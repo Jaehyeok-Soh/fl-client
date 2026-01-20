@@ -1,0 +1,46 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <Filter Include="99. ETC">
+      <UniqueIdentifier>{abc407db-dd3f-4180-a2f9-ea688f8ce102}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="99. ETC\99. Andromeda">
+      <UniqueIdentifier>{711d6e55-3e50-4bc7-8a41-e71fbae54572}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="99. ETC\00. Default">
+      <UniqueIdentifier>{1cc99351-da81-4feb-a1cf-61546807521f}</UniqueIdentifier>
+    </Filter>
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="targetver.h">
+      <Filter>99. ETC\99. Andromeda</Filter>
+    </ClInclude>
+    <ClInclude Include="framework.h">
+      <Filter>99. ETC\99. Andromeda</Filter>
+    </ClInclude>
+    <ClInclude Include="Resource.h">
+      <Filter>99. ETC\99. Andromeda</Filter>
+    </ClInclude>
+    <ClInclude Include="Client.h">
+      <Filter>99. ETC\00. Default</Filter>
+    </ClInclude>
+  </ItemGroup>
+  <ItemGroup>
+    <Image Include="Client.ico">
+      <Filter>99. ETC\99. Andromeda</Filter>
+    </Image>
+    <Image Include="small.ico">
+      <Filter>99. ETC\99. Andromeda</Filter>
+    </Image>
+  </ItemGroup>
+  <ItemGroup>
+    <ResourceCompile Include="Client.rc">
+      <Filter>99. ETC\99. Andromeda</Filter>
+    </ResourceCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="Client.cpp">
+      <Filter>99. ETC\00. Default</Filter>
+    </ClCompile>
+  </ItemGroup>
+</Project>
