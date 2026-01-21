@@ -276,9 +276,6 @@
     <ClCompile Include="..\Private\Collider.cpp">
       <Filter>00. System\05. Component\Collider</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\..\D3D11_Practice\Engine\Private\Component.cpp">
-      <Filter>00. System\05. Component</Filter>
-    </ClCompile>
     <ClCompile Include="..\Private\VIBuffer.cpp">
       <Filter>00. System\05. Component\VIBuffer</Filter>
     </ClCompile>
@@ -438,9 +435,6 @@
     <ClCompile Include="..\Private\Bone.cpp">
       <Filter>00. System\05. Component\Model\Bone</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\..\D3D11_Practice\Engine\Private\DebugDraw.cpp">
-      <Filter>01. Utility\10. DebugDraw</Filter>
-    </ClCompile>
     <ClCompile Include="..\Private\MapFile_Manager.cpp">
       <Filter>01. Utility\11. ToolFileManager</Filter>
     </ClCompile>
@@ -461,6 +455,12 @@
     </ClCompile>
     <ClCompile Include="..\Private\GameInstance.cpp">
       <Filter>01. Utility\00. GameInstance</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\Component.cpp">
+      <Filter>00. System\05. Component</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\DebugDraw.cpp">
+      <Filter>01. Utility\10. DebugDraw</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -541,9 +541,6 @@
     </ClInclude>
     <ClInclude Include="..\Public\Collider.h">
       <Filter>00. System\05. Component\Collider</Filter>
-    </ClInclude>
-    <ClInclude Include="..\Public\Component.h">
-      <Filter>00. System\05. Component</Filter>
     </ClInclude>
     <ClInclude Include="..\Public\VIBuffer.h">
       <Filter>00. System\05. Component\VIBuffer</Filter>
@@ -704,9 +701,6 @@
     <ClInclude Include="..\Public\Bone.h">
       <Filter>00. System\05. Component\Model\Bone</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\..\D3D11_Practice\Engine\Public\DebugDraw.h">
-      <Filter>01. Utility\10. DebugDraw</Filter>
-    </ClInclude>
     <ClInclude Include="..\Public\MapFile_Manager.h">
       <Filter>01. Utility\11. ToolFileManager</Filter>
     </ClInclude>
@@ -727,6 +721,12 @@
     </ClInclude>
     <ClInclude Include="..\Public\GameInstance.h">
       <Filter>01. Utility\00. GameInstance</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\D3D11_Practice\Engine\Public\Component.h">
+      <Filter>00. System\05. Component</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\D3D11_Practice\Engine\Public\DebugDraw.h">
+      <Filter>01. Utility\10. DebugDraw</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
