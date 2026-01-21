@@ -18,7 +18,6 @@ public:
 private:
 	HRESULT Ready_Player_Layer(const wstring& wstrLayerTag);
 	HRESULT Ready_UI_Layer(const wstring& wstrLayerTag);
-	HRESULT Ready_Enemy_Beach_Layer(const wstring& wstrLayerTag);
 private:
 	class CImGui_ToolManager* m_pImGuiManager = { nullptr };
 public:

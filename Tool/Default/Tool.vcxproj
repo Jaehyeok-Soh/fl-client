@@ -149,9 +149,15 @@
     <ClInclude Include="..\Public\ImGradient.h" />
     <ClInclude Include="..\Public\imgui.h" />
     <ClInclude Include="..\Public\ImGuizmo.h" />
+    <ClInclude Include="..\Public\ImGui_Base.h" />
+    <ClInclude Include="..\Public\ImGui_Dockspace_MenuBar.h" />
+    <ClInclude Include="..\Public\ImGui_Dockspace_TabBar.h" />
     <ClInclude Include="..\Public\imgui_impl_dx11.h" />
     <ClInclude Include="..\Public\imgui_impl_win32.h" />
     <ClInclude Include="..\Public\imgui_internal.h" />
+    <ClInclude Include="..\Public\ImGui_Layout.h" />
+    <ClInclude Include="..\Public\ImGui_Layout_Transform.h" />
+    <ClInclude Include="..\Public\ImGui_Panel.h" />
     <ClInclude Include="..\Public\imgui_stdlib.h" />
     <ClInclude Include="..\Public\ImGui_ToolManager.h" />
     <ClInclude Include="..\Public\ImSequencer.h" />
@@ -165,10 +171,15 @@
     <ClInclude Include="..\Public\Level_Effect.h" />
     <ClInclude Include="..\Public\Level_Loading.h" />
     <ClInclude Include="..\Public\Level_Map.h" />
+    <ClInclude Include="..\public\Level_UI.h" />
+    <ClInclude Include="..\Public\Loader.h" />
     <ClInclude Include="..\Public\Picking_ToolManager.h" />
+    <ClInclude Include="..\Public\ToolObject.h" />
     <ClInclude Include="..\Public\Tool_Defines.h" />
     <ClInclude Include="..\Public\MainApplication.h" />
     <ClInclude Include="..\Public\Tool_EventDefines.h" />
+    <ClInclude Include="..\Public\UEMapdataLoader.h" />
+    <ClInclude Include="..\Public\UEMapdataParser.h" />
     <ClInclude Include="framework.h" />
     <ClInclude Include="Resource.h" />
     <ClInclude Include="targetver.h" />
@@ -182,10 +193,16 @@
     <ClCompile Include="..\Private\ImGradient.cpp" />
     <ClCompile Include="..\Private\imgui.cpp" />
     <ClCompile Include="..\Private\ImGuizmo.cpp" />
+    <ClCompile Include="..\Private\ImGui_Base.cpp" />
     <ClCompile Include="..\Private\imgui_demo.cpp" />
+    <ClCompile Include="..\Private\ImGui_Dockspace_MenuBar.cpp" />
+    <ClCompile Include="..\Private\ImGui_Dockspace_TabBar.cpp" />
     <ClCompile Include="..\Private\imgui_draw.cpp" />
     <ClCompile Include="..\Private\imgui_impl_dx11.cpp" />
     <ClCompile Include="..\Private\imgui_impl_win32.cpp" />
+    <ClCompile Include="..\Private\ImGui_Layout.cpp" />
+    <ClCompile Include="..\Private\ImGui_Layout_Transform.cpp" />
+    <ClCompile Include="..\Private\ImGui_Panel.cpp" />
     <ClCompile Include="..\Private\imgui_stdlib.cpp" />
     <ClCompile Include="..\Private\imgui_tables.cpp" />
     <ClCompile Include="..\Private\ImGui_ToolManager.cpp" />
@@ -197,8 +214,14 @@
     <ClCompile Include="..\Private\Level_Effect.cpp" />
     <ClCompile Include="..\Private\Level_Loading.cpp" />
     <ClCompile Include="..\Private\Level_Map.cpp" />
+    <ClCompile Include="..\private\Level_UI.cpp" />
+    <ClCompile Include="..\Private\Loader.cpp" />
     <ClCompile Include="..\Private\MainApplication.cpp" />
     <ClCompile Include="..\Private\Picking_ToolManager.cpp" />
+    <ClCompile Include="..\Private\ToolObject.cpp" />
+    <ClCompile Include="..\Private\Tool_Defines.cpp" />
+    <ClCompile Include="..\Private\UEMapdataLoader.cpp" />
+    <ClCompile Include="..\Private\UEMapdataParser.cpp" />
     <ClCompile Include="Tool.cpp" />
   </ItemGroup>
   <ItemGroup>

@@ -3,7 +3,6 @@
 #include "ImGui_Dockspace_TabBar.h"
 #include "ToolObject.h"
 #include "Level_Loading.h"
-#include "ToolInstance.h"
 #include "ImGui_ToolManager.h"
 
 IMPLEMENT_SINGLETON(CImGui_ToolManager)
@@ -12,18 +11,16 @@ CImGui_ToolManager::CImGui_ToolManager()
 {
 }
 
-HRESULT CImGui_ToolManager::Initialize_ToolManager(HWND hWnd, ID3D11Device* pDevice, ID3D11DeviceContext* pDeviceContext, LEVELID eStartLevel)
+HRESULT CImGui_ToolManager::Initialize_ToolManager(HWND hWnd, ID3D11Device* pDevice, ID3D11DeviceContext* pDeviceContext, ELevelType eStartLevel)
 {
 	m_pDevice = pDevice;
 	m_hWnd = hWnd;
 	m_pDeviceContext = pDeviceContext;
 	m_pGameInstance = CGameInstance::GetInstance();
-	m_pToolInstance = CToolInstance::GetInstance();
 
 	Safe_AddRef(m_pDevice);
 	Safe_AddRef(m_pDeviceContext);
 	Safe_AddRef(m_pGameInstance);
-	Safe_AddRef(m_pToolInstance);
 
 	IMGUI_CHECKVERSION();
 	ImGuiContext* pImGuiContext = ImGui::CreateContext();
@@ -71,7 +68,7 @@ void CImGui_ToolManager::Render_Begin()
 {
 	// 모든 Render 이후 Gui 렌더
 	// 이때 BackBuffer 복사해오기
-	m_pToolInstance->Copy_BackBufferTexture(&m_pViewportFrameTexture);
+	m_pGameInstance->Copy_BackBufferTexture(&m_pViewportFrameTexture);
 
 	ImGui_ImplDX11_NewFrame();
 	ImGui_ImplWin32_NewFrame();
@@ -326,7 +323,7 @@ HRESULT CImGui_ToolManager::Show_Menubar(_bool bActive)
 	return m_pMenuBar->Render(nullptr);
 }
 
-HRESULT CImGui_ToolManager::Ready_DockSpace_Elements(LEVELID eStartLevel)
+HRESULT CImGui_ToolManager::Ready_DockSpace_Elements(ELevelType eStartLevel)
 {
 	if (!(m_pMenuBar = CImGui_Dockspace_MenuBar::Create("MenuBar##Dockspace", m_pDevice, m_pDeviceContext)))
 		return E_FAIL;
@@ -339,7 +336,6 @@ HRESULT CImGui_ToolManager::Ready_DockSpace_Elements(LEVELID eStartLevel)
 
 HRESULT CImGui_ToolManager::Ready_Events()
 {
-
 	return S_OK;
 }
 
@@ -381,7 +377,7 @@ HRESULT CImGui_ToolManager::CreateOrResizeViewportFrameTargets(_uint iWidth, _ui
 	return S_OK;
 }
 
-CImGui_ToolManager* CImGui_ToolManager::Create(HWND hWnd, ID3D11Device* pDevice, ID3D11DeviceContext* pDeviceContext, LEVELID eStartLevel)
+CImGui_ToolManager* CImGui_ToolManager::Create(HWND hWnd, ID3D11Device* pDevice, ID3D11DeviceContext* pDeviceContext, ELevelType eStartLevel)
 {
     CImGui_ToolManager* pInstance = new CImGui_ToolManager();
     if (FAILED(pInstance->Initialize_ToolManager(hWnd, pDevice, pDeviceContext, eStartLevel)))
@@ -402,7 +398,6 @@ void CImGui_ToolManager::Free()
 	Safe_Release(m_pTabBar);
 	Safe_Release(m_pViewportFrameTexture);
 	Safe_Release(m_pViewportFrameSRV);
-	Safe_Release(m_pToolInstance);
 	Safe_Release(m_pGameInstance);
     Safe_Release(m_pDeviceContext);
     Safe_Release(m_pDevice);

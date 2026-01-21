@@ -4,7 +4,6 @@
 #include "GameInstance.h"
 
 NS_BEGIN(Engine)
-class CToolInstance;
 class CGameInstance;
 NS_END
 
@@ -33,7 +32,7 @@ private:
 	CImGui_ToolManager();
 	virtual ~CImGui_ToolManager() = default;
 public:
-	HRESULT Initialize_ToolManager(HWND hWnd, ID3D11Device* pDevice, ID3D11DeviceContext* pDeviceContext, LEVELID eStartLevel);
+	HRESULT Initialize_ToolManager(HWND hWnd, ID3D11Device* pDevice, ID3D11DeviceContext* pDeviceContext, ELevelType eStartLevel);
 	HRESULT CreateOrResizeViewportFrameTargets(_uint iWidth, _uint iHeight);
 
 	void RayUpdate();
@@ -54,7 +53,7 @@ private:
 	void Update_Dockspace();
 	HRESULT Show_TabBar(_bool bActive);
 	HRESULT Show_Menubar(_bool bActive);
-	HRESULT Ready_DockSpace_Elements(LEVELID eStartLevel);
+	HRESULT Ready_DockSpace_Elements(ELevelType eStartLevel);
 private:
 	_bool m_bViewprotFocused = { false };
 	_bool m_bViewprotHovered = { false };
@@ -68,7 +67,6 @@ private:
 	ID3D11Device* m_pDevice = { nullptr };
 	ID3D11DeviceContext* m_pDeviceContext{ nullptr };
 	CGameInstance* m_pGameInstance = { nullptr };
-	CToolInstance* m_pToolInstance = { nullptr };
 	class CImGui_Dockspace_MenuBar* m_pMenuBar = { nullptr };
 	class CImGui_Dockspace_TabBar* m_pTabBar = { nullptr };
 private:
@@ -78,7 +76,7 @@ private:
 	_float2 m_vViewportSize = {};
 	_float2 m_vViewportBounds[2] = {};
 public:
-	static CImGui_ToolManager* Create(HWND hWnd, ID3D11Device* pDevice, ID3D11DeviceContext* pDeviceContext, LEVELID eStartLevel);
+	static CImGui_ToolManager* Create(HWND hWnd, ID3D11Device* pDevice, ID3D11DeviceContext* pDeviceContext, ELevelType eStartLevel);
 	virtual void Free() override;
 };
 

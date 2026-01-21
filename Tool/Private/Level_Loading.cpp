@@ -4,6 +4,7 @@
 #include "Level_Map.h"
 #include "Level_Animation.h"
 #include "Level_Camera.h"
+#include "Level_UI.h"
 #include "Level_Effect.h"
 #include "GameInstance.h"
 #include "Loader.h"
@@ -15,7 +16,7 @@ CLevel_Loading::CLevel_Loading(ID3D11Device* pDevice, ID3D11DeviceContext* pDevi
 	Safe_AddRef(m_pImGuiManager);
 }
 
-HRESULT CLevel_Loading::Initialize(LEVELID eNextLevelID)
+HRESULT CLevel_Loading::Initialize(ELevelType eNextLevelID)
 {
 	if (FAILED(Super::Initialize()))
 		return E_FAIL;
@@ -47,19 +48,22 @@ void CLevel_Loading::Update(const _float fTimeDelta)
 
 		switch (m_eNextLevelID)
 		{
-		case Tool::LEVELID::MAP:
+		case Tool::ELevelType::MAP:
 			pNewLevel = CLevel_Map::Create(m_pDevice, m_pDeviceContext);
 			break;
-		case Tool::LEVELID::ANIMATION:
+		case Tool::ELevelType::ANIMATION:
 			pNewLevel = CLevel_Animation::Create(m_pDevice, m_pDeviceContext);
 			break;
-		case Tool::LEVELID::EFFECT:
+		case Tool::ELevelType::EFFECT:
 			pNewLevel = CLevel_Effect::Create(m_pDevice, m_pDeviceContext);
 			break;
-		case Tool::LEVELID::CAMERA:
+		case Tool::ELevelType::CAMERA:
 			pNewLevel = CLevel_Camera::Create(m_pDevice, m_pDeviceContext);
 			break;
-		case Tool::LEVELID::ASSET_CONVERT:
+		case Tool::ELevelType::UI:
+			pNewLevel = CLevel_UI::Create(m_pDevice, m_pDeviceContext);
+			break;
+		case Tool::ELevelType::ASSET_CONVERT:
 			pNewLevel = CLevel_Assimp::Create(m_pDevice, m_pDeviceContext);
 			break;
 		default:
@@ -94,7 +98,7 @@ HRESULT CLevel_Loading::Render()
 	return S_OK;
 }
 
-CLevel_Loading* CLevel_Loading::Create(ID3D11Device* pDevice, ID3D11DeviceContext* pDeviceContext, LEVELID eNextLevelID)
+CLevel_Loading* CLevel_Loading::Create(ID3D11Device* pDevice, ID3D11DeviceContext* pDeviceContext, ELevelType eNextLevelID)
 {
 	CLevel_Loading* pInstance = new CLevel_Loading(pDevice, pDeviceContext);
 

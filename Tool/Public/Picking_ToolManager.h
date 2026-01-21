@@ -8,7 +8,7 @@ class CToolObject;
 class CPicking_ToolManager final : public CBase
 {
 	using SUPER = CBase;
-	DECLARE_SINGLETON(CPicking_ToolManager);
+	DECLARE_SINGLETON(CPicking_ToolManager)
 private:
 	CPicking_ToolManager();
 	virtual ~CPicking_ToolManager() = default;

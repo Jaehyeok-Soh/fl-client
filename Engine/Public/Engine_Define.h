@@ -16,6 +16,7 @@
 #include <DirectXTK/PrimitiveBatch.h>
 #include <DirectXTK/Effects.h>
 #include <DirectXTK/VertexTypes.h>
+#include <DirectXTK/SimpleMath.h>
 
 #include <DirectXTK/SpriteBatch.h>
 #include <DirectXTK/SpriteFont.h>
@@ -67,6 +68,7 @@ using std::unordered_set;
 using std::filesystem::path;
 
 using namespace DirectX;
+using namespace SimpleMath;
 
 #define MAX_BONE_TRANSFORMS 512
 #define MAX_MODEL_KEYFRAMES 512

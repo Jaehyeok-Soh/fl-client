@@ -24,9 +24,9 @@ public:
 	void Update(const _float fTimeDelta);
 	HRESULT Render();
 private:
-	HRESULT Start_Level(LEVELID eStartLevel);
+	HRESULT Start_Level(ELevelType eStartLevel);
 	HRESULT Ready_Static_Prototype();
-	HRESULT Ready_GuiManager(_uint iWidth, _uint iHeight, LEVELID eStartLevel);
+	HRESULT Ready_GuiManager(_uint iWidth, _uint iHeight, ELevelType eStartLevel);
 private:
 	CImGui_ToolManager* m_pImGuiManager = { nullptr };
 	ID3D11Device* m_pDevice					= { nullptr };

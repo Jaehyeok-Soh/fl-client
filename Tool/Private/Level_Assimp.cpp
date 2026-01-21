@@ -47,151 +47,7 @@ HRESULT CLevel_Assimp::Awake(const _uint iLevelID)
 	::XMStoreFloat4x4(&matPreTransformIdentity, ::XMMatrixIdentity());
 	::XMStoreFloat4x4(&matPreTransformScaling, ::XMMatrixScaling(0.001f, 0.001f, 0.001f));
 	::XMStoreFloat4x4(&matPreTransformMapObject, matUECoord * ::XMMatrixScaling(0.01f, 0.01f, 0.01f));
-	vector<AS_BONE*> vecMasterBones;
 
-	{
-		_float4x4 matPreTrasform = {};
-		::XMStoreFloat4x4(&matPreTrasform, matPreTransformScaling1000);
-		CConverter* pConverter = CConverter::Create(m_pDevice, m_pDeviceContext, L"Effects/AirRibons/", matPreTrasform, false);
-		pConverter->ReadAndExportFile();
-		Safe_Release(pConverter);
-	}
-	{
-		_float4x4 matPreTrasform = {};
-		::XMStoreFloat4x4(&matPreTrasform, matPreTransformScaling1000);
-		CConverter* pConverter = CConverter::Create(m_pDevice, m_pDeviceContext, L"Effects/Circle/", matPreTrasform, false);
-		pConverter->ReadAndExportFile();
-		Safe_Release(pConverter);
-	}
-	{
-		_float4x4 matPreTrasform = {};
-		::XMStoreFloat4x4(&matPreTrasform, matPreTransformScaling1000);
-		CConverter* pConverter = CConverter::Create(m_pDevice, m_pDeviceContext, L"Effects/CircleDetail/", matPreTrasform, false);
-		pConverter->ReadAndExportFile();
-		Safe_Release(pConverter);
-	}
-	{
-		_float4x4 matPreTrasform = {};
-		::XMStoreFloat4x4(&matPreTrasform, matPreTransformScaling1000);
-		CConverter* pConverter = CConverter::Create(m_pDevice, m_pDeviceContext, L"Effects/Grass/", matPreTrasform, false);
-		pConverter->ReadAndExportFile();
-		Safe_Release(pConverter);
-	}
-	{
-		_float4x4 matPreTrasform = {};
-		::XMStoreFloat4x4(&matPreTrasform, matPreTransformScaling1000);
-		CConverter* pConverter = CConverter::Create(m_pDevice, m_pDeviceContext, L"Effects/Lines/", matPreTrasform, false);
-		pConverter->ReadAndExportFile();
-		Safe_Release(pConverter);
-	}
-	{
-		_float4x4 matPreTrasform = {};
-		::XMStoreFloat4x4(&matPreTrasform, matPreTransformScaling1000);
-		CConverter* pConverter = CConverter::Create(m_pDevice, m_pDeviceContext, L"Effects/Rasengan/", matPreTrasform, false);
-		pConverter->ReadAndExportFile();
-		Safe_Release(pConverter);
-	}
-	{
-		_float4x4 matPreTrasform = {};
-		
-		::XMStoreFloat4x4(&matPreTrasform, matPreTransformScaling1000 * ::XMMatrixRotationRollPitchYaw(0.f, ::XMConvertToRadians(-90.f), 0.f));
-		CConverter* pConverter = CConverter::Create(m_pDevice, m_pDeviceContext, L"Effects/RasenganBigTornado/", matPreTrasform, false);
-		pConverter->ReadAndExportFile();
-		Safe_Release(pConverter);
-	}
-	{
-		_float4x4 matPreTrasform = {};
-		::XMStoreFloat4x4(&matPreTrasform, matPreTransformScaling100 * ::XMMatrixRotationRollPitchYaw(::XMConvertToRadians(90.f), 0.f, 0.f));
-		CConverter* pConverter = CConverter::Create(m_pDevice, m_pDeviceContext, L"Effects/WaterPrison/", matPreTrasform, false);
-		pConverter->ReadAndExportFile();
-		Safe_Release(pConverter);
-	}
-	{
-		_float4x4 matPreTrasform = {};
-
-		::XMStoreFloat4x4(&matPreTrasform, matPreTransformScaling100 * ::XMMatrixRotationRollPitchYaw(::XMConvertToRadians(-90.f), 0.f, 0.f));
-		CConverter* pConverter = CConverter::Create(m_pDevice, m_pDeviceContext, L"Effects/Fireball/", matPreTrasform, false);
-		pConverter->ReadAndExportFile();
-		Safe_Release(pConverter);
-	}
-	{
-		_float4x4 matPreTrasform = {};
-
-		::XMStoreFloat4x4(&matPreTrasform, matPreTransformScaling100 * ::XMMatrixRotationRollPitchYaw(0.f, ::XMConvertToRadians(-90.f), 0.f));
-		CConverter* pConverter = CConverter::Create(m_pDevice, m_pDeviceContext, L"Effects/Lightning/", matPreTrasform, false);
-		pConverter->ReadAndExportFile();
-		Safe_Release(pConverter);
-	}
-	{
-		_float4x4 matPreTrasform = {};
-		::XMStoreFloat4x4(&matPreTrasform, matPreTransformScaling10 * ::XMMatrixRotationRollPitchYaw(0.f, ::XMConvertToRadians(-90.f), 0.f));
-		CConverter* pConverter = CConverter::Create(m_pDevice, m_pDeviceContext, L"Effects/RasenganSmallTornado/", matPreTrasform, false);
-		pConverter->ReadAndExportFile();
-		Safe_Release(pConverter);
-	}
-	{
-		_float4x4 matPreTrasform = {};
-		::XMStoreFloat4x4(&matPreTrasform, matPreTransformScaling100 * ::XMMatrixRotationRollPitchYaw(0.f, 0.f, ::XMConvertToRadians(90.f)));
-		CConverter* pConverter = CConverter::Create(m_pDevice, m_pDeviceContext, L"Effects/Rings/", matPreTrasform, false);
-		pConverter->ReadAndExportFile();
-		Safe_Release(pConverter);
-	}
-	{
-		_float4x4 matPreTrasform = {};
-		::XMStoreFloat4x4(&matPreTrasform, matPreTransformScaling1000);
-		CConverter* pConverter = CConverter::Create(m_pDevice, m_pDeviceContext, L"Effects/SmokeMesh/", matPreTrasform, false);
-		pConverter->ReadAndExportFile();
-		Safe_Release(pConverter);
-	}
-	{
-		_float4x4 matPreTrasform = {};
-		::XMStoreFloat4x4(&matPreTrasform, matPreTransformScaling100);
-		CConverter* pConverter = CConverter::Create(m_pDevice, m_pDeviceContext, L"Effects/Sphere/", matPreTrasform, false);
-		pConverter->ReadAndExportFile();
-		Safe_Release(pConverter);
-	}
-	{
-		_float4x4 matPreTrasform = {};
-		::XMStoreFloat4x4(&matPreTrasform, matPreTransformScaling1000);
-		CConverter* pConverter = CConverter::Create(m_pDevice, m_pDeviceContext, L"Effects/Torus/", matPreTrasform, false);
-		pConverter->ReadAndExportFile();
-		Safe_Release(pConverter);
-	}
-	{
-		_float4x4 matPreTrasform = {};
-		::XMStoreFloat4x4(&matPreTrasform, matPreTransformScaling1000);
-		CConverter* pConverter = CConverter::Create(m_pDevice, m_pDeviceContext, L"Effects/Tree/", matPreTrasform, false);
-		pConverter->ReadAndExportFile();
-		Safe_Release(pConverter);
-	}
-	{
-		_float4x4 matPreTrasform = {};
-		::XMStoreFloat4x4(&matPreTrasform, matPreTransformScaling1000);
-		CConverter* pConverter = CConverter::Create(m_pDevice, m_pDeviceContext, L"Effects/Wire/", matPreTrasform, false);
-		pConverter->ReadAndExportFile();
-		Safe_Release(pConverter);
-	}
-	{
-		_float4x4 matPreTrasform = {};
-		::XMStoreFloat4x4(&matPreTrasform, matPreTransformScaling100);
-		CConverter* pConverter = CConverter::Create(m_pDevice, m_pDeviceContext, L"Effects/PainSkill/", matPreTrasform, false);
-		pConverter->ReadAndExportFile();
-		Safe_Release(pConverter);
-	}
-	{
-		_float4x4 matPreTrasform = {};
-		::XMStoreFloat4x4(&matPreTrasform, matPreTransformScaling100 * ::XMMatrixRotationRollPitchYaw(::XMConvertToRadians(90.f), 0.f, 0.f));
-		CConverter* pConverter = CConverter::Create(m_pDevice, m_pDeviceContext, L"Effects/RasenShuriken/", matPreTrasform, false);
-		pConverter->ReadAndExportFile();
-		Safe_Release(pConverter);
-	}
-	{
-		_float4x4 matPreTrasform = {};
-		::XMStoreFloat4x4(&matPreTrasform, matPreTransformScaling100 * ::XMMatrixRotationRollPitchYaw(::XMConvertToRadians(90.f), ::XMConvertToRadians(180.f), 0.f));
-		CConverter* pConverter = CConverter::Create(m_pDevice, m_pDeviceContext, L"Effects/SharkBomb/", matPreTrasform, false);
-		pConverter->ReadAndExportFile();
-		Safe_Release(pConverter);
-	}
 	/*
 	//Sword
 	{
@@ -315,21 +171,14 @@ HRESULT CLevel_Assimp::Awake(const _uint iLevelID)
 	*/
 #pragma endregion
 	
-	/*{
-		_float4x4 matPreTransform = {};
-		::XMStoreFloat4x4(&matPreTransform, ::XMMatrixScaling(0.001f, 0.001f, 0.001f));
-		CConverter* pConverter = CConverter::Create(m_pDevice, m_pDeviceContext, L"MapAssets", matPreTransform, ConvertType::MAPOBJECT);
-		pConverter->ReadAndExportFile();
-		Safe_Release(pConverter);
-	}*/
-	
-	{
-		CConverter* pConverter = CConverter::Create(m_pDevice, m_pDeviceContext, L"Map/AmeVillage/", matPreTransformMapObject, false);
-		pConverter->ReadAndExportFile();
-		Safe_Release(pConverter);
-	}
+	//// Map
+	//{
+	//	CConverter* pConverter = CConverter::Create(m_pDevice, m_pDeviceContext, L"Map/AmeVillage/", matPreTransformMapObject, false);
+	//	pConverter->ReadAndExportFile();
+	//	Safe_Release(pConverter);
+	//}
 
-	////Map
+	//// Map Parsing
 	//{
 	//	CUEMapdataParser::MAPPARSER_DESC desc = {};
 	//	desc.wstrPath = L"../../Resources/Data/MapData/Village/Village_Floor.json";
@@ -342,36 +191,7 @@ HRESULT CLevel_Assimp::Awake(const _uint iLevelID)
 	//		return E_FAIL;
 	//	Safe_Release(pParser);
 	//}
-	//{
-	//	CUEMapdataParser::MAPPARSER_DESC desc = {};
-	//	desc.wstrPath = L"../../Resources/Data/MapData/ExamStadium/ExamStadium_Env_Terrain.json";
-	//	CUEMapdataParser* pParser = CUEMapdataParser::Create(desc);
-	//	if (!pParser)
-	//		return E_FAIL;
-	//	if (FAILED(pParser->Read_Mapdata()))
-	//		return E_FAIL;
-	//	if (FAILED(pParser->Write_Mapdata()))
-	//		return E_FAIL;
-	//	Safe_Release(pParser);
-	//}
-	//{
-	//	CUEMapdataParser::MAPPARSER_DESC desc = {};
-	//	desc.wstrPath = L"../../Resources/Data/MapData/Village/Village_Env_Terrain.json";
-	//	CUEMapdataParser* pParser = CUEMapdataParser::Create(desc);
-	//	if (!pParser)
-	//		return E_FAIL;
-	//	if (FAILED(pParser->Read_Mapdata()))
-	//		return E_FAIL;
-	//	if (FAILED(pParser->Write_Mapdata()))
-	//		return E_FAIL;
-	//	Safe_Release(pParser);
-	//}
-	
-	if (vecMasterBones.size() >= 0)
-	{
-		for (auto& pElement : vecMasterBones)
-			Safe_Delete(pElement);
-	}
+
 	return S_OK;
 }
 

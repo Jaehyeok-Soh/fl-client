@@ -3,12 +3,12 @@
 
 NS_BEGIN(Tool)
 
-class CLevel_Camera final : public CLevel
+class CLevel_UI final : public CLevel
 {
 	using Super = CLevel;
 private:
-	explicit CLevel_Camera(ID3D11Device* pDevice, ID3D11DeviceContext* pDeviceContext);
-	virtual ~CLevel_Camera() = default;
+	explicit CLevel_UI(ID3D11Device* pDevice, ID3D11DeviceContext* pDeviceContext);
+	virtual ~CLevel_UI() = default;
 
 	virtual HRESULT Initialize() override;
 public:
@@ -21,7 +21,7 @@ private:
 private:
 	class CImGui_ToolManager* m_pImGuiManager = { nullptr };
 public:
-	static CLevel_Camera* Create(ID3D11Device* pDevice, ID3D11DeviceContext* pDeviceContext);
+	static CLevel_UI* Create(ID3D11Device* pDevice, ID3D11DeviceContext* pDeviceContext);
 	virtual void Free() override;
 };
 

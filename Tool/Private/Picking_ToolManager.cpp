@@ -5,14 +5,13 @@
 #include "GameObject.h"
 #include "Picking_ToolManager.h"
 
-IMPLEMENT_SINGLETON(CPicking_ToolManager);
+IMPLEMENT_SINGLETON(CPicking_ToolManager)
 
 CPicking_ToolManager::CPicking_ToolManager()
 {
     m_PickingList.reserve(50);
 }
 
-// TODO : Delegate에 구독해놓자 매번 Check하게 만들지 말고
 _bool CPicking_ToolManager::Picking()
 {
 	if (!MOUSE_LBUTTON_DOWN || ImGuizmo::IsUsing() || ImGuizmo::IsOver()) return false;

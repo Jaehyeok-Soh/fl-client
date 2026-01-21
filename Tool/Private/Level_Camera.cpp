@@ -13,15 +13,6 @@ CLevel_Camera::CLevel_Camera(ID3D11Device* pDevice, ID3D11DeviceContext* pDevice
 
 HRESULT CLevel_Camera::Initialize()
 {
-	//if (FAILED(Ready_Player_Layer(L"Player_Layer")))
-	//	return E_FAIL;
-
-	//if (FAILED(Ready_Enemy_Beach_Layer(L"Enemy_Beach_Layer")))
-	//	return E_FAIL;
-
-	//if (FAILED(Ready_UI_Layer(L"UI_Layer")))
-	//	return E_FAIL;
-
 	return S_OK;
 }
 
@@ -31,15 +22,6 @@ HRESULT CLevel_Camera::Awake(const _uint iLevelID)
 		return E_FAIL;
 
 	MSG_BOX("Camera");
-
-	//if (FAILED(m_pGameInstance->Awake_GameObjects(iLevelID, L"Player_Layer")))
-	//	return E_FAIL;
-
-	//if (FAILED(m_pGameInstance->Awake_GameObjects(iLevelID, L"Enemy_Beach_Layer")))
-	//	return E_FAIL;
-
-	//if (FAILED(m_pGameInstance->Awake_GameObjects(iLevelID, L"UI_Layer")))
-	//	return E_FAIL;
 
 	return S_OK;
 }
@@ -61,7 +43,6 @@ HRESULT CLevel_Camera::Render()
 	// Element Render
 
 	ImGui::ShowDemoWindow();
-
 	//////////////////////////
 	m_pImGuiManager->Render_Viewport(nullptr);
 	m_pImGuiManager->Render_End();
@@ -75,11 +56,6 @@ HRESULT CLevel_Camera::Ready_Player_Layer(const wstring& wstrLayerTag)
 }
 
 HRESULT CLevel_Camera::Ready_UI_Layer(const wstring& wstrLayerTag)
-{
-	return S_OK;
-}
-
-HRESULT CLevel_Camera::Ready_Enemy_Beach_Layer(const wstring& wstrLayerTag)
 {
 	return S_OK;
 }

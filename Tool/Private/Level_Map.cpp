@@ -8,16 +8,13 @@
 ////////////////
 // GameObject //
 ////////////////
+#include "ToolObject.h"
 #include "CameraMan_Free.h"
-#include "Terrain.h"
 #include "UEMapDataLoader.h"
 
 ///////////
 // ImGui //
 ///////////
-#include "ImGui_Inspector_Map.h"
-#include "ImGui_ObjectList_Panel.h"
-#include "ImGui_CreateMode_Panel.h"
 #include "ImGui_Base.h"
 
 /////////////
@@ -49,7 +46,7 @@ HRESULT CLevel_Map::Initialize()
 	if (FAILED(Ready_Lights()))
 		return E_FAIL;
 
-	if (FAILED(Ready_Camera_Layer(L"Camera_Layer")))
+	if (FAILED(Ready_Camera_Layer(g_wszCameraLayer)))
 		return E_FAIL;
 
 	return S_OK;
@@ -62,14 +59,8 @@ HRESULT CLevel_Map::Awake(const _uint iLevelID)
 
 	MSG_BOX("Map");
 
-	if (FAILED(m_pGameInstance->Awake_GameObjects(iLevelID, L"Camera_Layer")))
+	if (FAILED(m_pGameInstance->Awake_GameObjects(iLevelID, g_wszCameraLayer)))
 		return E_FAIL;
-
-	//if (FAILED(m_pGameInstance->Awake_GameObjects(iLevelID, g_wszStaticModelLayer)))
-	//	return E_FAIL;
-
-	//if (FAILED(m_pGameInstance->Awake_GameObjects(iLevelID, g_wszColMeshLayer)))
-	//	return E_FAIL;
 
 	if (FAILED(Ready_Camera_Setting(iLevelID)))
 		return E_FAIL;
@@ -127,17 +118,17 @@ void CLevel_Map::Render_Elements()
 
 HRESULT CLevel_Map::Reday_Gui()
 {
-	m_GuiElements[ENUM_TO_UINT(Elements::Inspector)] = CImGui_Inspector_Map::Create(this, m_pDevice, m_pDeviceContext);
+	//m_GuiElements[ENUM_TO_UINT(Elements::Inspector)] = CImGui_Inspector_Map::Create(this, m_pDevice, m_pDeviceContext);
 
-	{
-		CImGui_ObjectList_Panel* pReturn = CImGui_ObjectList_Panel::Create(this, m_pDevice, m_pDeviceContext, ENUM_TO_UINT(LEVELID::MAP));
-		pReturn->On_AddLayer(g_wszColMeshLayer, nullptr);
-		pReturn->On_AddLayer(g_wszStaticModelLayer, nullptr);
-		pReturn->On_AddLayer(g_wszStaticLightLayer, nullptr);
-		m_GuiElements[ENUM_TO_UINT(Elements::ObjectList)] = pReturn;
-	}
-	
-	m_GuiElements[ENUM_TO_UINT(Elements::CreateMode)] = CImGui_CreateMode_Panel::Create(this, m_pDevice, m_pDeviceContext);
+	//{
+	//	CImGui_ObjectList_Panel* pReturn = CImGui_ObjectList_Panel::Create(this, m_pDevice, m_pDeviceContext, ENUM_TO_UINT(ELevelType::MAP));
+	//	pReturn->On_AddLayer(g_wszColMeshLayer, nullptr);
+	//	pReturn->On_AddLayer(g_wszStaticModelLayer, nullptr);
+	//	pReturn->On_AddLayer(g_wszStaticLightLayer, nullptr);
+	//	m_GuiElements[ENUM_TO_UINT(Elements::ObjectList)] = pReturn;
+	//}
+	//
+	//m_GuiElements[ENUM_TO_UINT(Elements::CreateMode)] = CImGui_CreateMode_Panel::Create(this, m_pDevice, m_pDeviceContext);
 
 	return S_OK;
 }
@@ -154,26 +145,6 @@ void CLevel_Map::On_ChangeSelectedObject(CGameObject* pGo)
 	}
 	if (!ImGuizmo::IsOver() && !ImGuizmo::IsUsing())
 		m_pSelectedObject = nullptr;
-}
-
-HRESULT CLevel_Map::Ready_Terrain_Layer(const wstring& wstrLayerTag)
-{
-	{
-		CToolObject::TOOLOBJECT_DESC goDesc = {};
-		CTransform::TRANSFORM_DESC TransformDesc = {};
-		TransformDesc.vPosition = { 0.f, 0.f, 0.f };
-
-		goDesc.iLevelIndex = ENUM_TO_UINT(LEVELID::MAP);
-		goDesc.wstrLayerTag = wstrLayerTag;
-		goDesc.pTransform_Desc = &TransformDesc;
-		if (!(m_pGameInstance->Add_GameObject(ENUM_TO_UINT(LEVELID::MAP),
-			L"Prototype_GameObject_Terrain",
-			ENUM_TO_UINT(LEVELID::MAP),
-			wstrLayerTag, &goDesc)))
-			return E_FAIL;
-	}
-
-	return S_OK;
 }
 
 void CLevel_Map::On_CreateMode(_bool bValue)
@@ -206,9 +177,9 @@ HRESULT CLevel_Map::Ready_Camera_Layer(const wstring& wstrLayerTag)
 
 		goDesc.pTransform_Desc = &TransformDesc;
 		goDesc.pCamera_Desc = &CameraDesc;
-		if (!(pResult = m_pGameInstance->Add_GameObject(ENUM_TO_UINT(LEVELID::STATIC),
+		if (!(pResult = m_pGameInstance->Add_GameObject(ENUM_TO_UINT(ELevelType::STATIC),
 			L"Prototype_GameObject_CameraManFree",
-			ENUM_TO_UINT(LEVELID::MAP),
+			ENUM_TO_UINT(ELevelType::MAP),
 			wstrLayerTag, &goDesc)))
 			return E_FAIL;
 	}
@@ -246,15 +217,11 @@ void CLevel_Map::Ready_Event()
 {
 	m_EventHandles[ENUM_TO_UINT(Event::ChangeSelectedObject)] =
 		m_pGameInstance->Subscribe<ChangeSelectedObject>(this, &CLevel_Map::On_ChangeSelectedObject);
-
-	m_EventHandles[ENUM_TO_UINT(Event::CreateMode)] =
-		m_pGameInstance->Subscribe<CreateMode>(this, &CLevel_Map::On_CreateMode);
 }
 
 void CLevel_Map::Release_Event()
 {
 	m_pGameInstance->Unsubscribe<ChangeSelectedObject>(m_EventHandles[ENUM_TO_UINT(Event::ChangeSelectedObject)]);
-	m_pGameInstance->Unsubscribe<CreateMode>(m_EventHandles[ENUM_TO_UINT(Event::CreateMode)]);
 }
 
 CLevel_Map* CLevel_Map::Create(ID3D11Device* pDevice, ID3D11DeviceContext* pDeviceContext)

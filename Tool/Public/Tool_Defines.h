@@ -35,7 +35,7 @@ namespace Tool
 	extern unsigned int g_iWinSizeY;
 	extern float g_fAspectio;
 
-	enum class LEVELID : unsigned int
+	enum class ELevelType : unsigned int
 	{
 		STATIC = 0,
 		LOADING,
@@ -43,12 +43,13 @@ namespace Tool
 		ANIMATION,
 		EFFECT,
 		CAMERA,
+		UI,
 		ASSET_CONVERT,
 		END
 	};
-	const extern size_t g_iLevelID_Count;
+	inline constexpr size_t g_iLevelType_Count = static_cast<size_t>(ELevelType::END);
 
-	enum class ToolObjectType : unsigned int
+	enum class EToolObjectType : unsigned int
 	{
 		TERRAIN = 0,
 		COLMESH,
@@ -63,59 +64,59 @@ namespace Tool
 		END
 	};
 
-	static string TypeToString(ToolObjectType eType)
+	static string TypeToString(EToolObjectType eType)
 	{
 		switch (eType)
 		{
-		case Tool::ToolObjectType::TERRAIN:
+		case Tool::EToolObjectType::TERRAIN:
 			return "TERRAIN";
-		case Tool::ToolObjectType::COLMESH:
+		case Tool::EToolObjectType::COLMESH:
 			return "COLMESH";
-		case Tool::ToolObjectType::STATICMODEL:
+		case Tool::EToolObjectType::STATICMODEL:
 			return "STATICMODEL";
-		case Tool::ToolObjectType::DUMMY:
+		case Tool::EToolObjectType::DUMMY:
 			return "DUMMY";
-		case Tool::ToolObjectType::LIGHT:
+		case Tool::EToolObjectType::LIGHT:
 			return "LIGHT";
-		case Tool::ToolObjectType::COMPONENT_COLLIDER:
+		case Tool::EToolObjectType::COMPONENT_COLLIDER:
 			return "COMPONENT_COLLIDER";
-		case Tool::ToolObjectType::VERTEXOBJECT:
+		case Tool::EToolObjectType::VERTEXOBJECT:
 			return "VERTEXOBJECT";
-		case Tool::ToolObjectType::POLYGON:
+		case Tool::EToolObjectType::POLYGON:
 			return "POLYGON";
-		case Tool::ToolObjectType::TRIGGERBOX:
+		case Tool::EToolObjectType::TRIGGERBOX:
 			return "TRIGGERBOX";
-		case Tool::ToolObjectType::MESHEFFECT:
+		case Tool::EToolObjectType::MESHEFFECT:
 			return "MESHEFFECT";
 		}
 
 		return "NONE";
 	}
 
-	static ToolObjectType StringToType(const string& strType)
+	static EToolObjectType StringToType(const string& strType)
 	{
 		if (::strcmp(strType.c_str(), "TERRAIN") == 0)
-			return ToolObjectType::TERRAIN;
+			return EToolObjectType::TERRAIN;
 		else if (::strcmp(strType.c_str(), "COLMESH") == 0)
-			return ToolObjectType::COLMESH;
+			return EToolObjectType::COLMESH;
 		else if (::strcmp(strType.c_str(), "STATICMODEL") == 0)
-			return ToolObjectType::STATICMODEL;
+			return EToolObjectType::STATICMODEL;
 		else if (::strcmp(strType.c_str(), "DUMMY") == 0)
-			return ToolObjectType::DUMMY;
+			return EToolObjectType::DUMMY;
 		else if (::strcmp(strType.c_str(), "LIGHT") == 0)
-			return ToolObjectType::LIGHT;
+			return EToolObjectType::LIGHT;
 		else if (::strcmp(strType.c_str(), "COMPONENT_COLLIDER") == 0)
-			return ToolObjectType::COMPONENT_COLLIDER;
+			return EToolObjectType::COMPONENT_COLLIDER;
 		else if (::strcmp(strType.c_str(), "VERTEXOBJECT") == 0)
-			return ToolObjectType::VERTEXOBJECT;
+			return EToolObjectType::VERTEXOBJECT;
 		else if (::strcmp(strType.c_str(), "POLYGON") == 0)
-			return ToolObjectType::POLYGON;
+			return EToolObjectType::POLYGON;
 		else if (::strcmp(strType.c_str(), "TRIGGERBOX") == 0)
-			return ToolObjectType::TRIGGERBOX;
+			return EToolObjectType::TRIGGERBOX;
 		else if (::strcmp(strType.c_str(), "MESHEFFECT") == 0)
-			return ToolObjectType::MESHEFFECT;
+			return EToolObjectType::MESHEFFECT;
 		else
-			return ToolObjectType::END;
+			return EToolObjectType::END;
 	}
 
 	inline constexpr _tchar g_wszStaticLightLayer[]{ L"StaticLight_Layer\0" };
@@ -126,6 +127,7 @@ namespace Tool
 	inline constexpr _tchar g_wszColMeshLayer[]{ L"ColMesh_Layer\0" };
 	inline constexpr _tchar g_wszStaticModelLayer[]{ L"StaticModel_Layer\0" };
 	inline constexpr _tchar g_wszDummyColliderLayer[]{ L"DummyCollider_Layer\0" };
+	inline constexpr _tchar g_wszCameraLayer[]{ L"Camera_Layer\0" };
 
 	struct HoleBridges
 	{

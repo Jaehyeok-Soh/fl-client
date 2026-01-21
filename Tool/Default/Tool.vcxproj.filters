@@ -58,6 +58,33 @@
     <Filter Include="99. ETC\02. ImGuizmo">
       <UniqueIdentifier>{89310886-cedb-47e3-85b6-5c20571d5b8e}</UniqueIdentifier>
     </Filter>
+    <Filter Include="03. Level\UI">
+      <UniqueIdentifier>{66fc69c0-77cb-48e3-8ed2-01108d04329a}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="06. ImGui\00. Manager">
+      <UniqueIdentifier>{904601f9-ece0-4d51-a81e-58dafec6721a}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="06. ImGui\01. Panel">
+      <UniqueIdentifier>{5ab28e72-f996-48e6-95ae-2c238243172a}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="06. ImGui\02. Layout">
+      <UniqueIdentifier>{c9d08718-e84e-41ca-ac3b-8320fc9704bf}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="06. ImGui\03. Dockspace">
+      <UniqueIdentifier>{cb832581-9e3a-4970-a2fe-921fceca3c24}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="06. ImGui\02. Layout\Transform">
+      <UniqueIdentifier>{07c1c70c-f95a-43d2-a4c7-b08e5189b132}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02. GameObjects\Camera">
+      <UniqueIdentifier>{2b12e5f2-bf70-4b4d-9b74-c22127d59e07}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="07. UE_Mapdata">
+      <UniqueIdentifier>{0e98bf15-ae63-42d7-96db-f5fefb93e6f9}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="03. Level\Loading\Loader">
+      <UniqueIdentifier>{afe44f16-d8bc-4485-94d6-01fb36c16207}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="framework.h">
@@ -78,14 +105,8 @@
     <ClInclude Include="..\Public\Tool_Defines.h">
       <Filter>98. Defines</Filter>
     </ClInclude>
-    <ClInclude Include="..\Public\CameraMan_Free.h">
-      <Filter>02. GameObjects</Filter>
-    </ClInclude>
     <ClInclude Include="..\Public\Picking_ToolManager.h">
       <Filter>05. Picking</Filter>
-    </ClInclude>
-    <ClInclude Include="..\Public\ImGui_ToolManager.h">
-      <Filter>06. ImGui</Filter>
     </ClInclude>
     <ClInclude Include="..\Public\Level_Map.h">
       <Filter>03. Level\Map</Filter>
@@ -156,6 +177,45 @@
     <ClInclude Include="..\Public\Tool_EventDefines.h">
       <Filter>98. Defines</Filter>
     </ClInclude>
+    <ClInclude Include="..\public\Level_UI.h">
+      <Filter>03. Level\UI</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\ImGui_ToolManager.h">
+      <Filter>06. ImGui\00. Manager</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\ImGui_Base.h">
+      <Filter>06. ImGui</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\ImGui_Panel.h">
+      <Filter>06. ImGui\01. Panel</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\ImGui_Layout.h">
+      <Filter>06. ImGui\02. Layout</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\ImGui_Dockspace_MenuBar.h">
+      <Filter>06. ImGui\03. Dockspace</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\ImGui_Dockspace_TabBar.h">
+      <Filter>06. ImGui\03. Dockspace</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\ImGui_Layout_Transform.h">
+      <Filter>06. ImGui\02. Layout\Transform</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\CameraMan_Free.h">
+      <Filter>02. GameObjects\Camera</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\ToolObject.h">
+      <Filter>02. GameObjects</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\UEMapdataLoader.h">
+      <Filter>07. UE_Mapdata</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\UEMapdataParser.h">
+      <Filter>07. UE_Mapdata</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\Loader.h">
+      <Filter>03. Level\Loading\Loader</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <Image Include="small.ico">
@@ -177,14 +237,8 @@
     <ClCompile Include="..\Private\MainApplication.cpp">
       <Filter>01. MainApplication</Filter>
     </ClCompile>
-    <ClCompile Include="..\Private\CameraMan_Free.cpp">
-      <Filter>02. GameObjects</Filter>
-    </ClCompile>
     <ClCompile Include="..\Private\Picking_ToolManager.cpp">
       <Filter>05. Picking</Filter>
-    </ClCompile>
-    <ClCompile Include="..\Private\ImGui_ToolManager.cpp">
-      <Filter>06. ImGui</Filter>
     </ClCompile>
     <ClCompile Include="..\Private\Level_Animation.cpp">
       <Filter>03. Level\Animation</Filter>
@@ -245,6 +299,48 @@
     </ClCompile>
     <ClCompile Include="..\Private\ImSequencer.cpp">
       <Filter>99. ETC\02. ImGuizmo</Filter>
+    </ClCompile>
+    <ClCompile Include="..\private\Level_UI.cpp">
+      <Filter>03. Level\UI</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\ImGui_ToolManager.cpp">
+      <Filter>06. ImGui\00. Manager</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\ImGui_Base.cpp">
+      <Filter>06. ImGui</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\ImGui_Panel.cpp">
+      <Filter>06. ImGui\01. Panel</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\ImGui_Layout.cpp">
+      <Filter>06. ImGui\02. Layout</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\ImGui_Dockspace_TabBar.cpp">
+      <Filter>06. ImGui\03. Dockspace</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\ImGui_Dockspace_MenuBar.cpp">
+      <Filter>06. ImGui\03. Dockspace</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\ImGui_Layout_Transform.cpp">
+      <Filter>06. ImGui\02. Layout\Transform</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\CameraMan_Free.cpp">
+      <Filter>02. GameObjects\Camera</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\ToolObject.cpp">
+      <Filter>02. GameObjects</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\UEMapdataParser.cpp">
+      <Filter>07. UE_Mapdata</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\UEMapdataLoader.cpp">
+      <Filter>07. UE_Mapdata</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\Loader.cpp">
+      <Filter>03. Level\Loading\Loader</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\Tool_Defines.cpp">
+      <Filter>98. Defines</Filter>
     </ClCompile>
   </ItemGroup>
 </Project>

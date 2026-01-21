@@ -150,6 +150,14 @@ HRESULT CGameInstance::Draw_End()
 {
 	return m_pGraphic_Device->Present();
 }
+HRESULT CGameInstance::Resize_Viewport(D3D11_VIEWPORT viewport)
+{
+	return m_pGraphic_Device->Resize(viewport);
+}
+HRESULT CGameInstance::Copy_BackBufferTexture(ID3D11Texture2D** ppTexture)
+{
+	return m_pGraphic_Device->Copy_BackBufferTexture(ppTexture);
+}
 void CGameInstance::Clear(_uint iLevelID)
 {
 	m_pObject_Manager->Clear(iLevelID);
