@@ -1,0 +1,368 @@
+#pragma once
+#include "Base.h"
+#include <random>
+#include "RenderTarget_Manager.h"
+#include "Resource_Manager.h"
+#include "EventBus_Manager.h"
+
+NS_BEGIN(Engine)
+ 
+#pragma region MACRO
+#define KEY_BUTTON_HOLD(key) CGameInstance::GetInstance()->KeyButton_Pressing(key)
+#define KEY_BUTTON_DOWN(key) CGameInstance::GetInstance()->KeyButton_Down(key)
+#define KEY_BUTTON_UP(key) CGameInstance::GetInstance()->KeyButton_Up(key)
+#define KEY_BUTTON_NONE(key) CGameInstance::GetInstance()->KeyButton_None(key)
+
+#define MOUSE_LBUTTON_HOLD CGameInstance::GetInstance()->Mouse_Pressing(MOUSEKEYSTATE::LB)
+#define MOUSE_RBUTTON_HOLD CGameInstance::GetInstance()->Mouse_Pressing(MOUSEKEYSTATE::RB)
+#define MOUSE_WHEELBUTTON_HOLD CGameInstance::GetInstance()->Mouse_Pressing(MOUSEKEYSTATE::WHEEL)
+
+#define MOUSE_LBUTTON_DOWN CGameInstance::GetInstance()->Mouse_Down(MOUSEKEYSTATE::LB)
+#define MOUSE_RBUTTON_DOWN CGameInstance::GetInstance()->Mouse_Down(MOUSEKEYSTATE::RB)
+#define MOUSE_WHEELBUTTON_DOWN CGameInstance::GetInstance()->Mouse_Down(MOUSEKEYSTATE::WHEEL)
+
+#define MOUSE_LBUTTON_UP CGameInstance::GetInstance()->Mouse_Up(MOUSEKEYSTATE::LB)
+#define MOUSE_RBUTTON_UP CGameInstance::GetInstance()->Mouse_Up(MOUSEKEYSTATE::RB)
+#define MOUSE_WHEELBUTTON_UP CGameInstance::GetInstance()->Mouse_Up(MOUSEKEYSTATE::WHEEL)
+
+#define GET_MOUSE_MOVE_X CGameInstance::GetInstance()->Get_DIMouseMove(MOUSEMOVESTATE::X)
+#define GET_MOUSE_MOVE_Y CGameInstance::GetInstance()->Get_DIMouseMove(MOUSEMOVESTATE::Y)
+#define GET_MOUSE_MOVE_WHEEL CGameInstance::GetInstance()->Get_DIMouseMove(MOUSEMOVESTATE::WHEEL)
+#pragma endregion
+
+enum class CameraType;
+struct DelegateHandle;
+class CCollider;
+class CGameObject;
+class CCameraMan;
+class CLayer;
+
+class ENGINE_DLL CGameInstance final : public CBase
+{
+	using Super = CBase;
+private:
+	DECLARE_SINGLETON(CGameInstance)
+private:
+	CGameInstance();
+	virtual ~CGameInstance() = default;
+
+	void Reseed();
+public:
+#pragma region ENGINE
+	HRESULT					Initialize_Engine(const ENGINE_DESC& Engine_Desc, _Inout_ ID3D11Device** ppDevice, _Inout_ ID3D11DeviceContext** ppContext);
+	void					Update_Engine(_float fTimeDelta);
+	HRESULT					Draw_Begin(const _float4* pClearColor);
+	HRESULT					Draw();
+	HRESULT					Draw_End();
+	HRESULT					Resize_Viewport(D3D11_VIEWPORT viewport);
+	HRESULT					Copy_BackBufferTexture(ID3D11Texture2D** ppTexture);
+	void					Clear(_uint iLevelID);
+	void					Destroy_Engine();
+#pragma endregion
+
+#pragma region PICKING
+	void					PickingUpdate_ForTool(const _float4& _vNDC);
+	void					PickingUpdate(const _float fWinCX, const _float fWinCY);
+	void					TransformRayToLocalSpace(const _float4x4& matInvWorld);
+	_bool					IntersectrayWithTriangle_World(const _float3& vPointA, const _float3& vPointB, const _float3& vPointC, OUT _float4& vOut);
+	_bool					IntersectrayWithTriangle_Local(const _float3& vPointA, const _float3& vPointB, const _float3& vPointC, OUT _float4& vOut);
+	_bool					IntersectrayWithAABB_World(BoundingBox* pDesc, OUT _float4& vOut);
+	_bool					IntersectrayWithAABB_Local(BoundingBox* pOriginDesc, OUT _float4& vOut);
+	_bool					IntersectrayWithOBB_World(BoundingOrientedBox* pDesc, OUT _float4& vOut);
+	_bool					IntersectrayWithOBB_Local(BoundingOrientedBox* pOriginDesc, OUT _float4& vOut);
+	_bool					IntersectrayWithSphere_World(BoundingSphere* pDesc, OUT _float4& vOut);
+	_bool					IntersectrayWithSphere_Local(BoundingSphere* pOriginDesc, OUT _float4& vOut);
+#pragma endregion
+
+#pragma region LEVEL_MANAGER
+	HRESULT					Immediately_ChangeLevel(_uint iNewLevelID, class CLevel* pNewLevel);
+	void					Request_ChangeLevel(_uint iNewLevelID, class CLevel* pNewLevel);
+	_bool					Is_Awaked() const;
+	void					Awake_Level();
+	class CLevel*			Get_CurrentLevel();
+	_uint					Get_CurrentLevelIndex() const;
+#pragma endregion
+
+#pragma region TIMER_MANAGER
+	_float					Get_TimeDelta(const _tchar* pTimerTag);
+	HRESULT					Add_Timer(const _tchar* pTimerTag);
+	void					Remove_Timer(const _tchar* pTimerTag);
+	void					Compute_TimeDelta(const _tchar* pTimerTag);
+	void					Clear_Timers();
+#pragma endregion
+
+#pragma region PROTOTYPE_MANAGER
+	CBase*					Find_Prototype(_uint iLevelIndex, const wstring& wstrPrototypeTag);
+	HRESULT					Add_Prototype(_uint iLevelIndex, const wstring& wstrPrototypeTag, CBase* pPrototype);
+	CBase*					Clone_Prototype(EPrototypeType ePrototypeID, _uint iLevelIndex, const wstring& wstrPrototypeTag, void* pArg = nullptr);
+#pragma endregion
+
+#pragma region OBJECT_MANAGER
+	HRESULT					Awake_GameObjects(const _uint iCurrentLevelID, const wstring& wstrLayerTag);
+	
+	CGameObject*			Add_GameObject(_uint iCloneLevelIndex, const wstring& wstrLayerTag, CGameObject* pGo);
+	CGameObject*			Add_GameObject(_uint iPrototypeLevelIndex, const wstring& wstrPrototypeTag,
+							_uint iCloneLevelIndex, const wstring& wstrLayerTag, void* pArg = nullptr);
+	void					Immediately_DeleteGameObject(_uint iCloneLevelIndex, const wstring& wstrLayerTag, CGameObject* pGo);
+
+	void					Request_AddObject(_uint iCloneLevelIndex, const wstring& wstrLayerTag, CGameObject* pGo, std::function<void(CGameObject*)> onSpawnedCallback = nullptr);
+	void					Request_AddObject(_uint iPrototypeLevelIndex, const wstring& wstrPrototypeTag,
+							_uint iCloneLevelIndex, const wstring& wstrLayerTag, void* pArg = nullptr, std::function<void(CGameObject*)> onSpawnedCallback = nullptr);
+	void					Request_DeleteGameObject(_uint iCloneLevelIndex, const wstring& wstrLayerTag, CGameObject* pGo);
+
+	CGameObject*			Get_GameObject_Front(_uint iLevelIndex, const wstring& wstrLayerTag);
+	CGameObject*			Get_GameObject_Back(_uint iLevelIndex, const wstring& wstrLayerTag);
+	list<CGameObject*>*		Get_GameObject_List(_uint iLevelIndex, const wstring& wstrLayerTag);
+	
+	void					Clear_Layer(_uint iLevelIndex, const wstring& wstrLayerTag);
+#pragma endregion
+
+#pragma region COLLISION_MANAGER
+	void					Collision_Check_Group(_uint iLeft, _uint iRight);
+	HRESULT					Register_Collider(CCollider* pCollider);
+	HRESULT					Unregister_Collider(CCollider* pCollider);
+#pragma endregion
+
+#pragma region CAMERA_MANAGER
+	CCameraMan* Get_MainCamera();
+	void Change_MainCamera(CameraType eType, const wstring& wstrTag);
+	void Add_Camera(CameraType eType, const wstring& wstrTag, class CCameraMan* pGo);
+	void Remove_Camera(CameraType eType, const wstring& wstrTag);
+	void Add_Actor_Object(CGameObject* pGo, _bool bImmediatelyChange = false);
+	void Remove_Actor_Object(CGameObject* pGo);
+	void Change_Target(CGameObject* pGo);
+	HRESULT Change_Target_Next();
+	const _float4x4& Get_ViewMatrix() const;
+	void Set_ViewMatrix(_fmatrix matView);
+	const _float4x4& Get_ProjMatrix() const;
+	void Set_ProjMatrix(_fmatrix matProj);
+	const _float4x4& Get_UI_ViewMatrix() const;
+	const _float4x4& Get_UI_ProjMatrix() const;
+	ID3D11Buffer* Get_Global_ConstantBuffer();
+	ID3D11Buffer* Get_Inv_ConstantBuffer();
+	void Setup_ViewProj_ToCBuffer();
+	void Setup_UIViewProj_ToCBuffer();
+	void Setup_Inv_ToCBuffer();
+#pragma endregion
+	
+#pragma region SOUND_MANAGER
+	HRESULT Load_Sounds(const std::wstring& wstrFolderPath);
+	void PlayBGM(const _tchar* pSoundKey, _float fVolume, _bool bLoop = true, _float fPitch = 1.f);
+	void PlayAmbient(const _tchar* pSoundKey, _float fVolume, _bool bLoop = true, _float fPitch = 1.f);
+	void Play_OneShot(const _tchar* pSoundKey, _float fVolume, _float fPitch = 1.f);
+	void Play_RandOneShot(const _tchar* pSoundKey, _float fVolume, _int iCount, _float fPitch = 1.f);
+	void Play_Controlled(const _tchar* pSoundKey, _uint iControlledId, _float fVolume, _bool  bLoop = false, _float fPitch = 1.f);
+	void Stop_Controlled(_uint iControlledId);
+	void Set_ControlledVolume(_uint iControlledId, _float fVolume);
+	void Set_ControlledPitch(_uint iControlledId, _float fPitch);
+	void Stop_All();
+#pragma endregion
+
+#pragma region INPUT_MANAGER
+	_bool KeyButton_Pressing(_ubyte key);
+	_bool KeyButton_Down(_ubyte key);
+	_bool KeyButton_Up(_ubyte key);
+	_bool KeyButton_None(_ubyte eKeyID);
+
+	_bool Mouse_Down(MOUSEKEYSTATE eMouseKeyID);
+	_bool Mouse_Up(MOUSEKEYSTATE eMouseKeyID);
+	_bool Mouse_Pressing(MOUSEKEYSTATE eMouseKeyID);
+	_long Get_DIMouseMove(MOUSEMOVESTATE eMouseState);
+	const POINT& Get_MousePos();
+	void Set_Capture(_bool bCap);
+#pragma endregion
+
+#pragma region RESOURCE_MANAGER
+	template<typename T>
+	T* Load_Resource(const wstring& wstrKey, void* pArg);
+	template<typename T>
+	HRESULT Add_Resource(const wstring& wstrKey, T* pResource);
+	template<typename T>
+	T* Get_Resource(const wstring& wstrKey);
+	template<typename T>
+	void Remove_Resource(const wstring& wstrKey);
+	class CTextureBase* GetOrAddTexture(const wstring& wstrKey, void* pArg);
+#pragma endregion
+
+#pragma region RENDER_MANAGER
+	inline void Push_RenderObject(RENDER_CATEGORY eCategory, CGameObject* pGO);
+	inline void Push_DebugComponent(class CComponent* pComp);
+#pragma endregion
+
+#pragma region LIGHT_MANAGER
+	ID3D11Buffer* Get_Light_ConstantBuffer();
+	HRESULT Add_Light(const LIGHT_DESC& LightDesc);
+	HRESULT Push_DynamicLight(class CLight* pLight);
+	HRESULT Render_Lights(class CShader* pShader, class CVIBuffer_Rect_Tex* pVIBuffer);
+	void Clear_Lights();
+#pragma endregion
+
+#pragma region EVENT_MANAGER
+	void Flush_All();
+#pragma endregion
+
+#pragma region FONT_MANAGER
+	HRESULT Add_Font(const _wstring& strFontTag, const _tchar* pFontFilePath);
+	HRESULT Draw_Text(const _wstring& strFontTag, const _tchar* pText, const _float2& vPosition, _fvector vColor = XMVectorSet(1.f, 1.f, 1.f, 1.f));
+#pragma endregion
+
+#pragma region EVENTBUS_MANAGER
+	template<typename Tag, typename Func>
+	DelegateHandle Subscribe(Func&& func);
+	template<typename Tag>
+	DelegateHandle Subscribe(typename Tag::Signature* pFunc);
+	template<typename Tag, typename T, typename ...Args>
+	DelegateHandle Subscribe(T* pObj, void (T::* memFunc)(Args ...));
+	template<typename Tag, typename T, typename ...Args>
+	DelegateHandle Subscribe(T* pObj, void(T::* memFunc)(Args ...) const);
+	template<typename Tag>
+	bool Unsubscribe(DelegateHandle handle);
+	template<typename Tag, typename... Arg>
+	void Broadcast(Arg&&... a);
+	template<class Tag>
+	void Clear_Channel();
+#pragma endregion
+
+#pragma region FRUSTRUM
+	HRESULT Frustrum_Init();
+	_bool Culling_AABB(class CCollider* pCollider);
+#pragma endregion
+
+#pragma region RENDERTARGET_MANAGER
+	HRESULT Add_RenderTarget(ERenderTarget eTarget, const CRenderTarget::RENDERTARGET_DESC* pDesc);
+	HRESULT Add_MRT(EMRTLayer eMRTLayer, ERenderTarget eTarget);
+	HRESULT Begin_MRT(EMRTLayer eMRTLayer);
+	HRESULT End_MRT();
+	HRESULT Bind_RT_ShaderResource(ERenderTarget eTarget, class CShader* pShader);
+#ifdef _DEBUG
+	HRESULT Ready_RT_Debug(ERenderTarget eTarget, _float fX, _float fY, _float fSizeX, _float fSizeY);
+	HRESULT Debug_RT_Render(EMRTLayer eMRTLayer, class CShader* pShader, class CVIBuffer_Rect_Tex* pVIBuffer);
+#endif
+#pragma endregion
+
+
+#pragma region MAPFILE_MANAGER
+	HRESULT Save_MapData(const wstring& wstrSavePath, const MAPFILE_DATA& data);
+	HRESULT Load_MapData(const wstring& wstrFilePath, OUT MAPFILE_DATA& outData);
+#pragma endregion
+
+#pragma region RANDOM
+	float Rand_Float(float fA, float fB)
+	{
+		return std::uniform_real_distribution<float>(fA, fB)(m_rng);
+	}
+
+	int Rand_Int(int iA, int iB)
+	{
+		return std::uniform_int_distribution<int>(iA, iB)(m_rng);
+	}
+#pragma endregion
+
+// Todo - 쓰레기통 정리
+#pragma region GAMEDATA
+	const MODELPARTS_PROTOTYPETAGS& Get_ModelPartsData() const;
+	void Set_ModelPartsData(const MODELPARTS_PROTOTYPETAGS& tData);
+	HRESULT Add_MeshEffectPresets(const wstring& wstrFilePath);
+	HRESULT Add_MeshEffectPreviews(const wstring& wstrFilePath);
+	const EFFECT_PRESET_SNAPSHOT& Get_MeshEffectPresetSnapShot(_uint iPresetID);
+	const EFFECT_PRESET_SNAPSHOT& Get_MeshEffectPresetSnapShot(const string& strTag);
+	const MAPOBJECT_SAVEDATA* Get_MeshEffectPreview(const wstring& wstrGroupTag, const string& strNameTag);
+	const vector<MAPOBJECT_SAVEDATA>* Get_MeshEffectPreviews(const wstring& wstrTag);
+#pragma endregion
+private:
+	class CTimer_Manager* m_pTimer_Manager = { nullptr };
+	class CSound_Manager* m_pSound_Manager = { nullptr };
+	class CMapFile_Manager* m_pMapFile_Manager = { nullptr };
+	class CFont_Manager* m_pFont_Manager = { nullptr };
+	class CGraphic_Device* m_pGraphic_Device = { nullptr };
+	class CLevel_Manager* m_pLevel_Manager = { nullptr };
+	class CCollision_Manager* m_pCollision_Manager = { nullptr };
+	class CRender_Manager* m_pRender_Manager = { nullptr };
+	class CObject_Manager* m_pObject_Manager = { nullptr };
+	class CPrototype_Manager* m_pPrototype_Manager = { nullptr };
+	class CCamera_Manager* m_pCamera_Manager = { nullptr };
+	class CInput_Manager* m_pInput_Manager = { nullptr };
+	class CResource_Manager* m_pResource_Manager = { nullptr };
+	class CLight_Manager* m_pLight_Manager = { nullptr };
+	class CEvent_Manager* m_pEvent_Manager = { nullptr };
+	class CEventBus_Manager* m_pEventBus_Manager = { nullptr };
+	class CGameDataManager* m_pGameData_Manager = { nullptr };
+	class CRenderTarget_Manager* m_pRenderTarget_Manager = { nullptr };
+	class CPicking* m_pPicking = { nullptr };
+	class CFrustrum* m_pFrustrum = { nullptr };
+
+	std::mt19937_64 m_rng;
+public:
+	virtual void			Free() override;
+};
+
+#pragma region RESOURCE_MANAGER
+template<typename T>
+inline T* CGameInstance::Load_Resource(const wstring& wstrKey, void* pArg)
+{
+	return m_pResource_Manager->Load<T>(wstrKey, pArg);
+}
+
+template<typename T>
+inline HRESULT CGameInstance::Add_Resource(const wstring& wstrKey, T* pResource)
+{
+	return m_pResource_Manager->Add<T>(wstrKey, pResource);
+}
+
+template<typename T>
+inline T* CGameInstance::Get_Resource(const wstring& wstrKey)
+{
+	return m_pResource_Manager->Get<T>(wstrKey);
+}
+template<typename T>
+inline void CGameInstance::Remove_Resource(const wstring& wstrKey)
+{
+	return m_pResource_Manager->Remove<T>(wstrKey);
+}
+#pragma endregion
+
+#pragma region EVENTBUS_MANAGER
+template<typename Tag, typename Func>
+inline DelegateHandle CGameInstance::Subscribe(Func&& func)
+{
+	return m_pEventBus_Manager->Add_Lambda<Tag>(std::forward<Func>(func));
+}
+
+template<typename Tag>
+inline DelegateHandle CGameInstance::Subscribe(typename Tag::Signature* pFunc)
+{
+	return m_pEventBus_Manager->Add_Static<Tag>(pFunc);
+}
+
+template<typename Tag, typename T, typename ...Args>
+inline DelegateHandle CGameInstance::Subscribe(T* pObj, void (T::* memFunc)(Args ...))
+{
+	return m_pEventBus_Manager->Add_MemFunc<Tag>(pObj, memFunc);
+}
+
+template<typename Tag, typename T, typename ...Args>
+inline DelegateHandle CGameInstance::Subscribe(T* pObj, void (T::* memFunc)(Args ...) const)
+{
+	return m_pEventBus_Manager->Add_MemFunc<Tag>(pObj, memFunc);
+}
+
+template<typename Tag>
+inline bool CGameInstance::Unsubscribe(DelegateHandle handle)
+{
+	return m_pEventBus_Manager->Unsubscribe<Tag>(handle);
+}
+
+template<typename Tag, typename... Arg>
+inline void CGameInstance::Broadcast(Arg&&... a)
+{
+	m_pEventBus_Manager->Broadcast<Tag>(std::forward<Arg>(a)...);
+}
+
+template<typename Tag>
+inline void CGameInstance::Clear_Channel()
+{
+	return m_pEventBus_Manager->Clear_Channel<Tag>();
+}
+#pragma endregion
+
+NS_END

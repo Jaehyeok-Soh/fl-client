@@ -1,0 +1,286 @@
+#ifndef _STRUCT_DEFINES_HLSL_
+#define _STRUCT_DEFINES_HLSL_
+//////////////
+// VertexIn //
+//////////////
+
+struct VS_IN_POS
+{
+    float3 vPosition : POSITION;
+};
+
+struct VS_IN_POS_COLOR
+{
+    float3 vPosition : POSITION;
+    float4 vColor : COLOR;
+};
+
+struct VS_IN_POS_TEX
+{
+    float3 vPosition : POSITION;
+    float2 vUV : TEXCOORD0;
+};
+
+struct VS_IN_CUBE
+{
+    float3 vPosition : POSITION;
+    float3 vUV : TEXCOORD0;
+};
+
+struct VS_IN_POS_TEX_NOR
+{
+    float3 vPosition : POSITION;
+    float2 vUV : TEXCOORD0;
+    float3 vNormal : NORMAL;
+};
+
+struct VS_IN_MESH
+{
+    float3 vPosition : POSITION;
+    float2 vUV : TEXCOORD0;
+    float3 vNormal : NORMAL;
+    float3 vTangent : TANGENT;
+    float3 vBinormal : BINORMAL;
+};
+
+struct VS_IN_SKELECTON
+{
+    float3 vPosition : POSITION;
+    float2 vUV : TEXCOORD0;
+    float3 vNormal : NORMAL;
+    float3 vTangent : TANGENT;
+    float3 vBinormal : BINORMAL;
+    uint4 vBlendIndices : BLENDINDEX;
+    float4 vBlendWeight : BLENDWEIGHT;
+};
+
+struct VS_IN_POS_TEX_PARTICLE
+{
+    float3 vPosition : POSITION;
+    float2 vUV : TEXCOORD0;
+    
+    float4 vRight : TEXCOORD1;
+    float4 vUp : TEXCOORD2;
+    float4 vLook : TEXCOORD3;
+    float4 vTranslation : TEXCOORD4;
+    float2 vLifeTime : TEXCOORD5;
+};
+
+struct VS_IN_POS_GS_PARTICLE
+{
+    float3 vPosition : POSITION;
+    row_major float4x4 matTransform : WORLD;
+    float2 vLifeTime : TEXCOORD0;
+};
+
+//////////////////
+// VertexOutput //
+//////////////////
+
+struct VS_OUT_POS
+{
+    float4 vPosition : SV_POSITION;
+};
+
+struct VS_OUT_POS_COLOR
+{
+    float4 vPosition : SV_POSITION;
+    float4 vColor : COLOR;
+};
+
+struct VS_OUT_CUBE
+{
+    float4 vPosition : SV_POSITION;
+    float3 vUV : TEXCOORD0;
+};
+
+struct VS_OUT_POS_TEX
+{
+    float4 vPosition : SV_POSITION;
+    float2 vUV : TEXCOORD0;
+    float fHP : TEXCOORD1;
+};
+
+struct VS_OUT_POS_TEX_NOR
+{
+    float4 vPosition : SV_POSITION;
+    float2 vUV : TEXCOORD0;
+    float3 vNormal : NORMAL;
+    
+    float4 vWorldPos : TEXCOORD1;
+    float4 vProjPos : TEXCOORD2;
+};
+
+struct VS_OUT_MESH
+{
+    float4 vPosition : SV_POSITION;
+    float2 vUV : TEXCOORD0;
+    float3 vNormal : NORMAL;
+    float3 vTangent : TANGENT;
+    float3 vBinormal : BINORMAL;
+    
+    float4 vWorldPos : TEXCOORD1;
+    float4 vProjPos : TEXCOORD2;
+};
+
+struct VS_OUT_SKELETON
+{
+    float4 vPosition : SV_POSITION;
+    float2 vUV : TEXCOORD0;
+    float3 vNormal : NORMAL;
+    float3 vTangent : TANGENT;
+    float3 vBinormal : BINORMAL;
+    uint4 vBlendIndices : BLENDINDEX;
+    float4 vBlendWeight : BLENDWEIGHT;
+    
+    float4 vWorldPos : TEXCOORD1;
+    float4 vProjPos : TEXCOORD2;
+};
+
+struct VS_OUT_POS_TEX_PARTICLE
+{
+    float4 vPosition : SV_POSITION;
+    float2 vUV : TEXCOORD0;
+    
+    float2 vLifeTime : TEXCOORD1;
+};
+
+struct VS_OUT_POS_GS_PARTICLE
+{
+    float4 vPosition : POSITION;
+    float2 vPSize : PSIZE;
+    float2 vLieftTime : TEXCOORD0;
+};
+
+///////////////////
+// GeometryInput //
+///////////////////
+struct GS_IN_POS_PARTICLE
+{
+    float4 vPosition : POSITION;
+    float2 vPSize : PSIZE;
+    float2 vLieftTime : TEXCOORD0;
+};
+
+////////////////////
+// GeometryOutput //
+////////////////////
+struct GS_OUT_POS_PARTICLE
+{
+    float4 vPosition : SV_POSITION;
+    float2 vUV : TEXCOORD0;
+    float2 vLieftTime : TEXCOORD1;
+};
+
+////////////////
+// PiexlInput //
+////////////////
+
+struct PS_IN_POS
+{
+    float4 vPosition : SV_POSITION;
+};
+
+struct PS_IN_POS_COLOR
+{
+    float4 vPosition : SV_POSITION;
+    float4 vColor : COLOR;
+};
+
+struct PS_IN_CUBE
+{
+    float4 vPosition : SV_POSITION;
+    float3 vUV : TEXCOORD0;
+};
+
+struct PS_IN_POS_TEX
+{
+    float4 vPosition : SV_POSITION;
+    float2 vUV : TEXCOORD0;
+    float fHP : TEXCOORD1;
+};
+
+struct PS_IN_POS_TEX_NOR
+{
+    float4 vPosition : SV_POSITION;
+    float2 vUV : TEXCOORD0;
+    float3 vNormal : NORMAL;
+    
+    float4 vWorldPos : TEXCOORD1;
+    float4 vProjPos : TEXCOORD2;
+};
+
+struct PS_IN_MESH
+{
+    float4 vPosition : SV_POSITION;
+    float2 vUV : TEXCOORD0;
+    float3 vNormal : NORMAL;
+    float3 vTangent : TANGENT;
+    float3 vBinormal : BINORMAL;
+    
+    float4 vWorldPos : TEXCOORD1;
+    float4 vProjPos : TEXCOORD2;
+};
+
+struct PS_IN_SKELETON
+{
+    float4 vPosition : SV_POSITION;
+    float2 vUV : TEXCOORD0;
+    float3 vNormal : NORMAL;
+    float3 vTangent : TANGENT;
+    float3 vBinormal : BINORMAL;
+    uint4 vBlendIndices : BLENDINDEX;
+    float4 vBlendWeight : BLENDWEIGHT;
+    
+    float4 vWorldPos : TEXCOORD1;
+    float4 vProjPos : TEXCOORD2;
+};
+
+struct PS_IN_POS_TEX_PARTICLE
+{
+    float4 vPosition : SV_POSITION;
+    float2 vUV : TEXCOORD0;
+    
+    float2 vLifeTime : TEXCOORD1;
+};
+
+struct PS_IN_POS_PARTICLE
+{
+    float4 vPosition : SV_POSITION;
+    float2 vUV : TEXCOORD0;
+    
+    float2 vLifeTime : TEXCOORD1;
+};
+
+/////////////////
+// PiexlOutput //
+/////////////////
+
+struct PS_OUT
+{
+    float4 vColor : SV_TARGET0;
+};
+
+struct PS_OUT_LIGHT
+{
+    float4 vShade : SV_TARGET0;
+};
+
+struct PS_OUT_DEFFERED
+{
+    float4 vDiffuse : SV_TARGET0;
+    float3 vNormal : SV_TARGET1;
+    float4 vDepth : SV_TARGET2;
+};
+
+struct PS_OUT_BAKESHADOW
+{
+    float4 vDepth : SV_TARGET0;
+};
+
+struct PS_OUT_BACKBUFFER
+{
+    float4 vColor : SV_TARGET0;
+};
+
+#endif

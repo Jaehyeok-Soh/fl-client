@@ -4,11 +4,89 @@
     <Filter Include="99. ETC">
       <UniqueIdentifier>{abc407db-dd3f-4180-a2f9-ea688f8ce102}</UniqueIdentifier>
     </Filter>
+    <Filter Include="01. MainApplication">
+      <UniqueIdentifier>{1c92be80-c5c7-419a-81e5-19643d43a155}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="00. Default">
+      <UniqueIdentifier>{1cc99351-da81-4feb-a1cf-61546807521f}</UniqueIdentifier>
+    </Filter>
     <Filter Include="99. ETC\99. Andromeda">
       <UniqueIdentifier>{711d6e55-3e50-4bc7-8a41-e71fbae54572}</UniqueIdentifier>
     </Filter>
-    <Filter Include="99. ETC\00. Default">
-      <UniqueIdentifier>{1cc99351-da81-4feb-a1cf-61546807521f}</UniqueIdentifier>
+    <Filter Include="02. Level">
+      <UniqueIdentifier>{abc7f2c2-9af7-47f0-9621-b48aaf60ab10}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02. Level\Loading">
+      <UniqueIdentifier>{02313480-7853-487f-b3ec-5e32ba7be068}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02. Level\Logo">
+      <UniqueIdentifier>{1cdeefb3-8ba8-48fd-8354-bfe672cfa1ed}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02. Level\Dev">
+      <UniqueIdentifier>{a2daef10-3d20-4e39-ace1-5ff40c2ab0d2}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02. Level\Loading\Loader">
+      <UniqueIdentifier>{a017ef8a-3027-4490-9479-8f057105a565}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="03. GameObject">
+      <UniqueIdentifier>{a7a14a28-2c21-4edb-abba-6dabdc557803}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="04. Shaders">
+      <UniqueIdentifier>{9b30a852-67af-41c8-9c5d-c9d45304bb23}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="04. Shaders\Defines">
+      <UniqueIdentifier>{354ebfed-a9d5-464c-b65e-bc8fefcfb1ca}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="05. Component">
+      <UniqueIdentifier>{2840f41b-a1b7-48e7-80d9-efb16a70f794}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="03. GameObject\PartObjects">
+      <UniqueIdentifier>{857375ad-fa5b-46b0-b8a5-75a651a83f05}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="03. GameObject\ContainerObjects">
+      <UniqueIdentifier>{7a4b362a-5ea3-453e-979f-d9a4d63a2fdb}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="03. GameObject\PartObjects\Weapon">
+      <UniqueIdentifier>{74389417-ab77-4580-bc06-75bc82155129}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="03. GameObject\PartObjects\Body">
+      <UniqueIdentifier>{b0685f87-5255-4a4d-9d54-0e57567a0262}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="03. GameObject\ContainerObjects\Player">
+      <UniqueIdentifier>{a33c3f2f-f91e-4679-99a5-8e41ac14bd64}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="03. GameObject\PartObjects\ColliderPart">
+      <UniqueIdentifier>{f8d10d8d-a30c-435a-a8b3-f1c6c5c3150d}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="05. Component\ActionState">
+      <UniqueIdentifier>{c750c7a8-fbd8-4dfa-aae4-0289d588a174}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="05. Component\ControlContext">
+      <UniqueIdentifier>{6eae1188-805a-4682-97be-f5878859d316}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="06. FSM">
+      <UniqueIdentifier>{890fa858-1135-4621-8559-afa2d60f5830}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="06. FSM\Player">
+      <UniqueIdentifier>{3b0a3893-3375-41c4-a798-28dd2bc3cfc8}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="06. FSM\Player\Idle">
+      <UniqueIdentifier>{51b09a75-0a10-4351-89ee-c56fb121e232}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="06. FSM\Player\Run">
+      <UniqueIdentifier>{91862187-1896-4702-bd84-5dda29b4f39d}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="06. FSM\Player\Combo">
+      <UniqueIdentifier>{27a2b2a0-9e48-43b5-9d9d-e715fac9790b}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="06. FSM\Player\Combo\Attack">
+      <UniqueIdentifier>{e24f768e-0b04-4188-a9a5-c1b98e15de50}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="05. Component\Stat">
+      <UniqueIdentifier>{2ced342f-5042-4404-83a0-64377d92387f}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="03. GameObject\Camera">
+      <UniqueIdentifier>{4ef88d48-f7cf-4d3e-bc7a-24d09855396e}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
@@ -22,7 +100,82 @@
       <Filter>99. ETC\99. Andromeda</Filter>
     </ClInclude>
     <ClInclude Include="Client.h">
-      <Filter>99. ETC\00. Default</Filter>
+      <Filter>00. Default</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\MainApplication.h">
+      <Filter>01. MainApplication</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\Client_Defines.h">
+      <Filter>99. ETC</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\Client_EventDefine.h">
+      <Filter>99. ETC</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\Level_Loading.h">
+      <Filter>02. Level\Loading</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\Level_Logo.h">
+      <Filter>02. Level\Logo</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\Loader.h">
+      <Filter>02. Level\Loading\Loader</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\ColliderPart.h">
+      <Filter>03. GameObject\PartObjects\ColliderPart</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\Weapon.h">
+      <Filter>03. GameObject\PartObjects\Weapon</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\Body.h">
+      <Filter>03. GameObject\PartObjects\Body</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\PlayerActionState.h">
+      <Filter>05. Component\ActionState</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\PlayerControlContext.h">
+      <Filter>05. Component\ControlContext</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\State_Idle.h">
+      <Filter>06. FSM\Player\Idle</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\ComboState.h">
+      <Filter>06. FSM\Player\Combo</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\State_Run.h">
+      <Filter>06. FSM\Player\Run</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\State_RunStart.h">
+      <Filter>06. FSM\Player\Run</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\State_RunEnd.h">
+      <Filter>06. FSM\Player\Run</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\State_Combo_Second.h">
+      <Filter>06. FSM\Player\Combo\Attack</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\State_Combo_First.h">
+      <Filter>06. FSM\Player\Combo\Attack</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\State_Combo_Fourth.h">
+      <Filter>06. FSM\Player\Combo\Attack</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\State_Combo_Third.h">
+      <Filter>06. FSM\Player\Combo\Attack</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\MainPlayer.h">
+      <Filter>03. GameObject\ContainerObjects\Player</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\Player.h">
+      <Filter>03. GameObject\ContainerObjects\Player</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\StatComponent.h">
+      <Filter>05. Component\Stat</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\ComboContainer.h">
+      <Filter>06. FSM\Player\Combo</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\CameraMan_Targeter.h">
+      <Filter>03. GameObject\Camera</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -40,7 +193,120 @@
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Client.cpp">
-      <Filter>99. ETC\00. Default</Filter>
+      <Filter>00. Default</Filter>
     </ClCompile>
+    <ClCompile Include="..\Private\MainApplication.cpp">
+      <Filter>01. MainApplication</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\Level_Loading.cpp">
+      <Filter>02. Level\Loading</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\Level_Logo.cpp">
+      <Filter>02. Level\Logo</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\Loader.cpp">
+      <Filter>02. Level\Loading\Loader</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\ColliderPart.cpp">
+      <Filter>03. GameObject\PartObjects\ColliderPart</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\Weapon.cpp">
+      <Filter>03. GameObject\PartObjects\Weapon</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\Body.cpp">
+      <Filter>03. GameObject\PartObjects\Body</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\PlayerActionState.cpp">
+      <Filter>05. Component\ActionState</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\PlayerControlContext.cpp">
+      <Filter>05. Component\ControlContext</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\State_Idle.cpp">
+      <Filter>06. FSM\Player\Idle</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\ComboState.cpp">
+      <Filter>06. FSM\Player\Combo</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\State_RunEnd.cpp">
+      <Filter>06. FSM\Player\Run</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\State_Run.cpp">
+      <Filter>06. FSM\Player\Run</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\State_RunStart.cpp">
+      <Filter>06. FSM\Player\Run</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\State_Combo_Third.cpp">
+      <Filter>06. FSM\Player\Combo\Attack</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\State_Combo_First.cpp">
+      <Filter>06. FSM\Player\Combo\Attack</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\State_Combo_Second.cpp">
+      <Filter>06. FSM\Player\Combo\Attack</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\State_Combo_Fourth.cpp">
+      <Filter>06. FSM\Player\Combo\Attack</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\MainPlayer.cpp">
+      <Filter>03. GameObject\ContainerObjects\Player</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\Player.cpp">
+      <Filter>03. GameObject\ContainerObjects\Player</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\StatComponent.cpp">
+      <Filter>05. Component\Stat</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\ComboContainer.cpp">
+      <Filter>06. FSM\Player\Combo</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\CameraMan_Targeter.cpp">
+      <Filter>03. GameObject\Camera</Filter>
+    </ClCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <FxCompile Include="..\..\Shaders\Shader_VtxAnimMesh.hlsl">
+      <Filter>04. Shaders</Filter>
+    </FxCompile>
+    <FxCompile Include="..\..\Shaders\Shader_VtxCol.hlsl">
+      <Filter>04. Shaders</Filter>
+    </FxCompile>
+    <FxCompile Include="..\..\Shaders\Shader_VtxCube.hlsl">
+      <Filter>04. Shaders</Filter>
+    </FxCompile>
+    <FxCompile Include="..\..\Shaders\Shader_VtxMesh.hlsl">
+      <Filter>04. Shaders</Filter>
+    </FxCompile>
+    <FxCompile Include="..\..\Shaders\Shader_VtxMesh_SkillEffect.hlsl">
+      <Filter>04. Shaders</Filter>
+    </FxCompile>
+    <FxCompile Include="..\..\Shaders\Shader_VtxNorTex.hlsl">
+      <Filter>04. Shaders</Filter>
+    </FxCompile>
+    <FxCompile Include="..\..\Shaders\Shader_VtxPos_Particle.hlsl">
+      <Filter>04. Shaders</Filter>
+    </FxCompile>
+    <FxCompile Include="..\..\Shaders\Shader_VtxPosTex.hlsl">
+      <Filter>04. Shaders</Filter>
+    </FxCompile>
+    <FxCompile Include="..\..\Shaders\Shader_VtxPosTex_Particle.hlsl">
+      <Filter>04. Shaders</Filter>
+    </FxCompile>
+    <FxCompile Include="..\..\Shaders\Animation_Defines.hlsl">
+      <Filter>04. Shaders\Defines</Filter>
+    </FxCompile>
+    <FxCompile Include="..\..\Shaders\Common_Defines.hlsl">
+      <Filter>04. Shaders\Defines</Filter>
+    </FxCompile>
+    <FxCompile Include="..\..\Shaders\Global_Defines.hlsl">
+      <Filter>04. Shaders\Defines</Filter>
+    </FxCompile>
+    <FxCompile Include="..\..\Shaders\Light_Defines.hlsl">
+      <Filter>04. Shaders\Defines</Filter>
+    </FxCompile>
+    <FxCompile Include="..\..\Shaders\Struct_Defines.hlsl">
+      <Filter>04. Shaders\Defines</Filter>
+    </FxCompile>
   </ItemGroup>
 </Project>

@@ -70,6 +70,12 @@
     <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
   </ImportGroup>
   <PropertyGroup Label="UserMacros" />
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
+    <OutDir>..\Bin\Debug\</OutDir>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
+    <OutDir>..\Bin\Release\</OutDir>
+  </PropertyGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <ClCompile>
       <WarningLevel>Level3</WarningLevel>
@@ -104,11 +110,21 @@
       <SDLCheck>true</SDLCheck>
       <PreprocessorDefinitions>_DEBUG;_WINDOWS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
+      <LanguageStandard>stdcpp20</LanguageStandard>
+      <AdditionalIncludeDirectories>../Default;../Public;../../EngineSDK/Include;../../Libraries/Include/;</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <SubSystem>Windows</SubSystem>
       <GenerateDebugInformation>true</GenerateDebugInformation>
+      <AdditionalLibraryDirectories>../../EngineSDK/Library/Debug;../../Libraries/Lib/;</AdditionalLibraryDirectories>
+      <AdditionalDependencies>Engine.lib;d3d11.lib;d3dcompiler.lib;dxguid.lib;DirectXTex\\DirectXTex_Debug.lib;FX11\\Effects11d.lib;Assimp\\assimp-vc143-mtd.lib;DirectXTK\\Debug\\DirectXTK.lib;FMOD\\Debug\\fmodL_vc.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
+    <FxCompile>
+      <ShaderType>Effect</ShaderType>
+    </FxCompile>
+    <FxCompile>
+      <ShaderModel>5.0</ShaderModel>
+    </FxCompile>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
     <ClCompile>
@@ -118,21 +134,79 @@
       <SDLCheck>true</SDLCheck>
       <PreprocessorDefinitions>NDEBUG;_WINDOWS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
+      <LanguageStandard>stdcpp20</LanguageStandard>
+      <AdditionalIncludeDirectories>../Default;../Public;../../EngineSDK/Include;../../Libraries/Include/;</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <SubSystem>Windows</SubSystem>
       <EnableCOMDATFolding>true</EnableCOMDATFolding>
       <OptimizeReferences>true</OptimizeReferences>
       <GenerateDebugInformation>true</GenerateDebugInformation>
+      <AdditionalLibraryDirectories>../../EngineSDK/Library/Release;../../Libraries/Lib/;</AdditionalLibraryDirectories>
+      <AdditionalDependencies>Engine.lib;d3d11.lib;d3dcompiler.lib;dxguid.lib;DirectXTex\\DirectXTex.lib;FX11\\Effects11.lib;Assimp\\assimp-vc143-mt.lib;DirectXTK\\Release\\DirectXTK.lib;FMOD\\Release\\fmod_vc.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
+    <FxCompile>
+      <ShaderType>Effect</ShaderType>
+    </FxCompile>
+    <FxCompile>
+      <ShaderModel>5.0</ShaderModel>
+    </FxCompile>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClInclude Include="..\Public\Body.h" />
+    <ClInclude Include="..\Public\CameraMan_Targeter.h" />
+    <ClInclude Include="..\Public\Client_Defines.h" />
+    <ClInclude Include="..\Public\Client_EventDefine.h" />
+    <ClInclude Include="..\Public\ColliderPart.h" />
+    <ClInclude Include="..\Public\ComboContainer.h" />
+    <ClInclude Include="..\Public\ComboState.h" />
+    <ClInclude Include="..\Public\Level_Loading.h" />
+    <ClInclude Include="..\Public\Level_Logo.h" />
+    <ClInclude Include="..\Public\Loader.h" />
+    <ClInclude Include="..\Public\MainApplication.h" />
+    <ClInclude Include="..\Public\MainPlayer.h" />
+    <ClInclude Include="..\Public\Player.h" />
+    <ClInclude Include="..\Public\PlayerActionState.h" />
+    <ClInclude Include="..\Public\PlayerControlContext.h" />
+    <ClInclude Include="..\Public\StatComponent.h" />
+    <ClInclude Include="..\Public\State_Combo_First.h" />
+    <ClInclude Include="..\Public\State_Combo_Fourth.h" />
+    <ClInclude Include="..\Public\State_Combo_Second.h" />
+    <ClInclude Include="..\Public\State_Combo_Third.h" />
+    <ClInclude Include="..\Public\State_Idle.h" />
+    <ClInclude Include="..\Public\State_Run.h" />
+    <ClInclude Include="..\Public\State_RunEnd.h" />
+    <ClInclude Include="..\Public\State_RunStart.h" />
+    <ClInclude Include="..\Public\Weapon.h" />
     <ClInclude Include="Client.h" />
     <ClInclude Include="framework.h" />
     <ClInclude Include="Resource.h" />
     <ClInclude Include="targetver.h" />
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="..\Private\Body.cpp" />
+    <ClCompile Include="..\Private\CameraMan_Targeter.cpp" />
+    <ClCompile Include="..\Private\ColliderPart.cpp" />
+    <ClCompile Include="..\Private\ComboContainer.cpp" />
+    <ClCompile Include="..\Private\ComboState.cpp" />
+    <ClCompile Include="..\Private\Level_Loading.cpp" />
+    <ClCompile Include="..\Private\Level_Logo.cpp" />
+    <ClCompile Include="..\Private\Loader.cpp" />
+    <ClCompile Include="..\Private\MainApplication.cpp" />
+    <ClCompile Include="..\Private\MainPlayer.cpp" />
+    <ClCompile Include="..\Private\Player.cpp" />
+    <ClCompile Include="..\Private\PlayerActionState.cpp" />
+    <ClCompile Include="..\Private\PlayerControlContext.cpp" />
+    <ClCompile Include="..\Private\StatComponent.cpp" />
+    <ClCompile Include="..\Private\State_Combo_First.cpp" />
+    <ClCompile Include="..\Private\State_Combo_Fourth.cpp" />
+    <ClCompile Include="..\Private\State_Combo_Second.cpp" />
+    <ClCompile Include="..\Private\State_Combo_Third.cpp" />
+    <ClCompile Include="..\Private\State_Idle.cpp" />
+    <ClCompile Include="..\Private\State_Run.cpp" />
+    <ClCompile Include="..\Private\State_RunEnd.cpp" />
+    <ClCompile Include="..\Private\State_RunStart.cpp" />
+    <ClCompile Include="..\Private\Weapon.cpp" />
     <ClCompile Include="Client.cpp" />
   </ItemGroup>
   <ItemGroup>
@@ -141,6 +215,22 @@
   <ItemGroup>
     <Image Include="Client.ico" />
     <Image Include="small.ico" />
+  </ItemGroup>
+  <ItemGroup>
+    <FxCompile Include="..\..\Shaders\Animation_Defines.hlsl" />
+    <FxCompile Include="..\..\Shaders\Common_Defines.hlsl" />
+    <FxCompile Include="..\..\Shaders\Global_Defines.hlsl" />
+    <FxCompile Include="..\..\Shaders\Light_Defines.hlsl" />
+    <FxCompile Include="..\..\Shaders\Shader_VtxAnimMesh.hlsl" />
+    <FxCompile Include="..\..\Shaders\Shader_VtxCol.hlsl" />
+    <FxCompile Include="..\..\Shaders\Shader_VtxCube.hlsl" />
+    <FxCompile Include="..\..\Shaders\Shader_VtxMesh.hlsl" />
+    <FxCompile Include="..\..\Shaders\Shader_VtxMesh_SkillEffect.hlsl" />
+    <FxCompile Include="..\..\Shaders\Shader_VtxNorTex.hlsl" />
+    <FxCompile Include="..\..\Shaders\Shader_VtxPosTex.hlsl" />
+    <FxCompile Include="..\..\Shaders\Shader_VtxPosTex_Particle.hlsl" />
+    <FxCompile Include="..\..\Shaders\Shader_VtxPos_Particle.hlsl" />
+    <FxCompile Include="..\..\Shaders\Struct_Defines.hlsl" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

@@ -1,0 +1,50 @@
+#include "Global.hlsl"
+
+// Emissive
+// 빛과 상관없이 카메라와 물체의 정보만 필요
+// 외곽선을 구할 때 사용 (RimLight)
+float4 MaterialEmissive;
+
+
+MeshOutput VS(VertexTextureNormal input)
+{
+    MeshOutput output;
+    output.position = mul(input.position, W);
+    output.worldPosition = output.position;
+    output.position = mul(output.position, VP);
+    output.uv = input.uv;
+    output.normal = mul(float4(input.normal, 0.f), W);
+    
+    return output;
+}
+
+Texture2D Texture0;
+
+float4 PS(MeshOutput input) : SV_TARGET
+{   
+    float3 cameraPosition = InvV._41_42_43;
+    float3 E = normalize(cameraPosition - input.worldPosition);
+    
+    // eye와 법선벡터 내적 0~1 clamp    
+    float resultDot = saturate(dot(E, input.normal));
+    // camera 방향과 mesh의 법선벡터가 작을수록 emissive는 커진다.
+    // 자 그러면 cos0 즉, 바로 법선벡터와 수직인 상태면? 1인데 이를 빼니까 0으로 표현
+    // cos90을넘어가면 -값이 되는데 이를 0으로 clamp? 이를 빼니까 1로 표현
+    // 카메라 시야와 법선벡터의 각도가 좁을수록 emissive down
+    // 카메라 시야와 법선벡터의 각도가 클수록 emissive up!
+    float emissive = 1.0f - resultDot;
+    
+    
+    // lerp => 선형보간
+    // min, max, x => 그래프를 부드럽게 보간
+    emissive = smoothstep(0.0f, 1.0f, emissive);
+    emissive = pow(emissive, 4);
+    float4 color = MaterialEmissive * emissive;
+    
+    return color;
+}
+technique11 T0
+{
+    PASS_VP(P0, VS, PS)
+    PASS_RS_VP(P1, FillModeWireFrame, VS, PS)
+};
