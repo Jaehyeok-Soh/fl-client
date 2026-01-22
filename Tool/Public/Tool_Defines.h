@@ -64,6 +64,9 @@ namespace Tool
 		END
 	};
 
+
+
+
 	static string TypeToString(EToolObjectType eType)
 	{
 		switch (eType)
@@ -118,6 +121,42 @@ namespace Tool
 		else
 			return EToolObjectType::END;
 	}
+
+
+	enum class EClientLevelType : unsigned int
+	{
+		STATIC = 0,
+		LOGO,
+		END
+	};
+
+	inline constexpr size_t	g_iClientLevelType_Count = static_cast<size_t>(EClientLevelType::END);
+
+	static string ClientleveltypeToString(EClientLevelType eType)
+	{
+		switch (eType)
+		{
+		case Tool::EClientLevelType::STATIC:
+			return "STATIC";
+			break;
+		case Tool::EClientLevelType::LOGO:
+			return "LOGO";
+			break;
+		case Tool::EClientLevelType::END:
+			break;
+		}
+	}
+
+	static EClientLevelType StringToClientleveltype(const _string& str)
+	{
+		if (::strcmp(str.c_str(), "STATIC") == 0)
+			return EClientLevelType::STATIC;
+		else if (::strcmp(str.c_str(), "LOGO") == 0)
+			return EClientLevelType::LOGO;
+		else
+			return EClientLevelType::END;
+	}
+
 
 	inline constexpr _tchar g_wszStaticLightLayer[]{ L"StaticLight_Layer\0" };
 	inline constexpr _tchar g_wszMeshEffectPresetPath[]{ L"../../Resources/Data/EffectData/EffectMeshPreset.json\0" };

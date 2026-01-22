@@ -27,8 +27,6 @@ HRESULT CLevel_UI::Awake(const _uint iLevelID)
 	if (FAILED(Super::Awake(iLevelID)))
 		return E_FAIL;
 
-	MSG_BOX("UI");
-
 	if (FAILED(Ready_UI_Inspector()))
 		return E_FAIL;	
 
@@ -57,6 +55,8 @@ HRESULT CLevel_UI::Render()
 
 	//////////////////////////
 	// Element Render
+
+	ImGui::ShowDemoWindow();
 
 	for (CImGui_Base* pElement : m_GuiElements)
 	{
