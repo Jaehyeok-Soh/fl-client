@@ -85,6 +85,9 @@
     <Filter Include="03. Level\Loading\Loader">
       <UniqueIdentifier>{afe44f16-d8bc-4485-94d6-01fb36c16207}</UniqueIdentifier>
     </Filter>
+    <Filter Include="06. ImGui\01. Panel\UIPanels">
+      <UniqueIdentifier>{25cb433e-dd0f-4224-8a4f-fdf58f05f1a8}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="framework.h">
@@ -216,6 +219,9 @@
     <ClInclude Include="..\Public\Loader.h">
       <Filter>03. Level\Loading\Loader</Filter>
     </ClInclude>
+    <ClInclude Include="..\Public\UI_Inspector.h">
+      <Filter>06. ImGui\01. Panel\UIPanels</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <Image Include="small.ico">
@@ -341,6 +347,9 @@
     </ClCompile>
     <ClCompile Include="..\Private\Tool_Defines.cpp">
       <Filter>98. Defines</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\UI_Inspector.cpp">
+      <Filter>06. ImGui\01. Panel\UIPanels</Filter>
     </ClCompile>
   </ItemGroup>
 </Project>

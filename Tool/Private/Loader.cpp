@@ -16,13 +16,17 @@
 // Object
 //=================
 
+
+//=================
+// UI
+//=================
+
 //=================
 // Resource
 //=================
 #include "Texture.h"
 #include "MaterialInstance.h"
 #include "Material.h"
-#include "Model.h"
 
 
 CLoader::CLoader(ID3D11Device* pDevice, ID3D11DeviceContext* pDeviceContext, ELevelType eLoadingELevelType)
@@ -184,6 +188,7 @@ HRESULT CLoader::Loading_For_Camera()
 
 HRESULT CLoader::Loading_For_UI()
 {
+
 	m_isFinished = true;
 	return S_OK;
 }
