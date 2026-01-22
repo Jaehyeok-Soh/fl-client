@@ -1,8 +1,8 @@
+#include "Light_Manager.h"
 #include "Light.h"
 #include "Shader.h"
 #include "VIBuffer_Rect_Tex.h"
 #include "Constant_Buffer.h"
-#include "Light_Manager.h"
 
 CLight_Manager::CLight_Manager(ID3D11Device* pDevice, ID3D11DeviceContext* pDeviceContext)
 	: m_pDevice(pDevice)
@@ -59,6 +59,11 @@ HRESULT CLight_Manager::Render(CShader* pShader, CVIBuffer_Rect_Tex* pVIBuffer)
 	}
 	m_Lights[ENUM_TO_UINT(LIGHT_TYPE::DYNAMICPOINT)].clear();
 	return S_OK;
+}
+
+ID3D11Buffer* CLight_Manager::Get_Light_ConstantBuffer() const
+{
+	return m_pLight_CBuffer->Get_Buffer();
 }
 
 void CLight_Manager::Clear()

@@ -1,5 +1,5 @@
-#include "Collider.h"
 #include "Collision_Manager.h"
+#include "Collider.h"
 
 
 CCollision_Manager::CCollision_Manager(_uint iLayerCount)

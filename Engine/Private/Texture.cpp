@@ -1,6 +1,6 @@
-#include "GameInstance.h"
-#include "Shader.h"
 #include "Texture.h"
+#include "Shader.h"
+#include "GameInstance.h"
 
 CTexture::CTexture()
 	: Super()

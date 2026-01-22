@@ -1,8 +1,8 @@
-#include "GameInstance.h"
+#include "Frustrum.h"
 #include "Collider.h"
 #include "Bounding_AABB.h"
 #include "CameraMan.h"
-#include "Frustrum.h"
+#include "GameInstance.h"
 
 CFrustrum::CFrustrum()
     : m_pGameInstance(CGameInstance::GetInstance())

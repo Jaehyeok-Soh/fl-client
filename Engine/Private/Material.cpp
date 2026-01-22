@@ -1,7 +1,7 @@
-#include "Shader.h"
-#include "GameInstance.h"
-#include "TextureBase.h"
 #include "Material.h"
+#include "Shader.h"
+#include "TextureBase.h"
+#include "GameInstance.h"
 
 CMaterial::CMaterial(ID3D11Device* pDevice, ID3D11DeviceContext* pDeviceContext)
 	: Super(EResourceType::MATERIAL, pDevice, pDeviceContext)

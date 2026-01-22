@@ -1,11 +1,10 @@
+#include "Tool_Defines.h"
 #include "MainApplication.h"
 #include "Picking_ToolManager.h"
-#include "Tool_Defines.h"
 #include "VertexData.h"
 #include "Engine_Utils.h"
 #include "ImGui_ToolManager.h"
 #include "Level_Loading.h"
-#include "GameInstance.h"
 //=================
 // GameObject
 //=================
@@ -20,11 +19,8 @@
 #include "Shader.h"
 #include "Camera.h"
 #include "Transform.h"
-
-//=================
-// MaterialInstance
-//=================
 #include "MaterialInstance.h"
+#include "GameInstance.h"
 
 USING(Tool)
 
@@ -182,7 +178,7 @@ HRESULT CMainApplication::Ready_Static_Prototype()
 		desc.eType = eType;
 		desc.wstrName = Engine_Utils::MI_ToWString(eType);
 		desc.fEmissivePower = 1.f;
-		if (FAILED(m_pGameInstance->Add_Resource(desc.wstrName, CMaterialInstance::Create(m_pDevice, m_pDeviceContext, &desc))))
+		if (FAILED(m_pGameInstance->Add_Resource<CMaterialInstance>(desc.wstrName, CMaterialInstance::Create(m_pDevice, m_pDeviceContext, &desc))))
 			return E_FAIL;
 		
 		return S_OK;

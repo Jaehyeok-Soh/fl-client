@@ -1,7 +1,7 @@
-#include "ActionState.h"
-#include "GameInstance.h"
-#include "ContainerObject.h"
 #include "StateBase.h"
+#include "ActionState.h"
+#include "ContainerObject.h"
+#include "GameInstance.h"
 
 CStateBase::CStateBase(CActionState* pOwnerComponent, const string& strName)
 	: m_pOwnerStateComp(pOwnerComponent)

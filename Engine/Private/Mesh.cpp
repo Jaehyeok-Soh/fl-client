@@ -1,8 +1,8 @@
+#include "Mesh.h"
 #include "Bone.h"
 #include "Ray.h"
-#include "GameInstance.h"
 #include "Shader.h"
-#include "Mesh.h"
+#include "GameInstance.h"
 
 CMesh::CMesh(ID3D11Device* pDevice, ID3D11DeviceContext* pDeviceContext)
 	: Super(pDevice, pDeviceContext)

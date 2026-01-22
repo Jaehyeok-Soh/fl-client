@@ -1,10 +1,10 @@
+#include "Converter.h"
 #include "Engine_Utils.h"
 #include <fstream>
 #include <regex>
 #include "Bone.h"
 #include "FileUtils.h"
 #include "Importer.h"
-#include "Converter.h"
 
 CConverter::CConverter(ID3D11Device* pDevice, ID3D11DeviceContext* pDeviceContext, _float4x4 matPreTransform, _bool bCustom)
 	: m_pDevice(pDevice)

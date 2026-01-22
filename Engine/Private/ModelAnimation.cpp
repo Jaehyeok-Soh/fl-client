@@ -1,5 +1,5 @@
-#include "Channel.h"
 #include "ModelAnimation.h"
+#include "Channel.h"
 
 CModelAnimation::CModelAnimation(ID3D11Device* pDevice, ID3D11DeviceContext* pDeviceContext)
 	: Super(EResourceType::MODEL_ANIMATION, pDevice, pDeviceContext)

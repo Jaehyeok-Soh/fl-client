@@ -1,6 +1,6 @@
+#include "Component.h"
 #include "GameObject.h"
 #include "GameInstance.h"
-#include "Component.h"
 
 CComponent::CComponent()
 	: m_pGameInstance(CGameInstance::GetInstance())

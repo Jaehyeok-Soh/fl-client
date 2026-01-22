@@ -1,5 +1,5 @@
-#include "GameInstance.h"
 #include "VIBuffer_Line_Color.h"
+#include "GameInstance.h"
 
 
 CVIBuffer_Line_Color::CVIBuffer_Line_Color(ID3D11Device* pDevice, ID3D11DeviceContext* pDeviceContext)

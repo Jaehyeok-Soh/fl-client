@@ -4,8 +4,8 @@
 #include "Bounding_Sphere.h"
 #include "ActionState.h"
 #include "Model.h"
-#include "GameInstance.h"
 #include "Camera.h"
+#include "GameInstance.h"
 
 CGameObject::CGameObject(ID3D11Device* pDevice, ID3D11DeviceContext* pDeviceContext)
     : m_pDevice(pDevice)

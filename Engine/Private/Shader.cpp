@@ -1,8 +1,8 @@
+#include "Shader.h"
 #include "Engine_Utils.h"
-#include "GameInstance.h"
 #include "Constant_Buffer.h"
 #include "Material.h"
-#include "Shader.h"
+#include "GameInstance.h"
 
 CShader::CShader(ID3D11Device* pDevice, ID3D11DeviceContext* pDeviceContext)
 	: Super()

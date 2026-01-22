@@ -1,9 +1,9 @@
 #include "Bounding_Sphere.h"
-#include "GameInstance.h"
 #include "Ray.h"
 #include "Bounding_AABB.h"
 #include "Bounding_OBB.h"
 #include "DebugDraw.h"
+#include "GameInstance.h"
 
 CBounding_Sphere::CBounding_Sphere(ID3D11Device* pDevice, ID3D11DeviceContext* pDeviceContext)
     : Super(pDevice, pDeviceContext)

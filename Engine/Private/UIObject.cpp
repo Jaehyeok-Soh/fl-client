@@ -1,8 +1,8 @@
-#include "GameInstance.h"
+#include "UIObject.h"
 #include "Shader.h"
 #include "Texture.h"
 #include "Mesh.h"
-#include "UIObject.h"
+#include "GameInstance.h"
 
 CUIObject::CUIObject(ID3D11Device* pDevice, ID3D11DeviceContext* pDeviceContext)
 	: Super(pDevice, pDeviceContext)

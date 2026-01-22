@@ -1,5 +1,5 @@
-#include "Bone.h"
 #include "Channel.h"
+#include "Bone.h"
 
 CChannel::CChannel()
 {

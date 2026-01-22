@@ -1,5 +1,5 @@
-#include "Font.h"
 #include "Font_Manager.h"
+#include "Font.h"
 
 CFont_Manager::CFont_Manager(ID3D11Device* pDevice, ID3D11DeviceContext* pDeviceContext)
     : m_pDevice{ pDevice }

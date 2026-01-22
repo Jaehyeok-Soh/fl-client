@@ -1,5 +1,5 @@
-#include "TextureBase.h"
 #include "Resource_Manager.h"
+#include "TextureBase.h"
 
 CResource_Manager::CResource_Manager(ID3D11Device* pDevice, ID3D11DeviceContext* pDeviceContext)
 	: m_pDevice(pDevice)

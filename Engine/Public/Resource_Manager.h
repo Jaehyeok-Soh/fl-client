@@ -1,6 +1,9 @@
 #pragma once
 #include "Base.h"
 #include "ModelAnimation.h"
+#include "Material.h"
+#include "MaterialInstance.h"
+#include "TextureBase.h"
 
 NS_BEGIN(Engine)
 
@@ -136,11 +139,11 @@ inline void CResource_Manager::Remove(const wstring& wstrKey)
 template<typename T>
 inline EResourceType CResource_Manager::Get_Type()
 {
-	if constexpr (std::is_same_v<T, class CTextureBase>) return EResourceType::TEXTURE;
-	if constexpr (std::is_same_v<T, class CMaterial>) return EResourceType::MATERIAL;
-	if constexpr (std::is_same_v<T, class CAnimation>) return EResourceType::ANIMATION;
-	if constexpr (std::is_same_v<T, class CModelAnimation>) return EResourceType::MODEL_ANIMATION;
-	if constexpr (std::is_same_v<T, class CMaterialInstance>) return EResourceType::MATERIAL_INSTANCE;
+	if constexpr (std::is_same_v<T, class Engine::CTextureBase>) return EResourceType::TEXTURE;
+	if constexpr (std::is_same_v<T, class Engine::CMaterial>) return EResourceType::MATERIAL;
+	//if constexpr (std::is_same_v<T, class Engine::CAnimation>) return EResourceType::ANIMATION;
+	if constexpr (std::is_same_v<T, class Engine::CModelAnimation>) return EResourceType::MODEL_ANIMATION;
+	if constexpr (std::is_same_v<T, class Engine::CMaterialInstance>) return EResourceType::MATERIAL_INSTANCE;
 
 	return EResourceType::END;
 }

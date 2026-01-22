@@ -1,4 +1,4 @@
-#include "GameInstance.h"
+#include "ModelLoader.h"
 #include "ModelAnimation.h"
 #include "FileUtils.h"
 #include "AsTypes.h"
@@ -11,7 +11,7 @@
 #include "Mesh.h"
 #include "Model.h"
 #include "Material.h"
-#include "ModelLoader.h"
+#include "GameInstance.h"
 
 CModelLoader::CModelLoader(ID3D11Device* pDevice, ID3D11DeviceContext* pDeviceContext, _bool bCustom)
     : m_pDevice(pDevice)

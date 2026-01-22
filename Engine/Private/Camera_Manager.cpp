@@ -1,6 +1,6 @@
+#include "Camera_Manager.h"
 #include "Engine_Utils.h"
 #include "Constant_Buffer.h"
-#include "Camera_Manager.h"
 
 CCamera_Manager::CCamera_Manager(ID3D11Device* pDevice, ID3D11DeviceContext* pDeviceContext)
 	: m_pDevice(pDevice)

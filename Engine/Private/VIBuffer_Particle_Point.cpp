@@ -1,5 +1,5 @@
-#include "GameInstance.h"
 #include "VIBuffer_Particle_Point.h"
+#include "GameInstance.h"
 
 CVIBuffer_Particle_Point::CVIBuffer_Particle_Point(ID3D11Device* pDevice, ID3D11DeviceContext* pDeviceContext)
 	: Super(pDevice, pDeviceContext)

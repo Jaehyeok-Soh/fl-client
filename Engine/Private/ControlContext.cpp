@@ -1,5 +1,5 @@
-#include "GameInstance.h"
 #include "ControlContext.h"
+#include "GameInstance.h"
 
 CControlContext::CControlContext()
     : Super()
