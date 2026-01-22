@@ -1,7 +1,7 @@
-#include "GameObject.h"
-#include "GameInstance.h"
-#include "Transform.h"
 #include "Camera.h"
+#include "GameObject.h"
+#include "Transform.h"
+#include "GameInstance.h"
 
 CCamera::CCamera()
 	: Super()

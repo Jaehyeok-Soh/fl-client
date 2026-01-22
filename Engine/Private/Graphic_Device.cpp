@@ -1,5 +1,5 @@
-#include "GameInstance.h"
 #include "Graphic_Device.h"
+#include "GameInstance.h"
 
 CGraphic_Device::CGraphic_Device()
 {

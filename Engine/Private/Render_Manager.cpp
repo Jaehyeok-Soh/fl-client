@@ -1,11 +1,11 @@
+#include "Render_Manager.h"
 #include "Constant_Buffer.h"
 #include "GameObject.h"
 #include "Camera.h"
 #include "VIBuffer_Rect_Tex.h"
 #include "Shader.h"
-#include "GameInstance.h"
 #include "RenderTarget.h"
-#include "Render_Manager.h"
+#include "GameInstance.h"
 
 CRender_Manager::CRender_Manager(ID3D11Device* pDevice, ID3D11DeviceContext* pDeviceContext)
 	: m_pDevice(pDevice)

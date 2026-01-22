@@ -1,7 +1,7 @@
-#include "GameInstance.h"
+#include "Event_Manager.h"
 #include "Level.h"
 #include "GameObject.h"
-#include "Event_Manager.h"
+#include "GameInstance.h"
 
 CEvent_Manager::CEvent_Manager()
 	: m_pGameInstance(CGameInstance::GetInstance())

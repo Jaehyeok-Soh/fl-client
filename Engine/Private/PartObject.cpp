@@ -1,11 +1,11 @@
-#include "GameInstance.h"
+#include "PartObject.h"
 #include "CameraMan.h"
 #include "Bounding_Sphere.h"
 #include "Bounding_AABB.h"
 #include "Bounding_OBB.h"
 #include "Collider.h"
 #include "Model.h"
-#include "PartObject.h"
+#include "GameInstance.h"
 
 CPartObject::CPartObject(ID3D11Device* pDevice, ID3D11DeviceContext* pDeviceContext)
 	: Super(pDevice, pDeviceContext)

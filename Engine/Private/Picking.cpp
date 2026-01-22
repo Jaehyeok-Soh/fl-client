@@ -1,6 +1,6 @@
-#include "GameInstance.h"
-#include "GameObject.h"
 #include "Picking.h"
+#include "GameObject.h"
+#include "GameInstance.h"
 
 CPicking::CPicking(HWND hWnd)
 	: m_pGameInstance(CGameInstance::GetInstance())

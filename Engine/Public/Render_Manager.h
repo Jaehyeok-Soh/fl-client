@@ -2,7 +2,8 @@
 #include "Base.h"
 
 NS_BEGIN(Engine)
-
+class CGameInstance;
+class CGameObject;
 class CShader;
 
 class CRender_Manager final : public CBase
@@ -17,7 +18,6 @@ public:
 	HRESULT Set_Components();
 	HRESULT Render();
 	void Push_RenderObject(RENDER_CATEGORY eCategory, CGameObject* pGO);
-	void Baek_StaticModelShadow(const wstring& wstrLayerTag);
 private:	
 	HRESULT Render_Priority();
 	HRESULT Render_NoneBlend();

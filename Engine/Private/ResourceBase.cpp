@@ -1,5 +1,5 @@
-#include "GameInstance.h"
 #include "ResourceBase.h"
+#include "GameInstance.h"
 
 CResourceBase::CResourceBase(EResourceType eType, ID3D11Device* pDevice, ID3D11DeviceContext* pDeviceContext)
 	: m_bClone(false)

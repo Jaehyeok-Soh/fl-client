@@ -1,5 +1,5 @@
-#include "GameInstance.h"
 #include "CameraMan.h"
+#include "GameInstance.h"
 
 CCameraMan::CCameraMan(ID3D11Device* pDevice, ID3D11DeviceContext* pDeviceContext, CameraType eType)
     : Super(pDevice, pDeviceContext)

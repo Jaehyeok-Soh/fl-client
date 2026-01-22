@@ -1,3 +1,4 @@
+#include "ActionState.h"
 #include "StateBase.h"
 #include "GameObject.h"
 #include "ContainerObject.h"
@@ -6,7 +7,6 @@
 #include "Model.h"
 #include "Transform.h"
 #include "ControlContext.h"
-#include "ActionState.h"
 
 CActionState::CActionState()
 {

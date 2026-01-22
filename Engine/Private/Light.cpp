@@ -1,6 +1,6 @@
+#include "Light.h"
 #include "Shader.h"
 #include "VIBuffer_Rect_Tex.h"
-#include "Light.h"
 
 CLight::CLight()
 {

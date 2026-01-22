@@ -1,5 +1,5 @@
-#include "GameInstance.h"
 #include "GameDataManager.h"
+#include "GameInstance.h"
 
 CGameDataManager::CGameDataManager()
     : m_pGameInstance(CGameInstance::GetInstance())

@@ -1,6 +1,6 @@
+#include "RenderTarget.h"
 #include "Shader.h"
 #include "VIBuffer_Rect_Tex.h"
-#include "RenderTarget.h"
 
 CRenderTarget::CRenderTarget(ID3D11Device* pDevice, ID3D11DeviceContext* pDeviceContext)
 	: m_pDevice(pDevice)

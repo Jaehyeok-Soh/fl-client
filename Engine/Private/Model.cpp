@@ -1,13 +1,13 @@
+#include "Model.h"
 #include "ModelLoader.h"
 #include "Mesh.h"
 #include "Shader.h"
 #include "Bone.h"
 #include "Engine_Utils.h"
-#include "GameInstance.h"
 #include "Material.h"
 #include "MaterialInstance.h"
 #include "ModelAnimation.h"
-#include "Model.h"
+#include "GameInstance.h"
 
 CModel::CModel(ID3D11Device* pDevice, ID3D11DeviceContext* pDeviceContext)
 	: Super()

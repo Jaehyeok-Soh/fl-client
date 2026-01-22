@@ -1,9 +1,9 @@
+#include "Collider.h"
 #include "Bounding_AABB.h"
 #include "Bounding_OBB.h"
 #include "Bounding_Sphere.h"
 #include "GameObject.h"
 #include "GameInstance.h"
-#include "Collider.h"
 
 _uint CCollider::s_iNextID = { 0 };
 

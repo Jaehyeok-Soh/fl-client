@@ -1,7 +1,7 @@
-#include "FileUtils.h"
-#include "GameInstance.h"
-#include "Cell.h"
 #include "Navigation.h"
+#include "FileUtils.h"
+#include "Cell.h"
+#include "GameInstance.h"
 
 CNavigation::CNavigation(ID3D11Device* pDevice, ID3D11DeviceContext* pDeviceContext)
 	: m_pDevice(pDevice)
