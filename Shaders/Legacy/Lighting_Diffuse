@@ -1,0 +1,37 @@
+#include "Global.hlsl"
+
+// Diffuse ( 분산광 )
+// 우리가 일반적으로 알고있는 조명의 개념?
+// 물체의 표면에서 분산되어 눈으로 바로 들어오는 빛
+// 각도에 따라 밝기가 다르다 (람베르트 공식)
+float3 LightDir;
+float4 LightDiffuse;
+float4 MaterialDiffuse;
+
+VertexOutput VS(VertexTextureNormal input)
+{
+    VertexOutput output;
+    output.position = mul(input.position, W);
+    output.position = mul(output.position, VP);
+    
+    output.uv = input.uv;
+    output.normal = mul(float4(input.normal, 0.f), W);
+    
+    return output;
+}
+
+Texture2D DiffuseMap;
+
+float4 PS(VertexOutput input) : SV_TARGET
+{   
+    // 해당 uv에 위치한 pixel의 색상
+    float4 color = DiffuseMap.Sample(LinearSampler, input.uv);
+    float dotResult = dot(-LightDir, input.normal);
+    color = color * dotResult * LightDiffuse * MaterialDiffuse;
+    return color;
+}
+technique11 T0
+{
+    PASS_VP(P0, VS, PS)
+    PASS_RS_VP(P1, FillModeWireFrame, VS, PS)
+};

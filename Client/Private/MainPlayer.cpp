@@ -1,0 +1,568 @@
+#include "Model.h"
+#include "CameraMan.h"
+#include "Collider.h"
+#include "Bounding_Sphere.h"
+#include "PlayerActionState.h"
+#include "ComboContainer.h"
+#include "CameraMan_Targeter.h"
+#include "PlayerControlContext.h"
+#include "StatComponent.h"
+#include "Weapon.h"
+#include "Navigation.h"
+#include "Ray.h"
+#include "Bone.h"
+#include "Body.h"
+#include "Camera.h"
+#include "ColliderPart.h"
+#include "GameInstance.h"
+#pragma region State
+#include "State_Combo_First.h"
+#include "State_Combo_Second.h"
+#include "State_Combo_Third.h"
+#include "State_Combo_Fourth.h"
+#pragma endregion
+#include "MainPlayer.h"
+
+CMainPlayer::CMainPlayer(ID3D11Device* pDevice, ID3D11DeviceContext* pDeviceContext)
+    : Super(pDevice, pDeviceContext)
+{
+    m_vecPartObjects.resize(Part::END, nullptr);
+}
+
+CMainPlayer::CMainPlayer(const CMainPlayer& rhs)
+    : Super(rhs)
+{
+    m_vecPartObjects.resize(Part::END, nullptr);
+}
+
+HRESULT CMainPlayer::Initialize_Prototype()
+{
+    if (FAILED(Super::Initialize_Prototype()))
+        return E_FAIL;
+
+    return S_OK;
+}
+
+HRESULT CMainPlayer::Initialize(void* pArg)
+{
+    if (FAILED(Super::Initialize(pArg)))
+        return E_FAIL;
+
+    if (FAILED(Ready_Ability()))
+        return E_FAIL;
+
+    if (FAILED(Ready_Weapons()))
+        return E_FAIL;
+
+    if (FAILED(Add_Component<CPlayerControlContext>(0 /*static*/, L"Prototype_Component_ControlContext_Player", nullptr)))
+        return E_FAIL;
+
+    if (FAILED(Ready_Colliders()))
+        return E_FAIL;
+
+    if (FAILED(Ready_Ray()))
+        return E_FAIL;
+
+    return S_OK;
+}
+
+HRESULT CMainPlayer::Awake(const _uint iCurrentLevelID)
+{
+    if (FAILED(Super::Awake(iCurrentLevelID)))
+        return E_FAIL;
+
+    CGameInstance::GetInstance()->Add_Actor_Object(this);
+
+    if (FAILED(Get_Component<CPlayerActionState>()->Change_State(ENUM_TO_UINT(State::IDLE))))
+        return E_FAIL;
+    if (FAILED(Get_Component<CControlContext>()->Awake(iCurrentLevelID)))
+        return E_FAIL;
+
+    Get_Component<CTransform>()->Set_Info(TRANSFORM_INFO_STATE::POS, _float4{ 0.f, 0.f, 2.f, 1.f });
+    return S_OK;
+}
+
+void CMainPlayer::Update_Priority(const _float fTimeDelta)
+{
+    Super::Update_Priority(fTimeDelta);
+}
+
+void CMainPlayer::Update(const _float fTimeDelta)
+{
+    Super::Update(fTimeDelta);
+}
+
+void CMainPlayer::Update_Late(const _float fTimeDelta)
+{
+    Super::Update_Late(fTimeDelta);
+    
+    CPlayerControlContext* pControlContext = Get_Component<CPlayerControlContext>();
+    if (pControlContext == nullptr)
+        return;
+
+    //if (pControlContext->Is_WallMode())
+    //{
+    //    Movement_Wall(fTimeDelta);
+    //}
+    //else
+    //    Movement_Ground(fTimeDelta);
+}
+
+void CMainPlayer::Ready_Before_Render(const _float fTimeDelta)
+{
+    Super::Ready_Before_Render(fTimeDelta);
+}
+
+HRESULT CMainPlayer::Render()
+{
+    if (FAILED(Super::Render()))
+        return E_FAIL;
+
+    return S_OK;
+}
+
+void CMainPlayer::OnCollision(_uint iMyColliderLayer, CCollider* pOther)
+{
+}
+
+void CMainPlayer::OnCollision_Enter(_uint iMyColliderLayer, CCollider* pOther)
+{
+    ECollideLayer eMyLayer = static_cast<ECollideLayer>(iMyColliderLayer);
+    // _bool bAttackHit = Try_AttackHit(eMyLayer, pOther);
+}
+
+void CMainPlayer::OnCollision_Exit(_uint iMyColliderLayer, CCollider* pOther)
+{
+}
+
+#pragma region Legacy
+/*
+void CMainPlayer::Movement_Ground(const _float fTimeDelta)
+{
+    CColMesh_Manager* pColMeshManager = { nullptr };
+    CBody* pBody = Get_Part<CBody>(Part::BODY);
+    CCollider* pCollider = { nullptr };
+    CPlayerControlContext* pControlContext = { nullptr };
+    CTransform* pTransform = Get_Component<CTransform>();
+    CBounding_Sphere* pBounding = { nullptr };
+    if (!(pColMeshManager = CColMesh_Manager::GetInstance()))
+        return;
+    if (!(pCollider = pBody->Get_Component<CCollider>()))
+        return;
+    if (pCollider->Get_Type() != EColliderType::SPHERE)
+        return;
+    if (!(pControlContext = Get_Component<CPlayerControlContext>()))
+        return;
+
+    pBounding = static_cast<CBounding_Sphere*>(pCollider->Get_Bounding());
+    BoundingSphere* pDesc = pBounding->Get_Desc();
+
+    _float fCollideSphereRadius = pDesc->Radius;
+   _vector vCollideSphereCneterPos = ::XMVectorSetW(::XMLoadFloat3(&pDesc->Center), 1.f);
+    _vector vPrevPosition = ::XMLoadFloat4(&pTransform->Get_PrevPosition());
+    _vector vCurrentPosition = pTransform->Get_Info(TRANSFORM_INFO_STATE::POS);
+
+    // 이전 포지션 Dir 뽑아서 ColMesh와 충돌검사
+    _vector vMove = vCurrentPosition - vPrevPosition;
+    _vector vMoveXZ = ::XMVectorSetY(vMove, 0.f);
+    _float fMoveLength = ::XMVectorGetX(::XMVector3Length(vMoveXZ));
+
+    _vector vNormalieMoveDir = ::XMVector3Normalize(vMoveXZ);
+    m_pMoveRay->Setup_Ray(vCollideSphereCneterPos, vNormalieMoveDir);
+    _float fRayMaxDistance = fMoveLength + fCollideSphereRadius;
+
+    COLMESH_HITINFO wallHit = {};
+    if (fMoveLength > g_XMEpsilon.f[0] &&
+        pColMeshManager->Raycast_World(m_pMoveRay, fRayMaxDistance, wallHit) &&
+        wallHit.eSurfaceType == ESurfaceType::WALL)
+    {
+        _float fAllowed = wallHit.fDistance - fCollideSphereRadius;
+        if (fAllowed < 0.f)
+            fAllowed = 0.f;
+
+        if (fAllowed < fMoveLength)
+        {
+            const _float fCorrection = fAllowed - fMoveLength;
+            const _vector vCorrection = vNormalieMoveDir * fCorrection;
+
+            _vector vFixedPos = vCurrentPosition + vCorrection;
+            vFixedPos = ::XMVectorSetY(vFixedPos, ::XMVectorGetY(vCurrentPosition));
+            pTransform->Set_Info(TRANSFORM_INFO_STATE::POS, vFixedPos);
+        }
+    }
+
+
+    pControlContext->Clear_Grounded();
+    pControlContext->Set_Gravity(true);
+    if (pControlContext->Is_FootRayEnabled() == false)
+        return;
+
+    // ========================
+    // FootRay
+    // ========================
+    const _float fMax_StepUp = 0.03f;
+    const _float fMax_StepDown = 0.06f;
+    const _float fRayLength = fCollideSphereRadius + fMax_StepDown + 0.1f;
+
+    // 한번더 갱신
+    vCurrentPosition = pTransform->Get_Info(TRANSFORM_INFO_STATE::POS);
+    vCollideSphereCneterPos = ::XMVectorSetW(::XMLoadFloat3(&pDesc->Center), 1.f);
+
+    // 이미 세팅해둔 ray에 내 world
+    m_pFootRay->Setup_Ray(vCollideSphereCneterPos + ::XMVectorSet(0.f, 0.1f, 0.f, 0.f), ::XMVectorSet(0.f, -1.f, 0.f, 0.f));
+
+    COLMESH_HITINFO footHit = {};
+    if (pColMeshManager->Raycast_World(m_pFootRay, fRayLength, footHit) &&
+        footHit.eSurfaceType == ESurfaceType::GROUND)
+    {
+        _bool IsGround = { false };
+        _float fCurrentY = vCurrentPosition.m128_f32[1];
+        _float fGroundY = footHit.vHitPosition.y;
+        _float fDeltaY = fGroundY - fCurrentY;
+
+        if (fDeltaY > 0.f)
+        {
+            if (fDeltaY > fMax_StepUp)
+                fDeltaY = fMax_StepUp;
+
+            IsGround = true;
+            fCurrentY += fDeltaY;
+        }
+        else if (fDeltaY >= -fMax_StepDown)
+        {
+            IsGround = true;
+            fCurrentY = std::_Common_lerp(fCurrentY, fGroundY, 0.3f);
+        }
+        else
+            IsGround = false;
+
+        if (IsGround)
+        {
+            pControlContext->Set_Grounded(true, &footHit);
+            pControlContext->Set_Gravity(false);
+            vCurrentPosition = ::XMVectorSetY(vCurrentPosition, fCurrentY);
+            pTransform->Set_Info(TRANSFORM_INFO_STATE::POS, vCurrentPosition);
+        }
+    }
+}
+*/
+#pragma endregion
+
+#pragma region Legacy2
+/*
+_bool CMainPlayer::Try_AttackHit(ECollideLayer eMyLayer, CCollider* pOther)
+{
+    if (Is_PlayerAttackLayer(eMyLayer) == false)
+        return false;
+
+    if (pOther == nullptr)
+        return false;
+
+    ECollideLayer eOtherLayer = static_cast<ECollideLayer>(pOther->Get_Layer());
+    if (eOtherLayer != ECollideLayer::ENEMY_BODY)
+        return false;
+
+    CPartObject* pAttackPart = Get_PartByLayer(eMyLayer);
+    if (pAttackPart == nullptr || pAttackPart->Is_AttackWindow() == false)
+        return false;
+
+    ATTACK_DESC* pDesc = pAttackPart->Get_AttackDesc();
+
+    if (pDesc->iAttackType < 0)
+        return false;
+
+    CGameObject* pVictim = pOther->Get_Owner();
+
+    if (pAttackPart->Is_AlreadyHitted(pVictim))
+        return false;
+
+    if (pVictim->On_Hit(static_cast<_uint>(pOther->Get_Layer()), pDesc, this) == false)
+        return false;
+
+    if (pDesc->bImpact)
+    {
+        CCameraMan_Targeter* pCamera = static_cast<CCameraMan_Targeter*>(Get_CameraTargeter());
+        pCamera->Change_State(TargeterState::TARGETSYNC);
+    }
+    pAttackPart->Regist_HitTargets(pVictim);
+    return true;
+}
+*/
+#pragma endregion
+
+
+HRESULT CMainPlayer::Ready_Ability()
+{
+    CPlayerActionState* pActionState = { nullptr };
+    CModel* pModel = Get_Part<CBody>(ENUM_TO_UINT(Part::BODY))->Get_Component<CModel>();
+
+    if (!pModel)
+        return E_FAIL;
+
+    if (!(pActionState = Get_Component<CPlayerActionState>()))
+        return E_FAIL;
+
+    {
+        CStatComponent::STATCOMP_DESC desc = {};
+        desc.iHealth = 100;
+        if (FAILED(Add_Script_Component(L"StatComponent", L"Prototype_Component_Stat", &desc)))
+            return E_FAIL;
+
+        m_pStatComp = static_cast<CStatComponent*>(Get_Script_Component(L"StatComponent"));
+    }    
+
+    // HandCombo_Right
+    {
+        CComboContainer* pContainer = CComboContainer::Create(pActionState, "RightHand");
+        // ComboFirst
+        {
+            CState_Combo_First::COMBOSTATE_DESC desc = {};
+            desc.bBlend = true;
+            desc.bLeftMouse = true;
+            desc.fChanceTime_Start = 0.6f;
+            desc.fChanceTime_End = 0.7f;
+            desc.iAnimIndex = Get_AnimationIndex(L"Animation_Master_ComboRight01");
+            if (FAILED(pContainer->Add_Comobo(CState_Combo_First::Create(pActionState, &desc))))
+                return E_FAIL;
+        }
+        // ComboSecond
+        {
+            CState_Combo_Second::COMBOSTATE_DESC desc = {};
+            desc.bBlend = true;
+            desc.bLeftMouse = true;
+            desc.fChanceTime_Start = 0.5f;
+            desc.fChanceTime_End = 0.7f;
+            desc.iAnimIndex = Get_AnimationIndex(L"Animation_Master_ComboRight02");
+            if (FAILED(pContainer->Add_Comobo(CState_Combo_Second::Create(pActionState, &desc))))
+                return E_FAIL;
+        }
+        // ComboThird
+        {
+            CState_Combo_Third::COMBOSTATE_DESC desc = {};
+            desc.bBlend = true;
+            desc.bLeftMouse = true;
+            desc.fChanceTime_Start = 0.6f;
+            desc.fChanceTime_End = 0.7f;
+            desc.iAnimIndex = Get_AnimationIndex(L"Animation_Master_ComboRight03");
+            if (FAILED(pContainer->Add_Comobo(CState_Combo_Third::Create(pActionState, &desc))))
+                return E_FAIL;
+        }
+        // ComboFourth
+        {
+            CState_Combo_Fourth::COMBOSTATE_DESC desc = {};
+            desc.bBlend = true;
+            desc.bLeftMouse = true;
+            desc.fChanceTime_Start = 0.5f;
+            desc.fChanceTime_End = 0.7f;
+            desc.iAnimIndex = Get_AnimationIndex(L"Animation_Master_ComboRight04");
+            if (FAILED(pContainer->Add_Comobo(CState_Combo_Fourth::Create(pActionState, &desc))))
+                return E_FAIL;
+        }
+
+        pActionState->Add_State(ENUM_TO_UINT(CPlayer::State::LEFTMELEE), pContainer);
+    }
+    return S_OK;
+}
+
+HRESULT CMainPlayer::Ready_Weapons()
+{
+    // Weapon
+    {
+        CWeapon::WEAPON_DESC weaponDesc = {};
+        weaponDesc.wstrModelPrototypeName = L"Prototype_Component_Model_Sword";
+        weaponDesc.pMatParent = &Get_Component<CTransform>()->Get_WorldMatrix();
+        weaponDesc.pMatHandSocket = &Get_Part<CBody>(Part::BODY)->Get_RightHandWeaponSocket()->Get_CombinedTransformMatrixFloat();
+        weaponDesc.pMatSocket = &Get_Part<CBody>(Part::BODY)->Get_SwordSocket()->Get_CombinedTransformMatrixFloat();
+        if (FAILED(Add_Part(Part::WEAPON, ENUM_TO_UINT(ELevelType::STATIC), L"Prototype_GameObject_Part_Weapon", &weaponDesc)))
+            return E_FAIL;
+    }
+    // LeftHand
+    {
+        CColliderPart::COLLIDERPART_DESC colliderPartDesc = {};
+        colliderPartDesc.pMatParent = &Get_Component<CTransform>()->Get_WorldMatrix();
+        colliderPartDesc.pMatSocket = &Get_Part<CBody>(Part::BODY)->Get_LeftHandSocket()->Get_CombinedTransformMatrixFloat();
+        if (FAILED(Add_Part(Part::LEFTHAND, ENUM_TO_UINT(ELevelType::STATIC), L"Prototype_GameObject_Part_Collider", &colliderPartDesc)))
+            return E_FAIL;
+    }
+    // RightHand
+    {
+        CColliderPart::COLLIDERPART_DESC colliderPartDesc = {};
+        colliderPartDesc.pMatParent = &Get_Component<CTransform>()->Get_WorldMatrix();
+        colliderPartDesc.pMatSocket = &Get_Part<CBody>(Part::BODY)->Get_RightHandSocket()->Get_CombinedTransformMatrixFloat();
+        if (FAILED(Add_Part(Part::RIGHTHAND, ENUM_TO_UINT(ELevelType::STATIC), L"Prototype_GameObject_Part_Collider", &colliderPartDesc)))
+            return E_FAIL;
+    }
+    // LeftFoot
+    {
+        CColliderPart::COLLIDERPART_DESC colliderPartDesc = {};
+        colliderPartDesc.pMatParent = &Get_Component<CTransform>()->Get_WorldMatrix();
+        colliderPartDesc.pMatSocket = &Get_Part<CBody>(Part::BODY)->Get_LeftFootSocket()->Get_CombinedTransformMatrixFloat();
+        if (FAILED(Add_Part(Part::LEFTFOOT, ENUM_TO_UINT(ELevelType::STATIC), L"Prototype_GameObject_Part_Collider", &colliderPartDesc)))
+            return E_FAIL;
+    }
+    // RightFoot
+    {
+        CColliderPart::COLLIDERPART_DESC colliderPartDesc = {};
+        colliderPartDesc.pMatParent = &Get_Component<CTransform>()->Get_WorldMatrix();
+        colliderPartDesc.pMatSocket = &Get_Part<CBody>(Part::BODY)->Get_RightFootSocket()->Get_CombinedTransformMatrixFloat();
+        if (FAILED(Add_Part(Part::RIGHTFOOT, ENUM_TO_UINT(ELevelType::STATIC), L"Prototype_GameObject_Part_Collider", &colliderPartDesc)))
+            return E_FAIL;
+    }
+    return S_OK;
+}
+
+HRESULT CMainPlayer::Ready_Colliders()
+{
+    CBody* pBody = Get_Part<CBody>(ENUM_TO_UINT(Part::BODY));
+    if (!pBody)
+        return E_FAIL;
+    
+    CWeapon* pWeapon = Get_Part<CWeapon>(ENUM_TO_UINT(Part::WEAPON));
+    if (!pWeapon)
+        return E_FAIL;
+
+    CColliderPart* pLeftHand = Get_Part<CColliderPart>(ENUM_TO_UINT(Part::LEFTHAND));
+    if (!pLeftHand)
+        return E_FAIL;
+
+    CColliderPart* pRightHand = Get_Part<CColliderPart>(ENUM_TO_UINT(Part::RIGHTHAND));
+    if (!pRightHand)
+        return E_FAIL;
+
+    CColliderPart* pLeftFoot = Get_Part<CColliderPart>(ENUM_TO_UINT(Part::LEFTFOOT));
+    if (!pLeftFoot)
+        return E_FAIL;
+
+    CColliderPart* pRightFoot = Get_Part<CColliderPart>(ENUM_TO_UINT(Part::RIGHTFOOT));
+    if (!pRightFoot)
+        return E_FAIL;
+
+    // Body
+    {
+        CCollider::COLLIDER_DESC colliderDesc = {};
+        CBounding_Sphere::BOUNDING_SPHERE_DESC boundingDesc = {};
+        colliderDesc.iLayer = ENUM_TO_UINT(ECollideLayer::PLAYER_BODY);
+        boundingDesc.fRadius = 0.7f;
+        boundingDesc.vCenter = { 0.f, boundingDesc.fRadius, 0.f };
+        colliderDesc.pBoundingDesc = &boundingDesc;
+        if (FAILED(pBody->Add_Component<CCollider>(ENUM_TO_UINT(ELevelType::STATIC), L"Prototype_Component_Collider_Sphere", &colliderDesc)))
+            return E_FAIL;
+    }
+
+    // Weapon
+    {
+        CCollider::COLLIDER_DESC colliderDesc = {};
+        CBounding_Sphere::BOUNDING_SPHERE_DESC boundingDesc = {};
+        colliderDesc.iLayer = ENUM_TO_UINT(ECollideLayer::PLAYER_WEAPON);
+        boundingDesc.fRadius = 0.4f;
+        boundingDesc.vCenter = { 0.f, -boundingDesc.fRadius, 0.f };
+        colliderDesc.pBoundingDesc = &boundingDesc;
+        if (FAILED(pWeapon->Add_Component<CCollider>(ENUM_TO_UINT(ELevelType::STATIC), L"Prototype_Component_Collider_Sphere", &colliderDesc)))
+            return E_FAIL;
+    }
+
+    // LeftHand
+    {
+        CColliderPart* pLeftHand = Get_Part<CColliderPart>(ENUM_TO_UINT(Part::LEFTHAND));
+        if (!pLeftHand)
+            return E_FAIL;
+
+        CCollider::COLLIDER_DESC colliderDesc = {};
+        CBounding_Sphere::BOUNDING_SPHERE_DESC boundingDesc = {};
+        colliderDesc.iLayer = ENUM_TO_UINT(ECollideLayer::PLAYER_LEFTHAND);
+        boundingDesc.fRadius = 0.3f;
+        boundingDesc.vCenter = { 0.f, 0.f, 0.f };
+        colliderDesc.pBoundingDesc = &boundingDesc;
+        if (FAILED(pLeftHand->Add_Component<CCollider>(ENUM_TO_UINT(ELevelType::STATIC), L"Prototype_Component_Collider_Sphere", &colliderDesc)))
+            return E_FAIL;
+    }
+
+    // RightHand
+    {
+        CCollider::COLLIDER_DESC colliderDesc = {};
+        CBounding_Sphere::BOUNDING_SPHERE_DESC boundingDesc = {};
+        colliderDesc.iLayer = ENUM_TO_UINT(ECollideLayer::PLAYER_RIGHTHAND);
+        boundingDesc.fRadius = 0.3f;
+        boundingDesc.vCenter = { 0.f, 0.f, 0.f };
+        colliderDesc.pBoundingDesc = &boundingDesc;
+        if (FAILED(pRightHand->Add_Component<CCollider>(ENUM_TO_UINT(ELevelType::STATIC), L"Prototype_Component_Collider_Sphere", &colliderDesc)))
+            return E_FAIL;
+    }
+
+    // LeftFoot
+    {
+        CCollider::COLLIDER_DESC colliderDesc = {};
+        CBounding_Sphere::BOUNDING_SPHERE_DESC boundingDesc = {};
+        colliderDesc.iLayer = ENUM_TO_UINT(ECollideLayer::PLAYER_LEFTFOOT);
+        boundingDesc.fRadius = 0.3f;
+        boundingDesc.vCenter = { 0.f, 0.f, 0.f };
+        colliderDesc.pBoundingDesc = &boundingDesc;
+        if (FAILED(pLeftFoot->Add_Component<CCollider>(ENUM_TO_UINT(ELevelType::STATIC), L"Prototype_Component_Collider_Sphere", &colliderDesc)))
+            return E_FAIL;
+    }
+
+    // RightFoot
+    {
+        CCollider::COLLIDER_DESC colliderDesc = {};
+        CBounding_Sphere::BOUNDING_SPHERE_DESC boundingDesc = {};
+        colliderDesc.iLayer = ENUM_TO_UINT(ECollideLayer::PLAYER_RIGHTFOOT);
+        boundingDesc.fRadius = 0.45f;
+        boundingDesc.vCenter = { 0.f, 0.f, 0.f };
+        colliderDesc.pBoundingDesc = &boundingDesc;
+        if (FAILED(pRightFoot->Add_Component<CCollider>(ENUM_TO_UINT(ELevelType::STATIC), L"Prototype_Component_Collider_Sphere", &colliderDesc)))
+            return E_FAIL;
+    }
+
+    m_pGameInstance->Register_Collider(pBody->Get_Component<CCollider>());
+    m_pGameInstance->Register_Collider(pWeapon->Get_Component<CCollider>());
+    m_pGameInstance->Register_Collider(pLeftHand->Get_Component<CCollider>());
+    m_pGameInstance->Register_Collider(pRightHand->Get_Component<CCollider>());
+    m_pGameInstance->Register_Collider(pLeftFoot->Get_Component<CCollider>());
+    m_pGameInstance->Register_Collider(pRightFoot->Get_Component<CCollider>());
+    pWeapon->Get_Component<CCollider>()->Set_Active(false);
+    pLeftHand->Get_Component<CCollider>()->Set_Active(false);
+    pRightHand->Get_Component<CCollider>()->Set_Active(false);
+    pLeftFoot->Get_Component<CCollider>()->Set_Active(false);
+    pRightFoot->Get_Component<CCollider>()->Set_Active(false);
+    return S_OK;
+}
+
+HRESULT CMainPlayer::Ready_Ray()
+{
+    if (!(m_pFootRay = CRay::Create(_float4{ 0.f, 0.1f, 0.f, 1.f }, _float3{ 0.f, -1.f, 0.f })))
+        return E_FAIL;
+
+    if (!(m_pMoveRay = CRay::Create(_float4{ 0.f, 0.05f, 0.f, 1.f }, _float3{ 0.f, 0.f, 0.f })))
+        return E_FAIL;
+
+    return S_OK;
+}
+
+CMainPlayer* CMainPlayer::Create(ID3D11Device* pDevice, ID3D11DeviceContext* pDeviceContext)
+{
+    CMainPlayer* pInsatnce = new CMainPlayer(pDevice, pDeviceContext);
+    if (FAILED(pInsatnce->Initialize_Prototype()))
+    {
+        MSG_BOX("CMainPlayer::Create, Failed");
+        Safe_Release(pInsatnce);
+    }
+    return pInsatnce;
+}
+
+CGameObject* CMainPlayer::Clone(void* pArg)
+{
+    CMainPlayer* pClone = new CMainPlayer(*this);
+    if (FAILED(pClone->Initialize(pArg)))
+    {
+        MSG_BOX("CMainPlayer::Clone, Failed");
+        Safe_Release(pClone);
+    }
+    return pClone;
+}
+
+void CMainPlayer::Free()
+{
+    Safe_Release(m_pMoveRay);
+    Safe_Release(m_pFootRay);
+    Super::Free();
+}

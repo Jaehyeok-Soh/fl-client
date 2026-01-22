@@ -1,0 +1,270 @@
+#include "Tool_Defines.h"
+#include "GameInstance.h"
+#include "Loader.h"
+#include "UEMapDataLoader.h"
+//=================
+// Component
+//=================
+#include "VIBuffer_Terrain.h"
+#include "Model.h"
+#include "Collider.h"
+#include "Shader.h"
+#include "MonoBehaviour.h"
+#include "Camera.h"
+#include "Transform.h"
+//=================
+// Object
+//=================
+
+//=================
+// Resource
+//=================
+#include "Texture.h"
+#include "MaterialInstance.h"
+#include "Material.h"
+#include "Model.h"
+
+
+CLoader::CLoader(ID3D11Device* pDevice, ID3D11DeviceContext* pDeviceContext, ELevelType eLoadingELevelType)
+	: m_pDevice(pDevice)
+	, m_pDeviceContext(pDeviceContext)
+	, m_eLoadingELevelType(eLoadingELevelType)
+	, m_pGameInstance(CGameInstance::GetInstance())
+{
+	Safe_AddRef(m_pGameInstance);
+	Safe_AddRef(m_pDeviceContext);
+	Safe_AddRef(m_pDevice);
+}
+
+HRESULT CLoader::Initailize()
+{
+	try
+	{
+		m_LoadingThread = std::thread(
+			[this]()->void
+			{
+				Loading();
+			});
+	}
+	catch (std::exception& e)
+	{
+		std::string src{ e.what() };
+		return E_FAIL;
+	}
+
+	return S_OK;
+}
+
+HRESULT CLoader::Loading()
+{
+	::CoInitializeEx(nullptr, 0);
+
+	HRESULT hr = {};
+
+	switch (m_eLoadingELevelType)
+	{
+	case Tool::ELevelType::MAP:
+		hr = Loading_For_Map();
+		break;
+	case Tool::ELevelType::ANIMATION:
+		hr = Loading_For_Animation();
+		break;
+	case Tool::ELevelType::EFFECT:
+		hr = Loading_For_Effect();
+		break;
+	case Tool::ELevelType::CAMERA:
+		hr = Loading_For_Camera();
+		break;
+	case Tool::ELevelType::UI:
+		hr = Loading_For_UI();
+		break;
+	case Tool::ELevelType::ASSET_CONVERT:
+		hr = Loading_For_AssetConverter();
+		break;
+	default:
+		hr = E_FAIL;
+		break;
+	}
+
+	::CoUninitialize();
+
+	if (FAILED(hr))
+		return E_FAIL;
+
+	return S_OK;
+}
+
+HRESULT CLoader::Loading_For_Map()
+{
+	_float4x4 matPreTransformScale100;
+	::XMStoreFloat4x4(&matPreTransformScale100, ::XMMatrixScaling(0.01f, 0.01f, 0.01f));
+
+	//=================
+	// Componment
+	//=================
+	// For. Prototype_Component_Collider_Sphere
+	m_pGameInstance->Add_Prototype(ENUM_TO_UINT(ELevelType::MAP), L"Prototype_Component_Collider_Sphere", CCollider::Create(m_pDevice, m_pDeviceContext, EColliderType::SPHERE));
+	// For. Prototype_Component_Collider_AABB
+	m_pGameInstance->Add_Prototype(ENUM_TO_UINT(ELevelType::MAP), L"Prototype_Component_Collider_AABB", CCollider::Create(m_pDevice, m_pDeviceContext, EColliderType::AABB));
+	// For. Prototype_Component_Collider_OBB
+	m_pGameInstance->Add_Prototype(ENUM_TO_UINT(ELevelType::MAP), L"Prototype_Component_Collider_OBB", CCollider::Create(m_pDevice, m_pDeviceContext, EColliderType::OBB));
+
+	m_isFinished = true;
+	return S_OK;
+}
+
+HRESULT CLoader::Loading_For_Animation()
+{
+	m_isFinished = true;
+	return S_OK;
+}
+
+HRESULT CLoader::Loading_For_Effect()
+{
+	//====================
+	// Resource Material
+	//====================
+	// For. Material_Default
+	{
+		CMaterial::tagMaterialDesc desc = {};
+		desc.wstrName = L"Material_Default";
+		if (FAILED(m_pGameInstance->Add_Resource(desc.wstrName, CMaterial::Create(m_pDevice, m_pDeviceContext, &desc))))
+			return E_FAIL;
+	}
+	// For. MaterialInstance_Default
+	{
+		CMaterialInstance::tagMaterialInstanceOrignDesc desc = {};
+		desc.vTintColor = _float4{ 1.f, 1.f, 1.f, 1.f };
+		desc.wstrMaterialTag = L"Material_Default";
+		desc.wstrName = L"MaterialInstance_Default";
+		desc.fEmissivePower = 1.f;
+		if (FAILED(m_pGameInstance->Add_Resource(desc.wstrName, CMaterialInstance::Create(m_pDevice, m_pDeviceContext, &desc))))
+			return E_FAIL;
+	}
+	// For. MaterialInstance_Default_Red
+	{
+		CMaterialInstance::tagMaterialInstanceOrignDesc desc = {};
+		desc.vTintColor = _float4{ 1.f, 0.3f, 0.3f, 1.f };
+		desc.wstrMaterialTag = L"Material_Default";
+		desc.wstrName = L"MaterialInstance_Default_Red";
+		desc.fEmissivePower = 1.f;
+		if (FAILED(m_pGameInstance->Add_Resource(desc.wstrName, CMaterialInstance::Create(m_pDevice, m_pDeviceContext, &desc))))
+			return E_FAIL;
+	}
+	// For. MaterialInstance_Default_Blue
+	{
+		CMaterialInstance::tagMaterialInstanceOrignDesc desc = {};
+		desc.vTintColor = _float4{ 0.3f, 0.3f, 1.f, 1.f };
+		desc.wstrMaterialTag = L"Material_Default";
+		desc.wstrName = L"MaterialInstance_Default_Blue";
+		desc.fEmissivePower = 1.f;
+		if (FAILED(m_pGameInstance->Add_Resource(desc.wstrName, CMaterialInstance::Create(m_pDevice, m_pDeviceContext, &desc))))
+			return E_FAIL;
+	}
+	// For. MaterialInstance_Default_Green
+	{
+		CMaterialInstance::tagMaterialInstanceOrignDesc desc = {};
+		desc.vTintColor = _float4{ 0.3f, 1.f, 0.3f, 1.f };
+		desc.wstrMaterialTag = L"Material_Default";
+		desc.wstrName = L"MaterialInstance_Default_Green";
+		desc.fEmissivePower = 1.f;
+		if (FAILED(m_pGameInstance->Add_Resource(desc.wstrName, CMaterialInstance::Create(m_pDevice, m_pDeviceContext, &desc))))
+			return E_FAIL;
+	}
+
+	m_isFinished = true;
+	return S_OK;
+}
+
+HRESULT CLoader::Loading_For_Camera()
+{
+	m_isFinished = true;
+	return S_OK;
+}
+
+HRESULT CLoader::Loading_For_UI()
+{
+	m_isFinished = true;
+	return S_OK;
+}
+
+HRESULT CLoader::Loading_For_AssetConverter()
+{
+	m_isFinished = true;
+	return S_OK;
+}
+
+HRESULT CLoader::Loading_Textures(const wstring& wstrFolder)
+{
+	if (std::filesystem::exists(wstrFolder) == false)
+		return E_FAIL;
+
+	size_t iFileCount = { 0 };
+	for (const auto& entry : std::filesystem::directory_iterator(wstrFolder))
+	{
+		if (entry.is_regular_file())
+		{
+			++iFileCount;
+		}
+	}
+
+	for (const auto& entry : std::filesystem::directory_iterator(wstrFolder))
+	{
+		wstring wstrFileName = { L"" };
+		if (entry.is_regular_file())
+		{
+			wstrFileName = entry.path().filename().lexically_normal().stem();
+			CTextureBase::RESOURCE_BASE_DESC desc = {};
+			desc.wstrName = wstrFileName;
+			desc.wstrPath = entry.path();
+			if (FAILED(m_pGameInstance->Add_Resource(L"Texture_" + wstrFileName, CTextureBase::Create(m_pDevice, m_pDeviceContext, &desc))))
+				return E_FAIL;
+		}
+	}
+
+	return S_OK;
+}
+
+HRESULT CLoader::Loading_Texture(const wstring& wstrFile)
+{
+	if (wstrFile.empty())
+		return E_FAIL;
+
+	std::filesystem::path filePath{ wstrFile };
+	wstring wstrFileName = filePath.filename().lexically_normal().stem();
+
+	CTextureBase::RESOURCE_BASE_DESC desc = {};
+	desc.wstrName = wstrFileName;
+	desc.wstrPath = filePath.wstring();
+	if (FAILED(m_pGameInstance->Add_Resource(L"Texture_" + wstrFileName, CTextureBase::Create(m_pDevice, m_pDeviceContext, &desc))))
+		return E_FAIL;
+
+	return S_OK;
+}
+
+CLoader* CLoader::Create(ID3D11Device* pDevice, ID3D11DeviceContext* pDeviceContext, ELevelType eLoadingELevelType)
+{
+	CLoader* pInstance = new CLoader(pDevice, pDeviceContext, eLoadingELevelType);
+	
+	if(FAILED(pInstance->Initailize()))
+	{
+		MSG_BOX("CLoader::Create, Failed");
+		Safe_Release(pInstance);
+	}
+
+	return pInstance;
+}
+
+void CLoader::Free()
+{
+	if (m_LoadingThread.joinable())
+	{
+		m_LoadingThread.join();
+	}
+
+	Safe_Release(m_pGameInstance);
+	Safe_Release(m_pDeviceContext);
+	Safe_Release(m_pDevice);
+
+	Super::Free();
+}

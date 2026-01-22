@@ -1,0 +1,153 @@
+#pragma once
+#include "Base.h"
+
+NS_BEGIN(Engine)
+
+typedef struct tagVertexData
+{
+	XMFLOAT3 vPosition = { 0.f, 0.f, 0.f };
+
+	static constexpr unsigned int iNumElements = { 1 };
+	static constexpr D3D11_INPUT_ELEMENT_DESC Elements[] =
+	{
+		{ "POSITION", 0, DXGI_FORMAT_R32G32B32_FLOAT, 0, 0, D3D11_INPUT_PER_VERTEX_DATA, 0},
+	};
+}VTXPOS;
+
+typedef struct tagVertexPositionColor
+{
+	XMFLOAT3 vPosition = { 0.f, 0.f, 0.f };
+	XMFLOAT4 vColor = { 0.f, 0.f, 0.f, 0.f };
+
+	static constexpr unsigned int iNumElements = { 2 };
+	static constexpr D3D11_INPUT_ELEMENT_DESC Elements[] =
+	{
+		{ "POSITION", 0, DXGI_FORMAT_R32G32B32_FLOAT, 0, 0, D3D11_INPUT_PER_VERTEX_DATA, 0},
+		{ "COLOR", 0, DXGI_FORMAT_R32G32B32A32_FLOAT, 0, D3D11_APPEND_ALIGNED_ELEMENT, D3D11_INPUT_PER_VERTEX_DATA, 0}
+	};
+}VTXPOSCOL;
+
+typedef struct tagVertexPositionTexcoord
+{
+	XMFLOAT3 vPosition = {0.f, 0.f, 0.f};
+	XMFLOAT2 vUV = { 0.f, 0.f };
+
+	static constexpr unsigned int iNumElements = { 2 };
+	static constexpr D3D11_INPUT_ELEMENT_DESC Elements[] =
+	{
+		{ "POSITION", 0, DXGI_FORMAT_R32G32B32_FLOAT, 0, 0, D3D11_INPUT_PER_VERTEX_DATA, 0},
+		{ "TEXCOORD", 0, DXGI_FORMAT_R32G32_FLOAT, 0, D3D11_APPEND_ALIGNED_ELEMENT, D3D11_INPUT_PER_VERTEX_DATA, 0}
+	};
+}VTXPOSTEX;
+
+typedef struct tagVertexCube
+{
+	XMFLOAT3		vPosition;
+	XMFLOAT3		vTexcoord;
+
+	static const unsigned int		iNumElements = { 2 };
+
+	static constexpr D3D11_INPUT_ELEMENT_DESC		Elements[] = {
+		{ "POSITION", 0, DXGI_FORMAT_R32G32B32_FLOAT, 0, 0, D3D11_INPUT_PER_VERTEX_DATA, 0},
+		{ "TEXCOORD", 0, DXGI_FORMAT_R32G32B32_FLOAT, 0, D3D11_APPEND_ALIGNED_ELEMENT, D3D11_INPUT_PER_VERTEX_DATA, 0}
+	};
+}VTXCUBE;
+
+typedef struct tagVertexPositionNormalTexcoord
+{
+	XMFLOAT3 vPosition = { 0.f, 0.f, 0.f };
+	XMFLOAT3 vNormal = { 0.f, 0.f, 0.f };
+	XMFLOAT2 vUV = { 0.f, 0.f };
+
+	static constexpr unsigned int iNumElements = { 3 };
+	static constexpr D3D11_INPUT_ELEMENT_DESC Elements[] =
+	{
+		{ "POSITION", 0, DXGI_FORMAT_R32G32B32_FLOAT, 0, 0, D3D11_INPUT_PER_VERTEX_DATA, 0},
+		{ "NORMAL", 0, DXGI_FORMAT_R32G32B32_FLOAT, 0, D3D11_APPEND_ALIGNED_ELEMENT, D3D11_INPUT_PER_VERTEX_DATA, 0},
+		{ "TEXCOORD", 0, DXGI_FORMAT_R32G32_FLOAT, 0, D3D11_APPEND_ALIGNED_ELEMENT, D3D11_INPUT_PER_VERTEX_DATA, 0}
+	};
+}VTXNORTEX;
+
+typedef struct tagVertexMesh
+{
+	XMFLOAT3 vPosition = { 0.f, 0.f, 0.f };
+	XMFLOAT3 vNormal = { 0.f, 0.f, 0.f };
+	XMFLOAT3 vTangent = { 0.f, 0.f, 0.f };
+	XMFLOAT3 vBinormal = { 0.f, 0.f, 0.f };
+	XMFLOAT2 vUV = { 0.f, 0.f };
+
+	static constexpr unsigned int iNumElements = { 5 };
+	static constexpr D3D11_INPUT_ELEMENT_DESC Elements[] =
+	{
+		{ "POSITION", 0, DXGI_FORMAT_R32G32B32_FLOAT, 0, 0, D3D11_INPUT_PER_VERTEX_DATA, 0},
+		{ "NORMAL", 0, DXGI_FORMAT_R32G32B32_FLOAT, 0, D3D11_APPEND_ALIGNED_ELEMENT, D3D11_INPUT_PER_VERTEX_DATA, 0},
+		{ "TANGENT", 0, DXGI_FORMAT_R32G32B32_FLOAT, 0, D3D11_APPEND_ALIGNED_ELEMENT, D3D11_INPUT_PER_VERTEX_DATA, 0},
+		{ "BINORMAL", 0, DXGI_FORMAT_R32G32B32_FLOAT, 0, D3D11_APPEND_ALIGNED_ELEMENT, D3D11_INPUT_PER_VERTEX_DATA, 0},
+		{ "TEXCOORD", 0, DXGI_FORMAT_R32G32_FLOAT, 0, D3D11_APPEND_ALIGNED_ELEMENT, D3D11_INPUT_PER_VERTEX_DATA, 0}
+	};
+}VTXMESH;
+
+typedef struct tagVertexAnimationMesh
+{
+	XMFLOAT3 vPosition = { 0.f, 0.f, 0.f };
+	XMFLOAT3 vNormal = { 0.f, 0.f, 0.f };
+	XMFLOAT3 vTangent = { 0.f, 0.f, 0.f };
+	XMFLOAT3 vBinormal = { 0.f, 0.f, 0.f };
+	XMFLOAT2 vUV = { 0.f, 0.f };
+	XMUINT4 vBlendIndices = { 0, 0, 0, 0 };
+	XMFLOAT4 vBlendWeights = { 0.f, 0.f, 0.f, 0.f };
+
+	static constexpr unsigned int iNumElements = { 7 };
+	static constexpr D3D11_INPUT_ELEMENT_DESC Elements[] =
+	{
+		{ "POSITION", 0, DXGI_FORMAT_R32G32B32_FLOAT, 0, 0, D3D11_INPUT_PER_VERTEX_DATA, 0},
+		{ "NORMAL", 0, DXGI_FORMAT_R32G32B32_FLOAT, 0, D3D11_APPEND_ALIGNED_ELEMENT, D3D11_INPUT_PER_VERTEX_DATA, 0},
+		{ "TANGENT", 0, DXGI_FORMAT_R32G32B32_FLOAT, 0, D3D11_APPEND_ALIGNED_ELEMENT, D3D11_INPUT_PER_VERTEX_DATA, 0},
+		{ "BINORMAL", 0, DXGI_FORMAT_R32G32B32_FLOAT, 0, D3D11_APPEND_ALIGNED_ELEMENT, D3D11_INPUT_PER_VERTEX_DATA, 0},
+		{ "TEXCOORD", 0, DXGI_FORMAT_R32G32_FLOAT, 0, D3D11_APPEND_ALIGNED_ELEMENT, D3D11_INPUT_PER_VERTEX_DATA, 0},
+		{ "BLENDINDEX", 0, DXGI_FORMAT_R32G32B32A32_UINT, 0, D3D11_APPEND_ALIGNED_ELEMENT, D3D11_INPUT_PER_VERTEX_DATA, 0},
+		{ "BLENDWEIGHT", 0, DXGI_FORMAT_R32G32B32A32_FLOAT, 0, D3D11_APPEND_ALIGNED_ELEMENT, D3D11_INPUT_PER_VERTEX_DATA, 0},
+	};
+}VTXANIMMESH;
+ 
+typedef struct tagVertexInstance
+{
+	XMFLOAT4		vRight = { 0.f, 0.f, 0.f, 0.f };
+	XMFLOAT4		vUp = { 0.f, 0.f, 0.f, 0.f };
+	XMFLOAT4		vLook = { 0.f, 0.f, 0.f, 0.f };
+	XMFLOAT4		vTranslation = { 0.f, 0.f, 0.f, 1.f };
+	XMFLOAT2		vLifeTime = { 0.f, 0.f };
+}VTXPARTICLE;
+
+typedef struct tagVertexPosTexParticle
+{
+	static const unsigned int		iNumElements = { 7 };
+
+	static constexpr D3D11_INPUT_ELEMENT_DESC		Elements[] = {
+		{ "POSITION", 0, DXGI_FORMAT_R32G32B32_FLOAT, 0, 0, D3D11_INPUT_PER_VERTEX_DATA, 0},
+		{ "TEXCOORD", 0, DXGI_FORMAT_R32G32_FLOAT, 0, 12, D3D11_INPUT_PER_VERTEX_DATA, 0},
+
+		{ "TEXCOORD", 1, DXGI_FORMAT_R32G32B32A32_FLOAT, 1, 0, D3D11_INPUT_PER_INSTANCE_DATA, 1},
+		{ "TEXCOORD", 2, DXGI_FORMAT_R32G32B32A32_FLOAT, 1, 16, D3D11_INPUT_PER_INSTANCE_DATA, 1},
+		{ "TEXCOORD", 3, DXGI_FORMAT_R32G32B32A32_FLOAT, 1, 32, D3D11_INPUT_PER_INSTANCE_DATA, 1},
+		{ "TEXCOORD", 4, DXGI_FORMAT_R32G32B32A32_FLOAT, 1, 48, D3D11_INPUT_PER_INSTANCE_DATA, 1},
+		{ "TEXCOORD", 5, DXGI_FORMAT_R32G32_FLOAT, 1, 64, D3D11_INPUT_PER_INSTANCE_DATA, 1},
+	};
+}VTXPOSTEX_PARTICLE;
+
+typedef struct tagVertexPosParticle
+{
+	static const unsigned int		iNumElements = { 6 };
+
+	static constexpr D3D11_INPUT_ELEMENT_DESC		Elements[] = {
+		{ "POSITION", 0, DXGI_FORMAT_R32G32B32_FLOAT, 0, 0, D3D11_INPUT_PER_VERTEX_DATA, 0},
+
+		{ "WORLD", 0, DXGI_FORMAT_R32G32B32A32_FLOAT, 1, 0, D3D11_INPUT_PER_INSTANCE_DATA, 1},
+		{ "WORLD", 1, DXGI_FORMAT_R32G32B32A32_FLOAT, 1, 16, D3D11_INPUT_PER_INSTANCE_DATA, 1},
+		{ "WORLD", 2, DXGI_FORMAT_R32G32B32A32_FLOAT, 1, 32, D3D11_INPUT_PER_INSTANCE_DATA, 1},
+		{ "WORLD", 3, DXGI_FORMAT_R32G32B32A32_FLOAT, 1, 48, D3D11_INPUT_PER_INSTANCE_DATA, 1},
+
+		{ "TEXCOORD", 0, DXGI_FORMAT_R32G32_FLOAT, 1, 64, D3D11_INPUT_PER_INSTANCE_DATA, 1},
+	};
+}VTXPOS_PARTICLE;
+NS_END

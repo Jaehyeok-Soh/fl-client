@@ -1,0 +1,118 @@
+#pragma once
+#include "Engine_Define.h"
+
+NS_BEGIN(Engine)
+
+class ENGINE_DLL Engine_Utils
+{
+public:
+	static _bool StartsWith(const string& str, const string& comp);
+	static _bool StartsWith(const wstring& wstr, const wstring& comp);
+
+	static void Replace(OUT string& str, string comp, string rep);
+	static void Replace(OUT wstring& str, wstring comp, wstring rep);
+
+	static wstring ToWString(string value);
+	static string ToString(wstring value);
+
+	static _float SmoothStep(_float fT) { return fT * fT * (3.f - 2.f * fT); }
+
+	static string MI_ToString(EMaterialInstanceType eType)
+	{
+		switch (eType)
+		{
+		case Engine::EMaterialInstanceType::Default:
+			return "MaterialInstance_Default";
+		case Engine::EMaterialInstanceType::Concrete:
+			return "MaterialInstance_Concrete";
+		case Engine::EMaterialInstanceType::Mirror:
+			return "MaterialInstance_Mirror";
+		case Engine::EMaterialInstanceType::Water:
+			return "MaterialInstance_Water";
+		case Engine::EMaterialInstanceType::Dirt:
+			return "MaterialInstance_Dirt";
+		case Engine::EMaterialInstanceType::Red:
+			return "MaterialInstance_Red";
+		case Engine::EMaterialInstanceType::Blue:
+			return "MaterialInstance_Blue";
+		case Engine::EMaterialInstanceType::Green:
+			return "MaterialInstance_Green";
+		case Engine::EMaterialInstanceType::Grass:
+			return "MaterialInstance_Grass";
+		case Engine::EMaterialInstanceType::Orange:
+			return "MaterialInstance_Orange";
+		case Engine::EMaterialInstanceType::Brown:
+			return "MaterialInstance_Brown";
+		case Engine::EMaterialInstanceType::Pupple:
+			return "MaterialInstance_Pupple";
+		case Engine::EMaterialInstanceType::WinterGreen:
+			return "MaterialInstance_WinterGreen";
+		case Engine::EMaterialInstanceType::BurnishedBrown:
+			return "MaterialInstance_BurnishedBrown";
+		case Engine::EMaterialInstanceType::ConcreteLight:
+			return "MaterialInstance_ConcreteLight";
+		case Engine::EMaterialInstanceType::ConcreteMid:
+			return "MaterialInstance_ConcreteMid";
+		case Engine::EMaterialInstanceType::ConcreteWarm:
+			return "MaterialInstance_ConcreteWarm";
+		case Engine::EMaterialInstanceType::MetalCool:
+			return "MaterialInstance_MetalCool";
+		case Engine::EMaterialInstanceType::MetalDark:
+			return "MaterialInstance_MetalDark";
+		case Engine::EMaterialInstanceType::CourtBlue:
+			return "MaterialInstance_CourtBlue";
+		default:
+			return "";
+		}
+	}
+	static wstring MI_ToWString(EMaterialInstanceType eType)
+	{
+		switch (eType)
+		{
+		case Engine::EMaterialInstanceType::Default:
+			return L"MaterialInstance_Default";
+		case Engine::EMaterialInstanceType::Concrete:
+			return L"MaterialInstance_Concrete";
+		case Engine::EMaterialInstanceType::Mirror:
+			return L"MaterialInstance_Mirror";
+		case Engine::EMaterialInstanceType::Water:
+			return L"MaterialInstance_Water";
+		case Engine::EMaterialInstanceType::Dirt:
+			return L"MaterialInstance_Dirt";
+		case Engine::EMaterialInstanceType::Red:
+			return L"MaterialInstance_Red";
+		case Engine::EMaterialInstanceType::Blue:
+			return L"MaterialInstance_Blue";
+		case Engine::EMaterialInstanceType::Green:
+			return L"MaterialInstance_Green";
+		case Engine::EMaterialInstanceType::Grass:
+			return L"MaterialInstance_Grass";
+		case Engine::EMaterialInstanceType::Orange:
+			return L"MaterialInstance_Orange";
+		case Engine::EMaterialInstanceType::Brown:
+			return L"MaterialInstance_Brown";
+		case Engine::EMaterialInstanceType::Pupple:
+			return L"MaterialInstance_Pupple";
+		case Engine::EMaterialInstanceType::WinterGreen:
+			return L"MaterialInstance_WinterGreen";
+		case Engine::EMaterialInstanceType::BurnishedBrown:
+			return L"MaterialInstance_BurnishedBrown";
+		case Engine::EMaterialInstanceType::ConcreteLight:
+			return L"MaterialInstance_ConcreteLight";
+		case Engine::EMaterialInstanceType::ConcreteMid:
+			return L"MaterialInstance_ConcreteMid";
+		case Engine::EMaterialInstanceType::ConcreteWarm:
+			return L"MaterialInstance_ConcreteWarm";
+		case Engine::EMaterialInstanceType::MetalCool:
+			return L"MaterialInstance_MetalCool";
+		case Engine::EMaterialInstanceType::MetalDark:
+			return L"MaterialInstance_MetalDark";
+		case Engine::EMaterialInstanceType::CourtBlue:
+			return L"MaterialInstance_CourtBlue";
+		default:
+			return L"";
+		}
+	}
+};
+
+NS_END

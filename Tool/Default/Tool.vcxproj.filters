@@ -1,0 +1,394 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <Filter Include="00. Default">
+      <UniqueIdentifier>{3d3e8058-a3dd-4bb7-973b-02861a6a1e0b}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="01. MainApplication">
+      <UniqueIdentifier>{b2ad5ea6-fa9c-42e2-920e-65fa32a6965c}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="98. Defines">
+      <UniqueIdentifier>{db9350a6-0a7a-4cf2-8059-c0703abded55}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="99. ETC">
+      <UniqueIdentifier>{0b1b07a4-b609-4fd8-a064-8c12c9458d3f}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="99. ETC\99. Andromeda">
+      <UniqueIdentifier>{22cb062d-7f39-486d-886c-bc44b81a8b4d}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02. GameObjects">
+      <UniqueIdentifier>{a2605915-b5f6-4baa-afa6-abfe355bb097}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="05. Picking">
+      <UniqueIdentifier>{d9601722-b784-4d5f-afb2-aa6a6cfef0d8}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="06. ImGui">
+      <UniqueIdentifier>{f9dd71ac-23ce-49b7-a610-4730fc1cf6aa}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="03. Level">
+      <UniqueIdentifier>{924e0878-2431-4c68-80a2-ea22ab01f383}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="04. Component">
+      <UniqueIdentifier>{a5bce9c1-8524-4d44-b90e-d125e3b10e0d}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="03. Level\Animation">
+      <UniqueIdentifier>{a871dc62-300e-4186-92a8-946a4ba30b58}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="03. Level\Camera">
+      <UniqueIdentifier>{9a31fb8a-7d89-4e95-9798-7837f77e445c}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="03. Level\Assimp">
+      <UniqueIdentifier>{2f791368-f1de-41f0-af14-0d229b89c310}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="03. Level\Effect">
+      <UniqueIdentifier>{df7591e1-a21f-463c-a229-5189b6ea1f0f}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="03. Level\Loading">
+      <UniqueIdentifier>{ab106c3c-868b-4d70-aff0-e12423f75dac}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="03. Level\Map">
+      <UniqueIdentifier>{bfb9a5ad-1a88-4d8d-be1d-3cef17ba8de7}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="04. Component\GodInput">
+      <UniqueIdentifier>{a5f5d30c-7f0b-4ffe-9625-ac76026564d1}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="99. ETC\01. ImGui">
+      <UniqueIdentifier>{bc995b09-6115-4df2-9e5f-2f8df8bb16fd}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="99. ETC\02. ImGuizmo">
+      <UniqueIdentifier>{89310886-cedb-47e3-85b6-5c20571d5b8e}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="03. Level\UI">
+      <UniqueIdentifier>{66fc69c0-77cb-48e3-8ed2-01108d04329a}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="06. ImGui\00. Manager">
+      <UniqueIdentifier>{904601f9-ece0-4d51-a81e-58dafec6721a}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="06. ImGui\01. Panel">
+      <UniqueIdentifier>{5ab28e72-f996-48e6-95ae-2c238243172a}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="06. ImGui\02. Layout">
+      <UniqueIdentifier>{c9d08718-e84e-41ca-ac3b-8320fc9704bf}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="06. ImGui\03. Dockspace">
+      <UniqueIdentifier>{cb832581-9e3a-4970-a2fe-921fceca3c24}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="06. ImGui\02. Layout\Transform">
+      <UniqueIdentifier>{07c1c70c-f95a-43d2-a4c7-b08e5189b132}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02. GameObjects\Camera">
+      <UniqueIdentifier>{2b12e5f2-bf70-4b4d-9b74-c22127d59e07}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="07. UE_Mapdata">
+      <UniqueIdentifier>{0e98bf15-ae63-42d7-96db-f5fefb93e6f9}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="03. Level\Loading\Loader">
+      <UniqueIdentifier>{afe44f16-d8bc-4485-94d6-01fb36c16207}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="03. Level\Effect\Effect_Panel">
+      <UniqueIdentifier>{dcfafedc-a3a5-47ae-a71f-86669a2e7b2c}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="03. Level\Effect\Effect_Panel\Particle_System_Panel">
+      <UniqueIdentifier>{0680a4ef-f6b5-4f4c-9344-5a85832793a5}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="03. Level\Effect\Effect_Panel\EffectType_Selection">
+      <UniqueIdentifier>{c616f463-edcd-4d20-919c-9de9a390d678}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="03. Level\Effect\Effect_Object">
+      <UniqueIdentifier>{c7c882ca-f31c-44ed-bfc0-c6a26939bb11}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="03. Level\Effect\Effect_Object\Effect_ContainerObject">
+      <UniqueIdentifier>{849c5ab9-53df-4b2a-8a78-5d3fb0f5bf4a}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="03. Level\Effect\Effect_Object\Effect_PartObject">
+      <UniqueIdentifier>{ab8f52ba-9548-4d59-96fd-3e11792c6f59}</UniqueIdentifier>
+    </Filter>
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="framework.h">
+      <Filter>99. ETC\99. Andromeda</Filter>
+    </ClInclude>
+    <ClInclude Include="Resource.h">
+      <Filter>99. ETC\99. Andromeda</Filter>
+    </ClInclude>
+    <ClInclude Include="targetver.h">
+      <Filter>99. ETC\99. Andromeda</Filter>
+    </ClInclude>
+    <ClInclude Include="Tool.h">
+      <Filter>00. Default</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\MainApplication.h">
+      <Filter>01. MainApplication</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\Tool_Defines.h">
+      <Filter>98. Defines</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\Picking_ToolManager.h">
+      <Filter>05. Picking</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\Level_Map.h">
+      <Filter>03. Level\Map</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\Level_Loading.h">
+      <Filter>03. Level\Loading</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\Level_Effect.h">
+      <Filter>03. Level\Effect</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\Level_Camera.h">
+      <Filter>03. Level\Camera</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\Level_Assimp.h">
+      <Filter>03. Level\Assimp</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\Level_Animation.h">
+      <Filter>03. Level\Animation</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\GodInput.h">
+      <Filter>04. Component\GodInput</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\imstb_rectpack.h">
+      <Filter>99. ETC\01. ImGui</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\imstb_textedit.h">
+      <Filter>99. ETC\01. ImGui</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\imstb_truetype.h">
+      <Filter>99. ETC\01. ImGui</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\imconfig.h">
+      <Filter>99. ETC\01. ImGui</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\imgui.h">
+      <Filter>99. ETC\01. ImGui</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\imgui_impl_dx11.h">
+      <Filter>99. ETC\01. ImGui</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\imgui_impl_win32.h">
+      <Filter>99. ETC\01. ImGui</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\imgui_internal.h">
+      <Filter>99. ETC\01. ImGui</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\imgui_stdlib.h">
+      <Filter>99. ETC\01. ImGui</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\GraphEditor.h">
+      <Filter>99. ETC\02. ImGuizmo</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\ImCurveEdit.h">
+      <Filter>99. ETC\02. ImGuizmo</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\ImGradient.h">
+      <Filter>99. ETC\02. ImGuizmo</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\ImGuizmo.h">
+      <Filter>99. ETC\02. ImGuizmo</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\ImSequencer.h">
+      <Filter>99. ETC\02. ImGuizmo</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\ImZoomSlider.h">
+      <Filter>99. ETC\02. ImGuizmo</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\Tool_EventDefines.h">
+      <Filter>98. Defines</Filter>
+    </ClInclude>
+    <ClInclude Include="..\public\Level_UI.h">
+      <Filter>03. Level\UI</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\ImGui_ToolManager.h">
+      <Filter>06. ImGui\00. Manager</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\ImGui_Base.h">
+      <Filter>06. ImGui</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\ImGui_Panel.h">
+      <Filter>06. ImGui\01. Panel</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\ImGui_Layout.h">
+      <Filter>06. ImGui\02. Layout</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\ImGui_Dockspace_MenuBar.h">
+      <Filter>06. ImGui\03. Dockspace</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\ImGui_Dockspace_TabBar.h">
+      <Filter>06. ImGui\03. Dockspace</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\ImGui_Layout_Transform.h">
+      <Filter>06. ImGui\02. Layout\Transform</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\CameraMan_Free.h">
+      <Filter>02. GameObjects\Camera</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\ToolObject.h">
+      <Filter>02. GameObjects</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\UEMapdataLoader.h">
+      <Filter>07. UE_Mapdata</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\UEMapdataParser.h">
+      <Filter>07. UE_Mapdata</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\Loader.h">
+      <Filter>03. Level\Loading\Loader</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\CParticle_System_Panel.h">
+      <Filter>03. Level\Effect\Effect_Panel\Particle_System_Panel</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\EffectType_Selection_Panel.h">
+      <Filter>03. Level\Effect\Effect_Panel\EffectType_Selection</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\CEffectObject.h">
+      <Filter>03. Level\Effect\Effect_Object</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\Tool_ContainerObject.h">
+      <Filter>03. Level\Effect\Effect_Object\Effect_ContainerObject</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\Tool_PartObject.h">
+      <Filter>03. Level\Effect\Effect_Object\Effect_PartObject</Filter>
+    </ClInclude>
+  </ItemGroup>
+  <ItemGroup>
+    <Image Include="small.ico">
+      <Filter>99. ETC\99. Andromeda</Filter>
+    </Image>
+    <Image Include="Tool.ico">
+      <Filter>99. ETC\99. Andromeda</Filter>
+    </Image>
+  </ItemGroup>
+  <ItemGroup>
+    <ResourceCompile Include="Tool.rc">
+      <Filter>99. ETC\99. Andromeda</Filter>
+    </ResourceCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="Tool.cpp">
+      <Filter>00. Default</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\MainApplication.cpp">
+      <Filter>01. MainApplication</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\Picking_ToolManager.cpp">
+      <Filter>05. Picking</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\Level_Animation.cpp">
+      <Filter>03. Level\Animation</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\Level_Assimp.cpp">
+      <Filter>03. Level\Assimp</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\Level_Camera.cpp">
+      <Filter>03. Level\Camera</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\Level_Loading.cpp">
+      <Filter>03. Level\Loading</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\Level_Map.cpp">
+      <Filter>03. Level\Map</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\Level_Effect.cpp">
+      <Filter>03. Level\Effect</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\GodInput.cpp">
+      <Filter>04. Component\GodInput</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\imgui_impl_win32.cpp">
+      <Filter>99. ETC\01. ImGui</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\imgui_stdlib.cpp">
+      <Filter>99. ETC\01. ImGui</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\imgui_tables.cpp">
+      <Filter>99. ETC\01. ImGui</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\imgui_widgets.cpp">
+      <Filter>99. ETC\01. ImGui</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\imgui.cpp">
+      <Filter>99. ETC\01. ImGui</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\imgui_demo.cpp">
+      <Filter>99. ETC\01. ImGui</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\imgui_draw.cpp">
+      <Filter>99. ETC\01. ImGui</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\imgui_impl_dx11.cpp">
+      <Filter>99. ETC\01. ImGui</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\GraphEditor.cpp">
+      <Filter>99. ETC\02. ImGuizmo</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\ImCurveEdit.cpp">
+      <Filter>99. ETC\02. ImGuizmo</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\ImGradient.cpp">
+      <Filter>99. ETC\02. ImGuizmo</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\ImGuizmo.cpp">
+      <Filter>99. ETC\02. ImGuizmo</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\ImSequencer.cpp">
+      <Filter>99. ETC\02. ImGuizmo</Filter>
+    </ClCompile>
+    <ClCompile Include="..\private\Level_UI.cpp">
+      <Filter>03. Level\UI</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\ImGui_ToolManager.cpp">
+      <Filter>06. ImGui\00. Manager</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\ImGui_Base.cpp">
+      <Filter>06. ImGui</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\ImGui_Panel.cpp">
+      <Filter>06. ImGui\01. Panel</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\ImGui_Layout.cpp">
+      <Filter>06. ImGui\02. Layout</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\ImGui_Dockspace_TabBar.cpp">
+      <Filter>06. ImGui\03. Dockspace</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\ImGui_Dockspace_MenuBar.cpp">
+      <Filter>06. ImGui\03. Dockspace</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\ImGui_Layout_Transform.cpp">
+      <Filter>06. ImGui\02. Layout\Transform</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\CameraMan_Free.cpp">
+      <Filter>02. GameObjects\Camera</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\ToolObject.cpp">
+      <Filter>02. GameObjects</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\UEMapdataParser.cpp">
+      <Filter>07. UE_Mapdata</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\UEMapdataLoader.cpp">
+      <Filter>07. UE_Mapdata</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\Loader.cpp">
+      <Filter>03. Level\Loading\Loader</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\Tool_Defines.cpp">
+      <Filter>98. Defines</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\CParticle_System_Panel.cpp">
+      <Filter>03. Level\Effect\Effect_Panel\Particle_System_Panel</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\EffectType_Selection_Panel.cpp">
+      <Filter>03. Level\Effect\Effect_Panel\EffectType_Selection</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\CEffectObject.cpp">
+      <Filter>03. Level\Effect\Effect_Object</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\Tool_ContainerObject.cpp">
+      <Filter>03. Level\Effect\Effect_Object\Effect_ContainerObject</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\Tool_PartObject.cpp">
+      <Filter>03. Level\Effect\Effect_Object\Effect_PartObject</Filter>
+    </ClCompile>
+  </ItemGroup>
+</Project>

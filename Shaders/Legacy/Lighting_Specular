@@ -1,0 +1,62 @@
+#include "Global.hlsl"
+
+// Specular ( 반사광 )
+// 한방향으로 완전히 반사되는 빛 (퐁 공식!)
+// Diffuse는 normal과 LightDir의 각도가 핵심!
+// Specular는 LightDir이 반사되어 우리의 시야, 카메라에 들어오는 각도가 핵심!
+// 금속에 빛이 반사되어 우리의 시야에 들어올때 흰색 눈뽕!
+
+float3 LightDir;
+float4 LightSpecular;
+float4 MaterialSpecular;
+
+
+MeshOutput VS(VertexTextureNormal input)
+{
+    MeshOutput output;
+    output.position = mul(input.position, W);
+    // 월드 포지션을 저장
+    output.worldPosition = output.position;
+    output.position = mul(output.position, VP);
+    output.uv = input.uv;
+    output.normal = mul(float4(input.normal, 0.f), W);
+    
+    return output;
+}
+
+// {1, 1}
+// {1, 0}
+
+// -LightDir+ 2*( -LightDir + normal * dot (-lightdir, normal))
+// -LightDir + -2LightDir + 2결과
+// -3LightDir + 2결과
+Texture2D Texture0;
+
+float4 PS(MeshOutput input) : SV_TARGET
+{   
+    // dot(-LightDir, input.normal) => 내적하여 크기를 구함 (둘다 정규화가 이루어진 벡터라 cos(세타)), 즉 각도에 따른 크기가 발생
+    // R = (input.normal * 법선벡터에 투영된 크기) => 법선 벡터에 위 각도에 따른 크기를 곱하면 법선벡터에 투영된 벡터가 산출된다.
+    // (-LightDir + R) * 2 => 이렇게 되면 투영 벡터를 LightDir에 더하고 2를 곱한 상태가 되므로, LightDir에 2배가 되어 반사식이 이루어 지지않는다.
+    //                     => 우리의 목적은 LightDir의 반전, 법선벡터의 2배이다. LightDir까지 2배 한다는것은 말이 안됨
+    // -LightDir + 2 * R => 이렇게 되면 투영 벡터에 2배를 한값에 순수하게 -LightDir에 더하기 때문에 뒤집어진 반사 방향 벡터가 나온다.
+    float3 R = -LightDir + (2 * input.normal * dot(-LightDir, input.normal));
+    R = normalize(R);
+    // 카메라의 월드상 위치는? View 역행렬 => World => 41,42,43은 Position
+    float3 cameraPosition = InvV._41_42_43;
+    float3 E = normalize(cameraPosition - input.worldPosition);
+    // clamp 0~1
+    float resultDot = saturate(dot(R, E));
+    // 반사광에 대한 극명한 효과를 내주기 위해서 제곱
+    // 잘생각해보면 0~1의 값을 나타내는데 해당 값을 제곱하면 제곱 할수록 점점 작은 값을 내뱉게 되어있다.
+    float specular = pow(resultDot, 10);
+    
+    // 빛, 빛을 받아주는 비율, 각도에따른 값
+    float4 color = LightSpecular * MaterialSpecular * specular;
+    
+    return color;
+}
+technique11 T0
+{
+    PASS_VP(P0, VS, PS)
+    PASS_RS_VP(P1, FillModeWireFrame, VS, PS)
+};
