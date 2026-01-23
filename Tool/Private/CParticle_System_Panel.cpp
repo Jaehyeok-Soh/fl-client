@@ -1,5 +1,6 @@
 #include "CParticle_System_Panel.h"
 #include "GameInstance.h"
+#include "Engine_Utils.h"
 
 CParticle_System_Panel::CParticle_System_Panel(const _char* pLabel, CLevel* pOwner, ID3D11Device* pDevice, ID3D11DeviceContext* pDeviceContext)
 	:CImGui_Panel(pLabel, pOwner, pDevice, pDeviceContext)
@@ -32,6 +33,16 @@ HRESULT CParticle_System_Panel::Render(CToolObject* pGo)
 void CParticle_System_Panel::Time_Calculator(const float fDT)
 {
 	m_fTimeAccumulation += fDT * m_fPlayBackSpeed;
+}
+
+void CParticle_System_Panel::Draw_MeshFileList()
+{
+
+}
+
+void CParticle_System_Panel::Draw_TextureFileList()
+{
+
 }
 
 void CParticle_System_Panel::Draw_Timer()
@@ -235,7 +246,7 @@ void CParticle_System_Panel::Draw_ParticleSystem()
 	static bool Local = false;
 	static bool World = false;
 
-	ImGui::Checkbox("##Local1", &Local); ImGui::SameLine(0, 20.f);
+	ImGui::Checkbox("##Local1", &Local); ImGui::SameLine(0, 40.f);
 	ImGui::Checkbox("##World1", &World); ImGui::Spacing();
 
 	if (Local)
@@ -249,7 +260,6 @@ void CParticle_System_Panel::Draw_ParticleSystem()
 		m_tCurrentDesc._Effect_SimulationType = E_SIMULATION_SPACE::WORLD;
 	}
 
-
 		// Simulation Speed - 전체 이펙트의 재생 속도 배수입니다. 2라면 2배속으로 빠르게 움직입니다.
 		// Delta Time - 시간 계산 방식을 정합니다. 게임 속도에 맞춰진 Scaled 시간인가?
 		// Scaling Mode - 부모 오브젝트의 크기가 변할 때 파티클이 어떻게 반응할지 결정
@@ -257,14 +267,40 @@ void CParticle_System_Panel::Draw_ParticleSystem()
 		// Play On Awake* - 파티클 시스템이 씬에 생성되자마자 즉시 재생될지 여부를 결정한다.
 		// Emitter Velocity Mode - 파티클이 방출될 때, 본체의 속도를 어떻게 계산할지 정합니다.
 		// Max Particles = 동시에 존재할 수 있는 최대 입자 개수. 이 값만큼 iNSTANCE bUFFER의 크기를 잡아두면 성능상 좋음
+
+	ImGui::AlignTextToFramePadding();
+	ImGui::Text("Max Particles");
+	ImGui::Spacing();
+	ImGui::InputInt("##MaxParticles", &m_tCurrentDesc._Effect_MaxParticle, 0);
+	ImGui::Spacing();
+
 		// Auto Random Seed - 난수 Seed를 다르게 생성해서 입자 모양이 랜덤하게 변한다.
 		// Stop Action - 이펙트가 완전히 끝났을 때 해당 오브젝트를 어떻게 처리할지 정한다.
 		// Culling Mode - 카메라 화면 밖에 있을 때 연산을 중단할지 여부를 결정해서 성능을 최적화합니다.
 		// Ring Buffer Mode - 최대 입자 개수가 찼을 때, 가장 오래된 입자를 지우고 새 입자를 만들지 결정한다.
 
+	ImGui::Separator();
+
+	// ============================   Emission   =================================
+	ImGui::Text("Emission");
+
 	// - Emission
 		// Rate Over Time - 1초당 생성할 파티클 개수. AccumulatedTime >= 1.0f / Rate일 때 입자를 생성하는 로직을 짠다.
+
+	ImGui::AlignTextToFramePadding();
+	ImGui::Text("Rate Over Time");
+	ImGui::Spacing();
+	static float RateOverTime = 0.f;
+	ImGui::InputFloat("##RateOverTime", &RateOverTime, 0.f);
+	ImGui::Spacing();
 		// Rate Over Distance - 본체가 이동한 거리에 비례해서 입자를 뿜습니다. 
+
+	ImGui::AlignTextToFramePadding();
+	ImGui::Text("Rate Over Distance");
+	ImGui::Spacing();
+	static float RateOverDistance = 0.f;
+	ImGui::InputFloat("##RateOverDistance", &RateOverDistance, 0.f);
+	ImGui::Spacing();
 
 		// Bursts - 특정 시간에 파티클을 한꺼번에 '확' 터뜨리는 기능입니다.
 			// Time - 시스템 시작 후 몇 초 뒤에 터뜨릴지 정합니다. 
@@ -273,10 +309,70 @@ void CParticle_System_Panel::Draw_ParticleSystem()
 			// Interval : 반복할 때 ㅅ이의 시간 간격입니다.
 			// Probability - 해당 폭발이 일어날 확률(0~1)
 
-
+	// ==========================  Shape  =======================================
 	// - Shape			- 어디서 태어났냐
 		// Shape
 			// 분사 타입별 함수를 만들어서 변수 저장.
+	ImGui::SeparatorText("Shape");
+	ImGui::Text("Shape##Shape_EffectList"); ImGui::SameLine();
+
+	static int EffectNumber = {};
+	if (ImGui::TreeNode("##Effect_List"))
+	{
+		vector<string> m_pShapeList;
+		m_pShapeList.clear();
+
+		m_pShapeList.push_back("Sphere");
+		m_pShapeList.push_back("Hemisphere");
+		m_pShapeList.push_back("Circle");
+		m_pShapeList.push_back("Cone");
+		m_pShapeList.push_back("Box");
+		m_pShapeList.push_back("Mesh");
+
+		std::vector<const char*> iTems;
+		iTems.reserve(static_cast<int>(m_pShapeList.size()));
+
+		for (auto& str : m_pShapeList)
+			iTems.push_back(str.c_str());
+
+		ImGui::ListBox("", &EffectNumber, iTems.data(), static_cast<int>(m_pShapeList.size()), 6);
+
+		if ((iTems.size() - 1) < EffectNumber)
+		{
+			ImGui::TreePop();
+			return;
+		}
+		ImGui::TreePop();
+	}
+
+	switch (EffectNumber)
+	{
+		case 0:
+			m_tCurrentDesc._Effect_ShapeType = E_SHAPETYPE::SPHERE;
+			break;
+		case 1:
+			m_tCurrentDesc._Effect_ShapeType = E_SHAPETYPE::HEMISPHERE;
+			break;
+		case 2:
+			m_tCurrentDesc._Effect_ShapeType = E_SHAPETYPE::CIRCLE;
+			break;
+		case 3:
+			m_tCurrentDesc._Effect_ShapeType = E_SHAPETYPE::CONE;
+			break;
+		case 4:
+			m_tCurrentDesc._Effect_ShapeType = E_SHAPETYPE::BOX;
+			break;
+		case 5:
+			m_tCurrentDesc._Effect_ShapeType = E_SHAPETYPE::MESH;
+			break;
+	}
+
+	// ============   Radius   ============= 
+	ImGui::AlignTextToFramePadding();
+	ImGui::Text("Radius");
+	ImGui::Spacing();
+	ImGui::InputFloat("##Radius", &m_tCurrentDesc._Effect_Radius, 0.f);
+	ImGui::Spacing();
 
 		// Type 
 			// Mode 
@@ -307,6 +403,48 @@ void CParticle_System_Panel::Draw_ParticleSystem()
 
 HRESULT CParticle_System_Panel::EffectPanel_Initialize()
 {
+	if (FAILED(EffectFileResource_Setting()))
+		return E_FAIL;
+
+	return S_OK;
+}
+
+HRESULT CParticle_System_Panel::EffectFileResource_Setting()
+{
+	// depth를 사용하려면 범위 for을 돌리면 안된다. recursive_directory_iterator산하에 있는 함수이다.
+	ResourceFileSearch(E_EFFECT_RESOURCETYPE::TEXTURE, m_sTextureFolderPath);
+	ResourceFileSearch(E_EFFECT_RESOURCETYPE::MESH, m_sMeshFolderPath);
+	
+	return S_OK;
+}
+
+HRESULT CParticle_System_Panel::ResourceFileSearch(E_EFFECT_RESOURCETYPE eType, const string& Path)
+{
+	for (auto iter = std::filesystem::recursive_directory_iterator(Path);
+		iter != std::filesystem::recursive_directory_iterator();
+		++iter)
+	{
+		// 아 여기에 화살표 그으면 되는구나.
+
+		int depth = iter.depth();
+		auto fullpath = iter->path();
+		auto FolderName = iter->path().filename();
+
+		if (iter->is_regular_file())
+		{
+			string m_sFileName = Engine_Utils::GetFileNameFromPath(Engine_Utils::ToString(fullpath));
+
+			switch (eType)
+			{
+				case E_EFFECT_RESOURCETYPE::TEXTURE:
+					m_TextureFileNames.push_back(m_sFileName); break;
+
+				case E_EFFECT_RESOURCETYPE::MESH:
+					m_MeshFileNames.push_back(m_sFileName); break;
+			}
+		}
+	}
+
 	return S_OK;
 }
 

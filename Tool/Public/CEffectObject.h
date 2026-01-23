@@ -34,6 +34,8 @@ enum class E_SHAPETYPE
     HEMISPHERE,
     CONE,
     CIRCLE,
+    BOX,
+    MESH,
 };
 
 enum class E_SIMULATION_SPACE
@@ -105,8 +107,11 @@ public:
         _float      _Effect_StartDelay = { 0.f };
         _float      _Effect_LifeTime = { 0.f };
         _float      _Effect_StartSpeed = { 1.f };
-        _uint       _Effect_MaxParticle = { 100 };
+        int         _Effect_MaxParticle = { 100 };
         _bool       _Effect_BillBoardFlag = { false };
+
+        // ========  ¿Ã∆Â∆Æ Radius  ==========
+        _float      _Effect_Radius = 0.1f;
 
 
     }Effect_Desc;

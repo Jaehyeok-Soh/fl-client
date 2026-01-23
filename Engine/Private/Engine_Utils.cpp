@@ -1,4 +1,6 @@
 #include "Engine_Utils.h"
+#include <fstream>
+#include <filesystem>
 
 _bool Engine_Utils::StartsWith(const string& str, const string& comp)
 {
@@ -54,4 +56,19 @@ wstring Engine_Utils::ToWString(string value)
 string Engine_Utils::ToString(wstring value)
 {
     return string(value.begin(), value.end());
+}
+
+
+string Engine_Utils::GetFileNameFromPath(const string& filePath)
+{
+    std::filesystem::path path(filePath);
+
+    return path.filename().string();
+}
+
+string Engine_Utils::GetFileNameWithoutExtension(const string& filePath)
+{
+    std::filesystem::path path(filePath);
+
+    return path.stem().string();
 }
