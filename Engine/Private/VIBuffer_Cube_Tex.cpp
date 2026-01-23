@@ -36,31 +36,31 @@ HRESULT CVIBuffer_Cube_Tex::Initialize_Prototype(void* pArg)
     VTXCUBE* pVertices = new VTXCUBE[m_iVertexCount];
     ZeroMemory(pVertices, sizeof(VTXCUBE) * m_iVertexCount);
 
-    m_pVertexPositions = new _float3[m_iVertexCount];
-    ZeroMemory(m_pVertexPositions, sizeof(_float3) * m_iVertexCount);
+    m_pVertexPositions = new Vec3[m_iVertexCount];
+    ZeroMemory(m_pVertexPositions, sizeof(Vec3) * m_iVertexCount);
 
-    m_pVertexPositions[0] = pVertices[0].vPosition = _float3(-0.5f, 0.5f, -0.5f);
+    m_pVertexPositions[0] = pVertices[0].vPosition = Vec3(-0.5f, 0.5f, -0.5f);
     pVertices[0].vTexcoord = m_pVertexPositions[0];
 
-    m_pVertexPositions[1] = pVertices[1].vPosition = _float3(0.5f, 0.5f, -0.5f);
+    m_pVertexPositions[1] = pVertices[1].vPosition = Vec3(0.5f, 0.5f, -0.5f);
     pVertices[1].vTexcoord = m_pVertexPositions[1];
 
-    m_pVertexPositions[2] = pVertices[2].vPosition = _float3(0.5f, -0.5f, -0.5f);
+    m_pVertexPositions[2] = pVertices[2].vPosition = Vec3(0.5f, -0.5f, -0.5f);
     pVertices[2].vTexcoord = m_pVertexPositions[2];
 
-    m_pVertexPositions[3] = pVertices[3].vPosition = _float3(-0.5f, -0.5f, -0.5f);
+    m_pVertexPositions[3] = pVertices[3].vPosition = Vec3(-0.5f, -0.5f, -0.5f);
     pVertices[3].vTexcoord = m_pVertexPositions[3];
 
-    m_pVertexPositions[4] = pVertices[4].vPosition = _float3(-0.5f, 0.5f, 0.5f);
+    m_pVertexPositions[4] = pVertices[4].vPosition = Vec3(-0.5f, 0.5f, 0.5f);
     pVertices[4].vTexcoord = m_pVertexPositions[4];
 
-    m_pVertexPositions[5] = pVertices[5].vPosition = _float3(0.5f, 0.5f, 0.5f);
+    m_pVertexPositions[5] = pVertices[5].vPosition = Vec3(0.5f, 0.5f, 0.5f);
     pVertices[5].vTexcoord = m_pVertexPositions[5];
 
-    m_pVertexPositions[6] = pVertices[6].vPosition = _float3(0.5f, -0.5f, 0.5f);
+    m_pVertexPositions[6] = pVertices[6].vPosition = Vec3(0.5f, -0.5f, 0.5f);
     pVertices[6].vTexcoord = m_pVertexPositions[6];
 
-    m_pVertexPositions[7] = pVertices[7].vPosition = _float3(-0.5f, -0.5f, 0.5f);
+    m_pVertexPositions[7] = pVertices[7].vPosition = Vec3(-0.5f, -0.5f, 0.5f);
     pVertices[7].vTexcoord = m_pVertexPositions[7];
 
     for (_uint i = 0; i < m_iVertexCount; ++i)

@@ -9,28 +9,26 @@ CPicking::CPicking(HWND hWnd)
 	Safe_AddRef(m_pGameInstance);
 }
 
-void CPicking::Update(const _float4& _vNDC)
+void CPicking::Update(const Vec4& _vNDC)
 {
-	_vector vNDC = ::XMLoadFloat4(&_vNDC);
+	Vec4 vNDC = _vNDC;
 
 	// 뷰 스페이스 좌표
-	_matrix		matInvProj = ::XMLoadFloat4x4(&m_pGameInstance->Get_ProjMatrix());
-	matInvProj = ::XMMatrixInverse(nullptr, matInvProj);
-	vNDC = ::XMVector3TransformCoord(vNDC, matInvProj);
+	Matrix matInvProj = m_pGameInstance->Get_ProjMatrix().Invert();
+	vNDC = Vec4::Transform(vNDC, matInvProj);
 
 	// 뷰스페이스 상의 마우스 레이와 레이 위치
-	_vector vRayPos = ::XMVectorSet(0.f, 0.f, 0.f, 1.f);
-	_vector vRayDir = ::XMVector3Normalize(vNDC - vRayPos);
+	Vec3 vRayPos = Vec3::Zero;
+	Vec3 vRayDir = vNDC - vRayPos;
 
 	// 월드 스페이스 상의 마우스 레이와 레이 위치
-	_matrix		matInvView = ::XMLoadFloat4x4(&m_pGameInstance->Get_ViewMatrix());
-	matInvView = ::XMMatrixInverse(nullptr, matInvView);
-	vRayPos = ::XMVector3TransformCoord(vRayPos, matInvView);
-	vRayDir = ::XMVector3TransformNormal(vRayDir, matInvView);
-	vRayDir = ::XMVector3Normalize(vRayDir);
+	Matrix matInvView = m_pGameInstance->Get_ViewMatrix().Invert();
+	vRayPos = Vec3::Transform(vRayPos, matInvView);
+	vRayDir = Vec3::TransformNormal(vRayDir, matInvView);
+	vRayDir.Normalize();
 
-	::XMStoreFloat4(&m_vRayPos, vRayPos);
-	::XMStoreFloat3(&m_vRayDir, vRayDir);
+	m_vRayPos = vRayPos;
+	m_vRayDir = vRayDir;
 }
 
 void CPicking::Update(const _float fWinCX, const _float fWinCY)
@@ -41,130 +39,128 @@ void CPicking::Update(const _float fWinCX, const _float fWinCY)
 
 	::ScreenToClient(m_hWnd, &ptMouse);
 
-	// 투영 마우스 좌표 
-	_vector			vMousePos = { 0.f, 0.f, 0.f, 1.f };
-	::XMVectorSet(
+	// TODO - 피킹 이상하면 여기
+	// 투영 마우스 좌표
+	//Vec4			vMousePos = { 0.f, 0.f, 0.f, 1.f };
+	Vec4			vMousePos =
+		::XMVectorSet(
 		_float(ptMouse.x / (fWinCX * 0.5f) - 1),
 		_float(ptMouse.y / (fWinCY * -0.5f) + 1),
 		0.f,
 		1.f);
+	
 
 	// 뷰 스페이스 좌표
-	_matrix		matInvProj = ::XMLoadFloat4x4(&m_pGameInstance->Get_ProjMatrix());
-	matInvProj = ::XMMatrixInverse(nullptr, matInvProj);
-	vMousePos = ::XMVector3TransformCoord(vMousePos, matInvProj);
+	Matrix		matInvProj = m_pGameInstance->Get_ProjMatrix().Invert();
+	vMousePos = Vec4::Transform(vMousePos, matInvProj);
 
 	// 뷰스페이스 상의 마우스 레이와 레이 위치
-	_vector vRayPos = ::XMVectorSet(0.f, 0.f, 0.f, 1.f);
-	_vector vRayDir = ::XMVector3Normalize(vMousePos - vRayPos);
+	Vec3 vRayPos = Vec3::Zero;
+	Vec3 vRayDir = vMousePos - vRayPos;
+	vRayDir.Normalize();
 
 	// 월드 스페이스 상의 마우스 레이와 레이 위치
-	_matrix		matInvView = ::XMLoadFloat4x4(&m_pGameInstance->Get_ViewMatrix());
-	matInvView = ::XMMatrixInverse(nullptr, matInvView);
-	vRayPos = ::XMVector3TransformCoord(vRayPos, matInvView);
-	vRayDir = ::XMVector3TransformNormal(vRayDir, matInvView);
-	vRayDir = ::XMVector3Normalize(vRayDir);
+	Matrix matInvView = m_pGameInstance->Get_ViewMatrix().Invert();
+	vRayPos = Vec3::Transform(vRayPos, matInvView);
+	vRayDir = Vec3::TransformNormal(vRayDir, matInvView);
+	vRayDir.Normalize();
 
-	::XMStoreFloat4(&m_vRayPos, vRayPos);
-	::XMStoreFloat3(&m_vRayDir, vRayDir);
+	m_vRayPos = vRayPos;
+	m_vRayDir = vRayDir;
 }
 
 //bool    XM_CALLCONV     Intersects(_In_ FXMVECTOR Origin, _In_ FXMVECTOR Direction, _In_ FXMVECTOR V0, _In_ GXMVECTOR V1, _In_ HXMVECTOR V2, _Out_ float& Dist) noexcept;
 
-void CPicking::TransformRayToLocalSpace(const _float4x4& matInvWorld)
+void CPicking::TransformRayToLocalSpace(const Matrix& matInvWorld)
 {
-	::XMStoreFloat4(&m_vRayPos_Local, ::XMVector3TransformCoord(::XMLoadFloat4(&m_vRayPos), ::XMLoadFloat4x4(&matInvWorld)));
-	::XMStoreFloat3(&m_vRayDir_Local, ::XMVector3TransformNormal(::XMLoadFloat3(&m_vRayDir), ::XMLoadFloat4x4(&matInvWorld)));
-	::XMStoreFloat3(&m_vRayDir_Local, ::XMVector3Normalize(::XMLoadFloat3(&m_vRayDir_Local)));
+	m_vRayPos_Local = Vec3::Transform(m_vRayPos, matInvWorld);
+	m_vRayDir_Local = Vec3::TransformNormal(m_vRayDir, matInvWorld);
+	m_vRayDir_Local.Normalize();
 }
 
-_bool CPicking::IntersectrayWithTriangle_World(const _float3& vPointA, const _float3& vPointB, const _float3& vPointC, OUT _float4& vOut)
+_bool CPicking::IntersectrayWithTriangle_World(const Vec3& vPointA, const Vec3& vPointB, const Vec3& vPointC, OUT Vec3& vOut)
 {
 	_float fDist = {};
-	if (true == TriangleTests::Intersects(::XMLoadFloat4(&m_vRayPos), ::XMLoadFloat3(&m_vRayDir),
-		::XMLoadFloat3(&vPointA), ::XMLoadFloat3(&vPointB), ::XMLoadFloat3(&vPointC),
-		fDist))
+	if (true == TriangleTests::Intersects(m_vRayPos, m_vRayDir, vPointA, vPointB, vPointC, fDist))
 	{
-		::XMStoreFloat4(&vOut, ::XMLoadFloat4(&m_vRayPos) + ::XMLoadFloat3(&m_vRayDir) * fDist);
+		vOut = m_vRayPos + m_vRayDir * fDist;
 		return true;
 	}
 	return false;
 }
 
-_bool CPicking::IntersectrayWithTriangle_Local(const _float3& vPointA, const _float3& vPointB, const _float3& vPointC, OUT _float4& vOut)
+_bool CPicking::IntersectrayWithTriangle_Local(const Vec3& vPointA, const Vec3& vPointB, const Vec3& vPointC, OUT Vec3& vOut)
 {
 	_float fDist = {};
-	if (true == TriangleTests::Intersects(::XMLoadFloat4(&m_vRayPos_Local), ::XMLoadFloat3(&m_vRayDir_Local),
-		::XMLoadFloat3(&vPointA), ::XMLoadFloat3(&vPointB), ::XMLoadFloat3(&vPointC),
-		fDist))
+	if (true == TriangleTests::Intersects(m_vRayPos_Local, m_vRayDir_Local, vPointA, vPointB, vPointC, fDist))
 	{
-		::XMStoreFloat4(&vOut, ::XMLoadFloat4(&m_vRayPos_Local) + ::XMLoadFloat3(&m_vRayDir_Local) * fDist);
+		vOut = m_vRayPos_Local + m_vRayDir_Local * fDist;
 		return true;
 	}
 	return false;
 }
 
-_bool CPicking::IntersectrayWithAABB_World(BoundingBox* pDesc, OUT _float4& vOut)
+_bool CPicking::IntersectrayWithAABB_World(BoundingBox* pDesc, OUT Vec3& vOut)
 {
 	_float fDist = {};
-	if (pDesc->Intersects(::XMLoadFloat4(&m_vRayPos), ::XMLoadFloat3(&m_vRayDir), fDist))
+	if (pDesc->Intersects(m_vRayPos, m_vRayDir, fDist))
 	{
-		::XMStoreFloat4(&vOut, ::XMLoadFloat4(&m_vRayPos) + ::XMLoadFloat3(&m_vRayDir) * fDist);
+		vOut = m_vRayPos + m_vRayDir * fDist;
 		return true;
 	}
 	return false;
 }
 
-_bool CPicking::IntersectrayWithAABB_Local(BoundingBox* pOriginDesc, OUT _float4& vOut)
+_bool CPicking::IntersectrayWithAABB_Local(BoundingBox* pOriginDesc, OUT Vec3& vOut)
 {
 	_float fDist = {};
-	if (pOriginDesc->Intersects(::XMLoadFloat4(&m_vRayPos_Local), ::XMLoadFloat3(&m_vRayDir_Local), fDist))
+	if (pOriginDesc->Intersects(m_vRayPos_Local, m_vRayDir_Local, fDist))
 	{
-		::XMStoreFloat4(&vOut, ::XMLoadFloat4(&m_vRayPos_Local) + ::XMLoadFloat3(&m_vRayDir_Local) * fDist);
+		vOut = m_vRayPos_Local + m_vRayDir_Local * fDist;
 		return true;
 	}
 	return false;
 }
 
-_bool CPicking::IntersectrayWithOBB_World(BoundingOrientedBox* pDesc, OUT _float4& vOut)
+_bool CPicking::IntersectrayWithOBB_World(BoundingOrientedBox* pDesc, OUT Vec3& vOut)
 {
 	_float fDist = {};
-	if (pDesc->Intersects(::XMLoadFloat4(&m_vRayPos), ::XMLoadFloat3(&m_vRayDir), fDist))
+	if (pDesc->Intersects(m_vRayPos, m_vRayDir, fDist))
 	{
-		::XMStoreFloat4(&vOut, ::XMLoadFloat4(&m_vRayPos) + ::XMLoadFloat3(&m_vRayDir) * fDist);
+		vOut = m_vRayPos + m_vRayDir * fDist;
 		return true;
 	}
 	return false;
 }
 
-_bool CPicking::IntersectrayWithOBB_Local(BoundingOrientedBox* pOriginDesc, OUT _float4& vOut)
+_bool CPicking::IntersectrayWithOBB_Local(BoundingOrientedBox* pOriginDesc, OUT Vec3& vOut)
 {
 	_float fDist = {};
-	if (pOriginDesc->Intersects(::XMLoadFloat4(&m_vRayPos_Local), ::XMLoadFloat3(&m_vRayDir_Local), fDist))
+	if (pOriginDesc->Intersects(m_vRayPos_Local, m_vRayDir_Local, fDist))
 	{
-		::XMStoreFloat4(&vOut, ::XMLoadFloat4(&m_vRayPos_Local) + ::XMLoadFloat3(&m_vRayDir_Local) * fDist);
+		vOut = m_vRayPos_Local + m_vRayDir_Local * fDist;
 		return true;
 	}
 	return false;
 }
 
-_bool CPicking::IntersectrayWithSphere_World(BoundingSphere* pDesc, OUT _float4& vOut)
+_bool CPicking::IntersectrayWithSphere_World(BoundingSphere* pDesc, OUT Vec3& vOut)
 {
 	_float fDist = {};
-	if (pDesc->Intersects(::XMLoadFloat4(&m_vRayPos), ::XMLoadFloat3(&m_vRayDir), fDist))
+	if (pDesc->Intersects(m_vRayPos, m_vRayDir, fDist))
 	{
-		::XMStoreFloat4(&vOut, ::XMLoadFloat4(&m_vRayPos) + ::XMLoadFloat3(&m_vRayDir) * fDist);
+		vOut = m_vRayPos + m_vRayDir * fDist;
 		return true;
 	}
 	return false;
 }
 
-_bool CPicking::IntersectrayWithSphere_Local(BoundingSphere* pOriginDesc, OUT _float4& vOut)
+_bool CPicking::IntersectrayWithSphere_Local(BoundingSphere* pOriginDesc, OUT Vec3& vOut)
 {
 	_float fDist = {};
-	if (pOriginDesc->Intersects(::XMLoadFloat4(&m_vRayPos_Local), ::XMLoadFloat3(&m_vRayDir_Local), fDist))
+	if (pOriginDesc->Intersects(m_vRayPos_Local, m_vRayDir_Local, fDist))
 	{
-		::XMStoreFloat4(&vOut, ::XMLoadFloat4(&m_vRayPos_Local) + ::XMLoadFloat3(&m_vRayDir_Local) * fDist);
+		vOut = m_vRayPos_Local + m_vRayDir_Local * fDist;
 		return true;
 	}
 	return false;

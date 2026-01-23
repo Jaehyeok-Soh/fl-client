@@ -70,7 +70,7 @@ void CBody::Update(_float fTimeDelta)
 	Super::Update(fTimeDelta);
 	Get_Component<CModel>()->Update_Animation(fTimeDelta);
 	if(CCollider* pCollider = Get_Component<CCollider>())
-		pCollider->Update(::XMLoadFloat4x4(&m_matCombinedWorld));
+		pCollider->Update(m_matCombinedWorld);
 }
 
 void CBody::Update_Late(_float fTimeDelta)
@@ -144,21 +144,21 @@ HRESULT CBody::Render()
 	return S_OK;
 }
 
-const _float4x4* CBody::Get_SocketMatrix(const _char* szBoneName)
+const Matrix* CBody::Get_SocketMatrix(const _char* szBoneName)
 {
 	if (CBone* pReturn = Get_Component<CModel>()->Get_Bone(szBoneName))
 	{
-		return &pReturn->Get_CombinedTransformMatrixFloat();
+		return &pReturn->Get_CombinedTransformMatrix();
 	}
 
 	return nullptr;
 }
 
-const _float4x4* CBody::Get_SocketMatrix(_uint iIndex)
+const Matrix* CBody::Get_SocketMatrix(_uint iIndex)
 {
 	if (CBone* pReturn = Get_Component<CModel>()->Get_Bone(iIndex))
 	{
-		return &pReturn->Get_CombinedTransformMatrixFloat();
+		return &pReturn->Get_CombinedTransformMatrix();
 	}
 
 	return nullptr;

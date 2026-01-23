@@ -13,7 +13,7 @@ private:
 
 public:
 	HRESULT Initialize(const _tchar* pFontFilePath);
-	HRESULT Draw_Text(SpriteBatch* pBatch, const _tchar* pText, const _float2& vPosition, _fvector vColor);
+	HRESULT Draw_Text(SpriteBatch* pBatch, const _tchar* pText, const Vec2& vPosition, const Vec4 &vColor);
 
 private:
 	ID3D11Device* m_pDevice = { nullptr };

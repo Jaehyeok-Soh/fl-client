@@ -142,10 +142,10 @@ HRESULT CLevel_Effect::Ready_Lights()
 	{
 		LIGHT_DESC desc = {};
 		desc.eType = LIGHT_TYPE::DIRECTIONAL;
-		desc.vDirection = _float3(1.f, -1.f, 1.f);
-		desc.vDiffuse = _float4(1.f, 1.f, 1.f, 1.f);
-		desc.vAmbient = _float4(1.f, 1.f, 1.f, 1.f);
-		desc.vSpecular = _float4(1.f, 1.f, 1.f, 1.f);
+		desc.vDirection = Vec3(1.f, -1.f, 1.f);
+		desc.vDiffuse = Vec4(1.f, 1.f, 1.f, 1.f);
+		desc.vAmbient = Vec4(1.f, 1.f, 1.f, 1.f);
+		desc.vSpecular = Vec4(1.f, 1.f, 1.f, 1.f);
 
 		if (FAILED(m_pGameInstance->Add_Light(desc)))
 			return E_FAIL;

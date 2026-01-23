@@ -51,7 +51,7 @@ public:
 #pragma region ENGINE
 	HRESULT					Initialize_Engine(const ENGINE_DESC& Engine_Desc, _Inout_ ID3D11Device** ppDevice, _Inout_ ID3D11DeviceContext** ppContext);
 	void					Update_Engine(_float fTimeDelta);
-	HRESULT					Draw_Begin(const _float4* pClearColor);
+	HRESULT					Draw_Begin(const Vec4* pClearColor);
 	HRESULT					Draw();
 	HRESULT					Draw_End();
 	HRESULT					Resize_Viewport(D3D11_VIEWPORT viewport);
@@ -61,17 +61,17 @@ public:
 #pragma endregion
 
 #pragma region PICKING
-	void					PickingUpdate_ForTool(const _float4& _vNDC);
+	void					PickingUpdate_ForTool(const Vec4& _vNDC);
 	void					PickingUpdate(const _float fWinCX, const _float fWinCY);
-	void					TransformRayToLocalSpace(const _float4x4& matInvWorld);
-	_bool					IntersectrayWithTriangle_World(const _float3& vPointA, const _float3& vPointB, const _float3& vPointC, OUT _float4& vOut);
-	_bool					IntersectrayWithTriangle_Local(const _float3& vPointA, const _float3& vPointB, const _float3& vPointC, OUT _float4& vOut);
-	_bool					IntersectrayWithAABB_World(BoundingBox* pDesc, OUT _float4& vOut);
-	_bool					IntersectrayWithAABB_Local(BoundingBox* pOriginDesc, OUT _float4& vOut);
-	_bool					IntersectrayWithOBB_World(BoundingOrientedBox* pDesc, OUT _float4& vOut);
-	_bool					IntersectrayWithOBB_Local(BoundingOrientedBox* pOriginDesc, OUT _float4& vOut);
-	_bool					IntersectrayWithSphere_World(BoundingSphere* pDesc, OUT _float4& vOut);
-	_bool					IntersectrayWithSphere_Local(BoundingSphere* pOriginDesc, OUT _float4& vOut);
+	void					TransformRayToLocalSpace(const Matrix& matInvWorld);
+	_bool					IntersectrayWithTriangle_World(const Vec3& vPointA, const Vec3& vPointB, const Vec3& vPointC, OUT Vec3& vOut);
+	_bool					IntersectrayWithTriangle_Local(const Vec3& vPointA, const Vec3& vPointB, const Vec3& vPointC, OUT Vec3& vOut);
+	_bool					IntersectrayWithAABB_World(BoundingBox* pDesc, OUT Vec3& vOut);
+	_bool					IntersectrayWithAABB_Local(BoundingBox* pOriginDesc, OUT Vec3& vOut);
+	_bool					IntersectrayWithOBB_World(BoundingOrientedBox* pDesc, OUT Vec3& vOut);
+	_bool					IntersectrayWithOBB_Local(BoundingOrientedBox* pOriginDesc, OUT Vec3& vOut);
+	_bool					IntersectrayWithSphere_World(BoundingSphere* pDesc, OUT Vec3& vOut);
+	_bool					IntersectrayWithSphere_Local(BoundingSphere* pOriginDesc, OUT Vec3& vOut);
 #pragma endregion
 
 #pragma region LEVEL_MANAGER
@@ -132,12 +132,12 @@ public:
 	void Remove_Actor_Object(CGameObject* pGo);
 	void Change_Target(CGameObject* pGo);
 	HRESULT Change_Target_Next();
-	const _float4x4& Get_ViewMatrix() const;
-	void Set_ViewMatrix(_fmatrix matView);
-	const _float4x4& Get_ProjMatrix() const;
-	void Set_ProjMatrix(_fmatrix matProj);
-	const _float4x4& Get_UI_ViewMatrix() const;
-	const _float4x4& Get_UI_ProjMatrix() const;
+	const Matrix& Get_ViewMatrix() const;
+	void Set_ViewMatrix(Matrix matView);
+	const Matrix& Get_ProjMatrix() const;
+	void Set_ProjMatrix(Matrix matProj);
+	const Matrix& Get_UI_ViewMatrix() const;
+	const Matrix& Get_UI_ProjMatrix() const;
 	ID3D11Buffer* Get_Global_ConstantBuffer();
 	ID3D11Buffer* Get_Inv_ConstantBuffer();
 	void Setup_ViewProj_ToCBuffer();
@@ -203,7 +203,7 @@ public:
 
 #pragma region FONT_MANAGER
 	HRESULT Add_Font(const _wstring& strFontTag, const _tchar* pFontFilePath);
-	HRESULT Draw_Text(const _wstring& strFontTag, const _tchar* pText, const _float2& vPosition, _fvector vColor = XMVectorSet(1.f, 1.f, 1.f, 1.f));
+	HRESULT Draw_Text(const _wstring& strFontTag, const _tchar* pText, const Vec2& vPosition, Vec4 vColor = Vec4(1.f, 1.f, 1.f, 1.f));
 #pragma endregion
 
 #pragma region EVENTBUS_MANAGER

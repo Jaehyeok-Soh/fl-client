@@ -21,7 +21,7 @@ public:
 		wstring wstrBodyModelTag = { L"" };
 		wstring wstrNavigationPrototypeTag = { L"" };
 		_int iNavigationCellIndex = { -1 };
-		_float3 vSpawnPosition = {};
+		Vec3 vSpawnPosition = {};
 	}PLAYER_DESC;
 	enum Part : _uint
 	{
@@ -58,7 +58,6 @@ public:
 	virtual HRESULT Render() override;
 	virtual _int Get_AnimationIndex(const wstring& wstrName) override;
 private:
-	_vector Get_Dir(EDir eDir);
 	HRESULT Ready_BaseStates();
 	HRESULT Ready_PartObjects(PLAYER_DESC* pDesc);
 	HRESULT Ready_Components(PLAYER_DESC* pDesc);

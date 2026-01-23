@@ -104,8 +104,8 @@ HRESULT CVIBuffer_Terrain::Set_HeightMapTerrain(const _tchar* pHeightFileMapPath
     VTXNORTEX* pVertices = new VTXNORTEX[m_iVertexCount];
     ZeroMemory(pVertices, sizeof(VTXNORTEX) * m_iVertexCount);
 
-    m_pVertexPositions = new _float3[m_iVertexCount];
-    ZeroMemory(m_pVertexPositions, sizeof(_float3) * m_iVertexCount);
+    m_pVertexPositions = new Vec3[m_iVertexCount];
+    ZeroMemory(m_pVertexPositions, sizeof(Vec3) * m_iVertexCount);
 
     for (_uint i = 0; i < m_iRow_VerticesCount; i++)
     {
@@ -113,9 +113,9 @@ HRESULT CVIBuffer_Terrain::Set_HeightMapTerrain(const _tchar* pHeightFileMapPath
         {
             _uint       iIndex = i * m_iCol_VerticesCount + j;
 
-            m_pVertexPositions[iIndex] = pVertices[iIndex].vPosition = _float3((_float)j, (pPixels[iIndex] & 0x000000ff) / m_fHeightRatio, (_float)i);
-            pVertices[iIndex].vNormal = _float3(0.f, 0.f, 0.f);
-            pVertices[iIndex].vUV = _float2(j / (m_iCol_VerticesCount - 1.f), i / (m_iRow_VerticesCount - 1.f));
+            m_pVertexPositions[iIndex] = pVertices[iIndex].vPosition = Vec3((_float)j, (pPixels[iIndex] & 0x000000ff) / m_fHeightRatio, (_float)i);
+            pVertices[iIndex].vNormal = Vec3(0.f, 0.f, 0.f);
+            pVertices[iIndex].vUV = Vec2(j / (m_iCol_VerticesCount - 1.f), i / (m_iRow_VerticesCount - 1.f));
         }
     }
 
@@ -149,50 +149,39 @@ HRESULT CVIBuffer_Terrain::Set_HeightMapTerrain(const _tchar* pHeightFileMapPath
                 iIndex
             };
 
-            _vector     vSour, vDest, vNormal;
+            Vec3     vSour, vDest, vNormal;
 
             pIndices[iNumIndices++] = iIndices[0];
             pIndices[iNumIndices++] = iIndices[1];
             pIndices[iNumIndices++] = iIndices[2];
 
-            vSour = ::XMLoadFloat3(&pVertices[iIndices[1]].vPosition) - ::XMLoadFloat3(&pVertices[iIndices[0]].vPosition);
-            vDest = ::XMLoadFloat3(&pVertices[iIndices[2]].vPosition) - ::XMLoadFloat3(&pVertices[iIndices[1]].vPosition);
+            
+            vSour = pVertices[iIndices[1]].vPosition - pVertices[iIndices[0]].vPosition;
+            vDest = pVertices[iIndices[2]].vPosition - pVertices[iIndices[1]].vPosition;
+            vNormal = vSour.Cross(vDest);
+            vNormal.Normalize();
 
-            vNormal = ::XMVector3Normalize(::XMVector3Cross(vSour, vDest));
-
-            ::XMStoreFloat3(&pVertices[iIndices[0]].vNormal,
-                ::XMLoadFloat3(&pVertices[iIndices[0]].vNormal) + vNormal);
-            ::XMStoreFloat3(&pVertices[iIndices[1]].vNormal,
-                ::XMLoadFloat3(&pVertices[iIndices[1]].vNormal) + vNormal);
-            ::XMStoreFloat3(&pVertices[iIndices[2]].vNormal,
-                ::XMLoadFloat3(&pVertices[iIndices[2]].vNormal) + vNormal);
-
+            pVertices[iIndices[0]].vNormal += vNormal;
+            pVertices[iIndices[1]].vNormal += vNormal;
+            pVertices[iIndices[2]].vNormal += vNormal;
 
             pIndices[iNumIndices++] = iIndices[0];
             pIndices[iNumIndices++] = iIndices[2];
             pIndices[iNumIndices++] = iIndices[3];
 
+            vSour = pVertices[iIndices[2]].vPosition - pVertices[iIndices[0]].vPosition;
+            vDest = pVertices[iIndices[3]].vPosition - pVertices[iIndices[2]].vPosition;
+            vNormal = vSour.Cross(vDest);
+            vNormal.Normalize();
 
-            vSour = ::XMLoadFloat3(&pVertices[iIndices[2]].vPosition) - ::XMLoadFloat3(&pVertices[iIndices[0]].vPosition);
-            vDest = ::XMLoadFloat3(&pVertices[iIndices[3]].vPosition) - ::XMLoadFloat3(&pVertices[iIndices[2]].vPosition);
-
-            vNormal = ::XMVector3Normalize(::XMVector3Cross(vSour, vDest));
-
-            ::XMStoreFloat3(&pVertices[iIndices[0]].vNormal,
-                ::XMLoadFloat3(&pVertices[iIndices[0]].vNormal) + vNormal);
-            ::XMStoreFloat3(&pVertices[iIndices[2]].vNormal,
-                ::XMLoadFloat3(&pVertices[iIndices[2]].vNormal) + vNormal);
-            ::XMStoreFloat3(&pVertices[iIndices[3]].vNormal,
-                ::XMLoadFloat3(&pVertices[iIndices[3]].vNormal) + vNormal);
-
+            pVertices[iIndices[0]].vNormal += vNormal;
+            pVertices[iIndices[2]].vNormal += vNormal;
+            pVertices[iIndices[3]].vNormal += vNormal;
         }
     }
 
     for (size_t i = 0; i < m_iVertexCount; i++)
-    {
-        ::XMStoreFloat3(&pVertices[i].vNormal,
-            ::XMVector3Normalize(::XMLoadFloat3(&pVertices[i].vNormal)));
-    }
+        pVertices[i].vNormal.Normalize();
 
 #pragma endregion
 
@@ -240,8 +229,8 @@ HRESULT CVIBuffer_Terrain::Set_DefaultTerrain()
     VTXNORTEX* pVertices = new VTXNORTEX[m_iVertexCount];
     ZeroMemory(pVertices, sizeof(VTXNORTEX) * m_iVertexCount);
 
-    m_pVertexPositions = new _float3[m_iVertexCount];
-    ZeroMemory(m_pVertexPositions, sizeof(_float3) * m_iVertexCount);
+    m_pVertexPositions = new Vec3[m_iVertexCount];
+    ZeroMemory(m_pVertexPositions, sizeof(Vec3) * m_iVertexCount);
 
     for (_uint i = 0; i < m_iRow_VerticesCount; i++)
     {
@@ -249,9 +238,9 @@ HRESULT CVIBuffer_Terrain::Set_DefaultTerrain()
         {
             _uint       iIndex = i * m_iCol_VerticesCount + j;
 
-            m_pVertexPositions[iIndex] = pVertices[iIndex].vPosition = _float3((_float)j, 0.f, (_float)i);
-            pVertices[iIndex].vNormal = _float3(0.f, 1.f, 0.f);
-            pVertices[iIndex].vUV = _float2(j / (m_iCol_VerticesCount - 1.f), i / (m_iRow_VerticesCount - 1.f));
+            m_pVertexPositions[iIndex] = pVertices[iIndex].vPosition = Vec3((_float)j, 0.f, (_float)i);
+            pVertices[iIndex].vNormal = Vec3(0.f, 1.f, 0.f);
+            pVertices[iIndex].vUV = Vec2(j / (m_iCol_VerticesCount - 1.f), i / (m_iRow_VerticesCount - 1.f));
         }
     }
 #pragma endregion
@@ -331,9 +320,9 @@ HRESULT CVIBuffer_Terrain::Resize_Default()
             {
                 _uint       iIndex = i * m_iCol_VerticesCount + j;
 
-                m_pVertexPositions[iIndex] = pVertices[iIndex].vPosition = _float3((_float)j, 0.f, (_float)i);
-                pVertices[iIndex].vNormal = _float3(0.f, 1.f, 0.f);
-                pVertices[iIndex].vUV = _float2(j / (m_iCol_VerticesCount - 1.f), i / (m_iRow_VerticesCount - 1.f));
+                m_pVertexPositions[iIndex] = pVertices[iIndex].vPosition = Vec3((_float)j, 0.f, (_float)i);
+                pVertices[iIndex].vNormal = Vec3(0.f, 1.f, 0.f);
+                pVertices[iIndex].vUV = Vec2(j / (m_iCol_VerticesCount - 1.f), i / (m_iRow_VerticesCount - 1.f));
             }
         }
 

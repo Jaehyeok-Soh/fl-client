@@ -49,7 +49,7 @@ HRESULT CLevel_Manager::Render()
 	return S_OK;
 }
 
-const _float4& CLevel_Manager::Get_ClearColor() const
+const Vec4& CLevel_Manager::Get_ClearColor() const
 {
 	return m_pCurrentLevel->Get_ClearColor();
 }

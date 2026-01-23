@@ -20,14 +20,14 @@ _bool CPicking_ToolManager::Picking()
 		return false;
 
 	vector<CToolObject*> vecPicked;
-	vector<_float4> vecPos;
+	vector<Vec3> vecPos;
 
 	for (auto it = m_PickingList.begin(); it != m_PickingList.end(); )
 	{
 		CToolObject* obj = *it;
 		if (!obj) { it = m_PickingList.erase(it); continue; }
 
-		_float4 hitW;
+		Vec3 hitW;
 		if (obj->Picking(hitW)) {
 			vecPicked.push_back(obj);
 			vecPos.push_back(hitW);
@@ -39,14 +39,13 @@ _bool CPicking_ToolManager::Picking()
 		CGameInstance::GetInstance()->Broadcast<ChangeSelectedObject>(nullptr);
 		return false;
 	}
-	const _float4x4& matView = CGameInstance::GetInstance()->Get_ViewMatrix();
+	const Matrix& matView = CGameInstance::GetInstance()->Get_ViewMatrix();
 
 	int best = -1;
 	float bestZ = FLT_MAX;
 	for (int i = 0; i < (int)vecPos.size(); ++i)
 	{
-		_float3 vEye;
-		::XMStoreFloat3(&vEye, ::XMVector3TransformCoord(::XMLoadFloat4(&vecPos[i]), ::XMLoadFloat4x4(&matView)));
+		Vec3 vEye = Vec3::Transform(vecPos[i], matView);
 		if (vEye.z > 0.f && vEye.z < bestZ) { bestZ = vEye.z; best = i; }
 	}
 	if (best < 0)
@@ -102,14 +101,14 @@ _bool CPicking_ToolManager::Picking_ForDummy()
 	if (CImGui_ToolManager::GetInstance()->IsOutofViewport()) return FALSE;
 
 	vector<CToolObject*> vecPicked;
-	vector<_float4> vecPos;
+	vector<Vec3> vecPos;
 
 	for (auto it = m_PickingList.begin(); it != m_PickingList.end(); )
 	{
 		CToolObject* obj = *it;
 		if (!obj) { it = m_PickingList.erase(it); continue; }
 
-		_float4 hitW;
+		Vec3 hitW;
 		if (obj->Picking(hitW)) {
 			vecPicked.push_back(obj);
 			vecPos.push_back(hitW);
@@ -119,14 +118,13 @@ _bool CPicking_ToolManager::Picking_ForDummy()
 	if (vecPicked.empty())
 		return false;
 
-	const _float4x4& matView = CGameInstance::GetInstance()->Get_ViewMatrix();
+	const Matrix& matView = CGameInstance::GetInstance()->Get_ViewMatrix();
 
 	int best = -1;
 	float bestZ = FLT_MAX;
 	for (int i = 0; i < (int)vecPos.size(); ++i)
 	{
-		_float3 vEye;
-		::XMStoreFloat3(&vEye, ::XMVector3TransformCoord(::XMLoadFloat4(&vecPos[i]), ::XMLoadFloat4x4(&matView)));
+		Vec3 vEye = Vec3::Transform(vecPos[i], matView);
 		if (vEye.z > 0.f && vEye.z < bestZ) { bestZ = vEye.z; best = i; }
 	}
 	if (best < 0)

@@ -56,7 +56,7 @@ protected:
 	_bool Is_Grounded() const;
 	_bool Is_ApplyGravity() const;
 	_bool Is_AttackPressed() const;
-	void Chase_Target(_fvector vTargetPosition, const _float fTimedelta, const _float fSpeedRatio = 1.f);
+	void Chase_Target(const Vec3& vTargetPosition, const _float fTimedelta, const _float fSpeedRatio = 1.f);
 	void Move_Up(const _float fTimeDelta, const _float fSpeedRatio);
 	void Move_Left(const _float fTimeDelta, const _float fSpeedRatio = 1.f);
 	void Move_Right(const _float fTimeDelta, const _float fSpeedRatio = 1.f);
@@ -71,7 +71,7 @@ protected:
 	void Apply_ForceMove(const _float fTimeDelta);
 	void Clear_ForceMove();
 	void SetupLook_CameraLook();
-	void SetupLookAt(_fvector vPoint);
+	void SetupLookAt(const Vec3& vPoint);
 	void SetupLook_Target_XZ();
 	CGameObject* Get_Target();
 	_bool Align_Move(_uint iState);

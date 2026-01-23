@@ -12,7 +12,7 @@ public:
 		_uint iWidth = {};
 		_uint iHeight = {};
 		DXGI_FORMAT ePixelFormat = {};
-		_float4 vClearColor = {};
+		Vec4 vClearColor = {};
 	}RENDERTARGET_DESC;
 private:
 	CRenderTarget(ID3D11Device* pDevice, ID3D11DeviceContext* pDeviceContext);
@@ -27,7 +27,7 @@ public:
 #ifdef _DEBUG
 	HRESULT Ready_Debug(_float fX, _float fY, _float fSizeX, _float fSizeY);
 	HRESULT Render(class CShader* pShader, class CVIBuffer_Rect_Tex* pVIBuffer);
-	_float4x4 m_matWorld = {};
+	Matrix m_matWorld = {};
 #endif
 
 private:
@@ -41,7 +41,7 @@ private:
 	DXGI_FORMAT m_ePixelFormat = {};
 	_uint m_iWidth = {};
 	_uint m_iHeight = {};
-	_float4	m_vClearColor = {};
+	Vec4 m_vClearColor = {};
 public:
 	static CRenderTarget* Create(ID3D11Device* pDevice, ID3D11DeviceContext* pDeviceContext, const RENDERTARGET_DESC* pDesc);
 	virtual void Free() override;

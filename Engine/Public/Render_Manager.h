@@ -37,7 +37,7 @@ private:
 	class CVIBuffer_Rect_Tex* m_pVIBuffer = { nullptr };
 	class CShader* m_pShader = { nullptr };
 
-	_float4x4 m_matWorld_RT = {};
+	Matrix m_matWorld_RT = Matrix::Identity;
 public:
 	static CRender_Manager* Create(ID3D11Device* pDevice, ID3D11DeviceContext* pDeviceContext);
 	virtual void Free() override;

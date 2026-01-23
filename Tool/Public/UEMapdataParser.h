@@ -58,9 +58,9 @@ typedef struct tagParsedMapdataStaticMesh
 typedef struct tagParsedMapdataInner
 {
 	PARSED_MAPDATA_INNER_STATICMESH StaticMesh = {};
-	_float3 vPosition = { 0.f, 0.f, 0.f };
-	_float3 vPitchYawRoll = { 0.f, 0.f, 0.f };
-	_float3 vScale = { 0.f, 0.f, 0.f };
+	Vec3 vPosition = { 0.f, 0.f, 0.f };
+	Vec3 vPitchYawRoll = { 0.f, 0.f, 0.f };
+	Vec3 vScale = { 0.f, 0.f, 0.f };
 }PARSED_MAPDATA_INNER;
 
 typedef struct tagParsedMapdataOuter
@@ -85,7 +85,7 @@ void from_json(const json& _j, PARSED_MAPDATA_OUTER& _tData);
 void to_json(json& _j, const PARSED_MAPDATA_INNER& _tData);
 void from_json(const json& _j, PARSED_MAPDATA_INNER& _tData);
 
-void read_vec3_defaultscale(const json& _j, _float3& vOut);
-void read_vec3_xyz(const json& _j, _float3& vOut);
-void read_vec3_PitchYawRoll(const json& _j, _float3& vOut);
+void read_vec3_defaultscale(const json& _j, Vec3& vOut);
+void read_vec3_xyz(const json& _j, Vec3& vOut);
+void read_vec3_PitchYawRoll(const json& _j, Vec3& vOut);
 NS_END

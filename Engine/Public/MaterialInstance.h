@@ -11,7 +11,7 @@ public:
 	{
 		EMaterialInstanceType eType = { EMaterialInstanceType::END };
 		wstring wstrMaterialTag = {L"Material_Default"};
-		_float4 vTintColor = { 1.f, 1.f, 1.f, 1.f };
+		Vec4 vTintColor = { 1.f, 1.f, 1.f, 1.f };
 		_float fEmissivePower = { 1.f };
 	}MI_ORIGIN_DESC;
 private:
@@ -22,7 +22,7 @@ private:
 public:
 	HRESULT Bind_ShaderResource(class CShader* pShader);
 	EMaterialInstanceType Get_MIType() const { return m_eMIType; }
-	void Set_TintColor(const _float4& vColor) { m_shaderDesc.vTintColor = vColor; }
+	void Set_TintColor(const Vec4& vColor) { m_shaderDesc.vTintColor = vColor; }
 	void Set_EmissivePower(_float fEmissivePower) { m_shaderDesc.fEmissivePower = fEmissivePower; }
 private:
 

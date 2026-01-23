@@ -10,12 +10,12 @@ public:
 	typedef struct tagVIBuffer_ParticleOriginDesc : public Super::tagVIBufferOriginDesc
 	{
 		_uint iInstnaceCount = { 0 };
-		_float2 vSize = { 0.f, 0.f };
-		_float3 vCenter = { 0.f, 0.f, 0.f };
-		_float3	vPivot = { 0.f, 0.f, 0.f };
-		_float3 vRange = { 0.f, 0.f, 0.f };
-		_float2 vSpeed = { 0.f, 0.f };
-		_float2 vLifeTime = { 0.f, 0.f };
+		Vec2 vSize = { 0.f, 0.f };
+		Vec3 vCenter = { 0.f, 0.f, 0.f };
+		Vec3 vPivot = { 0.f, 0.f, 0.f };
+		Vec3 vRange = { 0.f, 0.f, 0.f };
+		Vec2 vSpeed = { 0.f, 0.f };
+		Vec2 vLifeTime = { 0.f, 0.f };
 		_bool isLoop = { false };
 	}PARTICLE_ORIGIN_DESC;
 protected:
@@ -39,7 +39,7 @@ protected:
 	_uint			m_iInstanceVertexStride = {};
 	VTXPARTICLE*	m_pInstanceVertices = { nullptr };
 	_float*			m_pSpeeds = { nullptr };
-	_float3			m_vPivot = {};
+	Vec3			m_vPivot = {};
 protected:
 	ID3D11Buffer* m_pVBInstance = { nullptr };
 	D3D11_BUFFER_DESC	m_InstanceBufferDesc = {};

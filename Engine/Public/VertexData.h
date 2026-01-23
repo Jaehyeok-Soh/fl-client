@@ -5,7 +5,7 @@ NS_BEGIN(Engine)
 
 typedef struct tagVertexData
 {
-	XMFLOAT3 vPosition = { 0.f, 0.f, 0.f };
+	SimpleMath::Vector3 vPosition = { 0.f, 0.f, 0.f };
 
 	static constexpr unsigned int iNumElements = { 1 };
 	static constexpr D3D11_INPUT_ELEMENT_DESC Elements[] =
@@ -16,8 +16,8 @@ typedef struct tagVertexData
 
 typedef struct tagVertexPositionColor
 {
-	XMFLOAT3 vPosition = { 0.f, 0.f, 0.f };
-	XMFLOAT4 vColor = { 0.f, 0.f, 0.f, 0.f };
+	SimpleMath::Vector3 vPosition = { 0.f, 0.f, 0.f };
+	SimpleMath::Vector4 vColor = { 0.f, 0.f, 0.f, 0.f };
 
 	static constexpr unsigned int iNumElements = { 2 };
 	static constexpr D3D11_INPUT_ELEMENT_DESC Elements[] =
@@ -29,8 +29,8 @@ typedef struct tagVertexPositionColor
 
 typedef struct tagVertexPositionTexcoord
 {
-	XMFLOAT3 vPosition = {0.f, 0.f, 0.f};
-	XMFLOAT2 vUV = { 0.f, 0.f };
+	SimpleMath::Vector3 vPosition = {0.f, 0.f, 0.f};
+	SimpleMath::Vector2 vUV = { 0.f, 0.f };
 
 	static constexpr unsigned int iNumElements = { 2 };
 	static constexpr D3D11_INPUT_ELEMENT_DESC Elements[] =
@@ -42,8 +42,8 @@ typedef struct tagVertexPositionTexcoord
 
 typedef struct tagVertexCube
 {
-	XMFLOAT3		vPosition;
-	XMFLOAT3		vTexcoord;
+	SimpleMath::Vector3		vPosition;
+	SimpleMath::Vector3		vTexcoord;
 
 	static const unsigned int		iNumElements = { 2 };
 
@@ -55,9 +55,9 @@ typedef struct tagVertexCube
 
 typedef struct tagVertexPositionNormalTexcoord
 {
-	XMFLOAT3 vPosition = { 0.f, 0.f, 0.f };
-	XMFLOAT3 vNormal = { 0.f, 0.f, 0.f };
-	XMFLOAT2 vUV = { 0.f, 0.f };
+	SimpleMath::Vector3 vPosition = { 0.f, 0.f, 0.f };
+	SimpleMath::Vector3 vNormal = { 0.f, 0.f, 0.f };
+	SimpleMath::Vector2 vUV = { 0.f, 0.f };
 
 	static constexpr unsigned int iNumElements = { 3 };
 	static constexpr D3D11_INPUT_ELEMENT_DESC Elements[] =
@@ -70,11 +70,11 @@ typedef struct tagVertexPositionNormalTexcoord
 
 typedef struct tagVertexMesh
 {
-	XMFLOAT3 vPosition = { 0.f, 0.f, 0.f };
-	XMFLOAT3 vNormal = { 0.f, 0.f, 0.f };
-	XMFLOAT3 vTangent = { 0.f, 0.f, 0.f };
-	XMFLOAT3 vBinormal = { 0.f, 0.f, 0.f };
-	XMFLOAT2 vUV = { 0.f, 0.f };
+	SimpleMath::Vector3 vPosition = { 0.f, 0.f, 0.f };
+	SimpleMath::Vector3 vNormal = { 0.f, 0.f, 0.f };
+	SimpleMath::Vector3 vTangent = { 0.f, 0.f, 0.f };
+	SimpleMath::Vector3 vBinormal = { 0.f, 0.f, 0.f };
+	SimpleMath::Vector2 vUV = { 0.f, 0.f };
 
 	static constexpr unsigned int iNumElements = { 5 };
 	static constexpr D3D11_INPUT_ELEMENT_DESC Elements[] =
@@ -89,13 +89,13 @@ typedef struct tagVertexMesh
 
 typedef struct tagVertexAnimationMesh
 {
-	XMFLOAT3 vPosition = { 0.f, 0.f, 0.f };
-	XMFLOAT3 vNormal = { 0.f, 0.f, 0.f };
-	XMFLOAT3 vTangent = { 0.f, 0.f, 0.f };
-	XMFLOAT3 vBinormal = { 0.f, 0.f, 0.f };
-	XMFLOAT2 vUV = { 0.f, 0.f };
+	SimpleMath::Vector3 vPosition = { 0.f, 0.f, 0.f };
+	SimpleMath::Vector3 vNormal = { 0.f, 0.f, 0.f };
+	SimpleMath::Vector3 vTangent = { 0.f, 0.f, 0.f };
+	SimpleMath::Vector3 vBinormal = { 0.f, 0.f, 0.f };
+	SimpleMath::Vector2 vUV = { 0.f, 0.f };
 	XMUINT4 vBlendIndices = { 0, 0, 0, 0 };
-	XMFLOAT4 vBlendWeights = { 0.f, 0.f, 0.f, 0.f };
+	SimpleMath::Vector4 vBlendWeights = { 0.f, 0.f, 0.f, 0.f };
 
 	static constexpr unsigned int iNumElements = { 7 };
 	static constexpr D3D11_INPUT_ELEMENT_DESC Elements[] =
@@ -112,11 +112,11 @@ typedef struct tagVertexAnimationMesh
  
 typedef struct tagVertexInstance
 {
-	XMFLOAT4		vRight = { 0.f, 0.f, 0.f, 0.f };
-	XMFLOAT4		vUp = { 0.f, 0.f, 0.f, 0.f };
-	XMFLOAT4		vLook = { 0.f, 0.f, 0.f, 0.f };
-	XMFLOAT4		vTranslation = { 0.f, 0.f, 0.f, 1.f };
-	XMFLOAT2		vLifeTime = { 0.f, 0.f };
+	SimpleMath::Vector4		vRight = { 0.f, 0.f, 0.f, 0.f };
+	SimpleMath::Vector4		vUp = { 0.f, 0.f, 0.f, 0.f };
+	SimpleMath::Vector4		vLook = { 0.f, 0.f, 0.f, 0.f };
+	SimpleMath::Vector4		vTranslation = { 0.f, 0.f, 0.f, 1.f };
+	SimpleMath::Vector2		vLifeTime = { 0.f, 0.f };
 }VTXPARTICLE;
 
 typedef struct tagVertexPosTexParticle

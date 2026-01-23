@@ -119,28 +119,6 @@ _int CPlayer::Get_AnimationIndex(const wstring& wstrName)
     return -1;
 }
 
-_vector CPlayer::Get_Dir(EDir eDir)
-{
-    CTransform* pTransform = Get_Component<CTransform>();
-    _vector vCurrentPosition = pTransform->Get_Info(TRANSFORM_INFO_STATE::POS);
-    _vector vCurrentRightDir = ::XMVector3Normalize(pTransform->Get_Info(TRANSFORM_INFO_STATE::RIGHT));
-    _vector vCurrentLookDir = ::XMVector3Normalize(pTransform->Get_Info(TRANSFORM_INFO_STATE::LOOK));
-
-    switch (eDir)
-    {
-    case Client::EDir::BACKWARD:
-        return -vCurrentLookDir;
-    case Client::EDir::RIGHT:
-        return vCurrentRightDir;
-    case Client::EDir::LEFT:
-        return -vCurrentRightDir;
-    case Client::EDir::FRONT:
-        return vCurrentLookDir;
-    }
-
-    return ::XMVectorSet(0.f, 0.f, 0.f, 0.f);
-}
-
 HRESULT CPlayer::Ready_BaseStates()
 {
     CPlayerActionState* pActionState = { nullptr };

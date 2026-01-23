@@ -29,24 +29,20 @@ HRESULT CLevel_Assimp::Awake(const _uint iLevelID)
 	
 	
 #pragma region Custom
-	_fmatrix matUECoord = ::XMMatrixSet(
+	Matrix matUECoord = ::XMMatrixSet(
 		1.f, 0.f, 0.f, 0.f,		// x' = x
 		0.f, 0.f, 1.f, 0.f,		// y' = z
 		0.f, -1.f, 0.f, 0.f,	// z' = -y
 		0.f, 0.f, 0.f, 1.f
 	);
 
-	_matrix matPreTransformScaling10 = ::XMMatrixScaling(0.1f, 0.1f, 0.1f);
-	_matrix matPreTransformScaling100 = ::XMMatrixScaling(0.01f, 0.01f, 0.01f);
-	_matrix matPreTransformScaling1000 = ::XMMatrixScaling(0.001f, 0.001f, 0.001f);
+	Matrix matPreTransformScaling10 = Matrix::CreateScale(0.1f, 0.1f, 0.1f);
+	Matrix matPreTransformScaling100 = Matrix::CreateScale(0.01f, 0.01f, 0.01f);
+	Matrix matPreTransformScaling1000 = Matrix::CreateScale(0.001f, 0.001f, 0.001f);
 
-	_float4x4 matPreTransformIdentity = {};
-	_float4x4 matPreTransformScaling = {};
-	_float4x4 matPreTransformMapObject = {};
-	_bool IsCustom = true;
-	::XMStoreFloat4x4(&matPreTransformIdentity, ::XMMatrixIdentity());
-	::XMStoreFloat4x4(&matPreTransformScaling, ::XMMatrixScaling(0.001f, 0.001f, 0.001f));
-	::XMStoreFloat4x4(&matPreTransformMapObject, matUECoord * ::XMMatrixScaling(0.01f, 0.01f, 0.01f));
+	Matrix matPreTransformIdentity = Matrix::Identity;
+	Matrix matPreTransformScaling = {};
+	Matrix matPreTransformMapObject = matUECoord * matPreTransformScaling100;
 
 	/*
 	//Sword

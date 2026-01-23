@@ -36,20 +36,20 @@ HRESULT CVIBuffer_Rect_Tex::Initialize_Prototype(void* pArg)
     VTXPOSTEX* pVertices = new VTXPOSTEX[m_iVertexCount];
     ZeroMemory(pVertices, sizeof(VTXPOSTEX) * m_iVertexCount);
 
-    m_pVertexPositions = new _float3[m_iVertexCount];
-    ZeroMemory(m_pVertexPositions, sizeof(_float3) * m_iVertexCount);
+    m_pVertexPositions = new Vec3[m_iVertexCount];
+    ZeroMemory(m_pVertexPositions, sizeof(Vec3) * m_iVertexCount);
 
-    m_pVertexPositions[0] = pVertices[0].vPosition = _float3(-0.5f, 0.5f, 0.f);
-    pVertices[0].vUV = _float2{ 0.f, 0.f };
+    m_pVertexPositions[0] = pVertices[0].vPosition = Vec3(-0.5f, 0.5f, 0.f);
+    pVertices[0].vUV = Vec2{ 0.f, 0.f };
 
-    m_pVertexPositions[1] = pVertices[1].vPosition = _float3(0.5f, 0.5f, 0.f);
-    pVertices[1].vUV = _float2{ 1.f, 0.f };
+    m_pVertexPositions[1] = pVertices[1].vPosition = Vec3(0.5f, 0.5f, 0.f);
+    pVertices[1].vUV = Vec2{ 1.f, 0.f };
 
-    m_pVertexPositions[2] = pVertices[2].vPosition = _float3(0.5f, -0.5f, 0.f);
-    pVertices[2].vUV = _float2{ 1.f, 1.f };
+    m_pVertexPositions[2] = pVertices[2].vPosition = Vec3(0.5f, -0.5f, 0.f);
+    pVertices[2].vUV = Vec2{ 1.f, 1.f };
 
-    m_pVertexPositions[3] = pVertices[3].vPosition = _float3(-0.5f, -0.5f, 0.f);
-    pVertices[3].vUV = _float2{ 0.f, 1.f };
+    m_pVertexPositions[3] = pVertices[3].vPosition = Vec3(-0.5f, -0.5f, 0.f);
+    pVertices[3].vUV = Vec2{ 0.f, 1.f };
 
     D3D11_SUBRESOURCE_DATA      VertexInitialData{};
     VertexInitialData.pSysMem = pVertices;

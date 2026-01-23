@@ -8,10 +8,10 @@ CCamera_Manager::CCamera_Manager(ID3D11Device* pDevice, ID3D11DeviceContext* pDe
 {
 	Safe_AddRef(m_pDevice);
 	Safe_AddRef(m_pDeviceContext);
-	::XMStoreFloat4x4(&m_matView, ::XMMatrixIdentity());
-	::XMStoreFloat4x4(&m_matProjection, ::XMMatrixIdentity());
-	::XMStoreFloat4x4(&m_matView_UI, ::XMMatrixIdentity());
-	::XMStoreFloat4x4(&m_matProjection_UI, ::XMMatrixIdentity());
+	m_matView = Matrix::Identity;
+	m_matProjection = Matrix::Identity;
+	m_matView_UI = Matrix::Identity;
+	m_matProjection_UI = Matrix::Identity;
 }
 
 HRESULT CCamera_Manager::Initiailize()
@@ -19,7 +19,7 @@ HRESULT CCamera_Manager::Initiailize()
 	D3D11_VIEWPORT          ViewportDesc{};
 	_uint					iNumViewports = { 1 };
 	m_pDeviceContext->RSGetViewports(&iNumViewports, &ViewportDesc);
-	::XMStoreFloat4x4(&m_matProjection_UI, ::XMMatrixOrthographicLH(ViewportDesc.Width, ViewportDesc.Height, 0.f, 1.f));
+	m_matProjection_UI = ::XMMatrixOrthographicLH(ViewportDesc.Width, ViewportDesc.Height, 0.f, 1.f);
 
 	Create_ConstantBuffer();
 	return S_OK;
@@ -159,9 +159,7 @@ void CCamera_Manager::Setup_ViewProj_ToCBuffer()
 {
 	m_tGlobalDesc.matView = m_matView;
 	m_tGlobalDesc.matProj = m_matProjection;
-	_matrix view = ::XMLoadFloat4x4(&m_tGlobalDesc.matView);
-	_matrix proj = ::XMLoadFloat4x4(&m_tGlobalDesc.matProj);
-	::XMStoreFloat4x4(&m_tGlobalDesc.matVP, view * proj);
+	m_tGlobalDesc.matVP = m_tGlobalDesc.matView * m_tGlobalDesc.matProj;
 	m_pGlobal_CBuffer->Copy_Data(m_tGlobalDesc);
 }
 
@@ -169,20 +167,14 @@ void CCamera_Manager::Setup_UIViewProj_ToCBuffer()
 {
 	m_tGlobalDesc.matView = m_matView_UI;
 	m_tGlobalDesc.matProj = m_matProjection_UI;
-	_matrix view = ::XMLoadFloat4x4(&m_tGlobalDesc.matView);
-	_matrix proj = ::XMLoadFloat4x4(&m_tGlobalDesc.matProj);
-	::XMStoreFloat4x4(&m_tGlobalDesc.matVP, view * proj);
+	m_tGlobalDesc.matVP = m_tGlobalDesc.matView * m_tGlobalDesc.matProj;
 	m_pGlobal_CBuffer->Copy_Data(m_tGlobalDesc);
 }
 
 void CCamera_Manager::Setup_Inv_ToCBuffer()
 {
-	_matrix view = ::XMLoadFloat4x4(&m_matView);
-	_matrix proj = ::XMLoadFloat4x4(&m_matProjection);
-
-	::XMStoreFloat4x4(&m_tInvDesc.matInvView, ::XMMatrixInverse(nullptr, view));
-	::XMStoreFloat4x4(&m_tInvDesc.matInvProj, ::XMMatrixInverse(nullptr, proj));
-
+	m_tInvDesc.matInvView = m_matView.Invert();
+	m_tInvDesc.matInvProj = m_matProjection.Invert();
 	m_pInv_CBuffer->Copy_Data(m_tInvDesc);
 }
 

@@ -119,12 +119,12 @@ void CUIObject::Set_Size(_float fX, _float fY)
 	SetUp_Rect();
 }
 
-void CUIObject::Set_Size(_float2 vSize)
+void CUIObject::Set_Size(const Vec2 &vSize)
 {
 	Set_Size(vSize.x, vSize.y);
 }
 
-void CUIObject::Set_Position(_float2 vPosition)
+void CUIObject::Set_Position(const Vec2 &vPosition)
 {
 	Set_Position(vPosition.x, vPosition.y);
 }
@@ -140,7 +140,7 @@ void CUIObject::Set_Position(_float fX, _float fY)
 	SetUp_Rect();
 }
 
-void CUIObject::Move_Position_Lerp(const _float2 vTargetPosition)
+void CUIObject::Move_Position_Lerp(const Vec2 &vTargetPosition)
 {
 	// TODO
 	// Transform에 만들어놓고 꺼내쓰자
@@ -190,7 +190,7 @@ void CUIObject::Set_SizeToTextureScale()
 {
 	if (!Get_Component<CTexture>())
 		return;
-	_float2 vSize = Get_Component<CTexture>()->Get_TextureSize();
+	Vec2 vSize = Get_Component<CTexture>()->Get_TextureSize();
 	vSize.x *= m_fSizeX;
 	vSize.y *= m_fSizeY;
 	Set_Size(vSize);

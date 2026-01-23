@@ -7,8 +7,8 @@
 CMesh::CMesh(ID3D11Device* pDevice, ID3D11DeviceContext* pDeviceContext)
 	: Super(pDevice, pDeviceContext)
 {
-	for (_float4x4& matBone : m_boneMatrices.transforms)
-		::XMStoreFloat4x4(&matBone, ::XMMatrixIdentity());
+	for (Matrix& matBone : m_boneMatrices.transforms)
+		matBone = Matrix::Identity;
 }
 
 CMesh::CMesh(const CMesh& rhs)
@@ -55,10 +55,10 @@ HRESULT CMesh::Initialize_Prototype(void* pArg)
 	if (pDesc->iOffsetMatricesCount > 0)
 	{
 		m_vecOffsetMatrices.resize(pDesc->iOffsetMatricesCount);
-		::memcpy(m_vecOffsetMatrices.data(), pDesc->spanOffsetMatrices.data(), sizeof(_float4x4) * pDesc->iOffsetMatricesCount);
+		::memcpy(m_vecOffsetMatrices.data(), pDesc->spanOffsetMatrices.data(), sizeof(Matrix) * pDesc->iOffsetMatricesCount);
 	}
 
-	m_pVertexPositions = new _float3[m_iVertexCount];
+	m_pVertexPositions = new SimpleMath::Vector3[m_iVertexCount];
 	for (_uint i = 0; i < m_iVertexCount; ++i)
 	{
 		m_pVertexPositions[i] = pDesc->spanVertex[i].vPosition;
@@ -113,26 +113,22 @@ HRESULT CMesh::Initialize_Prototype(void* pArg)
 	{
 		const _uint iTriangleCount = m_iIndexCount / 3;
 
-		m_pNormals = new _float3[iTriangleCount];
+		m_pNormals = new Vec3[iTriangleCount];
 		m_pSurfaceTypes = new ESurfaceType[iTriangleCount];
-		_vector vWorldUp = ::XMVectorSet(0.f, 1.f, 0.f, 0.f);
 		_uint iIndex = { 0 };
 		for (_uint i = 0; i < iTriangleCount; ++i)
 		{
-			const _float3& A = m_pVertexPositions[m_pIndices[iIndex++]];
-			const _float3& B = m_pVertexPositions[m_pIndices[iIndex++]];
-			const _float3& C = m_pVertexPositions[m_pIndices[iIndex++]];
+			const Vec3& vA = m_pVertexPositions[m_pIndices[iIndex++]];
+			const Vec3& vB = m_pVertexPositions[m_pIndices[iIndex++]];
+			const Vec3& vC = m_pVertexPositions[m_pIndices[iIndex++]];
 
-			_vector vA = ::XMLoadFloat3(&A);
-			_vector vB = ::XMLoadFloat3(&B);
-			_vector vC = ::XMLoadFloat3(&C);
-
-			_vector vAB = vB - vA;
-			_vector vAC = vC - vA;
-			_vector vNormal = ::XMVector3Normalize(::XMVector3Cross(vAB, vAC));
+			Vec3 vAB = vB - vA;
+			Vec3 vAC = vC - vA;
+			Vec3 vNormal = vAB.Cross(vAC);
+			vNormal.Normalize();
 
 			ESurfaceType eType = ESurfaceType::CEILING;
-			const _float fDot = ::XMVectorGetX(::XMVector3Dot(vNormal, vWorldUp));
+			const _float fDot = vNormal.Dot(Vec3::Up);
 			const _float fCosGroundMax = ::cosf(::XMConvertToRadians(50.f));
 
 			if (fDot >= fCosGroundMax)
@@ -140,7 +136,7 @@ HRESULT CMesh::Initialize_Prototype(void* pArg)
 			else if (fDot > -0.1f)
 				eType = ESurfaceType::WALL;
 
-			::XMStoreFloat3(&m_pNormals[i], vNormal);
+			m_pNormals[i] = vNormal;
 			m_pSurfaceTypes[i] = eType;
 		}
 	}		
@@ -160,14 +156,13 @@ HRESULT CMesh::Bind_Bones(CShader* pShader, const vector<CBone*>& vecBones, _uin
 {
 	for (size_t i = 0; i < m_vecAffectBoneIndices.size(); ++i)
 	{
-		::XMStoreFloat4x4(&m_boneMatrices.transforms[i + iIndexDistance],
-			::XMLoadFloat4x4(&m_vecOffsetMatrices[i]) *
-			vecBones[m_vecAffectBoneIndices[i]]->Get_CombinedTransformMatrix());
+		m_boneMatrices.transforms[i + iIndexDistance]
+			= m_vecOffsetMatrices[i] * vecBones[m_vecAffectBoneIndices[i]]->Get_CombinedTransformMatrix();
 	}
 	return pShader->Bind_BoneData(m_boneMatrices);
 }
 
-_bool CMesh::IntsersectWithPlane(OUT _float4& vOut)
+_bool CMesh::IntsersectWithPlane(OUT Vec3& vOut)
 {
 	const _uint iTriangleCount = m_iIndexCount / 3;
 	_uint iIndex = { 0 };
@@ -183,7 +178,7 @@ _bool CMesh::IntsersectWithPlane(OUT _float4& vOut)
 	return false;
 }
 
-_bool CMesh::IntsersectWithPlane(CRay* const pRay, _fmatrix matWorld, _float fMaxDistance, OUT MESH_RAY_HITINFO& outHit)
+_bool CMesh::IntsersectWithPlane(CRay* const pRay, Matrix matWorld, _float fMaxDistance, OUT MESH_RAY_HITINFO& outHit)
 {
 	if (m_iIndexCount == 0 || !m_pVertexPositions || !m_pIndices)
 		return false;
@@ -191,8 +186,9 @@ _bool CMesh::IntsersectWithPlane(CRay* const pRay, _fmatrix matWorld, _float fMa
 	MESH_RAY_HITINFO bestHit = {};
 	bestHit.fDistance = fMaxDistance;
 
-	_vector vRayOrigin = ::XMLoadFloat4(&pRay->Get_Origin());
-	_vector vRayDir = ::XMVector3Normalize(::XMLoadFloat3(&pRay->Get_Dir()));
+	Vec3 vRayOrigin = pRay->Get_Origin();
+	Vec3 vRayDir = pRay->Get_Dir();
+	vRayDir.Normalize();
 
 	const _uint iTriangleCount = m_iIndexCount / 3;
 	_uint iIndex = { 0 };
@@ -200,23 +196,17 @@ _bool CMesh::IntsersectWithPlane(CRay* const pRay, _fmatrix matWorld, _float fMa
 	_bool bHit = { false };
 	for (_uint i = 0; i < iTriangleCount; ++i)
 	{
-		_float4 vHitted = {};
+		Vec3 vHitted = {};
 
-		_float3 A = {};
-		_float3 B = {};
-		_float3 C = {};
-
-		::XMStoreFloat3(&A, ::XMVector3TransformCoord(::XMLoadFloat3(&m_pVertexPositions[m_pIndices[iIndex++]]), matWorld));
-		::XMStoreFloat3(&B, ::XMVector3TransformCoord(::XMLoadFloat3(&m_pVertexPositions[m_pIndices[iIndex++]]), matWorld));
-		::XMStoreFloat3(&C, ::XMVector3TransformCoord(::XMLoadFloat3(&m_pVertexPositions[m_pIndices[iIndex++]]), matWorld));
+		Vec3 A = Vec3::Transform(m_pVertexPositions[m_pIndices[iIndex++]], matWorld);
+		Vec3 B = Vec3::Transform(m_pVertexPositions[m_pIndices[iIndex++]], matWorld);
+		Vec3 C = Vec3::Transform(m_pVertexPositions[m_pIndices[iIndex++]], matWorld);
 
 		if (pRay->IntersectrayWithTriangle_World(A, B, C, vHitted) == false)
 			continue;
 
-		_vector vHitPoint = ::XMLoadFloat4(&vHitted);
-
-		_vector vDiff = vHitPoint - vRayOrigin;
-		_float fDistance = ::XMVectorGetX(::XMVector3Dot(vDiff, vRayDir));
+		Vec3 vDiff = vHitted - vRayOrigin;
+		_float fDistance = vDiff.Dot(vRayDir);
 
 		if (fDistance < 0.f || fDistance > bestHit.fDistance)
 			continue;
@@ -225,8 +215,7 @@ _bool CMesh::IntsersectWithPlane(CRay* const pRay, _fmatrix matWorld, _float fMa
 		bestHit.iTriangleIndex = static_cast<_int>(i);
 		bestHit.vNormal = m_pNormals[i];
 		bestHit.eSurfaceType = m_pSurfaceTypes[i];
-		::XMStoreFloat3(&bestHit.vHitPos, vHitPoint);
-
+		bestHit.vHitPos = vHitted;
 		bHit = true;
 	}
 

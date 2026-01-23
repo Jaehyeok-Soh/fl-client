@@ -248,7 +248,7 @@ HRESULT CShader::Bind_TransformData(const SHADER_TRANSFORMDESC& trnasformDesc)
 	return S_OK;
 }
 
-HRESULT CShader::Bind_TransformData(const _float4x4& matTransform)
+HRESULT CShader::Bind_TransformData(const Matrix& matTransform)
 {
 	SHADER_TRANSFORMDESC desc = {};
 	desc.matWorld = matTransform;

@@ -131,7 +131,7 @@ HRESULT CGraphic_Device::Copy_BackBufferTexture(ID3D11Texture2D** ppTexture)
 	return S_OK;
 }
 
-HRESULT CGraphic_Device::Clear_BackBuffer_View(const _float4* pClearColor)
+HRESULT CGraphic_Device::Clear_BackBuffer_View(const Vec4* pClearColor)
 {
 	if (!m_pDeviceContext)
 		return E_FAIL;

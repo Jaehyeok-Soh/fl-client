@@ -49,7 +49,7 @@ public:
 	virtual _bool Is_SecondSkillPressed() override { return false; }
 	virtual _bool Is_ThirdSkillPressed() override { return false; }
 	virtual _bool Is_RopePressed() override;
-	virtual _fvector Get_MoveDir() override;
+	virtual Vec3 Get_MoveDir() override;
 private:
 	void OnChangeLockonTarget(CGameObject* pGo);
 private:

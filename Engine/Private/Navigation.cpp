@@ -48,8 +48,7 @@ HRESULT CNavigation::Initialize(void* pArg)
 			m_iCurrentCellIndex = pDesc->iCurrentIndex;
 		else
 		{
-			_float3 vSrc = pDesc->vPosition;
-			Sync_Index(::XMVectorSetW(::XMLoadFloat3(&vSrc), 1.f));
+			Sync_Index(pDesc->vPosition);
 		}
 	}
 	else
@@ -58,76 +57,79 @@ HRESULT CNavigation::Initialize(void* pArg)
 	return S_OK;
 }
 
-_vector CNavigation::Get_CellPos()
+Vec3 CNavigation::Get_CellPos()
 {
 	if (m_pParentMatrix)
-		return ::XMVector3TransformCoord(::XMVectorSetW(m_vecCells[m_iCurrentCellIndex]->Get_CenterPos(), 1.f), ::XMLoadFloat4x4(m_pParentMatrix));
+		return Vec3::Transform(m_vecCells[m_iCurrentCellIndex]->Get_CenterPos(), *m_pParentMatrix);
 	else
-		return ::XMVectorSetW(m_vecCells[m_iCurrentCellIndex]->Get_CenterPos(), 1.f);
+		return m_vecCells[m_iCurrentCellIndex]->Get_CenterPos();
 }
 
-_vector CNavigation::Get_CellNormal()
+Vec3 CNavigation::Get_CellNormal()
 {
 	return m_vecCells[m_iCurrentCellIndex]->Get_UpNormal();
 }
 
-_vector CNavigation::Get_CellNormal_World()
+Vec3 CNavigation::Get_CellNormal_World()
 {
-	_vector vNormalLocal = m_vecCells[m_iCurrentCellIndex]->Get_UpNormal();
+	Vec3 vNormalLocal = m_vecCells[m_iCurrentCellIndex]->Get_UpNormal();
 
 	if (m_pParentMatrix)
 	{
-		_matrix matParent = ::XMLoadFloat4x4(m_pParentMatrix);
-		vNormalLocal = ::XMVector3TransformNormal(vNormalLocal, matParent);
-		vNormalLocal = ::XMVector3Normalize(vNormalLocal);
+		Matrix matParent = *m_pParentMatrix;
+		vNormalLocal = Vec3::TransformNormal(vNormalLocal, matParent);
+		vNormalLocal.Normalize();
 	}
 	
 	return vNormalLocal;
 }
 
-_vector CNavigation::SetUp_OnNavigation(_fvector vWorldPos)
+Vec3 CNavigation::SetUp_OnNavigation(Vec3 vWorldPos)
 {
 	if (m_pParentMatrix)
 	{
-		_vector vCellPos = XMVector3TransformCoord(vWorldPos, XMMatrixInverse(nullptr, ::XMLoadFloat4x4(m_pParentMatrix)));
-		vCellPos = XMVectorSetY(vCellPos, m_vecCells[m_iCurrentCellIndex]->Compute_Height(vCellPos));
-		return XMVector3TransformCoord(vCellPos, ::XMLoadFloat4x4(m_pParentMatrix));
+		Vec3 vCellPos = Vec3::Transform(vWorldPos, (*m_pParentMatrix).Invert());
+		vCellPos.y = m_vecCells[m_iCurrentCellIndex]->Compute_Height(vCellPos);
+		return Vec3::Transform(vCellPos, *m_pParentMatrix);
 	}
 	else
-		return XMVectorSetY(vWorldPos, m_vecCells[m_iCurrentCellIndex]->Compute_Height(vWorldPos));
+	{
+		vWorldPos.y = m_vecCells[m_iCurrentCellIndex]->Compute_Height(vWorldPos);
+		return vWorldPos;
+	}
 }
 
-_vector CNavigation::Project_OnNavigation(_fvector vWorldPos)
+Vec3 CNavigation::Project_OnNavigation(const Vec3& vWorldPos)
 {
 	if (m_iCurrentCellIndex < 0)
 		return vWorldPos;
 
-	_vector vLocalPos = vWorldPos;
+	Vec3 vLocalPos = vWorldPos;
 
 	if (m_pParentMatrix)
 	{
-		_matrix matInvParent = ::XMMatrixInverse(nullptr, ::XMLoadFloat4x4(m_pParentMatrix));
-		vLocalPos = ::XMVector3TransformCoord(vLocalPos, matInvParent);
+		Matrix matInvParent = (*m_pParentMatrix).Invert();
+		Vec3::Transform(vLocalPos, matInvParent);
 	}
 
 	CCell* pCell = m_vecCells[m_iCurrentCellIndex];
-	_vector vProjectedLocal = pCell->Project_OnPlane(vLocalPos);
+	Vec3 vProjectedLocal = pCell->Project_OnPlane(vLocalPos);
 
 	if (m_pParentMatrix)
 	{
-		_matrix matParent = ::XMLoadFloat4x4(m_pParentMatrix);
-		return ::XMVector3TransformCoord(vProjectedLocal, matParent);
+		Matrix matParent = *m_pParentMatrix;
+		return Vec3::Transform(vProjectedLocal, matParent);
 	}
 
 	return vProjectedLocal;
 }
 
-void CNavigation::Sync_Index(_fvector vWorldPos)
+void CNavigation::Sync_Index(const Vec3 &vWorldPos)
 {
-	_vector vCellPos = ::XMVectorSetW(vWorldPos, 1.f);
+	Vec3 vCellPos = vWorldPos;
 
 	if(m_pParentMatrix)
-		vCellPos = ::XMVector3TransformCoord(vCellPos, ::XMMatrixInverse(nullptr, ::XMLoadFloat4x4(m_pParentMatrix)));
+		vCellPos = Vec3::Transform(vCellPos, (*m_pParentMatrix).Invert());
 
 	m_iCurrentCellIndex = -1;
 	_float fBestDist = FLT_MAX;
@@ -135,12 +137,12 @@ void CNavigation::Sync_Index(_fvector vWorldPos)
 	{
 		CCell* pCell = m_vecCells[i];
 
-		_vector vA = pCell->Get_Point(EPOINT::A);
-		_vector vUpNormal = pCell->Get_UpNormal();
+		Vec3 vA = pCell->Get_Point(EPOINT::A);
+		Vec3 vUpNormal = pCell->Get_UpNormal();
 
-		_float fDist = ::XMVectorGetX(::XMVector3Dot(vCellPos - vA, vUpNormal));
+		_float fDist = (vCellPos - vA).Dot(vUpNormal);
 
-		_vector vProj = vCellPos - vUpNormal * fDist;
+		Vec3 vProj = vCellPos - vUpNormal * fDist;
 
 		_int iSrc = -1;
 		if (pCell->Is_In(vProj, &iSrc) == false)
@@ -157,7 +159,7 @@ void CNavigation::Sync_Index(_fvector vWorldPos)
 #pragma region Legacy
 	//for (size_t i = 0; i < m_vecCells.size(); ++i)
 	//{
-	//	_vector vNormal = m_vecCells[i]->Get_UpNormal();
+	//	Vec3 vNormal = m_vecCells[i]->Get_UpNormal();
 	//	_float fDist = { 0.f };
 	//	_bool bHit = { false };
 	//	if (true == TriangleTests::Intersects(
@@ -190,14 +192,14 @@ void CNavigation::Sync_Index(_fvector vWorldPos)
 #pragma endregion 
 }
 
-_bool CNavigation::Is_Move(_fvector vResultPos)
+_bool CNavigation::Is_Move(const Vec3 &vResultPos)
 {
 	if (-1 == m_iCurrentCellIndex)
 		return false;
 
-	_vector     vCellPos = vResultPos;
+	Vec3     vCellPos = vResultPos;
 	if (m_pParentMatrix)
-		vCellPos = XMVector3TransformCoord(vResultPos, XMMatrixInverse(nullptr, ::XMLoadFloat4x4(m_pParentMatrix)));
+		vCellPos = Vec3::Transform(vResultPos, (*m_pParentMatrix).Invert());
 
 	_int        iNeighborIndex = { -1 };
 	if (m_vecCells[m_iCurrentCellIndex]->Is_In(vCellPos, &iNeighborIndex))

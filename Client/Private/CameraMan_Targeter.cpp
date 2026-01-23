@@ -171,50 +171,51 @@ void CCameraMan_Targeter::TargetSync_Update_Priority(const _float fDeltaTime)
     if (!pPlayer)
         return;
 
-    _vector vChasePositionRaw = Get_HeadWorldPos_FromBody(pPlayer->Get_Part<CBody>(0), pPlayerTransform);
+    Vec3 vChasePositionRaw = Get_HeadWorldPos_FromBody(pPlayer->Get_Part<CBody>(0), pPlayerTransform);
     if (!m_bImpactInit)
     {
-        ::XMStoreFloat4(&m_vChaseFiltered, vChasePositionRaw);
+        m_vChaseFiltered = vChasePositionRaw;
         m_bImpactInit = true;
     }
 
     _float fT_Chase = 1.f - std::exp(-fDeltaTime / m_fTau_Pos);
-    _vector vChaseFiltered = ::XMVectorLerp(::XMLoadFloat4(&m_vChaseFiltered), vChasePositionRaw, fT_Chase);
-    ::XMStoreFloat4(&m_vChaseFiltered, vChaseFiltered);
+    Vec3 vChaseFiltered = Vec3::Lerp(m_vChaseFiltered, vChasePositionRaw, fT_Chase);
+    m_vChaseFiltered = vChaseFiltered;
 
-    _vector vPlayerLook = ::XMVector3Normalize(pPlayerTransform->Get_Info(TRANSFORM_INFO_STATE::LOOK));
-    vPlayerLook = ::XMVectorSetY(vPlayerLook, 0.f);
+    Vec3 vPlayerLook = pPlayerTransform->Get_Info(TRANSFORM_INFO_STATE::LOOK);
+    vPlayerLook.Normalize();
+    vPlayerLook.y = 0.0f;
 
-    if (::XMVectorGetX(::XMVector3LengthSq(vPlayerLook)) <= g_XMEpsilon.f[0])
+    if (vPlayerLook.LengthSquared() <= g_XMEpsilon.f[0])
         return;
 
-    vPlayerLook = ::XMVector3Normalize(vPlayerLook);
+    vPlayerLook.Normalize();
 
-    const _float fX = vPlayerLook.m128_f32[0];
-    const _float fZ = vPlayerLook.m128_f32[2];
-    const _float fYawTarget = std::atan2(fX, fZ);
-
+    const _float fYawTarget = std::atan2(vPlayerLook.x, vPlayerLook.z);
     _float fT_Rot = 1.f - std::exp(-fDeltaTime / m_fTau_Rotate);
 
-    _vector qCurrent = ::XMQuaternionRotationRollPitchYaw(m_fPitch, m_fYaw, 0.f);
-    _vector qTarget = ::XMQuaternionRotationRollPitchYaw(m_fPitch, fYawTarget, 0.f);
+    Quat qCurrent = Quat::CreateFromYawPitchRoll(Vec3(m_fPitch, m_fYaw, 0.f));
+    Quat qTarget = Quat::CreateFromYawPitchRoll(Vec3(m_fPitch, fYawTarget, 0.f));
 
-    if (::XMVectorGetX(::XMVector4Dot(qCurrent, qTarget)) < 0.f)
-        qTarget = ::XMVectorNegate(qTarget);
+    if (qCurrent.Dot(qTarget) < 0.f)
+        qTarget = -qTarget;
 
-    _vector qNew = ::XMQuaternionSlerp(qCurrent, qTarget, fT_Rot);
-    qNew = ::XMQuaternionNormalize(qNew);
+    Quat qNew = Quat::Slerp(qCurrent, qTarget, fT_Rot);
+    qNew.Normalize();
 
-    _matrix matRotation = ::XMMatrixRotationQuaternion(qNew);
+    Matrix matRotation = Matrix::CreateFromQuaternion(qNew);
 
-    _vector vRight = ::XMVector3Normalize(::XMVector3TransformNormal(::XMVectorSet(1.f, 0.f, 0.f, 0.f), matRotation));
-    _vector vUp = ::XMVector3Normalize(::XMVector3TransformNormal(::XMVectorSet(0.f, 1.f, 0.f, 0.f), matRotation));
-    _vector vLook = ::XMVector3Normalize(::XMVector3TransformNormal(::XMVectorSet(0.f, 0.f, 1.f, 0.f), matRotation));
+    Vec3 vRight = Vec3::TransformNormal(Vec3::Right, matRotation);
+    Vec3 vUp = Vec3::TransformNormal(Vec3::Up, matRotation);
+    Vec3 vLook = Vec3::TransformNormal(Vec3::Backward, matRotation);
+    vRight.Normalize();
+    vUp.Normalize();
+    vLook.Normalize();
 
-    m_fYaw = std::atan2(vLook.m128_f32[0], vLook.m128_f32[2]);
-    m_fPitch = std::asin(std::clamp(vLook.m128_f32[1], -1.f, 1.f)) * -1.f; 
+    m_fYaw = std::atan2(vLook.x, vLook.z);
+    m_fPitch = std::asin(std::clamp(vLook.y, -1.f, 1.f)) * -1.f; 
 
-    _vector vDesiredPos = vChaseFiltered - vLook * m_fDistance;
+    Vec3 vDesiredPos = vChaseFiltered - vLook * m_fDistance;
 
     CTransform* pCameraTransform = Get_Component<CTransform>();
     pCameraTransform->Set_Info(TRANSFORM_INFO_STATE::RIGHT, vRight);
@@ -277,30 +278,33 @@ void CCameraMan_Targeter::Chase_Player(CContainerObject* pPlayer, const _float f
     if (!(pPlayerTransform = pPlayer->Get_Component<CTransform>()))
         return;
 
-    _vector vFinalPosition = {};
-    _vector vCurrentPosition = Get_Component<CTransform>()->Get_Info(TRANSFORM_INFO_STATE::POS);
-    _vector vChasePositionRaw = Get_HeadWorldPos_FromBody(pBodyOfPlayer, pPlayerTransform);
+    Vec3 vFinalPosition = Vec3::Zero;
+    Vec3 vCurrentPosition = Get_Component<CTransform>()->Get_Info(TRANSFORM_INFO_STATE::POS);
+    Vec3 vChasePositionRaw = Get_HeadWorldPos_FromBody(pBodyOfPlayer, pPlayerTransform);
     if (m_bChaseInit == false)
     {
-        ::XMStoreFloat4(&m_vChaseFiltered, vChasePositionRaw);
+        m_vChaseFiltered = vChasePositionRaw;
         m_bChaseInit = true;
     }
 
     _float fT_Chase = 1.f - std::exp(-fTimeDelta / m_fTau_Pos);
-    _vector vChaseFiltered = ::XMVectorLerp(::XMLoadFloat4(&m_vChaseFiltered), vChasePositionRaw, fT_Chase);
-    ::XMStoreFloat4(&m_vChaseFiltered, vChaseFiltered);
+    Vec3 vChaseFiltered = Vec3::Lerp(m_vChaseFiltered, vChasePositionRaw, fT_Chase);
+    m_vChaseFiltered = vChaseFiltered;
 
     // 보간없이 바로 수행
     m_fPitch = std::clamp(m_fPitch_Target, ::XMConvertToRadians(-85.f), ::XMConvertToRadians(85.f));
     m_fYaw = m_fYaw_Target;
 
-    _matrix matRotation = ::XMMatrixRotationRollPitchYaw(m_fPitch, m_fYaw, 0.f);
-    _vector vLook = ::XMVector3Normalize(::XMVector3TransformNormal(::XMVectorSet(0.f, 0.f, 1.f, 0.f), matRotation));
-    _vector vWorldUp = ::XMVectorSet(0.f, 1.f, 0.f, 0.f);
-    _vector vRight = ::XMVector3Normalize(::XMVector3Cross(vWorldUp, vLook));
-    _vector vUp = ::XMVector3Normalize(::XMVector3Cross(vLook, vRight));
+    Matrix matRotation = Matrix::CreateFromYawPitchRoll(Vec3(m_fPitch, m_fYaw, 0.f));
+    Vec3 vLook = Vec3::TransformNormal(Vec3::Backward, matRotation);
+    vLook.Normalize();
+    Vec3 vWorldUp = Vec3::Up;
+    Vec3 vRight = vWorldUp.Cross(vLook);
+    vRight.Normalize();
+    Vec3 vUp = vLook.Cross(vRight);
+    vUp.Normalize();
 
-    _vector vDesiredPos = vChaseFiltered - vLook * m_fDistance;
+    Vec3 vDesiredPos = vChaseFiltered - vLook * m_fDistance;
 
     CTransform* pCameraTransform = Get_Component<CTransform>();
     pCameraTransform->Set_Info(TRANSFORM_INFO_STATE::RIGHT, vRight);
@@ -329,10 +333,10 @@ void CCameraMan_Targeter::OnChangeLockonTarget(CGameObject* pGo)
     }
 }
 
-_vector CCameraMan_Targeter::Get_HeadWorldPos_FromBody(CBody* pBody, CTransform* pTrnasform)
+Vec3 CCameraMan_Targeter::Get_HeadWorldPos_FromBody(CBody* pBody, CTransform* pTrnasform)
 {
-    _matrix matReturn = ::XMMatrixIdentity();
-    _matrix matWorld = ::XMLoadFloat4x4(&pTrnasform->Get_WorldMatrix());
+    Matrix matReturn = Matrix::Identity;
+    Matrix matWorld = pTrnasform->Get_WorldMatrix();
 
     if (CBone* pHead = pBody->Get_HeadBone())
         matReturn = pHead->Get_BindPoseTransformMatrix() * matWorld;
@@ -341,7 +345,7 @@ _vector CCameraMan_Targeter::Get_HeadWorldPos_FromBody(CBody* pBody, CTransform*
     else if (CBone* pSpine = pBody->Get_Spine1Bone())
         matReturn = pSpine->Get_BindPoseTransformMatrix() * matWorld;
 
-    return matReturn.r[3];
+    return matReturn.Translation();
 }
 
 CCameraMan_Targeter* CCameraMan_Targeter::Create(ID3D11Device* pDevice, ID3D11DeviceContext* pDeviceContext)
