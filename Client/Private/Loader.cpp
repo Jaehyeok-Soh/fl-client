@@ -90,10 +90,8 @@ HRESULT CLoader::Loading()
 
 HRESULT CLoader::Loading_For_Logo()
 {
-	_float4x4 matPreTransformScale;
-	::XMStoreFloat4x4(&matPreTransformScale, ::XMMatrixScaling(0.0001f, 0.0001f, 0.0001f));
-	_float4x4 matPreTransformIdentity;
-	::XMStoreFloat4x4(&matPreTransformIdentity, ::XMMatrixIdentity());
+	Matrix matPreTransformScale = Matrix::CreateScale(0.0001f, 0.0001f, 0.0001f);
+	Matrix matPreTransformIdentity = Matrix::Identity;
 
 	if (FAILED(m_pGameInstance->Load_Sounds(L"../../Resources/Sounds")))
 		return E_FAIL;

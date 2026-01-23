@@ -34,7 +34,7 @@ public:
 	virtual void OnCollision(_uint iMyColliderLayer, CCollider* pOther) {}
 	virtual void OnCollision_Enter(_uint iMyColliderLayer, CCollider* pOther) {}
 	virtual void OnCollision_Exit(_uint iMyColliderLayer, CCollider* pOther) {}
-	virtual _bool Picking(OUT _float4& vOut) { return false; }
+	virtual _bool Picking(OUT Vec3& vOut) { return false; }
 	virtual HRESULT Render();
 	virtual _bool On_Hit(_uint iCollideMyLayer, ATTACK_DESC* pDesc, CGameObject* pOther) { return true; }
 	virtual void Try_AttackHit() {};
@@ -61,7 +61,7 @@ public:
 	
 	_bool IsDead() const { return m_bDead; }
 	virtual void Set_Dead(const wstring &wstrLayerTag);
-	_float3 Get_CenterFromCollider(EColliderType eType, class CBounding* pBounding);
+	Vec3 Get_CenterFromCollider(EColliderType eType, class CBounding* pBounding);
 protected:
 	void Update_Script_Components(const _float fTimeDelta);
 private:

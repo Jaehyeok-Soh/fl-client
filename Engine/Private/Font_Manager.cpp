@@ -30,7 +30,7 @@ HRESULT CFont_Manager::Add_Font(const _wstring& strFontTag, const _tchar* pFontF
     return S_OK;
 }
 
-HRESULT CFont_Manager::Draw_Text(const _wstring& strFontTag, const _tchar* pText, const _float2& vPosition, _fvector vColor)
+HRESULT CFont_Manager::Draw_Text(const _wstring& strFontTag, const _tchar* pText, const Vec2& vPosition, const Vec4& vColor)
 {
     CFont* pFont = Find_Font(strFontTag);
     if (nullptr == pFont)

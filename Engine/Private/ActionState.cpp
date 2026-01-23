@@ -224,8 +224,8 @@ _bool CActionState::Is_AnimTrackPositionHalf()
 
 _bool CActionState::Align_Movement(const _float fTimeDelta)
 {
-	_fvector vTargetDir = m_pOwnerControlContext->Get_MoveDir();
-	if (::XMVector3Equal(vTargetDir, ::XMVectorZero()))
+	Vec3 vTargetDir = m_pOwnerControlContext->Get_MoveDir();
+	if (::XMVector3Equal(vTargetDir, Vec3::Zero))
 		return false;
 
 	m_pOwnerTransform->Turn_WorldYAxis(vTargetDir, fTimeDelta);
@@ -240,8 +240,7 @@ void CActionState::Follow_CameraLook(const _float fTimeDelta)
 		if (!(m_pOwnerTargetCamera = Get_Owner()->Get_CameraTargeter()))
 			return;
 	}
-	_vector vTargetDir = m_pOwnerTargetCamera->Get_Component<CTransform>()->Get_Info(TRANSFORM_INFO_STATE::LOOK);
-	m_pOwnerTransform->Turn_WorldYAxis(vTargetDir, fTimeDelta);
+	m_pOwnerTransform->Turn_WorldYAxis(m_pOwnerTargetCamera->Get_Component<CTransform>()->Get_Info(TRANSFORM_INFO_STATE::LOOK), fTimeDelta);
 }
 
 void CActionState::Apply_Gravity(const _float fTimeDelta)
@@ -255,8 +254,9 @@ void CActionState::Apply_Gravity(const _float fTimeDelta)
 
 	_float fDelta = m_fVerticalSpeed * fTimeDelta;
 
-	_vector vPos = m_pOwnerTransform->Get_Info(TRANSFORM_INFO_STATE::POS);
-	_vector vUp = ::XMVector3Normalize(m_pOwnerTransform->Get_Info(TRANSFORM_INFO_STATE::UP));
+	Vec3 vPos = m_pOwnerTransform->Get_Info(TRANSFORM_INFO_STATE::POS);
+	Vec3 vUp = m_pOwnerTransform->Get_Info(TRANSFORM_INFO_STATE::UP);
+	vUp.Normalize();
 	vPos += vUp * fDelta;
 	/*_float fCurrentY = ::XMVectorGetY(vPos);
 	vPos = ::XMVectorSetY(vPos, fCurrentY + fDelta);*/
@@ -280,18 +280,16 @@ void CActionState::SetupLook_CameraLook()
 		if (!(m_pOwnerTargetCamera = Get_Owner()->Get_CameraTargeter()))
 			return;
 	}
-	_vector vTarget = m_pOwnerTargetCamera->Get_Component<CTransform>()->Get_Info(TRANSFORM_INFO_STATE::LOOK);
-	vTarget = ::XMVector3Normalize(::XMVectorSetY(vTarget, 0.f));
+	Vec3 vTarget = m_pOwnerTargetCamera->Get_Component<CTransform>()->Get_Info(TRANSFORM_INFO_STATE::LOOK);
+	vTarget.y = 0.f;
+	vTarget.Normalize();
 
-	_float fTarget_X = ::XMVectorGetX(vTarget);
-	_float fTarget_Z = ::XMVectorGetZ(vTarget);
+	_float fRadian = std::atan2(vTarget.x, vTarget.z);
 
-	_float fRadian = std::atan2(fTarget_X, fTarget_Z);
-
-	m_pOwnerTransform->Rotation(::XMVectorSet(0.f, 1.f, 0.f, 0.f), fRadian);
+	m_pOwnerTransform->Rotation(Vec3::Up, fRadian);
 }
 
-void CActionState::SetupLookAt(_fvector vPoint)
+void CActionState::SetupLookAt(const Vec3& vPoint)
 {
 	m_pOwnerTransform->Look_At(vPoint);
 }
@@ -303,13 +301,17 @@ void CActionState::SetupLook_Target_XZ()
 		return;
 	CTransform* pTargetTransform = pTarget->Get_Component<CTransform>();
 
-	_float3 vScale = m_pOwnerTransform->Get_Scaled();
-	_vector vPosition = m_pOwnerTransform->Get_Info(TRANSFORM_INFO_STATE::POS);
-	_vector vTargetPosition = pTargetTransform->Get_Info(TRANSFORM_INFO_STATE::POS);
+	Vec3 vScale = m_pOwnerTransform->Get_Scaled();
+	Vec3 vPosition = m_pOwnerTransform->Get_Info(TRANSFORM_INFO_STATE::POS);
+	Vec3 vTargetPosition = pTargetTransform->Get_Info(TRANSFORM_INFO_STATE::POS);
 
-	_vector vNewLookDir = ::XMVector3Normalize(::XMVectorSetY(vTargetPosition - vPosition, 0.f));
-	_vector vNewRightDir = ::XMVector3Normalize(::XMVector3Cross(::XMVectorSet(0.f, 1.f, 0.f, 0.f), vNewLookDir));
-	_vector vNewUpDir = ::XMVector3Normalize(::XMVector3Cross(vNewLookDir, vNewRightDir));
+	Vec3 vNewLookDir = vTargetPosition - vPosition;
+	vNewLookDir.y = 0.f;
+	vNewLookDir.Normalize();
+	Vec3 vNewRightDir = Vec3::Up.Cross(vNewLookDir);
+	vNewRightDir.Normalize();
+	Vec3 vNewUpDir = vNewLookDir.Cross(vNewRightDir);
+	vNewUpDir.Normalize();
 
 	m_pOwnerTransform->Set_Info(TRANSFORM_INFO_STATE::RIGHT, vNewRightDir * vScale.x);
 	m_pOwnerTransform->Set_Info(TRANSFORM_INFO_STATE::UP, vNewUpDir * vScale.y);
@@ -373,7 +375,7 @@ _bool CActionState::Is_AttackPressed() const
 	return m_pOwnerControlContext->Is_LeftAttackPressed();
 }
 
-void CActionState::Chase_Target(_fvector vTargetPosition, const _float fTimedelta, const _float fSpeedRatio)
+void CActionState::Chase_Target(const Vec3 &vTargetPosition, const _float fTimedelta, const _float fSpeedRatio)
 {
 	m_pOwnerTransform->Chase(vTargetPosition, 1.f, fTimedelta * fSpeedRatio, m_pOwnerNavigation);
 }
@@ -405,22 +407,22 @@ void CActionState::Move_Backward(const _float fTimeDelta, const _float fSpeedRat
 
 void CActionState::StartForce_Front_ForAnimation(_float fForceAbs, _float fDragK)
 {
-	m_pOwnerTransform->Start_Force(::XMVector3Normalize(m_pOwnerTransform->Get_Info(TRANSFORM_INFO_STATE::LOOK)), fForceAbs, fDragK);
+	m_pOwnerTransform->Start_Force(m_pOwnerTransform->Get_Info(TRANSFORM_INFO_STATE::LOOK), fForceAbs, fDragK);
 }
 
 void CActionState::StartForce_Backward_ForAnimation(_float fForceAbs, _float fDragK)
 {
-	m_pOwnerTransform->Start_Force(-1.f * ::XMVector3Normalize(m_pOwnerTransform->Get_Info(TRANSFORM_INFO_STATE::LOOK)), fForceAbs, fDragK);
+	m_pOwnerTransform->Start_Force(-1.f * m_pOwnerTransform->Get_Info(TRANSFORM_INFO_STATE::LOOK), fForceAbs, fDragK);
 }
 
 void CActionState::StartForce_Left_ForAnimation(_float fForceAbs, _float fDragK)
 {
-	m_pOwnerTransform->Start_Force(-1.f * ::XMVector3Normalize(m_pOwnerTransform->Get_Info(TRANSFORM_INFO_STATE::RIGHT)), fForceAbs, fDragK);
+	m_pOwnerTransform->Start_Force(-1.f * m_pOwnerTransform->Get_Info(TRANSFORM_INFO_STATE::RIGHT), fForceAbs, fDragK);
 }
 
 void CActionState::StartForce_Right_ForAnimation(_float fForceAbs, _float fDragK)
 {
-	m_pOwnerTransform->Start_Force(::XMVector3Normalize(m_pOwnerTransform->Get_Info(TRANSFORM_INFO_STATE::RIGHT)), fForceAbs, fDragK);
+	m_pOwnerTransform->Start_Force(m_pOwnerTransform->Get_Info(TRANSFORM_INFO_STATE::RIGHT), fForceAbs, fDragK);
 }
 
 void CActionState::Set_AttackCollider(_uint iPartIndex, _bool bActive, ATTACK_DESC* pDesc)

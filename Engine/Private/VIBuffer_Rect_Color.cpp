@@ -47,19 +47,19 @@ HRESULT CVIBuffer_Rect_Color::Initialize_Prototype(void* pArg)
     VTXPOSCOL* pVertices = new VTXPOSCOL[m_iVertexCount];
     ZeroMemory(pVertices, sizeof(VTXPOSCOL) * m_iVertexCount);
 
-    m_pVertexPositions = new _float3[m_iVertexCount];
-    ZeroMemory(m_pVertexPositions, sizeof(_float3) * m_iVertexCount);
+    m_pVertexPositions = new Vec3[m_iVertexCount];
+    ZeroMemory(m_pVertexPositions, sizeof(Vec3) * m_iVertexCount);
 
-    m_pVertexPositions[0] = pVertices[0].vPosition = _float3(-0.5f, 0.5f, 0.f);
+    m_pVertexPositions[0] = pVertices[0].vPosition = Vec3(-0.5f, 0.5f, 0.f);
     pVertices[0].vColor = m_vColor;
 
-    m_pVertexPositions[1] = pVertices[1].vPosition = _float3(0.5f, 0.5f, 0.f);
+    m_pVertexPositions[1] = pVertices[1].vPosition = Vec3(0.5f, 0.5f, 0.f);
     pVertices[1].vColor = m_vColor;
 
-    m_pVertexPositions[2] = pVertices[2].vPosition = _float3(0.5f, -0.5f, 0.f);
+    m_pVertexPositions[2] = pVertices[2].vPosition = Vec3(0.5f, -0.5f, 0.f);
     pVertices[2].vColor = m_vColor;
 
-    m_pVertexPositions[3] = pVertices[3].vPosition = _float3(-0.5f, -0.5f, 0.f);
+    m_pVertexPositions[3] = pVertices[3].vPosition = Vec3(-0.5f, -0.5f, 0.f);
     pVertices[3].vColor = m_vColor;
 
     D3D11_SUBRESOURCE_DATA      VertexInitialData{};

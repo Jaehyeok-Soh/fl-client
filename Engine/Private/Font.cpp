@@ -15,11 +15,10 @@ HRESULT CFont::Initialize(const _tchar* pFontFilePath)
 	return S_OK;
 }
 
-HRESULT CFont::Draw_Text(SpriteBatch* pBatch, const _tchar* pText, const _float2& vPosition, _fvector vColor)
+HRESULT CFont::Draw_Text(SpriteBatch* pBatch, const _tchar* pText, const Vec2& vPosition, const Vec4 &vColor)
 {
-	_float2 vSize = {};
-	::XMStoreFloat2(&vSize, m_pFont->MeasureString(pText));
-	_float2 vFinalPos = vPosition;
+	Vec2 vSize = m_pFont->MeasureString(pText);
+	Vec2 vFinalPos = vPosition;
 	vFinalPos.x -= vSize.x * 0.5f;
 	vFinalPos.y -= vSize.y * 0.5f;
 	m_pFont->DrawString(pBatch, pText, vFinalPos, vColor);

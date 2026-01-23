@@ -92,8 +92,8 @@ HRESULT CVIBuffer_Line_Color::Initialize_Prototype(void* pArg)
     }
 
     // 디버그/피킹용 저장
-    m_pVertexPositions = new _float3[m_iVertexCount];
-    ZeroMemory(m_pVertexPositions, sizeof(_float3) * m_iVertexCount);
+    m_pVertexPositions = new Vec3[m_iVertexCount];
+    ZeroMemory(m_pVertexPositions, sizeof(Vec3) * m_iVertexCount);
 
     return S_OK;
 }
@@ -106,7 +106,7 @@ HRESULT CVIBuffer_Line_Color::Initialize(void* pArg)
 }
 
 // 폴리곤 윤곽: points 0..n-1 → (0-1,1-2,...,n-2,n-1, n-1-0)
-HRESULT CVIBuffer_Line_Color::Update_PolygonEdges(const std::vector<_float3>& points)
+HRESULT CVIBuffer_Line_Color::Update_PolygonEdges(const std::vector<Vec3>& points)
 {
     const _uint n = static_cast<_uint>(points.size());
     if (n < 2)
@@ -147,7 +147,7 @@ HRESULT CVIBuffer_Line_Color::Update_PolygonEdges(const std::vector<_float3>& po
 }
 
 // 임의 라인 집합: lineVertices = [p0,p1,p2,p3,...] (짝수개) 라고 가정
-HRESULT CVIBuffer_Line_Color::Update_Lines(const std::vector<_float3>& lineVertices)
+HRESULT CVIBuffer_Line_Color::Update_Lines(const std::vector<Vec3>& lineVertices)
 {
     const _uint vCount = static_cast<_uint>(lineVertices.size());
     if (vCount == 0 || (vCount & 1))
@@ -177,7 +177,7 @@ HRESULT CVIBuffer_Line_Color::Update_Lines(const std::vector<_float3>& lineVerti
     return S_OK;
 }
 
-_bool CVIBuffer_Line_Color::IntersectWithPlane(OUT _float4& vOut)
+_bool CVIBuffer_Line_Color::IntersectWithPlane(OUT Vec3& vOut)
 {
     const _uint iTriangleCount = m_iIndexCount / 3;
     _uint iCout = { 0 };

@@ -23,14 +23,12 @@ HRESULT CBounding_AABB::Initialize(const BOUNDING_DESC* pInitializeDesc)
     return S_OK;
 }
 
-void CBounding_AABB::Update(_fmatrix matWorld)
+void CBounding_AABB::Update(const Matrix &matWorld)
 {
-    _matrix matSrc = matWorld;
-    
-    matSrc.r[0] = ::XMVectorSet(1.f, 0.f, 0.f, 0.f) * ::XMVector3Length(matWorld.r[0]);
-    matSrc.r[1] = ::XMVectorSet(0.f, 1.f, 0.f, 0.f) * ::XMVector3Length(matWorld.r[1]);
-    matSrc.r[2] = ::XMVectorSet(0.f, 0.f, 1.f, 0.f) * ::XMVector3Length(matWorld.r[2]);
-
+    Matrix matSrc = matWorld;
+    matSrc.Right(Vec4::UnitX * matWorld.Right());
+    matSrc.Up(Vec4::UnitY * matWorld.Up());
+    matSrc.Backward(-Vec4::UnitZ * matWorld.Backward());
     m_pOriginalDesc->Transform(*m_pDesc, matSrc);
 }
 
@@ -54,22 +52,22 @@ _bool CBounding_AABB::Intersect_Bounding(EColliderType eType, CBounding* pOther)
     return bIsColl;
 }
 
-_bool CBounding_AABB::IntersectWithRay_World(class CGameInstance* pGameInstance, OUT _float4& vOut)
+_bool CBounding_AABB::IntersectWithRay_World(class CGameInstance* pGameInstance, OUT Vec3& vOut)
 {
     return pGameInstance->IntersectrayWithAABB_World(m_pDesc, vOut);
 }
 
-_bool CBounding_AABB::IntersectWithRay_Local(class CGameInstance* pGameInstance, OUT _float4& vOut)
+_bool CBounding_AABB::IntersectWithRay_Local(class CGameInstance* pGameInstance, OUT Vec3& vOut)
 {
     return pGameInstance->IntersectrayWithAABB_Local(m_pOriginalDesc, vOut);
 }
 
-_bool CBounding_AABB::IntersectWithRay_World(CRay* pRay, OUT _float4& vOut)
+_bool CBounding_AABB::IntersectWithRay_World(CRay* pRay, OUT Vec3& vOut)
 {
     return pRay->IntersectrayWithAABB_World(m_pDesc, vOut);
 }
 
-_bool CBounding_AABB::IntersectWithRay_Local(CRay* pRay, OUT _float4& vOut)
+_bool CBounding_AABB::IntersectWithRay_Local(CRay* pRay, OUT Vec3& vOut)
 {
     return pRay->IntersectrayWithAABB_Local(m_pOriginalDesc, vOut);
 }

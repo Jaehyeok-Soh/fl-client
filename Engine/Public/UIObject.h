@@ -38,10 +38,10 @@ public:
 	_float Get_PosY() const { return m_fY; }
 	_float Get_Ratio() const { return m_fRatio; }
 	void Set_Size(_float fX, _float fY);
-	void Set_Size(_float2 vSize);
-	void Set_Position(_float2 vPosition);
+	void Set_Size(const Vec2 &vSize);
+	void Set_Position(const Vec2& vPosition);
 	void Set_Position(_float fX, _float fY);
-	void Move_Position_Lerp(const _float2 vTargetPosition);
+	void Move_Position_Lerp(const Vec2 &vTargetPosition);
 	void Set_Pass(_uint iPass) { m_iPass = iPass; }
 	_bool IsVisible() const { return m_bVisible; }
 	virtual void Set_Visible() { m_bVisible = true; }

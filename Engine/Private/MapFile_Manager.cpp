@@ -151,7 +151,7 @@ void from_json(const json& j, TRIGGERBOX_SAVEDATA& data)
 	{
 		if (v.size() == 3)
 		{
-			data.vecPositions.push_back(_float3(v[0], v[1], v[2]));
+			data.vecPositions.push_back(Vec3(v[0], v[1], v[2]));
 		}
 	}
 }
@@ -334,7 +334,7 @@ void from_json(const json& j, POLYGON_SAVEDATA& data)
 	{
 		if (v.size() == 3)
 		{
-			data.vecVertices.push_back(_float3(v[0], v[1], v[2]));
+			data.vecVertices.push_back(Vec3(v[0], v[1], v[2]));
 		}
 	}
 }

@@ -27,8 +27,8 @@ private:
 public:
 	void Update_View();
 
-	const _float4x4& Get_ViewMatrix() const { return m_matView; }
-	const _float4x4& Get_ProjectionMatrix() const { return m_matProjection; }
+	const Matrix& Get_ViewMatrix() const { return m_matView; }
+	const Matrix& Get_ProjectionMatrix() const { return m_matProjection; }
 
 	_float Get_Fov() const { return m_fFov; }
 	void Set_Fov(_float fFov) { m_fFov; Update_Proj(); }
@@ -49,8 +49,8 @@ private:
 	_float m_fNear = { 0.f };
 	_float m_fFar = { 0.f };
 
-	_float4x4 m_matView = {};
-	_float4x4 m_matProjection = {};
+	Matrix m_matView = {};
+	Matrix m_matProjection = {};
 public:
 	static CCamera* Create();
 	virtual CComponent* Clone(void* pArg) override;

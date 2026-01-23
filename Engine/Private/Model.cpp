@@ -14,7 +14,7 @@ CModel::CModel(ID3D11Device* pDevice, ID3D11DeviceContext* pDeviceContext)
 	, m_pDevice(pDevice)
 	, m_pDeviceContext(pDeviceContext)
 {
-	::XMStoreFloat4x4(&m_matPreTransform, ::XMMatrixIdentity());
+	m_matPreTransform = Matrix::Identity;
 	Safe_AddRef(m_pDevice);
 	Safe_AddRef(m_pDeviceContext);
 }
@@ -63,8 +63,8 @@ HRESULT CModel::Initialize_Prototype(void* pArg)
 
 	MODEL_ORIGIN_DESC* pDesc = static_cast<MODEL_ORIGIN_DESC*>(pArg);
 	m_eType = pDesc->eType;
-	if(pDesc->pMatPreTransform)
-		::memcpy(&m_matPreTransform, pDesc->pMatPreTransform, sizeof(_float4x4));
+	if (pDesc->pMatPreTransform)
+		m_matPreTransform = *pDesc->pMatPreTransform;
 
 	if (!pDesc->pPrototypeTags)
 	{
@@ -112,9 +112,8 @@ HRESULT CModel::Initialize_Prototype(void* pArg)
 	m_vecPrevAnimationPose.resize(m_vecBones.size());
 	m_vecCurrAnimationPose.resize(m_vecBones.size());
 	for (size_t i = 0; i < m_vecBones.size(); ++i)
-	{
-		m_vecBones[i]->Setup_BindPoseTransformMatrix(m_vecBones, ::XMLoadFloat4x4(&m_matPreTransform));
-	}
+		m_vecBones[i]->Setup_BindPoseTransformMatrix(m_vecBones, m_matPreTransform);
+
 	return S_OK;
 }
 
@@ -195,7 +194,7 @@ void CModel::Play_Animation(_float fTimeDelta)
 	
 	for (size_t i = 0; i < m_vecBones.size(); ++i)
 	{
-		m_vecBones[i]->Update_CombinedTransformMatrix(m_vecBones, ::XMLoadFloat4x4(&m_matPreTransform));
+		m_vecBones[i]->Update_CombinedTransformMatrix(m_vecBones, m_matPreTransform);
 	}
 }
 
@@ -561,23 +560,23 @@ void CModel::Blend_Animation(_float fTimeDelta, _float fRatio)
 	_uint i = {};
 	for (auto& pBone : m_vecBones)
 	{
-		_matrix matTransformation = { ::XMMatrixIdentity() };
-		_vector vScale = {};
-		_vector vQuaternion = {};
-		_vector vTranslation = {};
+		Matrix matTransformation = Matrix::Identity;
+		Vec3 vScale = {};
+		Quat vQuaternion = {};
+		Vec3 vTranslation = {};
 
-		vScale = ::XMVectorLerp(::XMLoadFloat3(&m_vecPrevAnimationPose[i].vScale), ::XMLoadFloat3(&m_vecCurrAnimationPose[i].vScale), fRatio);
-		vQuaternion = ::XMQuaternionSlerp(::XMLoadFloat4(&m_vecPrevAnimationPose[i].vQuaterion), ::XMLoadFloat4(&m_vecCurrAnimationPose[i].vQuaterion), fRatio);
-		vTranslation = ::XMVectorLerp(::XMVectorSetW(::XMLoadFloat3(&m_vecPrevAnimationPose[i].vTranslation), 1.f), ::XMVectorSetW(::XMLoadFloat3(&m_vecCurrAnimationPose[i].vTranslation), 1.f), fRatio);
-
-		matTransformation = ::XMMatrixAffineTransformation(vScale, ::XMVectorSet(0.f, 0.f, 0.f, 1.f), vQuaternion, vTranslation);
+		vScale = Vec3::Lerp(m_vecPrevAnimationPose[i].vScale, m_vecCurrAnimationPose[i].vScale, fRatio);
+		vQuaternion = Quat::Slerp(m_vecPrevAnimationPose[i].vQuaterion, m_vecCurrAnimationPose[i].vQuaterion, fRatio);
+		vTranslation = Vec3::Lerp(m_vecPrevAnimationPose[i].vTranslation, m_vecCurrAnimationPose[i].vTranslation, fRatio);
+		
+		matTransformation = Matrix::CreateScale(vScale) * Matrix::CreateFromQuaternion(vQuaternion) * Matrix::CreateTranslation(vTranslation);
 		pBone->Set_TransformationMatrix(matTransformation);
 		++i;
 	}
 
 	for (size_t i = 0; i < m_vecBones.size(); ++i)
 	{
-		m_vecBones[i]->Update_CombinedTransformMatrix(m_vecBones, ::XMLoadFloat4x4(&m_matPreTransform));
+		m_vecBones[i]->Update_CombinedTransformMatrix(m_vecBones, m_matPreTransform);
 	}
 }
 

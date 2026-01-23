@@ -42,20 +42,20 @@ HRESULT CVIBuffer_Particle_Rect::Initialize_Prototype(void* pArg)
     VTXPOSTEX* pVertices = new VTXPOSTEX[m_iVertexCount];
     ZeroMemory(pVertices, sizeof(VTXPOSTEX) * m_iVertexCount);
 
-    m_pVertexPositions = new _float3[m_iVertexCount];
-    ZeroMemory(m_pVertexPositions, sizeof(_float3) * m_iVertexCount);
+    m_pVertexPositions = new Vec3[m_iVertexCount];
+    ZeroMemory(m_pVertexPositions, sizeof(Vec3) * m_iVertexCount);
 
-    m_pVertexPositions[0] = pVertices[0].vPosition = _float3(-0.5f, 0.5f, 0.f);
-    pVertices[0].vUV = _float2(0.0f, 0.f);
+    m_pVertexPositions[0] = pVertices[0].vPosition = Vec3(-0.5f, 0.5f, 0.f);
+    pVertices[0].vUV = Vec2(0.0f, 0.f);
 
-    m_pVertexPositions[1] = pVertices[1].vPosition = _float3(0.5f, 0.5f, 0.f);
-    pVertices[1].vUV = _float2(1.0f, 0.f);
+    m_pVertexPositions[1] = pVertices[1].vPosition = Vec3(0.5f, 0.5f, 0.f);
+    pVertices[1].vUV = Vec2(1.0f, 0.f);
 
-    m_pVertexPositions[2] = pVertices[2].vPosition = _float3(0.5f, -0.5f, 0.f);
-    pVertices[2].vUV = _float2(1.0f, 1.f);
+    m_pVertexPositions[2] = pVertices[2].vPosition = Vec3(0.5f, -0.5f, 0.f);
+    pVertices[2].vUV = Vec2(1.0f, 1.f);
 
-    m_pVertexPositions[3] = pVertices[3].vPosition = _float3(-0.5f, -0.5f, 0.f);
-    pVertices[3].vUV = _float2(0.0f, 1.f);
+    m_pVertexPositions[3] = pVertices[3].vPosition = Vec3(-0.5f, -0.5f, 0.f);
+    pVertices[3].vUV = Vec2(0.0f, 1.f);
 
     D3D11_SUBRESOURCE_DATA      VertexInitialData{};
     VertexInitialData.pSysMem = pVertices;
@@ -117,17 +117,17 @@ HRESULT CVIBuffer_Particle_Rect::Initialize_Prototype(void* pArg)
         _float      fScale = m_pGameInstance->Rand_Float(pParticleDesc->vSize.x, pParticleDesc->vSize.y);
         m_pSpeeds[i] = m_pGameInstance->Rand_Float(pParticleDesc->vSpeed.x, pParticleDesc->vSpeed.y);
 
-        m_pInstanceVertices[i].vRight = _float4(fScale, 0.f, 0.f, 0.f);
-        m_pInstanceVertices[i].vUp = _float4(0.f, fScale, 0.f, 0.f);
-        m_pInstanceVertices[i].vLook = _float4(0.f, 0.f, fScale, 0.f);
-        m_pInstanceVertices[i].vTranslation = _float4(
+        m_pInstanceVertices[i].vRight = Vec4(fScale, 0.f, 0.f, 0.f);
+        m_pInstanceVertices[i].vUp = Vec4(0.f, fScale, 0.f, 0.f);
+        m_pInstanceVertices[i].vLook = Vec4(0.f, 0.f, fScale, 0.f);
+        m_pInstanceVertices[i].vTranslation = Vec4(
             m_pGameInstance->Rand_Float(pParticleDesc->vCenter.x - pParticleDesc->vRange.x * 0.5f, pParticleDesc->vCenter.x + pParticleDesc->vRange.x * 0.5f),
             m_pGameInstance->Rand_Float(pParticleDesc->vCenter.y - pParticleDesc->vRange.y * 0.5f, pParticleDesc->vCenter.y + pParticleDesc->vRange.y * 0.5f),
             m_pGameInstance->Rand_Float(pParticleDesc->vCenter.z - pParticleDesc->vRange.z * 0.5f, pParticleDesc->vCenter.z + pParticleDesc->vRange.z * 0.5f),
             1.f
         );
 
-        m_pInstanceVertices[i].vLifeTime = _float2(0.f, m_pGameInstance->Rand_Float(pParticleDesc->vLifeTime.x, pParticleDesc->vLifeTime.y));
+        m_pInstanceVertices[i].vLifeTime = Vec2(0.f, m_pGameInstance->Rand_Float(pParticleDesc->vLifeTime.x, pParticleDesc->vLifeTime.y));
     }
 
     Safe_Delete_Array(pVertices);

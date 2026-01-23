@@ -75,9 +75,9 @@ private:
 private:
 	ID3D11Texture2D* m_pViewportFrameTexture = { nullptr };
 	ID3D11ShaderResourceView* m_pViewportFrameSRV = { nullptr };
-	_float2 m_vViewportOffset = {};
-	_float2 m_vViewportSize = {};
-	_float2 m_vViewportBounds[2] = {};
+	Vec2 m_vViewportOffset = {};
+	Vec2 m_vViewportSize = {};
+	Vec2 m_vViewportBounds[2] = {};
 public:
 	static CImGui_ToolManager* Create(HWND hWnd, ID3D11Device* pDevice, ID3D11DeviceContext* pDeviceContext, ELevelType eStartLevel);
 	virtual void Free() override;

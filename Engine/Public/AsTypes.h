@@ -15,7 +15,7 @@ typedef struct tagAsBone
 
 	_int iIndex = { -1 };
 	_int iParent = { -1 };
-	_float4x4 matTransform;
+	Matrix matTransform;
 
 	tagAsBone* Clone()
 	{
@@ -35,7 +35,7 @@ typedef struct tagAsMesh
 	_uint iAffectBoneCount = { 0 };
 	vector<_uint> vecAffectBoneIndices;
 
-	vector<_float4x4> vecOffsetMatrices;
+	vector<Matrix> vecOffsetMatrices;
 }AS_MESH;
 
 typedef struct tagAsMaterial
@@ -45,16 +45,16 @@ typedef struct tagAsMaterial
 	string strNormalFile = { "" };
 	string strSpecularFile = { "" };
 
-	_float4 vAmbient = { 0.f, 0.f, 0.f, 0.f };
-	_float4 vDiffuse = { 0.f, 0.f, 0.f, 0.f };
-	_float4 vSpecular = { 0.f, 0.f, 0.f, 0.f };
-	_float4 vEmissive = { 0.f, 0.f, 0.f, 0.f };
+	Vec4 vAmbient = { 0.f, 0.f, 0.f, 0.f };
+	Vec4 vDiffuse = { 0.f, 0.f, 0.f, 0.f };
+	Vec4 vSpecular = { 0.f, 0.f, 0.f, 0.f };
+	Vec4 vEmissive = { 0.f, 0.f, 0.f, 0.f };
 }AS_MATERIAL;
 
 typedef struct tagAsBlendWeight
 {
 	XMUINT4 vIndices = { 0, 0, 0, 0 };
-	_float4 vWeights = { 0.f, 0.f, 0.f, 0.f };
+	Vec4 vWeights = { 0.f, 0.f, 0.f, 0.f };
 
 	void Set(_uint iIndex, _uint iBoneIndex, _float fWeight)
 	{
@@ -136,9 +136,9 @@ typedef struct tagBoneWieght
 typedef struct tagAsKeyFrame
 {
 	_float fTrackPosition = { 0.0f };
-	_float3 vScale = { 0.0f, 0.0f, 0.0f };
-	_float4 vQuaternion = { 0.0f, 0.0f, 0.0f, 0.0f };
-	_float3 vTranslation = { 0.0f, 0.0f, 0.0f };
+	Vec3 vScale = { 0.0f, 0.0f, 0.0f };
+	Vec4 vQuaternion = { 0.0f, 0.0f, 0.0f, 0.0f };
+	Vec3 vTranslation = { 0.0f, 0.0f, 0.0f };
 }AS_KEYFRAME;
 
 // KeyFrame을 담고있는 구조체

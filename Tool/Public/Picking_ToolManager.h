@@ -19,10 +19,10 @@ public:
 	void Clear_Picking();
 	void Destroy_PickingManager();
 public:
-	const _float4& Get_PickingPos() const { return m_vPickingPos; }
+	const Vec3& Get_PickingPos() const { return m_vPickingPos; }
 	_bool Picking_ForDummy();
 private:
-	_float4 m_vPickingPos = {};
+	Vec3 m_vPickingPos = {};
 	std::unordered_set<CToolObject*> m_PickingList;
 };
 

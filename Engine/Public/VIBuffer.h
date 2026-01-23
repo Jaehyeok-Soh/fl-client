@@ -32,7 +32,7 @@ public:
 
 	D3D11_USAGE Get_VB_Usage() const { return m_VB_Usage; }
 	D3D11_USAGE Get_IB_Usage() const { return m_IB_Usage; }
-	const _float3* Get_VertexPositionData() const { return m_pVertexPositions; }
+	const Vec3* Get_VertexPositionData() const { return m_pVertexPositions; }
 	const _uint* Get_IndicesData() const { return m_pIndices; }
 	_uint Get_IndicesCount() const { return m_iIndexCount; }
 protected:
@@ -40,7 +40,7 @@ protected:
 	ID3D11Buffer* m_pIB = { nullptr };
 	ID3D11Device* m_pDevice = { nullptr };
 	ID3D11DeviceContext* m_pDeviceContext = { nullptr };
-	_float3* m_pVertexPositions = { nullptr };
+	Vec3* m_pVertexPositions = { nullptr };
 	_uint* m_pIndices = { nullptr };
 protected:
 	D3D11_PRIMITIVE_TOPOLOGY m_ePrimitiveType = { D3D11_PRIMITIVE_TOPOLOGY::D3D10_PRIMITIVE_TOPOLOGY_TRIANGLELIST };

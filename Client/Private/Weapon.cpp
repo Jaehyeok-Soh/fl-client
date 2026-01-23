@@ -70,11 +70,7 @@ void CWeapon::Update(_float fTimeDelta)
 {
 	Super::Update(fTimeDelta);
 	if (CCollider* pCollider = Get_Component<CCollider>())
-	{
-		_matrix matWorld = ::XMLoadFloat4x4(&m_matCombinedWorld);
-		_matrix matScaling = ::XMMatrixScaling(100.f, 100.f, 100.f);
-		pCollider->Update(matScaling * matWorld);
-	}
+		pCollider->Update(Matrix::CreateScale(100.f, 100.f, 100.f) * m_matCombinedWorld);
 }
 
 void CWeapon::Update_Late(_float fTimeDelta)
@@ -89,10 +85,10 @@ void CWeapon::Ready_Before_Render(_float fTimeDelta)
 	switch (m_eState)
 	{
 	case Client::CWeapon::HAND:
-		Super::Update_CombinedWorldMatrix(::XMLoadFloat4x4(m_pMatHandSocket) * ::XMLoadFloat4x4(m_pMatParent));
+		Super::Update_CombinedWorldMatrix((*m_pMatHandSocket) * (*m_pMatParent));
 		break;
 	default:
-		Super::Update_CombinedWorldMatrix(::XMLoadFloat4x4(m_pMatSocket) * ::XMLoadFloat4x4(m_pMatParent));
+		Super::Update_CombinedWorldMatrix((*m_pMatSocket) * (*m_pMatParent));
 		break;
 	}
 

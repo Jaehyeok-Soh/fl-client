@@ -154,7 +154,7 @@ void CStateBase::SetupLook_CameraLook()
 	m_pOwnerStateComp->SetupLook_CameraLook();
 }
 
-void CStateBase::SetupLookAt(_fvector vPoint)
+void CStateBase::SetupLookAt(const Vec3& vPoint)
 {
 	m_pOwnerStateComp->SetupLookAt(vPoint);
 }
@@ -179,7 +179,7 @@ _bool CStateBase::Is_AttackPressed() const
 	return m_pOwnerStateComp->Is_AttackPressed();
 }
 
-void CStateBase::Chase_Target(_fvector vTargetPosition, const _float fTimedelta, const _float fSpeedRatio)
+void CStateBase::Chase_Target(Vec3 vTargetPosition, const _float fTimedelta, const _float fSpeedRatio)
 {
 	m_pOwnerStateComp->Chase_Target(vTargetPosition, fTimedelta, fSpeedRatio);
 }

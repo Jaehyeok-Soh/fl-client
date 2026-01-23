@@ -1,5 +1,6 @@
 #include "Tool_Defines.h"
 #include "GameObject.h"
+#include "Transform.h"
 #include "GameInstance.h"
 #include "GodInput.h"
 
@@ -46,11 +47,11 @@ void CGodInput::Update(const _float fTimeDelta)
 
     if (KEY_BUTTON_HOLD(DIK_LCONTROL))
     {
-        Get_Owner()->Get_Component<CTransform>()->Go_Down(XMVectorSet(0.f, 1.f, 0.f, 0.f), fTimeDelta);
+        Get_Owner()->Get_Component<CTransform>()->Go_Down(Vec3::Up, fTimeDelta);
     }
     else if (KEY_BUTTON_HOLD(DIK_SPACE))
     {
-        Get_Owner()->Get_Component<CTransform>()->Go_Up(XMVectorSet(0.f, 1.f, 0.f, 0.f), fTimeDelta);
+        Get_Owner()->Get_Component<CTransform>()->Go_Up(Vec3::Up, fTimeDelta);
     }
 
     if (MOUSE_RBUTTON_HOLD)
@@ -58,7 +59,7 @@ void CGodInput::Update(const _float fTimeDelta)
         _long iMouseMove = {0};
         if (iMouseMove = GET_MOUSE_MOVE_X)
         {
-            Get_Owner()->Get_Component<CTransform>()->Turn(XMVectorSet(0.f, 1.f, 0.f, 0.f), fTimeDelta * iMouseMove * 0.3f);
+            Get_Owner()->Get_Component<CTransform>()->Turn(Vec3::Up, fTimeDelta * iMouseMove * 0.3f);
         }
         iMouseMove = {0};
         if (iMouseMove = GET_MOUSE_MOVE_Y)

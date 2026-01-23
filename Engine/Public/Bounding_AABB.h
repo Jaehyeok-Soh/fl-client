@@ -9,7 +9,7 @@ class ENGINE_DLL CBounding_AABB final : public CBounding
 public:
 	typedef struct tagBoundingAABBDesc : public Super::tagBoundingDesc
 	{
-		_float3 vExtens = {};
+		Vec3 vExtens = {};
 	}BOUNDING_AABB_DESC;
 private:
 	CBounding_AABB(ID3D11Device* pDevice, ID3D11DeviceContext* pDeviceContext);
@@ -19,12 +19,12 @@ private:
 public:
 	BoundingBox* Get_OriginalDesc() { return m_pOriginalDesc; }
 	BoundingBox* Get_Desc() { return m_pDesc; }
-	virtual void Update(_fmatrix matWorld) override;
+	virtual void Update(const Matrix &matWorld) override;
 	virtual _bool Intersect_Bounding(EColliderType eType, CBounding* pOther) override;
-	virtual _bool IntersectWithRay_World(class CGameInstance* pGameInstance, OUT _float4& vOut) override;
-	virtual _bool IntersectWithRay_Local(class CGameInstance* pGameInstance, OUT _float4& vOut) override;
-	virtual _bool IntersectWithRay_World(class CRay* pRay, OUT _float4& vOut) override;
-	virtual _bool IntersectWithRay_Local(class CRay* pRay, OUT _float4& vOut) override;
+	virtual _bool IntersectWithRay_World(class CGameInstance* pGameInstance, OUT Vec3& vOut) override;
+	virtual _bool IntersectWithRay_Local(class CGameInstance* pGameInstance, OUT Vec3& vOut) override;
+	virtual _bool IntersectWithRay_World(class CRay* pRay, OUT Vec3& vOut) override;
+	virtual _bool IntersectWithRay_Local(class CRay* pRay, OUT Vec3& vOut) override;
 #ifdef _DEBUG
 public:
 	virtual HRESULT Render(PrimitiveBatch<VertexPositionColor>* pBatch, _bool bIsColl) override;

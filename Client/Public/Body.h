@@ -35,8 +35,8 @@ public:
 	virtual _bool On_Hit(_uint iCollideMyLayer, ATTACK_DESC* pDesc, CGameObject* pOther) override;
 	virtual HRESULT Render() override;
 public:
-	const _float4x4* Get_SocketMatrix(const _char* szBoneName);
-	const _float4x4* Get_SocketMatrix(_uint iIndex);
+	const Matrix* Get_SocketMatrix(const _char* szBoneName);
+	const Matrix* Get_SocketMatrix(_uint iIndex);
 	CBone* Get_HeadBone();
 	CBone* Get_Spine1Bone();
 	CBone* Get_SpineBone();
