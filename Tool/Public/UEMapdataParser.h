@@ -57,10 +57,12 @@ typedef struct tagParsedMapdataStaticMesh
 
 typedef struct tagParsedMapdataInner
 {
+	/* S R T 저장이 안되어있는 경우가 있음 == 아래값과 동일하기 떄문에 저장이 안된것. */
 	PARSED_MAPDATA_INNER_STATICMESH StaticMesh = {};
 	Vec3 vPosition = { 0.f, 0.f, 0.f };
 	Vec3 vPitchYawRoll = { 0.f, 0.f, 0.f };
-	Vec3 vScale = { 0.f, 0.f, 0.f };
+	Vec3 vScale = { 1.f, 1.f, 1.f };
+
 }PARSED_MAPDATA_INNER;
 
 typedef struct tagParsedMapdataOuter

@@ -18,6 +18,8 @@ extern HINSTANCE	g_hInstance;
 
 #include <cstdint>
 #include <cmath>
+#include <shobjidl.h>
+
 
 #include "ImGuizmo.h"
 #include "ImSequencer.h"

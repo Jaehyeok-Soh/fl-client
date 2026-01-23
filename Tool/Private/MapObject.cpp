@@ -1,6 +1,7 @@
 #include "MapObject.h"
 #include "Model.h"
 #include "Shader.h"
+#include "GameInstance.h"
 #include "StaticModel.h"
 
 USING(Tool)
@@ -11,7 +12,7 @@ CMapObject::CMapObject(EToolObjectType eType, ID3D11Device* pDevice, ID3D11Devic
 }
 
 CMapObject::CMapObject(const CMapObject& rhs)
-    : CToolObject(rhs) , m_wstrModelName(rhs.m_wstrModelName) , m_eMapObjectType(rhs.m_eMapObjectType)
+    : CToolObject(rhs) , m_wstrModelPath(rhs.m_wstrModelPath) , m_eMapObjectType(rhs.m_eMapObjectType) , m_isLoaded(rhs.m_isLoaded)
 {
 }
 
@@ -31,29 +32,53 @@ HRESULT CMapObject::Initialize(void* pArg)
     CMapObject::MAPOBJECT_DESC* pDesc = static_cast<CMapObject::MAPOBJECT_DESC*>(pArg);
 
     /* Mesh 확장자로 바껴있읉첸디 */
-    m_wstrModelName = pDesc->wstrModelTag;
+    m_wstrModelPath = pDesc->wstrModelPath;
+    m_isLoaded = pDesc->isLoaded;
+
 
     if (FAILED(CMapObject::Ready_Component()))
         return E_FAIL;
+
+
+
+
 
     return S_OK;
 }
 
 HRESULT CMapObject::Ready_Component()
 {
-    if (m_eMapObjectType == EMapObject_Type::STATICMODEL)
-    {
-        /*Static Model 인경우 Model을 바로 생성해준다*/
-        CModel::MODEL_ORIGIN_DESC tModelDesc{};
-        tModelDesc.wstrModelFolderName  = m_wstrModelName;
-        tModelDesc.iPrototypeLevelIndex = ENUM_TO_UINT(ELevelType::MAP);
-        tModelDesc.eType = EModelType::STATIC;
-        /* Static Model 인경우 */
-    }
-    else
-    {
+    CModel::MODEL_COPY_DESC tDesc{};
 
-    }
+    if (FAILED(Add_Component<CShader>(ENUM_TO_UINT(ELevelType::STATIC), L"Prototype_Component_Shader_VtxMesh", nullptr)))
+        return E_FAIL;
+
+    if (FAILED(Add_Component<CModel>(ENUM_TO_UINT(ELevelType::MAP), L"Prototype_Component_Model_" + m_wstrModelPath, &tDesc)))
+        return S_OK;
+
+
+    CTransform* pTransform = Get_Component<CTransform>();
+
+    //Vec3 vPos = pTransform->Get_Info(TRANSFORM_INFO_STATE::POS);
+    //std::swap(vPos.y,vPos.z);
+    //pTransform->Set_Info(TRANSFORM_INFO_STATE::POS , vPos);
+
+
+
+    //if (m_eMapObjectType == EMapObject_Type::STATICMODEL)
+    //{
+    //    if (m_isLoaded = true)
+    //    {
+    //    }
+    //    else
+    //    {
+    //        Add_Component<CModel>(ENUM_TO_UINT(ELevelType::MAP), L"Prototype_Component_Model_" + m_wstrModelPath, &tDesc);
+    //    }
+    //}
+    //else
+    //{
+
+    //}
 
     return S_OK;
 }
@@ -88,6 +113,8 @@ void CMapObject::Ready_Before_Render(const _float fTimeDelta)
 {
     Super::Ready_Before_Render(fTimeDelta);
 
+
+    m_pGameInstance->Push_RenderObject(RENDER_CATEGORY::NONELIGHT , this);
 }
 
 HRESULT CMapObject::Render()
@@ -98,10 +125,12 @@ HRESULT CMapObject::Render()
     CModel*     pModel = CGameObject::Get_Component<CModel>();
     CShader*    pShader = CGameObject::Get_Component<CShader>();
 
-    if (!pModel || !pShader ) return E_FAIL;
+    if (!pModel || !pShader ) return S_OK;
+
+    pShader->Bind_TransformData(CGameObject::Get_Component<CTransform>()->Get_WorldMatrix());
 
     UINT32 iMeshCount = pModel->Get_MeshCount();
-
+    
 
     for (UINT32 i = 0; i < iMeshCount; ++i)
     {
@@ -113,6 +142,34 @@ HRESULT CMapObject::Render()
 
     return S_OK;
 }
+
+void CMapObject::Draw_ImGui()
+{
+    Super::Draw_ImGui();
+
+    
+    CTransform* pTransfrom = Get_Component<CTransform>();
+
+    if (!pTransfrom) return;
+
+    Matrix WorldMatrix = pTransfrom->Get_WorldMatrix();
+    
+    Vec3 vPosition  = WorldMatrix.Translation();
+    Vec3 vRotation  = WorldMatrix.ToEuler();
+    Vec3 vScale     = pTransfrom->Get_Scaled();
+
+
+    if (ImGui::InputFloat3("Position" , &vPosition.x ))
+        pTransfrom->Set_Info(TRANSFORM_INFO_STATE::POS, vPosition);
+    if (ImGui::InputFloat3("Rotation", &vRotation.x))
+        return;
+    if (ImGui::InputFloat3("Scale", &vScale.x))
+        pTransfrom->Set_Scale(vScale);
+
+    return;
+}
+
+
 
 
 void CMapObject::Free()

@@ -18,9 +18,8 @@ class CLevel_Map final : public CLevel
 	};
 	enum class Elements
 	{
-		Inspector = 0,
 		ObjectList,
-		CreateMode,
+		MapData,
 		END
 	};
 private:
@@ -50,6 +49,8 @@ private:
 	CToolObject* m_pSelectedObject = { nullptr };
 	std::array<DelegateHandle, ENUM_TO_SZET(Event::END)>	m_EventHandles;
 	array<class CImGui_Panel* , ENUM_TO_SZET(Event::END)>	m_arrayImGuiPanel{};
+
+
 public:
 	static CLevel_Map* Create(ID3D11Device* pDevice, ID3D11DeviceContext* pDeviceContext);
 	virtual void Free() override;

@@ -174,6 +174,7 @@
     <ClInclude Include="..\public\Level_UI.h" />
     <ClInclude Include="..\Public\Loader.h" />
     <ClInclude Include="..\Public\MapObject.h" />
+    <ClInclude Include="..\Public\Panel_MapDataController.h" />
     <ClInclude Include="..\Public\Panel_MapObjectList.h" />
     <ClInclude Include="..\Public\Panel_ModelConverter.h" />
     <ClInclude Include="..\Public\Picking_ToolManager.h" />
@@ -222,6 +223,7 @@
     <ClCompile Include="..\Private\Loader.cpp" />
     <ClCompile Include="..\Private\MainApplication.cpp" />
     <ClCompile Include="..\Private\MapObject.cpp" />
+    <ClCompile Include="..\Private\Panel_MapDataController.cpp" />
     <ClCompile Include="..\Private\Panel_MapObjectList.cpp" />
     <ClCompile Include="..\Private\Panel_ModelConverter.cpp" />
     <ClCompile Include="..\Private\Picking_ToolManager.cpp" />

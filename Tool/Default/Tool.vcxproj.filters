@@ -94,9 +94,6 @@
     <Filter Include="06. ImGui\01. Panel\Map">
       <UniqueIdentifier>{b4e4e477-acb3-4c83-a84e-a16a77ffbe18}</UniqueIdentifier>
     </Filter>
-    <Filter Include="06. ImGui\01. Panel\Map\Pannel_MapObjectList">
-      <UniqueIdentifier>{9755e817-fb8d-4b80-9214-161ecfd0e6ce}</UniqueIdentifier>
-    </Filter>
     <Filter Include="06. ImGui\01. Panel\Asimp">
       <UniqueIdentifier>{1502112a-c44e-484f-85c7-3e71f9a1a6b0}</UniqueIdentifier>
     </Filter>
@@ -105,6 +102,12 @@
     </Filter>
     <Filter Include="02. GameObjects\Map\00. MapObject\01. StaticMesh">
       <UniqueIdentifier>{2cfbf0d2-bd5d-4728-87d5-d2bb19dfb549}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="06. ImGui\01. Panel\Map\Panel_MapObjectList">
+      <UniqueIdentifier>{9755e817-fb8d-4b80-9214-161ecfd0e6ce}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="06. ImGui\01. Panel\Map\Panel_MapDataControler">
+      <UniqueIdentifier>{418b41f9-ac00-471b-99f0-07f9141edff7}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
@@ -238,7 +241,7 @@
       <Filter>02. GameObjects</Filter>
     </ClInclude>
     <ClInclude Include="..\Public\Panel_MapObjectList.h">
-      <Filter>06. ImGui\01. Panel\Map\Pannel_MapObjectList</Filter>
+      <Filter>06. ImGui\01. Panel\Map\Panel_MapObjectList</Filter>
     </ClInclude>
     <ClInclude Include="..\Public\Panel_ModelConverter.h">
       <Filter>06. ImGui\01. Panel\Asimp</Filter>
@@ -248,6 +251,9 @@
     </ClInclude>
     <ClInclude Include="..\Public\StaticModel.h">
       <Filter>02. GameObjects\Map\00. MapObject\01. StaticMesh</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\Panel_MapDataController.h">
+      <Filter>06. ImGui\01. Panel\Map\Panel_MapDataControler</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -376,7 +382,7 @@
       <Filter>02. GameObjects</Filter>
     </ClCompile>
     <ClCompile Include="..\Private\Panel_MapObjectList.cpp">
-      <Filter>06. ImGui\01. Panel\Map\Pannel_MapObjectList</Filter>
+      <Filter>06. ImGui\01. Panel\Map\Panel_MapObjectList</Filter>
     </ClCompile>
     <ClCompile Include="..\Private\Panel_ModelConverter.cpp">
       <Filter>06. ImGui\01. Panel\Asimp</Filter>
@@ -386,6 +392,9 @@
     </ClCompile>
     <ClCompile Include="..\Private\StaticModel.cpp">
       <Filter>02. GameObjects\Map\00. MapObject\01. StaticMesh</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\Panel_MapDataController.cpp">
+      <Filter>06. ImGui\01. Panel\Map\Panel_MapDataControler</Filter>
     </ClCompile>
   </ItemGroup>
 </Project>

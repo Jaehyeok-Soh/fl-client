@@ -50,6 +50,14 @@ HRESULT CLevel_Assimp::Awake(const _uint iLevelID)
 	Matrix matPreTransformScaling = {};
 	Matrix matPreTransformMapObject = matUECoord * matPreTransformScaling100;
 
+	//Map
+	{
+		CConverter* pConverter = CConverter::Create(m_pDevice, m_pDeviceContext, L"Map/Test/", matUECoord, false);
+		pConverter->ReadAndExportFile();
+		Safe_Release(pConverter);
+	}
+
+
 	/*
 	//Sword
 	{
@@ -171,14 +179,9 @@ HRESULT CLevel_Assimp::Awake(const _uint iLevelID)
 		Safe_Release(pConverter);
 	}
 	*/
+
 #pragma endregion
 	
-	// Map
-	//{
-	//	CConverter* pConverter = CConverter::Create(m_pDevice, m_pDeviceContext, L"Map/Test/", matPreTransformMapObject, false);
-	//	pConverter->ReadAndExportFile();
-	//	Safe_Release(pConverter);
-	//}
 
 	//// Map Parsing
 	//{

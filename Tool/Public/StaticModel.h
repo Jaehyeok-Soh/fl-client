@@ -3,11 +3,11 @@
 
 class CStaticModel : public CMapObject
 {
-	using Super = CToolObject;
+	using Super = CMapObject;
 public:
 	typedef struct tagStaticMesh : public CMapObject::MAPOBJECT_DESC
 	{
-	}STATICMESH_DESC;
+	}STATICMODEL_DESC;
 protected:
 	CStaticModel(EToolObjectType eType, ID3D11Device* pDevice, ID3D11DeviceContext* pDeviceContext);
 	explicit CStaticModel(const CStaticModel& rhs);

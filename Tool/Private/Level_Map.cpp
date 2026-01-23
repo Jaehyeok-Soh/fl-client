@@ -17,6 +17,7 @@
 ///////////
 #include "ImGui_Base.h"
 #include "Panel_MapObjectList.h"
+#include "Panel_MapDataController.h"
 
 /////////////
 // Manager //
@@ -49,6 +50,9 @@ HRESULT CLevel_Map::Initialize()
 
 	if (FAILED(Ready_Camera_Layer(g_wszCameraLayer)))
 		return E_FAIL;
+
+
+	m_vClearColor = {1.f,1.f,1.f,1.f};
 
 	return S_OK;
 }
@@ -121,6 +125,8 @@ void CLevel_Map::Render_Elements()
 HRESULT CLevel_Map::Reday_Gui()
 {
 	m_arrayImGuiPanel[static_cast<UINT32>(CLevel_Map::Elements::ObjectList)] = CPanel_MapObjectList::Create(" Map Object List ", this  ,m_pDevice , m_pDeviceContext);
+	m_arrayImGuiPanel[static_cast<UINT32>(CLevel_Map::Elements::MapData)] = CPanel_MapDataController::Create(" Map Data Controller ", this, m_pDevice, m_pDeviceContext);
+
 	return S_OK;
 }
 

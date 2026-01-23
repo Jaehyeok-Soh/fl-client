@@ -8,6 +8,7 @@
 #include "Model.h"
 #include "UEMapdataParser.h"
 #include "UEMapDataLoader.h"
+#include "StaticModel.h"
 
 CUEMapDataLoader::CUEMapDataLoader(ID3D11Device* pDevice, ID3D11DeviceContext* pDeviceContext)
 	: m_pDevice(pDevice)
@@ -98,21 +99,21 @@ HRESULT CUEMapDataLoader::Make_StaticModel(const wstring& wstrRawDataFilePath, c
 			//	return E_FAIL;
 			//}
 		}
-		// StaticModel
+		//\StaticModel
 		else
 		{			
-			//CStaticModel::STATICMODEL_DESC desc = {};
-			//desc.wstrLayerTag = wstrStaticModelLayerTag;
-			//desc.iLevelIndex = ENUM_TO_UINT(LEVELID::MAP);
-			//desc.wstrFileName = Engine::Engine_Utils::ToWString(strFilteredName);
-			//if (!(pResult = m_pGameInstance->Add_GameObject(ENUM_TO_UINT(LEVELID::MAP),
-			//	L"Prototype_GameObject_StaticModel",
-			//	ENUM_TO_UINT(LEVELID::MAP),
-			//	wstrStaticModelLayerTag, &desc)))
-			//{
-			//	Safe_Release(pParser);
-			//	return E_FAIL;
-			//}
+			CStaticModel::STATICMODEL_DESC desc = {};
+			desc.wstrLayerTag = wstrStaticModelLayerTag;
+			desc.iLevelIndex = ENUM_TO_UINT(ELevelType::MAP);
+			desc.wstrModelPath = Engine::Engine_Utils::ToWString(strFilteredName);
+			if (!(pResult = m_pGameInstance->Add_GameObject(desc.iLevelIndex,
+				L"Prototype_GameObject_StaticModel",
+				desc.iLevelIndex,
+				wstrStaticModelLayerTag, &desc)))
+			{
+				Safe_Release(pParser);
+				return E_FAIL;
+			}
 		}
 
 		CTransform* pTransform = pResult->Get_Component<CTransform>();
