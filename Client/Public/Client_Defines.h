@@ -167,8 +167,8 @@ namespace Client
 	typedef struct tagColMeshHitInformation
 	{
 		class CColMesh* pColMesh = { nullptr };
-		_float3 vHitPosition = { 0.f, 0.f, 0.f };
-		_float3 vNormal = { 0.f, 1.f, 0.f };
+		Vec3 vHitPosition = { 0.f, 0.f, 0.f };
+		Vec3 vNormal = { 0.f, 1.f, 0.f };
 		_float fDistance = D3D11_FLOAT32_MAX;
 		_int iTriangleIndex = -1;
 		ESurfaceType eSurfaceType = ESurfaceType::NONE;
@@ -176,13 +176,13 @@ namespace Client
 
 	typedef struct tagWallSpaceInformation
 	{
-		_float3 vCurrentUp = { 0.f, 1.f, 0.f };
-		_float3 vCurrentRight = { 1.f, 0.f, 0.f };
-		_float3 vCurrentLook = { 0.f, 0.f, 1.f };
+		Vec3 vCurrentUp = { 0.f, 1.f, 0.f };
+		Vec3 vCurrentRight = { 1.f, 0.f, 0.f };
+		Vec3 vCurrentLook = { 0.f, 0.f, 1.f };
 
-		_float3 vTargetUp = { 0.f, 1.f, 0.f };
-		_float3 vTargetRight = { 1.f, 0.f, 0.f };
-		_float3 vTargetLook = { 0.f, 0.f, 1.f };
+		Vec3 vTargetUp = { 0.f, 1.f, 0.f };
+		Vec3 vTargetRight = { 1.f, 0.f, 0.f };
+		Vec3 vTargetLook = { 0.f, 0.f, 1.f };
 
 		_float fAttachAlpha = { 0.f };
 	}WALLSPACE_INFO;
@@ -192,7 +192,7 @@ namespace Client
 		_int iTriangleIndex = -1;
 		_float fMaxRopeLength = D3D11_FLOAT32_MAX;
 		class CColMesh* pColMesh = { nullptr };
-		_float3 vHitPosition = { 0.f, 0.f, 0.f };
+		Vec3 vHitPosition = { 0.f, 0.f, 0.f };
 		WALLSPACE_INFO wallSpaceInfo = {};		
 	}ROPE_INFO;
 

@@ -21,7 +21,7 @@ public:
 		wstring wstrBodyModelTag = { L"" };
 		wstring wstrNavigationPrototypeTag = { L"" };
 		_int iNavigationCellIndex = { -1 };
-		_float3 vSpawnPosition = {};
+		Vec3 vSpawnPosition = {};
 	}PLAYER_DESC;
 	enum Part : _uint
 	{

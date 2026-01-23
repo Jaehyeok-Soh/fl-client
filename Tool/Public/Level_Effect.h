@@ -47,7 +47,7 @@ private:
 	HRESULT Ready_Gui();
 	HRESULT Ready_CameraSetting(const _uint iLevelID);
 	HRESULT Ready_EffectObjectSetting();
-
+	
 	void Render_Elements();
 	void Ready_Event();
 	void Release_Event();

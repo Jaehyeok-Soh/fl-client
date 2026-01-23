@@ -10,8 +10,8 @@ public:
 	typedef struct tagWeaponDesc : public CPartObject::PARTOBJ_DESC
 	{
 		wstring wstrModelPrototypeName = { L"" };
-		const _float4x4* pMatHandSocket = { nullptr };
-		const _float4x4* pMatSocket = { nullptr };
+		const Matrix* pMatHandSocket = { nullptr };
+		const Matrix* pMatSocket = { nullptr };
 	}WEAPON_DESC;
 private:
 	enum State
@@ -44,8 +44,8 @@ private:
 	HRESULT Bind_ShaderResources();
 private:
 	State m_eState = { State::NONE };
-	const _float4x4* m_pMatHandSocket = { nullptr };
-	const _float4x4* m_pMatSocket = { nullptr };
+	const Matrix* m_pMatHandSocket = { nullptr };
+	const Matrix* m_pMatSocket = { nullptr };
 public:
 	static CWeapon* Create(ID3D11Device* pDevice, ID3D11DeviceContext* pDeviceContext);
 	virtual CGameObject* Clone(void* pArg) override;

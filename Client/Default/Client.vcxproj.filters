@@ -16,11 +16,17 @@
     <Filter Include="02. Level">
       <UniqueIdentifier>{abc7f2c2-9af7-47f0-9621-b48aaf60ab10}</UniqueIdentifier>
     </Filter>
+    <Filter Include="02. Level\Loading">
+      <UniqueIdentifier>{02313480-7853-487f-b3ec-5e32ba7be068}</UniqueIdentifier>
+    </Filter>
     <Filter Include="02. Level\Logo">
       <UniqueIdentifier>{1cdeefb3-8ba8-48fd-8354-bfe672cfa1ed}</UniqueIdentifier>
     </Filter>
     <Filter Include="02. Level\Dev">
       <UniqueIdentifier>{a2daef10-3d20-4e39-ace1-5ff40c2ab0d2}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02. Level\Loading\Loader">
+      <UniqueIdentifier>{a017ef8a-3027-4490-9479-8f057105a565}</UniqueIdentifier>
     </Filter>
     <Filter Include="03. GameObject">
       <UniqueIdentifier>{a7a14a28-2c21-4edb-abba-6dabdc557803}</UniqueIdentifier>

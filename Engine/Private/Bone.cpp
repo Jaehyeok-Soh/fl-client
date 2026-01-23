@@ -11,41 +11,30 @@ HRESULT CBone::Initialize(BONE_DESC* pDesc)
     m_iParentIndex = pDesc->iParentIndex;
 
     // Converter에서 Export할때 이미 전치행렬 연산해서 넘겨줄거임
-    ::memcpy(&m_matTransform, &pDesc->matTransform, sizeof(_float4x4));
-    ::XMStoreFloat4x4(&m_matCombinedTransform, ::XMMatrixIdentity());
+    m_matTransform = pDesc->matTransform;
+    m_matCombinedTransform = Matrix::Identity;
     return S_OK;
 }
 
-void CBone::Update_CombinedTransformMatrix(const vector<CBone*>& Bones, _fmatrix PreTransformMatrix)
+void CBone::Update_CombinedTransformMatrix(const vector<CBone*>& Bones, const Matrix& PreTransformMatrix)
 {
     
     // 최상위 부모의 경우 PreTrnasformMatrix 연산
     // 이후에 자식들이 연산하면서 다 먹어 들어갈것
     if (m_iParentIndex == -1)
-    {
-        ::XMStoreFloat4x4(&m_matCombinedTransform,
-            ::XMLoadFloat4x4(&m_matTransform) * PreTransformMatrix);
-    }
+        m_matCombinedTransform = m_matTransform * PreTransformMatrix;
     else
     {
         // 저장해두었던 ParentIndex로 CombinedTransformMatrix를 가져와 연산
-        ::XMStoreFloat4x4(&m_matCombinedTransform,
-            ::XMLoadFloat4x4(&m_matTransform) * Bones[m_iParentIndex]->Get_CombinedTransformMatrix());
-    }
+        m_matCombinedTransform = m_matTransform * Bones[m_iParentIndex]->Get_CombinedTransformMatrix();
 }
 
-void CBone::Setup_BindPoseTransformMatrix(const vector<CBone*>& Bones, _fmatrix PreTransformMatrix)
+void CBone::Setup_BindPoseTransformMatrix(const vector<CBone*>& Bones, const Matrix& PreTransformMatrix)
 {
     if (m_iParentIndex == -1)
-    {
-        ::XMStoreFloat4x4(&m_matBindPoseTransform,
-            ::XMLoadFloat4x4(&m_matTransform) * PreTransformMatrix);
-    }
+        m_matBindPoseTransform = m_matTransform * PreTransformMatrix;
     else
-    {
-        ::XMStoreFloat4x4(&m_matBindPoseTransform,
-            ::XMLoadFloat4x4(&m_matTransform) * Bones[m_iParentIndex]->Get_BindPoseTransformMatrix());
-    }
+        m_matBindPoseTransform = m_matTransform * Bones[m_iParentIndex]->Get_BindPoseTransformMatrix();
 }
 
 CBone* CBone::Create(BONE_DESC* pDesc)

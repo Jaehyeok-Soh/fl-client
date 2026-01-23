@@ -140,12 +140,12 @@ _bool CPlayerControlContext::Is_RopePressed()
 	return m_pGameInstance->Mouse_Down(MOUSEKEYSTATE::RB);
 }
 
-_fvector CPlayerControlContext::Get_MoveDir()
+Vec3 CPlayerControlContext::Get_MoveDir()
 {
 	if (!m_pOwnerTargetCamera)
 	{
 		if (!(m_pOwnerTargetCamera = Get_Owner()->Get_CameraTargeter()))
-			return ::XMVectorZero();
+			return Vec3::Zero;
 	}
 
 	_bool bGround = (Is_WallMode() == false);
@@ -153,13 +153,18 @@ _fvector CPlayerControlContext::Get_MoveDir()
 	
 	CTransform* pTransform = Get_Owner()->Get_Component<CTransform>();
 	if (!pCameraTransform || !pTransform)
-		return::XMVectorZero();
+		return Vec3::Zero;
 
-	_vector vDesiredDir = ::XMVectorZero();
-	_vector vCameraLook = pCameraTransform->Get_Info(TRANSFORM_INFO_STATE::LOOK);
-	_vector vCameraRight = pCameraTransform->Get_Info(TRANSFORM_INFO_STATE::RIGHT);
-	_vector vCameraLookXZ = ::XMVector3Normalize(::XMVectorSetY(vCameraLook, 0.f));
-	_vector vCameraRightXZ = ::XMVector3Normalize(::XMVectorSetY(vCameraRight, 0.f));
+	Vec3 vDesiredDir = Vec3::Zero;
+	Vec3 vCameraLook = pCameraTransform->Get_Info(TRANSFORM_INFO_STATE::LOOK);
+	Vec3 vCameraRight = pCameraTransform->Get_Info(TRANSFORM_INFO_STATE::RIGHT);
+	Vec3 vCameraLookXZ = vCameraLook;
+	vCameraLook.y = 0.0f;
+	vCameraLook.Normalize();
+	Vec3 vCameraRightXZ = vCameraRight;
+	vCameraRight.y = 0.0f;
+	vCameraRight.Normalize();
+
 	if (bGround)
 	{
 		if (KEY_BUTTON_HOLD(DIK_W))  vDesiredDir += vCameraLookXZ;
@@ -170,20 +175,18 @@ _fvector CPlayerControlContext::Get_MoveDir()
 	}
 	else
 	{
-		_vector vPlayerUp = pTransform->Get_Info(TRANSFORM_INFO_STATE::UP);
-		_vector vCamLookOnWall = vCameraLook - ::XMVector3Dot(vCameraLook, vPlayerUp) * vPlayerUp;
-		_vector vCamRightOnWall = vCameraRight - ::XMVector3Dot(vCameraRight, vPlayerUp) * vPlayerUp;
+		Vec3 vPlayerUp = pTransform->Get_Info(TRANSFORM_INFO_STATE::UP);
+		Vec3 vCamLookOnWall = vCameraLook - (vPlayerUp * vCameraLook.Dot(vPlayerUp));
+		Vec3 vCamRightOnWall = vCameraRight - (vPlayerUp * vCameraRight.Dot(vPlayerUp));
 
-		if (::XMVectorGetX(::XMVector3LengthSq(vCamLookOnWall)) <= g_XMEpsilon.f[0])
+		if (vCamLookOnWall.LengthSquared() <= g_XMEpsilon.f[0])
 		{
-			vCamLookOnWall = ::XMVector3Normalize(pTransform->Get_Info(TRANSFORM_INFO_STATE::LOOK));
-			vCamRightOnWall = ::XMVector3Normalize(pTransform->Get_Info(TRANSFORM_INFO_STATE::RIGHT));
+			vCamLookOnWall = pTransform->Get_Info(TRANSFORM_INFO_STATE::LOOK);
+			vCamRightOnWall = pTransform->Get_Info(TRANSFORM_INFO_STATE::RIGHT);
 		}
-		else
-		{
-			vCamLookOnWall = ::XMVector3Normalize(vCamLookOnWall);
-			vCamRightOnWall = ::XMVector3Normalize(vCamRightOnWall);
-		}
+
+		vCamLookOnWall.Normalize();
+		vCamRightOnWall.Normalize();
 
 		if (KEY_BUTTON_HOLD(DIK_W))  vDesiredDir += vCamLookOnWall;
 		else if (KEY_BUTTON_HOLD(DIK_S)) vDesiredDir -= vCamLookOnWall;

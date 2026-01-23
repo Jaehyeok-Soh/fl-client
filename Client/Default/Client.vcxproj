@@ -71,7 +71,7 @@
   </ImportGroup>
   <PropertyGroup Label="UserMacros" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
-    <OutDir>..\Bin\Debug\</OutDir>
+    <OutDir>../Bin/Debug/</OutDir>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
     <OutDir>..\Bin\Release\</OutDir>
@@ -111,13 +111,13 @@
       <PreprocessorDefinitions>_DEBUG;_WINDOWS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
       <LanguageStandard>stdcpp20</LanguageStandard>
-      <AdditionalIncludeDirectories>../Default;../Public;../../EngineSDK/Include;../../Libraries/Include/;</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>../Default;../Public;../../EngineSDK/Include;../../Libraries/Include/;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <SubSystem>Windows</SubSystem>
       <GenerateDebugInformation>true</GenerateDebugInformation>
-      <AdditionalLibraryDirectories>../../EngineSDK/Library/Debug;../../Libraries/Lib/;</AdditionalLibraryDirectories>
-      <AdditionalDependencies>Engine.lib;d3d11.lib;d3dcompiler.lib;dxguid.lib;DirectXTex\\DirectXTex_Debug.lib;FX11\\Effects11d.lib;Assimp\\assimp-vc143-mtd.lib;DirectXTK\\Debug\\DirectXTK.lib;FMOD\\Debug\\fmodL_vc.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalLibraryDirectories>../../EngineSDK/Library/Debug;../../Libraries/Lib/;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <AdditionalDependencies>Engine.lib;d3d11.lib;d3dcompiler.lib;dxguid.lib;DirectXTex/DirectXTex_Debug.lib;FX11/Effects11d.lib;Assimp/assimp-vc143-mtd.lib;DirectXTK/Debug/DirectXTK.lib;FMOD/Debug/fmodL_vc.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
     <FxCompile>
       <ShaderType>Effect</ShaderType>

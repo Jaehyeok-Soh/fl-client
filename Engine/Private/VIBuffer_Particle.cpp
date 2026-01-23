@@ -168,10 +168,9 @@ void CVIBuffer_Particle::Spread(_float fTimeDelta)
 	for (size_t i = 0; i < m_iInstanceCount; i++)
 	{
 		/*pVertices[i].vTranslation.y -= m_pSpeeds[i] * fTimeDelta;*/
-		_vector		vLook = XMVector3Normalize(XMVectorSetW(XMLoadFloat4(&pVertices[i].vTranslation) - XMLoadFloat3(&m_vPivot), 0.f)) * m_pSpeeds[i];
-
-		XMStoreFloat4(&pVertices[i].vTranslation, XMLoadFloat4(&pVertices[i].vTranslation) + vLook * fTimeDelta);
-
+		Vec3		vLook = pVertices[i].vTranslation - m_vPivot * m_pSpeeds[i];
+		vLook.Normalize();
+		pVertices[i].vTranslation = pVertices[i].vTranslation + vLook * fTimeDelta;
 		pVertices[i].vLifeTime.x += fTimeDelta;
 		if (true == m_bIsLoop && pVertices[i].vLifeTime.x >= pVertices[i].vLifeTime.y)
 		{

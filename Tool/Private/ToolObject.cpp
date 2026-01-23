@@ -107,14 +107,14 @@ void CToolObject::Set_Invisible()
 
 void CToolObject::Export_TransformData(OUT TRANSFORM_SAVEDATA& data)
 {
-    _matrix matWorld = ::XMLoadFloat4x4(&Get_Component<CTransform>()->Get_WorldMatrix());
-    _vector vPos = {};
-    _vector vQuaternion = {};
-    _vector vScale = {};
-    ::XMMatrixDecompose(&vScale, &vQuaternion, &vPos, matWorld);
-    ::XMStoreFloat3(&data.vPos, vPos);
-    ::XMStoreFloat3(&data.vScale, vScale);
-    ::XMStoreFloat4(&data.vQuaternion, vQuaternion);
+    Matrix matWorld = Get_Component<CTransform>()->Get_WorldMatrix();
+    Vec3 vPos = {};
+    Quat vQuaternion = {};
+    Vec3 vScale = {};
+    matWorld.Decompose(vScale, vQuaternion, vPos);
+    data.vPos = vPos;
+    data.vScale = vScale;
+    data.vQuaternion = vQuaternion;
 }
 
 void CToolObject::Export_ModelData(OUT MODEL_SAVEDATA& data)

@@ -188,7 +188,7 @@ HRESULT CModelLoader::Read_Model(EModelType eType, vector<CBone*>* vecBones, vec
 			boneDesc.iIndex = pFileUtil->Read<_uint>();
 			boneDesc.strName = pFileUtil->Read<string>();
 			boneDesc.iParentIndex = pFileUtil->Read<_uint>();
-			boneDesc.matTransform = pFileUtil->Read<_float4x4>();
+			boneDesc.matTransform = pFileUtil->Read<Matrix>();
 			CBone* pNewbone = CBone::Create(&boneDesc);
 			if (!pNewbone)
 			{
@@ -264,12 +264,12 @@ HRESULT CModelLoader::Read_Model(EModelType eType, vector<CBone*>* vecBones, vec
 
 			// OffsetMatrix
 			meshDesc.iOffsetMatricesCount = pFileUtil->Read<_uint>();
-			vector<_float4x4> vecImportOffsetMatrices(meshDesc.iOffsetMatricesCount);
+			vector<Matrix> vecImportOffsetMatrices(meshDesc.iOffsetMatricesCount);
 			if (meshDesc.iOffsetMatricesCount > 0)
 			{
 				void* pOffsetMatrices(vecImportOffsetMatrices.data());
-				pFileUtil->Read(&pOffsetMatrices, sizeof(_float4x4) * meshDesc.iOffsetMatricesCount);
-				meshDesc.spanOffsetMatrices = std::span<_float4x4>(vecImportOffsetMatrices.data(), vecImportOffsetMatrices.size());
+				pFileUtil->Read(&pOffsetMatrices, sizeof(Matrix) * meshDesc.iOffsetMatricesCount);
+				meshDesc.spanOffsetMatrices = std::span<Matrix>(vecImportOffsetMatrices.data(), vecImportOffsetMatrices.size());
 			}
 
 			if (m_wstrModelName.ends_with(L"_COL") || m_wstrModelName.starts_with(L"COL_"))
@@ -408,9 +408,9 @@ HRESULT CModelLoader::Create_Channel(CFileUtils* pFileUtil, _uint iChannelCount,
 		{
 			KEYFRAME keyframe = {};
 			keyframe.fTrackPosition = pFileUtil->Read<_float>();
-			keyframe.vScale = pFileUtil->Read<_float3>();
-			keyframe.vQuaterion = pFileUtil->Read<_float4>();
-			keyframe.vTranslation = pFileUtil->Read<_float3>();
+			keyframe.vScale = pFileUtil->Read<Vec3>();
+			keyframe.vQuaterion = pFileUtil->Read<Vec4>();
+			keyframe.vTranslation = pFileUtil->Read<Vec3>();
 			vecKeyframes.push_back(keyframe);
 		}
 		std::span<KEYFRAME> spanKeyframes(vecKeyframes.data(), vecKeyframes.size());

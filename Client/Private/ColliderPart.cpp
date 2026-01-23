@@ -68,13 +68,10 @@ void CColliderPart::Update(_float fTimeDelta)
 {
 	Super::Update(fTimeDelta);
 
-	Super::Update_CombinedWorldMatrix(::XMLoadFloat4x4(m_pMatSocket) * ::XMLoadFloat4x4(m_pMatParent));
+	Super::Update_CombinedWorldMatrix((*m_pMatSocket) * (*m_pMatParent));
+
 	if (CCollider* pCollider = Get_Component<CCollider>())
-	{
-		_matrix matWorld = ::XMLoadFloat4x4(&m_matCombinedWorld);
-		_matrix matScaling = ::XMMatrixScaling(100.f, 100.f, 100.f);
-		pCollider->Update(matScaling * matWorld);
-	}
+		pCollider->Update(Matrix::CreateScale(100.f, 100.f, 100.f) * m_matCombinedWorld);
 }
 
 void CColliderPart::Update_Late(_float fTimeDelta)

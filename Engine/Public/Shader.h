@@ -80,7 +80,7 @@ public:
 	HRESULT Bind_CubeTexture(ID3D11ShaderResourceView* pSRV);
 	HRESULT Bind_DefaultTextures(ID3D11ShaderResourceView** ppSRV, _uint iCount = 8);
 	HRESULT Bind_TransformData(const SHADER_TRANSFORMDESC& trnasformDesc);
-	HRESULT Bind_TransformData(const _float4x4& matTransform);
+	HRESULT Bind_TransformData(const Matrix& matTransform);
 	void Bind_TransformTexture(ID3D11ShaderResourceView* pSRV);
 	HRESULT Bind_BoneData(const SHADER_BONEDESC& boneDesc);
 	void Bind_KeyFrameData(const SHADER_KEYFRAMEDESC& keyframeDesc);

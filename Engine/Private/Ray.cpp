@@ -1,10 +1,10 @@
 #include "Ray.h"
 
-CRay::CRay(const _float4& vLocalOrigin, const _float3& vLocalDir)
+CRay::CRay(const Vec3& vLocalOrigin, const Vec3& vLocalDir)
 	: m_vLocalOrigin(vLocalOrigin)
 	, m_vLocalDir(vLocalDir)
 {
-	::XMStoreFloat3(&m_vLocalDir, ::XMVector3Normalize(::XMLoadFloat3(&m_vLocalDir)));
+	m_vLocalDir.Normalize();
 }
 
 HRESULT CRay::Initialize()
@@ -12,13 +12,13 @@ HRESULT CRay::Initialize()
 	return S_OK;
 }
 
-void CRay::Setup_Ray(const _float4x4* pMatParent)
+void CRay::Setup_Ray(const Matrix* pMatParent)
 {
-	::XMStoreFloat4(&m_vOrigin, ::XMVector3TransformCoord(::XMVectorSetW(::XMLoadFloat4(&m_vLocalOrigin), 1.f), ::XMLoadFloat4x4(pMatParent)));
-	::XMStoreFloat3(&m_vDir, ::XMVector3TransformNormal(::XMLoadFloat3(&m_vLocalDir), ::XMLoadFloat4x4(pMatParent)));
+	m_vOrigin = Vec3::Transform(m_vLocalOrigin, *pMatParent);
+	m_vDir = Vec3::TransformNormal(m_vLocalDir, *pMatParent);
 }
 
-void CRay::Setup_Ray(_fvector vOrigin, _fvector vDir)
+_bool CRay::IntersectrayWithAABB_World(BoundingBox* pDesc, OUT Vec3& vOut)
 {
 	::XMStoreFloat4(&m_vOrigin, ::XMVectorSetW(vOrigin, 1.f));
 	::XMStoreFloat3(&m_vDir, vDir);
@@ -27,96 +27,92 @@ void CRay::Setup_Ray(_fvector vOrigin, _fvector vDir)
 _bool CRay::IntersectrayWithAABB_World(BoundingBox* pDesc, OUT _float4& vOut)
 {
 	_float fDist = {};
-	if (pDesc->Intersects(::XMLoadFloat4(&m_vOrigin), ::XMLoadFloat3(&m_vDir), fDist))
+	if (pDesc->Intersects(m_vOrigin, m_vDir, fDist))
 	{
-		::XMStoreFloat4(&vOut, ::XMLoadFloat4(&m_vOrigin) + ::XMLoadFloat3(&m_vDir) * fDist);
+		vOut = m_vOrigin + m_vDir * fDist;
 		return true;
 	}
 	return false;
 }
 
-_bool CRay::IntersectrayWithAABB_Local(BoundingBox* pOriginDesc, OUT _float4& vOut)
+_bool CRay::IntersectrayWithAABB_Local(BoundingBox* pOriginDesc, OUT Vec3& vOut)
 {
 	_float fDist = {};
-	if (pOriginDesc->Intersects(::XMLoadFloat4(&m_vLocalOrigin), ::XMLoadFloat3(&m_vLocalDir), fDist))
+	if (pOriginDesc->Intersects(m_vLocalOrigin, m_vLocalDir, fDist))
 	{
-		::XMStoreFloat4(&vOut, ::XMLoadFloat4(&m_vLocalOrigin) + ::XMLoadFloat3(&m_vLocalDir) * fDist);
+		vOut = m_vLocalOrigin + m_vLocalDir * fDist;
 		return true;
 	}
 	return false;
 }
 
-_bool CRay::IntersectrayWithOBB_World(BoundingOrientedBox* pDesc, OUT _float4& vOut)
+_bool CRay::IntersectrayWithOBB_World(BoundingOrientedBox* pDesc, OUT Vec3& vOut)
 {
 	_float fDist = {};
-	if (pDesc->Intersects(::XMLoadFloat4(&m_vOrigin), ::XMLoadFloat3(&m_vDir), fDist))
+	if (pDesc->Intersects(m_vOrigin, m_vDir, fDist))
 	{
-		::XMStoreFloat4(&vOut, ::XMLoadFloat4(&m_vOrigin) + ::XMLoadFloat3(&m_vDir) * fDist);
+		vOut = m_vOrigin + m_vDir * fDist;
 		return true;
 	}
 	return false;
 }
 
-_bool CRay::IntersectrayWithOBB_Local(BoundingOrientedBox* pOriginDesc, OUT _float4& vOut)
+_bool CRay::IntersectrayWithOBB_Local(BoundingOrientedBox* pOriginDesc, OUT Vec3& vOut)
 {
 	_float fDist = {};
-	if (pOriginDesc->Intersects(::XMLoadFloat4(&m_vLocalOrigin), ::XMLoadFloat3(&m_vLocalDir), fDist))
+	if (pOriginDesc->Intersects(m_vLocalOrigin, m_vLocalDir, fDist))
 	{
-		::XMStoreFloat4(&vOut, ::XMLoadFloat4(&m_vLocalOrigin) + ::XMLoadFloat3(&m_vLocalDir) * fDist);
+		vOut = m_vLocalOrigin + m_vLocalDir * fDist;
 		return true;
 	}
 	return false;
 }
 
-_bool CRay::IntersectrayWithSphere_World(BoundingSphere* pDesc, OUT _float4& vOut)
+_bool CRay::IntersectrayWithSphere_World(BoundingSphere* pDesc, OUT Vec3& vOut)
 {
 	_float fDist = {};
-	if (pDesc->Intersects(::XMLoadFloat4(&m_vOrigin), ::XMLoadFloat3(&m_vDir), fDist))
+	if (pDesc->Intersects(m_vOrigin, m_vDir, fDist))
 	{
-		::XMStoreFloat4(&vOut, ::XMLoadFloat4(&m_vOrigin) + ::XMLoadFloat3(&m_vDir) * fDist);
+		vOut = m_vOrigin + m_vDir * fDist;
 		return true;
 	}
 	return false;
 }
 
-_bool CRay::IntersectrayWithSphere_Local(BoundingSphere* pOriginDesc, OUT _float4& vOut)
+_bool CRay::IntersectrayWithSphere_Local(BoundingSphere* pOriginDesc, OUT Vec3& vOut)
 {
 	_float fDist = {};
-	if (pOriginDesc->Intersects(::XMLoadFloat4(&m_vLocalOrigin), ::XMLoadFloat3(&m_vLocalDir), fDist))
+	if (pOriginDesc->Intersects(m_vLocalOrigin, m_vLocalDir, fDist))
 	{
-		::XMStoreFloat4(&vOut, ::XMLoadFloat4(&m_vLocalOrigin) + ::XMLoadFloat3(&m_vLocalDir) * fDist);
+		vOut = m_vLocalOrigin + m_vLocalDir * fDist;
 		return true;
 	}
 	return false;
 }
 
-_bool CRay::IntersectrayWithTriangle_World(const _float3& vPointA, const _float3& vPointB, const _float3& vPointC, OUT _float4& vOut)
+_bool CRay::IntersectrayWithTriangle_World(const Vec3& vPointA, const Vec3& vPointB, const Vec3& vPointC, OUT Vec3& vOut)
 {
 	_float fDist = {};
-	if (true == TriangleTests::Intersects(::XMLoadFloat4(&m_vOrigin), ::XMLoadFloat3(&m_vDir),
-		::XMLoadFloat3(&vPointA), ::XMLoadFloat3(&vPointB), ::XMLoadFloat3(&vPointC),
-		fDist))
+	if (true == TriangleTests::Intersects(m_vOrigin, m_vDir, vPointA, vPointB, vPointC, fDist))
 	{
-		::XMStoreFloat4(&vOut, ::XMLoadFloat4(&m_vOrigin) + ::XMLoadFloat3(&m_vDir) * fDist);
+		vOut = m_vOrigin + m_vDir * fDist;
 		return true;
 	}
 	return false;
 }
 
-_bool CRay::IntersectrayWithTriangle_Local(const _float3& vPointA, const _float3& vPointB, const _float3& vPointC, OUT _float4& vOut)
+_bool CRay::IntersectrayWithTriangle_Local(const Vec3& vPointA, const Vec3& vPointB, const Vec3& vPointC, OUT Vec3& vOut)
 {
 	_float fDist = {};
-	if (true == TriangleTests::Intersects(::XMLoadFloat4(&m_vLocalOrigin), ::XMLoadFloat3(&m_vLocalDir),
-		::XMLoadFloat3(&vPointA), ::XMLoadFloat3(&vPointB), ::XMLoadFloat3(&vPointC),
-		fDist))
+	if (true == TriangleTests::Intersects(m_vLocalOrigin, m_vLocalDir, vPointA, vPointB, vPointC, fDist))
 	{
-		::XMStoreFloat4(&vOut, ::XMLoadFloat4(&m_vLocalOrigin) + ::XMLoadFloat3(&m_vLocalDir) * fDist);
+		vOut = m_vLocalOrigin + m_vLocalDir * fDist;
 		return true;
 	}
 	return false;
 }
 
-CRay* CRay::Create(const _float4& vLocalOrigin, const _float3& vLocalDir)
+CRay* CRay::Create(const Vec3& vLocalOrigin, const Vec3& vLocalDir)
 {
 	CRay* pInstance = new CRay(vLocalOrigin, vLocalDir);
 	if (FAILED(pInstance->Initialize()))

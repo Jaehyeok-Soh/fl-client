@@ -97,8 +97,7 @@ HRESULT CLoader::Loading()
 
 HRESULT CLoader::Loading_For_Map()
 {
-	_float4x4 matPreTransformScale100;
-	::XMStoreFloat4x4(&matPreTransformScale100, ::XMMatrixScaling(0.01f, 0.01f, 0.01f));
+	Matrix matPreTransformScale100 = Matrix::CreateScale(0.01f, 0.01f, 0.01f);
 
 	//=================
 	// Componment
@@ -149,7 +148,7 @@ HRESULT CLoader::Loading_For_Effect()
 	// For. MaterialInstance_Default
 	{
 		CMaterialInstance::tagMaterialInstanceOrignDesc desc = {};
-		desc.vTintColor = _float4{ 1.f, 1.f, 1.f, 1.f };
+		desc.vTintColor = Vec4{ 1.f, 1.f, 1.f, 1.f };
 		desc.wstrMaterialTag = L"Material_Default";
 		desc.wstrName = L"MaterialInstance_Default";
 		desc.fEmissivePower = 1.f;
@@ -159,7 +158,7 @@ HRESULT CLoader::Loading_For_Effect()
 	// For. MaterialInstance_Default_Red
 	{
 		CMaterialInstance::tagMaterialInstanceOrignDesc desc = {};
-		desc.vTintColor = _float4{ 1.f, 0.3f, 0.3f, 1.f };
+		desc.vTintColor = Vec4{ 1.f, 0.3f, 0.3f, 1.f };
 		desc.wstrMaterialTag = L"Material_Default";
 		desc.wstrName = L"MaterialInstance_Default_Red";
 		desc.fEmissivePower = 1.f;
@@ -169,7 +168,7 @@ HRESULT CLoader::Loading_For_Effect()
 	// For. MaterialInstance_Default_Blue
 	{
 		CMaterialInstance::tagMaterialInstanceOrignDesc desc = {};
-		desc.vTintColor = _float4{ 0.3f, 0.3f, 1.f, 1.f };
+		desc.vTintColor = Vec4{ 0.3f, 0.3f, 1.f, 1.f };
 		desc.wstrMaterialTag = L"Material_Default";
 		desc.wstrName = L"MaterialInstance_Default_Blue";
 		desc.fEmissivePower = 1.f;
@@ -179,7 +178,7 @@ HRESULT CLoader::Loading_For_Effect()
 	// For. MaterialInstance_Default_Green
 	{
 		CMaterialInstance::tagMaterialInstanceOrignDesc desc = {};
-		desc.vTintColor = _float4{ 0.3f, 1.f, 0.3f, 1.f };
+		desc.vTintColor = Vec4{ 0.3f, 1.f, 0.3f, 1.f };
 		desc.wstrMaterialTag = L"Material_Default";
 		desc.wstrName = L"MaterialInstance_Default_Green";
 		desc.fEmissivePower = 1.f;

@@ -204,21 +204,21 @@ void from_json(const json& _j, PARSED_MAPDATA_INNER& _tData)
 	else if (_j.contains("RelativeScale3D")) read_vec3_defaultscale(_j["RelativeScale3D"], _tData.vScale);
 }
 
-void read_vec3_defaultscale(const json& _j, _float3& vOut)
+void read_vec3_defaultscale(const json& _j, Vec3& vOut)
 {
 	vOut.x = _j.value("X", 1.f);
 	vOut.y = _j.value("Y", 1.f);
 	vOut.z = _j.value("Z", 1.f);
 }
 
-void read_vec3_xyz(const json& _j, _float3& vOut)
+void read_vec3_xyz(const json& _j, Vec3& vOut)
 {
 	vOut.x = _j.value("X", 0.f);
 	vOut.y = _j.value("Y", 0.f);
 	vOut.z = _j.value("Z", 0.f);
 }
 
-void read_vec3_PitchYawRoll(const json& _j, _float3& vOut)
+void read_vec3_PitchYawRoll(const json& _j, Vec3& vOut)
 {
 	vOut.x = _j.value("Pitch", 0.f);
 	vOut.y = _j.value("Yaw", 0.f);

@@ -40,39 +40,39 @@ HRESULT CVIBuffer_Cube_NorTex::Initialize_Prototype(void* pArg)
     VTXNORTEX* pVertices = new VTXNORTEX[m_iVertexCount];
     ZeroMemory(pVertices, sizeof(VTXNORTEX) * m_iVertexCount);
 
-    m_pVertexPositions = new _float3[m_iVertexCount];
-    ZeroMemory(m_pVertexPositions, sizeof(_float3) * m_iVertexCount);
+    m_pVertexPositions = new Vec3[m_iVertexCount];
+    ZeroMemory(m_pVertexPositions, sizeof(Vec3) * m_iVertexCount);
 
     // ¾Õ¸é
-    pVertices[0] = { _float3(-fWidth, -fHeight, -fDepth), _float3(0.0f, 0.0f, -1.0f), _float2(0.0f, 1.0f) };
-    pVertices[1] = { _float3(-fWidth, +fHeight, -fDepth), _float3(0.0f, 0.0f, -1.0f), _float2(0.0f, 0.0f) };
-    pVertices[2] = { _float3(+fWidth, +fHeight, -fDepth), _float3(0.0f, 0.0f, -1.0f), _float2(1.0f, 0.0f) };
-    pVertices[3] = { _float3(+fWidth, -fHeight, -fDepth), _float3(0.0f, 0.0f, -1.0f), _float2(1.0f, 1.0f) };
+    pVertices[0] = { Vec3(-fWidth, -fHeight, -fDepth), Vec3(0.0f, 0.0f, -1.0f), Vec2(0.0f, 1.0f) };
+    pVertices[1] = { Vec3(-fWidth, +fHeight, -fDepth), Vec3(0.0f, 0.0f, -1.0f), Vec2(0.0f, 0.0f) };
+    pVertices[2] = { Vec3(+fWidth, +fHeight, -fDepth), Vec3(0.0f, 0.0f, -1.0f), Vec2(1.0f, 0.0f) };
+    pVertices[3] = { Vec3(+fWidth, -fHeight, -fDepth), Vec3(0.0f, 0.0f, -1.0f), Vec2(1.0f, 1.0f) };
     // µÞ¸é
-    pVertices[4] = { _float3(-fWidth, -fHeight, +fDepth), _float3(0.0f, 0.0f, 1.0f), _float2(1.0f, 1.0f) };
-    pVertices[5] = { _float3(+fWidth, -fHeight, +fDepth), _float3(0.0f, 0.0f, 1.0f), _float2(0.0f, 1.0f) };
-    pVertices[6] = { _float3(+fWidth, +fHeight, +fDepth), _float3(0.0f, 0.0f, 1.0f), _float2(0.0f, 0.0f) };
-    pVertices[7] = { _float3(-fWidth, +fHeight, +fDepth), _float3(0.0f, 0.0f, 1.0f), _float2(1.0f, 0.0f) };
+    pVertices[4] = { Vec3(-fWidth, -fHeight, +fDepth), Vec3(0.0f, 0.0f, 1.0f), Vec2(1.0f, 1.0f) };
+    pVertices[5] = { Vec3(+fWidth, -fHeight, +fDepth), Vec3(0.0f, 0.0f, 1.0f), Vec2(0.0f, 1.0f) };
+    pVertices[6] = { Vec3(+fWidth, +fHeight, +fDepth), Vec3(0.0f, 0.0f, 1.0f), Vec2(0.0f, 0.0f) };
+    pVertices[7] = { Vec3(-fWidth, +fHeight, +fDepth), Vec3(0.0f, 0.0f, 1.0f), Vec2(1.0f, 0.0f) };
     // À­¸é
-    pVertices[8] = { _float3(-fWidth, +fHeight, -fDepth), _float3(0.0f, 1.0f, 0.0f), _float2(0.0f, 1.0f) };
-    pVertices[9] = { _float3(-fWidth, +fHeight, +fDepth), _float3(0.0f, 1.0f, 0.0f), _float2(0.0f, 0.0f) };
-    pVertices[10] = { _float3(+fWidth, +fHeight, +fDepth), _float3(0.0f, 1.0f, 0.0f), _float2(1.0f, 0.0f) };
-    pVertices[11] = { _float3(+fWidth, +fHeight, -fDepth), _float3(0.0f, 1.0f, 0.0f), _float2(1.0f, 1.0f) };
+    pVertices[8] = { Vec3(-fWidth, +fHeight, -fDepth), Vec3(0.0f, 1.0f, 0.0f), Vec2(0.0f, 1.0f) };
+    pVertices[9] = { Vec3(-fWidth, +fHeight, +fDepth), Vec3(0.0f, 1.0f, 0.0f), Vec2(0.0f, 0.0f) };
+    pVertices[10] = { Vec3(+fWidth, +fHeight, +fDepth), Vec3(0.0f, 1.0f, 0.0f), Vec2(1.0f, 0.0f) };
+    pVertices[11] = { Vec3(+fWidth, +fHeight, -fDepth), Vec3(0.0f, 1.0f, 0.0f), Vec2(1.0f, 1.0f) };
     // ¾Æ·§¸é
-    pVertices[12] = { _float3(-fWidth, -fHeight, -fDepth), _float3(0.0f, -1.0f, 0.0f), _float2(1.0f, 1.0f) };
-    pVertices[13] = { _float3(+fWidth, -fHeight, -fDepth), _float3(0.0f, -1.0f, 0.0f), _float2(0.0f, 1.0f) };
-    pVertices[14] = { _float3(+fWidth, -fHeight, +fDepth), _float3(0.0f, -1.0f, 0.0f), _float2(0.0f, 0.0f) };
-    pVertices[15] = { _float3(-fWidth, -fHeight, +fDepth), _float3(0.0f, -1.0f, 0.0f), _float2(1.0f, 0.0f) };
+    pVertices[12] = { Vec3(-fWidth, -fHeight, -fDepth), Vec3(0.0f, -1.0f, 0.0f), Vec2(1.0f, 1.0f) };
+    pVertices[13] = { Vec3(+fWidth, -fHeight, -fDepth), Vec3(0.0f, -1.0f, 0.0f), Vec2(0.0f, 1.0f) };
+    pVertices[14] = { Vec3(+fWidth, -fHeight, +fDepth), Vec3(0.0f, -1.0f, 0.0f), Vec2(0.0f, 0.0f) };
+    pVertices[15] = { Vec3(-fWidth, -fHeight, +fDepth), Vec3(0.0f, -1.0f, 0.0f), Vec2(1.0f, 0.0f) };
     // ¿ÞÂÊ¸é
-    pVertices[16] = { _float3(-fWidth, -fHeight, +fDepth), _float3(-1.0f, 0.0f, 0.0f), _float2(0.0f, 1.0f) };
-    pVertices[17] = { _float3(-fWidth, +fHeight, +fDepth), _float3(-1.0f, 0.0f, 0.0f), _float2(0.0f, 0.0f) };
-    pVertices[18] = { _float3(-fWidth, +fHeight, -fDepth), _float3(-1.0f, 0.0f, 0.0f), _float2(1.0f, 0.0f) };
-    pVertices[19] = { _float3(-fWidth, -fHeight, -fDepth), _float3(-1.0f, 0.0f, 0.0f), _float2(1.0f, 1.0f) };
+    pVertices[16] = { Vec3(-fWidth, -fHeight, +fDepth), Vec3(-1.0f, 0.0f, 0.0f), Vec2(0.0f, 1.0f) };
+    pVertices[17] = { Vec3(-fWidth, +fHeight, +fDepth), Vec3(-1.0f, 0.0f, 0.0f), Vec2(0.0f, 0.0f) };
+    pVertices[18] = { Vec3(-fWidth, +fHeight, -fDepth), Vec3(-1.0f, 0.0f, 0.0f), Vec2(1.0f, 0.0f) };
+    pVertices[19] = { Vec3(-fWidth, -fHeight, -fDepth), Vec3(-1.0f, 0.0f, 0.0f), Vec2(1.0f, 1.0f) };
     // ¿À¸¥ÂÊ¸é
-    pVertices[20] = { _float3(+fWidth, -fHeight, -fDepth), _float3(1.0f, 0.0f, 0.0f), _float2(0.0f, 1.0f) };
-    pVertices[21] = { _float3(+fWidth, +fHeight, -fDepth), _float3(1.0f, 0.0f, 0.0f), _float2(0.0f, 0.0f) };
-    pVertices[22] = { _float3(+fWidth, +fHeight, +fDepth), _float3(1.0f, 0.0f, 0.0f), _float2(1.0f, 0.0f) };
-    pVertices[23] = { _float3(+fWidth, -fHeight, +fDepth), _float3(1.0f, 0.0f, 0.0f), _float2(1.0f, 1.0f) };
+    pVertices[20] = { Vec3(+fWidth, -fHeight, -fDepth), Vec3(1.0f, 0.0f, 0.0f), Vec2(0.0f, 1.0f) };
+    pVertices[21] = { Vec3(+fWidth, +fHeight, -fDepth), Vec3(1.0f, 0.0f, 0.0f), Vec2(0.0f, 0.0f) };
+    pVertices[22] = { Vec3(+fWidth, +fHeight, +fDepth), Vec3(1.0f, 0.0f, 0.0f), Vec2(1.0f, 0.0f) };
+    pVertices[23] = { Vec3(+fWidth, -fHeight, +fDepth), Vec3(1.0f, 0.0f, 0.0f), Vec2(1.0f, 1.0f) };
 
     for (_uint i = 0; i < m_iVertexCount; ++i)
     {

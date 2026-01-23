@@ -13,7 +13,7 @@ public:
 		EModelType eType = { EModelType::END };
 		_int iPrototypeLevelIndex = { -1 };
 		const MODELPARTS_PROTOTYPETAGS* pPrototypeTags = { nullptr };
-		_float4x4* pMatPreTransform = { nullptr };
+		Matrix* pMatPreTransform = { nullptr };
 		wstring wstrModelFolderName = { L"" };
 	}MODEL_ORIGIN_DESC;
 	typedef struct tagModelCopyDesc
@@ -99,7 +99,7 @@ private:
 	void Blend_End();
 private:
 	EModelType m_eType = { EModelType::END };
-	_float4x4 m_matPreTransform = {};
+	Matrix m_matPreTransform = {};
 
 	ID3D11Device* m_pDevice = { nullptr };
 	ID3D11DeviceContext* m_pDeviceContext = { nullptr };

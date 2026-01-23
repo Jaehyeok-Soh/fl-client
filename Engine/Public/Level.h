@@ -17,10 +17,10 @@ public:
 	virtual HRESULT Awake(const _uint iCurrentLevelID);
 	virtual void Update(_float fTimeDelta);
 	virtual HRESULT Render();
-	const _float4& Get_ClearColor() const { return m_vClearColor; }
+	const Vec4& Get_ClearColor() const { return m_vClearColor; }
 protected:
 	_bool m_bAwaked = { false };
-	_float4 m_vClearColor = { 0.f, 0.f, 1.f, 1.f };
+	Vec4 m_vClearColor = { 0.f, 0.f, 1.f, 1.f };
 	CGameInstance* m_pGameInstance = { nullptr };
 	ID3D11Device* m_pDevice = { nullptr };
 	ID3D11DeviceContext* m_pDeviceContext = { nullptr };

@@ -9,7 +9,7 @@ class CColliderPart final : public CPartObject
 public:
 	typedef struct tagColliderPartDesc : public CPartObject::PARTOBJ_DESC
 	{
-		const _float4x4* pMatSocket = { nullptr };
+		const Matrix* pMatSocket = { nullptr };
 	}COLLIDERPART_DESC;
 private:
 	CColliderPart(ID3D11Device* pDevice, ID3D11DeviceContext* pDeviceContext);
@@ -31,7 +31,7 @@ public:
 private:
 	HRESULT Ready_Components(COLLIDERPART_DESC* pDesc);
 private:
-	const _float4x4* m_pMatSocket = { nullptr };
+	const Matrix* m_pMatSocket = { nullptr };
 public:
 	static CColliderPart* Create(ID3D11Device* pDevice, ID3D11DeviceContext* pDeviceContext);
 	virtual CGameObject* Clone(void* pArg) override;

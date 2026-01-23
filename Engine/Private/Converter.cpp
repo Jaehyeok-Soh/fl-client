@@ -6,7 +6,7 @@
 #include "FileUtils.h"
 #include "Importer.h"
 
-CConverter::CConverter(ID3D11Device* pDevice, ID3D11DeviceContext* pDeviceContext, _float4x4 matPreTransform, _bool bCustom)
+CConverter::CConverter(ID3D11Device* pDevice, ID3D11DeviceContext* pDeviceContext, const Matrix& matPreTransform, _bool bCustom)
 	: m_pDevice(pDevice)
 	, m_bCustom(bCustom)
 	, m_pDeviceContext(pDeviceContext)
@@ -69,8 +69,8 @@ void CConverter::Read_Bones(aiNode* pNode, _int iIndex, _int iParent)
 	pBone->iIndex = iIndex;
 	pBone->iParent = iParent;
 	pBone->strName = pNode->mName.C_Str();
-	::memcpy(&pBone->matTransform, &pNode->mTransformation, sizeof(_float4x4));
-	::XMStoreFloat4x4(&pBone->matTransform, ::XMMatrixTranspose(::XMLoadFloat4x4(&pBone->matTransform)));
+	::memcpy(&pBone->matTransform, &pNode->mTransformation, sizeof(Matrix));
+	pBone->matTransform = pBone->matTransform.Transpose();
 	m_pBones.push_back(pBone);
 
 	// 재귀
@@ -149,7 +149,7 @@ void CConverter::Read_Meshes()
 	for (_uint i = 0; i < iMeshCount; ++i)
 		m_pMeshes[i] = new AS_MESH;
 
-	_matrix matPreTransform = ::XMLoadFloat4x4(&m_matPreTransform);
+	Matrix matPreTransform = m_matPreTransform;
 	for (_uint m = 0; m < iMeshCount; ++m)
 	{
 		const aiMesh* pAiMesh = m_pScene->mMeshes[m];
@@ -169,31 +169,27 @@ void CConverter::Read_Meshes()
 		{
 			for (_uint v = 0; v < iVertexCount; ++v)
 			{
-				::memcpy(&pCurrentMesh->vecVertices[v].vPosition, &pAiMesh->mVertices[v], sizeof(_float3));
-				::memcpy(&pCurrentMesh->vecVertices[v].vNormal, &pAiMesh->mNormals[v], sizeof(_float3));
-				::memcpy(&pCurrentMesh->vecVertices[v].vTangent, &pAiMesh->mTangents[v], sizeof(_float3));
-				::memcpy(&pCurrentMesh->vecVertices[v].vBinormal, &pAiMesh->mBitangents[v], sizeof(_float3));
-				::memcpy(&pCurrentMesh->vecVertices[v].vUV, &pAiMesh->mTextureCoords[0][v], sizeof(_float2));
+				::memcpy(&pCurrentMesh->vecVertices[v].vPosition, &pAiMesh->mVertices[v], sizeof(Vec3));
+				::memcpy(&pCurrentMesh->vecVertices[v].vNormal, &pAiMesh->mNormals[v], sizeof(Vec3));
+				::memcpy(&pCurrentMesh->vecVertices[v].vTangent, &pAiMesh->mTangents[v], sizeof(Vec3));
+				::memcpy(&pCurrentMesh->vecVertices[v].vBinormal, &pAiMesh->mBitangents[v], sizeof(Vec3));
+				::memcpy(&pCurrentMesh->vecVertices[v].vUV, &pAiMesh->mTextureCoords[0][v], sizeof(Vec2));
 
-				::XMStoreFloat3(&pCurrentMesh->vecVertices[v].vPosition,
-					::XMVector3TransformCoord(::XMLoadFloat3(&pCurrentMesh->vecVertices[v].vPosition), matPreTransform));
-				::XMStoreFloat3(&pCurrentMesh->vecVertices[v].vNormal,
-					::XMVector3TransformNormal(::XMLoadFloat3(&pCurrentMesh->vecVertices[v].vNormal), matPreTransform));
-				::XMStoreFloat3(&pCurrentMesh->vecVertices[v].vTangent,
-					::XMVector3TransformNormal(::XMLoadFloat3(&pCurrentMesh->vecVertices[v].vTangent), matPreTransform));
-				::XMStoreFloat3(&pCurrentMesh->vecVertices[v].vBinormal,
-					::XMVector3TransformNormal(::XMLoadFloat3(&pCurrentMesh->vecVertices[v].vBinormal), matPreTransform));
+				pCurrentMesh->vecVertices[v].vPosition = Vec3::Transform(pCurrentMesh->vecVertices[v].vPosition, matPreTransform);
+				pCurrentMesh->vecVertices[v].vNormal = Vec3::Transform(pCurrentMesh->vecVertices[v].vNormal, matPreTransform);
+				pCurrentMesh->vecVertices[v].vTangent = Vec3::Transform(pCurrentMesh->vecVertices[v].vTangent, matPreTransform);
+				pCurrentMesh->vecVertices[v].vBinormal = Vec3::Transform(pCurrentMesh->vecVertices[v].vBinormal, matPreTransform);
 			}
 		}
 		else
 		{
 			for (_uint v = 0; v < iVertexCount; ++v)
 			{
-				::memcpy(&pCurrentMesh->vecVertices[v].vPosition, &pAiMesh->mVertices[v], sizeof(_float3));
-				::memcpy(&pCurrentMesh->vecVertices[v].vNormal, &pAiMesh->mNormals[v], sizeof(_float3));
-				::memcpy(&pCurrentMesh->vecVertices[v].vTangent, &pAiMesh->mTangents[v], sizeof(_float3));
-				::memcpy(&pCurrentMesh->vecVertices[v].vBinormal, &pAiMesh->mBitangents[v], sizeof(_float3));
-				::memcpy(&pCurrentMesh->vecVertices[v].vUV, &pAiMesh->mTextureCoords[0][v], sizeof(_float2));
+				::memcpy(&pCurrentMesh->vecVertices[v].vPosition, &pAiMesh->mVertices[v], sizeof(Vec3));
+				::memcpy(&pCurrentMesh->vecVertices[v].vNormal, &pAiMesh->mNormals[v], sizeof(Vec3));
+				::memcpy(&pCurrentMesh->vecVertices[v].vTangent, &pAiMesh->mTangents[v], sizeof(Vec3));
+				::memcpy(&pCurrentMesh->vecVertices[v].vBinormal, &pAiMesh->mBitangents[v], sizeof(Vec3));
+				::memcpy(&pCurrentMesh->vecVertices[v].vUV, &pAiMesh->mTextureCoords[0][v], sizeof(Vec2));
 			}
 		}
 
@@ -223,7 +219,7 @@ void CConverter::Read_Meshes()
 			pCurrentMesh->iAffectBoneCount = 1;
 			pCurrentMesh->vecOffsetMatrices.resize(1);
 			pCurrentMesh->vecAffectBoneIndices.resize(1);
-			::XMStoreFloat4x4(&pCurrentMesh->vecOffsetMatrices[0], ::XMMatrixIdentity());
+			pCurrentMesh->vecOffsetMatrices[0] = Matrix::Identity;
 			pCurrentMesh->vecAffectBoneIndices[0] = iSrcBoneIndex;
 			continue;
 		}
@@ -269,9 +265,9 @@ void CConverter::Read_AnimationData()
 			pChannel->iKeyFrameCount = (std::max)(pAiChannel->mNumPositionKeys, pAiChannel->mNumScalingKeys);
 			pChannel->iKeyFrameCount = (std::max)(pChannel->iKeyFrameCount, pAiChannel->mNumRotationKeys);
 
-			_float3		vScale{ 1.f, 1.f, 1.f };
-			_float4		vQuaternion{ 0.f, 0.f, 0.f, 1.f };
-			_float3		vTranslation{ 0.f, 0.f, 0.f };
+			Vec3		vScale{ 1.f, 1.f, 1.f };
+			Vec4		vQuaternion{ 0.f, 0.f, 0.f, 1.f };
+			Vec3		vTranslation{ 0.f, 0.f, 0.f };
 			pChannel->vecKeyFrames.resize(pChannel->iKeyFrameCount);
 			for (_uint k = 0; k < pChannel->iKeyFrameCount; ++k)
 			{
@@ -279,7 +275,7 @@ void CConverter::Read_AnimationData()
 
 				if (pAiChannel->mNumScalingKeys > k)
 				{
-					::memcpy(&vScale, &pAiChannel->mScalingKeys[k].mValue, sizeof(_float3));
+					::memcpy(&vScale, &pAiChannel->mScalingKeys[k].mValue, sizeof(Vec3));
 					KeyFrame.fTrackPosition = (_float)pAiChannel->mScalingKeys[k].mTime;
 				}
 
@@ -295,7 +291,7 @@ void CConverter::Read_AnimationData()
 
 				if (pAiChannel->mNumPositionKeys > k)
 				{
-					::memcpy(&vTranslation, &pAiChannel->mPositionKeys[k].mValue, sizeof(_float3));
+					::memcpy(&vTranslation, &pAiChannel->mPositionKeys[k].mValue, sizeof(Vec3));
 					KeyFrame.fTrackPosition = (_float)pAiChannel->mPositionKeys[k].mTime;
 				}
 
@@ -348,7 +344,7 @@ HRESULT CConverter::Export_ModelData()
 			pFileUtil->Write<_uint>(pElement->iIndex);
 			pFileUtil->Write<string>(pElement->strName);
 			pFileUtil->Write<_uint>(pElement->iParent);
-			pFileUtil->Write<_float4x4>(pElement->matTransform);
+			pFileUtil->Write<Matrix>(pElement->matTransform);
 		}
 		Safe_Release(pFileUtil);
 
@@ -371,9 +367,9 @@ HRESULT CConverter::Export_ModelData()
 				::printf("%s\n", name.c_str());
 				for (size_t i = 0; i < pMesh->vecVertices.size(); ++i)
 				{
-					_float3 p = pMesh->vecVertices[i].vPosition;
+					Vec3 p = pMesh->vecVertices[i].vPosition;
 					XMUINT4 indices = pMesh->vecVertices[i].vBlendIndices;
-					_float4 weights = pMesh->vecVertices[i].vBlendWeights;
+					Vec4 weights = pMesh->vecVertices[i].vBlendWeights;
 
 					::fprintf(pFile, "%f, %f, %f,", p.x, p.y, p.z);
 					::fprintf(pFile, "%d, %d, %d, %d,", indices.x, indices.y, indices.z, indices.w);
@@ -433,7 +429,7 @@ HRESULT CConverter::Export_ModelData()
 			// OffsetMatrix
 			pFileUtil->Write<_uint>((_uint)pElement->vecOffsetMatrices.size());
 			if (!pElement->vecOffsetMatrices.empty())
-				pFileUtil->Write(&pElement->vecOffsetMatrices[0], sizeof(_float4x4) * (_uint)pElement->vecOffsetMatrices.size());
+				pFileUtil->Write(&pElement->vecOffsetMatrices[0], sizeof(Matrix) * (_uint)pElement->vecOffsetMatrices.size());
 		}
 		
 		Safe_Release(pFileUtil);
@@ -528,9 +524,9 @@ HRESULT CConverter::Export_AnimationData(_uint iIndex)
 			for (AS_KEYFRAME& KeyFrame : pChannel->vecKeyFrames)
 			{
 				pFileUtil->Write<_float>(KeyFrame.fTrackPosition);
-				pFileUtil->Write<_float3>(KeyFrame.vScale);
-				pFileUtil->Write<_float4>(KeyFrame.vQuaternion);
-				pFileUtil->Write<_float3>(KeyFrame.vTranslation);
+				pFileUtil->Write<Vec3>(KeyFrame.vScale);
+				pFileUtil->Write<Vec4>(KeyFrame.vQuaternion);
+				pFileUtil->Write<Vec3>(KeyFrame.vTranslation);
 			}
 		}
 	}
@@ -890,7 +886,7 @@ void CConverter::Clear_For_Custom()
 	m_vecMapAssetPaths.clear();
 }
 
-CConverter* CConverter::Create(ID3D11Device* pDevice, ID3D11DeviceContext* pDeviceContext, const _tchar* wszAssetParentFolderPath, _float4x4 matPreTransform, _bool bCustom)
+CConverter* CConverter::Create(ID3D11Device* pDevice, ID3D11DeviceContext* pDeviceContext, const _tchar* wszAssetParentFolderPath, const Matrix &matPreTransform, _bool bCustom)
 {
 	CConverter* pInstance = new CConverter(pDevice, pDeviceContext, matPreTransform, bCustom);
 
@@ -921,7 +917,7 @@ void CConverter::Read_Default_AffectBoneData(_uint iVertexCount, _uint iAffectBo
 
 	// Initialize, Indentity Matrix
 	for (_uint i = 0; i < iAffectBoneCount; ++i)
-		::XMStoreFloat4x4(&pCurrentMesh->vecOffsetMatrices[i], ::XMMatrixIdentity());
+		pCurrentMesh->vecOffsetMatrices[i] = Matrix::Identity;
 
 	for (_uint b = 0; b < iAffectBoneCount; ++b)
 	{
@@ -934,9 +930,8 @@ void CConverter::Read_Default_AffectBoneData(_uint iVertexCount, _uint iAffectBo
 		}
 		pCurrentMesh->vecAffectBoneIndices[b] = iAffectBoneIndex;
 
-		::memcpy(&pCurrentMesh->vecOffsetMatrices[b], &pAiBone->mOffsetMatrix, sizeof(_float4x4));
-		::XMStoreFloat4x4(&pCurrentMesh->vecOffsetMatrices[b],
-			::XMMatrixTranspose(::XMLoadFloat4x4(&pCurrentMesh->vecOffsetMatrices[b])));
+		::memcpy(&pCurrentMesh->vecOffsetMatrices[b], &pAiBone->mOffsetMatrix, sizeof(Matrix));
+		pCurrentMesh->vecOffsetMatrices[b] = pCurrentMesh->vecOffsetMatrices[b].Transpose();
 
 		// b번째 뼈는 몇개의 정점에게 영향을 주는가?
 		for (_uint w = 0; w < pAiBone->mNumWeights; ++w)
@@ -1002,9 +997,9 @@ void CConverter::Read_ForMasterBone_AffectBoneData(_uint iVertexCount, _uint iAf
 		if (iAffectBoneIndex == -1)
 			continue;
 
-		_float4x4 matSrc = {};
-		::memcpy(&matSrc, &pAiBone->mOffsetMatrix, sizeof(_float4x4));
-		::XMStoreFloat4x4(&matSrc, ::XMMatrixTranspose(::XMLoadFloat4x4(&matSrc)));
+		Matrix matSrc = {};
+		::memcpy(&matSrc, &pAiBone->mOffsetMatrix, sizeof(Matrix));
+		matSrc = matSrc.Transpose();
 		pCurrentMesh->vecAffectBoneIndices.push_back(iAffectBoneIndex);
 		pCurrentMesh->vecOffsetMatrices.push_back(matSrc);
 	}

@@ -32,7 +32,7 @@ HRESULT CRender_Manager::Initialize()
 		desc.ePixelFormat = DXGI_FORMAT_R8G8B8A8_UNORM;
 		desc.iWidth = iWidth;
 		desc.iHeight = iHeight;
-		desc.vClearColor = _float4(0.f, 0.f, 0.f, 0.f);
+		desc.vClearColor = Vec4::Zero;
 		if (FAILED(m_pGameInstance->Add_RenderTarget(ERenderTarget::Diffuse, &desc)))
 			return E_FAIL;
 	}
@@ -42,7 +42,7 @@ HRESULT CRender_Manager::Initialize()
 		desc.ePixelFormat = DXGI_FORMAT_R16G16B16A16_UNORM;
 		desc.iWidth = iWidth;
 		desc.iHeight = iHeight;
-		desc.vClearColor = _float4(0.f, 0.f, 0.f, 0.f);
+		desc.vClearColor = Vec4::Zero;
 		if (FAILED(m_pGameInstance->Add_RenderTarget(ERenderTarget::Normal, &desc)))
 			return E_FAIL;
 	}
@@ -52,7 +52,7 @@ HRESULT CRender_Manager::Initialize()
 		desc.ePixelFormat = DXGI_FORMAT_R32G32B32A32_FLOAT;
 		desc.iWidth = iWidth;
 		desc.iHeight = iHeight;
-		desc.vClearColor = _float4(0.f, 0.f, 0.f, 0.f);
+		desc.vClearColor = Vec4::Zero;
 		if (FAILED(m_pGameInstance->Add_RenderTarget(ERenderTarget::Depth, &desc)))
 			return E_FAIL;
 	}
@@ -62,7 +62,7 @@ HRESULT CRender_Manager::Initialize()
 		desc.ePixelFormat = DXGI_FORMAT_R16G16B16A16_FLOAT;
 		desc.iWidth = iWidth;
 		desc.iHeight = iHeight;
-		desc.vClearColor = _float4(0.f, 0.f, 0.f, 0.f);
+		desc.vClearColor = Vec4::Zero;
 		if (FAILED(m_pGameInstance->Add_RenderTarget(ERenderTarget::Shade, &desc)))
 			return E_FAIL;
 	}
@@ -87,7 +87,7 @@ HRESULT CRender_Manager::Initialize()
 	{
 	}
 
-	::XMStoreFloat4x4(&m_matWorld_RT, ::XMMatrixScaling(viewportDesc.Width, viewportDesc.Height, 1.f));
+	m_matWorld_RT = Matrix::CreateScale(viewportDesc.Width, viewportDesc.Height, 1.f);
 
 #ifdef _DEBUG
 	if (FAILED(Ready_Debug()))

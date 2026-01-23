@@ -10,9 +10,9 @@ public:
 	constexpr static EComponentType _ID = EComponentType::NAVIGATION;
 	typedef struct tagNavigationDesc
 	{
-		const _float4x4* pParentMatrix = { nullptr };
+		const Matrix* pParentMatrix = { nullptr };
 		_int iCurrentIndex = { -1 };
-		_float3 vPosition = { 0.f, 0.f, 0.f };
+		Vec3 vPosition = { 0.f, 0.f, 0.f };
 	}NAVIGATION_DESC;
 private:
 	CNavigation(ID3D11Device* pDevice, ID3D11DeviceContext* pDeviceContext);
@@ -24,17 +24,17 @@ private:
 public:
 	_int Get_CurrentCellIndex() const { return m_iCurrentCellIndex; }
 	void Set_CurrentCellIndeX(const _int iIndex) { m_iCurrentCellIndex = iIndex; }
-	_vector Get_CellPos();
-	_vector Get_CellNormal();
-	_vector Get_CellNormal_World();
-	_vector SetUp_OnNavigation(_fvector vWorldPos);
-	_vector Project_OnNavigation(_fvector vWorldPos);
-	void Sync_Index(_fvector vWorldPos);
-	_bool Is_Move(_fvector vResultPos);
+	Vec3 Get_CellPos();
+	Vec3 Get_CellNormal();
+	Vec3 Get_CellNormal_World();
+	Vec3 SetUp_OnNavigation(Vec3 vWorldPos);
+	Vec3 Project_OnNavigation(const Vec3& vWorldPos);
+	void Sync_Index(const Vec3& vWorldPos);
+	_bool Is_Move(const Vec3& vResultPos);
 private:
 	HRESULT SetUp_Cells(const POLYGON_SAVEDATA& polygonData);
 private:
-	const _float4x4* m_pParentMatrix = { nullptr };
+	const Matrix* m_pParentMatrix = { nullptr };
 private:
 	_uint m_iCellCount = { 0 };
 	_int m_iCurrentCellIndex = { -1 };

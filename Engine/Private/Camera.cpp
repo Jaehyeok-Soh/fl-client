@@ -6,8 +6,8 @@
 CCamera::CCamera()
 	: Super()
 {
-	::XMStoreFloat4x4(&m_matView, ::XMMatrixIdentity());
-	::XMStoreFloat4x4(&m_matProjection, ::XMMatrixIdentity());
+	m_matView = Matrix::Identity;
+	m_matProjection = Matrix::Identity;
 }
 
 CCamera::CCamera(const CCamera& rhs)
@@ -54,7 +54,7 @@ void CCamera::Update_View()
 {
 	CTransform* pOwnerTransform = Get_Owner()->Get_Component<CTransform>();
 
-	_matrix matView = { ::XMMatrixIdentity() };
+	Matrix matView = Matrix::Identity;
 
 	if (m_eProjectionType == EProjectionType::PERSPECTIVE)
 	{
@@ -63,15 +63,14 @@ void CCamera::Update_View()
 			pOwnerTransform->Get_Info(TRANSFORM_INFO_STATE::UP));
 	}
 	
-	::XMStoreFloat4x4(&m_matView, matView);
+	m_matView = matView;
 }
 
 void CCamera::Update_Proj()
 {
 	m_fAspectRatio = m_fViewWidth / m_fViewHeight;
 
-	XMMATRIX matProjection = { ::XMMatrixIdentity() };
-
+	Matrix matProjection = Matrix::Identity;
 	switch (m_eProjectionType)
 	{
 	case Engine::EProjectionType::PERSPECTIVE:
@@ -83,8 +82,7 @@ void CCamera::Update_Proj()
 		matProjection = ::XMMatrixOrthographicLH(m_fViewWidth, m_fViewHeight, m_fNear, m_fFar);
 	} break;
 	}
-
-	::XMStoreFloat4x4(&m_matProjection, matProjection);
+	m_matProjection = matProjection;
 }
 
 CCamera* CCamera::Create()

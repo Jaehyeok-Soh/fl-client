@@ -33,7 +33,7 @@ public:
 	HRESULT Bind_ShaderResourceBuffer(class CShader* pShader);
 	HRESULT Bind_ShaderResource_Cube(class CShader* pShader);
 	_uint Get_TextureCount() const { return m_iTextureCount; }
-	const _float2& Get_TextureSize(_uint iIndex = 0) const { return m_vecTextures[iIndex]->Get_Size(); }
+	const Vec2& Get_TextureSize(_uint iIndex = 0) const { return m_vecTextures[iIndex]->Get_Size(); }
 private:
 	_uint m_iTextureCount = { 0 };
 	vector<CTextureBase*>						m_vecTextures;

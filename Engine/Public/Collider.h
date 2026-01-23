@@ -24,16 +24,16 @@ private:
 	virtual HRESULT Initialize_Prototype() override;
 	virtual HRESULT Initialize(void* pArg) override;
 public:
-	void Update(_fmatrix matWorld);
+	void Update(const Matrix &matWorld);
 
 	void OnCollision_Enter(CCollider* pOther);
 	void OnCollision(CCollider* pOther);
 	void OnCollision_Exit(CCollider* pOther);
 	_bool Intersect(CCollider* pOther);
-	_bool IntersectWithRay_World(OUT _float4& vOut);
-	_bool IntersectWithRay_Local(OUT _float4& vOut);
-	_bool IntersectWithRay_World(class CRay* pRay, OUT _float4& vOut);
-	_bool IntersectWithRay_Local(class CRay* pRay, OUT _float4& vOut);
+	_bool IntersectWithRay_World(OUT Vec3& vOut);
+	_bool IntersectWithRay_Local(OUT Vec3& vOut);
+	_bool IntersectWithRay_World(class CRay* pRay, OUT Vec3& vOut);
+	_bool IntersectWithRay_Local(class CRay* pRay, OUT Vec3& vOut);
 	CBounding* Get_Bounding() { return m_pBounding; }
 	
 	void Set_Active(_bool bActive) { m_bIsActive = bActive; }

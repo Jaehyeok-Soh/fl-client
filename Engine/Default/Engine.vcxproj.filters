@@ -728,6 +728,9 @@
     <ClInclude Include="..\Public\Component.h">
       <Filter>00. System\05. Component</Filter>
     </ClInclude>
+    <ClInclude Include="..\Public\DebugDraw.h">
+      <Filter>01. Utility\10. DebugDraw</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <FxCompile Include="..\..\Shaders\Shader_Deffered.hlsl">
