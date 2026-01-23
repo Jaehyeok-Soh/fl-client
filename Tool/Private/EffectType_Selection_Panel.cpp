@@ -159,7 +159,7 @@ void CEffectType_Selection_Panel::CreateParticleEffect()
 		pEffectDesc.eEffectType = E_EFFECTTYPE::NONE;
 
 		// =========   ¿Ã∆Â∆Æ Color Value   ===============
-		pEffectDesc._Effect_Color = _float4{ 0.f, 0.f, 0.f, 1.f };
+		pEffectDesc._Effect_Color = Vec4{ 0.f, 0.f, 0.f, 1.f };
 
 
 		// ========  ¿Ã∆Â∆Æ Material º≥¡§   ===========

@@ -20,12 +20,6 @@ void CRay::Setup_Ray(const Matrix* pMatParent)
 
 _bool CRay::IntersectrayWithAABB_World(BoundingBox* pDesc, OUT Vec3& vOut)
 {
-	::XMStoreFloat4(&m_vOrigin, ::XMVectorSetW(vOrigin, 1.f));
-	::XMStoreFloat3(&m_vDir, vDir);
-}
-
-_bool CRay::IntersectrayWithAABB_World(BoundingBox* pDesc, OUT _float4& vOut)
-{
 	_float fDist = {};
 	if (pDesc->Intersects(m_vOrigin, m_vDir, fDist))
 	{

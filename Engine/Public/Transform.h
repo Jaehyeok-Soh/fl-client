@@ -64,11 +64,9 @@ public:
 	void Force_Clear();
 private:
 	_bool m_bControll = { false };
-	_float4 m_vPrevPosition = { 0.f, 0.f, 0.f, 1.f };
 	_float m_fMoveScale = { 1.f };
 	_float m_fMovePerSec = { 5.f };
 	_float m_fRotatePerSec = { 8.f };
-	_float3 m_vForceVelocity = { 0.f, 0.f, 0.f };
 	_float m_fDragK = { 0.f };
 	Vec3 m_vForceVelocity = { 0.f, 0.f, 0.f };
 	Vec3 m_vPrevPosition = { 0.f, 0.f, 0.f };

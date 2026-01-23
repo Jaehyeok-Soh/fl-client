@@ -30,7 +30,7 @@ HRESULT CMesh::Initialize_Prototype(void* pArg)
 	if (!pArg)
 		return E_FAIL;
 
-	if(FAILED(Super::Initialize_Prototype(pArg)))
+	if (FAILED(Super::Initialize_Prototype(pArg)))
 		return E_FAIL;
 
 	MESH_ORIGIN_DESC* pDesc = static_cast<MESH_ORIGIN_DESC*>(pArg);
@@ -84,11 +84,11 @@ HRESULT CMesh::Initialize_Prototype(void* pArg)
 		MSG_BOX("CMesh::Initialize_Prototype, Modeltype is wrong");
 		return E_FAIL;
 	}
-	}	
-	
+	}
+
 	if (FAILED(hr))
 		return E_FAIL;
-	
+
 	m_pIndices = new _uint[m_iIndexCount];
 
 	// IndexBuffer
@@ -115,7 +115,6 @@ HRESULT CMesh::Initialize_Prototype(void* pArg)
 
 		m_pNormals = new Vec3[iTriangleCount];
 		m_pSurfaceTypes = new ESurfaceType[iTriangleCount];
-		_vector vWorldUp = ::XMVectorSet(0.f, 1.f, 0.f, 0.f);
 		_uint iIndex = { 0 };
 		for (_uint i = 0; i < iTriangleCount; ++i)
 		{
@@ -127,10 +126,6 @@ HRESULT CMesh::Initialize_Prototype(void* pArg)
 			Vec3 vAC = vC - vA;
 			Vec3 vNormal = vAB.Cross(vAC);
 			vNormal.Normalize();
-
-			_vector vAB = vB - vA;
-			_vector vAC = vC - vA;
-			_vector vNormal = ::XMVector3Normalize(::XMVector3Cross(vAB, vAC));
 
 			ESurfaceType eType = ESurfaceType::CEILING;
 			const _float fDot = vNormal.Dot(Vec3::Up);
@@ -144,7 +139,7 @@ HRESULT CMesh::Initialize_Prototype(void* pArg)
 			m_pNormals[i] = vNormal;
 			m_pSurfaceTypes[i] = eType;
 		}
-	}		
+	}
 
 	return S_OK;
 }

@@ -67,7 +67,7 @@ HRESULT Tool_PartObject::Render()
 	return S_OK;
 }
 
-_bool Tool_PartObject::Picking(OUT _float4& vOut)
+_bool Tool_PartObject::Picking(OUT Vec3& vOut)
 {
 	return true;
 }
@@ -96,60 +96,59 @@ void Tool_PartObject::Set_Parent(CGameObject* pGo)
 	m_pParentObject = pGo;
 }
 
-void Tool_PartObject::Update_CombinedWorldMatrix(const _float4x4* pMatParent)
+void Tool_PartObject::Update_CombinedWorldMatrix(const Matrix* pMatParent)
 {
-	::XMStoreFloat4x4(&m_CombineWorldMatrix, ::XMLoadFloat4x4(&Get_Component<CTransform>()->Get_WorldMatrix()) * ::XMLoadFloat4x4(pMatParent));
+	m_CombineWorldMatrix = Get_Component<CTransform>()->Get_WorldMatrix() * (*pMatParent);
 }
 
-void Tool_PartObject::Update_CombinedWorldMatrix(_fmatrix matParent)
+void Tool_PartObject::Update_CombinedWorldMatrix(Matrix matParent)
 {
-	::XMStoreFloat4x4(&m_CombineWorldMatrix, ::XMLoadFloat4x4(&Get_Component<CTransform>()->Get_WorldMatrix()) * matParent);
+	m_CombineWorldMatrix = Get_Component<CTransform>()->Get_WorldMatrix() * matParent;
 }
 
-
-void Tool_PartObject::Update_CombinedWorldMatrix_Bilboad(_fmatrix matParent)
+void Tool_PartObject::Update_CombinedWorldMatrix_Bilboad(Matrix matParent)
 {
-	::XMStoreFloat4x4(&m_CombineWorldMatrix, ::XMLoadFloat4x4(&Get_Component<CTransform>()->Get_WorldMatrix()) * matParent);
-
+	m_CombineWorldMatrix = Get_Component<CTransform>()->Get_WorldMatrix() * matParent;
 	CCameraMan* pMainCamera = m_pGameInstance->Get_MainCamera();
 	if (pMainCamera == nullptr)
 		return;
-	_matrix matWorld = ::XMLoadFloat4x4(&m_CombineWorldMatrix);
-	_float fScaleX = ::XMVectorGetX(::XMVector3Length(matWorld.r[0]));
-	_float fScaleY = ::XMVectorGetX(::XMVector3Length(matWorld.r[1]));
-	_float fScaleZ = ::XMVectorGetX(::XMVector3Length(matWorld.r[2]));
-	_vector vPosition = matWorld.r[3] + ::XMVectorSet(0.f, 0.3f, 0.f, 0.f);
-	_vector vCamPosition = pMainCamera->Get_Component<CTransform>()->Get_Info(TRANSFORM_INFO_STATE::POS);
-	_vector vLook = ::XMVector3Normalize(vPosition - vCamPosition);
-	_vector vRight = ::XMVector3Normalize(::XMVector3Cross(::XMVectorSet(0.f, 1.f, 0.f, 0.f), vLook));
-	_vector vUp = ::XMVector3Normalize(::XMVector3Cross(vLook, vRight));
-	matWorld.r[0] = ::XMVectorSetW(vRight * fScaleX, 0.f);
-	matWorld.r[1] = ::XMVectorSetW(vUp * fScaleY, 0.f);
-	matWorld.r[2] = ::XMVectorSetW(vLook * fScaleZ, 0.f);
-	matWorld.r[3] = ::XMVectorSetW(vPosition, 1.f);
+	_float fScaleX = m_CombineWorldMatrix.Right().Length();
+	_float fScaleY = m_CombineWorldMatrix.Up().Length();
+	_float fScaleZ = m_CombineWorldMatrix.Backward().Length();
+	Vec3 vPosition = m_CombineWorldMatrix.Translation() + Vec3{ 0.f, 0.3f, 0.f };
+	Vec3 vCamPosition = pMainCamera->Get_Component<CTransform>()->Get_Info(TRANSFORM_INFO_STATE::POS);
+	Vec3 vLook = vPosition - vCamPosition;
+	vLook.Normalize();
+	Vec3 vRight = Vec3::Up.Cross(vLook);
+	vRight.Normalize();
+	Vec3 vUp = vLook.Cross(vRight);
+	vUp.Normalize();
 
-	::XMStoreFloat4x4(&m_CombineWorldMatrix, matWorld);
+	m_CombineWorldMatrix.Right(vRight * fScaleX);
+	m_CombineWorldMatrix.Up(vUp * fScaleY);
+	m_CombineWorldMatrix.Backward(vLook * fScaleZ);
+	m_CombineWorldMatrix.Translation(vPosition);
 }
 
-void Tool_PartObject::Update_CombinedWorldMatrix_Bilboad(_fmatrix matParent, _float2 vUIScale)
+void Tool_PartObject::Update_CombinedWorldMatrix_Bilboad(Matrix matParent, Vec2 vUIScale)
 {
-	::XMStoreFloat4x4(&m_CombineWorldMatrix, ::XMLoadFloat4x4(&Get_Component<CTransform>()->Get_WorldMatrix()) * matParent);
-
+	m_CombineWorldMatrix = Get_Component<CTransform>()->Get_WorldMatrix() * matParent;
 	CCameraMan* pMainCamera = m_pGameInstance->Get_MainCamera();
 	if (pMainCamera == nullptr)
 		return;
-	_matrix matWorld = ::XMLoadFloat4x4(&m_CombineWorldMatrix);
-	_vector vPosition = matWorld.r[3] + ::XMVectorSet(0.f, 0.3f, 0.f, 0.f);
-	_vector vCamPosition = pMainCamera->Get_Component<CTransform>()->Get_Info(TRANSFORM_INFO_STATE::POS);
-	_vector vLook = ::XMVector3Normalize(vPosition - vCamPosition);
-	_vector vRight = ::XMVector3Normalize(::XMVector3Cross(::XMVectorSet(0.f, 1.f, 0.f, 0.f), vLook));
-	_vector vUp = ::XMVector3Normalize(::XMVector3Cross(vLook, vRight));
-	matWorld.r[0] = ::XMVectorSetW(vRight * vUIScale.x, 0.f);
-	matWorld.r[1] = ::XMVectorSetW(vUp * vUIScale.y, 0.f);
-	matWorld.r[2] = ::XMVectorSetW(vLook, 0.f);
-	matWorld.r[3] = ::XMVectorSetW(vPosition, 1.f);
+	Vec3 vPosition = m_CombineWorldMatrix.Translation() + Vec3{ 0.f, 0.3f, 0.f };
+	Vec3 vCamPosition = pMainCamera->Get_Component<CTransform>()->Get_Info(TRANSFORM_INFO_STATE::POS);
+	Vec3 vLook = vPosition - vCamPosition;
+	vLook.Normalize();
+	Vec3 vRight = Vec3::Up.Cross(vLook);
+	vRight.Normalize();
+	Vec3 vUp = vLook.Cross(vRight);
+	vUp.Normalize();
 
-	::XMStoreFloat4x4(&m_CombineWorldMatrix, matWorld);
+	m_CombineWorldMatrix.Right(vRight * vUIScale.x);
+	m_CombineWorldMatrix.Up(vUp * vUIScale.y);
+	m_CombineWorldMatrix.Backward(vLook);
+	m_CombineWorldMatrix.Translation(vPosition);
 }
 
 void Tool_PartObject::Free()

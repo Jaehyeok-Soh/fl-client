@@ -18,13 +18,12 @@ HRESULT CBone::Initialize(BONE_DESC* pDesc)
 
 void CBone::Update_CombinedTransformMatrix(const vector<CBone*>& Bones, const Matrix& PreTransformMatrix)
 {
-    
+
     // 최상위 부모의 경우 PreTrnasformMatrix 연산
     // 이후에 자식들이 연산하면서 다 먹어 들어갈것
     if (m_iParentIndex == -1)
         m_matCombinedTransform = m_matTransform * PreTransformMatrix;
     else
-    {
         // 저장해두었던 ParentIndex로 CombinedTransformMatrix를 가져와 연산
         m_matCombinedTransform = m_matTransform * Bones[m_iParentIndex]->Get_CombinedTransformMatrix();
 }

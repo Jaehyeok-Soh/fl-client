@@ -59,17 +59,17 @@ HRESULT CVIBuffer_Particle::Resize_InstanceBuffer(_uint iNumInstanceCount)
 		_float      fScale = m_pGameInstance->Rand_Float(m_tParticleDesc.vSize.x, m_tParticleDesc.vSize.y) * 0.5f;
 		m_pSpeeds[i] = m_pGameInstance->Rand_Float(m_tParticleDesc.vSpeed.x, m_tParticleDesc.vSpeed.y);
 
-		m_pInstanceVertices[i].vRight = _float4(fScale, 0.f, 0.f, 0.f);
-		m_pInstanceVertices[i].vUp = _float4(0.f, fScale, 0.f, 0.f);
-		m_pInstanceVertices[i].vLook = _float4(0.f, 0.f, fScale, 0.f);
-		m_pInstanceVertices[i].vTranslation = _float4(
+		m_pInstanceVertices[i].vRight = Vec4(fScale, 0.f, 0.f, 0.f);
+		m_pInstanceVertices[i].vUp = Vec4(0.f, fScale, 0.f, 0.f);
+		m_pInstanceVertices[i].vLook = Vec4(0.f, 0.f, fScale, 0.f);
+		m_pInstanceVertices[i].vTranslation = Vec4(
 			m_pGameInstance->Rand_Float(m_tParticleDesc.vCenter.x - m_tParticleDesc.vRange.x * 0.5f, m_tParticleDesc.vCenter.x + m_tParticleDesc.vRange.x * 0.5f),
 			m_pGameInstance->Rand_Float(m_tParticleDesc.vCenter.y - m_tParticleDesc.vRange.y * 0.5f, m_tParticleDesc.vCenter.y + m_tParticleDesc.vRange.y * 0.5f),
 			m_pGameInstance->Rand_Float(m_tParticleDesc.vCenter.z - m_tParticleDesc.vRange.z * 0.5f, m_tParticleDesc.vCenter.z + m_tParticleDesc.vRange.z * 0.5f),
 			1.f
 		);
 
-		m_pInstanceVertices[i].vLifeTime = _float2(0.f, m_pGameInstance->Rand_Float(m_tParticleDesc.vLifeTime.x, m_tParticleDesc.vLifeTime.y));
+		m_pInstanceVertices[i].vLifeTime = Vec2(0.f, m_pGameInstance->Rand_Float(m_tParticleDesc.vLifeTime.x, m_tParticleDesc.vLifeTime.y));
 	}
 
 	return m_pDevice->CreateBuffer(&m_InstanceBufferDesc, nullptr, &m_pVBInstance);

@@ -198,7 +198,7 @@ float4 PS_Texture(GS_OUT In) : SV_TARGET0
     
 }
 
-technique11 __XB_S_BCNT0_U32
+technique11 T0
 {
     pass Mesh_Effect
     {
@@ -215,8 +215,8 @@ technique11 __XB_S_BCNT0_U32
         SetRasterizerState(RS_Default_CullNone);
         SetDepthStencilState(DS_Default, 0);
         SetBlendState(BS_Default, float4(0.f, 0.f, 0.f, 0.f), 0xffffffff);
-        SetVertexShader(CompileShader(vs_5_0, VS_MAIN()));
+        SetVertexShader(CompileShader(vs_5_0, VS_Texture()));
         GeometryShader = compile gs_5_0 GS_Texture();
-        SetPixelShader(CompileShader(ps_5_0, PS_MAIN()));
+        SetPixelShader(CompileShader(ps_5_0, PS_Texture()));
     }
 }

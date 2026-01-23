@@ -13,7 +13,7 @@ class CMainApplication : public CBase
 {
 	using Super = CBase;
 public:
-	
+
 private:
 	CMainApplication();
 	virtual ~CMainApplication() = default;
@@ -28,8 +28,8 @@ private:
 	HRESULT Ready_GuiManager(_uint iWidth, _uint iHeight, ELevelType eStartLevel);
 private:
 	CImGui_ToolManager* m_pImGuiManager = { nullptr };
-	ID3D11Device* m_pDevice					= { nullptr };
-	ID3D11DeviceContext* m_pDeviceContext	= { nullptr };
+	ID3D11Device* m_pDevice = { nullptr };
+	ID3D11DeviceContext* m_pDeviceContext = { nullptr };
 	Engine::CGameInstance* m_pGameInstance = { nullptr };
 public:
 	virtual void Free() override;

@@ -145,7 +145,7 @@ HRESULT CEffectObject::Render()
     return S_OK;
 }
 
-_bool CEffectObject::Picking(OUT _float4& vOut)
+_bool CEffectObject::Picking(OUT Vec3& vOut)
 {
     return _bool();
 }

@@ -59,7 +59,7 @@ HRESULT Effect::Render()
 	return Super::Render();
 }
 
-_bool Effect::Picking(OUT _float4& vOut)
+_bool Effect::Picking(OUT Vec3& vOut)
 {
 	return Super::Picking(vOut);
 }

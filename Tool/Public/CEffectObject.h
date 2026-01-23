@@ -79,17 +79,17 @@ public:
         _uint       _Effect_ShaderPass = {};
 
         // =======   ¿Ã∆Â∆Æ Ω∫≈©∑— Value   ===========
-        _float2     _Effect_ScrollSpeed = { 0.f, 0.f };
+        Vec2     _Effect_ScrollSpeed = { 0.f, 0.f };
 
         // ========   ¿Ã∆Â∆Æ ø÷∞Ó Scale Value   ==========
-        _float2     _Effect_DistortionScale = { 0.f, 0.f };
+        Vec2     _Effect_DistortionScale = { 0.f, 0.f };
 
         // ==========   ¿Ã∆Â∆Æ Sacle Value   ==============
-        _float3     _Effect_StartScale = { 1.f, 1.f, 1.f };
-        _float3     _Effect_EndScale = { 1.f, 1.f, 1.f };
+        Vec3     _Effect_StartScale = { 1.f, 1.f, 1.f };
+        Vec3     _Effect_EndScale = { 1.f, 1.f, 1.f };
 
         // =========   ¿Ã∆Â∆Æ Color Value   ===============
-        _float4     _Effect_Color = { 0.f, 0.f, 0.f, 0.f };
+        Vec4     _Effect_Color = { 0.f, 0.f, 0.f, 0.f };
 
         // =========   TooløÎ Ω√∞£ ∞™   ================
         _float      _Effect_ToolFlag = false;
@@ -126,7 +126,7 @@ public:
     virtual void Update_Late(const _float fTimeDelta) override;
     virtual void Ready_Before_Render(const _float fTimeDelta) override;
     virtual HRESULT Render() override;
-    virtual _bool Picking(OUT _float4& vOut) override;
+    virtual _bool Picking(OUT Vec3& vOut) override;
     virtual HRESULT Export_Data(OUT MAPOBJECT_SAVEDATA& data) override;
     virtual void Draw_ImGui() override;
     virtual void Set_Dead(const wstring& wstrLayerTag) override;
@@ -165,7 +165,7 @@ private:
     CTexture*    m_pTextureCom = { nullptr };
 
     //  ========== Ω∫≈©∑— OffSet ========
-    _float2      m_vScrollOffset = { 0.f, 0.f };
+    Vec2      m_vScrollOffset = { 0.f, 0.f };
     
 };
 

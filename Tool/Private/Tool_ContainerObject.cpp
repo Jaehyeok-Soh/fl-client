@@ -41,6 +41,7 @@ HRESULT Tool_ContainerObject::Awake(const _uint iCurrentLevelID)
 			pPart->Awake(iCurrentLevelID);
 	}
 
+	return S_OK;
 }
 
 void Tool_ContainerObject::Update_Priority(const _float fDT)
@@ -90,7 +91,7 @@ HRESULT Tool_ContainerObject::Render()
 	return S_OK;
 }
 
-_bool Tool_ContainerObject::Picking(OUT _float4& vOut)
+_bool Tool_ContainerObject::Picking(OUT Vec3& vOut)
 {
 	for (Tool_PartObject*& pPart : m_vecPartObjects)
 	{
@@ -98,6 +99,7 @@ _bool Tool_ContainerObject::Picking(OUT _float4& vOut)
 			return pPart->Picking(vOut);
 	}
 
+	return false;
 }
 
 HRESULT Tool_ContainerObject::Export_Data(OUT MAPOBJECT_SAVEDATA& data)
@@ -107,6 +109,8 @@ HRESULT Tool_ContainerObject::Export_Data(OUT MAPOBJECT_SAVEDATA& data)
 		if (pPart)
 			return pPart->Export_Data(data);
 	}
+
+	return S_OK;
 }
 
 void Tool_ContainerObject::Draw_ImGui()

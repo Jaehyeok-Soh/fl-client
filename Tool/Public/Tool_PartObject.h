@@ -10,7 +10,7 @@ class Tool_PartObject :
 public:
 	typedef struct tagPartObjectDesc : public Super::TOOLOBJECT_DESC
 	{
-		const _float4x4* pMatParent = { nullptr };
+		const Matrix* pMatParent = { nullptr };
 	}PARTOBJ_DESC;
 
 protected:
@@ -28,7 +28,7 @@ public:
 	virtual void Update_Late(const _float fTimeDelta) override;
 	virtual void Ready_Before_Render(const _float fTimeDelta) override;
 	virtual HRESULT Render() override;
-	virtual _bool Picking(OUT _float4& vOut) override;
+	virtual _bool Picking(OUT Vec3& vOut) override;
 	virtual HRESULT Export_Data(OUT MAPOBJECT_SAVEDATA& data) override;
 	virtual void Draw_ImGui();
 	virtual void Set_Dead(const wstring& wstrLayerTag) override;
@@ -39,14 +39,14 @@ public:
 
 protected:
 	CGameObject*	 m_pParentObject = { nullptr };
-	_float4x4        m_CombineWorldMatrix = {};
-	const _float4x4* m_pMatParent = { nullptr };
+	Matrix        m_CombineWorldMatrix = {};
+	const Matrix* m_pMatParent = { nullptr };
 
 protected:
-	void Update_CombinedWorldMatrix(const _float4x4* pMatParent);
-	void Update_CombinedWorldMatrix(_fmatrix matParent);
-	void Update_CombinedWorldMatrix_Bilboad(_fmatrix matParent);
-	void Update_CombinedWorldMatrix_Bilboad(_fmatrix matParent, _float2 vUIScale);
+	void Update_CombinedWorldMatrix(const Matrix* pMatParent);
+	void Update_CombinedWorldMatrix(Matrix matParent);
+	void Update_CombinedWorldMatrix_Bilboad(Matrix matParent);
+	void Update_CombinedWorldMatrix_Bilboad(Matrix matParent, Vec2 vUIScale);
 
 public:
 	virtual CGameObject* Clone(void* pArg) = 0;

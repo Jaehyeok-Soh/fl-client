@@ -111,7 +111,7 @@ inline void CTransform::Set_Scale(_float fX, _float fY, _float fZ)
 	Set_Info(TRANSFORM_INFO_STATE::LOOK, vLook * fZ);
 }
 
-inline void CTransform::Set_Scale(const Vec3 &vValue)
+inline void CTransform::Set_Scale(const Vec3& vValue)
 {
 	Vec3 vRight = Get_Info(TRANSFORM_INFO_STATE::RIGHT);
 	vRight.Normalize();
@@ -125,13 +125,6 @@ inline void CTransform::Set_Scale(const Vec3 &vValue)
 	Set_Info(TRANSFORM_INFO_STATE::LOOK, vLook * vValue.z);
 }
 
-inline void CTransform::Set_Scale(const _float3& vValue)
-{
-	Set_Info(TRANSFORM_INFO_STATE::RIGHT, ::XMVector3Normalize(Get_Info(TRANSFORM_INFO_STATE::RIGHT)) * vValue.x);
-	Set_Info(TRANSFORM_INFO_STATE::UP, ::XMVector3Normalize(Get_Info(TRANSFORM_INFO_STATE::UP)) * vValue.y);
-	Set_Info(TRANSFORM_INFO_STATE::LOOK, ::XMVector3Normalize(Get_Info(TRANSFORM_INFO_STATE::LOOK)) * vValue.z);
-}
-
 inline void CTransform::Add_Scale(_float fX, _float fY, _float fZ)
 {
 	Vec3 vScaled = Get_Scaled();
@@ -141,14 +134,13 @@ inline void CTransform::Add_Scale(_float fX, _float fY, _float fZ)
 	Set_Scale(vScaled);
 }
 
-inline void CTransform::Go_Dir(const Vec3 &vTargetDir, const _float fTimeDelta, CNavigation* pNavigation)
+inline void CTransform::Go_Dir(const Vec3& vTargetDir, const _float fTimeDelta, CNavigation* pNavigation)
 {
 	Vec3 vPosition = Get_Info(TRANSFORM_INFO_STATE::POS);
 	Vec3 vDir = vTargetDir;
 	vDir.Normalize();
 
 	vPosition += vDir * m_fMovePerSec * m_fMoveScale * fTimeDelta;
-
 	if (pNavigation == nullptr || pNavigation->Is_Move(vPosition))
 		Set_Info(TRANSFORM_INFO_STATE::POS, vPosition);
 }
@@ -163,7 +155,6 @@ inline void CTransform::Go_Straight(const _float fTimeDelta, CNavigation* pNavig
 	if (pNavigation == nullptr || pNavigation->Is_Move(vPosition))
 		Set_Info(TRANSFORM_INFO_STATE::POS, vPosition);
 }
-}
 
 inline void CTransform::Go_BackWard(const _float fTimeDelta, CNavigation* pNavigation)
 {
@@ -171,10 +162,9 @@ inline void CTransform::Go_BackWard(const _float fTimeDelta, CNavigation* pNavig
 	Vec3 vDir = Get_Info(TRANSFORM_INFO_STATE::LOOK);
 	vDir.Normalize();
 
-	vPosition -= vDir * m_fMovePerSec * m_fMoveScale *fTimeDelta;
+	vPosition -= vDir * m_fMovePerSec * m_fMoveScale * fTimeDelta;
 	if (pNavigation == nullptr || pNavigation->Is_Move(vPosition))
 		Set_Info(TRANSFORM_INFO_STATE::POS, vPosition);
-}
 }
 
 inline void CTransform::Go_Up(const _float fTimeDelta, CNavigation* pNavigation)
@@ -183,10 +173,9 @@ inline void CTransform::Go_Up(const _float fTimeDelta, CNavigation* pNavigation)
 	Vec3 vDir = Get_Info(TRANSFORM_INFO_STATE::UP);
 	vDir.Normalize();
 
-	vPosition += vDir * m_fMovePerSec * m_fMoveScale *fTimeDelta;
+	vPosition += vDir * m_fMovePerSec * m_fMoveScale * fTimeDelta;
 	if (pNavigation == nullptr || pNavigation->Is_Move(vPosition))
 		Set_Info(TRANSFORM_INFO_STATE::POS, vPosition);
-}
 }
 
 inline void CTransform::Go_Down(const _float fTimeDelta, CNavigation* pNavigation)
@@ -195,30 +184,27 @@ inline void CTransform::Go_Down(const _float fTimeDelta, CNavigation* pNavigatio
 	Vec3 vDir = Get_Info(TRANSFORM_INFO_STATE::UP);
 	vDir.Normalize();
 
-	vPosition -= vDir * m_fMovePerSec * m_fMoveScale *fTimeDelta;
+	vPosition -= vDir * m_fMovePerSec * m_fMoveScale * fTimeDelta;
 	if (pNavigation == nullptr || pNavigation->Is_Move(vPosition))
 		Set_Info(TRANSFORM_INFO_STATE::POS, vPosition);
-}
 }
 
 inline void CTransform::Go_Up(const Vec3& vAxis, const _float fTimeDelta, CNavigation* pNavigation)
 {
 	Vec3 vPosition = Get_Info(TRANSFORM_INFO_STATE::POS);
 
-	vPosition += vAxis * m_fMovePerSec * m_fMoveScale *fTimeDelta;
+	vPosition += vAxis * m_fMovePerSec * m_fMoveScale * fTimeDelta;
 	if (pNavigation == nullptr || pNavigation->Is_Move(vPosition))
 		Set_Info(TRANSFORM_INFO_STATE::POS, vPosition);
-}
 }
 
 inline void CTransform::Go_Down(const Vec3& vAxis, const _float fTimeDelta, CNavigation* pNavigation)
 {
 	Vec3 vPosition = Get_Info(TRANSFORM_INFO_STATE::POS);
 
-	vPosition -= vAxis * m_fMovePerSec * m_fMoveScale *fTimeDelta;
+	vPosition -= vAxis * m_fMovePerSec * m_fMoveScale * fTimeDelta;
 	if (pNavigation == nullptr || pNavigation->Is_Move(vPosition))
 		Set_Info(TRANSFORM_INFO_STATE::POS, vPosition);
-}
 }
 
 inline void CTransform::Go_Right(const _float fTimeDelta, CNavigation* pNavigation)
@@ -227,10 +213,9 @@ inline void CTransform::Go_Right(const _float fTimeDelta, CNavigation* pNavigati
 	Vec3 vDir = Get_Info(TRANSFORM_INFO_STATE::RIGHT);
 	vDir.Normalize();
 
-	vPosition += vDir * m_fMovePerSec * m_fMoveScale *fTimeDelta;
+	vPosition += vDir * m_fMovePerSec * m_fMoveScale * fTimeDelta;
 	if (pNavigation == nullptr || pNavigation->Is_Move(vPosition))
 		Set_Info(TRANSFORM_INFO_STATE::POS, vPosition);
-}
 }
 
 inline void CTransform::Go_Left(const _float fTimeDelta, CNavigation* pNavigation)
@@ -239,10 +224,9 @@ inline void CTransform::Go_Left(const _float fTimeDelta, CNavigation* pNavigatio
 	Vec3 vDir = Get_Info(TRANSFORM_INFO_STATE::RIGHT);
 	vDir.Normalize();
 
-	vPosition -= vDir * m_fMovePerSec * m_fMoveScale *fTimeDelta;
+	vPosition -= vDir * m_fMovePerSec * m_fMoveScale * fTimeDelta;
 	if (pNavigation == nullptr || pNavigation->Is_Move(vPosition))
 		Set_Info(TRANSFORM_INFO_STATE::POS, vPosition);
-}
 }
 
 inline void CTransform::Pitch_Turn(const _float fTimeDelta)
@@ -302,7 +286,7 @@ inline void CTransform::Rotation(const Vec3& vAxis, _float fRadian)
 	Set_Info(TRANSFORM_INFO_STATE::LOOK, Vec3::TransformNormal(vLook, matRotation));
 }
 
-inline void CTransform::Turn_WorldYAxis(const Vec3 &vTargetDir, const _float fTimeDelta)
+inline void CTransform::Turn_WorldYAxis(const Vec3& vTargetDir, const _float fTimeDelta)
 {
 	Vec3 vActorLook = Get_Info(TRANSFORM_INFO_STATE::LOOK);
 	vActorLook.y = 0.0f;
@@ -323,7 +307,7 @@ inline void CTransform::Turn_WorldYAxis(const Vec3 &vTargetDir, const _float fTi
 	Turn(Vector3::UnitY, fRadian * fTimeDelta);
 }
 
-inline void CTransform::Turn(const Vec3 &vAxis, const _float fTimeDelta)
+inline void CTransform::Turn(const Vec3& vAxis, const _float fTimeDelta)
 {
 	Vec3 vRight = Get_Info(TRANSFORM_INFO_STATE::RIGHT);
 	Vec3 vUp = Get_Info(TRANSFORM_INFO_STATE::UP);
@@ -336,7 +320,7 @@ inline void CTransform::Turn(const Vec3 &vAxis, const _float fTimeDelta)
 	Set_Info(TRANSFORM_INFO_STATE::LOOK, Vec3::TransformNormal(vLook, matRotation));
 }
 
-inline void CTransform::Look_At(const Vec3 &vPoint)
+inline void CTransform::Look_At(const Vec3& vPoint)
 {
 	Vec3 vScale = Get_Scaled();
 	Vec3 vLookDir = vPoint - Get_Info(TRANSFORM_INFO_STATE::POS);
@@ -356,7 +340,7 @@ inline void CTransform::Look_At_XZ(Vec3 vPoint)
 	Vec3 vScale = Get_Scaled();
 	Vec3 vCurrentPosition = Get_Info(TRANSFORM_INFO_STATE::POS);
 	vPoint.y = vCurrentPosition.y;
-	Vec3 vLookDir =  vPoint - vCurrentPosition;
+	Vec3 vLookDir = vPoint - vCurrentPosition;
 	Vec3 vRightDir = Vec3::Up.Cross(vLookDir);
 	Vec3 vUpDir = vLookDir.Cross(vRightDir);
 	vLookDir.Normalize();
@@ -376,11 +360,10 @@ inline void CTransform::Chase(const Vec3& vPoint, _float fMinDistance, const _fl
 	vTargetDir.Normalize();
 
 	if (fLength >= fMinDistance)
-		vPosition += vTargetDir * m_fMovePerSec * m_fMoveScale *fTimeDelta;
+		vPosition += vTargetDir * m_fMovePerSec * m_fMoveScale * fTimeDelta;
 
 	if (pNavigation == nullptr || pNavigation->Is_Move(vPosition))
 		Set_Info(TRANSFORM_INFO_STATE::POS, vPosition);
-}
 }
 
 void CTransform::Start_Force(Vec3 vTargetDir, _float fForceAbs, _float fDragK)
@@ -404,7 +387,7 @@ void CTransform::Apply_Force(_float fDeltaTime, CNavigation* pNavigation)
 
 	if (pNavigation == nullptr || pNavigation->Is_Move(vNext))
 		Set_Info(TRANSFORM_INFO_STATE::POS, vNext);
-	
+
 	_float fDecay = std::exp(-m_fDragK * fDeltaTime);
 	vVelocity *= fDecay;
 
@@ -418,11 +401,11 @@ void CTransform::Apply_Force(_float fDeltaTime, CNavigation* pNavigation)
 void CTransform::Update_PrevPosition()
 {
 	m_vPrevPosition =
-	Vec3(
-		m_matWorld.m[ENUM_TO_UINT(TRANSFORM_INFO_STATE::POS)][0],
-		m_matWorld.m[ENUM_TO_UINT(TRANSFORM_INFO_STATE::POS)][1],
-		m_matWorld.m[ENUM_TO_UINT(TRANSFORM_INFO_STATE::POS)][2]
-	);
+		Vec3(
+			m_matWorld.m[ENUM_TO_UINT(TRANSFORM_INFO_STATE::POS)][0],
+			m_matWorld.m[ENUM_TO_UINT(TRANSFORM_INFO_STATE::POS)][1],
+			m_matWorld.m[ENUM_TO_UINT(TRANSFORM_INFO_STATE::POS)][2]
+		);
 }
 
 void CTransform::Force_Clear()
@@ -447,7 +430,7 @@ CTransform* CTransform::Create()
 CComponent* CTransform::Clone(void* pArg)
 {
 	CTransform* pClone = new CTransform(*this);
-	
+
 	if (FAILED(pClone->Initialize(pArg)))
 	{
 		MSG_BOX("CTransform::Clone, Failed");

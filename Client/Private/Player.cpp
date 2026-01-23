@@ -47,9 +47,9 @@ HRESULT CPlayer::Initialize(void* pArg)
         return E_FAIL;
 
     PLAYER_DESC* pDesc = static_cast<PLAYER_DESC*>(pArg);
-    
+
     if (FAILED(Ready_PartObjects(pDesc)))
-       return E_FAIL;
+        return E_FAIL;
 
     if (FAILED(Ready_Components(pDesc)))
         return E_FAIL;
@@ -62,7 +62,7 @@ HRESULT CPlayer::Initialize(void* pArg)
 
 HRESULT CPlayer::Awake(const _uint iCurrentLevelID)
 {
-    if(FAILED(Super::Awake(iCurrentLevelID)))
+    if (FAILED(Super::Awake(iCurrentLevelID)))
         return E_FAIL;
 
     CGameInstance::GetInstance()->Add_Actor_Object(this);
@@ -119,28 +119,6 @@ _int CPlayer::Get_AnimationIndex(const wstring& wstrName)
     return -1;
 }
 
-_vector CPlayer::Get_Dir(EDir eDir)
-{
-    CTransform* pTransform = Get_Component<CTransform>();
-    _vector vCurrentPosition = pTransform->Get_Info(TRANSFORM_INFO_STATE::POS);
-    _vector vCurrentRightDir = ::XMVector3Normalize(pTransform->Get_Info(TRANSFORM_INFO_STATE::RIGHT));
-    _vector vCurrentLookDir = ::XMVector3Normalize(pTransform->Get_Info(TRANSFORM_INFO_STATE::LOOK));
-
-    switch (eDir)
-    {
-    case Client::EDir::BACKWARD:
-        return -vCurrentLookDir;
-    case Client::EDir::RIGHT:
-        return vCurrentRightDir;
-    case Client::EDir::LEFT:
-        return -vCurrentRightDir;
-    case Client::EDir::FRONT:
-        return vCurrentLookDir;
-    }
-
-    return ::XMVectorSet(0.f, 0.f, 0.f, 0.f);
-}
-
 HRESULT CPlayer::Ready_BaseStates()
 {
     CPlayerActionState* pActionState = { nullptr };
@@ -191,7 +169,7 @@ HRESULT CPlayer::Ready_BaseStates()
 HRESULT CPlayer::Ready_PartObjects(PLAYER_DESC* pDesc)
 {
     {
-        CBody::BODY_DESC bodyDesc = {}; 
+        CBody::BODY_DESC bodyDesc = {};
         bodyDesc.pMatParent = &Get_Component<CTransform>()->Get_WorldMatrix();
         bodyDesc.bCustomed = false;
         bodyDesc.iLevelIndex = pDesc->iLevelIndex;
@@ -213,7 +191,7 @@ HRESULT CPlayer::Ready_Components(PLAYER_DESC* pDesc)
             return E_FAIL;
     }
 
-    if(pDesc->wstrNavigationPrototypeTag.empty() == false)
+    if (pDesc->wstrNavigationPrototypeTag.empty() == false)
     {
         CNavigation::NAVIGATION_DESC desc = {};
         desc.iCurrentIndex = pDesc->iNavigationCellIndex;
