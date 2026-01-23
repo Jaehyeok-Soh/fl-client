@@ -8,6 +8,7 @@
 // UI
 //==========
 #include "UI_Inspector.h"
+#include "UI_Hierachy.h"
 
 CLevel_UI::CLevel_UI(ID3D11Device* pDevice, ID3D11DeviceContext* pDeviceContext)
 	: Super(pDevice, pDeviceContext)
@@ -78,6 +79,12 @@ HRESULT CLevel_UI::Ready_UI_Inspector()
 		return E_FAIL;	
 
 	m_GuiElements[ENUM_TO_SZET(Elements::INSPECTOR)] = p;
+
+	p = CUI_Hierachy::Create("UI_Hierachy", CLevel_Loading::Create(m_pDevice, m_pDeviceContext, ELevelType::UI), m_pDevice, m_pDeviceContext);
+	if (nullptr == p)
+		return E_FAIL;
+	m_GuiElements[ENUM_TO_SZET(Elements::HIERACHY)] = p;
+
 	return S_OK;
 }
 

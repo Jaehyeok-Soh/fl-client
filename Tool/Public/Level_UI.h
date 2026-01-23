@@ -13,6 +13,7 @@ class CLevel_UI final : public CLevel
 	enum class Elements
 	{
 		INSPECTOR,
+		HIERACHY,
 		END
 	};
 

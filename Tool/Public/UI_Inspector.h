@@ -1,11 +1,9 @@
 #pragma once
 #include "ImGui_Panel.h"
+#include "UIData_Repository.h"
 
 NS_BEGIN(Tool)
-typedef struct tagCanvasDesc CANVAS_DESC;
-
 class CImGui_ToolManager;
-
 class CUI_Inspector final : public CImGui_Panel
 {
 	using Super = CImGui_Panel;
@@ -22,18 +20,31 @@ public:
 
 	/* 플로우 함수 */
 private:
+	/* 씬 생성 */
 	void SetUp_Level();
-	void SetUp_Canvas();
-	void Input_Canvas_Tag();
-	void Input_Canvas_TransformInfo();
 
-	void SetUp_UIType();
+	/* 캔버스 태그 정하고 생성 */
+	void Create_Canvas();
+
+	/* 캔버스 크기, 위치 조정 및 삭제 */
+	void Edit_Canvas();
+
+	/* 캔버스에 들어갈 레이어를 생성 */
+
+	/* 레이어에 들어갈 UI를 생성 */
+	/* UI 타입 지정 -> 버튼인지, 이미지인지, 영상인지 등 */
+	/* UI 텍스쳐를 지정 -> 파일 패스를 저장해야될듯 */
+	/* UI에 붙일 기능을 지정 -> 기능들은 ENUM으로 */
+
 
 	/* 기능 */
 private:
-	void Create_Canvas();
-	void Setting_Canvas_CustomSize();
-	void Setting_Canvas_ViewportSize();
+	void Input_Canvas_Tag();
+	void Input_Canvas_TransformInfo();
+
+	void Create_Canvas_Btn();
+	void Setting_Canvas_CustomSize_Btn();
+	void Setting_Canvas_ViewportSize_Btn();
 	
 	uint32_t TagToIndex(const _string& Tag);
 
@@ -48,34 +59,21 @@ private:
 	_bool m_isCreateCanvas	= { FALSE };
 	_bool m_isCustomSize	= { FALSE };
 	_bool m_isViewportSize	= { FALSE };
+	_bool m_isEditCanvas = { FALSE };
 
 	_string m_strCurEditor_CanvasTag = {};
 	uint32_t m_iCurEditor_CanvasIndex = {};
+	vector<_string> m_vecEditor_CanvasTag = {};
 
-	vector<CANVAS_DESC> m_vecEditor_CanvasInfo;
+	vector<CANVAS_DATA> m_vecEditor_CanvasInfo;
 
 private:
 	int32_t m_iCurSelectLevelID = {};
-
-	vector<CANVAS_DESC> m_vecCanvasInfo;
 	vector<_string> m_vecLayers;
 
 public:
 	static CUI_Inspector* Create(const _char* pLabel, CLevel* pOwner, ID3D11Device* pDevice, ID3D11DeviceContext* pDeviceContext);
 	virtual void Free() override;
 };
-
-typedef struct tagCanvasDesc
-{
-	_string strTag;
-	_bool isUsingViewport;
-
-	int32_t iWidth;
-	int32_t iHeight;
-	int32_t iPosX;
-	int32_t iPosY;
-	int32_t iPosZ;
-
-}CANVAS_DESC;
 
 NS_END

@@ -23,6 +23,7 @@ HRESULT CUI_Inspector::Initialize_Prototype()
 
 void CUI_Inspector::Update(const _float fTimeDelta)
 {
+
 }
 
 HRESULT CUI_Inspector::Render(CToolObject* pGo)
@@ -31,7 +32,10 @@ HRESULT CUI_Inspector::Render(CToolObject* pGo)
 	
 	SetUp_Level();
 	
-	SetUp_Canvas();
+	Create_Canvas();
+
+	if (!m_vecEditor_CanvasInfo.empty())
+		Edit_Canvas();
 
 	ImGui::End();
 	return S_OK;
@@ -43,13 +47,13 @@ void CUI_Inspector::SetUp_Level()
 	ImGui::Combo("Current_Selected_Level", &m_iCurSelectLevelID, m_szArrClientLevelType, m_vecClientLevelType.size());
 }
 
-void CUI_Inspector::SetUp_Canvas()
+void CUI_Inspector::Create_Canvas()
 {
 	ImGui::NewLine();
 	ImGui::Text("<<Canvas>>");
 
 	Input_Canvas_Tag();
-	Create_Canvas();
+	Create_Canvas_Btn();
 
 	/* Create 버튼을 눌렀다면 */
 	if (m_isCreateCanvas)
@@ -78,6 +82,8 @@ void CUI_Inspector::SetUp_Canvas()
 		{
 			CANVAS_DESC tDesc = {};
 			tDesc.strTag = m_strCurEditor_CanvasTag;
+			m_vecEditor_CanvasTag.push_back(m_strCurEditor_CanvasTag);
+
 			m_vecEditor_CanvasInfo.push_back(tDesc);
 			m_vecCanvasInfo.push_back(tDesc);
 
@@ -85,14 +91,35 @@ void CUI_Inspector::SetUp_Canvas()
 			
 			m_strCurEditor_CanvasTag = "";
 			m_isCreateCanvas = FALSE;
+			m_isEditCanvas = TRUE;
 		}
 	}
+}
 
-	Setting_Canvas_CustomSize();
+void CUI_Inspector::Edit_Canvas()
+{
+	ImGui::NewLine();
+	ImGui::Text("<<Select CanvasTag To Edit>>");
+	ImGui::BeginChild("CanvasList", ImVec2(0, 100), true);
+	for (int i = 0; i < (int)m_vecEditor_CanvasTag.size(); ++i)
+	{
+		bool selected = (m_iCurEditor_CanvasIndex == i);
+		if (ImGui::Selectable(m_vecEditor_CanvasTag[i].c_str(), selected))
+			m_iCurEditor_CanvasIndex = i;
+	}
+	ImGui::EndChild();
+
+	Setting_Canvas_CustomSize_Btn();
 	ImGui::SameLine();
-	Setting_Canvas_ViewportSize();
-
+	Setting_Canvas_ViewportSize_Btn();
 	Input_Canvas_TransformInfo();
+
+	if (ImGui::Button("Delete Selected Canvas"))
+	{
+		m_vecEditor_CanvasInfo.erase(m_vecEditor_CanvasInfo.begin() + m_iCurEditor_CanvasIndex);
+		m_vecEditor_CanvasTag.erase(m_vecEditor_CanvasTag.begin() + m_iCurEditor_CanvasIndex);
+		m_iCurEditor_CanvasIndex = 0;
+	}
 }
 
 void CUI_Inspector::Input_Canvas_Tag()
@@ -140,6 +167,8 @@ void CUI_Inspector::Input_Canvas_TransformInfo()
 		ImGui::SameLine();
 		ImGui::SetNextItemWidth(60.f);
 		ImGui::InputScalar("##CanvasPosZ", ImGuiDataType_S32, &m_vecCanvasInfo[m_iCurEditor_CanvasIndex].iPosZ);
+		m_vecEditor_CanvasInfo[m_iCurEditor_CanvasIndex].isUsingViewport = FALSE;
+
 		m_vecCanvasInfo[m_iCurEditor_CanvasIndex] = m_vecEditor_CanvasInfo[m_iCurEditor_CanvasIndex];
 
 	}
@@ -151,42 +180,39 @@ void CUI_Inspector::Input_Canvas_TransformInfo()
 		m_vecCanvasInfo[m_iCurEditor_CanvasIndex].iPosX = 0;
 		m_vecCanvasInfo[m_iCurEditor_CanvasIndex].iPosY = 0;
 		m_vecCanvasInfo[m_iCurEditor_CanvasIndex].iPosZ = 0;
+		m_vecCanvasInfo[m_iCurEditor_CanvasIndex].isUsingViewport = TRUE;
 
-
+		m_vecEditor_CanvasInfo[m_iCurEditor_CanvasIndex].iWidth = m_pToolManager->Get_CurViewportSize().x;
+		m_vecEditor_CanvasInfo[m_iCurEditor_CanvasIndex].iHeight = m_pToolManager->Get_CurViewportSize().y;
 		m_vecEditor_CanvasInfo[m_iCurEditor_CanvasIndex].iPosX = 0;
 		m_vecEditor_CanvasInfo[m_iCurEditor_CanvasIndex].iPosY = 0;
 		m_vecEditor_CanvasInfo[m_iCurEditor_CanvasIndex].iPosZ = 0;
-		m_vecEditor_CanvasInfo[m_iCurEditor_CanvasIndex].iWidth = m_pToolManager->Get_CurViewportSize().x;
-		m_vecEditor_CanvasInfo[m_iCurEditor_CanvasIndex].iHeight = m_pToolManager->Get_CurViewportSize().y;
-
+		m_vecEditor_CanvasInfo[m_iCurEditor_CanvasIndex].isUsingViewport = TRUE;
 	}
 }
 
-void CUI_Inspector::Create_Canvas()
+void CUI_Inspector::Create_Canvas_Btn()
 {
 	if (ImGui::Button("Create With This Tag"))
 		m_isCreateCanvas = TRUE;
 }
 
-void CUI_Inspector::Setting_Canvas_CustomSize()
+void CUI_Inspector::Setting_Canvas_CustomSize_Btn()
 {
 	if (ImGui::Button("Setting By CustomSize"))
 	{
 		m_isCustomSize = TRUE;
 		m_isViewportSize = FALSE;
 
-		m_vecEditor_CanvasInfo[m_iCurEditor_CanvasIndex].isUsingViewport = FALSE;
 	}
 }
 
-void CUI_Inspector::Setting_Canvas_ViewportSize()
+void CUI_Inspector::Setting_Canvas_ViewportSize_Btn()
 {
 	if (ImGui::Button("Setting By ViewportSize"))
 	{
 		m_isCustomSize = FALSE;
 		m_isViewportSize = TRUE;
-
-		m_vecEditor_CanvasInfo[m_iCurEditor_CanvasIndex].isUsingViewport = TRUE;
 	}
 }
 

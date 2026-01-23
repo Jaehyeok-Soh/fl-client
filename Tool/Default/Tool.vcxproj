@@ -180,6 +180,8 @@
     <ClInclude Include="..\Public\Tool_EventDefines.h" />
     <ClInclude Include="..\Public\UEMapdataLoader.h" />
     <ClInclude Include="..\Public\UEMapdataParser.h" />
+    <ClInclude Include="..\Public\UIData_Repository.h" />
+    <ClInclude Include="..\Public\UI_Hierachy.h" />
     <ClInclude Include="..\Public\UI_Inspector.h" />
     <ClInclude Include="framework.h" />
     <ClInclude Include="Resource.h" />
@@ -223,6 +225,8 @@
     <ClCompile Include="..\Private\Tool_Defines.cpp" />
     <ClCompile Include="..\Private\UEMapdataLoader.cpp" />
     <ClCompile Include="..\Private\UEMapdataParser.cpp" />
+    <ClCompile Include="..\Private\UIData_Repository.cpp" />
+    <ClCompile Include="..\Private\UI_Hierachy.cpp" />
     <ClCompile Include="..\Private\UI_Inspector.cpp" />
     <ClCompile Include="Tool.cpp" />
   </ItemGroup>

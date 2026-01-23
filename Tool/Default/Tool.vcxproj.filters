@@ -88,6 +88,15 @@
     <Filter Include="06. ImGui\01. Panel\UIPanels">
       <UniqueIdentifier>{25cb433e-dd0f-4224-8a4f-fdf58f05f1a8}</UniqueIdentifier>
     </Filter>
+    <Filter Include="06. ImGui\01. Panel\UIPanels\Inspector">
+      <UniqueIdentifier>{098b7047-0c8e-4fe8-b63d-f281e3eaa593}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="06. ImGui\01. Panel\UIPanels\Hierachy">
+      <UniqueIdentifier>{ba50b2d3-2e46-434e-92e4-771e393bc34b}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="08.UIData">
+      <UniqueIdentifier>{566d6d02-9c34-4ed7-beae-db2b024e4049}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="framework.h">
@@ -220,7 +229,13 @@
       <Filter>03. Level\Loading\Loader</Filter>
     </ClInclude>
     <ClInclude Include="..\Public\UI_Inspector.h">
-      <Filter>06. ImGui\01. Panel\UIPanels</Filter>
+      <Filter>06. ImGui\01. Panel\UIPanels\Inspector</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\UI_Hierachy.h">
+      <Filter>06. ImGui\01. Panel\UIPanels\Hierachy</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\UIData_Repository.h">
+      <Filter>08.UIData</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -349,7 +364,13 @@
       <Filter>98. Defines</Filter>
     </ClCompile>
     <ClCompile Include="..\Private\UI_Inspector.cpp">
-      <Filter>06. ImGui\01. Panel\UIPanels</Filter>
+      <Filter>06. ImGui\01. Panel\UIPanels\Inspector</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\UI_Hierachy.cpp">
+      <Filter>06. ImGui\01. Panel\UIPanels\Hierachy</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\UIData_Repository.cpp">
+      <Filter>08.UIData</Filter>
     </ClCompile>
   </ItemGroup>
 </Project>
