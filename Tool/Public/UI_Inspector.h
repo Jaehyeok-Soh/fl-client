@@ -20,15 +20,9 @@ public:
 	virtual void Update(const _float fTimeDelta)override;
 	virtual HRESULT Render(CToolObject* pGo) override;
 
-	/* 플로우 함수 */
 private:
-	/* 씬 생성 */
 	void SetUp_Level();
-
-	/* 캔버스 태그 정하고 생성 */
 	void Create_Canvas();
-
-	/* 캔버스 크기, 위치 조정 및 삭제 */
 	void Edit_Canvas();
 
 	/* 캔버스에 들어갈 레이어를 생성 */
@@ -39,11 +33,11 @@ private:
 	/* UI에 붙일 기능을 지정 -> 기능들은 ENUM으로 */
 
 
-	/* 기능 */
 private:
 	void Input_Canvas_Tag();
 	void Input_Canvas_TransformInfo();
 
+	/* 버튼 */
 	void Create_Canvas_Btn();
 	void Setting_Canvas_CustomSize_Btn();
 	void Setting_Canvas_ViewportSize_Btn();
@@ -63,7 +57,6 @@ private:
 	_bool m_isEditCanvas = { FALSE };
 
 	_string m_strCurEditor_CanvasTag = {};
-	vector<_string> m_vecEditor_CanvasTag = {};
 
 private:
 	int32_t m_iCurSelectLevelID = {};

@@ -51,16 +51,7 @@ namespace Tool
 
 	enum class EToolObjectType : unsigned int
 	{
-		TERRAIN = 0,
-		COLMESH,
-		STATICMODEL,
-		DUMMY,
-		LIGHT,
-		COMPONENT_COLLIDER,
-		VERTEXOBJECT,
-		POLYGON,
-		TRIGGERBOX,
-		MESHEFFECT,
+		UI,
 		END
 	};
 
@@ -71,26 +62,8 @@ namespace Tool
 	{
 		switch (eType)
 		{
-		case Tool::EToolObjectType::TERRAIN:
-			return "TERRAIN";
-		case Tool::EToolObjectType::COLMESH:
-			return "COLMESH";
-		case Tool::EToolObjectType::STATICMODEL:
-			return "STATICMODEL";
-		case Tool::EToolObjectType::DUMMY:
-			return "DUMMY";
-		case Tool::EToolObjectType::LIGHT:
-			return "LIGHT";
-		case Tool::EToolObjectType::COMPONENT_COLLIDER:
-			return "COMPONENT_COLLIDER";
-		case Tool::EToolObjectType::VERTEXOBJECT:
-			return "VERTEXOBJECT";
-		case Tool::EToolObjectType::POLYGON:
-			return "POLYGON";
-		case Tool::EToolObjectType::TRIGGERBOX:
-			return "TRIGGERBOX";
-		case Tool::EToolObjectType::MESHEFFECT:
-			return "MESHEFFECT";
+		case Tool::EToolObjectType::UI:
+			return "UI";
 		}
 
 		return "NONE";
@@ -98,26 +71,8 @@ namespace Tool
 
 	static EToolObjectType StringToType(const string& strType)
 	{
-		if (::strcmp(strType.c_str(), "TERRAIN") == 0)
-			return EToolObjectType::TERRAIN;
-		else if (::strcmp(strType.c_str(), "COLMESH") == 0)
-			return EToolObjectType::COLMESH;
-		else if (::strcmp(strType.c_str(), "STATICMODEL") == 0)
-			return EToolObjectType::STATICMODEL;
-		else if (::strcmp(strType.c_str(), "DUMMY") == 0)
-			return EToolObjectType::DUMMY;
-		else if (::strcmp(strType.c_str(), "LIGHT") == 0)
-			return EToolObjectType::LIGHT;
-		else if (::strcmp(strType.c_str(), "COMPONENT_COLLIDER") == 0)
-			return EToolObjectType::COMPONENT_COLLIDER;
-		else if (::strcmp(strType.c_str(), "VERTEXOBJECT") == 0)
-			return EToolObjectType::VERTEXOBJECT;
-		else if (::strcmp(strType.c_str(), "POLYGON") == 0)
-			return EToolObjectType::POLYGON;
-		else if (::strcmp(strType.c_str(), "TRIGGERBOX") == 0)
-			return EToolObjectType::TRIGGERBOX;
-		else if (::strcmp(strType.c_str(), "MESHEFFECT") == 0)
-			return EToolObjectType::MESHEFFECT;
+		if (::strcmp(strType.c_str(), "UI") == 0)
+			return EToolObjectType::UI;
 		else
 			return EToolObjectType::END;
 	}
@@ -127,6 +82,7 @@ namespace Tool
 	{
 		STATIC = 0,
 		LOGO,
+		LOADING,
 		END
 	};
 
@@ -142,6 +98,9 @@ namespace Tool
 		case Tool::EClientLevelType::LOGO:
 			return "LOGO";
 			break;
+		case Tool::EClientLevelType::LOADING:
+			return "LOADING";
+			break;
 		case Tool::EClientLevelType::END:
 			break;
 		}
@@ -153,6 +112,8 @@ namespace Tool
 			return EClientLevelType::STATIC;
 		else if (::strcmp(str.c_str(), "LOGO") == 0)
 			return EClientLevelType::LOGO;
+		else if (::strcmp(str.c_str(), "LOADING") == 0)
+			return EClientLevelType::LOADING;
 		else
 			return EClientLevelType::END;
 	}

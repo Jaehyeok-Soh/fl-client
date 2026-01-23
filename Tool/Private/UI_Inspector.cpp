@@ -80,7 +80,6 @@ void CUI_Inspector::Create_Canvas()
 		CANVAS_DATA tData = {};
 		tData.strTag = m_strCurEditor_CanvasTag;
 		m_pUIManager->Add_CanvasData(tData);
-		m_vecEditor_CanvasTag.push_back(m_strCurEditor_CanvasTag);
 
 		m_strCurEditor_CanvasTag = "";
 		m_isCreateCanvas = FALSE;
@@ -92,10 +91,10 @@ void CUI_Inspector::Edit_Canvas()
 	ImGui::NewLine();
 	ImGui::Text("<<Select CanvasTag To Edit>>");
 	ImGui::BeginChild("CanvasList", ImVec2(0, 100), true);
-	for (int i = 0; i < (int)m_vecEditor_CanvasTag.size(); ++i)
+	for (int i = 0; i < m_pUIManager->Get_CanvasData_Size(); ++i)
 	{
 		bool selected = (m_pUIManager->Get_CurCanvasIndex() == i);
-		if (ImGui::Selectable(m_vecEditor_CanvasTag[i].c_str(), selected))
+		if (ImGui::Selectable(m_pUIManager->Get_CanvasData(i).strTag.c_str(), selected))
 			m_pUIManager->Set_CurCanvasIndex(i);
 	}
 	ImGui::EndChild();
@@ -107,7 +106,6 @@ void CUI_Inspector::Edit_Canvas()
 
 	if (ImGui::Button("Delete Selected Canvas"))
 	{
-		m_vecEditor_CanvasTag.erase(m_vecEditor_CanvasTag.begin() + m_pUIManager->Get_CurCanvasIndex());
 		m_pUIManager->Remove_CurCanvasData();
 	}
 }
