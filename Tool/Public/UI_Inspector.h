@@ -4,6 +4,8 @@
 
 NS_BEGIN(Tool)
 class CImGui_ToolManager;
+class CImGui_UIManager;
+
 class CUI_Inspector final : public CImGui_Panel
 {
 	using Super = CImGui_Panel;
@@ -46,10 +48,9 @@ private:
 	void Setting_Canvas_CustomSize_Btn();
 	void Setting_Canvas_ViewportSize_Btn();
 	
-	uint32_t TagToIndex(const _string& Tag);
-
 private:
 	CImGui_ToolManager* m_pToolManager = { nullptr };
+	CImGui_UIManager* m_pUIManager = { nullptr };
 
 	ImGuiWindowFlags m_Flag = {};
 
@@ -62,10 +63,7 @@ private:
 	_bool m_isEditCanvas = { FALSE };
 
 	_string m_strCurEditor_CanvasTag = {};
-	uint32_t m_iCurEditor_CanvasIndex = {};
 	vector<_string> m_vecEditor_CanvasTag = {};
-
-	vector<CANVAS_DATA> m_vecEditor_CanvasInfo;
 
 private:
 	int32_t m_iCurSelectLevelID = {};

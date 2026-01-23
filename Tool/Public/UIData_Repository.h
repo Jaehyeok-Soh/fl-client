@@ -1,6 +1,10 @@
 #pragma once
 #include "Base.h"
+#pragma push_macro("new")
+#undef new
 #include "json.hpp"
+using json = nlohmann::json;
+#pragma pop_macro("new")
 
 using json = nlohmann::json;
 
@@ -10,11 +14,17 @@ typedef struct tagCanvasData CANVAS_DATA;
 
 class CUIData_Repository final : public CBase
 {
+	using Super = CBase;
+
 	DECLARE_SINGLETON(CUIData_Repository)
 
 private:
 	CUIData_Repository();
 	virtual ~CUIData_Repository() = default;
+
+public:
+	void Road_UIData();
+	void Save_UIData();
 
 private:
 	vector<CANVAS_DATA> m_vecCanvasData;

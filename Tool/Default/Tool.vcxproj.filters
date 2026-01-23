@@ -97,6 +97,9 @@
     <Filter Include="08.UIData">
       <UniqueIdentifier>{566d6d02-9c34-4ed7-beae-db2b024e4049}</UniqueIdentifier>
     </Filter>
+    <Filter Include="08.UIData\Manager">
+      <UniqueIdentifier>{6d36fbe4-59ee-4223-946d-8f5f4bc5d255}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="framework.h">
@@ -237,6 +240,9 @@
     <ClInclude Include="..\Public\UIData_Repository.h">
       <Filter>08.UIData</Filter>
     </ClInclude>
+    <ClInclude Include="..\Public\ImGui_UIManager.h">
+      <Filter>08.UIData\Manager</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <Image Include="small.ico">
@@ -371,6 +377,9 @@
     </ClCompile>
     <ClCompile Include="..\Private\UIData_Repository.cpp">
       <Filter>08.UIData</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\ImGui_UIManager.cpp">
+      <Filter>08.UIData\Manager</Filter>
     </ClCompile>
   </ItemGroup>
 </Project>

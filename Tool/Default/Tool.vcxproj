@@ -160,6 +160,7 @@
     <ClInclude Include="..\Public\ImGui_Panel.h" />
     <ClInclude Include="..\Public\imgui_stdlib.h" />
     <ClInclude Include="..\Public\ImGui_ToolManager.h" />
+    <ClInclude Include="..\Public\ImGui_UIManager.h" />
     <ClInclude Include="..\Public\ImSequencer.h" />
     <ClInclude Include="..\Public\imstb_rectpack.h" />
     <ClInclude Include="..\Public\imstb_textedit.h" />
@@ -209,6 +210,7 @@
     <ClCompile Include="..\Private\imgui_stdlib.cpp" />
     <ClCompile Include="..\Private\imgui_tables.cpp" />
     <ClCompile Include="..\Private\ImGui_ToolManager.cpp" />
+    <ClCompile Include="..\Private\ImGui_UIManager.cpp" />
     <ClCompile Include="..\Private\imgui_widgets.cpp" />
     <ClCompile Include="..\Private\ImSequencer.cpp" />
     <ClCompile Include="..\Private\Level_Animation.cpp" />

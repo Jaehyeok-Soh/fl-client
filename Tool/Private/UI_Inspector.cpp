@@ -1,17 +1,21 @@
 #include "UI_Inspector.h"
 #include "ImGui_ToolManager.h"
+#include "ImGui_UIManager.h"
 
 CUI_Inspector::CUI_Inspector(const _char* pLabel, CLevel* pOwner, ID3D11Device* pDevice, ID3D11DeviceContext* pDeviceContext)
 	:Super(pLabel, pOwner, pDevice, pDeviceContext),
-	m_pToolManager(CImGui_ToolManager::GetInstance())
+	m_pToolManager(CImGui_ToolManager::GetInstance()),
+	m_pUIManager(CImGui_UIManager::GetInstance())
 {
 	Safe_AddRef(m_pToolManager);
+	Safe_AddRef(m_pUIManager);
 }
 
 HRESULT CUI_Inspector::Initialize_Prototype()
 {
 	m_vecClientLevelType.resize(g_iClientLevelType_Count);
 
+	/* 클라이언트 레벨 저장 및 const char* 로 변환해서 따로 저장 / 툴에서 레벨을 이름보고 정할 수 있게하기 위해서 */
 	for (size_t i = 0; i < g_iClientLevelType_Count; ++i)
 	{
 		m_vecClientLevelType[i] = (ClientleveltypeToString(static_cast<EClientLevelType>(i)));
@@ -34,7 +38,7 @@ HRESULT CUI_Inspector::Render(CToolObject* pGo)
 	
 	Create_Canvas();
 
-	if (!m_vecEditor_CanvasInfo.empty())
+	if (0 != m_pUIManager->Get_CanvasData_Size())
 		Edit_Canvas();
 
 	ImGui::End();
@@ -60,39 +64,26 @@ void CUI_Inspector::Create_Canvas()
 	{
 		if (m_strCurEditor_CanvasTag == "")
 		{
-			MSG_BOX("Canvas Tag Empty");
+			MSG_BOX("CUI_Inspector::Create_Canvas, Empty Tag");
 			m_isCreateCanvas = FALSE;
 			return;
 		}
 
-		/* 현재 Editor에 있는 CanvasTag를 순회 */
-		for (const auto& Desc : m_vecEditor_CanvasInfo)
+		/* 태그가 있다*/
+		if (m_pUIManager->HasCanvasTag(m_strCurEditor_CanvasTag))
 		{
-			/* 만약 CurTag가 vector에 있다면 */
-			if (Desc.strTag == m_strCurEditor_CanvasTag)
-			{
-				MSG_BOX("Canvas Tag Already Created!");
-				m_isCreateCanvas = FALSE;
-				break;
-			}
-		}
-
-		/* 위에 루프를 돌고 왔는데 m_isCreateCanvas가 FALSE가 아니라면 -> Tag가 없다는 뜻이므로 */
-		if (m_isCreateCanvas)
-		{
-			CANVAS_DESC tDesc = {};
-			tDesc.strTag = m_strCurEditor_CanvasTag;
-			m_vecEditor_CanvasTag.push_back(m_strCurEditor_CanvasTag);
-
-			m_vecEditor_CanvasInfo.push_back(tDesc);
-			m_vecCanvasInfo.push_back(tDesc);
-
-			m_iCurEditor_CanvasIndex = TagToIndex(m_strCurEditor_CanvasTag);
-			
-			m_strCurEditor_CanvasTag = "";
+			MSG_BOX("CUI_Inspector::Create_Canvas, Tag Already Created");
 			m_isCreateCanvas = FALSE;
-			m_isEditCanvas = TRUE;
+			return;
 		}
+
+		CANVAS_DATA tData = {};
+		tData.strTag = m_strCurEditor_CanvasTag;
+		m_pUIManager->Add_CanvasData(tData);
+		m_vecEditor_CanvasTag.push_back(m_strCurEditor_CanvasTag);
+
+		m_strCurEditor_CanvasTag = "";
+		m_isCreateCanvas = FALSE;
 	}
 }
 
@@ -103,9 +94,9 @@ void CUI_Inspector::Edit_Canvas()
 	ImGui::BeginChild("CanvasList", ImVec2(0, 100), true);
 	for (int i = 0; i < (int)m_vecEditor_CanvasTag.size(); ++i)
 	{
-		bool selected = (m_iCurEditor_CanvasIndex == i);
+		bool selected = (m_pUIManager->Get_CurCanvasIndex() == i);
 		if (ImGui::Selectable(m_vecEditor_CanvasTag[i].c_str(), selected))
-			m_iCurEditor_CanvasIndex = i;
+			m_pUIManager->Set_CurCanvasIndex(i);
 	}
 	ImGui::EndChild();
 
@@ -116,9 +107,8 @@ void CUI_Inspector::Edit_Canvas()
 
 	if (ImGui::Button("Delete Selected Canvas"))
 	{
-		m_vecEditor_CanvasInfo.erase(m_vecEditor_CanvasInfo.begin() + m_iCurEditor_CanvasIndex);
-		m_vecEditor_CanvasTag.erase(m_vecEditor_CanvasTag.begin() + m_iCurEditor_CanvasIndex);
-		m_iCurEditor_CanvasIndex = 0;
+		m_vecEditor_CanvasTag.erase(m_vecEditor_CanvasTag.begin() + m_pUIManager->Get_CurCanvasIndex());
+		m_pUIManager->Remove_CurCanvasData();
 	}
 }
 
@@ -139,55 +129,45 @@ void CUI_Inspector::Input_Canvas_TransformInfo()
 		ImGui::TextUnformatted("Width :");
 		ImGui::SameLine();
 		ImGui::SetNextItemWidth(90.f);
-		ImGui::InputScalar("##CanvasSizeX", ImGuiDataType_S32, &m_vecCanvasInfo[m_iCurEditor_CanvasIndex].iWidth);
+		ImGui::InputScalar("##CanvasSizeX", ImGuiDataType_S32, &m_pUIManager->Get_CurCanvasDataRef().iWidth);
 
 		ImGui::SameLine(0.f, 16.f);
 
 		ImGui::TextUnformatted("Height :");
 		ImGui::SameLine();
 		ImGui::SetNextItemWidth(90.f);
-		ImGui::InputScalar("##CanvasSizeY", ImGuiDataType_S32, &m_vecCanvasInfo[m_iCurEditor_CanvasIndex].iHeight);
+		ImGui::InputScalar("##CanvasSizeY", ImGuiDataType_S32, &m_pUIManager->Get_CurCanvasDataRef().iHeight);
 
 		/* Pos X / Y / Z */
 		ImGui::TextUnformatted("X :");
 		ImGui::SameLine();
 		ImGui::SetNextItemWidth(60.f);
-		ImGui::InputScalar("##CanvasPosX", ImGuiDataType_S32, & m_vecCanvasInfo[m_iCurEditor_CanvasIndex].iPosX);
+		ImGui::InputScalar("##CanvasPosX", ImGuiDataType_S32, &m_pUIManager->Get_CurCanvasDataRef().iPosX);
 
 		ImGui::SameLine(0.f, 16.f);
 
 		ImGui::TextUnformatted("Y :");
 		ImGui::SameLine();
 		ImGui::SetNextItemWidth(60.f);
-		ImGui::InputScalar("##CanvasPosY", ImGuiDataType_S32, &m_vecCanvasInfo[m_iCurEditor_CanvasIndex].iPosY);
+		ImGui::InputScalar("##CanvasPosY", ImGuiDataType_S32, &m_pUIManager->Get_CurCanvasDataRef().iPosY);
 
 		ImGui::SameLine(0.f, 16.f);
 		
 		ImGui::TextUnformatted("Z :");
 		ImGui::SameLine();
 		ImGui::SetNextItemWidth(60.f);
-		ImGui::InputScalar("##CanvasPosZ", ImGuiDataType_S32, &m_vecCanvasInfo[m_iCurEditor_CanvasIndex].iPosZ);
-		m_vecEditor_CanvasInfo[m_iCurEditor_CanvasIndex].isUsingViewport = FALSE;
-
-		m_vecCanvasInfo[m_iCurEditor_CanvasIndex] = m_vecEditor_CanvasInfo[m_iCurEditor_CanvasIndex];
-
+		ImGui::InputScalar("##CanvasPosZ", ImGuiDataType_S32, &m_pUIManager->Get_CurCanvasDataRef().iPosZ);
+		m_pUIManager->Get_CurCanvasDataRef().isUsingViewport = FALSE;
 	}
 	/* 뷰포트 기준으로 캔버스를 만들겠다 */
 	else if (m_isViewportSize)
 	{
-		m_vecCanvasInfo[m_iCurEditor_CanvasIndex].iWidth = 0;
-		m_vecCanvasInfo[m_iCurEditor_CanvasIndex].iHeight = 0;
-		m_vecCanvasInfo[m_iCurEditor_CanvasIndex].iPosX = 0;
-		m_vecCanvasInfo[m_iCurEditor_CanvasIndex].iPosY = 0;
-		m_vecCanvasInfo[m_iCurEditor_CanvasIndex].iPosZ = 0;
-		m_vecCanvasInfo[m_iCurEditor_CanvasIndex].isUsingViewport = TRUE;
-
-		m_vecEditor_CanvasInfo[m_iCurEditor_CanvasIndex].iWidth = m_pToolManager->Get_CurViewportSize().x;
-		m_vecEditor_CanvasInfo[m_iCurEditor_CanvasIndex].iHeight = m_pToolManager->Get_CurViewportSize().y;
-		m_vecEditor_CanvasInfo[m_iCurEditor_CanvasIndex].iPosX = 0;
-		m_vecEditor_CanvasInfo[m_iCurEditor_CanvasIndex].iPosY = 0;
-		m_vecEditor_CanvasInfo[m_iCurEditor_CanvasIndex].iPosZ = 0;
-		m_vecEditor_CanvasInfo[m_iCurEditor_CanvasIndex].isUsingViewport = TRUE;
+		m_pUIManager->Get_CurCanvasDataRef().iWidth = m_pToolManager->Get_CurViewportSize().x;
+		m_pUIManager->Get_CurCanvasDataRef().iHeight = m_pToolManager->Get_CurViewportSize().y;
+		m_pUIManager->Get_CurCanvasDataRef().iPosX = 0;
+		m_pUIManager->Get_CurCanvasDataRef().iPosY = 0;
+		m_pUIManager->Get_CurCanvasDataRef().iPosZ = 0;
+		m_pUIManager->Get_CurCanvasDataRef().isUsingViewport = TRUE;
 	}
 }
 
@@ -216,20 +196,6 @@ void CUI_Inspector::Setting_Canvas_ViewportSize_Btn()
 	}
 }
 
-uint32_t CUI_Inspector::TagToIndex(const _string& Tag)
-{
-	uint32_t index = {0};
-	for (const auto& Desc : m_vecCanvasInfo)
-	{
-		/* 만약 Tag가 vector에 있다면 */
-		if (Desc.strTag == Tag)
-			return index;
-		++index;
-	}
-	/* 없으면 현재 인덱스를 반환 */
-	return m_iCurEditor_CanvasIndex;
-}
-
 CUI_Inspector* CUI_Inspector::Create(const _char* pLabel, CLevel* pOwner, ID3D11Device* pDevice, ID3D11DeviceContext* pDeviceContext)
 {
 	CUI_Inspector* pInstance = new CUI_Inspector(pLabel, pOwner, pDevice, pDeviceContext);
@@ -246,6 +212,7 @@ CUI_Inspector* CUI_Inspector::Create(const _char* pLabel, CLevel* pOwner, ID3D11
 void CUI_Inspector::Free()
 {
 	Safe_Release(m_pToolManager);
+	Safe_Release(m_pUIManager);
 	Super::Free();
 }
 

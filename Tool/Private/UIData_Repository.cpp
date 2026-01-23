@@ -7,8 +7,17 @@ CUIData_Repository::CUIData_Repository()
 {
 }
 
+void CUIData_Repository::Road_UIData()
+{
+}
+
+void CUIData_Repository::Save_UIData()
+{
+}
+
 void CUIData_Repository::Free()
 {
+	Super::Free();
 }
 
 void to_json(json& _j, const CANVAS_DATA& _tData)
@@ -29,7 +38,7 @@ void from_json(const json& _j, CANVAS_DATA& _tData)
 {
 	_j.at("Tag").get_to(_tData.strTag);
 	_j.at("UsingViewport").get_to(_tData.isUsingViewport);
-	_j.at("Width").get_to(_tData.isUsingViewport);
+	_j.at("Width").get_to(_tData.iWidth);
 	_j.at("Height").get_to(_tData.iHeight);
 	_j.at("PosX").get_to(_tData.iPosX);
 	_j.at("PosY").get_to(_tData.iPosY);
