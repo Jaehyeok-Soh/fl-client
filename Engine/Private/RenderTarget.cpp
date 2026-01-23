@@ -59,11 +59,7 @@ HRESULT CRenderTarget::Ready_Debug(_float fX, _float fY, _float fSizeX, _float f
 
 	m_pDeviceContext->RSGetViewports(&iViewportCount, &ViewPortDesc);
 
-	::XMStoreFloat4x4(&m_matWorld,
-		::XMMatrixScaling(fSizeX, fSizeY, 1.f) *
-		::XMMatrixTranslation(fX - ViewPortDesc.Width * 0.5f, -fY + ViewPortDesc.Height * 0.5f, 0.f)
-	);
-
+	m_matWorld = Matrix::CreateScale(fSizeX, fSizeY, 1.f) * Matrix::CreateTranslation(fX - ViewPortDesc.Width * 0.5f, -fY + ViewPortDesc.Height * 0.5f, 0.f);
 	return S_OK;
 }
 

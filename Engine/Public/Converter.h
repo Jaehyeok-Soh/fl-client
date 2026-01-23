@@ -30,7 +30,7 @@ class ENGINE_DLL CConverter final : public CBase
 {
 	using Super = CBase;
 private:
-	CConverter(ID3D11Device* pDevice, ID3D11DeviceContext* pDeviceContext, _float4x4 matPreTransform, _bool bCustom);
+	CConverter(ID3D11Device* pDevice, ID3D11DeviceContext* pDeviceContext, const Matrix &matPreTransform, _bool bCustom);
 	virtual ~CConverter() = default;
 public:
 	HRESULT Initialize(const _tchar* wszAssetParentFolderName);
@@ -79,7 +79,7 @@ private:
 	CImporter* m_pImporter = { nullptr };
 	const aiScene* m_pScene = { nullptr };
 
-	_float4x4 m_matPreTransform = {};
+	Matrix m_matPreTransform = {};
 	vector<AS_BONE*> m_pMasterBones;
 	vector<AS_BONE*> m_pBones;
 	vector<AS_MESH*> m_pMeshes;
@@ -90,7 +90,7 @@ private:
 	ID3D11Device* m_pDevice = { nullptr };
 	ID3D11DeviceContext* m_pDeviceContext = { nullptr };
 public:
-	static CConverter* Create(ID3D11Device* pDevice, ID3D11DeviceContext* pDeviceContext, const _tchar* wszAssetParentFolderName, _float4x4 matPreTransform, _bool bCustom = false);
+	static CConverter* Create(ID3D11Device* pDevice, ID3D11DeviceContext* pDeviceContext, const _tchar* wszAssetParentFolderName, const Matrix& matPreTransform, _bool bCustom = false);
 	virtual void Free();
 };
 

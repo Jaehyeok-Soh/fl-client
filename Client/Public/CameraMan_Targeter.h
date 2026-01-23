@@ -56,7 +56,7 @@ private:
 	void Chase_Actor(const _float fTimeDelta);
 	void Chase_Player(CContainerObject* pObject, const _float fTimeDelta);
 	void OnChangeLockonTarget(CGameObject* pGo);
-	_vector Get_HeadWorldPos_FromBody(CBody* pBody, CTransform* pTrnasform);
+	Vec3 Get_HeadWorldPos_FromBody(CBody* pBody, CTransform* pTrnasform);
 private:
 	TargeterState m_eCurrentState = { TargeterState::NORMAL };
 	CGameObject* m_pLockonTarget = { nullptr };
@@ -64,7 +64,7 @@ private:
 	_float m_fTargetSpeed = { 0.f };
 
 	_bool m_bChaseInit = { false };
-	_float4 m_vChaseFiltered = { 0.f, 0.f, 0.f, 1.f };
+	Vec3 m_vChaseFiltered = { 0.f, 0.f, 0.f };
 
 	_bool m_bImpactInit = { false };
 	const _float m_fImpactDuration = { 0.14f };

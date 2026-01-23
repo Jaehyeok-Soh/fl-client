@@ -8,56 +8,47 @@ CCell::CCell(ID3D11Device* pDevice, ID3D11DeviceContext* pDeviceContext)
 	Safe_AddRef(m_pDeviceContext);
 }
 
-HRESULT CCell::Initialize(const _float3* pPoints, _int iIndex)
+HRESULT CCell::Initialize(const Vec3* pPoints, _int iIndex)
 {
-	::memcpy(m_vPoints, pPoints, sizeof(_float3) * ENUM_TO_UINT(EPOINT::END));
+	::memcpy(m_vPoints, pPoints, sizeof(Vec3) * ENUM_TO_UINT(EPOINT::END));
 
 	m_iIndex = iIndex;
 
-	_vector vPointA = ::XMLoadFloat3(&m_vPoints[ENUM_TO_UINT(EPOINT::A)]);
-	_vector vPointB = ::XMLoadFloat3(&m_vPoints[ENUM_TO_UINT(EPOINT::B)]);
-	_vector vPointC = ::XMLoadFloat3(&m_vPoints[ENUM_TO_UINT(EPOINT::C)]);
+	Vec3 vAB = (m_vPoints[ENUM_TO_UINT(EPOINT::B)] - m_vPoints[ENUM_TO_UINT(EPOINT::A)]);
+	Vec3 vAC = (m_vPoints[ENUM_TO_UINT(EPOINT::C)] - m_vPoints[ENUM_TO_UINT(EPOINT::A)]);
+	vAB.Normalize();
+	vAC.Normalize();
 
-	_vector vAB = ::XMVector3Normalize(vPointB - vPointA);
-	_vector vAC = ::XMVector3Normalize(vPointC - vPointA);
-
-	_vector vUp = ::XMVector3Normalize(::XMVector3Cross(vAB, vAC));
-
-	::XMStoreFloat3(&m_vUpNormal, vUp);
+	Vec3 vUp = vAB.Cross(vAC);
+	vUp.Normalize();
+	m_vUpNormal = vUp;
 	return S_OK;
 }
 
-_vector CCell::Project_OnPlane(_fvector vPos) const
+Vec3 CCell::Project_OnPlane(const Vec3 &vPos) const
 {
-	_vector vA = Get_Point(EPOINT::A);
-	_vector vB = Get_Point(EPOINT::B);
-	_vector vC = Get_Point(EPOINT::C);
-
-	_vector vNormal = Get_UpNormal();
-
-	_vector vA_Pos = vPos - vA;
-	_float fDist = ::XMVectorGetX(::XMVector3Dot(vA_Pos, vNormal));
+	Vec3 vNormal = Get_UpNormal();
+	Vec3 vA_Pos = vPos - Get_Point(EPOINT::A);
+	_float fDist = vA_Pos.Dot(vNormal);
 	return vPos - vNormal * fDist;
 }
 
-_vector CCell::Get_CenterPos()
+Vec3 CCell::Get_CenterPos()
 {
-	_vector		vPosition = {};
-
+	Vec3 vPosition = {};
 	for (size_t i = 0; i < 3; i++)
-	{
-		vPosition += ::XMLoadFloat3(&m_vPoints[i]);
-	}
+		vPosition += m_vPoints[i];
+
 	return vPosition / 3.f;
 }
 
-_bool CCell::Is_In(_fvector vResultPos, _int* pNeighborIndex)
+_bool CCell::Is_In(Vec3 vResultPos, _int* pNeighborIndex)
 {
 	for (size_t i = 0; i < ENUM_TO_UINT(ELINE::END); ++i)
 	{
-		_vector vDir = vResultPos - ::XMLoadFloat3(&m_vPoints[i]);
-		_vector vDist450 = ::XMVector3Dot(::XMLoadFloat3(&m_vPoints[ENUM_TO_UINT(EPOINT::A)]) - vResultPos, ::XMLoadFloat3(&m_vNormals[ENUM_TO_UINT(ELINE::AB)]));
-		if (g_XMEpsilon.f[0] < ::XMVectorGetX(::XMVector3Dot(vDir, ::XMLoadFloat3(&m_vNormals[i]))))
+		Vec3 vDir = vResultPos - m_vPoints[i];
+		_float fDot = vDir.Dot(m_vNormals[i]);
+		if (g_XMEpsilon.f[0] < fDot)
 		{
 			*pNeighborIndex = m_iNeighbors[i];
 			return false;
@@ -67,57 +58,57 @@ _bool CCell::Is_In(_fvector vResultPos, _int* pNeighborIndex)
 	return true;
 }
 
-_bool CCell::Compare(_fvector vSourPoint, _fvector vDestPoint)
+_bool CCell::Compare(Vec3 vSourPoint, Vec3 vDestPoint)
 {
-	if (::XMVector3Equal(vSourPoint, ::XMLoadFloat3(&m_vPoints[ENUM_TO_UINT(EPOINT::A)])) == true)
+	if (::XMVector3Equal(vSourPoint, m_vPoints[ENUM_TO_UINT(EPOINT::A)]) == true)
 	{
-		if (::XMVector3Equal(vDestPoint, ::XMLoadFloat3(&m_vPoints[ENUM_TO_UINT(EPOINT::B)])) == true)
+		if (::XMVector3Equal(vDestPoint, m_vPoints[ENUM_TO_UINT(EPOINT::B)]) == true)
 			return true;
-		if (::XMVector3Equal(vDestPoint, ::XMLoadFloat3(&m_vPoints[ENUM_TO_UINT(EPOINT::C)])) == true)
+		if (::XMVector3Equal(vDestPoint, m_vPoints[ENUM_TO_UINT(EPOINT::C)]) == true)
 			return true;
 	}
 
-	if (::XMVector3Equal(vSourPoint, ::XMLoadFloat3(&m_vPoints[ENUM_TO_UINT(EPOINT::B)])) == true)
+	if (::XMVector3Equal(vSourPoint, m_vPoints[ENUM_TO_UINT(EPOINT::B)]) == true)
 	{
-		if (::XMVector3Equal(vDestPoint, ::XMLoadFloat3(&m_vPoints[ENUM_TO_UINT(EPOINT::C)])) == true)
+		if (::XMVector3Equal(vDestPoint, m_vPoints[ENUM_TO_UINT(EPOINT::C)]) == true)
 			return true;
-		if (::XMVector3Equal(vDestPoint, ::XMLoadFloat3(&m_vPoints[ENUM_TO_UINT(EPOINT::A)])) == true)
+		if (::XMVector3Equal(vDestPoint, m_vPoints[ENUM_TO_UINT(EPOINT::A)]) == true)
 			return true;
 	}
 
-	if (::XMVector3Equal(vSourPoint, ::XMLoadFloat3(&m_vPoints[ENUM_TO_UINT(EPOINT::C)])) == true)
+	if (::XMVector3Equal(vSourPoint, m_vPoints[ENUM_TO_UINT(EPOINT::C)]) == true)
 	{
-		if (::XMVector3Equal(vDestPoint, ::XMLoadFloat3(&m_vPoints[ENUM_TO_UINT(EPOINT::A)])) == true)
+		if (::XMVector3Equal(vDestPoint, m_vPoints[ENUM_TO_UINT(EPOINT::A)]) == true)
 			return true;
-		if (::XMVector3Equal(vDestPoint, ::XMLoadFloat3(&m_vPoints[ENUM_TO_UINT(EPOINT::B)])) == true)
+		if (::XMVector3Equal(vDestPoint, m_vPoints[ENUM_TO_UINT(EPOINT::B)]) == true)
 			return true;
 	}
 
 	return false;
 }
 
-_float CCell::Compute_Height(_vector vCellPos)
+_float CCell::Compute_Height(const Vec3& vCellPos)
 {
-	_vector vPlane = ::XMPlaneFromPoints(
+	Vec4 vPlane = ::XMPlaneFromPoints(
 		::XMLoadFloat3(&m_vPoints[ENUM_TO_UINT(ENUM_TO_UINT(EPOINT::A))]),
 		::XMLoadFloat3(&m_vPoints[ENUM_TO_UINT(ENUM_TO_UINT(EPOINT::B))]),
 		::XMLoadFloat3(&m_vPoints[ENUM_TO_UINT(ENUM_TO_UINT(EPOINT::C))]));
 
 	// ax + by + cz + d  = 0
 	// y = (-ax - cz - d) / b
-	_float x = ::XMVectorGetX(vCellPos);
-	_float y = ::XMVectorGetY(vCellPos);
-	_float z = ::XMVectorGetZ(vCellPos);
+	_float x = vCellPos.x;
+	_float y = vCellPos.y;
+	_float z = vCellPos.z;
 
-	_float a = ::XMVectorGetX(vPlane);
-	_float b = ::XMVectorGetY(vPlane);
-	_float c = ::XMVectorGetZ(vPlane);
-	_float d = ::XMVectorGetW(vPlane);
+	_float a = vPlane.x;
+	_float b = vPlane.y;
+	_float c = vPlane.z;
+	_float d = vPlane.w;
 
 	return ((-a * x) - (c * z) - d) / b;
 }
 
-CCell* CCell::Create(ID3D11Device* pDevice, ID3D11DeviceContext* pDeviceContext, const _float3* pPoints, _int iIndex)
+CCell* CCell::Create(ID3D11Device* pDevice, ID3D11DeviceContext* pDeviceContext, const Vec3* pPoints, _int iIndex)
 {
 	CCell* pInstance = new CCell(pDevice, pDeviceContext);
 	if (FAILED(pInstance->Initialize(pPoints, iIndex)))

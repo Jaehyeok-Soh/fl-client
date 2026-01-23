@@ -122,7 +122,7 @@ void CGameInstance::Update_Engine(_float fTimeDelta)
 	m_pObject_Manager->Ready_Before_Render(fTimeDelta);
 }
 
-HRESULT CGameInstance::Draw_Begin(const _float4* pClearColor)
+HRESULT CGameInstance::Draw_Begin(const Vec4* pClearColor)
 {
 	if (FAILED(m_pGraphic_Device->Clear_BackBuffer_View(&m_pLevel_Manager->Get_ClearColor())))
 		return E_FAIL;
@@ -170,7 +170,7 @@ void CGameInstance::Clear(_uint iLevelID)
 }
 
 #pragma region PICKING
-void CGameInstance::PickingUpdate_ForTool(const _float4& _vNDC)
+void CGameInstance::PickingUpdate_ForTool(const Vec4& _vNDC)
 {
 	m_pPicking->Update(_vNDC);
 }
@@ -180,41 +180,41 @@ void CGameInstance::PickingUpdate(const _float fWinCX, const _float fWinCY)
 	m_pPicking->Update(fWinCX, fWinCY);
 }
 
-void CGameInstance::TransformRayToLocalSpace(const _float4x4& matInvWorld)
+void CGameInstance::TransformRayToLocalSpace(const Matrix& matInvWorld)
 {
 	m_pPicking->TransformRayToLocalSpace(matInvWorld);
 }
 
-_bool CGameInstance::IntersectrayWithTriangle_World(const _float3& vPointA, const _float3& vPointB, const _float3& vPointC, OUT _float4& vOut)
+_bool CGameInstance::IntersectrayWithTriangle_World(const Vec3& vPointA, const Vec3& vPointB, const Vec3& vPointC, OUT Vec3& vOut)
 {
 	return m_pPicking->IntersectrayWithTriangle_World(vPointA, vPointB, vPointC, vOut);
 }
 
-_bool CGameInstance::IntersectrayWithTriangle_Local(const _float3& vPointA, const _float3& vPointB, const _float3& vPointC, OUT _float4& vOut)
+_bool CGameInstance::IntersectrayWithTriangle_Local(const Vec3& vPointA, const Vec3& vPointB, const Vec3& vPointC, OUT Vec3& vOut)
 {
 	return m_pPicking->IntersectrayWithTriangle_Local(vPointA, vPointB, vPointC, vOut);
 }
-_bool CGameInstance::IntersectrayWithAABB_World(BoundingBox* pDesc, OUT _float4& vOut)
+_bool CGameInstance::IntersectrayWithAABB_World(BoundingBox* pDesc, OUT Vec3& vOut)
 {
 	return m_pPicking->IntersectrayWithAABB_World(pDesc, vOut);
 }
-_bool CGameInstance::IntersectrayWithAABB_Local(BoundingBox* pOriginDesc, OUT _float4& vOut)
+_bool CGameInstance::IntersectrayWithAABB_Local(BoundingBox* pOriginDesc, OUT Vec3& vOut)
 {
 	return m_pPicking->IntersectrayWithAABB_Local(pOriginDesc, vOut);
 }
-_bool CGameInstance::IntersectrayWithOBB_World(BoundingOrientedBox* pDesc, OUT _float4& vOut)
+_bool CGameInstance::IntersectrayWithOBB_World(BoundingOrientedBox* pDesc, OUT Vec3& vOut)
 {
 	return m_pPicking->IntersectrayWithOBB_World(pDesc, vOut);
 }
-_bool CGameInstance::IntersectrayWithOBB_Local(BoundingOrientedBox* pOriginDesc, OUT _float4& vOut)
+_bool CGameInstance::IntersectrayWithOBB_Local(BoundingOrientedBox* pOriginDesc, OUT Vec3& vOut)
 {
 	return m_pPicking->IntersectrayWithOBB_Local(pOriginDesc, vOut);
 }
-_bool CGameInstance::IntersectrayWithSphere_World(BoundingSphere* pDesc, OUT _float4& vOut)
+_bool CGameInstance::IntersectrayWithSphere_World(BoundingSphere* pDesc, OUT Vec3& vOut)
 {
 	return m_pPicking->IntersectrayWithSphere_World(pDesc, vOut);
 }
-_bool CGameInstance::IntersectrayWithSphere_Local(BoundingSphere* pOriginDesc, OUT _float4& vOut)
+_bool CGameInstance::IntersectrayWithSphere_Local(BoundingSphere* pOriginDesc, OUT Vec3& vOut)
 {
 	return m_pPicking->IntersectrayWithSphere_Local(pOriginDesc, vOut);
 }
@@ -426,27 +426,27 @@ HRESULT CGameInstance::Change_Target_Next()
 {
 	return m_pCamera_Manager->Change_Target_Next();
 }
-const _float4x4& CGameInstance::Get_ViewMatrix() const
+const Matrix& CGameInstance::Get_ViewMatrix() const
 {
 	return m_pCamera_Manager->Get_ViewMatrix();
 }
-void CGameInstance::Set_ViewMatrix(_fmatrix matView)
+void CGameInstance::Set_ViewMatrix(Matrix matView)
 {
 	m_pCamera_Manager->Set_ViewMatrix(matView);
 }
-const _float4x4& CGameInstance::Get_ProjMatrix() const
+const Matrix& CGameInstance::Get_ProjMatrix() const
 {
 	return m_pCamera_Manager->Get_ProjMatrix();
 }
-void CGameInstance::Set_ProjMatrix(_fmatrix matProj)
+void CGameInstance::Set_ProjMatrix(Matrix matProj)
 {
 	m_pCamera_Manager->Set_ProjMatrix(matProj);
 }
-const _float4x4& CGameInstance::Get_UI_ViewMatrix() const
+const Matrix& CGameInstance::Get_UI_ViewMatrix() const
 {
 	return m_pCamera_Manager->Get_UI_ViewMatrix();
 }
-const _float4x4& CGameInstance::Get_UI_ProjMatrix() const
+const Matrix& CGameInstance::Get_UI_ProjMatrix() const
 {
 	return m_pCamera_Manager->Get_UI_ProjMatrix();
 }
@@ -608,7 +608,7 @@ HRESULT CGameInstance::Add_Font(const _wstring& strFontTag, const _tchar* pFontF
 {
 	return m_pFont_Manager->Add_Font(strFontTag, pFontFilePath);
 }
-HRESULT CGameInstance::Draw_Text(const _wstring& strFontTag, const _tchar* pText, const _float2& vPosition, _fvector vColor)
+HRESULT CGameInstance::Draw_Text(const _wstring& strFontTag, const _tchar* pText, const Vec2& vPosition, Vec4 vColor)
 {
 	return m_pFont_Manager->Draw_Text(strFontTag, pText, vPosition, vColor);
 }

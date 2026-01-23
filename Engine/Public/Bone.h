@@ -12,7 +12,7 @@ public:
 		string strName = { "" };
 		_int iIndex = { -1 };
 		_int iParentIndex = { -1 };
-		_float4x4 matTransform = {};
+		Matrix matTransform = Matrix::Identity;
 	}BONE_DESC;
 private:
 	CBone();
@@ -21,22 +21,19 @@ private:
 	HRESULT Initialize(BONE_DESC* pDesc);
 public:
 	_bool Compare_Name(const _char* pName) { return !::strcmp(pName, m_szName); }
-	void Set_TransformationMatrix(const _float4x4& matTransformation) { m_matTransform = matTransformation; }
-	void Set_TransformationMatrix(_fmatrix matTransformation) { ::XMStoreFloat4x4(&m_matTransform, matTransformation); }
-	_matrix Get_CombinedTransformMatrix() { return ::XMLoadFloat4x4(&m_matCombinedTransform); }
-	_matrix Get_BindPoseTransformMatrix() { return ::XMLoadFloat4x4(&m_matBindPoseTransform); }
-	const _float4x4& Get_BindPoseTransformMatrixFloat() const { return m_matBindPoseTransform; }
-	const _float4x4 &Get_CombinedTransformMatrixFloat() const { return m_matCombinedTransform; }
+	void Set_TransformationMatrix(const Matrix& matTransformation) { m_matTransform = matTransformation; }
+	const Matrix &Get_CombinedTransformMatrix() { return m_matCombinedTransform; }
+	const Matrix &Get_BindPoseTransformMatrix() { return m_matBindPoseTransform; }
 	_int Get_Index() const { return m_iIndex; }
 	_int Get_ParentIndex() const { return m_iParentIndex; }
-	void Update_CombinedTransformMatrix(const vector<CBone*>& Bones, _fmatrix PreTransformMatrix);
-	void Setup_BindPoseTransformMatrix(const vector<CBone*>& Bones, _fmatrix PreTransformMatrix);
+	void Update_CombinedTransformMatrix(const vector<CBone*>& Bones, const Matrix &PreTransformMatrix);
+	void Setup_BindPoseTransformMatrix(const vector<CBone*>& Bones, const Matrix &PreTransformMatrix);
 private:
 	_int m_iIndex = { -1 };
 	_int m_iParentIndex = { -1 };
-	_float4x4 m_matTransform = {};
-	_float4x4 m_matBindPoseTransform = {};
-	_float4x4 m_matCombinedTransform = {};
+	Matrix m_matTransform = {};
+	Matrix m_matBindPoseTransform = {};
+	Matrix m_matCombinedTransform = {};
 	_char m_szName[MAX_NAME] = {};
 public:
 	static CBone* Create(BONE_DESC* pDesc);

@@ -20,7 +20,7 @@ HRESULT CBounding_Sphere::Initialize(const BOUNDING_DESC* pInitialDesc)
     return S_OK;
 }
 
-void CBounding_Sphere::Update(_fmatrix WorldMatrix)
+void CBounding_Sphere::Update(const Matrix &WorldMatrix)
 {
     m_pOriginalDesc->Transform(*m_pDesc, WorldMatrix);
 }
@@ -44,20 +44,20 @@ _bool CBounding_Sphere::Intersect_Bounding(EColliderType eType, CBounding* pOthe
     return bIsColl;
 }
 
-_bool CBounding_Sphere::IntersectWithRay_World(CGameInstance* pGameInstance, OUT _float4& vOut)
+_bool CBounding_Sphere::IntersectWithRay_World(CGameInstance* pGameInstance, OUT Vec3& vOut)
 {
     return pGameInstance->IntersectrayWithSphere_World(m_pDesc, vOut);
 }
-_bool CBounding_Sphere::IntersectWithRay_Local(CGameInstance* pGameInstance, OUT _float4& vOut)
+_bool CBounding_Sphere::IntersectWithRay_Local(CGameInstance* pGameInstance, OUT Vec3& vOut)
 {
     return pGameInstance->IntersectrayWithSphere_Local(m_pOriginalDesc, vOut);
 }
 
-_bool CBounding_Sphere::IntersectWithRay_World(CRay* pRay, OUT _float4& vOut)
+_bool CBounding_Sphere::IntersectWithRay_World(CRay* pRay, OUT Vec3& vOut)
 {
     return pRay->IntersectrayWithSphere_World(m_pDesc, vOut);
 }
-_bool CBounding_Sphere::IntersectWithRay_Local(CRay* pRay, OUT _float4& vOut)
+_bool CBounding_Sphere::IntersectWithRay_Local(CRay* pRay, OUT Vec3& vOut)
 {
     return pRay->IntersectrayWithSphere_Local(m_pOriginalDesc, vOut);
 }

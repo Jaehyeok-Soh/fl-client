@@ -16,7 +16,7 @@ public:
 	HRESULT Copy_BackBufferTexture(ID3D11Texture2D** ppTexture);
 
 	// Render Begin
-	HRESULT Clear_BackBuffer_View(const _float4* pClearColor);
+	HRESULT Clear_BackBuffer_View(const Vec4* pClearColor);
 	HRESULT Clear_DepthStencil_View();
 	// Render End
 	HRESULT Present();

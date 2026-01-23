@@ -53,7 +53,7 @@ public:
 	virtual _bool Is_SecondSkillPressed() PURE;
 	virtual _bool Is_ThirdSkillPressed() PURE;
 	virtual _bool Is_RopePressed() PURE;
-	virtual _fvector Get_MoveDir() PURE;
+	virtual Vec3 Get_MoveDir() PURE;
 
 	CGameObject* Get_Target() { return m_pTarget; }
 protected:

@@ -27,45 +27,43 @@ void CChannel::Update_TransformationMatrix(const vector<CBone*>& vecBones, _floa
 	if (fCurrentTrackPosition <= 0.f)
 		*pCurrentKeyFrameIndex = 0;
 
-	_float4x4 matTransformation = {};
+	Matrix matTransformation = {};
 	KEYFRAME lastKeyFrame = m_vecKeyframes.back();
-	_vector vScale, vQuaternion, vTranslation;
-
+	Vec3 vScale, vTranslation;
+	Quat vQuaternion;
 	if (fCurrentTrackPosition >= lastKeyFrame.fTrackPosition)
 	{
-		vScale = ::XMLoadFloat3(&lastKeyFrame.vScale);
-		vQuaternion = ::XMLoadFloat4(&lastKeyFrame.vQuaterion);
-		vTranslation = ::XMVectorSetW(::XMLoadFloat3(&lastKeyFrame.vTranslation), 1.f);
+		vScale = lastKeyFrame.vScale;
+		vQuaternion = lastKeyFrame.vQuaterion;
+		vTranslation = lastKeyFrame.vTranslation;
 	}
 	else
 	{
-		_vector		vLeftScale{}, vRightScale{};
-		_vector		vLeftQuaternion{}, vRightQuaternion{};
-		_vector		vLeftTranslation{}, vRightTranslation{};
+		Vec3		vLeftScale{}, vRightScale{};
+		Quat		vLeftQuaternion{}, vRightQuaternion{};
+		Vec3		vLeftTranslation{}, vRightTranslation{};
 
 		if (fCurrentTrackPosition >= m_vecKeyframes[(*pCurrentKeyFrameIndex) + 1].fTrackPosition)
 			++(*pCurrentKeyFrameIndex);
 
-		vLeftScale = ::XMLoadFloat3(&m_vecKeyframes[(*pCurrentKeyFrameIndex)].vScale);
-		vRightScale = ::XMLoadFloat3(&m_vecKeyframes[(*pCurrentKeyFrameIndex) + 1].vScale);
+		vLeftScale = m_vecKeyframes[(*pCurrentKeyFrameIndex)].vScale;
+		vRightScale = m_vecKeyframes[(*pCurrentKeyFrameIndex) + 1].vScale;
 
-		vLeftQuaternion = ::XMLoadFloat4(&m_vecKeyframes[(*pCurrentKeyFrameIndex)].vQuaterion);
-		vRightQuaternion = ::XMLoadFloat4(&m_vecKeyframes[(*pCurrentKeyFrameIndex) + 1].vQuaterion);
+		vLeftQuaternion = m_vecKeyframes[(*pCurrentKeyFrameIndex)].vQuaterion;
+		vRightQuaternion = m_vecKeyframes[(*pCurrentKeyFrameIndex) + 1].vQuaterion;
 
-		vLeftTranslation = ::XMVectorSetW(::XMLoadFloat3(&m_vecKeyframes[(*pCurrentKeyFrameIndex)].vTranslation), 1.f);
-		vRightTranslation = ::XMVectorSetW(::XMLoadFloat3(&m_vecKeyframes[(*pCurrentKeyFrameIndex) + 1].vTranslation), 1.f);
+		vLeftTranslation = m_vecKeyframes[(*pCurrentKeyFrameIndex)].vTranslation;
+		vRightTranslation = m_vecKeyframes[(*pCurrentKeyFrameIndex) + 1].vTranslation;
 
 		_float		fRatio = (fCurrentTrackPosition - m_vecKeyframes[(*pCurrentKeyFrameIndex)].fTrackPosition) /
 			(m_vecKeyframes[(*pCurrentKeyFrameIndex) + 1].fTrackPosition - m_vecKeyframes[(*pCurrentKeyFrameIndex)].fTrackPosition);
 
-		vScale = ::XMVectorLerp(vLeftScale, vRightScale, fRatio);
-		vQuaternion = ::XMQuaternionSlerp(vLeftQuaternion, vRightQuaternion, fRatio);
-		vTranslation = ::XMVectorLerp(vLeftTranslation, vRightTranslation, fRatio);
+		vScale = Vec3::Lerp(vLeftScale, vRightScale, fRatio);
+		vQuaternion = Quat::Slerp(vLeftQuaternion, vRightQuaternion, fRatio);
+		vTranslation = Vec3::Lerp(vLeftTranslation, vRightTranslation, fRatio);
 	}
 
-	::XMStoreFloat4x4(&matTransformation,
-		::XMMatrixAffineTransformation(vScale, ::XMVectorSet(0.f, 0.f, 0.f, 1.f), vQuaternion, vTranslation));
-
+	matTransformation = Matrix::CreateScale(vScale) * Matrix::CreateFromQuaternion(vQuaternion) * Matrix::CreateTranslation(vTranslation);
 	vecBones[m_iBoneIndex]->Set_TransformationMatrix(matTransformation);
 }
 
@@ -74,45 +72,46 @@ void CChannel::SetUp_PoseData(std::span<LOCALSRT> spanLocalSrtData, _float fCurr
 	if (fCurrentTrackPosition <= 0.f)
 		*pCurrentKeyFrameIndex = 0;
 
-	_float4x4 matTransformation = {};
+	Matrix matTransformation = {};
 	KEYFRAME lastKeyFrame = m_vecKeyframes.back();
-	_vector vScale, vQuaternion, vTranslation;
+	Vec3 vScale, vTranslation;
+	Quat vQuaternion;
 
 	if (fCurrentTrackPosition >= lastKeyFrame.fTrackPosition)
 	{
-		vScale = ::XMLoadFloat3(&lastKeyFrame.vScale);
-		vQuaternion = ::XMLoadFloat4(&lastKeyFrame.vQuaterion);
-		vTranslation = ::XMVectorSetW(::XMLoadFloat3(&lastKeyFrame.vTranslation), 1.f);
+		vScale = lastKeyFrame.vScale;
+		vQuaternion = lastKeyFrame.vQuaterion;
+		vTranslation = lastKeyFrame.vTranslation;
 	}
 	else
 	{
-		_vector		vLeftScale{}, vRightScale{};
-		_vector		vLeftQuaternion{}, vRightQuaternion{};
-		_vector		vLeftTranslation{}, vRightTranslation{};
+		Vec3		vLeftScale{}, vRightScale{};
+		Quat		vLeftQuaternion{}, vRightQuaternion{};
+		Vec3		vLeftTranslation{}, vRightTranslation{};
 
 		if (fCurrentTrackPosition >= m_vecKeyframes[(*pCurrentKeyFrameIndex) + 1].fTrackPosition)
 			++(*pCurrentKeyFrameIndex);
 
-		vLeftScale = ::XMLoadFloat3(&m_vecKeyframes[(*pCurrentKeyFrameIndex)].vScale);
-		vRightScale = ::XMLoadFloat3(&m_vecKeyframes[(*pCurrentKeyFrameIndex) + 1].vScale);
+		vLeftScale = m_vecKeyframes[(*pCurrentKeyFrameIndex)].vScale;
+		vRightScale = m_vecKeyframes[(*pCurrentKeyFrameIndex) + 1].vScale;
 
-		vLeftQuaternion = ::XMLoadFloat4(&m_vecKeyframes[(*pCurrentKeyFrameIndex)].vQuaterion);
-		vRightQuaternion = ::XMLoadFloat4(&m_vecKeyframes[(*pCurrentKeyFrameIndex) + 1].vQuaterion);
+		vLeftQuaternion = m_vecKeyframes[(*pCurrentKeyFrameIndex)].vQuaterion;
+		vRightQuaternion = m_vecKeyframes[(*pCurrentKeyFrameIndex) + 1].vQuaterion;
 
-		vLeftTranslation = ::XMVectorSetW(::XMLoadFloat3(&m_vecKeyframes[(*pCurrentKeyFrameIndex)].vTranslation), 1.f);
-		vRightTranslation = ::XMVectorSetW(::XMLoadFloat3(&m_vecKeyframes[(*pCurrentKeyFrameIndex) + 1].vTranslation), 1.f);
+		vLeftTranslation = m_vecKeyframes[(*pCurrentKeyFrameIndex)].vTranslation;
+		vRightTranslation = m_vecKeyframes[(*pCurrentKeyFrameIndex) + 1].vTranslation;
 
 		_float		fRatio = (fCurrentTrackPosition - m_vecKeyframes[(*pCurrentKeyFrameIndex)].fTrackPosition) /
 			(m_vecKeyframes[(*pCurrentKeyFrameIndex) + 1].fTrackPosition - m_vecKeyframes[(*pCurrentKeyFrameIndex)].fTrackPosition);
 
-		vScale = ::XMVectorLerp(vLeftScale, vRightScale, fRatio);
-		vQuaternion = ::XMQuaternionSlerp(vLeftQuaternion, vRightQuaternion, fRatio);
-		vTranslation = ::XMVectorLerp(vLeftTranslation, vRightTranslation, fRatio);
+		vScale = Vec3::Lerp(vLeftScale, vRightScale, fRatio);
+		vQuaternion = Quat::Slerp(vLeftQuaternion, vRightQuaternion, fRatio);
+		vTranslation = Vec3::Lerp(vLeftTranslation, vRightTranslation, fRatio);
 	}
 
-	::XMStoreFloat3(&spanLocalSrtData[m_iBoneIndex].vScale, vScale);
-	::XMStoreFloat4(&spanLocalSrtData[m_iBoneIndex].vQuaterion, vQuaternion);
-	::XMStoreFloat3(&spanLocalSrtData[m_iBoneIndex].vTranslation, vTranslation);
+	spanLocalSrtData[m_iBoneIndex].vScale = vScale;
+	spanLocalSrtData[m_iBoneIndex].vQuaterion = vQuaternion;
+	spanLocalSrtData[m_iBoneIndex].vTranslation = vTranslation;
 }
 
 CChannel* CChannel::Create(const CHANNEL_DESC& desc)

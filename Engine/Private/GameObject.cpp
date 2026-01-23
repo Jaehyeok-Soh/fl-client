@@ -158,7 +158,7 @@ void CGameObject::Set_Dead(const wstring& wstrLayerTag)
     m_pGameInstance->Request_DeleteGameObject(m_pGameInstance->Get_CurrentLevelIndex(), wstrLayerTag, this);
 }
 
-_float3 CGameObject::Get_CenterFromCollider(EColliderType eType, CBounding* pBounding)
+Vec3 CGameObject::Get_CenterFromCollider(EColliderType eType, CBounding* pBounding)
 {
     switch (eType)
     {

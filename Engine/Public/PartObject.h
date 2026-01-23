@@ -9,7 +9,7 @@ class ENGINE_DLL CPartObject abstract : public CGameObject
 public:
 	typedef struct tagPartObjectDesc : public Super::GAMEOBJECT_DESC
 	{
-		const _float4x4* pMatParent = { nullptr };
+		const Matrix* pMatParent = { nullptr };
 	}PARTOBJ_DESC;
 protected:
 	CPartObject(ID3D11Device* pDevice, ID3D11DeviceContext* pDeviceContext);
@@ -44,15 +44,15 @@ public:
 protected:
 	void Clear_AttackDesc();
 protected:
-	void Update_CombinedWorldMatrix(const _float4x4* pMatParent);
-	void Update_CombinedWorldMatrix(_fmatrix matParent);
-	void Update_CombinedWorldMatrix_Bilboad(_fmatrix matParent);
-	void Update_CombinedWorldMatrix_Bilboad(_fmatrix matParent, _float2 vUIScale);
+	void Update_CombinedWorldMatrix(const Matrix* pMatParent);
+	void Update_CombinedWorldMatrix(Matrix matParent);
+	void Update_CombinedWorldMatrix_Bilboad(Matrix matParent);
+	void Update_CombinedWorldMatrix_Bilboad(Matrix matParent, Vec2 vUIScale);
 protected:
 	_bool m_bAttackWindow = { false };
 	CGameObject* m_pParentObject = { nullptr };
-	const _float4x4* m_pMatParent = { nullptr };
-	_float4x4 m_matCombinedWorld = {};
+	const Matrix* m_pMatParent = { nullptr };
+	Matrix m_matCombinedWorld = {};
 	ATTACK_DESC m_CurrentAttackDesc = {};
 	unordered_set<CGameObject*> m_unsetHitTargets;
 public:

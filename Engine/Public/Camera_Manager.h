@@ -27,13 +27,13 @@ public:
 	void Change_Target(CGameObject* pGo);
 	HRESULT Change_Target_Next();
 	
-	const _float4x4& Get_ViewMatrix() const { return m_matView; }
-	void Set_ViewMatrix(_fmatrix matView) { ::XMStoreFloat4x4(&m_matView, matView); }
-	const _float4x4& Get_ProjMatrix() const { return m_matProjection; }
-	void Set_ProjMatrix(_fmatrix matProj) { ::XMStoreFloat4x4(&m_matProjection, matProj); }
+	const Matrix& Get_ViewMatrix() const { return m_matView; }
+	void Set_ViewMatrix(const Matrix &matView) { m_matView = matView; }
+	const Matrix& Get_ProjMatrix() const { return m_matProjection; }
+	void Set_ProjMatrix(const Matrix &matProj) { m_matProjection = matProj; }
 
-	const _float4x4& Get_UI_ViewMatrix() const { return m_matView_UI; }
-	const _float4x4& Get_UI_ProjMatrix() const { return m_matProjection_UI; }
+	const Matrix& Get_UI_ViewMatrix() const { return m_matView_UI; }
+	const Matrix& Get_UI_ProjMatrix() const { return m_matProjection_UI; }
 
 	void Update_ViewMatrix();
 
@@ -51,10 +51,10 @@ private:
 	ID3D11Device* m_pDevice = { nullptr };
 	ID3D11DeviceContext* m_pDeviceContext = { nullptr };
 	CCameraMan* m_pMainCamera = { nullptr };
-	_float4x4 m_matView;
-	_float4x4 m_matProjection;
-	_float4x4 m_matView_UI;
-	_float4x4 m_matProjection_UI;
+	Matrix m_matView;
+	Matrix m_matProjection;
+	Matrix m_matView_UI;
+	Matrix m_matProjection_UI;
 	unordered_set<CGameObject*> m_Actors;
 	map<wstring, CCameraMan*> m_Cameras[ENUM_TO_UINT(CameraType::END)];
 

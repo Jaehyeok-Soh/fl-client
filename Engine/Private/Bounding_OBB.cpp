@@ -14,20 +14,15 @@ HRESULT CBounding_OBB::Initialize(const BOUNDING_DESC* pInitialDesc)
 {
     const BOUNDING_OBB_DESC* pDesc = static_cast<const BOUNDING_OBB_DESC*>(pInitialDesc);
 
-    _float4     vRotation = {};
-    ::XMStoreFloat4(&vRotation,
-        ::XMQuaternionRotationRollPitchYaw(
-            ::XMConvertToRadians(pDesc->vAngles.x),
-            ::XMConvertToRadians(pDesc->vAngles.y),
-            ::XMConvertToRadians(pDesc->vAngles.z)));
-
+    Quat     vRotation = Quat::Identity;
+    vRotation = Quat::CreateFromYawPitchRoll(pDesc->vAngles);
     m_pOriginalDesc = new BoundingOrientedBox(pDesc->vCenter, pDesc->vExtents, vRotation);
     m_pDesc = new BoundingOrientedBox(*m_pOriginalDesc);
 
     return S_OK;
 }
 
-void CBounding_OBB::Update(_fmatrix WorldMatrix)
+void CBounding_OBB::Update(const Matrix& WorldMatrix)
 {
     m_pOriginalDesc->Transform(*m_pDesc, WorldMatrix);
 }
@@ -52,22 +47,22 @@ _bool CBounding_OBB::Intersect_Bounding(EColliderType eType, CBounding* pOther)
     return bIsColl;
 }
 
-_bool CBounding_OBB::IntersectWithRay_World(CGameInstance* pGameInstance, OUT _float4& vOut)
+_bool CBounding_OBB::IntersectWithRay_World(CGameInstance* pGameInstance, OUT Vec3& vOut)
 {
     return pGameInstance->IntersectrayWithOBB_World(m_pDesc, vOut);
 }
 
-_bool CBounding_OBB::IntersectWithRay_Local(CGameInstance* pGameInstance, OUT _float4& vOut)
+_bool CBounding_OBB::IntersectWithRay_Local(CGameInstance* pGameInstance, OUT Vec3& vOut)
 {
     return pGameInstance->IntersectrayWithOBB_Local(m_pOriginalDesc, vOut);
 }
 
-_bool CBounding_OBB::IntersectWithRay_World(CRay* pRay, OUT _float4& vOut)
+_bool CBounding_OBB::IntersectWithRay_World(CRay* pRay, OUT Vec3& vOut)
 {
     return pRay->IntersectrayWithOBB_World(m_pDesc, vOut);
 }
 
-_bool CBounding_OBB::IntersectWithRay_Local(CRay* pRay, OUT _float4& vOut)
+_bool CBounding_OBB::IntersectWithRay_Local(CRay* pRay, OUT Vec3& vOut)
 {
     return pRay->IntersectrayWithOBB_Local(m_pOriginalDesc, vOut);
 }

@@ -78,7 +78,7 @@ HRESULT CCollider::Initialize(void* pArg)
 	return S_OK;
 }
 
-void CCollider::Update(_fmatrix matWorld)
+void CCollider::Update(const Matrix &matWorld)
 {
 	m_pBounding->Update(matWorld);
 }
@@ -104,22 +104,22 @@ _bool CCollider::Intersect(CCollider* pOther)
 	return m_bIsColl;
 }
 
-_bool CCollider::IntersectWithRay_World(OUT _float4& vOut)
+_bool CCollider::IntersectWithRay_World(OUT Vec3& vOut)
 {
 	return m_pBounding->IntersectWithRay_World(m_pGameInstance, vOut);
 }
 
-_bool CCollider::IntersectWithRay_Local(OUT _float4& vOut)
+_bool CCollider::IntersectWithRay_Local(OUT Vec3& vOut)
 {
 	return m_pBounding->IntersectWithRay_Local(m_pGameInstance, vOut);
 }
 
-_bool CCollider::IntersectWithRay_World(CRay* pRay, OUT _float4& vOut)
+_bool CCollider::IntersectWithRay_World(CRay* pRay, OUT Vec3& vOut)
 {
 	return m_pBounding->IntersectWithRay_World(pRay, vOut);
 }
 
-_bool CCollider::IntersectWithRay_Local(CRay* pRay, OUT _float4& vOut)
+_bool CCollider::IntersectWithRay_Local(CRay* pRay, OUT Vec3& vOut)
 {
 	return m_pBounding->IntersectWithRay_Local(pRay, vOut);
 }
@@ -154,9 +154,9 @@ void CCollider::Render()
 	if (Is_Active() == false)
 		return;
 	m_pDeviceContext->GSSetShader(nullptr, nullptr, 0);
-	m_pEffect->SetWorld(XMMatrixIdentity());
-	m_pEffect->SetView(::XMLoadFloat4x4(&m_pGameInstance->Get_ViewMatrix()));
-	m_pEffect->SetProjection(::XMLoadFloat4x4(&m_pGameInstance->Get_ProjMatrix()));
+	m_pEffect->SetWorld(Matrix::Identity);
+	m_pEffect->SetView(m_pGameInstance->Get_ViewMatrix());
+	m_pEffect->SetProjection(m_pGameInstance->Get_ProjMatrix());
 	
 	m_pEffect->Apply(m_pDeviceContext);
 	m_pDeviceContext->IASetInputLayout(m_pInputLayout);

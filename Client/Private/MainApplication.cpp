@@ -68,7 +68,7 @@ void CMainApplication::Update(const _float fTimeDelta)
 
 HRESULT CMainApplication::Render()
 {
-	_float4 ClearColor = { 0.f, 0.f, 1.f, 1.f };
+	Vec4 ClearColor = { 0.f, 0.f, 1.f, 1.f };
 	m_pGameInstance->Draw_Begin(&ClearColor);
 	m_pGameInstance->Draw();
 	m_pGameInstance->Draw_End();
@@ -223,7 +223,7 @@ HRESULT CMainApplication::Ready_Static_Prototype()
 	//=================
 	// MaterialInstance
 	//=================
-	auto makeMaterialInstance = [&](const _float4& vColor, EMaterialInstanceType eType)->HRESULT
+	auto makeMaterialInstance = [&](const Vec4& vColor, EMaterialInstanceType eType)->HRESULT
 	{
 		CMaterialInstance::tagMaterialInstanceOrignDesc desc = {};
 		desc.vTintColor = vColor;
@@ -236,83 +236,83 @@ HRESULT CMainApplication::Ready_Static_Prototype()
 		return S_OK;
 	};
 	// For. MaterialInstance_Default
-	if (FAILED(makeMaterialInstance(_float4{ 1.f, 1.f, 1.f, 1.f }, EMaterialInstanceType::Default)))
+	if (FAILED(makeMaterialInstance(Vec4{ 1.f, 1.f, 1.f, 1.f }, EMaterialInstanceType::Default)))
 		return E_FAIL;
 
 	// For. MaterialInstance_Concrete
-	if (FAILED(makeMaterialInstance(_float4{ 0.3f, 0.3f, 0.3f, 1.f }, EMaterialInstanceType::Concrete)))
+	if (FAILED(makeMaterialInstance(Vec4{ 0.3f, 0.3f, 0.3f, 1.f }, EMaterialInstanceType::Concrete)))
 		return E_FAIL;
 
 	// For. MaterialInstance_Mirror
-	if (FAILED(makeMaterialInstance(_float4{ 0.375f, 0.25f, 0.5f, 1.f }, EMaterialInstanceType::Mirror)))
+	if (FAILED(makeMaterialInstance(Vec4{ 0.375f, 0.25f, 0.5f, 1.f }, EMaterialInstanceType::Mirror)))
 		return E_FAIL;
 
 	// For. MaterialInstance_Water
-	if (FAILED(makeMaterialInstance(_float4{ 0.235f, 0.3675f, 0.5f, 1.f }, EMaterialInstanceType::Water)))
+	if (FAILED(makeMaterialInstance(Vec4{ 0.235f, 0.3675f, 0.5f, 1.f }, EMaterialInstanceType::Water)))
 		return E_FAIL;
 
 	// For. MaterialInstance_Dirt
-	if (FAILED(makeMaterialInstance(_float4{ 0.415f, 0.251047f, 0.077674f, 1.f }, EMaterialInstanceType::Dirt)))
+	if (FAILED(makeMaterialInstance(Vec4{ 0.415f, 0.251047f, 0.077674f, 1.f }, EMaterialInstanceType::Dirt)))
 		return E_FAIL;
 
 	// For. MaterialInstance_Red
-	if (FAILED(makeMaterialInstance(_float4{ 0.7f, 0.1f, 0.1f, 1.f }, EMaterialInstanceType::Red)))
+	if (FAILED(makeMaterialInstance(Vec4{ 0.7f, 0.1f, 0.1f, 1.f }, EMaterialInstanceType::Red)))
 		return E_FAIL;
 
 	// For. MaterialInstance_Blue
-	if (FAILED(makeMaterialInstance(_float4{ 0.1f, 0.1f, 0.5f, 1.f }, EMaterialInstanceType::Blue)))
+	if (FAILED(makeMaterialInstance(Vec4{ 0.1f, 0.1f, 0.5f, 1.f }, EMaterialInstanceType::Blue)))
 		return E_FAIL;
 
 	// For. MaterialInstance_Green
-	if (FAILED(makeMaterialInstance(_float4{ 0.2f, 0.6f, 0.1f, 1.f }, EMaterialInstanceType::Green)))
+	if (FAILED(makeMaterialInstance(Vec4{ 0.2f, 0.6f, 0.1f, 1.f }, EMaterialInstanceType::Green)))
 		return E_FAIL;
 
 	// For. MaterialInstance_Grass
-	if (FAILED(makeMaterialInstance(_float4{ 0.3f, 0.5f, 0.1f, 1.f }, EMaterialInstanceType::Grass)))
+	if (FAILED(makeMaterialInstance(Vec4{ 0.3f, 0.5f, 0.1f, 1.f }, EMaterialInstanceType::Grass)))
 		return E_FAIL;
 
 	// For. MaterialInstance_Orange
-	if (FAILED(makeMaterialInstance(_float4{ 0.86f, 0.3f, 0.f, 1.f }, EMaterialInstanceType::Orange)))
+	if (FAILED(makeMaterialInstance(Vec4{ 0.86f, 0.3f, 0.f, 1.f }, EMaterialInstanceType::Orange)))
 		return E_FAIL;
 
 	// For. MaterialInstance_Brown
-	if (FAILED(makeMaterialInstance(_float4{ 0.567f, 0.304864f, 0.195615f, 1.f }, EMaterialInstanceType::Brown)))
+	if (FAILED(makeMaterialInstance(Vec4{ 0.567f, 0.304864f, 0.195615f, 1.f }, EMaterialInstanceType::Brown)))
 		return E_FAIL;
 
 	// For. MaterialInstance_Pupple
-	if (FAILED(makeMaterialInstance(_float4{ 0.27f, 0.15f, 0.48f, 1.f }, EMaterialInstanceType::Pupple)))
+	if (FAILED(makeMaterialInstance(Vec4{ 0.27f, 0.15f, 0.48f, 1.f }, EMaterialInstanceType::Pupple)))
 		return E_FAIL;
 
 	// For. MaterialInstance_WinterGreen
-	if (FAILED(makeMaterialInstance(_float4{ 0.3f, 0.5f, 0.5f, 1.f }, EMaterialInstanceType::WinterGreen)))
+	if (FAILED(makeMaterialInstance(Vec4{ 0.3f, 0.5f, 0.5f, 1.f }, EMaterialInstanceType::WinterGreen)))
 		return E_FAIL;
 
 	// For. MaterialInstance_BurnishedBrown
-	if (FAILED(makeMaterialInstance(_float4{ 0.48f, 0.35f, 0.34f, 1.f }, EMaterialInstanceType::BurnishedBrown)))
+	if (FAILED(makeMaterialInstance(Vec4{ 0.48f, 0.35f, 0.34f, 1.f }, EMaterialInstanceType::BurnishedBrown)))
 		return E_FAIL;
 
 	// For. MaterialInstance_ConcreteLight
-	if (FAILED(makeMaterialInstance(_float4{ 0.72f, 0.72f, 0.69f, 1.f }, EMaterialInstanceType::ConcreteLight)))
+	if (FAILED(makeMaterialInstance(Vec4{ 0.72f, 0.72f, 0.69f, 1.f }, EMaterialInstanceType::ConcreteLight)))
 		return E_FAIL;
 
 	// For. MaterialInstance_ConcreteMid
-	if (FAILED(makeMaterialInstance(_float4{ 0.55f, 0.56f, 0.54f, 1.f }, EMaterialInstanceType::ConcreteMid)))
+	if (FAILED(makeMaterialInstance(Vec4{ 0.55f, 0.56f, 0.54f, 1.f }, EMaterialInstanceType::ConcreteMid)))
 		return E_FAIL;
 
 	// For. MaterialInstance_ConcreteWarm
-	if (FAILED(makeMaterialInstance(_float4{ 0.63f, 0.60f, 0.55f, 1.f }, EMaterialInstanceType::ConcreteWarm)))
+	if (FAILED(makeMaterialInstance(Vec4{ 0.63f, 0.60f, 0.55f, 1.f }, EMaterialInstanceType::ConcreteWarm)))
 		return E_FAIL;
 
 	// For. MaterialInstance_MetalCool
-	if (FAILED(makeMaterialInstance(_float4{ 0.62f, 0.67f, 0.72f, 1.f }, EMaterialInstanceType::MetalCool)))
+	if (FAILED(makeMaterialInstance(Vec4{ 0.62f, 0.67f, 0.72f, 1.f }, EMaterialInstanceType::MetalCool)))
 		return E_FAIL;
 
 	// For. MaterialInstance_MetalDark
-	if (FAILED(makeMaterialInstance(_float4{ 0.28f, 0.31f, 0.34f, 1.f }, EMaterialInstanceType::MetalDark)))
+	if (FAILED(makeMaterialInstance(Vec4{ 0.28f, 0.31f, 0.34f, 1.f }, EMaterialInstanceType::MetalDark)))
 		return E_FAIL;
 
 	// For. MaterialInstance_CourtBlue
-	if (FAILED(makeMaterialInstance(_float4{ 0.16f, 0.22f, 0.52f, 1.f }, EMaterialInstanceType::CourtBlue)))
+	if (FAILED(makeMaterialInstance(Vec4{ 0.16f, 0.22f, 0.52f, 1.f }, EMaterialInstanceType::CourtBlue)))
 		return E_FAIL;
 	return S_OK;
 }

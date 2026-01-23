@@ -117,19 +117,19 @@ HRESULT CUEMapDataLoader::Make_StaticModel(const wstring& wstrRawDataFilePath, c
 
 		CTransform* pTransform = pResult->Get_Component<CTransform>();
 		// Unreal엔진에서는 Degree로 표현됨, 이를 radian으로 바꿔줘야함
-		_matrix matRotation = ::XMMatrixRotationRollPitchYaw(
+		Matrix matRotation = ::XMMatrixRotationRollPitchYaw(
 			::XMConvertToRadians(mapdataOuter.Properties.vPitchYawRoll.x),
 			::XMConvertToRadians(mapdataOuter.Properties.vPitchYawRoll.y),
 			::XMConvertToRadians(mapdataOuter.Properties.vPitchYawRoll.z));
-		pTransform->Set_Info(TRANSFORM_INFO_STATE::RIGHT, matRotation.r[0]);
-		pTransform->Set_Info(TRANSFORM_INFO_STATE::UP, matRotation.r[1]);
-		pTransform->Set_Info(TRANSFORM_INFO_STATE::LOOK, matRotation.r[2]);
+		pTransform->Set_Info(TRANSFORM_INFO_STATE::RIGHT, matRotation.Right());
+		pTransform->Set_Info(TRANSFORM_INFO_STATE::UP, matRotation.Up());
+		pTransform->Set_Info(TRANSFORM_INFO_STATE::LOOK, matRotation.Backward());
 		// scale은 양수이니 그냥 z, y 만 스왑
 		if (mapdataOuter.Properties.vScale.x > 0.f && mapdataOuter.Properties.vScale.z > 0.f && mapdataOuter.Properties.vScale.y > 0.f)
 			pTransform->Set_Scale(mapdataOuter.Properties.vScale.x, mapdataOuter.Properties.vScale.z, mapdataOuter.Properties.vScale.y);
 
 		// position은 z, y 스왑후 z값쪽에 음수를 입혀야함
-		pTransform->Set_Info(TRANSFORM_INFO_STATE::POS, ::XMVectorSet(mapdataOuter.Properties.vPosition.x * 0.01f, mapdataOuter.Properties.vPosition.z * 0.01f, mapdataOuter.Properties.vPosition.y * -0.01f, 1.f));
+		pTransform->Set_Info(TRANSFORM_INFO_STATE::POS, Vec3(mapdataOuter.Properties.vPosition.x * 0.01f, mapdataOuter.Properties.vPosition.z * 0.01f, mapdataOuter.Properties.vPosition.y * -0.01f));
 
 		// TODO - CreateObject 이벤트로 뺴고나서 이거 지워야함
 		if (m_pGameInstance->Is_Awaked())

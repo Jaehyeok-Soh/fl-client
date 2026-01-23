@@ -56,7 +56,7 @@ HRESULT CImGui_ToolManager::Initialize_ToolManager(HWND hWnd, ID3D11Device* pDev
 
 void CImGui_ToolManager::RayUpdate()
 {
-	_float4 vNDC = { 0.f, 0.f, 0.f, 1.f };
+	Vec4 vNDC = { 0.f, 0.f, 0.f, 1.f };
 	// 마우스가 Viewport안에 없을시에 실패 연산 안함
 	if (Calculate_ViewportUV(vNDC.x, vNDC.y) == false)
 		return;
@@ -90,12 +90,12 @@ void CImGui_ToolManager::ImGuizmo_Render(CToolObject* pSelectedObject)
 		ImGuizmo::SetRect(m_vViewportBounds[0].x, m_vViewportBounds[0].y
 			, m_vViewportBounds[1].x - m_vViewportBounds[0].x, m_vViewportBounds[1].y - m_vViewportBounds[0].y);
 
-		const _float4x4& matView = m_pGameInstance->Get_ViewMatrix();
-		const _float4x4& matProj = m_pGameInstance->Get_ProjMatrix();
+		const Matrix& matView = m_pGameInstance->Get_ViewMatrix();
+		const Matrix& matProj = m_pGameInstance->Get_ProjMatrix();
 
 		// Object Transform
 		CTransform* pTransform = pSelectedObject->Get_Component<CTransform>();
-		_float4x4 matWorld = pTransform->Get_WorldMatrix();
+		Matrix matWorld = pTransform->Get_WorldMatrix();
 
 		// snapping
 		_bool bSnap = KEY_BUTTON_HOLD(DIK_LSHIFT);
@@ -132,10 +132,10 @@ void CImGui_ToolManager::ImGuizmo_Render(CToolObject* pSelectedObject)
 			// float scale[3];
 			// ImGuizmo::DecomposeMatrixToComponents(*matWorld.m, translation, rotation, scale);
 
-			pTransform->Set_Info(TRANSFORM_INFO_STATE::RIGHT, *reinterpret_cast<_float4*>(&matWorld.m[0]));
-			pTransform->Set_Info(TRANSFORM_INFO_STATE::UP, *reinterpret_cast<_float4*>(&matWorld.m[1]));
-			pTransform->Set_Info(TRANSFORM_INFO_STATE::LOOK, *reinterpret_cast<_float4*>(&matWorld.m[2]));
-			pTransform->Set_Info(TRANSFORM_INFO_STATE::POS, *reinterpret_cast<_float4*>(&matWorld.m[3]));
+			pTransform->Set_Info(TRANSFORM_INFO_STATE::RIGHT, matWorld.Right());
+			pTransform->Set_Info(TRANSFORM_INFO_STATE::UP, matWorld.Up());
+			pTransform->Set_Info(TRANSFORM_INFO_STATE::LOOK, matWorld.Backward());
+			pTransform->Set_Info(TRANSFORM_INFO_STATE::POS, matWorld.Translation());
 		}
 	}
 	else
@@ -151,8 +151,8 @@ bool CImGui_ToolManager::Calculate_ViewportUV(OUT _float &fU, OUT _float& fV)
 	::ScreenToClient(m_hWnd, &ptMouse);
 
 	// m_vViewportBounds는 실제 정렬된 Offset 검정색 영역을 제외한 실제 이미지 영역
-	const _float2& vMin = m_vViewportBounds[0];
-	const _float2& vMax = m_vViewportBounds[1];
+	const Vec2& vMin = m_vViewportBounds[0];
+	const Vec2& vMax = m_vViewportBounds[1];
 
 	// Imgui viewport 밖이면?
 	if (ptMouse.x < vMin.x || ptMouse.y < vMin.y ||

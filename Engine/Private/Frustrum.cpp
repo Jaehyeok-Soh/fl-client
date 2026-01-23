@@ -11,7 +11,7 @@ CFrustrum::CFrustrum()
 
 HRESULT CFrustrum::Initialize()
 {
-    _matrix matProj = ::XMLoadFloat4x4(&m_pGameInstance->Get_ProjMatrix());
+    Matrix matProj = m_pGameInstance->Get_ProjMatrix();
     m_pOriginBounding = new BoundingFrustum;
     m_pWorldBounding = new BoundingFrustum;
 
@@ -34,8 +34,7 @@ void CFrustrum::Update()
 {
     if (m_pWorldBounding)
     {
-        _matrix matWorld = ::XMLoadFloat4x4(&m_pGameInstance->Get_MainCamera()->Get_Component<CTransform>()->Get_WorldMatrix());
-        m_pOriginBounding->Transform(*m_pWorldBounding, matWorld);
+        m_pOriginBounding->Transform(*m_pWorldBounding, m_pGameInstance->Get_MainCamera()->Get_Component<CTransform>()->Get_WorldMatrix());
     }
 }
 

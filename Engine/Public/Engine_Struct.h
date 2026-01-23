@@ -23,91 +23,60 @@ namespace Engine
 #pragma region Shader
 	typedef struct tagShaderGlobalDesc
 	{
-		XMFLOAT4X4 matView;
-		XMFLOAT4X4 matProj;
-		XMFLOAT4X4 matVP;
-		tagShaderGlobalDesc()
-		{
-			::XMStoreFloat4x4(&matView, ::XMMatrixIdentity());
-			::XMStoreFloat4x4(&matProj, ::XMMatrixIdentity());
-			::XMStoreFloat4x4(&matVP, ::XMMatrixIdentity());
-		}
-		tagShaderGlobalDesc(const XMFLOAT4X4& view, const XMFLOAT4X4& Proj, const XMFLOAT4X4& vp, const XMFLOAT4X4& invView, const XMFLOAT4X4& invProj)
-			: matView(view)
-			, matProj(Proj)
-			, matVP(vp)
-		{}
-		tagShaderGlobalDesc(const tagShaderGlobalDesc& rhs)
-			: matView(rhs.matView)
-			, matProj(rhs.matProj)
-			, matVP(rhs.matVP)
-		{}
+		Matrix matView = Matrix::Identity;
+		Matrix matProj = Matrix::Identity;
+		Matrix matVP = Matrix::Identity;
 	}SHADER_GLOBALDESC;
 
 	typedef struct tagShaderInvDesc
 	{
-		XMFLOAT4X4 matInvView;
-		XMFLOAT4X4 matInvProj;
-		tagShaderInvDesc()
-		{
-			::XMStoreFloat4x4(&matInvView, ::XMMatrixIdentity());
-			::XMStoreFloat4x4(&matInvProj, ::XMMatrixIdentity());
-		}
+		Matrix matInvView = Matrix::Identity;
+		Matrix matInvProj = Matrix::Identity;
 	}SHADER_INVDESC;
 
 	typedef struct tagShaderTransformDesc
 	{
-		XMFLOAT4X4 matWorld;
-		tagShaderTransformDesc()
-		{
-			::XMStoreFloat4x4(&matWorld, ::XMMatrixIdentity());
-		}
-		tagShaderTransformDesc(const XMFLOAT4X4& world)
-			: matWorld(world)
-		{}
-		tagShaderTransformDesc(const tagShaderTransformDesc& rhs)
-			: matWorld(rhs.matWorld)
-		{}
+		Matrix matWorld = Matrix::Identity;
 	}SHADER_TRANSFORMDESC;
 
 	typedef struct tagLightDesc
 	{
-		LIGHT_TYPE		eType = { LIGHT_TYPE::END };
-		XMFLOAT4		vDiffuse = { 0.f, 0.f, 0.f, 0.f };
-		XMFLOAT4		vAmbient = { 0.f, 0.f, 0.f, 0.f };
-		XMFLOAT4		vSpecular = { 0.f, 0.f, 0.f, 0.f };
+		LIGHT_TYPE				eType = { LIGHT_TYPE::END };
+		SimpleMath::Vector4		vDiffuse = { 0.f, 0.f, 0.f, 0.f };
+		SimpleMath::Vector4		vAmbient = { 0.f, 0.f, 0.f, 0.f };
+		SimpleMath::Vector4		vSpecular = { 0.f, 0.f, 0.f, 0.f };
 
-		XMFLOAT3		vDirection = { 0.f, 0.f, 0.f };
-		XMFLOAT4		vPosition = { 0.f, 0.f, 0.f, 0.f };
-		float			fRange = { 1.f };
+		SimpleMath::Vector3		vDirection = { 0.f, 0.f, 0.f };
+		SimpleMath::Vector4		vPosition = { 0.f, 0.f, 0.f, 0.f };
+		float					fRange = { 1.f };
 	}LIGHT_DESC;
 
 	typedef struct tagShaderLightDesc
 	{
-		XMFLOAT4 vAmbient = { 1.f, 1.f, 1.f, 1.f };
-		XMFLOAT4 vDiffuse = { 1.f, 1.f, 1.f, 1.f };
-		XMFLOAT4 vSpecular = { 1.f, 1.f, 1.f, 1.f };
+		SimpleMath::Vector4 vAmbient = { 1.f, 1.f, 1.f, 1.f };
+		SimpleMath::Vector4 vDiffuse = { 1.f, 1.f, 1.f, 1.f };
+		SimpleMath::Vector4 vSpecular = { 1.f, 1.f, 1.f, 1.f };
 
-		XMFLOAT4 vPosition = { 0.f, 0.f, 0.f, 1.f };
-		XMFLOAT3 vDirection = { 0.f, 0.f, 0.f };
+		SimpleMath::Vector4 vPosition = { 0.f, 0.f, 0.f, 1.f };
+		SimpleMath::Vector3 vDirection = { 0.f, 0.f, 0.f };
 		float fRange = 1.f;
 	}SHADER_LIGHTDESC;
 
 	typedef struct tagShaderMaterialDesc
 	{
-		XMFLOAT4 vAmbient = { 0.5f, 0.5f, 0.5f, 1.f };
-		XMFLOAT4 vDiffuse = { 1.f, 1.f, 1.f, 1.f };
-		XMFLOAT4 vSpecular = { 1.f, 1.f, 1.f, 1.f };
-		XMFLOAT4 vEmissive = { 0.f, 1.f, 0.f, 1.f };
+		SimpleMath::Vector4 vAmbient = { 0.5f, 0.5f, 0.5f, 1.f };
+		SimpleMath::Vector4 vDiffuse = { 1.f, 1.f, 1.f, 1.f };
+		SimpleMath::Vector4 vSpecular = { 1.f, 1.f, 1.f, 1.f };
+		SimpleMath::Vector4 vEmissive = { 0.f, 1.f, 0.f, 1.f };
 	}SHADER_MATERIALDESC;
 
 	typedef struct tagShaderMaterialInstanceDesc
 	{
-		XMFLOAT4 vTintColor = { 1.f, 1.f,1.f, 1.f };
-		XMFLOAT4 vAmbient = { 0.5f, 0.5f, 0.5f, 1.f };
-		XMFLOAT4 vSpecular = { 1.f, 1.f,1.f, 1.f };
-		XMFLOAT4 vEmissive = { 1.f, 1.f,1.f, 1.f };
-		XMFLOAT3 vPadding = {};
+		SimpleMath::Vector4 vTintColor = { 1.f, 1.f,1.f, 1.f };
+		SimpleMath::Vector4 vAmbient = { 0.5f, 0.5f, 0.5f, 1.f };
+		SimpleMath::Vector4 vSpecular = { 1.f, 1.f,1.f, 1.f };
+		SimpleMath::Vector4 vEmissive = { 1.f, 1.f,1.f, 1.f };
+		SimpleMath::Vector3 vPadding = {};
 		float fEmissivePower = { 1.f };
 	}SHADER_MI_DESC;
 
@@ -117,41 +86,41 @@ namespace Engine
 		float fIntensity = { 0.8f };
 		float fDissolveThreshold = { 0.5f };
 		float fEdgeWidth = { 0.05f };
-		XMFLOAT2 vUVOffset = { 0.f, 0.f };
-		XMFLOAT2 vGradationMap = { 0.f, 0.f }; // Index, Count
-		XMFLOAT2 vPatternScale = { 0.f, 0.f }; // Scale X,Y
-		XMFLOAT2 vPatternOffset = { 0.f, 0.f }; // Offset X,Y
+		SimpleMath::Vector2 vUVOffset = { 0.f, 0.f };
+		SimpleMath::Vector2 vGradationMap = { 0.f, 0.f }; // Index, Count
+		SimpleMath::Vector2 vPatternScale = { 0.f, 0.f }; // Scale X,Y
+		SimpleMath::Vector2 vPatternOffset = { 0.f, 0.f }; // Offset X,Y
 		float fGradationHeight = { 0.1f };
-		XMFLOAT3 vPadding = {};
+		SimpleMath::Vector3 vPadding = {};
 	}SHADER_SKILLEFFECT_DESC;
 
 	typedef struct tagShaderBoneDesc
 	{
-		XMFLOAT4X4 transforms[MAX_BONE_TRANSFORMS];
+		SimpleMath::Matrix transforms[MAX_BONE_TRANSFORMS];
 	}SHADER_BONEDESC;
 
 	struct AnimationData
 	{
-		XMFLOAT2 vSpriteOffset;
-		XMFLOAT2 vSpriteSize;
-		XMFLOAT2 vTextureSize;
+		SimpleMath::Vector2 vSpriteOffset;
+		SimpleMath::Vector2 vSpriteSize;
+		SimpleMath::Vector2 vTextureSize;
 		float fUseAnimation;
 		float fPadding;
 	};
 
 	typedef struct tagKeyFrame
 	{
-		XMFLOAT3 vScale = { 0.f, 0.f, 0.f };
-		XMFLOAT4 vQuaterion = { 0.f, 0.f, 0.f, 1.f };
-		XMFLOAT3 vTranslation = { 0.f, 0.f, 0.f };
+		SimpleMath::Vector3 vScale = { 0.f, 0.f, 0.f };
+		SimpleMath::Vector4 vQuaterion = { 0.f, 0.f, 0.f, 1.f };
+		SimpleMath::Vector3 vTranslation = { 0.f, 0.f, 0.f };
 		float fTrackPosition = { 0.f };
 	}KEYFRAME;
 
 	typedef struct tagLocalSRTData
 	{
-		XMFLOAT3 vScale = { 0.f, 0.f, 0.f };
-		XMFLOAT4 vQuaterion = { 0.f, 0.f, 0.f, 1.f };
-		XMFLOAT3 vTranslation = { 0.f, 0.f, 0.f };
+		SimpleMath::Vector3 vScale = { 0.f, 0.f, 0.f };
+		SimpleMath::Vector4 vQuaterion = { 0.f, 0.f, 0.f, 1.f };
+		SimpleMath::Vector3 vTranslation = { 0.f, 0.f, 0.f };
 	}LOCALSRT;
 
 	// Animation
@@ -163,7 +132,7 @@ namespace Engine
 		float fRatio = 0.f;
 		float fSumTime = 0.f;
 		float fSpeed = 1.f;
-		XMFLOAT2 padding;
+		SimpleMath::Vector2 padding;
 	}SHADER_KEYFRAMEDESC;
 
 	typedef struct tagShaderTweenDesc
@@ -208,15 +177,15 @@ namespace Engine
 
 	typedef struct tagShaderSnowBillboardDesc
 	{
-		XMFLOAT4 vColor = { 1.f, 1.f, 1.f, 1.f };
+		SimpleMath::Vector4 vColor = { 1.f, 1.f, 1.f, 1.f };
 
-		XMFLOAT3 vVelocity = { 0.f, -5.f, 0.f };
+		SimpleMath::Vector3 vVelocity = { 0.f, -5.f, 0.f };
 		float fDrawDistance = { 0.f };
 
-		XMFLOAT3 vOrigin = { 0.f, 0.f, 0.f };
+		SimpleMath::Vector3 vOrigin = { 0.f, 0.f, 0.f };
 		float fTurbulence = { 5.f };
 
-		XMFLOAT3 vExtent = { 0.f, 0.f, 0.f };
+		SimpleMath::Vector3 vExtent = { 0.f, 0.f, 0.f };
 		float fTime = { 0.f };
 
 	}SHADER_SNOWBBDESC;
@@ -269,7 +238,7 @@ namespace Engine
 		bool bImpact = { false };
 		float fForceAbs = { 0.f };
 		float  fDragK = { 0.f };
-		XMFLOAT3 vColliderCenter = { 0.f, 0.f, 0.f };
+		SimpleMath::Vector3 vColliderCenter = { 0.f, 0.f, 0.f };
 	}ATTACK_DESC;
 
 	typedef struct tagEffectPresetSnapShot
@@ -298,7 +267,7 @@ namespace Engine
 		int iGradationMapIndex = { 0 };
 		int iGradationMapCount = { 0 };
 		float fGradationHeight = { 0.f };
-		XMFLOAT4 vTintColor = { 1.f, 1.f, 1.f, 1.f };
+		SimpleMath::Vector4 vTintColor = { 1.f, 1.f, 1.f, 1.f };
 		float fEmissivePower = { 1.f };
 		wstring wstrMaterialTag = L"";
 		wstring wstrMaterialInstanceTag = L"";
@@ -306,16 +275,16 @@ namespace Engine
 
 	typedef struct tagTransformSaveData
 	{
-		XMFLOAT3 vPos = {};
-		XMFLOAT4 vQuaternion = {};
-		XMFLOAT3 vScale = { 1.f, 1.f, 1.f };
+		SimpleMath::Vector3 vPos = {};
+		SimpleMath::Vector4 vQuaternion = {};
+		SimpleMath::Vector3 vScale = { 1.f, 1.f, 1.f };
 	}TRANSFORM_SAVEDATA;
 
 	typedef struct tagTriggerBoxSaveData
 	{
 		string strPolygonName = { "" };
 		vector<string> vecMonsterNames;
-		vector<XMFLOAT3> vecPositions;
+		vector<SimpleMath::Vector3> vecPositions;
 	}TRIGGERBOX_SAVEDATA;
 
 	typedef struct tagModelSaveData
@@ -329,23 +298,23 @@ namespace Engine
 	typedef struct tagLightSaveData
 	{
 		LIGHT_TYPE eType;
-		XMFLOAT4 vDiffuse = { 1.f, 1.f, 1.f, 1.f };
-		XMFLOAT4 vAmbient = { 1.f, 1.f, 1.f, 1.f };
+		SimpleMath::Vector4 vDiffuse = { 1.f, 1.f, 1.f, 1.f };
+		SimpleMath::Vector4 vAmbient = { 1.f, 1.f, 1.f, 1.f };
 	}LIGHT_SAVEDATA;
 
 	typedef struct tagColliderSaveData
 	{
 		string shape = { "" };
 		float fRadius = {};
-		XMFLOAT3 vCenter = {};
-		XMFLOAT3 vExtents = {};
-		XMFLOAT3 vEuler = {};
+		SimpleMath::Vector3 vCenter = {};
+		SimpleMath::Vector3 vExtents = {};
+		SimpleMath::Vector3 vEuler = {};
 	}COLLIDER_SAVEDATA;
 
 	typedef struct tagCellSaveData
 	{
-		array<XMFLOAT3, ENUM_TO_UINT(EPOINT::END)> arrPoints;
-		array<XMFLOAT3, ENUM_TO_UINT(ELINE::END)> arrNormals;
+		array<SimpleMath::Vector3, ENUM_TO_UINT(EPOINT::END)> arrPoints;
+		array<SimpleMath::Vector3, ENUM_TO_UINT(ELINE::END)> arrNormals;
 		array<int, ENUM_TO_UINT(ELINE::END)> arrNeighbors;
 		int	iIndex = { -1 };
 	}CELL_SAVEDATA;
@@ -353,7 +322,7 @@ namespace Engine
 	typedef struct tagPolygonSaveData
 	{
 		vector<CELL_SAVEDATA> vecCells;
-		vector<XMFLOAT3> vecVertices;
+		vector<SimpleMath::Vector3> vecVertices;
 		vector<unsigned short> vecIndices;
 	}POLYGON_SAVEDATA;
 

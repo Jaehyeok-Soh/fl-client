@@ -15,14 +15,14 @@ public:
 	ID3D11ShaderResourceView* Get_SRV() { return m_pSRV; }
 	ID3D11ShaderResourceView** Get_SRV_AddressOf() { return &m_pSRV; }
 
-	const _float2& Get_Size() const { return m_vSize; }
-	void Set_Size(const _float2& vSize) { m_vSize = vSize; }
+	const Vec2& Get_Size() const { return m_vSize; }
+	void Set_Size(const Vec2& vSize) { m_vSize = vSize; }
 private:
 	HRESULT Load_TextureBase();
 	HRESULT Load_LegacyXTex();
 private:
 	ID3D11ShaderResourceView* m_pSRV = { nullptr };
-	_float2 m_vSize = { 0.0f, 0.0f };
+	Vec2 m_vSize = { 0.0f, 0.0f };
 public:
 	static CTextureBase* Create(ID3D11Device* pDevice, ID3D11DeviceContext* pDeviceContext, void* pArg);
 	virtual void Free() override;

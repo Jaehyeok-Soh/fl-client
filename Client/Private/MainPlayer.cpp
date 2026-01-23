@@ -78,7 +78,7 @@ HRESULT CMainPlayer::Awake(const _uint iCurrentLevelID)
     if (FAILED(Get_Component<CControlContext>()->Awake(iCurrentLevelID)))
         return E_FAIL;
 
-    Get_Component<CTransform>()->Set_Info(TRANSFORM_INFO_STATE::POS, _float4{ 0.f, 0.f, 2.f, 1.f });
+    Get_Component<CTransform>()->Set_Info(TRANSFORM_INFO_STATE::POS, Vec3{ 0.f, 0.f, 2.f });
     return S_OK;
 }
 
@@ -372,8 +372,8 @@ HRESULT CMainPlayer::Ready_Weapons()
         CWeapon::WEAPON_DESC weaponDesc = {};
         weaponDesc.wstrModelPrototypeName = L"Prototype_Component_Model_Sword";
         weaponDesc.pMatParent = &Get_Component<CTransform>()->Get_WorldMatrix();
-        weaponDesc.pMatHandSocket = &Get_Part<CBody>(Part::BODY)->Get_RightHandWeaponSocket()->Get_CombinedTransformMatrixFloat();
-        weaponDesc.pMatSocket = &Get_Part<CBody>(Part::BODY)->Get_SwordSocket()->Get_CombinedTransformMatrixFloat();
+        weaponDesc.pMatHandSocket = &Get_Part<CBody>(Part::BODY)->Get_RightHandWeaponSocket()->Get_CombinedTransformMatrix();
+        weaponDesc.pMatSocket = &Get_Part<CBody>(Part::BODY)->Get_SwordSocket()->Get_CombinedTransformMatrix();
         if (FAILED(Add_Part(Part::WEAPON, ENUM_TO_UINT(ELevelType::STATIC), L"Prototype_GameObject_Part_Weapon", &weaponDesc)))
             return E_FAIL;
     }
@@ -381,7 +381,7 @@ HRESULT CMainPlayer::Ready_Weapons()
     {
         CColliderPart::COLLIDERPART_DESC colliderPartDesc = {};
         colliderPartDesc.pMatParent = &Get_Component<CTransform>()->Get_WorldMatrix();
-        colliderPartDesc.pMatSocket = &Get_Part<CBody>(Part::BODY)->Get_LeftHandSocket()->Get_CombinedTransformMatrixFloat();
+        colliderPartDesc.pMatSocket = &Get_Part<CBody>(Part::BODY)->Get_LeftHandSocket()->Get_CombinedTransformMatrix();
         if (FAILED(Add_Part(Part::LEFTHAND, ENUM_TO_UINT(ELevelType::STATIC), L"Prototype_GameObject_Part_Collider", &colliderPartDesc)))
             return E_FAIL;
     }
@@ -389,7 +389,7 @@ HRESULT CMainPlayer::Ready_Weapons()
     {
         CColliderPart::COLLIDERPART_DESC colliderPartDesc = {};
         colliderPartDesc.pMatParent = &Get_Component<CTransform>()->Get_WorldMatrix();
-        colliderPartDesc.pMatSocket = &Get_Part<CBody>(Part::BODY)->Get_RightHandSocket()->Get_CombinedTransformMatrixFloat();
+        colliderPartDesc.pMatSocket = &Get_Part<CBody>(Part::BODY)->Get_RightHandSocket()->Get_CombinedTransformMatrix();
         if (FAILED(Add_Part(Part::RIGHTHAND, ENUM_TO_UINT(ELevelType::STATIC), L"Prototype_GameObject_Part_Collider", &colliderPartDesc)))
             return E_FAIL;
     }
@@ -397,7 +397,7 @@ HRESULT CMainPlayer::Ready_Weapons()
     {
         CColliderPart::COLLIDERPART_DESC colliderPartDesc = {};
         colliderPartDesc.pMatParent = &Get_Component<CTransform>()->Get_WorldMatrix();
-        colliderPartDesc.pMatSocket = &Get_Part<CBody>(Part::BODY)->Get_LeftFootSocket()->Get_CombinedTransformMatrixFloat();
+        colliderPartDesc.pMatSocket = &Get_Part<CBody>(Part::BODY)->Get_LeftFootSocket()->Get_CombinedTransformMatrix();
         if (FAILED(Add_Part(Part::LEFTFOOT, ENUM_TO_UINT(ELevelType::STATIC), L"Prototype_GameObject_Part_Collider", &colliderPartDesc)))
             return E_FAIL;
     }
@@ -405,7 +405,7 @@ HRESULT CMainPlayer::Ready_Weapons()
     {
         CColliderPart::COLLIDERPART_DESC colliderPartDesc = {};
         colliderPartDesc.pMatParent = &Get_Component<CTransform>()->Get_WorldMatrix();
-        colliderPartDesc.pMatSocket = &Get_Part<CBody>(Part::BODY)->Get_RightFootSocket()->Get_CombinedTransformMatrixFloat();
+        colliderPartDesc.pMatSocket = &Get_Part<CBody>(Part::BODY)->Get_RightFootSocket()->Get_CombinedTransformMatrix();
         if (FAILED(Add_Part(Part::RIGHTFOOT, ENUM_TO_UINT(ELevelType::STATIC), L"Prototype_GameObject_Part_Collider", &colliderPartDesc)))
             return E_FAIL;
     }
@@ -530,10 +530,10 @@ HRESULT CMainPlayer::Ready_Colliders()
 
 HRESULT CMainPlayer::Ready_Ray()
 {
-    if (!(m_pFootRay = CRay::Create(_float4{ 0.f, 0.1f, 0.f, 1.f }, _float3{ 0.f, -1.f, 0.f })))
+    if (!(m_pFootRay = CRay::Create(Vec3{ 0.f, 0.1f, 0.f }, Vec3{ 0.f, -1.f, 0.f })))
         return E_FAIL;
 
-    if (!(m_pMoveRay = CRay::Create(_float4{ 0.f, 0.05f, 0.f, 1.f }, _float3{ 0.f, 0.f, 0.f })))
+    if (!(m_pMoveRay = CRay::Create(Vec3{ 0.f, 0.05f, 0.f }, Vec3{ 0.f, 0.f, 0.f })))
         return E_FAIL;
 
     return S_OK;

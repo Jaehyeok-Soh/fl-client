@@ -51,39 +51,39 @@ HRESULT CVIBuffer_Cube_Color::Initialize_Prototype(void* pArg)
     VTXPOSCOL* pVertices = new VTXPOSCOL[m_iVertexCount];
     ZeroMemory(pVertices, sizeof(VTXPOSCOL) * m_iVertexCount);
 
-    m_pVertexPositions = new _float3[m_iVertexCount];
-    ZeroMemory(m_pVertexPositions, sizeof(_float3) * m_iVertexCount);
+    m_pVertexPositions = new Vec3[m_iVertexCount];
+    ZeroMemory(m_pVertexPositions, sizeof(Vec3) * m_iVertexCount);
 
     // ¾Õ¸é
-    pVertices[0] = VTXPOSCOL{ _float3(-fWidth, -fHeight, -fDepth), m_vColor };
-    pVertices[1] = VTXPOSCOL{ _float3(-fWidth, +fHeight, -fDepth), m_vColor };
-    pVertices[2] = VTXPOSCOL{ _float3(+fWidth, +fHeight, -fDepth), m_vColor };
-    pVertices[3] = VTXPOSCOL{ _float3(+fWidth, -fHeight, -fDepth), m_vColor };
+    pVertices[0] = VTXPOSCOL{ Vec3(-fWidth, -fHeight, -fDepth), m_vColor };
+    pVertices[1] = VTXPOSCOL{ Vec3(-fWidth, +fHeight, -fDepth), m_vColor };
+    pVertices[2] = VTXPOSCOL{ Vec3(+fWidth, +fHeight, -fDepth), m_vColor };
+    pVertices[3] = VTXPOSCOL{ Vec3(+fWidth, -fHeight, -fDepth), m_vColor };
     // µÞ¸é
-    pVertices[4] = VTXPOSCOL{ _float3(-fWidth, -fHeight, +fDepth), m_vColor };
-    pVertices[5] = VTXPOSCOL{ _float3(+fWidth, -fHeight, +fDepth), m_vColor };
-    pVertices[6] = VTXPOSCOL{ _float3(+fWidth, +fHeight, +fDepth), m_vColor };
-    pVertices[7] = VTXPOSCOL{ _float3(-fWidth, +fHeight, +fDepth), m_vColor };
+    pVertices[4] = VTXPOSCOL{ Vec3(-fWidth, -fHeight, +fDepth), m_vColor };
+    pVertices[5] = VTXPOSCOL{ Vec3(+fWidth, -fHeight, +fDepth), m_vColor };
+    pVertices[6] = VTXPOSCOL{ Vec3(+fWidth, +fHeight, +fDepth), m_vColor };
+    pVertices[7] = VTXPOSCOL{ Vec3(-fWidth, +fHeight, +fDepth), m_vColor };
     // À­¸é
-    pVertices[8] = VTXPOSCOL{ _float3(-fWidth, +fHeight, -fDepth), m_vColor };
-    pVertices[9] = VTXPOSCOL{ _float3(-fWidth, +fHeight, +fDepth), m_vColor };
-    pVertices[10] = VTXPOSCOL{ _float3(+fWidth, +fHeight, +fDepth), m_vColor };
-    pVertices[11] = VTXPOSCOL{ _float3(+fWidth, +fHeight, -fDepth), m_vColor };
+    pVertices[8] = VTXPOSCOL{ Vec3(-fWidth, +fHeight, -fDepth), m_vColor };
+    pVertices[9] = VTXPOSCOL{ Vec3(-fWidth, +fHeight, +fDepth), m_vColor };
+    pVertices[10] = VTXPOSCOL{ Vec3(+fWidth, +fHeight, +fDepth), m_vColor };
+    pVertices[11] = VTXPOSCOL{ Vec3(+fWidth, +fHeight, -fDepth), m_vColor };
     // ¾Æ·§¸é
-    pVertices[12] = VTXPOSCOL{ _float3(-fWidth, -fHeight, -fDepth), m_vColor };
-    pVertices[13] = VTXPOSCOL{ _float3(+fWidth, -fHeight, -fDepth), m_vColor };
-    pVertices[14] = VTXPOSCOL{ _float3(+fWidth, -fHeight, +fDepth), m_vColor };
-    pVertices[15] = VTXPOSCOL{ _float3(-fWidth, -fHeight, +fDepth), m_vColor };
+    pVertices[12] = VTXPOSCOL{ Vec3(-fWidth, -fHeight, -fDepth), m_vColor };
+    pVertices[13] = VTXPOSCOL{ Vec3(+fWidth, -fHeight, -fDepth), m_vColor };
+    pVertices[14] = VTXPOSCOL{ Vec3(+fWidth, -fHeight, +fDepth), m_vColor };
+    pVertices[15] = VTXPOSCOL{ Vec3(-fWidth, -fHeight, +fDepth), m_vColor };
     // ¿ÞÂÊ¸é
-    pVertices[16] = VTXPOSCOL{ _float3(-fWidth, -fHeight, +fDepth), m_vColor };
-    pVertices[17] = VTXPOSCOL{ _float3(-fWidth, +fHeight, +fDepth), m_vColor };
-    pVertices[18] = VTXPOSCOL{ _float3(-fWidth, +fHeight, -fDepth), m_vColor };
-    pVertices[19] = VTXPOSCOL{ _float3(-fWidth, -fHeight, -fDepth), m_vColor };
+    pVertices[16] = VTXPOSCOL{ Vec3(-fWidth, -fHeight, +fDepth), m_vColor };
+    pVertices[17] = VTXPOSCOL{ Vec3(-fWidth, +fHeight, +fDepth), m_vColor };
+    pVertices[18] = VTXPOSCOL{ Vec3(-fWidth, +fHeight, -fDepth), m_vColor };
+    pVertices[19] = VTXPOSCOL{ Vec3(-fWidth, -fHeight, -fDepth), m_vColor };
     // ¿À¸¥ÂÊ¸é
-    pVertices[20] = VTXPOSCOL{ _float3(+fWidth, -fHeight, -fDepth), m_vColor };
-    pVertices[21] = VTXPOSCOL{ _float3(+fWidth, +fHeight, -fDepth), m_vColor };
-    pVertices[22] = VTXPOSCOL{ _float3(+fWidth, +fHeight, +fDepth), m_vColor };
-    pVertices[23] = VTXPOSCOL{ _float3(+fWidth, -fHeight, +fDepth), m_vColor };
+    pVertices[20] = VTXPOSCOL{ Vec3(+fWidth, -fHeight, -fDepth), m_vColor };
+    pVertices[21] = VTXPOSCOL{ Vec3(+fWidth, +fHeight, -fDepth), m_vColor };
+    pVertices[22] = VTXPOSCOL{ Vec3(+fWidth, +fHeight, +fDepth), m_vColor };
+    pVertices[23] = VTXPOSCOL{ Vec3(+fWidth, -fHeight, +fDepth), m_vColor };
 
     for (_uint i = 0; i < m_iVertexCount; ++i)
     {

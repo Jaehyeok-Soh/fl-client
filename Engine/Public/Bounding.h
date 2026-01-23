@@ -9,7 +9,7 @@ class ENGINE_DLL CBounding abstract : public CBase
 public:
 	typedef struct tagBoundingDesc
 	{
-		_float3 vCenter = {};
+		Vec3 vCenter = {};
 	}BOUNDING_DESC;
 protected:
 	CBounding(ID3D11Device* pDevice, ID3D11DeviceContext* pDeviceContext);
@@ -17,12 +17,12 @@ protected:
 
 	HRESULT Initialize(BOUNDING_DESC* pDesc);
 public:
-	virtual void Update(_fmatrix matWorld) PURE;
+	virtual void Update(const Matrix &matWorld) PURE;
 	virtual _bool Intersect_Bounding(EColliderType eType, CBounding* pOther) PURE;
-	virtual _bool IntersectWithRay_World(class CGameInstance * pGameInstance, OUT _float4& vOut) PURE;
-	virtual _bool IntersectWithRay_Local(class CGameInstance* pGameInstance, OUT _float4&vOut) PURE;
-	virtual _bool IntersectWithRay_World(class CRay* pRay, OUT _float4& vOut) PURE;
-	virtual _bool IntersectWithRay_Local(class CRay* pRay, OUT _float4& vOut) PURE;
+	virtual _bool IntersectWithRay_World(class CGameInstance * pGameInstance, OUT Vec3& vOut) PURE;
+	virtual _bool IntersectWithRay_Local(class CGameInstance* pGameInstance, OUT Vec3&vOut) PURE;
+	virtual _bool IntersectWithRay_World(class CRay* pRay, OUT Vec3& vOut) PURE;
+	virtual _bool IntersectWithRay_Local(class CRay* pRay, OUT Vec3& vOut) PURE;
 #ifdef _DEBUG
 public:
 	virtual HRESULT Render(PrimitiveBatch<VertexPositionColor>* pBatch, _bool bIsColl) PURE;

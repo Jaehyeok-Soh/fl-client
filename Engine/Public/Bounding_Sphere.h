@@ -19,12 +19,12 @@ private:
 public:
 	BoundingSphere* Get_OriginalDesc() { return m_pOriginalDesc; }
 	BoundingSphere* Get_Desc() { return m_pDesc; }
-	virtual void Update(_fmatrix WorldMatrix) override;
+	virtual void Update(const Matrix &WorldMatrix) override;
 	virtual _bool Intersect_Bounding(EColliderType eType, CBounding* pOther) override;
-	virtual _bool IntersectWithRay_World(class CGameInstance* pGameInstance, OUT _float4& vOut) override;
-	virtual _bool IntersectWithRay_Local(class CGameInstance* pGameInstance, OUT _float4& vOut) override;
-	virtual _bool IntersectWithRay_World(class CRay* pRay, OUT _float4& vOut) override;
-	virtual _bool IntersectWithRay_Local(class CRay* pRay, OUT _float4& vOut) override;
+	virtual _bool IntersectWithRay_World(class CGameInstance* pGameInstance, OUT Vec3& vOut) override;
+	virtual _bool IntersectWithRay_Local(class CGameInstance* pGameInstance, OUT Vec3& vOut) override;
+	virtual _bool IntersectWithRay_World(class CRay* pRay, OUT Vec3& vOut) override;
+	virtual _bool IntersectWithRay_Local(class CRay* pRay, OUT Vec3& vOut) override;
 #ifdef _DEBUG
 public:
 	virtual HRESULT Render(PrimitiveBatch<VertexPositionColor>* pBatch, _bool isColl) override;

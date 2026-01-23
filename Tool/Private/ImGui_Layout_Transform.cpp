@@ -62,18 +62,18 @@ HRESULT CImGui_Layout_Transform::Render(CToolObject* pGo)
         if (ImGui::Button("InitCamera"))
         {
             CTransform* pMainCamTransform = CGameInstance::GetInstance()->Get_MainCamera()->Get_Component<CTransform>();
-            pMainCamTransform->Set_Info(TRANSFORM_INFO_STATE::POS, ::XMVectorSet(0.f, 0.5f, -2.f, 1.f));
-            pMainCamTransform->Look_At(::XMVectorSet(0.f, 0.f, 0.f, 1.f));
+            pMainCamTransform->Set_Info(TRANSFORM_INFO_STATE::POS, Vec3(0.f, 0.5f, -2.f));
+            pMainCamTransform->Look_At(Vec3::Zero);
         }
 
 
         if (ImGui::BeginTable("Transform#map", 15, ImGuiTableFlags_SizingStretchSame))
         {
             CTransform* pTransform = pGo->Get_Component<CTransform>();
-            _float4x4 matWorld = pTransform->Get_WorldMatrix();
-            _float3 vScale = {};
-            _float3 vRotation = {};
-            _float3 vTranslation = {};
+            Matrix matWorld = pTransform->Get_WorldMatrix();
+            Vec3 vScale = {};
+            Vec3 vRotation = {};
+            Vec3 vTranslation = {};
             ImGuizmo::DecomposeMatrixToComponents(*matWorld.m, &vTranslation.x, &vRotation.x, &vScale.x);
 
             ImGui::TableSetupColumn("Label", ImGuiTableColumnFlags_WidthFixed | ImGuiTableColumnFlags_NoResize, 60.0f);
@@ -126,10 +126,10 @@ HRESULT CImGui_Layout_Transform::Render(CToolObject* pGo)
             if (m_pPrev && m_pPrev == pGo)
             {
                 ImGuizmo::RecomposeMatrixFromComponents(&vTranslation.x, &vRotation.x, &vScale.x, *matWorld.m);
-                pTransform->Set_Info(TRANSFORM_INFO_STATE::RIGHT, *reinterpret_cast<_float4*>(&matWorld.m[0]));
-                pTransform->Set_Info(TRANSFORM_INFO_STATE::UP, *reinterpret_cast<_float4*>(&matWorld.m[1]));
-                pTransform->Set_Info(TRANSFORM_INFO_STATE::LOOK, *reinterpret_cast<_float4*>(&matWorld.m[2]));
-                pTransform->Set_Info(TRANSFORM_INFO_STATE::POS, *reinterpret_cast<_float4*>(&matWorld.m[3]));
+                pTransform->Set_Info(TRANSFORM_INFO_STATE::RIGHT, matWorld.Right());
+                pTransform->Set_Info(TRANSFORM_INFO_STATE::UP, matWorld.Up());
+                pTransform->Set_Info(TRANSFORM_INFO_STATE::LOOK, matWorld.Backward());
+                pTransform->Set_Info(TRANSFORM_INFO_STATE::POS, matWorld.Translation());
             }
 
             m_pPrev = pGo;
