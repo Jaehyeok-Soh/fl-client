@@ -49,7 +49,7 @@ public:
 	EGuizmoState Get_GuizmoState() const { return m_eGuizmoState; }
 	void Set_GuizmoState(EGuizmoState eState) { m_eGuizmoState = eState; }
 
-	const _float2& Get_CurViewportSize() const { return m_vViewportSize; }
+	const XMFLOAT2& Get_CurViewportSize() const { return m_vViewportSize; }
 
 private:	
 	bool Calculate_ViewportUV(OUT _float& fU, OUT _float& fV);
