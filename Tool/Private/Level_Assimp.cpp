@@ -3,6 +3,7 @@
 #include "Importer.h"
 #include "Converter.h"
 #include "ImGui_ToolManager.h"
+#include "Panel_ModelConverter.h"
 #include "Level_Assimp.h"
 
 CLevel_Assimp::CLevel_Assimp(ID3D11Device* pDevice, ID3D11DeviceContext* pDeviceContext)
@@ -10,6 +11,7 @@ CLevel_Assimp::CLevel_Assimp(ID3D11Device* pDevice, ID3D11DeviceContext* pDevice
 	, m_pImGuiManager(CImGui_ToolManager::GetInstance())
 {
 	Safe_AddRef(m_pImGuiManager);
+	m_arrayImGuiPanel.fill(nullptr);
 }
 
 HRESULT CLevel_Assimp::Initialize()
@@ -25,9 +27,13 @@ HRESULT CLevel_Assimp::Awake(const _uint iLevelID)
 	if (FAILED(Super::Awake(iLevelID)))
 		return E_FAIL;
 
+
+	if (FAILED(Ready_GUI()))
+		return E_FAIL;
+
+
 	MSG_BOX("Assimp");
-	
-	
+
 #pragma region Custom
 	_fmatrix matUECoord = ::XMMatrixSet(
 		1.f, 0.f, 0.f, 0.f,		// x' = x
@@ -171,9 +177,9 @@ HRESULT CLevel_Assimp::Awake(const _uint iLevelID)
 	*/
 #pragma endregion
 	
-	//// Map
+	// Map
 	//{
-	//	CConverter* pConverter = CConverter::Create(m_pDevice, m_pDeviceContext, L"Map/AmeVillage/", matPreTransformMapObject, false);
+	//	CConverter* pConverter = CConverter::Create(m_pDevice, m_pDeviceContext, L"Map/Test/", matPreTransformMapObject, false);
 	//	pConverter->ReadAndExportFile();
 	//	Safe_Release(pConverter);
 	//}
@@ -181,7 +187,7 @@ HRESULT CLevel_Assimp::Awake(const _uint iLevelID)
 	//// Map Parsing
 	//{
 	//	CUEMapdataParser::MAPPARSER_DESC desc = {};
-	//	desc.wstrPath = L"../../Resources/Data/MapData/Village/Village_Floor.json";
+	//	desc.wstrPath = L"../../Resources/Data/MapData/Prologue/Prologue_Village_Art_0101BigObjs.json";
 	//	CUEMapdataParser* pParser = CUEMapdataParser::Create(desc);
 	//	if (!pParser)
 	//		return E_FAIL;
@@ -194,6 +200,22 @@ HRESULT CLevel_Assimp::Awake(const _uint iLevelID)
 
 	return S_OK;
 }
+
+
+HRESULT CLevel_Assimp::Ready_GUI()
+{
+	CImGui_Panel* pPanel{ nullptr };
+
+	pPanel = CPanel_ModelConverter::Create("Model Converter", this, m_pDevice, m_pDeviceContext);
+
+	if (!pPanel) return E_FAIL;
+	else		m_arrayImGuiPanel[ENUM_TO_SZET(CLevel_Assimp::Elements::ModelConverter)] = pPanel;
+
+
+	return S_OK;
+}
+
+
 
 void CLevel_Assimp::Update(const _float fTimeDelta)
 {
@@ -209,6 +231,11 @@ HRESULT CLevel_Assimp::Render()
 	m_pImGuiManager->Render_Dockspace();
 	//////////////////////////
 	// Element Render
+
+	for (auto& Panel : m_arrayImGuiPanel)
+		if (Panel)
+			Panel->Render(nullptr);
+
 
 	//////////////////////////
 	m_pImGuiManager->Render_End();

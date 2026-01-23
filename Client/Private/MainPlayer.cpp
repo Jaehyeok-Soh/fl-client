@@ -118,6 +118,7 @@ HRESULT CMainPlayer::Render()
     if (FAILED(Super::Render()))
         return E_FAIL;
 
+
     return S_OK;
 }
 

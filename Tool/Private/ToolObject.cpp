@@ -6,6 +6,7 @@
 #include "Engine_Utils.h"
 #include "Picking_ToolManager.h"
 #include "ToolObject.h"
+#include "MapObject.h"
 
 CToolObject::CToolObject(EToolObjectType eType, ID3D11Device* pDevice, ID3D11DeviceContext* pDeviceContext)
     : Super(pDevice, pDeviceContext)
@@ -20,6 +21,7 @@ CToolObject::CToolObject(const CToolObject& rhs)
     , m_eType(rhs.m_eType)
 {
 }
+
 
 HRESULT CToolObject::Initialize_Prototype()
 {
@@ -87,6 +89,10 @@ HRESULT CToolObject::Render()
 void CToolObject::Draw_ImGui()
 {
     
+}
+
+void CMapObject::Set_Dead(const wstring& wstrLayerTag)
+{
 }
 
 void CToolObject::Set_Dead(const wstring& wstrLayerTag)

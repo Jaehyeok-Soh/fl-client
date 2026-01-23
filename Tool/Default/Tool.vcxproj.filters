@@ -85,6 +85,27 @@
     <Filter Include="03. Level\Loading\Loader">
       <UniqueIdentifier>{afe44f16-d8bc-4485-94d6-01fb36c16207}</UniqueIdentifier>
     </Filter>
+    <Filter Include="02. GameObjects\Map">
+      <UniqueIdentifier>{2318f38b-6d39-4c06-902a-133043782e03}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02. GameObjects\Map\00. MapObject">
+      <UniqueIdentifier>{c7045980-bb80-4be0-8ca4-288e4abc51ca}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="06. ImGui\01. Panel\Map">
+      <UniqueIdentifier>{b4e4e477-acb3-4c83-a84e-a16a77ffbe18}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="06. ImGui\01. Panel\Map\Pannel_MapObjectList">
+      <UniqueIdentifier>{9755e817-fb8d-4b80-9214-161ecfd0e6ce}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="06. ImGui\01. Panel\Asimp">
+      <UniqueIdentifier>{1502112a-c44e-484f-85c7-3e71f9a1a6b0}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02. GameObjects\Map\00. MapObject\00. MapObject">
+      <UniqueIdentifier>{cdb92401-9c8e-484e-b963-3905e522a34c}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02. GameObjects\Map\00. MapObject\01. StaticMesh">
+      <UniqueIdentifier>{2cfbf0d2-bd5d-4728-87d5-d2bb19dfb549}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="framework.h">
@@ -204,9 +225,6 @@
     <ClInclude Include="..\Public\CameraMan_Free.h">
       <Filter>02. GameObjects\Camera</Filter>
     </ClInclude>
-    <ClInclude Include="..\Public\ToolObject.h">
-      <Filter>02. GameObjects</Filter>
-    </ClInclude>
     <ClInclude Include="..\Public\UEMapdataLoader.h">
       <Filter>07. UE_Mapdata</Filter>
     </ClInclude>
@@ -215,6 +233,21 @@
     </ClInclude>
     <ClInclude Include="..\Public\Loader.h">
       <Filter>03. Level\Loading\Loader</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\ToolObject.h">
+      <Filter>02. GameObjects</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\Panel_MapObjectList.h">
+      <Filter>06. ImGui\01. Panel\Map\Pannel_MapObjectList</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\Panel_ModelConverter.h">
+      <Filter>06. ImGui\01. Panel\Asimp</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\MapObject.h">
+      <Filter>02. GameObjects\Map\00. MapObject\00. MapObject</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\StaticModel.h">
+      <Filter>02. GameObjects\Map\00. MapObject\01. StaticMesh</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -327,9 +360,6 @@
     <ClCompile Include="..\Private\CameraMan_Free.cpp">
       <Filter>02. GameObjects\Camera</Filter>
     </ClCompile>
-    <ClCompile Include="..\Private\ToolObject.cpp">
-      <Filter>02. GameObjects</Filter>
-    </ClCompile>
     <ClCompile Include="..\Private\UEMapdataParser.cpp">
       <Filter>07. UE_Mapdata</Filter>
     </ClCompile>
@@ -341,6 +371,21 @@
     </ClCompile>
     <ClCompile Include="..\Private\Tool_Defines.cpp">
       <Filter>98. Defines</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\ToolObject.cpp">
+      <Filter>02. GameObjects</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\Panel_MapObjectList.cpp">
+      <Filter>06. ImGui\01. Panel\Map\Pannel_MapObjectList</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\Panel_ModelConverter.cpp">
+      <Filter>06. ImGui\01. Panel\Asimp</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\MapObject.cpp">
+      <Filter>02. GameObjects\Map\00. MapObject\00. MapObject</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\StaticModel.cpp">
+      <Filter>02. GameObjects\Map\00. MapObject\01. StaticMesh</Filter>
     </ClCompile>
   </ItemGroup>
 </Project>

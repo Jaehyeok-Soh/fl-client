@@ -15,7 +15,7 @@
 //=================
 // Object
 //=================
-
+#include "MapObject.h"
 //=================
 // Resource
 //=================
@@ -23,6 +23,8 @@
 #include "MaterialInstance.h"
 #include "Material.h"
 #include "Model.h"
+
+
 
 
 CLoader::CLoader(ID3D11Device* pDevice, ID3D11DeviceContext* pDeviceContext, ELevelType eLoadingELevelType)
@@ -108,6 +110,13 @@ HRESULT CLoader::Loading_For_Map()
 	m_pGameInstance->Add_Prototype(ENUM_TO_UINT(ELevelType::MAP), L"Prototype_Component_Collider_AABB", CCollider::Create(m_pDevice, m_pDeviceContext, EColliderType::AABB));
 	// For. Prototype_Component_Collider_OBB
 	m_pGameInstance->Add_Prototype(ENUM_TO_UINT(ELevelType::MAP), L"Prototype_Component_Collider_OBB", CCollider::Create(m_pDevice, m_pDeviceContext, EColliderType::OBB));
+
+
+	//=================
+	// CGameObject
+	//=================
+	m_pGameInstance->Add_Prototype(ENUM_TO_UINT(ELevelType::MAP), L"ProtoType_GameObject_MapObject", CMapObject::Create(EToolObjectType::MAPOBJECT, m_pDevice, m_pDeviceContext));
+
 
 	m_isFinished = true;
 	return S_OK;

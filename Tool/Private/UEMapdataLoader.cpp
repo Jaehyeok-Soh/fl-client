@@ -97,7 +97,6 @@ HRESULT CUEMapDataLoader::Make_StaticModel(const wstring& wstrRawDataFilePath, c
 			//	Safe_Release(pParser);
 			//	return E_FAIL;
 			//}
-
 		}
 		// StaticModel
 		else
