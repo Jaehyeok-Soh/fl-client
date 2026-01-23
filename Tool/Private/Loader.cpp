@@ -6,6 +6,7 @@
 // Component
 //=================
 #include "VIBuffer_Terrain.h"
+#include "VIBuffer_Particle_Point.h"
 #include "Model.h"
 #include "Collider.h"
 #include "Shader.h"
@@ -121,6 +122,20 @@ HRESULT CLoader::Loading_For_Animation()
 
 HRESULT CLoader::Loading_For_Effect()
 {
+	// For. Prototype_Component_Collider_OBB
+	CVIBuffer_Particle_Point::PARTICLE_POINT_ORIGIN_DESC	ExploDesc{};
+	ExploDesc.iInstnaceCount = 30;
+	ExploDesc.vCenter = _float3(0.f, 0.f, 0.f);
+	ExploDesc.vSize = _float2(0.05f, 0.15f);
+	ExploDesc.vRange = _float3(0.5f, 0.5f, 0.5f);
+	ExploDesc.vSpeed = _float2(2.f, 5.f);
+	ExploDesc.vLifeTime = _float2(1.f, 1.5f);
+	ExploDesc.isLoop = false;
+	ExploDesc.vPivot = _float3(0.f, 0.f, 0.5f);
+
+	m_pGameInstance->Add_Prototype(ENUM_TO_UINT(ELevelType::EFFECT), L"Prototype_Component_VIBuffer_Particle_Point", CVIBuffer_Particle_Point::Create(m_pDevice, m_pDeviceContext, &ExploDesc));
+
+
 	//====================
 	// Resource Material
 	//====================

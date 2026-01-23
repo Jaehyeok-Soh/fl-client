@@ -140,8 +140,13 @@ void Tool_ContainerObject::Remove_Part(_uint iPartID)
 
 HRESULT Tool_ContainerObject::Add_Part(Tool_PartObject* pPart, _uint iPartID)
 {
-	if (m_vecPartObjects[iPartID])
-		return E_FAIL;
+	//if (m_vecPartObjects[iPartID])
+	//	return E_FAIL;
+
+	if (m_vecPartObjects.size() <= iPartID)
+	{
+		m_vecPartObjects.resize(iPartID + 1);
+	}
 
 	pPart->Set_Parent(this);
 	m_vecPartObjects[iPartID] = pPart;
@@ -150,8 +155,13 @@ HRESULT Tool_ContainerObject::Add_Part(Tool_PartObject* pPart, _uint iPartID)
 
 HRESULT Tool_ContainerObject::Add_Part(_uint iPartID, _uint iPrototypeLevelIndex, const  wstring& wstrPrototypeTag, void* pArg)
 {
-	if (m_vecPartObjects[iPartID])
-		return E_FAIL;
+	//if (m_vecPartObjects[iPartID])
+	//	return E_FAIL;
+
+	if (m_vecPartObjects.size() <= iPartID)
+	{
+		m_vecPartObjects.resize(iPartID + 1);
+	}
 
 	if (CBase* pClone = m_pGameInstance->Clone_Prototype(EPrototypeType::GAMEOBJECT, iPrototypeLevelIndex, wstrPrototypeTag, pArg))
 	{
@@ -193,5 +203,10 @@ HRESULT Tool_ContainerObject::Change_Part(_uint iPartID, _uint iPrototypeLevelIn
 
 void Tool_ContainerObject::Free()
 {
+	for (Tool_PartObject*& pPart : m_vecPartObjects)
+		Safe_Release(pPart);
+
+	m_vecPartObjects.clear();
+
 	Super::Free();
 }

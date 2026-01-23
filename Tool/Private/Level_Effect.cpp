@@ -11,6 +11,7 @@
 #include "ToolObject.h"
 #include "CameraMan_Free.h"
 #include "CEffectObject.h"
+#include "Effect.h"
 
 ///////////
 // ImGui //
@@ -166,14 +167,16 @@ HRESULT CLevel_Effect::Ready_Lights()
 
 HRESULT CLevel_Effect::Ready_Gui()
 {
-	m_GuiElements[ENUM_TO_UINT(Elements::EffectSystem)] = CEffectType_Selection_Panel::Create("Effect_Selection_Panel", this, m_pDevice, m_pDeviceContext);
+	m_GuiElements[ENUM_TO_UINT(Elements::EffectSystem)] = CEffectType_Selection_Panel::Create("Effect_Selection_Panel", this, m_pDevice, m_pDeviceContext, &m_pSelectedObject);
+	m_GuiElements[ENUM_TO_UINT(Elements::ParticleSystem)] = CParticle_System_Panel::Create("CParticle_System_Panel", this, m_pDevice, m_pDeviceContext);
 
 	return S_OK;
 }
 
 HRESULT CLevel_Effect::Ready_EffectObjectSetting()
 {
-	m_pGameInstance->Add_Prototype(ENUM_TO_UINT(ELevelType::EFFECT), L"Prototype_GameObject_Effect", CEffectObject::Create(EToolObjectType::MESHEFFECT, m_pDevice, m_pDeviceContext));
+	m_pGameInstance->Add_Prototype(ENUM_TO_UINT(ELevelType::EFFECT), L"Prototype_GameObject_Effect", Effect::Create(EToolObjectType::MESHEFFECT, m_pDevice, m_pDeviceContext));
+	m_pGameInstance->Add_Prototype(ENUM_TO_UINT(ELevelType::EFFECT), L"Prototype_GameObject_Effect_Parts", CEffectObject::Create(EToolObjectType::MESHEFFECT, m_pDevice, m_pDeviceContext));
 	
 	return S_OK;
 }

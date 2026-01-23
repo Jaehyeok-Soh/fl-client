@@ -97,11 +97,14 @@
     <Filter Include="03. Level\Effect\Effect_Object">
       <UniqueIdentifier>{c7c882ca-f31c-44ed-bfc0-c6a26939bb11}</UniqueIdentifier>
     </Filter>
-    <Filter Include="03. Level\Effect\Effect_Object\Effect_ContainerObject">
+    <Filter Include="02. GameObjects\PartObject">
+      <UniqueIdentifier>{ab8f52ba-9548-4d59-96fd-3e11792c6f59}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02. GameObjects\ContainerObject">
       <UniqueIdentifier>{849c5ab9-53df-4b2a-8a78-5d3fb0f5bf4a}</UniqueIdentifier>
     </Filter>
-    <Filter Include="03. Level\Effect\Effect_Object\Effect_PartObject">
-      <UniqueIdentifier>{ab8f52ba-9548-4d59-96fd-3e11792c6f59}</UniqueIdentifier>
+    <Filter Include="03. Level\Effect\Effect_Object\Effect">
+      <UniqueIdentifier>{484f6f3e-8e60-44ee-bc6e-9752b2de029b}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
@@ -244,10 +247,13 @@
       <Filter>03. Level\Effect\Effect_Object</Filter>
     </ClInclude>
     <ClInclude Include="..\Public\Tool_ContainerObject.h">
-      <Filter>03. Level\Effect\Effect_Object\Effect_ContainerObject</Filter>
+      <Filter>02. GameObjects\ContainerObject</Filter>
     </ClInclude>
     <ClInclude Include="..\Public\Tool_PartObject.h">
-      <Filter>03. Level\Effect\Effect_Object\Effect_PartObject</Filter>
+      <Filter>02. GameObjects\PartObject</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\Effect.h">
+      <Filter>03. Level\Effect\Effect_Object\Effect</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -385,10 +391,13 @@
       <Filter>03. Level\Effect\Effect_Object</Filter>
     </ClCompile>
     <ClCompile Include="..\Private\Tool_ContainerObject.cpp">
-      <Filter>03. Level\Effect\Effect_Object\Effect_ContainerObject</Filter>
+      <Filter>02. GameObjects\ContainerObject</Filter>
     </ClCompile>
     <ClCompile Include="..\Private\Tool_PartObject.cpp">
-      <Filter>03. Level\Effect\Effect_Object\Effect_PartObject</Filter>
+      <Filter>02. GameObjects\PartObject</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\Effect.cpp">
+      <Filter>03. Level\Effect\Effect_Object\Effect</Filter>
     </ClCompile>
   </ItemGroup>
 </Project>

@@ -27,6 +27,8 @@ HRESULT Tool_PartObject::Initialize(void* pArg)
 
 	PARTOBJ_DESC* pDesc = static_cast<PARTOBJ_DESC*>(pArg);
 	m_pMatParent = pDesc->pMatParent;
+
+	return S_OK;
 }
 
 HRESULT Tool_PartObject::Awake(const _uint iCurrentLevelID)

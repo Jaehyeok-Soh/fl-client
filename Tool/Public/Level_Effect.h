@@ -27,6 +27,8 @@ class CLevel_Effect final : public CLevel
 	{
 		Inspector = 0,
 		EffectSystem,
+
+		ParticleSystem,
 		END
 	};
 private:

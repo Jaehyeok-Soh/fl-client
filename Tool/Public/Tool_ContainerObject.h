@@ -30,7 +30,7 @@ public:
 	virtual void Draw_ImGui();
 	virtual void Set_Dead(const wstring& wstrLayerTag) override;
 
-protected:
+public:
 	template<typename T>
 	T* Get_Part(_uint iPartID);
 
