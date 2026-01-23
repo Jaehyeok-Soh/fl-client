@@ -91,10 +91,6 @@ void CToolObject::Draw_ImGui()
     
 }
 
-void CMapObject::Set_Dead(const wstring& wstrLayerTag)
-{
-}
-
 void CToolObject::Set_Dead(const wstring& wstrLayerTag)
 {
     Super::Set_Dead(m_wstrLayerTag);

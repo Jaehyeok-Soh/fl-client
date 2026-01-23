@@ -26,9 +26,9 @@ private:
 private:
 	CGameInstance*		m_pGameInstance;
 
-	_float3				m_vTranslation{0,0,0};
-	_float3				m_vRotation{0,0,0};
-	_float3				m_vScale{1,1,1};
+	Vec3				m_vTranslation{0,0,0};
+	Vec3				m_vRotation{0,0,0};
+	Vec3				m_vScale{1,1,1};
 
 public:
 	static  CPanel_ModelConverter* Create(const _char* pLabel, CLevel* pOwner, ID3D11Device* pDevice, ID3D11DeviceContext* pDeviceContext);

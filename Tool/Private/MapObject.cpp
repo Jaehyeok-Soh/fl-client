@@ -114,63 +114,6 @@ HRESULT CMapObject::Render()
     return S_OK;
 }
 
-void CMapObject::Draw_ImGui()
-{
-
-    return;
-}
-
-
-_bool CMapObject::Picking(OUT _float4& vOut)
-{
-
-
-    return false;
-}
-
-HRESULT CMapObject::Export_Data(OUT MAPOBJECT_SAVEDATA& data)
-{
-
-    return S_OK;
-}
-
-
-CMapObject* CMapObject::Create(EToolObjectType eType, ID3D11Device* pDevice, ID3D11DeviceContext* pDeviceContext)
-{
-    CMapObject* pMapObject = new CMapObject(eType, pDevice, pDeviceContext);
-
-    if (FAILED(pMapObject->Initialize_Prototype()))
-    {
-        Safe_Release(pMapObject);
-        MSG_BOX("MapObject is Failed To Create");
-        return nullptr;
-    }
-
-    return pMapObject;
-}
-
-CGameObject* CStaticModel::Clone(void* pArg)
-{
-    return nullptr;
-}
-
-void CStaticModel::Free()
-{
-}
-
-CGameObject* CMapObject::Clone(void* pArg)
-{
-    CMapObject* pMapObject = new CMapObject(*this);
-
-    if (FAILED(pMapObject->Initialize(pArg)))
-    {
-        Safe_Release(pMapObject);
-        MSG_BOX("MapObject is Failed To Clone");
-        return nullptr;
-    }
-
-    return pMapObject;
-}
 
 void CMapObject::Free()
 { 

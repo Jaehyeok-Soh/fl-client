@@ -29,22 +29,12 @@ public:
 	virtual void			Update_Late(const _float fTimeDelta)			override;
 	virtual void			Ready_Before_Render(const _float fTimeDelta)	override;
 	virtual HRESULT			Render()										override;
-	virtual void			Draw_ImGui()									override;
-	virtual void			Set_Dead(const wstring& wstrLayerTag)			override;
-public:
-	virtual _bool			Picking(OUT _float4& vOut)						override;
-	virtual HRESULT			Export_Data(OUT MAPOBJECT_SAVEDATA& data)		override;
 private:
 	/* 내가 해당하는 MapObject Type 에 따른 Desc을 작성을 다르게할예정 */
 	wstring					m_wstrModelName{L""};
 	EMapObject_Type			m_eMapObjectType{ EMapObject_Type::END };
-
-
 	void*					m_pDesc{nullptr};
-
 public:
-	static  CMapObject*		Create(EToolObjectType eType, ID3D11Device* pDevice, ID3D11DeviceContext* pDeviceContext);
-	virtual CGameObject*	Clone(void* pArg)						override;
 	virtual void			Free()									override;
 };
 

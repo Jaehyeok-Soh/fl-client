@@ -27,11 +27,13 @@ HRESULT CPanel_ModelConverter::Render(CToolObject* pGo)
 
 	ImGui::Text(" Matrix ");
 
-	XMMATRIX SRTMatirx = XMMatrixScalingFromVector(XMLoadFloat3(&m_vScale)) *
-		XMMatrixRotationRollPitchYaw(XMConvertToRadians(m_vRotation.x), XMConvertToRadians(m_vRotation.y), XMConvertToRadians(m_vRotation.z)) *
-			XMMatrixTranslationFromVector(XMVectorSetW(XMLoadFloat3(&m_vTranslation), 1.f));
 
-	ImGui::Text("  %f  %f  %f  %f " , SRTMatirx.r[0] );
+	Matrix SRTMatirx = Matrix::CreateScale(m_vScale) * Matrix::CreateFromYawPitchRoll(m_vRotation * (XM_PI / 180.f)) * Matrix::CreateTranslation(m_vTranslation);
+
+	ImGui::Text("  %.2f  %.2f  %.2f  %.2f " , SRTMatirx._11 , SRTMatirx._12 , SRTMatirx._13, SRTMatirx._14);
+	ImGui::Text("  %.2f  %.2f  %.2f  %.2f " , SRTMatirx._21 , SRTMatirx._22 , SRTMatirx._23, SRTMatirx._24);
+	ImGui::Text("  %.2f  %.2f  %.2f  %.2f " , SRTMatirx._31 , SRTMatirx._32 , SRTMatirx._33, SRTMatirx._34);
+	ImGui::Text("  %.2f  %.2f  %.2f  %.2f " , SRTMatirx._41 , SRTMatirx._42 , SRTMatirx._43, SRTMatirx._44);
 	
 
 

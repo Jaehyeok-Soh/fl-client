@@ -15,7 +15,7 @@
 //=================
 // Object
 //=================
-#include "MapObject.h"
+#include "StaticModel.h"
 //=================
 // Resource
 //=================
@@ -114,7 +114,7 @@ HRESULT CLoader::Loading_For_Map()
 	//=================
 	// CGameObject
 	//=================
-	m_pGameInstance->Add_Prototype(ENUM_TO_UINT(ELevelType::MAP), L"ProtoType_GameObject_MapObject", CMapObject::Create(EToolObjectType::MAPOBJECT, m_pDevice, m_pDeviceContext));
+	m_pGameInstance->Add_Prototype(ENUM_TO_UINT(ELevelType::MAP), L"ProtoType_GameObject_MapObject", CStaticModel::Create(EToolObjectType::MAPOBJECT, m_pDevice, m_pDeviceContext));
 
 
 	m_isFinished = true;

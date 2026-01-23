@@ -254,6 +254,10 @@ CLevel_Assimp* CLevel_Assimp::Create(ID3D11Device* pDevice, ID3D11DeviceContext*
 
 void CLevel_Assimp::Free()
 {
+	for (auto& Panel : m_arrayImGuiPanel)
+		Safe_Release(Panel);
+
+
 	Safe_Release(m_pImGuiManager);
 	Super::Free();
 }
