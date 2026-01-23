@@ -32,7 +32,6 @@ HRESULT CBody::Initialize(void* pArg)
 		return E_FAIL;
 
 	BODY_DESC* pDesc = static_cast<BODY_DESC*>(pArg);
-	m_bCustomed = pDesc->bCustomed;
 	if (FAILED(Ready_Components(pDesc)))
 		return E_FAIL;
 
@@ -119,26 +118,12 @@ HRESULT CBody::Render()
 	_uint iMeshCount = pModel->Get_MeshCount();
 
 	pShader->Bind_TransformData(m_matCombinedWorld);
-
-	if (m_bCustomed)
+	for (_uint i = 0; i < iMeshCount; ++i)
 	{
-		pModel->Bind_Masterbones(pShader, 2);
-		for (_uint i = 0; i < iMeshCount; ++i)
-		{
-			pModel->Bind_Material(pShader, i);
-			pShader->Apply();
-			pModel->Render(i);
-		}
-	}
-	else
-	{
-		for (_uint i = 0; i < iMeshCount; ++i)
-		{
-			pModel->Bind_Material(pShader, i);
-			pModel->Bind_Bones(pShader, i);
-			pShader->Apply();
-			pModel->Render(i);
-		}
+		pModel->Bind_Material(pShader, i);
+		pModel->Bind_Bones(pShader, i);
+		pShader->Apply();
+		pModel->Render(i);
 	}
 
 	return S_OK;

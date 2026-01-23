@@ -6,9 +6,10 @@
 #include "FileUtils.h"
 #include "Importer.h"
 
-CConverter::CConverter(ID3D11Device* pDevice, ID3D11DeviceContext* pDeviceContext, const Matrix& matPreTransform, _bool bCustom)
+#define MAX_COUNT_FOR_CREATEFOLDER 5
+
+CConverter::CConverter(ID3D11Device* pDevice, ID3D11DeviceContext* pDeviceContext, const Matrix& matPreTransform)
 	: m_pDevice(pDevice)
-	, m_bCustom(bCustom)
 	, m_pDeviceContext(pDeviceContext)
 	, m_matPreTransform(matPreTransform)
 {
@@ -17,47 +18,62 @@ CConverter::CConverter(ID3D11Device* pDevice, ID3D11DeviceContext* pDeviceContex
 	m_pImporter = CImporter::Create();
 }
 
-HRESULT CConverter::Initialize(const _tchar* wszAssetParentFolderName)
+HRESULT CConverter::Initialize(const _tchar* wszAssetParentFolderName, const _char* szSolutionFullPath)
 {
-	if (!wszAssetParentFolderName)
+	if (wszAssetParentFolderName == nullptr)
 		return E_FAIL;
 
-	_tchar srcBuffer[MAX_PATH] = L"";
-	::lstrcatW(srcBuffer, g_wszAssetRelativePath);
-	::lstrcatW(srcBuffer, wszAssetParentFolderName);
-	m_RelativeFolderPath = wszAssetParentFolderName;
-	m_AssetParentPath = std::filesystem::path(srcBuffer);
+	path assetsfolderPath = path("Resources") / "Assets";
+	path prefixRelativePath = g_wszAssetRelativePath;
+	path solutionFullPath = szSolutionFullPath;
+	path fullFolderPath = wszAssetParentFolderName;
+
+	solutionFullPath = std::filesystem::weakly_canonical(solutionFullPath);
+	fullFolderPath = std::filesystem::weakly_canonical(fullFolderPath);
+
+	if (FAILED(Is_SubPath(solutionFullPath, fullFolderPath)))
+		return E_FAIL;
+	
+	path assetAbs = solutionFullPath / assetsfolderPath;
+	
+	if (FAILED(Is_SubPath(assetAbs, fullFolderPath)))
+		return E_FAIL;
+
+	m_RelativeFolderPath = fullFolderPath.lexically_relative(assetAbs);
+	m_AssetParentPath = prefixRelativePath / m_RelativeFolderPath;
 	m_pMaterials.reserve(30);
 	m_pBones.reserve(600);
 	m_pMeshes.reserve(30);
 	return S_OK;
 }
 
-HRESULT CConverter::ReadAndExportFile()
+HRESULT CConverter::ReadAndExport()
 {
-	if (!std::filesystem::exists(m_AssetParentPath))
+	if (std::filesystem::exists(m_AssetParentPath) == false)
 		return E_FAIL;
 
-	if (FAILED(Read_Folder()))
+	if (FAILED(Check_Folder()))
 		return E_FAIL;
 
 	switch (m_eType)
 	{
-	case Engine::ConvertType::NORMAL:
+	case ConvertType::NONANIM:
 	{
-		if (FAILED(ReadAndExport_Normal()))
+		if (FAILED(ReadAndExport_NoAnimation()))
 			return E_FAIL;
 	} break;
-	case Engine::ConvertType::ANIM:
+	case ConvertType::NONANIM_MORETHANONE:
 	{
-		if (FAILED(ReadAndExport_Animations()))
+		if (FAILED(ReadAndExport_MoreThanOne()))
 			return E_FAIL;
 	} break;
-	case Engine::ConvertType::MULTINORMALS:
+	case ConvertType::ANIM:
 	{
-		if (FAILED(ReadAndExport_MapDatas()))
+		if (FAILED(ReadAndExport_Animation()))
 			return E_FAIL;
 	} break;
+	default:
+		return E_FAIL;
 	}
 
 	return S_OK;
@@ -224,21 +240,29 @@ void CConverter::Read_Meshes()
 			continue;
 		}
 
-		if (m_pMasterBones.size() <= 0)
-		{
-			Read_Default_AffectBoneData(iVertexCount, iAffectBoneCount, pAiMesh, pCurrentMesh);
-		}
-		else
-			Read_ForMasterBone_AffectBoneData(iVertexCount, iAffectBoneCount, pAiMesh, pCurrentMesh);
+		Read_Default_AffectBoneData(iVertexCount, iAffectBoneCount, pAiMesh, pCurrentMesh);
 	}
 }
 
-void CConverter::Read_AnimationData()
+HRESULT CConverter::Create_AiScene(const string& strPath, _uint iFlag)
 {
-	if (m_pScene->mNumAnimations <= 0)
-		return;
+	iFlag |= aiProcess_ConvertToLeftHanded | aiProcessPreset_TargetRealtime_Fast | aiProcess_EmbedTextures;
 
+	m_pScene = m_pImporter->Get_Assimp_Importer()->ReadFile(strPath, iFlag);
+
+	if (m_pScene == nullptr)
+	{
+		MSG_BOX("CConverter::Create_AiScene, failed");
+		return E_FAIL;
+	}
+
+	return S_OK;
+}
+
+HRESULT CConverter::Read_AnimationData()
+{
 	m_pAnimations.reserve(m_pScene->mNumAnimations);
+	m_vecAnimNames.resize(m_pScene->mNumAnimations);
 	for (_uint a = 0; a < m_pScene->mNumAnimations; ++a)
 	{
 		const aiAnimation* pAiAnimation = m_pScene->mAnimations[a];
@@ -304,6 +328,8 @@ void CConverter::Read_AnimationData()
 		}
 		m_pAnimations.push_back(pAnimation);
 	}
+
+	return S_OK;
 }
 
 
@@ -312,6 +338,8 @@ HRESULT CConverter::Export_ModelData()
 	std::filesystem::path ModelfinalPath = { g_wszModelRelativePath };
 	ModelfinalPath /= m_RelativeFolderPath;
 	ModelfinalPath /= L"Model";
+
+	Create_Folder(ModelfinalPath);
 
 	// BoneData
 	if(m_pBones.size() > 0)
@@ -444,15 +472,7 @@ HRESULT CConverter::Export_MaterialData()
 	MaterialfinalPath /= m_RelativeFolderPath;
 	MaterialfinalPath /= L"Material";
 
-	// 폴더 생성
-	if (!std::filesystem::exists(MaterialfinalPath))
-	{
-		if (!std::filesystem::exists(MaterialfinalPath.parent_path()))
-		{
-			std::filesystem::create_directory(MaterialfinalPath.parent_path());
-		}
-		std::filesystem::create_directory(MaterialfinalPath);
-	}
+	Create_Folder(MaterialfinalPath);
 
 	string strFolder = MaterialfinalPath.string();
 
@@ -482,52 +502,39 @@ HRESULT CConverter::Export_MaterialData()
 	return S_OK;
 }
 
-HRESULT CConverter::Export_AnimationData(_uint iIndex)
+HRESULT CConverter::Export_AnimationData(const string& strAnimationName, size_t iIndex)
 {
 	std::filesystem::path AnimationfinalPath = { g_wszModelRelativePath };
 	AnimationfinalPath /= m_RelativeFolderPath;
 	AnimationfinalPath /= L"Animation";
 
-	// 폴더 생성
-	if (!std::filesystem::exists(AnimationfinalPath))
-	{
-		if (!std::filesystem::exists(AnimationfinalPath.parent_path()))
-		{
-			std::filesystem::create_directory(AnimationfinalPath.parent_path());
-		}
+	Create_Folder(AnimationfinalPath);
 
-		std::filesystem::create_directory(AnimationfinalPath);
-	}
-
-	AnimationfinalPath /= m_vecAnimPaths[iIndex].wstrAnimationName;
+	AnimationfinalPath /= strAnimationName;
 	AnimationfinalPath.replace_extension(g_wszAnimationExtension);
 
 	CFileUtils* pFileUtil = CFileUtils::Create();
 	pFileUtil->Open(AnimationfinalPath, FileMode::WRITE);
 
-	pFileUtil->Write<_uint>((_uint)m_pAnimations.size());
-	for (_uint i = 0; i < (_uint)m_pAnimations.size(); ++i)
+	AS_ANIMATION* pAnimation = m_pAnimations[iIndex];
+
+	pFileUtil->Write<string>(pAnimation->strName);
+	pFileUtil->Write<_float>(pAnimation->fDuration);
+	pFileUtil->Write<_float>(pAnimation->fTickPerSecond);
+
+	pFileUtil->Write<_uint>((_uint)pAnimation->vecChannels.size());
+	for (AS_CHANNEL* pChannel : pAnimation->vecChannels)
 	{
-		AS_ANIMATION* pAnimation = m_pAnimations[i];
+		pFileUtil->Write<string>(pChannel->strBoneName);
+		pFileUtil->Write<_int>(pChannel->iBoneIndex);
 
-		pFileUtil->Write<string>(pAnimation->strName);
-		pFileUtil->Write<_float>(pAnimation->fDuration);
-		pFileUtil->Write<_float>(pAnimation->fTickPerSecond);
-
-		pFileUtil->Write<_uint>((_uint)pAnimation->vecChannels.size());
-		for (AS_CHANNEL* pChannel : pAnimation->vecChannels)
+		pFileUtil->Write<_uint>((_uint)pChannel->vecKeyFrames.size());
+		for (AS_KEYFRAME& KeyFrame : pChannel->vecKeyFrames)
 		{
-			pFileUtil->Write<string>(pChannel->strBoneName);
-			pFileUtil->Write<_int>(pChannel->iBoneIndex);
-
-			pFileUtil->Write<_uint>((_uint)pChannel->vecKeyFrames.size());
-			for (AS_KEYFRAME& KeyFrame : pChannel->vecKeyFrames)
-			{
-				pFileUtil->Write<_float>(KeyFrame.fTrackPosition);
-				pFileUtil->Write<Vec3>(KeyFrame.vScale);
-				pFileUtil->Write<Vec4>(KeyFrame.vQuaternion);
-				pFileUtil->Write<Vec3>(KeyFrame.vTranslation);
-			}
+			pFileUtil->Write<_float>(KeyFrame.fTrackPosition);
+			pFileUtil->Write<Vec3>(KeyFrame.vScale);
+			pFileUtil->Write<Vec4>(KeyFrame.vQuaternion);
+			pFileUtil->Write<Vec3>(KeyFrame.vTranslation);
 		}
 	}
 
@@ -545,6 +552,7 @@ string CConverter::Write_Texture(const _char *szSaveFolder, const _char* szFile)
 	if(pSrcTexture)
 	{
 		string strPath = (std::filesystem::path(szSaveFolder) / strFileName).string();
+		Create_Folder((std::filesystem::path(szSaveFolder)));
 
 		if (pSrcTexture->mHeight == 0)
 		{
@@ -620,69 +628,10 @@ _int CConverter::Get_BoneIndex(const _char* szName)
 	return -1;
 }
 
-HRESULT CConverter::Read_Folder()
+HRESULT CConverter::ReadAndExport_NoAnimation()
 {
-	if (std::filesystem::exists(m_AssetParentPath) == false)
-	{
-		MSG_BOX("CConverter::Read_Folder, AssetParentPath is invalid");
-		return E_FAIL;
-	}
-
-	size_t iFileCount = Get_FileCount(m_AssetParentPath);
-	size_t iFolderCount = Get_FolderCount(m_AssetParentPath);
-
-	if (iFileCount == 1)
-	{
-		for (const auto& entry : std::filesystem::directory_iterator(m_AssetParentPath))
-		{
-			if (entry.is_regular_file())
-			{
-				m_wstrAssetName = entry.path().filename().lexically_normal().stem();
-				break;
-			}
-		}
-
-		// .fbx파일 하나에 폴더가 있으면 Animation폴더로 간주
-		if (iFolderCount >= 1)
-		{
-			m_eType = ConvertType::ANIM;
-		}
-		// .fbx파일 하나만 있으면 단일 모델로 간주
-		else
-		{
-			m_eType = ConvertType::NORMAL;
-		}
-	}
-	// .fbx 1개 초과면 MapData로 간주
-	else if (iFileCount > 1)
-	{
-		m_vecMapAssetPaths.resize(iFileCount);
-		m_eType = ConvertType::MULTINORMALS;
-	}
-	else
-	{
-		MSG_BOX("CConverter::ReadAndExportFile, Folder rule violation");
-		return E_FAIL;
-	}
-
-	return S_OK;
-}
-
-HRESULT CConverter::ReadAndExport_Normal()
-{
-	std::filesystem::path finalPath = m_AssetParentPath / m_wstrAssetName;
-	finalPath.replace_extension(g_wszModelExtension);
-
-	m_pScene = m_pImporter->Get_Assimp_Importer()->ReadFile(
-		Engine_Utils::ToString(finalPath.c_str()),
-		aiProcess_ConvertToLeftHanded | aiProcessPreset_TargetRealtime_Fast
-	);
-
-	if (!m_pScene)
-		return E_FAIL;
-
-	m_pBones.reserve(m_pScene->mNumSkeletons);
-	Read_Bones(m_pScene->mRootNode, -1, -1);
+	// m_pBones.reserve(m_pScene->mNumSkeletons);
+	// Read_Bones(m_pScene->mRootNode, -1, -1);
 	Read_Meshes();
 	Read_MaterialData();
 
@@ -695,33 +644,27 @@ HRESULT CConverter::ReadAndExport_Normal()
 	return S_OK;
 }
 
-HRESULT CConverter::ReadAndExport_MapDatas()
+HRESULT CConverter::ReadAndExport_MoreThanOne()
 {
 	size_t iCount = { 0 };
 	for (const auto& entry : std::filesystem::directory_iterator(m_AssetParentPath))
 	{
 		if (entry.is_regular_file())
 		{
-			m_vecMapAssetPaths[iCount] = entry.path();
+			m_vecAssetPaths[iCount] = entry.path();
 			++iCount;
 		}
 	}
 
-	for (size_t i = 0; i < m_vecMapAssetPaths.size(); ++i)
+	for (size_t i = 0; i < m_vecAssetPaths.size(); ++i)
 	{
 		Clear();
-		m_pScene = m_pImporter->Get_Assimp_Importer()->ReadFile(
-			Engine_Utils::ToString(m_vecMapAssetPaths[i].c_str()),
-			aiProcess_ConvertToLeftHanded | aiProcessPreset_TargetRealtime_Fast
-		);
-
-		if (!m_pScene)
+		
+		if (FAILED(Create_AiScene(Engine_Utils::ToString(m_vecAssetPaths[i]))))
 			return E_FAIL;
 
-		m_wstrAssetName = m_vecMapAssetPaths[i].filename().lexically_normal().stem();
+		m_wstrAssetName = m_vecAssetPaths[i].filename().lexically_normal().stem();
 
-		//m_pBones.reserve(m_pScene->mNumSkeletons);
-		//Read_Bones(m_pScene->mRootNode, -1, -1);
 		Read_Meshes();
 		Read_MaterialData();
 
@@ -735,87 +678,117 @@ HRESULT CConverter::ReadAndExport_MapDatas()
 	return S_OK;
 }
 
-HRESULT CConverter::ReadAndExport_Animations()
+HRESULT CConverter::ReadAndExport_Animation()
 {
-	std::filesystem::path AnimFolder = m_AssetParentPath / L"Animations";
-	if (std::filesystem::exists(AnimFolder) == false)
-	{
-		MSG_BOX("CConverter::Read_AnimationFolder, Animation folder is invalid");
-		return E_FAIL;
-	}
-
-	size_t iFileCount = Get_FileCount(AnimFolder);
-	if (iFileCount <= 0)
-	{
-		MSG_BOX("CConverter::Read_AnimationFolder, Animation file is invalid");
-		return E_FAIL;
-	}
-
-	// 메모리 미리 확보
-	m_vecAnimPaths.resize(iFileCount);
-
-	// 경로 순회하면서 넣기
-	_uint iCount = { 0 };
-	for (const auto& entry : std::filesystem::directory_iterator(AnimFolder))
-	{
-		if (entry.is_regular_file())
-		{
-			m_vecAnimPaths[iCount] = ANIMPATHPART(entry.path());
-			++iCount;
-		}
-	}
-
-	// 룰 지정 alpha_alpha01
-	std::wregex rule{ L"^([[:alpha:]]+)_([[:alnum:]]+)$" };
-	const std::wsregex_iterator wstrItr_End;
-
-	// 정규표현식 적용을 후 Tag와 AnimationName 추출을 위한 람다식
-	for_each(m_vecAnimPaths.begin(), m_vecAnimPaths.end(),
-		[&wstrItr_End, &rule](ANIMPATHPART& element)->void
-		{
-			std::wstring tmp{ element.filePath.stem() };
-			if (std::wsmatch match; std::regex_match(tmp, match, rule))
-			{
-				// 0은 문자열 전체
-				element.wstrTag = match[1];
-				element.wstrAnimationName = match[2];
-			}
-		});
-
-	// 포함된 모델 데이터 먼저 읽기
-	if (FAILED(ReadAndExport_Normal()))
+	m_pBones.reserve(m_pScene->mNumSkeletons);
+	Read_Bones(m_pScene->mRootNode, -1, -1);
+	Read_Meshes();
+	Read_MaterialData();
+	
+	if (FAILED(Read_AnimationData()))
 		return E_FAIL;
 
-	for (_uint i = 0; i < (_uint)m_vecAnimPaths.size(); ++i)
+	if (FAILED(Export_ModelData()))
+		return E_FAIL;
+
+	if (FAILED(Export_MaterialData()))
+		return E_FAIL;
+
+	for (size_t i = 0; i < m_pAnimations.size(); ++i)
 	{
-		Clear(); // Bone을 제외한 모든 데이터 정리
-		m_pScene = m_pImporter->Get_Assimp_Importer()->ReadFile(
-			Engine_Utils::ToString(m_vecAnimPaths[i].filePath.c_str()),
-			aiProcess_ConvertToLeftHanded | aiProcessPreset_TargetRealtime_Fast
-		);
-
-		if (!m_pScene)
-			return E_FAIL;
-
-		Read_AnimationData();
-		if (FAILED(Export_AnimationData(i)))
+		if (FAILED(Export_AnimationData(m_pAnimations[i]->strName, i)))
 			return E_FAIL;
 	}
 
 	return S_OK;
 }
 
-
-
-_int CConverter::Get_BoneIndexFormMatserBone(const _char* szName)
+HRESULT CConverter::Check_Folder()
 {
-	for (AS_BONE* pBone : m_pMasterBones)
+	m_iFileCount = Get_FileCount(m_AssetParentPath);
+	m_iFolderCount = Get_FolderCount(m_AssetParentPath);
+
+	if (m_iFolderCount > 0)
 	{
-		if (pBone->strName == szName)
-			return pBone->iIndex;
+		MSG_BOX("CConverter::Ready_Folder, wrong folder.. has too many folders");
+		return E_FAIL;
 	}
 
-	return -1;
+	if (m_iFileCount <= 0)
+	{
+		MSG_BOX("CConverter::Ready_Folder, empty folder");
+		return E_FAIL;
+	}
+	else if (m_iFileCount == 1)
+	{
+		for (const auto& entry : std::filesystem::directory_iterator(m_AssetParentPath))
+		{
+			if (entry.is_regular_file())
+			{
+				m_wstrAssetName = entry.path().filename().lexically_normal().stem();
+				break;
+			}
+		}
+
+		path assetFilePath = m_AssetParentPath / m_wstrAssetName;
+		assetFilePath.replace_extension(g_wszModelExtension);
+		if (FAILED(Create_AiScene(assetFilePath.string())))
+			return E_FAIL;
+
+		if (FAILED(Check_Type()))
+			return E_FAIL;
+	}
+	else
+	{
+		m_eType = ConvertType::NONANIM_MORETHANONE;
+		m_vecAssetPaths.resize(m_iFileCount);
+	}
+
+	return S_OK;
+}
+
+HRESULT CConverter::Check_Type()
+{
+	m_eType = ConvertType::NONANIM;
+
+	if (m_pScene->HasAnimations())
+		m_eType = ConvertType::ANIM;
+
+	if (m_pScene->HasMeshes() == false)
+		return E_FAIL;
+
+	return S_OK;
+}
+
+HRESULT CConverter::Is_SubPath(const path &baseAbsPath, const path& targetAbsPath)
+{
+	if (baseAbsPath.empty() || targetAbsPath.empty())
+		return E_FAIL;
+
+	if (baseAbsPath.has_root_name() && targetAbsPath.has_root_name() &&
+		(baseAbsPath.has_root_name() != targetAbsPath.has_root_name()))
+		return E_FAIL;
+
+	path relative = targetAbsPath.lexically_relative(baseAbsPath);
+	if (relative.empty())
+		return E_FAIL;
+
+	for (const auto& pathPart : relative)
+	{
+		if (pathPart == "..")
+			return E_FAIL;
+	}
+
+	return S_OK;
+}
+
+void CConverter::Create_Folder(path destPath)
+{
+	destPath = destPath.lexically_normal();
+	if (std::filesystem::exists(destPath))
+		return;
+
+	std::filesystem::create_directories(destPath);
 }
 
 size_t CConverter::Get_FileCount(const wstring wstrFolderPath)
@@ -825,6 +798,7 @@ size_t CConverter::Get_FileCount(const wstring wstrFolderPath)
 	{
 		if (entry.is_regular_file())
 		{
+			m_vecAssetPaths.push_back(entry.path());
 			++iFileCount;
 		}
 	}
@@ -846,20 +820,18 @@ size_t CConverter::Get_FolderCount(const wstring wstrFolderPath)
 	return iFolderCount;
 }
 
-// Bone 빼고 다 정리
 void CConverter::Clear()
 {
 	m_pImporter->Get_Assimp_Importer()->FreeScene();
 
-	for (AS_MATERIAL* pElement : m_pMaterials)
-	{
+	for (AS_BONE* pElement : m_pBones)
 		Safe_Delete(pElement);
-	}
+
+	for (AS_MATERIAL* pElement : m_pMaterials)
+		Safe_Delete(pElement);
 
 	for (AS_MESH* pElement : m_pMeshes)
-	{
 		Safe_Delete(pElement);
-	}
 
 	for (AS_ANIMATION* pElement : m_pAnimations)
 	{
@@ -871,26 +843,17 @@ void CConverter::Clear()
 		Safe_Delete(pElement);
 	}
 
+	m_pBones.clear();
 	m_pMaterials.clear();
 	m_pMeshes.clear();
 	m_pAnimations.clear();
 }
 
-void CConverter::Clear_For_Custom()
+CConverter* CConverter::Create(ID3D11Device* pDevice, ID3D11DeviceContext* pDeviceContext, const _char* szSolutionFullPath, const _tchar* wszAssetParentFolderName, const Matrix &matPreTransform)
 {
-	Clear();
-	for (AS_BONE* pElement : m_pBones)
-		Safe_Delete(pElement);
-	m_pBones.clear();
-	m_vecAnimPaths.clear();
-	m_vecMapAssetPaths.clear();
-}
+	CConverter* pInstance = new CConverter(pDevice, pDeviceContext, matPreTransform);
 
-CConverter* CConverter::Create(ID3D11Device* pDevice, ID3D11DeviceContext* pDeviceContext, const _tchar* wszAssetParentFolderPath, const Matrix &matPreTransform, _bool bCustom)
-{
-	CConverter* pInstance = new CConverter(pDevice, pDeviceContext, matPreTransform, bCustom);
-
-	if (FAILED(pInstance->Initialize(wszAssetParentFolderPath)))
+	if (FAILED(pInstance->Initialize(wszAssetParentFolderName, szSolutionFullPath)))
 	{
 		MSG_BOX("CConverter::Create");
 		Safe_Release(pInstance);
@@ -954,104 +917,9 @@ void CConverter::Read_Default_AffectBoneData(_uint iVertexCount, _uint iAffectBo
 	}
 }
 
-void CConverter::Read_ForMasterBone_AffectBoneData(_uint iVertexCount, _uint iAffectBoneCount, const aiMesh* pAiMesh, AS_MESH* pCurrentMesh)
-{
-	// Weight 유틸용 벡터
-	vector<AS_BONEWEIGHTS> tempVertexBoneWeights;
-	tempVertexBoneWeights.resize(iVertexCount);
-
-	// MasterBone에 맞추어 수정
-	pCurrentMesh->iAffectBoneCount = iAffectBoneCount;
-	pCurrentMesh->vecAffectBoneIndices.reserve(iAffectBoneCount);
-	pCurrentMesh->vecOffsetMatrices.reserve(iAffectBoneCount);
-
-	// Initialize, Indentity Matrix
-	// 해당 Mesh의 Affect카운트를 일단 전부 순회
-	// 필요없는 Bone의 경우 기록을 하지않지만, 스키닝데이터가 존재한다면 현재로선 매핑 불가능함
-	for (_uint b = 0; b < iAffectBoneCount; ++b)
-	{
-		// 메시에 영향을 주는 Bone들을 순회
-		const aiBone* pAiBone = pAiMesh->mBones[b];
-		// Index정보를 마스터Bone 기준으로 들고온다.
-		_int iAffectBoneIndex = Get_BoneIndexFormMatserBone(pAiBone->mName.C_Str());
-		// b번째 뼈는 몇개의 정점에게 영향을 주는가?
-		for (_uint w = 0; w < pAiBone->mNumWeights; ++w)
-		{
-			const aiVertexWeight& AiWeight = pAiBone->mWeights[w];
-			_uint iVertexIndex = AiWeight.mVertexId;
-			_float fWeight = AiWeight.mWeight;
-			// Master본과 일치하지않는데, Weight값 즉 스키닝 데이터가 있다면 매핑이 불가능
-			if (iAffectBoneIndex == -1 && fWeight > 0.0001f)
-			{
-				MSG_BOX("안돼!!!!!!!!!!!!!!!!!!!!!!!!!!!!");
-				return;
-			}
-			else if(iAffectBoneIndex == -1)
-				break;
-			// Masetr본과 일치하지않지만, Wieght값은 
-
-			// Wieght가 4개 넘어갈경우 큰값 상위 4개만 저장
-			tempVertexBoneWeights[iVertexIndex].Add_Weights(iAffectBoneIndex, fWeight);
-		}
-
-		if (iAffectBoneIndex == -1)
-			continue;
-
-		Matrix matSrc = {};
-		::memcpy(&matSrc, &pAiBone->mOffsetMatrix, sizeof(Matrix));
-		matSrc = matSrc.Transpose();
-		pCurrentMesh->vecAffectBoneIndices.push_back(iAffectBoneIndex);
-		pCurrentMesh->vecOffsetMatrices.push_back(matSrc);
-	}
-
-
-	// 최종 결과 계산, Weight Normalize 추후 Shader에서 정렬할 필요 없음
-	for (_uint v = 0; v < tempVertexBoneWeights.size(); ++v)
-	{
-		AS_BLENDWEIGHT blendWeight = tempVertexBoneWeights[v].Get_BlendWeight();
-		pCurrentMesh->vecVertices[v].vBlendIndices = blendWeight.vIndices;
-		pCurrentMesh->vecVertices[v].vBlendWeights = blendWeight.vWeights;
-	}
-
-}
-
 void CConverter::Free()
 {
-	for (AS_MATERIAL* pElement : m_pMaterials)
-	{
-		Safe_Delete(pElement);
-	}
-
-	for (AS_MESH* pElement : m_pMeshes)
-	{
-		Safe_Delete(pElement);
-	}
-
-	for (AS_BONE* pElement : m_pMasterBones)
-	{
-		Safe_Delete(pElement);
-	}
-
-	for (AS_BONE* pElement : m_pBones)
-	{
-		Safe_Delete(pElement);
-	}
-
-	for (AS_ANIMATION* pElement : m_pAnimations)
-	{
-		for (AS_CHANNEL* pData : pElement->vecChannels)
-		{
-			Safe_Delete(pData);
-		}
-		pElement->vecChannels.clear();
-		Safe_Delete(pElement);
-	}
-
-	m_pMasterBones.clear();
-	m_pMaterials.clear();
-	m_pMeshes.clear();
-	m_pBones.clear();
-	m_pAnimations.clear();
+	Clear();
 
 	Safe_Release(m_pDeviceContext);
 	Safe_Release(m_pDevice);

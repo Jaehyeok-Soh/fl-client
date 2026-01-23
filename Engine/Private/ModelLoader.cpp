@@ -348,13 +348,6 @@ HRESULT CModelLoader::Read_Animation(vector<CModelAnimation*>* vecAnimations)
 
 		desc.wstrName = wstrAnimationame;
 		desc.wstrPath = AnimationClipPath;
-		_uint iAnimationCount = pFileUtil->Read<_uint>();
-		if (iAnimationCount <= 0)
-		{
-			MSG_BOX("CModel::Read_Animation, Animation data is invalid");
-			return E_FAIL;
-		}
-
 		const string aiAnimationName = pFileUtil->Read<string>();
 		desc.fDuration = pFileUtil->Read<_float>();
 		desc.fTickPerSecond = pFileUtil->Read<_float>();

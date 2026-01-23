@@ -119,15 +119,15 @@ namespace Tool
 			return EToolObjectType::END;
 	}
 
-	inline constexpr _tchar g_wszStaticLightLayer[]{ L"StaticLight_Layer\0" };
-	inline constexpr _tchar g_wszMeshEffectPresetPath[]{ L"../../Resources/Data/EffectData/EffectMeshPreset.json\0" };
-	inline constexpr _tchar g_wszMeshPreviewLayer[]{ L"MeshPreview_Layer\0" };
-	inline constexpr _tchar g_wszPolygonLayer[]{ L"Polygon_Layer\0" };
-	inline constexpr _tchar g_wszTriggerBoxLayer[]{ L"TriggerBox_Layer\0" };
-	inline constexpr _tchar g_wszColMeshLayer[]{ L"ColMesh_Layer\0" };
-	inline constexpr _tchar g_wszStaticModelLayer[]{ L"StaticModel_Layer\0" };
-	inline constexpr _tchar g_wszDummyColliderLayer[]{ L"DummyCollider_Layer\0" };
-	inline constexpr _tchar g_wszCameraLayer[]{ L"Camera_Layer\0" };
+	inline constexpr _tchar g_wszStaticLightLayer[]{ L"StaticLight_Layer" };
+	inline constexpr _tchar g_wszMeshEffectPresetPath[]{ L"../../Resources/Data/EffectData/EffectMeshPreset.json" };
+	inline constexpr _tchar g_wszMeshPreviewLayer[]{ L"MeshPreview_Layer" };
+	inline constexpr _tchar g_wszPolygonLayer[]{ L"Polygon_Layer" };
+	inline constexpr _tchar g_wszTriggerBoxLayer[]{ L"TriggerBox_Layer" };
+	inline constexpr _tchar g_wszColMeshLayer[]{ L"ColMesh_Layer" };
+	inline constexpr _tchar g_wszStaticModelLayer[]{ L"StaticModel_Layer" };
+	inline constexpr _tchar g_wszDummyColliderLayer[]{ L"DummyCollider_Layer" };
+	inline constexpr _tchar g_wszCameraLayer[]{ L"Camera_Layer" };
 
 	struct HoleBridges
 	{

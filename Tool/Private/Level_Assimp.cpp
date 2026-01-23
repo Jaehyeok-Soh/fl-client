@@ -5,6 +5,7 @@
 #include "ImGui_ToolManager.h"
 #include "Level_Assimp.h"
 
+
 CLevel_Assimp::CLevel_Assimp(ID3D11Device* pDevice, ID3D11DeviceContext* pDeviceContext)
 	: CLevel(pDevice, pDeviceContext)
 	, m_pImGuiManager(CImGui_ToolManager::GetInstance())
@@ -43,6 +44,12 @@ HRESULT CLevel_Assimp::Awake(const _uint iLevelID)
 	Matrix matPreTransformIdentity = Matrix::Identity;
 	Matrix matPreTransformScaling = {};
 	Matrix matPreTransformMapObject = matUECoord * matPreTransformScaling100;
+	{
+		std::filesystem::path test{ "C:/Users/PC/Documents/FinalProject/Resources/Assets/TestPlayer" };
+		CConverter* pConverter = CConverter::Create(m_pDevice, m_pDeviceContext, SOLUTION_DIR, test.c_str(), matPreTransformIdentity);
+		pConverter->ReadAndExport();
+		Safe_Release(pConverter);
+	}
 
 	/*
 	//Sword

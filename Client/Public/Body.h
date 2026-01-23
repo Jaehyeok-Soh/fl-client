@@ -13,7 +13,6 @@ class CBody final : public CPartObject
 public:
 	typedef struct tagBodyDesc : public CPartObject::PARTOBJ_DESC
 	{
-		_bool bCustomed = { false };
 		wstring wstrModelPrototypeName = { L"" };
 	}BODY_DESC;
 protected:
@@ -54,7 +53,6 @@ private:
 	HRESULT Ready_Components(BODY_DESC *pDesc);
 	HRESULT Bind_ShaderResources();
 private:
-	_bool m_bCustomed = { false };
 	_int m_iLeftHand_Index = { 0 };
 	_int m_iRightHand_Index = { 0 };
 	_int m_iLeftFoot_Index = { 0 };

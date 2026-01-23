@@ -100,7 +100,8 @@ HRESULT CMainApplication::Ready_Static_Prototype()
 	{
 		CShader::SHADER_ORIGIN_DESC shaderDesc = {};
 		shaderDesc.pShaderFilePath = L"../../Shaders/Shader_VtxCol.hlsl";
-		shaderDesc.iNumElements = Engine::VTXPOSCOL::iNumElements;
+		shaderDesc.iNumElements = 
+			VTXPOSCOL::iNumElements;
 		shaderDesc.pElements = Engine::VTXPOSCOL::Elements;
 		if (FAILED(m_pGameInstance->Add_Prototype(ENUM_TO_UINT(ELevelType::STATIC), L"Prototype_Component_Shader_VtxCol",
 			CShader::Create(m_pDevice, m_pDeviceContext, &shaderDesc))))
