@@ -73,6 +73,7 @@ private:
 private:
     // ======== ImGui 값이 변동 됐다는걸 알리는 변수 ========
     _bool               m_bModified = false;
+    int                 m_iSelectPartsIndex = 0;
 };
 
 NS_END

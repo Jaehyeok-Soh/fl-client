@@ -32,6 +32,7 @@ HRESULT CParticle_System_Panel::Render(CToolObject* pGo)
 	}
 	m_bModified = false;
 
+	Draw_Parts(pGo);
 	Draw_ParticleSystem(pGo);
 	Draw_Timer(pGo);
 	Draw_EffectColor(pGo);
@@ -47,7 +48,7 @@ void CParticle_System_Panel::Binding_EffectDesc(CToolObject* pGo)
 	if (pGo == nullptr) return;
 
 	// 일단은 임시로.
-	CEffectObject* EffectParts = static_cast<Effect*>(pGo)->Get_Part<CEffectObject>(0);
+	CEffectObject* EffectParts = static_cast<Effect*>(pGo)->Get_Part<CEffectObject>(m_iSelectPartsIndex);
 	EffectParts->Set_EffectDesc(m_tCurrentDesc);
 }
 
@@ -92,7 +93,7 @@ void CParticle_System_Panel::Draw_Timer(CToolObject* pGo)
 		m_bModified = true;
 
 		// 일단은 임시로.
-		CEffectObject* EffectParts = static_cast<Effect*>(pGo)->Get_Part<CEffectObject>(0);
+		CEffectObject* EffectParts = static_cast<Effect*>(pGo)->Get_Part<CEffectObject>(m_iSelectPartsIndex);
 		EffectParts->Get_Component<CVIBuffer_Particle_Point>()->Reset_Simulation();
 		EffectParts->TimeReset();
 	}
@@ -107,7 +108,7 @@ void CParticle_System_Panel::Draw_Timer(CToolObject* pGo)
 		m_bModified = true;
 
 		// 일단은 임시로.
-		CEffectObject* EffectParts = static_cast<Effect*>(pGo)->Get_Part<CEffectObject>(0);
+		CEffectObject* EffectParts = static_cast<Effect*>(pGo)->Get_Part<CEffectObject>(m_iSelectPartsIndex);
 		EffectParts->Get_Component<CVIBuffer_Particle_Point>()->Reset_Simulation();
 		EffectParts->TimeReset();
 	}
@@ -591,13 +592,127 @@ void CParticle_System_Panel::Draw_EffectColor(CToolObject* pGo)
 void CParticle_System_Panel::Draw_Parts(CToolObject* pGo)
 {
 	ImGui::Begin("Effect Parts Setting");
-	ImGui::Text("Effect Add Parts Settings");
 
 	// ContainerObject의 Parts List를 들고오고 size를 통해 Index 조작도 되게끔 한다.
 	Effect* pInstance = static_cast<Effect*>(pGo);
-	if (pInstance == nullptr) return;
+	if (pInstance == nullptr)
+	{
+		ImGui::End();
+		return;
+	}
 
+	static int PartIndex = {};
+	auto PartsList = pInstance->Get_PartList();
+	
+	PartIndex = static_cast<int>(PartsList.size()) - 1;
 
+	if (ImGui::TreeNode("Effect_PartsList##Effect_PartsList"))
+	{
+		std::vector<const char*> iTems;
+		iTems.reserve(static_cast<int>(PartsList.size()));
+
+		for (auto& parts : PartsList)
+			iTems.push_back(parts->Get_Name().c_str());
+		
+		if (ImGui::ListBox("##PartsSelector", &PartIndex, iTems.data(), static_cast<int>(iTems.size()), 6))
+		{
+			m_iSelectPartsIndex = PartIndex;
+			m_bModified |= true;
+
+			if ((iTems.size() - 1) < PartIndex)
+			{
+				ImGui::TreePop();
+				ImGui::End();
+				return;
+			}
+
+			CEffectObject* pSelectdPart = static_cast<Effect*>(pGo)->Get_Part<CEffectObject>(m_iSelectPartsIndex);
+			if (pSelectdPart)
+				m_tCurrentDesc = pSelectdPart->Get_EffectDesc();
+		}
+
+		ImGui::TreePop();
+	}
+	if (ImGui::TreeNode("Edit##Part_Setting"))
+	{
+		if (ImGui::TreeNode("Create##Part_Setting"))
+		{
+			if (ImGui::Button("Create##Part_ObjectSetting"))
+			{
+				// =========	Create	  ==============
+				CGameObject* pResult = { nullptr };
+
+				CEffectObject::Effect_Desc pEffectDesc = {};
+				CTransform::TRANSFORM_DESC transformDesc = {};
+				// =========    트랜스폼   ============
+				transformDesc.vPosition = { 0.f, 0.0f, 0.f };
+				transformDesc.fRotatePerSec = 1.f;
+				transformDesc.fMovePerSec = 1.f;
+
+				pEffectDesc.pMatParent = &(pGo->Get_Component<CTransform>()->Get_WorldMatrix());
+				pEffectDesc.pTransform_Desc = &transformDesc;
+
+				pEffectDesc.wstrLayerTag = L"Effect_Parts";
+				pEffectDesc.iLevelIndex = ENUM_TO_UINT(ELevelType::EFFECT);
+				// ========     이펙트 타입   =========
+				pEffectDesc.eEffectSystemType = E_EffectSystemType::Particle;
+				pEffectDesc.eEffectType = E_EFFECTTYPE::Particle;
+
+				// =========   이펙트 Color Value   ===============
+				pEffectDesc._Effect_Color = Vec4{ 0.f, 0.f, 0.f, 1.f };
+
+				// ========  이펙트 Material 설정   ===========
+				pEffectDesc._Effect_Model_Tag = {};
+				pEffectDesc._Effect_Shader_Tag = {};
+				pEffectDesc._Effect_DiffuseTexture_Tag = {};
+				pEffectDesc._Effect_Mesh_NoiseTexture_Tag = {};
+				pEffectDesc._Effect_DiffuseTexture_Tag = {};
+				pEffectDesc._Effect_ShaderPass = {};
+
+				pEffectDesc._Effect_bUseAtlas = false;
+				pEffectDesc._Effect_TileCount = CEffectObject::_uint2{ 0, 0 };
+
+				// =======   이펙트 스크롤 Value   ===========
+				pEffectDesc._Effect_ScrollSpeed = { 0.f, 0.f };
+
+				// ========   이펙트 왜곡 Scale Value   ==========
+				pEffectDesc._Effect_DistortionScale = { 0.f, 0.f };
+
+				// ==========   이펙트 Sacle Value   ==============
+				pEffectDesc._Effect_StartScale = { 1.f, 1.f, 1.f };
+				pEffectDesc._Effect_EndScale = { 1.f, 1.f, 1.f };
+
+				static_cast<Effect*>(pGo)->Add_Part(static_cast<_uint>(PartsList.size()), ENUM_TO_UINT(ELevelType::EFFECT), L"Prototype_GameObject_Effect_Parts", &pEffectDesc);
+				static_cast<Effect*>(pGo)->Get_Part<CEffectObject>(PartIndex)->Set_Name("DEFAULT_EFFECT");
+			}
+			ImGui::TreePop();
+		}
+		if (ImGui::TreeNode("Name Change##Part_Setting"))
+		{
+			static char nameBuf[128] = {};
+			string effectName = static_cast<Effect*>(pGo)->Get_Part<CEffectObject>(PartIndex)->Get_Name();
+
+			if (nameBuf[0] == '\0' && !effectName.empty())
+			{
+				std::string tmp = effectName;
+				strncpy_s(nameBuf, sizeof(nameBuf), tmp.c_str(), _TRUNCATE);
+			}
+			// ImGui에서 입력 받기
+			ImGui::InputText("##ChangeName_PartSetting", nameBuf, IM_ARRAYSIZE(nameBuf)); ImGui::SameLine();
+
+			if (ImGui::Button("SAVE"))
+			{
+				effectName = nameBuf;
+				static_cast<Effect*>(pGo)->Get_Part<CEffectObject>(PartIndex)->Set_Name(effectName);
+			}
+			ImGui::TreePop();
+		}
+
+		ImGui::TreePop();
+	}
+	
+	ImGui::End();
+	
 }
 
 
