@@ -128,7 +128,7 @@ HRESULT CLoader::Loading_For_Logo()
 		desc.eType = EModelType::ANIM;
 		desc.iPrototypeLevelIndex = ENUM_TO_UINT(ELevelType::STATIC);
 		desc.pMatPreTransform = &matPreTransformScale;
-		desc.wstrModelFolderName = L"TestPlayer";
+		desc.wstrModelFolderName = L"PlayerMoon";
 		m_pGameInstance->Add_Prototype(ENUM_TO_UINT(ELevelType::STATIC), L"Prototype_Component_Model_Master", CModel::Create(m_pDevice, m_pDeviceContext, &desc));
 	}
 	// For. Prototype_Component_Camera
