@@ -17,9 +17,9 @@ struct Channel : IChannel
 
 NS_BEGIN(Engine)
 
-struct OnCameraCut { using Signature = void(_int i, _float f); };
+struct Example { using Signature = void(_int i, _float f); };
 
-// 위에서 선언한 구조체 OnCameraCut
+// 위에서 선언한 구조체 Example
 // using Signautre가 곧 아래 선언한 typename Tag
 class CEventBus_Manager final : public CBase
 {

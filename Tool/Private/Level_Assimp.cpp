@@ -52,17 +52,6 @@ HRESULT CLevel_Assimp::Awake(const _uint iLevelID)
 	Matrix matPreTransformScaling = {};
 	Matrix matPreTransformMapObject = matUECoord * matPreTransformScaling10;
 
-	//Map
-	{
-		//CConverter* pConverter = CConverter::Create(m_pDevice, m_pDeviceContext, SOLUTION_DIR, L"Map/Test/", matUECoord);
-		//pConverter->ReadAndExport();
-		//Safe_Release(pConverter);
-
-		//MSG_BOX("변환 완료");
-
-	}
-
-
 	/*
 	//Sword
 	{

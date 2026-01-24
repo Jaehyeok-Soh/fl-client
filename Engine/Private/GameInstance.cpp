@@ -238,9 +238,9 @@ void CGameInstance::Request_ChangeLevel(_uint iNewLevelID, CLevel* pNewLevel)
 	m_pEvent_Manager->Push_ChangeLevelEvet(desc);
 }
 
-_bool CGameInstance::Is_Awaked() const
+_bool CGameInstance::Is_Awaked(const _uint iLevelID) const
 {
-	return m_pLevel_Manager->Is_Awaked();
+	return m_pLevel_Manager->Is_Awaked(iLevelID);
 }
 
 void CGameInstance::Awake_Level()
@@ -304,9 +304,9 @@ CBase* CGameInstance::Clone_Prototype(EPrototypeType ePrototypeID, _uint iLevelI
 #pragma endregion
 
 #pragma region OBJECT_MANAGER
-HRESULT CGameInstance::Awake_GameObjects(const _uint iCurrentLevelID, const wstring& wstrLayerTag)
+HRESULT CGameInstance::Awake_GameObjects(const _uint iCurrentLevelID)
 {
-	return m_pObject_Manager->Awake(iCurrentLevelID, wstrLayerTag);
+	return m_pObject_Manager->Awake(iCurrentLevelID);
 }
 
 CGameObject* CGameInstance::Add_GameObject(_uint iCloneLevelIndex, const wstring& wstrLayerTag, CGameObject* pGo)

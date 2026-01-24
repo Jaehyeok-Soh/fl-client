@@ -151,6 +151,15 @@
     <Filter Include="98. Defines\pch">
       <UniqueIdentifier>{6a433bfc-3f5f-420f-ac46-69cffb0edf23}</UniqueIdentifier>
     </Filter>
+    <Filter Include="02. GameObjects\UI\UI">
+      <UniqueIdentifier>{6a558198-77c1-41fb-9345-05c1fc4f9daf}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02. GameObjects\UI\Canvas">
+      <UniqueIdentifier>{5d6846d5-10a5-4a42-bb54-26c8e2fde4ee}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02. GameObjects\UI\Layer">
+      <UniqueIdentifier>{d0269bd1-6673-49d6-8c4d-8c813644618a}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="framework.h">
@@ -292,7 +301,10 @@
       <Filter>08.UIData\Manager</Filter>
     </ClInclude>
     <ClInclude Include="..\Public\ToolUI.h">
-      <Filter>02. GameObjects\UI</Filter>
+      <Filter>02. GameObjects\UI\UI</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\ToolCanvas.h">
+      <Filter>02. GameObjects\UI\Canvas</Filter>
     </ClInclude>
     <ClInclude Include="..\Public\ToolObject.h">
       <Filter>02. GameObjects</Filter>
@@ -332,6 +344,9 @@
     </ClInclude>
     <ClInclude Include="pch.h">
       <Filter>98. Defines\pch</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\ToolLayer.h">
+      <Filter>02. GameObjects\UI\Layer</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -469,7 +484,10 @@
       <Filter>08.UIData\Manager</Filter>
     </ClCompile>
     <ClCompile Include="..\Private\ToolUI.cpp">
-      <Filter>02. GameObjects\UI</Filter>
+      <Filter>02. GameObjects\UI\UI</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\ToolCanvas.cpp">
+      <Filter>02. GameObjects\UI\Canvas</Filter>
     </ClCompile>
     <ClCompile Include="..\Private\ToolObject.cpp">
       <Filter>02. GameObjects</Filter>
@@ -509,6 +527,9 @@
     </ClCompile>
     <ClCompile Include="pch.cpp">
       <Filter>98. Defines\pch</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\ToolLayer.cpp">
+      <Filter>02. GameObjects\UI\Layer</Filter>
     </ClCompile>
   </ItemGroup>
 </Project>

@@ -48,28 +48,29 @@ HRESULT CToolUI::Awake(const _uint iCurrentLevelID)
 
 void CToolUI::Update_Priority(const _float fTimeDelta)
 {
-	Super::Update_Priority(fTimeDelta);
+		Super::Update_Priority(fTimeDelta);
 }
 
 void CToolUI::Update(const _float fTimeDelta)
 {
-	Super::Update(fTimeDelta);
+		Super::Update(fTimeDelta);
 }
 
 void CToolUI::Update_Late(const _float fTimeDelta)
 {
-	Super::Update_Late(fTimeDelta);
+		Super::Update_Late(fTimeDelta);
 }
 
 void CToolUI::Ready_Before_Render(const _float fTimeDelta)
 {
-	Super::Ready_Before_Render(fTimeDelta);
+		Super::Ready_Before_Render(fTimeDelta);
 }
 
 HRESULT CToolUI::Render()
 {
+
 	if (FAILED(Super::Render()))
-        return E_FAIL;
+		return E_FAIL;
 
     if (FAILED(Bind_ShaderResources()))
         return E_FAIL;
@@ -78,13 +79,12 @@ HRESULT CToolUI::Render()
     Get_Component<CVIBuffer>()->Bind_Resource();
     Get_Component<CVIBuffer>()->Render();
 
-    // m_pGameInstance->Draw_Text(L"Font_Default", m_wstrText.c_str(), _float2{ Get_PosX(), Get_PosY() }, ::XMVectorSet(0.f, 0.f, 0.f, 1.f));
     return S_OK;
 }
 
 HRESULT CToolUI::Ready_Components(TOOLUI_DESC* pDesc)
 { 
-	if (FAILED(Add_Component<CTexture>(0, pDesc->wstrTextureTag, pDesc)))
+	if (FAILED(Add_Component<CTexture>(ENUM_TO_UINT(ELevelType::UI), pDesc->wstrTextureTag, pDesc)))
         return E_FAIL;
 
     if (FAILED(Add_Component<CShader>(0, L"Prototype_Component_Shader_VtxPosTex", pDesc)))
@@ -124,7 +124,7 @@ CGameObject* CToolUI::Clone(void* pArg)
 	CToolUI* pInstance = new CToolUI(*this);
 	if (FAILED(pInstance->Initialize(pArg)))
 	{
-		MSG_BOX("CToolUI::Create, Clone Failed");
+		MSG_BOX("CToolUI::Clone, Clone Failed");
 		Safe_Release(pInstance);
 	}
 	return pInstance;

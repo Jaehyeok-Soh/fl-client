@@ -51,12 +51,56 @@ void Engine_Utils::Replace(OUT wstring& str, wstring comp, wstring rep)
 
 wstring Engine_Utils::ToWString(string value)
 {
-    return wstring(value.begin(), value.end());
+    if (value.empty())
+        return wstring();
+
+    _int iRequire = ::MultiByteToWideChar(
+        CP_UTF8, MB_ERR_INVALID_CHARS,
+        value.data(),
+        static_cast<_int>(value.size()),
+        nullptr, 0);
+
+    if (iRequire <= 0)
+        return wstring();
+
+    wstring wstrReturn(static_cast<size_t>(iRequire), L'\0');
+
+    _int iWritten = ::MultiByteToWideChar(
+        CP_UTF8, MB_ERR_INVALID_CHARS,
+        value.data(), static_cast<_int>(value.size()),
+        wstrReturn.data(), iRequire);
+
+    if (iWritten <= 0)
+        return wstring();
+
+    return wstrReturn;
 }
 
 string Engine_Utils::ToString(wstring value)
 {
-    return string(value.begin(), value.end());
+    if (value.empty())
+        return string();
+
+    _int iRequire = ::WideCharToMultiByte(
+        CP_UTF8, WC_ERR_INVALID_CHARS,
+        value.data(),
+        static_cast<_int>(value.size()),
+        nullptr, 0, nullptr, nullptr);
+
+    if (iRequire <= 0)
+        return string();
+
+    string strReturn(static_cast<size_t>(iRequire), L'\0');
+
+    _int iWritten = ::WideCharToMultiByte(
+        CP_UTF8, WC_ERR_INVALID_CHARS,
+        value.data(), static_cast<_int>(value.size()),
+        strReturn.data(), iRequire, nullptr, nullptr);
+
+    if (iWritten <= 0)
+        return string();
+
+    return strReturn;
 }
 
 

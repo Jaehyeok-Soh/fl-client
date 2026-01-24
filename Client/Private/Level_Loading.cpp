@@ -17,7 +17,7 @@ HRESULT CLevel_Loading::Initialize(ELevelType eNextLevelID)
 
 	m_eNextLevelID = eNextLevelID;
 
-	if (FAILED(Ready_UI_Layer(L"UI_Layer")))
+	if (FAILED(Ready_UI_Layer(g_wszUILayer)))
 		return E_FAIL;
 
 	if (!(m_pLoader = CLoader::Create(m_pDevice, m_pDeviceContext, eNextLevelID)))
@@ -29,9 +29,6 @@ HRESULT CLevel_Loading::Initialize(ELevelType eNextLevelID)
 HRESULT CLevel_Loading::Awake(const _uint iLevelID)
 {
 	if (FAILED(Super::Awake(iLevelID)))
-		return E_FAIL;
-
-	if (FAILED(m_pGameInstance->Awake_GameObjects(iLevelID, L"UI_Layer")))
 		return E_FAIL;
 
 	return S_OK;
@@ -68,8 +65,6 @@ HRESULT CLevel_Loading::Render()
 		return E_FAIL;
 
 	m_pLoader->Output();
-
-
 	return S_OK;
 }
 
