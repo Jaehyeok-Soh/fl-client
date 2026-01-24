@@ -22,26 +22,39 @@ public:
 
 private:
 	void SetUp_Level();
-	void Create_Canvas();
+	void Make_Canvas();
 	void Edit_Canvas();
 
 	/* 캔버스에 들어갈 레이어를 생성 */
+	void Make_Layers();
+	void Edit_Layers();
 
 	/* 레이어에 들어갈 UI를 생성 */
+	void Make_UI();
+
+	void SetUp_UI_Common_Info();
 	/* UI 타입 지정 -> 버튼인지, 이미지인지, 영상인지 등 */
 	/* UI 텍스쳐를 지정 -> 파일 패스를 저장해야될듯 */
 	/* UI에 붙일 기능을 지정 -> 기능들은 ENUM으로 */
 
+	void UI_List();
 
 private:
 	void Input_Canvas_Tag();
 	void Input_Canvas_TransformInfo();
+	void Input_Layer_Tag();
+
+	void Input_RectTransform();
 
 	/* 버튼 */
-	void Create_Canvas_Btn();
+	void Make_Canvas_Btn();
 	void Setting_Canvas_CustomSize_Btn();
 	void Setting_Canvas_ViewportSize_Btn();
 	
+	void Make_Layer_Btn();
+	void Make_UI_Btn();
+	void Ready_Make_NewUI();
+
 private:
 	CImGui_ToolManager* m_pToolManager = { nullptr };
 	CImGui_UIManager* m_pUIManager = { nullptr };
@@ -56,7 +69,15 @@ private:
 	_bool m_isViewportSize	= { FALSE };
 	_bool m_isEditCanvas = { FALSE };
 
-	_string m_strCurEditor_CanvasTag = {};
+	_bool m_isCreateLayer = { FALSE };
+
+	_bool m_isBeginCreateUI = { FALSE };
+	_bool m_isCreateUI = { FALSE };
+
+	_string m_strCanvasTag = {};
+	_string m_strLayerTag = {};
+
+	int32_t m_iRectTransformIndex = {4};
 
 private:
 	int32_t m_iCurSelectLevelID = {};

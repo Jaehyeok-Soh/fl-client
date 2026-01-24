@@ -5,10 +5,15 @@
 #include "Level_UI.h"
 
 //==========
-// UI
+// ImGui
 //==========
 #include "UI_Inspector.h"
 #include "UI_Hierachy.h"
+
+//==========
+// UI
+//==========
+#include "ToolUI.h"
 
 CLevel_UI::CLevel_UI(ID3D11Device* pDevice, ID3D11DeviceContext* pDeviceContext)
 	: Super(pDevice, pDeviceContext)
@@ -30,6 +35,9 @@ HRESULT CLevel_UI::Awake(const _uint iLevelID)
 
 	if (FAILED(Ready_UI_Inspector()))
 		return E_FAIL;	
+
+	if (FAILED(Ready_UI_Object(L"Layer_UI_Object")))
+		return E_FAIL;
 
 	return S_OK;
 }
@@ -84,6 +92,31 @@ HRESULT CLevel_UI::Ready_UI_Inspector()
 	if (nullptr == p)
 		return E_FAIL;
 	m_GuiElements[ENUM_TO_SZET(Elements::HIERACHY)] = p;
+
+	return S_OK;
+}
+
+HRESULT CLevel_UI::Ready_UI_Object(const _wstring& wstrLayerTag)
+{
+	CGameObject* pResult = { nullptr };
+
+
+	// Prototype_UI_Test_Button
+	CToolUI::TOOLUI_DESC Desc = {};
+	Desc.wstrTextureTag = L"Prototype_Component_Button_Test_Texture";
+	Desc.bAlpha = TRUE;
+	Desc.fSizeX = 1.f;
+	Desc.fSizeY = 1.f;
+	Desc.fX = 100.f;
+	Desc.fY = 100.f;
+	Desc.iLevelIndex = static_cast<uint32_t>(ELevelType::UI);
+
+	pResult = m_pGameInstance->Add_GameObject(Desc.iLevelIndex, L"Prototype_UI_Test_Button", Desc.iLevelIndex, wstrLayerTag, &Desc);
+	if(nullptr == pResult)
+		return E_FAIL;
+
+	if (FAILED(pResult->Awake(Desc.iLevelIndex)))
+		return E_FAIL;
 
 	return S_OK;
 }

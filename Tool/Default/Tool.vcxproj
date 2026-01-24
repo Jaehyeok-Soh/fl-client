@@ -176,6 +176,7 @@
     <ClInclude Include="..\Public\Loader.h" />
     <ClInclude Include="..\Public\Picking_ToolManager.h" />
     <ClInclude Include="..\Public\ToolObject.h" />
+    <ClInclude Include="..\Public\ToolUI.h" />
     <ClInclude Include="..\Public\Tool_Defines.h" />
     <ClInclude Include="..\Public\MainApplication.h" />
     <ClInclude Include="..\Public\Tool_EventDefines.h" />
@@ -224,6 +225,7 @@
     <ClCompile Include="..\Private\MainApplication.cpp" />
     <ClCompile Include="..\Private\Picking_ToolManager.cpp" />
     <ClCompile Include="..\Private\ToolObject.cpp" />
+    <ClCompile Include="..\Private\ToolUI.cpp" />
     <ClCompile Include="..\Private\Tool_Defines.cpp" />
     <ClCompile Include="..\Private\UEMapdataLoader.cpp" />
     <ClCompile Include="..\Private\UEMapdataParser.cpp" />

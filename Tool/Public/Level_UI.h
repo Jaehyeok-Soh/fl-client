@@ -28,7 +28,7 @@ public:
 	virtual HRESULT Render() override;
 private:
 	HRESULT Ready_UI_Inspector();
-	HRESULT Ready_UI_Layer(const wstring& wstrLayerTag);
+	HRESULT Ready_UI_Object(const _wstring& wstrLayerTag);
 
 	array<class CImGui_Base*, ENUM_TO_SZET(Elements::END)> m_GuiElements;
 

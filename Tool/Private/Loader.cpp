@@ -20,6 +20,7 @@
 //=================
 // UI
 //=================
+#include "ToolUI.h"
 
 //=================
 // Resource
@@ -187,6 +188,8 @@ HRESULT CLoader::Loading_For_Camera()
 
 HRESULT CLoader::Loading_For_UI()
 {
+	if(FAILED(m_pGameInstance->Add_Prototype(static_cast<uint32_t>(ELevelType::UI), L"Prototype_UI_Test_Button", CToolUI::Create(EToolObjectType::UI, m_pDevice, m_pDeviceContext))))
+		return E_FAIL;
 
 	m_isFinished = true;
 	return S_OK;
