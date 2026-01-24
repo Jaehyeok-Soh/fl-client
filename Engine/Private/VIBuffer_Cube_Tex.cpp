@@ -1,3 +1,4 @@
+#include "Engine_pch.h"
 #include "VIBuffer_Cube_Tex.h"
 
 CVIBuffer_Cube_Tex::CVIBuffer_Cube_Tex(ID3D11Device* pDevice, ID3D11DeviceContext* pDeviceContext)

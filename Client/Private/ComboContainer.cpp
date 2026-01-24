@@ -1,7 +1,7 @@
-#include "Client_Defines.h"
-#include "GameInstance.h"
-#include "ComboState.h"
+#include "pch.h"
 #include "ComboContainer.h"
+#include "ComboState.h"
+#include "GameInstance.h"
 
 CComboContainer::CComboContainer(CActionState* pOwnerComponent, const string& strName)
 	: Super(pOwnerComponent, strName)

@@ -1,6 +1,6 @@
-#include "Tool_Defines.h"
-#include "ImGui_Layout.h"
+#include "pch.h"
 #include "ImGui_Panel.h"
+#include "ImGui_Layout.h"
 
 CImGui_Panel::CImGui_Panel(const _char* pLabel, CLevel* pOwner, ID3D11Device* pDevice, ID3D11DeviceContext* pDeviceContext)
     : Super(pLabel, pDevice, pDeviceContext)

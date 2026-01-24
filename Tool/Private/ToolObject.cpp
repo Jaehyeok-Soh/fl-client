@@ -1,11 +1,11 @@
-#include "Tool_Defines.h"
-#include "GameInstance.h"
+#include "pch.h"
+#include "ToolObject.h"
 #include "Model.h"
 #include "MaterialInstance.h"
 #include "Collider.h"
 #include "Engine_Utils.h"
 #include "Picking_ToolManager.h"
-#include "ToolObject.h"
+#include "GameInstance.h"
 
 CToolObject::CToolObject(EToolObjectType eType, ID3D11Device* pDevice, ID3D11DeviceContext* pDeviceContext)
     : Super(pDevice, pDeviceContext)
@@ -164,5 +164,3 @@ void CToolObject::Free()
 {
     Super::Free();
 }
-
-

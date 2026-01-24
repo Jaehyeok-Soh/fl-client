@@ -1,3 +1,4 @@
+#include "Engine_pch.h"
 #include "TextureBase.h"
 
 CTextureBase::CTextureBase(ID3D11Device* pDevice, ID3D11DeviceContext* pDeviceContext)

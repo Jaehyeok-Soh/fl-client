@@ -1,6 +1,6 @@
-#include "Client_Defines.h"
-#include "GameInstance.h"
+#include "pch.h"
 #include "StatComponent.h"
+#include "GameInstance.h"
 
 CStatComponent::CStatComponent()
 	: m_pGameInstance(CGameInstance::GetInstance())

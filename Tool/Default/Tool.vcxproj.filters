@@ -85,6 +85,9 @@
     <Filter Include="03. Level\Loading\Loader">
       <UniqueIdentifier>{afe44f16-d8bc-4485-94d6-01fb36c16207}</UniqueIdentifier>
     </Filter>
+    <Filter Include="98. Defines\pch">
+      <UniqueIdentifier>{6a433bfc-3f5f-420f-ac46-69cffb0edf23}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="framework.h">
@@ -216,6 +219,9 @@
     <ClInclude Include="..\Public\Loader.h">
       <Filter>03. Level\Loading\Loader</Filter>
     </ClInclude>
+    <ClInclude Include="pch.h">
+      <Filter>98. Defines\pch</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <Image Include="small.ico">
@@ -341,6 +347,9 @@
     </ClCompile>
     <ClCompile Include="..\Private\Tool_Defines.cpp">
       <Filter>98. Defines</Filter>
+    </ClCompile>
+    <ClCompile Include="pch.cpp">
+      <Filter>98. Defines\pch</Filter>
     </ClCompile>
   </ItemGroup>
 </Project>

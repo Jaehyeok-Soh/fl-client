@@ -1,8 +1,9 @@
+#include "pch.h"
 #include "Level_Loading.h"
 #include "Level_Logo.h"
 #include "TextureBase.h"
-#include "GameInstance.h"
 #include "Loader.h"
+#include "GameInstance.h"
 
 CLevel_Loading::CLevel_Loading(ID3D11Device* pDevice, ID3D11DeviceContext* pDeviceContext)
 	: Super(pDevice, pDeviceContext)

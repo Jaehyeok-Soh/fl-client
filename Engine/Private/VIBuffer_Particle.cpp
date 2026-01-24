@@ -1,3 +1,4 @@
+#include "Engine_pch.h"
 #include "VIBuffer_Particle.h"
 
 CVIBuffer_Particle::CVIBuffer_Particle(ID3D11Device* pDevice, ID3D11DeviceContext* pDeviceContext)

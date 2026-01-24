@@ -1,8 +1,8 @@
-#include "Client_Defines.h"
+#include "pch.h"
+#include "State_Run.h"
 #include "Player.h"
 #include "MainPlayer.h"
 #include "GameInstance.h"
-#include "State_Run.h"
 
 CState_Run::CState_Run(CActionState* pOwnerComponent)
 	: Super(pOwnerComponent, "Run")
@@ -45,8 +45,8 @@ void CState_Run::Update(const _float fTimeDelta)
 		m_fDuration -= m_fInterval;
 	}
 
-	if (Align_Attack(ENUM_TO_UINT(CPlayer::State::LEFTMELEE)))
-		return;
+	//if (Align_Attack(ENUM_TO_UINT(CPlayer::State::LEFTMELEE)))
+	//	return;
 
 	if (Align_Movement(fTimeDelta) == false)
 		Request_Change_State(ENUM_TO_UINT(CPlayer::State::RUNEND));

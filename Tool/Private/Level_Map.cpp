@@ -1,3 +1,5 @@
+#include "pch.h"
+#include "Level_Map.h"
 ///////////////
 // Component //
 ///////////////
@@ -26,7 +28,6 @@
 #include "Level_Loading.h"
 #include "Engine_Utils.h"
 #include "Tool_Defines.h"
-#include "Level_Map.h"
 
 CLevel_Map::CLevel_Map(ID3D11Device* pDevice, ID3D11DeviceContext* pDeviceContext)
 	: Super(pDevice, pDeviceContext)

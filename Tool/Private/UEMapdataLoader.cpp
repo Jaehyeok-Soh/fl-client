@@ -1,13 +1,13 @@
-#include "Tool_Defines.h"
+#include "pch.h"
+#include "UEMapDataLoader.h"
 #include "Transform.h"
 #include <algorithm>
 #include "Engine_Utils.h"
 #include "Engine_GlobalValue.h"
 #include "ToolObject.h"
-#include "GameInstance.h"
 #include "Model.h"
 #include "UEMapdataParser.h"
-#include "UEMapDataLoader.h"
+#include "GameInstance.h"
 
 CUEMapDataLoader::CUEMapDataLoader(ID3D11Device* pDevice, ID3D11DeviceContext* pDeviceContext)
 	: m_pDevice(pDevice)
@@ -120,7 +120,7 @@ HRESULT CUEMapDataLoader::Make_StaticModel(const wstring& wstrRawDataFilePath, c
 		// Unreal엔진에서는 Degree로 표현됨, 이를 radian으로 바꿔줘야함
 		Matrix matRotation = ::XMMatrixRotationRollPitchYaw(
 			::XMConvertToRadians(mapdataOuter.Properties.vPitchYawRoll.x),
-			::XMConvertToRadians(mapdataOuter.Properties.vPitchYawRoll.y),
+			::XMConvertToRadians(mapdataOuter.Properties.vPitchYawRoll.y), 
 			::XMConvertToRadians(mapdataOuter.Properties.vPitchYawRoll.z));
 		pTransform->Set_Info(TRANSFORM_INFO_STATE::RIGHT, matRotation.Right());
 		pTransform->Set_Info(TRANSFORM_INFO_STATE::UP, matRotation.Up());

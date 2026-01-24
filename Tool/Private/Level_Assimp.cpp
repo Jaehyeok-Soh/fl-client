@@ -1,9 +1,9 @@
-#include "Tool_Defines.h"
+#include "pch.h"
+#include "Level_Assimp.h"
 #include "UEMapdataParser.h"
 #include "Importer.h"
 #include "Converter.h"
 #include "ImGui_ToolManager.h"
-#include "Level_Assimp.h"
 
 
 CLevel_Assimp::CLevel_Assimp(ID3D11Device* pDevice, ID3D11DeviceContext* pDeviceContext)
@@ -42,10 +42,9 @@ HRESULT CLevel_Assimp::Awake(const _uint iLevelID)
 	Matrix matPreTransformScaling1000 = Matrix::CreateScale(0.001f, 0.001f, 0.001f);
 
 	Matrix matPreTransformIdentity = Matrix::Identity;
-	Matrix matPreTransformScaling = {};
 	Matrix matPreTransformMapObject = matUECoord * matPreTransformScaling100;
 	{
-		std::filesystem::path test{ "C:/Users/PC/Documents/FinalProject/Resources/Assets/TestPlayer" };
+		std::filesystem::path test{ "C:/Users/PC/Documents/FinalProject/Resources/Assets/Master" };
 		CConverter* pConverter = CConverter::Create(m_pDevice, m_pDeviceContext, SOLUTION_DIR, test.c_str(), matPreTransformIdentity);
 		pConverter->ReadAndExport();
 		Safe_Release(pConverter);

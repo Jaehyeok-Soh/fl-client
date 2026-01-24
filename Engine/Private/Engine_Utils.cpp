@@ -1,3 +1,4 @@
+#include "Engine_pch.h"
 #include "Engine_Utils.h"
 
 _bool Engine_Utils::StartsWith(const string& str, const string& comp)

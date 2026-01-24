@@ -1,3 +1,4 @@
+#include "Engine_pch.h"
 #include "VIBuffer_Terrain.h"
 
 CVIBuffer_Terrain::CVIBuffer_Terrain(ID3D11Device* pDevice, ID3D11DeviceContext* pDeviceContext)

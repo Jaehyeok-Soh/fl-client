@@ -1,5 +1,4 @@
-#include "Tool_Defines.h"
-#include "GameInstance.h"
+#include "pch.h"
 #include "Loader.h"
 #include "UEMapDataLoader.h"
 //=================
@@ -23,7 +22,7 @@
 #include "MaterialInstance.h"
 #include "Material.h"
 #include "Model.h"
-
+#include "GameInstance.h"
 
 CLoader::CLoader(ID3D11Device* pDevice, ID3D11DeviceContext* pDeviceContext, ELevelType eLoadingELevelType)
 	: m_pDevice(pDevice)

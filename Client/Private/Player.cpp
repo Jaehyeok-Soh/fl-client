@@ -1,3 +1,4 @@
+#include "pch.h"
 #include "Navigation.h"
 #include "StatComponent.h"
 #include "MainPlayer.h"
@@ -132,7 +133,7 @@ HRESULT CPlayer::Ready_BaseStates()
     // Idle
     {
         CState_Idle::STATE_DESC desc = {};
-        desc.iAnimIndex = Get_AnimationIndex(L"Animation_Master_IdleLoop");
+        desc.iAnimIndex = Get_AnimationIndex(L"Animation_TestPlayer_Idle");
         desc.bBlend = true;
         desc.bLoop = true;
         if (FAILED(pActionState->Add_State(ENUM_TO_UINT(State::IDLE), CState_Idle::Create(pActionState, &desc))))
@@ -141,15 +142,16 @@ HRESULT CPlayer::Ready_BaseStates()
     // RunStart
     {
         CState_RunStart::STATE_DESC desc = {};
-        desc.iAnimIndex = Get_AnimationIndex(L"Animation_Master_RunStart");
+        desc.iAnimIndex = Get_AnimationIndex(L"Animation_TestPlayer_Run_Loop");
         desc.bBlend = true;
+        desc.bLoop = true;
         if (FAILED(pActionState->Add_State(ENUM_TO_UINT(State::RUNSTART), CState_RunStart::Create(pActionState, &desc))))
             return E_FAIL;
     }
     // Run
     {
         CState_Run::STATE_DESC desc = {};
-        desc.iAnimIndex = Get_AnimationIndex(L"Animation_Master_RunLoop");
+        desc.iAnimIndex = Get_AnimationIndex(L"Animation_TestPlayer_Run_Loop");
         desc.bBlend = true;
         desc.bLoop = true;
         if (FAILED(pActionState->Add_State(ENUM_TO_UINT(State::RUN), CState_Run::Create(pActionState, &desc))))
@@ -158,8 +160,9 @@ HRESULT CPlayer::Ready_BaseStates()
     // RunEnd
     {
         CState_RunEnd::STATE_DESC desc = {};
-        desc.iAnimIndex = Get_AnimationIndex(L"Animation_Master_RunEnd");
+        desc.iAnimIndex = Get_AnimationIndex(L"Animation_TestPlayer_Run_Loop");
         desc.bBlend = true;
+        desc.bLoop = true;
         if (FAILED(pActionState->Add_State(ENUM_TO_UINT(State::RUNEND), CState_RunEnd::Create(pActionState, &desc))))
             return E_FAIL;
     }
@@ -171,7 +174,6 @@ HRESULT CPlayer::Ready_PartObjects(PLAYER_DESC* pDesc)
     {
         CBody::BODY_DESC bodyDesc = {}; 
         bodyDesc.pMatParent = &Get_Component<CTransform>()->Get_WorldMatrix();
-        bodyDesc.bCustomed = false;
         bodyDesc.iLevelIndex = pDesc->iLevelIndex;
         bodyDesc.wstrModelPrototypeName = pDesc->wstrBodyModelTag;
         if (FAILED(Add_Part(Part::BODY, ENUM_TO_UINT(ELevelType::STATIC), L"Prototype_GameObject_Part_Body", &bodyDesc)))

@@ -4,18 +4,6 @@
 
 NS_BEGIN(Engine)
 
-// Animation파일 양식
-// Tag_AnimationName.fbx
-typedef struct tagAnimationFilenameParts
-{
-	std::filesystem::path filePath;
-	wstring wstrTag = L"";
-	wstring wstrAnimationName = L"";
-
-	tagAnimationFilenameParts() {}
-	tagAnimationFilenameParts(const path& path_in) : filePath(path_in) {}
-}ANIMPATHPART;
-
 enum class ConvertType : unsigned int
 {
 	NONANIM = 0,

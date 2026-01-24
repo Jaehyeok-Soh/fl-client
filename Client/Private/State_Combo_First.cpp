@@ -1,7 +1,7 @@
-#include "Client_Defines.h"
+#include "pch.h"
+#include "State_Combo_First.h"
 #include "Player.h"
 #include "GameInstance.h"
-#include "State_Combo_First.h"
 
 CState_Combo_First::CState_Combo_First(CActionState* pOwnerComponent)
     : Super(pOwnerComponent, "ComboFirst")
@@ -42,19 +42,19 @@ void CState_Combo_First::Update(const _float fTimeDelta)
     _int iNewPart = -1;
     ATTACK_DESC desc = {};
 
-    if (Is_AnimTrackPositionBetween(0.3f, 0.4f))
-    {
-        iNewWindow = 0;
-        iNewPart = ENUM_TO_UINT(CPlayer::Part::LEFTHAND);
-        desc.iAttackType = ENUM_TO_UINT(EHitType::LEFT);
-        desc.iDamage = 1;
-        if (m_bFirst == false)
-        {
-            CGameInstance::GetInstance()->Play_RandOneShot(L"HandAttack", 0.2f, 3);
-            CGameInstance::GetInstance()->Play_RandOneShot(L"Player_Hit", 0.3f, 6);
-            m_bFirst = true;
-        }
-    }
+    //if (Is_AnimTrackPositionBetween(0.3f, 0.4f))
+    //{
+    //    iNewWindow = 0;
+    //    iNewPart = ENUM_TO_UINT(CPlayer::Part::LEFTHAND);
+    //    desc.iAttackType = ENUM_TO_UINT(EHitType::LEFT);
+    //    desc.iDamage = 1;
+    //    if (m_bFirst == false)
+    //    {
+    //        CGameInstance::GetInstance()->Play_RandOneShot(L"HandAttack", 0.2f, 3);
+    //        CGameInstance::GetInstance()->Play_RandOneShot(L"Player_Hit", 0.3f, 6);
+    //        m_bFirst = true;
+    //    }
+    //}
 
     Apply_AttackDesc(iNewWindow, iNewPart, &desc);
 }
@@ -65,7 +65,7 @@ HRESULT CState_Combo_First::End()
         return E_FAIL;
 
     m_bFirst = { false };
-    Set_AttackCollider(ENUM_TO_UINT(CPlayer::Part::LEFTHAND), false, nullptr);
+    //Set_AttackCollider(ENUM_TO_UINT(CPlayer::Part::LEFTHAND), false, nullptr);
     return S_OK;
 }
 

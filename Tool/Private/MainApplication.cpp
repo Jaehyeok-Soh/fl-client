@@ -1,4 +1,4 @@
-#include "Tool_Defines.h"
+#include "pch.h"
 #include "MainApplication.h"
 #include "Picking_ToolManager.h"
 #include "VertexData.h"
@@ -309,7 +309,6 @@ void CMainApplication::Free()
 	Safe_Release(m_pDeviceContext);
 	Safe_Release(m_pDevice);
 
-	m_pImGuiManager->DestroyInstance();
 	m_pGameInstance->Destroy_Engine();
 	Super::Free();
 }

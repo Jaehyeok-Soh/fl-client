@@ -1,6 +1,7 @@
-#include "Tool_Defines.h"
-#include <fstream>
+#include "pch.h"
 #include "UEMapdataParser.h"
+#include <fstream>
+
 
 CUEMapdataParser::CUEMapdataParser()
 {

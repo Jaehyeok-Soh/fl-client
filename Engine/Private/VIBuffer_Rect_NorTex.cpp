@@ -1,3 +1,4 @@
+#include "Engine_pch.h"
 #include "VIBuffer_Rect_NorTex.h"
 
 CVIBuffer_Rect_NorTex::CVIBuffer_Rect_NorTex(ID3D11Device* pDevice, ID3D11DeviceContext* pDeviceContext)

@@ -1,3 +1,4 @@
+#include "Engine_pch.h"
 #include "VIBuffer_Rect_Tex.h"
 
 CVIBuffer_Rect_Tex::CVIBuffer_Rect_Tex(ID3D11Device* pDevice, ID3D11DeviceContext* pDeviceContext)
