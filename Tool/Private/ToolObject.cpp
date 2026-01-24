@@ -5,6 +5,7 @@
 #include "Collider.h"
 #include "Engine_Utils.h"
 #include "Picking_ToolManager.h"
+#include "MapObject.h"
 #include "GameInstance.h"
 
 CToolObject::CToolObject(EToolObjectType eType, ID3D11Device* pDevice, ID3D11DeviceContext* pDeviceContext)
@@ -20,6 +21,7 @@ CToolObject::CToolObject(const CToolObject& rhs)
     , m_eType(rhs.m_eType)
 {
 }
+
 
 HRESULT CToolObject::Initialize_Prototype()
 {

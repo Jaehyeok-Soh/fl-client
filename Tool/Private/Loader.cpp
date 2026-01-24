@@ -15,7 +15,7 @@
 //=================
 // Object
 //=================
-
+#include "StaticModel.h"
 //=================
 // Resource
 //=================
@@ -24,6 +24,8 @@
 #include "Material.h"
 #include "Model.h"
 #include "GameInstance.h"
+
+
 
 CLoader::CLoader(ID3D11Device* pDevice, ID3D11DeviceContext* pDeviceContext, ELevelType eLoadingELevelType)
 	: m_pDevice(pDevice)
@@ -107,6 +109,20 @@ HRESULT CLoader::Loading_For_Map()
 	m_pGameInstance->Add_Prototype(ENUM_TO_UINT(ELevelType::MAP), L"Prototype_Component_Collider_AABB", CCollider::Create(m_pDevice, m_pDeviceContext, EColliderType::AABB));
 	// For. Prototype_Component_Collider_OBB
 	m_pGameInstance->Add_Prototype(ENUM_TO_UINT(ELevelType::MAP), L"Prototype_Component_Collider_OBB", CCollider::Create(m_pDevice, m_pDeviceContext, EColliderType::OBB));
+
+	/* Map Data Model */
+	CUEMapDataLoader* pMapDataLoader = CUEMapDataLoader::Create(m_pDevice,m_pDeviceContext);
+	if (pMapDataLoader == nullptr) return E_FAIL;
+	if (FAILED(pMapDataLoader->Make_Prototype(L"../../Resources/Models/Map/Test/Model/")))
+		return E_FAIL;
+	Safe_Release(pMapDataLoader);
+
+
+	//=================
+	// CGameObject
+	//=================
+	m_pGameInstance->Add_Prototype(ENUM_TO_UINT(ELevelType::MAP), L"Prototype_GameObject_StaticModel", CStaticModel::Create(EToolObjectType::MAPOBJECT, m_pDevice, m_pDeviceContext));
+
 
 	m_isFinished = true;
 	return S_OK;

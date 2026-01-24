@@ -182,8 +182,13 @@
     <ClInclude Include="..\Public\Level_Map.h" />
     <ClInclude Include="..\public\Level_UI.h" />
     <ClInclude Include="..\Public\Loader.h" />
+    <ClInclude Include="..\Public\MapObject.h" />
+    <ClInclude Include="..\Public\Panel_MapDataController.h" />
+    <ClInclude Include="..\Public\Panel_MapObjectList.h" />
+    <ClInclude Include="..\Public\Panel_ModelConverter.h" />
     <ClInclude Include="..\Public\CParticle_System_Panel.h" />
     <ClInclude Include="..\Public\Picking_ToolManager.h" />
+    <ClInclude Include="..\Public\StaticModel.h" />
     <ClInclude Include="..\Public\ToolObject.h" />
     <ClInclude Include="..\Public\Tool_Defines.h" />
     <ClInclude Include="..\Public\MainApplication.h" />
@@ -272,8 +277,13 @@
     <ClCompile Include="..\private\Level_UI.cpp" />
     <ClCompile Include="..\Private\Loader.cpp" />
     <ClCompile Include="..\Private\MainApplication.cpp" />
+    <ClCompile Include="..\Private\MapObject.cpp" />
+    <ClCompile Include="..\Private\Panel_MapDataController.cpp" />
+    <ClCompile Include="..\Private\Panel_MapObjectList.cpp" />
+    <ClCompile Include="..\Private\Panel_ModelConverter.cpp" />
     <ClCompile Include="..\Private\CParticle_System_Panel.cpp" />
     <ClCompile Include="..\Private\Picking_ToolManager.cpp" />
+    <ClCompile Include="..\Private\StaticModel.cpp" />
     <ClCompile Include="..\Private\ToolObject.cpp" />
     <ClCompile Include="..\Private\Tool_Defines.cpp" />
     <ClCompile Include="..\Private\UEMapdataLoader.cpp" />

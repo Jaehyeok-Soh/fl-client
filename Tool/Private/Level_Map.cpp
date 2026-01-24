@@ -18,6 +18,8 @@
 // ImGui //
 ///////////
 #include "ImGui_Base.h"
+#include "Panel_MapObjectList.h"
+#include "Panel_MapDataController.h"
 
 /////////////
 // Manager //
@@ -36,7 +38,7 @@ CLevel_Map::CLevel_Map(ID3D11Device* pDevice, ID3D11DeviceContext* pDeviceContex
 {
 	Safe_AddRef(m_pImGuiManager);
 	Safe_AddRef(m_pPickingManager);
-	m_GuiElements.fill(nullptr);
+	m_arrayImGuiPanel.fill(nullptr);
 }
 
 HRESULT CLevel_Map::Initialize()
@@ -71,6 +73,13 @@ HRESULT CLevel_Map::Awake(const _uint iLevelID)
 
 	Ready_Event();
 	m_pImGuiManager->Ready_Events();
+
+
+	/* Cam Setting */
+
+	m_pGameInstance->Get_MainCamera()->Get_Component<CCamera>()->Set_Fov(60.f);
+
+
 	return S_OK;
 }
 
@@ -82,7 +91,7 @@ void CLevel_Map::Update(const _float fTimeDelta)
 	else
 		m_pPickingManager->Picking_ForDummy();
 
-	for (CImGui_Base* pElement : m_GuiElements)
+	for (CImGui_Panel* pElement : m_arrayImGuiPanel)
 	{
 		if (pElement)
 			pElement->Update(fTimeDelta);
@@ -110,26 +119,17 @@ HRESULT CLevel_Map::Render()
 
 void CLevel_Map::Render_Elements()
 {
-	for (CImGui_Base* pElement : m_GuiElements)
+	for (CImGui_Panel* pElement : m_arrayImGuiPanel)
 	{
-		if(pElement)
+		if (pElement)
 			pElement->Render(m_pSelectedObject);
 	}
 }
 
 HRESULT CLevel_Map::Reday_Gui()
 {
-	//m_GuiElements[ENUM_TO_UINT(Elements::Inspector)] = CImGui_Inspector_Map::Create(this, m_pDevice, m_pDeviceContext);
-
-	//{
-	//	CImGui_ObjectList_Panel* pReturn = CImGui_ObjectList_Panel::Create(this, m_pDevice, m_pDeviceContext, ENUM_TO_UINT(ELevelType::MAP));
-	//	pReturn->On_AddLayer(g_wszColMeshLayer, nullptr);
-	//	pReturn->On_AddLayer(g_wszStaticModelLayer, nullptr);
-	//	pReturn->On_AddLayer(g_wszStaticLightLayer, nullptr);
-	//	m_GuiElements[ENUM_TO_UINT(Elements::ObjectList)] = pReturn;
-	//}
-	//
-	//m_GuiElements[ENUM_TO_UINT(Elements::CreateMode)] = CImGui_CreateMode_Panel::Create(this, m_pDevice, m_pDeviceContext);
+	m_arrayImGuiPanel[static_cast<UINT32>(CLevel_Map::Elements::ObjectList)] = CPanel_MapObjectList::Create(" Map Object List ", this  ,m_pDevice , m_pDeviceContext);
+	m_arrayImGuiPanel[static_cast<UINT32>(CLevel_Map::Elements::MapData)] = CPanel_MapDataController::Create(" Map Data Controller ", this, m_pDevice, m_pDeviceContext);
 
 	return S_OK;
 }
@@ -241,11 +241,12 @@ CLevel_Map* CLevel_Map::Create(ID3D11Device* pDevice, ID3D11DeviceContext* pDevi
 void CLevel_Map::Free()
 {
 	Release_Event();
-	for (CImGui_Base* pElement : m_GuiElements)
+	for (CImGui_Panel* pElement : m_arrayImGuiPanel)
 	{
 		Safe_Release(pElement);
 	}
-	m_GuiElements.fill(nullptr);
+	m_arrayImGuiPanel.fill(nullptr);
+
 	Safe_Release(m_pImGuiManager);
 	Safe_Release(m_pPickingManager);
 	Super::Free();

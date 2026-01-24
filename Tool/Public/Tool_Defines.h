@@ -18,6 +18,8 @@ extern HINSTANCE	g_hInstance;
 
 #include <cstdint>
 #include <cmath>
+#include <shobjidl.h>
+
 
 #include "ImGuizmo.h"
 #include "ImSequencer.h"
@@ -28,6 +30,9 @@ extern HINSTANCE	g_hInstance;
 
 #define MAX_ROW 129
 #define MAX_COL 129
+
+#define	TO_RAD  (XM_PI / 180.f)
+#define	To_DEGREE ( 180.f / XM_PI )
 
 namespace Tool
 {
@@ -51,15 +56,7 @@ namespace Tool
 
 	enum class EToolObjectType : unsigned int
 	{
-		TERRAIN = 0,
-		COLMESH,
-		STATICMODEL,
-		DUMMY,
-		LIGHT,
-		COMPONENT_COLLIDER,
-		VERTEXOBJECT,
-		POLYGON,
-		TRIGGERBOX,
+		MAPOBJECT,
 		MESHEFFECT,
 		END
 	};
@@ -68,26 +65,9 @@ namespace Tool
 	{
 		switch (eType)
 		{
-		case Tool::EToolObjectType::TERRAIN:
-			return "TERRAIN";
-		case Tool::EToolObjectType::COLMESH:
-			return "COLMESH";
-		case Tool::EToolObjectType::STATICMODEL:
-			return "STATICMODEL";
-		case Tool::EToolObjectType::DUMMY:
-			return "DUMMY";
-		case Tool::EToolObjectType::LIGHT:
-			return "LIGHT";
-		case Tool::EToolObjectType::COMPONENT_COLLIDER:
-			return "COMPONENT_COLLIDER";
-		case Tool::EToolObjectType::VERTEXOBJECT:
-			return "VERTEXOBJECT";
-		case Tool::EToolObjectType::POLYGON:
-			return "POLYGON";
-		case Tool::EToolObjectType::TRIGGERBOX:
-			return "TRIGGERBOX";
-		case Tool::EToolObjectType::MESHEFFECT:
-			return "MESHEFFECT";
+		case Tool::EToolObjectType::MAPOBJECT:	return "MAPOBJECT";
+		case Tool::EToolObjectType::MESHEFFECT: return "MESHEFFECT";
+		default:								return "NONE";
 		}
 
 		return "NONE";
@@ -95,28 +75,10 @@ namespace Tool
 
 	static EToolObjectType StringToType(const string& strType)
 	{
-		if (::strcmp(strType.c_str(), "TERRAIN") == 0)
-			return EToolObjectType::TERRAIN;
-		else if (::strcmp(strType.c_str(), "COLMESH") == 0)
-			return EToolObjectType::COLMESH;
-		else if (::strcmp(strType.c_str(), "STATICMODEL") == 0)
-			return EToolObjectType::STATICMODEL;
-		else if (::strcmp(strType.c_str(), "DUMMY") == 0)
-			return EToolObjectType::DUMMY;
-		else if (::strcmp(strType.c_str(), "LIGHT") == 0)
-			return EToolObjectType::LIGHT;
-		else if (::strcmp(strType.c_str(), "COMPONENT_COLLIDER") == 0)
-			return EToolObjectType::COMPONENT_COLLIDER;
-		else if (::strcmp(strType.c_str(), "VERTEXOBJECT") == 0)
-			return EToolObjectType::VERTEXOBJECT;
-		else if (::strcmp(strType.c_str(), "POLYGON") == 0)
-			return EToolObjectType::POLYGON;
-		else if (::strcmp(strType.c_str(), "TRIGGERBOX") == 0)
-			return EToolObjectType::TRIGGERBOX;
-		else if (::strcmp(strType.c_str(), "MESHEFFECT") == 0)
-			return EToolObjectType::MESHEFFECT;
-		else
-			return EToolObjectType::END;
+		if		(strType == "MAPOBJECT") return EToolObjectType::MAPOBJECT;
+		else if (strType == "MAPOBJECT") return EToolObjectType::MESHEFFECT;
+
+		return EToolObjectType::END;
 	}
 
 	inline constexpr _tchar g_wszStaticLightLayer[]{ L"StaticLight_Layer" };
@@ -143,6 +105,55 @@ namespace Tool
 
 		EFFECT_PRESET_SNAPSHOT snapShot = {};
 	}EFFECT_PRESET;
+
+#pragma region Enum
+
+
+#pragma region Map
+	// Don't Touch , Talk Before Touch //
+	/*----------------------- Map Tool ---------------------------*/
+	enum class EMapObject_Type
+	{
+		/* 지형지물 = Terrain = Object */
+		STATICMODEL,
+		END,
+	};
+
+
+	static EMapObject_Type MapObjectType_StringToType(const string& strType)
+	{
+		if (strType == "STATICMODEL") return EMapObject_Type::STATICMODEL;
+
+
+		return EMapObject_Type::END;
+	}
+
+	static string MapObjectType_TypeToString(EMapObject_Type eType)
+	{
+
+		switch (eType)
+		{
+		case Tool::EMapObject_Type::STATICMODEL:	return "STATICMODEL";
+		default:									return "NONE";
+		}
+
+		return "NONE";
+
+	}
+
+	/*-----------------------------------------------------------*/
+
+#pragma endregion
+
+
+#pragma endregion
+
+
+#pragma region Struct
+
+#pragma endregion
+
+
 }
 
 using namespace Tool; 

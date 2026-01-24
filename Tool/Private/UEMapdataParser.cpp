@@ -31,13 +31,103 @@ HRESULT CUEMapdataParser::Read_Mapdata()
 	for (const auto& jObj : jArray)
 	{
 		PARSED_MAPDATA_OUTER outer = {};
-		const string type = jObj.value("Type", string{});
-		if (type.find("StaticMesh") == string::npos)
+
+		const string Out = jObj.value("Outer", string{});
+		if (Out.find("LOD") != wstring::npos)
 			continue;
-		outer.strType = jObj["Type"].get<string>();
-		outer.strName = jObj.at("Name").get<string>();
-		outer.Properties = jObj.at("Properties").get<PARSED_MAPDATA_INNER>();
-		m_vecData.push_back(outer);		
+
+		const string type = jObj.value("Type", string{});
+
+		if (!type.compare("StaticMeshComponent"))
+		{
+			if (jObj.contains("Type"))
+				outer.strType = jObj["Type"].get<string>();
+			if (jObj.contains("Name"))
+				outer.strName = jObj["Name"].get<string>();
+			if (jObj.contains("Properties"))
+			{
+				auto& LoadJson = jObj["Properties"];
+
+				if (LoadJson.contains("StaticMesh"))
+				{
+					if (LoadJson["StaticMesh"].contains("ObjectName"))
+						outer.Properties.StaticMesh.strObjectName = LoadJson["StaticMesh"]["ObjectName"].get<string>();
+					if (LoadJson["StaticMesh"].contains("ObjectPath"))
+						outer.Properties.StaticMesh.strObjectPath = LoadJson["StaticMesh"]["ObjectPath"].get<string>();
+				}
+				if (LoadJson.contains("RelativeLocation"))
+				{
+					outer.Properties.vPosition.x = LoadJson["RelativeLocation"]["X"].get<float>();
+					outer.Properties.vPosition.y = LoadJson["RelativeLocation"]["Y"].get<float>();
+					outer.Properties.vPosition.z = LoadJson["RelativeLocation"]["Z"].get<float>();
+				}
+				if (LoadJson.contains("RelativeRotation"))
+				{
+					outer.Properties.vPitchYawRoll.x = LoadJson["RelativeRotation"]["Pitch"].get<float>();
+					outer.Properties.vPitchYawRoll.y = LoadJson["RelativeRotation"]["Yaw"].get<float>();
+					outer.Properties.vPitchYawRoll.z = LoadJson["RelativeRotation"]["Roll"].get<float>();
+				}
+				if (LoadJson.contains("RelativeScale3D"))
+				{
+					outer.Properties.vScale.x = LoadJson["RelativeScale3D"]["X"].get<float>();
+					outer.Properties.vScale.y = LoadJson["RelativeScale3D"]["Y"].get<float>();
+					outer.Properties.vScale.z = LoadJson["RelativeScale3D"]["Z"].get<float>();
+				}
+			}
+		}
+		else if (!type.compare("InstancedStaticMeshComponent"))
+		{
+			if(jObj.contains("Type"))
+				outer.strType = jObj["Type"].get<string>();
+			if (jObj.contains("Name"))
+				outer.strName = jObj["Name"].get<string>();
+			if (jObj.contains("Properties"))
+			{
+				auto& LoadJson = jObj["Properties"];
+
+				if (LoadJson.contains("StaticMesh"))
+				{
+					if(LoadJson["StaticMesh"].contains("ObjectName"))
+						outer.Properties.StaticMesh.strObjectName = LoadJson["StaticMesh"]["ObjectName"].get<string>();
+					if (LoadJson["StaticMesh"].contains("ObjectPath"))
+						outer.Properties.StaticMesh.strObjectPath = LoadJson["StaticMesh"]["ObjectPath"].get<string>();
+				}
+			}
+
+			if (jObj.contains("PerInstanceSMData"))
+			{
+				auto& LoadJson = jObj["PerInstanceSMData"];
+				if (jObj.contains("TransformData"))
+				{
+					auto& LoadJson = jObj["TransformData"];
+					if (LoadJson.contains("Rotation"))
+					{
+						outer.Properties.vPitchYawRoll.x = LoadJson["Rotation"]["Pitch"].get<float>();
+						outer.Properties.vPitchYawRoll.y = LoadJson["Rotation"]["Yaw"].get<float>();
+						outer.Properties.vPitchYawRoll.z = LoadJson["Rotation"]["Roll"].get<float>();
+					}
+					if (LoadJson.contains("Translation"))
+					{
+						outer.Properties.vPosition.x = LoadJson["Translation"]["X"].get<float>();
+						outer.Properties.vPosition.y = LoadJson["Translation"]["Y"].get<float>();
+						outer.Properties.vPosition.z = LoadJson["Translation"]["Z"].get<float>();
+					}
+					if (LoadJson.contains("Scale3D"))
+					{
+						outer.Properties.vScale.x = LoadJson["Scale3D"]["X"].get<float>();
+						outer.Properties.vScale.y = LoadJson["Scale3D"]["Y"].get<float>();
+						outer.Properties.vScale.z = LoadJson["Scale3D"]["Z"].get<float>();
+					}
+				}
+			}
+
+		}
+		else
+			continue;
+
+		string str = outer.Properties.StaticMesh.strObjectPath;
+
+		m_vecData.push_back(outer);
 	}
 	ifs.close();
 	return S_OK;

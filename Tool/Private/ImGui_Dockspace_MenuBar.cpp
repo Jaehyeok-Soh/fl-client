@@ -59,7 +59,7 @@ void CImGui_Dockspace_MenuBar::Open_FileDialog()
 		// ParsingData
 		if (result.ends_with(L"_Parsed.json"))
 		{
-			//Load_ParsingData(result);
+
 		}
 		// MyData
 		else
