@@ -82,13 +82,13 @@ HRESULT CLevel_UI::Render()
 
 HRESULT CLevel_UI::Ready_UI_Inspector()
 {
-	CImGui_Base* p = CUI_Inspector::Create("UI_Inspector", CLevel_Loading::Create(m_pDevice, m_pDeviceContext, ELevelType::UI), m_pDevice, m_pDeviceContext);
+	CImGui_Base* p = CUI_Inspector::Create("[[ UI Creater ]]", CLevel_Loading::Create(m_pDevice, m_pDeviceContext, ELevelType::UI), m_pDevice, m_pDeviceContext);
 	if (nullptr == p)
 		return E_FAIL;	
 
 	m_GuiElements[ENUM_TO_SZET(Elements::INSPECTOR)] = p;
 
-	p = CUI_Hierachy::Create("UI_Hierachy", CLevel_Loading::Create(m_pDevice, m_pDeviceContext, ELevelType::UI), m_pDevice, m_pDeviceContext);
+	p = CUI_Hierachy::Create("[[ UI List Viewer ]]", CLevel_Loading::Create(m_pDevice, m_pDeviceContext, ELevelType::UI), m_pDevice, m_pDeviceContext);
 	if (nullptr == p)
 		return E_FAIL;
 	m_GuiElements[ENUM_TO_SZET(Elements::HIERACHY)] = p;

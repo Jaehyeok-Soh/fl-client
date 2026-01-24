@@ -21,6 +21,7 @@ public:
 	virtual HRESULT Render(CToolObject* pGo) override;
 
 private:
+	void Load_Data();
 	void SetUp_Level();
 	void Make_Canvas();
 	void Edit_Canvas();

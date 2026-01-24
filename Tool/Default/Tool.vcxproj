@@ -149,6 +149,7 @@
     <ClInclude Include="..\Public\CEffectObject.h" />
     <ClInclude Include="..\Public\Effect.h" />
     <ClInclude Include="..\Public\EffectType_Selection_Panel.h" />
+    <ClInclude Include="..\Public\ToolLayer.h" />
     <ClInclude Include="..\Public\Tool_ContainerObject.h" />
     <ClInclude Include="..\Public\Tool_PartObject.h" />
     <ClInclude Include="..\Public\GodInput.h" />
@@ -212,6 +213,7 @@
     <ClCompile Include="..\Private\CEffectObject.cpp" />
     <ClCompile Include="..\Private\Effect.cpp" />
     <ClCompile Include="..\Private\EffectType_Selection_Panel.cpp" />
+    <ClCompile Include="..\Private\ToolLayer.cpp" />
     <ClCompile Include="..\Private\Tool_ContainerObject.cpp" />
     <ClCompile Include="..\Private\Tool_PartObject.cpp" />
     <ClCompile Include="..\Private\GodInput.cpp" />

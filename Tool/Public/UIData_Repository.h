@@ -4,10 +4,8 @@
 #undef new
 #include "json.hpp"
 using json = nlohmann::json;
+using order_json = nlohmann::ordered_json;
 #pragma pop_macro("new")
-
-using json = nlohmann::json;
-
 
 NS_BEGIN(Tool)
 typedef struct tagCanvasData CANVAS_DATA;
@@ -35,8 +33,8 @@ private:
 	virtual ~CUIData_Repository() = default;
 
 public:
-	void Road_UIData();
-	void Save_UIData();
+	HRESULT Load_UIData(const _wstring& wstrSaveFilePath, OUT vector<CANVAS_DATA>& OutVec);
+	HRESULT Save_UIData(const _wstring& wstrSaveFilePath);
 
 private:
 	vector<CANVAS_DATA> m_vecCanvasData;
@@ -179,7 +177,11 @@ typedef struct tagGenericUIData
 
 }GENERIC_UI_DATA;
 
-void to_json(json& _j, const CANVAS_DATA& _tData);
-void from_json(const json& _j, CANVAS_DATA& _tData);
+void to_json(order_json& _j, const CANVAS_DATA& _tData);
+void from_json(const order_json& _j, CANVAS_DATA& _tData);
+void to_json(order_json& _j, const LAYER_DATA& _tData);
+void from_json(const order_json& _j, LAYER_DATA& _tData);
+void to_json(order_json& _j, const GENERIC_UI_DATA& _tData);
+void from_json(const order_json& _j, GENERIC_UI_DATA& _tData);
 
 NS_END

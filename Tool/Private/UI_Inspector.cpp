@@ -2,6 +2,7 @@
 #include "UI_Inspector.h"
 #include "ImGui_ToolManager.h"
 #include "ImGui_UIManager.h"
+#include "UIData_Repository.h"
 #include "ToolUI.h"
 
 CUI_Inspector::CUI_Inspector(const _char* pLabel, CLevel* pOwner, ID3D11Device* pDevice, ID3D11DeviceContext* pDeviceContext)
@@ -38,7 +39,8 @@ HRESULT CUI_Inspector::Render(CToolObject* pGo)
 	
 	/* 씬 */
 	SetUp_Level();
-	
+	Load_Data();
+
 	/* 캔버스 태그 받고 생성 */
 	Make_Canvas();
 
@@ -52,17 +54,34 @@ HRESULT CUI_Inspector::Render(CToolObject* pGo)
 
 		/* 레이어 선택 */
 		Edit_Layers();
-
-		/* UI를 만들기 버튼을 눌렀는지 */
-		if (m_isCreateUI)
-		{
-		
-		}
 	}
 
 
 	ImGui::End();
 	return S_OK;
+}
+
+void CUI_Inspector::Load_Data()
+{
+	if (ImGui::Button("Load UI Data", ImVec2(0, 0)))
+	{
+		OPENFILENAMEW ofn{};
+		_tchar szFile[MAX_PATH] = { 0 };
+
+		ofn.lStructSize = sizeof(OPENFILENAMEW);
+		ofn.hwndOwner = g_hWnd;
+		ofn.lpstrFile = szFile;
+		ofn.nMaxFile = MAX_PATH;
+		ofn.lpstrFilter = L"Json Files (*.json)\0*.json\0All Files (*.*)\0*.*\0\0";
+		ofn.nFilterIndex = 1;
+		ofn.Flags = OFN_PATHMUSTEXIST | OFN_FILEMUSTEXIST | OFN_NOCHANGEDIR;
+
+		if (::GetOpenFileNameW(&ofn) == TRUE)
+		{
+			wstring result = szFile;
+			CUIData_Repository::GetInstance()->Load_UIData(result, m_pUIManager->Get_CurCanvas_Ref());
+		}
+	}
 }
 
 void CUI_Inspector::SetUp_Level()
@@ -213,11 +232,16 @@ void CUI_Inspector::Add_NewUI()
 void CUI_Inspector::Edit_UI()
 {
 	SetUp_UI_Common_Info();
+
+	if (ImGui::Button("Save UI"))
+	{
+		CUIData_Repository::GetInstance()->Save_UIData(L"../../Resources/Data/UIData/Data.json");
+	}
 }
 
 void CUI_Inspector::SetUp_UI_Common_Info()
 {
-	if (!ImGui::Begin("UI Palette"))
+	if (!ImGui::Begin("[[ Inspector ]]"))
 	{
 		ImGui::End();
 		return;

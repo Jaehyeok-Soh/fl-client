@@ -1,8 +1,10 @@
 #pragma once
 #include "UIObject.h"
 #include "Tool_Defines.h"
+#include "UIData_Repository.h"
 
 NS_BEGIN(Tool)
+
 
 class CToolCanvas final : public CUIObject
 {
@@ -33,6 +35,9 @@ public:
 private:
 	HRESULT Ready_Components(TOOLUI_DESC* pDesc);
 	HRESULT Bind_ShaderResources();
+
+private:
+	CANVAS_DATA m_tData = {};
 
 public:
 	static CToolCanvas* Create(EToolObjectType eType, ID3D11Device* pDevice, ID3D11DeviceContext* pDeviceContext);

@@ -157,6 +157,9 @@
     <Filter Include="02. GameObjects\UI\Canvas">
       <UniqueIdentifier>{5d6846d5-10a5-4a42-bb54-26c8e2fde4ee}</UniqueIdentifier>
     </Filter>
+    <Filter Include="02. GameObjects\UI\Layer">
+      <UniqueIdentifier>{d0269bd1-6673-49d6-8c4d-8c813644618a}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="framework.h">
@@ -342,6 +345,9 @@
     <ClInclude Include="pch.h">
       <Filter>98. Defines\pch</Filter>
     </ClInclude>
+    <ClInclude Include="..\Public\ToolLayer.h">
+      <Filter>02. GameObjects\UI\Layer</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <Image Include="small.ico">
@@ -521,6 +527,9 @@
     </ClCompile>
     <ClCompile Include="pch.cpp">
       <Filter>98. Defines\pch</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\ToolLayer.cpp">
+      <Filter>02. GameObjects\UI\Layer</Filter>
     </ClCompile>
   </ItemGroup>
 </Project>
