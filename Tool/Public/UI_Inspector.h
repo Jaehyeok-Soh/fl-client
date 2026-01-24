@@ -47,6 +47,8 @@ private:
 
 	void Input_RectTransform();
 
+	_bool ScrubLabel_Float(const char* labelText, float* v, float speedPerPixel, float vMin = -FLT_MAX, float vMax = FLT_MAX);
+
 	/* ¹öÆ° */
 	void Make_Canvas_Btn();
 	void Setting_Canvas_CustomSize_Btn();

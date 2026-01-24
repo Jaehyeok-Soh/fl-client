@@ -103,6 +103,12 @@
     <Filter Include="01. MainApplication">
       <UniqueIdentifier>{b2ad5ea6-fa9c-42e2-920e-65fa32a6965c}</UniqueIdentifier>
     </Filter>
+    <Filter Include="02. GameObjects\UI\UI">
+      <UniqueIdentifier>{6a558198-77c1-41fb-9345-05c1fc4f9daf}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02. GameObjects\UI\Canvas">
+      <UniqueIdentifier>{5d6846d5-10a5-4a42-bb54-26c8e2fde4ee}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="framework.h">
@@ -247,7 +253,10 @@
       <Filter>08.UIData\Manager</Filter>
     </ClInclude>
     <ClInclude Include="..\Public\ToolUI.h">
-      <Filter>02. GameObjects\UI</Filter>
+      <Filter>02. GameObjects\UI\UI</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\ToolCanvas.h">
+      <Filter>02. GameObjects\UI\Canvas</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -388,7 +397,10 @@
       <Filter>08.UIData\Manager</Filter>
     </ClCompile>
     <ClCompile Include="..\Private\ToolUI.cpp">
-      <Filter>02. GameObjects\UI</Filter>
+      <Filter>02. GameObjects\UI\UI</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\ToolCanvas.cpp">
+      <Filter>02. GameObjects\UI\Canvas</Filter>
     </ClCompile>
   </ItemGroup>
 </Project>

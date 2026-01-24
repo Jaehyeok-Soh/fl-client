@@ -175,6 +175,7 @@
     <ClInclude Include="..\public\Level_UI.h" />
     <ClInclude Include="..\Public\Loader.h" />
     <ClInclude Include="..\Public\Picking_ToolManager.h" />
+    <ClInclude Include="..\Public\ToolCanvas.h" />
     <ClInclude Include="..\Public\ToolObject.h" />
     <ClInclude Include="..\Public\ToolUI.h" />
     <ClInclude Include="..\Public\Tool_Defines.h" />
@@ -224,6 +225,7 @@
     <ClCompile Include="..\Private\Loader.cpp" />
     <ClCompile Include="..\Private\MainApplication.cpp" />
     <ClCompile Include="..\Private\Picking_ToolManager.cpp" />
+    <ClCompile Include="..\Private\ToolCanvas.cpp" />
     <ClCompile Include="..\Private\ToolObject.cpp" />
     <ClCompile Include="..\Private\ToolUI.cpp" />
     <ClCompile Include="..\Private\Tool_Defines.cpp" />

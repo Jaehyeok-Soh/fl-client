@@ -253,6 +253,16 @@ GENERIC_UI_DATA* CImGui_UIManager::Get_UIData_Ptr(uint32_t UIIndex)
 	return &Get_CurUIDatas_Ref()[UIIndex];
 }
 
+CToolUI* CImGui_UIManager::Get_UI_Ptr(uint32_t UIIndex)
+{
+	if (UIIndex >= Get_NumUI(m_iCurCanvasIndex, m_iCurLayerIndex))
+	{
+		MSG_BOX("CImGui_UIManager::Get_UIData_Ptr, Index Out of Range");
+		return nullptr;
+	}
+	return Get_CurLayers_Ref()[m_iCurLayerIndex].vecUIObjects[UIIndex];
+}
+
 void CImGui_UIManager::Free()
 {
 	Super::Free();

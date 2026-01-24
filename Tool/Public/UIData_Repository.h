@@ -169,14 +169,13 @@ typedef struct tagGenericUIData
 	_string strName;
 
 	uint32_t iUIType;
-
 	uint32_t iRectTransformType;
 
 	int32_t iWidth;
 	int32_t iHeight;
-	int32_t iPosX;
-	int32_t iPosY;
-	int32_t iPosZ;
+	_float fPosX;
+	_float fPosY;
+	_float fPosZ;
 
 }GENERIC_UI_DATA;
 

@@ -1,6 +1,7 @@
 #include "UI_Inspector.h"
 #include "ImGui_ToolManager.h"
 #include "ImGui_UIManager.h"
+#include "ToolUI.h"
 
 CUI_Inspector::CUI_Inspector(const _char* pLabel, CLevel* pOwner, ID3D11Device* pDevice, ID3D11DeviceContext* pDeviceContext)
 	:Super(pLabel, pOwner, pDevice, pDeviceContext),
@@ -446,25 +447,82 @@ void CUI_Inspector::Input_RectTransform()
 	ImGui::SetNextItemWidth(90.f);
 	ImGui::InputScalar("##UISizeY", ImGuiDataType_S32, &m_pUIManager->Get_UIData_Ptr(m_pUIManager->Get_CurUIIndex())->iHeight);
 
+
 	/* Pos X / Y / Z */
-	ImGui::TextUnformatted("X :");
-	ImGui::SameLine();
-	ImGui::SetNextItemWidth(60.f);
-	ImGui::InputScalar("##UIPosX", ImGuiDataType_S32, &m_pUIManager->Get_UIData_Ptr(m_pUIManager->Get_CurUIIndex())->iPosX);
+	auto* pData = m_pUIManager->Get_UIData_Ptr(m_pUIManager->Get_CurUIIndex());
+
+	ImGui::PushID("UIPosX");
+	ScrubLabel_Float("X :", &pData->fPosX, 0.01f);
+	ImGui::SetNextItemWidth(100.f);
+	{
+		float step = 0.1f, step_fast = 1.0f;
+		ImGui::InputScalar("##UIPosX", ImGuiDataType_Float, &pData->fPosX, &step, &step_fast, "%.1f");
+	}
+	ImGui::PopID();
 
 	ImGui::SameLine(0.f, 16.f);
 
-	ImGui::TextUnformatted("Y :");
-	ImGui::SameLine();
-	ImGui::SetNextItemWidth(60.f);
-	ImGui::InputScalar("##UIPosY", ImGuiDataType_S32, &m_pUIManager->Get_UIData_Ptr(m_pUIManager->Get_CurUIIndex())->iPosY);
+	ImGui::PushID("UIPosY");
+	ScrubLabel_Float("Y :", &pData->fPosY, 0.01f);
+	ImGui::SetNextItemWidth(100.f);
+	{
+		float step = 0.1f, step_fast = 1.0f;
+		ImGui::InputScalar("##UIPosY", ImGuiDataType_Float, &pData->fPosY, &step, &step_fast, "%.1f");
+	}
+	ImGui::PopID();
 
 	ImGui::SameLine(0.f, 16.f);
 
-	ImGui::TextUnformatted("Z :");
+	ImGui::PushID("UIPosZ");
+	ScrubLabel_Float("Z :", &pData->fPosZ, 0.01f);
+	ImGui::SetNextItemWidth(100.f);
+	{
+		float step = 0.1f, step_fast = 1.0f;
+		ImGui::InputScalar("##UIPosZ", ImGuiDataType_Float, &pData->fPosZ, &step, &step_fast, "%.1f");
+	}
+	ImGui::PopID();
+
+	m_pUIManager->Get_UI_Ptr(m_pUIManager->Get_CurUIIndex())->Set_Position(
+		static_cast<_float>(m_pUIManager->Get_UIData_Ptr(m_pUIManager->Get_CurUIIndex())->fPosX),
+		static_cast<_float>(m_pUIManager->Get_UIData_Ptr(m_pUIManager->Get_CurUIIndex())->fPosY));
+}
+
+
+_bool CUI_Inspector::ScrubLabel_Float(const char* labelText, float* v, float speedPerPixel = 0.01f, float vMin, float vMax)
+{
+	ImVec2 pos = ImGui::GetCursorScreenPos();
+	ImVec2 size = ImGui::CalcTextSize(labelText);
+
+	ImGui::InvisibleButton("##ScrubLabel", size);
+
+	if (ImGui::IsItemHovered())
+		ImGui::SetMouseCursor(ImGuiMouseCursor_ResizeEW);
+
+	bool changed = false;
+
+	if (ImGui::IsItemActive())
+	{
+		float dx = ImGui::GetIO().MouseDelta.x;
+		if (dx != 0.f)
+		{
+			float scale = 1.f;
+			if (ImGui::GetIO().KeyShift) scale = 10.f;
+			if (ImGui::GetIO().KeyCtrl)  scale = 0.1f;
+
+			*v += dx * speedPerPixel * scale;
+
+			if (vMin < vMax)
+			{
+				if (*v < vMin) *v = vMin;
+				if (*v > vMax) *v = vMax;
+			}
+			changed = true;
+		}
+	}
+	ImGui::SetCursorScreenPos(pos);
+	ImGui::TextUnformatted(labelText);
 	ImGui::SameLine();
-	ImGui::SetNextItemWidth(60.f);
-	ImGui::InputScalar("##UIPosZ", ImGuiDataType_S32, &m_pUIManager->Get_UIData_Ptr(m_pUIManager->Get_CurUIIndex())->iPosZ);
+	return changed;
 }
 
 void CUI_Inspector::Make_Canvas_Btn()

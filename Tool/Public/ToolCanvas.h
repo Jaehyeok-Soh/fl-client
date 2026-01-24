@@ -4,7 +4,7 @@
 
 NS_BEGIN(Tool)
 
-class CToolUI final : public CUIObject
+class CToolCanvas final : public CUIObject
 {
 	using Super = CUIObject;
 public:
@@ -15,9 +15,9 @@ public:
 	}TOOLUI_DESC;
 
 private:
-	CToolUI(ID3D11Device* pDevice, ID3D11DeviceContext* pDeviceContext);
-	CToolUI(const CToolUI& rhs);
-	virtual ~CToolUI() = default;
+	CToolCanvas(ID3D11Device* pDevice, ID3D11DeviceContext* pDeviceContext);
+	CToolCanvas(const CToolCanvas& rhs);
+	virtual ~CToolCanvas() = default;
 
 public:
 	virtual HRESULT Initialize_Prototype() override;
@@ -35,7 +35,7 @@ private:
 	HRESULT Bind_ShaderResources();
 
 public:
-	static CToolUI* Create(EToolObjectType eType, ID3D11Device* pDevice, ID3D11DeviceContext* pDeviceContext);
+	static CToolCanvas* Create(EToolObjectType eType, ID3D11Device* pDevice, ID3D11DeviceContext* pDeviceContext);
 	CGameObject* Clone(void* pArg);
 	virtual void Free() override;
 };

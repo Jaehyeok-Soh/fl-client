@@ -52,6 +52,7 @@ public:
 	CANVAS_DATA* Get_CanvasData_Ptr(uint32_t CanvasIndex);
 	LAYER_DATA*	Get_LayerData_Ptr(uint32_t LayerIndex);
 	GENERIC_UI_DATA* Get_UIData_Ptr(uint32_t UIIndex);
+	CToolUI* Get_UI_Ptr(uint32_t UIIndex);
 
 	uint32_t Get_CurCanvasIndex() { return m_iCurCanvasIndex; }
 	uint32_t Get_CurLayerIndex() { return m_iCurLayerIndex; }
