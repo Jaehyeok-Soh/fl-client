@@ -5,6 +5,8 @@
 #include "Engine_Utils.h"
 #include "ImGui_ToolManager.h"
 #include "Level_Loading.h"
+#include "ImGui_UIManager.h"
+#include "UIData_Repository.h"
 //=================
 // GameObject
 //=================
@@ -319,6 +321,8 @@ void CMainApplication::Free()
 {
 	Safe_Release(m_pImGuiManager);
 	CPicking_ToolManager::GetInstance()->DestroyInstance();
+	CUIData_Repository::GetInstance()->DestroyInstance();
+	CImGui_UIManager::GetInstance()->DestroyInstance();
 	Safe_Release(m_pGameInstance);
 	Safe_Release(m_pDeviceContext);
 	Safe_Release(m_pDevice);
