@@ -11,9 +11,10 @@ CLevel_Manager::CLevel_Manager()
 
 HRESULT CLevel_Manager::Change_Level(_uint iNewLevelID, CLevel* pNewLevel)
 {
+	m_bAwaked = false;
+
 	if (m_pCurrentLevel)
 	{
-		m_bAwaked = false;
 		m_pGameInstance->Clear(m_iCurrentLevelID);
 	}
 
@@ -33,6 +34,7 @@ HRESULT CLevel_Manager::Awake()
 		MSG_BOX("CLevel_Manager::Awake, m_pCurrentLevel Failed");
 		return E_FAIL;
 	}
+
 	m_bAwaked = true;
 	return S_OK;
 }
@@ -53,6 +55,14 @@ HRESULT CLevel_Manager::Render()
 const Vec4& CLevel_Manager::Get_ClearColor() const
 {
 	return m_pCurrentLevel->Get_ClearColor();
+}
+
+_bool CLevel_Manager::Is_Awaked(const _uint iLevelID) const
+{
+	if (iLevelID != m_iCurrentLevelID)
+		return false;
+
+	return m_bAwaked;
 }
 
 CLevel_Manager* CLevel_Manager::Create()

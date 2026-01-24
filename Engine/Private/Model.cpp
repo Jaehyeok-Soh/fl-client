@@ -12,7 +12,7 @@
 
 CModel::CModel(ID3D11Device* pDevice, ID3D11DeviceContext* pDeviceContext)
 	: Super()
-	, m_pDevice(pDevice)
+	, m_pDevice(pDevice) 
 	, m_pDeviceContext(pDeviceContext)
 {
 	m_matPreTransform = Matrix::Identity;
@@ -130,7 +130,7 @@ HRESULT CModel::Initialize(void* pArg)
 	{
 		for (size_t i = 0; i < iMaterialCount; ++i)
 		{
-			if (FAILED(Change_MI(i, Engine_Utils::MI_ToWString(EMaterialInstanceType::Default))))
+			if (FAILED(Change_MI((_uint)i, Engine_Utils::MI_ToWString(EMaterialInstanceType::Default))))
 				return E_FAIL;
 		}
 
@@ -145,7 +145,7 @@ HRESULT CModel::Initialize(void* pArg)
 
 			for (size_t i = 0; i < iMaterialCount; ++i)
 			{
-				if (FAILED(Change_MI(i, Engine_Utils::MI_ToWString(pDesc->spanMIs[i]))))
+				if (FAILED(Change_MI((_uint)i, Engine_Utils::MI_ToWString(pDesc->spanMIs[i]))))
 					return E_FAIL;
 
 				m_vecPasses[i] = pDesc->spanShaderPassesByMesh[i];

@@ -4,16 +4,15 @@
 #undef new
 #include "json.hpp"
 using json = nlohmann::json;
+using order_json = nlohmann::ordered_json;
 #pragma pop_macro("new")
-
-using json = nlohmann::json;
-
 
 NS_BEGIN(Tool)
 typedef struct tagCanvasData CANVAS_DATA;
 typedef struct tagLayerData LAYER_DATA;
 typedef struct tagGenericUIData GENERIC_UI_DATA;
 
+class CToolUI;
 
 enum class EUiType {
 	IMAGE_2D = 0, IMAGE_3D, BUTTON, TEXT, VIDEO, END
@@ -34,8 +33,8 @@ private:
 	virtual ~CUIData_Repository() = default;
 
 public:
-	void Road_UIData();
-	void Save_UIData();
+	HRESULT Load_UIData(const _wstring& wstrSaveFilePath, OUT vector<CANVAS_DATA>& OutVec);
+	HRESULT Save_UIData(const _wstring& wstrSaveFilePath);
 
 private:
 	vector<CANVAS_DATA> m_vecCanvasData;
@@ -143,11 +142,11 @@ typedef struct tagCanvasData
 	_string strTag;
 	_bool isUsingViewport;
 
-	int32_t iWidth;
-	int32_t iHeight;
-	int32_t iPosX;
-	int32_t iPosY;
-	int32_t iPosZ;
+	_float fWidth;
+	_float fHeight;
+	_float fPosX;
+	_float fPosY;
+	_float fPosZ;
 
 	vector<LAYER_DATA> vecLayers;
 }CANVAS_DATA;
@@ -158,23 +157,31 @@ typedef struct tagLayerData
 
 	vector<GENERIC_UI_DATA> vecUIData;
 
+	/* For.Runtime */
+	vector<CToolUI*> vecUIObjects;
 }LAYER_DATA;
 
 typedef struct tagGenericUIData
 {
-	uint32_t iUIType;
+	/* For.Runtime */
+	_string strName;
 
+	uint32_t iUIType;
 	uint32_t iRectTransformType;
 
-	int32_t iWidth;
-	int32_t iHeight;
-	int32_t iPosX;
-	int32_t iPosY;
-	int32_t iPosZ;
+	_float fWidth;
+	_float fHeight;
+	_float fPosX;
+	_float fPosY;
+	_float fPosZ;
 
 }GENERIC_UI_DATA;
 
-void to_json(json& _j, const CANVAS_DATA& _tData);
-void from_json(const json& _j, CANVAS_DATA& _tData);
+void to_json(order_json& _j, const CANVAS_DATA& _tData);
+void from_json(const order_json& _j, CANVAS_DATA& _tData);
+void to_json(order_json& _j, const LAYER_DATA& _tData);
+void from_json(const order_json& _j, LAYER_DATA& _tData);
+void to_json(order_json& _j, const GENERIC_UI_DATA& _tData);
+void from_json(const order_json& _j, GENERIC_UI_DATA& _tData);
 
 NS_END

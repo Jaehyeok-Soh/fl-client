@@ -149,6 +149,7 @@
     <ClInclude Include="..\Public\CEffectObject.h" />
     <ClInclude Include="..\Public\Effect.h" />
     <ClInclude Include="..\Public\EffectType_Selection_Panel.h" />
+    <ClInclude Include="..\Public\ToolLayer.h" />
     <ClInclude Include="..\Public\Tool_ContainerObject.h" />
     <ClInclude Include="..\Public\Tool_PartObject.h" />
     <ClInclude Include="..\Public\GodInput.h" />
@@ -190,6 +191,7 @@
     <ClInclude Include="..\Public\CParticle_System_Panel.h" />
     <ClInclude Include="..\Public\Picking_ToolManager.h" />
     <ClInclude Include="..\Public\StaticModel.h" />
+    <ClInclude Include="..\Public\ToolCanvas.h" />
     <ClInclude Include="..\Public\ToolObject.h" />
     <ClInclude Include="..\Public\ToolUI.h" />
     <ClInclude Include="..\Public\Tool_Defines.h" />
@@ -211,6 +213,7 @@
     <ClCompile Include="..\Private\CEffectObject.cpp" />
     <ClCompile Include="..\Private\Effect.cpp" />
     <ClCompile Include="..\Private\EffectType_Selection_Panel.cpp" />
+    <ClCompile Include="..\Private\ToolLayer.cpp" />
     <ClCompile Include="..\Private\Tool_ContainerObject.cpp" />
     <ClCompile Include="..\Private\Tool_PartObject.cpp" />
     <ClCompile Include="..\Private\GodInput.cpp" />
@@ -290,6 +293,7 @@
     <ClCompile Include="..\Private\CParticle_System_Panel.cpp" />
     <ClCompile Include="..\Private\Picking_ToolManager.cpp" />
     <ClCompile Include="..\Private\StaticModel.cpp" />
+    <ClCompile Include="..\Private\ToolCanvas.cpp" />
     <ClCompile Include="..\Private\ToolObject.cpp" />
     <ClCompile Include="..\Private\ToolUI.cpp" />
     <ClCompile Include="..\Private\Tool_Defines.cpp" />
