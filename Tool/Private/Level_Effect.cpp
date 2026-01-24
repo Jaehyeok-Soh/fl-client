@@ -69,9 +69,6 @@ HRESULT CLevel_Effect::Awake(const _uint iLevelID)
 
 	MSG_BOX("Effect");
 
-	if (FAILED(m_pGameInstance->Awake_GameObjects(iLevelID, g_wszCameraLayer)))
-		return E_FAIL;
-
 	if (FAILED(Ready_CameraSetting(iLevelID)))
 		return E_FAIL;
 

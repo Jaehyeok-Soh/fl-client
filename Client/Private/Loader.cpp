@@ -155,8 +155,6 @@ HRESULT CLoader::Loading_For_Logo()
 	m_pGameInstance->Add_Prototype(ENUM_TO_UINT(ELevelType::STATIC), L"Prototype_GameObject_Part_Body", CBody::Create(m_pDevice, m_pDeviceContext));
 	// For. Prototype_GameObject_Part_Collider
 	m_pGameInstance->Add_Prototype(ENUM_TO_UINT(ELevelType::STATIC), L"Prototype_GameObject_Part_Collider", CColliderPart::Create(m_pDevice, m_pDeviceContext));
-	// For. Prototype_GameObject_Part_Weapon
-	m_pGameInstance->Add_Prototype(ENUM_TO_UINT(ELevelType::STATIC), L"Prototype_GameObject_Part_Weapon", CWeapon::Create(m_pDevice, m_pDeviceContext));
 	{
 		std::lock_guard<std::mutex> lockguard(m_mutex_1);
 		lstrcpy(m_szFPS, TEXT("로딩이 완료되었슴니다."));

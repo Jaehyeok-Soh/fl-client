@@ -14,7 +14,7 @@ private:
 
 	HRESULT Initialize(_uint iLevelCount);
 public:
-	HRESULT Awake(const _uint iCurrentLevelID, const wstring& wstrLayerTag);
+	HRESULT Awake(const _uint iCurrentLevelID);
 	void Update_Priority(const _float fTimeDelta);
 	void Update(const _float fTimeDelta);
 	void Update_Late(const _float fTimeDelta);

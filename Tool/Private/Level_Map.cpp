@@ -69,9 +69,6 @@ HRESULT CLevel_Map::Awake(const _uint iLevelID)
 
 	MSG_BOX("Map");
 
-	if (FAILED(m_pGameInstance->Awake_GameObjects(iLevelID, g_wszCameraLayer)))
-		return E_FAIL;
-
 	if (FAILED(Ready_Camera_Setting(iLevelID)))
 		return E_FAIL;
 

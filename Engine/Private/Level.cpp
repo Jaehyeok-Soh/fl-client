@@ -18,7 +18,9 @@ HRESULT CLevel::Initialize()
 
 HRESULT CLevel::Awake(const _uint iLevelID)
 {
-	m_bAwaked = true;
+	if (FAILED(m_pGameInstance->Awake_GameObjects(iLevelID)))
+		return E_FAIL;
+
 	return S_OK;
 }
 
