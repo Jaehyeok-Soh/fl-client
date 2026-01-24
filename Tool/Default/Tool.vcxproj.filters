@@ -4,9 +4,6 @@
     <Filter Include="00. Default">
       <UniqueIdentifier>{3d3e8058-a3dd-4bb7-973b-02861a6a1e0b}</UniqueIdentifier>
     </Filter>
-    <Filter Include="01. MainApplication">
-      <UniqueIdentifier>{b2ad5ea6-fa9c-42e2-920e-65fa32a6965c}</UniqueIdentifier>
-    </Filter>
     <Filter Include="98. Defines">
       <UniqueIdentifier>{db9350a6-0a7a-4cf2-8059-c0703abded55}</UniqueIdentifier>
     </Filter>
@@ -84,6 +81,27 @@
     </Filter>
     <Filter Include="03. Level\Loading\Loader">
       <UniqueIdentifier>{afe44f16-d8bc-4485-94d6-01fb36c16207}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="06. ImGui\01. Panel\UIPanels">
+      <UniqueIdentifier>{25cb433e-dd0f-4224-8a4f-fdf58f05f1a8}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="06. ImGui\01. Panel\UIPanels\Inspector">
+      <UniqueIdentifier>{098b7047-0c8e-4fe8-b63d-f281e3eaa593}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="06. ImGui\01. Panel\UIPanels\Hierachy">
+      <UniqueIdentifier>{ba50b2d3-2e46-434e-92e4-771e393bc34b}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="08.UIData">
+      <UniqueIdentifier>{566d6d02-9c34-4ed7-beae-db2b024e4049}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="08.UIData\Manager">
+      <UniqueIdentifier>{6d36fbe4-59ee-4223-946d-8f5f4bc5d255}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02. GameObjects\UI">
+      <UniqueIdentifier>{0db6a6bb-4c91-4d50-87bc-383b7b30d4b5}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="01. MainApplication">
+      <UniqueIdentifier>{b2ad5ea6-fa9c-42e2-920e-65fa32a6965c}</UniqueIdentifier>
     </Filter>
     <Filter Include="02. GameObjects\Map">
       <UniqueIdentifier>{2318f38b-6d39-4c06-902a-133043782e03}</UniqueIdentifier>
@@ -261,6 +279,21 @@
     <ClInclude Include="..\Public\Loader.h">
       <Filter>03. Level\Loading\Loader</Filter>
     </ClInclude>
+    <ClInclude Include="..\Public\UI_Inspector.h">
+      <Filter>06. ImGui\01. Panel\UIPanels\Inspector</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\UI_Hierachy.h">
+      <Filter>06. ImGui\01. Panel\UIPanels\Hierachy</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\UIData_Repository.h">
+      <Filter>08.UIData</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\ImGui_UIManager.h">
+      <Filter>08.UIData\Manager</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\ToolUI.h">
+      <Filter>02. GameObjects\UI</Filter>
+    </ClInclude>
     <ClInclude Include="..\Public\ToolObject.h">
       <Filter>02. GameObjects</Filter>
     </ClInclude>
@@ -422,6 +455,21 @@
     </ClCompile>
     <ClCompile Include="..\Private\Tool_Defines.cpp">
       <Filter>98. Defines</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\UI_Inspector.cpp">
+      <Filter>06. ImGui\01. Panel\UIPanels\Inspector</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\UI_Hierachy.cpp">
+      <Filter>06. ImGui\01. Panel\UIPanels\Hierachy</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\UIData_Repository.cpp">
+      <Filter>08.UIData</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\ImGui_UIManager.cpp">
+      <Filter>08.UIData\Manager</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\ToolUI.cpp">
+      <Filter>02. GameObjects\UI</Filter>
     </ClCompile>
     <ClCompile Include="..\Private\ToolObject.cpp">
       <Filter>02. GameObjects</Filter>

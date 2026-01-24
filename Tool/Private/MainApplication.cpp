@@ -14,6 +14,7 @@
 // Component
 //=================
 #include "VIBuffer_Line_Color.h"
+#include "VIBuffer_Rect_Tex.h"
 #include "MonoBehaviour.h"
 #include "Texture.h"
 #include "Shader.h"
@@ -74,6 +75,8 @@ HRESULT CMainApplication::Ready_Static_Prototype()
 		CTexture::TEXTURE_COMPONENT_ORIGIN_DESC desc = {};
 		if (FAILED(m_pGameInstance->Add_Prototype(ENUM_TO_UINT(ELevelType::STATIC), L"Prototype_Component_Texture_Empty", CTexture::Create(&desc))))
 			return E_FAIL;
+
+
 	}
 	if (FAILED(m_pGameInstance->Add_Prototype(ENUM_TO_UINT(ELevelType::STATIC), L"Prototype_Component_Transform", CTransform::Create())))
 		return E_FAIL;
@@ -90,6 +93,15 @@ HRESULT CMainApplication::Ready_Static_Prototype()
 		textureDesc.wstrTexturePath = L"../../Resources/Textures/Default.png";
 		if (FAILED(m_pGameInstance->Add_Prototype(ENUM_TO_UINT(ELevelType::STATIC), L"Prototype_Component_Texture_Default",
 			CTexture::Create(&textureDesc))))
+			return E_FAIL;
+	}
+
+	// For. Prototype_Component_Button_Test_Texture
+	{
+		CTexture::TEXTURE_COMPONENT_ORIGIN_DESC textureDesc = {};
+		textureDesc.iTextureCount = 1;
+		textureDesc.wstrTexturePath = L"../../Resources/Textures/UI/Button/T_Com_BtnIcon_Custom.png";
+		if (FAILED(m_pGameInstance->Add_Prototype(ENUM_TO_UINT(ELevelType::STATIC), L"Prototype_Component_Button_Test_Texture", CTexture::Create(&textureDesc))))
 			return E_FAIL;
 	}
 
@@ -160,6 +172,15 @@ HRESULT CMainApplication::Ready_Static_Prototype()
 		shaderDesc.pElements = Engine::VTXMESH::Elements;
 		if (FAILED(m_pGameInstance->Add_Prototype(ENUM_TO_UINT(ELevelType::STATIC), L"Prototype_Component_Shader_VtxMesh_SkillEffect",
 			CShader::Create(m_pDevice, m_pDeviceContext, &shaderDesc))))
+			return E_FAIL;
+	}
+
+
+	// For. Prototype_Component_VIBuffer_Rect_Tex
+	{
+		CVIBuffer_Rect_Tex::VIBUFFER_ORIGIN_DESC viBufferDesc = {};
+		if (FAILED(m_pGameInstance->Add_Prototype(ENUM_TO_UINT(ELevelType::STATIC), L"Prototype_Component_VIBuffer_Rect_Tex",
+			CVIBuffer_Rect_Tex::Create(m_pDevice, m_pDeviceContext, &viBufferDesc))))
 			return E_FAIL;
 	}
 

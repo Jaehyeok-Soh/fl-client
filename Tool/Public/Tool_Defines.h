@@ -58,8 +58,12 @@ namespace Tool
 	{
 		MAPOBJECT,
 		MESHEFFECT,
+		UI,
 		END
 	};
+
+
+
 
 	static string TypeToString(EToolObjectType eType)
 	{
@@ -67,6 +71,7 @@ namespace Tool
 		{
 		case Tool::EToolObjectType::MAPOBJECT:	return "MAPOBJECT";
 		case Tool::EToolObjectType::MESHEFFECT: return "MESHEFFECT";
+		case Tool::EToolObjectType::UI:			return "UI";
 		default:								return "NONE";
 		}
 
@@ -75,10 +80,52 @@ namespace Tool
 
 	static EToolObjectType StringToType(const string& strType)
 	{
-		if		(strType == "MAPOBJECT") return EToolObjectType::MAPOBJECT;
-		else if (strType == "MAPOBJECT") return EToolObjectType::MESHEFFECT;
+		if (::strcmp(strType.c_str(), "MAPOBJECT") == 0)  return EToolObjectType::MAPOBJECT;
+		else if (::strcmp(strType.c_str(), "MESHEFFECT") == 0) return EToolObjectType::MESHEFFECT;
+		if (::strcmp(strType.c_str(), "UI") == 0) return EToolObjectType::UI;
 
-		return EToolObjectType::END;
+			return EToolObjectType::END;
+	}
+
+
+	enum class EClientLevelType : unsigned int
+	{
+		STATIC = 0,
+		LOGO,
+		LOADING,
+		END
+	};
+
+	inline constexpr size_t	g_iClientLevelType_Count = static_cast<size_t>(EClientLevelType::END);
+
+	static string ClientleveltypeToString(EClientLevelType eType)
+	{
+		switch (eType)
+		{
+		case Tool::EClientLevelType::STATIC:
+			return "STATIC";
+			break;
+		case Tool::EClientLevelType::LOGO:
+			return "LOGO";
+			break;
+		case Tool::EClientLevelType::LOADING:
+			return "LOADING";
+			break;
+		case Tool::EClientLevelType::END:
+			break;
+		}
+	}
+
+	static EClientLevelType StringToClientleveltype(const _string& str)
+	{
+		if (::strcmp(str.c_str(), "STATIC") == 0)
+			return EClientLevelType::STATIC;
+		else if (::strcmp(str.c_str(), "LOGO") == 0)
+			return EClientLevelType::LOGO;
+		else if (::strcmp(str.c_str(), "LOADING") == 0)
+			return EClientLevelType::LOADING;
+		else
+			return EClientLevelType::END;
 	}
 
 	inline constexpr _tchar g_wszStaticLightLayer[]{ L"StaticLight_Layer" };
