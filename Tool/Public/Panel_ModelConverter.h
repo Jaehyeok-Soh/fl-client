@@ -20,6 +20,8 @@ protected:
 
 	HRESULT	Initialize();
 
+	HRESULT	Ready_PreMatirxPreset();
+
 public:
 	virtual HRESULT Render(CToolObject* pGo)override;
 	virtual void Update(const _float fTimeDelta)override;
@@ -36,6 +38,13 @@ private:
 	Vec3				m_vTranslation{0,0,0};
 	Vec3				m_vRotation{0,0,0};
 	Vec3				m_vScale{1,1,1};
+
+
+
+	map<wstring, Matrix > m_mapPreMatrix{};
+
+	wstring				  m_wstrSelectPreMatrix{L"Identity"};
+
 
 public:
 	static  CPanel_ModelConverter* Create(const _char* pLabel, CLevel* pOwner, ID3D11Device* pDevice, ID3D11DeviceContext* pDeviceContext);
