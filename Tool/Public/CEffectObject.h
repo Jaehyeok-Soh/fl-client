@@ -103,7 +103,7 @@ public:
         Vec4     _Effect_Color = { 0.f, 0.f, 0.f, 0.f };
 
         // =========   Tool용 시간 값   ================
-        bool      _Effect_TimeStop = false;
+        bool      _Effect_TimeStop = true;
 
         // =========   이펙트 Atlas Texture 전용  =========          << 거의 안쓸듯. 아틀라스 할 바에 편집하고 말지
         bool        _Effect_bUseAtlas = {};

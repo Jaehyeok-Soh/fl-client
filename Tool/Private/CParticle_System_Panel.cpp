@@ -70,6 +70,7 @@ void CParticle_System_Panel::Draw_Timer(CToolObject* pGo)
 	if (ImGui::Button("Play"))
 	{
 		m_bTimeSetting = true;
+		m_tCurrentDesc._Effect_TimeStop = false;
 	}
 	ImGui::SameLine();
 
@@ -83,6 +84,7 @@ void CParticle_System_Panel::Draw_Timer(CToolObject* pGo)
 	if (ImGui::Button("Reset"))
 	{
 		m_fTimeAccumulation = 0.f;
+		m_tCurrentDesc._Effect_TimeStop = false;
 		pGo->Get_Component<CVIBuffer_Particle_Point>()->Reset_Simulation();
 		static_cast<CEffectObject*>(pGo)->TimeReset();
 	}
@@ -424,7 +426,7 @@ void CParticle_System_Panel::Draw_ParticleSystem(CToolObject* pGo)
 		{
 			if (Diffuse_TextureNumber < m_TextureFileNames.size())
 			{
-				m_tCurrentDesc._Effect_DiffuseTexture_Tag = Engine_Utils::ToWString("TEXT_" + m_TextureFileNames[Diffuse_TextureNumber]);
+				m_tCurrentDesc._Effect_DiffuseTexture_Tag = Engine_Utils::ToWString(m_TextureFileNames[Diffuse_TextureNumber]);
 			}
 		}
 
@@ -536,8 +538,8 @@ void CParticle_System_Panel::Draw_ParticleSystem(CToolObject* pGo)
 
 		if (ImGui::ListBox("##Shader_List", &Shader_Number, [](void* data, int idx, const char** out_text)
 			{
-				auto& vector = *static_cast<std::vector<std::string>*>(data);
-				*out_text = vector[idx].c_str();
+				auto& vector = *static_cast<std::vector<std::pair<std::string,std::string>>*>(data);
+				*out_text = vector[idx].second.c_str();
 				return true;
 			},
 			(void*)&m_ShaderFileNames, (int)m_ShaderFileNames.size(), 5))

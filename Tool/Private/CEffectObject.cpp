@@ -85,6 +85,7 @@ void CEffectObject::Model_Setting(const wstring& ModelName)
 void CEffectObject::Texture_Setting(const wstring& TextureName)
 {
     CTexture::TEXTURE_COMPONENT_ORIGIN_DESC desc = {};
+    wstring s = L"Prototype_Component_Texture_";
 
     // 빈 깡통 텍스처로 교체해주고.
 
@@ -92,16 +93,16 @@ void CEffectObject::Texture_Setting(const wstring& TextureName)
     {
         Change_Component<CTexture>(static_cast<CTexture*>(m_pGameInstance->Clone_Prototype(EPrototypeType::COMPONENT, 0, L"Prototype_Component_Texture_Empty", &desc)));
 
-        Get_Component<CTexture>()->Add_DefaultTexture(m_tEffectDesc._Effect_DiffuseTexture_Tag, ENUM_TO_UINT(TEXTURETYPE::DIFFUSE));
-        Get_Component<CTexture>()->Add_DefaultTexture(m_tEffectDesc._Effect_Mesh_NoiseTexture_Tag, ENUM_TO_UINT(TEXTURETYPE::NOISE));
+        Get_Component<CTexture>()->Add_DefaultTexture(s + m_tEffectDesc._Effect_DiffuseTexture_Tag, ENUM_TO_UINT(TEXTURETYPE::DIFFUSE));
+        Get_Component<CTexture>()->Add_DefaultTexture(s + m_tEffectDesc._Effect_Mesh_NoiseTexture_Tag, ENUM_TO_UINT(TEXTURETYPE::NOISE));
     }
 
     else
     {
-        Add_Component<CModel>(0, m_tEffectDesc._Effect_DiffuseTexture_Tag, &desc);
-
-        Get_Component<CTexture>()->Add_DefaultTexture(m_tEffectDesc._Effect_DiffuseTexture_Tag, ENUM_TO_UINT(TEXTURETYPE::DIFFUSE));
-        Get_Component<CTexture>()->Add_DefaultTexture(m_tEffectDesc._Effect_Mesh_NoiseTexture_Tag, ENUM_TO_UINT(TEXTURETYPE::NOISE));
+        Add_Component<CTexture>(0, s + m_tEffectDesc._Effect_DiffuseTexture_Tag, &desc);
+        
+        Get_Component<CTexture>()->Add_DefaultTexture(s + m_tEffectDesc._Effect_DiffuseTexture_Tag, ENUM_TO_UINT(TEXTURETYPE::DIFFUSE));
+        Get_Component<CTexture>()->Add_DefaultTexture(s + m_tEffectDesc._Effect_Mesh_NoiseTexture_Tag, ENUM_TO_UINT(TEXTURETYPE::NOISE));
     }
 
 }
@@ -138,12 +139,11 @@ void CEffectObject::Shader_Setting(const wstring& ShaderName)
 
 HRESULT CEffectObject::Bind_ShaderResource()
 {
-
-
     CShader* pShader = Get_Component<CShader>();
     CModel* pModel = Get_Component<CModel>();
-    _uint iMeshCount = pModel->Get_MeshCount();
 
+    if (pShader == nullptr) return S_OK;
+    
     pShader->Bind_TransformData(m_CombineWorldMatrix);
 
     // 셰이더에 던질 구조체 작성하기.
@@ -156,14 +156,20 @@ HRESULT CEffectObject::Bind_ShaderResource()
         pShader->Bind_EffectData(pDesc);
     }
 
-    for (_uint i = 0; i < iMeshCount; ++i)
+    if (pModel)
     {
-        pModel->Bind_Material(pShader, i);
-        pModel->Bind_Bones(pShader, i);
-        pShader->Apply();
-        pModel->Render(i);
+        _uint iMeshCount = pModel->Get_MeshCount();
+
+        for (_uint i = 0; i < iMeshCount; ++i)
+        {
+            pModel->Bind_Material(pShader, i);
+            pModel->Bind_Bones(pShader, i);
+            pShader->Apply();
+            pModel->Render(i);
+        }
     }
-    
+
+    pShader->Apply();
 
     return S_OK;
 }
@@ -216,7 +222,7 @@ void CEffectObject::Ready_Before_Render(const _float fTimeDelta)
 {
     Super::Ready_Before_Render(fTimeDelta);
 
-    m_pGameInstance->Push_RenderObject(RENDER_CATEGORY::NONEBLEND, this);
+    m_pGameInstance->Push_RenderObject(RENDER_CATEGORY::NONELIGHT, this);
     Super::Update_CombinedWorldMatrix(m_pMatParent);
 }
 
