@@ -117,3 +117,50 @@ string Engine_Utils::GetFileNameWithoutExtension(const string& filePath)
 
     return path.stem().string();
 }
+
+void Engine_Utils::Add_Flag(Flags& curFlags, _uint iBitFlag)
+{
+    curFlags |= iBitFlag;
+}
+
+void Engine_Utils::RemoveSoft_Flag(Flags& curFlags, _uint iBitFlag)
+{
+    if (curFlags & iBitFlag)
+        curFlags ^= iBitFlag;
+}
+
+void Engine_Utils::RemoveHard_Flag(Flags& curFlags, _uint iBitFlag)
+{
+    curFlags &= ~iBitFlag;
+}
+
+bool Engine_Utils::Has_Flag(Flags curFlags, _uint iBitFlag)
+{
+    return (curFlags & iBitFlag) != 0;
+}
+
+bool Engine_Utils::Has_OnlyFlag(Flags curFlags, _uint iCheckFlag)
+{
+    return (curFlags & iCheckFlag) && (curFlags == iCheckFlag);
+}
+
+void Engine_Utils::Toggle_Flag(Flags& curFlags, _uint iBitFlag)
+{
+    curFlags ^= iBitFlag;
+}
+
+void Engine_Utils::Set_OnlyFlag(Flags& curFlags, _uint iBitFlag)
+{
+    // 1. 단일 비트인지 검사 (예: 1,2,4,8,...)
+    if (iBitFlag == 0 || (iBitFlag & (iBitFlag - 1)) != 0)
+    {
+        // 잘못된 플래그일 경우 무시
+        return;
+    }
+
+    // 2. 모든 하위 비트 제거
+    curFlags = 0;
+
+    // 3. 해당 플래그만 켜기
+    curFlags |= iBitFlag;
+}

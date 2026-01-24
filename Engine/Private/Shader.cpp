@@ -50,6 +50,9 @@ CShader::CShader(const CShader& rhs)
 	, m_pDefaultTextures(rhs.m_pDefaultTextures)
 	, m_pSkillEffect_CBuffer(rhs.m_pSkillEffect_CBuffer)
 	, m_pSkillEffectBuffer(rhs.m_pSkillEffectBuffer)
+	, m_pEffect_CBuffer(rhs.m_pEffect_CBuffer)
+	, m_pEffectBuffer(rhs.m_pEffectBuffer)
+
 {
 	Safe_AddRef(m_pDevice);
 	Safe_AddRef(m_pDeviceContext);
@@ -79,6 +82,8 @@ CShader::CShader(const CShader& rhs)
 	Safe_AddRef(m_pRenderTargetDepthTexture);
 	Safe_AddRef(m_pSkillEffect_CBuffer);
 	Safe_AddRef(m_pSkillEffectBuffer);
+	Safe_AddRef(m_pEffect_CBuffer);
+	Safe_AddRef(m_pEffectBuffer);
 	Safe_AddRef(m_pDefaultTextures);
 	Safe_AddRef(m_pGlobalMask_Effect);
 
@@ -351,16 +356,16 @@ HRESULT CShader::Load_Shader(const D3D11_INPUT_ELEMENT_DESC* pElements, const _u
 #ifdef _DEBUG
 		flag = D3DCOMPILE_DEBUG | D3DCOMPILE_SKIP_OPTIMIZATION;
 #else
-		flag = D3DCOMPILE_OPTIMIZATION_LEVEL1;
+		flag = D3DCOMPILE_OPTIMIZATION_LEVEL1;¡¡
 #endif   
 		ID3DBlob* pBlob = { nullptr };
-		if (FAILED(::D3DX11CompileEffectFromFile(Get_Path().c_str(), NULL, D3D_COMPILE_STANDARD_FILE_INCLUDE, flag, 0, m_pDevice, &m_pEffect, &pBlob)))
+ 		if (FAILED(::D3DX11CompileEffectFromFile(Get_Path().c_str(), NULL, D3D_COMPILE_STANDARD_FILE_INCLUDE, flag, 0, m_pDevice, &m_pEffect, &pBlob)))
 		{
 			if (pBlob)
 			{
 				LPVOID pSrc = pBlob->GetBufferPointer();
 				wstring wstrhi(static_cast<const _tchar*>(pSrc));
-				_uint i = 0;
+ 				_uint i = 0;
 			}
 			Safe_Release(pBlob);
 			return E_FAIL;

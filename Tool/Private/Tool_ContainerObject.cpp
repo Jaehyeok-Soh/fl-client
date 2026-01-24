@@ -135,6 +135,11 @@ void Tool_ContainerObject::Set_Dead(const wstring& wstrLayerTag)
 }
 
 
+vector<class Tool_PartObject*>& Tool_ContainerObject::Get_PartList()
+{
+	return m_vecPartObjects;
+}
+
 void Tool_ContainerObject::Remove_Part(_uint iPartID)
 {
 	if (m_vecPartObjects[iPartID])

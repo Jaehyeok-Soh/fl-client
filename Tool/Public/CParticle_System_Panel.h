@@ -36,6 +36,10 @@ protected:
     void Draw_Timer(CToolObject* pGo);
     void Draw_ParticleSystem(CToolObject* pGo);
 
+protected:
+    void Draw_EffectColor(CToolObject* pGo);
+    void Draw_Parts(CToolObject* pGo);
+
 public:
     void Update(const _float fDT) override;
     virtual HRESULT Render(CToolObject* pGo) override;
@@ -65,6 +69,10 @@ private:
     string              m_sMeshFolderPath = "../../Resources/Models";
     string              m_sTextureFolderPath = "../../Resources/Textures";
     string              m_sShaderFolderPath = "../../Shaders";
+
+private:
+    // ======== ImGui 값이 변동 됐다는걸 알리는 변수 ========
+    _bool               m_bModified = false;
 };
 
 NS_END

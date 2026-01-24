@@ -28,11 +28,16 @@ namespace Engine
 	typedef		float						_float;
 	typedef		double						_double;
 	
-	using Vec2 = DirectX::SimpleMath::Vector2;
-	using Vec3 = DirectX::SimpleMath::Vector3;
-	using Vec4 = DirectX::SimpleMath::Vector4;
-	using Matrix = DirectX::SimpleMath::Matrix;
-	using Quat = DirectX::SimpleMath::Quaternion;
+	using Vec2		= DirectX::SimpleMath::Vector2;
+	using Vec3		= DirectX::SimpleMath::Vector3;
+	using Vec4		= DirectX::SimpleMath::Vector4;
+	using Matrix	= DirectX::SimpleMath::Matrix;
+	using Quat		= DirectX::SimpleMath::Quaternion;
+
+	// 기능 typedef
+	using MinMax	= DirectX::SimpleMath::Vector2; // 변수 앞에 M 붙이기
+	using TimeCount = DirectX::SimpleMath::Vector2; // 변수 앞에 T 붙이기
+	using Flags		= signed int;					// 변수 앞에 F 붙이기
 }
 
 #endif // Engine_Typedef_h__
