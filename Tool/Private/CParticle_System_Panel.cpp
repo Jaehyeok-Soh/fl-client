@@ -637,6 +637,19 @@ void CParticle_System_Panel::Draw_Parts(CToolObject* pGo)
 	{
 		if (ImGui::TreeNode("Create##Part_Setting"))
 		{
+			// 이름 짓기
+			static char nameBuf[128] = {};
+			string effectName = static_cast<Effect*>(pGo)->Get_Part<CEffectObject>(PartIndex)->Get_Name();
+
+			if (nameBuf[0] == '\0' && !effectName.empty())
+			{
+				std::string tmp = effectName;
+				strncpy_s(nameBuf, sizeof(nameBuf), tmp.c_str(), _TRUNCATE);
+			}
+			// ImGui에서 입력 받기
+			ImGui::InputText("##ChangeName_PartSetting", nameBuf, IM_ARRAYSIZE(nameBuf)); ImGui::SameLine();
+			effectName = nameBuf;
+			
 			if (ImGui::Button("Create##Part_ObjectSetting"))
 			{
 				// =========	Create	  ==============
@@ -683,7 +696,7 @@ void CParticle_System_Panel::Draw_Parts(CToolObject* pGo)
 				pEffectDesc._Effect_EndScale = { 1.f, 1.f, 1.f };
 
 				static_cast<Effect*>(pGo)->Add_Part(static_cast<_uint>(PartsList.size()), ENUM_TO_UINT(ELevelType::EFFECT), L"Prototype_GameObject_Effect_Parts", &pEffectDesc);
-				static_cast<Effect*>(pGo)->Get_Part<CEffectObject>(PartIndex)->Set_Name("DEFAULT_EFFECT");
+				static_cast<Effect*>(pGo)->Get_Part<CEffectObject>(PartsList.size())->Set_Name(effectName);
 			}
 			ImGui::TreePop();
 		}
