@@ -18,6 +18,15 @@ public:
 	static string GetFileNameFromPath(const string& filePath);
 	static string GetFileNameWithoutExtension(const string& path);
 
+	/* 비트 플래그 유틸 함수 */
+	static void Add_Flag(Flags& curFlags, _uint iBitFlag);
+	static void RemoveSoft_Flag(Flags& curFlags, _uint iBitFlag); // 있다면 지워라
+	static void RemoveHard_Flag(Flags& curFlags, _uint iBitFlag); // 무조건 지우기
+	static bool Has_Flag(Flags curFlags, _uint iBitFlag);
+	static bool Has_OnlyFlag(Flags curFlags, _uint iCheckFlag);
+	static void Toggle_Flag(Flags& curFlags, _uint iBitFlag);
+	static void Set_OnlyFlag(Flags& curFlags, _uint iBitFlag);
+
 	static _float SmoothStep(_float fT) { return fT * fT * (3.f - 2.f * fT); }
 
 	static string MI_ToString(EMaterialInstanceType eType)
