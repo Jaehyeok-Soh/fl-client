@@ -26,11 +26,11 @@ void to_json(json& _j, const CANVAS_DATA& _tData)
 	{
 		{"Tag", _tData.strTag},
 		{"UsingViewport", _tData.isUsingViewport},
-		{"Width", _tData.iWidth},
-		{"Height", _tData.iHeight},
-		{"PosX", _tData.iPosX},
-		{"PosY", _tData.iPosY},
-		{"PosZ", _tData.iPosZ},
+		{"Width", _tData.fWidth},
+		{"Height", _tData.fHeight},
+		{"PosX", _tData.fPosX},
+		{"PosY", _tData.fPosY},
+		{"PosZ", _tData.fPosZ},
 	};
 }
 
@@ -38,9 +38,9 @@ void from_json(const json& _j, CANVAS_DATA& _tData)
 {
 	_j.at("Tag").get_to(_tData.strTag);
 	_j.at("UsingViewport").get_to(_tData.isUsingViewport);
-	_j.at("Width").get_to(_tData.iWidth);
-	_j.at("Height").get_to(_tData.iHeight);
-	_j.at("PosX").get_to(_tData.iPosX);
-	_j.at("PosY").get_to(_tData.iPosY);
-	_j.at("PosZ").get_to(_tData.iPosZ);
+	_j.at("Width").get_to(_tData.fWidth);
+	_j.at("Height").get_to(_tData.fHeight);
+	_j.at("PosX").get_to(_tData.fPosX);
+	_j.at("PosY").get_to(_tData.fPosY);
+	_j.at("PosZ").get_to(_tData.fPosZ);
 }

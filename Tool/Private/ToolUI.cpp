@@ -84,7 +84,7 @@ HRESULT CToolUI::Render()
 
 HRESULT CToolUI::Ready_Components(TOOLUI_DESC* pDesc)
 { 
-	if (FAILED(Add_Component<CTexture>(0, pDesc->wstrTextureTag, pDesc)))
+	if (FAILED(Add_Component<CTexture>(ENUM_TO_UINT(ELevelType::UI), pDesc->wstrTextureTag, pDesc)))
         return E_FAIL;
 
     if (FAILED(Add_Component<CShader>(0, L"Prototype_Component_Shader_VtxPosTex", pDesc)))
@@ -124,7 +124,7 @@ CGameObject* CToolUI::Clone(void* pArg)
 	CToolUI* pInstance = new CToolUI(*this);
 	if (FAILED(pInstance->Initialize(pArg)))
 	{
-		MSG_BOX("CToolUI::Create, Clone Failed");
+		MSG_BOX("CToolUI::Clone, Clone Failed");
 		Safe_Release(pInstance);
 	}
 	return pInstance;

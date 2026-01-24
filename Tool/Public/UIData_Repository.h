@@ -144,11 +144,11 @@ typedef struct tagCanvasData
 	_string strTag;
 	_bool isUsingViewport;
 
-	int32_t iWidth;
-	int32_t iHeight;
-	int32_t iPosX;
-	int32_t iPosY;
-	int32_t iPosZ;
+	_float fWidth;
+	_float fHeight;
+	_float fPosX;
+	_float fPosY;
+	_float fPosZ;
 
 	vector<LAYER_DATA> vecLayers;
 }CANVAS_DATA;
@@ -171,8 +171,8 @@ typedef struct tagGenericUIData
 	uint32_t iUIType;
 	uint32_t iRectTransformType;
 
-	int32_t iWidth;
-	int32_t iHeight;
+	_float fWidth;
+	_float fHeight;
 	_float fPosX;
 	_float fPosY;
 	_float fPosZ;

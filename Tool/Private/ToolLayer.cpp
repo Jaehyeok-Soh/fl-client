@@ -1,6 +1,6 @@
 #include "pch.h"
 
-#include "ToolCanvas.h"
+#include "ToolLayer.h"
 #include "Tool_Defines.h"
 #include "GameInstance.h"
 
@@ -9,24 +9,24 @@
 #include "VIBuffer_Rect_Tex.h"
 #include "Texture.h"
 
-CToolCanvas::CToolCanvas(ID3D11Device* pDevice, ID3D11DeviceContext* pDeviceContext)
+CToolLayer::CToolLayer(ID3D11Device* pDevice, ID3D11DeviceContext* pDeviceContext)
 	:CUIObject(pDevice, pDeviceContext)
 {
 }
 
-CToolCanvas::CToolCanvas(const CToolCanvas& rhs)
+CToolLayer::CToolLayer(const CToolLayer& rhs)
 	:CUIObject(rhs)
 {
 }
 
-HRESULT CToolCanvas::Initialize_Prototype()
+HRESULT CToolLayer::Initialize_Prototype()
 {
 	if (FAILED(Super::Initialize_Prototype()))
 		return E_FAIL;
 	return S_OK;
 }
 
-HRESULT CToolCanvas::Initialize(void* pArg)
+HRESULT CToolLayer::Initialize(void* pArg)
 {
 	if (FAILED(Super::Initialize(pArg)))
 		return E_FAIL;
@@ -39,7 +39,7 @@ HRESULT CToolCanvas::Initialize(void* pArg)
 	return S_OK;
 }
 
-HRESULT CToolCanvas::Awake(const _uint iCurrentLevelID)
+HRESULT CToolLayer::Awake(const _uint iCurrentLevelID)
 {
 	if (FAILED(Super::Awake(iCurrentLevelID)))
 		return E_FAIL;
@@ -48,27 +48,27 @@ HRESULT CToolCanvas::Awake(const _uint iCurrentLevelID)
 	return S_OK;
 }
 
-void CToolCanvas::Update_Priority(const _float fTimeDelta)
+void CToolLayer::Update_Priority(const _float fTimeDelta)
 {
 	Super::Update_Priority(fTimeDelta);
 }
 
-void CToolCanvas::Update(const _float fTimeDelta)
+void CToolLayer::Update(const _float fTimeDelta)
 {
 	Super::Update(fTimeDelta);
 }
 
-void CToolCanvas::Update_Late(const _float fTimeDelta)
+void CToolLayer::Update_Late(const _float fTimeDelta)
 {
 	Super::Update_Late(fTimeDelta);
 }
 
-void CToolCanvas::Ready_Before_Render(const _float fTimeDelta)
+void CToolLayer::Ready_Before_Render(const _float fTimeDelta)
 {
 	Super::Ready_Before_Render(fTimeDelta);
 }
 
-HRESULT CToolCanvas::Render()
+HRESULT CToolLayer::Render()
 {
 
 	if (FAILED(Super::Render()))
@@ -84,7 +84,7 @@ HRESULT CToolCanvas::Render()
 	return S_OK;
 }
 
-HRESULT CToolCanvas::Ready_Components(TOOLUI_DESC* pDesc)
+HRESULT CToolLayer::Ready_Components(TOOLUI_DESC* pDesc)
 {
 	if (FAILED(Add_Component<CTexture>(0, pDesc->wstrTextureTag, pDesc)))
 		return E_FAIL;
@@ -98,7 +98,7 @@ HRESULT CToolCanvas::Ready_Components(TOOLUI_DESC* pDesc)
 	return S_OK;
 }
 
-HRESULT CToolCanvas::Bind_ShaderResources()
+HRESULT CToolLayer::Bind_ShaderResources()
 {
 	CShader* pShader = Get_Component<CShader>();
 	if (FAILED(Get_Component<CTransform>()->Bind_ShaderResource(pShader)))
@@ -110,29 +110,29 @@ HRESULT CToolCanvas::Bind_ShaderResources()
 	return S_OK;
 }
 
-CToolCanvas* CToolCanvas::Create(EToolObjectType eType, ID3D11Device* pDevice, ID3D11DeviceContext* pDeviceContext)
+CToolLayer* CToolLayer::Create(EToolObjectType eType, ID3D11Device* pDevice, ID3D11DeviceContext* pDeviceContext)
 {
-	CToolCanvas* pInstance = new CToolCanvas(pDevice, pDeviceContext);
+	CToolLayer* pInstance = new CToolLayer(pDevice, pDeviceContext);
 	if (FAILED(pInstance->Initialize_Prototype()))
 	{
-		MSG_BOX("CToolCanvas::Create, Create Failed");
+		MSG_BOX("CToolLayer::Create, Create Failed");
 		Safe_Release(pInstance);
 	}
 	return pInstance;
 }
 
-CGameObject* CToolCanvas::Clone(void* pArg)
+CGameObject* CToolLayer::Clone(void* pArg)
 {
-	CToolCanvas* pInstance = new CToolCanvas(*this);
+	CToolLayer* pInstance = new CToolLayer(*this);
 	if (FAILED(pInstance->Initialize(pArg)))
 	{
-		MSG_BOX("CToolCanvas::Clone, Clone Failed");
+		MSG_BOX("CToolLayer::Clone, Clone Failed");
 		Safe_Release(pInstance);
 	}
 	return pInstance;
 }
 
-void CToolCanvas::Free()
+void CToolLayer::Free()
 {
 	Super::Free();
 }
