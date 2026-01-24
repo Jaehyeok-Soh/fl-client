@@ -19,7 +19,7 @@ HRESULT CBone::Initialize(BONE_DESC* pDesc)
 
 void CBone::Update_CombinedTransformMatrix(const vector<CBone*>& Bones, const Matrix& PreTransformMatrix)
 {
-    
+
     // 최상위 부모의 경우 PreTrnasformMatrix 연산
     // 이후에 자식들이 연산하면서 다 먹어 들어갈것
     if (m_iParentIndex == -1)

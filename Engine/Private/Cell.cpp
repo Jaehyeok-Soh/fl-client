@@ -40,6 +40,10 @@ Vec3 CCell::Get_CenterPos()
 	for (size_t i = 0; i < 3; i++)
 		vPosition += m_vPoints[i];
 
+	for (size_t i = 0; i < 3; i++)
+	{
+		vPosition += ::XMLoadFloat3(&m_vPoints[i]);
+	}
 	return vPosition / 3.f;
 }
 

@@ -146,6 +146,11 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClInclude Include="..\Public\CameraMan_Free.h" />
+    <ClInclude Include="..\Public\CEffectObject.h" />
+    <ClInclude Include="..\Public\Effect.h" />
+    <ClInclude Include="..\Public\EffectType_Selection_Panel.h" />
+    <ClInclude Include="..\Public\Tool_ContainerObject.h" />
+    <ClInclude Include="..\Public\Tool_PartObject.h" />
     <ClInclude Include="..\Public\GodInput.h" />
     <ClInclude Include="..\Public\GraphEditor.h" />
     <ClInclude Include="..\Public\imconfig.h" />
@@ -177,6 +182,7 @@
     <ClInclude Include="..\Public\Level_Map.h" />
     <ClInclude Include="..\public\Level_UI.h" />
     <ClInclude Include="..\Public\Loader.h" />
+    <ClInclude Include="..\Public\CParticle_System_Panel.h" />
     <ClInclude Include="..\Public\Picking_ToolManager.h" />
     <ClInclude Include="..\Public\ToolObject.h" />
     <ClInclude Include="..\Public\Tool_Defines.h" />
@@ -192,6 +198,11 @@
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="..\Private\CameraMan_Free.cpp" />
+    <ClCompile Include="..\Private\CEffectObject.cpp" />
+    <ClCompile Include="..\Private\Effect.cpp" />
+    <ClCompile Include="..\Private\EffectType_Selection_Panel.cpp" />
+    <ClCompile Include="..\Private\Tool_ContainerObject.cpp" />
+    <ClCompile Include="..\Private\Tool_PartObject.cpp" />
     <ClCompile Include="..\Private\GodInput.cpp" />
     <ClCompile Include="..\Private\GraphEditor.cpp">
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">NotUsing</PrecompiledHeader>
@@ -261,6 +272,7 @@
     <ClCompile Include="..\private\Level_UI.cpp" />
     <ClCompile Include="..\Private\Loader.cpp" />
     <ClCompile Include="..\Private\MainApplication.cpp" />
+    <ClCompile Include="..\Private\CParticle_System_Panel.cpp" />
     <ClCompile Include="..\Private\Picking_ToolManager.cpp" />
     <ClCompile Include="..\Private\ToolObject.cpp" />
     <ClCompile Include="..\Private\Tool_Defines.cpp" />

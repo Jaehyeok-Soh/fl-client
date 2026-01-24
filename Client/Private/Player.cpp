@@ -48,9 +48,9 @@ HRESULT CPlayer::Initialize(void* pArg)
         return E_FAIL;
 
     PLAYER_DESC* pDesc = static_cast<PLAYER_DESC*>(pArg);
-    
+
     if (FAILED(Ready_PartObjects(pDesc)))
-       return E_FAIL;
+        return E_FAIL;
 
     if (FAILED(Ready_Components(pDesc)))
         return E_FAIL;
@@ -63,7 +63,7 @@ HRESULT CPlayer::Initialize(void* pArg)
 
 HRESULT CPlayer::Awake(const _uint iCurrentLevelID)
 {
-    if(FAILED(Super::Awake(iCurrentLevelID)))
+    if (FAILED(Super::Awake(iCurrentLevelID)))
         return E_FAIL;
 
     CGameInstance::GetInstance()->Add_Actor_Object(this);
@@ -172,7 +172,7 @@ HRESULT CPlayer::Ready_BaseStates()
 HRESULT CPlayer::Ready_PartObjects(PLAYER_DESC* pDesc)
 {
     {
-        CBody::BODY_DESC bodyDesc = {}; 
+        CBody::BODY_DESC bodyDesc = {};
         bodyDesc.pMatParent = &Get_Component<CTransform>()->Get_WorldMatrix();
         bodyDesc.iLevelIndex = pDesc->iLevelIndex;
         bodyDesc.wstrModelPrototypeName = pDesc->wstrBodyModelTag;
@@ -193,7 +193,7 @@ HRESULT CPlayer::Ready_Components(PLAYER_DESC* pDesc)
             return E_FAIL;
     }
 
-    if(pDesc->wstrNavigationPrototypeTag.empty() == false)
+    if (pDesc->wstrNavigationPrototypeTag.empty() == false)
     {
         CNavigation::NAVIGATION_DESC desc = {};
         desc.iCurrentIndex = pDesc->iNavigationCellIndex;

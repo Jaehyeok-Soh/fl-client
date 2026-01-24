@@ -158,6 +158,7 @@ HRESULT CModel::Initialize(void* pArg)
 
 HRESULT CModel::Change_Animation(_uint iAnimationIndex, _bool bBlend, _bool isLoop, _bool bForce)
 {
+
 	if (m_iCurrentAnimIndex == iAnimationIndex && bForce == false)
 		return S_OK;
 

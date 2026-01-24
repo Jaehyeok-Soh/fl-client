@@ -172,18 +172,18 @@ HRESULT CMainApplication::Ready_Static_Prototype()
 	//=================
 	// MaterialInstance
 	//=================
-	auto makeMaterialInstance = [&](const Vec4 &vColor, EMaterialInstanceType eType)->HRESULT
-	{
-		CMaterialInstance::tagMaterialInstanceOrignDesc desc = {};
-		desc.vTintColor = vColor;
-		desc.eType = eType;
-		desc.wstrName = Engine_Utils::MI_ToWString(eType);
-		desc.fEmissivePower = 1.f;
-		if (FAILED(m_pGameInstance->Add_Resource<CMaterialInstance>(desc.wstrName, CMaterialInstance::Create(m_pDevice, m_pDeviceContext, &desc))))
-			return E_FAIL;
-		
-		return S_OK;
-	};
+	auto makeMaterialInstance = [&](const Vec4& vColor, EMaterialInstanceType eType)->HRESULT
+		{
+			CMaterialInstance::tagMaterialInstanceOrignDesc desc = {};
+			desc.vTintColor = vColor;
+			desc.eType = eType;
+			desc.wstrName = Engine_Utils::MI_ToWString(eType);
+			desc.fEmissivePower = 1.f;
+			if (FAILED(m_pGameInstance->Add_Resource<CMaterialInstance>(desc.wstrName, CMaterialInstance::Create(m_pDevice, m_pDeviceContext, &desc))))
+				return E_FAIL;
+
+			return S_OK;
+		};
 	// For. MaterialInstance_Default
 	if (FAILED(makeMaterialInstance(Vec4{ 1.f, 1.f, 1.f, 1.f }, EMaterialInstanceType::Default)))
 		return E_FAIL;

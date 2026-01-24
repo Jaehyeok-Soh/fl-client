@@ -61,7 +61,7 @@ public:
 	HRESULT Bind_Bones(class CShader* pShader, const vector<class CBone*>& vecBones, _uint iIndexDistance = 0);
 	_bool IsSame(const _char* szName) { return ::strcmp(m_szName, szName) != 0; }
 	_bool IntsersectWithPlane(OUT Vec3& vOut);
-	_bool IntsersectWithPlane(CRay *const pRay, Matrix matWorld ,_float fMaxDistance, OUT MESH_RAY_HITINFO& outHit);
+	_bool IntsersectWithPlane(CRay* const pRay, Matrix matWorld, _float fMaxDistance, OUT MESH_RAY_HITINFO& outHit);
 private:
 	HRESULT Load_AnimVertices(std::span<VTXANIMMESH> spanVertex);
 	HRESULT Load_NonAnimVertices(std::span<VTXANIMMESH> spanVertex);
@@ -70,16 +70,16 @@ public:
 	// HRESULT Bind_Bones()
 private:
 	_char m_szName[MAX_NAME] = {};
-	
+
 	_uint m_iMaterialIndex = { 0 };
 	_uint m_iAffectBoneCount = { 0 };
-	
+
 	vector<_uint> m_vecAffectBoneIndices;
 	SHADER_BONEDESC m_boneMatrices;
 	vector<Matrix> m_vecOffsetMatrices;
 
-	Vec3* m_pNormals = {nullptr};
-	ESurfaceType *m_pSurfaceTypes = { nullptr };
+	Vec3* m_pNormals = { nullptr };
+	ESurfaceType* m_pSurfaceTypes = { nullptr };
 public:
 	static CMesh* Create(ID3D11Device* pDevice, ID3D11DeviceContext* pDeviceContext, void* pArg);
 	virtual CComponent* Clone(void* pArg) override;

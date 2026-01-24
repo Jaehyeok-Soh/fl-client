@@ -75,6 +75,7 @@ public:
 	void Bind_MaterialData(const SHADER_MATERIALDESC& desc);
 	void Bind_MaterialInstanceData(const SHADER_MI_DESC& desc);
 	void Bind_SkillEffectData(const SHADER_SKILLEFFECT_DESC& desc);
+	void Bind_EffectData(const SHADER_EFFECT_DESC& desc);
 	void Bind_GlobalMask(_uint iMask);
 	HRESULT Bind_DefaultTexture(ID3D11ShaderResourceView* pSRV);
 	HRESULT Bind_CubeTexture(ID3D11ShaderResourceView* pSRV);
@@ -124,8 +125,14 @@ private:
 	CConstant_Buffer<SHADER_KEYFRAMEDESC>* m_pKeyFrame_CBuffer = { nullptr };
 	ID3DX11EffectConstantBuffer* m_pKeyFrameEffectBuffer = { nullptr };
 
+	// Mr.Gang Ver
 	CConstant_Buffer<SHADER_SKILLEFFECT_DESC>* m_pSkillEffect_CBuffer = { nullptr };
 	ID3DX11EffectConstantBuffer* m_pSkillEffectBuffer = { nullptr };
+
+	// Mr.Choi Ver
+	CConstant_Buffer<SHADER_EFFECT_DESC>* m_pEffect_CBuffer = { nullptr };
+	ID3DX11EffectConstantBuffer* m_pEffectBuffer = { nullptr };
+
 
 	ID3DX11EffectScalarVariable* m_pGlobalMask_Effect = { nullptr };
 

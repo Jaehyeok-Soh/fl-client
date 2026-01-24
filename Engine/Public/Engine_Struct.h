@@ -94,6 +94,14 @@ namespace Engine
 		SimpleMath::Vector3 vPadding = {};
 	}SHADER_SKILLEFFECT_DESC;
 
+	typedef struct tagShaderEffectDesc
+	{
+		unsigned int iFlags = { 0 };
+		SimpleMath::Vector2 vScrollOffset = { 0.f, 0.f };
+		SimpleMath::Vector2 vDistortionScale = { 0.f, 0.f };
+		SimpleMath::Vector4 vEffectColor = { 0.f, 0.f, 0.f, 0.f };
+	}SHADER_EFFECT_DESC;
+
 	typedef struct tagShaderBoneDesc
 	{
 		SimpleMath::Matrix transforms[MAX_BONE_TRANSFORMS];

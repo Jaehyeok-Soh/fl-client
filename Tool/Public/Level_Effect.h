@@ -26,7 +26,9 @@ class CLevel_Effect final : public CLevel
 	enum class Elements
 	{
 		Inspector = 0,
-		PresetBrowser,
+		EffectSystem,
+
+		ParticleSystem,
 		END
 	};
 private:
@@ -44,10 +46,12 @@ private:
 	HRESULT Ready_Lights();
 	HRESULT Ready_Gui();
 	HRESULT Ready_CameraSetting(const _uint iLevelID);
+	HRESULT Ready_EffectObjectSetting();
 	
 	void Render_Elements();
 	void Ready_Event();
 	void Release_Event();
+
 private:
 	class CImGui_ToolManager* m_pImGuiManager = { nullptr };
 	class CPicking_ToolManager* m_pPickingManager = { nullptr };

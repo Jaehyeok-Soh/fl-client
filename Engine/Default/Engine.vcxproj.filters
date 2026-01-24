@@ -728,6 +728,9 @@
     <ClInclude Include="..\Public\GameInstance.h">
       <Filter>01. Utility\00. GameInstance</Filter>
     </ClInclude>
+    <ClInclude Include="..\Public\DebugDraw.h">
+      <Filter>01. Utility\10. DebugDraw</Filter>
+    </ClInclude>
     <ClInclude Include="..\Public\Component.h">
       <Filter>00. System\05. Component</Filter>
     </ClInclude>

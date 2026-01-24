@@ -85,6 +85,27 @@
     <Filter Include="03. Level\Loading\Loader">
       <UniqueIdentifier>{afe44f16-d8bc-4485-94d6-01fb36c16207}</UniqueIdentifier>
     </Filter>
+    <Filter Include="03. Level\Effect\Effect_Panel">
+      <UniqueIdentifier>{dcfafedc-a3a5-47ae-a71f-86669a2e7b2c}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="03. Level\Effect\Effect_Panel\Particle_System_Panel">
+      <UniqueIdentifier>{0680a4ef-f6b5-4f4c-9344-5a85832793a5}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="03. Level\Effect\Effect_Panel\EffectType_Selection">
+      <UniqueIdentifier>{c616f463-edcd-4d20-919c-9de9a390d678}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="03. Level\Effect\Effect_Object">
+      <UniqueIdentifier>{c7c882ca-f31c-44ed-bfc0-c6a26939bb11}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02. GameObjects\PartObject">
+      <UniqueIdentifier>{ab8f52ba-9548-4d59-96fd-3e11792c6f59}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02. GameObjects\ContainerObject">
+      <UniqueIdentifier>{849c5ab9-53df-4b2a-8a78-5d3fb0f5bf4a}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="03. Level\Effect\Effect_Object\Effect">
+      <UniqueIdentifier>{484f6f3e-8e60-44ee-bc6e-9752b2de029b}</UniqueIdentifier>
+    </Filter>
     <Filter Include="98. Defines\pch">
       <UniqueIdentifier>{6a433bfc-3f5f-420f-ac46-69cffb0edf23}</UniqueIdentifier>
     </Filter>
@@ -219,6 +240,24 @@
     <ClInclude Include="..\Public\Loader.h">
       <Filter>03. Level\Loading\Loader</Filter>
     </ClInclude>
+    <ClInclude Include="..\Public\CParticle_System_Panel.h">
+      <Filter>03. Level\Effect\Effect_Panel\Particle_System_Panel</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\EffectType_Selection_Panel.h">
+      <Filter>03. Level\Effect\Effect_Panel\EffectType_Selection</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\CEffectObject.h">
+      <Filter>03. Level\Effect\Effect_Object</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\Tool_ContainerObject.h">
+      <Filter>02. GameObjects\ContainerObject</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\Tool_PartObject.h">
+      <Filter>02. GameObjects\PartObject</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\Effect.h">
+      <Filter>03. Level\Effect\Effect_Object\Effect</Filter>
+    </ClInclude>
     <ClInclude Include="pch.h">
       <Filter>98. Defines\pch</Filter>
     </ClInclude>
@@ -347,6 +386,24 @@
     </ClCompile>
     <ClCompile Include="..\Private\Tool_Defines.cpp">
       <Filter>98. Defines</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\CParticle_System_Panel.cpp">
+      <Filter>03. Level\Effect\Effect_Panel\Particle_System_Panel</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\EffectType_Selection_Panel.cpp">
+      <Filter>03. Level\Effect\Effect_Panel\EffectType_Selection</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\CEffectObject.cpp">
+      <Filter>03. Level\Effect\Effect_Object</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\Tool_ContainerObject.cpp">
+      <Filter>02. GameObjects\ContainerObject</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\Tool_PartObject.cpp">
+      <Filter>02. GameObjects\PartObject</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\Effect.cpp">
+      <Filter>03. Level\Effect\Effect_Object\Effect</Filter>
     </ClCompile>
     <ClCompile Include="pch.cpp">
       <Filter>98. Defines\pch</Filter>
