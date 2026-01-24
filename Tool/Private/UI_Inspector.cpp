@@ -54,19 +54,7 @@ HRESULT CUI_Inspector::Render(CToolObject* pGo)
 		/* UI를 만들기 버튼을 눌렀는지 */
 		if (m_isCreateUI)
 		{
-			if (m_isBeginCreateUI)
-				Ready_Make_NewUI();
-
-			_bool fail = { FALSE };
-
-			if (0 == m_pUIManager->Get_NumUI(m_pUIManager->Get_CurCanvasIndex(), m_pUIManager->Get_CurLayerIndex()))
-			{
-				m_isCreateUI = FALSE;
-				fail = TRUE;
-			}
-
-			if(!fail)
-				Make_UI();
+		
 		}
 	}
 
@@ -195,11 +183,38 @@ void CUI_Inspector::Edit_Layers()
 
 	if (0 != m_pUIManager->Get_NumLayer(m_pUIManager->Get_CurCanvasIndex()))
 	{
+		ImGui::NewLine();
+		ImGui::Text("<<UI>>");
+		ImGui::TextUnformatted("UIName :");
+		ImGui::SameLine();
+		ImGui::SetNextItemWidth(150.f);
+		ImGui::InputText("##UIName", &m_strUIName);
 		Make_UI_Btn();
+
+		if (!m_pUIManager->Get_CurUIDatas().empty())
+		{
+			Show_UI_List();
+			Edit_UI();
+		}
 	}
+
 }
 
-void CUI_Inspector::Make_UI()
+void CUI_Inspector::Add_NewUI()
+{
+	GENERIC_UI_DATA tData = {};
+	tData.strName = m_strUIName;
+	m_pUIManager->Add_UIData(tData);
+
+	m_strUIName = "";
+}
+
+void CUI_Inspector::Edit_UI()
+{
+	SetUp_UI_Common_Info();
+}
+
+void CUI_Inspector::SetUp_UI_Common_Info()
 {
 	if (!ImGui::Begin("UI Palette"))
 	{
@@ -207,10 +222,36 @@ void CUI_Inspector::Make_UI()
 		return;
 	}
 
+	/* =========================
+	 *  Common Setting (Top)
+	 * ========================= */
 
+	if (ImGui::BeginTabBar("##SetUpUICommonInfo", ImGuiTabBarFlags_Reorderable))
+	{
+		if (ImGui::BeginTabItem("Common Setting"))
+		{
+			ImGui::EndTabItem();
+		}
+		ImGui::EndTabBar();
+	}
 
-	SetUp_UI_Common_Info();
+	const float fTopHeight = 220.f; // 필요하면 조절하세요
+	ImGui::BeginChild("##ContentBox1", ImVec2(0.f, fTopHeight), true, ImGuiWindowFlags_None);
 
+	/* 렉트 트랜스폼 */
+	Input_RectTransform();
+	/* 텍스쳐 경로 */
+	// TODO: Input_TexturePath();
+
+	ImGui::EndChild();
+
+	ImGui::Spacing();
+	ImGui::Separator();
+	ImGui::Spacing();
+
+	/* =========================
+	 *  Palette Tabs (Bottom)
+	 * ========================= */
 
 	static int s_iTab = 0;
 
@@ -237,8 +278,6 @@ void CUI_Inspector::Make_UI()
 		ImGui::EndTabBar();
 	}
 
-	ImGui::Separator();
-
 	ImGui::BeginChild("##ContentBox", ImVec2(0.f, 0.f), true, ImGuiWindowFlags_None);
 
 	if (s_iTab == 0)
@@ -256,9 +295,9 @@ void CUI_Inspector::Make_UI()
 		ImGui::Spacing();
 
 		ImGui::Text("ImTextureID가 있으면 ImGui::Image(...)로 출력하시면 됩니다.");
-		ImGui::Button("Import Texture");
+		if (ImGui::Button("Import Texture")) {}
 	}
-	else if (s_iTab == 2)
+	else // s_iTab == 2
 	{
 		ImGui::Text("Text Tab");
 		ImGui::Spacing();
@@ -270,41 +309,21 @@ void CUI_Inspector::Make_UI()
 	ImGui::EndChild();
 
 	ImGui::End();
-}
 
-void CUI_Inspector::SetUp_UI_Common_Info()
-{
-	if (ImGui::BeginTabBar("##SetUpUICommonInfo", ImGuiTabBarFlags_Reorderable))
-	{
-		if (ImGui::BeginTabItem("Common Setting"))
-		{
-			ImGui::EndTabItem();
-		}
-
-		ImGui::EndTabBar();
-	}
-
-	ImGui::BeginChild("##ContentBox1", ImVec2(0.f, 0.f), true, ImGuiWindowFlags_None);
-
-	/* 렉트 트랜스폼 */
-	Input_RectTransform();
-	/* 텍스쳐 경로 */
-
-	ImGui::EndChild();
 }
 
 
-void CUI_Inspector::UI_List()
+void CUI_Inspector::Show_UI_List()
 {
 	ImGui::NewLine();
 	ImGui::Text("<<UI List>>");
 	ImGui::BeginChild("UIList", ImVec2(0, 100), true);
 
-	for (int i = 0; i < m_pUIManager->Get_NumLayer(m_pUIManager->Get_CurCanvasIndex()); ++i)
+	for (int i = 0; i < m_pUIManager->Get_NumUI(m_pUIManager->Get_CurCanvasIndex(), m_pUIManager->Get_CurLayerIndex()); ++i)
 	{
-		bool selected = (m_pUIManager->Get_CurLayerIndex() == i);
-		if (ImGui::Selectable(m_pUIManager->Get_LayerData_Ptr(i)->strTag.c_str(), selected))
-			m_pUIManager->Change_Layers(i);
+		bool selected = (m_pUIManager->Get_CurUIIndex() == i);
+		if (ImGui::Selectable(m_pUIManager->Get_UIData_Ptr(i)->strName.c_str(), selected))
+			m_pUIManager->Change_UIData(i);
 	}
 	ImGui::EndChild();
 }
@@ -485,17 +504,30 @@ void CUI_Inspector::Make_UI_Btn()
 	if (ImGui::Button("Create UI With This Layer"))
 	{
 		m_isCreateUI = TRUE;
-		m_isBeginCreateUI = TRUE;
+		m_iRectTransformIndex = 4;
+
+		if (m_strUIName == "")
+		{
+			MSG_BOX("CUI_Inspector::Make_UI_Btn, Empty Tag");
+			m_isCreateCanvas = FALSE;
+			return;
+		}
+
+		/* UI 태그가 있다*/
+		const auto& vecUI = m_pUIManager->Get_CurUIDatas();
+		for (uint32_t i = 0; i < m_pUIManager->Get_NumUI(m_pUIManager->Get_CurCanvasIndex(), m_pUIManager->Get_CurLayerIndex()); ++i)
+		{
+			if (m_strCanvasTag == vecUI[i].strName)
+			{
+				MSG_BOX("CUI_Inspector::Make_UI_Btn, Tag Already Created");
+				m_isCreateCanvas = FALSE;
+				return;
+			}
+		}
+		Add_NewUI();
 	}
 }
 
-void CUI_Inspector::Ready_Make_NewUI()
-{
-	GENERIC_UI_DATA tData = {};
-	m_pUIManager->Add_UIData(tData);
-	m_iRectTransformIndex = 4;
-	m_isBeginCreateUI = FALSE;
-}
 
 CUI_Inspector* CUI_Inspector::Create(const _char* pLabel, CLevel* pOwner, ID3D11Device* pDevice, ID3D11DeviceContext* pDeviceContext)
 {

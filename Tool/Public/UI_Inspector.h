@@ -30,14 +30,15 @@ private:
 	void Edit_Layers();
 
 	/* 레이어에 들어갈 UI를 생성 */
-	void Make_UI();
+	void Add_NewUI();
+	void Edit_UI();
 
 	void SetUp_UI_Common_Info();
 	/* UI 타입 지정 -> 버튼인지, 이미지인지, 영상인지 등 */
 	/* UI 텍스쳐를 지정 -> 파일 패스를 저장해야될듯 */
 	/* UI에 붙일 기능을 지정 -> 기능들은 ENUM으로 */
 
-	void UI_List();
+	void Show_UI_List();
 
 private:
 	void Input_Canvas_Tag();
@@ -53,7 +54,6 @@ private:
 	
 	void Make_Layer_Btn();
 	void Make_UI_Btn();
-	void Ready_Make_NewUI();
 
 private:
 	CImGui_ToolManager* m_pToolManager = { nullptr };
@@ -71,11 +71,11 @@ private:
 
 	_bool m_isCreateLayer = { FALSE };
 
-	_bool m_isBeginCreateUI = { FALSE };
 	_bool m_isCreateUI = { FALSE };
 
 	_string m_strCanvasTag = {};
 	_string m_strLayerTag = {};
+	_string m_strUIName = {};
 
 	int32_t m_iRectTransformIndex = {4};
 

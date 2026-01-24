@@ -14,6 +14,7 @@ typedef struct tagCanvasData CANVAS_DATA;
 typedef struct tagLayerData LAYER_DATA;
 typedef struct tagGenericUIData GENERIC_UI_DATA;
 
+class CToolUI;
 
 enum class EUiType {
 	IMAGE_2D = 0, IMAGE_3D, BUTTON, TEXT, VIDEO, END
@@ -158,10 +159,15 @@ typedef struct tagLayerData
 
 	vector<GENERIC_UI_DATA> vecUIData;
 
+	/* For.Runtime */
+	vector<CToolUI*> vecUIObjects;
 }LAYER_DATA;
 
 typedef struct tagGenericUIData
 {
+	/* For.Runtime */
+	_string strName;
+
 	uint32_t iUIType;
 
 	uint32_t iRectTransformType;

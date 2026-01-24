@@ -4,6 +4,8 @@
 
 NS_BEGIN(Tool)
 
+class CToolUI;
+
 class CImGui_UIManager final : public CBase
 {
 	using Super = CBase;
@@ -19,6 +21,7 @@ public:
 	void Add_CanvasData(const CANVAS_DATA& tData);
 	void Add_LayerData(const LAYER_DATA& tData);
 	void Add_UIData(const GENERIC_UI_DATA& tData);
+	void Add_UI(const GENERIC_UI_DATA& tData);
 
 	/* 커서를 옮길 땐 이걸 써주세요. */
 	void Change_Canvas(uint32_t iNewCanvasIndex);
@@ -27,7 +30,10 @@ public:
 
 	uint32_t Get_NumCanvas();
 	uint32_t Get_NumLayer(uint32_t iCanvasIndex);
+	uint32_t Get_CurNumLayer();
 	uint32_t Get_NumUI(uint32_t iCanvasIndex, uint32_t iLayerIndex);
+	uint32_t Get_CurNumUI();
+
 
 	/* 데이터를 지울 땐 이걸 써주세요. */
 	void Remove_CanvasData();
@@ -35,6 +41,7 @@ public:
 	void Remove_UIData();
 
 	/* 내부 데이터 빠르게 꺼내오기 */
+	vector<CANVAS_DATA>& Get_CurCanvas_Ref() { return m_vecCanvasData; }
 	vector<LAYER_DATA>& Get_CurLayers_Ref() { return m_vecCanvasData[m_iCurCanvasIndex].vecLayers; }
 	vector<GENERIC_UI_DATA>& Get_CurUIDatas_Ref() { return Get_CurLayers_Ref()[m_iCurLayerIndex].vecUIData; }
 
