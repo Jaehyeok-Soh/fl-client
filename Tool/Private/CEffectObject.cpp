@@ -1,10 +1,11 @@
+#include "pch.h"
 #include "CEffectObject.h"
-#include "GameInstance.h"
 #include "Shader.h"
 #include "Model.h"
 #include "Texture.h"
 #include "mesh.h"
 #include "VIBuffer_Particle_Point.h"
+#include "GameInstance.h"
 
 CEffectObject::CEffectObject(EToolObjectType eType, ID3D11Device* pDevice, ID3D11DeviceContext* pDeviceContext)
     :Tool_PartObject(eType, pDevice, pDeviceContext)

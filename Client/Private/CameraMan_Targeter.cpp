@@ -1,3 +1,4 @@
+#include "pch.h"
 #include "Client_Defines.h"
 #include "GameInstance.h"
 #include "ContainerObject.h"
@@ -269,7 +270,7 @@ void CCameraMan_Targeter::Chase_Actor(const _float fTimeDelta)
 }
 
 void CCameraMan_Targeter::Chase_Player(CContainerObject* pPlayer, const _float fTimeDelta)
-{
+ {
     CBody* pBodyOfPlayer = nullptr;
     if (!(pBodyOfPlayer = pPlayer->Get_Part<CBody>(CPlayer::BODY)))
         return;

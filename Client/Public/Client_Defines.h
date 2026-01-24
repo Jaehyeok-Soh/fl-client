@@ -2,7 +2,7 @@
 
 #include "Engine_Define.h"
 #include <windows.h>
-#include "Client_EventDefine.h"
+
 
 extern HWND			g_hWnd;
 extern HINSTANCE	g_hInstance;

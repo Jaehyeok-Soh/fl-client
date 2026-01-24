@@ -14,7 +14,6 @@ public:
 	enum AbilityState : _uint
 	{
 		HAND = 0,
-		SWORD,
 		END
 	};
 private:

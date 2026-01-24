@@ -1,3 +1,4 @@
+#include "pch.h"
 #include "Effect.h"
 
 Effect::Effect(EToolObjectType eType, ID3D11Device* pDevice, ID3D11DeviceContext* pDeviceContext)

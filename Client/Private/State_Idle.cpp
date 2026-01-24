@@ -1,7 +1,7 @@
-#include "Client_Defines.h"
-#include "GameInstance.h"
-#include "Player.h"
+#include "pch.h"
 #include "State_Idle.h"
+#include "Player.h"
+#include "GameInstance.h"
 
 CState_Idle::CState_Idle(CActionState* pOwnerComponent)
 	: Super(pOwnerComponent, "Idle")
@@ -39,8 +39,8 @@ void CState_Idle::Update(const _float fTimeDelta)
 	if (Align_Move(ENUM_TO_UINT(CPlayer::State::RUNSTART)))
 		return;
 
-	if (Align_Attack(ENUM_TO_UINT(CPlayer::State::LEFTMELEE)))
-		return;
+	//if (Align_Attack(ENUM_TO_UINT(CPlayer::State::LEFTMELEE)))
+	//	return;
 }
 
 HRESULT CState_Idle::End()

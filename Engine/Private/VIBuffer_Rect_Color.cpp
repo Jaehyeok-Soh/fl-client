@@ -1,3 +1,4 @@
+#include "Engine_pch.h"
 #include "VIBuffer_Rect_Color.h"
 
 CVIBuffer_Rect_Color::CVIBuffer_Rect_Color(ID3D11Device* pDevice, ID3D11DeviceContext* pDeviceContext)

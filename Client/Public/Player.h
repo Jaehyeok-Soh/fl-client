@@ -26,11 +26,6 @@ public:
 	enum Part : _uint
 	{
 		BODY = 0,
-		WEAPON,
-		RIGHTHAND,
-		LEFTHAND,
-		RIGHTFOOT,
-		LEFTFOOT,
 		END
 	};
 	enum class State : _uint
@@ -39,7 +34,6 @@ public:
 		RUNSTART,
 		RUN,
 		RUNEND,
-		LEFTMELEE,
 		END
 	};
 protected:

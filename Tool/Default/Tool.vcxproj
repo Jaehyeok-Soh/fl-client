@@ -108,10 +108,12 @@
     <ClCompile>
       <WarningLevel>Level3</WarningLevel>
       <SDLCheck>true</SDLCheck>
-      <PreprocessorDefinitions>_DEBUG;_WINDOWS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <PreprocessorDefinitions>_DEBUG;_WINDOWS;SOLUTION_DIR=R"($(SolutionDir))";%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
       <AdditionalIncludeDirectories>../Default;../Public;../../EngineSDK/Include;../../Libraries/Include/;</AdditionalIncludeDirectories>
       <LanguageStandard>stdcpp20</LanguageStandard>
+      <PrecompiledHeader>Use</PrecompiledHeader>
+      <PrecompiledHeaderFile>pch.h</PrecompiledHeaderFile>
     </ClCompile>
     <Link>
       <SubSystem>Windows</SubSystem>
@@ -126,10 +128,12 @@
       <FunctionLevelLinking>true</FunctionLevelLinking>
       <IntrinsicFunctions>true</IntrinsicFunctions>
       <SDLCheck>true</SDLCheck>
-      <PreprocessorDefinitions>NDEBUG;_WINDOWS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <PreprocessorDefinitions>NDEBUG;_WINDOWS;SOLUTION_DIR=R"($(SolutionDir))";%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
       <AdditionalIncludeDirectories>../Default;../Public;../../EngineSDK/Include;../../Libraries/Include/;</AdditionalIncludeDirectories>
       <LanguageStandard>stdcpp20</LanguageStandard>
+      <PrecompiledHeader>Use</PrecompiledHeader>
+      <PrecompiledHeaderFile>pch.h</PrecompiledHeaderFile>
     </ClCompile>
     <Link>
       <SubSystem>Windows</SubSystem>
@@ -165,6 +169,7 @@
     <ClInclude Include="..\Public\ImGui_Panel.h" />
     <ClInclude Include="..\Public\imgui_stdlib.h" />
     <ClInclude Include="..\Public\ImGui_ToolManager.h" />
+    <ClInclude Include="..\Public\ImGui_UIManager.h" />
     <ClInclude Include="..\Public\ImSequencer.h" />
     <ClInclude Include="..\Public\imstb_rectpack.h" />
     <ClInclude Include="..\Public\imstb_textedit.h" />
@@ -178,15 +183,25 @@
     <ClInclude Include="..\Public\Level_Map.h" />
     <ClInclude Include="..\public\Level_UI.h" />
     <ClInclude Include="..\Public\Loader.h" />
+    <ClInclude Include="..\Public\MapObject.h" />
+    <ClInclude Include="..\Public\Panel_MapDataController.h" />
+    <ClInclude Include="..\Public\Panel_MapObjectList.h" />
+    <ClInclude Include="..\Public\Panel_ModelConverter.h" />
     <ClInclude Include="..\Public\CParticle_System_Panel.h" />
     <ClInclude Include="..\Public\Picking_ToolManager.h" />
+    <ClInclude Include="..\Public\StaticModel.h" />
     <ClInclude Include="..\Public\ToolObject.h" />
+    <ClInclude Include="..\Public\ToolUI.h" />
     <ClInclude Include="..\Public\Tool_Defines.h" />
     <ClInclude Include="..\Public\MainApplication.h" />
     <ClInclude Include="..\Public\Tool_EventDefines.h" />
     <ClInclude Include="..\Public\UEMapdataLoader.h" />
     <ClInclude Include="..\Public\UEMapdataParser.h" />
+    <ClInclude Include="..\Public\UIData_Repository.h" />
+    <ClInclude Include="..\Public\UI_Hierachy.h" />
+    <ClInclude Include="..\Public\UI_Inspector.h" />
     <ClInclude Include="framework.h" />
+    <ClInclude Include="pch.h" />
     <ClInclude Include="Resource.h" />
     <ClInclude Include="targetver.h" />
     <ClInclude Include="Tool.h" />
@@ -199,26 +214,66 @@
     <ClCompile Include="..\Private\Tool_ContainerObject.cpp" />
     <ClCompile Include="..\Private\Tool_PartObject.cpp" />
     <ClCompile Include="..\Private\GodInput.cpp" />
-    <ClCompile Include="..\Private\GraphEditor.cpp" />
-    <ClCompile Include="..\Private\ImCurveEdit.cpp" />
-    <ClCompile Include="..\Private\ImGradient.cpp" />
-    <ClCompile Include="..\Private\imgui.cpp" />
-    <ClCompile Include="..\Private\ImGuizmo.cpp" />
+    <ClCompile Include="..\Private\GraphEditor.cpp">
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">NotUsing</PrecompiledHeader>
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|x64'">NotUsing</PrecompiledHeader>
+    </ClCompile>
+    <ClCompile Include="..\Private\ImCurveEdit.cpp">
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">NotUsing</PrecompiledHeader>
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|x64'">NotUsing</PrecompiledHeader>
+    </ClCompile>
+    <ClCompile Include="..\Private\ImGradient.cpp">
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">NotUsing</PrecompiledHeader>
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|x64'">NotUsing</PrecompiledHeader>
+    </ClCompile>
+    <ClCompile Include="..\Private\imgui.cpp">
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">NotUsing</PrecompiledHeader>
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|x64'">NotUsing</PrecompiledHeader>
+    </ClCompile>
+    <ClCompile Include="..\Private\ImGuizmo.cpp">
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">NotUsing</PrecompiledHeader>
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|x64'">NotUsing</PrecompiledHeader>
+    </ClCompile>
     <ClCompile Include="..\Private\ImGui_Base.cpp" />
-    <ClCompile Include="..\Private\imgui_demo.cpp" />
+    <ClCompile Include="..\Private\imgui_demo.cpp">
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">NotUsing</PrecompiledHeader>
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|x64'">NotUsing</PrecompiledHeader>
+    </ClCompile>
     <ClCompile Include="..\Private\ImGui_Dockspace_MenuBar.cpp" />
     <ClCompile Include="..\Private\ImGui_Dockspace_TabBar.cpp" />
-    <ClCompile Include="..\Private\imgui_draw.cpp" />
-    <ClCompile Include="..\Private\imgui_impl_dx11.cpp" />
-    <ClCompile Include="..\Private\imgui_impl_win32.cpp" />
+    <ClCompile Include="..\Private\imgui_draw.cpp">
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">NotUsing</PrecompiledHeader>
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|x64'">NotUsing</PrecompiledHeader>
+    </ClCompile>
+    <ClCompile Include="..\Private\imgui_impl_dx11.cpp">
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">NotUsing</PrecompiledHeader>
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|x64'">NotUsing</PrecompiledHeader>
+    </ClCompile>
+    <ClCompile Include="..\Private\imgui_impl_win32.cpp">
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">NotUsing</PrecompiledHeader>
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|x64'">NotUsing</PrecompiledHeader>
+    </ClCompile>
     <ClCompile Include="..\Private\ImGui_Layout.cpp" />
     <ClCompile Include="..\Private\ImGui_Layout_Transform.cpp" />
     <ClCompile Include="..\Private\ImGui_Panel.cpp" />
-    <ClCompile Include="..\Private\imgui_stdlib.cpp" />
-    <ClCompile Include="..\Private\imgui_tables.cpp" />
+    <ClCompile Include="..\Private\imgui_stdlib.cpp">
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">NotUsing</PrecompiledHeader>
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|x64'">NotUsing</PrecompiledHeader>
+    </ClCompile>
+    <ClCompile Include="..\Private\imgui_tables.cpp">
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">NotUsing</PrecompiledHeader>
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|x64'">NotUsing</PrecompiledHeader>
+    </ClCompile>
     <ClCompile Include="..\Private\ImGui_ToolManager.cpp" />
-    <ClCompile Include="..\Private\imgui_widgets.cpp" />
-    <ClCompile Include="..\Private\ImSequencer.cpp" />
+    <ClCompile Include="..\Private\ImGui_UIManager.cpp" />
+    <ClCompile Include="..\Private\imgui_widgets.cpp">
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">NotUsing</PrecompiledHeader>
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|x64'">NotUsing</PrecompiledHeader>
+    </ClCompile>
+    <ClCompile Include="..\Private\ImSequencer.cpp">
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">NotUsing</PrecompiledHeader>
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|x64'">NotUsing</PrecompiledHeader>
+    </ClCompile>
     <ClCompile Include="..\Private\Level_Animation.cpp" />
     <ClCompile Include="..\Private\Level_Assimp.cpp" />
     <ClCompile Include="..\Private\Level_Camera.cpp" />
@@ -228,10 +283,25 @@
     <ClCompile Include="..\private\Level_UI.cpp" />
     <ClCompile Include="..\Private\Loader.cpp" />
     <ClCompile Include="..\Private\MainApplication.cpp" />
+    <ClCompile Include="..\Private\MapObject.cpp" />
+    <ClCompile Include="..\Private\Panel_MapDataController.cpp" />
+    <ClCompile Include="..\Private\Panel_MapObjectList.cpp" />
+    <ClCompile Include="..\Private\Panel_ModelConverter.cpp" />
     <ClCompile Include="..\Private\CParticle_System_Panel.cpp" />
     <ClCompile Include="..\Private\Picking_ToolManager.cpp" />
+    <ClCompile Include="..\Private\StaticModel.cpp" />
     <ClCompile Include="..\Private\ToolObject.cpp" />
+    <ClCompile Include="..\Private\ToolUI.cpp" />
     <ClCompile Include="..\Private\Tool_Defines.cpp" />
+    <ClCompile Include="..\Private\UIData_Repository.cpp" />
+    <ClCompile Include="..\Private\UI_Hierachy.cpp" />
+    <ClCompile Include="..\Private\UI_Inspector.cpp" />
+    <ClCompile Include="pch.cpp">
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Create</PrecompiledHeader>
+      <PrecompiledHeaderFile Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">pch.h</PrecompiledHeaderFile>
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Create</PrecompiledHeader>
+      <PrecompiledHeaderFile Condition="'$(Configuration)|$(Platform)'=='Release|x64'">pch.h</PrecompiledHeaderFile>
+    </ClCompile>
     <ClCompile Include="..\Private\UEMapdataLoader.cpp" />
     <ClCompile Include="..\Private\UEMapdataParser.cpp" />
     <ClCompile Include="Tool.cpp" />

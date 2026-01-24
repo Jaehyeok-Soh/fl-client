@@ -1,3 +1,4 @@
+#include "Engine_pch.h"
 #include "Ray.h"
 
 CRay::CRay(const Vec3& vLocalOrigin, const Vec3& vLocalDir)

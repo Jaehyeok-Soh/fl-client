@@ -1,7 +1,7 @@
-#include "Client_Defines.h"
+#include "pch.h"
+#include "State_Combo_Third.h"
 #include "Player.h"
 #include "GameInstance.h"
-#include "State_Combo_Third.h"
 
 CState_Combo_Third::CState_Combo_Third(CActionState* pOwnerComponent)
     : Super(pOwnerComponent, "ComboThird")
@@ -45,21 +45,21 @@ void CState_Combo_Third::Update(const _float fTimeDelta)
     if (Can_Dash(EDashFlag::FIRST) && Is_AnimTrackPositionAt(0.1f))
         StartForce_ForAnimation(EDashFlag::FIRST, EDir::FRONT, 4.f, 7.f);
 
-    if (Is_AnimTrackPositionBetween(0.29f, 0.37f))
-    {
-        iNewWindow = 0;
-        iNewPart = ENUM_TO_UINT(CPlayer::Part::LEFTFOOT);
-        desc.fForceAbs = 4.f;
-        desc.fDragK = 7.f;
-        desc.iAttackType = ENUM_TO_UINT(EHitType::FRONT);
-        desc.iDamage = 1;
-        if (m_bFirst == false)
-        {
-            CGameInstance::GetInstance()->Play_RandOneShot(L"HandAttack", 0.2f, 3);
-            CGameInstance::GetInstance()->Play_RandOneShot(L"Player_Hit", 0.3f, 6);
-            m_bFirst = true;
-        }
-    }
+    //if (Is_AnimTrackPositionBetween(0.29f, 0.37f))
+    //{
+    //    iNewWindow = 0;
+    //    iNewPart = ENUM_TO_UINT(CPlayer::Part::LEFTFOOT);
+    //    desc.fForceAbs = 4.f;
+    //    desc.fDragK = 7.f;
+    //    desc.iAttackType = ENUM_TO_UINT(EHitType::FRONT);
+    //    desc.iDamage = 1;
+    //    if (m_bFirst == false)
+    //    {
+    //        CGameInstance::GetInstance()->Play_RandOneShot(L"HandAttack", 0.2f, 3);
+    //        CGameInstance::GetInstance()->Play_RandOneShot(L"Player_Hit", 0.3f, 6);
+    //        m_bFirst = true;
+    //    }
+    //}
 
     Apply_AttackDesc(iNewWindow, iNewPart, &desc);
     Apply_ForceMove(fTimeDelta);
@@ -72,7 +72,7 @@ HRESULT CState_Combo_Third::End()
 
     m_bFirst = false;
     Clear_ForceMove();
-    Set_AttackCollider(ENUM_TO_UINT(CPlayer::Part::LEFTFOOT), false, nullptr);
+    //Set_AttackCollider(ENUM_TO_UINT(CPlayer::Part::LEFTFOOT), false, nullptr);
     return S_OK;
 }
 

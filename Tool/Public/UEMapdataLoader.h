@@ -16,6 +16,7 @@ private:
 	CUEMapDataLoader(ID3D11Device* pDevice, ID3D11DeviceContext* pDeviceContext);
 	virtual ~CUEMapDataLoader() = default;
 public:
+
 	HRESULT Make_Prototype(const wstring &wstrMapModelFolderPath);
 	HRESULT Make_StaticModel(const wstring &wstrRawDataFilePath, const wstring &wstrStaticModelLayerTag, const wstring &wstrColmeshLayerTag);
 private:

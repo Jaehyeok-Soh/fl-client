@@ -1,8 +1,8 @@
-#include "Tool_Defines.h"
+#include "pch.h"
+#include "Level_Camera.h"
 #include "Level_Loading.h"
 #include "ImGui_ToolManager.h"
 #include "GameInstance.h"
-#include "Level_Camera.h"
 
 CLevel_Camera::CLevel_Camera(ID3D11Device* pDevice, ID3D11DeviceContext* pDeviceContext)
 	: Super(pDevice, pDeviceContext)
