@@ -103,6 +103,54 @@
     <Filter Include="01. MainApplication">
       <UniqueIdentifier>{b2ad5ea6-fa9c-42e2-920e-65fa32a6965c}</UniqueIdentifier>
     </Filter>
+    <Filter Include="02. GameObjects\Map">
+      <UniqueIdentifier>{2318f38b-6d39-4c06-902a-133043782e03}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02. GameObjects\Map\00. MapObject">
+      <UniqueIdentifier>{c7045980-bb80-4be0-8ca4-288e4abc51ca}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="06. ImGui\01. Panel\Map">
+      <UniqueIdentifier>{b4e4e477-acb3-4c83-a84e-a16a77ffbe18}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="06. ImGui\01. Panel\Asimp">
+      <UniqueIdentifier>{1502112a-c44e-484f-85c7-3e71f9a1a6b0}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02. GameObjects\Map\00. MapObject\00. MapObject">
+      <UniqueIdentifier>{cdb92401-9c8e-484e-b963-3905e522a34c}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02. GameObjects\Map\00. MapObject\01. StaticMesh">
+      <UniqueIdentifier>{2cfbf0d2-bd5d-4728-87d5-d2bb19dfb549}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="06. ImGui\01. Panel\Map\Panel_MapObjectList">
+      <UniqueIdentifier>{9755e817-fb8d-4b80-9214-161ecfd0e6ce}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="06. ImGui\01. Panel\Map\Panel_MapDataControler">
+      <UniqueIdentifier>{418b41f9-ac00-471b-99f0-07f9141edff7}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="03. Level\Effect\Effect_Panel">
+      <UniqueIdentifier>{dcfafedc-a3a5-47ae-a71f-86669a2e7b2c}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="03. Level\Effect\Effect_Panel\Particle_System_Panel">
+      <UniqueIdentifier>{0680a4ef-f6b5-4f4c-9344-5a85832793a5}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="03. Level\Effect\Effect_Panel\EffectType_Selection">
+      <UniqueIdentifier>{c616f463-edcd-4d20-919c-9de9a390d678}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="03. Level\Effect\Effect_Object">
+      <UniqueIdentifier>{c7c882ca-f31c-44ed-bfc0-c6a26939bb11}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02. GameObjects\PartObject">
+      <UniqueIdentifier>{ab8f52ba-9548-4d59-96fd-3e11792c6f59}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02. GameObjects\ContainerObject">
+      <UniqueIdentifier>{849c5ab9-53df-4b2a-8a78-5d3fb0f5bf4a}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="03. Level\Effect\Effect_Object\Effect">
+      <UniqueIdentifier>{484f6f3e-8e60-44ee-bc6e-9752b2de029b}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="98. Defines\pch">
+      <UniqueIdentifier>{6a433bfc-3f5f-420f-ac46-69cffb0edf23}</UniqueIdentifier>
+    </Filter>
     <Filter Include="02. GameObjects\UI\UI">
       <UniqueIdentifier>{6a558198-77c1-41fb-9345-05c1fc4f9daf}</UniqueIdentifier>
     </Filter>
@@ -228,9 +276,6 @@
     <ClInclude Include="..\Public\CameraMan_Free.h">
       <Filter>02. GameObjects\Camera</Filter>
     </ClInclude>
-    <ClInclude Include="..\Public\ToolObject.h">
-      <Filter>02. GameObjects</Filter>
-    </ClInclude>
     <ClInclude Include="..\Public\UEMapdataLoader.h">
       <Filter>07. UE_Mapdata</Filter>
     </ClInclude>
@@ -257,6 +302,45 @@
     </ClInclude>
     <ClInclude Include="..\Public\ToolCanvas.h">
       <Filter>02. GameObjects\UI\Canvas</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\ToolObject.h">
+      <Filter>02. GameObjects</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\Panel_MapObjectList.h">
+      <Filter>06. ImGui\01. Panel\Map\Panel_MapObjectList</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\Panel_ModelConverter.h">
+      <Filter>06. ImGui\01. Panel\Asimp</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\MapObject.h">
+      <Filter>02. GameObjects\Map\00. MapObject\00. MapObject</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\StaticModel.h">
+      <Filter>02. GameObjects\Map\00. MapObject\01. StaticMesh</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\Panel_MapDataController.h">
+      <Filter>06. ImGui\01. Panel\Map\Panel_MapDataControler</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\CParticle_System_Panel.h">
+      <Filter>03. Level\Effect\Effect_Panel\Particle_System_Panel</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\EffectType_Selection_Panel.h">
+      <Filter>03. Level\Effect\Effect_Panel\EffectType_Selection</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\CEffectObject.h">
+      <Filter>03. Level\Effect\Effect_Object</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\Tool_ContainerObject.h">
+      <Filter>02. GameObjects\ContainerObject</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\Tool_PartObject.h">
+      <Filter>02. GameObjects\PartObject</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\Effect.h">
+      <Filter>03. Level\Effect\Effect_Object\Effect</Filter>
+    </ClInclude>
+    <ClInclude Include="pch.h">
+      <Filter>98. Defines\pch</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -369,9 +453,6 @@
     <ClCompile Include="..\Private\CameraMan_Free.cpp">
       <Filter>02. GameObjects\Camera</Filter>
     </ClCompile>
-    <ClCompile Include="..\Private\ToolObject.cpp">
-      <Filter>02. GameObjects</Filter>
-    </ClCompile>
     <ClCompile Include="..\Private\UEMapdataParser.cpp">
       <Filter>07. UE_Mapdata</Filter>
     </ClCompile>
@@ -401,6 +482,45 @@
     </ClCompile>
     <ClCompile Include="..\Private\ToolCanvas.cpp">
       <Filter>02. GameObjects\UI\Canvas</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\ToolObject.cpp">
+      <Filter>02. GameObjects</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\Panel_MapObjectList.cpp">
+      <Filter>06. ImGui\01. Panel\Map\Panel_MapObjectList</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\Panel_ModelConverter.cpp">
+      <Filter>06. ImGui\01. Panel\Asimp</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\MapObject.cpp">
+      <Filter>02. GameObjects\Map\00. MapObject\00. MapObject</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\StaticModel.cpp">
+      <Filter>02. GameObjects\Map\00. MapObject\01. StaticMesh</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\Panel_MapDataController.cpp">
+      <Filter>06. ImGui\01. Panel\Map\Panel_MapDataControler</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\CParticle_System_Panel.cpp">
+      <Filter>03. Level\Effect\Effect_Panel\Particle_System_Panel</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\EffectType_Selection_Panel.cpp">
+      <Filter>03. Level\Effect\Effect_Panel\EffectType_Selection</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\CEffectObject.cpp">
+      <Filter>03. Level\Effect\Effect_Object</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\Tool_ContainerObject.cpp">
+      <Filter>02. GameObjects\ContainerObject</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\Tool_PartObject.cpp">
+      <Filter>02. GameObjects\PartObject</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\Effect.cpp">
+      <Filter>03. Level\Effect\Effect_Object\Effect</Filter>
+    </ClCompile>
+    <ClCompile Include="pch.cpp">
+      <Filter>98. Defines\pch</Filter>
     </ClCompile>
   </ItemGroup>
 </Project>

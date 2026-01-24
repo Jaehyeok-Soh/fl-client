@@ -1,8 +1,8 @@
-#include "Client_Defines.h"
-#include "Player.h"
-#include "GameInstance.h"
-#include "MainPlayer.h"
+#include "pch.h"
 #include "State_RunStart.h"
+#include "Player.h"
+#include "MainPlayer.h"
+#include "GameInstance.h"
 
 CState_RunStart::CState_RunStart(CActionState* pOwnerComponent)
 	: Super(pOwnerComponent, "RunStart")
@@ -47,8 +47,8 @@ void CState_RunStart::Update(const _float fTimeDelta)
 		m_fDuration -= m_fInterval;
 	}
 
-	if (Align_Attack(ENUM_TO_UINT(CPlayer::State::LEFTMELEE)))
-		return;
+	//if (Align_Attack(ENUM_TO_UINT(CPlayer::State::LEFTMELEE)))
+	//	return;
 
 	if (Is_AnimFinished())
 	{

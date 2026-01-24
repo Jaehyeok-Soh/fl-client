@@ -3,6 +3,14 @@
 
 NS_BEGIN(Engine)
 
+enum class E_PARTICLE_MOVESTATE
+{
+	NONE,
+	DROP,
+	RISE,
+	SPREAD,
+};
+
 class ENGINE_DLL CVIBuffer_Particle abstract : public CVIBuffer
 {
 	using Super = CVIBuffer;
@@ -30,8 +38,20 @@ public:
 	virtual void Render() override;
 	
 public:
+	void Update_Simulation(_float fTimeDelta, E_PARTICLE_MOVESTATE eType);
+	void Reset_Simulation();
+
+	// ======== 행동 패턴들 =========
 	void Drop(_float fTimeDelta);
+	void Rise(_float fTimeDelta);
 	void Spread(_float fTimeDelta);
+
+public:
+	const PARTICLE_ORIGIN_DESC& Get_ParticleDesc() { return m_tParticleDesc; }
+	void Set_ParticleDesc(const PARTICLE_ORIGIN_DESC& Desc);
+
+	HRESULT Resize_InstanceBuffer(_uint iNumInstanceCount);
+
 protected:
 	_bool			m_bIsLoop = { false };
 	_uint			m_iIndexCountPerInstance = {};
@@ -43,6 +63,7 @@ protected:
 protected:
 	ID3D11Buffer* m_pVBInstance = { nullptr };
 	D3D11_BUFFER_DESC	m_InstanceBufferDesc = {};
+	PARTICLE_ORIGIN_DESC m_tParticleDesc = {};
 public:
 	virtual CComponent* Clone(void* pArg) PURE;
 	virtual void Free() override;

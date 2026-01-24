@@ -1,3 +1,4 @@
+#include "Engine_pch.h"
 #include "VIBuffer_Terrain.h"
 
 CVIBuffer_Terrain::CVIBuffer_Terrain(ID3D11Device* pDevice, ID3D11DeviceContext* pDeviceContext)
@@ -155,6 +156,8 @@ HRESULT CVIBuffer_Terrain::Set_HeightMapTerrain(const _tchar* pHeightFileMapPath
             pIndices[iNumIndices++] = iIndices[1];
             pIndices[iNumIndices++] = iIndices[2];
 
+            vSour = ::XMLoadFloat3(&pVertices[iIndices[1]].vPosition) - ::XMLoadFloat3(&pVertices[iIndices[0]].vPosition);
+            vDest = ::XMLoadFloat3(&pVertices[iIndices[2]].vPosition) - ::XMLoadFloat3(&pVertices[iIndices[1]].vPosition);
             
             vSour = pVertices[iIndices[1]].vPosition - pVertices[iIndices[0]].vPosition;
             vDest = pVertices[iIndices[2]].vPosition - pVertices[iIndices[1]].vPosition;

@@ -1,4 +1,4 @@
-#include "Tool_Defines.h"
+#include "pch.h"
 #include "MainApplication.h"
 #include "Picking_ToolManager.h"
 #include "VertexData.h"
@@ -112,7 +112,8 @@ HRESULT CMainApplication::Ready_Static_Prototype()
 	{
 		CShader::SHADER_ORIGIN_DESC shaderDesc = {};
 		shaderDesc.pShaderFilePath = L"../../Shaders/Shader_VtxCol.hlsl";
-		shaderDesc.iNumElements = Engine::VTXPOSCOL::iNumElements;
+		shaderDesc.iNumElements = 
+			VTXPOSCOL::iNumElements;
 		shaderDesc.pElements = Engine::VTXPOSCOL::Elements;
 		if (FAILED(m_pGameInstance->Add_Prototype(ENUM_TO_UINT(ELevelType::STATIC), L"Prototype_Component_Shader_VtxCol",
 			CShader::Create(m_pDevice, m_pDeviceContext, &shaderDesc))))
@@ -192,18 +193,18 @@ HRESULT CMainApplication::Ready_Static_Prototype()
 	//=================
 	// MaterialInstance
 	//=================
-	auto makeMaterialInstance = [&](const Vec4 &vColor, EMaterialInstanceType eType)->HRESULT
-	{
-		CMaterialInstance::tagMaterialInstanceOrignDesc desc = {};
-		desc.vTintColor = vColor;
-		desc.eType = eType;
-		desc.wstrName = Engine_Utils::MI_ToWString(eType);
-		desc.fEmissivePower = 1.f;
-		if (FAILED(m_pGameInstance->Add_Resource<CMaterialInstance>(desc.wstrName, CMaterialInstance::Create(m_pDevice, m_pDeviceContext, &desc))))
-			return E_FAIL;
-		
-		return S_OK;
-	};
+	auto makeMaterialInstance = [&](const Vec4& vColor, EMaterialInstanceType eType)->HRESULT
+		{
+			CMaterialInstance::tagMaterialInstanceOrignDesc desc = {};
+			desc.vTintColor = vColor;
+			desc.eType = eType;
+			desc.wstrName = Engine_Utils::MI_ToWString(eType);
+			desc.fEmissivePower = 1.f;
+			if (FAILED(m_pGameInstance->Add_Resource<CMaterialInstance>(desc.wstrName, CMaterialInstance::Create(m_pDevice, m_pDeviceContext, &desc))))
+				return E_FAIL;
+
+			return S_OK;
+		};
 	// For. MaterialInstance_Default
 	if (FAILED(makeMaterialInstance(Vec4{ 1.f, 1.f, 1.f, 1.f }, EMaterialInstanceType::Default)))
 		return E_FAIL;
@@ -329,7 +330,6 @@ void CMainApplication::Free()
 	Safe_Release(m_pDeviceContext);
 	Safe_Release(m_pDevice);
 
-	m_pImGuiManager->DestroyInstance();
 	m_pGameInstance->Destroy_Engine();
 	Super::Free();
 }

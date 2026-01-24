@@ -1,7 +1,8 @@
-#include "Client_Defines.h"
+#include "pch.h"
+#include "State_RunEnd.h"
 #include "Player.h"
 #include "GameInstance.h"
-#include "State_RunEnd.h"
+
 
 CState_RunEnd::CState_RunEnd(CActionState* pOwnerComponent)
 	: Super(pOwnerComponent, "RunEnd")
@@ -42,8 +43,8 @@ void CState_RunEnd::Update(const _float fTimeDelta)
 		return;
 	}
 
-	if (Align_Attack(ENUM_TO_UINT(CPlayer::State::LEFTMELEE)))
-		return;
+	//if (Align_Attack(ENUM_TO_UINT(CPlayer::State::LEFTMELEE)))
+	//	return;
 
 	if (Align_Move(ENUM_TO_UINT(CPlayer::State::RUNSTART)))
 		return;

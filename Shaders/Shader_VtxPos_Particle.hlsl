@@ -9,7 +9,7 @@ VS_OUT_POS_GS_PARTICLE VS_MAIN(VS_IN_POS_GS_PARTICLE input)
     vector vPosition = mul(vector(input.vPosition, 1.f), input.matTransform);
     output.vPosition = mul(vPosition, W);
     output.vPSize = float2(length(input.matTransform._11_22_33), length(input.matTransform._21_22_23));
-    output.vLieftTime = input.vLifeTime;
+    output.vLifeTime = input.vLifeTime;
     
     return output;
 }
@@ -25,19 +25,19 @@ void GS_MAIN(point GS_IN_POS_PARTICLE input[1], inout TriangleStream<GS_OUT_POS_
     
     output[0].vPosition = mul(vector(input[0].vPosition.xyz + vRight + vUp, 1.f), VP);
     output[0].vUV = float2(0.f, 0.f);
-    output[0].vLieftTime = input[0].vLieftTime;
+    output[0].vLifeTime = input[0].vLifeTime;
     
     output[1].vPosition = mul(vector(input[0].vPosition.xyz - vRight + vUp, 1.f), VP);
     output[1].vUV = float2(1.f, 0.f);
-    output[1].vLieftTime = input[0].vLieftTime;
+    output[1].vLifeTime = input[0].vLifeTime;
     
     output[2].vPosition = mul(vector(input[0].vPosition.xyz - vRight - vUp, 1.f), VP);
     output[2].vUV = float2(1.f, 1.f);
-    output[2].vLieftTime = input[0].vLieftTime;
+    output[2].vLifeTime = input[0].vLifeTime;
     
     output[3].vPosition = mul(vector(input[0].vPosition.xyz + vRight - vUp, 1.f), VP);
     output[3].vUV = float2(0.f, 1.f);
-    output[3].vLieftTime = input[0].vLieftTime;
+    output[3].vLifeTime = input[0].vLifeTime;
     
     outStream.Append(output[0]);
     outStream.Append(output[1]);

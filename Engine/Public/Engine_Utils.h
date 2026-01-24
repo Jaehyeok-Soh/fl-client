@@ -15,6 +15,9 @@ public:
 	static wstring ToWString(string value);
 	static string ToString(wstring value);
 
+	static string GetFileNameFromPath(const string& filePath);
+	static string GetFileNameWithoutExtension(const string& path);
+
 	static _float SmoothStep(_float fT) { return fT * fT * (3.f - 2.f * fT); }
 
 	static string MI_ToString(EMaterialInstanceType eType)

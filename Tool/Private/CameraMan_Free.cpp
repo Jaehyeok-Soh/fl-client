@@ -1,7 +1,7 @@
-#include "Tool_Defines.h"
+#include "pch.h"
+#include "CameraMan_Free.h"
 #include "GodInput.h"
 #include "GameInstance.h"
-#include "CameraMan_Free.h"
 
 CCameraMan_Free::CCameraMan_Free(ID3D11Device* pDevice, ID3D11DeviceContext* pDeviceContext)
     : Super(pDevice, pDeviceContext, CameraType::DYNAMIC)

@@ -88,6 +88,15 @@
     <Filter Include="03. GameObject\Camera">
       <UniqueIdentifier>{4ef88d48-f7cf-4d3e-bc7a-24d09855396e}</UniqueIdentifier>
     </Filter>
+    <Filter Include="02. Level\Loading">
+      <UniqueIdentifier>{02313480-7853-487f-b3ec-5e32ba7be068}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02. Level\Loading\Loader">
+      <UniqueIdentifier>{a017ef8a-3027-4490-9479-8f057105a565}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="99. ETC\pch">
+      <UniqueIdentifier>{1afcebe2-6c14-4448-ab52-4236696f383f}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="targetver.h">
@@ -177,6 +186,9 @@
     <ClInclude Include="..\Public\CameraMan_Targeter.h">
       <Filter>03. GameObject\Camera</Filter>
     </ClInclude>
+    <ClInclude Include="pch.h">
+      <Filter>99. ETC\pch</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <Image Include="Client.ico">
@@ -264,6 +276,9 @@
     <ClCompile Include="..\Private\CameraMan_Targeter.cpp">
       <Filter>03. GameObject\Camera</Filter>
     </ClCompile>
+    <ClCompile Include="pch.cpp">
+      <Filter>99. ETC\pch</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <FxCompile Include="..\..\Shaders\Shader_VtxAnimMesh.hlsl">
@@ -307,6 +322,15 @@
     </FxCompile>
     <FxCompile Include="..\..\Shaders\Struct_Defines.hlsl">
       <Filter>04. Shaders\Defines</Filter>
+    </FxCompile>
+    <FxCompile Include="..\..\Shaders\Shader_VtxEffectMesh.hlsl">
+      <Filter>04. Shaders</Filter>
+    </FxCompile>
+    <FxCompile Include="..\..\Shaders\Shader_VtxEffectParticle.hlsl">
+      <Filter>04. Shaders</Filter>
+    </FxCompile>
+    <FxCompile Include="..\..\Shaders\Shader_VtxEffectTexture.hlsl">
+      <Filter>04. Shaders</Filter>
     </FxCompile>
   </ItemGroup>
 </Project>

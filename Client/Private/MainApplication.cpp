@@ -1,3 +1,4 @@
+#include "pch.h"
 #include "MainApplication.h"
 #include "Collision_Manager.h"
 #include "Material.h"

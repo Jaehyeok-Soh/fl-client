@@ -1,3 +1,4 @@
+#include "Engine_pch.h"
 #include "Importer.h"
 
 CImporter::CImporter()
@@ -7,7 +8,8 @@ CImporter::CImporter()
 HRESULT CImporter::Initialize()
 {
 	m_pImporter = new Assimp::Importer();
-
+	m_pImporter->SetPropertyBool(AI_CONFIG_IMPORT_FBX_READ_TEXTURES, true);
+	m_pImporter->SetPropertyBool(AI_CONFIG_IMPORT_FBX_READ_MATERIALS, true);
 	return S_OK;
 }
 

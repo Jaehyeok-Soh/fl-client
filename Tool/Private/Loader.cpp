@@ -1,11 +1,11 @@
-#include "Tool_Defines.h"
-#include "GameInstance.h"
+#include "pch.h"
 #include "Loader.h"
 #include "UEMapDataLoader.h"
 //=================
 // Component
 //=================
 #include "VIBuffer_Terrain.h"
+#include "VIBuffer_Particle_Point.h"
 #include "Model.h"
 #include "Collider.h"
 #include "Shader.h"
@@ -15,19 +15,20 @@
 //=================
 // Object
 //=================
-
+#include "StaticModel.h"
 
 //=================
 // UI
 //=================
 #include "ToolUI.h"
-
 //=================
 // Resource
 //=================
 #include "Texture.h"
 #include "MaterialInstance.h"
 #include "Material.h"
+#include "GameInstance.h"
+
 
 
 CLoader::CLoader(ID3D11Device* pDevice, ID3D11DeviceContext* pDeviceContext, ELevelType eLoadingELevelType)
@@ -113,6 +114,20 @@ HRESULT CLoader::Loading_For_Map()
 	// For. Prototype_Component_Collider_OBB
 	m_pGameInstance->Add_Prototype(ENUM_TO_UINT(ELevelType::MAP), L"Prototype_Component_Collider_OBB", CCollider::Create(m_pDevice, m_pDeviceContext, EColliderType::OBB));
 
+	/* Map Data Model */
+	CUEMapDataLoader* pMapDataLoader = CUEMapDataLoader::Create(m_pDevice,m_pDeviceContext);
+	if (pMapDataLoader == nullptr) return E_FAIL;
+	if (FAILED(pMapDataLoader->Make_Prototype(L"../../Resources/Models/Map/Test/Model/")))
+		return E_FAIL;
+	Safe_Release(pMapDataLoader);
+
+
+	//=================
+	// CGameObject
+	//=================
+	m_pGameInstance->Add_Prototype(ENUM_TO_UINT(ELevelType::MAP), L"Prototype_GameObject_StaticModel", CStaticModel::Create(EToolObjectType::MAPOBJECT, m_pDevice, m_pDeviceContext));
+
+
 	m_isFinished = true;
 	return S_OK;
 }
@@ -125,6 +140,20 @@ HRESULT CLoader::Loading_For_Animation()
 
 HRESULT CLoader::Loading_For_Effect()
 {
+	// For. Prototype_Component_Collider_OBB
+	CVIBuffer_Particle_Point::PARTICLE_POINT_ORIGIN_DESC	ExploDesc{};
+	ExploDesc.iInstnaceCount = 30;
+	ExploDesc.vCenter = Vec3(0.f, 0.f, 0.f);
+	ExploDesc.vSize = Vec2(0.05f, 0.15f);
+	ExploDesc.vRange = Vec3(0.5f, 0.5f, 0.5f);
+	ExploDesc.vSpeed = Vec2(2.f, 5.f);
+	ExploDesc.vLifeTime = Vec2(1.f, 1.5f);
+	ExploDesc.isLoop = false;
+	ExploDesc.vPivot = Vec3(0.f, 0.f, 0.5f);
+
+	m_pGameInstance->Add_Prototype(ENUM_TO_UINT(ELevelType::EFFECT), L"Prototype_Component_VIBuffer_Particle_Point", CVIBuffer_Particle_Point::Create(m_pDevice, m_pDeviceContext, &ExploDesc));
+
+
 	//====================
 	// Resource Material
 	//====================

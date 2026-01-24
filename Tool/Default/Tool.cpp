@@ -1,7 +1,6 @@
-#include "framework.h"
-#include "GameInstance.h"
-#include "Tool_Defines.h"
+#include "pch.h"
 #include "Tool.h"
+#include "framework.h"
 #include "MainApplication.h"
 #include "GameInstance.h"
 

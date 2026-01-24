@@ -1,3 +1,4 @@
+#include "Engine_pch.h"
 #include "VIBuffer_Cube_NorTex.h"
 
 CVIBuffer_Cube_NorTex::CVIBuffer_Cube_NorTex(ID3D11Device* pDevice, ID3D11DeviceContext* pDeviceContext)

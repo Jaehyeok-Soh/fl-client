@@ -12,7 +12,7 @@ private:
 
 	HRESULT Initialize();
 public:
-	void Setup_Ray(const Matrix *pMatParent);
+	void Setup_Ray(const Matrix* pMatParent);
 	void Setup_Ray(const Vec3& vOrigin, const Vec3& vDir) { m_vOrigin = vOrigin; m_vDir = vDir; }
 	const Vec3& Get_Origin() const { return m_vOrigin; }
 	const Vec3& Get_Dir() const { return m_vDir; }

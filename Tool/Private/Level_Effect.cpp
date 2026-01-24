@@ -1,3 +1,5 @@
+#include "pch.h"
+#include "Level_Effect.h"
 ///////////////
 // Component //
 ///////////////
@@ -10,11 +12,15 @@
 ////////////////
 #include "ToolObject.h"
 #include "CameraMan_Free.h"
+#include "CEffectObject.h"
+#include "Effect.h"
 
 ///////////
 // ImGui //
 ///////////
 #include "ImGui_Base.h"
+#include "CParticle_System_Panel.h"
+#include "EffectType_Selection_Panel.h"
 
 /////////////
 // Manager //
@@ -25,7 +31,6 @@
 #include "Level_Loading.h"
 #include "Engine_Utils.h"
 #include "Tool_Defines.h"
-#include "Level_Effect.h"
 
 CLevel_Effect::CLevel_Effect(ID3D11Device* pDevice, ID3D11DeviceContext* pDeviceContext)
 	: Super(pDevice, pDeviceContext)
@@ -48,7 +53,12 @@ HRESULT CLevel_Effect::Initialize()
 	if (FAILED(Ready_Camera(g_wszCameraLayer)))
 		return E_FAIL;
 
+	if (FAILED(Ready_EffectObjectSetting()))
+		return E_FAIL;
+
 	m_vClearColor = { 0.3f, 0.3f, 0.3f, 1.f };
+
+	// For. Prototype_GameObject_MainPlayer
 	return S_OK;
 }
 
@@ -77,6 +87,7 @@ void CLevel_Effect::Update(const _float fTimeDelta)
 {
 	Super::Update(fTimeDelta);
 	m_pPickingManager->Picking();
+
 	for (CImGui_Base* pElement : m_GuiElements)
 	{
 		if (pElement)
@@ -94,6 +105,7 @@ HRESULT CLevel_Effect::Render()
 	m_pImGuiManager->Render_Dockspace();
 	//////////////////////////
 	Render_Elements();
+
 
 	//////////////////////////
 	m_pImGuiManager->Render_Viewport(m_pSelectedObject);
@@ -156,6 +168,17 @@ HRESULT CLevel_Effect::Ready_Lights()
 
 HRESULT CLevel_Effect::Ready_Gui()
 {
+	m_GuiElements[ENUM_TO_UINT(Elements::EffectSystem)] = CEffectType_Selection_Panel::Create("Effect_Selection_Panel", this, m_pDevice, m_pDeviceContext, &m_pSelectedObject);
+	m_GuiElements[ENUM_TO_UINT(Elements::ParticleSystem)] = CParticle_System_Panel::Create("CParticle_System_Panel", this, m_pDevice, m_pDeviceContext);
+
+	return S_OK;
+}
+
+HRESULT CLevel_Effect::Ready_EffectObjectSetting()
+{
+	m_pGameInstance->Add_Prototype(ENUM_TO_UINT(ELevelType::EFFECT), L"Prototype_GameObject_Effect", Effect::Create(EToolObjectType::MESHEFFECT, m_pDevice, m_pDeviceContext));
+	m_pGameInstance->Add_Prototype(ENUM_TO_UINT(ELevelType::EFFECT), L"Prototype_GameObject_Effect_Parts", CEffectObject::Create(EToolObjectType::MESHEFFECT, m_pDevice, m_pDeviceContext));
+	
 	return S_OK;
 }
 
@@ -167,6 +190,8 @@ HRESULT CLevel_Effect::Ready_CameraSetting(const _uint iLevelID)
 
 	return S_OK;
 }
+
+
 
 void CLevel_Effect::Render_Elements()
 {

@@ -18,6 +18,8 @@ extern HINSTANCE	g_hInstance;
 
 #include <cstdint>
 #include <cmath>
+#include <shobjidl.h>
+
 
 #include "ImGuizmo.h"
 #include "ImSequencer.h"
@@ -28,6 +30,9 @@ extern HINSTANCE	g_hInstance;
 
 #define MAX_ROW 129
 #define MAX_COL 129
+
+#define	TO_RAD  (XM_PI / 180.f)
+#define	To_DEGREE ( 180.f / XM_PI )
 
 namespace Tool
 {
@@ -51,6 +56,8 @@ namespace Tool
 
 	enum class EToolObjectType : unsigned int
 	{
+		MAPOBJECT,
+		MESHEFFECT,
 		UI,
 		END
 	};
@@ -62,8 +69,10 @@ namespace Tool
 	{
 		switch (eType)
 		{
-		case Tool::EToolObjectType::UI:
-			return "UI";
+		case Tool::EToolObjectType::MAPOBJECT:	return "MAPOBJECT";
+		case Tool::EToolObjectType::MESHEFFECT: return "MESHEFFECT";
+		case Tool::EToolObjectType::UI:			return "UI";
+		default:								return "NONE";
 		}
 
 		return "NONE";
@@ -71,9 +80,10 @@ namespace Tool
 
 	static EToolObjectType StringToType(const string& strType)
 	{
-		if (::strcmp(strType.c_str(), "UI") == 0)
-			return EToolObjectType::UI;
-		else
+		if (::strcmp(strType.c_str(), "MAPOBJECT") == 0)  return EToolObjectType::MAPOBJECT;
+		else if (::strcmp(strType.c_str(), "MESHEFFECT") == 0) return EToolObjectType::MESHEFFECT;
+		if (::strcmp(strType.c_str(), "UI") == 0) return EToolObjectType::UI;
+
 			return EToolObjectType::END;
 	}
 
@@ -118,16 +128,15 @@ namespace Tool
 			return EClientLevelType::END;
 	}
 
-
-	inline constexpr _tchar g_wszStaticLightLayer[]{ L"StaticLight_Layer\0" };
-	inline constexpr _tchar g_wszMeshEffectPresetPath[]{ L"../../Resources/Data/EffectData/EffectMeshPreset.json\0" };
-	inline constexpr _tchar g_wszMeshPreviewLayer[]{ L"MeshPreview_Layer\0" };
-	inline constexpr _tchar g_wszPolygonLayer[]{ L"Polygon_Layer\0" };
-	inline constexpr _tchar g_wszTriggerBoxLayer[]{ L"TriggerBox_Layer\0" };
-	inline constexpr _tchar g_wszColMeshLayer[]{ L"ColMesh_Layer\0" };
-	inline constexpr _tchar g_wszStaticModelLayer[]{ L"StaticModel_Layer\0" };
-	inline constexpr _tchar g_wszDummyColliderLayer[]{ L"DummyCollider_Layer\0" };
-	inline constexpr _tchar g_wszCameraLayer[]{ L"Camera_Layer\0" };
+	inline constexpr _tchar g_wszStaticLightLayer[]{ L"StaticLight_Layer" };
+	inline constexpr _tchar g_wszMeshEffectPresetPath[]{ L"../../Resources/Data/EffectData/EffectMeshPreset.json" };
+	inline constexpr _tchar g_wszMeshPreviewLayer[]{ L"MeshPreview_Layer" };
+	inline constexpr _tchar g_wszPolygonLayer[]{ L"Polygon_Layer" };
+	inline constexpr _tchar g_wszTriggerBoxLayer[]{ L"TriggerBox_Layer" };
+	inline constexpr _tchar g_wszColMeshLayer[]{ L"ColMesh_Layer" };
+	inline constexpr _tchar g_wszStaticModelLayer[]{ L"StaticModel_Layer" };
+	inline constexpr _tchar g_wszDummyColliderLayer[]{ L"DummyCollider_Layer" };
+	inline constexpr _tchar g_wszCameraLayer[]{ L"Camera_Layer" };
 
 	struct HoleBridges
 	{
@@ -143,6 +152,55 @@ namespace Tool
 
 		EFFECT_PRESET_SNAPSHOT snapShot = {};
 	}EFFECT_PRESET;
+
+#pragma region Enum
+
+
+#pragma region Map
+	// Don't Touch , Talk Before Touch //
+	/*----------------------- Map Tool ---------------------------*/
+	enum class EMapObject_Type
+	{
+		/* 지형지물 = Terrain = Object */
+		STATICMODEL,
+		END,
+	};
+
+
+	static EMapObject_Type MapObjectType_StringToType(const string& strType)
+	{
+		if (strType == "STATICMODEL") return EMapObject_Type::STATICMODEL;
+
+
+		return EMapObject_Type::END;
+	}
+
+	static string MapObjectType_TypeToString(EMapObject_Type eType)
+	{
+
+		switch (eType)
+		{
+		case Tool::EMapObject_Type::STATICMODEL:	return "STATICMODEL";
+		default:									return "NONE";
+		}
+
+		return "NONE";
+
+	}
+
+	/*-----------------------------------------------------------*/
+
+#pragma endregion
+
+
+#pragma endregion
+
+
+#pragma region Struct
+
+#pragma endregion
+
+
 }
 
 using namespace Tool; 

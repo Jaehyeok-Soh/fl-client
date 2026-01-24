@@ -1,11 +1,11 @@
+#include "pch.h"
 #include "ToolUI.h"
-#include "Tool_Defines.h"
-#include "GameInstance.h"
 
 /* Components */
 #include "Shader.h"
 #include "VIBuffer_Rect_Tex.h"
 #include "Texture.h"
+#include "GameInstance.h"
 
 CToolUI::CToolUI(ID3D11Device* pDevice, ID3D11DeviceContext* pDeviceContext)
 	:CUIObject(pDevice, pDeviceContext)

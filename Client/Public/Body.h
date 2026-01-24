@@ -13,7 +13,6 @@ class CBody final : public CPartObject
 public:
 	typedef struct tagBodyDesc : public CPartObject::PARTOBJ_DESC
 	{
-		_bool bCustomed = { false };
 		wstring wstrModelPrototypeName = { L"" };
 	}BODY_DESC;
 protected:
@@ -38,36 +37,35 @@ public:
 	const Matrix* Get_SocketMatrix(const _char* szBoneName);
 	const Matrix* Get_SocketMatrix(_uint iIndex);
 	CBone* Get_HeadBone();
-	CBone* Get_Spine1Bone();
-	CBone* Get_SpineBone();
 	CBone* Get_NeckBone();
-	CBone* Get_SwordSocket();
-	CBone* Get_RightHandWeaponSocket();
-	CBone* Get_LeftHandSocket();
-	CBone* Get_RightHandSocket();
-	CBone* Get_LeftFootSocket();
-	CBone* Get_RightFootSocket();
-	CBone* Get_LeftShoulderSocket();
-	CBone* Get_RightShoulderSocket();
-	CBone* Get_EffectMouseSocket();
+	CBone* Get_Spine1Bone();
+	//CBone* Get_SpineBone();
+	//CBone* Get_SwordSocket();
+	//CBone* Get_RightHandWeaponSocket();
+	//CBone* Get_LeftHandSocket();
+	//CBone* Get_RightHandSocket();
+	//CBone* Get_LeftFootSocket();
+	//CBone* Get_RightFootSocket();
+	//CBone* Get_LeftShoulderSocket();
+	//CBone* Get_RightShoulderSocket();
+	//CBone* Get_EffectMouseSocket();
 private:
 	HRESULT Ready_Components(BODY_DESC *pDesc);
 	HRESULT Bind_ShaderResources();
 private:
-	_bool m_bCustomed = { false };
-	_int m_iLeftHand_Index = { 0 };
-	_int m_iRightHand_Index = { 0 };
-	_int m_iLeftFoot_Index = { 0 };
-	_int m_iRightFoot_Index = { 0 };
 	_int m_iHead_Index = { 0 };
 	_int m_iNeck_Index = { 0 };
 	_int m_iSpine1_Index = { 0 };
-	_int m_iSpine_Index = { 0 };
-	_int m_iSwordSocket_Index = { 0 };
-	_int m_iLeftShoulderSocket_Index = { 0 };
-	_int m_iRightShoulderSocket_Index = { 0 };
-	_int m_iEffectMouseSocket_Index = { 0 };
-	_int m_iRightHandWeaponSocket_Index = { 0 };
+	//_int m_iSpine_Index = { 0 };
+	//_int m_iLeftHand_Index = { 0 };
+	//_int m_iRightHand_Index = { 0 };
+	//_int m_iLeftFoot_Index = { 0 };
+	//_int m_iRightFoot_Index = { 0 };
+	//_int m_iSwordSocket_Index = { 0 };
+	//_int m_iLeftShoulderSocket_Index = { 0 };
+	//_int m_iRightShoulderSocket_Index = { 0 };
+	//_int m_iEffectMouseSocket_Index = { 0 };
+	//_int m_iRightHandWeaponSocket_Index = { 0 };
 public:
 	static CBody* Create(ID3D11Device* pDevice, ID3D11DeviceContext* pDeviceContext);
 	virtual CGameObject* Clone(void* pArg) override;

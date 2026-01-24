@@ -1,3 +1,4 @@
+#include "Engine_pch.h"
 #include "VIBuffer_Cube_Color.h"
 
 CVIBuffer_Cube_Color::CVIBuffer_Cube_Color(ID3D11Device* pDevice, ID3D11DeviceContext* pDeviceContext)

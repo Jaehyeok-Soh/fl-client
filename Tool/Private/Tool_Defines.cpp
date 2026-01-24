@@ -1,3 +1,4 @@
+#include "pch.h"
 #include "Tool_Defines.h"
 
 unsigned int Tool::g_iWinSizeX = 1850;

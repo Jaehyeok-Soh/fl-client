@@ -1,3 +1,4 @@
+#include "pch.h"
 #include "UI_Inspector.h"
 #include "ImGui_ToolManager.h"
 #include "ImGui_UIManager.h"

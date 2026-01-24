@@ -1,4 +1,4 @@
-#include "GameInstance.h"
+#include "pch.h"
 #include "Engine_Utils.h"
 //=================
 // Component
@@ -31,6 +31,7 @@
 //=================
 #include "TextureBase.h"
 #include "Model.h"
+#include "GameInstance.h"
 
 
 
@@ -90,7 +91,7 @@ HRESULT CLoader::Loading()
 
 HRESULT CLoader::Loading_For_Logo()
 {
-	Matrix matPreTransformScale = Matrix::CreateScale(0.0001f, 0.0001f, 0.0001f);
+	Matrix matPreTransformScale = Matrix::CreateScale(0.01f, 0.01f, 0.01f);
 	Matrix matPreTransformIdentity = Matrix::Identity;
 
 	if (FAILED(m_pGameInstance->Load_Sounds(L"../../Resources/Sounds")))
@@ -121,22 +122,13 @@ HRESULT CLoader::Loading_For_Logo()
 	//=================
 	// For. Prototype_Component_Stat
 	m_pGameInstance->Add_Prototype(ENUM_TO_UINT(ELevelType::STATIC), L"Prototype_Component_Stat", CStatComponent::Create());
-	// For. Prototype_Component_Model_Sword
-	{
-		CModel::MODEL_ORIGIN_DESC desc = {};
-		desc.eType = EModelType::NONANIM;
-		desc.iPrototypeLevelIndex = ENUM_TO_UINT(ELevelType::STATIC);
-		desc.pMatPreTransform = &matPreTransformScale;
-		desc.wstrModelFolderName = L"Sword";
-		m_pGameInstance->Add_Prototype(ENUM_TO_UINT(ELevelType::STATIC), L"Prototype_Component_Model_Sword", CModel::Create(m_pDevice, m_pDeviceContext, &desc));
-	}
 	// For. Prototype_Component_Model_Master
 	{
 		CModel::MODEL_ORIGIN_DESC desc = {};
 		desc.eType = EModelType::ANIM;
 		desc.iPrototypeLevelIndex = ENUM_TO_UINT(ELevelType::STATIC);
 		desc.pMatPreTransform = &matPreTransformScale;
-		desc.wstrModelFolderName = L"Master";
+		desc.wstrModelFolderName = L"TestPlayer";
 		m_pGameInstance->Add_Prototype(ENUM_TO_UINT(ELevelType::STATIC), L"Prototype_Component_Model_Master", CModel::Create(m_pDevice, m_pDeviceContext, &desc));
 	}
 	// For. Prototype_Component_Camera

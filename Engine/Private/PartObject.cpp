@@ -1,3 +1,4 @@
+#include "Engine_pch.h"
 #include "PartObject.h"
 #include "CameraMan.h"
 #include "Bounding_Sphere.h"

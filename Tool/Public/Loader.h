@@ -3,6 +3,10 @@
 #include <mutex>
 #include "Base.h"
 
+NS_BEGIN(Engine)
+class CGameInstance;
+NS_END
+
 NS_BEGIN(Tool)
 
 class CLoader final : public CBase
@@ -41,7 +45,7 @@ private:
 private:
 	ID3D11Device* m_pDevice = { nullptr };
 	ID3D11DeviceContext* m_pDeviceContext = { nullptr };
-	class CGameInstance* m_pGameInstance = { nullptr };
+	CGameInstance* m_pGameInstance = { nullptr };
 
 	ELevelType m_eLoadingELevelType = { ELevelType::END };
 	std::thread m_LoadingThread = {};

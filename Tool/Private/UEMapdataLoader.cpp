@@ -1,13 +1,14 @@
-#include "Tool_Defines.h"
+#include "pch.h"
+#include "UEMapDataLoader.h"
 #include "Transform.h"
 #include <algorithm>
 #include "Engine_Utils.h"
 #include "Engine_GlobalValue.h"
 #include "ToolObject.h"
-#include "GameInstance.h"
 #include "Model.h"
 #include "UEMapdataParser.h"
-#include "UEMapDataLoader.h"
+#include "StaticModel.h"
+#include "GameInstance.h"
 
 CUEMapDataLoader::CUEMapDataLoader(ID3D11Device* pDevice, ID3D11DeviceContext* pDeviceContext)
 	: m_pDevice(pDevice)
@@ -85,52 +86,45 @@ HRESULT CUEMapDataLoader::Make_StaticModel(const wstring& wstrRawDataFilePath, c
 		// ColMesh
 		if (strFilteredName.ends_with("_COL") || strFilteredName.starts_with("COL_"))
 		{
-			//CColMesh::COLMESH_DESC desc = {};
-			//desc.wstrLayerTag = wstrColmeshLayerTag;
-			//desc.iLevelIndex = ENUM_TO_UINT(LEVELID::MAP);
-			//desc.wstrFileName = Engine::Engine_Utils::ToWString(strFilteredName);
-			//if (!(pResult = m_pGameInstance->Add_GameObject(ENUM_TO_UINT(LEVELID::MAP),
-			//	L"Prototype_GameObject_ColMesh",
-			//	ENUM_TO_UINT(LEVELID::MAP),
-			//	wstrColmeshLayerTag, &desc)))
-			//{
-			//	Safe_Release(pParser);
-			//	return E_FAIL;
-			//}
-
+			continue;
 		}
-		// StaticModel
+		//\StaticModel
 		else
 		{			
-			//CStaticModel::STATICMODEL_DESC desc = {};
-			//desc.wstrLayerTag = wstrStaticModelLayerTag;
-			//desc.iLevelIndex = ENUM_TO_UINT(LEVELID::MAP);
-			//desc.wstrFileName = Engine::Engine_Utils::ToWString(strFilteredName);
-			//if (!(pResult = m_pGameInstance->Add_GameObject(ENUM_TO_UINT(LEVELID::MAP),
-			//	L"Prototype_GameObject_StaticModel",
-			//	ENUM_TO_UINT(LEVELID::MAP),
-			//	wstrStaticModelLayerTag, &desc)))
-			//{
-			//	Safe_Release(pParser);
-			//	return E_FAIL;
-			//}
+			CStaticModel::STATICMODEL_DESC desc = {};
+			desc.wstrLayerTag = wstrStaticModelLayerTag;
+			desc.iLevelIndex = ENUM_TO_UINT(ELevelType::MAP);
+			desc.wstrModelPath = Engine::Engine_Utils::ToWString(strFilteredName);
+			if (!(pResult = m_pGameInstance->Add_GameObject(desc.iLevelIndex,
+				L"Prototype_GameObject_StaticModel",
+				desc.iLevelIndex,
+				wstrStaticModelLayerTag, &desc)))
+			{
+				Safe_Release(pParser);
+				return E_FAIL;
+			}
 		}
 
 		CTransform* pTransform = pResult->Get_Component<CTransform>();
 		// Unreal엔진에서는 Degree로 표현됨, 이를 radian으로 바꿔줘야함
-		Matrix matRotation = ::XMMatrixRotationRollPitchYaw(
-			::XMConvertToRadians(mapdataOuter.Properties.vPitchYawRoll.x),
-			::XMConvertToRadians(mapdataOuter.Properties.vPitchYawRoll.y),
-			::XMConvertToRadians(mapdataOuter.Properties.vPitchYawRoll.z));
+
+		Vec3 vSwapRotation = Vec3(
+			XMConvertToRadians(mapdataOuter.Properties.vPitchYawRoll.x), XMConvertToRadians(mapdataOuter.Properties.vPitchYawRoll.z), XMConvertToRadians(mapdataOuter.Properties.vPitchYawRoll.y));
+		Matrix matRotation = Matrix::CreateFromYawPitchRoll(vSwapRotation);
+
 		pTransform->Set_Info(TRANSFORM_INFO_STATE::RIGHT, matRotation.Right());
 		pTransform->Set_Info(TRANSFORM_INFO_STATE::UP, matRotation.Up());
 		pTransform->Set_Info(TRANSFORM_INFO_STATE::LOOK, matRotation.Backward());
-		// scale은 양수이니 그냥 z, y 만 스왑
-		if (mapdataOuter.Properties.vScale.x > 0.f && mapdataOuter.Properties.vScale.z > 0.f && mapdataOuter.Properties.vScale.y > 0.f)
-			pTransform->Set_Scale(mapdataOuter.Properties.vScale.x, mapdataOuter.Properties.vScale.z, mapdataOuter.Properties.vScale.y);
+
+		Vec3 vSwapScale = Vec3(mapdataOuter.Properties.vScale.x, mapdataOuter.Properties.vScale.z , mapdataOuter.Properties.vScale.y);
+		pTransform->Set_Scale(vSwapScale);
+
+		float vMulSize = 0.01f;
+		Vec3  vSwapPosition = Vec3(mapdataOuter.Properties.vPosition.x * vMulSize , mapdataOuter.Properties.vPosition.z * vMulSize, mapdataOuter.Properties.vPosition.y * -vMulSize);
+		pTransform->Set_Info(TRANSFORM_INFO_STATE::POS, vSwapPosition);
 
 		// position은 z, y 스왑후 z값쪽에 음수를 입혀야함
-		pTransform->Set_Info(TRANSFORM_INFO_STATE::POS, Vec3(mapdataOuter.Properties.vPosition.x * 0.01f, mapdataOuter.Properties.vPosition.z * 0.01f, mapdataOuter.Properties.vPosition.y * -0.01f));
+		//pTransform->Set_Info(TRANSFORM_INFO_STATE::POS, Vec3(mapdataOuter.Properties.vPosition.x * 0.01f, mapdataOuter.Properties.vPosition.z * 0.01f, mapdataOuter.Properties.vPosition.y * -0.01f));
 
 		// TODO - CreateObject 이벤트로 뺴고나서 이거 지워야함
 		if (m_pGameInstance->Is_Awaked())

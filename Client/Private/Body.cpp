@@ -1,3 +1,4 @@
+#include "pch.h"
 #include "Client_Defines.h"
 #include "Player.h"
 #include "GameInstance.h"
@@ -32,23 +33,22 @@ HRESULT CBody::Initialize(void* pArg)
 		return E_FAIL;
 
 	BODY_DESC* pDesc = static_cast<BODY_DESC*>(pArg);
-	m_bCustomed = pDesc->bCustomed;
 	if (FAILED(Ready_Components(pDesc)))
 		return E_FAIL;
 
-	m_iLeftHand_Index = Get_Component<CModel>()->Get_BoneIndex("LeftHand");
-	m_iRightHand_Index = Get_Component<CModel>()->Get_BoneIndex("RightHand");
-	m_iLeftFoot_Index = Get_Component<CModel>()->Get_BoneIndex("LeftFoot");
-	m_iRightFoot_Index = Get_Component<CModel>()->Get_BoneIndex("RightFoot");
-	m_iHead_Index = Get_Component<CModel>()->Get_BoneIndex("Head");
-	m_iNeck_Index = Get_Component<CModel>()->Get_BoneIndex("Neck");
-	m_iSpine_Index = Get_Component<CModel>()->Get_BoneIndex("Spine");
-	m_iSpine1_Index = Get_Component<CModel>()->Get_BoneIndex("Spine1");
-	m_iEffectMouseSocket_Index = Get_Component<CModel>()->Get_BoneIndex("EFF_Mouth01");
-	m_iSwordSocket_Index = Get_Component<CModel>()->Get_BoneIndex("Attach_NinjaSword");
-	m_iLeftShoulderSocket_Index = Get_Component<CModel>()->Get_BoneIndex("LeftShoulder");
-	m_iRightShoulderSocket_Index = Get_Component<CModel>()->Get_BoneIndex("RightShoulder");
-	m_iRightHandWeaponSocket_Index = Get_Component<CModel>()->Get_BoneIndex("MeleeWeaponRHand");
+	m_iHead_Index = Get_Component<CModel>()->Get_BoneIndex("head");
+	m_iNeck_Index = Get_Component<CModel>()->Get_BoneIndex("neck_01");
+	m_iSpine1_Index = Get_Component<CModel>()->Get_BoneIndex("spine_01");
+	//m_iLeftHand_Index = Get_Component<CModel>()->Get_BoneIndex("hand_l");
+	//m_iRightHand_Index = Get_Component<CModel>()->Get_BoneIndex("hand_r");
+	//m_iLeftFoot_Index = Get_Component<CModel>()->Get_BoneIndex("LeftFoot");
+	//m_iRightFoot_Index = Get_Component<CModel>()->Get_BoneIndex("RightFoot");
+	//m_iSpine_Index = Get_Component<CModel>()->Get_BoneIndex("Spine");
+	//m_iEffectMouseSocket_Index = Get_Component<CModel>()->Get_BoneIndex("EFF_Mouth01");
+	//m_iSwordSocket_Index = Get_Component<CModel>()->Get_BoneIndex("Attach_NinjaSword");
+	//m_iLeftShoulderSocket_Index = Get_Component<CModel>()->Get_BoneIndex("LeftShoulder");
+	//m_iRightShoulderSocket_Index = Get_Component<CModel>()->Get_BoneIndex("RightShoulder");
+	//m_iRightHandWeaponSocket_Index = Get_Component<CModel>()->Get_BoneIndex("MeleeWeaponRHand");
 	return S_OK;
 }
 
@@ -119,26 +119,12 @@ HRESULT CBody::Render()
 	_uint iMeshCount = pModel->Get_MeshCount();
 
 	pShader->Bind_TransformData(m_matCombinedWorld);
-
-	if (m_bCustomed)
+	for (_uint i = 0; i < iMeshCount; ++i)
 	{
-		pModel->Bind_Masterbones(pShader, 2);
-		for (_uint i = 0; i < iMeshCount; ++i)
-		{
-			pModel->Bind_Material(pShader, i);
-			pShader->Apply();
-			pModel->Render(i);
-		}
-	}
-	else
-	{
-		for (_uint i = 0; i < iMeshCount; ++i)
-		{
-			pModel->Bind_Material(pShader, i);
-			pModel->Bind_Bones(pShader, i);
-			pShader->Apply();
-			pModel->Render(i);
-		}
+		pModel->Bind_Material(pShader, i);
+		pModel->Bind_Bones(pShader, i);
+		pShader->Apply();
+		pModel->Render(i);
 	}
 
 	return S_OK;
@@ -180,14 +166,6 @@ CBone* CBody::Get_Spine1Bone()
 	return nullptr;
 }
 
-CBone* CBody::Get_SpineBone()
-{
-	if (CBone* pSpine = Get_Component<CModel>()->Get_Bone(m_iSpine_Index))
-		return pSpine;
-
-	return nullptr;
-}
-
 CBone* CBody::Get_NeckBone()
 {
 	if (CBone* pNeck = Get_Component<CModel>()->Get_Bone(m_iNeck_Index))
@@ -196,77 +174,87 @@ CBone* CBody::Get_NeckBone()
 	return nullptr;
 }
 
-CBone* CBody::Get_SwordSocket()
-{
-	if (CBone* pSwordSocket = Get_Component<CModel>()->Get_Bone(m_iSwordSocket_Index))
-		return pSwordSocket;
-
-	return nullptr;
-}
-
-CBone* CBody::Get_RightHandWeaponSocket()
-{
-	if (CBone* pRightHandWeaponSocket = Get_Component<CModel>()->Get_Bone(m_iRightHandWeaponSocket_Index))
-		return pRightHandWeaponSocket;
-
-	return nullptr;
-}
-
-CBone* CBody::Get_LeftFootSocket()
-{
-	if (CBone* pLeftFootSocket = Get_Component<CModel>()->Get_Bone(m_iLeftFoot_Index))
-		return pLeftFootSocket;
-
-	return nullptr;
-}
-
-CBone* CBody::Get_RightFootSocket()
-{
-	if (CBone* pRightFootSocket = Get_Component<CModel>()->Get_Bone(m_iRightFoot_Index))
-		return pRightFootSocket;
-
-	return nullptr;
-}
-
-CBone* CBody::Get_LeftShoulderSocket()
-{
-	if (CBone* pLeftShoulderSocket = Get_Component<CModel>()->Get_Bone(m_iLeftShoulderSocket_Index))
-		return pLeftShoulderSocket;
-
-	return nullptr;
-}
-
-CBone* CBody::Get_RightShoulderSocket()
-{
-	if(CBone * pRightShoulderSocket = Get_Component<CModel>()->Get_Bone(m_iRightShoulderSocket_Index))
-		return pRightShoulderSocket;
-
-	return nullptr;
-}
-
-CBone* CBody::Get_EffectMouseSocket()
-{
-	if (CBone* pEffectMouseSocket = Get_Component<CModel>()->Get_Bone(m_iEffectMouseSocket_Index))
-		return pEffectMouseSocket;
-
-	return nullptr;
-}
-
-CBone* CBody::Get_LeftHandSocket()
-{
-	if (CBone* pLeftHandSocket = Get_Component<CModel>()->Get_Bone(m_iLeftHand_Index))
-		return pLeftHandSocket;
-
-	return nullptr;
-}
-
-CBone* CBody::Get_RightHandSocket()
-{
-	if (CBone* pRightHandSocket = Get_Component<CModel>()->Get_Bone(m_iRightHand_Index))
-		return pRightHandSocket;
-
-	return nullptr;
-}
+//
+//CBone* CBody::Get_SpineBone()
+//{
+//	if (CBone* pSpine = Get_Component<CModel>()->Get_Bone(m_iSpine_Index))
+//		return pSpine;
+//
+//	return nullptr;
+//}
+//
+//
+//CBone* CBody::Get_SwordSocket()
+//{
+//	if (CBone* pSwordSocket = Get_Component<CModel>()->Get_Bone(m_iSwordSocket_Index))
+//		return pSwordSocket;
+//
+//	return nullptr;
+//}
+//
+//CBone* CBody::Get_RightHandWeaponSocket()
+//{
+//	if (CBone* pRightHandWeaponSocket = Get_Component<CModel>()->Get_Bone(m_iRightHandWeaponSocket_Index))
+//		return pRightHandWeaponSocket;
+//
+//	return nullptr;
+//}
+//
+//CBone* CBody::Get_LeftFootSocket()
+//{
+//	if (CBone* pLeftFootSocket = Get_Component<CModel>()->Get_Bone(m_iLeftFoot_Index))
+//		return pLeftFootSocket;
+//
+//	return nullptr;
+//}
+//
+//CBone* CBody::Get_RightFootSocket()
+//{
+//	if (CBone* pRightFootSocket = Get_Component<CModel>()->Get_Bone(m_iRightFoot_Index))
+//		return pRightFootSocket;
+//
+//	return nullptr;
+//}
+//
+//CBone* CBody::Get_LeftShoulderSocket()
+//{
+//	if (CBone* pLeftShoulderSocket = Get_Component<CModel>()->Get_Bone(m_iLeftShoulderSocket_Index))
+//		return pLeftShoulderSocket;
+//
+//	return nullptr;
+//}
+//
+//CBone* CBody::Get_RightShoulderSocket()
+//{
+//	if(CBone * pRightShoulderSocket = Get_Component<CModel>()->Get_Bone(m_iRightShoulderSocket_Index))
+//		return pRightShoulderSocket;
+//
+//	return nullptr;
+//}
+//
+//CBone* CBody::Get_EffectMouseSocket()
+//{
+//	if (CBone* pEffectMouseSocket = Get_Component<CModel>()->Get_Bone(m_iEffectMouseSocket_Index))
+//		return pEffectMouseSocket;
+//
+//	return nullptr;
+//}
+//
+//CBone* CBody::Get_LeftHandSocket()
+//{
+//	if (CBone* pLeftHandSocket = Get_Component<CModel>()->Get_Bone(m_iLeftHand_Index))
+//		return pLeftHandSocket;
+//
+//	return nullptr;
+//}
+//
+//CBone* CBody::Get_RightHandSocket()
+//{
+//	if (CBone* pRightHandSocket = Get_Component<CModel>()->Get_Bone(m_iRightHand_Index))
+//		return pRightHandSocket;
+//
+//	return nullptr;
+//}
 
 HRESULT CBody::Ready_Components(BODY_DESC* pDesc)
 {
