@@ -117,8 +117,11 @@ HRESULT CLoader::Loading_For_Map()
 	/* Map Data Model */
 	CUEMapDataLoader* pMapDataLoader = CUEMapDataLoader::Create(m_pDevice,m_pDeviceContext);
 	if (pMapDataLoader == nullptr) return E_FAIL;
-	if (FAILED(pMapDataLoader->Make_Prototype(L"../../Resources/Models/Map/Test/Model/")))
+	if (FAILED(pMapDataLoader->Make_Prototype(L"../../Resources/Models/Map/DevScene/Model/")))
+	{
+		Safe_Release(pMapDataLoader);
 		return E_FAIL;
+	}
 	Safe_Release(pMapDataLoader);
 
 

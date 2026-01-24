@@ -72,8 +72,8 @@ HRESULT CUEMapDataLoader::Make_StaticModel(const wstring& wstrRawDataFilePath, c
 	for (size_t i = 0; i < pParser->m_vecData.size(); ++i)
 	{
 		const PARSED_MAPDATA_OUTER& mapdataOuter = pParser->m_vecData[i];
-		if (::strcmp(pFilterName, mapdataOuter.strName.c_str()) != 0)
-			continue; 
+		//if (::strcmp(pFilterName, mapdataOuter.strType.c_str()) != 0)
+		//	continue; 
 
 		string strFilteredName = mapdataOuter.Properties.StaticMesh.strObjectName;
 		// StaticMesh'.....' 형태로 이루어져있음
@@ -109,7 +109,7 @@ HRESULT CUEMapDataLoader::Make_StaticModel(const wstring& wstrRawDataFilePath, c
 		// Unreal엔진에서는 Degree로 표현됨, 이를 radian으로 바꿔줘야함
 
 		Vec3 vSwapRotation = Vec3(
-			XMConvertToRadians(mapdataOuter.Properties.vPitchYawRoll.x), XMConvertToRadians(mapdataOuter.Properties.vPitchYawRoll.z), XMConvertToRadians(mapdataOuter.Properties.vPitchYawRoll.y));
+			XMConvertToRadians(mapdataOuter.Properties.vPitchYawRoll.x), XMConvertToRadians(mapdataOuter.Properties.vPitchYawRoll.y), XMConvertToRadians(mapdataOuter.Properties.vPitchYawRoll.z));
 		Matrix matRotation = Matrix::CreateFromYawPitchRoll(vSwapRotation);
 
 		pTransform->Set_Info(TRANSFORM_INFO_STATE::RIGHT, matRotation.Right());

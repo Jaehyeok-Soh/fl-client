@@ -2,7 +2,6 @@
 #include "UEMapdataParser.h"
 #include <fstream>
 
-
 CUEMapdataParser::CUEMapdataParser()
 {
 }
@@ -12,6 +11,7 @@ HRESULT CUEMapdataParser::Initialize(const MAPPARSER_DESC& desc)
 	m_path = desc.wstrPath;
 	return S_OK;
 }
+
 
 HRESULT CUEMapdataParser::Read_Mapdata()
 {
@@ -34,6 +34,9 @@ HRESULT CUEMapdataParser::Read_Mapdata()
 
 		const string Out = jObj.value("Outer", string{});
 		if (Out.find("LOD") != wstring::npos)
+			continue;
+		
+		if (jObj.contains("Template"))
 			continue;
 
 		const string type = jObj.value("Type", string{});
@@ -78,12 +81,17 @@ HRESULT CUEMapdataParser::Read_Mapdata()
 		else if (!type.compare("InstancedStaticMeshComponent"))
 		{
 			if(jObj.contains("Type"))
-				outer.strType = jObj["Type"].get<string>();
+				outer.strType = "StaticMeshComponent";
 			if (jObj.contains("Name"))
-				outer.strName = jObj["Name"].get<string>();
+				outer.strName = "InstancedStaticMeshComponent";
 			if (jObj.contains("Properties"))
 			{
 				auto& LoadJson = jObj["Properties"];
+
+				if (LoadJson.contains("PerInstanceSMData"))
+				{
+					int a = 0;
+				}
 
 				if (LoadJson.contains("StaticMesh"))
 				{
@@ -91,34 +99,53 @@ HRESULT CUEMapdataParser::Read_Mapdata()
 						outer.Properties.StaticMesh.strObjectName = LoadJson["StaticMesh"]["ObjectName"].get<string>();
 					if (LoadJson["StaticMesh"].contains("ObjectPath"))
 						outer.Properties.StaticMesh.strObjectPath = LoadJson["StaticMesh"]["ObjectPath"].get<string>();
+
+					string target = "MaterialInstanceConstant";
+					string replacement = "StaticMesh";
+					size_t pos = outer.Properties.StaticMesh.strObjectName.find("target");
+					if (pos != std::string::npos)
+					{
+						outer.Properties.StaticMesh.strObjectName.replace(pos,target.length(),replacement);
+					}
+
 				}
 			}
 
 			if (jObj.contains("PerInstanceSMData"))
 			{
-				auto& LoadJson = jObj["PerInstanceSMData"];
-				if (jObj.contains("TransformData"))
+				auto& LoadInsSMDatas = jObj["PerInstanceSMData"];
+				/* 배열로 들어온다 */
+
+				for (auto& LoadInsSMData : LoadInsSMDatas)
 				{
-					auto& LoadJson = jObj["TransformData"];
-					if (LoadJson.contains("Rotation"))
+					if (LoadInsSMData.contains("TransformData"))
 					{
-						outer.Properties.vPitchYawRoll.x = LoadJson["Rotation"]["Pitch"].get<float>();
-						outer.Properties.vPitchYawRoll.y = LoadJson["Rotation"]["Yaw"].get<float>();
-						outer.Properties.vPitchYawRoll.z = LoadJson["Rotation"]["Roll"].get<float>();
-					}
-					if (LoadJson.contains("Translation"))
-					{
-						outer.Properties.vPosition.x = LoadJson["Translation"]["X"].get<float>();
-						outer.Properties.vPosition.y = LoadJson["Translation"]["Y"].get<float>();
-						outer.Properties.vPosition.z = LoadJson["Translation"]["Z"].get<float>();
-					}
-					if (LoadJson.contains("Scale3D"))
-					{
-						outer.Properties.vScale.x = LoadJson["Scale3D"]["X"].get<float>();
-						outer.Properties.vScale.y = LoadJson["Scale3D"]["Y"].get<float>();
-						outer.Properties.vScale.z = LoadJson["Scale3D"]["Z"].get<float>();
+						auto& LoadJson = LoadInsSMData["TransformData"];
+						if (LoadJson.contains("Rotation"))
+						{
+							Quat vQuat{};
+							vQuat.x = LoadJson["Rotation"]["X"].get<float>();
+							vQuat.y = LoadJson["Rotation"]["Y"].get<float>();
+							vQuat.z = LoadJson["Rotation"]["Z"].get<float>();
+							vQuat.w = LoadJson["Rotation"]["W"].get<float>();
+							outer.Properties.vPitchYawRoll = vQuat.ToEuler();
+							std::swap(outer.Properties.vPitchYawRoll.y, outer.Properties.vPitchYawRoll.z);
+						}
+						if (LoadJson.contains("Translation"))
+						{
+							outer.Properties.vPosition.x = LoadJson["Translation"]["X"].get<float>();
+							outer.Properties.vPosition.y = LoadJson["Translation"]["Y"].get<float>();
+							outer.Properties.vPosition.z = LoadJson["Translation"]["Z"].get<float>();
+						}
+						if (LoadJson.contains("Scale3D"))
+						{
+							outer.Properties.vScale.x = LoadJson["Scale3D"]["X"].get<float>();
+							outer.Properties.vScale.y = LoadJson["Scale3D"]["Y"].get<float>();
+							outer.Properties.vScale.z = LoadJson["Scale3D"]["Z"].get<float>();
+						}
 					}
 				}
+			
 			}
 
 		}
