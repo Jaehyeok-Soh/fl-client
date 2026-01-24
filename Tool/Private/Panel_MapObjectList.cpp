@@ -85,7 +85,7 @@ HRESULT CPanel_MapObjectList::Render(CToolObject* pGo)
 		}
 		else
 		{
-			char szTreeNode[MAX_PATH];
+			//char szTreeNode[MAX_PATH];
 			UINT32 iIndex = 0;
 			for (auto& StaticMesh : *pListStaticModelLayer)
 			{
