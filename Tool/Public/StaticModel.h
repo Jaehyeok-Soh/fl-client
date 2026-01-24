@@ -24,6 +24,10 @@ public:
 	virtual HRESULT			Render()										override;
 	virtual void			Draw_ImGui()									override;
 	virtual void			Set_Dead(const wstring& wstrLayerTag)			override;
+
+private:
+	bool					IntsersectWithPlane(OUT Vec3& vOut);
+
 public:
 	virtual _bool			Picking(OUT Vec3& vOut)						override;
 	virtual HRESULT			Export_Data(OUT MAPOBJECT_SAVEDATA& data)		override;

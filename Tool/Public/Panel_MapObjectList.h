@@ -3,11 +3,14 @@
 
 NS_BEGIN(Engine)
 class CGameInstance;
+class CCameraMan;
+class CCamera;
 NS_END
 
 
 NS_BEGIN(Tool)
 
+class CImGui_Layout_Transform;
 class CMapObject;
 
 class CPanel_MapObjectList : public CImGui_Panel
@@ -22,8 +25,13 @@ public:
 private:
 	CGameInstance* m_pGameInstance{nullptr};
 
-	CMapObject*	   m_pSelectMapObject{nullptr};
 
+	CImGui_Layout_Transform* m_pTransformLayout{nullptr};
+	CMapObject*				 m_pSelectMapObject{nullptr};
+
+
+	CCameraMan*			 m_pCamera{nullptr};
+	CCamera*			 m_pCameraCom{nullptr};
 public:
 	static  CPanel_MapObjectList* Create(const _char* pLabel, CLevel* pOwner, ID3D11Device* pDevice, ID3D11DeviceContext* pDeviceContext);
 	virtual void Free() override;

@@ -51,9 +51,6 @@ HRESULT CLevel_Map::Initialize()
 	if (FAILED(Ready_Camera_Layer(g_wszCameraLayer)))
 		return E_FAIL;
 
-
-	m_vClearColor = {1.f,1.f,1.f,1.f};
-
 	return S_OK;
 }
 
@@ -75,6 +72,12 @@ HRESULT CLevel_Map::Awake(const _uint iLevelID)
 
 	Ready_Event();
 	m_pImGuiManager->Ready_Events();
+
+
+	/* Cam Setting */
+
+	m_pGameInstance->Get_MainCamera()->Get_Component<CCamera>()->Set_Fov(60.f);
+
 
 	return S_OK;
 }

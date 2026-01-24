@@ -31,6 +31,9 @@ extern HINSTANCE	g_hInstance;
 #define MAX_ROW 129
 #define MAX_COL 129
 
+#define	TO_RAD  (XM_PI / 180.f)
+#define	To_DEGREE ( 180.f / XM_PI )
+
 namespace Tool
 {
 	extern unsigned int g_iWinSizeX;

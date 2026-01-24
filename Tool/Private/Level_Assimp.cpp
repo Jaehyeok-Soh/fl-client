@@ -35,6 +35,7 @@ HRESULT CLevel_Assimp::Awake(const _uint iLevelID)
 	MSG_BOX("Assimp");
 
 #pragma region Custom
+
 	Matrix matUECoord = ::XMMatrixSet(
 		1.f, 0.f, 0.f, 0.f,		// x' = x
 		0.f, 0.f, 1.f, 0.f,		// y' = z
@@ -48,13 +49,16 @@ HRESULT CLevel_Assimp::Awake(const _uint iLevelID)
 
 	Matrix matPreTransformIdentity = Matrix::Identity;
 	Matrix matPreTransformScaling = {};
-	Matrix matPreTransformMapObject = matUECoord * matPreTransformScaling100;
+	Matrix matPreTransformMapObject = matUECoord * matPreTransformScaling10;
 
 	//Map
 	{
 		CConverter* pConverter = CConverter::Create(m_pDevice, m_pDeviceContext, L"Map/Test/", matUECoord, false);
 		pConverter->ReadAndExportFile();
 		Safe_Release(pConverter);
+
+		MSG_BOX("변환 완료");
+
 	}
 
 

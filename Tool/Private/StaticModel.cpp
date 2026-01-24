@@ -1,4 +1,7 @@
 #include "StaticModel.h"
+#include "GameInstance.h"
+#include "Mesh.h"
+#include "Model.h"
 
 CStaticModel::CStaticModel(EToolObjectType eType, ID3D11Device* pDevice, ID3D11DeviceContext* pDeviceContext)
 	: CMapObject(eType, pDevice,pDeviceContext)
@@ -84,8 +87,33 @@ void CStaticModel::Set_Dead(const wstring& wstrLayerTag)
 
 }
 
+bool CStaticModel::IntsersectWithPlane(OUT Vec3& vOut)
+{
+	CModel* pModel = Get_Component<CModel>();
+	if (pModel == nullptr)  return false;
+
+	_uint iMeshCount = pModel->Get_MeshCount();
+	for (_uint i = 0; i < iMeshCount; ++i)
+	{
+		if (pModel->Get_Mesh(i)->IntsersectWithPlane(vOut))
+			return true;
+	}
+	return false;
+}
+
 _bool CStaticModel::Picking(OUT Vec3& vOut)
 {
+	const Matrix& matWorld = Get_Component<CTransform>()->Get_WorldMatrix();
+	Matrix matLocal = {};
+
+	matLocal = matWorld.Invert();
+	m_pGameInstance->TransformRayToLocalSpace(matLocal);
+
+	if (IntsersectWithPlane(vOut))
+	{
+		vOut = Vec3::Transform(vOut, matWorld);
+		return true;
+	}
 	return false;
 }
 

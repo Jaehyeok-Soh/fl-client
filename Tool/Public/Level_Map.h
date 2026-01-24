@@ -40,8 +40,10 @@ private:
 	HRESULT Ready_Camera_Setting(const _uint iLevelID);
 	void Ready_Event();
 	void Release_Event();
-	void On_ChangeSelectedObject(CGameObject* pGo);
-	void On_CreateMode(_bool bValue);
+public:
+	void		 On_ChangeSelectedObject(CGameObject* pGo);
+	void		 On_CreateMode(_bool bValue);
+	CToolObject* Get_SelectToolObject() { return m_pSelectedObject; }
 private:
 	_bool m_bCreateMode = { false };
 	class CImGui_ToolManager* m_pImGuiManager = { nullptr };

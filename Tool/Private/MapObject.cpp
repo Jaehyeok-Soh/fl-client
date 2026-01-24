@@ -114,7 +114,7 @@ void CMapObject::Ready_Before_Render(const _float fTimeDelta)
     Super::Ready_Before_Render(fTimeDelta);
 
 
-    m_pGameInstance->Push_RenderObject(RENDER_CATEGORY::NONELIGHT , this);
+    m_pGameInstance->Push_RenderObject(RENDER_CATEGORY::NONEBLEND , this);
 }
 
 HRESULT CMapObject::Render()
@@ -135,6 +135,7 @@ HRESULT CMapObject::Render()
     for (UINT32 i = 0; i < iMeshCount; ++i)
     {
         pModel->Bind_Material(pShader,i);
+        pModel->Bind_MaterialInstance(pShader,i);
         pShader->Apply();
         pModel->Render(i);
     }
