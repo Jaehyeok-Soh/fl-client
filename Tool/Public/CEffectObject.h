@@ -30,11 +30,9 @@ enum class TEXTURETYPE
 enum class E_SHAPETYPE
 {
     NONE = 0,
-    SPHERE,
-    HEMISPHERE,
-    CONE,
-    CIRCLE,
-    BOX,
+    SPREAD,
+    DROP,
+    RISE,
     MESH,
 };
 
@@ -74,10 +72,10 @@ public:
     typedef struct tagEffectObjectDesc : public Super::PARTOBJ_DESC
     {
         // ========     이펙트 타입   =========
-        E_EffectSystemType eEffectSystemType      = E_EffectSystemType::None;
-        E_PARTICLETYPE eEffectParticleType        = E_PARTICLETYPE::NONE;
-        E_EFFECTTYPE eEffectType                  = E_EFFECTTYPE::NONE;
-        E_SHAPETYPE _Effect_ShapeType             = E_SHAPETYPE::NONE;
+        E_EffectSystemType eEffectSystemType      = E_EffectSystemType::Particle;
+        E_PARTICLETYPE eEffectParticleType        = E_PARTICLETYPE::PARTICLE;
+        E_EFFECTTYPE eEffectType                  = E_EFFECTTYPE::Particle;
+        E_SHAPETYPE _Effect_ShapeType             = E_SHAPETYPE::SPREAD;
         E_SIMULATION_SPACE _Effect_SimulationType = E_SIMULATION_SPACE::NONE;
 
         // ========  이펙트 Material 설정   ===========
@@ -87,7 +85,7 @@ public:
 
         wstring     _Effect_Shader_Path = {};
         wstring     _Effect_Shader_Tag = {};
-        int         _Effect_ShaderPass = {};
+        int         _Effect_ShaderPass = {0};
 
         // =======   이펙트 스크롤 Value   ===========
         Vec2     _Effect_ScrollSpeed = { 0.f, 0.f };
@@ -100,7 +98,7 @@ public:
         Vec3     _Effect_EndScale = { 1.f, 1.f, 1.f };
 
         // =========   이펙트 Color Value   ===============
-        Vec4     _Effect_Color = { 0.f, 0.f, 0.f, 0.f };
+        Vec4     _Effect_Color = { 1.f, 0.f, 0.f, 1.f };
 
         // =========   Tool용 시간 값   ================
         bool      _Effect_TimeStop = true;
@@ -110,17 +108,17 @@ public:
         _uint2      _Effect_TileCount = {};
 
         // ========   이펙트 파티클 전용   ============
-        _float              _Effect_Duration = { 0.f };
-        _bool               _Effect_Looping = { false };
+        Vec2                _Effect_ParticleSize = { 0.05f, 0.15f };
+        _float              _Effect_Duration = { 5.f };
+        _bool               _Effect_Looping = { true };
         _float              _Effect_StartDelay = { 0.f };
-        _float              _Effect_LifeTime = { 0.f };
-        _float              _Effect_StartSpeed = { 1.f };
+        _float              _Effect_LifeTime = { 5.f };
+        _float              _Effect_PlayBack = { 1.f };
         int                 _Effect_MaxParticle = { 100 };
         E_RENDER_TYPE       _Effect_BillBoardFlag = E_RENDER_TYPE::NONE;
 
         // ========  이펙트 Radius  ==========
-        _float      _Effect_Radius = 0.1f;
-
+        Vec3                _Effect_Range = {1.f, 1.f, 1.f};
 
     }Effect_Desc;
 
@@ -152,6 +150,8 @@ public:
     void Model_Setting(const wstring& Name);
     void Shader_Setting(const wstring& Name);
     void Texture_Setting(const wstring& Name);
+
+    void Particle_Setting();
 
 private:
     //  ==========  Shader Binding Setting  =============

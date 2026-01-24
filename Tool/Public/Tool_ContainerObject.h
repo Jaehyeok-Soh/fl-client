@@ -34,6 +34,7 @@ public:
 	template<typename T>
 	T* Get_Part(_uint iPartID);
 
+	vector<class Tool_PartObject*>& Get_PartList();
 	void Remove_Part(_uint iPartID);
 	HRESULT Add_Part(class Tool_PartObject* pPart, _uint iPartID);
 	HRESULT Add_Part(_uint iPartID, _uint iPrototypeLevelIndex, const  wstring& wstrPrototypeTag, void* pArg);

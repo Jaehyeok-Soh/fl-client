@@ -30,15 +30,14 @@ HRESULT CParticle_System_Panel::Render(CToolObject* pGo)
 		m_bTimeSetting = false;
 		return E_FAIL;
 	}
+	m_bModified = false;
 
 	Draw_ParticleSystem(pGo);
 	Draw_Timer(pGo);
+	Draw_EffectColor(pGo);
 
-	if (m_bTimeSetting)
-	{
-		// === Part Object Binding 하기 === 
+	if(m_bModified)
 		Binding_EffectDesc(pGo);
-	}
 
 	return S_OK;
 }
@@ -72,6 +71,8 @@ void CParticle_System_Panel::Draw_Timer(CToolObject* pGo)
 	{
 		m_bTimeSetting = true;
 		m_tCurrentDesc._Effect_TimeStop = false;
+
+		m_bModified = true;
 	}
 	ImGui::SameLine();
 
@@ -79,6 +80,8 @@ void CParticle_System_Panel::Draw_Timer(CToolObject* pGo)
 	{
 		m_bTimeSetting = false;
 		m_tCurrentDesc._Effect_TimeStop = true;
+
+		m_bModified = true;
 	}
 	ImGui::SameLine();
 
@@ -86,8 +89,12 @@ void CParticle_System_Panel::Draw_Timer(CToolObject* pGo)
 	{
 		m_fTimeAccumulation = 0.f;
 		m_tCurrentDesc._Effect_TimeStop = false;
-		pGo->Get_Component<CVIBuffer_Particle_Point>()->Reset_Simulation();
-		static_cast<CEffectObject*>(pGo)->TimeReset();
+		m_bModified = true;
+
+		// 일단은 임시로.
+		CEffectObject* EffectParts = static_cast<Effect*>(pGo)->Get_Part<CEffectObject>(0);
+		EffectParts->Get_Component<CVIBuffer_Particle_Point>()->Reset_Simulation();
+		EffectParts->TimeReset();
 	}
 
 	ImGui::SameLine();
@@ -96,10 +103,13 @@ void CParticle_System_Panel::Draw_Timer(CToolObject* pGo)
 	{
 		m_bTimeSetting = false;
 		m_tCurrentDesc._Effect_TimeStop = true;
-		pGo->Get_Component<CVIBuffer_Particle_Point>()->Reset_Simulation();
-		static_cast<CEffectObject*>(pGo)->TimeReset();
-
 		m_fTimeAccumulation = 0.f;
+		m_bModified = true;
+
+		// 일단은 임시로.
+		CEffectObject* EffectParts = static_cast<Effect*>(pGo)->Get_Part<CEffectObject>(0);
+		EffectParts->Get_Component<CVIBuffer_Particle_Point>()->Reset_Simulation();
+		EffectParts->TimeReset();
 	}
 
 	ImGui::Spacing();
@@ -111,7 +121,7 @@ void CParticle_System_Panel::Draw_Timer(CToolObject* pGo)
 	ImGui::AlignTextToFramePadding();
 	ImGui::Text("Playback Speed");
 	ImGui::Spacing();
-	ImGui::InputFloat("##PlaybackSpeed", &m_fPlayBackSpeed, 0.f);
+	m_bModified |= ImGui::InputFloat("##PlaybackSpeed", &m_tCurrentDesc._Effect_PlayBack, 0.f);
 	ImGui::Spacing();
 
 	// ==================   Playback Time   =======================
@@ -119,7 +129,7 @@ void CParticle_System_Panel::Draw_Timer(CToolObject* pGo)
 	ImGui::AlignTextToFramePadding();
 	ImGui::Text("Playback Time");
 	ImGui::Spacing();
-	ImGui::InputFloat("##PlayBackTime", &m_fTimeAccumulation, 0.f);
+	m_bModified |= ImGui::InputFloat("##PlayBackTime", &m_fTimeAccumulation, 0.f);
 	ImGui::Spacing();
 
 	// Particles 
@@ -151,7 +161,7 @@ void CParticle_System_Panel::Draw_ParticleSystem(CToolObject* pGo)
 		ImGui::AlignTextToFramePadding();
 		ImGui::Text("Duration");
 		ImGui::SameLine();
-		ImGui::InputFloat("##Duration1", &m_tCurrentDesc._Effect_Duration, 0.f);
+		m_bModified |= ImGui::InputFloat("##Duration1", &m_tCurrentDesc._Effect_Duration, 0.f);
 		ImGui::Spacing();
 
 		// ===================   Looping - 재생이 끝나면 반복할지 결정한다		=====================
@@ -159,7 +169,7 @@ void CParticle_System_Panel::Draw_ParticleSystem(CToolObject* pGo)
 		ImGui::AlignTextToFramePadding();
 		ImGui::Text("Looping");
 		ImGui::SameLine();
-		ImGui::Checkbox("##Looping1", &m_tCurrentDesc._Effect_Looping);
+		m_bModified |= ImGui::Checkbox("##Looping1", &m_tCurrentDesc._Effect_Looping);
 		ImGui::Spacing();
 
 		// ==================   Prewarm - 체크하면 게임 시작시 이미 시스템이 헌 서아쿨아 돌아간 것처럼 미리 입자가 퍼져있다.  =========================
@@ -168,7 +178,7 @@ void CParticle_System_Panel::Draw_ParticleSystem(CToolObject* pGo)
 		ImGui::Text("Prewarm");
 		ImGui::SameLine();
 		static bool Prewarm = false;
-		ImGui::Checkbox("##Prewarm1", &Prewarm);
+		m_bModified |= ImGui::Checkbox("##Prewarm1", &Prewarm);
 		ImGui::Spacing();
 
 		// =================   Start Delay - 재생 버튼을 누르고 실제 입자가 나오기까지 걸리는 시간   =========================
@@ -176,7 +186,7 @@ void CParticle_System_Panel::Draw_ParticleSystem(CToolObject* pGo)
 		ImGui::AlignTextToFramePadding();
 		ImGui::Text("Start Delay");
 		ImGui::SameLine();
-		ImGui::InputFloat("##StartDelay1", &m_tCurrentDesc._Effect_StartDelay, 0.f);
+		m_bModified |= ImGui::InputFloat("##StartDelay1", &m_tCurrentDesc._Effect_StartDelay, 0.f);
 		ImGui::Spacing();
 
 		// 2. 파티클 초기 설정
@@ -185,7 +195,7 @@ void CParticle_System_Panel::Draw_ParticleSystem(CToolObject* pGo)
 		ImGui::AlignTextToFramePadding();
 		ImGui::Text("Start LifeTime");
 		ImGui::SameLine();
-		ImGui::InputFloat("##StartLifeTime1", &m_tCurrentDesc._Effect_LifeTime, 0.f);
+		m_bModified |= ImGui::InputFloat("##StartLifeTime1", &m_tCurrentDesc._Effect_LifeTime, 0.f);
 		ImGui::Spacing();
 
 		// ===============   Start Speed - 입자가 처음 뿜어져 나올 때의 속도   =============================================
@@ -194,7 +204,7 @@ void CParticle_System_Panel::Draw_ParticleSystem(CToolObject* pGo)
 		ImGui::Text("Start Speed");
 		ImGui::SameLine();
 		static float StartSpeed = 0.f;
-		ImGui::InputFloat("##StartSpeed1", &StartSpeed, 0.f);
+		m_bModified |= ImGui::InputFloat("##StartSpeed1", &StartSpeed, 0.f);
 		ImGui::Spacing();
 
 		// ==============  Start Size - 입자의 초기 사이즈   =========================================
@@ -204,13 +214,13 @@ void CParticle_System_Panel::Draw_ParticleSystem(CToolObject* pGo)
 		ImGui::Spacing();
 
 		ImGui::Text("X"); ImGui::SameLine();
-		ImGui::InputFloat("##StartX", &m_tCurrentDesc._Effect_StartScale.x); ImGui::Spacing();
+		m_bModified |= ImGui::InputFloat("##StartX", &m_tCurrentDesc._Effect_StartScale.x); ImGui::Spacing();
 
 		ImGui::Text("Y"); ImGui::SameLine();
-		ImGui::InputFloat("##StartY", &m_tCurrentDesc._Effect_StartScale.y); ImGui::Spacing();
+		m_bModified |= ImGui::InputFloat("##StartY", &m_tCurrentDesc._Effect_StartScale.y); ImGui::Spacing();
 
 		ImGui::Text("Z"); ImGui::SameLine();
-		ImGui::InputFloat("##StartZ", &m_tCurrentDesc._Effect_StartScale.z); ImGui::Spacing();
+		m_bModified |= ImGui::InputFloat("##StartZ", &m_tCurrentDesc._Effect_StartScale.z); ImGui::Spacing();
 
 		// ==============  End Size - 입자의 마지막 사이즈   =========================================
 
@@ -219,13 +229,13 @@ void CParticle_System_Panel::Draw_ParticleSystem(CToolObject* pGo)
 		ImGui::Spacing();
 
 		ImGui::Text("X"); ImGui::SameLine();
-		ImGui::InputFloat("##EndX", &m_tCurrentDesc._Effect_EndScale.x); ImGui::Spacing();
+		m_bModified |= ImGui::InputFloat("##EndX", &m_tCurrentDesc._Effect_EndScale.x); ImGui::Spacing();
 
 		ImGui::Text("Y"); ImGui::SameLine();
-		ImGui::InputFloat("##EndY", &m_tCurrentDesc._Effect_EndScale.y); ImGui::Spacing();
+		m_bModified |= ImGui::InputFloat("##EndY", &m_tCurrentDesc._Effect_EndScale.y); ImGui::Spacing();
 
 		ImGui::Text("Z"); ImGui::SameLine();
-		ImGui::InputFloat("##EndZ", &m_tCurrentDesc._Effect_EndScale.z); ImGui::Spacing();
+		m_bModified |= ImGui::InputFloat("##EndZ", &m_tCurrentDesc._Effect_EndScale.z); ImGui::Spacing();
 
 		// ==============   3D Start Rotation - 입자의 축마다의 회전값    =========================
 
@@ -234,7 +244,7 @@ void CParticle_System_Panel::Draw_ParticleSystem(CToolObject* pGo)
 		ImGui::SameLine();
 		static bool StartRotation_3D = false;
 
-		ImGui::Checkbox("##StartRotation_3D", &StartRotation_3D); ImGui::Spacing();
+		m_bModified |= ImGui::Checkbox("##StartRotation_3D", &StartRotation_3D); ImGui::Spacing();
 
 		if (StartRotation_3D)
 		{
@@ -243,13 +253,13 @@ void CParticle_System_Panel::Draw_ParticleSystem(CToolObject* pGo)
 			static float StartRotationZ_3D = 0.f;
 
 			ImGui::Text("X"); ImGui::SameLine();
-			ImGui::InputFloat("##StartRotationX_3D", &StartRotationX_3D); ImGui::Spacing();
+			m_bModified |= ImGui::InputFloat("##StartRotationX_3D", &StartRotationX_3D); ImGui::Spacing();
 
 			ImGui::Text("Y"); ImGui::SameLine();
-			ImGui::InputFloat("##StartRotationY_3D", &StartRotationY_3D); ImGui::Spacing();
+			m_bModified |= ImGui::InputFloat("##StartRotationY_3D", &StartRotationY_3D); ImGui::Spacing();
 
 			ImGui::Text("Z"); ImGui::SameLine();
-			ImGui::InputFloat("##StartRotationZ_3D", &StartRotationZ_3D); ImGui::Spacing();
+			m_bModified |= ImGui::InputFloat("##StartRotationZ_3D", &StartRotationZ_3D); ImGui::Spacing();
 		}
 
 		// ==========   Start Rotation - 모든 축의 회전값   ===================================
@@ -277,8 +287,8 @@ void CParticle_System_Panel::Draw_ParticleSystem(CToolObject* pGo)
 		static bool Local = false;
 		static bool World = false;
 
-		ImGui::Checkbox("##Local1", &Local); ImGui::SameLine(0, 40.f);
-		ImGui::Checkbox("##World1", &World); ImGui::Spacing();
+		m_bModified |= ImGui::Checkbox("##Local1", &Local); ImGui::SameLine(0, 40.f);
+		m_bModified |= ImGui::Checkbox("##World1", &World); ImGui::Spacing();
 
 		if (Local)
 		{
@@ -302,7 +312,7 @@ void CParticle_System_Panel::Draw_ParticleSystem(CToolObject* pGo)
 		ImGui::AlignTextToFramePadding();
 		ImGui::Text("Max Particles");
 		ImGui::Spacing();
-		ImGui::InputInt("##MaxParticles", &m_tCurrentDesc._Effect_MaxParticle, 0);
+		m_bModified |= ImGui::InputInt("##MaxParticles", &m_tCurrentDesc._Effect_MaxParticle, 0);
 		ImGui::Spacing();
 
 		// Auto Random Seed - 난수 Seed를 다르게 생성해서 입자 모양이 랜덤하게 변한다.
@@ -325,7 +335,7 @@ void CParticle_System_Panel::Draw_ParticleSystem(CToolObject* pGo)
 		ImGui::Text("Rate Over Time");
 		ImGui::Spacing();
 		static float RateOverTime = 0.f;
-		ImGui::InputFloat("##RateOverTime", &RateOverTime, 0.f);
+		m_bModified |= ImGui::InputFloat("##RateOverTime", &RateOverTime, 0.f);
 		ImGui::Spacing();
 		// Rate Over Distance - 본체가 이동한 거리에 비례해서 입자를 뿜습니다. 
 
@@ -333,7 +343,7 @@ void CParticle_System_Panel::Draw_ParticleSystem(CToolObject* pGo)
 		ImGui::Text("Rate Over Distance");
 		ImGui::Spacing();
 		static float RateOverDistance = 0.f;
-		ImGui::InputFloat("##RateOverDistance", &RateOverDistance, 0.f);
+		m_bModified |= ImGui::InputFloat("##RateOverDistance", &RateOverDistance, 0.f);
 		ImGui::Spacing();
 
 		// Bursts - 특정 시간에 파티클을 한꺼번에 '확' 터뜨리는 기능입니다.
@@ -359,12 +369,10 @@ void CParticle_System_Panel::Draw_ParticleSystem(CToolObject* pGo)
 			vector<string> m_pShapeList;
 			m_pShapeList.clear();
 
-			m_pShapeList.push_back("Sphere");
-			m_pShapeList.push_back("Hemisphere");
-			m_pShapeList.push_back("Circle");
-			m_pShapeList.push_back("Cone");
-			m_pShapeList.push_back("Box");
-			m_pShapeList.push_back("Mesh");
+			m_pShapeList.push_back("SPREAD");
+			m_pShapeList.push_back("DROP");
+			m_pShapeList.push_back("RISE");
+			m_pShapeList.push_back("MESH");
 
 			std::vector<const char*> iTems;
 			iTems.reserve(static_cast<int>(m_pShapeList.size()));
@@ -372,7 +380,7 @@ void CParticle_System_Panel::Draw_ParticleSystem(CToolObject* pGo)
 			for (auto& str : m_pShapeList)
 				iTems.push_back(str.c_str());
 
-			ImGui::ListBox("", &ShapeEffectNumber, iTems.data(), static_cast<int>(m_pShapeList.size()), 6);
+			m_bModified |= ImGui::ListBox("", &ShapeEffectNumber, iTems.data(), static_cast<int>(m_pShapeList.size()), 6);
 
 			if ((iTems.size() - 1) < ShapeEffectNumber)
 			{
@@ -385,29 +393,23 @@ void CParticle_System_Panel::Draw_ParticleSystem(CToolObject* pGo)
 		switch (ShapeEffectNumber)
 		{
 		case 0:
-			m_tCurrentDesc._Effect_ShapeType = E_SHAPETYPE::SPHERE;
+			m_tCurrentDesc._Effect_ShapeType = E_SHAPETYPE::SPREAD;
 			break;
 		case 1:
-			m_tCurrentDesc._Effect_ShapeType = E_SHAPETYPE::HEMISPHERE;
+			m_tCurrentDesc._Effect_ShapeType = E_SHAPETYPE::DROP;
 			break;
 		case 2:
-			m_tCurrentDesc._Effect_ShapeType = E_SHAPETYPE::CIRCLE;
+			m_tCurrentDesc._Effect_ShapeType = E_SHAPETYPE::RISE;
 			break;
 		case 3:
-			m_tCurrentDesc._Effect_ShapeType = E_SHAPETYPE::CONE;
-			break;
-		case 4:
-			m_tCurrentDesc._Effect_ShapeType = E_SHAPETYPE::BOX;
-			break;
-		case 5:
 			m_tCurrentDesc._Effect_ShapeType = E_SHAPETYPE::MESH;
 			break;
 		}
 
 		// ============   Radius   ============= 
 		ImGui::AlignTextToFramePadding();
-		ImGui::Text("Radius"); ImGui::SameLine();
-		ImGui::InputFloat("##Radius", &m_tCurrentDesc._Effect_Radius, 0.f);
+		ImGui::Text("Range"); ImGui::SameLine();
+		m_bModified |= ImGui::InputFloat3("##Range", &m_tCurrentDesc._Effect_Range.x, "%.2f");
 		ImGui::Spacing();
 
 
@@ -429,6 +431,8 @@ void CParticle_System_Panel::Draw_ParticleSystem(CToolObject* pGo)
 			{
 				m_tCurrentDesc._Effect_DiffuseTexture_Tag = Engine_Utils::ToWString(m_TextureFileNames[Diffuse_TextureNumber]);
 			}
+			
+			m_bModified = true;
 		}
 
 		ImGui::Spacing();
@@ -451,6 +455,8 @@ void CParticle_System_Panel::Draw_ParticleSystem(CToolObject* pGo)
 			{
 				m_tCurrentDesc._Effect_Mesh_NoiseTexture_Tag = Engine_Utils::ToWString("TEXT_" + m_TextureFileNames[Noise_TextureNumber]);
 			}
+
+			m_bModified = true;
 		}
 
 		ImGui::Spacing();
@@ -470,6 +476,10 @@ void CParticle_System_Panel::Draw_ParticleSystem(CToolObject* pGo)
 
 			ImGui::TreePop();
 		}
+
+		// ===========  size 변경 
+
+		m_bModified |= ImGui::DragFloat2("Particle Size", &m_tCurrentDesc._Effect_ParticleSize.x, 0.01f, 0.0f, 1.f, "%.2f");
 	}
 
 	// ==========  Position & Rotation & Scale ===========
@@ -550,17 +560,46 @@ void CParticle_System_Panel::Draw_ParticleSystem(CToolObject* pGo)
 				m_tCurrentDesc._Effect_Shader_Path = Engine_Utils::ToWString(m_ShaderFileNames[Shader_Number].first);
 				m_tCurrentDesc._Effect_Shader_Tag = Engine_Utils::ToWString(m_ShaderFileNames[Shader_Number].second);
 			}
+
+			m_bModified = true;
 		}
 
 		ImGui::Spacing();
 		// Shader Pass 선택하기
 		ImGui::Text("Shader Pass :"); ImGui::SameLine();
-		ImGui::InputInt("##Renderer_ShaderPass", &m_tCurrentDesc._Effect_ShaderPass); ImGui::Spacing();
+		m_bModified |= ImGui::InputInt("##Renderer_ShaderPass", &m_tCurrentDesc._Effect_ShaderPass); ImGui::Spacing();
 	}
 
 	ImGui::End();
 
 }
+
+void CParticle_System_Panel::Draw_EffectColor(CToolObject* pGo)
+{
+	ImGui::Begin("Effect Settings");
+
+	ImGui::Text("Particle Color Settings");
+
+	m_bModified |= ImGui::ColorPicker4("##MyEffectPicker", (float*)&m_tCurrentDesc._Effect_Color,
+		ImGuiColorEditFlags_PickerHueWheel |
+		ImGuiColorEditFlags_AlphaBar |       // 투명도 조절 바 표시
+		ImGuiColorEditFlags_DisplayRGB);
+
+	ImGui::End();
+}
+
+void CParticle_System_Panel::Draw_Parts(CToolObject* pGo)
+{
+	ImGui::Begin("Effect Parts Setting");
+	ImGui::Text("Effect Add Parts Settings");
+
+	// ContainerObject의 Parts List를 들고오고 size를 통해 Index 조작도 되게끔 한다.
+	Effect* pInstance = static_cast<Effect*>(pGo);
+	if (pInstance == nullptr) return;
+
+
+}
+
 
 HRESULT CParticle_System_Panel::EffectPanel_Initialize()
 {

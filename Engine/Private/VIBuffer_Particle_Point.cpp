@@ -10,7 +10,7 @@ CVIBuffer_Particle_Point::CVIBuffer_Particle_Point(ID3D11Device* pDevice, ID3D11
 CVIBuffer_Particle_Point::CVIBuffer_Particle_Point(const CVIBuffer_Particle_Point& rhs)
 	: Super(rhs)
 {
-}
+} 
 
 HRESULT CVIBuffer_Particle_Point::Initialize_Prototype(void* pArg)
 {

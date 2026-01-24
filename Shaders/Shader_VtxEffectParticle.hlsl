@@ -1,4 +1,5 @@
 #include "Struct_Defines.hlsl"
+#include "Animation_Defines.hlsl"
 #include "Light_Defines.hlsl"
 
 #define DEFAULTTEXTURE 0 // 기본 텍스처
@@ -7,10 +8,10 @@
 struct EffectDesc
 {
     uint g_Flags;
+    float3 vPadding;
     float2 g_ScrollOffset;
     float2 g_DistortionScale;
     float4 g_EffectColor;
-    float3 vPadding;
 };
 
 cbuffer ConstantBuffer_Effect
@@ -39,12 +40,11 @@ VS_OUT_POS_GS_PARTICLE VS_Particle(VS_IN_POS_GS_PARTICLE In)
 {
     VS_OUT_POS_GS_PARTICLE Out;
     
-    Out.vPosition = mul(float4(0.f, 0.f, 0.f, 1.f), W);
+    vector vPosition = mul(vector(In.vPosition, 1.f), In.matTransform);
     
-    // ============   크기 : World 행렬에서 스케일 값 정확히 추출   =============
-    Out.vPSize.x = length(W._11_12_13);
-    Out.vPSize.y = length(W._21_22_23);
-    
+
+    Out.vPosition = mul(vPosition, W);
+    Out.vPSize = float2(length(In.matTransform._11_12_13), length(In.matTransform._21_22_23));
     Out.vLifeTime = In.vLifeTime;
     
     return Out;
@@ -81,7 +81,7 @@ void GS_Particle(point VS_OUT_POS_GS_PARTICLE In[1], inout TriangleStream<GS_OUT
     // 삼각형 스트립 출력 (0-1-2, 0-2-3)
     OutStream.Append(Out[0]);
     OutStream.Append(Out[1]);
-    OutStream.Append(Out[2]);
+    OutStream.Append(Out[2]);       
     OutStream.RestartStrip();
     OutStream.Append(Out[0]);
     OutStream.Append(Out[2]);
@@ -96,8 +96,7 @@ float4 PS_Particle(GS_OUT_POS_PARTICLE In) : SV_TARGET0
     vector color = g_Effect.g_EffectColor;
 
     // ===========  라이프타임에 따른 투명도 적용  =============
-    color.a *= saturate(In.vLifeTime.y - In.vLifeTime.x);
-    
+    color.a = saturate(In.vLifeTime.y - In.vLifeTime.x);
     return color;
 }
 
@@ -108,9 +107,9 @@ technique11 T0
     {
         SetRasterizerState(RS_Default_CullNone);
         SetDepthStencilState(DS_Default, 0);
-        SetBlendState(BS_Default, float4(0.f, 0.f, 0.f, 0.f), 0xffffffff);
+        SetBlendState(BS_AlphaBlend, float4(0.f, 0.f, 0.f, 0.f), 0xffffffff);
         SetVertexShader(CompileShader(vs_5_0, VS_Particle()));
-        GeometryShader = compile gs_5_0 GS_Particle();
+        SetGeometryShader(CompileShader(gs_5_0, GS_Particle()));
         SetPixelShader(CompileShader(ps_5_0, PS_Particle()));
     }
 }

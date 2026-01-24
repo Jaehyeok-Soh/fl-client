@@ -48,6 +48,21 @@ HRESULT CEffectObject::Component_Setting(void* pArg)
     if (FAILED(Add_Component<CVIBuffer_Particle_Point>(ENUM_TO_UINT(ELevelType::EFFECT), L"Prototype_Component_VIBuffer_Particle_Point", nullptr)))
         return E_FAIL;
 
+    // Default 값으로 Shader 세팅
+    {
+        CShader::SHADER_ORIGIN_DESC ShaderDesc = {};
+        if (FAILED(Add_Component<CShader>(0, L"Prototype_Component_Shader_VtxEffectParticle", &ShaderDesc)))
+            return E_FAIL;
+    }
+
+    // Default 값으로 Texture 세팅
+    {
+        CTexture::TEXTURE_COMPONENT_ORIGIN_DESC desc = {};
+        if (FAILED(Add_Component<CTexture>(0, L"Prototype_Component_Texture_Default", &desc)))
+            return E_FAIL;
+    }
+
+
     return S_OK;
 }
 
@@ -69,6 +84,29 @@ void CEffectObject::Set_EffectDesc(const Effect_Desc& Desc)
     Model_Setting(m_tEffectDesc._Effect_Model_Tag);
     Texture_Setting(m_tEffectDesc._Effect_DiffuseTexture_Tag);
     Shader_Setting(m_tEffectDesc._Effect_Shader_Tag);
+    Particle_Setting();
+}
+
+void CEffectObject::Particle_Setting()
+{
+    if (m_tEffectDesc.eEffectType == E_EFFECTTYPE::Particle)
+    {
+        CVIBuffer_Particle_Point* pInstance = Get_Component<CVIBuffer_Particle_Point>();
+        auto pDesc = pInstance->Get_ParticleDesc();
+
+        CVIBuffer_Particle_Point::PARTICLE_POINT_ORIGIN_DESC desc = {};
+
+        desc.iInstnaceCount = m_tEffectDesc._Effect_MaxParticle;
+        desc.isLoop = m_tEffectDesc._Effect_Looping;
+        desc.vLifeTime.x = pDesc.vLifeTime.x;
+        desc.vLifeTime.y = m_tEffectDesc._Effect_LifeTime;
+        desc.vRange = m_tEffectDesc._Effect_Range;
+        desc.vPlayBackSpeed = m_tEffectDesc._Effect_PlayBack;
+        desc.vSize = m_tEffectDesc._Effect_ParticleSize;
+        desc.vSpeed = Vec2{ 0.f, 3.f };
+
+        pInstance->Set_ParticleDesc(desc);
+    }
 }
 
 void CEffectObject::Model_Setting(const wstring& ModelName)
@@ -86,7 +124,7 @@ void CEffectObject::Model_Setting(const wstring& ModelName)
 void CEffectObject::Texture_Setting(const wstring& TextureName)
 {
     CTexture::TEXTURE_COMPONENT_ORIGIN_DESC desc = {};
-    wstring s = L"Prototype_Component_Texture_";
+    wstring s = L"Texture_";
 
     // 빈 깡통 텍스처로 교체해주고.
 
@@ -94,16 +132,24 @@ void CEffectObject::Texture_Setting(const wstring& TextureName)
     {
         Change_Component<CTexture>(static_cast<CTexture*>(m_pGameInstance->Clone_Prototype(EPrototypeType::COMPONENT, 0, L"Prototype_Component_Texture_Empty", &desc)));
 
-        Get_Component<CTexture>()->Add_DefaultTexture(s + m_tEffectDesc._Effect_DiffuseTexture_Tag, ENUM_TO_UINT(TEXTURETYPE::DIFFUSE));
-        Get_Component<CTexture>()->Add_DefaultTexture(s + m_tEffectDesc._Effect_Mesh_NoiseTexture_Tag, ENUM_TO_UINT(TEXTURETYPE::NOISE));
+        CTexture* pInstance = Get_Component<CTexture>();
+        if (pInstance)
+        {
+            Get_Component<CTexture>()->Add_DefaultTexture(s + m_tEffectDesc._Effect_DiffuseTexture_Tag, ENUM_TO_UINT(TEXTURETYPE::DIFFUSE));
+            Get_Component<CTexture>()->Add_DefaultTexture(s + m_tEffectDesc._Effect_Mesh_NoiseTexture_Tag, ENUM_TO_UINT(TEXTURETYPE::NOISE));
+        }
     }
 
     else
     {
         Add_Component<CTexture>(0, s + m_tEffectDesc._Effect_DiffuseTexture_Tag, &desc);
         
-        Get_Component<CTexture>()->Add_DefaultTexture(s + m_tEffectDesc._Effect_DiffuseTexture_Tag, ENUM_TO_UINT(TEXTURETYPE::DIFFUSE));
-        Get_Component<CTexture>()->Add_DefaultTexture(s + m_tEffectDesc._Effect_Mesh_NoiseTexture_Tag, ENUM_TO_UINT(TEXTURETYPE::NOISE));
+        CTexture* pInstance = Get_Component<CTexture>();
+        if (pInstance)
+        {
+            Get_Component<CTexture>()->Add_DefaultTexture(s + m_tEffectDesc._Effect_DiffuseTexture_Tag, ENUM_TO_UINT(TEXTURETYPE::DIFFUSE));
+            Get_Component<CTexture>()->Add_DefaultTexture(s + m_tEffectDesc._Effect_Mesh_NoiseTexture_Tag, ENUM_TO_UINT(TEXTURETYPE::NOISE));
+        }
     }
 
 }
@@ -150,11 +196,19 @@ HRESULT CEffectObject::Bind_ShaderResource()
     // 셰이더에 던질 구조체 작성하기.
     {
         SHADER_EFFECT_DESC pDesc = {};
-        pDesc.iFlags = 1;
+        pDesc.iFlags = 0;
+        pDesc.vPadding = Vec3{ 0.f, 0.f, 0.f };
         pDesc.vDistortionScale = m_tEffectDesc._Effect_DistortionScale;
         pDesc.vEffectColor = m_tEffectDesc._Effect_Color;
         pDesc.vScrollOffset = m_vScrollOffset;
         pShader->Bind_EffectData(pDesc);
+    }
+
+    // 텍스처 바인딩
+    {
+        CTexture* pTexture = Get_Component<CTexture>();
+        if (pTexture)
+            pTexture->Bind_ShaderResourceBuffer(Get_Component<CShader>());
     }
 
     if (pModel)
@@ -169,8 +223,15 @@ HRESULT CEffectObject::Bind_ShaderResource()
             pModel->Render(i);
         }
     }
-
     pShader->Apply();
+
+    CVIBuffer_Particle_Point* pInstance = Get_Component<CVIBuffer_Particle_Point>();
+    if (pInstance)
+    {
+        m_pDeviceContext->IASetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY_POINTLIST);
+        pInstance->Bind_Resource();
+        pInstance->Render();
+    }
 
     return S_OK;
 }
@@ -200,15 +261,33 @@ void CEffectObject::Update(const _float fTimeDelta)
 
     switch (m_tEffectDesc._Effect_ShapeType)
     {
-    case E_SHAPETYPE::NONE:
-        break;
+        case E_SHAPETYPE::NONE:
+            break;
 
-    case E_SHAPETYPE::SPHERE:
-    case E_SHAPETYPE::HEMISPHERE:
-    case E_SHAPETYPE::CONE:
-    case E_SHAPETYPE::CIRCLE:
-        Get_Component<CVIBuffer_Particle_Point>()->Update_Simulation(fTimeDelta, E_PARTICLE_MOVESTATE::SPREAD);
-        break;
+        case E_SHAPETYPE::SPREAD:
+        {
+            CVIBuffer_Particle_Point* pInstance = Get_Component<CVIBuffer_Particle_Point>();
+            if (pInstance) pInstance->Update_Simulation(fTimeDelta, E_PARTICLE_MOVESTATE::SPREAD);
+            break;
+        }
+        case E_SHAPETYPE::DROP:
+        {
+            CVIBuffer_Particle_Point* pInstance = Get_Component<CVIBuffer_Particle_Point>();
+            if (pInstance) pInstance->Update_Simulation(fTimeDelta, E_PARTICLE_MOVESTATE::DROP);
+            break;
+        }
+        case E_SHAPETYPE::RISE:
+        {
+            CVIBuffer_Particle_Point* pInstance = Get_Component<CVIBuffer_Particle_Point>();
+            if (pInstance) pInstance->Update_Simulation(fTimeDelta, E_PARTICLE_MOVESTATE::RISE);
+            break;
+        }
+        case E_SHAPETYPE::MESH:
+        {
+            CVIBuffer_Particle_Point* pInstance = Get_Component<CVIBuffer_Particle_Point>();
+            if (pInstance) pInstance->Update_Simulation(fTimeDelta, E_PARTICLE_MOVESTATE::RISE);
+            break;
+        }
     }
 }
 
