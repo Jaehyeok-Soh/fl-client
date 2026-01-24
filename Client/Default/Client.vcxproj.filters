@@ -317,5 +317,11 @@
     <FxCompile Include="..\..\Shaders\Shader_VtxEffectMesh.hlsl">
       <Filter>04. Shaders</Filter>
     </FxCompile>
+    <FxCompile Include="..\..\Shaders\Shader_VtxEffectParticle.hlsl">
+      <Filter>04. Shaders</Filter>
+    </FxCompile>
+    <FxCompile Include="..\..\Shaders\Shader_VtxEffectTexture.hlsl">
+      <Filter>04. Shaders</Filter>
+    </FxCompile>
   </ItemGroup>
 </Project>

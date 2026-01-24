@@ -38,6 +38,13 @@ enum class E_SHAPETYPE
     MESH,
 };
 
+enum class E_RENDER_TYPE
+{
+    NONE = 0,
+    BILBOARD,
+    MESH,
+};
+
 enum class E_SIMULATION_SPACE
 {
     NONE = 0,
@@ -75,10 +82,12 @@ public:
 
         // ========  이펙트 Material 설정   ===========
         wstring     _Effect_Model_Tag = {};
-        wstring     _Effect_Shader_Tag = {};
         wstring     _Effect_DiffuseTexture_Tag = {};
         wstring     _Effect_Mesh_NoiseTexture_Tag = {};
-        _uint       _Effect_ShaderPass = {};
+
+        wstring     _Effect_Shader_Path = {};
+        wstring     _Effect_Shader_Tag = {};
+        int         _Effect_ShaderPass = {};
 
         // =======   이펙트 스크롤 Value   ===========
         Vec2     _Effect_ScrollSpeed = { 0.f, 0.f };
@@ -102,13 +111,13 @@ public:
         _uint2      _Effect_TileCount = {};
 
         // ========   이펙트 파티클 전용   ============
-        _float      _Effect_Duration = { 0.f };
-        _bool       _Effect_Looping = { false };
-        _float      _Effect_StartDelay = { 0.f };
-        _float      _Effect_LifeTime = { 0.f };
-        _float      _Effect_StartSpeed = { 1.f };
-        int         _Effect_MaxParticle = { 100 };
-        _bool       _Effect_BillBoardFlag = { false };
+        _float              _Effect_Duration = { 0.f };
+        _bool               _Effect_Looping = { false };
+        _float              _Effect_StartDelay = { 0.f };
+        _float              _Effect_LifeTime = { 0.f };
+        _float              _Effect_StartSpeed = { 1.f };
+        int                 _Effect_MaxParticle = { 100 };
+        E_RENDER_TYPE       _Effect_BillBoardFlag = E_RENDER_TYPE::NONE;
 
         // ========  이펙트 Radius  ==========
         _float      _Effect_Radius = 0.1f;
@@ -139,7 +148,10 @@ public:
 public:
     //  ==========  초기 Component 설정  ================
     HRESULT EffectDesc_Initialize(void* pArg);
-    HRESULT Component_Setting();
+    HRESULT Component_Setting(void* pArg);
+
+    void Shader_Setting(const wstring& Name);
+    void Texture_Setting(const wstring& Name);
 
 private:
     //  ==========  Shader Binding Setting  =============
@@ -153,7 +165,8 @@ public:
     const E_EffectSystemType& Get_EffectType() { return m_tEffectDesc.eEffectSystemType; }
     const Effect_Desc& Get_EffectDesc() { return m_tEffectDesc; }
 
-    void Set_EffectDesc(const Effect_Desc& Desc) { m_tEffectDesc = Desc; }
+    void Set_EffectDesc(const Effect_Desc& Desc);
+
 
 public:
     static CEffectObject* Create(EToolObjectType eType, ID3D11Device* pDevice, ID3D11DeviceContext* pDeviceContext);
@@ -166,7 +179,6 @@ private:
 
     //  ========== 이펙트 재료 ===========
     CModel*      m_pModelCom = { nullptr };
-    CShader*     m_pShaderCom = { nullptr };
     CTexture*    m_pTextureCom = { nullptr };
 
     //  ========== 스크롤 OffSet ========

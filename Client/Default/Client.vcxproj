@@ -225,6 +225,18 @@
     <FxCompile Include="..\..\Shaders\Shader_VtxCol.hlsl" />
     <FxCompile Include="..\..\Shaders\Shader_VtxCube.hlsl" />
     <FxCompile Include="..\..\Shaders\Shader_VtxEffectMesh.hlsl" />
+    <FxCompile Include="..\..\Shaders\Shader_VtxEffectParticle.hlsl">
+      <ShaderType Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Effect</ShaderType>
+      <ShaderType Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Vertex</ShaderType>
+      <ShaderType Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">Vertex</ShaderType>
+      <ShaderType Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Effect</ShaderType>
+    </FxCompile>
+    <FxCompile Include="..\..\Shaders\Shader_VtxEffectTexture.hlsl">
+      <ShaderType Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Vertex</ShaderType>
+      <ShaderType Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Vertex</ShaderType>
+      <ShaderType Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">Vertex</ShaderType>
+      <ShaderType Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Vertex</ShaderType>
+    </FxCompile>
     <FxCompile Include="..\..\Shaders\Shader_VtxMesh.hlsl" />
     <FxCompile Include="..\..\Shaders\Shader_VtxMesh_SkillEffect.hlsl" />
     <FxCompile Include="..\..\Shaders\Shader_VtxNorTex.hlsl" />

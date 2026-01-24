@@ -487,6 +487,15 @@ void CShader::Create_ConstantBuffer()
 		}
 	}
 
+	// EffectDesc by Choi
+	{
+		if (m_pEffectBuffer = Get_ConstantBuffer("ConstantBuffer_Effect"))
+		{
+			m_pEffect_CBuffer = CConstant_Buffer<SHADER_EFFECT_DESC>::Create(m_pDevice, m_pDeviceContext);
+			m_pEffectBuffer->SetConstantBuffer(m_pEffect_CBuffer->Get_Buffer());
+		}
+	}
+
 	// Texture
 	{
 		m_pTransformTexture = Get_SRV("g_TransformMap");
@@ -532,8 +541,10 @@ void CShader::Clear_ConstantBuffer()
 {
 	Safe_Release(m_pGlobalMask_Effect);
 	Safe_Release(m_pDefaultTextures);
-	Safe_Release(m_pSkillEffect_CBuffer);
+	Safe_Release(m_pSkillEffect_CBuffer); // GangVer
 	Safe_Release(m_pSkillEffectBuffer);
+	Safe_Release(m_pEffect_CBuffer); // ChoiVer
+	Safe_Release(m_pEffectBuffer);
 	Safe_Release(m_pRenderTargetDiffuseTexture);
 	Safe_Release(m_pRenderTargetNormalTexture);
 	Safe_Release(m_pRenderTargetShadeTexture);

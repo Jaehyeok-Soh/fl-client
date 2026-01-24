@@ -149,7 +149,7 @@ struct VS_OUT_POS_GS_PARTICLE
 {
     float4 vPosition : POSITION;
     float2 vPSize : PSIZE;
-    float2 vLieftTime : TEXCOORD0;
+    float2 vLifeTime : TEXCOORD0;
 };
 
 ///////////////////
@@ -159,7 +159,7 @@ struct GS_IN_POS_PARTICLE
 {
     float4 vPosition : POSITION;
     float2 vPSize : PSIZE;
-    float2 vLieftTime : TEXCOORD0;
+    float2 vLifeTime : TEXCOORD0;
 };
 
 ////////////////////
@@ -169,7 +169,7 @@ struct GS_OUT_POS_PARTICLE
 {
     float4 vPosition : SV_POSITION;
     float2 vUV : TEXCOORD0;
-    float2 vLieftTime : TEXCOORD1;
+    float2 vLifeTime : TEXCOORD1;
 };
 
 ////////////////

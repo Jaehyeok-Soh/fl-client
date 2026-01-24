@@ -30,7 +30,7 @@ HRESULT CEffectObject::Initialize(void* pArg)
         return E_FAIL;
     }
 
-    if (FAILED(Component_Setting()))
+    if (FAILED(Component_Setting(pArg)))
         return E_FAIL;
 
     if (FAILED(EffectDesc_Initialize(pArg)))
@@ -42,7 +42,7 @@ HRESULT CEffectObject::Initialize(void* pArg)
     return S_OK;
 }
 
-HRESULT CEffectObject::Component_Setting()
+HRESULT CEffectObject::Component_Setting(void* pArg)
 {
     if (FAILED(Add_Component<CVIBuffer_Particle_Point>(ENUM_TO_UINT(ELevelType::EFFECT), L"Prototype_Component_VIBuffer_Particle_Point", nullptr)))
         return E_FAIL;
@@ -61,12 +61,43 @@ HRESULT CEffectObject::EffectDesc_Initialize(void* pArg)
     return S_OK;
 }
 
+void CEffectObject::Set_EffectDesc(const Effect_Desc& Desc)
+{
+    m_tEffectDesc = Desc;
+    
+    m_pModelCom = m_pGameInstance->Get_Resource<CModel>(m_tEffectDesc._Effect_Model_Tag);
+
+    Texture_Setting(m_tEffectDesc._Effect_DiffuseTexture_Tag);
+    Shader_Setting(m_tEffectDesc._Effect_Shader_Tag);
+}
+
+void CEffectObject::Texture_Setting(const wstring& TextureName)
+{
+    CTexture::TEXTURE_COMPONENT_ORIGIN_DESC desc = {};
+
+    // 빈 깡통 텍스처로 교체해주고.
+    Change_Component<CTexture>(static_cast<CTexture*>(m_pGameInstance->Clone_Prototype(EPrototypeType::COMPONENT, 0, L"Prototype_Component_Texture_Empty", &desc)));
+    
+    Get_Component<CTexture>()->Add_DefaultTexture(m_tEffectDesc._Effect_DiffuseTexture_Tag, ENUM_TO_UINT(TEXTURETYPE::DIFFUSE));
+    Get_Component<CTexture>()->Add_DefaultTexture(m_tEffectDesc._Effect_Mesh_NoiseTexture_Tag, ENUM_TO_UINT(TEXTURETYPE::NOISE));
+}
+
+void CEffectObject::Shader_Setting(const wstring& ShaderName)
+{
+    CShader::SHADER_ORIGIN_DESC ShaderDesc = {};
+
+    if (ShaderName == L"Shader_VtxEffectParticle")
+       Change_Component<CShader>(static_cast<CShader*>(m_pGameInstance->Clone_Prototype(EPrototypeType::COMPONENT, 0, L"Prototype_Component_Shader_VtxEffectParticle", nullptr)));
+
+    else if (ShaderName == L"Shader_VtxEffectMesh")
+        Change_Component<CShader>(static_cast<CShader*>(m_pGameInstance->Clone_Prototype(EPrototypeType::COMPONENT, 0, L"Prototype_Component_Shader_VtxEffectMesh", nullptr)));
+
+    else if (ShaderName == L"Shader_VtxEffectTexture")
+        Change_Component<CShader>(static_cast<CShader*>(m_pGameInstance->Clone_Prototype(EPrototypeType::COMPONENT, 0, L"Prototype_Component_Shader_VtxEffectTexture", nullptr)));
+}
+
 HRESULT CEffectObject::Bind_ShaderResource()
 {
-    if (m_pShaderCom)
-    {
-
-    }
 
     return S_OK;
 }
@@ -171,15 +202,15 @@ void CEffectObject::Bind_ShaderResource_Particles()
             break;
 
         case E_PARTICLETYPE::PARTICLE:
-           /* m_pShaderCom->Set_Pass(2);*/
+            Get_Component<CShader>()->Set_Pass(0);
             break;
 
         case E_PARTICLETYPE::TEXTURE:
-            m_pShaderCom->Set_Pass(1);
+            Get_Component<CShader>()->Set_Pass(0);
             break;
 
         case E_PARTICLETYPE::MESH:
-            m_pShaderCom->Set_Pass(0);
+            Get_Component<CShader>()->Set_Pass(0);
             break;
     }
     // 어떤 종류를 파티클로 지정할 것인지. (Mesh, Particle, Texture) 3가지 타입.
