@@ -34,6 +34,7 @@ private:
 
 private:
 	class CImGui_ToolManager* m_pImGuiManager = { nullptr };
+
 public:
 	static CLevel_UI* Create(ID3D11Device* pDevice, ID3D11DeviceContext* pDeviceContext);
 	virtual void Free() override;

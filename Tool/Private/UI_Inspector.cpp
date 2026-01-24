@@ -2,6 +2,8 @@
 #include "UI_Inspector.h"
 #include "ImGui_ToolManager.h"
 #include "ImGui_UIManager.h"
+#include "UIData_Repository.h"
+#include "ToolUI.h"
 
 CUI_Inspector::CUI_Inspector(const _char* pLabel, CLevel* pOwner, ID3D11Device* pDevice, ID3D11DeviceContext* pDeviceContext)
 	:Super(pLabel, pOwner, pDevice, pDeviceContext),
@@ -37,7 +39,8 @@ HRESULT CUI_Inspector::Render(CToolObject* pGo)
 	
 	/* 씬 */
 	SetUp_Level();
-	
+	Load_Data();
+
 	/* 캔버스 태그 받고 생성 */
 	Make_Canvas();
 
@@ -51,24 +54,6 @@ HRESULT CUI_Inspector::Render(CToolObject* pGo)
 
 		/* 레이어 선택 */
 		Edit_Layers();
-
-		/* UI를 만들기 버튼을 눌렀는지 */
-		if (m_isCreateUI)
-		{
-			if (m_isBeginCreateUI)
-				Ready_Make_NewUI();
-
-			_bool fail = { FALSE };
-
-			if (0 == m_pUIManager->Get_NumUI(m_pUIManager->Get_CurCanvasIndex(), m_pUIManager->Get_CurLayerIndex()))
-			{
-				m_isCreateUI = FALSE;
-				fail = TRUE;
-			}
-
-			if(!fail)
-				Make_UI();
-		}
 	}
 
 
@@ -76,10 +61,33 @@ HRESULT CUI_Inspector::Render(CToolObject* pGo)
 	return S_OK;
 }
 
+void CUI_Inspector::Load_Data()
+{
+	if (ImGui::Button("Load UI Data", ImVec2(0, 0)))
+	{
+		OPENFILENAMEW ofn{};
+		_tchar szFile[MAX_PATH] = { 0 };
+
+		ofn.lStructSize = sizeof(OPENFILENAMEW);
+		ofn.hwndOwner = g_hWnd;
+		ofn.lpstrFile = szFile;
+		ofn.nMaxFile = MAX_PATH;
+		ofn.lpstrFilter = L"Json Files (*.json)\0*.json\0All Files (*.*)\0*.*\0\0";
+		ofn.nFilterIndex = 1;
+		ofn.Flags = OFN_PATHMUSTEXIST | OFN_FILEMUSTEXIST | OFN_NOCHANGEDIR;
+
+		if (::GetOpenFileNameW(&ofn) == TRUE)
+		{
+			wstring result = szFile;
+			CUIData_Repository::GetInstance()->Load_UIData(result, m_pUIManager->Get_CurCanvas_Ref());
+		}
+	}
+}
+
 void CUI_Inspector::SetUp_Level()
 {
 	ImGui::Text("<<SetUp Level>>");
-	ImGui::Combo("Current_Selected_Level", &m_iCurSelectLevelID, m_szArrClientLevelType, m_vecClientLevelType.size());
+	ImGui::Combo("Current_Selected_Level", &m_iCurSelectLevelID, m_szArrClientLevelType, static_cast<uint32_t>(m_vecClientLevelType.size()));
 }
 
 void CUI_Inspector::Make_Canvas()
@@ -127,7 +135,7 @@ void CUI_Inspector::Edit_Canvas()
 	ImGui::NewLine();
 	ImGui::Text("<<Select CanvasTag To Edit>>");
 	ImGui::BeginChild("CanvasList", ImVec2(0, 50), true);
-	for (int i = 0; i < m_pUIManager->Get_NumCanvas(); ++i)
+	for (uint32_t i = 0; i < m_pUIManager->Get_NumCanvas(); ++i)
 	{
 		bool selected = (m_pUIManager->Get_CurCanvasIndex() == i);
 		if (ImGui::Selectable(m_pUIManager->Get_CanvasData_Ptr(i)->strTag.c_str(), selected))
@@ -186,7 +194,7 @@ void CUI_Inspector::Edit_Layers()
 	ImGui::BeginChild("LayerList", ImVec2(0, 100), true);
 
 
-	for (int i = 0; i < m_pUIManager->Get_NumLayer(m_pUIManager->Get_CurCanvasIndex()); ++i)
+	for (uint32_t i = 0; i < m_pUIManager->Get_NumLayer(m_pUIManager->Get_CurCanvasIndex()); ++i)
 	{
 		bool selected = (m_pUIManager->Get_CurLayerIndex() == i);
 		if (ImGui::Selectable(m_pUIManager->Get_LayerData_Ptr(i)->strTag.c_str(), selected))
@@ -196,22 +204,78 @@ void CUI_Inspector::Edit_Layers()
 
 	if (0 != m_pUIManager->Get_NumLayer(m_pUIManager->Get_CurCanvasIndex()))
 	{
+		ImGui::NewLine();
+		ImGui::Text("<<UI>>");
+		ImGui::TextUnformatted("UIName :");
+		ImGui::SameLine();
+		ImGui::SetNextItemWidth(150.f);
+		ImGui::InputText("##UIName", &m_strUIName);
 		Make_UI_Btn();
+
+		if (!m_pUIManager->Get_CurUIDatas().empty())
+		{
+			Show_UI_List();
+			Edit_UI();
+		}
+	}
+
+}
+
+void CUI_Inspector::Add_NewUI()
+{
+	GENERIC_UI_DATA tData = {};
+	tData.strName = m_strUIName;
+	m_pUIManager->Add_UIData(tData);
+	m_strUIName = "";
+}
+
+void CUI_Inspector::Edit_UI()
+{
+	SetUp_UI_Common_Info();
+
+	if (ImGui::Button("Save UI"))
+	{
+		CUIData_Repository::GetInstance()->Save_UIData(L"../../Resources/Data/UIData/Data.json");
 	}
 }
 
-void CUI_Inspector::Make_UI()
+void CUI_Inspector::SetUp_UI_Common_Info()
 {
-	if (!ImGui::Begin("UI Palette"))
+	if (!ImGui::Begin("[[ Inspector ]]"))
 	{
 		ImGui::End();
 		return;
 	}
 
+	/* =========================
+	 *  Common Setting (Top)
+	 * ========================= */
 
+	if (ImGui::BeginTabBar("##SetUpUICommonInfo", ImGuiTabBarFlags_Reorderable))
+	{
+		if (ImGui::BeginTabItem("Common Setting"))
+		{
+			ImGui::EndTabItem();
+		}
+		ImGui::EndTabBar();
+	}
 
-	SetUp_UI_Common_Info();
+	ImGui::BeginChild("##ContentBox1", ImVec2(0.f, 0.f), true, ImGuiWindowFlags_None);
 
+	/* 렉트 트랜스폼 */
+	Input_RectTransform();
+	/* 텍스쳐 경로 */
+	// TODO: Input_TexturePath();
+
+	ImGui::EndChild();
+
+	ImGui::Spacing();
+	ImGui::Separator();
+	ImGui::Spacing();
+
+	/* =========================
+	 *  Palette Tabs (Bottom)
+	 * ========================= */
 
 	static int s_iTab = 0;
 
@@ -238,8 +302,6 @@ void CUI_Inspector::Make_UI()
 		ImGui::EndTabBar();
 	}
 
-	ImGui::Separator();
-
 	ImGui::BeginChild("##ContentBox", ImVec2(0.f, 0.f), true, ImGuiWindowFlags_None);
 
 	if (s_iTab == 0)
@@ -257,9 +319,9 @@ void CUI_Inspector::Make_UI()
 		ImGui::Spacing();
 
 		ImGui::Text("ImTextureID가 있으면 ImGui::Image(...)로 출력하시면 됩니다.");
-		ImGui::Button("Import Texture");
+		if (ImGui::Button("Import Texture")) {}
 	}
-	else if (s_iTab == 2)
+	else // s_iTab == 2
 	{
 		ImGui::Text("Text Tab");
 		ImGui::Spacing();
@@ -269,43 +331,20 @@ void CUI_Inspector::Make_UI()
 	}
 
 	ImGui::EndChild();
-
 	ImGui::End();
 }
 
-void CUI_Inspector::SetUp_UI_Common_Info()
-{
-	if (ImGui::BeginTabBar("##SetUpUICommonInfo", ImGuiTabBarFlags_Reorderable))
-	{
-		if (ImGui::BeginTabItem("Common Setting"))
-		{
-			ImGui::EndTabItem();
-		}
-
-		ImGui::EndTabBar();
-	}
-
-	ImGui::BeginChild("##ContentBox1", ImVec2(0.f, 0.f), true, ImGuiWindowFlags_None);
-
-	/* 렉트 트랜스폼 */
-	Input_RectTransform();
-	/* 텍스쳐 경로 */
-
-	ImGui::EndChild();
-}
-
-
-void CUI_Inspector::UI_List()
+void CUI_Inspector::Show_UI_List()
 {
 	ImGui::NewLine();
 	ImGui::Text("<<UI List>>");
 	ImGui::BeginChild("UIList", ImVec2(0, 100), true);
 
-	for (int i = 0; i < m_pUIManager->Get_NumLayer(m_pUIManager->Get_CurCanvasIndex()); ++i)
+	for (uint32_t i = 0; i < m_pUIManager->Get_NumUI(m_pUIManager->Get_CurCanvasIndex(), m_pUIManager->Get_CurLayerIndex()); ++i)
 	{
-		bool selected = (m_pUIManager->Get_CurLayerIndex() == i);
-		if (ImGui::Selectable(m_pUIManager->Get_LayerData_Ptr(i)->strTag.c_str(), selected))
-			m_pUIManager->Change_Layers(i);
+		bool selected = (m_pUIManager->Get_CurUIIndex() == i);
+		if (ImGui::Selectable(m_pUIManager->Get_UIData_Ptr(i)->strName.c_str(), selected))
+			m_pUIManager->Change_UIData(i);
 	}
 	ImGui::EndChild();
 }
@@ -323,49 +362,33 @@ void CUI_Inspector::Input_Canvas_TransformInfo()
 	/* 내맘대로 만들겠다 */
 	if (m_isCustomSize)
 	{
+		auto* pData = m_pUIManager->Get_CanvasData_Ptr(m_pUIManager->Get_CurCanvasIndex());
+
 		/* Width / Height */
-		ImGui::TextUnformatted("Width :");
-		ImGui::SameLine();
-		ImGui::SetNextItemWidth(90.f);
-		ImGui::InputScalar("##CanvasSizeX", ImGuiDataType_S32, &m_pUIManager->Get_CanvasData_Ptr(m_pUIManager->Get_CurCanvasIndex())->iWidth);
-
+		Scrub_Float("Width :", "CanvasSizeX", &pData->fWidth, 0.01f, 0.1f, 1.0f, 120.f);
 		ImGui::SameLine(0.f, 16.f);
-
-		ImGui::TextUnformatted("Height :");
-		ImGui::SameLine();
-		ImGui::SetNextItemWidth(90.f);
-		ImGui::InputScalar("##CanvasSizeY", ImGuiDataType_S32, &m_pUIManager->Get_CanvasData_Ptr(m_pUIManager->Get_CurCanvasIndex())->iHeight);
+		Scrub_Float("Height :", "CanvasSizeY", &pData->fHeight, 0.01f, 0.1f, 1.0f, 120.f);
 
 		/* Pos X / Y / Z */
-		ImGui::TextUnformatted("X :");
-		ImGui::SameLine();
-		ImGui::SetNextItemWidth(60.f);
-		ImGui::InputScalar("##CanvasPosX", ImGuiDataType_S32, &m_pUIManager->Get_CanvasData_Ptr(m_pUIManager->Get_CurCanvasIndex())->iPosX);
-
+		Scrub_Float("X :", "CanvasPosX", &pData->fPosX, 0.01f, 0.1f, 1.0f, 100.f);
 		ImGui::SameLine(0.f, 16.f);
-
-		ImGui::TextUnformatted("Y :");
-		ImGui::SameLine();
-		ImGui::SetNextItemWidth(60.f);
-		ImGui::InputScalar("##CanvasPosY", ImGuiDataType_S32, &m_pUIManager->Get_CanvasData_Ptr(m_pUIManager->Get_CurCanvasIndex())->iPosY);
-
+		Scrub_Float("Y :", "CanvasPosY", &pData->fPosY, 0.01f, 0.1f, 1.0f, 100.f);
 		ImGui::SameLine(0.f, 16.f);
-		
-		ImGui::TextUnformatted("Z :");
-		ImGui::SameLine();
-		ImGui::SetNextItemWidth(60.f);
-		ImGui::InputScalar("##CanvasPosZ", ImGuiDataType_S32, &m_pUIManager->Get_CanvasData_Ptr(m_pUIManager->Get_CurCanvasIndex())->iPosZ);
-		m_pUIManager->Get_CanvasData_Ptr(m_pUIManager->Get_CurCanvasIndex())->isUsingViewport = FALSE;
+		Scrub_Float("Z :", "CanvasPosZ", &pData->fPosZ, 0.01f, 0.1f, 1.0f, 100.f);
+
+		pData->isUsingViewport = FALSE;
 	}
 	/* 뷰포트 기준으로 캔버스를 만들겠다 */
 	else if (m_isViewportSize)
 	{
-		m_pUIManager->Get_CanvasData_Ptr(m_pUIManager->Get_CurCanvasIndex())->iWidth = m_pToolManager->Get_CurViewportSize().x;
-		m_pUIManager->Get_CanvasData_Ptr(m_pUIManager->Get_CurCanvasIndex())->iHeight = m_pToolManager->Get_CurViewportSize().y;
-		m_pUIManager->Get_CanvasData_Ptr(m_pUIManager->Get_CurCanvasIndex())->iPosX = 0;
-		m_pUIManager->Get_CanvasData_Ptr(m_pUIManager->Get_CurCanvasIndex())->iPosY = 0;
-		m_pUIManager->Get_CanvasData_Ptr(m_pUIManager->Get_CurCanvasIndex())->iPosZ = 0;
-		m_pUIManager->Get_CanvasData_Ptr(m_pUIManager->Get_CurCanvasIndex())->isUsingViewport = TRUE;
+		auto* pData = m_pUIManager->Get_CanvasData_Ptr(m_pUIManager->Get_CurCanvasIndex());
+
+		pData->fWidth = m_pToolManager->Get_CurViewportSize().x;
+		pData->fHeight = m_pToolManager->Get_CurViewportSize().y;
+		pData->fPosX = 0.f;
+		pData->fPosY = 0.f;
+		pData->fPosZ = 0.f;
+		pData->isUsingViewport = TRUE;
 	}
 }
 
@@ -379,7 +402,6 @@ void CUI_Inspector::Input_Layer_Tag()
 	ImGui::InputText("##LayerTag", &m_strLayerTag);
 
 	Make_Layer_Btn();
-
 }
 
 void CUI_Inspector::Input_RectTransform()
@@ -416,37 +438,68 @@ void CUI_Inspector::Input_RectTransform()
 	}
 
 	/* Width / Height */
-	ImGui::TextUnformatted("Width :");
-	ImGui::SameLine();
-	ImGui::SetNextItemWidth(90.f);
-	ImGui::InputScalar("##UISizeX", ImGuiDataType_S32, &m_pUIManager->Get_UIData_Ptr(m_pUIManager->Get_CurUIIndex())->iWidth);
-
+	auto* pData = m_pUIManager->Get_UIData_Ptr(m_pUIManager->Get_CurUIIndex());
+	Scrub_Float("Width :", "UISizeX", &pData->fWidth, 0.01f, 0.1f, 1.0f, 100.f);
 	ImGui::SameLine(0.f, 16.f);
-
-	ImGui::TextUnformatted("Height :");
-	ImGui::SameLine();
-	ImGui::SetNextItemWidth(90.f);
-	ImGui::InputScalar("##UISizeY", ImGuiDataType_S32, &m_pUIManager->Get_UIData_Ptr(m_pUIManager->Get_CurUIIndex())->iHeight);
+	Scrub_Float("Height :", "UISizeY", &pData->fHeight, 0.01f, 0.1f, 1.0f, 100.f);
 
 	/* Pos X / Y / Z */
-	ImGui::TextUnformatted("X :");
-	ImGui::SameLine();
-	ImGui::SetNextItemWidth(60.f);
-	ImGui::InputScalar("##UIPosX", ImGuiDataType_S32, &m_pUIManager->Get_UIData_Ptr(m_pUIManager->Get_CurUIIndex())->iPosX);
-
+	Scrub_Float("X :", "UIPosX", &pData->fPosX, 0.01f, 0.1f, 1.0f, 100.f);
 	ImGui::SameLine(0.f, 16.f);
-
-	ImGui::TextUnformatted("Y :");
-	ImGui::SameLine();
-	ImGui::SetNextItemWidth(60.f);
-	ImGui::InputScalar("##UIPosY", ImGuiDataType_S32, &m_pUIManager->Get_UIData_Ptr(m_pUIManager->Get_CurUIIndex())->iPosY);
-
+	Scrub_Float("Y :", "UIPosY", &pData->fPosY, 0.01f, 0.1f, 1.0f, 100.f);
 	ImGui::SameLine(0.f, 16.f);
+	Scrub_Float("Z :", "UIPosZ", &pData->fPosZ, 0.01f, 0.1f, 1.0f, 100.f);
 
-	ImGui::TextUnformatted("Z :");
+
+	m_pUIManager->Get_UI_Ptr(m_pUIManager->Get_CurUIIndex())->Set_Position(
+		static_cast<_float>(m_pUIManager->Get_UIData_Ptr(m_pUIManager->Get_CurUIIndex())->fPosX),
+		static_cast<_float>(m_pUIManager->Get_UIData_Ptr(m_pUIManager->Get_CurUIIndex())->fPosY));
+}
+
+_bool CUI_Inspector::Scrub_Float(const _char* label, const _char* Id, OUT _float* pValue, float fValuePerPixel, float fStep, float fStep_fast, float fSize)
+{
+	ImGui::PushID(Id);
+
+	ImVec2 pos = ImGui::GetCursorScreenPos();
+	ImVec2 size = ImGui::CalcTextSize(label);
+
+	ImGui::InvisibleButton("##ScrubLabel", size);
+
+	if (ImGui::IsItemHovered())
+		ImGui::SetMouseCursor(ImGuiMouseCursor_ResizeEW);
+
+	_bool changed = FALSE;
+
+	if (ImGui::IsItemActive())
+	{
+		float dx = ImGui::GetIO().MouseDelta.x;
+		if (dx != 0.f)
+		{
+			float scale = 1.f;
+			if (ImGui::GetIO().KeyShift) scale = 10.f;
+			if (ImGui::GetIO().KeyCtrl)  scale = 0.1f;
+
+			*pValue += dx * fValuePerPixel * scale;
+
+			if (-FLT_MAX < FLT_MAX)
+			{
+				if (*pValue < -FLT_MAX) *pValue = -FLT_MAX;
+				if (*pValue > FLT_MAX) *pValue = FLT_MAX;
+			}
+			changed = TRUE;
+		}
+	}
+	ImGui::SetCursorScreenPos(pos);
+	ImGui::TextUnformatted(label);
 	ImGui::SameLine();
-	ImGui::SetNextItemWidth(60.f);
-	ImGui::InputScalar("##UIPosZ", ImGuiDataType_S32, &m_pUIManager->Get_UIData_Ptr(m_pUIManager->Get_CurUIIndex())->iPosZ);
+
+	ImGui::SetNextItemWidth(fSize);
+	if (ImGui::InputScalar("##Value", ImGuiDataType_Float, pValue, &fStep, &fStep_fast, "%.1f"))
+		changed = TRUE;
+
+	ImGui::PopID();
+
+	return changed;
 }
 
 void CUI_Inspector::Make_Canvas_Btn()
@@ -486,16 +539,28 @@ void CUI_Inspector::Make_UI_Btn()
 	if (ImGui::Button("Create UI With This Layer"))
 	{
 		m_isCreateUI = TRUE;
-		m_isBeginCreateUI = TRUE;
-	}
-}
+		m_iRectTransformIndex = 4;
 
-void CUI_Inspector::Ready_Make_NewUI()
-{
-	GENERIC_UI_DATA tData = {};
-	m_pUIManager->Add_UIData(tData);
-	m_iRectTransformIndex = 4;
-	m_isBeginCreateUI = FALSE;
+		if (m_strUIName == "")
+		{
+			MSG_BOX("CUI_Inspector::Make_UI_Btn, Empty Tag");
+			m_isCreateCanvas = FALSE;
+			return;
+		}
+
+		/* UI 태그가 있다*/
+		const auto& vecUI = m_pUIManager->Get_CurUIDatas();
+		for (uint32_t i = 0; i < m_pUIManager->Get_NumUI(m_pUIManager->Get_CurCanvasIndex(), m_pUIManager->Get_CurLayerIndex()); ++i)
+		{
+			if (m_strCanvasTag == vecUI[i].strName)
+			{
+				MSG_BOX("CUI_Inspector::Make_UI_Btn, Tag Already Created");
+				m_isCreateCanvas = FALSE;
+				return;
+			}
+		}
+		Add_NewUI();
+	}
 }
 
 CUI_Inspector* CUI_Inspector::Create(const _char* pLabel, CLevel* pOwner, ID3D11Device* pDevice, ID3D11DeviceContext* pDeviceContext)
