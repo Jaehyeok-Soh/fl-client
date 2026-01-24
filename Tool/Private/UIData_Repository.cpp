@@ -57,10 +57,6 @@ HRESULT CUIData_Repository::Save_UIData(const _wstring& wstrSaveFilePath)
 	return S_OK;
 }
 
-HRESULT CUIData_Repository::Make_UIObject()
-{
-	return S_OK;
-}
 
 void CUIData_Repository::Free()
 {
