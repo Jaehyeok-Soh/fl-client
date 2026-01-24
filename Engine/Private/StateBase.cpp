@@ -56,10 +56,14 @@ HRESULT CStateBase::Start(void *pArg, _bool bForce)
 			// 만약 preidx가 없다면 무조건 업데이트
 			if(pAniData.iPrevStateIdx == -1 || pAniData.iPrevStateIdx == Get_PrevState())
 			{
+				Engine_Utils::RemoveHard_Flag(m_FAniFlags, STATEANI_FLAG::SA_PreAniDone);
 				Request_ChangeAnimation(pAniData.iAnimationIdex, true, false, true); // 무조건 loop : false
 				return S_OK;
 			}
 		}
+
+		// pre가 있긴 하지만 이번에는 없을 때
+		Engine_Utils::Add_Flag(m_FAniFlags, STATEANI_FLAG::SA_PreAniDone);
 	}
 
 	// 만약 preAni가 없다면 내꺼 재생
