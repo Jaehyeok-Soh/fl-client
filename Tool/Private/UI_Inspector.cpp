@@ -79,7 +79,10 @@ void CUI_Inspector::Load_Data()
 		if (::GetOpenFileNameW(&ofn) == TRUE)
 		{
 			wstring result = szFile;
-			CUIData_Repository::GetInstance()->Load_UIData(result, m_pUIManager->Get_CurCanvas_Ref());
+			if (FAILED(CUIData_Repository::GetInstance()->Load_UIData(result, m_pUIManager->Get_CurCanvas_Ref())))
+				return;
+
+			m_pUIManager->Remake_UIObjects();
 		}
 	}
 }
@@ -450,10 +453,13 @@ void CUI_Inspector::Input_RectTransform()
 	ImGui::SameLine(0.f, 16.f);
 	Scrub_Float("Z :", "UIPosZ", &pData->fPosZ, 0.01f, 0.1f, 1.0f, 100.f);
 
+	if (nullptr != m_pUIManager->Get_UI_Ptr(m_pUIManager->Get_CurUIIndex()))
+	{
+		m_pUIManager->Get_UI_Ptr(m_pUIManager->Get_CurUIIndex())->Set_Position(
+			static_cast<_float>(m_pUIManager->Get_UIData_Ptr(m_pUIManager->Get_CurUIIndex())->fPosX),
+			static_cast<_float>(m_pUIManager->Get_UIData_Ptr(m_pUIManager->Get_CurUIIndex())->fPosY));
+	}
 
-	m_pUIManager->Get_UI_Ptr(m_pUIManager->Get_CurUIIndex())->Set_Position(
-		static_cast<_float>(m_pUIManager->Get_UIData_Ptr(m_pUIManager->Get_CurUIIndex())->fPosX),
-		static_cast<_float>(m_pUIManager->Get_UIData_Ptr(m_pUIManager->Get_CurUIIndex())->fPosY));
 }
 
 _bool CUI_Inspector::Scrub_Float(const _char* label, const _char* Id, OUT _float* pValue, float fValuePerPixel, float fStep, float fStep_fast, float fSize)
