@@ -54,11 +54,11 @@ HRESULT CLevel_Assimp::Awake(const _uint iLevelID)
 
 	//Map
 	{
-		CConverter* pConverter = CConverter::Create(m_pDevice, m_pDeviceContext, SOLUTION_DIR, L"Map/Test/", matUECoord);
-		pConverter->ReadAndExport();
-		Safe_Release(pConverter);
+		//CConverter* pConverter = CConverter::Create(m_pDevice, m_pDeviceContext, SOLUTION_DIR, L"Map/Test/", matUECoord);
+		//pConverter->ReadAndExport();
+		//Safe_Release(pConverter);
 
-		MSG_BOX("변환 완료");
+		//MSG_BOX("변환 완료");
 
 	}
 
