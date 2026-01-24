@@ -103,12 +103,15 @@ HRESULT CActionState::Swap_State(_uint iIndex, CStateBase* pState, CStateBase** 
 
 HRESULT CActionState::Change_State(_uint iIndex, _bool bForce, void* pArg)
 {
+	// 인덱스 방어
 	if (iIndex >= m_vecStates.size() || m_vecStates[iIndex] == nullptr)
 		return E_FAIL;
 
+	// 같은 state 방어
 	if (m_iCurrentState == iIndex && bForce == false)
 		return S_OK;
 
+	// 이전 state end 호출
 	if (m_iCurrentState >= 0 && m_iCurrentState < m_vecStates.size())
 	{
 		if (CStateBase* pPrevState = m_vecStates[m_iCurrentState])
@@ -118,9 +121,14 @@ HRESULT CActionState::Change_State(_uint iIndex, _bool bForce, void* pArg)
 		}
 	}
 
+	// pre state 업데이트 -> start에서 사용할지 몰라서 위에서 업데이트
+	m_iPrevState = m_iCurrentState;
+
+	// change state : start
 	if (FAILED(m_vecStates[iIndex]->Start(pArg, bForce)))
 		return E_FAIL;
-	m_iPrevState = m_iCurrentState;
+
+	// cur state 업데이트
 	m_iCurrentState = iIndex;
 	return S_OK;
 }
