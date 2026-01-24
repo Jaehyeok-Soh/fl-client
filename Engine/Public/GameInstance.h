@@ -290,7 +290,7 @@ private:
 	class CRenderTarget_Manager* m_pRenderTarget_Manager = { nullptr };
 	class CPicking* m_pPicking = { nullptr };
 	class CFrustrum* m_pFrustrum = { nullptr };
-
+private:
 	std::mt19937_64 m_rng;
 public:
 	virtual void			Free() override;

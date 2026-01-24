@@ -125,10 +125,6 @@ HRESULT CUEMapDataLoader::Make_StaticModel(const wstring& wstrRawDataFilePath, c
 
 		// position은 z, y 스왑후 z값쪽에 음수를 입혀야함
 		//pTransform->Set_Info(TRANSFORM_INFO_STATE::POS, Vec3(mapdataOuter.Properties.vPosition.x * 0.01f, mapdataOuter.Properties.vPosition.z * 0.01f, mapdataOuter.Properties.vPosition.y * -0.01f));
-
-		// TODO - CreateObject 이벤트로 뺴고나서 이거 지워야함
-		if (m_pGameInstance->Is_Awaked())
-			pResult->Awake(ENUM_TO_UINT(ELevelType::MAP));
 	}
 
 	Safe_Release(pParser);
