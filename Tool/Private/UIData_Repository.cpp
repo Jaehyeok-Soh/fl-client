@@ -29,6 +29,8 @@ HRESULT CUIData_Repository::Load_UIData(const _wstring& wstrSaveFilePath, OUT ve
 	order_json j = json::parse(text);
 	OutVec = j.get<vector<CANVAS_DATA>>();
 	Safe_Release(pFileUtil);
+
+	return S_OK;
 }
 
 HRESULT CUIData_Repository::Save_UIData(const _wstring& wstrSaveFilePath)
