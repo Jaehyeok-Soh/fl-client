@@ -1,6 +1,7 @@
+#include "pch.h"
 #include "Panel_ModelConverter.h"
-#include "GameInstance.h"
 #include "Converter.h" 
+#include "GameInstance.h"
 
 USING(Tool)
 
@@ -89,8 +90,8 @@ void CPanel_ModelConverter::Convert_FbxFolder(const wchar_t* wszFloderPath)
 	/* Pre Matrix */
 	wstring ResultMsg{};
 	std::filesystem::path pathFile{ wszFloderPath };
-	CConverter* pConverter = CConverter::Create(m_pDevice, m_pDeviceContext , wszFloderPath, m_SRTMatirx );
-	if (FAILED(pConverter->ReadAndExportFile()))
+	CConverter* pConverter = CConverter::Create(m_pDevice, m_pDeviceContext, SOLUTION_DIR, wszFloderPath, m_SRTMatirx);
+	if (FAILED(pConverter->ReadAndExport()))
 		ResultMsg = pathFile.filename().wstring() + L" Convert is Failed", L"Converter";
 	else
 		ResultMsg = pathFile.filename().wstring() + L" Convert is Complete", L"Converter";

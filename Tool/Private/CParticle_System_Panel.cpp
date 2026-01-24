@@ -1,10 +1,11 @@
+#include "pch.h"
 #include "CParticle_System_Panel.h"
-#include "GameInstance.h"
 #include "Engine_Utils.h"
 #include "Transform.h"
 #include "Effect.h"
 #include "CEffectObject.h"
 #include "VIBuffer_Particle_Point.h"
+#include "GameInstance.h"
 
 CParticle_System_Panel::CParticle_System_Panel(const _char* pLabel, CLevel* pOwner, ID3D11Device* pDevice, ID3D11DeviceContext* pDeviceContext)
 	:CImGui_Panel(pLabel, pOwner, pDevice, pDeviceContext)
@@ -420,7 +421,7 @@ void CParticle_System_Panel::Draw_ParticleSystem(CToolObject* pGo)
 				*out_text = vector[idx].c_str();
 				return true;
 			},
-			(void*)&m_TextureFileNames, (int)m_TextureFileNames.size(), 3));
+			(void*)&m_TextureFileNames, (int)m_TextureFileNames.size(), 3))
 		{
 			if (Diffuse_TextureNumber < m_TextureFileNames.size())
 			{
@@ -442,7 +443,7 @@ void CParticle_System_Panel::Draw_ParticleSystem(CToolObject* pGo)
 				*out_text = vector[idx].c_str();
 				return true;
 			},
-			(void*)&m_TextureFileNames, (int)m_TextureFileNames.size(), 3));
+			(void*)&m_TextureFileNames, (int)m_TextureFileNames.size(), 3))
 		{
 			if (Noise_TextureNumber < m_TextureFileNames.size())
 			{
@@ -515,7 +516,7 @@ void CParticle_System_Panel::Draw_ParticleSystem(CToolObject* pGo)
 				*out_text = vector[idx].c_str();
 				return true;
 			},
-			(void*)&m_pRendererModeList, (int)m_pRendererModeList.size(), 2));
+			(void*)&m_pRendererModeList, (int)m_pRendererModeList.size(), 2))
 	
 		switch (RendererModeNumber)
 		{

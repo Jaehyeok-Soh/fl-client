@@ -1,8 +1,9 @@
+#include "pch.h"
 #include "MapObject.h"
 #include "Model.h"
 #include "Shader.h"
-#include "GameInstance.h"
 #include "StaticModel.h"
+#include "GameInstance.h"
 
 USING(Tool)
 

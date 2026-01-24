@@ -494,13 +494,13 @@ void CShader::Create_ConstantBuffer()
 	}
 
 	// EffectDesc by Choi
-	//{
-	//	if (m_pEffectBuffer = Get_ConstantBuffer("ConstantBuffer_Effect"))
-	//	{
-	//		m_pEffect_CBuffer = CConstant_Buffer<SHADER_EFFECT_DESC>::Create(m_pDevice, m_pDeviceContext);
-	//		m_pEffectBuffer->SetConstantBuffer(m_pEffect_CBuffer->Get_Buffer());
-	//	}
-	//}
+	{
+		if (m_pEffectBuffer = Get_ConstantBuffer("ConstantBuffer_Effect"))
+		{
+			m_pEffect_CBuffer = CConstant_Buffer<SHADER_EFFECT_DESC>::Create(m_pDevice, m_pDeviceContext);
+			m_pEffectBuffer->SetConstantBuffer(m_pEffect_CBuffer->Get_Buffer());
+		}
+	}
 
 	// Texture
 	{

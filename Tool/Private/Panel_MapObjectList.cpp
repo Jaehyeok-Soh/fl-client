@@ -1,3 +1,4 @@
+#include "pch.h"
 #include "Panel_MapObjectList.h"
 #include "StaticModel.h"
 #include "Engine_Utils.h"

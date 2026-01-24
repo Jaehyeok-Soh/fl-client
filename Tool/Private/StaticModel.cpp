@@ -1,7 +1,8 @@
+#include "pch.h"
 #include "StaticModel.h"
-#include "GameInstance.h"
 #include "Mesh.h"
 #include "Model.h"
+#include "GameInstance.h"
 
 CStaticModel::CStaticModel(EToolObjectType eType, ID3D11Device* pDevice, ID3D11DeviceContext* pDeviceContext)
 	: CMapObject(eType, pDevice,pDeviceContext)

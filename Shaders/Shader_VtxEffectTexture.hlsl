@@ -10,6 +10,7 @@ struct EffectDesc
     float2 g_ScrollOffset;
     float2 g_DistortionScale;
     float4 g_EffectColor;
+    float3 vPadding;
 };
 
 cbuffer ConstantBuffer_Effect

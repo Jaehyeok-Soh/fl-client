@@ -1,6 +1,7 @@
+#include "pch.h"
 #include "Tool_PartObject.h"
-#include "GameInstance.h"
 #include "CameraMan.h"
+#include "GameInstance.h"
 
 Tool_PartObject::Tool_PartObject(EToolObjectType eType, ID3D11Device* pDevice, ID3D11DeviceContext* pDeviceContext)
 	:CToolObject(eType, pDevice, pDeviceContext)

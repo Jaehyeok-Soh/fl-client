@@ -1,7 +1,8 @@
+#include "pch.h"
 #include "EffectType_Selection_Panel.h"
-#include "GameInstance.h"
 #include "CEffectObject.h"
 #include "Effect.h"
+#include "GameInstance.h"
 
 CEffectType_Selection_Panel::CEffectType_Selection_Panel(const _char* pLabel, CLevel* pOwner, ID3D11Device* pDevice, ID3D11DeviceContext* pDeviceContext)
     :CImGui_Panel(pLabel, pOwner, pDevice, pDeviceContext),
