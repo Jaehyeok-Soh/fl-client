@@ -38,8 +38,8 @@ private:
 	HRESULT Ready_MapObject_Layer();
 	HRESULT Ready_Camera_Layer(const wstring& wstrLayerTag);
 	HRESULT Ready_Camera_Setting(const _uint iLevelID);
-	void Ready_Event();
-	void Release_Event();
+	void	Ready_Event();
+	void	Release_Event();
 public:
 	void		 On_ChangeSelectedObject(CGameObject* pGo);
 	void		 On_CreateMode(_bool bValue);
@@ -51,6 +51,12 @@ private:
 	CToolObject* m_pSelectedObject = { nullptr };
 	std::array<DelegateHandle, ENUM_TO_SZET(Event::END)>	m_EventHandles;
 	array<class CImGui_Panel* , ENUM_TO_SZET(Event::END)>	m_arrayImGuiPanel{};
+
+
+	/* Btach */
+	PrimitiveBatch<DirectX::VertexPositionColor>*			m_pBatch{ nullptr };
+	BasicEffect*											m_pEffect{ nullptr };
+	ID3D11InputLayout*										m_pInputLayout{ nullptr };
 
 
 public:

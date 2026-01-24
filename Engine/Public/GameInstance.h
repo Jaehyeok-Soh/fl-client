@@ -77,7 +77,7 @@ public:
 #pragma region LEVEL_MANAGER
 	HRESULT					Immediately_ChangeLevel(_uint iNewLevelID, class CLevel* pNewLevel);
 	void					Request_ChangeLevel(_uint iNewLevelID, class CLevel* pNewLevel);
-	_bool					Is_Awaked() const;
+	_bool					Is_Awaked(const _uint iLevelID) const;
 	void					Awake_Level();
 	class CLevel*			Get_CurrentLevel();
 	_uint					Get_CurrentLevelIndex() const;
@@ -98,7 +98,7 @@ public:
 #pragma endregion
 
 #pragma region OBJECT_MANAGER
-	HRESULT					Awake_GameObjects(const _uint iCurrentLevelID, const wstring& wstrLayerTag);
+	HRESULT					Awake_GameObjects(const _uint iCurrentLevelID);
 	
 	CGameObject*			Add_GameObject(_uint iCloneLevelIndex, const wstring& wstrLayerTag, CGameObject* pGo);
 	CGameObject*			Add_GameObject(_uint iPrototypeLevelIndex, const wstring& wstrPrototypeTag,
@@ -290,7 +290,7 @@ private:
 	class CRenderTarget_Manager* m_pRenderTarget_Manager = { nullptr };
 	class CPicking* m_pPicking = { nullptr };
 	class CFrustrum* m_pFrustrum = { nullptr };
-
+private:
 	std::mt19937_64 m_rng;
 public:
 	virtual void			Free() override;

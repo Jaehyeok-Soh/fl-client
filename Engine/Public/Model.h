@@ -120,7 +120,7 @@ private:
 	_uint m_iAnimationCount = { 0 };
 	_uint m_iCurrentAnimIndex = { 0 };
 	_uint m_iPrevAnimIndex = { 0 };
-	unordered_map<wstring, _uint> m_umapAnimationIndexTable;
+	unordered_map<wstring, size_t> m_umapAnimationIndexTable;
 	vector<class CModelAnimation*> m_vecAnimations;
 	vector<LOCALSRT> m_vecPrevAnimationPose;
 	vector<LOCALSRT> m_vecCurrAnimationPose;

@@ -5,6 +5,8 @@
 #include "Engine_Utils.h"
 #include "ImGui_ToolManager.h"
 #include "Level_Loading.h"
+#include "ImGui_UIManager.h"
+#include "UIData_Repository.h"
 //=================
 // GameObject
 //=================
@@ -96,14 +98,7 @@ HRESULT CMainApplication::Ready_Static_Prototype()
 			return E_FAIL;
 	}
 
-	// For. Prototype_Component_Button_Test_Texture
-	{
-		CTexture::TEXTURE_COMPONENT_ORIGIN_DESC textureDesc = {};
-		textureDesc.iTextureCount = 1;
-		textureDesc.wstrTexturePath = L"../../Resources/Textures/UI/Button/T_Com_BtnIcon_Custom.png";
-		if (FAILED(m_pGameInstance->Add_Prototype(ENUM_TO_UINT(ELevelType::STATIC), L"Prototype_Component_Button_Test_Texture", CTexture::Create(&textureDesc))))
-			return E_FAIL;
-	}
+
 
 	//=================
 	// Resource Component
@@ -359,6 +354,8 @@ void CMainApplication::Free()
 {
 	Safe_Release(m_pImGuiManager);
 	CPicking_ToolManager::GetInstance()->DestroyInstance();
+	CUIData_Repository::GetInstance()->DestroyInstance();
+	CImGui_UIManager::GetInstance()->DestroyInstance();
 	Safe_Release(m_pGameInstance);
 	Safe_Release(m_pDeviceContext);
 	Safe_Release(m_pDevice);

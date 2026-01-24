@@ -83,13 +83,13 @@ void CLayer::Delete_GameObject(CGameObject* pGo)
 	m_pGameObjects.erase(itr);
 }
 
-CGameObject* CLayer::Add_GameObject(CGameObject* pGO)
+HRESULT CLayer::Add_GameObject(CGameObject* pGO)
 {
 	if (!pGO)
-		return nullptr;
+		return E_FAIL;
 
 	m_pGameObjects.push_back(pGO);
-	return pGO;
+	return S_OK;
 }
 
 CGameObject* CLayer::Get_GameObject_Front()

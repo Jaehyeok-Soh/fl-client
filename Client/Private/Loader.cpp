@@ -122,22 +122,13 @@ HRESULT CLoader::Loading_For_Logo()
 	//=================
 	// For. Prototype_Component_Stat
 	m_pGameInstance->Add_Prototype(ENUM_TO_UINT(ELevelType::STATIC), L"Prototype_Component_Stat", CStatComponent::Create());
-	// For. Prototype_Component_Model_Sword
-	{
-		CModel::MODEL_ORIGIN_DESC desc = {};
-		desc.eType = EModelType::NONANIM;
-		desc.iPrototypeLevelIndex = ENUM_TO_UINT(ELevelType::STATIC);
-		desc.pMatPreTransform = &matPreTransformScale;
-		desc.wstrModelFolderName = L"Sword";
-		m_pGameInstance->Add_Prototype(ENUM_TO_UINT(ELevelType::STATIC), L"Prototype_Component_Model_Sword", CModel::Create(m_pDevice, m_pDeviceContext, &desc));
-	}
 	// For. Prototype_Component_Model_Master
 	{
 		CModel::MODEL_ORIGIN_DESC desc = {};
 		desc.eType = EModelType::ANIM;
 		desc.iPrototypeLevelIndex = ENUM_TO_UINT(ELevelType::STATIC);
 		desc.pMatPreTransform = &matPreTransformScale;
-		desc.wstrModelFolderName = L"TestPlayer";
+		desc.wstrModelFolderName = L"PlayerMoon";
 		m_pGameInstance->Add_Prototype(ENUM_TO_UINT(ELevelType::STATIC), L"Prototype_Component_Model_Master", CModel::Create(m_pDevice, m_pDeviceContext, &desc));
 	}
 	// For. Prototype_Component_Camera
@@ -164,8 +155,6 @@ HRESULT CLoader::Loading_For_Logo()
 	m_pGameInstance->Add_Prototype(ENUM_TO_UINT(ELevelType::STATIC), L"Prototype_GameObject_Part_Body", CBody::Create(m_pDevice, m_pDeviceContext));
 	// For. Prototype_GameObject_Part_Collider
 	m_pGameInstance->Add_Prototype(ENUM_TO_UINT(ELevelType::STATIC), L"Prototype_GameObject_Part_Collider", CColliderPart::Create(m_pDevice, m_pDeviceContext));
-	// For. Prototype_GameObject_Part_Weapon
-	m_pGameInstance->Add_Prototype(ENUM_TO_UINT(ELevelType::STATIC), L"Prototype_GameObject_Part_Weapon", CWeapon::Create(m_pDevice, m_pDeviceContext));
 	{
 		std::lock_guard<std::mutex> lockguard(m_mutex_1);
 		lstrcpy(m_szFPS, TEXT("로딩이 완료되었슴니다."));

@@ -102,18 +102,12 @@ namespace Tool
 	{
 		switch (eType)
 		{
-		case Tool::EClientLevelType::STATIC:
-			return "STATIC";
-			break;
-		case Tool::EClientLevelType::LOGO:
-			return "LOGO";
-			break;
-		case Tool::EClientLevelType::LOADING:
-			return "LOADING";
-			break;
-		case Tool::EClientLevelType::END:
-			break;
+		case Tool::EClientLevelType::STATIC: return "STATIC";
+		case Tool::EClientLevelType::LOGO:	 return "LOGO";
+		case Tool::EClientLevelType::LOADING:return "LOADING";
+		default:							 return "NONE";
 		}
+		return "NONE";
 	}
 
 	static EClientLevelType StringToClientleveltype(const _string& str)

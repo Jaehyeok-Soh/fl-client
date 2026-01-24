@@ -19,8 +19,7 @@ HRESULT CPanel_ModelConverter::Initialize()
 		IID_IFileOpenDialog, reinterpret_cast<void**>(&m_pOpenDialog));
 
 	DWORD dwOptions{};
-	m_pOpenDialog->SetOptions(dwOptions | FOS_PICKFOLDERS | FOS_FORCEFILESYSTEM);
-
+	m_pOpenDialog->SetOptions(dwOptions | FOS_FORCEFILESYSTEM);
 
 	return hr;
 }
@@ -79,7 +78,10 @@ void CPanel_ModelConverter::Open_FolderDialog()
 	{
 		LPWSTR pPath{nullptr};
 		pItem->GetDisplayName(SIGDN_FILESYSPATH , &pPath);
-		wcscpy_s(szFile,pPath);
+
+		path FilePath = pPath;
+		FilePath.remove_filename();
+		Convert_FbxFolder(FilePath.c_str());
 	}
 
 	return;
