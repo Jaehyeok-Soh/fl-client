@@ -31,10 +31,17 @@
 #include "Engine_Utils.h"
 #include "Tool_Defines.h"
 
+#include "DebugDraw.h"
+
+
+
 CLevel_Map::CLevel_Map(ID3D11Device* pDevice, ID3D11DeviceContext* pDeviceContext)
 	: Super(pDevice, pDeviceContext)
 	, m_pImGuiManager(CImGui_ToolManager::GetInstance())
 	, m_pPickingManager(CPicking_ToolManager::GetInstance())
+	, m_pBatch{nullptr}
+	, m_pEffect(nullptr)
+	, m_pInputLayout(nullptr)
 {
 	Safe_AddRef(m_pImGuiManager);
 	Safe_AddRef(m_pPickingManager);
@@ -80,6 +87,25 @@ HRESULT CLevel_Map::Awake(const _uint iLevelID)
 	m_pGameInstance->Get_MainCamera()->Get_Component<CCamera>()->Set_Fov(60.f);
 
 
+	/* Batch  */
+
+	m_pBatch = new PrimitiveBatch<VertexPositionColor>(m_pDeviceContext);
+	m_pEffect = new BasicEffect(m_pDevice);
+	m_pEffect->SetVertexColorEnabled(true);
+
+	const void* pShaderInput = { nullptr };
+	size_t iShaderInputLenght = {};
+	m_pEffect->GetVertexShaderBytecode(&pShaderInput, &iShaderInputLenght);
+
+	if (FAILED(m_pDevice->CreateInputLayout(
+		VertexPositionColor::InputElements
+		, VertexPositionColor::InputElementCount
+		, pShaderInput
+		, iShaderInputLenght
+		, &m_pInputLayout)))
+		return E_FAIL;
+
+
 	return S_OK;
 }
 
@@ -108,11 +134,14 @@ HRESULT CLevel_Map::Render()
 	m_pImGuiManager->Render_Dockspace();
 	//////////////////////////
 	// Element Render
+	//DX::DrawGrid(m_pBatch, XMVectorSet(1.f, 0.f, 0.f, 1.f), XMVectorSet(0.f, 0.f, 1.f, 1.f), XMVectorSet(0.f, 0.f, 0.f, 1.f), 1000, 1000, DirectX::Colors::White);
 	Render_Elements();
-	
 	//////////////////////////
 	m_pImGuiManager->Render_Viewport(m_pSelectedObject);
 	m_pImGuiManager->Render_End();
+
+
+
 
 	return S_OK;
 }
@@ -246,6 +275,11 @@ void CLevel_Map::Free()
 		Safe_Release(pElement);
 	}
 	m_arrayImGuiPanel.fill(nullptr);
+
+	Safe_Delete(m_pBatch);
+	Safe_Delete(m_pEffect);
+	Safe_Release(m_pInputLayout);
+
 
 	Safe_Release(m_pImGuiManager);
 	Safe_Release(m_pPickingManager);
