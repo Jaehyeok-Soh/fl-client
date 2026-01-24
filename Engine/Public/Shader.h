@@ -75,6 +75,7 @@ public:
 	void Bind_MaterialData(const SHADER_MATERIALDESC& desc);
 	void Bind_MaterialInstanceData(const SHADER_MI_DESC& desc);
 	void Bind_SkillEffectData(const SHADER_SKILLEFFECT_DESC& desc);
+	void Bind_EffectData(const SHADER_EFFECT_DESC& desc);
 	void Bind_GlobalMask(_uint iMask);
 	HRESULT Bind_DefaultTexture(ID3D11ShaderResourceView* pSRV);
 	HRESULT Bind_CubeTexture(ID3D11ShaderResourceView* pSRV);

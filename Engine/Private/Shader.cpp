@@ -222,6 +222,11 @@ void CShader::Bind_SkillEffectData(const SHADER_SKILLEFFECT_DESC& desc)
 	m_pSkillEffect_CBuffer->Copy_Data(desc);
 }
 
+void CShader::Bind_EffectData(const SHADER_EFFECT_DESC& desc)
+{
+	m_pEffect_CBuffer->Copy_Data(desc);
+}
+
 void CShader::Bind_GlobalMask(_uint iMask)
 {
 	m_pGlobalMask_Effect->SetInt((_int)iMask);
@@ -488,13 +493,13 @@ void CShader::Create_ConstantBuffer()
 	}
 
 	// EffectDesc by Choi
-	{
-		if (m_pEffectBuffer = Get_ConstantBuffer("ConstantBuffer_Effect"))
-		{
-			m_pEffect_CBuffer = CConstant_Buffer<SHADER_EFFECT_DESC>::Create(m_pDevice, m_pDeviceContext);
-			m_pEffectBuffer->SetConstantBuffer(m_pEffect_CBuffer->Get_Buffer());
-		}
-	}
+	//{
+	//	if (m_pEffectBuffer = Get_ConstantBuffer("ConstantBuffer_Effect"))
+	//	{
+	//		m_pEffect_CBuffer = CConstant_Buffer<SHADER_EFFECT_DESC>::Create(m_pDevice, m_pDeviceContext);
+	//		m_pEffectBuffer->SetConstantBuffer(m_pEffect_CBuffer->Get_Buffer());
+	//	}
+	//}
 
 	// Texture
 	{

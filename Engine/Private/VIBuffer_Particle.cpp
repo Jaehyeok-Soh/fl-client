@@ -75,6 +75,24 @@ HRESULT CVIBuffer_Particle::Resize_InstanceBuffer(_uint iNumInstanceCount)
 	return m_pDevice->CreateBuffer(&m_InstanceBufferDesc, nullptr, &m_pVBInstance);
 }
 
+// 객체를 아예 초기로 전부 초기화 해주는 Reset 버튼
+void CVIBuffer_Particle::Reset_Simulation()
+{
+	D3D11_MAPPED_SUBRESOURCE		SubResource{};
+
+	m_pDeviceContext->Map(m_pVBInstance, 0, D3D11_MAP_WRITE_NO_OVERWRITE, 0, &SubResource);
+
+	VTXPARTICLE* pVertices = static_cast<VTXPARTICLE*>(SubResource.pData);
+
+	for (size_t i = 0; i < m_iInstanceCount; i++)
+	{
+		pVertices[i].vTranslation = m_pInstanceVertices[i].vTranslation;
+		pVertices[i].vLifeTime.x = 0.f;
+	}
+
+	m_pDeviceContext->Unmap(m_pVBInstance, 0);
+}
+
 void CVIBuffer_Particle::Set_ParticleDesc(const PARTICLE_ORIGIN_DESC& Desc)
 {
 	if (m_iInstanceCount != Desc.iInstnaceCount)

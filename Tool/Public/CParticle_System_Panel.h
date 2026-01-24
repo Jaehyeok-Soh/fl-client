@@ -33,7 +33,7 @@ protected:
     void Binding_EffectDesc(CToolObject* pGo);
 
     //  =======  그리기 Window 창  =======
-    void Draw_Timer();
+    void Draw_Timer(CToolObject* pGo);
     void Draw_ParticleSystem(CToolObject* pGo);
 
 public:

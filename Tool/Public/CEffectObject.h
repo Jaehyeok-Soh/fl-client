@@ -103,8 +103,7 @@ public:
         Vec4     _Effect_Color = { 0.f, 0.f, 0.f, 0.f };
 
         // =========   Tool용 시간 값   ================
-        _float      _Effect_ToolFlag = false;
-        _float      _Effect_TimeAccumulation = 0.f;
+        bool      _Effect_TimeStop = false;
 
         // =========   이펙트 Atlas Texture 전용  =========          << 거의 안쓸듯. 아틀라스 할 바에 편집하고 말지
         bool        _Effect_bUseAtlas = {};
@@ -150,6 +149,7 @@ public:
     HRESULT EffectDesc_Initialize(void* pArg);
     HRESULT Component_Setting(void* pArg);
 
+    void Model_Setting(const wstring& Name);
     void Shader_Setting(const wstring& Name);
     void Texture_Setting(const wstring& Name);
 
@@ -160,6 +160,11 @@ private:
     void Bind_ShaderResource_Particles();
     void Bind_ShaderResource_Meshes();
     void Bind_ShaderResource_Trails();
+
+private:
+    void TimeCalculate(const _float fDT);
+public:
+    void TimeReset();
 
 public:
     const E_EffectSystemType& Get_EffectType() { return m_tEffectDesc.eEffectSystemType; }
@@ -184,6 +189,8 @@ private:
     //  ========== 스크롤 OffSet ========
     Vec2      m_vScrollOffset = { 0.f, 0.f };
     
+private:
+    _bool              m_bIsTool = { false };
 };
 
 NS_END

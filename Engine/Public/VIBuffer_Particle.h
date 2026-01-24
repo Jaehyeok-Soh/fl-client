@@ -39,6 +39,7 @@ public:
 	
 public:
 	void Update_Simulation(_float fTimeDelta, E_PARTICLE_MOVESTATE eType);
+	void Reset_Simulation();
 
 	// ======== 행동 패턴들 =========
 	void Drop(_float fTimeDelta);

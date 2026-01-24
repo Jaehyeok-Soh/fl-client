@@ -4,6 +4,7 @@
 #include "Transform.h"
 #include "Effect.h"
 #include "CEffectObject.h"
+#include "VIBuffer_Particle_Point.h"
 
 CParticle_System_Panel::CParticle_System_Panel(const _char* pLabel, CLevel* pOwner, ID3D11Device* pDevice, ID3D11DeviceContext* pDeviceContext)
 	:CImGui_Panel(pLabel, pOwner, pDevice, pDeviceContext)
@@ -30,7 +31,7 @@ HRESULT CParticle_System_Panel::Render(CToolObject* pGo)
 	}
 
 	Draw_ParticleSystem(pGo);
-	Draw_Timer();
+	Draw_Timer(pGo);
 
 	if (m_bTimeSetting)
 	{
@@ -55,7 +56,7 @@ void CParticle_System_Panel::Time_Calculator(const float fDT)
 	m_fTimeAccumulation += fDT * m_fPlayBackSpeed;
 }
 
-void CParticle_System_Panel::Draw_Timer()
+void CParticle_System_Panel::Draw_Timer(CToolObject* pGo)
 {
 	ImGui::Begin("Particles");
 	
@@ -75,12 +76,26 @@ void CParticle_System_Panel::Draw_Timer()
 	if (ImGui::Button("Pause"))
 	{
 		m_bTimeSetting = false;
+		m_tCurrentDesc._Effect_TimeStop = true;
 	}
+	ImGui::SameLine();
+
+	if (ImGui::Button("Reset"))
+	{
+		m_fTimeAccumulation = 0.f;
+		pGo->Get_Component<CVIBuffer_Particle_Point>()->Reset_Simulation();
+		static_cast<CEffectObject*>(pGo)->TimeReset();
+	}
+
 	ImGui::SameLine();
 
 	if (ImGui::Button("Stop"))
 	{
 		m_bTimeSetting = false;
+		m_tCurrentDesc._Effect_TimeStop = true;
+		pGo->Get_Component<CVIBuffer_Particle_Point>()->Reset_Simulation();
+		static_cast<CEffectObject*>(pGo)->TimeReset();
+
 		m_fTimeAccumulation = 0.f;
 	}
 
