@@ -56,7 +56,6 @@ HRESULT CUI_Inspector::Render(CToolObject* pGo)
 		Edit_Layers();
 	}
 
-
 	ImGui::End();
 	return S_OK;
 }

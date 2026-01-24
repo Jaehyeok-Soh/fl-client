@@ -287,19 +287,18 @@ HRESULT CImGui_UIManager::Remake_UIObjects()
 	vecLayer.clear();
 	vecUIdata.clear();
 
-	for (const CANVAS_DATA& CanvasData : m_vecCanvasData)
+	for (CANVAS_DATA& CanvasData : m_vecCanvasData)
 	{
 		vecLayer.emplace_back();
 		vecUIdata.emplace_back();
 
-		for (const LAYER_DATA& LayerData : CanvasData.vecLayers)
+		for (LAYER_DATA& LayerData : CanvasData.vecLayers)
 		{
 			vecLayer.back().push_back(LayerData);
 			vecUIdata.back().emplace_back();
 
-			for (const GENERIC_UI_DATA& UIData : LayerData.vecUIData)
+			for (GENERIC_UI_DATA& UIData : LayerData.vecUIData)
 			{
-				vecUIdata.back().back().push_back(UIData);
 				CToolUI::TOOLUI_DESC Desc = {};
 				Desc.UIData = UIData;
 				Desc.wstrTextureTag = L"Prototype_Component_Button_Test_Texture";
@@ -310,8 +309,9 @@ HRESULT CImGui_UIManager::Remake_UIObjects()
 				if (nullptr == pResult)
 					return E_FAIL;	
 				pResult->Awake(static_cast<uint32_t>(ELevelType::UI));
-			}
 
+				LayerData.vecUIObjects.push_back(reinterpret_cast<CToolUI*>(pResult));
+			}
 		}
 	}
 	return S_OK;
