@@ -206,15 +206,6 @@ HRESULT CEvent_Manager::Spawn_GameObject(SpawnEventDesc& spawnDesc)
 		return E_FAIL;
 	}
 
-	if (m_pGameInstance->Is_Awaked())
-	{
-		if (FAILED(pResult->Awake(spawnDesc.iCloneLevelIndex)))
-		{
-			MSG_BOX("CEvent_Manager::Spawn_GameObject, awake failed");
-			return E_FAIL;
-		}
-	}
-
 	return S_OK;
 }
 

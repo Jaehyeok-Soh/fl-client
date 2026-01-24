@@ -2,8 +2,8 @@
 #include "Object_Manager.h"
 #include "Event_Manager.h"
 #include "GameObject.h"
-#include "GameInstance.h"
 #include "Layer.h"
+#include "GameInstance.h"
 
 CObject_Manager::CObject_Manager()
 	: m_pGameInstance(CGameInstance::GetInstance())
@@ -20,19 +20,18 @@ HRESULT CObject_Manager::Initialize(_uint iLevelCount)
 	return S_OK;
 }
 
-HRESULT CObject_Manager::Awake(const _uint iCurrentLevelID, const wstring& wstrLayerTag)
+HRESULT CObject_Manager::Awake(const _uint iCurrentLevelID)
 {
-	if (CLayer* pFindLayer = Find_Layer(iCurrentLevelID, wstrLayerTag))
+	for (auto &Pair : m_pLayers[iCurrentLevelID])
 	{
-		if (FAILED(pFindLayer->Awake(iCurrentLevelID)))
-			return E_FAIL;
+		CLayer*& pLayer = Pair.second;
+		if (pLayer != nullptr)
+		{
+			if (FAILED(pLayer->Awake(iCurrentLevelID)))
+				return E_FAIL;
+		}
 	}
-	else
-	{
-		CLayer* pNewLayer = CLayer::Create();
-		m_pLayers[iCurrentLevelID].insert(map<const wstring, CLayer*>::value_type(wstrLayerTag, pNewLayer));
-		pNewLayer->Awake(iCurrentLevelID);
-	}
+
 	return S_OK;
 }
 
@@ -94,38 +93,42 @@ CGameObject* CObject_Manager::Add_GameObject(_uint iCloneLevelIndex, const wstri
 	if (!pGo || wstrLayerTag.empty())
 		return nullptr;
 
-	if (CLayer* pFindLayer = Find_Layer(iCloneLevelIndex, wstrLayerTag))
+	CLayer* pLayer = Find_Layer(iCloneLevelIndex, wstrLayerTag);
+	if (pLayer == nullptr)
 	{
-		return pFindLayer->Add_GameObject(pGo);
-	}
-	else
-	{
-		CLayer* pNewLayer = CLayer::Create();
-		m_pLayers[iCloneLevelIndex].insert(map<const wstring, CLayer*>::value_type(wstrLayerTag, pNewLayer));
-		return pNewLayer->Add_GameObject(pGo);
+		pLayer = CLayer::Create();
+		m_pLayers[iCloneLevelIndex].insert(map<const wstring, CLayer*>::value_type(wstrLayerTag, pLayer));
 	}
 
-	return nullptr;
+	if (FAILED(pLayer->Add_GameObject(pGo)))
+		return nullptr;
+
+	if (m_pGameInstance->Is_Awaked() == true)
+		pGo->Awake(iCloneLevelIndex);
+
+	return pGo;
 }
 
 CGameObject* CObject_Manager::Add_GameObject(_uint iPrototypeLevelIndex, const wstring& wstrPrototypeTag, _uint iCloneLevelIndex, const wstring& wstrLayerTag, void* pArg)
 {
 	CGameObject* pClone = dynamic_cast<CGameObject*>(m_pGameInstance->Clone_Prototype(EPrototypeType::GAMEOBJECT, iPrototypeLevelIndex, wstrPrototypeTag, pArg));
-	if (!pClone)
+	if (pClone == nullptr)
 		return nullptr;
 
-	if (CLayer* pFindLayer = Find_Layer(iCloneLevelIndex, wstrLayerTag))
+	CLayer* pLayer = Find_Layer(iCloneLevelIndex, wstrLayerTag);
+	if (pLayer == nullptr)
 	{
-		return pFindLayer->Add_GameObject(pClone);
-	}
-	else
-	{
-		CLayer* pNewLayer = CLayer::Create();
-		m_pLayers[iCloneLevelIndex].insert(map<const wstring, CLayer*>::value_type(wstrLayerTag, pNewLayer));
-		return pNewLayer->Add_GameObject(pClone);
+		pLayer = CLayer::Create();
+		m_pLayers[iCloneLevelIndex].insert(map<const wstring, CLayer*>::value_type(wstrLayerTag, pLayer));
 	}
 
-	return nullptr;
+	if (FAILED(pLayer->Add_GameObject(pClone)))
+		return nullptr;
+
+	if (m_pGameInstance->Is_Awaked() == true)
+		pClone->Awake(iCloneLevelIndex);
+
+	return pClone;
 }
 
 CGameObject* CObject_Manager::Get_GameObject(_uint iLevelIndex, const wstring& wstrLayerTag, CGameObject* pGo)

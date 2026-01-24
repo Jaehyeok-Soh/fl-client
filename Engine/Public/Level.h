@@ -19,7 +19,6 @@ public:
 	virtual HRESULT Render();
 	const Vec4& Get_ClearColor() const { return m_vClearColor; }
 protected:
-	_bool m_bAwaked = { false };
 	Vec4 m_vClearColor = { 0.f, 0.f, 1.f, 1.f };
 	CGameInstance* m_pGameInstance = { nullptr };
 	ID3D11Device* m_pDevice = { nullptr };

@@ -304,9 +304,9 @@ CBase* CGameInstance::Clone_Prototype(EPrototypeType ePrototypeID, _uint iLevelI
 #pragma endregion
 
 #pragma region OBJECT_MANAGER
-HRESULT CGameInstance::Awake_GameObjects(const _uint iCurrentLevelID, const wstring& wstrLayerTag)
+HRESULT CGameInstance::Awake_GameObjects(const _uint iCurrentLevelID)
 {
-	return m_pObject_Manager->Awake(iCurrentLevelID, wstrLayerTag);
+	return m_pObject_Manager->Awake(iCurrentLevelID);
 }
 
 CGameObject* CGameInstance::Add_GameObject(_uint iCloneLevelIndex, const wstring& wstrLayerTag, CGameObject* pGo)

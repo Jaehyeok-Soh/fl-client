@@ -33,6 +33,7 @@ HRESULT CLevel_Manager::Awake()
 		MSG_BOX("CLevel_Manager::Awake, m_pCurrentLevel Failed");
 		return E_FAIL;
 	}
+
 	m_bAwaked = true;
 	return S_OK;
 }

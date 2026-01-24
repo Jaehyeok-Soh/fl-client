@@ -98,7 +98,7 @@ public:
 #pragma endregion
 
 #pragma region OBJECT_MANAGER
-	HRESULT					Awake_GameObjects(const _uint iCurrentLevelID, const wstring& wstrLayerTag);
+	HRESULT					Awake_GameObjects(const _uint iCurrentLevelID);
 	
 	CGameObject*			Add_GameObject(_uint iCloneLevelIndex, const wstring& wstrLayerTag, CGameObject* pGo);
 	CGameObject*			Add_GameObject(_uint iPrototypeLevelIndex, const wstring& wstrPrototypeTag,
