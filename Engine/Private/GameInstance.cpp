@@ -238,9 +238,9 @@ void CGameInstance::Request_ChangeLevel(_uint iNewLevelID, CLevel* pNewLevel)
 	m_pEvent_Manager->Push_ChangeLevelEvet(desc);
 }
 
-_bool CGameInstance::Is_Awaked() const
+_bool CGameInstance::Is_Awaked(const _uint iLevelID) const
 {
-	return m_pLevel_Manager->Is_Awaked();
+	return m_pLevel_Manager->Is_Awaked(iLevelID);
 }
 
 void CGameInstance::Awake_Level()

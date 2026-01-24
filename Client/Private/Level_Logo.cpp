@@ -32,15 +32,6 @@ HRESULT CLevel_Logo::Awake(const _uint iLevelID)
 	if (FAILED(Super::Awake(iLevelID)))
 		return E_FAIL;
 
-	if (FAILED(m_pGameInstance->Awake_GameObjects(iLevelID, g_wszDynamicCameraLayer)))
-		return E_FAIL;
-
-	if (FAILED(m_pGameInstance->Awake_GameObjects(iLevelID, g_wszPlayerLayer)))
-		return E_FAIL;
-
-	if (FAILED(m_pGameInstance->Awake_GameObjects(iLevelID, g_wszUILayer)))
-		return E_FAIL;
-
 	if (FAILED(Ready_Camera_Setting(iLevelID)))
 		return E_FAIL;
 

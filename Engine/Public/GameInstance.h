@@ -77,7 +77,7 @@ public:
 #pragma region LEVEL_MANAGER
 	HRESULT					Immediately_ChangeLevel(_uint iNewLevelID, class CLevel* pNewLevel);
 	void					Request_ChangeLevel(_uint iNewLevelID, class CLevel* pNewLevel);
-	_bool					Is_Awaked() const;
+	_bool					Is_Awaked(const _uint iLevelID) const;
 	void					Awake_Level();
 	class CLevel*			Get_CurrentLevel();
 	_uint					Get_CurrentLevelIndex() const;
