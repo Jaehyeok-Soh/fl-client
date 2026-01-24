@@ -50,64 +50,13 @@ HRESULT CPanel_ModelConverter::Ready_PreMatirxPreset()
 
 HRESULT CPanel_ModelConverter::Render(CToolObject* pGo)
 {
-	ImGui::Begin(m_strLabel.c_str());
+	if (FAILED(Render_ConvertWindow()))
+		return E_FAIL;
 
 
-	ImGui::SeparatorText(" Pre Matrix Setting ");
+	if (FAILED(Render_FunctionWindow()))
+		return E_FAIL;
 
-	ImGui::SeparatorText(" Preset Matrix List ");
-
-	
-	string strSelectPreMatrix = Engine_Utils::ToString(m_wstrSelectPreMatrix);
-
-	INT32 iIndex{0};
-
-
-	if (ImGui::BeginCombo("Preset Matrix List##Preset_Matrix_Combo", strSelectPreMatrix.c_str()))
-	{
-		for (auto& Pair : m_mapPreMatrix)
-		{
-			string strPreMatrixName = Engine_Utils::ToString(Pair.first);
-			bool isSelected = (strSelectPreMatrix == strPreMatrixName);
-			if (ImGui::Selectable(strPreMatrixName.c_str(), isSelected))
-			{
-				m_wstrSelectPreMatrix = Engine_Utils::ToWString(strPreMatrixName);
-				m_SRTMatirx  =  m_mapPreMatrix[m_wstrSelectPreMatrix];
-			}
-			if (isSelected == true)
-				ImGui::SetItemDefaultFocus();
-		}
-
-		ImGui::EndCombo();
-	}
-
-	ImGui::Separator();
-
-
-	ImGui::Text("---S R T---");
-
-	ImGui::InputFloat3("S" , &m_vScale.x);
-	ImGui::InputFloat3("R" , &m_vRotation.x);
-	ImGui::InputFloat3("T" , &m_vTranslation.x);
-
-	if(ImGui::Button("Create Matrix By SRT" , ImVec2(256,32)))
-		m_SRTMatirx = Matrix::CreateScale(m_vScale) * Matrix::CreateFromYawPitchRoll(m_vRotation * (XM_PI / 180.f)) * Matrix::CreateTranslation(m_vTranslation);
-
-	ImGui::Text(" Matrix ");
-
-	ImGui::Text("  %.2f  %.2f  %.2f  %.2f " , m_SRTMatirx._11,	m_SRTMatirx._12,  m_SRTMatirx._13,  m_SRTMatirx._14);
-	ImGui::Text("  %.2f  %.2f  %.2f  %.2f ",  m_SRTMatirx._21,  m_SRTMatirx._22,  m_SRTMatirx._23,  m_SRTMatirx._24);
-	ImGui::Text("  %.2f  %.2f  %.2f  %.2f ",  m_SRTMatirx._31,  m_SRTMatirx._32,  m_SRTMatirx._33,  m_SRTMatirx._34);
-	ImGui::Text("  %.2f  %.2f  %.2f  %.2f ",  m_SRTMatirx._41,  m_SRTMatirx._42,  m_SRTMatirx._43,  m_SRTMatirx._44);
-
-
-	ImGui::Separator();
-
-
-	if (ImGui::Button(" Convert Fbx Floder (Chose Folder) " ,  ImVec2(256,128)))
-		Open_FolderDialog();
-
-	ImGui::End();
 
 	return S_OK;
 }
@@ -152,6 +101,188 @@ void CPanel_ModelConverter::Convert_FbxFolder(const wchar_t* wszFloderPath)
 
 	MessageBox(nullptr,ResultMsg.c_str(),L"Converter",MB_OK);
 }
+
+HRESULT CPanel_ModelConverter::Render_ConvertWindow()
+{
+	ImGui::Begin(m_strLabel.c_str());
+
+
+	ImGui::SeparatorText(" Pre Matrix Setting ");
+
+	ImGui::SeparatorText(" Preset Matrix List ");
+
+
+	string strSelectPreMatrix = Engine_Utils::ToString(m_wstrSelectPreMatrix);
+
+	INT32 iIndex{ 0 };
+
+
+	if (ImGui::BeginCombo("Preset Matrix List##Preset_Matrix_Combo", strSelectPreMatrix.c_str()))
+	{
+		for (auto& Pair : m_mapPreMatrix)
+		{
+			string strPreMatrixName = Engine_Utils::ToString(Pair.first);
+			bool isSelected = (strSelectPreMatrix == strPreMatrixName);
+			if (ImGui::Selectable(strPreMatrixName.c_str(), isSelected))
+			{
+				m_wstrSelectPreMatrix = Engine_Utils::ToWString(strPreMatrixName);
+				m_SRTMatirx = m_mapPreMatrix[m_wstrSelectPreMatrix];
+			}
+			if (isSelected == true)
+				ImGui::SetItemDefaultFocus();
+		}
+
+		ImGui::EndCombo();
+	}
+
+	ImGui::Separator();
+
+
+	ImGui::Text("---S R T---");
+
+	ImGui::InputFloat3("S", &m_vScale.x);
+	ImGui::InputFloat3("R", &m_vRotation.x);
+	ImGui::InputFloat3("T", &m_vTranslation.x);
+
+	if (ImGui::Button("Create Matrix By SRT", ImVec2(256, 32)))
+		m_SRTMatirx = Matrix::CreateScale(m_vScale) * Matrix::CreateFromYawPitchRoll(m_vRotation * (XM_PI / 180.f)) * Matrix::CreateTranslation(m_vTranslation);
+
+	ImGui::Text(" Matrix ");
+
+	ImGui::Text("  %.2f  %.2f  %.2f  %.2f ", m_SRTMatirx._11, m_SRTMatirx._12, m_SRTMatirx._13, m_SRTMatirx._14);
+	ImGui::Text("  %.2f  %.2f  %.2f  %.2f ", m_SRTMatirx._21, m_SRTMatirx._22, m_SRTMatirx._23, m_SRTMatirx._24);
+	ImGui::Text("  %.2f  %.2f  %.2f  %.2f ", m_SRTMatirx._31, m_SRTMatirx._32, m_SRTMatirx._33, m_SRTMatirx._34);
+	ImGui::Text("  %.2f  %.2f  %.2f  %.2f ", m_SRTMatirx._41, m_SRTMatirx._42, m_SRTMatirx._43, m_SRTMatirx._44);
+
+
+	ImGui::Separator();
+
+
+	if (ImGui::Button(" Convert Fbx Floder (Chose Folder) ", ImVec2(256, 128)))
+		Open_FolderDialog();
+
+	ImGui::End();
+
+	return S_OK;
+
+
+
+	return S_OK;
+}
+
+HRESULT CPanel_ModelConverter::Render_FunctionWindow()
+{
+	ImGui::Begin(" Function Window ");
+
+	ImGui::Separator();
+
+	if (ImGui::Button(" Check None Export Fbx Model  ", ImVec2(256, 32)))
+	{
+		OPENFILENAMEW ofn{};
+		_tchar szFile[MAX_PATH] = { 0 };
+
+		DWORD dwOptions{};
+		m_pOpenDialog->SetOptions(dwOptions | FOS_PICKFOLDERS | FOS_FORCEFILESYSTEM);
+
+
+		m_pOpenDialog->Show(g_hWnd);
+
+		IShellItem* pItem{ nullptr };
+		if (SUCCEEDED(m_pOpenDialog->GetResult(&pItem)))
+		{
+			LPWSTR pPath{ nullptr };
+			pItem->GetDisplayName(SIGDN_FILESYSPATH, &pPath);
+
+			path FilePath = pPath;
+			FilePath.remove_filename();
+			Check_NoneExport_FbxModel(FilePath.c_str());
+			m_wstrCheckNoneExportFbxModelFloderPath = FilePath;
+		}
+	}
+
+
+	if (!m_vecNoneExportFbxModelPath.empty())
+	{
+
+		//Check_NoneExport_FbxModel(m_wstrCheckNoneExportFbxModelFloderPath.c_str());
+
+		ImGui::Begin( " None Export Fbx Model Info ");
+
+		wstring& wstrPath = m_vecNoneExportFbxModelPath[m_iCurWorkCheckNoneExportFbxModelIndex];
+		ImGui::Text("File [%d / %d]", m_iCurWorkCheckNoneExportFbxModelIndex + 1, (int)m_vecNoneExportFbxModelPath.size());
+		ImGui::Text("Path: %ls", wstrPath.c_str());
+
+		if (ImGui::Button("Open Folder")) {
+			ShellExecuteW(NULL, L"open", L"explorer.exe", (L"/select," + wstrPath).c_str(), NULL, SW_SHOWNORMAL);
+		}
+
+		if (ImGui::Button("Next Asset") || ImGui::IsKeyPressed(ImGuiKey_Space)) {
+			m_iCurWorkCheckNoneExportFbxModelIndex++ ;
+		}
+
+
+		ImGui::End();
+	}
+	else
+		m_wstrCheckNoneExportFbxModelFloderPath.clear();
+
+	ImGui::Separator();
+
+	ImGui::End();
+	return S_OK;
+}
+
+void CPanel_ModelConverter::Check_NoneExport_FbxModel(const wchar_t* wszFloderPath)
+{
+	if (wszFloderPath == nullptr) return;
+
+	path pathCheckFloder{wszFloderPath};
+
+	if (pathCheckFloder.has_extension()) return;
+
+	for (auto& CheckPath : std::filesystem::recursive_directory_iterator(pathCheckFloder))
+	{
+		path Path{CheckPath};
+		wstring wstrPath = Path.wstring();
+		wstring wstrExt  = Path.extension();
+		wstring wstrFileName = path(Path.filename()).stem();
+		
+
+		if (wstrExt != L".pskx")
+			continue;
+
+		wstring wstrTarget = L"\\";
+		size_t Pos_Target = wstrPath.rfind(wstrTarget);
+		if (Pos_Target == std::wstring::npos)
+			continue;
+
+		m_vecNoneExportFbxModelPath.clear();
+
+		wstring wstrParentFloderPath = wstrPath.erase( Pos_Target , wstrPath.length()) ;
+
+
+		bool isExport{false};
+
+		for(auto& FindExportPath : std::filesystem::directory_iterator(wstrParentFloderPath) )
+		{ 
+			path Path{ FindExportPath };
+			wstring wstrExt = Path.extension();
+			if (wstrExt != L".fbx")
+				continue;
+			wstring wstrExportFbxName = path(Path.filename()).stem();
+			
+			if ( isExport  = (wstrExportFbxName == wstrFileName ))
+				break;
+		}
+		if (isExport)
+			continue;
+		else
+			m_vecNoneExportFbxModelPath.push_back(Path);
+	}
+}
+
+
+
 
 CPanel_ModelConverter* CPanel_ModelConverter::Create(const _char* pLabel, CLevel* pOwner, ID3D11Device* pDevice, ID3D11DeviceContext* pDeviceContext)
 {

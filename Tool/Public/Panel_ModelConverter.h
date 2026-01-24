@@ -28,6 +28,15 @@ public:
 private:
 	void	Open_FolderDialog();
 	void	Convert_FbxFolder(const wchar_t* wszFloderPath);
+
+	HRESULT	Render_ConvertWindow();
+
+	HRESULT	Render_FunctionWindow();
+
+private:
+	void	Check_NoneExport_FbxModel(const wchar_t* wszFloderPath);
+
+
 private:
 	CGameInstance*		m_pGameInstance;
 
@@ -44,7 +53,11 @@ private:
 	map<wstring, Matrix > m_mapPreMatrix{};
 
 	wstring				  m_wstrSelectPreMatrix{L"Identity"};
+	
 
+	vector<wstring>		  m_vecNoneExportFbxModelPath{};
+	wstring				  m_wstrCheckNoneExportFbxModelFloderPath{};
+	UINT32				  m_iCurWorkCheckNoneExportFbxModelIndex{};
 
 public:
 	static  CPanel_ModelConverter* Create(const _char* pLabel, CLevel* pOwner, ID3D11Device* pDevice, ID3D11DeviceContext* pDeviceContext);

@@ -32,16 +32,12 @@ HRESULT CMapObject::Initialize(void* pArg)
 
     CMapObject::MAPOBJECT_DESC* pDesc = static_cast<CMapObject::MAPOBJECT_DESC*>(pArg);
 
-    /* Mesh 확장자로 바껴있읉첸디 */
+    m_wstrModelName = pDesc->wstrModelName;
     m_wstrModelPath = pDesc->wstrModelPath;
     m_isLoaded = pDesc->isLoaded;
 
-
     if (FAILED(CMapObject::Ready_Component()))
         return E_FAIL;
-
-
-
 
 
     return S_OK;
@@ -54,8 +50,14 @@ HRESULT CMapObject::Ready_Component()
     if (FAILED(Add_Component<CShader>(ENUM_TO_UINT(ELevelType::STATIC), L"Prototype_Component_Shader_VtxMesh", nullptr)))
         return E_FAIL;
 
-    if (FAILED(Add_Component<CModel>(ENUM_TO_UINT(ELevelType::MAP), L"Prototype_Component_Model_" + m_wstrModelPath, &tDesc)))
-        return S_OK;
+    /* CStatic_Model Type 이라면 */
+    if (m_eMapObjectType == EMapObject_Type::STATICMODEL)
+    {
+        if (FAILED(Add_Component<CModel>(ENUM_TO_UINT(ELevelType::MAP), L"Prototype_Component_Model_" + m_wstrModelName, &tDesc)))
+            return S_OK;
+    }
+
+
 
 
     CTransform* pTransform = Get_Component<CTransform>();

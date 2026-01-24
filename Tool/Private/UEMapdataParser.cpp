@@ -1,6 +1,7 @@
 #include "pch.h"
 #include "UEMapdataParser.h"
 #include <fstream>
+#include "Engine_Utils.h"
 
 CUEMapdataParser::CUEMapdataParser()
 {
@@ -152,11 +153,52 @@ HRESULT CUEMapdataParser::Read_Mapdata()
 		else
 			continue;
 
-		string str = outer.Properties.StaticMesh.strObjectPath;
+		string strName = outer.Properties.StaticMesh.strObjectName;
+		string strPath = outer.Properties.StaticMesh.strObjectPath;
+
+		size_t Pos_Point = strPath.rfind(".");
+		if (Pos_Point != std::string::npos)
+		{
+			strPath.replace(Pos_Point,strPath.length() , ".fbx" );
+		}
+
+		string strChange = "Level";
+		string strTarget = "Scene";
+		size_t Pos_Scene = strPath.find(strTarget);
+		if (Pos_Scene != std::string::npos)
+			strPath.replace(0 , Pos_Scene + strTarget.length()  , strChange );
+		else
+		{
+			string strTarget = "Content";
+			size_t Pos_Target = strPath.find(strTarget);
+			if (Pos_Target != std::string::npos)
+				strPath.replace(0 , Pos_Target + strTarget.length() , strTarget);
+		}
+
+		vector<string> vecTargetStr = { "EN000_" , "EN001_" , "EN002_" , "EN003_" };
+		size_t Pos_EN{ std::string::npos };
+
+		for (auto& Target : vecTargetStr)
+		{
+			Pos_EN = strPath.find(Target);
+			if (Pos_EN != std::string::npos)
+			{
+				strPath.erase(Pos_EN , Target.length());
+				break;
+			}
+		}
+
+		outer.Properties.StaticMesh.strObjectPath = strPath;
+		outer.Properties.StaticMesh.strObjectName = path(strPath).filename().stem().string();
+
+		outer.Properties.StaticMesh.strObjectPath = "../../Resources/Models/Map/" + outer.Properties.StaticMesh.strObjectPath;
+
 
 		m_vecData.push_back(outer);
 	}
+
 	ifs.close();
+
 	return S_OK;
 }
 
