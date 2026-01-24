@@ -122,15 +122,6 @@ HRESULT CLoader::Loading_For_Logo()
 	//=================
 	// For. Prototype_Component_Stat
 	m_pGameInstance->Add_Prototype(ENUM_TO_UINT(ELevelType::STATIC), L"Prototype_Component_Stat", CStatComponent::Create());
-	// For. Prototype_Component_Model_Sword
-	{
-		CModel::MODEL_ORIGIN_DESC desc = {};
-		desc.eType = EModelType::NONANIM;
-		desc.iPrototypeLevelIndex = ENUM_TO_UINT(ELevelType::STATIC);
-		desc.pMatPreTransform = &matPreTransformScale;
-		desc.wstrModelFolderName = L"Sword";
-		m_pGameInstance->Add_Prototype(ENUM_TO_UINT(ELevelType::STATIC), L"Prototype_Component_Model_Sword", CModel::Create(m_pDevice, m_pDeviceContext, &desc));
-	}
 	// For. Prototype_Component_Model_Master
 	{
 		CModel::MODEL_ORIGIN_DESC desc = {};
