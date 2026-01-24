@@ -31,9 +31,7 @@ public:
 	enum class State : _uint
 	{
 		IDLE,
-		RUNSTART,
 		RUN,
-		RUNEND,
 		END
 	};
 protected:

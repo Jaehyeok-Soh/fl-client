@@ -133,39 +133,43 @@ HRESULT CPlayer::Ready_BaseStates()
     // Idle
     {
         CState_Idle::STATE_DESC desc = {};
+        desc.FAniFlags = CStateBase::STATEANI_FLAG::SA_HasPreAni;
+        desc.vecPreAnims = { {ENUM_TO_UINT(State::RUN), Get_AnimationIndex(L"Animation_PlayerMoon_Run_Stop_L")} };
         desc.iAnimIndex = Get_AnimationIndex(L"Animation_PlayerMoon_Idle");
         desc.bBlend = true;
         desc.bLoop = true;
         if (FAILED(pActionState->Add_State(ENUM_TO_UINT(State::IDLE), CState_Idle::Create(pActionState, &desc))))
             return E_FAIL;
     }
-    // RunStart
-    {
-        CState_RunStart::STATE_DESC desc = {};
-        desc.iAnimIndex = Get_AnimationIndex(L"Animation_PlayerMoon_Run_Start_L");
-        desc.bBlend = true;
-        desc.bLoop = false;
-        if (FAILED(pActionState->Add_State(ENUM_TO_UINT(State::RUNSTART), CState_RunStart::Create(pActionState, &desc))))
-            return E_FAIL;
-    }
+    //// RunStart
+    //{
+    //    CState_RunStart::STATE_DESC desc = {};
+    //    desc.iAnimIndex = Get_AnimationIndex(L"Animation_PlayerMoon_Run_Start_L");
+    //    desc.bBlend = true;
+    //    desc.bLoop = false;
+    //    if (FAILED(pActionState->Add_State(ENUM_TO_UINT(State::RUNSTART), CState_RunStart::Create(pActionState, &desc))))
+    //        return E_FAIL;
+    //}
     // Run
     {
         CState_Run::STATE_DESC desc = {};
+        desc.FAniFlags = CStateBase::STATEANI_FLAG::SA_HasPreAni;
+        desc.vecPreAnims = { {-1, Get_AnimationIndex(L"Animation_PlayerMoon_Run_Start_L")} };
         desc.iAnimIndex = Get_AnimationIndex(L"Animation_PlayerMoon_Run_Loop");
         desc.bBlend = true;
         desc.bLoop = true;
         if (FAILED(pActionState->Add_State(ENUM_TO_UINT(State::RUN), CState_Run::Create(pActionState, &desc))))
             return E_FAIL;
     }
-    // RunEnd
-    {
-        CState_RunEnd::STATE_DESC desc = {};
-        desc.iAnimIndex = Get_AnimationIndex(L"Animation_PlayerMoon_Run_Stop_L");
-        desc.bBlend = true;
-        desc.bLoop = false;
-        if (FAILED(pActionState->Add_State(ENUM_TO_UINT(State::RUNEND), CState_RunEnd::Create(pActionState, &desc))))
-            return E_FAIL;
-    }
+    //// RunEnd
+    //{
+    //    CState_RunEnd::STATE_DESC desc = {};
+    //    desc.iAnimIndex = Get_AnimationIndex(L"Animation_PlayerMoon_Run_Stop_L");
+    //    desc.bBlend = true;
+    //    desc.bLoop = false;
+    //    if (FAILED(pActionState->Add_State(ENUM_TO_UINT(State::RUNEND), CState_RunEnd::Create(pActionState, &desc))))
+    //        return E_FAIL;
+    //}
     return S_OK;
 }
 

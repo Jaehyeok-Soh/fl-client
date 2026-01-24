@@ -179,8 +179,12 @@
     <ClInclude Include="..\Public\State_Combo_Third.h" />
     <ClInclude Include="..\Public\State_Idle.h" />
     <ClInclude Include="..\Public\State_Run.h" />
-    <ClInclude Include="..\Public\State_RunEnd.h" />
-    <ClInclude Include="..\Public\State_RunStart.h" />
+    <ClInclude Include="..\Public\State_RunEnd.h">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</ExcludedFromBuild>
+    </ClInclude>
+    <ClInclude Include="..\Public\State_RunStart.h">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</ExcludedFromBuild>
+    </ClInclude>
     <ClInclude Include="..\Public\Weapon.h" />
     <ClInclude Include="Client.h" />
     <ClInclude Include="framework.h" />
@@ -209,8 +213,12 @@
     <ClCompile Include="..\Private\State_Combo_Third.cpp" />
     <ClCompile Include="..\Private\State_Idle.cpp" />
     <ClCompile Include="..\Private\State_Run.cpp" />
-    <ClCompile Include="..\Private\State_RunEnd.cpp" />
-    <ClCompile Include="..\Private\State_RunStart.cpp" />
+    <ClCompile Include="..\Private\State_RunEnd.cpp">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="..\Private\State_RunStart.cpp">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</ExcludedFromBuild>
+    </ClCompile>
     <ClCompile Include="..\Private\Weapon.cpp" />
     <ClCompile Include="Client.cpp" />
     <ClCompile Include="pch.cpp">

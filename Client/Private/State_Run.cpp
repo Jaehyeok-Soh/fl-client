@@ -49,7 +49,7 @@ void CState_Run::Update(const _float fTimeDelta)
 	//	return;
 
 	if (Align_Movement(fTimeDelta) == false)
-		Request_Change_State(ENUM_TO_UINT(CPlayer::State::RUNEND));
+		Request_Change_State(ENUM_TO_UINT(CPlayer::State::IDLE));
 }
 
 HRESULT CState_Run::End()

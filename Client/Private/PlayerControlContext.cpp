@@ -56,9 +56,8 @@ _bool CPlayerControlContext::Is_FootRayEnabled()
 	switch (eState)
 	{
 	case Client::CPlayer::State::IDLE:
-	case Client::CPlayer::State::RUNSTART:
 	case Client::CPlayer::State::RUN:
-	case Client::CPlayer::State::RUNEND:
+
 		return true;
 	default:
 		return true;
