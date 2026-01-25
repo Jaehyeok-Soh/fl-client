@@ -16,14 +16,14 @@ public:
 	void Update(const _float fTimeDelta);
 	void Update_Late(const _float fTimeDelta);
 	void Ready_Before_Render(const _float fTimeDelta);
-	CGameObject* Get_GameObject(CGameObject* pGo);
+	CGameObject* Get_GameObject(_uint iIndex);
 	void Delete_GameObject(class CGameObject* pGo);
 	HRESULT Add_GameObject(class CGameObject* pGO);
 	CGameObject* Get_GameObject_Front();
 	CGameObject* Get_GameObject_Back();
 	list<CGameObject*>* Get_GameObject_List() { return &m_pGameObjects; }
 private:
-	CGameObject* Find_GameObject(CGameObject* pGo);
+	CGameObject* Find_GameObject(_uint iIndex);
 private:
 	list<CGameObject*> m_pGameObjects;
 public:

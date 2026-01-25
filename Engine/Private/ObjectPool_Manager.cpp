@@ -1,0 +1,141 @@
+#include "Engine_pch.h"
+#include "ObjectPool_Manager.h"
+#include "ObjectPool.h"
+#include "GameInstance.h"
+
+CObjectPool_Manager::CObjectPool_Manager()
+{
+}
+
+HRESULT CObjectPool_Manager::Initialize(_uint iLevelCount)
+{
+	if (iLevelCount <= 0)
+		return E_FAIL;
+	
+	m_iLevelCount = iLevelCount;
+	m_Pools.resize(m_iLevelCount);
+	return S_OK;
+}
+
+HRESULT CObjectPool_Manager::Regist_Pool(_uint iTargetLevelIndex, const wstring& wstrPoolTag, const wstring& wstrLayerTag, void* pArg, CGameObject* pSeed, _uint iPoolCapacityCount)
+{
+	if (Is_OutOfRange(iTargetLevelIndex))
+		return E_FAIL;
+
+	CObjectPool* pPool = Find_Pool(iTargetLevelIndex, wstrPoolTag);
+	if (pPool != nullptr)
+	{
+		MSG_BOX("CObjectPool_Manager::Regist_Pool, already registed");
+		return E_FAIL;
+	}
+
+	pPool = CObjectPool::Create(wstrLayerTag, pArg, pSeed, iPoolCapacityCount);
+	if (pPool == nullptr)
+		return E_FAIL;
+
+	auto& umapPools = m_Pools[iTargetLevelIndex];
+	umapPools.insert(unordered_map<wstring, CObjectPool*>::value_type(wstrPoolTag, pPool));
+	return S_OK;
+}
+
+CObjectPool* CObjectPool_Manager::Get_Pool(_uint iLevelIndex, const wstring& wstrPoolTag)
+{
+	if (Is_OutOfRange(iLevelIndex))
+		return nullptr;
+
+	return Find_Pool(iLevelIndex, wstrPoolTag);
+}
+
+CGameObject* CObjectPool_Manager::Spawn(_uint iLevelIndex, const wstring& wstrPoolTag, void* pArg)
+{
+	if (Is_OutOfRange(iLevelIndex))
+		return nullptr;
+
+	CObjectPool* pPool = Find_Pool(iLevelIndex, wstrPoolTag);
+	if (pPool == nullptr)
+		return nullptr;
+
+	return pPool->Spawn(pArg);
+}
+
+HRESULT CObjectPool_Manager::Despawn(_uint iLevelIndex, const wstring& wstrPoolTag, CGameObject* pGo)
+{
+	if (Is_OutOfRange(iLevelIndex))
+		return E_FAIL;
+
+	CObjectPool* pPool = Find_Pool(iLevelIndex, wstrPoolTag);
+	if (pPool == nullptr)
+		return E_FAIL;
+
+	return pPool->Despawn(pGo);
+}
+
+_int CObjectPool_Manager::Get_ActiveCount(_uint iLevelIndex, const wstring& wstrPoolTag)
+{
+	if (Is_OutOfRange(iLevelIndex))
+		return -1;
+
+	CObjectPool* pPool = Find_Pool(iLevelIndex, wstrPoolTag);
+	if (pPool == nullptr)
+		return -1;
+
+	return (_int)pPool->Get_ActiveCount();
+}
+
+CGameObject* CObjectPool_Manager::Get_ActiveObjectAt(_uint iLevelIndex, const wstring& wstrPoolTag, _uint iIndex)
+{
+	if (Is_OutOfRange(iLevelIndex))
+		return nullptr;
+
+	CObjectPool* pPool = Find_Pool(iLevelIndex, wstrPoolTag);
+	if (pPool == nullptr)
+		return nullptr;
+
+	return pPool->Get_ActiveObjectAt(iIndex);
+}
+
+void CObjectPool_Manager::All_Despawn_StaticLevel()
+{
+	auto& umapPools = m_Pools[0];
+	for (auto& Pair : umapPools)
+		Pair.second->All_Despawn();
+}
+
+void CObjectPool_Manager::Clear(_uint iLevelIndex)
+{
+	if (Is_OutOfRange(iLevelIndex))
+		return;
+
+	auto& umapPools = m_Pools[iLevelIndex];
+	for (auto& Pair : umapPools)
+		Safe_Release(Pair.second);
+
+	umapPools.clear();
+}
+
+void CObjectPool_Manager::All_Clear()
+{
+	for (_uint i = 0; i < m_iLevelCount; ++i)
+		Clear(i);
+
+	m_Pools.clear();
+}
+
+CObjectPool* CObjectPool_Manager::Find_Pool(_uint iLevelIndex, const wstring& wstrPoolTag)
+{
+	auto& umapPools = m_Pools[iLevelIndex];
+	if (umapPools.size() <= 0)
+		return nullptr;
+
+	auto itr = umapPools.find(wstrPoolTag);
+	if (itr == umapPools.end())
+		return nullptr;
+
+	return itr->second;
+}
+
+void CObjectPool_Manager::Free()
+{
+	All_Clear();
+	Super::Free();
+}

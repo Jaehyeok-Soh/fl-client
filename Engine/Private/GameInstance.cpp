@@ -4,6 +4,7 @@
 #include "Font_Manager.h"
 #include "Event_Manager.h"
 #include "MapFile_Manager.h"
+#include "ObjectPool_Manager.h"
 #include "GameDataManager.h"
 #include "Collision_Manager.h"
 #include "Constant_Buffer.h"
@@ -60,7 +61,10 @@ HRESULT CGameInstance::Initialize_Engine(const ENGINE_DESC& Engine_Desc, _Inout_
 	if (!(m_pPrototype_Manager = CPrototype_Manager::Create(Engine_Desc.iLevelCount)))
 		return E_FAIL;
 
-	if (!(m_pObject_Manager = CObject_Manager::Create(Engine_Desc.iLevelCount)))
+	if (!(m_pObjectPool_Manager = CObjectPool_Manager::Create(Engine_Desc.iLevelCount)))
+		return E_FAIL;
+
+	if (!(m_pObject_Manager = CObject_Manager::Create(Engine_Desc.iLevelCount, m_pObjectPool_Manager)))
 		return E_FAIL;
 
 	if (!(m_pInput_Manager = CInput_Manager::Create(Engine_Desc.hInst, Engine_Desc.hWnd)))
@@ -109,11 +113,11 @@ void CGameInstance::Update_Engine(_float fTimeDelta)
 {
 	m_pSound_Manager->Update();
 	m_pInput_Manager->Update();
+	m_pLevel_Manager->Update(fTimeDelta);
 	m_pObject_Manager->Update_Priority(fTimeDelta);
 	m_pObject_Manager->Update(fTimeDelta);
 	m_pCollision_Manager->Update(fTimeDelta);
 	m_pObject_Manager->Update_Late(fTimeDelta);
-	m_pLevel_Manager->Update(fTimeDelta);
 
 	// 메인카메라 업데이트
 	m_pCamera_Manager->Update_ViewMatrix();
@@ -161,7 +165,9 @@ HRESULT CGameInstance::Copy_BackBufferTexture(ID3D11Texture2D** ppTexture)
 }
 void CGameInstance::Clear(_uint iLevelID)
 {
+	m_pObjectPool_Manager->All_Despawn_StaticLevel();
 	m_pObject_Manager->Clear(iLevelID);
+	m_pObjectPool_Manager->Clear(iLevelID);
 	m_pPrototype_Manager->Clear(iLevelID);
 	m_pInput_Manager->Clear();
 	m_pCamera_Manager->Clear();
@@ -336,13 +342,21 @@ void CGameInstance::Request_AddObject(_uint iCloneLevelIndex, const wstring& wst
 }
 void CGameInstance::Request_AddObject(_uint iPrototypeLevelIndex, const wstring& wstrPrototypeTag, _uint iCloneLevelIndex, const wstring& wstrLayerTag, void* pArg, std::function<void(CGameObject*)> onSpawnedCallback)
 {
-	CBase* pResult = m_pPrototype_Manager->Clone_Prototype(EPrototypeType::GAMEOBJECT, iPrototypeLevelIndex, wstrPrototypeTag, pArg);
+	CGameObject* pResult = { nullptr };
+
+	// Pool쪽 먼저 체크
+	pResult = m_pObjectPool_Manager->Spawn(iCloneLevelIndex, wstrPrototypeTag, pArg);
+
+	// Pool에 없으면 Clone
+	if (pResult == nullptr)
+		pResult = static_cast<CGameObject*>(m_pPrototype_Manager->Clone_Prototype(EPrototypeType::GAMEOBJECT, iPrototypeLevelIndex, wstrPrototypeTag, pArg));
+
 	if (pResult)
 	{
 		SpawnEventDesc desc = {};
 		desc.iCloneLevelIndex = static_cast<_int>(iCloneLevelIndex);
 		desc.wstrLayerTag = wstrLayerTag;
-		desc.pClone = static_cast<CGameObject*>(pResult);
+		desc.pClone = pResult;
 		if(onSpawnedCallback)
 			desc.callback = std::move(onSpawnedCallback);
 		m_pEvent_Manager->Push_SpawnEvent(desc);
@@ -358,6 +372,10 @@ void CGameInstance::Request_DeleteGameObject(_uint iCloneLevelIndex, const wstri
 	desc.wstrLayerTag = wstrLayerTag;
 	desc.pGo = pGo;
 	m_pEvent_Manager->Push_DespawnEvent(desc);	
+}
+CGameObject* CGameInstance::Get_GameObject(_uint iLevelIndex, const wstring& wstrLayerTag, _uint iObjectIndex)
+{
+	return m_pObject_Manager->Get_GameObject(iLevelIndex, wstrLayerTag, iObjectIndex);
 }
 CGameObject* CGameInstance::Get_GameObject_Front(_uint iLayerIndex, const wstring& wstrLayerTag)
 {
@@ -377,8 +395,20 @@ void CGameInstance::Clear_Layer(_uint iLevelIndex, const wstring& wstrLayerTag)
 }
 #pragma endregion
 
-#pragma region COLLISION_MANAGER
+#pragma region OBJECTPOOL_MANAGER
+HRESULT CGameInstance::Regist_Pool(_uint iTargetLevelIndex, const wstring& wstrPoolTag, const wstring& wstrLayerTag, void* pArg, CGameObject* pSeed, _uint iPoolCapacityCount)
+{
+	return m_pObjectPool_Manager->Regist_Pool(iTargetLevelIndex, wstrPoolTag, wstrLayerTag, pArg, pSeed, iPoolCapacityCount);
+}
+#pragma endregion
 
+#pragma region COLLISION_MANAGER
+/// <summary>
+/// Level의 Awake() 시점에 호출 해야함
+/// 두개의 Layer충돌을 검사하도록 등록하는 함수
+/// </summary>
+/// <param name="iLeft">LayerID_1</param>
+/// <param name="iRight">LayerID_2</param>
 void CGameInstance::Collision_Check_Group(_uint iLeft, _uint iRight)
 {
 	m_pCollision_Manager->Check_Group(iLeft, iRight);
@@ -628,6 +658,7 @@ void CGameInstance::Destroy_Engine()
 	Safe_Release(m_pRenderTarget_Manager);
 	Safe_Release(m_pCamera_Manager);
 	Safe_Release(m_pObject_Manager);
+	Safe_Release(m_pObjectPool_Manager);
 	Safe_Release(m_pCollision_Manager);
 	Safe_Release(m_pPicking);
 	Safe_Release(m_pGameData_Manager);
@@ -761,6 +792,7 @@ void CGameInstance::Free()
 	Safe_Release(m_pRenderTarget_Manager);
 	Safe_Release(m_pCamera_Manager);
 	Safe_Release(m_pObject_Manager);
+	Safe_Release(m_pObjectPool_Manager);
 	Safe_Release(m_pCollision_Manager);
 	Safe_Release(m_pPicking);
 	Safe_Release(m_pGameData_Manager);
