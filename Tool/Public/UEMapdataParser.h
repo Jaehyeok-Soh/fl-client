@@ -26,7 +26,7 @@ private:
 
 	HRESULT Initialize(const MAPPARSER_DESC &desc);
 public:
-	HRESULT Read_Mapdata();
+	HRESULT Read_Mapdata(bool isRawData);
 	HRESULT Write_Mapdata();
 private:
 	std::filesystem::path m_path;

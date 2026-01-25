@@ -14,7 +14,7 @@ HRESULT CUEMapdataParser::Initialize(const MAPPARSER_DESC& desc)
 }
 
 
-HRESULT CUEMapdataParser::Read_Mapdata()
+HRESULT CUEMapdataParser::Read_Mapdata(bool isRawData)
 {
 	if (!std::filesystem::exists(m_path))
 		return E_FAIL;
@@ -101,6 +101,9 @@ HRESULT CUEMapdataParser::Read_Mapdata()
 					if (LoadJson["StaticMesh"].contains("ObjectPath"))
 						outer.Properties.StaticMesh.strObjectPath = LoadJson["StaticMesh"]["ObjectPath"].get<string>();
 
+					if (outer.Properties.StaticMesh.strObjectName.find("SM_Rou_Sta01") != string::npos)
+						int a = 0;
+
 					string target = "MaterialInstanceConstant";
 					string replacement = "StaticMesh";
 					size_t pos = outer.Properties.StaticMesh.strObjectName.find("target");
@@ -153,8 +156,17 @@ HRESULT CUEMapdataParser::Read_Mapdata()
 		else
 			continue;
 
+
+		if (!isRawData)
+		{
+			m_vecData.push_back(outer);
+			continue;
+		}
+
+
 		string strName = outer.Properties.StaticMesh.strObjectName;
 		string strPath = outer.Properties.StaticMesh.strObjectPath;
+
 
 		size_t Pos_Point = strPath.rfind(".");
 		if (Pos_Point != std::string::npos)
@@ -188,13 +200,23 @@ HRESULT CUEMapdataParser::Read_Mapdata()
 			}
 		}
 
+		strTarget ="Mesh";
+		size_t Pos_Target = strPath.find(strTarget);
+		if (Pos_Target != std::string::npos)
+		{
+			Pos_Target += strTarget.length();
+			strPath.insert(Pos_Target,"/Model");
+		}
+
+
+
 		outer.Properties.StaticMesh.strObjectPath = strPath;
 		outer.Properties.StaticMesh.strObjectName = path(strPath).filename().stem().string();
 
-		outer.Properties.StaticMesh.strObjectPath = "../../Resources/Models/Map/" + outer.Properties.StaticMesh.strObjectPath;
-
+		outer.Properties.StaticMesh.strObjectPath = "Map/" + outer.Properties.StaticMesh.strObjectPath;
 
 		m_vecData.push_back(outer);
+
 	}
 
 	ifs.close();
