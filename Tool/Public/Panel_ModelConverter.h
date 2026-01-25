@@ -54,10 +54,12 @@ private:
 
 	wstring				  m_wstrSelectPreMatrix{L"Identity"};
 	
+	bool				  m_isRecursiveDirectory{false};
 
 	vector<wstring>		  m_vecNoneExportFbxModelPath{};
 	wstring				  m_wstrCheckNoneExportFbxModelFloderPath{};
 	UINT32				  m_iCurWorkCheckNoneExportFbxModelIndex{};
+	
 
 public:
 	static  CPanel_ModelConverter* Create(const _char* pLabel, CLevel* pOwner, ID3D11Device* pDevice, ID3D11DeviceContext* pDeviceContext);
