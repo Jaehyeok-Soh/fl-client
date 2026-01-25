@@ -37,14 +37,22 @@ HRESULT CUI_Inspector::Render(CToolObject* pGo)
 {
 	ImGui::Begin(m_strLabel.c_str(), nullptr, m_Flag);
 	
-	/* 씬 */
+	/* 레벨을 선택 */
 	SetUp_Level();
+
+	/* 캔버스를 생성 */
+	Make_Canvas();
+
+	/* 레이어를 생성 */
+
+	/* UI 를 생성 */
+
+
+
+	/* 씬 */
 	Load_Data();
 	ImGui::SameLine();
 	Clear_Data();
-
-	/* 캔버스 태그 받고 생성 */
-	Make_Canvas();
 
 	if (0 != m_pUIManager->Get_NumCanvas())
 	{
@@ -80,7 +88,7 @@ void CUI_Inspector::Load_Data()
 		if (::GetOpenFileNameW(&ofn) == TRUE)
 		{
 			wstring result = szFile;
-			if (FAILED(CUIData_Repository::GetInstance()->Load_UIData(result, m_pUIManager->Get_CurCanvas_Ref())))
+			if (FAILED(CUIData_Repository::GetInstance()->Load_UIData(result, m_pUIManager->Safe_Access_CanvasVector())))
 				return;
 
 			m_pUIManager->Remake_UIObjects();
@@ -98,48 +106,78 @@ void CUI_Inspector::Clear_Data()
 
 void CUI_Inspector::SetUp_Level()
 {
-	ImGui::Text("<<SetUp Level>>");
-	ImGui::Combo("Current_Selected_Level", &m_iCurSelectLevelID, m_szArrClientLevelType, static_cast<uint32_t>(m_vecClientLevelType.size()));
+	ImGui::PushID("SetUpLevel");
+
+	ImGui::SeparatorText("SetUp Level");
+
+	ImGui::BeginChild("LevelCard", ImVec2(0, 76), true, ImGuiWindowFlags_NoScrollbar);
+
+	ImGui::TextDisabled("Select the working level for preview / spawn.");
+	ImGui::Spacing();
+
+	ImGui::AlignTextToFramePadding();
+	ImGui::Text("Level");
+	ImGui::SameLine(90);
+
+	ImGui::SetNextItemWidth(-1);
+	ImGui::Combo("##Current_Selected_Level", &m_iCurSelectLevelID, m_szArrClientLevelType, (int)m_vecClientLevelType.size());
+
+	ImGui::EndChild();
+
+	ImGui::PopID();
 }
 
 void CUI_Inspector::Make_Canvas()
 {
-	ImGui::NewLine();
-	ImGui::Text("<<Canvas>>");
+	ImGui::PushID("CanvasSection");
 
+	ImGui::SeparatorText("Canvas");
+
+	ImGui::BeginChild("CanvasCard", ImVec2(0, 110), true, ImGuiWindowFlags_NoScrollbar);
+
+	ImGui::TextDisabled("Create a canvas by tag. Tags must be unique.");
+	ImGui::Spacing();
+
+	/* 기존 UI 함수 호출 (기능 유지) */
 	Input_Canvas_Tag();
+	ImGui::SameLine();
 	Make_Canvas_Btn();
 
-	/* Create 버튼을 눌렀다면 */
+	ImGui::EndChild();
+
+	/* Create 버튼을 눌렀다면 (기능 절대 유지) */
 	if (m_isCreateCanvas)
 	{
 		if (m_strCanvasTag == "")
 		{
 			MSG_BOX("CUI_Inspector::Make_Canvas, Empty Tag");
 			m_isCreateCanvas = FALSE;
+			ImGui::PopID();
 			return;
 		}
 
 		/* 캔버스 태그가 있다*/
-
-		const auto& vecCanvas = m_pUIManager->Get_CurCanvas();
+		const auto* pCanvasVec = m_pUIManager->Safe_Access_CanvasVector();
 		for (uint32_t i = 0; i < m_pUIManager->Get_NumCanvas(); ++i)
 		{
-			if (m_strCanvasTag == vecCanvas[i].strTag)
+			if (m_strCanvasTag == (*pCanvasVec)[i].strTag)
 			{
 				MSG_BOX("CUI_Inspector::Make_Canvas, Tag Already Created");
 				m_isCreateCanvas = FALSE;
+				ImGui::PopID();
 				return;
 			}
 		}
 
-		CANVAS_DATA tData = {};
-		tData.strTag = m_strCanvasTag;
-		m_pUIManager->Add_CanvasData(tData);
+		CANVAS_DATA tCanvasData = {};
+		tCanvasData.strTag = m_strCanvasTag;
+		m_pUIManager->Safe_Add_CanvasData(tCanvasData);
 
 		m_strCanvasTag = "";
 		m_isCreateCanvas = FALSE;
 	}
+
+	ImGui::PopID();
 }
 
 void CUI_Inspector::Edit_Canvas()
@@ -150,8 +188,8 @@ void CUI_Inspector::Edit_Canvas()
 	for (uint32_t i = 0; i < m_pUIManager->Get_NumCanvas(); ++i)
 	{
 		bool selected = (m_pUIManager->Get_CurCanvasIndex() == i);
-		if (ImGui::Selectable(m_pUIManager->Get_CanvasData_Ptr(i)->strTag.c_str(), selected))
-			m_pUIManager->Change_Canvas(i);
+		if (ImGui::Selectable(m_pUIManager->Safe_Access_Canvas(i)->strTag.c_str(), selected))
+			m_pUIManager->Safe_Change_Canvas(i);
 	}
 	ImGui::EndChild();
 
@@ -161,7 +199,7 @@ void CUI_Inspector::Edit_Canvas()
 	Input_Canvas_TransformInfo();
 
 	if (ImGui::Button("Delete Selected Canvas"))
-		m_pUIManager->Remove_CanvasData();
+		m_pUIManager->Safe_Remove_CanvasData();
 }
 
 void CUI_Inspector::Make_Layers()
@@ -177,10 +215,10 @@ void CUI_Inspector::Make_Layers()
 			return;
 		}
 
-		const auto& vecLayer = m_pUIManager->Get_CurLayers();
-		for (uint32_t i = 0; i < m_pUIManager->Get_NumLayer(m_pUIManager->Get_CurCanvasIndex()); ++i)
+		const auto* pLayerVec = m_pUIManager->Safe_Access_LayerVector();
+		for (uint32_t i = 0; i < m_pUIManager->Get_NumLayer(); ++i)
 		{
-			if ( m_strLayerTag == vecLayer[i].strTag)
+			if ( m_strLayerTag == (*pLayerVec)[i].strTag)
 			{
 				MSG_BOX("CUI_Inspector::Make_Layers, This LayerTag Already Exist in Currnet Canvas");
 				m_isCreateLayer = FALSE;
@@ -192,7 +230,7 @@ void CUI_Inspector::Make_Layers()
 		{
 			LAYER_DATA tData = {};
 			tData.strTag = m_strLayerTag;
-			m_pUIManager->Add_LayerData(tData);
+			m_pUIManager->Safe_Add_LayerData(tData);
 			m_strLayerTag = "";
 			m_isCreateLayer = FALSE;
 		}
@@ -206,15 +244,15 @@ void CUI_Inspector::Edit_Layers()
 	ImGui::BeginChild("LayerList", ImVec2(0, 100), true);
 
 
-	for (uint32_t i = 0; i < m_pUIManager->Get_NumLayer(m_pUIManager->Get_CurCanvasIndex()); ++i)
+	for (uint32_t i = 0; i < m_pUIManager->Get_NumLayer(); ++i)
 	{
 		bool selected = (m_pUIManager->Get_CurLayerIndex() == i);
-		if (ImGui::Selectable(m_pUIManager->Get_LayerData_Ptr(i)->strTag.c_str(), selected))
-			m_pUIManager->Change_Layers(i);
+		if (ImGui::Selectable(m_pUIManager->Safe_Access_Layer(i)->strTag.c_str(), selected))
+			m_pUIManager->Safe_Change_Layer(i);
 	}
 	ImGui::EndChild();
 
-	if (0 != m_pUIManager->Get_NumLayer(m_pUIManager->Get_CurCanvasIndex()))
+	if (0 != m_pUIManager->Get_NumLayer())
 	{
 		ImGui::NewLine();
 		ImGui::Text("<<UI>>");
@@ -224,10 +262,13 @@ void CUI_Inspector::Edit_Layers()
 		ImGui::InputText("##UIName", &m_strUIName);
 		Make_UI_Btn();
 
-		if (!m_pUIManager->Get_CurUIDatas().empty())
+		if (nullptr != m_pUIManager->Safe_Access_UIVector())
 		{
-			Show_UI_List();
-			Edit_UI();
+			if (!m_pUIManager->Safe_Access_UIVector()->empty())
+			{
+				Show_UI_List();
+				Edit_UI();
+			}
 		}
 	}
 
@@ -237,7 +278,7 @@ void CUI_Inspector::Add_NewUI()
 {
 	GENERIC_UI_DATA tData = {};
 	tData.strName = m_strUIName;
-	m_pUIManager->Add_UIData(tData);
+	m_pUIManager->Safe_Add_UIData(tData);
 	m_strUIName = "";
 }
 
@@ -352,11 +393,11 @@ void CUI_Inspector::Show_UI_List()
 	ImGui::Text("<<UI List>>");
 	ImGui::BeginChild("UIList", ImVec2(0, 100), true);
 
-	for (uint32_t i = 0; i < m_pUIManager->Get_NumUI(m_pUIManager->Get_CurCanvasIndex(), m_pUIManager->Get_CurLayerIndex()); ++i)
+	for (uint32_t i = 0; i < m_pUIManager->Get_NumUI(); ++i)
 	{
 		bool selected = (m_pUIManager->Get_CurUIIndex() == i);
-		if (ImGui::Selectable(m_pUIManager->Get_UIData_Ptr(i)->strName.c_str(), selected))
-			m_pUIManager->Change_UIData(i);
+		if (ImGui::Selectable(m_pUIManager->Safe_Access_UI(i)->strName.c_str(), selected))
+			m_pUIManager->Safe_Change_UI(i);
 	}
 	ImGui::EndChild();
 }
@@ -374,26 +415,26 @@ void CUI_Inspector::Input_Canvas_TransformInfo()
 	/* 내맘대로 만들겠다 */
 	if (m_isCustomSize)
 	{
-		auto* pData = m_pUIManager->Get_CanvasData_Ptr(m_pUIManager->Get_CurCanvasIndex());
+		auto* pCanvas = m_pUIManager->Safe_Access_Canvas(m_pUIManager->Get_CurCanvasIndex());
 
 		/* Width / Height */
-		Scrub_Float("Width :", "CanvasSizeX", &pData->fWidth, 0.1f, 20.f, 0.1f, 1.0f, 120.f);
+		Scrub_Float("Width :", "CanvasSizeX", &pCanvas->fWidth, 0.1f, 20.f, 0.1f, 1.0f, 120.f);
 		ImGui::SameLine(0.f, 16.f);
-		Scrub_Float("Height :", "CanvasSizeY", &pData->fHeight, 0.1f, 20.f, 0.1f, 1.0f, 120.f);
+		Scrub_Float("Height :", "CanvasSizeY", &pCanvas->fHeight, 0.1f, 20.f, 0.1f, 1.0f, 120.f);
 
 		/* Pos X / Y / Z */
-		Scrub_Float("X :", "CanvasPosX", &pData->fPosX, 0.1f, 20.f, 0.1f, 1.0f, 100.f);
+		Scrub_Float("X :", "CanvasPosX", &pCanvas->fPosX, 0.1f, 20.f, 0.1f, 1.0f, 100.f);
 		ImGui::SameLine(0.f, 16.f);
-		Scrub_Float("Y :", "CanvasPosY", &pData->fPosY, 0.1f, 20.f, 0.1f, 1.0f, 100.f);
+		Scrub_Float("Y :", "CanvasPosY", &pCanvas->fPosY, 0.1f, 20.f, 0.1f, 1.0f, 100.f);
 		ImGui::SameLine(0.f, 16.f);
-		Scrub_Float("Z :", "CanvasPosZ", &pData->fPosZ, 0.1f, 20.f, 0.1f, 1.0f, 100.f);
+		Scrub_Float("Z :", "CanvasPosZ", &pCanvas->fPosZ, 0.1f, 20.f, 0.1f, 1.0f, 100.f);
 
-		pData->isUsingViewport = FALSE;
+		pCanvas->isUsingViewport = FALSE;
 	}
 	/* 뷰포트 기준으로 캔버스를 만들겠다 */
 	else if (m_isViewportSize)
 	{
-		auto* pData = m_pUIManager->Get_CanvasData_Ptr(m_pUIManager->Get_CurCanvasIndex());
+		auto* pData = m_pUIManager->Safe_Access_Canvas(m_pUIManager->Get_CurCanvasIndex());
 
 		pData->fWidth = m_pToolManager->Get_CurViewportSize().x;
 		pData->fHeight = m_pToolManager->Get_CurViewportSize().y;
@@ -450,7 +491,7 @@ void CUI_Inspector::Input_RectTransform()
 	}
 
 	/* Width / Height */
-	auto* pData = m_pUIManager->Get_UIData_Ptr(m_pUIManager->Get_CurUIIndex());
+	auto* pData = m_pUIManager->Safe_Access_UI(m_pUIManager->Get_CurUIIndex());
 	Scrub_Float("Width :", "UISizeX", &pData->fWidth, 0.1f, 20.f, 0.1f, 10.0f, 100.f);
 	ImGui::SameLine(0.f, 16.f);
 	Scrub_Float("Height :", "UISizeY", &pData->fHeight, 0.1f, 20.f, 0.1f, 10.0f, 100.f);
@@ -462,11 +503,11 @@ void CUI_Inspector::Input_RectTransform()
 	ImGui::SameLine(0.f, 16.f);
 	Scrub_Float("Z :", "UIPosZ", &pData->fPosZ, 0.1f, 20.f, 0.1f, 10.0f, 100.f);
 
-	if (nullptr != m_pUIManager->Get_UI_Ptr(m_pUIManager->Get_CurUIIndex()))
+	LAYER_DATA* pLayer = m_pUIManager->Safe_Access_Layer(m_pUIManager->Get_CurLayerIndex());
+	if (nullptr != pLayer)
 	{
-		m_pUIManager->Get_UI_Ptr(m_pUIManager->Get_CurUIIndex())->Set_Position(
-			static_cast<_float>(m_pUIManager->Get_UIData_Ptr(m_pUIManager->Get_CurUIIndex())->fPosX),
-			static_cast<_float>(m_pUIManager->Get_UIData_Ptr(m_pUIManager->Get_CurUIIndex())->fPosY));
+		if(!pLayer->vecUIObjects.empty())
+			pLayer->vecUIObjects[m_pUIManager->Get_CurUIIndex()]->Set_Position(pData->fPosX,pData->fPosY, pData->fPosZ);
 	}
 }
 
@@ -563,10 +604,10 @@ void CUI_Inspector::Make_UI_Btn()
 		}
 
 		/* UI 태그가 있다*/
-		const auto& vecUI = m_pUIManager->Get_CurUIDatas();
-		for (uint32_t i = 0; i < m_pUIManager->Get_NumUI(m_pUIManager->Get_CurCanvasIndex(), m_pUIManager->Get_CurLayerIndex()); ++i)
+		const auto* pUIVec = m_pUIManager->Safe_Access_UI(m_pUIManager->Get_CurUIIndex());
+		for (uint32_t i = 0; i < m_pUIManager->Get_NumUI(); ++i)
 		{
-			if (m_strCanvasTag == vecUI[i].strName)
+			if (m_strCanvasTag == pUIVec[i].strName)
 			{
 				MSG_BOX("CUI_Inspector::Make_UI_Btn, Tag Already Created");
 				m_isCreateCanvas = FALSE;
