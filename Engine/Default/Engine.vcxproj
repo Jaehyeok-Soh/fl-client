@@ -249,6 +249,7 @@
     <ClCompile Include="..\Private\VIBuffer_Cube_Tex.cpp" />
     <ClCompile Include="..\Private\VIBuffer_Line_Color.cpp" />
     <ClCompile Include="..\Private\VIBuffer_Particle.cpp" />
+    <ClCompile Include="..\Private\VIBuffer_Particle_Mesh.cpp" />
     <ClCompile Include="..\Private\VIBuffer_Particle_Point.cpp" />
     <ClCompile Include="..\Private\VIBuffer_Particle_Rect.cpp" />
     <ClCompile Include="..\Private\VIBuffer_Rect_Color.cpp" />
@@ -346,6 +347,7 @@
     <ClInclude Include="..\Public\VIBuffer_Cube_Tex.h" />
     <ClInclude Include="..\Public\VIBuffer_Line_Color.h" />
     <ClInclude Include="..\Public\VIBuffer_Particle.h" />
+    <ClInclude Include="..\Public\VIBuffer_Particle_Mesh.h" />
     <ClInclude Include="..\Public\VIBuffer_Particle_Point.h" />
     <ClInclude Include="..\Public\VIBuffer_Particle_Rect.h" />
     <ClInclude Include="..\Public\VIBuffer_Rect_Color.h" />

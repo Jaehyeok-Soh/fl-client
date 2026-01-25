@@ -35,30 +35,29 @@ float4 DefaultTextureSample(float2 UV)
 
 }
 
-VS_OUT_MESH VS_EffectMesh(VS_IN_MESH In)
+VS_OUT_INST_MESH_PARTICLE VS_EffectMesh(VS_IN_INST_MESH_PARTICLE In)
 {
-    VS_OUT_MESH Out;
+    VS_OUT_INST_MESH_PARTICLE Out = (VS_OUT_INST_MESH_PARTICLE) 0;
     
-    // ========                 위치 변환                  =============
-    float4 vWorldPos = mul(float4(In.vPosition, 1.f), W);
+    float4 vWorldPos = mul(float4(In.vPosition, 1.f), In.matTransform);
+    float4 vViewPos = mul(vWorldPos, V);
+    Out.vPosition = mul(vViewPos, P);
     
     Out.vWorldPos = vWorldPos;
-    Out.vPosition = mul(vWorldPos, V);
-    Out.vPosition = mul(vWorldPos, P);
-    
-    // =======   ProjPos가 필요하다면 사용 (픽셀 셰이더에서 사용) =========
     Out.vProjPos = Out.vPosition;
     
-    // =======               Normal 변환                    ===========
-    Out.vNormal = normalize(mul(float4(In.vNormal, 0.f), W));
+    Out.vNormal = normalize(mul(In.vNormal, (float3x3) In.matTransform));
+    Out.vTangent = normalize(mul(In.vTangent, (float3x3) In.matTransform));
+    Out.vBinormal = normalize(mul(In.vBinormal, (float3x3) In.matTransform));
     
-    // =======              Texture 좌표 전달               ============
     Out.vUV = In.vUV;
+    
+    Out.vPSize = float2(length(In.matTransform[0].xyz), length(In.matTransform[1].xyz));
+    Out.vLifeTime = In.vLifeTime;
     
     return Out;
 }
-
-float4 PS_EffectMesh(VS_OUT_MESH In) : SV_Target0
+float4 PS_EffectMesh(VS_OUT_INST_MESH_PARTICLE In) : SV_Target0
 {
     // =======              노이즈 계산                     ===========
     float2 noiseUV = In.vUV + g_Effect.g_ScrollOffset;
@@ -85,12 +84,15 @@ float4 PS_EffectMesh(VS_OUT_MESH In) : SV_Target0
     // ==========               알파 마스킹                   =========
     float finalAlpha = color.a * noiseValue;
     
+    float lifeAlpha = 1.0f - (In.vLifeTime.x / In.vLifeTime.y);
+    finalAlpha *= lifeAlpha;
+    
     // ==========               알파 클리핑                   =========
     if (finalAlpha < 0.01f)
         discard;
     
     // ==========   미리 지정한 이펙트 색깔을 곱해서 출력하기   =========
-    return float4(color.rgb * g_Effect.g_EffectColor.rgb * 3.0f, finalAlpha);
+    return float4(color.rgb * g_Effect.g_EffectColor.rgb, finalAlpha);
 }
 
 technique11 T0

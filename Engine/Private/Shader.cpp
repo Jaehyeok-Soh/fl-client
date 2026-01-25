@@ -395,7 +395,7 @@ HRESULT CShader::Load_Shader(const D3D11_INPUT_ELEMENT_DESC* pElements, const _u
 
 				if (FAILED(m_pDevice->CreateInputLayout(pElements, iNumElements, pass.tDesc.pIAInputSignature, pass.tDesc.IAInputSignatureSize, &pass.pInputLayout)))
 					return E_FAIL;
-
+				 
 				technique.vecPasses.push_back(pass);
 			}
 

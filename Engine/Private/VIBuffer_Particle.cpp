@@ -41,7 +41,7 @@ CVIBuffer_Particle::CVIBuffer_Particle(const CVIBuffer_Particle& rhs)
 
 HRESULT CVIBuffer_Particle::Initialize_Prototype(void* pArg)
 {
- 	if (FAILED(Super::Initialize_Prototype(pArg)))
+	if (FAILED(Super::Initialize_Prototype(pArg)))
 		return E_FAIL;
 
 	PARTICLE_ORIGIN_DESC* pDesc = static_cast<PARTICLE_ORIGIN_DESC*>(pArg);
@@ -68,7 +68,7 @@ HRESULT CVIBuffer_Particle::Resize_InstanceBuffer(_uint iNumInstanceCount)
 	Safe_Release(m_pVBInstance);
 	Safe_Delete_Array(m_pInstanceVertices);
 	Safe_Delete_Array(m_pSpeeds);
-	
+
 	// 새로운 버퍼 생성
 	m_pInstanceVertices = new VTXPARTICLE[m_iInstanceCount];
 	m_InstanceBufferDesc.ByteWidth = m_iInstanceCount * m_iInstanceVertexStride;
@@ -77,22 +77,47 @@ HRESULT CVIBuffer_Particle::Resize_InstanceBuffer(_uint iNumInstanceCount)
 	::ZeroMemory(m_pSpeeds, sizeof(_float) * m_iInstanceCount);
 
 	// 버퍼를 재할당 했다면 입자들 생명주기 등등 전부 새롭게.
-	for (size_t i = 0; i < m_iInstanceCount; i++)
+
+	if (m_tParticleDesc.isRandomSeed == false)
 	{
-		_float      fScale = m_pGameInstance->Rand_Float(m_tParticleDesc.vSize.x, m_tParticleDesc.vSize.y) * 0.5f;
-		m_pSpeeds[i] = m_pGameInstance->Rand_Float(m_tParticleDesc.vSpeed.x, m_tParticleDesc.vSpeed.y);
+		for (size_t i = 0; i < m_iInstanceCount; i++)
+		{
+			_float      fScale = m_tParticleDesc.vSize.y * 0.5f;
+			m_pSpeeds[i] = m_tParticleDesc.vSpeed.y;
 
-		m_pInstanceVertices[i].vRight = Vec4(fScale, 0.f, 0.f, 0.f);
-		m_pInstanceVertices[i].vUp = Vec4(0.f, fScale, 0.f, 0.f);
-		m_pInstanceVertices[i].vLook = Vec4(0.f, 0.f, fScale, 0.f);
-		m_pInstanceVertices[i].vTranslation = Vec4(
-			m_pGameInstance->Rand_Float(m_tParticleDesc.vCenter.x - m_tParticleDesc.vRange.x * 0.5f, m_tParticleDesc.vCenter.x + m_tParticleDesc.vRange.x * 0.5f),
-			m_pGameInstance->Rand_Float(m_tParticleDesc.vCenter.y - m_tParticleDesc.vRange.y * 0.5f, m_tParticleDesc.vCenter.y + m_tParticleDesc.vRange.y * 0.5f),
-			m_pGameInstance->Rand_Float(m_tParticleDesc.vCenter.z - m_tParticleDesc.vRange.z * 0.5f, m_tParticleDesc.vCenter.z + m_tParticleDesc.vRange.z * 0.5f),
-			1.f
-		);
+			m_pInstanceVertices[i].vRight = Vec4(fScale, 0.f, 0.f, 0.f);
+			m_pInstanceVertices[i].vUp = Vec4(0.f, fScale, 0.f, 0.f);
+			m_pInstanceVertices[i].vLook = Vec4(0.f, 0.f, fScale, 0.f);
+			m_pInstanceVertices[i].vTranslation = Vec4(
+				m_tParticleDesc.vCenter.x,
+				m_tParticleDesc.vCenter.y,
+				m_tParticleDesc.vCenter.z,
+				1.f
+			);
 
-		m_pInstanceVertices[i].vLifeTime = Vec2(0.f, m_pGameInstance->Rand_Float(m_tParticleDesc.vLifeTime.x, m_tParticleDesc.vLifeTime.y));
+			m_pInstanceVertices[i].vLifeTime = Vec2(0.f, m_tParticleDesc.vLifeTime.y);
+		}
+	}
+
+	else if (m_tParticleDesc.isRandomSeed == true)
+	{
+		for (size_t i = 0; i < m_iInstanceCount; i++)
+		{
+			_float      fScale = m_pGameInstance->Rand_Float(m_tParticleDesc.vSize.x, m_tParticleDesc.vSize.y) * 0.5f;
+			m_pSpeeds[i] = m_pGameInstance->Rand_Float(m_tParticleDesc.vSpeed.x, m_tParticleDesc.vSpeed.y);
+
+			m_pInstanceVertices[i].vRight = Vec4(fScale, 0.f, 0.f, 0.f);
+			m_pInstanceVertices[i].vUp = Vec4(0.f, fScale, 0.f, 0.f);
+			m_pInstanceVertices[i].vLook = Vec4(0.f, 0.f, fScale, 0.f);
+			m_pInstanceVertices[i].vTranslation = Vec4(
+				m_pGameInstance->Rand_Float(m_tParticleDesc.vCenter.x - m_tParticleDesc.vRange.x * 0.5f, m_tParticleDesc.vCenter.x + m_tParticleDesc.vRange.x * 0.5f),
+				m_pGameInstance->Rand_Float(m_tParticleDesc.vCenter.y - m_tParticleDesc.vRange.y * 0.5f, m_tParticleDesc.vCenter.y + m_tParticleDesc.vRange.y * 0.5f),
+				m_pGameInstance->Rand_Float(m_tParticleDesc.vCenter.z - m_tParticleDesc.vRange.z * 0.5f, m_tParticleDesc.vCenter.z + m_tParticleDesc.vRange.z * 0.5f),
+				1.f
+			);
+
+			m_pInstanceVertices[i].vLifeTime = Vec2(0.f, m_pGameInstance->Rand_Float(m_tParticleDesc.vLifeTime.x, m_tParticleDesc.vLifeTime.y));
+		}
 	}
 
 	D3D11_SUBRESOURCE_DATA InstanceInitialData{};
@@ -126,14 +151,15 @@ void CVIBuffer_Particle::Set_ParticleDesc(const PARTICLE_ORIGIN_DESC& Desc)
 		m_tParticleDesc.vSize.y != Desc.vSize.y ||
 		m_tParticleDesc.vRange.x != Desc.vRange.x ||
 		m_tParticleDesc.vRange.y != Desc.vRange.y ||
-		m_tParticleDesc.vRange.z != Desc.vRange.z)
+		m_tParticleDesc.vRange.z != Desc.vRange.z ||
+		m_tParticleDesc.isRandomSeed != Desc.isRandomSeed)
 	{
 		// 인스턴스 할 갯수가 줄었다면 버퍼 재할당하자
 		m_tParticleDesc = Desc;
 		Resize_InstanceBuffer(Desc.iInstnaceCount);
 	}
 
-	m_fPlayBackSpeed = Desc.vPlayBackSpeed;
+	m_fStartSpeeds = Desc.m_fStartSpeeds;
 	m_bIsLoop = Desc.isLoop;
 	m_vPivot = Desc.vPivot;
 }
@@ -167,7 +193,7 @@ void CVIBuffer_Particle::Render()
 	m_pDeviceContext->DrawIndexedInstanced(m_iIndexCountPerInstance, m_iInstanceCount, 0, 0, 0);
 }
 
-void CVIBuffer_Particle::Update_Simulation(_float fTImeDelta, E_PARTICLE_MOVESTATE eType)
+void CVIBuffer_Particle::Update_Simulation(Vec3 vLook, _float fTImeDelta, E_PARTICLE_MOVESTATE eType)
 {
 	switch (eType)
 	{
@@ -182,6 +208,9 @@ void CVIBuffer_Particle::Update_Simulation(_float fTImeDelta, E_PARTICLE_MOVESTA
 		case E_PARTICLE_MOVESTATE::SPREAD:
 			Spread(fTImeDelta);
 			break;
+		case E_PARTICLE_MOVESTATE::STRAIGHT:
+			Straight(vLook, fTImeDelta);
+			break;
 	}
 }
 
@@ -195,7 +224,7 @@ void CVIBuffer_Particle::Drop(_float fTimeDelta)
 
 	for (size_t i = 0; i < m_iInstanceCount; i++)
 	{
-		pVertices[i].vTranslation.y -= m_pSpeeds[i] * fTimeDelta * m_fPlayBackSpeed;
+		pVertices[i].vTranslation.y -= m_pSpeeds[i] * fTimeDelta * m_fStartSpeeds;
 		pVertices[i].vLifeTime.x += fTimeDelta;
 		if (true == m_bIsLoop && pVertices[i].vLifeTime.x >= pVertices[i].vLifeTime.y)
 		{
@@ -220,7 +249,7 @@ void CVIBuffer_Particle::Spread(_float fTimeDelta)
 		/*pVertices[i].vTranslation.y -= m_pSpeeds[i] * fTimeDelta;*/
 		Vec3		vLook = pVertices[i].vTranslation - m_vPivot * m_pSpeeds[i];
 		vLook.Normalize();
-		pVertices[i].vTranslation = pVertices[i].vTranslation + vLook * fTimeDelta * m_fPlayBackSpeed;
+		pVertices[i].vTranslation = pVertices[i].vTranslation + vLook * fTimeDelta * m_fStartSpeeds;
 		pVertices[i].vLifeTime.x += fTimeDelta;
 		if (true == m_bIsLoop && pVertices[i].vLifeTime.x >= pVertices[i].vLifeTime.y)
 		{
@@ -230,6 +259,26 @@ void CVIBuffer_Particle::Spread(_float fTimeDelta)
 	}
 
 	m_pDeviceContext->Unmap(m_pVBInstance, 0);
+}
+
+void CVIBuffer_Particle::Straight(Vec3 vLook, _float fDT)
+{
+	D3D11_MAPPED_SUBRESOURCE		SubResource{};
+
+	m_pDeviceContext->Map(m_pVBInstance, 0, D3D11_MAP_WRITE_NO_OVERWRITE, 0, &SubResource);
+	VTXPARTICLE* pVertices = static_cast<VTXPARTICLE*>(SubResource.pData);
+
+	for (size_t i = 0; i < m_iInstanceCount; i++)
+	{
+		vLook.Normalize();
+		pVertices[i].vTranslation = pVertices[i].vTranslation + vLook * fDT * m_fStartSpeeds;
+		pVertices[i].vLifeTime.x += fDT;
+		if (true == m_bIsLoop && pVertices[i].vLifeTime.x >= pVertices[i].vLifeTime.y)
+		{
+			pVertices[i].vLifeTime.x = 0.f;
+			pVertices[i].vTranslation = m_pInstanceVertices[i].vTranslation;
+		}
+	}
 }
 
 void CVIBuffer_Particle::Rise(_float fTimeDelta)
@@ -243,7 +292,7 @@ void CVIBuffer_Particle::Rise(_float fTimeDelta)
 	for (size_t i = 0; i < m_iInstanceCount; i++)
 	{
 		// 1. 위로 이동 (Y축 증가)
-		pVertices[i].vTranslation.y += m_pSpeeds[i] * fTimeDelta * m_fPlayBackSpeed;
+		pVertices[i].vTranslation.y += m_pSpeeds[i] * fTimeDelta * m_fStartSpeeds;
 
 		// 2. 수명 업데이트
 		pVertices[i].vLifeTime.x += fTimeDelta;

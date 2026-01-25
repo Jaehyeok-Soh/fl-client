@@ -5,6 +5,7 @@
 #include "Texture.h"
 #include "mesh.h"
 #include "VIBuffer_Particle_Point.h"
+#include "VIBuffer_Particle_Mesh.h"
 #include "GameInstance.h"
 
 CEffectObject::CEffectObject(EToolObjectType eType, ID3D11Device* pDevice, ID3D11DeviceContext* pDeviceContext)
@@ -101,9 +102,10 @@ void CEffectObject::Particle_Setting()
         desc.vLifeTime.x = pDesc.vLifeTime.x;
         desc.vLifeTime.y = m_tEffectDesc._Effect_LifeTime;
         desc.vRange = m_tEffectDesc._Effect_Range;
-        desc.vPlayBackSpeed = m_tEffectDesc._Effect_PlayBack;
+        desc.m_fStartSpeeds = m_tEffectDesc._Effect_StartSpeed;
         desc.vSize = m_tEffectDesc._Effect_ParticleSize;
         desc.vSpeed = Vec2{ 0.f, 3.f };
+        desc.isRandomSeed = m_tEffectDesc._Effect_IsRandomSeed;
 
         pInstance->Set_ParticleDesc(desc);
     }
@@ -228,7 +230,6 @@ HRESULT CEffectObject::Bind_ShaderResource()
     CVIBuffer_Particle_Point* pInstance = Get_Component<CVIBuffer_Particle_Point>();
     if (pInstance)
     {
-        m_pDeviceContext->IASetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY_POINTLIST);
         pInstance->Bind_Resource();
         pInstance->Render();
     }
@@ -247,17 +248,19 @@ void CEffectObject::Update_Priority(const _float fDT)
 {
     if (m_tEffectDesc._Effect_TimeStop) return;
 
-    Super::Update_Priority(fDT);
+    // 임시 방편 Speed
+    Super::Update_Priority(fDT * m_tEffectDesc._Effect_PlayBackSpeed);
 }
 
 void CEffectObject::Update(const _float fTimeDelta)
 {
     if (m_tEffectDesc._Effect_TimeStop) return;
+    // 임시 방편
+    _float TimeT = m_tEffectDesc._Effect_PlayBackSpeed * fTimeDelta;
 
-    Super::Update(fTimeDelta);
-
+    Super::Update(TimeT);
     // == 스크롤 값 == 
-    TimeCalculate(fTimeDelta);
+    TimeCalculate(TimeT);
 
     switch (m_tEffectDesc._Effect_ShapeType)
     {
@@ -267,25 +270,32 @@ void CEffectObject::Update(const _float fTimeDelta)
         case E_SHAPETYPE::SPREAD:
         {
             CVIBuffer_Particle_Point* pInstance = Get_Component<CVIBuffer_Particle_Point>();
-            if (pInstance) pInstance->Update_Simulation(fTimeDelta, E_PARTICLE_MOVESTATE::SPREAD);
+            if (pInstance) pInstance->Update_Simulation(Vec3{}, TimeT, E_PARTICLE_MOVESTATE::SPREAD);
             break;
         }
         case E_SHAPETYPE::DROP:
         {
             CVIBuffer_Particle_Point* pInstance = Get_Component<CVIBuffer_Particle_Point>();
-            if (pInstance) pInstance->Update_Simulation(fTimeDelta, E_PARTICLE_MOVESTATE::DROP);
+            if (pInstance) pInstance->Update_Simulation(Vec3{}, TimeT, E_PARTICLE_MOVESTATE::DROP);
             break;
         }
         case E_SHAPETYPE::RISE:
         {
             CVIBuffer_Particle_Point* pInstance = Get_Component<CVIBuffer_Particle_Point>();
-            if (pInstance) pInstance->Update_Simulation(fTimeDelta, E_PARTICLE_MOVESTATE::RISE);
+            if (pInstance) pInstance->Update_Simulation(Vec3{}, TimeT, E_PARTICLE_MOVESTATE::RISE);
             break;
         }
         case E_SHAPETYPE::MESH:
         {
             CVIBuffer_Particle_Point* pInstance = Get_Component<CVIBuffer_Particle_Point>();
-            if (pInstance) pInstance->Update_Simulation(fTimeDelta, E_PARTICLE_MOVESTATE::RISE);
+            if (pInstance) pInstance->Update_Simulation(Vec3{}, TimeT, E_PARTICLE_MOVESTATE::RISE);
+            break;
+        }
+
+        case E_SHAPETYPE::STRAIGHT:
+        {
+            CVIBuffer_Particle_Point* pInstance = Get_Component<CVIBuffer_Particle_Point>();
+            if (pInstance) pInstance->Update_Simulation(Get_Component<CTransform>()->Get_Info(TRANSFORM_INFO_STATE::LOOK), TimeT, E_PARTICLE_MOVESTATE::STRAIGHT);
             break;
         }
     }
@@ -295,12 +305,17 @@ void CEffectObject::Update_Late(const _float fTimeDelta)
 {
     if (m_tEffectDesc._Effect_TimeStop) return;
 
-    Super::Update_Late(fTimeDelta);
+    _float TimeT = m_tEffectDesc._Effect_PlayBackSpeed * fTimeDelta;
+
+    Super::Update_Late(TimeT);
 }
 
 void CEffectObject::Ready_Before_Render(const _float fTimeDelta)
 {
-    Super::Ready_Before_Render(fTimeDelta);
+    // 임시 방편 
+    _float TimeT = m_tEffectDesc._Effect_PlayBackSpeed * fTimeDelta;
+
+    Super::Ready_Before_Render(TimeT);
 
     m_pGameInstance->Push_RenderObject(RENDER_CATEGORY::NONELIGHT, this);
     Super::Update_CombinedWorldMatrix(m_pMatParent);

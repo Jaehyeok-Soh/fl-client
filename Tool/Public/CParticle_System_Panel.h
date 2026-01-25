@@ -62,8 +62,8 @@ private:
 
 private:
     //  =======  폴더명 & 파일명을 대신할 Mesh 전용 vector 컨테이너
-    std::vector<string> m_MeshFileNames;
-    std::vector<string> m_TextureFileNames;
+    std::vector<std::pair<string/*path*/, string/*Name*/>> m_MeshFileNames;
+    std::vector<std::pair<string/*Path*/, string/*Name*/>> m_TextureFileNames;
     std::vector<std::pair<string/*Path*/, string/*Name*/>> m_ShaderFileNames;
 
     string              m_sMeshFolderPath = "../../Resources/Models";
