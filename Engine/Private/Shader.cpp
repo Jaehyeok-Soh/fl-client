@@ -356,7 +356,7 @@ HRESULT CShader::Load_Shader(const D3D11_INPUT_ELEMENT_DESC* pElements, const _u
 #ifdef _DEBUG
 		flag = D3DCOMPILE_DEBUG | D3DCOMPILE_SKIP_OPTIMIZATION;
 #else
-		flag = D3DCOMPILE_OPTIMIZATION_LEVEL1;¡¡
+		flag = D3DCOMPILE_OPTIMIZATION_LEVEL1;
 #endif   
 		ID3DBlob* pBlob = { nullptr };
  		if (FAILED(::D3DX11CompileEffectFromFile(Get_Path().c_str(), NULL, D3D_COMPILE_STANDARD_FILE_INCLUDE, flag, 0, m_pDevice, &m_pEffect, &pBlob)))

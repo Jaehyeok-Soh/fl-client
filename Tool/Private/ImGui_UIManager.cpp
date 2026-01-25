@@ -4,11 +4,14 @@
 #include "GameInstance.h"
 #include "Engine_Utils.h"
 #include "ToolUI.h"
+#include "GameInstance.h"
 
 IMPLEMENT_SINGLETON(CImGui_UIManager)
 
 CImGui_UIManager::CImGui_UIManager()
+	:m_pGameInstance(CGameInstance::GetInstance())
 {
+	Safe_AddRef(m_pGameInstance);
 }
 
 void CImGui_UIManager::Add_CanvasData(const CANVAS_DATA& tData)
@@ -60,7 +63,6 @@ void CImGui_UIManager::Add_UI(const GENERIC_UI_DATA& tData)
 		static_cast<uint32_t>(ELevelType::UI), L"Prototype_UI_Test_Button",
 		static_cast<uint32_t>(ELevelType::UI), Engine_Utils::ToWString(m_vecCanvasData[m_iCurCanvasIndex].vecLayers[m_iCurLayerIndex].strTag), &Desc);
 
-	pGO->Awake(static_cast<uint32_t>(ELevelType::UI));
 	m_vecCanvasData[m_iCurCanvasIndex].vecLayers[m_iCurLayerIndex].vecUIObjects.push_back(reinterpret_cast<CToolUI*>(pGO));
 }
 
@@ -256,6 +258,15 @@ GENERIC_UI_DATA* CImGui_UIManager::Get_UIData_Ptr(uint32_t UIIndex)
 
 CToolUI* CImGui_UIManager::Get_UI_Ptr(uint32_t UIIndex)
 {
+	if (m_vecCanvasData.empty())
+		return nullptr;
+
+	if (m_vecCanvasData[m_iCurCanvasIndex].vecLayers.empty())
+		return nullptr;
+
+	if (m_vecCanvasData[m_iCurCanvasIndex].vecLayers[m_iCurLayerIndex].vecUIObjects.empty())
+		return nullptr;
+
 	if (UIIndex >= Get_NumUI(m_iCurCanvasIndex, m_iCurLayerIndex))
 	{
 		MSG_BOX("CImGui_UIManager::Get_UIData_Ptr, Index Out of Range");
@@ -264,8 +275,76 @@ CToolUI* CImGui_UIManager::Get_UI_Ptr(uint32_t UIIndex)
 	return Get_CurLayers_Ref()[m_iCurLayerIndex].vecUIObjects[UIIndex];
 }
 
+HRESULT CImGui_UIManager::Remake_UIObjects()
+{
+	if (m_vecCanvasData.empty())
+		return S_OK;
+
+	vector<vector<LAYER_DATA>> vecLayer;
+	vector<vector<vector<GENERIC_UI_DATA>>> vecUIdata;
+
+	vecLayer.clear();
+	vecUIdata.clear();
+
+	for (CANVAS_DATA& CanvasData : m_vecCanvasData)
+	{
+		vecLayer.emplace_back();
+		vecUIdata.emplace_back();
+
+		for (LAYER_DATA& LayerData : CanvasData.vecLayers)
+		{
+			vecLayer.back().push_back(LayerData);
+			vecUIdata.back().emplace_back();
+
+			for (GENERIC_UI_DATA& UIData : LayerData.vecUIData)
+			{
+				CToolUI::TOOLUI_DESC Desc = {};
+				Desc.UIData = UIData;
+				Desc.wstrTextureTag = L"Prototype_Component_Button_Test_Texture";
+				CGameObject* pResult = { nullptr };
+
+				pResult = m_pGameInstance->Add_GameObject(static_cast<uint32_t>(ELevelType::UI), L"Prototype_UI_Test_Button",
+					static_cast<uint32_t>(ELevelType::UI), Engine_Utils::ToWString(LayerData.strTag), &Desc);
+				if (nullptr == pResult)
+					return E_FAIL;
+
+				LayerData.vecUIObjects.push_back(reinterpret_cast<CToolUI*>(pResult));
+			}
+		}
+	}
+	return S_OK;
+}
+
+HRESULT CImGui_UIManager::Clear_UIObjects()
+{
+	if (m_vecCanvasData.empty())
+		return S_OK;
+
+	vector<vector<LAYER_DATA>> vecLayer;
+	vector<vector<vector<GENERIC_UI_DATA>>> vecUIdata;
+
+	vecLayer.clear();
+	vecUIdata.clear();
+
+	for (const CANVAS_DATA& CanvasData : m_vecCanvasData)
+	{
+		vecLayer.emplace_back();
+		vecUIdata.emplace_back();
+
+		for (const LAYER_DATA& LayerData : CanvasData.vecLayers)
+		{
+			vecLayer.back().push_back(LayerData);
+			vecUIdata.back().emplace_back();
+
+			m_pGameInstance->Clear_Layer(static_cast<uint32_t>(ELevelType::UI), Engine_Utils::ToWString(LayerData.strTag));
+		}
+	}
+	return S_OK;
+}
+
 void CImGui_UIManager::Free()
 {
+	Safe_Release(m_pGameInstance);
 	Super::Free();
 }
 

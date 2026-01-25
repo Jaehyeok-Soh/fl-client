@@ -1,6 +1,7 @@
 #pragma once
 #include "UIObject.h"
 #include "Tool_Defines.h"
+#include "UIData_Repository.h"
 
 NS_BEGIN(Tool)
 
@@ -11,6 +12,8 @@ public:
 	typedef struct tagToolUIDesc : public Super::UIOBJECT_DESC
 	{
 		_wstring wstrTextureTag;
+
+		GENERIC_UI_DATA UIData;
 
 	}TOOLUI_DESC;
 

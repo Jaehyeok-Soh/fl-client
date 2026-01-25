@@ -164,6 +164,7 @@
     <ClInclude Include="..\Public\ColliderPart.h" />
     <ClInclude Include="..\Public\ComboContainer.h" />
     <ClInclude Include="..\Public\ComboState.h" />
+    <ClInclude Include="..\Public\GenericUI.h" />
     <ClInclude Include="..\Public\Level_Loading.h" />
     <ClInclude Include="..\Public\Level_Logo.h" />
     <ClInclude Include="..\Public\Loader.h" />
@@ -181,6 +182,7 @@
     <ClInclude Include="..\Public\State_Run.h" />
     <ClInclude Include="..\Public\State_RunEnd.h" />
     <ClInclude Include="..\Public\State_RunStart.h" />
+    <ClInclude Include="..\Public\UI_Manager.h" />
     <ClInclude Include="..\Public\Weapon.h" />
     <ClInclude Include="Client.h" />
     <ClInclude Include="framework.h" />
@@ -194,6 +196,7 @@
     <ClCompile Include="..\Private\ColliderPart.cpp" />
     <ClCompile Include="..\Private\ComboContainer.cpp" />
     <ClCompile Include="..\Private\ComboState.cpp" />
+    <ClCompile Include="..\Private\GenericUI.cpp" />
     <ClCompile Include="..\Private\Level_Loading.cpp" />
     <ClCompile Include="..\Private\Level_Logo.cpp" />
     <ClCompile Include="..\Private\Loader.cpp" />
@@ -211,6 +214,7 @@
     <ClCompile Include="..\Private\State_Run.cpp" />
     <ClCompile Include="..\Private\State_RunEnd.cpp" />
     <ClCompile Include="..\Private\State_RunStart.cpp" />
+    <ClCompile Include="..\Private\UI_Manager.cpp" />
     <ClCompile Include="..\Private\Weapon.cpp" />
     <ClCompile Include="Client.cpp" />
     <ClCompile Include="pch.cpp">

@@ -2,6 +2,10 @@
 #include "Base.h"
 #include "UIData_Repository.h"
 
+NS_BEGIN(Engine)
+class CGameInstance;
+NS_END
+
 NS_BEGIN(Tool)
 
 class CToolUI;
@@ -60,9 +64,14 @@ public:
 
 #pragma endregion
 
+	HRESULT Remake_UIObjects();
+	HRESULT Clear_UIObjects();
+
 private:
 	/* CANVAS_DATA -> LAYER_DATA -> GENERIC_UI_DATA 각각 벡터를 가지는 계층 구조 입니다 */
 	vector<CANVAS_DATA> m_vecCanvasData;
+
+	CGameInstance* m_pGameInstance = { nullptr };
 
 private:
 	/* 커서들 입니다. */

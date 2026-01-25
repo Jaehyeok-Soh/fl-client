@@ -65,8 +65,6 @@ HRESULT CLevel_UI::Render()
 	//////////////////////////
 	// Element Render
 
-	ImGui::ShowDemoWindow();
-
 	for (CImGui_Base* pElement : m_GuiElements)
 	{
 		if (pElement)

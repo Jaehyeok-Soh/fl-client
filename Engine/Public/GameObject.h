@@ -7,6 +7,7 @@ NS_BEGIN(Engine)
 
 class CCollider;
 class CCameraMan;
+class CObjectPool;
 
 class ENGINE_DLL CGameObject abstract : public CBase
 {
@@ -36,6 +37,8 @@ public:
 	virtual void OnCollision_Exit(_uint iMyColliderLayer, CCollider* pOther) {}
 	virtual _bool Picking(OUT Vec3& vOut) { return false; }
 	virtual HRESULT Render();
+	virtual HRESULT Spawn_FromPool(void* pArg) { return S_OK; }
+	virtual HRESULT Despawn_FromPool() { return S_OK; }
 	virtual _bool On_Hit(_uint iCollideMyLayer, ATTACK_DESC* pDesc, CGameObject* pOther) { return true; }
 	virtual void Try_AttackHit() {};
 	template<typename T>
@@ -43,9 +46,11 @@ public:
 	template<typename T>
 	inline T* Get_Component();
 	template<typename T>
-	HRESULT Add_Component(_uint iLevelIndex, const wstring& wstrPrototypeTag, void* pArg);
+	inline HRESULT Add_Component(_uint iPrototypeLevelIndex, const wstring& wstrPrototypeTag, void* pArg);
 	template<typename T>
-	HRESULT Add_Component(T* pOriginInstance);
+	inline HRESULT Add_Component(T* pOriginInstance);
+	template<typename T>
+	inline T* Detach_Component();
 	template<typename T>
 	void Remove_Component();
 	inline CMonoBehaviour* Get_Script_Component(const wstring& wstrComponentTag);
@@ -53,6 +58,7 @@ public:
 	HRESULT Add_Script_Component(const wstring& wstrComponentTag, CMonoBehaviour* pComp);
 	HRESULT Add_Script_Component(const wstring& wstrComponentTag, const wstring& wstrPrototypeTag, void* pArg);
 	void Remove_Script_Component(const wstring& wstrComponentTag);
+	HRESULT Change_Script_Component(const wstring& wsrtTargetComponentTag, CMonoBehaviour* pComp);
 	virtual _int Get_AnimationIndex(const wstring& wstrName);
 	virtual HRESULT Change_State(_uint iIndex);
 	CCameraMan* Get_CameraTargeter() { return m_pTargeter; }
@@ -62,13 +68,22 @@ public:
 	_bool IsDead() const { return m_bDead; }
 	virtual void Set_Dead(const wstring &wstrLayerTag);
 	Vec3 Get_CenterFromCollider(EColliderType eType, class CBounding* pBounding);
-protected:
-	void Update_Script_Components(const _float fTimeDelta);
+	void Set_ActiveIndex(_uint iActiveIndex) { m_iActiveIndex = (_int)iActiveIndex; }
+	_int Get_ActiveIndex() const { return m_iActiveIndex; }
+	_bool Is_PoolObject() const { return m_pOwnerPool != nullptr; }
+	_bool Is_Awaked() const { return m_bAwaked; }
+	void Set_Awake(_bool bAwaked) { m_bAwaked = bAwaked; }
+	CObjectPool* Get_OwnerPool() { return m_pOwnerPool; }
+	void Set_OwnerPool(CObjectPool* pOwnerPool) { m_pOwnerPool = pOwnerPool; }
 private:
+	void Update_Script_Components(const _float fTimeDelta);
 	void Safe_Release_Component();
 	void Safe_Release_ScriptComponent();
 protected:
+	_bool m_bAwaked = { false };
 	_bool m_bDead = { false };
+	_int m_iActiveIndex = { -1 };
+	CObjectPool* m_pOwnerPool = { nullptr };
 	CCameraMan* m_pTargeter = { nullptr };
 	ID3D11Device* m_pDevice = { nullptr };
 	ID3D11DeviceContext* m_pDeviceContext = { nullptr };
@@ -82,6 +97,13 @@ public:
 	virtual void Free() override;
 };
 
+/// <summary>
+/// <para>컴포넌트를 참조하는 함수</para>
+/// <para>타입캐스팅이 이루어져서 가져옴</para>
+/// RefCount책임은 외부에
+/// </summary>
+/// <typeparam name="T"></typeparam>
+/// <returns></returns>
 template <typename T>
 inline T* CGameObject::Get_Component()
 {
@@ -90,8 +112,17 @@ inline T* CGameObject::Get_Component()
 	return static_cast<T*>(m_Components[ENUM_TO_UINT(T::_ID)]);
 }
 
+/// <summary>
+/// <para>컴포넌트를 추가하는 함수</para>
+/// 내부적으로 원본을 복사 생성하여 추가
+/// </summary>
+/// <typeparam name="T"></typeparam>
+/// <param name="iPrototypeLevelIndex">원본의 LevelID</param>
+/// <param name="wstrPrototypeTag">원본의 태그</param>
+/// <param name="pArg">객체 Desc</param>
+/// <returns></returns>
 template <typename T>
-inline HRESULT CGameObject::Add_Component(_uint iLevelIndex, const wstring& wstrPrototypeTag, void* pArg)
+inline HRESULT CGameObject::Add_Component(_uint iPrototypeLevelIndex, const wstring& wstrPrototypeTag, void* pArg)
 {
 	static_assert(T::_ID >= EComponentType::TRANSFORM || T::_ID < EComponentType::END, "ComponentType ID is invalid");
 	static_assert(T::_ID != EComponentType::SCRIPT, "Script type components dont support this feature. Please check the function name");
@@ -100,33 +131,70 @@ inline HRESULT CGameObject::Add_Component(_uint iLevelIndex, const wstring& wstr
 		Safe_Release(m_Components[ENUM_TO_UINT(T::_ID)]);
 
 	if (!((m_Components[ENUM_TO_UINT(T::_ID)] =
-		dynamic_cast<CComponent*>(CGameInstance::GetInstance()->Clone_Prototype(EPrototypeType::COMPONENT, iLevelIndex, wstrPrototypeTag, pArg)))))
+		dynamic_cast<CComponent*>(CGameInstance::GetInstance()->Clone_Prototype(EPrototypeType::COMPONENT, iPrototypeLevelIndex, wstrPrototypeTag, pArg)))))
 		return E_FAIL;
 
 	m_Components[ENUM_TO_UINT(T::_ID)]->Set_Owner(this);
 	return S_OK;
 }
 
+/// <summary>
+/// <para>컴포넌트를 추가하는 함수</para>
+/// 파라미터로 인스턴스를 받아 추가하며, 해당 슬롯에 컴포넌트가 추가되어있었다면 Safe_Release 처리
+/// </summary>
+/// <typeparam name="T"></typeparam>
+/// <param name="pComp"></param>
+/// <returns></returns>
 template <typename T>
-inline HRESULT CGameObject::Add_Component(T* pOriginInstance)
+inline HRESULT CGameObject::Add_Component(T* pComp)
 {
 	static_assert(T::_ID >= EComponentType::TRANSFORM || T::_ID < EComponentType::END, "ComponentType ID is invalid");
 	static_assert(T::_ID != EComponentType::SCRIPT, "Script type components dont support this feature. Please check the function name");
 
-	if (!pOriginInstance)
+	if (!pComp)
 		return E_FAIL;
 
 	if (m_Components[ENUM_TO_UINT(T::_ID)])
 		Safe_Release(m_Components[ENUM_TO_UINT(T::_ID)]);
 
 	if (!((m_Components[ENUM_TO_UINT(T::_ID)] =
-		dynamic_cast<CComponent*>(pOriginInstance))))
+		dynamic_cast<CComponent*>(pComp))))
 		return E_FAIL;
 
 	m_Components[ENUM_TO_UINT(T::_ID)]->Set_Owner(this);
 	return S_OK;
 }
 
+/// <summary>
+/// <para>컴포넌트를 탈착시키는 함수</para>
+/// <para>Remove_Component와 달리 Safe_Release하지 않고 슬롯에서 인스턴스를 빼옴</para>
+/// <para>이때, Owner는 자동적으로 nullptr 처리</para>
+/// 해당 Component의 생명주기는 호출자에게 달려있음
+/// </summary>
+/// <typeparam name="T"></typeparam>
+/// <returns></returns>
+template<typename T>
+inline T* CGameObject::Detach_Component()
+{
+	static_assert(T::_ID >= EComponentType::TRANSFORM || T::_ID < EComponentType::END, "ComponentType ID is invalid");
+	static_assert(T::_ID != EComponentType::SCRIPT, "Script type components dont support this feature. Please check the function name");
+	
+	if (m_Components[ENUM_TO_UINT(T::_ID)] == nullptr)
+		return nullptr;
+
+	m_Components[ENUM_TO_UINT(T::_ID)]->Set_Owner(nullptr);
+	T* Return{ nullptr };
+	Return = m_Components[ENUM_TO_UINT(T::_ID)];
+	m_Components[ENUM_TO_UINT(T::_ID)] = nullptr;
+	return Return;
+}
+
+/// <summary>
+/// <para>컴포넌트를 교체하는 함수</para>
+/// 기존 슬롯에 있던 컴포넌트는 Safe_Release처리
+/// </summary>
+/// <typeparam name="T"></typeparam>
+/// <param name="pSrc"></param>
 template <typename T>
 inline void CGameObject::Change_Component(T* pSrc)
 {
@@ -140,6 +208,10 @@ inline void CGameObject::Change_Component(T* pSrc)
 	m_Components[ENUM_TO_UINT(T::_ID)]->Set_Owner(this);
 }
 
+/// <summary>
+/// 컴포넌트를 삭제하는 함수
+/// </summary>
+/// <typeparam name="T"></typeparam>
 template <typename T>
 inline void CGameObject::Remove_Component()
 {
