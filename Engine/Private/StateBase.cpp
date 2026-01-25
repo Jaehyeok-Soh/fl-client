@@ -305,6 +305,11 @@ void CStateBase::Set_JumpCount(_uint iCount)
 	m_pOwnerStateComp->Set_JumpCount(iCount);
 }
 
+_bool CStateBase::Key_Input(_uint iKey)
+{
+	return m_pOwnerStateComp->Key_Input(static_cast<CControlContext::CONTROL_KEY>(iKey));
+}
+
 _bool CStateBase::Align_Move(_uint iRunState)
 {
 	return m_pOwnerStateComp->Align_Move(iRunState);

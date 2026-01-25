@@ -151,6 +151,8 @@ protected:
 	CGameObject* Get_Target();
 	void Set_AnimationPlayRate(_float fSpeed);
 	void Set_JumpCount(_uint iCount);
+
+	_bool Key_Input(_uint iKey);
 private:
 	
 private:

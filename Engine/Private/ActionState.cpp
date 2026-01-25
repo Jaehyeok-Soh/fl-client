@@ -7,7 +7,7 @@
 #include "CameraMan.h"
 #include "Model.h"
 #include "Transform.h"
-#include "ControlContext.h"
+
 
 CActionState::CActionState()
 {
@@ -357,6 +357,62 @@ _bool CActionState::Align_Attack(_uint iState)
 	}
 
 	return false;
+}
+
+_bool CActionState::Key_Input(CControlContext::CONTROL_KEY eKey)
+{
+	switch (eKey)
+	{
+	case CControlContext::CONTROL_KEY::MOVE:
+		return m_pOwnerControlContext->Is_MovePressed();
+
+	case CControlContext::CONTROL_KEY::DASH:
+		return m_pOwnerControlContext->Is_DashPressed();
+
+	case CControlContext::CONTROL_KEY::WALK:
+		return m_pOwnerControlContext->Is_WalkPressed();
+
+	case CControlContext::CONTROL_KEY::SPECIALMV:
+		return m_pOwnerControlContext->Is_SepcialMovePressed();
+
+	case CControlContext::CONTROL_KEY::JUMP:
+		return m_pOwnerControlContext->Is_JumpPressed();
+
+	case CControlContext::CONTROL_KEY::WIRE:
+		return m_pOwnerControlContext->Is_WirePressed();
+
+	case CControlContext::CONTROL_KEY::DODGE:
+		return m_pOwnerControlContext->Is_DodgePressed();
+
+	case CControlContext::CONTROL_KEY::LATT:
+		return m_pOwnerControlContext->Is_LeftAttackPressed();
+
+	case CControlContext::CONTROL_KEY::RATT:
+		return m_pOwnerControlContext->Is_RightAttackPressed();
+
+	case CControlContext::CONTROL_KEY::CHARGATT:
+		return m_pOwnerControlContext->Is_ChargingAttackPressed();
+
+	case CControlContext::CONTROL_KEY::COMBO1:
+		return m_pOwnerControlContext->Is_ComboAtt1Pressed();
+
+	case CControlContext::CONTROL_KEY::COMBO2:
+		return m_pOwnerControlContext->Is_ComboAtt2Pressed();
+
+	case CControlContext::CONTROL_KEY::COMBO3:
+		return m_pOwnerControlContext->Is_ComboAtt3Pressed();
+
+	case CControlContext::CONTROL_KEY::COMBO4:
+		return m_pOwnerControlContext->Is_ComboAtt4Pressed();
+
+	case CControlContext::CONTROL_KEY::SKILL1:
+		return m_pOwnerControlContext->Is_Skill1Pressed();
+
+	case CControlContext::CONTROL_KEY::SKILL2:
+		return m_pOwnerControlContext->Is_Skill2Pressed();
+	}
+
+
 }
 
 void CActionState::Set_AnimationPlayRate(_uint iIndex, _float fSpeed)

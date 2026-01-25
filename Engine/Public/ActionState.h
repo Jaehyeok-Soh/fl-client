@@ -1,10 +1,10 @@
 #pragma once
 #include "Component.h"
 #include "StateBase.h"
+#include "ControlContext.h"
 
 NS_BEGIN(Engine)
 
-class CControlContext;
 class CModel;
 class CTransform;
 class CNavigation;
@@ -20,6 +20,7 @@ public:
 		_uint iStateCount = { 0 };
 		CModel* pOwnerModel = { nullptr };
 	}ACTIONSTATE_DESC;
+
 protected:
 	CActionState();
 	CActionState(const CActionState& rhs);
@@ -76,8 +77,11 @@ protected:
 	CGameObject* Get_Target();
 	_bool Align_Move(_uint iState);
 	_bool Align_Attack(_uint iState);
+
 	void Set_AnimationPlayRate(_uint iIndex, _float fSpeed);
 	void Set_JumpCount(_uint iCount);
+
+	_bool Key_Input(CControlContext::CONTROL_KEY eKey);
 private:
 	HRESULT Set_OwnerComponents();
 protected:
