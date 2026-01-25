@@ -61,10 +61,10 @@ HRESULT CStateBase::Start(void *pArg, _bool bForce)
 				return S_OK;
 			}
 		}
-
-		// pre가 있긴 하지만 이번에는 없을 때
-		Engine_Utils::Add_Flag(m_FAniFlags, STATEANI_FLAG::SA_PreAniDone);
 	}
+
+	// pre가 있긴 하지만 이번에는 없을 때 || pre 자체가 없을 때
+	Engine_Utils::Add_Flag(m_FAniFlags, STATEANI_FLAG::SA_PreAniDone);
 
 	// 만약 preAni가 없다면 내꺼 재생
 	Request_ChangeAnimation(m_iAnimIndex, m_bBlend, m_bLoop, bForce);
@@ -159,6 +159,14 @@ _bool CStateBase::Is_AnimFinished()
 		return false;
 
 	return m_pOwnerStateComp->Is_AnimFinished();
+}
+
+_bool CStateBase::Is_MainAnimFinished()
+{
+	if (m_pOwnerStateComp == nullptr)
+		return false;
+
+	return m_pOwnerStateComp->Is_AnimFinished() && Engine_Utils::Has_Flag(m_FAniFlags, STATEANI_FLAG::SA_PreAniDone);
 }
 
 _bool CStateBase::Is_AnimTrackPositionHalf()

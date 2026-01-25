@@ -116,6 +116,7 @@ protected:
 	_float Get_AnimElpasedTimeSeconds();
 	_float Get_AnimNormalizedTime();
 	_bool Is_AnimFinished();
+	_bool Is_MainAnimFinished();
 	_bool Is_AnimTrackPositionAt(_float fRatio);
 	_bool Is_AnimTrackPositionBetween(_float fStartRatio, _float EndRatio);
 	_bool Is_AnimTrackPositionHalf();
