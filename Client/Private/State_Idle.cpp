@@ -35,12 +35,6 @@ HRESULT CState_Idle::Start(void *pArg, _bool bForce)
 void CState_Idle::Update(const _float fTimeDelta)
 {
 	Super::Update(fTimeDelta);
-
-	if (Align_Move(ENUM_TO_UINT(CPlayer::State::RUN)))
-		return;
-
-	//if (Align_Attack(ENUM_TO_UINT(CPlayer::State::LEFTMELEE)))
-	//	return;
 }
 
 HRESULT CState_Idle::End()

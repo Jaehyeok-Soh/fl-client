@@ -1,15 +1,15 @@
 #include "pch.h"
-#include "State_Run.h"
+#include "State_RunLoop.h"
 #include "Player.h"
 #include "MainPlayer.h"
 #include "GameInstance.h"
 
-CState_Run::CState_Run(CActionState* pOwnerComponent)
-	: Super(pOwnerComponent, "Run")
+CState_RunLoop::CState_RunLoop(CActionState* pOwnerComponent)
+	: Super(pOwnerComponent, "RunLoop")
 {
 }
 
-HRESULT CState_Run::Initialize(void* pArg)
+HRESULT CState_RunLoop::Initialize(void* pArg)
 {
 	if (FAILED(Super::Initialize(pArg)))
 		return E_FAIL;
@@ -17,7 +17,7 @@ HRESULT CState_Run::Initialize(void* pArg)
 	return S_OK;
 }
 
-HRESULT CState_Run::Awake(const _uint iLevelIndex)
+HRESULT CState_RunLoop::Awake(const _uint iLevelIndex)
 {
 	if (FAILED(Super::Awake(iLevelIndex)))
 		return E_FAIL;
@@ -25,7 +25,7 @@ HRESULT CState_Run::Awake(const _uint iLevelIndex)
 	return S_OK;
 }
 
-HRESULT CState_Run::Start(void* pArg, _bool bForce)
+HRESULT CState_RunLoop::Start(void* pArg, _bool bForce)
 {
 	if (FAILED(Super::Start(pArg, bForce)))
 		return E_FAIL;		
@@ -33,7 +33,7 @@ HRESULT CState_Run::Start(void* pArg, _bool bForce)
 	return S_OK;
 }
 
-void CState_Run::Update(const _float fTimeDelta)
+void CState_RunLoop::Update(const _float fTimeDelta)
 {
 	Super::Update(fTimeDelta);
 
@@ -48,11 +48,13 @@ void CState_Run::Update(const _float fTimeDelta)
 	//if (Align_Attack(ENUM_TO_UINT(CPlayer::State::LEFTMELEE)))
 	//	return;
 
-	if (Align_Movement(fTimeDelta) == false)
-		Request_Change_State(ENUM_TO_UINT(CPlayer::State::IDLE));
+	
+	//// move를 해라, 근데 움직임이 없다면 idle로 바꿔라
+	//if (Align_Movement(fTimeDelta) == false)
+	//	Request_Change_State(ENUM_TO_UINT(CPlayer::State::IDLE));
 }
 
-HRESULT CState_Run::End()
+HRESULT CState_RunLoop::End()
 {
 	if (FAILED(Super::End()))
 		return E_FAIL;
@@ -61,18 +63,18 @@ HRESULT CState_Run::End()
 	return S_OK;
 }
 
-CState_Run* CState_Run::Create(CActionState* pOwnerComponent, void* pArg)
+CState_RunLoop* CState_RunLoop::Create(CActionState* pOwnerComponent, void* pArg)
 {
-	CState_Run* pInstance = new CState_Run(pOwnerComponent);
+	CState_RunLoop* pInstance = new CState_RunLoop(pOwnerComponent);
 	if (FAILED(pInstance->Initialize(pArg)))
 	{
-		MSG_BOX("CState_Run::Create, Failed");
+		MSG_BOX("CState_RunLoop::Create, Failed");
 		Safe_Release(pInstance);
 	}
 	return pInstance;
 }
 
-void CState_Run::Free()
+void CState_RunLoop::Free()
 {
 	Super::Free();
 }
