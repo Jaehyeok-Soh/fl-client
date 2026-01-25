@@ -134,6 +134,17 @@ CObjectPool* CObjectPool_Manager::Find_Pool(_uint iLevelIndex, const wstring& ws
 	return itr->second;
 }
 
+CObjectPool_Manager* CObjectPool_Manager::Create(_uint iLevelCount)
+{
+	CObjectPool_Manager* pInstance = new CObjectPool_Manager();
+	if (FAILED(pInstance->Initialize(iLevelCount)))
+	{
+		MSG_BOX("CObjectPool_Manager::Create, Failed");
+		Safe_Release(pInstance);
+	}
+	return pInstance;
+}
+
 void CObjectPool_Manager::Free()
 {
 	All_Clear();

@@ -113,11 +113,11 @@ void CGameInstance::Update_Engine(_float fTimeDelta)
 {
 	m_pSound_Manager->Update();
 	m_pInput_Manager->Update();
-	m_pLevel_Manager->Update(fTimeDelta);
 	m_pObject_Manager->Update_Priority(fTimeDelta);
 	m_pObject_Manager->Update(fTimeDelta);
 	m_pCollision_Manager->Update(fTimeDelta);
 	m_pObject_Manager->Update_Late(fTimeDelta);
+	m_pLevel_Manager->Update(fTimeDelta);
 
 	// 메인카메라 업데이트
 	m_pCamera_Manager->Update_ViewMatrix();

@@ -47,6 +47,7 @@ HRESULT CGameObject::Initialize(void* pArg)
 
 HRESULT CGameObject::Awake(const _uint iCurrentLevelID)
 {
+    m_bAwaked = true;
     return S_OK;
 }
 
