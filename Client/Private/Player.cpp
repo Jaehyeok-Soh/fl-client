@@ -133,7 +133,7 @@ HRESULT CPlayer::Ready_BaseStates()
     // Idle
     {
         CState_Idle::STATE_DESC desc = {};
-        desc.iAnimIndex = Get_AnimationIndex(L"Animation_TestPlayer_Idle");
+        desc.iAnimIndex = Get_AnimationIndex(L"Animation_PlayerMoon_Idle");
         desc.bBlend = true;
         desc.bLoop = true;
         if (FAILED(pActionState->Add_State(ENUM_TO_UINT(State::IDLE), CState_Idle::Create(pActionState, &desc))))
@@ -142,16 +142,16 @@ HRESULT CPlayer::Ready_BaseStates()
     // RunStart
     {
         CState_RunStart::STATE_DESC desc = {};
-        desc.iAnimIndex = Get_AnimationIndex(L"Animation_TestPlayer_Run_Loop");
+        desc.iAnimIndex = Get_AnimationIndex(L"Animation_PlayerMoon_Run_Start_L");
         desc.bBlend = true;
-        desc.bLoop = true;
+        desc.bLoop = false;
         if (FAILED(pActionState->Add_State(ENUM_TO_UINT(State::RUNSTART), CState_RunStart::Create(pActionState, &desc))))
             return E_FAIL;
     }
     // Run
     {
         CState_Run::STATE_DESC desc = {};
-        desc.iAnimIndex = Get_AnimationIndex(L"Animation_TestPlayer_Run_Loop");
+        desc.iAnimIndex = Get_AnimationIndex(L"Animation_PlayerMoon_Run_Loop");
         desc.bBlend = true;
         desc.bLoop = true;
         if (FAILED(pActionState->Add_State(ENUM_TO_UINT(State::RUN), CState_Run::Create(pActionState, &desc))))
@@ -160,9 +160,9 @@ HRESULT CPlayer::Ready_BaseStates()
     // RunEnd
     {
         CState_RunEnd::STATE_DESC desc = {};
-        desc.iAnimIndex = Get_AnimationIndex(L"Animation_TestPlayer_Run_Loop");
+        desc.iAnimIndex = Get_AnimationIndex(L"Animation_PlayerMoon_Run_Stop_L");
         desc.bBlend = true;
-        desc.bLoop = true;
+        desc.bLoop = false;
         if (FAILED(pActionState->Add_State(ENUM_TO_UINT(State::RUNEND), CState_RunEnd::Create(pActionState, &desc))))
             return E_FAIL;
     }

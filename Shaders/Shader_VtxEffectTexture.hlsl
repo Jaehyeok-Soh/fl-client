@@ -1,4 +1,5 @@
 #include "Struct_Defines.hlsl"
+#include "Animation_Defines.hlsl"
 #include "Light_Defines.hlsl"
 
 #define DEFAULTTEXTURE 0 // 기본 텍스처
@@ -7,10 +8,10 @@
 struct EffectDesc
 {
     uint g_Flags;
+    float3 vPadding;
     float2 g_ScrollOffset;
     float2 g_DistortionScale;
     float4 g_EffectColor;
-    float3 vPadding;
 };
 
 cbuffer ConstantBuffer_Effect
@@ -34,51 +35,28 @@ float4 DefaultTextureSample(float2 UV)
     return g_DefaultTextures[DEFAULTTEXTURE].Sample(LinearSampler, UV);
 
 }
-struct VS_IN
-{
-    float3 vLocalPos : POSITION;
-    row_major float4x4 TransformaionMatrix : INST_WORLD;
-    float2 vLifeTime : INST_TEXCOORD0;
-};
 
-struct VS_OUT
+VS_OUT_POS_GS_PARTICLE VS_Texture(VS_IN_POS_GS_PARTICLE In)
 {
-    float4 vWorldPos : POSITION;
-    float2 vPSize : PSIZE;
-    float2 vLifeTime : TEXCOORD0;
-};
+    VS_OUT_POS_GS_PARTICLE Out;
+    
+    vector vPosition = mul(vector(In.vPosition, 1.f), In.matTransform);
+    
 
-VS_OUT VS_Texture(VS_IN In)
-{
-    VS_OUT Out;
-    
-    Out.vWorldPos = mul(float4(0.f, 0.f, 0.f, 1.f), W);
-    
-    // ============   크기 : World 행렬에서 스케일 값 정확히 추출   =============
-    Out.vPSize.x = length(W._11_12_13);
-    Out.vPSize.y = length(W._21_22_23);
-    
+    Out.vPosition = mul(vPosition, W);
+    Out.vPSize = float2(length(In.matTransform._11_12_13), length(In.matTransform._21_22_23));
     Out.vLifeTime = In.vLifeTime;
     
     return Out;
 }
 
-
-struct GS_OUT
-{
-    float4 vPosition : SV_Position;
-    float2 vTexcoord : TEXCOORD0;
-    float2 vLifeTime : TEXCOORD1;
-};
-
-
 [maxvertexcount(6)]
-void GS_Texture(point VS_OUT In[1], inout TriangleStream<GS_OUT> OutStream)
+void GS_Texture(point VS_OUT_POS_GS_PARTICLE In[1], inout TriangleStream<GS_OUT_POS_PARTICLE> OutStream)
 {
-    GS_OUT Out[4];
+    GS_OUT_POS_PARTICLE Out[4];
     
     // =========        빌보드 계산          ==============
-    float3 vLook = normalize(CameraPosition() - In[0].vWorldPos.xyz);
+    float3 vLook = normalize(CameraPosition() - In[0].vPosition.xyz);
     float3 vRight = normalize(cross(float3(0.f, 1.f, 0.f), vLook)) * In[0].vPSize.x;
     float3 vUp = normalize(cross(vLook, vRight)) * In[0].vPSize.y;
     
@@ -86,17 +64,17 @@ void GS_Texture(point VS_OUT In[1], inout TriangleStream<GS_OUT> OutStream)
     
     // ========         정점 4개 생성        =============
     float3 vPos[4];
-    vPos[0] = In[0].vWorldPos.xyz + vRight + vUp;
-    vPos[1] = In[0].vWorldPos.xyz - vRight + vUp;
-    vPos[2] = In[0].vWorldPos.xyz - vRight - vUp;
-    vPos[3] = In[0].vWorldPos.xyz + vRight - vUp;
+    vPos[0] = In[0].vPosition.xyz + vRight + vUp;
+    vPos[1] = In[0].vPosition.xyz - vRight + vUp;
+    vPos[2] = In[0].vPosition.xyz - vRight - vUp;
+    vPos[3] = In[0].vPosition.xyz + vRight - vUp;
 
     float2 vUV[4] = { float2(0, 0), float2(1, 0), float2(1, 1), float2(0, 1) };
 
     for (int i = 0; i < 4; ++i)
     {
         Out[i].vPosition = mul(float4(vPos[i], 1.f), matVP);
-        Out[i].vTexcoord = vUV[i];
+        Out[i].vUV = vUV[i];
         Out[i].vLifeTime = In[0].vLifeTime;
     }
 
@@ -111,17 +89,17 @@ void GS_Texture(point VS_OUT In[1], inout TriangleStream<GS_OUT> OutStream)
     OutStream.RestartStrip();
 }
 
-float4 PS_Texture(GS_OUT In) : SV_TARGET0
+float4 PS_Texture(GS_OUT_POS_PARTICLE In) : SV_TARGET0
 {
-    float2 noiseUV = In.vTexcoord + g_Effect.g_ScrollOffset;
-    float4 noiseSample = { 0.f, 0.f, 0.f, 1.f };
+    float2 noiseUV = In.vUV + g_Effect.g_ScrollOffset;
+    float4 noiseSample = { 1.f, 1.f, 1.f, 1.f };
     
     if (HasNoiseTexture())
     {
         noiseSample = NoiseTextureSample(noiseUV);
     }
     float noiseValue = noiseSample.r;
-    float2 finalUV = In.vTexcoord;
+    float2 finalUV = In.vUV;
     
     finalUV.x += (noiseValue - 0.5f) * g_Effect.g_DistortionScale.x;
     finalUV.y += (noiseValue - 0.5f) * g_Effect.g_DistortionScale.y;
@@ -134,10 +112,10 @@ float4 PS_Texture(GS_OUT In) : SV_TARGET0
     float LifeRatio = saturate(1.0f - (In.vLifeTime.x / In.vLifeTime.y));
     finalAlpha *= LifeRatio;
     
-    if (finalAlpha < 0.01f)
+    if (finalAlpha < 0.05f)
         discard;
     
-    return float4(color.rgb * g_Effect.g_EffectColor.rgb * 3.0f, finalAlpha);
+    return float4(color.rgb * g_Effect.g_EffectColor.rgb * 1.0f, finalAlpha);
 }
 
 
@@ -149,7 +127,7 @@ technique11 T0
         SetDepthStencilState(DS_Default, 0);
         SetBlendState(BS_Default, float4(0.f, 0.f, 0.f, 0.f), 0xffffffff);
         SetVertexShader(CompileShader(vs_5_0, VS_Texture()));
-        GeometryShader = compile gs_5_0 GS_Texture();
+        SetGeometryShader(CompileShader(gs_5_0, GS_Texture()));
         SetPixelShader(CompileShader(ps_5_0, PS_Texture()));
     }
 }

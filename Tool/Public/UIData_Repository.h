@@ -7,6 +7,11 @@ using json = nlohmann::json;
 using order_json = nlohmann::ordered_json;
 #pragma pop_macro("new")
 
+NS_BEGIN(Engine)
+class CGameInstance;
+NS_END
+
+
 NS_BEGIN(Tool)
 typedef struct tagCanvasData CANVAS_DATA;
 typedef struct tagLayerData LAYER_DATA;
@@ -35,9 +40,11 @@ private:
 public:
 	HRESULT Load_UIData(const _wstring& wstrSaveFilePath, OUT vector<CANVAS_DATA>& OutVec);
 	HRESULT Save_UIData(const _wstring& wstrSaveFilePath);
+	HRESULT Make_UIObjects(const vector<CANVAS_DATA>& vecData);
 
 private:
 	vector<CANVAS_DATA> m_vecCanvasData;
+	CGameInstance* m_pGameInstance = { nullptr };
 
 public:
 	virtual void Free()override;

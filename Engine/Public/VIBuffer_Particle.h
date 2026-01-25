@@ -23,6 +23,7 @@ public:
 		Vec3 vPivot = { 0.f, 0.f, 0.f };
 		Vec3 vRange = { 0.f, 0.f, 0.f };
 		Vec2 vSpeed = { 0.f, 0.f };
+		float vPlayBackSpeed = { 1.f };
 		Vec2 vLifeTime = { 0.f, 0.f };
 		_bool isLoop = { false };
 	}PARTICLE_ORIGIN_DESC;
@@ -49,8 +50,11 @@ public:
 public:
 	const PARTICLE_ORIGIN_DESC& Get_ParticleDesc() { return m_tParticleDesc; }
 	void Set_ParticleDesc(const PARTICLE_ORIGIN_DESC& Desc);
-
 	HRESULT Resize_InstanceBuffer(_uint iNumInstanceCount);
+
+public:
+	virtual _uint   Get_InstanceCount() { return m_iInstanceCount; }
+	virtual _uint	Get_IndexCountPerInstance() { return m_iIndexCountPerInstance; }
 
 protected:
 	_bool			m_bIsLoop = { false };
@@ -59,6 +63,7 @@ protected:
 	_uint			m_iInstanceVertexStride = {};
 	VTXPARTICLE*	m_pInstanceVertices = { nullptr };
 	_float*			m_pSpeeds = { nullptr };
+	_float			m_fPlayBackSpeed = { 1.f };
 	Vec3			m_vPivot = {};
 protected:
 	ID3D11Buffer* m_pVBInstance = { nullptr };

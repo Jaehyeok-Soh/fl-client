@@ -27,6 +27,11 @@
 #include "ColliderPart.h"
 #include "Loader.h"
 //=================
+// UI
+//=================
+#include "GenericUI.h"
+
+//=================
 // Resource
 //=================
 #include "TextureBase.h"
@@ -101,6 +106,16 @@ HRESULT CLoader::Loading_For_Logo()
 		std::lock_guard<std::mutex> lockguard(m_mutex_1);
 		lstrcpy(m_szFPS, TEXT("텍스쳐를 로딩 중 입니다."));
 	}
+
+	// For. Prototype_Component_Button_Test_Texture
+	{
+		CTexture::TEXTURE_COMPONENT_ORIGIN_DESC textureDesc = {};
+		textureDesc.iTextureCount = 1;
+		textureDesc.wstrTexturePath = L"../../Resources/Textures/UI/Button/T_Com_BtnIcon_Custom.png";
+		if (FAILED(m_pGameInstance->Add_Prototype(ENUM_TO_UINT(ELevelType::LOGO), L"Prototype_Component_Button_Test_Texture", CTexture::Create(&textureDesc))))
+			return E_FAIL;
+	}
+
 	{
 		std::lock_guard<std::mutex> lockguard(m_mutex_1);
 		lstrcpy(m_szFPS, TEXT("모델을(를) 로딩 중 입니다."));
@@ -128,7 +143,7 @@ HRESULT CLoader::Loading_For_Logo()
 		desc.eType = EModelType::ANIM;
 		desc.iPrototypeLevelIndex = ENUM_TO_UINT(ELevelType::STATIC);
 		desc.pMatPreTransform = &matPreTransformScale;
-		desc.wstrModelFolderName = L"TestPlayer";
+		desc.wstrModelFolderName = L"PlayerMoon";
 		m_pGameInstance->Add_Prototype(ENUM_TO_UINT(ELevelType::STATIC), L"Prototype_Component_Model_Master", CModel::Create(m_pDevice, m_pDeviceContext, &desc));
 	}
 	// For. Prototype_Component_Camera
@@ -155,6 +170,16 @@ HRESULT CLoader::Loading_For_Logo()
 	m_pGameInstance->Add_Prototype(ENUM_TO_UINT(ELevelType::STATIC), L"Prototype_GameObject_Part_Body", CBody::Create(m_pDevice, m_pDeviceContext));
 	// For. Prototype_GameObject_Part_Collider
 	m_pGameInstance->Add_Prototype(ENUM_TO_UINT(ELevelType::STATIC), L"Prototype_GameObject_Part_Collider", CColliderPart::Create(m_pDevice, m_pDeviceContext));
+
+	//=================
+	// UI
+	//=================
+	// For. Prototype_UI_Test_Button
+	{
+		if (FAILED(m_pGameInstance->Add_Prototype(ENUM_TO_UINT(ELevelType::LOGO), L"Prototype_UI_Test_Button", CGenericUI::Create(m_pDevice, m_pDeviceContext))))
+			return E_FAIL;
+	}
+
 	{
 		std::lock_guard<std::mutex> lockguard(m_mutex_1);
 		lstrcpy(m_szFPS, TEXT("로딩이 완료되었슴니다."));

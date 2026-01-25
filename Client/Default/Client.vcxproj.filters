@@ -97,6 +97,12 @@
     <Filter Include="99. ETC\pch">
       <UniqueIdentifier>{1afcebe2-6c14-4448-ab52-4236696f383f}</UniqueIdentifier>
     </Filter>
+    <Filter Include="03. GameObject\UIObjects">
+      <UniqueIdentifier>{b8fa4419-f65b-4ff0-9246-77dad0e88328}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="03. GameObject\UIObjects\Manager">
+      <UniqueIdentifier>{7559622c-8d80-4e5c-81bd-e123eb0f162c}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="targetver.h">
@@ -189,6 +195,12 @@
     <ClInclude Include="pch.h">
       <Filter>99. ETC\pch</Filter>
     </ClInclude>
+    <ClInclude Include="..\Public\GenericUI.h">
+      <Filter>03. GameObject\UIObjects</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\UI_Manager.h">
+      <Filter>03. GameObject\UIObjects\Manager</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <Image Include="Client.ico">
@@ -278,6 +290,12 @@
     </ClCompile>
     <ClCompile Include="pch.cpp">
       <Filter>99. ETC\pch</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\GenericUI.cpp">
+      <Filter>03. GameObject\UIObjects</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\UI_Manager.cpp">
+      <Filter>03. GameObject\UIObjects\Manager</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

@@ -16,6 +16,7 @@ public:
 	typedef struct tagMapObjectDesc : public CToolObject::TOOLOBJECT_DESC
 	{
 		bool			isLoaded{ false };
+		wstring			wstrModelName{L""};
 		wstring			wstrModelPath{L""};
 	}MAPOBJECT_DESC;
 
@@ -41,6 +42,7 @@ public:
 
 protected:
 	/* 내가 해당하는 MapObject Type 에 따른 Desc을 작성을 다르게할예정 */
+	wstring					m_wstrModelName{L""};
 	wstring					m_wstrModelPath{L""};
 	EMapObject_Type			m_eMapObjectType{ EMapObject_Type::END };
 	bool					m_isLoaded{false};
