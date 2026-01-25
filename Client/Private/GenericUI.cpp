@@ -23,33 +23,55 @@ CGenericUI::CGenericUI(const CGenericUI& rhs)
 
 HRESULT CGenericUI::Initialize_Prototype()
 {
+	if (FAILED(Super::Initialize_Prototype()))
+		return E_FAIL;
 	return S_OK;
 }
 
 HRESULT CGenericUI::Initialize(void* pArg)
 {
+	GENERIC_UI_DESC* pDesc = static_cast<GENERIC_UI_DESC*>(pArg);
+
+	if (FAILED(Super::Initialize(pArg)))
+		return E_FAIL;
+
+
+	if (FAILED(Ready_Components(pDesc)))
+		return E_FAIL;
+
 	return S_OK;
 }
 
 HRESULT CGenericUI::Awake(const _uint iCurrentLevelID)
 {
+	if (FAILED(Super::Awake(iCurrentLevelID)))
+		return E_FAIL;
+
+	Set_SizeToTextureScale();
 	return S_OK;
 }
 
 void CGenericUI::Update_Priority(const _float fTimeDelta)
 {
+	Super::Update_Priority(fTimeDelta);
 }
 
 void CGenericUI::Update(const _float fTimeDelta)
 {
+
+	Super::Update(fTimeDelta);
 }
 
 void CGenericUI::Update_Late(const _float fTimeDelta)
 {
+
+	Super::Update_Late(fTimeDelta);
 }
 
 void CGenericUI::Ready_Before_Render(const _float fTimeDelta)
 {
+
+	Super::Ready_Before_Render(fTimeDelta);
 }
 
 HRESULT CGenericUI::Render()
@@ -117,4 +139,5 @@ CGameObject* CGenericUI::Clone(void* pArg)
 
 void CGenericUI::Free()
 {
+	Super::Free();
 }

@@ -339,6 +339,7 @@ HRESULT CImGui_UIManager::Clear_UIObjects()
 			m_pGameInstance->Clear_Layer(static_cast<uint32_t>(ELevelType::UI), Engine_Utils::ToWString(LayerData.strTag));
 		}
 	}
+	return S_OK;
 }
 
 void CImGui_UIManager::Free()
