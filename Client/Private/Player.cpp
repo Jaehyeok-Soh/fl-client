@@ -1,4 +1,6 @@
 #include "pch.h"
+#include "Player.h"
+
 #include "Navigation.h"
 #include "StatComponent.h"
 #include "MainPlayer.h"
@@ -13,14 +15,29 @@
 #include "Bone.h"
 #include "Body.h"
 #include "PlayerActionState.h"
-#include "GameInstance.h"
+
 #pragma region States
-#include "State_RunStart.h"
-#include "State_Run.h"
-#include "State_RunEnd.h"
 #include "State_Idle.h"
+#include "State_Walk.h"
+#include "State_Crouch.h"
+#include "State_CrouchWalk.h"
+#include "State_Slide.h"
+
+#include "State_DashBack.h"
+#include "State_DashFront.h"
+#include "State_DashSky.h"
+
+#include "State_RunShort.h"
+#include "State_RunLoop.h"
+
+#include "State_Jump.h"
+#include "State_JumpDouble.h"
+#include "State_JumpBullet.h"
+#include "State_JumpBack.h"
+
 #pragma endregion
-#include "Player.h"
+
+#include "GameInstance.h"
 
 CPlayer::CPlayer(ID3D11Device* pDevice, ID3D11DeviceContext* pDeviceContext)
     : Super(pDevice, pDeviceContext)
@@ -130,46 +147,203 @@ HRESULT CPlayer::Ready_BaseStates()
     if (!(pActionState = Get_Component<CPlayerActionState>()))
         return E_FAIL;
 
+    vector<_uint> vecChangeState_ByKey{};
+    vecChangeState_ByKey.resize(ENUM_TO_SZET(CStateBase_Player::STATEKEY::END), ENUM_TO_UINT(State::END));
+
     // Idle
     {
-        CState_Idle::STATE_DESC desc = {};
-        desc.FAniFlags = CStateBase::STATEANI_FLAG::SA_HasPreAni;
-        desc.vecPreAnims = { {ENUM_TO_UINT(State::RUN), Get_AnimationIndex(L"Animation_PlayerMoon_Run_Stop_L")} };
-        desc.iAnimIndex = Get_AnimationIndex(L"Animation_PlayerMoon_Idle");
-        desc.bBlend = true;
-        desc.bLoop = true;
+        CStateBase_Player::PLAYER_STATEBASE_DESC  desc = {};
+        desc.FAniFlags      = CStateBase::STATEANI_FLAG::SA_HasPreAni;
+        desc.vecPreAnims    = { 
+                                {ENUM_TO_UINT(State::RUNLOOP), Get_AnimationIndex(L"Animation_PlayerMoon_Run_Stop_L")} 
+                                ,{ENUM_TO_UINT(State::WALK), Get_AnimationIndex(L"Animation_PlayerMoon_Walk_Stop_L")} 
+                                ,{ENUM_TO_UINT(State::CROUCH), Get_AnimationIndex(L"Animation_PlayerMoon_Crouch_To_Stand")}
+                                ,{ENUM_TO_UINT(State::CROUCHWALK), Get_AnimationIndex(L"Animation_PlayerMoon_Crouch_To_Stand")}
+                                ,{ENUM_TO_UINT(State::SLIDE), Get_AnimationIndex(L"Animation_PlayerMoon_Slide_End")}
+        };
+        desc.iAnimIndex     = { Get_AnimationIndex(L"Animation_PlayerMoon_Idle") };
+        desc.bBlend         = true;
+        desc.bLoop          = true;
+
+        desc.eMoveType = CStateBase_Player::MOVETYPE::CHANGE;
+        vecChangeState_ByKey[ENUM_TO_SZET(CStateBase_Player::STATEKEY::MOVE)] = ENUM_TO_UINT(State::WALK);
+        //vecChangeState_ByKey[ENUM_TO_SZET(CStateBase_Player::STATEKEY::SPACE)] = ENUM_TO_UINT(State::JUMP);
+        vecChangeState_ByKey[ENUM_TO_SZET(CStateBase_Player::STATEKEY::SHIFT)] = ENUM_TO_UINT(State::DASHBACK);
+        vecChangeState_ByKey[ENUM_TO_SZET(CStateBase_Player::STATEKEY::LCRTL_PRESS)] = ENUM_TO_UINT(State::CROUCH);
+        desc.vecChangeState_ByKey = vecChangeState_ByKey;
+
+
         if (FAILED(pActionState->Add_State(ENUM_TO_UINT(State::IDLE), CState_Idle::Create(pActionState, &desc))))
             return E_FAIL;
     }
-    //// RunStart
-    //{
-    //    CState_RunStart::STATE_DESC desc = {};
-    //    desc.iAnimIndex = Get_AnimationIndex(L"Animation_PlayerMoon_Run_Start_L");
-    //    desc.bBlend = true;
-    //    desc.bLoop = false;
-    //    if (FAILED(pActionState->Add_State(ENUM_TO_UINT(State::RUNSTART), CState_RunStart::Create(pActionState, &desc))))
-    //        return E_FAIL;
-    //}
-    // Run
+
+    // Walk
     {
-        CState_Run::STATE_DESC desc = {};
+        CStateBase_Player::PLAYER_STATEBASE_DESC  desc = {};
         desc.FAniFlags = CStateBase::STATEANI_FLAG::SA_HasPreAni;
-        desc.vecPreAnims = { {-1, Get_AnimationIndex(L"Animation_PlayerMoon_Run_Start_L")} };
-        desc.iAnimIndex = Get_AnimationIndex(L"Animation_PlayerMoon_Run_Loop");
+        desc.vecPreAnims = {
+                        {ENUM_TO_UINT(State::SLIDE), Get_AnimationIndex(L"Animation_PlayerMoon_Slide_End")}
+        };
+        desc.iAnimIndex = { Get_AnimationIndex(L"Animation_PlayerMoon_Walk_Loop") };
         desc.bBlend = true;
         desc.bLoop = true;
-        if (FAILED(pActionState->Add_State(ENUM_TO_UINT(State::RUN), CState_Run::Create(pActionState, &desc))))
+
+        desc.eMoveType = CStateBase_Player::MOVETYPE::NORMAL;
+        vecChangeState_ByKey[ENUM_TO_SZET(CStateBase_Player::STATEKEY::MOVE)] = ENUM_TO_UINT(State::IDLE);
+        //vecChangeState_ByKey[ENUM_TO_SZET(CStateBase_Player::STATEKEY::SPACE)] = ENUM_TO_UINT(State::JUMP);
+        vecChangeState_ByKey[ENUM_TO_SZET(CStateBase_Player::STATEKEY::SHIFT)] = ENUM_TO_UINT(State::DASHFRONT);
+        vecChangeState_ByKey[ENUM_TO_SZET(CStateBase_Player::STATEKEY::LCRTL_PRESS)] = ENUM_TO_UINT(State::SLIDE);
+        desc.vecChangeState_ByKey = vecChangeState_ByKey;
+
+        if (FAILED(pActionState->Add_State(ENUM_TO_UINT(State::WALK), CState_Walk::Create(pActionState, &desc))))
             return E_FAIL;
     }
-    //// RunEnd
-    //{
-    //    CState_RunEnd::STATE_DESC desc = {};
-    //    desc.iAnimIndex = Get_AnimationIndex(L"Animation_PlayerMoon_Run_Stop_L");
-    //    desc.bBlend = true;
-    //    desc.bLoop = false;
-    //    if (FAILED(pActionState->Add_State(ENUM_TO_UINT(State::RUNEND), CState_RunEnd::Create(pActionState, &desc))))
-    //        return E_FAIL;
-    //}
+
+    // Crouch
+    {
+        CStateBase_Player::PLAYER_STATEBASE_DESC  desc = {};
+        desc.FAniFlags = 0;
+        desc.iAnimIndex = { Get_AnimationIndex(L"Animation_PlayerMoon_Crouch_Idle") };
+        desc.bBlend = true;
+        desc.bLoop = true;
+
+        desc.eMoveType = CStateBase_Player::MOVETYPE::CHANGE;
+        vecChangeState_ByKey[ENUM_TO_SZET(CStateBase_Player::STATEKEY::MOVE)] = ENUM_TO_UINT(State::CROUCHWALK);
+        //vecChangeState_ByKey[ENUM_TO_SZET(CStateBase_Player::STATEKEY::SPACE)] = ENUM_TO_UINT(State::JUMPBULLET);
+        vecChangeState_ByKey[ENUM_TO_SZET(CStateBase_Player::STATEKEY::SHIFT)] = ENUM_TO_UINT(State::DASHBACK);
+        vecChangeState_ByKey[ENUM_TO_SZET(CStateBase_Player::STATEKEY::LCRTL_PRESS)] = ENUM_TO_UINT(State::END);
+        vecChangeState_ByKey[ENUM_TO_SZET(CStateBase_Player::STATEKEY::LCRTL_UP)] = ENUM_TO_UINT(State::IDLE);
+        desc.vecChangeState_ByKey = vecChangeState_ByKey;
+
+        if (FAILED(pActionState->Add_State(ENUM_TO_UINT(State::CROUCH), CState_Crouch::Create(pActionState, &desc))))
+            return E_FAIL;
+    }
+
+    // CrouchWalk
+    {
+        CStateBase_Player::PLAYER_STATEBASE_DESC  desc = {};
+        desc.FAniFlags = 0;
+        desc.iAnimIndex = { Get_AnimationIndex(L"Animation_PlayerMoon_Crouch_Loop") };
+        desc.bBlend = true;
+        desc.bLoop = true;
+
+        desc.eMoveType = CStateBase_Player::MOVETYPE::NORMAL;
+        vecChangeState_ByKey[ENUM_TO_SZET(CStateBase_Player::STATEKEY::MOVE)] = ENUM_TO_UINT(State::IDLE);
+        //vecChangeState_ByKey[ENUM_TO_SZET(CStateBase_Player::STATEKEY::SPACE)] = ENUM_TO_UINT(State::JUMPBULLET);
+        vecChangeState_ByKey[ENUM_TO_SZET(CStateBase_Player::STATEKEY::SHIFT)] = ENUM_TO_UINT(State::DASHBACK);
+        vecChangeState_ByKey[ENUM_TO_SZET(CStateBase_Player::STATEKEY::LCRTL_PRESS)] = ENUM_TO_UINT(State::END);
+        vecChangeState_ByKey[ENUM_TO_SZET(CStateBase_Player::STATEKEY::LCRTL_UP)] = ENUM_TO_UINT(State::IDLE);
+        desc.vecChangeState_ByKey = vecChangeState_ByKey;
+
+        if (FAILED(pActionState->Add_State(ENUM_TO_UINT(State::CROUCHWALK), CState_CrouchWalk::Create(pActionState, &desc))))
+            return E_FAIL;
+    }
+
+    // Slide
+    {
+        CStateBase_Player::PLAYER_STATEBASE_DESC  desc = {};
+        desc.FAniFlags = 0;
+        desc.iAnimIndex = { Get_AnimationIndex(L"Animation_PlayerMoon_Slide_Loop") };
+        desc.bBlend = true;
+        desc.bLoop = false;
+        desc.iNextState = ENUM_TO_UINT(State::IDLE);
+
+        desc.eMoveType = CStateBase_Player::MOVETYPE::OWN;
+        vecChangeState_ByKey[ENUM_TO_SZET(CStateBase_Player::STATEKEY::MOVE)] = ENUM_TO_UINT(State::END);
+        //vecChangeState_ByKey[ENUM_TO_SZET(CStateBase_Player::STATEKEY::SPACE)] = ENUM_TO_UINT(State::JUMPBULLET);
+        vecChangeState_ByKey[ENUM_TO_SZET(CStateBase_Player::STATEKEY::SHIFT)] = ENUM_TO_UINT(State::DASHFRONT);
+        vecChangeState_ByKey[ENUM_TO_SZET(CStateBase_Player::STATEKEY::LCRTL_PRESS)] = ENUM_TO_UINT(State::END);
+        vecChangeState_ByKey[ENUM_TO_SZET(CStateBase_Player::STATEKEY::LCRTL_UP)] = ENUM_TO_UINT(State::IDLE);
+        desc.vecChangeState_ByKey = vecChangeState_ByKey;
+
+        if (FAILED(pActionState->Add_State(ENUM_TO_UINT(State::SLIDE), CState_Slide::Create(pActionState, &desc))))
+            return E_FAIL;
+    }
+
+    // DASHBACK
+    {
+        CStateBase_Player::PLAYER_STATEBASE_DESC  desc = {};
+        desc.FAniFlags = 0;
+        desc.iAnimIndex = { Get_AnimationIndex(L"Animation_PlayerMoon_DodgeBack") };
+        desc.bBlend = true;
+        desc.bLoop = false;
+        desc.iNextState = ENUM_TO_UINT(State::IDLE);
+
+        desc.eMoveType = CStateBase_Player::MOVETYPE::CHANGE;
+        vecChangeState_ByKey[ENUM_TO_SZET(CStateBase_Player::STATEKEY::MOVE)] = ENUM_TO_UINT(State::IDLE);
+        //vecChangeState_ByKey[ENUM_TO_SZET(CStateBase_Player::STATEKEY::SPACE)] = ENUM_TO_UINT(State::JUMPBACK);
+        vecChangeState_ByKey[ENUM_TO_SZET(CStateBase_Player::STATEKEY::SHIFT)] = ENUM_TO_UINT(State::END);
+        vecChangeState_ByKey[ENUM_TO_SZET(CStateBase_Player::STATEKEY::LCRTL_PRESS)] = ENUM_TO_UINT(State::END);
+        vecChangeState_ByKey[ENUM_TO_SZET(CStateBase_Player::STATEKEY::LCRTL_UP)] = ENUM_TO_UINT(State::END);
+        desc.vecChangeState_ByKey = vecChangeState_ByKey;
+
+        if (FAILED(pActionState->Add_State(ENUM_TO_UINT(State::DASHBACK), CState_DashBack::Create(pActionState, &desc))))
+            return E_FAIL;
+    }
+
+    // DASHFRONT
+    {
+        CStateBase_Player::PLAYER_STATEBASE_DESC  desc = {};
+        desc.FAniFlags = 0;
+        desc.iAnimIndex = { Get_AnimationIndex(L"Animation_PlayerMoon_Dodge") };
+        desc.bBlend = true;
+        desc.bLoop = false;
+        desc.iNextState = ENUM_TO_UINT(State::IDLE);
+
+        desc.eMoveType = CStateBase_Player::MOVETYPE::CHANGE;
+        vecChangeState_ByKey[ENUM_TO_SZET(CStateBase_Player::STATEKEY::MOVE)] = ENUM_TO_UINT(State::RUNSHORT);
+        //vecChangeState_ByKey[ENUM_TO_SZET(CStateBase_Player::STATEKEY::SPACE)] = ENUM_TO_UINT(State::JUMPBACK);
+        vecChangeState_ByKey[ENUM_TO_SZET(CStateBase_Player::STATEKEY::SHIFT)] = ENUM_TO_UINT(State::END);
+        vecChangeState_ByKey[ENUM_TO_SZET(CStateBase_Player::STATEKEY::LCRTL_PRESS)] = ENUM_TO_UINT(State::END);
+        vecChangeState_ByKey[ENUM_TO_SZET(CStateBase_Player::STATEKEY::LCRTL_UP)] = ENUM_TO_UINT(State::END);
+        desc.vecChangeState_ByKey = vecChangeState_ByKey;
+
+        if (FAILED(pActionState->Add_State(ENUM_TO_UINT(State::DASHFRONT), CState_DashFront::Create(pActionState, &desc))))
+            return E_FAIL;
+    }
+
+    // RUNSHORT
+    {
+        CStateBase_Player::PLAYER_STATEBASE_DESC  desc = {};
+        desc.FAniFlags = 0;
+        desc.iAnimIndex = { Get_AnimationIndex(L"Animation_PlayerMoon_Run_Loop_Acc") };
+        desc.bBlend = true;
+        desc.bLoop = false;
+        desc.iNextState = ENUM_TO_UINT(State::IDLE);
+
+        desc.eMoveType = CStateBase_Player::MOVETYPE::NON;
+        vecChangeState_ByKey[ENUM_TO_SZET(CStateBase_Player::STATEKEY::MOVE)] = ENUM_TO_UINT(State::WALK);
+        //vecChangeState_ByKey[ENUM_TO_SZET(CStateBase_Player::STATEKEY::SPACE)] = ENUM_TO_UINT(State::JUMP);
+        vecChangeState_ByKey[ENUM_TO_SZET(CStateBase_Player::STATEKEY::SHIFT)] = ENUM_TO_UINT(State::RUNLOOP);
+        vecChangeState_ByKey[ENUM_TO_SZET(CStateBase_Player::STATEKEY::LCRTL_PRESS)] = ENUM_TO_UINT(State::END);
+        vecChangeState_ByKey[ENUM_TO_SZET(CStateBase_Player::STATEKEY::LCRTL_UP)] = ENUM_TO_UINT(State::END);
+        desc.vecChangeState_ByKey = vecChangeState_ByKey;
+
+        if (FAILED(pActionState->Add_State(ENUM_TO_UINT(State::RUNSHORT), CState_RunShort::Create(pActionState, &desc))))
+            return E_FAIL;
+    }
+
+    // RunLoop
+    {
+        CState_RunLoop::PLAYER_STATEBASE_DESC  desc = {};
+        desc.FAniFlags      = CStateBase::STATEANI_FLAG::SA_HasPreAni;
+        desc.vecPreAnims    = { {-1, Get_AnimationIndex(L"Animation_PlayerMoon_Run_Start_L")} };
+        desc.iAnimIndex     = { Get_AnimationIndex(L"Animation_PlayerMoon_Run_Loop") };
+        desc.bBlend         = true;
+        desc.bLoop          = true;
+
+        desc.eMoveType = CStateBase_Player::MOVETYPE::NORMAL;
+        vecChangeState_ByKey[ENUM_TO_SZET(CStateBase_Player::STATEKEY::MOVE)] = ENUM_TO_UINT(State::IDLE);
+        //vecChangeState_ByKey[ENUM_TO_SZET(CStateBase_Player::STATEKEY::SPACE)] = ENUM_TO_UINT(State::JUMP);
+        vecChangeState_ByKey[ENUM_TO_SZET(CStateBase_Player::STATEKEY::SHIFT)] = ENUM_TO_UINT(State::DASHFRONT);
+        vecChangeState_ByKey[ENUM_TO_SZET(CStateBase_Player::STATEKEY::LCRTL_PRESS)] = ENUM_TO_UINT(State::SLIDE);
+        vecChangeState_ByKey[ENUM_TO_SZET(CStateBase_Player::STATEKEY::LCRTL_UP)] = ENUM_TO_UINT(State::END);
+        desc.vecChangeState_ByKey = vecChangeState_ByKey;
+
+        if (FAILED(pActionState->Add_State(ENUM_TO_UINT(State::RUNLOOP), CState_RunLoop::Create(pActionState, &desc))))
+            return E_FAIL;
+    }
+
     return S_OK;
 }
 

@@ -49,7 +49,7 @@ HRESULT CLevel_Logo::Render()
 	if (FAILED(Super::Render()))
 		return E_FAIL;
 
-	::SetWindowText(g_hWnd, L"로고레벨 입니다.");
+	//::SetWindowText(g_hWnd, L"로고레벨 입니다.");
 
 	return S_OK;
 }
