@@ -30,9 +30,29 @@ public:
 	};
 	enum class State : _uint
 	{
-		IDLE,
-		RUN,
-		END
+		IDLE
+		,WALK
+		,CROUCH
+		,CROUCHWALK
+		,SLIDE
+		,SLIDESKY
+
+		,DASHBACK
+		,DASHFRONT
+		,DASHSKY
+
+		,RUNSHORT
+		,RUNLOOP
+
+		,JUMP
+		,JUMPDOUBLE
+		,JUMPBULLET
+		,JUMPBACK
+
+		,FALL
+		,LAND
+
+		,END
 	};
 protected:
 	CPlayer(ID3D11Device* pDevice, ID3D11DeviceContext* pDeviceContext);
