@@ -65,6 +65,7 @@ public:
 #pragma endregion
 
 	HRESULT Remake_UIObjects();
+	HRESULT Clear_UIObjects();
 
 private:
 	/* CANVAS_DATA -> LAYER_DATA -> GENERIC_UI_DATA 각각 벡터를 가지는 계층 구조 입니다 */

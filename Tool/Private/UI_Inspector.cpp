@@ -40,6 +40,8 @@ HRESULT CUI_Inspector::Render(CToolObject* pGo)
 	/* ¾À */
 	SetUp_Level();
 	Load_Data();
+	ImGui::SameLine();
+	Clear_Data();
 
 	/* Äµ¹ö½º ÅÂ±× ¹Þ°í »ý¼º */
 	Make_Canvas();
@@ -83,6 +85,14 @@ void CUI_Inspector::Load_Data()
 
 			m_pUIManager->Remake_UIObjects();
 		}
+	}
+}
+
+void CUI_Inspector::Clear_Data()
+{
+	if (ImGui::Button("Clear UI Data", ImVec2(0, 0)))
+	{
+		m_pUIManager->Clear_UIObjects();
 	}
 }
 
@@ -367,16 +377,16 @@ void CUI_Inspector::Input_Canvas_TransformInfo()
 		auto* pData = m_pUIManager->Get_CanvasData_Ptr(m_pUIManager->Get_CurCanvasIndex());
 
 		/* Width / Height */
-		Scrub_Float("Width :", "CanvasSizeX", &pData->fWidth, 0.01f, 0.1f, 1.0f, 120.f);
+		Scrub_Float("Width :", "CanvasSizeX", &pData->fWidth, 0.1f, 20.f, 0.1f, 1.0f, 120.f);
 		ImGui::SameLine(0.f, 16.f);
-		Scrub_Float("Height :", "CanvasSizeY", &pData->fHeight, 0.01f, 0.1f, 1.0f, 120.f);
+		Scrub_Float("Height :", "CanvasSizeY", &pData->fHeight, 0.1f, 20.f, 0.1f, 1.0f, 120.f);
 
 		/* Pos X / Y / Z */
-		Scrub_Float("X :", "CanvasPosX", &pData->fPosX, 0.01f, 0.1f, 1.0f, 100.f);
+		Scrub_Float("X :", "CanvasPosX", &pData->fPosX, 0.1f, 20.f, 0.1f, 1.0f, 100.f);
 		ImGui::SameLine(0.f, 16.f);
-		Scrub_Float("Y :", "CanvasPosY", &pData->fPosY, 0.01f, 0.1f, 1.0f, 100.f);
+		Scrub_Float("Y :", "CanvasPosY", &pData->fPosY, 0.1f, 20.f, 0.1f, 1.0f, 100.f);
 		ImGui::SameLine(0.f, 16.f);
-		Scrub_Float("Z :", "CanvasPosZ", &pData->fPosZ, 0.01f, 0.1f, 1.0f, 100.f);
+		Scrub_Float("Z :", "CanvasPosZ", &pData->fPosZ, 0.1f, 20.f, 0.1f, 1.0f, 100.f);
 
 		pData->isUsingViewport = FALSE;
 	}
@@ -441,16 +451,16 @@ void CUI_Inspector::Input_RectTransform()
 
 	/* Width / Height */
 	auto* pData = m_pUIManager->Get_UIData_Ptr(m_pUIManager->Get_CurUIIndex());
-	Scrub_Float("Width :", "UISizeX", &pData->fWidth, 0.01f, 0.1f, 1.0f, 100.f);
+	Scrub_Float("Width :", "UISizeX", &pData->fWidth, 0.1f, 20.f, 0.1f, 10.0f, 100.f);
 	ImGui::SameLine(0.f, 16.f);
-	Scrub_Float("Height :", "UISizeY", &pData->fHeight, 0.01f, 0.1f, 1.0f, 100.f);
+	Scrub_Float("Height :", "UISizeY", &pData->fHeight, 0.1f, 20.f, 0.1f, 10.0f, 100.f);
 
 	/* Pos X / Y / Z */
-	Scrub_Float("X :", "UIPosX", &pData->fPosX, 0.01f, 0.1f, 1.0f, 100.f);
+	Scrub_Float("X :", "UIPosX", &pData->fPosX, 0.1f, 20.f, 0.1f, 10.0f, 100.f);
 	ImGui::SameLine(0.f, 16.f);
-	Scrub_Float("Y :", "UIPosY", &pData->fPosY, 0.01f, 0.1f, 1.0f, 100.f);
+	Scrub_Float("Y :", "UIPosY", &pData->fPosY, 0.1f, 20.f, 0.1f, 10.0f, 100.f);
 	ImGui::SameLine(0.f, 16.f);
-	Scrub_Float("Z :", "UIPosZ", &pData->fPosZ, 0.01f, 0.1f, 1.0f, 100.f);
+	Scrub_Float("Z :", "UIPosZ", &pData->fPosZ, 0.1f, 20.f, 0.1f, 10.0f, 100.f);
 
 	if (nullptr != m_pUIManager->Get_UI_Ptr(m_pUIManager->Get_CurUIIndex()))
 	{
@@ -458,10 +468,9 @@ void CUI_Inspector::Input_RectTransform()
 			static_cast<_float>(m_pUIManager->Get_UIData_Ptr(m_pUIManager->Get_CurUIIndex())->fPosX),
 			static_cast<_float>(m_pUIManager->Get_UIData_Ptr(m_pUIManager->Get_CurUIIndex())->fPosY));
 	}
-
 }
 
-_bool CUI_Inspector::Scrub_Float(const _char* label, const _char* Id, OUT _float* pValue, float fValuePerPixel, float fStep, float fStep_fast, float fSize)
+_bool CUI_Inspector::Scrub_Float(const _char* label, const _char* Id, OUT _float* pValue, float fValuePerPixel, float fValuePerPixel_fast, float fStep, float fStep_fast, float fSize)
 {
 	ImGui::PushID(Id);
 
@@ -481,8 +490,8 @@ _bool CUI_Inspector::Scrub_Float(const _char* label, const _char* Id, OUT _float
 		if (dx != 0.f)
 		{
 			float scale = 1.f;
-			if (ImGui::GetIO().KeyShift) scale = 10.f;
-			if (ImGui::GetIO().KeyCtrl)  scale = 0.1f;
+			if (ImGui::GetIO().KeyShift) scale = 0.1f;
+			if (ImGui::GetIO().KeyCtrl)  scale = fValuePerPixel_fast;
 
 			*pValue += dx * fValuePerPixel * scale;
 

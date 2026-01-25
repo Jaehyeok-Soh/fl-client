@@ -75,7 +75,6 @@ void CToolUI::Ready_Before_Render(const _float fTimeDelta)
 
 HRESULT CToolUI::Render()
 {
-
 	if (FAILED(Super::Render()))
 		return E_FAIL;
 

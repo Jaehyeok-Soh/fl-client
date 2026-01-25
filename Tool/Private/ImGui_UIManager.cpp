@@ -63,7 +63,6 @@ void CImGui_UIManager::Add_UI(const GENERIC_UI_DATA& tData)
 		static_cast<uint32_t>(ELevelType::UI), L"Prototype_UI_Test_Button",
 		static_cast<uint32_t>(ELevelType::UI), Engine_Utils::ToWString(m_vecCanvasData[m_iCurCanvasIndex].vecLayers[m_iCurLayerIndex].strTag), &Desc);
 
-	pGO->Awake(static_cast<uint32_t>(ELevelType::UI));
 	m_vecCanvasData[m_iCurCanvasIndex].vecLayers[m_iCurLayerIndex].vecUIObjects.push_back(reinterpret_cast<CToolUI*>(pGO));
 }
 
@@ -307,14 +306,39 @@ HRESULT CImGui_UIManager::Remake_UIObjects()
 				pResult = m_pGameInstance->Add_GameObject(static_cast<uint32_t>(ELevelType::UI), L"Prototype_UI_Test_Button",
 					static_cast<uint32_t>(ELevelType::UI), Engine_Utils::ToWString(LayerData.strTag), &Desc);
 				if (nullptr == pResult)
-					return E_FAIL;	
-				pResult->Awake(static_cast<uint32_t>(ELevelType::UI));
+					return E_FAIL;
 
 				LayerData.vecUIObjects.push_back(reinterpret_cast<CToolUI*>(pResult));
 			}
 		}
 	}
 	return S_OK;
+}
+
+HRESULT CImGui_UIManager::Clear_UIObjects()
+{
+	if (m_vecCanvasData.empty())
+		return S_OK;
+
+	vector<vector<LAYER_DATA>> vecLayer;
+	vector<vector<vector<GENERIC_UI_DATA>>> vecUIdata;
+
+	vecLayer.clear();
+	vecUIdata.clear();
+
+	for (const CANVAS_DATA& CanvasData : m_vecCanvasData)
+	{
+		vecLayer.emplace_back();
+		vecUIdata.emplace_back();
+
+		for (const LAYER_DATA& LayerData : CanvasData.vecLayers)
+		{
+			vecLayer.back().push_back(LayerData);
+			vecUIdata.back().emplace_back();
+
+			m_pGameInstance->Clear_Layer(static_cast<uint32_t>(ELevelType::UI), Engine_Utils::ToWString(LayerData.strTag));
+		}
+	}
 }
 
 void CImGui_UIManager::Free()
