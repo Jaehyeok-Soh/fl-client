@@ -39,6 +39,7 @@ HRESULT CLevel_UI::Awake(const _uint iLevelID)
 	if (FAILED(Ready_UI_Object(L"Layer_UI_Object")))
 		return E_FAIL;
 
+	ImGui::StyleColorsClassic();
 	return S_OK;
 }
 
@@ -61,7 +62,6 @@ HRESULT CLevel_UI::Render()
 	m_pImGuiManager->Render_Begin();
 	m_pImGuiManager->ImGuizmo_Render_Begin();
 	m_pImGuiManager->Render_Dockspace();
-
 	//////////////////////////
 	// Element Render
 
@@ -88,26 +88,6 @@ HRESULT CLevel_UI::Ready_UI_Inspector()
 
 HRESULT CLevel_UI::Ready_UI_Object(const _wstring& wstrLayerTag)
 {
-	CGameObject* pResult = { nullptr };
-
-
-	//// Prototype_UI_Test_Button
-	//CToolUI::TOOLUI_DESC Desc = {};
-	//Desc.wstrTextureTag = L"Prototype_Component_Button_Test_Texture";
-	//Desc.bAlpha = TRUE;
-	//Desc.fSizeX = 1.f;
-	//Desc.fSizeY = 1.f;
-	//Desc.fX = 100.f;
-	//Desc.fY = 100.f;
-	//Desc.iLevelIndex = static_cast<uint32_t>(ELevelType::UI);
-
-	//pResult = m_pGameInstance->Add_GameObject(Desc.iLevelIndex, L"Prototype_UI_Test_Button", Desc.iLevelIndex, wstrLayerTag, &Desc);
-	//if(nullptr == pResult)
-	//	return E_FAIL;
-
-	//if (FAILED(pResult->Awake(Desc.iLevelIndex)))
-	//	return E_FAIL;
-
 	return S_OK;
 }
 
@@ -126,6 +106,8 @@ CLevel_UI* CLevel_UI::Create(ID3D11Device* pDevice, ID3D11DeviceContext* pDevice
 
 void CLevel_UI::Free()
 {
+	ImGui::StyleColorsDark();
+
 	Safe_Release(m_pImGuiManager);
 
 	for (CImGui_Base* pElement : m_GuiElements)
