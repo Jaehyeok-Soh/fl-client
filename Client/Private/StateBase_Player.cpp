@@ -47,18 +47,28 @@ HRESULT CStateBase_Player::Start(void* pArg, _bool bForce)
 
 void CStateBase_Player::Update(const _float fTimeDelta)
 {
+#ifdef _DEBUG
+	std::wstring msg = L"State: ";
+	std::wstring ws(m_strName.begin(), m_strName.end());
+	msg += ws;
+	SetWindowText(g_hWnd, msg.c_str());
+#endif
+
 	Super::Update(fTimeDelta);
 
-	if (Check_MoveKey(fTimeDelta))
+	if(Check_MoveKey(fTimeDelta))
 		return;
 
-	if (Check_JumpKey(fTimeDelta))
+	if(Check_JumpKey(fTimeDelta))
 		return;
 
-	if (Check_DashKey(fTimeDelta))
+	if(Check_DashKey(fTimeDelta))
 		return;
 
-	if (Check_CtrlKey(fTimeDelta))
+	if(Check_CtrlPressKey(fTimeDelta))
+		return;
+
+	if(Check_CtrlUpKey(fTimeDelta))
 		return;
 }
 
@@ -78,28 +88,30 @@ _bool CStateBase_Player::Check_MoveKey(const _float fTimeDelta)
 	case MOVETYPE::NORMAL:
 		if (Align_Movement(fTimeDelta) == false)	// 8방향 움직임 
 		{
-			Request_Change_State(m_iNextState);		// 없다면 다음 state로 change
+			Request_Change_State(m_vecChangeState_ByKey[ENUM_TO_UINT(STATEKEY::MOVE)]); // 움직임이 없다면 실행할 
 			return true;
 		}
 
-		return false;
+		break;
 
 	case MOVETYPE::CHANGE: // 키가 눌렸다면 해당 state로 change
-		return (Align_Move(m_vecChangeState_ByKey[ENUM_TO_UINT(STATEKEY::MOVE)].iChageState));
+		return (Align_Move(m_vecChangeState_ByKey[ENUM_TO_UINT(STATEKEY::MOVE)]));
 
 	case MOVETYPE::OWN:		// 내 움직임
 		OwnMove(fTimeDelta); 
-		return false;
+		break;
 
 	case MOVETYPE::NON:		// 움직이지 않음
-		if (!m_bLoop && Is_AnimFinished()) // loop가 아닌데 애니메이션이 끝났다면
-		{
-			Request_Change_State(m_iNextState);		// 다음 state로 change
-			return true;
-		}
-
-		return false;
+		break;
 	}
+
+	if (!m_bLoop && Is_MainAnimFinished()) // loop가 아닌데 애니메이션이 끝났다면 : pre animation이랑 잘 해야될듯..?
+	{
+		Request_Change_State(m_iNextState);		// 다음 state로 change
+		return true;
+	}
+
+	return false;
 }
 
 _bool CStateBase_Player::Check_JumpKey(const _float fTimeDelta)
@@ -107,7 +119,7 @@ _bool CStateBase_Player::Check_JumpKey(const _float fTimeDelta)
 	if (Has_ChangeState(STATEKEY::SPACE) &&
 		Key_Input(ENUM_TO_UINT(CControlContext::CONTROL_KEY::JUMP)))
 	{
-		Request_Change_State(m_vecChangeState_ByKey[ENUM_TO_UINT(STATEKEY::SPACE)].iChageState);
+		Request_Change_State(m_vecChangeState_ByKey[ENUM_TO_UINT(STATEKEY::SPACE)]);
 		return true;
 	}
 
@@ -119,19 +131,31 @@ _bool CStateBase_Player::Check_DashKey(const _float fTimeDelta)
 	if (Has_ChangeState(STATEKEY::SHIFT) &&
 		Key_Input(ENUM_TO_UINT(CControlContext::CONTROL_KEY::DASH)))
 	{
-		Request_Change_State(m_vecChangeState_ByKey[ENUM_TO_UINT(STATEKEY::SHIFT)].iChageState);
+		Request_Change_State(m_vecChangeState_ByKey[ENUM_TO_UINT(STATEKEY::SHIFT)]);
 		return true;
 	}
 
 	return false;
 }
 
-_bool CStateBase_Player::Check_CtrlKey(const _float fTimeDelta)
+_bool CStateBase_Player::Check_CtrlPressKey(const _float fTimeDelta)
 {
-	if (Has_ChangeState(STATEKEY::LCRTL) &&
+	if (Has_ChangeState(STATEKEY::LCRTL_PRESS) &&
 		Key_Input(ENUM_TO_UINT(CControlContext::CONTROL_KEY::SPECIALMV)))
 	{
-		Request_Change_State(m_vecChangeState_ByKey[ENUM_TO_UINT(STATEKEY::LCRTL)].iChageState);
+		Request_Change_State(m_vecChangeState_ByKey[ENUM_TO_UINT(STATEKEY::LCRTL_PRESS)]);
+		return true;
+	}
+
+	return false;
+}
+
+_bool CStateBase_Player::Check_CtrlUpKey(const _float fTimeDelta)
+{
+	if (Has_ChangeState(STATEKEY::LCRTL_UP) &&
+		Key_Input(ENUM_TO_UINT(CControlContext::CONTROL_KEY::DODGE)))
+	{
+		Request_Change_State(m_vecChangeState_ByKey[ENUM_TO_UINT(STATEKEY::LCRTL_UP)]);
 		return true;
 	}
 
@@ -141,7 +165,7 @@ _bool CStateBase_Player::Check_CtrlKey(const _float fTimeDelta)
 _bool CStateBase_Player::Has_ChangeState(STATEKEY eKey)
 {
 	// state end 이면 state change를 안 한다
-	return m_iEndState != m_vecChangeState_ByKey[ENUM_TO_UINT(eKey)].iChageState;
+	return m_iEndState != m_vecChangeState_ByKey[ENUM_TO_UINT(eKey)];
 }
 
 void CStateBase_Player::Free()

@@ -11,21 +11,14 @@ class CStateBase_Player abstract : public CStateBase
 	using Super = CStateBase;
 
 public:
-	enum class KEYSTATE { NONE, PRESS, DOWN, UP, END };
 	enum class MOVETYPE { NORMAL, CHANGE, OWN, NON }; // 8방향 움직임, state change, own moving, dont move
-	enum class STATEKEY : _uint {MOVE, SPACE, SHIFT, LCRTL, Q, E, LM, RM, END};
+	enum class STATEKEY : _uint {MOVE, SPACE, SHIFT, LCRTL_PRESS, LCRTL_UP, Q, E, LM, RM, END};
 
-	typedef struct KeyStateData
-	{
-		_uint		iChageState;
-		KEYSTATE	eKeyState;
-	}KEYSTATE_DATA;
-
-	typedef struct tagPlayerStateDesc : public CStateBase
+	typedef struct tagPlayerStateDesc : public CStateBase::STATE_DESC
 	{
 		MOVETYPE				eMoveType = { MOVETYPE::NORMAL };
 		_uint					iNextState = { 0 };			// loop이면 키 입력이 없을때 바뀔 state, no loop라면 animation 끝나고 바뀔 state
-		vector<KEYSTATE_DATA>	vecChangeState_ByKey;			// 키 입력에 따라 어떻게 바꿀지 담는 벡터
+		vector<_uint>			vecChangeState_ByKey;			// 키 입력에 따라 어떻게 바꿀지 담는 벡터
 
 	}PLAYER_STATEBASE_DESC;
 
@@ -43,18 +36,19 @@ public:
 protected:
 	MOVETYPE				m_eMoveType = { MOVETYPE::NORMAL };
 	_uint					m_iNextState = { 0 };
-	vector<KEYSTATE_DATA>	m_vecChangeState_ByKey;	
+	vector<_uint>	m_vecChangeState_ByKey;
 	_uint					m_iEndState		= { 0 };
 
 protected:
 	virtual void OwnMove(const _float fTimeDelta) {}; // state 내부에서 알아서 움직일때
 
-	// 키가 눌렸다면 true 반환
+	// state가 변환 했다면 true
 private:
 	_bool Check_MoveKey(const _float fTimeDelta);
 	_bool Check_JumpKey(const _float fTimeDelta);
 	_bool Check_DashKey(const _float fTimeDelta);
-	_bool Check_CtrlKey(const _float fTimeDelta);
+	_bool Check_CtrlPressKey(const _float fTimeDelta);
+	_bool Check_CtrlUpKey(const _float fTimeDelta);
 
 	_bool Has_ChangeState(STATEKEY eKey);
 
