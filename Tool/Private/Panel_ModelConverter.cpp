@@ -71,6 +71,13 @@ void CPanel_ModelConverter::Open_FolderDialog()
 	OPENFILENAMEW ofn{};
 	_tchar szFile[MAX_PATH] = { 0 };
 
+	DWORD dwOptions{};
+
+	if (!m_isRecursiveDirectory)
+		m_pOpenDialog->SetOptions(dwOptions | FOS_FORCEFILESYSTEM);
+	else
+		m_pOpenDialog->SetOptions(dwOptions | FOS_FORCEFILESYSTEM | FOS_PICKFOLDERS);
+
 	m_pOpenDialog->Show(g_hWnd);
 
 	IShellItem* pItem{nullptr};
@@ -92,12 +99,62 @@ void CPanel_ModelConverter::Convert_FbxFolder(const wchar_t* wszFloderPath)
 	/* Pre Matrix */
 	wstring ResultMsg{};
 	std::filesystem::path pathFile{ wszFloderPath };
-	CConverter* pConverter = CConverter::Create(m_pDevice, m_pDeviceContext, SOLUTION_DIR, wszFloderPath, m_SRTMatirx);
-	if (FAILED(pConverter->ReadAndExport()))
-		ResultMsg = pathFile.filename().wstring() + L" Convert is Failed", L"Converter";
+
+	vector<wstring> vecCheckFolderPath{};
+
+	if (m_isRecursiveDirectory)
+	{
+		/* 폴더 순회 O */
+		/* 이 폴더에 Fbx 파일이 있는지 없는지 Check를 한다 */
+		for (auto& Path : std::filesystem::recursive_directory_iterator(wszFloderPath))
+		{
+			path	pathFile{Path};
+			if (std::filesystem::is_directory(pathFile))
+				continue;
+			/* Fbx 파일 검사 */
+			if (pathFile.extension().wstring() != g_wszModelExtension)
+				continue;
+
+			path    pathParent = path(Path);
+			pathParent._Remove_filename_and_separator();
+
+			bool isCheck{false};
+			for (auto& wstrCheckFloderPath : vecCheckFolderPath)
+				if (wstrCheckFloderPath == pathParent)
+				{
+					isCheck = true;
+					break;
+				}
+
+			if (isCheck)
+			{
+				/* 폴더가 이미 진행된 폴더라면? pass*/
+				continue;
+			}
+			else
+				vecCheckFolderPath.push_back(pathParent);
+
+			CConverter* pConverter = CConverter::Create(m_pDevice, m_pDeviceContext, SOLUTION_DIR, pathParent.c_str() , m_SRTMatirx);
+			if (FAILED(pConverter->ReadAndExport()))
+				ResultMsg = pathFile.filename().wstring() + L" Convert is Failed", L"Converter";
+			else
+				ResultMsg = pathFile.filename().wstring() + L" Convert is Complete", L"Converter";
+			Safe_Release(pConverter);
+		}
+	}
 	else
-		ResultMsg = pathFile.filename().wstring() + L" Convert is Complete", L"Converter";
-	Safe_Release(pConverter);
+	{
+		/* 폴더 순회 X */
+		
+		CConverter* pConverter = CConverter::Create(m_pDevice, m_pDeviceContext, SOLUTION_DIR, wszFloderPath, m_SRTMatirx);
+		if (FAILED(pConverter->ReadAndExport()))
+			ResultMsg = pathFile.filename().wstring() + L" Convert is Failed", L"Converter";
+		else
+			ResultMsg = pathFile.filename().wstring() + L" Convert is Complete", L"Converter";
+		Safe_Release(pConverter);
+
+	}
+
 
 	MessageBox(nullptr,ResultMsg.c_str(),L"Converter",MB_OK);
 }
@@ -161,6 +218,8 @@ HRESULT CPanel_ModelConverter::Render_ConvertWindow()
 	if (ImGui::Button(" Convert Fbx Floder (Chose Folder) ", ImVec2(256, 128)))
 		Open_FolderDialog();
 
+	ImGui::Checkbox(" Recursive Directory##Recursive_Directory_CheckBox ",&m_isRecursiveDirectory);
+
 	ImGui::End();
 
 	return S_OK;
@@ -213,11 +272,28 @@ HRESULT CPanel_ModelConverter::Render_FunctionWindow()
 
 		ImGui::Text("File [%d / %d]", m_iCurWorkCheckNoneExportFbxModelIndex + 1 , iTotalNum );
 
-		ImGui::NewLine();
+		if (ImGui::BeginCombo(" File List#Combo_ExportFile", strName.c_str() ))
+		{
+			string strCurFileName{""};
+			for (UINT32 i = 0; i < iTotalNum; ++i)
+			{
+				strCurFileName = Engine_Utils::GetFileNameWithoutExtension(Engine_Utils::ToString(m_vecNoneExportFbxModelPath[i]));
+
+				bool isSelect = (m_iCurWorkCheckNoneExportFbxModelIndex == i);
+
+				if (ImGui::Selectable(strCurFileName.c_str(), isSelect))
+					m_iCurWorkCheckNoneExportFbxModelIndex = i;
+				if (isSelect == true)
+					ImGui::SetItemDefaultFocus();
+			}
+
+			ImGui::EndCombo();
+		}
 
 		ImGui::TextWrapped("Path : %ls", wstrPath.c_str());
 
 		ImGui::TextWrapped("Name : %s", strName.c_str());
+
 
 		if (ImGui::Button("Open File"))
 			ShellExecuteW(NULL, L"open", L"explorer.exe", (L"/select," + wstrPath).c_str(), NULL, SW_SHOWNORMAL);
@@ -300,7 +376,7 @@ void CPanel_ModelConverter::Check_NoneExport_FbxModel(const wchar_t* wszFloderPa
 		wstring wstrFileName = path(Path.filename()).stem();
 		
 
-		if (wstrExt != L".pskx")
+		if (wstrExt != L".uemodel")
 			continue;
 
 		wstring wstrTarget = L"\\";
@@ -308,12 +384,12 @@ void CPanel_ModelConverter::Check_NoneExport_FbxModel(const wchar_t* wszFloderPa
 		if (Pos_Target == std::wstring::npos)
 			continue;
 
-		wstring wstrParentFloderPath = wstrPath.erase( Pos_Target , wstrPath.length()) ;
-
+		wstring wstrParentFolderPath = wstrPath.erase( Pos_Target , wstrPath.length()) ;
 
 		bool isExport{false};
 
-		for(auto& FindExportPath : std::filesystem::directory_iterator(wstrParentFloderPath) )
+
+		for(auto& FindExportPath : std::filesystem::directory_iterator(wstrParentFolderPath) )
 		{ 
 			path Path{ FindExportPath };
 			wstring wstrExt = Path.extension();
