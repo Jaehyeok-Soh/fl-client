@@ -203,21 +203,70 @@ HRESULT CPanel_ModelConverter::Render_FunctionWindow()
 
 	if (!m_vecNoneExportFbxModelPath.empty())
 	{
-
-		//Check_NoneExport_FbxModel(m_wstrCheckNoneExportFbxModelFloderPath.c_str());
-
 		ImGui::Begin( " None Export Fbx Model Info ");
 
-		wstring& wstrPath = m_vecNoneExportFbxModelPath[m_iCurWorkCheckNoneExportFbxModelIndex];
-		ImGui::Text("File [%d / %d]", m_iCurWorkCheckNoneExportFbxModelIndex + 1, (int)m_vecNoneExportFbxModelPath.size());
-		ImGui::Text("Path: %ls", wstrPath.c_str());
+		UINT32 iTotalNum = ENUM_TO_UINT(m_vecNoneExportFbxModelPath.size());
 
-		if (ImGui::Button("Open Folder")) {
+		wstring& wstrPath = m_vecNoneExportFbxModelPath[m_iCurWorkCheckNoneExportFbxModelIndex];
+		wstring  wwstrFileName = path(wstrPath).filename();
+		string   strName = path(wstrPath).filename().stem().string();
+
+		ImGui::Text("File [%d / %d]", m_iCurWorkCheckNoneExportFbxModelIndex + 1 , iTotalNum );
+
+		ImGui::NewLine();
+
+		ImGui::TextWrapped("Path : %ls", wstrPath.c_str());
+
+		ImGui::TextWrapped("Name : %s", strName.c_str());
+
+		if (ImGui::Button("Open File"))
 			ShellExecuteW(NULL, L"open", L"explorer.exe", (L"/select," + wstrPath).c_str(), NULL, SW_SHOWNORMAL);
+
+		if (ImGui::Button(" Pre ")) {
+			if (m_iCurWorkCheckNoneExportFbxModelIndex == 0)
+				m_iCurWorkCheckNoneExportFbxModelIndex = iTotalNum - 1 ;
+			else
+				m_iCurWorkCheckNoneExportFbxModelIndex--;
 		}
 
-		if (ImGui::Button("Next Asset") || ImGui::IsKeyPressed(ImGuiKey_Space)) {
+		ImGui::SameLine();
+
+		if (ImGui::Button(" Next ")) {
 			m_iCurWorkCheckNoneExportFbxModelIndex++ ;
+			if (m_iCurWorkCheckNoneExportFbxModelIndex >= iTotalNum)
+				m_iCurWorkCheckNoneExportFbxModelIndex = 0;
+		}
+
+
+		if (ImGui::Button(" Check Export File "))
+		{
+			path	pathFile{wstrPath};
+			pathFile._Remove_filename_and_separator();
+
+			bool isExport{false};
+
+			for (auto& FindExportPath : std::filesystem::directory_iterator(pathFile))
+			{
+				path Path{ FindExportPath };
+				wstring wstrExt = Path.extension();
+				if (wstrExt != L".fbx")
+					continue;
+				string wstrExportFbxName = path(Path.filename()).stem().string();
+
+				if (isExport = (wstrExportFbxName == strName))
+					break;
+			}
+
+			if (isExport)
+				MSG_BOX("This Model is Complete Export Fbx File , Work Next File");
+			else
+				MSG_BOX("This Model is None Export");
+		}
+		
+		if (ImGui::Button(" End Work "))
+		{
+			m_vecNoneExportFbxModelPath.clear();
+			m_iCurWorkCheckNoneExportFbxModelIndex = 0;
 		}
 
 
@@ -240,6 +289,9 @@ void CPanel_ModelConverter::Check_NoneExport_FbxModel(const wchar_t* wszFloderPa
 
 	if (pathCheckFloder.has_extension()) return;
 
+	m_vecNoneExportFbxModelPath.clear();
+	m_iCurWorkCheckNoneExportFbxModelIndex = 0;
+
 	for (auto& CheckPath : std::filesystem::recursive_directory_iterator(pathCheckFloder))
 	{
 		path Path{CheckPath};
@@ -255,8 +307,6 @@ void CPanel_ModelConverter::Check_NoneExport_FbxModel(const wchar_t* wszFloderPa
 		size_t Pos_Target = wstrPath.rfind(wstrTarget);
 		if (Pos_Target == std::wstring::npos)
 			continue;
-
-		m_vecNoneExportFbxModelPath.clear();
 
 		wstring wstrParentFloderPath = wstrPath.erase( Pos_Target , wstrPath.length()) ;
 
