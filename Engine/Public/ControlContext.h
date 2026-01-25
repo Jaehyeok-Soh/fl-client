@@ -80,6 +80,8 @@ public:
 	virtual _bool	Is_Skill1Pressed()				PURE;
 	virtual _bool	Is_Skill2Pressed()				PURE;
 
+	virtual _bool	Is_InteractionPressed()			PURE;
+
 	virtual Vec3	Get_MoveDir()					PURE;
 
 	CGameObject* Get_Target() { return m_pTarget; }

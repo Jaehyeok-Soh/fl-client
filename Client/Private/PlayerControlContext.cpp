@@ -3,8 +3,9 @@
 #include "Player.h"
 #include "PlayerActionState.h"
 #include "CameraMan.h"
-#include "GameInstance.h"
+
 #include "PlayerControlContext.h"
+#include "GameInstance.h"
 
 CPlayerControlContext::CPlayerControlContext()
 	: Super()
@@ -56,7 +57,7 @@ _bool CPlayerControlContext::Is_FootRayEnabled()
 	switch (eState)
 	{
 	case Client::CPlayer::State::IDLE:
-	case Client::CPlayer::State::RUN:
+	case Client::CPlayer::State::RUN_LOOP:
 
 		return true;
 	default:
@@ -79,32 +80,12 @@ void CPlayerControlContext::Clear_Grounded()
 
 _bool CPlayerControlContext::Is_LeftAttackPressed()
 {
-	return m_pGameInstance->Mouse_Pressing(MOUSEKEYSTATE::LB);
+	return m_pGameInstance->Mouse_Down(MOUSEKEYSTATE::LB);
 }
 
 _bool CPlayerControlContext::Is_RightAttackPressed()
 {
-	return m_pGameInstance->Mouse_Pressing(MOUSEKEYSTATE::RB);
-}
-
-_bool CPlayerControlContext::Is_FrontDashPressed()
-{
-	return m_pGameInstance->KeyButton_Pressing(DIK_LSHIFT) && m_pGameInstance->KeyButton_Pressing(DIK_W);
-}
-
-_bool CPlayerControlContext::Is_LeftDashPressed()
-{
-	return m_pGameInstance->KeyButton_Pressing(DIK_LSHIFT) && m_pGameInstance->KeyButton_Pressing(DIK_A);
-}
-
-_bool CPlayerControlContext::Is_RightDashPressed()
-{
-	return m_pGameInstance->KeyButton_Pressing(DIK_LSHIFT) && m_pGameInstance->KeyButton_Pressing(DIK_D);
-}
-
-_bool CPlayerControlContext::Is_BackDashPressed()
-{
-	return m_pGameInstance->KeyButton_Pressing(DIK_LSHIFT) && m_pGameInstance->KeyButton_Pressing(DIK_S);
+	return m_pGameInstance->Mouse_Down(MOUSEKEYSTATE::RB);
 }
 
 _bool CPlayerControlContext::Is_MovePressed()
@@ -122,22 +103,62 @@ _bool CPlayerControlContext::Is_JumpPressed()
 
 _bool CPlayerControlContext::Is_WirePressed()
 {
-	return m_pGameInstance->Mouse_Down(MOUSEKEYSTATE::RB);
+	return m_pGameInstance->KeyButton_Down(DIK_F);
 }
 
 _bool CPlayerControlContext::Is_DodgePressed()
 {
+	return m_pGameInstance->KeyButton_Up(DIK_LCONTROL);
+}
+
+_bool CPlayerControlContext::Is_InteractionPressed()
+{
+	return m_pGameInstance->KeyButton_Down(DIK_F);
+}
+
+_bool CPlayerControlContext::Is_DashPressed()
+{
+	return m_pGameInstance->KeyButton_Down(DIK_LSHIFT);
+}
+
+_bool CPlayerControlContext::Is_SepcialMovePressed()
+{
+	return m_pGameInstance->KeyButton_Pressing(DIK_LCONTROL);
+}
+
+_bool CPlayerControlContext::Is_ComboAtt1Pressed()
+{
+	return m_pGameInstance->Mouse_Down(MOUSEKEYSTATE::LB);
+}
+
+_bool CPlayerControlContext::Is_ComboAtt2Pressed()
+{
+	return m_pGameInstance->Mouse_Down(MOUSEKEYSTATE::LB);
+}
+
+_bool CPlayerControlContext::Is_ComboAtt3Pressed()
+{
+	return m_pGameInstance->Mouse_Down(MOUSEKEYSTATE::LB);
+}
+
+_bool CPlayerControlContext::Is_ComboAtt4Pressed()
+{
+	return m_pGameInstance->Mouse_Down(MOUSEKEYSTATE::LB);
+}
+
+_bool CPlayerControlContext::Is_Skill1Pressed()
+{
 	return m_pGameInstance->KeyButton_Down(DIK_Q);
 }
 
-_bool CPlayerControlContext::Is_ChakraJumpPressed()
+_bool CPlayerControlContext::Is_Skill2Pressed()
 {
-	return m_pGameInstance->KeyButton_Down(DIK_LCONTROL);
+	return m_pGameInstance->KeyButton_Down(DIK_E);
 }
 
-_bool CPlayerControlContext::Is_RopePressed()
+_bool CPlayerControlContext::Is_ChargingAttackPressed()
 {
-	return m_pGameInstance->Mouse_Down(MOUSEKEYSTATE::RB);
+	return m_pGameInstance->Mouse_Pressing(MOUSEKEYSTATE::LB);
 }
 
 Vec3 CPlayerControlContext::Get_MoveDir()
