@@ -107,12 +107,12 @@ HRESULT CLoader::Loading_For_Logo()
 		lstrcpy(m_szFPS, TEXT("텍스쳐를 로딩 중 입니다."));
 	}
 
-	// For. Prototype_Component_Button_Test_Texture
+	// For. Prototype_Component_GenericUI_Texture
 	{
 		CTexture::TEXTURE_COMPONENT_ORIGIN_DESC textureDesc = {};
 		textureDesc.iTextureCount = 1;
 		textureDesc.wstrTexturePath = L"../../Resources/Textures/UI/Button/T_Com_BtnIcon_Custom.png";
-		if (FAILED(m_pGameInstance->Add_Prototype(ENUM_TO_UINT(ELevelType::LOGO), L"Prototype_Component_Button_Test_Texture", CTexture::Create(&textureDesc))))
+		if (FAILED(m_pGameInstance->Add_Prototype(ENUM_TO_UINT(ELevelType::LOGO), L"Prototype_Component_GenericUI_Texture", CTexture::Create(&textureDesc))))
 			return E_FAIL;
 	}
 
@@ -174,9 +174,9 @@ HRESULT CLoader::Loading_For_Logo()
 	//=================
 	// UI
 	//=================
-	// For. Prototype_UI_Test_Button
+	// For. Prototype_UI_GenericUI
 	{
-		if (FAILED(m_pGameInstance->Add_Prototype(ENUM_TO_UINT(ELevelType::LOGO), L"Prototype_UI_Test_Button", CGenericUI::Create(m_pDevice, m_pDeviceContext))))
+		if (FAILED(m_pGameInstance->Add_Prototype(ENUM_TO_UINT(ELevelType::LOGO), L"Prototype_UI_GenericUI", CGenericUI::Create(m_pDevice, m_pDeviceContext))))
 			return E_FAIL;
 	}
 
