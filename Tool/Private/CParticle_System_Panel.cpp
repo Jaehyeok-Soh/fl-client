@@ -238,8 +238,8 @@ void CParticle_System_Panel::Draw_ParticleSystem(CToolObject* pGo)
 
 				CEffectObject* pInstance = static_cast<Effect*>(pGo)->Get_Part<CEffectObject>(m_iSelectPartsIndex);
 				CTransform* pTransform = pInstance->Get_Component<CTransform>();
-				if(pTransform)
-					pTransform->Rotation()
+				/*if(pTransform)
+					pTransform->Rotation()*/
 			}
 			ImGui::TreePop();
 		}
