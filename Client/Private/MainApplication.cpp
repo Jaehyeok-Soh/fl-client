@@ -13,6 +13,8 @@
 #include "VIBuffer_Rect_Tex.h"
 #include "Level_Loading.h"
 
+#include "UI_Manager.h"
+
 USING(Client)
 
 
@@ -335,7 +337,7 @@ void CMainApplication::Free()
 {
 	Safe_Release(m_pDeviceContext);
 	Safe_Release(m_pDevice);
-
+	CUI_Manager::GetInstance()->DestroyInstance();
 	m_pGameInstance->Destroy_Engine();
 	Safe_Release(m_pGameInstance);
 	Super::Free();

@@ -2,6 +2,10 @@
 #include "Base.h"
 #include "UIData_Repository.h"
 
+NS_BEGIN(Engine)
+class CGameInstance;
+NS_END
+
 NS_BEGIN(Tool)
 
 class CToolUI;
@@ -18,57 +22,57 @@ private:
 public:
 #pragma region FUCTION
 	/* 데이터를 새로 추가합니다. */
-	void Add_CanvasData(const CANVAS_DATA& tData);
-	void Add_LayerData(const LAYER_DATA& tData);
-	void Add_UIData(const GENERIC_UI_DATA& tData);
-	void Add_UI(const GENERIC_UI_DATA& tData);
+	void Safe_Add_CanvasData(const CANVAS_DATA& tData);
+	void Safe_Add_LayerData(const LAYER_DATA& tData);
+	void Safe_Add_UIData(const GENERIC_UI_DATA& tData);
+	HRESULT  Safe_Add_UI(LAYER_DATA* pLayer, const GENERIC_UI_DATA& tData);
 
 	/* 커서를 옮길 땐 이걸 써주세요. */
-	void Change_Canvas(uint32_t iNewCanvasIndex);
-	void Change_Layers(uint32_t iNewLayerIndex);
-	void Change_UIData(uint32_t iNewUIIndex);
+	void Safe_Change_Canvas(int32_t iNewCanvasIndex);
+	void Safe_Change_Layer(int32_t iNewLayerIndex);
+	void Safe_Change_UI(int32_t iNewUIIndex);
 
-	uint32_t Get_NumCanvas();
-	uint32_t Get_NumLayer(uint32_t iCanvasIndex);
-	uint32_t Get_CurNumLayer();
-	uint32_t Get_NumUI(uint32_t iCanvasIndex, uint32_t iLayerIndex);
-	uint32_t Get_CurNumUI();
-
+	int32_t Get_NumCanvas();
+	int32_t Get_NumLayer();
+	int32_t Get_NumUI();
 
 	/* 데이터를 지울 땐 이걸 써주세요. */
-	void Remove_CanvasData();
-	void Remove_LayerData();
-	void Remove_UIData();
+	void Safe_Remove_CanvasData();
+	void Safe_Remove_LayerData();
 
-	/* 내부 데이터 빠르게 꺼내오기 */
-	vector<CANVAS_DATA>& Get_CurCanvas_Ref() { return m_vecCanvasData; }
-	vector<LAYER_DATA>& Get_CurLayers_Ref() { return m_vecCanvasData[m_iCurCanvasIndex].vecLayers; }
-	vector<GENERIC_UI_DATA>& Get_CurUIDatas_Ref() { return Get_CurLayers_Ref()[m_iCurLayerIndex].vecUIData; }
 
-	const vector<CANVAS_DATA>& Get_CurCanvas() const { return m_vecCanvasData; }
-	const vector<LAYER_DATA>& Get_CurLayers() const { return m_vecCanvasData[m_iCurCanvasIndex].vecLayers; }
-	const vector<GENERIC_UI_DATA>& Get_CurUIDatas() const { return Get_CurLayers()[m_iCurLayerIndex].vecUIData; }
-
-	CANVAS_DATA* Get_CanvasData_Ptr(uint32_t CanvasIndex);
-	LAYER_DATA*	Get_LayerData_Ptr(uint32_t LayerIndex);
-	GENERIC_UI_DATA* Get_UIData_Ptr(uint32_t UIIndex);
-	CToolUI* Get_UI_Ptr(uint32_t UIIndex);
-
-	uint32_t Get_CurCanvasIndex() { return m_iCurCanvasIndex; }
-	uint32_t Get_CurLayerIndex() { return m_iCurLayerIndex; }
-	uint32_t Get_CurUIIndex() { return m_iCurUIIndex; }
+	int32_t Get_CurCanvasIndex() { return m_iCurCanvasIndex; }
+	int32_t Get_CurLayerIndex() { return m_iCurLayerIndex; }
+	int32_t Get_CurUIIndex() { return m_iCurUIIndex; }
 
 #pragma endregion
+
+	HRESULT Remake_UIObjects();
+	HRESULT Clear_UIObjects();
+
+	vector<CANVAS_DATA>* Safe_Access_CanvasVector();
+	CANVAS_DATA* Safe_Access_Canvas(int32_t index);
+	vector<LAYER_DATA>* Safe_Access_LayerVector();
+	LAYER_DATA* Safe_Access_Layer(int32_t index);
+	vector<GENERIC_UI_DATA>* Safe_Access_UIVector();
+	GENERIC_UI_DATA* Safe_Access_UI(int32_t index);
+
+	/// <summary>
+	/// 내부 데이터 안전을 보장할 수 없음
+	/// </summary>
+	/// <returns></returns>
+	vector<CANVAS_DATA>& Get_CanvasDataVector_Ref() { return m_vecCanvasData; }
 
 private:
 	/* CANVAS_DATA -> LAYER_DATA -> GENERIC_UI_DATA 각각 벡터를 가지는 계층 구조 입니다 */
 	vector<CANVAS_DATA> m_vecCanvasData;
+	CGameInstance* m_pGameInstance = { nullptr };
 
 private:
 	/* 커서들 입니다. */
-	uint32_t m_iCurCanvasIndex = {};
-	uint32_t m_iCurLayerIndex = {};
-	uint32_t m_iCurUIIndex = {};
+	int32_t m_iCurCanvasIndex = {};
+	int32_t m_iCurLayerIndex = {};
+	int32_t m_iCurUIIndex = {};
 
 public:
 	virtual void Free()override;

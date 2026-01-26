@@ -164,6 +164,8 @@
     <ClInclude Include="..\Public\ColliderPart.h" />
     <ClInclude Include="..\Public\ComboContainer.h" />
     <ClInclude Include="..\Public\ComboState.h" />
+    <ClInclude Include="..\Public\GenericUI.h" />
+    <ClInclude Include="..\Public\State_CrouchWalk.h" />
     <ClInclude Include="..\Public\Level_Loading.h" />
     <ClInclude Include="..\Public\Level_Logo.h" />
     <ClInclude Include="..\Public\Loader.h" />
@@ -172,15 +174,28 @@
     <ClInclude Include="..\Public\Player.h" />
     <ClInclude Include="..\Public\PlayerActionState.h" />
     <ClInclude Include="..\Public\PlayerControlContext.h" />
+    <ClInclude Include="..\Public\State_DashFront.h" />
     <ClInclude Include="..\Public\StatComponent.h" />
+    <ClInclude Include="..\Public\StateBase_Player.h">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">false</ExcludedFromBuild>
+    </ClInclude>
     <ClInclude Include="..\Public\State_Combo_First.h" />
     <ClInclude Include="..\Public\State_Combo_Fourth.h" />
     <ClInclude Include="..\Public\State_Combo_Second.h" />
     <ClInclude Include="..\Public\State_Combo_Third.h" />
+    <ClInclude Include="..\Public\State_Crouch.h" />
+    <ClInclude Include="..\Public\State_DashBack.h" />
+    <ClInclude Include="..\Public\State_DashSky.h" />
     <ClInclude Include="..\Public\State_Idle.h" />
-    <ClInclude Include="..\Public\State_Run.h" />
-    <ClInclude Include="..\Public\State_RunEnd.h" />
-    <ClInclude Include="..\Public\State_RunStart.h" />
+    <ClInclude Include="..\Public\State_Jump.h" />
+    <ClInclude Include="..\Public\State_JumpBack.h" />
+    <ClInclude Include="..\Public\State_JumpBullet.h" />
+    <ClInclude Include="..\Public\State_JumpDouble.h" />
+    <ClInclude Include="..\Public\State_RunLoop.h" />
+    <ClInclude Include="..\Public\State_RunShort.h" />
+    <ClInclude Include="..\Public\State_Slide.h" />
+    <ClInclude Include="..\Public\State_Walk.h" />
+    <ClInclude Include="..\Public\UI_Manager.h" />
     <ClInclude Include="..\Public\Weapon.h" />
     <ClInclude Include="Client.h" />
     <ClInclude Include="framework.h" />
@@ -194,6 +209,8 @@
     <ClCompile Include="..\Private\ColliderPart.cpp" />
     <ClCompile Include="..\Private\ComboContainer.cpp" />
     <ClCompile Include="..\Private\ComboState.cpp" />
+    <ClCompile Include="..\Private\GenericUI.cpp" />
+    <ClCompile Include="..\Private\State_CrouchWalk.cpp" />
     <ClCompile Include="..\Private\Level_Loading.cpp" />
     <ClCompile Include="..\Private\Level_Logo.cpp" />
     <ClCompile Include="..\Private\Loader.cpp" />
@@ -202,15 +219,28 @@
     <ClCompile Include="..\Private\Player.cpp" />
     <ClCompile Include="..\Private\PlayerActionState.cpp" />
     <ClCompile Include="..\Private\PlayerControlContext.cpp" />
+    <ClCompile Include="..\Private\State_DashFront.cpp" />
     <ClCompile Include="..\Private\StatComponent.cpp" />
+    <ClCompile Include="..\Private\StateBase_Player.cpp">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">false</ExcludedFromBuild>
+    </ClCompile>
     <ClCompile Include="..\Private\State_Combo_First.cpp" />
     <ClCompile Include="..\Private\State_Combo_Fourth.cpp" />
     <ClCompile Include="..\Private\State_Combo_Second.cpp" />
     <ClCompile Include="..\Private\State_Combo_Third.cpp" />
+    <ClCompile Include="..\Private\State_Crouch.cpp" />
+    <ClCompile Include="..\Private\State_DashBack.cpp" />
+    <ClCompile Include="..\Private\State_DashSky.cpp" />
     <ClCompile Include="..\Private\State_Idle.cpp" />
-    <ClCompile Include="..\Private\State_Run.cpp" />
-    <ClCompile Include="..\Private\State_RunEnd.cpp" />
-    <ClCompile Include="..\Private\State_RunStart.cpp" />
+    <ClCompile Include="..\Private\State_Jump.cpp" />
+    <ClCompile Include="..\Private\State_JumpBack.cpp" />
+    <ClCompile Include="..\Private\State_JumpBullet.cpp" />
+    <ClCompile Include="..\Private\State_JumpDouble.cpp" />
+    <ClCompile Include="..\Private\State_RunLoop.cpp" />
+    <ClCompile Include="..\Private\State_RunShort.cpp" />
+    <ClCompile Include="..\Private\State_Slide.cpp" />
+    <ClCompile Include="..\Private\State_Walk.cpp" />
+    <ClCompile Include="..\Private\UI_Manager.cpp" />
     <ClCompile Include="..\Private\Weapon.cpp" />
     <ClCompile Include="Client.cpp" />
     <ClCompile Include="pch.cpp">

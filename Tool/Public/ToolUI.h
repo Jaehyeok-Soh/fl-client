@@ -1,6 +1,7 @@
 #pragma once
 #include "UIObject.h"
 #include "Tool_Defines.h"
+#include "UIData_Repository.h"
 
 NS_BEGIN(Tool)
 

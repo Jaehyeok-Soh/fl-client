@@ -3,6 +3,8 @@
 #include "Event_Manager.h"
 #include "GameObject.h"
 #include "Layer.h"
+#include "ObjectPool.h"
+#include "ObjectPool_Manager.h"
 #include "GameInstance.h"
 
 CObject_Manager::CObject_Manager()
@@ -11,10 +13,13 @@ CObject_Manager::CObject_Manager()
 	Safe_AddRef(m_pGameInstance);
 }
 
-HRESULT CObject_Manager::Initialize(_uint iLevelCount)
+HRESULT CObject_Manager::Initialize(_uint iLevelCount, CObjectPool_Manager* pPoolManager)
 {
-	m_iLevelCount = iLevelCount;
+	if (pPoolManager == nullptr)
+		return E_FAIL;
 
+	m_pPoolManager = pPoolManager;
+	m_iLevelCount = iLevelCount;
 	m_pLayers = vector<map<const wstring, class CLayer*>>{ iLevelCount };
 
 	return S_OK;
@@ -84,8 +89,24 @@ void CObject_Manager::Delete_GameObject(_uint iCloneLevelIndex, const wstring& w
 	if (!pGo || wstrLayerTag.empty())
 		return;
 
-	if (CLayer* pFindLayer = Find_Layer(iCloneLevelIndex, wstrLayerTag))
-		pFindLayer->Delete_GameObject(pGo);
+	if (pGo->Is_PoolObject() == true)
+	{
+		CObjectPool* pOwnerPool = pGo->Get_OwnerPool();
+		if (pOwnerPool == nullptr)
+			return;
+
+		if (CLayer* pFindLayer = Find_Layer(iCloneLevelIndex, wstrLayerTag))
+			pFindLayer->Delete_GameObject(pGo);
+
+		pOwnerPool->Despawn(pGo);
+	}
+	else
+	{
+		if (CLayer* pFindLayer = Find_Layer(iCloneLevelIndex, wstrLayerTag))
+			pFindLayer->Delete_GameObject(pGo);
+
+		Safe_Release(pGo);
+	}
 }
 
 CGameObject* CObject_Manager::Add_GameObject(_uint iCloneLevelIndex, const wstring& wstrLayerTag, CGameObject* pGo)
@@ -111,8 +132,16 @@ CGameObject* CObject_Manager::Add_GameObject(_uint iCloneLevelIndex, const wstri
 
 CGameObject* CObject_Manager::Add_GameObject(_uint iPrototypeLevelIndex, const wstring& wstrPrototypeTag, _uint iCloneLevelIndex, const wstring& wstrLayerTag, void* pArg)
 {
-	CGameObject* pClone = dynamic_cast<CGameObject*>(m_pGameInstance->Clone_Prototype(EPrototypeType::GAMEOBJECT, iPrototypeLevelIndex, wstrPrototypeTag, pArg));
-	if (pClone == nullptr)
+	CGameObject* pGo = { nullptr };
+
+	// Pool쪽 먼저 체크
+	pGo = m_pPoolManager->Spawn(iPrototypeLevelIndex, wstrPrototypeTag, pArg);
+
+	// Pool에 없으면 Clone
+	if (pGo == nullptr)
+		pGo =  static_cast<CGameObject*>(m_pGameInstance->Clone_Prototype(EPrototypeType::GAMEOBJECT, iPrototypeLevelIndex, wstrPrototypeTag, pArg));
+
+	if (pGo == nullptr)
 		return nullptr;
 
 	CLayer* pLayer = Find_Layer(iCloneLevelIndex, wstrLayerTag);
@@ -122,20 +151,20 @@ CGameObject* CObject_Manager::Add_GameObject(_uint iPrototypeLevelIndex, const w
 		m_pLayers[iCloneLevelIndex].insert(map<const wstring, CLayer*>::value_type(wstrLayerTag, pLayer));
 	}
 
-	if (FAILED(pLayer->Add_GameObject(pClone)))
+	if (FAILED(pLayer->Add_GameObject(pGo)))
 		return nullptr;
 
-	if (m_pGameInstance->Is_Awaked(iCloneLevelIndex) == true)
-		pClone->Awake(iCloneLevelIndex);
+	if ((m_pGameInstance->Is_Awaked(iCloneLevelIndex) == true) && (pGo->Is_Awaked() == false))
+		pGo->Awake(iCloneLevelIndex);
 
-	return pClone;
+	return pGo;
 }
 
-CGameObject* CObject_Manager::Get_GameObject(_uint iLevelIndex, const wstring& wstrLayerTag, CGameObject* pGo)
+CGameObject* CObject_Manager::Get_GameObject(_uint iLevelIndex, const wstring& wstrLayerTag, _uint iIndex)
 {
 	if (CLayer* pFindLayer = Find_Layer(iLevelIndex, wstrLayerTag))
 	{
-		return pFindLayer->Get_GameObject(pGo);
+		return pFindLayer->Get_GameObject(iIndex);
 	}
 
 	return nullptr;
@@ -205,11 +234,11 @@ CLayer* CObject_Manager::Find_Layer(_uint iLevelIndex, const wstring& wstrLayerT
 	return itr->second;
 }
 
-CObject_Manager* CObject_Manager::Create(_uint iLevelCount)
+CObject_Manager* CObject_Manager::Create(_uint iLevelCount, CObjectPool_Manager* pPoolManager)
 {
 	CObject_Manager* pInstance = new CObject_Manager();
 
-	if (FAILED(pInstance->Initialize(iLevelCount)))
+	if (FAILED(pInstance->Initialize(iLevelCount, pPoolManager)))
 	{
 		MSG_BOX("CObject_Manager::Create");
 		Safe_Release(pInstance);

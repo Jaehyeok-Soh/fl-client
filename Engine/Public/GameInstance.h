@@ -110,11 +110,16 @@ public:
 							_uint iCloneLevelIndex, const wstring& wstrLayerTag, void* pArg = nullptr, std::function<void(CGameObject*)> onSpawnedCallback = nullptr);
 	void					Request_DeleteGameObject(_uint iCloneLevelIndex, const wstring& wstrLayerTag, CGameObject* pGo);
 
+	CGameObject*			Get_GameObject(_uint iLevelIndex, const wstring& wstrLayerTag, _uint iObjectIndex);
 	CGameObject*			Get_GameObject_Front(_uint iLevelIndex, const wstring& wstrLayerTag);
 	CGameObject*			Get_GameObject_Back(_uint iLevelIndex, const wstring& wstrLayerTag);
 	list<CGameObject*>*		Get_GameObject_List(_uint iLevelIndex, const wstring& wstrLayerTag);
 	
 	void					Clear_Layer(_uint iLevelIndex, const wstring& wstrLayerTag);
+#pragma endregion
+
+#pragma region OBJECTPOOL_MANAGER
+	HRESULT Regist_Pool(_uint iTargetLevelIndex, const wstring& wstrPoolTag, const wstring& wstrLayerTag, void* pArg, CGameObject* pSeed, _uint iPoolCapacityCount);
 #pragma endregion
 
 #pragma region COLLISION_MANAGER
@@ -270,6 +275,7 @@ public:
 	const vector<MAPOBJECT_SAVEDATA>* Get_MeshEffectPreviews(const wstring& wstrTag);
 #pragma endregion
 private:
+	class CObjectPool_Manager* m_pObjectPool_Manager = { nullptr };
 	class CTimer_Manager* m_pTimer_Manager = { nullptr };
 	class CSound_Manager* m_pSound_Manager = { nullptr };
 	class CMapFile_Manager* m_pMapFile_Manager = { nullptr };

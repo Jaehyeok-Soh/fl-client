@@ -49,7 +49,7 @@ HRESULT CPanel_MapDataController::Render(CToolObject* pGo)
 				CUEMapdataParser::MAPPARSER_DESC tDesc{};
 				tDesc.wstrPath = ofn.lpstrFile;
 				CUEMapdataParser* pMapDataLoader = CUEMapdataParser::Create(tDesc);
-				if(FAILED(pMapDataLoader->Read_Mapdata()))
+				if(FAILED(pMapDataLoader->Read_Mapdata(true)))
 					return E_FAIL;
 				if (FAILED(pMapDataLoader->Write_Mapdata()))
 					return E_FAIL;

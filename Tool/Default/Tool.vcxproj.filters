@@ -163,6 +163,9 @@
     <Filter Include="02. GameObjects\UI\Layer">
       <UniqueIdentifier>{d0269bd1-6673-49d6-8c4d-8c813644618a}</UniqueIdentifier>
     </Filter>
+    <Filter Include="06. ImGui\01. Panel\UIPanels\Maker">
+      <UniqueIdentifier>{f5fed899-dccb-4d0d-a291-189fd27b3ca2}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="framework.h">
@@ -351,6 +354,9 @@
     <ClInclude Include="..\Public\ToolLayer.h">
       <Filter>02. GameObjects\UI\Layer</Filter>
     </ClInclude>
+    <ClInclude Include="..\Public\UI_Maker.h">
+      <Filter>06. ImGui\01. Panel\UIPanels\Maker</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <Image Include="small.ico">
@@ -533,6 +539,9 @@
     </ClCompile>
     <ClCompile Include="..\Private\ToolLayer.cpp">
       <Filter>02. GameObjects\UI\Layer</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\UI_Maker.cpp">
+      <Filter>06. ImGui\01. Panel\UIPanels\Maker</Filter>
     </ClCompile>
   </ItemGroup>
 </Project>

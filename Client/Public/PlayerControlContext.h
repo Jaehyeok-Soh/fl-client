@@ -35,20 +35,24 @@ public:
 	void Set_RopeInfo(const ROPE_INFO& ropeInfo) { m_CurrentRopeInfo = ropeInfo; }
 	virtual _bool Is_LeftAttackPressed() override;
 	virtual _bool Is_RightAttackPressed() override;
-	virtual _bool Is_FrontDashPressed() override;
-	virtual _bool Is_LeftDashPressed() override;
-	virtual _bool Is_RightDashPressed() override;
-	virtual _bool Is_BackDashPressed() override;
+
 	virtual _bool Is_MovePressed() override;
 	virtual _bool Is_WalkPressed() override { return false; }
 	virtual _bool Is_JumpPressed() override;
 	virtual _bool Is_WirePressed() override;
 	virtual _bool Is_DodgePressed() override;
-	virtual _bool Is_ChakraJumpPressed() override;
-	virtual _bool Is_FirstSkillPressed() override { return false; }
-	virtual _bool Is_SecondSkillPressed() override { return false; }
-	virtual _bool Is_ThirdSkillPressed() override { return false; }
-	virtual _bool Is_RopePressed() override;
+
+	virtual _bool Is_DashPressed() override;
+	virtual _bool Is_SepcialMovePressed() override;
+	virtual _bool Is_ComboAtt1Pressed() override;
+	virtual _bool Is_ComboAtt2Pressed() override;
+	virtual _bool Is_ComboAtt3Pressed() override;
+	virtual _bool Is_ComboAtt4Pressed() override;
+	virtual _bool Is_Skill1Pressed() override;
+	virtual _bool Is_Skill2Pressed() override;
+	virtual _bool Is_InteractionPressed() override;
+
+	virtual _bool Is_ChargingAttackPressed() override;
 	virtual Vec3 Get_MoveDir() override;
 private:
 	void OnChangeLockonTarget(CGameObject* pGo);

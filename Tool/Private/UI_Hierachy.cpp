@@ -22,145 +22,149 @@ void CUI_Hierachy::Update(const _float fTimeDelta)
 
 HRESULT CUI_Hierachy::Render(CToolObject* pGo)
 {
-	//ImGui::Begin(m_strLabel.c_str(), nullptr, m_Flag);
-	//static int s_iSelRoot = -1;
-	//static int s_iSelChild = -1;
-	//static int s_iSelGrand = -1;
+	const auto* vecCanvas = CImGui_UIManager::GetInstance()->Safe_Access_CanvasVector();
+	if (nullptr == vecCanvas)
+		return S_OK;
 
-	//auto SelectRoot = [&](int r)
-	//	{
-	//		s_iSelRoot = r;
-	//		s_iSelChild = -1;
-	//		s_iSelGrand = -1;
-	//	};
+	ImGui::Begin(m_strLabel.c_str(), nullptr, m_Flag);
+	static int s_iSelRoot = -1;
+	static int s_iSelChild = -1;
+	static int s_iSelGrand = -1;
 
-	//auto SelectChild = [&](int r, int c)
-	//	{
-	//		s_iSelRoot = r;
-	//		s_iSelChild = c;
-	//		s_iSelGrand = -1;
-	//	};
+	auto SelectRoot = [&](int r)
+		{
+			s_iSelRoot = r;
+			s_iSelChild = -1;
+			s_iSelGrand = -1;
+		};
 
-	//auto SelectGrand = [&](int r, int c, int g)
-	//	{
-	//		s_iSelRoot = r;
-	//		s_iSelChild = c;
-	//		s_iSelGrand = g;
-	//	};
+	auto SelectChild = [&](int r, int c)
+		{
+			s_iSelRoot = r;
+			s_iSelChild = c;
+			s_iSelGrand = -1;
+		};
 
-	//auto DrawNode = [&](const char* id, const _string& label, ImGuiTreeNodeFlags extraFlags, bool isSelected)->bool
-	//	{
-	//		ImGuiTreeNodeFlags flags =
-	//			ImGuiTreeNodeFlags_SpanAvailWidth |
-	//			ImGuiTreeNodeFlags_OpenOnArrow |
-	//			extraFlags;
+	auto SelectGrand = [&](int r, int c, int g)
+		{
+			s_iSelRoot = r;
+			s_iSelChild = c;
+			s_iSelGrand = g;
+		};
 
-	//		if (isSelected)
-	//			flags |= ImGuiTreeNodeFlags_Selected;
+	auto DrawNode = [&](const char* id, const _string& label, ImGuiTreeNodeFlags extraFlags, bool isSelected)->bool
+		{
+			ImGuiTreeNodeFlags flags =
+				ImGuiTreeNodeFlags_SpanAvailWidth |
+				ImGuiTreeNodeFlags_OpenOnArrow |
+				extraFlags;
 
-	//		return ImGui::TreeNodeEx(id, flags, "%s", label.c_str());
-	//	};
+			if (isSelected)
+				flags |= ImGuiTreeNodeFlags_Selected;
 
-	//auto DrawLeaf = [&](const char* id, const _string& label, bool isSelected)
-	//	{
-	//		ImGuiTreeNodeFlags flags =
-	//			ImGuiTreeNodeFlags_SpanAvailWidth |
-	//			ImGuiTreeNodeFlags_Leaf |
-	//			ImGuiTreeNodeFlags_NoTreePushOnOpen;
+			return ImGui::TreeNodeEx(id, flags, "%s", label.c_str());
+		};
 
-	//		if (isSelected)
-	//			flags |= ImGuiTreeNodeFlags_Selected;
+	auto DrawLeaf = [&](const char* id, const _string& label, bool isSelected)
+		{
+			ImGuiTreeNodeFlags flags =
+				ImGuiTreeNodeFlags_SpanAvailWidth |
+				ImGuiTreeNodeFlags_Leaf |
+				ImGuiTreeNodeFlags_NoTreePushOnOpen;
 
-	//		ImGui::TreeNodeEx(id, flags, "%s", label.c_str());
-	//	};
+			if (isSelected)
+				flags |= ImGuiTreeNodeFlags_Selected;
 
-	//// 예시 데이터
-	//const auto& vecCanvas = CImGui_UIManager::GetInstance()->Get_CurCanvas_Ref();
-	//static vector<_string> vecRoot;
-	//static vector<vector<_string>> vecChild;
-	//static vector<vector<vector<_string>>> vecGrand;
+			ImGui::TreeNodeEx(id, flags, "%s", label.c_str());
+		};
 
-	//vecRoot.clear();
-	//vecChild.clear();
-	//vecGrand.clear();
+	// 예시 데이터
 
-	//for (const auto& canvasData : vecCanvas)
-	//{
-	//	vecRoot.push_back(canvasData.strTag);
+	static vector<_string> vecRoot;
+	static vector<vector<_string>> vecChild;
+	static vector<vector<vector<_string>>> vecGrand;
 
-	//	// canvas 하나 추가
-	//	vecChild.emplace_back();   // vecChild.back()가 이 캔버스의 레이어 리스트
-	//	vecGrand.emplace_back();   // vecGrand.back()가 이 캔버스의 [레이어][UI] 구조
+	vecRoot.clear();
+	vecChild.clear();
+	vecGrand.clear();
 
-	//	for (const auto& layerData : canvasData.vecLayers)
-	//	{
-	//		// layer 하나 추가
-	//		vecChild.back().push_back(layerData.strTag);
-	//		vecGrand.back().emplace_back(); // 이 레이어의 UI 리스트(= vector<_string>)
+	for (const auto& canvasData : *vecCanvas)
+	{
+		vecRoot.push_back(canvasData.strTag);
 
-	//		for (const auto& uiData : layerData.vecUIData)
-	//		{
-	//			vecGrand.back().back().push_back(uiData.strName);
-	//		}
-	//	}
-	//}
+		// canvas 하나 추가
+		vecChild.emplace_back();   // vecChild.back()가 이 캔버스의 레이어 리스트
+		vecGrand.emplace_back();   // vecGrand.back()가 이 캔버스의 [레이어][UI] 구조
 
-	//for (int r = 0; r < (int)vecRoot.size(); ++r)
-	//{
-	//	ImGui::PushID(r);
+		for (const auto& layerData : canvasData.vecLayers)
+		{
+			// layer 하나 추가
+			vecChild.back().push_back(layerData.strTag);
+			vecGrand.back().emplace_back(); // 이 레이어의 UI 리스트(= vector<_string>)
 
-	//	bool openedRoot = DrawNode("##Root", vecRoot[r], 0, (s_iSelRoot == r && s_iSelChild == -1 && s_iSelGrand == -1));
-	//	if (ImGui::IsItemClicked(ImGuiMouseButton_Left))
-	//		SelectRoot(r);
+			for (const auto& uiData : layerData.vecUIData)
+			{
+				vecGrand.back().back().push_back(uiData.strName);
+			}
+		}
+	}
 
-	//	if (openedRoot)
-	//	{
-	//		if (r < (int)vecChild.size())
-	//		{
-	//			for (int c = 0; c < (int)vecChild[r].size(); ++c)
-	//			{
-	//				ImGui::PushID(c);
+	for (int r = 0; r < (int)vecRoot.size(); ++r)
+	{
+		ImGui::PushID(r);
 
-	//				bool hasGrand = (r < (int)vecGrand.size() && c < (int)vecGrand[r].size() && !vecGrand[r][c].empty());
+		bool openedRoot = DrawNode("##Root", vecRoot[r], 0, (s_iSelRoot == r && s_iSelChild == -1 && s_iSelGrand == -1));
+		if (ImGui::IsItemClicked(ImGuiMouseButton_Left))
+			SelectRoot(r);
 
-	//				if (hasGrand)
-	//				{
-	//					bool openedChild = DrawNode("##Child", vecChild[r][c], 0, (s_iSelRoot == r && s_iSelChild == c && s_iSelGrand == -1));
-	//					if (ImGui::IsItemClicked(ImGuiMouseButton_Left))
-	//						SelectChild(r, c);
+		if (openedRoot)
+		{
+			if (r < (int)vecChild.size())
+			{
+				for (int c = 0; c < (int)vecChild[r].size(); ++c)
+				{
+					ImGui::PushID(c);
 
-	//					if (openedChild)
-	//					{
-	//						for (int g = 0; g < (int)vecGrand[r][c].size(); ++g)
-	//						{
-	//							ImGui::PushID(g);
+					bool hasGrand = (r < (int)vecGrand.size() && c < (int)vecGrand[r].size() && !vecGrand[r][c].empty());
 
-	//							DrawLeaf("##Grand", vecGrand[r][c][g], (s_iSelRoot == r && s_iSelChild == c && s_iSelGrand == g));
-	//							if (ImGui::IsItemClicked(ImGuiMouseButton_Left))
-	//								SelectGrand(r, c, g);
+					if (hasGrand)
+					{
+						bool openedChild = DrawNode("##Child", vecChild[r][c], 0, (s_iSelRoot == r && s_iSelChild == c && s_iSelGrand == -1));
+						if (ImGui::IsItemClicked(ImGuiMouseButton_Left))
+							SelectChild(r, c);
 
-	//							ImGui::PopID();
-	//						}
-	//						ImGui::TreePop();
-	//					}
-	//				}
-	//				else
-	//				{
-	//					DrawLeaf("##ChildLeaf", vecChild[r][c], (s_iSelRoot == r && s_iSelChild == c && s_iSelGrand == -1));
-	//					if (ImGui::IsItemClicked(ImGuiMouseButton_Left))
-	//						SelectChild(r, c);
-	//				}
-	//				ImGui::PopID();
-	//			}
-	//		}
-	//		ImGui::TreePop();
-	//	}
-	//	ImGui::PopID();
-	//}
-	//ImGui::Text("Selected Root=%d, Child=%d, Grand=%d", s_iSelRoot, s_iSelChild, s_iSelGrand);
+						if (openedChild)
+						{
+							for (int g = 0; g < (int)vecGrand[r][c].size(); ++g)
+							{
+								ImGui::PushID(g);
+
+								DrawLeaf("##Grand", vecGrand[r][c][g], (s_iSelRoot == r && s_iSelChild == c && s_iSelGrand == g));
+								if (ImGui::IsItemClicked(ImGuiMouseButton_Left))
+									SelectGrand(r, c, g);
+
+								ImGui::PopID();
+							}
+							ImGui::TreePop();
+						}
+					}
+					else
+					{
+						DrawLeaf("##ChildLeaf", vecChild[r][c], (s_iSelRoot == r && s_iSelChild == c && s_iSelGrand == -1));
+						if (ImGui::IsItemClicked(ImGuiMouseButton_Left))
+							SelectChild(r, c);
+					}
+					ImGui::PopID();
+				}
+			}
+			ImGui::TreePop();
+		}
+		ImGui::PopID();
+	}
+	ImGui::Text("Selected Root=%d, Child=%d, Grand=%d", s_iSelRoot, s_iSelChild, s_iSelGrand);
 
 
-	//ImGui::End();
+	ImGui::End();
 	return S_OK;
 }
 

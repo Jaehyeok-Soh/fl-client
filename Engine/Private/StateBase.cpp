@@ -2,7 +2,9 @@
 #include "StateBase.h"
 #include "ActionState.h"
 #include "ContainerObject.h"
+
 #include "GameInstance.h"
+#include "Engine_Utils.h"
 
 CStateBase::CStateBase(CActionState* pOwnerComponent, const string& strName)
 	: m_pOwnerStateComp(pOwnerComponent)
@@ -17,9 +19,16 @@ HRESULT CStateBase::Initialize(void* pArg)
 	if (pArg)
 	{
 		STATE_DESC* pDesc = static_cast<STATE_DESC*>(pArg);
+
 		m_bBlend = pDesc->bBlend;
 		m_bLoop = pDesc->bLoop;
 		m_iAnimIndex = pDesc->iAnimIndex;
+
+		m_FAniFlags = pDesc->FAniFlags;
+		if (Engine_Utils::Has_Flag(m_FAniFlags, STATEANI_FLAG::SA_HasPreAni))
+			m_vecPreAnims = std::move(pDesc->vecPreAnims);
+		else
+			m_vecPreAnims.clear();
 	}
 
 	return S_OK;
@@ -35,16 +44,47 @@ HRESULT CStateBase::Start(void *pArg, _bool bForce)
 	if (pArg)
 	{
 		STATE_START_DESC *pDesc = static_cast<STATE_START_DESC*>(pArg);
-
-		// TODO
+		m_bMainForce = bForce;
 	}
 
+	// 만약 preAni가 있는 state라면
+	// vecPreAnims 탐색 후 preAni 결정
+	if (Engine_Utils::Has_Flag(m_FAniFlags, STATEANI_FLAG::SA_HasPreAni))
+	{
+		for (auto& pAniData : m_vecPreAnims)
+		{
+			// 만약 preidx가 없다면 무조건 업데이트
+			if(pAniData.iPrevStateIdx == -1 || pAniData.iPrevStateIdx == Get_PrevState())
+			{
+				Engine_Utils::RemoveHard_Flag(m_FAniFlags, STATEANI_FLAG::SA_PreAniDone);
+				Request_ChangeAnimation(pAniData.iAnimationIdex, true, false, true); // 무조건 loop : false
+				return S_OK;
+			}
+		}
+	}
+
+	// pre가 있긴 하지만 이번에는 없을 때 || pre 자체가 없을 때
+	Engine_Utils::Add_Flag(m_FAniFlags, STATEANI_FLAG::SA_PreAniDone);
+
+	// 만약 preAni가 없다면 내꺼 재생
 	Request_ChangeAnimation(m_iAnimIndex, m_bBlend, m_bLoop, bForce);
 	return S_OK;
 }
 
 void CStateBase::Update(const _float fTimeDelta)
 {
+	// 만약 preAni가 있는 state라면
+	// preAni 끝났는지 확인 후 ->  PreAniDone flag On & animationi chnage. 
+	if (Engine_Utils::Has_Flag(m_FAniFlags, STATEANI_FLAG::SA_HasPreAni) &&
+		!Engine_Utils::Has_Flag(m_FAniFlags, STATEANI_FLAG::SA_PreAniDone))
+	{
+		if (Is_AnimFinished())
+		{
+			Engine_Utils::Add_Flag(m_FAniFlags, STATEANI_FLAG::SA_PreAniDone);
+			Request_ChangeAnimation(m_iAnimIndex, m_bBlend, m_bLoop, m_bMainForce);
+		}
+	}
+
 	m_fStateElapsed += fTimeDelta;
 }
 
@@ -119,6 +159,14 @@ _bool CStateBase::Is_AnimFinished()
 		return false;
 
 	return m_pOwnerStateComp->Is_AnimFinished();
+}
+
+_bool CStateBase::Is_MainAnimFinished()
+{
+	if (m_pOwnerStateComp == nullptr)
+		return false;
+
+	return m_pOwnerStateComp->Is_AnimFinished() && Engine_Utils::Has_Flag(m_FAniFlags, STATEANI_FLAG::SA_PreAniDone);
 }
 
 _bool CStateBase::Is_AnimTrackPositionHalf()
@@ -263,6 +311,11 @@ void CStateBase::Set_AnimationPlayRate(_float fSpeed)
 void CStateBase::Set_JumpCount(_uint iCount)
 {
 	m_pOwnerStateComp->Set_JumpCount(iCount);
+}
+
+_bool CStateBase::Key_Input(_uint iKey)
+{
+	return m_pOwnerStateComp->Key_Input(static_cast<CControlContext::CONTROL_KEY>(iKey));
 }
 
 _bool CStateBase::Align_Move(_uint iRunState)

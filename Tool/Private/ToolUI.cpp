@@ -26,10 +26,11 @@ HRESULT CToolUI::Initialize_Prototype()
 
 HRESULT CToolUI::Initialize(void* pArg)
 {
+	TOOLUI_DESC* pDesc = static_cast<TOOLUI_DESC*>(pArg);
+
 	if (FAILED(Super::Initialize(pArg)))
 		return E_FAIL;
-
-	TOOLUI_DESC* pDesc = static_cast<TOOLUI_DESC*>(pArg);
+	
 
     if (FAILED(Ready_Components(pDesc)))
         return E_FAIL;
@@ -48,27 +49,26 @@ HRESULT CToolUI::Awake(const _uint iCurrentLevelID)
 
 void CToolUI::Update_Priority(const _float fTimeDelta)
 {
-		Super::Update_Priority(fTimeDelta);
+	Super::Update_Priority(fTimeDelta);
 }
 
 void CToolUI::Update(const _float fTimeDelta)
 {
-		Super::Update(fTimeDelta);
+	Super::Update(fTimeDelta);
 }
 
 void CToolUI::Update_Late(const _float fTimeDelta)
 {
-		Super::Update_Late(fTimeDelta);
+	Super::Update_Late(fTimeDelta);
 }
 
 void CToolUI::Ready_Before_Render(const _float fTimeDelta)
 {
-		Super::Ready_Before_Render(fTimeDelta);
+	Super::Ready_Before_Render(fTimeDelta);
 }
 
 HRESULT CToolUI::Render()
 {
-
 	if (FAILED(Super::Render()))
 		return E_FAIL;
 

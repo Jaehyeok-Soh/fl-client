@@ -3,6 +3,7 @@
 #include "Tool_Defines.h"
 #include "ImGui_UIManager.h"
 #include "FileUtils.h"
+#include "GameInstance.h"
 
 NS_BEGIN(Tool)
 
@@ -10,10 +11,12 @@ IMPLEMENT_SINGLETON(CUIData_Repository)
 
 
 CUIData_Repository::CUIData_Repository()
+	:m_pGameInstance(CGameInstance::GetInstance())
 {
+	Safe_AddRef(m_pGameInstance);
 }
 
-HRESULT CUIData_Repository::Load_UIData(const _wstring& wstrSaveFilePath, OUT vector<CANVAS_DATA>& OutVec)
+HRESULT CUIData_Repository::Load_UIData(const _wstring& wstrSaveFilePath, OUT vector<CANVAS_DATA>& OutRef)
 {
 	CFileUtils* pFileUtil = CFileUtils::Create();
 
@@ -27,7 +30,8 @@ HRESULT CUIData_Repository::Load_UIData(const _wstring& wstrSaveFilePath, OUT ve
 	pFileUtil->ReadAllText(text);
 
 	order_json j = json::parse(text);
-	OutVec = j.get<vector<CANVAS_DATA>>();
+	m_vecCanvasData = j.get<vector<CANVAS_DATA>>();
+	OutRef = j.get<vector<CANVAS_DATA>>();
 	Safe_Release(pFileUtil);
 
 	return S_OK;
@@ -37,7 +41,11 @@ HRESULT CUIData_Repository::Save_UIData(const _wstring& wstrSaveFilePath)
 {
 	CFileUtils* pFileUtil = CFileUtils::Create();
 
-	m_vecCanvasData = CImGui_UIManager::GetInstance()->Get_CurCanvas_Ref();
+	vector<CANVAS_DATA>* pVec =	CImGui_UIManager::GetInstance()->Safe_Access_CanvasVector();
+	if (nullptr == pVec)
+		return E_FAIL;
+
+	m_vecCanvasData = *pVec;
 
 	if (FAILED(pFileUtil->Open(wstrSaveFilePath, FileMode::WRITE)))
 	{
@@ -57,8 +65,46 @@ HRESULT CUIData_Repository::Save_UIData(const _wstring& wstrSaveFilePath)
 	return S_OK;
 }
 
+HRESULT CUIData_Repository::Make_UIObjects(const vector<CANVAS_DATA>& vecData)
+{
+	if (vecData.empty())
+		return S_OK;
+
+	vector<vector<LAYER_DATA>> vecLayer;
+	vector<vector<vector<GENERIC_UI_DATA>>> vecUIdata;
+
+	vecLayer.clear();
+	vecUIdata.clear();
+
+	for (const CANVAS_DATA& CanvasData : vecData)
+	{
+		// 1) Canvas 한 칸 생성
+		vecLayer.emplace_back();  
+		vecUIdata.emplace_back(); 
+
+		// 2) 레이어들 채우기
+		for (const LAYER_DATA& LayerData : CanvasData.vecLayers)
+		{
+			// 레이어 추가
+			vecLayer.back().push_back(LayerData);
+
+			// 3) Layer 한 칸 생성 (이 레이어의 UI 리스트 자리)
+			vecUIdata.back().emplace_back(); // vecUIdata.back().back() : 이번 레이어의 UI 목록
+
+			// 4) UI들 채우기
+			for (const GENERIC_UI_DATA& UIData : LayerData.vecUIData)
+			{
+				vecUIdata.back().back().push_back(UIData);
+			}
+		}
+	}
+	return S_OK;
+}
+
+
 void CUIData_Repository::Free()
 {
+	Safe_Release(m_pGameInstance);
 	Super::Free();
 }
 

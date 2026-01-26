@@ -1,271 +1,390 @@
 #include "pch.h"
 #include "ImGui_UIManager.h"
 #include "Tool_Defines.h"
-#include "GameInstance.h"
 #include "Engine_Utils.h"
 #include "ToolUI.h"
+#include "GameInstance.h"
 
 IMPLEMENT_SINGLETON(CImGui_UIManager)
 
 CImGui_UIManager::CImGui_UIManager()
+	:m_pGameInstance(CGameInstance::GetInstance())
 {
+	Safe_AddRef(m_pGameInstance);
 }
 
-void CImGui_UIManager::Add_CanvasData(const CANVAS_DATA& tData)
+void CImGui_UIManager::Safe_Add_CanvasData(const CANVAS_DATA& tData)
 {
 	m_vecCanvasData.push_back(tData);
-	m_iCurCanvasIndex = static_cast<uint32_t>(m_vecCanvasData.size() - 1);
+	Safe_Change_Canvas(static_cast<uint32_t>(m_vecCanvasData.size() - 1));
 }
 
-void CImGui_UIManager::Add_LayerData(const LAYER_DATA& tData)
+void CImGui_UIManager::Safe_Add_LayerData(const LAYER_DATA& tData)
 {
-	if (m_iCurCanvasIndex >= Get_NumCanvas())
-	{
-		MSG_BOX("CImGui_UIManager::Add_LayerData, No Canvas");
+	CANVAS_DATA* pCanvas = Safe_Access_Canvas(m_iCurCanvasIndex);
+	if (nullptr == pCanvas)
 		return;
-	}
-	m_vecCanvasData[m_iCurCanvasIndex].vecLayers.push_back(tData);
-	m_iCurLayerIndex = static_cast<uint32_t>(m_vecCanvasData[m_iCurCanvasIndex].vecLayers.size() - 1);
+	
+	pCanvas->vecLayers.push_back(tData);
+	Safe_Change_Layer(static_cast<uint32_t>(pCanvas->vecLayers.size() - 1));
 }
 
-void CImGui_UIManager::Add_UIData(const GENERIC_UI_DATA& tData)
+void CImGui_UIManager::Safe_Add_UIData(const GENERIC_UI_DATA& tData)
 {
-	if (m_iCurCanvasIndex >= Get_NumCanvas())
-	{
-		MSG_BOX("CImGui_UIManager::Add_UIData, No Canvas");
+	LAYER_DATA* pLayer = Safe_Access_Layer(m_iCurLayerIndex);
+	if (nullptr == pLayer)
 		return;
-	}
 
-	if (m_iCurLayerIndex >= Get_NumLayer(m_iCurCanvasIndex))
-	{
-		MSG_BOX("CImGui_UIManager::Add_UIData, No Layer");
+	if (FAILED(Safe_Add_UI(pLayer, tData)))
 		return;
-	}
-	m_vecCanvasData[m_iCurCanvasIndex].vecLayers[m_iCurLayerIndex].vecUIData.push_back(tData);
-	Add_UI(tData);
-	m_iCurUIIndex = static_cast<uint32_t>(m_vecCanvasData[m_iCurCanvasIndex].vecLayers[m_iCurLayerIndex].vecUIData.size() - 1);
+
+	pLayer->vecUIData.push_back(tData);
+	Safe_Change_UI(static_cast<uint32_t>(pLayer->vecUIData.size() - 1));
 }
 
-void CImGui_UIManager::Add_UI(const GENERIC_UI_DATA& tData)
+HRESULT CImGui_UIManager::Safe_Add_UI(LAYER_DATA* pLayer, const GENERIC_UI_DATA& tData)
 {
+	if ("" == pLayer->strTag)
+		return E_FAIL;
+
+	uint32_t iLevelIndex = static_cast<uint32_t>(ELevelType::UI);
 	CToolUI::TOOLUI_DESC Desc = {};
-	Desc.bAlpha = TRUE;
-	Desc.fSizeX = 1.f;
-	Desc.fSizeY = 1.f;
-	Desc.fX = 100.f;
-	Desc.fY = 100.f;
+	Desc.isAlpha	= TRUE;
+	Desc.fWidth		= 64.f;
+	//Desc.fWidth		= tData.fWidth;
+	Desc.fHeight	= 64.f;
+	//Desc.fHeight	= tData.fHeight;
+	Desc.fX			= tData.fPosX;
+	Desc.fY			= tData.fPosY;
+	Desc.fZ			= tData.fPosZ;
 	Desc.wstrTextureTag = L"Prototype_Component_Button_Test_Texture";
 
-	CGameObject* pGO = CGameInstance::GetInstance()->Add_GameObject(
-		static_cast<uint32_t>(ELevelType::UI), L"Prototype_UI_Test_Button",
-		static_cast<uint32_t>(ELevelType::UI), Engine_Utils::ToWString(m_vecCanvasData[m_iCurCanvasIndex].vecLayers[m_iCurLayerIndex].strTag), &Desc);
+	CGameObject* pGO = CGameInstance::GetInstance()->Add_GameObject(iLevelIndex, L"Prototype_UI_Test_Button",iLevelIndex,Engine_Utils::ToWString(pLayer->strTag), &Desc);
+	if (nullptr == pGO)
+		return E_FAIL;
 
-	pGO->Awake(static_cast<uint32_t>(ELevelType::UI));
-	m_vecCanvasData[m_iCurCanvasIndex].vecLayers[m_iCurLayerIndex].vecUIObjects.push_back(reinterpret_cast<CToolUI*>(pGO));
+	pLayer->vecUIObjects.push_back(reinterpret_cast<CToolUI*>(pGO));
+	return S_OK;
 }
 
-void CImGui_UIManager::Change_Canvas(uint32_t iNewCanvasIndex)
+void CImGui_UIManager::Safe_Change_Canvas(int32_t iNewCanvasIndex)
 {
-	uint32_t iNumCanvas = Get_NumCanvas();
-
-	if (iNumCanvas == 0)
+	if (m_vecCanvasData.empty() || iNewCanvasIndex < 0)
 	{
-		m_iCurCanvasIndex = 0;
-		m_iCurLayerIndex = 0;
-		m_iCurUIIndex = 0;
+		m_iCurCanvasIndex = -1;
+		m_iCurLayerIndex = -1;
+		m_iCurUIIndex = -1;
 		return;
 	}
 
-	if (iNewCanvasIndex > iNumCanvas)
+	/* ¡÷¿« */
+	int32_t iNumCanvasData = static_cast<int32_t>(m_vecCanvasData.size());
+	if (iNewCanvasIndex >= iNumCanvasData)
 		return;
-	
-	m_iCurLayerIndex = 0;
-	m_iCurUIIndex = 0;
+
 	m_iCurCanvasIndex = iNewCanvasIndex;
+	if (m_vecCanvasData[m_iCurCanvasIndex].vecLayers.empty())
+	{
+		m_iCurLayerIndex = -1;
+		m_iCurUIIndex = -1;
+		return;
+	}
+
+	int32_t iNumLayerData = static_cast<int32_t>(m_vecCanvasData[m_iCurCanvasIndex].vecLayers.size());
+	if (m_iCurLayerIndex >= iNumLayerData)
+		m_iCurLayerIndex = iNumLayerData - 1;
+
+	if (m_vecCanvasData[m_iCurCanvasIndex].vecLayers[m_iCurLayerIndex].vecUIData.empty())
+	{
+		m_iCurUIIndex = -1;
+		return;
+	}
+
+	int32_t iNumUIData = static_cast<int32_t>(m_vecCanvasData[m_iCurCanvasIndex].vecLayers[m_iCurLayerIndex].vecUIData.size());
+	if (m_iCurUIIndex >= iNumUIData)
+		m_iCurUIIndex = iNumUIData - 1;
 }
 
-void CImGui_UIManager::Change_Layers(uint32_t iNewLayerIndex)
+void CImGui_UIManager::Safe_Change_Layer(int32_t iNewLayerIndex)
 {
-	uint32_t iNumCanvas = Get_NumCanvas();
+	if (-1 == m_iCurCanvasIndex)
+		return;
 
-	if (iNumCanvas == 0)
+	if (m_vecCanvasData[m_iCurCanvasIndex].vecLayers.empty() || iNewLayerIndex < 0)
 	{
-		m_iCurCanvasIndex = 0;
-		m_iCurLayerIndex = 0;
-		m_iCurUIIndex = 0;
+		m_iCurLayerIndex = -1;
+		m_iCurUIIndex = -1;
 		return;
 	}
 
-	uint32_t iNumLayer = Get_NumLayer(m_iCurCanvasIndex);
-
-	if (iNumLayer == 0)
-	{
-		m_iCurLayerIndex = 0;
-		m_iCurUIIndex = 0;
-		return;
-	}
-
-	if (iNewLayerIndex > iNumLayer)
+	int32_t iNumLayerData = static_cast<int32_t>(m_vecCanvasData[m_iCurCanvasIndex].vecLayers.size());
+	if (iNewLayerIndex >= iNumLayerData)
 		return;
 
-	m_iCurUIIndex = 0;
 	m_iCurLayerIndex = iNewLayerIndex;
+
+	if (m_vecCanvasData[m_iCurCanvasIndex].vecLayers[m_iCurLayerIndex].vecUIData.empty())
+	{
+		m_iCurUIIndex = -1;
+		return;
+	}
+
+	int32_t iNumUIData = static_cast<int32_t>(m_vecCanvasData[m_iCurCanvasIndex].vecLayers[m_iCurLayerIndex].vecUIData.size());
+	
+	if (m_iCurUIIndex >= iNumUIData)
+		m_iCurUIIndex = iNumUIData - 1;
 }
 
-void CImGui_UIManager::Change_UIData(uint32_t iNewUIIndex)
+void CImGui_UIManager::Safe_Change_UI(int32_t iNewUIIndex)
 {
-	uint32_t iNumCanvas = Get_NumCanvas();
-	if (iNumCanvas == 0)
+	if (-1 == m_iCurCanvasIndex)
+		return;
+
+	if (-1 == m_iCurLayerIndex)
+		return;
+
+	if (m_vecCanvasData[m_iCurCanvasIndex].vecLayers[m_iCurLayerIndex].vecUIData.empty() || iNewUIIndex < 0)
 	{
-		m_iCurCanvasIndex = 0;
-		m_iCurLayerIndex = 0;
-		m_iCurUIIndex = 0;
+		m_iCurUIIndex = -1;
 		return;
 	}
 
-	uint32_t iNumLayer = Get_NumLayer(m_iCurCanvasIndex);
-	if (iNumLayer == 0)
-	{
-		m_iCurLayerIndex = 0;
-		m_iCurUIIndex = 0;
+	int32_t iNumUIData = static_cast<int32_t>(m_vecCanvasData[m_iCurCanvasIndex].vecLayers[m_iCurLayerIndex].vecUIData.size());
+	if (iNewUIIndex >= iNumUIData)
 		return;
-	}
 
-	uint32_t iNumUI = Get_NumUI(m_iCurCanvasIndex, m_iCurLayerIndex);
-	if (iNumUI == 0)
-	{
-		m_iCurUIIndex = 0;
-		return;
-	}
-	if (iNewUIIndex > iNumUI)
-		return;
-	
 	m_iCurUIIndex = iNewUIIndex;
 }
 
-uint32_t CImGui_UIManager::Get_NumCanvas()
+int32_t CImGui_UIManager::Get_NumCanvas()
 {
-	return static_cast<uint32_t>(m_vecCanvasData.size());
+	if (m_vecCanvasData.empty())
+		return 0;
+
+	return static_cast<int32_t>(m_vecCanvasData.size());
 }
 
-uint32_t CImGui_UIManager::Get_NumLayer(uint32_t iCanvasIndex)
+int32_t CImGui_UIManager::Get_NumLayer()
 {
-	if (iCanvasIndex >= Get_NumCanvas())
-	{
-		MSG_BOX("CImGui_UIManager::Get_NumLayer, CanvasIndex Out of Range");
+	CANVAS_DATA* pCanvas = Safe_Access_Canvas(m_iCurCanvasIndex);
+	if (nullptr == pCanvas)
 		return 0;
-	}
 
-	return static_cast<uint32_t>(m_vecCanvasData[iCanvasIndex].vecLayers.size());
+	if (pCanvas->vecLayers.empty())
+		return 0;
+
+	return static_cast<int32_t>(pCanvas->vecLayers.size());
 }
 
-uint32_t CImGui_UIManager::Get_CurNumLayer()
+int32_t CImGui_UIManager::Get_NumUI()
 {
-	if (m_iCurCanvasIndex >= Get_NumCanvas())
-	{
-		MSG_BOX("CImGui_UIManager::Get_NumLayer, CanvasIndex Out of Range");
+	LAYER_DATA* pLayer = Safe_Access_Layer(m_iCurLayerIndex);
+	if (nullptr == pLayer)
 		return 0;
-	}
 
-	return static_cast<uint32_t>(m_vecCanvasData[m_iCurCanvasIndex].vecLayers.size());
+	if (pLayer->vecUIData.empty())
+		return 0;
+
+	return static_cast<int32_t>(pLayer->vecUIData.size());
 }
 
-uint32_t CImGui_UIManager::Get_NumUI(uint32_t iCanvasIndex, uint32_t iLayerIndex)
+void CImGui_UIManager::Safe_Remove_CanvasData()
 {
-	if (iCanvasIndex >= Get_NumCanvas())
+	CANVAS_DATA* pCanvas = Safe_Access_Canvas(m_iCurCanvasIndex);
+	if (nullptr == pCanvas)
+		return;
+
+	vector<_wstring> vecLayerTags;
+	vecLayerTags.reserve(pCanvas->vecLayers.size());
+
+	for (const LAYER_DATA& Layer : pCanvas->vecLayers)
 	{
-		MSG_BOX("CImGui_UIManager::Get_NumUI, CanvasIndex Out of Range");
-		return 0;
+		if (!Layer.strTag.empty())
+			vecLayerTags.push_back(Engine_Utils::ToWString(Layer.strTag));
 	}
 
-	uint32_t iNumLayer = static_cast<uint32_t>(m_vecCanvasData[iCanvasIndex].vecLayers.size());
-	if (iLayerIndex >= iNumLayer)
+	for (const _wstring& wstrTag : vecLayerTags)
 	{
-		MSG_BOX("CImGui_UIManager::Get_NumUI, LayerIndex Out of Range");
-		return 0;
+		m_pGameInstance->Clear_Layer(static_cast<uint32_t>(ELevelType::UI), wstrTag);
 	}
 
-	return static_cast<uint32_t>(m_vecCanvasData[iCanvasIndex].vecLayers[iLayerIndex].vecUIData.size());
-}
-
-uint32_t CImGui_UIManager::Get_CurNumUI()
-{
-	if (m_iCurCanvasIndex >= Get_NumCanvas())
-	{
-		MSG_BOX("CImGui_UIManager::Get_NumUI, CanvasIndex Out of Range");
-		return 0;
-	}
-
-	uint32_t iNumLayer = static_cast<uint32_t>(m_vecCanvasData[m_iCurCanvasIndex].vecLayers.size());
-	if (m_iCurLayerIndex >= iNumLayer)
-	{
-		MSG_BOX("CImGui_UIManager::Get_NumUI, LayerIndex Out of Range");
-		return 0;
-	}
-
-	return static_cast<uint32_t>(m_vecCanvasData[m_iCurCanvasIndex].vecLayers[m_iCurLayerIndex].vecUIData.size());
-}
-
-void CImGui_UIManager::Remove_CanvasData()
-{
+	pCanvas->Clear_Data();
 	m_vecCanvasData.erase(m_vecCanvasData.begin() + m_iCurCanvasIndex);
-	Change_Canvas(0);
+
+	if (Get_NumCanvas() <= 0)
+		Safe_Change_Canvas(-1);
+	else
+		Safe_Change_Canvas(Get_NumCanvas() - 1);
 }
 
-void CImGui_UIManager::Remove_LayerData()
+void CImGui_UIManager::Safe_Remove_LayerData()
 {
-	Get_CurLayers_Ref().erase(Get_CurLayers_Ref().begin() + m_iCurLayerIndex);
-	Change_Layers(0);
+	LAYER_DATA* pLayer = Safe_Access_Layer(m_iCurLayerIndex);
+	if (nullptr == pLayer)
+		return;
+	auto p = &m_vecCanvasData[m_iCurCanvasIndex].vecLayers;
+
+	_wstring wstrLayerTag = Engine_Utils::ToWString(pLayer->strTag);
+	pLayer->Clear_Data();
+	m_pGameInstance->Clear_Layer(static_cast<uint32_t>(ELevelType::UI), wstrLayerTag);
+	
+	p->erase(p->begin() +  m_iCurLayerIndex);
+	if(Get_NumLayer() <= 0)
+		Safe_Change_Layer(-1);
+	else
+		Safe_Change_Layer(Get_NumLayer() - 1);
 }
 
-void CImGui_UIManager::Remove_UIData()
-{
-	Get_CurUIDatas_Ref().erase(Get_CurUIDatas_Ref().begin() + m_iCurUIIndex);
-	Change_UIData(0);
-}
 
-CANVAS_DATA* CImGui_UIManager::Get_CanvasData_Ptr(uint32_t CanvasIndex)
+HRESULT CImGui_UIManager::Remake_UIObjects()
 {
-	if (CanvasIndex >= Get_NumCanvas())
+	CANVAS_DATA* pCanvas = Safe_Access_Canvas(m_iCurCanvasIndex);
+	if (nullptr == pCanvas)
+		return S_OK;
+
+	if (pCanvas->vecLayers.empty())
+		return S_OK;
+
+	uint32_t iLevelIndex = static_cast<uint32_t>(ELevelType::UI);
+
+	for (LAYER_DATA& Layer : pCanvas->vecLayers)
 	{
-		MSG_BOX("CImGui_UIManager::Get_CanvasData_Ptr, Index Out of Range");
-		return nullptr;
+		if (Layer.strTag.empty())
+			continue;
+
+		Layer.vecUIObjects.clear();
+
+		for (const GENERIC_UI_DATA& UIData : Layer.vecUIData)
+		{
+			CToolUI::TOOLUI_DESC Desc = {};
+			Desc.fX = UIData.fPosX;
+			Desc.fY = UIData.fPosY;
+			Desc.fZ = UIData.fPosZ;
+			Desc.fHeight = 64.f;
+			//Desc.fHeight = UIData.fHeight;
+			Desc.fWidth = 64.f;
+			//Desc.fWidth = UIData.fWidth;
+			Desc.isAlpha = TRUE;
+			Desc.wstrTextureTag = L"Prototype_Component_Button_Test_Texture";
+
+			CGameObject* pResult = m_pGameInstance->Add_GameObject(
+				iLevelIndex, L"Prototype_UI_Test_Button",
+				iLevelIndex, Engine_Utils::ToWString(Layer.strTag), &Desc);
+
+			if (nullptr == pResult)
+				return E_FAIL;
+
+			Layer.vecUIObjects.push_back(reinterpret_cast<CToolUI*>(pResult));
+		}
 	}
-	return &m_vecCanvasData[CanvasIndex];
+	return S_OK;
 }
 
-LAYER_DATA* CImGui_UIManager::Get_LayerData_Ptr(uint32_t LayerIndex)
+HRESULT CImGui_UIManager::Clear_UIObjects()
 {
-	if (LayerIndex >= Get_NumLayer(m_iCurCanvasIndex))
-	{
-		MSG_BOX("CImGui_UIManager::Get_LayerData_Ptr, Index Out of Range");
-		return nullptr;
-	}
-	return &Get_CurLayers_Ref()[LayerIndex];
+	LAYER_DATA* pLayer = Safe_Access_Layer(m_iCurLayerIndex);
+	if (nullptr == pLayer)
+		return S_OK;
+
+	if ("" == pLayer->strTag)
+		return S_OK;
+
+	uint32_t iLevelIndex = static_cast<uint32_t>(ELevelType::UI);
+
+	m_pGameInstance->Clear_Layer(iLevelIndex, Engine_Utils::ToWString(pLayer->strTag));
+	pLayer->vecUIObjects.clear();
+	return S_OK;
 }
 
-GENERIC_UI_DATA* CImGui_UIManager::Get_UIData_Ptr(uint32_t UIIndex)
+
+vector<CANVAS_DATA>* CImGui_UIManager::Safe_Access_CanvasVector()
 {
-	if (UIIndex >= Get_NumUI(m_iCurCanvasIndex, m_iCurLayerIndex))
-	{
-		MSG_BOX("CImGui_UIManager::Get_UIData_Ptr, Index Out of Range");
+	if (m_vecCanvasData.empty())
 		return nullptr;
-	}
-	return &Get_CurUIDatas_Ref()[UIIndex];
+	return &m_vecCanvasData;
 }
 
-CToolUI* CImGui_UIManager::Get_UI_Ptr(uint32_t UIIndex)
+CANVAS_DATA* CImGui_UIManager::Safe_Access_Canvas(int32_t index)
 {
-	if (UIIndex >= Get_NumUI(m_iCurCanvasIndex, m_iCurLayerIndex))
-	{
-		MSG_BOX("CImGui_UIManager::Get_UIData_Ptr, Index Out of Range");
+	if (m_vecCanvasData.empty())
 		return nullptr;
-	}
-	return Get_CurLayers_Ref()[m_iCurLayerIndex].vecUIObjects[UIIndex];
+	
+	if (index < 0)
+		return nullptr;
+
+	int32_t NumCanvas = static_cast<int32_t>(m_vecCanvasData.size());
+
+	if (index >= NumCanvas)
+		return nullptr;
+
+	return &m_vecCanvasData[index];
+}
+
+vector<LAYER_DATA>* CImGui_UIManager::Safe_Access_LayerVector()
+{
+	CANVAS_DATA* pCanvas = Safe_Access_Canvas(m_iCurCanvasIndex);
+	if (nullptr == pCanvas)
+		return nullptr;
+
+	if (pCanvas->vecLayers.empty())
+		return nullptr;
+
+	return &pCanvas->vecLayers;
+}
+
+LAYER_DATA* CImGui_UIManager::Safe_Access_Layer(int32_t index)
+{
+	CANVAS_DATA* pCanvas = Safe_Access_Canvas(m_iCurCanvasIndex);
+	if (nullptr == pCanvas)
+		return nullptr;
+
+	if ((*pCanvas).vecLayers.empty())
+		return nullptr;
+
+	if (index < 0)
+		return nullptr;
+
+	int32_t iNumLayer = static_cast<int32_t>((*pCanvas).vecLayers.size());
+	if (index >= iNumLayer)
+		return nullptr;
+
+	return &(pCanvas->vecLayers[index]);
+}
+
+vector<GENERIC_UI_DATA>* CImGui_UIManager::Safe_Access_UIVector()
+{
+	LAYER_DATA* pLayer = Safe_Access_Layer(m_iCurLayerIndex);
+	if (nullptr == pLayer)
+		return nullptr;
+
+	if (pLayer->vecUIData.empty())
+		return nullptr;
+
+	return &pLayer->vecUIData;
+}
+
+GENERIC_UI_DATA* CImGui_UIManager::Safe_Access_UI(int32_t index)
+{
+	LAYER_DATA* pLayer = Safe_Access_Layer(m_iCurLayerIndex);
+	if (nullptr == pLayer)
+		return nullptr;
+
+	if ((*pLayer).vecUIData.empty())
+		return nullptr;
+
+	if (index < 0)
+		return nullptr;
+
+	int32_t NumUI = static_cast<int32_t>((*pLayer).vecUIData.size());
+	if (index >= NumUI)
+		return nullptr;
+
+	return &(pLayer->vecUIData[index]);
 }
 
 void CImGui_UIManager::Free()
 {
+	Safe_Release(m_pGameInstance);
 	Super::Free();
 }
 

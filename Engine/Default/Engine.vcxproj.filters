@@ -226,6 +226,9 @@
     <Filter Include="00. System\11. ConstantBuffer">
       <UniqueIdentifier>{10db4137-a3f1-4c63-b692-88ce07aa8dc1}</UniqueIdentifier>
     </Filter>
+    <Filter Include="00. System\04. GameObject\00. Manager\Pool">
+      <UniqueIdentifier>{ded27517-c785-4541-afbd-9c3dacdacc77}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="..\Private\Timer.cpp">
@@ -473,6 +476,12 @@
     </ClCompile>
     <ClCompile Include="..\Private\Constant_Buffer.cpp">
       <Filter>00. System\11. ConstantBuffer</Filter>
+    </ClCompile>
+    <ClCompile Include="..\private\ObjectPool.cpp">
+      <Filter>00. System\04. GameObject\00. Manager\Pool</Filter>
+    </ClCompile>
+    <ClCompile Include="..\private\ObjectPool_Manager.cpp">
+      <Filter>00. System\04. GameObject\00. Manager</Filter>
     </ClCompile>
     <ClCompile Include="..\Private\VIBuffer_Particle_Mesh.cpp">
       <Filter>00. System\05. Component\VIBuffer\Particle</Filter>
@@ -751,6 +760,12 @@
     </ClInclude>
     <ClInclude Include="..\Public\Constant_Buffer.h">
       <Filter>00. System\11. ConstantBuffer</Filter>
+    </ClInclude>
+    <ClInclude Include="..\public\ObjectPool.h">
+      <Filter>00. System\04. GameObject\00. Manager\Pool</Filter>
+    </ClInclude>
+    <ClInclude Include="..\public\ObjectPool_Manager.h">
+      <Filter>00. System\04. GameObject\00. Manager</Filter>
     </ClInclude>
     <ClInclude Include="..\Public\VIBuffer_Particle_Mesh.h">
       <Filter>00. System\05. Component\VIBuffer\Particle</Filter>
