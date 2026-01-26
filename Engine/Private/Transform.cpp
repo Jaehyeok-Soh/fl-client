@@ -36,7 +36,10 @@ HRESULT CTransform::Initialize(void* pArg)
 		if (pDesc->pTransform_Desc)
 		{
 			TRANSFORM_DESC* pFinalDesc = static_cast<TRANSFORM_DESC*>(pDesc->pTransform_Desc);
-			Set_Info(TRANSFORM_INFO_STATE::POS, Vec3(pFinalDesc->vPosition.x, pFinalDesc->vPosition.y, pFinalDesc->vPosition.z));
+			Set_Scale(pFinalDesc->vScale);
+			Set_Info(TRANSFORM_INFO_STATE::POS, pFinalDesc->vPosition);
+			
+
 			m_fMovePerSec = pFinalDesc->fMovePerSec;
 			m_fRotatePerSec = pFinalDesc->fRotatePerSec;
 		}
@@ -228,6 +231,15 @@ inline void CTransform::Go_Left(const _float fTimeDelta, CNavigation* pNavigatio
 	vPosition -= vDir * m_fMovePerSec * m_fMoveScale * fTimeDelta;
 	if (pNavigation == nullptr || pNavigation->Is_Move(vPosition))
 		Set_Info(TRANSFORM_INFO_STATE::POS, vPosition);
+}
+
+inline void CTransform::Rotation(_float fRadianX, _float fRadianY, _float fRadianZ)
+{
+	Matrix ScaleMatrix = Matrix::CreateScale(Get_Scaled());
+	Matrix RoationMarix = Matrix::CreateFromYawPitchRoll(fRadianY , fRadianX , fRadianZ );
+	Vec3   vPos = Get_Info(TRANSFORM_INFO_STATE::POS);
+	m_matWorld = ScaleMatrix * RoationMarix;
+	Set_Info(TRANSFORM_INFO_STATE::POS , vPos);
 }
 
 inline void CTransform::Pitch_Turn(const _float fTimeDelta)
