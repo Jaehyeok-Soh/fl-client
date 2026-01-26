@@ -20,6 +20,7 @@ public:
 	virtual HRESULT Initialize(void* pArg) override;
 	virtual void Update(const _float fTimeDelta) override;
 private:
+	bool		 m_isGodStop{false};
 
 public:
 	static CGodInput* Create();

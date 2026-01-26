@@ -5,6 +5,7 @@
 
 NS_BEGIN(Tool)
 
+class CToolLayer;
 
 class CToolCanvas final : public CUIObject
 {
@@ -38,6 +39,7 @@ private:
 
 private:
 	CANVAS_DATA m_tData = {};
+	vector<CToolLayer*> m_vecToolLayers;
 
 public:
 	static CToolCanvas* Create(EToolObjectType eType, ID3D11Device* pDevice, ID3D11DeviceContext* pDeviceContext);

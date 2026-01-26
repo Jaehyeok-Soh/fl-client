@@ -133,6 +133,12 @@
     <Filter Include="06. FSM\Player\RunShort">
       <UniqueIdentifier>{94a246c4-b42f-494a-aad5-0ee9bf6ba581}</UniqueIdentifier>
     </Filter>
+    <Filter Include="03. GameObject\UIObjects">
+      <UniqueIdentifier>{b8fa4419-f65b-4ff0-9246-77dad0e88328}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="03. GameObject\UIObjects\Manager">
+      <UniqueIdentifier>{7559622c-8d80-4e5c-81bd-e123eb0f162c}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="targetver.h">
@@ -258,6 +264,12 @@
     <ClInclude Include="..\Public\State_Slide.h">
       <Filter>06. FSM\Player\Slide</Filter>
     </ClInclude>
+    <ClInclude Include="..\Public\GenericUI.h">
+      <Filter>03. GameObject\UIObjects</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\UI_Manager.h">
+      <Filter>03. GameObject\UIObjects\Manager</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <Image Include="Client.ico">
@@ -380,6 +392,12 @@
     </ClCompile>
     <ClCompile Include="..\Private\State_Slide.cpp">
       <Filter>06. FSM\Player\Slide</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\GenericUI.cpp">
+      <Filter>03. GameObject\UIObjects</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\UI_Manager.cpp">
+      <Filter>03. GameObject\UIObjects\Manager</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

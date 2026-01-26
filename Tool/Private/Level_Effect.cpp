@@ -117,7 +117,7 @@ HRESULT CLevel_Effect::Ready_Camera(const wstring& wstrLayerTag)
 		CGameObject* pResult = { nullptr };
 		CCameraMan::GAMEOBJECT_DESC goDesc = {};
 		CTransform::TRANSFORM_DESC TransformDesc = {};
-		TransformDesc.vPosition = { 1.f, 1.f, -1.f };
+		TransformDesc.vPosition = { 0.f, 0.f, -1.f };
 		TransformDesc.fMovePerSec = { 6.f };
 		TransformDesc.fRotatePerSec = { 1.f };
 		CCamera::CAMERA_DESC CameraDesc = {};

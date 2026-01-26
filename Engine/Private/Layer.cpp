@@ -57,12 +57,9 @@ void CLayer::Ready_Before_Render(const _float fTimeDelta)
 	}
 }
 
-CGameObject* CLayer::Get_GameObject(CGameObject* pGo)
+CGameObject* CLayer::Get_GameObject(_uint iIndex)
 {
-	if (!pGo)
-		return nullptr;
-
-	return Find_GameObject(pGo);
+	return Find_GameObject(iIndex);
 }
 
 void CLayer::Delete_GameObject(CGameObject* pGo)
@@ -79,7 +76,6 @@ void CLayer::Delete_GameObject(CGameObject* pGo)
 	if (itr == m_pGameObjects.end())
 		return;
 
-	Safe_Release(pGo);
 	m_pGameObjects.erase(itr);
 }
 
@@ -108,20 +104,13 @@ CGameObject* CLayer::Get_GameObject_Back()
 	return m_pGameObjects.back();
 }
 
-CGameObject* CLayer::Find_GameObject(CGameObject* pGo)
+CGameObject* CLayer::Find_GameObject(_uint iIndex)
 {
-	if (m_pGameObjects.size() <= 0)
+	if (m_pGameObjects.size() <= 0 || m_pGameObjects.size() <= iIndex)
 		return nullptr;
 
-	auto itr = std::find_if(m_pGameObjects.begin(), m_pGameObjects.end(),
-		[pGo](CGameObject* pElement)->_bool
-		{
-			return pGo == pElement;
-		});
-
-	if (itr == m_pGameObjects.end())
-		return nullptr;
-
+	auto itr = m_pGameObjects.begin();
+	std::advance(itr, iIndex);
 	return *itr;
 }
 

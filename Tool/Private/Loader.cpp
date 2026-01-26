@@ -114,12 +114,15 @@ HRESULT CLoader::Loading_For_Map()
 	// For. Prototype_Component_Collider_OBB
 	m_pGameInstance->Add_Prototype(ENUM_TO_UINT(ELevelType::MAP), L"Prototype_Component_Collider_OBB", CCollider::Create(m_pDevice, m_pDeviceContext, EColliderType::OBB));
 
-	/* Map Data Model */
-	CUEMapDataLoader* pMapDataLoader = CUEMapDataLoader::Create(m_pDevice,m_pDeviceContext);
-	if (pMapDataLoader == nullptr) return E_FAIL;
-	if (FAILED(pMapDataLoader->Make_Prototype(L"../../Resources/Models/Map/Test/Model/")))
-		return E_FAIL;
-	Safe_Release(pMapDataLoader);
+	///* Map Data Model */
+	//CUEMapDataLoader* pMapDataLoader = CUEMapDataLoader::Create(m_pDevice,m_pDeviceContext);
+	//if (pMapDataLoader == nullptr) return E_FAIL;
+	//if (FAILED(pMapDataLoader->Make_Prototype(L"../../Resources/Models/Map/DevScene/Model/")))
+	//{
+	//	Safe_Release(pMapDataLoader);
+	//	return E_FAIL;
+	//}
+	//Safe_Release(pMapDataLoader);
 
 
 	//=================
@@ -147,7 +150,7 @@ HRESULT CLoader::Loading_For_Effect()
 	ExploDesc.vSize = Vec2(0.05f, 0.15f);
 	ExploDesc.vRange = Vec3(0.5f, 0.5f, 0.5f);
 	ExploDesc.vSpeed = Vec2(2.f, 5.f);
-	ExploDesc.vLifeTime = Vec2(1.f, 1.5f);
+	ExploDesc.vLifeTime = Vec2(1.f, 5.5f);
 	ExploDesc.isLoop = false;
 	ExploDesc.vPivot = Vec3(0.f, 0.f, 0.5f);
 

@@ -27,6 +27,13 @@ HRESULT CGodInput::Initialize(void* pArg)
 
 void CGodInput::Update(const _float fTimeDelta)
 {
+    if (KEY_BUTTON_UP(DIK_F5))
+        m_isGodStop = !m_isGodStop;
+
+    if (m_isGodStop)
+        return;
+   
+
     if (KEY_BUTTON_HOLD(DIK_W))
     {
         Get_Owner()->Get_Component<CTransform>()->Go_Straight(fTimeDelta);

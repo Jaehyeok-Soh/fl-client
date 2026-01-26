@@ -18,11 +18,30 @@ CVIBuffer_Particle::CVIBuffer_Particle(const CVIBuffer_Particle& rhs)
 	, m_pSpeeds{ rhs.m_pSpeeds }
 	, m_bIsLoop{ rhs.m_bIsLoop }
 {
+	m_pVBInstance = nullptr;
+	m_pInstanceVertices = nullptr;
+	m_pSpeeds = nullptr;
+
+	// 깊복
+	if (rhs.m_iInstanceCount > 0)
+	{
+		m_InstanceBufferDesc = rhs.m_InstanceBufferDesc;
+
+		m_pInstanceVertices = new VTXPARTICLE[m_iInstanceCount];
+		m_pSpeeds = new _float[m_iInstanceCount];
+
+		memcpy(m_pInstanceVertices, rhs.m_pInstanceVertices, sizeof(VTXPARTICLE) * m_iInstanceCount);
+		memcpy(m_pSpeeds, rhs.m_pSpeeds, sizeof(_float) * m_iInstanceCount);
+
+		D3D11_SUBRESOURCE_DATA InstanceInitialData{};
+		InstanceInitialData.pSysMem = m_pInstanceVertices;
+		m_pDevice->CreateBuffer(&m_InstanceBufferDesc, &InstanceInitialData, &m_pVBInstance);
+	}
 }
 
 HRESULT CVIBuffer_Particle::Initialize_Prototype(void* pArg)
 {
-	if (FAILED(Super::Initialize_Prototype(pArg)))
+ 	if (FAILED(Super::Initialize_Prototype(pArg)))
 		return E_FAIL;
 
 	PARTICLE_ORIGIN_DESC* pDesc = static_cast<PARTICLE_ORIGIN_DESC*>(pArg);
@@ -54,6 +73,9 @@ HRESULT CVIBuffer_Particle::Resize_InstanceBuffer(_uint iNumInstanceCount)
 	m_pInstanceVertices = new VTXPARTICLE[m_iInstanceCount];
 	m_InstanceBufferDesc.ByteWidth = m_iInstanceCount * m_iInstanceVertexStride;
 
+	m_pSpeeds = new _float[m_iInstanceCount];
+	::ZeroMemory(m_pSpeeds, sizeof(_float) * m_iInstanceCount);
+
 	// 버퍼를 재할당 했다면 입자들 생명주기 등등 전부 새롭게.
 	for (size_t i = 0; i < m_iInstanceCount; i++)
 	{
@@ -73,7 +95,10 @@ HRESULT CVIBuffer_Particle::Resize_InstanceBuffer(_uint iNumInstanceCount)
 		m_pInstanceVertices[i].vLifeTime = Vec2(0.f, m_pGameInstance->Rand_Float(m_tParticleDesc.vLifeTime.x, m_tParticleDesc.vLifeTime.y));
 	}
 
-	return m_pDevice->CreateBuffer(&m_InstanceBufferDesc, nullptr, &m_pVBInstance);
+	D3D11_SUBRESOURCE_DATA InstanceInitialData{};
+	InstanceInitialData.pSysMem = m_pInstanceVertices;
+
+	return m_pDevice->CreateBuffer(&m_InstanceBufferDesc, &InstanceInitialData, &m_pVBInstance);
 }
 
 // 객체를 아예 초기로 전부 초기화 해주는 Reset 버튼
@@ -96,13 +121,19 @@ void CVIBuffer_Particle::Reset_Simulation()
 
 void CVIBuffer_Particle::Set_ParticleDesc(const PARTICLE_ORIGIN_DESC& Desc)
 {
-	if (m_iInstanceCount != Desc.iInstnaceCount)
+	if (m_iInstanceCount != Desc.iInstnaceCount ||
+		m_tParticleDesc.vSize.x != Desc.vSize.x ||
+		m_tParticleDesc.vSize.y != Desc.vSize.y ||
+		m_tParticleDesc.vRange.x != Desc.vRange.x ||
+		m_tParticleDesc.vRange.y != Desc.vRange.y ||
+		m_tParticleDesc.vRange.z != Desc.vRange.z)
 	{
 		// 인스턴스 할 갯수가 줄었다면 버퍼 재할당하자
 		m_tParticleDesc = Desc;
 		Resize_InstanceBuffer(Desc.iInstnaceCount);
 	}
 
+	m_fPlayBackSpeed = Desc.vPlayBackSpeed;
 	m_bIsLoop = Desc.isLoop;
 	m_vPivot = Desc.vPivot;
 }
@@ -164,7 +195,7 @@ void CVIBuffer_Particle::Drop(_float fTimeDelta)
 
 	for (size_t i = 0; i < m_iInstanceCount; i++)
 	{
-		pVertices[i].vTranslation.y -= m_pSpeeds[i] * fTimeDelta;
+		pVertices[i].vTranslation.y -= m_pSpeeds[i] * fTimeDelta * m_fPlayBackSpeed;
 		pVertices[i].vLifeTime.x += fTimeDelta;
 		if (true == m_bIsLoop && pVertices[i].vLifeTime.x >= pVertices[i].vLifeTime.y)
 		{
@@ -189,7 +220,7 @@ void CVIBuffer_Particle::Spread(_float fTimeDelta)
 		/*pVertices[i].vTranslation.y -= m_pSpeeds[i] * fTimeDelta;*/
 		Vec3		vLook = pVertices[i].vTranslation - m_vPivot * m_pSpeeds[i];
 		vLook.Normalize();
-		pVertices[i].vTranslation = pVertices[i].vTranslation + vLook * fTimeDelta;
+		pVertices[i].vTranslation = pVertices[i].vTranslation + vLook * fTimeDelta * m_fPlayBackSpeed;
 		pVertices[i].vLifeTime.x += fTimeDelta;
 		if (true == m_bIsLoop && pVertices[i].vLifeTime.x >= pVertices[i].vLifeTime.y)
 		{
@@ -212,7 +243,7 @@ void CVIBuffer_Particle::Rise(_float fTimeDelta)
 	for (size_t i = 0; i < m_iInstanceCount; i++)
 	{
 		// 1. 위로 이동 (Y축 증가)
-		pVertices[i].vTranslation.y += m_pSpeeds[i] * fTimeDelta;
+		pVertices[i].vTranslation.y += m_pSpeeds[i] * fTimeDelta * m_fPlayBackSpeed;
 
 		// 2. 수명 업데이트
 		pVertices[i].vLifeTime.x += fTimeDelta;
@@ -229,11 +260,11 @@ void CVIBuffer_Particle::Rise(_float fTimeDelta)
 }
 void CVIBuffer_Particle::Free()
 {
-	if(IsClone() == false)
-	{
-		Safe_Delete_Array(m_pSpeeds);
-		Safe_Delete_Array(m_pInstanceVertices);
-	}
+	//if(IsClone() == false)
+	//{
+	Safe_Delete_Array(m_pSpeeds);
+	Safe_Delete_Array(m_pInstanceVertices);
+	/*}*/
 	Safe_Release(m_pVBInstance);
 	Super::Free();
 }

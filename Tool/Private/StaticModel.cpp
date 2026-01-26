@@ -37,6 +37,12 @@ HRESULT CStaticModel::Initialize(void* pArg)
 	return S_OK;
 }
 
+HRESULT CStaticModel::Ready_Component()
+{
+	return S_OK;
+}
+
+
 HRESULT CStaticModel::Awake(const _uint iCurrentLevelID)
 {
 	if (FAILED(Super::Awake(iCurrentLevelID)))

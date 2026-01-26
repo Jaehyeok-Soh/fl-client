@@ -13,7 +13,7 @@ public:
 	virtual HRESULT Render(CToolObject* pGo)override;
 	virtual void Update(const _float fTimeDelta)override;
 private:
-
+	const wstring m_wstrMapDatPath{L"../../Resources/Data/MapData/"};
 public:
 	static  CPanel_MapDataController* Create(const _char* pLabel, CLevel* pOwner, ID3D11Device* pDevice, ID3D11DeviceContext* pDeviceContext);
 	virtual void Free() override;

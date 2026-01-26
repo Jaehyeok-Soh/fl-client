@@ -63,53 +63,50 @@ HRESULT CUEMapDataLoader::Make_StaticModel(const wstring& wstrRawDataFilePath, c
 	if (!pParser)
 		return E_FAIL;
 
-	if (FAILED(pParser->Read_Mapdata()))
+	if (FAILED(pParser->Read_Mapdata(false)))
 		return E_FAIL;
 
 	const _char* pFilterName = "StaticMeshComponent0";
+	const UINT32 iLevelID = ENUM_TO_UINT(ELevelType::MAP);
+
+	wstring wstrModelName{};
+	wstring wstrModelPath{};
 
 	_uint iCount = { 0 };
 	for (size_t i = 0; i < pParser->m_vecData.size(); ++i)
 	{
 		const PARSED_MAPDATA_OUTER& mapdataOuter = pParser->m_vecData[i];
-		if (::strcmp(pFilterName, mapdataOuter.strName.c_str()) != 0)
-			continue; 
+		wstrModelName = Engine_Utils::ToWString(mapdataOuter.Properties.StaticMesh.strObjectName);
+		wstrModelPath = Engine_Utils::ToWString(mapdataOuter.Properties.StaticMesh.strObjectPath);
 
-		string strFilteredName = mapdataOuter.Properties.StaticMesh.strObjectName;
-		// StaticMesh'.....' 형태로 이루어져있음
-		// staticmesh' 지우기
-		strFilteredName.erase(0, 11);
-		// 마지막 ' 지우기
-		strFilteredName.erase(strFilteredName.size() - 1, 1);
-		CGameObject* pResult = { nullptr };
+		CGameObject* pResult{ nullptr };
 
-		// ColMesh
-		if (strFilteredName.ends_with("_COL") || strFilteredName.starts_with("COL_"))
+		CModel::MODEL_ORIGIN_DESC tModelDesc{};
+		tModelDesc.eType = EModelType::STATIC;
+		tModelDesc.wstrModelFolderName = wstrModelPath;
+		tModelDesc.iPrototypeLevelIndex = iLevelID;
+		m_pGameInstance->Add_Prototype(iLevelID, L"Prototype_Component_Model_" + wstrModelName, CModel::Create(m_pDevice, m_pDeviceContext, &tModelDesc));
+
+
+		CStaticModel::STATICMODEL_DESC desc = {};
+		desc.wstrLayerTag = wstrStaticModelLayerTag;
+		desc.iLevelIndex = ENUM_TO_UINT(ELevelType::MAP);
+		desc.wstrModelPath = wstrModelPath;
+		desc.wstrModelName = wstrModelName;
+		if (!(pResult = m_pGameInstance->Add_GameObject(desc.iLevelIndex,
+			L"Prototype_GameObject_StaticModel",
+			desc.iLevelIndex,
+			wstrStaticModelLayerTag, &desc)))
 		{
-			continue;
-		}
-		//\StaticModel
-		else
-		{			
-			CStaticModel::STATICMODEL_DESC desc = {};
-			desc.wstrLayerTag = wstrStaticModelLayerTag;
-			desc.iLevelIndex = ENUM_TO_UINT(ELevelType::MAP);
-			desc.wstrModelPath = Engine::Engine_Utils::ToWString(strFilteredName);
-			if (!(pResult = m_pGameInstance->Add_GameObject(desc.iLevelIndex,
-				L"Prototype_GameObject_StaticModel",
-				desc.iLevelIndex,
-				wstrStaticModelLayerTag, &desc)))
-			{
-				Safe_Release(pParser);
-				return E_FAIL;
-			}
+			Safe_Release(pParser);
+			return E_FAIL;
 		}
 
 		CTransform* pTransform = pResult->Get_Component<CTransform>();
 		// Unreal엔진에서는 Degree로 표현됨, 이를 radian으로 바꿔줘야함
 
 		Vec3 vSwapRotation = Vec3(
-			XMConvertToRadians(mapdataOuter.Properties.vPitchYawRoll.x), XMConvertToRadians(mapdataOuter.Properties.vPitchYawRoll.z), XMConvertToRadians(mapdataOuter.Properties.vPitchYawRoll.y));
+			XMConvertToRadians(mapdataOuter.Properties.vPitchYawRoll.x), XMConvertToRadians(mapdataOuter.Properties.vPitchYawRoll.y), XMConvertToRadians(mapdataOuter.Properties.vPitchYawRoll.z));
 		Matrix matRotation = Matrix::CreateFromYawPitchRoll(vSwapRotation);
 
 		pTransform->Set_Info(TRANSFORM_INFO_STATE::RIGHT, matRotation.Right());

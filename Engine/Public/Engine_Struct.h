@@ -97,10 +97,10 @@ namespace Engine
 	typedef struct tagShaderEffectDesc
 	{
 		unsigned int iFlags = { 0 };
+		SimpleMath::Vector3 vPadding = {};
 		SimpleMath::Vector2 vScrollOffset = { 0.f, 0.f };
 		SimpleMath::Vector2 vDistortionScale = { 0.f, 0.f };
 		SimpleMath::Vector4 vEffectColor = { 0.f, 0.f, 0.f, 0.f };
-		SimpleMath::Vector3 vPadding = {};
 	}SHADER_EFFECT_DESC;
 
 	typedef struct tagShaderBoneDesc

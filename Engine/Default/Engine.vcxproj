@@ -224,7 +224,9 @@
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|x64'">NotUsing</PrecompiledHeader>
     </ClCompile>
     <ClCompile Include="..\Private\Navigation.cpp" />
+    <ClCompile Include="..\private\ObjectPool_Manager.cpp" />
     <ClCompile Include="..\Private\Object_Manager.cpp" />
+    <ClCompile Include="..\private\ObjectPool.cpp" />
     <ClCompile Include="..\Private\PartObject.cpp" />
     <ClCompile Include="..\Private\Picking.cpp" />
     <ClCompile Include="..\Private\Prototype_Manager.cpp" />
@@ -320,7 +322,9 @@
     <ClInclude Include="..\Public\MonoBehaviour.h" />
     <ClInclude Include="..\Public\MulticastDelegate.h" />
     <ClInclude Include="..\Public\Navigation.h" />
+    <ClInclude Include="..\public\ObjectPool_Manager.h" />
     <ClInclude Include="..\Public\Object_Manager.h" />
+    <ClInclude Include="..\public\ObjectPool.h" />
     <ClInclude Include="..\Public\PartObject.h" />
     <ClInclude Include="..\Public\Picking.h" />
     <ClInclude Include="..\Public\Prototype_Manager.h" />

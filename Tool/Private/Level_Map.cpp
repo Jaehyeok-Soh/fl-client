@@ -80,7 +80,6 @@ HRESULT CLevel_Map::Awake(const _uint iLevelID)
 
 
 	/* Cam Setting */
-
 	m_pGameInstance->Get_MainCamera()->Get_Component<CCamera>()->Set_Fov(60.f);
 
 
@@ -131,13 +130,24 @@ HRESULT CLevel_Map::Render()
 	m_pImGuiManager->Render_Dockspace();
 	//////////////////////////
 	// Element Render
-	//DX::DrawGrid(m_pBatch, XMVectorSet(1.f, 0.f, 0.f, 1.f), XMVectorSet(0.f, 0.f, 1.f, 1.f), XMVectorSet(0.f, 0.f, 0.f, 1.f), 1000, 1000, DirectX::Colors::White);
+	
+	m_pDeviceContext->GSSetShader(nullptr, nullptr, 0);
+	m_pEffect->SetWorld(Matrix::Identity);
+	m_pEffect->SetView(m_pGameInstance->Get_ViewMatrix());
+	m_pEffect->SetProjection(m_pGameInstance->Get_ProjMatrix());
+	m_pEffect->Apply(m_pDeviceContext);
+	m_pDeviceContext->IASetInputLayout(m_pInputLayout);
+
+	m_pBatch->Begin();
+	DX::DrawGrid(m_pBatch, XMVectorSet(1000.f, 0.f, 0.f, 1.f), XMVectorSet(0.f, 0.f, 1000.f, 1.f), XMVectorSet(0.f, 0.f, 0.f, 1.f), 50, 50, DirectX::Colors::Red);
+
+	m_pBatch->End();
+
+
 	Render_Elements();
-	//////////////////////////
+
 	m_pImGuiManager->Render_Viewport(m_pSelectedObject);
 	m_pImGuiManager->Render_End();
-
-
 
 
 	return S_OK;
