@@ -118,6 +118,9 @@ void CUIObject::OffPicked()
 
 void CUIObject::Set_Size(_float fWidth, _float fHeight)
 {
+	if (fWidth < 0.1f || fHeight < 0.f)
+		return;
+
 	m_fWidth = fWidth;
 	m_fHeight = fHeight;
 
@@ -140,7 +143,6 @@ void CUIObject::Set_Position(_float fX, _float fY, _float fZ)
 	m_fX = fX;
 	m_fY = fY;
 	m_fZ = fZ;
-
 	Get_Component<CTransform>()->Set_Info(TRANSFORM_INFO_STATE::POS, XMVectorSet(m_fX - m_iViewportWidth * 0.5f, -m_fY + m_iViewportHeight * 0.5f, m_fZ, 1.f));
 	SetUp_Rect();
 }

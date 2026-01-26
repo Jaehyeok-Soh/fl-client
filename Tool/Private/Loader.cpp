@@ -232,6 +232,9 @@ HRESULT CLoader::Loading_For_UI()
 		textureDesc.wstrTexturePath = L"../../Resources/Textures/UI/Button/T_Com_BtnIcon_Custom.png";
 		if (FAILED(m_pGameInstance->Add_Prototype(ENUM_TO_UINT(ELevelType::UI), L"Prototype_Component_Button_Test_Texture", CTexture::Create(&textureDesc))))
 			return E_FAIL;
+
+		if (FAILED(Loading_Textures(L"../../Resources/Textures/UI/Layout")))
+			return E_FAIL;
 	}
 
 	//=================

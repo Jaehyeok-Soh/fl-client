@@ -260,10 +260,8 @@ HRESULT CImGui_UIManager::Remake_UIObjects()
 			Desc.fX = UIData.fPosX;
 			Desc.fY = UIData.fPosY;
 			Desc.fZ = UIData.fPosZ;
-			Desc.fHeight = 64.f;
-			//Desc.fHeight = UIData.fHeight;
-			Desc.fWidth = 64.f;
-			//Desc.fWidth = UIData.fWidth;
+			Desc.fHeight = UIData.fHeight;
+			Desc.fWidth = UIData.fWidth;
 			Desc.isAlpha = TRUE;
 			Desc.wstrTextureTag = L"Prototype_Component_Button_Test_Texture";
 
@@ -363,7 +361,7 @@ vector<GENERIC_UI_DATA>* CImGui_UIManager::Safe_Access_UIVector()
 	return &pLayer->vecUIData;
 }
 
-GENERIC_UI_DATA* CImGui_UIManager::Safe_Access_UI(int32_t index)
+GENERIC_UI_DATA* CImGui_UIManager::Safe_Access_UIData(int32_t index)
 {
 	LAYER_DATA* pLayer = Safe_Access_Layer(m_iCurLayerIndex);
 	if (nullptr == pLayer)
@@ -380,6 +378,23 @@ GENERIC_UI_DATA* CImGui_UIManager::Safe_Access_UI(int32_t index)
 		return nullptr;
 
 	return &(pLayer->vecUIData[index]);
+}
+
+CToolUI* CImGui_UIManager::Safe_Access_UIObject()
+{
+	LAYER_DATA* pLayer = Safe_Access_Layer(m_iCurLayerIndex);
+
+	if (nullptr == pLayer)
+		return nullptr;
+
+	if (pLayer->vecUIObjects.empty())
+		return nullptr;
+
+	int32_t NumUIObject = static_cast<int32_t>(pLayer->vecUIObjects.size());
+	if (m_iCurUIIndex >= NumUIObject || m_iCurUIIndex < 0)
+		return nullptr;
+
+	return pLayer->vecUIObjects[m_iCurUIIndex];
 }
 
 void CImGui_UIManager::Free()

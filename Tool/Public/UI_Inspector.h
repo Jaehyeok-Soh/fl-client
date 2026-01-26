@@ -21,15 +21,16 @@ public:
 	virtual HRESULT Render(CToolObject* pGo) override;
 	
 	void SetUp_Public_Info();
-
-	void SetUp_UI_Common_Info();
-private:
 	void Input_RectTransform();
+	void Input_TextureTag();
 
+
+
+private:
 	/// <summary>
 	/// 드래그(스크럽) 방식으로 실수 값을 편집하는 ImGui용 유틸리티 함수.
 	/// </summary>
-	/// <param name="label">			: 화면에 표시될 텍스트 레이블(중복O).</param>
+	/// <param name="label">			: 화면에 표시될 텍스트 레이블 !절대 ""를 넣지 말 것!</param>
 	/// <param name="Id">				: 내부 상태 구분용 아이디(중복X).</param>
 	/// <param name="pValue">			: 입력 및 출력으로 사용되는 실수 포인터(OUT). 현재 값을 전달하고 함수 호출로 변경된 값으로 반환.</param>
 	/// <param name="fValuePerPixel">	: 픽셀 이동당 값 변화량(민감도). 기본값 0.01f.</param>

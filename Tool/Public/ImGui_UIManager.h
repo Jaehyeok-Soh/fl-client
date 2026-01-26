@@ -50,12 +50,14 @@ public:
 	HRESULT Remake_UIObjects();
 	HRESULT Clear_UIObjects();
 
+	/* 안전하게 원소에 접근하는 함수들 / nullptr 체크 필수 */
 	vector<CANVAS_DATA>* Safe_Access_CanvasVector();
 	CANVAS_DATA* Safe_Access_Canvas(int32_t index);
 	vector<LAYER_DATA>* Safe_Access_LayerVector();
 	LAYER_DATA* Safe_Access_Layer(int32_t index);
 	vector<GENERIC_UI_DATA>* Safe_Access_UIVector();
-	GENERIC_UI_DATA* Safe_Access_UI(int32_t index);
+	GENERIC_UI_DATA* Safe_Access_UIData(int32_t index);
+	CToolUI* Safe_Access_UIObject();
 
 	/// <summary>
 	/// 내부 데이터 안전을 보장할 수 없음

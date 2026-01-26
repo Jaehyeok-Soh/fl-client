@@ -151,6 +151,7 @@ typedef struct tagGenericUIData
 
 	uint32_t iUIType;
 	uint32_t iRectTransformType;
+	_wstring wstrTextureTag;
 
 	_float fWidth;
 	_float fHeight;

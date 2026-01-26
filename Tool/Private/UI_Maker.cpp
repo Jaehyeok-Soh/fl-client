@@ -496,7 +496,7 @@ void CUI_Maker::Make_UI()
 		const int32_t iNumUI = (int32_t)pUIVec->size();
 		for (int32_t i = 0; i < iNumUI; ++i)
 		{
-			auto* pUI = m_pUIManager->Safe_Access_UI(i);
+			auto* pUI = m_pUIManager->Safe_Access_UIData(i);
 			if (nullptr == pUI)
 				continue;
 
