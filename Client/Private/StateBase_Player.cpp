@@ -22,7 +22,6 @@ HRESULT CStateBase_Player::Initialize(void* pArg)
 	PLAYER_STATEBASE_DESC* pDesc	= static_cast<PLAYER_STATEBASE_DESC*>(pArg);
 
 	m_FMoves						= pDesc->FMoves;
-	m_iNextState					= pDesc->iNextState;
 	m_vecChangeState_ByKey			= std::move(pDesc->vecChangeState_ByKey);
 
 	m_tKeyTimer						= pDesc->tKeyTimer;
@@ -90,11 +89,18 @@ HRESULT CStateBase_Player::End()
 	return S_OK;
 }
 
+void CStateBase_Player::Change_State(STATEKEY eKey)
+{
+	_uint iNextState = m_vecChangeState_ByKey[ENUM_TO_UINT(eKey)];
+	Set_NextStateDesc(iNextState);		// next state에 대한 desc 작성
+	Request_Change_State(iNextState, &m_tNextStateDesc);	
+}
+
 _bool CStateBase_Player::Check_MoveKey(const _float fTimeDelta)
 {
-	if (!m_bLoop && Is_MainAnimFinished()) // loop가 아닌데 애니메이션이 끝났다면 : pre animation이랑 잘 해야될듯..?
+	if (!m_bLoop && Is_MainAnimFinished())		// loop가 아닌데 애니메이션이 끝났다면 : pre animation이랑 잘 해야될듯..?
 	{
-		Request_Change_State(m_iNextState);		// 다음 state로 change
+		Change_State(STATEKEY::LOOPDONE);			// 다음 state로 change
 		return true;
 	}
 
@@ -102,13 +108,14 @@ _bool CStateBase_Player::Check_MoveKey(const _float fTimeDelta)
 	{
 		if (Align_Movement(fTimeDelta) == false)	// 8방향 움직임 
 		{
-			Request_Change_State(m_vecChangeState_ByKey[ENUM_TO_UINT(STATEKEY::MOVE)]); // 움직임이 없다면 실행할 
+			Change_State(STATEKEY::MOVE);
 			return true;
 		}
 	}
 
 	if (Engine_Utils::Has_Flag(m_FMoves, MOVEFLAGS::PRESS_CHANGE))
 	{
+		Set_NextStateDesc(m_vecChangeState_ByKey[ENUM_TO_UINT(STATEKEY::MOVE)]);
 		return (Align_Move(m_vecChangeState_ByKey[ENUM_TO_UINT(STATEKEY::MOVE)]));
 	}
 
@@ -131,7 +138,7 @@ _bool CStateBase_Player::Check_JumpKey(const _float fTimeDelta)
 	if (Has_ChangeState(STATEKEY::SPACE) &&
 		Key_Input(ENUM_TO_UINT(CControlContext::CONTROL_KEY::JUMP)))
 	{
-		Request_Change_State(m_vecChangeState_ByKey[ENUM_TO_UINT(STATEKEY::SPACE)]);
+		Change_State(STATEKEY::SPACE);
 		return true;
 	}
 
@@ -143,7 +150,7 @@ _bool CStateBase_Player::Check_DashKey(const _float fTimeDelta)
 	if (Has_ChangeState(STATEKEY::SHIFT) &&
 		Key_Input(ENUM_TO_UINT(CControlContext::CONTROL_KEY::DASH)))
 	{
-		Request_Change_State(m_vecChangeState_ByKey[ENUM_TO_UINT(STATEKEY::SHIFT)]);
+		Change_State(STATEKEY::SHIFT);
 		return true;
 	}
 
@@ -155,7 +162,7 @@ _bool CStateBase_Player::Check_CtrlPressKey(const _float fTimeDelta)
 	if (Has_ChangeState(STATEKEY::LCRTL_PRESS) &&
 		Key_Input(ENUM_TO_UINT(CControlContext::CONTROL_KEY::SPECIALMV)))
 	{
-		Request_Change_State(m_vecChangeState_ByKey[ENUM_TO_UINT(STATEKEY::LCRTL_PRESS)]);
+		Change_State(STATEKEY::LCRTL_PRESS);
 		return true;
 	}
 
@@ -167,7 +174,7 @@ _bool CStateBase_Player::Check_CtrlUpKey(const _float fTimeDelta)
 	if (Has_ChangeState(STATEKEY::LCRTL_UP) &&
 		Key_Input(ENUM_TO_UINT(CControlContext::CONTROL_KEY::DODGE)))
 	{
-		Request_Change_State(m_vecChangeState_ByKey[ENUM_TO_UINT(STATEKEY::LCRTL_UP)]);
+		Change_State(STATEKEY::LCRTL_UP);
 		return true;
 	}
 

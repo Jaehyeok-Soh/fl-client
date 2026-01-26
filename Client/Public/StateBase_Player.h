@@ -20,12 +20,11 @@ public:
 		,	OWN				= 0x0008 // 자신만의 움직임
 	};
 
-	enum class STATEKEY : _uint {MOVE, SPACE, SHIFT, LCRTL_PRESS, LCRTL_UP, Q, E, LM, RM, END};
+	enum class STATEKEY : _uint {MOVE, SPACE, SHIFT, LCRTL_PRESS, LCRTL_UP, Q, E, LM, RM, LOOPDONE , END}; //END에는 키가 없을떄 바꿀 state를 넣자
 
 	typedef struct tagPlayerStateDesc : public CStateBase::STATE_DESC
 	{
 		Flags					FMoves		= { 0 };
-		_uint					iNextState	= { 0 };			// loop이면 키 입력이 없을때 바뀔 state, no loop라면 animation 끝나고 바뀔 state
 		vector<_uint>			vecChangeState_ByKey;			// 키 입력에 따라 어떻게 바꿀지 담는 벡터
 
 		TIME_COUNTER			tKeyTimer = {};
@@ -44,13 +43,17 @@ public:
 	
 protected:
 	Flags					m_FMoves		= { 0 };
-	_uint					m_iNextState	= { 0 };
 	vector<_uint>			m_vecChangeState_ByKey;
 	_uint					m_iEndState		= { 0 };
 	TIME_COUNTER			m_tKeyTimer		= {};
 
+	STATE_START_DESC		m_tNextStateDesc = {};
+
 protected:
-	virtual void OwnMove(const _float fTimeDelta) {}; // state 내부에서 알아서 움직일때
+	virtual void OwnMove(const _float fTimeDelta) {};		// state 내부에서 알아서 움직일때
+	virtual void Set_NextStateDesc(_uint iNextState) {};	// 다음 state에 따라 desc을 작성한다 : 각 state 내부에서
+
+	virtual void Change_State(STATEKEY eKey);
 
 	// state가 변환 했다면 true
 private:
