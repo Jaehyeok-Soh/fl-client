@@ -75,7 +75,7 @@ protected:
 	void SetupLookAt(const Vec3& vPoint);
 	void SetupLook_Target_XZ();
 	CGameObject* Get_Target();
-	_bool Align_Move(_uint iState);
+	_bool Align_Move(_uint iState, _bool bForce = false, void* pArg = nullptr);
 	_bool Align_Attack(_uint iState);
 
 	void Set_AnimationPlayRate(_uint iIndex, _float fSpeed);

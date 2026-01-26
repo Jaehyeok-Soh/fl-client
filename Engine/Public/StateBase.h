@@ -58,19 +58,22 @@ public:
 	// 먼저 실행할 animation 정보
 	typedef struct tagPreAnimationDesc
 	{
-		_int iPrevStateIdx	= {-1};
-		_int iAnimationIdex = {-1};
-	}PRE_ANIMATION;
+		_int iPrevStateIdx	= {-1}; // 이전 state가 이거이면
+		_int iAnimationIdex = {-1}; // 이 animation을 재생
+
+		// 만약 prevIdx가 -1이면 무조건 실행
+	}CHECK_ANIMATION;
 
 	// Initial desc
 	typedef struct tagStateBaseDesc
 	{
 		Flags			FAniFlags		= { 0 };
-		vector<PRE_ANIMATION>	vecPreAnims;
+		vector<CHECK_ANIMATION>	vecPreAnims;
+		vector<_int>			vecMainAnims;
 
 		_bool bBlend = { false };
 		_bool bLoop = { false };
-		_int					iAnimIndex		= -1;
+		//_int					iAnimIndex		= -1;
 	}STATE_DESC;
 
 	// change state 할때 들어오는 desc
@@ -78,6 +81,7 @@ public:
 	{
 		_float	fForceAbs		= { 0.f };
 		_float	fDragK			= { 0.f };
+		_uint	iMainAnimIdx	= { 0 };
 	}STATE_START_DESC;
 
 protected:
@@ -89,10 +93,10 @@ public:
 	// State를 가진 Object가 Scene에서 첫 루프가 시작 될때 최초 호출되는 함수
 	virtual HRESULT Awake(const _uint iLevelIndex) PURE;
 	virtual HRESULT Start(void *pArg, _bool bFroce = false) PURE;
-	virtual void Update(const _float fTimeDelta) PURE;
+	virtual void	Update(const _float fTimeDelta) PURE;
 	virtual HRESULT End() PURE;
-	const _char* Get_Name() const { return m_strName.c_str(); }
-	virtual _uint Get_Capabilities() const
+	const _char*	Get_Name() const { return m_strName.c_str(); }
+	virtual _uint	Get_Capabilities() const
 	{
 		return	StateCapability::MOVE
 			| StateCapability::ROTATE
@@ -123,7 +127,7 @@ protected:
 
 protected:
 	_bool Align_Movement(const _float fTimeDelta);
-	_bool Align_Move(_uint iRunState);
+	_bool Align_Move(_uint iRunState, _bool bForce = false, void* pArg = nullptr);
 
 	void Follow_CameraLook(const _float fTimeDelta);
 	void Apply_Gravity(const _float fTimeDelta);
@@ -167,11 +171,13 @@ protected:
 	_bool	m_bBlend		= { false };
 	_bool	m_bLoop			= { false };
 	_bool	m_bMainForce	= { false };
-	_int	m_iAnimIndex	= { -1 };
+
 	string	m_strName		= { "" };
 
 	Flags					m_FAniFlags		= { 0 };
-	vector<PRE_ANIMATION>	m_vecPreAnims;
+	vector<CHECK_ANIMATION>	m_vecPreAnims;
+	vector<_int>			m_vecMainAnims;
+	_uint					m_iMainAnimIdx = { 0 }; // mainAnimIdx
 
 	_int m_iMixAni			= { -1 }; // todo : animation 섞는거 어떻게 할지...
 

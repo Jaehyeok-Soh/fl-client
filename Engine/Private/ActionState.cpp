@@ -332,14 +332,14 @@ CGameObject* CActionState::Get_Target()
 	return m_pOwnerControlContext->Get_Target();
 }
 
-_bool CActionState::Align_Move(_uint iState)
+_bool CActionState::Align_Move(_uint iState, _bool bForce , void* pArg)
 {
 	if (m_pOwnerControlContext == nullptr)
 		return false;
 
 	if (m_pOwnerControlContext->Is_MovePressed())
 	{
-		Change_State(iState);
+		Change_State(iState, bForce, pArg);
 		return true;
 	}
 	return false;
