@@ -24,6 +24,8 @@ HRESULT CStateBase_Player::Initialize(void* pArg)
 	m_iNextState = pDesc->iNextState;
 	m_vecChangeState_ByKey = std::move(pDesc->vecChangeState_ByKey);
 
+	m_tKeyTimer = pDesc->tKeyTimer;
+
 	return S_OK;
 }
 
@@ -56,26 +58,33 @@ void CStateBase_Player::Update(const _float fTimeDelta)
 
 	Super::Update(fTimeDelta);
 
-	if(Check_MoveKey(fTimeDelta))
-		return;
+	// keyCount를 하지 않거나, coolTime이 다 되었다면
+	if (!(m_tKeyTimer.bCountTime) ||
+		m_tKeyTimer.CountTime(fTimeDelta) == 1.f)
+	{
+		if (Check_MoveKey(fTimeDelta))
+			return;
 
-	if(Check_JumpKey(fTimeDelta))
-		return;
+		if (Check_JumpKey(fTimeDelta))
+			return;
 
-	if(Check_DashKey(fTimeDelta))
-		return;
+		if (Check_DashKey(fTimeDelta))
+			return;
 
-	if(Check_CtrlPressKey(fTimeDelta))
-		return;
+		if (Check_CtrlPressKey(fTimeDelta))
+			return;
 
-	if(Check_CtrlUpKey(fTimeDelta))
-		return;
+		if (Check_CtrlUpKey(fTimeDelta))
+			return;
+	}
 }
 
 HRESULT CStateBase_Player::End()
 {
 	if (FAILED(Super::End()))
 		return E_FAIL;
+
+	m_tKeyTimer.fTimeAcc = 0.f;
 
 	return S_OK;
 }

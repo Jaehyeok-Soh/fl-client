@@ -20,6 +20,7 @@ public:
 		_uint					iNextState = { 0 };			// loop이면 키 입력이 없을때 바뀔 state, no loop라면 animation 끝나고 바뀔 state
 		vector<_uint>			vecChangeState_ByKey;			// 키 입력에 따라 어떻게 바꿀지 담는 벡터
 
+		TIME_COUNTER			tKeyTimer = {};
 	}PLAYER_STATEBASE_DESC;
 
 protected:
@@ -34,10 +35,11 @@ public:
 	virtual HRESULT End() override;
 	
 protected:
-	MOVETYPE				m_eMoveType = { MOVETYPE::NORMAL };
-	_uint					m_iNextState = { 0 };
-	vector<_uint>	m_vecChangeState_ByKey;
+	MOVETYPE				m_eMoveType		= { MOVETYPE::NORMAL };
+	_uint					m_iNextState	= { 0 };
+	vector<_uint>			m_vecChangeState_ByKey;
 	_uint					m_iEndState		= { 0 };
+	TIME_COUNTER			m_tKeyTimer		= {};
 
 protected:
 	virtual void OwnMove(const _float fTimeDelta) {}; // state 내부에서 알아서 움직일때

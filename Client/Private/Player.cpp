@@ -150,6 +150,10 @@ HRESULT CPlayer::Ready_BaseStates()
     vector<_uint> vecChangeState_ByKey{};
     vecChangeState_ByKey.resize(ENUM_TO_SZET(CStateBase_Player::STATEKEY::END), ENUM_TO_UINT(State::END));
 
+    TIME_COUNTER tKeyTimer = {};
+    tKeyTimer.bCountTime = false;
+    tKeyTimer.bTimeReset = false;
+
     // Idle
     {
         CStateBase_Player::PLAYER_STATEBASE_DESC  desc = {};
@@ -160,6 +164,7 @@ HRESULT CPlayer::Ready_BaseStates()
                                 ,{ENUM_TO_UINT(State::CROUCH), Get_AnimationIndex(L"Animation_PlayerMoon_Crouch_To_Stand")}
                                 ,{ENUM_TO_UINT(State::CROUCHWALK), Get_AnimationIndex(L"Animation_PlayerMoon_Crouch_To_Stand")}
                                 ,{ENUM_TO_UINT(State::SLIDE), Get_AnimationIndex(L"Animation_PlayerMoon_Slide_End")}
+                                ,{ENUM_TO_UINT(State::RUNLOOP), Get_AnimationIndex(L"Animation_PlayerMoon_Run_Stop_L_Acc")}
         };
         desc.iAnimIndex     = { Get_AnimationIndex(L"Animation_PlayerMoon_Idle") };
         desc.bBlend         = true;
@@ -172,6 +177,7 @@ HRESULT CPlayer::Ready_BaseStates()
         vecChangeState_ByKey[ENUM_TO_SZET(CStateBase_Player::STATEKEY::LCRTL_PRESS)] = ENUM_TO_UINT(State::CROUCH);
         desc.vecChangeState_ByKey = vecChangeState_ByKey;
 
+        desc.tKeyTimer = tKeyTimer;
 
         if (FAILED(pActionState->Add_State(ENUM_TO_UINT(State::IDLE), CState_Idle::Create(pActionState, &desc))))
             return E_FAIL;
@@ -298,6 +304,11 @@ HRESULT CPlayer::Ready_BaseStates()
         vecChangeState_ByKey[ENUM_TO_SZET(CStateBase_Player::STATEKEY::LCRTL_UP)] = ENUM_TO_UINT(State::END);
         desc.vecChangeState_ByKey = vecChangeState_ByKey;
 
+
+        tKeyTimer.bCountTime = true;
+        tKeyTimer.fMaxTime = 0.3f;
+        desc.tKeyTimer = tKeyTimer;
+
         if (FAILED(pActionState->Add_State(ENUM_TO_UINT(State::DASHFRONT), CState_DashFront::Create(pActionState, &desc))))
             return E_FAIL;
     }
@@ -305,14 +316,15 @@ HRESULT CPlayer::Ready_BaseStates()
     // RUNSHORT
     {
         CStateBase_Player::PLAYER_STATEBASE_DESC  desc = {};
-        desc.FAniFlags = 0;
-        desc.iAnimIndex = { Get_AnimationIndex(L"Animation_PlayerMoon_Run_Loop_Acc") };
+        desc.FAniFlags = CStateBase::STATEANI_FLAG::SA_HasPreAni;
+        desc.vecPreAnims = { {-1, Get_AnimationIndex(L"Animation_PlayerMoon_Run_Start_L")} };
+        desc.iAnimIndex = { Get_AnimationIndex(L"Animation_PlayerMoon_Run_Loop") };
         desc.bBlend = true;
         desc.bLoop = false;
         desc.iNextState = ENUM_TO_UINT(State::IDLE);
 
-        desc.eMoveType = CStateBase_Player::MOVETYPE::NON;
-        vecChangeState_ByKey[ENUM_TO_SZET(CStateBase_Player::STATEKEY::MOVE)] = ENUM_TO_UINT(State::WALK);
+        desc.eMoveType = CStateBase_Player::MOVETYPE::NORMAL;
+        vecChangeState_ByKey[ENUM_TO_SZET(CStateBase_Player::STATEKEY::MOVE)] = ENUM_TO_UINT(State::IDLE);
         //vecChangeState_ByKey[ENUM_TO_SZET(CStateBase_Player::STATEKEY::SPACE)] = ENUM_TO_UINT(State::JUMP);
         vecChangeState_ByKey[ENUM_TO_SZET(CStateBase_Player::STATEKEY::SHIFT)] = ENUM_TO_UINT(State::RUNLOOP);
         vecChangeState_ByKey[ENUM_TO_SZET(CStateBase_Player::STATEKEY::LCRTL_PRESS)] = ENUM_TO_UINT(State::END);
@@ -326,9 +338,8 @@ HRESULT CPlayer::Ready_BaseStates()
     // RunLoop
     {
         CState_RunLoop::PLAYER_STATEBASE_DESC  desc = {};
-        desc.FAniFlags      = CStateBase::STATEANI_FLAG::SA_HasPreAni;
-        desc.vecPreAnims    = { {-1, Get_AnimationIndex(L"Animation_PlayerMoon_Run_Start_L")} };
-        desc.iAnimIndex     = { Get_AnimationIndex(L"Animation_PlayerMoon_Run_Loop") };
+        desc.FAniFlags      = 0;
+        desc.iAnimIndex     = { Get_AnimationIndex(L"Animation_PlayerMoon_Run_Loop_Acc") };
         desc.bBlend         = true;
         desc.bLoop          = true;
 
