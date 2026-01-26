@@ -76,8 +76,9 @@ void CImGui_UIManager::Safe_Change_Canvas(int32_t iNewCanvasIndex)
 		m_iCurUIIndex = -1;
 		return;
 	}
-	
-	uint32_t iNumCanvasData = static_cast<uint32_t>(m_vecCanvasData.size());
+
+	/* ¡÷¿« */
+	int32_t iNumCanvasData = static_cast<int32_t>(m_vecCanvasData.size());
 	if (iNewCanvasIndex >= iNumCanvasData)
 		return;
 
@@ -89,7 +90,7 @@ void CImGui_UIManager::Safe_Change_Canvas(int32_t iNewCanvasIndex)
 		return;
 	}
 
-	uint32_t iNumLayerData = static_cast<uint32_t>(m_vecCanvasData[m_iCurCanvasIndex].vecLayers.size());
+	int32_t iNumLayerData = static_cast<int32_t>(m_vecCanvasData[m_iCurCanvasIndex].vecLayers.size());
 	if (m_iCurLayerIndex >= iNumLayerData)
 		m_iCurLayerIndex = iNumLayerData - 1;
 
