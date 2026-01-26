@@ -129,7 +129,6 @@ namespace Tool
 	inline constexpr _tchar g_wszTriggerBoxLayer[]{ L"TriggerBox_Layer" };
 	inline constexpr _tchar g_wszColMeshLayer[]{ L"ColMesh_Layer" };
 	inline constexpr _tchar g_wszStaticModelLayer[]{ L"StaticModel_Layer" };
-	inline constexpr _tchar g_wszDummyColliderLayer[]{ L"DummyCollider_Layer" };
 	inline constexpr _tchar g_wszCameraLayer[]{ L"Camera_Layer" };
 
 	struct HoleBridges

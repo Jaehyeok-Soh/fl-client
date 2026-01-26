@@ -343,9 +343,9 @@ _bool CEffectObject::Picking(OUT Vec3& vOut)
     return _bool();
 }
 
-HRESULT CEffectObject::Export_Data(OUT MAPOBJECT_SAVEDATA& data)
+_bool CEffectObject::Export_Data(DTO::ECategory eCategory, CDataDocumentBase* pDocument)
 {
-    return S_OK;
+    return false;
 }
 
 void CEffectObject::Draw_ImGui()

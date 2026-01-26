@@ -2,7 +2,7 @@
 #include "Engine_Define.h"
 
 NS_BEGIN(Engine)
-
+ 
 class ENGINE_DLL Engine_Utils
 {
 public:
@@ -17,6 +17,8 @@ public:
 
 	static string GetFileNameFromPath(const string& filePath);
 	static string GetFileNameWithoutExtension(const string& path);
+
+	static string Make_DataFileKey(const std::filesystem::path& filePath) { return filePath.stem().string(); }
 
 	/* 비트 플래그 유틸 함수 */
 	static void Add_Flag(Flags& curFlags, _uint iBitFlag);

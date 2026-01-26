@@ -1,0 +1,81 @@
+#pragma once
+#include "Base.h"
+#include "FileUtils.h"
+#include "DataDocumentBase.h"
+#include "Engine_Utils.h"
+
+NS_BEGIN(Engine)
+
+class ENGINE_DLL CDataStore : public CBase
+{
+	using Super = CBase;
+protected:
+	CDataStore();
+	virtual ~CDataStore() = default;
+public:
+	template<typename T>
+	HRESULT LoadFile_Json(const path& filePath);
+	HRESULT SaveFile_Json(const path& filePath);
+	const CDataDocumentBase* Get_Document(const string& strFileKey);
+	_bool Has(const string& strFileKey) const;
+	HRESULT Regist_Document(const string& strFileKey, CDataDocumentBase* pDoc);
+protected:
+	void Erase_Document(const string& strFileKey);
+private:
+	void Clear();
+protected:
+	unordered_map<string, CDataDocumentBase*> m_umapDocuments;
+public:
+	static CDataStore* Create();
+	virtual void Free() override;
+};
+
+template<typename T>
+HRESULT CDataStore::LoadFile_Json(const path& filePath)
+{
+	static_assert(std::is_base_of_v<CDataDocumentBase, T> == true, "T is not derived from CDataDocumentBase");
+	CFileUtils* pFileUtil = CFileUtils::Create();
+	if (FAILED(pFileUtil->Open(filePath, FileMode::READ)))
+	{
+		MSG_BOX("CDataStore::LoadFile_Json, open failed");
+		Safe_Release(pFileUtil);
+		return E_FAIL;
+	}
+
+	std::string text;
+	if (FAILED(pFileUtil->ReadAllText(text)))
+	{
+		MSG_BOX("CDataStore::LoadFile_Json, read failed");
+		Safe_Release(pFileUtil);
+		return E_FAIL;
+	}
+
+	json j = json::parse(text, nullptr, false);
+	if (j.is_discarded() == true)
+	{
+		MSG_BOX("CDataStore::LoadFile_Json, is_discarded");
+		Safe_Release(pFileUtil);
+		return E_FAIL;
+	}
+
+	T* pDoc = T::Create();
+	if (pDoc->FromJson(j))
+	{
+		MSG_BOX("CDataStore::LoadFile_Json, read failed");
+		Safe_Release(pDoc);
+		Safe_Release(pFileUtil);
+		return E_FAIL;
+	}
+
+	if (FAILED(Regist_Document(Engine_Utils::Make_DataFileKey(filePath), pDoc)))
+	{
+		MSG_BOX("CDataStore::LoadFile_Json, load failed");
+		Safe_Release(pDoc);
+		Safe_Release(pFileUtil);
+		return E_FAIL;
+	}
+
+	Safe_Release(pFileUtil);
+	return S_OK;
+}
+NS_END

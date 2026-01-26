@@ -185,6 +185,10 @@
     <ClCompile Include="..\Private\ContainerObject.cpp" />
     <ClCompile Include="..\Private\ControlContext.cpp" />
     <ClCompile Include="..\Private\Converter.cpp" />
+    <ClCompile Include="..\private\DataDocumentBase.cpp" />
+    <ClCompile Include="..\private\DataDocument_Example.cpp" />
+    <ClCompile Include="..\private\DataRepository.cpp" />
+    <ClCompile Include="..\private\DataStore.cpp" />
     <ClCompile Include="..\Private\DebugDraw.cpp">
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Use</PrecompiledHeader>
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Use</PrecompiledHeader>
@@ -204,6 +208,7 @@
     <ClCompile Include="..\Private\GameInstance.cpp" />
     <ClCompile Include="..\Private\GameObject.cpp" />
     <ClCompile Include="..\Private\Graphic_Device.cpp" />
+    <ClCompile Include="..\private\DataStructBase.cpp" />
     <ClCompile Include="..\Private\Importer.cpp" />
     <ClCompile Include="..\Private\Input_Manager.cpp" />
     <ClCompile Include="..\Private\Layer.cpp" />
@@ -224,6 +229,7 @@
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|x64'">NotUsing</PrecompiledHeader>
     </ClCompile>
     <ClCompile Include="..\Private\Navigation.cpp" />
+    <ClCompile Include="..\private\ObjectDataBase.cpp" />
     <ClCompile Include="..\private\ObjectPool_Manager.cpp" />
     <ClCompile Include="..\Private\Object_Manager.cpp" />
     <ClCompile Include="..\private\ObjectPool.cpp" />
@@ -285,6 +291,12 @@
     <ClInclude Include="..\Public\ContainerObject.h" />
     <ClInclude Include="..\Public\ControlContext.h" />
     <ClInclude Include="..\Public\Converter.h" />
+    <ClInclude Include="..\public\DataDocumentBase.h" />
+    <ClInclude Include="..\public\DataDocument_Example.h" />
+    <ClInclude Include="..\Public\DataEnum.h" />
+    <ClInclude Include="..\public\DataRepository.h" />
+    <ClInclude Include="..\public\DataStore.h" />
+    <ClInclude Include="..\Public\DataStruct_Example.h" />
     <ClInclude Include="..\Public\DebugDraw.h" />
     <ClInclude Include="..\Public\Delegate.h" />
     <ClInclude Include="..\Public\Engine_Define.h" />
@@ -305,6 +317,7 @@
     <ClInclude Include="..\Public\GameInstance.h" />
     <ClInclude Include="..\Public\GameObject.h" />
     <ClInclude Include="..\Public\Graphic_Device.h" />
+    <ClInclude Include="..\public\DataStructBase.h" />
     <ClInclude Include="..\Public\Importer.h" />
     <ClInclude Include="..\Public\Input_Manager.h" />
     <ClInclude Include="..\Public\Layer.h" />
@@ -322,6 +335,7 @@
     <ClInclude Include="..\Public\MonoBehaviour.h" />
     <ClInclude Include="..\Public\MulticastDelegate.h" />
     <ClInclude Include="..\Public\Navigation.h" />
+    <ClInclude Include="..\public\ObjectDataBase.h" />
     <ClInclude Include="..\public\ObjectPool_Manager.h" />
     <ClInclude Include="..\Public\Object_Manager.h" />
     <ClInclude Include="..\public\ObjectPool.h" />

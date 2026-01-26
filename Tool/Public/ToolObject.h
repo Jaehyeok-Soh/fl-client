@@ -30,7 +30,6 @@ public:
 	virtual void Ready_Before_Render(const _float fTimeDelta) override;
 	virtual HRESULT Render() override;
 	virtual _bool Picking(OUT Vec3& vOut) PURE;
-	virtual HRESULT Export_Data(OUT MAPOBJECT_SAVEDATA &data) PURE;
 	virtual void Draw_ImGui();
 	virtual void Set_Dead(const wstring& wstrLayerTag) override;
 public:

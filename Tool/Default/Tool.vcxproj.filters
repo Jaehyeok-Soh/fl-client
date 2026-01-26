@@ -163,6 +163,12 @@
     <Filter Include="02. GameObjects\UI\Layer">
       <UniqueIdentifier>{d0269bd1-6673-49d6-8c4d-8c813644618a}</UniqueIdentifier>
     </Filter>
+    <Filter Include="09. Builder">
+      <UniqueIdentifier>{afa9ad94-11da-4af6-822f-8784ae7231ad}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="09. Builder\Example">
+      <UniqueIdentifier>{9970cc5b-f703-4b3a-8311-0fc2a45575d8}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="framework.h">
@@ -351,6 +357,12 @@
     <ClInclude Include="..\Public\ToolLayer.h">
       <Filter>02. GameObjects\UI\Layer</Filter>
     </ClInclude>
+    <ClInclude Include="..\public\BuilderBase.h">
+      <Filter>09. Builder</Filter>
+    </ClInclude>
+    <ClInclude Include="..\public\Builder_Example.h">
+      <Filter>09. Builder\Example</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <Image Include="small.ico">
@@ -533,6 +545,12 @@
     </ClCompile>
     <ClCompile Include="..\Private\ToolLayer.cpp">
       <Filter>02. GameObjects\UI\Layer</Filter>
+    </ClCompile>
+    <ClCompile Include="..\private\BuilderBase.cpp">
+      <Filter>09. Builder</Filter>
+    </ClCompile>
+    <ClCompile Include="..\private\Builder_Example.cpp">
+      <Filter>09. Builder\Example</Filter>
     </ClCompile>
   </ItemGroup>
 </Project>

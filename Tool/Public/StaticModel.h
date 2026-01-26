@@ -30,7 +30,7 @@ private:
 
 public:
 	virtual _bool			Picking(OUT Vec3& vOut)						override;
-	virtual HRESULT			Export_Data(OUT MAPOBJECT_SAVEDATA& data)		override;
+	virtual _bool			Export_Data(DTO::ECategory eCategory, CDataDocumentBase* pDocument)		override;
 public:
 	static  CStaticModel*	Create(EToolObjectType eType, ID3D11Device* pDevice, ID3D11DeviceContext* pDeviceContext);
 	virtual CGameObject*	Clone(void* pArg)								override;

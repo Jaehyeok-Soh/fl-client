@@ -19,6 +19,7 @@
 #include "CameraMan.h"
 #include "Camera_Manager.h"
 #include "Level_Manager.h"
+#include "DataRepository.h"
 #include "Input_Manager.h"
 #include "Graphic_Device.h"
 #include "Render_Manager.h"
@@ -52,7 +53,7 @@ HRESULT CGameInstance::Initialize_Engine(const ENGINE_DESC& Engine_Desc, _Inout_
 	if(!(m_pGameData_Manager = CGameDataManager::Create()))
 		return E_FAIL;
 
-	if (!(m_pMapFile_Manager = CMapFile_Manager::Create()))
+	if (!(m_pDataRepository = CDataRepository::Create(Engine_Desc.iLevelCount)))
 		return E_FAIL;
 
 	if (!(m_pLevel_Manager = CLevel_Manager::Create()))
@@ -587,10 +588,38 @@ void CGameInstance::Set_Capture(_bool bCap)
 {
 	m_pInput_Manager->Set_Capture(bCap);
 }
+
+#pragma region RESOURCE_MANAGER
 CTextureBase* CGameInstance::GetOrAddTexture(const wstring& wstrKey, void* pArg)
 {
 	return m_pResource_Manager->GetOrAddTexture(wstrKey, pArg);
 }
+#pragma endregion
+
+#pragma region DATA_REPOSITORY
+HRESULT CGameInstance::Load_Folder_Json(_uint iLevelID, DTO::ECategory eCategory, const path& folderPath)
+{
+	return m_pDataRepository->Load_Folder_Json(iLevelID, eCategory, folderPath);
+}
+HRESULT CGameInstance::Load_File_Json(_uint iLevelID, DTO::ECategory eCategory, const path& folderPath)
+{
+	return m_pDataRepository->Load_File_Json(iLevelID, eCategory, folderPath);
+}
+HRESULT CGameInstance::Save_File_Json(_uint iLevelID, DTO::ECategory eCategory, const path& folderPath) const
+{
+	return m_pDataRepository->Save_File_Json(iLevelID, eCategory, folderPath);
+}
+CDataDocumentBase* CGameInstance::Ensure_Document(_uint iLevelID, DTO::ECategory eCategory, const path& filePath)
+{
+	return m_pDataRepository->Ensure_Document(iLevelID, eCategory, filePath);
+}
+const CDataDocumentBase* CGameInstance::Get_Document(_uint iLevelID, DTO::ECategory eCategory, const string& strFileKey)
+{
+	return m_pDataRepository->Get_Document(iLevelID, eCategory, strFileKey);
+}
+#pragma endregion
+
+
 void CGameInstance::Push_RenderObject(RENDER_CATEGORY eCategory, CGameObject* pGO)
 {
 	m_pRender_Manager->Push_RenderObject(eCategory, pGO);
@@ -651,7 +680,7 @@ void CGameInstance::Destroy_Engine()
 	Safe_Release(m_pFrustrum);
 	Safe_Release(m_pInput_Manager);
 	Safe_Release(m_pTimer_Manager);
-	Safe_Release(m_pMapFile_Manager);
+	Safe_Release(m_pDataRepository);
 	Safe_Release(m_pRender_Manager);
 	Safe_Release(m_pSound_Manager);
 	Safe_Release(m_pFont_Manager);
@@ -787,7 +816,7 @@ void CGameInstance::Free()
 	Safe_Release(m_pTimer_Manager);
 	Safe_Release(m_pSound_Manager);
 	Safe_Release(m_pFont_Manager);
-	Safe_Release(m_pMapFile_Manager);
+	Safe_Release(m_pDataRepository);
 	Safe_Release(m_pRender_Manager);
 	Safe_Release(m_pRenderTarget_Manager);
 	Safe_Release(m_pCamera_Manager);
