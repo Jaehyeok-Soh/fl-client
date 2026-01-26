@@ -648,19 +648,11 @@ HRESULT CConverter::ReadAndExport_NoAnimation()
 HRESULT CConverter::ReadAndExport_MoreThanOne()
 {
 	size_t iCount = { 0 };
-	for (const auto& entry : std::filesystem::directory_iterator(m_AssetParentPath))
-	{
-		if (entry.is_regular_file())
-		{
-			m_vecAssetPaths[iCount] = entry.path();
-			++iCount;
-		}
-	}
 
 	for (size_t i = 0; i < m_vecAssetPaths.size(); ++i)
 	{
 		Clear();
-		
+
 		if (FAILED(Create_AiScene(Engine_Utils::ToString(m_vecAssetPaths[i]))))
 			return E_FAIL;
 
@@ -799,6 +791,8 @@ size_t CConverter::Get_FileCount(const wstring wstrFolderPath)
 	{
 		if (entry.is_regular_file())
 		{
+			if (lstrcmpW(path(entry).extension().c_str(), g_wszModelExtension) != 0)
+				continue;
 			m_vecAssetPaths.push_back(entry.path());
 			++iFileCount;
 		}

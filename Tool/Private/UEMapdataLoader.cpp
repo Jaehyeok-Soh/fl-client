@@ -63,7 +63,7 @@ HRESULT CUEMapDataLoader::Make_StaticModel(const wstring& wstrRawDataFilePath, c
 	if (!pParser)
 		return E_FAIL;
 
-	if (FAILED(pParser->Read_Mapdata()))
+	if (FAILED(pParser->Read_Mapdata(false)))
 		return E_FAIL;
 
 	const _char* pFilterName = "StaticMeshComponent0";
@@ -83,17 +83,16 @@ HRESULT CUEMapDataLoader::Make_StaticModel(const wstring& wstrRawDataFilePath, c
 
 		CModel::MODEL_ORIGIN_DESC tModelDesc{};
 		tModelDesc.eType = EModelType::STATIC;
-		tModelDesc.wstrModelFolderName = wstrModelName;
+		tModelDesc.wstrModelFolderName = wstrModelPath;
 		tModelDesc.iPrototypeLevelIndex = iLevelID;
-		if (FAILED(m_pGameInstance->Add_Prototype(iLevelID, L"Prototype_Component_Model_" + wstrModelName, CModel::Create(m_pDevice, m_pDeviceContext, &tModelDesc))))
-			return E_FAIL;
+		m_pGameInstance->Add_Prototype(iLevelID, L"Prototype_Component_Model_" + wstrModelName, CModel::Create(m_pDevice, m_pDeviceContext, &tModelDesc));
 
 
 		CStaticModel::STATICMODEL_DESC desc = {};
 		desc.wstrLayerTag = wstrStaticModelLayerTag;
 		desc.iLevelIndex = ENUM_TO_UINT(ELevelType::MAP);
-		desc.wstrModelPath = Engine::Engine_Utils::ToWString(mapdataOuter.Properties.StaticMesh.strObjectPath);
-		desc.wstrModelName = Engine::Engine_Utils::ToWString(mapdataOuter.Properties.StaticMesh.strObjectName);
+		desc.wstrModelPath = wstrModelPath;
+		desc.wstrModelName = wstrModelName;
 		if (!(pResult = m_pGameInstance->Add_GameObject(desc.iLevelIndex,
 			L"Prototype_GameObject_StaticModel",
 			desc.iLevelIndex,
