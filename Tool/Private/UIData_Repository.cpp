@@ -16,7 +16,7 @@ CUIData_Repository::CUIData_Repository()
 	Safe_AddRef(m_pGameInstance);
 }
 
-HRESULT CUIData_Repository::Load_UIData(const _wstring& wstrSaveFilePath, OUT vector<CANVAS_DATA>* pOut)
+HRESULT CUIData_Repository::Load_UIData(const _wstring& wstrSaveFilePath, OUT vector<CANVAS_DATA>& OutRef)
 {
 	CFileUtils* pFileUtil = CFileUtils::Create();
 
@@ -31,7 +31,7 @@ HRESULT CUIData_Repository::Load_UIData(const _wstring& wstrSaveFilePath, OUT ve
 
 	order_json j = json::parse(text);
 	m_vecCanvasData = j.get<vector<CANVAS_DATA>>();
-	pOut = &m_vecCanvasData;
+	OutRef = j.get<vector<CANVAS_DATA>>();
 	Safe_Release(pFileUtil);
 
 	return S_OK;

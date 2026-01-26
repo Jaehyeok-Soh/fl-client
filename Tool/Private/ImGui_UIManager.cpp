@@ -50,8 +50,10 @@ HRESULT CImGui_UIManager::Safe_Add_UI(LAYER_DATA* pLayer, const GENERIC_UI_DATA&
 	uint32_t iLevelIndex = static_cast<uint32_t>(ELevelType::UI);
 	CToolUI::TOOLUI_DESC Desc = {};
 	Desc.isAlpha	= TRUE;
-	Desc.fWidth		= tData.fWidth;
-	Desc.fHeight	= tData.fHeight;
+	Desc.fWidth		= 64.f;
+	//Desc.fWidth		= tData.fWidth;
+	Desc.fHeight	= 64.f;
+	//Desc.fHeight	= tData.fHeight;
 	Desc.fX			= tData.fPosX;
 	Desc.fY			= tData.fPosY;
 	Desc.fZ			= tData.fPosZ;
@@ -235,26 +237,44 @@ void CImGui_UIManager::Safe_Remove_LayerData()
 
 HRESULT CImGui_UIManager::Remake_UIObjects()
 {
-	LAYER_DATA* pLayer = Safe_Access_Layer(m_iCurLayerIndex);
-	if (nullptr == pLayer)
+	CANVAS_DATA* pCanvas = Safe_Access_Canvas(m_iCurCanvasIndex);
+	if (nullptr == pCanvas)
+		return S_OK;
+
+	if (pCanvas->vecLayers.empty())
 		return S_OK;
 
 	uint32_t iLevelIndex = static_cast<uint32_t>(ELevelType::UI);
-	for (const GENERIC_UI_DATA& UIData : pLayer->vecUIData)
-	{
-		CToolUI::TOOLUI_DESC Desc = {};
-		Desc.fX = UIData.fPosX;
-		Desc.fY = UIData.fPosY;
-		Desc.fZ = UIData.fPosZ;
-		Desc.fHeight = UIData.fHeight;
-		Desc.fWidth = UIData.fWidth;
-		Desc.isAlpha = TRUE;
-		Desc.wstrTextureTag = L"Prototype_Component_Button_Test_Texture";
 
-		CGameObject* pResult = m_pGameInstance->Add_GameObject(iLevelIndex, L"Prototype_UI_Test_Button",iLevelIndex, Engine_Utils::ToWString(pLayer->strTag), &Desc);
-		if (nullptr == pResult)
-			return E_FAIL;
-		pLayer->vecUIObjects.push_back(reinterpret_cast<CToolUI*>(pResult));
+	for (LAYER_DATA& Layer : pCanvas->vecLayers)
+	{
+		if (Layer.strTag.empty())
+			continue;
+
+		Layer.vecUIObjects.clear();
+
+		for (const GENERIC_UI_DATA& UIData : Layer.vecUIData)
+		{
+			CToolUI::TOOLUI_DESC Desc = {};
+			Desc.fX = UIData.fPosX;
+			Desc.fY = UIData.fPosY;
+			Desc.fZ = UIData.fPosZ;
+			Desc.fHeight = 64.f;
+			//Desc.fHeight = UIData.fHeight;
+			Desc.fWidth = 64.f;
+			//Desc.fWidth = UIData.fWidth;
+			Desc.isAlpha = TRUE;
+			Desc.wstrTextureTag = L"Prototype_Component_Button_Test_Texture";
+
+			CGameObject* pResult = m_pGameInstance->Add_GameObject(
+				iLevelIndex, L"Prototype_UI_Test_Button",
+				iLevelIndex, Engine_Utils::ToWString(Layer.strTag), &Desc);
+
+			if (nullptr == pResult)
+				return E_FAIL;
+
+			Layer.vecUIObjects.push_back(reinterpret_cast<CToolUI*>(pResult));
+		}
 	}
 	return S_OK;
 }

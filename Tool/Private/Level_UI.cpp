@@ -7,7 +7,7 @@
 //==========
 // ImGui
 //==========
-#include "UI_Inspector.h"
+#include "UI_Maker.h"
 #include "UI_Hierachy.h"
 
 //==========
@@ -80,7 +80,7 @@ HRESULT CLevel_UI::Render()
 
 HRESULT CLevel_UI::Ready_UI_Inspector()
 {
-	m_GuiElements[ENUM_TO_SZET(Elements::INSPECTOR)] = CUI_Inspector::Create("[[ UI Creater ]]", this, m_pDevice, m_pDeviceContext);
+	m_GuiElements[ENUM_TO_SZET(Elements::UIMAKER)] = CUI_Maker::Create("[[ UI Creater ]]", this, m_pDevice, m_pDeviceContext);
 	m_GuiElements[ENUM_TO_SZET(Elements::HIERACHY)] = CUI_Hierachy::Create("[[ UI List Viewer ]]", this, m_pDevice, m_pDeviceContext);
 
 	return S_OK;

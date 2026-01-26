@@ -50,13 +50,18 @@ public:
 	HRESULT Remake_UIObjects();
 	HRESULT Clear_UIObjects();
 
-	
 	vector<CANVAS_DATA>* Safe_Access_CanvasVector();
 	CANVAS_DATA* Safe_Access_Canvas(int32_t index);
 	vector<LAYER_DATA>* Safe_Access_LayerVector();
 	LAYER_DATA* Safe_Access_Layer(int32_t index);
 	vector<GENERIC_UI_DATA>* Safe_Access_UIVector();
 	GENERIC_UI_DATA* Safe_Access_UI(int32_t index);
+
+	/// <summary>
+	/// 내부 데이터 안전을 보장할 수 없음
+	/// </summary>
+	/// <returns></returns>
+	vector<CANVAS_DATA>& Get_CanvasDataVector_Ref() { return m_vecCanvasData; }
 
 private:
 	/* CANVAS_DATA -> LAYER_DATA -> GENERIC_UI_DATA 각각 벡터를 가지는 계층 구조 입니다 */

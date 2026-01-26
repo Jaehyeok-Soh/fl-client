@@ -38,7 +38,7 @@ private:
 	virtual ~CUIData_Repository() = default;
 
 public:
-	HRESULT Load_UIData(const _wstring& wstrSaveFilePath, OUT vector<CANVAS_DATA>* pOut);
+	HRESULT Load_UIData(const _wstring& wstrSaveFilePath, OUT vector<CANVAS_DATA>& OutRef);
 	HRESULT Save_UIData(const _wstring& wstrSaveFilePath);
 	HRESULT Make_UIObjects(const vector<CANVAS_DATA>& vecData);
 
