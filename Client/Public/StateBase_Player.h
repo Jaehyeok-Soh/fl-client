@@ -11,13 +11,21 @@ class CStateBase_Player abstract : public CStateBase
 	using Super = CStateBase;
 
 public:
-	enum class MOVETYPE { NORMAL, CHANGE, OWN, NON }; // 8방향 움직임, state change, own moving, dont move
+	// wasd가 눌렸을때 어떻게 할건지
+	enum MOVEFLAGS : Flags
+	{
+			NORMAL			= 0x0001 // 8방향 움직임
+		,	PRESS_CHANGE	= 0x0002 // state change : press
+		,	UP_CHANGE		= 0x0004 // state change : up
+		,	OWN				= 0x0008 // 자신만의 움직임
+	};
+
 	enum class STATEKEY : _uint {MOVE, SPACE, SHIFT, LCRTL_PRESS, LCRTL_UP, Q, E, LM, RM, END};
 
 	typedef struct tagPlayerStateDesc : public CStateBase::STATE_DESC
 	{
-		MOVETYPE				eMoveType = { MOVETYPE::NORMAL };
-		_uint					iNextState = { 0 };			// loop이면 키 입력이 없을때 바뀔 state, no loop라면 animation 끝나고 바뀔 state
+		Flags					FMoves		= { 0 };
+		_uint					iNextState	= { 0 };			// loop이면 키 입력이 없을때 바뀔 state, no loop라면 animation 끝나고 바뀔 state
 		vector<_uint>			vecChangeState_ByKey;			// 키 입력에 따라 어떻게 바꿀지 담는 벡터
 
 		TIME_COUNTER			tKeyTimer = {};
@@ -35,7 +43,7 @@ public:
 	virtual HRESULT End() override;
 	
 protected:
-	MOVETYPE				m_eMoveType		= { MOVETYPE::NORMAL };
+	Flags					m_FMoves		= { 0 };
 	_uint					m_iNextState	= { 0 };
 	vector<_uint>			m_vecChangeState_ByKey;
 	_uint					m_iEndState		= { 0 };

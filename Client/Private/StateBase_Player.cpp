@@ -7,6 +7,7 @@
 // manager
 #include "GameInstance.h"
 #include "ControlContext.h"
+#include "Engine_Utils.h"
 
 CStateBase_Player::CStateBase_Player(CActionState* pOwnerComponent, const string& strName)
 	: Super(pOwnerComponent, strName)
@@ -18,13 +19,13 @@ HRESULT CStateBase_Player::Initialize(void* pArg)
 	if (FAILED(Super::Initialize(pArg)))
 		return E_FAIL;
 
-	PLAYER_STATEBASE_DESC* pDesc = static_cast<PLAYER_STATEBASE_DESC*>(pArg);
+	PLAYER_STATEBASE_DESC* pDesc	= static_cast<PLAYER_STATEBASE_DESC*>(pArg);
 
-	m_eMoveType = pDesc->eMoveType;
-	m_iNextState = pDesc->iNextState;
-	m_vecChangeState_ByKey = std::move(pDesc->vecChangeState_ByKey);
+	m_FMoves						= pDesc->FMoves;
+	m_iNextState					= pDesc->iNextState;
+	m_vecChangeState_ByKey			= std::move(pDesc->vecChangeState_ByKey);
 
-	m_tKeyTimer = pDesc->tKeyTimer;
+	m_tKeyTimer						= pDesc->tKeyTimer;
 
 	return S_OK;
 }
@@ -91,34 +92,36 @@ HRESULT CStateBase_Player::End()
 
 _bool CStateBase_Player::Check_MoveKey(const _float fTimeDelta)
 {
-	//	enum class MOVETYPE { NORMAL, CHANGE, OWN, NON }; // 8방향 움직임, state change, own moving, dont move
-	switch (m_eMoveType)
-	{
-	case MOVETYPE::NORMAL:
-		if (Align_Movement(fTimeDelta) == false)	// 8방향 움직임 
-		{
-			Request_Change_State(m_vecChangeState_ByKey[ENUM_TO_UINT(STATEKEY::MOVE)]); // 움직임이 없다면 실행할 
-			return true;
-		}
-
-		break;
-
-	case MOVETYPE::CHANGE: // 키가 눌렸다면 해당 state로 change
-		return (Align_Move(m_vecChangeState_ByKey[ENUM_TO_UINT(STATEKEY::MOVE)]));
-
-	case MOVETYPE::OWN:		// 내 움직임
-		OwnMove(fTimeDelta); 
-		break;
-
-	case MOVETYPE::NON:		// 움직이지 않음
-		break;
-	}
-
 	if (!m_bLoop && Is_MainAnimFinished()) // loop가 아닌데 애니메이션이 끝났다면 : pre animation이랑 잘 해야될듯..?
 	{
 		Request_Change_State(m_iNextState);		// 다음 state로 change
 		return true;
 	}
+
+	if (Engine_Utils::Has_Flag(m_FMoves, MOVEFLAGS::NORMAL))
+	{
+		if (Align_Movement(fTimeDelta) == false)	// 8방향 움직임 
+		{
+			Request_Change_State(m_vecChangeState_ByKey[ENUM_TO_UINT(STATEKEY::MOVE)]); // 움직임이 없다면 실행할 
+			return true;
+		}
+	}
+
+	if (Engine_Utils::Has_Flag(m_FMoves, MOVEFLAGS::PRESS_CHANGE))
+	{
+		return (Align_Move(m_vecChangeState_ByKey[ENUM_TO_UINT(STATEKEY::MOVE)]));
+	}
+
+	if (Engine_Utils::Has_Flag(m_FMoves, MOVEFLAGS::UP_CHANGE))
+	{
+		
+	}
+
+	if (Engine_Utils::Has_Flag(m_FMoves, MOVEFLAGS::OWN))
+	{
+		OwnMove(fTimeDelta);
+	}
+
 
 	return false;
 }

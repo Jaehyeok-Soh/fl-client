@@ -170,13 +170,15 @@ HRESULT CPlayer::Ready_BaseStates()
         desc.bBlend         = true;
         desc.bLoop          = true;
 
-        desc.eMoveType = CStateBase_Player::MOVETYPE::CHANGE;
+        desc.FMoves = CStateBase_Player::MOVEFLAGS::PRESS_CHANGE;
         vecChangeState_ByKey[ENUM_TO_SZET(CStateBase_Player::STATEKEY::MOVE)] = ENUM_TO_UINT(State::WALK);
         //vecChangeState_ByKey[ENUM_TO_SZET(CStateBase_Player::STATEKEY::SPACE)] = ENUM_TO_UINT(State::JUMP);
         vecChangeState_ByKey[ENUM_TO_SZET(CStateBase_Player::STATEKEY::SHIFT)] = ENUM_TO_UINT(State::DASHBACK);
         vecChangeState_ByKey[ENUM_TO_SZET(CStateBase_Player::STATEKEY::LCRTL_PRESS)] = ENUM_TO_UINT(State::CROUCH);
         desc.vecChangeState_ByKey = vecChangeState_ByKey;
 
+        tKeyTimer.bCountTime = true;
+        tKeyTimer.fMaxTime = 0.1f;
         desc.tKeyTimer = tKeyTimer;
 
         if (FAILED(pActionState->Add_State(ENUM_TO_UINT(State::IDLE), CState_Idle::Create(pActionState, &desc))))
@@ -186,20 +188,22 @@ HRESULT CPlayer::Ready_BaseStates()
     // Walk
     {
         CStateBase_Player::PLAYER_STATEBASE_DESC  desc = {};
-        desc.FAniFlags = CStateBase::STATEANI_FLAG::SA_HasPreAni;
-        desc.vecPreAnims = {
-                        {ENUM_TO_UINT(State::SLIDE), Get_AnimationIndex(L"Animation_PlayerMoon_Slide_End")}
-        };
+        desc.FAniFlags = 0;
+        //desc.vecPreAnims = {
+        //                {ENUM_TO_UINT(State::SLIDE), Get_AnimationIndex(L"Animation_PlayerMoon_Slide_End")}
+        //};
         desc.iAnimIndex = { Get_AnimationIndex(L"Animation_PlayerMoon_Walk_Loop") };
         desc.bBlend = true;
         desc.bLoop = true;
 
-        desc.eMoveType = CStateBase_Player::MOVETYPE::NORMAL;
+        desc.FMoves = CStateBase_Player::MOVEFLAGS::NORMAL;
         vecChangeState_ByKey[ENUM_TO_SZET(CStateBase_Player::STATEKEY::MOVE)] = ENUM_TO_UINT(State::IDLE);
         //vecChangeState_ByKey[ENUM_TO_SZET(CStateBase_Player::STATEKEY::SPACE)] = ENUM_TO_UINT(State::JUMP);
         vecChangeState_ByKey[ENUM_TO_SZET(CStateBase_Player::STATEKEY::SHIFT)] = ENUM_TO_UINT(State::DASHFRONT);
         vecChangeState_ByKey[ENUM_TO_SZET(CStateBase_Player::STATEKEY::LCRTL_PRESS)] = ENUM_TO_UINT(State::SLIDE);
         desc.vecChangeState_ByKey = vecChangeState_ByKey;
+
+        desc.tKeyTimer = tKeyTimer;
 
         if (FAILED(pActionState->Add_State(ENUM_TO_UINT(State::WALK), CState_Walk::Create(pActionState, &desc))))
             return E_FAIL;
@@ -213,13 +217,15 @@ HRESULT CPlayer::Ready_BaseStates()
         desc.bBlend = true;
         desc.bLoop = true;
 
-        desc.eMoveType = CStateBase_Player::MOVETYPE::CHANGE;
+        desc.FMoves = CStateBase_Player::MOVEFLAGS::PRESS_CHANGE;
         vecChangeState_ByKey[ENUM_TO_SZET(CStateBase_Player::STATEKEY::MOVE)] = ENUM_TO_UINT(State::CROUCHWALK);
         //vecChangeState_ByKey[ENUM_TO_SZET(CStateBase_Player::STATEKEY::SPACE)] = ENUM_TO_UINT(State::JUMPBULLET);
         vecChangeState_ByKey[ENUM_TO_SZET(CStateBase_Player::STATEKEY::SHIFT)] = ENUM_TO_UINT(State::DASHBACK);
         vecChangeState_ByKey[ENUM_TO_SZET(CStateBase_Player::STATEKEY::LCRTL_PRESS)] = ENUM_TO_UINT(State::END);
         vecChangeState_ByKey[ENUM_TO_SZET(CStateBase_Player::STATEKEY::LCRTL_UP)] = ENUM_TO_UINT(State::IDLE);
         desc.vecChangeState_ByKey = vecChangeState_ByKey;
+
+        desc.tKeyTimer = tKeyTimer;
 
         if (FAILED(pActionState->Add_State(ENUM_TO_UINT(State::CROUCH), CState_Crouch::Create(pActionState, &desc))))
             return E_FAIL;
@@ -228,18 +234,20 @@ HRESULT CPlayer::Ready_BaseStates()
     // CrouchWalk
     {
         CStateBase_Player::PLAYER_STATEBASE_DESC  desc = {};
-        desc.FAniFlags = 0;
+        desc.FAniFlags  = 0;
         desc.iAnimIndex = { Get_AnimationIndex(L"Animation_PlayerMoon_Crouch_Loop") };
-        desc.bBlend = true;
-        desc.bLoop = true;
+        desc.bBlend     = true;
+        desc.bLoop      = true;
 
-        desc.eMoveType = CStateBase_Player::MOVETYPE::NORMAL;
+        desc.FMoves = CStateBase_Player::MOVEFLAGS::NORMAL;
         vecChangeState_ByKey[ENUM_TO_SZET(CStateBase_Player::STATEKEY::MOVE)] = ENUM_TO_UINT(State::IDLE);
         //vecChangeState_ByKey[ENUM_TO_SZET(CStateBase_Player::STATEKEY::SPACE)] = ENUM_TO_UINT(State::JUMPBULLET);
         vecChangeState_ByKey[ENUM_TO_SZET(CStateBase_Player::STATEKEY::SHIFT)] = ENUM_TO_UINT(State::DASHBACK);
         vecChangeState_ByKey[ENUM_TO_SZET(CStateBase_Player::STATEKEY::LCRTL_PRESS)] = ENUM_TO_UINT(State::END);
         vecChangeState_ByKey[ENUM_TO_SZET(CStateBase_Player::STATEKEY::LCRTL_UP)] = ENUM_TO_UINT(State::IDLE);
         desc.vecChangeState_ByKey = vecChangeState_ByKey;
+
+        desc.tKeyTimer = tKeyTimer;
 
         if (FAILED(pActionState->Add_State(ENUM_TO_UINT(State::CROUCHWALK), CState_CrouchWalk::Create(pActionState, &desc))))
             return E_FAIL;
@@ -248,19 +256,23 @@ HRESULT CPlayer::Ready_BaseStates()
     // Slide
     {
         CStateBase_Player::PLAYER_STATEBASE_DESC  desc = {};
-        desc.FAniFlags = 0;
+        desc.FAniFlags  = CStateBase::STATEANI_FLAG::SA_HasPreAni;
+        desc.vecPreAnims = {
+                        {ENUM_TO_UINT(State::RUNLOOP), Get_AnimationIndex(L"Animation_PlayerMoon_Run_Stop_L")}
+        };
         desc.iAnimIndex = { Get_AnimationIndex(L"Animation_PlayerMoon_Slide_Loop") };
-        desc.bBlend = true;
-        desc.bLoop = false;
+        desc.bBlend     = true;
+        desc.bLoop      = false;
         desc.iNextState = ENUM_TO_UINT(State::IDLE);
 
-        desc.eMoveType = CStateBase_Player::MOVETYPE::OWN;
+        desc.FMoves = CStateBase_Player::MOVEFLAGS::OWN;
         vecChangeState_ByKey[ENUM_TO_SZET(CStateBase_Player::STATEKEY::MOVE)] = ENUM_TO_UINT(State::END);
         //vecChangeState_ByKey[ENUM_TO_SZET(CStateBase_Player::STATEKEY::SPACE)] = ENUM_TO_UINT(State::JUMPBULLET);
         vecChangeState_ByKey[ENUM_TO_SZET(CStateBase_Player::STATEKEY::SHIFT)] = ENUM_TO_UINT(State::DASHFRONT);
         vecChangeState_ByKey[ENUM_TO_SZET(CStateBase_Player::STATEKEY::LCRTL_PRESS)] = ENUM_TO_UINT(State::END);
         vecChangeState_ByKey[ENUM_TO_SZET(CStateBase_Player::STATEKEY::LCRTL_UP)] = ENUM_TO_UINT(State::IDLE);
         desc.vecChangeState_ByKey = vecChangeState_ByKey;
+        desc.tKeyTimer = tKeyTimer;
 
         if (FAILED(pActionState->Add_State(ENUM_TO_UINT(State::SLIDE), CState_Slide::Create(pActionState, &desc))))
             return E_FAIL;
@@ -269,19 +281,20 @@ HRESULT CPlayer::Ready_BaseStates()
     // DASHBACK
     {
         CStateBase_Player::PLAYER_STATEBASE_DESC  desc = {};
-        desc.FAniFlags = 0;
-        desc.iAnimIndex = { Get_AnimationIndex(L"Animation_PlayerMoon_DodgeBack") };
-        desc.bBlend = true;
-        desc.bLoop = false;
-        desc.iNextState = ENUM_TO_UINT(State::IDLE);
+        desc.FAniFlags      = 0;
+        desc.iAnimIndex     = { Get_AnimationIndex(L"Animation_PlayerMoon_DodgeBack") };
+        desc.bBlend         = true;
+        desc.bLoop          = false;
+        desc.iNextState     = ENUM_TO_UINT(State::IDLE);
 
-        desc.eMoveType = CStateBase_Player::MOVETYPE::CHANGE;
+        desc.FMoves = CStateBase_Player::MOVEFLAGS::PRESS_CHANGE;
         vecChangeState_ByKey[ENUM_TO_SZET(CStateBase_Player::STATEKEY::MOVE)] = ENUM_TO_UINT(State::IDLE);
         //vecChangeState_ByKey[ENUM_TO_SZET(CStateBase_Player::STATEKEY::SPACE)] = ENUM_TO_UINT(State::JUMPBACK);
         vecChangeState_ByKey[ENUM_TO_SZET(CStateBase_Player::STATEKEY::SHIFT)] = ENUM_TO_UINT(State::END);
         vecChangeState_ByKey[ENUM_TO_SZET(CStateBase_Player::STATEKEY::LCRTL_PRESS)] = ENUM_TO_UINT(State::END);
         vecChangeState_ByKey[ENUM_TO_SZET(CStateBase_Player::STATEKEY::LCRTL_UP)] = ENUM_TO_UINT(State::END);
         desc.vecChangeState_ByKey = vecChangeState_ByKey;
+        desc.tKeyTimer = tKeyTimer;
 
         if (FAILED(pActionState->Add_State(ENUM_TO_UINT(State::DASHBACK), CState_DashBack::Create(pActionState, &desc))))
             return E_FAIL;
@@ -296,7 +309,7 @@ HRESULT CPlayer::Ready_BaseStates()
         desc.bLoop = false;
         desc.iNextState = ENUM_TO_UINT(State::IDLE);
 
-        desc.eMoveType = CStateBase_Player::MOVETYPE::CHANGE;
+        desc.FMoves = CStateBase_Player::MOVEFLAGS::PRESS_CHANGE;
         vecChangeState_ByKey[ENUM_TO_SZET(CStateBase_Player::STATEKEY::MOVE)] = ENUM_TO_UINT(State::RUNSHORT);
         //vecChangeState_ByKey[ENUM_TO_SZET(CStateBase_Player::STATEKEY::SPACE)] = ENUM_TO_UINT(State::JUMPBACK);
         vecChangeState_ByKey[ENUM_TO_SZET(CStateBase_Player::STATEKEY::SHIFT)] = ENUM_TO_UINT(State::END);
@@ -313,6 +326,8 @@ HRESULT CPlayer::Ready_BaseStates()
             return E_FAIL;
     }
 
+    tKeyTimer.bCountTime = false;
+
     // RUNSHORT
     {
         CStateBase_Player::PLAYER_STATEBASE_DESC  desc = {};
@@ -323,13 +338,15 @@ HRESULT CPlayer::Ready_BaseStates()
         desc.bLoop = false;
         desc.iNextState = ENUM_TO_UINT(State::IDLE);
 
-        desc.eMoveType = CStateBase_Player::MOVETYPE::NORMAL;
+        desc.FMoves = CStateBase_Player::MOVEFLAGS::NORMAL;
         vecChangeState_ByKey[ENUM_TO_SZET(CStateBase_Player::STATEKEY::MOVE)] = ENUM_TO_UINT(State::IDLE);
         //vecChangeState_ByKey[ENUM_TO_SZET(CStateBase_Player::STATEKEY::SPACE)] = ENUM_TO_UINT(State::JUMP);
         vecChangeState_ByKey[ENUM_TO_SZET(CStateBase_Player::STATEKEY::SHIFT)] = ENUM_TO_UINT(State::RUNLOOP);
         vecChangeState_ByKey[ENUM_TO_SZET(CStateBase_Player::STATEKEY::LCRTL_PRESS)] = ENUM_TO_UINT(State::END);
         vecChangeState_ByKey[ENUM_TO_SZET(CStateBase_Player::STATEKEY::LCRTL_UP)] = ENUM_TO_UINT(State::END);
         desc.vecChangeState_ByKey = vecChangeState_ByKey;
+
+        desc.tKeyTimer = tKeyTimer;
 
         if (FAILED(pActionState->Add_State(ENUM_TO_UINT(State::RUNSHORT), CState_RunShort::Create(pActionState, &desc))))
             return E_FAIL;
@@ -343,13 +360,15 @@ HRESULT CPlayer::Ready_BaseStates()
         desc.bBlend         = true;
         desc.bLoop          = true;
 
-        desc.eMoveType = CStateBase_Player::MOVETYPE::NORMAL;
+        desc.FMoves = CStateBase_Player::MOVEFLAGS::NORMAL;
         vecChangeState_ByKey[ENUM_TO_SZET(CStateBase_Player::STATEKEY::MOVE)] = ENUM_TO_UINT(State::IDLE);
         //vecChangeState_ByKey[ENUM_TO_SZET(CStateBase_Player::STATEKEY::SPACE)] = ENUM_TO_UINT(State::JUMP);
         vecChangeState_ByKey[ENUM_TO_SZET(CStateBase_Player::STATEKEY::SHIFT)] = ENUM_TO_UINT(State::DASHFRONT);
         vecChangeState_ByKey[ENUM_TO_SZET(CStateBase_Player::STATEKEY::LCRTL_PRESS)] = ENUM_TO_UINT(State::SLIDE);
         vecChangeState_ByKey[ENUM_TO_SZET(CStateBase_Player::STATEKEY::LCRTL_UP)] = ENUM_TO_UINT(State::END);
         desc.vecChangeState_ByKey = vecChangeState_ByKey;
+
+        desc.tKeyTimer = tKeyTimer;
 
         if (FAILED(pActionState->Add_State(ENUM_TO_UINT(State::RUNLOOP), CState_RunLoop::Create(pActionState, &desc))))
             return E_FAIL;
