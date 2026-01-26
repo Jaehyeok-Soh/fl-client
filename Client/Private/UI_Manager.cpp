@@ -57,7 +57,7 @@ HRESULT CUI_Manager::Load_UIData(const _wstring& wstrSaveFilePath)
 				Desc.fX = UIData.fPosX;
 				Desc.fY = UIData.fPosY;
 				Desc.wstrTextureTag = L"Prototype_Component_GenericUI_Texture";
-				Desc.bAlpha = TRUE;
+				Desc.isAlpha = TRUE;
 				Desc.iLevelIndex = static_cast<uint32_t>(ELevelType::LOGO);
 
 				CGameObject* pResult = { nullptr };

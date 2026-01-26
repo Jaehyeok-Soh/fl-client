@@ -24,7 +24,6 @@ public:
 
 	void SetUp_UI_Common_Info();
 private:
-	void Input_Canvas_TransformInfo();
 	void Input_RectTransform();
 
 	/// <summary>
@@ -50,6 +49,7 @@ private:
 	const _char* m_szArrClientLevelType[g_iClientLevelType_Count];
 
 	CToolUI* m_pSelectedUI = { nullptr };
+	uint32_t m_iRectTransformIndex = {};
 
 public:
 	static CUI_Inspector* Create(const _char* pLabel, CLevel* pOwner, ID3D11Device* pDevice, ID3D11DeviceContext* pDeviceContext);

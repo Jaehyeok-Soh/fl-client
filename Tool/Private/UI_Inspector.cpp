@@ -37,7 +37,7 @@ HRESULT CUI_Inspector::Render(CToolObject* pGo)
 {
 	ImGui::Begin(m_strLabel.c_str(), nullptr, m_Flag);
 
-	m_pSelectedUI = m_pUIManager->Safe_Access_UI(m_pUIManager->Get_CurUIIndex());
+	// m_pSelectedUI = m_pUIManager->Safe_Access_UI(m_pUIManager->Get_CurUIIndex());
 	SetUp_Public_Info();
 
 	ImGui::End();
@@ -142,41 +142,6 @@ void CUI_Inspector::SetUp_UI_Common_Info()
 
 	ImGui::EndChild();
 	ImGui::End();
-}
-
-void CUI_Inspector::Input_Canvas_TransformInfo()
-{
-	/* 내맘대로 만들겠다 */
-	if (m_isCustomSize)
-	{
-		auto* pCanvas = m_pUIManager->Safe_Access_Canvas(m_pUIManager->Get_CurCanvasIndex());
-
-		/* Width / Height */
-		Scrub_Float("Width :", "CanvasSizeX", &pCanvas->fWidth, 0.1f, 20.f, 0.1f, 1.0f, 120.f);
-		ImGui::SameLine(0.f, 16.f);
-		Scrub_Float("Height :", "CanvasSizeY", &pCanvas->fHeight, 0.1f, 20.f, 0.1f, 1.0f, 120.f);
-
-		/* Pos X / Y / Z */
-		Scrub_Float("X :", "CanvasPosX", &pCanvas->fPosX, 0.1f, 20.f, 0.1f, 1.0f, 100.f);
-		ImGui::SameLine(0.f, 16.f);
-		Scrub_Float("Y :", "CanvasPosY", &pCanvas->fPosY, 0.1f, 20.f, 0.1f, 1.0f, 100.f);
-		ImGui::SameLine(0.f, 16.f);
-		Scrub_Float("Z :", "CanvasPosZ", &pCanvas->fPosZ, 0.1f, 20.f, 0.1f, 1.0f, 100.f);
-
-		pCanvas->isUsingViewport = FALSE;
-	}
-	/* 뷰포트 기준으로 캔버스를 만들겠다 */
-	else if (m_isViewportSize)
-	{
-		auto* pData = m_pUIManager->Safe_Access_Canvas(m_pUIManager->Get_CurCanvasIndex());
-
-		pData->fWidth = m_pToolManager->Get_CurViewportSize().x;
-		pData->fHeight = m_pToolManager->Get_CurViewportSize().y;
-		pData->fPosX = 0.f;
-		pData->fPosY = 0.f;
-		pData->fPosZ = 0.f;
-		pData->isUsingViewport = TRUE;
-	}
 }
 
 void CUI_Inspector::Input_RectTransform()

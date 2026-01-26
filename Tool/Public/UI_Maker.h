@@ -41,7 +41,8 @@ private:
 	/// <returns>						값이 변경되면 true를 반환하고, 변경이 없으면 false를 반환합니다.</returns>
 	_bool Scrub_Float(const _char* label, const _char* Id, OUT _float* pValue,
 		float fValuePerPixel = 0.01f,float fScale = 10.f, float fStep = 0.1f, float fStep_fast = 1.0f, float fSize = 100.f);
-
+	
+	void Input_Canvas_TransformInfo();
 private:
 	CImGui_ToolManager* m_pToolManager = { nullptr };
 	CImGui_UIManager* m_pUIManager = { nullptr };

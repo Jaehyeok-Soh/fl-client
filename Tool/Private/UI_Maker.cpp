@@ -268,7 +268,7 @@ void CUI_Maker::Make_Canvas()
 			const auto* pCanvasVec = m_pUIManager->Safe_Access_CanvasVector();
 			_bool isDuplicated = FALSE;
 
-			for (uint32_t i = 0; i < m_pUIManager->Get_NumCanvas(); ++i)
+			for (int32_t i = 0; i < m_pUIManager->Get_NumCanvas(); ++i)
 			{
 				if (m_strCanvasTag == (*pCanvasVec)[i].strTag)
 				{
@@ -338,7 +338,7 @@ void CUI_Maker::Make_Layer()
 				}
 
 				const auto* pLayerVec = m_pUIManager->Safe_Access_LayerVector();
-				for (uint32_t i = 0; i < m_pUIManager->Get_NumLayer(); ++i)
+				for (int32_t i = 0; i < m_pUIManager->Get_NumLayer(); ++i)
 				{
 					if (m_strLayerTag == (*pLayerVec)[i].strTag)
 					{
@@ -561,6 +561,40 @@ _bool CUI_Maker::Scrub_Float(const _char* label, const _char* Id, OUT _float* pV
 	return changed;
 }
 
+void CUI_Maker::Input_Canvas_TransformInfo()
+{
+	/* 내맘대로 만들겠다 */
+	if (m_isCustomSize)
+	{
+		auto* pCanvas = m_pUIManager->Safe_Access_Canvas(m_pUIManager->Get_CurCanvasIndex());
+
+		/* Width / Height */
+		Scrub_Float("Width :", "CanvasSizeX", &pCanvas->fWidth, 0.1f, 20.f, 0.1f, 1.0f, 120.f);
+		ImGui::SameLine(0.f, 16.f);
+		Scrub_Float("Height :", "CanvasSizeY", &pCanvas->fHeight, 0.1f, 20.f, 0.1f, 1.0f, 120.f);
+
+		/* Pos X / Y / Z */
+		Scrub_Float("X :", "CanvasPosX", &pCanvas->fPosX, 0.1f, 20.f, 0.1f, 1.0f, 100.f);
+		ImGui::SameLine(0.f, 16.f);
+		Scrub_Float("Y :", "CanvasPosY", &pCanvas->fPosY, 0.1f, 20.f, 0.1f, 1.0f, 100.f);
+		ImGui::SameLine(0.f, 16.f);
+		Scrub_Float("Z :", "CanvasPosZ", &pCanvas->fPosZ, 0.1f, 20.f, 0.1f, 1.0f, 100.f);
+
+		pCanvas->isUsingViewport = FALSE;
+	}
+	/* 뷰포트 기준으로 캔버스를 만들겠다 */
+	else if (m_isViewportSize)
+	{
+		auto* pData = m_pUIManager->Safe_Access_Canvas(m_pUIManager->Get_CurCanvasIndex());
+
+		pData->fWidth = m_pToolManager->Get_CurViewportSize().x;
+		pData->fHeight = m_pToolManager->Get_CurViewportSize().y;
+		pData->fPosX = 0.f;
+		pData->fPosY = 0.f;
+		pData->fPosZ = 0.f;
+		pData->isUsingViewport = TRUE;
+	}
+}
 
 CUI_Maker* CUI_Maker::Create(const _char* pLabel, CLevel* pOwner, ID3D11Device* pDevice, ID3D11DeviceContext* pDeviceContext)
 {
