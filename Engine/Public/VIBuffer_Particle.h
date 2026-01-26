@@ -12,6 +12,8 @@ enum class E_PARTICLE_MOVESTATE
 	STRAIGHT,
 };
 
+class CModel;
+
 // 추후에 여기에 Random Seed flag 값 들어올 예정.
 
 class ENGINE_DLL CVIBuffer_Particle abstract : public CVIBuffer
@@ -30,6 +32,7 @@ public:
 		Vec2 vLifeTime = { 0.f, 0.f };
 		_bool isLoop = { false };
 		_float isRandomSeed = { false };
+		CModel*	pModel = { nullptr };
 	}PARTICLE_ORIGIN_DESC;
 protected:
 	CVIBuffer_Particle(ID3D11Device* pDevice, ID3D11DeviceContext* pDeviceContext);
@@ -43,24 +46,25 @@ public:
 	virtual void Render() override;
 	
 public:
-	void Update_Simulation(Vec3 vLook, _float fTimeDelta, E_PARTICLE_MOVESTATE eType);
-	void Reset_Simulation();
+	virtual void Update_Simulation(Vec3 vLook, _float fTimeDelta, E_PARTICLE_MOVESTATE eType);
+	virtual void Reset_Simulation();
 
 	// ======== 행동 패턴들 =========
-	void Drop(_float fTimeDelta);
-	void Rise(_float fTimeDelta);
-	void Spread(_float fTimeDelta);
+	virtual void Drop(_float fTimeDelta);
+	virtual void Rise(_float fTimeDelta);
+	virtual void Spread(_float fTimeDelta);
 
-	void Straight(Vec3 vLook, _float fDT);
+	virtual void Straight(Vec3 vLook, _float fDT);
 
 public:
 	const PARTICLE_ORIGIN_DESC& Get_ParticleDesc() { return m_tParticleDesc; }
-	void Set_ParticleDesc(const PARTICLE_ORIGIN_DESC& Desc);
-	HRESULT Resize_InstanceBuffer(_uint iNumInstanceCount);
+	virtual void Set_ParticleDesc(const PARTICLE_ORIGIN_DESC& Desc) {}
+	virtual HRESULT Resize_InstanceBuffer(_uint iNumInstanceCount) { return S_OK; }
 
 public:
 	virtual _uint   Get_InstanceCount() { return m_iInstanceCount; }
 	virtual _uint	Get_IndexCountPerInstance() { return m_iIndexCountPerInstance; }
+	virtual void	Debug_CheckVertexBuffer();
 
 protected:
 	_bool			m_bIsLoop = { false };

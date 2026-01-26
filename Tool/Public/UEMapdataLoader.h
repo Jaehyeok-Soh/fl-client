@@ -17,7 +17,7 @@ private:
 	virtual ~CUEMapDataLoader() = default;
 public:
 
-	HRESULT Make_Prototype(const wstring &wstrMapModelFolderPath);
+	HRESULT Make_Prototype(_uint LevelType, const wstring &wstrMapModelFolderPath);
 	HRESULT Make_StaticModel(const wstring &wstrRawDataFilePath, const wstring &wstrStaticModelLayerTag, const wstring &wstrColmeshLayerTag);
 private:
 	CGameInstance* m_pGameInstance = { nullptr };

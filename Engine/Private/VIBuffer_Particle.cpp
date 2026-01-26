@@ -18,25 +18,6 @@ CVIBuffer_Particle::CVIBuffer_Particle(const CVIBuffer_Particle& rhs)
 	, m_pSpeeds{ rhs.m_pSpeeds }
 	, m_bIsLoop{ rhs.m_bIsLoop }
 {
-	m_pVBInstance = nullptr;
-	m_pInstanceVertices = nullptr;
-	m_pSpeeds = nullptr;
-
-	// 깊복
-	if (rhs.m_iInstanceCount > 0)
-	{
-		m_InstanceBufferDesc = rhs.m_InstanceBufferDesc;
-
-		m_pInstanceVertices = new VTXPARTICLE[m_iInstanceCount];
-		m_pSpeeds = new _float[m_iInstanceCount];
-
-		memcpy(m_pInstanceVertices, rhs.m_pInstanceVertices, sizeof(VTXPARTICLE) * m_iInstanceCount);
-		memcpy(m_pSpeeds, rhs.m_pSpeeds, sizeof(_float) * m_iInstanceCount);
-
-		D3D11_SUBRESOURCE_DATA InstanceInitialData{};
-		InstanceInitialData.pSysMem = m_pInstanceVertices;
-		m_pDevice->CreateBuffer(&m_InstanceBufferDesc, &InstanceInitialData, &m_pVBInstance);
-	}
 }
 
 HRESULT CVIBuffer_Particle::Initialize_Prototype(void* pArg)
@@ -59,73 +40,6 @@ HRESULT CVIBuffer_Particle::Initialize(void* pArg)
 	return S_OK;
 }
 
-//  =============   새로 버퍼 할당  ==============
-HRESULT CVIBuffer_Particle::Resize_InstanceBuffer(_uint iNumInstanceCount)
-{
-	m_iInstanceCount = iNumInstanceCount;
-
-	// 기존 버퍼 해제
-	Safe_Release(m_pVBInstance);
-	Safe_Delete_Array(m_pInstanceVertices);
-	Safe_Delete_Array(m_pSpeeds);
-
-	// 새로운 버퍼 생성
-	m_pInstanceVertices = new VTXPARTICLE[m_iInstanceCount];
-	m_InstanceBufferDesc.ByteWidth = m_iInstanceCount * m_iInstanceVertexStride;
-
-	m_pSpeeds = new _float[m_iInstanceCount];
-	::ZeroMemory(m_pSpeeds, sizeof(_float) * m_iInstanceCount);
-
-	// 버퍼를 재할당 했다면 입자들 생명주기 등등 전부 새롭게.
-
-	if (m_tParticleDesc.isRandomSeed == false)
-	{
-		for (size_t i = 0; i < m_iInstanceCount; i++)
-		{
-			_float      fScale = m_tParticleDesc.vSize.y * 0.5f;
-			m_pSpeeds[i] = m_tParticleDesc.vSpeed.y;
-
-			m_pInstanceVertices[i].vRight = Vec4(fScale, 0.f, 0.f, 0.f);
-			m_pInstanceVertices[i].vUp = Vec4(0.f, fScale, 0.f, 0.f);
-			m_pInstanceVertices[i].vLook = Vec4(0.f, 0.f, fScale, 0.f);
-			m_pInstanceVertices[i].vTranslation = Vec4(
-				m_tParticleDesc.vCenter.x,
-				m_tParticleDesc.vCenter.y,
-				m_tParticleDesc.vCenter.z,
-				1.f
-			);
-
-			m_pInstanceVertices[i].vLifeTime = Vec2(0.f, m_tParticleDesc.vLifeTime.y);
-		}
-	}
-
-	else if (m_tParticleDesc.isRandomSeed == true)
-	{
-		for (size_t i = 0; i < m_iInstanceCount; i++)
-		{
-			_float      fScale = m_pGameInstance->Rand_Float(m_tParticleDesc.vSize.x, m_tParticleDesc.vSize.y) * 0.5f;
-			m_pSpeeds[i] = m_pGameInstance->Rand_Float(m_tParticleDesc.vSpeed.x, m_tParticleDesc.vSpeed.y);
-
-			m_pInstanceVertices[i].vRight = Vec4(fScale, 0.f, 0.f, 0.f);
-			m_pInstanceVertices[i].vUp = Vec4(0.f, fScale, 0.f, 0.f);
-			m_pInstanceVertices[i].vLook = Vec4(0.f, 0.f, fScale, 0.f);
-			m_pInstanceVertices[i].vTranslation = Vec4(
-				m_pGameInstance->Rand_Float(m_tParticleDesc.vCenter.x - m_tParticleDesc.vRange.x * 0.5f, m_tParticleDesc.vCenter.x + m_tParticleDesc.vRange.x * 0.5f),
-				m_pGameInstance->Rand_Float(m_tParticleDesc.vCenter.y - m_tParticleDesc.vRange.y * 0.5f, m_tParticleDesc.vCenter.y + m_tParticleDesc.vRange.y * 0.5f),
-				m_pGameInstance->Rand_Float(m_tParticleDesc.vCenter.z - m_tParticleDesc.vRange.z * 0.5f, m_tParticleDesc.vCenter.z + m_tParticleDesc.vRange.z * 0.5f),
-				1.f
-			);
-
-			m_pInstanceVertices[i].vLifeTime = Vec2(0.f, m_pGameInstance->Rand_Float(m_tParticleDesc.vLifeTime.x, m_tParticleDesc.vLifeTime.y));
-		}
-	}
-
-	D3D11_SUBRESOURCE_DATA InstanceInitialData{};
-	InstanceInitialData.pSysMem = m_pInstanceVertices;
-
-	return m_pDevice->CreateBuffer(&m_InstanceBufferDesc, &InstanceInitialData, &m_pVBInstance);
-}
-
 // 객체를 아예 초기로 전부 초기화 해주는 Reset 버튼
 void CVIBuffer_Particle::Reset_Simulation()
 {
@@ -142,26 +56,6 @@ void CVIBuffer_Particle::Reset_Simulation()
 	}
 
 	m_pDeviceContext->Unmap(m_pVBInstance, 0);
-}
-
-void CVIBuffer_Particle::Set_ParticleDesc(const PARTICLE_ORIGIN_DESC& Desc)
-{
-	if (m_iInstanceCount != Desc.iInstnaceCount ||
-		m_tParticleDesc.vSize.x != Desc.vSize.x ||
-		m_tParticleDesc.vSize.y != Desc.vSize.y ||
-		m_tParticleDesc.vRange.x != Desc.vRange.x ||
-		m_tParticleDesc.vRange.y != Desc.vRange.y ||
-		m_tParticleDesc.vRange.z != Desc.vRange.z ||
-		m_tParticleDesc.isRandomSeed != Desc.isRandomSeed)
-	{
-		// 인스턴스 할 갯수가 줄었다면 버퍼 재할당하자
-		m_tParticleDesc = Desc;
-		Resize_InstanceBuffer(Desc.iInstnaceCount);
-	}
-
-	m_fStartSpeeds = Desc.m_fStartSpeeds;
-	m_bIsLoop = Desc.isLoop;
-	m_vPivot = Desc.vPivot;
 }
 
 HRESULT CVIBuffer_Particle::Bind_Resource()
@@ -185,12 +79,15 @@ HRESULT CVIBuffer_Particle::Bind_Resource()
 	m_pDeviceContext->IASetIndexBuffer(m_pIB, m_eIndexFormat, 0);
 	m_pDeviceContext->IASetPrimitiveTopology(m_ePrimitiveType);
 
+	m_pDeviceContext->IASetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
 	return S_OK;
 }
 
 void CVIBuffer_Particle::Render()
 {
+	Debug_CheckVertexBuffer();
 	m_pDeviceContext->DrawIndexedInstanced(m_iIndexCountPerInstance, m_iInstanceCount, 0, 0, 0);
+
 }
 
 void CVIBuffer_Particle::Update_Simulation(Vec3 vLook, _float fTImeDelta, E_PARTICLE_MOVESTATE eType)
@@ -306,6 +203,51 @@ void CVIBuffer_Particle::Rise(_float fTimeDelta)
 	}
 
 	m_pDeviceContext->Unmap(m_pVBInstance, 0);
+}
+
+void CVIBuffer_Particle::Debug_CheckVertexBuffer()
+{
+	if (m_pVB == nullptr) return;
+
+	// 1. 원본 버퍼의 정보를 가져온다.
+	D3D11_BUFFER_DESC desc;
+	m_pVB->GetDesc(&desc);
+
+	// 2. CPU가 읽을 수 있는 Staging Buffer 생성
+	ID3D11Buffer* pStagingBuffer = nullptr;
+	D3D11_BUFFER_DESC stagingDesc = desc;
+	stagingDesc.Usage = D3D11_USAGE_STAGING;
+	stagingDesc.BindFlags = 0;
+	stagingDesc.CPUAccessFlags = D3D11_CPU_ACCESS_READ;
+	stagingDesc.MiscFlags = 0;
+
+	if (FAILED(m_pDevice->CreateBuffer(&stagingDesc, nullptr, &pStagingBuffer)))
+		return;
+
+	// 3. GPU -> Staging Buffer로 데이터 복사
+	m_pDeviceContext->CopyResource(pStagingBuffer, m_pVB);
+
+	// 4. 데이터 읽기
+	D3D11_MAPPED_SUBRESOURCE mappedResource;
+	if (SUCCEEDED(m_pDeviceContext->Map(pStagingBuffer, 0, D3D11_MAP_READ, 0, &mappedResource)))
+	{
+		// 네가 확인한 56바이트 VTXMESH 구조체로 캐스팅
+		VTXMESH* pVertices = reinterpret_cast<VTXMESH*>(mappedResource.pData);
+		_uint iCount = desc.ByteWidth / sizeof(VTXMESH);
+
+		// 너무 많으면 터지니까 앞의 10개만 확인해보자
+		for (_uint i = 0; i < 10 && i < iCount; ++i)
+		{
+			printf("[%d] Pos: %.2f, %.2f, %.2f | UV: %.2f, %.2f\n",
+				i, pVertices[i].vPosition.x, pVertices[i].vPosition.y, pVertices[i].vPosition.z,
+				pVertices[i].vUV.x, pVertices[i].vUV.y);
+		}
+
+		m_pDeviceContext->Unmap(pStagingBuffer, 0);
+	}
+
+	Safe_Release(pStagingBuffer);
+
 }
 void CVIBuffer_Particle::Free()
 {

@@ -37,7 +37,8 @@ float4 DefaultTextureSample(float2 UV)
 
 VS_OUT_INST_MESH_PARTICLE VS_EffectMesh(VS_IN_INST_MESH_PARTICLE In)
 {
-    VS_OUT_INST_MESH_PARTICLE Out = (VS_OUT_INST_MESH_PARTICLE) 0;
+    VS_OUT_INST_MESH_PARTICLE Out;
+
     
     float4 vWorldPos = mul(float4(In.vPosition, 1.f), In.matTransform);
     float4 vViewPos = mul(vWorldPos, V);
@@ -63,7 +64,7 @@ float4 PS_EffectMesh(VS_OUT_INST_MESH_PARTICLE In) : SV_Target0
     float2 noiseUV = In.vUV + g_Effect.g_ScrollOffset;
     
     // =======              노이즈 텍스처 샘플링             ===========
-    float4 noiseSample = {0.f, 0.f, 0.f, 1.f};
+    float4 noiseSample = {1.f, 1.f, 1.f, 1.f};
     
     if (HasNoiseTexture())
     {
@@ -88,10 +89,16 @@ float4 PS_EffectMesh(VS_OUT_INST_MESH_PARTICLE In) : SV_Target0
     finalAlpha *= lifeAlpha;
     
     // ==========               알파 클리핑                   =========
+    
+    //float4 testcolor = float4(1.0f, 0.f, 0.f, 1.f);
+    //return testcolor;
+    
     if (finalAlpha < 0.01f)
         discard;
     
     // ==========   미리 지정한 이펙트 색깔을 곱해서 출력하기   =========
+    
+   
     return float4(color.rgb * g_Effect.g_EffectColor.rgb, finalAlpha);
 }
 

@@ -5,7 +5,7 @@ NS_BEGIN(Engine)
 
 class CModel;
 
-class ENGINE_DLL VIBuffer_Particle_Mesh final :
+class ENGINE_DLL CVIBuffer_Particle_Mesh final :
     public CVIBuffer_Particle
 {
 	using Super = CVIBuffer_Particle;
@@ -17,17 +17,22 @@ public:
 	}PARTICLE_Mesh_ORIGIN_DESC;
 
 private:
-	VIBuffer_Particle_Mesh(ID3D11Device* pDevice, ID3D11DeviceContext* pDeviceContext);
-	VIBuffer_Particle_Mesh(const VIBuffer_Particle_Mesh& rhs);
-	virtual ~VIBuffer_Particle_Mesh() = default;
+	CVIBuffer_Particle_Mesh(ID3D11Device* pDevice, ID3D11DeviceContext* pDeviceContext);
+	CVIBuffer_Particle_Mesh(const CVIBuffer_Particle_Mesh& rhs);
+	virtual ~CVIBuffer_Particle_Mesh() = default;
 
 	virtual HRESULT Initialize_Prototype(void* pArg);
 	virtual HRESULT Initialize(void* pArg) override;
 
 public:
-	static VIBuffer_Particle_Mesh* Create(ID3D11Device* pDevice, ID3D11DeviceContext* pDeviceContext, void* pArg);
+	virtual HRESULT Resize_InstanceBuffer(_uint iNumInstanceCount) override;
+	virtual void Set_ParticleDesc(const PARTICLE_ORIGIN_DESC& desc) override;
+
+public:
+	static CVIBuffer_Particle_Mesh* Create(ID3D11Device* pDevice, ID3D11DeviceContext* pDeviceContext, void* pArg);
 	virtual CComponent* Clone(void* pArg) override;
 	virtual void Free() override;
+
 };
 
 NS_END

@@ -235,6 +235,11 @@ void CParticle_System_Panel::Draw_ParticleSystem(CToolObject* pGo)
 
 				ImGui::SeparatorText("Rotation 3D Convert To Radian - X Y Z - ");
 				m_bModified |= ImGui::InputFloat3("##StartRotationX_3D", &StartRotation.x); ImGui::Spacing();
+
+				CEffectObject* pInstance = static_cast<Effect*>(pGo)->Get_Part<CEffectObject>(m_iSelectPartsIndex);
+				CTransform* pTransform = pInstance->Get_Component<CTransform>();
+				if(pTransform)
+					pTransform->Rotation()
 			}
 			ImGui::TreePop();
 		}
@@ -367,47 +372,90 @@ void CParticle_System_Panel::Draw_ParticleSystem(CToolObject* pGo)
 		ImGui::AlignTextToFramePadding();
 		ImGui::Text("Diffuse Texture"); ImGui::SameLine();
 
-		static int Diffuse_TextureNumber = 0;
-
-		if (ImGui::Button("Open Texture Folder##Diffuse_Texture"))
+		if (ImGui::Button("Open Texture Selector##Diffuse_Texture"))
 			ImGui::OpenPopup("TextureSelector##Diffuse_Texture");
+
+		ImGui::SetNextWindowSize(ImVec2(700, 500), ImGuiCond_Appearing);
 
 		if (ImGui::BeginPopupModal("TextureSelector##Diffuse_Texture", NULL))
 		{
-			for (auto& p : m_TextureFileNames)
+			ImGui::BeginChild("FolderList", ImVec2(180, 0), true);
 			{
-				string fileName = p.second;
-				wstring s = L"Texture_";
-				CTextureBase* pTexture = m_pGameInstance->Get_Resource<CTextureBase>(s + Engine_Utils::ToWString(m_TextureFileNames[Diffuse_TextureNumber].second));
-				ID3D11ShaderResourceView* pSRV = nullptr;
-				if (pTexture)
-					pSRV = pTexture->Get_SRV();
+				ImGui::TextColored(ImVec4(1, 1, 0, 1), "Category");
+				ImGui::Separator();
 
-				if (pSRV != nullptr)
+				for (auto& folderName : m_TextureFolderNames)
 				{
-					if (ImGui::ImageButton(m_TextureFileNames[Diffuse_TextureNumber].second.c_str(), (ImTextureID)pSRV, ImVec2(64, 64)))
+					// 현재 선택된 폴더면 하이라이트 효과
+					if (ImGui::Selectable(folderName.c_str(), m_strSelectedFolder == folderName))
 					{
-						m_tCurrentDesc._Effect_DiffuseTexture_Tag = Engine_Utils::ToWString(m_TextureFileNames[Diffuse_TextureNumber].second);
-						ImGui::CloseCurrentPopup();
+						m_strSelectedFolder = folderName;
 					}
-
-					ImGui::SameLine();
-					ImGui::Text(fileName.c_str());
-				}
-
-				else
-				{
-					ImGui::Dummy(ImVec2(64, 64));
-					ImGui::SameLine();
-					ImGui::Text("No Texture");
 				}
 			}
+			ImGui::EndChild();
 
-			if (ImGui::Button("Close"))
+			ImGui::SameLine();
+
+			// --- 우측 : 선택된 폴더 내 텍스처 그리드 창 ---
+			ImGui::BeginChild("TextureGrid", ImVec2(0, 0), true);
 			{
-				m_tCurrentDesc._Effect_DiffuseTexture_Tag = Engine_Utils::ToWString(m_TextureFileNames[Diffuse_TextureNumber].second);
-				ImGui::CloseCurrentPopup();
+				ImGui::Text("Folder: %s", m_strSelectedFolder.empty() ? "None" : m_strSelectedFolder.c_str());
+				ImGui::Separator();
+
+				if (!m_strSelectedFolder.empty() && m_TextureMap.count(m_strSelectedFolder))
+				{
+					auto& fileList = m_TextureMap[m_strSelectedFolder];
+					int columns = 5; // 한 줄에 5장씩
+
+					for (int i = 0; i < fileList.size(); ++i)
+					{
+						string fullPath = fileList[i].first;
+						string fileName = fileList[i].second;
+
+						// 리소스 매니저에서 텍스처 가져오기 (태그 명명 규칙 확인해봐!)
+						wstring textureTag = L"Texture_" + Engine_Utils::ToWString(fileName);
+						CTextureBase* pTexture = m_pGameInstance->Get_Resource<CTextureBase>(textureTag);
+						ID3D11ShaderResourceView* pSRV = (pTexture) ? pTexture->Get_SRV() : nullptr;
+
+						ImGui::PushID(i);
+						ImGui::BeginGroup();
+
+						if (pSRV)
+						{
+							// 이미지 버튼 크기를 64x64 정도로 키움
+							if (ImGui::ImageButton("##texBtn", (ImTextureID)pSRV, ImVec2(64, 64)))
+							{
+								m_tCurrentDesc._Effect_DiffuseTexture_Tag = Engine_Utils::ToWString(fileName);
+								m_bModified = true;
+								ImGui::EndGroup(); ImGui::PopID();
+								ImGui::CloseCurrentPopup();
+								break;
+							}
+						}
+						else
+						{
+							ImGui::Button("No Res", ImVec2(64, 64));
+						}
+
+						// 파일명이 너무 길면 잘라서 출력
+						string display = (fileName.length() > 10) ? fileName.substr(0, 8) + ".." : fileName;
+						ImGui::Text(display.c_str());
+
+						ImGui::EndGroup();
+						ImGui::PopID();
+
+						// 가로로 5장 배치 로직
+						if ((i + 1) % columns != 0) ImGui::SameLine(0, 10.f);
+
+						Safe_Release(pTexture);
+					}
+				}
 			}
+			ImGui::EndChild();
+
+			ImGui::Separator();
+			if (ImGui::Button("Close", ImVec2(120, 0))) { ImGui::CloseCurrentPopup(); }
 
 			ImGui::EndPopup();
 		}
@@ -416,49 +464,92 @@ void CParticle_System_Panel::Draw_ParticleSystem(CToolObject* pGo)
 
 		// ===========   Noise Texture  ============
 		ImGui::AlignTextToFramePadding();
-		ImGui::Text("Noise Texture"); ImGui::SameLine(0, 20);
+		ImGui::Text("Noise Texture"); ImGui::SameLine();
 
-		static int Noise_TextureNumber = 0;
+		if (ImGui::Button("Open Texture Selector##Noise Texture"))
+			ImGui::OpenPopup("TextureSelector##Noise Texture");
 
-		if (ImGui::Button("Open Texture Folder##Noise_Texture"))
-			ImGui::OpenPopup("TextureSelector##Noise_Texture");
+		ImGui::SetNextWindowSize(ImVec2(700, 500), ImGuiCond_Appearing);
 
-		if (ImGui::BeginPopupModal("TextureSelector##Noise_Texture", NULL))
+		if (ImGui::BeginPopupModal("TextureSelector##Noise Texture", NULL))
 		{
-			for (auto& p : m_TextureFileNames)
+			ImGui::BeginChild("FolderList##Noise Texture", ImVec2(180, 0), true);
 			{
-				string fileName = p.second;
-				wstring s = L"Texture_";
-				CTextureBase* pTexture =  m_pGameInstance->Get_Resource<CTextureBase>(s + Engine_Utils::ToWString(m_TextureFileNames[Noise_TextureNumber].second));
-				ID3D11ShaderResourceView* pSRV = nullptr;
-				if(pTexture)
-					pSRV = pTexture->Get_SRV();
+				ImGui::TextColored(ImVec4(1, 1, 0, 1), "Category");
+				ImGui::Separator();
 
-				if (pSRV != nullptr)
+				for (auto& folderName : m_TextureFolderNames)
 				{
-					if(ImGui::ImageButton(m_TextureFileNames[Noise_TextureNumber].second.c_str(), (ImTextureID)pSRV, ImVec2(64, 64)))
+					// 현재 선택된 폴더면 하이라이트 효과
+					if (ImGui::Selectable(folderName.c_str(), m_strSelectedFolder == folderName))
 					{
-						m_tCurrentDesc._Effect_Mesh_NoiseTexture_Tag = Engine_Utils::ToWString(m_TextureFileNames[Noise_TextureNumber].second);
-						ImGui::CloseCurrentPopup();
+						m_strSelectedFolder = folderName;
 					}
-
-					ImGui::SameLine();
-					ImGui::Text(fileName.c_str());
-				}
-
-				else
-				{
-					ImGui::Dummy(ImVec2(64, 64));
-					ImGui::SameLine();
-					ImGui::Text("No Texture");
 				}
 			}
+			ImGui::EndChild();
 
-			if (ImGui::Button("Close"))
+			ImGui::SameLine();
+
+			// --- 우측 : 선택된 폴더 내 텍스처 그리드 창 ---
+			ImGui::BeginChild("TextureGrid##Noise Texture", ImVec2(0, 0), true);
 			{
-				m_tCurrentDesc._Effect_Mesh_NoiseTexture_Tag = Engine_Utils::ToWString(m_TextureFileNames[Noise_TextureNumber].second);
-				ImGui::CloseCurrentPopup(); 
+				ImGui::Text("Folder: %s", m_strSelectedFolder.empty() ? "None" : m_strSelectedFolder.c_str());
+				ImGui::Separator();
+
+				if (!m_strSelectedFolder.empty() && m_TextureMap.count(m_strSelectedFolder))
+				{
+					auto& fileList = m_TextureMap[m_strSelectedFolder];
+					int columns = 5; // 한 줄에 5장씩
+
+					for (int i = 0; i < fileList.size(); ++i)
+					{
+						string fullPath = fileList[i].first;
+						string fileName = fileList[i].second;
+
+						// 리소스 매니저에서 텍스처 가져오기 (태그 명명 규칙 확인해봐!)
+						wstring textureTag = L"Texture_" + Engine_Utils::ToWString(fileName);
+						CTextureBase* pTexture = m_pGameInstance->Get_Resource<CTextureBase>(textureTag);
+						ID3D11ShaderResourceView* pSRV = (pTexture) ? pTexture->Get_SRV() : nullptr;
+
+						ImGui::PushID(i);
+						ImGui::BeginGroup();
+
+						if (pSRV)
+						{
+							// 이미지 버튼 크기를 64x64 정도로 키움
+							if (ImGui::ImageButton("##texBtnNoise Texture", (ImTextureID)pSRV, ImVec2(64, 64)))
+							{
+								m_tCurrentDesc._Effect_Mesh_NoiseTexture_Tag = Engine_Utils::ToWString(fileName);
+								m_bModified = true;
+								ImGui::EndGroup(); ImGui::PopID();
+								ImGui::CloseCurrentPopup();
+								break;
+							}
+						}
+						else
+						{
+							ImGui::Button("No Res##Noise Texture", ImVec2(64, 64));
+						}
+
+						// 파일명이 너무 길면 잘라서 출력
+						string display = (fileName.length() > 10) ? fileName.substr(0, 8) + ".." : fileName;
+						ImGui::Text(display.c_str());
+
+						ImGui::EndGroup();
+						ImGui::PopID();
+
+						// 가로로 5장 배치 로직
+						if ((i + 1) % columns != 0) ImGui::SameLine(0, 10.f);
+
+						Safe_Release(pTexture);
+					}
+				}
 			}
+			ImGui::EndChild();
+
+			ImGui::Separator();
+			if (ImGui::Button("Close", ImVec2(120, 0))) { ImGui::CloseCurrentPopup(); }
 
 			ImGui::EndPopup();
 		}
@@ -589,7 +680,9 @@ void CParticle_System_Panel::Draw_ParticleSystem(CToolObject* pGo)
 			case 1:
 				m_tCurrentDesc.eEffectParticleType = E_PARTICLETYPE::TEXTURE; break;
 			case 2:
-				m_tCurrentDesc.eEffectParticleType = E_PARTICLETYPE::MESH; break;
+				m_tCurrentDesc.eEffectParticleType = E_PARTICLETYPE::MESH; 
+				Make_MeshSelectButton();
+				break;
 			default:
 				m_tCurrentDesc.eEffectParticleType = E_PARTICLETYPE::NONE;
 				break;
@@ -632,6 +725,39 @@ void CParticle_System_Panel::Draw_ParticleSystem(CToolObject* pGo)
 	}
 
 	ImGui::End();
+}
+
+void CParticle_System_Panel::Make_MeshSelectButton()
+{
+	if (ImGui::Button(" Load Mesh Data "))
+	{
+		OPENFILENAMEW ofn{};
+		_tchar szFile[MAX_PATH] = { 0 };
+
+		ofn.lStructSize = sizeof(OPENFILENAMEW);
+		ofn.hwndOwner = g_hWnd;
+		ofn.lpstrFile = szFile;
+		ofn.nMaxFile = MAX_PATH;
+		ofn.lpstrFilter = L"Mesh Files (*.mesh)\0*.mesh\0All Files (*.*)\0*.*\0\0";
+		ofn.nFilterIndex = 1;
+		ofn.Flags = OFN_PATHMUSTEXIST | OFN_FILEMUSTEXIST | OFN_NOCHANGEDIR;
+
+		if (::GetOpenFileNameW(&ofn) == TRUE)
+		{
+			wstring result = szFile;
+			// ParsingData
+			if (result.find(L".mesh") != std::wstring::npos)
+			{
+				std::filesystem::path filePath(result);
+
+				string MeshName = filePath.stem().string();
+				m_tCurrentDesc._Effect_Model_Tag = Engine_Utils::ToWString(MeshName);
+
+				m_bModified |= true;
+			}
+		}
+	}
+
 }
 
 void CParticle_System_Panel::Draw_EffectColor(CToolObject* pGo)
@@ -793,15 +919,59 @@ HRESULT CParticle_System_Panel::EffectPanel_Initialize()
 	if (FAILED(EffectFileResource_Setting()))
 		return E_FAIL;
 
+
 	return S_OK;
 }
 
 HRESULT CParticle_System_Panel::EffectFileResource_Setting()
 {
+	ResourceFolderSearch(E_EFFECT_RESOURCETYPE::TEXTURE, m_sTextureFolderPath);
+
 	ResourceFileSearch(E_EFFECT_RESOURCETYPE::TEXTURE, m_sTextureFolderPath);
-	ResourceFileSearch(E_EFFECT_RESOURCETYPE::MESH, m_sMeshFolderPath);
 	ResourceFileSearch(E_EFFECT_RESOURCETYPE::SHADER, m_sShaderFolderPath);
+
 	
+	return S_OK;
+}
+
+HRESULT CParticle_System_Panel::ResourceFolderSearch(E_EFFECT_RESOURCETYPE eType, const string& RootPath)
+{
+	// 기존 데이터 초기화 (필요시)
+	m_TextureMap.clear();
+	m_TextureFolderNames.clear();
+
+	namespace fs = std::filesystem;
+
+	if (!fs::exists(RootPath)) return E_FAIL;
+
+	for (auto& iter : fs::recursive_directory_iterator(RootPath))
+	{
+		// 파일인 경우에만 처리
+		if (iter.is_regular_file())
+		{
+			auto fullPath = iter.path();
+			string strFullPath = Engine_Utils::ToString(fullPath);
+			string fileName = fullPath.filename().string();
+			string pureFileName = Engine_Utils::GetFileNameWithoutExtension(strFullPath);
+
+			// 파일이 속한 바로 위 폴더 이름 추출
+			string folderName = fullPath.parent_path().filename().string();
+
+			string ext = fullPath.extension().string();
+			for (auto& c : ext) c = tolower(c);
+
+			if (ext == ".png" || ext == ".dds" || ext == ".tga" || ext == ".jpg")
+			{
+				m_TextureMap[folderName].push_back(make_pair(strFullPath, pureFileName));
+
+				if (find(m_TextureFolderNames.begin(), m_TextureFolderNames.end(), folderName) == m_TextureFolderNames.end())
+				{
+					m_TextureFolderNames.push_back(folderName);
+				}
+			}
+		}
+	}
+
 	return S_OK;
 }
 
@@ -825,9 +995,6 @@ HRESULT CParticle_System_Panel::ResourceFileSearch(E_EFFECT_RESOURCETYPE eType, 
 			{
 				case E_EFFECT_RESOURCETYPE::TEXTURE:
 					m_TextureFileNames.push_back(make_pair(Engine_Utils::ToString(fullpath), m_sFileName)); break;
-
-				case E_EFFECT_RESOURCETYPE::MESH:
-					m_MeshFileNames.push_back(make_pair(Engine_Utils::ToString(fullpath), m_sFileName)); break;
 
 				case E_EFFECT_RESOURCETYPE::SHADER:
 					m_ShaderFileNames.push_back(make_pair(Engine_Utils::ToString(fullpath), m_sFileName)); break;

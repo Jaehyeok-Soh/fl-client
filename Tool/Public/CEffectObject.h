@@ -157,6 +157,7 @@ public:
     void Model_Setting(const wstring& Name);
     void Shader_Setting(const wstring& Name);
     void Texture_Setting(const wstring& Name);
+    void Buffer_Setting();
 
     void Particle_Setting();
 
@@ -189,6 +190,7 @@ public:
 private:
     //  ========== ¿Ã∆Â∆Æ Desc ===========
     Effect_Desc        m_tEffectDesc = {};
+    Effect_Desc        m_tPrevEffectDesc = {};
 
     //  ========== ¿Ã∆Â∆Æ ¿Á∑· ===========
     CModel*      m_pModelCom = { nullptr };
