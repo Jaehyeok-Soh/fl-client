@@ -58,7 +58,7 @@ void Engine_Utils::Add_Text(OUT string& str_out, const string& strfind, const st
 
     if (sztPos == string::npos) return;
 
-    size_t iOffset = ioffset == 0 ? strfind.length() : ioffset;
+    _int64 iOffset = ioffset == 0 ? strfind.length() : ioffset;
 
     size_t sztFinalPos = sztPos + iOffset;
 
@@ -76,7 +76,9 @@ void Engine_Utils::Add_Text(OUT wstring& wstr_out, const wstring& wstrfind, cons
 
     if (sztPos == wstring::npos) return;
 
-    size_t iOffset = ioffset == 0 ? wstrfind.length() : ioffset;
+    _int64 iOffset = ioffset == 0 ? wstrfind.length() : ioffset;
+
+
 
     size_t sztFinalPos = (_int64)sztPos + iOffset;
 

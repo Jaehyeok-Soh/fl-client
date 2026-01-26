@@ -62,6 +62,32 @@ namespace Tool
 		END
 	};
 
+	enum class EStaticModel_Type
+	{
+		DEFUALT,
+		INSTANCE,
+		END,
+	};
+
+
+	static string StaticModelType_ToString(EStaticModel_Type eType)
+	{
+		switch (eType)
+		{
+		case Tool::EStaticModel_Type::DEFUALT: return "DEFUALT";
+		case Tool::EStaticModel_Type::INSTANCE:	return "INSTANCE";
+		default		:						return "NONE";
+		}
+
+
+		return "NONE";
+	}
+	static EStaticModel_Type StaticModelType_ToEnum(string streType)
+	{
+		if (streType == "DEFUALT") return EStaticModel_Type::DEFUALT;
+		if (streType == "INSTANCE") return EStaticModel_Type::INSTANCE;
+		return EStaticModel_Type::END;
+	}
 
 
 
@@ -160,7 +186,6 @@ namespace Tool
 		END,
 	};
 
-
 	static EMapObject_Type MapObjectType_StringToType(const string& strType)
 	{
 		if (strType == "STATICMODEL") return EMapObject_Type::STATICMODEL;
@@ -181,6 +206,7 @@ namespace Tool
 		return "NONE";
 
 	}
+
 
 	/*-----------------------------------------------------------*/
 

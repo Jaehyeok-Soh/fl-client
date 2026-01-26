@@ -37,8 +37,8 @@ HRESULT CTransform::Initialize(void* pArg)
 		{
 			TRANSFORM_DESC* pFinalDesc = static_cast<TRANSFORM_DESC*>(pDesc->pTransform_Desc);
 			Set_Scale(pFinalDesc->vScale);
+			Rotation( XMConvertToRadians(pFinalDesc->vRotation_Degrees.x) , XMConvertToRadians(pFinalDesc->vRotation_Degrees.y ), XMConvertToRadians(pFinalDesc->vRotation_Degrees.z));
 			Set_Info(TRANSFORM_INFO_STATE::POS, pFinalDesc->vPosition);
-			
 
 			m_fMovePerSec = pFinalDesc->fMovePerSec;
 			m_fRotatePerSec = pFinalDesc->fRotatePerSec;
@@ -235,11 +235,11 @@ inline void CTransform::Go_Left(const _float fTimeDelta, CNavigation* pNavigatio
 
 inline void CTransform::Rotation(_float fRadianX, _float fRadianY, _float fRadianZ)
 {
-	Matrix ScaleMatrix = Matrix::CreateScale(Get_Scaled());
-	Matrix RoationMarix = Matrix::CreateFromYawPitchRoll(fRadianY , fRadianX , fRadianZ );
-	Vec3   vPos = Get_Info(TRANSFORM_INFO_STATE::POS);
-	m_matWorld = ScaleMatrix * RoationMarix;
-	Set_Info(TRANSFORM_INFO_STATE::POS , vPos);
+	Matrix ScaleMatrix			= Matrix::CreateScale(Get_Scaled()); //
+	Matrix RotationMatrix		= Matrix::CreateFromYawPitchRoll(fRadianY, fRadianX, fRadianZ); //
+	Matrix TranslationMatrix	= Matrix::CreateTranslation(Get_Info(TRANSFORM_INFO_STATE::POS)); //
+
+	m_matWorld = ScaleMatrix * RotationMatrix * TranslationMatrix;
 }
 
 inline void CTransform::Pitch_Turn(const _float fTimeDelta)
