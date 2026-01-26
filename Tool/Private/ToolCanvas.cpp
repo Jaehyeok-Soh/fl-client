@@ -9,6 +9,8 @@
 #include "VIBuffer_Rect_Tex.h"
 #include "Texture.h"
 
+#include "DebugDraw.h"
+
 CToolCanvas::CToolCanvas(ID3D11Device* pDevice, ID3D11DeviceContext* pDeviceContext)
 	:CUIObject(pDevice, pDeviceContext)
 {
@@ -44,7 +46,17 @@ HRESULT CToolCanvas::Awake(const _uint iCurrentLevelID)
 	if (FAILED(Super::Awake(iCurrentLevelID)))
 		return E_FAIL;
 
-	Set_SizeToTextureScale();
+	m_pBatch = new PrimitiveBatch<VertexPositionColor>(m_pDeviceContext);
+	m_pEffect = new BasicEffect(m_pDevice);
+	m_pEffect->SetVertexColorEnabled(true);
+
+	const void* pShaderInput = { nullptr };
+	size_t iShaderInputLenght = {};
+	m_pEffect->GetVertexShaderBytecode(&pShaderInput, &iShaderInputLenght);
+
+	if (FAILED(m_pDevice->CreateInputLayout(VertexPositionColor::InputElements, VertexPositionColor::InputElementCount, pShaderInput, iShaderInputLenght, &m_pInputLayout)))
+		return E_FAIL;
+
 	return S_OK;
 }
 
@@ -60,6 +72,7 @@ void CToolCanvas::Update(const _float fTimeDelta)
 
 void CToolCanvas::Update_Late(const _float fTimeDelta)
 {
+	
 	Super::Update_Late(fTimeDelta);
 }
 
@@ -70,6 +83,10 @@ void CToolCanvas::Ready_Before_Render(const _float fTimeDelta)
 
 HRESULT CToolCanvas::Render()
 {
+	m_pBatch->Begin();
+//	m_pBatch->DrawLine(VertexPositionColor{})
+	m_pBatch->End();
+
 
 	if (FAILED(Super::Render()))
 		return E_FAIL;
@@ -86,8 +103,8 @@ HRESULT CToolCanvas::Render()
 
 HRESULT CToolCanvas::Ready_Components(TOOLUI_DESC* pDesc)
 {
-	if (FAILED(Add_Component<CTexture>(0, pDesc->wstrTextureTag, pDesc)))
-		return E_FAIL;
+	//if (FAILED(Add_Component<CTexture>(0, pDesc->wstrTextureTag, pDesc)))
+	//	return E_FAIL;
 
 	if (FAILED(Add_Component<CShader>(0, L"Prototype_Component_Shader_VtxPosTex", pDesc)))
 		return E_FAIL;

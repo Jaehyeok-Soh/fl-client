@@ -233,8 +233,13 @@ HRESULT CLoader::Loading_For_UI()
 		if (FAILED(m_pGameInstance->Add_Prototype(ENUM_TO_UINT(ELevelType::UI), L"Prototype_Component_Button_Test_Texture", CTexture::Create(&textureDesc))))
 			return E_FAIL;
 
-		if (FAILED(Loading_Textures(L"../../Resources/Textures/UI/Layout")))
+		textureDesc.iTextureCount = 31;
+		textureDesc.wstrTexturePath = L"../../Resources/Textures/UI/Aim/%d.png";
+		if (FAILED(m_pGameInstance->Add_Prototype(ENUM_TO_UINT(ELevelType::UI), L"Texture_Aim", CTexture::Create(&textureDesc))))
 			return E_FAIL;
+
+		//if (FAILED(Loading_Textures(L"../../Resources/Textures/UI/Layout")))
+		//	return E_FAIL;
 	}
 
 	//=================

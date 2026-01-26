@@ -27,6 +27,8 @@ HRESULT CToolUI::Initialize_Prototype()
 HRESULT CToolUI::Initialize(void* pArg)
 {
 	TOOLUI_DESC* pDesc = static_cast<TOOLUI_DESC*>(pArg);
+	m_tMyDesc = pDesc;
+	m_iTextureIndex = pDesc->iTextureIndex;
 
 	if (FAILED(Super::Initialize(pArg)))
 		return E_FAIL;
@@ -43,7 +45,6 @@ HRESULT CToolUI::Awake(const _uint iCurrentLevelID)
 	if (FAILED(Super::Awake(iCurrentLevelID)))
         return E_FAIL;
 
-    Set_SizeToTextureScale();
     return S_OK;
 }
 
@@ -102,7 +103,8 @@ HRESULT CToolUI::Bind_ShaderResources()
     if (FAILED(Get_Component<CTransform>()->Bind_ShaderResource(pShader)))
         return E_FAIL;
 
-    if (FAILED(Get_Component<CTexture>()->Bind_ShaderResource(pShader, 0)))
+	/* 텍스쳐 컴포넌트에 */
+    if (FAILED(Get_Component<CTexture>()->Bind_ShaderResource(pShader, m_iTextureIndex)))
         return E_FAIL;
 
     return S_OK;

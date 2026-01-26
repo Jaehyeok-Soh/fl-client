@@ -263,15 +263,12 @@ HRESULT CImGui_UIManager::Remake_UIObjects()
 			Desc.fHeight = UIData.fHeight;
 			Desc.fWidth = UIData.fWidth;
 			Desc.isAlpha = TRUE;
-			Desc.wstrTextureTag = L"Prototype_Component_Button_Test_Texture";
+			Desc.wstrTextureTag = Engine_Utils::ToWString( UIData.strTextureTag);
+			Desc.iTextureIndex = UIData.iTextureIndex;
 
-			CGameObject* pResult = m_pGameInstance->Add_GameObject(
-				iLevelIndex, L"Prototype_UI_Test_Button",
-				iLevelIndex, Engine_Utils::ToWString(Layer.strTag), &Desc);
-
+			CGameObject* pResult = m_pGameInstance->Add_GameObject(	iLevelIndex, L"Prototype_UI_Test_Button", iLevelIndex, Engine_Utils::ToWString(Layer.strTag), &Desc);
 			if (nullptr == pResult)
 				return E_FAIL;
-
 			Layer.vecUIObjects.push_back(reinterpret_cast<CToolUI*>(pResult));
 		}
 	}
@@ -280,17 +277,22 @@ HRESULT CImGui_UIManager::Remake_UIObjects()
 
 HRESULT CImGui_UIManager::Clear_UIObjects()
 {
-	LAYER_DATA* pLayer = Safe_Access_Layer(m_iCurLayerIndex);
-	if (nullptr == pLayer)
-		return S_OK;
-
-	if ("" == pLayer->strTag)
-		return S_OK;
-
 	uint32_t iLevelIndex = static_cast<uint32_t>(ELevelType::UI);
 
-	m_pGameInstance->Clear_Layer(iLevelIndex, Engine_Utils::ToWString(pLayer->strTag));
-	pLayer->vecUIObjects.clear();
+	uint32_t iNumLayer = Get_NumLayer();
+	for (uint32_t i = 0; i < iNumLayer; ++i)
+	{
+		LAYER_DATA* pLayer = Safe_Access_Layer(i);
+		if (nullptr == pLayer)
+			continue;
+
+		if ("" == pLayer->strTag)
+			continue;
+
+		m_pGameInstance->Clear_Layer(iLevelIndex, Engine_Utils::ToWString(pLayer->strTag));
+		pLayer->vecUIObjects.clear();
+	}
+
 	return S_OK;
 }
 

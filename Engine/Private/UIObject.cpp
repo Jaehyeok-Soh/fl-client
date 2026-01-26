@@ -35,9 +35,8 @@ HRESULT CUIObject::Initialize(void* pArg)
 
 	m_fX = pDesc->fX;
 	m_fY = pDesc->fY;
-	m_fWidth = pDesc->fWidth;
-	m_fHeight = pDesc->fHeight;
-
+	m_fWidth = 1.f;
+	m_fHeight = 1.f;
 
 	D3D11_VIEWPORT          ViewportDesc = {};
 	_uint					iNumViewports = { 1 };

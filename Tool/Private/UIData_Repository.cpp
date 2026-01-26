@@ -154,7 +154,8 @@ void to_json(order_json& _j, const GENERIC_UI_DATA& _tData)
 	_j["Name"] = _tData.strName;
 	_j["UIType"] = _tData.iUIType;
 	_j["RectTransformType"] = _tData.iRectTransformType;
-	_j["TextureTag"] = _tData.wstrTextureTag;
+	_j["TextureTag"] = _tData.strTextureTag;
+	_j["TextureIndex"] = _tData.iTextureIndex;
 	_j["Width"] = _tData.fWidth;
 	_j["Height"] = _tData.fHeight;
 	_j["PosX"] = _tData.fPosX;
@@ -167,7 +168,8 @@ void from_json(const order_json& _j, GENERIC_UI_DATA& _tData)
 	_j.at("Name").get_to(_tData.strName);
 	_j.at("UIType").get_to(_tData.iUIType);
 	_j.at("RectTransformType").get_to(_tData.iRectTransformType);
-	_j.at("TextureTag").get_to(_tData.wstrTextureTag);
+	_j.at("TextureTag").get_to(_tData.strTextureTag);
+	_j.at("TextureIndex").get_to(_tData.iTextureIndex);
 	_j.at("Width").get_to(_tData.fWidth);
 	_j.at("Height").get_to(_tData.fHeight);
 	_j.at("PosX").get_to(_tData.fPosX);

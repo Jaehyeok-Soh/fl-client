@@ -3,6 +3,7 @@
 #include "ImGui_ToolManager.h"
 #include "ImGui_UIManager.h"
 #include "UIData_Repository.h"
+#include "Engine_Utils.h"
 #include "ToolUI.h"
 #include "Texture.h"
 #include "GameInstance.h"
@@ -122,7 +123,7 @@ void CUI_Inspector::Input_RectTransform()
 	ImGui::Spacing();
 
 	// Size (Width / Height) : 2 columns
-	if (ImGui::BeginTable("##RectSizeTable", 2, ImGuiTableFlags_SizingStretchSame))
+	if (ImGui::BeginTable("##RectSizeTable", 3, ImGuiTableFlags_SizingStretchSame))
 	{
 		ImGui::TableNextColumn();
 		ImGui::SetNextItemWidth(-FLT_MIN);
@@ -132,9 +133,22 @@ void CUI_Inspector::Input_RectTransform()
 		ImGui::SetNextItemWidth(-FLT_MIN);
 		Scrub_Float("Height", "##UIObjectHeight", &pData->fHeight, 0.1f, 20.f, 0.1f, 10.0f, 100.f);
 
-		if (nullptr != m_pSelectedUI)
-			m_pSelectedUI->Set_Size(pData->fWidth, pData->fHeight);
+		ImGui::TableNextColumn();
+		ImGui::SetNextItemWidth(-FLT_MIN);
+		if(ImGui::Button("Set Native Size", ImVec2(0.f, 0.f)))
+		{
+			if (nullptr != m_pSelectedUI)
+				m_pSelectedUI->Set_SizeToTextureScale();
 
+			pData->fWidth = m_pSelectedUI->Get_Width();
+			pData->fHeight = m_pSelectedUI->Get_Height();
+		}
+		else
+		{
+			if (nullptr != m_pSelectedUI)
+				m_pSelectedUI->Set_Size(pData->fWidth, pData->fHeight);
+		}
+		
 		ImGui::EndTable();
 	}
 
@@ -168,12 +182,46 @@ void CUI_Inspector::Input_RectTransform()
 
 void CUI_Inspector::Input_TextureTag()
 {
-	ID3D11ShaderResourceView* pSRV = CGameInstance::GetInstance()->Get_Resource<CTextureBase>(L"Texture_T_Battle_BGCustom01")->Get_SRV();
-
-	if (ImGui::ImageButton("##MyImgBtn", (ImTextureID)pSRV, ImVec2(64.f, 64.f)))
+	if (ImGui::Button("Select Texture"))
 	{
+		OPENFILENAMEW ofn{};
+		_tchar szFile[MAX_PATH] = { 0 };
 
+		ofn.lStructSize = sizeof(OPENFILENAMEW);
+		ofn.hwndOwner = g_hWnd;
+		ofn.lpstrFile = szFile;
+		ofn.nMaxFile = MAX_PATH; 
+		ofn.lpstrFilter =
+			L"Image Files (*.png;*.dds)\0*.png;*.dds\0"
+			L"Png Files (*.png)\0*.png\0"
+			L"Dds Files (*.dds)\0*.dds\0"
+			L"All Files (*.*)\0*.*\0\0";
+		ofn.nFilterIndex = 1;
+		ofn.Flags = OFN_PATHMUSTEXIST | OFN_FILEMUSTEXIST | OFN_NOCHANGEDIR;
+
+		if (::GetOpenFileNameW(&ofn) == TRUE)
+		{
+			_wstring result = szFile; 
+
+			std::filesystem::path f(result);
+			if (f.extension().wstring() == L".png" || f.extension().wstring() == L".dds")
+			{
+				_wstring wstrFolderName = f.parent_path().filename().wstring();
+				uint32_t iFileIndex = std::stoi( f.stem().wstring());
+
+				CTexture* pTexture = dynamic_cast<CTexture*>(dynamic_cast<CComponent*>(
+					CGameInstance::GetInstance()->Clone_Prototype(EPrototypeType::COMPONENT, static_cast<uint32_t>(ELevelType::UI),L"Texture_" + wstrFolderName)));
+				if (nullptr == pTexture)
+					return;
+
+				m_pSelectedUI-> Change_Component<CTexture>(pTexture);
+				m_pSelectedUI->Set_TextureIndex(iFileIndex);
+				m_pUIManager->Safe_Access_UIData(m_pUIManager->Get_CurUIIndex())->strTextureTag = Engine_Utils::ToString( L"Texture_" + wstrFolderName);
+				m_pUIManager->Safe_Access_UIData(m_pUIManager->Get_CurUIIndex())->iTextureIndex = iFileIndex;
+			}
+		}
 	}
+
 }
 
 _bool CUI_Inspector::Scrub_Float(const _char* label, const _char* Id, OUT _float* pValue, float fValuePerPixel, float fValuePerPixel_fast, float fStep, float fStep_fast, float fSize)

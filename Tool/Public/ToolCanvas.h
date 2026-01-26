@@ -13,8 +13,6 @@ class CToolCanvas final : public CUIObject
 public:
 	typedef struct tagToolUIDesc : public Super::UIOBJECT_DESC
 	{
-		_wstring wstrTextureTag;
-
 	}TOOLUI_DESC;
 
 private:
@@ -39,6 +37,10 @@ private:
 
 private:
 	vector<CToolLayer*> m_vecToolLayers;
+
+	PrimitiveBatch<DirectX::VertexPositionColor>* m_pBatch = { nullptr };
+	BasicEffect* m_pEffect = { nullptr };
+	ID3D11InputLayout* m_pInputLayout = { nullptr };
 
 	/* 아마 있어야될 변수 */
 	/* 얘의 이동량에 따라 Tool Layers들에 전달? 아니면 바로 전달 */
