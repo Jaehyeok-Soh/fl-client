@@ -58,6 +58,11 @@ void CStateBase_Player::Update(const _float fTimeDelta)
 
 	Super::Update(fTimeDelta);
 
+	// 만약 이전 애니메이션때 변화하기 싫은데 아직 preAni가 끝나지 않았다면
+	if (Engine_Utils::Has_Flag(m_FAniFlags, STATEANI_FLAG::SA_PreNonEvent) &&
+		!Engine_Utils::Has_Flag(m_FAniFlags, STATEANI_FLAG::SA_PreAniDone))
+		return;
+
 	// keyCount를 하지 않거나, coolTime이 다 되었다면
 	if (!(m_tKeyTimer.bCountTime) ||
 		m_tKeyTimer.CountTime(fTimeDelta) == 1.f)
