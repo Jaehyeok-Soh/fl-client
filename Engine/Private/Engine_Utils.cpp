@@ -49,6 +49,45 @@ void Engine_Utils::Replace(OUT wstring& str, wstring comp, wstring rep)
     str = temp;
 }
 
+void Engine_Utils::Add_Text(OUT string& str_out, const string& strfind, const string& stradd, _bool isback, _int32 ioffset)
+{
+
+    if (strfind.empty()) return;
+
+    size_t sztPos = isback ? str_out.rfind(strfind) : str_out.find(strfind);
+
+    if (sztPos == string::npos) return;
+
+    size_t iOffset = ioffset == 0 ? strfind.length() : ioffset;
+
+    size_t sztFinalPos = sztPos + iOffset;
+
+    if (sztFinalPos <= str_out.length())
+    {
+        str_out.insert(sztFinalPos, stradd);
+    }
+}
+
+void Engine_Utils::Add_Text(OUT wstring& wstr_out, const wstring& wstrfind, const wstring& wstradd, _bool isback, _int32 ioffset)
+{
+    if (wstrfind.empty()) return;
+
+    size_t sztPos = isback ? wstr_out.rfind(wstrfind) : wstr_out.find(wstrfind);
+
+    if (sztPos == wstring::npos) return;
+
+    size_t iOffset = ioffset == 0 ? wstrfind.length() : ioffset;
+
+    size_t sztFinalPos = (_int64)sztPos + iOffset;
+
+    if (sztFinalPos <= wstr_out.length())
+    {
+        wstr_out.insert(sztFinalPos, wstradd);
+    }
+}
+
+
+
 wstring Engine_Utils::ToWString(string value)
 {
     if (value.empty())
