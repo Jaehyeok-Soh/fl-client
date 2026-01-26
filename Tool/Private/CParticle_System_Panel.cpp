@@ -18,7 +18,7 @@ void CParticle_System_Panel::Update(const _float fDT)
 {
 	if (m_bTimeSetting)
 	{
-	// === 시간 계산 ===
+	// === 시간 계산 ===ww
 		Time_Calculator(fDT * m_tCurrentDesc._Effect_PlayBackSpeed);
 	}
 }
