@@ -21,6 +21,8 @@ private:
 public:
 	virtual HRESULT Bind_Resource() override;
 	virtual void Render() override;
+	virtual HRESULT Resize_InstanceBuffer(_uint iNumInstanceCount) override;
+	virtual void Set_ParticleDesc(const PARTICLE_ORIGIN_DESC& desc) override;
 public:
 	static CVIBuffer_Particle_Point* Create(ID3D11Device* pDevice, ID3D11DeviceContext* pDeviceContext, void* pArg);
 	virtual CComponent* Clone(void* pArg) override;

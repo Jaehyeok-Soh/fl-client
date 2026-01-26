@@ -371,6 +371,40 @@ namespace Engine
 		std::vector<MAPOBJECT_SAVEDATA> objects;
 		std::vector<MESHEEFFECT_PRESET_SAVEDATA> meshEffectPresets;
 	}MAPFILE_DATA;
+
+#pragma region Util
+	typedef struct tagTimeCounter
+	{
+		float fTimeAcc = { 0.f }; // 누적 타임
+		float fMaxTime = { 0.f }; // 최대 시간
+
+		bool bCountTime = { true }; // 타임 카운트를 할래?
+		bool bTimeReset = { true }; // 한 주기가 끝나고 acc를 0으로 다시 맞출건지
+
+		float CountTime(const float fTimeDelta) // TimeCount 함수
+		{
+			// 카운트를 하지 않을 거라면 음수 반환
+			if (!bCountTime)
+				return -1.f;
+
+			// 타임 누적
+			fTimeAcc += fTimeDelta;
+
+			// 넘었는지 검사
+			if (fTimeAcc >= fMaxTime)
+			{
+				fTimeAcc = bTimeReset ? 0.f : fMaxTime; // timeacc 리셋
+				return 1.f;
+			}
+
+			// 비율 값으로 반환
+			return fTimeAcc / fMaxTime;
+		}
+
+	}TIME_COUNTER;
+
+#pragma endregion
+
 }
 
 

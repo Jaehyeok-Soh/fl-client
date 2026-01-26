@@ -39,6 +39,9 @@ private:
 private:
 	vector<CToolUI*> m_vecToolUIs;
 
+	/* 아마 있어야될 변수 */
+	/* 얘의 m_iPass -> vecToolUIs 가 동일하게 가짐 */
+
 public:
 	static CToolLayer* Create(EToolObjectType eType, ID3D11Device* pDevice, ID3D11DeviceContext* pDeviceContext);
 	CGameObject* Clone(void* pArg);

@@ -35,6 +35,11 @@ public:
 	const Vec3* Get_VertexPositionData() const { return m_pVertexPositions; }
 	const _uint* Get_IndicesData() const { return m_pIndices; }
 	_uint Get_IndicesCount() const { return m_iIndexCount; }
+
+	// 인스턴싱용으로 들고가자.
+	ID3D11Buffer*& Get_VBBuffer() { return m_pVB; }
+	ID3D11Buffer*& Get_IBBuffer() { return m_pIB; }
+
 protected:
 	ID3D11Buffer* m_pVB = { nullptr };
 	ID3D11Buffer* m_pIB = { nullptr };

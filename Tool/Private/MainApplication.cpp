@@ -174,9 +174,9 @@ HRESULT CMainApplication::Ready_Static_Prototype()
 	{
 		CShader::SHADER_ORIGIN_DESC shaderDesc = {};
 		shaderDesc.pShaderFilePath = L"../../Shaders/Shader_VtxEffectMesh.hlsl";
-		shaderDesc.iNumElements = Engine::VTXMESH::iNumElements;
-		shaderDesc.pElements = Engine::VTXMESH::Elements;
-		if (FAILED(m_pGameInstance->Add_Prototype(ENUM_TO_UINT(ELevelType::STATIC), L"Prototype_Component_Shader_VtxEffectMesh",
+		shaderDesc.iNumElements = Engine::VTXPOS_PARTICLEMESH::iNumElements;
+		shaderDesc.pElements = Engine::VTXPOS_PARTICLEMESH::Elements;
+ 		if (FAILED(m_pGameInstance->Add_Prototype(ENUM_TO_UINT(ELevelType::STATIC), L"Prototype_Component_Shader_VtxEffectMesh",
 			CShader::Create(m_pDevice, m_pDeviceContext, &shaderDesc))))
 			return E_FAIL;
 	}

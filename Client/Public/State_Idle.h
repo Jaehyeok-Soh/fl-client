@@ -1,11 +1,11 @@
 #pragma once
-#include "StateBase.h"
+#include "StateBase_Player.h"
 
 NS_BEGIN(Client)
 
-class CState_Idle final : public CStateBase
+class CState_Idle final : public CStateBase_Player
 {
-	using Super = CStateBase;
+	using Super = CStateBase_Player;
 private:
 	CState_Idle(CActionState* pOwnerComponent);
 	virtual ~CState_Idle() = default;
@@ -16,7 +16,6 @@ public:
 	virtual HRESULT Start(void *pArg, _bool bForce = false) override;
 	virtual void Update(const _float fTimeDelta) override;
 	virtual HRESULT End() override;
-private:
 
 public:
 	static CState_Idle* Create(CActionState* pOwnerComponent, void* pArg = nullptr);

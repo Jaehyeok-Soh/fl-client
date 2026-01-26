@@ -30,9 +30,12 @@ public:
 	virtual void Update_Late(const _float fTimeDelta) override;
 	virtual void Ready_Before_Render(const _float fTimeDelta) override;
 	virtual HRESULT Render() override;
+
+public:
 	virtual void OnCollision(_uint iMyColliderLayer, CCollider* pOther) override;
 	virtual void OnCollision_Enter(_uint iMyColliderLayer, CCollider* pOther) override;
 	virtual void OnCollision_Exit(_uint iMyColliderLayer, CCollider* pOther) override;
+
 private:
 	// void Movement_Ground(const _float fTimeDelta);
 	//_bool Try_AttackHit(ECollideLayer eMyLayer, CCollider* pOther);

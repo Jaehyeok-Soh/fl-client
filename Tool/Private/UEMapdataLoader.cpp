@@ -20,7 +20,7 @@ CUEMapDataLoader::CUEMapDataLoader(ID3D11Device* pDevice, ID3D11DeviceContext* p
 	Safe_AddRef(m_pGameInstance);
 }
 
-HRESULT CUEMapDataLoader::Make_Prototype(const wstring& wstrMapModelFolderPath)
+HRESULT CUEMapDataLoader::Make_Prototype(_uint Leveltype, const wstring& wstrMapModelFolderPath)
 {
 	std::filesystem::path mapFolderPath = wstrMapModelFolderPath;
 	if (std::filesystem::exists(mapFolderPath) == false)
@@ -40,15 +40,15 @@ HRESULT CUEMapDataLoader::Make_Prototype(const wstring& wstrMapModelFolderPath)
 			wstring wstrFileName = fileFullPath.stem();
 			{
 				CBase* pFinded = { nullptr };
-				if (pFinded = m_pGameInstance->Find_Prototype(ENUM_TO_UINT(ELevelType::MAP), wstrModelTag + wstrFileName))
+				if (pFinded = m_pGameInstance->Find_Prototype(Leveltype, wstrModelTag + wstrFileName))
 					continue;
 			}
 
 			CModel::MODEL_ORIGIN_DESC desc = {};
 			desc.eType = EModelType::STATIC;
-			desc.iPrototypeLevelIndex = ENUM_TO_UINT(ELevelType::MAP);
+			desc.iPrototypeLevelIndex = Leveltype;
 			desc.wstrModelFolderName = fileFullPath.lexically_relative(basePath);
-			m_pGameInstance->Add_Prototype(ENUM_TO_UINT(ELevelType::MAP), wstrModelTag + wstrFileName, CModel::Create(m_pDevice, m_pDeviceContext, &desc));
+			m_pGameInstance->Add_Prototype(Leveltype, wstrModelTag + wstrFileName, CModel::Create(m_pDevice, m_pDeviceContext, &desc));
 		}
 	}
 

@@ -16,6 +16,26 @@ class ENGINE_DLL CControlContext abstract : public CComponent
 	using Super = CComponent;
 public:
 	constexpr static EComponentType _ID = EComponentType::CONTROLCONTEXT;
+
+	enum class CONTROL_KEY {
+		MOVE
+		, DASH
+		, WALK
+		, SPECIALMV
+		, JUMP
+		, WIRE
+		, DODGE
+		, LATT
+		, RATT
+		, CHARGATT
+		, COMBO1
+		, COMBO2
+		, COMBO3
+		, COMBO4
+		, SKILL1
+		, SKILL2
+	};
+
 protected:
 	CControlContext();
 	explicit CControlContext(const CControlContext& rhs);
@@ -37,23 +57,32 @@ public:
 	_bool Is_WallMode() const { return m_eCurrentMovement == EMovementMode::WALL; }
 	_bool Set_ContectWithTarget(_bool bContect) { return m_bContectedWithTarget = bContect; }
 	_bool Is_ContectedWithTarget() const { return m_bContectedWithTarget; }
-	virtual _bool Is_LeftAttackPressed() PURE;
-	virtual _bool Is_RightAttackPressed() PURE;
-	virtual _bool Is_FrontDashPressed() PURE;
-	virtual _bool Is_LeftDashPressed() PURE;
-	virtual _bool Is_RightDashPressed() PURE;
-	virtual _bool Is_BackDashPressed() PURE;
-	virtual _bool Is_MovePressed() PURE;
-	virtual _bool Is_WalkPressed() PURE;
-	virtual _bool Is_JumpPressed() PURE;
-	virtual _bool Is_WirePressed() PURE;
-	virtual _bool Is_DodgePressed() PURE;
-	virtual _bool Is_ChakraJumpPressed() PURE;
-	virtual _bool Is_FirstSkillPressed() PURE;
-	virtual _bool Is_SecondSkillPressed() PURE;
-	virtual _bool Is_ThirdSkillPressed() PURE;
-	virtual _bool Is_RopePressed() PURE;
-	virtual Vec3 Get_MoveDir() PURE;
+
+public:
+	virtual _bool	Is_MovePressed()				PURE;
+	virtual _bool	Is_DashPressed()				PURE;
+	virtual _bool	Is_WalkPressed()				PURE;
+	virtual _bool	Is_SepcialMovePressed()			PURE;
+	virtual _bool	Is_JumpPressed()				PURE;
+
+	virtual _bool	Is_WirePressed()				PURE;
+	virtual _bool	Is_DodgePressed()				PURE;
+
+	virtual _bool	Is_LeftAttackPressed()			PURE;
+	virtual _bool	Is_RightAttackPressed()			PURE;
+	virtual _bool	Is_ChargingAttackPressed()		PURE;
+
+	virtual _bool	Is_ComboAtt1Pressed()			PURE;
+	virtual _bool	Is_ComboAtt2Pressed()			PURE;
+	virtual _bool	Is_ComboAtt3Pressed()			PURE;
+	virtual _bool	Is_ComboAtt4Pressed()			PURE;
+
+	virtual _bool	Is_Skill1Pressed()				PURE;
+	virtual _bool	Is_Skill2Pressed()				PURE;
+
+	virtual _bool	Is_InteractionPressed()			PURE;
+
+	virtual Vec3	Get_MoveDir()					PURE;
 
 	CGameObject* Get_Target() { return m_pTarget; }
 protected:
