@@ -19,7 +19,7 @@ private:
 	explicit CNavigation(const CNavigation& rhs);
 	virtual ~CNavigation() = default;
 
-	virtual HRESULT Initialize_Prototype(const POLYGON_SAVEDATA& polygonData);
+	virtual HRESULT Initialize_Prototype();
 	virtual HRESULT Initialize(void* pArg) override;
 public:
 	_int Get_CurrentCellIndex() const { return m_iCurrentCellIndex; }
@@ -32,7 +32,7 @@ public:
 	void Sync_Index(const Vec3& vWorldPos);
 	_bool Is_Move(const Vec3& vResultPos);
 private:
-	HRESULT SetUp_Cells(const POLYGON_SAVEDATA& polygonData);
+	HRESULT SetUp_Cells();
 private:
 	const Matrix* m_pParentMatrix = { nullptr };
 private:
@@ -42,7 +42,7 @@ private:
 	ID3D11DeviceContext* m_pDeviceContext = { nullptr };
 	vector<class CCell*> m_vecCells;
 public:
-	static CNavigation* Create(ID3D11Device* pDevice, ID3D11DeviceContext* pDeviceContext, const POLYGON_SAVEDATA &polygonData);
+	static CNavigation* Create(ID3D11Device* pDevice, ID3D11DeviceContext* pDeviceContext);
 	virtual CComponent* Clone(void* pArg) override;
 	virtual void Free() override;
 };

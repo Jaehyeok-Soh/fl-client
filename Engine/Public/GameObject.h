@@ -2,12 +2,14 @@
 #include "Base.h"
 #include "Transform.h"
 #include "MonoBehaviour.h"
+#include "DataEnum.h"
 
 NS_BEGIN(Engine)
 
 class CCollider;
 class CCameraMan;
 class CObjectPool;
+class CDataDocumentBase;
 
 class ENGINE_DLL CGameObject abstract : public CBase
 {
@@ -75,6 +77,8 @@ public:
 	void Set_Awake(_bool bAwaked) { m_bAwaked = bAwaked; }
 	CObjectPool* Get_OwnerPool() { return m_pOwnerPool; }
 	void Set_OwnerPool(CObjectPool* pOwnerPool) { m_pOwnerPool = pOwnerPool; }
+
+	virtual _bool Export_Data(DTO::ECategory eCategory, CDataDocumentBase* pDocument) { return false; }
 private:
 	void Update_Script_Components(const _float fTimeDelta);
 	void Safe_Release_Component();

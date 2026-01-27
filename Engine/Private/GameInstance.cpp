@@ -3,7 +3,6 @@
 #include "Frustrum.h"
 #include "Font_Manager.h"
 #include "Event_Manager.h"
-#include "MapFile_Manager.h"
 #include "ObjectPool_Manager.h"
 #include "GameDataManager.h"
 #include "Collision_Manager.h"
@@ -19,6 +18,7 @@
 #include "CameraMan.h"
 #include "Camera_Manager.h"
 #include "Level_Manager.h"
+#include "DataRepository.h"
 #include "Input_Manager.h"
 #include "Graphic_Device.h"
 #include "Render_Manager.h"
@@ -52,7 +52,7 @@ HRESULT CGameInstance::Initialize_Engine(const ENGINE_DESC& Engine_Desc, _Inout_
 	if(!(m_pGameData_Manager = CGameDataManager::Create()))
 		return E_FAIL;
 
-	if (!(m_pMapFile_Manager = CMapFile_Manager::Create()))
+	if (!(m_pDataRepository = CDataRepository::Create(Engine_Desc.iLevelCount)))
 		return E_FAIL;
 
 	if (!(m_pLevel_Manager = CLevel_Manager::Create()))
@@ -165,6 +165,7 @@ HRESULT CGameInstance::Copy_BackBufferTexture(ID3D11Texture2D** ppTexture)
 }
 void CGameInstance::Clear(_uint iLevelID)
 {
+	m_pDataRepository->Clear(iLevelID);
 	m_pObjectPool_Manager->All_Despawn_StaticLevel();
 	m_pObject_Manager->Clear(iLevelID);
 	m_pObjectPool_Manager->Clear(iLevelID);
@@ -587,10 +588,38 @@ void CGameInstance::Set_Capture(_bool bCap)
 {
 	m_pInput_Manager->Set_Capture(bCap);
 }
+
+#pragma region RESOURCE_MANAGER
 CTextureBase* CGameInstance::GetOrAddTexture(const wstring& wstrKey, void* pArg)
 {
 	return m_pResource_Manager->GetOrAddTexture(wstrKey, pArg);
 }
+#pragma endregion
+
+#pragma region DATA_REPOSITORY
+HRESULT CGameInstance::Load_Folder_Json(_uint iLevelID, DTO::ECategory eCategory, const path& folderPath)
+{
+	return m_pDataRepository->Load_Folder_Json(iLevelID, eCategory, folderPath);
+}
+HRESULT CGameInstance::Load_File_Json(_uint iLevelID, DTO::ECategory eCategory, const path& folderPath)
+{
+	return m_pDataRepository->Load_File_Json(iLevelID, eCategory, folderPath);
+}
+HRESULT CGameInstance::Save_File_Json(_uint iLevelID, DTO::ECategory eCategory, const path& folderPath) const
+{
+	return m_pDataRepository->Save_File_Json(iLevelID, eCategory, folderPath);
+}
+CDataDocumentBase* CGameInstance::Ensure_Document(_uint iLevelID, DTO::ECategory eCategory, const path& filePath)
+{
+	return m_pDataRepository->Ensure_Document(iLevelID, eCategory, filePath);
+}
+const CDataDocumentBase* CGameInstance::Get_Document(_uint iLevelID, DTO::ECategory eCategory, const string& strFileKey)
+{
+	return m_pDataRepository->Get_Document(iLevelID, eCategory, strFileKey);
+}
+#pragma endregion
+
+
 void CGameInstance::Push_RenderObject(RENDER_CATEGORY eCategory, CGameObject* pGO)
 {
 	m_pRender_Manager->Push_RenderObject(eCategory, pGO);
@@ -651,7 +680,7 @@ void CGameInstance::Destroy_Engine()
 	Safe_Release(m_pFrustrum);
 	Safe_Release(m_pInput_Manager);
 	Safe_Release(m_pTimer_Manager);
-	Safe_Release(m_pMapFile_Manager);
+	Safe_Release(m_pDataRepository);
 	Safe_Release(m_pRender_Manager);
 	Safe_Release(m_pSound_Manager);
 	Safe_Release(m_pFont_Manager);
@@ -723,62 +752,6 @@ HRESULT CGameInstance::Debug_RT_Render(EMRTLayer eMRTLayer, CShader* pShader, CV
 #endif
 #pragma endregion
 
-#pragma region GAMEDATA_MANAGER
-const MODELPARTS_PROTOTYPETAGS& CGameInstance::Get_ModelPartsData() const
-{
-	return m_pGameData_Manager->Get_ModelPartsData();
-}
-
-void CGameInstance::Set_ModelPartsData(const MODELPARTS_PROTOTYPETAGS& tData)
-{
-	m_pGameData_Manager->Set_ModelPartsData(tData);
-}
-
-HRESULT CGameInstance::Add_MeshEffectPresets(const wstring& wstrFilePath)
-{
-	return m_pGameData_Manager->Add_Presets(wstrFilePath);
-}
-
-HRESULT CGameInstance::Add_MeshEffectPreviews(const wstring& wstrFilePath)
-{
-	return m_pGameData_Manager->Add_Previews(wstrFilePath);
-}
-
-const EFFECT_PRESET_SNAPSHOT& CGameInstance::Get_MeshEffectPresetSnapShot(_uint iPresetID)
-{
-	return m_pGameData_Manager->Get_PresetSnapShot(iPresetID);
-}
-
-const EFFECT_PRESET_SNAPSHOT& CGameInstance::Get_MeshEffectPresetSnapShot(const string& strTag)
-{
-	return m_pGameData_Manager->Get_PresetSnapShot(strTag);
-}
-
-const MAPOBJECT_SAVEDATA* CGameInstance::Get_MeshEffectPreview(const wstring& wstrGroupTag, const string& strNameTag)
-{
-	return m_pGameData_Manager->Get_Preview(wstrGroupTag, strNameTag);
-}
-
-const vector<MAPOBJECT_SAVEDATA>* CGameInstance::Get_MeshEffectPreviews(const wstring& wstrTag)
-{
-	return m_pGameData_Manager->Get_Previews(wstrTag);
-}
-#pragma endregion
-
-#pragma region MAPFILE_MANAGER
-
-HRESULT CGameInstance::Save_MapData(const wstring& wstrSavePath, const MAPFILE_DATA& data)
-{
-	return m_pMapFile_Manager->SaveData(wstrSavePath, data);
-}
-
-HRESULT CGameInstance::Load_MapData(const wstring& wstrFilePath, OUT MAPFILE_DATA& outData)
-{
-	return m_pMapFile_Manager->LoadData(wstrFilePath, outData);
-}
-
-#pragma endregion
-
 void CGameInstance::Free()
 {
 	Safe_Release(m_pFrustrum);
@@ -787,7 +760,7 @@ void CGameInstance::Free()
 	Safe_Release(m_pTimer_Manager);
 	Safe_Release(m_pSound_Manager);
 	Safe_Release(m_pFont_Manager);
-	Safe_Release(m_pMapFile_Manager);
+	Safe_Release(m_pDataRepository);
 	Safe_Release(m_pRender_Manager);
 	Safe_Release(m_pRenderTarget_Manager);
 	Safe_Release(m_pCamera_Manager);

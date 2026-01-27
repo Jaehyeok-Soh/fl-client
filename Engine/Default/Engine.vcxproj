@@ -173,6 +173,7 @@
     <ClCompile Include="..\Private\Bounding_AABB.cpp" />
     <ClCompile Include="..\Private\Bounding_OBB.cpp" />
     <ClCompile Include="..\Private\Bounding_Sphere.cpp" />
+    <ClCompile Include="..\Private\BuilderBase.cpp" />
     <ClCompile Include="..\Private\Camera.cpp" />
     <ClCompile Include="..\Private\CameraMan.cpp" />
     <ClCompile Include="..\Private\Camera_Manager.cpp" />
@@ -185,6 +186,13 @@
     <ClCompile Include="..\Private\ContainerObject.cpp" />
     <ClCompile Include="..\Private\ControlContext.cpp" />
     <ClCompile Include="..\Private\Converter.cpp" />
+    <ClCompile Include="..\private\DataDocumentBase.cpp" />
+    <ClCompile Include="..\private\DataDocument_Example.cpp" />
+    <ClCompile Include="..\Private\DataEnum.cpp" />
+    <ClCompile Include="..\private\DataRepository.cpp" />
+    <ClCompile Include="..\private\DataStore.cpp" />
+    <ClCompile Include="..\private\DataStruct_Animation.cpp" />
+    <ClCompile Include="..\Private\DataStruct_Example.cpp" />
     <ClCompile Include="..\Private\DebugDraw.cpp">
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Use</PrecompiledHeader>
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Use</PrecompiledHeader>
@@ -206,12 +214,12 @@
     <ClCompile Include="..\Private\Graphic_Device.cpp" />
     <ClCompile Include="..\Private\Importer.cpp" />
     <ClCompile Include="..\Private\Input_Manager.cpp" />
+    <ClCompile Include="..\private\json_forward.cpp" />
     <ClCompile Include="..\Private\Layer.cpp" />
     <ClCompile Include="..\Private\Level.cpp" />
     <ClCompile Include="..\Private\Level_Manager.cpp" />
     <ClCompile Include="..\Private\Light.cpp" />
     <ClCompile Include="..\Private\Light_Manager.cpp" />
-    <ClCompile Include="..\Private\MapFile_Manager.cpp" />
     <ClCompile Include="..\Private\Material.cpp" />
     <ClCompile Include="..\Private\MaterialInstance.cpp" />
     <ClCompile Include="..\Private\Mesh.cpp" />
@@ -224,6 +232,7 @@
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|x64'">NotUsing</PrecompiledHeader>
     </ClCompile>
     <ClCompile Include="..\Private\Navigation.cpp" />
+    <ClCompile Include="..\private\ObjectDataBase.cpp" />
     <ClCompile Include="..\private\ObjectPool_Manager.cpp" />
     <ClCompile Include="..\Private\Object_Manager.cpp" />
     <ClCompile Include="..\private\ObjectPool.cpp" />
@@ -258,6 +267,7 @@
     <ClCompile Include="..\Private\VIBuffer_Rect_NorTex.cpp" />
     <ClCompile Include="..\Private\VIBuffer_Rect_Tex.cpp" />
     <ClCompile Include="..\Private\VIBuffer_Terrain.cpp" />
+    <ClCompile Include="DataStruct_Effect.cpp" />
     <ClCompile Include="Engine_pch.cpp">
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Create</PrecompiledHeader>
       <PrecompiledHeaderFile Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Engine_pch.h</PrecompiledHeaderFile>
@@ -274,6 +284,7 @@
     <ClInclude Include="..\Public\Bounding_AABB.h" />
     <ClInclude Include="..\Public\Bounding_OBB.h" />
     <ClInclude Include="..\Public\Bounding_Sphere.h" />
+    <ClInclude Include="..\Public\BuilderBase.h" />
     <ClInclude Include="..\Public\Camera.h" />
     <ClInclude Include="..\Public\CameraMan.h" />
     <ClInclude Include="..\Public\Camera_Manager.h" />
@@ -286,6 +297,13 @@
     <ClInclude Include="..\Public\ContainerObject.h" />
     <ClInclude Include="..\Public\ControlContext.h" />
     <ClInclude Include="..\Public\Converter.h" />
+    <ClInclude Include="..\public\DataDocumentBase.h" />
+    <ClInclude Include="..\public\DataDocument_Example.h" />
+    <ClInclude Include="..\Public\DataEnum.h" />
+    <ClInclude Include="..\public\DataRepository.h" />
+    <ClInclude Include="..\public\DataStore.h" />
+    <ClInclude Include="..\public\DataStruct_Animation.h" />
+    <ClInclude Include="..\Public\DataStruct_Example.h" />
     <ClInclude Include="..\Public\DebugDraw.h" />
     <ClInclude Include="..\Public\Delegate.h" />
     <ClInclude Include="..\Public\Engine_Define.h" />
@@ -308,12 +326,12 @@
     <ClInclude Include="..\Public\Graphic_Device.h" />
     <ClInclude Include="..\Public\Importer.h" />
     <ClInclude Include="..\Public\Input_Manager.h" />
+    <ClInclude Include="..\public\json_forward.h" />
     <ClInclude Include="..\Public\Layer.h" />
     <ClInclude Include="..\Public\Level.h" />
     <ClInclude Include="..\Public\Level_Manager.h" />
     <ClInclude Include="..\Public\Light.h" />
     <ClInclude Include="..\Public\Light_Manager.h" />
-    <ClInclude Include="..\Public\MapFile_Manager.h" />
     <ClInclude Include="..\Public\Material.h" />
     <ClInclude Include="..\Public\MaterialInstance.h" />
     <ClInclude Include="..\Public\Mesh.h" />
@@ -323,6 +341,7 @@
     <ClInclude Include="..\Public\MonoBehaviour.h" />
     <ClInclude Include="..\Public\MulticastDelegate.h" />
     <ClInclude Include="..\Public\Navigation.h" />
+    <ClInclude Include="..\public\ObjectDataBase.h" />
     <ClInclude Include="..\public\ObjectPool_Manager.h" />
     <ClInclude Include="..\Public\Object_Manager.h" />
     <ClInclude Include="..\public\ObjectPool.h" />
@@ -358,6 +377,7 @@
     <ClInclude Include="..\Public\VIBuffer_Rect_NorTex.h" />
     <ClInclude Include="..\Public\VIBuffer_Rect_Tex.h" />
     <ClInclude Include="..\Public\VIBuffer_Terrain.h" />
+    <ClInclude Include="DataStruct_Effect.h" />
     <ClInclude Include="Engine_pch.h" />
   </ItemGroup>
   <ItemGroup>

@@ -190,9 +190,6 @@
     <Filter Include="01. Utility\10. DebugDraw">
       <UniqueIdentifier>{88f6fe56-807e-44fa-b7aa-9f1c004b7371}</UniqueIdentifier>
     </Filter>
-    <Filter Include="01. Utility\11. ToolFileManager">
-      <UniqueIdentifier>{67bc0521-dc6e-49f1-a9da-6e4c700cae7a}</UniqueIdentifier>
-    </Filter>
     <Filter Include="01. Utility\12. Font">
       <UniqueIdentifier>{0e01db69-f148-4948-a598-6a1194c165ea}</UniqueIdentifier>
     </Filter>
@@ -228,6 +225,42 @@
     </Filter>
     <Filter Include="00. System\04. GameObject\00. Manager\Pool">
       <UniqueIdentifier>{ded27517-c785-4541-afbd-9c3dacdacc77}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="01. Utility\11. DataRepository">
+      <UniqueIdentifier>{67bc0521-dc6e-49f1-a9da-6e4c700cae7a}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="01. Utility\11. DataRepository\Datas">
+      <UniqueIdentifier>{8b747a01-5706-452a-b736-ddf6afbc156c}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="01. Utility\11. DataRepository\Datas\Map">
+      <UniqueIdentifier>{15ba85be-f915-4766-a455-2018073c53c0}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="01. Utility\11. DataRepository\Datas\Effect">
+      <UniqueIdentifier>{a16905f1-353c-46e4-82b5-1c78e3f2787f}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="01. Utility\11. DataRepository\Datas\UI">
+      <UniqueIdentifier>{dc215b92-cabe-4630-ae6d-a6a3938907c1}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="01. Utility\11. DataRepository\Datas\Animation">
+      <UniqueIdentifier>{7684dca7-837f-4e42-8fb8-5ccd73547404}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="01. Utility\11. DataRepository\Datas\Example">
+      <UniqueIdentifier>{b44dc512-194b-41b2-8ec2-055c839fb4b7}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="01. Utility\11. DataRepository\Datas\Example\DataDocument_Example">
+      <UniqueIdentifier>{47151a61-c828-43d0-b827-394936375c18}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="01. Utility\11. DataRepository\DataStore">
+      <UniqueIdentifier>{a828855c-2320-4ac5-8055-1e54f4a51ef2}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="01. Utility\11. DataRepository\DataDocument">
+      <UniqueIdentifier>{d92b3cc7-2127-4eae-b0bd-663796f94e36}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="01. Utility\14. Builder">
+      <UniqueIdentifier>{003cbb26-9bb1-45d8-973c-b3ea809374c0}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="01. Utility\15. Json_Forward">
+      <UniqueIdentifier>{4107a650-cbc3-44ad-a524-9e33f21f391e}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
@@ -441,9 +474,6 @@
     <ClCompile Include="..\Private\Bone.cpp">
       <Filter>00. System\05. Component\Model\Bone</Filter>
     </ClCompile>
-    <ClCompile Include="..\Private\MapFile_Manager.cpp">
-      <Filter>01. Utility\11. ToolFileManager</Filter>
-    </ClCompile>
     <ClCompile Include="..\Private\Font.cpp">
       <Filter>01. Utility\12. Font</Filter>
     </ClCompile>
@@ -482,6 +512,39 @@
     </ClCompile>
     <ClCompile Include="..\private\ObjectPool_Manager.cpp">
       <Filter>00. System\04. GameObject\00. Manager</Filter>
+    </ClCompile>
+    <ClCompile Include="..\private\DataRepository.cpp">
+      <Filter>01. Utility\11. DataRepository</Filter>
+    </ClCompile>
+    <ClCompile Include="..\private\DataStore.cpp">
+      <Filter>01. Utility\11. DataRepository\DataStore</Filter>
+    </ClCompile>
+    <ClCompile Include="..\private\DataDocumentBase.cpp">
+      <Filter>01. Utility\11. DataRepository\DataDocument</Filter>
+    </ClCompile>
+    <ClCompile Include="..\private\DataDocument_Example.cpp">
+      <Filter>01. Utility\11. DataRepository\Datas\Example\DataDocument_Example</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\BuilderBase.cpp">
+      <Filter>01. Utility\14. Builder</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\DataEnum.cpp">
+      <Filter>01. Utility\11. DataRepository</Filter>
+    </ClCompile>
+    <ClCompile Include="..\private\json_forward.cpp">
+      <Filter>01. Utility\15. Json_Forward</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\DataStruct_Example.cpp">
+      <Filter>01. Utility\11. DataRepository\Datas\Example</Filter>
+    </ClCompile>
+    <ClCompile Include="DataStruct_Effect.cpp">
+      <Filter>01. Utility\11. DataRepository\Datas\Effect</Filter>
+    </ClCompile>
+    <ClCompile Include="..\private\DataStruct_Animation.cpp">
+      <Filter>01. Utility\11. DataRepository\Datas\Animation</Filter>
+    </ClCompile>
+    <ClCompile Include="..\private\ObjectDataBase.cpp">
+      <Filter>01. Utility\11. DataRepository\Datas</Filter>
     </ClCompile>
     <ClCompile Include="..\Private\VIBuffer_Particle_Mesh.cpp">
       <Filter>00. System\05. Component\VIBuffer\Particle</Filter>
@@ -719,9 +782,6 @@
     <ClInclude Include="..\Public\Bone.h">
       <Filter>00. System\05. Component\Model\Bone</Filter>
     </ClInclude>
-    <ClInclude Include="..\Public\MapFile_Manager.h">
-      <Filter>01. Utility\11. ToolFileManager</Filter>
-    </ClInclude>
     <ClInclude Include="..\Public\Font.h">
       <Filter>01. Utility\12. Font</Filter>
     </ClInclude>
@@ -766,6 +826,39 @@
     </ClInclude>
     <ClInclude Include="..\public\ObjectPool_Manager.h">
       <Filter>00. System\04. GameObject\00. Manager</Filter>
+    </ClInclude>
+    <ClInclude Include="..\public\DataRepository.h">
+      <Filter>01. Utility\11. DataRepository</Filter>
+    </ClInclude>
+    <ClInclude Include="..\public\DataStore.h">
+      <Filter>01. Utility\11. DataRepository\DataStore</Filter>
+    </ClInclude>
+    <ClInclude Include="..\public\DataDocumentBase.h">
+      <Filter>01. Utility\11. DataRepository\DataDocument</Filter>
+    </ClInclude>
+    <ClInclude Include="..\public\DataDocument_Example.h">
+      <Filter>01. Utility\11. DataRepository\Datas\Example\DataDocument_Example</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\DataStruct_Example.h">
+      <Filter>01. Utility\11. DataRepository\Datas\Example</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\DataEnum.h">
+      <Filter>01. Utility\11. DataRepository</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\BuilderBase.h">
+      <Filter>01. Utility\14. Builder</Filter>
+    </ClInclude>
+    <ClInclude Include="..\public\json_forward.h">
+      <Filter>01. Utility\15. Json_Forward</Filter>
+    </ClInclude>
+    <ClInclude Include="DataStruct_Effect.h">
+      <Filter>01. Utility\11. DataRepository\Datas\Effect</Filter>
+    </ClInclude>
+    <ClInclude Include="..\public\DataStruct_Animation.h">
+      <Filter>01. Utility\11. DataRepository\Datas\Animation</Filter>
+    </ClInclude>
+    <ClInclude Include="..\public\ObjectDataBase.h">
+      <Filter>01. Utility\11. DataRepository\Datas</Filter>
     </ClInclude>
     <ClInclude Include="..\Public\VIBuffer_Particle_Mesh.h">
       <Filter>00. System\05. Component\VIBuffer\Particle</Filter>

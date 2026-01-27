@@ -4,6 +4,7 @@
 #include "RenderTarget_Manager.h"
 #include "Resource_Manager.h"
 #include "EventBus_Manager.h"
+#include "DataRepository.h"
 
 NS_BEGIN(Engine)
  
@@ -189,6 +190,17 @@ public:
 	class CTextureBase* GetOrAddTexture(const wstring& wstrKey, void* pArg);
 #pragma endregion
 
+#pragma region DATA_REPOSITORY
+	HRESULT Load_Folder_Json(_uint iLevelID, DTO::ECategory eCategory, const path& folderPath);
+	HRESULT Load_File_Json(_uint iLevelID, DTO::ECategory eCategory, const path& filePath);
+	HRESULT Save_File_Json(_uint iLevelID, DTO::ECategory eCategory, const path& filePath) const;
+	CDataDocumentBase* Ensure_Document(_uint iLevelID, DTO::ECategory eCategory, const path& filePath);
+	const CDataDocumentBase* Get_Document(_uint iLevelID, DTO::ECategory eCategory, const string& strFileKey);
+	 
+	template<typename T>
+	HRESULT Regist_Document(_uint iLevelID, DTO::ECategory eCategory);
+#pragma endregion
+
 #pragma region RENDER_MANAGER
 	inline void Push_RenderObject(RENDER_CATEGORY eCategory, CGameObject* pGO);
 	inline void Push_DebugComponent(class CComponent* pComp);
@@ -245,12 +257,6 @@ public:
 #endif
 #pragma endregion
 
-
-#pragma region MAPFILE_MANAGER
-	HRESULT Save_MapData(const wstring& wstrSavePath, const MAPFILE_DATA& data);
-	HRESULT Load_MapData(const wstring& wstrFilePath, OUT MAPFILE_DATA& outData);
-#pragma endregion
-
 #pragma region RANDOM
 	float Rand_Float(float fA, float fB)
 	{
@@ -265,20 +271,13 @@ public:
 
 // Todo - 쓰레기통 정리
 #pragma region GAMEDATA
-	const MODELPARTS_PROTOTYPETAGS& Get_ModelPartsData() const;
-	void Set_ModelPartsData(const MODELPARTS_PROTOTYPETAGS& tData);
-	HRESULT Add_MeshEffectPresets(const wstring& wstrFilePath);
-	HRESULT Add_MeshEffectPreviews(const wstring& wstrFilePath);
-	const EFFECT_PRESET_SNAPSHOT& Get_MeshEffectPresetSnapShot(_uint iPresetID);
-	const EFFECT_PRESET_SNAPSHOT& Get_MeshEffectPresetSnapShot(const string& strTag);
-	const MAPOBJECT_SAVEDATA* Get_MeshEffectPreview(const wstring& wstrGroupTag, const string& strNameTag);
-	const vector<MAPOBJECT_SAVEDATA>* Get_MeshEffectPreviews(const wstring& wstrTag);
+
 #pragma endregion
 private:
 	class CObjectPool_Manager* m_pObjectPool_Manager = { nullptr };
+	class CDataRepository* m_pDataRepository = { nullptr };
 	class CTimer_Manager* m_pTimer_Manager = { nullptr };
 	class CSound_Manager* m_pSound_Manager = { nullptr };
-	class CMapFile_Manager* m_pMapFile_Manager = { nullptr };
 	class CFont_Manager* m_pFont_Manager = { nullptr };
 	class CGraphic_Device* m_pGraphic_Device = { nullptr };
 	class CLevel_Manager* m_pLevel_Manager = { nullptr };
@@ -370,5 +369,14 @@ inline void CGameInstance::Clear_Channel()
 	return m_pEventBus_Manager->Clear_Channel<Tag>();
 }
 #pragma endregion
+
+#pragma region DATA_REPOSITORY
+template<typename T>
+inline HRESULT CGameInstance::Regist_Document(_uint iLevelID, DTO::ECategory eCategory)
+{
+	return m_pDataRepository->Regist_Category<T>(iLevelID, eCategory);
+}
+
+#pragma endregion 
 
 NS_END
