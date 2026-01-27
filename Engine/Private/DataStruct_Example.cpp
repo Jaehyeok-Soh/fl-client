@@ -17,7 +17,34 @@ NLOHMANN_JSON_SERIALIZE_ENUM(EMapType,
 	}
 )
 
-inline void to_json(json& j, const TExample_LightData& data)
+void to_json(json& j, const EMapType& e)
+{
+	switch (e)
+	{
+	case EMapType::STATICMODEL:
+		j = "STATICMODEL";
+		break;
+	case EMapType::LIGHT:
+		j = "LIGHT";
+		break;
+	default:
+		j = "END";
+		break;
+	}
+}
+
+void from_json(const json& j, EMapType& e)
+{
+	const std::string s = j.get<std::string>();
+	if (s == "STATICMODEL")
+		e = EMapType::STATICMODEL;
+	else if (s == "LIGHT")
+		e = EMapType::LIGHT;
+	else if (s == "END")
+		e = EMapType::END;
+}
+
+void to_json(json& j, const TExample_LightData& data)
 {
 	j = json
 	{
@@ -28,7 +55,7 @@ inline void to_json(json& j, const TExample_LightData& data)
 		{ "iValue3", data.iValue3 }
 	};
 }
-inline void from_json(const json& j, TExample_LightData& data)
+void from_json(const json& j, TExample_LightData& data)
 {
 	j.at("strTag").get_to(data.strTag);
 	if (j.contains("iValue"))
@@ -38,7 +65,7 @@ inline void from_json(const json& j, TExample_LightData& data)
 	if (j.contains("iValue3"))
 		data.iValue3 = j["iValue3"].get<_int>();
 }
-inline void to_json(json& j, const TExample_StaticModelData& data)
+void to_json(json& j, const TExample_StaticModelData& data)
 {
 	j = json
 	{
@@ -49,7 +76,7 @@ inline void to_json(json& j, const TExample_StaticModelData& data)
 		{ "iValue3", data.iValue3 }
 	};
 }
-inline void from_json(const json& j, TExample_StaticModelData& data)
+void from_json(const json& j, TExample_StaticModelData& data)
 {
 	j.at("strTag").get_to(data.strTag);
 	if (j.contains("iValue"))

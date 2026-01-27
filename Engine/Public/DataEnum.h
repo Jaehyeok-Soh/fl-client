@@ -1,6 +1,5 @@
 #pragma once
 
-
 /*
 * Category를 제외한 아래의 EUIType 등을 각자 DataStruct선언으로 옮기세요
 */
@@ -17,8 +16,6 @@ enum class ECategory : _uint
 	END
 };
 inline constexpr _uint g_CategoryCount{ ENUM_TO_UINT(ECategory::END) };
-
-
 
 /////////////////-------------------  UI  -------------------/////////////////
 enum class EUIType : _uint

@@ -114,11 +114,15 @@ void CImGui_Dockspace_MenuBar::Load_Data(const wstring& wstrFilePath)
 	DTO::ECategory eCategory = DTO::ECategory::MAP;
 	_uint iLevelID = ENUM_TO_UINT(eLevelType);
 
+	if (FAILED(m_pGameInstance->Regist_Document<CDataDocument_Example>(iLevelID, eCategory)))
+		return;
+
 	if (FAILED(m_pGameInstance->Load_File_Json(iLevelID, eCategory, wstrFilePath)))
 		return;
 
 	const CDataDocumentBase* pBase = m_pGameInstance->Get_Document(iLevelID, eCategory, "asdf");
-	
+	_uint i = 0;
+	i += 2;
 }
 
 void CImGui_Dockspace_MenuBar::Save_MapData(const wstring& wstrFilePath)

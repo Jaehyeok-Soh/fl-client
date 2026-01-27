@@ -528,9 +528,6 @@
     <ClCompile Include="..\Private\BuilderBase.cpp">
       <Filter>01. Utility\14. Builder</Filter>
     </ClCompile>
-    <ClCompile Include="..\Private\DataEnum.cpp">
-      <Filter>01. Utility\11. DataRepository</Filter>
-    </ClCompile>
     <ClCompile Include="..\private\json_forward.cpp">
       <Filter>01. Utility\15. Json_Forward</Filter>
     </ClCompile>
@@ -548,6 +545,12 @@
     </ClCompile>
     <ClCompile Include="..\Private\VIBuffer_Particle_Mesh.cpp">
       <Filter>00. System\05. Component\VIBuffer\Particle</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\DataEnum.cpp">
+      <Filter>01. Utility\11. DataRepository</Filter>
+    </ClCompile>
+    <ClCompile Include="..\private\DataEnum_JsonDecl.cpp">
+      <Filter>01. Utility\11. DataRepository</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -862,6 +865,9 @@
     </ClInclude>
     <ClInclude Include="..\Public\VIBuffer_Particle_Mesh.h">
       <Filter>00. System\05. Component\VIBuffer\Particle</Filter>
+    </ClInclude>
+    <ClInclude Include="..\public\DataEnum_JsonDecl.h">
+      <Filter>01. Utility\11. DataRepository</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
