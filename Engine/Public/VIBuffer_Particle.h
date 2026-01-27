@@ -31,7 +31,7 @@ public:
 		float m_fStartSpeeds = { 1.f };
 		Vec2 vLifeTime = { 0.f, 0.f };
 		_bool isLoop = { false };
-		_float isRandomSeed = { false };
+		_bool isRandomSeed = { false };
 		CModel*	pModel = { nullptr };
 	}PARTICLE_ORIGIN_DESC;
 protected:

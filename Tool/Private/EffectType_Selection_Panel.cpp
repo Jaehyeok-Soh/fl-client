@@ -166,7 +166,7 @@ void CEffectType_Selection_Panel::CreateParticleEffect()
 		pEffectDesc._Effect_Model_Tag = {};
 		pEffectDesc._Effect_Shader_Tag = {};
 		pEffectDesc._Effect_DiffuseTexture_Tag = {};
-		pEffectDesc._Effect_Mesh_NoiseTexture_Tag = {};
+		pEffectDesc._Effect_NoiseTexture_Tag = {};
 		pEffectDesc._Effect_DiffuseTexture_Tag = {};
 		pEffectDesc._Effect_ShaderPass = {};
 
@@ -175,6 +175,7 @@ void CEffectType_Selection_Panel::CreateParticleEffect()
 
 		// =======   ¿Ã∆Â∆Æ Ω∫≈©∑— Value   ===========
 		pEffectDesc._Effect_ScrollSpeed = { 0.f, 0.f };
+		pEffectDesc._Effect_DiscardValue = { 0.05f };
 
 		// ========   ¿Ã∆Â∆Æ ø÷∞Ó Scale Value   ==========
 		pEffectDesc._Effect_DistortionScale = { 0.f, 0.f };
