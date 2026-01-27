@@ -11,7 +11,7 @@ USING(Tool)
 
 CPanel_MapObjectList::CPanel_MapObjectList(const _char* pLabel, CLevel* pOwner, ID3D11Device* pDevice, ID3D11DeviceContext* pDeviceContext)
 	: CImGui_Panel(pLabel, pOwner, pDevice, pDeviceContext), m_pGameInstance(CGameInstance::GetInstance()), m_pTransformLayout(nullptr), m_pCamera(nullptr)
-	, m_pCameraCom(nullptr)
+	, m_pCameraCom(nullptr), m_wszMapObjectLayerTag{}
 {
 
 	m_pTransformLayout = CImGui_Layout_Transform::Create("Layout_Transform", m_pDevice, m_pDeviceContext);
@@ -97,7 +97,10 @@ HRESULT CPanel_MapObjectList::Render_MapObjectList()
 	ImGui::SeparatorText(" Function ");
 
 	if (ImGui::Button("Clear"))
+	{
+		m_pSelectMapObject = nullptr;
 		m_pGameInstance->Clear_Layer(ENUM_TO_UINT(ELevelType::MAP), g_wszStaticModelLayer);
+	}
 
 	ImGui::Separator();
 

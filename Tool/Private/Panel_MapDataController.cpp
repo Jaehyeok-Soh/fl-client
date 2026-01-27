@@ -113,6 +113,10 @@ HRESULT CPanel_MapDataController::Render_Converted_UnrealRawMapData_Button()
 
 	if (ImGui::CollapsingHeader(" [ Function ] : Converted Raw Data"))
 	{
+		if (ImGui::InputFloat("Convert Position Mul Scale", &m_fMulScale))
+			m_pUEMapdataParser->Set_MulScale(m_fMulScale);
+
+
 		ImGui::SeparatorText("[ Load All ] Raw Map Data");
 
 		if (ImGui::Button(" [ Load All ] Raw Map Data "))
