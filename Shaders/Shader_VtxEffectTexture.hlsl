@@ -4,11 +4,17 @@
 
 #define DEFAULTTEXTURE 0 // 기본 텍스처
 #define NOISETEXTURE 1
+#define MASKINGTEXTURE 2
+#define GRADATIONTEXTURE 3
 
 struct EffectDesc
 {
-    uint g_Flags;
+    uint g_TextureFlags;
     float3 vPadding;
+    
+    uint g_RenderFlags;       // 
+    float3 vPadding1;
+    
     float2 g_ScrollOffset;
     float2 g_DistortionScale;
     float4 g_EffectColor;
@@ -19,22 +25,58 @@ cbuffer ConstantBuffer_Effect
     EffectDesc g_Effect;
 };
 
-bool HasNoiseTexture()
+// ========  Render Flags  =========
+bool HasBillboard()
 {
-    return (g_Effect.g_Flags & 1) != 0;
+    return (g_Effect.g_RenderFlags & 1) != 0;
 }
 
+// ========  Texture Flags  ==========
+
+bool HasDefaultTexture()
+{
+    return (g_Effect.g_TextureFlags & 1) != 0;
+}
+
+bool HasNoiseTexture()
+{
+    return (g_Effect.g_TextureFlags & 2) != 0;
+}
+
+bool HasMaskTexture()
+{
+    return (g_Effect.g_TextureFlags & 4) != 0;
+}
+
+bool HasGradationTexture()
+{
+    return (g_Effect.g_TextureFlags & 8) != 0;
+
+}
+
+// ========== Texture Sampling =============
+float4 DefaultTextureSample(float2 UV)
+{
+    return g_DefaultTextures[DEFAULTTEXTURE].Sample(LinearSampler, UV);
+}
 
 float4 NoiseTextureSample(float2 UV)
 {
     return g_DefaultTextures[NOISETEXTURE].Sample(LinearSampler, UV);
 }
 
-float4 DefaultTextureSample(float2 UV)
+float4 MaskTextureSample(float2 UV)
 {
-    return g_DefaultTextures[DEFAULTTEXTURE].Sample(LinearSampler, UV);
-
+    return g_DefaultTextures[MASKINGTEXTURE].Sample(LinearSampler, UV);
 }
+
+float4 GradationTextureSample(float2 UV)
+{
+    return g_DefaultTextures[GRADATIONTEXTURE].Sample(LinearSampler, UV);
+}
+
+// =========== VS In  ==============
+
 
 VS_OUT_POS_GS_PARTICLE VS_Texture(VS_IN_POS_GS_PARTICLE In)
 {
@@ -56,12 +98,17 @@ void GS_Texture(point VS_OUT_POS_GS_PARTICLE In[1], inout TriangleStream<GS_OUT_
     GS_OUT_POS_PARTICLE Out[4];
     
     // =========        빌보드 계산          ==============
-    float3 vLook = normalize(CameraPosition() - In[0].vPosition.xyz);
-    float3 vRight = normalize(cross(float3(0.f, 1.f, 0.f), vLook)) * In[0].vPSize.x;
-    float3 vUp = normalize(cross(vLook, vRight)) * In[0].vPSize.y;
-    
+    float3 vRight = float3(1.f, 0.f, 0.f) * In[0].vPSize.x;
+    float3 vUp = float3(0.f, 1.f, 0.f) * In[0].vPSize.y;
     matrix matVP = mul(V, P);
     
+    if (HasBillboard())
+    {
+        float3 vLook = normalize(CameraPosition() - In[0].vPosition.xyz);
+        vRight = normalize(cross(float3(0.f, 1.f, 0.f), vLook)) * In[0].vPSize.x;
+        vUp = normalize(cross(vLook, vRight)) * In[0].vPSize.y;
+    }
+
     // ========         정점 4개 생성        =============
     float3 vPos[4];
     vPos[0] = In[0].vPosition.xyz + vRight + vUp;
@@ -98,15 +145,22 @@ float4 PS_Texture(GS_OUT_POS_PARTICLE In) : SV_TARGET0
     {
         noiseSample = NoiseTextureSample(noiseUV);
     }
+    
     float noiseValue = noiseSample.r;
     float2 finalUV = In.vUV;
     
     finalUV.x += (noiseValue - 0.5f) * g_Effect.g_DistortionScale.x;
     finalUV.y += (noiseValue - 0.5f) * g_Effect.g_DistortionScale.y;
 
-    float4 color = DefaultTextureSample(finalUV);
+    // =========== Diffuse Texture 여부 =============
+    float4 DiffuseColor = float4(1.f, 1.f, 1.f, 1.f);
     
-    float finalAlpha = color.a * noiseValue;
+    if (HasDiffuse())
+    {
+        DiffuseColor = DefaultTextureSample(finalUV);
+    }
+    
+    float finalAlpha = DiffuseColor.a * noiseValue;
     
     // ===========  라이프타임에 따른 투명도 적용  =============
     float LifeRatio = saturate(1.0f - (In.vLifeTime.x / In.vLifeTime.y));
@@ -114,7 +168,7 @@ float4 PS_Texture(GS_OUT_POS_PARTICLE In) : SV_TARGET0
     if (finalAlpha < 0.05f)
         discard;
     
-    return float4(color.rgb * g_Effect.g_EffectColor.rgb * 1.0f, finalAlpha);
+    return float4(DiffuseColor.rgb * g_Effect.g_EffectColor.rgb * 1.0f, finalAlpha);
 }
 
 

@@ -85,8 +85,8 @@ void CEffectObject::Set_EffectDesc(const Effect_Desc& Desc)
     Model_Setting(m_tEffectDesc._Effect_Model_Tag);
     Texture_Setting(m_tEffectDesc._Effect_DiffuseTexture_Tag);
     Shader_Setting(m_tEffectDesc._Effect_Shader_Tag);
-    Particle_Setting();
     Buffer_Setting();
+    Particle_Setting();
 
     m_tPrevEffectDesc = m_tEffectDesc;
 }
@@ -178,7 +178,9 @@ void CEffectObject::Texture_Setting(const wstring& TextureName)
         if (pInstance)
         {
             Get_Component<CTexture>()->Add_DefaultTexture(s + m_tEffectDesc._Effect_DiffuseTexture_Tag, ENUM_TO_UINT(TEXTURETYPE::DIFFUSE));
-            Get_Component<CTexture>()->Add_DefaultTexture(s + m_tEffectDesc._Effect_Mesh_NoiseTexture_Tag, ENUM_TO_UINT(TEXTURETYPE::NOISE));
+            Get_Component<CTexture>()->Add_DefaultTexture(s + m_tEffectDesc._Effect_NoiseTexture_Tag, ENUM_TO_UINT(TEXTURETYPE::NOISE));
+            Get_Component<CTexture>()->Add_DefaultTexture(s + m_tEffectDesc._Effect_MaskingTexture_Tag, ENUM_TO_UINT(TEXTURETYPE::MASKING));
+            Get_Component<CTexture>()->Add_DefaultTexture(s + m_tEffectDesc._Effect_GradationTexture_Tag, ENUM_TO_UINT(TEXTURETYPE::GRADATION));
         }
     }
 
@@ -190,7 +192,9 @@ void CEffectObject::Texture_Setting(const wstring& TextureName)
         if (pInstance)
         {
             Get_Component<CTexture>()->Add_DefaultTexture(s + m_tEffectDesc._Effect_DiffuseTexture_Tag, ENUM_TO_UINT(TEXTURETYPE::DIFFUSE));
-            Get_Component<CTexture>()->Add_DefaultTexture(s + m_tEffectDesc._Effect_Mesh_NoiseTexture_Tag, ENUM_TO_UINT(TEXTURETYPE::NOISE));
+            Get_Component<CTexture>()->Add_DefaultTexture(s + m_tEffectDesc._Effect_NoiseTexture_Tag, ENUM_TO_UINT(TEXTURETYPE::NOISE));
+            Get_Component<CTexture>()->Add_DefaultTexture(s + m_tEffectDesc._Effect_MaskingTexture_Tag, ENUM_TO_UINT(TEXTURETYPE::MASKING));
+            Get_Component<CTexture>()->Add_DefaultTexture(s + m_tEffectDesc._Effect_GradationTexture_Tag, ENUM_TO_UINT(TEXTURETYPE::GRADATION));
         }
     }
 
@@ -226,6 +230,21 @@ void CEffectObject::Shader_Setting(const wstring& ShaderName)
 
 }
 
+
+void CEffectObject::Bind_ShaderState_Setting()
+{
+    // 클라에서 설정할 것.
+    ID3DX11EffectRasterizerVariable* rsVar = Get_Component<CShader>()->Get_Rasterizer("SelectedRS");
+    ID3DX11EffectBlendVariable* bsVar = Get_Component<CShader>()->Get_Blend("SelectedBS");
+    ID3DX11EffectDepthStencilVariable* dsVar = Get_Component<CShader>()->Get_DepthStencil("SelectedDS");
+
+    // Rasterizer
+    //if(m_tEffectDesc._Effect_Shader_RasterizeState_Flag & )
+
+    // DepthStencil
+}
+
+
 HRESULT CEffectObject::Bind_ShaderResource()
 {
     CShader* pShader = Get_Component<CShader>();
@@ -238,8 +257,13 @@ HRESULT CEffectObject::Bind_ShaderResource()
     // 셰이더에 던질 구조체 작성하기.
     {
         SHADER_EFFECT_DESC pDesc = {};
-        pDesc.iFlags = 0;
+        // TextureFlag
+        pDesc.iTextureFlags = m_tEffectDesc._Effect_TextureFlag;
         pDesc.vPadding = Vec3{ 0.f, 0.f, 0.f };
+        // RenderFlag
+        pDesc.iRenderFlags = m_tEffectDesc._Effect_RenderFlag;
+        pDesc.vPadding_2 = Vec3{ 0.f, 0.f, 0.f };
+        
         pDesc.vDistortionScale = m_tEffectDesc._Effect_DistortionScale;
         pDesc.vEffectColor = m_tEffectDesc._Effect_Color;
         pDesc.vScrollOffset = m_vScrollOffset;
@@ -277,14 +301,12 @@ HRESULT CEffectObject::Bind_ShaderResource()
         }
     }
 
-
-
     return S_OK;
 }
 
 HRESULT CEffectObject::Awake(const _uint iCurrentLevelID)
 {
-
+    // 절대로 절대로 Loader에서 불리면 안된다.
 
     return S_OK;
 }

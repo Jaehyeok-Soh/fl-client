@@ -25,6 +25,8 @@ enum class TEXTURETYPE
 {
     DIFFUSE = 0,
     NOISE = 1,
+    MASKING = 2,
+    GRADATION = 3,
 };
 
 enum class E_SHAPETYPE
@@ -59,6 +61,38 @@ enum class E_PARTICLETYPE
     MESH,
 };
 
+enum class E_SAMPLERSTATE_FLAG
+{
+    LinearSampler,
+    LinearClampSampler,
+    LinearBorderSampler,
+    LinearMirrorSampler,
+    PointSampler
+};
+
+enum class E_RASTERIZESTATE_FLAG
+{
+    RS_Default,
+    RS_Default_CullFront,
+    RS_Default_CullNone,
+    RS_Wire,
+};
+
+enum class E_BLENDSTATE_FLAG
+{
+    BS_Default,
+    BS_AlphaBlend,
+    BS_Blend,
+};
+
+enum class E_DEPTHSTENCILSTATE_FLAG
+{
+    DS_Default,
+    DS_Disabled,
+    DS_ReadOnly,
+    DS_Write,
+};
+
 // 비트 플래그로 파티클 종류 지정하기.
 // 비트 플래그로 로컬 좌표 따라갈것인지, 월드 좌표 따라갈 것인지 정하기.
 
@@ -73,20 +107,22 @@ public:
     typedef struct tagEffectObjectDesc : public Super::PARTOBJ_DESC
     {
         // ========     이펙트 타입   =========
-        E_EffectSystemType eEffectSystemType      = E_EffectSystemType::Particle;
-        E_PARTICLETYPE eEffectParticleType        = E_PARTICLETYPE::PARTICLE;
-        E_EFFECTTYPE eEffectType                  = E_EFFECTTYPE::Particle;
-        E_SHAPETYPE _Effect_ShapeType             = E_SHAPETYPE::SPREAD;
+        E_EffectSystemType eEffectSystemType = E_EffectSystemType::Particle;
+        E_PARTICLETYPE eEffectParticleType = E_PARTICLETYPE::PARTICLE;
+        E_EFFECTTYPE eEffectType = E_EFFECTTYPE::Particle;
+        E_SHAPETYPE _Effect_ShapeType = E_SHAPETYPE::SPREAD;
         E_SIMULATION_SPACE _Effect_SimulationType = E_SIMULATION_SPACE::NONE;
 
         // ========  이펙트 Material 설정   ===========
         wstring     _Effect_Model_Tag = {};
         wstring     _Effect_DiffuseTexture_Tag = {};
-        wstring     _Effect_Mesh_NoiseTexture_Tag = {};
+        wstring     _Effect_NoiseTexture_Tag = {};
+        wstring     _Effect_MaskingTexture_Tag = {};
+        wstring     _Effect_GradationTexture_Tag = {};
 
         wstring     _Effect_Shader_Path = {};
         wstring     _Effect_Shader_Tag = {};
-        int         _Effect_ShaderPass = {0};
+        int         _Effect_ShaderPass = { 0 };
 
         // =======   이펙트 스크롤 Value   ===========
         Vec2     _Effect_ScrollSpeed = { 0.f, 0.f };
@@ -100,6 +136,7 @@ public:
 
         // =========   이펙트 Color Value   ===============
         Vec4     _Effect_Color = { 1.f, 0.f, 0.f, 1.f };
+        float    _Effect_DiscardValue = { 0.05f };
 
         // =========   Tool용 시간 값   ================
         bool      _Effect_TimeStop = true;
@@ -122,10 +159,26 @@ public:
         _float              _Effect_PlayBackSpeed = { 1.f };
         _float              _Effect_StartSpeed = { 1.f };   // Particle에 영향을 주는 스피드 [개별 배속]
         int                 _Effect_MaxParticle = { 100 };
-        E_RENDER_TYPE       _Effect_BillBoardFlag = E_RENDER_TYPE::NONE;
 
         // ========  이펙트 Radius  ==========
-        Vec3                _Effect_Range = {1.f, 1.f, 1.f};
+        Vec3                _Effect_Range = { 1.f, 1.f, 1.f };
+
+        // ========  이펙트 Texture Flag  =======
+        _uint               _Effect_TextureFlag = {};
+        _uint               _Effect_RenderFlag = {};
+
+        // ========  툴용 Flag ========
+        _bool               _Effect_Tool_DiffuseTexture = { false };
+        _bool               _Effect_Tool_NoiseTexture = { false };
+        _bool               _Effect_Tool_MaskingTexture = { false };
+        _bool               _Effect_Tool_GradationTexture = { false };
+
+        _bool               _Effect_Tool_UseBillboard = { false };
+
+        // ========= Shader 전용 Flag ============
+        _uint               _Effect_Shader_RasterizeState_Flag = {};
+        _uint               _Effect_Shader_DepthStencilState_Flag = {};
+        _uint               _Effect_Shader_BlendState_Flag = {};
 
     }Effect_Desc;
 
@@ -160,6 +213,7 @@ public:
     void Buffer_Setting();
 
     void Particle_Setting();
+    void Bind_ShaderState_Setting();
 
 private:
     //  ==========  Shader Binding Setting  =============
