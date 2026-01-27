@@ -166,19 +166,24 @@ public:
         // ========  이펙트 Texture Flag  =======
         _uint               _Effect_TextureFlag = {};
         _uint               _Effect_RenderFlag = {};
+        _uint               _Effect_SamplerStateFlag = {};
 
         // ========  툴용 Flag ========
+        // Texture 쓰니?
         _bool               _Effect_Tool_DiffuseTexture = { false };
         _bool               _Effect_Tool_NoiseTexture = { false };
         _bool               _Effect_Tool_MaskingTexture = { false };
         _bool               _Effect_Tool_GradationTexture = { false };
 
+        // 빌보드는 있니, 스크롤은 먹이니
         _bool               _Effect_Tool_UseBillboard = { false };
+        _bool               _Effect_Tool_UseScroll = { false };
 
-        // ========= Shader 전용 Flag ============
-        _uint               _Effect_Shader_RasterizeState_Flag = {};
-        _uint               _Effect_Shader_DepthStencilState_Flag = {};
-        _uint               _Effect_Shader_BlendState_Flag = {};
+        // SamplerState 몇번 쓸거니
+        int               _Effect_Tool_DiffuseSamplerState_Flag = {};
+        int               _Effect_Tool_NoiseSamplerState_Flag = {};
+        int               _Effect_Tool_MaskingSamplerState_Flag = {};
+        int               _Effect_Tool_GradiationSamplerState_Flag = {};
 
     }Effect_Desc;
 

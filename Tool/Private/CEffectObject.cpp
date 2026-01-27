@@ -263,6 +263,9 @@ HRESULT CEffectObject::Bind_ShaderResource()
         // RenderFlag
         pDesc.iRenderFlags = m_tEffectDesc._Effect_RenderFlag;
         pDesc.vPadding_2 = Vec3{ 0.f, 0.f, 0.f };
+        // SamplerStateFlag
+        pDesc.iSamplerStateFlags = m_tEffectDesc._Effect_SamplerStateFlag;
+        pDesc.vPadding_3 = Vec3{ 0.f, 0.f, 0.f };
         
         pDesc.vDistortionScale = m_tEffectDesc._Effect_DistortionScale;
         pDesc.vEffectColor = m_tEffectDesc._Effect_Color;

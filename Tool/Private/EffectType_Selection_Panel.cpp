@@ -28,8 +28,6 @@ void CEffectType_Selection_Panel::DrawEmbedded()
 	ImGui::SameLine();
 	if (ImGui::Button("Trail")) { m_eSelectedEffectType = E_EffectSystemType::Trail; }
 	ImGui::SameLine();
-		
-
 }
 
 void CEffectType_Selection_Panel::DrawEffectList()

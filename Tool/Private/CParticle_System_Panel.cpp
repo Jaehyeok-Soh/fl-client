@@ -898,7 +898,8 @@ void CParticle_System_Panel::Draw_ParticleSystem(CToolObject* pGo)
 		if (ImGui::TreeNode("RenderState Setting##Renderer"))
 		{
 			// =============  [USE BILLBOARD]  ==============
-			if (ImGui::Checkbox("Use BillBoard##Renderer", &m_tCurrentDesc._Effect_Tool_UseBillboard))
+			ImGui::Text("Bilboard"); ImGui::SameLine(0, 200.f);
+			if (ImGui::Checkbox("Use##BillBoardRenderer", &m_tCurrentDesc._Effect_Tool_UseBillboard))
 			{
 				if (m_tCurrentDesc._Effect_Tool_UseBillboard)
 					Engine_Utils::Add_Flag(m_tCurrentDesc._Effect_RenderFlag, 1);
@@ -908,16 +909,198 @@ void CParticle_System_Panel::Draw_ParticleSystem(CToolObject* pGo)
 
 				m_bModified |= true;
 			}
+			ImGui::Spacing();
 			// =============  [CHOOSE SAMPLERSTATE]	  ============
 
+			if (ImGui::TreeNode("SamplerState Setting##Renderer"))
+			{
+				// Diffuse Texture##SamplerState
+				if (ImGui::TreeNode("Diffuse Texture##SamplerState"))
+				{
+					vector<string> m_PParticleTypeList;
+					m_PParticleTypeList.clear();
 
-			// =============  [CHOOSE BLENDSTATE]   ==============
+					m_PParticleTypeList.push_back("LinearSampler");
+					m_PParticleTypeList.push_back("LinearClampSampler");
+					m_PParticleTypeList.push_back("LinearBorderSampler");
+					m_PParticleTypeList.push_back("LinearMirrorSampler");
+					m_PParticleTypeList.push_back("PointSampler");
 
+					std::vector<const char*> iTems1;
+					iTems1.reserve(static_cast<int>(m_PParticleTypeList.size()));
 
-			// =============  [CHOOSE RASTERIZESTATE]   ==========
+					for (auto& str : m_PParticleTypeList)
+						iTems1.push_back(str.c_str());
 
+					if (ImGui::ListBox("##ParticleType Select", &m_tCurrentDesc._Effect_Tool_DiffuseSamplerState_Flag, [](void* data, int idx, const char** out_text)
+						{
+							auto& vector = *static_cast<std::vector<std::string>*>(data);
+							*out_text = vector[idx].c_str();
+							return true;
+						},
+						(void*)&m_PParticleTypeList, (int)m_PParticleTypeList.size(), 2))
+					{
+						m_bModified |= true;
+					}
 
-			// =============  [CHOOSE DEPTHSTENCILSTATE]  ========
+					switch (m_tCurrentDesc._Effect_Tool_DiffuseSamplerState_Flag)
+					{
+					case 0:
+						Engine_Utils::Add_Flag(m_tCurrentDesc._Effect_SamplerStateFlag, 1); break;
+					case 1:
+						Engine_Utils::Add_Flag(m_tCurrentDesc._Effect_SamplerStateFlag, 2); break;
+					case 2:
+						Engine_Utils::Add_Flag(m_tCurrentDesc._Effect_SamplerStateFlag, 4); break;
+					case 3:
+						Engine_Utils::Add_Flag(m_tCurrentDesc._Effect_SamplerStateFlag, 8); break;
+					case 4:
+						Engine_Utils::Add_Flag(m_tCurrentDesc._Effect_SamplerStateFlag, 16); break;
+					}
+
+					ImGui::TreePop();
+					ImGui::Spacing();
+				}
+				// Noise Texture##SamplerState
+				if (ImGui::TreeNode("Noise Texture##SamplerState"))
+				{
+					vector<string> m_PParticleTypeList;
+					m_PParticleTypeList.clear();
+
+					m_PParticleTypeList.push_back("LinearSampler");
+					m_PParticleTypeList.push_back("LinearClampSampler");
+					m_PParticleTypeList.push_back("LinearBorderSampler");
+					m_PParticleTypeList.push_back("LinearMirrorSampler");
+					m_PParticleTypeList.push_back("PointSampler");
+
+					std::vector<const char*> iTems1;
+					iTems1.reserve(static_cast<int>(m_PParticleTypeList.size()));
+
+					for (auto& str : m_PParticleTypeList)
+						iTems1.push_back(str.c_str());
+
+					if (ImGui::ListBox("##ParticleType Select", &m_tCurrentDesc._Effect_Tool_DiffuseSamplerState_Flag, [](void* data, int idx, const char** out_text)
+						{
+							auto& vector = *static_cast<std::vector<std::string>*>(data);
+							*out_text = vector[idx].c_str();
+							return true;
+						},
+						(void*)&m_PParticleTypeList, (int)m_PParticleTypeList.size(), 2))
+					{
+						m_bModified |= true;
+					}
+
+					switch (m_tCurrentDesc._Effect_Tool_DiffuseSamplerState_Flag)
+					{
+					case 0:
+						Engine_Utils::Add_Flag(m_tCurrentDesc._Effect_SamplerStateFlag, 1); break;
+					case 1:
+						Engine_Utils::Add_Flag(m_tCurrentDesc._Effect_SamplerStateFlag, 2); break;
+					case 2:
+						Engine_Utils::Add_Flag(m_tCurrentDesc._Effect_SamplerStateFlag, 4); break;
+					case 3:
+						Engine_Utils::Add_Flag(m_tCurrentDesc._Effect_SamplerStateFlag, 8); break;
+					case 4:
+						Engine_Utils::Add_Flag(m_tCurrentDesc._Effect_SamplerStateFlag, 16); break;
+					}
+
+					ImGui::TreePop();
+					ImGui::Spacing();
+				}
+				// Masking Texture##SamplerState
+				if (ImGui::TreeNode("Masking Texture##SamplerState"))
+				{
+					vector<string> m_PParticleTypeList;
+					m_PParticleTypeList.clear();
+
+					m_PParticleTypeList.push_back("LinearSampler");
+					m_PParticleTypeList.push_back("LinearClampSampler");
+					m_PParticleTypeList.push_back("LinearBorderSampler");
+					m_PParticleTypeList.push_back("LinearMirrorSampler");
+					m_PParticleTypeList.push_back("PointSampler");
+
+					std::vector<const char*> iTems1;
+					iTems1.reserve(static_cast<int>(m_PParticleTypeList.size()));
+
+					for (auto& str : m_PParticleTypeList)
+						iTems1.push_back(str.c_str());
+
+					if (ImGui::ListBox("##ParticleType Select", &m_tCurrentDesc._Effect_Tool_DiffuseSamplerState_Flag, [](void* data, int idx, const char** out_text)
+						{
+							auto& vector = *static_cast<std::vector<std::string>*>(data);
+							*out_text = vector[idx].c_str();
+							return true;
+						},
+						(void*)&m_PParticleTypeList, (int)m_PParticleTypeList.size(), 2))
+					{
+						m_bModified |= true;
+					}
+
+					switch (m_tCurrentDesc._Effect_Tool_DiffuseSamplerState_Flag)
+					{
+					case 0:
+						Engine_Utils::Add_Flag(m_tCurrentDesc._Effect_SamplerStateFlag, 1); break;
+					case 1:
+						Engine_Utils::Add_Flag(m_tCurrentDesc._Effect_SamplerStateFlag, 2); break;
+					case 2:
+						Engine_Utils::Add_Flag(m_tCurrentDesc._Effect_SamplerStateFlag, 4); break;
+					case 3:
+						Engine_Utils::Add_Flag(m_tCurrentDesc._Effect_SamplerStateFlag, 8); break;
+					case 4:
+						Engine_Utils::Add_Flag(m_tCurrentDesc._Effect_SamplerStateFlag, 16); break;
+					}
+
+					ImGui::TreePop();
+					ImGui::Spacing();
+				}
+				// Gradation Texture##SamplerState
+				if (ImGui::TreeNode("Gradation Texture##SamplerState"))
+				{
+					vector<string> m_PParticleTypeList;
+					m_PParticleTypeList.clear();
+
+					m_PParticleTypeList.push_back("LinearSampler");
+					m_PParticleTypeList.push_back("LinearClampSampler");
+					m_PParticleTypeList.push_back("LinearBorderSampler");
+					m_PParticleTypeList.push_back("LinearMirrorSampler");
+					m_PParticleTypeList.push_back("PointSampler");
+
+					std::vector<const char*> iTems1;
+					iTems1.reserve(static_cast<int>(m_PParticleTypeList.size()));
+
+					for (auto& str : m_PParticleTypeList)
+						iTems1.push_back(str.c_str());
+
+					if (ImGui::ListBox("##ParticleType Select", &m_tCurrentDesc._Effect_Tool_DiffuseSamplerState_Flag, [](void* data, int idx, const char** out_text)
+						{
+							auto& vector = *static_cast<std::vector<std::string>*>(data);
+							*out_text = vector[idx].c_str();
+							return true;
+						},
+						(void*)&m_PParticleTypeList, (int)m_PParticleTypeList.size(), 2))
+					{
+						m_bModified |= true;
+					}
+
+					switch (m_tCurrentDesc._Effect_Tool_DiffuseSamplerState_Flag)
+					{
+					case 0:
+						Engine_Utils::Add_Flag(m_tCurrentDesc._Effect_SamplerStateFlag, 1); break;
+					case 1:
+						Engine_Utils::Add_Flag(m_tCurrentDesc._Effect_SamplerStateFlag, 2); break;
+					case 2:
+						Engine_Utils::Add_Flag(m_tCurrentDesc._Effect_SamplerStateFlag, 4); break;
+					case 3:
+						Engine_Utils::Add_Flag(m_tCurrentDesc._Effect_SamplerStateFlag, 8); break;
+					case 4:
+						Engine_Utils::Add_Flag(m_tCurrentDesc._Effect_SamplerStateFlag, 16); break;
+					}
+
+					ImGui::TreePop();
+					ImGui::Spacing();
+				}
+
+				ImGui::TreePop();
+			}
 
 
 

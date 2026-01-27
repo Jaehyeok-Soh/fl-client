@@ -2,18 +2,37 @@
 #include "Animation_Defines.hlsl"
 #include "Light_Defines.hlsl"
 
+
+// Texture Flag
 #define DEFAULTTEXTURE 0 // 기본 텍스처
 #define NOISETEXTURE 1
 #define MASKINGTEXTURE 2
 #define GRADATIONTEXTURE 3
 
+// Render Flag
+#define BILLBOARD 1
+#define SCROLL 2
+
+// SamplerState Flag
+#define LINEARSAMPLER 1
+#define CLAMP 2
+#define BORDER 4
+#define MIRROR 8
+#define POINT 16
+
 struct EffectDesc
 {
+    // Texture 바인딩 Flag들
     uint g_TextureFlags;
     float3 vPadding;
     
-    uint g_RenderFlags;       // 
+    // 기타 Render 설정값들
+    uint g_RenderFlags;
     float3 vPadding1;
+    
+     // 특정 텍스처마다 먹일 SamplerState
+    uint g_StateFlags;
+    float3 vPadding2;
     
     float2 g_ScrollOffset;
     float2 g_DistortionScale;
@@ -26,9 +45,15 @@ cbuffer ConstantBuffer_Effect
 };
 
 // ========  Render Flags  =========
+
 bool HasBillboard()
 {
     return (g_Effect.g_RenderFlags & 1) != 0;
+}
+
+bool HasScroll()
+{
+    return (g_Effect.g_RenderFlags & 2) != 0;
 }
 
 // ========  Texture Flags  ==========
@@ -51,32 +76,51 @@ bool HasMaskTexture()
 bool HasGradationTexture()
 {
     return (g_Effect.g_TextureFlags & 8) != 0;
+}
 
+// ========= SamplerState Flags ===========
+    // Diffuse
+float4 SampleTextureWithFlags(Texture2D tex, uint flags, uint Shift, float2 uv) // texture라는 이름을 사용하지 못함
+{
+    // Shift만큼 밀어버리고, 하위 3비트씩만 서로 읽어서 인덱스로 사용.
+    uint Index = (flags >> Shift) & 0x7; // 0x7이 하위 3비트
+   
+    if (Index == LINEARSAMPLER)
+        return tex.Sample(LinearSampler, uv);
+    else if (Index == CLAMP)
+        return tex.Sample(LinearClampSampler, uv);
+    else if (Index == BORDER)
+        return tex.Sample(LinearBorderSampler, uv);
+    else if (Index == MIRROR)
+        return tex.Sample(LinearMirrorSampler, uv);
+    else if (Index == POINT)
+        return tex.Sample(PointSampler, uv);
+    else
+        return tex.Sample(LinearSampler, uv);
 }
 
 // ========== Texture Sampling =============
 float4 DefaultTextureSample(float2 UV)
 {
-    return g_DefaultTextures[DEFAULTTEXTURE].Sample(LinearSampler, UV);
+    return SampleTextureWithFlags(g_DefaultTextures[DEFAULTTEXTURE], g_Effect.g_StateFlags, 0, UV);
 }
 
 float4 NoiseTextureSample(float2 UV)
 {
-    return g_DefaultTextures[NOISETEXTURE].Sample(LinearSampler, UV);
+    return SampleTextureWithFlags(g_DefaultTextures[NOISETEXTURE], g_Effect.g_StateFlags, 3, UV);
 }
 
 float4 MaskTextureSample(float2 UV)
 {
-    return g_DefaultTextures[MASKINGTEXTURE].Sample(LinearSampler, UV);
+    return SampleTextureWithFlags(g_DefaultTextures[MASKINGTEXTURE], g_Effect.g_StateFlags, 6, UV);
 }
 
 float4 GradationTextureSample(float2 UV)
 {
-    return g_DefaultTextures[GRADATIONTEXTURE].Sample(LinearSampler, UV);
+    return SampleTextureWithFlags(g_DefaultTextures[GRADATIONTEXTURE], g_Effect.g_StateFlags, 9, UV);
 }
 
 // =========== VS In  ==============
-
 
 VS_OUT_POS_GS_PARTICLE VS_Texture(VS_IN_POS_GS_PARTICLE In)
 {
