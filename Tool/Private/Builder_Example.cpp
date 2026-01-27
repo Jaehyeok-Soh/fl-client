@@ -16,7 +16,7 @@ HRESULT CBuilder_Example::Build(const CDataDocumentBase &document)
 	const auto& doc = static_cast<const CDataDocument_Example&>(document);
 	// For. StaticModel
 	{
-		const vector<DTO::IObjectDataBase*> vecList = doc.Get_ListByType(ENUM_TO_UINT(DTO::EMapType::STATICMODEL));
+		const vector<Engine::IObjectDataBase*> vecList = doc.Get_ListByType(ENUM_TO_UINT(DTO::EMapType::STATICMODEL));
 		for (const auto& pObjectData : vecList)
 		{
 			const auto* pStaticModelData = static_cast<const Engine::CExample_StaticModel*>(pObjectData);
@@ -26,7 +26,7 @@ HRESULT CBuilder_Example::Build(const CDataDocumentBase &document)
 	}
 	// For. Light
 	{
-		const vector<DTO::IObjectDataBase*> vecList = doc.Get_ListByType(ENUM_TO_UINT(DTO::EMapType::LIGHT));
+		const vector<Engine::IObjectDataBase*> vecList = doc.Get_ListByType(ENUM_TO_UINT(DTO::EMapType::LIGHT));
 		for (const auto& pObjectData : vecList)
 		{
 			const auto* pLightData = static_cast<const Engine::CExample_LightData*>(pObjectData);

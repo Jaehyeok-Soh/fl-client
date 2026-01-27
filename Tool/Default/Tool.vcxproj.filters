@@ -357,10 +357,7 @@
     <ClInclude Include="..\Public\ToolLayer.h">
       <Filter>02. GameObjects\UI\Layer</Filter>
     </ClInclude>
-    <ClInclude Include="..\public\BuilderBase.h">
-      <Filter>09. Builder</Filter>
-    </ClInclude>
-    <ClInclude Include="..\public\Builder_Example.h">
+    <ClInclude Include="..\Public\Builder_Example.h">
       <Filter>09. Builder\Example</Filter>
     </ClInclude>
   </ItemGroup>
@@ -546,10 +543,7 @@
     <ClCompile Include="..\Private\ToolLayer.cpp">
       <Filter>02. GameObjects\UI\Layer</Filter>
     </ClCompile>
-    <ClCompile Include="..\private\BuilderBase.cpp">
-      <Filter>09. Builder</Filter>
-    </ClCompile>
-    <ClCompile Include="..\private\Builder_Example.cpp">
+    <ClCompile Include="..\Private\Builder_Example.cpp">
       <Filter>09. Builder\Example</Filter>
     </ClCompile>
   </ItemGroup>

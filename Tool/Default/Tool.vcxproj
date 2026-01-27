@@ -145,8 +145,7 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <ClInclude Include="..\public\BuilderBase.h" />
-    <ClInclude Include="..\public\Builder_Example.h" />
+    <ClInclude Include="..\Public\Builder_Example.h" />
     <ClInclude Include="..\Public\CameraMan_Free.h" />
     <ClInclude Include="..\Public\CEffectObject.h" />
     <ClInclude Include="..\Public\Effect.h" />
@@ -211,8 +210,7 @@
     <ClInclude Include="Tool.h" />
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="..\private\BuilderBase.cpp" />
-    <ClCompile Include="..\private\Builder_Example.cpp" />
+    <ClCompile Include="..\Private\Builder_Example.cpp" />
     <ClCompile Include="..\Private\CameraMan_Free.cpp" />
     <ClCompile Include="..\Private\CEffectObject.cpp" />
     <ClCompile Include="..\Private\Effect.cpp" />

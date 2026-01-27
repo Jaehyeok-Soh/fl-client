@@ -1,10 +1,11 @@
 #pragma once
 #include "Base.h"
 #include "DataEnum.h"
+#include "json_forward.h"
 
-NS_BEGIN(DTO)
+NS_BEGIN(Engine)
 
-class IObjectDataBase abstract : public Engine::CBase
+class ENGINE_DLL IObjectDataBase abstract : public Engine::CBase
 {
 	using Super = Engine::CBase;
 protected:

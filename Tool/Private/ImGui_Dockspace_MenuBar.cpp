@@ -4,6 +4,11 @@
 #include "Level_Effect.h"
 #include "GameObject.h"
 #include "Level_Loading.h"
+#pragma push_macro("new")
+#undef new
+#include "json.hpp"
+using json = nlohmann::json;
+#pragma pop_macro("new")
 #include "DataDocument_Example.h"
 #include "DataStruct_Example.h"
 #include "GameInstance.h"

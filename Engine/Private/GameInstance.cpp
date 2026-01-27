@@ -166,6 +166,7 @@ HRESULT CGameInstance::Copy_BackBufferTexture(ID3D11Texture2D** ppTexture)
 }
 void CGameInstance::Clear(_uint iLevelID)
 {
+	m_pDataRepository->Clear(iLevelID);
 	m_pObjectPool_Manager->All_Despawn_StaticLevel();
 	m_pObject_Manager->Clear(iLevelID);
 	m_pObjectPool_Manager->Clear(iLevelID);

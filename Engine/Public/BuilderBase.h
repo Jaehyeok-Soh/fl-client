@@ -2,13 +2,11 @@
 #include "Base.h"
 
 NS_BEGIN(Engine)
+
 class CGameInstance;
 class CDataDocumentBase;
-NS_END
 
-NS_BEGIN(Tool)
-
-class CBuilderBase abstract : public CBase
+class ENGINE_DLL CBuilderBase abstract : public CBase
 {
 	using Super = CBase;
 public:

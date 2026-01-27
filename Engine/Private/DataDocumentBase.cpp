@@ -6,9 +6,9 @@ CDataDocumentBase::CDataDocumentBase()
 {
 }
 
-const vector<DTO::IObjectDataBase*> CDataDocumentBase::Get_AllList() const
+const vector<IObjectDataBase*> CDataDocumentBase::Get_AllList() const
 {
-	vector<DTO::IObjectDataBase*> vecReturn;
+	vector<IObjectDataBase*> vecReturn;
 	size_t iCount = Get_ObjectCount();
 	if (iCount <= 0)
 		return {};
@@ -21,9 +21,9 @@ const vector<DTO::IObjectDataBase*> CDataDocumentBase::Get_AllList() const
 	return vecReturn;
 }
 
-const vector<DTO::IObjectDataBase*> CDataDocumentBase::Get_ListByType(_uint iType) const
+const vector<IObjectDataBase*> CDataDocumentBase::Get_ListByType(_uint iType) const
 {
-	vector<DTO::IObjectDataBase*> vecReturn;
+	vector<IObjectDataBase*> vecReturn;
 	auto itrType = m_Datas.find(iType);
 	if (itrType == m_Datas.end())
 		return {};
@@ -35,7 +35,7 @@ const vector<DTO::IObjectDataBase*> CDataDocumentBase::Get_ListByType(_uint iTyp
 	return vecReturn;
 }
 
-const DTO::IObjectDataBase* CDataDocumentBase::Get_ByTag(_uint iType, const string& strTag) const
+const IObjectDataBase* CDataDocumentBase::Get_ByTag(_uint iType, const string& strTag) const
 {
 	auto itrType = m_Datas.find(iType);
 	if (itrType == m_Datas.end())

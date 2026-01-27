@@ -6,6 +6,11 @@
 
 NS_BEGIN(Engine)
 
+/*
+* DataRepository가 Level별, 카테고리별로 저장하는곳이였다면
+* DataStore는 파일이름별 DataDocument를 저장
+*/
+
 class ENGINE_DLL CDataStore : public CBase
 {
 	using Super = CBase;
@@ -33,7 +38,6 @@ public:
 template<typename T>
 HRESULT CDataStore::LoadFile_Json(const path& filePath)
 {
-	static_assert(std::is_base_of_v<CDataDocumentBase, T> == true, "T is not derived from CDataDocumentBase");
 	CFileUtils* pFileUtil = CFileUtils::Create();
 	if (FAILED(pFileUtil->Open(filePath, FileMode::READ)))
 	{

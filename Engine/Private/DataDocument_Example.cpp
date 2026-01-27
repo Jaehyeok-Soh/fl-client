@@ -1,5 +1,11 @@
 #include "Engine_pch.h"
 #include "DataDocument_Example.h"
+#pragma push_macro("new")
+#undef new
+#include "json.hpp"
+using json = nlohmann::json;
+#pragma pop_macro("new")
+
 
 CDataDocument_Example::CDataDocument_Example()
 {
@@ -12,19 +18,19 @@ HRESULT CDataDocument_Example::Initialize()
 
 HRESULT CDataDocument_Example::Try_Add(const DTO::TExample_LightData& data)
 {
-	DTO::IObjectDataBase* pObjectBase = Create_ObjectData(DTO::EMapType::LIGHT);
+	IObjectDataBase* pObjectBase = Create_ObjectData(DTO::EMapType::LIGHT);
 	static_cast<CExample_LightData*>(pObjectBase)->Get_Data() = data;
 	return Try_Add(pObjectBase);
 }
 
 HRESULT CDataDocument_Example::Try_Add(const DTO::TExample_StaticModelData& data)
 {
-	DTO::IObjectDataBase* pObjectBase = Create_ObjectData(DTO::EMapType::STATICMODEL);
+	IObjectDataBase* pObjectBase = Create_ObjectData(DTO::EMapType::STATICMODEL);
 	static_cast<CExample_StaticModel*>(pObjectBase)->Get_Data() = data;
 	return Try_Add(pObjectBase);
 }
 
-DTO::IObjectDataBase* CDataDocument_Example::Create_ObjectData(DTO::EMapType eType)
+IObjectDataBase* CDataDocument_Example::Create_ObjectData(DTO::EMapType eType)
 {
 	switch (eType)
 	{
@@ -37,7 +43,7 @@ DTO::IObjectDataBase* CDataDocument_Example::Create_ObjectData(DTO::EMapType eTy
 	}
 }
 
-HRESULT CDataDocument_Example::Try_Add(DTO::IObjectDataBase* pObject)
+HRESULT CDataDocument_Example::Try_Add(IObjectDataBase* pObject)
 {
 	if (pObject == nullptr)
 		return E_FAIL;
@@ -111,7 +117,7 @@ HRESULT CDataDocument_Example::FromJson(const json& j)
 
 		const DTO::EMapType eType = object.at("Type").get<DTO::EMapType>();
 
-		DTO::IObjectDataBase* pObjectDataBase = Create_ObjectData(eType);
+		IObjectDataBase* pObjectDataBase = Create_ObjectData(eType);
 		if (pObjectDataBase == nullptr)
 			return E_FAIL;
 
