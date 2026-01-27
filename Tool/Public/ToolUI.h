@@ -11,8 +11,10 @@ class CToolUI final : public CUIObject
 public:
 	typedef struct tagToolUIDesc : public Super::UIOBJECT_DESC
 	{
-		_wstring wstrTextureTag;
-		uint32_t iTextureIndex;
+		_string strName;
+		_string strInitTextureTag;
+		uint32_t iInitTextureIndex;
+
 	}TOOLUI_DESC;
 
 private:
@@ -31,15 +33,40 @@ public:
 	virtual void Ready_Before_Render(const _float fTimeDelta) override;
 	virtual HRESULT Render() override;
 
-public:
-	void Set_TextureIndex(uint32_t index) { m_iTextureIndex = index; }
-
 private:
 	HRESULT Ready_Components(TOOLUI_DESC* pDesc);
 	HRESULT Bind_ShaderResources();
 
+public:
+	const _string& Get_Name()const { return m_strName; }
+	void Set_Name(const _string& str) { m_strName = str; }
+
+	ERectTransform Get_RectTransformType() const { return m_eRectTransformType; }
+	void Set_RectTransformType(ERectTransform value) { m_eRectTransformType = value; }
+	EUiType Get_UIType() const { return m_eUIType; }
+	void Set_UIType(EUiType value) { m_eUIType = value; }
+
+	const _wstring& Get_TextureTag() const { return m_wstrTextureTag; }
+	void Set_TextureTag(const _wstring& value) { m_wstrTextureTag = value; }
+	uint32_t Get_TextureIndex() const { return m_iTextureIndex; }
+	void Set_TextureIndex(uint32_t value) { m_iTextureIndex = value; }
+
+
+	_float* Get_WIdth_Ptr() { return &m_fWidth; }
+	_float* Get_Height_Ptr() { return &m_fHeight; }
+	_float* Get_PosX_Ptr() { return &m_fX; }
+	_float* Get_PosY_Ptr() { return &m_fY; }
+	_float* Get_PosZ_Ptr() { return &m_fZ; }
+
 private:
-	TOOLUI_DESC* m_tMyDesc = { nullptr };
+	_string m_strName = {};
+
+	GENERIC_UI_DATA m_tUIData = {};
+
+	ERectTransform m_eRectTransformType = { ERectTransform::CENTER };
+	EUiType m_eUIType = { EUiType::IMAGE_2D };
+	
+	_wstring m_wstrTextureTag = {};
 	uint32_t m_iTextureIndex = {};
 
 public:

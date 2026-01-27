@@ -3,18 +3,12 @@
 #include "Level_Loading.h"
 #include "ImGui_ToolManager.h"
 #include "GameInstance.h"
-
 //==========
 // ImGui
 //==========
 #include "UI_Maker.h"
 #include "UI_Hierachy.h"
 #include "UI_Inspector.h"
-
-//==========
-// UI
-//==========
-#include "ToolUI.h"
 
 CLevel_UI::CLevel_UI(ID3D11Device* pDevice, ID3D11DeviceContext* pDeviceContext)
 	: Super(pDevice, pDeviceContext)

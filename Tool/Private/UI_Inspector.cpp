@@ -39,14 +39,12 @@ HRESULT CUI_Inspector::Render(CToolObject* pGo)
 {
 	ImGui::Begin(m_strLabel.c_str(), nullptr, m_Flag);
 
-	m_pSelectedUI = m_pUIManager->Safe_Access_UIObject();
+	m_pSelectedUI = m_pUIManager->Safe_Access_UI(m_pUIManager->Get_CurUIIndex());
 	if (nullptr != m_pSelectedUI)
 	{
 		SetUp_Public_Info();
 		Input_TextureTag();
 	}
-
-
 
 	ImGui::End();
 	return S_OK;
@@ -59,13 +57,8 @@ void CUI_Inspector::SetUp_Public_Info()
 void CUI_Inspector::Input_RectTransform()
 {
 	ImGui::PushID("RectTransform");
-
 	ImGui::SeparatorText("Rect Transform");
-
-	////////////////////////////
-	// Current Selection Card
 	ImGui::BeginChild("RectTransformCard", ImVec2(-FLT_MIN, 168.f), true, ImGuiWindowFlags_NoScrollbar);
-
 	ImGui::TextDisabled("Anchor / pivot preset (3x3).");
 	ImGui::Spacing();
 
@@ -105,14 +98,6 @@ void CUI_Inspector::Input_RectTransform()
 
 	ImGui::EndChild();
 
-	////////////////////////////
-	// Data
-	auto* pData = m_pUIManager->Safe_Access_UIData(m_pUIManager->Get_CurUIIndex());
-	if (nullptr == pData)
-	{
-		ImGui::PopID();
-		return;
-	}
 
 	////////////////////////////
 	// Transform / Size Card
@@ -127,27 +112,14 @@ void CUI_Inspector::Input_RectTransform()
 	{
 		ImGui::TableNextColumn();
 		ImGui::SetNextItemWidth(-FLT_MIN);
-		Scrub_Float("Width", "##UIObjectWidth", &pData->fWidth, 0.1f, 20.f, 0.1f, 10.0f, 100.f);
+		Scrub_Float("Width", "##UIObjectWidth", m_pSelectedUI->Get_WIdth_Ptr(), 0.1f, 20.f, 0.1f, 10.0f, 100.f);
 
 		ImGui::TableNextColumn();
 		ImGui::SetNextItemWidth(-FLT_MIN);
-		Scrub_Float("Height", "##UIObjectHeight", &pData->fHeight, 0.1f, 20.f, 0.1f, 10.0f, 100.f);
+		Scrub_Float("Height", "##UIObjectHeight", m_pSelectedUI->Get_Height_Ptr(), 0.1f, 20.f, 0.1f, 10.0f, 100.f);
 
 		ImGui::TableNextColumn();
 		ImGui::SetNextItemWidth(-FLT_MIN);
-		if(ImGui::Button("Set Native Size", ImVec2(0.f, 0.f)))
-		{
-			if (nullptr != m_pSelectedUI)
-				m_pSelectedUI->Set_SizeToTextureScale();
-
-			pData->fWidth = m_pSelectedUI->Get_Width();
-			pData->fHeight = m_pSelectedUI->Get_Height();
-		}
-		else
-		{
-			if (nullptr != m_pSelectedUI)
-				m_pSelectedUI->Set_Size(pData->fWidth, pData->fHeight);
-		}
 		
 		ImGui::EndTable();
 	}
@@ -159,24 +131,20 @@ void CUI_Inspector::Input_RectTransform()
 	{
 		ImGui::TableNextColumn();
 		ImGui::SetNextItemWidth(-FLT_MIN);
-		Scrub_Float("UIPosX", "##UIObjectPosX", &pData->fPosX, 0.1f, 20.f, 0.1f, 10.0f, 100.f);
+		Scrub_Float("UIPosX", "##UIObjectPosX", m_pSelectedUI->Get_PosX_Ptr(), 0.1f, 20.f, 0.1f, 10.0f, 100.f);
 
 		ImGui::TableNextColumn();
 		ImGui::SetNextItemWidth(-FLT_MIN);
-		Scrub_Float("UIPosY", "##UIObjectPosY", &pData->fPosY, 0.1f, 20.f, 0.1f, 10.0f, 100.f);
+		Scrub_Float("UIPosY", "##UIObjectPosY", m_pSelectedUI->Get_PosY_Ptr(), 0.1f, 20.f, 0.1f, 10.0f, 100.f);
 
 		ImGui::TableNextColumn();
 		ImGui::SetNextItemWidth(-FLT_MIN);
-		Scrub_Float("UIPosZ", "##UIObjectPosZ", &pData->fPosZ, 0.1f, 20.f, 0.1f, 10.0f, 100.f);
+		Scrub_Float("UIPosZ", "##UIObjectPosZ", m_pSelectedUI->Get_PosZ_Ptr(), 0.1f, 20.f, 0.1f, 10.0f, 100.f);
 
 		ImGui::EndTable();
 	}
 
 	ImGui::EndChild();
-
-	if (nullptr != m_pSelectedUI)
-		m_pSelectedUI->Set_Position(pData->fPosX, pData->fPosY, pData->fPosZ);
-
 	ImGui::PopID();
 }
 
@@ -216,8 +184,8 @@ void CUI_Inspector::Input_TextureTag()
 
 				m_pSelectedUI-> Change_Component<CTexture>(pTexture);
 				m_pSelectedUI->Set_TextureIndex(iFileIndex);
-				m_pUIManager->Safe_Access_UIData(m_pUIManager->Get_CurUIIndex())->strTextureTag = Engine_Utils::ToString( L"Texture_" + wstrFolderName);
-				m_pUIManager->Safe_Access_UIData(m_pUIManager->Get_CurUIIndex())->iTextureIndex = iFileIndex;
+				//m_pUIManager->Safe_Access_UIData_Ptr(m_pUIManager->Get_CurUIIndex())->strTextureTag = Engine_Utils::ToString( L"Texture_" + wstrFolderName);
+				//m_pUIManager->Safe_Access_UIData_Ptr(m_pUIManager->Get_CurUIIndex())->iTextureIndex = iFileIndex;
 			}
 		}
 	}

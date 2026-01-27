@@ -8,6 +8,8 @@ NS_END
 
 NS_BEGIN(Tool)
 
+class CToolCanvas;
+class CToolLayer;
 class CToolUI;
 
 class CImGui_UIManager final : public CBase
@@ -20,12 +22,7 @@ private:
 	virtual ~CImGui_UIManager() = default;
 
 public:
-#pragma region FUCTION
-	/* 데이터를 새로 추가합니다. */
-	void Safe_Add_CanvasData(const CANVAS_DATA& tData);
-	void Safe_Add_LayerData(const LAYER_DATA& tData);
-	void Safe_Add_UIData(const GENERIC_UI_DATA& tData);
-	HRESULT  Safe_Add_UI(LAYER_DATA* pLayer, const GENERIC_UI_DATA& tData);
+	HRESULT Safe_Add_Canvas(CToolCanvas* pCanvas);
 
 	/* 커서를 옮길 땐 이걸 써주세요. */
 	void Safe_Change_Canvas(int32_t iNewCanvasIndex);
@@ -36,42 +33,26 @@ public:
 	int32_t Get_NumLayer();
 	int32_t Get_NumUI();
 
-	/* 데이터를 지울 땐 이걸 써주세요. */
-	void Safe_Remove_CanvasData();
-	void Safe_Remove_LayerData();
-
-
 	int32_t Get_CurCanvasIndex() { return m_iCurCanvasIndex; }
 	int32_t Get_CurLayerIndex() { return m_iCurLayerIndex; }
 	int32_t Get_CurUIIndex() { return m_iCurUIIndex; }
 
-#pragma endregion
-
-	HRESULT Remake_UIObjects();
-	HRESULT Clear_UIObjects();
 
 	/* 안전하게 원소에 접근하는 함수들 / nullptr 체크 필수 */
-	vector<CANVAS_DATA>* Safe_Access_CanvasVector();
-	CANVAS_DATA* Safe_Access_Canvas(int32_t index);
-	vector<LAYER_DATA>* Safe_Access_LayerVector();
-	LAYER_DATA* Safe_Access_Layer(int32_t index);
-	vector<GENERIC_UI_DATA>* Safe_Access_UIVector();
-	GENERIC_UI_DATA* Safe_Access_UIData(int32_t index);
-	CToolUI* Safe_Access_UIObject();
+	vector<CToolCanvas*>*	Safe_Access_CanvasVector() { if (m_vecCanvas.empty())return nullptr; return &m_vecCanvas; };
+	CToolCanvas*	Safe_Access_Canvas(int32_t index);
 
-	/// <summary>
-	/// 내부 데이터 안전을 보장할 수 없음
-	/// </summary>
-	/// <returns></returns>
-	vector<CANVAS_DATA>& Get_CanvasDataVector_Ref() { return m_vecCanvasData; }
+	vector<CToolLayer*>* Safe_Access_LayerVector();
+	CToolLayer*		Safe_Access_Layer(int32_t index);
+
+	vector<CToolUI*>* Safe_Access_UIVector();
+	CToolUI*		Safe_Access_UI(int32_t index);
 
 private:
-	/* CANVAS_DATA -> LAYER_DATA -> GENERIC_UI_DATA 각각 벡터를 가지는 계층 구조 입니다 */
-	vector<CANVAS_DATA> m_vecCanvasData;
 	CGameInstance* m_pGameInstance = { nullptr };
 
+	vector<CToolCanvas*> m_vecCanvas;
 private:
-	/* 커서들 입니다. */
 	int32_t m_iCurCanvasIndex = {};
 	int32_t m_iCurLayerIndex = {};
 	int32_t m_iCurUIIndex = {};

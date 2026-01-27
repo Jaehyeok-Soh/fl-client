@@ -132,6 +132,10 @@ namespace Tool
 	inline constexpr _tchar g_wszDummyColliderLayer[]{ L"DummyCollider_Layer" };
 	inline constexpr _tchar g_wszCameraLayer[]{ L"Camera_Layer" };
 
+	inline constexpr _tchar g_wszPrototypeTagCanvas[]{ L"Prototype_UI_Canvas" };
+	inline constexpr _tchar g_wszPrototypeTagLayer[]{ L"Prototype_UI_Layer" };
+	inline constexpr _tchar g_wszPrototypeTagUI[]{ L"Prototype_UI_UI" };
+
 	struct HoleBridges
 	{
 		_int iHolePolyIndex = { -1 };

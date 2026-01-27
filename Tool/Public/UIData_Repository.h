@@ -13,9 +13,15 @@ NS_END
 
 
 NS_BEGIN(Tool)
+
+
 typedef struct tagCanvasData CANVAS_DATA;
 typedef struct tagLayerData LAYER_DATA;
 typedef struct tagGenericUIData GENERIC_UI_DATA;
+
+typedef struct tagUIDTO UI_DTO;
+typedef struct tagLayerDTO LAYER_DTO;
+typedef struct tagCanvasDTO CANVAS_DTO;
 
 class CToolUI;
 
@@ -38,12 +44,11 @@ private:
 	virtual ~CUIData_Repository() = default;
 
 public:
-	HRESULT Load_UIData(const _wstring& wstrSaveFilePath, OUT vector<CANVAS_DATA>& OutRef);
-	HRESULT Save_UIData(const _wstring& wstrSaveFilePath);
-	HRESULT Make_UIObjects(const vector<CANVAS_DATA>& vecData);
+	HRESULT Load_UIData(OUT vector<CANVAS_DATA>& OutRef);
+	HRESULT Save_UIData();
 
 private:
-	vector<CANVAS_DATA> m_vecCanvasData;
+	vector<CANVAS_DATA> m_vecUIDTO;
 	CGameInstance* m_pGameInstance = { nullptr };
 
 public:
@@ -67,7 +72,6 @@ static const _string& UITypeToString(EUiType eType)
 	}
 	return "";
 }
-
 static EUiType StringToUIType(const _string& str)
 {
 	if (::strcmp(str.c_str(), "IMAGE_2D") == 0)
@@ -83,7 +87,6 @@ static EUiType StringToUIType(const _string& str)
 	else
 		return EUiType::END;
 }
-
 static const _string& RectTransformToString(ERectTransform eType)
 {
 	static const _string sLEFTTOP = "LEFTTOP";
@@ -120,7 +123,6 @@ static const _string& RectTransformToString(ERectTransform eType)
 	}
 	return sEMPTY;
 }
-
 static ERectTransform StringToRectTransform(const _string& str)
 {
 	if (::strcmp(str.c_str(), "LEFTTOP") == 0)
@@ -144,6 +146,7 @@ static ERectTransform StringToRectTransform(const _string& str)
 	else
 		return ERectTransform::END;
 }
+
 typedef struct tagGenericUIData
 {
 	/* For.Runtime */
@@ -163,37 +166,26 @@ typedef struct tagGenericUIData
 	void Clear_Data()
 	{
 		strName = "";
-
 		iUIType = 0;
 		iRectTransformType = 4;
 		strTextureTag = "";
 		iTextureIndex = 0;
-
 		fWidth = 0.f;
 		fHeight = 0.f;
 		fPosX = 0.f;
 		fPosY = 0.f;
 		fPosZ = 0.f;
 	}
+
 }GENERIC_UI_DATA;
 
 typedef struct tagLayerData
 {
 	_string strTag;
 
-	vector<GENERIC_UI_DATA> vecUIData;
-
-	/* For.Runtime / 포인터 참조 */
-	vector<CToolUI*> vecUIObjects;
-
 	void Clear_Data()
 	{
 		strTag = "";
-		for (auto& data : vecUIData)
-		{
-			data.Clear_Data();
-		}
-		vecUIData.clear();
 	}
 }LAYER_DATA;
 
@@ -208,8 +200,6 @@ typedef struct tagCanvasData
 	_float fPosY;
 	_float fPosZ;
 
-	vector<LAYER_DATA> vecLayers;
-
 	void Clear_Data()
 	{
 		strTag = "";
@@ -219,15 +209,31 @@ typedef struct tagCanvasData
 		fPosX = 0.f;
 		fPosY = 0.f;
 		fPosZ = 0.f;
-
-		for (auto& data : vecLayers)
-		{
-			data.Clear_Data();
-		}
-		vecLayers.clear();
 	}
 }CANVAS_DATA;
 
+
+typedef struct tagUIDTO
+{
+	GENERIC_UI_DATA UIVO;
+
+}UI_DTO;
+
+typedef struct tagLayerDTO
+{
+	LAYER_DATA LayerVO;
+
+	vector<UI_DTO> vecUIDTO;
+
+}LAYER_DTO;
+
+typedef struct tagCanvasDTO
+{
+	CANVAS_DATA CanvasVO;
+
+	vector<LAYER_DTO> vecLayerDTO;
+
+}CANVAS_DTO;
 
 void to_json(order_json& _j, const CANVAS_DATA& _tData);
 void from_json(const order_json& _j, CANVAS_DATA& _tData);
@@ -235,5 +241,12 @@ void to_json(order_json& _j, const LAYER_DATA& _tData);
 void from_json(const order_json& _j, LAYER_DATA& _tData);
 void to_json(order_json& _j, const GENERIC_UI_DATA& _tData);
 void from_json(const order_json& _j, GENERIC_UI_DATA& _tData);
+
+void to_json(order_json& _j, const UI_DTO& _tData);
+void from_json(const order_json& _j, UI_DTO& _tData);
+void to_json(order_json& _j, const LAYER_DTO& _tData);
+void from_json(const order_json& _j, LAYER_DTO& _tData);
+void to_json(order_json& _j, const CANVAS_DTO& _tData);
+void from_json(const order_json& _j, CANVAS_DTO& _tData);
 
 NS_END

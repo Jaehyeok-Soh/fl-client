@@ -3,6 +3,11 @@
 #include "ToolCanvas.h"
 #include "Tool_Defines.h"
 #include "GameInstance.h"
+#include "ImGui_UIManager.h"
+
+#include "ToolLayer.h"
+#include "ToolUI.h"
+#include "Engine_Utils.h"
 
 /* Components */
 #include "Shader.h"
@@ -12,8 +17,10 @@
 #include "DebugDraw.h"
 
 CToolCanvas::CToolCanvas(ID3D11Device* pDevice, ID3D11DeviceContext* pDeviceContext)
-	:CUIObject(pDevice, pDeviceContext)
+	:CUIObject(pDevice, pDeviceContext),
+	m_pUIManager(CImGui_UIManager::GetInstance())
 {
+	Safe_AddRef(m_pUIManager);
 }
 
 CToolCanvas::CToolCanvas(const CToolCanvas& rhs)
@@ -25,15 +32,17 @@ HRESULT CToolCanvas::Initialize_Prototype()
 {
 	if (FAILED(Super::Initialize_Prototype()))
 		return E_FAIL;
+
 	return S_OK;
 }
 
 HRESULT CToolCanvas::Initialize(void* pArg)
 {
+	TOOLCANVAS_DESC* pDesc = static_cast<TOOLCANVAS_DESC*>(pArg);
+	m_strTag = pDesc->strTag;
+
 	if (FAILED(Super::Initialize(pArg)))
 		return E_FAIL;
-
-	TOOLUI_DESC* pDesc = static_cast<TOOLUI_DESC*>(pArg);
 
 	if (FAILED(Ready_Components(pDesc)))
 		return E_FAIL;
@@ -83,48 +92,87 @@ void CToolCanvas::Ready_Before_Render(const _float fTimeDelta)
 
 HRESULT CToolCanvas::Render()
 {
-	m_pBatch->Begin();
-//	m_pBatch->DrawLine(VertexPositionColor{})
+	SetUp_Rect();
+	m_pBatch->Begin(); 
+	const DirectX::XMFLOAT4 vColor = { 1.f, 1.f, 1.f, 1.f }; // 원하는 색으로 바꾸세요
+
+	// Top
+	m_pBatch->DrawLine(
+		VertexPositionColor{ { (float)m_tRect.left,  (float)m_tRect.top,    m_fZ }, vColor },
+		VertexPositionColor{ { (float)m_tRect.right, (float)m_tRect.top,    m_fZ }, vColor }
+	);
+
+	// Right
+	m_pBatch->DrawLine(
+		VertexPositionColor{ { (float)m_tRect.right, (float)m_tRect.top,    m_fZ }, vColor },
+		VertexPositionColor{ { (float)m_tRect.right, (float)m_tRect.bottom, m_fZ }, vColor }
+	);
+
+	// Bottom
+	m_pBatch->DrawLine(
+		VertexPositionColor{ { (float)m_tRect.right, (float)m_tRect.bottom, m_fZ }, vColor },
+		VertexPositionColor{ { (float)m_tRect.left,  (float)m_tRect.bottom, m_fZ }, vColor }
+	);
+
+	// Left
+	m_pBatch->DrawLine(
+		VertexPositionColor{ { (float)m_tRect.left,  (float)m_tRect.bottom, m_fZ }, vColor },
+		VertexPositionColor{ { (float)m_tRect.left,  (float)m_tRect.top,    m_fZ }, vColor }
+	);
+
 	m_pBatch->End();
-
-
-	if (FAILED(Super::Render()))
-		return E_FAIL;
-
-	if (FAILED(Bind_ShaderResources()))
-		return E_FAIL;
-
-	Get_Component<CShader>()->Apply();
-	Get_Component<CVIBuffer>()->Bind_Resource();
-	Get_Component<CVIBuffer>()->Render();
 
 	return S_OK;
 }
 
-HRESULT CToolCanvas::Ready_Components(TOOLUI_DESC* pDesc)
+HRESULT CToolCanvas::Ready_Components(TOOLCANVAS_DESC* pDesc)
 {
-	//if (FAILED(Add_Component<CTexture>(0, pDesc->wstrTextureTag, pDesc)))
-	//	return E_FAIL;
-
-	if (FAILED(Add_Component<CShader>(0, L"Prototype_Component_Shader_VtxPosTex", pDesc)))
-		return E_FAIL;
-
-	if (FAILED(Add_Component<CVIBuffer_Rect_Tex>(0, L"Prototype_Component_VIBuffer_Rect_Tex", pDesc)))
-		return E_FAIL;
-
 	return S_OK;
 }
 
 HRESULT CToolCanvas::Bind_ShaderResources()
 {
-	CShader* pShader = Get_Component<CShader>();
-	if (FAILED(Get_Component<CTransform>()->Bind_ShaderResource(pShader)))
-		return E_FAIL;
-
-	if (FAILED(Get_Component<CTexture>()->Bind_ShaderResource(pShader, 0)))
-		return E_FAIL;
-
 	return S_OK;
+}
+
+HRESULT CToolCanvas::Safe_Add_Layer(CToolLayer* pLayer)
+{
+	if (nullptr == pLayer)
+		return E_FAIL;
+
+	m_vecToolLayers.push_back(pLayer);
+	return S_OK;
+}
+
+vector<CToolLayer*>* CToolCanvas::Safe_Access_LayerObject_Vector_Ptr()
+{
+	if (m_vecToolLayers.empty())
+		return nullptr;
+	return &m_vecToolLayers;
+}
+
+CToolLayer* CToolCanvas::Safe_Access_LayerObject_Ptr(int32_t index)
+{
+	if (m_vecToolLayers.empty())
+		return nullptr;
+
+	int32_t NumLayer = static_cast<int32_t>(m_vecToolLayers.size());
+	if (index >= NumLayer || index < 0)
+		return nullptr;
+
+	return m_vecToolLayers[index];
+}
+
+CToolLayer* CToolCanvas::Safe_Access_CurLayerObject_Ptr()
+{
+	if (m_vecToolLayers.empty())
+		return nullptr;
+
+	int32_t NumLayer = static_cast<int32_t>(m_vecToolLayers.size());
+	if (m_pUIManager->Get_CurCanvasIndex() >= NumLayer || m_pUIManager->Get_CurCanvasIndex() < 0)
+		return nullptr;
+
+	return m_vecToolLayers[m_pUIManager->Get_CurCanvasIndex()];
 }
 
 CToolCanvas* CToolCanvas::Create(EToolObjectType eType, ID3D11Device* pDevice, ID3D11DeviceContext* pDeviceContext)
@@ -151,6 +199,17 @@ CGameObject* CToolCanvas::Clone(void* pArg)
 
 void CToolCanvas::Free()
 {
+	Safe_Release(m_pUIManager);
+	Safe_Delete(m_pBatch);
+	Safe_Delete(m_pEffect);
+	Safe_Release(m_pInputLayout);
+	for (auto* p : m_vecToolLayers)
+	{
+		if (nullptr == p)
+			continue;
+		Safe_Release(p);
+	}
+	m_vecToolLayers.clear();
 	Super::Free();
 }
 
