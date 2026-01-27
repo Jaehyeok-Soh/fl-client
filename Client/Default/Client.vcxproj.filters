@@ -139,6 +139,12 @@
     <Filter Include="03. GameObject\UIObjects\Manager">
       <UniqueIdentifier>{7559622c-8d80-4e5c-81bd-e123eb0f162c}</UniqueIdentifier>
     </Filter>
+    <Filter Include="06. FSM\Player\Fall">
+      <UniqueIdentifier>{058d7e2d-7dc5-46cd-ae4f-e96fbf12fcfe}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="06. FSM\Player\Land">
+      <UniqueIdentifier>{90a3215f-abb6-4b46-85cd-612282d4f9cb}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="targetver.h">
@@ -270,6 +276,12 @@
     <ClInclude Include="..\Public\UI_Manager.h">
       <Filter>03. GameObject\UIObjects\Manager</Filter>
     </ClInclude>
+    <ClInclude Include="..\Public\State_Fall.h">
+      <Filter>06. FSM\Player\Fall</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\State_Land.h">
+      <Filter>06. FSM\Player\Land</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <Image Include="Client.ico">
@@ -398,6 +410,12 @@
     </ClCompile>
     <ClCompile Include="..\Private\UI_Manager.cpp">
       <Filter>03. GameObject\UIObjects\Manager</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\State_Fall.cpp">
+      <Filter>06. FSM\Player\Fall</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\State_Land.cpp">
+      <Filter>06. FSM\Player\Land</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

@@ -186,11 +186,13 @@
     <ClInclude Include="..\Public\State_Crouch.h" />
     <ClInclude Include="..\Public\State_DashBack.h" />
     <ClInclude Include="..\Public\State_DashSky.h" />
+    <ClInclude Include="..\Public\State_Fall.h" />
     <ClInclude Include="..\Public\State_Idle.h" />
     <ClInclude Include="..\Public\State_Jump.h" />
     <ClInclude Include="..\Public\State_JumpBack.h" />
     <ClInclude Include="..\Public\State_JumpBullet.h" />
     <ClInclude Include="..\Public\State_JumpDouble.h" />
+    <ClInclude Include="..\Public\State_Land.h" />
     <ClInclude Include="..\Public\State_RunLoop.h" />
     <ClInclude Include="..\Public\State_RunShort.h" />
     <ClInclude Include="..\Public\State_Slide.h" />
@@ -231,11 +233,13 @@
     <ClCompile Include="..\Private\State_Crouch.cpp" />
     <ClCompile Include="..\Private\State_DashBack.cpp" />
     <ClCompile Include="..\Private\State_DashSky.cpp" />
+    <ClCompile Include="..\Private\State_Fall.cpp" />
     <ClCompile Include="..\Private\State_Idle.cpp" />
     <ClCompile Include="..\Private\State_Jump.cpp" />
     <ClCompile Include="..\Private\State_JumpBack.cpp" />
     <ClCompile Include="..\Private\State_JumpBullet.cpp" />
     <ClCompile Include="..\Private\State_JumpDouble.cpp" />
+    <ClCompile Include="..\Private\State_Land.cpp" />
     <ClCompile Include="..\Private\State_RunLoop.cpp" />
     <ClCompile Include="..\Private\State_RunShort.cpp" />
     <ClCompile Include="..\Private\State_Slide.cpp" />
