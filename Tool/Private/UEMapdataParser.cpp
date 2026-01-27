@@ -431,7 +431,7 @@ void to_json(json& SaveJson, const UE_TRANSFORMDATA& tData)
 	SaveJson["Rotation"]["Y"] = tData.vRotation.y;
 	SaveJson["Rotation"]["Z"] = tData.vRotation.z;
 	SaveJson["Rotation"]["W"] = tData.vRotation.w;
-	write_vec3_xyz(SaveJson["Translation"], tData.vScale3D);
+	write_vec3_xyz(SaveJson["Translation"], tData.vTranslation);
 
 	return;
 }
