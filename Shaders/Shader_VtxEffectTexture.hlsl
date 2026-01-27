@@ -111,7 +111,6 @@ float4 PS_Texture(GS_OUT_POS_PARTICLE In) : SV_TARGET0
     // ===========  라이프타임에 따른 투명도 적용  =============
     float LifeRatio = saturate(1.0f - (In.vLifeTime.x / In.vLifeTime.y));
     finalAlpha *= LifeRatio;
-    
     if (finalAlpha < 0.05f)
         discard;
     

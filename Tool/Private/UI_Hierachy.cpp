@@ -22,6 +22,10 @@ void CUI_Hierachy::Update(const _float fTimeDelta)
 
 HRESULT CUI_Hierachy::Render(CToolObject* pGo)
 {
+	const auto* vecCanvas = CImGui_UIManager::GetInstance()->Safe_Access_CanvasVector();
+	if (nullptr == vecCanvas)
+		return S_OK;
+
 	ImGui::Begin(m_strLabel.c_str(), nullptr, m_Flag);
 	static int s_iSelRoot = -1;
 	static int s_iSelChild = -1;
@@ -75,7 +79,7 @@ HRESULT CUI_Hierachy::Render(CToolObject* pGo)
 		};
 
 	// 예시 데이터
-	const auto& vecCanvas = CImGui_UIManager::GetInstance()->Get_CurCanvas_Ref();
+
 	static vector<_string> vecRoot;
 	static vector<vector<_string>> vecChild;
 	static vector<vector<vector<_string>>> vecGrand;
@@ -84,7 +88,7 @@ HRESULT CUI_Hierachy::Render(CToolObject* pGo)
 	vecChild.clear();
 	vecGrand.clear();
 
-	for (const auto& canvasData : vecCanvas)
+	for (const auto& canvasData : *vecCanvas)
 	{
 		vecRoot.push_back(canvasData.strTag);
 

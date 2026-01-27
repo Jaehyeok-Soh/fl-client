@@ -5,6 +5,7 @@
 #include "Texture.h"
 #include "mesh.h"
 #include "VIBuffer_Particle_Point.h"
+#include "VIBuffer_Particle_Mesh.h"
 #include "GameInstance.h"
 
 CEffectObject::CEffectObject(EToolObjectType eType, ID3D11Device* pDevice, ID3D11DeviceContext* pDeviceContext)
@@ -85,6 +86,41 @@ void CEffectObject::Set_EffectDesc(const Effect_Desc& Desc)
     Texture_Setting(m_tEffectDesc._Effect_DiffuseTexture_Tag);
     Shader_Setting(m_tEffectDesc._Effect_Shader_Tag);
     Particle_Setting();
+    Buffer_Setting();
+
+    m_tPrevEffectDesc = m_tEffectDesc;
+}
+
+void CEffectObject::Buffer_Setting()
+{
+    if (m_tPrevEffectDesc._Effect_Model_Tag != m_tEffectDesc._Effect_Model_Tag || m_tPrevEffectDesc.eEffectParticleType != m_tEffectDesc.eEffectParticleType)
+    {
+        switch (m_tEffectDesc.eEffectParticleType)
+        {
+        case E_PARTICLETYPE::PARTICLE:
+        {
+            Change_Component<CVIBuffer_Particle_Point>(static_cast<CVIBuffer_Particle_Point*>(m_pGameInstance->Clone_Prototype(EPrototypeType::COMPONENT, ENUM_TO_UINT(ELevelType::EFFECT), L"Prototype_Component_VIBuffer_Particle_Point", nullptr)));
+            break;
+        }
+        case E_PARTICLETYPE::MESH:
+        {
+            if (Get_Component<CModel>())
+            {
+                CModel* pInstance = Get_Component<CModel>();
+                CVIBuffer_Particle_Mesh::PARTICLE_Mesh_ORIGIN_DESC MeshBufferDesc = {};
+                MeshBufferDesc._Model = pInstance;
+
+                Change_Component<CVIBuffer_Particle_Mesh>(static_cast<CVIBuffer_Particle_Mesh*>(m_pGameInstance->Clone_Prototype(EPrototypeType::COMPONENT, ENUM_TO_UINT(ELevelType::EFFECT), L"Prototype_Component_VIBuffer_Particle_Mesh", &MeshBufferDesc)));
+            }
+            break;
+        }
+        case E_PARTICLETYPE::TEXTURE:
+        {
+            Change_Component<CVIBuffer_Particle_Point>(static_cast<CVIBuffer_Particle_Point*>(m_pGameInstance->Clone_Prototype(EPrototypeType::COMPONENT, ENUM_TO_UINT(ELevelType::EFFECT), L"Prototype_Component_VIBuffer_Particle_Point", nullptr)));
+            break;
+        }
+        }
+    }
 }
 
 void CEffectObject::Particle_Setting()
@@ -101,9 +137,11 @@ void CEffectObject::Particle_Setting()
         desc.vLifeTime.x = pDesc.vLifeTime.x;
         desc.vLifeTime.y = m_tEffectDesc._Effect_LifeTime;
         desc.vRange = m_tEffectDesc._Effect_Range;
-        desc.vPlayBackSpeed = m_tEffectDesc._Effect_PlayBack;
+        desc.m_fStartSpeeds = m_tEffectDesc._Effect_StartSpeed;
         desc.vSize = m_tEffectDesc._Effect_ParticleSize;
         desc.vSpeed = Vec2{ 0.f, 3.f };
+        desc.isRandomSeed = m_tEffectDesc._Effect_IsRandomSeed;
+        desc.pModel = Get_Component<CModel>();
 
         pInstance->Set_ParticleDesc(desc);
     }
@@ -111,14 +149,18 @@ void CEffectObject::Particle_Setting()
 
 void CEffectObject::Model_Setting(const wstring& ModelName)
 {
-    CModel::MODEL_COPY_DESC pDesc = {};
-    wstring s = L"Prototype_Component_Model_";
+    if (m_tPrevEffectDesc._Effect_Model_Tag != m_tEffectDesc._Effect_Model_Tag)
+    {
+        CModel::MODEL_COPY_DESC pDesc = {};
+        wstring s = L"Prototype_Component_Model_";
 
-    if (Get_Component<CModel>())
-        Change_Component<CModel>(static_cast<CModel*>(m_pGameInstance->Clone_Prototype(EPrototypeType::COMPONENT, 0, s + ModelName, &pDesc)));
+        if (Get_Component<CModel>())
+            Change_Component<CModel>(static_cast<CModel*>(m_pGameInstance->Clone_Prototype(EPrototypeType::COMPONENT, ENUM_TO_UINT(ELevelType::EFFECT), s + ModelName, &pDesc)));
 
-    else
-        Add_Component<CModel>(0, s + ModelName, &pDesc);
+        else
+            if (FAILED(Add_Component<CModel>(ENUM_TO_UINT(ELevelType::EFFECT), s + ModelName, &pDesc)))
+                return;
+    }
 }
 
 void CEffectObject::Texture_Setting(const wstring& TextureName)
@@ -176,7 +218,7 @@ void CEffectObject::Shader_Setting(const wstring& ShaderName)
             Add_Component<CShader>(0, L"Prototype_Component_Shader_VtxEffectParticle", &ShaderDesc);
 
         else if (ShaderName == L"Shader_VtxEffectMesh")
-            Add_Component<CShader>(0, L"Prototype_Component_Shader_VtxEffectMesh", &ShaderDesc);
+             Change_Component<CShader>(static_cast<CShader*>(m_pGameInstance->Clone_Prototype(EPrototypeType::COMPONENT, 0, L"Prototype_Component_Shader_VtxEffectMesh", &ShaderDesc)));
 
         else if (ShaderName == L"Shader_VtxEffectTexture")
             Add_Component<CShader>(0, L"Prototype_Component_Shader_VtxEffectTexture", &ShaderDesc);
@@ -211,27 +253,31 @@ HRESULT CEffectObject::Bind_ShaderResource()
             pTexture->Bind_ShaderResourceBuffer(Get_Component<CShader>());
     }
 
-    if (pModel)
+    if (m_tEffectDesc.eEffectParticleType != E_PARTICLETYPE::MESH)
     {
-        _uint iMeshCount = pModel->Get_MeshCount();
+        CVIBuffer_Particle_Point* pInstance = static_cast<CVIBuffer_Particle_Point*>(Get_Component<CVIBuffer_Particle_Point>());
 
-        for (_uint i = 0; i < iMeshCount; ++i)
+        if (pInstance)
         {
-            pModel->Bind_Material(pShader, i);
-            pModel->Bind_Bones(pShader, i);
+            pInstance->Bind_Resource();
             pShader->Apply();
-            pModel->Render(i);
+            pInstance->Render();
         }
     }
-    pShader->Apply();
 
-    CVIBuffer_Particle_Point* pInstance = Get_Component<CVIBuffer_Particle_Point>();
-    if (pInstance)
+    else if(m_tEffectDesc.eEffectParticleType == E_PARTICLETYPE::MESH)
     {
-        m_pDeviceContext->IASetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY_POINTLIST);
-        pInstance->Bind_Resource();
-        pInstance->Render();
+        CVIBuffer_Particle_Mesh* pInstance = static_cast<CVIBuffer_Particle_Mesh*>(Get_Component<CVIBuffer_Particle_Mesh>());
+
+        if (pInstance)
+        {
+            pInstance->Bind_Resource();
+            pShader->Apply();
+            pInstance->Render();
+        }
     }
+
+
 
     return S_OK;
 }
@@ -247,17 +293,19 @@ void CEffectObject::Update_Priority(const _float fDT)
 {
     if (m_tEffectDesc._Effect_TimeStop) return;
 
-    Super::Update_Priority(fDT);
+    // 임시 방편 Speed
+    Super::Update_Priority(fDT * m_tEffectDesc._Effect_PlayBackSpeed);
 }
 
 void CEffectObject::Update(const _float fTimeDelta)
 {
     if (m_tEffectDesc._Effect_TimeStop) return;
+    // 임시 방편
+    _float TimeT = m_tEffectDesc._Effect_PlayBackSpeed * fTimeDelta;
 
-    Super::Update(fTimeDelta);
-
+    Super::Update(TimeT);
     // == 스크롤 값 == 
-    TimeCalculate(fTimeDelta);
+    TimeCalculate(TimeT);
 
     switch (m_tEffectDesc._Effect_ShapeType)
     {
@@ -267,25 +315,32 @@ void CEffectObject::Update(const _float fTimeDelta)
         case E_SHAPETYPE::SPREAD:
         {
             CVIBuffer_Particle_Point* pInstance = Get_Component<CVIBuffer_Particle_Point>();
-            if (pInstance) pInstance->Update_Simulation(fTimeDelta, E_PARTICLE_MOVESTATE::SPREAD);
+            if (pInstance) pInstance->Update_Simulation(Vec3{}, TimeT, E_PARTICLE_MOVESTATE::SPREAD);
             break;
         }
         case E_SHAPETYPE::DROP:
         {
             CVIBuffer_Particle_Point* pInstance = Get_Component<CVIBuffer_Particle_Point>();
-            if (pInstance) pInstance->Update_Simulation(fTimeDelta, E_PARTICLE_MOVESTATE::DROP);
+            if (pInstance) pInstance->Update_Simulation(Vec3{}, TimeT, E_PARTICLE_MOVESTATE::DROP);
             break;
         }
         case E_SHAPETYPE::RISE:
         {
             CVIBuffer_Particle_Point* pInstance = Get_Component<CVIBuffer_Particle_Point>();
-            if (pInstance) pInstance->Update_Simulation(fTimeDelta, E_PARTICLE_MOVESTATE::RISE);
+            if (pInstance) pInstance->Update_Simulation(Vec3{}, TimeT, E_PARTICLE_MOVESTATE::RISE);
             break;
         }
         case E_SHAPETYPE::MESH:
         {
             CVIBuffer_Particle_Point* pInstance = Get_Component<CVIBuffer_Particle_Point>();
-            if (pInstance) pInstance->Update_Simulation(fTimeDelta, E_PARTICLE_MOVESTATE::RISE);
+            if (pInstance) pInstance->Update_Simulation(Vec3{}, TimeT, E_PARTICLE_MOVESTATE::RISE);
+            break;
+        }
+
+        case E_SHAPETYPE::STRAIGHT:
+        {
+            CVIBuffer_Particle_Point* pInstance = Get_Component<CVIBuffer_Particle_Point>();
+            if (pInstance) pInstance->Update_Simulation(Get_Component<CTransform>()->Get_Info(TRANSFORM_INFO_STATE::LOOK), TimeT, E_PARTICLE_MOVESTATE::STRAIGHT);
             break;
         }
     }
@@ -295,12 +350,17 @@ void CEffectObject::Update_Late(const _float fTimeDelta)
 {
     if (m_tEffectDesc._Effect_TimeStop) return;
 
-    Super::Update_Late(fTimeDelta);
+    _float TimeT = m_tEffectDesc._Effect_PlayBackSpeed * fTimeDelta;
+
+    Super::Update_Late(TimeT);
 }
 
 void CEffectObject::Ready_Before_Render(const _float fTimeDelta)
 {
-    Super::Ready_Before_Render(fTimeDelta);
+    // 임시 방편 
+    _float TimeT = m_tEffectDesc._Effect_PlayBackSpeed * fTimeDelta;
+
+    Super::Ready_Before_Render(TimeT);
 
     m_pGameInstance->Push_RenderObject(RENDER_CATEGORY::NONELIGHT, this);
     Super::Update_CombinedWorldMatrix(m_pMatParent);

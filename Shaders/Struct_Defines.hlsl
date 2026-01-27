@@ -73,6 +73,20 @@ struct VS_IN_POS_GS_PARTICLE
     float2 vLifeTime : TEXCOORD0;
 };
 
+struct VS_IN_INST_MESH_PARTICLE
+{
+    // Slot 0
+    float3 vPosition : POSITION;
+    float3 vNormal : NORMAL;
+    float3 vTangent : TANGENT;
+    float3 vBinormal : BINORMAL;
+    float2 vUV : TEXCOORD0;
+    
+    // Slot 1
+    row_major float4x4 matTransform : WORLD;
+    float2 vLifeTime : TEXCOORD1;
+};
+
 //////////////////
 // VertexOutput //
 //////////////////
@@ -152,6 +166,21 @@ struct VS_OUT_POS_GS_PARTICLE
     float2 vLifeTime : TEXCOORD0;
 };
 
+struct VS_OUT_INST_MESH_PARTICLE
+{
+    float4 vPosition : SV_POSITION;
+    float2 vUV : TEXCOORD0;
+    float3 vNormal : NORMAL;
+    float3 vTangent : TANGENT;
+    float3 vBinormal : BINORMAL;
+    
+    float4 vWorldPos : TEXCOORD1;
+    float4 vProjPos : TEXCOORD2;
+
+    float2 vPSize : PSIZE;
+    float2 vLifeTime : TEXCOORD3;
+
+};
 ///////////////////
 // GeometryInput //
 ///////////////////

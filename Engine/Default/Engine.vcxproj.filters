@@ -483,6 +483,9 @@
     <ClCompile Include="..\private\ObjectPool_Manager.cpp">
       <Filter>00. System\04. GameObject\00. Manager</Filter>
     </ClCompile>
+    <ClCompile Include="..\Private\VIBuffer_Particle_Mesh.cpp">
+      <Filter>00. System\05. Component\VIBuffer\Particle</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\Public\Timer_Manager.h">
@@ -763,6 +766,9 @@
     </ClInclude>
     <ClInclude Include="..\public\ObjectPool_Manager.h">
       <Filter>00. System\04. GameObject\00. Manager</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\VIBuffer_Particle_Mesh.h">
+      <Filter>00. System\05. Component\VIBuffer\Particle</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

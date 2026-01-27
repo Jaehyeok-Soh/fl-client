@@ -308,7 +308,7 @@ CComponent* CMesh::Clone(void* pArg)
 }
 
 void CMesh::Free()
-{
+{ 
 	if (IsClone() == false)
 	{
 		Safe_Delete_Array(m_pNormals);

@@ -38,8 +38,10 @@ private:
 	HRESULT Bind_ShaderResources();
 
 private:
-	CANVAS_DATA m_tData = {};
 	vector<CToolLayer*> m_vecToolLayers;
+
+	/* 아마 있어야될 변수 */
+	/* 얘의 이동량에 따라 Tool Layers들에 전달? 아니면 바로 전달 */
 
 public:
 	static CToolCanvas* Create(EToolObjectType eType, ID3D11Device* pDevice, ID3D11DeviceContext* pDeviceContext);

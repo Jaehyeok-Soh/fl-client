@@ -13,8 +13,6 @@ public:
 	{
 		_wstring wstrTextureTag;
 
-		GENERIC_UI_DATA UIData;
-
 	}TOOLUI_DESC;
 
 private:

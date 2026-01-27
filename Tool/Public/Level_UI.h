@@ -12,8 +12,9 @@ class CLevel_UI final : public CLevel
 	using Super = CLevel;
 	enum class Elements
 	{
-		INSPECTOR,
+		UIMAKER,
 		HIERACHY,
+		INSPECTOR,
 		END
 	};
 
