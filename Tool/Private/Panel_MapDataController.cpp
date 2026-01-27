@@ -52,16 +52,20 @@ HRESULT CPanel_MapDataController::Render_ConvertedList()
 {
 	string strSelectPath = Engine_Utils::ToString(m_vecConvertedUEMapDataPath[m_iSelectConvertedUEMapDataPath]);
 
+	path pathSelect{strSelectPath};
+	string strFileName = path(strSelectPath).filename().stem().string();
+
 	ImGui::SeparatorText(" Converted Raw Map List ");
 
 
-	if (ImGui::BeginCombo("Converted Raw Map Data List##Comboe_RawData", strSelectPath.c_str()))
+	if (ImGui::BeginCombo("Converted Raw Map Data List" , strFileName.c_str()))
 	{
 		_uint i = 0;
 		for (auto& DataPath : m_vecConvertedUEMapDataPath)
 		{
 			bool isSelected = m_iSelectConvertedUEMapDataPath == i;
-			if (ImGui::Selectable(strSelectPath.c_str(), isSelected))
+			string strCurFileName = path(DataPath).filename().stem().string();
+			if (ImGui::Selectable(strCurFileName.c_str(), isSelected))
 				m_iSelectConvertedUEMapDataPath = i;
 			if (isSelected == true)
 				ImGui::SetItemDefaultFocus();
@@ -71,7 +75,7 @@ HRESULT CPanel_MapDataController::Render_ConvertedList()
 	}
 
 
-	ImGui::Separator();
+	ImGui::SeparatorText("Batch Converted Map Data");
 
 	if (ImGui::Button("Batch Converted Map Data"))
 	{
@@ -81,7 +85,18 @@ HRESULT CPanel_MapDataController::Render_ConvertedList()
 	ImGui::Separator();
 
 
+
+	ImGui::SeparatorText("Save Filtering Map Data");
+
+	if (ImGui::Button("Save Filtering Map Data"))
+	{
+		m_pUEMapdataParser->Save_FilteringRawMapData(Engine_Utils::ToWString(strSelectPath).c_str());
+	}
+
 	ImGui::Separator();
+
+
+	ImGui::SeparatorText("Save Converted Map Data");
 
 	if (ImGui::Button("Save Converted Map Data"))
 	{
@@ -90,12 +105,13 @@ HRESULT CPanel_MapDataController::Render_ConvertedList()
 
 	ImGui::Separator();
 
+
 	return S_OK;
 }
 
 HRESULT CPanel_MapDataController::Render_Converted_UnrealRawMapData_Button()
 {
-	ImGui::Separator();
+	ImGui::SeparatorText("Load Unreal Raw Map Data");
 
 	if (ImGui::Button(" Load Unreal Raw Map Data "))
 	{
@@ -119,6 +135,11 @@ HRESULT CPanel_MapDataController::Render_Converted_UnrealRawMapData_Button()
 
 	ImGui::Separator();
 
+	return S_OK;
+}
+
+HRESULT CPanel_MapDataController::Render_Filtering_UnrealRawMapData_Button()
+{
 	return S_OK;
 }
 

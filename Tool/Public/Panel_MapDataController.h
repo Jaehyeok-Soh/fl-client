@@ -18,6 +18,7 @@ public:
 private:
 	HRESULT Render_ConvertedList();
 	HRESULT Render_Converted_UnrealRawMapData_Button();
+	HRESULT Render_Filtering_UnrealRawMapData_Button();
 private:
 	const wstring m_wstrMapDatPath{L"../../Resources/Data/MapData/"};
 public:
