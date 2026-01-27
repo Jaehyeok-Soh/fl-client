@@ -1,14 +1,14 @@
 #pragma once
-#include "StateBase.h"
+#include "StateBase_Player.h"
 
 NS_BEGIN(Client)
 
-class CState_Run final : public CStateBase
+class CState_Walk final : public CStateBase_Player
 {
-	using Super = CStateBase;
+	using Super = CStateBase_Player;
 private:
-	CState_Run(CActionState* pOwnerComponent);
-	virtual ~CState_Run() = default;
+	CState_Walk(CActionState* pOwnerComponent);
+	virtual ~CState_Walk() = default;
 
 	virtual HRESULT Initialize(void* pArg) override;
 public:
@@ -16,11 +16,9 @@ public:
 	virtual HRESULT Start(void* pArg, _bool bForce = false) override;
 	virtual void Update(const _float fTimeDelta) override;
 	virtual HRESULT End() override;
-private:
-	_float m_fDuration = { 0.f };
-	_float m_fInterval = { 0.25f };
+
 public:
-	static CState_Run* Create(CActionState* pOwnerComponent, void* pArg = nullptr);
+	static CState_Walk* Create(CActionState* pOwnerComponent, void* pArg = nullptr);
 	virtual void Free() override;
 };
 

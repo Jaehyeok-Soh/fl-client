@@ -73,9 +73,6 @@
     <Filter Include="06. FSM\Player\Idle">
       <UniqueIdentifier>{51b09a75-0a10-4351-89ee-c56fb121e232}</UniqueIdentifier>
     </Filter>
-    <Filter Include="06. FSM\Player\Run">
-      <UniqueIdentifier>{91862187-1896-4702-bd84-5dda29b4f39d}</UniqueIdentifier>
-    </Filter>
     <Filter Include="06. FSM\Player\Combo">
       <UniqueIdentifier>{27a2b2a0-9e48-43b5-9d9d-e715fac9790b}</UniqueIdentifier>
     </Filter>
@@ -97,11 +94,56 @@
     <Filter Include="99. ETC\pch">
       <UniqueIdentifier>{1afcebe2-6c14-4448-ab52-4236696f383f}</UniqueIdentifier>
     </Filter>
+    <Filter Include="06. FSM\Player\Walk">
+      <UniqueIdentifier>{f456fcb9-eb8a-4e62-a71e-9280f9418c9a}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="06. FSM\Player\Crouch">
+      <UniqueIdentifier>{dfb42709-e9fb-456f-9d70-d5bdb692f4bc}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="06. FSM\Player\CrouchWalk">
+      <UniqueIdentifier>{3ed84ef1-3005-427c-ad9a-beb498c85016}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="06. FSM\Player\Slide">
+      <UniqueIdentifier>{d359c49f-cb70-4c7a-82b5-06291589e9b8}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="06. FSM\Player\Jump">
+      <UniqueIdentifier>{0dee20d9-64b8-4bae-b0af-6b27ead1c2fb}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="06. FSM\Player\DashBack">
+      <UniqueIdentifier>{902bc6b0-2606-46cf-902c-e58daa3a16a9}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="06. FSM\Player\DashFront">
+      <UniqueIdentifier>{b738b353-6637-40f9-9762-6a4027a61b1f}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="06. FSM\Player\DashSky">
+      <UniqueIdentifier>{39a224de-7994-4a34-8213-33de7f2ffb80}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="06. FSM\Player\JumpDouble">
+      <UniqueIdentifier>{babc7b21-f2cf-49a6-a5b4-39e81cfc1a62}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="06. FSM\Player\JumpBullet">
+      <UniqueIdentifier>{035d7d4f-91a6-4344-a226-becb5c53f751}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="06. FSM\Player\JumpBack">
+      <UniqueIdentifier>{8fe83029-b209-4452-9cc7-cc96e5d5d63e}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="06. FSM\Player\RunLoop">
+      <UniqueIdentifier>{c33da02f-066b-4006-81bb-214583043915}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="06. FSM\Player\RunShort">
+      <UniqueIdentifier>{94a246c4-b42f-494a-aad5-0ee9bf6ba581}</UniqueIdentifier>
+    </Filter>
     <Filter Include="03. GameObject\UIObjects">
       <UniqueIdentifier>{b8fa4419-f65b-4ff0-9246-77dad0e88328}</UniqueIdentifier>
     </Filter>
     <Filter Include="03. GameObject\UIObjects\Manager">
       <UniqueIdentifier>{7559622c-8d80-4e5c-81bd-e123eb0f162c}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="06. FSM\Player\Fall">
+      <UniqueIdentifier>{058d7e2d-7dc5-46cd-ae4f-e96fbf12fcfe}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="06. FSM\Player\Land">
+      <UniqueIdentifier>{90a3215f-abb6-4b46-85cd-612282d4f9cb}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
@@ -156,15 +198,6 @@
     <ClInclude Include="..\Public\ComboState.h">
       <Filter>06. FSM\Player\Combo</Filter>
     </ClInclude>
-    <ClInclude Include="..\Public\State_Run.h">
-      <Filter>06. FSM\Player\Run</Filter>
-    </ClInclude>
-    <ClInclude Include="..\Public\State_RunStart.h">
-      <Filter>06. FSM\Player\Run</Filter>
-    </ClInclude>
-    <ClInclude Include="..\Public\State_RunEnd.h">
-      <Filter>06. FSM\Player\Run</Filter>
-    </ClInclude>
     <ClInclude Include="..\Public\State_Combo_Second.h">
       <Filter>06. FSM\Player\Combo\Attack</Filter>
     </ClInclude>
@@ -195,11 +228,59 @@
     <ClInclude Include="pch.h">
       <Filter>99. ETC\pch</Filter>
     </ClInclude>
+    <ClInclude Include="..\Public\StateBase_Player.h">
+      <Filter>06. FSM\Player</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\State_Walk.h">
+      <Filter>06. FSM\Player\Walk</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\State_RunLoop.h">
+      <Filter>06. FSM\Player\RunLoop</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\State_Crouch.h">
+      <Filter>06. FSM\Player\Crouch</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\State_CrouchWalk.h">
+      <Filter>06. FSM\Player\CrouchWalk</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\State_DashBack.h">
+      <Filter>06. FSM\Player\DashBack</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\State_DashFront.h">
+      <Filter>06. FSM\Player\DashFront</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\State_DashSky.h">
+      <Filter>06. FSM\Player\DashSky</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\State_Jump.h">
+      <Filter>06. FSM\Player\Jump</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\State_JumpDouble.h">
+      <Filter>06. FSM\Player\JumpDouble</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\State_JumpBullet.h">
+      <Filter>06. FSM\Player\JumpBullet</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\State_JumpBack.h">
+      <Filter>06. FSM\Player\JumpBack</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\State_RunShort.h">
+      <Filter>06. FSM\Player\RunShort</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\State_Slide.h">
+      <Filter>06. FSM\Player\Slide</Filter>
+    </ClInclude>
     <ClInclude Include="..\Public\GenericUI.h">
       <Filter>03. GameObject\UIObjects</Filter>
     </ClInclude>
     <ClInclude Include="..\Public\UI_Manager.h">
       <Filter>03. GameObject\UIObjects\Manager</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\State_Fall.h">
+      <Filter>06. FSM\Player\Fall</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\State_Land.h">
+      <Filter>06. FSM\Player\Land</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -252,15 +333,6 @@
     <ClCompile Include="..\Private\ComboState.cpp">
       <Filter>06. FSM\Player\Combo</Filter>
     </ClCompile>
-    <ClCompile Include="..\Private\State_RunEnd.cpp">
-      <Filter>06. FSM\Player\Run</Filter>
-    </ClCompile>
-    <ClCompile Include="..\Private\State_Run.cpp">
-      <Filter>06. FSM\Player\Run</Filter>
-    </ClCompile>
-    <ClCompile Include="..\Private\State_RunStart.cpp">
-      <Filter>06. FSM\Player\Run</Filter>
-    </ClCompile>
     <ClCompile Include="..\Private\State_Combo_Third.cpp">
       <Filter>06. FSM\Player\Combo\Attack</Filter>
     </ClCompile>
@@ -291,11 +363,59 @@
     <ClCompile Include="pch.cpp">
       <Filter>99. ETC\pch</Filter>
     </ClCompile>
+    <ClCompile Include="..\Private\StateBase_Player.cpp">
+      <Filter>06. FSM\Player</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\State_Walk.cpp">
+      <Filter>06. FSM\Player\Walk</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\State_RunLoop.cpp">
+      <Filter>06. FSM\Player\RunLoop</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\State_Crouch.cpp">
+      <Filter>06. FSM\Player\Crouch</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\State_CrouchWalk.cpp">
+      <Filter>06. FSM\Player\CrouchWalk</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\State_DashBack.cpp">
+      <Filter>06. FSM\Player\DashBack</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\State_DashFront.cpp">
+      <Filter>06. FSM\Player\DashFront</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\State_DashSky.cpp">
+      <Filter>06. FSM\Player\DashSky</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\State_Jump.cpp">
+      <Filter>06. FSM\Player\Jump</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\State_JumpDouble.cpp">
+      <Filter>06. FSM\Player\JumpDouble</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\State_JumpBullet.cpp">
+      <Filter>06. FSM\Player\JumpBullet</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\State_JumpBack.cpp">
+      <Filter>06. FSM\Player\JumpBack</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\State_RunShort.cpp">
+      <Filter>06. FSM\Player\RunShort</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\State_Slide.cpp">
+      <Filter>06. FSM\Player\Slide</Filter>
+    </ClCompile>
     <ClCompile Include="..\Private\GenericUI.cpp">
       <Filter>03. GameObject\UIObjects</Filter>
     </ClCompile>
     <ClCompile Include="..\Private\UI_Manager.cpp">
       <Filter>03. GameObject\UIObjects\Manager</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\State_Fall.cpp">
+      <Filter>06. FSM\Player\Fall</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\State_Land.cpp">
+      <Filter>06. FSM\Player\Land</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

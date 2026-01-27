@@ -38,7 +38,7 @@ private:
 	virtual ~CUIData_Repository() = default;
 
 public:
-	HRESULT Load_UIData(const _wstring& wstrSaveFilePath, OUT vector<CANVAS_DATA>& OutVec);
+	HRESULT Load_UIData(const _wstring& wstrSaveFilePath, OUT vector<CANVAS_DATA>& OutRef);
 	HRESULT Save_UIData(const _wstring& wstrSaveFilePath);
 	HRESULT Make_UIObjects(const vector<CANVAS_DATA>& vecData);
 
@@ -144,30 +144,6 @@ static ERectTransform StringToRectTransform(const _string& str)
 	else
 		return ERectTransform::END;
 }
-typedef struct tagCanvasData
-{
-	_string strTag;
-	_bool isUsingViewport;
-
-	_float fWidth;
-	_float fHeight;
-	_float fPosX;
-	_float fPosY;
-	_float fPosZ;
-
-	vector<LAYER_DATA> vecLayers;
-}CANVAS_DATA;
-
-typedef struct tagLayerData
-{
-	_string strTag;
-
-	vector<GENERIC_UI_DATA> vecUIData;
-
-	/* For.Runtime */
-	vector<CToolUI*> vecUIObjects;
-}LAYER_DATA;
-
 typedef struct tagGenericUIData
 {
 	/* For.Runtime */
@@ -182,7 +158,72 @@ typedef struct tagGenericUIData
 	_float fPosY;
 	_float fPosZ;
 
+	void Clear_Data()
+	{
+		strName = "";
+
+		iUIType = 0;
+		iRectTransformType = 4;
+
+		fWidth = 0.f;
+		fHeight = 0.f;
+		fPosX = 0.f;
+		fPosY = 0.f;
+		fPosZ = 0.f;
+	}
 }GENERIC_UI_DATA;
+
+typedef struct tagLayerData
+{
+	_string strTag;
+
+	vector<GENERIC_UI_DATA> vecUIData;
+
+	/* For.Runtime / 포인터 참조 */
+	vector<CToolUI*> vecUIObjects;
+
+	void Clear_Data()
+	{
+		strTag = "";
+		for (auto& data : vecUIData)
+		{
+			data.Clear_Data();
+		}
+		vecUIData.clear();
+	}
+}LAYER_DATA;
+
+typedef struct tagCanvasData
+{
+	_string strTag;
+	_bool isUsingViewport;
+
+	_float fWidth;
+	_float fHeight;
+	_float fPosX;
+	_float fPosY;
+	_float fPosZ;
+
+	vector<LAYER_DATA> vecLayers;
+
+	void Clear_Data()
+	{
+		strTag = "";
+		isUsingViewport = FALSE;
+		fWidth = 0.f;
+		fHeight = 0.f;
+		fPosX = 0.f;
+		fPosY = 0.f;
+		fPosZ = 0.f;
+
+		for (auto& data : vecLayers)
+		{
+			data.Clear_Data();
+		}
+		vecLayers.clear();
+	}
+}CANVAS_DATA;
+
 
 void to_json(order_json& _j, const CANVAS_DATA& _tData);
 void from_json(const order_json& _j, CANVAS_DATA& _tData);

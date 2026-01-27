@@ -27,9 +27,9 @@ CNavigation::CNavigation(const CNavigation& rhs)
 		Safe_AddRef(pCell);
 }
 
-HRESULT CNavigation::Initialize_Prototype(const POLYGON_SAVEDATA& polygonData)
+HRESULT CNavigation::Initialize_Prototype()
 {
-	if (FAILED(SetUp_Cells(polygonData)))
+	if (FAILED(SetUp_Cells()))
 		return E_FAIL;
 
 	return S_OK;
@@ -231,34 +231,15 @@ _bool CNavigation::Is_Move(const Vec3 &vResultPos)
 	return false;
 }
 
-HRESULT CNavigation::SetUp_Cells(const POLYGON_SAVEDATA& polygonData)
+HRESULT CNavigation::SetUp_Cells()
 {
-	size_t iCellCount = polygonData.vecCells.size();
-	m_vecCells.reserve(iCellCount);
-	for (size_t i = 0; i < iCellCount; ++i)
-	{
-		const CELL_SAVEDATA& cellData = polygonData.vecCells[i];
-		CCell *pCell = CCell::Create(m_pDevice, m_pDeviceContext,  cellData.arrPoints.data(), cellData.iIndex);
-		if (!pCell)
-			return E_FAIL;
-
-		pCell->Set_Neighbor(ELINE::AB, cellData.arrNeighbors[ENUM_TO_UINT(ELINE::AB)]);
-		pCell->Set_Neighbor(ELINE::BC, cellData.arrNeighbors[ENUM_TO_UINT(ELINE::BC)]);
-		pCell->Set_Neighbor(ELINE::CA, cellData.arrNeighbors[ENUM_TO_UINT(ELINE::CA)]);
-
-		pCell->Set_Normal(ELINE::AB, cellData.arrNormals[ENUM_TO_UINT(ELINE::AB)]);
-		pCell->Set_Normal(ELINE::BC, cellData.arrNormals[ENUM_TO_UINT(ELINE::BC)]);
-		pCell->Set_Normal(ELINE::CA, cellData.arrNormals[ENUM_TO_UINT(ELINE::CA)]);
-		m_vecCells.push_back(pCell);
-	}
-
 	return S_OK;
 }
 
-CNavigation* CNavigation::Create(ID3D11Device* pDevice, ID3D11DeviceContext* pDeviceContext, const POLYGON_SAVEDATA& polygonData)
+CNavigation* CNavigation::Create(ID3D11Device* pDevice, ID3D11DeviceContext* pDeviceContext)
 {
 	CNavigation* pInstance = new CNavigation(pDevice, pDeviceContext);
-	if (FAILED(pInstance->Initialize_Prototype(polygonData)))
+	if (FAILED(pInstance->Initialize_Prototype()))
 	{
 		MSG_BOX("CNavigation::Create, Failed");
 		Safe_Release(pInstance);

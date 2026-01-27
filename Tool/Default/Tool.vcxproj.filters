@@ -91,12 +91,6 @@
     <Filter Include="06. ImGui\01. Panel\UIPanels\Hierachy">
       <UniqueIdentifier>{ba50b2d3-2e46-434e-92e4-771e393bc34b}</UniqueIdentifier>
     </Filter>
-    <Filter Include="08.UIData">
-      <UniqueIdentifier>{566d6d02-9c34-4ed7-beae-db2b024e4049}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="08.UIData\Manager">
-      <UniqueIdentifier>{6d36fbe4-59ee-4223-946d-8f5f4bc5d255}</UniqueIdentifier>
-    </Filter>
     <Filter Include="02. GameObjects\UI">
       <UniqueIdentifier>{0db6a6bb-4c91-4d50-87bc-383b7b30d4b5}</UniqueIdentifier>
     </Filter>
@@ -168,6 +162,15 @@
     </Filter>
     <Filter Include="09. Builder\Example">
       <UniqueIdentifier>{9970cc5b-f703-4b3a-8311-0fc2a45575d8}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="08. UIData">
+      <UniqueIdentifier>{566d6d02-9c34-4ed7-beae-db2b024e4049}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="08. UIData\Manager">
+      <UniqueIdentifier>{6d36fbe4-59ee-4223-946d-8f5f4bc5d255}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="06. ImGui\01. Panel\UIPanels\Maker">
+      <UniqueIdentifier>{f5fed899-dccb-4d0d-a291-189fd27b3ca2}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
@@ -304,10 +307,10 @@
       <Filter>06. ImGui\01. Panel\UIPanels\Hierachy</Filter>
     </ClInclude>
     <ClInclude Include="..\Public\UIData_Repository.h">
-      <Filter>08.UIData</Filter>
+      <Filter>08. UIData</Filter>
     </ClInclude>
     <ClInclude Include="..\Public\ImGui_UIManager.h">
-      <Filter>08.UIData\Manager</Filter>
+      <Filter>08. UIData\Manager</Filter>
     </ClInclude>
     <ClInclude Include="..\Public\ToolUI.h">
       <Filter>02. GameObjects\UI\UI</Filter>
@@ -359,6 +362,9 @@
     </ClInclude>
     <ClInclude Include="..\Public\Builder_Example.h">
       <Filter>09. Builder\Example</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\UI_Maker.h">
+      <Filter>06. ImGui\01. Panel\UIPanels\Maker</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -490,10 +496,10 @@
       <Filter>06. ImGui\01. Panel\UIPanels\Hierachy</Filter>
     </ClCompile>
     <ClCompile Include="..\Private\UIData_Repository.cpp">
-      <Filter>08.UIData</Filter>
+      <Filter>08. UIData</Filter>
     </ClCompile>
     <ClCompile Include="..\Private\ImGui_UIManager.cpp">
-      <Filter>08.UIData\Manager</Filter>
+      <Filter>08. UIData\Manager</Filter>
     </ClCompile>
     <ClCompile Include="..\Private\ToolUI.cpp">
       <Filter>02. GameObjects\UI\UI</Filter>
@@ -545,6 +551,9 @@
     </ClCompile>
     <ClCompile Include="..\Private\Builder_Example.cpp">
       <Filter>09. Builder\Example</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\UI_Maker.cpp">
+      <Filter>06. ImGui\01. Panel\UIPanels\Maker</Filter>
     </ClCompile>
   </ItemGroup>
 </Project>

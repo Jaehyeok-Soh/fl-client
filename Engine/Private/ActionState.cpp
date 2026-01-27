@@ -7,7 +7,7 @@
 #include "CameraMan.h"
 #include "Model.h"
 #include "Transform.h"
-#include "ControlContext.h"
+
 
 CActionState::CActionState()
 {
@@ -103,12 +103,15 @@ HRESULT CActionState::Swap_State(_uint iIndex, CStateBase* pState, CStateBase** 
 
 HRESULT CActionState::Change_State(_uint iIndex, _bool bForce, void* pArg)
 {
+	// 인덱스 방어
 	if (iIndex >= m_vecStates.size() || m_vecStates[iIndex] == nullptr)
 		return E_FAIL;
 
+	// 같은 state 방어
 	if (m_iCurrentState == iIndex && bForce == false)
 		return S_OK;
 
+	// 이전 state end 호출
 	if (m_iCurrentState >= 0 && m_iCurrentState < m_vecStates.size())
 	{
 		if (CStateBase* pPrevState = m_vecStates[m_iCurrentState])
@@ -118,9 +121,14 @@ HRESULT CActionState::Change_State(_uint iIndex, _bool bForce, void* pArg)
 		}
 	}
 
+	// pre state 업데이트 -> start에서 사용할지 몰라서 위에서 업데이트
+	m_iPrevState = m_iCurrentState;
+
+	// change state : start
 	if (FAILED(m_vecStates[iIndex]->Start(pArg, bForce)))
 		return E_FAIL;
-	m_iPrevState = m_iCurrentState;
+
+	// cur state 업데이트
 	m_iCurrentState = iIndex;
 	return S_OK;
 }
@@ -324,14 +332,14 @@ CGameObject* CActionState::Get_Target()
 	return m_pOwnerControlContext->Get_Target();
 }
 
-_bool CActionState::Align_Move(_uint iState)
+_bool CActionState::Align_Move(_uint iState, _bool bForce , void* pArg)
 {
 	if (m_pOwnerControlContext == nullptr)
 		return false;
 
 	if (m_pOwnerControlContext->Is_MovePressed())
 	{
-		Change_State(iState);
+		Change_State(iState, bForce, pArg);
 		return true;
 	}
 	return false;
@@ -346,6 +354,62 @@ _bool CActionState::Align_Attack(_uint iState)
 	{
 		Change_State(iState);
 		return true;
+	}
+
+	return false;
+}
+
+_bool CActionState::Key_Input(CControlContext::CONTROL_KEY eKey)
+{
+	switch (eKey)
+	{
+	case CControlContext::CONTROL_KEY::MOVE:
+		return m_pOwnerControlContext->Is_MovePressed();
+
+	case CControlContext::CONTROL_KEY::DASH:
+		return m_pOwnerControlContext->Is_DashPressed();
+
+	case CControlContext::CONTROL_KEY::WALK:
+		return m_pOwnerControlContext->Is_WalkPressed();
+
+	case CControlContext::CONTROL_KEY::SPECIALMV:
+		return m_pOwnerControlContext->Is_SepcialMovePressed();
+
+	case CControlContext::CONTROL_KEY::JUMP:
+		return m_pOwnerControlContext->Is_JumpPressed();
+
+	case CControlContext::CONTROL_KEY::WIRE:
+		return m_pOwnerControlContext->Is_WirePressed();
+
+	case CControlContext::CONTROL_KEY::DODGE:
+		return m_pOwnerControlContext->Is_DodgePressed();
+
+	case CControlContext::CONTROL_KEY::LATT:
+		return m_pOwnerControlContext->Is_LeftAttackPressed();
+
+	case CControlContext::CONTROL_KEY::RATT:
+		return m_pOwnerControlContext->Is_RightAttackPressed();
+
+	case CControlContext::CONTROL_KEY::CHARGATT:
+		return m_pOwnerControlContext->Is_ChargingAttackPressed();
+
+	case CControlContext::CONTROL_KEY::COMBO1:
+		return m_pOwnerControlContext->Is_ComboAtt1Pressed();
+
+	case CControlContext::CONTROL_KEY::COMBO2:
+		return m_pOwnerControlContext->Is_ComboAtt2Pressed();
+
+	case CControlContext::CONTROL_KEY::COMBO3:
+		return m_pOwnerControlContext->Is_ComboAtt3Pressed();
+
+	case CControlContext::CONTROL_KEY::COMBO4:
+		return m_pOwnerControlContext->Is_ComboAtt4Pressed();
+
+	case CControlContext::CONTROL_KEY::SKILL1:
+		return m_pOwnerControlContext->Is_Skill1Pressed();
+
+	case CControlContext::CONTROL_KEY::SKILL2:
+		return m_pOwnerControlContext->Is_Skill2Pressed();
 	}
 
 	return false;
@@ -404,6 +468,11 @@ void CActionState::Move_Front(const _float fTimeDelta, const _float fSpeedRatio)
 void CActionState::Move_Backward(const _float fTimeDelta, const _float fSpeedRatio)
 {
 	m_pOwnerTransform->Go_BackWard(fTimeDelta * fSpeedRatio, m_pOwnerNavigation);
+}
+
+void CActionState::Move_Down(const _float fTimeDelta, const _float fSpeedRatio)
+{
+	m_pOwnerTransform->Go_Down(fTimeDelta, m_pOwnerNavigation);
 }
 
 void CActionState::StartForce_Front_ForAnimation(_float fForceAbs, _float fDragK)

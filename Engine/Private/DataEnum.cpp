@@ -32,3 +32,38 @@ NLOHMANN_JSON_SERIALIZE_ENUM(EAnimationType,
 )
 
 NS_END
+
+
+//TMP
+NS_BEGIN(Engine)
+
+NLOHMANN_JSON_SERIALIZE_ENUM(EMaterialInstanceType, {
+	{EMaterialInstanceType::Default, "Default"},
+	{EMaterialInstanceType::Concrete, "Concrete"},
+	{EMaterialInstanceType::Mirror, "Mirror"},
+	{EMaterialInstanceType::Water, "Water"},
+	{EMaterialInstanceType::Dirt, "Dirt"},
+	{EMaterialInstanceType::Red, "Red"},
+	{EMaterialInstanceType::Blue, "Blue"},
+	{EMaterialInstanceType::Green, "Green"},
+	{EMaterialInstanceType::Grass, "Grass"},
+	{EMaterialInstanceType::Orange, "Orange"},
+	{EMaterialInstanceType::Brown, "Brown" },
+	{EMaterialInstanceType::Pupple, "Pupple" },
+	{EMaterialInstanceType::WinterGreen, "WinterGreen" },
+	{EMaterialInstanceType::BurnishedBrown, "BurnishedBrown" },
+	{EMaterialInstanceType::ConcreteLight, "ConcreteLight" },
+	{EMaterialInstanceType::ConcreteMid, "ConcreteMid" },
+	{EMaterialInstanceType::ConcreteWarm, "ConcreteWarm" },
+	{EMaterialInstanceType::MetalCool, "MetalCool" },
+	{EMaterialInstanceType::MetalDark, "MetalDark" },
+	{EMaterialInstanceType::CourtBlue, "CourtBlue" } }
+)
+
+NLOHMANN_JSON_SERIALIZE_ENUM(LIGHT_TYPE, {
+	{LIGHT_TYPE::DIRECTIONAL, "DIRECTIONAL"},
+	{LIGHT_TYPE::STATICPOINT, "STATIC_POINT"},
+	{LIGHT_TYPE::DYNAMICPOINT, "DYNAMIC_POINT"} }
+)
+
+NS_END

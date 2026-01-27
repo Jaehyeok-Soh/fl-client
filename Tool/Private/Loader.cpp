@@ -5,6 +5,7 @@
 // Component
 //=================
 #include "VIBuffer_Terrain.h"
+#include "VIBuffer_Particle_Mesh.h"
 #include "VIBuffer_Particle_Point.h"
 #include "Model.h"
 #include "Collider.h"
@@ -114,15 +115,15 @@ HRESULT CLoader::Loading_For_Map()
 	// For. Prototype_Component_Collider_OBB
 	m_pGameInstance->Add_Prototype(ENUM_TO_UINT(ELevelType::MAP), L"Prototype_Component_Collider_OBB", CCollider::Create(m_pDevice, m_pDeviceContext, EColliderType::OBB));
 
-	/* Map Data Model */
-	CUEMapDataLoader* pMapDataLoader = CUEMapDataLoader::Create(m_pDevice,m_pDeviceContext);
-	if (pMapDataLoader == nullptr) return E_FAIL;
-	if (FAILED(pMapDataLoader->Make_Prototype(L"../../Resources/Models/Map/DevScene/Model/")))
-	{
-		Safe_Release(pMapDataLoader);
-		return E_FAIL;
-	}
-	Safe_Release(pMapDataLoader);
+	///* Map Data Model */
+	//CUEMapDataLoader* pMapDataLoader = CUEMapDataLoader::Create(m_pDevice,m_pDeviceContext);
+	//if (pMapDataLoader == nullptr) return E_FAIL;
+	//if (FAILED(pMapDataLoader->Make_Prototype(L"../../Resources/Models/Map/DevScene/Model/")))
+	//{
+	//	Safe_Release(pMapDataLoader);
+	//	return E_FAIL;
+	//}
+	//Safe_Release(pMapDataLoader);
 
 
 	//=================
@@ -155,7 +156,7 @@ HRESULT CLoader::Loading_For_Effect()
 	ExploDesc.vPivot = Vec3(0.f, 0.f, 0.5f);
 
 	m_pGameInstance->Add_Prototype(ENUM_TO_UINT(ELevelType::EFFECT), L"Prototype_Component_VIBuffer_Particle_Point", CVIBuffer_Particle_Point::Create(m_pDevice, m_pDeviceContext, &ExploDesc));
-
+	m_pGameInstance->Add_Prototype(ENUM_TO_UINT(ELevelType::EFFECT), L"Prototype_Component_VIBuffer_Particle_Mesh", CVIBuffer_Particle_Mesh::Create(m_pDevice, m_pDeviceContext, &ExploDesc));
 
 	//====================
 	// Resource Material
@@ -207,6 +208,15 @@ HRESULT CLoader::Loading_For_Effect()
 		if (FAILED(m_pGameInstance->Add_Resource(desc.wstrName, CMaterialInstance::Create(m_pDevice, m_pDeviceContext, &desc))))
 			return E_FAIL;
 	}
+
+	/* Effect Data Model */
+	CUEMapDataLoader* pMapDataLoader = CUEMapDataLoader::Create(m_pDevice, m_pDeviceContext);
+	if (pMapDataLoader == nullptr) return E_FAIL;
+	if (FAILED(pMapDataLoader->Make_Prototype(ENUM_TO_UINT(ELevelType::EFFECT), L"../../Resources/Models/Effect_FBX/blade/Model/")))
+		return E_FAIL;
+	Safe_Release(pMapDataLoader);
+
+	Loading_Texturessss(L"../../Resources/Textures/Effect");
 
 	m_isFinished = true;
 	return S_OK;
@@ -279,6 +289,45 @@ HRESULT CLoader::Loading_Textures(const wstring& wstrFolder)
 			desc.wstrPath = entry.path();
 			if (FAILED(m_pGameInstance->Add_Resource(L"Texture_" + wstrFileName, CTextureBase::Create(m_pDevice, m_pDeviceContext, &desc))))
 				return E_FAIL;
+		}
+	}
+
+	return S_OK;
+}
+
+HRESULT CLoader::Loading_Texturessss(const wstring& wstrFolder)
+{
+	namespace fs = std::filesystem;
+
+	if (fs::exists(wstrFolder) == false)
+		return E_FAIL;
+
+	for (const auto& entry : fs::recursive_directory_iterator(wstrFolder))
+	{
+		if (entry.is_regular_file())
+		{
+			auto path = entry.path();
+
+			wstring wstrExtension = path.extension().wstring();
+			for (auto& c : wstrExtension) c = towlower(c);
+
+			if (wstrExtension == L".hdr")
+				continue;
+
+			wstring wstrFileName = path.stem().wstring();
+
+			wstring wstrFolderName = path.parent_path().filename().wstring();
+			wstring wstrResourceTag = L"Texture_" + wstrFileName;
+
+			CTextureBase::RESOURCE_BASE_DESC desc = {};
+			desc.wstrName = wstrFileName;
+			desc.wstrPath = path.wstring();
+
+			if (FAILED(m_pGameInstance->Add_Resource(wstrResourceTag,
+				CTextureBase::Create(m_pDevice, m_pDeviceContext, &desc))))
+			{
+				continue;
+			}
 		}
 	}
 

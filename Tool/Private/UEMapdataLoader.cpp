@@ -20,7 +20,7 @@ CUEMapDataLoader::CUEMapDataLoader(ID3D11Device* pDevice, ID3D11DeviceContext* p
 	Safe_AddRef(m_pGameInstance);
 }
 
-HRESULT CUEMapDataLoader::Make_Prototype(const wstring& wstrMapModelFolderPath)
+HRESULT CUEMapDataLoader::Make_Prototype(_uint Leveltype, const wstring& wstrMapModelFolderPath)
 {
 	std::filesystem::path mapFolderPath = wstrMapModelFolderPath;
 	if (std::filesystem::exists(mapFolderPath) == false)
@@ -40,15 +40,15 @@ HRESULT CUEMapDataLoader::Make_Prototype(const wstring& wstrMapModelFolderPath)
 			wstring wstrFileName = fileFullPath.stem();
 			{
 				CBase* pFinded = { nullptr };
-				if (pFinded = m_pGameInstance->Find_Prototype(ENUM_TO_UINT(ELevelType::MAP), wstrModelTag + wstrFileName))
+				if (pFinded = m_pGameInstance->Find_Prototype(Leveltype, wstrModelTag + wstrFileName))
 					continue;
 			}
 
 			CModel::MODEL_ORIGIN_DESC desc = {};
 			desc.eType = EModelType::STATIC;
-			desc.iPrototypeLevelIndex = ENUM_TO_UINT(ELevelType::MAP);
+			desc.iPrototypeLevelIndex = Leveltype;
 			desc.wstrModelFolderName = fileFullPath.lexically_relative(basePath);
-			m_pGameInstance->Add_Prototype(ENUM_TO_UINT(ELevelType::MAP), wstrModelTag + wstrFileName, CModel::Create(m_pDevice, m_pDeviceContext, &desc));
+			m_pGameInstance->Add_Prototype(Leveltype, wstrModelTag + wstrFileName, CModel::Create(m_pDevice, m_pDeviceContext, &desc));
 		}
 	}
 
@@ -57,75 +57,76 @@ HRESULT CUEMapDataLoader::Make_Prototype(const wstring& wstrMapModelFolderPath)
 
 HRESULT CUEMapDataLoader::Make_StaticModel(const wstring& wstrRawDataFilePath, const wstring& wstrStaticModelLayerTag, const wstring& wstrColmeshLayerTag)
 {
-	CUEMapdataParser::MAPPARSER_DESC desc = {};
-	desc.wstrPath = wstrRawDataFilePath;
-	CUEMapdataParser* pParser = CUEMapdataParser::Create(desc);
-	if (!pParser)
-		return E_FAIL;
+	//CUEMapdataParser::MAPPARSER_DESC desc = {};
+	//desc.wstrPath = wstrRawDataFilePath;
+	//CUEMapdataParser* pParser = CUEMapdataParser::Create(desc);
+	//if (!pParser)
+	//	return E_FAIL;
 
-	if (FAILED(pParser->Read_Mapdata()))
-		return E_FAIL;
+	//if (FAILED(pParser->Read_Mapdata(false)))
+	//	return E_FAIL;
 
-	const _char* pFilterName = "StaticMeshComponent0";
-	const UINT32 iLevelID = ENUM_TO_UINT(ELevelType::MAP);
+	//const _char* pFilterName = "StaticMeshComponent0";
+	//const UINT32 iLevelID = ENUM_TO_UINT(ELevelType::MAP);
 
-	wstring wstrModelName{};
-	wstring wstrModelPath{};
+	//wstring wstrModelName{};
+	//wstring wstrModelPath{};
 
-	_uint iCount = { 0 };
-	for (size_t i = 0; i < pParser->m_vecData.size(); ++i)
-	{
-		const PARSED_MAPDATA_OUTER& mapdataOuter = pParser->m_vecData[i];
-		wstrModelName = Engine_Utils::ToWString(mapdataOuter.Properties.StaticMesh.strObjectName);
-		wstrModelPath = Engine_Utils::ToWString(mapdataOuter.Properties.StaticMesh.strObjectPath);
+	//_uint iCount = { 0 };
+	//for (size_t i = 0; i < pParser->m_vecData.size(); ++i)
+	//{
+	//	const PARSED_MAPDATA_OUTER& mapdataOuter = pParser->m_vecData[i];
+	//	wstrModelName = Engine_Utils::ToWString(mapdataOuter.Properties.StaticMesh.strObjectName);
+	//	wstrModelPath = Engine_Utils::ToWString(mapdataOuter.Properties.StaticMesh.strObjectPath);
 
-		CGameObject* pResult{ nullptr };
+	//	CGameObject* pResult{ nullptr };
 
-		CModel::MODEL_ORIGIN_DESC tModelDesc{};
-		tModelDesc.eType = EModelType::STATIC;
-		tModelDesc.wstrModelFolderName = wstrModelName;
-		tModelDesc.iPrototypeLevelIndex = iLevelID;
-		if (FAILED(m_pGameInstance->Add_Prototype(iLevelID, L"Prototype_Component_Model_" + wstrModelName, CModel::Create(m_pDevice, m_pDeviceContext, &tModelDesc))))
-			return E_FAIL;
+	//	CModel::MODEL_ORIGIN_DESC tModelDesc{};
+	//	tModelDesc.eType = EModelType::STATIC;
+	//	tModelDesc.wstrModelFolderName = wstrModelPath;
+	//	tModelDesc.iPrototypeLevelIndex = iLevelID;
+	//	CModel* pModel =  CModel::Create(m_pDevice, m_pDeviceContext, &tModelDesc);
+	//	if (pModel)
+	//	{
+	//		if (FAILED(m_pGameInstance->Add_Prototype(iLevelID, L"Prototype_Component_Model_" + wstrModelName, pModel)))
+	//			Safe_Release(pModel);
+	//	}
 
 
-		CStaticModel::STATICMODEL_DESC desc = {};
-		desc.wstrLayerTag = wstrStaticModelLayerTag;
-		desc.iLevelIndex = ENUM_TO_UINT(ELevelType::MAP);
-		desc.wstrModelPath = Engine::Engine_Utils::ToWString(mapdataOuter.Properties.StaticMesh.strObjectPath);
-		desc.wstrModelName = Engine::Engine_Utils::ToWString(mapdataOuter.Properties.StaticMesh.strObjectName);
-		if (!(pResult = m_pGameInstance->Add_GameObject(desc.iLevelIndex,
-			L"Prototype_GameObject_StaticModel",
-			desc.iLevelIndex,
-			wstrStaticModelLayerTag, &desc)))
-		{
-			Safe_Release(pParser);
-			return E_FAIL;
-		}
+	//	CStaticModel::STATICMODEL_DESC desc = {};
+	//	desc.wstrLayerTag = wstrStaticModelLayerTag;
+	//	desc.iLevelIndex = ENUM_TO_UINT(ELevelType::MAP);
+	//	desc.wstrModelPath = wstrModelPath;
+	//	desc.wstrModelName = wstrModelName;
+	//	if (!(pResult = m_pGameInstance->Add_GameObject(desc.iLevelIndex,
+	//		L"Prototype_GameObject_StaticModel",
+	//		desc.iLevelIndex,
+	//		wstrStaticModelLayerTag, &desc)))
+	//	{
+	//		Safe_Release(pParser);
+	//		return E_FAIL;
+	//	}
 
-		CTransform* pTransform = pResult->Get_Component<CTransform>();
-		// Unreal엔진에서는 Degree로 표현됨, 이를 radian으로 바꿔줘야함
+	//	CTransform* pTransform = pResult->Get_Component<CTransform>();
+	//	// Unreal엔진에서는 Degree로 표현됨, 이를 radian으로 바꿔줘야함
 
-		Vec3 vSwapRotation = Vec3(
-			XMConvertToRadians(mapdataOuter.Properties.vPitchYawRoll.x), XMConvertToRadians(mapdataOuter.Properties.vPitchYawRoll.y), XMConvertToRadians(mapdataOuter.Properties.vPitchYawRoll.z));
-		Matrix matRotation = Matrix::CreateFromYawPitchRoll(vSwapRotation);
+	//	Vec3 vSwapRotation = Vec3(
+	//		XMConvertToRadians(mapdataOuter.Properties.vPitchYawRoll.x), XMConvertToRadians(mapdataOuter.Properties.vPitchYawRoll.y), XMConvertToRadians(mapdataOuter.Properties.vPitchYawRoll.z));
+	//	Matrix matRotation = Matrix::CreateFromYawPitchRoll(vSwapRotation);
 
-		pTransform->Set_Info(TRANSFORM_INFO_STATE::RIGHT, matRotation.Right());
-		pTransform->Set_Info(TRANSFORM_INFO_STATE::UP, matRotation.Up());
-		pTransform->Set_Info(TRANSFORM_INFO_STATE::LOOK, matRotation.Backward());
+	//	pTransform->Set_Info(TRANSFORM_INFO_STATE::RIGHT, matRotation.Right());
+	//	pTransform->Set_Info(TRANSFORM_INFO_STATE::UP, matRotation.Up());
+	//	pTransform->Set_Info(TRANSFORM_INFO_STATE::LOOK, matRotation.Backward());
 
-		Vec3 vSwapScale = Vec3(mapdataOuter.Properties.vScale.x, mapdataOuter.Properties.vScale.z , mapdataOuter.Properties.vScale.y);
-		pTransform->Set_Scale(vSwapScale);
+	//	Vec3 vSwapScale = Vec3(mapdataOuter.Properties.vScale.x, mapdataOuter.Properties.vScale.z , mapdataOuter.Properties.vScale.y);
+	//	pTransform->Set_Scale(vSwapScale);
 
-		float vMulSize = 0.01f;
-		Vec3  vSwapPosition = Vec3(mapdataOuter.Properties.vPosition.x * vMulSize , mapdataOuter.Properties.vPosition.z * vMulSize, mapdataOuter.Properties.vPosition.y * -vMulSize);
-		pTransform->Set_Info(TRANSFORM_INFO_STATE::POS, vSwapPosition);
+	//	float vMulSize = 0.01f;
+	//	Vec3  vSwapPosition = Vec3(mapdataOuter.Properties.vPosition.x * vMulSize , mapdataOuter.Properties.vPosition.z * vMulSize, mapdataOuter.Properties.vPosition.y * -vMulSize);
+	//	pTransform->Set_Info(TRANSFORM_INFO_STATE::POS, vSwapPosition);
+	//}
 
-		// position은 z, y 스왑후 z값쪽에 음수를 입혀야함
-		//pTransform->Set_Info(TRANSFORM_INFO_STATE::POS, Vec3(mapdataOuter.Properties.vPosition.x * 0.01f, mapdataOuter.Properties.vPosition.z * 0.01f, mapdataOuter.Properties.vPosition.y * -0.01f));
-	}
-
-	Safe_Release(pParser);
+	//Safe_Release(pParser);
 	return S_OK;
 }
 

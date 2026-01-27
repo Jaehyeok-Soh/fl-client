@@ -29,21 +29,25 @@ HRESULT CUIObject::Initialize(void* pArg)
 		return E_FAIL;
 
 	UIOBJECT_DESC* pDesc = static_cast<UIOBJECT_DESC*>(pArg);
+
+	m_isVisible = pDesc->isInitVisible;
+	m_eCategory = (pDesc->isAlpha ? RENDER_CATEGORY::BLENDUI : RENDER_CATEGORY::UI);
+
 	m_fX = pDesc->fX;
 	m_fY = pDesc->fY;
-	m_fSizeX = pDesc->fSizeX;
-	m_fSizeY = pDesc->fSizeY;
-	m_eCategory = pDesc->bAlpha == true ? RENDER_CATEGORY::BLENDUI : RENDER_CATEGORY::UI;
+	m_fWidth = pDesc->fWidth;
+	m_fHeight = pDesc->fHeight;
 
 
 	D3D11_VIEWPORT          ViewportDesc = {};
 	_uint					iNumViewports = { 1 };
+
 	m_pDeviceContext->RSGetViewports(&iNumViewports, &ViewportDesc);
 	m_iViewportWidth = (_uint)ViewportDesc.Width;
 	m_iViewportHeight = (_uint)ViewportDesc.Height;
 
-	Set_Size(pDesc->fSizeX, pDesc->fSizeY);
-	Set_Position(pDesc->fX, pDesc->fY);
+	Set_Size(pDesc->fWidth, pDesc->fHeight);
+	Set_Position(pDesc->fX, pDesc->fY, pDesc->fZ);
 
 	if (FAILED(Add_Component<CShader>(0, L"Prototype_Component_Shader_VtxPosTex", pArg)))
 		return E_FAIL;
@@ -95,14 +99,14 @@ _bool CUIObject::IsPicked()
 {
 	if (::PtInRect(&m_tRect, m_pGameInstance->Get_MousePos()))
 	{
-		m_bPicked = true;
+		m_isPicked = true;
 		return true;
 	}
 	else
 	{
-		if (m_bPicked)
+		if (m_isPicked)
 			OffPicked();
-		m_bPicked = false;
+		m_isPicked = false;
 		return false;
 	}
 }
@@ -112,11 +116,12 @@ void CUIObject::OffPicked()
 
 }
 
-void CUIObject::Set_Size(_float fX, _float fY)
+void CUIObject::Set_Size(_float fWidth, _float fHeight)
 {
-	m_fSizeX = fX;
-	m_fSizeY = fY;
-	Get_Component<CTransform>()->Set_Scale(m_fSizeX, m_fSizeY, 1.f);
+	m_fWidth = fWidth;
+	m_fHeight = fHeight;
+
+	Get_Component<CTransform>()->Set_Scale(m_fWidth, m_fHeight, 1.f);
 	SetUp_Rect();
 }
 
@@ -125,92 +130,81 @@ void CUIObject::Set_Size(const Vec2 &vSize)
 	Set_Size(vSize.x, vSize.y);
 }
 
-void CUIObject::Set_Position(const Vec2 &vPosition)
+void CUIObject::Set_Position(const Vec3 &vPosition)
 {
-	Set_Position(vPosition.x, vPosition.y);
+	Set_Position(vPosition.x, vPosition.y, vPosition.z);
 }
 
-void CUIObject::Set_Position(_float fX, _float fY)
+void CUIObject::Set_Position(_float fX, _float fY, _float fZ)
 {
 	m_fX = fX;
 	m_fY = fY;
+	m_fZ = fZ;
 
-	Get_Component<CTransform>()->Set_Info(TRANSFORM_INFO_STATE::POS, XMVectorSet(
-		m_fX - m_iViewportWidth * 0.5f,
-		-m_fY + m_iViewportHeight * 0.5f, 0.f, 1.f));
+	Get_Component<CTransform>()->Set_Info(TRANSFORM_INFO_STATE::POS, XMVectorSet(m_fX - m_iViewportWidth * 0.5f, -m_fY + m_iViewportHeight * 0.5f, m_fZ, 1.f));
 	SetUp_Rect();
-}
-
-void CUIObject::Move_Position_Lerp(const Vec2 &vTargetPosition)
-{
-	// TODO
-	// Transform에 만들어놓고 꺼내쓰자
 }
 
 void CUIObject::Located_Left_In_Viewport()
 {
-	Set_Position(m_fSizeX * 0.5f, m_iViewportHeight * 0.5f);
+	Set_Position(m_fWidth * 0.5f, m_iViewportHeight * 0.5f, m_fZ);
 }
 
 void CUIObject::Located_Right_In_Viewport()
 {
-	Set_Position(m_iViewportWidth - m_fSizeX * 0.5f, m_iViewportHeight * 0.5f);
+	Set_Position(m_iViewportWidth - m_fWidth * 0.5f, m_iViewportHeight * 0.5f, m_fZ);
 }
 
 void CUIObject::Located_Top_In_Viewport()
 {
-	Set_Position(m_iViewportWidth * 0.5f, m_fSizeY * 0.5f);
+	Set_Position(m_iViewportWidth * 0.5f, m_fHeight * 0.5f, m_fZ);
 }
 
 void CUIObject::Located_Bottom_In_Viewport()
 {
-	Set_Position(m_iViewportWidth * 0.5f, m_iViewportHeight - m_fSizeY * 0.5f);
+	Set_Position(m_iViewportWidth * 0.5f, m_iViewportHeight - m_fHeight * 0.5f, m_fZ);
 }
 
 void CUIObject::Located_LeftTop_In_Viewport()
 {
-	Set_Position(m_fSizeX * 0.5f, m_fSizeY * 0.5f);
+	Set_Position(m_fWidth * 0.5f, m_fHeight * 0.5f, m_fZ);
 }
 
 void CUIObject::Located_RightTop_In_Viewport()
 {
-	Set_Position(m_iViewportWidth - m_fSizeX * 0.5f, m_fSizeY * 0.5f);
+	Set_Position(m_iViewportWidth - m_fWidth * 0.5f, m_fHeight * 0.5f, m_fZ);
 }
 
 void CUIObject::Located_LeftBottom_In_Viewport()
 {
-	Set_Position(m_fSizeX * 0.5f, m_iViewportHeight - m_fSizeY * 0.5f);
+	Set_Position(m_fWidth * 0.5f, m_iViewportHeight - m_fHeight * 0.5f, m_fZ);
 }
 
 void CUIObject::Located_RightBottom_In_Viewport()
 {
-	Set_Position(m_iViewportWidth - m_fSizeX * 0.5f, m_iViewportHeight - m_fSizeY * 0.5f);
+	Set_Position(m_iViewportWidth - m_fWidth * 0.5f, m_iViewportHeight - m_fHeight * 0.5f, m_fZ);
 }
 
 void CUIObject::Set_SizeToTextureScale()
 {
 	if (!Get_Component<CTexture>())
 		return;
+
 	Vec2 vSize = Get_Component<CTexture>()->Get_TextureSize();
-	vSize.x *= m_fSizeX;
-	vSize.y *= m_fSizeY;
 	Set_Size(vSize);
-	m_fRatio = vSize.x / vSize.y;
+	m_fAspect = vSize.x / vSize.y;
 	SetUp_Rect();
 }
 
 void CUIObject::SetUp_Rect()
 {
-	m_tRect.left = (LONG)(m_fX - m_fSizeX / 2);
-	m_tRect.right = (LONG)(m_fX + m_fSizeX / 2);
-	m_tRect.top = (LONG)(m_fY - m_fSizeY / 2);
-	m_tRect.bottom = (LONG)(m_fY + m_fSizeY / 2);
+	m_tRect.left = (LONG)(m_fX - m_fWidth / 2);
+	m_tRect.right = (LONG)(m_fX + m_fWidth / 2);
+	m_tRect.top = (LONG)(m_fY - m_fHeight / 2);
+	m_tRect.bottom = (LONG)(m_fY + m_fHeight / 2);
 }
 
 void CUIObject::Free()
 {
-	Safe_Release(m_pTexture);
-	Safe_Release(m_pShader);
-	Safe_Release(m_pMesh);
 	Super::Free();
 }

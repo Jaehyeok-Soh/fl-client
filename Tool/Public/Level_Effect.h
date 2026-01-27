@@ -60,7 +60,6 @@ private:
 	array<DelegateHandle, ENUM_TO_SZET(Event::END)> m_EventHandles;
 	array<class CImGui_Base*, ENUM_TO_SZET(Elements::END)> m_GuiElements;
 public:
-	void Save_PresetData(MAPFILE_DATA& data);
 	static CLevel_Effect* Create(ID3D11Device* pDevice, ID3D11DeviceContext* pDeviceContext);
 	virtual void Free() override;
 };

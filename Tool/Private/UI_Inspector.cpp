@@ -36,219 +36,17 @@ void CUI_Inspector::Update(const _float fTimeDelta)
 HRESULT CUI_Inspector::Render(CToolObject* pGo)
 {
 	ImGui::Begin(m_strLabel.c_str(), nullptr, m_Flag);
-	
-	/* 씬 */
-	SetUp_Level();
-	Load_Data();
-	ImGui::SameLine();
-	Clear_Data();
 
-	/* 캔버스 태그 받고 생성 */
-	Make_Canvas();
-
-	if (0 != m_pUIManager->Get_NumCanvas())
-	{
-		/* 캔버스 크기,위치 등 조정 */
-		Edit_Canvas();
-
-		/* 레이어 태그 받고 생성 */
-		Make_Layers();
-
-		/* 레이어 선택 */
-		Edit_Layers();
-	}
+	// m_pSelectedUI = m_pUIManager->Safe_Access_UI(m_pUIManager->Get_CurUIIndex());
+	SetUp_Public_Info();
 
 	ImGui::End();
 	return S_OK;
 }
 
-void CUI_Inspector::Load_Data()
+void CUI_Inspector::SetUp_Public_Info()
 {
-	if (ImGui::Button("Load UI Data", ImVec2(0, 0)))
-	{
-		OPENFILENAMEW ofn{};
-		_tchar szFile[MAX_PATH] = { 0 };
-
-		ofn.lStructSize = sizeof(OPENFILENAMEW);
-		ofn.hwndOwner = g_hWnd;
-		ofn.lpstrFile = szFile;
-		ofn.nMaxFile = MAX_PATH;
-		ofn.lpstrFilter = L"Json Files (*.json)\0*.json\0All Files (*.*)\0*.*\0\0";
-		ofn.nFilterIndex = 1;
-		ofn.Flags = OFN_PATHMUSTEXIST | OFN_FILEMUSTEXIST | OFN_NOCHANGEDIR;
-
-		if (::GetOpenFileNameW(&ofn) == TRUE)
-		{
-			wstring result = szFile;
-			if (FAILED(CUIData_Repository::GetInstance()->Load_UIData(result, m_pUIManager->Get_CurCanvas_Ref())))
-				return;
-
-			m_pUIManager->Remake_UIObjects();
-		}
-	}
-}
-
-void CUI_Inspector::Clear_Data()
-{
-	if (ImGui::Button("Clear UI Data", ImVec2(0, 0)))
-	{
-		m_pUIManager->Clear_UIObjects();
-	}
-}
-
-void CUI_Inspector::SetUp_Level()
-{
-	ImGui::Text("<<SetUp Level>>");
-	ImGui::Combo("Current_Selected_Level", &m_iCurSelectLevelID, m_szArrClientLevelType, static_cast<uint32_t>(m_vecClientLevelType.size()));
-}
-
-void CUI_Inspector::Make_Canvas()
-{
-	ImGui::NewLine();
-	ImGui::Text("<<Canvas>>");
-
-	Input_Canvas_Tag();
-	Make_Canvas_Btn();
-
-	/* Create 버튼을 눌렀다면 */
-	if (m_isCreateCanvas)
-	{
-		if (m_strCanvasTag == "")
-		{
-			MSG_BOX("CUI_Inspector::Make_Canvas, Empty Tag");
-			m_isCreateCanvas = FALSE;
-			return;
-		}
-
-		/* 캔버스 태그가 있다*/
-
-		const auto& vecCanvas = m_pUIManager->Get_CurCanvas();
-		for (uint32_t i = 0; i < m_pUIManager->Get_NumCanvas(); ++i)
-		{
-			if (m_strCanvasTag == vecCanvas[i].strTag)
-			{
-				MSG_BOX("CUI_Inspector::Make_Canvas, Tag Already Created");
-				m_isCreateCanvas = FALSE;
-				return;
-			}
-		}
-
-		CANVAS_DATA tData = {};
-		tData.strTag = m_strCanvasTag;
-		m_pUIManager->Add_CanvasData(tData);
-
-		m_strCanvasTag = "";
-		m_isCreateCanvas = FALSE;
-	}
-}
-
-void CUI_Inspector::Edit_Canvas()
-{
-	ImGui::NewLine();
-	ImGui::Text("<<Select CanvasTag To Edit>>");
-	ImGui::BeginChild("CanvasList", ImVec2(0, 50), true);
-	for (uint32_t i = 0; i < m_pUIManager->Get_NumCanvas(); ++i)
-	{
-		bool selected = (m_pUIManager->Get_CurCanvasIndex() == i);
-		if (ImGui::Selectable(m_pUIManager->Get_CanvasData_Ptr(i)->strTag.c_str(), selected))
-			m_pUIManager->Change_Canvas(i);
-	}
-	ImGui::EndChild();
-
-	Setting_Canvas_CustomSize_Btn();
-	ImGui::SameLine();
-	Setting_Canvas_ViewportSize_Btn();
-	Input_Canvas_TransformInfo();
-
-	if (ImGui::Button("Delete Selected Canvas"))
-		m_pUIManager->Remove_CanvasData();
-}
-
-void CUI_Inspector::Make_Layers()
-{
-	Input_Layer_Tag();
-
-	if (m_isCreateLayer)
-	{
-		if (m_strLayerTag == "")
-		{
-			MSG_BOX("CUI_Inspector::Make_Layers, Empty Tag");
-			m_isCreateLayer = FALSE;
-			return;
-		}
-
-		const auto& vecLayer = m_pUIManager->Get_CurLayers();
-		for (uint32_t i = 0; i < m_pUIManager->Get_NumLayer(m_pUIManager->Get_CurCanvasIndex()); ++i)
-		{
-			if ( m_strLayerTag == vecLayer[i].strTag)
-			{
-				MSG_BOX("CUI_Inspector::Make_Layers, This LayerTag Already Exist in Currnet Canvas");
-				m_isCreateLayer = FALSE;
-				return;
-			}
-		}
-
-		if (m_isCreateLayer)
-		{
-			LAYER_DATA tData = {};
-			tData.strTag = m_strLayerTag;
-			m_pUIManager->Add_LayerData(tData);
-			m_strLayerTag = "";
-			m_isCreateLayer = FALSE;
-		}
-	}
-}
-
-void CUI_Inspector::Edit_Layers()
-{
-	ImGui::NewLine();
-	ImGui::Text("<<Select Layer>>");
-	ImGui::BeginChild("LayerList", ImVec2(0, 100), true);
-
-
-	for (uint32_t i = 0; i < m_pUIManager->Get_NumLayer(m_pUIManager->Get_CurCanvasIndex()); ++i)
-	{
-		bool selected = (m_pUIManager->Get_CurLayerIndex() == i);
-		if (ImGui::Selectable(m_pUIManager->Get_LayerData_Ptr(i)->strTag.c_str(), selected))
-			m_pUIManager->Change_Layers(i);
-	}
-	ImGui::EndChild();
-
-	if (0 != m_pUIManager->Get_NumLayer(m_pUIManager->Get_CurCanvasIndex()))
-	{
-		ImGui::NewLine();
-		ImGui::Text("<<UI>>");
-		ImGui::TextUnformatted("UIName :");
-		ImGui::SameLine();
-		ImGui::SetNextItemWidth(150.f);
-		ImGui::InputText("##UIName", &m_strUIName);
-		Make_UI_Btn();
-
-		if (!m_pUIManager->Get_CurUIDatas().empty())
-		{
-			Show_UI_List();
-			Edit_UI();
-		}
-	}
-
-}
-
-void CUI_Inspector::Add_NewUI()
-{
-	GENERIC_UI_DATA tData = {};
-	tData.strName = m_strUIName;
-	m_pUIManager->Add_UIData(tData);
-	m_strUIName = "";
-}
-
-void CUI_Inspector::Edit_UI()
-{
-	SetUp_UI_Common_Info();
-
-	if (ImGui::Button("Save UI"))
-	{
-		CUIData_Repository::GetInstance()->Save_UIData(L"../../Resources/Data/UIData/Data.json");
-	}
+	Input_RectTransform();
 }
 
 void CUI_Inspector::SetUp_UI_Common_Info()
@@ -346,76 +144,6 @@ void CUI_Inspector::SetUp_UI_Common_Info()
 	ImGui::End();
 }
 
-void CUI_Inspector::Show_UI_List()
-{
-	ImGui::NewLine();
-	ImGui::Text("<<UI List>>");
-	ImGui::BeginChild("UIList", ImVec2(0, 100), true);
-
-	for (uint32_t i = 0; i < m_pUIManager->Get_NumUI(m_pUIManager->Get_CurCanvasIndex(), m_pUIManager->Get_CurLayerIndex()); ++i)
-	{
-		bool selected = (m_pUIManager->Get_CurUIIndex() == i);
-		if (ImGui::Selectable(m_pUIManager->Get_UIData_Ptr(i)->strName.c_str(), selected))
-			m_pUIManager->Change_UIData(i);
-	}
-	ImGui::EndChild();
-}
-
-void CUI_Inspector::Input_Canvas_Tag()
-{
-	ImGui::TextUnformatted("CanvasTag :");
-	ImGui::SameLine();
-	ImGui::SetNextItemWidth(150.f);
-	ImGui::InputText("##CanvasTag", &m_strCanvasTag);
-}
-
-void CUI_Inspector::Input_Canvas_TransformInfo()
-{
-	/* 내맘대로 만들겠다 */
-	if (m_isCustomSize)
-	{
-		auto* pData = m_pUIManager->Get_CanvasData_Ptr(m_pUIManager->Get_CurCanvasIndex());
-
-		/* Width / Height */
-		Scrub_Float("Width :", "CanvasSizeX", &pData->fWidth, 0.1f, 20.f, 0.1f, 1.0f, 120.f);
-		ImGui::SameLine(0.f, 16.f);
-		Scrub_Float("Height :", "CanvasSizeY", &pData->fHeight, 0.1f, 20.f, 0.1f, 1.0f, 120.f);
-
-		/* Pos X / Y / Z */
-		Scrub_Float("X :", "CanvasPosX", &pData->fPosX, 0.1f, 20.f, 0.1f, 1.0f, 100.f);
-		ImGui::SameLine(0.f, 16.f);
-		Scrub_Float("Y :", "CanvasPosY", &pData->fPosY, 0.1f, 20.f, 0.1f, 1.0f, 100.f);
-		ImGui::SameLine(0.f, 16.f);
-		Scrub_Float("Z :", "CanvasPosZ", &pData->fPosZ, 0.1f, 20.f, 0.1f, 1.0f, 100.f);
-
-		pData->isUsingViewport = FALSE;
-	}
-	/* 뷰포트 기준으로 캔버스를 만들겠다 */
-	else if (m_isViewportSize)
-	{
-		auto* pData = m_pUIManager->Get_CanvasData_Ptr(m_pUIManager->Get_CurCanvasIndex());
-
-		pData->fWidth = m_pToolManager->Get_CurViewportSize().x;
-		pData->fHeight = m_pToolManager->Get_CurViewportSize().y;
-		pData->fPosX = 0.f;
-		pData->fPosY = 0.f;
-		pData->fPosZ = 0.f;
-		pData->isUsingViewport = TRUE;
-	}
-}
-
-void CUI_Inspector::Input_Layer_Tag()
-{
-	ImGui::NewLine();
-	ImGui::Text("<<Layer>>");
-	ImGui::TextUnformatted("LayerTag :");
-	ImGui::SameLine();
-	ImGui::SetNextItemWidth(150.f);
-	ImGui::InputText("##LayerTag", &m_strLayerTag);
-
-	Make_Layer_Btn();
-}
-
 void CUI_Inspector::Input_RectTransform()
 {
 	ImGui::Text("Current Select : ");
@@ -450,7 +178,7 @@ void CUI_Inspector::Input_RectTransform()
 	}
 
 	/* Width / Height */
-	auto* pData = m_pUIManager->Get_UIData_Ptr(m_pUIManager->Get_CurUIIndex());
+	auto* pData = m_pUIManager->Safe_Access_UI(m_pUIManager->Get_CurUIIndex());
 	Scrub_Float("Width :", "UISizeX", &pData->fWidth, 0.1f, 20.f, 0.1f, 10.0f, 100.f);
 	ImGui::SameLine(0.f, 16.f);
 	Scrub_Float("Height :", "UISizeY", &pData->fHeight, 0.1f, 20.f, 0.1f, 10.0f, 100.f);
@@ -462,11 +190,11 @@ void CUI_Inspector::Input_RectTransform()
 	ImGui::SameLine(0.f, 16.f);
 	Scrub_Float("Z :", "UIPosZ", &pData->fPosZ, 0.1f, 20.f, 0.1f, 10.0f, 100.f);
 
-	if (nullptr != m_pUIManager->Get_UI_Ptr(m_pUIManager->Get_CurUIIndex()))
+	LAYER_DATA* pLayer = m_pUIManager->Safe_Access_Layer(m_pUIManager->Get_CurLayerIndex());
+	if (nullptr != pLayer)
 	{
-		m_pUIManager->Get_UI_Ptr(m_pUIManager->Get_CurUIIndex())->Set_Position(
-			static_cast<_float>(m_pUIManager->Get_UIData_Ptr(m_pUIManager->Get_CurUIIndex())->fPosX),
-			static_cast<_float>(m_pUIManager->Get_UIData_Ptr(m_pUIManager->Get_CurUIIndex())->fPosY));
+		if (!pLayer->vecUIObjects.empty())
+			pLayer->vecUIObjects[m_pUIManager->Get_CurUIIndex()]->Set_Position(pData->fPosX, pData->fPosY, pData->fPosZ);
 	}
 }
 
@@ -514,67 +242,6 @@ _bool CUI_Inspector::Scrub_Float(const _char* label, const _char* Id, OUT _float
 	ImGui::PopID();
 
 	return changed;
-}
-
-void CUI_Inspector::Make_Canvas_Btn()
-{
-	if (ImGui::Button("Create Canvas With This Tag"))
-		m_isCreateCanvas = TRUE;
-}
-
-void CUI_Inspector::Setting_Canvas_CustomSize_Btn()
-{
-	if (ImGui::Button("Setting By CustomSize"))
-	{
-		m_isCustomSize = TRUE;
-		m_isViewportSize = FALSE;
-	}
-}
-
-void CUI_Inspector::Setting_Canvas_ViewportSize_Btn()
-{
-	if (ImGui::Button("Setting By ViewportSize"))
-	{
-		m_isCustomSize = FALSE;
-		m_isViewportSize = TRUE;
-	}
-}
-
-void CUI_Inspector::Make_Layer_Btn()
-{
-	if (ImGui::Button("Create Layer With This Tag"))
-	{
-		m_isCreateLayer = TRUE;
-	}
-}
-
-void CUI_Inspector::Make_UI_Btn()
-{
-	if (ImGui::Button("Create UI With This Layer"))
-	{
-		m_isCreateUI = TRUE;
-		m_iRectTransformIndex = 4;
-
-		if (m_strUIName == "")
-		{
-			MSG_BOX("CUI_Inspector::Make_UI_Btn, Empty Tag");
-			m_isCreateCanvas = FALSE;
-			return;
-		}
-
-		/* UI 태그가 있다*/
-		const auto& vecUI = m_pUIManager->Get_CurUIDatas();
-		for (uint32_t i = 0; i < m_pUIManager->Get_NumUI(m_pUIManager->Get_CurCanvasIndex(), m_pUIManager->Get_CurLayerIndex()); ++i)
-		{
-			if (m_strCanvasTag == vecUI[i].strName)
-			{
-				MSG_BOX("CUI_Inspector::Make_UI_Btn, Tag Already Created");
-				m_isCreateCanvas = FALSE;
-				return;
-			}
-		}
-		Add_NewUI();
-	}
 }
 
 CUI_Inspector* CUI_Inspector::Create(const _char* pLabel, CLevel* pOwner, ID3D11Device* pDevice, ID3D11DeviceContext* pDeviceContext)

@@ -257,12 +257,6 @@ public:
 #endif
 #pragma endregion
 
-
-#pragma region MAPFILE_MANAGER
-	HRESULT Save_MapData(const wstring& wstrSavePath, const MAPFILE_DATA& data);
-	HRESULT Load_MapData(const wstring& wstrFilePath, OUT MAPFILE_DATA& outData);
-#pragma endregion
-
 #pragma region RANDOM
 	float Rand_Float(float fA, float fB)
 	{
@@ -277,21 +271,13 @@ public:
 
 // Todo - 쓰레기통 정리
 #pragma region GAMEDATA
-	const MODELPARTS_PROTOTYPETAGS& Get_ModelPartsData() const;
-	void Set_ModelPartsData(const MODELPARTS_PROTOTYPETAGS& tData);
-	HRESULT Add_MeshEffectPresets(const wstring& wstrFilePath);
-	HRESULT Add_MeshEffectPreviews(const wstring& wstrFilePath);
-	const EFFECT_PRESET_SNAPSHOT& Get_MeshEffectPresetSnapShot(_uint iPresetID);
-	const EFFECT_PRESET_SNAPSHOT& Get_MeshEffectPresetSnapShot(const string& strTag);
-	const MAPOBJECT_SAVEDATA* Get_MeshEffectPreview(const wstring& wstrGroupTag, const string& strNameTag);
-	const vector<MAPOBJECT_SAVEDATA>* Get_MeshEffectPreviews(const wstring& wstrTag);
+
 #pragma endregion
 private:
 	class CObjectPool_Manager* m_pObjectPool_Manager = { nullptr };
 	class CDataRepository* m_pDataRepository = { nullptr };
 	class CTimer_Manager* m_pTimer_Manager = { nullptr };
 	class CSound_Manager* m_pSound_Manager = { nullptr };
-	class CMapFile_Manager* m_pMapFile_Manager = { nullptr };
 	class CFont_Manager* m_pFont_Manager = { nullptr };
 	class CGraphic_Device* m_pGraphic_Device = { nullptr };
 	class CLevel_Manager* m_pLevel_Manager = { nullptr };

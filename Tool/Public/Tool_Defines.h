@@ -62,6 +62,32 @@ namespace Tool
 		END
 	};
 
+	enum class EStaticModel_Type
+	{
+		DEFUALT,
+		INSTANCE,
+		END,
+	};
+
+
+	static string StaticModelType_ToString(EStaticModel_Type eType)
+	{
+		switch (eType)
+		{
+		case Tool::EStaticModel_Type::DEFUALT: return "DEFUALT";
+		case Tool::EStaticModel_Type::INSTANCE:	return "INSTANCE";
+		default		:						return "NONE";
+		}
+
+
+		return "NONE";
+	}
+	static EStaticModel_Type StaticModelType_ToEnum(string streType)
+	{
+		if (streType == "DEFUALT") return EStaticModel_Type::DEFUALT;
+		if (streType == "INSTANCE") return EStaticModel_Type::INSTANCE;
+		return EStaticModel_Type::END;
+	}
 
 
 
@@ -131,21 +157,6 @@ namespace Tool
 	inline constexpr _tchar g_wszStaticModelLayer[]{ L"StaticModel_Layer" };
 	inline constexpr _tchar g_wszCameraLayer[]{ L"Camera_Layer" };
 
-	struct HoleBridges
-	{
-		_int iHolePolyIndex = { -1 };
-		_int iOuterVertexIndex = { -1 };
-		_int iHoleVertexIndex = { -1 };
-	};
-
-	typedef struct tagEffectPreset
-	{
-		_uint iPressetID = 0;
-		string strName = "";
-
-		EFFECT_PRESET_SNAPSHOT snapShot = {};
-	}EFFECT_PRESET;
-
 #pragma region Enum
 
 
@@ -158,7 +169,6 @@ namespace Tool
 		STATICMODEL,
 		END,
 	};
-
 
 	static EMapObject_Type MapObjectType_StringToType(const string& strType)
 	{
@@ -180,6 +190,7 @@ namespace Tool
 		return "NONE";
 
 	}
+
 
 	/*-----------------------------------------------------------*/
 

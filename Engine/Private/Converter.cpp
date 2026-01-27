@@ -650,7 +650,7 @@ HRESULT CConverter::ReadAndExport_MoreThanOne()
 	for (size_t i = 0; i < m_vecAssetPaths.size(); ++i)
 	{
 		Clear();
-		
+
 		if (FAILED(Create_AiScene(Engine_Utils::ToString(m_vecAssetPaths[i]))))
 			return E_FAIL;
 
@@ -789,6 +789,8 @@ size_t CConverter::Get_FileCount(const wstring wstrFolderPath)
 	{
 		if (entry.is_regular_file())
 		{
+			if (lstrcmpW(path(entry).extension().c_str(), g_wszModelExtension) != 0)
+				continue;
 			m_vecAssetPaths.push_back(entry.path());
 			++iFileCount;
 		}

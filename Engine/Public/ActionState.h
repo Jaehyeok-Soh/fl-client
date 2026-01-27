@@ -1,10 +1,10 @@
 #pragma once
 #include "Component.h"
 #include "StateBase.h"
+#include "ControlContext.h"
 
 NS_BEGIN(Engine)
 
-class CControlContext;
 class CModel;
 class CTransform;
 class CNavigation;
@@ -20,6 +20,7 @@ public:
 		_uint iStateCount = { 0 };
 		CModel* pOwnerModel = { nullptr };
 	}ACTIONSTATE_DESC;
+
 protected:
 	CActionState();
 	CActionState(const CActionState& rhs);
@@ -62,6 +63,7 @@ protected:
 	void Move_Right(const _float fTimeDelta, const _float fSpeedRatio = 1.f);
 	void Move_Front(const _float fTimeDelta, const _float fSpeedRatio = 1.f);
 	void Move_Backward(const _float fTimeDelta, const _float fSpeedRatio = 1.f);
+	void Move_Down(const _float fTimeDelta, const _float fSpeedRatio = 1.f);
 	void StartForce_Front_ForAnimation(_float fForceAbs, _float fDragK);
 	void StartForce_Backward_ForAnimation(_float fForceAbs, _float fDragK);
 	void StartForce_Left_ForAnimation(_float fForceAbs, _float fDragK);
@@ -74,10 +76,13 @@ protected:
 	void SetupLookAt(const Vec3& vPoint);
 	void SetupLook_Target_XZ();
 	CGameObject* Get_Target();
-	_bool Align_Move(_uint iState);
+	_bool Align_Move(_uint iState, _bool bForce = false, void* pArg = nullptr);
 	_bool Align_Attack(_uint iState);
+
 	void Set_AnimationPlayRate(_uint iIndex, _float fSpeed);
 	void Set_JumpCount(_uint iCount);
+
+	_bool Key_Input(CControlContext::CONTROL_KEY eKey);
 private:
 	HRESULT Set_OwnerComponents();
 protected:

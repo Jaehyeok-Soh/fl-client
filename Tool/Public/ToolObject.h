@@ -48,8 +48,6 @@ protected:
 	void Set_Name(const string& strName, _uint iValue);
 	void Set_Name(const wstring& wstrName, _uint iValue);
 	void Update_CombinedWorldMatrix(const Matrix &matParent);
-	void Export_TransformData(OUT TRANSFORM_SAVEDATA& data);
-	void Export_ModelData(OUT MODEL_SAVEDATA& data);
 private:
 	HRESULT Set_TypeString();
 protected:

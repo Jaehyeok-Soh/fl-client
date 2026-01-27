@@ -34,13 +34,14 @@ enum class E_SHAPETYPE
     DROP,
     RISE,
     MESH,
+    STRAIGHT,
 };
 
 enum class E_RENDER_TYPE
 {
     NONE = 0,
     BILBOARD,
-    MESH,
+    NONE_BILBOARD,
 };
 
 enum class E_SIMULATION_SPACE
@@ -107,13 +108,19 @@ public:
         bool        _Effect_bUseAtlas = {};
         _uint2      _Effect_TileCount = {};
 
+        // =========   이펙트 Emission 전용   =============
+        _float      _Effect_RateOverTime = {};
+        _float      _Effect_RateOverDistance = {};
+
         // ========   이펙트 파티클 전용   ============
         Vec2                _Effect_ParticleSize = { 0.05f, 0.15f };
         _float              _Effect_Duration = { 5.f };
         _bool               _Effect_Looping = { true };
+        _bool               _Effect_IsRandomSeed = { true };
         _float              _Effect_StartDelay = { 0.f };
         _float              _Effect_LifeTime = { 5.f };
-        _float              _Effect_PlayBack = { 1.f };
+        _float              _Effect_PlayBackSpeed = { 1.f };
+        _float              _Effect_StartSpeed = { 1.f };   // Particle에 영향을 주는 스피드 [개별 배속]
         int                 _Effect_MaxParticle = { 100 };
         E_RENDER_TYPE       _Effect_BillBoardFlag = E_RENDER_TYPE::NONE;
 
@@ -150,6 +157,7 @@ public:
     void Model_Setting(const wstring& Name);
     void Shader_Setting(const wstring& Name);
     void Texture_Setting(const wstring& Name);
+    void Buffer_Setting();
 
     void Particle_Setting();
 
@@ -165,6 +173,7 @@ private:
     void TimeCalculate(const _float fDT);
 public:
     void TimeReset();
+    void TimePause(_bool b) { m_tEffectDesc._Effect_TimeStop = b; }
 
 public:
     const E_EffectSystemType& Get_EffectType() { return m_tEffectDesc.eEffectSystemType; }
@@ -181,6 +190,7 @@ public:
 private:
     //  ========== 이펙트 Desc ===========
     Effect_Desc        m_tEffectDesc = {};
+    Effect_Desc        m_tPrevEffectDesc = {};
 
     //  ========== 이펙트 재료 ===========
     CModel*      m_pModelCom = { nullptr };

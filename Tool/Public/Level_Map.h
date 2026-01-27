@@ -5,6 +5,7 @@ NS_BEGIN(Tool)
 
 class CToolObject;
 class CImGui_Panel;
+class CUEMapdataParser;
 
 
 class CLevel_Map final : public CLevel
@@ -59,7 +60,13 @@ private:
 	ID3D11InputLayout*										m_pInputLayout{ nullptr };
 
 
+	CUEMapdataParser*										m_pUEMapDataParser{nullptr};
+
+private:
+
+
 public:
+	
 	static CLevel_Map* Create(ID3D11Device* pDevice, ID3D11DeviceContext* pDeviceContext);
 	virtual void Free() override;
 };

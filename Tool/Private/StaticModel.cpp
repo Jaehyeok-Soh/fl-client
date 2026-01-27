@@ -33,11 +33,19 @@ HRESULT CStaticModel::Initialize(void* pArg)
 
 	STATICMODEL_DESC* pDesc = static_cast<STATICMODEL_DESC*>(pArg);
 
+	m_eType = pDesc->eType;
+
 	if (FAILED(CStaticModel::Ready_Component()))
 		return E_FAIL;
 
 	return S_OK;
 }
+
+HRESULT CStaticModel::Ready_Component()
+{
+	return S_OK;
+}
+
 
 HRESULT CStaticModel::Awake(const _uint iCurrentLevelID)
 {

@@ -12,6 +12,10 @@ public:
 	static void Replace(OUT string& str, string comp, string rep);
 	static void Replace(OUT wstring& str, wstring comp, wstring rep);
 
+	static void Add_Text(OUT string& str_out, const string& strfind , const string& stradd ,_bool isback = false , _int32 ioffset = 0);
+	static void Add_Text(OUT wstring& str_out, const wstring& strfind , const wstring& stradd , _bool isback = false, _int32 i0ffset = 0);
+
+
 	static wstring ToWString(string value);
 	static string ToString(wstring value);
 

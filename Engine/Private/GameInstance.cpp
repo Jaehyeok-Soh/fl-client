@@ -3,7 +3,6 @@
 #include "Frustrum.h"
 #include "Font_Manager.h"
 #include "Event_Manager.h"
-#include "MapFile_Manager.h"
 #include "ObjectPool_Manager.h"
 #include "GameDataManager.h"
 #include "Collision_Manager.h"
@@ -751,62 +750,6 @@ HRESULT CGameInstance::Debug_RT_Render(EMRTLayer eMRTLayer, CShader* pShader, CV
 	return m_pRenderTarget_Manager->Render(eMRTLayer, pShader, pVIBuffer);
 }
 #endif
-#pragma endregion
-
-#pragma region GAMEDATA_MANAGER
-const MODELPARTS_PROTOTYPETAGS& CGameInstance::Get_ModelPartsData() const
-{
-	return m_pGameData_Manager->Get_ModelPartsData();
-}
-
-void CGameInstance::Set_ModelPartsData(const MODELPARTS_PROTOTYPETAGS& tData)
-{
-	m_pGameData_Manager->Set_ModelPartsData(tData);
-}
-
-HRESULT CGameInstance::Add_MeshEffectPresets(const wstring& wstrFilePath)
-{
-	return m_pGameData_Manager->Add_Presets(wstrFilePath);
-}
-
-HRESULT CGameInstance::Add_MeshEffectPreviews(const wstring& wstrFilePath)
-{
-	return m_pGameData_Manager->Add_Previews(wstrFilePath);
-}
-
-const EFFECT_PRESET_SNAPSHOT& CGameInstance::Get_MeshEffectPresetSnapShot(_uint iPresetID)
-{
-	return m_pGameData_Manager->Get_PresetSnapShot(iPresetID);
-}
-
-const EFFECT_PRESET_SNAPSHOT& CGameInstance::Get_MeshEffectPresetSnapShot(const string& strTag)
-{
-	return m_pGameData_Manager->Get_PresetSnapShot(strTag);
-}
-
-const MAPOBJECT_SAVEDATA* CGameInstance::Get_MeshEffectPreview(const wstring& wstrGroupTag, const string& strNameTag)
-{
-	return m_pGameData_Manager->Get_Preview(wstrGroupTag, strNameTag);
-}
-
-const vector<MAPOBJECT_SAVEDATA>* CGameInstance::Get_MeshEffectPreviews(const wstring& wstrTag)
-{
-	return m_pGameData_Manager->Get_Previews(wstrTag);
-}
-#pragma endregion
-
-#pragma region MAPFILE_MANAGER
-
-HRESULT CGameInstance::Save_MapData(const wstring& wstrSavePath, const MAPFILE_DATA& data)
-{
-	return m_pMapFile_Manager->SaveData(wstrSavePath, data);
-}
-
-HRESULT CGameInstance::Load_MapData(const wstring& wstrFilePath, OUT MAPFILE_DATA& outData)
-{
-	return m_pMapFile_Manager->LoadData(wstrFilePath, outData);
-}
-
 #pragma endregion
 
 void CGameInstance::Free()

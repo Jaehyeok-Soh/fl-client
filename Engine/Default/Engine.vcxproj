@@ -220,7 +220,6 @@
     <ClCompile Include="..\Private\Level_Manager.cpp" />
     <ClCompile Include="..\Private\Light.cpp" />
     <ClCompile Include="..\Private\Light_Manager.cpp" />
-    <ClCompile Include="..\Private\MapFile_Manager.cpp" />
     <ClCompile Include="..\Private\Material.cpp" />
     <ClCompile Include="..\Private\MaterialInstance.cpp" />
     <ClCompile Include="..\Private\Mesh.cpp" />
@@ -261,6 +260,7 @@
     <ClCompile Include="..\Private\VIBuffer_Cube_Tex.cpp" />
     <ClCompile Include="..\Private\VIBuffer_Line_Color.cpp" />
     <ClCompile Include="..\Private\VIBuffer_Particle.cpp" />
+    <ClCompile Include="..\Private\VIBuffer_Particle_Mesh.cpp" />
     <ClCompile Include="..\Private\VIBuffer_Particle_Point.cpp" />
     <ClCompile Include="..\Private\VIBuffer_Particle_Rect.cpp" />
     <ClCompile Include="..\Private\VIBuffer_Rect_Color.cpp" />
@@ -332,7 +332,6 @@
     <ClInclude Include="..\Public\Level_Manager.h" />
     <ClInclude Include="..\Public\Light.h" />
     <ClInclude Include="..\Public\Light_Manager.h" />
-    <ClInclude Include="..\Public\MapFile_Manager.h" />
     <ClInclude Include="..\Public\Material.h" />
     <ClInclude Include="..\Public\MaterialInstance.h" />
     <ClInclude Include="..\Public\Mesh.h" />
@@ -371,6 +370,7 @@
     <ClInclude Include="..\Public\VIBuffer_Cube_Tex.h" />
     <ClInclude Include="..\Public\VIBuffer_Line_Color.h" />
     <ClInclude Include="..\Public\VIBuffer_Particle.h" />
+    <ClInclude Include="..\Public\VIBuffer_Particle_Mesh.h" />
     <ClInclude Include="..\Public\VIBuffer_Particle_Point.h" />
     <ClInclude Include="..\Public\VIBuffer_Particle_Rect.h" />
     <ClInclude Include="..\Public\VIBuffer_Rect_Color.h" />

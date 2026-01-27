@@ -47,17 +47,43 @@ class ENGINE_DLL CStateBase abstract : public CBase
 {
 	using Super = CBase;
 public:
+	// state 안에서 쓰는 animation과 관련한 불 값들
+	enum STATEANI_FLAG : Flags
+	{
+		SA_HasPreAni		= 0x0001	// pre ani가 있니
+		, SA_PreNonEvent	= 0x0002	// pre ani때 상태 변환 유무
+		, SA_PreAniDone		= 0x0004	// 이전 ani가 끝났니
+	};
+
+	// 먼저 실행할 animation 정보
+	typedef struct tagPreAnimationDesc
+	{
+		_int iPrevStateIdx	= {-1}; // 이전 state가 이거이면
+		_int iAnimationIdex = {-1}; // 이 animation을 재생
+
+		// 만약 prevIdx가 -1이면 무조건 실행
+	}CHECK_ANIMATION;
+
+	// Initial desc
 	typedef struct tagStateBaseDesc
 	{
+		Flags			FAniFlags		= { 0 };
+		vector<CHECK_ANIMATION>	vecPreAnims;
+		vector<_int>			vecMainAnims;
+
 		_bool bBlend = { false };
 		_bool bLoop = { false };
-		_int iAnimIndex = -1;
+		//_int					iAnimIndex		= -1;
 	}STATE_DESC;
+
+	// change state 할때 들어오는 desc
 	typedef struct tagStateBaseStartDesc
 	{
-		_float fForceAbs = { 0.f };
-		_float fDragK = { 0.f };
+		_float	fForceAbs		= { 0.f };
+		_float	fDragK			= { 0.f };
+		_uint	iMainAnimIdx	= { 0 };
 	}STATE_START_DESC;
+
 protected:
 	CStateBase(CActionState* pOwnerComponent, const string &strName);
 	virtual ~CStateBase() = default;
@@ -67,10 +93,10 @@ public:
 	// State를 가진 Object가 Scene에서 첫 루프가 시작 될때 최초 호출되는 함수
 	virtual HRESULT Awake(const _uint iLevelIndex) PURE;
 	virtual HRESULT Start(void *pArg, _bool bFroce = false) PURE;
-	virtual void Update(const _float fTimeDelta) PURE;
+	virtual void	Update(const _float fTimeDelta) PURE;
 	virtual HRESULT End() PURE;
-	const _char* Get_Name() const { return m_strName.c_str(); }
-	virtual _uint Get_Capabilities() const
+	const _char*	Get_Name() const { return m_strName.c_str(); }
+	virtual _uint	Get_Capabilities() const
 	{
 		return	StateCapability::MOVE
 			| StateCapability::ROTATE
@@ -86,6 +112,7 @@ public:
 	_bool Can_BeAttacked() const { return Has_Capability(Get_Capabilities(), StateCapability::BEATTACKED); }
 	_float Get_StateElapsedTime() const { return m_fStateElapsed; }
 	virtual _bool Is_FinishedState() { return Is_AnimFinished(); }
+
 protected:
 	HRESULT Request_ChangeAnimation(_uint iAnimationIndex, _bool bBlend, _bool bLoop, _bool bForce = false);
 	HRESULT Request_Change_State(_uint iIndex, void *pArg = nullptr);
@@ -93,12 +120,14 @@ protected:
 	_float Get_AnimElpasedTimeSeconds();
 	_float Get_AnimNormalizedTime();
 	_bool Is_AnimFinished();
+	_bool Is_MainAnimFinished();
 	_bool Is_AnimTrackPositionAt(_float fRatio);
 	_bool Is_AnimTrackPositionBetween(_float fStartRatio, _float EndRatio);
 	_bool Is_AnimTrackPositionHalf();
+
 protected:
 	_bool Align_Movement(const _float fTimeDelta);
-	_bool Align_Move(_uint iRunState);
+	_bool Align_Move(_uint iRunState, _bool bForce = false, void* pArg = nullptr);
 
 	void Follow_CameraLook(const _float fTimeDelta);
 	void Apply_Gravity(const _float fTimeDelta);
@@ -116,6 +145,7 @@ protected:
 	void Move_Right(const _float fTimeDelta, const _float fSpeedRatio = 1.f);
 	void Move_Front(const _float fTimeDelta, const _float fSpeedRatio = 1.f);
 	void Move_Backward(const _float fTimeDelta, const _float fSpeedRatio = 1.f);
+	void Move_Down(const _float fTimeDelta, const _float fSpeedRatio = 1.f);
 	void StartForce_Front_ForAnimation(_float fForceAbs, _float fDragK);
 	void StartForce_Backward_ForAnimation(_float fForceAbs, _float fDragK);
 	void StartForce_Left_ForAnimation(_float fForceAbs, _float fDragK);
@@ -127,20 +157,31 @@ protected:
 	CGameObject* Get_Target();
 	void Set_AnimationPlayRate(_float fSpeed);
 	void Set_JumpCount(_uint iCount);
+
+	_bool Key_Input(_uint iKey);
 private:
 	
 private:
 	_bool IsBlend() { return m_bBlend; }
 	_bool IsLoop() { return m_bLoop; }
 private:
-	class CGameInstance* m_pGameInstance = { nullptr };
-	CActionState* m_pOwnerStateComp = { nullptr };
+	class CGameInstance* m_pGameInstance	= { nullptr };
+	CActionState*		m_pOwnerStateComp	= { nullptr };
 protected:
-	_float m_fStateElapsed = { 0.f };
-	_bool m_bBlend = { false };
-	_bool m_bLoop = { false };
-	_int m_iAnimIndex = { -1 };
-	string m_strName = { "" };
+	_float	m_fStateElapsed = { 0.f };
+	_bool	m_bBlend		= { false };
+	_bool	m_bLoop			= { false };
+	_bool	m_bMainForce	= { false };
+
+	string	m_strName		= { "" };
+
+	Flags					m_FAniFlags		= { 0 };
+	vector<CHECK_ANIMATION>	m_vecPreAnims;
+	vector<_int>			m_vecMainAnims;
+	_uint					m_iMainAnimIdx = { 0 }; // mainAnimIdx
+
+	_int m_iMixAni			= { -1 }; // todo : animation 섞는거 어떻게 할지...
+
 public:
 	virtual void Free() override;
 };

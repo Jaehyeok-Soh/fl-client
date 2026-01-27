@@ -3,8 +3,8 @@
 #include "Model.h"
 #include "Shader.h"
 #include "StaticModel.h"
+#include "Engine_Utils.h"
 #include "GameInstance.h"
-
 USING(Tool)
 
 CMapObject::CMapObject(EToolObjectType eType, ID3D11Device* pDevice, ID3D11DeviceContext* pDeviceContext)
@@ -36,9 +36,11 @@ HRESULT CMapObject::Initialize(void* pArg)
     m_wstrModelPath = pDesc->wstrModelPath;
     m_isLoaded = pDesc->isLoaded;
 
+
     if (FAILED(CMapObject::Ready_Component()))
         return E_FAIL;
 
+    Set_Name(m_wstrModelName);
 
     return S_OK;
 }
@@ -53,35 +55,20 @@ HRESULT CMapObject::Ready_Component()
     /* CStatic_Model Type ¿Ã∂Û∏È */
     if (m_eMapObjectType == EMapObject_Type::STATICMODEL)
     {
-        if (FAILED(Add_Component<CModel>(ENUM_TO_UINT(ELevelType::MAP), L"Prototype_Component_Model_" + m_wstrModelName, &tDesc)))
-            return S_OK;
+        CModel::MODEL_ORIGIN_DESC tModelDesc{};
+        tModelDesc.eType = EModelType::STATIC;
+        tModelDesc.wstrModelFolderName = m_wstrModelPath;
+        tModelDesc.iPrototypeLevelIndex = ENUM_TO_UINT(ELevelType::MAP);
+        CModel* pModel = CModel::Create(m_pDevice, m_pDeviceContext , &tModelDesc);
+        if (pModel)
+        {
+            if (FAILED(m_pGameInstance->Add_Prototype(tModelDesc.iPrototypeLevelIndex, L"Prototype_Component_Model_" + m_wstrModelName, pModel)))
+                Safe_Release(pModel);
+        }
+        CModel::MODEL_COPY_DESC tModelCopyDesc{};
+        CGameObject::Add_Component<CModel>(tModelDesc.iPrototypeLevelIndex, L"Prototype_Component_Model_" + m_wstrModelName, &tModelCopyDesc);
     }
 
-
-
-
-    CTransform* pTransform = Get_Component<CTransform>();
-
-    //Vec3 vPos = pTransform->Get_Info(TRANSFORM_INFO_STATE::POS);
-    //std::swap(vPos.y,vPos.z);
-    //pTransform->Set_Info(TRANSFORM_INFO_STATE::POS , vPos);
-
-
-
-    //if (m_eMapObjectType == EMapObject_Type::STATICMODEL)
-    //{
-    //    if (m_isLoaded = true)
-    //    {
-    //    }
-    //    else
-    //    {
-    //        Add_Component<CModel>(ENUM_TO_UINT(ELevelType::MAP), L"Prototype_Component_Model_" + m_wstrModelPath, &tDesc);
-    //    }
-    //}
-    //else
-    //{
-
-    //}
 
     return S_OK;
 }
