@@ -339,7 +339,7 @@ PS_OUT PS_BLACK(PS_IN_MESH input)
     output.vColor = float4(1.f, 1.f, 1.f, 1.f);
     
     return output;
-}
+};
 
 technique11 T0
 {

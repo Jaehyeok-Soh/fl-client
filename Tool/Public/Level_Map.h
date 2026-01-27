@@ -45,6 +45,7 @@ public:
 	void		 On_ChangeSelectedObject(CGameObject* pGo);
 	void		 On_CreateMode(_bool bValue);
 	CToolObject* Get_SelectToolObject() { return m_pSelectedObject; }
+	void		 Set_SelectToolObject(CToolObject* pToolObject) { m_pSelectedObject = pToolObject; }
 private:
 	_bool m_bCreateMode = { false };
 	class CImGui_ToolManager* m_pImGuiManager = { nullptr };

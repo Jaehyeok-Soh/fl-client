@@ -60,6 +60,7 @@ private:
 	unordered_map< wstring, vector<CONVERTED_MAPDATA>>  m_umapConvertedMapData{};
 	unordered_map< wstring , vector<UE_MAP_DATA>>		m_umapUnreal_Map_Data{};
 	vector<string>										m_vecTypeFilter{};
+	vector<string>										m_vecOuterFilter{};
 	float												m_fMulScale{0.01f};
 
 private:
@@ -98,6 +99,8 @@ typedef struct tagUnreal_OverrideMaterials
 }UE_OVERRIDEMATERIALS;
 typedef struct tagUnreal_Properties
 {
+	bool					m_isFiltering{ false };
+
 	_int32					iInstancingRandomSeed{ 0 };
 
 	/* Rotatino = Pitch Yaw Roll */
@@ -112,6 +115,8 @@ typedef struct tagUnreal_Properties
 }UE_PROPERTIES;
 typedef struct tagUnreal_Map_Data
 {
+	bool	m_isFiltering{false};
+
 	string strType{};
 	string strName{};
 	string strOuter{};
