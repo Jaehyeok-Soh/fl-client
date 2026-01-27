@@ -1,6 +1,8 @@
 #include "pch.h"
 #include "State_JumpBack.h"
 
+#include "Player.h"
+
 CState_JumpBack::CState_JumpBack(CActionState* pOwnerComponent)
 	: Super(pOwnerComponent, "JumpBack")
 {
@@ -42,6 +44,24 @@ HRESULT CState_JumpBack::End()
 
 	return S_OK;
 }
+
+void CState_JumpBack::OwnMove(const _float fTimeDelta)
+{
+	Move_Backward(fTimeDelta);
+}
+
+void CState_JumpBack::Set_NextStateDesc(_uint iNextState)
+{
+	switch (iNextState)
+	{
+	case ENUM_TO_UINT(CPlayer::State::SLIDE):
+		m_tNextStateDesc.iMainAnimIdx = 1; break; // skyslide
+
+	default:
+		m_tNextStateDesc.iMainAnimIdx = 0;
+	}
+}
+
 
 CState_JumpBack* CState_JumpBack::Create(CActionState* pOwnerComponent, void* pArg)
 {

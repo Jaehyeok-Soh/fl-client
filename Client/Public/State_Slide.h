@@ -6,6 +6,8 @@ NS_BEGIN(Client)
 class CState_Slide final : public CStateBase_Player
 {
 	using Super = CStateBase_Player;
+public:
+	enum class ANI {NORMAL, SKY};
 private:
 	CState_Slide(CActionState* pOwnerComponent);
 	virtual ~CState_Slide() = default;
@@ -19,6 +21,7 @@ public:
 
 protected:
 	virtual void OwnMove(const _float fTimeDelta) override;
+	virtual void Change_State(STATEKEY eKey) override;
 
 public:
 	static CState_Slide* Create(CActionState* pOwnerComponent, void* pArg = nullptr);

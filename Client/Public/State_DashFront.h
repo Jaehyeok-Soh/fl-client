@@ -17,6 +17,12 @@ public:
 	virtual void Update(const _float fTimeDelta) override;
 	virtual HRESULT End() override;
 
+protected:
+	virtual void OwnMove(const _float fTimeDelta) override;
+
+private:
+	_float m_fDashOffset = 1.5f;
+
 public:
 	static CState_DashFront* Create(CActionState* pOwnerComponent, void* pArg = nullptr);
 	virtual void Free() override;
