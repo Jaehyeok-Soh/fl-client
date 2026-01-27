@@ -107,31 +107,6 @@ void CToolObject::Set_Invisible()
     m_bVisible = false;
 }
 
-void CToolObject::Export_TransformData(OUT TRANSFORM_SAVEDATA& data)
-{
-    Matrix matWorld = Get_Component<CTransform>()->Get_WorldMatrix();
-    Vec3 vPos = {};
-    Quat vQuaternion = {};
-    Vec3 vScale = {};
-    matWorld.Decompose(vScale, vQuaternion, vPos);
-    data.vPos = vPos;
-    data.vScale = vScale;
-    data.vQuaternion = vQuaternion;
-}
-
-void CToolObject::Export_ModelData(OUT MODEL_SAVEDATA& data)
-{
-    data.fileName = m_strModelFileName;
-    CModel* pModel = Get_Component<CModel>();
-    _uint iMaterialCount = pModel->Get_MaterialCount();
-    data.vecMI.reserve(iMaterialCount);
-    for (_uint i = 0; i < iMaterialCount; ++i)
-    {
-        data.vecMI.push_back(pModel->Get_MaterialInstance(i)->Get_MIType());
-        data.vecShaderPassesByMesh.push_back(pModel->Get_PassByMesh(i));
-    }
-}
-
 void CToolObject::Set_Name(const string& strName)
 {
     m_strName = strName;

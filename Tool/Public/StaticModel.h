@@ -33,7 +33,7 @@ private:
 	bool					IntsersectWithPlane(OUT Vec3& vOut);
 public:
 	virtual _bool			Picking(OUT Vec3& vOut)						override;
-	virtual HRESULT			Export_Data(OUT MAPOBJECT_SAVEDATA& data)		override;
+	virtual _bool			Export_Data(DTO::ECategory eCategory, CDataDocumentBase* pDocument)		override;
 private:
 	EStaticModel_Type		m_eType{};
 public:

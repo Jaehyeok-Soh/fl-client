@@ -1,9 +1,6 @@
 #include "pch.h"
 #include "Panel_MapDataController.h"
 
-/* 진짜 맵파일 로드 */
-#include "MapFile_Manager.h"
-
 /* 로우 데이터 뽑아서 새로 만들어주는역할 + 새로만든 Json파일로 모델 뛰우기 */
 #include "UEMapdataParser.h"
 #include "UEMapdataLoader.h"

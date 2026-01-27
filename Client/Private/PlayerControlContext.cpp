@@ -108,7 +108,7 @@ _bool CPlayerControlContext::Is_WirePressed()
 
 _bool CPlayerControlContext::Is_DodgePressed()
 {
-	return m_pGameInstance->KeyButton_Up(DIK_LCONTROL);
+	return m_pGameInstance->KeyButton_Up(DIK_LCONTROL) || m_pGameInstance->KeyButton_None(DIK_LCONTROL);
 }
 
 _bool CPlayerControlContext::Is_InteractionPressed()

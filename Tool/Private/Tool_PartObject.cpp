@@ -73,11 +73,6 @@ _bool Tool_PartObject::Picking(OUT Vec3& vOut)
 	return true;
 }
 
-HRESULT Tool_PartObject::Export_Data(OUT MAPOBJECT_SAVEDATA& data)
-{
-	return S_OK;
-}
-
 void Tool_PartObject::Set_Dead(const wstring& wstrLayerTag)
 {
 	Super::Set_Dead(wstrLayerTag);

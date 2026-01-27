@@ -48,8 +48,6 @@ CShader::CShader(const CShader& rhs)
 	, m_pRenderTargetShadeTexture(rhs.m_pRenderTargetShadeTexture)
 	, m_pRenderTargetDepthTexture(rhs.m_pRenderTargetDepthTexture)
 	, m_pDefaultTextures(rhs.m_pDefaultTextures)
-	, m_pSkillEffect_CBuffer(rhs.m_pSkillEffect_CBuffer)
-	, m_pSkillEffectBuffer(rhs.m_pSkillEffectBuffer)
 	, m_pEffect_CBuffer(rhs.m_pEffect_CBuffer)
 	, m_pEffectBuffer(rhs.m_pEffectBuffer)
 
@@ -80,8 +78,6 @@ CShader::CShader(const CShader& rhs)
 	Safe_AddRef(m_pRenderTargetNormalTexture);
 	Safe_AddRef(m_pRenderTargetShadeTexture);
 	Safe_AddRef(m_pRenderTargetDepthTexture);
-	Safe_AddRef(m_pSkillEffect_CBuffer);
-	Safe_AddRef(m_pSkillEffectBuffer);
 	Safe_AddRef(m_pEffect_CBuffer);
 	Safe_AddRef(m_pEffectBuffer);
 	Safe_AddRef(m_pDefaultTextures);
@@ -221,11 +217,6 @@ void CShader::Bind_MaterialData(const SHADER_MATERIALDESC& desc)
 void CShader::Bind_MaterialInstanceData(const SHADER_MI_DESC& desc)
 {
 	m_pMI_CBuffer->Copy_Data(desc);
-}
-
-void CShader::Bind_SkillEffectData(const SHADER_SKILLEFFECT_DESC& desc)
-{
-	m_pSkillEffect_CBuffer->Copy_Data(desc);
 }
 
 void CShader::Bind_EffectData(const SHADER_EFFECT_DESC& desc)
@@ -489,16 +480,7 @@ void CShader::Create_ConstantBuffer()
 		}
 	}
 
-	// SkillEffect
-	{
-		if (m_pSkillEffectBuffer = Get_ConstantBuffer("SkillEffectBuffer"))
-		{
-			m_pSkillEffect_CBuffer = CConstant_Buffer<SHADER_SKILLEFFECT_DESC>::Create(m_pDevice, m_pDeviceContext);
-			m_pSkillEffectBuffer->SetConstantBuffer(m_pSkillEffect_CBuffer->Get_Buffer());
-		}
-	}
-
-	// EffectDesc by Choi
+	// EffectDesc
 	{
 		if (m_pEffectBuffer = Get_ConstantBuffer("ConstantBuffer_Effect"))
 		{
@@ -552,9 +534,7 @@ void CShader::Clear_ConstantBuffer()
 {
 	Safe_Release(m_pGlobalMask_Effect);
 	Safe_Release(m_pDefaultTextures);
-	Safe_Release(m_pSkillEffect_CBuffer); // GangVer
-	Safe_Release(m_pSkillEffectBuffer);
-	Safe_Release(m_pEffect_CBuffer); // ChoiVer
+	Safe_Release(m_pEffect_CBuffer);
 	Safe_Release(m_pEffectBuffer);
 	Safe_Release(m_pRenderTargetDiffuseTexture);
 	Safe_Release(m_pRenderTargetNormalTexture);

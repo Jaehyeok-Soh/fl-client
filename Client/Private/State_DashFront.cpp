@@ -43,6 +43,11 @@ HRESULT CState_DashFront::End()
 	return S_OK;
 }
 
+void CState_DashFront::OwnMove(const _float fTimeDelta)
+{
+	Move_Front(fTimeDelta, m_fDashOffset);
+}
+
 CState_DashFront* CState_DashFront::Create(CActionState* pOwnerComponent, void* pArg)
 {
 	CState_DashFront* pInstance = new CState_DashFront(pOwnerComponent);

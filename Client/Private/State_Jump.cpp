@@ -1,6 +1,8 @@
 #include "pch.h"
 #include "State_Jump.h"
 
+#include "Player.h"
+
 CState_Jump::CState_Jump(CActionState* pOwnerComponent)
 	: Super(pOwnerComponent, "Jump")
 {
@@ -41,6 +43,18 @@ HRESULT CState_Jump::End()
 		return E_FAIL;
 
 	return S_OK;
+}
+
+void CState_Jump::Set_NextStateDesc(_uint iNextState)
+{
+	switch (iNextState)
+	{
+	case ENUM_TO_UINT(CPlayer::State::SLIDE):
+		m_tNextStateDesc.iMainAnimIdx = 1; break; // skyslide
+
+	default:
+		m_tNextStateDesc.iMainAnimIdx = 0;
+	}
 }
 
 CState_Jump* CState_Jump::Create(CActionState* pOwnerComponent, void* pArg)

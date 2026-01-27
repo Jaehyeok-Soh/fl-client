@@ -155,23 +155,7 @@ namespace Tool
 	inline constexpr _tchar g_wszTriggerBoxLayer[]{ L"TriggerBox_Layer" };
 	inline constexpr _tchar g_wszColMeshLayer[]{ L"ColMesh_Layer" };
 	inline constexpr _tchar g_wszStaticModelLayer[]{ L"StaticModel_Layer" };
-	inline constexpr _tchar g_wszDummyColliderLayer[]{ L"DummyCollider_Layer" };
 	inline constexpr _tchar g_wszCameraLayer[]{ L"Camera_Layer" };
-
-	struct HoleBridges
-	{
-		_int iHolePolyIndex = { -1 };
-		_int iOuterVertexIndex = { -1 };
-		_int iHoleVertexIndex = { -1 };
-	};
-
-	typedef struct tagEffectPreset
-	{
-		_uint iPressetID = 0;
-		string strName = "";
-
-		EFFECT_PRESET_SNAPSHOT snapShot = {};
-	}EFFECT_PRESET;
 
 #pragma region Enum
 

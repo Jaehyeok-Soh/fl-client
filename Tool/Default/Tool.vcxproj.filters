@@ -157,6 +157,12 @@
     <Filter Include="02. GameObjects\UI\Layer">
       <UniqueIdentifier>{d0269bd1-6673-49d6-8c4d-8c813644618a}</UniqueIdentifier>
     </Filter>
+    <Filter Include="09. Builder">
+      <UniqueIdentifier>{afa9ad94-11da-4af6-822f-8784ae7231ad}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="09. Builder\Example">
+      <UniqueIdentifier>{9970cc5b-f703-4b3a-8311-0fc2a45575d8}</UniqueIdentifier>
+    </Filter>
     <Filter Include="08. UIData">
       <UniqueIdentifier>{566d6d02-9c34-4ed7-beae-db2b024e4049}</UniqueIdentifier>
     </Filter>
@@ -354,6 +360,9 @@
     <ClInclude Include="..\Public\ToolLayer.h">
       <Filter>02. GameObjects\UI\Layer</Filter>
     </ClInclude>
+    <ClInclude Include="..\Public\Builder_Example.h">
+      <Filter>09. Builder\Example</Filter>
+    </ClInclude>
     <ClInclude Include="..\Public\UI_Maker.h">
       <Filter>06. ImGui\01. Panel\UIPanels\Maker</Filter>
     </ClInclude>
@@ -539,6 +548,9 @@
     </ClCompile>
     <ClCompile Include="..\Private\ToolLayer.cpp">
       <Filter>02. GameObjects\UI\Layer</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\Builder_Example.cpp">
+      <Filter>09. Builder\Example</Filter>
     </ClCompile>
     <ClCompile Include="..\Private\UI_Maker.cpp">
       <Filter>06. ImGui\01. Panel\UIPanels\Maker</Filter>

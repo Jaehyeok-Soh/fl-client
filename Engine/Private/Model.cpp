@@ -67,43 +67,35 @@ HRESULT CModel::Initialize_Prototype(void* pArg)
 	if (pDesc->pMatPreTransform)
 		m_matPreTransform = *pDesc->pMatPreTransform;
 
-	if (!pDesc->pPrototypeTags)
+	HRESULT hr = { E_FAIL };
+	switch (pDesc->eType)
 	{
-		HRESULT hr = { E_FAIL };
-		switch (pDesc->eType)
-		{
-		case EModelType::NONANIM:
-		{
-			hr = Load_NonAnimModel(pDesc->wstrModelFolderName);
-		} break;
-		case EModelType::CUSTOMPARTS:
-		{
-			hr = Load_CustomPartsModel(pDesc->wstrModelFolderName);
-		} break;
-		case EModelType::ANIM:
-		{
-			hr = Load_AnimModel(pDesc->wstrModelFolderName);
-		} break;
-		case EModelType::BONE:
-		{
-			hr = Load_OnlyBone(pDesc->wstrModelFolderName);
-		} break;
-		case EModelType::STATIC:
-		{
-			hr = Load_StaticModel(pDesc->wstrModelFolderName);
-		} break;
-		default:
-			return E_FAIL;
-		}
+	case EModelType::NONANIM:
+	{
+		hr = Load_NonAnimModel(pDesc->wstrModelFolderName);
+	} break;
+	case EModelType::CUSTOMPARTS:
+	{
+		hr = Load_CustomPartsModel(pDesc->wstrModelFolderName);
+	} break;
+	case EModelType::ANIM:
+	{
+		hr = Load_AnimModel(pDesc->wstrModelFolderName);
+	} break;
+	case EModelType::BONE:
+	{
+		hr = Load_OnlyBone(pDesc->wstrModelFolderName);
+	} break;
+	case EModelType::STATIC:
+	{
+		hr = Load_StaticModel(pDesc->wstrModelFolderName);
+	} break;
+	default:
+		return E_FAIL;
+	}
 
-		if (FAILED(hr))
-			return E_FAIL;
-	}
-	else
-	{
-		if (FAILED(Combine_Model(pDesc->pPrototypeTags)))
-			return E_FAIL;
-	}
+	if (FAILED(hr))
+		return E_FAIL;
 
 	if (m_vecAnimations.size() > 0)
 	{
@@ -466,63 +458,6 @@ HRESULT CModel::Load_OnlyBone(const wstring& wstrModelName)
 		return E_FAIL;
 
 	Safe_Release(pModelLoader);
-	return S_OK;
-}
-
-HRESULT CModel::Combine_Model(const MODELPARTS_PROTOTYPETAGS* pPrototypeTags)
-{
-	m_vecMeshes.reserve(50);
-	m_vecMaterials.reserve(50);
-
-	// Master
-	{
-		CModel* pMaster = { nullptr };
-		if (!(pMaster = Get_Clone(L"Prototype_Component_Model_Master")))
-			return E_FAIL;
-		m_vecBones.resize(pMaster->m_vecBones.size());
-		for (size_t i = 0; i < pMaster->m_vecBones.size(); ++i)
-		{
-			m_vecBones[i] = pMaster->m_vecBones[i]->Clone();
-		}
-		m_vecAnimations.resize(pMaster->m_vecAnimations.size());
-		for (size_t i = 0; i < pMaster->m_vecAnimations.size(); ++i)
-		{
-			m_vecAnimations[i] = pMaster->m_vecAnimations[i]->Clone();
-		}
-
-		m_pMasterMesh = static_cast<CMesh*>(pMaster->m_vecMeshes[0]->Clone(nullptr));
-		if (!m_pMasterMesh)
-			return E_FAIL;
-		Safe_Release(pMaster);
-	}
-
-	
-	// Head
-	{
-		if (FAILED(Add_Parts(pPrototypeTags->wstrHead)))
-			return E_FAIL;
-	}
-
-	// Face
-	{
-		if (FAILED(Add_Parts(pPrototypeTags->wstrFace)))
-			return E_FAIL;
-	}
-
-	// Body
-	if (pPrototypeTags->wstrOneset.empty())
-	{
-		if (FAILED(Add_Parts(pPrototypeTags->wstrUpper)))
-			return E_FAIL;
-		if (FAILED(Add_Parts(pPrototypeTags->wstrLower)))
-			return E_FAIL;
-	}
-	else
-	{
-		if (FAILED(Add_Parts(pPrototypeTags->wstrOneset)))
-			return E_FAIL;
-	}
-
 	return S_OK;
 }
 
