@@ -51,6 +51,10 @@ public:
 public:
 	HRESULT					  Save_ConvertedRawMapData(const wchar_t* wszFilePath);
 	HRESULT					  Save_FilteringRawMapData(const wchar_t* wszFilePath);
+
+public:
+	const wstring										m_WstringConverted{ L"_Converted.json" };
+	const wstring										m_WstringFiltering{ L"_Filtering.json" };
 private:
 	
 	unordered_map< wstring, vector<CONVERTED_MAPDATA>>  m_umapConvertedMapData{};

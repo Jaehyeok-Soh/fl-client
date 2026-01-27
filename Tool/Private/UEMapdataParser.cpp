@@ -30,10 +30,9 @@ HRESULT CUEMapdataParser::Initialize(ID3D11Device* pDevice, ID3D11DeviceContext*
 	Safe_AddRef(m_pDevice);
 	Safe_AddRef(m_pContext);
 	Safe_AddRef(m_pGameInstance);
-
-
 	return S_OK;
 }
+
 
 bool CUEMapdataParser::Filter(const string& strName, const string& strType)
 {
@@ -56,7 +55,6 @@ bool CUEMapdataParser::Filter(const string& strName, const string& strType)
 		if (!isFilering_Type && !isFilering_Name)
 			return false;
 	}
-
 	return true;
 }
 
@@ -213,9 +211,29 @@ vector<wstring> CUEMapdataParser::Get_ConvertedFilePathList()
 
 HRESULT CUEMapdataParser::Convert_UnrealRawMapData(const wchar_t* wszUERawDataJsonFile)
 {
+	if (wszUERawDataJsonFile == nullptr)  return E_FAIL;
+
 	wstring MapDataPath = wszUERawDataJsonFile;
 	
+	vector<wstring> wstrFilter = { m_WstringConverted , m_WstringFiltering };
+	for (auto& Filter : wstrFilter)
+	{
+		if (MapDataPath.find(Filter) != wstring::npos)
+		{
+			MSG_BOX("[Unreal Raw Data Json] 파일이 아닙니다");
+			return S_OK;
+		}
+	}
+
+	
 	vector<UE_MAP_DATA>* vecUEData = Get_Unreal_MapData(wszUERawDataJsonFile);
+
+	if (vecUEData != nullptr)
+	{
+		m_umapConvertedMapData.at(wszUERawDataJsonFile) = Convert_UE_MapData(*vecUEData);
+		MSG_BOX(" Unreal Raw Data Load Complete ");
+		return S_OK;
+	}
 
 
 	std::ifstream ifs(wszUERawDataJsonFile, std::ios::in | std::ios::binary);

@@ -66,15 +66,17 @@ HRESULT CPanel_MapDataController::Render_ConvertedList()
 				m_iSelectConvertedUEMapDataPath = i;
 			if (isSelected == true)
 				ImGui::SetItemDefaultFocus();
+
+			i++;
 		}
 
 		ImGui::EndCombo();
 	}
 
 
-	ImGui::SeparatorText("Batch Converted Map Data");
+	ImGui::SeparatorText(" [ Batch ] Converted Map Data");
 
-	if (ImGui::Button("Batch Converted Map Data"))
+	if (ImGui::Button(" [ Batch ] Converted Map Data"))
 	{
 		m_pUEMapdataParser->Batch_UnrealRawMapData(Engine_Utils::ToWString(strSelectPath).c_str());
 	}
@@ -83,7 +85,7 @@ HRESULT CPanel_MapDataController::Render_ConvertedList()
 
 
 
-	ImGui::SeparatorText("Save Filtering Map Data");
+	ImGui::SeparatorText("[ Save Filtering ] Map Data");
 
 	if (ImGui::Button("Save Filtering Map Data"))
 	{
@@ -93,9 +95,9 @@ HRESULT CPanel_MapDataController::Render_ConvertedList()
 	ImGui::Separator();
 
 
-	ImGui::SeparatorText("Save Converted Map Data");
+	ImGui::SeparatorText(" [ Save Converted ] Map Data");
 
-	if (ImGui::Button("Save Converted Map Data"))
+	if (ImGui::Button(" [ Save Converted ] Map Data"))
 	{
 		m_pUEMapdataParser->Save_ConvertedRawMapData(Engine_Utils::ToWString(strSelectPath).c_str());
 	}
@@ -108,29 +110,66 @@ HRESULT CPanel_MapDataController::Render_ConvertedList()
 
 HRESULT CPanel_MapDataController::Render_Converted_UnrealRawMapData_Button()
 {
-	ImGui::SeparatorText("Load Unreal Raw Map Data");
 
-	if (ImGui::Button(" Load Unreal Raw Map Data "))
+	if (ImGui::CollapsingHeader(" [ Function ] : Converted Raw Data"))
 	{
-		OPENFILENAMEW ofn{};
-		_tchar szFile[MAX_PATH] = { 0 };
+		if (ImGui::InputFloat("Convert Position Mul Scale", &m_fMulScale))
+			m_pUEMapdataParser->Set_MulScale(m_fMulScale);
 
-		ofn.lStructSize = sizeof(OPENFILENAMEW);
-		ofn.hwndOwner = g_hWnd;
-		ofn.lpstrFile = szFile;
-		ofn.nMaxFile = MAX_PATH;
-		ofn.lpstrFilter = L"Json Files (*.json)\0*.json\0All Files (*.*)\0*.*\0\0";
-		ofn.nFilterIndex = 1;
-		ofn.Flags = OFN_PATHMUSTEXIST | OFN_FILEMUSTEXIST | OFN_NOCHANGEDIR;
 
-		if (::GetOpenFileNameW(&ofn) == TRUE)
+		ImGui::SeparatorText("[ Load All ] Raw Map Data");
+
+		if (ImGui::Button(" [ Load All ] Raw Map Data "))
 		{
-			wstring result = szFile;
-			m_pUEMapdataParser->Convert_UnrealRawMapData(result.c_str());
-		}
-	}
+			for (auto& Path : std::filesystem::recursive_directory_iterator(m_wstrMapDatPath))
+			{
+				if (!std::filesystem::is_regular_file(Path))
+					continue;
 
-	ImGui::Separator();
+				path FullPath = Path;
+
+				if (FullPath.extension() != L".json")
+					continue;
+
+				wstring wstrFileName = path(FullPath).filename();
+
+				if (wstrFileName.find(m_pUEMapdataParser->m_WstringConverted) != wstring::npos)
+					continue;
+
+				if (wstrFileName.find(m_pUEMapdataParser->m_WstringFiltering) != wstring::npos)
+					continue;
+
+				m_pUEMapdataParser->Convert_UnrealRawMapData(FullPath.wstring().c_str());
+			}
+		}
+
+		ImGui::Separator();
+
+
+		ImGui::SeparatorText("[ Load Select Unreal ] Raw Map Data");
+
+		if (ImGui::Button(" [ Load Select ] Raw Map Data "))
+		{
+			OPENFILENAMEW ofn{};
+			_tchar szFile[MAX_PATH] = { 0 };
+
+			ofn.lStructSize = sizeof(OPENFILENAMEW);
+			ofn.hwndOwner = g_hWnd;
+			ofn.lpstrFile = szFile;
+			ofn.nMaxFile = MAX_PATH;
+			ofn.lpstrFilter = L"Json Files (*.json)\0*.json\0All Files (*.*)\0*.*\0\0";
+			ofn.nFilterIndex = 1;
+			ofn.Flags = OFN_PATHMUSTEXIST | OFN_FILEMUSTEXIST | OFN_NOCHANGEDIR;
+
+			if (::GetOpenFileNameW(&ofn) == TRUE)
+			{
+				wstring result = szFile;
+				m_pUEMapdataParser->Convert_UnrealRawMapData(result.c_str());
+			}
+		}
+
+		ImGui::Separator();
+	}
 
 	return S_OK;
 }
