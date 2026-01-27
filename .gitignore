@@ -15,6 +15,7 @@
 #/EngineSDK
 /EngineSDK/Include/**
 !/EngineSDK/Include/json.hpp
+!/EngineSDK/Include/json_fwd.hpp
 /EngineSDK/Library/**
 
 # Weird layout: build intermediates live under Include/

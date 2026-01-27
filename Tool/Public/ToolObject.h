@@ -30,7 +30,6 @@ public:
 	virtual void Ready_Before_Render(const _float fTimeDelta) override;
 	virtual HRESULT Render() override;
 	virtual _bool Picking(OUT Vec3& vOut) PURE;
-	virtual HRESULT Export_Data(OUT MAPOBJECT_SAVEDATA &data) PURE;
 	virtual void Draw_ImGui();
 	virtual void Set_Dead(const wstring& wstrLayerTag) override;
 public:
@@ -49,8 +48,6 @@ protected:
 	void Set_Name(const string& strName, _uint iValue);
 	void Set_Name(const wstring& wstrName, _uint iValue);
 	void Update_CombinedWorldMatrix(const Matrix &matParent);
-	void Export_TransformData(OUT TRANSFORM_SAVEDATA& data);
-	void Export_ModelData(OUT MODEL_SAVEDATA& data);
 private:
 	HRESULT Set_TypeString();
 protected:

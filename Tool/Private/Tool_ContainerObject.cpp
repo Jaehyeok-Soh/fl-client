@@ -103,17 +103,6 @@ _bool Tool_ContainerObject::Picking(OUT Vec3& vOut)
 	return false;
 }
 
-HRESULT Tool_ContainerObject::Export_Data(OUT MAPOBJECT_SAVEDATA& data)
-{
-	for (Tool_PartObject*& pPart : m_vecPartObjects)
-	{
-		if (pPart)
-			return pPart->Export_Data(data);
-	}
-
-	return S_OK;
-}
-
 void Tool_ContainerObject::Draw_ImGui()
 {
 	for (Tool_PartObject*& pPart : m_vecPartObjects)

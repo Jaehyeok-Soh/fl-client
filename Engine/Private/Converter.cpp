@@ -647,8 +647,6 @@ HRESULT CConverter::ReadAndExport_NoAnimation()
 
 HRESULT CConverter::ReadAndExport_MoreThanOne()
 {
-	size_t iCount = { 0 };
-
 	for (size_t i = 0; i < m_vecAssetPaths.size(); ++i)
 	{
 		Clear();

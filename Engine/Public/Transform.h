@@ -12,7 +12,9 @@ public:
 	constexpr static EComponentType _ID = EComponentType::TRANSFORM;
 	typedef struct tagTransformDesc
 	{
-		Vec3 vPosition = { 0.f, 0.f, 0.f };
+		Vec3 vPosition		   = { 0.f, 0.f, 0.f };
+		Vec3 vScale			   = { 1.f, 1.f, 1.f };
+		Vec3 vRotation_Degrees = { 0.f, 0.f, 0.f };
 		_float fMovePerSec = { 5.f };
 		_float fRotatePerSec = { 8.f };
 	}TRANSFORM_DESC;
@@ -43,6 +45,7 @@ public:
 	inline void Go_Down(const Vec3& vAxis, const _float fTimeDelta, CNavigation* pNavigation = nullptr);
 	inline void Go_Right(const _float fTimeDelta, CNavigation* pNavigation = nullptr);
 	inline void Go_Left(const _float fTimeDelta, CNavigation* pNavigation = nullptr);
+	inline void Rotation(_float fRadianX, _float fRadianY, _float fRadianZ);
 	inline void Roll_Turn(const _float fTimeDelta);
 	inline void Pitch_Turn(const _float fTimeDelta);
 	inline void Yaw_Turn(const _float fTimeDelta);
@@ -63,13 +66,13 @@ public:
 	void Update_PrevPosition();
 	void Force_Clear();
 private:
-	_bool m_bControll = { false };
-	_float m_fMoveScale = { 1.f };
-	_float m_fMovePerSec = { 5.f };
-	_float m_fRotatePerSec = { 8.f };
-	_float m_fDragK = { 0.f };
-	Vec3 m_vForceVelocity = { 0.f, 0.f, 0.f };
-	Vec3 m_vPrevPosition = { 0.f, 0.f, 0.f };
+	_bool		m_bControll = { false };
+	_float		m_fMoveScale = { 1.f };
+	_float		m_fMovePerSec = { 5.f };
+	_float		m_fRotatePerSec = { 8.f };
+	_float		m_fDragK = { 0.f };
+	Vec3		m_vForceVelocity = { 0.f, 0.f, 0.f };
+	Vec3		m_vPrevPosition = { 0.f, 0.f, 0.f };
 	Matrix		m_matWorld;
 public:
 	virtual CComponent* Clone(void* pArg) override;

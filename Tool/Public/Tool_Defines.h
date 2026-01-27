@@ -62,6 +62,32 @@ namespace Tool
 		END
 	};
 
+	enum class EStaticModel_Type
+	{
+		DEFUALT,
+		INSTANCE,
+		END,
+	};
+
+
+	static string StaticModelType_ToString(EStaticModel_Type eType)
+	{
+		switch (eType)
+		{
+		case Tool::EStaticModel_Type::DEFUALT: return "DEFUALT";
+		case Tool::EStaticModel_Type::INSTANCE:	return "INSTANCE";
+		default		:						return "NONE";
+		}
+
+
+		return "NONE";
+	}
+	static EStaticModel_Type StaticModelType_ToEnum(string streType)
+	{
+		if (streType == "DEFUALT") return EStaticModel_Type::DEFUALT;
+		if (streType == "INSTANCE") return EStaticModel_Type::INSTANCE;
+		return EStaticModel_Type::END;
+	}
 
 
 
@@ -129,28 +155,11 @@ namespace Tool
 	inline constexpr _tchar g_wszTriggerBoxLayer[]{ L"TriggerBox_Layer" };
 	inline constexpr _tchar g_wszColMeshLayer[]{ L"ColMesh_Layer" };
 	inline constexpr _tchar g_wszStaticModelLayer[]{ L"StaticModel_Layer" };
-	inline constexpr _tchar g_wszDummyColliderLayer[]{ L"DummyCollider_Layer" };
 	inline constexpr _tchar g_wszCameraLayer[]{ L"Camera_Layer" };
 
 	inline constexpr _tchar g_wszPrototypeTagCanvas[]{ L"Prototype_UI_Canvas" };
 	inline constexpr _tchar g_wszPrototypeTagLayer[]{ L"Prototype_UI_Layer" };
 	inline constexpr _tchar g_wszPrototypeTagUI[]{ L"Prototype_UI_UI" };
-
-	struct HoleBridges
-	{
-		_int iHolePolyIndex = { -1 };
-		_int iOuterVertexIndex = { -1 };
-		_int iHoleVertexIndex = { -1 };
-	};
-
-	typedef struct tagEffectPreset
-	{
-		_uint iPressetID = 0;
-		string strName = "";
-
-		EFFECT_PRESET_SNAPSHOT snapShot = {};
-	}EFFECT_PRESET;
-
 #pragma region Enum
 
 
@@ -163,7 +172,6 @@ namespace Tool
 		STATICMODEL,
 		END,
 	};
-
 
 	static EMapObject_Type MapObjectType_StringToType(const string& strType)
 	{
@@ -185,6 +193,7 @@ namespace Tool
 		return "NONE";
 
 	}
+
 
 	/*-----------------------------------------------------------*/
 

@@ -65,9 +65,9 @@ _bool Effect::Picking(OUT Vec3& vOut)
 	return Super::Picking(vOut);
 }
 
-HRESULT Effect::Export_Data(OUT MAPOBJECT_SAVEDATA& data)
+_bool Effect::Export_Data(DTO::ECategory eCategory, CDataDocumentBase* pDocument)
 {
-	return Super::Export_Data(data);
+	return false;
 }
 
 void Effect::Draw_ImGui()

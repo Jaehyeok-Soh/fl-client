@@ -33,7 +33,7 @@
 
 #include "DebugDraw.h"
 
-
+#include "UEMapdataParser.h"
 
 CLevel_Map::CLevel_Map(ID3D11Device* pDevice, ID3D11DeviceContext* pDeviceContext)
 	: Super(pDevice, pDeviceContext)
@@ -42,6 +42,7 @@ CLevel_Map::CLevel_Map(ID3D11Device* pDevice, ID3D11DeviceContext* pDeviceContex
 	, m_pBatch{nullptr}
 	, m_pEffect(nullptr)
 	, m_pInputLayout(nullptr)
+	, m_pUEMapDataParser(CUEMapdataParser::GetInstance())
 {
 	Safe_AddRef(m_pImGuiManager);
 	Safe_AddRef(m_pPickingManager);
@@ -58,6 +59,8 @@ HRESULT CLevel_Map::Initialize()
 
 	if (FAILED(Ready_Camera_Layer(g_wszCameraLayer)))
 		return E_FAIL;
+
+	m_pUEMapDataParser->Initialize(m_pDevice,m_pDeviceContext);
 
 	return S_OK;
 }
@@ -290,5 +293,8 @@ void CLevel_Map::Free()
 
 	Safe_Release(m_pImGuiManager);
 	Safe_Release(m_pPickingManager);
+
+	m_pUEMapDataParser->DestroyInstance();
+
 	Super::Free();
 }

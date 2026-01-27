@@ -15,7 +15,7 @@ class CParticle_System_Panel :
 {
     using Super = CImGui_Panel;
 public:
-    enum class E_EFFECT_RESOURCETYPE {TEXTURE, MESH, SHADER};
+    enum class E_EFFECT_RESOURCETYPE {TEXTURE, MESH, SHADER, FOLDER};
 protected:
     explicit CParticle_System_Panel(const _char* pLabel, CLevel* pOwner, ID3D11Device* pDevice, ID3D11DeviceContext* pDeviceContext);
     virtual ~CParticle_System_Panel() = default;
@@ -23,6 +23,7 @@ protected:
 protected:
     HRESULT EffectPanel_Initialize();
     HRESULT EffectFileResource_Setting();
+    HRESULT ResourceFolderSearch(E_EFFECT_RESOURCETYPE eType, const string& Path);
     HRESULT ResourceFileSearch(E_EFFECT_RESOURCETYPE eType, const string& Path);
 
 
@@ -39,6 +40,10 @@ protected:
 protected:
     void Draw_EffectColor(CToolObject* pGo);
     void Draw_Parts(CToolObject* pGo);
+
+protected:
+    // ========= Renderer Button 창 ===========
+    void Make_MeshSelectButton();
 
 public:
     void Update(const _float fDT) override;
@@ -62,17 +67,20 @@ private:
 
 private:
     //  =======  폴더명 & 파일명을 대신할 Mesh 전용 vector 컨테이너
-    std::vector<string> m_MeshFileNames;
-    std::vector<string> m_TextureFileNames;
+    std::map<string, std::vector<std::pair<string/*path*/, string/*Name*/>>> m_TextureMap;
+    std::vector<string> m_TextureFolderNames;
+
+    std::vector<std::pair<string/*Path*/, string/*Name*/>> m_TextureFileNames;
     std::vector<std::pair<string/*Path*/, string/*Name*/>> m_ShaderFileNames;
 
-    string              m_sMeshFolderPath = "../../Resources/Models";
-    string              m_sTextureFolderPath = "../../Resources/Textures";
+    string              m_sTextureFolderPath = "../../Resources/Textures/Effect";
     string              m_sShaderFolderPath = "../../Shaders";
 
 private:
     // ======== ImGui 값이 변동 됐다는걸 알리는 변수 ========
     _bool               m_bModified = false;
+    int                 m_iSelectPartsIndex = 0;
+    string              m_strSelectedFolder = "";
 };
 
 NS_END

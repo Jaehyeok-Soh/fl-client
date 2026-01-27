@@ -2,6 +2,8 @@
 #include "StaticModel.h"
 #include "Mesh.h"
 #include "Model.h"
+#include "DataDocument_Example.h"
+#include "DataStruct_Example.h"
 #include "GameInstance.h"
 
 CStaticModel::CStaticModel(EToolObjectType eType, ID3D11Device* pDevice, ID3D11DeviceContext* pDeviceContext)
@@ -30,6 +32,8 @@ HRESULT CStaticModel::Initialize(void* pArg)
 		return E_FAIL;
 
 	STATICMODEL_DESC* pDesc = static_cast<STATICMODEL_DESC*>(pArg);
+
+	m_eType = pDesc->eType;
 
 	if (FAILED(CStaticModel::Ready_Component()))
 		return E_FAIL;
@@ -124,9 +128,23 @@ _bool CStaticModel::Picking(OUT Vec3& vOut)
 	return false;
 }
 
-HRESULT CStaticModel::Export_Data(OUT MAPOBJECT_SAVEDATA& data)
+_bool CStaticModel::Export_Data(DTO::ECategory eCategory, CDataDocumentBase* pDocument)
 {
-	return S_OK;
+	if (eCategory != DTO::ECategory::MAP || pDocument == nullptr)
+		return false;
+
+	if (pDocument->Get_Category() != DTO::ECategory::MAP)
+		return false;
+
+	auto* pExampleDocument = static_cast<CDataDocument_Example*>(pDocument);
+
+	DTO::TExample_StaticModelData saveData;
+	saveData.strTag = m_strName;
+	// dto.vPosition = { 1.f, 1.f, 1.f };
+	// dto.vColor = { 1.f, 1.f, 1.f, 1.f };
+
+	pExampleDocument->Try_Add(saveData);
+	return false;
 }
 
 CStaticModel* CStaticModel::Create(EToolObjectType eType, ID3D11Device* pDevice, ID3D11DeviceContext* pDeviceContext)

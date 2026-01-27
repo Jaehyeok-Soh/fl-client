@@ -1,6 +1,8 @@
 #include "pch.h"
 #include "State_Slide.h"
 
+#include "Player.h"
+
 CState_Slide::CState_Slide(CActionState* pOwnerComponent)
     : Super(pOwnerComponent, "Slide")
 {
@@ -45,7 +47,23 @@ HRESULT CState_Slide::End()
 
 void CState_Slide::OwnMove(const _float fTimeDelta)
 {
-    Move_Front(fTimeDelta);
+    //CStateBase::Move_Front(fTimeDelta);
+}
+
+void CState_Slide::Change_State(STATEKEY eKey)
+{
+    if (ENUM_TO_UINT(ANI::SKY) == m_iMainAnimIdx)
+    {
+        switch(eKey)
+        {
+        case STATEKEY::LCRTL_UP:
+        case STATEKEY::LOOPDONE:
+            Request_Change_State(ENUM_TO_UINT(CPlayer::State::LAND)); // ¿ø·¡ FALL
+            return;
+        }
+    }
+
+    Super::Change_State(eKey);
 }
 
 CState_Slide* CState_Slide::Create(CActionState* pOwnerComponent, void* pArg)

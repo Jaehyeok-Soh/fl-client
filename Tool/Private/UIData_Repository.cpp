@@ -51,7 +51,7 @@ HRESULT CUIData_Repository::Save_UIData()
 	std::string text = j.dump(4);
 	if (FAILED(pFileUtil->WriteAllText(text)))
 	{
-		MSG_BOX("CMapFile_Manager::SaveData, write failed");
+		MSG_BOX("CUIData_Repository::SaveData, write failed");
 		return E_FAIL;
 	}
 

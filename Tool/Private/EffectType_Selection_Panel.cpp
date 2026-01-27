@@ -84,30 +84,29 @@ void CEffectType_Selection_Panel::DrawEffectList()
 
 HRESULT CEffectType_Selection_Panel::Render(CToolObject* pGo)
 {
-	if (ImGui::Begin("##EFfect type Selection"))
+	ImGui::Begin("##EFfect type Selection");
+	DrawEmbedded();
+	DrawEffectList();
+
+	switch (m_eSelectedEffectType)
 	{
-		DrawEmbedded();
-		DrawEffectList();
+	case E_EffectSystemType::Particle:
+		CreateParticleEffect(); break;
 
-		switch (m_eSelectedEffectType)
-		{
-		case E_EffectSystemType::Particle:
-			CreateParticleEffect(); break;
+	case E_EffectSystemType::ForceField:
+		CreateForceFieldEffect(); break;
 
-		case E_EffectSystemType::ForceField:
-			CreateForceFieldEffect(); break;
+	case E_EffectSystemType::Line:
+		CreateLineEffect(); break;
 
-		case E_EffectSystemType::Line:
-			CreateLineEffect(); break;
-
-		case E_EffectSystemType::Trail:
-			CreateTrailEffect(); break;
-		}
-
-		m_eSelectedEffectType = E_EffectSystemType::None;
-
-		ImGui::End();
+	case E_EffectSystemType::Trail:
+		CreateTrailEffect(); break;
 	}
+
+	m_eSelectedEffectType = E_EffectSystemType::None;
+
+	ImGui::End();
+	
 	return S_OK;
 }
 
@@ -157,7 +156,7 @@ void CEffectType_Selection_Panel::CreateParticleEffect()
 		pEffectDesc.iLevelIndex = ENUM_TO_UINT(ELevelType::EFFECT);
 		// ========     ¿Ã∆Â∆Æ ≈∏¿‘   =========
 		pEffectDesc.eEffectSystemType = E_EffectSystemType::Particle;
-		pEffectDesc.eEffectType = E_EFFECTTYPE::NONE;
+		pEffectDesc.eEffectType = E_EFFECTTYPE::Particle;
 
 		// =========   ¿Ã∆Â∆Æ Color Value   ===============
 		pEffectDesc._Effect_Color = Vec4{ 0.f, 0.f, 0.f, 1.f };
@@ -185,6 +184,7 @@ void CEffectType_Selection_Panel::CreateParticleEffect()
 		pEffectDesc._Effect_EndScale = { 1.f, 1.f, 1.f };
 
 		static_cast<Effect*>(pEffectContainer)->Add_Part(0, ENUM_TO_UINT(ELevelType::EFFECT), L"Prototype_GameObject_Effect_Parts", &pEffectDesc);
+		static_cast<Effect*>(pEffectContainer)->Get_Part<CEffectObject>(0)->Set_Name("DEFAULT_EFFECT");
 	}
 }
 
