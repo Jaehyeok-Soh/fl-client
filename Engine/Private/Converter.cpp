@@ -193,9 +193,9 @@ void CConverter::Read_Meshes()
 				::memcpy(&pCurrentMesh->vecVertices[v].vUV, &pAiMesh->mTextureCoords[0][v], sizeof(Vec2));
 
 				pCurrentMesh->vecVertices[v].vPosition = Vec3::Transform(pCurrentMesh->vecVertices[v].vPosition, matPreTransform);
-				pCurrentMesh->vecVertices[v].vNormal = Vec3::Transform(pCurrentMesh->vecVertices[v].vNormal, matPreTransform);
-				pCurrentMesh->vecVertices[v].vTangent = Vec3::Transform(pCurrentMesh->vecVertices[v].vTangent, matPreTransform);
-				pCurrentMesh->vecVertices[v].vBinormal = Vec3::Transform(pCurrentMesh->vecVertices[v].vBinormal, matPreTransform);
+				pCurrentMesh->vecVertices[v].vNormal = Vec3::TransformNormal(pCurrentMesh->vecVertices[v].vNormal, matPreTransform);
+				pCurrentMesh->vecVertices[v].vTangent = Vec3::TransformNormal(pCurrentMesh->vecVertices[v].vTangent, matPreTransform);
+				pCurrentMesh->vecVertices[v].vBinormal = Vec3::TransformNormal(pCurrentMesh->vecVertices[v].vBinormal, matPreTransform);
 			}
 		}
 		else

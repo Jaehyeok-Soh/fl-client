@@ -294,7 +294,7 @@ HRESULT CUEMapdataParser::Batch_UnrealRawMapData(const wchar_t* wszFileName)
 		desc.iLevelIndex = ENUM_TO_UINT(ELevelType::MAP);
 		desc.wstrModelPath = CONVERTED_MAPDATA.tUsingModelInfo.wstrPath;
 		desc.wstrModelName = CONVERTED_MAPDATA.tUsingModelInfo.wstrName;
-
+		desc.eType = CONVERTED_MAPDATA.eType;
 		CTransform::TRANSFORM_DESC tTramsoformDesc{};
 		tTramsoformDesc.vScale				= CONVERTED_MAPDATA.vScale;
 		tTramsoformDesc.vRotation_Degrees	= CONVERTED_MAPDATA.vPitchYawRoll;
