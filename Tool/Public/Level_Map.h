@@ -5,6 +5,7 @@ NS_BEGIN(Tool)
 
 class CToolObject;
 class CImGui_Panel;
+class CUEMapdataParser;
 
 
 class CLevel_Map final : public CLevel
@@ -44,6 +45,7 @@ public:
 	void		 On_ChangeSelectedObject(CGameObject* pGo);
 	void		 On_CreateMode(_bool bValue);
 	CToolObject* Get_SelectToolObject() { return m_pSelectedObject; }
+	void		 Set_SelectToolObject(CToolObject* pToolObject) { m_pSelectedObject = pToolObject; }
 private:
 	_bool m_bCreateMode = { false };
 	class CImGui_ToolManager* m_pImGuiManager = { nullptr };
@@ -59,7 +61,13 @@ private:
 	ID3D11InputLayout*										m_pInputLayout{ nullptr };
 
 
+	CUEMapdataParser*										m_pUEMapDataParser{nullptr};
+
+private:
+
+
 public:
+	
 	static CLevel_Map* Create(ID3D11Device* pDevice, ID3D11DeviceContext* pDeviceContext);
 	virtual void Free() override;
 };

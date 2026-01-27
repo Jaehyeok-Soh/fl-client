@@ -21,7 +21,10 @@
 //=================
 // UI
 //=================
+#include "ToolCanvas.h"
+#include "ToolLayer.h"
 #include "ToolUI.h"
+
 //=================
 // Resource
 //=================
@@ -242,15 +245,33 @@ HRESULT CLoader::Loading_For_UI()
 		textureDesc.wstrTexturePath = L"../../Resources/Textures/UI/Button/T_Com_BtnIcon_Custom.png";
 		if (FAILED(m_pGameInstance->Add_Prototype(ENUM_TO_UINT(ELevelType::UI), L"Prototype_Component_Button_Test_Texture", CTexture::Create(&textureDesc))))
 			return E_FAIL;
+
+		textureDesc.iTextureCount = 31;
+		textureDesc.wstrTexturePath = L"../../Resources/Textures/UI/Aim/%d.png";
+		if (FAILED(m_pGameInstance->Add_Prototype(ENUM_TO_UINT(ELevelType::UI), L"Texture_Aim", CTexture::Create(&textureDesc))))
+			return E_FAIL;
+
+		//if (FAILED(Loading_Textures(L"../../Resources/Textures/UI/Layout")))
+		//	return E_FAIL;
 	}
 
 	//=================
 	// UI Objects
 	//=================
 
-	// For. Prototype_UI_Test_Button
+	// For. Prototype_UI_Canvas
 	{
-		if(FAILED(m_pGameInstance->Add_Prototype(ENUM_TO_UINT(ELevelType::UI), L"Prototype_UI_Test_Button", CToolUI::Create(EToolObjectType::UI, m_pDevice, m_pDeviceContext))))
+		if (FAILED(m_pGameInstance->Add_Prototype(ENUM_TO_UINT(ELevelType::UI), g_wszPrototypeTagCanvas, CToolCanvas::Create(EToolObjectType::UI, m_pDevice, m_pDeviceContext))))
+			return E_FAIL;
+	}
+	// For. Prototype_UI_Layer
+	{
+		if (FAILED(m_pGameInstance->Add_Prototype(ENUM_TO_UINT(ELevelType::UI), g_wszPrototypeTagLayer, CToolLayer::Create(EToolObjectType::UI, m_pDevice, m_pDeviceContext))))
+			return E_FAIL;
+	}
+	// For. Prototype_UI_UI
+	{
+		if (FAILED(m_pGameInstance->Add_Prototype(ENUM_TO_UINT(ELevelType::UI), g_wszPrototypeTagUI, CToolUI::Create(EToolObjectType::UI, m_pDevice, m_pDeviceContext))))
 			return E_FAIL;
 	}
 

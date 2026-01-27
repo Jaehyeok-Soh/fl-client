@@ -7,6 +7,7 @@
 // manager
 #include "GameInstance.h"
 #include "ControlContext.h"
+#include "Engine_Utils.h"
 
 CStateBase_Player::CStateBase_Player(CActionState* pOwnerComponent, const string& strName)
 	: Super(pOwnerComponent, strName)
@@ -18,13 +19,12 @@ HRESULT CStateBase_Player::Initialize(void* pArg)
 	if (FAILED(Super::Initialize(pArg)))
 		return E_FAIL;
 
-	PLAYER_STATEBASE_DESC* pDesc = static_cast<PLAYER_STATEBASE_DESC*>(pArg);
+	PLAYER_STATEBASE_DESC* pDesc	= static_cast<PLAYER_STATEBASE_DESC*>(pArg);
 
-	m_eMoveType = pDesc->eMoveType;
-	m_iNextState = pDesc->iNextState;
-	m_vecChangeState_ByKey = std::move(pDesc->vecChangeState_ByKey);
+	m_FMoves						= pDesc->FMoves;
+	m_vecChangeState_ByKey			= std::move(pDesc->vecChangeState_ByKey);
 
-	m_tKeyTimer = pDesc->tKeyTimer;
+	m_tKeyTimer						= pDesc->tKeyTimer;
 
 	return S_OK;
 }
@@ -50,23 +50,38 @@ HRESULT CStateBase_Player::Start(void* pArg, _bool bForce)
 void CStateBase_Player::Update(const _float fTimeDelta)
 {
 #ifdef _DEBUG
+	//WINDOW_DEBUG
 	std::wstring msg = L"State: ";
 	std::wstring ws(m_strName.begin(), m_strName.end());
 	msg += ws;
+
+	msg += L" / AniIdx: ";
+	msg += std::to_wstring(m_iMainAnimIdx);
 	SetWindowText(g_hWnd, msg.c_str());
 #endif
 
 	Super::Update(fTimeDelta);
 
-	// keyCount를 하지 않거나, coolTime이 다 되었다면
+	// 만약 이전 애니메이션때 변화하기 싫은데 아직 preAni가 끝나지 않았다면 : key 입력 처리를 하지 않음
+	if (Engine_Utils::Has_Flag(m_FAniFlags, STATEANI_FLAG::SA_PreNonEvent) &&
+		!Engine_Utils::Has_Flag(m_FAniFlags, STATEANI_FLAG::SA_PreAniDone))
+		return;
+	 
+	// keyCount를 하지 않거나, coolTime이 다 되었다면 : key 입력을 처리하자
 	if (!(m_tKeyTimer.bCountTime) ||
 		m_tKeyTimer.CountTime(fTimeDelta) == 1.f)
 	{
+		if (!m_bLoop && Is_MainAnimFinished())		// loop가 아닌데 애니메이션이 끝났다면 : pre animation이랑 잘 해야될듯..?
+		{
+			Change_State(STATEKEY::LOOPDONE);			// 다음 state로 change
+			return;
+		}
+
 		if (Check_MoveKey(fTimeDelta))
 			return;
 
 		if (Check_JumpKey(fTimeDelta))
-			return;
+ 			return;
 
 		if (Check_DashKey(fTimeDelta))
 			return;
@@ -89,35 +104,41 @@ HRESULT CStateBase_Player::End()
 	return S_OK;
 }
 
+void CStateBase_Player::Change_State(STATEKEY eKey)
+{
+	_uint iNextState = m_vecChangeState_ByKey[ENUM_TO_UINT(eKey)];
+	Set_NextStateDesc(iNextState);		// next state에 대한 desc 작성
+	Request_Change_State(iNextState, &m_tNextStateDesc);	
+}
+
 _bool CStateBase_Player::Check_MoveKey(const _float fTimeDelta)
 {
-	//	enum class MOVETYPE { NORMAL, CHANGE, OWN, NON }; // 8방향 움직임, state change, own moving, dont move
-	switch (m_eMoveType)
+	if (Engine_Utils::Has_Flag(m_FMoves, MOVEFLAGS::OWN))
 	{
-	case MOVETYPE::NORMAL:
-		if (Align_Movement(fTimeDelta) == false)	// 8방향 움직임 
-		{
-			Request_Change_State(m_vecChangeState_ByKey[ENUM_TO_UINT(STATEKEY::MOVE)]); // 움직임이 없다면 실행할 
-			return true;
-		}
-
-		break;
-
-	case MOVETYPE::CHANGE: // 키가 눌렸다면 해당 state로 change
-		return (Align_Move(m_vecChangeState_ByKey[ENUM_TO_UINT(STATEKEY::MOVE)]));
-
-	case MOVETYPE::OWN:		// 내 움직임
-		OwnMove(fTimeDelta); 
-		break;
-
-	case MOVETYPE::NON:		// 움직이지 않음
-		break;
+		OwnMove(fTimeDelta);
 	}
 
-	if (!m_bLoop && Is_MainAnimFinished()) // loop가 아닌데 애니메이션이 끝났다면 : pre animation이랑 잘 해야될듯..?
+	if (Engine_Utils::Has_Flag(m_FMoves, MOVEFLAGS::PRESS_CHANGE))
 	{
-		Request_Change_State(m_iNextState);		// 다음 state로 change
-		return true;
+		Set_NextStateDesc(m_vecChangeState_ByKey[ENUM_TO_UINT(STATEKEY::MOVE)]);
+		return (Align_Move(m_vecChangeState_ByKey[ENUM_TO_UINT(STATEKEY::MOVE)]));
+	}
+
+	if (Engine_Utils::Has_Flag(m_FMoves, MOVEFLAGS::NORMAL))
+	{
+		if (Align_Movement(fTimeDelta) == false)	// 8방향 움직임 
+		{
+			if (Engine_Utils::Has_Flag(m_FMoves, MOVEFLAGS::OWN))
+				return false;
+
+			Change_State(STATEKEY::MOVE);
+			return true;
+		}
+	}
+
+	if (Engine_Utils::Has_Flag(m_FMoves, MOVEFLAGS::UP_CHANGE))
+	{
+		
 	}
 
 	return false;
@@ -128,7 +149,7 @@ _bool CStateBase_Player::Check_JumpKey(const _float fTimeDelta)
 	if (Has_ChangeState(STATEKEY::SPACE) &&
 		Key_Input(ENUM_TO_UINT(CControlContext::CONTROL_KEY::JUMP)))
 	{
-		Request_Change_State(m_vecChangeState_ByKey[ENUM_TO_UINT(STATEKEY::SPACE)]);
+		Change_State(STATEKEY::SPACE);
 		return true;
 	}
 
@@ -140,7 +161,7 @@ _bool CStateBase_Player::Check_DashKey(const _float fTimeDelta)
 	if (Has_ChangeState(STATEKEY::SHIFT) &&
 		Key_Input(ENUM_TO_UINT(CControlContext::CONTROL_KEY::DASH)))
 	{
-		Request_Change_State(m_vecChangeState_ByKey[ENUM_TO_UINT(STATEKEY::SHIFT)]);
+		Change_State(STATEKEY::SHIFT);
 		return true;
 	}
 
@@ -152,7 +173,7 @@ _bool CStateBase_Player::Check_CtrlPressKey(const _float fTimeDelta)
 	if (Has_ChangeState(STATEKEY::LCRTL_PRESS) &&
 		Key_Input(ENUM_TO_UINT(CControlContext::CONTROL_KEY::SPECIALMV)))
 	{
-		Request_Change_State(m_vecChangeState_ByKey[ENUM_TO_UINT(STATEKEY::LCRTL_PRESS)]);
+		Change_State(STATEKEY::LCRTL_PRESS);
 		return true;
 	}
 
@@ -164,7 +185,7 @@ _bool CStateBase_Player::Check_CtrlUpKey(const _float fTimeDelta)
 	if (Has_ChangeState(STATEKEY::LCRTL_UP) &&
 		Key_Input(ENUM_TO_UINT(CControlContext::CONTROL_KEY::DODGE)))
 	{
-		Request_Change_State(m_vecChangeState_ByKey[ENUM_TO_UINT(STATEKEY::LCRTL_UP)]);
+		Change_State(STATEKEY::LCRTL_UP);
 		return true;
 	}
 

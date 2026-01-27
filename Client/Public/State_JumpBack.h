@@ -17,6 +17,10 @@ public:
 	virtual void Update(const _float fTimeDelta) override;
 	virtual HRESULT End() override;
 
+protected:
+	virtual void OwnMove(const _float fTimeDelta) override;
+	virtual void Set_NextStateDesc(_uint iNextState) override;
+
 public:
 	static CState_JumpBack* Create(CActionState* pOwnerComponent, void* pArg = nullptr);
 	virtual void Free() override;

@@ -1,6 +1,8 @@
 #include "pch.h"
 #include "ToolUI.h"
 
+#include "Engine_Utils.h"
+
 /* Components */
 #include "Shader.h"
 #include "VIBuffer_Rect_Tex.h"
@@ -27,10 +29,12 @@ HRESULT CToolUI::Initialize_Prototype()
 HRESULT CToolUI::Initialize(void* pArg)
 {
 	TOOLUI_DESC* pDesc = static_cast<TOOLUI_DESC*>(pArg);
+	m_strName = pDesc->strName;
+	m_wstrTextureTag = Engine_Utils::ToWString(pDesc->strInitTextureTag);
+	m_iTextureIndex = pDesc->iInitTextureIndex;
 
 	if (FAILED(Super::Initialize(pArg)))
 		return E_FAIL;
-	
 
     if (FAILED(Ready_Components(pDesc)))
         return E_FAIL;
@@ -43,12 +47,13 @@ HRESULT CToolUI::Awake(const _uint iCurrentLevelID)
 	if (FAILED(Super::Awake(iCurrentLevelID)))
         return E_FAIL;
 
-    Set_SizeToTextureScale();
     return S_OK;
 }
 
 void CToolUI::Update_Priority(const _float fTimeDelta)
 {
+	Set_Size(m_fWidth, m_fHeight);
+	Set_Position(m_fX, m_fY, m_fZ);
 	Super::Update_Priority(fTimeDelta);
 }
 
@@ -84,7 +89,7 @@ HRESULT CToolUI::Render()
 
 HRESULT CToolUI::Ready_Components(TOOLUI_DESC* pDesc)
 { 
-	if (FAILED(Add_Component<CTexture>(ENUM_TO_UINT(ELevelType::UI), pDesc->wstrTextureTag, pDesc)))
+	if (FAILED(Add_Component<CTexture>(ENUM_TO_UINT(ELevelType::UI), m_wstrTextureTag, pDesc)))
         return E_FAIL;
 
     if (FAILED(Add_Component<CShader>(0, L"Prototype_Component_Shader_VtxPosTex", pDesc)))
@@ -99,10 +104,11 @@ HRESULT CToolUI::Ready_Components(TOOLUI_DESC* pDesc)
 HRESULT CToolUI::Bind_ShaderResources()
 {
     CShader* pShader = Get_Component<CShader>();
+
     if (FAILED(Get_Component<CTransform>()->Bind_ShaderResource(pShader)))
         return E_FAIL;
 
-    if (FAILED(Get_Component<CTexture>()->Bind_ShaderResource(pShader, 0)))
+    if (FAILED(Get_Component<CTexture>()->Bind_ShaderResource(pShader, m_iTextureIndex)))
         return E_FAIL;
 
     return S_OK;

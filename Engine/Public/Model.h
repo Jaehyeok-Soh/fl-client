@@ -12,7 +12,6 @@ public:
 	{
 		EModelType eType = { EModelType::END };
 		_int iPrototypeLevelIndex = { -1 };
-		const MODELPARTS_PROTOTYPETAGS* pPrototypeTags = { nullptr };
 		Matrix* pMatPreTransform = { nullptr };
 		wstring wstrModelFolderName = { L"" };
 	}MODEL_ORIGIN_DESC;
@@ -78,7 +77,6 @@ private:
 	HRESULT Load_AnimModel(const wstring& wstrModelName);
 	HRESULT Load_CustomPartsModel(const wstring& wstrModelName);
 	HRESULT Load_OnlyBone(const wstring& wstrModelName);
-	HRESULT Combine_Model(const MODELPARTS_PROTOTYPETAGS* pPrototypeTags);
 	HRESULT Add_Parts(const wstring &wstrPrototypeTag);
 	CModel* Get_Clone(const wstring &wstrPrototypeTag);
 	void Play_Animation(_float fTimeDelta);

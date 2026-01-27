@@ -332,14 +332,14 @@ CGameObject* CActionState::Get_Target()
 	return m_pOwnerControlContext->Get_Target();
 }
 
-_bool CActionState::Align_Move(_uint iState)
+_bool CActionState::Align_Move(_uint iState, _bool bForce , void* pArg)
 {
 	if (m_pOwnerControlContext == nullptr)
 		return false;
 
 	if (m_pOwnerControlContext->Is_MovePressed())
 	{
-		Change_State(iState);
+		Change_State(iState, bForce, pArg);
 		return true;
 	}
 	return false;
@@ -412,7 +412,7 @@ _bool CActionState::Key_Input(CControlContext::CONTROL_KEY eKey)
 		return m_pOwnerControlContext->Is_Skill2Pressed();
 	}
 
-
+	return false;
 }
 
 void CActionState::Set_AnimationPlayRate(_uint iIndex, _float fSpeed)
@@ -468,6 +468,11 @@ void CActionState::Move_Front(const _float fTimeDelta, const _float fSpeedRatio)
 void CActionState::Move_Backward(const _float fTimeDelta, const _float fSpeedRatio)
 {
 	m_pOwnerTransform->Go_BackWard(fTimeDelta * fSpeedRatio, m_pOwnerNavigation);
+}
+
+void CActionState::Move_Down(const _float fTimeDelta, const _float fSpeedRatio)
+{
+	m_pOwnerTransform->Go_Down(fTimeDelta, m_pOwnerNavigation);
 }
 
 void CActionState::StartForce_Front_ForAnimation(_float fForceAbs, _float fDragK)

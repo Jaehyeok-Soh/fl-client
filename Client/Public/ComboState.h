@@ -42,7 +42,7 @@ public:
 	virtual void Update(const _float fTimeDelta) override;
 	virtual HRESULT End() override;
 public:
-	_uint Get_AnimIndex() const { return m_iAnimIndex; }
+	_uint Get_AnimIndex() const { return m_vecMainAnims[m_iMainAnimIdx]; }
 	_int Get_RootState() const { return m_iRootState; }
 	_int Get_ComboIndex() const { return m_iComboIndex; }
 	void Set_ComboIndex(_uint iValue) { m_iComboIndex = iValue; }

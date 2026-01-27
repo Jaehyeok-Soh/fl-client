@@ -73,21 +73,26 @@ void CPanel_ModelConverter::Open_FolderDialog()
 
 	DWORD dwOptions{};
 
+
 	if (!m_isRecursiveDirectory)
 		m_pOpenDialog->SetOptions(dwOptions | FOS_FORCEFILESYSTEM);
 	else
 		m_pOpenDialog->SetOptions(dwOptions | FOS_FORCEFILESYSTEM | FOS_PICKFOLDERS);
+
 
 	m_pOpenDialog->Show(g_hWnd);
 
 	IShellItem* pItem{nullptr};
 	if (SUCCEEDED(m_pOpenDialog->GetResult(&pItem)))
 	{
+
+
 		LPWSTR pPath{nullptr};
 		pItem->GetDisplayName(SIGDN_FILESYSPATH , &pPath);
 
 		path FilePath = pPath;
-		FilePath.remove_filename();
+		if(!m_isRecursiveDirectory)
+			FilePath.remove_filename();
 		Convert_FbxFolder(FilePath.c_str());
 	}
 
@@ -138,7 +143,9 @@ void CPanel_ModelConverter::Convert_FbxFolder(const wchar_t* wszFloderPath)
 			if (FAILED(pConverter->ReadAndExport()))
 				ResultMsg = pathFile.filename().wstring() + L" Convert is Failed", L"Converter";
 			else
-				ResultMsg = pathFile.filename().wstring() + L" Convert is Complete", L"Converter";
+			{
+				ResultMsg += pathFile.filename().wstring() + L" Convert is Complete", L"Converter";
+			}
 			Safe_Release(pConverter);
 		}
 	}

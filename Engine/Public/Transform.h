@@ -66,13 +66,13 @@ public:
 	void Update_PrevPosition();
 	void Force_Clear();
 private:
-	_bool m_bControll = { false };
-	_float m_fMoveScale = { 1.f };
-	_float m_fMovePerSec = { 5.f };
-	_float m_fRotatePerSec = { 8.f };
-	_float m_fDragK = { 0.f };
-	Vec3 m_vForceVelocity = { 0.f, 0.f, 0.f };
-	Vec3 m_vPrevPosition = { 0.f, 0.f, 0.f };
+	_bool		m_bControll = { false };
+	_float		m_fMoveScale = { 1.f };
+	_float		m_fMovePerSec = { 5.f };
+	_float		m_fRotatePerSec = { 8.f };
+	_float		m_fDragK = { 0.f };
+	Vec3		m_vForceVelocity = { 0.f, 0.f, 0.f };
+	Vec3		m_vPrevPosition = { 0.f, 0.f, 0.f };
 	Matrix		m_matWorld;
 public:
 	virtual CComponent* Clone(void* pArg) override;

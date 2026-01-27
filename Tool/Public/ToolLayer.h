@@ -1,20 +1,21 @@
 #pragma once
 #include "UIObject.h"
 #include "Tool_Defines.h"
+#include "UIData_Repository.h"
 
 NS_BEGIN(Tool)
 
+class CImGui_UIManager;
 class CToolUI;
 
 class CToolLayer final : public CUIObject
 {
 	using Super = CUIObject;
 public:
-	typedef struct tagToolUIDesc : public Super::UIOBJECT_DESC
+	typedef struct tagToolLayerDesc : public Super::UIOBJECT_DESC
 	{
-		_wstring wstrTextureTag;
-
-	}TOOLUI_DESC;
+		_string strTag = {};
+	}TOOLLAYER_DESC;
 
 private:
 	CToolLayer(ID3D11Device* pDevice, ID3D11DeviceContext* pDeviceContext);
@@ -33,14 +34,27 @@ public:
 	virtual HRESULT Render() override;
 
 private:
-	HRESULT Ready_Components(TOOLUI_DESC* pDesc);
+	HRESULT Ready_Components(TOOLLAYER_DESC* pDesc);
 	HRESULT Bind_ShaderResources();
 
+public:
+	/* UI오브젝트 접근 함수 */
+	HRESULT Safe_Add_UI(CToolUI* pUI);
+
+	vector<CToolUI*>* Safe_Access_UIObject_Vector_Ptr();
+	CToolUI* Safe_Access_UIObject_Ptr(int32_t index);
+	CToolUI* Safe_Access_CurUIObject_Ptr();
+
+	const _string& Get_Tag() const { return m_strTag; }
+	void Set_Tag(const _string& Tag) { m_strTag = Tag; }
+
 private:
+	CImGui_UIManager* m_pUIManager = { nullptr };
+
+	LAYER_DATA m_tLayerData = {};
 	vector<CToolUI*> m_vecToolUIs;
 
-	/* 아마 있어야될 변수 */
-	/* 얘의 m_iPass -> vecToolUIs 가 동일하게 가짐 */
+	_string m_strTag = {};
 
 public:
 	static CToolLayer* Create(EToolObjectType eType, ID3D11Device* pDevice, ID3D11DeviceContext* pDeviceContext);

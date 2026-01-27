@@ -3,15 +3,21 @@
 #include "ToolLayer.h"
 #include "Tool_Defines.h"
 #include "GameInstance.h"
+#include "ImGui_UIManager.h"
+#include "Engine_Utils.h"
 
 /* Components */
 #include "Shader.h"
 #include "VIBuffer_Rect_Tex.h"
 #include "Texture.h"
 
+#include "ToolUI.h"
+
 CToolLayer::CToolLayer(ID3D11Device* pDevice, ID3D11DeviceContext* pDeviceContext)
-	:CUIObject(pDevice, pDeviceContext)
+	:CUIObject(pDevice, pDeviceContext),
+	m_pUIManager(CImGui_UIManager::GetInstance())
 {
+	Safe_AddRef(m_pUIManager);
 }
 
 CToolLayer::CToolLayer(const CToolLayer& rhs)
@@ -31,7 +37,8 @@ HRESULT CToolLayer::Initialize(void* pArg)
 	if (FAILED(Super::Initialize(pArg)))
 		return E_FAIL;
 
-	TOOLUI_DESC* pDesc = static_cast<TOOLUI_DESC*>(pArg);
+	TOOLLAYER_DESC* pDesc = static_cast<TOOLLAYER_DESC*>(pArg);
+	m_strTag = pDesc->strTag;
 
 	if (FAILED(Ready_Components(pDesc)))
 		return E_FAIL;
@@ -70,44 +77,61 @@ void CToolLayer::Ready_Before_Render(const _float fTimeDelta)
 
 HRESULT CToolLayer::Render()
 {
-
 	if (FAILED(Super::Render()))
 		return E_FAIL;
-
-	if (FAILED(Bind_ShaderResources()))
-		return E_FAIL;
-
-	Get_Component<CShader>()->Apply();
-	Get_Component<CVIBuffer>()->Bind_Resource();
-	Get_Component<CVIBuffer>()->Render();
 
 	return S_OK;
 }
 
-HRESULT CToolLayer::Ready_Components(TOOLUI_DESC* pDesc)
+HRESULT CToolLayer::Ready_Components(TOOLLAYER_DESC* pDesc)
 {
-	if (FAILED(Add_Component<CTexture>(0, pDesc->wstrTextureTag, pDesc)))
-		return E_FAIL;
-
-	if (FAILED(Add_Component<CShader>(0, L"Prototype_Component_Shader_VtxPosTex", pDesc)))
-		return E_FAIL;
-
-	if (FAILED(Add_Component<CVIBuffer_Rect_Tex>(0, L"Prototype_Component_VIBuffer_Rect_Tex", pDesc)))
-		return E_FAIL;
-
 	return S_OK;
 }
 
 HRESULT CToolLayer::Bind_ShaderResources()
 {
-	CShader* pShader = Get_Component<CShader>();
-	if (FAILED(Get_Component<CTransform>()->Bind_ShaderResource(pShader)))
-		return E_FAIL;
-
-	if (FAILED(Get_Component<CTexture>()->Bind_ShaderResource(pShader, 0)))
-		return E_FAIL;
-
 	return S_OK;
+}
+
+HRESULT CToolLayer::Safe_Add_UI(CToolUI* pUI)
+{
+	if (nullptr == pUI)
+		return E_FAIL;
+
+	m_vecToolUIs.push_back(pUI);
+	return S_OK;
+}
+
+vector<CToolUI*>* CToolLayer::Safe_Access_UIObject_Vector_Ptr()
+{
+	if (m_vecToolUIs.empty())
+		return nullptr;
+
+	return &m_vecToolUIs;
+}
+
+CToolUI* CToolLayer::Safe_Access_UIObject_Ptr(int32_t index)
+{
+	if (m_vecToolUIs.empty())
+		return nullptr;
+
+	int32_t NumLayer = static_cast<int32_t>(m_vecToolUIs.size());
+	if (index >= NumLayer || index < 0)
+		return nullptr;
+
+	return m_vecToolUIs[index];
+}
+
+CToolUI* CToolLayer::Safe_Access_CurUIObject_Ptr()
+{
+	if (m_vecToolUIs.empty())
+		return nullptr;
+
+	int32_t NumLayer = static_cast<int32_t>(m_vecToolUIs.size());
+	if (m_pUIManager->Get_CurLayerIndex() >= NumLayer || m_pUIManager->Get_CurLayerIndex() < 0)
+		return nullptr;
+
+	return m_vecToolUIs[m_pUIManager->Get_CurLayerIndex()];
 }
 
 CToolLayer* CToolLayer::Create(EToolObjectType eType, ID3D11Device* pDevice, ID3D11DeviceContext* pDeviceContext)
@@ -134,6 +158,15 @@ CGameObject* CToolLayer::Clone(void* pArg)
 
 void CToolLayer::Free()
 {
+	Safe_Release(m_pUIManager);
+
+	for (auto* p : m_vecToolUIs)
+	{
+		if (nullptr == p)
+			continue;
+		Safe_Release(p);
+	}
+	m_vecToolUIs.clear();
 	Super::Free();
 }
 
