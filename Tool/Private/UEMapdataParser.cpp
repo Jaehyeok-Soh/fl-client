@@ -31,40 +31,10 @@ HRESULT CUEMapdataParser::Initialize(ID3D11Device* pDevice, ID3D11DeviceContext*
 	Safe_AddRef(m_pContext);
 	Safe_AddRef(m_pGameInstance);
 
-	if (FAILED(Ready_PreUEMapRawDataLoad()))
-		return E_FAIL;
 	return S_OK;
+
 }
 
-HRESULT CUEMapdataParser::Ready_PreUEMapRawDataLoad()
-{
-	path FolderPath = L"../../Resources/Data/MapData";
-
-	for (auto& Path : std::filesystem::recursive_directory_iterator(FolderPath))
-	{
-		if (std::filesystem::is_regular_file(Path))
-			continue;
-
-		path FullPath = Path;
-
-		if (FullPath.extension() != L".json")
-			continue;
-
-		wstring wstrFileName = path(FullPath).filename().stem();
-
-		if (wstrFileName.find(m_WstringConverted) != wstring::npos)
-			continue;
-
-		if (wstrFileName.find(m_WstringFiltering) != wstring::npos)
-			continue;
-
-		Convert_UnrealRawMapData(FullPath.wstring().c_str());
-	}
-
-
-
-	return S_OK;
-}
 
 bool CUEMapdataParser::Filter(const string& strName, const string& strType)
 {

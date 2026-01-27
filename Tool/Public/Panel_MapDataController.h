@@ -28,7 +28,6 @@ private:
 	vector<wstring>	  m_vecConvertedUEMapDataPath{};
 	_uint			  m_iSelectConvertedUEMapDataPath{};
 	CUEMapdataParser* m_pUEMapdataParser{nullptr};
-
 };
 
 NS_END
