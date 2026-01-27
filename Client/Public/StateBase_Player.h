@@ -44,7 +44,7 @@ public:
 protected:
 	Flags					m_FMoves		= { 0 };
 	vector<_uint>			m_vecChangeState_ByKey;
-	_uint					m_iEndState		= { 0 };
+
 	TIME_COUNTER			m_tKeyTimer		= {};
 
 	STATE_START_DESC		m_tNextStateDesc = {};
@@ -53,7 +53,11 @@ protected:
 	virtual void OwnMove(const _float fTimeDelta) {};		// state 내부에서 알아서 움직일때
 	virtual void Set_NextStateDesc(_uint iNextState) {};	// 다음 state에 따라 desc을 작성한다 : 각 state 내부에서
 
+	virtual void CheckAni_WhenStart() {};								// 만약 자체에서 로직을 통해 바꾸고 싶다면
 	virtual void Change_State(STATEKEY eKey);
+
+private:
+	_uint					m_iEndState = { 0 };
 
 	// state가 변환 했다면 true
 private:

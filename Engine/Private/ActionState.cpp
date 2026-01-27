@@ -470,6 +470,11 @@ void CActionState::Move_Backward(const _float fTimeDelta, const _float fSpeedRat
 	m_pOwnerTransform->Go_BackWard(fTimeDelta * fSpeedRatio, m_pOwnerNavigation);
 }
 
+void CActionState::Move_Down(const _float fTimeDelta, const _float fSpeedRatio)
+{
+	m_pOwnerTransform->Go_Down(fTimeDelta, m_pOwnerNavigation);
+}
+
 void CActionState::StartForce_Front_ForAnimation(_float fForceAbs, _float fDragK)
 {
 	m_pOwnerTransform->Start_Force(m_pOwnerTransform->Get_Info(TRANSFORM_INFO_STATE::LOOK), fForceAbs, fDragK);

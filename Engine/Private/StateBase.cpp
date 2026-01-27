@@ -272,6 +272,11 @@ void CStateBase::Move_Backward(const _float fTimeDelta, const _float fSpeedRatio
 	m_pOwnerStateComp->Move_Backward(fTimeDelta, fSpeedRatio);
 }
 
+void CStateBase::Move_Down(const _float fTimeDelta, const _float fSpeedRatio)
+{
+	m_pOwnerStateComp->Move_Down(fTimeDelta, fSpeedRatio);
+}
+
 void CStateBase::StartForce_Front_ForAnimation(_float fForceAbs, _float fDragK)
 {
 	m_pOwnerStateComp->StartForce_Front_ForAnimation(fForceAbs, fDragK);
