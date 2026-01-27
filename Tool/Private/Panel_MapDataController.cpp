@@ -69,6 +69,8 @@ HRESULT CPanel_MapDataController::Render_ConvertedList()
 				m_iSelectConvertedUEMapDataPath = i;
 			if (isSelected == true)
 				ImGui::SetItemDefaultFocus();
+
+			i++;
 		}
 
 		ImGui::EndCombo();

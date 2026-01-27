@@ -35,6 +35,7 @@ private:
 	void					  Change_ModelPath(OUT _wstring& wstrModelName , OUT _wstring& wstrModelPath);
 public:
 	HRESULT Initialize(ID3D11Device* pDevice, ID3D11DeviceContext* pContext);
+	HRESULT Ready_PreUEMapRawDataLoad();
 public:
 	vector<UE_MAP_DATA>*	   Get_Unreal_MapData(const wstring& FindKey);
 	vector<CONVERTED_MAPDATA>* Get_Converted_MapData(const wstring& FindKey);
@@ -57,6 +58,9 @@ private:
 	unordered_map< wstring , vector<UE_MAP_DATA>>		m_umapUnreal_Map_Data{};
 	vector<string>										m_vecTypeFilter{};
 	float												m_fMulScale{0.01f};
+
+	const wstring										m_WstringConverted{L"_Converted.json"};
+	const wstring										m_WstringFiltering{L"_Filtering.json"};
 
 private:
 	CGameInstance*		 m_pGameInstance{nullptr};
