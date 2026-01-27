@@ -412,7 +412,7 @@ _bool CActionState::Key_Input(CControlContext::CONTROL_KEY eKey)
 		return m_pOwnerControlContext->Is_Skill2Pressed();
 	}
 
-
+	return false;
 }
 
 void CActionState::Set_AnimationPlayRate(_uint iIndex, _float fSpeed)
