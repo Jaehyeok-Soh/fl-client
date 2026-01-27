@@ -143,7 +143,9 @@ void CPanel_ModelConverter::Convert_FbxFolder(const wchar_t* wszFloderPath)
 			if (FAILED(pConverter->ReadAndExport()))
 				ResultMsg = pathFile.filename().wstring() + L" Convert is Failed", L"Converter";
 			else
-				ResultMsg = pathFile.filename().wstring() + L" Convert is Complete", L"Converter";
+			{
+				ResultMsg += pathFile.filename().wstring() + L" Convert is Complete", L"Converter";
+			}
 			Safe_Release(pConverter);
 		}
 	}

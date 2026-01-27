@@ -20,7 +20,7 @@ CUEMapdataParser::CUEMapdataParser()
 HRESULT CUEMapdataParser::Initialize(ID3D11Device* pDevice, ID3D11DeviceContext* pContext)
 {
 	m_vecTypeFilter = { "StaticMeshComponent" , "InstancedStaticMeshComponent" };
-
+	m_vecOuterFilter = {"LOD"};
 	m_umapConvertedMapData.clear();
 	m_umapUnreal_Map_Data.clear();
 
@@ -40,21 +40,32 @@ bool CUEMapdataParser::Filter(const string& strName, const string& strType)
 	if (strName.empty()) return true;
 	if (strType.empty()) return true;
 
-	bool isFilering_Type{ true };
-	bool isFilering_Name{ true };
+	
+	for (auto& strFilterOuter : m_vecOuterFilter)
+	{
+		if (strType.find(strFilterOuter) != string::npos)
+			return true;
+	}
+
+	bool isFiltering_Type{ true };
+	bool isFiltering_Name{ true };
+
+
 	for (auto& strFilter : m_vecTypeFilter)
 	{
-		isFilering_Type = true;
-		isFilering_Name = true;
+		isFiltering_Type = true;
+		isFiltering_Name = true;
 
 		if (strType == strFilter)
-			isFilering_Type = false;
+			isFiltering_Type = false;
 		if (strName.find(strFilter) != string::npos)
-			isFilering_Name = false;
+			isFiltering_Name = false;
 
-		if (!isFilering_Type && !isFilering_Name)
+		if (!isFiltering_Type && !isFiltering_Name)
 			return false;
 	}
+
+
 	return true;
 }
 
@@ -254,7 +265,8 @@ HRESULT CUEMapdataParser::Convert_UnrealRawMapData(const wchar_t* wszUERawDataJs
 
 		UE_MAP_DATA tData{};
 		tData = UE_Map_Data_Json;
-		vecData.push_back(tData);
+		if(!tData.m_isFiltering)
+			vecData.push_back(tData);
 	}
 
 	m_umapUnreal_Map_Data.emplace(MapDataPath, vecData);

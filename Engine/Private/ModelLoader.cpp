@@ -146,6 +146,7 @@ HRESULT CModelLoader::Read_Material(vector<CMaterial*>* vecMaterials)
 		//MaterialDesc.vAmbient = asMaterial.vAmbient;
 		//MaterialDesc.vSpecular = asMaterial.vSpecular;
 		//MaterialDesc.vEmissive = asMaterial.vEmissive;
+
 		pMaterial = CMaterial::Create(m_pDevice, m_pDeviceContext, &MaterialDesc);
 		if (FAILED(m_pGameInstance->Add_Resource(MaterialDesc.wstrName, pMaterial)))
 		{
