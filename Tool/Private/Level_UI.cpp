@@ -3,17 +3,12 @@
 #include "Level_Loading.h"
 #include "ImGui_ToolManager.h"
 #include "GameInstance.h"
-
 //==========
 // ImGui
 //==========
 #include "UI_Maker.h"
 #include "UI_Hierachy.h"
-
-//==========
-// UI
-//==========
-#include "ToolUI.h"
+#include "UI_Inspector.h"
 
 CLevel_UI::CLevel_UI(ID3D11Device* pDevice, ID3D11DeviceContext* pDeviceContext)
 	: Super(pDevice, pDeviceContext)
@@ -81,6 +76,7 @@ HRESULT CLevel_UI::Render()
 HRESULT CLevel_UI::Ready_UI_Inspector()
 {
 	m_GuiElements[ENUM_TO_SZET(Elements::UIMAKER)] = CUI_Maker::Create("[[ UI Creater ]]", this, m_pDevice, m_pDeviceContext);
+	m_GuiElements[ENUM_TO_SZET(Elements::INSPECTOR)] = CUI_Inspector::Create("[[ UI Inspector ]]", this, m_pDevice, m_pDeviceContext);
 	m_GuiElements[ENUM_TO_SZET(Elements::HIERACHY)] = CUI_Hierachy::Create("[[ UI List Viewer ]]", this, m_pDevice, m_pDeviceContext);
 
 	return S_OK;

@@ -18,16 +18,17 @@ public:
 private:
 	HRESULT Render_ConvertedList();
 	HRESULT Render_Converted_UnrealRawMapData_Button();
+	HRESULT Render_Filtering_UnrealRawMapData_Button();
 private:
 	const wstring m_wstrMapDatPath{L"../../Resources/Data/MapData/"};
 public:
 	static  CPanel_MapDataController* Create(const _char* pLabel, CLevel* pOwner, ID3D11Device* pDevice, ID3D11DeviceContext* pDeviceContext);
 	virtual void Free() override;
 private:
+	float			  m_fMulScale{0.01f};
 	vector<wstring>	  m_vecConvertedUEMapDataPath{};
 	_uint			  m_iSelectConvertedUEMapDataPath{};
 	CUEMapdataParser* m_pUEMapdataParser{nullptr};
-
 };
 
 NS_END

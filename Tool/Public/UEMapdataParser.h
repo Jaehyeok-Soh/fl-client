@@ -36,7 +36,7 @@ private:
 public:
 	HRESULT Initialize(ID3D11Device* pDevice, ID3D11DeviceContext* pContext);
 public:
-	vector<UE_MAP_DATA>*	  Get_Unreal_MapData(const wstring& FindKey);
+	vector<UE_MAP_DATA>*	   Get_Unreal_MapData(const wstring& FindKey);
 	vector<CONVERTED_MAPDATA>* Get_Converted_MapData(const wstring& FindKey);
 
 	void					  Set_MulScale(float fMulScale) { m_fMulScale = fMulScale; }
@@ -50,12 +50,18 @@ public:
 
 public:
 	HRESULT					  Save_ConvertedRawMapData(const wchar_t* wszFilePath);
+	HRESULT					  Save_FilteringRawMapData(const wchar_t* wszFilePath);
+
+public:
+	const wstring										m_WstringConverted{ L"_Converted.json" };
+	const wstring										m_WstringFiltering{ L"_Filtering.json" };
 private:
 	
-	unordered_map< wstring, vector<CONVERTED_MAPDATA>> m_umapConvertedMapData{};
-	unordered_map< wstring , vector<UE_MAP_DATA>>	  m_umapUnreal_Map_Data{};
-	vector<string>									  m_vecTypeFilter{};
-	float											  m_fMulScale{0.01f};
+	unordered_map< wstring, vector<CONVERTED_MAPDATA>>  m_umapConvertedMapData{};
+	unordered_map< wstring , vector<UE_MAP_DATA>>		m_umapUnreal_Map_Data{};
+	vector<string>										m_vecTypeFilter{};
+	vector<string>										m_vecOuterFilter{};
+	float												m_fMulScale{0.01f};
 
 private:
 	CGameInstance*		 m_pGameInstance{nullptr};
@@ -93,6 +99,8 @@ typedef struct tagUnreal_OverrideMaterials
 }UE_OVERRIDEMATERIALS;
 typedef struct tagUnreal_Properties
 {
+	bool					m_isFiltering{ false };
+
 	_int32					iInstancingRandomSeed{ 0 };
 
 	/* Rotatino = Pitch Yaw Roll */
@@ -107,6 +115,8 @@ typedef struct tagUnreal_Properties
 }UE_PROPERTIES;
 typedef struct tagUnreal_Map_Data
 {
+	bool	m_isFiltering{false};
+
 	string strType{};
 	string strName{};
 	string strOuter{};
@@ -149,6 +159,7 @@ void read_vec4_Quat(const json& _j, Quat& vOut);
 
 void write_vec3_xyz(json& _j, const Vec3& vOut);
 void write_vec3_PitchYawRoll(json& _j, const Vec3& vOut);
+void write_vec4_Quat(const json& _j, Quat&& vOut);
 
 
 #pragma endregion

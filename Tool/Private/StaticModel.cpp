@@ -91,6 +91,12 @@ HRESULT CStaticModel::Render()
 void CStaticModel::Draw_ImGui()
 {
 	Super::Draw_ImGui();
+
+	ImGui::SeparatorText(" Static Model Info ");
+
+	ImGui::NewLine();
+
+	ImGui::Text(" Type : [%s]" , StaticModelType_ToString(m_eType).c_str()) ;
 }
 
 void CStaticModel::Set_Dead(const wstring& wstrLayerTag)

@@ -3,7 +3,10 @@
 #include "ImGui_ToolManager.h"
 #include "ImGui_UIManager.h"
 #include "UIData_Repository.h"
+#include "Engine_Utils.h"
 #include "ToolUI.h"
+#include "Texture.h"
+#include "GameInstance.h"
 
 CUI_Inspector::CUI_Inspector(const _char* pLabel, CLevel* pOwner, ID3D11Device* pDevice, ID3D11DeviceContext* pDeviceContext)
 	:Super(pLabel, pOwner, pDevice, pDeviceContext),
@@ -30,15 +33,18 @@ HRESULT CUI_Inspector::Initialize_Prototype()
 
 void CUI_Inspector::Update(const _float fTimeDelta)
 {
-
 }
 
 HRESULT CUI_Inspector::Render(CToolObject* pGo)
 {
 	ImGui::Begin(m_strLabel.c_str(), nullptr, m_Flag);
 
-	// m_pSelectedUI = m_pUIManager->Safe_Access_UI(m_pUIManager->Get_CurUIIndex());
-	SetUp_Public_Info();
+	m_pSelectedUI = m_pUIManager->Safe_Access_UI(m_pUIManager->Get_CurUIIndex());
+	if (nullptr != m_pSelectedUI)
+	{
+		SetUp_Public_Info();
+		Input_TextureTag();
+	}
 
 	ImGui::End();
 	return S_OK;
@@ -48,128 +54,41 @@ void CUI_Inspector::SetUp_Public_Info()
 {
 	Input_RectTransform();
 }
-
-void CUI_Inspector::SetUp_UI_Common_Info()
-{
-	if (!ImGui::Begin("[[ Inspector ]]"))
-	{
-		ImGui::End();
-		return;
-	}
-
-	/* =========================
-	 *  Common Setting (Top)
-	 * ========================= */
-
-	if (ImGui::BeginTabBar("##SetUpUICommonInfo", ImGuiTabBarFlags_Reorderable))
-	{
-		if (ImGui::BeginTabItem("Common Setting"))
-		{
-			ImGui::EndTabItem();
-		}
-		ImGui::EndTabBar();
-	}
-
-	ImGui::BeginChild("##ContentBox1", ImVec2(0.f, 0.f), true, ImGuiWindowFlags_None);
-
-	/* 렉트 트랜스폼 */
-	Input_RectTransform();
-	/* 텍스쳐 경로 */
-	// TODO: Input_TexturePath();
-
-	ImGui::EndChild();
-
-	ImGui::Spacing();
-	ImGui::Separator();
-	ImGui::Spacing();
-
-	/* =========================
-	 *  Palette Tabs (Bottom)
-	 * ========================= */
-
-	static int s_iTab = 0;
-
-	if (ImGui::BeginTabBar("##PersonalUISetting", ImGuiTabBarFlags_Reorderable))
-	{
-		if (ImGui::BeginTabItem("Button"))
-		{
-			s_iTab = 0;
-			ImGui::EndTabItem();
-		}
-
-		if (ImGui::BeginTabItem("Image"))
-		{
-			s_iTab = 1;
-			ImGui::EndTabItem();
-		}
-
-		if (ImGui::BeginTabItem("Text"))
-		{
-			s_iTab = 2;
-			ImGui::EndTabItem();
-		}
-
-		ImGui::EndTabBar();
-	}
-
-	ImGui::BeginChild("##ContentBox", ImVec2(0.f, 0.f), true, ImGuiWindowFlags_None);
-
-	if (s_iTab == 0)
-	{
-		ImGui::Text("Button Tab");
-		ImGui::Spacing();
-
-		if (ImGui::Button("Create Button")) {}
-		ImGui::SameLine();
-		if (ImGui::Button("Delete Button")) {}
-	}
-	else if (s_iTab == 1)
-	{
-		ImGui::Text("Image Tab");
-		ImGui::Spacing();
-
-		ImGui::Text("ImTextureID가 있으면 ImGui::Image(...)로 출력하시면 됩니다.");
-		if (ImGui::Button("Import Texture")) {}
-	}
-	else // s_iTab == 2
-	{
-		ImGui::Text("Text Tab");
-		ImGui::Spacing();
-
-		static char buf[128] = {};
-		ImGui::InputText("Label", buf, IM_ARRAYSIZE(buf));
-	}
-
-	ImGui::EndChild();
-	ImGui::End();
-}
-
 void CUI_Inspector::Input_RectTransform()
 {
-	ImGui::Text("Current Select : ");
-	ImGui::SameLine();
-	ImGui::Text(RectTransformToString(static_cast<ERectTransform>(m_iRectTransformIndex)).c_str());
+	ImGui::PushID("RectTransform");
+	ImGui::SeparatorText("Rect Transform");
+	ImGui::BeginChild("RectTransformCard", ImVec2(-FLT_MIN, 168.f), true, ImGuiWindowFlags_NoScrollbar);
+	ImGui::TextDisabled("Anchor / pivot preset (3x3).");
+	ImGui::Spacing();
 
-	if (ImGui::BeginTable("##Grid33", 3, ImGuiTableFlags_SizingStretchSame))
+	{
+		ImGui::AlignTextToFramePadding();
+		ImGui::Text("Current");
+		ImGui::SameLine(90.f);
+		ImGui::TextDisabled(RectTransformToString(static_cast<ERectTransform>(m_iRectTransformIndex)).c_str());
+	}
+
+	ImGui::Spacing();
+
+	if (ImGui::BeginTable("##RectGrid33", 3, ImGuiTableFlags_SizingStretchSame))
 	{
 		for (int i = 0; i < 9; ++i)
 		{
 			ImGui::TableNextColumn();
 
-			bool isSelected = (m_iRectTransformIndex == i);
+			const bool isSelected = (m_iRectTransformIndex == i);
 
-			// 선택된 버튼만 색을 바꿔서 밝게 보이게
 			if (isSelected)
 			{
-				ImGui::PushStyleColor(ImGuiCol_Button, ImGui::GetStyleColorVec4(ImGuiCol_ButtonHovered));
+				ImGui::PushStyleColor(ImGuiCol_Button, ImGui::GetStyleColorVec4(ImGuiCol_ButtonActive));
 				ImGui::PushStyleColor(ImGuiCol_ButtonHovered, ImGui::GetStyleColorVec4(ImGuiCol_ButtonActive));
 				ImGui::PushStyleColor(ImGuiCol_ButtonActive, ImGui::GetStyleColorVec4(ImGuiCol_ButtonActive));
 			}
 
-			if (ImGui::Button(RectTransformToString(static_cast<ERectTransform>(i)).c_str(), ImVec2(-FLT_MIN, 48.f)))
-			{
+			ImGui::SetNextItemWidth(-FLT_MIN);
+			if (ImGui::Button(RectTransformToString(static_cast<ERectTransform>(i)).c_str(), ImVec2(-FLT_MIN, 36.f)))
 				m_iRectTransformIndex = i;
-			}
 
 			if (isSelected)
 				ImGui::PopStyleColor(3);
@@ -177,25 +96,100 @@ void CUI_Inspector::Input_RectTransform()
 		ImGui::EndTable();
 	}
 
-	/* Width / Height */
-	auto* pData = m_pUIManager->Safe_Access_UI(m_pUIManager->Get_CurUIIndex());
-	Scrub_Float("Width :", "UISizeX", &pData->fWidth, 0.1f, 20.f, 0.1f, 10.0f, 100.f);
-	ImGui::SameLine(0.f, 16.f);
-	Scrub_Float("Height :", "UISizeY", &pData->fHeight, 0.1f, 20.f, 0.1f, 10.0f, 100.f);
+	ImGui::EndChild();
 
-	/* Pos X / Y / Z */
-	Scrub_Float("X :", "UIPosX", &pData->fPosX, 0.1f, 20.f, 0.1f, 10.0f, 100.f);
-	ImGui::SameLine(0.f, 16.f);
-	Scrub_Float("Y :", "UIPosY", &pData->fPosY, 0.1f, 20.f, 0.1f, 10.0f, 100.f);
-	ImGui::SameLine(0.f, 16.f);
-	Scrub_Float("Z :", "UIPosZ", &pData->fPosZ, 0.1f, 20.f, 0.1f, 10.0f, 100.f);
 
-	LAYER_DATA* pLayer = m_pUIManager->Safe_Access_Layer(m_pUIManager->Get_CurLayerIndex());
-	if (nullptr != pLayer)
+	////////////////////////////
+	// Transform / Size Card
+	ImGui::Spacing();
+	ImGui::BeginChild("RectTransformValuesCard", ImVec2(-FLT_MIN, 112.f), true, ImGuiWindowFlags_NoScrollbar);
+
+	ImGui::TextDisabled("Size and position (local).");
+	ImGui::Spacing();
+
+	// Size (Width / Height) : 2 columns
+	if (ImGui::BeginTable("##RectSizeTable", 3, ImGuiTableFlags_SizingStretchSame))
 	{
-		if (!pLayer->vecUIObjects.empty())
-			pLayer->vecUIObjects[m_pUIManager->Get_CurUIIndex()]->Set_Position(pData->fPosX, pData->fPosY, pData->fPosZ);
+		ImGui::TableNextColumn();
+		ImGui::SetNextItemWidth(-FLT_MIN);
+		Scrub_Float("Width", "##UIObjectWidth", m_pSelectedUI->Get_WIdth_Ptr(), 0.1f, 20.f, 0.1f, 10.0f, 100.f);
+
+		ImGui::TableNextColumn();
+		ImGui::SetNextItemWidth(-FLT_MIN);
+		Scrub_Float("Height", "##UIObjectHeight", m_pSelectedUI->Get_Height_Ptr(), 0.1f, 20.f, 0.1f, 10.0f, 100.f);
+
+		ImGui::TableNextColumn();
+		ImGui::SetNextItemWidth(-FLT_MIN);
+		
+		ImGui::EndTable();
 	}
+
+	ImGui::Spacing();
+
+	// Position (X / Y / Z) : 3 columns
+	if (ImGui::BeginTable("##RectPosTable", 3, ImGuiTableFlags_SizingStretchSame))
+	{
+		ImGui::TableNextColumn();
+		ImGui::SetNextItemWidth(-FLT_MIN);
+		Scrub_Float("UIPosX", "##UIObjectPosX", m_pSelectedUI->Get_PosX_Ptr(), 0.1f, 20.f, 0.1f, 10.0f, 100.f);
+
+		ImGui::TableNextColumn();
+		ImGui::SetNextItemWidth(-FLT_MIN);
+		Scrub_Float("UIPosY", "##UIObjectPosY", m_pSelectedUI->Get_PosY_Ptr(), 0.1f, 20.f, 0.1f, 10.0f, 100.f);
+
+		ImGui::TableNextColumn();
+		ImGui::SetNextItemWidth(-FLT_MIN);
+		Scrub_Float("UIPosZ", "##UIObjectPosZ", m_pSelectedUI->Get_PosZ_Ptr(), 0.1f, 20.f, 0.1f, 10.0f, 100.f);
+
+		ImGui::EndTable();
+	}
+
+	ImGui::EndChild();
+	ImGui::PopID();
+}
+
+void CUI_Inspector::Input_TextureTag()
+{
+	if (ImGui::Button("Select Texture"))
+	{
+		OPENFILENAMEW ofn{};
+		_tchar szFile[MAX_PATH] = { 0 };
+
+		ofn.lStructSize = sizeof(OPENFILENAMEW);
+		ofn.hwndOwner = g_hWnd;
+		ofn.lpstrFile = szFile;
+		ofn.nMaxFile = MAX_PATH; 
+		ofn.lpstrFilter =
+			L"Image Files (*.png;*.dds)\0*.png;*.dds\0"
+			L"Png Files (*.png)\0*.png\0"
+			L"Dds Files (*.dds)\0*.dds\0"
+			L"All Files (*.*)\0*.*\0\0";
+		ofn.nFilterIndex = 1;
+		ofn.Flags = OFN_PATHMUSTEXIST | OFN_FILEMUSTEXIST | OFN_NOCHANGEDIR;
+
+		if (::GetOpenFileNameW(&ofn) == TRUE)
+		{
+			_wstring result = szFile; 
+
+			std::filesystem::path f(result);
+			if (f.extension().wstring() == L".png" || f.extension().wstring() == L".dds")
+			{
+				_wstring wstrFolderName = f.parent_path().filename().wstring();
+				uint32_t iFileIndex = std::stoi( f.stem().wstring());
+
+				CTexture* pTexture = dynamic_cast<CTexture*>(dynamic_cast<CComponent*>(
+					CGameInstance::GetInstance()->Clone_Prototype(EPrototypeType::COMPONENT, static_cast<uint32_t>(ELevelType::UI),L"Texture_" + wstrFolderName)));
+				if (nullptr == pTexture)
+					return;
+
+				m_pSelectedUI-> Change_Component<CTexture>(pTexture);
+				m_pSelectedUI->Set_TextureIndex(iFileIndex);
+				//m_pUIManager->Safe_Access_UIData_Ptr(m_pUIManager->Get_CurUIIndex())->strTextureTag = Engine_Utils::ToString( L"Texture_" + wstrFolderName);
+				//m_pUIManager->Safe_Access_UIData_Ptr(m_pUIManager->Get_CurUIIndex())->iTextureIndex = iFileIndex;
+			}
+		}
+	}
+
 }
 
 _bool CUI_Inspector::Scrub_Float(const _char* label, const _char* Id, OUT _float* pValue, float fValuePerPixel, float fValuePerPixel_fast, float fStep, float fStep_fast, float fSize)

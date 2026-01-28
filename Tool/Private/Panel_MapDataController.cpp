@@ -49,28 +49,34 @@ HRESULT CPanel_MapDataController::Render_ConvertedList()
 {
 	string strSelectPath = Engine_Utils::ToString(m_vecConvertedUEMapDataPath[m_iSelectConvertedUEMapDataPath]);
 
+	path pathSelect{strSelectPath};
+	string strFileName = path(strSelectPath).filename().stem().string();
+
 	ImGui::SeparatorText(" Converted Raw Map List ");
 
 
-	if (ImGui::BeginCombo("Converted Raw Map Data List##Comboe_RawData", strSelectPath.c_str()))
+	if (ImGui::BeginCombo("Converted Raw Map Data List" , strFileName.c_str()))
 	{
 		_uint i = 0;
 		for (auto& DataPath : m_vecConvertedUEMapDataPath)
 		{
 			bool isSelected = m_iSelectConvertedUEMapDataPath == i;
-			if (ImGui::Selectable(strSelectPath.c_str(), isSelected))
+			string strCurFileName = path(DataPath).filename().stem().string();
+			if (ImGui::Selectable(strCurFileName.c_str(), isSelected))
 				m_iSelectConvertedUEMapDataPath = i;
 			if (isSelected == true)
 				ImGui::SetItemDefaultFocus();
+
+			i++;
 		}
 
 		ImGui::EndCombo();
 	}
 
 
-	ImGui::Separator();
+	ImGui::SeparatorText(" [ Batch ] Converted Map Data");
 
-	if (ImGui::Button("Batch Converted Map Data"))
+	if (ImGui::Button(" [ Batch ] Converted Map Data"))
 	{
 		m_pUEMapdataParser->Batch_UnrealRawMapData(Engine_Utils::ToWString(strSelectPath).c_str());
 	}
@@ -78,44 +84,98 @@ HRESULT CPanel_MapDataController::Render_ConvertedList()
 	ImGui::Separator();
 
 
+
+	ImGui::SeparatorText("[ Save Filtering ] Map Data");
+
+	if (ImGui::Button("Save Filtering Map Data"))
+	{
+		m_pUEMapdataParser->Save_FilteringRawMapData(Engine_Utils::ToWString(strSelectPath).c_str());
+	}
+
 	ImGui::Separator();
 
-	if (ImGui::Button("Save Converted Map Data"))
+
+	ImGui::SeparatorText(" [ Save Converted ] Map Data");
+
+	if (ImGui::Button(" [ Save Converted ] Map Data"))
 	{
 		m_pUEMapdataParser->Save_ConvertedRawMapData(Engine_Utils::ToWString(strSelectPath).c_str());
 	}
 
 	ImGui::Separator();
 
+
 	return S_OK;
 }
 
 HRESULT CPanel_MapDataController::Render_Converted_UnrealRawMapData_Button()
 {
-	ImGui::Separator();
 
-	if (ImGui::Button(" Load Unreal Raw Map Data "))
+	if (ImGui::CollapsingHeader(" [ Function ] : Converted Raw Data"))
 	{
-		OPENFILENAMEW ofn{};
-		_tchar szFile[MAX_PATH] = { 0 };
+		if (ImGui::InputFloat("Convert Position Mul Scale", &m_fMulScale))
+			m_pUEMapdataParser->Set_MulScale(m_fMulScale);
 
-		ofn.lStructSize = sizeof(OPENFILENAMEW);
-		ofn.hwndOwner = g_hWnd;
-		ofn.lpstrFile = szFile;
-		ofn.nMaxFile = MAX_PATH;
-		ofn.lpstrFilter = L"Json Files (*.json)\0*.json\0All Files (*.*)\0*.*\0\0";
-		ofn.nFilterIndex = 1;
-		ofn.Flags = OFN_PATHMUSTEXIST | OFN_FILEMUSTEXIST | OFN_NOCHANGEDIR;
 
-		if (::GetOpenFileNameW(&ofn) == TRUE)
+		ImGui::SeparatorText("[ Load All ] Raw Map Data");
+
+		if (ImGui::Button(" [ Load All ] Raw Map Data "))
 		{
-			wstring result = szFile;
-			m_pUEMapdataParser->Convert_UnrealRawMapData(result.c_str());
+			for (auto& Path : std::filesystem::recursive_directory_iterator(m_wstrMapDatPath))
+			{
+				if (!std::filesystem::is_regular_file(Path))
+					continue;
+
+				path FullPath = Path;
+
+				if (FullPath.extension() != L".json")
+					continue;
+
+				wstring wstrFileName = path(FullPath).filename();
+
+				if (wstrFileName.find(m_pUEMapdataParser->m_WstringConverted) != wstring::npos)
+					continue;
+
+				if (wstrFileName.find(m_pUEMapdataParser->m_WstringFiltering) != wstring::npos)
+					continue;
+
+				m_pUEMapdataParser->Convert_UnrealRawMapData(FullPath.wstring().c_str());
+			}
 		}
+
+		ImGui::Separator();
+
+
+		ImGui::SeparatorText("[ Load Select Unreal ] Raw Map Data");
+
+		if (ImGui::Button(" [ Load Select ] Raw Map Data "))
+		{
+			OPENFILENAMEW ofn{};
+			_tchar szFile[MAX_PATH] = { 0 };
+
+			ofn.lStructSize = sizeof(OPENFILENAMEW);
+			ofn.hwndOwner = g_hWnd;
+			ofn.lpstrFile = szFile;
+			ofn.nMaxFile = MAX_PATH;
+			ofn.lpstrFilter = L"Json Files (*.json)\0*.json\0All Files (*.*)\0*.*\0\0";
+			ofn.nFilterIndex = 1;
+			ofn.Flags = OFN_PATHMUSTEXIST | OFN_FILEMUSTEXIST | OFN_NOCHANGEDIR;
+
+			if (::GetOpenFileNameW(&ofn) == TRUE)
+			{
+				wstring result = szFile;
+				m_pUEMapdataParser->Convert_UnrealRawMapData(result.c_str());
+			}
+		}
+
+		ImGui::Separator();
 	}
 
-	ImGui::Separator();
+	return S_OK;
+}
 
+HRESULT CPanel_MapDataController::Render_Filtering_UnrealRawMapData_Button()
+{
 	return S_OK;
 }
 

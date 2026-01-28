@@ -20,7 +20,7 @@ CUEMapdataParser::CUEMapdataParser()
 HRESULT CUEMapdataParser::Initialize(ID3D11Device* pDevice, ID3D11DeviceContext* pContext)
 {
 	m_vecTypeFilter = { "StaticMeshComponent" , "InstancedStaticMeshComponent" };
-
+	m_vecOuterFilter = {"LOD"};
 	m_umapConvertedMapData.clear();
 	m_umapUnreal_Map_Data.clear();
 
@@ -30,10 +30,9 @@ HRESULT CUEMapdataParser::Initialize(ID3D11Device* pDevice, ID3D11DeviceContext*
 	Safe_AddRef(m_pDevice);
 	Safe_AddRef(m_pContext);
 	Safe_AddRef(m_pGameInstance);
-
-
 	return S_OK;
 }
+
 
 bool CUEMapdataParser::Filter(const string& strName, const string& strType)
 {
@@ -41,21 +40,31 @@ bool CUEMapdataParser::Filter(const string& strName, const string& strType)
 	if (strName.empty()) return true;
 	if (strType.empty()) return true;
 
-	bool isFilering_Type{ true };
-	bool isFilering_Name{ true };
+	
+	for (auto& strFilterOuter : m_vecOuterFilter)
+	{
+		if (strType.find(strFilterOuter) != string::npos)
+			return true;
+	}
+
+	bool isFiltering_Type{ true };
+	bool isFiltering_Name{ true };
+
+
 	for (auto& strFilter : m_vecTypeFilter)
 	{
-		isFilering_Type = true;
-		isFilering_Name = true;
+		isFiltering_Type = true;
+		isFiltering_Name = true;
 
 		if (strType == strFilter)
-			isFilering_Type = false;
+			isFiltering_Type = false;
 		if (strName.find(strFilter) != string::npos)
-			isFilering_Name = false;
+			isFiltering_Name = false;
 
-		if (!isFilering_Type && !isFilering_Name)
+		if (!isFiltering_Type && !isFiltering_Name)
 			return false;
 	}
+
 
 	return true;
 }
@@ -81,9 +90,6 @@ vector<CONVERTED_MAPDATA> CUEMapdataParser::Convert_UE_MapData(const vector<UE_M
 		tConvertedData.tUsingModelInfo.wstrPath = Engine_Utils::ToWString(tUEMapData.tProperties.tStaticMesh.strObjectPath);
 		Change_ModelPath(tConvertedData.tUsingModelInfo.wstrName, tConvertedData.tUsingModelInfo.wstrPath);
 
-		if (tConvertedData.tUsingModelInfo.wstrPath == L"Map/EM/Content/Maps/Datas/Data_Art/Ailixian/Ailixian_Train01_Art.fbx")
-			int a = 0;
-
 		for (auto& Material : tUEMapData.tProperties.tOverrideMaterials.vecObjectInfo)
 		{
 			if (Material.strObjectName.empty())
@@ -97,7 +103,6 @@ vector<CONVERTED_MAPDATA> CUEMapdataParser::Convert_UE_MapData(const vector<UE_M
 			tConvertedData.vPitchYawRoll = tUEMapData.tProperties.vRelativeRotation;
 			tConvertedData.vPosition     = tUEMapData.tProperties.vRelativeLocation;
 			Change_SRT(&tConvertedData.vScale, &tConvertedData.vPitchYawRoll, &tConvertedData.vPosition, tConvertedData.eType);
-			//std::swap(tConvertedData.vPitchYawRoll.y,tConvertedData.vPitchYawRoll.z);
 			vecConvertedData.push_back(tConvertedData);
 		}
 		else if (tConvertedData.eType == EStaticModel_Type::INSTANCE)
@@ -109,11 +114,15 @@ vector<CONVERTED_MAPDATA> CUEMapdataParser::Convert_UE_MapData(const vector<UE_M
 				tConvertedData.vPosition = PerInstanceSMData.tTransformData.vTranslation;
 				tConvertedData.vScale = PerInstanceSMData.tTransformData.vScale3D;
 				std::swap(PerInstanceSMData.tTransformData.vRotation.y, PerInstanceSMData.tTransformData.vRotation.z);
+				tConvertedData.vPitchYawRoll = Vec3(
+					XMConvertToDegrees(PerInstanceSMData.tTransformData.vRotation.x) ,
+					XMConvertToDegrees(PerInstanceSMData.tTransformData.vRotation.y),
+					XMConvertToDegrees(PerInstanceSMData.tTransformData.vRotation.z));
 				tConvertedData.vPitchYawRoll = PerInstanceSMData.tTransformData.vRotation.ToEuler() * To_DEGREE;
 				Change_SRT(&tConvertedData.vScale,&tConvertedData.vPitchYawRoll,&tConvertedData.vPosition, tConvertedData.eType);
 
 				/* SRT 변환 이후 Push Back */
-				//vecConvertedData.push_back(tConvertedData);
+				vecConvertedData.push_back(tConvertedData);
 			}
 		}
 	}
@@ -213,9 +222,29 @@ vector<wstring> CUEMapdataParser::Get_ConvertedFilePathList()
 
 HRESULT CUEMapdataParser::Convert_UnrealRawMapData(const wchar_t* wszUERawDataJsonFile)
 {
+	if (wszUERawDataJsonFile == nullptr)  return E_FAIL;
+
 	wstring MapDataPath = wszUERawDataJsonFile;
 	
+	vector<wstring> wstrFilter = { m_WstringConverted , m_WstringFiltering };
+	for (auto& Filter : wstrFilter)
+	{
+		if (MapDataPath.find(Filter) != wstring::npos)
+		{
+			MSG_BOX("[Unreal Raw Data Json] 파일이 아닙니다");
+			return S_OK;
+		}
+	}
+
+	
 	vector<UE_MAP_DATA>* vecUEData = Get_Unreal_MapData(wszUERawDataJsonFile);
+
+	if (vecUEData != nullptr)
+	{
+		m_umapConvertedMapData.at(wszUERawDataJsonFile) = Convert_UE_MapData(*vecUEData);
+		MSG_BOX(" Unreal Raw Data Load Complete ");
+		return S_OK;
+	}
 
 
 	std::ifstream ifs(wszUERawDataJsonFile, std::ios::in | std::ios::binary);
@@ -236,7 +265,8 @@ HRESULT CUEMapdataParser::Convert_UnrealRawMapData(const wchar_t* wszUERawDataJs
 
 		UE_MAP_DATA tData{};
 		tData = UE_Map_Data_Json;
-		vecData.push_back(tData);
+		if(!tData.m_isFiltering)
+			vecData.push_back(tData);
 	}
 
 	m_umapUnreal_Map_Data.emplace(MapDataPath, vecData);
@@ -289,18 +319,45 @@ HRESULT CUEMapdataParser::Save_ConvertedRawMapData(const wchar_t* wszFilePath)
 	if (pFind == nullptr) return E_FAIL;
 
 	path FilePath{ wszFilePath };
-
-	wstring wstrSavePath{FilePath};
-
-	Engine_Utils::Add_Text(wstrSavePath,L".",L"_Converted", false , -1 );
+	wstring wstrFileName = path(FilePath).filename().stem();
+	wstrFileName += L"_Converted.json";
+	wstring wstrSavePath = FilePath.remove_filename();
+	wstrSavePath += wstrFileName;
 
 	json SaveJson = json::array();
-
 
 	for (auto& Converted_MapData : *pFind)
 		SaveJson.push_back(Converted_MapData);
 
 	std::ofstream ofs{wstrSavePath};
+
+	ofs << SaveJson.dump(4);
+
+	ofs.close();
+
+	return S_OK;
+}
+
+HRESULT CUEMapdataParser::Save_FilteringRawMapData(const wchar_t* wszFilePath)
+{
+	vector<UE_MAP_DATA>* pFind = Get_Unreal_MapData(wszFilePath);
+
+
+	if (pFind == nullptr) return E_FAIL;
+
+	path FilePath{ wszFilePath };
+
+	wstring wstrFileName = path(FilePath).filename().stem();
+	wstrFileName += L"_Filtering.json";
+	wstring wstrSavePath = FilePath.remove_filename();
+	wstrSavePath += wstrFileName;
+
+	json SaveJson = json::array();
+
+	for (auto& Converted_MapData : *pFind)
+		SaveJson.push_back(Converted_MapData);
+
+	std::ofstream ofs{ wstrSavePath };
 
 	ofs << SaveJson.dump(4);
 
@@ -322,9 +379,14 @@ void CUEMapdataParser::Free()
 
 NS_BEGIN(Tool)
 
+#pragma region   To From Json   :   [Unreal Map Raw Data] 
+
 void to_json(json& SaveJson, const UE_OBJECT_INFO& tData)
 {
+	SaveJson["ObjectName"] = tData.strObjectName;
+	SaveJson["ObjectPath"] = tData.strObjectPath;
 
+	return;
 }
 
 void from_json(const json& LoadJson, UE_OBJECT_INFO& tData)
@@ -335,7 +397,17 @@ void from_json(const json& LoadJson, UE_OBJECT_INFO& tData)
 
 void to_json(json& SaveJson, const UE_OVERRIDEMATERIALS& tData)
 {
-
+	for (size_t i = 0; i < tData.vecObjectInfo.size(); ++i)
+	{
+		if (tData.isNull[i])
+			SaveJson.push_back(json::object());
+		else
+		{
+			json Object{};
+			Object = tData.vecObjectInfo[i];
+			Object.push_back(Object);
+		}
+	}
 }
 
 void from_json(const json& LoadJson, UE_OVERRIDEMATERIALS& tData)
@@ -354,6 +426,13 @@ void from_json(const json& LoadJson, UE_OVERRIDEMATERIALS& tData)
 
 void to_json(json& SaveJson, const UE_TRANSFORMDATA& tData)
 {
+	write_vec3_xyz(SaveJson["Scale3D"], tData.vScale3D);
+	SaveJson["Rotation"]["X"] = tData.vRotation.x;
+	SaveJson["Rotation"]["Y"] = tData.vRotation.y;
+	SaveJson["Rotation"]["Z"] = tData.vRotation.z;
+	SaveJson["Rotation"]["W"] = tData.vRotation.w;
+	write_vec3_xyz(SaveJson["Translation"], tData.vScale3D);
+
 	return;
 }
 
@@ -373,7 +452,15 @@ void from_json(const json& LoadJson, UE_TRANSFORMDATA& tData)
 
 void to_json(json& SaveJson, const UE_PER_INSTANCE_SM_DATA& tData)
 {
-
+	if (tData.isNull)
+	{
+		json Object;
+		SaveJson = Object;
+	}
+	else
+	{
+		SaveJson["TransformData"] = tData.tTransformData;
+	}
 	return;
 }
 
@@ -385,7 +472,15 @@ void from_json(const json& LoadJson, UE_PER_INSTANCE_SM_DATA& tData)
 
 void to_json(json& SaveJson, const UE_PROPERTIES& tData)
 {
+	SaveJson["InstancingRandomSeed"] = tData.iInstancingRandomSeed;
 
+	SaveJson["StaticMesh"] = tData.tStaticMesh;
+	SaveJson["AttachParent"] = tData.tAttachParent;
+	SaveJson["OverrideMaterials"], tData.tOverrideMaterials;
+
+	write_vec3_xyz(SaveJson["RelativeLocation"], tData.vRelativeLocation);
+	write_vec3_PitchYawRoll(SaveJson["RelativeRotation"], tData.vRelativeRotation);
+	write_vec3_xyz(SaveJson["RelativeScale3D"], tData.vRelativeScale);
 }
 
 void from_json(const json& LoadJson, UE_PROPERTIES& tData)
@@ -409,12 +504,17 @@ void from_json(const json& LoadJson, UE_PROPERTIES& tData)
 	if (Properties_Json.contains("RelativeScale3D"))
 		read_vec3_defaultscale(Properties_Json["RelativeScale3D"], tData.vRelativeScale);
 
-
 	return;
 }
 
 void to_json(json& SaveJson, const UE_MAP_DATA& tData)
 {
+	SaveJson["Type"]  =  tData.strType;
+	SaveJson["Name"]  =  tData.strType;
+	SaveJson["Outer"] =  tData.strType;
+
+	SaveJson["Properties"] = tData.tProperties;
+	SaveJson["PerInstanceSMData"] = tData.vecPerInstanceSMData;
 	return;
 }
 
@@ -429,67 +529,18 @@ void from_json(const json& LoadJson , UE_MAP_DATA& tData)
 
 	if (LoadJson.contains("PerInstanceSMData"))
 	{
-		
 		tData.vecPerInstanceSMData = LoadJson["PerInstanceSMData"].get<vector<UE_PER_INSTANCE_SM_DATA>>();
 	}
 }
 
-void read_vec3_defaultscale(const json& _j, Vec3& vOut)
-{
-	vOut.x = _j.value("X", 1.f);
-	vOut.y = _j.value("Y", 1.f);
-	vOut.z = _j.value("Z", 1.f);
-}
-
-void read_vec3_xyz(const json& _j, Vec3& vOut)
-{
-	vOut.x = _j.value("X", 0.f);
-	vOut.y = _j.value("Y", 0.f);
-	vOut.z = _j.value("Z", 0.f);
-}
-
-void read_vec3_PitchYawRoll(const json& _j, Vec3& vOut)
-{
-	vOut.x = _j.value("Pitch", 0.f);
-	vOut.y = _j.value("Yaw", 0.f);
-	vOut.z = _j.value("Roll", 0.f);
-}
-
-void read_vec4_Quat(const json& _j, Quat& vOut)
-{
-	vOut.x = _j.value("X", 0.f);
-	vOut.y = _j.value("Y", 0.f);
-	vOut.z = _j.value("Z", 0.f);
-	vOut.w = _j.value("W", 0.f);
-}
-
-void write_vec3_xyz(json& _j, const Vec3& vOut)
-{
-	_j["X"] = vOut.x;
-	_j["Y"] = vOut.y;
-	_j["Z"] = vOut.z;
-}
-
-void write_vec3_PitchYawRoll(json& _j, const Vec3& vOut)
-{
-	_j["Pitch"] = vOut.x;
-	_j["Yaw"] = vOut.y;
-	_j["Roll"] = vOut.z;
-}
-
-
-
-#pragma region Converted Map Data 
-
-
+#pragma endregion
+#pragma region To From Json : [Converted Map Data]
 
 void to_json(json& SaveJson, const USING_MATERIAL_INFO& tData)
 {
 	SaveJson["Name"] = Engine_Utils::ToString(tData.wstrName);
 	SaveJson["Path"] = Engine_Utils::ToString(tData.wstrPath);
 }
-
-
 void to_json(json& SaveJson, const USING_MODEL_INFO& tData)
 {
 	SaveJson["Name"] = Engine_Utils::ToString(tData.wstrName);
@@ -504,8 +555,6 @@ void to_json(json& SaveJson, const USING_MODEL_INFO& tData)
 		Material_Json.push_back(Material_Info);
 	}
 }
-
-
 void to_json(json& SaveJson, const CONVERTED_MAPDATA& tData)
 {
 	SaveJson["Type"] = StaticModelType_ToString(tData.eType);
@@ -517,10 +566,55 @@ void to_json(json& SaveJson, const CONVERTED_MAPDATA& tData)
 	SaveJson["Model Info"] = tData.tUsingModelInfo;
 }
 
-
-
-
 #pragma endregion
+
+void read_vec3_defaultscale(const json& _j, Vec3& vOut)
+{
+	vOut.x = _j.value("X", 1.f);
+	vOut.y = _j.value("Y", 1.f);
+	vOut.z = _j.value("Z", 1.f);
+}
+void read_vec3_xyz(const json& _j, Vec3& vOut)
+{
+	vOut.x = _j.value("X", 0.f);
+	vOut.y = _j.value("Y", 0.f);
+	vOut.z = _j.value("Z", 0.f);
+}
+void read_vec3_PitchYawRoll(const json& _j, Vec3& vOut)
+{
+	vOut.x = _j.value("Pitch", 0.f);
+	vOut.y = _j.value("Yaw", 0.f);
+	vOut.z = _j.value("Roll", 0.f);
+}
+void read_vec4_Quat(const json& _j, Quat& vOut)
+{
+	vOut.x = _j.value("X", 0.f);
+	vOut.y = _j.value("Y", 0.f);
+	vOut.z = _j.value("Z", 0.f);
+	vOut.w = _j.value("W", 0.f);
+}
+void write_vec3_xyz(json& _j, const Vec3& vOut)
+{
+	_j["X"] = vOut.x;
+	_j["Y"] = vOut.y;
+	_j["Z"] = vOut.z;
+}
+void write_vec3_PitchYawRoll(json& _j, const Vec3& vOut)
+{
+	_j["Pitch"] = vOut.x;
+	_j["Yaw"] = vOut.y;
+	_j["Roll"] = vOut.z;
+}
+void write_vec4_Quat(json& _j, const Quat& vOut)
+{
+	_j["X"] = vOut.x;
+	_j["Y"] = vOut.y;
+	_j["Z"] = vOut.z;
+	_j["W"] = vOut.w;
+}
+
+
+
 
 NS_END
 

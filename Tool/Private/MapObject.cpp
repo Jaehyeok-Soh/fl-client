@@ -13,7 +13,7 @@ CMapObject::CMapObject(EToolObjectType eType, ID3D11Device* pDevice, ID3D11Devic
 }
 
 CMapObject::CMapObject(const CMapObject& rhs)
-    : CToolObject(rhs) , m_wstrModelPath(rhs.m_wstrModelPath) , m_eMapObjectType(rhs.m_eMapObjectType) , m_isLoaded(rhs.m_isLoaded)
+    : CToolObject(rhs) , m_eMapObjectType(rhs.m_eMapObjectType) , m_isLoaded(rhs.m_isLoaded)
 {
 }
 
@@ -32,15 +32,12 @@ HRESULT CMapObject::Initialize(void* pArg)
 
     CMapObject::MAPOBJECT_DESC* pDesc = static_cast<CMapObject::MAPOBJECT_DESC*>(pArg);
 
-    m_wstrModelName = pDesc->wstrModelName;
-    m_wstrModelPath = pDesc->wstrModelPath;
-    m_isLoaded = pDesc->isLoaded;
-
+    m_strModelFileName = Engine_Utils::ToString(pDesc->wstrModelPath);
+    m_strName          = Engine_Utils::ToString(pDesc->wstrModelName);
+    m_isLoaded         = pDesc->isLoaded;
 
     if (FAILED(CMapObject::Ready_Component()))
         return E_FAIL;
-
-    Set_Name(m_wstrModelName);
 
     return S_OK;
 }
@@ -57,16 +54,16 @@ HRESULT CMapObject::Ready_Component()
     {
         CModel::MODEL_ORIGIN_DESC tModelDesc{};
         tModelDesc.eType = EModelType::STATIC;
-        tModelDesc.wstrModelFolderName = m_wstrModelPath;
+        tModelDesc.wstrModelFolderName = Engine_Utils::ToWString(m_strModelFileName);
         tModelDesc.iPrototypeLevelIndex = ENUM_TO_UINT(ELevelType::MAP);
         CModel* pModel = CModel::Create(m_pDevice, m_pDeviceContext , &tModelDesc);
         if (pModel)
         {
-            if (FAILED(m_pGameInstance->Add_Prototype(tModelDesc.iPrototypeLevelIndex, L"Prototype_Component_Model_" + m_wstrModelName, pModel)))
+            if (FAILED(m_pGameInstance->Add_Prototype(tModelDesc.iPrototypeLevelIndex, L"Prototype_Component_Model_" + Engine_Utils::ToWString(m_strName), pModel)))
                 Safe_Release(pModel);
         }
         CModel::MODEL_COPY_DESC tModelCopyDesc{};
-        CGameObject::Add_Component<CModel>(tModelDesc.iPrototypeLevelIndex, L"Prototype_Component_Model_" + m_wstrModelName, &tModelCopyDesc);
+        CGameObject::Add_Component<CModel>(tModelDesc.iPrototypeLevelIndex, L"Prototype_Component_Model_" + Engine_Utils::ToWString(m_strName), &tModelCopyDesc);
     }
 
 
@@ -143,19 +140,18 @@ void CMapObject::Draw_ImGui()
 
     if (!pTransfrom) return;
 
-    Matrix WorldMatrix = pTransfrom->Get_WorldMatrix();
-    
-    Vec3 vPosition  = WorldMatrix.Translation();
-    Vec3 vRotation  = WorldMatrix.ToEuler();
-    Vec3 vScale     = pTransfrom->Get_Scaled();
+
+    if (ImGui::TreeNode("Quaternion"))
+    {
+        Matrix WorldMatrix = pTransfrom->Get_WorldMatrix();
+        Vec3 vScale{}, vPosition;
+        Quat vQuat{};
+        WorldMatrix.Decompose(vScale, vQuat, vPosition);
+        ImGui::Text( " X : [%.2f]  Y : [%.2f]  Z : [%.2f]  W : [%.2f] " , vQuat.x , vQuat.y , vQuat.z , vQuat.w );
+        ImGui::TreePop();
+    }
 
 
-    if (ImGui::InputFloat3("Position" , &vPosition.x ))
-        pTransfrom->Set_Info(TRANSFORM_INFO_STATE::POS, vPosition);
-    if (ImGui::InputFloat3("Rotation", &vRotation.x))
-        return;
-    if (ImGui::InputFloat3("Scale", &vScale.x))
-        pTransfrom->Set_Scale(vScale);
 
     return;
 }

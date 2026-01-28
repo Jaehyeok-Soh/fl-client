@@ -190,11 +190,11 @@ void CParticle_System_Panel::Draw_ParticleSystem(CToolObject* pGo)
 		ImGui::AlignTextToFramePadding();
 		if(ImGui::TreeNode("Particle Time Setting##ParticleSystem"))
 		{
-			ImGui::Text("StartDelay##TimeSetting"); ImGui::SameLine();
+			ImGui::Text("StartDelay"); ImGui::SameLine();
 			m_bModified |= ImGui::InputFloat("##StartDelay1", &m_tCurrentDesc._Effect_StartDelay, 0.f);
-			ImGui::Text("StartLifeTime1##TimeSetting"); ImGui::SameLine();
+			ImGui::Text("StartLifeTime"); ImGui::SameLine();
 			m_bModified |= ImGui::InputFloat("##StartLifeTime1", &m_tCurrentDesc._Effect_LifeTime, 0.f);
-			ImGui::Text("StartSpeed1##TimeSetting"); ImGui::SameLine();
+			ImGui::Text("StartSpeed"); ImGui::SameLine();
 			m_bModified |= ImGui::InputFloat("##StartSpeed1", &m_tCurrentDesc._Effect_StartSpeed, 0.f);
 
 			ImGui::TreePop();
@@ -209,7 +209,6 @@ void CParticle_System_Panel::Draw_ParticleSystem(CToolObject* pGo)
 		}
 
 		// ==============  Start Size - 입자의 초기 사이즈   =========================================
-
 		ImGui::AlignTextToFramePadding();
 		if (ImGui::TreeNode("Size Setting"))
 		{
@@ -234,12 +233,16 @@ void CParticle_System_Panel::Draw_ParticleSystem(CToolObject* pGo)
 				static Vec3 StartRotation = { 0.f, 0.f, 0.f };
 
 				ImGui::SeparatorText("Rotation 3D Convert To Radian - X Y Z - ");
-				m_bModified |= ImGui::InputFloat3("##StartRotationX_3D", &StartRotation.x); ImGui::Spacing();
+				m_bModified |= ImGui::DragFloat3("##StartRotationX_3D", &StartRotation.x, 0.1f, 0.f, 360.f); ImGui::Spacing();
 
 				CEffectObject* pInstance = static_cast<Effect*>(pGo)->Get_Part<CEffectObject>(m_iSelectPartsIndex);
 				CTransform* pTransform = pInstance->Get_Component<CTransform>();
-				/*if(pTransform)
-					pTransform->Rotation()*/
+
+				if (pTransform)
+					pTransform->Rotation(
+						DirectX::XMConvertToRadians(StartRotation.x),
+						DirectX::XMConvertToRadians(StartRotation.y),
+						DirectX::XMConvertToRadians(StartRotation.z));
 			}
 			ImGui::TreePop();
 		}
@@ -360,6 +363,30 @@ void CParticle_System_Panel::Draw_ParticleSystem(CToolObject* pGo)
 		case 4: m_tCurrentDesc._Effect_ShapeType = E_SHAPETYPE::MESH; break;
 		case 5: m_tCurrentDesc._Effect_ShapeType = E_SHAPETYPE::STRAIGHT; break; }
 
+		// ============   Distortion   Scale 설정하기   ===========
+		ImGui::AlignTextToFramePadding();
+		if (ImGui::TreeNode("Distortion Scale##Shape"))
+		{
+			m_bModified |= ImGui::DragFloat2("##Distortion Scale", &m_tCurrentDesc._Effect_DistortionScale.x, 0.1f, 0.1f, 100.f);
+			ImGui::TreePop();
+		}
+
+		// ============   Scroll 값 설정하기   ============
+		ImGui::AlignTextToFramePadding();
+		if (ImGui::TreeNode("Scroll Speed##Shape"))
+		{
+			m_bModified |= ImGui::DragFloat2("##Scroll Speed", &m_tCurrentDesc._Effect_ScrollSpeed.x, 0.1f, -100.f, 100.f);
+			ImGui::TreePop();
+		}
+
+		// ============  Discard Value 설정하기   ==========
+		ImGui::AlignTextToFramePadding();
+		if (ImGui::TreeNode("Discard Value##Shape"))
+		{
+			m_bModified |= ImGui::DragFloat("##Discard Value", &m_tCurrentDesc._Effect_DiscardValue, 0.01f, 0.f, 1.f);
+			ImGui::TreePop();
+		}
+
 		// ============   Radius   ============= 
 		ImGui::AlignTextToFramePadding();
 		if (ImGui::TreeNode("Range"))
@@ -368,12 +395,36 @@ void CParticle_System_Panel::Draw_ParticleSystem(CToolObject* pGo)
 			ImGui::TreePop();
 		}
 
+		// ===========  size 변경 
+		ImGui::AlignTextToFramePadding();
+		if (ImGui::TreeNode("Particle Size ##Shape"))
+		{
+			m_bModified |= ImGui::DragFloat2("Particle Size", &m_tCurrentDesc._Effect_ParticleSize.x, 0.01f, 0.0f, 100.f, "%.2f");
+			
+
+			ImGui::TreePop();
+		}
+
+#pragma region DIFFUSE_TEXTURE
 		// ===========   Diffse Texture  ============
 		ImGui::AlignTextToFramePadding();
 		ImGui::Text("Diffuse Texture"); ImGui::SameLine();
 
 		if (ImGui::Button("Open Texture Selector##Diffuse_Texture"))
 			ImGui::OpenPopup("TextureSelector##Diffuse_Texture");
+
+		ImGui::SameLine();
+		// ============ Diffuse Use check box =============
+		if (ImGui::Checkbox("Use##DefaultTexture", &m_tCurrentDesc._Effect_Tool_DiffuseTexture))
+		{
+			if (m_tCurrentDesc._Effect_Tool_DiffuseTexture)
+				Engine_Utils::Add_Flag(m_tCurrentDesc._Effect_TextureFlag, 1);
+
+			else
+				Engine_Utils::RemoveHard_Flag(m_tCurrentDesc._Effect_TextureFlag, 1);
+
+			m_bModified |= true;
+		}
 
 		ImGui::SetNextWindowSize(ImVec2(700, 500), ImGuiCond_Appearing);
 
@@ -430,6 +481,8 @@ void CParticle_System_Panel::Draw_ParticleSystem(CToolObject* pGo)
 								m_bModified = true;
 								ImGui::EndGroup(); ImGui::PopID();
 								ImGui::CloseCurrentPopup();
+
+								Safe_Release(pTexture);
 								break;
 							}
 						}
@@ -468,6 +521,23 @@ void CParticle_System_Panel::Draw_ParticleSystem(CToolObject* pGo)
 
 		if (ImGui::Button("Open Texture Selector##Noise Texture"))
 			ImGui::OpenPopup("TextureSelector##Noise Texture");
+
+		ImGui::SameLine();
+
+#pragma endregion
+
+#pragma region NOISE_TEXTURE
+		// ============ NoiseTexture Use check box =============
+		if (ImGui::Checkbox("Use##NoiseTexture", &m_tCurrentDesc._Effect_Tool_NoiseTexture))
+		{
+			if (m_tCurrentDesc._Effect_Tool_NoiseTexture)
+				Engine_Utils::Add_Flag(m_tCurrentDesc._Effect_TextureFlag, 2);
+
+			else
+				Engine_Utils::RemoveHard_Flag(m_tCurrentDesc._Effect_TextureFlag, 2);
+
+			m_bModified |= true;
+		}
 
 		ImGui::SetNextWindowSize(ImVec2(700, 500), ImGuiCond_Appearing);
 
@@ -520,10 +590,12 @@ void CParticle_System_Panel::Draw_ParticleSystem(CToolObject* pGo)
 							// 이미지 버튼 크기를 64x64 정도로 키움
 							if (ImGui::ImageButton("##texBtnNoise Texture", (ImTextureID)pSRV, ImVec2(64, 64)))
 							{
-								m_tCurrentDesc._Effect_Mesh_NoiseTexture_Tag = Engine_Utils::ToWString(fileName);
+								m_tCurrentDesc._Effect_NoiseTexture_Tag = Engine_Utils::ToWString(fileName);
 								m_bModified = true;
 								ImGui::EndGroup(); ImGui::PopID();
 								ImGui::CloseCurrentPopup();
+
+								Safe_Release(pTexture);
 								break;
 							}
 						}
@@ -556,6 +628,231 @@ void CParticle_System_Panel::Draw_ParticleSystem(CToolObject* pGo)
 
 		ImGui::Spacing();
 
+#pragma endregion
+
+#pragma region MASKING_TEXTURE
+		// ===========   Masking Texture  ============
+		ImGui::AlignTextToFramePadding();
+		ImGui::Text("Masking Texture"); ImGui::SameLine();
+
+		if (ImGui::Button("Open Texture Selector##Masking Texture"))
+			ImGui::OpenPopup("TextureSelector##Masking Texture");
+
+		ImGui::SameLine();
+		// ============ Masking Use check box =============
+		if (ImGui::Checkbox("Use##MaskingTexture", &m_tCurrentDesc._Effect_Tool_MaskingTexture))
+		{
+			if (m_tCurrentDesc._Effect_Tool_MaskingTexture)
+				Engine_Utils::Add_Flag(m_tCurrentDesc._Effect_TextureFlag, 4);
+
+			else
+				Engine_Utils::RemoveHard_Flag(m_tCurrentDesc._Effect_TextureFlag, 4);
+
+			m_bModified |= true;
+		}
+
+		ImGui::SetNextWindowSize(ImVec2(700, 500), ImGuiCond_Appearing);
+
+		if (ImGui::BeginPopupModal("TextureSelector##Masking Texture", NULL))
+		{
+			ImGui::BeginChild("FolderList##Masking Texture", ImVec2(180, 0), true);
+			{
+				ImGui::TextColored(ImVec4(1, 1, 0, 1), "Category");
+				ImGui::Separator();
+
+				for (auto& folderName : m_TextureFolderNames)
+				{
+					// 현재 선택된 폴더면 하이라이트 효과
+					if (ImGui::Selectable(folderName.c_str(), m_strSelectedFolder == folderName))
+					{
+						m_strSelectedFolder = folderName;
+					}
+				}
+			}
+			ImGui::EndChild();
+
+			ImGui::SameLine();
+
+			// --- 우측 : 선택된 폴더 내 텍스처 그리드 창 ---
+			ImGui::BeginChild("TextureGrid##Masking Texture", ImVec2(0, 0), true);
+			{
+				ImGui::Text("Folder: %s", m_strSelectedFolder.empty() ? "None" : m_strSelectedFolder.c_str());
+				ImGui::Separator();
+
+				if (!m_strSelectedFolder.empty() && m_TextureMap.count(m_strSelectedFolder))
+				{
+					auto& fileList = m_TextureMap[m_strSelectedFolder];
+					int columns = 5; // 한 줄에 5장씩
+
+					for (int i = 0; i < fileList.size(); ++i)
+					{
+						string fullPath = fileList[i].first;
+						string fileName = fileList[i].second;
+
+						// 리소스 매니저에서 텍스처 가져오기 (태그 명명 규칙 확인해봐!)
+						wstring textureTag = L"Texture_" + Engine_Utils::ToWString(fileName);
+						CTextureBase* pTexture = m_pGameInstance->Get_Resource<CTextureBase>(textureTag);
+						ID3D11ShaderResourceView* pSRV = (pTexture) ? pTexture->Get_SRV() : nullptr;
+
+						ImGui::PushID(i);
+						ImGui::BeginGroup();
+
+						if (pSRV)
+						{
+							// 이미지 버튼 크기를 64x64 정도로 키움
+							if (ImGui::ImageButton("##texBtnMasking Texture", (ImTextureID)pSRV, ImVec2(64, 64)))
+							{
+								m_tCurrentDesc._Effect_MaskingTexture_Tag = Engine_Utils::ToWString(fileName);
+								m_bModified = true;
+								ImGui::EndGroup(); ImGui::PopID();
+								ImGui::CloseCurrentPopup();
+
+								Safe_Release(pTexture);
+								break;
+							}
+						}
+						else
+						{
+							ImGui::Button("No Res##Masking Texture", ImVec2(64, 64));
+						}
+
+						// 파일명이 너무 길면 잘라서 출력
+						string display = (fileName.length() > 10) ? fileName.substr(0, 8) + ".." : fileName;
+						ImGui::Text(display.c_str());
+
+						ImGui::EndGroup();
+						ImGui::PopID();
+
+						// 가로로 5장 배치 로직
+						if ((i + 1) % columns != 0) ImGui::SameLine(0, 10.f);
+
+						Safe_Release(pTexture);
+					}
+				}
+			}
+			ImGui::EndChild();
+
+			ImGui::Separator();
+			if (ImGui::Button("Close", ImVec2(120, 0))) { ImGui::CloseCurrentPopup(); }
+
+			ImGui::EndPopup();
+		}
+
+		ImGui::Spacing();
+
+#pragma endregion
+
+#pragma region GRADATION_TEXTURE
+		// ===========   Gradation Texture  ============
+		ImGui::AlignTextToFramePadding();
+		ImGui::Text("Gradation Texture"); ImGui::SameLine();
+
+		if (ImGui::Button("Open Texture Selector##Gradation Texture"))
+			ImGui::OpenPopup("TextureSelector##Gradation Texture");
+
+		ImGui::SameLine();
+		// ============ Gradation Use check box =============
+		if (ImGui::Checkbox("Use##GradationTexture", &m_tCurrentDesc._Effect_Tool_GradationTexture))
+		{
+			if (m_tCurrentDesc._Effect_Tool_GradationTexture)
+				Engine_Utils::Add_Flag(m_tCurrentDesc._Effect_TextureFlag, 8);
+
+			else
+				Engine_Utils::RemoveHard_Flag(m_tCurrentDesc._Effect_TextureFlag, 8);
+
+			m_bModified |= true;
+		}
+
+		ImGui::SetNextWindowSize(ImVec2(700, 500), ImGuiCond_Appearing);
+
+		if (ImGui::BeginPopupModal("TextureSelector##Gradation Texture", NULL))
+		{
+			ImGui::BeginChild("FolderList##Gradation Texture", ImVec2(180, 0), true);
+			{
+				ImGui::TextColored(ImVec4(1, 1, 0, 1), "Category");
+				ImGui::Separator();
+
+				for (auto& folderName : m_TextureFolderNames)
+				{
+					// 현재 선택된 폴더면 하이라이트 효과
+					if (ImGui::Selectable(folderName.c_str(), m_strSelectedFolder == folderName))
+					{
+						m_strSelectedFolder = folderName;
+					}
+				}
+			}
+			ImGui::EndChild();
+
+			ImGui::SameLine();
+
+			// --- 우측 : 선택된 폴더 내 텍스처 그리드 창 ---
+			ImGui::BeginChild("TextureGrid##Gradation Texture", ImVec2(0, 0), true);
+			{
+				ImGui::Text("Folder: %s", m_strSelectedFolder.empty() ? "None" : m_strSelectedFolder.c_str());
+				ImGui::Separator();
+
+				if (!m_strSelectedFolder.empty() && m_TextureMap.count(m_strSelectedFolder))
+				{
+					auto& fileList = m_TextureMap[m_strSelectedFolder];
+					int columns = 5; // 한 줄에 5장씩
+
+					for (int i = 0; i < fileList.size(); ++i)
+					{
+						string fullPath = fileList[i].first;
+						string fileName = fileList[i].second;
+
+						// 리소스 매니저에서 텍스처 가져오기 (태그 명명 규칙 확인해봐!)
+						wstring textureTag = L"Texture_" + Engine_Utils::ToWString(fileName);
+						CTextureBase* pTexture = m_pGameInstance->Get_Resource<CTextureBase>(textureTag);
+						ID3D11ShaderResourceView* pSRV = (pTexture) ? pTexture->Get_SRV() : nullptr;
+
+						ImGui::PushID(i);
+						ImGui::BeginGroup();
+
+						if (pSRV)
+						{
+							// 이미지 버튼 크기를 64x64 정도로 키움
+							if (ImGui::ImageButton("##texBtnGradation Texture", (ImTextureID)pSRV, ImVec2(64, 64)))
+							{
+								m_tCurrentDesc._Effect_GradationTexture_Tag = Engine_Utils::ToWString(fileName);
+								m_bModified = true;
+								ImGui::EndGroup(); ImGui::PopID();
+								ImGui::CloseCurrentPopup();
+
+								Safe_Release(pTexture);
+								break;
+							}
+						}
+						else
+						{
+							ImGui::Button("No Res##Gradation Texture", ImVec2(64, 64));
+						}
+
+						// 파일명이 너무 길면 잘라서 출력
+						string display = (fileName.length() > 10) ? fileName.substr(0, 8) + ".." : fileName;
+						ImGui::Text(display.c_str());
+
+						ImGui::EndGroup();
+						ImGui::PopID();
+
+						// 가로로 5장 배치 로직
+						if ((i + 1) % columns != 0) ImGui::SameLine(0, 10.f);
+
+						Safe_Release(pTexture);
+					}
+				}
+			}
+			ImGui::EndChild();
+
+			ImGui::Separator();
+			if (ImGui::Button("Close", ImVec2(120, 0))) { ImGui::CloseCurrentPopup(); }
+
+			ImGui::EndPopup();
+		}
+
+		ImGui::Spacing();
+#pragma endregion
+
 		// ===========   Position & Rotation & Scale =============
 		ImGui::AlignTextToFramePadding();
 
@@ -571,10 +868,6 @@ void CParticle_System_Panel::Draw_ParticleSystem(CToolObject* pGo)
 
 			ImGui::TreePop();
 		}
-
-		// ===========  size 변경 
-
-		m_bModified |= ImGui::DragFloat2("Particle Size", &m_tCurrentDesc._Effect_ParticleSize.x, 0.01f, 0.0f, 1.f, "%.2f");
 	}
 
 	// ==========  Position & Rotation & Scale ===========
@@ -600,47 +893,35 @@ void CParticle_System_Panel::Draw_ParticleSystem(CToolObject* pGo)
 
 	if (ImGui::CollapsingHeader("Renderer"))
 	{
-		// Render Mode
-		if (ImGui::TreeNode("Render Mode"))
+		// ============ RenderState check box =============
+
+		if (ImGui::TreeNode("RenderState Setting##Renderer"))
 		{
-			static int RendererModeNumber = {};
-
-			vector<string> m_pRendererModeList;
-			m_pRendererModeList.clear();
-
-			m_pRendererModeList.push_back("Bilboard");
-			m_pRendererModeList.push_back("None_Bilboard");
-
-			std::vector<const char*> iTems;
-			iTems.reserve(static_cast<int>(m_pRendererModeList.size()));
-
-			for (auto& str : m_pRendererModeList)
-				iTems.push_back(str.c_str());
-
-			if (ImGui::ListBox("##Renderer_Mode_List", &RendererModeNumber, [](void* data, int idx, const char** out_text)
-				{
-					auto& vector = *static_cast<std::vector<std::string>*>(data);
-					*out_text = vector[idx].c_str();
-					return true;
-				},
-				(void*)&m_pRendererModeList, (int)m_pRendererModeList.size(), 2))
+			// =============  [USE BILLBOARD]  ==============
+			if (ImGui::Checkbox("Use BillBoard##Renderer", &m_tCurrentDesc._Effect_Tool_UseBillboard))
 			{
+				if (m_tCurrentDesc._Effect_Tool_UseBillboard)
+					Engine_Utils::Add_Flag(m_tCurrentDesc._Effect_RenderFlag, 1);
+
+				else
+					Engine_Utils::RemoveHard_Flag(m_tCurrentDesc._Effect_RenderFlag, 1);
+
 				m_bModified |= true;
 			}
+			// =============  [CHOOSE SAMPLERSTATE]	  ============
 
-			switch (RendererModeNumber)
-			{
-			case 0:
-				m_tCurrentDesc._Effect_BillBoardFlag = E_RENDER_TYPE::BILBOARD; break;
-			case 1:
-				m_tCurrentDesc._Effect_BillBoardFlag = E_RENDER_TYPE::NONE_BILBOARD; break;
-			default:
-				m_tCurrentDesc._Effect_BillBoardFlag = E_RENDER_TYPE::NONE; break;
-			}
-		
+
+			// =============  [CHOOSE BLENDSTATE]   ==============
+
+
+			// =============  [CHOOSE RASTERIZESTATE]   ==========
+
+
+			// =============  [CHOOSE DEPTHSTENCILSTATE]  ========
+
+
 
 			ImGui::TreePop();
-			ImGui::Spacing();
 		}
 
 		// ===========   ParticleType Select   ===========
@@ -863,7 +1144,7 @@ void CParticle_System_Panel::Draw_Parts(CToolObject* pGo)
 				pEffectDesc._Effect_Model_Tag = {};
 				pEffectDesc._Effect_Shader_Tag = {};
 				pEffectDesc._Effect_DiffuseTexture_Tag = {};
-				pEffectDesc._Effect_Mesh_NoiseTexture_Tag = {};
+				pEffectDesc._Effect_NoiseTexture_Tag = {};
 				pEffectDesc._Effect_DiffuseTexture_Tag = {};
 				pEffectDesc._Effect_ShaderPass = {};
 
