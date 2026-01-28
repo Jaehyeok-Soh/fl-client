@@ -123,6 +123,8 @@ void CImGui_Dockspace_MenuBar::Load_Data(const wstring& wstrFilePath)
 	auto& okay = phi->Get_ListByType(ENUM_TO_UINT(DTO::EMapType::STATICMODEL));
 	auto& okay2 = phi->Get_ListByType(ENUM_TO_UINT(DTO::EMapType::LIGHT));
 	_int a = 10;
+	if (okay.size() > 0 && okay2.size() > 0)
+		MSG_BOX("Okay");
 }
 
 void CImGui_Dockspace_MenuBar::Save_MapData(const wstring& wstrFilePath)

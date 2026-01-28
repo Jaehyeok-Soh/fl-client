@@ -10,7 +10,7 @@
 *    CDoucmentBase 상속 객체 (ex. DataDocument_Example)
 *	 Tool, Client쪽 Builder 상속 객체 (ex. Builder_Example)
 * - 아래 규칙에 따라 struct, to_json, from_json, wrapper class 선언
-* - 만든 Struct헤더 DataDocumentBase헤더에 추가
+* - 만든 Struct헤더 DataDefine_Json.h헤더에 추가
 */
 #pragma endregion
 
@@ -23,17 +23,6 @@
 *		cpp에도 구조체, enum class 에는 DTO 네임스페이스, 엔진선언부에는 Engine 네임스페이스
 *		json이 헤더에 노출된다면?
 *		헤더에는 전방선언용 "json_forward.h"선언, 헤더에서 json.hpp 인클루드 금지
-*		cpp에는 매크로 포함 json.hpp 인클루드
-* 4. template 때문에 Client, Tool쪽에서 m_pGameInstance를 통해서 함수를 호출하다보면 json 문제 발생
-*		링커가 .obj 만들며 template으로 명령어 만들때 해당 .cpp에 json 정보가 없기때문
-*		아래와 똑같이 선언
-
-#pragma push_macro("new")
-#undef new
-#include "json.hpp"
-using json = nlohmann::json;
-#pragma pop_macro("new")
-
 */
 NS_BEGIN(DTO)
 
