@@ -12,11 +12,11 @@ public:
 	constexpr static EComponentType _ID = EComponentType::TRANSFORM;
 	typedef struct tagTransformDesc
 	{
-		Vec3 vPosition		   = { 0.f, 0.f, 0.f };
-		Vec3 vScale			   = { 1.f, 1.f, 1.f };
-		Vec3 vRotation_Degrees = { 0.f, 0.f, 0.f };
-		_float fMovePerSec = { 5.f };
-		_float fRotatePerSec = { 8.f };
+		Vec3 vPosition			= { 0.f, 0.f, 0.f };
+		Vec3 vScale				= { 1.f, 1.f, 1.f };
+		Vec3 vRotation_Degrees	= { 0.f, 0.f, 0.f };
+		_float fMovePerSec		= { 5.f };
+		_float fRotatePerSec	= { 8.f };
 	}TRANSFORM_DESC;
 private:
 	CTransform();
@@ -65,6 +65,11 @@ public:
 	void Apply_Force(_float fDeltaTime, CNavigation* pNavigation = nullptr);
 	void Update_PrevPosition();
 	void Force_Clear();
+
+public:
+	void MoveArgWorld_ToMyWorld(Matrix& vNewWorld, _bool isChangeThis = false);
+	void MoveMyWorld_ToArgWorld(Matrix& vNewWorld, _bool isChangeArg = false);
+
 private:
 	_bool		m_bControll = { false };
 	_float		m_fMoveScale = { 1.f };
