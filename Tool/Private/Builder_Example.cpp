@@ -1,6 +1,7 @@
 #include "pch.h"
 #include "Builder_Example.h"
 #include "GameInstance.h"
+#include "Builder_UI.h"
 
 CBuilder_Example::CBuilder_Example(ID3D11Device* pDevice, ID3D11DeviceContext* pDeviceContext)
 	: Super(pDevice, pDeviceContext)

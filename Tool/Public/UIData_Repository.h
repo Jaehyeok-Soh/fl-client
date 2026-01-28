@@ -147,6 +147,7 @@ static ERectTransform StringToRectTransform(const _string& str)
 		return ERectTransform::END;
 }
 
+/* 런타임 전용 */
 typedef struct tagGenericUIData
 {
 	/* For.Runtime */
@@ -178,7 +179,6 @@ typedef struct tagGenericUIData
 	}
 
 }GENERIC_UI_DATA;
-
 typedef struct tagLayerData
 {
 	_string strTag;
@@ -188,7 +188,6 @@ typedef struct tagLayerData
 		strTag = "";
 	}
 }LAYER_DATA;
-
 typedef struct tagCanvasData
 {
 	_string strTag;
@@ -212,7 +211,7 @@ typedef struct tagCanvasData
 	}
 }CANVAS_DATA;
 
-
+/* 세이브/로드 전용*/
 typedef struct tagUIDTO
 {
 	GENERIC_UI_DATA UIVO;

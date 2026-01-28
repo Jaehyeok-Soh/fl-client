@@ -57,6 +57,10 @@ public:
 	_float* Get_PosY_Ptr() { return &m_fY; }
 	_float* Get_PosZ_Ptr() { return &m_fZ; }
 
+	const CANVAS_DATA& Get_Data()const { return m_tCanvasData; }
+	CANVAS_DATA& Get_Data_Ref() { return m_tCanvasData; }
+
+	void Sync_Data();
 private:
 	PrimitiveBatch<DirectX::VertexPositionColor>* m_pBatch = { nullptr };
 	BasicEffect* m_pEffect = { nullptr };

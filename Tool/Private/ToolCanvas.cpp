@@ -87,6 +87,7 @@ void CToolCanvas::Update_Late(const _float fTimeDelta)
 
 void CToolCanvas::Ready_Before_Render(const _float fTimeDelta)
 {
+	Sync_Data();
 	Super::Ready_Before_Render(fTimeDelta);
 }
 
@@ -194,6 +195,16 @@ CToolLayer* CToolCanvas::Safe_Access_CurLayerObject_Ptr()
 		return nullptr;
 
 	return m_vecToolLayers[m_pUIManager->Get_CurCanvasIndex()];
+}
+
+void CToolCanvas::Sync_Data()
+{
+	m_tCanvasData.strTag = m_strTag;
+	m_tCanvasData.fWidth = m_fWidth;
+	m_tCanvasData.fHeight = m_fHeight;
+	m_tCanvasData.fPosX = m_fX;
+	m_tCanvasData.fPosY = m_fY;
+	m_tCanvasData.fPosZ = m_fZ;
 }
 
 CToolCanvas* CToolCanvas::Create(EToolObjectType eType, ID3D11Device* pDevice, ID3D11DeviceContext* pDeviceContext)

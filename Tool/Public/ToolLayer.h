@@ -48,6 +48,10 @@ public:
 	const _string& Get_Tag() const { return m_strTag; }
 	void Set_Tag(const _string& Tag) { m_strTag = Tag; }
 
+	const LAYER_DATA& Get_Data()const { return m_tLayerData; }
+	LAYER_DATA& Get_Data_Ref() { return m_tLayerData; }
+
+	void Sync_Data();
 private:
 	CImGui_UIManager* m_pUIManager = { nullptr };
 

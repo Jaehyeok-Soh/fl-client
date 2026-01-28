@@ -15,31 +15,40 @@ HRESULT CDataDocument_UI::Initialize()
 	return S_OK;
 }
 
-HRESULT CDataDocument_UI::Try_Add(const DTO::TExample_LightData& data)
+HRESULT CDataDocument_UI::Try_Add(const DTO::TUI_CanvasData& data)
 {
-	IObjectDataBase* pObjectBase = Create_ObjectData(DTO::EMapType::LIGHT);
-	static_cast<CExample_LightData*>(pObjectBase)->Get_Data() = data;
+	/* ObjectDataBase를 생성, Data를 함수 인자로 채워줌 */
+	IObjectDataBase* pObjectBase = Create_ObjectData(DTO::EUIType::CANVAS);
+	static_cast<CUI_Canvas_DTO*>(pObjectBase)->Get_Data() = data;
 	return Try_Add(pObjectBase);
 }
 
-HRESULT CDataDocument_UI::Try_Add(const DTO::TExample_StaticModelData& data)
+HRESULT CDataDocument_UI::Try_Add(const DTO::TUI_LayerData& data)
 {
-	IObjectDataBase* pObjectBase = Create_ObjectData(DTO::EMapType::STATICMODEL);
-	static_cast<CExample_StaticModel*>(pObjectBase)->Get_Data() = data;
+	IObjectDataBase* pObjectBase = Create_ObjectData(DTO::EUIType::LAYER);
+	static_cast<CUI_Layer_DTO*>(pObjectBase)->Get_Data() = data;
 	return Try_Add(pObjectBase);
 }
 
-IObjectDataBase* CDataDocument_UI::Create_ObjectData(DTO::EMapType eType)
+HRESULT CDataDocument_UI::Try_Add(const DTO::TUI_GenericUIData& data)
+{
+	IObjectDataBase* pObjectBase = Create_ObjectData(DTO::EUIType::GENERICUI);
+	static_cast<CUI_GenericUI_DTO*>(pObjectBase)->Get_Data() = data;
+	return Try_Add(pObjectBase);
+}
+
+IObjectDataBase* CDataDocument_UI::Create_ObjectData(DTO::EUIType eType)
 {
 	switch (eType)
 	{
-	case DTO::EMapType::STATICMODEL:
-		return CExample_StaticModel::Create();
-	case DTO::EMapType::LIGHT:
-		return CExample_LightData::Create();
-	default:
-		return nullptr;
+	case DTO::EUIType::CANVAS:
+		return CUI_Canvas_DTO::Create();
+	case DTO::EUIType::LAYER:
+		return CUI_Layer_DTO::Create();
+	case DTO::EUIType::GENERICUI:
+		return CUI_GenericUI_DTO::Create();
 	}
+	return nullptr;
 }
 
 HRESULT CDataDocument_UI::Try_Add(IObjectDataBase* pObject)
@@ -61,6 +70,7 @@ HRESULT CDataDocument_UI::Try_Add(IObjectDataBase* pObject)
 	}
 
 	m_AllTags.insert(strTag);
+	/* Type */
 	const _uint iType = pObject->Get_Type();
 	m_Datas[iType].emplace(strTag, pObject);
 	return S_OK;
@@ -114,7 +124,7 @@ HRESULT CDataDocument_UI::FromJson(const json& j)
 		if (object.contains("Type") == false)
 			return E_FAIL;
 
-		const DTO::EMapType eType = object.at("Type").get<DTO::EMapType>();
+		const DTO::EUIType eType = object.at("Type").get<DTO::EUIType>();
 
 		IObjectDataBase* pObjectDataBase = Create_ObjectData(eType);
 		if (pObjectDataBase == nullptr)
@@ -135,6 +145,7 @@ HRESULT CDataDocument_UI::FromJson(const json& j)
 
 	return S_OK;
 }
+
 
 CDataDocument_UI* CDataDocument_UI::Create()
 {

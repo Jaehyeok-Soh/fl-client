@@ -72,6 +72,7 @@ void CToolLayer::Update_Late(const _float fTimeDelta)
 
 void CToolLayer::Ready_Before_Render(const _float fTimeDelta)
 {
+	Sync_Data();
 	Super::Ready_Before_Render(fTimeDelta);
 }
 
@@ -132,6 +133,11 @@ CToolUI* CToolLayer::Safe_Access_CurUIObject_Ptr()
 		return nullptr;
 
 	return m_vecToolUIs[m_pUIManager->Get_CurLayerIndex()];
+}
+
+void CToolLayer::Sync_Data()
+{
+	m_tLayerData.strTag = m_strTag;
 }
 
 CToolLayer* CToolLayer::Create(EToolObjectType eType, ID3D11Device* pDevice, ID3D11DeviceContext* pDeviceContext)

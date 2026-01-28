@@ -3,9 +3,18 @@
 #include "Tool_Defines.h"
 #include "ImGui_UIManager.h"
 #include "FileUtils.h"
+
+#include "DataStruct_UI.h"
+#include "DataDocument_UI.h"
+
+#include "ToolCanvas.h"
+#include "ToolLayer.h"
+#include "ToolUI.h"
+
 #include "GameInstance.h"
 
-#define UISAVEPATH L"../../Resources/Data/UIData/Data.json"
+#define UIDATAFILE_PATH L"../../Resources/Data/UIData/Data.json"
+
 NS_BEGIN(Tool)
 
 IMPLEMENT_SINGLETON(CUIData_Repository)
@@ -21,7 +30,7 @@ HRESULT CUIData_Repository::Load_UIData(OUT vector<CANVAS_DATA>& OutRef)
 {
 	CFileUtils* pFileUtil = CFileUtils::Create();
 
-	if (FAILED(pFileUtil->Open(UISAVEPATH, FileMode::READ)))
+	if (FAILED(pFileUtil->Open(UIDATAFILE_PATH, FileMode::READ)))
 	{
 		MSG_BOX("CUIData_Repository::Load_UIData, open failed");
 		return E_FAIL;
@@ -39,23 +48,89 @@ HRESULT CUIData_Repository::Load_UIData(OUT vector<CANVAS_DATA>& OutRef)
 
 HRESULT CUIData_Repository::Save_UIData()
 {
-	CFileUtils* pFileUtil = CFileUtils::Create();
+	ELevelType eLevelType = ELevelType::UI;
+	DTO::ECategory eCategory = DTO::ECategory::UI;
+	_uint iLevelID = ENUM_TO_UINT(eLevelType);
 
-	if (FAILED(pFileUtil->Open(UISAVEPATH, FileMode::WRITE)))
+	/* 문서객체를 만들어서 저장하고 */
+	if (FAILED(m_pGameInstance->Regist_Document<CDataDocument_UI>(iLevelID, eCategory)))
 	{
-		MSG_BOX("CUIData_Repository::Save_UIData, open failed");
+		MSG_BOX("CUIData_Repository::Save_UIData, Document Regist Failed");
 		return E_FAIL;
 	}
 
-	order_json j = m_vecUIDTO;
-	std::string text = j.dump(4);
-	if (FAILED(pFileUtil->WriteAllText(text)))
-	{
-		MSG_BOX("CUIData_Repository::SaveData, write failed");
+	/* 방금 등록한 문서객체에 데이터를 더해서 꺼내오기 */
+	CDataDocumentBase* pDocument = m_pGameInstance->Ensure_Document(iLevelID, eCategory, UIDATAFILE_PATH);
+	if (pDocument == nullptr)
 		return E_FAIL;
+
+	CDataDocument_UI* pDoc = static_cast<CDataDocument_UI*>(pDocument);
+
+	/* 런타임 데이터를 저장용으로 변경 */
+	{
+		DTO::TUI_CanvasData ForSaveData = {};
+		const auto* pCanvasVec = CImGui_UIManager::GetInstance()->Safe_Access_CanvasVector();
+		if (nullptr != pCanvasVec)
+		{
+			for (const auto* pCanvas : *pCanvasVec)
+			{
+				CANVAS_DATA RuntimeData = pCanvas->Get_Data();
+
+				ForSaveData.strName = RuntimeData.strTag;
+				ForSaveData.fWidth = RuntimeData.fWidth;
+				ForSaveData.fHeight = RuntimeData.fHeight;
+				ForSaveData.fPosX = RuntimeData.fPosX;
+				ForSaveData.fPosY = RuntimeData.fPosY;
+				ForSaveData.fPosZ = RuntimeData.fPosZ;
+
+				if (FAILED(pDoc->Try_Add(ForSaveData)))
+					return E_FAIL;
+			}
+		}
 	}
 
-	Safe_Release(pFileUtil);
+	{
+		DTO::TUI_LayerData ForSaveData = {};
+		const auto* pLayerVec = CImGui_UIManager::GetInstance()->Safe_Access_LayerVector();
+		if (nullptr != pLayerVec)
+		{
+			for (const auto* pLayer : *pLayerVec)
+			{
+				LAYER_DATA RuntimeData = pLayer->Get_Data();
+				ForSaveData.strLayerTag = RuntimeData.strTag;
+				if (FAILED(pDoc->Try_Add(ForSaveData)))
+					return E_FAIL;
+			}
+		}
+	}
+
+	{
+		DTO::TUI_GenericUIData ForSaveData = {};
+		const auto* pUIVector = CImGui_UIManager::GetInstance()->Safe_Access_UIVector();
+		if (nullptr != pUIVector)
+		{
+			for (const auto* pUI : *pUIVector)
+			{
+				GENERIC_UI_DATA RuntimeData = pUI->Get_Data();
+
+				ForSaveData.iRectTransformType = RuntimeData.iRectTransformType;
+				ForSaveData.iUIType = RuntimeData.iUIType;
+				ForSaveData.strName = RuntimeData.strName;
+				ForSaveData.fWidth = RuntimeData.fWidth;
+				ForSaveData.fHeight = RuntimeData.fHeight;
+				ForSaveData.fPosX = RuntimeData.fPosX;
+				ForSaveData.fPosY = RuntimeData.fPosY;
+				ForSaveData.fPosZ = RuntimeData.fPosZ;
+
+				if (FAILED(pDoc->Try_Add(ForSaveData)))
+					return E_FAIL;
+			}
+		}
+	}
+
+	if (FAILED(m_pGameInstance->Save_File_Json(iLevelID, eCategory, UIDATAFILE_PATH)))
+		return E_FAIL;
+
 	return S_OK;
 }
 

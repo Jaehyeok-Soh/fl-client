@@ -172,6 +172,9 @@
     <Filter Include="06. ImGui\01. Panel\UIPanels\Maker">
       <UniqueIdentifier>{f5fed899-dccb-4d0d-a291-189fd27b3ca2}</UniqueIdentifier>
     </Filter>
+    <Filter Include="09. Builder\UI">
+      <UniqueIdentifier>{00ebdf0c-5d5b-4d6a-beeb-19cd527d2574}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="framework.h">
@@ -366,6 +369,9 @@
     <ClInclude Include="..\Public\UI_Maker.h">
       <Filter>06. ImGui\01. Panel\UIPanels\Maker</Filter>
     </ClInclude>
+    <ClInclude Include="..\Public\Builder_UI.h">
+      <Filter>09. Builder\UI</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <Image Include="small.ico">
@@ -554,6 +560,9 @@
     </ClCompile>
     <ClCompile Include="..\Private\UI_Maker.cpp">
       <Filter>06. ImGui\01. Panel\UIPanels\Maker</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\Builder_UI.cpp">
+      <Filter>09. Builder\UI</Filter>
     </ClCompile>
   </ItemGroup>
 </Project>

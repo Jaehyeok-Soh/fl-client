@@ -69,6 +69,7 @@ void CToolUI::Update_Late(const _float fTimeDelta)
 
 void CToolUI::Ready_Before_Render(const _float fTimeDelta)
 {
+	Sync_Data();
 	Super::Ready_Before_Render(fTimeDelta);
 }
 
@@ -112,6 +113,18 @@ HRESULT CToolUI::Bind_ShaderResources()
         return E_FAIL;
 
     return S_OK;
+}
+
+void CToolUI::Sync_Data()
+{
+	m_tUIData.iRectTransformType =static_cast<uint32_t>( m_eRectTransformType);
+	m_tUIData.iUIType = static_cast<uint32_t>(m_eUIType);
+	m_tUIData.strName = m_strName;
+	m_tUIData.fWidth = m_fWidth;
+	m_tUIData.fHeight = m_fHeight;
+	m_tUIData.fPosX = m_fX;
+	m_tUIData.fPosY = m_fY;
+	m_tUIData.fPosZ = m_fZ;
 }
 
 CToolUI* CToolUI::Create(EToolObjectType eType, ID3D11Device* pDevice, ID3D11DeviceContext* pDeviceContext)

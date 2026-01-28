@@ -15,6 +15,8 @@ public:
 		_string strInitTextureTag;
 		uint32_t iInitTextureIndex;
 
+		uint32_t iRectTransformType;
+		uint32_t iUIType;
 	}TOOLUI_DESC;
 
 private:
@@ -57,6 +59,11 @@ public:
 	_float* Get_PosX_Ptr() { return &m_fX; }
 	_float* Get_PosY_Ptr() { return &m_fY; }
 	_float* Get_PosZ_Ptr() { return &m_fZ; }
+
+	const GENERIC_UI_DATA& Get_Data()const { return m_tUIData; }
+	GENERIC_UI_DATA& Get_Data_Ref() { return m_tUIData; }
+
+	void Sync_Data();
 
 private:
 	_string m_strName = {};

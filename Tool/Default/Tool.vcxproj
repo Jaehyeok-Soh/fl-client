@@ -146,6 +146,7 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClInclude Include="..\Public\Builder_Example.h" />
+    <ClInclude Include="..\Public\Builder_UI.h" />
     <ClInclude Include="..\Public\CameraMan_Free.h" />
     <ClInclude Include="..\Public\CEffectObject.h" />
     <ClInclude Include="..\Public\Effect.h" />
@@ -212,6 +213,7 @@
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="..\Private\Builder_Example.cpp" />
+    <ClCompile Include="..\Private\Builder_UI.cpp" />
     <ClCompile Include="..\Private\CameraMan_Free.cpp" />
     <ClCompile Include="..\Private\CEffectObject.cpp" />
     <ClCompile Include="..\Private\Effect.cpp" />

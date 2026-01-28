@@ -1,0 +1,132 @@
+#include "pch.h"
+#include "Builder_UI.h"
+
+#include "ToolCanvas.h"
+#include "ToolLayer.h"
+#include "ToolUI.h"
+
+#include "GameInstance.h"
+
+CBuilder_UI::CBuilder_UI(ID3D11Device* pDevice, ID3D11DeviceContext* pDeviceContext)
+	:Super(pDevice, pDeviceContext)
+{
+}
+
+HRESULT CBuilder_UI::Build(const CDataDocumentBase& document)
+{
+	if (document.Get_Category() != DTO::ECategory::UI)
+		return E_FAIL;
+
+	const auto& doc = static_cast<const CDataDocument_UI&>(document);
+	// For. Canvas
+	{
+		/* 문서에 저장된 IObjectDataBase -> 데이터를 가진 클래스의 부모 */
+		const vector<Engine::IObjectDataBase*> vecDtoList = doc.Get_ListByType(ENUM_TO_UINT(DTO::EUIType::CANVAS));
+		for (const auto& pDtoBase : vecDtoList)
+		{
+			/* 데이터를 보유한 클래스 다운캐스팅 */
+			const auto* pDto = static_cast<const Engine::CUI_Canvas_DTO*>(pDtoBase);
+			/* 데이터를 보유한 클래스에서 데이터를 추출 -> 오브젝트 매니저 레이어에 추가까지 */
+			if (FAILED(Create_CanvasDTO(pDto->Get_Data())))
+				return E_FAIL;
+		}
+	}
+
+	// For. Layer
+	{
+		const vector<Engine::IObjectDataBase*> vecDataList = doc.Get_ListByType(ENUM_TO_UINT(DTO::EUIType::LAYER));
+		for (const auto& pObjectData : vecDataList)
+		{
+			const auto* pDto = static_cast<const Engine::CUI_Layer_DTO*>(pObjectData);
+			if (FAILED(Create_LayerDTO(pDto->Get_Data())))
+				return E_FAIL;
+		}
+	}
+
+	// For. GenericUI
+	{
+		const vector<Engine::IObjectDataBase*> vecDataList = doc.Get_ListByType(ENUM_TO_UINT(DTO::EUIType::GENERICUI));
+		for (const auto& pObjectData : vecDataList)
+		{
+			const auto* pDto = static_cast<const Engine::CUI_GenericUI_DTO*>(pObjectData);
+			if (FAILED(Create_GenericUIDTO(pDto->Get_Data())))
+				return E_FAIL;
+		}
+	}
+
+	return S_OK;
+}
+
+HRESULT CBuilder_UI::Create_CanvasDTO(const DTO::TUI_CanvasData& data)
+{
+	if (data.eType != DTO::EUIType::CANVAS)
+		return E_FAIL;
+
+	/* 데이터를 이용해서 Object 만들기 */
+	CToolCanvas::TOOLCANVAS_DESC Desc = {};
+	Desc.iLevelIndex = static_cast<uint32_t>(ELevelType::UI);
+
+	Desc.strTag = data.strName;
+	Desc.fWidth = data.fWidth;
+	Desc.fHeight = data.fHeight;
+	Desc.fX = data.fPosX;
+	Desc.fY = data.fPosY;
+	Desc.fZ = data.fPosZ;
+
+	CGameObject* pResult = m_pGameInstance->Add_GameObject(Desc.iLevelIndex, g_wszPrototypeTagCanvas, 
+		Desc.iLevelIndex, Engine_Utils::ToWString( Desc.strTag ), &Desc);
+	 if (pResult == nullptr)
+		return E_FAIL;
+
+	return S_OK;
+}
+
+HRESULT CBuilder_UI::Create_LayerDTO(const DTO::TUI_LayerData& data)
+{
+	if (data.eType != DTO::EUIType::LAYER)
+		return E_FAIL;
+
+	/* 데이터를 이용해서 Object 만들기 */
+	CToolLayer::TOOLLAYER_DESC Desc = {};
+	Desc.iLevelIndex = static_cast<uint32_t>(ELevelType::UI);
+
+	Desc.strTag = data.strLayerTag;
+
+	CGameObject* pResult = m_pGameInstance->Add_GameObject(Desc.iLevelIndex, g_wszPrototypeTagLayer, 
+		Desc.iLevelIndex, Engine_Utils::ToWString( Desc.strTag ), &Desc);
+	if (pResult == nullptr)
+		return E_FAIL;
+
+	return S_OK;
+}
+
+HRESULT CBuilder_UI::Create_GenericUIDTO(const DTO::TUI_GenericUIData& data)
+{
+	if (data.eType != DTO::EUIType::GENERICUI)
+		return E_FAIL;
+
+	/* 데이터를 이용해서 Object 만들기 */
+	CToolUI::TOOLUI_DESC Desc = {};
+	Desc.iLevelIndex = static_cast<uint32_t>(ELevelType::UI);
+
+	Desc.strName = data.strName	;
+	Desc.iRectTransformType = data.iRectTransformType;
+	Desc.iUIType = data.iUIType;
+	Desc.fWidth = data.fWidth;
+	Desc.fHeight = data.fHeight;
+	Desc.fX = data.fPosX;
+	Desc.fY = data.fPosY;
+	Desc.fZ = data.fPosZ;
+
+	CGameObject* pResult = m_pGameInstance->Add_GameObject(Desc.iLevelIndex, g_wszPrototypeTagLayer,
+		Desc.iLevelIndex, Engine_Utils::ToWString(data.strLayerTag), &Desc);
+	if (pResult == nullptr)
+		return E_FAIL;
+
+	return S_OK;
+}
+
+void CBuilder_UI::Free()
+{
+	Super::Free();
+}
