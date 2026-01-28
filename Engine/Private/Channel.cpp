@@ -28,6 +28,9 @@ void CChannel::Update_TransformationMatrix(const vector<CBone*>& vecBones, _floa
 	if (fCurrentTrackPosition <= 0.f)
 		*pCurrentKeyFrameIndex = 0;
 
+	/* test : root motion */
+	_bool isMotionBone = (m_iBoneIndex == 2);
+
 	Matrix matTransformation = {};
 	KEYFRAME lastKeyFrame = m_vecKeyframes.back();
 	Vec3 vScale, vTranslation;
@@ -53,8 +56,17 @@ void CChannel::Update_TransformationMatrix(const vector<CBone*>& vecBones, _floa
 		vLeftQuaternion = m_vecKeyframes[(*pCurrentKeyFrameIndex)].vQuaterion;
 		vRightQuaternion = m_vecKeyframes[(*pCurrentKeyFrameIndex) + 1].vQuaterion;
 
-		vLeftTranslation = m_vecKeyframes[(*pCurrentKeyFrameIndex)].vTranslation;
-		vRightTranslation = m_vecKeyframes[(*pCurrentKeyFrameIndex) + 1].vTranslation;
+		if (isMotionBone)
+		{
+			vLeftTranslation = {0.f,0.f,0.f};
+			vRightTranslation = { 0.f,0.f,0.f };
+		}
+
+		else
+		{
+			vLeftTranslation = m_vecKeyframes[(*pCurrentKeyFrameIndex)].vTranslation;
+			vRightTranslation = m_vecKeyframes[(*pCurrentKeyFrameIndex) + 1].vTranslation;
+		}
 
 		_float		fRatio = (fCurrentTrackPosition - m_vecKeyframes[(*pCurrentKeyFrameIndex)].fTrackPosition) /
 			(m_vecKeyframes[(*pCurrentKeyFrameIndex) + 1].fTrackPosition - m_vecKeyframes[(*pCurrentKeyFrameIndex)].fTrackPosition);
@@ -73,6 +85,9 @@ void CChannel::SetUp_PoseData(std::span<LOCALSRT> spanLocalSrtData, _float fCurr
 	if (fCurrentTrackPosition <= 0.f)
 		*pCurrentKeyFrameIndex = 0;
 
+	/* test : root motion */
+	_bool isMotionBone = (m_iBoneIndex == 2);
+
 	Matrix matTransformation = {};
 	KEYFRAME lastKeyFrame = m_vecKeyframes.back();
 	Vec3 vScale, vTranslation;
@@ -99,8 +114,17 @@ void CChannel::SetUp_PoseData(std::span<LOCALSRT> spanLocalSrtData, _float fCurr
 		vLeftQuaternion = m_vecKeyframes[(*pCurrentKeyFrameIndex)].vQuaterion;
 		vRightQuaternion = m_vecKeyframes[(*pCurrentKeyFrameIndex) + 1].vQuaterion;
 
-		vLeftTranslation = m_vecKeyframes[(*pCurrentKeyFrameIndex)].vTranslation;
-		vRightTranslation = m_vecKeyframes[(*pCurrentKeyFrameIndex) + 1].vTranslation;
+		if (isMotionBone)
+		{
+			vLeftTranslation = { 0.f,0.f,0.f };
+			vRightTranslation = { 0.f,0.f,0.f };
+		}
+
+		else
+		{
+			vLeftTranslation = m_vecKeyframes[(*pCurrentKeyFrameIndex)].vTranslation;
+			vRightTranslation = m_vecKeyframes[(*pCurrentKeyFrameIndex) + 1].vTranslation;
+		}
 
 		_float		fRatio = (fCurrentTrackPosition - m_vecKeyframes[(*pCurrentKeyFrameIndex)].fTrackPosition) /
 			(m_vecKeyframes[(*pCurrentKeyFrameIndex) + 1].fTrackPosition - m_vecKeyframes[(*pCurrentKeyFrameIndex)].fTrackPosition);
