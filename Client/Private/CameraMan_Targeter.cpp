@@ -172,7 +172,7 @@ void CCameraMan_Targeter::TargetSync_Update_Priority(const _float fDeltaTime)
     if (!pPlayer)
         return;
 
-    Vec3 vChasePositionRaw = Get_HeadWorldPos_FromBody(pPlayer->Get_Part<CBody>(0), pPlayerTransform);
+    Vec3 vChasePositionRaw = Get_CamBoneWorldPos_FromBody(pPlayer->Get_Part<CBody>(0), pPlayerTransform);
     if (!m_bImpactInit)
     {
         m_vChaseFiltered = vChasePositionRaw;
@@ -271,17 +271,19 @@ void CCameraMan_Targeter::Chase_Actor(const _float fTimeDelta)
 
 void CCameraMan_Targeter::Chase_Player(CContainerObject* pPlayer, const _float fTimeDelta)
  {
+    // 플레이어의 바디를 들고 온다
     CBody* pBodyOfPlayer = nullptr;
     if (!(pBodyOfPlayer = pPlayer->Get_Part<CBody>(CPlayer::BODY)))
         return;
 
+    // 플레이어의 transform을 들고 온다
     CTransform* pPlayerTransform = nullptr;
     if (!(pPlayerTransform = pPlayer->Get_Component<CTransform>()))
         return;
 
     Vec3 vFinalPosition = Vec3::Zero;
     Vec3 vCurrentPosition = Get_Component<CTransform>()->Get_Info(TRANSFORM_INFO_STATE::POS);
-    Vec3 vChasePositionRaw = Get_HeadWorldPos_FromBody(pBodyOfPlayer, pPlayerTransform);
+    Vec3 vChasePositionRaw = Get_CamBoneWorldPos_FromBody(pBodyOfPlayer, pPlayerTransform);
     if (m_bChaseInit == false)
     {
         m_vChaseFiltered = vChasePositionRaw;
@@ -296,22 +298,27 @@ void CCameraMan_Targeter::Chase_Player(CContainerObject* pPlayer, const _float f
     m_fPitch = std::clamp(m_fPitch_Target, ::XMConvertToRadians(-85.f), ::XMConvertToRadians(85.f));
     m_fYaw = m_fYaw_Target;
 
+    // z축 회전을 제외하고 rotationM을 만들어 look을 만든단
     Matrix matRotation = Matrix::CreateFromYawPitchRoll(Vec3(m_fPitch, m_fYaw, 0.f));
     Vec3 vLook = Vec3::TransformNormal(Vec3::Backward, matRotation);
     vLook.Normalize();
+
+    /* 내 L 을 이용해 다시 R U을 조립한다*/
     Vec3 vWorldUp = Vec3::Up;
     Vec3 vRight = vWorldUp.Cross(vLook);
     vRight.Normalize();
     Vec3 vUp = vLook.Cross(vRight);
     vUp.Normalize();
 
+    // position : chase의 pos 에서 내 look 방향으로 조금 뒤로 빼
     Vec3 vDesiredPos = vChaseFiltered - vLook * m_fDistance;
 
+    // RUL & P 다시 재조립
     CTransform* pCameraTransform = Get_Component<CTransform>();
     pCameraTransform->Set_Info(TRANSFORM_INFO_STATE::RIGHT, vRight);
-    pCameraTransform->Set_Info(TRANSFORM_INFO_STATE::UP, vUp);
-    pCameraTransform->Set_Info(TRANSFORM_INFO_STATE::LOOK, vLook);
-    pCameraTransform->Set_Info(TRANSFORM_INFO_STATE::POS, vDesiredPos);
+    pCameraTransform->Set_Info(TRANSFORM_INFO_STATE::UP,    vUp);
+    pCameraTransform->Set_Info(TRANSFORM_INFO_STATE::LOOK,  vLook);
+    pCameraTransform->Set_Info(TRANSFORM_INFO_STATE::POS,   vDesiredPos);
 }
 
 void CCameraMan_Targeter::OnChangeLockonTarget(CGameObject* pGo)
@@ -334,19 +341,22 @@ void CCameraMan_Targeter::OnChangeLockonTarget(CGameObject* pGo)
     }
 }
 
-Vec3 CCameraMan_Targeter::Get_HeadWorldPos_FromBody(CBody* pBody, CTransform* pTrnasform)
+Vec3 CCameraMan_Targeter::Get_CamBoneWorldPos_FromBody(CBody* pBody, CTransform* pTrnasform)
 {
     Matrix matReturn = Matrix::Identity;
-    Matrix matWorld = pTrnasform->Get_WorldMatrix();
+    Matrix matWorld = pTrnasform->Get_WorldMatrix(); // player matrix
 
-    if (CBone* pHead = pBody->Get_HeadBone())
+    // player body의 ""가 있다면 -> bondM * camM
+    if (CBone* pCamBone = pBody->Get_CamSocketBone()) //Get_CamBone ?? Get_CamSocketBone
+        matReturn = pCamBone->Get_CombinedTransformMatrix() * matWorld;
+    else if (CBone* pHead = pBody->Get_HeadBone())
         matReturn = pHead->Get_BindPoseTransformMatrix() * matWorld;
     else if (CBone* pNeck = pBody->Get_NeckBone())
         matReturn = pNeck->Get_BindPoseTransformMatrix() * matWorld;
     else if (CBone* pSpine = pBody->Get_Spine1Bone())
         matReturn = pSpine->Get_BindPoseTransformMatrix() * matWorld;
 
-    return matReturn.Translation();
+    return matReturn.Translation(); // bondM * camM의 Position return
 }
 
 CCameraMan_Targeter* CCameraMan_Targeter::Create(ID3D11Device* pDevice, ID3D11DeviceContext* pDeviceContext)

@@ -39,6 +39,8 @@ HRESULT CBody::Initialize(void* pArg)
 	m_iHead_Index = Get_Component<CModel>()->Get_BoneIndex("head");
 	m_iNeck_Index = Get_Component<CModel>()->Get_BoneIndex("neck_01");
 	m_iSpine1_Index = Get_Component<CModel>()->Get_BoneIndex("spine_01");
+	m_iCamPos_Index = Get_Component<CModel>()->Get_BoneIndex("camera_point");
+	m_iCamSocket_Index = Get_Component<CModel>()->Get_BoneIndex("camera_socket");
 	//m_iLeftHand_Index = Get_Component<CModel>()->Get_BoneIndex("hand_l");
 	//m_iRightHand_Index = Get_Component<CModel>()->Get_BoneIndex("hand_r");
 	//m_iLeftFoot_Index = Get_Component<CModel>()->Get_BoneIndex("LeftFoot");
@@ -146,6 +148,22 @@ const Matrix* CBody::Get_SocketMatrix(_uint iIndex)
 	{
 		return &pReturn->Get_CombinedTransformMatrix();
 	}
+
+	return nullptr;
+}
+
+CBone* CBody::Get_CamBone()
+{
+	if (CBone* pCam = Get_Component<CModel>()->Get_Bone(m_iCamPos_Index))
+		return pCam;
+
+	return nullptr;
+}
+
+CBone* CBody::Get_CamSocketBone()
+{
+	if (CBone* pCam = Get_Component<CModel>()->Get_Bone(m_iCamSocket_Index))
+		return pCam;
 
 	return nullptr;
 }
