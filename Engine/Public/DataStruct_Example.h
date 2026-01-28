@@ -1,6 +1,7 @@
 #pragma once
 #include "ObjectDataBase.h"
-
+#include "DataEnum.h"
+#include "json_forward.h"
 
 #pragma region 최초 사용법
 /*
@@ -45,8 +46,13 @@ enum class EMapType : _uint
 };
 inline constexpr _uint g_MapTypeCount{ ENUM_TO_UINT(EMapType::END) };
 
-void to_json(json& j, const EMapType& e);
-void from_json(const json& j, EMapType& e);
+NLOHMANN_JSON_SERIALIZE_ENUM(EMapType,
+	{
+		{EMapType::STATICMODEL, "STATICMODEL"},
+		{EMapType::LIGHT, "LIGHT"},
+		{EMapType::END, "END"},
+	}
+)
 
 /////////////////-------------------  ObjectStruct  -------------------/////////////////
 struct TExample_LightData
@@ -71,10 +77,48 @@ struct TExample_StaticModelData
 
 
 /////////////////-------------------  to_json, from_json  -------------------/////////////////
-void to_json(json& j, const TExample_LightData& data);
-void from_json(const json& j, TExample_LightData& data);
-void to_json(json& j, const TExample_StaticModelData& data);
-void from_json(const json& j, TExample_StaticModelData& data);
+inline void to_json(json& j, const TExample_LightData& data)
+{
+	j = json
+	{
+		{ "Type", TExample_LightData::eType },
+		{ "strTag", data.strTag },
+		{ "iValue", data.iValue },
+		{ "iValue2", data.iValue2 },
+		{ "iValue3", data.iValue3 }
+	};
+}
+inline void from_json(const json& j, TExample_LightData& data)
+{
+	j.at("strTag").get_to(data.strTag);
+	if (j.contains("iValue"))
+		data.iValue = j["iValue"].get<_uint>();
+	if (j.contains("iValue2"))
+		data.iValue2 = j["iValue2"].get<_float>();
+	if (j.contains("iValue3"))
+		data.iValue3 = j["iValue3"].get<_int>();
+}
+inline void to_json(json& j, const TExample_StaticModelData& data)
+{
+	j = json
+	{
+		{ "Type", TExample_StaticModelData::eType },
+		{ "strTag", data.strTag },
+		{ "iValue", data.iValue },
+		{ "iValue2", data.iValue2 },
+		{ "iValue3", data.iValue3 }
+	};
+}
+inline void from_json(const json& j, TExample_StaticModelData& data)
+{
+	j.at("strTag").get_to(data.strTag);
+	if (j.contains("iValue"))
+		data.iValue = j["iValue"].get<_uint>();
+	if (j.contains("iValue2"))
+		data.iValue2 = j["iValue2"].get<_float>();
+	if (j.contains("iValue3"))
+		data.iValue3 = j["iValue3"].get<_int>();
+}
 NS_END
 
 /////////////////-------------------  Wrapping Class  -------------------/////////////////
@@ -99,7 +143,7 @@ public:
 private:
 	DTO::TExample_LightData m_Data;
 public:
-	static CExample_LightData* Create() { return new CExample_LightData(); }
+	static CExample_LightData* Create();
 	virtual void Free() override { Super::Free(); }
 };
 
@@ -123,7 +167,7 @@ public:
 private:
 	DTO::TExample_StaticModelData m_Data;
 public:
-	static CExample_StaticModel* Create() { return new CExample_StaticModel(); }
+	static CExample_StaticModel* Create();
 	virtual void Free() override { Super::Free(); }
 };
 

@@ -1,8 +1,6 @@
 #pragma once
 #include "Base.h"
 #include "json_forward.h"
-#include "DataEnum_JsonDecl.h"
-#include "DataStruct_Example.h"
 
 /// <summary>
 /// ÀÇÀÇ
