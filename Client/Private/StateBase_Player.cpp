@@ -126,11 +126,10 @@ _bool CStateBase_Player::Check_MoveKey(const _float fTimeDelta)
 
 	if (Engine_Utils::Has_Flag(m_FMoves, MOVEFLAGS::NORMAL))
 	{
-		if (Align_Movement(fTimeDelta) == false)	// 8방향 움직임 
+		if (Align_Movement(fTimeDelta) == false								// 8방향 움직임을 하고
+			&& Engine_Utils::Has_Flag(m_FMoves, MOVEFLAGS::OWN) == false)	// 원래 움직임이 있지 않았다면
 		{
-			if (Engine_Utils::Has_Flag(m_FMoves, MOVEFLAGS::OWN))
-				return false;
-
+			// 입력이 없을 때
 			Change_State(STATEKEY::MOVE);
 			return true;
 		}
