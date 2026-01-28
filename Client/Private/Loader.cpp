@@ -98,6 +98,7 @@ HRESULT CLoader::Loading_For_Logo()
 {
 	Matrix matPreTransformScale = Matrix::CreateScale(0.01f, 0.01f, 0.01f);
 	Matrix matPreTransformIdentity = Matrix::Identity;
+	Matrix matPreTransformTurn90 = matPreTransformScale * Matrix::CreateFromYawPitchRoll(XMConvertToRadians(90.f), 0.f, 0.f);
 
 	if (FAILED(m_pGameInstance->Load_Sounds(L"../../Resources/Sounds")))
 		return E_FAIL;
@@ -142,8 +143,8 @@ HRESULT CLoader::Loading_For_Logo()
 		CModel::MODEL_ORIGIN_DESC desc = {};
 		desc.eType = EModelType::ANIM;
 		desc.iPrototypeLevelIndex = ENUM_TO_UINT(ELevelType::STATIC);
-		desc.pMatPreTransform = &matPreTransformScale;
-		desc.wstrModelFolderName = L"PlayerMoon";
+		desc.pMatPreTransform = &(matPreTransformScale);	// matPreTransformScale // matPreTransformTurn90
+		desc.wstrModelFolderName = L"PlayerMoon";					// PlayerMoon // Pino
 		m_pGameInstance->Add_Prototype(ENUM_TO_UINT(ELevelType::STATIC), L"Prototype_Component_Model_Master", CModel::Create(m_pDevice, m_pDeviceContext, &desc));
 	}
 	// For. Prototype_Component_Camera
