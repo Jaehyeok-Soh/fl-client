@@ -8,6 +8,10 @@
 #include "Material.h"
 #include "MaterialInstance.h"
 #include "ModelAnimation.h"
+
+#include "GameObject.h"
+
+
 #include "GameInstance.h"
 
 CModel::CModel(ID3D11Device* pDevice, ID3D11DeviceContext* pDeviceContext)
@@ -184,7 +188,7 @@ HRESULT CModel::Set_PassByMesh(class CShader* pShader, _uint iMeshIndex)
 
 void CModel::Play_Animation(_float fTimeDelta)
 {
-	m_bIsAnimFinished = m_vecAnimations[m_iCurrentAnimIndex]->Update_TransformationMatrices(m_vecBones, fTimeDelta, m_isAnimLoop);
+	m_bIsAnimFinished = m_vecAnimations[m_iCurrentAnimIndex]->Update_TransformationMatrices(m_vecBones, fTimeDelta, m_isAnimLoop, m_pOwner->Get_Component<CTransform>());
 	
 	for (size_t i = 0; i < m_vecBones.size(); ++i)
 	{
@@ -491,8 +495,8 @@ CModel* CModel::Get_Clone(const wstring& wstrPrototypeTag)
 
 void CModel::Blend_Animation(_float fTimeDelta, _float fRatio)
 {
-	m_vecAnimations[m_iPrevAnimIndex]->SetUp_PoseDatasForBlending(m_vecPrevAnimationPose, fTimeDelta);
-	m_vecAnimations[m_iCurrentAnimIndex]->SetUp_PoseDatasForBlending(m_vecCurrAnimationPose, fTimeDelta);
+	m_vecAnimations[m_iPrevAnimIndex]->SetUp_PoseDatasForBlending(m_vecPrevAnimationPose, fTimeDelta, m_pOwner->Get_Component<CTransform>());
+	m_vecAnimations[m_iCurrentAnimIndex]->SetUp_PoseDatasForBlending(m_vecCurrAnimationPose, fTimeDelta, m_pOwner->Get_Component<CTransform>());
 
 	_uint i = {};
 	for (auto& pBone : m_vecBones)

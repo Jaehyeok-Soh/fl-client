@@ -6,6 +6,8 @@ NS_BEGIN(Engine)
 // 특정 동작을 위한 뼈대들의 시간에 따른 상태값(행렬)을 보관한다.
 // CChannel 특정 뼈의 시간에 따른 상태값을 보관
 
+class CTransform;
+
 class CModelAnimation final : public CResourceBase
 {
 	using Super = CResourceBase;
@@ -24,8 +26,8 @@ private:
 
 	virtual HRESULT Initialize(void* pArg) override;
 public:
-	_bool Update_TransformationMatrices(const vector<class CBone*>& vecBones, _float fTimeDelta, _bool isLoop);
-	void SetUp_PoseDatasForBlending(std::span<LOCALSRT> spanLocalSrtData, _float fTimeDelta);
+	_bool Update_TransformationMatrices(const vector<class CBone*>& vecBones, _float fTimeDelta, _bool isLoop, CTransform* pOwnerTransform);
+	void SetUp_PoseDatasForBlending(std::span<LOCALSRT> spanLocalSrtData, _float fTimeDelta, CTransform* pOwnerTransform);
 	void Clear();
 
 	_float Get_DurationTime() const { return m_fDuration; }
