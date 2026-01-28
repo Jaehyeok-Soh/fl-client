@@ -27,6 +27,12 @@
 
 #include "FMOD/fmod.hpp"
 
+#pragma push_macro("new")
+#undef new
+#include "json.hpp"
+using json = nlohmann::json;
+#pragma pop_macro("new")
+
 //#pragma push_macro("new")
 //#undef new
 //#include <PxPhysicsAPI.h>
@@ -72,3 +78,4 @@ using namespace SimpleMath;
 #include <dinput.h>
 
 #include "Engine_Define.h"
+#include "DataDefine_Json.h"

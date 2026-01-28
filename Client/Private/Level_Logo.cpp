@@ -104,8 +104,8 @@ HRESULT CLevel_Logo::Ready_UI_Layer(const wstring& wstrLayerTag)
 	//if(nullptr == pResult)
 	//	return E_FAIL;
 
-	if (FAILED(CUI_Manager::GetInstance()->Load_UIData(L"../../Resources/Data/UIData/Data.json")))
-		return E_FAIL;	
+	//if (FAILED(CUI_Manager::GetInstance()->Load_UIData(L"../../Resources/Data/UIData/Data.json")))
+	//	return E_FAIL;	
 
 	return S_OK;
 }
