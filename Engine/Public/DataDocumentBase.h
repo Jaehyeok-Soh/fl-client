@@ -1,6 +1,6 @@
 #pragma once
 #include "Base.h"
-#include "DataStruct_Example.h"
+#include "json_forward.h"
 
 /// <summary>
 /// ÀÇÀÇ

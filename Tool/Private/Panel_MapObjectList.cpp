@@ -99,6 +99,7 @@ HRESULT CPanel_MapObjectList::Render_MapObjectList()
 	if (ImGui::Button("Clear"))
 	{
 		m_pSelectMapObject = nullptr;
+		static_cast<CLevel_Map*>(this->m_pOwnerLevel)->Set_SelectToolObject(nullptr);
 		m_pGameInstance->Clear_Layer(ENUM_TO_UINT(ELevelType::MAP), g_wszStaticModelLayer);
 	}
 
@@ -129,7 +130,6 @@ HRESULT CPanel_MapObjectList::Render_MapObjectList()
 					{
 						static_cast<CLevel_Map*>(m_pOwnerLevel)->On_ChangeSelectedObject(pStaticModel);
 					}
-
 				}
 			}
 		}

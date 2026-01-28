@@ -75,6 +75,7 @@ protected:
 	_float m_fX = {};
 	_float m_fY = {};
 	_float m_fZ = {};
+	
 	_float m_fWidth = {};
 	_float m_fHeight = {};
 	_float m_fAspect = {};

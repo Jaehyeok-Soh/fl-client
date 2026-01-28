@@ -528,17 +528,11 @@
     <ClCompile Include="..\Private\BuilderBase.cpp">
       <Filter>01. Utility\14. Builder</Filter>
     </ClCompile>
-    <ClCompile Include="..\Private\DataEnum.cpp">
-      <Filter>01. Utility\11. DataRepository</Filter>
-    </ClCompile>
     <ClCompile Include="..\private\json_forward.cpp">
       <Filter>01. Utility\15. Json_Forward</Filter>
     </ClCompile>
     <ClCompile Include="..\Private\DataStruct_Example.cpp">
       <Filter>01. Utility\11. DataRepository\Datas\Example</Filter>
-    </ClCompile>
-    <ClCompile Include="DataStruct_Effect.cpp">
-      <Filter>01. Utility\11. DataRepository\Datas\Effect</Filter>
     </ClCompile>
     <ClCompile Include="..\private\DataStruct_Animation.cpp">
       <Filter>01. Utility\11. DataRepository\Datas\Animation</Filter>
@@ -548,6 +542,15 @@
     </ClCompile>
     <ClCompile Include="..\Private\VIBuffer_Particle_Mesh.cpp">
       <Filter>00. System\05. Component\VIBuffer\Particle</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\DataEnum.cpp">
+      <Filter>01. Utility\11. DataRepository</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\DataDefine_Json.cpp">
+      <Filter>01. Utility\11. DataRepository</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\DataStruct_Effect.cpp">
+      <Filter>01. Utility\11. DataRepository\Datas\Effect</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -851,9 +854,6 @@
     <ClInclude Include="..\public\json_forward.h">
       <Filter>01. Utility\15. Json_Forward</Filter>
     </ClInclude>
-    <ClInclude Include="DataStruct_Effect.h">
-      <Filter>01. Utility\11. DataRepository\Datas\Effect</Filter>
-    </ClInclude>
     <ClInclude Include="..\public\DataStruct_Animation.h">
       <Filter>01. Utility\11. DataRepository\Datas\Animation</Filter>
     </ClInclude>
@@ -862,6 +862,12 @@
     </ClInclude>
     <ClInclude Include="..\Public\VIBuffer_Particle_Mesh.h">
       <Filter>00. System\05. Component\VIBuffer\Particle</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\DataStruct_Effect.h">
+      <Filter>01. Utility\11. DataRepository\Datas\Effect</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\DataDefine_Json.h">
+      <Filter>01. Utility\11. DataRepository</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

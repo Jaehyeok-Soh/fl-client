@@ -315,7 +315,8 @@ void CVIBuffer_Particle_Mesh::Set_ParticleDesc(const PARTICLE_ORIGIN_DESC& Desc)
 		m_tParticleDesc.vRange.y != Desc.vRange.y ||
 		m_tParticleDesc.vRange.z != Desc.vRange.z ||
 		m_tParticleDesc.isRandomSeed != Desc.isRandomSeed ||
-		m_tParticleDesc.pModel != Desc.pModel)
+		m_tParticleDesc.pModel != Desc.pModel ||
+		m_tParticleDesc.vLifeTime.y != Desc.vLifeTime.y)
 	{
 		// 인스턴스 할 갯수가 줄었다면 버퍼 재할당하자
 		m_tParticleDesc = Desc;
