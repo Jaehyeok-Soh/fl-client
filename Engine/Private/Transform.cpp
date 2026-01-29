@@ -233,10 +233,18 @@ inline void CTransform::Go_Left(const _float fTimeDelta, CNavigation* pNavigatio
 		Set_Info(TRANSFORM_INFO_STATE::POS, vPosition);
 }
 
+inline void CTransform::Rotation(TRANSFORM_INFO_STATE eState, _float fRadian)
+{
+	Vector3 vAxis = Get_Info(eState);
+	vAxis.Normalize();
+	Rotation(vAxis, fRadian);
+}
+
 inline void CTransform::Rotation(_float fRadianX, _float fRadianY, _float fRadianZ)
 {
 	Matrix ScaleMatrix			= Matrix::CreateScale(Get_Scaled()); //
-	Matrix RotationMatrix		= Matrix::CreateFromYawPitchRoll(fRadianY, fRadianX, fRadianZ); //
+	Quat quat					= Quat::CreateFromYawPitchRoll(fRadianY, fRadianX, fRadianZ);
+	Matrix RotationMatrix		= Matrix::CreateFromQuaternion(quat); //
 	Matrix TranslationMatrix	= Matrix::CreateTranslation(Get_Info(TRANSFORM_INFO_STATE::POS)); //
 
 	m_matWorld = ScaleMatrix * RotationMatrix * TranslationMatrix;
@@ -291,7 +299,7 @@ inline void CTransform::Rotation(const Vec3& vAxis, _float fRadian)
 	Vec3 vRight = Vec3::Right * vScale.x;
 	Vec3 vUp = Vec3::Up * vScale.y;
 	Vec3 vLook = Vec3::Backward * vScale.z;
-
+	
 	Matrix matRotation = Matrix::CreateFromAxisAngle(vAxis, fRadian);
 
 	Set_Info(TRANSFORM_INFO_STATE::RIGHT, Vec3::TransformNormal(vRight, matRotation));
