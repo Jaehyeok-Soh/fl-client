@@ -3,6 +3,13 @@
 #include "Level_Logo.h"
 #include "TextureBase.h"
 #include "Loader.h"
+
+//=================
+// Builder
+//=================
+#include "Builder_Example.h"
+#include "BuilderSystem.h"
+
 #include "GameInstance.h"
 
 CLevel_Loading::CLevel_Loading(ID3D11Device* pDevice, ID3D11DeviceContext* pDeviceContext)
@@ -16,9 +23,6 @@ HRESULT CLevel_Loading::Initialize(ELevelType eNextLevelID)
 		return E_FAIL;
 
 	m_eNextLevelID = eNextLevelID;
-
-	if (FAILED(Ready_UI_Layer(g_wszUILayer)))
-		return E_FAIL;
 
 	if (!(m_pLoader = CLoader::Create(m_pDevice, m_pDeviceContext, eNextLevelID)))
 		return E_FAIL;
@@ -65,13 +69,6 @@ HRESULT CLevel_Loading::Render()
 		return E_FAIL;
 
 	m_pLoader->Output();
-	return S_OK;
-}
-
-HRESULT CLevel_Loading::Ready_UI_Layer(const wstring& wstrLayerTag)
-{
-	_uint iLevelIndex = ENUM_TO_UINT(ELevelType::LOADING);
-
 	return S_OK;
 }
 

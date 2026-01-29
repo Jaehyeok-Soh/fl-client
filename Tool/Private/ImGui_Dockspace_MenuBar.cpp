@@ -116,15 +116,14 @@ void CImGui_Dockspace_MenuBar::Load_Data(const wstring& wstrFilePath)
 		return;
 
 	// 여기까지 성공하면 로드가 된것! 아래 코드는 그냥 테스트용
-
 	const CDataDocumentBase* pBase = m_pGameInstance->Get_Document(iLevelID, eCategory, "asdf");
-	CDataDocumentBase* pTest = const_cast<CDataDocumentBase*>(pBase);
-	CDataDocument_Example* phi = static_cast<CDataDocument_Example*>(pTest);
-	auto& okay = phi->Get_ListByType(ENUM_TO_UINT(DTO::EMapType::STATICMODEL));
-	auto& okay2 = phi->Get_ListByType(ENUM_TO_UINT(DTO::EMapType::LIGHT));
-	_int a = 10;
+	const CDataDocument_Example* pTest = static_cast<const CDataDocument_Example*>(pBase);
+	const auto okay = pTest->Get_ListByType(ENUM_TO_UINT(DTO::EMapType::STATICMODEL));
+	const auto okay2 = pTest->Get_ListByType(ENUM_TO_UINT(DTO::EMapType::LIGHT));
 	if (okay.size() > 0 && okay2.size() > 0)
 		MSG_BOX("Okay");
+	else
+		MSG_BOX("Failed");
 }
 
 void CImGui_Dockspace_MenuBar::Save_MapData(const wstring& wstrFilePath)

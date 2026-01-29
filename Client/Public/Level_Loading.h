@@ -1,5 +1,4 @@
 #pragma once
-#include "Client_Defines.h"
 #include "Level.h"
 
 NS_BEGIN(Client)
@@ -16,9 +15,6 @@ public:
 	virtual HRESULT Awake(const _uint iLevelID) override;
 	virtual void Update(const _float fTimeDelta) override;
 	virtual HRESULT Render() override;
-private:
-	HRESULT Ready_UI_Layer(const wstring &wstrLayerTag);
-
 private:
 	class CLoader* m_pLoader = { nullptr };
 	ELevelType m_eNextLevelID = { ELevelType::END };

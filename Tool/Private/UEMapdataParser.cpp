@@ -151,48 +151,15 @@ void CUEMapdataParser::Change_ModelPath(OUT _wstring& wstrModelName, OUT _wstrin
 
 	size_t Pos_Point = wstrPath.rfind(L".");
 	if (Pos_Point != std::string::npos)
-		wstrPath.replace(Pos_Point,wstrPath.length(),g_wszModelExtension);
+		wstrPath.replace(Pos_Point, wstrPath.length(), g_wszModelExtension);
 
-	wstring wstrChange = L"Level";
-	wstring wstrTarget = L"Scene";
-	size_t Pos_Scene = wstrPath.find(wstrTarget);
-	if (Pos_Scene != std::string::npos)
-		wstrPath.replace(0, Pos_Scene + wstrTarget.length(), wstrChange);
-	else
-	{
-		wstrTarget = L"Content";
-		size_t Pos_Target = wstrPath.find(wstrTarget);
-		if (Pos_Target != std::string::npos)
-			wstrPath.replace(0, Pos_Target + wstrTarget.length(), wstrChange);
-
-		wstrTarget = L"BasicShapes";
-		Engine_Utils::Add_Text(wstrPath  , wstrTarget , L"/Model" , wstrTarget.length());
-	}
-
-	vector<wstring> vecTargetWStr = { L"EN000_" , L"EN001_" , L"EN002_" , L"EN003_" };
-	size_t Pos_EN{ std::string::npos };
-
-	for (auto& Target : vecTargetWStr)
-	{
-		Pos_EN = wstrPath.find(Target);
-		if (Pos_EN != std::string::npos)
-		{
-			wstrPath.erase(Pos_EN, Target.length());
-			break;
-		}
-	}
-
-	wstrTarget = L"Mesh";
-	size_t Pos_Target = wstrPath.find(wstrTarget);
+	wstring wstrTarget = L"Content/";
+	size_t  Pos_Target = wstrPath.find(wstrTarget);
 	if (Pos_Target != std::string::npos)
-	{
-		Pos_Target += wstrTarget.length();
-		wstrPath.insert(Pos_Target, L"/Model");
-	}
+		wstrPath.erase(0, Pos_Target + wstrTarget.length());
 
-	wstrModelPath = wstrPath;
 	wstrModelName = path(wstrPath).filename().stem().wstring();
-	wstrModelPath = L"Map/" + wstrModelPath;
+	wstrModelPath = L"Map/" + path(wstrPath).parent_path().wstring() + L"/Model/" + wstrModelName + L".fbx";
 }
 
 vector<UE_MAP_DATA>* CUEMapdataParser::Get_Unreal_MapData(const wstring& FindKey)

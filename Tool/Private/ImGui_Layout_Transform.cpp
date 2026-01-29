@@ -32,6 +32,9 @@ HRESULT CImGui_Layout_Transform::Render(CToolObject* pGo)
         // Trnasform //
         ///////////////
 
+        _bool bDirty = { false };
+        _bool bDecomposed = { false };
+
         CImGui_ToolManager::EGuizmoState eState = CImGui_ToolManager::GetInstance()->Get_GuizmoState();
         _bool bTrans = { false };
         _bool bRotate = { false };
@@ -68,26 +71,29 @@ HRESULT CImGui_Layout_Transform::Render(CToolObject* pGo)
         }
 
 
-        if (ImGui::BeginTable("Transform#map", 15, ImGuiTableFlags_SizingStretchSame))
+        if (ImGui::BeginTable("Transform#map", 18, ImGuiTableFlags_SizingStretchSame))
         {
             CTransform* pTransform = pGo->Get_Component<CTransform>();
             Matrix matWorld = pTransform->Get_WorldMatrix();
             Vec3 vScale = {};
-            Vec3 vRotation = {};
+            Quat vQuaternion = {};
             Vec3 vTranslation = {};
-            ImGuizmo::DecomposeMatrixToComponents(*matWorld.m, &vTranslation.x, &vRotation.x, &vScale.x);
+            if (matWorld.Decompose(vScale, vQuaternion, vTranslation))
+                bDecomposed = true;
 
             ImGui::TableSetupColumn("Label", ImGuiTableColumnFlags_WidthFixed | ImGuiTableColumnFlags_NoResize, 60.0f);
             ImGui::TableSetupColumn("Sep", ImGuiTableColumnFlags_WidthFixed | ImGuiTableColumnFlags_NoResize, 6.0f);
             ImGui::TableSetupColumn("X", ImGuiTableColumnFlags_WidthFixed | ImGuiTableColumnFlags_NoResize, 100.f);
             ImGui::TableSetupColumn("Y", ImGuiTableColumnFlags_WidthFixed | ImGuiTableColumnFlags_NoResize, 100.f);
             ImGui::TableSetupColumn("Z", ImGuiTableColumnFlags_WidthFixed | ImGuiTableColumnFlags_NoResize, 100.f);
+            ImGui::TableSetupColumn("W", ImGuiTableColumnFlags_WidthFixed | ImGuiTableColumnFlags_NoResize, 100.f);
 
             auto makeInputFiled = [&](_int iCol, const _char* pLabel, _float* pValue, _float fSens, ImU32 Color)
             {
                 ImGui::TableSetColumnIndex(iCol);
                 ImGui::SetNextItemWidth(-FLT_MIN);
-                _bool bChanged = ImGui::DragFloat(pLabel, pValue, fSens);
+                if (ImGui::DragFloat(pLabel, pValue, fSens))
+                    bDirty = true;
                 makeVerticalBar(ImGui::GetItemRectMin(), ImGui::GetItemRectMax(), 4.0f, Color);
             };
 
@@ -109,9 +115,10 @@ HRESULT CImGui_Layout_Transform::Render(CToolObject* pGo)
             fHeight = ImGui::GetFrameHeight();
             ImGui::Dummy(ImVec2(1, fHeight));
             makeVerticalBar(ImGui::GetItemRectMin(), ImGui::GetItemRectMax(), 2.0f, IM_COL32(100, 100, 100, 160));
-            makeInputFiled(2, "RotationX##Map", &vRotation.x, 0.1f, IM_COL32(200, 60, 60, 255));
-            makeInputFiled(3, "RotationY##Map", &vRotation.y, 0.1f, IM_COL32(60, 200, 60, 255));
-            makeInputFiled(4, "RotationZ##Map", &vRotation.z, 0.1f, IM_COL32(60, 120, 220, 255));
+            makeInputFiled(2, "QuaternionX##Map", &vQuaternion.x, 0.001f, IM_COL32(200, 60, 60, 255));
+            makeInputFiled(3, "QuaternionY##Map", &vQuaternion.y, 0.001f, IM_COL32(60, 200, 60, 255));
+            makeInputFiled(4, "QuaternionZ##Map", &vQuaternion.z, 0.001f, IM_COL32(60, 120, 220, 255));
+            makeInputFiled(5, "QuaternionW##Map", &vQuaternion.w, 0.001f, IM_COL32(60, 120, 220, 255));
 
             ImGui::TableNextRow();
             ImGui::TableSetColumnIndex(0);
@@ -124,9 +131,14 @@ HRESULT CImGui_Layout_Transform::Render(CToolObject* pGo)
             makeInputFiled(3, "ScaleY##Map", &vScale.y, 0.01f, IM_COL32(60, 200, 60, 255));
             makeInputFiled(4, "ScaleZ##Map", &vScale.z, 0.01f, IM_COL32(60, 120, 220, 255));
             
-            if (m_pPrev && m_pPrev == pGo)
+            vScale.x = (std::max)(vScale.x, 0.0001f);
+            vScale.y = (std::max)(vScale.y, 0.0001f);
+            vScale.z = (std::max)(vScale.z, 0.0001f);
+
+            if (m_pPrev && m_pPrev == pGo && bDirty && bDecomposed)
             {
-                ImGuizmo::RecomposeMatrixFromComponents(&vTranslation.x, &vRotation.x, &vScale.x, *matWorld.m);
+                vQuaternion.Normalize();
+                matWorld = Matrix::CreateScale(vScale) * Matrix::CreateFromQuaternion(vQuaternion) * Matrix::CreateTranslation(vTranslation);
                 pTransform->Set_Info(TRANSFORM_INFO_STATE::RIGHT, matWorld.Right());
                 pTransform->Set_Info(TRANSFORM_INFO_STATE::UP, matWorld.Up());
                 pTransform->Set_Info(TRANSFORM_INFO_STATE::LOOK, matWorld.Backward());
