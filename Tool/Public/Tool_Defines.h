@@ -25,6 +25,7 @@ extern HINSTANCE	g_hInstance;
 #include "ImSequencer.h"
 #include "ImZoomSlider.h"
 #include "ImCurveEdit.h"
+#include "imfilebrowser.h"
 #include "GraphEditor.h"
 #pragma pop_macro("new")
 
@@ -39,6 +40,45 @@ namespace Tool
 	extern unsigned int g_iWinSizeX;
 	extern unsigned int g_iWinSizeY;
 	extern float g_fAspectio;
+
+	typedef struct FolderInfo
+	{
+		std::wstring	wstrFloderFullPath{};
+		std::wstring	wstrFloderName{};
+		unsigned int	iCountFloders{ 0 };
+		unsigned int	iCountFiles{ 0 };
+	}FLODER_INFO;
+	/* 파일 관련 */
+	typedef struct FileInfo
+	{
+		/* 전체 경로 */
+		std::wstring wstrFileFullPath{};
+		std::wstring wstrFileNameEXT{};
+		std::wstring wstrFileName{};
+		std::wstring wstrFileEXT{};
+
+	public:
+		FileInfo()
+			: wstrFileFullPath{}, wstrFileEXT{ }, wstrFileName{}
+		{
+
+		}
+		FileInfo(const std::wstring& wstrPath)
+		{
+			std::filesystem::path psFile(wstrPath);
+
+			wstrFileFullPath = psFile.c_str();
+			wstrFileNameEXT = psFile.filename().wstring();
+			wstrFileName = psFile.filename().stem().wstring();
+			wstrFileEXT = psFile.extension().wstring();
+			return;
+		}
+		FileInfo(const std::filesystem::path& Path)
+			: wstrFileFullPath(Path.wstring()), wstrFileName(Path.filename().stem().wstring()), wstrFileEXT(Path.extension().wstring())
+			, wstrFileNameEXT(Path.filename().wstring())
+		{
+		}
+	}FILE_INFO;
 
 	enum class ELevelType : unsigned int
 	{

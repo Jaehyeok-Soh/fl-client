@@ -697,13 +697,6 @@ HRESULT CConverter::ReadAndExport_Animation()
 HRESULT CConverter::Check_Folder()
 {
 	m_iFileCount = Get_FileCount(m_AssetParentPath);
-	m_iFolderCount = Get_FolderCount(m_AssetParentPath);
-
-	if (m_iFolderCount > 0)
-	{
-		MSG_BOX("CConverter::Ready_Folder, wrong folder.. has too many folders");
-		return E_FAIL;
-	}
 
 	if (m_iFileCount <= 0)
 	{

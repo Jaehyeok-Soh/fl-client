@@ -41,8 +41,24 @@ HRESULT CPanel_ModelConverter::Ready_PreMatirxPreset()
 		0.f, -1.f, 0.f, 0.f,	// z' = -y
 		0.f, 0.f, 0.f, 1.f
 	);
-	m_mapPreMatrix.emplace(L"Unreal_To_DirectX", matUECoord);
+	m_mapPreMatrix.emplace(L"Unreal_To_DirectX", matUECoord   );
+	//*Matrix::CreateRotationY(-180.f)
 
+	matUECoord = ::XMMatrixSet(
+		1.f, 0.f, 0.f, 0.f,   // 그대로 유지
+
+		// [Row 2] Input Y (Back) -> Output Z (Forward)
+		// 입력 Y가 -(앞)일 때 출력 Z가 +(앞)이 되어야 하므로 -1을 곱함
+		0.f, 0.f, -1.f, 0.f,
+
+		// [Row 3] Input Z (Up) -> Output Y (Up)
+		// 하늘은 하늘로 가야 하므로 무조건 +1
+		0.f, 1.f, 0.f, 0.f,
+
+		// [Row 4]
+		0.f, 0.f, 0.f, 1.f
+	);
+	m_mapPreMatrix.emplace(L"Fmodel_To_DirectX", matUECoord);
 
 	return S_OK;
 }

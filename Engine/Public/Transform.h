@@ -50,6 +50,7 @@ public:
 	inline void Pitch_Turn(const _float fTimeDelta);
 	inline void Yaw_Turn(const _float fTimeDelta);
 	inline void Rotation(const Vec3& vAxis, _float fRadian);
+	inline void Rotation(const Quat& vQuat);
 	inline void Turn_WorldYAxis(const Vec3 &vTargetDir, const _float fTimeDelta);
 	inline void Turn(const Vec3 &vAxis, const _float fTimeDelta);
 	inline void Look_At(const Vec3 &vPoint);
