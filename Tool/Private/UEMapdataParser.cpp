@@ -111,8 +111,6 @@ vector<CONVERTED_MAPDATA> CUEMapdataParser::Convert_UE_MapData(const vector<UE_M
 			if (tConvertedData.tUsingModelInfo.wstrName.find(L"Wall") != wstring::npos)
 				int a = 0;
 
-
-
 			Quat vQuat = Quat::CreateFromYawPitchRoll(XMConvertToRadians(tUEMapData.tProperties.vRelativeRotation.y)
 				, XMConvertToRadians(tUEMapData.tProperties.vRelativeRotation.x
 				), XMConvertToRadians(tUEMapData.tProperties.vRelativeRotation.z));
@@ -127,6 +125,7 @@ vector<CONVERTED_MAPDATA> CUEMapdataParser::Convert_UE_MapData(const vector<UE_M
 
 			Change_SRT(&tConvertedData.vScale, &tConvertedData.vPitchYawRoll, &tConvertedData.vPosition, tConvertedData.eType);
 			vecConvertedData.push_back(tConvertedData);
+
 		}
 
 #pragma region INSTANCE

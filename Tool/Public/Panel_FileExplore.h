@@ -19,15 +19,11 @@ public:
 	virtual HRESULT Render(CToolObject* pGo)override;
 	virtual void Update(const _float fTimeDelta)override;
 	HRESULT	Update_MapObjectList();
-public:
-
 private:
 	HRESULT	Render_MapObjectList();
 	HRESULT	Render_CamInfo();
 	HRESULT	Render_SelectInfo();
 	HRESULT Render_FileMoustRightButton(const wstring& wstrExt);
-
-
 private:
 	void						FloderWindow();
 	void						FileWindow();
@@ -36,8 +32,6 @@ private:
 private:
 	CFolder*					m_pRootFolder{ nullptr };
 	vector<CFile*>				m_vecFiles;
-
-
 	string						m_strCurPath;
 	char						m_szFileName[MAX_PATH];
 	char						m_szKey[MAX_PATH];
