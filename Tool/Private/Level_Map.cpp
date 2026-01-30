@@ -83,7 +83,7 @@ HRESULT CLevel_Map::Awake(const _uint iLevelID)
 
 
 	/* Cam Setting */
-	m_pGameInstance->Get_MainCamera()->Get_Component<CCamera>()->Set_Fov(60.f);
+	m_pGameInstance->Get_MainCamera()->Get_Component<CCamera>()->Set_Fov(XMConvertToRadians(60.f));
 
 	/* Batch */
 
