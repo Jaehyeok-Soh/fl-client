@@ -13,7 +13,6 @@ CFolder::CFolder()
 
 HRESULT CFolder::Initialize(CFolder* pParentFloder, const wstring& wstrRootPath, ID3D11Device* pDevice, ID3D11DeviceContext* pContext)
 {
-
     /* 파일 이름이 있으면 FileName을 제거한다 */
     wstring wstr = Engine_Utils::NormalizePath_WString(std::filesystem::canonical(wstrRootPath));
 
@@ -48,16 +47,46 @@ HRESULT CFolder::Initialize(CFolder* pParentFloder, const wstring& wstrRootPath,
         }
     }
 
-
     path Path(wstrRootPath);
 
     return S_OK;
-
 }
 
 void CFolder::ImGui_Update()
 {
 
+}
+
+vector<wstring> CFolder::Find_File(const wstring& wstrFileName)
+{
+    vector<wstring> wstrPreFindFile{};
+
+    if (wstrFileName.empty()) return wstrPreFindFile;
+
+    for (auto& FolderPair : m_mapTreeFloder)
+    {
+        CFolder* pFolder = FolderPair.second;
+        if (!pFolder)
+            continue;
+        vector<wstring> wstrCurFindFile = pFolder->Find_File(wstrFileName);
+        if (wstrCurFindFile.empty())
+            continue;
+        wstrPreFindFile.insert( wstrPreFindFile.end(), wstrCurFindFile.begin() , wstrCurFindFile.end());
+    }
+
+
+    for (auto& File : m_vecFile)
+    {
+        if (!File)
+            continue;
+
+        if (File->Get_FileInfo().wstrFileName.find(wstrFileName) == std::wstring::npos)
+            continue;
+
+        wstrPreFindFile.push_back(File->Get_FileInfo().wstrFileFullPath);
+    } 
+
+    return wstrPreFindFile;
 }
 
 CFolder* CFolder::Create(CFolder* pParentFloder, const std::wstring& wstrRootPath, ID3D11Device* pDevice, ID3D11DeviceContext* pContext)
