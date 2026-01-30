@@ -1,12 +1,6 @@
 #pragma once
 #include "VertexData.h"
 
-#pragma push_macro("new")
-#undef new
-#include "json.hpp"
-using json = nlohmann::json;
-#pragma pop_macro("new")
-
 NS_BEGIN(Engine)
 
 typedef struct tagAsBone

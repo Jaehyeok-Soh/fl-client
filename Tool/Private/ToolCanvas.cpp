@@ -92,8 +92,29 @@ void CToolCanvas::Ready_Before_Render(const _float fTimeDelta)
 
 HRESULT CToolCanvas::Render()
 {
+
+	if (nullptr == m_pBatch || nullptr == m_pEffect || nullptr == m_pInputLayout)
+		return E_FAIL;
+
 	SetUp_Rect();
-	m_pBatch->Begin(); 
+
+	D3D11_VIEWPORT vp = {};
+	UINT numVP = 1;
+	m_pDeviceContext->RSGetViewports(&numVP, &vp);
+
+	m_pDeviceContext->IASetInputLayout(m_pInputLayout);
+
+	m_pEffect->SetWorld(DirectX::XMMatrixIdentity());
+	m_pEffect->SetView(DirectX::XMMatrixIdentity());
+	m_pEffect->SetProjection(DirectX::XMMatrixOrthographicOffCenterLH(
+		0.f, vp.Width,
+		vp.Height, 0.f,
+		0.f, 1.f));
+
+	m_pEffect->Apply(m_pDeviceContext);
+
+	m_pBatch->Begin();
+
 	const DirectX::XMFLOAT4 vColor = { 1.f, 1.f, 1.f, 1.f }; // 원하는 색으로 바꾸세요
 
 	// Top

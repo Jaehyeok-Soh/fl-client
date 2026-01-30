@@ -4,11 +4,6 @@
 #include "Level_Effect.h"
 #include "GameObject.h"
 #include "Level_Loading.h"
-#pragma push_macro("new")
-#undef new
-#include "json.hpp"
-using json = nlohmann::json;
-#pragma pop_macro("new")
 #include "DataDocument_Example.h"
 #include "DataStruct_Example.h"
 #include "GameInstance.h"
@@ -114,11 +109,22 @@ void CImGui_Dockspace_MenuBar::Load_Data(const wstring& wstrFilePath)
 	DTO::ECategory eCategory = DTO::ECategory::MAP;
 	_uint iLevelID = ENUM_TO_UINT(eLevelType);
 
+	if (FAILED(m_pGameInstance->Regist_Document<CDataDocument_Example>(iLevelID, eCategory)))
+		return;
+
 	if (FAILED(m_pGameInstance->Load_File_Json(iLevelID, eCategory, wstrFilePath)))
 		return;
 
+	// 여기까지 성공하면 로드가 된것! 아래 코드는 그냥 테스트용
+
 	const CDataDocumentBase* pBase = m_pGameInstance->Get_Document(iLevelID, eCategory, "asdf");
-	
+	CDataDocumentBase* pTest = const_cast<CDataDocumentBase*>(pBase);
+	CDataDocument_Example* phi = static_cast<CDataDocument_Example*>(pTest);
+	auto& okay = phi->Get_ListByType(ENUM_TO_UINT(DTO::EMapType::STATICMODEL));
+	auto& okay2 = phi->Get_ListByType(ENUM_TO_UINT(DTO::EMapType::LIGHT));
+	_int a = 10;
+	if (okay.size() > 0 && okay2.size() > 0)
+		MSG_BOX("Okay");
 }
 
 void CImGui_Dockspace_MenuBar::Save_MapData(const wstring& wstrFilePath)

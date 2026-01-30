@@ -1,31 +1,35 @@
 #include "Engine_pch.h"
-#include "DataDocument_Example.h"
+#include "DataDocument_UI.h"
+#pragma push_macro("new")
+#undef new
+#include "json.hpp"
+using json = nlohmann::json;
+#pragma pop_macro("new")
 
-
-CDataDocument_Example::CDataDocument_Example()
+CDataDocument_UI::CDataDocument_UI()
 {
 }
 
-HRESULT CDataDocument_Example::Initialize()
+HRESULT CDataDocument_UI::Initialize()
 {
 	return S_OK;
 }
 
-HRESULT CDataDocument_Example::Try_Add(const DTO::TExample_LightData& data)
+HRESULT CDataDocument_UI::Try_Add(const DTO::TExample_LightData& data)
 {
 	IObjectDataBase* pObjectBase = Create_ObjectData(DTO::EMapType::LIGHT);
 	static_cast<CExample_LightData*>(pObjectBase)->Get_Data() = data;
 	return Try_Add(pObjectBase);
 }
 
-HRESULT CDataDocument_Example::Try_Add(const DTO::TExample_StaticModelData& data)
+HRESULT CDataDocument_UI::Try_Add(const DTO::TExample_StaticModelData& data)
 {
 	IObjectDataBase* pObjectBase = Create_ObjectData(DTO::EMapType::STATICMODEL);
 	static_cast<CExample_StaticModel*>(pObjectBase)->Get_Data() = data;
 	return Try_Add(pObjectBase);
 }
 
-IObjectDataBase* CDataDocument_Example::Create_ObjectData(DTO::EMapType eType)
+IObjectDataBase* CDataDocument_UI::Create_ObjectData(DTO::EMapType eType)
 {
 	switch (eType)
 	{
@@ -38,7 +42,7 @@ IObjectDataBase* CDataDocument_Example::Create_ObjectData(DTO::EMapType eType)
 	}
 }
 
-HRESULT CDataDocument_Example::Try_Add(IObjectDataBase* pObject)
+HRESULT CDataDocument_UI::Try_Add(IObjectDataBase* pObject)
 {
 	if (pObject == nullptr)
 		return E_FAIL;
@@ -68,7 +72,7 @@ HRESULT CDataDocument_Example::Try_Add(IObjectDataBase* pObject)
 /// </summary>
 /// <param name="j"></param>
 /// <returns></returns>
-json CDataDocument_Example::ToJson() const
+json CDataDocument_UI::ToJson() const
 {
 	json j;
 	j["Category"] = DTO::ECategory::MAP;
@@ -89,7 +93,7 @@ json CDataDocument_Example::ToJson() const
 /// </summary>
 /// <param name="j"></param>
 /// <returns></returns>
-HRESULT CDataDocument_Example::FromJson(const json& j)
+HRESULT CDataDocument_UI::FromJson(const json& j)
 {
 	Clear();
 
@@ -132,18 +136,18 @@ HRESULT CDataDocument_Example::FromJson(const json& j)
 	return S_OK;
 }
 
-CDataDocument_Example* CDataDocument_Example::Create()
+CDataDocument_UI* CDataDocument_UI::Create()
 {
-	CDataDocument_Example* pInstance = new CDataDocument_Example();
+	CDataDocument_UI* pInstance = new CDataDocument_UI();
 	if (FAILED(pInstance->Initialize()))
 	{
-		MSG_BOX("CDataDocument_Example::Create, Failed");
+		MSG_BOX("CDataDocument_UI::Create, Failed");
 		Safe_Release(pInstance);
 	}
 	return pInstance;
 }
 
-void CDataDocument_Example::Free()
+void CDataDocument_UI::Free()
 {
 	Super::Free();
 }

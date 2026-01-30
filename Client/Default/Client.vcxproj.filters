@@ -145,6 +145,9 @@
     <Filter Include="06. FSM\Player\Land">
       <UniqueIdentifier>{90a3215f-abb6-4b46-85cd-612282d4f9cb}</UniqueIdentifier>
     </Filter>
+    <Filter Include="03. GameObject\EffectObject">
+      <UniqueIdentifier>{92c0cd51-e66c-4b79-afa4-76c22a867df3}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="targetver.h">

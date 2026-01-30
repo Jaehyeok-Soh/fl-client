@@ -186,13 +186,17 @@
     <ClCompile Include="..\Private\ContainerObject.cpp" />
     <ClCompile Include="..\Private\ControlContext.cpp" />
     <ClCompile Include="..\Private\Converter.cpp" />
+    <ClCompile Include="..\Private\DataDefine_Json.cpp" />
     <ClCompile Include="..\private\DataDocumentBase.cpp" />
     <ClCompile Include="..\private\DataDocument_Example.cpp" />
+    <ClCompile Include="..\Private\DataDocument_UI.cpp" />
     <ClCompile Include="..\Private\DataEnum.cpp" />
     <ClCompile Include="..\private\DataRepository.cpp" />
     <ClCompile Include="..\private\DataStore.cpp" />
     <ClCompile Include="..\private\DataStruct_Animation.cpp" />
+    <ClCompile Include="..\Private\DataStruct_Effect.cpp" />
     <ClCompile Include="..\Private\DataStruct_Example.cpp" />
+    <ClCompile Include="..\Private\DataStruct_UI.cpp" />
     <ClCompile Include="..\Private\DebugDraw.cpp">
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Use</PrecompiledHeader>
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Use</PrecompiledHeader>
@@ -267,7 +271,6 @@
     <ClCompile Include="..\Private\VIBuffer_Rect_NorTex.cpp" />
     <ClCompile Include="..\Private\VIBuffer_Rect_Tex.cpp" />
     <ClCompile Include="..\Private\VIBuffer_Terrain.cpp" />
-    <ClCompile Include="DataStruct_Effect.cpp" />
     <ClCompile Include="Engine_pch.cpp">
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Create</PrecompiledHeader>
       <PrecompiledHeaderFile Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Engine_pch.h</PrecompiledHeaderFile>
@@ -297,13 +300,17 @@
     <ClInclude Include="..\Public\ContainerObject.h" />
     <ClInclude Include="..\Public\ControlContext.h" />
     <ClInclude Include="..\Public\Converter.h" />
+    <ClInclude Include="..\Public\DataDefine_Json.h" />
     <ClInclude Include="..\public\DataDocumentBase.h" />
     <ClInclude Include="..\public\DataDocument_Example.h" />
+    <ClInclude Include="..\Public\DataDocument_UI.h" />
     <ClInclude Include="..\Public\DataEnum.h" />
     <ClInclude Include="..\public\DataRepository.h" />
     <ClInclude Include="..\public\DataStore.h" />
     <ClInclude Include="..\public\DataStruct_Animation.h" />
+    <ClInclude Include="..\Public\DataStruct_Effect.h" />
     <ClInclude Include="..\Public\DataStruct_Example.h" />
+    <ClInclude Include="..\Public\DataStruct_UI.h" />
     <ClInclude Include="..\Public\DebugDraw.h" />
     <ClInclude Include="..\Public\Delegate.h" />
     <ClInclude Include="..\Public\Engine_Define.h" />
@@ -377,7 +384,6 @@
     <ClInclude Include="..\Public\VIBuffer_Rect_NorTex.h" />
     <ClInclude Include="..\Public\VIBuffer_Rect_Tex.h" />
     <ClInclude Include="..\Public\VIBuffer_Terrain.h" />
-    <ClInclude Include="DataStruct_Effect.h" />
     <ClInclude Include="Engine_pch.h" />
   </ItemGroup>
   <ItemGroup>

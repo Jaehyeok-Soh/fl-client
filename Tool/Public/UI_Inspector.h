@@ -24,7 +24,10 @@ public:
 	void Input_RectTransform();
 	void Input_TextureTag();
 
+	HRESULT Setting_Texture();
 
+	HRESULT File_Search(const _string& str);
+	HRESULT Folder_Search(const string& Path);
 
 private:
 	/// <summary>
@@ -51,6 +54,16 @@ private:
 
 	CToolUI* m_pSelectedUI = { nullptr };
 	uint32_t m_iRectTransformIndex = {};
+
+private:
+	// ======== ImGui 값이 변동 됐다는걸 알리는 변수 ========
+	string              m_strSelectedFolder = "";
+private:
+	//  =======  폴더명 & 파일명을 대신할 Mesh 전용 vector 컨테이너
+	std::map<string, std::vector<std::pair<string/*path*/, string/*Name*/>>> m_TextureMap;
+	std::vector<string> m_TextureFolderNames;
+
+	std::vector<std::pair<string/*Path*/, string/*Name*/>> m_TextureFileNames;
 
 public:
 	static CUI_Inspector* Create(const _char* pLabel, CLevel* pOwner, ID3D11Device* pDevice, ID3D11DeviceContext* pDeviceContext);
