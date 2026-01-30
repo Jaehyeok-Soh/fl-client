@@ -40,6 +40,10 @@ protected:
 	EMapObject_Type			m_eMapObjectType{ EMapObject_Type::END };
 	bool					m_isLoaded{false};
 	void*					m_pDesc{nullptr};
+
+
+	Vec3					m_vImGuiPitchYawRoll{};
+	Quat					m_vImGuiQuat{};
 public:
 	virtual void			Free()									override;
 };

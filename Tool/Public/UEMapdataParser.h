@@ -55,6 +55,7 @@ public:
 public:
 	const wstring										m_WstringConverted{ L"_Converted.json" };
 	const wstring										m_WstringFiltering{ L"_Filtering.json" };
+	Vec3												m_vMulPitchYawRoll{0.f,0.f,0.f};
 private:
 	
 	unordered_map< wstring, vector<CONVERTED_MAPDATA>>  m_umapConvertedMapData{};

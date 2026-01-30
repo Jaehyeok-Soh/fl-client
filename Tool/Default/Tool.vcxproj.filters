@@ -172,6 +172,15 @@
     <Filter Include="06. ImGui\01. Panel\UIPanels\Maker">
       <UniqueIdentifier>{f5fed899-dccb-4d0d-a291-189fd27b3ca2}</UniqueIdentifier>
     </Filter>
+    <Filter Include="06. ImGui\01. Panel\Map\File">
+      <UniqueIdentifier>{052f47e7-8ad0-46fe-9e82-68a1541c2501}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="10. Folder">
+      <UniqueIdentifier>{4df4c641-6c22-41c1-a9af-09c6188b9065}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="11. File">
+      <UniqueIdentifier>{eba6acec-ecab-4a90-8b8e-1c78ded4b5e3}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="framework.h">
@@ -366,6 +375,18 @@
     <ClInclude Include="..\Public\UI_Maker.h">
       <Filter>06. ImGui\01. Panel\UIPanels\Maker</Filter>
     </ClInclude>
+    <ClInclude Include="..\Public\imfilebrowser.h">
+      <Filter>99. ETC\01. ImGui</Filter>
+    </ClInclude>
+    <ClInclude Include="..\public\Panel_FileExplore.h">
+      <Filter>06. ImGui\01. Panel\Map\File</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\Folder.h">
+      <Filter>10. Folder</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\File.h">
+      <Filter>11. File</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <Image Include="small.ico">
@@ -554,6 +575,15 @@
     </ClCompile>
     <ClCompile Include="..\Private\UI_Maker.cpp">
       <Filter>06. ImGui\01. Panel\UIPanels\Maker</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\Panel_FileExplore.cpp">
+      <Filter>06. ImGui\01. Panel\Map\File</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\Folder.cpp">
+      <Filter>10. Folder</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\File.cpp">
+      <Filter>11. File</Filter>
     </ClCompile>
   </ItemGroup>
 </Project>

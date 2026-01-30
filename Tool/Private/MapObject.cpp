@@ -8,12 +8,12 @@
 USING(Tool)
 
 CMapObject::CMapObject(EToolObjectType eType, ID3D11Device* pDevice, ID3D11DeviceContext* pDeviceContext)
-    : CToolObject(eType,pDevice,pDeviceContext)
+    : CToolObject(eType, pDevice, pDeviceContext), m_vImGuiPitchYawRoll{}
 {
 }
 
 CMapObject::CMapObject(const CMapObject& rhs)
-    : CToolObject(rhs) , m_eMapObjectType(rhs.m_eMapObjectType) , m_isLoaded(rhs.m_isLoaded)
+    : CToolObject(rhs), m_eMapObjectType(rhs.m_eMapObjectType), m_isLoaded(rhs.m_isLoaded), m_vImGuiPitchYawRoll{}
 {
 }
 
@@ -147,9 +147,23 @@ void CMapObject::Draw_ImGui()
         Vec3 vScale{}, vPosition;
         Quat vQuat{};
         WorldMatrix.Decompose(vScale, vQuat, vPosition);
-        ImGui::Text( " X : [%.2f]  Y : [%.2f]  Z : [%.2f]  W : [%.2f] " , vQuat.x , vQuat.y , vQuat.z , vQuat.w );
+        ImGui::InputFloat4( "Quat" , &m_vImGuiQuat.x);
+        if (ImGui::Button("Ratattion From Quat"))
+        {
+            pTransfrom->Rotation(m_vImGuiQuat);
+        }
         ImGui::TreePop();
     }
+
+
+    ImGui::InputFloat3("Pitch Yaw Roll", &m_vImGuiPitchYawRoll.x);
+
+    if (ImGui::Button("Rotation"))
+    {
+        pTransfrom->Rotation(XMConvertToRadians(m_vImGuiPitchYawRoll.x), XMConvertToRadians(m_vImGuiPitchYawRoll.y), XMConvertToRadians(m_vImGuiPitchYawRoll.z));
+        ZeroMemory(&m_vImGuiPitchYawRoll, sizeof(Vec3));
+    }
+
 
 
 

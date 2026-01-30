@@ -6,6 +6,7 @@
 #include "Level_Map.h"
 #include "CameraMan.h"
 #include "Camera.h"
+#include "Panel_FileExplore.h"
 
 USING(Tool)
 
@@ -40,11 +41,8 @@ HRESULT CPanel_MapObjectList::Initialize()
 HRESULT CPanel_MapObjectList::Ready_LayerTag()
 {
 	lstrcpyW(m_wszMapObjectLayerTag[ENUM_TO_UINT(EMapObject_Type::STATICMODEL)],g_wszStaticModelLayer);
-
-
 	return S_OK;
 }
-
 
 HRESULT CPanel_MapObjectList::Render(CToolObject* pGo)
 {
@@ -126,10 +124,10 @@ HRESULT CPanel_MapObjectList::Render_MapObjectList()
 						ImGui::TextColored(ImVec4(1.0, 0.f, 0.f, 1.f), pStaticModel->Get_Name().c_str());
 					else
 						ImGui::Text(pStaticModel->Get_Name().c_str());
-					if (ImGui::IsItemClicked())
-					{
+					if (ImGui::IsItemClicked(ImGuiMouseButton_Left))
 						static_cast<CLevel_Map*>(m_pOwnerLevel)->On_ChangeSelectedObject(pStaticModel);
-					}
+					else if (ImGui::IsItemClicked(ImGuiMouseButton_Right))
+							m_pCamera->Get_Component<CTransform>()->Set_Info(TRANSFORM_INFO_STATE::POS, pStaticModel->Get_Component<CTransform>()->Get_Info(TRANSFORM_INFO_STATE::POS));
 				}
 			}
 		}
@@ -182,9 +180,7 @@ HRESULT CPanel_MapObjectList::Render_CamInfo()
 			m_pCameraCom->Set_Fov(fFar);
 		ImGui::TreePop();
 	}
-
 	ImGui::End();
-
 
 	return S_OK;
 }
@@ -211,7 +207,7 @@ CPanel_MapObjectList* CPanel_MapObjectList::Create(const _char* pLabel, CLevel* 
 {
 	CPanel_MapObjectList* pPanel = new CPanel_MapObjectList(pLabel, pOwner, pDevice, pDeviceContext);
 
-	if (pPanel->Initialize())
+	if (FAILED(pPanel->Initialize()))
 	{
 		Safe_Release(pPanel);
 		MSG_BOX(" MapObjec List Panel Is Failed To Create");
