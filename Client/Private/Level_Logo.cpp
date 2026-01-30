@@ -1,20 +1,29 @@
 #include "pch.h"
-#include "Player.h"
 #include "Level_Loading.h"
-#include "CameraMan_Targeter.h"
-#include "GameInstance.h"
 #include "Level_Logo.h"
+//=================
+// Manager
+//=================
 #include "UI_Manager.h"
+
+//=================
+// Builder
+//=================
+#include "Builder_Example.h"
+#include "BuilderSystem.h"
 
 //=================
 // Object
 //=================
-
+#include "Player.h"
+#include "CameraMan_Targeter.h"
 
 //=================
 // UI
 //=================
 #include "GenericUI.h"
+
+#include "GameInstance.h"
 
 CLevel_Logo::CLevel_Logo(ID3D11Device* pDevice, ID3D11DeviceContext* pDeviceContext)
 	: Super(pDevice, pDeviceContext)
@@ -23,6 +32,12 @@ CLevel_Logo::CLevel_Logo(ID3D11Device* pDevice, ID3D11DeviceContext* pDeviceCont
 
 HRESULT CLevel_Logo::Initialize()
 {
+	if (FAILED(Ready_Builders()))
+		return E_FAIL;
+
+	if (FAILED(Build_Files()))
+		return E_FAIL;
+
 	if (FAILED(Ready_Camera_Layer(g_wszDynamicCameraLayer)))
 		return E_FAIL;
 
@@ -60,7 +75,22 @@ HRESULT CLevel_Logo::Render()
 	if (FAILED(Super::Render()))
 		return E_FAIL;
 
-	//::SetWindowText(g_hWnd, L"로고레벨 입니다.");
+	return S_OK;
+}
+
+HRESULT CLevel_Logo::Ready_Builders()
+{
+	if (FAILED(Ready_Builder(DTO::ECategory::MAP, CBuilder_Example::Create(m_pDevice, m_pDeviceContext))))
+		return E_FAIL;
+
+	return S_OK;
+}
+
+HRESULT CLevel_Logo::Build_Files()
+{
+	// For. Example
+	//if (FAILED(Build_File(ENUM_TO_UINT(ELevelType::LOGO), DTO::ECategory::MAP, "asdf")))
+	//	return E_FAIL;
 
 	return S_OK;
 }

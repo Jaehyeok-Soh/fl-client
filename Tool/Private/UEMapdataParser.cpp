@@ -186,7 +186,7 @@ void CUEMapdataParser::Change_ModelPath(OUT _wstring& wstrModelName, OUT _wstrin
 
 	size_t Pos_Point = wstrPath.rfind(L".");
 	if (Pos_Point != std::string::npos)
-		wstrPath.replace(Pos_Point,wstrPath.length(),g_wszModelExtension);
+		wstrPath.replace(Pos_Point, wstrPath.length(), g_wszModelExtension);
 
 
 	wstring wstrChange = L"Level";
