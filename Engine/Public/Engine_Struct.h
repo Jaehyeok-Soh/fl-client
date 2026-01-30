@@ -83,13 +83,19 @@ namespace Engine
 	typedef struct tagShaderEffectDesc
 	{
 		unsigned int iTextureFlags = { 0 };
-		SimpleMath::Vector3 vPadding = {};
-
 		unsigned int iRenderFlags = { 0 };
-		SimpleMath::Vector3 vPadding_2 = {};
-
 		unsigned int  iSamplerStateFlags = {0};
-		SimpleMath::Vector3 vPadding_3 = {};
+		float iDiscardValue = { 0.f };
+
+		unsigned int iOperatorFlags = { 0 };
+		unsigned int iRotationFlags = { 0 };
+		SimpleMath::Vector2 vPadding1 = { 0.f, 0.f };
+
+		// 스프라이트 정보 추가
+		unsigned int SpriteColCount = {};		// 가로 프레임 수
+		unsigned int SpriteRowCount = {};		// 세로 프레임 수
+		unsigned int CurSpriteIndex = {};		// 현재 스프라이트 인덱스
+		float		 Padding2 = {};
 
 		SimpleMath::Vector2 vScrollOffset = { 0.f, 0.f };
 		SimpleMath::Vector2 vDistortionScale = { 0.f, 0.f };

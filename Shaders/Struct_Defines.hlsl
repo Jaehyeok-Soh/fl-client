@@ -201,6 +201,14 @@ struct GS_OUT_POS_PARTICLE
     float2 vLifeTime : TEXCOORD1;
 };
 
+struct GS_OUT_EFFECT_PARTICLE
+{
+    float4 vPosition : SV_POSITION;
+    float2 vUV : TEXCOORD0;
+    float2 vSpriteUV : TEXCOORD1;
+    float2 vLifeTime : TEXCOORD2;
+};
+
 ////////////////
 // PiexlInput //
 ////////////////

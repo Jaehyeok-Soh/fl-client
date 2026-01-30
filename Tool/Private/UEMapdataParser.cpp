@@ -86,9 +86,15 @@ vector<CONVERTED_MAPDATA> CUEMapdataParser::Convert_UE_MapData(const vector<UE_M
 		tUEMapData = vecUEMapData[i];
 		tConvertedData.eType = tUEMapData.Type_ToString();
 
+
 		tConvertedData.tUsingModelInfo.wstrName = Engine_Utils::ToWString(tUEMapData.tProperties.tStaticMesh.strObjectName);
 		tConvertedData.tUsingModelInfo.wstrPath = Engine_Utils::ToWString(tUEMapData.tProperties.tStaticMesh.strObjectPath);
 		Change_ModelPath(tConvertedData.tUsingModelInfo.wstrName, tConvertedData.tUsingModelInfo.wstrPath);
+
+		if (tConvertedData.tUsingModelInfo.wstrName == L"SM_Com_Bus18")
+		{
+			int a = 0; 
+		}
 
 		for (auto& Material : tUEMapData.tProperties.tOverrideMaterials.vecObjectInfo)
 		{
@@ -138,7 +144,7 @@ void CUEMapdataParser::Change_SRT(Vec3* vScale, Vec3* vPitchYawRoll, Vec3* vPosi
 		vPitchYawRoll = vPitchYawRoll;
 	if (vPosition)
 	{
-		Vec3 vSwap = Vec3( vPosition->x * m_fMulScale , vPosition->z * m_fMulScale , vPosition->y * (-m_fMulScale) );
+		Vec3 vSwap = Vec3( vPosition->x * m_fMulScale , vPosition->z * m_fMulScale , vPosition->y * (m_fMulScale) );
 		*vPosition = vSwap;
 	}
 }

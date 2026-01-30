@@ -151,6 +151,9 @@
     <Filter Include="07. System\01. Builder">
       <UniqueIdentifier>{77a673f3-430b-46eb-bcc9-6f9bd3b5dd56}</UniqueIdentifier>
     </Filter>
+    <Filter Include="03. GameObject\EffectObject">
+      <UniqueIdentifier>{92c0cd51-e66c-4b79-afa4-76c22a867df3}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="targetver.h">
