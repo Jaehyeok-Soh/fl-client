@@ -228,22 +228,12 @@ void CEffectObject::Shader_Setting(const wstring& ShaderName)
             Add_Component<CShader>(0, L"Prototype_Component_Shader_VtxEffectTexture", &ShaderDesc);
     }
 
+    // Shader Pass 설정
+    if (Get_Component<CShader>())
+        Get_Component<CShader>()->Set_Pass(m_tEffectDesc._Effect_ShaderPass);
+
+
 }
-
-
-void CEffectObject::Bind_ShaderState_Setting()
-{
-    // 클라에서 설정할 것.
-    ID3DX11EffectRasterizerVariable* rsVar = Get_Component<CShader>()->Get_Rasterizer("SelectedRS");
-    ID3DX11EffectBlendVariable* bsVar = Get_Component<CShader>()->Get_Blend("SelectedBS");
-    ID3DX11EffectDepthStencilVariable* dsVar = Get_Component<CShader>()->Get_DepthStencil("SelectedDS");
-
-    // Rasterizer
-    //if(m_tEffectDesc._Effect_Shader_RasterizeState_Flag & )
-
-    // DepthStencil
-}
-
 
 HRESULT CEffectObject::Bind_ShaderResource()
 {
@@ -259,14 +249,23 @@ HRESULT CEffectObject::Bind_ShaderResource()
         SHADER_EFFECT_DESC pDesc = {};
         // TextureFlag
         pDesc.iTextureFlags = m_tEffectDesc._Effect_TextureFlag;
-        pDesc.vPadding = Vec3{ 0.f, 0.f, 0.f };
         // RenderFlag
         pDesc.iRenderFlags = m_tEffectDesc._Effect_RenderFlag;
-        pDesc.vPadding_2 = Vec3{ 0.f, 0.f, 0.f };
         // SamplerStateFlag
         pDesc.iSamplerStateFlags = m_tEffectDesc._Effect_SamplerStateFlag;
-        pDesc.vPadding_3 = Vec3{ 0.f, 0.f, 0.f };
-        
+        // DiscardValue
+        pDesc.iDiscardValue = m_tEffectDesc._Effect_DiscardValue;
+        // Texture_RotationFlag
+        pDesc.iRotationFlags = m_tEffectDesc._Effect_TextureRotationFlag;
+        // Texture_OperatorFlag
+        pDesc.iOperatorFlags = m_tEffectDesc._Effect_TextureOperatorFlag;
+        pDesc.vPadding1 = SimpleMath::Vector2(0.f, 0.f);
+
+        pDesc.SpriteColCount = m_tEffectDesc._Effect_TileCount.x;
+        pDesc.SpriteRowCount = m_tEffectDesc._Effect_TileCount.y;
+        pDesc.CurSpriteIndex = m_iCurSpriteNumber;
+        pDesc.Padding2 = { 0.f };
+
         pDesc.vDistortionScale = m_tEffectDesc._Effect_DistortionScale;
         pDesc.vEffectColor = m_tEffectDesc._Effect_Color;
         pDesc.vScrollOffset = m_vScrollOffset;
@@ -310,7 +309,6 @@ HRESULT CEffectObject::Bind_ShaderResource()
 HRESULT CEffectObject::Awake(const _uint iCurrentLevelID)
 {
     // 절대로 절대로 Loader에서 불리면 안된다.
-
     return S_OK;
 }
 
@@ -327,10 +325,10 @@ void CEffectObject::Update(const _float fTimeDelta)
     if (m_tEffectDesc._Effect_TimeStop) return;
     // 임시 방편
     _float TimeT = m_tEffectDesc._Effect_PlayBackSpeed * fTimeDelta;
-
-    Super::Update(TimeT);
-    // == 스크롤 값 == 
     TimeCalculate(TimeT);
+    Super::Update(TimeT);
+
+    // == 스크롤 값 == 
 
     switch (m_tEffectDesc._Effect_ShapeType)
     {
@@ -389,6 +387,17 @@ void CEffectObject::Ready_Before_Render(const _float fTimeDelta)
 
     m_pGameInstance->Push_RenderObject(RENDER_CATEGORY::NONELIGHT, this);
     Super::Update_CombinedWorldMatrix(m_pMatParent);
+}
+
+// 
+void CEffectObject::Preview_TextureKey_Binding(const string& Key) 
+{
+
+}
+
+void CEffectObject::Preview_Texture_Reset()
+{
+
 }
 
 HRESULT CEffectObject::Render()
@@ -465,17 +474,47 @@ void CEffectObject::Bind_ShaderResource_Particles()
     // Texture일 때, 빌보드를 먹일 것인가?
 }
 
-void CEffectObject::TimeReset()
-{
+void CEffectObject::TimeReset(Effect_Desc Desc)
+{ 
     m_vScrollOffset = Vec2{ 0.f, 0.f };
+    m_fTimeAccumulation = 0.f;
+    m_tPrevEffectDesc._Effect_Looping = m_tEffectDesc._Effect_Looping = Desc._Effect_Looping;
+    Set_EffectDesc(m_tEffectDesc);
 }
 
 void CEffectObject::TimeCalculate(const _float fDT)
 {
     // =======  [스크롤 값]  ==========
     // 1. 노이즈 텍스처를 사용할 것이라면 반드시 필요할 것.
-    m_vScrollOffset.x += m_tEffectDesc._Effect_ScrollSpeed.x * fDT;
-    m_vScrollOffset.y += m_tEffectDesc._Effect_ScrollSpeed.y * fDT;
+
+    if (m_tEffectDesc._Effect_Duration <= m_fTimeAccumulation)
+    {
+        m_tEffectDesc._Effect_Looping = false;
+        Set_EffectDesc(m_tEffectDesc);
+    }
+
+    if (m_tEffectDesc._Effect_Looping == false)
+    {
+        if (m_vScrollOffset.x >= 1.f || m_vScrollOffset.y >= 1.f)
+            m_tEffectDesc._Effect_Looping = false;
+    }
+
+    m_vScrollOffset.x += fDT * m_tEffectDesc._Effect_ScrollSpeed.x;
+    m_vScrollOffset.y += fDT * m_tEffectDesc._Effect_ScrollSpeed.y;
+
+    // 스프라이트 사용 중이고, 애니메이션 사용을 켰을 때.
+    if ((m_tEffectDesc._Effect_RenderFlag & (1 << 5)) && m_tEffectDesc._Effect_bPlayAnim)
+    {
+        m_fTimeAccumulation += fDT * m_tEffectDesc._Effect_AnimSpeed;
+
+        // 전체 프레임 수 계산
+        _uint iTotalFrame = m_tEffectDesc._Effect_TileCount.x * m_tEffectDesc._Effect_TileCount.y;
+
+        if (iTotalFrame > 0)
+        {
+            m_iCurSpriteNumber = (_uint)m_fTimeAccumulation % iTotalFrame;
+        }
+    }
 }
 
 void CEffectObject::Bind_ShaderResource_Meshes()

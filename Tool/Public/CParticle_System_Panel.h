@@ -40,6 +40,17 @@ protected:
 protected:
     void Draw_EffectColor(CToolObject* pGo);
     void Draw_Parts(CToolObject* pGo);
+    void Draw_Drop_Texture(CToolObject* pGo);
+    void Draw_Rotation_Texture(CToolObject* pGo);
+    void Draw_Sprite_Texture(CToolObject* pGo);
+
+    // Draw_Preview Texture Setting 함수
+    void Draw_Preview_Texture(CToolObject* pGo);
+    HRESULT Create_CanvasEffect();
+    HRESULT Create_Preview_Resources();
+
+    // Texture Window 함수들
+    void UpdateRotationFlags();
 
 protected:
     // ========= Renderer Button 창 ===========
@@ -81,6 +92,15 @@ private:
     _bool               m_bModified = false;
     int                 m_iSelectPartsIndex = 0;
     string              m_strSelectedFolder = "";
+
+    // ======== 이미지의 회전정보를 담고 있는 배열 ==========
+    bool                m_bShowRotationModal = false;
+    int                 m_iRotIndices[6] = { 0, 0, 0, 0, 0, 0 };
+
+    // ======== 도화지로 쓸 이펙트 객체 ============ (Preview Texture를 만들기 위함)
+    class CEffectObject*        m_pCanvasEffectObject = { nullptr };
+    ID3D11RenderTargetView*     m_pPreviewRTV = {nullptr};
+    ID3D11ShaderResourceView*   m_pPreviewSRV = { nullptr };
 };
 
 NS_END

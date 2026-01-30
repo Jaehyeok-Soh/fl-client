@@ -27,6 +27,8 @@ enum class TEXTURETYPE
     NOISE = 1,
     MASKING = 2,
     GRADATION = 3,
+    TRAIL = 4,
+    NORMAL = 5,
 };
 
 enum class E_SHAPETYPE
@@ -119,6 +121,8 @@ public:
         wstring     _Effect_NoiseTexture_Tag = {};
         wstring     _Effect_MaskingTexture_Tag = {};
         wstring     _Effect_GradationTexture_Tag = {};
+        wstring     _Effect_TrailTexture_Tag = {};
+        wstring     _Effect_NormalTexture_Tag = {};
 
         wstring     _Effect_Shader_Path = {};
         wstring     _Effect_Shader_Tag = {};
@@ -141,9 +145,12 @@ public:
         // =========   Tool용 시간 값   ================
         bool      _Effect_TimeStop = true;
 
-        // =========   이펙트 Atlas Texture 전용  =========          << 거의 안쓸듯. 아틀라스 할 바에 편집하고 말지
-        bool        _Effect_bUseAtlas = {};
+        // =========   이펙트 Sprite 사용 여부    ============
+        bool        _Effect_bUseSprite = {};
         _uint2      _Effect_TileCount = {};
+        bool        _Effect_bPlayAnim = { false };
+        _float      _Effect_AnimSpeed = { 1.0f };
+
 
         // =========   이펙트 Emission 전용   =============
         _float      _Effect_RateOverTime = {};
@@ -167,6 +174,8 @@ public:
         _uint               _Effect_TextureFlag = {};
         _uint               _Effect_RenderFlag = {};
         _uint               _Effect_SamplerStateFlag = {};
+        _uint               _Effect_TextureRotationFlag = {};
+        _uint               _Effect_TextureOperatorFlag = {};
 
         // ========  툴용 Flag ========
         // Texture 쓰니?
@@ -178,13 +187,16 @@ public:
         // 빌보드는 있니, 스크롤은 먹이니
         _bool               _Effect_Tool_UseBillboard = { false };
         _bool               _Effect_Tool_UseScroll = { false };
+        _bool               _Effect_Tool_RightScroll = { false };
+        _bool               _Effect_Tool_DownScroll = { false };
 
         // SamplerState 몇번 쓸거니
         int               _Effect_Tool_DiffuseSamplerState_Flag = {};
         int               _Effect_Tool_NoiseSamplerState_Flag = {};
         int               _Effect_Tool_MaskingSamplerState_Flag = {};
-        int               _Effect_Tool_GradiationSamplerState_Flag = {};
+        int               _Effect_Tool_GradationSamplerState_Flag = {};
 
+        // 
     }Effect_Desc;
 
 protected:
@@ -218,7 +230,6 @@ public:
     void Buffer_Setting();
 
     void Particle_Setting();
-    void Bind_ShaderState_Setting();
 
 private:
     //  ==========  Shader Binding Setting  =============
@@ -231,7 +242,7 @@ private:
 private:
     void TimeCalculate(const _float fDT);
 public:
-    void TimeReset();
+    void TimeReset(Effect_Desc Desc);
     void TimePause(_bool b) { m_tEffectDesc._Effect_TimeStop = b; }
 
 public:
@@ -239,6 +250,11 @@ public:
     const Effect_Desc& Get_EffectDesc() { return m_tEffectDesc; }
 
     void Set_EffectDesc(const Effect_Desc& Desc);
+
+public:
+    // 툴 전용 - Preview Texture Effect 전용
+    void Preview_Texture_Reset();
+    void Preview_TextureKey_Binding(const string& Key);
 
 
 public:
@@ -257,6 +273,10 @@ private:
 
     //  ========== 스크롤 OffSet ========
     Vec2      m_vScrollOffset = { 0.f, 0.f };
+    _float    m_fTimeAccumulation = 0.f;
+
+    //  ========== 현재 이펙트 sprite Number  ===========
+    _uint       m_iCurSpriteNumber = {};
     
 private:
     _bool              m_bIsTool = { false };

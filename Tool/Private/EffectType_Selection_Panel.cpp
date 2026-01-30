@@ -168,7 +168,6 @@ void CEffectType_Selection_Panel::CreateParticleEffect()
 		pEffectDesc._Effect_DiffuseTexture_Tag = {};
 		pEffectDesc._Effect_ShaderPass = {};
 
-		pEffectDesc._Effect_bUseAtlas = false;
 		pEffectDesc._Effect_TileCount = CEffectObject::_uint2{0, 0};
 
 		// =======   이펙트 스크롤 Value   ===========
