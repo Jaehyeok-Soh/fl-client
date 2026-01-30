@@ -24,6 +24,9 @@ CPanel_MapObjectList::CPanel_MapObjectList(const _char* pLabel, CLevel* pOwner, 
 	m_pCameraCom = m_pCamera->Get_Component<CCamera>();
 
 	m_arrayMapObjectList.fill(nullptr);
+
+	m_fOriginSRTFlag = CMapObject::EReset_Type::S | CMapObject::EReset_Type::R | CMapObject::EReset_Type::T;
+	
 }
 
 
@@ -187,15 +190,68 @@ HRESULT CPanel_MapObjectList::Render_CamInfo()
 
 HRESULT CPanel_MapObjectList::Render_SelectInfo()
 {
-
 	ImGui::Begin(" Select Info ");
 
 	if (m_pSelectMapObject == nullptr)
 		ImGui::Text(" Select Map Object is Empty ");
 	else
 	{
+		ImGui::SeparatorText(" Actions ");
+
+		ImGui::NewLine();
+
+		if (ImGui::Button(" Delete "))
+		{ 
+			m_pGameInstance->Request_DeleteGameObject(ENUM_TO_UINT(ELevelType::MAP), m_pSelectMapObject->Get_LayerTag(), m_pSelectMapObject);
+			static_cast<CLevel_Map*>(m_pOwnerLevel)->Set_SelectToolObject(nullptr);
+		}
+		ImGui::SameLine();
+		if (ImGui::Button(" Cancel Select "))
+		{ 
+			m_pSelectMapObject = nullptr ;  
+			static_cast<CLevel_Map*>(m_pOwnerLevel)->Set_SelectToolObject(nullptr);
+		}
+
+		ImGui::NewLine();
+
+		ImGui::SeparatorText("Reset / Resister");
+
+		if (ImGui::TreeNode(" Origin SRT "))
+		{
+			Vec3 vScale = m_pSelectMapObject->Get_OriginScale();
+			Vec3 vDegree = m_pSelectMapObject->Get_OriginDegree();
+			Vec3 vPos    = m_pSelectMapObject->Get_OriginPosition();
+			ImGui::Text( " Scale	=> X : [ %.2f ]  Y : [ %.2f ]  Z : [ %.2f ]" , vScale.x	, vScale.y	, vScale.z);
+			ImGui::Text( " Degree	=> X : [ %.2f ]  Y : [ %.2f ]  Z : [ %.2f ]" , vDegree.x	, vDegree.y , vDegree.z);
+			ImGui::Text( " Position => X : [ %.2f ]  Y : [ %.2f ]  Z : [ %.2f ]" , vPos.x		, vPos.y	, vPos.z);
+			ImGui::TreePop();
+		}
+
+		if (ImGui::Button(" Reset "))
+		{
+			static_cast<CMapObject*>(m_pSelectMapObject)->Reset_SRT(m_fOriginSRTFlag);
+		}
+		ImGui::SameLine();
+		if (ImGui::Button(" Register "))
+		{
+			static_cast<CMapObject*>(m_pSelectMapObject)->Register_OriginSRT(m_fOriginSRTFlag);
+		}
+
+		ImGui::CheckboxFlags("S##Flag_S", reinterpret_cast<_int*>(&m_fOriginSRTFlag) , CMapObject::EReset_Type::S );
+		ImGui::SameLine();
+		ImGui::CheckboxFlags("R##Flag_R", reinterpret_cast<_int*>(&m_fOriginSRTFlag) , CMapObject::EReset_Type::R );
+		ImGui::SameLine();
+		ImGui::CheckboxFlags("T##Flag_T", reinterpret_cast<_int*>(&m_fOriginSRTFlag) , CMapObject::EReset_Type::T );
+		ImGui::SameLine();
+
+		ImGui::NewLine();
+
+		ImGui::Separator();
+
 		m_pTransformLayout->Render(m_pSelectMapObject);
-		m_pSelectMapObject->Draw_ImGui();	
+
+		if(m_pSelectMapObject)
+			m_pSelectMapObject->Draw_ImGui();
 	}
 
 	ImGui::End();

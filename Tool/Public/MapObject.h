@@ -12,6 +12,14 @@ class CMapObject : public CToolObject
 {
 	using Super = CToolObject;
 public:
+	enum EReset_Type
+	{
+		NONE = 0,
+		S = 1 << 0,
+		R = 1 << 1,
+		T = 1 << 2,
+		END
+	};
 
 	typedef struct tagMapObjectDesc : public CToolObject::TOOLOBJECT_DESC
 	{
@@ -29,18 +37,30 @@ public:
 	virtual HRESULT			Initialize(void* pArg)							override;
 	HRESULT					Ready_Component();
 public:
+	void					Reset_SRT(Engine::Flags fResetTypeFlag);
+	void					Register_OriginSRT(Engine::Flags fResetTypeFlag);
+public:
+	Vec3					Get_OriginScale();
+	Vec3					Get_OriginDegree();
+	Vec3					Get_OriginPosition();
+public:
 	virtual HRESULT			Awake(const _uint iCurrentLevelID)				override;
 	virtual void			Update_Priority(const _float fTimeDelta)		override;
 	virtual void			Update(const _float fTimeDelta)					override;
-	virtual void			Update_Late(const _float fTimeDelta)			override;
+	virtual void			Update_Late(const _float fTimeelta)			override;
 	virtual void			Ready_Before_Render(const _float fTimeDelta)	override;
 	virtual HRESULT			Render()										override;
 	virtual void			Draw_ImGui()override;
 protected:
 	EMapObject_Type			m_eMapObjectType{ EMapObject_Type::END };
 	bool					m_isLoaded{false};
+	bool					m_isRegisterSRT{false};
 	void*					m_pDesc{nullptr};
 
+
+	Vec3					m_vOriginScale{};
+	Vec3					m_vOriginDegree{};
+	Vec3					m_vOriginPosition{};
 
 	Vec3					m_vImGuiPitchYawRoll{};
 	Quat					m_vImGuiQuat{};

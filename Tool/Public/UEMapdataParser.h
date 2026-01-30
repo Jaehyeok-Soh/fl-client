@@ -30,7 +30,7 @@ private:
 	CUEMapdataParser();
 	virtual ~CUEMapdataParser() = default;
 	bool	Filter(const string& strName,const string& strType);
-	vector<CONVERTED_MAPDATA>  Convert_UE_MapData(const vector<UE_MAP_DATA>& tData);
+	vector<CONVERTED_MAPDATA> Convert_UE_MapData(const vector<UE_MAP_DATA>& tData);
 	void					  Change_SRT(Vec3* vScale, Vec3* vPitchYawRoll, Vec3* vPosition, EStaticModel_Type eType);
 	void					  Change_ModelPath(OUT _wstring& wstrModelName , OUT _wstring& wstrModelPath);
 public:
@@ -39,18 +39,18 @@ public:
 	vector<UE_MAP_DATA>*	   Get_Unreal_MapData(const wstring& FindKey);
 	vector<CONVERTED_MAPDATA>* Get_Converted_MapData(const wstring& FindKey);
 
-	void					  Set_MulScale(float fMulScale) { m_fMulScale = fMulScale; }
-	float					  Get_MulScale() const { return m_fMulScale; }
+	void					   Set_MulScale(float fMulScale) { m_fMulScale = fMulScale; }
+	float					   Get_MulScale() const { return m_fMulScale; }
 
-	vector<wstring>			  Get_ConvertedFilePathList();
-
-public:
-	HRESULT					  Convert_UnrealRawMapData(const wchar_t* wszUERawDataJsonFile);
-	HRESULT					  Batch_UnrealRawMapData(const wchar_t* wwszFilePath);
+	vector<wstring>			   Get_ConvertedFilePathList();
 
 public:
-	HRESULT					  Save_ConvertedRawMapData(const wchar_t* wszFilePath);
-	HRESULT					  Save_FilteringRawMapData(const wchar_t* wszFilePath);
+	HRESULT					   Convert_UnrealRawMapData(const wchar_t* wszUERawDataJsonFile);
+	HRESULT					   Batch_UnrealRawMapData(const wchar_t* wwszFilePath);
+
+public:
+	HRESULT					   Save_ConvertedRawMapData(const wchar_t* wszFilePath);
+	HRESULT					   Save_FilteringRawMapData(const wchar_t* wszFilePath);
 
 public:
 	const wstring										m_WstringConverted{ L"_Converted.json" };

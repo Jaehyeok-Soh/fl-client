@@ -327,6 +327,7 @@ HRESULT CUEMapdataParser::Batch_UnrealRawMapData(const wchar_t* wszFileName)
 		desc.wstrModelPath = CONVERTED_MAPDATA.tUsingModelInfo.wstrPath;
 		desc.wstrModelName = CONVERTED_MAPDATA.tUsingModelInfo.wstrName;
 		desc.eType = CONVERTED_MAPDATA.eType;
+		desc.isLoaded = true;
 		CTransform::TRANSFORM_DESC tTramsoformDesc{};
 
 		if (CONVERTED_MAPDATA.tUsingModelInfo.wstrName.find(L"Wall") != wstring::npos)
