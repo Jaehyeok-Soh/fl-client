@@ -25,6 +25,10 @@
 #include <Assimp/scene.h>
 #include <Assimp/postprocess.h>
 
+#include "PhysX\PxPhysics.h"
+#include "PhysX\PxPhysicsAPI.h"
+using namespace physx;
+
 #include "FMOD/fmod.hpp"
 
 #pragma push_macro("new")

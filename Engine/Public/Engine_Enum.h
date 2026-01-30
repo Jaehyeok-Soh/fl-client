@@ -146,5 +146,89 @@ namespace Engine
 		WALL,
 		END
 	};
+	//===================
+// PhysicsShape
+//===================
+	enum class EPhysicsShape : unsigned int
+	{
+		SPHERE,
+		CAPSULE,
+		BOX,
+		PLANE,
+		END
+	};
+	//===================
+	// PhysicsConvexShape
+	//===================
+	enum class EPhysicsConvexShape : unsigned int
+	{
+		POINT,
+		SEGMENT,
+		BOX,
+		ELLIPSOID,
+		CYLINDER,
+		CONE,
+		END
+	};
+	//===================
+	// PhysicsMaterial
+	//===================
+	enum class EPhysicsMaterial : unsigned int
+	{
+		CUSTOM,
+		PLAYER,
+		DEFAULT,
+		CONCRETE,
+		ICE,
+		WOOD,
+		RUBBER,
+		METAL,
+		GLASS,
+		NONE,
+		END
+	};
+	//===================
+	// PhysicsActorType
+	//===================
+	enum class EPhysicsActorType : unsigned int
+	{
+		STATIC,
+		DYNAMIC,
+		KINEMATIC,
+		END
+	};
+	//===================
+	// PhysicsCCTType
+	//===================
+	enum class EPhysicsCCTType : unsigned int
+	{
+		BOX,
+		CAPSULE,
+		END
+	};
+	//===================
+	// PhysicsCollisionDetection
+	//===================
+	enum class EPhysicsCollisionDetection : unsigned int
+	{
+		DISCRETE,
+		CONTINNUOUS,
+		CONTINUOUS_DYNAMIC,
+		CONTINUOUS_SPECULATIVE,
+		END
+	};
+	enum class PHYSICSFILTERGROUP
+	{
+		PLAYER = 1 << 0,
+		OBJECT1 = 1 << 1,
+		OBJECT2 = 1 << 2,
+		MAP = 1 << 3,
+		ATTACK = 1 << 4,
+		SKILL = 1 << 5,
+		ATTACK_BULLET = 1 << 6,
+		SKILL_BULLET = 1 << 7,
+		NONE = 1 << 8,
+		END
+	};
 }
 #endif // Engine_Enum_h__

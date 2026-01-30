@@ -265,6 +265,24 @@
     <Filter Include="01. Utility\11. DataRepository\Datas\UI\DataDocument_UI">
       <UniqueIdentifier>{e3481bba-63f5-47f4-be29-b3aaa0b87de7}</UniqueIdentifier>
     </Filter>
+    <Filter Include="00. System\12. PhysX">
+      <UniqueIdentifier>{b9e816a5-9979-4c4d-93be-57106c925e39}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="00. System\12. PhysX\Actor">
+      <UniqueIdentifier>{e712b0a3-163f-401f-84eb-73edbe64920d}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="00. System\12. PhysX\Character">
+      <UniqueIdentifier>{073bee4e-087d-4c7b-ac62-66b357f78b51}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="00. System\12. PhysX\Geometry">
+      <UniqueIdentifier>{fc77d74d-45ec-47fc-ba36-cb14bb49106f}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="00. System\12. PhysX\Resource">
+      <UniqueIdentifier>{ec51ab7c-3629-4b3e-87ff-173e9f73355c}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="00. System\12. PhysX\Utils">
+      <UniqueIdentifier>{15f5e6ba-c605-46fb-bc82-2b0ba4544d95}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="..\Private\Timer.cpp">
@@ -560,6 +578,24 @@
     </ClCompile>
     <ClCompile Include="..\Private\Model.cpp">
       <Filter>00. System\05. Component\Model</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\Physics_Module.cpp">
+      <Filter>00. System\12. PhysX</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\Physics_ResourceManager.cpp">
+      <Filter>00. System\12. PhysX\Resource</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\Physics_Utils.cpp">
+      <Filter>00. System\12. PhysX\Utils</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\Physics_ShapeFactory.cpp">
+      <Filter>00. System\12. PhysX\Geometry</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\Physics_CCTManager.cpp">
+      <Filter>00. System\12. PhysX\Character</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\Physics_ActorFactory.cpp">
+      <Filter>00. System\12. PhysX\Actor</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -883,6 +919,24 @@
     </ClInclude>
     <ClInclude Include="..\Public\DataDocument_UI.h">
       <Filter>01. Utility\11. DataRepository\Datas\UI\DataDocument_UI</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\Physics_Module.h">
+      <Filter>00. System\12. PhysX</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\Physics_ResourceManager.h">
+      <Filter>00. System\12. PhysX\Resource</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\Physics_Utils.h">
+      <Filter>00. System\12. PhysX\Utils</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\Physics_ShapeFactory.h">
+      <Filter>00. System\12. PhysX\Geometry</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\Physics_CCTManager.h">
+      <Filter>00. System\12. PhysX\Character</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\Physics_ActorFactory.h">
+      <Filter>00. System\12. PhysX\Actor</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

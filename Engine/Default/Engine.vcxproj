@@ -241,6 +241,12 @@
     <ClCompile Include="..\Private\Object_Manager.cpp" />
     <ClCompile Include="..\private\ObjectPool.cpp" />
     <ClCompile Include="..\Private\PartObject.cpp" />
+    <ClCompile Include="..\Private\Physics_ActorFactory.cpp" />
+    <ClCompile Include="..\Private\Physics_CCTManager.cpp" />
+    <ClCompile Include="..\Private\Physics_Module.cpp" />
+    <ClCompile Include="..\Private\Physics_ResourceManager.cpp" />
+    <ClCompile Include="..\Private\Physics_ShapeFactory.cpp" />
+    <ClCompile Include="..\Private\Physics_Utils.cpp" />
     <ClCompile Include="..\Private\Picking.cpp" />
     <ClCompile Include="..\Private\Prototype_Manager.cpp" />
     <ClCompile Include="..\Private\Ray.cpp" />
@@ -353,6 +359,12 @@
     <ClInclude Include="..\Public\Object_Manager.h" />
     <ClInclude Include="..\public\ObjectPool.h" />
     <ClInclude Include="..\Public\PartObject.h" />
+    <ClInclude Include="..\Public\Physics_ActorFactory.h" />
+    <ClInclude Include="..\Public\Physics_CCTManager.h" />
+    <ClInclude Include="..\Public\Physics_Module.h" />
+    <ClInclude Include="..\Public\Physics_ResourceManager.h" />
+    <ClInclude Include="..\Public\Physics_ShapeFactory.h" />
+    <ClInclude Include="..\Public\Physics_Utils.h" />
     <ClInclude Include="..\Public\Picking.h" />
     <ClInclude Include="..\Public\Prototype_Manager.h" />
     <ClInclude Include="..\Public\Ray.h" />

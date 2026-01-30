@@ -50,12 +50,12 @@ namespace DX
         FXMVECTOR origin,
         FXMVECTOR majorAxis,
         FXMVECTOR minorAxis,
-        GXMVECTOR color);
+        GXMVECTOR color = DirectX::Colors::White);
 
 
     inline void XM_CALLCONV DrawCube(PrimitiveBatch<VertexPositionColor>* batch,
         CXMMATRIX matWorld,
-        FXMVECTOR color)
+        FXMVECTOR color = DirectX::Colors::White)
     {
         static const XMVECTORF32 s_verts[8] =
         {
@@ -98,7 +98,7 @@ namespace DX
 
     inline void XM_CALLCONV Draw(PrimitiveBatch<VertexPositionColor>* batch,
         const BoundingSphere& sphere,
-        FXMVECTOR color)
+        FXMVECTOR color = DirectX::Colors::White)
     {
         XMVECTOR origin = XMLoadFloat3(&sphere.Center);
 
@@ -116,7 +116,7 @@ namespace DX
 
     inline void XM_CALLCONV Draw(PrimitiveBatch<VertexPositionColor>* batch,
         const BoundingBox& box,
-        FXMVECTOR color)
+        FXMVECTOR color = DirectX::Colors::White)
     {
         XMMATRIX matWorld = XMMatrixScaling(box.Extents.x, box.Extents.y, box.Extents.z);
         XMVECTOR position = XMLoadFloat3(&box.Center);
@@ -128,7 +128,7 @@ namespace DX
 
     inline void XM_CALLCONV Draw(PrimitiveBatch<VertexPositionColor>* batch,
         const BoundingOrientedBox& obb,
-        FXMVECTOR color)
+        FXMVECTOR color = DirectX::Colors::White)
     {
         XMMATRIX matWorld = XMMatrixRotationQuaternion(XMLoadFloat4(&obb.Orientation));
         XMMATRIX matScale = XMMatrixScaling(obb.Extents.x, obb.Extents.y, obb.Extents.z);
@@ -142,7 +142,7 @@ namespace DX
 
     inline void XM_CALLCONV Draw(PrimitiveBatch<VertexPositionColor>* batch,
         const BoundingFrustum& frustum,
-        FXMVECTOR color)
+        FXMVECTOR color = DirectX::Colors::White)
     {
         XMFLOAT3 corners[BoundingFrustum::CORNER_COUNT];
         frustum.GetCorners(corners);
@@ -190,7 +190,7 @@ namespace DX
         FXMVECTOR origin,
         size_t xdivs,
         size_t ydivs,
-        GXMVECTOR color)
+        GXMVECTOR color = DirectX::Colors::White)
     {
         xdivs = std::max<size_t>(1, xdivs);
         ydivs = std::max<size_t>(1, ydivs);
@@ -265,7 +265,7 @@ namespace DX
         FXMVECTOR origin,
         FXMVECTOR direction,
         bool normalize,
-        FXMVECTOR color)
+        FXMVECTOR color = DirectX::Colors::White)
     {
         VertexPositionColor verts[3];
         XMStoreFloat3(&verts[0].position, origin);
@@ -300,7 +300,7 @@ namespace DX
         FXMVECTOR pointA,
         FXMVECTOR pointB,
         FXMVECTOR pointC,
-        GXMVECTOR color)
+        GXMVECTOR color = DirectX::Colors::White)
     {
         VertexPositionColor verts[4];
         XMStoreFloat3(&verts[0].position, pointA);
@@ -314,6 +314,165 @@ namespace DX
         XMStoreFloat4(&verts[3].color, color);
 
         batch->Draw(D3D_PRIMITIVE_TOPOLOGY_LINESTRIP, verts, 4);
+    }
+
+    inline void XM_CALLCONV DrawMesh(DirectX::PrimitiveBatch<DirectX::VertexPositionColor>* batch,
+        const PxGeometryHolder& geom,
+        const PxTransform& globalPose,
+        CXMMATRIX matWorld,
+        DirectX::GXMVECTOR color = DirectX::Colors::White)
+    {
+        if (geom.getType() != PxGeometryType::eTRIANGLEMESH)
+            return;
+
+        PxTriangleMeshGeometry triMeshGeom = geom.triangleMesh();
+        PxTriangleMesh* triMesh = triMeshGeom.triangleMesh;
+        if (!triMesh)
+            return;
+
+        const PxVec3* pxVerts = triMesh->getVertices();
+        const void* pxTris = triMesh->getTriangles();
+        const PxU32 numVerts = triMesh->getNbVertices();
+        const PxU32 numTris = triMesh->getNbTriangles();
+
+        _bool is16Bit = triMesh->getTriangleMeshFlags() & PxTriangleMeshFlag::e16_BIT_INDICES;
+
+        static vector<VertexPositionColor> batchVerts;
+        batchVerts.clear();
+        batchVerts.reserve(numVerts);
+
+        PxMeshScale meshScale = triMeshGeom.scale;
+
+        XMFLOAT4 vColor;
+        XMStoreFloat4(&vColor, color);
+
+        for (PxU32 i = 0; i < numVerts; i++)
+        {
+            PxVec3 v = meshScale.transform(pxVerts[i]);
+            Vec4 vPos = XMVector3TransformCoord(XMLoadFloat3((XMFLOAT3*)&v), matWorld);
+
+            VertexPositionColor vert;
+            XMStoreFloat3(&vert.position, vPos);
+            vert.color = vColor;
+
+            batchVerts.push_back(vert);
+        }
+
+        static vector<_ushort> batchIndices;
+        batchIndices.clear();
+        batchIndices.reserve(numTris * 6); // 삼각형 1개당 선 3개(인덱스 6개)
+
+        for (PxU32 i = 0; i < numTris; i++)
+        {
+            _uint i0, i1, i2;
+
+            if (is16Bit)
+            {
+                const PxU16* indices = (const PxU16*)pxTris;
+                i0 = indices[i * 3 + 0];
+                i1 = indices[i * 3 + 1];
+                i2 = indices[i * 3 + 2];
+            }
+            else
+            {
+                const PxU32* indices = (const PxU32*)pxTris;
+                i0 = indices[i * 3 + 0];
+                i1 = indices[i * 3 + 1];
+                i2 = indices[i * 3 + 2];
+            }
+
+            batchIndices.push_back((_ushort)i0);
+            batchIndices.push_back((_ushort)i1);
+
+            batchIndices.push_back((_ushort)i1);
+            batchIndices.push_back((_ushort)i2);
+
+            batchIndices.push_back((_ushort)i2);
+            batchIndices.push_back((_ushort)i0);
+        }
+
+        batch->DrawIndexed(D3D_PRIMITIVE_TOPOLOGY_LINELIST,
+            batchIndices.data(),
+            batchIndices.size(),
+            batchVerts.data(),
+            batchVerts.size());
+    }
+
+    inline void XM_CALLCONV DrawCapsule(DirectX::PrimitiveBatch<DirectX::VertexPositionColor>* batch,
+        const DirectX::BoundingSphere& sphere,
+        _float halfHeight,
+        DirectX::GXMVECTOR color = DirectX::Colors::White)
+    {
+        ///
+        /// Head
+        ///
+        XMVECTOR originHead = XMLoadFloat3(&sphere.Center);
+        originHead = XMVectorSetY(originHead, XMVectorGetY(originHead) + halfHeight);
+
+        const float radius = sphere.Radius;
+
+        XMVECTOR xaxisHead = g_XMIdentityR0 * radius;
+        XMVECTOR yaxisHead = g_XMIdentityR1 * radius;
+        XMVECTOR zaxisHead = g_XMIdentityR2 * radius;
+
+        DrawRing(batch, originHead, xaxisHead, zaxisHead, color);
+        DrawRing(batch, originHead, xaxisHead, yaxisHead, color);
+        DrawRing(batch, originHead, yaxisHead, zaxisHead, color);
+
+
+
+        ///
+        /// Foot
+        ///
+        XMVECTOR originFoot = XMLoadFloat3(&sphere.Center);
+
+        XMVECTOR xaxisFoot = g_XMIdentityR0 * radius;
+        XMVECTOR yaxisFoot = g_XMIdentityR1 * radius;
+        XMVECTOR zaxisFoot = g_XMIdentityR2 * radius;
+
+        DrawRing(batch, originFoot, xaxisFoot, zaxisFoot, color);
+        DrawRing(batch, originFoot, xaxisFoot, yaxisFoot, color);
+        DrawRing(batch, originFoot, yaxisFoot, zaxisFoot, color);
+
+
+
+        ///
+        /// Body
+        ///
+        XMVECTOR vRight = XMVectorSet(1.f, 0.f, 0.f, 0.f);
+        XMVECTOR vLook = XMVectorSet(0.f, 0.f, 1.f, 0.f);
+
+        XMFLOAT4 vColor;
+        XMStoreFloat4(&vColor, color);
+
+        VertexPositionColor v1;
+        VertexPositionColor v2;
+        v1.color = vColor;
+        v2.color = vColor;
+
+        {
+            XMStoreFloat3(&v1.position, originHead + vRight * radius);
+            XMStoreFloat3(&v2.position, originFoot + vRight * radius);
+            batch->DrawLine(v1, v2);
+        }
+
+        {
+            XMStoreFloat3(&v1.position, originHead - vRight * radius);
+            XMStoreFloat3(&v2.position, originFoot - vRight * radius);
+            batch->DrawLine(v1, v2);
+        }
+
+        {
+            XMStoreFloat3(&v1.position, originHead + vLook * radius);
+            XMStoreFloat3(&v2.position, originFoot + vLook * radius);
+            batch->DrawLine(v1, v2);
+        }
+
+        {
+            XMStoreFloat3(&v1.position, originHead - vLook * radius);
+            XMStoreFloat3(&v2.position, originFoot - vLook * radius);
+            batch->DrawLine(v1, v2);
+        }
     }
 }
 

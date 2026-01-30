@@ -140,7 +140,7 @@
       <EnableCOMDATFolding>true</EnableCOMDATFolding>
       <OptimizeReferences>true</OptimizeReferences>
       <GenerateDebugInformation>true</GenerateDebugInformation>
-      <AdditionalDependencies>Engine.lib;d3d11.lib;d3dcompiler.lib;dxguid.lib;DirectXTex\\DirectXTex.lib;FX11\\Effects11.lib;Assimp\\assimp-vc143-mt.lib;DirectXTK\\Release\\DirectXTK.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>Engine.lib;d3d11.lib;d3dcompiler.lib;dxguid.lib;DirectXTex\\DirectXTex.lib;FX11\\Effects11.lib;Assimp\\assimp-vc143-mt.lib;DirectXTK\\Release\\DirectXTK.lib;PhysX/PhysX_64.lib;PhysX/PhysXCommon_64.lib;PhysX/PhysXCooking_64.lib;PhysX/PhysXFoundation_64.lib;PhysX/PVDRuntime_64.lib;PhysX/PhysXExtensions_static_64.lib;PhysX/PhysXPvdSDK_static_64.lib;PhysX/PhysXGpu_64.lib;PhysX/PhysXCharacterKinematic_static_64.lib;%(AdditionalDependencies)</AdditionalDependencies>
       <AdditionalLibraryDirectories>../../EngineSDK/Library/Release;../../Libraries/Lib/;</AdditionalLibraryDirectories>
     </Link>
   </ItemDefinitionGroup>
