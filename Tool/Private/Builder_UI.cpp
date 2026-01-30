@@ -66,7 +66,7 @@ HRESULT CBuilder_UI::Create_CanvasDTO(const DTO::TUI_CanvasData& data)
 	CToolCanvas::TOOLCANVAS_DESC Desc = {};
 	Desc.iLevelIndex = static_cast<uint32_t>(ELevelType::UI);
 
-	Desc.strTag = data.strName;
+	Desc.strTag = data.strTag;
 	Desc.fWidth = data.fWidth;
 	Desc.fHeight = data.fHeight;
 	Desc.fX = data.fPosX;
@@ -90,7 +90,7 @@ HRESULT CBuilder_UI::Create_LayerDTO(const DTO::TUI_LayerData& data)
 	CToolLayer::TOOLLAYER_DESC Desc = {};
 	Desc.iLevelIndex = static_cast<uint32_t>(ELevelType::UI);
 
-	Desc.strTag = data.strLayerTag;
+	Desc.strTag = data.strTag;
 
 	CGameObject* pResult = m_pGameInstance->Add_GameObject(Desc.iLevelIndex, g_wszPrototypeTagLayer, 
 		Desc.iLevelIndex, Engine_Utils::ToWString( Desc.strTag ), &Desc);
@@ -109,7 +109,7 @@ HRESULT CBuilder_UI::Create_GenericUIDTO(const DTO::TUI_GenericUIData& data)
 	CToolUI::TOOLUI_DESC Desc = {};
 	Desc.iLevelIndex = static_cast<uint32_t>(ELevelType::UI);
 
-	Desc.strName = data.strName	;
+	Desc.strName = data.strTag	;
 	Desc.iRectTransformType = data.iRectTransformType;
 	Desc.iUIType = data.iUIType;
 	Desc.fWidth = data.fWidth;
@@ -119,7 +119,8 @@ HRESULT CBuilder_UI::Create_GenericUIDTO(const DTO::TUI_GenericUIData& data)
 	Desc.fZ = data.fPosZ;
 
 	CGameObject* pResult = m_pGameInstance->Add_GameObject(Desc.iLevelIndex, g_wszPrototypeTagLayer,
-		Desc.iLevelIndex, Engine_Utils::ToWString(data.strLayerTag), &Desc);
+		Desc.iLevelIndex, Engine_Utils::ToWString(data.strTag), &Desc);
+
 	if (pResult == nullptr)
 		return E_FAIL;
 

@@ -7,22 +7,14 @@ using json = nlohmann::json;
 using order_json = nlohmann::ordered_json;
 #pragma pop_macro("new")
 
+#include "DataStruct_UI.h"
+
 NS_BEGIN(Engine)
 class CGameInstance;
 NS_END
 
 
 NS_BEGIN(Tool)
-
-
-typedef struct tagCanvasData CANVAS_DATA;
-typedef struct tagLayerData LAYER_DATA;
-typedef struct tagGenericUIData GENERIC_UI_DATA;
-
-typedef struct tagUIDTO UI_DTO;
-typedef struct tagLayerDTO LAYER_DTO;
-typedef struct tagCanvasDTO CANVAS_DTO;
-
 class CToolUI;
 
 enum class EUiType {
@@ -30,7 +22,7 @@ enum class EUiType {
 };
 
 enum class ERectTransform {
-	LEFTTOP = 0, TOP, RIGHTTOP, LEFT, CENTER, RIGHT, LEFTBOTTOM, BOTTOM, RIGHTBOTTOM, END
+	LT = 0, CT, RT, LC, C, RC, LB, CB, RB, END
 };
 
 class CUIData_Repository final : public CBase
@@ -44,11 +36,10 @@ private:
 	virtual ~CUIData_Repository() = default;
 
 public:
-	HRESULT Load_UIData(OUT vector<CANVAS_DATA>& OutRef);
+	HRESULT Load_UIData();
 	HRESULT Save_UIData();
 
 private:
-	vector<CANVAS_DATA> m_vecUIDTO;
 	CGameInstance* m_pGameInstance = { nullptr };
 
 public:
@@ -87,165 +78,47 @@ static EUiType StringToUIType(const _string& str)
 	else
 		return EUiType::END;
 }
+
 static const _string& RectTransformToString(ERectTransform eType)
 {
-	static const _string sLEFTTOP = "LEFTTOP";
-	static const _string sTOP = "TOP";
-	static const _string sRIGHTTOP = "RIGHTTOP";
-	static const _string sLEFT = "LEFT";
-	static const _string sCENTER = "CENTER";
-	static const _string sRIGHT = "RIGHT";
-	static const _string sLEFTBOTTOM = "LEFTBOTTOM";
-	static const _string sBOTTOM = "BOTTOM";
-	static const _string sRIGHTBOTTOM = "RIGHTBOTTOM";
+	static const _string sLT = "LT";
+	static const _string sCT = "CT";
+	static const _string sRT = "RT";
+	static const _string sLC = "LC";
+	static const _string sC = "C";
+	static const _string sRC = "RC";
+	static const _string sLB = "LB";
+	static const _string sCB = "CB";
+	static const _string sRB = "RB";
 	static const _string sEMPTY = "";
 
 	switch (eType)
 	{
-	case Tool::ERectTransform::LEFTTOP:
-		return sLEFTTOP;
-	case Tool::ERectTransform::TOP:
-		return sTOP;
-	case Tool::ERectTransform::RIGHTTOP:
-		return sRIGHTTOP;
-	case Tool::ERectTransform::LEFT:
-		return sLEFT;
-	case Tool::ERectTransform::CENTER:
-		return sCENTER;
-	case Tool::ERectTransform::RIGHT:
-		return sRIGHT;
-	case Tool::ERectTransform::LEFTBOTTOM:
-		return sLEFTBOTTOM;
-	case Tool::ERectTransform::BOTTOM:
-		return sBOTTOM;
-	case Tool::ERectTransform::RIGHTBOTTOM:
-		return sRIGHTBOTTOM;
+	case ERectTransform::LT: return sLT;
+	case ERectTransform::CT: return sCT;
+	case ERectTransform::RT: return sRT;
+	case ERectTransform::LC: return sLC;
+	case ERectTransform::C:  return sC;
+	case ERectTransform::RC: return sRC;
+	case ERectTransform::LB: return sLB;
+	case ERectTransform::CB: return sCB;
+	case ERectTransform::RB: return sRB;
+	default: break;
 	}
 	return sEMPTY;
 }
+
 static ERectTransform StringToRectTransform(const _string& str)
 {
-	if (::strcmp(str.c_str(), "LEFTTOP") == 0)
-		return ERectTransform::LEFTTOP;
-	else if (::strcmp(str.c_str(), "TOP") == 0)
-		return ERectTransform::TOP;
-	else if (::strcmp(str.c_str(), "RIGHTTOP") == 0)
-		return ERectTransform::RIGHTTOP;
-	else if (::strcmp(str.c_str(), "LEFT") == 0)
-		return ERectTransform::LEFT;
-	else if (::strcmp(str.c_str(), "CENTER") == 0)
-		return ERectTransform::CENTER;
-	else if (::strcmp(str.c_str(), "RIGHT") == 0)
-		return ERectTransform::RIGHT;
-	else if (::strcmp(str.c_str(), "LEFTBOTTOM") == 0)
-		return ERectTransform::LEFTBOTTOM;
-	else if (::strcmp(str.c_str(), "BOTTOM") == 0)
-		return ERectTransform::BOTTOM;
-	else if (::strcmp(str.c_str(), "RIGHTBOTTOM") == 0)
-		return ERectTransform::RIGHTBOTTOM;
-	else
-		return ERectTransform::END;
+	if (::strcmp(str.c_str(), "LT") == 0) return ERectTransform::LT;
+	if (::strcmp(str.c_str(), "CT") == 0) return ERectTransform::CT;
+	if (::strcmp(str.c_str(), "RT") == 0) return ERectTransform::RT;
+	if (::strcmp(str.c_str(), "LC") == 0) return ERectTransform::LC;
+	if (::strcmp(str.c_str(), "C") == 0) return ERectTransform::C;
+	if (::strcmp(str.c_str(), "RC") == 0) return ERectTransform::RC;
+	if (::strcmp(str.c_str(), "LB") == 0) return ERectTransform::LB;
+	if (::strcmp(str.c_str(), "CB") == 0) return ERectTransform::CB;
+	if (::strcmp(str.c_str(), "RB") == 0) return ERectTransform::RB;
+	return ERectTransform::END;
 }
-
-/* 런타임 전용 */
-typedef struct tagGenericUIData
-{
-	/* For.Runtime */
-	_string strName;
-
-	uint32_t iUIType;
-	uint32_t iRectTransformType;
-	_string strTextureTag;
-	uint32_t iTextureIndex;
-
-	_float fWidth;
-	_float fHeight;
-	_float fPosX;
-	_float fPosY;
-	_float fPosZ;
-
-	void Clear_Data()
-	{
-		strName = "";
-		iUIType = 0;
-		iRectTransformType = 4;
-		strTextureTag = "";
-		iTextureIndex = 0;
-		fWidth = 0.f;
-		fHeight = 0.f;
-		fPosX = 0.f;
-		fPosY = 0.f;
-		fPosZ = 0.f;
-	}
-
-}GENERIC_UI_DATA;
-typedef struct tagLayerData
-{
-	_string strTag;
-
-	void Clear_Data()
-	{
-		strTag = "";
-	}
-}LAYER_DATA;
-typedef struct tagCanvasData
-{
-	_string strTag;
-	_bool isUsingViewport;
-
-	_float fWidth;
-	_float fHeight;
-	_float fPosX;
-	_float fPosY;
-	_float fPosZ;
-
-	void Clear_Data()
-	{
-		strTag = "";
-		isUsingViewport = FALSE;
-		fWidth = 0.f;
-		fHeight = 0.f;
-		fPosX = 0.f;
-		fPosY = 0.f;
-		fPosZ = 0.f;
-	}
-}CANVAS_DATA;
-
-/* 세이브/로드 전용*/
-typedef struct tagUIDTO
-{
-	GENERIC_UI_DATA UIVO;
-
-}UI_DTO;
-
-typedef struct tagLayerDTO
-{
-	LAYER_DATA LayerVO;
-
-	vector<UI_DTO> vecUIDTO;
-
-}LAYER_DTO;
-
-typedef struct tagCanvasDTO
-{
-	CANVAS_DATA CanvasVO;
-
-	vector<LAYER_DTO> vecLayerDTO;
-
-}CANVAS_DTO;
-
-void to_json(order_json& _j, const CANVAS_DATA& _tData);
-void from_json(const order_json& _j, CANVAS_DATA& _tData);
-void to_json(order_json& _j, const LAYER_DATA& _tData);
-void from_json(const order_json& _j, LAYER_DATA& _tData);
-void to_json(order_json& _j, const GENERIC_UI_DATA& _tData);
-void from_json(const order_json& _j, GENERIC_UI_DATA& _tData);
-
-void to_json(order_json& _j, const UI_DTO& _tData);
-void from_json(const order_json& _j, UI_DTO& _tData);
-void to_json(order_json& _j, const LAYER_DTO& _tData);
-void from_json(const order_json& _j, LAYER_DTO& _tData);
-void to_json(order_json& _j, const CANVAS_DTO& _tData);
-void from_json(const order_json& _j, CANVAS_DTO& _tData);
-
 NS_END

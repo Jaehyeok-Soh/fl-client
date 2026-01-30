@@ -17,9 +17,8 @@ inline constexpr _uint g_UITypeCount{ ENUM_TO_UINT(EUIType::END) };
 struct TUI_GenericUIData
 {
 	static constexpr EUIType eType = EUIType::GENERICUI;
-	std::string strTag{ "GenericUI" };
-	std::string strName;
-	std::string strLayerTag;
+	std::string strTag;
+	uint32_t iLayerIndex;
 	uint32_t iRectTransformType;
 	uint32_t iUIType;
 	_float fWidth;
@@ -27,21 +26,21 @@ struct TUI_GenericUIData
 	_float fPosX;
 	_float fPosY;
 	_float fPosZ;
-
+	_string strTextureTag;
+	uint32_t iTextureIndex;
 };
 
 struct TUI_LayerData
 {
 	static constexpr EUIType eType = EUIType::LAYER;
-	std::string strTag{ "Layer" };
-	std::string strLayerTag;
+	std::string strTag;
 };
 
 struct TUI_CanvasData
 {
 	static constexpr EUIType eType = EUIType::CANVAS;
-	std::string strTag{ "Canvas" };
-	std::string strName;
+	std::string strTag;
+
 	_float fWidth;
 	_float fHeight;
 	_float fPosX;
@@ -50,14 +49,12 @@ struct TUI_CanvasData
 };
 
 /////////////////-------------------  to_json, from_json  -------------------/////////////////
-inline void to_json(json& j, const TUI_GenericUIData& data);
-inline void from_json(const json& j, TUI_GenericUIData& data);
-
-inline void to_json(json& j, const TUI_LayerData& data);
-inline void from_json(const json& j, TUI_LayerData& data);
-
-inline void to_json(json& j, const TUI_CanvasData& data);
-inline void from_json(const json& j, TUI_CanvasData& data);
+void to_json(json& j, const TUI_GenericUIData& data);
+void from_json(const json& j, TUI_GenericUIData& data);
+void to_json(json& j, const TUI_LayerData& data);
+void from_json(const json& j, TUI_LayerData& data);
+void to_json(json& j, const TUI_CanvasData& data);
+void from_json(const json& j, TUI_CanvasData& data);
 NS_END
 
 /////////////////-------------------  Wrapping Class  -------------------/////////////////

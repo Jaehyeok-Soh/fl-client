@@ -16,15 +16,13 @@ NLOHMANN_JSON_SERIALIZE_ENUM(EUIType,
 	}
 )	
 
-inline void to_json(json& j, const TUI_GenericUIData& data)
+void to_json(json& j, const TUI_GenericUIData& data)
 {
 	j = json
 	{
 		{ "Type", TUI_GenericUIData::eType },
 		{ "strTag", data.strTag },
-		{ "strUIName", data.strName },
-		{ "strLayerTag", data.strLayerTag },
-
+		{ "iLayerIndex", data.iLayerIndex },
 		{ "iRectTransformType", data.iRectTransformType },
 		{ "iUIType", data.iUIType },
 		{ "fWidth", data.fWidth },
@@ -32,14 +30,15 @@ inline void to_json(json& j, const TUI_GenericUIData& data)
 		{ "fPosX", data.fPosX },
 		{ "fPosY", data.fPosY },
 		{ "fPosZ", data.fPosZ },
+
+		{ "strTextureTag", data.strTextureTag },
+		{ "iTextureIndex", data.iTextureIndex },
 	};
 }
-inline void from_json(const json& j, TUI_GenericUIData& data)
+void from_json(const json& j, TUI_GenericUIData& data)
 {
 	j.at("strTag").get_to(data.strTag);
-	j.at("strName").get_to(data.strName);
-	j.at("strLayerTag").get_to(data.strLayerTag);
-
+	j.at("iLayerIndex").get_to(data.iLayerIndex);
 	j.at("iRectTransformType").get_to(data.iRectTransformType);
 	j.at("iUIType").get_to(data.iUIType);
 	j.at("fWidth").get_to(data.fWidth);
@@ -47,29 +46,27 @@ inline void from_json(const json& j, TUI_GenericUIData& data)
 	j.at("fPosX").get_to(data.fPosX);
 	j.at("fPosY").get_to(data.fPosY);
 	j.at("fPosZ").get_to(data.fPosZ);
+	j.at("strTextureTag").get_to(data.strTextureTag);
+	j.at("iTextureIndex").get_to(data.iTextureIndex);
 }
-inline void to_json(json& j, const TUI_LayerData& data)
+void to_json(json& j, const TUI_LayerData& data)
 {
 	j = json
 	{
 		{ "Type", TUI_LayerData::eType },
 		{ "strTag", data.strTag },
-		{ "strLayerTag", data.strLayerTag },
 	};
 }
-inline void from_json(const json& j, TUI_LayerData& data)
+void from_json(const json& j, TUI_LayerData& data)
 {
 	j.at("strTag").get_to(data.strTag);
-	j.at("strLayerTag").get_to(data.strLayerTag);
 }
-
-inline void to_json(json& j, const TUI_CanvasData& data)
+void to_json(json& j, const TUI_CanvasData& data)
 {
 	j = json
 	{
 		{ "Type", TUI_CanvasData::eType },
 		{ "strTag", data.strTag },
-		{ "strName", data.strName},		
 		{ "fWidth", data.fWidth },
 		{ "fHeight", data.fHeight },
 		{ "fPosX", data.fPosX },
@@ -78,10 +75,9 @@ inline void to_json(json& j, const TUI_CanvasData& data)
 	};
 }
 
-inline void from_json(const json& j, TUI_CanvasData& data)
+void from_json(const json& j, TUI_CanvasData& data)
 {
 	j.at("strTag").get_to(data.strTag);
-	j.at("strName").get_to(data.strName);
 	j.at("fWidth").get_to(data.fWidth);
 	j.at("fHeight").get_to(data.fHeight);
 	j.at("fPosX").get_to(data.fPosX);

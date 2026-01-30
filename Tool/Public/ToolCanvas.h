@@ -57,10 +57,22 @@ public:
 	_float* Get_PosY_Ptr() { return &m_fY; }
 	_float* Get_PosZ_Ptr() { return &m_fZ; }
 
-	const CANVAS_DATA& Get_Data()const { return m_tCanvasData; }
-	CANVAS_DATA& Get_Data_Ref() { return m_tCanvasData; }
+	Vec2 Get_LT() { return Vec2{ m_fX - m_fWidth * 0.5f , m_fY - m_fHeight * 0.5f }; }	// Left Top
+	Vec2 Get_CT() { return Vec2{ m_fX,  m_fY - m_fHeight * 0.5f }; }					// Center Top
+	Vec2 Get_RT() { return Vec2{ m_fX + m_fWidth * 0.5f , m_fY - m_fHeight * 0.5f }; }	// Right Top
+	Vec2 Get_LC() { return Vec2{ m_fX - m_fWidth * 0.5f  , m_fY }; }					// Left Center
+	Vec2 Get_C()  { return Vec2{ m_fX , m_fY }; }										// Center
+	Vec2 Get_RC() { return Vec2{ m_fX + m_fWidth * 0.5f , m_fY }; }						// Right Center
+	Vec2 Get_LB() { return Vec2{ m_fX - m_fWidth * 0.5f , m_fY + m_fHeight * 0.5f }; }	// Left Bottom
+	Vec2 Get_CB() { return Vec2{ m_fX, m_fY + m_fHeight * 0.5f }; }						// Center Bottom
+	Vec2 Get_RB() { return Vec2{ m_fX + m_fWidth * 0.5f , m_fY + m_fHeight * 0.5f }; }	// Right Bottom
 
 	void Sync_Data();
+	virtual _bool Export_Data(DTO::ECategory eCategory, CDataDocumentBase* pDocument) override;
+
+	const DTO::TUI_CanvasData& Get_Data()const { return m_tCanvasData; }
+	DTO::TUI_CanvasData& Get_Data_Ref() { return m_tCanvasData; }
+
 private:
 	PrimitiveBatch<DirectX::VertexPositionColor>* m_pBatch = { nullptr };
 	BasicEffect* m_pEffect = { nullptr };
@@ -68,10 +80,8 @@ private:
 
 private:
 	CImGui_UIManager* m_pUIManager = { nullptr };
-
-	CANVAS_DATA m_tCanvasData = {};
+	DTO::TUI_CanvasData m_tCanvasData = {};
 	vector<CToolLayer*> m_vecToolLayers;
-
 	_string m_strTag;
 	_bool m_isUsingViewport;
 

@@ -146,6 +146,12 @@ void CUIObject::Set_Position(_float fX, _float fY, _float fZ)
 	SetUp_Rect();
 }
 
+void CUIObject::Move_Position(_float fX, _float fY, _float fZ)
+{
+	Get_Component<CTransform>()->Set_Info(TRANSFORM_INFO_STATE::POS, XMVectorSet(fX - m_iViewportWidth * 0.5f, -fY + m_iViewportHeight * 0.5f, fZ, 1.f));
+	SetUp_Rect();
+}
+
 void CUIObject::Located_Left_In_Viewport()
 {
 	Set_Position(m_fWidth * 0.5f, m_iViewportHeight * 0.5f, m_fZ);

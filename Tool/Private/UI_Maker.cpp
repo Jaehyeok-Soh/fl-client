@@ -345,7 +345,7 @@ void CUI_Maker::Make_Layer()
 						}
 					}
 
-					if (m_strLayerTag == (*pLayerVec)[i]->Get_Tag())
+					if (m_strLayerTag == (*pLayerVec)[i]->Get_Name())
 					{
 						MSG_BOX("CUI_Maker::Make_Layers, This LayerTag Already Exist in Currnet Canvas");
 						m_isCreateLayer = FALSE;
@@ -408,16 +408,39 @@ void CUI_Maker::Make_Layer()
 			ImGui::TextDisabled("Select Layer");
 			ImGui::BeginChild("LAYER LIST", ImVec2(0, 92.f), true);
 
-			for (int32_t i = 0; i < iNumLayer; ++i)
+			if (ImGui::BeginTable("##LayerTable", 2, ImGuiTableFlags_SizingStretchProp))
 			{
-				auto* pLayer = m_pUIManager->Safe_Access_Layer(i);
-				if (nullptr == pLayer)
-					continue;
+				ImGui::TableSetupColumn("Name", ImGuiTableColumnFlags_WidthStretch);
+				ImGui::TableSetupColumn("Btn", ImGuiTableColumnFlags_WidthFixed, 56.f);
 
-				const bool selected = (m_pUIManager->Get_CurLayerIndex() == i);
-				if (ImGui::Selectable(pLayer->Get_Tag().c_str(), selected))
-					m_pUIManager->Safe_Change_Layer(i);
+				for (int32_t i = 0; i < iNumLayer; ++i)
+				{
+					auto* pLayer = m_pUIManager->Safe_Access_Layer(i);
+					if (nullptr == pLayer)
+						continue;
+
+					ImGui::PushID(i);
+					ImGui::TableNextRow();
+
+					ImGui::TableSetColumnIndex(0);
+					const bool selected = (m_pUIManager->Get_CurLayerIndex() == i);
+					if (ImGui::Selectable(pLayer->Get_Name().c_str(), selected))
+						m_pUIManager->Safe_Change_Layer(i);
+
+					ImGui::TableSetColumnIndex(1);
+					if (ImGui::SmallButton("<o>"))
+					{
+						CToolLayer* pLayer = m_pUIManager->Safe_Access_Layer(m_pUIManager->Get_CurLayerIndex());
+						if (nullptr != pLayer)
+							pLayer->Set_isVisible(!pLayer->Get_isVisible());
+					}
+
+					ImGui::PopID();
+				}
+
+				ImGui::EndTable();
 			}
+
 			ImGui::EndChild();
 		}
 	}
@@ -490,17 +513,18 @@ void CUI_Maker::Make_UI()
 					Desc.fHeight = 100.f;
 					Desc.fWidth = 100.f;
 					Desc.strName = m_strUIName;
+					Desc.iLayerIndex = m_pUIManager->Get_CurLayerIndex();
 					Desc.iLevelIndex = static_cast<uint32_t>(ELevelType::UI);
 					Desc.isAlpha = TRUE;
 					Desc.isInitVisible = TRUE;
-					Desc.strInitTextureTag = "Texture_Aim";
+					Desc.strInitTextureTag = "Texture_Boss";
 					Desc.iInitTextureIndex = 0;
 
 					CToolLayer* pLayer = m_pUIManager->Safe_Access_Layer(m_pUIManager->Get_CurLayerIndex());
 					if (nullptr != pLayer)
 					{
 						CGameObject* pResult =
-							CGameInstance::GetInstance()->Add_GameObject(Desc.iLevelIndex, g_wszPrototypeTagUI, Desc.iLevelIndex, Engine_Utils::ToWString(pLayer->Get_Tag()), &Desc);
+							CGameInstance::GetInstance()->Add_GameObject(Desc.iLevelIndex, g_wszPrototypeTagUI, Desc.iLevelIndex, Engine_Utils::ToWString(pLayer->Get_Name()), &Desc);
 
 						if (nullptr == pResult)
 						{

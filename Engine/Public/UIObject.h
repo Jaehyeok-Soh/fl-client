@@ -48,6 +48,7 @@ public:
 	void Set_Size(const Vec2 &vSize);
 	void Set_Position(const Vec3& vPosition);
 	void Set_Position(_float fX, _float fY, _float fZ);
+	void Move_Position(_float fX, _float fY, _float fZ);
 	void Set_Pass(_uint iPass) { m_iShaderPass = iPass; }
 	_bool IsVisible() const { return m_isVisible; }
 	virtual void Set_Visible() { m_isVisible = true; }

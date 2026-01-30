@@ -38,7 +38,7 @@ HRESULT CToolLayer::Initialize(void* pArg)
 		return E_FAIL;
 
 	TOOLLAYER_DESC* pDesc = static_cast<TOOLLAYER_DESC*>(pArg);
-	m_strTag = pDesc->strTag;
+	m_strName = pDesc->strTag;
 
 	if (FAILED(Ready_Components(pDesc)))
 		return E_FAIL;
@@ -94,6 +94,11 @@ HRESULT CToolLayer::Bind_ShaderResources()
 	return S_OK;
 }
 
+void CToolLayer::Sync_Data()
+{
+	m_tLayerData.strTag = m_strName;
+}
+
 HRESULT CToolLayer::Safe_Add_UI(CToolUI* pUI)
 {
 	if (nullptr == pUI)
@@ -135,10 +140,6 @@ CToolUI* CToolLayer::Safe_Access_CurUIObject_Ptr()
 	return m_vecToolUIs[m_pUIManager->Get_CurLayerIndex()];
 }
 
-void CToolLayer::Sync_Data()
-{
-	m_tLayerData.strTag = m_strTag;
-}
 
 CToolLayer* CToolLayer::Create(EToolObjectType eType, ID3D11Device* pDevice, ID3D11DeviceContext* pDeviceContext)
 {

@@ -14,6 +14,8 @@
 #include "VIBuffer_Rect_Tex.h"
 #include "Texture.h"
 
+#include "DataDocument_UI.h"
+
 #include "DebugDraw.h"
 
 CToolCanvas::CToolCanvas(ID3D11Device* pDevice, ID3D11DeviceContext* pDeviceContext)
@@ -197,14 +199,35 @@ CToolLayer* CToolCanvas::Safe_Access_CurLayerObject_Ptr()
 	return m_vecToolLayers[m_pUIManager->Get_CurCanvasIndex()];
 }
 
+
+
 void CToolCanvas::Sync_Data()
 {
 	m_tCanvasData.strTag = m_strTag;
+
 	m_tCanvasData.fWidth = m_fWidth;
 	m_tCanvasData.fHeight = m_fHeight;
 	m_tCanvasData.fPosX = m_fX;
 	m_tCanvasData.fPosY = m_fY;
 	m_tCanvasData.fPosZ = m_fZ;
+}
+
+_bool CToolCanvas::Export_Data(DTO::ECategory eCategory, CDataDocumentBase* pDocument)
+{
+	//if (eCategory != DTO::ECategory::UI || pDocument == nullptr)
+	//	return false;
+
+	//if (pDocument->Get_Category() != DTO::ECategory::UI	)
+	//	return false;
+
+	//auto* pExampleDocument = static_cast<CDataDocument_UI*>(pDocument);
+
+	//DTO::TExample_StaticModelData saveData;
+	//// dto.vPosition = { 1.f, 1.f, 1.f };
+	//// dto.vColor = { 1.f, 1.f, 1.f, 1.f };
+
+	//pExampleDocument->Try_Add(saveData);
+	return false;
 }
 
 CToolCanvas* CToolCanvas::Create(EToolObjectType eType, ID3D11Device* pDevice, ID3D11DeviceContext* pDeviceContext)

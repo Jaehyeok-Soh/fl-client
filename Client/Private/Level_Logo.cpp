@@ -88,25 +88,8 @@ HRESULT CLevel_Logo::Ready_Player_Layer(const wstring& wstrLayerTag)
 
 HRESULT CLevel_Logo::Ready_UI_Layer(const wstring& wstrLayerTag)
 {
-	//CGameObject* pResult = { nullptr };
 
-	//// Prototype_UI_Test_Button
-	//CGenericUI::GENERIC_UI_DESC Desc = {};
-	//Desc.wstrTextureTag = L"Prototype_UI_GenericUI";
-	//Desc.bAlpha = TRUE;
-	//Desc.fSizeX = 1.f;
-	//Desc.fSizeY = 1.f;
-	//Desc.fX = 100.f;
-	//Desc.fY = 100.f;
-	//Desc.iLevelIndex = static_cast<uint32_t>(ELevelType::LOGO);
-
-	//pResult = m_pGameInstance->Add_GameObject(Desc.iLevelIndex, L"Prototype_UI_Test_Button", Desc.iLevelIndex, wstrLayerTag, &Desc);
-	//if(nullptr == pResult)
-	//	return E_FAIL;
-
-	//if (FAILED(CUI_Manager::GetInstance()->Load_UIData(L"../../Resources/Data/UIData/Data.json")))
-	//	return E_FAIL;	
-
+	
 	return S_OK;
 }
 

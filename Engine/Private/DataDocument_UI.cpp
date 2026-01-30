@@ -77,7 +77,7 @@ HRESULT CDataDocument_UI::Try_Add(IObjectDataBase* pObject)
 }
 
 /// <summary>
-/// <para>MapType의 ToJson</para>
+/// <para>UIType의 ToJson</para>
 /// 구조체의 Category를 Map으로 강제화
 /// </summary>
 /// <param name="j"></param>
@@ -85,7 +85,7 @@ HRESULT CDataDocument_UI::Try_Add(IObjectDataBase* pObject)
 json CDataDocument_UI::ToJson() const
 {
 	json j;
-	j["Category"] = DTO::ECategory::MAP;
+	j["Category"] = DTO::ECategory::UI;
 
 	json jsonArray = json::array();
 	for (const auto& [iType, umapTags] : m_Datas)

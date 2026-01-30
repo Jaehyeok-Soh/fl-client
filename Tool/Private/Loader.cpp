@@ -241,18 +241,10 @@ HRESULT CLoader::Loading_For_UI()
 	// For. Prototype_Component_Button_Test_Texture
 	{
 		CTexture::TEXTURE_COMPONENT_ORIGIN_DESC textureDesc = {};
-		textureDesc.iTextureCount = 1;
-		textureDesc.wstrTexturePath = L"../../Resources/Textures/UI/Button/T_Com_BtnIcon_Custom.png";
-		if (FAILED(m_pGameInstance->Add_Prototype(ENUM_TO_UINT(ELevelType::UI), L"Prototype_Component_Button_Test_Texture", CTexture::Create(&textureDesc))))
+		textureDesc.iTextureCount = 16;
+		textureDesc.wstrTexturePath = L"../../Resources/Textures/UI/%d.png";
+		if (FAILED(m_pGameInstance->Add_Prototype(ENUM_TO_UINT(ELevelType::UI), L"Texture_Boss", CTexture::Create(&textureDesc))))
 			return E_FAIL;
-
-		textureDesc.iTextureCount = 31;
-		textureDesc.wstrTexturePath = L"../../Resources/Textures/UI/Aim/%d.png";
-		if (FAILED(m_pGameInstance->Add_Prototype(ENUM_TO_UINT(ELevelType::UI), L"Texture_Aim", CTexture::Create(&textureDesc))))
-			return E_FAIL;
-
-		//if (FAILED(Loading_Textures(L"../../Resources/Textures/UI/Layout")))
-		//	return E_FAIL;
 	}
 
 	//=================
