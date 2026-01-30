@@ -28,8 +28,6 @@ void CEffectType_Selection_Panel::DrawEmbedded()
 	ImGui::SameLine();
 	if (ImGui::Button("Trail")) { m_eSelectedEffectType = E_EffectSystemType::Trail; }
 	ImGui::SameLine();
-		
-
 }
 
 void CEffectType_Selection_Panel::DrawEffectList()
@@ -170,7 +168,6 @@ void CEffectType_Selection_Panel::CreateParticleEffect()
 		pEffectDesc._Effect_DiffuseTexture_Tag = {};
 		pEffectDesc._Effect_ShaderPass = {};
 
-		pEffectDesc._Effect_bUseAtlas = false;
 		pEffectDesc._Effect_TileCount = CEffectObject::_uint2{0, 0};
 
 		// =======   이펙트 스크롤 Value   ===========

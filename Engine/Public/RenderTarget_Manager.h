@@ -16,6 +16,7 @@ enum class EMRTLayer : _uint
 {
 	GameObjects,
 	LightAcc,
+
 	END,
 };
 
