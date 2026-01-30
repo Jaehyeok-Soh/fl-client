@@ -208,7 +208,6 @@ void CUI_Maker::Make_Canvas()
 			const float fSpacing = ImGui::GetStyle().ItemSpacing.x;
 			const float fAvailW = ImGui::GetContentRegionAvail().x;
 			const float fBtnW = (fAvailW - fSpacing) * 0.5f;
-
 			if (ImGui::Button("CUSTOM SIZE", ImVec2(fBtnW, 0.f)))
 			{
 				m_isCustomSize = TRUE;
@@ -220,7 +219,6 @@ void CUI_Maker::Make_Canvas()
 				m_isCustomSize = FALSE;
 				m_isViewportSize = TRUE;
 			}
-
 			/* 현재 캔버스에 Setter로 값 변경 */
 			Input_Canvas_TransformInfo();
 		}
@@ -344,7 +342,6 @@ void CUI_Maker::Make_Layer()
 							break;
 						}
 					}
-
 					if (m_strLayerTag == (*pLayerVec)[i]->Get_Name())
 					{
 						MSG_BOX("CUI_Maker::Make_Layers, This LayerTag Already Exist in Currnet Canvas");
@@ -359,10 +356,8 @@ void CUI_Maker::Make_Layer()
 					CToolLayer::TOOLLAYER_DESC Desc = {};
 					Desc.strTag = m_strLayerTag;
 					Desc.iLevelIndex = static_cast<uint32_t>(ELevelType::UI);
-
 					CGameObject* pResult =
 						CGameInstance::GetInstance()->Add_GameObject(Desc.iLevelIndex, g_wszPrototypeTagLayer, Desc.iLevelIndex, Engine_Utils::ToWString(m_strLayerTag), &Desc);
-
 					if (nullptr == pResult)
 					{
 						m_strLayerTag = "";
@@ -385,7 +380,6 @@ void CUI_Maker::Make_Layer()
 					m_strLayerTag = "";
 					m_isCreateLayer = FALSE;
 				}
-				
 			}
 		}
 	}
@@ -395,7 +389,6 @@ void CUI_Maker::Make_Layer()
 	ImGui::Spacing();
 	const int32_t iNumLayer = m_pUIManager->Get_NumLayer();
 	int32_t iCurLayer = m_pUIManager->Get_CurLayerIndex();
-
 	if (0 < iNumLayer)
 	{
 		if (nullptr == m_pUIManager->Safe_Access_Layer(iCurLayer))
@@ -430,17 +423,14 @@ void CUI_Maker::Make_Layer()
 					ImGui::TableSetColumnIndex(1);
 					if (ImGui::SmallButton("<o>"))
 					{
-						CToolLayer* pLayer = m_pUIManager->Safe_Access_Layer(m_pUIManager->Get_CurLayerIndex());
+						CToolLayer* pLayer = m_pUIManager->Safe_Access_Layer(i);
 						if (nullptr != pLayer)
 							pLayer->Set_isVisible(!pLayer->Get_isVisible());
 					}
-
 					ImGui::PopID();
 				}
-
 				ImGui::EndTable();
 			}
-
 			ImGui::EndChild();
 		}
 	}

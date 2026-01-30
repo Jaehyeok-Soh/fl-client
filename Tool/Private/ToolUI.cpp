@@ -157,7 +157,7 @@ void CToolUI::SetUp_RectTransform_Position()
 
 void CToolUI::SetUp_Visible()
 {
-	CToolLayer* pLayer = CImGui_UIManager::GetInstance()->Safe_Access_Layer(CImGui_UIManager::GetInstance()->Get_CurLayerIndex());
+	CToolLayer* pLayer = CImGui_UIManager::GetInstance()->Safe_Access_Layer(m_iLayerIndex);
 	if (nullptr == pLayer)
 		return;
 
