@@ -191,24 +191,6 @@ HRESULT CLoader::Loading_For_Logo()
 	// For. Prototype_GameObject_Physics_Terrain
 	m_pGameInstance->Add_Prototype(ENUM_TO_UINT(ELevelType::STATIC), L"Prototype_GameObject_Physics_Terrain", CPhysics_Terrain::Create(m_pDevice, m_pDeviceContext));
 
-	//=================
-	// UI
-	//=================
-	// For. Prototype_UI_GenericUI
-	{
-		if (FAILED(m_pGameInstance->Add_Prototype(ENUM_TO_UINT(ELevelType::LOGO), L"Prototype_UI_GenericUI", CGenericUI::Create(m_pDevice, m_pDeviceContext))))
-			return E_FAIL;
-	}
-	//////////////////////////////////
-	//////////// Ready UI ////////////
-	//////////////////////////////////
-#pragma region UI
-	{
-		// For. Prototype_UI_GenericUI
-		ADD_PROTOTYPE(ELevelType::LOGO, L"Prototype_UI_GenericUI", CGenericUI::Create(m_pDevice, m_pDeviceContext));
-	}
-#pragma endregion
-
 	m_isFinished = true;
 	return S_OK;
 }
