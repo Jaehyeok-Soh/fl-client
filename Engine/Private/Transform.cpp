@@ -36,9 +36,23 @@ HRESULT CTransform::Initialize(void* pArg)
 		if (pDesc->pTransform_Desc)
 		{
 			TRANSFORM_DESC* pFinalDesc = static_cast<TRANSFORM_DESC*>(pDesc->pTransform_Desc);
-			Set_Scale(pFinalDesc->vScale);
-			Rotation( XMConvertToRadians(pFinalDesc->vRotation_Degrees.x) , XMConvertToRadians(pFinalDesc->vRotation_Degrees.y ), XMConvertToRadians(pFinalDesc->vRotation_Degrees.z));
-			Set_Info(TRANSFORM_INFO_STATE::POS, pFinalDesc->vPosition);
+
+			//Set_Scale(pFinalDesc->vScale);
+			//Rotation(XMConvertToRadians(pFinalDesc->vRotation_Degrees.x),
+			//	XMConvertToRadians(pFinalDesc->vRotation_Degrees.y),
+			//	XMConvertToRadians(pFinalDesc->vRotation_Degrees.z));
+			//Set_Info(TRANSFORM_INFO_STATE::POS,pFinalDesc->vPosition);
+
+
+			Matrix vScale	 = Matrix::CreateScale(pFinalDesc->vScale);
+			Matrix vRotation = Matrix::CreateFromQuaternion(Quat::CreateFromYawPitchRoll(
+					XMConvertToRadians(pFinalDesc->vRotation_Degrees.y),
+					XMConvertToRadians(pFinalDesc->vRotation_Degrees.x),
+					XMConvertToRadians(pFinalDesc->vRotation_Degrees.z)));
+			Matrix vPos		 = Matrix::CreateTranslation(pFinalDesc->vPosition);
+
+
+			m_matWorld = vScale*  vRotation  * vPos;
 
 			m_fMovePerSec = pFinalDesc->fMovePerSec;
 			m_fRotatePerSec = pFinalDesc->fRotatePerSec;
@@ -233,13 +247,34 @@ inline void CTransform::Go_Left(const _float fTimeDelta, CNavigation* pNavigatio
 		Set_Info(TRANSFORM_INFO_STATE::POS, vPosition);
 }
 
+inline void CTransform::Rotation(TRANSFORM_INFO_STATE eState, _float fRadian)
+{
+	Vector3 vAxis = Get_Info(eState);
+	vAxis.Normalize();
+	Rotation(vAxis, fRadian);
+}
+
 inline void CTransform::Rotation(_float fRadianX, _float fRadianY, _float fRadianZ)
 {
-	Matrix ScaleMatrix			= Matrix::CreateScale(Get_Scaled()); //
-	Matrix RotationMatrix		= Matrix::CreateFromYawPitchRoll(fRadianY, fRadianX, fRadianZ); //
-	Matrix TranslationMatrix	= Matrix::CreateTranslation(Get_Info(TRANSFORM_INFO_STATE::POS)); //
+	// 사원수를 통해 회전 행렬을 구함
+	Quat vQuaternion = XMQuaternionRotationRollPitchYaw(fRadianX, fRadianY, fRadianZ);
+	Matrix RotationMatrix = XMMatrixRotationQuaternion(vQuaternion);
 
-	m_matWorld = ScaleMatrix * RotationMatrix * TranslationMatrix;
+	// r,u,l 의 scale 값 포함해서 표현
+	Vec3 vScale = this->Get_Scaled();
+	Vec3 vRight = Vec3(1.f,0.f,0.f) * vScale.x;
+	Vec3 vUp = Vec3(0.f,1.f,0.f) * vScale.y;
+	Vec3 vLook = Vec3(0.f,0.f,1.f) * vScale.z;
+
+	// r,u,l 각각 *RotMat
+	vRight = XMVector3TransformNormal(vRight, RotationMatrix);
+	vUp = XMVector3TransformNormal(vUp, RotationMatrix);
+	vLook = XMVector3TransformNormal(vLook, RotationMatrix);
+
+	// 완성한 r,u,l worldMat에 셋팅
+	Set_Info(TRANSFORM_INFO_STATE::RIGHT, vRight);
+	Set_Info(TRANSFORM_INFO_STATE::UP, vUp);
+	Set_Info(TRANSFORM_INFO_STATE::LOOK, vLook);
 }
 
 inline void CTransform::Pitch_Turn(const _float fTimeDelta)
@@ -291,13 +326,32 @@ inline void CTransform::Rotation(const Vec3& vAxis, _float fRadian)
 	Vec3 vRight = Vec3::Right * vScale.x;
 	Vec3 vUp = Vec3::Up * vScale.y;
 	Vec3 vLook = Vec3::Backward * vScale.z;
-
+	
 	Matrix matRotation = Matrix::CreateFromAxisAngle(vAxis, fRadian);
 
 	Set_Info(TRANSFORM_INFO_STATE::RIGHT, Vec3::TransformNormal(vRight, matRotation));
 	Set_Info(TRANSFORM_INFO_STATE::UP, Vec3::TransformNormal(vUp, matRotation));
 	Set_Info(TRANSFORM_INFO_STATE::LOOK, Vec3::TransformNormal(vLook, matRotation));
 }
+
+inline void CTransform::Rotation(const Quat& vQuat)
+{
+	Vec3 vScale = Get_Scaled();
+
+	Vec3 vRight = Vec3::Right * vScale.x;
+	Vec3 vUp = Vec3::Up * vScale.y;
+	Vec3 vLook = Vec3::Backward * vScale.z;
+
+	Quat vNormalQuat = vQuat;
+	vNormalQuat.Normalize();
+
+	Matrix matRotation = Matrix::CreateFromQuaternion(vNormalQuat);
+
+	Set_Info(TRANSFORM_INFO_STATE::RIGHT, Vec3::TransformNormal(vRight, matRotation));
+	Set_Info(TRANSFORM_INFO_STATE::UP, Vec3::TransformNormal(vUp, matRotation));
+	Set_Info(TRANSFORM_INFO_STATE::LOOK, Vec3::TransformNormal(vLook, matRotation));
+}
+
 
 inline void CTransform::Turn_WorldYAxis(const Vec3& vTargetDir, const _float fTimeDelta)
 {

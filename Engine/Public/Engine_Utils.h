@@ -16,6 +16,10 @@ public:
 	static void Add_Text(OUT wstring& str_out, const wstring& strfind , const wstring& stradd , _bool isback = false, _int32 i0ffset = 0);
 
 
+	static string NormalizePath(const std::filesystem::path& path);
+	static wstring NormalizePath_WString(const std::filesystem::path& path);
+
+
 	static wstring ToWString(string value);
 	static string ToString(wstring value);
 

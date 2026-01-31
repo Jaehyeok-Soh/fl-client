@@ -152,6 +152,10 @@
     <ClInclude Include="..\Public\CEffectObject.h" />
     <ClInclude Include="..\Public\Effect.h" />
     <ClInclude Include="..\Public\EffectType_Selection_Panel.h" />
+    <ClInclude Include="..\Public\File.h" />
+    <ClInclude Include="..\Public\Folder.h" />
+    <ClInclude Include="..\Public\imfilebrowser.h" />
+    <ClInclude Include="..\public\Panel_FileExplore.h" />
     <ClInclude Include="..\Public\Image.h" />
     <ClInclude Include="..\Public\ToolLayer.h" />
     <ClInclude Include="..\Public\Tool_ContainerObject.h" />
@@ -221,6 +225,9 @@
     <ClCompile Include="..\Private\CEffectObject.cpp" />
     <ClCompile Include="..\Private\Effect.cpp" />
     <ClCompile Include="..\Private\EffectType_Selection_Panel.cpp" />
+    <ClCompile Include="..\Private\File.cpp" />
+    <ClCompile Include="..\Private\Folder.cpp" />
+    <ClCompile Include="..\Private\Panel_FileExplore.cpp" />
     <ClCompile Include="..\Private\Image.cpp" />
     <ClCompile Include="..\Private\ToolLayer.cpp" />
     <ClCompile Include="..\Private\Tool_ContainerObject.cpp" />

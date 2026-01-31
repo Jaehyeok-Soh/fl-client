@@ -9,7 +9,7 @@ class CDataDocumentBase;
 class ENGINE_DLL CBuilderBase abstract : public CBase
 {
 	using Super = CBase;
-public:
+protected:
 	CBuilderBase(ID3D11Device* pDevice, ID3D11DeviceContext* pDeviceContext);
 	virtual ~CBuilderBase() = default;
 public:

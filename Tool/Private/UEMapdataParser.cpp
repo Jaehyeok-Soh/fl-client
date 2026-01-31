@@ -86,9 +86,15 @@ vector<CONVERTED_MAPDATA> CUEMapdataParser::Convert_UE_MapData(const vector<UE_M
 		tUEMapData = vecUEMapData[i];
 		tConvertedData.eType = tUEMapData.Type_ToString();
 
+
 		tConvertedData.tUsingModelInfo.wstrName = Engine_Utils::ToWString(tUEMapData.tProperties.tStaticMesh.strObjectName);
 		tConvertedData.tUsingModelInfo.wstrPath = Engine_Utils::ToWString(tUEMapData.tProperties.tStaticMesh.strObjectPath);
 		Change_ModelPath(tConvertedData.tUsingModelInfo.wstrName, tConvertedData.tUsingModelInfo.wstrPath);
+
+		if (tConvertedData.tUsingModelInfo.wstrName == L"SM_Com_Bus18")
+		{
+			int a = 0; 
+		}
 
 		for (auto& Material : tUEMapData.tProperties.tOverrideMaterials.vecObjectInfo)
 		{
@@ -100,11 +106,29 @@ vector<CONVERTED_MAPDATA> CUEMapdataParser::Convert_UE_MapData(const vector<UE_M
 		if(tConvertedData.eType == EStaticModel_Type::DEFUALT)
 		{
 			tConvertedData.vScale		 = tUEMapData.tProperties.vRelativeScale;
-			tConvertedData.vPitchYawRoll = tUEMapData.tProperties.vRelativeRotation;
 			tConvertedData.vPosition     = tUEMapData.tProperties.vRelativeLocation;
+
+			if (tConvertedData.tUsingModelInfo.wstrName.find(L"Wall") != wstring::npos)
+				int a = 0;
+
+			Quat vQuat = Quat::CreateFromYawPitchRoll(XMConvertToRadians(tUEMapData.tProperties.vRelativeRotation.y)
+				, XMConvertToRadians(tUEMapData.tProperties.vRelativeRotation.x
+				), XMConvertToRadians(tUEMapData.tProperties.vRelativeRotation.z));
+
+			Quat vMulPitchYawRoll = Quat::CreateFromYawPitchRoll(XMConvertToRadians(m_vMulPitchYawRoll.y)
+				, XMConvertToRadians(m_vMulPitchYawRoll.x
+				), XMConvertToRadians(m_vMulPitchYawRoll.z));
+
+			Matrix QuatMatrix = Matrix::CreateFromQuaternion(vQuat) * Matrix::CreateFromQuaternion(vMulPitchYawRoll);
+
+			tConvertedData.vPitchYawRoll = QuatMatrix.ToEuler() * To_DEGREE;
+
 			Change_SRT(&tConvertedData.vScale, &tConvertedData.vPitchYawRoll, &tConvertedData.vPosition, tConvertedData.eType);
 			vecConvertedData.push_back(tConvertedData);
+
 		}
+
+#pragma region INSTANCE
 		else if (tConvertedData.eType == EStaticModel_Type::INSTANCE)
 		{
 			for (auto& PerInstanceSMData : tUEMapData.vecPerInstanceSMData)
@@ -125,6 +149,8 @@ vector<CONVERTED_MAPDATA> CUEMapdataParser::Convert_UE_MapData(const vector<UE_M
 				vecConvertedData.push_back(tConvertedData);
 			}
 		}
+#pragma endregion
+
 	}
 
 	return vecConvertedData;
@@ -132,13 +158,22 @@ vector<CONVERTED_MAPDATA> CUEMapdataParser::Convert_UE_MapData(const vector<UE_M
 
 void CUEMapdataParser::Change_SRT(Vec3* vScale, Vec3* vPitchYawRoll, Vec3* vPosition , EStaticModel_Type eType)
 {	
-	if(vScale)
-		std::swap(vScale->y, vScale->z);
+	if (vScale)
+	{
+		std::swap(vScale->x,  vScale->z );	
+		vScale->x = fabs(vScale->x);
+		vScale->y = fabs(vScale->y);
+		vScale->z = fabs(vScale->z);
+
+	}
 	if (vPitchYawRoll)
-		vPitchYawRoll = vPitchYawRoll;
+	{		
+		std::swap(vPitchYawRoll->x,vPitchYawRoll->z);
+		vPitchYawRoll->x *= -1.f;
+	}
 	if (vPosition)
 	{
-		Vec3 vSwap = Vec3( vPosition->x * m_fMulScale , vPosition->z * m_fMulScale , vPosition->y * (-m_fMulScale) );
+		Vec3 vSwap = Vec3( vPosition->x * m_fMulScale , vPosition->z * m_fMulScale , -vPosition->y * m_fMulScale );
 		*vPosition = vSwap;
 	}
 }
@@ -147,11 +182,12 @@ void CUEMapdataParser::Change_ModelPath(OUT _wstring& wstrModelName, OUT _wstrin
 {
 	wstring wstrName = wstrModelName;
 	wstring wstrPath = wstrModelPath;
-
+	 
 
 	size_t Pos_Point = wstrPath.rfind(L".");
 	if (Pos_Point != std::string::npos)
-		wstrPath.replace(Pos_Point,wstrPath.length(),g_wszModelExtension);
+		wstrPath.replace(Pos_Point, wstrPath.length(), g_wszModelExtension);
+
 
 	wstring wstrChange = L"Level";
 	wstring wstrTarget = L"Scene";
@@ -164,9 +200,6 @@ void CUEMapdataParser::Change_ModelPath(OUT _wstring& wstrModelName, OUT _wstrin
 		size_t Pos_Target = wstrPath.find(wstrTarget);
 		if (Pos_Target != std::string::npos)
 			wstrPath.replace(0, Pos_Target + wstrTarget.length(), wstrChange);
-
-		wstrTarget = L"BasicShapes";
-		Engine_Utils::Add_Text(wstrPath  , wstrTarget , L"/Model" , wstrTarget.length());
 	}
 
 	vector<wstring> vecTargetWStr = { L"EN000_" , L"EN001_" , L"EN002_" , L"EN003_" };
@@ -182,17 +215,12 @@ void CUEMapdataParser::Change_ModelPath(OUT _wstring& wstrModelName, OUT _wstrin
 		}
 	}
 
-	wstrTarget = L"Mesh";
-	size_t Pos_Target = wstrPath.find(wstrTarget);
-	if (Pos_Target != std::string::npos)
-	{
-		Pos_Target += wstrTarget.length();
-		wstrPath.insert(Pos_Target, L"/Model");
-	}
-
-	wstrModelPath = wstrPath;
 	wstrModelName = path(wstrPath).filename().stem().wstring();
-	wstrModelPath = L"Map/" + wstrModelPath;
+	wstrModelPath = L"Map/" + path(wstrPath).parent_path().wstring() + L"/Model/" + wstrModelName + L".fbx";
+
+
+	/* Lies of P */
+	//wstrModelName = path(wstrPath).filename().stem().wstring();
 }
 
 vector<UE_MAP_DATA>* CUEMapdataParser::Get_Unreal_MapData(const wstring& FindKey)
@@ -261,7 +289,11 @@ HRESULT CUEMapdataParser::Convert_UnrealRawMapData(const wchar_t* wszUERawDataJs
 	vector<CONVERTED_MAPDATA> vecConvertedData{};
 	for (const json& UE_Map_Data_Json : UE_Map_Datas_Json)
 	{
-		if (Filter(UE_Map_Data_Json.value("Name", ""), UE_Map_Data_Json.value("Type", ""))) continue;
+		if (Filter(UE_Map_Data_Json.value("Name", ""), UE_Map_Data_Json.value("Type", ""))) 
+			continue;
+		if (UE_Map_Data_Json.value("Outer", "").find("LOD") != wstring::npos)
+			continue;
+
 
 		UE_MAP_DATA tData{};
 		tData = UE_Map_Data_Json;
@@ -294,8 +326,12 @@ HRESULT CUEMapdataParser::Batch_UnrealRawMapData(const wchar_t* wszFileName)
 		desc.iLevelIndex = ENUM_TO_UINT(ELevelType::MAP);
 		desc.wstrModelPath = CONVERTED_MAPDATA.tUsingModelInfo.wstrPath;
 		desc.wstrModelName = CONVERTED_MAPDATA.tUsingModelInfo.wstrName;
-
+		desc.eType = CONVERTED_MAPDATA.eType;
 		CTransform::TRANSFORM_DESC tTramsoformDesc{};
+
+		if (CONVERTED_MAPDATA.tUsingModelInfo.wstrName.find(L"Wall") != wstring::npos)
+			int a = 0;
+
 		tTramsoformDesc.vScale				= CONVERTED_MAPDATA.vScale;
 		tTramsoformDesc.vRotation_Degrees	= CONVERTED_MAPDATA.vPitchYawRoll;
 		tTramsoformDesc.vPosition			= CONVERTED_MAPDATA.vPosition;
@@ -307,6 +343,9 @@ HRESULT CUEMapdataParser::Batch_UnrealRawMapData(const wchar_t* wszFileName)
 			Safe_Release(pResult);
 			return E_FAIL;
 		}
+
+
+
 	}
 
 	return S_OK;
@@ -431,7 +470,7 @@ void to_json(json& SaveJson, const UE_TRANSFORMDATA& tData)
 	SaveJson["Rotation"]["Y"] = tData.vRotation.y;
 	SaveJson["Rotation"]["Z"] = tData.vRotation.z;
 	SaveJson["Rotation"]["W"] = tData.vRotation.w;
-	write_vec3_xyz(SaveJson["Translation"], tData.vScale3D);
+	write_vec3_xyz(SaveJson["Translation"], tData.vTranslation);
 
 	return;
 }

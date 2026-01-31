@@ -2,19 +2,23 @@
 #include "Builder_Example.h"
 #include "DataDocument_Example.h"
 #include "GameInstance.h"
-#include "Builder_UI.h"
 
 CBuilder_Example::CBuilder_Example(ID3D11Device* pDevice, ID3D11DeviceContext* pDeviceContext)
 	: Super(pDevice, pDeviceContext)
 {
 }
 
-HRESULT CBuilder_Example::Build(const CDataDocumentBase &document)
+HRESULT CBuilder_Example::Initialize()
+{
+	return S_OK;
+}
+
+HRESULT CBuilder_Example::Build(const CDataDocumentBase& document)
 {
 	if (document.Get_Category() != DTO::ECategory::MAP)
 		return E_FAIL;
 
-	
+
 	const auto& doc = static_cast<const CDataDocument_Example&>(document);
 	// For. StaticModel
 	{
@@ -67,6 +71,17 @@ HRESULT CBuilder_Example::Create_Light(const DTO::TExample_LightData& data)
 		return E_FAIL;
 
 	return S_OK;
+}
+
+CBuilder_Example* CBuilder_Example::Create(ID3D11Device* pDevice, ID3D11DeviceContext* pDeviceContext)
+{
+	CBuilder_Example* pInstance = new CBuilder_Example(pDevice, pDeviceContext);
+	if (FAILED(pInstance->Initialize()))
+	{
+		MSG_BOX("CBuilder_Example::Create, Failed");
+		Safe_Release(pInstance);
+	}
+	return pInstance;
 }
 
 void CBuilder_Example::Free()

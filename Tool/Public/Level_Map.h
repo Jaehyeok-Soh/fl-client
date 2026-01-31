@@ -21,6 +21,7 @@ class CLevel_Map final : public CLevel
 	{
 		ObjectList,
 		MapData,
+		FileExplore,
 		END
 	};
 private:
@@ -52,7 +53,7 @@ private:
 	class CPicking_ToolManager* m_pPickingManager = { nullptr };
 	CToolObject* m_pSelectedObject = { nullptr };
 	std::array<DelegateHandle, ENUM_TO_SZET(Event::END)>	m_EventHandles;
-	array<class CImGui_Panel* , ENUM_TO_SZET(Event::END)>	m_arrayImGuiPanel{};
+	array<class CImGui_Panel* , ENUM_TO_SZET(Elements::END)>	m_arrayImGuiPanel{};
 
 
 	/* Btach */
@@ -64,6 +65,7 @@ private:
 	CUEMapdataParser*										m_pUEMapDataParser{nullptr};
 
 private:
+
 
 
 public:

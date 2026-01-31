@@ -193,9 +193,9 @@ void CConverter::Read_Meshes()
 				::memcpy(&pCurrentMesh->vecVertices[v].vUV, &pAiMesh->mTextureCoords[0][v], sizeof(Vec2));
 
 				pCurrentMesh->vecVertices[v].vPosition = Vec3::Transform(pCurrentMesh->vecVertices[v].vPosition, matPreTransform);
-				pCurrentMesh->vecVertices[v].vNormal = Vec3::Transform(pCurrentMesh->vecVertices[v].vNormal, matPreTransform);
-				pCurrentMesh->vecVertices[v].vTangent = Vec3::Transform(pCurrentMesh->vecVertices[v].vTangent, matPreTransform);
-				pCurrentMesh->vecVertices[v].vBinormal = Vec3::Transform(pCurrentMesh->vecVertices[v].vBinormal, matPreTransform);
+				pCurrentMesh->vecVertices[v].vNormal = Vec3::TransformNormal(pCurrentMesh->vecVertices[v].vNormal, matPreTransform);
+				pCurrentMesh->vecVertices[v].vTangent = Vec3::TransformNormal(pCurrentMesh->vecVertices[v].vTangent, matPreTransform);
+				pCurrentMesh->vecVertices[v].vBinormal = Vec3::TransformNormal(pCurrentMesh->vecVertices[v].vBinormal, matPreTransform);
 			}
 		}
 		else
@@ -697,13 +697,6 @@ HRESULT CConverter::ReadAndExport_Animation()
 HRESULT CConverter::Check_Folder()
 {
 	m_iFileCount = Get_FileCount(m_AssetParentPath);
-	m_iFolderCount = Get_FolderCount(m_AssetParentPath);
-
-	if (m_iFolderCount > 0)
-	{
-		MSG_BOX("CConverter::Ready_Folder, wrong folder.. has too many folders");
-		return E_FAIL;
-	}
 
 	if (m_iFileCount <= 0)
 	{

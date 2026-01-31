@@ -262,6 +262,9 @@
     <Filter Include="01. Utility\15. Json_Forward">
       <UniqueIdentifier>{4107a650-cbc3-44ad-a524-9e33f21f391e}</UniqueIdentifier>
     </Filter>
+    <Filter Include="01. Utility\14. Builder\System">
+      <UniqueIdentifier>{b06ceb4e-7762-491c-8da1-7e7412cfc8be}</UniqueIdentifier>
+    </Filter>
     <Filter Include="01. Utility\11. DataRepository\Datas\UI\DataDocument_UI">
       <UniqueIdentifier>{e3481bba-63f5-47f4-be29-b3aaa0b87de7}</UniqueIdentifier>
     </Filter>
@@ -551,6 +554,9 @@
     </ClCompile>
     <ClCompile Include="..\Private\DataStruct_Effect.cpp">
       <Filter>01. Utility\11. DataRepository\Datas\Effect</Filter>
+    </ClCompile>
+    <ClCompile Include="..\private\BuilderSystem.cpp">
+      <Filter>01. Utility\14. Builder\System</Filter>
     </ClCompile>
     <ClCompile Include="..\Private\DataStruct_UI.cpp">
       <Filter>01. Utility\11. DataRepository\Datas\UI</Filter>
@@ -877,6 +883,9 @@
     </ClInclude>
     <ClInclude Include="..\Public\DataDefine_Json.h">
       <Filter>01. Utility\11. DataRepository</Filter>
+    </ClInclude>
+    <ClInclude Include="..\public\BuilderSystem.h">
+      <Filter>01. Utility\14. Builder\System</Filter>
     </ClInclude>
     <ClInclude Include="..\Public\DataStruct_UI.h">
       <Filter>01. Utility\11. DataRepository\Datas\UI</Filter>
