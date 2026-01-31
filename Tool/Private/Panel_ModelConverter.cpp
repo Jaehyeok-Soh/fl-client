@@ -56,6 +56,9 @@ HRESULT CPanel_ModelConverter::Ready_PreMatirxPreset()
 	);
 	m_mapPreMatrix.emplace(L"Fmodel_To_DirectX", matUECoord);
 
+	matUECoord = Matrix::CreateRotationX(::XMConvertToRadians(90.f));
+	m_mapPreMatrix.emplace(L"BJ", matUECoord);
+
 	return S_OK;
 }
 

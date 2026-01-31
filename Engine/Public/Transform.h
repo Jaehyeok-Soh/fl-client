@@ -12,9 +12,11 @@ public:
 	constexpr static EComponentType _ID = EComponentType::TRANSFORM;
 	typedef struct tagTransformDesc
 	{
-		Vec3 vPosition		   = { 0.f, 0.f, 0.f };
-		Vec3 vScale			   = { 1.f, 1.f, 1.f };
+		_bool bInstance = { false };
+		Vec3 vPosition = { 0.f, 0.f, 0.f };
+		Vec3 vScale = { 1.f, 1.f, 1.f };
 		Vec3 vRotation_Degrees = { 0.f, 0.f, 0.f };
+		Quat vQuaternion = { 0.f, 0.f, 0.f, 1.f };
 		_float fMovePerSec = { 5.f };
 		_float fRotatePerSec = { 8.f };
 	}TRANSFORM_DESC;
