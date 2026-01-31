@@ -175,6 +175,18 @@
     <Filter Include="09. Builder\UI">
       <UniqueIdentifier>{00ebdf0c-5d5b-4d6a-beeb-19cd527d2574}</UniqueIdentifier>
     </Filter>
+    <Filter Include="04. Component\UI">
+      <UniqueIdentifier>{37b8805b-b8b2-4d8e-9462-7b66ccfd88b8}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="04. Component\UI\Base">
+      <UniqueIdentifier>{c62f88ef-46c8-4765-a55f-bdeabb264ca2}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="04. Component\UI\Base\Button">
+      <UniqueIdentifier>{fe6349f9-32ea-4a8b-95ea-73a5755222d8}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="04. Component\UI\Base\Image">
+      <UniqueIdentifier>{a104c8ef-1845-4c86-bc3a-8a16759efc49}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="framework.h">
@@ -372,6 +384,12 @@
     <ClInclude Include="..\Public\Builder_UI.h">
       <Filter>09. Builder\UI</Filter>
     </ClInclude>
+    <ClInclude Include="..\Public\Button.h">
+      <Filter>04. Component\UI\Base\Button</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\Image.h">
+      <Filter>04. Component\UI\Base\Image</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <Image Include="small.ico">
@@ -563,6 +581,12 @@
     </ClCompile>
     <ClCompile Include="..\Private\Builder_UI.cpp">
       <Filter>09. Builder\UI</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\Button.cpp">
+      <Filter>04. Component\UI\Base\Button</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\Image.cpp">
+      <Filter>04. Component\UI\Base\Image</Filter>
     </ClCompile>
   </ItemGroup>
 </Project>

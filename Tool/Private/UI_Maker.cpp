@@ -8,13 +8,21 @@
 #include "Engine_Utils.h"
 #include "ToolCanvas.h"
 
+/* Component */
+#include "Button.h"
+#include "Image.h"
+
+#include "GameInstance.h"
+
 CUI_Maker::CUI_Maker(const _char* pLabel, CLevel* pOwner, ID3D11Device* pDevice, ID3D11DeviceContext* pDeviceContext)
 	:Super(pLabel, pOwner, pDevice, pDeviceContext),
 	m_pToolManager(CImGui_ToolManager::GetInstance()),
-	m_pUIManager(CImGui_UIManager::GetInstance())
+	m_pUIManager(CImGui_UIManager::GetInstance()),
+	m_pGameInstance(CGameInstance::GetInstance())
 {
 	Safe_AddRef(m_pToolManager);
 	Safe_AddRef(m_pUIManager);
+	Safe_AddRef(m_pGameInstance);
 }
 
 HRESULT CUI_Maker::Initialize_Prototype()
@@ -421,7 +429,7 @@ void CUI_Maker::Make_Layer()
 						m_pUIManager->Safe_Change_Layer(i);
 
 					ImGui::TableSetColumnIndex(1);
-					if (ImGui::SmallButton("<o>"))
+					if (ImGui::SmallButton("Visible"))
 					{
 						CToolLayer* pLayer = m_pUIManager->Safe_Access_Layer(i);
 						if (nullptr != pLayer)
@@ -499,6 +507,8 @@ void CUI_Maker::Make_UI()
 				}
 				else
 				{
+
+
 					CToolUI::TOOLUI_DESC Desc = {};
 					Desc.fHeight = 100.f;
 					Desc.fWidth = 100.f;
@@ -524,6 +534,14 @@ void CUI_Maker::Make_UI()
 						}
 						else
 						{
+							CButton::BUTTON_DESC BtnComDesc = {};
+							CImage::IMAGE_DESC ImgComDesc = {};
+							CMonoBehaviour* pCom = dynamic_cast<CMonoBehaviour*>(CButton::Create(BtnComDesc));
+							pResult->Add_Script_Component(L"Component_UIBase", pCom);
+							pResult->Get_Script_Component(L"Component_UIBase")->Initialize(&BtnComDesc);
+							//pResult->Change_Script_Component(L"Component_UIBase", dynamic_cast<CMonoBehaviour*>(CImage::Create(ImgComDesc)));
+							//m_pGameInstance->Subscribe<OnClickEvent>(pCom, &CButton::OnClick);
+
 							if (FAILED(pLayer->Safe_Add_UI(dynamic_cast<CToolUI*>(pResult))))
 							{
 								m_strUIName = "";
@@ -666,6 +684,7 @@ void CUI_Maker::Free()
 {
 	Safe_Release(m_pToolManager);
 	Safe_Release(m_pUIManager);
+	Safe_Release(m_pGameInstance);
 	Super::Free();
 }
 

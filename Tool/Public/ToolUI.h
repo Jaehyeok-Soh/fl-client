@@ -34,14 +34,17 @@ public:
 	virtual void Ready_Before_Render(const _float fTimeDelta) override;
 	virtual HRESULT Render() override;
 
+	_bool Calc_HitEvent();
 private:
 	HRESULT Ready_Components(TOOLUI_DESC* pDesc);
 	HRESULT Bind_ShaderResources();
 
+	/* Rect Transform Type에 따라 Pos를 옮기고 RenderPos 저장해둠 */
 	void SetUp_RectTransform_Position();
+	/* Layer의 Visible 상태에 따라 자신의 Visible 상태를 세팅함 */
 	void SetUp_Visible();
+	/* 마우스가 내 안에 있는지 */
 	void Sync_Data();
-
 #pragma region GETTER/SETTER
 public:
 	const _string& Get_Name()const { return m_strName; }
@@ -59,7 +62,9 @@ public:
 	_float* Get_PosX_Ptr() { return &m_fX; }
 	_float* Get_PosY_Ptr() { return &m_fY; }
 	_float* Get_PosZ_Ptr() { return &m_fZ; }
+	const Vec3& Get_RenderPos() const { return m_vRenderPos; }
 	const DTO::TUI_GenericUIData& Get_Data()const { return m_tUIData; }
+	CToolUI* Get_Self() { return this; }
 	DTO::TUI_GenericUIData& Get_Data_Ref() { return m_tUIData; }
 #pragma endregion
 
@@ -73,6 +78,9 @@ private:
 	EUiType m_eUIType = { EUiType::IMAGE_2D };
 	_wstring m_wstrTextureTag = {};
 	uint32_t m_iTextureIndex = {};
+
+	Vec3 m_vRenderPos = {};
+	RECT m_tRenderRect = {};
 
 public:
 	static CToolUI* Create(EToolObjectType eType, ID3D11Device* pDevice, ID3D11DeviceContext* pDeviceContext);

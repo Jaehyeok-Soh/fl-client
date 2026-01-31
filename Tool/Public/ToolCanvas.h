@@ -67,6 +67,7 @@ public:
 	Vec2 Get_CB() { return Vec2{ m_fX, m_fY + m_fHeight * 0.5f }; }						// Center Bottom
 	Vec2 Get_RB() { return Vec2{ m_fX + m_fWidth * 0.5f , m_fY + m_fHeight * 0.5f }; }	// Right Bottom
 
+	void Calc_HitTest();
 	void Sync_Data();
 	virtual _bool Export_Data(DTO::ECategory eCategory, CDataDocumentBase* pDocument) override;
 

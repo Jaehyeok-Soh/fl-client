@@ -201,6 +201,32 @@ CToolLayer* CToolCanvas::Safe_Access_CurLayerObject_Ptr()
 
 
 
+void CToolCanvas::Calc_HitTest()
+{
+	vector<CToolUI*> vecUIs;
+
+	for (CToolLayer* pLayer : m_vecToolLayers)
+	{
+		auto* vecUI = pLayer->Safe_Access_UIObject_Vector_Ptr();
+		if (nullptr == vecUI)
+			continue;
+
+		for (CToolUI* pUI : *vecUI)
+		{
+			vecUIs.push_back(pUI);
+		}
+	}
+
+	vector<CToolUI*> vecTriggerUIs;
+	for (CToolUI* pUI : vecUIs)
+	{
+		if (pUI->Calc_HitEvent())
+		{
+
+		}
+	}
+}
+
 void CToolCanvas::Sync_Data()
 {
 	m_tCanvasData.strTag = m_strTag;

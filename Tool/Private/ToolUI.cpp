@@ -104,6 +104,13 @@ HRESULT CToolUI::Render()
     return S_OK;
 }
 
+_bool CToolUI::Calc_HitEvent()
+{
+	if (::PtInRect(&m_tRenderRect, m_pGameInstance->Get_MousePos()))
+		return TRUE;
+	return FALSE;
+}
+
 HRESULT CToolUI::Ready_Components(TOOLUI_DESC* pDesc)
 { 
 	if (FAILED(Add_Component<CTexture>(ENUM_TO_UINT(ELevelType::UI), m_wstrTextureTag, pDesc)))
@@ -153,6 +160,12 @@ void CToolUI::SetUp_RectTransform_Position()
 	}
 
 	Move_Position(initPos.x + m_fX, initPos.y + m_fY, m_fZ);
+	m_vRenderPos = Vec3{ initPos.x + m_fX, initPos.y + m_fY, m_fZ };
+
+	m_tRenderRect.left		= static_cast<LONG>(initPos.x + m_fX - (m_fWidth * 0.5f));
+	m_tRenderRect.right		= static_cast<LONG>(initPos.x + m_fX + (m_fWidth * 0.5f));
+	m_tRenderRect.top		= static_cast<LONG>(initPos.y + m_fY - (m_fHeight * 0.5f));
+	m_tRenderRect.bottom	= static_cast<LONG>(initPos.y + m_fY + (m_fHeight * 0.5f));
 }
 
 void CToolUI::SetUp_Visible()
@@ -163,6 +176,8 @@ void CToolUI::SetUp_Visible()
 
 	m_isVisible = pLayer->Get_isVisible();
 }
+
+
 
 void CToolUI::Sync_Data()
 {
