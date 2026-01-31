@@ -150,6 +150,7 @@ public:
         _uint2      _Effect_TileCount = {};
         bool        _Effect_bPlayAnim = { false };
         _float      _Effect_AnimSpeed = { 1.0f };
+        _uint       m_iCurSpriteNumber = {};
 
 
         // =========   이펙트 Emission 전용   =============
@@ -276,8 +277,6 @@ private:
     _float    m_fTimeAccumulation = 0.f;
 
     //  ========== 현재 이펙트 sprite Number  ===========
-    _uint       m_iCurSpriteNumber = {};
-    
 private:
     _bool              m_bIsTool = { false };
 };

@@ -227,12 +227,6 @@ void CEffectObject::Shader_Setting(const wstring& ShaderName)
         else if (ShaderName == L"Shader_VtxEffectTexture")
             Add_Component<CShader>(0, L"Prototype_Component_Shader_VtxEffectTexture", &ShaderDesc);
     }
-
-    // Shader Pass 설정
-    if (Get_Component<CShader>())
-        Get_Component<CShader>()->Set_Pass(m_tEffectDesc._Effect_ShaderPass);
-
-
 }
 
 HRESULT CEffectObject::Bind_ShaderResource()
@@ -241,8 +235,11 @@ HRESULT CEffectObject::Bind_ShaderResource()
     CModel* pModel = Get_Component<CModel>();
 
     if (pShader == nullptr) return S_OK;
-    
+    pShader->Set_Pass(m_tEffectDesc._Effect_ShaderPass);
     pShader->Bind_TransformData(m_CombineWorldMatrix);
+
+    if (FAILED(m_pGameInstance->Bind_RT_ShaderResource(ERenderTarget::Scene, pShader)))
+        return E_FAIL;
 
     // 셰이더에 던질 구조체 작성하기.
     {
@@ -263,7 +260,7 @@ HRESULT CEffectObject::Bind_ShaderResource()
 
         pDesc.SpriteColCount = m_tEffectDesc._Effect_TileCount.x;
         pDesc.SpriteRowCount = m_tEffectDesc._Effect_TileCount.y;
-        pDesc.CurSpriteIndex = m_iCurSpriteNumber;
+        pDesc.CurSpriteIndex = m_tEffectDesc.m_iCurSpriteNumber;
         pDesc.Padding2 = { 0.f };
 
         pDesc.vDistortionScale = m_tEffectDesc._Effect_DistortionScale;
@@ -512,7 +509,7 @@ void CEffectObject::TimeCalculate(const _float fDT)
 
         if (iTotalFrame > 0)
         {
-            m_iCurSpriteNumber = (_uint)m_fTimeAccumulation % iTotalFrame;
+            m_tEffectDesc.m_iCurSpriteNumber = (_uint)m_fTimeAccumulation % iTotalFrame;
         }
     }
 }

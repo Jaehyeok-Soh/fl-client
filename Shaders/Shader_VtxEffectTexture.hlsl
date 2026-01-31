@@ -328,8 +328,8 @@ void GS_Texture(point VS_OUT_POS_GS_PARTICLE In[1], inout TriangleStream<GS_OUT_
 
     vFinalUV[0] = float2(0, 0);
     vFinalUV[1] = float2(1, 0);
-    vFinalUV[2] = float2(1, 1);
-    vFinalUV[3] = float2(0, 1);
+    vFinalUV[2] = float2(0, 1);
+    vFinalUV[3] = float2(1, 1);
     
     
     if (HasSprite())

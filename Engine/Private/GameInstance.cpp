@@ -739,6 +739,11 @@ HRESULT CGameInstance::Bind_RT_ShaderResource(ERenderTarget eTarget, CShader* pS
 	return m_pRenderTarget_Manager->Bind_ShaderResource(eTarget, pShader);
 }
 
+HRESULT CGameInstance::Copy_BackBufferResource(ERenderTarget eTarget)
+{
+	return m_pRenderTarget_Manager->Copy_BackBufferResource(eTarget);
+}
+
 #ifdef _DEBUG
 HRESULT CGameInstance::Ready_RT_Debug(ERenderTarget eTarget, _float fX, _float fY, _float fSizeX, _float fSizeY)
 {

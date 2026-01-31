@@ -96,9 +96,25 @@ HRESULT CRenderTarget_Manager::Bind_ShaderResource(ERenderTarget eTarget, CShade
         return pShader->Bind_RenderTargetShadeTexture(m_arrRenderTargets[iIndex]->Get_SRV());
     case Engine::ERenderTarget::Depth:
         return pShader->Bind_RenderTargetDepthTexture(m_arrRenderTargets[iIndex]->Get_SRV());
+    case Engine::ERenderTarget::Scene:
+        return pShader->Bind_RenderTargetSceneTexture(m_arrRenderTargets[iIndex]->Get_SRV());
+
     default:
         return E_FAIL; 
     }
+}
+
+HRESULT CRenderTarget_Manager::Copy_BackBufferResource(ERenderTarget eTarget)
+{
+    ID3D11Resource* pSrcResource = nullptr;
+    m_pBackBuffer->GetResource(&pSrcResource);
+
+    CRenderTarget* pTarget = Get_RenderTarget(eTarget);
+
+    m_pDeviceContext->CopyResource(pTarget->Get_Texture2D(), pSrcResource);
+
+    Safe_Release(pSrcResource);
+    return S_OK;
 }
 
 #ifdef _DEBUG

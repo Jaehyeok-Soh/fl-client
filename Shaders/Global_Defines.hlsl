@@ -69,5 +69,6 @@ Texture2D g_RenderTargetDiffuseTexture;
 Texture2D g_RenderTargetNormalTexture;
 Texture2D g_RenderTargetShadeTexture;
 Texture2D g_RenderTargetDepthTexture;
+Texture2D g_RenderTargetSceneTexture;
 
 #endif
