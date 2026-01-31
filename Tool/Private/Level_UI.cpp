@@ -20,6 +20,9 @@ CLevel_UI::CLevel_UI(ID3D11Device* pDevice, ID3D11DeviceContext* pDeviceContext)
 
 HRESULT CLevel_UI::Initialize()
 {
+	if (FAILED(Super::Initialize()))
+		return E_FAIL;
+
 	return S_OK;
 }
 

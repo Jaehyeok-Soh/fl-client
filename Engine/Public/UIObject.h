@@ -8,6 +8,13 @@ class ENGINE_DLL CUIObject abstract : public CGameObject
 	using Super = CGameObject;
 
 public:
+	enum EInteract : uint32_t {
+		NONE		= 0, 
+		HOVER		= 1u << 0,
+		PRESSING	= 1u << 1,
+		CLICK		= 1u << 2,
+		SELECTED	= 1u << 3,
+	};
 	typedef struct tagUIObjectDesc : public Super::GAMEOBJECT_DESC
 	{
 		_bool isAlpha;
@@ -37,8 +44,7 @@ public:
 	virtual HRESULT Render() override;
 
 public:
-	virtual _bool IsPicked();
-	virtual void OffPicked();
+	virtual void Calc_InteractState_Mouse();
 	_float Get_Width() const { return m_fWidth; }
 	_float Get_Height() const { return m_fHeight; }
 	_float Get_PosX() const { return m_fX; }
@@ -48,6 +54,7 @@ public:
 	void Set_Size(const Vec2 &vSize);
 	void Set_Position(const Vec3& vPosition);
 	void Set_Position(_float fX, _float fY, _float fZ);
+	void Move_Position(_float fX, _float fY, _float fZ);
 	void Set_Pass(_uint iPass) { m_iShaderPass = iPass; }
 	_bool IsVisible() const { return m_isVisible; }
 	virtual void Set_Visible() { m_isVisible = true; }
@@ -66,7 +73,6 @@ protected:
 
 protected:
 	_bool m_isVisible = { false };
-	_bool m_isPicked = { false };
 	RECT m_tRect = {};
 	RENDER_CATEGORY m_eCategory = { RENDER_CATEGORY::UI };
 	_uint m_iViewportWidth = { 0 };
@@ -80,12 +86,7 @@ protected:
 	_float m_fHeight = {};
 	_float m_fAspect = {};
 	
-	_bool m_isTrigger = { FALSE };
-	_bool m_isHovering = { FALSE };
-	_bool m_isPressing = { FALSE };
-	_bool m_isClicked = { FALSE };
-	_bool m_isSelected = { FALSE };
-	_bool m_isSelectClicked = { FALSE };
+	uint32_t m_iInteractState = {};
 
 public:
 	virtual CGameObject* Clone(void* pArg) PURE;

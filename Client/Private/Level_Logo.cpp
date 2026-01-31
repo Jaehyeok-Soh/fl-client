@@ -32,6 +32,9 @@ CLevel_Logo::CLevel_Logo(ID3D11Device* pDevice, ID3D11DeviceContext* pDeviceCont
 
 HRESULT CLevel_Logo::Initialize()
 {
+	if (FAILED(Super::Initialize()))
+		return E_FAIL;
+
 	if (FAILED(Ready_Builders()))
 		return E_FAIL;
 
@@ -48,6 +51,9 @@ HRESULT CLevel_Logo::Initialize()
 		return E_FAIL;
 
 	if (FAILED(Ready_Lights()))
+		return E_FAIL;
+
+	if (FAILED(Ready_Test_Terrain(L"test_terrain")))
 		return E_FAIL;
 
 	return S_OK;
@@ -118,25 +124,8 @@ HRESULT CLevel_Logo::Ready_Player_Layer(const wstring& wstrLayerTag)
 
 HRESULT CLevel_Logo::Ready_UI_Layer(const wstring& wstrLayerTag)
 {
-	//CGameObject* pResult = { nullptr };
 
-	//// Prototype_UI_Test_Button
-	//CGenericUI::GENERIC_UI_DESC Desc = {};
-	//Desc.wstrTextureTag = L"Prototype_UI_GenericUI";
-	//Desc.bAlpha = TRUE;
-	//Desc.fSizeX = 1.f;
-	//Desc.fSizeY = 1.f;
-	//Desc.fX = 100.f;
-	//Desc.fY = 100.f;
-	//Desc.iLevelIndex = static_cast<uint32_t>(ELevelType::LOGO);
-
-	//pResult = m_pGameInstance->Add_GameObject(Desc.iLevelIndex, L"Prototype_UI_Test_Button", Desc.iLevelIndex, wstrLayerTag, &Desc);
-	//if(nullptr == pResult)
-	//	return E_FAIL;
-
-	//if (FAILED(CUI_Manager::GetInstance()->Load_UIData(L"../../Resources/Data/UIData/Data.json")))
-	//	return E_FAIL;	
-
+	
 	return S_OK;
 }
 
@@ -178,6 +167,25 @@ HRESULT CLevel_Logo::Ready_Lights()
 		desc.vSpecular = Vec4(1.f, 1.f, 1.f, 1.f);
 
 		if (FAILED(m_pGameInstance->Add_Light(desc)))
+			return E_FAIL;
+	}
+
+	return S_OK;
+}
+
+HRESULT CLevel_Logo::Ready_Test_Terrain(const wstring& wstrLayerTag)
+{
+	{
+		CGameObject * pResult = { nullptr };
+		CGameObject::GAMEOBJECT_DESC goDesc = {};
+		CTransform::TRANSFORM_DESC TransformDesc = {};
+		TransformDesc.vPosition = { 0.f, 0.f, 0.f };
+		goDesc.pTransform_Desc = &TransformDesc;
+
+		if (!(pResult = m_pGameInstance->Add_GameObject(ENUM_TO_UINT(ELevelType::STATIC),
+			L"Prototype_GameObject_Physics_Terrain",
+			ENUM_TO_UINT(ELevelType::LOGO),
+			wstrLayerTag, &goDesc)))
 			return E_FAIL;
 	}
 

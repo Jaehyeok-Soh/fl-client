@@ -7,7 +7,7 @@
 #include "CameraMan.h"
 #include "Model.h"
 #include "Transform.h"
-
+#include "PhysicsCCT.h"
 
 CActionState::CActionState()
 {
@@ -21,6 +21,8 @@ HRESULT CActionState::Initialize_Prototype()
 {
 	if (FAILED(Super::Initialize_Prototype()))
 		return E_FAIL;
+
+	CCTFlags |= PxControllerCollisionFlag::eCOLLISION_DOWN;
 
 	return S_OK;
 }
@@ -61,6 +63,8 @@ void CActionState::Update(const _float fTimeDelta)
 {
 	if(m_vecStates[m_iCurrentState])
 		m_vecStates[m_iCurrentState]->Update(fTimeDelta);
+
+	Apply_Gravity_CCT(fTimeDelta);
 }
 
 HRESULT CActionState::Add_State(_uint iIndex, CStateBase* pState)
@@ -237,8 +241,28 @@ _bool CActionState::Align_Movement(const _float fTimeDelta)
 	if (::XMVector3Equal(vTargetDir, Vec3::Zero))
 		return false;
 
-	m_pOwnerTransform->Turn_WorldYAxis(vTargetDir, fTimeDelta);
-	m_pOwnerTransform->Go_Straight(fTimeDelta, m_pOwnerNavigation);
+	// CCT : 2026-01-30 ¼ÒÀçÇõ
+	CPhysicsCCT* cct = { nullptr };
+	if (cct = m_pOwner->Get_Component<CPhysicsCCT>())
+	{
+		m_pOwnerTransform->Turn_WorldYAxis(vTargetDir, fTimeDelta);
+		Vec3 turnedLook = m_pOwnerTransform->Get_Info(TRANSFORM_INFO_STATE::LOOK);
+		turnedLook.Normalize();
+
+		_float moveps = m_pOwnerTransform->Get_MovePerSec();
+		Vec3 disp = turnedLook * moveps * fTimeDelta;
+		CCTFlags = cct->Move(disp, 0.01f, fTimeDelta);
+
+		Vec3 finalPos = cct->GetFootPosition();
+
+		m_pOwnerTransform->Set_Info(TRANSFORM_INFO_STATE::POS, finalPos);
+	}
+	else
+	{
+		m_pOwnerTransform->Turn_WorldYAxis(vTargetDir, fTimeDelta);
+		m_pOwnerTransform->Go_Straight(fTimeDelta, m_pOwnerNavigation);
+	}
+	
 	return true;
 }
 
@@ -270,6 +294,38 @@ void CActionState::Apply_Gravity(const _float fTimeDelta)
 	/*_float fCurrentY = ::XMVectorGetY(vPos);
 	vPos = ::XMVectorSetY(vPos, fCurrentY + fDelta);*/
 	m_pOwnerTransform->Set_Info(TRANSFORM_INFO_STATE::POS, vPos);
+}
+
+void CActionState::Apply_Gravity_CCT(const _float fTimeDelta)
+{
+	if (Is_ApplyGravity() == false)
+		return;
+
+	m_fVerticalSpeed += m_fGravity * fTimeDelta;
+	if (m_fVerticalSpeed < m_fMaxFallSpeed)
+		m_fVerticalSpeed = m_fMaxFallSpeed;
+
+	_float fDelta = m_fVerticalSpeed * fTimeDelta;
+
+	CPhysicsCCT* cct = { nullptr };
+	if (cct = m_pOwner->Get_Component<CPhysicsCCT>())
+	{
+		Vec3 vPos = cct->GetFootPosition();
+		Vec3 vUp = m_pOwnerTransform->Get_Info(TRANSFORM_INFO_STATE::UP);
+		vUp.Normalize();
+		vUp = vUp * fDelta;
+		
+		CCTFlags = cct->Move(vUp, 0.01f, fTimeDelta);
+
+		Vec3 finalPos = cct->GetFootPosition();
+
+		m_pOwnerTransform->Set_Info(TRANSFORM_INFO_STATE::POS, finalPos);
+
+		if (CCTFlags & PxControllerCollisionFlag::eCOLLISION_DOWN)
+			m_fVerticalSpeed = 0.f;
+	}
+
+	return;
 }
 
 void CActionState::Apply_ForceMove(const _float fTimeDelta)

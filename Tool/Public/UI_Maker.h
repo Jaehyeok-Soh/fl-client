@@ -2,6 +2,10 @@
 #include "ImGui_Panel.h"
 #include "UIData_Repository.h"
 
+NS_BEGIN(Engine)
+class CGameInstance;
+NS_END
+
 NS_BEGIN(Tool)
 class CImGui_ToolManager;
 class CImGui_UIManager;
@@ -46,6 +50,8 @@ private:
 private:
 	CImGui_ToolManager* m_pToolManager = { nullptr };
 	CImGui_UIManager* m_pUIManager = { nullptr };
+	CGameInstance* m_pGameInstance = { nullptr };
+
 	ImGuiWindowFlags m_Flag = {};
 	vector<_string> m_vecClientLevelType; 
 	const _char* m_szArrClientLevelType[g_iClientLevelType_Count];

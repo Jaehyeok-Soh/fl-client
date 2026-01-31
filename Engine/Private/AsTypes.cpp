@@ -60,18 +60,84 @@ void from_json(const json& _j, AS_MESH& _tData)
 {
 }
 
+void to_json(json& _j, const AS_MATERIALTAGS& _tData)
+{
+	_j = json
+	{
+		{ "DIFFUSE_FILE", _tData.vecFiles[aiTextureType_DIFFUSE - 1] },
+		{ "SPECULAR_FILE", _tData.vecFiles[aiTextureType_SPECULAR - 1] },
+		{ "AMBIENT_FILE", _tData.vecFiles[aiTextureType_AMBIENT - 1] },
+		{ "EMISSIVE_FILE", _tData.vecFiles[aiTextureType_EMISSIVE - 1] },
+		{ "HEIGHT_FILE", _tData.vecFiles[aiTextureType_HEIGHT - 1] },
+		{ "NORMAL_FILE", _tData.vecFiles[aiTextureType_NORMALS - 1] },
+		{ "SHININESS_FILE", _tData.vecFiles[aiTextureType_SHININESS - 1] },
+		{ "OPACITY_FILE", _tData.vecFiles[aiTextureType_OPACITY - 1] },
+		{ "DISPLACEMENT_FILE", _tData.vecFiles[aiTextureType_DISPLACEMENT - 1] },
+		{ "LIGHTMAP_FILE", _tData.vecFiles[aiTextureType_LIGHTMAP - 1] },
+		{ "REFLECTION_FILE", _tData.vecFiles[aiTextureType_REFLECTION - 1] },
+		{ "BASECOLOR_FILE", _tData.vecFiles[aiTextureType_BASE_COLOR - 1] },
+		{ "NORMALCAMERA_FILE", _tData.vecFiles[aiTextureType_NORMAL_CAMERA - 1] },
+		{ "EMISSIONCOLOR_FILE", _tData.vecFiles[aiTextureType_EMISSION_COLOR - 1] },
+		{ "METALNESS_FILE", _tData.vecFiles[aiTextureType_METALNESS - 1] },
+		{ "ROUGHNESS_FILE", _tData.vecFiles[aiTextureType_DIFFUSE_ROUGHNESS - 1] },
+		{ "AMBIENTOCCLUSION_FILE", _tData.vecFiles[aiTextureType_AMBIENT_OCCLUSION - 1] },
+		{ "UNKNOWN_FILE", _tData.vecFiles[aiTextureType_UNKNOWN - 1] }
+	};
+}
+	
+
+void from_json(const json& _j, AS_MATERIALTAGS& _tData)
+{
+	_tData.vecFiles.resize(ENUM_TO_UINT(EMaterialTextureType::MAX_COUNT));
+
+	if (_j.contains("DIFFUSE_FILE"))
+		_j.at("DIFFUSE_FILE").get_to(_tData.vecFiles[aiTextureType_DIFFUSE - 1]);
+	if (_j.contains("SPECULAR_FILE"))
+		_j.at("SPECULAR_FILE").get_to(_tData.vecFiles[aiTextureType_SPECULAR - 1]);
+	if (_j.contains("AMBIENT_FILE"))
+		_j.at("AMBIENT_FILE").get_to(_tData.vecFiles[aiTextureType_AMBIENT - 1]);
+	if (_j.contains("EMISSIVE_FILE"))
+		_j.at("EMISSIVE_FILE").get_to(_tData.vecFiles[aiTextureType_EMISSIVE - 1]);
+	if (_j.contains("HEIGHT_FILE"))
+		_j.at("HEIGHT_FILE").get_to(_tData.vecFiles[aiTextureType_HEIGHT - 1]);
+	if (_j.contains("NORMAL_FILE"))
+		_j.at("NORMAL_FILE").get_to(_tData.vecFiles[aiTextureType_NORMALS - 1]);
+	if (_j.contains("SHININESS_FILE"))
+		_j.at("SHININESS_FILE").get_to(_tData.vecFiles[aiTextureType_SHININESS - 1]);
+	if (_j.contains("OPACITY_FILE"))
+		_j.at("OPACITY_FILE").get_to(_tData.vecFiles[aiTextureType_OPACITY - 1]);
+	if (_j.contains("DISPLACEMENT_FILE"))
+		_j.at("DISPLACEMENT_FILE").get_to(_tData.vecFiles[aiTextureType_DISPLACEMENT - 1]);
+	if (_j.contains("LIGHTMAP_FILE"))
+		_j.at("LIGHTMAP_FILE").get_to(_tData.vecFiles[aiTextureType_LIGHTMAP - 1]);
+	if (_j.contains("REFLECTION_FILE"))
+		_j.at("REFLECTION_FILE").get_to(_tData.vecFiles[aiTextureType_REFLECTION - 1]);
+	if (_j.contains("BASECOLOR_FILE"))
+		_j.at("BASECOLOR_FILE").get_to(_tData.vecFiles[aiTextureType_BASE_COLOR - 1]);
+	if (_j.contains("NORMALCAMERA_FILE"))
+		_j.at("NORMALCAMERA_FILE").get_to(_tData.vecFiles[aiTextureType_NORMAL_CAMERA - 1]);
+	if (_j.contains("EMISSIONCOLOR_FILE"))
+		_j.at("EMISSIONCOLOR_FILE").get_to(_tData.vecFiles[aiTextureType_EMISSION_COLOR - 1]);
+	if (_j.contains("METALNESS_FILE"))
+		_j.at("METALNESS_FILE").get_to(_tData.vecFiles[aiTextureType_METALNESS - 1]);
+	if (_j.contains("ROUGHNESS_FILE"))
+		_j.at("ROUGHNESS_FILE").get_to(_tData.vecFiles[aiTextureType_DIFFUSE_ROUGHNESS - 1]);
+	if (_j.contains("AMBIENTOCCLUSION_FILE"))
+		_j.at("AMBIENTOCCLUSION_FILE").get_to(_tData.vecFiles[aiTextureType_AMBIENT_OCCLUSION - 1]);
+	if (_j.contains("UNKNOWN_FILE"))
+		_j.at("UNKNOWN_FILE").get_to(_tData.vecFiles[aiTextureType_UNKNOWN - 1]);
+}
+
 void to_json(json& _j, const AS_MATERIAL& _tData)
 {
 	_j = json
 	{
 		{"NAME", _tData.strName},
-		{"DIFFUSE_FILE", _tData.strDiffuseFile},
-		{"NORMAL_FILE", _tData.strNormalFile},
-		{"SPECULAR_FILE", _tData.strSpecularFile},
 		{"AMBIENT", {_tData.vAmbient.x, _tData.vAmbient.y, _tData.vAmbient.z, _tData.vAmbient.w}},
 		{"DIFFUSE", {_tData.vDiffuse.x, _tData.vDiffuse.y, _tData.vDiffuse.z, _tData.vDiffuse.w}},
 		{"SPECULAR", {_tData.vSpecular.x, _tData.vSpecular.y, _tData.vSpecular.z, _tData.vSpecular.w}},
 		{"EMISSIVE", {_tData.vEmissive.x, _tData.vEmissive.y, _tData.vEmissive.z, _tData.vEmissive.w}},
+		{"FILES", _tData.tags},
 	};
 }
 
@@ -80,9 +146,7 @@ void from_json(const json& _j, AS_MATERIAL& _tData)
 	using vVector4 = std::array<_float, 4>;
 
 	_j.at("NAME").get_to(_tData.strName);
-	_j.at("DIFFUSE_FILE").get_to(_tData.strDiffuseFile);
-	_j.at("NORMAL_FILE").get_to(_tData.strNormalFile);
-	_j.at("SPECULAR_FILE").get_to(_tData.strSpecularFile);
+	
 
 	vVector4 Ambient = _j.at("AMBIENT").get<vVector4>();
 	vVector4 Diffuse = _j.at("DIFFUSE").get<vVector4>();
@@ -93,6 +157,8 @@ void from_json(const json& _j, AS_MATERIAL& _tData)
 	::memcpy(&_tData.vDiffuse, Diffuse.data(), sizeof(_float) * 4);
 	::memcpy(&_tData.vSpecular, Specular.data(), sizeof(_float) * 4);
 	::memcpy(&_tData.vEmissive, Emissive.data(), sizeof(_float) * 4);
+
+	_j.at("FILES").get_to(_tData.tags);
 }
 
 void to_json(json& _j, const VTXANIMMESH& _tData)

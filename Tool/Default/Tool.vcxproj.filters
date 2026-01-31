@@ -181,6 +181,24 @@
     <Filter Include="11. File">
       <UniqueIdentifier>{eba6acec-ecab-4a90-8b8e-1c78ded4b5e3}</UniqueIdentifier>
     </Filter>
+    <Filter Include="03. Level\Logo">
+      <UniqueIdentifier>{6b4ad873-673f-4c55-a2cf-8ed6c0b3e198}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="09. Builder\UI">
+      <UniqueIdentifier>{00ebdf0c-5d5b-4d6a-beeb-19cd527d2574}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="04. Component\UI">
+      <UniqueIdentifier>{37b8805b-b8b2-4d8e-9462-7b66ccfd88b8}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="04. Component\UI\Base">
+      <UniqueIdentifier>{c62f88ef-46c8-4765-a55f-bdeabb264ca2}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="04. Component\UI\Base\Button">
+      <UniqueIdentifier>{fe6349f9-32ea-4a8b-95ea-73a5755222d8}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="04. Component\UI\Base\Image">
+      <UniqueIdentifier>{a104c8ef-1845-4c86-bc3a-8a16759efc49}</UniqueIdentifier>
+    </Filter>
     <Filter Include="07. UE_Mapdata\01. MapDataLoader">
       <UniqueIdentifier>{434ecd0b-d87d-4fef-959a-113592ac3a30}</UniqueIdentifier>
     </Filter>
@@ -629,6 +647,18 @@
     </ClCompile>
     <ClCompile Include="..\Private\DebugLine.cpp">
       <Filter>12. DebugLine\01. DebugLine</Filter>
+    </ClCompile>
+    <ClCompile Include="..\private\Level_Logo.cpp">
+      <Filter>03. Level\Logo</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\Builder_UI.cpp">
+      <Filter>09. Builder\UI</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\Button.cpp">
+      <Filter>04. Component\UI\Base\Button</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\Image.cpp">
+      <Filter>04. Component\UI\Base\Image</Filter>
     </ClCompile>
   </ItemGroup>
 </Project>

@@ -8,13 +8,21 @@
 #include "Engine_Utils.h"
 #include "ToolCanvas.h"
 
+/* Component */
+#include "Button.h"
+#include "Image.h"
+
+#include "GameInstance.h"
+
 CUI_Maker::CUI_Maker(const _char* pLabel, CLevel* pOwner, ID3D11Device* pDevice, ID3D11DeviceContext* pDeviceContext)
 	:Super(pLabel, pOwner, pDevice, pDeviceContext),
 	m_pToolManager(CImGui_ToolManager::GetInstance()),
-	m_pUIManager(CImGui_UIManager::GetInstance())
+	m_pUIManager(CImGui_UIManager::GetInstance()),
+	m_pGameInstance(CGameInstance::GetInstance())
 {
 	Safe_AddRef(m_pToolManager);
 	Safe_AddRef(m_pUIManager);
+	Safe_AddRef(m_pGameInstance);
 }
 
 HRESULT CUI_Maker::Initialize_Prototype()
@@ -208,7 +216,6 @@ void CUI_Maker::Make_Canvas()
 			const float fSpacing = ImGui::GetStyle().ItemSpacing.x;
 			const float fAvailW = ImGui::GetContentRegionAvail().x;
 			const float fBtnW = (fAvailW - fSpacing) * 0.5f;
-
 			if (ImGui::Button("CUSTOM SIZE", ImVec2(fBtnW, 0.f)))
 			{
 				m_isCustomSize = TRUE;
@@ -220,7 +227,6 @@ void CUI_Maker::Make_Canvas()
 				m_isCustomSize = FALSE;
 				m_isViewportSize = TRUE;
 			}
-
 			/* 현재 캔버스에 Setter로 값 변경 */
 			Input_Canvas_TransformInfo();
 		}
@@ -344,8 +350,7 @@ void CUI_Maker::Make_Layer()
 							break;
 						}
 					}
-
-					if (m_strLayerTag == (*pLayerVec)[i]->Get_Tag())
+					if (m_strLayerTag == (*pLayerVec)[i]->Get_Name())
 					{
 						MSG_BOX("CUI_Maker::Make_Layers, This LayerTag Already Exist in Currnet Canvas");
 						m_isCreateLayer = FALSE;
@@ -359,10 +364,8 @@ void CUI_Maker::Make_Layer()
 					CToolLayer::TOOLLAYER_DESC Desc = {};
 					Desc.strTag = m_strLayerTag;
 					Desc.iLevelIndex = static_cast<uint32_t>(ELevelType::UI);
-
 					CGameObject* pResult =
 						CGameInstance::GetInstance()->Add_GameObject(Desc.iLevelIndex, g_wszPrototypeTagLayer, Desc.iLevelIndex, Engine_Utils::ToWString(m_strLayerTag), &Desc);
-
 					if (nullptr == pResult)
 					{
 						m_strLayerTag = "";
@@ -385,7 +388,6 @@ void CUI_Maker::Make_Layer()
 					m_strLayerTag = "";
 					m_isCreateLayer = FALSE;
 				}
-				
 			}
 		}
 	}
@@ -395,7 +397,6 @@ void CUI_Maker::Make_Layer()
 	ImGui::Spacing();
 	const int32_t iNumLayer = m_pUIManager->Get_NumLayer();
 	int32_t iCurLayer = m_pUIManager->Get_CurLayerIndex();
-
 	if (0 < iNumLayer)
 	{
 		if (nullptr == m_pUIManager->Safe_Access_Layer(iCurLayer))
@@ -408,15 +409,35 @@ void CUI_Maker::Make_Layer()
 			ImGui::TextDisabled("Select Layer");
 			ImGui::BeginChild("LAYER LIST", ImVec2(0, 92.f), true);
 
-			for (int32_t i = 0; i < iNumLayer; ++i)
+			if (ImGui::BeginTable("##LayerTable", 2, ImGuiTableFlags_SizingStretchProp))
 			{
-				auto* pLayer = m_pUIManager->Safe_Access_Layer(i);
-				if (nullptr == pLayer)
-					continue;
+				ImGui::TableSetupColumn("Name", ImGuiTableColumnFlags_WidthStretch);
+				ImGui::TableSetupColumn("Btn", ImGuiTableColumnFlags_WidthFixed, 56.f);
 
-				const bool selected = (m_pUIManager->Get_CurLayerIndex() == i);
-				if (ImGui::Selectable(pLayer->Get_Tag().c_str(), selected))
-					m_pUIManager->Safe_Change_Layer(i);
+				for (int32_t i = 0; i < iNumLayer; ++i)
+				{
+					auto* pLayer = m_pUIManager->Safe_Access_Layer(i);
+					if (nullptr == pLayer)
+						continue;
+
+					ImGui::PushID(i);
+					ImGui::TableNextRow();
+
+					ImGui::TableSetColumnIndex(0);
+					const bool selected = (m_pUIManager->Get_CurLayerIndex() == i);
+					if (ImGui::Selectable(pLayer->Get_Name().c_str(), selected))
+						m_pUIManager->Safe_Change_Layer(i);
+
+					ImGui::TableSetColumnIndex(1);
+					if (ImGui::SmallButton("Visible"))
+					{
+						CToolLayer* pLayer = m_pUIManager->Safe_Access_Layer(i);
+						if (nullptr != pLayer)
+							pLayer->Set_isVisible(!pLayer->Get_isVisible());
+					}
+					ImGui::PopID();
+				}
+				ImGui::EndTable();
 			}
 			ImGui::EndChild();
 		}
@@ -486,21 +507,24 @@ void CUI_Maker::Make_UI()
 				}
 				else
 				{
+
+
 					CToolUI::TOOLUI_DESC Desc = {};
 					Desc.fHeight = 100.f;
 					Desc.fWidth = 100.f;
 					Desc.strName = m_strUIName;
+					Desc.iLayerIndex = m_pUIManager->Get_CurLayerIndex();
 					Desc.iLevelIndex = static_cast<uint32_t>(ELevelType::UI);
 					Desc.isAlpha = TRUE;
 					Desc.isInitVisible = TRUE;
-					Desc.strInitTextureTag = "Texture_Aim";
+					Desc.strInitTextureTag = "Texture_Boss";
 					Desc.iInitTextureIndex = 0;
 
 					CToolLayer* pLayer = m_pUIManager->Safe_Access_Layer(m_pUIManager->Get_CurLayerIndex());
 					if (nullptr != pLayer)
 					{
 						CGameObject* pResult =
-							CGameInstance::GetInstance()->Add_GameObject(Desc.iLevelIndex, g_wszPrototypeTagUI, Desc.iLevelIndex, Engine_Utils::ToWString(pLayer->Get_Tag()), &Desc);
+							CGameInstance::GetInstance()->Add_GameObject(Desc.iLevelIndex, g_wszPrototypeTagUI, Desc.iLevelIndex, Engine_Utils::ToWString(pLayer->Get_Name()), &Desc);
 
 						if (nullptr == pResult)
 						{
@@ -510,6 +534,14 @@ void CUI_Maker::Make_UI()
 						}
 						else
 						{
+							CButton::BUTTON_DESC BtnComDesc = {};
+							CImage::IMAGE_DESC ImgComDesc = {};
+							CMonoBehaviour* pCom = dynamic_cast<CMonoBehaviour*>(CButton::Create(BtnComDesc));
+							pResult->Add_Script_Component(L"Component_UIBase", pCom);
+							pResult->Get_Script_Component(L"Component_UIBase")->Initialize(&BtnComDesc);
+							//pResult->Change_Script_Component(L"Component_UIBase", dynamic_cast<CMonoBehaviour*>(CImage::Create(ImgComDesc)));
+							//m_pGameInstance->Subscribe<OnClickEvent>(pCom, &CButton::OnClick);
+
 							if (FAILED(pLayer->Safe_Add_UI(dynamic_cast<CToolUI*>(pResult))))
 							{
 								m_strUIName = "";
@@ -652,6 +684,7 @@ void CUI_Maker::Free()
 {
 	Safe_Release(m_pToolManager);
 	Safe_Release(m_pUIManager);
+	Safe_Release(m_pGameInstance);
 	Super::Free();
 }
 

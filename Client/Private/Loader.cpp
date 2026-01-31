@@ -32,6 +32,7 @@
 #include "Weapon.h"
 #include "ColliderPart.h"
 #include "Loader.h"
+#include "Physics_Terrain.h" // physics test
 //=================
 // UI
 //=================
@@ -137,15 +138,6 @@ HRESULT CLoader::Loading_For_Logo()
 	{
 		if (FAILED(m_pGameInstance->Load_Sounds(L"../../Resources/Sounds")))
 			return E_FAIL;
-
-		// For. Prototype_Component_GenericUI_Texture
-		{
-			CTexture::TEXTURE_COMPONENT_ORIGIN_DESC textureDesc = {};
-			textureDesc.iTextureCount = 1;
-			textureDesc.wstrTexturePath = L"../../Resources/Textures/UI/Button/T_Com_BtnIcon_Custom.png";
-			if (FAILED(m_pGameInstance->Add_Prototype(ENUM_TO_UINT(ELevelType::LOGO), L"Prototype_Component_GenericUI_Texture", CTexture::Create(&textureDesc))))
-				return E_FAIL;
-		}
 	}
 #pragma endregion
 
@@ -196,15 +188,8 @@ HRESULT CLoader::Loading_For_Logo()
 	}
 #pragma endregion
 
-	//////////////////////////////////
-	//////////// Ready UI ////////////
-	//////////////////////////////////
-#pragma region UI
-	{
-		// For. Prototype_UI_GenericUI
-		ADD_PROTOTYPE(ELevelType::LOGO, L"Prototype_UI_GenericUI", CGenericUI::Create(m_pDevice, m_pDeviceContext));
-	}
-#pragma endregion
+	// For. Prototype_GameObject_Physics_Terrain
+	m_pGameInstance->Add_Prototype(ENUM_TO_UINT(ELevelType::STATIC), L"Prototype_GameObject_Physics_Terrain", CPhysics_Terrain::Create(m_pDevice, m_pDeviceContext));
 
 	m_isFinished = true;
 	return S_OK;

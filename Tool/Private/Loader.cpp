@@ -74,6 +74,9 @@ HRESULT CLoader::Loading()
 
 	switch (m_eLoadingELevelType)
 	{
+	case Tool::ELevelType::LOGO:
+		hr = Loading_For_Logo();
+		break;
 	case Tool::ELevelType::MAP:
 		hr = Loading_For_Map();
 		break;
@@ -102,6 +105,12 @@ HRESULT CLoader::Loading()
 	if (FAILED(hr))
 		return E_FAIL;
 
+	return S_OK;
+}
+
+HRESULT CLoader::Loading_For_Logo()
+{
+	m_isFinished = true;
 	return S_OK;
 }
 
@@ -223,7 +232,7 @@ HRESULT CLoader::Loading_For_Effect()
 		return E_FAIL;
 	Safe_Release(pMapDataLoader);
 
-	Loading_Texturessss(L"../../Resources/Textures/Effect");
+	Loading_Textures_Effect(L"../../Resources/Textures/Effect");
 
 	m_isFinished = true;
 	return S_OK;
@@ -245,18 +254,10 @@ HRESULT CLoader::Loading_For_UI()
 	// For. Prototype_Component_Button_Test_Texture
 	{
 		CTexture::TEXTURE_COMPONENT_ORIGIN_DESC textureDesc = {};
-		textureDesc.iTextureCount = 1;
-		textureDesc.wstrTexturePath = L"../../Resources/Textures/UI/Button/T_Com_BtnIcon_Custom.png";
-		if (FAILED(m_pGameInstance->Add_Prototype(ENUM_TO_UINT(ELevelType::UI), L"Prototype_Component_Button_Test_Texture", CTexture::Create(&textureDesc))))
+		textureDesc.iTextureCount = 16;
+		textureDesc.wstrTexturePath = L"../../Resources/Textures/UI/%d.png";
+		if (FAILED(m_pGameInstance->Add_Prototype(ENUM_TO_UINT(ELevelType::UI), L"Texture_Boss", CTexture::Create(&textureDesc))))
 			return E_FAIL;
-
-		textureDesc.iTextureCount = 31;
-		textureDesc.wstrTexturePath = L"../../Resources/Textures/UI/Aim/%d.png";
-		if (FAILED(m_pGameInstance->Add_Prototype(ENUM_TO_UINT(ELevelType::UI), L"Texture_Aim", CTexture::Create(&textureDesc))))
-			return E_FAIL;
-
-		//if (FAILED(Loading_Textures(L"../../Resources/Textures/UI/Layout")))
-		//	return E_FAIL;
 	}
 
 	//=================
@@ -320,7 +321,7 @@ HRESULT CLoader::Loading_Textures(const wstring& wstrFolder)
 	return S_OK;
 }
 
-HRESULT CLoader::Loading_Texturessss(const wstring& wstrFolder)
+HRESULT CLoader::Loading_Textures_Effect(const wstring& wstrFolder)
 {
 	namespace fs = std::filesystem;
 

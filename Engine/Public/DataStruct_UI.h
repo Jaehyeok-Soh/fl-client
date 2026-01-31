@@ -17,42 +17,56 @@ inline constexpr _uint g_UITypeCount{ ENUM_TO_UINT(EUIType::END) };
 struct TUI_GenericUIData
 {
 	static constexpr EUIType eType = EUIType::GENERICUI;
-	std::string strTag{ "GenericUI" };
+	std::string strTag;
+	uint32_t iLayerIndex;
+	uint32_t iRectTransformType;
+	uint32_t iUIType;
+	_float fWidth;
+	_float fHeight;
+	_float fPosX;
+	_float fPosY;
+	_float fPosZ;
+	_string strTextureTag;
+	uint32_t iTextureIndex;
 };
 
 struct TUI_LayerData
 {
 	static constexpr EUIType eType = EUIType::LAYER;
-	std::string strTag{ "Layer" };
+	std::string strTag;
 };
 
 struct TUI_CanvasData
 {
 	static constexpr EUIType eType = EUIType::CANVAS;
-	std::string strTag{ "Canvas" };
+	std::string strTag;
+
+	_float fWidth;
+	_float fHeight;
+	_float fPosX;
+	_float fPosY;
+	_float fPosZ;
 };
 
 /////////////////-------------------  to_json, from_json  -------------------/////////////////
-inline void to_json(json& j, const TUI_GenericUIData& data);
-inline void from_json(const json& j, TUI_GenericUIData& data);
-
-inline void to_json(json& j, const TUI_LayerData& data);
-inline void from_json(const json& j, TUI_LayerData& data);
-
-inline void to_json(json& j, const TUI_CanvasData& data);
-inline void from_json(const json& j, TUI_CanvasData& data);
+void to_json(json& j, const TUI_GenericUIData& data);
+void from_json(const json& j, TUI_GenericUIData& data);
+void to_json(json& j, const TUI_LayerData& data);
+void from_json(const json& j, TUI_LayerData& data);
+void to_json(json& j, const TUI_CanvasData& data);
+void from_json(const json& j, TUI_CanvasData& data);
 NS_END
 
 /////////////////-------------------  Wrapping Class  -------------------/////////////////
 
 NS_BEGIN(Engine)
 
-class ENGINE_DLL CUI_GenericUI final : public IObjectDataBase
+class ENGINE_DLL CUI_GenericUI_DTO final : public IObjectDataBase
 {
 	using Super = IObjectDataBase;
 private:
-	CUI_GenericUI() = default;
-	virtual ~CUI_GenericUI() = default;
+	CUI_GenericUI_DTO() = default;
+	virtual ~CUI_GenericUI_DTO() = default;
 public:
 	_uint Get_Type() const override { return ENUM_TO_UINT(DTO::EUIType::GENERICUI); }
 	const _string& Get_Tag() const override { return m_Data.strTag; }
@@ -65,16 +79,16 @@ public:
 private:
 	DTO::TUI_GenericUIData m_Data;
 public:
-	static CUI_GenericUI* Create() { return new CUI_GenericUI(); }
+	static CUI_GenericUI_DTO* Create() { return new CUI_GenericUI_DTO(); }
 	virtual void Free() override { Super::Free(); }
 };
 
-class ENGINE_DLL CUI_Layer final : public IObjectDataBase
+class ENGINE_DLL CUI_Layer_DTO final : public IObjectDataBase
 {
 	using Super = IObjectDataBase;
 private:
-	CUI_Layer() = default;
-	virtual ~CUI_Layer() = default;
+	CUI_Layer_DTO() = default;
+	virtual ~CUI_Layer_DTO() = default;
 public:
 	_uint Get_Type() const override { return ENUM_TO_UINT(DTO::EUIType::LAYER); }
 	const std::string& Get_Tag() const override { return m_Data.strTag; }
@@ -87,16 +101,16 @@ public:
 private:
 	DTO::TUI_LayerData m_Data;
 public:
-	static CUI_Layer* Create() { return new CUI_Layer(); }
+	static CUI_Layer_DTO* Create() { return new CUI_Layer_DTO(); }
 	virtual void Free() override { Super::Free(); }
 };
 
-class ENGINE_DLL CUI_Canvas final : public IObjectDataBase
+class ENGINE_DLL CUI_Canvas_DTO final : public IObjectDataBase
 {
 	using Super = IObjectDataBase;
 private:
-	CUI_Canvas() = default;
-	virtual ~CUI_Canvas() = default;
+	CUI_Canvas_DTO() = default;
+	virtual ~CUI_Canvas_DTO() = default;
 public:
 	_uint Get_Type() const override { return ENUM_TO_UINT(DTO::EUIType::CANVAS); }
 	const std::string& Get_Tag() const override { return m_Data.strTag; }
@@ -109,7 +123,7 @@ public:
 private:
 	DTO::TUI_CanvasData m_Data;
 public:
-	static CUI_Canvas* Create() { return new CUI_Canvas(); }
+	static CUI_Canvas_DTO* Create() { return new CUI_Canvas_DTO(); }
 	virtual void Free() override { Super::Free(); }
 };
 

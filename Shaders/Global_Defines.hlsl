@@ -32,15 +32,6 @@ static const float PI = 3.14159265359f;
 static const float EPSILON = 1e-5f;
 
 ////////////
-// Scalar //
-////////////
-uint g_iMaterialMask;
-bool HasDiffuse() { return (g_iMaterialMask & 1) != 0; }
-bool HasNormal() { return (g_iMaterialMask & 2) != 0; }
-bool HasSpecular() { return (g_iMaterialMask & 4) != 0; }
-bool HasEmissive() { return (g_iMaterialMask & 8) != 0; }
-
-////////////
 // vector //
 ////////////
 float3 CameraPosition()
@@ -69,5 +60,6 @@ Texture2D g_RenderTargetDiffuseTexture;
 Texture2D g_RenderTargetNormalTexture;
 Texture2D g_RenderTargetShadeTexture;
 Texture2D g_RenderTargetDepthTexture;
+Texture2D g_RenderTargetSceneTexture;
 
 #endif

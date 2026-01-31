@@ -47,6 +47,7 @@ CShader::CShader(const CShader& rhs)
 	, m_pRenderTargetNormalTexture(rhs.m_pRenderTargetNormalTexture)
 	, m_pRenderTargetShadeTexture(rhs.m_pRenderTargetShadeTexture)
 	, m_pRenderTargetDepthTexture(rhs.m_pRenderTargetDepthTexture)
+	, m_prenderTargetSceneTexture(rhs.m_prenderTargetSceneTexture)
 	, m_pDefaultTextures(rhs.m_pDefaultTextures)
 	, m_pEffect_CBuffer(rhs.m_pEffect_CBuffer)
 	, m_pEffectBuffer(rhs.m_pEffectBuffer)
@@ -78,6 +79,7 @@ CShader::CShader(const CShader& rhs)
 	Safe_AddRef(m_pRenderTargetNormalTexture);
 	Safe_AddRef(m_pRenderTargetShadeTexture);
 	Safe_AddRef(m_pRenderTargetDepthTexture);
+	Safe_AddRef(m_prenderTargetSceneTexture);
 	Safe_AddRef(m_pEffect_CBuffer);
 	Safe_AddRef(m_pEffectBuffer);
 	Safe_AddRef(m_pDefaultTextures);
@@ -309,7 +311,16 @@ HRESULT CShader::Bind_DiffuseTexture(ID3D11ShaderResourceView* pDiffuse)
 		return E_FAIL;
 
 	m_pMaterialSRV_Effect->SetResourceArray(&pDiffuse, 0, 1);
-	m_pMaterialMask_Effect->SetInt(1 << ENUM_TO_UINT(MATERIALSLOT::DIFFUSE));
+	m_pMaterialMask_Effect->SetInt(1 << ENUM_TO_UINT(EMaterialTextureType::DIFFUSE));
+	return S_OK;
+}
+
+HRESULT CShader::Bind_RenderTargetSceneTexture(ID3D11ShaderResourceView* pScene)
+{
+	if (!pScene)
+		return E_FAIL;
+
+	m_prenderTargetSceneTexture->SetResource(pScene);
 	return S_OK;
 }
 
@@ -505,6 +516,7 @@ void CShader::Create_ConstantBuffer()
 		m_pRenderTargetNormalTexture = Get_SRV("g_RenderTargetNormalTexture");
 		m_pRenderTargetShadeTexture = Get_SRV("g_RenderTargetShadeTexture");
 		m_pRenderTargetDepthTexture = Get_SRV("g_RenderTargetDepthTexture");
+		m_prenderTargetSceneTexture = Get_SRV("g_RenderTargetSceneTexture");
 	}
 }
 
@@ -540,6 +552,7 @@ void CShader::Clear_ConstantBuffer()
 	Safe_Release(m_pRenderTargetNormalTexture);
 	Safe_Release(m_pRenderTargetShadeTexture);
 	Safe_Release(m_pRenderTargetDepthTexture);
+	Safe_Release(m_prenderTargetSceneTexture);
 	Safe_Release(m_pRenderTargetTexture);
 	Safe_Release(m_pMaterialSRV_Effect);
 	Safe_Release(m_pMaterialMask_Effect);

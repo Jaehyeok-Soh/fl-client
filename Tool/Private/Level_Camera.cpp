@@ -13,6 +13,9 @@ CLevel_Camera::CLevel_Camera(ID3D11Device* pDevice, ID3D11DeviceContext* pDevice
 
 HRESULT CLevel_Camera::Initialize()
 {
+	if (FAILED(Super::Initialize()))
+		return E_FAIL;
+
 	return S_OK;
 }
 

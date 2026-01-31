@@ -1,6 +1,7 @@
 #include "pch.h"
 #include "Level_Loading.h"
 #include "ImGui_ToolManager.h"
+#include "Level_Logo.h"
 #include "Level_Assimp.h"
 #include "Level_Map.h"
 #include "Level_Animation.h"
@@ -49,6 +50,9 @@ void CLevel_Loading::Update(const _float fTimeDelta)
 
 		switch (m_eNextLevelID)
 		{
+		case Tool::ELevelType::LOGO:
+			pNewLevel = CLevel_Logo::Create(m_pDevice, m_pDeviceContext);
+			break;
 		case Tool::ELevelType::MAP:
 			pNewLevel = CLevel_Map::Create(m_pDevice, m_pDeviceContext);
 			break;

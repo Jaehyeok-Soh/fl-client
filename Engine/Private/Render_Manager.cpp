@@ -68,6 +68,17 @@ HRESULT CRender_Manager::Initialize()
 			return E_FAIL;
 	}
 
+	// For. Target_Scene
+	{
+		CRenderTarget::RENDERTARGET_DESC desc = {};
+		desc.ePixelFormat = DXGI_FORMAT_R8G8B8A8_UNORM;
+		desc.iWidth = iWidth;
+		desc.iHeight = iHeight;
+		desc.vClearColor = Vec4::Zero;
+		if (FAILED(m_pGameInstance->Add_RenderTarget(ERenderTarget::Scene, &desc)))
+			return E_FAIL;
+	}
+
 	// For. MRT_GameObjects
 	{
 		if (FAILED(m_pGameInstance->Add_MRT(EMRTLayer::GameObjects, ERenderTarget::Diffuse)))
@@ -81,6 +92,12 @@ HRESULT CRender_Manager::Initialize()
 	// For. MRT_LightAcc
 	{
 		if (FAILED(m_pGameInstance->Add_MRT(EMRTLayer::LightAcc, ERenderTarget::Shade)))
+			return E_FAIL;
+	}
+
+	// For. MRT_Effect
+	{
+		if (FAILED(m_pGameInstance->Add_MRT(EMRTLayer::Effect, ERenderTarget::Scene)))
 			return E_FAIL;
 	}
 
@@ -262,6 +279,11 @@ HRESULT CRender_Manager::Render_Blend()
 
 HRESULT CRender_Manager::Render_NonLights()
 {
+	if (m_renderObjects[ENUM_TO_UINT(RENDER_CATEGORY::NONELIGHT)].size() != 0)
+	{
+		m_pGameInstance->Copy_BackBufferResource(ERenderTarget::Scene);
+	}
+
 	for (CGameObject* pElement : m_renderObjects[ENUM_TO_UINT(RENDER_CATEGORY::NONELIGHT)])
 	{
 		if (FAILED(pElement->Render()))

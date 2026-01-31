@@ -15,6 +15,11 @@ HRESULT CImGui_Dockspace_TabBar::Render(CToolObject* pGo)
 
 	if (ImGui::BeginTabBar(m_strLabel.c_str()))
 	{
+		if (ImGui::BeginTabItem("Logo##TabBar"))
+		{
+			eNowSelected = ELevelType::LOGO;
+			ImGui::EndTabItem();
+		}
 		if (ImGui::BeginTabItem("Map##TabBar"))
 		{
 			eNowSelected = ELevelType::MAP;
