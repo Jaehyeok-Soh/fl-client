@@ -154,6 +154,9 @@
     <Filter Include="03. GameObject\EffectObject">
       <UniqueIdentifier>{92c0cd51-e66c-4b79-afa4-76c22a867df3}</UniqueIdentifier>
     </Filter>
+    <Filter Include="03. GameObject\PhysicsTerrain">
+      <UniqueIdentifier>{685e6485-a2ca-4006-9535-8434d576b1ec}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="targetver.h">
@@ -294,6 +297,9 @@
     <ClInclude Include="..\public\Builder_Example.h">
       <Filter>07. System\01. Builder</Filter>
     </ClInclude>
+    <ClInclude Include="..\Public\Physics_Terrain.h">
+      <Filter>03. GameObject\PhysicsTerrain</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <Image Include="Client.ico">
@@ -431,6 +437,9 @@
     </ClCompile>
     <ClCompile Include="..\private\Builder_Example.cpp">
       <Filter>07. System\01. Builder</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Public\Physics_Terrain.cpp">
+      <Filter>03. GameObject\PhysicsTerrain</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

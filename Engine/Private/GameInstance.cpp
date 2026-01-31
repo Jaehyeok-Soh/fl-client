@@ -22,6 +22,7 @@
 #include "Input_Manager.h"
 #include "Graphic_Device.h"
 #include "Render_Manager.h"
+#include "Physics_Module.h"
 
 IMPLEMENT_SINGLETON(CGameInstance)
 
@@ -106,6 +107,9 @@ HRESULT CGameInstance::Initialize_Engine(const ENGINE_DESC& Engine_Desc, _Inout_
 	if (!(m_pEventBus_Manager = CEventBus_Manager::Create()))
 		return E_FAIL;
 
+	if (!(m_pPhysics_Module = CPhysics_Module::Create(*ppDevice, *ppContext)))
+		return E_FAIL;
+
 	return S_OK;
 }
 
@@ -118,6 +122,9 @@ void CGameInstance::Update_Engine(_float fTimeDelta)
 	m_pCollision_Manager->Update(fTimeDelta);
 	m_pObject_Manager->Update_Late(fTimeDelta);
 	m_pLevel_Manager->Update(fTimeDelta);
+
+	// 피직스 시뮬레이트
+	m_pPhysics_Module->StepPhysics(fTimeDelta);
 
 	// 메인카메라 업데이트
 	m_pCamera_Manager->Update_ViewMatrix();
@@ -692,6 +699,7 @@ void CGameInstance::Destroy_Engine()
 	Safe_Release(m_pPicking);
 	Safe_Release(m_pGameData_Manager);
 	Safe_Release(m_pPrototype_Manager);
+	Safe_Release(m_pPhysics_Module);
 	Safe_Release(m_pLevel_Manager);
 	Safe_Release(m_pLight_Manager);
 	Safe_Release(m_pEvent_Manager);
@@ -757,6 +765,78 @@ HRESULT CGameInstance::Debug_RT_Render(EMRTLayer eMRTLayer, CShader* pShader, CV
 #endif
 #pragma endregion
 
+#pragma region PHYSICS_MODULE
+void CGameInstance::StepPhysics(_float fTimeDelta)
+{
+	m_pPhysics_Module->StepPhysics(fTimeDelta);
+}
+
+void CGameInstance::AddActor(PxRigidActor* actor)
+{
+	m_pPhysics_Module->AddActor(actor);
+}
+
+void CGameInstance::ClearPhysics()
+{
+	m_pPhysics_Module->ClearPhysics();
+}
+
+PxTransform CGameInstance::XMMatrixToPxTransform(Matrix mat)
+{
+	return m_pPhysics_Module->XMMatrixToPxTransform(mat);
+}
+
+Matrix CGameInstance::PxTransformToXMMatrix(PxTransform pxTransform)
+{
+	return m_pPhysics_Module->PxTransformToXMMatrix(pxTransform);
+}
+
+void CGameInstance::Physics_Render(PxRigidActor* pActor, XMVECTOR color)
+{
+	m_pPhysics_Module->Render(pActor, color);
+}
+
+void CGameInstance::SerializeStaticMesh(std::filesystem::path path, vector<PxTriangleMesh*> meshes)
+{
+	m_pPhysics_Module->SerializeStaticMesh(path, meshes);
+}
+
+PxCollection* CGameInstance::DeserializeStaticMesh(std::filesystem::path path)
+{
+	return m_pPhysics_Module->DeserializeStaticMesh(path);
+}
+
+void CGameInstance::SerializeConvexMesh(std::filesystem::path path, vector<PxConvexMesh*> meshes)
+{
+	m_pPhysics_Module->SerializeConvexMesh(path, meshes);
+}
+
+PxCollection* CGameInstance::SerializeConvexMesh(std::filesystem::path path)
+{
+	return m_pPhysics_Module->SerializeConvexMesh(path);
+}
+
+vector<PxShape*> CGameInstance::GetShape(PHYSICSCOLLIDER_DESC* pDesc)
+{
+	return m_pPhysics_Module->GetShape(pDesc);
+}
+
+vector<PxShape*> CGameInstance::GetMeshShape(PHYSICSCOLLIDER_DESC* pDesc)
+{
+	return m_pPhysics_Module->GetMeshShape(pDesc);
+}
+
+PxRigidActor* CGameInstance::GetActor(PHYSICSRIGIDBODY_DESC* rigidBodyDesc, PHYSICSCOLLIDER_DESC* colliderDesc, vector<PxShape*>& shapes)
+{
+	return m_pPhysics_Module->GetActor(rigidBodyDesc, colliderDesc, shapes);
+}
+
+PxController* CGameInstance::GetController(PHYSICSCCT_DESC* pDesc)
+{
+	return m_pPhysics_Module->GetController(pDesc);
+}
+#pragma endregion
+
 void CGameInstance::Free()
 {
 	Safe_Release(m_pFrustrum);
@@ -775,6 +855,7 @@ void CGameInstance::Free()
 	Safe_Release(m_pPicking);
 	Safe_Release(m_pGameData_Manager);
 	Safe_Release(m_pPrototype_Manager);
+	Safe_Release(m_pPhysics_Module);
 	Safe_Release(m_pLevel_Manager);
 	Safe_Release(m_pEvent_Manager);
 	Safe_Release(m_pEventBus_Manager);
@@ -782,3 +863,4 @@ void CGameInstance::Free()
 	Safe_Release(m_pGraphic_Device);
 	Super::Free();
 }
+
