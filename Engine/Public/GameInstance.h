@@ -251,6 +251,7 @@ public:
 	HRESULT Begin_MRT(EMRTLayer eMRTLayer);
 	HRESULT End_MRT();
 	HRESULT Bind_RT_ShaderResource(ERenderTarget eTarget, class CShader* pShader);
+	HRESULT Copy_BackBufferResource(ERenderTarget eTarget);
 #ifdef _DEBUG
 	HRESULT Ready_RT_Debug(ERenderTarget eTarget, _float fX, _float fY, _float fSizeX, _float fSizeY);
 	HRESULT Debug_RT_Render(EMRTLayer eMRTLayer, class CShader* pShader, class CVIBuffer_Rect_Tex* pVIBuffer);

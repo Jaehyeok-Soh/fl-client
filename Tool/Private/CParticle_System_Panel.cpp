@@ -315,19 +315,38 @@ void CParticle_System_Panel::Draw_ParticleSystem(CToolObject* pGo)
 				// 1. Local - 부모가 움직이면 이미 생성된 입자도 부모를 따라 움직인다.
 				// 2. World - 생성된 후에는 부모를 떠나 독립된 월드 좌표에서 움직입니다.
 
-		ImGui::AlignTextToFramePadding();
-		if (ImGui::TreeNode("Simulation Space"))
+		ImGui::AlignTextToFramePadding(); if (ImGui::TreeNode("Simulation Space"))
 		{
-			ImGui::Text("Local"); ImGui::SameLine(0, 20.f);
-			ImGui::Text("World"); ImGui::Spacing();
-			static bool Local = false;
-			static bool World = false;
+			// 현재 어떤 모드인지 확인
+			bool isLocal = (m_tCurrentDesc._Effect_SimulationType == E_SIMULATION_SPACE::LOCAL);
+			bool isWorld = (m_tCurrentDesc._Effect_SimulationType == E_SIMULATION_SPACE::WORLD);
 
-			m_bModified |= ImGui::Checkbox("##Local1", &Local); ImGui::SameLine(0, 40.f);
-			m_bModified |= ImGui::Checkbox("##World1", &World); ImGui::Spacing();
+			ImGui::Text("Local"); ImGui::SameLine(0, 45.f);
+			ImGui::Text("World");
 
-			if (Local) m_tCurrentDesc._Effect_SimulationType = E_SIMULATION_SPACE::LOCAL;
-			else if (World) m_tCurrentDesc._Effect_SimulationType = E_SIMULATION_SPACE::WORLD;
+			// ==== Local 체크박스 ====
+			if (ImGui::Checkbox("##LocalMode", &isLocal))
+			{
+				// 클릭 시 무조건 LOCAL로 변경
+				m_tCurrentDesc._Effect_SimulationType = E_SIMULATION_SPACE::LOCAL;
+				m_bModified = true;
+			}
+
+			ImGui::SameLine(0, 40.f);
+
+			// ==== World 체크박스 ====
+			if (ImGui::Checkbox("##WorldMode", &isWorld))
+			{
+				// 클릭 시 무조건 WORLD로 변경
+				m_tCurrentDesc._Effect_SimulationType = E_SIMULATION_SPACE::WORLD;
+				m_bModified = true;
+			}
+
+			// ====== 이쁘게 디자인하기 =======
+			ImGui::Spacing();
+			const char* modeText = (m_tCurrentDesc._Effect_SimulationType == E_SIMULATION_SPACE::LOCAL) ? "LOCAL" : "WORLD";
+			ImGui::Text("Active Mode: "); ImGui::SameLine();
+			ImGui::TextColored(ImVec4(0.0f, 1.0f, 1.0f, 1.0f), "%s", modeText);
 
 			ImGui::TreePop();
 		}
@@ -1271,6 +1290,7 @@ void CParticle_System_Panel::Draw_ParticleSystem(CToolObject* pGo)
 						m_PParticleTypeList.push_back("DEFAULT_MESH");
 						m_PParticleTypeList.push_back("BULLET");
 						m_PParticleTypeList.push_back("TRAIL");
+						m_PParticleTypeList.push_back("DISTOTION");
 						break;
 					}
 				}
@@ -1453,6 +1473,51 @@ void CParticle_System_Panel::Draw_Sprite_Texture(CToolObject* pGo)
 				m_tCurrentDesc._Effect_TileCount.x,
 				m_tCurrentDesc._Effect_TileCount.y,
 				m_tCurrentDesc._Effect_TileCount.x * m_tCurrentDesc._Effect_TileCount.y);
+
+
+			// ================  재생 제어 설정 구역  ==============
+
+			ImGui::Spacing();
+			ImGui::Separator();
+			ImGui::Spacing();
+
+			ImGui::TextColored(ImVec4(1.0f, 1.0f, 0.f, 1.f), "PlayBack Settings");
+
+			// =============  애니메이션 고정 여부 체크박스 ============
+			if (ImGui::Checkbox("Play Animation", &m_tCurrentDesc._Effect_bPlayAnim))
+			{
+				m_bModified |= true;
+			}
+
+			if (m_tCurrentDesc._Effect_bPlayAnim)
+			{
+				// 애니메이션이 켜졌을 때,
+				ImGui::AlignTextToFramePadding();
+				ImGui::Text("Anim Speed"); ImGui::SameLine(100);
+				ImGui::SetNextItemWidth(-1.0f);
+				if (ImGui::DragFloat("##AnimSpeed", &m_tCurrentDesc._Effect_AnimSpeed, 0.1f, 0.0f, 100.0f, "%.2f FPS"))
+				{
+					m_bModified |= true;
+				}
+			}
+
+			else
+			{
+				// 애니메이션이 켜진게 아닐 때.
+				int maxIndex = (int)(m_tCurrentDesc._Effect_TileCount.x * m_tCurrentDesc._Effect_TileCount.y);
+				if (maxIndex < 0) maxIndex = 0;
+
+				int curIdx = (int)m_tCurrentDesc.m_iCurSpriteNumber;
+
+				ImGui::AlignTextToFramePadding();
+				ImGui::Text("Frame Index"); ImGui::SameLine();
+				ImGui::SetNextItemWidth(-1.0f);
+				if (ImGui::SliderInt("##CurIndex", &curIdx, 0, maxIndex))
+				{
+					m_tCurrentDesc.m_iCurSpriteNumber = (uint32_t)curIdx;
+					m_bModified |= true;
+				}
+			}
 		}
 
 		ImGui::TreePop();

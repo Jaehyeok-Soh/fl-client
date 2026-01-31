@@ -111,7 +111,7 @@ wstring Engine_Utils::ToWString(string value)
         return wstring();
 
     _int iRequire = ::MultiByteToWideChar(
-        CP_UTF8, MB_ERR_INVALID_CHARS,
+        CP_ACP, MB_ERR_INVALID_CHARS,
         value.data(),
         static_cast<_int>(value.size()),
         nullptr, 0);
@@ -122,7 +122,7 @@ wstring Engine_Utils::ToWString(string value)
     wstring wstrReturn(static_cast<size_t>(iRequire), L'\0');
 
     _int iWritten = ::MultiByteToWideChar(
-        CP_UTF8, MB_ERR_INVALID_CHARS,
+        CP_ACP, MB_ERR_INVALID_CHARS,
         value.data(), static_cast<_int>(value.size()),
         wstrReturn.data(), iRequire);
 
