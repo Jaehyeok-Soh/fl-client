@@ -64,22 +64,13 @@ public:
 	void Set_RotatePerSec(_float fSpeed) { m_fRotatePerSec = fSpeed; }
 	_float Get_MovePerSec() const { return m_fMovePerSec; }
 	void Set_MoveScale(_float fScale) { m_fMoveScale = fScale; }
+	void Set_MovePerSec(float fMoveSpeed) { m_fMovePerSec = fMoveSpeed; }
 	void Set_WorldMatrix(const Matrix& WorldMatrix) { m_matWorld = WorldMatrix; }
 	_float Get_MoveScale() const { return m_fMoveScale; }
 	void Start_Force(Vec3 vTargetDir, _float fForceAbs, _float fDragK);
 	void Apply_Force(_float fDeltaTime, CNavigation* pNavigation = nullptr);
 	void Update_PrevPosition();
 	void Force_Clear();
-	_float	Get_RotatePerSec() const { return m_fRotatePerSec; }
-	void	Set_RotatePerSec(_float fSpeed) { m_fRotatePerSec = fSpeed; }
-	_float	Get_MovePerSec() const { return m_fMovePerSec; }
-	void	Set_MovePerSec(float fMoveSpeed) { m_fMovePerSec = fMoveSpeed; }
-	void	Set_MoveScale(_float fScale) { m_fMoveScale = fScale; }
-	_float	Get_MoveScale() const { return m_fMoveScale; }
-	void	Start_Force(Vec3 vTargetDir, _float fForceAbs, _float fDragK);
-	void	Apply_Force(_float fDeltaTime, CNavigation* pNavigation = nullptr);
-	void	Update_PrevPosition();
-	void	Force_Clear();
 private:
 	_bool		m_bControll = { false };
 	_float		m_fMoveScale = { 1.f };

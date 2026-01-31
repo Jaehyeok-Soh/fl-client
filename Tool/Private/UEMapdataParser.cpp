@@ -133,20 +133,7 @@ vector<CONVERTED_MAPDATA> CUEMapdataParser::Convert_UE_MapData(const vector<UE_M
 
 void CUEMapdataParser::Change_SRT(Vec3* vScale, Vec3* vPitchYawRoll, Vec3* vPosition , EStaticModel_Type eType)
 {	
-	if (vScale)
-	{
-		//std::swap( vScale->x ,  vScale->z );
-	}
-	if (vPitchYawRoll)
-	{		
-		//std::swap(vPitchYawRoll->x,vPitchYawRoll->z);
-		vPitchYawRoll->x *= -1.f;
-	}
-	if (vPosition)
-	{
-		Vec3 vSwap = Vec3( vPosition->x * m_fMulScale , vPosition->z * m_fMulScale , -vPosition->y * m_fMulScale );
-		*vPosition = vSwap;
-	}
+
 }
 
 void CUEMapdataParser::Change_ModelPath(OUT _wstring& wstrModelName, OUT _wstring& wstrModelPath)
