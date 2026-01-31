@@ -49,6 +49,7 @@ void Engine_Utils::Replace(OUT wstring& str, wstring comp, wstring rep)
     str = temp;
 }
 
+
 void Engine_Utils::Add_Text(OUT string& str_out, const string& strfind, const string& stradd, _bool isback, _int32 ioffset)
 {
 
@@ -86,6 +87,20 @@ void Engine_Utils::Add_Text(OUT wstring& wstr_out, const wstring& wstrfind, cons
     {
         wstr_out.insert(sztFinalPos, wstradd);
     }
+}
+
+string Engine_Utils::NormalizePath(const std::filesystem::path& path)
+{
+    std::string s = path.lexically_normal().string();  // ../, ./ 정리 + 문자열 변환
+    std::replace(s.begin(), s.end(), '\\', '/');       // 윈도우 백슬래시 → 슬래시
+    return s;
+}
+
+wstring Engine_Utils::NormalizePath_WString(const std::filesystem::path& path)
+{
+    std::wstring ws = path.lexically_normal().wstring();  // ../, ./ 정리 + 문자열 변환
+    std::replace(ws.begin(), ws.end(), '\\', '/');       // 윈도우 백슬래시 → 슬래시
+    return ws;
 }
 
 

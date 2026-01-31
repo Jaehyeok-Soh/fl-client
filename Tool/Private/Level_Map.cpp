@@ -20,7 +20,7 @@
 #include "ImGui_Base.h"
 #include "Panel_MapObjectList.h"
 #include "Panel_MapDataController.h"
-
+#include "Panel_FileExplore.h"
 /////////////
 // Manager //
 /////////////
@@ -83,10 +83,9 @@ HRESULT CLevel_Map::Awake(const _uint iLevelID)
 
 
 	/* Cam Setting */
-	m_pGameInstance->Get_MainCamera()->Get_Component<CCamera>()->Set_Fov(60.f);
+	m_pGameInstance->Get_MainCamera()->Get_Component<CCamera>()->Set_Fov(XMConvertToRadians(60.f));
 
-
-	/* Batch  */
+	/* Batch */
 
 	m_pBatch = new PrimitiveBatch<VertexPositionColor>(m_pDeviceContext);
 	m_pEffect = new BasicEffect(m_pDevice);
@@ -146,7 +145,6 @@ HRESULT CLevel_Map::Render()
 
 	m_pBatch->End();
 
-
 	Render_Elements();
 
 	m_pImGuiManager->Render_Viewport(m_pSelectedObject);
@@ -169,6 +167,10 @@ HRESULT CLevel_Map::Reday_Gui()
 {
 	m_arrayImGuiPanel[static_cast<UINT32>(CLevel_Map::Elements::ObjectList)] = CPanel_MapObjectList::Create(" Map Object List ", this  ,m_pDevice , m_pDeviceContext);
 	m_arrayImGuiPanel[static_cast<UINT32>(CLevel_Map::Elements::MapData)] = CPanel_MapDataController::Create(" Map Data Controller ", this, m_pDevice, m_pDeviceContext);
+	m_arrayImGuiPanel[static_cast<UINT32>(CLevel_Map::Elements::FileExplore)] = CPanel_FileExplore::Create(
+		L"../../Resources", {".fbx" ,".Mesh",".png",".dds" ,"png" , ".json"},
+		" Panel_FileExplore ", this, m_pDevice, m_pDeviceContext);
+
 
 	return S_OK;
 }
@@ -249,7 +251,6 @@ HRESULT CLevel_Map::Ready_Camera_Setting(const _uint iLevelID)
 	CGameObject* pFreeCamera = m_pGameInstance->Get_GameObject_Back(iLevelID, L"Camera_Layer");
 	m_pGameInstance->Add_Camera(CameraType::STATIC, g_FreeCameraName, static_cast<CCameraMan*>(pFreeCamera));
 	m_pGameInstance->Change_MainCamera(CameraType::STATIC, g_FreeCameraName);
-
 	return S_OK;
 }
 
