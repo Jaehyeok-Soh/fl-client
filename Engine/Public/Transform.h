@@ -58,15 +58,16 @@ public:
 	inline void Look_At_XZ(Vec3 vPoint);
 	inline void Chase(const Vec3 &vPoint, _float fMinDistance, const _float fTimeDelta, CNavigation* pNavigation = nullptr);
 	const Vec3& Get_PrevPosition() const { return m_vPrevPosition; }
-	_float Get_RotatePerSec() const { return m_fRotatePerSec; }
-	void Set_RotatePerSec(_float fSpeed) { m_fRotatePerSec = fSpeed; }
-	_float Get_MovePerSec() const { return m_fMovePerSec; }
-	void Set_MoveScale(_float fScale) { m_fMoveScale = fScale; }
-	_float Get_MoveScale() const { return m_fMoveScale; }
-	void Start_Force(Vec3 vTargetDir, _float fForceAbs, _float fDragK);
-	void Apply_Force(_float fDeltaTime, CNavigation* pNavigation = nullptr);
-	void Update_PrevPosition();
-	void Force_Clear();
+	_float	Get_RotatePerSec() const { return m_fRotatePerSec; }
+	void	Set_RotatePerSec(_float fSpeed) { m_fRotatePerSec = fSpeed; }
+	_float	Get_MovePerSec() const { return m_fMovePerSec; }
+	void	Set_MovePerSec(float fMoveSpeed) { m_fMovePerSec = fMoveSpeed; }
+	void	Set_MoveScale(_float fScale) { m_fMoveScale = fScale; }
+	_float	Get_MoveScale() const { return m_fMoveScale; }
+	void	Start_Force(Vec3 vTargetDir, _float fForceAbs, _float fDragK);
+	void	Apply_Force(_float fDeltaTime, CNavigation* pNavigation = nullptr);
+	void	Update_PrevPosition();
+	void	Force_Clear();
 private:
 	_bool		m_bControll = { false };
 	_float		m_fMoveScale = { 1.f };

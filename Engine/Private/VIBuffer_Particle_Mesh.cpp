@@ -71,8 +71,6 @@ HRESULT CVIBuffer_Particle_Mesh::Initialize(void* pArg)
 		m_pDeviceContext->Unmap(pStagingBuffer, 0);
 	}
 	Safe_Release(pStagingBuffer);
-
-	// 인덱스 버퍼 복사해오기
 	{
 		ID3D11Buffer* pOriginalIB = pMesh->Get_IBBuffer();
 		D3D11_BUFFER_DESC IBDesc;

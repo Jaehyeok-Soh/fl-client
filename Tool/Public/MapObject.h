@@ -4,14 +4,18 @@
 
 NS_BEGIN(Tool)
 
-
-
-
-
 class CMapObject : public CToolObject
 {
 	using Super = CToolObject;
 public:
+	enum class EState
+	{
+		Preview,
+		Default,
+		Select,
+		END,
+	};
+
 	enum EReset_Type
 	{
 		NONE = 0,
@@ -24,8 +28,11 @@ public:
 	typedef struct tagMapObjectDesc : public CToolObject::TOOLOBJECT_DESC
 	{
 		bool			isLoaded{ false };
-		wstring			wstrModelName{L""};
-		wstring			wstrModelPath{L""};
+		wstring			wstrModelName{ L"" };
+		wstring			wstrModelPath{ L"" };
+
+
+		CMapObject::EState eState{CMapObject::EState::Default};
 	}MAPOBJECT_DESC;
 
 protected:
@@ -40,9 +47,12 @@ public:
 	void					Reset_SRT(Engine::Flags fResetTypeFlag);
 	void					Register_OriginSRT(Engine::Flags fResetTypeFlag);
 public:
+	void					Set_MapObjectState(CMapObject::EState eState) { m_eMapObjectState = eState; }
+public:
 	Vec3					Get_OriginScale();
 	Vec3					Get_OriginDegree();
 	Vec3					Get_OriginPosition();
+	CMapObject::EState		Get_MapObjectState()  const { return m_eMapObjectState; }
 public:
 	virtual HRESULT			Awake(const _uint iCurrentLevelID)				override;
 	virtual void			Update_Priority(const _float fTimeDelta)		override;
@@ -53,6 +63,8 @@ public:
 	virtual void			Draw_ImGui()override;
 protected:
 	EMapObject_Type			m_eMapObjectType{ EMapObject_Type::END };
+	EState					m_eMapObjectState{ EState::Default};
+
 	bool					m_isLoaded{false};
 	bool					m_isRegisterSRT{false};
 	void*					m_pDesc{nullptr};

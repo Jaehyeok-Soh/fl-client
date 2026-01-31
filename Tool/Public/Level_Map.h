@@ -6,7 +6,8 @@ NS_BEGIN(Tool)
 class CToolObject;
 class CImGui_Panel;
 class CUEMapdataParser;
-
+class CMapToolManager;
+class CDebugLine;
 
 class CLevel_Map final : public CLevel
 {
@@ -15,10 +16,11 @@ class CLevel_Map final : public CLevel
 	{
 		ChangeSelectedObject = 0,
 		CreateMode,
-		END
+		END,
 	};
 	enum class Elements
 	{
+		MapTool,
 		ObjectList,
 		MapData,
 		FileExplore,
@@ -34,39 +36,37 @@ public:
 	virtual void	Update(const _float fTimeDelta) override;
 	virtual HRESULT Render() override;
 private:
-	void	Render_Elements();
-	HRESULT Reday_Gui();
-	HRESULT Ready_Lights();
-	HRESULT Ready_MapObject_Layer();
-	HRESULT Ready_Camera_Layer(const wstring& wstrLayerTag);
-	HRESULT Ready_Camera_Setting(const _uint iLevelID);
-	void	Ready_Event();
-	void	Release_Event();
+	void			Render_Elements();
+	HRESULT			Reday_Gui();
+	HRESULT			Ready_Lights();
+	HRESULT			Ready_MapObject_Layer();
+	HRESULT			Ready_Camera_Layer(const wstring& wstrLayerTag);
+	HRESULT			Ready_Camera_Setting(const _uint iLevelID);
+	HRESULT			Ready_DebugLine();
+	void			Ready_Event();
+	void			Release_Event();
 public:
-	void		 On_ChangeSelectedObject(CGameObject* pGo);
-	void		 On_CreateMode(_bool bValue);
-	CToolObject* Get_SelectToolObject() { return m_pSelectedObject; }
-	void		 Set_SelectToolObject(CToolObject* pToolObject) { m_pSelectedObject = pToolObject; }
+	void			On_ChangeSelectedObject(CGameObject* pGo);
+	void			On_CreateMode(_bool bValue);
+	CToolObject*	Get_SelectToolObject() { return m_pSelectedObject; }
+	void			Set_SelectToolObject(CToolObject* pToolObject) { m_pSelectedObject = pToolObject; }
 private:
 	_bool m_bCreateMode = { false };
 	class CImGui_ToolManager* m_pImGuiManager = { nullptr };
 	class CPicking_ToolManager* m_pPickingManager = { nullptr };
 	CToolObject* m_pSelectedObject = { nullptr };
-	std::array<DelegateHandle, ENUM_TO_SZET(Event::END)>	m_EventHandles;
+	std::array<DelegateHandle, ENUM_TO_SZET(Event::END)>		m_EventHandles;
 	array<class CImGui_Panel* , ENUM_TO_SZET(Elements::END)>	m_arrayImGuiPanel{};
 
 
-	/* Btach */
-	PrimitiveBatch<DirectX::VertexPositionColor>*			m_pBatch{ nullptr };
-	BasicEffect*											m_pEffect{ nullptr };
-	ID3D11InputLayout*										m_pInputLayout{ nullptr };
-
 
 	CUEMapdataParser*										m_pUEMapDataParser{nullptr};
+	CMapToolManager*										m_pMapToolManager{nullptr};
+
+	
+	CDebugLine*												m_pDebugLine{};
 
 private:
-
-
 
 public:
 	

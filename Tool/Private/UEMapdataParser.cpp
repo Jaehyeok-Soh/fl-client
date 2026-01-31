@@ -129,6 +129,7 @@ vector<CONVERTED_MAPDATA> CUEMapdataParser::Convert_UE_MapData(const vector<UE_M
 		}
 
 #pragma region INSTANCE
+
 		else if (tConvertedData.eType == EStaticModel_Type::INSTANCE)
 		{
 			for (auto& PerInstanceSMData : tUEMapData.vecPerInstanceSMData)
@@ -149,6 +150,7 @@ vector<CONVERTED_MAPDATA> CUEMapdataParser::Convert_UE_MapData(const vector<UE_M
 				vecConvertedData.push_back(tConvertedData);
 			}
 		}
+
 #pragma endregion
 
 	}
@@ -160,11 +162,7 @@ void CUEMapdataParser::Change_SRT(Vec3* vScale, Vec3* vPitchYawRoll, Vec3* vPosi
 {	
 	if (vScale)
 	{
-		std::swap(vScale->x,  vScale->z );	
-		vScale->x = fabs(vScale->x);
-		vScale->y = fabs(vScale->y);
-		vScale->z = fabs(vScale->z);
-
+		//std::swap( vScale->x ,  vScale->z );
 	}
 	if (vPitchYawRoll)
 	{		
@@ -344,9 +342,6 @@ HRESULT CUEMapdataParser::Batch_UnrealRawMapData(const wchar_t* wszFileName)
 			Safe_Release(pResult);
 			return E_FAIL;
 		}
-
-
-
 	}
 
 	return S_OK;

@@ -73,6 +73,10 @@ public:
 	_bool					IntersectrayWithOBB_Local(BoundingOrientedBox* pOriginDesc, OUT Vec3& vOut);
 	_bool					IntersectrayWithSphere_World(BoundingSphere* pDesc, OUT Vec3& vOut);
 	_bool					IntersectrayWithSphere_Local(BoundingSphere* pOriginDesc, OUT Vec3& vOut);
+
+	const Vec3&				Picking_Get_RayPos(bool isLocal = false) const;
+	const Vec3&				Picking_Get_RayDir(bool isLocal = false) const;
+
 #pragma endregion
 
 #pragma region LEVEL_MANAGER

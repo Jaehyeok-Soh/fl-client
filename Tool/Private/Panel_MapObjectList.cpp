@@ -7,12 +7,13 @@
 #include "CameraMan.h"
 #include "Camera.h"
 #include "Panel_FileExplore.h"
+#include "Panel_MapTool.h"
 
 USING(Tool)
 
 CPanel_MapObjectList::CPanel_MapObjectList(const _char* pLabel, CLevel* pOwner, ID3D11Device* pDevice, ID3D11DeviceContext* pDeviceContext)
 	: CImGui_Panel(pLabel, pOwner, pDevice, pDeviceContext), m_pGameInstance(CGameInstance::GetInstance()), m_pTransformLayout(nullptr), m_pCamera(nullptr)
-	, m_pCameraCom(nullptr), m_wszMapObjectLayerTag{}
+	, m_pCameraCom(nullptr), m_wszMapObjectLayerTag{}, m_szFindName{}
 {
 
 	m_pTransformLayout = CImGui_Layout_Transform::Create("Layout_Transform", m_pDevice, m_pDeviceContext);
@@ -49,11 +50,6 @@ HRESULT CPanel_MapObjectList::Ready_LayerTag()
 
 HRESULT CPanel_MapObjectList::Render(CToolObject* pGo)
 {
-	if (FAILED(Render_CamInfo()))
-		return E_FAIL;
-
-	ImGui::Separator();
-
 
 	if (FAILED(Render_MapObjectList()))
 		return E_FAIL;
@@ -77,6 +73,7 @@ void CPanel_MapObjectList::Update(const _float fTimeDelta)
 
 }
 
+
 HRESULT CPanel_MapObjectList::Update_MapObjectList()
 {
 	for (_uint i = 0; i < ENUM_TO_UINT(EMapObject_Type::END); ++i)
@@ -86,6 +83,7 @@ HRESULT CPanel_MapObjectList::Update_MapObjectList()
 
 	return S_OK;
 }
+
 
 HRESULT CPanel_MapObjectList::Render_MapObjectList()
 {
@@ -106,6 +104,15 @@ HRESULT CPanel_MapObjectList::Render_MapObjectList()
 
 	ImGui::Separator();
 
+	ImGui::NewLine();
+	
+	ImGui::InputText("Search", m_szFindName, MAX_PATH);
+	
+	ImGui::NewLine();
+
+	ImGui::Separator();
+
+
 	if (ImGui::CollapsingHeader("List"))
 	{
 		list<CGameObject*>* pListStaticModelLayer = m_pGameInstance->Get_GameObject_List(ENUM_TO_UINT(ELevelType::MAP), g_wszStaticModelLayer);
@@ -122,11 +129,24 @@ HRESULT CPanel_MapObjectList::Render_MapObjectList()
 				if (StaticMesh)
 				{
 					CStaticModel* pStaticModel = static_cast<CStaticModel*>(StaticMesh);
+					string strModelName = pStaticModel->Get_Name();
 
-					if (StaticMesh == m_pSelectMapObject)
-						ImGui::TextColored(ImVec4(1.0, 0.f, 0.f, 1.f), pStaticModel->Get_Name().c_str());
+					if ( m_pSelectMapObject  &&  StaticMesh == m_pSelectMapObject)
+						ImGui::TextColored(ImVec4(1.0, 0.f, 0.f, 1.f), strModelName.c_str());
 					else
-						ImGui::Text(pStaticModel->Get_Name().c_str());
+					{
+						if (strlen(m_szFindName) > 0)
+						{
+							if (strModelName.find(m_szFindName) == string::npos)
+								continue;
+							else
+								ImGui::Text(pStaticModel->Get_Name().c_str());
+						}
+						else
+							ImGui::Text(pStaticModel->Get_Name().c_str());
+					}
+
+
 					if (ImGui::IsItemClicked(ImGuiMouseButton_Left))
 						static_cast<CLevel_Map*>(m_pOwnerLevel)->On_ChangeSelectedObject(pStaticModel);
 					else if (ImGui::IsItemClicked(ImGuiMouseButton_Right))
@@ -136,53 +156,6 @@ HRESULT CPanel_MapObjectList::Render_MapObjectList()
 		}
 	}
 
-	ImGui::End();
-
-	return S_OK;
-}
-
-HRESULT CPanel_MapObjectList::Render_CamInfo()
-{
-	ImGui::Begin("Camera Info");
-
-
-	if (ImGui::TreeNode(" Camera S R T "))
-	{
-		CTransform* pTransfrom = m_pCamera->Get_Component<CTransform>();
-
-		if (!pTransfrom) return E_FAIL;
-
-		Matrix WorldMatrix = pTransfrom->Get_WorldMatrix();
-
-		Vec3 vLook = pTransfrom->Get_Info(TRANSFORM_INFO_STATE::LOOK);
-		vLook.Normalize();
-
-		Vec3 vPosition = WorldMatrix.Translation();
-		Vec3 vRotation = WorldMatrix.ToEuler();
-		Vec3 vScale = pTransfrom->Get_Scaled();
-
-
-		if (ImGui::InputFloat3("Position", &vPosition.x))
-			pTransfrom->Set_Info(TRANSFORM_INFO_STATE::POS, vPosition);
-		ImGui::InputFloat3("Rotation", &vRotation.x);
-		if (ImGui::InputFloat3("Scale", &vScale.x))
-			pTransfrom->Set_Scale(vScale);
-
-		ImGui::Text(" Look [ %.2f , %.2f , %.2f ] ", vLook.x, vLook.y, vLook.z);
-
-		ImGui::TreePop();
-	}
-
-	if (ImGui::TreeNode(" Camera Setting "))
-	{
-		float fFov = m_pCameraCom->Get_Fov() * To_DEGREE;
-		if (ImGui::DragFloat("Fov#Fov", &fFov))
-			m_pCameraCom->Set_Fov(fFov * TO_RAD);
-		float fFar = m_pCameraCom->Get_Far();
-		if (ImGui::DragFloat("Far#Far", &fFar))
-			m_pCameraCom->Set_Fov(fFar);
-		ImGui::TreePop();
-	}
 	ImGui::End();
 
 	return S_OK;
@@ -258,6 +231,7 @@ HRESULT CPanel_MapObjectList::Render_SelectInfo()
 
 	return S_OK;
 }
+
 
 CPanel_MapObjectList* CPanel_MapObjectList::Create(const _char* pLabel, CLevel* pOwner, ID3D11Device* pDevice, ID3D11DeviceContext* pDeviceContext)
 {

@@ -33,9 +33,10 @@ HRESULT CMapObject::Initialize(void* pArg)
 
     CMapObject::MAPOBJECT_DESC* pDesc = static_cast<CMapObject::MAPOBJECT_DESC*>(pArg);
 
-    m_strModelFileName = Engine_Utils::ToString(pDesc->wstrModelPath);
-    m_strName          = Engine_Utils::ToString(pDesc->wstrModelName);
-    m_isLoaded         = pDesc->isLoaded;
+    m_strModelFileName        = Engine_Utils::ToString(pDesc->wstrModelPath);
+    m_strName                 = Engine_Utils::ToString(pDesc->wstrModelName);
+    m_isLoaded                = pDesc->isLoaded;
+    m_eMapObjectState         = pDesc->eState;
 
     if (FAILED(CMapObject::Ready_Component()))
         return E_FAIL;
@@ -204,28 +205,70 @@ void CMapObject::Draw_ImGui()
     
     if (!pTransfrom) return;
 
-    if (ImGui::TreeNode("Quaternion"))
+
+    Matrix WorldMatrix = pTransfrom->Get_WorldMatrix();
+    Vec3 vScale{}, vPosition;
+    Quat vQuat{};
+    Vec3 vDegree{};
+    
+    WorldMatrix.Decompose(vScale, vQuat, vPosition);
+    vDegree = vQuat.ToEuler() * To_DEGREE;
+
+
+#pragma region Scale Setting
+
+    if (ImGui::TreeNode(" Scale Setting "))
     {
-        Matrix WorldMatrix = pTransfrom->Get_WorldMatrix();
-        Vec3 vScale{}, vPosition;
-        Quat vQuat{};
-        WorldMatrix.Decompose(vScale, vQuat, vPosition);
-        ImGui::InputFloat4( "Quat" , &m_vImGuiQuat.x);
-        if (ImGui::Button("Ratattion From Quat"))
-        {
-            pTransfrom->Rotation(m_vImGuiQuat);
-        }
+        ImGui::Separator();
+
+        if (ImGui::DragFloat3(" Scale ", &vScale.x, 0.01f))
+            pTransfrom->Set_Scale(vScale);
+
+        ImGui::Separator();
+
         ImGui::TreePop();
     }
 
+#pragma endregion
 
-    ImGui::InputFloat3("Pitch Yaw Roll", &m_vImGuiPitchYawRoll.x);
+#pragma region Rotation Setting
 
-    if (ImGui::Button("Rotation"))
+    if (ImGui::TreeNode(" Rotation Setting "))
     {
-        pTransfrom->Rotation(XMConvertToRadians(m_vImGuiPitchYawRoll.x), XMConvertToRadians(m_vImGuiPitchYawRoll.y), XMConvertToRadians(m_vImGuiPitchYawRoll.z));
-        ZeroMemory(&m_vImGuiPitchYawRoll, sizeof(Vec3));
+        ImGui::SeparatorText(" Pitch Yaw Roll ");
+
+        
+        if (ImGui::DragFloat3("Pitch Yaw Roll", &vDegree.x))
+            pTransfrom->Rotation(Quat::CreateFromYawPitchRoll(vDegree * TO_RAD));
+
+        ImGui::Separator();
+
+        ImGui::SeparatorText(" Quaternion ");
+
+        if (ImGui::DragFloat4(" Quaternion ", &vQuat.x))
+            pTransfrom->Rotation(vQuat);
+
+        ImGui::Separator();
+
+        ImGui::TreePop();
     }
+#pragma endregion
+
+#pragma region Position Setting
+
+    if (ImGui::TreeNode(" Position Setting "))
+    {
+        ImGui::Separator();
+
+        if (ImGui::DragFloat3(" Position ", &vPosition.x, 0.05f))
+            pTransfrom->Set_Scale(vScale);
+
+        ImGui::Separator();
+
+        ImGui::TreePop();
+    }
+
+#pragma endregion
 
     return;
 }

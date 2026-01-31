@@ -2,12 +2,14 @@
 #include "Panel_FileExplore.h"
 #include "Folder.h"
 #include "File.h"
-
+#include "MapToolManager.h"
 
 CPanel_FileExplore::CPanel_FileExplore(const _char* pLabel, CLevel* pOwner, ID3D11Device* pDevice, ID3D11DeviceContext* pDeviceContext)
 	: CImGui_Panel(pLabel, pOwner, pDevice, pDeviceContext), m_pImFileBrowser{}
 	, m_vecFiles{}, m_pRootFolder{ nullptr }, m_szFileName{}, m_szKey{}, m_szFindFileName{}
+	, m_pMapToolManager(CMapToolManager::GetInstance())
 {
+	Safe_AddRef(m_pMapToolManager);
 	m_vecFiles.clear();
 }
 
@@ -101,7 +103,7 @@ void CPanel_FileExplore::FileWindow()
 
 			if (ImGui::BeginPopupContextItem(popupId.c_str()))
 			{
-				Render_FileMoustRightButton(File->Get_FileInfo().wstrFileEXT);
+				Render_FileMoustRightButton(File->Get_FileInfo().wstrFileFullPath);
 				ImGui::EndPopup();
 			}
 
@@ -113,19 +115,23 @@ void CPanel_FileExplore::FileWindow()
 }
 
 
-HRESULT CPanel_FileExplore::Render_FileMoustRightButton(const wstring& wstrExt)
+HRESULT CPanel_FileExplore::Render_FileMoustRightButton(const wstring& wstrPath)
 {
-	if (wstrExt.empty()) return E_FAIL;
-	if (wstrExt != g_wszMeshExtension) return S_OK;
+	if (wstrPath.empty()) return E_FAIL;
+
+	path FullPath = wstrPath;
+	wstring wstrExt = FullPath.extension();
+
+
+
+	if ( wstrExt  != g_wszMeshExtension) return S_OK;
+
 
 	if (ImGui::Selectable("Make Model"))
-	{
-		/* 열기 로직 */ 
-	}
+		m_pMapToolManager->Make_Preview(EMapObject_Type::STATICMODEL, wstrPath);
 
 	return S_OK;
 }
-
 
 
 void CPanel_FileExplore::Draw_TreeFiles(CFolder* pTreeFloder)
@@ -164,7 +170,6 @@ void CPanel_FileExplore::FileFindWindow()
 		m_vecFindFilePathList.clear();
 		m_vecFindFilePathList = m_pRootFolder->Find_File(Engine_Utils::ToWString(m_szFindFileName));
 		memset(m_szFindFileName,0,MAX_PATH);
-		
 	}
 	
 	if (m_vecFindFilePathList.empty())
@@ -172,7 +177,7 @@ void CPanel_FileExplore::FileFindWindow()
 	else
 	{
 		_uint iIndex{};
-		char  szBeginPopupContextItem[MAX_PATH];
+		//char  szBeginPopupContextItem[MAX_PATH];
 
 		for (auto& FilePath : m_vecFindFilePathList)
 		{
@@ -181,7 +186,7 @@ void CPanel_FileExplore::FileFindWindow()
 			string strFileName = pathFile.filename().string();
 
 			ImGui::TextWrapped(strFileName.c_str());
-			ImVec2 p = ImGui::GetCursorScreenPos(); // 현재 커서 위치 저장
+			ImVec2 p = ImGui::GetCursorScreenPos();
 			if (ImGui::IsItemHovered())
 			{
 				ImGui::GetWindowDrawList()->AddRectFilled(
@@ -228,11 +233,12 @@ void CPanel_FileExplore::Free()
 	
 	Safe_Delete(m_pImFileBrowser);
 
-
 	for (auto& File : m_vecFiles)
 		Safe_Release(File);
 
 	Safe_Release(m_pRootFolder);
+	Safe_Release(m_pMapToolManager);
+
 
 	return;
 }
