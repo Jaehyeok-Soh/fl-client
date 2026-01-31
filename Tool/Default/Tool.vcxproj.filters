@@ -172,6 +172,33 @@
     <Filter Include="06. ImGui\01. Panel\UIPanels\Maker">
       <UniqueIdentifier>{f5fed899-dccb-4d0d-a291-189fd27b3ca2}</UniqueIdentifier>
     </Filter>
+    <Filter Include="06. ImGui\01. Panel\Map\File">
+      <UniqueIdentifier>{052f47e7-8ad0-46fe-9e82-68a1541c2501}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="10. Folder">
+      <UniqueIdentifier>{4df4c641-6c22-41c1-a9af-09c6188b9065}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="11. File">
+      <UniqueIdentifier>{eba6acec-ecab-4a90-8b8e-1c78ded4b5e3}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="03. Level\Logo">
+      <UniqueIdentifier>{6b4ad873-673f-4c55-a2cf-8ed6c0b3e198}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="09. Builder\UI">
+      <UniqueIdentifier>{00ebdf0c-5d5b-4d6a-beeb-19cd527d2574}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="04. Component\UI">
+      <UniqueIdentifier>{37b8805b-b8b2-4d8e-9462-7b66ccfd88b8}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="04. Component\UI\Base">
+      <UniqueIdentifier>{c62f88ef-46c8-4765-a55f-bdeabb264ca2}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="04. Component\UI\Base\Button">
+      <UniqueIdentifier>{fe6349f9-32ea-4a8b-95ea-73a5755222d8}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="04. Component\UI\Base\Image">
+      <UniqueIdentifier>{a104c8ef-1845-4c86-bc3a-8a16759efc49}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="framework.h">
@@ -366,6 +393,30 @@
     <ClInclude Include="..\Public\UI_Maker.h">
       <Filter>06. ImGui\01. Panel\UIPanels\Maker</Filter>
     </ClInclude>
+    <ClInclude Include="..\Public\imfilebrowser.h">
+      <Filter>99. ETC\01. ImGui</Filter>
+    </ClInclude>
+    <ClInclude Include="..\public\Panel_FileExplore.h">
+      <Filter>06. ImGui\01. Panel\Map\File</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\Folder.h">
+      <Filter>10. Folder</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\File.h">
+      <Filter>11. File</Filter>
+    </ClInclude>
+    <ClInclude Include="..\public\Level_Logo.h">
+      <Filter>03. Level\Logo</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\Builder_UI.h">
+      <Filter>09. Builder\UI</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\Button.h">
+      <Filter>04. Component\UI\Base\Button</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\Image.h">
+      <Filter>04. Component\UI\Base\Image</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <Image Include="small.ico">
@@ -554,6 +605,27 @@
     </ClCompile>
     <ClCompile Include="..\Private\UI_Maker.cpp">
       <Filter>06. ImGui\01. Panel\UIPanels\Maker</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\Panel_FileExplore.cpp">
+      <Filter>06. ImGui\01. Panel\Map\File</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\Folder.cpp">
+      <Filter>10. Folder</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\File.cpp">
+      <Filter>11. File</Filter>
+    </ClCompile>
+    <ClCompile Include="..\private\Level_Logo.cpp">
+      <Filter>03. Level\Logo</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\Builder_UI.cpp">
+      <Filter>09. Builder\UI</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\Button.cpp">
+      <Filter>04. Component\UI\Base\Button</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\Image.cpp">
+      <Filter>04. Component\UI\Base\Image</Filter>
     </ClCompile>
   </ItemGroup>
 </Project>

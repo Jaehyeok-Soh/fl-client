@@ -6,11 +6,35 @@
 ///////////
 #define DEFAULT 0
 
+//////////////////
+// MaterialSlot //
+//////////////////
 #define DIFFUSE 0
-#define NORMAL 1
-#define SPECULAR 2
+#define SPECULAR 1
+#define AMBIENT 2
 #define EMISSIVE 3
-#define MATERIAL_END 4
+#define HEIGHT 4
+#define NORMAL 5
+#define SHININESS 6
+#define OPACITY 7
+#define DISPLACEMENT 8
+#define LIGHTMAP 9
+#define REFLECTION 10
+#define BASE_COLOR 11
+#define NORMAL_CAMERA 12
+#define EMISSION_COLOR 13
+#define METALNESS 14
+#define DIFFUSE_ROUGHNESS 15
+#define AMBIENT_OCCLUSION 16
+#define UNKNOWN 17
+#define MATERIAL_END 18
+
+////////////
+// Scalar //
+////////////
+uint g_iMaterialMask;
+uint Bit(uint iSlot) { return 1u << iSlot; }
+bool Has(uint iMask, uint iSlot) { return iMask & Bit(iSlot) != 0; }
 
 #define MAX_BONE_TRANSFORMS 512
 #define MAX_MODEL_KEYFRAMES 512

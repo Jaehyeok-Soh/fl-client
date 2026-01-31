@@ -56,6 +56,10 @@ using json = nlohmann::json;
 #include <algorithm>
 #include <filesystem>
 #include <typeindex>
+#include <thread>
+#include <future>
+#include <mutex>
+#include <condition_variable>
 #include <type_traits>
 #include <cstring>
 #include <utility>
@@ -73,6 +77,10 @@ using std::list;
 using std::map;
 using std::unordered_map;
 using std::unordered_set;
+using std::thread;
+using std::future;
+using std::mutex;
+using std::condition_variable;
 using std::filesystem::path;
 
 using namespace DirectX;

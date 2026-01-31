@@ -43,8 +43,8 @@ private:
 	CMapObject*				 m_pSelectMapObject{nullptr};
 
 
-	CCameraMan*			 m_pCamera{nullptr};
-	CCamera*			 m_pCameraCom{nullptr};
+	CCameraMan*				 m_pCamera{nullptr};
+	CCamera*				 m_pCameraCom{nullptr};
 public:
 	static  CPanel_MapObjectList* Create(const _char* pLabel, CLevel* pOwner, ID3D11Device* pDevice, ID3D11DeviceContext* pDeviceContext);
 	virtual void Free() override;

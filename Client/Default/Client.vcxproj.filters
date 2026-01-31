@@ -145,6 +145,15 @@
     <Filter Include="06. FSM\Player\Land">
       <UniqueIdentifier>{90a3215f-abb6-4b46-85cd-612282d4f9cb}</UniqueIdentifier>
     </Filter>
+    <Filter Include="07. System">
+      <UniqueIdentifier>{2791cb25-3e1a-4608-9186-fe30589113cf}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="07. System\01. Builder">
+      <UniqueIdentifier>{77a673f3-430b-46eb-bcc9-6f9bd3b5dd56}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="03. GameObject\EffectObject">
+      <UniqueIdentifier>{92c0cd51-e66c-4b79-afa4-76c22a867df3}</UniqueIdentifier>
+    </Filter>
     <Filter Include="03. GameObject\PhysicsTerrain">
       <UniqueIdentifier>{685e6485-a2ca-4006-9535-8434d576b1ec}</UniqueIdentifier>
     </Filter>
@@ -285,6 +294,9 @@
     <ClInclude Include="..\Public\State_Land.h">
       <Filter>06. FSM\Player\Land</Filter>
     </ClInclude>
+    <ClInclude Include="..\public\Builder_Example.h">
+      <Filter>07. System\01. Builder</Filter>
+    </ClInclude>
     <ClInclude Include="..\Public\Physics_Terrain.h">
       <Filter>03. GameObject\PhysicsTerrain</Filter>
     </ClInclude>
@@ -422,6 +434,9 @@
     </ClCompile>
     <ClCompile Include="..\Private\State_Land.cpp">
       <Filter>06. FSM\Player\Land</Filter>
+    </ClCompile>
+    <ClCompile Include="..\private\Builder_Example.cpp">
+      <Filter>07. System\01. Builder</Filter>
     </ClCompile>
     <ClCompile Include="..\Public\Physics_Terrain.cpp">
       <Filter>03. GameObject\PhysicsTerrain</Filter>

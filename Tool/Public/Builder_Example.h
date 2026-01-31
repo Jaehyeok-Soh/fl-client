@@ -1,6 +1,5 @@
 #pragma once
 #include "BuilderBase.h"
-#include "DataDocument_Example.h"
 
 NS_BEGIN(Engine)
 class CDataDocumentBase;

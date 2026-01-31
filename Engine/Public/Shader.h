@@ -69,6 +69,7 @@ public:
 	HRESULT Bind_RenderTargetNormalTexture(ID3D11ShaderResourceView* pTexture);
 	HRESULT Bind_RenderTargetShadeTexture(ID3D11ShaderResourceView* pTexture);
 	HRESULT Bind_RenderTargetDepthTexture(ID3D11ShaderResourceView* pTexture);
+	HRESULT Bind_RenderTargetSceneTexture(ID3D11ShaderResourceView* pTexture); // 이펙트 전용 후처리 쉐이더 텍스처
 	HRESULT Bind_DiffuseTexture(ID3D11ShaderResourceView* pDiffuse);
 	void Bind_MaterialTextures(ID3D11ShaderResourceView** ppSRV, _uint iCount);
 	void Bind_MaterialMask(_short iMask);
@@ -137,6 +138,9 @@ private:
 	ID3DX11EffectShaderResourceVariable* m_pRenderTargetNormalTexture = { nullptr };
 	ID3DX11EffectShaderResourceVariable* m_pRenderTargetShadeTexture = { nullptr };
 	ID3DX11EffectShaderResourceVariable* m_pRenderTargetDepthTexture = { nullptr };
+	// Effect Shader 전용 텍스처
+	ID3DX11EffectShaderResourceVariable* m_prenderTargetSceneTexture = { nullptr };	// 유니티에서 SceneTexture라고 하더라.
+
 	ID3DX11EffectShaderResourceVariable* m_pDefaultTextures = { nullptr };
 	ID3DX11EffectShaderResourceVariable* m_pCubeTexture = { nullptr };
 public:

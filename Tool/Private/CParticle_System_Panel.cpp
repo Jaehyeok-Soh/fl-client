@@ -6,12 +6,72 @@
 #include "CEffectObject.h"
 #include "VIBuffer_Particle_Point.h"
 #include "GameInstance.h"
+#include "Texture.h"
 
 CParticle_System_Panel::CParticle_System_Panel(const _char* pLabel, CLevel* pOwner, ID3D11Device* pDevice, ID3D11DeviceContext* pDeviceContext)
 	:CImGui_Panel(pLabel, pOwner, pDevice, pDeviceContext)
 	,m_pGameInstance(CGameInstance::GetInstance())
 {
 	Safe_AddRef(m_pGameInstance);
+}
+
+HRESULT CParticle_System_Panel::Create_CanvasEffect()
+{
+	//// =========	Create	  ==============
+	//CGameObject* pResult = { nullptr };
+
+	//CEffectObject::Effect_Desc pEffectDesc = {};
+	//CTransform::TRANSFORM_DESC transformDesc = {};
+	//// =========    트랜스폼   ============
+	//transformDesc.vPosition = { 0.f, 0.0f, 0.f };
+	//transformDesc.fRotatePerSec = 1.f;
+	//transformDesc.fMovePerSec = 1.f;
+
+	//pEffectDesc.pMatParent = nullptr;
+	//pEffectDesc.pTransform_Desc = &transformDesc;
+
+	//pEffectDesc.wstrLayerTag = L"Effect_Parts";
+	//pEffectDesc.iLevelIndex = ENUM_TO_UINT(ELevelType::EFFECT);
+	//// ========     이펙트 타입   =========
+	//pEffectDesc.eEffectSystemType = E_EffectSystemType::Particle;
+	//pEffectDesc.eEffectType = E_EFFECTTYPE::Particle;
+	//pEffectDesc.eEffectParticleType = E_PARTICLETYPE::TEXTURE;
+
+	//// =========   이펙트 Color Value   ===============
+	//pEffectDesc._Effect_Color = Vec4{ 0.f, 0.f, 0.f, 1.f };
+
+	//// ========  이펙트 Material 설정   ===========
+	//pEffectDesc._Effect_Model_Tag = {};
+	//pEffectDesc._Effect_Shader_Tag = {};
+	//pEffectDesc._Effect_DiffuseTexture_Tag = {};
+	//pEffectDesc._Effect_NoiseTexture_Tag = {};
+	//pEffectDesc._Effect_DiffuseTexture_Tag = {};
+	//pEffectDesc._Effect_ShaderPass = {};
+
+	//pEffectDesc._Effect_TileCount = CEffectObject::_uint2{ 0, 0 };
+
+	//// =======   이펙트 스크롤 Value   ===========
+	//pEffectDesc._Effect_ScrollSpeed = { 0.f, 0.f };
+
+	//// ========   이펙트 왜곡 Scale Value   ==========
+	//pEffectDesc._Effect_DistortionScale = { 0.f, 0.f };
+
+	//// ==========   이펙트 Sacle Value   ==============
+	//pEffectDesc._Effect_StartScale = { 1.f, 1.f, 1.f };
+	//pEffectDesc._Effect_EndScale = { 1.f, 1.f, 1.f };
+
+	//CBase* pClone = m_pGameInstance->Clone_Prototype(EPrototypeType::GAMEOBJECT, ENUM_TO_UINT(ELevelType::EFFECT), L"Prototype_GameObject_Effect_Parts", &pEffectDesc);
+	//	
+	//if(pClone)
+	//	m_pCanvasEffectObject = static_cast<CEffectObject*>(pClone);
+
+	//else
+	//	return E_FAIL;
+
+	//
+	//
+
+	return S_OK;
 }
 
 void CParticle_System_Panel::Update(const _float fDT)
@@ -36,6 +96,7 @@ HRESULT CParticle_System_Panel::Render(CToolObject* pGo)
 	Draw_ParticleSystem(pGo);
 	Draw_Timer(pGo);
 	Draw_EffectColor(pGo);
+	Draw_Drop_Texture(pGo);
 
 	if(m_bModified)
 		Binding_EffectDesc(pGo);
@@ -102,7 +163,7 @@ void CParticle_System_Panel::Draw_Timer(CToolObject* pGo)
 		{
 			Part->Get_Component<CVIBuffer_Particle_Point>()->Reset_Simulation();
 			static_cast<CEffectObject*>(Part)->TimePause(false);
-			static_cast<CEffectObject*>(Part)->TimeReset();
+			static_cast<CEffectObject*>(Part)->TimeReset(m_tCurrentDesc);
 		}
 	}
 
@@ -120,7 +181,7 @@ void CParticle_System_Panel::Draw_Timer(CToolObject* pGo)
 		{
 			Part->Get_Component<CVIBuffer_Particle_Point>()->Reset_Simulation();
 			static_cast<CEffectObject*>(Part)->TimePause(true);
-			static_cast<CEffectObject*>(Part)->TimeReset();
+			static_cast<CEffectObject*>(Part)->TimeReset(m_tCurrentDesc);
 		}
 	}
 
@@ -254,19 +315,38 @@ void CParticle_System_Panel::Draw_ParticleSystem(CToolObject* pGo)
 				// 1. Local - 부모가 움직이면 이미 생성된 입자도 부모를 따라 움직인다.
 				// 2. World - 생성된 후에는 부모를 떠나 독립된 월드 좌표에서 움직입니다.
 
-		ImGui::AlignTextToFramePadding();
-		if (ImGui::TreeNode("Simulation Space"))
+		ImGui::AlignTextToFramePadding(); if (ImGui::TreeNode("Simulation Space"))
 		{
-			ImGui::Text("Local"); ImGui::SameLine(0, 20.f);
-			ImGui::Text("World"); ImGui::Spacing();
-			static bool Local = false;
-			static bool World = false;
+			// 현재 어떤 모드인지 확인
+			//bool isLocal = (m_tCurrentDesc._Effect_SimulationType == E_SIMULATION_SPACE::LOCAL);
+			//bool isWorld = (m_tCurrentDesc._Effect_SimulationType == E_SIMULATION_SPACE::WORLD);
 
-			m_bModified |= ImGui::Checkbox("##Local1", &Local); ImGui::SameLine(0, 40.f);
-			m_bModified |= ImGui::Checkbox("##World1", &World); ImGui::Spacing();
+			//ImGui::Text("Local"); ImGui::SameLine(0, 45.f);
+			//ImGui::Text("World");
 
-			if (Local) m_tCurrentDesc._Effect_SimulationType = E_SIMULATION_SPACE::LOCAL;
-			else if (World) m_tCurrentDesc._Effect_SimulationType = E_SIMULATION_SPACE::WORLD;
+			//// ==== Local 체크박스 ====
+			//if (ImGui::Checkbox("##LocalMode", &isLocal))
+			//{
+			//	// 클릭 시 무조건 LOCAL로 변경
+			//	m_tCurrentDesc._Effect_SimulationType = E_SIMULATION_SPACE::LOCAL;
+			//	m_bModified = true;
+			//}
+
+			//ImGui::SameLine(0, 40.f);
+
+			//// ==== World 체크박스 ====
+			//if (ImGui::Checkbox("##WorldMode", &isWorld))
+			//{
+			//	// 클릭 시 무조건 WORLD로 변경
+			//	m_tCurrentDesc._Effect_SimulationType = E_SIMULATION_SPACE::WORLD;
+			//	m_bModified = true;
+			//}
+
+			//// ====== 이쁘게 디자인하기 =======
+			//ImGui::Spacing();
+			//const char* modeText = (m_tCurrentDesc._Effect_SimulationType == E_SIMULATION_SPACE::LOCAL) ? "LOCAL" : "WORLD";
+			//ImGui::Text("Active Mode: "); ImGui::SameLine();
+			//ImGui::TextColored(ImVec4(0.0f, 1.0f, 1.0f, 1.0f), "%s", modeText);
 
 			ImGui::TreePop();
 		}
@@ -376,9 +456,44 @@ void CParticle_System_Panel::Draw_ParticleSystem(CToolObject* pGo)
 		if (ImGui::TreeNode("Scroll Speed##Shape"))
 		{
 			m_bModified |= ImGui::DragFloat2("##Scroll Speed", &m_tCurrentDesc._Effect_ScrollSpeed.x, 0.1f, -100.f, 100.f);
-			ImGui::TreePop();
-		}
+		// ============  Scroll 사용할거야?   =============
+			// SCROLL 사용 여부
+			if (ImGui::Checkbox("Use##Scroll", &m_tCurrentDesc._Effect_Tool_UseScroll))
+			{
+				if (m_tCurrentDesc._Effect_Tool_UseScroll)
+					Engine_Utils::Add_Flag(m_tCurrentDesc._Effect_RenderFlag, 1 << 1); // SCROLL
+				else
+					Engine_Utils::RemoveHard_Flag(m_tCurrentDesc._Effect_RenderFlag, 1 << 1);
 
+				m_bModified |= true;
+			}
+
+			// RIGHT
+			if (m_tCurrentDesc._Effect_Tool_UseScroll)
+			{
+				ImGui::SameLine();
+				if (ImGui::Checkbox("RIGHT", &m_tCurrentDesc._Effect_Tool_RightScroll))
+				{
+					if (m_tCurrentDesc._Effect_Tool_RightScroll)
+						Engine_Utils::Add_Flag(m_tCurrentDesc._Effect_RenderFlag, 1 << 2); // RIGHT
+					else
+						Engine_Utils::RemoveHard_Flag(m_tCurrentDesc._Effect_RenderFlag, 1 << 2);
+					m_bModified |= true;
+				}
+
+				ImGui::SameLine();
+				if (ImGui::Checkbox("DOWN", &m_tCurrentDesc._Effect_Tool_DownScroll))
+				{
+					if (m_tCurrentDesc._Effect_Tool_DownScroll)
+						Engine_Utils::Add_Flag(m_tCurrentDesc._Effect_RenderFlag, 1 << 3); // DOWN 
+					else
+						Engine_Utils::RemoveHard_Flag(m_tCurrentDesc._Effect_RenderFlag, 1 << 3);
+					m_bModified |= true;
+				}
+			}
+			ImGui::TreePop();
+
+		}
 		// ============  Discard Value 설정하기   ==========
 		ImGui::AlignTextToFramePadding();
 		if (ImGui::TreeNode("Discard Value##Shape"))
@@ -851,6 +966,20 @@ void CParticle_System_Panel::Draw_ParticleSystem(CToolObject* pGo)
 		}
 
 		ImGui::Spacing();
+
+		// ===========  Texture Rotation  ================
+		// 
+		// Texture Setting 버튼
+		if (ImGui::Button("Texture Setting")) 
+		{
+			m_bShowRotationModal = true; 
+		}
+
+		if (m_bShowRotationModal)
+		{
+			Draw_Rotation_Texture(pGo);
+		}
+
 #pragma endregion
 
 		// ===========   Position & Rotation & Scale =============
@@ -891,6 +1020,15 @@ void CParticle_System_Panel::Draw_ParticleSystem(CToolObject* pGo)
    //       RENDERER    //
   // ==================//
 
+	// 공용으로 사용할 람다식
+	auto PackSamplerFlag = [](uint32_t& totalFlag, int selectedIdx, int shift) {
+		// 해당 위치의 3비트를 0으로 밀어버림
+		totalFlag &= ~(0x7 << shift);
+		// 새로운 인덱스를 shift만큼 밀어서 꽂아넣음 
+		totalFlag |= (selectedIdx << shift);
+		};
+
+
 	if (ImGui::CollapsingHeader("Renderer"))
 	{
 		// ============ RenderState check box =============
@@ -898,7 +1036,8 @@ void CParticle_System_Panel::Draw_ParticleSystem(CToolObject* pGo)
 		if (ImGui::TreeNode("RenderState Setting##Renderer"))
 		{
 			// =============  [USE BILLBOARD]  ==============
-			if (ImGui::Checkbox("Use BillBoard##Renderer", &m_tCurrentDesc._Effect_Tool_UseBillboard))
+			ImGui::Text("Bilboard"); ImGui::SameLine(0, 200.f);
+			if (ImGui::Checkbox("Use##BillBoardRenderer", &m_tCurrentDesc._Effect_Tool_UseBillboard))
 			{
 				if (m_tCurrentDesc._Effect_Tool_UseBillboard)
 					Engine_Utils::Add_Flag(m_tCurrentDesc._Effect_RenderFlag, 1);
@@ -910,16 +1049,144 @@ void CParticle_System_Panel::Draw_ParticleSystem(CToolObject* pGo)
 			}
 			// =============  [CHOOSE SAMPLERSTATE]	  ============
 
+			if (ImGui::TreeNode("SamplerState Setting##Renderer"))
+			{
+				// Diffuse Texture##SamplerState
+				if (ImGui::TreeNode("Diffuse Texture##SamplerState"))
+				{
+					vector<string> m_PParticleTypeList;
+					m_PParticleTypeList.clear();
 
-			// =============  [CHOOSE BLENDSTATE]   ==============
+					m_PParticleTypeList.push_back("LinearSampler");
+					m_PParticleTypeList.push_back("LinearClampSampler");
+					m_PParticleTypeList.push_back("LinearBorderSampler");
+					m_PParticleTypeList.push_back("LinearMirrorSampler");
+					m_PParticleTypeList.push_back("PointSampler");
 
+					std::vector<const char*> iTems1;
+					iTems1.reserve(static_cast<int>(m_PParticleTypeList.size()));
 
-			// =============  [CHOOSE RASTERIZESTATE]   ==========
+					for (auto& str : m_PParticleTypeList)
+						iTems1.push_back(str.c_str());
 
+					if (ImGui::ListBox("##ParticleType Select", &m_tCurrentDesc._Effect_Tool_DiffuseSamplerState_Flag, [](void* data, int idx, const char** out_text)
+						{
+							auto& vector = *static_cast<std::vector<std::string>*>(data);
+							*out_text = vector[idx].c_str();
+							return true;
+						},
+						(void*)&m_PParticleTypeList, (int)m_PParticleTypeList.size(), 2))
+					{
+						PackSamplerFlag(m_tCurrentDesc._Effect_SamplerStateFlag, m_tCurrentDesc._Effect_Tool_DiffuseSamplerState_Flag, 0);
+						m_bModified |= true;
+					}
 
-			// =============  [CHOOSE DEPTHSTENCILSTATE]  ========
+		
+					ImGui::TreePop();
+					ImGui::Spacing();
+				}
+				// Noise Texture##SamplerState
+				if (ImGui::TreeNode("Noise Texture##SamplerState"))
+				{
+					vector<string> m_PParticleTypeList;
+					m_PParticleTypeList.clear();
 
+					m_PParticleTypeList.push_back("LinearSampler");
+					m_PParticleTypeList.push_back("LinearClampSampler");
+					m_PParticleTypeList.push_back("LinearBorderSampler");
+					m_PParticleTypeList.push_back("LinearMirrorSampler");
+					m_PParticleTypeList.push_back("PointSampler");
 
+					std::vector<const char*> iTems1;
+					iTems1.reserve(static_cast<int>(m_PParticleTypeList.size()));
+
+					for (auto& str : m_PParticleTypeList)
+						iTems1.push_back(str.c_str());
+
+					if (ImGui::ListBox("##ParticleType Select", &m_tCurrentDesc._Effect_Tool_NoiseSamplerState_Flag, [](void* data, int idx, const char** out_text)
+						{
+							auto& vector = *static_cast<std::vector<std::string>*>(data);
+							*out_text = vector[idx].c_str();
+							return true;
+						},
+						(void*)&m_PParticleTypeList, (int)m_PParticleTypeList.size(), 2))
+					{
+						PackSamplerFlag(m_tCurrentDesc._Effect_SamplerStateFlag, m_tCurrentDesc._Effect_Tool_NoiseSamplerState_Flag, 3);
+						m_bModified |= true;
+					}
+
+					ImGui::TreePop();
+					ImGui::Spacing();
+				}
+				// Masking Texture##SamplerState
+				if (ImGui::TreeNode("Masking Texture##SamplerState"))
+				{
+					vector<string> m_PParticleTypeList;
+					m_PParticleTypeList.clear();
+
+					m_PParticleTypeList.push_back("LinearSampler");
+					m_PParticleTypeList.push_back("LinearClampSampler");
+					m_PParticleTypeList.push_back("LinearBorderSampler");
+					m_PParticleTypeList.push_back("LinearMirrorSampler");
+					m_PParticleTypeList.push_back("PointSampler");
+
+					std::vector<const char*> iTems1;
+					iTems1.reserve(static_cast<int>(m_PParticleTypeList.size()));
+
+					for (auto& str : m_PParticleTypeList)
+						iTems1.push_back(str.c_str());
+
+					if (ImGui::ListBox("##ParticleType Select", &m_tCurrentDesc._Effect_Tool_MaskingSamplerState_Flag, [](void* data, int idx, const char** out_text)
+						{
+							auto& vector = *static_cast<std::vector<std::string>*>(data);
+							*out_text = vector[idx].c_str();
+							return true;
+						},
+						(void*)&m_PParticleTypeList, (int)m_PParticleTypeList.size(), 2))
+					{
+						PackSamplerFlag(m_tCurrentDesc._Effect_SamplerStateFlag, m_tCurrentDesc._Effect_Tool_MaskingSamplerState_Flag, 6);
+						m_bModified |= true;
+					}
+
+					ImGui::TreePop();
+					ImGui::Spacing();
+				}
+				// Gradation Texture##SamplerState
+				if (ImGui::TreeNode("Gradation Texture##SamplerState"))
+				{
+					vector<string> m_PParticleTypeList;
+					m_PParticleTypeList.clear();
+
+					m_PParticleTypeList.push_back("LinearSampler");
+					m_PParticleTypeList.push_back("LinearClampSampler");
+					m_PParticleTypeList.push_back("LinearBorderSampler");
+					m_PParticleTypeList.push_back("LinearMirrorSampler");
+					m_PParticleTypeList.push_back("PointSampler");
+
+					std::vector<const char*> iTems1;
+					iTems1.reserve(static_cast<int>(m_PParticleTypeList.size()));
+
+					for (auto& str : m_PParticleTypeList)
+						iTems1.push_back(str.c_str());
+
+					if (ImGui::ListBox("##ParticleType Select", &m_tCurrentDesc._Effect_Tool_GradationSamplerState_Flag, [](void* data, int idx, const char** out_text)
+						{
+							auto& vector = *static_cast<std::vector<std::string>*>(data);
+							*out_text = vector[idx].c_str();
+							return true;
+						},
+						(void*)&m_PParticleTypeList, (int)m_PParticleTypeList.size(), 2))
+					{
+						PackSamplerFlag(m_tCurrentDesc._Effect_SamplerStateFlag, m_tCurrentDesc._Effect_Tool_GradationSamplerState_Flag, 9);
+						m_bModified |= true;
+					}
+
+					ImGui::TreePop();
+					ImGui::Spacing();
+				}
+
+				ImGui::TreePop();
+			}
 
 			ImGui::TreePop();
 		}
@@ -996,11 +1263,62 @@ void CParticle_System_Panel::Draw_ParticleSystem(CToolObject* pGo)
 				m_bModified |= true;
 			}
 
-			ImGui::Spacing();
-			// Shader Pass 선택하기
-			ImGui::Text("Shader Pass :"); ImGui::SameLine();
-			m_bModified |= ImGui::InputInt("##Renderer_ShaderPass", &m_tCurrentDesc._Effect_ShaderPass); 
-			ImGui::TreePop(); ImGui::Spacing();
+			if (ImGui::TreeNode("SHADER PASS LIST##RENDERER"))
+			{
+				static int ShaderPassNumber = {};
+				vector<string> m_PParticleTypeList;
+				m_PParticleTypeList.clear();
+
+				switch (m_tCurrentDesc.eEffectParticleType)
+				{
+					case E_PARTICLETYPE::NONE:
+					{
+						break;
+					}
+					case E_PARTICLETYPE::PARTICLE:
+					{
+						m_PParticleTypeList.push_back("DEFAULT_PARTICLE");
+						break;
+					}
+					case E_PARTICLETYPE::TEXTURE:
+					{
+						m_PParticleTypeList.push_back("DEFAULT_TEXTURE");
+						break;
+					}
+					case E_PARTICLETYPE::MESH:
+					{
+						m_PParticleTypeList.push_back("DEFAULT_MESH");
+						m_PParticleTypeList.push_back("BULLET");
+						m_PParticleTypeList.push_back("TRAIL");
+						m_PParticleTypeList.push_back("DISTOTION");
+						break;
+					}
+				}
+
+				if (m_PParticleTypeList.size() <= ShaderPassNumber)
+					ShaderPassNumber = static_cast<int>((m_PParticleTypeList.size() - 1));
+
+				std::vector<const char*> iTems1;
+				iTems1.reserve(static_cast<int>(m_PParticleTypeList.size()));
+
+				for (auto& str : m_PParticleTypeList)
+					iTems1.push_back(str.c_str());
+
+				if (ImGui::ListBox("##ParticleType Select", &ShaderPassNumber, [](void* data, int idx, const char** out_text)
+					{
+						auto& vector = *static_cast<std::vector<std::string>*>(data);
+						*out_text = vector[idx].c_str();
+						return true;
+					},
+					(void*)&m_PParticleTypeList, (int)m_PParticleTypeList.size(), 2))
+				{
+					m_bModified |= true;
+					m_tCurrentDesc._Effect_ShaderPass = (ShaderPassNumber);
+				}
+				ImGui::TreePop();
+				ImGui::Spacing();
+			}
+			ImGui::TreePop();
 		}
 
 	}
@@ -1041,6 +1359,235 @@ void CParticle_System_Panel::Make_MeshSelectButton()
 
 }
 
+void CParticle_System_Panel::Draw_Drop_Texture(CToolObject* pGo)
+{
+
+}
+
+void CParticle_System_Panel::Draw_Rotation_Texture(CToolObject* pGo)
+{
+	ImGui::Begin("Texture_Setting##DropTexture");
+
+	if (ImGui::TreeNodeEx("ROTATION SETTING", ImGuiTreeNodeFlags_DefaultOpen))
+	{
+		if (ImGui::BeginTable("RotationTable", 3, ImGuiTableFlags_Borders | ImGuiTableFlags_RowBg))
+		{
+			const char* textureNames[] = { "Diffuse", "Noise", "Masking", "Gradation", "Trail", "Normal" };
+			const char* rotationLabels[] = { "0", "90", "180", "270" };
+
+			for (int i = 0; i < 6; i++)
+			{
+				ImGui::TableNextColumn();
+				ImGui::Text("%s", textureNames[i]);
+
+				// 각 텍스처별로 콤보박스 배치
+				std::string label = "##Rot" + std::to_string(i);
+				if (ImGui::Combo(label.c_str(), &m_iRotIndices[i], rotationLabels, IM_ARRAYSIZE(rotationLabels)))
+				{
+					UpdateRotationFlags();
+					m_bModified |= true;
+				}
+			}
+			ImGui::EndTable();
+
+			ImGui::Separator();
+
+			// 하단에 Close 버튼 추가
+			if (ImGui::Button("Close", ImVec2(120, 0)))
+			{
+				m_bShowRotationModal = false;
+			}
+		}
+		ImGui::TreePop();
+	}
+
+	// Setting 하나 더
+	Draw_Sprite_Texture(pGo);
+
+	ImGui::End();
+}
+
+void CParticle_System_Panel::Draw_Sprite_Texture(CToolObject* pGo)
+{
+	ImGui::Spacing();
+	ImGui::Separator();
+	ImGui::Spacing();
+
+	// 1. SPRITE 헤더 (비트 플래그 기반)
+	if (ImGui::TreeNodeEx("SPRITE ANIMATION SETTING", ImGuiTreeNodeFlags_DefaultOpen))
+	{
+		// 2. SPRITE 비트 플래그 체크 (1 << 5)
+		bool bUseSprite = (m_tCurrentDesc._Effect_RenderFlag & (1 << 5)) != 0;
+
+		ImGui::Text("Enable Sprite"); ImGui::SameLine(130);
+		if (ImGui::Checkbox("##UseSpriteFlag", &bUseSprite))
+		{
+			if (bUseSprite)
+				m_tCurrentDesc._Effect_RenderFlag |= (1 << 5); // SPRITE 비트 켜기
+			else
+				m_tCurrentDesc._Effect_RenderFlag &= ~(1 << 5); // SPRITE 비트 끄기
+
+			m_bModified = true;
+		}
+
+		// 3. 스프라이트 활성화 시 세부 타일 설정 (디자인 유지)
+		if (bUseSprite)
+		{
+			ImGui::PushStyleColor(ImGuiCol_ChildBg, ImVec4(0.12f, 0.12f, 0.12f, 1.0f));
+			ImGui::BeginChild("SpriteTileDetail", ImVec2(0, 75), true, ImGuiWindowFlags_NoScrollbar);
+
+			if (ImGui::BeginTable("SpriteTileTable", 2))
+			{
+				// 가로 칸수 (g_SpriteCol)
+				ImGui::TableNextColumn();
+				ImGui::AlignTextToFramePadding();
+				ImGui::Text("Col (X)");
+
+				ImGui::TableNextColumn();
+				ImGui::SetNextItemWidth(-1.0f);
+				int col = (int)m_tCurrentDesc._Effect_TileCount.x;
+				if (ImGui::DragInt("##ColX", &col, 0.1f, 1, 64)) {
+					m_tCurrentDesc._Effect_TileCount.x = (uint32_t)col;
+					m_bModified = true;
+				}
+
+				// 세로 칸수 (g_SpriteRow)
+				ImGui::TableNextColumn();
+				ImGui::Text("Row (Y)");
+
+				ImGui::TableNextColumn();
+				ImGui::SetNextItemWidth(-1.0f);
+				int row = (int)m_tCurrentDesc._Effect_TileCount.y;
+				if (ImGui::DragInt("##RowY", &row, 0.1f, 1, 64)) {
+					m_tCurrentDesc._Effect_TileCount.y = (uint32_t)row;
+					m_bModified = true;
+				}
+
+				ImGui::EndTable();
+			}
+			ImGui::EndChild();
+			ImGui::PopStyleColor();
+
+			ImGui::TextColored(ImVec4(0.5f, 0.6f, 1.0f, 1.0f),
+				"  * Grid: %d x %d (Total %d)",
+				m_tCurrentDesc._Effect_TileCount.x,
+				m_tCurrentDesc._Effect_TileCount.y,
+				m_tCurrentDesc._Effect_TileCount.x * m_tCurrentDesc._Effect_TileCount.y);
+
+
+			// ================  재생 제어 설정 구역  ==============
+
+			ImGui::Spacing();
+			ImGui::Separator();
+			ImGui::Spacing();
+
+			ImGui::TextColored(ImVec4(1.0f, 1.0f, 0.f, 1.f), "PlayBack Settings");
+
+			// =============  애니메이션 고정 여부 체크박스 ============
+			if (ImGui::Checkbox("Play Animation", &m_tCurrentDesc._Effect_bPlayAnim))
+			{
+				m_bModified |= true;
+			}
+
+			if (m_tCurrentDesc._Effect_bPlayAnim)
+			{
+				// 애니메이션이 켜졌을 때,
+				ImGui::AlignTextToFramePadding();
+				ImGui::Text("Anim Speed"); ImGui::SameLine(100);
+				ImGui::SetNextItemWidth(-1.0f);
+				if (ImGui::DragFloat("##AnimSpeed", &m_tCurrentDesc._Effect_AnimSpeed, 0.1f, 0.0f, 100.0f, "%.2f FPS"))
+				{
+					m_bModified |= true;
+				}
+			}
+
+			else
+			{
+				// 애니메이션이 켜진게 아닐 때.
+				int maxIndex = (int)(m_tCurrentDesc._Effect_TileCount.x * m_tCurrentDesc._Effect_TileCount.y);
+				if (maxIndex < 0) maxIndex = 0;
+
+				int curIdx = (int)m_tCurrentDesc.m_iCurSpriteNumber;
+
+				ImGui::AlignTextToFramePadding();
+				ImGui::Text("Frame Index"); ImGui::SameLine();
+				ImGui::SetNextItemWidth(-1.0f);
+				if (ImGui::SliderInt("##CurIndex", &curIdx, 0, maxIndex))
+				{
+					m_tCurrentDesc.m_iCurSpriteNumber = (uint32_t)curIdx;
+					m_bModified |= true;
+				}
+			}
+		}
+
+		ImGui::TreePop();
+	}
+}
+
+void CParticle_System_Panel::UpdateRotationFlags()
+{
+	uint32_t packed = 0;
+	for (int i = 0; i < 6; i++)
+	{
+		packed |= (static_cast<uint32_t>(m_iRotIndices[i]) << (i * 4));
+	}
+	m_tCurrentDesc._Effect_TextureRotationFlag = packed;
+}
+
+void CParticle_System_Panel::Draw_Preview_Texture(CToolObject* pGo)
+{
+	ImGui::Separator();
+	ImGui::Text("Currently Bound Textures");
+
+	if (ImGui::BeginChild("TexturePreview", ImVec2(0, 100), true, ImGuiWindowFlags_HorizontalScrollbar))
+	{
+		const char* SlotName[] = { "Diffuse", "Noise", "Mask", "Gradation", "Trail", "Normal" };
+
+		for (int i = 0; i < 6; i++)
+		{
+			ImGui::BeginGroup();
+
+			ImGui::Text("%s", SlotName[i]);
+
+			// 텍스처 SRV 바인딩
+			CToolObject* pInstance = static_cast<Effect*>(pGo)->Get_Part<CToolObject>(m_iSelectPartsIndex);
+			CTextureBase* pTextureCom = m_pGameInstance->Get_Resource<CTextureBase>(L"");
+				
+
+			if (pTextureCom)
+			{
+				ID3D11ShaderResourceView* pSRV = pTextureCom->Get_SRV();
+			}
+		}
+	}
+}
+
+HRESULT CParticle_System_Panel::Create_Preview_Resources()
+{
+	//D3D11_TEXTURE2D_DESC texDesc = {};
+	//texDesc.Width = 256;
+	//texDesc.Height = 256;
+	//texDesc.MipLevels = 1;
+	//texDesc.ArraySize = 1;
+	//texDesc.Format = DXGI_FORMAT_R8G8B8A8_UNORM;
+	//texDesc.SampleDesc.Count = 1;
+	//texDesc.Usage = D3D11_USAGE_DEFAULT;
+	//texDesc.BindFlags = D3D11_BIND_RENDER_TARGET | D3D11_BIND_SHADER_RESOURCE;
+
+	//ID3D11Texture2D* pTargetTexture = nullptr;
+	//if (FAILED(m_pDevice->CreateTexture2D(&texDesc, nullptr, &pTargetTexture)))
+	//	return E_FAIL;
+
+	//// Tool용 RendertargetView
+	//m_pDevice->CreateRenderTargetView(pTargetTexture, nullptr, &m_pPreviewRTV);
+	//// Tool용 Shader Resource VIew
+	//m_pDevice->CreateShaderResourceView(pTargetTexture, nullptr, &m_pPreviewSRV);
+
+	//Safe_Release(pTargetTexture);
+
+	return S_OK;
+}
+
 void CParticle_System_Panel::Draw_EffectColor(CToolObject* pGo)
 {
 	ImGui::Begin("Effect Settings");
@@ -1051,6 +1598,8 @@ void CParticle_System_Panel::Draw_EffectColor(CToolObject* pGo)
 		ImGuiColorEditFlags_PickerHueWheel |
 		ImGuiColorEditFlags_AlphaBar |       // 투명도 조절 바 표시
 		ImGuiColorEditFlags_DisplayRGB);
+
+	// HDR 선택도 할 수 있는 창을 만들자.
 
 	ImGui::End();
 }
@@ -1148,7 +1697,6 @@ void CParticle_System_Panel::Draw_Parts(CToolObject* pGo)
 				pEffectDesc._Effect_DiffuseTexture_Tag = {};
 				pEffectDesc._Effect_ShaderPass = {};
 
-				pEffectDesc._Effect_bUseAtlas = false;
 				pEffectDesc._Effect_TileCount = CEffectObject::_uint2{ 0, 0 };
 
 				// =======   이펙트 스크롤 Value   ===========
@@ -1200,6 +1748,8 @@ HRESULT CParticle_System_Panel::EffectPanel_Initialize()
 	if (FAILED(EffectFileResource_Setting()))
 		return E_FAIL;
 
+	if (FAILED(Create_CanvasEffect()))
+		return E_FAIL;
 
 	return S_OK;
 }
@@ -1312,4 +1862,9 @@ void CParticle_System_Panel::Free()
 	__super::Free();
 
 	Safe_Release(m_pGameInstance);
+	//Safe_Release(m_pCanvasEffectObject);
+
+	//// Preview Texture용 이펙트 객체 삭제
+	//Safe_Release(m_pPreviewRTV);
+	//Safe_Release(m_pPreviewSRV);
 }

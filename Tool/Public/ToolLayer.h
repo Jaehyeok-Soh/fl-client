@@ -37,25 +37,27 @@ private:
 	HRESULT Ready_Components(TOOLLAYER_DESC* pDesc);
 	HRESULT Bind_ShaderResources();
 
-public:
-	/* UI오브젝트 접근 함수 */
-	HRESULT Safe_Add_UI(CToolUI* pUI);
+	void Sync_Data();
 
+#pragma region GETTER/SETTER
+public:
+	HRESULT Safe_Add_UI(CToolUI* pUI);
 	vector<CToolUI*>* Safe_Access_UIObject_Vector_Ptr();
 	CToolUI* Safe_Access_UIObject_Ptr(int32_t index);
 	CToolUI* Safe_Access_CurUIObject_Ptr();
-
-	const _string& Get_Tag() const { return m_strTag; }
-	void Set_Tag(const _string& Tag) { m_strTag = Tag; }
-
+	const _string& Get_Name() const { return m_strName; }
+	void Set_Name(const _string& Tag) { m_strName = Tag; }
+	_bool Get_isVisible() const { return m_isVisible; }
+	void Set_isVisible(_bool is) { m_isVisible = is; }
+	const DTO::TUI_LayerData& Get_Data()const { return m_tLayerData; }
+	DTO::TUI_LayerData& Get_Data_Ref() { return m_tLayerData; }
+#pragma endregion
 private:
 	CImGui_UIManager* m_pUIManager = { nullptr };
-
-	LAYER_DATA m_tLayerData = {};
+	DTO::TUI_LayerData m_tLayerData = {};
 	vector<CToolUI*> m_vecToolUIs;
 
-	_string m_strTag = {};
-
+	_string m_strName = {};
 public:
 	static CToolLayer* Create(EToolObjectType eType, ID3D11Device* pDevice, ID3D11DeviceContext* pDeviceContext);
 	CGameObject* Clone(void* pArg);

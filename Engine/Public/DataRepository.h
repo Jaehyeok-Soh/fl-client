@@ -58,7 +58,7 @@ public:
 template<typename T>
 inline HRESULT CDataRepository::Regist_Category(_uint iLevelID, DTO::ECategory eCategory)
 {
-	static_assert(std::is_base_of_v<CDataDocumentBase, T> == true, "T is not derived from CDataDocumentBase");
+	static_assert(std::is_base_of_v<CDataDocumentBase, T>, "T is not derived from CDataDocumentBase");
 	if (iLevelID >= m_mapStores.size())
 		return E_FAIL;
 

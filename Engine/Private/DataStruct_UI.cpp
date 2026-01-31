@@ -14,21 +14,42 @@ NLOHMANN_JSON_SERIALIZE_ENUM(EUIType,
 		{EUIType::LAYER, "LAYER"},
 		{EUIType::GENERICUI, "GENERICUI"}
 	}
-)
+)	
 
-inline void to_json(json& j, const TUI_GenericUIData& data)
+void to_json(json& j, const TUI_GenericUIData& data)
 {
 	j = json
 	{
 		{ "Type", TUI_GenericUIData::eType },
 		{ "strTag", data.strTag },
+		{ "iLayerIndex", data.iLayerIndex },
+		{ "iRectTransformType", data.iRectTransformType },
+		{ "iUIType", data.iUIType },
+		{ "fWidth", data.fWidth },
+		{ "fHeight", data.fHeight },
+		{ "fPosX", data.fPosX },
+		{ "fPosY", data.fPosY },
+		{ "fPosZ", data.fPosZ },
+
+		{ "strTextureTag", data.strTextureTag },
+		{ "iTextureIndex", data.iTextureIndex },
 	};
 }
-inline void from_json(const json& j, TUI_GenericUIData& data)
+void from_json(const json& j, TUI_GenericUIData& data)
 {
 	j.at("strTag").get_to(data.strTag);
+	j.at("iLayerIndex").get_to(data.iLayerIndex);
+	j.at("iRectTransformType").get_to(data.iRectTransformType);
+	j.at("iUIType").get_to(data.iUIType);
+	j.at("fWidth").get_to(data.fWidth);
+	j.at("fHeight").get_to(data.fHeight);
+	j.at("fPosX").get_to(data.fPosX);
+	j.at("fPosY").get_to(data.fPosY);
+	j.at("fPosZ").get_to(data.fPosZ);
+	j.at("strTextureTag").get_to(data.strTextureTag);
+	j.at("iTextureIndex").get_to(data.iTextureIndex);
 }
-inline void to_json(json& j, const TUI_LayerData& data)
+void to_json(json& j, const TUI_LayerData& data)
 {
 	j = json
 	{
@@ -36,23 +57,32 @@ inline void to_json(json& j, const TUI_LayerData& data)
 		{ "strTag", data.strTag },
 	};
 }
-inline void from_json(const json& j, TUI_LayerData& data)
+void from_json(const json& j, TUI_LayerData& data)
 {
 	j.at("strTag").get_to(data.strTag);
 }
-
-inline void to_json(json& j, const TUI_CanvasData& data)
+void to_json(json& j, const TUI_CanvasData& data)
 {
 	j = json
 	{
 		{ "Type", TUI_CanvasData::eType },
 		{ "strTag", data.strTag },
+		{ "fWidth", data.fWidth },
+		{ "fHeight", data.fHeight },
+		{ "fPosX", data.fPosX },
+		{ "fPosY", data.fPosY },
+		{ "fPosZ", data.fPosZ },
 	};
 }
 
-inline void from_json(const json& j, TUI_CanvasData& data)
+void from_json(const json& j, TUI_CanvasData& data)
 {
 	j.at("strTag").get_to(data.strTag);
+	j.at("fWidth").get_to(data.fWidth);
+	j.at("fHeight").get_to(data.fHeight);
+	j.at("fPosX").get_to(data.fPosX);
+	j.at("fPosY").get_to(data.fPosY);
+	j.at("fPosZ").get_to(data.fPosZ);
 }
 
 NS_END
@@ -60,34 +90,34 @@ NS_END
 
 NS_BEGIN(Engine)
 
-json CUI_GenericUI::ToJson() const
+json CUI_GenericUI_DTO::ToJson() const
 {
 	return json(m_Data);
 }
 
-HRESULT CUI_GenericUI::FromJson(const json& j)
+HRESULT CUI_GenericUI_DTO::FromJson(const json& j)
 {
 	m_Data = j.get<DTO::TUI_GenericUIData>();
 	return S_OK;
 }
 
-json CUI_Layer::ToJson() const
+json CUI_Layer_DTO::ToJson() const
 {
 	return json(m_Data);
 }
 
-HRESULT CUI_Layer::FromJson(const json& j)
+HRESULT CUI_Layer_DTO::FromJson(const json& j)
 {
 	m_Data = j.get<DTO::TUI_LayerData>();
 	return S_OK;
 }
 
-json CUI_Canvas::ToJson() const
+json CUI_Canvas_DTO::ToJson() const
 {
 	return json(m_Data);
 }
 
-HRESULT CUI_Canvas::FromJson(const json& j)
+HRESULT CUI_Canvas_DTO::FromJson(const json& j)
 {
 	m_Data = j.get<DTO::TUI_CanvasData>();
 	return S_OK;

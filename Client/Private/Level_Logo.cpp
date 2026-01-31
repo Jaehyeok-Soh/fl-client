@@ -1,20 +1,29 @@
 #include "pch.h"
-#include "Player.h"
 #include "Level_Loading.h"
-#include "CameraMan_Targeter.h"
-#include "GameInstance.h"
 #include "Level_Logo.h"
+//=================
+// Manager
+//=================
 #include "UI_Manager.h"
+
+//=================
+// Builder
+//=================
+#include "Builder_Example.h"
+#include "BuilderSystem.h"
 
 //=================
 // Object
 //=================
-
+#include "Player.h"
+#include "CameraMan_Targeter.h"
 
 //=================
 // UI
 //=================
 #include "GenericUI.h"
+
+#include "GameInstance.h"
 
 CLevel_Logo::CLevel_Logo(ID3D11Device* pDevice, ID3D11DeviceContext* pDeviceContext)
 	: Super(pDevice, pDeviceContext)
@@ -23,6 +32,15 @@ CLevel_Logo::CLevel_Logo(ID3D11Device* pDevice, ID3D11DeviceContext* pDeviceCont
 
 HRESULT CLevel_Logo::Initialize()
 {
+	if (FAILED(Super::Initialize()))
+		return E_FAIL;
+
+	if (FAILED(Ready_Builders()))
+		return E_FAIL;
+
+	if (FAILED(Build_Files()))
+		return E_FAIL;
+
 	if (FAILED(Ready_Camera_Layer(g_wszDynamicCameraLayer)))
 		return E_FAIL;
 
@@ -63,7 +81,22 @@ HRESULT CLevel_Logo::Render()
 	if (FAILED(Super::Render()))
 		return E_FAIL;
 
-	//::SetWindowText(g_hWnd, L"로고레벨 입니다.");
+	return S_OK;
+}
+
+HRESULT CLevel_Logo::Ready_Builders()
+{
+	if (FAILED(Ready_Builder(DTO::ECategory::MAP, CBuilder_Example::Create(m_pDevice, m_pDeviceContext))))
+		return E_FAIL;
+
+	return S_OK;
+}
+
+HRESULT CLevel_Logo::Build_Files()
+{
+	// For. Example
+	//if (FAILED(Build_File(ENUM_TO_UINT(ELevelType::LOGO), DTO::ECategory::MAP, "asdf")))
+	//	return E_FAIL;
 
 	return S_OK;
 }
@@ -91,25 +124,8 @@ HRESULT CLevel_Logo::Ready_Player_Layer(const wstring& wstrLayerTag)
 
 HRESULT CLevel_Logo::Ready_UI_Layer(const wstring& wstrLayerTag)
 {
-	//CGameObject* pResult = { nullptr };
 
-	//// Prototype_UI_Test_Button
-	//CGenericUI::GENERIC_UI_DESC Desc = {};
-	//Desc.wstrTextureTag = L"Prototype_UI_GenericUI";
-	//Desc.bAlpha = TRUE;
-	//Desc.fSizeX = 1.f;
-	//Desc.fSizeY = 1.f;
-	//Desc.fX = 100.f;
-	//Desc.fY = 100.f;
-	//Desc.iLevelIndex = static_cast<uint32_t>(ELevelType::LOGO);
-
-	//pResult = m_pGameInstance->Add_GameObject(Desc.iLevelIndex, L"Prototype_UI_Test_Button", Desc.iLevelIndex, wstrLayerTag, &Desc);
-	//if(nullptr == pResult)
-	//	return E_FAIL;
-
-	//if (FAILED(CUI_Manager::GetInstance()->Load_UIData(L"../../Resources/Data/UIData/Data.json")))
-	//	return E_FAIL;	
-
+	
 	return S_OK;
 }
 

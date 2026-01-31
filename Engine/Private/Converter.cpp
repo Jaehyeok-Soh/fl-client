@@ -106,6 +106,7 @@ void CConverter::Read_MaterialData()
 
 		AS_MATERIAL* pMaterial = new AS_MATERIAL;
 		pMaterial->strName = srcMaterial->GetName().C_Str();
+		pMaterial->tags.vecFiles.resize(ENUM_TO_UINT(EMaterialTextureType::MAX_COUNT));
 
 		// Color
 		{
@@ -131,21 +132,15 @@ void CConverter::Read_MaterialData()
 
 		// filePath
 		{
-			aiString file;
+			aiString file{ "" };
 
-			// Diffuse Texture
-			srcMaterial->GetTexture(aiTextureType_DIFFUSE, 0, &file);
-			pMaterial->strDiffuseFile = file.C_Str();
-
-			aiString file1;
-			// Specular Texture
-			srcMaterial->GetTexture(aiTextureType_SPECULAR, 0, &file1);
-			pMaterial->strSpecularFile = file1.C_Str();
-
-			aiString file2;
-			// Normal Texture
-			srcMaterial->GetTexture(aiTextureType_NORMALS, 0, &file2);
-			pMaterial->strNormalFile = file2.C_Str();
+			for (_uint i = 0; i < ENUM_TO_UINT(EMaterialTextureType::MAX_COUNT); ++i)
+			{
+				aiTextureType eDebug = static_cast<aiTextureType>(i + 1);
+				srcMaterial->GetTexture(static_cast<aiTextureType>(i + 1), 0, &file);
+				pMaterial->tags.vecFiles[i] = file.C_Str();
+				file = "";
+			}
 		}
 
 		m_pMaterials.push_back(pMaterial);
@@ -193,9 +188,9 @@ void CConverter::Read_Meshes()
 				::memcpy(&pCurrentMesh->vecVertices[v].vUV, &pAiMesh->mTextureCoords[0][v], sizeof(Vec2));
 
 				pCurrentMesh->vecVertices[v].vPosition = Vec3::Transform(pCurrentMesh->vecVertices[v].vPosition, matPreTransform);
-				pCurrentMesh->vecVertices[v].vNormal = Vec3::Transform(pCurrentMesh->vecVertices[v].vNormal, matPreTransform);
-				pCurrentMesh->vecVertices[v].vTangent = Vec3::Transform(pCurrentMesh->vecVertices[v].vTangent, matPreTransform);
-				pCurrentMesh->vecVertices[v].vBinormal = Vec3::Transform(pCurrentMesh->vecVertices[v].vBinormal, matPreTransform);
+				pCurrentMesh->vecVertices[v].vNormal = Vec3::TransformNormal(pCurrentMesh->vecVertices[v].vNormal, matPreTransform);
+				pCurrentMesh->vecVertices[v].vTangent = Vec3::TransformNormal(pCurrentMesh->vecVertices[v].vTangent, matPreTransform);
+				pCurrentMesh->vecVertices[v].vBinormal = Vec3::TransformNormal(pCurrentMesh->vecVertices[v].vBinormal, matPreTransform);
 			}
 		}
 		else
@@ -417,14 +412,7 @@ HRESULT CConverter::Export_ModelData()
 		MeshFinalPath.replace_extension(g_wszMeshExtension);
 
 		// 폴더 생성
-		if (!std::filesystem::exists(ModelfinalPath))
-		{
-			if (!std::filesystem::exists(ModelfinalPath.parent_path()))
-			{
-				std::filesystem::create_directory(ModelfinalPath.parent_path());
-			}
-			std::filesystem::create_directory(ModelfinalPath);
-		}
+		Create_Folder(ModelfinalPath);
 
 		CFileUtils* pFileUtil = CFileUtils::Create();
 		if (FAILED(pFileUtil->Open(MeshFinalPath, FileMode::WRITE)))
@@ -488,12 +476,14 @@ HRESULT CConverter::Export_MaterialData()
 	}
 
 	json jArray = json::array();
-	for (AS_MATERIAL* pElement : m_pMaterials)
+	for (size_t i = 0; i < m_pMaterials.size(); ++i)
 	{
-		pElement->strDiffuseFile = Write_Texture(strFolder.c_str(), pElement->strDiffuseFile.c_str());
-		pElement->strNormalFile = Write_Texture(strFolder.c_str(), pElement->strNormalFile.c_str());
-		pElement->strSpecularFile = Write_Texture(strFolder.c_str(), pElement->strSpecularFile.c_str());
-		jArray.push_back(*pElement);
+		AS_MATERIAL & element = (*m_pMaterials[i]);
+		for (size_t j = 0; j < element.tags.vecFiles.size(); ++j)
+		{
+			element.tags.vecFiles[j] = Write_Texture(strFolder.c_str(), element.tags.vecFiles[j].c_str());
+		}
+		jArray.push_back(element);
 	}
 
 	// setw(i) 출력될 값의 최소폭을 i 만큼 지정
@@ -697,13 +687,6 @@ HRESULT CConverter::ReadAndExport_Animation()
 HRESULT CConverter::Check_Folder()
 {
 	m_iFileCount = Get_FileCount(m_AssetParentPath);
-	m_iFolderCount = Get_FolderCount(m_AssetParentPath);
-
-	if (m_iFolderCount > 0)
-	{
-		MSG_BOX("CConverter::Ready_Folder, wrong folder.. has too many folders");
-		return E_FAIL;
-	}
 
 	if (m_iFileCount <= 0)
 	{

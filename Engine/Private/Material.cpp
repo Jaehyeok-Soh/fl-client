@@ -14,7 +14,7 @@ CMaterial::CMaterial(const CMaterial& rhs)
 	: Super(rhs)
 	, m_iTextureMask(rhs.m_iTextureMask)
 {
-	for (size_t i = 0; i < ENUM_TO_SZET(MATERIALSLOT::END); ++i)
+	for (size_t i = 0; i < ENUM_TO_SZET(EMaterialTextureType::MAX_COUNT); ++i)
 	{
 		m_arrSRVs[i] = rhs.m_arrSRVs[i];
 		if (m_arrSRVs[i])
@@ -31,26 +31,11 @@ HRESULT CMaterial::Initialize(void* pArg)
 		return E_FAIL;
 
 	MATERIAL_DESC* pDesc = static_cast<MATERIAL_DESC*>(pArg);
-
-	if (!pDesc->wstrDiffuseTag.empty())
+	for (size_t i = 0; i < pDesc->spanTags.size(); ++i)
 	{
-		if (FAILED(Caching_Resource(pDesc->wstrDiffuseTag.c_str(), MATERIALSLOT::DIFFUSE)))
-			return E_FAIL;
-	}
-	if (!pDesc->wstrNormalTag.empty())
-	{
-		if (FAILED(Caching_Resource(pDesc->wstrNormalTag.c_str(), MATERIALSLOT::NORMAL)))
-			return E_FAIL;
-	}
-	if (!pDesc->wstrSpecularTag.empty())
-	{
-		if (FAILED(Caching_Resource(pDesc->wstrSpecularTag.c_str(), MATERIALSLOT::SPECULAR)))
-			return E_FAIL;
-	}
-	if (!pDesc->wstrEmissiveTag.empty())
-	{
-		if (FAILED(Caching_Resource(pDesc->wstrEmissiveTag.c_str(), MATERIALSLOT::EMISSIVE)))
-			return E_FAIL;
+		if(pDesc->spanTags[i].empty() == false)
+			if (FAILED(Caching_Resource(Engine_Utils::ToWString(pDesc->spanTags[i]), static_cast<EMaterialTextureType>(i))))
+				return E_FAIL;
 	}
 
 	return S_OK;
@@ -58,14 +43,14 @@ HRESULT CMaterial::Initialize(void* pArg)
 
 HRESULT CMaterial::Bind_ShaderResource(CShader* pShader)
 {
-	pShader->Bind_MaterialTextures(&m_arrSRVs[0], ENUM_TO_UINT(MATERIALSLOT::END));
+	pShader->Bind_MaterialTextures(&m_arrSRVs[0], ENUM_TO_UINT(EMaterialTextureType::MAX_COUNT));
 	pShader->Bind_MaterialMask(m_iTextureMask);
 	return S_OK;
 }
 
-HRESULT CMaterial::Caching_Resource(const _tchar* pTag, MATERIALSLOT eSlot)
+HRESULT CMaterial::Caching_Resource(const wstring& pTag, EMaterialTextureType eSlot)
 {
-	ID3D11ShaderResourceView* pSRV = Get_ShaderResourceView(pTag);
+	ID3D11ShaderResourceView* pSRV = Get_ShaderResourceView(pTag.c_str());
 	if (!pSRV)
 		return E_FAIL;
 

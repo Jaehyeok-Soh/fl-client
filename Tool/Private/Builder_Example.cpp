@@ -1,6 +1,8 @@
 #include "pch.h"
 #include "Builder_Example.h"
+#include "DataDocument_Example.h"
 #include "GameInstance.h"
+#include "Builder_UI.h"
 
 CBuilder_Example::CBuilder_Example(ID3D11Device* pDevice, ID3D11DeviceContext* pDeviceContext)
 	: Super(pDevice, pDeviceContext)
@@ -34,8 +36,6 @@ HRESULT CBuilder_Example::Build(const CDataDocumentBase &document)
 				return E_FAIL;
 		}
 	}
-
-	
 
 	return S_OK;
 }
