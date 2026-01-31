@@ -62,6 +62,7 @@ public:
 	void Set_RotatePerSec(_float fSpeed) { m_fRotatePerSec = fSpeed; }
 	_float Get_MovePerSec() const { return m_fMovePerSec; }
 	void Set_MoveScale(_float fScale) { m_fMoveScale = fScale; }
+	void Set_WorldMatrix(const Matrix& WorldMatrix) { m_matWorld = WorldMatrix; }
 	_float Get_MoveScale() const { return m_fMoveScale; }
 	void Start_Force(Vec3 vTargetDir, _float fForceAbs, _float fDragK);
 	void Apply_Force(_float fDeltaTime, CNavigation* pNavigation = nullptr);

@@ -91,11 +91,6 @@ vector<CONVERTED_MAPDATA> CUEMapdataParser::Convert_UE_MapData(const vector<UE_M
 		tConvertedData.tUsingModelInfo.wstrPath = Engine_Utils::ToWString(tUEMapData.tProperties.tStaticMesh.strObjectPath);
 		Change_ModelPath(tConvertedData.tUsingModelInfo.wstrName, tConvertedData.tUsingModelInfo.wstrPath);
 
-		if (tConvertedData.tUsingModelInfo.wstrName == L"SM_Com_Bus18")
-		{
-			int a = 0; 
-		}
-
 		for (auto& Material : tUEMapData.tProperties.tOverrideMaterials.vecObjectInfo)
 		{
 			if (Material.strObjectName.empty())
@@ -107,25 +102,61 @@ vector<CONVERTED_MAPDATA> CUEMapdataParser::Convert_UE_MapData(const vector<UE_M
 		{
 			tConvertedData.vScale		 = tUEMapData.tProperties.vRelativeScale;
 			tConvertedData.vPosition     = tUEMapData.tProperties.vRelativeLocation;
+			tConvertedData.vPitchYawRoll = tUEMapData.tProperties.vRelativeRotation;
 
 			if (tConvertedData.tUsingModelInfo.wstrName.find(L"Wall") != wstring::npos)
 				int a = 0;
 
-			Quat vQuat = Quat::CreateFromYawPitchRoll(XMConvertToRadians(tUEMapData.tProperties.vRelativeRotation.y)
-				, XMConvertToRadians(tUEMapData.tProperties.vRelativeRotation.x
-				), XMConvertToRadians(tUEMapData.tProperties.vRelativeRotation.z));
+			//Quat vQuat = Quat::CreateFromYawPitchRoll(XMConvertToRadians(tUEMapData.tProperties.vRelativeRotation.y)
+			//	, XMConvertToRadians(tUEMapData.tProperties.vRelativeRotation.x
+			//	), XMConvertToRadians(tUEMapData.tProperties.vRelativeRotation.z));
+			// 
+			// 언리얼의 데이터를 라디안으로 먼저 변환
 
-			Quat vMulPitchYawRoll = Quat::CreateFromYawPitchRoll(XMConvertToRadians(m_vMulPitchYawRoll.y)
-				, XMConvertToRadians(m_vMulPitchYawRoll.x
-				), XMConvertToRadians(m_vMulPitchYawRoll.z));
 
-			Matrix QuatMatrix = Matrix::CreateFromQuaternion(vQuat) * Matrix::CreateFromQuaternion(vMulPitchYawRoll);
+			// 1. 언리얼 데이터 그대로 가져오기 (이미 하고 있는 부분)
+			float fPitch = XMConvertToRadians(tUEMapData.tProperties.vRelativeRotation.x); // Unreal X
+			float fYaw = XMConvertToRadians(tUEMapData.tProperties.vRelativeRotation.y); // Unreal Y
+			float fRoll = XMConvertToRadians(tUEMapData.tProperties.vRelativeRotation.z); // Unreal Z
 
-			tConvertedData.vPitchYawRoll = QuatMatrix.ToEuler() * To_DEGREE;
+			Quat qRoll = Quat::CreateFromAxisAngle(Vec3(1.f, 0.f, 0.f), fRoll);
+			Quat qPitch = Quat::CreateFromAxisAngle(Vec3(0.f, 1.f, 0.f), fPitch);
+			Quat qYaw = Quat::CreateFromAxisAngle(Vec3(0.f, 0.f, 1.f), fYaw);
 
-			Change_SRT(&tConvertedData.vScale, &tConvertedData.vPitchYawRoll, &tConvertedData.vPosition, tConvertedData.eType);
+			// 언리얼의 회전 합산 (순서 주의!)
+			//Quat qUnreal = qYaw * qPitch * qRoll;
+			//
+			//Matrix matUECoord = ::XMMatrixSet(
+			//	1.f, 0.f, 0.f, 0.f,		
+			//	0.f, 0.f, 1.f, 0.f,		
+			//	0.f, -1.f, 0.f, 0.f,	
+			//	0.f, 0.f, 0.f, 1.f
+			//);
+
+			//Matrix	matUnrealWorld = Matrix::CreateScale(tConvertedData.vScale) * Matrix::CreateFromQuaternion(qUnreal) * Matrix::CreateTranslation(tConvertedData.vPosition);
+
+			//Matrix matDX = matUECoord.Invert() * matUnrealWorld * matUECoord;
+
+			//Quat qResult;
+			//Vec3 vScale, vPos;
+			//matDX.Decompose(vScale, qResult, vPos); 
+
+			//tConvertedData.vPitchYawRoll = qResult.ToEuler() * To_DEGREE;
+			//tConvertedData.vPosition = vPos;
+			//tConvertedData.vScale = vScale;
+
+			//tConvertedData.vPosition *= m_fMulScale;
+
+			//Quat vMulPitchYawRoll = Quat::CreateFromYawPitchRoll(XMConvertToRadians(m_vMulPitchYawRoll.y)
+			//	, XMConvertToRadians(m_vMulPitchYawRoll.x
+			//	), XMConvertToRadians(m_vMulPitchYawRoll.z));
+
+			//Matrix QuatMatrix = Matrix::CreateFromQuaternion(vQuat);
+
+			//tConvertedData.vPitchYawRoll = QuatMatrix.ToEuler() * To_DEGREE;
+
+			//Change_SRT(&tConvertedData.vScale, &tConvertedData.vPitchYawRoll, &tConvertedData.vPosition, tConvertedData.eType);
 			vecConvertedData.push_back(tConvertedData);
-
 		}
 
 #pragma region INSTANCE
@@ -138,15 +169,11 @@ vector<CONVERTED_MAPDATA> CUEMapdataParser::Convert_UE_MapData(const vector<UE_M
 				tConvertedData.vPosition = PerInstanceSMData.tTransformData.vTranslation;
 				tConvertedData.vScale = PerInstanceSMData.tTransformData.vScale3D;
 				std::swap(PerInstanceSMData.tTransformData.vRotation.y, PerInstanceSMData.tTransformData.vRotation.z);
-				tConvertedData.vPitchYawRoll = Vec3(
-					XMConvertToDegrees(PerInstanceSMData.tTransformData.vRotation.x) ,
-					XMConvertToDegrees(PerInstanceSMData.tTransformData.vRotation.y),
-					XMConvertToDegrees(PerInstanceSMData.tTransformData.vRotation.z));
 				tConvertedData.vPitchYawRoll = PerInstanceSMData.tTransformData.vRotation.ToEuler() * To_DEGREE;
 				Change_SRT(&tConvertedData.vScale,&tConvertedData.vPitchYawRoll,&tConvertedData.vPosition, tConvertedData.eType);
 
 				/* SRT 변환 이후 Push Back */
-				vecConvertedData.push_back(tConvertedData);
+				//vecConvertedData.push_back(tConvertedData);
 			}
 		}
 #pragma endregion
@@ -168,7 +195,7 @@ void CUEMapdataParser::Change_SRT(Vec3* vScale, Vec3* vPitchYawRoll, Vec3* vPosi
 	}
 	if (vPitchYawRoll)
 	{		
-		std::swap(vPitchYawRoll->x,vPitchYawRoll->z);
+		//std::swap(vPitchYawRoll->x,vPitchYawRoll->z);
 		vPitchYawRoll->x *= -1.f;
 	}
 	if (vPosition)
@@ -333,9 +360,9 @@ HRESULT CUEMapdataParser::Batch_UnrealRawMapData(const wchar_t* wszFileName)
 		if (CONVERTED_MAPDATA.tUsingModelInfo.wstrName.find(L"Wall") != wstring::npos)
 			int a = 0;
 
-		tTramsoformDesc.vScale				= CONVERTED_MAPDATA.vScale;
-		tTramsoformDesc.vRotation_Degrees	= CONVERTED_MAPDATA.vPitchYawRoll;
-		tTramsoformDesc.vPosition			= CONVERTED_MAPDATA.vPosition;
+		//tTramsoformDesc.vScale				= CONVERTED_MAPDATA.vScale;
+		//tTramsoformDesc.vRotation_Degrees	= CONVERTED_MAPDATA.vPitchYawRoll;
+		//tTramsoformDesc.vPosition			= CONVERTED_MAPDATA.vPosition;
 
 		desc.pTransform_Desc = (void*)&tTramsoformDesc;
 
@@ -344,9 +371,37 @@ HRESULT CUEMapdataParser::Batch_UnrealRawMapData(const wchar_t* wszFileName)
 			Safe_Release(pResult);
 			return E_FAIL;
 		}
+		CTransform* pTrasform = pResult->Get_Component<CTransform>();
+
+		// 1. 언리얼 데이터 그대로 가져오기 (이미 하고 있는 부분)
+		float fPitch = XMConvertToRadians(CONVERTED_MAPDATA.vPitchYawRoll.x); // Unreal X
+		float fYaw = XMConvertToRadians(CONVERTED_MAPDATA.vPitchYawRoll.y); // Unreal Y
+		float fRoll = XMConvertToRadians(CONVERTED_MAPDATA.vPitchYawRoll.z); // Unreal Z
+
+		Quat qRoll = Quat::CreateFromAxisAngle(Vec3(1.f, 0.f, 0.f), fRoll);
+		Quat qPitch = Quat::CreateFromAxisAngle(Vec3(0.f, 1.f, 0.f), fPitch);
+		Quat qYaw = Quat::CreateFromAxisAngle(Vec3(0.f, 0.f, 1.f), fYaw);
+
+		Quat qUnreal = qYaw * qPitch * qRoll;
 
 
+		Matrix matUECoord = ::XMMatrixSet(
+			1.f, 0.f, 0.f, 0.f,    // x' = x  (오른쪽 유지)
+			0.f, 0.f, 1.f, 0.f,    // y' = z  (언리얼의 Z(Up) -> 우리의 Y(Up))
+			0.f, -1.f, 0.f, 0.f,    // z' = -y (언리얼의 -Y(Forward) -> 우리의 +Z(Forward))
+			0.f, 0.f, 0.f, 1.f
+		);
 
+		Matrix	matUnrealWorld = Matrix::CreateScale(CONVERTED_MAPDATA.vScale) * 
+			Matrix::CreateFromQuaternion(qUnreal) * Matrix::CreateTranslation(CONVERTED_MAPDATA.vPosition);
+
+		Matrix matDX = matUECoord * matUnrealWorld;
+
+		matDX._41 *= m_fMulScale;
+		matDX._42 *= m_fMulScale;
+		matDX._43 *= m_fMulScale;
+
+		pTrasform->Set_WorldMatrix(matDX);
 	}
 
 	return S_OK;

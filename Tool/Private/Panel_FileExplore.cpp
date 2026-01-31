@@ -172,7 +172,7 @@ void CPanel_FileExplore::FileFindWindow()
 	else
 	{
 		_uint iIndex{};
-		char  szBeginPopupContextItem[MAX_PATH];
+		//char  szBeginPopupContextItem[MAX_PATH];
 
 		for (auto& FilePath : m_vecFindFilePathList)
 		{
