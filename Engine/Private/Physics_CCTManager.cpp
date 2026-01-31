@@ -68,6 +68,7 @@ void CPhysics_CCTManager::ReleaseCCTManager()
 PxController* CPhysics_CCTManager::MakeBoxController(PHYSICSCCT_DESC* pDesc)
 {
 	PxBoxControllerDesc desc{};
+	desc.contactOffset = 0.1f;
 	desc.halfSideExtent = pDesc->vExtens.x / 2.f;
 	desc.halfHeight = pDesc->vExtens.y / 2.f;
 	desc.halfForwardExtent = pDesc->vExtens.z / 2.f;
@@ -79,6 +80,7 @@ PxController* CPhysics_CCTManager::MakeBoxController(PHYSICSCCT_DESC* pDesc)
 PxController* CPhysics_CCTManager::MakeCapsuleController(PHYSICSCCT_DESC* pDesc)
 {
 	PxCapsuleControllerDesc desc{};
+	desc.contactOffset = 0.1f;
 	desc.radius = pDesc->fRadius;
 	desc.height = pDesc->fHeight;
 	desc.material = m_pResourceManager->GetMaterial(&pDesc->tMaterial);
@@ -101,8 +103,6 @@ CPhysics_CCTManager* CPhysics_CCTManager::Create(ID3D11Device* pDevice, ID3D11De
 
 void CPhysics_CCTManager::Free()
 {
-	__super::Free();
-
 	Safe_Release(m_pGameInstance);
 
 	Safe_Release(m_pDevice);
@@ -112,4 +112,6 @@ void CPhysics_CCTManager::Free()
 
 	ReleaseCCTManager();
 	PX_RELEASE(m_pControllerManager);
+
+	Super::Free();
 }

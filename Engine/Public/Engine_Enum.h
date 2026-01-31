@@ -70,7 +70,12 @@ namespace Engine
 		CAMERA,
 		SHADER,
 		//
+		PX_RIGIDBODY,
+		PX_COLLIDER,
+		PX_CCT,
+		//
 		SCRIPT,
+		
 		END
 	}; 
 	inline constexpr size_t g_ComponentTypeCount = static_cast<size_t>(EComponentType::END) - 1;

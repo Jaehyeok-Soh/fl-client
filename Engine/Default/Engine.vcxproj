@@ -241,6 +241,9 @@
     <ClCompile Include="..\Private\Object_Manager.cpp" />
     <ClCompile Include="..\private\ObjectPool.cpp" />
     <ClCompile Include="..\Private\PartObject.cpp" />
+    <ClCompile Include="..\Private\PhysicsCCT.cpp" />
+    <ClCompile Include="..\Private\PhysicsCollider.cpp" />
+    <ClCompile Include="..\Private\PhysicsRigidBody.cpp" />
     <ClCompile Include="..\Private\Physics_ActorFactory.cpp" />
     <ClCompile Include="..\Private\Physics_CCTManager.cpp" />
     <ClCompile Include="..\Private\Physics_Module.cpp" />
@@ -359,6 +362,9 @@
     <ClInclude Include="..\Public\Object_Manager.h" />
     <ClInclude Include="..\public\ObjectPool.h" />
     <ClInclude Include="..\Public\PartObject.h" />
+    <ClInclude Include="..\Public\PhysicsCCT.h" />
+    <ClInclude Include="..\Public\PhysicsCollider.h" />
+    <ClInclude Include="..\Public\PhysicsRigidBody.h" />
     <ClInclude Include="..\Public\Physics_ActorFactory.h" />
     <ClInclude Include="..\Public\Physics_CCTManager.h" />
     <ClInclude Include="..\Public\Physics_Module.h" />

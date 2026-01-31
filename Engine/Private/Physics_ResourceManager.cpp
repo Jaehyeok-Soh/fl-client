@@ -558,8 +558,6 @@ CPhysics_ResourceManager* CPhysics_ResourceManager::Create(ID3D11Device* pDevice
 
 void CPhysics_ResourceManager::Free()
 {
-	__super::Free();
-
 	for (size_t i = 0; i < ENUM_TO_UINT(EPhysicsMaterial::END); i++)
 		PX_RELEASE(m_Materials[i]);
 
@@ -572,4 +570,6 @@ void CPhysics_ResourceManager::Free()
 		Safe_Delete(ptr);
 
 	m_MemBlocks.clear();
+
+	Super::Free();
 }

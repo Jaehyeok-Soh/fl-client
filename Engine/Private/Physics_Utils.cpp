@@ -38,6 +38,14 @@ HRESULT CPhysics_Utils::Initialize()
 	{
 		return E_FAIL;
 	}
+
+	D3D11_DEPTH_STENCIL_DESC dssDesc{};
+	ZeroMemory(&dssDesc, sizeof(dssDesc));
+	dssDesc.DepthEnable = TRUE;
+	dssDesc.DepthWriteMask = D3D11_DEPTH_WRITE_MASK_ALL;
+	dssDesc.DepthFunc = D3D11_COMPARISON_LESS;
+
+	m_pDevice->CreateDepthStencilState(&dssDesc, &m_pDSS);
 #endif // _DEBUG
 
 	return S_OK;
@@ -46,14 +54,14 @@ HRESULT CPhysics_Utils::Initialize()
 #ifdef _DEBUG
 HRESULT CPhysics_Utils::Render(PxRigidActor* pActor, XMVECTOR color)
 {
-	m_pEffect->SetWorld(XMMatrixIdentity());
+	m_pEffect->SetWorld(Matrix::Identity);
 	m_pEffect->SetView(m_pGameInstance->Get_ViewMatrix());
 	m_pEffect->SetProjection(m_pGameInstance->Get_ProjMatrix());
 
 	m_pEffect->Apply(m_pContext);
 	m_pContext->IASetInputLayout(m_pInputLayout);
 
-	m_pContext->GSSetShader(nullptr, nullptr, 0);
+	m_pContext->OMSetDepthStencilState(m_pDSS, 0);
 
 	m_pContext->IASetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY_LINELIST);
 
@@ -93,14 +101,27 @@ HRESULT CPhysics_Utils::Render(PxRigidActor* pActor, XMVECTOR color)
 		}
 		break;
 		case physx::PxGeometryType::ePLANE:
+		{
+			_float fGridSize = 50.f;
+			size_t numDiv = 200;
+
+			Vec4 yAxis = matWorld.r[0];
+			Vec4 zAxis = matWorld.r[2];
+			Vec4 origin = matWorld.r[3];
+
+			Vec4 gridAxis1 = yAxis * fGridSize;
+			Vec4 gridAxis2 = zAxis * fGridSize;
+
+			DX::DrawGrid(m_pBatch, XMLoadFloat4(&gridAxis1), XMLoadFloat4(&gridAxis2), origin, numDiv, numDiv);
+		}
 			break;
 		case physx::PxGeometryType::eCAPSULE:
 		{
 			PxCapsuleGeometry capsule = geom.capsule();
 			BoundingSphere boundingSphereHead{};
-			boundingSphereHead.Radius = capsule.radius;
-			boundingSphereHead.Center = Vec3(globalPose.p.x, globalPose.p.y, globalPose.p.z);
-			DX::DrawCapsule(m_pBatch, boundingSphereHead, capsule.halfHeight);
+			boundingSphereHead.Radius = capsule.radius + 0.1f;
+			boundingSphereHead.Center = Vec3(globalPose.p.x, globalPose.p.y - 0.1f, globalPose.p.z);
+			DX::DrawCapsule(m_pBatch, boundingSphereHead, capsule.halfHeight + 0.1f);
 		}
 		break;
 		case physx::PxGeometryType::eBOX:
@@ -176,9 +197,9 @@ _bool CPhysics_Utils::RayCast()
 	PxVec3 d3(0.f, 0.f, 0.f);
 	PxReal dist{};
 	if (m_bRayHit = m_pScene->raycast(o3, d3, dist, m_RayCastHitBuffer))
-		//m_RayCastHitBuffer.block.actor
+		return m_bRayHit;//m_RayCastHitBuffer.block.actor
 
-		return m_bRayHit;
+	return m_bRayHit;
 }
 
 CPhysics_Utils* CPhysics_Utils::Create(ID3D11Device* pDevice, ID3D11DeviceContext* pContext, PxPhysics* pPhysics, PxScene* pScene)
@@ -196,8 +217,6 @@ CPhysics_Utils* CPhysics_Utils::Create(ID3D11Device* pDevice, ID3D11DeviceContex
 
 void CPhysics_Utils::Free()
 {
-	__super::Free();
-
 	Safe_Release(m_pGameInstance);
 
 	Safe_Release(m_pDevice);
@@ -208,5 +227,8 @@ void CPhysics_Utils::Free()
 	Safe_Delete(m_pEffect);
 
 	Safe_Release(m_pInputLayout);
+	Safe_Release(m_pDSS);
 #endif
+
+	Super::Free();
 }

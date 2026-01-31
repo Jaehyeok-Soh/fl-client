@@ -283,6 +283,15 @@
     <Filter Include="00. System\12. PhysX\Utils">
       <UniqueIdentifier>{15f5e6ba-c605-46fb-bc82-2b0ba4544d95}</UniqueIdentifier>
     </Filter>
+    <Filter Include="00. System\05. Component\PhysicsRigidBody">
+      <UniqueIdentifier>{e4299287-d639-442c-bcb3-5722ba115b2c}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="00. System\05. Component\PhysicsCollider">
+      <UniqueIdentifier>{b809626c-6e0f-4aa5-81fd-523bcdf1dc3a}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="00. System\05. Component\PhysicsCCT">
+      <UniqueIdentifier>{20045528-a719-46f9-8133-abf66bb4da37}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="..\Private\Timer.cpp">
@@ -596,6 +605,15 @@
     </ClCompile>
     <ClCompile Include="..\Private\Physics_ActorFactory.cpp">
       <Filter>00. System\12. PhysX\Actor</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\PhysicsCollider.cpp">
+      <Filter>00. System\05. Component\PhysicsCollider</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\PhysicsRigidBody.cpp">
+      <Filter>00. System\05. Component\PhysicsRigidBody</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\PhysicsCCT.cpp">
+      <Filter>00. System\05. Component\PhysicsCCT</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -937,6 +955,15 @@
     </ClInclude>
     <ClInclude Include="..\Public\Physics_ActorFactory.h">
       <Filter>00. System\12. PhysX\Actor</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\PhysicsCollider.h">
+      <Filter>00. System\05. Component\PhysicsCollider</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\PhysicsRigidBody.h">
+      <Filter>00. System\05. Component\PhysicsRigidBody</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\PhysicsCCT.h">
+      <Filter>00. System\05. Component\PhysicsCCT</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

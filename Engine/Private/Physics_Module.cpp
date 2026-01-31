@@ -21,7 +21,12 @@ CPhysics_Module::CPhysics_Module(ID3D11Device* pDevice, ID3D11DeviceContext* pDe
 
 HRESULT CPhysics_Module::Initialize()
 {
-	m_pFoundation = PxCreateFoundation(PX_PHYSICS_VERSION, m_Allocator, m_ErrorCallback);
+	if (!(m_pFoundation = PxCreateFoundation(PX_PHYSICS_VERSION, m_Allocator, m_ErrorCallback)))
+	{
+		MSG_BOX("Failed to created : PxFoundation");
+		return E_FAIL;
+	}
+	
 
 #ifdef _DEBUG
 	//m_pPvd = PxCreatePvd(*m_pFoundation);
@@ -31,7 +36,11 @@ HRESULT CPhysics_Module::Initialize()
 	//m_pPvd->connect(*transport, PxPvdInstrumentationFlag::ePROFILE);
 #endif // _DEBUG
 
-	m_pPhysics = PxCreatePhysics(PX_PHYSICS_VERSION, *m_pFoundation, PxTolerancesScale(), true, m_pPvd);
+	if (!(m_pPhysics = PxCreatePhysics(PX_PHYSICS_VERSION, *m_pFoundation, PxTolerancesScale(), true, m_pPvd)))
+	{
+		MSG_BOX("Failed to created : PxPhysics");
+		return E_FAIL;
+	}
 
 	PxInitExtensions(*m_pPhysics, m_pPvd);
 
@@ -93,7 +102,11 @@ HRESULT CPhysics_Module::Initialize()
 			sceneDesc.broadPhaseType = PxBroadPhaseType::eSAP;
 		}
 
-		m_pScene = m_pPhysics->createScene(sceneDesc);
+		if (!(m_pScene = m_pPhysics->createScene(sceneDesc)))
+		{
+			MSG_BOX("Failed to created : PxScene");
+			return E_FAIL;
+		}
 	}
 
 #ifdef _DEBUG
@@ -114,11 +127,35 @@ HRESULT CPhysics_Module::Initialize()
 #endif // _DEBUG
 
 	{
-		m_pUtils = CPhysics_Utils::Create(m_pDevice, m_pDeviceContext, m_pPhysics, m_pScene);
-		m_pResourceManager = CPhysics_ResourceManager::Create(m_pDevice, m_pDeviceContext, m_pPhysics, m_pScene);
-		m_pShapeFactory = CPhysics_ShapeFactory::Create(m_pDevice, m_pDeviceContext, m_pPhysics, m_pScene, m_pResourceManager);
-		m_pActorFactory = CPhysics_ActorFactory::Create(m_pDevice, m_pDeviceContext, m_pPhysics, m_pScene);
-		m_pCCTManager = CPhysics_CCTManager::Create(m_pDevice, m_pDeviceContext, m_pPhysics, m_pScene, m_pResourceManager);
+		if (!(m_pUtils = CPhysics_Utils::Create(m_pDevice, m_pDeviceContext, m_pPhysics, m_pScene)))
+		{
+			MSG_BOX("Failed to created : physics utils");
+			return E_FAIL;
+		}
+
+		if (!(m_pResourceManager = CPhysics_ResourceManager::Create(m_pDevice, m_pDeviceContext, m_pPhysics, m_pScene)))
+		{
+			MSG_BOX("Failed to created : physics resource manager");
+			return E_FAIL;
+		}
+
+		if (!(m_pShapeFactory = CPhysics_ShapeFactory::Create(m_pDevice, m_pDeviceContext, m_pPhysics, m_pScene, m_pResourceManager)))
+		{
+			MSG_BOX("Failed to created : physics shape factory");
+			return E_FAIL;
+		}
+
+		if (!(m_pActorFactory = CPhysics_ActorFactory::Create(m_pDevice, m_pDeviceContext, m_pPhysics, m_pScene)))
+		{
+			MSG_BOX("Failed to created : physics actor factory");
+			return E_FAIL;
+		}
+		
+		if (!(m_pCCTManager = CPhysics_CCTManager::Create(m_pDevice, m_pDeviceContext, m_pPhysics, m_pScene, m_pResourceManager)))
+		{
+			MSG_BOX("Failed to created : physics cct manager");
+			return E_FAIL;
+		}
 	}
 
 	return S_OK;
@@ -235,8 +272,6 @@ CPhysics_Module* CPhysics_Module::Create(ID3D11Device* pDevice, ID3D11DeviceCont
 
 void CPhysics_Module::Free()
 {
-	__super::Free();
-
 	Safe_Release(m_pGameInstance);
 
 	Safe_Release(m_pDevice);
@@ -249,4 +284,5 @@ void CPhysics_Module::Free()
 	Safe_Release(m_pUtils);
 
 	ClearPhysics();
+	Super::Free();
 }

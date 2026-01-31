@@ -40,43 +40,49 @@ PxRigidActor* CPhysics_ActorFactory::GetActor(PHYSICSRIGIDBODY_DESC* rigidBodyDe
 
 PxRigidActor* CPhysics_ActorFactory::MakeStatic(PHYSICSRIGIDBODY_DESC* rigidBodyDesc, PHYSICSCOLLIDER_DESC* colliderDesc, vector<PxShape*>& shapes)
 {
-	//PxTransform transform = m_pGameInstance->XMMatrixToPxTransform(*rigidBodyDesc->pParentMatrix);
+	PxTransform transform = m_pGameInstance->XMMatrixToPxTransform(*rigidBodyDesc->pOwnerMatrix);
+	PxRigidStatic* staticActor = m_pPhysics->createRigidStatic(transform);
+	for (auto& shape : shapes)
+	{
+		if (shape->getGeometry().getType() == PxGeometryType::ePLANE)
+		{
+			PxTransform localPose(PxVec3(0), PxQuat(PxHalfPi, PxVec3(0, 0, 1)));
+			shape->setLocalPose(localPose);
+		}
 
-	//PxRigidStatic* staticActor = m_pPhysics->createRigidStatic(transform);
-	//for (auto& shape : shapes)
-	//	staticActor->attachShape(*shape);
+		staticActor->attachShape(*shape);
+	}
 
-	//return staticActor;
-	return nullptr;
+	return staticActor;
 }
 
 PxRigidActor* CPhysics_ActorFactory::MakeDynamic(PHYSICSRIGIDBODY_DESC* rigidBodyDesc, PHYSICSCOLLIDER_DESC* colliderDesc, vector<PxShape*>& shapes)
 {
-	//PxTransform transform = m_pGameInstance->XMMatrixToPxTransform(*rigidBodyDesc->pParentMatrix);
+	PxTransform transform = m_pGameInstance->XMMatrixToPxTransform(*rigidBodyDesc->pOwnerMatrix);
 
-	//PxRigidDynamic* dynamicActor = m_pPhysics->createRigidDynamic(transform);
-	//for (auto& shape : shapes)
-	//	dynamicActor->attachShape(*shape);
+	PxRigidDynamic* dynamicActor = m_pPhysics->createRigidDynamic(transform);
+	for (auto& shape : shapes)
+		dynamicActor->attachShape(*shape);
 
-	//PxRigidBodyExt::updateMassAndInertia(*dynamicActor, rigidBodyDesc->fDensity);
+	PxRigidBodyExt::updateMassAndInertia(*dynamicActor, rigidBodyDesc->fDensity);
 
-	//return dynamicActor;
+	return dynamicActor;
 	return nullptr;
 }
 
 PxRigidActor* CPhysics_ActorFactory::MakeKinematic(PHYSICSRIGIDBODY_DESC* rigidBodyDesc, PHYSICSCOLLIDER_DESC* colliderDesc, vector<PxShape*>& shapes)
 {
-	//PxTransform transform = m_pGameInstance->XMMatrixToPxTransform(*rigidBodyDesc->pParentMatrix);
+	PxTransform transform = m_pGameInstance->XMMatrixToPxTransform(*rigidBodyDesc->pOwnerMatrix);
 
-	//PxRigidDynamic* kinematicActor = m_pPhysics->createRigidDynamic(transform);
-	//for (auto& shape : shapes)
-	//	kinematicActor->attachShape(*shape);
+	PxRigidDynamic* kinematicActor = m_pPhysics->createRigidDynamic(transform);
+	for (auto& shape : shapes)
+		kinematicActor->attachShape(*shape);
 
-	//PxRigidBodyExt::updateMassAndInertia(*kinematicActor, rigidBodyDesc->fDensity);
+	PxRigidBodyExt::updateMassAndInertia(*kinematicActor, rigidBodyDesc->fDensity);
 
-	//kinematicActor->setRigidBodyFlag(PxRigidBodyFlag::eKINEMATIC, true);
+	kinematicActor->setRigidBodyFlag(PxRigidBodyFlag::eKINEMATIC, true);
 
-	//return kinematicActor;
+	return kinematicActor;
 	return nullptr;
 }
 
@@ -95,10 +101,10 @@ CPhysics_ActorFactory* CPhysics_ActorFactory::Create(ID3D11Device* pDevice, ID3D
 
 void CPhysics_ActorFactory::Free()
 {
-	__super::Free();
-
 	Safe_Release(m_pGameInstance);
 
 	Safe_Release(m_pDevice);
 	Safe_Release(m_pContext);
+
+	Super::Free();
 }

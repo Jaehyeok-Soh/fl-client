@@ -195,7 +195,7 @@ namespace DX
         xdivs = std::max<size_t>(1, xdivs);
         ydivs = std::max<size_t>(1, ydivs);
 
-        for (size_t i = 0; i <= xdivs; ++i)
+         for (size_t i = 0; i <= xdivs; ++i)
         {
             float percent = float(i) / float(xdivs);
             percent = (percent * 2.f) - 1.f;
@@ -425,6 +425,7 @@ namespace DX
         /// Foot
         ///
         XMVECTOR originFoot = XMLoadFloat3(&sphere.Center);
+        originFoot = XMVectorSetY(originFoot, XMVectorGetY(originFoot) - halfHeight);
 
         XMVECTOR xaxisFoot = g_XMIdentityR0 * radius;
         XMVECTOR yaxisFoot = g_XMIdentityR1 * radius;

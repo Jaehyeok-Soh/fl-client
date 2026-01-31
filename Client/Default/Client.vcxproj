@@ -165,6 +165,7 @@
     <ClInclude Include="..\Public\ComboContainer.h" />
     <ClInclude Include="..\Public\ComboState.h" />
     <ClInclude Include="..\Public\GenericUI.h" />
+    <ClInclude Include="..\Public\Physics_Terrain.h" />
     <ClInclude Include="..\Public\State_CrouchWalk.h" />
     <ClInclude Include="..\Public\Level_Loading.h" />
     <ClInclude Include="..\Public\Level_Logo.h" />
@@ -246,6 +247,7 @@
     <ClCompile Include="..\Private\State_Walk.cpp" />
     <ClCompile Include="..\Private\UI_Manager.cpp" />
     <ClCompile Include="..\Private\Weapon.cpp" />
+    <ClCompile Include="..\Public\Physics_Terrain.cpp" />
     <ClCompile Include="Client.cpp" />
     <ClCompile Include="pch.cpp">
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Create</PrecompiledHeader>

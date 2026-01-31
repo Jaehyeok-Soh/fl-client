@@ -149,7 +149,7 @@ vector<PxGeometryHolder> CPhysics_ShapeFactory::MakeGeometry(PHYSICSCOLLIDER_DES
 		break;
 
 	case EPhysicsShape::PLANE:
-		result.push_back(MakeSphere(pDesc));
+		result.push_back(MakePlane(pDesc));
 		break;
 
 	default:
@@ -333,12 +333,12 @@ CPhysics_ShapeFactory* CPhysics_ShapeFactory::Create(ID3D11Device* pDevice, ID3D
 
 void CPhysics_ShapeFactory::Free()
 {
-	__super::Free();
-
 	Safe_Release(m_pResourceManager);
 
 	Safe_Release(m_pGameInstance);
 
 	Safe_Release(m_pDevice);
 	Safe_Release(m_pContext);
+
+	Super::Free();
 }

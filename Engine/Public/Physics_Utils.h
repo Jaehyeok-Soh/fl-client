@@ -37,6 +37,7 @@ private:
     BasicEffect* m_pEffect = { nullptr };
     ID3D11InputLayout* m_pInputLayout = { nullptr };
     const PxU32 m_iMaxRenderShape = { 8 };
+    ID3D11DepthStencilState* m_pDSS = { nullptr };
 #endif
 
 private:
@@ -45,6 +46,8 @@ private:
 
     PxRaycastBuffer m_RayCastHitBuffer = {};
     _bool m_bRayHit = { false };
+
+    PxMaterial* mtrlEx = { nullptr };
 
 public:
     static CPhysics_Utils* Create(ID3D11Device* pDevice, ID3D11DeviceContext* pContext, PxPhysics* pPhysics, PxScene* pScene);

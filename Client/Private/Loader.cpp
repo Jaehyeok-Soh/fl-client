@@ -26,6 +26,7 @@
 #include "Weapon.h"
 #include "ColliderPart.h"
 #include "Loader.h"
+#include "Physics_Terrain.h" // physics test
 //=================
 // UI
 //=================
@@ -170,6 +171,9 @@ HRESULT CLoader::Loading_For_Logo()
 	m_pGameInstance->Add_Prototype(ENUM_TO_UINT(ELevelType::STATIC), L"Prototype_GameObject_Part_Body", CBody::Create(m_pDevice, m_pDeviceContext));
 	// For. Prototype_GameObject_Part_Collider
 	m_pGameInstance->Add_Prototype(ENUM_TO_UINT(ELevelType::STATIC), L"Prototype_GameObject_Part_Collider", CColliderPart::Create(m_pDevice, m_pDeviceContext));
+
+	// For. Prototype_GameObject_Physics_Terrain
+	m_pGameInstance->Add_Prototype(ENUM_TO_UINT(ELevelType::STATIC), L"Prototype_GameObject_Physics_Terrain", CPhysics_Terrain::Create(m_pDevice, m_pDeviceContext));
 
 	//=================
 	// UI

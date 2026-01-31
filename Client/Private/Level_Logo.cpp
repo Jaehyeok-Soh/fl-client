@@ -35,6 +35,9 @@ HRESULT CLevel_Logo::Initialize()
 	if (FAILED(Ready_Lights()))
 		return E_FAIL;
 
+	if (FAILED(Ready_Test_Terrain(L"test_terrain")))
+		return E_FAIL;
+
 	return S_OK;
 }
 
@@ -148,6 +151,25 @@ HRESULT CLevel_Logo::Ready_Lights()
 		desc.vSpecular = Vec4(1.f, 1.f, 1.f, 1.f);
 
 		if (FAILED(m_pGameInstance->Add_Light(desc)))
+			return E_FAIL;
+	}
+
+	return S_OK;
+}
+
+HRESULT CLevel_Logo::Ready_Test_Terrain(const wstring& wstrLayerTag)
+{
+	{
+		CGameObject * pResult = { nullptr };
+		CGameObject::GAMEOBJECT_DESC goDesc = {};
+		CTransform::TRANSFORM_DESC TransformDesc = {};
+		TransformDesc.vPosition = { 0.f, 0.f, 0.f };
+		goDesc.pTransform_Desc = &TransformDesc;
+
+		if (!(pResult = m_pGameInstance->Add_GameObject(ENUM_TO_UINT(ELevelType::STATIC),
+			L"Prototype_GameObject_Physics_Terrain",
+			ENUM_TO_UINT(ELevelType::LOGO),
+			wstrLayerTag, &goDesc)))
 			return E_FAIL;
 	}
 

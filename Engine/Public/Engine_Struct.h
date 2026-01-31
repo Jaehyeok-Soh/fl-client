@@ -272,7 +272,7 @@ namespace Engine
 	typedef struct tagPhysicsCCT
 	{
 		EPhysicsCCTType eType = { EPhysicsCCTType::CAPSULE };
-		DirectX::SimpleMath::Matrix* pOwnerMatrix = { nullptr };
+		const Matrix* pOwnerMatrix = { nullptr };
 		float fRadius = {};
 		float fHeight = {};
 		SimpleMath::Vector3 vExtens = {};
@@ -283,6 +283,8 @@ namespace Engine
 		/// Material ///
 		////////////////
 		PHYSICSMATERIAL_DESC tMaterial = {};
+
+		class CGameObject* pOwner = { nullptr };
 	}PHYSICSCCT_DESC;
 
 	typedef struct tagPhysicsRigidBody
@@ -296,7 +298,7 @@ namespace Engine
 		float fLinearDamping = {};
 		float fAngularDamping = {};
 
-		const Matrix* pParentMatrix = { nullptr };
+		const Matrix* pOwnerMatrix = { nullptr };
 	}PHYSICSRIGIDBODY_DESC;
 
 	typedef struct tagPhysicsCollider

@@ -21,6 +21,7 @@ private:
 	HRESULT Ready_UI_Layer(const wstring& wstrLayerTag);
 	HRESULT Ready_Camera_Layer(const wstring& wstrLayerTag);
 	HRESULT Ready_Lights();
+	HRESULT Ready_Test_Terrain(const wstring& wstrLayerTag);
 
 	HRESULT Ready_Camera_Setting(const _uint iLevelIndex);
 public:
