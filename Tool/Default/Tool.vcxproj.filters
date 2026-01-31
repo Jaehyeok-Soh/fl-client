@@ -181,6 +181,9 @@
     <Filter Include="11. File">
       <UniqueIdentifier>{eba6acec-ecab-4a90-8b8e-1c78ded4b5e3}</UniqueIdentifier>
     </Filter>
+    <Filter Include="03. Level\Logo">
+      <UniqueIdentifier>{6b4ad873-673f-4c55-a2cf-8ed6c0b3e198}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="framework.h">
@@ -387,6 +390,9 @@
     <ClInclude Include="..\Public\File.h">
       <Filter>11. File</Filter>
     </ClInclude>
+    <ClInclude Include="..\public\Level_Logo.h">
+      <Filter>03. Level\Logo</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <Image Include="small.ico">
@@ -584,6 +590,9 @@
     </ClCompile>
     <ClCompile Include="..\Private\File.cpp">
       <Filter>11. File</Filter>
+    </ClCompile>
+    <ClCompile Include="..\private\Level_Logo.cpp">
+      <Filter>03. Level\Logo</Filter>
     </ClCompile>
   </ItemGroup>
 </Project>

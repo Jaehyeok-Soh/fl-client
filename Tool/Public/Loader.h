@@ -33,6 +33,7 @@ public:
 	}
 private:
 	HRESULT Loading();
+	HRESULT Loading_For_Logo();
 	HRESULT Loading_For_Map();
 	HRESULT Loading_For_Animation();
 	HRESULT Loading_For_Effect();

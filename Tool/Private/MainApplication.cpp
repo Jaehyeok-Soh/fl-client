@@ -51,7 +51,7 @@ HRESULT CMainApplication::Initialize()
 		return E_FAIL;
 
 	// Gui 세팅과 동시에 Level 스타트
-	if (FAILED(Ready_GuiManager(EngineDesc.iWinCX, EngineDesc.iWinCY, /* StartLevel */ ELevelType::MAP)))
+	if (FAILED(Ready_GuiManager(EngineDesc.iWinCX, EngineDesc.iWinCY, /* StartLevel */ ELevelType::LOGO)))
 		return E_FAIL;
 
 	CPicking_ToolManager* pPickingManager = { nullptr };

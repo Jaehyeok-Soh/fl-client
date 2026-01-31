@@ -73,6 +73,9 @@ HRESULT CLoader::Loading()
 
 	switch (m_eLoadingELevelType)
 	{
+	case Tool::ELevelType::LOGO:
+		hr = Loading_For_Logo();
+		break;
 	case Tool::ELevelType::MAP:
 		hr = Loading_For_Map();
 		break;
@@ -101,6 +104,12 @@ HRESULT CLoader::Loading()
 	if (FAILED(hr))
 		return E_FAIL;
 
+	return S_OK;
+}
+
+HRESULT CLoader::Loading_For_Logo()
+{
+	m_isFinished = true;
 	return S_OK;
 }
 
