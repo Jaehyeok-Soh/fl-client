@@ -270,6 +270,27 @@ public:
 	}
 #pragma endregion
 
+#pragma region PHYSICS_MODULE
+	void StepPhysics(_float fTimeDelta);
+	void AddActor(PxRigidActor* actor);
+	void ClearPhysics();
+	PxTransform XMMatrixToPxTransform(Matrix mat);
+	Matrix PxTransformToXMMatrix(PxTransform pxTransform);
+#ifdef _DEBUG
+	void Physics_Render(PxRigidActor* pActor, XMVECTOR color = DirectX::Colors::White);
+#endif // _DEBUG
+	void SerializeStaticMesh(std::filesystem::path path, vector<PxTriangleMesh*> meshes);
+	PxCollection* DeserializeStaticMesh(std::filesystem::path path);
+	void SerializeConvexMesh(std::filesystem::path path, vector<PxConvexMesh*> meshes);
+	PxCollection* SerializeConvexMesh(std::filesystem::path path);
+	void SerializeLevel(std::filesystem::path path) {}
+	void DeserializeLevel(std::filesystem::path path) {}
+	vector<PxShape*> GetShape(PHYSICSCOLLIDER_DESC* pDesc);
+	vector<PxShape*> GetMeshShape(PHYSICSCOLLIDER_DESC* pDesc);
+	PxRigidActor* GetActor(PHYSICSRIGIDBODY_DESC* rigidBodyDesc, PHYSICSCOLLIDER_DESC* colliderDesc, vector<PxShape*>& shapes);
+	PxController* GetController(PHYSICSCCT_DESC* pDesc);
+#pragma endregion
+
 // Todo - 쓰레기통 정리
 #pragma region GAMEDATA
 
@@ -296,6 +317,7 @@ private:
 	class CRenderTarget_Manager* m_pRenderTarget_Manager = { nullptr };
 	class CPicking* m_pPicking = { nullptr };
 	class CFrustrum* m_pFrustrum = { nullptr };
+	class CPhysics_Module* m_pPhysics_Module = { nullptr };
 private:
 	std::mt19937_64 m_rng;
 public:

@@ -70,6 +70,7 @@ protected:
 	void StartForce_Right_ForAnimation(_float fForceAbs, _float fDragK);
 	void Set_AttackCollider(_uint iPartIndex, _bool bActive, ATTACK_DESC* pDesc);
 	void Apply_Gravity(const _float fTimeDelta);
+	void Apply_Gravity_CCT(const _float fTimeDelta);
 	void Apply_ForceMove(const _float fTimeDelta);
 	void Clear_ForceMove();
 	void SetupLook_CameraLook();
@@ -101,6 +102,9 @@ protected:
 	const _float m_fMaxFallSpeed = { -30.f };
 	_float m_fVerticalSpeed = { 0.f };
 	vector<CStateBase*> m_vecStates;
+
+	// Physics
+	PxControllerCollisionFlags CCTFlags{};
 public:
 	virtual CComponent* Clone(void* pArg) PURE;
 	virtual void Free() override;

@@ -33,6 +33,7 @@ public:
 	D3D11_USAGE Get_VB_Usage() const { return m_VB_Usage; }
 	D3D11_USAGE Get_IB_Usage() const { return m_IB_Usage; }
 	const Vec3* Get_VertexPositionData() const { return m_pVertexPositions; }
+	_uint Get_VerticesCount() const { return m_iVertexCount; }
 	const _uint* Get_IndicesData() const { return m_pIndices; }
 	_uint Get_IndicesCount() const { return m_iIndexCount; }
 

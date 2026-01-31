@@ -14,6 +14,7 @@
 #include "Body.h"
 #include "Camera.h"
 #include "ColliderPart.h"
+#include "PhysicsCCT.h"
 #include "GameInstance.h"
 #pragma region State
 #include "State_Combo_First.h"
@@ -63,6 +64,9 @@ HRESULT CMainPlayer::Initialize(void* pArg)
     if (FAILED(Ready_Ray()))
         return E_FAIL;
 
+    if (FAILED(Ready_CCT()))
+        return E_FAIL;
+
     return S_OK;
 }
 
@@ -79,6 +83,9 @@ HRESULT CMainPlayer::Awake(const _uint iCurrentLevelID)
         return E_FAIL;
 
     Get_Component<CTransform>()->Set_Info(TRANSFORM_INFO_STATE::POS, Vec3{ 0.f, 0.f, 2.f });
+
+    Get_Component<CPhysicsCCT>()->Awake();
+
     return S_OK;
 }
 
@@ -111,6 +118,10 @@ void CMainPlayer::Update_Late(const _float fTimeDelta)
 void CMainPlayer::Ready_Before_Render(const _float fTimeDelta)
 {
     Super::Ready_Before_Render(fTimeDelta);
+
+#ifdef _DEBUG
+    m_pGameInstance->Push_DebugComponent(Get_Component<CPhysicsCCT>());
+#endif // _DEBUG
 }
 
 HRESULT CMainPlayer::Render()
@@ -534,6 +545,27 @@ HRESULT CMainPlayer::Ready_Ray()
         return E_FAIL;
 
     if (!(m_pMoveRay = CRay::Create(Vec3{ 0.f, 0.05f, 0.f }, Vec3{ 0.f, 0.f, 0.f })))
+        return E_FAIL;
+
+    return S_OK;
+}
+
+HRESULT CMainPlayer::Ready_CCT()
+{
+    PHYSICSCCT_DESC desc;
+    desc.eType = EPhysicsCCTType::CAPSULE;
+    desc.pOwnerMatrix = &Get_Component<CTransform>()->Get_WorldMatrix();
+    desc.fRadius = 0.5f;
+    desc.fHeight = 1.f;
+    desc.vExtens = { 0.f, 0.f, 0.f };
+
+    PHYSICSMATERIAL_DESC mtrlDesc{};
+    mtrlDesc.eMaterial = EPhysicsMaterial::PLAYER;
+
+    desc.tMaterial = mtrlDesc;
+    desc.pOwner = this;
+
+    if (FAILED(Add_Component<CPhysicsCCT>(0, L"Prototype_Component_Physics_CCT", &desc)))
         return E_FAIL;
 
     return S_OK;
