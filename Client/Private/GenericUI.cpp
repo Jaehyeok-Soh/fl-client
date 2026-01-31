@@ -35,7 +35,6 @@ HRESULT CGenericUI::Initialize(void* pArg)
 	if (FAILED(Super::Initialize(pArg)))
 		return E_FAIL;
 
-
 	if (FAILED(Ready_Components(pDesc)))
 		return E_FAIL;
 
@@ -58,19 +57,16 @@ void CGenericUI::Update_Priority(const _float fTimeDelta)
 
 void CGenericUI::Update(const _float fTimeDelta)
 {
-
 	Super::Update(fTimeDelta);
 }
 
 void CGenericUI::Update_Late(const _float fTimeDelta)
 {
-
 	Super::Update_Late(fTimeDelta);
 }
 
 void CGenericUI::Ready_Before_Render(const _float fTimeDelta)
 {
-
 	Super::Ready_Before_Render(fTimeDelta);
 }
 

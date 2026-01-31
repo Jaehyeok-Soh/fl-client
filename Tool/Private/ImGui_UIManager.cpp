@@ -21,7 +21,6 @@ HRESULT CImGui_UIManager::Safe_Add_Canvas(CToolCanvas* pCanvas)
 		return E_FAIL;
 
 	m_vecCanvas.push_back(pCanvas);
-	m_iCurCanvasIndex++;
 	return S_OK;
 }
 
