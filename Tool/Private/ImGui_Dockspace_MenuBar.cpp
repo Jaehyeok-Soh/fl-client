@@ -8,6 +8,10 @@
 #include "DataStruct_Example.h"
 #include "GameInstance.h"
 
+// Effect
+#include "DataDocument_Effect.h"
+#include "DataStruct_Effect.h"
+
 CImGui_Dockspace_MenuBar::CImGui_Dockspace_MenuBar(const _char* pLabel, ID3D11Device* pDevice, ID3D11DeviceContext* pDeviceContext)
 	: Super(pLabel, pDevice, pDeviceContext)
 	, m_pGameInstance(CGameInstance::GetInstance())
@@ -177,6 +181,23 @@ void CImGui_Dockspace_MenuBar::Save_AnimationData(const wstring& wstrFilePath)
 
 void CImGui_Dockspace_MenuBar::Save_EffectData(const wstring& wstrFilePath)
 {
+	ELevelType eLevelType = ELevelType::EFFECT;
+	DTO::ECategory eCategory = DTO::ECategory::EFFECT;
+	_uint iLevelID = ENUM_TO_UINT(eLevelType);
+	if (FAILED(m_pGameInstance->Regist_Document<CDataDocument_Effect>(iLevelID, eCategory)))
+		return;
+
+	CDataDocumentBase* pDocument = m_pGameInstance->Ensure_Document(iLevelID, eCategory, wstrFilePath);
+	if (pDocument == nullptr)
+		return;
+
+	// Effect Container °´Ã¼ Layer
+	wstring ContainerObjectLayerTag = L"Effect";
+
+	CDataDocument_Effect* pDoc = static_cast<CDataDocument_Effect*>(pDocument);
+	Request_ExportData(ELevelType::EFFECT, eCategory, ContainerObjectLayerTag, pDocument);
+
+	m_pGameInstance->Save_File_Json(iLevelID, eCategory, wstrFilePath);
 }
 
 void CImGui_Dockspace_MenuBar::Save_CameraData(const wstring& wstrFilePath)

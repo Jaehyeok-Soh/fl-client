@@ -15,28 +15,19 @@ HRESULT CDataDocument_Effect::Initialize()
 	return S_OK;
 }
 
-HRESULT CDataDocument_Effect::Try_Add(const DTO::TExample_LightData& data)
+HRESULT CDataDocument_Effect::Try_Add(const DTO::TEFFECT_ContainerData& data)
 {
-	IObjectDataBase* pObjectBase = Create_ObjectData(DTO::EMapType::LIGHT);
-	static_cast<CExample_LightData*>(pObjectBase)->Get_Data() = data;
+	IObjectDataBase* pObjectBase = Create_ObjectData(DTO::EEffectType::EFFECT_CONTAINER);
+	static_cast<CEFFECT_CONTAINER*>(pObjectBase)->Get_Data() = data;
 	return Try_Add(pObjectBase);
 }
 
-HRESULT CDataDocument_Effect::Try_Add(const DTO::TExample_StaticModelData& data)
-{
-	IObjectDataBase* pObjectBase = Create_ObjectData(DTO::EMapType::STATICMODEL);
-	static_cast<CExample_StaticModel*>(pObjectBase)->Get_Data() = data;
-	return Try_Add(pObjectBase);
-}
-
-IObjectDataBase* CDataDocument_Effect::Create_ObjectData(DTO::EMapType eType)
+IObjectDataBase* CDataDocument_Effect::Create_ObjectData(DTO::EEffectType eType)
 {
 	switch (eType)
 	{
-	case DTO::EMapType::STATICMODEL:
-		return CExample_StaticModel::Create();
-	case DTO::EMapType::LIGHT:
-		return CExample_LightData::Create();
+	case DTO::EEffectType::EFFECT_CONTAINER:
+		return CEFFECT_CONTAINER::Create();
 	default:
 		return nullptr;
 	}
@@ -100,7 +91,7 @@ HRESULT CDataDocument_Effect::FromJson(const json& j)
 	if (j.contains("Category"))
 	{
 		const DTO::ECategory eCategory = j.at("Category").get<DTO::ECategory>();
-		if (eCategory != DTO::ECategory::MAP)
+		if (eCategory != DTO::ECategory::EFFECT)
 			return E_FAIL;
 	}
 	else
@@ -114,7 +105,7 @@ HRESULT CDataDocument_Effect::FromJson(const json& j)
 		if (object.contains("Type") == false)
 			return E_FAIL;
 
-		const DTO::EMapType eType = object.at("Type").get<DTO::EMapType>();
+		const DTO::EEffectType eType = object.at("Type").get<DTO::EEffectType>();
 
 		IObjectDataBase* pObjectDataBase = Create_ObjectData(eType);
 		if (pObjectDataBase == nullptr)

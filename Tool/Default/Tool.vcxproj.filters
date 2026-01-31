@@ -351,9 +351,6 @@
     <ClInclude Include="..\Public\Panel_MapObjectList.h">
       <Filter>06. ImGui\01. Panel\Map\Panel_MapObjectList</Filter>
     </ClInclude>
-    <ClInclude Include="..\Public\Panel_ModelConverter.h">
-      <Filter>06. ImGui\01. Panel\Asimp</Filter>
-    </ClInclude>
     <ClInclude Include="..\Public\MapObject.h">
       <Filter>02. GameObjects\Map\00. MapObject\00. MapObject</Filter>
     </ClInclude>
@@ -416,6 +413,9 @@
     </ClInclude>
     <ClInclude Include="..\Public\Image.h">
       <Filter>04. Component\UI\Base\Image</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\Panel_ModelConverter.h">
+      <Filter>06. ImGui\01. Panel\Asimp</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
