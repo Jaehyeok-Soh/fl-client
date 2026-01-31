@@ -9,6 +9,7 @@
 #define GRADATIONTEXTURE 3
 #define TRAILTEXTURE 4
 #define NORMALTEXTURE 5
+#define SCENETEXTURE 6
 
 texture2D g_EffectTexture;
 
@@ -235,7 +236,6 @@ bool HasGradationTexture()
 bool HasTrailTexture()
 {
     return (g_Effect.g_TextureFlags & (1 << 4)) != 0;
-
 }
 
 // ========= SamplerState Flags ===========
@@ -283,6 +283,11 @@ float4 GradationTextureSample(float2 UV)
 float4 TrailTextureSample(float2 UV)
 {
     return SampleTextureWithFlags(g_DefaultTextures[TRAILTEXTURE], g_Effect.g_StateFlags, 12, UV);
+}
+
+float4 SceneTextureSample(float2 UV)
+{
+    return g_RenderTargetSceneTexture.Sample(LinearSampler, UV);
 }
 
 // =========== VS In  ==============
@@ -427,6 +432,102 @@ float4 PS_BULLET(VS_OUT_INST_MESH_PARTICLE In) : SV_Target0
     return float4(DiffuseSample.rgb * g_Effect.g_EffectColor.rgb, finalAlpha);
 }
 
+float4 PS_DISTOTION(VS_OUT_INST_MESH_PARTICLE In) : SV_Target0
+{
+     // =======              노이즈 텍스처 샘플링             ===========
+    float2 finalUV = In.vUV;
+    float4 DiffuseSample = { 1.f, 1.f, 1.f, 1.f };
+    float4 noiseSample = { 0.5f, 1.f, 1.f, 1.f };
+    float4 MaskSample = { 1.f, 1.f, 1.f, 1.f };
+    float noiseValue;
+    
+    if (HasNoiseTexture())
+    {
+        float2 noiseUV = Get90DegreeRotatedUV(In.vUV, g_Effect.g_RotationFlags, NOISETEXTURE);
+        noiseUV += g_Effect.g_ScrollOffset;
+        noiseSample = NoiseTextureSample(noiseUV);
+        
+        // 지금 바인딩 되어있는 Gradation 텍스처가 있는지 확인한다.
+        if (HasMaskTexture())
+        {
+            MaskSample = MaskTextureSample(Get90DegreeRotatedUV(In.vUV, g_Effect.g_RotationFlags, MASKINGTEXTURE));
+            noiseValue = Float_Operation(noiseSample.r, MaskSample.r, MUL);
+        }
+        
+        finalUV.x = Float_Operation(noiseValue, g_Effect.g_DistortionScale.x, MUL);
+        finalUV.y = Float_Operation(noiseValue, g_Effect.g_DistortionScale.y, MUL);
+    }
+        // 클립 좌표계에서 내 위치 찾아서 UV좌표 꺼내오기.
+    float2 ScreenUV = In.vProjPos.xy / In.vProjPos.w;
+    ScreenUV = ScreenUV * 0.5f + 0.5f;
+    
+    float2 distortionUV = ScreenUV + finalUV;
+    float4 refractionColor = float4(1.f, 1.f, 1.f, 1.f);
+    
+    // 이 UV 좌표로 SceneTexture를 샘플링한다.
+
+    refractionColor = SceneTextureSample(distortionUV);
+    
+    float lifeAlpha = 1.0f - (In.vLifeTime.x / In.vLifeTime.y);
+    refractionColor.a *= lifeAlpha;
+    
+        // ==========               알파 클리핑                   =========
+    
+    //if (refractionColor.a < g_Effect.g_DiscardValue)
+    //    discard;
+    
+    // ==========   미리 지정한 이펙트 색깔을 곱해서 출력하기   =========
+    return float4(refractionColor.rgb, refractionColor.a);
+}
+
+float4 PS_SWORDEFFECT(VS_OUT_INST_MESH_PARTICLE In) :SV_Target0
+{
+         // =======              노이즈 텍스처 샘플링             ===========
+    float2 finalUV = In.vUV;
+    float4 DiffuseSample = { 1.f, 1.f, 1.f, 1.f };
+    float4 noiseSample = { 0.5f, 1.f, 1.f, 1.f };
+    float4 MaskSample = { 1.f, 1.f, 1.f, 1.f };
+    float noiseValue;
+    
+    if (HasNoiseTexture())
+    {
+        float2 noiseUV = Get90DegreeRotatedUV(In.vUV, g_Effect.g_RotationFlags, NOISETEXTURE);
+        noiseUV += g_Effect.g_ScrollOffset;
+        noiseSample = NoiseTextureSample(noiseUV);
+        
+        // 지금 바인딩 되어있는 Gradation 텍스처가 있는지 확인한다.
+        if (HasMaskTexture())
+        {
+            MaskSample = MaskTextureSample(Get90DegreeRotatedUV(In.vUV, g_Effect.g_RotationFlags, MASKINGTEXTURE));
+            noiseValue = Float_Operation(noiseSample.r, MaskSample.r, MUL);
+        }
+        
+        finalUV.x = Float_Operation(noiseValue, g_Effect.g_DistortionScale.x, MUL);
+        finalUV.y = Float_Operation(noiseValue, g_Effect.g_DistortionScale.y, MUL);
+    }
+        // 클립 좌표계에서 내 위치 찾아서 UV좌표 꺼내오기.
+    float2 ScreenUV = In.vProjPos.xy / In.vProjPos.w;
+    ScreenUV = ScreenUV * 0.5f + 0.5f;
+    
+    float2 distortionUV = ScreenUV + finalUV;
+    float4 refractionColor = float4(1.f, 1.f, 1.f, 1.f);
+    
+    // 이 UV 좌표로 SceneTexture를 샘플링한다.
+
+    refractionColor = SceneTextureSample(distortionUV);
+    
+    float lifeAlpha = 1.0f - (In.vLifeTime.x / In.vLifeTime.y);
+    refractionColor.a *= lifeAlpha;
+    
+        // ==========               알파 클리핑                   =========
+    
+    //if (refractionColor.a < g_Effect.g_DiscardValue)
+    //    discard;
+    
+    // ==========   미리 지정한 이펙트 색깔을 곱해서 출력하기   =========
+    return float4(refractionColor.rgb, refractionColor.a);
+}
+
 technique11 T0
 {
     pass Mesh_Effect
@@ -457,5 +558,25 @@ technique11 T0
         SetVertexShader(CompileShader(vs_5_0, VS_DEFAULT()));
         GeometryShader = NULL;
         SetPixelShader(CompileShader(ps_5_0, PS_DEFAULT()));
+    }
+
+    pass Distotion_EFFECT
+    {
+        SetRasterizerState(RS_Default_CullNone);
+        SetDepthStencilState(DS_Default, 0);
+        SetBlendState(BS_Default, float4(0.f, 0.f, 0.f, 0.f), 0xffffffff);
+        SetVertexShader(CompileShader(vs_5_0, VS_DEFAULT()));
+        GeometryShader = NULL;
+        SetPixelShader(CompileShader(ps_5_0, PS_DISTOTION()));
+    }
+
+    pass SWORD_EFFECT
+    {
+        SetRasterizerState(RS_Default_CullNone);
+        SetDepthStencilState(DS_Default, 0);
+        SetBlendState(BS_Default, float4(0.f, 0.f, 0.f, 0.f), 0xffffffff);
+        SetVertexShader(CompileShader(vs_5_0, VS_DEFAULT()));
+        GeometryShader = NULL;
+        SetPixelShader(CompileShader(ps_5_0, PS_SWORDEFFECT()));
     }
 }

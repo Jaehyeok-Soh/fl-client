@@ -9,6 +9,7 @@ enum class ERenderTarget : _uint
 	Normal,
 	Shade,
 	Depth,
+	Scene,	// 유니티에서 SceneTexture라고 함. Effect 전용
 	END,
 };
 
@@ -16,6 +17,7 @@ enum class EMRTLayer : _uint
 {
 	GameObjects,
 	LightAcc,
+	Effect,
 
 	END,
 };
@@ -33,6 +35,7 @@ public:
 	HRESULT Begin_MRT(EMRTLayer eMRTLayer);
 	HRESULT End_MRT();
 	HRESULT Bind_ShaderResource(ERenderTarget eTarget, class CShader* pShader);
+	HRESULT Copy_BackBufferResource(ERenderTarget eTarget);
 
 public:
 	class CRenderTarget* Get_RenderTarget(ERenderTarget eTarget) { return m_arrRenderTargets[ENUM_TO_UINT(eTarget)]; }

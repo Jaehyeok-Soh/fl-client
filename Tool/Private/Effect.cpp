@@ -75,6 +75,11 @@ void Effect::Draw_ImGui()
 	Super::Draw_ImGui();
 }
 
+void Effect::Set_Parents(CGameObject* pGo)
+{
+
+}
+
 void Effect::Set_Dead(const wstring& wstrLayerTag)
 {
 }

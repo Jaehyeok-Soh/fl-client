@@ -59,6 +59,7 @@ void CUI_Inspector::SetUp_Public_Info()
 {
 	Input_RectTransform();
 }
+
 void CUI_Inspector::Input_RectTransform()
 {
 	ImGui::PushID("RectTransform");
@@ -75,14 +76,13 @@ void CUI_Inspector::Input_RectTransform()
 	}
 
 	ImGui::Spacing();
-
 	if (ImGui::BeginTable("##RectGrid33", 3, ImGuiTableFlags_SizingStretchSame))
 	{
 		for (int i = 0; i < 9; ++i)
 		{
 			ImGui::TableNextColumn();
 
-			const bool isSelected = (m_iRectTransformIndex == i);
+			const bool isSelected = (static_cast<uint32_t>(m_pSelectedUI->Get_RectTransformType())== i);
 
 			if (isSelected)
 			{
@@ -93,7 +93,7 @@ void CUI_Inspector::Input_RectTransform()
 
 			ImGui::SetNextItemWidth(-FLT_MIN);
 			if (ImGui::Button(RectTransformToString(static_cast<ERectTransform>(i)).c_str(), ImVec2(-FLT_MIN, 36.f)))
-				m_iRectTransformIndex = i;
+				m_pSelectedUI->Set_RectTransformType(static_cast<ERectTransform>(i));
 
 			if (isSelected)
 				ImGui::PopStyleColor(3);

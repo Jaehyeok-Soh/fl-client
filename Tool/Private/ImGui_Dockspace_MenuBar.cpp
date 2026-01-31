@@ -121,6 +121,7 @@ void CImGui_Dockspace_MenuBar::Load_Data(const wstring& wstrFilePath)
 	const auto okay = pTest->Get_ListByType(ENUM_TO_UINT(DTO::EMapType::STATICMODEL));
 	const auto okay2 = pTest->Get_ListByType(ENUM_TO_UINT(DTO::EMapType::LIGHT));
 	if (okay.size() > 0 && okay2.size() > 0)
+		
 		MSG_BOX("Okay");
 	else
 		MSG_BOX("Failed");

@@ -1,8 +1,8 @@
 #include "Engine_pch.h"
 #include "UIObject.h"
-#include "Shader.h"
+#include "Shader.h"	
 #include "Texture.h"
-#include "Mesh.h"
+#include "Engine_Utils.h"
 #include "GameInstance.h"
 
 CUIObject::CUIObject(ID3D11Device* pDevice, ID3D11DeviceContext* pDeviceContext)
@@ -94,30 +94,32 @@ HRESULT CUIObject::Render()
 	return S_OK;
 }
 
-_bool CUIObject::IsPicked()
+void CUIObject::Calc_InteractState_Mouse()
 {
 	if (::PtInRect(&m_tRect, m_pGameInstance->Get_MousePos()))
 	{
-		m_isPicked = true;
-		return true;
+		Engine_Utils::Add_Flag(m_iInteractState, EInteract::HOVER);
+
+		if (MOUSE_LBUTTON_DOWN)
+		{
+			Engine_Utils::Add_Flag(m_iInteractState, EInteract::CLICK);
+		}
+		if (MOUSE_LBUTTON_HOLD)
+		{
+			Engine_Utils::Add_Flag(m_iInteractState, EInteract::PRESSING);
+		}
+		if (MOUSE_LBUTTON_UP)
+		{
+		}
 	}
 	else
 	{
-		if (m_isPicked)
-			OffPicked();
-		m_isPicked = false;
-		return false;
 	}
-}
-
-void CUIObject::OffPicked()
-{
-
 }
 
 void CUIObject::Set_Size(_float fWidth, _float fHeight)
 {
-	if (fWidth < 0.1f || fHeight < 0.f)
+	if (fWidth < 0.1f || fHeight < 0.1f)
 		return;
 
 	m_fWidth = fWidth;
@@ -143,6 +145,12 @@ void CUIObject::Set_Position(_float fX, _float fY, _float fZ)
 	m_fY = fY;
 	m_fZ = fZ;
 	Get_Component<CTransform>()->Set_Info(TRANSFORM_INFO_STATE::POS, XMVectorSet(m_fX - m_iViewportWidth * 0.5f, -m_fY + m_iViewportHeight * 0.5f, m_fZ, 1.f));
+	SetUp_Rect();
+}
+
+void CUIObject::Move_Position(_float fX, _float fY, _float fZ)
+{
+	Get_Component<CTransform>()->Set_Info(TRANSFORM_INFO_STATE::POS, XMVectorSet(fX - m_iViewportWidth * 0.5f, -fY + m_iViewportHeight * 0.5f, fZ, 1.f));
 	SetUp_Rect();
 }
 
