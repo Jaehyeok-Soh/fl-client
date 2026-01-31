@@ -260,10 +260,6 @@ private:
     Effect_Desc        m_tEffectDesc = {};
     Effect_Desc        m_tPrevEffectDesc = {};
 
-    //  ========== 이펙트 재료 ===========
-    CModel*      m_pModelCom = { nullptr };
-    CTexture*    m_pTextureCom = { nullptr };
-
     //  ========== 스크롤 OffSet ========
     Vec2      m_vScrollOffset = { 0.f, 0.f };
     _float    m_fTimeAccumulation = 0.f;

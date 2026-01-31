@@ -8,7 +8,7 @@ using json = nlohmann::json;
 
 NS_BEGIN(DTO)
 
-inline void to_json(json& j, const TEFFECT_ContainerData& data)
+void to_json(json& j, const TEFFECT_ContainerData& data)
 {
 	j = json
 	{
@@ -16,24 +16,11 @@ inline void to_json(json& j, const TEFFECT_ContainerData& data)
 		{ "strTag", data.strTag },
 	};
 }
-inline void from_json(const json& j, TEFFECT_ContainerData& data)
+void from_json(const json& j, TEFFECT_ContainerData& data)
 {
 	j.at("strTag").get_to(data.strTag);
 }
-inline void to_json(json& j, const TEFFECT_ContainerData& data)
-{
-	j = json
-	{
-		{ "Type", TEFFECT_ContainerData::eType },
-		{ "strTag", data.strTag },
-	};
-}
-inline void from_json(const json& j, TEFFECT_PartsData& data)
-{
-	j.at("strTag").get_to(data.strTag);
-}
-
-inline void to_json(json& j, const TEFFECT_PartsData& data)
+void to_json(json& j, const TEFFECT_PartsData& data)
 {
 	j = json
 	{
@@ -41,8 +28,7 @@ inline void to_json(json& j, const TEFFECT_PartsData& data)
 		{ "strTag", data.strTag },
 	};
 }
-
-inline void from_json(const json& j, TEFFECT_PartsData& data)
+void from_json(const json& j, TEFFECT_PartsData& data)
 {
 	j.at("strTag").get_to(data.strTag);
 }

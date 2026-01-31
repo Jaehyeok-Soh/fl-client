@@ -146,7 +146,7 @@ private:
     virtual ~CEFFECT_CONTAINER() = default;
 
 public:
-    _uint Get_Type() const override { return ENUM_TO_UINT(DTO::EEffectType::EFFECT); }
+    _uint Get_Type() const override { return ENUM_TO_UINT(DTO::EEffectType::EFFECT_CONTAINER); }
     const _string& Get_Tag() const override { return m_Data.strTag; }
 
     json ToJson() const override;
@@ -174,7 +174,7 @@ private:
     virtual ~CEffect_PARTS() = default;
 
 public:
-    _uint Get_Type() const override { return ENUM_TO_UINT(DTO::EEffectType::EFFECTOBJECT); }
+    _uint Get_Type() const override { return ENUM_TO_UINT(DTO::EEffectType::EFFECT_PARTS); }
     const std::string& Get_Tag() const override { return m_Data.strTag; }
 
     json ToJson() const override;
