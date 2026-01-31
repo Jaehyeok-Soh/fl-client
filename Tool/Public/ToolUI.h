@@ -33,7 +33,6 @@ public:
 	virtual void Update_Late(const _float fTimeDelta) override;
 	virtual void Ready_Before_Render(const _float fTimeDelta) override;
 	virtual HRESULT Render() override;
-
 	_bool Calc_HitEvent();
 private:
 	HRESULT Ready_Components(TOOLUI_DESC* pDesc);
@@ -43,7 +42,7 @@ private:
 	void SetUp_RectTransform_Position();
 	/* Layer의 Visible 상태에 따라 자신의 Visible 상태를 세팅함 */
 	void SetUp_Visible();
-	/* 마우스가 내 안에 있는지 */
+	void Acting_By_InteractState();
 	void Sync_Data();
 #pragma region GETTER/SETTER
 public:
@@ -68,6 +67,10 @@ public:
 	DTO::TUI_GenericUIData& Get_Data_Ref() { return m_tUIData; }
 #pragma endregion
 
+private:	
+	PrimitiveBatch<DirectX::VertexPositionColor>* m_pBatch = { nullptr };
+	BasicEffect* m_pEffect = { nullptr };
+	ID3D11InputLayout* m_pInputLayout = { nullptr };
 private:
 	DTO::TUI_GenericUIData m_tUIData = {};
 
@@ -81,7 +84,7 @@ private:
 
 	Vec3 m_vRenderPos = {};
 	RECT m_tRenderRect = {};
-
+	_bool m_isHitTest = { FALSE };
 public:
 	static CToolUI* Create(EToolObjectType eType, ID3D11Device* pDevice, ID3D11DeviceContext* pDeviceContext);
 	CGameObject* Clone(void* pArg);

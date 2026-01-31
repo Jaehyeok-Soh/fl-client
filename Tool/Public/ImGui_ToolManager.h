@@ -50,6 +50,8 @@ public:
 	void Set_GuizmoState(EGuizmoState eState) { m_eGuizmoState = eState; }
 
 	const Vec2& Get_CurViewportSize() const { return m_vViewportSize; }
+	const Vec2& Get_ViewportMousePos() const { return m_vViewportMousePos; }
+	POINT Get_ViewportMousePos_Point() const { return POINT{ (LONG)m_vViewportMousePos.x, (LONG)m_vViewportMousePos.y }; }
 
 private:	
 	bool Calculate_ViewportUV(OUT _float& fU, OUT _float& fV);
@@ -57,6 +59,7 @@ private:
 	HRESULT Show_TabBar(_bool bActive);
 	HRESULT Show_Menubar(_bool bActive);
 	HRESULT Ready_DockSpace_Elements(ELevelType eStartLevel);
+	void Calc_ViewportMousePos();
 private:
 	_bool m_bViewprotFocused = { false };
 	_bool m_bViewprotHovered = { false };
@@ -78,6 +81,8 @@ private:
 	Vec2 m_vViewportOffset = {};
 	Vec2 m_vViewportSize = {};
 	Vec2 m_vViewportBounds[2] = {};
+	Vec2 m_vViewportMousePos = {};
+
 public:
 	static CImGui_ToolManager* Create(HWND hWnd, ID3D11Device* pDevice, ID3D11DeviceContext* pDeviceContext, ELevelType eStartLevel);
 	virtual void Free() override;

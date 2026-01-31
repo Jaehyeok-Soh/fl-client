@@ -304,7 +304,7 @@ void CImGui_ToolManager::Render_Viewport(CToolObject* pSelectedObject)
 
 	m_vViewportSize = { fViewWidth, fViewHeight };
 	m_vViewportOffset = { fOffset_X, fOffset_Y };
-	
+	Calc_ViewportMousePos();
 	ImGuizmo_Render(pSelectedObject);
 
 	ImGui::End();
@@ -332,6 +332,23 @@ HRESULT CImGui_ToolManager::Ready_DockSpace_Elements(ELevelType eStartLevel)
 		return E_FAIL;
 
 	return S_OK;
+}
+
+void CImGui_ToolManager::Calc_ViewportMousePos()
+{
+	POINT			vScreenPos;
+	::GetCursorPos(&vScreenPos);
+	
+	const uint32_t LT = 0;
+	const uint32_t RB = 1;
+
+	if (vScreenPos.x < m_vViewportBounds[LT].x)	m_vViewportMousePos.x = 0.f;
+	else if (vScreenPos.x > m_vViewportBounds[RB].x)m_vViewportMousePos.x = m_vViewportSize.x;
+	else m_vViewportMousePos.x = vScreenPos.x - m_vViewportBounds[LT].x;
+
+	if (vScreenPos.y < m_vViewportBounds[LT].y)	m_vViewportMousePos.y = 0.f;
+	else if (vScreenPos.y > m_vViewportBounds[RB].y)m_vViewportMousePos.y = m_vViewportSize.y;
+	else m_vViewportMousePos.y = vScreenPos.y - m_vViewportBounds[LT].y;
 }
 
 HRESULT CImGui_ToolManager::Ready_Events()

@@ -4,6 +4,7 @@
 #include "ImGui_UIManager.h"
 #include "FileUtils.h"
 #include "DataStruct_UI.h"
+#include "Builder_UI.h"
 #include "DataDocument_UI.h"
 #include "ToolCanvas.h"
 #include "ToolLayer.h"
@@ -20,25 +21,17 @@ CUIData_Repository::CUIData_Repository()
 	Safe_AddRef(m_pGameInstance);
 }
 
-HRESULT CUIData_Repository::Load_UIData()
+void CUIData_Repository::Initialize(ID3D11Device* pDevice, ID3D11DeviceContext* pDeviceContext)
 {
-	//CFileUtils* pFileUtil = CFileUtils::Create();
+	m_pDevice = pDevice;
+	m_pDeviceContext = pDeviceContext;
 
-	//if (FAILED(pFileUtil->Open(UIDATAFILE_PATH, FileMode::READ)))
-	//{
-	//	MSG_BOX("CUIData_Repository::Load_UIData, open failed");
-	//	return E_FAIL;
-	//}
+	Safe_AddRef(m_pDevice);
+	Safe_AddRef(m_pDeviceContext);
+}
 
-	//std::string text = {};
-	//pFileUtil->ReadAllText(text);
-
-	//order_json j = json::parse(text);
-	//m_vecUIDTO = j.get<vector<CANVAS_DATA>>();
-	//OutRef = j.get<vector<CANVAS_DATA>>();
-	//Safe_Release(pFileUtil);
-
-
+HRESULT CUIData_Repository::Load_UIData(const _wstring& strFilePath)
+{
 	ELevelType eLevelType = ELevelType::UI;
 	DTO::ECategory eCategory = DTO::ECategory::UI;
 	_uint iLevelID = ENUM_TO_UINT(eLevelType);
@@ -46,17 +39,14 @@ HRESULT CUIData_Repository::Load_UIData()
 	if (FAILED(m_pGameInstance->Regist_Document<CDataDocument_UI>(iLevelID, eCategory)))
 		return E_FAIL;
 
-	if (FAILED(m_pGameInstance->Load_File_Json(iLevelID, eCategory, UIDATAFILE_PATH)))
+	if (FAILED(m_pGameInstance->Load_File_Json(iLevelID, eCategory, strFilePath)))
 		return E_FAIL;
 
-	const CDataDocumentBase* pBase = m_pGameInstance->Get_Document(iLevelID, eCategory, "Data");
-	CDataDocumentBase* pTest = const_cast<CDataDocumentBase*>(pBase);
-	CDataDocument_UI* phi = static_cast<CDataDocument_UI*>(pTest);
-
-	auto& okay = phi->Get_ListByType(ENUM_TO_UINT(DTO::EUIType::CANVAS));
-	auto& okay2 = phi->Get_ListByType(ENUM_TO_UINT(DTO::EUIType::LAYER));
-	auto& okay3 = phi->Get_ListByType(ENUM_TO_UINT(DTO::EUIType::GENERICUI));
-
+	std::filesystem::path p = strFilePath;
+	auto stem = p.stem();        
+	const CDataDocumentBase* pBase = m_pGameInstance->Get_Document(iLevelID, eCategory, stem.string());
+	CBuilder_UI* pBuilder = CBuilder_UI::Create(m_pDevice, m_pDeviceContext);
+	pBuilder->Build(*pBase);
 	MSG_BOX("불러오기 완료");
 	return S_OK;
 }
@@ -129,6 +119,8 @@ HRESULT CUIData_Repository::Save_UIData()
 void CUIData_Repository::Free()
 {
 	Safe_Release(m_pGameInstance);
+	Safe_Release(m_pDevice);
+	Safe_Release(m_pDeviceContext);
 	Super::Free();
 }
 

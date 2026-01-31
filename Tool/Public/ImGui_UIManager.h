@@ -20,7 +20,6 @@ class CImGui_UIManager final : public CBase
 private:
 	CImGui_UIManager();
 	virtual ~CImGui_UIManager() = default;
-
 public:
 	HRESULT Safe_Add_Canvas(CToolCanvas* pCanvas);
 

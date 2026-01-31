@@ -8,13 +8,7 @@ using json = nlohmann::json;
 
 NS_BEGIN(DTO)
 
-NLOHMANN_JSON_SERIALIZE_ENUM(EUIType,
-	{
-		{EUIType::CANVAS, "CANVAS"},
-		{EUIType::LAYER, "LAYER"},
-		{EUIType::GENERICUI, "GENERICUI"}
-	}
-)	
+
 
 void to_json(json& j, const TUI_GenericUIData& data)
 {

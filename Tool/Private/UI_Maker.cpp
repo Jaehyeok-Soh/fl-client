@@ -112,6 +112,7 @@ void CUI_Maker::UIData_IO()
 
 		if (::GetOpenFileNameW(&ofn) == TRUE)
 		{
+			CUIData_Repository::GetInstance()->Load_UIData(szFile);
 		}
 	}
 
@@ -660,9 +661,19 @@ void CUI_Maker::Input_Canvas_TransformInfo()
 	else if (m_isViewportSize)
 	{
 		auto* pCanvas = m_pUIManager->Safe_Access_Canvas(m_pUIManager->Get_CurCanvasIndex());
+		ImGui::TextDisabled("Width : %.2f", pCanvas->Get_Width());
+		ImGui::SameLine(0.f, 16.f);
+		ImGui::TextDisabled("Height :%.2f", pCanvas->Get_Height());
 
-		pCanvas->Set_Size(m_pToolManager->Get_CurViewportSize().x, m_pToolManager->Get_CurViewportSize().y);
-		pCanvas->Set_Position(0.f, 0.f, 0.f) ;
+		/* Pos X / Y / Z */
+		Scrub_Float("X :", "CanvasPosX", pCanvas->Get_PosX_Ptr(), 0.1f, 20.f, 0.1f, 1.0f, 100.f);
+		ImGui::SameLine(0.f, 16.f);
+		Scrub_Float("Y :", "CanvasPosY", pCanvas->Get_PosY_Ptr(), 0.1f, 20.f, 0.1f, 1.0f, 100.f);
+		ImGui::SameLine(0.f, 16.f);
+		Scrub_Float("Z :", "CanvasPosZ", pCanvas->Get_PosZ_Ptr(), 0.1f, 20.f, 0.1f, 1.0f, 100.f);
+
+		*pCanvas->Get_Width_Ptr() = CImGui_ToolManager::GetInstance()->Get_CurViewportSize().x;
+		*pCanvas->Get_Height_Ptr() = CImGui_ToolManager::GetInstance()->Get_CurViewportSize().y;
 		pCanvas->Set_isUsingViewport(TRUE);
 	}
 }
@@ -676,7 +687,6 @@ CUI_Maker* CUI_Maker::Create(const _char* pLabel, CLevel* pOwner, ID3D11Device* 
 		MSG_BOX("CUI_Maker::Create, Failed");
 		Safe_Release(pInstance);
 	}
-
 	return pInstance;
 }
 

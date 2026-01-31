@@ -14,7 +14,9 @@ class CBuilder_UI final : public CBuilderBase
 private:
 	CBuilder_UI(ID3D11Device* pDevice, ID3D11DeviceContext* pDeviceContext);
 	virtual ~CBuilder_UI() = default;
+
 public:
+	HRESULT Initialize();
 	virtual HRESULT Build(const CDataDocumentBase& document) override;
 private:
 	HRESULT Create_CanvasDTO(const DTO::TUI_CanvasData& data);

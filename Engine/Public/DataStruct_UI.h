@@ -13,6 +13,14 @@ enum class EUIType : _uint
 };
 inline constexpr _uint g_UITypeCount{ ENUM_TO_UINT(EUIType::END) };
 
+NLOHMANN_JSON_SERIALIZE_ENUM(EUIType,
+	{
+		{EUIType::CANVAS, "CANVAS"},
+		{EUIType::LAYER, "LAYER"},
+		{EUIType::GENERICUI, "GENERICUI"}
+	}
+)
+
 /////////////////-------------------  Data Struct  -------------------/////////////////
 struct TUI_GenericUIData
 {

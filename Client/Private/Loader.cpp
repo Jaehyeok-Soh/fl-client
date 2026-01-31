@@ -137,15 +137,6 @@ HRESULT CLoader::Loading_For_Logo()
 	{
 		if (FAILED(m_pGameInstance->Load_Sounds(L"../../Resources/Sounds")))
 			return E_FAIL;
-
-		// For. Prototype_Component_GenericUI_Texture
-		{
-			CTexture::TEXTURE_COMPONENT_ORIGIN_DESC textureDesc = {};
-			textureDesc.iTextureCount = 1;
-			textureDesc.wstrTexturePath = L"../../Resources/Textures/UI/Button/T_Com_BtnIcon_Custom.png";
-			if (FAILED(m_pGameInstance->Add_Prototype(ENUM_TO_UINT(ELevelType::LOGO), L"Prototype_Component_GenericUI_Texture", CTexture::Create(&textureDesc))))
-				return E_FAIL;
-		}
 	}
 #pragma endregion
 

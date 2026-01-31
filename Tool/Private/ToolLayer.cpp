@@ -39,6 +39,7 @@ HRESULT CToolLayer::Initialize(void* pArg)
 
 	TOOLLAYER_DESC* pDesc = static_cast<TOOLLAYER_DESC*>(pArg);
 	m_strName = pDesc->strTag;
+	m_isVisible = TRUE;
 
 	if (FAILED(Ready_Components(pDesc)))
 		return E_FAIL;
@@ -51,7 +52,6 @@ HRESULT CToolLayer::Awake(const _uint iCurrentLevelID)
 	if (FAILED(Super::Awake(iCurrentLevelID)))
 		return E_FAIL;
 
-	Set_SizeToTextureScale();
 	return S_OK;
 }
 

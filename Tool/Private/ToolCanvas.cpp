@@ -2,7 +2,6 @@
 
 #include "ToolCanvas.h"
 #include "Tool_Defines.h"
-#include "GameInstance.h"
 #include "ImGui_UIManager.h"
 
 #include "ToolLayer.h"
@@ -15,8 +14,9 @@
 #include "Texture.h"
 
 #include "DataDocument_UI.h"
-
+#include "ImGui_ToolManager.h"
 #include "DebugDraw.h"
+#include "GameInstance.h"
 
 CToolCanvas::CToolCanvas(ID3D11Device* pDevice, ID3D11DeviceContext* pDeviceContext)
 	:CUIObject(pDevice, pDeviceContext),
@@ -73,17 +73,19 @@ HRESULT CToolCanvas::Awake(const _uint iCurrentLevelID)
 
 void CToolCanvas::Update_Priority(const _float fTimeDelta)
 {
+	Set_Size(m_fWidth, m_fHeight);
+	Move_Position(m_fX, m_fY, m_fZ);
 	Super::Update_Priority(fTimeDelta);
 }
 
 void CToolCanvas::Update(const _float fTimeDelta)
 {
+	Calc_HitUpdate();
 	Super::Update(fTimeDelta);
 }
 
 void CToolCanvas::Update_Late(const _float fTimeDelta)
 {
-	
 	Super::Update_Late(fTimeDelta);
 }
 
@@ -95,30 +97,19 @@ void CToolCanvas::Ready_Before_Render(const _float fTimeDelta)
 
 HRESULT CToolCanvas::Render()
 {
-
 	if (nullptr == m_pBatch || nullptr == m_pEffect || nullptr == m_pInputLayout)
 		return E_FAIL;
-
-	SetUp_Rect();
 
 	D3D11_VIEWPORT vp = {};
 	UINT numVP = 1;
 	m_pDeviceContext->RSGetViewports(&numVP, &vp);
-
 	m_pDeviceContext->IASetInputLayout(m_pInputLayout);
-
 	m_pEffect->SetWorld(DirectX::XMMatrixIdentity());
 	m_pEffect->SetView(DirectX::XMMatrixIdentity());
-	m_pEffect->SetProjection(DirectX::XMMatrixOrthographicOffCenterLH(
-		0.f, vp.Width,
-		vp.Height, 0.f,
-		0.f, 1.f));
-
+	m_pEffect->SetProjection(DirectX::XMMatrixOrthographicOffCenterLH(0.f, vp.Width,vp.Height, 0.f,	0.f, 1.f));
 	m_pEffect->Apply(m_pDeviceContext);
-
 	m_pBatch->Begin();
-
-	const DirectX::XMFLOAT4 vColor = { 1.f, 1.f, 1.f, 1.f }; // 원하는 색으로 바꾸세요
+	const DirectX::XMFLOAT4 vColor = { 1.f, 1.f, 1.f, 1.f };
 
 	// Top
 	m_pBatch->DrawLine(
@@ -143,11 +134,10 @@ HRESULT CToolCanvas::Render()
 		VertexPositionColor{ { (float)m_tRect.left,  (float)m_tRect.bottom, m_fZ }, vColor },
 		VertexPositionColor{ { (float)m_tRect.left,  (float)m_tRect.top,    m_fZ }, vColor }
 	);
-
 	m_pBatch->End();
-
 	return S_OK;
 }
+
 
 HRESULT CToolCanvas::Ready_Components(TOOLCANVAS_DESC* pDesc)
 {
@@ -157,6 +147,132 @@ HRESULT CToolCanvas::Ready_Components(TOOLCANVAS_DESC* pDesc)
 HRESULT CToolCanvas::Bind_ShaderResources()
 {
 	return S_OK;
+}
+
+void CToolCanvas::Calc_HitUpdate()
+{
+	/* 누른 순간 */
+	if (MOUSE_LBUTTON_DOWN)
+	{
+		m_pCaptureUI = Calc_TopUI();
+		if (nullptr != m_pCaptureUI)
+			Engine_Utils::Add_Flag(m_pCaptureUI->Get_InteractState_Ref(), CUIObject::EInteractState::PRESS_ENTER);
+	}
+	/* 누르고 있을 때 */
+	else if (MOUSE_LBUTTON_HOLD)
+	{
+		if (nullptr != m_pCaptureUI)
+		{
+			if (m_pCaptureUI->Calc_HitEvent())
+			{
+				if (!m_isPreUIPressing)
+				{
+					Engine_Utils::Add_Flag(m_pCaptureUI->Get_InteractState_Ref(), CUIObject::EInteractState::PRESS_ENTER);
+					m_isPreUIPressing = TRUE;
+				}
+				else
+				{
+					Engine_Utils::Add_Flag(m_pCaptureUI->Get_InteractState_Ref(), CUIObject::EInteractState::PRESSING);
+				}
+			}
+			else
+			{
+				if (m_isPreUIPressing)
+				{
+					Engine_Utils::Add_Flag(m_pCaptureUI->Get_InteractState_Ref(), CUIObject::EInteractState::PRESS_EXIT);
+					m_isPreUIPressing = FALSE;
+				}
+			}
+		}
+	}
+	/* 땐 순간 */
+	else if (MOUSE_LBUTTON_UP)
+	{
+		if (nullptr != m_pCaptureUI)
+		{
+			if (m_pCaptureUI->Calc_HitEvent())
+			{
+				Engine_Utils::Add_Flag(m_pCaptureUI->Get_InteractState_Ref(), CUIObject::EInteractState::CLICKED);
+			}
+		}
+		m_pCaptureUI = nullptr;
+	}
+	/* 안 누르고 있을 때*/
+	else
+	{
+		CToolUI* pUI = Calc_TopUI();
+		/* 마우스랑 겹치는 UI가 없다 */
+		if (nullptr == pUI)
+		{
+			/* 호버링중인 UI가 있다 */
+			if (nullptr != m_pHoveringUI)
+			{
+				Engine_Utils::Add_Flag(m_pHoveringUI->Get_InteractState_Ref(), CUIObject::EInteractState::HOVERING_EXIT);
+				m_pHoveringUI = nullptr;
+			}
+		}
+		/* 마우스랑 겹치는 UI가 있다 */
+		else
+		{
+			if (nullptr == m_pHoveringUI)
+			{
+				m_pHoveringUI = pUI;
+				Engine_Utils::Add_Flag(m_pHoveringUI->Get_InteractState_Ref(), CUIObject::EInteractState::HOVERING_ENTER);
+			}
+			else
+			{
+				if (m_pHoveringUI != pUI)
+				{
+					Engine_Utils::Add_Flag(m_pHoveringUI->Get_InteractState_Ref(), CUIObject::EInteractState::HOVERING_EXIT);
+					Engine_Utils::Add_Flag(pUI->Get_InteractState_Ref(), CUIObject::EInteractState::HOVERING_ENTER);
+					m_pHoveringUI = pUI;
+				}
+			}
+		}
+	}
+}
+
+
+CToolUI* CToolCanvas::Calc_TopUI()
+{
+	CToolUI* pTopUI = { nullptr };
+
+	for (CToolLayer* pLayer : m_vecToolLayers)
+	{
+		if (!pLayer->Get_isVisible())
+			continue;
+
+		auto* vecUI = pLayer->Safe_Access_UIObject_Vector_Ptr();
+		if (nullptr == vecUI)
+			continue;
+
+		for (CToolUI* pUI : *vecUI)
+		{
+			/* UI안에 마우스가 있으면 TRUE */
+			if (pUI->Calc_HitEvent())
+			{
+				if (nullptr == pTopUI)
+					pTopUI = pUI;
+				else
+				{
+					if (pTopUI->Get_PosZ() < pUI->Get_PosZ())
+						pTopUI = pUI;
+				}
+			}
+		}
+	}
+	return pTopUI;
+}
+
+void CToolCanvas::Sync_Data()
+{
+	m_tCanvasData.strTag = m_strTag;
+
+	m_tCanvasData.fWidth = m_fWidth;
+	m_tCanvasData.fHeight = m_fHeight;
+	m_tCanvasData.fPosX = m_fX;
+	m_tCanvasData.fPosY = m_fY;
+	m_tCanvasData.fPosZ = m_fZ;
 }
 
 HRESULT CToolCanvas::Safe_Add_Layer(CToolLayer* pLayer)
@@ -197,45 +313,6 @@ CToolLayer* CToolCanvas::Safe_Access_CurLayerObject_Ptr()
 		return nullptr;
 
 	return m_vecToolLayers[m_pUIManager->Get_CurCanvasIndex()];
-}
-
-
-
-void CToolCanvas::Calc_HitTest()
-{
-	vector<CToolUI*> vecUIs;
-
-	for (CToolLayer* pLayer : m_vecToolLayers)
-	{
-		auto* vecUI = pLayer->Safe_Access_UIObject_Vector_Ptr();
-		if (nullptr == vecUI)
-			continue;
-
-		for (CToolUI* pUI : *vecUI)
-		{
-			vecUIs.push_back(pUI);
-		}
-	}
-
-	vector<CToolUI*> vecTriggerUIs;
-	for (CToolUI* pUI : vecUIs)
-	{
-		if (pUI->Calc_HitEvent())
-		{
-
-		}
-	}
-}
-
-void CToolCanvas::Sync_Data()
-{
-	m_tCanvasData.strTag = m_strTag;
-
-	m_tCanvasData.fWidth = m_fWidth;
-	m_tCanvasData.fHeight = m_fHeight;
-	m_tCanvasData.fPosX = m_fX;
-	m_tCanvasData.fPosY = m_fY;
-	m_tCanvasData.fPosZ = m_fZ;
 }
 
 _bool CToolCanvas::Export_Data(DTO::ECategory eCategory, CDataDocumentBase* pDocument)
