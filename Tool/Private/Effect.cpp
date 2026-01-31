@@ -43,6 +43,11 @@ void Effect::Update_Priority(const _float fTimeDelta)
 void Effect::Update(const _float fTimeDelta)
 {
 	Super::Update(fTimeDelta);
+
+	if (m_eSimulationSpace == E_SIMULATION_SPACE::LOCAL && m_pParentsWorldMatrix != nullptr)
+	{
+		Update_CombinedWorldMatrix(m_pParentsWorldMatrix);
+	}
 }
 
 void Effect::Update_Late(const _float fTimeDelta)
@@ -75,10 +80,11 @@ void Effect::Draw_ImGui()
 	Super::Draw_ImGui();
 }
 
-void Effect::Set_Parents(CGameObject* pGo)
+void Effect::Update_CombinedWorldMatrix(const Matrix* pMatParent)
 {
-
+	m_matCombinedWorld = Get_Component<CTransform>()->Get_WorldMatrix() * (*pMatParent);
 }
+
 
 void Effect::Set_Dead(const wstring& wstrLayerTag)
 {

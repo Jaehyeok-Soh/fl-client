@@ -48,13 +48,6 @@ enum class E_RENDER_TYPE
     NONE_BILBOARD,
 };
 
-enum class E_SIMULATION_SPACE
-{
-    NONE = 0,
-    LOCAL,
-    WORLD,
-};
-
 enum class E_PARTICLETYPE
 {
     NONE = 0,
@@ -113,7 +106,6 @@ public:
         E_PARTICLETYPE eEffectParticleType = E_PARTICLETYPE::PARTICLE;
         E_EFFECTTYPE eEffectType = E_EFFECTTYPE::Particle;
         E_SHAPETYPE _Effect_ShapeType = E_SHAPETYPE::SPREAD;
-        E_SIMULATION_SPACE _Effect_SimulationType = E_SIMULATION_SPACE::NONE;
 
         // ========  ¿Ã∆Â∆Æ Material º≥¡§   ===========
         wstring     _Effect_Model_Tag = {};

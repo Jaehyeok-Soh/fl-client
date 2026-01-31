@@ -265,14 +265,8 @@
     <Filter Include="01. Utility\14. Builder\System">
       <UniqueIdentifier>{b06ceb4e-7762-491c-8da1-7e7412cfc8be}</UniqueIdentifier>
     </Filter>
-    <Filter Include="00. System\12. ThreadPool">
-      <UniqueIdentifier>{3090c42e-4f52-4415-b6aa-bb81a2d39d57}</UniqueIdentifier>
-    </Filter>
     <Filter Include="01. Utility\11. DataRepository\Datas\UI\DataDocument_UI">
       <UniqueIdentifier>{e3481bba-63f5-47f4-be29-b3aaa0b87de7}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="00. System\12. ThreadPool\ThreadWorker">
-      <UniqueIdentifier>{dc576a95-635a-4c61-ad8c-a54e92ba0b5e}</UniqueIdentifier>
     </Filter>
     <Filter Include="01. Utility\11. DataRepository\Datas\Effect\DataDocument_Effect">
       <UniqueIdentifier>{7da61fa3-9b42-4c35-8768-abfd05e5d094}</UniqueIdentifier>
@@ -576,11 +570,8 @@
     <ClCompile Include="..\Private\Model.cpp">
       <Filter>00. System\05. Component\Model</Filter>
     </ClCompile>
-    <ClCompile Include="..\public\ThreadPool.cpp">
-      <Filter>00. System\12. ThreadPool</Filter>
-    </ClCompile>
-    <ClCompile Include="..\private\ThreadWorker.cpp">
-      <Filter>00. System\12. ThreadPool\ThreadWorker</Filter>
+    <ClCompile Include="..\Private\DataDocument_Effect.cpp">
+      <Filter>01. Utility\11. DataRepository\Datas\Effect\DataDocument_Effect</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -908,11 +899,8 @@
     <ClInclude Include="..\Public\DataDocument_UI.h">
       <Filter>01. Utility\11. DataRepository\Datas\UI\DataDocument_UI</Filter>
     </ClInclude>
-    <ClInclude Include="..\public\ThreadPool.h">
-      <Filter>00. System\12. ThreadPool</Filter>
-    </ClInclude>
-    <ClInclude Include="..\public\ThreadWorker.h">
-      <Filter>00. System\12. ThreadPool\ThreadWorker</Filter>
+    <ClInclude Include="..\Public\DataDocument_Effect.h">
+      <Filter>01. Utility\11. DataRepository\Datas\Effect\DataDocument_Effect</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

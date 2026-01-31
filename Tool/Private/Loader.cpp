@@ -228,7 +228,7 @@ HRESULT CLoader::Loading_For_Effect()
 		return E_FAIL;
 	Safe_Release(pMapDataLoader);
 
-	Loading_Texturessss(L"../../Resources/Textures/Effect");
+	Loading_Textures_Effect(L"../../Resources/Textures/Effect");
 
 	m_isFinished = true;
 	return S_OK;
@@ -317,7 +317,7 @@ HRESULT CLoader::Loading_Textures(const wstring& wstrFolder)
 	return S_OK;
 }
 
-HRESULT CLoader::Loading_Texturessss(const wstring& wstrFolder)
+HRESULT CLoader::Loading_Textures_Effect(const wstring& wstrFolder)
 {
 	namespace fs = std::filesystem;
 

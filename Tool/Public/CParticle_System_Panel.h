@@ -98,9 +98,9 @@ private:
     int                 m_iRotIndices[6] = { 0, 0, 0, 0, 0, 0 };
 
     // ======== 도화지로 쓸 이펙트 객체 ============ (Preview Texture를 만들기 위함)
-    class CEffectObject*        m_pCanvasEffectObject = { nullptr };
-    ID3D11RenderTargetView*     m_pPreviewRTV = {nullptr};
-    ID3D11ShaderResourceView*   m_pPreviewSRV = { nullptr };
+    //class CEffectObject*        m_pCanvasEffectObject = { nullptr };
+    //ID3D11RenderTargetView*     m_pPreviewRTV = {nullptr};
+    //ID3D11ShaderResourceView*   m_pPreviewSRV = { nullptr };
 };
 
 NS_END

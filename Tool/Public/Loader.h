@@ -41,7 +41,7 @@ private:
 	HRESULT Loading_For_UI();
 	HRESULT Loading_For_AssetConverter();
 private:
-	HRESULT Loading_Texturessss(const wstring& wstrFile);
+	HRESULT Loading_Textures_Effect(const wstring& wstrFile);
 	HRESULT Loading_Textures(const wstring& wstrFolder);
 	HRESULT Loading_Texture(const wstring& wstrFile);
 private:
