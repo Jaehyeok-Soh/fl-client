@@ -195,6 +195,7 @@ typedef struct tagCONVERTED_MAPDATA
 	/* SRT */
 	Vec3			 vPosition{ 0.f,0.f,0.f };
 	Vec3			 vPitchYawRoll{0.f,0.f,0.f};
+	Vec4			 vQuaternion{ 0.f, 0.f, 0.f, 1.f };
 	Vec3			 vScale{1.f,1.f,1.f};
 }CONVERTED_MAPDATA;
 

@@ -12,9 +12,11 @@ public:
 	constexpr static EComponentType _ID = EComponentType::TRANSFORM;
 	typedef struct tagTransformDesc
 	{
-		Vec3 vPosition		   = { 0.f, 0.f, 0.f };
-		Vec3 vScale			   = { 1.f, 1.f, 1.f };
+		_bool bInstance = { false };
+		Vec3 vPosition = { 0.f, 0.f, 0.f };
+		Vec3 vScale = { 1.f, 1.f, 1.f };
 		Vec3 vRotation_Degrees = { 0.f, 0.f, 0.f };
+		Quat vQuaternion = { 0.f, 0.f, 0.f, 1.f };
 		_float fMovePerSec = { 5.f };
 		_float fRotatePerSec = { 8.f };
 	}TRANSFORM_DESC;
@@ -58,6 +60,16 @@ public:
 	inline void Look_At_XZ(Vec3 vPoint);
 	inline void Chase(const Vec3 &vPoint, _float fMinDistance, const _float fTimeDelta, CNavigation* pNavigation = nullptr);
 	const Vec3& Get_PrevPosition() const { return m_vPrevPosition; }
+	_float Get_RotatePerSec() const { return m_fRotatePerSec; }
+	void Set_RotatePerSec(_float fSpeed) { m_fRotatePerSec = fSpeed; }
+	_float Get_MovePerSec() const { return m_fMovePerSec; }
+	void Set_MoveScale(_float fScale) { m_fMoveScale = fScale; }
+	void Set_WorldMatrix(const Matrix& WorldMatrix) { m_matWorld = WorldMatrix; }
+	_float Get_MoveScale() const { return m_fMoveScale; }
+	void Start_Force(Vec3 vTargetDir, _float fForceAbs, _float fDragK);
+	void Apply_Force(_float fDeltaTime, CNavigation* pNavigation = nullptr);
+	void Update_PrevPosition();
+	void Force_Clear();
 	_float	Get_RotatePerSec() const { return m_fRotatePerSec; }
 	void	Set_RotatePerSec(_float fSpeed) { m_fRotatePerSec = fSpeed; }
 	_float	Get_MovePerSec() const { return m_fMovePerSec; }
