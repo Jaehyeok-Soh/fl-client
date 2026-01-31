@@ -32,17 +32,20 @@ typedef struct tagAsMesh
 	vector<Matrix> vecOffsetMatrices;
 }AS_MESH;
 
+typedef struct tagAsMaterialFileTags
+{
+	vector<string> vecFiles;
+}AS_MATERIALTAGS;
+
 typedef struct tagAsMaterial
 {
 	string strName = { "" };
-	string strDiffuseFile = { "" };
-	string strNormalFile = { "" };
-	string strSpecularFile = { "" };
-
 	Vec4 vAmbient = { 0.f, 0.f, 0.f, 0.f };
 	Vec4 vDiffuse = { 0.f, 0.f, 0.f, 0.f };
 	Vec4 vSpecular = { 0.f, 0.f, 0.f, 0.f };
 	Vec4 vEmissive = { 0.f, 0.f, 0.f, 0.f };
+
+	AS_MATERIALTAGS tags;
 }AS_MATERIAL;
 
 typedef struct tagAsBlendWeight

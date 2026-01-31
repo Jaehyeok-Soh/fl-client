@@ -311,7 +311,7 @@ HRESULT CShader::Bind_DiffuseTexture(ID3D11ShaderResourceView* pDiffuse)
 		return E_FAIL;
 
 	m_pMaterialSRV_Effect->SetResourceArray(&pDiffuse, 0, 1);
-	m_pMaterialMask_Effect->SetInt(1 << ENUM_TO_UINT(MATERIALSLOT::DIFFUSE));
+	m_pMaterialMask_Effect->SetInt(1 << ENUM_TO_UINT(EMaterialTextureType::DIFFUSE));
 	return S_OK;
 }
 

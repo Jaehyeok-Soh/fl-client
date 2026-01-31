@@ -64,7 +64,6 @@ HRESULT CRenderTarget_Manager::Begin_MRT(EMRTLayer eMRTLayer)
     }
 
     m_pDeviceContext->OMSetRenderTargets(iRenderTargetCount, pRTVs, m_pDSV);
-
     return S_OK;
 }
 

@@ -51,6 +51,9 @@ CLevel_Map::CLevel_Map(ID3D11Device* pDevice, ID3D11DeviceContext* pDeviceContex
 
 HRESULT CLevel_Map::Initialize()
 {
+	if (FAILED(Super::Initialize()))
+		return E_FAIL;
+
 	if (FAILED(Ready_MapObject_Layer()))
 		return E_FAIL;
 

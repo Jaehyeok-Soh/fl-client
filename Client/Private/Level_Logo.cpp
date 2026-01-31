@@ -32,7 +32,7 @@ CLevel_Logo::CLevel_Logo(ID3D11Device* pDevice, ID3D11DeviceContext* pDeviceCont
 
 HRESULT CLevel_Logo::Initialize()
 {
-	if(FAILED(Super::Initialize()))
+	if (FAILED(Super::Initialize()))
 		return E_FAIL;
 
 	if (FAILED(Ready_Builders()))

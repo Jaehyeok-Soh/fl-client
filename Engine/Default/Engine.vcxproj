@@ -255,6 +255,7 @@
     <ClCompile Include="..\Private\StateBase.cpp" />
     <ClCompile Include="..\Private\Texture.cpp" />
     <ClCompile Include="..\Private\TextureBase.cpp" />
+    <ClCompile Include="..\private\ThreadWorker.cpp" />
     <ClCompile Include="..\Private\Timer.cpp" />
     <ClCompile Include="..\Private\Timer_Manager.cpp" />
     <ClCompile Include="..\Private\Transform.cpp" />
@@ -272,6 +273,7 @@
     <ClCompile Include="..\Private\VIBuffer_Rect_NorTex.cpp" />
     <ClCompile Include="..\Private\VIBuffer_Rect_Tex.cpp" />
     <ClCompile Include="..\Private\VIBuffer_Terrain.cpp" />
+    <ClCompile Include="..\public\ThreadPool.cpp" />
     <ClCompile Include="Engine_pch.cpp">
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Create</PrecompiledHeader>
       <PrecompiledHeaderFile Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Engine_pch.h</PrecompiledHeaderFile>
@@ -368,6 +370,8 @@
     <ClInclude Include="..\Public\StateBase.h" />
     <ClInclude Include="..\Public\Texture.h" />
     <ClInclude Include="..\Public\TextureBase.h" />
+    <ClInclude Include="..\public\ThreadPool.h" />
+    <ClInclude Include="..\public\ThreadWorker.h" />
     <ClInclude Include="..\Public\Timer.h" />
     <ClInclude Include="..\Public\Timer_Manager.h" />
     <ClInclude Include="..\Public\Transform.h" />

@@ -65,13 +65,13 @@ cbuffer MaterialInstance
 // Albedo - π›ªÁ¿≤
 void Compute_Diffse(inout float4 _vDiffuse, float2 _vUV)
 {
-    if (HasDiffuse())
+    if (Has(g_iMaterialMask, DIFFUSE))
         _vDiffuse = g_MaterialTextures[DIFFUSE].Sample(LinearSampler, _vUV);
 }
 
 void Compute_Normal(inout float3 _vNormal, float3 _vTangent, float3 _vBinormal, float2 _vUV)
 {
-    if (HasNormal())
+    if (Has(g_iMaterialMask, NORMAL))
     {
         // T, B, N
         float3x3 matWorld = float3x3(_vTangent, _vBinormal, _vNormal);
@@ -84,7 +84,7 @@ void Compute_Normal(inout float3 _vNormal, float3 _vTangent, float3 _vBinormal, 
 float4 Compute_Diffuse_Ambient(float3 _vWorldSpace_Normal, float2 _vUV)
 {
     float4 vDiffuse;
-    if (HasDiffuse())
+    if (Has(g_iMaterialMask, NORMAL))
         vDiffuse = g_MaterialTextures[DIFFUSE].Sample(LinearSampler, _vUV);
     else
         vDiffuse = 1.f;
@@ -104,7 +104,7 @@ float4 Compute_Specular(float2 _vUV, float3 _vWorldSpace_Normal, float3 _vWorldP
     float fResultDot = saturate(dot(vReflect, vLook)); // clamp(0~1)
     float fPower = 1.f;
     float fShine = 20.f;
-    if (HasSpecular())
+    if (Has(g_iMaterialMask, SPECULAR))
         fPower = g_MaterialTextures[SPECULAR].Sample(LinearSampler, _vUV).a;
     
     float fSpecular = pow(fResultDot, fShine) * fPower;
