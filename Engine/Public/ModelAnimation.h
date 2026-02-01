@@ -18,6 +18,9 @@ public:
 		_float fDuration = { 0.f };
 		_float fTickPerSecond = { 0.f };
 		std::span<class CChannel*> spanChannels;
+
+		_bool bRootAni		= {false};
+		_bool bMixAni		= {false};
 	}MODELANIM_DESC;
 private:
 	CModelAnimation(ID3D11Device* pDevice, ID3D11DeviceContext* pDeviceContext);

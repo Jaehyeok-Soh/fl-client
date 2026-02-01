@@ -22,6 +22,8 @@ public:
 		_int iBoneIndex = { -1 };
 		string strName = { "" };
 		std::span<KEYFRAME> spanKeyframes;
+
+		_int iRootBoneIndex = {-1};
 	}CHANNEL_DESC;
 private:
 	CChannel();
@@ -29,6 +31,11 @@ private:
 
 	HRESULT Initialize(const CHANNEL_DESC& desc);
 public:
+	// normal anim
+	void Update_TransformationMatrix(const vector<class CBone*>& vecBones, _float fCurrentTrackPosition, _uint* pCurrentKeyFrameIndex);
+	void SetUp_PoseData(std::span<LOCALSRT> spanLocalSrtData, _float fCurrentTrackPosition, _uint* pCurrentKeyFrameIndex);
+
+	// motion anim
 	void Update_TransformationMatrix(const vector<class CBone*>& vecBones, _float fCurrentTrackPosition, _uint* pCurrentKeyFrameIndex, CTransform* pOwnerTransform);
 	void SetUp_PoseData(std::span<LOCALSRT> spanLocalSrtData, _float fCurrentTrackPosition, _uint* pCurrentKeyFrameIndex, CTransform* pOwnerTransform);
 
@@ -40,8 +47,9 @@ private:
 	vector<KEYFRAME>	m_vecKeyframes;
 
 private:
-	_bool				m_isMotionBone	= { false };
+	_bool				m_bMotionBone	= { false };
 	Matrix				m_matTrans = {};
+	Vec3				m_vPreRootLocal = Vec3::Zero;
 
 private:
 	void Update_MotionBone(Vec3 vLeftTrans, Vec3 vRightTrans, _float fRatio, CTransform* pOwnerTransform);

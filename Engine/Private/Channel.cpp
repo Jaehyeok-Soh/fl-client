@@ -28,7 +28,17 @@ HRESULT CChannel::Initialize(const CHANNEL_DESC& desc)
 	else
 		return E_FAIL;
 
+	m_bMotionBone = (desc.iRootBoneIndex == m_iBoneIndex);
+
 	return S_OK;
+}
+
+void CChannel::Update_TransformationMatrix(const vector<class CBone*>& vecBones, _float fCurrentTrackPosition, _uint* pCurrentKeyFrameIndex)
+{
+}
+
+void CChannel::SetUp_PoseData(std::span<LOCALSRT> spanLocalSrtData, _float fCurrentTrackPosition, _uint* pCurrentKeyFrameIndex)
+{
 }
 
 void CChannel::Update_TransformationMatrix(const vector<class CBone*>& vecBones, _float fCurrentTrackPosition, _uint* pCurrentKeyFrameIndex, CTransform* pOwnerTransfrom)
@@ -64,26 +74,17 @@ void CChannel::Update_TransformationMatrix(const vector<class CBone*>& vecBones,
 		vLeftQuaternion = m_vecKeyframes[(*pCurrentKeyFrameIndex)].vQuaterion;
 		vRightQuaternion = m_vecKeyframes[(*pCurrentKeyFrameIndex) + 1].vQuaterion;
 
-		//if (isMotionBone)
-		//{
-		//	vLeftTranslation = {0.f,0.f,0.f};
-		//	vRightTranslation = { 0.f,0.f,0.f };
-		//}
-
-		//else
-		{
-			vLeftTranslation = m_vecKeyframes[(*pCurrentKeyFrameIndex)].vTranslation;
-			vRightTranslation = m_vecKeyframes[(*pCurrentKeyFrameIndex) + 1].vTranslation;
-		}
+		vLeftTranslation = m_vecKeyframes[(*pCurrentKeyFrameIndex)].vTranslation;
+		vRightTranslation = m_vecKeyframes[(*pCurrentKeyFrameIndex) + 1].vTranslation;
 
 		_float		fRatio = (fCurrentTrackPosition - m_vecKeyframes[(*pCurrentKeyFrameIndex)].fTrackPosition) /
 			(m_vecKeyframes[(*pCurrentKeyFrameIndex) + 1].fTrackPosition - m_vecKeyframes[(*pCurrentKeyFrameIndex)].fTrackPosition);
 
-		if (m_isMotionBone)
+		if (m_bMotionBone)
 		{
-			Update_MotionBone(vLeftTranslation, vRightTranslation, fRatio, pOwnerTransfrom);
-			vLeftTranslation = { 0.f,0.f,0.f };
-			vRightTranslation = { 0.f,0.f,0.f };
+			//Update_MotionBone(vLeftTranslation, vRightTranslation, fRatio, pOwnerTransfrom);
+			vLeftTranslation	= { 0.f,0.f,0.f };
+			vRightTranslation	= { 0.f,0.f,0.f };
 		}
 
 		vScale = Vec3::Lerp(vLeftScale, vRightScale, fRatio);
@@ -136,9 +137,9 @@ void CChannel::SetUp_PoseData(std::span<LOCALSRT> spanLocalSrtData, _float fCurr
 		_float		fRatio = (fCurrentTrackPosition - m_vecKeyframes[(*pCurrentKeyFrameIndex)].fTrackPosition) /
 			(m_vecKeyframes[(*pCurrentKeyFrameIndex) + 1].fTrackPosition - m_vecKeyframes[(*pCurrentKeyFrameIndex)].fTrackPosition);
 
-		if (m_isMotionBone)
+		if (m_bMotionBone)
 		{
-			Update_MotionBone(vLeftTranslation, vRightTranslation, fRatio, pOwnerTransform);
+			//Update_MotionBone(vLeftTranslation, vRightTranslation, fRatio, pOwnerTransform);
 			vLeftTranslation	= { 0.f,0.f,0.f };
 			vRightTranslation	= { 0.f,0.f,0.f };
 		}
@@ -155,11 +156,28 @@ void CChannel::SetUp_PoseData(std::span<LOCALSRT> spanLocalSrtData, _float fCurr
 
 void CChannel::Update_MotionBone(Vec3 vLeftTrans, Vec3 vRightTrans, _float fRatio, CTransform* pOwnerTransform)
 {
+	if (pOwnerTransform == nullptr)
+		return;
+	/* 채널의 이동량을 더해줘 */
 	// trans만 선형 보간을 한 매트릭스 생성
-	Vec3 vTranslation = Vec3::Lerp(vLeftTrans, vRightTrans, fRatio);
-	m_matTrans.Translation(vTranslation);
 
-	pOwnerTransform->MoveArgWorld_ToMyWorld(m_matTrans, true);
+	// 선형 보간된 현재 뼈 local 위치
+	Vec3 vCurTranslation = Vec3::Lerp(vLeftTrans, vRightTrans, fRatio);
+
+	// owner의 회전을 곱해서 완성된 델타 위치를 얻어낸다
+	//Vec3 vScale, vTrans;
+	//Quat q
+
+
+	//Vec3 deltaWorld = qOwnerRot * (vCurTranslation - m_vPreRootLocal);
+	Vec3 deltaWorld = (vCurTranslation - m_vPreRootLocal);
+
+	//deltaWorld = { deltaWorld.y , deltaWorld.z , deltaWorld.x };
+	
+	// 변화량을 더해 준다
+	pOwnerTransform->Add_Position(deltaWorld);
+
+	m_vPreRootLocal = vCurTranslation;
 }
 
 CChannel* CChannel::Create(const CHANNEL_DESC& desc)

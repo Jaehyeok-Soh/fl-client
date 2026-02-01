@@ -84,7 +84,7 @@ HRESULT CModel::Initialize_Prototype(void* pArg)
 	} break;
 	case EModelType::ANIM:
 	{
-		hr = Load_AnimModel(pDesc->wstrModelFolderName);
+		hr = Load_AnimModel(pDesc->wstrModelFolderName, pDesc->pAniChannelData);
 	} break;
 	case EModelType::BONE:
 	{
@@ -394,6 +394,14 @@ wstring CModel::Get_MaterialName(_uint iIndex) const
 	return wstring(m_vecMaterials[iIndex]->Get_Name());
 }
 
+_wstring CModel::Get_AnimationName(_uint iAniIndex) const
+{
+	if (iAniIndex >= m_vecAnimations.size())
+		return L"";
+
+	return wstring(m_vecAnimations[iAniIndex]->Get_Name());
+}
+
 void CModel::Set_AnimationPlayRate(_uint iIndex, _float fValue)
 {
 	if (m_vecAnimations[iIndex])
@@ -426,7 +434,7 @@ HRESULT CModel::Load_NonAnimModel(const wstring& wstrModelName)
 	return S_OK;
 }
 
-HRESULT CModel::Load_AnimModel(const wstring& wstrModelName)
+HRESULT CModel::Load_AnimModel(const wstring& wstrModelName, DATA_ANIMCHANNEL* pData)
 {
 	CModelLoader* pModelLoader = CModelLoader::Create(m_pDevice, m_pDeviceContext, wstrModelName.c_str());
 	
@@ -434,7 +442,7 @@ HRESULT CModel::Load_AnimModel(const wstring& wstrModelName)
 		return E_FAIL;
 	if (FAILED(pModelLoader->Read_Material(&m_vecMaterials)))
 		return E_FAIL;
-	if (FAILED(pModelLoader->Read_Animation(&m_vecAnimations)))
+	if (FAILED(pModelLoader->Read_Animation(&m_vecAnimations, pData)))
 		return E_FAIL;
 	
 	Safe_Release(pModelLoader);
