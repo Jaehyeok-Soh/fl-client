@@ -443,6 +443,11 @@ void CTransform::MoveMyWorld_ToArgWorld(Matrix& vNewWorld, _bool isChangeArg)
 		vNewWorld = m_matWorld;
 }
 
+void CTransform::Add_Position(const Vec3& vAddPos)
+{
+	m_matWorld.Translation(Get_Info(TRANSFORM_INFO_STATE::POS) + vAddPos);
+}
+
 CTransform* CTransform::Create()
 {
 	CTransform* pInstance = new CTransform();
