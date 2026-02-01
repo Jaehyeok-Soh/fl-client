@@ -32,6 +32,7 @@
 #include "Weapon.h"
 #include "ColliderPart.h"
 #include "Loader.h"
+#include "Physics_Terrain.h" // physics test
 //=================
 // UI
 //=================
@@ -187,15 +188,8 @@ HRESULT CLoader::Loading_For_Logo()
 	}
 #pragma endregion
 
-	//////////////////////////////////
-	//////////// Ready UI ////////////
-	//////////////////////////////////
-#pragma region UI
-	{
-		// For. Prototype_UI_GenericUI
-		ADD_PROTOTYPE(ELevelType::LOGO, L"Prototype_UI_GenericUI", CGenericUI::Create(m_pDevice, m_pDeviceContext));
-	}
-#pragma endregion
+	// For. Prototype_GameObject_Physics_Terrain
+	m_pGameInstance->Add_Prototype(ENUM_TO_UINT(ELevelType::STATIC), L"Prototype_GameObject_Physics_Terrain", CPhysics_Terrain::Create(m_pDevice, m_pDeviceContext));
 
 	m_isFinished = true;
 	return S_OK;

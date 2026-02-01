@@ -17,59 +17,59 @@ CParticle_System_Panel::CParticle_System_Panel(const _char* pLabel, CLevel* pOwn
 
 HRESULT CParticle_System_Panel::Create_CanvasEffect()
 {
-	// =========	Create	  ==============
-	CGameObject* pResult = { nullptr };
+	//// =========	Create	  ==============
+	//CGameObject* pResult = { nullptr };
 
-	CEffectObject::Effect_Desc pEffectDesc = {};
-	CTransform::TRANSFORM_DESC transformDesc = {};
-	// =========    트랜스폼   ============
-	transformDesc.vPosition = { 0.f, 0.0f, 0.f };
-	transformDesc.fRotatePerSec = 1.f;
-	transformDesc.fMovePerSec = 1.f;
+	//CEffectObject::Effect_Desc pEffectDesc = {};
+	//CTransform::TRANSFORM_DESC transformDesc = {};
+	//// =========    트랜스폼   ============
+	//transformDesc.vPosition = { 0.f, 0.0f, 0.f };
+	//transformDesc.fRotatePerSec = 1.f;
+	//transformDesc.fMovePerSec = 1.f;
 
-	pEffectDesc.pMatParent = nullptr;
-	pEffectDesc.pTransform_Desc = &transformDesc;
+	//pEffectDesc.pMatParent = nullptr;
+	//pEffectDesc.pTransform_Desc = &transformDesc;
 
-	pEffectDesc.wstrLayerTag = L"Effect_Parts";
-	pEffectDesc.iLevelIndex = ENUM_TO_UINT(ELevelType::EFFECT);
-	// ========     이펙트 타입   =========
-	pEffectDesc.eEffectSystemType = E_EffectSystemType::Particle;
-	pEffectDesc.eEffectType = E_EFFECTTYPE::Particle;
-	pEffectDesc.eEffectParticleType = E_PARTICLETYPE::TEXTURE;
+	//pEffectDesc.wstrLayerTag = L"Effect_Parts";
+	//pEffectDesc.iLevelIndex = ENUM_TO_UINT(ELevelType::EFFECT);
+	//// ========     이펙트 타입   =========
+	//pEffectDesc.eEffectSystemType = E_EffectSystemType::Particle;
+	//pEffectDesc.eEffectType = E_EFFECTTYPE::Particle;
+	//pEffectDesc.eEffectParticleType = E_PARTICLETYPE::TEXTURE;
 
-	// =========   이펙트 Color Value   ===============
-	pEffectDesc._Effect_Color = Vec4{ 0.f, 0.f, 0.f, 1.f };
+	//// =========   이펙트 Color Value   ===============
+	//pEffectDesc._Effect_Color = Vec4{ 0.f, 0.f, 0.f, 1.f };
 
-	// ========  이펙트 Material 설정   ===========
-	pEffectDesc._Effect_Model_Tag = {};
-	pEffectDesc._Effect_Shader_Tag = {};
-	pEffectDesc._Effect_DiffuseTexture_Tag = {};
-	pEffectDesc._Effect_NoiseTexture_Tag = {};
-	pEffectDesc._Effect_DiffuseTexture_Tag = {};
-	pEffectDesc._Effect_ShaderPass = {};
+	//// ========  이펙트 Material 설정   ===========
+	//pEffectDesc._Effect_Model_Tag = {};
+	//pEffectDesc._Effect_Shader_Tag = {};
+	//pEffectDesc._Effect_DiffuseTexture_Tag = {};
+	//pEffectDesc._Effect_NoiseTexture_Tag = {};
+	//pEffectDesc._Effect_DiffuseTexture_Tag = {};
+	//pEffectDesc._Effect_ShaderPass = {};
 
-	pEffectDesc._Effect_TileCount = CEffectObject::_uint2{ 0, 0 };
+	//pEffectDesc._Effect_TileCount = CEffectObject::_uint2{ 0, 0 };
 
-	// =======   이펙트 스크롤 Value   ===========
-	pEffectDesc._Effect_ScrollSpeed = { 0.f, 0.f };
+	//// =======   이펙트 스크롤 Value   ===========
+	//pEffectDesc._Effect_ScrollSpeed = { 0.f, 0.f };
 
-	// ========   이펙트 왜곡 Scale Value   ==========
-	pEffectDesc._Effect_DistortionScale = { 0.f, 0.f };
+	//// ========   이펙트 왜곡 Scale Value   ==========
+	//pEffectDesc._Effect_DistortionScale = { 0.f, 0.f };
 
-	// ==========   이펙트 Sacle Value   ==============
-	pEffectDesc._Effect_StartScale = { 1.f, 1.f, 1.f };
-	pEffectDesc._Effect_EndScale = { 1.f, 1.f, 1.f };
+	//// ==========   이펙트 Sacle Value   ==============
+	//pEffectDesc._Effect_StartScale = { 1.f, 1.f, 1.f };
+	//pEffectDesc._Effect_EndScale = { 1.f, 1.f, 1.f };
 
-	CBase* pClone = m_pGameInstance->Clone_Prototype(EPrototypeType::GAMEOBJECT, ENUM_TO_UINT(ELevelType::EFFECT), L"Prototype_GameObject_Effect_Parts", &pEffectDesc);
-		
-	if(pClone)
-		m_pCanvasEffectObject = static_cast<CEffectObject*>(pClone);
+	//CBase* pClone = m_pGameInstance->Clone_Prototype(EPrototypeType::GAMEOBJECT, ENUM_TO_UINT(ELevelType::EFFECT), L"Prototype_GameObject_Effect_Parts", &pEffectDesc);
+	//	
+	//if(pClone)
+	//	m_pCanvasEffectObject = static_cast<CEffectObject*>(pClone);
 
-	else
-		return E_FAIL;
+	//else
+	//	return E_FAIL;
 
-	
-	
+	//
+	//
 
 	return S_OK;
 }
@@ -317,9 +317,8 @@ void CParticle_System_Panel::Draw_ParticleSystem(CToolObject* pGo)
 
 		ImGui::AlignTextToFramePadding(); if (ImGui::TreeNode("Simulation Space"))
 		{
-			// 현재 어떤 모드인지 확인
-			bool isLocal = (m_tCurrentDesc._Effect_SimulationType == E_SIMULATION_SPACE::LOCAL);
-			bool isWorld = (m_tCurrentDesc._Effect_SimulationType == E_SIMULATION_SPACE::WORLD);
+			bool isLocal = (static_cast<Effect*>(pGo)->Get_SimulationSpace() == E_SIMULATION_SPACE::LOCAL);
+			bool isWorld = (static_cast<Effect*>(pGo)->Get_SimulationSpace() == E_SIMULATION_SPACE::WORLD);
 
 			ImGui::Text("Local"); ImGui::SameLine(0, 45.f);
 			ImGui::Text("World");
@@ -328,7 +327,7 @@ void CParticle_System_Panel::Draw_ParticleSystem(CToolObject* pGo)
 			if (ImGui::Checkbox("##LocalMode", &isLocal))
 			{
 				// 클릭 시 무조건 LOCAL로 변경
-				m_tCurrentDesc._Effect_SimulationType = E_SIMULATION_SPACE::LOCAL;
+				static_cast<Effect*>(pGo)->Set_SimulationSpace(E_SIMULATION_SPACE::LOCAL);
 				m_bModified = true;
 			}
 
@@ -338,13 +337,13 @@ void CParticle_System_Panel::Draw_ParticleSystem(CToolObject* pGo)
 			if (ImGui::Checkbox("##WorldMode", &isWorld))
 			{
 				// 클릭 시 무조건 WORLD로 변경
-				m_tCurrentDesc._Effect_SimulationType = E_SIMULATION_SPACE::WORLD;
+				static_cast<Effect*>(pGo)->Set_SimulationSpace(E_SIMULATION_SPACE::WORLD);
 				m_bModified = true;
 			}
 
 			// ====== 이쁘게 디자인하기 =======
 			ImGui::Spacing();
-			const char* modeText = (m_tCurrentDesc._Effect_SimulationType == E_SIMULATION_SPACE::LOCAL) ? "LOCAL" : "WORLD";
+			const char* modeText = (static_cast<Effect*>(pGo)->Get_SimulationSpace() == E_SIMULATION_SPACE::LOCAL) ? "LOCAL" : "WORLD";
 			ImGui::Text("Active Mode: "); ImGui::SameLine();
 			ImGui::TextColored(ImVec4(0.0f, 1.0f, 1.0f, 1.0f), "%s", modeText);
 
@@ -1564,26 +1563,26 @@ void CParticle_System_Panel::Draw_Preview_Texture(CToolObject* pGo)
 
 HRESULT CParticle_System_Panel::Create_Preview_Resources()
 {
-	D3D11_TEXTURE2D_DESC texDesc = {};
-	texDesc.Width = 256;
-	texDesc.Height = 256;
-	texDesc.MipLevels = 1;
-	texDesc.ArraySize = 1;
-	texDesc.Format = DXGI_FORMAT_R8G8B8A8_UNORM;
-	texDesc.SampleDesc.Count = 1;
-	texDesc.Usage = D3D11_USAGE_DEFAULT;
-	texDesc.BindFlags = D3D11_BIND_RENDER_TARGET | D3D11_BIND_SHADER_RESOURCE;
+	//D3D11_TEXTURE2D_DESC texDesc = {};
+	//texDesc.Width = 256;
+	//texDesc.Height = 256;
+	//texDesc.MipLevels = 1;
+	//texDesc.ArraySize = 1;
+	//texDesc.Format = DXGI_FORMAT_R8G8B8A8_UNORM;
+	//texDesc.SampleDesc.Count = 1;
+	//texDesc.Usage = D3D11_USAGE_DEFAULT;
+	//texDesc.BindFlags = D3D11_BIND_RENDER_TARGET | D3D11_BIND_SHADER_RESOURCE;
 
-	ID3D11Texture2D* pTargetTexture = nullptr;
-	if (FAILED(m_pDevice->CreateTexture2D(&texDesc, nullptr, &pTargetTexture)))
-		return E_FAIL;
+	//ID3D11Texture2D* pTargetTexture = nullptr;
+	//if (FAILED(m_pDevice->CreateTexture2D(&texDesc, nullptr, &pTargetTexture)))
+	//	return E_FAIL;
 
-	// Tool용 RendertargetView
-	m_pDevice->CreateRenderTargetView(pTargetTexture, nullptr, &m_pPreviewRTV);
-	// Tool용 Shader Resource VIew
-	m_pDevice->CreateShaderResourceView(pTargetTexture, nullptr, &m_pPreviewSRV);
+	//// Tool용 RendertargetView
+	//m_pDevice->CreateRenderTargetView(pTargetTexture, nullptr, &m_pPreviewRTV);
+	//// Tool용 Shader Resource VIew
+	//m_pDevice->CreateShaderResourceView(pTargetTexture, nullptr, &m_pPreviewSRV);
 
-	Safe_Release(pTargetTexture);
+	//Safe_Release(pTargetTexture);
 
 	return S_OK;
 }
@@ -1862,9 +1861,9 @@ void CParticle_System_Panel::Free()
 	__super::Free();
 
 	Safe_Release(m_pGameInstance);
-	Safe_Release(m_pCanvasEffectObject);
+	//Safe_Release(m_pCanvasEffectObject);
 
-	// Preview Texture용 이펙트 객체 삭제
-	Safe_Release(m_pPreviewRTV);
-	Safe_Release(m_pPreviewSRV);
+	//// Preview Texture용 이펙트 객체 삭제
+	//Safe_Release(m_pPreviewRTV);
+	//Safe_Release(m_pPreviewSRV);
 }

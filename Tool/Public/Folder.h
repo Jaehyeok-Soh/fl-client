@@ -24,7 +24,8 @@ public:
 	const   vector<CFile*>& GetFiles()				const { return m_vecFile; }
 	const   FLODER_INFO& GetFloderInfo()			const { return m_tInfo; }
 public:
-	void				ImGui_Update();
+	void							ImGui_Update();
+	vector<wstring>					Find_File(const wstring& wstrFileName);
 private:
 	CGameInstance*					m_pGameInstance;
 private:

@@ -1,22 +1,19 @@
 #include "pch.h"
-
 #include "ToolCanvas.h"
 #include "Tool_Defines.h"
 #include "ImGui_UIManager.h"
-
 #include "ToolLayer.h"
 #include "ToolUI.h"
 #include "Engine_Utils.h"
-
 /* Components */
 #include "Shader.h"
 #include "VIBuffer_Rect_Tex.h"
 #include "Texture.h"
-
 #include "DataDocument_UI.h"
-#include "ImGui_ToolManager.h"
 #include "DebugDraw.h"
 #include "GameInstance.h"
+
+#define UIDATAFILE_PATH L"../../Resources/Data/UIData/"
 
 CToolCanvas::CToolCanvas(ID3D11Device* pDevice, ID3D11DeviceContext* pDeviceContext)
 	:CUIObject(pDevice, pDeviceContext),
@@ -317,20 +314,39 @@ CToolLayer* CToolCanvas::Safe_Access_CurLayerObject_Ptr()
 
 _bool CToolCanvas::Export_Data(DTO::ECategory eCategory, CDataDocumentBase* pDocument)
 {
-	//if (eCategory != DTO::ECategory::UI || pDocument == nullptr)
-	//	return false;
+	ELevelType eLevelType = ELevelType::UI;
+	_uint iLevelID = ENUM_TO_UINT(eLevelType);
+	_wstring wstrFilePath = UIDATAFILE_PATH + Engine_Utils::ToWString(m_strTag) + L".json";
+	CDataDocumentBase* pDocBase = m_pGameInstance->Ensure_Document(iLevelID, eCategory, wstrFilePath);
+	if (pDocBase == nullptr)
+		return FALSE;
 
-	//if (pDocument->Get_Category() != DTO::ECategory::UI	)
-	//	return false;
+	CDataDocument_UI* pDoc = static_cast<CDataDocument_UI*>(pDocBase);
+	if (FAILED(pDoc->Try_Add(m_tCanvasData)))
+		return FALSE;
 
-	//auto* pExampleDocument = static_cast<CDataDocument_UI*>(pDocument);
+	/* Canvas俊 历厘等 Layer 历厘 */
+	if (m_vecToolLayers.empty())
+		return FALSE;
 
-	//DTO::TExample_StaticModelData saveData;
-	//// dto.vPosition = { 1.f, 1.f, 1.f };
-	//// dto.vColor = { 1.f, 1.f, 1.f, 1.f };
+	for (auto* pLayer : m_vecToolLayers)
+	{
+		if (FAILED(pDoc->Try_Add(pLayer->Get_Data())))
+			return FALSE;
 
-	//pExampleDocument->Try_Add(saveData);
-	return false;
+
+		/* Layer俊 历厘等 UI 历厘 */
+		auto* pUIVec = pLayer->Safe_Access_UIObject_Vector_Ptr();
+		if (nullptr == pUIVec)
+			continue;
+		for (auto* pUI : *pUIVec)
+		{
+			if (FAILED(pDoc->Try_Add(pUI->Get_Data())))
+				return FALSE;
+		}
+	}
+
+	return TRUE;
 }
 
 CToolCanvas* CToolCanvas::Create(EToolObjectType eType, ID3D11Device* pDevice, ID3D11DeviceContext* pDeviceContext)

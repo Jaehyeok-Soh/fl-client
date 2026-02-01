@@ -41,6 +41,10 @@ HRESULT CEffectObject::Initialize(void* pArg)
         return E_FAIL;
     }
 
+    Effect_Desc* pDesc = static_cast<Effect_Desc*>(pArg);
+    if (pDesc != nullptr)
+        m_tEffectDesc = *pDesc;
+
     return S_OK;
 }
 
@@ -320,11 +324,49 @@ void CEffectObject::Update_Priority(const _float fDT)
 void CEffectObject::Update(const _float fTimeDelta)
 {
     if (m_tEffectDesc._Effect_TimeStop) return;
-    // 임시 방편
+
     _float TimeT = m_tEffectDesc._Effect_PlayBackSpeed * fTimeDelta;
+    m_fTimeAccumulation += TimeT; // 전체 시간 누적
+
+    //  ========   Start Delay 체크   ========   
+    if (m_fTimeAccumulation < m_tEffectDesc._Effect_StartDelay)
+    {
+        m_bIsStarted = false;
+        return; // 아직 대기 중이므로 업데이트 안 함
+    }
+    m_bIsStarted = true;
+
+    //========   실제 시뮬레이션 시간 (Delay를 제외한 시간)  ========   
+    _float fActiveTime = m_fTimeAccumulation - m_tEffectDesc._Effect_StartDelay;
+
+    // ========   Duration 및 Looping 제어   ========   
+    if (fActiveTime >= m_tEffectDesc._Effect_Duration)
+    {
+        if (m_tEffectDesc._Effect_Looping)
+        {
+            m_fTimeAccumulation = m_tEffectDesc._Effect_StartDelay; // 리셋
+            fActiveTime = 0.f;
+            // 루프 시 파티클 버퍼 리셋이 필요하다면 호출
+   /*         auto pVIBuffer = Get_Component<CVIBuffer_Particle_Point>();
+            if (pVIBuffer) pVIBuffer->Reset_Simulation();*/
+        }
+        else
+        {
+            return;
+        }
+    }
+
+    // ========   크기 보간 (Start Size -> End Size)   ========   
+    // 진행률 계산 (0.0 ~ 1.0)
+    _float fRatio = fActiveTime / m_tEffectDesc._Effect_Duration;
+    if (fRatio > 1.f) fRatio = 1.f;
+
+    // 선형 보간을 통한 실시간 스케일 계산
+    Vec3 vCurrentScale = Vec3::Lerp(m_tEffectDesc._Effect_StartScale, m_tEffectDesc._Effect_EndScale, fRatio);
+    Get_Component<CTransform>()->Set_Scale(vCurrentScale);
+
     TimeCalculate(TimeT);
     Super::Update(TimeT);
-
     // == 스크롤 값 == 
 
     switch (m_tEffectDesc._Effect_ShapeType)
@@ -472,44 +514,36 @@ void CEffectObject::Bind_ShaderResource_Particles()
 }
 
 void CEffectObject::TimeReset(Effect_Desc Desc)
-{ 
+{
     m_vScrollOffset = Vec2{ 0.f, 0.f };
-    m_fTimeAccumulation = 0.f;
-    m_tPrevEffectDesc._Effect_Looping = m_tEffectDesc._Effect_Looping = Desc._Effect_Looping;
+    m_fTimeAccumulation = 0.f; // 시간 초기화
+    m_bIsStarted = false;      // 시작 상태 초기화
+
+    // Transform 스케일도 Start Scale로 원복
+    Get_Component<CTransform>()->Set_Scale(m_tEffectDesc._Effect_StartScale);
+
+    m_tPrevEffectDesc = m_tEffectDesc = Desc;
     Set_EffectDesc(m_tEffectDesc);
 }
 
 void CEffectObject::TimeCalculate(const _float fDT)
 {
-    // =======  [스크롤 값]  ==========
-    // 1. 노이즈 텍스처를 사용할 것이라면 반드시 필요할 것.
+    // Start Delay를 제외한 순수 실행 시간 기반 진행률
+    _float fActiveTime = m_fTimeAccumulation - m_tEffectDesc._Effect_StartDelay;
+    if (fActiveTime < 0.f) fActiveTime = 0.f;
 
-    if (m_tEffectDesc._Effect_Duration <= m_fTimeAccumulation)
-    {
-        m_tEffectDesc._Effect_Looping = false;
-        Set_EffectDesc(m_tEffectDesc);
-    }
-
-    if (m_tEffectDesc._Effect_Looping == false)
-    {
-        if (m_vScrollOffset.x >= 1.f || m_vScrollOffset.y >= 1.f)
-            m_tEffectDesc._Effect_Looping = false;
-    }
-
+    // ======= [스크롤 값] ==========
     m_vScrollOffset.x += fDT * m_tEffectDesc._Effect_ScrollSpeed.x;
     m_vScrollOffset.y += fDT * m_tEffectDesc._Effect_ScrollSpeed.y;
 
-    // 스프라이트 사용 중이고, 애니메이션 사용을 켰을 때.
+    // ======= [스프라이트 애니메이션] =======
     if ((m_tEffectDesc._Effect_RenderFlag & (1 << 5)) && m_tEffectDesc._Effect_bPlayAnim)
     {
-        m_fTimeAccumulation += fDT * m_tEffectDesc._Effect_AnimSpeed;
-
-        // 전체 프레임 수 계산
         _uint iTotalFrame = m_tEffectDesc._Effect_TileCount.x * m_tEffectDesc._Effect_TileCount.y;
-
         if (iTotalFrame > 0)
         {
-            m_tEffectDesc.m_iCurSpriteNumber = (_uint)m_fTimeAccumulation % iTotalFrame;
+            // TimeAccumulation 대신 fActiveTime을 사용하여 Delay 이후부터 0프레임 시작
+            m_tEffectDesc.m_iCurSpriteNumber = (_uint)(fActiveTime * m_tEffectDesc._Effect_AnimSpeed) % iTotalFrame;
         }
     }
 }

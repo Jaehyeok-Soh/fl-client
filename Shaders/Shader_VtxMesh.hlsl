@@ -126,7 +126,7 @@ PS_OUT PS_BLACK(PS_IN_MESH input)
 
 technique11 T0
 {
-	PASS_RS_DS_BS_VP(P0, RS_Default, DS_Default, BS_Default, VS_MAIN, PS_MAIN)
+	PASS_RS_DS_BS_VP(P0, RS_Default_CullNone, DS_Default, BS_Default, VS_MAIN, PS_MAIN)
     PASS_RS_DS_BS_VP(P1, RS_Default_CullNone, DS_Default, BS_Default, VS_MAIN, PS_MAIN)
     PASS_RS_DS_BS_VP(P2, RS_Default, DS_Default, BS_Default, VS_MAIN, PS_MASK)
     PASS_RS_DS_BS_VP(P3, RS_Default, DS_Default, BS_Default, VS_MAIN, PS_MASKPIPE)

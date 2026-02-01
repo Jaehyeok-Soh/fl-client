@@ -84,6 +84,7 @@ namespace Tool
 	{
 		STATIC = 0,
 		LOADING,
+		LOGO,
 		MAP,
 		ANIMATION,
 		EFFECT,

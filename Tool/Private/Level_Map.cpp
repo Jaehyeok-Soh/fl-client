@@ -21,6 +21,7 @@
 #include "Panel_MapObjectList.h"
 #include "Panel_MapDataController.h"
 #include "Panel_FileExplore.h"
+#include "Panel_MapTool.h"
 /////////////
 // Manager //
 /////////////
@@ -32,17 +33,17 @@
 #include "Tool_Defines.h"
 
 #include "DebugDraw.h"
+#include "DebugLine.h"
 
 #include "UEMapdataParser.h"
+#include "MapToolManager.h"
 
 CLevel_Map::CLevel_Map(ID3D11Device* pDevice, ID3D11DeviceContext* pDeviceContext)
 	: Super(pDevice, pDeviceContext)
 	, m_pImGuiManager(CImGui_ToolManager::GetInstance())
 	, m_pPickingManager(CPicking_ToolManager::GetInstance())
-	, m_pBatch{nullptr}
-	, m_pEffect(nullptr)
-	, m_pInputLayout(nullptr)
 	, m_pUEMapDataParser(CUEMapdataParser::GetInstance())
+	, m_pMapToolManager(CMapToolManager::GetInstance())
 {
 	Safe_AddRef(m_pImGuiManager);
 	Safe_AddRef(m_pPickingManager);
@@ -51,6 +52,9 @@ CLevel_Map::CLevel_Map(ID3D11Device* pDevice, ID3D11DeviceContext* pDeviceContex
 
 HRESULT CLevel_Map::Initialize()
 {
+	if (FAILED(Super::Initialize()))
+		return E_FAIL;
+
 	if (FAILED(Ready_MapObject_Layer()))
 		return E_FAIL;
 
@@ -60,7 +64,11 @@ HRESULT CLevel_Map::Initialize()
 	if (FAILED(Ready_Camera_Layer(g_wszCameraLayer)))
 		return E_FAIL;
 
+	if (FAILED(Ready_DebugLine()))
+		return E_FAIL;
+
 	m_pUEMapDataParser->Initialize(m_pDevice,m_pDeviceContext);
+	m_pMapToolManager->Initialize(m_pDevice, m_pDeviceContext);
 
 	return S_OK;
 }
@@ -82,26 +90,7 @@ HRESULT CLevel_Map::Awake(const _uint iLevelID)
 	m_pImGuiManager->Ready_Events();
 
 
-	/* Cam Setting */
-	m_pGameInstance->Get_MainCamera()->Get_Component<CCamera>()->Set_Fov(XMConvertToRadians(60.f));
-
 	/* Batch */
-
-	m_pBatch = new PrimitiveBatch<VertexPositionColor>(m_pDeviceContext);
-	m_pEffect = new BasicEffect(m_pDevice);
-	m_pEffect->SetVertexColorEnabled(true);
-
-	const void* pShaderInput = { nullptr };
-	size_t iShaderInputLenght = {};
-	m_pEffect->GetVertexShaderBytecode(&pShaderInput, &iShaderInputLenght);
-
-	if (FAILED(m_pDevice->CreateInputLayout(
-		VertexPositionColor::InputElements
-		, VertexPositionColor::InputElementCount
-		, pShaderInput
-		, iShaderInputLenght
-		, &m_pInputLayout)))
-		return E_FAIL;
 
 
 	return S_OK;
@@ -110,10 +99,10 @@ HRESULT CLevel_Map::Awake(const _uint iLevelID)
 void CLevel_Map::Update(const _float fTimeDelta)
 {
 	Super::Update(fTimeDelta);
-	if (!m_bCreateMode)
+	if(m_pMapToolManager->Get_Preview() == nullptr)
 		m_pPickingManager->Picking();
-	else
-		m_pPickingManager->Picking_ForDummy();
+
+	m_pMapToolManager->Update(fTimeDelta);
 
 	for (CImGui_Panel* pElement : m_arrayImGuiPanel)
 	{
@@ -132,18 +121,7 @@ HRESULT CLevel_Map::Render()
 	m_pImGuiManager->Render_Dockspace();
 	//////////////////////////
 	// Element Render
-	
-	m_pDeviceContext->GSSetShader(nullptr, nullptr, 0);
-	m_pEffect->SetWorld(Matrix::Identity);
-	m_pEffect->SetView(m_pGameInstance->Get_ViewMatrix());
-	m_pEffect->SetProjection(m_pGameInstance->Get_ProjMatrix());
-	m_pEffect->Apply(m_pDeviceContext);
-	m_pDeviceContext->IASetInputLayout(m_pInputLayout);
 
-	m_pBatch->Begin();
-	DX::DrawGrid(m_pBatch, XMVectorSet(1000.f, 0.f, 0.f, 1.f), XMVectorSet(0.f, 0.f, 1000.f, 1.f), XMVectorSet(0.f, 0.f, 0.f, 1.f), 50, 50, DirectX::Colors::Red);
-
-	m_pBatch->End();
 
 	Render_Elements();
 
@@ -171,6 +149,7 @@ HRESULT CLevel_Map::Reday_Gui()
 		L"../../Resources", {".fbx" ,".Mesh",".png",".dds" ,"png" , ".json"},
 		" Panel_FileExplore ", this, m_pDevice, m_pDeviceContext);
 
+	m_arrayImGuiPanel[static_cast<UINT32>(CLevel_Map::Elements::MapTool)] = CPanel_MapTool::Create(" Map Tool " , this , m_pDevice, m_pDeviceContext);
 
 	return S_OK;
 }
@@ -205,13 +184,14 @@ HRESULT CLevel_Map::Ready_Camera_Layer(const wstring& wstrLayerTag)
 		CGameObject* pResult = { nullptr };
 		CCameraMan::GAMEOBJECT_DESC goDesc = {};
 		CTransform::TRANSFORM_DESC TransformDesc = {};
-		TransformDesc.vPosition = {1.f, 1.f, -1.f};
+		TransformDesc.vPosition = { 0.f, 5.0f, -5.f };
+		TransformDesc.vRotation_Degrees = { 0.f,0.f,0.f};
 		TransformDesc.fMovePerSec = { 15.f };
 		TransformDesc.fRotatePerSec = {2.f};
 		CCamera::CAMERA_DESC CameraDesc = {};
 
 		CameraDesc.eProjectionType = EProjectionType::PERSPECTIVE;
-		CameraDesc.fFov = ::XMConvertToRadians(90.f);
+		CameraDesc.fFov = ::XMConvertToRadians(60.f);
 		CameraDesc.fViewWidth = (_float)g_iWinSizeX;
 		CameraDesc.fViewHeight = (_float)g_iWinSizeY;
 		CameraDesc.fNear = 0.1f;
@@ -248,9 +228,25 @@ HRESULT CLevel_Map::Ready_Lights()
 
 HRESULT CLevel_Map::Ready_Camera_Setting(const _uint iLevelID)
 {
-	CGameObject* pFreeCamera = m_pGameInstance->Get_GameObject_Back(iLevelID, L"Camera_Layer");
-	m_pGameInstance->Add_Camera(CameraType::STATIC, g_FreeCameraName, static_cast<CCameraMan*>(pFreeCamera));
+	CCameraMan* pFreeCamera = static_cast<CCameraMan*>(m_pGameInstance->Get_GameObject_Back(iLevelID, L"Camera_Layer"));
+	m_pGameInstance->Add_Camera(CameraType::STATIC, g_FreeCameraName, pFreeCamera);
 	m_pGameInstance->Change_MainCamera(CameraType::STATIC, g_FreeCameraName);
+
+	return S_OK;
+}
+
+HRESULT CLevel_Map::Ready_DebugLine()
+{
+	CDebugLine::DEBUGLINE_DESC tDesc{};
+	tDesc.vColor_X = {0.f,1.f,0.f,1.f};
+	tDesc.vColor_Z = {1.f,0.f,0.f,1.f};
+
+	CTransform::TRANSFORM_DESC tTsDesc{};
+	tDesc.pTransform_Desc = &tTsDesc;
+
+	m_pGameInstance->Add_GameObject(ENUM_TO_UINT(ELevelType::STATIC), L"Prototype_GameObject_DebugLine", ENUM_TO_UINT(ELevelType::MAP), L"Layer_DebugLine",
+		&tDesc);
+
 	return S_OK;
 }
 
@@ -287,15 +283,12 @@ void CLevel_Map::Free()
 	}
 	m_arrayImGuiPanel.fill(nullptr);
 
-	Safe_Delete(m_pBatch);
-	Safe_Delete(m_pEffect);
-	Safe_Release(m_pInputLayout);
-
-
 	Safe_Release(m_pImGuiManager);
 	Safe_Release(m_pPickingManager);
 
 	m_pUEMapDataParser->DestroyInstance();
+	m_pMapToolManager->DestroyInstance();
+
 
 	Super::Free();
 }

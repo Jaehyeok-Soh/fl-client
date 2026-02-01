@@ -154,6 +154,15 @@
     <Filter Include="03. GameObject\EffectObject">
       <UniqueIdentifier>{92c0cd51-e66c-4b79-afa4-76c22a867df3}</UniqueIdentifier>
     </Filter>
+    <Filter Include="03. GameObject\PhysicsTerrain">
+      <UniqueIdentifier>{685e6485-a2ca-4006-9535-8434d576b1ec}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="03. GameObject\EffectObject\Parent_Effect">
+      <UniqueIdentifier>{8cd88b80-877f-4e92-8aa2-40f15afde9e4}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="03. GameObject\EffectObject\Child_Effect">
+      <UniqueIdentifier>{b42020a7-95bc-4264-b992-20809b8a58c6}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="targetver.h">
@@ -294,6 +303,15 @@
     <ClInclude Include="..\public\Builder_Example.h">
       <Filter>07. System\01. Builder</Filter>
     </ClInclude>
+    <ClInclude Include="..\Public\Physics_Terrain.h">
+      <Filter>03. GameObject\PhysicsTerrain</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\Effect.h">
+      <Filter>03. GameObject\EffectObject\Parent_Effect</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\EffectObject.h">
+      <Filter>03. GameObject\EffectObject\Child_Effect</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <Image Include="Client.ico">
@@ -431,6 +449,15 @@
     </ClCompile>
     <ClCompile Include="..\private\Builder_Example.cpp">
       <Filter>07. System\01. Builder</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Public\Physics_Terrain.cpp">
+      <Filter>03. GameObject\PhysicsTerrain</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\Effect.cpp">
+      <Filter>03. GameObject\EffectObject\Parent_Effect</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\EffectObject.cpp">
+      <Filter>03. GameObject\EffectObject\Child_Effect</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

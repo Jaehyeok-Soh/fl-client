@@ -6,6 +6,9 @@
 #define MAX_MODEL_INSTANCE 512
 #define MAX_NAME 128
 
+// PhysX
+#define PVD_HOST "127.0.0.1"
+
 #include "Engine_Enum.h"
 #include "Engine_Macro.h"
 #include "Engine_Struct.h"

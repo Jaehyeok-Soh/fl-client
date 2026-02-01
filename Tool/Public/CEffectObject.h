@@ -48,13 +48,6 @@ enum class E_RENDER_TYPE
     NONE_BILBOARD,
 };
 
-enum class E_SIMULATION_SPACE
-{
-    NONE = 0,
-    LOCAL,
-    WORLD,
-};
-
 enum class E_PARTICLETYPE
 {
     NONE = 0,
@@ -113,7 +106,6 @@ public:
         E_PARTICLETYPE eEffectParticleType = E_PARTICLETYPE::PARTICLE;
         E_EFFECTTYPE eEffectType = E_EFFECTTYPE::Particle;
         E_SHAPETYPE _Effect_ShapeType = E_SHAPETYPE::SPREAD;
-        E_SIMULATION_SPACE _Effect_SimulationType = E_SIMULATION_SPACE::NONE;
 
         // ========  이펙트 Material 설정   ===========
         wstring     _Effect_Model_Tag = {};
@@ -268,13 +260,10 @@ private:
     Effect_Desc        m_tEffectDesc = {};
     Effect_Desc        m_tPrevEffectDesc = {};
 
-    //  ========== 이펙트 재료 ===========
-    CModel*      m_pModelCom = { nullptr };
-    CTexture*    m_pTextureCom = { nullptr };
-
     //  ========== 스크롤 OffSet ========
     Vec2      m_vScrollOffset = { 0.f, 0.f };
     _float    m_fTimeAccumulation = 0.f;
+    _bool  m_bIsStarted = { false }; // 타임 딜레이 지났는지에 대한 bool값
 
     //  ========== 현재 이펙트 sprite Number  ===========
 private:

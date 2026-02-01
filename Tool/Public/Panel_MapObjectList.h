@@ -30,21 +30,24 @@ public:
 
 private:
 	HRESULT	Render_MapObjectList();
-	HRESULT	Render_CamInfo();
 	HRESULT	Render_SelectInfo();
-
 private:
-	CGameInstance* m_pGameInstance{nullptr};
 
-	wchar_t					 m_wszMapObjectLayerTag[ENUM_TO_UINT(EMapObject_Type::END)][MAX_PATH];
-	array<list<CGameObject*>*, ENUM_TO_UINT(EMapObject_Type::END)> m_arrayMapObjectList{};
+	CGameInstance*				m_pGameInstance{nullptr};
 
-	CImGui_Layout_Transform* m_pTransformLayout{nullptr};
-	CMapObject*				 m_pSelectMapObject{nullptr};
+	wchar_t						m_wszMapObjectLayerTag[ENUM_TO_UINT(EMapObject_Type::END)][MAX_PATH];
+	array<list<CGameObject*>*,	ENUM_TO_UINT(EMapObject_Type::END)> m_arrayMapObjectList{};
 
+	char						m_szFindName[MAX_PATH];
 
-	CCameraMan*				 m_pCamera{nullptr};
-	CCamera*				 m_pCameraCom{nullptr};
+	CImGui_Layout_Transform*	m_pTransformLayout{nullptr};
+	CMapObject*					m_pSelectMapObject{nullptr};
+
+	_uint						m_fOriginSRTFlag{};
+
+	CCameraMan*					m_pCamera{nullptr};
+	CCamera*					m_pCameraCom{nullptr};
+
 public:
 	static  CPanel_MapObjectList* Create(const _char* pLabel, CLevel* pOwner, ID3D11Device* pDevice, ID3D11DeviceContext* pDeviceContext);
 	virtual void Free() override;
