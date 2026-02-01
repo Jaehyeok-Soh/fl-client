@@ -36,6 +36,8 @@ private:
 	HRESULT Loading_File(_uint iLevelID, DTO::ECategory eCategory,const wstring& wstrFilePath);
 	HRESULT Loading_Textures(const wstring &wstrFolder);
 	HRESULT Loading_Texture(const wstring& wstrFile);
+	// 복수, 단일 mesh가 들어있는 폴더, 파일 넣으면 가능
+	HRESULT Make_StaticModel_Prototype(ELevelType eType, const wstring& wstrFolderPath);
 private:
 	ID3D11Device* m_pDevice = { nullptr };
 	ID3D11DeviceContext* m_pDeviceContext = { nullptr };
