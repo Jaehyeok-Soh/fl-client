@@ -119,7 +119,7 @@
       <SubSystem>Windows</SubSystem>
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <AdditionalLibraryDirectories>../../EngineSDK/Library/Debug;../../Libraries/Lib/;</AdditionalLibraryDirectories>
-      <AdditionalDependencies>Engine.lib;d3d11.lib;d3dcompiler.lib;dxguid.lib;DirectXTex\\DirectXTex_Debug.lib;FX11\\Effects11d.lib;Assimp\\assimp-vc143-mtd.lib;DirectXTK\\Debug\\DirectXTK.lib;FMOD\\Debug\fmodL_vc.lib;PhysX/PhysX_64.lib;PhysX/PhysXCommon_64.lib;PhysX/PhysXCooking_64.lib;PhysX/PhysXFoundation_64.lib;PhysX/PVDRuntime_64.lib;PhysX/PhysXExtensions_static_64.lib;PhysX/PhysXPvdSDK_static_64.lib;PhysX/PhysXGpu_64.lib;PhysX/PhysXCharacterKinematic_static_64.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>Engine.lib;d3d11.lib;d3dcompiler.lib;dxguid.lib;DirectXTex\\DirectXTex_Debug.lib;FX11\\Effects11d.lib;Assimp\\assimp-vc143-mtd.lib;DirectXTK\\Debug\\DirectXTK.lib;FMOD\\Debug\fmodL_vc.lib;PhysX/debug/PhysX_64.lib;PhysX/debug/PhysXCommon_64.lib;PhysX/debug/PhysXCooking_64.lib;PhysX/debug/PhysXFoundation_64.lib;PhysX/debug/PVDRuntime_64.lib;PhysX/debug/PhysXExtensions_static_64.lib;PhysX/debug/PhysXPvdSDK_static_64.lib;PhysX/debug/PhysXGpu_64.lib;PhysX/debug/PhysXCharacterKinematic_static_64.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
@@ -140,11 +140,14 @@
       <EnableCOMDATFolding>true</EnableCOMDATFolding>
       <OptimizeReferences>true</OptimizeReferences>
       <GenerateDebugInformation>true</GenerateDebugInformation>
-      <AdditionalDependencies>Engine.lib;d3d11.lib;d3dcompiler.lib;dxguid.lib;DirectXTex\\DirectXTex.lib;FX11\\Effects11.lib;Assimp\\assimp-vc143-mt.lib;DirectXTK\\Release\\DirectXTK.lib;PhysX/PhysX_64.lib;PhysX/PhysXCommon_64.lib;PhysX/PhysXCooking_64.lib;PhysX/PhysXFoundation_64.lib;PhysX/PVDRuntime_64.lib;PhysX/PhysXExtensions_static_64.lib;PhysX/PhysXPvdSDK_static_64.lib;PhysX/PhysXGpu_64.lib;PhysX/PhysXCharacterKinematic_static_64.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>Engine.lib;d3d11.lib;d3dcompiler.lib;dxguid.lib;DirectXTex\\DirectXTex.lib;FX11\\Effects11.lib;Assimp\\assimp-vc143-mt.lib;DirectXTK\\Release\\DirectXTK.lib;PhysX/release/PhysX_64.lib;PhysX/release/PhysXCommon_64.lib;PhysX/release/PhysXCooking_64.lib;PhysX/release/PhysXFoundation_64.lib;PhysX/release/PVDRuntime_64.lib;PhysX/release/PhysXExtensions_static_64.lib;PhysX/release/PhysXPvdSDK_static_64.lib;PhysX/release/PhysXGpu_64.lib;PhysX/release/PhysXCharacterKinematic_static_64.lib;%(AdditionalDependencies)</AdditionalDependencies>
       <AdditionalLibraryDirectories>../../EngineSDK/Library/Release;../../Libraries/Lib/;</AdditionalLibraryDirectories>
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClInclude Include="..\Public\AnimObj.h">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">false</ExcludedFromBuild>
+    </ClInclude>
     <ClInclude Include="..\Public\Builder_Example.h" />
     <ClInclude Include="..\Public\Builder_UI.h" />
     <ClInclude Include="..\Public\Button.h" />
@@ -162,6 +165,9 @@
     <ClInclude Include="..\public\Panel_FileExplore.h" />
     <ClInclude Include="..\Public\Image.h" />
     <ClInclude Include="..\Public\Panel_MapTool.h" />
+    <ClInclude Include="..\Public\Panel_Model.h">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</ExcludedFromBuild>
+    </ClInclude>
     <ClInclude Include="..\Public\ToolLayer.h" />
     <ClInclude Include="..\Public\Tool_ContainerObject.h" />
     <ClInclude Include="..\Public\Tool_PartObject.h" />
@@ -223,6 +229,9 @@
     <ClInclude Include="Tool.h" />
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="..\Private\AnimObj.cpp">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">false</ExcludedFromBuild>
+    </ClCompile>
     <ClCompile Include="..\Private\Builder_Example.cpp" />
     <ClCompile Include="..\Private\Builder_UI.cpp" />
     <ClCompile Include="..\Private\Button.cpp" />
@@ -239,6 +248,9 @@
     <ClCompile Include="..\Private\Panel_FileExplore.cpp" />
     <ClCompile Include="..\Private\Image.cpp" />
     <ClCompile Include="..\Private\Panel_MapTool.cpp" />
+    <ClCompile Include="..\Private\Panel_Model.cpp">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</ExcludedFromBuild>
+    </ClCompile>
     <ClCompile Include="..\Private\ToolLayer.cpp" />
     <ClCompile Include="..\Private\Tool_ContainerObject.cpp" />
     <ClCompile Include="..\Private\Tool_PartObject.cpp" />

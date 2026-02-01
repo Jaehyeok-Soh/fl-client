@@ -120,5 +120,6 @@ void CPhysicsCollider::Free()
 {
 	Safe_Release(m_pDeviceContext);
 	Safe_Release(m_pDevice);
+
 	Super::Free();
 }

@@ -56,7 +56,7 @@ private:
 	void Chase_Actor(const _float fTimeDelta);
 	void Chase_Player(CContainerObject* pObject, const _float fTimeDelta);
 	void OnChangeLockonTarget(CGameObject* pGo);
-	Vec3 Get_HeadWorldPos_FromBody(CBody* pBody, CTransform* pTrnasform);
+	Vec3 Get_CamBoneWorldPos_FromBody(CBody* pBody, CTransform* pTrnasform);
 private:
 	TargeterState m_eCurrentState = { TargeterState::NORMAL };
 	CGameObject* m_pLockonTarget = { nullptr };

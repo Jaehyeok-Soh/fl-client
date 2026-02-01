@@ -15,7 +15,7 @@ class CCollision_Manager final : public CBase
 		_bool bIsColliding = { false };
 		_bool bChecked = { false };
 	};
-	using PairMap = std::unordered_map<_uint64, PairState>;
+	using PairMap = std::unordered_map<uint64, PairState>;
 private:
 	CCollision_Manager(_uint iLayerCount);
 	virtual ~CCollision_Manager() = default;
@@ -28,7 +28,7 @@ public:
 	HRESULT Unregister_Collider(CCollider* pCollider);
 	void Clear();
 private:
-	_uint64 Make_PairKey(const CCollider* pA, const CCollider* pB);
+	uint64 Make_PairKey(const CCollider* pA, const CCollider* pB);
 	void Check_LayerPair(_uint iLeftLayer, _uint iRightLayer, const _float fTimeDelta);
 	void CollideTest_Pair(CCollider* pLeft, CCollider* pRight);
 private:

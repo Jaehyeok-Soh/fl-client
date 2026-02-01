@@ -10,7 +10,7 @@ class ENGINE_DLL CBuilderBase abstract : public CBase
 {
 	using Super = CBase;
 protected:
-	CBuilderBase(ID3D11Device* pDevice, ID3D11DeviceContext* pDeviceContext);
+	CBuilderBase(ID3D11Device* pDevice, ID3D11DeviceContext* pDeviceContext, _uint iLevelID);
 	virtual ~CBuilderBase() = default;
 public:
 	virtual HRESULT Build(const CDataDocumentBase& document) PURE;

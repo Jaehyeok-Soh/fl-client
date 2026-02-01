@@ -11,6 +11,8 @@
 
 NS_BEGIN(Engine)
 
+class CTransform;
+
 class CChannel final : public CBase
 {
 	using Super = CBase;
@@ -20,6 +22,8 @@ public:
 		_int iBoneIndex = { -1 };
 		string strName = { "" };
 		std::span<KEYFRAME> spanKeyframes;
+
+		_int iRootBoneIndex = {-1};
 	}CHANNEL_DESC;
 private:
 	CChannel();
@@ -27,13 +31,29 @@ private:
 
 	HRESULT Initialize(const CHANNEL_DESC& desc);
 public:
-	void Update_TransformationMatrix(const vector<class CBone*> &vecBones, _float fCurrentTrackPosition, _uint* pCurrentKeyFrameIndex);
+	// normal anim
+	void Update_TransformationMatrix(const vector<class CBone*>& vecBones, _float fCurrentTrackPosition, _uint* pCurrentKeyFrameIndex);
 	void SetUp_PoseData(std::span<LOCALSRT> spanLocalSrtData, _float fCurrentTrackPosition, _uint* pCurrentKeyFrameIndex);
+
+	// motion anim
+	void Update_TransformationMatrix(const vector<class CBone*>& vecBones, _float fCurrentTrackPosition, _uint* pCurrentKeyFrameIndex, CTransform* pOwnerTransform);
+	void SetUp_PoseData(std::span<LOCALSRT> spanLocalSrtData, _float fCurrentTrackPosition, _uint* pCurrentKeyFrameIndex, CTransform* pOwnerTransform);
+
+	// 기본 channel 정보
 private:
-	_char m_szName[MAX_NAME];
-	_int m_iBoneIndex = { -1 };
-	_uint m_iKeyFrameCount = { 0 };
-	vector<KEYFRAME> m_vecKeyframes;
+	_char				m_szName[MAX_NAME];
+	_int				m_iBoneIndex	 = { -1 };
+	_uint				m_iKeyFrameCount = { 0 };
+	vector<KEYFRAME>	m_vecKeyframes;
+
+private:
+	_bool				m_bMotionBone	= { false };
+	Matrix				m_matTrans = {};
+	Vec3				m_vPreRootLocal = Vec3::Zero;
+
+private:
+	void Update_MotionBone(Vec3 vLeftTrans, Vec3 vRightTrans, _float fRatio, CTransform* pOwnerTransform);
+
 public:
 	static CChannel* Create(const CHANNEL_DESC &desc);
 	virtual void Free() override;

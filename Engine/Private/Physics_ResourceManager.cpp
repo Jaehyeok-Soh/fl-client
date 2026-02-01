@@ -561,15 +561,15 @@ void CPhysics_ResourceManager::Free()
 	for (size_t i = 0; i < ENUM_TO_UINT(EPhysicsMaterial::END); i++)
 		PX_RELEASE(m_Materials[i]);
 
-	Safe_Release(m_pGameInstance);
-
-	Safe_Release(m_pDevice);
-	Safe_Release(m_pContext);
-
 	for (void* ptr : m_MemBlocks)
 		Safe_Delete(ptr);
 
 	m_MemBlocks.clear();
+
+	Safe_Release(m_pGameInstance);
+
+	Safe_Release(m_pDevice);
+	Safe_Release(m_pContext);
 
 	Super::Free();
 }

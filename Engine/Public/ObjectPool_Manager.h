@@ -15,7 +15,7 @@ private:
 
 	HRESULT Initialize(_uint iLevelCount);
 public:
-	HRESULT Regist_Pool(_uint iTargetLevelIndex, const wstring &wstrPoolTag, const wstring& wstrLayerTag, void* pArg, CGameObject* pSeed, _uint iPoolCapacityCount);
+	HRESULT Regist_Pool(_uint iTargetLevelIndex, const wstring& wstrPoolTag, const wstring& wstrLayerTag, _uint iSeedLevelID, const wstring& wstrSeedPrototypeTag, void* pArg, _uint iPoolCapacityCount);
 	CObjectPool* Get_Pool(_uint iLevelIndex, const wstring& wstrPoolTag);
 	CGameObject* Spawn(_uint iLevelIndex, const wstring& wstrPoolTag, void* pArg);
 	HRESULT Despawn(_uint iLevelIndex, const wstring& wstrPoolTag, CGameObject* pGo);

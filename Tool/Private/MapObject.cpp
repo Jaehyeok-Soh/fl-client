@@ -34,7 +34,7 @@ HRESULT CMapObject::Initialize(void* pArg)
     CMapObject::MAPOBJECT_DESC* pDesc = static_cast<CMapObject::MAPOBJECT_DESC*>(pArg);
 
     m_strModelFileName        = Engine_Utils::ToString(pDesc->wstrModelPath);
-    m_strName                 = Engine_Utils::ToString(pDesc->wstrModelName);
+    Set_Name(pDesc->wstrModelName);
     m_isLoaded                = pDesc->isLoaded;
     m_eMapObjectState         = pDesc->eState;
 
