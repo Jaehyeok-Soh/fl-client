@@ -107,26 +107,6 @@ void CToolObject::Set_Invisible()
     m_bVisible = false;
 }
 
-void CToolObject::Set_Name(const string& strName)
-{
-    m_strName = strName;
-}
-
-void CToolObject::Set_Name(const wstring& wstrName)
-{
-    m_strName = Engine_Utils::ToString(wstrName);
-}
-
-void CToolObject::Set_Name(const string& strName, _uint iValue)
-{
-    m_strName = strName + "_[" + std::to_string(iValue) + "]";
-}
-
-void CToolObject::Set_Name(const wstring& wstrName, _uint iValue)
-{
-    m_strName = Engine_Utils::ToString(wstrName) + "_[" + std::to_string(iValue) + "]";
-}
-
 HRESULT CToolObject::Set_TypeString()
 {
     m_strObjectType = TypeToString(m_eType);

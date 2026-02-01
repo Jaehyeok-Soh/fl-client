@@ -124,9 +124,6 @@
     <Filter Include="02. GameObjects\PartObject">
       <UniqueIdentifier>{ab8f52ba-9548-4d59-96fd-3e11792c6f59}</UniqueIdentifier>
     </Filter>
-    <Filter Include="02. GameObjects\ContainerObject">
-      <UniqueIdentifier>{849c5ab9-53df-4b2a-8a78-5d3fb0f5bf4a}</UniqueIdentifier>
-    </Filter>
     <Filter Include="98. Defines\pch">
       <UniqueIdentifier>{6a433bfc-3f5f-420f-ac46-69cffb0edf23}</UniqueIdentifier>
     </Filter>
@@ -207,6 +204,21 @@
     </Filter>
     <Filter Include="12. DebugLine\01. DebugLine">
       <UniqueIdentifier>{f4bab261-d522-4da3-ab3e-259ad1d9e20a}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="06. ImGui\01. Panel\Animation">
+      <UniqueIdentifier>{535a7846-4389-404b-82c0-4227a110de20}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="06. ImGui\01. Panel\Animation\Panel_Model">
+      <UniqueIdentifier>{b345042e-f3b0-46e3-8816-dfb4c3df7229}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="06. ImGui\01. Panel\Animation\Panel_Animation">
+      <UniqueIdentifier>{bfd46406-ca40-4922-afe3-9c0cfdad63c2}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02. GameObjects\ContainerObject">
+      <UniqueIdentifier>{849c5ab9-53df-4b2a-8a78-5d3fb0f5bf4a}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02. GameObjects\ContainerObject\AnimModel">
+      <UniqueIdentifier>{c92b61a1-bb6a-4cd8-ab0e-69498fa9e46d}</UniqueIdentifier>
     </Filter>
     <Filter Include="06. ImGui\01. Panel\UI">
       <UniqueIdentifier>{25cb433e-dd0f-4224-8a4f-fdf58f05f1a8}</UniqueIdentifier>
@@ -450,6 +462,20 @@
     <ClInclude Include="..\public\Level_Logo.h">
       <Filter>03. Level\Logo</Filter>
     </ClInclude>
+    <ClInclude Include="..\Public\Button.h" />
+    <ClInclude Include="..\Public\Image.h" />
+    <ClInclude Include="..\public\Level_Logo.h">
+      <Filter>03. Level\Logo</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\Builder_UI.h">
+      <Filter>09. Builder\UI</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\Panel_Model.h">
+      <Filter>06. ImGui\01. Panel\Animation\Panel_Model</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\AnimObj.h">
+      <Filter>02. GameObjects\ContainerObject\AnimModel</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <Image Include="small.ico">
@@ -671,6 +697,12 @@
     </ClCompile>
     <ClCompile Include="..\Private\Image.cpp">
       <Filter>04. Component\UI\Base\Image</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\Panel_Model.cpp">
+      <Filter>06. ImGui\01. Panel\Animation\Panel_Model</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\AnimObj.cpp">
+      <Filter>02. GameObjects\ContainerObject\AnimModel</Filter>
     </ClCompile>
   </ItemGroup>
 </Project>

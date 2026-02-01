@@ -124,7 +124,7 @@ public:
 #pragma endregion
 
 #pragma region OBJECTPOOL_MANAGER
-	HRESULT Regist_Pool(_uint iTargetLevelIndex, const wstring& wstrPoolTag, const wstring& wstrLayerTag, void* pArg, CGameObject* pSeed, _uint iPoolCapacityCount);
+	HRESULT Regist_Pool(_uint iTargetLevelIndex, const wstring& wstrPoolTag, const wstring& wstrLayerTag, _uint iSeedLevelID, const wstring &wstrSeedPrototypeTag,void* pArg, _uint iPoolCapacityCount);
 #pragma endregion
 
 #pragma region COLLISION_MANAGER

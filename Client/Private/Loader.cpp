@@ -11,6 +11,7 @@
 #include "VIBuffer_Terrain.h"
 #include "VIBuffer_Particle_Rect.h"
 #include "VIBuffer_Particle_Point.h"
+#include "VIBuffer_Particle_Mesh.h"
 #include "VIBuffer_Cube_Tex.h"
 #include "Shader.h"
 #include "Camera.h"
@@ -19,10 +20,11 @@
 // Builder
 //=================
 #include "DataDocument_Example.h"
+#include "DataDocument_Effect.h"
 #include "DataDocument_UI.h"
 #include "Builder_Example.h"
-#include "BuilderSystem.h"
 #include "Builder_UI.h"
+#include "BuilderSystem.h"
 
 //=================
 // Object
@@ -35,6 +37,8 @@
 #include "ColliderPart.h"
 #include "Loader.h"
 #include "Physics_Terrain.h" // physics test
+#include "Effect.h"
+#include "EffectObject.h"
 //=================
 // UI
 //=================
@@ -46,6 +50,7 @@
 //=================
 #include "TextureBase.h"
 #include "Model.h"
+#include "ModelLoader.h"
 #include "GameInstance.h"
 
 #pragma region Macro
@@ -113,6 +118,7 @@ HRESULT CLoader::Loading_For_Logo()
 #pragma region PretransformMatrix
 	Matrix matPreTransformScale = Matrix::CreateScale(0.01f, 0.01f, 0.01f);
 	Matrix matPreTransformIdentity = Matrix::Identity;
+	Matrix matPreTransformTurn90 = matPreTransformScale * Matrix::CreateFromYawPitchRoll(XMConvertToRadians(90.f), 0.f, 0.f);
 #pragma endregion
 
 	/////////////////////////////////////////
@@ -124,12 +130,19 @@ HRESULT CLoader::Loading_For_Logo()
 		{
 			if (FAILED(m_pGameInstance->Regist_Document<CDataDocument_Example>(ENUM_TO_UINT(ELevelType::LOGO), DTO::ECategory::MAP)))
 				return E_FAIL;
+
+			if (FAILED(m_pGameInstance->Regist_Document<CDataDocument_Effect>(ENUM_TO_UINT(ELevelType::LOGO), DTO::ECategory::EFFECT)))
+				return E_FAIL;
+
 			if (FAILED(m_pGameInstance->Regist_Document<CDataDocument_UI>(ENUM_TO_UINT(ELevelType::LOGO), DTO::ECategory::MAP)))
 				return E_FAIL;
 		}
 		
+	
 		// Read Json
 		{
+			if (FAILED(Loading_File(ENUM_TO_UINT(ELevelType::LOGO), DTO::ECategory::EFFECT, L"../../Resources/Data/EffectData/Attack_1.json")))
+				return E_FAIL;
 			// For. Example
 			// if (FAILED(Loading_File(ENUM_TO_UINT(ELevelType::LOGO), DTO::ECategory::MAP, L"asdf")))
 			// 	return E_FAIL;
@@ -142,6 +155,12 @@ HRESULT CLoader::Loading_For_Logo()
 	/////////////////////////////////////////
 #pragma region Resource
 	{
+		//if (FAILED(m_pGameInstance->Load_Sounds(L"../../Resources/Sounds")))
+		//	return E_FAIL;
+
+		//if (FAILED(Make_StaticModel_Prototype(ELevelType::LOGO, L"../../Resources/Models/Map/TestMap")))
+		//	return E_FAIL;
+	}
 		if (FAILED(m_pGameInstance->Load_Sounds(L"../../Resources/Sounds")))
 			return E_FAIL;
 
@@ -161,31 +180,40 @@ HRESULT CLoader::Loading_For_Logo()
 	//////////////////////////////////////////
 #pragma region Component
 	{
-		// For. Prototype_Component_Stat
-		ADD_PROTOTYPE(ELevelType::STATIC, L"Prototype_Component_Stat", CStatComponent::Create());
-		// For. Prototype_Component_Model_Master
-		{
-			CModel::MODEL_ORIGIN_DESC desc = {};
-			desc.eType = EModelType::ANIM;
-			desc.iPrototypeLevelIndex = ENUM_TO_UINT(ELevelType::STATIC);
-			desc.pMatPreTransform = &matPreTransformScale;
-			desc.wstrModelFolderName = L"PlayerMoon";
-			ADD_PROTOTYPE(ELevelType::STATIC, L"Prototype_Component_Model_Master", CModel::Create(m_pDevice, m_pDeviceContext, &desc));
-		}
-		// For. Prototype_Component_Camera
-		ADD_PROTOTYPE(ELevelType::STATIC, L"Prototype_Component_Camera", CCamera::Create());
-		// For. Prototype_Component_ActionState_Player
-		ADD_PROTOTYPE(ELevelType::STATIC, L"Prototype_Component_ActionState_Player", CPlayerActionState::Create());
-		// For. Prototype_Component_ControlContext_Player
-		ADD_PROTOTYPE(ELevelType::STATIC, L"Prototype_Component_ControlContext_Player", CPlayerControlContext::Create());
-		// For. Prototype_Component_Collider_AABB
-		ADD_PROTOTYPE(ELevelType::STATIC, L"Prototype_Component_Collider_AABB", CCollider::Create(m_pDevice, m_pDeviceContext, EColliderType::AABB));
-		// For. Prototype_Component_Collider_OBB
-		ADD_PROTOTYPE(ELevelType::STATIC, L"Prototype_Component_Collider_OBB", CCollider::Create(m_pDevice, m_pDeviceContext, EColliderType::OBB));
-		// For. Prototype_Component_Collider_SPHERE
-		ADD_PROTOTYPE(ELevelType::STATIC, L"Prototype_Component_Collider_SPHERE", CCollider::Create(m_pDevice, m_pDeviceContext, EColliderType::SPHERE));
+		std::lock_guard<std::mutex> lockguard(m_mutex_1);
+		lstrcpy(m_szFPS, TEXT("객체원형을(를) 로딩 중 입니다."));
 	}
-#pragma endregion
+	//=================
+	// Component
+	//=================
+	// For. Prototype_Component_Stat
+	m_pGameInstance->Add_Prototype(ENUM_TO_UINT(ELevelType::STATIC), L"Prototype_Component_Stat", CStatComponent::Create());
+	// For. Prototype_Component_Model_Master
+	{
+		CModel::MODEL_ORIGIN_DESC desc = {};
+		desc.eType = EModelType::ANIM;
+		desc.iPrototypeLevelIndex = ENUM_TO_UINT(ELevelType::STATIC);
+		desc.pMatPreTransform = &(matPreTransformScale);	// matPreTransformScale // matPreTransformTurn90
+		desc.wstrModelFolderName = L"PlayerMoon";					// PlayerMoon // Pino
+
+		CModel::DATA_ANIMCHANNEL tAniChannelData = {};
+		tAniChannelData.iRootBoneIndex = 2;
+		desc.pAniChannelData = &tAniChannelData;
+
+		m_pGameInstance->Add_Prototype(ENUM_TO_UINT(ELevelType::STATIC), L"Prototype_Component_Model_Master", CModel::Create(m_pDevice, m_pDeviceContext, &desc));
+	}
+	// For. Prototype_Component_Camera
+	m_pGameInstance->Add_Prototype(ENUM_TO_UINT(ELevelType::STATIC), L"Prototype_Component_Camera", CCamera::Create());
+	// For. Prototype_Component_ActionState_Player
+	m_pGameInstance->Add_Prototype(ENUM_TO_UINT(ELevelType::STATIC), L"Prototype_Component_ActionState_Player", CPlayerActionState::Create());
+	// For. Prototype_Component_ControlContext_Player
+	m_pGameInstance->Add_Prototype(ENUM_TO_UINT(ELevelType::STATIC), L"Prototype_Component_ControlContext_Player", CPlayerControlContext::Create());
+	// For. Prototype_Component_Collider_AABB
+	m_pGameInstance->Add_Prototype(ENUM_TO_UINT(ELevelType::STATIC), L"Prototype_Component_Collider_AABB", CCollider::Create(m_pDevice, m_pDeviceContext, EColliderType::AABB));
+	// For. Prototype_Component_Collider_OBB
+	m_pGameInstance->Add_Prototype(ENUM_TO_UINT(ELevelType::STATIC), L"Prototype_Component_Collider_OBB", CCollider::Create(m_pDevice, m_pDeviceContext, EColliderType::OBB));
+	// For. Prototype_Component_Collider_SPHERE
+	m_pGameInstance->Add_Prototype(ENUM_TO_UINT(ELevelType::STATIC), L"Prototype_Component_Collider_Sphere", CCollider::Create(m_pDevice, m_pDeviceContext, EColliderType::SPHERE));
 
 	///////////////////////////////////////
 	//////////// Ready Objects ////////////
@@ -200,6 +228,28 @@ HRESULT CLoader::Loading_For_Logo()
 		ADD_PROTOTYPE(ELevelType::STATIC, L"Prototype_GameObject_Part_Body", CBody::Create(m_pDevice, m_pDeviceContext));
 		// For. Prototype_GameObject_Part_Collider
 		ADD_PROTOTYPE(ELevelType::STATIC, L"Prototype_GameObject_Part_Collider", CColliderPart::Create(m_pDevice, m_pDeviceContext));
+
+		// 이펙트 Object
+		ADD_PROTOTYPE(ELevelType::LOGO, L"Prototype_GameObject_Effect", Effect::Create(m_pDevice, m_pDeviceContext));
+		ADD_PROTOTYPE(ELevelType::LOGO, L"Prototype_GameObject_Effect_Parts", CEffectObject::Create(m_pDevice, m_pDeviceContext));
+	}
+#pragma endregion
+
+#pragma region BUFFER
+	{
+		CVIBuffer_Particle_Point::PARTICLE_POINT_ORIGIN_DESC	ExploDesc{};
+		ExploDesc.iInstnaceCount = 30;
+		ExploDesc.vCenter = Vec3(0.f, 0.f, 0.f);
+		ExploDesc.vSize = Vec2(0.05f, 0.15f);
+		ExploDesc.vRange = Vec3(0.5f, 0.5f, 0.5f);
+		ExploDesc.vSpeed = Vec2(2.f, 5.f);
+		ExploDesc.vLifeTime = Vec2(1.f, 5.5f);
+		ExploDesc.isLoop = false;
+		ExploDesc.vPivot = Vec3(0.f, 0.f, 0.5f);
+
+		ADD_PROTOTYPE(ELevelType::STATIC, L"Prototype_Component_VIBuffer_Particle_Point", CVIBuffer_Particle_Point::Create(m_pDevice, m_pDeviceContext, &ExploDesc));
+		ADD_PROTOTYPE(ELevelType::STATIC, L"Prototype_Component_VIBuffer_Particle_Mesh", CVIBuffer_Particle_Mesh::Create(m_pDevice, m_pDeviceContext, &ExploDesc));
+
 
 		// For. Prototype_UI_Canvas
 		ADD_PROTOTYPE(ELevelType::STATIC, L"Prototype_UI_Canvas", CCanvas::Create(m_pDevice, m_pDeviceContext));
@@ -272,6 +322,39 @@ HRESULT CLoader::Loading_Texture(const wstring& wstrFile)
 	desc.wstrPath = filePath.wstring();
 	if (FAILED(m_pGameInstance->Add_Resource(L"Texture_" + wstrFileName, CTextureBase::Create(m_pDevice, m_pDeviceContext, &desc))))
 		return E_FAIL;
+
+	return S_OK;
+}
+
+HRESULT CLoader::Make_StaticModel_Prototype(ELevelType eLevelType, const wstring& wstrFilePath)
+{
+	std::filesystem::path filePath{ wstrFilePath };
+	filePath /= "Model";
+	const wstring wstrModelTag = L"Prototype_Component_Model_";
+	const std::filesystem::path basePath = g_wszModelRelativePath;
+	const _uint iPrototypeLevelType = ENUM_TO_UINT(eLevelType);
+	for (const auto& entry : std::filesystem::directory_iterator(filePath))
+	{
+		if (entry.is_regular_file())
+		{
+			if (entry.path().extension() != g_wszMeshExtension)
+				continue;
+
+			std::filesystem::path fileFullPath = entry.path();
+			wstring wstrFileName = fileFullPath.stem();
+			{
+				CBase* pFinded = { nullptr };
+				if (pFinded = m_pGameInstance->Find_Prototype(iPrototypeLevelType, wstrModelTag + wstrFileName))
+					continue;
+			}
+
+			CModel::MODEL_ORIGIN_DESC desc = {};
+			desc.eType = EModelType::STATIC;
+			desc.iPrototypeLevelIndex = iPrototypeLevelType;
+			desc.wstrModelFolderName = fileFullPath.lexically_relative(basePath);
+			m_pGameInstance->Add_Prototype(iPrototypeLevelType, wstrModelTag + wstrFileName, CModel::Create(m_pDevice, m_pDeviceContext, &desc));
+		}
+	}
 
 	return S_OK;
 }

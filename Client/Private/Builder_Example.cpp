@@ -4,7 +4,7 @@
 #include "GameInstance.h"
 
 CBuilder_Example::CBuilder_Example(ID3D11Device* pDevice, ID3D11DeviceContext* pDeviceContext, _uint iLevelID)
-	: Super(pDevice, pDeviceContext,iLevelID)
+	: Super(pDevice, pDeviceContext, iLevelID)
 {
 }
 

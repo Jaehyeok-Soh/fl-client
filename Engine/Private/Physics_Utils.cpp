@@ -21,7 +21,7 @@ CPhysics_Utils::CPhysics_Utils(ID3D11Device* pDevice, ID3D11DeviceContext* pCont
 HRESULT CPhysics_Utils::Initialize()
 {
 #ifdef _DEBUG
-	m_pBatch = new PrimitiveBatch<VertexPositionColor>(m_pContext, 100000, 100000);
+	m_pBatch = new PrimitiveBatch<VertexPositionColor>(m_pContext, 10000, 10000);
 	m_pEffect = new BasicEffect(m_pDevice);
 	m_pEffect->SetVertexColorEnabled(true);
 
@@ -185,7 +185,7 @@ Matrix CPhysics_Utils::PxTransformToXMMatrix(PxTransform pxTransform)
 	Quat vQuat(pxTransform.q.x, pxTransform.q.y, pxTransform.q.z, pxTransform.q.w);
 	Vec4 vTrans(pxTransform.p.x, pxTransform.p.y, pxTransform.p.z, 1.f);
 	
-	vQuat.CreateFromRotationMatrix(matQuat);
+	matQuat = XMMatrixRotationQuaternion(vQuat);
 	matTrans = XMMatrixTranslation(vTrans.x, vTrans.y, vTrans.z);
 
 	return matQuat * matTrans;
@@ -217,11 +217,6 @@ CPhysics_Utils* CPhysics_Utils::Create(ID3D11Device* pDevice, ID3D11DeviceContex
 
 void CPhysics_Utils::Free()
 {
-	Safe_Release(m_pGameInstance);
-
-	Safe_Release(m_pDevice);
-	Safe_Release(m_pContext);
-
 #ifdef _DEBUG
 	Safe_Delete(m_pBatch);
 	Safe_Delete(m_pEffect);
@@ -229,6 +224,11 @@ void CPhysics_Utils::Free()
 	Safe_Release(m_pInputLayout);
 	Safe_Release(m_pDSS);
 #endif
+
+	Safe_Release(m_pDevice);
+	Safe_Release(m_pContext);
+
+	Safe_Release(m_pGameInstance);
 
 	Super::Free();
 }

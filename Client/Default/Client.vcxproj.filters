@@ -175,6 +175,9 @@
     <Filter Include="03. GameObject\UIObjects\Canvas">
       <UniqueIdentifier>{bef61798-c2ef-48e4-8db0-faf0d1677c2d}</UniqueIdentifier>
     </Filter>
+    <Filter Include="07. System\01. Builder\EffectBuilder">
+      <UniqueIdentifier>{0a51c3b4-11ce-445a-904c-410b2a5ef809}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="targetver.h">
@@ -333,6 +336,9 @@
     <ClInclude Include="..\Public\Canvas.h">
       <Filter>03. GameObject\UIObjects\Canvas</Filter>
     </ClInclude>
+    <ClInclude Include="..\Public\EffectBuilder.h">
+      <Filter>07. System\01. Builder\EffectBuilder</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <Image Include="Client.ico">
@@ -488,6 +494,9 @@
     </ClCompile>
     <ClCompile Include="..\Private\Canvas.cpp">
       <Filter>03. GameObject\UIObjects\Canvas</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\EffectBuilder.cpp">
+      <Filter>07. System\01. Builder\EffectBuilder</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
