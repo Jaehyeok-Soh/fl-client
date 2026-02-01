@@ -21,18 +21,34 @@ NS_BEGIN(Tool)
 typedef struct tagParsedMapdataOuter PARSED_MAPDATA_OUTER;
 typedef struct tagUnreal_Map_Data	 UE_MAP_DATA;
 typedef struct tagCONVERTED_MAPDATA   CONVERTED_MAPDATA;
+typedef struct tagUsingModelInfo   USING_MODEL_INFO;
+typedef struct tagUsingMaterialInfo   USING_MATERIAL_INFO;
 
 class CUEMapdataParser final : public CBase
 {
 	using Super = CBase;
 	DECLARE_SINGLETON(CUEMapdataParser)
+public:
+	enum class EObject_Path_Type
+	{
+		Model,
+		Mtl,
+		Tex,
+		END,
+	};
+
+
 private:
 	CUEMapdataParser();
 	virtual ~CUEMapdataParser() = default;
 	bool	Filter(const string& strName,const string& strType);
-	vector<CONVERTED_MAPDATA> Convert_UE_MapData(const vector<UE_MAP_DATA>& tData);
-	void					  Change_SRT(Vec3* vScale, Vec3* vPitchYawRoll, Vec3* vPosition, EStaticModel_Type eType);
-	void					  Change_ModelPath(OUT _wstring& wstrModelName , OUT _wstring& wstrModelPath);
+	vector<CONVERTED_MAPDATA>	Convert_UE_MapData(const vector<UE_MAP_DATA>& tData);
+	void						Change_SRT(Vec3* vScale, Vec3* vPitchYawRoll, Vec3* vPosition, EStaticModel_Type eType);
+	void						Change_ObjectPath(OUT _wstring& wstrModelName , OUT _wstring& wstrModelPath , EObject_Path_Type eType);
+	void						Change_UsingModelInfo(OUT USING_MODEL_INFO& tUsingModelInfo);
+	void						Change_Material_JsonFile_Path(OUT wstring& wstrMaterialJsonFilePath,const wstring& wstrModelPath);
+	void						Change_UsingMaterialInfo(OUT USING_MATERIAL_INFO& tUsingMtlInfo);
+	void						Change_UsingMaterialTexturePath(OUT USING_MATERIAL_INFO& tUsingMtlInfo);
 public:
 	HRESULT Initialize(ID3D11Device* pDevice, ID3D11DeviceContext* pContext);
 public:
@@ -63,6 +79,10 @@ private:
 	vector<string>										m_vecTypeFilter{};
 	vector<string>										m_vecOuterFilter{};
 	float												m_fMulScale{0.01f};
+
+
+private:
+	vector<string>										m_vecMtlTextureFilter{};
 
 private:
 	CGameInstance*		 m_pGameInstance{nullptr};
@@ -160,7 +180,7 @@ void read_vec4_Quat(const json& _j, Quat& vOut);
 
 void write_vec3_xyz(json& _j, const Vec3& vOut);
 void write_vec3_PitchYawRoll(json& _j, const Vec3& vOut);
-void write_vec4_Quat(const json& _j, Quat&& vOut);
+void write_vec4_Quat(const json& _j, Quat& vOut);
 
 
 #pragma endregion
@@ -170,9 +190,13 @@ void write_vec4_Quat(const json& _j, Quat&& vOut);
 
 typedef struct tagUsingMaterialInfo
 {
-	bool	isNull{true};
-	wstring wstrName{};
-	wstring wstrPath{};
+	bool	isNull{ true };
+
+	/* 참조하고 있는 Origin Mrt Material Json 파일 Path 값 */
+	wstring wstrOriginMtl_JsonFile_Name{};
+	wstring wstrOriginMtl_JsonFile_Path{};
+	/* 그 안에서 뜯어낸 Texutre 바인딩 이름 : Texutre 경로 [ 메테리얼 Json 경로에 꽃아줄 이름 ] */
+	vector < std::pair<wstring, wstring>> vecUsingTextureInfo{};
 }USING_MATERIAL_INFO;
 
 
@@ -181,7 +205,12 @@ typedef struct tagUsingModelInfo
 	wstring wstrName{};
 	wstring wstrPath{};
 
+	/* 모델이 생성되고 난 이후에 저장되는 메테리얼 경로 */
+	wstring wstrMtl_JsonFile_Path{};
+
 	vector<USING_MATERIAL_INFO> vecMaterialInfo{};
+public:
+
 }USING_MODEL_INFO;
 
 
