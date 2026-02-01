@@ -124,7 +124,7 @@ HRESULT CCollision_Manager::Unregister_Collider(CCollider* pCollider)
 	return S_OK;
 }
 
-_uint64 CCollision_Manager::Make_PairKey(const CCollider* pA, const CCollider* pB)
+uint64 CCollision_Manager::Make_PairKey(const CCollider* pA, const CCollider* pB)
 {
 	COLLIDER_ID id = {};
 	_uint a = pA->Get_ID();
@@ -171,7 +171,7 @@ void CCollision_Manager::Check_LayerPair(_uint iLeftLayer, _uint iRightLayer, co
 
 void CCollision_Manager::CollideTest_Pair(CCollider* pLeft, CCollider* pRight)
 {
-	_uint64 iKey = Make_PairKey(pLeft, pRight);
+	uint64 iKey = Make_PairKey(pLeft, pRight);
 
 	auto [itr, inserted] = m_umapPairs.try_emplace(iKey, PairState{});
 	PairState& pairState = itr->second;

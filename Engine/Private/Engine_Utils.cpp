@@ -174,6 +174,35 @@ string Engine_Utils::GetFileNameWithoutExtension(const string& filePath)
     return path.stem().string();
 }
 
+Vec3 Engine_Utils::ToEulerDegrees(const Quat& q)
+{
+    Matrix matRot = Matrix::CreateFromQuaternion(q);
+
+    Vec3 vEuler;
+
+    // 행렬에서 각 성분을 추출합니다
+    float asinVal = -matRot._32;
+    if (asinVal < -1.0f) asinVal = -1.0f;
+    if (asinVal > 1.0f) asinVal = 1.0f;
+
+    vEuler.x = asin(asinVal); // Pitch
+
+    if (cos(vEuler.x) > 0.0001f)
+    {
+        vEuler.y = atan2(matRot._31, matRot._33); // Yaw
+        vEuler.z = atan2(matRot._12, matRot._22); // Roll
+    }
+    else
+    {
+        // 짐벌락(Gimbal Lock) 발생 시 처리
+        vEuler.y = 0.0f;
+        vEuler.z = atan2(-matRot._21, matRot._11);
+    }
+
+    return Vec3(DirectX::XMConvertToDegrees(vEuler.x),
+        DirectX::XMConvertToDegrees(vEuler.y),
+        DirectX::XMConvertToDegrees(vEuler.z));
+}
 void Engine_Utils::Add_Flag(Flags& curFlags, _uint iBitFlag)
 {
     curFlags |= iBitFlag;

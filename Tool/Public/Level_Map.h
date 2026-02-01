@@ -58,13 +58,8 @@ private:
 	std::array<DelegateHandle, ENUM_TO_SZET(Event::END)>		m_EventHandles;
 	array<class CImGui_Panel* , ENUM_TO_SZET(Elements::END)>	m_arrayImGuiPanel{};
 
-
-
 	CUEMapdataParser*										m_pUEMapDataParser{nullptr};
 	CMapToolManager*										m_pMapToolManager{nullptr};
-
-	
-	CDebugLine*												m_pDebugLine{};
 
 private:
 

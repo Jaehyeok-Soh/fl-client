@@ -46,13 +46,14 @@ public:
 	virtual void Draw_ImGui() override;
 	virtual void Set_Dead(const wstring& wstrLayerTag) override;
 
-protected:
+public:
 	virtual void Set_ParentsWorldMatrix(Matrix* worldMatrix) { m_pParentsWorldMatrix = worldMatrix; }
 	virtual void Set_SimulationSpace(E_SIMULATION_SPACE Space) { m_eSimulationSpace = Space; }
 
 	virtual const E_SIMULATION_SPACE& Get_SimulationSpace() { return m_eSimulationSpace; }
 	virtual Matrix* Get_ParentsWorldMatrix() { return m_pParentsWorldMatrix; }
 
+protected:
 	void Update_CombinedWorldMatrix(const Matrix* pMatParent);
 
 public:
