@@ -366,6 +366,9 @@
     <ClInclude Include="..\Public\Panel_MapObjectList.h">
       <Filter>06. ImGui\01. Panel\Map\Panel_MapObjectList</Filter>
     </ClInclude>
+    <ClInclude Include="..\Public\Panel_ModelConverter.h">
+      <Filter>06. ImGui\01. Panel\Asimp</Filter>
+    </ClInclude>
     <ClInclude Include="..\Public\MapObject.h">
       <Filter>02. GameObjects\Map\00. MapObject\00. MapObject</Filter>
     </ClInclude>
@@ -435,8 +438,11 @@
     <ClInclude Include="..\Public\DebugLine.h">
       <Filter>12. DebugLine\01. DebugLine</Filter>
     </ClInclude>
-    <ClInclude Include="..\Public\Panel_ModelConverter.h">
-      <Filter>06. ImGui\01. Panel\Asimp</Filter>
+    <ClInclude Include="..\Public\Button.h" />
+    <ClInclude Include="..\public\Level_Logo.h" />
+    <ClInclude Include="..\Public\Image.h" />
+    <ClInclude Include="..\Public\Builder_UI.h">
+      <Filter>99. ETC</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

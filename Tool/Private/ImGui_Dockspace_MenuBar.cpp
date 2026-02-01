@@ -14,6 +14,12 @@
 #include "Effect.h"
 #include "CEFfectObject.h"
 
+// UI
+#include "DataStruct_UI.h"
+#include "DataDocument_UI.h"
+#include "ImGui_UIManager.h"
+#include "ToolCanvas.h"
+
 CImGui_Dockspace_MenuBar::CImGui_Dockspace_MenuBar(const _char* pLabel, ID3D11Device* pDevice, ID3D11DeviceContext* pDeviceContext)
 	: Super(pLabel, pDevice, pDeviceContext)
 	, m_pGameInstance(CGameInstance::GetInstance())
@@ -212,6 +218,26 @@ void CImGui_Dockspace_MenuBar::Save_CameraData(const wstring& wstrFilePath)
 
 void CImGui_Dockspace_MenuBar::Save_UIData(const wstring& wstrFilePath)
 {
+	ELevelType eLevelType = ELevelType::UI;
+	DTO::ECategory eCategory = DTO::ECategory::UI;
+	_uint iLevelID = ENUM_TO_UINT(eLevelType);
+
+	const _wstring& strKey = Engine_Utils::ToWString(
+		CImGui_UIManager::GetInstance()->Safe_Access_Canvas(CImGui_UIManager::GetInstance()->Get_CurCanvasIndex())->Get_Tag());
+
+	_wstring wstrfinalPath = std::filesystem::path(wstrFilePath).parent_path().wstring() + L"\\" + strKey + L".json";
+
+	if (FAILED(m_pGameInstance->Regist_Document<CDataDocument_UI>(iLevelID, eCategory)))
+		return;
+
+	CDataDocumentBase* pDocument = m_pGameInstance->Ensure_Document(iLevelID, eCategory, strKey);
+	if (pDocument == nullptr)
+		return;
+
+	CDataDocument_UI* pDoc = static_cast<CDataDocument_UI*>(pDocument);
+	Request_ExportData(ELevelType::UI, eCategory, strKey, pDocument);
+
+	m_pGameInstance->Save_File_Json(iLevelID, eCategory, wstrfinalPath);
 }
 
 void CImGui_Dockspace_MenuBar::Load_MapData(const wstring& wstrFilePath)
