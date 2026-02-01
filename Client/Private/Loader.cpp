@@ -46,6 +46,7 @@
 //=================
 #include "TextureBase.h"
 #include "Model.h"
+#include "ModelLoader.h"
 #include "GameInstance.h"
 
 #pragma region Macro
@@ -147,8 +148,11 @@ HRESULT CLoader::Loading_For_Logo()
 	/////////////////////////////////////////
 #pragma region Resource
 	{
-		if (FAILED(m_pGameInstance->Load_Sounds(L"../../Resources/Sounds")))
-			return E_FAIL;
+		//if (FAILED(m_pGameInstance->Load_Sounds(L"../../Resources/Sounds")))
+		//	return E_FAIL;
+
+		//if (FAILED(Make_StaticModel_Prototype(ELevelType::LOGO, L"../../Resources/Models/Map/TestMap")))
+		//	return E_FAIL;
 	}
 #pragma endregion
 
@@ -296,6 +300,38 @@ HRESULT CLoader::Loading_Texture(const wstring& wstrFile)
 	return S_OK;
 }
 
+HRESULT CLoader::Make_StaticModel_Prototype(ELevelType eLevelType, const wstring& wstrFilePath)
+{
+	std::filesystem::path filePath{ wstrFilePath };
+	filePath /= "Model";
+	const wstring wstrModelTag = L"Prototype_Component_Model_";
+	const std::filesystem::path basePath = g_wszModelRelativePath;
+	const _uint iPrototypeLevelType = ENUM_TO_UINT(eLevelType);
+	for (const auto& entry : std::filesystem::directory_iterator(filePath))
+	{
+		if (entry.is_regular_file())
+		{
+			if (entry.path().extension() != g_wszMeshExtension)
+				continue;
+
+			std::filesystem::path fileFullPath = entry.path();
+			wstring wstrFileName = fileFullPath.stem();
+			{
+				CBase* pFinded = { nullptr };
+				if (pFinded = m_pGameInstance->Find_Prototype(iPrototypeLevelType, wstrModelTag + wstrFileName))
+					continue;
+			}
+
+			CModel::MODEL_ORIGIN_DESC desc = {};
+			desc.eType = EModelType::STATIC;
+			desc.iPrototypeLevelIndex = iPrototypeLevelType;
+			desc.wstrModelFolderName = fileFullPath.lexically_relative(basePath);
+			m_pGameInstance->Add_Prototype(iPrototypeLevelType, wstrModelTag + wstrFileName, CModel::Create(m_pDevice, m_pDeviceContext, &desc));
+		}
+	}
+
+	return S_OK;
+}
 
 CLoader* CLoader::Create(ID3D11Device* pDevice, ID3D11DeviceContext* pDeviceContext, ELevelType eLoadingLevelID)
 {

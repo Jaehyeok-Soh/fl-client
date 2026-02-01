@@ -72,7 +72,6 @@ HRESULT CLevel_Logo::Awake(const _uint iLevelID)
 	if (FAILED(Ready_Camera_Setting(iLevelID)))
 		return E_FAIL;
 
-	m_pGameInstance->PlayBGM(L"Music_Logo", 0.1f);
 	return S_OK;
 }
 
