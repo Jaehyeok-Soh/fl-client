@@ -220,6 +220,12 @@
     <Filter Include="12. DebugLine\01. DebugLine">
       <UniqueIdentifier>{f4bab261-d522-4da3-ab3e-259ad1d9e20a}</UniqueIdentifier>
     </Filter>
+    <Filter Include="04. Component\Map">
+      <UniqueIdentifier>{ea20cd24-748e-4bdd-a0a7-35c178fc58cb}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="04. Component\Map\Tool_StaticMesh">
+      <UniqueIdentifier>{d82ac746-4abc-4ab0-a328-d317d74841e5}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="framework.h">
@@ -438,10 +444,21 @@
     <ClInclude Include="..\Public\Panel_ModelConverter.h">
       <Filter>06. ImGui\01. Panel\Asimp</Filter>
     </ClInclude>
-    <ClInclude Include="..\Public\Builder_UI.h" />
-    <ClInclude Include="..\Public\Button.h" />
-    <ClInclude Include="..\public\Level_Logo.h" />
-    <ClInclude Include="..\Public\Image.h" />
+    <ClInclude Include="..\Public\Button.h">
+      <Filter>04. Component\UI\Base\Button</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\Image.h">
+      <Filter>04. Component\UI\Base\Image</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\Builder_UI.h">
+      <Filter>09. Builder\UI</Filter>
+    </ClInclude>
+    <ClInclude Include="..\public\Level_Logo.h">
+      <Filter>03. Level\Logo</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\Tool_StaticMeshComponent.h">
+      <Filter>04. Component\Map\Tool_StaticMesh</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <Image Include="small.ico">
@@ -663,6 +680,9 @@
     </ClCompile>
     <ClCompile Include="..\Private\Image.cpp">
       <Filter>04. Component\UI\Base\Image</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\Tool_StaticMeshComponent.cpp">
+      <Filter>04. Component\Map\Tool_StaticMesh</Filter>
     </ClCompile>
   </ItemGroup>
 </Project>

@@ -5,9 +5,22 @@ class CStaticModel : public CMapObject
 {
 	using Super = CMapObject;
 public:
-	typedef struct tagStaticMesh : public CMapObject::MAPOBJECT_DESC
+	typedef struct tagStaticModel : public CMapObject::MAPOBJECT_DESC
 	{
+		wstring				wstrModelName{ L"" };
+		wstring				wstrModelPath{ L"" };
+
+
 		EStaticModel_Type eType{};
+	public:
+		tagStaticModel(EStaticModel_Type _eType, const wstring _wstrModelName, const wstring& _wstrModelPath)
+			: eType(_eType) , wstrModelName(_wstrModelName) , wstrModelPath(_wstrModelPath)
+		{
+		}
+		tagStaticModel()
+			: eType(EStaticModel_Type::END), wstrModelName(L""), wstrModelPath(L"")
+		{
+		}
 	}STATICMODEL_DESC;
 protected:
 	CStaticModel(EToolObjectType eType, ID3D11Device* pDevice, ID3D11DeviceContext* pDeviceContext);

@@ -7,13 +7,16 @@
 #include "StaticModel.h"
 #include "DebugLine.h"
 
+
 IMPLEMENT_SINGLETON(CMapToolManager)
 
 CMapToolManager::CMapToolManager()
 	: m_pGameInstance(CGameInstance::GetInstance())
 	, m_pImGui_ToolManager(CImGui_ToolManager::GetInstance())
+	, m_arrayMapObjectCloneFactory{}
 {
 	Safe_AddRef(m_pGameInstance);
+	m_arrayMapObjectCloneFactory.fill(nullptr);
 }
 
 HRESULT CMapToolManager::Initialize(ID3D11Device* pDevice, ID3D11DeviceContext* pContext)
@@ -27,6 +30,9 @@ HRESULT CMapToolManager::Initialize(ID3D11Device* pDevice, ID3D11DeviceContext* 
 
 	m_fMouseWheelSpeed = 0.001f;
 	m_fMouseRange = 1.f;
+
+	if (FAILED(Register_MapObjectCloneFactory()))
+		return E_FAIL;
 
 	return S_OK;
 }
@@ -104,38 +110,30 @@ void CMapToolManager::DrawImGui_Preview()
 	m_pPreviewMapobject->Draw_ImGui();
 }
 
-CMapObject* CMapToolManager::Make_Preview(EMapObject_Type eMapObjectType,const wstring& wstrModelPath)
+CMapObject* CMapToolManager::Make_Preview( EMapObject_Type eType  , void* pArg )
 {
 	CMapObject* pPreviewObject{ nullptr };
 
-	if (eMapObjectType == EMapObject_Type::STATICMODEL)
-	{
-		CStaticModel::STATICMODEL_DESC tDesc{};
-		tDesc.iLevelIndex = ENUM_TO_UINT(ELevelType::MAP);
-		tDesc.eType = EStaticModel_Type::DEFUALT;
-		tDesc.isLoaded = false;
-		tDesc.wstrModelPath = wstrModelPath;
-		tDesc.wstrModelName = path(wstrModelPath).filename().stem();
-		tDesc.wstrLayerTag = g_wszStaticModelLayer;
-		tDesc.eState = CMapObject::EState::Preview;
+	auto& Factory = m_arrayMapObjectCloneFactory[ENUM_TO_UINT(eType)];
 
-		if (!(pPreviewObject =
-			static_cast<CMapObject*>
-			(m_pGameInstance->Add_GameObject(tDesc.iLevelIndex, L"Prototype_GameObject_StaticModel", tDesc.iLevelIndex, g_wszStaticModelLayer, &tDesc))))
-		{
-			Safe_Release(m_pPreviewMapobject);
-			return nullptr;
-		}
-	}
-
+	if (Factory == nullptr) return nullptr;
 
 	Delete_Preview();
 
-	return m_pPreviewMapobject = pPreviewObject;
+	return m_pPreviewMapobject =  static_cast<CMapObject*>(Factory(pArg));
 }
 
 HRESULT CMapToolManager::Batch_Preview()
 {
+	return S_OK;
+}
+
+HRESULT CMapToolManager::Register_MapObjectCloneFactory()
+{
+	m_arrayMapObjectCloneFactory[ENUM_TO_UINT(EMapObject_Type::STATICMODEL)] =
+		[=](void* pArg)->CGameObject* { return m_pGameInstance->Add_GameObject(ENUM_TO_UINT(ELevelType::MAP),L"Prototype_GameObject_StaticModel",
+			ENUM_TO_UINT(ELevelType::MAP),g_wszStaticModelLayer,pArg);};
+
 	return S_OK;
 }
 
@@ -144,4 +142,9 @@ void CMapToolManager::Free()
 	Safe_Release(m_pDevice);
 	Safe_Release(m_pContext);
 	Safe_Release(m_pGameInstance);
+
+
+
+	for (auto& Factory : m_arrayMapObjectCloneFactory)
+		Factory = nullptr;
 }

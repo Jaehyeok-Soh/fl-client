@@ -375,7 +375,7 @@ HRESULT CUEMapdataParser::Batch_UnrealRawMapData(const wchar_t* wszFileName)
 
 	for (auto& CONVERTED_MAPDATA : *pFind)
 	{
-		CStaticModel::STATICMODEL_DESC desc = {};
+		CStaticModel::STATICMODEL_DESC desc{};
 		desc.wstrLayerTag = g_wszStaticModelLayer;
 		desc.iLevelIndex = ENUM_TO_UINT(ELevelType::MAP);
 		desc.wstrModelPath = CONVERTED_MAPDATA.tUsingModelInfo.wstrPath;

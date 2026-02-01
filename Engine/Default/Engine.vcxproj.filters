@@ -629,6 +629,9 @@
     </ClCompile>
     <ClCompile Include="..\private\ThreadWorker.cpp" />
     <ClCompile Include="..\public\ThreadPool.cpp" />
+    <ClCompile Include="..\Private\DataStruct_Map.cpp">
+      <Filter>01. Utility\11. DataRepository\Datas\Map</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\Public\Timer_Manager.h">
@@ -987,6 +990,9 @@
     </ClInclude>
     <ClInclude Include="..\public\ThreadPool.h" />
     <ClInclude Include="..\public\ThreadWorker.h" />
+    <ClInclude Include="..\Public\DataStruct_Map.h">
+      <Filter>01. Utility\11. DataRepository\Datas\Map</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <FxCompile Include="..\..\Shaders\Shader_Deffered.hlsl">

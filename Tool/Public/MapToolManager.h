@@ -2,6 +2,8 @@
 #include "Base.h"
 
 
+
+
 NS_BEGIN(Engine)
 
 class  CGameInstance;
@@ -13,6 +15,10 @@ NS_BEGIN(Tool)
 class CMapObject;
 class CImGui_ToolManager;
 
+
+using MapObjectCloneFactory = std::function<CGameObject*(void* pArg)>;
+
+
 class CMapToolManager : public CBase
 {
 public:
@@ -23,8 +29,10 @@ private:
 	virtual ~CMapToolManager() = default;
 public:
 	HRESULT					Initialize(ID3D11Device* pDevice , ID3D11DeviceContext* pContext);
-	CMapObject*				Make_Preview(EMapObject_Type eMapObjectType ,const wstring& wstrModelPath = L"");
+	CMapObject*				Make_Preview(EMapObject_Type Type, void* pArg);
 	HRESULT					Batch_Preview();
+private:
+	HRESULT					Register_MapObjectCloneFactory();
 public:
 	void					Update(float DT);
 	void					Input_Update(float DT);
@@ -51,11 +59,11 @@ private:
 
 	Vec3					m_vRayWorldPos{};
 
-	CImGui_ToolManager*		m_pImGui_ToolManager{nullptr};
+	CImGui_ToolManager*												  m_pImGui_ToolManager{nullptr};
+	array< MapObjectCloneFactory, ENUM_TO_UINT(EMapObject_Type::END)> m_arrayMapObjectCloneFactory{};
 
 private:
 	virtual void Free() override;
-
 public:
 	friend class CPanel_MapTool;
 };
