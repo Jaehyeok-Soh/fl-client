@@ -89,8 +89,6 @@ HRESULT CLevel_Map::Awake(const _uint iLevelID)
 	Ready_Event();
 	m_pImGuiManager->Ready_Events();
 
-	/* Cam Setting */
-	m_pGameInstance->Get_MainCamera()->Get_Component<CCamera>()->Set_Fov(XMConvertToRadians(60.f));
 
 	/* Batch */
 
@@ -186,13 +184,14 @@ HRESULT CLevel_Map::Ready_Camera_Layer(const wstring& wstrLayerTag)
 		CGameObject* pResult = { nullptr };
 		CCameraMan::GAMEOBJECT_DESC goDesc = {};
 		CTransform::TRANSFORM_DESC TransformDesc = {};
-		TransformDesc.vPosition = {1.f, 1.f, -1.f};
+		TransformDesc.vPosition = { 0.f, 5.0f, -5.f };
+		TransformDesc.vRotation_Degrees = { 0.f,0.f,0.f};
 		TransformDesc.fMovePerSec = { 15.f };
 		TransformDesc.fRotatePerSec = {2.f};
 		CCamera::CAMERA_DESC CameraDesc = {};
 
 		CameraDesc.eProjectionType = EProjectionType::PERSPECTIVE;
-		CameraDesc.fFov = ::XMConvertToRadians(90.f);
+		CameraDesc.fFov = ::XMConvertToRadians(60.f);
 		CameraDesc.fViewWidth = (_float)g_iWinSizeX;
 		CameraDesc.fViewHeight = (_float)g_iWinSizeY;
 		CameraDesc.fNear = 0.1f;
@@ -229,16 +228,15 @@ HRESULT CLevel_Map::Ready_Lights()
 
 HRESULT CLevel_Map::Ready_Camera_Setting(const _uint iLevelID)
 {
-	CGameObject* pFreeCamera = m_pGameInstance->Get_GameObject_Back(iLevelID, L"Camera_Layer");
-	m_pGameInstance->Add_Camera(CameraType::STATIC, g_FreeCameraName, static_cast<CCameraMan*>(pFreeCamera));
+	CCameraMan* pFreeCamera = static_cast<CCameraMan*>(m_pGameInstance->Get_GameObject_Back(iLevelID, L"Camera_Layer"));
+	m_pGameInstance->Add_Camera(CameraType::STATIC, g_FreeCameraName, pFreeCamera);
 	m_pGameInstance->Change_MainCamera(CameraType::STATIC, g_FreeCameraName);
+
 	return S_OK;
 }
 
 HRESULT CLevel_Map::Ready_DebugLine()
 {
-	m_pDebugLine = nullptr;
-
 	CDebugLine::DEBUGLINE_DESC tDesc{};
 	tDesc.vColor_X = {0.f,1.f,0.f,1.f};
 	tDesc.vColor_Z = {1.f,0.f,0.f,1.f};
@@ -246,13 +244,8 @@ HRESULT CLevel_Map::Ready_DebugLine()
 	CTransform::TRANSFORM_DESC tTsDesc{};
 	tDesc.pTransform_Desc = &tTsDesc;
 
-
-	m_pDebugLine =
-		static_cast<CDebugLine*>(m_pGameInstance->Add_GameObject(ENUM_TO_UINT(ELevelType::STATIC),L"Prototype_GameObject_DebugLine",ENUM_TO_UINT(ELevelType::MAP),L"Layer_DebugLine",
-			&tDesc));
-	if (m_pDebugLine == nullptr) return E_FAIL;
-
-
+	m_pGameInstance->Add_GameObject(ENUM_TO_UINT(ELevelType::STATIC), L"Prototype_GameObject_DebugLine", ENUM_TO_UINT(ELevelType::MAP), L"Layer_DebugLine",
+		&tDesc);
 
 	return S_OK;
 }
@@ -289,7 +282,6 @@ void CLevel_Map::Free()
 		Safe_Release(pElement);
 	}
 	m_arrayImGuiPanel.fill(nullptr);
-
 
 	Safe_Release(m_pImGuiManager);
 	Safe_Release(m_pPickingManager);

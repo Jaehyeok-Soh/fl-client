@@ -148,6 +148,8 @@ HRESULT CVIBuffer_Particle_Mesh::Initialize(void* pArg)
 //  =============   새로 버퍼 할당  ==============
 HRESULT CVIBuffer_Particle_Mesh::Resize_InstanceBuffer(_uint iNumInstanceCount)
 {
+	if (m_tParticleDesc.pModel == nullptr) return E_FAIL;
+	
 	// Stride 재설정
 	m_iInstanceVertexStride = sizeof(VTXPARTICLE);
 	m_ePrimitiveType = D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST;
@@ -161,9 +163,6 @@ HRESULT CVIBuffer_Particle_Mesh::Resize_InstanceBuffer(_uint iNumInstanceCount)
 	Safe_Release(m_pVBInstance);
 	Safe_Delete_Array(m_pInstanceVertices);
 	Safe_Delete_Array(m_pSpeeds);
-
-	if (m_tParticleDesc.pModel == nullptr)
-		return E_FAIL;
 
 	CMesh* pMesh = m_tParticleDesc.pModel->Get_Mesh(0);
 	ID3D11Buffer* pOriginalVB = pMesh->Get_VBBuffer();

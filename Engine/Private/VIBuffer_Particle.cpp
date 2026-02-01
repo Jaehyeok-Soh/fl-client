@@ -176,6 +176,7 @@ void CVIBuffer_Particle::Straight(Vec3 vLook, _float fDT)
 			pVertices[i].vTranslation = m_pInstanceVertices[i].vTranslation;
 		}
 	}
+	m_pDeviceContext->Unmap(m_pVBInstance, 0);
 }
 
 void CVIBuffer_Particle::Rise(_float fTimeDelta)

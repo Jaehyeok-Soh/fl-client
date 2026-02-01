@@ -1,6 +1,6 @@
 #pragma once
 #include "DataDocumentBase.h"
-#include "DataStruct_Example.h"
+#include "DataStruct_Effect.h"
 
 NS_BEGIN(Engine)
 
@@ -17,10 +17,9 @@ public:
 	virtual DTO::ECategory Get_Category() const override { return DTO::ECategory::EFFECT; }
 	virtual json ToJson() const override;
 	virtual HRESULT FromJson(const json& j) override;
-	HRESULT Try_Add(const DTO::TExample_LightData& data);
-	HRESULT Try_Add(const DTO::TExample_StaticModelData& data);
+	HRESULT Try_Add(const DTO::TEFFECT_ContainerData& data);
 private:
-	IObjectDataBase* Create_ObjectData(DTO::EMapType eType);
+	IObjectDataBase* Create_ObjectData(DTO::EEffectType eType);
 	HRESULT Try_Add(IObjectDataBase* pObject);
 public:
 	static CDataDocument_Effect* Create();

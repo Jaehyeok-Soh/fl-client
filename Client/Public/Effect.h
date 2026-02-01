@@ -1,34 +1,23 @@
 #pragma once
-#include "Tool_ContainerObject.h"
+#include "Client_Defines.h"
+#include "ContainerObject.h"
+#include "DataStruct_Effect.h"
 
-NS_BEGIN(Engine)
+NS_BEGIN(Client)
 
-class CGameObject;
-
-NS_END
-
-NS_BEGIN(Tool)
-
-enum class E_SIMULATION_SPACE
+class Effect : public CContainerObject
 {
-	NONE = 0,
-	LOCAL,
-	WORLD,
-};
-
-class Effect : public Tool_ContainerObject
-{
-	using Super = Tool_ContainerObject;
+	using Super = CContainerObject;
 
 public:
-	typedef struct tagToolObjectDesc : public Super::TOOLOBJECT_DESC
+	typedef struct tagEffectContainerDesc : public Super::GAMEOBJECT_DESC
 	{
-		E_SIMULATION_SPACE _Effect_SimulationType = E_SIMULATION_SPACE::NONE;
+		DTO::E_SIMULATION_SPACE _Effect_SimulationType = DTO::E_SIMULATION_SPACE::NONE;
 	}EFFECT_CONTAINERDESC;
 
 protected:
-	Effect(EToolObjectType eType, ID3D11Device* pDevice, ID3D11DeviceContext* pDeviceContext);
-	explicit Effect(const Tool_ContainerObject& rhs);
+	Effect(ID3D11Device* pDevice, ID3D11DeviceContext* pDeviceContext);
+	explicit Effect(const Effect& rhs);
 	virtual ~Effect() = default;
 
 public:
@@ -43,28 +32,34 @@ public:
 	virtual HRESULT Render() override;
 	virtual _bool Picking(OUT Vec3& vOut) override;
 	virtual _bool Export_Data(DTO::ECategory eCategory, CDataDocumentBase* pDocument) override;
-	virtual void Draw_ImGui() override;
 	virtual void Set_Dead(const wstring& wstrLayerTag) override;
 
 public:
 	virtual void Set_ParentsWorldMatrix(Matrix* worldMatrix) { m_pParentsWorldMatrix = worldMatrix; }
-	virtual void Set_SimulationSpace(E_SIMULATION_SPACE Space) { m_eSimulationSpace = Space; }
+	virtual void Set_SimulationSpace(DTO::E_SIMULATION_SPACE Space) { m_eSimulationSpace = Space; }
 
-	virtual const E_SIMULATION_SPACE& Get_SimulationSpace() { return m_eSimulationSpace; }
+	virtual const DTO::E_SIMULATION_SPACE& Get_SimulationSpace() { return m_eSimulationSpace; }
 	virtual Matrix* Get_ParentsWorldMatrix() { return m_pParentsWorldMatrix; }
 
 protected:
 	void Update_CombinedWorldMatrix(const Matrix* pMatParent);
 
 public:
-	static Effect* Create(EToolObjectType eType, ID3D11Device* pDevice, ID3D11DeviceContext* pDeviceContext);
+	const string& Get_Name() const { return m_szName; }
+	void Set_Name(const string& Name) { m_szName = Name; }
+
+public:
+	static Effect* Create(ID3D11Device* pDevice, ID3D11DeviceContext* pDeviceContext);
 	virtual CGameObject* Clone(void* pArg);
 	virtual void Free() override;
 
 protected:
-	E_SIMULATION_SPACE				m_eSimulationSpace = {};
-	Matrix*							m_pParentsWorldMatrix = { nullptr };
-	Matrix							m_matCombinedWorld = {};
+	DTO::E_SIMULATION_SPACE				m_eSimulationSpace = {};
+	Matrix*								m_pParentsWorldMatrix = { nullptr };
+	Matrix								m_matCombinedWorld = {};
+
+protected:
+	string								m_szName = {};
 };
 
 NS_END
