@@ -8,6 +8,8 @@
 #include "Camera.h"
 #include "GameInstance.h"
 
+uint64 CGameObject::s_iNextID = 0;
+
 CGameObject::CGameObject(ID3D11Device* pDevice, ID3D11DeviceContext* pDeviceContext)
     : m_pDevice(pDevice)
     , m_pDeviceContext(pDeviceContext)
@@ -25,6 +27,7 @@ CGameObject::CGameObject(const CGameObject& rhs)
     , m_pDeviceContext(rhs.m_pDeviceContext)
     , m_pGameInstance(CGameInstance::GetInstance())
     , m_bClone(true)
+    , m_iObjectID(++s_iNextID)
 {
     Safe_AddRef(m_pDevice);
     Safe_AddRef(m_pDeviceContext);
@@ -233,6 +236,16 @@ Vec3 CGameObject::Get_CenterFromCollider(EColliderType eType, CBounding* pBoundi
     default:
         return { -100.f, -100.f, -100.f };
     }
+}
+
+void CGameObject::Set_Name(const string& strName)
+{
+    m_strName = strName;
+}
+
+void CGameObject::Set_Name(const wstring& wstrName)
+{
+    m_strName = Engine_Utils::ToString(wstrName);
 }
 
 /// <summary>
