@@ -1,20 +1,24 @@
 #include "pch.h"
 #include "Player.h"
 
+// component
 #include "Navigation.h"
 #include "StatComponent.h"
-#include "MainPlayer.h"
 #include "Model.h"
-#include "Weapon.h"
-#include "ColliderPart.h"
 #include "Bounding_AABB.h"
 #include "Bounding_OBB.h"
 #include "Bounding_Sphere.h"
-#include "CameraMan_Targeter.h"
-#include "Collider.h"
 #include "Bone.h"
-#include "Body.h"
 #include "PlayerActionState.h"
+#include "ColliderPart.h"
+#include "Collider.h"
+
+// parts objs
+#include "Weapon.h"
+#include "Body.h"
+
+#include "MainPlayer.h"
+#include "CameraMan_Targeter.h"
 
 #pragma region States
 #include "State_Idle.h"
@@ -117,6 +121,21 @@ void CPlayer::Update_Late(const _float fTimeDelta)
 void CPlayer::Ready_Before_Render(const _float fTimeDelta)
 {
     Super::Ready_Before_Render(fTimeDelta);
+
+#ifdef _DEBUG
+    CTransform* pTrans = Get_Component<CTransform>();
+
+    Vec3 vPos = pTrans->Get_Info(TRANSFORM_INFO_STATE::POS);
+
+    float x = vPos.x;
+    float y = vPos.y;
+    float z = vPos.z;
+
+    char buf[128];
+    sprintf_s(buf, "Position : %.3f, %.3f, %.3f\n", x, y, z);
+    OutputDebugStringA(buf);
+#endif
+
 }
 
 HRESULT CPlayer::Render()
@@ -138,6 +157,19 @@ _int CPlayer::Get_AnimationIndex(const wstring& wstrName)
         return -1;
     }
     return -1;
+}
+
+_wstring CPlayer::Get_AnimationName(_uint iAniIndex)
+{
+    if (CBody* pBody = Get_Part<CBody>(Part::BODY))
+    {
+        if (CModel* pModel = pBody->Get_Component<CModel>())
+        {
+            return pModel->Get_AnimationName(iAniIndex);
+        }
+        return L"";
+    }
+    return L"";
 }
 
 HRESULT CPlayer::Ready_BaseStates()
@@ -415,7 +447,7 @@ HRESULT CPlayer::Ready_BaseStates()
         desc.bBlend = true;
         desc.bLoop = false;
 
-        desc.FMoves = CStateBase_Player::MOVEFLAGS::OWN | CStateBase_Player::MOVEFLAGS::NORMAL;
+        desc.FMoves = CStateBase_Player::MOVEFLAGS::NORMAL;
         vecChangeState_ByKey[ENUM_TO_SZET(CStateBase_Player::STATEKEY::MOVE)]           = ENUM_TO_UINT(State::END);
         vecChangeState_ByKey[ENUM_TO_SZET(CStateBase_Player::STATEKEY::SPACE)]          = ENUM_TO_UINT(State::JUMPDOUBLE);
         vecChangeState_ByKey[ENUM_TO_SZET(CStateBase_Player::STATEKEY::SHIFT)]          = ENUM_TO_UINT(State::DASHSKY);
@@ -438,7 +470,7 @@ HRESULT CPlayer::Ready_BaseStates()
         desc.bBlend = true;
         desc.bLoop = false;
 
-        desc.FMoves = CStateBase_Player::MOVEFLAGS::OWN | CStateBase_Player::MOVEFLAGS::NORMAL;
+        desc.FMoves = CStateBase_Player::MOVEFLAGS::NORMAL;
         vecChangeState_ByKey[ENUM_TO_SZET(CStateBase_Player::STATEKEY::MOVE)]           = ENUM_TO_UINT(State::END);
         vecChangeState_ByKey[ENUM_TO_SZET(CStateBase_Player::STATEKEY::SPACE)]          = ENUM_TO_UINT(State::END);
         vecChangeState_ByKey[ENUM_TO_SZET(CStateBase_Player::STATEKEY::SHIFT)]          = ENUM_TO_UINT(State::DASHSKY);
@@ -461,8 +493,8 @@ HRESULT CPlayer::Ready_BaseStates()
         desc.bBlend = true;
         desc.bLoop = false;
 
-        desc.FMoves = CStateBase_Player::MOVEFLAGS::OWN | CStateBase_Player::MOVEFLAGS::PRESS_CHANGE;
-        vecChangeState_ByKey[ENUM_TO_SZET(CStateBase_Player::STATEKEY::MOVE)]           = ENUM_TO_UINT(State::LAND); // ¿ø·¡´Â fall
+        desc.FMoves = CStateBase_Player::MOVEFLAGS::OWN;
+        vecChangeState_ByKey[ENUM_TO_SZET(CStateBase_Player::STATEKEY::MOVE)]           = ENUM_TO_UINT(State::END);
         vecChangeState_ByKey[ENUM_TO_SZET(CStateBase_Player::STATEKEY::SPACE)]          = ENUM_TO_UINT(State::JUMPDOUBLE);
         vecChangeState_ByKey[ENUM_TO_SZET(CStateBase_Player::STATEKEY::SHIFT)]          = ENUM_TO_UINT(State::DASHSKY);
         vecChangeState_ByKey[ENUM_TO_SZET(CStateBase_Player::STATEKEY::LCRTL_PRESS)]    = ENUM_TO_UINT(State::END);
