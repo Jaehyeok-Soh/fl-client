@@ -57,7 +57,7 @@ protected:
 	virtual void Change_State(STATEKEY eKey);				// change 랩핑 함수 : 필요시 오버라이드
 
 private:
-	_uint					m_iEndState = { 0 };
+	_uint					m_iEndStateIdx = { 0 };
 
 	// state가 변환 했다면 true
 private:
