@@ -233,6 +233,18 @@ _bool CGameInstance::IntersectrayWithSphere_Local(BoundingSphere* pOriginDesc, O
 {
 	return m_pPicking->IntersectrayWithSphere_Local(pOriginDesc, vOut);
 }
+
+const Vec3& CGameInstance::Picking_Get_RayPos(bool isLocal) const
+{
+	return m_pPicking->Get_RayPos(isLocal);
+}
+
+const Vec3& CGameInstance::Picking_Get_RayDir(bool isLocal) const
+{
+	return m_pPicking->Get_RayDir(isLocal);
+}
+
+
 #pragma endregion
 
 #pragma region LEVEL_MANAGER

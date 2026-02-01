@@ -12,6 +12,7 @@
 #include "Shader.h"
 #include "MonoBehaviour.h"
 #include "Camera.h"
+#include "VIBuffer_Line_Color.h"
 #include "Transform.h"
 //=================
 // Object
@@ -126,6 +127,9 @@ HRESULT CLoader::Loading_For_Map()
 	m_pGameInstance->Add_Prototype(ENUM_TO_UINT(ELevelType::MAP), L"Prototype_Component_Collider_AABB", CCollider::Create(m_pDevice, m_pDeviceContext, EColliderType::AABB));
 	// For. Prototype_Component_Collider_OBB
 	m_pGameInstance->Add_Prototype(ENUM_TO_UINT(ELevelType::MAP), L"Prototype_Component_Collider_OBB", CCollider::Create(m_pDevice, m_pDeviceContext, EColliderType::OBB));
+
+
+
 
 	///* Map Data Model */
 	//CUEMapDataLoader* pMapDataLoader = CUEMapDataLoader::Create(m_pDevice,m_pDeviceContext);

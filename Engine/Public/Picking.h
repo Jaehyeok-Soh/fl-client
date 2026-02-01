@@ -24,6 +24,9 @@ public:
 	_bool IntersectrayWithOBB_Local(BoundingOrientedBox* pOriginDesc, OUT Vec3& vOut);
 	_bool IntersectrayWithSphere_World(BoundingSphere* pDesc, OUT Vec3& vOut);
 	_bool IntersectrayWithSphere_Local(BoundingSphere* pOriginDesc, OUT Vec3& vOut);
+public:
+	const Vec3& Get_RayPos(bool isLocal = false) const;
+	const Vec3& Get_RayDir(bool isLocal = false) const;
 private:
 	HWND m_hWnd = { NULL };
 	class CGameInstance* m_pGameInstance = { nullptr };

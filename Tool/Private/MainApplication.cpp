@@ -11,7 +11,7 @@
 // GameObject
 //=================
 #include "CameraMan_Free.h"
-
+#include "DebugLine.h"
 //=================
 // Component
 //=================
@@ -217,6 +217,12 @@ HRESULT CMainApplication::Ready_Static_Prototype()
 	//=================
 	if (FAILED(m_pGameInstance->Add_Prototype(ENUM_TO_UINT(ELevelType::STATIC), L"Prototype_GameObject_CameraManFree", CCameraMan_Free::Create(m_pDevice, m_pDeviceContext))))
 		return E_FAIL;
+
+	if (FAILED(m_pGameInstance->Add_Prototype(ENUM_TO_UINT(ELevelType::STATIC), L"Prototype_GameObject_DebugLine", CDebugLine::Create(m_pDevice, m_pDeviceContext))))
+		return E_FAIL;
+
+
+
 
 	//=================
 	// MaterialInstance

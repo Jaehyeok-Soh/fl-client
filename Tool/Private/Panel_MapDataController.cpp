@@ -113,14 +113,14 @@ HRESULT CPanel_MapDataController::Render_Converted_UnrealRawMapData_Button()
 
 	if (ImGui::CollapsingHeader(" [ Function ] : Converted Raw Data"))
 	{
-		if (ImGui::InputFloat("Convert Position Mul Scale", &m_fMulScale))
-			m_pUEMapdataParser->Set_MulScale(m_fMulScale);
+		//if (ImGui::InputFloat("Convert Position Mul Scale", &m_fMulScale))
+		//	m_pUEMapdataParser->Set_MulScale(m_fMulScale);
 
-		if (ImGui::TreeNode(" Mul PitchYawRoll Setting"))
-		{
-			ImGui::DragFloat3("Mul_PitchYawRoll", &m_pUEMapdataParser->m_vMulPitchYawRoll.x , 0.5f);
-			ImGui::TreePop();
-		}
+		//if (ImGui::TreeNode(" Mul PitchYawRoll Setting"))
+		//{
+		//	ImGui::DragFloat3("Mul_PitchYawRoll", &m_pUEMapdataParser->m_vMulPitchYawRoll.x , 0.5f);
+		//	ImGui::TreePop();
+		//}
 
 
 		ImGui::SeparatorText("[ Load All ] Raw Map Data");

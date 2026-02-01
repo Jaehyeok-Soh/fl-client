@@ -37,23 +37,52 @@ HRESULT CTransform::Initialize(void* pArg)
 		{
 			TRANSFORM_DESC* pFinalDesc = static_cast<TRANSFORM_DESC*>(pDesc->pTransform_Desc);
 
-			//Set_Scale(pFinalDesc->vScale);
-			//Rotation(XMConvertToRadians(pFinalDesc->vRotation_Degrees.x),
-			//	XMConvertToRadians(pFinalDesc->vRotation_Degrees.y),
-			//	XMConvertToRadians(pFinalDesc->vRotation_Degrees.z));
-			//Set_Info(TRANSFORM_INFO_STATE::POS,pFinalDesc->vPosition);
-
+			Matrix B =
+			{
+				1,  0,  0,  0,
+				0,  0, -1,  0,
+				0,  1,  0,  0,
+				0,  0,  0,  1
+			};
+			Matrix InvB = B.Transpose();
 
 			Matrix vScale	 = Matrix::CreateScale(pFinalDesc->vScale);
-			Matrix vRotation = Matrix::CreateFromQuaternion(Quat::CreateFromYawPitchRoll(
-					XMConvertToRadians(pFinalDesc->vRotation_Degrees.y),
-					XMConvertToRadians(pFinalDesc->vRotation_Degrees.x),
-					XMConvertToRadians(pFinalDesc->vRotation_Degrees.z)));
+			Matrix vRotation = Matrix::Identity;
+			if(pFinalDesc->bInstance == false)
+			{
+				float pitch = XMConvertToRadians(pFinalDesc->vRotation_Degrees.x) * 0.5f;
+				float yaw = XMConvertToRadians(pFinalDesc->vRotation_Degrees.y) * 0.5f;
+				float roll = XMConvertToRadians(pFinalDesc->vRotation_Degrees.z) * 0.5f;
+
+				const float SP = sinf(pitch), CP = cosf(pitch);
+				const float SY = sinf(yaw), CY = cosf(yaw);
+				const float SR = sinf(roll), CR = cosf(roll);
+
+				// (x,y,z,w) 순서로 반환 (SimpleMath Quaternion과 동일)
+				Quat q;
+				q.x = CR * SP * SY - SR * CP * CY;
+				q.y = -CR * SP * CY - SR * CP * SY;
+				q.z = CR * CP * SY - SR * SP * CY;
+				q.w = CR * CP * CY + SR * SP * SY;
+
+				// 비교 편의상 부호 표준화(선택): q와 -q는 같은 회전
+				if (q.w < 0.f) q = Quat(-q.x, -q.y, -q.z, -q.w);
+
+				
+				vRotation = Matrix::CreateFromQuaternion(q);
+			}
+			else
+			{
+				Quat qV = pFinalDesc->vQuaternion;
+				if (qV.w < 0.f) qV = Quat(-qV.x, -qV.y, -qV.z, -qV.w);
+
+				vRotation = Matrix::CreateFromQuaternion(qV);
+			}
+
 			Matrix vPos		 = Matrix::CreateTranslation(pFinalDesc->vPosition);
 
-
 			m_matWorld = vScale*  vRotation  * vPos;
-
+			m_matWorld = InvB * m_matWorld * B;
 			m_fMovePerSec = pFinalDesc->fMovePerSec;
 			m_fRotatePerSec = pFinalDesc->fRotatePerSec;
 		}

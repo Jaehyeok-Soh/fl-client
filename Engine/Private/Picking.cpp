@@ -167,6 +167,16 @@ _bool CPicking::IntersectrayWithSphere_Local(BoundingSphere* pOriginDesc, OUT Ve
 	return false;
 }
 
+const Vec3& CPicking::Get_RayPos(bool isLocal) const
+{
+	return isLocal == true ? m_vRayPos_Local : m_vRayPos;
+}
+
+const Vec3& CPicking::Get_RayDir(bool isLocal) const
+{
+	return isLocal == true ? m_vRayDir_Local : m_vRayDir;
+}
+
 CPicking* CPicking::Create(HWND hWnd)
 {
 	return new CPicking(hWnd);

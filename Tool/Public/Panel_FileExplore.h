@@ -6,6 +6,7 @@ NS_BEGIN(Tool)
 
 class CFolder;
 class CFile;
+class CMapToolManager;
 
 class CPanel_FileExplore : public CImGui_Panel
 {
@@ -23,13 +24,15 @@ private:
 	HRESULT	Render_MapObjectList();
 	HRESULT	Render_CamInfo();
 	HRESULT	Render_SelectInfo();
-	HRESULT Render_FileMoustRightButton(const wstring& wstrExt);
+	HRESULT Render_FileMoustRightButton(const wstring& wstrPath);
 private:
 	void						FloderWindow();
 	void						FileWindow();
 	void						Draw_TreeFiles(CFolder* pTreeFloder);
+	void						FileFindWindow();
 
 private:
+	vector<wstring>				m_vecFindFilePathList{};
 	CFolder*					m_pRootFolder{ nullptr };
 	vector<CFile*>				m_vecFiles;
 	string						m_strCurPath;
@@ -37,6 +40,9 @@ private:
 	char						m_szKey[MAX_PATH];
 
 private:
+	CMapToolManager*			m_pMapToolManager{nullptr};
+
+	char						m_szFindFileName[MAX_PATH];
 
 	class ImGui::FileBrowser*  m_pImFileBrowser{};
 	CGameInstance*			   m_pGameInstance{ nullptr };

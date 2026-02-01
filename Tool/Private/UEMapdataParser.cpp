@@ -91,11 +91,6 @@ vector<CONVERTED_MAPDATA> CUEMapdataParser::Convert_UE_MapData(const vector<UE_M
 		tConvertedData.tUsingModelInfo.wstrPath = Engine_Utils::ToWString(tUEMapData.tProperties.tStaticMesh.strObjectPath);
 		Change_ModelPath(tConvertedData.tUsingModelInfo.wstrName, tConvertedData.tUsingModelInfo.wstrPath);
 
-		if (tConvertedData.tUsingModelInfo.wstrName == L"SM_Com_Bus18")
-		{
-			int a = 0; 
-		}
-
 		for (auto& Material : tUEMapData.tProperties.tOverrideMaterials.vecObjectInfo)
 		{
 			if (Material.strObjectName.empty())
@@ -107,48 +102,28 @@ vector<CONVERTED_MAPDATA> CUEMapdataParser::Convert_UE_MapData(const vector<UE_M
 		{
 			tConvertedData.vScale		 = tUEMapData.tProperties.vRelativeScale;
 			tConvertedData.vPosition     = tUEMapData.tProperties.vRelativeLocation;
+			tConvertedData.vPitchYawRoll = tUEMapData.tProperties.vRelativeRotation;
 
-			if (tConvertedData.tUsingModelInfo.wstrName.find(L"Wall") != wstring::npos)
-				int a = 0;
-
-			Quat vQuat = Quat::CreateFromYawPitchRoll(XMConvertToRadians(tUEMapData.tProperties.vRelativeRotation.y)
-				, XMConvertToRadians(tUEMapData.tProperties.vRelativeRotation.x
-				), XMConvertToRadians(tUEMapData.tProperties.vRelativeRotation.z));
-
-			Quat vMulPitchYawRoll = Quat::CreateFromYawPitchRoll(XMConvertToRadians(m_vMulPitchYawRoll.y)
-				, XMConvertToRadians(m_vMulPitchYawRoll.x
-				), XMConvertToRadians(m_vMulPitchYawRoll.z));
-
-			Matrix QuatMatrix = Matrix::CreateFromQuaternion(vQuat) * Matrix::CreateFromQuaternion(vMulPitchYawRoll);
-
-			tConvertedData.vPitchYawRoll = QuatMatrix.ToEuler() * To_DEGREE;
-
-			Change_SRT(&tConvertedData.vScale, &tConvertedData.vPitchYawRoll, &tConvertedData.vPosition, tConvertedData.eType);
 			vecConvertedData.push_back(tConvertedData);
-
 		}
 
 #pragma region INSTANCE
+
 		else if (tConvertedData.eType == EStaticModel_Type::INSTANCE)
 		{
 			for (auto& PerInstanceSMData : tUEMapData.vecPerInstanceSMData)
 			{
 				if (PerInstanceSMData.isNull == true)
 					continue;
+				
 				tConvertedData.vPosition = PerInstanceSMData.tTransformData.vTranslation;
 				tConvertedData.vScale = PerInstanceSMData.tTransformData.vScale3D;
-				std::swap(PerInstanceSMData.tTransformData.vRotation.y, PerInstanceSMData.tTransformData.vRotation.z);
-				tConvertedData.vPitchYawRoll = Vec3(
-					XMConvertToDegrees(PerInstanceSMData.tTransformData.vRotation.x) ,
-					XMConvertToDegrees(PerInstanceSMData.tTransformData.vRotation.y),
-					XMConvertToDegrees(PerInstanceSMData.tTransformData.vRotation.z));
-				tConvertedData.vPitchYawRoll = PerInstanceSMData.tTransformData.vRotation.ToEuler() * To_DEGREE;
-				Change_SRT(&tConvertedData.vScale,&tConvertedData.vPitchYawRoll,&tConvertedData.vPosition, tConvertedData.eType);
+				tConvertedData.vQuaternion = PerInstanceSMData.tTransformData.vRotation;
 
-				/* SRT 변환 이후 Push Back */
 				vecConvertedData.push_back(tConvertedData);
 			}
 		}
+
 #pragma endregion
 
 	}
@@ -158,24 +133,7 @@ vector<CONVERTED_MAPDATA> CUEMapdataParser::Convert_UE_MapData(const vector<UE_M
 
 void CUEMapdataParser::Change_SRT(Vec3* vScale, Vec3* vPitchYawRoll, Vec3* vPosition , EStaticModel_Type eType)
 {	
-	if (vScale)
-	{
-		std::swap(vScale->x,  vScale->z );	
-		vScale->x = fabs(vScale->x);
-		vScale->y = fabs(vScale->y);
-		vScale->z = fabs(vScale->z);
 
-	}
-	if (vPitchYawRoll)
-	{		
-		std::swap(vPitchYawRoll->x,vPitchYawRoll->z);
-		vPitchYawRoll->x *= -1.f;
-	}
-	if (vPosition)
-	{
-		Vec3 vSwap = Vec3( vPosition->x * m_fMulScale , vPosition->z * m_fMulScale , -vPosition->y * m_fMulScale );
-		*vPosition = vSwap;
-	}
 }
 
 void CUEMapdataParser::Change_ModelPath(OUT _wstring& wstrModelName, OUT _wstring& wstrModelPath)
@@ -327,14 +285,25 @@ HRESULT CUEMapdataParser::Batch_UnrealRawMapData(const wchar_t* wszFileName)
 		desc.wstrModelPath = CONVERTED_MAPDATA.tUsingModelInfo.wstrPath;
 		desc.wstrModelName = CONVERTED_MAPDATA.tUsingModelInfo.wstrName;
 		desc.eType = CONVERTED_MAPDATA.eType;
+		desc.isLoaded = true;
 		CTransform::TRANSFORM_DESC tTramsoformDesc{};
 
 		if (CONVERTED_MAPDATA.tUsingModelInfo.wstrName.find(L"Wall") != wstring::npos)
 			int a = 0;
 
+		if (desc.eType == EStaticModel_Type::INSTANCE)
+		{
+			tTramsoformDesc.bInstance = true;
+			tTramsoformDesc.vQuaternion = CONVERTED_MAPDATA.vQuaternion;
+		}
+
 		tTramsoformDesc.vScale				= CONVERTED_MAPDATA.vScale;
 		tTramsoformDesc.vRotation_Degrees	= CONVERTED_MAPDATA.vPitchYawRoll;
 		tTramsoformDesc.vPosition			= CONVERTED_MAPDATA.vPosition;
+
+		{
+			tTramsoformDesc.vPosition *= m_fMulScale;
+		}
 
 		desc.pTransform_Desc = (void*)&tTramsoformDesc;
 
@@ -343,9 +312,6 @@ HRESULT CUEMapdataParser::Batch_UnrealRawMapData(const wchar_t* wszFileName)
 			Safe_Release(pResult);
 			return E_FAIL;
 		}
-
-
-
 	}
 
 	return S_OK;

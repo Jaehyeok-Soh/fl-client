@@ -8,12 +8,13 @@
 USING(Tool)
 
 CMapObject::CMapObject(EToolObjectType eType, ID3D11Device* pDevice, ID3D11DeviceContext* pDeviceContext)
-    : CToolObject(eType, pDevice, pDeviceContext), m_vImGuiPitchYawRoll{}
+    : CToolObject(eType, pDevice, pDeviceContext), m_vImGuiPitchYawRoll{}, m_isLoaded{ false }, m_isRegisterSRT{false}
 {
 }
 
 CMapObject::CMapObject(const CMapObject& rhs)
     : CToolObject(rhs), m_eMapObjectType(rhs.m_eMapObjectType), m_isLoaded(rhs.m_isLoaded), m_vImGuiPitchYawRoll{}
+    , m_isRegisterSRT{false}
 {
 }
 
@@ -32,12 +33,19 @@ HRESULT CMapObject::Initialize(void* pArg)
 
     CMapObject::MAPOBJECT_DESC* pDesc = static_cast<CMapObject::MAPOBJECT_DESC*>(pArg);
 
-    m_strModelFileName = Engine_Utils::ToString(pDesc->wstrModelPath);
-    m_strName          = Engine_Utils::ToString(pDesc->wstrModelName);
-    m_isLoaded         = pDesc->isLoaded;
+    m_strModelFileName        = Engine_Utils::ToString(pDesc->wstrModelPath);
+    m_strName                 = Engine_Utils::ToString(pDesc->wstrModelName);
+    m_isLoaded                = pDesc->isLoaded;
+    m_eMapObjectState         = pDesc->eState;
 
     if (FAILED(CMapObject::Ready_Component()))
         return E_FAIL;
+
+
+    if (m_isLoaded)
+    {
+        Register_OriginSRT( EReset_Type::S | EReset_Type::R | EReset_Type::T);
+    }
 
     return S_OK;
 }
@@ -66,15 +74,73 @@ HRESULT CMapObject::Ready_Component()
         CGameObject::Add_Component<CModel>(tModelDesc.iPrototypeLevelIndex, L"Prototype_Component_Model_" + Engine_Utils::ToWString(m_strName), &tModelCopyDesc);
     }
 
-
     return S_OK;
+}
+
+void CMapObject::Reset_SRT(Engine::Flags fResetTypeFlag)
+{
+    if (!m_isLoaded && !m_isRegisterSRT)
+    {
+        MSG_BOX(" None Load Or None Register SRT");
+        return;
+    }
+
+    CTransform* pTransfrom = Get_Component<CTransform>();
+    if (pTransfrom == nullptr) return;
+
+
+    if (Engine_Utils::Has_Flag(fResetTypeFlag, ENUM_TO_UINT(EReset_Type::S)))
+        pTransfrom->Set_Scale(m_vOriginScale);
+    if (Engine_Utils::Has_Flag(fResetTypeFlag, ENUM_TO_UINT(EReset_Type::R)))
+        pTransfrom->Rotation(XMConvertToRadians(m_vOriginDegree.x), XMConvertToRadians(m_vOriginDegree.y), XMConvertToRadians(m_vOriginDegree.z));
+    if (Engine_Utils::Has_Flag(fResetTypeFlag, ENUM_TO_UINT(EReset_Type::T)))
+        pTransfrom->Set_Info(TRANSFORM_INFO_STATE::POS , m_vOriginPosition);
+
+    return;
+}
+
+void CMapObject::Register_OriginSRT(Engine::Flags fResetTypeFlag)
+{
+    m_isRegisterSRT = true;
+
+
+    CTransform* pTransfrom = Get_Component<CTransform>();
+    if (pTransfrom == nullptr) return;
+
+    Vec3 vScale{};
+    Quat vRotation{};
+    Vec3 vPos{};
+
+    Matrix WorldMatrix = pTransfrom->Get_WorldMatrix();
+    WorldMatrix.Decompose(vScale , vRotation , vPos);
+
+    if (Engine_Utils::Has_Flag(fResetTypeFlag, ENUM_TO_UINT(EReset_Type::S)))
+        m_vOriginScale = pTransfrom->Get_Scaled();
+    if (Engine_Utils::Has_Flag(fResetTypeFlag, ENUM_TO_UINT(EReset_Type::R)))
+        m_vOriginDegree = vRotation.ToEuler() * To_DEGREE;
+    if (Engine_Utils::Has_Flag(fResetTypeFlag, ENUM_TO_UINT(EReset_Type::T)))
+        m_vOriginPosition = vPos;
+}
+
+Vec3 CMapObject::Get_OriginScale()
+{
+    return m_vOriginScale;
+}
+
+Vec3 CMapObject::Get_OriginDegree()
+{
+    return m_vOriginDegree;
+}
+
+Vec3 CMapObject::Get_OriginPosition()
+{
+    return m_vOriginPosition;
 }
 
 HRESULT CMapObject::Awake(const _uint iCurrentLevelID)
 {
     if (FAILED(Super::Awake(iCurrentLevelID)))
         return E_FAIL;
-
 
     return S_OK;
 }
@@ -135,37 +201,74 @@ void CMapObject::Draw_ImGui()
 {
     Super::Draw_ImGui();
 
-    
     CTransform* pTransfrom = Get_Component<CTransform>();
-
+    
     if (!pTransfrom) return;
 
 
-    if (ImGui::TreeNode("Quaternion"))
+    Matrix WorldMatrix = pTransfrom->Get_WorldMatrix();
+    Vec3 vScale{}, vPosition;
+    Quat vQuat{};
+    Vec3 vDegree{};
+    
+    WorldMatrix.Decompose(vScale, vQuat, vPosition);
+    vDegree = vQuat.ToEuler() * To_DEGREE;
+
+
+#pragma region Scale Setting
+
+    if (ImGui::TreeNode(" Scale Setting "))
     {
-        Matrix WorldMatrix = pTransfrom->Get_WorldMatrix();
-        Vec3 vScale{}, vPosition;
-        Quat vQuat{};
-        WorldMatrix.Decompose(vScale, vQuat, vPosition);
-        ImGui::InputFloat4( "Quat" , &m_vImGuiQuat.x);
-        if (ImGui::Button("Ratattion From Quat"))
-        {
-            pTransfrom->Rotation(m_vImGuiQuat);
-        }
+        ImGui::Separator();
+
+        if (ImGui::DragFloat3(" Scale ", &vScale.x, 0.01f))
+            pTransfrom->Set_Scale(vScale);
+
+        ImGui::Separator();
+
         ImGui::TreePop();
     }
 
+#pragma endregion
 
-    ImGui::InputFloat3("Pitch Yaw Roll", &m_vImGuiPitchYawRoll.x);
+#pragma region Rotation Setting
 
-    if (ImGui::Button("Rotation"))
+    if (ImGui::TreeNode(" Rotation Setting "))
     {
-        pTransfrom->Rotation(XMConvertToRadians(m_vImGuiPitchYawRoll.x), XMConvertToRadians(m_vImGuiPitchYawRoll.y), XMConvertToRadians(m_vImGuiPitchYawRoll.z));
-        ZeroMemory(&m_vImGuiPitchYawRoll, sizeof(Vec3));
+        ImGui::SeparatorText(" Pitch Yaw Roll ");
+
+        
+        if (ImGui::DragFloat3("Pitch Yaw Roll", &vDegree.x))
+            pTransfrom->Rotation(Quat::CreateFromYawPitchRoll(vDegree * TO_RAD));
+
+        ImGui::Separator();
+
+        ImGui::SeparatorText(" Quaternion ");
+
+        if (ImGui::DragFloat4(" Quaternion ", &vQuat.x))
+            pTransfrom->Rotation(vQuat);
+
+        ImGui::Separator();
+
+        ImGui::TreePop();
+    }
+#pragma endregion
+
+#pragma region Position Setting
+
+    if (ImGui::TreeNode(" Position Setting "))
+    {
+        ImGui::Separator();
+
+        if (ImGui::DragFloat3(" Position ", &vPosition.x, 0.05f))
+            pTransfrom->Set_Scale(vScale);
+
+        ImGui::Separator();
+
+        ImGui::TreePop();
     }
 
-
-
+#pragma endregion
 
     return;
 }
