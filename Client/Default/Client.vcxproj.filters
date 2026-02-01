@@ -163,6 +163,9 @@
     <Filter Include="03. GameObject\EffectObject\Child_Effect">
       <UniqueIdentifier>{b42020a7-95bc-4264-b992-20809b8a58c6}</UniqueIdentifier>
     </Filter>
+    <Filter Include="07. System\01. Builder\EffectBuilder">
+      <UniqueIdentifier>{0a51c3b4-11ce-445a-904c-410b2a5ef809}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="targetver.h">
@@ -312,6 +315,9 @@
     <ClInclude Include="..\Public\EffectObject.h">
       <Filter>03. GameObject\EffectObject\Child_Effect</Filter>
     </ClInclude>
+    <ClInclude Include="..\Public\EffectBuilder.h">
+      <Filter>07. System\01. Builder\EffectBuilder</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <Image Include="Client.ico">
@@ -458,6 +464,9 @@
     </ClCompile>
     <ClCompile Include="..\Private\EffectObject.cpp">
       <Filter>03. GameObject\EffectObject\Child_Effect</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\EffectBuilder.cpp">
+      <Filter>07. System\01. Builder\EffectBuilder</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

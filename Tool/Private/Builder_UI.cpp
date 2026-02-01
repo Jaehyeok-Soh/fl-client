@@ -7,8 +7,8 @@
 
 #include "GameInstance.h"
 
-CBuilder_UI::CBuilder_UI(ID3D11Device* pDevice, ID3D11DeviceContext* pDeviceContext)
-	:Super(pDevice, pDeviceContext)
+CBuilder_UI::CBuilder_UI(ID3D11Device* pDevice, ID3D11DeviceContext* pDeviceContext, _uint iLevelID)
+	:Super(pDevice, pDeviceContext, iLevelID)
 {
 }
 

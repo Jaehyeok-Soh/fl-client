@@ -459,6 +459,14 @@
     <ClInclude Include="..\Public\Tool_StaticMeshComponent.h">
       <Filter>04. Component\Map\Tool_StaticMesh</Filter>
     </ClInclude>
+    <ClInclude Include="..\Public\Button.h" />
+    <ClInclude Include="..\Public\Image.h" />
+    <ClInclude Include="..\public\Level_Logo.h">
+      <Filter>03. Level\Logo</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\Builder_UI.h">
+      <Filter>09. Builder\UI</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <Image Include="small.ico">

@@ -11,6 +11,7 @@
 #include "VIBuffer_Terrain.h"
 #include "VIBuffer_Particle_Rect.h"
 #include "VIBuffer_Particle_Point.h"
+#include "VIBuffer_Particle_Mesh.h"
 #include "VIBuffer_Cube_Tex.h"
 #include "Shader.h"
 #include "Camera.h"
@@ -19,6 +20,7 @@
 // Builder
 //=================
 #include "DataDocument_Example.h"
+#include "DataDocument_Effect.h"
 #include "Builder_Example.h"
 #include "BuilderSystem.h"
 
@@ -33,6 +35,8 @@
 #include "ColliderPart.h"
 #include "Loader.h"
 #include "Physics_Terrain.h" // physics test
+#include "Effect.h"
+#include "EffectObject.h"
 //=================
 // UI
 //=================
@@ -120,10 +124,16 @@ HRESULT CLoader::Loading_For_Logo()
 		{
 			if (FAILED(m_pGameInstance->Regist_Document<CDataDocument_Example>(ENUM_TO_UINT(ELevelType::LOGO), DTO::ECategory::MAP)))
 				return E_FAIL;
+
+			if (FAILED(m_pGameInstance->Regist_Document<CDataDocument_Effect>(ENUM_TO_UINT(ELevelType::LOGO), DTO::ECategory::EFFECT)))
+				return E_FAIL;
 		}
 		
+	
 		// Read Json
 		{
+			if (FAILED(Loading_File(ENUM_TO_UINT(ELevelType::LOGO), DTO::ECategory::EFFECT, L"../../Resources/Data/EffectData/Attack_1.json")))
+				return E_FAIL;
 			// For. Example
 			// if (FAILED(Loading_File(ENUM_TO_UINT(ELevelType::LOGO), DTO::ECategory::MAP, L"asdf")))
 			// 	return E_FAIL;
@@ -185,6 +195,28 @@ HRESULT CLoader::Loading_For_Logo()
 		ADD_PROTOTYPE(ELevelType::STATIC, L"Prototype_GameObject_Part_Body", CBody::Create(m_pDevice, m_pDeviceContext));
 		// For. Prototype_GameObject_Part_Collider
 		ADD_PROTOTYPE(ELevelType::STATIC, L"Prototype_GameObject_Part_Collider", CColliderPart::Create(m_pDevice, m_pDeviceContext));
+
+		// ¿Ã∆Â∆Æ Object
+		ADD_PROTOTYPE(ELevelType::LOGO, L"Prototype_GameObject_Effect", Effect::Create(m_pDevice, m_pDeviceContext));
+		ADD_PROTOTYPE(ELevelType::LOGO, L"Prototype_GameObject_Effect_Parts", CEffectObject::Create(m_pDevice, m_pDeviceContext));
+	}
+#pragma endregion
+
+#pragma region BUFFER
+	{
+		CVIBuffer_Particle_Point::PARTICLE_POINT_ORIGIN_DESC	ExploDesc{};
+		ExploDesc.iInstnaceCount = 30;
+		ExploDesc.vCenter = Vec3(0.f, 0.f, 0.f);
+		ExploDesc.vSize = Vec2(0.05f, 0.15f);
+		ExploDesc.vRange = Vec3(0.5f, 0.5f, 0.5f);
+		ExploDesc.vSpeed = Vec2(2.f, 5.f);
+		ExploDesc.vLifeTime = Vec2(1.f, 5.5f);
+		ExploDesc.isLoop = false;
+		ExploDesc.vPivot = Vec3(0.f, 0.f, 0.5f);
+
+		ADD_PROTOTYPE(ELevelType::STATIC, L"Prototype_Component_VIBuffer_Particle_Point", CVIBuffer_Particle_Point::Create(m_pDevice, m_pDeviceContext, &ExploDesc));
+		ADD_PROTOTYPE(ELevelType::STATIC, L"Prototype_Component_VIBuffer_Particle_Mesh", CVIBuffer_Particle_Mesh::Create(m_pDevice, m_pDeviceContext, &ExploDesc));
+
 	}
 #pragma endregion
 
@@ -253,6 +285,7 @@ HRESULT CLoader::Loading_Texture(const wstring& wstrFile)
 
 	return S_OK;
 }
+
 
 CLoader* CLoader::Create(ID3D11Device* pDevice, ID3D11DeviceContext* pDeviceContext, ELevelType eLoadingLevelID)
 {

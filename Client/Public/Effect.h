@@ -13,6 +13,8 @@ public:
 	typedef struct tagEffectContainerDesc : public Super::GAMEOBJECT_DESC
 	{
 		DTO::E_SIMULATION_SPACE _Effect_SimulationType = DTO::E_SIMULATION_SPACE::NONE;
+
+		vector<DTO::TEFFECT_PartsData>	_childData = {};
 	}EFFECT_CONTAINERDESC;
 
 protected:
@@ -23,6 +25,10 @@ protected:
 public:
 	virtual HRESULT Initialize_Prototype() override;
 	virtual HRESULT Initialize(void* pArg) override;
+
+protected:
+	HRESULT Ready_PartsData(void* pArg);
+
 public:
 	virtual HRESULT Awake(const _uint iCurrentLevelID) override;
 	virtual void Update_Priority(const _float fTimeDelta) override;
@@ -33,6 +39,10 @@ public:
 	virtual _bool Picking(OUT Vec3& vOut) override;
 	virtual _bool Export_Data(DTO::ECategory eCategory, CDataDocumentBase* pDocument) override;
 	virtual void Set_Dead(const wstring& wstrLayerTag) override;
+
+protected:
+	virtual HRESULT Spawn_FromPool(void* pArg) override;
+	virtual HRESULT Despawn_FromPool() override;
 
 public:
 	virtual void Set_ParentsWorldMatrix(Matrix* worldMatrix) { m_pParentsWorldMatrix = worldMatrix; }
