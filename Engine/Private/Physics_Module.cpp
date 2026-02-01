@@ -272,11 +272,6 @@ CPhysics_Module* CPhysics_Module::Create(ID3D11Device* pDevice, ID3D11DeviceCont
 
 void CPhysics_Module::Free()
 {
-	Safe_Release(m_pGameInstance);
-
-	Safe_Release(m_pDevice);
-	Safe_Release(m_pDeviceContext);
-
 	Safe_Release(m_pCCTManager);
 	Safe_Release(m_pActorFactory);
 	Safe_Release(m_pShapeFactory);
@@ -284,5 +279,11 @@ void CPhysics_Module::Free()
 	Safe_Release(m_pUtils);
 
 	ClearPhysics();
+
+	Safe_Release(m_pDevice);
+	Safe_Release(m_pDeviceContext);
+
+	Safe_Release(m_pGameInstance);
+
 	Super::Free();
 }

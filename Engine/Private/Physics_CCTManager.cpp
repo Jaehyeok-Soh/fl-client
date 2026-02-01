@@ -103,15 +103,15 @@ CPhysics_CCTManager* CPhysics_CCTManager::Create(ID3D11Device* pDevice, ID3D11De
 
 void CPhysics_CCTManager::Free()
 {
-	Safe_Release(m_pGameInstance);
-
-	Safe_Release(m_pDevice);
-	Safe_Release(m_pContext);
-
 	Safe_Release(m_pResourceManager);
 
 	ReleaseCCTManager();
 	PX_RELEASE(m_pControllerManager);
+
+	Safe_Release(m_pDevice);
+	Safe_Release(m_pContext);
+
+	Safe_Release(m_pGameInstance);
 
 	Super::Free();
 }

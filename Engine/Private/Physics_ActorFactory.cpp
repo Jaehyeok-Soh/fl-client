@@ -101,10 +101,10 @@ CPhysics_ActorFactory* CPhysics_ActorFactory::Create(ID3D11Device* pDevice, ID3D
 
 void CPhysics_ActorFactory::Free()
 {
-	Safe_Release(m_pGameInstance);
-
 	Safe_Release(m_pDevice);
 	Safe_Release(m_pContext);
+
+	Safe_Release(m_pGameInstance);
 
 	Super::Free();
 }

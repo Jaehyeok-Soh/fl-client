@@ -627,6 +627,8 @@
     <ClCompile Include="..\Private\PhysicsCCT.cpp">
       <Filter>00. System\05. Component\PhysicsCCT</Filter>
     </ClCompile>
+    <ClCompile Include="..\private\ThreadWorker.cpp" />
+    <ClCompile Include="..\public\ThreadPool.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\Public\Timer_Manager.h">
@@ -983,6 +985,8 @@
     <ClInclude Include="..\Public\PhysicsCCT.h">
       <Filter>00. System\05. Component\PhysicsCCT</Filter>
     </ClInclude>
+    <ClInclude Include="..\public\ThreadPool.h" />
+    <ClInclude Include="..\public\ThreadWorker.h" />
   </ItemGroup>
   <ItemGroup>
     <FxCompile Include="..\..\Shaders\Shader_Deffered.hlsl">

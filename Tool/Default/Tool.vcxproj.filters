@@ -438,6 +438,10 @@
     <ClInclude Include="..\Public\DebugLine.h">
       <Filter>12. DebugLine\01. DebugLine</Filter>
     </ClInclude>
+    <ClInclude Include="..\Public\Builder_UI.h" />
+    <ClInclude Include="..\Public\Button.h" />
+    <ClInclude Include="..\public\Level_Logo.h" />
+    <ClInclude Include="..\Public\Image.h" />
   </ItemGroup>
   <ItemGroup>
     <Image Include="small.ico">
