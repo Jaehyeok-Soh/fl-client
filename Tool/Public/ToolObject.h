@@ -51,10 +51,10 @@ protected:
 private:
 	HRESULT Set_TypeString();
 protected:
-	string m_strName = "";
-	string m_strModelFileName = "";
-	string m_strObjectType = "";
-	wstring m_wstrLayerTag = L"";
+	string m_strName			= "";
+	string m_strModelFileName	= "";
+	string m_strObjectType		= "";
+	wstring m_wstrLayerTag		= L"";
 private:
 	EToolObjectType m_eType = { EToolObjectType::END };
 	_bool m_bVisible = { false };

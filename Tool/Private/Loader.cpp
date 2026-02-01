@@ -17,6 +17,8 @@
 // Object
 //=================
 #include "StaticModel.h"
+#include "Tool_ContainerObject.h"
+#include "Tool_PartObject.h"
 
 //=================
 // UI
@@ -141,6 +143,18 @@ HRESULT CLoader::Loading_For_Map()
 
 HRESULT CLoader::Loading_For_Animation()
 {
+	/* model load */
+	Matrix matPreTransformScale = Matrix::CreateScale(0.01f, 0.01f, 0.01f);
+	// For. Prototype_Component_Model
+	{
+		CModel::MODEL_ORIGIN_DESC desc = {};
+		desc.eType = EModelType::ANIM;
+		desc.iPrototypeLevelIndex = ENUM_TO_UINT(ELevelType::ANIMATION);
+		desc.pMatPreTransform = &matPreTransformScale;
+		desc.wstrModelFolderName = L"PlayerMoon";
+		m_pGameInstance->Add_Prototype(ENUM_TO_UINT(ELevelType::ANIMATION), L"Prototype_Component_Model_PlayerMoon", CModel::Create(m_pDevice, m_pDeviceContext, &desc));
+	}
+
 	m_isFinished = true;
 	return S_OK;
 }

@@ -127,6 +127,10 @@ void CToolObject::Set_Name(const wstring& wstrName, _uint iValue)
     m_strName = Engine_Utils::ToString(wstrName) + "_[" + std::to_string(iValue) + "]";
 }
 
+void CToolObject::Update_CombinedWorldMatrix(const Matrix& matParent)
+{
+}
+
 HRESULT CToolObject::Set_TypeString()
 {
     m_strObjectType = TypeToString(m_eType);
