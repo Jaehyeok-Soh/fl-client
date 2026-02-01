@@ -172,7 +172,7 @@ HRESULT CLoader::Loading_For_Logo()
 			if (FAILED(m_pGameInstance->Add_Prototype(ENUM_TO_UINT(ELevelType::STATIC), L"Texture_Boss", CTexture::Create(&textureDesc))))
 				return E_FAIL;
 		}
-	}
+	
 #pragma endregion
 
 	//////////////////////////////////////////
