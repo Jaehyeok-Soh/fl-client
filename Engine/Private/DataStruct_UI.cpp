@@ -71,6 +71,9 @@ void to_json(json& j, const TUI_CanvasData& data)
 		{ "fPosX", data.fPosX },
 		{ "fPosY", data.fPosY },
 		{ "fPosZ", data.fPosZ },
+		{ "isViewportSize", data.isViewportSize },
+		{ "iEditorSizeX", data.iEditorSizeX },
+		{ "iEditorSizeY", data.iEditorSizeY },
 	};
 }
 
@@ -83,6 +86,9 @@ void from_json(const json& j, TUI_CanvasData& data)
 	j.at("fPosX").get_to(data.fPosX);
 	j.at("fPosY").get_to(data.fPosY);
 	j.at("fPosZ").get_to(data.fPosZ);
+	j.at("isViewportSize").get_to(data.isViewportSize);
+	j.at("iEditorSizeX").get_to(data.iEditorSizeX);
+	j.at("iEditorSizeY").get_to(data.iEditorSizeY);
 }
 
 NS_END

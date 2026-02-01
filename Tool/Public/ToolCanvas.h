@@ -16,6 +16,9 @@ public:
 	{
 		_string strTag;
 		uint32_t iClientLevelIndex;
+
+		uint32_t iEditorSizeX;
+		uint32_t iEditorSizeY;
 	}TOOLCANVAS_DESC;
 
 private:

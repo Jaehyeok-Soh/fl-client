@@ -103,6 +103,7 @@ void CCanvas::Update(const _float fTimeDelta)
 
 void CCanvas::Update_Late(const _float fTimeDelta)
 {
+	Calc_HitUpdate();
 	Super::Update_Late(fTimeDelta);
 }
 

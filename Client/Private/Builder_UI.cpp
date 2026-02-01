@@ -70,11 +70,29 @@ HRESULT CBuilder_UI::Create_CanvasDTO(const DTO::TUI_CanvasData& data)
 	/* 데이터를 이용해서 Object 만들기 */
 	CCanvas::CANVAS_DESC Desc = {};
 	Desc.iLevelIndex = data.iLevelIndex;
-	Desc.fWidth = data.fWidth;
-	Desc.fHeight = data.fHeight;
-	Desc.fX = data.fPosX;
-	Desc.fY = data.fPosY;
-	Desc.fZ = data.fPosZ;
+	
+	{
+		_float fScaleX = (_float)g_iWinSizeX / (_float)data.iEditorSizeX;
+		_float fScaleY = (_float)g_iWinSizeY / (_float)data.iEditorSizeY;
+		Desc.fX = data.fPosX * fScaleX;
+		Desc.fY = data.fPosY * fScaleY;
+		Desc.fZ = data.fPosZ;
+	}
+
+	if (data.isViewportSize)
+	{
+		D3D11_VIEWPORT vp{};
+		UINT numVP = 1;
+		m_pDeviceContext->RSGetViewports(&numVP, &vp);
+
+		Desc.fWidth = vp.Width;
+		Desc.fHeight = vp.Height;
+	}
+	else
+	{
+		Desc.fWidth = data.fWidth;
+		Desc.fHeight = data.fHeight;
+	}
 	
 	CGameObject* pResult = m_pGameInstance->Add_GameObject(m_iLevelID, L"Prototype_UI_Canvas", m_iLevelID, Engine_Utils::ToWString(data.strTag), &Desc);
 	if (pResult == nullptr)

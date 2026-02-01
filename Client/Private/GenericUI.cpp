@@ -56,8 +56,11 @@ HRESULT CGenericUI::Awake(const _uint iCurrentLevelID)
 
 void CGenericUI::Update_Priority(const _float fTimeDelta)
 {
-	if(m_isVisible)
+	if (m_isVisible)
+	{
+		m_iInteractState = 0;
 		Super::Update_Priority(fTimeDelta);
+	}
 }
 
 void CGenericUI::Update(const _float fTimeDelta)
@@ -84,7 +87,10 @@ void CGenericUI::Update_Late(const _float fTimeDelta)
 void CGenericUI::Ready_Before_Render(const _float fTimeDelta)
 {
 	if (m_isVisible)
+	{
+		Acting_By_InteractState();
 		Super::Ready_Before_Render(fTimeDelta);
+	}
 }
 
 HRESULT CGenericUI::Render()
@@ -110,6 +116,24 @@ _bool CGenericUI::Calc_HitEvent()
 	if (::PtInRect(&m_tRenderRect, m_pGameInstance->Get_MousePos()))
 		return TRUE;
 	return FALSE;
+}
+
+void CGenericUI::Acting_By_InteractState()
+{
+	if (Engine_Utils::Has_Flag(m_iInteractState, EInteractState::NONE))
+		m_iTextureIndex = 0;
+	if (Engine_Utils::Has_Flag(m_iInteractState, EInteractState::HOVERING_ENTER))
+		m_iTextureIndex = 1;
+	if (Engine_Utils::Has_Flag(m_iInteractState, EInteractState::HOVERING_EXIT))
+		m_iTextureIndex = 2;
+	if (Engine_Utils::Has_Flag(m_iInteractState, EInteractState::PRESS_ENTER))
+		m_iTextureIndex = 3;
+	if (Engine_Utils::Has_Flag(m_iInteractState, EInteractState::PRESSING))
+		m_iTextureIndex = 4;
+	if (Engine_Utils::Has_Flag(m_iInteractState, EInteractState::PRESS_EXIT))
+		m_iTextureIndex = 5;
+	if (Engine_Utils::Has_Flag(m_iInteractState, EInteractState::CLICKED))
+		m_iTextureIndex = 6;
 }
 
 HRESULT CGenericUI::Ready_Components(GENERIC_UI_DESC* pDesc)

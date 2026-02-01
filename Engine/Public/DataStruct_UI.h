@@ -59,6 +59,11 @@ struct TUI_CanvasData
 	_float fPosX;
 	_float fPosY;
 	_float fPosZ;
+
+	_bool isViewportSize;
+	uint32_t iEditorSizeX ;
+	uint32_t iEditorSizeY;
+
 };
 
 /////////////////-------------------  to_json, from_json  -------------------/////////////////

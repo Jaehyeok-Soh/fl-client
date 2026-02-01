@@ -35,6 +35,7 @@ public:
 	virtual HRESULT Render() override;
 
 	_bool Calc_HitEvent();
+	void Acting_By_InteractState();
 
 private:
 	HRESULT Ready_Components(GENERIC_UI_DESC* pDesc);

@@ -271,6 +271,8 @@ void CUI_Maker::Make_Canvas()
 				Desc.strTag = m_strCanvasTag;
 				Desc.iLevelIndex = { static_cast<uint32_t>(ELevelType::UI) };
 				Desc.iClientLevelIndex = m_iCurSelectLevelID;
+				Desc.iEditorSizeX = g_iWinSizeX;
+				Desc.iEditorSizeY = g_iWinSizeY;
 				CGameObject* pResult =
 					CGameInstance::GetInstance()->Add_GameObject(Desc.iLevelIndex, g_wszPrototypeTagCanvas, Desc.iLevelIndex, Engine_Utils::ToWString(m_strCanvasTag),&Desc );
 
@@ -686,9 +688,7 @@ void CUI_Maker::Input_Canvas_TransformInfo()
 
 		m_pDeviceContext->RSGetViewports(&iNumViewports, &Viewports);
 
-//		*pCanvas->Get_Width_Ptr() = CImGui_ToolManager::GetInstance()->Get_CurViewportSize().x;
 		*pCanvas->Get_Width_Ptr() = Viewports.Width;
-	//	*pCanvas->Get_Height_Ptr() = CImGui_ToolManager::GetInstance()->Get_CurViewportSize().y;
 		*pCanvas->Get_Height_Ptr() = Viewports.Height;
 		pCanvas->Set_isUsingViewport(TRUE);
 	}

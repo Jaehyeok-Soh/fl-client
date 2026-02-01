@@ -40,6 +40,8 @@ HRESULT CToolCanvas::Initialize(void* pArg)
 	TOOLCANVAS_DESC* pDesc = static_cast<TOOLCANVAS_DESC*>(pArg);
 	m_strTag = pDesc->strTag;
 	m_iClientLevelIndex = pDesc->iClientLevelIndex;
+	m_tCanvasData.iEditorSizeX = pDesc->iEditorSizeX;
+	m_tCanvasData.iEditorSizeY = pDesc->iEditorSizeY;
 
 	if (FAILED(Super::Initialize(pArg)))
 		return E_FAIL;
@@ -272,6 +274,8 @@ void CToolCanvas::Sync_Data()
 	m_tCanvasData.fPosX = m_fX;
 	m_tCanvasData.fPosY = m_fY;
 	m_tCanvasData.fPosZ = m_fZ;
+
+	m_tCanvasData.isViewportSize = m_isUsingViewport;
 }
 
 HRESULT CToolCanvas::Safe_Add_Layer(CToolLayer* pLayer)

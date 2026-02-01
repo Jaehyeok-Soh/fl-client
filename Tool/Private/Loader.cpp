@@ -274,6 +274,16 @@ HRESULT CLoader::Loading_For_UI()
 			return E_FAIL;
 	}
 
+	// For. Prototype_Component_Texture_MouseCursor
+	{
+		CTexture::TEXTURE_COMPONENT_ORIGIN_DESC textureDesc = {};
+		textureDesc.iTextureCount = 6;
+		textureDesc.wstrTexturePath = L"../../Resources/Textures/UI/Cursor/%d.png";
+		if (FAILED(m_pGameInstance->Add_Prototype(ENUM_TO_UINT(ELevelType::UI), L"Texture_MouseCursor",
+			CTexture::Create(&textureDesc))))
+			return E_FAIL;
+	}
+
 	//=================
 	// UI Objects
 	//=================

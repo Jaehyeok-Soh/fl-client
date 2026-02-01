@@ -243,6 +243,16 @@ HRESULT CMainApplication::Ready_Static_Prototype()
 			return E_FAIL;
 	}
 
+	// For. Prototype_Component_Texture_MouseCursor
+	{
+		CTexture::TEXTURE_COMPONENT_ORIGIN_DESC textureDesc = {};
+		textureDesc.iTextureCount = 6;
+		textureDesc.wstrTexturePath = L"../../Resources/Textures/UI/Cursor/%d.png";
+		if (FAILED(m_pGameInstance->Add_Prototype(ENUM_TO_UINT(ELevelType::STATIC), L"Prototype_Component_Texture_MouseCursor",
+			CTexture::Create(&textureDesc))))
+			return E_FAIL;
+	}
+
 	// For. Prototype_Component_Transform
 	{
 		if (FAILED(m_pGameInstance->Add_Prototype(ENUM_TO_UINT(ELevelType::STATIC),
