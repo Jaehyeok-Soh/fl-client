@@ -14,6 +14,7 @@ class CDataDocumentBase;
 class ENGINE_DLL CGameObject abstract : public CBase
 {
 	using Super = CBase;
+	static uint64 s_iNextID;
 public:
 	typedef struct tagGameObjectDesc : public CComponent::tagComponentDesc
 	{
@@ -77,8 +78,10 @@ public:
 	void Set_Awake(_bool bAwaked) { m_bAwaked = bAwaked; }
 	CObjectPool* Get_OwnerPool() { return m_pOwnerPool; }
 	void Set_OwnerPool(CObjectPool* pOwnerPool) { m_pOwnerPool = pOwnerPool; }
-
 	virtual _bool Export_Data(DTO::ECategory eCategory, CDataDocumentBase* pDocument) { return false; }
+public:
+	void Set_Name(const string& strName);
+	void Set_Name(const wstring& wstrName);
 private:
 	void Update_Script_Components(const _float fTimeDelta);
 	void Safe_Release_Component();
@@ -92,6 +95,8 @@ protected:
 	ID3D11Device* m_pDevice = { nullptr };
 	ID3D11DeviceContext* m_pDeviceContext = { nullptr };
 	class CGameInstance *m_pGameInstance = { nullptr };
+	uint64 m_iObjectID = { 0 };
+	string m_strName = { "" };
 private:
 	_bool m_bClone = { false };
 	array<CComponent*, g_ComponentTypeCount> m_Components;
