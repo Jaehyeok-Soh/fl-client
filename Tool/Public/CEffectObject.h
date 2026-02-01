@@ -263,6 +263,7 @@ private:
     //  ========== 스크롤 OffSet ========
     Vec2      m_vScrollOffset = { 0.f, 0.f };
     _float    m_fTimeAccumulation = 0.f;
+    _bool  m_bIsStarted = { false }; // 타임 딜레이 지났는지에 대한 bool값
 
     //  ========== 현재 이펙트 sprite Number  ===========
 private:

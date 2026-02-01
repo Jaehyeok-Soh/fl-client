@@ -1,6 +1,7 @@
 #include "Engine_pch.h"
 #include "ObjectPool_Manager.h"
 #include "ObjectPool.h"
+#include "GameObject.h"
 #include "GameInstance.h"
 
 CObjectPool_Manager::CObjectPool_Manager()
@@ -17,7 +18,7 @@ HRESULT CObjectPool_Manager::Initialize(_uint iLevelCount)
 	return S_OK;
 }
 
-HRESULT CObjectPool_Manager::Regist_Pool(_uint iTargetLevelIndex, const wstring& wstrPoolTag, const wstring& wstrLayerTag, void* pArg, CGameObject* pSeed, _uint iPoolCapacityCount)
+HRESULT CObjectPool_Manager::Regist_Pool(_uint iTargetLevelIndex, const wstring& wstrPoolTag, const wstring& wstrLayerTag, _uint iSeedLevelID, const wstring& wstrSeedPrototypeTag, void* pArg, _uint iPoolCapacityCount)
 {
 	if (Is_OutOfRange(iTargetLevelIndex))
 		return E_FAIL;
@@ -29,7 +30,14 @@ HRESULT CObjectPool_Manager::Regist_Pool(_uint iTargetLevelIndex, const wstring&
 		return E_FAIL;
 	}
 
-	pPool = CObjectPool::Create(wstrLayerTag, pArg, pSeed, iPoolCapacityCount);
+	CBase* pSeed = CGameInstance::GetInstance()->Clone_Prototype(EPrototypeType::GAMEOBJECT, iSeedLevelID, wstrSeedPrototypeTag, pArg);
+	if (pSeed != nullptr)
+	{
+		MSG_BOX("CObjectPool_Manager::Regist_Pool, seed clone failed");
+		return E_FAIL;
+	}
+
+	pPool = CObjectPool::Create(wstrLayerTag, pArg, static_cast<CGameObject*>(pSeed), iPoolCapacityCount);
 	if (pPool == nullptr)
 		return E_FAIL;
 

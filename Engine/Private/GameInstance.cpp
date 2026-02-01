@@ -416,9 +416,9 @@ void CGameInstance::Clear_Layer(_uint iLevelIndex, const wstring& wstrLayerTag)
 #pragma endregion
 
 #pragma region OBJECTPOOL_MANAGER
-HRESULT CGameInstance::Regist_Pool(_uint iTargetLevelIndex, const wstring& wstrPoolTag, const wstring& wstrLayerTag, void* pArg, CGameObject* pSeed, _uint iPoolCapacityCount)
+HRESULT CGameInstance::Regist_Pool(_uint iTargetLevelIndex, const wstring& wstrPoolTag, const wstring& wstrLayerTag, _uint iSeedLevelID, const wstring& wstrSeedPrototypeTag, void* pArg, _uint iPoolCapacityCount)
 {
-	return m_pObjectPool_Manager->Regist_Pool(iTargetLevelIndex, wstrPoolTag, wstrLayerTag, pArg, pSeed, iPoolCapacityCount);
+	return m_pObjectPool_Manager->Regist_Pool(iTargetLevelIndex, wstrPoolTag, wstrLayerTag, iSeedLevelID, wstrSeedPrototypeTag, pArg, iPoolCapacityCount);
 }
 #pragma endregion
 

@@ -18,23 +18,20 @@ enum class E_SIMULATION_SPACE { NONE = 0, LOCAL, WORLD };
 enum class EEffectType : _uint{ EFFECT_CONTAINER, EFFECT_PARTS, END};
 inline constexpr _uint g_EffectTypeCount{ ENUM_TO_UINT(EEffectType::END) };
 
-struct TEFFECT_ContainerData
-{
-    static constexpr EEffectType eType = EEffectType::EFFECT_CONTAINER;
-    std::string strTag{ "Effect" };
-
-    E_SIMULATION_SPACE _Effect_SimulationType = E_SIMULATION_SPACE::NONE;
-};
 
 struct TEFFECT_PartsData
 {
     static constexpr EEffectType eType = EEffectType::EFFECT_PARTS;
     std::string strTag{ "EffectObject" };
+    std::string EffectPartsName = {};
+    std::string ParentsName = {};
 
-    E_EffectSystemType eEffectSystemType = E_EffectSystemType::Particle;
-    E_PARTICLETYPE eEffectParticleType = E_PARTICLETYPE::PARTICLE;
-    E_EFFECTTYPE eEffectType = E_EFFECTTYPE::Particle;
-    E_SHAPETYPE _Effect_ShapeType = E_SHAPETYPE::SPREAD;
+    Matrix      vWorldMatrix = {};
+
+    _uint eEffectSystemType = ENUM_TO_UINT(E_EffectSystemType::Particle);
+    _uint eEffectParticleType = ENUM_TO_UINT(E_PARTICLETYPE::PARTICLE);
+    _uint eEffectType = ENUM_TO_UINT(E_EFFECTTYPE::Particle);
+    _uint _Effect_ShapeType = ENUM_TO_UINT(E_SHAPETYPE::SPREAD);
 
     // ========  ¿Ã∆Â∆Æ Material º≥¡§   ===========
     wstring     _Effect_Model_Tag = {};
@@ -119,9 +116,22 @@ struct TEFFECT_PartsData
     int               _Effect_Tool_GradationSamplerState_Flag = {};
 };
 
+struct TEFFECT_ContainerData
+{
+    static constexpr EEffectType eType = EEffectType::EFFECT_CONTAINER;
+    std::string strTag{ "Effect" };
+    std::string EffectContainerName = {};
+
+    Matrix      vWorldMatrix = {};
+    _uint _Effect_SimulationType = ENUM_TO_UINT(E_SIMULATION_SPACE::NONE);
+    vector<TEFFECT_PartsData>   _ChildData = {};
+};
+
 NLOHMANN_JSON_SERIALIZE_ENUM(EEffectType,
-	{
-		{EEffectType::END, "END"}
+    { 
+    {EEffectType::EFFECT_CONTAINER, "EFFECT_CONTAINER"},
+    {EEffectType::EFFECT_PARTS, "EFFECT_PARTS"},
+	{EEffectType::END, "END"}
 	}
 )
 
@@ -160,33 +170,6 @@ private:
 
 public:
     static CEFFECT_CONTAINER* Create() { return new CEFFECT_CONTAINER(); }
-    virtual void Free() override { Super::Free(); }
-};
-
-// ==================  EFfect Object  =================
-
-class ENGINE_DLL CEffect_PARTS final : public IObjectDataBase
-{
-    using Super = IObjectDataBase;
-
-private:
-    CEffect_PARTS() = default;
-    virtual ~CEffect_PARTS() = default;
-
-public:
-    _uint Get_Type() const override { return ENUM_TO_UINT(DTO::EEffectType::EFFECT_PARTS); }
-    const std::string& Get_Tag() const override { return m_Data.strTag; }
-
-    json ToJson() const override;
-    HRESULT FromJson(const json& j) override;
-
-    const DTO::TEFFECT_PartsData& Get_Data() const { return m_Data; }
-    DTO::TEFFECT_PartsData& Get_Data() { return m_Data; }
-
-private:
-    DTO::TEFFECT_PartsData m_Data;
-public:
-    static CEffect_PARTS* Create() { return new CEffect_PARTS(); }
     virtual void Free() override { Super::Free(); }
 };
 
