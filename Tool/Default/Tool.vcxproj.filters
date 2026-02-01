@@ -438,11 +438,13 @@
     <ClInclude Include="..\Public\Panel_ModelConverter.h">
       <Filter>06. ImGui\01. Panel\Asimp</Filter>
     </ClInclude>
-    <ClInclude Include="..\Public\Builder_UI.h" />
     <ClInclude Include="..\Public\Button.h" />
     <ClInclude Include="..\Public\Image.h" />
     <ClInclude Include="..\public\Level_Logo.h">
       <Filter>03. Level\Logo</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\Builder_UI.h">
+      <Filter>09. Builder\UI</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
