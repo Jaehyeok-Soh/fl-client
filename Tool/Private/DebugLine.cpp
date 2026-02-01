@@ -10,8 +10,6 @@ CDebugLine::CDebugLine(ID3D11Device* pDevice, ID3D11DeviceContext* pContext)
 	, m_pEffect(nullptr)
 	, m_pInputLayout(nullptr)
 {
-	Safe_AddRef(pDevice);
-	Safe_AddRef(pContext);
 }
 
 CDebugLine::CDebugLine(const CDebugLine& rhs)
@@ -166,8 +164,12 @@ CGameObject* CDebugLine::Clone(void* pArg)
 
 void CDebugLine::Free()
 {
+	if (IsClone())
+	{
+		Safe_Delete(m_pBatch);
+		Safe_Delete(m_pEffect);
+		Safe_Release(m_pInputLayout);
+	}
+
 	Super::Free();
-	Safe_Delete(m_pBatch);
-	Safe_Delete(m_pEffect);
-	Safe_Release(m_pInputLayout);
 }
