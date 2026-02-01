@@ -177,6 +177,10 @@ HRESULT CUI_Hierachy::Render(CToolObject* pGo)
 	ImGui::Text("Screen Mouse Pos %d, %d", CGameInstance::GetInstance()->Get_MousePos().x, CGameInstance::GetInstance()->Get_MousePos().y);
 	ImGui::Text("Viewport Mouse Pos %.2f, %.2f", CImGui_ToolManager::GetInstance()->Get_ViewportMousePos().x, CImGui_ToolManager::GetInstance()->Get_ViewportMousePos().y);
 	ImGui::Text("Viewport Size %.2f, %.2f", CImGui_ToolManager::GetInstance()->Get_CurViewportSize().x, CImGui_ToolManager::GetInstance()->Get_CurViewportSize().y);
+
+	auto* pUI = CImGui_UIManager::GetInstance()->Safe_Access_UI(CImGui_UIManager::GetInstance()->Get_CurUIIndex());
+	if(nullptr != pUI)
+		ImGui::Text("ui Render pos %.2f, %.2f", pUI->Get_RenderPos().x, pUI->Get_RenderPos().y);
 	ImGui::End();
 
 	return S_OK;

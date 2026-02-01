@@ -34,13 +34,16 @@ HRESULT CToolUI::Initialize(void* pArg)
 {
 	TOOLUI_DESC* pDesc = static_cast<TOOLUI_DESC*>(pArg);
 	m_strName = pDesc->strName;
+
+	m_strCanvasName = pDesc->strCanvasName;
+	m_iCanvasIndex = pDesc->iCanvasIndex;
+	m_strLayerName = pDesc->strLayerName;
 	m_iLayerIndex = pDesc->iLayerIndex;
+
 	m_wstrTextureTag = Engine_Utils::ToWString(pDesc->strInitTextureTag);
 	m_iTextureIndex = pDesc->iInitTextureIndex;
-
 	if (FAILED(Super::Initialize(pArg)))
 		return E_FAIL;
-
     if (FAILED(Ready_Components(pDesc)))
         return E_FAIL;
 
@@ -121,26 +124,22 @@ HRESULT CToolUI::Render()
 	// Top
 	m_pBatch->DrawLine(
 		VertexPositionColor{ { (float)m_tRenderRect.left,  (float)m_tRenderRect.top,    m_fZ }, vColor },
-		VertexPositionColor{ { (float)m_tRenderRect.right, (float)m_tRenderRect.top,    m_fZ }, vColor }
-	);
+		VertexPositionColor{ { (float)m_tRenderRect.right, (float)m_tRenderRect.top,    m_fZ }, vColor });
 
 	// Right
 	m_pBatch->DrawLine(
 		VertexPositionColor{ { (float)m_tRenderRect.right, (float)m_tRenderRect.top,    m_fZ }, vColor },
-		VertexPositionColor{ { (float)m_tRenderRect.right, (float)m_tRenderRect.bottom, m_fZ }, vColor }
-	);
+		VertexPositionColor{ { (float)m_tRenderRect.right, (float)m_tRenderRect.bottom, m_fZ }, vColor });
 
 	// Bottom
 	m_pBatch->DrawLine(
 		VertexPositionColor{ { (float)m_tRenderRect.right, (float)m_tRenderRect.bottom, m_fZ }, vColor },
-		VertexPositionColor{ { (float)m_tRenderRect.left,  (float)m_tRenderRect.bottom, m_fZ }, vColor }
-	);
+		VertexPositionColor{ { (float)m_tRenderRect.left,  (float)m_tRenderRect.bottom, m_fZ }, vColor });
 
 	// Left
 	m_pBatch->DrawLine(
 		VertexPositionColor{ { (float)m_tRenderRect.left,  (float)m_tRenderRect.bottom, m_fZ }, vColor },
-		VertexPositionColor{ { (float)m_tRenderRect.left,  (float)m_tRenderRect.top,    m_fZ }, vColor }
-	);
+		VertexPositionColor{ { (float)m_tRenderRect.left,  (float)m_tRenderRect.top,    m_fZ }, vColor });
 	m_pBatch->End();
 
     return S_OK;
@@ -148,7 +147,7 @@ HRESULT CToolUI::Render()
 
 _bool CToolUI::Calc_HitEvent()
 {
-	if (::PtInRect(&m_tRenderRect, CImGui_ToolManager::GetInstance()->Get_ViewportMousePos_Point()))
+	if (::PtInRect(&m_tRenderRect, CImGui_ToolManager::GetInstance()->Get_CalculatedMousePos_Point()))
 	{
 		m_isHitTest = TRUE;
 		return TRUE;
@@ -185,7 +184,7 @@ HRESULT CToolUI::Bind_ShaderResources()
 
 void CToolUI::SetUp_RectTransform_Position()
 {
-	auto* pCanvas = CImGui_UIManager::GetInstance()->Safe_Access_Canvas(CImGui_UIManager::GetInstance()->Get_CurCanvasIndex());
+	auto* pCanvas = CImGui_UIManager::GetInstance()->Safe_Access_Canvas(m_iCanvasIndex);
 	if (nullptr == pCanvas)
 		return;
 
@@ -243,7 +242,8 @@ void CToolUI::Acting_By_InteractState()
 void CToolUI::Sync_Data()
 {
 	m_tUIData.strTag = m_strName;
-	m_tUIData.iLayerIndex = m_iLayerIndex;
+	m_tUIData.strCanvasName = m_strCanvasName;
+	m_tUIData.strLayerName = m_strLayerName;
 	m_tUIData.iRectTransformType = static_cast<uint32_t>( m_eRectTransformType);
 	m_tUIData.iUIType = static_cast<uint32_t>(m_eUIType);
 	m_tUIData.fWidth = m_fWidth;

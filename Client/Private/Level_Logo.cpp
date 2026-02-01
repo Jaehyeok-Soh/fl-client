@@ -9,6 +9,7 @@
 //=================
 // Builder
 //=================
+#include "Builder_UI.h"
 #include "Builder_Example.h"
 #include "BuilderSystem.h"
 
@@ -21,6 +22,10 @@
 //=================
 // UI
 //=================
+#include "DataDocument_UI.h"
+#include "DataStruct_UI.h"
+#include "Canvas.h"
+#include "UILayer.h"
 #include "GenericUI.h"
 
 #include "GameInstance.h"
@@ -86,7 +91,9 @@ HRESULT CLevel_Logo::Render()
 
 HRESULT CLevel_Logo::Ready_Builders()
 {
-	if (FAILED(Ready_Builder(DTO::ECategory::MAP, CBuilder_Example::Create(m_pDevice, m_pDeviceContext))))
+	if (FAILED(Ready_Builder(DTO::ECategory::MAP, CBuilder_Example::Create(m_pDevice, m_pDeviceContext, static_cast<_uint>(ELevelType::LOGO)))))
+		return E_FAIL;
+	if (FAILED(Ready_Builder(DTO::ECategory::UI, CBuilder_UI::Create(m_pDevice, m_pDeviceContext, static_cast<_uint>(ELevelType::STATIC)))))
 		return E_FAIL;
 
 	return S_OK;
@@ -124,8 +131,31 @@ HRESULT CLevel_Logo::Ready_Player_Layer(const wstring& wstrLayerTag)
 
 HRESULT CLevel_Logo::Ready_UI_Layer(const wstring& wstrLayerTag)
 {
+	ELevelType eLevelType = ELevelType::LOGO;
+	DTO::ECategory eCategory = DTO::ECategory::UI;
+	_uint iLevelID = ENUM_TO_UINT(eLevelType);
 
-	
+	if (FAILED(m_pGameInstance->Regist_Document<CDataDocument_UI>(iLevelID, eCategory)))
+		return E_FAIL;
+
+	std::filesystem::path strFolderPath = L"../../Resources/Data/UIData/Logo/";
+	vector<path> vecfiles;
+
+	if (std::filesystem::exists(strFolderPath))
+	{
+		for (auto iter : std::filesystem::directory_iterator(strFolderPath))
+		{
+			if (iter.is_regular_file())
+				vecfiles.push_back(iter.path().stem());
+		
+			if (FAILED(m_pGameInstance->Load_File_Json(iLevelID, eCategory, iter.path())))
+				return E_FAIL;
+
+			if (FAILED(Build_File(iLevelID, eCategory, iter.path().stem().string())))
+				return E_FAIL;
+		}
+	}
+
 	return S_OK;
 }
 

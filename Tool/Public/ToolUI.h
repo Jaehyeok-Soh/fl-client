@@ -11,7 +11,12 @@ public:
 	typedef struct tagToolUIDesc : public Super::UIOBJECT_DESC
 	{
 		_string strName;
+
+		_string strCanvasName;
+		uint32_t iCanvasIndex;
+		_string strLayerName;
 		uint32_t iLayerIndex;
+
 		_string strInitTextureTag;
 		uint32_t iInitTextureIndex;
 		uint32_t iRectTransformType;
@@ -75,6 +80,9 @@ private:
 	DTO::TUI_GenericUIData m_tUIData = {};
 
 	_string m_strName = {};
+	_string m_strCanvasName = {};
+	uint32_t m_iCanvasIndex = {};
+	_string m_strLayerName = {};
 	uint32_t m_iLayerIndex = {};
 
 	ERectTransform m_eRectTransformType = { ERectTransform::C };
@@ -85,6 +93,7 @@ private:
 	Vec3 m_vRenderPos = {};
 	RECT m_tRenderRect = {};
 	_bool m_isHitTest = { FALSE };
+
 public:
 	static CToolUI* Create(EToolObjectType eType, ID3D11Device* pDevice, ID3D11DeviceContext* pDeviceContext);
 	CGameObject* Clone(void* pArg);

@@ -15,7 +15,7 @@ public:
 	typedef struct tagToolCanvasDesc : public Super::UIOBJECT_DESC
 	{
 		_string strTag;
-
+		uint32_t iClientLevelIndex;
 	}TOOLCANVAS_DESC;
 
 private:
@@ -74,12 +74,12 @@ private:
 	CImGui_UIManager* m_pUIManager = { nullptr };
 	DTO::TUI_CanvasData m_tCanvasData = {};
 	vector<CToolLayer*> m_vecToolLayers;
+	uint32_t m_iClientLevelIndex = {};
 	_string m_strTag;
 	_bool m_isUsingViewport;
 
 	CToolUI* m_pCaptureUI = {nullptr};
 	CToolUI* m_pHoveringUI = { nullptr };
-
 
 	_bool m_isPreUIPressing = { FALSE };
 	_bool m_isPreHovering = { FALSE };

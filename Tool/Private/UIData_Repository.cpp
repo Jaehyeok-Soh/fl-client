@@ -45,8 +45,10 @@ HRESULT CUIData_Repository::Load_UIData(const _wstring& strFilePath)
 	std::filesystem::path p = strFilePath;
 	auto stem = p.stem();        
 	const CDataDocumentBase* pBase = m_pGameInstance->Get_Document(iLevelID, eCategory, stem.string());
-	CBuilder_UI* pBuilder = CBuilder_UI::Create(m_pDevice, m_pDeviceContext);
+	CBuilder_UI* pBuilder = CBuilder_UI::Create(m_pDevice, m_pDeviceContext, iLevelID);
 	pBuilder->Build(*pBase);
+	Safe_Release(pBuilder);
+
 	MSG_BOX("불러오기 완료");
 	return S_OK;
 }

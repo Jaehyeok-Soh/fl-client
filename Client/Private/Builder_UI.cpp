@@ -1,11 +1,10 @@
 #include "pch.h"
 #include "Builder_UI.h"
 
-#include "ToolCanvas.h"
-#include "ToolLayer.h"
-#include "ToolUI.h"
+#include "Canvas.h"
+#include "UILayer.h"
+#include "GenericUI.h"
 
-#include "ImGui_UIManager.h"
 #include "GameInstance.h"
 
 CBuilder_UI::CBuilder_UI(ID3D11Device* pDevice, ID3D11DeviceContext* pDeviceContext, _uint iLevelID)
@@ -69,23 +68,19 @@ HRESULT CBuilder_UI::Create_CanvasDTO(const DTO::TUI_CanvasData& data)
 		return E_FAIL;
 
 	/* 데이터를 이용해서 Object 만들기 */
-	CToolCanvas::TOOLCANVAS_DESC Desc = {};
-	Desc.iLevelIndex = static_cast<uint32_t>(ELevelType::UI);
-
-	Desc.strTag = data.strTag;
+	CCanvas::CANVAS_DESC Desc = {};
+	Desc.iLevelIndex = data.iLevelIndex;
 	Desc.fWidth = data.fWidth;
 	Desc.fHeight = data.fHeight;
 	Desc.fX = data.fPosX;
 	Desc.fY = data.fPosY;
 	Desc.fZ = data.fPosZ;
-
-	CGameObject* pResult = m_pGameInstance->Add_GameObject(Desc.iLevelIndex, g_wszPrototypeTagCanvas, 
-		Desc.iLevelIndex, Engine_Utils::ToWString( Desc.strTag ), &Desc);
-	 if (pResult == nullptr)
+	
+	CGameObject* pResult = m_pGameInstance->Add_GameObject(m_iLevelID, L"Prototype_UI_Canvas", m_iLevelID, Engine_Utils::ToWString(data.strTag), &Desc);
+	if (pResult == nullptr)
 		return E_FAIL;
 
-	 if (FAILED(CImGui_UIManager::GetInstance()->Safe_Add_Canvas(dynamic_cast<CToolCanvas*>(pResult))))
-		 return E_FAIL;
+	m_MapCache.emplace(data.strTag, dynamic_cast<CCanvas*>(pResult));
 
 	return S_OK;
 }
@@ -96,23 +91,21 @@ HRESULT CBuilder_UI::Create_LayerDTO(const DTO::TUI_LayerData& data)
 		return E_FAIL;
 
 	/* 데이터를 이용해서 Object 만들기 */
-	CToolLayer::TOOLLAYER_DESC Desc = {};
-	Desc.iLevelIndex = static_cast<uint32_t>(ELevelType::UI);
-
-	Desc.strTag = data.strTag;
+	CUILayer::UILAYER_DESC Desc = {};
 	Desc.isInitVisible = TRUE;
-	CGameObject* pResult = m_pGameInstance->Add_GameObject(Desc.iLevelIndex, g_wszPrototypeTagLayer, 
-		Desc.iLevelIndex, Engine_Utils::ToWString( Desc.strTag ), &Desc);
+
+	CGameObject* pResult = m_pGameInstance->Add_GameObject(m_iLevelID, L"Prototype_UI_UILayer", m_iLevelID, Engine_Utils::ToWString(data.strTag), &Desc);
 	if (pResult == nullptr)
 		return E_FAIL;
-	 
-	auto* pCanvas = CImGui_UIManager::GetInstance()->Safe_Access_Canvas(CImGui_UIManager::GetInstance()->Get_CurCanvasIndex());
-	if (nullptr == pCanvas)
+	auto* pLayer = dynamic_cast<CUILayer*>(pResult);
+	if (nullptr == pLayer)
 		return E_FAIL;
 
-	if (FAILED(pCanvas->Safe_Add_Layer(dynamic_cast<CToolLayer*>(pResult))))
-		return E_FAIL;
+	auto iter = m_MapCache.find(data.strCanvasName);
+	if (iter != m_MapCache.end())
+		iter->second->Get_UILayerVector()->push_back(pLayer);
 
+	m_MapLayerCache.emplace(data.strTag, pLayer);
 	return S_OK;
 }
 
@@ -122,32 +115,28 @@ HRESULT CBuilder_UI::Create_GenericUIDTO(const DTO::TUI_GenericUIData& data)
 		return E_FAIL;
 
 	/* 데이터를 이용해서 Object 만들기 */
-	CToolUI::TOOLUI_DESC Desc = {};
-	Desc.iLevelIndex = static_cast<uint32_t>(ELevelType::UI);
-
-	Desc.strName = data.strTag	;
+	CGenericUI::GENERIC_UI_DESC Desc = {};
 	Desc.iRectTransformType = data.iRectTransformType;
 	Desc.iUIType = data.iUIType;
 	Desc.fWidth = data.fWidth;
-	Desc.fHeight = data.fHeight; 
+	Desc.fHeight = data.fHeight;
 	Desc.fX = data.fPosX;
 	Desc.fY = data.fPosY;
 	Desc.fZ = data.fPosZ;
-	Desc.strInitTextureTag = data.strTextureTag;
-	Desc.iInitTextureIndex = data.iTextureIndex;
-
-	CGameObject* pResult = m_pGameInstance->Add_GameObject(Desc.iLevelIndex, g_wszPrototypeTagUI,
-		Desc.iLevelIndex, Engine_Utils::ToWString(data.strTag), &Desc);
-
+	Desc.wstrTextureTag = Engine_Utils::ToWString( data.strTextureTag);
+	Desc.iTextureIndex = data.iTextureIndex;
+	
+	CGameObject* pResult = m_pGameInstance->Add_GameObject(m_iLevelID, L"Prototype_UI_GenericUI", m_iLevelID, Engine_Utils::ToWString(data.strTag), &Desc);
 	if (pResult == nullptr)
 		return E_FAIL;
-
-	auto* pLayer = CImGui_UIManager::GetInstance()->Safe_Access_Layer(CImGui_UIManager::GetInstance()->Get_CurLayerIndex());
-	if (nullptr == pLayer)
+	
+	auto* pUI = dynamic_cast<CGenericUI*>(pResult);
+	if (nullptr == pUI)
 		return E_FAIL;
 
-	if (FAILED(pLayer->Safe_Add_UI(dynamic_cast<CToolUI*>(pResult))))
-		return E_FAIL;
+	auto iter = m_MapLayerCache.find(data.strLayerName);
+	if (iter != m_MapLayerCache.end())
+		iter->second->Get_UIVector()->push_back(pUI);
 
 	return S_OK;
 }

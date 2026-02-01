@@ -39,6 +39,7 @@ HRESULT CToolCanvas::Initialize(void* pArg)
 {
 	TOOLCANVAS_DESC* pDesc = static_cast<TOOLCANVAS_DESC*>(pArg);
 	m_strTag = pDesc->strTag;
+	m_iClientLevelIndex = pDesc->iClientLevelIndex;
 
 	if (FAILED(Super::Initialize(pArg)))
 		return E_FAIL;
@@ -265,6 +266,7 @@ void CToolCanvas::Sync_Data()
 {
 	m_tCanvasData.strTag = m_strTag;
 
+	m_tCanvasData.iLevelIndex = m_iClientLevelIndex;
 	m_tCanvasData.fWidth = m_fWidth;
 	m_tCanvasData.fHeight = m_fHeight;
 	m_tCanvasData.fPosX = m_fX;

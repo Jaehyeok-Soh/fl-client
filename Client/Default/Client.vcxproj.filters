@@ -163,6 +163,18 @@
     <Filter Include="03. GameObject\EffectObject\Child_Effect">
       <UniqueIdentifier>{b42020a7-95bc-4264-b992-20809b8a58c6}</UniqueIdentifier>
     </Filter>
+    <Filter Include="07. System\01. Builder\UI">
+      <UniqueIdentifier>{c030ae43-15b7-4d22-8ca7-b55ab7fdc119}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="03. GameObject\UIObjects\UI">
+      <UniqueIdentifier>{6d2a781d-ab40-4385-b96c-b3366f4eaba6}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="03. GameObject\UIObjects\Layer">
+      <UniqueIdentifier>{54739f16-d1ed-490f-b95b-8ee9350dd97f}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="03. GameObject\UIObjects\Canvas">
+      <UniqueIdentifier>{bef61798-c2ef-48e4-8db0-faf0d1677c2d}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="targetver.h">
@@ -288,9 +300,6 @@
     <ClInclude Include="..\Public\State_Slide.h">
       <Filter>06. FSM\Player\Slide</Filter>
     </ClInclude>
-    <ClInclude Include="..\Public\GenericUI.h">
-      <Filter>03. GameObject\UIObjects</Filter>
-    </ClInclude>
     <ClInclude Include="..\Public\UI_Manager.h">
       <Filter>03. GameObject\UIObjects\Manager</Filter>
     </ClInclude>
@@ -311,6 +320,18 @@
     </ClInclude>
     <ClInclude Include="..\Public\EffectObject.h">
       <Filter>03. GameObject\EffectObject\Child_Effect</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\Builder_UI.h">
+      <Filter>07. System\01. Builder\UI</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\GenericUI.h">
+      <Filter>03. GameObject\UIObjects\UI</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\UILayer.h">
+      <Filter>03. GameObject\UIObjects\Layer</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\Canvas.h">
+      <Filter>03. GameObject\UIObjects\Canvas</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -435,9 +456,6 @@
     <ClCompile Include="..\Private\State_Slide.cpp">
       <Filter>06. FSM\Player\Slide</Filter>
     </ClCompile>
-    <ClCompile Include="..\Private\GenericUI.cpp">
-      <Filter>03. GameObject\UIObjects</Filter>
-    </ClCompile>
     <ClCompile Include="..\Private\UI_Manager.cpp">
       <Filter>03. GameObject\UIObjects\Manager</Filter>
     </ClCompile>
@@ -458,6 +476,18 @@
     </ClCompile>
     <ClCompile Include="..\Private\EffectObject.cpp">
       <Filter>03. GameObject\EffectObject\Child_Effect</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\Builder_UI.cpp">
+      <Filter>07. System\01. Builder\UI</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\GenericUI.cpp">
+      <Filter>03. GameObject\UIObjects\UI</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\UILayer.cpp">
+      <Filter>03. GameObject\UIObjects\Layer</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\Canvas.cpp">
+      <Filter>03. GameObject\UIObjects\Canvas</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

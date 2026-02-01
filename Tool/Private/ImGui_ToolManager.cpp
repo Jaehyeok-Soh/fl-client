@@ -145,10 +145,7 @@ void CImGui_ToolManager::ImGuizmo_Render(CToolObject* pSelectedObject)
 bool CImGui_ToolManager::Calculate_ViewportUV(OUT _float &fU, OUT _float& fV)
 {
 	POINT			ptMouse;
-
 	::GetCursorPos(&ptMouse);
-
-	::ScreenToClient(m_hWnd, &ptMouse);
 
 	// m_vViewportBounds는 실제 정렬된 Offset 검정색 영역을 제외한 실제 이미지 영역
 	const Vec2& vMin = m_vViewportBounds[0];
@@ -197,9 +194,7 @@ void CImGui_ToolManager::Render_Dockspace()
 {
 	if (m_eState == State::Disable)
 		return;
-
 	Update_Dockspace();
-
 	_bool bActive = static_cast<bool>(m_eState);
 	ImGui::Begin("ToolApplication", &bActive, m_Flag);
 	ImGui::PopStyleVar();
@@ -266,13 +261,15 @@ void CImGui_ToolManager::Render_Viewport(CToolObject* pSelectedObject)
 	const float fAspect = g_fAspectio;
 	float fViewWidth = fPanelWidth;
 	float fViewHeight = fViewWidth / fAspect;
-	
+
 	// 세로가 더 커지면 가로를 줄임
 	if (fViewHeight > fPanelHeight)
 	{
 		fViewHeight = fPanelHeight;
 		fViewWidth = fPanelHeight * fAspect;
 	}
+	m_fXScale = g_iWinSizeX / fViewWidth;
+	m_fYScale = g_iWinSizeY / fViewHeight;
 
 	// viewort크기에 따라 aspectio를 유지하며 여백 공간을 검정색으로 표현해내기 위함
 	// 아래 Offset은 Bar를 제외한 실제 이미지가 출력된 LeftTop Offset
@@ -349,6 +346,9 @@ void CImGui_ToolManager::Calc_ViewportMousePos()
 	if (vScreenPos.y < m_vViewportBounds[LT].y)	m_vViewportMousePos.y = 0.f;
 	else if (vScreenPos.y > m_vViewportBounds[RB].y)m_vViewportMousePos.y = m_vViewportSize.y;
 	else m_vViewportMousePos.y = vScreenPos.y - m_vViewportBounds[LT].y;
+
+	m_vCalcMousePos.x = m_vViewportMousePos.x * m_fXScale;
+	m_vCalcMousePos.y = m_vViewportMousePos.y * m_fYScale;
 }
 
 HRESULT CImGui_ToolManager::Ready_Events()

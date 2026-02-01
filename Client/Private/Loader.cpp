@@ -19,8 +19,10 @@
 // Builder
 //=================
 #include "DataDocument_Example.h"
+#include "DataDocument_UI.h"
 #include "Builder_Example.h"
 #include "BuilderSystem.h"
+#include "Builder_UI.h"
 
 //=================
 // Object
@@ -36,6 +38,8 @@
 //=================
 // UI
 //=================
+#include "Canvas.h"
+#include "UILayer.h"
 #include "GenericUI.h"
 //=================
 // Resource
@@ -120,6 +124,8 @@ HRESULT CLoader::Loading_For_Logo()
 		{
 			if (FAILED(m_pGameInstance->Regist_Document<CDataDocument_Example>(ENUM_TO_UINT(ELevelType::LOGO), DTO::ECategory::MAP)))
 				return E_FAIL;
+			if (FAILED(m_pGameInstance->Regist_Document<CDataDocument_UI>(ENUM_TO_UINT(ELevelType::LOGO), DTO::ECategory::MAP)))
+				return E_FAIL;
 		}
 		
 		// Read Json
@@ -138,6 +144,15 @@ HRESULT CLoader::Loading_For_Logo()
 	{
 		if (FAILED(m_pGameInstance->Load_Sounds(L"../../Resources/Sounds")))
 			return E_FAIL;
+
+		// For. Prototype_Component_Button_Test_Texture
+		{
+			CTexture::TEXTURE_COMPONENT_ORIGIN_DESC textureDesc = {};
+			textureDesc.iTextureCount = 16;
+			textureDesc.wstrTexturePath = L"../../Resources/Textures/UI/%d.png";
+			if (FAILED(m_pGameInstance->Add_Prototype(ENUM_TO_UINT(ELevelType::STATIC), L"Texture_Boss", CTexture::Create(&textureDesc))))
+				return E_FAIL;
+		}
 	}
 #pragma endregion
 
@@ -185,6 +200,13 @@ HRESULT CLoader::Loading_For_Logo()
 		ADD_PROTOTYPE(ELevelType::STATIC, L"Prototype_GameObject_Part_Body", CBody::Create(m_pDevice, m_pDeviceContext));
 		// For. Prototype_GameObject_Part_Collider
 		ADD_PROTOTYPE(ELevelType::STATIC, L"Prototype_GameObject_Part_Collider", CColliderPart::Create(m_pDevice, m_pDeviceContext));
+
+		// For. Prototype_UI_Canvas
+		ADD_PROTOTYPE(ELevelType::STATIC, L"Prototype_UI_Canvas", CCanvas::Create(m_pDevice, m_pDeviceContext));
+		// For. Prototype_UI_UILayer
+		ADD_PROTOTYPE(ELevelType::STATIC, L"Prototype_UI_UILayer", CUILayer::Create(m_pDevice, m_pDeviceContext));
+		// For. Prototype_UI_GenericUI
+		ADD_PROTOTYPE(ELevelType::STATIC, L"Prototype_UI_GenericUI", CGenericUI::Create(m_pDevice, m_pDeviceContext));
 	}
 #pragma endregion
 

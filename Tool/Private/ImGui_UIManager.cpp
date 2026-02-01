@@ -238,16 +238,6 @@ CToolUI* CImGui_UIManager::Safe_Access_UI(int32_t index)
 void CImGui_UIManager::Free()
 {
 	Safe_Release(m_pGameInstance);
-
-	for (auto* p : m_vecCanvas)
-	{
-		if (nullptr == p)
-			continue;
-
-		Safe_Release(p);
-	}
-	m_vecCanvas.clear();
-
 	Super::Free();
 }
 

@@ -49,7 +49,6 @@ public:
 
 private:
 	CGameInstance* m_pGameInstance = { nullptr };
-
 	vector<CToolCanvas*> m_vecCanvas;
 private:
 	int32_t m_iCurCanvasIndex = {};

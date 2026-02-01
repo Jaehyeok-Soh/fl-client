@@ -2,16 +2,15 @@
 #include "BuilderBase.h"
 #include "GameInstance.h"
 
-CBuilderBase::CBuilderBase(ID3D11Device* pDevice, ID3D11DeviceContext* pDeviceContext)
+CBuilderBase::CBuilderBase(ID3D11Device* pDevice, ID3D11DeviceContext* pDeviceContext, _uint iLevelID)
 	: m_pDevice(pDevice)
 	, m_pDeviceContext(pDeviceContext)
 	, m_pGameInstance(CGameInstance::GetInstance())
+	,m_iLevelID(iLevelID)
 {
 	Safe_AddRef(m_pDevice);
 	Safe_AddRef(m_pDeviceContext);
 	Safe_AddRef(m_pGameInstance);
-
-	m_iLevelID = m_pGameInstance->Get_CurrentLevelIndex();
 }
 
 void CBuilderBase::Free()

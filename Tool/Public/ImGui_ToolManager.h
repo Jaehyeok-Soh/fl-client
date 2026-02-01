@@ -45,14 +45,13 @@ public:
 
 	_bool IsOutofViewport() const {	return m_bOutofViewport; }
 	HRESULT Ready_Events();
-
 	EGuizmoState Get_GuizmoState() const { return m_eGuizmoState; }
 	void Set_GuizmoState(EGuizmoState eState) { m_eGuizmoState = eState; }
 
 	const Vec2& Get_CurViewportSize() const { return m_vViewportSize; }
 	const Vec2& Get_ViewportMousePos() const { return m_vViewportMousePos; }
 	POINT Get_ViewportMousePos_Point() const { return POINT{ (LONG)m_vViewportMousePos.x, (LONG)m_vViewportMousePos.y }; }
-
+	POINT Get_CalculatedMousePos_Point() const { return POINT{ (LONG)m_vCalcMousePos.x, (LONG)m_vCalcMousePos.y }; }
 private:	
 	bool Calculate_ViewportUV(OUT _float& fU, OUT _float& fV);
 	void Update_Dockspace();
@@ -60,6 +59,7 @@ private:
 	HRESULT Show_Menubar(_bool bActive);
 	HRESULT Ready_DockSpace_Elements(ELevelType eStartLevel);
 	void Calc_ViewportMousePos();
+
 private:
 	_bool m_bViewprotFocused = { false };
 	_bool m_bViewprotHovered = { false };
@@ -82,7 +82,9 @@ private:
 	Vec2 m_vViewportSize = {};
 	Vec2 m_vViewportBounds[2] = {};
 	Vec2 m_vViewportMousePos = {};
-
+	_float m_fXScale = {};
+	_float m_fYScale = {};
+	Vec2 m_vCalcMousePos = {};
 public:
 	static CImGui_ToolManager* Create(HWND hWnd, ID3D11Device* pDevice, ID3D11DeviceContext* pDeviceContext, ELevelType eStartLevel);
 	virtual void Free() override;

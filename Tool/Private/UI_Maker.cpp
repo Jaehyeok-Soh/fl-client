@@ -270,7 +270,7 @@ void CUI_Maker::Make_Canvas()
 				CToolCanvas::TOOLCANVAS_DESC Desc = {};
 				Desc.strTag = m_strCanvasTag;
 				Desc.iLevelIndex = { static_cast<uint32_t>(ELevelType::UI) };
-
+				Desc.iClientLevelIndex = m_iCurSelectLevelID;
 				CGameObject* pResult =
 					CGameInstance::GetInstance()->Add_GameObject(Desc.iLevelIndex, g_wszPrototypeTagCanvas, Desc.iLevelIndex, Engine_Utils::ToWString(m_strCanvasTag),&Desc );
 
@@ -365,6 +365,11 @@ void CUI_Maker::Make_Layer()
 					CToolLayer::TOOLLAYER_DESC Desc = {};
 					Desc.strTag = m_strLayerTag;
 					Desc.iLevelIndex = static_cast<uint32_t>(ELevelType::UI);
+					auto* pCanvas = m_pUIManager->Safe_Access_Canvas(m_pUIManager->Get_CurCanvasIndex());
+					if(nullptr != pCanvas)
+						Desc.strCanvasName = pCanvas->Get_Tag();
+					Desc.iCanvasIndex = m_pUIManager->Get_CurCanvasIndex();
+
 					CGameObject* pResult =
 						CGameInstance::GetInstance()->Add_GameObject(Desc.iLevelIndex, g_wszPrototypeTagLayer, Desc.iLevelIndex, Engine_Utils::ToWString(m_strLayerTag), &Desc);
 					if (nullptr == pResult)
@@ -477,7 +482,6 @@ void CUI_Maker::Make_UI()
 
 		if (m_isCreateUI)
 		{
-
 			if ("" == m_strUIName )
 			{
 				MSG_BOX("CUI_Maker::Make_UI_Btn, Empty Tag");
@@ -508,20 +512,25 @@ void CUI_Maker::Make_UI()
 				}
 				else
 				{
-
-
 					CToolUI::TOOLUI_DESC Desc = {};
+					Desc.iLevelIndex = static_cast<uint32_t>(ELevelType::UI);
 					Desc.fHeight = 100.f;
 					Desc.fWidth = 100.f;
 					Desc.strName = m_strUIName;
+					auto* pCanvas = m_pUIManager->Safe_Access_Canvas(m_pUIManager->Get_CurCanvasIndex());
+					if(nullptr != pCanvas)
+						Desc.strCanvasName = pCanvas->Get_Tag();
+					auto* pLayer = m_pUIManager->Safe_Access_Layer(m_pUIManager->Get_CurLayerIndex());
+					if(nullptr != pLayer)
+						Desc.strLayerName = pLayer->Get_Name();
+
+					Desc.iCanvasIndex = m_pUIManager->Get_CurCanvasIndex();
 					Desc.iLayerIndex = m_pUIManager->Get_CurLayerIndex();
-					Desc.iLevelIndex = static_cast<uint32_t>(ELevelType::UI);
 					Desc.isAlpha = TRUE;
 					Desc.isInitVisible = TRUE;
 					Desc.strInitTextureTag = "Texture_Boss";
 					Desc.iInitTextureIndex = 0;
 
-					CToolLayer* pLayer = m_pUIManager->Safe_Access_Layer(m_pUIManager->Get_CurLayerIndex());
 					if (nullptr != pLayer)
 					{
 						CGameObject* pResult =
@@ -672,8 +681,15 @@ void CUI_Maker::Input_Canvas_TransformInfo()
 		ImGui::SameLine(0.f, 16.f);
 		Scrub_Float("Z :", "CanvasPosZ", pCanvas->Get_PosZ_Ptr(), 0.1f, 20.f, 0.1f, 1.0f, 100.f);
 
-		*pCanvas->Get_Width_Ptr() = CImGui_ToolManager::GetInstance()->Get_CurViewportSize().x;
-		*pCanvas->Get_Height_Ptr() = CImGui_ToolManager::GetInstance()->Get_CurViewportSize().y;
+		UINT iNumViewports = 1;
+		D3D11_VIEWPORT Viewports = {};
+
+		m_pDeviceContext->RSGetViewports(&iNumViewports, &Viewports);
+
+//		*pCanvas->Get_Width_Ptr() = CImGui_ToolManager::GetInstance()->Get_CurViewportSize().x;
+		*pCanvas->Get_Width_Ptr() = Viewports.Width;
+	//	*pCanvas->Get_Height_Ptr() = CImGui_ToolManager::GetInstance()->Get_CurViewportSize().y;
+		*pCanvas->Get_Height_Ptr() = Viewports.Height;
 		pCanvas->Set_isUsingViewport(TRUE);
 	}
 }

@@ -32,6 +32,11 @@ HRESULT CGenericUI::Initialize(void* pArg)
 {
 	GENERIC_UI_DESC* pDesc = static_cast<GENERIC_UI_DESC*>(pArg);
 
+	m_eUIType = static_cast<EUiType>(pDesc->iUIType);
+	m_eRectTransformType = static_cast<ERectTransform>(pDesc->iRectTransformType);
+	m_wstrTextureTag = pDesc->wstrTextureTag;
+	m_iTextureIndex = pDesc->iTextureIndex;
+
 	if (FAILED(Super::Initialize(pArg)))
 		return E_FAIL;
 
@@ -46,32 +51,47 @@ HRESULT CGenericUI::Awake(const _uint iCurrentLevelID)
 	if (FAILED(Super::Awake(iCurrentLevelID)))
 		return E_FAIL;
 
-	Set_SizeToTextureScale();
 	return S_OK;
 }
 
 void CGenericUI::Update_Priority(const _float fTimeDelta)
 {
-	Super::Update_Priority(fTimeDelta);
+	if(m_isVisible)
+		Super::Update_Priority(fTimeDelta);
 }
 
 void CGenericUI::Update(const _float fTimeDelta)
 {
-	Super::Update(fTimeDelta);
+	if (m_isVisible)
+	{
+		Vec3 vPos = Vec3{ m_vRectPos.x + m_fX, m_vRectPos.y + m_fY, m_fZ };
+		Move_Position(vPos.x, vPos.y, vPos.z);
+
+		m_tRenderRect.left	= static_cast<LONG>(vPos.x - (m_fWidth * 0.5f));
+		m_tRenderRect.right = static_cast<LONG>(vPos.x + (m_fWidth * 0.5f));
+		m_tRenderRect.top	= static_cast<LONG>(vPos.y - (m_fHeight * 0.5f));
+		m_tRenderRect.bottom = static_cast<LONG>(vPos.y + (m_fHeight * 0.5f));
+		Super::Update(fTimeDelta);
+	}
 }
 
 void CGenericUI::Update_Late(const _float fTimeDelta)
 {
-	Super::Update_Late(fTimeDelta);
+	if (m_isVisible)
+		Super::Update_Late(fTimeDelta);
 }
 
 void CGenericUI::Ready_Before_Render(const _float fTimeDelta)
 {
-	Super::Ready_Before_Render(fTimeDelta);
+	if (m_isVisible)
+		Super::Ready_Before_Render(fTimeDelta);
 }
 
 HRESULT CGenericUI::Render()
 {
+	if (!m_isVisible)
+		return S_OK;
+
 	if (FAILED(Super::Render()))
 		return E_FAIL;
 
@@ -85,17 +105,21 @@ HRESULT CGenericUI::Render()
 	return S_OK;
 }
 
+_bool CGenericUI::Calc_HitEvent()
+{
+	if (::PtInRect(&m_tRenderRect, m_pGameInstance->Get_MousePos()))
+		return TRUE;
+	return FALSE;
+}
+
 HRESULT CGenericUI::Ready_Components(GENERIC_UI_DESC* pDesc)
 {
-	if (FAILED(Add_Component<CTexture>(ENUM_TO_UINT(ELevelType::LOGO), pDesc->wstrTextureTag, pDesc)))
+	if (FAILED(Add_Component<CTexture>(ENUM_TO_UINT(ELevelType::STATIC), m_wstrTextureTag, pDesc)))
 		return E_FAIL;
-
 	if (FAILED(Add_Component<CShader>(0, L"Prototype_Component_Shader_VtxPosTex", pDesc)))
 		return E_FAIL;
-
 	if (FAILED(Add_Component<CVIBuffer_Rect_Tex>(0, L"Prototype_Component_VIBuffer_Rect_Tex", pDesc)))
 		return E_FAIL;
-
 	return S_OK;
 }
 
@@ -104,10 +128,8 @@ HRESULT CGenericUI::Bind_ShaderResources()
 	CShader* pShader = Get_Component<CShader>();
 	if (FAILED(Get_Component<CTransform>()->Bind_ShaderResource(pShader)))
 		return E_FAIL;
-
-	if (FAILED(Get_Component<CTexture>()->Bind_ShaderResource(pShader, 0)))
+	if (FAILED(Get_Component<CTexture>()->Bind_ShaderResource(pShader, m_iTextureIndex)))
 		return E_FAIL;
-
 	return S_OK;
 }
 
