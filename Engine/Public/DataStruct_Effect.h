@@ -128,8 +128,10 @@ struct TEFFECT_ContainerData
 };
 
 NLOHMANN_JSON_SERIALIZE_ENUM(EEffectType,
-	{
-		{EEffectType::END, "END"}
+    { 
+    {EEffectType::EFFECT_CONTAINER, "EFFECT_CONTAINER"},
+    {EEffectType::EFFECT_PARTS, "EFFECT_PARTS"},
+	{EEffectType::END, "END"}
 	}
 )
 

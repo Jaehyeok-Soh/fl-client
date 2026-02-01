@@ -31,6 +31,13 @@ private:
 	void Save_CameraData(const wstring& wstrFilePath);
 	void Save_UIData(const wstring& wstrFilePath);
 
+private:
+	void Load_MapData(const wstring& wstrFilePath);
+	void Load_AnimationData(const wstring& wstrFilePath);
+	void Load_EffectData(const wstring& wstrFilePath);
+	void Load_CameraData(const wstring& wstrFilePath);
+	void Load_UIData(const wstring& wstrFilePath);
+
 	void Request_ExportData(ELevelType eLevelID, DTO::ECategory eCategory, const wstring& wstrLayerTag, CDataDocumentBase* pDocument);
 private:
 	CGameInstance* m_pGameInstance{nullptr};

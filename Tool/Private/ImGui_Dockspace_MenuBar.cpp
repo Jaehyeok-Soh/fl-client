@@ -11,6 +11,8 @@
 // Effect
 #include "DataDocument_Effect.h"
 #include "DataStruct_Effect.h"
+#include "Effect.h"
+#include "CEFfectObject.h"
 
 CImGui_Dockspace_MenuBar::CImGui_Dockspace_MenuBar(const _char* pLabel, ID3D11Device* pDevice, ID3D11DeviceContext* pDeviceContext)
 	: Super(pLabel, pDevice, pDeviceContext)
@@ -109,26 +111,30 @@ void CImGui_Dockspace_MenuBar::Save_Data(const wstring& wstrFilePath)
 
 void CImGui_Dockspace_MenuBar::Load_Data(const wstring& wstrFilePath)
 {
-	ELevelType eLevelType = ELevelType::MAP;
-	DTO::ECategory eCategory = DTO::ECategory::MAP;
-	_uint iLevelID = ENUM_TO_UINT(eLevelType);
+	ELevelType eCurentLevel = static_cast<ELevelType>(m_pGameInstance->Get_CurrentLevelIndex());
+	switch (eCurentLevel)
+	{
+	case Tool::ELevelType::LOADING:
 
-	if (FAILED(m_pGameInstance->Regist_Document<CDataDocument_Example>(iLevelID, eCategory)))
-		return;
-
-	if (FAILED(m_pGameInstance->Load_File_Json(iLevelID, eCategory, wstrFilePath)))
-		return;
-
-	// 여기까지 성공하면 로드가 된것! 아래 코드는 그냥 테스트용
-	const CDataDocumentBase* pBase = m_pGameInstance->Get_Document(iLevelID, eCategory, "asdf");
-	const CDataDocument_Example* pTest = static_cast<const CDataDocument_Example*>(pBase);
-	const auto okay = pTest->Get_ListByType(ENUM_TO_UINT(DTO::EMapType::STATICMODEL));
-	const auto okay2 = pTest->Get_ListByType(ENUM_TO_UINT(DTO::EMapType::LIGHT));
-	if (okay.size() > 0 && okay2.size() > 0)
-		
-		MSG_BOX("Okay");
-	else
-		MSG_BOX("Failed");
+		break;
+	case Tool::ELevelType::MAP:
+		Load_MapData(wstrFilePath);
+		break;
+	case Tool::ELevelType::ANIMATION:
+		Load_AnimationData(wstrFilePath);
+		break;
+	case Tool::ELevelType::EFFECT:
+		Load_EffectData(wstrFilePath);
+		break;
+	case Tool::ELevelType::CAMERA:
+		Load_CameraData(wstrFilePath);
+		break;
+	case Tool::ELevelType::UI:
+		Load_UIData(wstrFilePath);
+		break;
+	case Tool::ELevelType::ASSET_CONVERT:
+		break;
+	}
 }
 
 void CImGui_Dockspace_MenuBar::Save_MapData(const wstring& wstrFilePath)
@@ -205,6 +211,221 @@ void CImGui_Dockspace_MenuBar::Save_CameraData(const wstring& wstrFilePath)
 }
 
 void CImGui_Dockspace_MenuBar::Save_UIData(const wstring& wstrFilePath)
+{
+}
+
+void CImGui_Dockspace_MenuBar::Load_MapData(const wstring& wstrFilePath)
+{
+	ELevelType eLevelType = ELevelType::MAP;
+	DTO::ECategory eCategory = DTO::ECategory::MAP;
+	_uint iLevelID = ENUM_TO_UINT(eLevelType);
+
+	if (FAILED(m_pGameInstance->Regist_Document<CDataDocument_Example>(iLevelID, eCategory)))
+		return;
+
+	if (FAILED(m_pGameInstance->Load_File_Json(iLevelID, eCategory, wstrFilePath)))
+		return;
+
+	// 여기까지 성공하면 로드가 된것! 아래 코드는 그냥 테스트용
+	const CDataDocumentBase* pBase = m_pGameInstance->Get_Document(iLevelID, eCategory, "asdf");
+	const CDataDocument_Example* pTest = static_cast<const CDataDocument_Example*>(pBase);
+	const auto okay = pTest->Get_ListByType(ENUM_TO_UINT(DTO::EMapType::STATICMODEL));
+	const auto okay2 = pTest->Get_ListByType(ENUM_TO_UINT(DTO::EMapType::LIGHT));
+	if (okay.size() > 0 && okay2.size() > 0)
+
+		MSG_BOX("Okay");
+	else
+		MSG_BOX("Failed");
+}
+
+void CImGui_Dockspace_MenuBar::Load_AnimationData(const wstring& wstrFilePath)
+{
+}
+
+void CImGui_Dockspace_MenuBar::Load_EffectData(const wstring& wstrFilePath)
+{
+	ELevelType eLevelType = ELevelType::EFFECT;
+	DTO::ECategory eCategory = DTO::ECategory::EFFECT;
+	_uint iLevelID = ENUM_TO_UINT(eLevelType);
+
+	std::filesystem::path filePath(wstrFilePath);
+	string FileKey = filePath.stem().string();
+
+	if (FAILED(m_pGameInstance->Regist_Document<CDataDocument_Effect>(iLevelID, eCategory)))
+		return;
+
+	if (FAILED(m_pGameInstance->Load_File_Json(iLevelID, eCategory, wstrFilePath)))
+		return;
+
+	// 여기까지 성공하면 로드가 된것! 아래 코드는 그냥 테스트용
+	const CDataDocumentBase* pBase = m_pGameInstance->Get_Document(iLevelID, eCategory, FileKey);
+	const CDataDocument_Effect* pTest = static_cast<const CDataDocument_Effect*>(pBase);
+
+	const auto okay = pTest->Get_ListByType(ENUM_TO_UINT(DTO::EEffectType::EFFECT_CONTAINER));
+
+	if (okay.size() > 0)
+		MSG_BOX("Okay");
+	else
+		MSG_BOX("Failed");
+
+	// 객체 로딩중 .. 
+	CToolObject* pEffectContainer = { nullptr };
+	for (auto& ObjectData : okay)
+	{
+		DTO::TEFFECT_ContainerData pData = static_cast<CEFFECT_CONTAINER*>(ObjectData)->Get_Data();
+
+		// 부모 객체 생성 과정
+			// worldmatrix 분해해서 transform에 굳이굳이 넣기.
+		Vec3 vScale, vPos, vRot;
+		Quat vQuat;
+		pData.vWorldMatrix.Decompose(vScale, vQuat, vPos);
+
+		CTransform::TRANSFORM_DESC pTransDesc = {};
+		pTransDesc.fMovePerSec = 1.f;
+		pTransDesc.fRotatePerSec = 1.f;
+		pTransDesc.vPosition = vPos;
+		pTransDesc.vRotation_Degrees = Engine_Utils::ToEulerDegrees(vQuat);
+		pTransDesc.vScale = vScale;
+
+		Effect::EFFECT_CONTAINERDESC pDesc = {};
+		pDesc._Effect_SimulationType = (E_SIMULATION_SPACE)pData._Effect_SimulationType;
+		pDesc.wstrLayerTag = L"Effect";
+		pDesc.iLevelIndex = iLevelID;
+		pDesc.pTransform_Desc = &pTransDesc;
+
+		// =============== CREATE	EFFECT ==================
+
+		if (!(pEffectContainer = static_cast<CToolObject*>(m_pGameInstance->Add_GameObject(ENUM_TO_UINT(ELevelType::EFFECT),
+			L"Prototype_GameObject_Effect",
+			ENUM_TO_UINT(ELevelType::EFFECT),
+			pDesc.wstrLayerTag, &pDesc))))
+		{
+			MSG_BOX("생성 실패 : Effect Object - Particle System");
+			return;
+		}
+		else
+		{
+			// 이름 정해주기
+			pEffectContainer->Set_Name(pData.EffectContainerName);
+		}
+
+		// =============== CREATE   PARTS ===================
+		_uint index = 0;
+		for (DTO::TEFFECT_PartsData& Part : pData._ChildData)
+		{
+			// 1. Transform 데이터 복원 (Matrix -> Vec3)
+			Vec3 vScale, vPos;
+			Quat vQuat;
+			Part.vWorldMatrix.Decompose(vScale, vQuat, vPos);
+
+			CEffectObject::Effect_Desc pEffectDesc = {};
+			CTransform::TRANSFORM_DESC transformDesc = {};
+
+			transformDesc.vPosition = vPos;
+			transformDesc.vScale = vScale;
+			transformDesc.vRotation_Degrees = Engine_Utils::ToEulerDegrees(vQuat); // Quat -> Euler 변환
+			transformDesc.fRotatePerSec = 1.f;
+			transformDesc.fMovePerSec = 1.f;
+
+			//===========    부모 행렬 연결 및 기본 설정   ==============
+			pEffectDesc.pMatParent = &(pEffectContainer->Get_Component<CTransform>()->Get_WorldMatrix());
+			pEffectDesc.pTransform_Desc = &transformDesc;
+			pEffectDesc.wstrLayerTag = L"Effect_Parts";
+			pEffectDesc.iLevelIndex = ENUM_TO_UINT(ELevelType::EFFECT);
+
+			// ==========   이펙트 타입 및 시스템 설정 ==============
+			pEffectDesc.eEffectSystemType = (E_EffectSystemType)Part.eEffectSystemType;
+			pEffectDesc.eEffectParticleType = (E_PARTICLETYPE)Part.eEffectParticleType;
+			pEffectDesc.eEffectType = (E_EFFECTTYPE)Part.eEffectType;
+			pEffectDesc._Effect_ShapeType = (E_SHAPETYPE)Part._Effect_ShapeType;
+
+			// ==========    리소스 태그 복원  ===============
+			pEffectDesc._Effect_Model_Tag = Part._Effect_Model_Tag;
+			pEffectDesc._Effect_DiffuseTexture_Tag = Part._Effect_DiffuseTexture_Tag;
+			pEffectDesc._Effect_NoiseTexture_Tag = Part._Effect_NoiseTexture_Tag;
+			pEffectDesc._Effect_MaskingTexture_Tag = Part._Effect_MaskingTexture_Tag;
+			pEffectDesc._Effect_GradationTexture_Tag = Part._Effect_GradationTexture_Tag;
+			pEffectDesc._Effect_TrailTexture_Tag = Part._Effect_TrailTexture_Tag;
+			pEffectDesc._Effect_NormalTexture_Tag = Part._Effect_NormalTexture_Tag;
+
+			// =====    셰이더 설정   =====================
+			pEffectDesc._Effect_Shader_Tag = Part._Effect_Shader_Tag;
+			pEffectDesc._Effect_ShaderPass = Part._Effect_ShaderPass;
+
+			// ======   수치 및 컬러 데이터 복원   ===========
+			pEffectDesc._Effect_ScrollSpeed = Part._Effect_ScrollSpeed;
+			pEffectDesc._Effect_DistortionScale = Part._Effect_DistortionScale;
+			pEffectDesc._Effect_StartScale = Part._Effect_StartScale;
+			pEffectDesc._Effect_EndScale = Part._Effect_EndScale;
+			pEffectDesc._Effect_Color = Part._Effect_Color;
+			pEffectDesc._Effect_DiscardValue = Part._Effect_DiscardValue;
+			pEffectDesc._Effect_Range = Part._Effect_Range;
+			pEffectDesc._Effect_ParticleSize = Part._Effect_ParticleSize;
+
+			// =====   스프라이트 및 애니메이션 설정   ========
+			pEffectDesc._Effect_bUseSprite = Part._Effect_bUseSprite;
+			pEffectDesc._Effect_TileCount = { Part._Effect_TileCount.x, Part._Effect_TileCount.y };
+			pEffectDesc._Effect_bPlayAnim = Part._Effect_bPlayAnim;
+			pEffectDesc._Effect_AnimSpeed = Part._Effect_AnimSpeed;
+			pEffectDesc.m_iCurSpriteNumber = Part.m_iCurSpriteNumber;
+
+			//=======   파티클 시스템 상세 설정   ========
+			pEffectDesc._Effect_Duration = Part._Effect_Duration;
+			pEffectDesc._Effect_Looping = Part._Effect_Looping;
+			pEffectDesc._Effect_IsRandomSeed = Part._Effect_IsRandomSeed;
+			pEffectDesc._Effect_StartDelay = Part._Effect_StartDelay;
+			pEffectDesc._Effect_LifeTime = Part._Effect_LifeTime;
+			pEffectDesc._Effect_PlayBackSpeed = Part._Effect_PlayBackSpeed;
+			pEffectDesc._Effect_StartSpeed = Part._Effect_StartSpeed;
+			pEffectDesc._Effect_MaxParticle = Part._Effect_MaxParticle;
+			pEffectDesc._Effect_RateOverTime = Part._Effect_RateOverTime;
+			pEffectDesc._Effect_RateOverDistance = Part._Effect_RateOverDistance;
+
+			// ===========  및 렌더링 플래그   =============
+			pEffectDesc._Effect_TextureFlag = Part._Effect_TextureFlag;
+			pEffectDesc._Effect_RenderFlag = Part._Effect_RenderFlag;
+			pEffectDesc._Effect_SamplerStateFlag = Part._Effect_SamplerStateFlag;
+
+			pEffectDesc._Effect_Tool_DiffuseTexture = Part._Effect_Tool_DiffuseTexture;
+			pEffectDesc._Effect_Tool_NoiseTexture = Part._Effect_Tool_NoiseTexture;
+			pEffectDesc._Effect_Tool_MaskingTexture = Part._Effect_Tool_MaskingTexture;
+			pEffectDesc._Effect_Tool_GradationTexture = Part._Effect_Tool_GradationTexture;
+
+			// ===========   빌보드 및 스크롤 옵션 상태 복원   ===========
+			pEffectDesc._Effect_Tool_UseBillboard = Part._Effect_Tool_UseBillboard;
+			pEffectDesc._Effect_Tool_UseScroll = Part._Effect_Tool_UseScroll;
+			pEffectDesc._Effect_Tool_RightScroll = Part._Effect_Tool_RightScroll;
+			pEffectDesc._Effect_Tool_DownScroll = Part._Effect_Tool_DownScroll;
+
+			// ===========   샘플러 스테이트 인덱스 복원   ===========
+			pEffectDesc._Effect_Tool_DiffuseSamplerState_Flag = Part._Effect_Tool_DiffuseSamplerState_Flag;
+			pEffectDesc._Effect_Tool_NoiseSamplerState_Flag = Part._Effect_Tool_NoiseSamplerState_Flag;
+			pEffectDesc._Effect_Tool_MaskingSamplerState_Flag = Part._Effect_Tool_MaskingSamplerState_Flag;
+			pEffectDesc._Effect_Tool_GradationSamplerState_Flag = Part._Effect_Tool_GradationSamplerState_Flag;
+
+			static_cast<Effect*>(pEffectContainer)->Add_Part(index,
+				ENUM_TO_UINT(ELevelType::EFFECT),
+				L"Prototype_GameObject_Effect_Parts",
+				&pEffectDesc
+			);
+
+			//========  생성된 파츠 이름 설정  =============
+
+			_uint iLastIdx = (_uint)static_cast<Effect*>(pEffectContainer)->Get_PartList().size() - 1;
+			static_cast<Effect*>(pEffectContainer)->Get_Part<CEffectObject>(iLastIdx)->Set_Name(Part.EffectPartsName);
+
+			index++;
+		}
+		
+	}
+
+}
+
+void CImGui_Dockspace_MenuBar::Load_CameraData(const wstring& wstrFilePath)
+{
+}
+
+void CImGui_Dockspace_MenuBar::Load_UIData(const wstring& wstrFilePath)
 {
 }
 

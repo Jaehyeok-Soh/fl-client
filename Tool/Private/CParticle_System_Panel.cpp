@@ -317,36 +317,35 @@ void CParticle_System_Panel::Draw_ParticleSystem(CToolObject* pGo)
 
 		ImGui::AlignTextToFramePadding(); if (ImGui::TreeNode("Simulation Space"))
 		{
-			// 현재 어떤 모드인지 확인
-			//bool isLocal = (m_tCurrentDesc._Effect_SimulationType == E_SIMULATION_SPACE::LOCAL);
-			//bool isWorld = (m_tCurrentDesc._Effect_SimulationType == E_SIMULATION_SPACE::WORLD);
+			bool isLocal = (static_cast<Effect*>(pGo)->Get_SimulationSpace() == E_SIMULATION_SPACE::LOCAL);
+			bool isWorld = (static_cast<Effect*>(pGo)->Get_SimulationSpace() == E_SIMULATION_SPACE::WORLD);
 
-			//ImGui::Text("Local"); ImGui::SameLine(0, 45.f);
-			//ImGui::Text("World");
+			ImGui::Text("Local"); ImGui::SameLine(0, 45.f);
+			ImGui::Text("World");
 
-			//// ==== Local 체크박스 ====
-			//if (ImGui::Checkbox("##LocalMode", &isLocal))
-			//{
-			//	// 클릭 시 무조건 LOCAL로 변경
-			//	m_tCurrentDesc._Effect_SimulationType = E_SIMULATION_SPACE::LOCAL;
-			//	m_bModified = true;
-			//}
+			// ==== Local 체크박스 ====
+			if (ImGui::Checkbox("##LocalMode", &isLocal))
+			{
+				// 클릭 시 무조건 LOCAL로 변경
+				static_cast<Effect*>(pGo)->Set_SimulationSpace(E_SIMULATION_SPACE::LOCAL);
+				m_bModified = true;
+			}
 
-			//ImGui::SameLine(0, 40.f);
+			ImGui::SameLine(0, 40.f);
 
-			//// ==== World 체크박스 ====
-			//if (ImGui::Checkbox("##WorldMode", &isWorld))
-			//{
-			//	// 클릭 시 무조건 WORLD로 변경
-			//	m_tCurrentDesc._Effect_SimulationType = E_SIMULATION_SPACE::WORLD;
-			//	m_bModified = true;
-			//}
+			// ==== World 체크박스 ====
+			if (ImGui::Checkbox("##WorldMode", &isWorld))
+			{
+				// 클릭 시 무조건 WORLD로 변경
+				static_cast<Effect*>(pGo)->Set_SimulationSpace(E_SIMULATION_SPACE::WORLD);
+				m_bModified = true;
+			}
 
-			//// ====== 이쁘게 디자인하기 =======
-			//ImGui::Spacing();
-			//const char* modeText = (m_tCurrentDesc._Effect_SimulationType == E_SIMULATION_SPACE::LOCAL) ? "LOCAL" : "WORLD";
-			//ImGui::Text("Active Mode: "); ImGui::SameLine();
-			//ImGui::TextColored(ImVec4(0.0f, 1.0f, 1.0f, 1.0f), "%s", modeText);
+			// ====== 이쁘게 디자인하기 =======
+			ImGui::Spacing();
+			const char* modeText = (static_cast<Effect*>(pGo)->Get_SimulationSpace() == E_SIMULATION_SPACE::LOCAL) ? "LOCAL" : "WORLD";
+			ImGui::Text("Active Mode: "); ImGui::SameLine();
+			ImGui::TextColored(ImVec4(0.0f, 1.0f, 1.0f, 1.0f), "%s", modeText);
 
 			ImGui::TreePop();
 		}

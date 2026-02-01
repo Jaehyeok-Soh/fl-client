@@ -28,6 +28,14 @@ HRESULT Effect::Initialize(void* pArg)
 	if (FAILED(Super::Initialize(pArg)))
 		return E_FAIL;
 
+	EFFECT_CONTAINERDESC* pDesc = static_cast<EFFECT_CONTAINERDESC*>(pArg);
+
+	if (pDesc != nullptr)
+		m_eSimulationSpace = pDesc->_Effect_SimulationType;
+
+	else
+		MSG_BOX("EFFECT_CONTAINERDESC nullptr");
+
 	return S_OK;
 }
 
@@ -98,18 +106,19 @@ _bool Effect::Export_Data(DTO::ECategory eCategory, CDataDocumentBase* pDocument
 		const CEffectObject::Effect_Desc& tPartDesc = pEffectPart->Get_EffectDesc();
 		DTO::TEFFECT_PartsData tPartData;
 
-		// [기존 코드 유지 부분]
+		// =========== Document에 추가할 값 ===========
 		tPartData.strTag = pEffectPart->Get_Name();
 		tPartData.EffectPartsName = tPartData.strTag;
 		tPartData.ParentsName = tContainerData.EffectContainerName;
 		tPartData.vWorldMatrix = pEffectPart->Get_Component<CTransform>()->Get_WorldMatrix();
 
+		// =========== Effect Type ===========
 		tPartData.eEffectSystemType = ENUM_TO_UINT(tPartDesc.eEffectSystemType);
 		tPartData.eEffectParticleType = ENUM_TO_UINT(tPartDesc.eEffectParticleType);
 		tPartData.eEffectType = ENUM_TO_UINT(tPartDesc.eEffectType);
 		tPartData._Effect_ShapeType = ENUM_TO_UINT(tPartDesc._Effect_ShapeType);
 
-		// [리소스/셰이더]
+		// =========== Resource ===========
 		tPartData._Effect_Model_Tag = tPartDesc._Effect_Model_Tag;
 		tPartData._Effect_DiffuseTexture_Tag = tPartDesc._Effect_DiffuseTexture_Tag;
 		tPartData._Effect_NoiseTexture_Tag = tPartDesc._Effect_NoiseTexture_Tag;
@@ -120,7 +129,7 @@ _bool Effect::Export_Data(DTO::ECategory eCategory, CDataDocumentBase* pDocument
 		tPartData._Effect_Shader_Tag = tPartDesc._Effect_Shader_Tag;
 		tPartData._Effect_ShaderPass = tPartDesc._Effect_ShaderPass;
 
-		// [수치 데이터]
+		// =========== Shader에 던질 수치 데이터 ===========
 		tPartData._Effect_ScrollSpeed = tPartDesc._Effect_ScrollSpeed;
 		tPartData._Effect_DistortionScale = tPartDesc._Effect_DistortionScale;
 		tPartData._Effect_StartScale = tPartDesc._Effect_StartScale;
@@ -130,14 +139,14 @@ _bool Effect::Export_Data(DTO::ECategory eCategory, CDataDocumentBase* pDocument
 		tPartData._Effect_Range = tPartDesc._Effect_Range;
 		tPartData._Effect_ParticleSize = tPartDesc._Effect_ParticleSize;
 
-		// [스프라이트 애니메이션]
+		// =========== 스프라이트 애니메이션 제어 ===========
 		tPartData._Effect_bUseSprite = tPartDesc._Effect_bUseSprite;
 		tPartData._Effect_TileCount = { tPartDesc._Effect_TileCount.x, tPartDesc._Effect_TileCount.y };
 		tPartData._Effect_bPlayAnim = tPartDesc._Effect_bPlayAnim;
 		tPartData._Effect_AnimSpeed = tPartDesc._Effect_AnimSpeed;
 		tPartData.m_iCurSpriteNumber = tPartDesc.m_iCurSpriteNumber;
 
-		// [파티클 시스템 상세]
+		// ===========  파티클 시스템 정보 ===========
 		tPartData._Effect_Duration = tPartDesc._Effect_Duration;
 		tPartData._Effect_Looping = tPartDesc._Effect_Looping;
 		tPartData._Effect_IsRandomSeed = tPartDesc._Effect_IsRandomSeed;
@@ -149,18 +158,18 @@ _bool Effect::Export_Data(DTO::ECategory eCategory, CDataDocumentBase* pDocument
 		tPartData._Effect_RateOverTime = tPartDesc._Effect_RateOverTime;
 		tPartData._Effect_RateOverDistance = tPartDesc._Effect_RateOverDistance;
 
-		// [플래그 정보]
+		// ===========  플래그 정보 ===========
 		tPartData._Effect_TextureFlag = tPartDesc._Effect_TextureFlag;
 		tPartData._Effect_RenderFlag = tPartDesc._Effect_RenderFlag;
 		tPartData._Effect_SamplerStateFlag = tPartDesc._Effect_SamplerStateFlag;
 
-		// [툴 전용 데이터까지 넣어줘야 JSON 로드 시 툴 UI 상태가 복원됨]
+		// =========== 툴 전용 데이터 ===========
 		tPartData._Effect_Tool_DiffuseTexture = tPartDesc._Effect_Tool_DiffuseTexture;
 		tPartData._Effect_Tool_NoiseTexture = tPartDesc._Effect_Tool_NoiseTexture;
 
 		tContainerData._ChildData.push_back(tPartData);
     }
-    // 부모의 자식 리스트에 추가
+    // ===========  부모 Document에 추가 ===========
     return SUCCEEDED(pEffectDoc->Try_Add(tContainerData));
 }
 

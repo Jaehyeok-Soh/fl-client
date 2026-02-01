@@ -9,6 +9,7 @@ using json = nlohmann::json;
 
 NS_BEGIN(DTO)
 
+// ==========  Container  ==========
 void to_json(json& j, const TEFFECT_ContainerData& data)
 {
 	j = json
@@ -21,7 +22,7 @@ void to_json(json& j, const TEFFECT_ContainerData& data)
 			data.vWorldMatrix._11, data.vWorldMatrix._12, data.vWorldMatrix._13, data.vWorldMatrix._14,
 			data.vWorldMatrix._21, data.vWorldMatrix._22, data.vWorldMatrix._23, data.vWorldMatrix._24,
 			data.vWorldMatrix._31, data.vWorldMatrix._32, data.vWorldMatrix._33, data.vWorldMatrix._34,
-			data.vWorldMatrix._41, data.vWorldMatrix._42, data.vWorldMatrix._43, data.vWorldMatrix._44
+			data.vWorldMatrix._41, data.vWorldMatrix._42, data.vWorldMatrix._43, data.vWorldMatrix._44 
 		}},
 		{ "_ChildData", data._ChildData }
 	};
@@ -45,7 +46,7 @@ void from_json(const json& j, TEFFECT_ContainerData& data)
 		j.at("_ChildData").get_to(data._ChildData);
 }
 
-// 2. Parts (자식)
+// ==========   Parts   ==========
 void to_json(json& j, const TEFFECT_PartsData& data)
 {
 	j = json
@@ -61,11 +62,13 @@ void to_json(json& j, const TEFFECT_PartsData& data)
 			data.vWorldMatrix._41, data.vWorldMatrix._42, data.vWorldMatrix._43, data.vWorldMatrix._44
 		}},
 
+		// ========== Effect 타입 ==========
 		{"EffectSystem", data.eEffectSystemType},
 		{"ParticleSystem", data.eEffectParticleType},
 		{"EffectType", data.eEffectType},
 		{"ShapeType", data._Effect_ShapeType},
 
+		// ========== Resource 값 ==========
 		{"Model_Tag", Engine_Utils::ToString(data._Effect_Model_Tag)},
 		{"DiffuseTexture_Tag", Engine_Utils::ToString(data._Effect_DiffuseTexture_Tag)},
 		{"NoiseTexture_Tag", Engine_Utils::ToString(data._Effect_NoiseTexture_Tag)},
@@ -74,6 +77,7 @@ void to_json(json& j, const TEFFECT_PartsData& data)
 		{"TrailTexture_Tag", Engine_Utils::ToString(data._Effect_TrailTexture_Tag)},
 		{"NormalTexture_Tag", Engine_Utils::ToString(data._Effect_NormalTexture_Tag)},
 
+		// ========== Shader 값 ==========
 		{"Shader_Tag", Engine_Utils::ToString(data._Effect_Shader_Tag)},
 		{"Shader_Pass", data._Effect_ShaderPass},
 
@@ -85,6 +89,7 @@ void to_json(json& j, const TEFFECT_PartsData& data)
 		{"Range", {{"x", data._Effect_Range.x}, {"y", data._Effect_Range.y}, {"z", data._Effect_Range.z}}},
 		{"ParticleSize", {{"x", data._Effect_ParticleSize.x}, {"y", data._Effect_ParticleSize.y}}},
 
+		// ========== Shader 내부 바인딩 값 ==========
 		{"DiscardValue", data._Effect_DiscardValue},
 		{"UseSprite", data._Effect_bUseSprite},
 		{"TileCount", {{"x", data._Effect_TileCount.x}, {"y", data._Effect_TileCount.y}}},
@@ -96,7 +101,21 @@ void to_json(json& j, const TEFFECT_PartsData& data)
 		{"MaxParticle", data._Effect_MaxParticle},
 		{"TextureFlag", data._Effect_TextureFlag},
 		{"RenderFlag", data._Effect_RenderFlag},
-		{"SampleStateFlag", data._Effect_SamplerStateFlag}
+		{"SampleStateFlag", data._Effect_SamplerStateFlag},
+
+		// ==========  툴 전용 플래그 저장  ==========
+		{"Tool_DiffuseTexture", data._Effect_Tool_DiffuseTexture},
+		{"Tool_NoiseTexture", data._Effect_Tool_NoiseTexture},
+		{"Tool_MaskingTexture", data._Effect_Tool_MaskingTexture},
+		{"Tool_GradationTexture", data._Effect_Tool_GradationTexture},
+		{"Tool_UseBillboard", data._Effect_Tool_UseBillboard},
+		{"Tool_UseScroll", data._Effect_Tool_UseScroll},
+		{"Tool_RightScroll", data._Effect_Tool_RightScroll},
+		{"Tool_DownScroll", data._Effect_Tool_DownScroll},
+		{"Tool_DiffuseSampler_Flag", data._Effect_Tool_DiffuseSamplerState_Flag},
+		{"Tool_NoiseSampler_Flag", data._Effect_Tool_NoiseSamplerState_Flag},
+		{"Tool_MaskingSampler_Flag", data._Effect_Tool_MaskingSamplerState_Flag},
+		{"Tool_GradationSampler_Flag", data._Effect_Tool_GradationSamplerState_Flag}
 	};
 }
 
@@ -149,20 +168,34 @@ void from_json(const json& j, TEFFECT_PartsData& data)
 	data._Effect_TileCount.y = j.at("TileCount").at("y").get<_uint>();
 	data._Effect_ParticleSize.x = j.at("ParticleSize").at("x").get<float>();
 	data._Effect_ParticleSize.y = j.at("ParticleSize").at("y").get<float>();
-	data._Effect_Range.x = j.at("Range").at("x").get<float>(); 
-	data._Effect_Range.y = j.at("Range").at("y").get<float>(); 
-	data._Effect_Range.z = j.at("Range").at("z").get<float>(); 
+	data._Effect_Range.x = j.at("Range").at("x").get<float>();
+	data._Effect_Range.y = j.at("Range").at("y").get<float>();
+	data._Effect_Range.z = j.at("Range").at("z").get<float>();
 
 	j.at("UseSprite").get_to(data._Effect_bUseSprite);
 	j.at("PlayAnimation").get_to(data._Effect_bPlayAnim);
 	j.at("AnimationSpeed").get_to(data._Effect_AnimSpeed);
-	j.at("DiscardValue").get_to(data._Effect_DiscardValue); 
+	j.at("DiscardValue").get_to(data._Effect_DiscardValue);
 	j.at("Duration").get_to(data._Effect_Duration);
 	j.at("Looping").get_to(data._Effect_Looping);
 	j.at("MaxParticle").get_to(data._Effect_MaxParticle);
 	j.at("TextureFlag").get_to(data._Effect_TextureFlag);
 	j.at("RenderFlag").get_to(data._Effect_RenderFlag);
 	j.at("SampleStateFlag").get_to(data._Effect_SamplerStateFlag);
+
+	// 툴 전용 플래그 복원
+	j.at("Tool_DiffuseTexture").get_to(data._Effect_Tool_DiffuseTexture);
+	j.at("Tool_NoiseTexture").get_to(data._Effect_Tool_NoiseTexture);
+	j.at("Tool_MaskingTexture").get_to(data._Effect_Tool_MaskingTexture);
+	j.at("Tool_GradationTexture").get_to(data._Effect_Tool_GradationTexture);
+	j.at("Tool_UseBillboard").get_to(data._Effect_Tool_UseBillboard);
+	j.at("Tool_UseScroll").get_to(data._Effect_Tool_UseScroll);
+	j.at("Tool_RightScroll").get_to(data._Effect_Tool_RightScroll);
+	j.at("Tool_DownScroll").get_to(data._Effect_Tool_DownScroll);
+	j.at("Tool_DiffuseSampler_Flag").get_to(data._Effect_Tool_DiffuseSamplerState_Flag);
+	j.at("Tool_NoiseSampler_Flag").get_to(data._Effect_Tool_NoiseSamplerState_Flag);
+	j.at("Tool_MaskingSampler_Flag").get_to(data._Effect_Tool_MaskingSamplerState_Flag);
+	j.at("Tool_GradationSampler_Flag").get_to(data._Effect_Tool_GradationSamplerState_Flag);
 }
 
 NS_END
