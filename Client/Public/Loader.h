@@ -32,8 +32,11 @@ private:
 	HRESULT Loading();
 	HRESULT Loading_For_Logo();
 private:
+	HRESULT Loading_Files(_uint iLevelID, DTO::ECategory eCategory, const wstring& wstrFolderPath);
+	HRESULT Loading_File(_uint iLevelID, DTO::ECategory eCategory,const wstring& wstrFilePath);
 	HRESULT Loading_Textures(const wstring &wstrFolder);
 	HRESULT Loading_Texture(const wstring& wstrFile);
+
 private:
 	ID3D11Device* m_pDevice = { nullptr };
 	ID3D11DeviceContext* m_pDeviceContext = { nullptr };

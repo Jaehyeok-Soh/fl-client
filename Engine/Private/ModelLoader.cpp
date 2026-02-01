@@ -96,7 +96,7 @@ HRESULT CModelLoader::Read_Material(vector<CMaterial*>* vecMaterials)
 	vecMaterials->reserve(jArray.size());
 	for (const auto& jObj : jArray)
 	{
-		AS_MATERIAL asMaterial = jObj.get<AS_MATERIAL>();
+ 		AS_MATERIAL asMaterial = jObj.get<AS_MATERIAL>();
 		CMaterial::MATERIAL_DESC MaterialDesc = {};
 		CMaterial* pMaterial = nullptr;
 		MaterialDesc.wstrName = Engine_Utils::ToWString(asMaterial.strName);
@@ -107,38 +107,19 @@ HRESULT CModelLoader::Read_Material(vector<CMaterial*>* vecMaterials)
 		}
 
 		{
-			MaterialDesc.wstrDiffuseTag = Engine_Utils::ToWString(asMaterial.strDiffuseFile);
-			if (!MaterialDesc.wstrDiffuseTag.empty())
+			MaterialDesc.spanTags = std::span<string>(asMaterial.tags.vecFiles.data(), asMaterial.tags.vecFiles.size());
+			for (_uint i = 0; i < ENUM_TO_UINT(EMaterialTextureType::MAX_COUNT); ++i)
 			{
-				CTextureBase::RESOURCE_BASE_DESC srcDesc = {};
-				srcDesc.wstrName = MaterialDesc.wstrDiffuseTag;
-				srcDesc.wstrPath = parentPath / MaterialDesc.wstrDiffuseTag;
-				CTextureBase* pReturn = m_pGameInstance->GetOrAddTexture(srcDesc.wstrName, &srcDesc);
-				Safe_Release(pReturn);
-			}
-		}
+				if (MaterialDesc.spanTags[i].empty() == false)
+				{
+					wstring wstrTag = Engine_Utils::ToWString(MaterialDesc.spanTags[i]);
 
-		{
-			MaterialDesc.wstrNormalTag = Engine_Utils::ToWString(asMaterial.strNormalFile);
-			if (!MaterialDesc.wstrNormalTag.empty())
-			{
-				CTextureBase::RESOURCE_BASE_DESC srcDesc = {};
-				srcDesc.wstrName = MaterialDesc.wstrNormalTag;
-				srcDesc.wstrPath = parentPath / MaterialDesc.wstrNormalTag;
-				CTextureBase* pReturn = m_pGameInstance->GetOrAddTexture(srcDesc.wstrName, &srcDesc);
-				Safe_Release(pReturn);
-			}
-		}
-
-		{
-			MaterialDesc.wstrSpecularTag = Engine_Utils::ToWString(asMaterial.strSpecularFile);
-			if (!MaterialDesc.wstrSpecularTag.empty())
-			{
-				CTextureBase::RESOURCE_BASE_DESC srcDesc = {};
-				srcDesc.wstrName = MaterialDesc.wstrSpecularTag;
-				srcDesc.wstrPath = parentPath / MaterialDesc.wstrSpecularTag;
-				CTextureBase* pReturn = m_pGameInstance->GetOrAddTexture(srcDesc.wstrName, &srcDesc);
-				Safe_Release(pReturn);
+					CTextureBase::RESOURCE_BASE_DESC srcDesc = {};
+					srcDesc.wstrName = wstrTag;
+					srcDesc.wstrPath = parentPath / wstrTag;
+					CTextureBase* pReturn = m_pGameInstance->GetOrAddTexture(srcDesc.wstrName, &srcDesc);
+					Safe_Release(pReturn);
+				}
 			}
 		}
 

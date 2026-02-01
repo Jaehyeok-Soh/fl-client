@@ -12,6 +12,9 @@
 #include "GameInstance.h"
 #include "VIBuffer_Rect_Tex.h"
 #include "Level_Loading.h"
+#include "PhysicsRigidBody.h"
+#include "PhysicsCollider.h"
+#include "PhysicsCCT.h"
 
 #include "UI_Manager.h"
 
@@ -170,6 +173,41 @@ HRESULT CMainApplication::Ready_Static_Prototype()
 			CShader::Create(m_pDevice, m_pDeviceContext, &shaderDesc))))
 			return E_FAIL;
 	}
+#pragma region EFFECT_Shader
+	// For. Prototype_Component_Shader_VtxEffectMesh
+	{
+		CShader::SHADER_ORIGIN_DESC shaderDesc = {};
+		shaderDesc.pShaderFilePath = L"../../Shaders/Shader_VtxEffectMesh.hlsl";
+		shaderDesc.iNumElements = Engine::VTXPOS_PARTICLEMESH::iNumElements;
+		shaderDesc.pElements = Engine::VTXPOS_PARTICLEMESH::Elements;
+		if (FAILED(m_pGameInstance->Add_Prototype(ENUM_TO_UINT(ELevelType::STATIC), L"Prototype_Component_Shader_VtxEffectMesh",
+			CShader::Create(m_pDevice, m_pDeviceContext, &shaderDesc))))
+			return E_FAIL;
+	}
+
+	// For. Prototype_Component_Shader_VtxEffectParticle
+	{
+		CShader::SHADER_ORIGIN_DESC shaderDesc = {};
+		shaderDesc.pShaderFilePath = L"../../Shaders/Shader_VtxEffectParticle.hlsl";
+		shaderDesc.iNumElements = Engine::VTXPOS_PARTICLE::iNumElements;
+		shaderDesc.pElements = Engine::VTXPOS_PARTICLE::Elements;
+		if (FAILED(m_pGameInstance->Add_Prototype(ENUM_TO_UINT(ELevelType::STATIC), L"Prototype_Component_Shader_VtxEffectParticle",
+			CShader::Create(m_pDevice, m_pDeviceContext, &shaderDesc))))
+			return E_FAIL;
+	}
+
+	// For. Prototype_Component_Shader_VtxEffectTexture
+	{
+		CShader::SHADER_ORIGIN_DESC shaderDesc = {};
+		shaderDesc.pShaderFilePath = L"../../Shaders/Shader_VtxEffectTexture.hlsl";
+		shaderDesc.iNumElements = Engine::VTXPOS_PARTICLE::iNumElements;
+		shaderDesc.pElements = Engine::VTXPOS_PARTICLE::Elements;
+		if (FAILED(m_pGameInstance->Add_Prototype(ENUM_TO_UINT(ELevelType::STATIC), L"Prototype_Component_Shader_VtxEffectTexture",
+			CShader::Create(m_pDevice, m_pDeviceContext, &shaderDesc))))
+			return E_FAIL;
+	}
+#pragma endregion
+	// ======================		BUFFER		======================
 
 	// For. Prototype_Component_VIBuffer_Rect_Tex
 	{
@@ -317,6 +355,29 @@ HRESULT CMainApplication::Ready_Static_Prototype()
 	// For. MaterialInstance_CourtBlue
 	if (FAILED(makeMaterialInstance(Vec4{ 0.16f, 0.22f, 0.52f, 1.f }, EMaterialInstanceType::CourtBlue)))
 		return E_FAIL;
+	//=================
+	// Physics Component
+	//=================
+	// For. Prototype_Component_Transform
+	{
+		if (FAILED(m_pGameInstance->Add_Prototype(ENUM_TO_UINT(ELevelType::STATIC), L"Prototype_Component_Physics_CCT",
+			CPhysicsCCT::Create(m_pDevice, m_pDeviceContext))))
+			return E_FAIL;
+	}
+
+	// For. Prototype_Component_Transform
+	{
+		if (FAILED(m_pGameInstance->Add_Prototype(ENUM_TO_UINT(ELevelType::STATIC), L"Prototype_Component_Physics_RigidBody",
+			CPhysicsRigidBody::Create(m_pDevice, m_pDeviceContext))))
+			return E_FAIL;
+	}
+
+	// For. Prototype_Component_Transform
+	{
+		if (FAILED(m_pGameInstance->Add_Prototype(ENUM_TO_UINT(ELevelType::STATIC), L"Prototype_Component_Physics_Collider",
+			CPhysicsCollider::Create(m_pDevice, m_pDeviceContext, nullptr))))
+			return E_FAIL;
+	}
 	return S_OK;
 }
 

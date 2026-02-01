@@ -169,6 +169,54 @@
     <Filter Include="06. ImGui\01. Panel\UIPanels\Maker">
       <UniqueIdentifier>{f5fed899-dccb-4d0d-a291-189fd27b3ca2}</UniqueIdentifier>
     </Filter>
+    <Filter Include="06. ImGui\01. Panel\Map\File">
+      <UniqueIdentifier>{052f47e7-8ad0-46fe-9e82-68a1541c2501}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="10. Folder">
+      <UniqueIdentifier>{4df4c641-6c22-41c1-a9af-09c6188b9065}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="11. File">
+      <UniqueIdentifier>{eba6acec-ecab-4a90-8b8e-1c78ded4b5e3}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="03. Level\Logo">
+      <UniqueIdentifier>{6b4ad873-673f-4c55-a2cf-8ed6c0b3e198}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="09. Builder\UI">
+      <UniqueIdentifier>{00ebdf0c-5d5b-4d6a-beeb-19cd527d2574}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="04. Component\UI">
+      <UniqueIdentifier>{37b8805b-b8b2-4d8e-9462-7b66ccfd88b8}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="04. Component\UI\Base">
+      <UniqueIdentifier>{c62f88ef-46c8-4765-a55f-bdeabb264ca2}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="04. Component\UI\Base\Button">
+      <UniqueIdentifier>{fe6349f9-32ea-4a8b-95ea-73a5755222d8}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="04. Component\UI\Base\Image">
+      <UniqueIdentifier>{a104c8ef-1845-4c86-bc3a-8a16759efc49}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="07. UE_Mapdata\01. MapDataLoader">
+      <UniqueIdentifier>{434ecd0b-d87d-4fef-959a-113592ac3a30}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="07. UE_Mapdata\02. MapDataPaser">
+      <UniqueIdentifier>{1fe68a57-8a50-4f80-80f6-1cdca50a3217}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="07. UE_Mapdata\00. MapObjectManager">
+      <UniqueIdentifier>{828aac90-c7f0-43d9-bf6b-523eb4f90cbc}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="06. ImGui\01. Panel\Map\Panel_MapTool">
+      <UniqueIdentifier>{4812e337-4689-478b-9ab4-fdb519dcef02}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="12. DebugLine">
+      <UniqueIdentifier>{a6816b7e-ec64-446e-b029-75a5db0148fa}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="12. DebugLine\00. Grid">
+      <UniqueIdentifier>{1bd055f2-0e4d-4c86-a144-7f3505e280f8}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="12. DebugLine\01. DebugLine">
+      <UniqueIdentifier>{f4bab261-d522-4da3-ab3e-259ad1d9e20a}</UniqueIdentifier>
+    </Filter>
     <Filter Include="06. ImGui\01. Panel\Animation">
       <UniqueIdentifier>{535a7846-4389-404b-82c0-4227a110de20}</UniqueIdentifier>
     </Filter>
@@ -303,12 +351,6 @@
     <ClInclude Include="..\Public\CameraMan_Free.h">
       <Filter>02. GameObjects\Camera</Filter>
     </ClInclude>
-    <ClInclude Include="..\Public\UEMapdataLoader.h">
-      <Filter>07. UE_Mapdata</Filter>
-    </ClInclude>
-    <ClInclude Include="..\Public\UEMapdataParser.h">
-      <Filter>07. UE_Mapdata</Filter>
-    </ClInclude>
     <ClInclude Include="..\Public\Loader.h">
       <Filter>03. Level\Loading\Loader</Filter>
     </ClInclude>
@@ -336,17 +378,11 @@
     <ClInclude Include="..\Public\Panel_MapObjectList.h">
       <Filter>06. ImGui\01. Panel\Map\Panel_MapObjectList</Filter>
     </ClInclude>
-    <ClInclude Include="..\Public\Panel_ModelConverter.h">
-      <Filter>06. ImGui\01. Panel\Asimp</Filter>
-    </ClInclude>
     <ClInclude Include="..\Public\MapObject.h">
       <Filter>02. GameObjects\Map\00. MapObject\00. MapObject</Filter>
     </ClInclude>
     <ClInclude Include="..\Public\StaticModel.h">
       <Filter>02. GameObjects\Map\00. MapObject\01. StaticMesh</Filter>
-    </ClInclude>
-    <ClInclude Include="..\Public\Panel_MapDataController.h">
-      <Filter>06. ImGui\01. Panel\Map\Panel_MapDataControler</Filter>
     </ClInclude>
     <ClInclude Include="..\Public\CParticle_System_Panel.h">
       <Filter>03. Level\Effect\Effect_Panel\Particle_System_Panel</Filter>
@@ -377,6 +413,50 @@
     </ClInclude>
     <ClInclude Include="..\Public\UI_Maker.h">
       <Filter>06. ImGui\01. Panel\UIPanels\Maker</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\imfilebrowser.h">
+      <Filter>99. ETC\01. ImGui</Filter>
+    </ClInclude>
+    <ClInclude Include="..\public\Panel_FileExplore.h">
+      <Filter>06. ImGui\01. Panel\Map\File</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\Folder.h">
+      <Filter>10. Folder</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\File.h">
+      <Filter>11. File</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\UEMapdataLoader.h">
+      <Filter>07. UE_Mapdata\01. MapDataLoader</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\UEMapdataParser.h">
+      <Filter>07. UE_Mapdata\02. MapDataPaser</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\MapToolManager.h">
+      <Filter>07. UE_Mapdata\00. MapObjectManager</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\Panel_MapTool.h">
+      <Filter>06. ImGui\01. Panel\Map\Panel_MapTool</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\Panel_MapDataController.h">
+      <Filter>06. ImGui\01. Panel\Map\Panel_MapDataControler</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\Grid.h">
+      <Filter>12. DebugLine\00. Grid</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\DebugLine.h">
+      <Filter>12. DebugLine\01. DebugLine</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\Panel_ModelConverter.h">
+      <Filter>06. ImGui\01. Panel\Asimp</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\Button.h" />
+    <ClInclude Include="..\Public\Image.h" />
+    <ClInclude Include="..\public\Level_Logo.h">
+      <Filter>03. Level\Logo</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\Builder_UI.h">
+      <Filter>09. Builder\UI</Filter>
     </ClInclude>
     <ClInclude Include="..\Public\Panel_Model.h">
       <Filter>06. ImGui\01. Panel\Animation\Panel_Model</Filter>
@@ -495,12 +575,6 @@
     <ClCompile Include="..\Private\CameraMan_Free.cpp">
       <Filter>02. GameObjects\Camera</Filter>
     </ClCompile>
-    <ClCompile Include="..\Private\UEMapdataParser.cpp">
-      <Filter>07. UE_Mapdata</Filter>
-    </ClCompile>
-    <ClCompile Include="..\Private\UEMapdataLoader.cpp">
-      <Filter>07. UE_Mapdata</Filter>
-    </ClCompile>
     <ClCompile Include="..\Private\Loader.cpp">
       <Filter>03. Level\Loading\Loader</Filter>
     </ClCompile>
@@ -572,6 +646,45 @@
     </ClCompile>
     <ClCompile Include="..\Private\UI_Maker.cpp">
       <Filter>06. ImGui\01. Panel\UIPanels\Maker</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\Panel_FileExplore.cpp">
+      <Filter>06. ImGui\01. Panel\Map\File</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\Folder.cpp">
+      <Filter>10. Folder</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\File.cpp">
+      <Filter>11. File</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\UEMapdataLoader.cpp">
+      <Filter>07. UE_Mapdata\01. MapDataLoader</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\UEMapdataParser.cpp">
+      <Filter>07. UE_Mapdata\02. MapDataPaser</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\MapToolManager.cpp">
+      <Filter>07. UE_Mapdata\00. MapObjectManager</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\Panel_MapTool.cpp">
+      <Filter>06. ImGui\01. Panel\Map\Panel_MapTool</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\Grid.cpp">
+      <Filter>12. DebugLine\00. Grid</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\DebugLine.cpp">
+      <Filter>12. DebugLine\01. DebugLine</Filter>
+    </ClCompile>
+    <ClCompile Include="..\private\Level_Logo.cpp">
+      <Filter>03. Level\Logo</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\Builder_UI.cpp">
+      <Filter>09. Builder\UI</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\Button.cpp">
+      <Filter>04. Component\UI\Base\Button</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\Image.cpp">
+      <Filter>04. Component\UI\Base\Image</Filter>
     </ClCompile>
     <ClCompile Include="..\Private\Panel_Model.cpp">
       <Filter>06. ImGui\01. Panel\Animation\Panel_Model</Filter>

@@ -73,6 +73,10 @@ public:
 	_bool					IntersectrayWithOBB_Local(BoundingOrientedBox* pOriginDesc, OUT Vec3& vOut);
 	_bool					IntersectrayWithSphere_World(BoundingSphere* pDesc, OUT Vec3& vOut);
 	_bool					IntersectrayWithSphere_Local(BoundingSphere* pOriginDesc, OUT Vec3& vOut);
+
+	const Vec3&				Picking_Get_RayPos(bool isLocal = false) const;
+	const Vec3&				Picking_Get_RayDir(bool isLocal = false) const;
+
 #pragma endregion
 
 #pragma region LEVEL_MANAGER
@@ -120,7 +124,7 @@ public:
 #pragma endregion
 
 #pragma region OBJECTPOOL_MANAGER
-	HRESULT Regist_Pool(_uint iTargetLevelIndex, const wstring& wstrPoolTag, const wstring& wstrLayerTag, void* pArg, CGameObject* pSeed, _uint iPoolCapacityCount);
+	HRESULT Regist_Pool(_uint iTargetLevelIndex, const wstring& wstrPoolTag, const wstring& wstrLayerTag, _uint iSeedLevelID, const wstring &wstrSeedPrototypeTag,void* pArg, _uint iPoolCapacityCount);
 #pragma endregion
 
 #pragma region COLLISION_MANAGER
@@ -251,6 +255,7 @@ public:
 	HRESULT Begin_MRT(EMRTLayer eMRTLayer);
 	HRESULT End_MRT();
 	HRESULT Bind_RT_ShaderResource(ERenderTarget eTarget, class CShader* pShader);
+	HRESULT Copy_BackBufferResource(ERenderTarget eTarget);
 #ifdef _DEBUG
 	HRESULT Ready_RT_Debug(ERenderTarget eTarget, _float fX, _float fY, _float fSizeX, _float fSizeY);
 	HRESULT Debug_RT_Render(EMRTLayer eMRTLayer, class CShader* pShader, class CVIBuffer_Rect_Tex* pVIBuffer);
@@ -267,6 +272,27 @@ public:
 	{
 		return std::uniform_int_distribution<int>(iA, iB)(m_rng);
 	}
+#pragma endregion
+
+#pragma region PHYSICS_MODULE
+	void StepPhysics(_float fTimeDelta);
+	void AddActor(PxRigidActor* actor);
+	void ClearPhysics();
+	PxTransform XMMatrixToPxTransform(Matrix mat);
+	Matrix PxTransformToXMMatrix(PxTransform pxTransform);
+#ifdef _DEBUG
+	void Physics_Render(PxRigidActor* pActor, XMVECTOR color = DirectX::Colors::White);
+#endif // _DEBUG
+	void SerializeStaticMesh(std::filesystem::path path, vector<PxTriangleMesh*> meshes);
+	PxCollection* DeserializeStaticMesh(std::filesystem::path path);
+	void SerializeConvexMesh(std::filesystem::path path, vector<PxConvexMesh*> meshes);
+	PxCollection* SerializeConvexMesh(std::filesystem::path path);
+	void SerializeLevel(std::filesystem::path path) {}
+	void DeserializeLevel(std::filesystem::path path) {}
+	vector<PxShape*> GetShape(PHYSICSCOLLIDER_DESC* pDesc);
+	vector<PxShape*> GetMeshShape(PHYSICSCOLLIDER_DESC* pDesc);
+	PxRigidActor* GetActor(PHYSICSRIGIDBODY_DESC* rigidBodyDesc, PHYSICSCOLLIDER_DESC* colliderDesc, vector<PxShape*>& shapes);
+	PxController* GetController(PHYSICSCCT_DESC* pDesc);
 #pragma endregion
 
 // Todo - 쓰레기통 정리
@@ -295,6 +321,7 @@ private:
 	class CRenderTarget_Manager* m_pRenderTarget_Manager = { nullptr };
 	class CPicking* m_pPicking = { nullptr };
 	class CFrustrum* m_pFrustrum = { nullptr };
+	class CPhysics_Module* m_pPhysics_Module = { nullptr };
 private:
 	std::mt19937_64 m_rng;
 public:

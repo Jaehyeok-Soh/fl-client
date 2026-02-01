@@ -22,6 +22,9 @@ CLevel_Animation::CLevel_Animation(ID3D11Device* pDevice, ID3D11DeviceContext* p
 
 HRESULT CLevel_Animation::Initialize()
 {
+	if (FAILED(Super::Initialize()))
+		return E_FAIL;
+
 	return S_OK;
 }
 

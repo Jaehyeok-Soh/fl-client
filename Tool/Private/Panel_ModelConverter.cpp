@@ -41,8 +41,23 @@ HRESULT CPanel_ModelConverter::Ready_PreMatirxPreset()
 		0.f, -1.f, 0.f, 0.f,	// z' = -y
 		0.f, 0.f, 0.f, 1.f
 	);
-	m_mapPreMatrix.emplace(L"Unreal_To_DirectX", matUECoord);
+	m_mapPreMatrix.emplace(L"Unreal_To_DirectX", matUECoord   );
+	//*Matrix::CreateRotationY(-180.f)
 
+	matUECoord = ::XMMatrixSet(
+		1.f, 0.f, 0.f, 0.f,   // 그대로 유지
+
+		0.f, 0.f, -1.f, 0.f,
+
+		0.f, 1.f, 0.f, 0.f,
+
+		// [Row 4]
+		0.f, 0.f, 0.f, 1.f
+	);
+	m_mapPreMatrix.emplace(L"Fmodel_To_DirectX", matUECoord);
+
+	matUECoord = Matrix::CreateRotationX(::XMConvertToRadians(90.f));
+	m_mapPreMatrix.emplace(L"BJ", matUECoord);
 
 	return S_OK;
 }
@@ -413,9 +428,6 @@ void CPanel_ModelConverter::Check_NoneExport_FbxModel(const wchar_t* wszFloderPa
 			m_vecNoneExportFbxModelPath.push_back(Path);
 	}
 }
-
-
-
 
 CPanel_ModelConverter* CPanel_ModelConverter::Create(const _char* pLabel, CLevel* pOwner, ID3D11Device* pDevice, ID3D11DeviceContext* pDeviceContext)
 {

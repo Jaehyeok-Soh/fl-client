@@ -11,7 +11,7 @@
 // GameObject
 //=================
 #include "CameraMan_Free.h"
-
+#include "DebugLine.h"
 //=================
 // Component
 //=================
@@ -51,7 +51,7 @@ HRESULT CMainApplication::Initialize()
 		return E_FAIL;
 
 	// Gui 세팅과 동시에 Level 스타트
-	if (FAILED(Ready_GuiManager(EngineDesc.iWinCX, EngineDesc.iWinCY, /* StartLevel */ ELevelType::MAP)))
+	if (FAILED(Ready_GuiManager(EngineDesc.iWinCX, EngineDesc.iWinCY, /* StartLevel */ ELevelType::LOGO)))
 		return E_FAIL;
 
 	CPicking_ToolManager* pPickingManager = { nullptr };
@@ -217,6 +217,12 @@ HRESULT CMainApplication::Ready_Static_Prototype()
 	//=================
 	if (FAILED(m_pGameInstance->Add_Prototype(ENUM_TO_UINT(ELevelType::STATIC), L"Prototype_GameObject_CameraManFree", CCameraMan_Free::Create(m_pDevice, m_pDeviceContext))))
 		return E_FAIL;
+
+	if (FAILED(m_pGameInstance->Add_Prototype(ENUM_TO_UINT(ELevelType::STATIC), L"Prototype_GameObject_DebugLine", CDebugLine::Create(m_pDevice, m_pDeviceContext))))
+		return E_FAIL;
+
+
+
 
 	//=================
 	// MaterialInstance

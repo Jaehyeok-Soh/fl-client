@@ -119,7 +119,7 @@
       <SubSystem>Windows</SubSystem>
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <AdditionalLibraryDirectories>../../EngineSDK/Library/Debug;../../Libraries/Lib/;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
-      <AdditionalDependencies>Engine.lib;d3d11.lib;d3dcompiler.lib;dxguid.lib;DirectXTex/DirectXTex_Debug.lib;FX11/Effects11d.lib;Assimp/assimp-vc143-mtd.lib;DirectXTK/Debug/DirectXTK.lib;FMOD/Debug/fmodL_vc.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>Engine.lib;d3d11.lib;d3dcompiler.lib;dxguid.lib;DirectXTex/DirectXTex_Debug.lib;FX11/Effects11d.lib;Assimp/assimp-vc143-mtd.lib;DirectXTK/Debug/DirectXTK.lib;FMOD/Debug/fmodL_vc.lib;PhysX/debug/PhysX_64.lib;PhysX/debug/PhysXCommon_64.lib;PhysX/debug/PhysXCooking_64.lib;PhysX/debug/PhysXFoundation_64.lib;PhysX/debug/PVDRuntime_64.lib;PhysX/debug/PhysXExtensions_static_64.lib;PhysX/debug/PhysXPvdSDK_static_64.lib;PhysX/debug/PhysXGpu_64.lib;PhysX/debug/PhysXCharacterKinematic_static_64.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
     <FxCompile>
       <ShaderType>Effect</ShaderType>
@@ -147,7 +147,7 @@
       <OptimizeReferences>true</OptimizeReferences>
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <AdditionalLibraryDirectories>../../EngineSDK/Library/Release;../../Libraries/Lib/;</AdditionalLibraryDirectories>
-      <AdditionalDependencies>Engine.lib;d3d11.lib;d3dcompiler.lib;dxguid.lib;DirectXTex\\DirectXTex.lib;FX11\\Effects11.lib;Assimp\\assimp-vc143-mt.lib;DirectXTK\\Release\\DirectXTK.lib;FMOD\\Release\\fmod_vc.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>Engine.lib;d3d11.lib;d3dcompiler.lib;dxguid.lib;DirectXTex\\DirectXTex.lib;FX11\\Effects11.lib;Assimp\\assimp-vc143-mt.lib;DirectXTK\\Release\\DirectXTK.lib;FMOD\\Release\\fmod_vc.lib;PhysX/release/PhysX_64.lib;PhysX/release/PhysXCommon_64.lib;PhysX/release/PhysXCooking_64.lib;PhysX/release/PhysXFoundation_64.lib;PhysX/release/PVDRuntime_64.lib;PhysX/release/PhysXExtensions_static_64.lib;PhysX/release/PhysXPvdSDK_static_64.lib;PhysX/release/PhysXGpu_64.lib;PhysX/release/PhysXCharacterKinematic_static_64.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
     <FxCompile>
       <ShaderType>Effect</ShaderType>
@@ -158,13 +158,18 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClInclude Include="..\Public\Body.h" />
+    <ClInclude Include="..\public\Builder_Example.h" />
     <ClInclude Include="..\Public\CameraMan_Targeter.h" />
     <ClInclude Include="..\Public\Client_Defines.h" />
     <ClInclude Include="..\Public\Client_EventDefine.h" />
     <ClInclude Include="..\Public\ColliderPart.h" />
     <ClInclude Include="..\Public\ComboContainer.h" />
     <ClInclude Include="..\Public\ComboState.h" />
+    <ClInclude Include="..\Public\Effect.h" />
+    <ClInclude Include="..\Public\EffectBuilder.h" />
+    <ClInclude Include="..\Public\EffectObject.h" />
     <ClInclude Include="..\Public\GenericUI.h" />
+    <ClInclude Include="..\Public\Physics_Terrain.h" />
     <ClInclude Include="..\Public\State_CrouchWalk.h" />
     <ClInclude Include="..\Public\Level_Loading.h" />
     <ClInclude Include="..\Public\Level_Logo.h" />
@@ -207,10 +212,14 @@
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="..\Private\Body.cpp" />
+    <ClCompile Include="..\private\Builder_Example.cpp" />
     <ClCompile Include="..\Private\CameraMan_Targeter.cpp" />
     <ClCompile Include="..\Private\ColliderPart.cpp" />
     <ClCompile Include="..\Private\ComboContainer.cpp" />
     <ClCompile Include="..\Private\ComboState.cpp" />
+    <ClCompile Include="..\Private\Effect.cpp" />
+    <ClCompile Include="..\Private\EffectBuilder.cpp" />
+    <ClCompile Include="..\Private\EffectObject.cpp" />
     <ClCompile Include="..\Private\GenericUI.cpp" />
     <ClCompile Include="..\Private\State_CrouchWalk.cpp" />
     <ClCompile Include="..\Private\Level_Loading.cpp" />
@@ -246,6 +255,7 @@
     <ClCompile Include="..\Private\State_Walk.cpp" />
     <ClCompile Include="..\Private\UI_Manager.cpp" />
     <ClCompile Include="..\Private\Weapon.cpp" />
+    <ClCompile Include="..\Public\Physics_Terrain.cpp" />
     <ClCompile Include="Client.cpp" />
     <ClCompile Include="pch.cpp">
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Create</PrecompiledHeader>

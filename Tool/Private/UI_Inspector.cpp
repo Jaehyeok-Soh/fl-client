@@ -28,6 +28,9 @@ HRESULT CUI_Inspector::Initialize_Prototype()
 		m_szArrClientLevelType[i] = m_vecClientLevelType[i].c_str();
 	}
 
+	Folder_Search("../../Resources/Textures/UI");
+	File_Search("../../Resources/Textures/UI");
+
 	return S_OK;
 }
 
@@ -38,6 +41,8 @@ void CUI_Inspector::Update(const _float fTimeDelta)
 HRESULT CUI_Inspector::Render(CToolObject* pGo)
 {
 	ImGui::Begin(m_strLabel.c_str(), nullptr, m_Flag);
+
+	Setting_Texture();
 
 	m_pSelectedUI = m_pUIManager->Safe_Access_UI(m_pUIManager->Get_CurUIIndex());
 	if (nullptr != m_pSelectedUI)
@@ -54,6 +59,7 @@ void CUI_Inspector::SetUp_Public_Info()
 {
 	Input_RectTransform();
 }
+
 void CUI_Inspector::Input_RectTransform()
 {
 	ImGui::PushID("RectTransform");
@@ -70,14 +76,13 @@ void CUI_Inspector::Input_RectTransform()
 	}
 
 	ImGui::Spacing();
-
 	if (ImGui::BeginTable("##RectGrid33", 3, ImGuiTableFlags_SizingStretchSame))
 	{
 		for (int i = 0; i < 9; ++i)
 		{
 			ImGui::TableNextColumn();
 
-			const bool isSelected = (m_iRectTransformIndex == i);
+			const bool isSelected = (static_cast<uint32_t>(m_pSelectedUI->Get_RectTransformType())== i);
 
 			if (isSelected)
 			{
@@ -88,7 +93,7 @@ void CUI_Inspector::Input_RectTransform()
 
 			ImGui::SetNextItemWidth(-FLT_MIN);
 			if (ImGui::Button(RectTransformToString(static_cast<ERectTransform>(i)).c_str(), ImVec2(-FLT_MIN, 36.f)))
-				m_iRectTransformIndex = i;
+				m_pSelectedUI->Set_RectTransformType(static_cast<ERectTransform>(i));
 
 			if (isSelected)
 				ImGui::PopStyleColor(3);
@@ -190,6 +195,165 @@ void CUI_Inspector::Input_TextureTag()
 		}
 	}
 
+}
+
+HRESULT CUI_Inspector::Setting_Texture()
+{	
+	// ===========   Diffse Texture  ============
+	ImGui::AlignTextToFramePadding();
+	ImGui::Text("Diffuse Texture"); ImGui::SameLine();
+
+	if (ImGui::Button("Open Texture Selector##Diffuse_Texture"))
+		ImGui::OpenPopup("TextureSelector##Diffuse_Texture");
+
+	ImGui::SetNextWindowSize(ImVec2(700, 500), ImGuiCond_Appearing);
+
+	if (ImGui::BeginPopupModal("TextureSelector##Diffuse_Texture", NULL))
+	{
+		ImGui::BeginChild("FolderList", ImVec2(180, 0), true);
+		{
+			ImGui::TextColored(ImVec4(1, 1, 0, 1), "Category");
+			ImGui::Separator();
+
+			for (auto& folderName : m_TextureFolderNames)
+			{
+				// 현재 선택된 폴더면 하이라이트 효과
+				if (ImGui::Selectable(folderName.c_str(), m_strSelectedFolder == folderName))
+				{
+					m_strSelectedFolder = folderName;
+				}
+			}
+		}
+		ImGui::EndChild();
+
+		ImGui::SameLine();
+
+		// --- 우측 : 선택된 폴더 내 텍스처 그리드 창 ---
+		ImGui::BeginChild("TextureGrid", ImVec2(0, 0), true);
+		{
+			ImGui::Text("Folder: %s", m_strSelectedFolder.empty() ? "None" : m_strSelectedFolder.c_str());
+			ImGui::Separator();
+
+			if (!m_strSelectedFolder.empty() && m_TextureMap.count(m_strSelectedFolder))
+			{
+				auto& fileList = m_TextureMap[m_strSelectedFolder];
+				int columns = 5; // 한 줄에 5장씩
+
+				for (int i = 0; i < fileList.size(); ++i)
+				{
+					string fullPath = fileList[i].first;
+					string fileName = fileList[i].second;
+
+					// 리소스 매니저에서 텍스처 가져오기 (태그 명명 규칙 확인해봐!)
+					wstring textureTag = L"Texture_" + Engine_Utils::ToWString(fileName);
+					CTextureBase* pTexture = CGameInstance::GetInstance()->Get_Resource<CTextureBase>(textureTag);
+					ID3D11ShaderResourceView* pSRV = (pTexture) ? pTexture->Get_SRV() : nullptr;
+
+					ImGui::PushID(i);
+					ImGui::BeginGroup();
+
+					if (pSRV)
+					{
+						// 이미지 버튼 크기를 64x64 정도로 키움
+						if (ImGui::ImageButton("##texBtn", (ImTextureID)pSRV, ImVec2(64, 64)))
+						{
+							ImGui::EndGroup(); ImGui::PopID();
+							ImGui::CloseCurrentPopup();
+							break;
+						}
+					}
+					else
+					{
+						ImGui::Button("No Res", ImVec2(64, 64));
+					}
+
+					// 파일명이 너무 길면 잘라서 출력
+					string display = (fileName.length() > 10) ? fileName.substr(0, 8) + ".." : fileName;
+					ImGui::Text(display.c_str());
+
+					ImGui::EndGroup();
+					ImGui::PopID();
+
+					// 가로로 5장 배치 로직
+					if ((i + 1) % columns != 0) ImGui::SameLine(0, 10.f);
+
+					Safe_Release(pTexture);
+				}
+			}
+		}
+		ImGui::EndChild();
+
+		ImGui::Separator();
+		if (ImGui::Button("Close", ImVec2(120, 0))) { ImGui::CloseCurrentPopup(); }
+
+		ImGui::EndPopup();
+	}
+
+	ImGui::Spacing();
+	return S_OK;
+}
+
+HRESULT CUI_Inspector::File_Search(const string& RootPath)
+{
+	// 기존 데이터 초기화 (필요시)
+	m_TextureMap.clear();
+	m_TextureFolderNames.clear();
+
+	namespace fs = std::filesystem;
+
+	if (!fs::exists(RootPath)) return E_FAIL;
+
+	for (auto& iter : fs::recursive_directory_iterator(RootPath))
+	{
+		// 파일인 경우에만 처리
+		if (iter.is_regular_file())
+		{
+			auto fullPath = iter.path();
+			string strFullPath = Engine_Utils::ToString(fullPath);
+			string fileName = fullPath.filename().string();
+			string pureFileName = Engine_Utils::GetFileNameWithoutExtension(strFullPath);
+
+			// 파일이 속한 바로 위 폴더 이름 추출
+			string folderName = fullPath.parent_path().filename().string();
+
+			string ext = fullPath.extension().string();
+			for (auto& c : ext) c = tolower(c);
+
+			if (ext == ".png" || ext == ".dds" || ext == ".tga" || ext == ".jpg")
+			{
+				m_TextureMap[folderName].push_back(make_pair(strFullPath, pureFileName));
+
+				if (find(m_TextureFolderNames.begin(), m_TextureFolderNames.end(), folderName) == m_TextureFolderNames.end())
+				{
+					m_TextureFolderNames.push_back(folderName);
+				}
+			}
+		}
+	}
+	return S_OK;
+}
+
+HRESULT CUI_Inspector::Folder_Search(const string& Path)
+{
+	for (auto iter = std::filesystem::recursive_directory_iterator(Path);
+		iter != std::filesystem::recursive_directory_iterator();
+		++iter)
+	{
+		// 아 여기에 화살표 그으면 되는구나.
+
+		int depth = iter.depth();
+		auto fullpath = iter->path();
+		auto FolderName = iter->path().filename();
+
+		if (iter->is_regular_file())
+		{
+			string m_sFileName = Engine_Utils::GetFileNameWithoutExtension(Engine_Utils::ToString(fullpath));
+			m_TextureFileNames.push_back(make_pair(Engine_Utils::ToString(fullpath), m_sFileName));
+
+		}
+	}
+
+	return S_OK;
 }
 
 _bool CUI_Inspector::Scrub_Float(const _char* label, const _char* Id, OUT _float* pValue, float fValuePerPixel, float fValuePerPixel_fast, float fStep, float fStep_fast, float fSize)

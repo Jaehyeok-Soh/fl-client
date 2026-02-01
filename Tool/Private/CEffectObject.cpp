@@ -41,6 +41,10 @@ HRESULT CEffectObject::Initialize(void* pArg)
         return E_FAIL;
     }
 
+    Effect_Desc* pDesc = static_cast<Effect_Desc*>(pArg);
+    if (pDesc != nullptr)
+        m_tEffectDesc = *pDesc;
+
     return S_OK;
 }
 
@@ -227,23 +231,7 @@ void CEffectObject::Shader_Setting(const wstring& ShaderName)
         else if (ShaderName == L"Shader_VtxEffectTexture")
             Add_Component<CShader>(0, L"Prototype_Component_Shader_VtxEffectTexture", &ShaderDesc);
     }
-
 }
-
-
-void CEffectObject::Bind_ShaderState_Setting()
-{
-    // 클라에서 설정할 것.
-    ID3DX11EffectRasterizerVariable* rsVar = Get_Component<CShader>()->Get_Rasterizer("SelectedRS");
-    ID3DX11EffectBlendVariable* bsVar = Get_Component<CShader>()->Get_Blend("SelectedBS");
-    ID3DX11EffectDepthStencilVariable* dsVar = Get_Component<CShader>()->Get_DepthStencil("SelectedDS");
-
-    // Rasterizer
-    //if(m_tEffectDesc._Effect_Shader_RasterizeState_Flag & )
-
-    // DepthStencil
-}
-
 
 HRESULT CEffectObject::Bind_ShaderResource()
 {
@@ -251,19 +239,34 @@ HRESULT CEffectObject::Bind_ShaderResource()
     CModel* pModel = Get_Component<CModel>();
 
     if (pShader == nullptr) return S_OK;
-    
+    pShader->Set_Pass(m_tEffectDesc._Effect_ShaderPass);
     pShader->Bind_TransformData(m_CombineWorldMatrix);
+
+    if (FAILED(m_pGameInstance->Bind_RT_ShaderResource(ERenderTarget::Scene, pShader)))
+        return E_FAIL;
 
     // 셰이더에 던질 구조체 작성하기.
     {
         SHADER_EFFECT_DESC pDesc = {};
         // TextureFlag
         pDesc.iTextureFlags = m_tEffectDesc._Effect_TextureFlag;
-        pDesc.vPadding = Vec3{ 0.f, 0.f, 0.f };
         // RenderFlag
         pDesc.iRenderFlags = m_tEffectDesc._Effect_RenderFlag;
-        pDesc.vPadding_2 = Vec3{ 0.f, 0.f, 0.f };
-        
+        // SamplerStateFlag
+        pDesc.iSamplerStateFlags = m_tEffectDesc._Effect_SamplerStateFlag;
+        // DiscardValue
+        pDesc.iDiscardValue = m_tEffectDesc._Effect_DiscardValue;
+        // Texture_RotationFlag
+        pDesc.iRotationFlags = m_tEffectDesc._Effect_TextureRotationFlag;
+        // Texture_OperatorFlag
+        pDesc.iOperatorFlags = m_tEffectDesc._Effect_TextureOperatorFlag;
+        pDesc.vPadding1 = SimpleMath::Vector2(0.f, 0.f);
+
+        pDesc.SpriteColCount = m_tEffectDesc._Effect_TileCount.x;
+        pDesc.SpriteRowCount = m_tEffectDesc._Effect_TileCount.y;
+        pDesc.CurSpriteIndex = m_tEffectDesc.m_iCurSpriteNumber;
+        pDesc.Padding2 = { 0.f };
+
         pDesc.vDistortionScale = m_tEffectDesc._Effect_DistortionScale;
         pDesc.vEffectColor = m_tEffectDesc._Effect_Color;
         pDesc.vScrollOffset = m_vScrollOffset;
@@ -307,7 +310,6 @@ HRESULT CEffectObject::Bind_ShaderResource()
 HRESULT CEffectObject::Awake(const _uint iCurrentLevelID)
 {
     // 절대로 절대로 Loader에서 불리면 안된다.
-
     return S_OK;
 }
 
@@ -322,12 +324,50 @@ void CEffectObject::Update_Priority(const _float fDT)
 void CEffectObject::Update(const _float fTimeDelta)
 {
     if (m_tEffectDesc._Effect_TimeStop) return;
-    // 임시 방편
-    _float TimeT = m_tEffectDesc._Effect_PlayBackSpeed * fTimeDelta;
 
+    _float TimeT = m_tEffectDesc._Effect_PlayBackSpeed * fTimeDelta;
+    m_fTimeAccumulation += TimeT; // 전체 시간 누적
+
+    //  ========   Start Delay 체크   ========   
+    if (m_fTimeAccumulation < m_tEffectDesc._Effect_StartDelay)
+    {
+        m_bIsStarted = false;
+        return; // 아직 대기 중이므로 업데이트 안 함
+    }
+    m_bIsStarted = true;
+
+    //========   실제 시뮬레이션 시간 (Delay를 제외한 시간)  ========   
+    _float fActiveTime = m_fTimeAccumulation - m_tEffectDesc._Effect_StartDelay;
+
+    // ========   Duration 및 Looping 제어   ========   
+    if (fActiveTime >= m_tEffectDesc._Effect_Duration)
+    {
+        if (m_tEffectDesc._Effect_Looping)
+        {
+            m_fTimeAccumulation = m_tEffectDesc._Effect_StartDelay; // 리셋
+            fActiveTime = 0.f;
+            // 루프 시 파티클 버퍼 리셋이 필요하다면 호출
+   /*         auto pVIBuffer = Get_Component<CVIBuffer_Particle_Point>();
+            if (pVIBuffer) pVIBuffer->Reset_Simulation();*/
+        }
+        else
+        {
+            return;
+        }
+    }
+
+    // ========   크기 보간 (Start Size -> End Size)   ========   
+    // 진행률 계산 (0.0 ~ 1.0)
+    _float fRatio = fActiveTime / m_tEffectDesc._Effect_Duration;
+    if (fRatio > 1.f) fRatio = 1.f;
+
+    // 선형 보간을 통한 실시간 스케일 계산
+    Vec3 vCurrentScale = Vec3::Lerp(m_tEffectDesc._Effect_StartScale, m_tEffectDesc._Effect_EndScale, fRatio);
+    Get_Component<CTransform>()->Set_Scale(vCurrentScale);
+
+    TimeCalculate(TimeT);
     Super::Update(TimeT);
     // == 스크롤 값 == 
-    TimeCalculate(TimeT);
 
     switch (m_tEffectDesc._Effect_ShapeType)
     {
@@ -386,6 +426,17 @@ void CEffectObject::Ready_Before_Render(const _float fTimeDelta)
 
     m_pGameInstance->Push_RenderObject(RENDER_CATEGORY::NONELIGHT, this);
     Super::Update_CombinedWorldMatrix(m_pMatParent);
+}
+
+// 
+void CEffectObject::Preview_TextureKey_Binding(const string& Key) 
+{
+
+}
+
+void CEffectObject::Preview_Texture_Reset()
+{
+
 }
 
 HRESULT CEffectObject::Render()
@@ -462,17 +513,39 @@ void CEffectObject::Bind_ShaderResource_Particles()
     // Texture일 때, 빌보드를 먹일 것인가?
 }
 
-void CEffectObject::TimeReset()
+void CEffectObject::TimeReset(Effect_Desc Desc)
 {
     m_vScrollOffset = Vec2{ 0.f, 0.f };
+    m_fTimeAccumulation = 0.f; // 시간 초기화
+    m_bIsStarted = false;      // 시작 상태 초기화
+
+    // Transform 스케일도 Start Scale로 원복
+    Get_Component<CTransform>()->Set_Scale(m_tEffectDesc._Effect_StartScale);
+
+    m_tPrevEffectDesc = m_tEffectDesc = Desc;
+    Set_EffectDesc(m_tEffectDesc);
 }
 
 void CEffectObject::TimeCalculate(const _float fDT)
 {
-    // =======  [스크롤 값]  ==========
-    // 1. 노이즈 텍스처를 사용할 것이라면 반드시 필요할 것.
-    m_vScrollOffset.x += m_tEffectDesc._Effect_ScrollSpeed.x * fDT;
-    m_vScrollOffset.y += m_tEffectDesc._Effect_ScrollSpeed.y * fDT;
+    // Start Delay를 제외한 순수 실행 시간 기반 진행률
+    _float fActiveTime = m_fTimeAccumulation - m_tEffectDesc._Effect_StartDelay;
+    if (fActiveTime < 0.f) fActiveTime = 0.f;
+
+    // ======= [스크롤 값] ==========
+    m_vScrollOffset.x += fDT * m_tEffectDesc._Effect_ScrollSpeed.x;
+    m_vScrollOffset.y += fDT * m_tEffectDesc._Effect_ScrollSpeed.y;
+
+    // ======= [스프라이트 애니메이션] =======
+    if ((m_tEffectDesc._Effect_RenderFlag & (1 << 5)) && m_tEffectDesc._Effect_bPlayAnim)
+    {
+        _uint iTotalFrame = m_tEffectDesc._Effect_TileCount.x * m_tEffectDesc._Effect_TileCount.y;
+        if (iTotalFrame > 0)
+        {
+            // TimeAccumulation 대신 fActiveTime을 사용하여 Delay 이후부터 0프레임 시작
+            m_tEffectDesc.m_iCurSpriteNumber = (_uint)(fActiveTime * m_tEffectDesc._Effect_AnimSpeed) % iTotalFrame;
+        }
+    }
 }
 
 void CEffectObject::Bind_ShaderResource_Meshes()

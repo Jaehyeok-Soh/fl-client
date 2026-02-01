@@ -22,6 +22,7 @@ private:
 public:
 	ID3D11RenderTargetView* Get_RTV() const { return m_pRTV; }
 	ID3D11ShaderResourceView* Get_SRV() const { return m_pSRV; }
+	ID3D11Texture2D* Get_Texture2D() const { return m_pTexture2D; }
 	void Clear();
 
 #ifdef _DEBUG

@@ -21,40 +21,57 @@ NS_BEGIN(Tool)
 typedef struct tagParsedMapdataOuter PARSED_MAPDATA_OUTER;
 typedef struct tagUnreal_Map_Data	 UE_MAP_DATA;
 typedef struct tagCONVERTED_MAPDATA   CONVERTED_MAPDATA;
+typedef struct tagUsingModelInfo   USING_MODEL_INFO;
+typedef struct tagUsingMaterialInfo   USING_MATERIAL_INFO;
 
 class CUEMapdataParser final : public CBase
 {
 	using Super = CBase;
 	DECLARE_SINGLETON(CUEMapdataParser)
+public:
+	enum class EObject_Path_Type
+	{
+		Model,
+		Mtl,
+		Tex,
+		END,
+	};
+
+
 private:
 	CUEMapdataParser();
 	virtual ~CUEMapdataParser() = default;
 	bool	Filter(const string& strName,const string& strType);
-	vector<CONVERTED_MAPDATA>  Convert_UE_MapData(const vector<UE_MAP_DATA>& tData);
-	void					  Change_SRT(Vec3* vScale, Vec3* vPitchYawRoll, Vec3* vPosition, EStaticModel_Type eType);
-	void					  Change_ModelPath(OUT _wstring& wstrModelName , OUT _wstring& wstrModelPath);
+	vector<CONVERTED_MAPDATA>	Convert_UE_MapData(const vector<UE_MAP_DATA>& tData);
+	void						Change_SRT(Vec3* vScale, Vec3* vPitchYawRoll, Vec3* vPosition, EStaticModel_Type eType);
+	void						Change_ObjectPath(OUT _wstring& wstrModelName , OUT _wstring& wstrModelPath , EObject_Path_Type eType);
+	void						Change_UsingModelInfo(OUT USING_MODEL_INFO& tUsingModelInfo);
+	void						Change_Material_JsonFile_Path(OUT wstring& wstrMaterialJsonFilePath,const wstring& wstrModelPath);
+	void						Change_UsingMaterialInfo(OUT USING_MATERIAL_INFO& tUsingMtlInfo);
+	void						Change_UsingMaterialTexturePath(OUT USING_MATERIAL_INFO& tUsingMtlInfo);
 public:
 	HRESULT Initialize(ID3D11Device* pDevice, ID3D11DeviceContext* pContext);
 public:
 	vector<UE_MAP_DATA>*	   Get_Unreal_MapData(const wstring& FindKey);
 	vector<CONVERTED_MAPDATA>* Get_Converted_MapData(const wstring& FindKey);
 
-	void					  Set_MulScale(float fMulScale) { m_fMulScale = fMulScale; }
-	float					  Get_MulScale() const { return m_fMulScale; }
+	void					   Set_MulScale(float fMulScale) { m_fMulScale = fMulScale; }
+	float					   Get_MulScale() const { return m_fMulScale; }
 
-	vector<wstring>			  Get_ConvertedFilePathList();
-
-public:
-	HRESULT					  Convert_UnrealRawMapData(const wchar_t* wszUERawDataJsonFile);
-	HRESULT					  Batch_UnrealRawMapData(const wchar_t* wwszFilePath);
+	vector<wstring>			   Get_ConvertedFilePathList();
 
 public:
-	HRESULT					  Save_ConvertedRawMapData(const wchar_t* wszFilePath);
-	HRESULT					  Save_FilteringRawMapData(const wchar_t* wszFilePath);
+	HRESULT					   Convert_UnrealRawMapData(const wchar_t* wszUERawDataJsonFile);
+	HRESULT					   Batch_UnrealRawMapData(const wchar_t* wwszFilePath);
+
+public:
+	HRESULT					   Save_ConvertedRawMapData(const wchar_t* wszFilePath);
+	HRESULT					   Save_FilteringRawMapData(const wchar_t* wszFilePath);
 
 public:
 	const wstring										m_WstringConverted{ L"_Converted.json" };
 	const wstring										m_WstringFiltering{ L"_Filtering.json" };
+	Vec3												m_vMulPitchYawRoll{0.f,0.f,0.f};
 private:
 	
 	unordered_map< wstring, vector<CONVERTED_MAPDATA>>  m_umapConvertedMapData{};
@@ -62,6 +79,10 @@ private:
 	vector<string>										m_vecTypeFilter{};
 	vector<string>										m_vecOuterFilter{};
 	float												m_fMulScale{0.01f};
+
+
+private:
+	vector<string>										m_vecMtlTextureFilter{};
 
 private:
 	CGameInstance*		 m_pGameInstance{nullptr};
@@ -159,7 +180,7 @@ void read_vec4_Quat(const json& _j, Quat& vOut);
 
 void write_vec3_xyz(json& _j, const Vec3& vOut);
 void write_vec3_PitchYawRoll(json& _j, const Vec3& vOut);
-void write_vec4_Quat(const json& _j, Quat&& vOut);
+void write_vec4_Quat(const json& _j, Quat& vOut);
 
 
 #pragma endregion
@@ -169,9 +190,13 @@ void write_vec4_Quat(const json& _j, Quat&& vOut);
 
 typedef struct tagUsingMaterialInfo
 {
-	bool	isNull{true};
-	wstring wstrName{};
-	wstring wstrPath{};
+	bool	isNull{ true };
+
+	/* 참조하고 있는 Origin Mrt Material Json 파일 Path 값 */
+	wstring wstrOriginMtl_JsonFile_Name{};
+	wstring wstrOriginMtl_JsonFile_Path{};
+	/* 그 안에서 뜯어낸 Texutre 바인딩 이름 : Texutre 경로 [ 메테리얼 Json 경로에 꽃아줄 이름 ] */
+	vector < std::pair<wstring, wstring>> vecUsingTextureInfo{};
 }USING_MATERIAL_INFO;
 
 
@@ -180,7 +205,12 @@ typedef struct tagUsingModelInfo
 	wstring wstrName{};
 	wstring wstrPath{};
 
+	/* 모델이 생성되고 난 이후에 저장되는 메테리얼 경로 */
+	wstring wstrMtl_JsonFile_Path{};
+
 	vector<USING_MATERIAL_INFO> vecMaterialInfo{};
+public:
+
 }USING_MODEL_INFO;
 
 
@@ -194,6 +224,7 @@ typedef struct tagCONVERTED_MAPDATA
 	/* SRT */
 	Vec3			 vPosition{ 0.f,0.f,0.f };
 	Vec3			 vPitchYawRoll{0.f,0.f,0.f};
+	Vec4			 vQuaternion{ 0.f, 0.f, 0.f, 1.f };
 	Vec3			 vScale{1.f,1.f,1.f};
 }CONVERTED_MAPDATA;
 

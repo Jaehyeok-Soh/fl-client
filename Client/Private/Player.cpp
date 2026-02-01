@@ -79,6 +79,8 @@ HRESULT CPlayer::Initialize(void* pArg)
     if (FAILED(Ready_Components(pDesc)))
         return E_FAIL;
 
+    
+
     if (FAILED(Ready_BaseStates()))
         return E_FAIL;
 

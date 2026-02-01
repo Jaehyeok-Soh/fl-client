@@ -1,20 +1,34 @@
 #include "pch.h"
-#include "Player.h"
 #include "Level_Loading.h"
-#include "CameraMan_Targeter.h"
-#include "GameInstance.h"
 #include "Level_Logo.h"
+//=================
+// Manager
+//=================
 #include "UI_Manager.h"
+
+//=================
+// Builder
+//=================
+#include "Builder_Example.h"
+#include "BuilderSystem.h"
+#include "EffectBuilder.h"
+#include "DataStruct_Effect.h"
+#include "DataDocument_Effect.h"
 
 //=================
 // Object
 //=================
-
+#include "Player.h"
+#include "CameraMan_Targeter.h"
+#include "Effect.h"
+#include "EffectObject.h"
 
 //=================
 // UI
 //=================
 #include "GenericUI.h"
+
+#include "GameInstance.h"
 
 CLevel_Logo::CLevel_Logo(ID3D11Device* pDevice, ID3D11DeviceContext* pDeviceContext)
 	: Super(pDevice, pDeviceContext)
@@ -23,6 +37,15 @@ CLevel_Logo::CLevel_Logo(ID3D11Device* pDevice, ID3D11DeviceContext* pDeviceCont
 
 HRESULT CLevel_Logo::Initialize()
 {
+	if (FAILED(Super::Initialize()))
+		return E_FAIL;
+
+	if (FAILED(Ready_Builders()))
+		return E_FAIL;
+
+	if (FAILED(Build_Files()))
+		return E_FAIL;
+
 	if (FAILED(Ready_Camera_Layer(g_wszDynamicCameraLayer)))
 		return E_FAIL;
 
@@ -33,6 +56,9 @@ HRESULT CLevel_Logo::Initialize()
 		return E_FAIL;
 
 	if (FAILED(Ready_Lights()))
+		return E_FAIL;
+
+	if (FAILED(Ready_Test_Terrain(L"test_terrain")))
 		return E_FAIL;
 
 	return S_OK;
@@ -53,6 +79,11 @@ HRESULT CLevel_Logo::Awake(const _uint iLevelID)
 void CLevel_Logo::Update(const _float fTimeDelta)
 {
 	Super::Update(fTimeDelta);
+
+	if (m_pGameInstance->KeyButton_Down(DIK_0))
+	{
+		m_pGameInstance->Request_AddObject(ENUM_TO_UINT(ELevelType::LOGO), L"POOL_ParticleSystem", ENUM_TO_UINT(ELevelType::LOGO), L"Effect", nullptr);
+	}
 }
 
 HRESULT CLevel_Logo::Render()
@@ -60,7 +91,28 @@ HRESULT CLevel_Logo::Render()
 	if (FAILED(Super::Render()))
 		return E_FAIL;
 
-	//::SetWindowText(g_hWnd, L"로고레벨 입니다.");
+	return S_OK;
+}
+
+HRESULT CLevel_Logo::Ready_Builders()
+{
+	if (FAILED(Ready_Builder(DTO::ECategory::MAP, CBuilder_Example::Create(m_pDevice, m_pDeviceContext, ENUM_TO_UINT(ELevelType::LOGO)))))
+		return E_FAIL;
+
+	if (FAILED(Ready_Builder(DTO::ECategory::EFFECT, EffectBuilder::Create(m_pDevice, m_pDeviceContext, ENUM_TO_UINT(ELevelType::LOGO)))))
+		return E_FAIL;
+
+	return S_OK;
+}
+
+HRESULT CLevel_Logo::Build_Files()
+{
+	if (FAILED(Build_File(ENUM_TO_UINT(ELevelType::LOGO), DTO::ECategory::EFFECT, "Attack_1")))
+		return E_FAIL;
+
+	// For. Example
+	//if (FAILED(Build_File(ENUM_TO_UINT(ELevelType::LOGO), DTO::ECategory::MAP, "asdf")))
+	//	return E_FAIL;
 
 	return S_OK;
 }
@@ -88,25 +140,8 @@ HRESULT CLevel_Logo::Ready_Player_Layer(const wstring& wstrLayerTag)
 
 HRESULT CLevel_Logo::Ready_UI_Layer(const wstring& wstrLayerTag)
 {
-	//CGameObject* pResult = { nullptr };
 
-	//// Prototype_UI_Test_Button
-	//CGenericUI::GENERIC_UI_DESC Desc = {};
-	//Desc.wstrTextureTag = L"Prototype_UI_GenericUI";
-	//Desc.bAlpha = TRUE;
-	//Desc.fSizeX = 1.f;
-	//Desc.fSizeY = 1.f;
-	//Desc.fX = 100.f;
-	//Desc.fY = 100.f;
-	//Desc.iLevelIndex = static_cast<uint32_t>(ELevelType::LOGO);
-
-	//pResult = m_pGameInstance->Add_GameObject(Desc.iLevelIndex, L"Prototype_UI_Test_Button", Desc.iLevelIndex, wstrLayerTag, &Desc);
-	//if(nullptr == pResult)
-	//	return E_FAIL;
-
-	if (FAILED(CUI_Manager::GetInstance()->Load_UIData(L"../../Resources/Data/UIData/Data.json")))
-		return E_FAIL;	
-
+	
 	return S_OK;
 }
 
@@ -154,6 +189,25 @@ HRESULT CLevel_Logo::Ready_Lights()
 	return S_OK;
 }
 
+HRESULT CLevel_Logo::Ready_Test_Terrain(const wstring& wstrLayerTag)
+{
+	{
+		CGameObject * pResult = { nullptr };
+		CGameObject::GAMEOBJECT_DESC goDesc = {};
+		CTransform::TRANSFORM_DESC TransformDesc = {};
+		TransformDesc.vPosition = { 0.f, 0.f, 0.f };
+		goDesc.pTransform_Desc = &TransformDesc;
+
+		if (!(pResult = m_pGameInstance->Add_GameObject(ENUM_TO_UINT(ELevelType::STATIC),
+			L"Prototype_GameObject_Physics_Terrain",
+			ENUM_TO_UINT(ELevelType::LOGO),
+			wstrLayerTag, &goDesc)))
+			return E_FAIL;
+	}
+
+	return S_OK;
+}
+
 HRESULT CLevel_Logo::Ready_Camera_Setting(const _uint iLevelIndex)
 {
 	CGameObject* pMainCamera = m_pGameInstance->Get_GameObject_Front(iLevelIndex, g_wszDynamicCameraLayer);
@@ -163,6 +217,7 @@ HRESULT CLevel_Logo::Ready_Camera_Setting(const _uint iLevelIndex)
 	m_pGameInstance->Change_Target(pPlayer);
 	return S_OK;
 }
+
 
 CLevel_Logo* CLevel_Logo::Create(ID3D11Device* pDevice, ID3D11DeviceContext* pDeviceContext)
 {

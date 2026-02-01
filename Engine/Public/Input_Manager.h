@@ -27,11 +27,13 @@ public:
 	_bool Mouse_Pressing(MOUSEKEYSTATE eMouseKeyID);
 
 	const POINT& Get_MousePos() const { return m_MousePos; }
+
 public:
+
 	HRESULT Initialize(HINSTANCE hInst, HWND hWnd);
 	void	Update();
 	void	Clear();
-	void Set_Capture(_bool bCap) { m_bCaptrue = bCap; }
+	void	Set_Capture(_bool bCap) { m_bCaptrue = bCap; }
 
 private:
 	_bool					m_bCaptrue = { false };

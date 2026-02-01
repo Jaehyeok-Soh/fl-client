@@ -44,9 +44,12 @@ private:
 	HRESULT Ready_Weapons();
 	HRESULT Ready_Colliders();
 	HRESULT Ready_Ray();
+	HRESULT Ready_CCT();
+
 private:
 	CRay* m_pFootRay = { nullptr };
 	CRay* m_pMoveRay = { nullptr };
+
 public:
 	static CMainPlayer* Create(ID3D11Device* pDevice, ID3D11DeviceContext* pDeviceContext);
 	virtual CGameObject* Clone(void* pArg) override;

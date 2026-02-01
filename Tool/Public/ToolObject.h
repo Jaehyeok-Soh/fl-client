@@ -41,20 +41,13 @@ public:
 	const string& Get_TypeName() const { return m_strObjectType; }
 	EToolObjectType Get_Type() const { return m_eType; }
 	const wstring& Get_LayerTag() const { return m_wstrLayerTag; }
-public:
-	void Set_Name(const string& strName);
-	void Set_Name(const wstring& wstrName);
-protected:
-	void Set_Name(const string& strName, _uint iValue);
-	void Set_Name(const wstring& wstrName, _uint iValue);
 	void Update_CombinedWorldMatrix(const Matrix &matParent);
 private:
 	HRESULT Set_TypeString();
 protected:
-	string m_strName			= "";
-	string m_strModelFileName	= "";
-	string m_strObjectType		= "";
-	wstring m_wstrLayerTag		= L"";
+	string m_strModelFileName = "";
+	string m_strObjectType = "";
+	wstring m_wstrLayerTag = L"";
 private:
 	EToolObjectType m_eType = { EToolObjectType::END };
 	_bool m_bVisible = { false };

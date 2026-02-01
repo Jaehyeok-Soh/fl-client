@@ -83,13 +83,19 @@ namespace Engine
 	typedef struct tagShaderEffectDesc
 	{
 		unsigned int iTextureFlags = { 0 };
-		SimpleMath::Vector3 vPadding = {};
-
 		unsigned int iRenderFlags = { 0 };
-		SimpleMath::Vector3 vPadding_2 = {};
-
 		unsigned int  iSamplerStateFlags = {0};
-		SimpleMath::Vector3 vPadding_3 = {};
+		float iDiscardValue = { 0.f };
+
+		unsigned int iOperatorFlags = { 0 };
+		unsigned int iRotationFlags = { 0 };
+		SimpleMath::Vector2 vPadding1 = { 0.f, 0.f };
+
+		// 스프라이트 정보 추가
+		unsigned int SpriteColCount = {};		// 가로 프레임 수
+		unsigned int SpriteRowCount = {};		// 세로 프레임 수
+		unsigned int CurSpriteIndex = {};		// 현재 스프라이트 인덱스
+		float		 Padding2 = {};
 
 		SimpleMath::Vector2 vScrollOffset = { 0.f, 0.f };
 		SimpleMath::Vector2 vDistortionScale = { 0.f, 0.f };
@@ -249,7 +255,111 @@ namespace Engine
 		}
 
 	}TIME_COUNTER;
+#pragma endregion
 
+#pragma region Physics
+	typedef struct tagPhysicsMaterial
+	{
+		////////////////
+		/// Material ///
+		////////////////
+		EPhysicsMaterial eMaterial = { EPhysicsMaterial::DEFAULT };
+
+		// custom 시 필요
+		// 정치 마찰력 // 멈춰있는 물체를 밀 때 필요한 힘
+		float fStaticFriction = {};
+		// 운동 마찰력 // 미끄러지고 있는 도중에 작용하는 마찰 (높을수록 금방 멈춘다)
+		float fDynamicFriction = {};
+		// 반발 계수
+		float fRestitution = {};
+
+	}PHYSICSMATERIAL_DESC;
+
+	typedef struct tagPhysicsCCT
+	{
+		EPhysicsCCTType eType = { EPhysicsCCTType::CAPSULE };
+		const Matrix* pOwnerMatrix = { nullptr };
+		float fRadius = {};
+		float fHeight = {};
+		SimpleMath::Vector3 vExtens = {};
+		//PxCapsuleControllerDesc capsuleDesc{};
+		//PxBoxControllerDesc boxDesc{};
+
+		////////////////
+		/// Material ///
+		////////////////
+		PHYSICSMATERIAL_DESC tMaterial = {};
+
+		class CGameObject* pOwner = { nullptr };
+	}PHYSICSCCT_DESC;
+
+	typedef struct tagPhysicsRigidBody
+	{
+		EPhysicsActorType eType = { EPhysicsActorType::STATIC };
+		EPhysicsCollisionDetection detection = { EPhysicsCollisionDetection::DISCRETE };
+		float fDensity = { 10.f };
+		float fMass = { 1.f };
+		bool bUseGravity = { true };
+		bool bIsKinematic = { false };
+		float fLinearDamping = {};
+		float fAngularDamping = {};
+
+		const Matrix* pOwnerMatrix = { nullptr };
+	}PHYSICSRIGIDBODY_DESC;
+
+	typedef struct tagPhysicsCollider
+	{
+		///////////////////////////
+		/// Prototype Parameter ///
+		///////////////////////////
+		unsigned int iPrototypeLevelIndex = {};
+		wstring wstrModelPrototypeTag = { L"" };
+		wstring wstrFilePath = { L"" };
+
+		///////////////
+		/// Details ///
+		///////////////
+		bool bIsTrigger = { false };
+		SimpleMath::Vector3 vCenter = {};
+		float fRadius = {};
+		float fHeight = {};
+		SimpleMath::Vector3 vExtents = {};
+		SimpleMath::Vector3 vXAxis = { 0.f, 0.f, 1.f };
+
+		////////////////
+		/// Geometry ///
+		////////////////
+		EPhysicsShape eShape = { EPhysicsShape::BOX };
+
+		///////////////////////
+		/// Geometry Convex ///
+		///////////////////////
+		bool bIsConvex = { false };
+		EPhysicsConvexShape eConvexShape = { EPhysicsConvexShape::END };
+		float fMargin = {};
+
+		/////////////////////////
+		/// Geometry Triangle ///
+		/////////////////////////
+		// convex가 아니면 trimesh
+		//bool bIsTriMesh = { false };
+
+		////////////////
+		/// Material ///
+		////////////////
+		PHYSICSMATERIAL_DESC tMaterial = {};
+
+		//////////////////
+		/// Properties ///
+		//////////////////
+		bool bIsActive = { true };
+
+		////////////////////////
+		/// Collision Filter ///
+		////////////////////////
+		PHYSICSFILTERGROUP eFilterGroup = PHYSICSFILTERGROUP::NONE;
+		unsigned int iFilterMask = {};
+	}PHYSICSCOLLIDER_DESC;
 #pragma endregion
 
 }

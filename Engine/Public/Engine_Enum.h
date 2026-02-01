@@ -8,7 +8,6 @@ namespace Engine
 	//===================
 	enum class MOUSEKEYSTATE : unsigned int { LB, RB, WHEEL, XB, END };
 	enum class MOUSEMOVESTATE : unsigned int { X, Y, WHEEL, END };
-	enum class MATERIALSLOT { DIFFUSE = 0, NORMAL, SPECULAR, EMISSIVE, END };
 	enum class WINMODE { FULL, WIN };
 	enum class TRANSFORM_INFO_STATE { RIGHT, UP, LOOK, POS, END };
 	enum class LIGHT_TYPE : unsigned int { DIRECTIONAL, STATICPOINT, DYNAMICPOINT, END };
@@ -70,7 +69,12 @@ namespace Engine
 		CAMERA,
 		SHADER,
 		//
+		PX_RIGIDBODY,
+		PX_COLLIDER,
+		PX_CCT,
+		//
 		SCRIPT,
+		
 		END
 	}; 
 	inline constexpr size_t g_ComponentTypeCount = static_cast<size_t>(EComponentType::END) - 1;
@@ -144,6 +148,115 @@ namespace Engine
 	{
 		GROUND,
 		WALL,
+		END
+	};
+	//===================
+	// MaterialType
+	//===================
+	enum class EMaterialTextureType : unsigned int
+	{
+		DIFFUSE = 0,
+		SPECULAR = 1,
+		AMBIENT = 2,
+		EMISSIVE = 3,
+		HEIGHT = 4,
+		NORMALS = 5,
+		SHININESS = 6,
+		OPACITY = 7,
+		DISPLACEMENT = 8,
+		LIGHTMAP = 9,
+		REFLECTION = 10,
+		BASE_COLOR = 11,
+		NORMAL_CAMERA = 12,
+		EMISSION_COLOR = 13,
+		METALNESS = 14,
+		DIFFUSE_ROUGHNESS = 15,
+		AMBIENT_OCCLUSION = 16,
+		UNKNOWN = 17,
+		MAX_COUNT = 18
+	};
+	//===================
+// PhysicsShape
+//===================
+	enum class EPhysicsShape : unsigned int
+	{
+		SPHERE,
+		CAPSULE,
+		BOX,
+		PLANE,
+		END
+	};
+	//===================
+	// PhysicsConvexShape
+	//===================
+	enum class EPhysicsConvexShape : unsigned int
+	{
+		POINT,
+		SEGMENT,
+		BOX,
+		ELLIPSOID,
+		CYLINDER,
+		CONE,
+		END
+	};
+	//===================
+	// PhysicsMaterial
+	//===================
+	enum class EPhysicsMaterial : unsigned int
+	{
+		CUSTOM,
+		PLAYER,
+		DEFAULT,
+		CONCRETE,
+		ICE,
+		WOOD,
+		RUBBER,
+		METAL,
+		GLASS,
+		NONE,
+		END
+	};
+	//===================
+	// PhysicsActorType
+	//===================
+	enum class EPhysicsActorType : unsigned int
+	{
+		STATIC,
+		DYNAMIC,
+		KINEMATIC,
+		END
+	};
+	//===================
+	// PhysicsCCTType
+	//===================
+	enum class EPhysicsCCTType : unsigned int
+	{
+		BOX,
+		CAPSULE,
+		END
+	};
+	//===================
+	// PhysicsCollisionDetection
+	//===================
+	enum class EPhysicsCollisionDetection : unsigned int
+	{
+		DISCRETE,
+		CONTINNUOUS,
+		CONTINUOUS_DYNAMIC,
+		CONTINUOUS_SPECULATIVE,
+		END
+	};
+	enum class PHYSICSFILTERGROUP
+	{
+		PLAYER = 1 << 0,
+		OBJECT1 = 1 << 1,
+		OBJECT2 = 1 << 2,
+		MAP = 1 << 3,
+		ATTACK = 1 << 4,
+		SKILL = 1 << 5,
+		ATTACK_BULLET = 1 << 6,
+		SKILL_BULLET = 1 << 7,
+		NONE = 1 << 8,
 		END
 	};
 }

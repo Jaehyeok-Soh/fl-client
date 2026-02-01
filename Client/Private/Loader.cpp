@@ -11,11 +11,19 @@
 #include "VIBuffer_Terrain.h"
 #include "VIBuffer_Particle_Rect.h"
 #include "VIBuffer_Particle_Point.h"
+#include "VIBuffer_Particle_Mesh.h"
 #include "VIBuffer_Cube_Tex.h"
 #include "Shader.h"
 #include "Camera.h"
 #include "Transform.h"
-#include "Model.h"
+//=================
+// Builder
+//=================
+#include "DataDocument_Example.h"
+#include "DataDocument_Effect.h"
+#include "Builder_Example.h"
+#include "BuilderSystem.h"
+
 //=================
 // Object
 //=================
@@ -26,17 +34,23 @@
 #include "Weapon.h"
 #include "ColliderPart.h"
 #include "Loader.h"
+#include "Physics_Terrain.h" // physics test
+#include "Effect.h"
+#include "EffectObject.h"
 //=================
 // UI
 //=================
 #include "GenericUI.h"
-
 //=================
 // Resource
 //=================
 #include "TextureBase.h"
 #include "Model.h"
 #include "GameInstance.h"
+
+#pragma region Macro
+#define ADD_PROTOTYPE(eLevelType, wstrPrototypeTag, pBase) if(FAILED(m_pGameInstance->Add_Prototype(ENUM_TO_UINT(eLevelType), wstrPrototypeTag, pBase))) return E_FAIL
+#pragma endregion
 
 
 
@@ -96,39 +110,52 @@ HRESULT CLoader::Loading()
 
 HRESULT CLoader::Loading_For_Logo()
 {
+#pragma region PretransformMatrix
 	Matrix matPreTransformScale = Matrix::CreateScale(0.01f, 0.01f, 0.01f);
 	Matrix matPreTransformIdentity = Matrix::Identity;
 	Matrix matPreTransformTurn90 = matPreTransformScale * Matrix::CreateFromYawPitchRoll(XMConvertToRadians(90.f), 0.f, 0.f);
+#pragma endregion
 
-	if (FAILED(m_pGameInstance->Load_Sounds(L"../../Resources/Sounds")))
-		return E_FAIL;
-
+	/////////////////////////////////////////
+	//////////// Ready ToolData ////////////
+	/////////////////////////////////////////
+#pragma region ToolData
 	{
-		std::lock_guard<std::mutex> lockguard(m_mutex_1);
-		lstrcpy(m_szFPS, TEXT("텍스쳐를 로딩 중 입니다."));
+		// Regist Document
+		{
+			if (FAILED(m_pGameInstance->Regist_Document<CDataDocument_Example>(ENUM_TO_UINT(ELevelType::LOGO), DTO::ECategory::MAP)))
+				return E_FAIL;
+
+			if (FAILED(m_pGameInstance->Regist_Document<CDataDocument_Effect>(ENUM_TO_UINT(ELevelType::LOGO), DTO::ECategory::EFFECT)))
+				return E_FAIL;
+		}
+		
+	
+		// Read Json
+		{
+			if (FAILED(Loading_File(ENUM_TO_UINT(ELevelType::LOGO), DTO::ECategory::EFFECT, L"../../Resources/Data/EffectData/Attack_1.json")))
+				return E_FAIL;
+			// For. Example
+			// if (FAILED(Loading_File(ENUM_TO_UINT(ELevelType::LOGO), DTO::ECategory::MAP, L"asdf")))
+			// 	return E_FAIL;
+		}
 	}
+#pragma endregion
 
-	// For. Prototype_Component_GenericUI_Texture
+	/////////////////////////////////////////
+	//////////// Ready Resources ////////////
+	/////////////////////////////////////////
+#pragma region Resource
 	{
-		CTexture::TEXTURE_COMPONENT_ORIGIN_DESC textureDesc = {};
-		textureDesc.iTextureCount = 1;
-		textureDesc.wstrTexturePath = L"../../Resources/Textures/UI/Button/T_Com_BtnIcon_Custom.png";
-		if (FAILED(m_pGameInstance->Add_Prototype(ENUM_TO_UINT(ELevelType::LOGO), L"Prototype_Component_GenericUI_Texture", CTexture::Create(&textureDesc))))
+		if (FAILED(m_pGameInstance->Load_Sounds(L"../../Resources/Sounds")))
 			return E_FAIL;
 	}
+#pragma endregion
 
-	{
-		std::lock_guard<std::mutex> lockguard(m_mutex_1);
-		lstrcpy(m_szFPS, TEXT("모델을(를) 로딩 중 입니다."));
-	}
-
-
-	{
-		std::lock_guard<std::mutex> lockguard(m_mutex_1);
-		lstrcpy(m_szFPS, TEXT("ㅅㅖ이더을(를) 로딩 중 입니다."));
-	}
-
-
+	//////////////////////////////////////////
+	//////////// Ready Components ////////////
+	//////////////////////////////////////////
+#pragma region Component
 	{
 		std::lock_guard<std::mutex> lockguard(m_mutex_1);
 		lstrcpy(m_szFPS, TEXT("객체원형을(를) 로딩 중 입니다."));
@@ -165,35 +192,61 @@ HRESULT CLoader::Loading_For_Logo()
 	// For. Prototype_Component_Collider_SPHERE
 	m_pGameInstance->Add_Prototype(ENUM_TO_UINT(ELevelType::STATIC), L"Prototype_Component_Collider_Sphere", CCollider::Create(m_pDevice, m_pDeviceContext, EColliderType::SPHERE));
 
-	//=================
-	// Object
-	//=================
-	// For. Prototype_GameObject_MainPlayer
-	m_pGameInstance->Add_Prototype(ENUM_TO_UINT(ELevelType::STATIC), L"Prototype_GameObject_MainPlayer", CMainPlayer::Create(m_pDevice, m_pDeviceContext));
-	// For. Prototype_GameObject_CameraManTargeter
-	m_pGameInstance->Add_Prototype(ENUM_TO_UINT(ELevelType::STATIC), L"Prototype_GameObject_CameraManTargeter", CCameraMan_Targeter::Create(m_pDevice, m_pDeviceContext));
-	// For. Prototype_GameObject_Part_Body
-	m_pGameInstance->Add_Prototype(ENUM_TO_UINT(ELevelType::STATIC), L"Prototype_GameObject_Part_Body", CBody::Create(m_pDevice, m_pDeviceContext));
-	// For. Prototype_GameObject_Part_Collider
-	m_pGameInstance->Add_Prototype(ENUM_TO_UINT(ELevelType::STATIC), L"Prototype_GameObject_Part_Collider", CColliderPart::Create(m_pDevice, m_pDeviceContext));
-
-	//=================
-	// UI
-	//=================
-	// For. Prototype_UI_GenericUI
+	///////////////////////////////////////
+	//////////// Ready Objects ////////////
+	///////////////////////////////////////
+#pragma region Objects
 	{
-		if (FAILED(m_pGameInstance->Add_Prototype(ENUM_TO_UINT(ELevelType::LOGO), L"Prototype_UI_GenericUI", CGenericUI::Create(m_pDevice, m_pDeviceContext))))
-			return E_FAIL;
-	}
+		// For. Prototype_GameObject_MainPlayer
+		ADD_PROTOTYPE(ELevelType::STATIC, L"Prototype_GameObject_MainPlayer", CMainPlayer::Create(m_pDevice, m_pDeviceContext));
+		// For. Prototype_GameObject_CameraManTargeter
+		ADD_PROTOTYPE(ELevelType::STATIC, L"Prototype_GameObject_CameraManTargeter", CCameraMan_Targeter::Create(m_pDevice, m_pDeviceContext));
+		// For. Prototype_GameObject_Part_Body
+		ADD_PROTOTYPE(ELevelType::STATIC, L"Prototype_GameObject_Part_Body", CBody::Create(m_pDevice, m_pDeviceContext));
+		// For. Prototype_GameObject_Part_Collider
+		ADD_PROTOTYPE(ELevelType::STATIC, L"Prototype_GameObject_Part_Collider", CColliderPart::Create(m_pDevice, m_pDeviceContext));
 
-	{
-		std::lock_guard<std::mutex> lockguard(m_mutex_1);
-		lstrcpy(m_szFPS, TEXT("로딩이 완료되었슴니다."));
+		// 이펙트 Object
+		ADD_PROTOTYPE(ELevelType::LOGO, L"Prototype_GameObject_Effect", Effect::Create(m_pDevice, m_pDeviceContext));
+		ADD_PROTOTYPE(ELevelType::LOGO, L"Prototype_GameObject_Effect_Parts", CEffectObject::Create(m_pDevice, m_pDeviceContext));
 	}
+#pragma endregion
+
+#pragma region BUFFER
+	{
+		CVIBuffer_Particle_Point::PARTICLE_POINT_ORIGIN_DESC	ExploDesc{};
+		ExploDesc.iInstnaceCount = 30;
+		ExploDesc.vCenter = Vec3(0.f, 0.f, 0.f);
+		ExploDesc.vSize = Vec2(0.05f, 0.15f);
+		ExploDesc.vRange = Vec3(0.5f, 0.5f, 0.5f);
+		ExploDesc.vSpeed = Vec2(2.f, 5.f);
+		ExploDesc.vLifeTime = Vec2(1.f, 5.5f);
+		ExploDesc.isLoop = false;
+		ExploDesc.vPivot = Vec3(0.f, 0.f, 0.5f);
+
+		ADD_PROTOTYPE(ELevelType::STATIC, L"Prototype_Component_VIBuffer_Particle_Point", CVIBuffer_Particle_Point::Create(m_pDevice, m_pDeviceContext, &ExploDesc));
+		ADD_PROTOTYPE(ELevelType::STATIC, L"Prototype_Component_VIBuffer_Particle_Mesh", CVIBuffer_Particle_Mesh::Create(m_pDevice, m_pDeviceContext, &ExploDesc));
+
+	}
+#pragma endregion
+
+	// For. Prototype_GameObject_Physics_Terrain
+	m_pGameInstance->Add_Prototype(ENUM_TO_UINT(ELevelType::STATIC), L"Prototype_GameObject_Physics_Terrain", CPhysics_Terrain::Create(m_pDevice, m_pDeviceContext));
 
 	m_isFinished = true;
 	return S_OK;
 }
+
+HRESULT CLoader::Loading_Files(_uint iLevelID, DTO::ECategory eCategory, const wstring& wstrFolderPath)
+{
+	return m_pGameInstance->Load_Folder_Json(iLevelID, eCategory, wstrFolderPath);
+}
+
+HRESULT CLoader::Loading_File(_uint iLevelID, DTO::ECategory eCategory, const wstring& wstrFilePath)
+{
+	return m_pGameInstance->Load_File_Json(iLevelID, eCategory, wstrFilePath);
+}
+
 
 HRESULT CLoader::Loading_Textures(const wstring& wstrFolder)
 {
@@ -242,6 +295,7 @@ HRESULT CLoader::Loading_Texture(const wstring& wstrFile)
 
 	return S_OK;
 }
+
 
 CLoader* CLoader::Create(ID3D11Device* pDevice, ID3D11DeviceContext* pDeviceContext, ELevelType eLoadingLevelID)
 {

@@ -145,6 +145,27 @@
     <Filter Include="06. FSM\Player\Land">
       <UniqueIdentifier>{90a3215f-abb6-4b46-85cd-612282d4f9cb}</UniqueIdentifier>
     </Filter>
+    <Filter Include="07. System">
+      <UniqueIdentifier>{2791cb25-3e1a-4608-9186-fe30589113cf}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="07. System\01. Builder">
+      <UniqueIdentifier>{77a673f3-430b-46eb-bcc9-6f9bd3b5dd56}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="03. GameObject\EffectObject">
+      <UniqueIdentifier>{92c0cd51-e66c-4b79-afa4-76c22a867df3}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="03. GameObject\PhysicsTerrain">
+      <UniqueIdentifier>{685e6485-a2ca-4006-9535-8434d576b1ec}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="03. GameObject\EffectObject\Parent_Effect">
+      <UniqueIdentifier>{8cd88b80-877f-4e92-8aa2-40f15afde9e4}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="03. GameObject\EffectObject\Child_Effect">
+      <UniqueIdentifier>{b42020a7-95bc-4264-b992-20809b8a58c6}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="07. System\01. Builder\EffectBuilder">
+      <UniqueIdentifier>{0a51c3b4-11ce-445a-904c-410b2a5ef809}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="targetver.h">
@@ -282,6 +303,21 @@
     <ClInclude Include="..\Public\State_Land.h">
       <Filter>06. FSM\Player\Land</Filter>
     </ClInclude>
+    <ClInclude Include="..\public\Builder_Example.h">
+      <Filter>07. System\01. Builder</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\Physics_Terrain.h">
+      <Filter>03. GameObject\PhysicsTerrain</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\Effect.h">
+      <Filter>03. GameObject\EffectObject\Parent_Effect</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\EffectObject.h">
+      <Filter>03. GameObject\EffectObject\Child_Effect</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\EffectBuilder.h">
+      <Filter>07. System\01. Builder\EffectBuilder</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <Image Include="Client.ico">
@@ -416,6 +452,21 @@
     </ClCompile>
     <ClCompile Include="..\Private\State_Land.cpp">
       <Filter>06. FSM\Player\Land</Filter>
+    </ClCompile>
+    <ClCompile Include="..\private\Builder_Example.cpp">
+      <Filter>07. System\01. Builder</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Public\Physics_Terrain.cpp">
+      <Filter>03. GameObject\PhysicsTerrain</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\Effect.cpp">
+      <Filter>03. GameObject\EffectObject\Parent_Effect</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\EffectObject.cpp">
+      <Filter>03. GameObject\EffectObject\Child_Effect</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\EffectBuilder.cpp">
+      <Filter>07. System\01. Builder\EffectBuilder</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

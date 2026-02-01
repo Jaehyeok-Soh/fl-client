@@ -104,7 +104,7 @@ HRESULT CUI_Hierachy::Render(CToolObject* pGo)
 			for (const auto& layerData : *canvasData->Safe_Access_LayerObject_Vector_Ptr())
 			{
 				// layer 하나 추가
-				vecChild.back().push_back(layerData->Get_Tag());
+				vecChild.back().push_back(layerData->Get_Name());
 				vecGrand.back().emplace_back(); // 이 레이어의 UI 리스트(= vector<_string>)
 	
 				if (nullptr != layerData->Safe_Access_UIObject_Vector_Ptr())

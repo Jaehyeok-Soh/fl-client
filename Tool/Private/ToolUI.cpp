@@ -9,6 +9,10 @@
 #include "Texture.h"
 #include "GameInstance.h"
 
+#include "ToolCanvas.h"
+#include "ToolLayer.h"
+#include "ImGui_UIManager.h"
+
 CToolUI::CToolUI(ID3D11Device* pDevice, ID3D11DeviceContext* pDeviceContext)
 	:CUIObject(pDevice, pDeviceContext)
 {
@@ -30,6 +34,7 @@ HRESULT CToolUI::Initialize(void* pArg)
 {
 	TOOLUI_DESC* pDesc = static_cast<TOOLUI_DESC*>(pArg);
 	m_strName = pDesc->strName;
+	m_iLayerIndex = pDesc->iLayerIndex;
 	m_wstrTextureTag = Engine_Utils::ToWString(pDesc->strInitTextureTag);
 	m_iTextureIndex = pDesc->iInitTextureIndex;
 
@@ -53,27 +58,39 @@ HRESULT CToolUI::Awake(const _uint iCurrentLevelID)
 void CToolUI::Update_Priority(const _float fTimeDelta)
 {
 	Set_Size(m_fWidth, m_fHeight);
-	Set_Position(m_fX, m_fY, m_fZ);
+	SetUp_RectTransform_Position();
+	SetUp_Visible();
 	Super::Update_Priority(fTimeDelta);
 }
 
 void CToolUI::Update(const _float fTimeDelta)
 {
-	Super::Update(fTimeDelta);
+	if(m_isVisible)
+		Super::Update(fTimeDelta);
 }
 
 void CToolUI::Update_Late(const _float fTimeDelta)
 {
-	Super::Update_Late(fTimeDelta);
+	if (m_isVisible)
+		Super::Update_Late(fTimeDelta);
 }
 
 void CToolUI::Ready_Before_Render(const _float fTimeDelta)
 {
-	Super::Ready_Before_Render(fTimeDelta);
+
+	if (m_isVisible)
+	{
+		Sync_Data();
+		Super::Ready_Before_Render(fTimeDelta);
+
+	}
 }
 
 HRESULT CToolUI::Render()
 {
+	if (!m_isVisible)
+		return S_OK;
+
 	if (FAILED(Super::Render()))
 		return E_FAIL;
 
@@ -85,6 +102,13 @@ HRESULT CToolUI::Render()
     Get_Component<CVIBuffer>()->Render();
 
     return S_OK;
+}
+
+_bool CToolUI::Calc_HitEvent()
+{
+	if (::PtInRect(&m_tRenderRect, m_pGameInstance->Get_MousePos()))
+		return TRUE;
+	return FALSE;
 }
 
 HRESULT CToolUI::Ready_Components(TOOLUI_DESC* pDesc)
@@ -112,6 +136,62 @@ HRESULT CToolUI::Bind_ShaderResources()
         return E_FAIL;
 
     return S_OK;
+}
+
+void CToolUI::SetUp_RectTransform_Position()
+{
+	auto* pCanvas = CImGui_UIManager::GetInstance()->Safe_Access_Canvas(CImGui_UIManager::GetInstance()->Get_CurCanvasIndex());
+	if (nullptr == pCanvas)
+		return;
+
+	Vec2 initPos = {};
+	switch (m_eRectTransformType)
+	{
+	case Tool::ERectTransform::LT:initPos = pCanvas->Get_LT();break;
+	case Tool::ERectTransform::CT:initPos = pCanvas->Get_CT();break;
+	case Tool::ERectTransform::RT:initPos = pCanvas->Get_RT();break;
+	case Tool::ERectTransform::LC:initPos = pCanvas->Get_LC();break;
+	case Tool::ERectTransform::C:initPos = pCanvas->Get_C();break;
+	case Tool::ERectTransform::RC:initPos = pCanvas->Get_RC();break;
+	case Tool::ERectTransform::LB:initPos = pCanvas->Get_LB();break;
+	case Tool::ERectTransform::CB:initPos = pCanvas->Get_CB();break;
+	case Tool::ERectTransform::RB:initPos = pCanvas->Get_RB();break;
+	default:initPos = pCanvas->Get_C();break;
+	}
+
+	Move_Position(initPos.x + m_fX, initPos.y + m_fY, m_fZ);
+	m_vRenderPos = Vec3{ initPos.x + m_fX, initPos.y + m_fY, m_fZ };
+
+	m_tRenderRect.left		= static_cast<LONG>(initPos.x + m_fX - (m_fWidth * 0.5f));
+	m_tRenderRect.right		= static_cast<LONG>(initPos.x + m_fX + (m_fWidth * 0.5f));
+	m_tRenderRect.top		= static_cast<LONG>(initPos.y + m_fY - (m_fHeight * 0.5f));
+	m_tRenderRect.bottom	= static_cast<LONG>(initPos.y + m_fY + (m_fHeight * 0.5f));
+}
+
+void CToolUI::SetUp_Visible()
+{
+	CToolLayer* pLayer = CImGui_UIManager::GetInstance()->Safe_Access_Layer(m_iLayerIndex);
+	if (nullptr == pLayer)
+		return;
+
+	m_isVisible = pLayer->Get_isVisible();
+}
+
+
+
+void CToolUI::Sync_Data()
+{
+	m_tUIData.strTag = m_strName;
+	m_tUIData.iLayerIndex = m_iLayerIndex;
+	m_tUIData.iRectTransformType = static_cast<uint32_t>( m_eRectTransformType);
+	m_tUIData.iUIType = static_cast<uint32_t>(m_eUIType);
+	m_tUIData.fWidth = m_fWidth;
+	m_tUIData.fHeight = m_fHeight;
+	m_tUIData.fPosX = m_fX;
+	m_tUIData.fPosY = m_fY;
+	m_tUIData.fPosZ = m_fZ;
+	m_tUIData.strTextureTag = Engine_Utils::ToString(m_wstrTextureTag);
+	m_tUIData.iTextureIndex = m_iTextureIndex;
 }
 
 CToolUI* CToolUI::Create(EToolObjectType eType, ID3D11Device* pDevice, ID3D11DeviceContext* pDeviceContext)

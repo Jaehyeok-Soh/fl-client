@@ -24,10 +24,6 @@ CVIBuffer_Particle_Point::CVIBuffer_Particle_Point(const CVIBuffer_Particle_Poin
 
 		memcpy(m_pInstanceVertices, rhs.m_pInstanceVertices, sizeof(VTXPARTICLE) * m_iInstanceCount);
 		memcpy(m_pSpeeds, rhs.m_pSpeeds, sizeof(_float) * m_iInstanceCount);
-
-		D3D11_SUBRESOURCE_DATA InstanceInitialData{};
-		InstanceInitialData.pSysMem = m_pInstanceVertices;
-		m_pDevice->CreateBuffer(&m_InstanceBufferDesc, &InstanceInitialData, &m_pVBInstance);
 	}
 } 
 

@@ -122,7 +122,7 @@
       <SubSystem>Windows</SubSystem>
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <EnableUAC>false</EnableUAC>
-      <AdditionalDependencies>d3d11.lib;dinput8.lib;d3dcompiler.lib;dxguid.lib;DirectXTex/DirectXTex_Debug.lib;FX11/Effects11d.lib;Assimp/assimp-vc143-mtd.lib;DirectXTK/Debug/DirectXTK.lib;FMOD/Debug/fmodL_vc.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>d3d11.lib;dinput8.lib;d3dcompiler.lib;dxguid.lib;DirectXTex/DirectXTex_Debug.lib;FX11/Effects11d.lib;Assimp/assimp-vc143-mtd.lib;DirectXTK/Debug/DirectXTK.lib;FMOD/Debug/fmodL_vc.lib;PhysX/debug/PhysX_64.lib;PhysX/debug/PhysXCommon_64.lib;PhysX/debug/PhysXCooking_64.lib;PhysX/debug/PhysXFoundation_64.lib;PhysX/debug/PVDRuntime_64.lib;PhysX/debug/PhysXExtensions_static_64.lib;PhysX/debug/PhysXPvdSDK_static_64.lib;PhysX/debug/PhysXGpu_64.lib;PhysX/debug/PhysXCharacterKinematic_static_64.lib;%(AdditionalDependencies)</AdditionalDependencies>
       <AdditionalLibraryDirectories>../../Libraries/Lib/;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
     </Link>
     <FxCompile>
@@ -151,7 +151,7 @@
       <OptimizeReferences>true</OptimizeReferences>
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <EnableUAC>false</EnableUAC>
-      <AdditionalDependencies>d3d11.lib;dinput8.lib;d3dcompiler.lib;dxguid.lib;DirectXTex\\DirectXTex.lib;FX11\\Effects11.lib;Assimp\\assimp-vc143-mt.lib;DirectXTK\\Release\\DirectXTK.lib;FMOD\\Release\\fmod_vc.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>d3d11.lib;dinput8.lib;d3dcompiler.lib;dxguid.lib;DirectXTex\\DirectXTex.lib;FX11\\Effects11.lib;Assimp\\assimp-vc143-mt.lib;DirectXTK\\Release\\DirectXTK.lib;FMOD\\Release\\fmod_vc.lib;PhysX/release/PhysX_64.lib;PhysX/release/PhysXCommon_64.lib;PhysX/release/PhysXCooking_64.lib;PhysX/release/PhysXFoundation_64.lib;PhysX/release/PVDRuntime_64.lib;PhysX/release/PhysXExtensions_static_64.lib;PhysX/release/PhysXPvdSDK_static_64.lib;PhysX/release/PhysXGpu_64.lib;PhysX/release/PhysXCharacterKinematic_static_64.lib;%(AdditionalDependencies)</AdditionalDependencies>
       <AdditionalLibraryDirectories>../../Libraries/Lib/;</AdditionalLibraryDirectories>
     </Link>
     <FxCompile>
@@ -174,9 +174,11 @@
     <ClCompile Include="..\Private\Bounding_OBB.cpp" />
     <ClCompile Include="..\Private\Bounding_Sphere.cpp" />
     <ClCompile Include="..\Private\BuilderBase.cpp" />
+    <ClCompile Include="..\private\BuilderSystem.cpp" />
     <ClCompile Include="..\Private\Camera.cpp" />
     <ClCompile Include="..\Private\CameraMan.cpp" />
     <ClCompile Include="..\Private\Camera_Manager.cpp" />
+    <ClCompile Include="..\Private\DataDocument_Effect.cpp" />
     <ClCompile Include="..\Private\Cell.cpp" />
     <ClCompile Include="..\Private\Channel.cpp" />
     <ClCompile Include="..\Private\Collider.cpp" />
@@ -189,12 +191,14 @@
     <ClCompile Include="..\Private\DataDefine_Json.cpp" />
     <ClCompile Include="..\private\DataDocumentBase.cpp" />
     <ClCompile Include="..\private\DataDocument_Example.cpp" />
+    <ClCompile Include="..\Private\DataDocument_UI.cpp" />
     <ClCompile Include="..\Private\DataEnum.cpp" />
     <ClCompile Include="..\private\DataRepository.cpp" />
     <ClCompile Include="..\private\DataStore.cpp" />
     <ClCompile Include="..\private\DataStruct_Animation.cpp" />
     <ClCompile Include="..\Private\DataStruct_Effect.cpp" />
     <ClCompile Include="..\Private\DataStruct_Example.cpp" />
+    <ClCompile Include="..\Private\DataStruct_UI.cpp" />
     <ClCompile Include="..\Private\DebugDraw.cpp">
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Use</PrecompiledHeader>
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Use</PrecompiledHeader>
@@ -239,6 +243,15 @@
     <ClCompile Include="..\Private\Object_Manager.cpp" />
     <ClCompile Include="..\private\ObjectPool.cpp" />
     <ClCompile Include="..\Private\PartObject.cpp" />
+    <ClCompile Include="..\Private\PhysicsCCT.cpp" />
+    <ClCompile Include="..\Private\PhysicsCollider.cpp" />
+    <ClCompile Include="..\Private\PhysicsRigidBody.cpp" />
+    <ClCompile Include="..\Private\Physics_ActorFactory.cpp" />
+    <ClCompile Include="..\Private\Physics_CCTManager.cpp" />
+    <ClCompile Include="..\Private\Physics_Module.cpp" />
+    <ClCompile Include="..\Private\Physics_ResourceManager.cpp" />
+    <ClCompile Include="..\Private\Physics_ShapeFactory.cpp" />
+    <ClCompile Include="..\Private\Physics_Utils.cpp" />
     <ClCompile Include="..\Private\Picking.cpp" />
     <ClCompile Include="..\Private\Prototype_Manager.cpp" />
     <ClCompile Include="..\Private\Ray.cpp" />
@@ -252,6 +265,7 @@
     <ClCompile Include="..\Private\StateBase.cpp" />
     <ClCompile Include="..\Private\Texture.cpp" />
     <ClCompile Include="..\Private\TextureBase.cpp" />
+    <ClCompile Include="..\private\ThreadWorker.cpp" />
     <ClCompile Include="..\Private\Timer.cpp" />
     <ClCompile Include="..\Private\Timer_Manager.cpp" />
     <ClCompile Include="..\Private\Transform.cpp" />
@@ -269,6 +283,7 @@
     <ClCompile Include="..\Private\VIBuffer_Rect_NorTex.cpp" />
     <ClCompile Include="..\Private\VIBuffer_Rect_Tex.cpp" />
     <ClCompile Include="..\Private\VIBuffer_Terrain.cpp" />
+    <ClCompile Include="..\public\ThreadPool.cpp" />
     <ClCompile Include="Engine_pch.cpp">
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Create</PrecompiledHeader>
       <PrecompiledHeaderFile Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Engine_pch.h</PrecompiledHeaderFile>
@@ -286,9 +301,11 @@
     <ClInclude Include="..\Public\Bounding_OBB.h" />
     <ClInclude Include="..\Public\Bounding_Sphere.h" />
     <ClInclude Include="..\Public\BuilderBase.h" />
+    <ClInclude Include="..\public\BuilderSystem.h" />
     <ClInclude Include="..\Public\Camera.h" />
     <ClInclude Include="..\Public\CameraMan.h" />
     <ClInclude Include="..\Public\Camera_Manager.h" />
+    <ClInclude Include="..\Public\DataDocument_Effect.h" />
     <ClInclude Include="..\Public\Cell.h" />
     <ClInclude Include="..\Public\Channel.h" />
     <ClInclude Include="..\Public\Collider.h" />
@@ -301,12 +318,14 @@
     <ClInclude Include="..\Public\DataDefine_Json.h" />
     <ClInclude Include="..\public\DataDocumentBase.h" />
     <ClInclude Include="..\public\DataDocument_Example.h" />
+    <ClInclude Include="..\Public\DataDocument_UI.h" />
     <ClInclude Include="..\Public\DataEnum.h" />
     <ClInclude Include="..\public\DataRepository.h" />
     <ClInclude Include="..\public\DataStore.h" />
     <ClInclude Include="..\public\DataStruct_Animation.h" />
     <ClInclude Include="..\Public\DataStruct_Effect.h" />
     <ClInclude Include="..\Public\DataStruct_Example.h" />
+    <ClInclude Include="..\Public\DataStruct_UI.h" />
     <ClInclude Include="..\Public\DebugDraw.h" />
     <ClInclude Include="..\Public\Delegate.h" />
     <ClInclude Include="..\Public\Engine_Define.h" />
@@ -349,6 +368,15 @@
     <ClInclude Include="..\Public\Object_Manager.h" />
     <ClInclude Include="..\public\ObjectPool.h" />
     <ClInclude Include="..\Public\PartObject.h" />
+    <ClInclude Include="..\Public\PhysicsCCT.h" />
+    <ClInclude Include="..\Public\PhysicsCollider.h" />
+    <ClInclude Include="..\Public\PhysicsRigidBody.h" />
+    <ClInclude Include="..\Public\Physics_ActorFactory.h" />
+    <ClInclude Include="..\Public\Physics_CCTManager.h" />
+    <ClInclude Include="..\Public\Physics_Module.h" />
+    <ClInclude Include="..\Public\Physics_ResourceManager.h" />
+    <ClInclude Include="..\Public\Physics_ShapeFactory.h" />
+    <ClInclude Include="..\Public\Physics_Utils.h" />
     <ClInclude Include="..\Public\Picking.h" />
     <ClInclude Include="..\Public\Prototype_Manager.h" />
     <ClInclude Include="..\Public\Ray.h" />
@@ -362,6 +390,8 @@
     <ClInclude Include="..\Public\StateBase.h" />
     <ClInclude Include="..\Public\Texture.h" />
     <ClInclude Include="..\Public\TextureBase.h" />
+    <ClInclude Include="..\public\ThreadPool.h" />
+    <ClInclude Include="..\public\ThreadWorker.h" />
     <ClInclude Include="..\Public\Timer.h" />
     <ClInclude Include="..\Public\Timer_Manager.h" />
     <ClInclude Include="..\Public\Transform.h" />

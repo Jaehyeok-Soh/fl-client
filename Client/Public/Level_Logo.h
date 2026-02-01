@@ -17,10 +17,13 @@ public:
 	virtual void Update(const _float fTimeDelta) override;
 	virtual HRESULT Render() override;
 private:
+	HRESULT Ready_Builders();
+	HRESULT Build_Files();
 	HRESULT Ready_Player_Layer(const wstring& wstrLayerTag);
 	HRESULT Ready_UI_Layer(const wstring& wstrLayerTag);
 	HRESULT Ready_Camera_Layer(const wstring& wstrLayerTag);
 	HRESULT Ready_Lights();
+	HRESULT Ready_Test_Terrain(const wstring& wstrLayerTag);
 
 	HRESULT Ready_Camera_Setting(const _uint iLevelIndex);
 public:

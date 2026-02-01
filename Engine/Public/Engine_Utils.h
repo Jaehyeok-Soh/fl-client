@@ -16,6 +16,9 @@ public:
 	static void Add_Text(OUT wstring& str_out, const wstring& strfind , const wstring& stradd , _bool isback = false, _int32 i0ffset = 0);
 
 
+	static string NormalizePath(const std::filesystem::path& path);
+	static wstring NormalizePath_WString(const std::filesystem::path& path);
+
 	static wstring ToWString(string value);
 	static string ToString(wstring value);
 
@@ -23,7 +26,8 @@ public:
 	static string GetFileNameWithoutExtension(const string& path);
 
 	static string Make_DataFileKey(const std::filesystem::path& filePath) { return filePath.stem().string(); }
-
+	// 쿼터니언 값을 오일러 값으로 바꿔서 반환해주는 함수
+	static Vec3 ToEulerDegrees(const Quat& q);
 	/* 비트 플래그 유틸 함수 */
 	static void Add_Flag(Flags& curFlags, _uint iBitFlag);
 	static void RemoveSoft_Flag(Flags& curFlags, _uint iBitFlag); // 있다면 지워라

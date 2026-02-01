@@ -57,7 +57,9 @@ _bool CPicking_ToolManager::Picking()
 	m_vPickingPos = vecPos[best];
 	if(CGameInstance::GetInstance()->KeyButton_Pressing(DIK_LSHIFT) == false)
 		CGameInstance::GetInstance()->Broadcast<ChangeSelectedObject>(vecPicked[best]);
+
 	return true;
+
 }
 
 void CPicking_ToolManager::Add_PickingGroup(CToolObject* pGo)
