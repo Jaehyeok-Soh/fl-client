@@ -440,8 +440,10 @@
     </ClInclude>
     <ClInclude Include="..\Public\Builder_UI.h" />
     <ClInclude Include="..\Public\Button.h" />
-    <ClInclude Include="..\public\Level_Logo.h" />
     <ClInclude Include="..\Public\Image.h" />
+    <ClInclude Include="..\public\Level_Logo.h">
+      <Filter>03. Level\Logo</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <Image Include="small.ico">

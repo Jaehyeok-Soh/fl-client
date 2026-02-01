@@ -11,12 +11,17 @@
 //=================
 #include "Builder_Example.h"
 #include "BuilderSystem.h"
+#include "EffectBuilder.h"
+#include "DataStruct_Effect.h"
+#include "DataDocument_Effect.h"
 
 //=================
 // Object
 //=================
 #include "Player.h"
 #include "CameraMan_Targeter.h"
+#include "Effect.h"
+#include "EffectObject.h"
 
 //=================
 // UI
@@ -74,6 +79,11 @@ HRESULT CLevel_Logo::Awake(const _uint iLevelID)
 void CLevel_Logo::Update(const _float fTimeDelta)
 {
 	Super::Update(fTimeDelta);
+
+	if (m_pGameInstance->KeyButton_Down(DIK_0))
+	{
+		m_pGameInstance->Request_AddObject(ENUM_TO_UINT(ELevelType::LOGO), L"POOL_ParticleSystem", ENUM_TO_UINT(ELevelType::LOGO), L"Effect", nullptr);
+	}
 }
 
 HRESULT CLevel_Logo::Render()
@@ -86,7 +96,10 @@ HRESULT CLevel_Logo::Render()
 
 HRESULT CLevel_Logo::Ready_Builders()
 {
-	if (FAILED(Ready_Builder(DTO::ECategory::MAP, CBuilder_Example::Create(m_pDevice, m_pDeviceContext))))
+	if (FAILED(Ready_Builder(DTO::ECategory::MAP, CBuilder_Example::Create(m_pDevice, m_pDeviceContext, ENUM_TO_UINT(ELevelType::LOGO)))))
+		return E_FAIL;
+
+	if (FAILED(Ready_Builder(DTO::ECategory::EFFECT, EffectBuilder::Create(m_pDevice, m_pDeviceContext, ENUM_TO_UINT(ELevelType::LOGO)))))
 		return E_FAIL;
 
 	return S_OK;
@@ -94,6 +107,9 @@ HRESULT CLevel_Logo::Ready_Builders()
 
 HRESULT CLevel_Logo::Build_Files()
 {
+	if (FAILED(Build_File(ENUM_TO_UINT(ELevelType::LOGO), DTO::ECategory::EFFECT, "Attack_1")))
+		return E_FAIL;
+
 	// For. Example
 	//if (FAILED(Build_File(ENUM_TO_UINT(ELevelType::LOGO), DTO::ECategory::MAP, "asdf")))
 	//	return E_FAIL;
@@ -201,6 +217,7 @@ HRESULT CLevel_Logo::Ready_Camera_Setting(const _uint iLevelIndex)
 	m_pGameInstance->Change_Target(pPlayer);
 	return S_OK;
 }
+
 
 CLevel_Logo* CLevel_Logo::Create(ID3D11Device* pDevice, ID3D11DeviceContext* pDeviceContext)
 {

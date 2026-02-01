@@ -31,7 +31,7 @@ HRESULT CObjectPool_Manager::Regist_Pool(_uint iTargetLevelIndex, const wstring&
 	}
 
 	CBase* pSeed = CGameInstance::GetInstance()->Clone_Prototype(EPrototypeType::GAMEOBJECT, iSeedLevelID, wstrSeedPrototypeTag, pArg);
-	if (pSeed != nullptr)
+	if (pSeed == nullptr)
 	{
 		MSG_BOX("CObjectPool_Manager::Regist_Pool, seed clone failed");
 		return E_FAIL;

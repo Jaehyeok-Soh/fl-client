@@ -166,6 +166,7 @@
     <ClInclude Include="..\Public\ComboContainer.h" />
     <ClInclude Include="..\Public\ComboState.h" />
     <ClInclude Include="..\Public\Effect.h" />
+    <ClInclude Include="..\Public\EffectBuilder.h" />
     <ClInclude Include="..\Public\EffectObject.h" />
     <ClInclude Include="..\Public\GenericUI.h" />
     <ClInclude Include="..\Public\Physics_Terrain.h" />
@@ -217,6 +218,7 @@
     <ClCompile Include="..\Private\ComboContainer.cpp" />
     <ClCompile Include="..\Private\ComboState.cpp" />
     <ClCompile Include="..\Private\Effect.cpp" />
+    <ClCompile Include="..\Private\EffectBuilder.cpp" />
     <ClCompile Include="..\Private\EffectObject.cpp" />
     <ClCompile Include="..\Private\GenericUI.cpp" />
     <ClCompile Include="..\Private\State_CrouchWalk.cpp" />
