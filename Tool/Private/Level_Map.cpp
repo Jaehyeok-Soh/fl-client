@@ -99,9 +99,6 @@ HRESULT CLevel_Map::Awake(const _uint iLevelID)
 void CLevel_Map::Update(const _float fTimeDelta)
 {
 	Super::Update(fTimeDelta);
-	if(m_pMapToolManager->Get_Preview() == nullptr)
-		m_pPickingManager->Picking();
-
 	m_pMapToolManager->Update(fTimeDelta);
 
 	for (CImGui_Panel* pElement : m_arrayImGuiPanel)
@@ -109,6 +106,13 @@ void CLevel_Map::Update(const _float fTimeDelta)
 		if (pElement)
 			pElement->Update(fTimeDelta);
 	}
+}
+
+void CLevel_Map::Update_Picking()
+{
+	Super::Update_Picking();
+	if (m_pMapToolManager->Get_Preview() == nullptr)
+		m_pPickingManager->Picking();
 }
 
 HRESULT CLevel_Map::Render()

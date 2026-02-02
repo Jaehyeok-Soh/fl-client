@@ -130,6 +130,8 @@ void CGameInstance::Update_Engine(_float fTimeDelta)
 	m_pCamera_Manager->Update_ViewMatrix();
 	m_pFrustrum->Update();
 
+	m_pLevel_Manager->Update_Picking();
+
 	// 업데이트 후 마지막
 	m_pObject_Manager->Ready_Before_Render(fTimeDelta);
 }

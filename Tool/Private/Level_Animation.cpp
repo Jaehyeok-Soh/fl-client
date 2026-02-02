@@ -45,6 +45,11 @@ void CLevel_Animation::Update(const _float fTimeDelta)
 	//Update_Elements(fTimeDelta);
 }
 
+void CLevel_Animation::Update_Picking()
+{
+	
+}
+
 HRESULT CLevel_Animation::Render()
 {
 	if (FAILED(Super::Render()))

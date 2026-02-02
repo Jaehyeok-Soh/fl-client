@@ -83,13 +83,18 @@ HRESULT CLevel_Effect::Awake(const _uint iLevelID)
 void CLevel_Effect::Update(const _float fTimeDelta)
 {
 	Super::Update(fTimeDelta);
-	m_pPickingManager->Picking();
 
 	for (CImGui_Base* pElement : m_GuiElements)
 	{
 		if (pElement)
 			pElement->Update(fTimeDelta);
 	}
+}
+
+void CLevel_Effect::Update_Picking()
+{
+	Super::Update_Picking();
+	m_pPickingManager->Picking();
 }
 
 HRESULT CLevel_Effect::Render()
