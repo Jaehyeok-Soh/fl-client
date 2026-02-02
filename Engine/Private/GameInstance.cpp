@@ -805,11 +805,6 @@ Matrix CGameInstance::PxTransformToXMMatrix(PxTransform pxTransform)
 	return m_pPhysics_Module->PxTransformToXMMatrix(pxTransform);
 }
 
-void CGameInstance::Physics_Render(PxRigidActor* pActor, XMVECTOR color)
-{
-	m_pPhysics_Module->Render(pActor, color);
-}
-
 void CGameInstance::SerializeStaticMesh(std::filesystem::path path, vector<PxTriangleMesh*> meshes)
 {
 	m_pPhysics_Module->SerializeStaticMesh(path, meshes);
@@ -849,6 +844,13 @@ PxController* CGameInstance::GetController(PHYSICSCCT_DESC* pDesc)
 {
 	return m_pPhysics_Module->GetController(pDesc);
 }
+
+#ifdef _DEBUG
+void CGameInstance::Physics_Render(PxRigidActor* pActor, XMVECTOR color)
+{
+	m_pPhysics_Module->Render(pActor, color);
+}
+#endif
 #pragma endregion
 
 void CGameInstance::Free()

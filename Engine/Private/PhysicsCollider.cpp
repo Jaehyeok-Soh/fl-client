@@ -88,10 +88,12 @@ void CPhysicsCollider::SetCenter(Vec3 vCenter)
 		shape->setLocalPose(PxTransform(PxVec3(vCenter.x, vCenter.y, vCenter.z)));
 }
 
+#ifdef _DEBUG
 void CPhysicsCollider::Render()
 {
 	return;
 }
+#endif
 
 CPhysicsCollider* CPhysicsCollider::Create(ID3D11Device* pDevice, ID3D11DeviceContext* pDeviceContext, void* pArg)
 {

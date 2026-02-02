@@ -83,8 +83,8 @@ private:
     PxScene* m_pScene = { nullptr };
     PxMaterial* m_pMaterial = { nullptr };
     PxCudaContextManager* m_pCudaContextManager = { nullptr };
-#ifdef _DEBUG
     PxPvd* m_pPvd = { nullptr };
+#ifdef _DEBUG
     _bool m_bEnabledDebugDraw = { false };
 #endif // _DEBUG
 
