@@ -36,6 +36,9 @@ public:
 public:
 	const Matrix* Get_SocketMatrix(const _char* szBoneName);
 	const Matrix* Get_SocketMatrix(_uint iIndex);
+	CBone* Get_CamBone();
+	CBone* Get_CamSocketBone();
+
 	CBone* Get_HeadBone();
 	CBone* Get_NeckBone();
 	CBone* Get_Spine1Bone();
@@ -56,6 +59,10 @@ private:
 	_int m_iHead_Index = { 0 };
 	_int m_iNeck_Index = { 0 };
 	_int m_iSpine1_Index = { 0 };
+
+	_int m_iCamPos_Index	= { 0 }; // cam ¿¬°á »À idx
+	_int m_iCamSocket_Index = { 0 }; // cam ¿¬°á »À idx
+	_int m_iRootMotion_Index	= { 0 }; // rootmotion »À idx
 	//_int m_iSpine_Index = { 0 };
 	//_int m_iLeftHand_Index = { 0 };
 	//_int m_iRightHand_Index = { 0 };

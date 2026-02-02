@@ -14,6 +14,7 @@ HRESULT CBone::Initialize(BONE_DESC* pDesc)
     // Converter에서 Export할때 이미 전치행렬 연산해서 넘겨줄거임
     m_matTransform = pDesc->matTransform;
     m_matCombinedTransform = Matrix::Identity;
+
     return S_OK;
 }
 

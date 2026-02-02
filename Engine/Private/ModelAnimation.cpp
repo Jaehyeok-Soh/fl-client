@@ -2,6 +2,8 @@
 #include "ModelAnimation.h"
 #include "Channel.h"
 
+#include "Transform.h"
+
 CModelAnimation::CModelAnimation(ID3D11Device* pDevice, ID3D11DeviceContext* pDeviceContext)
 	: Super(EResourceType::MODEL_ANIMATION, pDevice, pDeviceContext)
 {
@@ -41,7 +43,7 @@ HRESULT CModelAnimation::Initialize(void* pArg)
 	return S_OK;
 }
 
-_bool CModelAnimation::Update_TransformationMatrices(const vector<class CBone*>& vecBones, _float fTimeDelta, _bool isLoop)
+_bool CModelAnimation::Update_TransformationMatrices(const vector<class CBone*>& vecBones, _float fTimeDelta, _bool isLoop, CTransform* pOwnerTransform)
 {
 	m_fCurrentTrackPosition += m_fTickPerSecond * fTimeDelta;
 
@@ -56,12 +58,12 @@ _bool CModelAnimation::Update_TransformationMatrices(const vector<class CBone*>&
 	_uint iIndex = { 0 };
 	for (auto& pChannel : m_vecChannels)
 	{
-		pChannel->Update_TransformationMatrix(vecBones, m_fCurrentTrackPosition, &m_vecCurrentKeyFrameIndices[iIndex++]);
+		pChannel->Update_TransformationMatrix(vecBones, m_fCurrentTrackPosition, &m_vecCurrentKeyFrameIndices[iIndex++], pOwnerTransform);
 	}
 	return false;
 }
 
-void CModelAnimation::SetUp_PoseDatasForBlending(std::span<LOCALSRT> spanLocalSrtData, _float fTimeDelta)
+void CModelAnimation::SetUp_PoseDatasForBlending(std::span<LOCALSRT> spanLocalSrtData, _float fTimeDelta, CTransform* pOwnerTransform)
 {
 	m_fCurrentTrackPosition += m_fTickPerSecond * fTimeDelta;
 	if (m_fCurrentTrackPosition >= m_fDuration)
@@ -72,7 +74,7 @@ void CModelAnimation::SetUp_PoseDatasForBlending(std::span<LOCALSRT> spanLocalSr
 	_uint iIndex = { 0 };
 	for (auto& pChannel : m_vecChannels)
 	{
-		pChannel->SetUp_PoseData(spanLocalSrtData, m_fCurrentTrackPosition, &m_vecCurrentKeyFrameIndices[iIndex++]);
+		pChannel->SetUp_PoseData(spanLocalSrtData, m_fCurrentTrackPosition, &m_vecCurrentKeyFrameIndices[iIndex++], pOwnerTransform);
 	}
 }
 

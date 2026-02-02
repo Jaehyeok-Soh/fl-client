@@ -34,7 +34,7 @@ HRESULT CStateBase_Player::Awake(const _uint iLevelIndex)
 	if (FAILED(Super::Awake(iLevelIndex)))
 		return E_FAIL;
 
-	m_iEndState = ENUM_TO_UINT(CPlayer::State::END);
+	m_iEndStateIdx = ENUM_TO_UINT(CPlayer::State::END);
 
 	return S_OK;
 }
@@ -109,6 +109,8 @@ void CStateBase_Player::Change_State(STATEKEY eKey)
 	_uint iNextState = m_vecChangeState_ByKey[ENUM_TO_UINT(eKey)];
 	Set_NextStateDesc(iNextState);		// next state에 대한 desc 작성
 	Request_Change_State(iNextState, &m_tNextStateDesc);	
+
+	/* 플레이어가 이런 state를 이런 애니메이션으로 바꿨다 */
 }
 
 _bool CStateBase_Player::Check_MoveKey(const _float fTimeDelta)
@@ -126,11 +128,12 @@ _bool CStateBase_Player::Check_MoveKey(const _float fTimeDelta)
 
 	if (Engine_Utils::Has_Flag(m_FMoves, MOVEFLAGS::NORMAL))
 	{
-		if (Align_Movement(fTimeDelta) == false)	// 8방향 움직임 
+		if (Align_Movement(fTimeDelta) == false								// 8방향 움직임을 하는데 입력이 없고
+			&&
+			Has_ChangeState(STATEKEY::MOVE))								// change move 키가 있다면
+				
 		{
-			if (Engine_Utils::Has_Flag(m_FMoves, MOVEFLAGS::OWN))
-				return false;
-
+			// change state
 			Change_State(STATEKEY::MOVE);
 			return true;
 		}
@@ -195,7 +198,7 @@ _bool CStateBase_Player::Check_CtrlUpKey(const _float fTimeDelta)
 _bool CStateBase_Player::Has_ChangeState(STATEKEY eKey)
 {
 	// state end 이면 state change를 안 한다
-	return m_iEndState != m_vecChangeState_ByKey[ENUM_TO_UINT(eKey)];
+	return m_iEndStateIdx != m_vecChangeState_ByKey[ENUM_TO_UINT(eKey)];
 }
 
 void CStateBase_Player::Free()
