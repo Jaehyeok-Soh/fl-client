@@ -1,8 +1,9 @@
 #include "Engine_pch.h"
 #include "Channel.h"
-#include "Bone.h"
 
+#include "Bone.h"
 #include "Transform.h"
+#include "PhysicsCCT.h"
 
 CChannel::CChannel()
 {
@@ -17,6 +18,7 @@ HRESULT CChannel::Initialize(const CHANNEL_DESC& desc)
 	0.f, 0.f, 0.f, 1.f
 	};
 
+
 	::strcpy_s(m_szName, desc.strName.c_str());
 	m_iBoneIndex = desc.iBoneIndex;
 	m_iKeyFrameCount = (_uint)desc.spanKeyframes.size();
@@ -28,7 +30,7 @@ HRESULT CChannel::Initialize(const CHANNEL_DESC& desc)
 	else
 		return E_FAIL;
 
-	m_bMotionBone = (desc.iRootBoneIndex == m_iBoneIndex);
+	m_bRootBone = (desc.iRootBoneIndex == m_iBoneIndex);
 
 	return S_OK;
 }
@@ -41,13 +43,10 @@ void CChannel::SetUp_PoseData(std::span<LOCALSRT> spanLocalSrtData, _float fCurr
 {
 }
 
-void CChannel::Update_TransformationMatrix(const vector<class CBone*>& vecBones, _float fCurrentTrackPosition, _uint* pCurrentKeyFrameIndex, CTransform* pOwnerTransfrom)
+void CChannel::Update_TransformationMatrix(const vector<class CBone*>& vecBones, _float fCurrentTrackPosition, _uint* pCurrentKeyFrameIndex, CTransform* pOwnerTransform, CPhysicsCCT* pOwnerPhyCCT)
 {
 	if (fCurrentTrackPosition <= 0.f)
 		*pCurrentKeyFrameIndex = 0;
-
-	/* test : root motion */
-	//_bool isMotionBone = (m_iBoneIndex == 2);
 
 	Matrix matTransformation = {};
 	KEYFRAME lastKeyFrame = m_vecKeyframes.back();
@@ -80,9 +79,9 @@ void CChannel::Update_TransformationMatrix(const vector<class CBone*>& vecBones,
 		_float		fRatio = (fCurrentTrackPosition - m_vecKeyframes[(*pCurrentKeyFrameIndex)].fTrackPosition) /
 			(m_vecKeyframes[(*pCurrentKeyFrameIndex) + 1].fTrackPosition - m_vecKeyframes[(*pCurrentKeyFrameIndex)].fTrackPosition);
 
-		if (m_bMotionBone)
+		if (m_bRootBone)
 		{
-			//Update_MotionBone(vLeftTranslation, vRightTranslation, fRatio, pOwnerTransfrom);
+			Update_MotionBone(vLeftTranslation, vRightTranslation, pOwnerTransform, pOwnerPhyCCT);
 			vLeftTranslation	= { 0.f,0.f,0.f };
 			vRightTranslation	= { 0.f,0.f,0.f };
 		}
@@ -96,13 +95,10 @@ void CChannel::Update_TransformationMatrix(const vector<class CBone*>& vecBones,
 	vecBones[m_iBoneIndex]->Set_TransformationMatrix(matTransformation);
 }
 
-void CChannel::SetUp_PoseData(std::span<LOCALSRT> spanLocalSrtData, _float fCurrentTrackPosition, _uint* pCurrentKeyFrameIndex, CTransform* pOwnerTransform)
+void CChannel::SetUp_PoseData(std::span<LOCALSRT> spanLocalSrtData, _float fCurrentTrackPosition, _uint* pCurrentKeyFrameIndex, CTransform* pOwnerTransform, CPhysicsCCT* pOwnerPhyCCT)
 {
 	if (fCurrentTrackPosition <= 0.f)
 		*pCurrentKeyFrameIndex = 0;
-
-	/* test : root motion */
-	//_bool isMotionBone = (m_iBoneIndex == 2);
 
 	Matrix matTransformation = {};
 	KEYFRAME lastKeyFrame = m_vecKeyframes.back();
@@ -137,11 +133,11 @@ void CChannel::SetUp_PoseData(std::span<LOCALSRT> spanLocalSrtData, _float fCurr
 		_float		fRatio = (fCurrentTrackPosition - m_vecKeyframes[(*pCurrentKeyFrameIndex)].fTrackPosition) /
 			(m_vecKeyframes[(*pCurrentKeyFrameIndex) + 1].fTrackPosition - m_vecKeyframes[(*pCurrentKeyFrameIndex)].fTrackPosition);
 
-		if (m_bMotionBone)
+		if (m_bRootBone)
 		{
-			//Update_MotionBone(vLeftTranslation, vRightTranslation, fRatio, pOwnerTransform);
-			vLeftTranslation	= { 0.f,0.f,0.f };
-			vRightTranslation	= { 0.f,0.f,0.f };
+			Update_MotionBone(vLeftTranslation, vRightTranslation, pOwnerTransform, pOwnerPhyCCT);
+			vLeftTranslation = { 0.f,0.f,0.f };
+			vRightTranslation = { 0.f,0.f,0.f };
 		}
 
 		vScale			= Vec3::Lerp(vLeftScale, vRightScale, fRatio);
@@ -154,30 +150,29 @@ void CChannel::SetUp_PoseData(std::span<LOCALSRT> spanLocalSrtData, _float fCurr
 	spanLocalSrtData[m_iBoneIndex].vTranslation = vTranslation;
 }
 
-void CChannel::Update_MotionBone(Vec3 vLeftTrans, Vec3 vRightTrans, _float fRatio, CTransform* pOwnerTransform)
+void CChannel::Update_MotionBone(Vec3 vLeftTrans, Vec3 vRightTrans,  CTransform* pOwnerTransform, CPhysicsCCT* pOwnerPhyCCT)
 {
-	if (pOwnerTransform == nullptr)
+	if (pOwnerTransform == nullptr ||
+		pOwnerPhyCCT == nullptr)
 		return;
-	/* 채널의 이동량을 더해줘 */
-	// trans만 선형 보간을 한 매트릭스 생성
 
-	// 선형 보간된 현재 뼈 local 위치
-	Vec3 vCurTranslation = Vec3::Lerp(vLeftTrans, vRightTrans, fRatio);
+	/* 좌표계 차이 때문에 x,z,y & 부호 반대로 */
+	_float fLocalRight	= vLeftTrans.x - vRightTrans.x;
+	_float fLocalUp		= vLeftTrans.z - vRightTrans.z;
+	_float fLocalLook	= vLeftTrans.y - vRightTrans.y;
 
-	// owner의 회전을 곱해서 완성된 델타 위치를 얻어낸다
-	//Vec3 vScale, vTrans;
-	//Quat q
+	Vec3 vOwnerPos		= pOwnerTransform->Get_Info(TRANSFORM_INFO_STATE::POS);
+	Vec3 vOwnerRight	= pOwnerTransform->Get_Info(TRANSFORM_INFO_STATE::RIGHT);
+	Vec3 vOwnerUp		= pOwnerTransform->Get_Info(TRANSFORM_INFO_STATE::UP);
+	Vec3 vOwnerLook		= pOwnerTransform->Get_Info(TRANSFORM_INFO_STATE::LOOK);
 
+	Vec3 moveDistance = vOwnerRight * fLocalRight + vOwnerUp * fLocalUp + vOwnerLook * fLocalLook;
 
-	//Vec3 deltaWorld = qOwnerRot * (vCurTranslation - m_vPreRootLocal);
-	Vec3 deltaWorld = (vCurTranslation - m_vPreRootLocal);
+	pOwnerPhyCCT->Move(moveDistance, 0.0f, 0.016f);
 
-	//deltaWorld = { deltaWorld.y , deltaWorld.z , deltaWorld.x };
-	
-	// 변화량을 더해 준다
-	pOwnerTransform->Add_Position(deltaWorld);
+	Vec3 finalPos = pOwnerPhyCCT->GetFootPosition();
 
-	m_vPreRootLocal = vCurTranslation;
+	pOwnerTransform->Set_Info(TRANSFORM_INFO_STATE::POS, finalPos);
 }
 
 CChannel* CChannel::Create(const CHANNEL_DESC& desc)
