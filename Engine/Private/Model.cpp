@@ -9,6 +9,7 @@
 #include "MaterialInstance.h"
 #include "ModelAnimation.h"
 
+#include "PhysicsCCT.h"
 #include "Transform.h"
 #include "GameObject.h"
 
@@ -173,9 +174,9 @@ HRESULT CModel::Change_Animation(_uint iAnimationIndex, _bool bBlend, _bool isLo
 	return S_OK;
 }
 
-void CModel::Update_Animation(_float fTimeDelta, CTransform* pOwnerTransform)
+void CModel::Update_Animation(_float fTimeDelta, CTransform* pOwnerTransform, CPhysicsCCT* pOwnerPhyCCT)
 {
-	Update_AnimationPlayState(fTimeDelta, pOwnerTransform);
+	Update_AnimationPlayState(fTimeDelta, pOwnerTransform, pOwnerPhyCCT);
 }
 
 HRESULT CModel::Set_PassByMesh(class CShader* pShader, _uint iMeshIndex)
@@ -492,12 +493,12 @@ CModel* CModel::Get_Clone(const wstring& wstrPrototypeTag)
 	return dynamic_cast<CModel*>(m_pGameInstance->Clone_Prototype(EPrototypeType::COMPONENT, 0/* static */, wstrPrototypeTag));
 }
 
-void CModel::Play_Animation(_float fTimeDelta, CTransform* pOwnerTransform)
+void CModel::Play_Animation(_float fTimeDelta, CTransform* pOwnerTransform, CPhysicsCCT* pOwnerPhyCCT)
 {
 	if (pOwnerTransform)
-		m_bIsAnimFinished = m_vecAnimations[m_iCurrentAnimIndex]->Update_TransformationMatrices(m_vecBones, fTimeDelta, m_isAnimLoop, pOwnerTransform);
+		m_bIsAnimFinished = m_vecAnimations[m_iCurrentAnimIndex]->Update_TransformationMatrices(m_vecBones, fTimeDelta, m_isAnimLoop, pOwnerTransform, pOwnerPhyCCT);
 	else
-		m_bIsAnimFinished = m_vecAnimations[m_iCurrentAnimIndex]->Update_TransformationMatrices(m_vecBones, fTimeDelta, m_isAnimLoop, m_pOwner->Get_Component<CTransform>());
+		m_bIsAnimFinished = m_vecAnimations[m_iCurrentAnimIndex]->Update_TransformationMatrices(m_vecBones, fTimeDelta, m_isAnimLoop, m_pOwner->Get_Component<CTransform>(), m_pOwner->Get_Component<CPhysicsCCT>());
 
 	for (size_t i = 0; i < m_vecBones.size(); ++i)
 	{
@@ -505,18 +506,18 @@ void CModel::Play_Animation(_float fTimeDelta, CTransform* pOwnerTransform)
 	}
 }
 
-void CModel::Blend_Animation(_float fTimeDelta, _float fRatio, CTransform* pOwnerTransform)
+void CModel::Blend_Animation(_float fTimeDelta, _float fRatio, CTransform* pOwnerTransform, CPhysicsCCT* pOwnerPhyCCT)
 {
 	if (pOwnerTransform)
 	{
-		m_vecAnimations[m_iPrevAnimIndex]->SetUp_PoseDatasForBlending(m_vecPrevAnimationPose, fTimeDelta, pOwnerTransform);
-		m_vecAnimations[m_iCurrentAnimIndex]->SetUp_PoseDatasForBlending(m_vecCurrAnimationPose, fTimeDelta, pOwnerTransform);
+		m_vecAnimations[m_iPrevAnimIndex]->SetUp_PoseDatasForBlending(m_vecPrevAnimationPose, fTimeDelta, pOwnerTransform, pOwnerPhyCCT);
+		m_vecAnimations[m_iCurrentAnimIndex]->SetUp_PoseDatasForBlending(m_vecCurrAnimationPose, fTimeDelta, pOwnerTransform, pOwnerPhyCCT);
 	}
 
 	else
 	{
-		m_vecAnimations[m_iPrevAnimIndex]->SetUp_PoseDatasForBlending(m_vecPrevAnimationPose, fTimeDelta, m_pOwner->Get_Component<CTransform>());
-		m_vecAnimations[m_iCurrentAnimIndex]->SetUp_PoseDatasForBlending(m_vecCurrAnimationPose, fTimeDelta, m_pOwner->Get_Component<CTransform>());
+		m_vecAnimations[m_iPrevAnimIndex]->SetUp_PoseDatasForBlending(m_vecPrevAnimationPose, fTimeDelta, m_pOwner->Get_Component<CTransform>(), m_pOwner->Get_Component<CPhysicsCCT>());
+		m_vecAnimations[m_iCurrentAnimIndex]->SetUp_PoseDatasForBlending(m_vecCurrAnimationPose, fTimeDelta, m_pOwner->Get_Component<CTransform>(), m_pOwner->Get_Component<CPhysicsCCT>());
 	}
 
 
@@ -580,15 +581,15 @@ void CModel::Begin_AnimationPlayState(AnimationPlayState eState)
 	}
 }
 
-void CModel::Update_AnimationPlayState(const _float fTimeDelta, CTransform* pOwnerTransform)
+void CModel::Update_AnimationPlayState(const _float fTimeDelta, CTransform* pOwnerTransform, CPhysicsCCT* pOwnerPhyCCT)
 {
 	switch (m_eCurrentAnimationState)
 	{
 	case Engine::CModel::PLAY:
-		Play_Update(fTimeDelta, pOwnerTransform);
+		Play_Update(fTimeDelta, pOwnerTransform, pOwnerPhyCCT);
 		break;
 	case Engine::CModel::BLEND:
-		Blend_Update(fTimeDelta, pOwnerTransform);
+		Blend_Update(fTimeDelta, pOwnerTransform, pOwnerPhyCCT);
 		break;
 	}
 }
@@ -617,9 +618,9 @@ void CModel::Play_Begin()
 {
 }
 
-void CModel::Play_Update(const _float fTimeDelta, CTransform* pOwnerTransform)
+void CModel::Play_Update(const _float fTimeDelta, CTransform* pOwnerTransform, CPhysicsCCT* pOwnerPhyCCT)
 {
-	Play_Animation(fTimeDelta, pOwnerTransform);
+	Play_Animation(fTimeDelta, pOwnerTransform, pOwnerPhyCCT);
 }
 
 void CModel::Play_End()
@@ -632,7 +633,7 @@ void CModel::Blend_Begin()
 	m_fBlendedTime = 0.f;
 }
 
-void CModel::Blend_Update(const _float fTimeDelta, CTransform* pOwnerTransform)
+void CModel::Blend_Update(const _float fTimeDelta, CTransform* pOwnerTransform, CPhysicsCCT* pOwnerPhyCCT)
 {
 	if(m_fBlendDuration <= 0.f)
 		Change_AnimationPlayState(PLAY);
@@ -642,7 +643,11 @@ void CModel::Blend_Update(const _float fTimeDelta, CTransform* pOwnerTransform)
 	{
 		_float fNormalizedTime = std::clamp(m_fBlendedTime / m_fBlendDuration, 0.f, 1.f);
 		_float fRatio = fNormalizedTime * fNormalizedTime * (3.0f - 2.0f * fNormalizedTime);
-		Blend_Animation(fTimeDelta, fRatio, pOwnerTransform);
+
+		if(pOwnerTransform)
+			Blend_Animation(fTimeDelta, fRatio, pOwnerTransform, pOwnerPhyCCT);
+		else
+			Blend_Animation(fTimeDelta, fRatio, m_pOwner->Get_Component<CTransform>(), m_pOwner->Get_Component<CPhysicsCCT>());
 	}
 	else
 		Change_AnimationPlayState(PLAY);

@@ -12,6 +12,7 @@
 NS_BEGIN(Engine)
 
 class CTransform;
+class CPhysicsCCT;
 
 class CChannel final : public CBase
 {
@@ -36,8 +37,8 @@ public:
 	void SetUp_PoseData(std::span<LOCALSRT> spanLocalSrtData, _float fCurrentTrackPosition, _uint* pCurrentKeyFrameIndex);
 
 	// motion anim
-	void Update_TransformationMatrix(const vector<class CBone*>& vecBones, _float fCurrentTrackPosition, _uint* pCurrentKeyFrameIndex, CTransform* pOwnerTransform);
-	void SetUp_PoseData(std::span<LOCALSRT> spanLocalSrtData, _float fCurrentTrackPosition, _uint* pCurrentKeyFrameIndex, CTransform* pOwnerTransform);
+	void Update_TransformationMatrix(const vector<class CBone*>& vecBones, _float fCurrentTrackPosition, _uint* pCurrentKeyFrameIndex, CTransform* pOwnerTransform, CPhysicsCCT* pOwnerPhyCCT);
+	void SetUp_PoseData(std::span<LOCALSRT> spanLocalSrtData, _float fCurrentTrackPosition, _uint* pCurrentKeyFrameIndex, CTransform* pOwnerTransform, CPhysicsCCT* pOwnerPhyCCT);
 
 	// 기본 channel 정보
 private:
@@ -52,8 +53,7 @@ private:
 	Vec3				m_vPreRootLocal = Vec3::Zero;
 
 private:
-	void Update_MotionBone(Vec3 vLeftTrans, Vec3 vRightTrans, _float fRatio, CTransform* pOwnerTransform);
-	void Update_MotionBone(Vec3 vLeftTrans, Vec3 vRightTrans , CTransform* pOwnerTransform);
+	void Update_MotionBone(Vec3 vLeftTrans, Vec3 vRightTrans , CTransform* pOwnerTransform, CPhysicsCCT* pOwnerPhyCCT);
 
 public:
 	static CChannel* Create(const CHANNEL_DESC &desc);

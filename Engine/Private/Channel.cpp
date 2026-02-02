@@ -1,8 +1,9 @@
 #include "Engine_pch.h"
 #include "Channel.h"
-#include "Bone.h"
 
+#include "Bone.h"
 #include "Transform.h"
+#include "PhysicsCCT.h"
 
 CChannel::CChannel()
 {
@@ -42,7 +43,7 @@ void CChannel::SetUp_PoseData(std::span<LOCALSRT> spanLocalSrtData, _float fCurr
 {
 }
 
-void CChannel::Update_TransformationMatrix(const vector<class CBone*>& vecBones, _float fCurrentTrackPosition, _uint* pCurrentKeyFrameIndex, CTransform* pOwnerTransform)
+void CChannel::Update_TransformationMatrix(const vector<class CBone*>& vecBones, _float fCurrentTrackPosition, _uint* pCurrentKeyFrameIndex, CTransform* pOwnerTransform, CPhysicsCCT* pOwnerPhyCCT)
 {
 	if (fCurrentTrackPosition <= 0.f)
 		*pCurrentKeyFrameIndex = 0;
@@ -80,7 +81,7 @@ void CChannel::Update_TransformationMatrix(const vector<class CBone*>& vecBones,
 
 		if (m_bRootBone)
 		{
-			Update_MotionBone(vLeftTranslation, vRightTranslation, pOwnerTransform);
+			Update_MotionBone(vLeftTranslation, vRightTranslation, pOwnerTransform, pOwnerPhyCCT);
 			vLeftTranslation	= { 0.f,0.f,0.f };
 			vRightTranslation	= { 0.f,0.f,0.f };
 		}
@@ -94,7 +95,7 @@ void CChannel::Update_TransformationMatrix(const vector<class CBone*>& vecBones,
 	vecBones[m_iBoneIndex]->Set_TransformationMatrix(matTransformation);
 }
 
-void CChannel::SetUp_PoseData(std::span<LOCALSRT> spanLocalSrtData, _float fCurrentTrackPosition, _uint* pCurrentKeyFrameIndex, CTransform* pOwnerTransform)
+void CChannel::SetUp_PoseData(std::span<LOCALSRT> spanLocalSrtData, _float fCurrentTrackPosition, _uint* pCurrentKeyFrameIndex, CTransform* pOwnerTransform, CPhysicsCCT* pOwnerPhyCCT)
 {
 	if (fCurrentTrackPosition <= 0.f)
 		*pCurrentKeyFrameIndex = 0;
@@ -134,7 +135,7 @@ void CChannel::SetUp_PoseData(std::span<LOCALSRT> spanLocalSrtData, _float fCurr
 
 		if (m_bRootBone)
 		{
-			Update_MotionBone(vLeftTranslation, vRightTranslation, pOwnerTransform);
+			Update_MotionBone(vLeftTranslation, vRightTranslation, pOwnerTransform, pOwnerPhyCCT);
 			vLeftTranslation = { 0.f,0.f,0.f };
 			vRightTranslation = { 0.f,0.f,0.f };
 		}
@@ -149,38 +150,13 @@ void CChannel::SetUp_PoseData(std::span<LOCALSRT> spanLocalSrtData, _float fCurr
 	spanLocalSrtData[m_iBoneIndex].vTranslation = vTranslation;
 }
 
-void CChannel::Update_MotionBone(Vec3 vLeftTrans, Vec3 vRightTrans, _float fRatio, CTransform* pOwnerTransform)
+void CChannel::Update_MotionBone(Vec3 vLeftTrans, Vec3 vRightTrans,  CTransform* pOwnerTransform, CPhysicsCCT* pOwnerPhyCCT)
 {
-	if (pOwnerTransform == nullptr)
+	if (pOwnerTransform == nullptr ||
+		pOwnerPhyCCT == nullptr)
 		return;
 
-	/* 채널의 이동량을 더해줘 */
-	// trans만 선형 보간을 한 매트릭스 생성
-
-	//// 선형 보간된 현재 뼈 local 위치
-	Vec3 vCurTranslation = Vec3::Lerp(vLeftTrans, vRightTrans, fRatio);
-
-	// position 변화량 : 뼈 로컬
-	Vec3 vDeltaLocal = (vCurTranslation - m_vPreRootLocal);
-	vDeltaLocal = { vDeltaLocal.x, vDeltaLocal.z, vDeltaLocal.y };
-
-	// 뼈 로컬상의 변화량을 player 좌표계로 맞춰줌
-	Vec3 vDeltaWorld = pOwnerTransform->LocalPos_toMyWorld(vDeltaLocal, true);
-
-	//Matrix matRot = Matrix::CreateFromQuaternion(
-	//	pOwnerTransform->Get_RotationQuaternion());
-	//Vec3 vDeltaWorld = Vec3::Transform(vDeltaLocal, matRot);
-	
-	// 변화량을 더해 준다
-	pOwnerTransform->Add_Position(vDeltaLocal);
-
-	// prePos 저장
-	m_vPreRootLocal = vCurTranslation;
-
-}
-
-void CChannel::Update_MotionBone(Vec3 vLeftTrans, Vec3 vRightTrans,  CTransform* pOwnerTransform)
-{
+	/* 좌표계 차이 때문에 x,z,y & 부호 반대로 */
 	_float fLocalRight	= vLeftTrans.x - vRightTrans.x;
 	_float fLocalUp		= vLeftTrans.z - vRightTrans.z;
 	_float fLocalLook	= vLeftTrans.y - vRightTrans.y;
@@ -192,7 +168,11 @@ void CChannel::Update_MotionBone(Vec3 vLeftTrans, Vec3 vRightTrans,  CTransform*
 
 	Vec3 moveDistance = vOwnerRight * fLocalRight + vOwnerUp * fLocalUp + vOwnerLook * fLocalLook;
 
-	pOwnerTransform->Add_Position(moveDistance);
+	pOwnerPhyCCT->Move(moveDistance, 0.0f, 1.f);
+
+	Vec3 finalPos = pOwnerPhyCCT->GetFootPosition();
+
+	pOwnerTransform->Set_Info(TRANSFORM_INFO_STATE::POS, finalPos);
 }
 
 CChannel* CChannel::Create(const CHANNEL_DESC& desc)

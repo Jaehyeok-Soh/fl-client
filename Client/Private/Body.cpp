@@ -1,5 +1,7 @@
 #include "pch.h"
 #include "Client_Defines.h"
+#include "Body.h"
+
 #include "Player.h"
 #include "GameInstance.h"
 #include "ActionState.h"
@@ -7,7 +9,8 @@
 #include "Collider.h"
 #include "Bone.h"
 #include "Model.h"
-#include "Body.h"
+#include "PhysicsCCT.h"
+
 
 CBody::CBody(ID3D11Device* pDevice, ID3D11DeviceContext* pDeviceContext)
 	: Super(pDevice, pDeviceContext)
@@ -70,7 +73,8 @@ void CBody::Update_Priority(_float fTimeDelta)
 void CBody::Update(_float fTimeDelta)
 {
 	Super::Update(fTimeDelta);
-	Get_Component<CModel>()->Update_Animation(fTimeDelta, Get_Parent()->Get_Component<CTransform>());
+	CPhysicsCCT* pPlayerCCT = Get_Parent()->Get_Component<CPhysicsCCT>();
+	Get_Component<CModel>()->Update_Animation(fTimeDelta, Get_Parent()->Get_Component<CTransform>(), pPlayerCCT);
 	if(CCollider* pCollider = Get_Component<CCollider>())
 		pCollider->Update(m_matCombinedWorld);
 }
