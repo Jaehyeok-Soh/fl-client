@@ -339,6 +339,9 @@
     <ClInclude Include="..\Public\EffectBuilder.h">
       <Filter>07. System\01. Builder\EffectBuilder</Filter>
     </ClInclude>
+    <ClInclude Include="..\Public\Physics_LandScape.h">
+      <Filter>03. GameObject\PhysicsTerrain</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <Image Include="Client.ico">
@@ -497,6 +500,9 @@
     </ClCompile>
     <ClCompile Include="..\Private\EffectBuilder.cpp">
       <Filter>07. System\01. Builder\EffectBuilder</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\Physics_LandScape.cpp">
+      <Filter>03. GameObject\PhysicsTerrain</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

@@ -15,6 +15,7 @@ CPhysicsCollider::CPhysicsCollider(const CPhysicsCollider& rhs)
 	: Super(rhs)
 	, m_pDevice(rhs.m_pDevice)
 	, m_pDeviceContext(rhs.m_pDeviceContext)
+	, m_pColliderShapes(rhs.m_pColliderShapes)
 {
 	Safe_AddRef(m_pDevice);
 	Safe_AddRef(m_pDeviceContext);

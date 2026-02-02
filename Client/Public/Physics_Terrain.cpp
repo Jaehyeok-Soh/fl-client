@@ -99,17 +99,6 @@ HRESULT CPhysics_Terrain::Ready_Physics()
 HRESULT CPhysics_Terrain::Ready_PhysicsCollider()
 {
 	PHYSICSCOLLIDER_DESC desc{};
-	//desc.bIsTrigger = false;
-	//desc.vCenter = { 0.f, 0.f, 0.f };
-	//desc.fRadius = 0.f;
-	//desc.fHeight = 0.f;
-	//desc.vExtents = { 0.f, 0.f, 0.f };
-	//desc.vXAxis = { 0.f, 1.f, 0.f };
-	//desc.eShape = EPhysicsShape::PLANE;
-	//desc.eConvexShape = EPhysicsConvexShape::END;
-	//desc.fMargin = 0.f;
-	//desc.tMaterial = {};
-	//desc.bIsActive = true;
 	desc.bIsTrigger = false;
 	desc.vCenter = { 0.f, -0.5f, 0.f };
 	desc.fRadius = 0.f;

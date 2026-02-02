@@ -23,6 +23,7 @@
 #include "CameraMan_Targeter.h"
 #include "Effect.h"
 #include "EffectObject.h"
+#include "Physics_LandScape.h"
 
 //=================
 // UI
@@ -161,7 +162,7 @@ HRESULT CLevel_Logo::Ready_UI_Layer(const wstring& wstrLayerTag)
 		{
 			if (iter.is_regular_file())
 				vecfiles.push_back(iter.path().stem());
-		
+
 			if (FAILED(m_pGameInstance->Load_File_Json(iLevelID, eCategory, iter.path())))
 				return E_FAIL;
 
@@ -220,7 +221,7 @@ HRESULT CLevel_Logo::Ready_Lights()
 HRESULT CLevel_Logo::Ready_Test_Terrain(const wstring& wstrLayerTag)
 {
 	{
-		CGameObject * pResult = { nullptr };
+		CGameObject* pResult = { nullptr };
 		CGameObject::GAMEOBJECT_DESC goDesc = {};
 		CTransform::TRANSFORM_DESC TransformDesc = {};
 		TransformDesc.vPosition = { 0.f, 0.f, 0.f };
@@ -230,6 +231,21 @@ HRESULT CLevel_Logo::Ready_Test_Terrain(const wstring& wstrLayerTag)
 			L"Prototype_GameObject_Physics_Terrain",
 			ENUM_TO_UINT(ELevelType::LOGO),
 			wstrLayerTag, &goDesc)))
+			return E_FAIL;
+	}
+
+	{
+		CGameObject* pResult = { nullptr };
+		CPhysics_LandScape::PXLANDSCAPE_DESC pxDesc = {};
+		CTransform::TRANSFORM_DESC TransformDesc = {};
+		TransformDesc.vPosition = { 0.f, 0.f, 0.f };
+		pxDesc.pTransform_Desc = &TransformDesc;
+		pxDesc.wstrColliderPrototypeName = L"Prototype_Component_Physics_Collider_total_landScape_4x4";
+
+		if (!(pResult = m_pGameInstance->Add_GameObject(ENUM_TO_UINT(ELevelType::STATIC),
+			L"Prototype_GameObject_Physics_LandScape",
+			ENUM_TO_UINT(ELevelType::LOGO),
+			wstrLayerTag, &pxDesc)))
 			return E_FAIL;
 	}
 
@@ -250,7 +266,7 @@ HRESULT CLevel_Logo::Ready_Camera_Setting(const _uint iLevelIndex)
 CLevel_Logo* CLevel_Logo::Create(ID3D11Device* pDevice, ID3D11DeviceContext* pDeviceContext)
 {
 	CLevel_Logo* pInstance = new CLevel_Logo(pDevice, pDeviceContext);
-	
+
 	if (FAILED(pInstance->Initialize()))
 	{
 		MSG_BOX("CLevel_Logo::Create, Failed");
