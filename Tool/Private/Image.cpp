@@ -31,6 +31,9 @@ HRESULT CImage::Initialize(void* pArg)
 
 void CImage::Update(const _float fTimeDelta)
 {
+	if (nullptr == m_pOwner)
+		return;
+
 	m_pOwner->Set_TextureIndex(m_iTextureIndex);
 	Sync_Data();
 }

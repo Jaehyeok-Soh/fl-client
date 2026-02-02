@@ -3,10 +3,16 @@
 
 #include "UIData_Repository.h"
 
+NS_BEGIN(Engine)
+class IUIActionForMe;
+NS_END
+
 NS_BEGIN(Tool)
 class CToolUI final : public CUIObject
 {
 	using Super = CUIObject;
+	using ActionFunc = std::function<void(IUIActionForMe*)>;
+
 public:
 	typedef struct tagToolUIDesc : public Super::UIOBJECT_DESC
 	{
@@ -38,6 +44,12 @@ public:
 	virtual void Ready_Before_Render(const _float fTimeDelta) override;
 	virtual HRESULT Render() override;
 	_bool Calc_HitEvent();
+
+public:
+	HRESULT Bind_Action(DTO::EUIEvent EventType, ActionFunc func);
+	void Execute_Actions(DTO::EUIEvent EventType);
+	IUIActionForMe* Get_ActionForMe() const { return m_pActionForMe; }
+
 private:
 	HRESULT Ready_Components(TOOLUI_DESC* pDesc);
 	HRESULT Bind_ShaderResources();
@@ -97,6 +109,11 @@ private:
 	_bool m_isHitTest = { FALSE };
 
 	vector<EUIComponentType> m_vecUIComponentTypes;
+
+	IUIActionForMe* m_pActionForMe = { nullptr };
+
+	/* 액션들을 이벤트 갯수만큼 정적으로 할당 사실상 vector<ActionFunc>[] 이거임 */
+	array< vector<ActionFunc> , ENUM_TO_UINT(DTO::EUIEvent::END)> m_vecBindingActions;
 
 public:
 	static CToolUI* Create(EToolObjectType eType, ID3D11Device* pDevice, ID3D11DeviceContext* pDeviceContext);

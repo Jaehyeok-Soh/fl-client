@@ -282,6 +282,7 @@ namespace Tool
 		default:return L"";
 		}
 	}
+
 #pragma endregion
 
 #pragma region Struct

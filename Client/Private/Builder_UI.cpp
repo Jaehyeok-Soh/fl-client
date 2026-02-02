@@ -125,7 +125,6 @@ HRESULT CBuilder_UI::Create_GenericUIDTO(const DTO::TUI_GenericUIData& data)
 	/* 데이터를 이용해서 Object 만들기 */
 	CGenericUI::GENERIC_UI_DESC Desc = {};
 	Desc.iRectTransformType = data.iRectTransformType;
-	Desc.iUIType = data.iUIType;
 	Desc.fWidth = data.fWidth * m_vAspect.x;
 	Desc.fHeight = data.fHeight * m_vAspect.y;
 	Desc.fX = data.fPosX * m_vAspect.x;

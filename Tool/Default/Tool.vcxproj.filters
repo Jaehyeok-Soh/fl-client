@@ -136,15 +136,6 @@
     <Filter Include="98. Defines\pch">
       <UniqueIdentifier>{6a433bfc-3f5f-420f-ac46-69cffb0edf23}</UniqueIdentifier>
     </Filter>
-    <Filter Include="02. GameObjects\UI\UI">
-      <UniqueIdentifier>{6a558198-77c1-41fb-9345-05c1fc4f9daf}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="02. GameObjects\UI\Canvas">
-      <UniqueIdentifier>{5d6846d5-10a5-4a42-bb54-26c8e2fde4ee}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="02. GameObjects\UI\Layer">
-      <UniqueIdentifier>{d0269bd1-6673-49d6-8c4d-8c813644618a}</UniqueIdentifier>
-    </Filter>
     <Filter Include="09. Builder">
       <UniqueIdentifier>{afa9ad94-11da-4af6-822f-8784ae7231ad}</UniqueIdentifier>
     </Filter>
@@ -244,8 +235,17 @@
     <Filter Include="04. Component\UI\Event\Hovering Event">
       <UniqueIdentifier>{9d2b4fcc-9574-48fb-987b-10121fcd5d24}</UniqueIdentifier>
     </Filter>
-    <Filter Include="04. Component\UI\Event\Registry">
-      <UniqueIdentifier>{abc79176-4e55-4860-9641-95cfb826ec8d}</UniqueIdentifier>
+    <Filter Include="02. GameObjects\UI\00.Action">
+      <UniqueIdentifier>{5aad0370-bb04-419c-a027-b5551686fa23}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02. GameObjects\UI\01.Canvas">
+      <UniqueIdentifier>{5d6846d5-10a5-4a42-bb54-26c8e2fde4ee}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02. GameObjects\UI\02.Layer">
+      <UniqueIdentifier>{d0269bd1-6673-49d6-8c4d-8c813644618a}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02. GameObjects\UI\03.UI">
+      <UniqueIdentifier>{6a558198-77c1-41fb-9345-05c1fc4f9daf}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
@@ -382,10 +382,10 @@
       <Filter>08. UIData\Manager</Filter>
     </ClInclude>
     <ClInclude Include="..\Public\ToolUI.h">
-      <Filter>02. GameObjects\UI\UI</Filter>
+      <Filter>02. GameObjects\UI\03.UI</Filter>
     </ClInclude>
     <ClInclude Include="..\Public\ToolCanvas.h">
-      <Filter>02. GameObjects\UI\Canvas</Filter>
+      <Filter>02. GameObjects\UI\01.Canvas</Filter>
     </ClInclude>
     <ClInclude Include="..\Public\ToolObject.h">
       <Filter>02. GameObjects</Filter>
@@ -424,7 +424,7 @@
       <Filter>98. Defines\pch</Filter>
     </ClInclude>
     <ClInclude Include="..\Public\ToolLayer.h">
-      <Filter>02. GameObjects\UI\Layer</Filter>
+      <Filter>02. GameObjects\UI\02.Layer</Filter>
     </ClInclude>
     <ClInclude Include="..\Public\Builder_Example.h">
       <Filter>09. Builder\Example</Filter>
@@ -500,8 +500,8 @@
     <ClInclude Include="..\Public\UIEvent_Hovering.h">
       <Filter>04. Component\UI\Event\Hovering Event</Filter>
     </ClInclude>
-    <ClInclude Include="..\Public\UI_Action_Registry.h">
-      <Filter>04. Component\UI\Event\Registry</Filter>
+    <ClInclude Include="..\Public\UIAction_Tool.h">
+      <Filter>02. GameObjects\UI\00.Action</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -633,10 +633,10 @@
       <Filter>08. UIData\Manager</Filter>
     </ClCompile>
     <ClCompile Include="..\Private\ToolUI.cpp">
-      <Filter>02. GameObjects\UI\UI</Filter>
+      <Filter>02. GameObjects\UI\03.UI</Filter>
     </ClCompile>
     <ClCompile Include="..\Private\ToolCanvas.cpp">
-      <Filter>02. GameObjects\UI\Canvas</Filter>
+      <Filter>02. GameObjects\UI\01.Canvas</Filter>
     </ClCompile>
     <ClCompile Include="..\Private\ToolObject.cpp">
       <Filter>02. GameObjects</Filter>
@@ -678,7 +678,7 @@
       <Filter>98. Defines\pch</Filter>
     </ClCompile>
     <ClCompile Include="..\Private\ToolLayer.cpp">
-      <Filter>02. GameObjects\UI\Layer</Filter>
+      <Filter>02. GameObjects\UI\02.Layer</Filter>
     </ClCompile>
     <ClCompile Include="..\Private\Builder_Example.cpp">
       <Filter>09. Builder\Example</Filter>
@@ -740,8 +740,8 @@
     <ClCompile Include="..\Private\UIEvent_Hovering.cpp">
       <Filter>04. Component\UI\Event\Hovering Event</Filter>
     </ClCompile>
-    <ClCompile Include="..\Private\UI_Action_Registry.cpp">
-      <Filter>04. Component\UI\Event\Registry</Filter>
+    <ClCompile Include="..\Private\UIAction_Tool.cpp">
+      <Filter>02. GameObjects\UI\00.Action</Filter>
     </ClCompile>
   </ItemGroup>
 </Project>

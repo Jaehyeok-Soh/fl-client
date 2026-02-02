@@ -11,6 +11,7 @@
 #include "ToolLayer.h"
 #include "ImGui_UIManager.h"
 #include "ImGui_ToolManager.h"
+#include "UIAction_Tool.h"
 
 #include "GameInstance.h"
 CToolUI::CToolUI(ID3D11Device* pDevice, ID3D11DeviceContext* pDeviceContext)
@@ -58,6 +59,11 @@ HRESULT CToolUI::Awake(const _uint iCurrentLevelID)
 	m_pBatch = new PrimitiveBatch<VertexPositionColor>(m_pDeviceContext);
 	m_pEffect = new BasicEffect(m_pDevice);
 	m_pEffect->SetVertexColorEnabled(true);
+
+	m_pActionForMe = CUIAction_Tool::Create(this);
+	if (nullptr == m_pActionForMe)
+		return E_FAIL;
+
     return S_OK;
 }
 
@@ -154,6 +160,29 @@ _bool CToolUI::Calc_HitEvent()
 		return TRUE;
 	}
 	return FALSE;
+}
+
+HRESULT CToolUI::Bind_Action(DTO::EUIEvent EventType, ActionFunc func)
+{
+	const size_t index = ENUM_TO_SZET(EventType);
+	if (index >= m_vecBindingActions.size())
+		return E_FAIL;
+
+	m_vecBindingActions[index].push_back(std::move(func));
+	return S_OK;
+}
+
+void CToolUI::Execute_Actions(DTO::EUIEvent EventType)
+{
+	if (nullptr == m_pActionForMe)
+		return;
+
+	const size_t index = ENUM_TO_SZET(EventType);
+	if (index >= m_vecBindingActions.size())
+		return;
+
+	for (auto& fn : m_vecBindingActions[index])
+		fn(m_pActionForMe);
 }
 
 HRESULT CToolUI::Ready_Components(TOOLUI_DESC* pDesc)
@@ -313,6 +342,7 @@ void CToolUI::Free()
 	Safe_Delete(m_pBatch);
 	Safe_Delete(m_pEffect);
 	Safe_Release(m_pInputLayout);
+	Safe_Release(m_pActionForMe);
 	Super::Free();
 }
 
