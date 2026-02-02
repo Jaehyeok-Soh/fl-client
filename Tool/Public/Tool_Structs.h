@@ -64,12 +64,15 @@ namespace Tool
 
 	}INSTANCEMODEL_DATA;
 
-
+	void to_json(json& SaveJson, const	 SRT_DATA& tData);
 	void to_json(json& SaveJson, const	 USING_MATERIAL_INFO& tData);
 	void to_json(json& SaveJson, const	 USING_MODEL_INFO& tData);
 	void to_json(json& SaveJson, const	 STATICMODEL_DATA& tData);
 
-
+	void from_json(const json& LoadJson, SRT_DATA& tData);
+	void from_json(const json& LoadJson, USING_MATERIAL_INFO& tData);
+	void from_json(const json& LoadJson, USING_MODEL_INFO& tData);
+	void from_json(const json& LoadJson, STATICMODEL_DATA& tData);
 
 #pragma endregion 
 

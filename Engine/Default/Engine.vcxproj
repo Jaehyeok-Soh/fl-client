@@ -191,6 +191,7 @@
     <ClCompile Include="..\Private\DataDefine_Json.cpp" />
     <ClCompile Include="..\private\DataDocumentBase.cpp" />
     <ClCompile Include="..\private\DataDocument_Example.cpp" />
+    <ClCompile Include="..\Private\DataDocument_Map.cpp" />
     <ClCompile Include="..\Private\DataDocument_UI.cpp" />
     <ClCompile Include="..\Private\DataEnum.cpp" />
     <ClCompile Include="..\private\DataRepository.cpp" />
@@ -319,6 +320,7 @@
     <ClInclude Include="..\Public\DataDefine_Json.h" />
     <ClInclude Include="..\public\DataDocumentBase.h" />
     <ClInclude Include="..\public\DataDocument_Example.h" />
+    <ClInclude Include="..\Public\DataDocument_Map.h" />
     <ClInclude Include="..\Public\DataDocument_UI.h" />
     <ClInclude Include="..\Public\DataEnum.h" />
     <ClInclude Include="..\public\DataRepository.h" />

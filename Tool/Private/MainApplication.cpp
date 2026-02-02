@@ -22,13 +22,14 @@
 #include "Shader.h"
 #include "Camera.h"
 #include "Transform.h"
+#include "MapToolManager.h"
 #include "MaterialInstance.h"
 #include "GameInstance.h"
 
 USING(Tool)
 
 CMainApplication::CMainApplication()
-	: m_pGameInstance(CGameInstance::GetInstance())
+	: m_pGameInstance(CGameInstance::GetInstance()), m_pMapToolManager{nullptr}
 {
 	Safe_AddRef(m_pGameInstance);
 }
@@ -56,6 +57,12 @@ HRESULT CMainApplication::Initialize()
 
 	CPicking_ToolManager* pPickingManager = { nullptr };
 	if (!(pPickingManager = CPicking_ToolManager::GetInstance()))
+		return E_FAIL;
+
+
+	/* 愱砒 概聪历 固府 积己 */
+	m_pMapToolManager = CMapToolManager::GetInstance();
+	if (FAILED(m_pMapToolManager->Initialize(m_pDevice, m_pDeviceContext)))
 		return E_FAIL;
 
 	return S_OK;
@@ -362,6 +369,7 @@ void CMainApplication::Free()
 	CPicking_ToolManager::GetInstance()->DestroyInstance();
 	CUIData_Repository::GetInstance()->DestroyInstance();
 	CImGui_UIManager::GetInstance()->DestroyInstance();
+	CMapToolManager::GetInstance()->DestroyInstance();
 	Safe_Release(m_pGameInstance);
 	Safe_Release(m_pDeviceContext);
 	Safe_Release(m_pDevice);

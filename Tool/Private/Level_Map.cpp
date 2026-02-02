@@ -55,6 +55,7 @@ HRESULT CLevel_Map::Initialize()
 	if (FAILED(Super::Initialize()))
 		return E_FAIL;
 
+
 	if (FAILED(Ready_MapObject_Layer()))
 		return E_FAIL;
 
@@ -68,7 +69,6 @@ HRESULT CLevel_Map::Initialize()
 		return E_FAIL;
 
 	m_pUEMapDataParser->Initialize(m_pDevice,m_pDeviceContext);
-	m_pMapToolManager->Initialize(m_pDevice, m_pDeviceContext);
 
 	return S_OK;
 }
@@ -289,9 +289,10 @@ void CLevel_Map::Free()
 
 	Safe_Release(m_pImGuiManager);
 	Safe_Release(m_pPickingManager);
+	Safe_Release(m_pMapToolManager);
 
 	m_pUEMapDataParser->DestroyInstance();
-	m_pMapToolManager->DestroyInstance();
+
 
 
 	Super::Free();

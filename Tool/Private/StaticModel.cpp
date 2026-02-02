@@ -2,10 +2,10 @@
 #include "StaticModel.h"
 #include "Mesh.h"
 #include "Model.h"
-#include "DataDocument_Example.h"
-#include "DataStruct_Example.h"
 #include "GameInstance.h"
 #include "Shader.h"
+#include "DataStruct_Map.h"
+#include "DataDocument_Map.h"
 
 CStaticModel::CStaticModel(EToolObjectType eType, ID3D11Device* pDevice, ID3D11DeviceContext* pDeviceContext)
 	: CMapObject(eType, pDevice,pDeviceContext)
@@ -186,15 +186,37 @@ _bool CStaticModel::Export_Data(DTO::ECategory eCategory, CDataDocumentBase* pDo
 	if (pDocument->Get_Category() != DTO::ECategory::MAP)
 		return false;
 
-	auto* pExampleDocument = static_cast<CDataDocument_Example*>(pDocument);
+	auto* pMapDocument = static_cast<CDataDocument_Map*>(pDocument);
 
-	DTO::TExample_StaticModelData saveData;
-	saveData.strTag = m_strName;
-	// dto.vPosition = { 1.f, 1.f, 1.f };
-	// dto.vColor = { 1.f, 1.f, 1.f, 1.f };
+	CTransform* pTs = Get_Component<CTransform>();
+	Matrix WorldMatrix = pTs->Get_WorldMatrix();
 
-	pExampleDocument->Try_Add(saveData);
-	return false;
+
+	DTO::TMap_StaticModelData tSave_StaticModleData{};
+	tSave_StaticModleData.strTag = m_strName + std::to_string(m_iObjectID);
+
+	/* SRT */
+	WorldMatrix.Decompose(tSave_StaticModleData.tSRTData.vScale, tSave_StaticModleData.tSRTData.vQuat, tSave_StaticModleData.tSRTData.vPosition);
+
+
+	/* Using Material Info */
+	tSave_StaticModleData.tUsingModelInfo.wstrName = m_tData.tUsingModelInfo.wstrName;
+	tSave_StaticModleData.tUsingModelInfo.wstrPath = m_tData.tUsingModelInfo.wstrPath;
+	tSave_StaticModleData.tUsingModelInfo.wstrMtl_JsonFile_Path;
+
+	for (auto& UsingMaterial : m_tData.tUsingModelInfo.vecMaterialInfo)
+	{
+		DTO::USING_MATERIAL_INFO tSaveMtl{};
+		tSaveMtl.isNull = UsingMaterial.isNull;
+		tSaveMtl.wstrOriginMtl_JsonFile_Name = UsingMaterial.wstrOriginMtl_JsonFile_Name;
+		tSaveMtl.wstrOriginMtl_JsonFile_Path = UsingMaterial.wstrOriginMtl_JsonFile_Path;
+		tSaveMtl.vecUsingTextureInfo = UsingMaterial.vecUsingTextureInfo;
+	}
+
+
+	pMapDocument->Try_Add(tSave_StaticModleData);
+
+	return true;
 }
 
 CStaticModel* CStaticModel::Create(EToolObjectType eType, ID3D11Device* pDevice, ID3D11DeviceContext* pDeviceContext)
