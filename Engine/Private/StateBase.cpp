@@ -332,6 +332,11 @@ void CStateBase::Set_JumpCount(_uint iCount)
 	m_pOwnerStateComp->Set_JumpCount(iCount);
 }
 
+void CStateBase::Turn_byCam(const _float fTimeDelta)
+{
+	m_pOwnerStateComp->Turn_byCam(fTimeDelta);
+}
+
 _bool CStateBase::Key_Input(_uint iKey)
 {
 	return m_pOwnerStateComp->Key_Input(static_cast<CControlContext::CONTROL_KEY>(iKey));
