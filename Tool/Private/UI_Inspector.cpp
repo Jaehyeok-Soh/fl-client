@@ -6,6 +6,9 @@
 #include "Engine_Utils.h"
 #include "ToolUI.h"
 #include "Texture.h"
+#include "Button.h"
+#include "Image.h"
+
 #include "GameInstance.h"
 
 CUI_Inspector::CUI_Inspector(const _char* pLabel, CLevel* pOwner, ID3D11Device* pDevice, ID3D11DeviceContext* pDeviceContext)
@@ -49,6 +52,7 @@ HRESULT CUI_Inspector::Render(CToolObject* pGo)
 	{
 		SetUp_Public_Info();
 		Input_TextureTag();
+		Input_UIType();
 	}
 
 	ImGui::End();
@@ -64,7 +68,7 @@ void CUI_Inspector::Input_RectTransform()
 {
 	ImGui::PushID("RectTransform");
 	ImGui::SeparatorText("Rect Transform");
-	ImGui::BeginChild("RectTransformCard", ImVec2(-FLT_MIN, 168.f), true, ImGuiWindowFlags_NoScrollbar);
+	ImGui::BeginChild("RectTransformCard", ImVec2(0, 168.f), true, ImGuiWindowFlags_NoScrollbar);
 	ImGui::TextDisabled("Anchor / pivot preset (3x3).");
 	ImGui::Spacing();
 
@@ -107,7 +111,7 @@ void CUI_Inspector::Input_RectTransform()
 	////////////////////////////
 	// Transform / Size Card
 	ImGui::Spacing();
-	ImGui::BeginChild("RectTransformValuesCard", ImVec2(-FLT_MIN, 112.f), true, ImGuiWindowFlags_NoScrollbar);
+	ImGui::BeginChild("RectTransformValuesCard", ImVec2(0, 112.f), true, ImGuiWindowFlags_NoScrollbar);
 
 	ImGui::TextDisabled("Size and position (local).");
 	ImGui::Spacing();
@@ -128,9 +132,7 @@ void CUI_Inspector::Input_RectTransform()
 		
 		ImGui::EndTable();
 	}
-
 	ImGui::Spacing();
-
 	// Position (X / Y / Z) : 3 columns
 	if (ImGui::BeginTable("##RectPosTable", 3, ImGuiTableFlags_SizingStretchSame))
 	{
@@ -148,7 +150,6 @@ void CUI_Inspector::Input_RectTransform()
 
 		ImGui::EndTable();
 	}
-
 	ImGui::EndChild();
 	ImGui::PopID();
 }
@@ -182,19 +183,98 @@ void CUI_Inspector::Input_TextureTag()
 				_wstring wstrFolderName = f.parent_path().filename().wstring();
 				uint32_t iFileIndex = std::stoi( f.stem().wstring());
 
-				CTexture* pTexture = dynamic_cast<CTexture*>(dynamic_cast<CComponent*>(
-					CGameInstance::GetInstance()->Clone_Prototype(EPrototypeType::COMPONENT, static_cast<uint32_t>(ELevelType::UI),L"Texture_" + wstrFolderName)));
-				if (nullptr == pTexture)
-					return;
-
-				m_pSelectedUI-> Change_Component<CTexture>(pTexture);
 				m_pSelectedUI->Set_TextureIndex(iFileIndex);
-				//m_pUIManager->Safe_Access_UIData_Ptr(m_pUIManager->Get_CurUIIndex())->strTextureTag = Engine_Utils::ToString( L"Texture_" + wstrFolderName);
-				//m_pUIManager->Safe_Access_UIData_Ptr(m_pUIManager->Get_CurUIIndex())->iTextureIndex = iFileIndex;
 			}
 		}
 	}
+}
 
+void CUI_Inspector::Input_UIType()
+{
+	ImGui::PushID("InspectorTabs");
+
+	ImGui::SeparatorText("UI Base Component");
+	ImGui::BeginChild("InspectorTabsCard", ImVec2(0.f, 400.f), true, ImGuiWindowFlags_NoScrollbar);
+
+	ImGui::TextDisabled("Add Component");
+	ImGui::Spacing();
+
+	if (ImGui::BeginTabBar("##InspectorTabBar", ImGuiTabBarFlags_Reorderable | ImGuiTabBarFlags_FittingPolicyScroll))
+	{
+		if (ImGui::BeginTabItem("Image 2D"))
+		{
+			ImGui::BeginChild("##RectTabCard", ImVec2(0.f, 0.f), false, ImGuiWindowFlags_NoScrollbar);
+
+			//CButton::BUTTON_DESC BtnComDesc = {};
+			//CImage::IMAGE_DESC ImgComDesc = {};
+			//CMonoBehaviour* pCom = dynamic_cast<CMonoBehaviour*>(CButton::Create(BtnComDesc));
+			//m_pSelectedUI->Add_Script_Component(L"Component_UIBase", pCom);
+			//pResult->Change_Script_Component(L"Component_UIBase", dynamic_cast<CMonoBehaviour*>(CImage::Create(ImgComDesc)));
+			//m_pGameInstance->Subscribe<OnClickEvent>(pCom, &CButton::OnClick);
+
+			ImGui::EndChild();
+			ImGui::EndTabItem();
+		}
+
+		if (ImGui::BeginTabItem("Image 3D"))
+		{
+			ImGui::BeginChild("##TextureTabCard", ImVec2(-FLT_MIN, 0.f), false, ImGuiWindowFlags_NoScrollbar);
+
+			ImGui::TextDisabled("Texture selection / tag.");
+			ImGui::Spacing();
+
+			if (nullptr != m_pSelectedUI)
+				Input_TextureTag();
+			else
+				ImGui::TextDisabled("No UI selected.");
+
+			ImGui::EndChild();
+			ImGui::EndTabItem();
+		}
+
+		if (ImGui::BeginTabItem("Button"))
+		{
+			ImGui::BeginChild("##MiscTabCard", ImVec2(-FLT_MIN, 0.f), false, ImGuiWindowFlags_NoScrollbar);
+
+			ImGui::TextDisabled("Extra options.");
+			ImGui::Spacing();
+
+			ImGui::TextDisabled("...");
+
+			ImGui::EndChild();
+			ImGui::EndTabItem();
+		}
+
+		if (ImGui::BeginTabItem("Text"))
+		{
+			ImGui::BeginChild("##MiscTabCard", ImVec2(-FLT_MIN, 0.f), false, ImGuiWindowFlags_NoScrollbar);
+
+			ImGui::TextDisabled("Extra options.");
+			ImGui::Spacing();
+
+			ImGui::TextDisabled("...");
+
+			ImGui::EndChild();
+			ImGui::EndTabItem();
+		}
+
+		if (ImGui::BeginTabItem("Video"))
+		{
+			ImGui::BeginChild("##MiscTabCard", ImVec2(-FLT_MIN, 0.f), false, ImGuiWindowFlags_NoScrollbar);
+
+			ImGui::TextDisabled("Extra options.");
+			ImGui::Spacing();
+
+			ImGui::TextDisabled("...");
+
+			ImGui::EndChild();
+			ImGui::EndTabItem();
+		}
+		ImGui::EndTabBar();
+	}
+
+	ImGui::EndChild();
+	ImGui::PopID();
 }
 
 HRESULT CUI_Inspector::Setting_Texture()
@@ -339,8 +419,6 @@ HRESULT CUI_Inspector::Folder_Search(const string& Path)
 		iter != std::filesystem::recursive_directory_iterator();
 		++iter)
 	{
-		// 아 여기에 화살표 그으면 되는구나.
-
 		int depth = iter.depth();
 		auto fullpath = iter->path();
 		auto FolderName = iter->path().filename();
@@ -349,10 +427,8 @@ HRESULT CUI_Inspector::Folder_Search(const string& Path)
 		{
 			string m_sFileName = Engine_Utils::GetFileNameWithoutExtension(Engine_Utils::ToString(fullpath));
 			m_TextureFileNames.push_back(make_pair(Engine_Utils::ToString(fullpath), m_sFileName));
-
 		}
 	}
-
 	return S_OK;
 }
 

@@ -71,29 +71,19 @@ HRESULT CBuilder_UI::Create_CanvasDTO(const DTO::TUI_CanvasData& data)
 	CCanvas::CANVAS_DESC Desc = {};
 	Desc.iLevelIndex = data.iLevelIndex;
 	
-	{
-		_float fScaleX = (_float)g_iWinSizeX / (_float)data.iEditorSizeX;
-		_float fScaleY = (_float)g_iWinSizeY / (_float)data.iEditorSizeY;
-		Desc.fX = data.fPosX * fScaleX;
-		Desc.fY = data.fPosY * fScaleY;
-		Desc.fZ = data.fPosZ;
-	}
+	m_vAspect.x = (_float)g_iWinSizeX / (_float)data.iEditorSizeX;
+	m_vAspect.y = (_float)g_iWinSizeY / (_float)data.iEditorSizeY;
+	Desc.fX = data.fPosX * m_vAspect.x;
+	Desc.fY = data.fPosY * m_vAspect.y;
+	Desc.fZ = data.fPosZ;
 
-	if (data.isViewportSize)
-	{
-		D3D11_VIEWPORT vp{};
-		UINT numVP = 1;
-		m_pDeviceContext->RSGetViewports(&numVP, &vp);
+	D3D11_VIEWPORT vp{};
+	UINT numVP = 1;
+	m_pDeviceContext->RSGetViewports(&numVP, &vp);
 
-		Desc.fWidth = vp.Width;
-		Desc.fHeight = vp.Height;
-	}
-	else
-	{
-		Desc.fWidth = data.fWidth;
-		Desc.fHeight = data.fHeight;
-	}
-	
+	Desc.fWidth = vp.Width;
+	Desc.fHeight = vp.Height;
+
 	CGameObject* pResult = m_pGameInstance->Add_GameObject(m_iLevelID, L"Prototype_UI_Canvas", m_iLevelID, Engine_Utils::ToWString(data.strTag), &Desc);
 	if (pResult == nullptr)
 		return E_FAIL;
@@ -136,12 +126,12 @@ HRESULT CBuilder_UI::Create_GenericUIDTO(const DTO::TUI_GenericUIData& data)
 	CGenericUI::GENERIC_UI_DESC Desc = {};
 	Desc.iRectTransformType = data.iRectTransformType;
 	Desc.iUIType = data.iUIType;
-	Desc.fWidth = data.fWidth;
-	Desc.fHeight = data.fHeight;
-	Desc.fX = data.fPosX;
-	Desc.fY = data.fPosY;
+	Desc.fWidth = data.fWidth * m_vAspect.x;
+	Desc.fHeight = data.fHeight * m_vAspect.y;
+	Desc.fX = data.fPosX * m_vAspect.x;
+	Desc.fY = data.fPosY * m_vAspect.y;
 	Desc.fZ = data.fPosZ;
-	Desc.wstrTextureTag = Engine_Utils::ToWString( data.strTextureTag);
+	Desc.wstrTextureTag = L"Prototype_Component_UI_Texture";
 	Desc.iTextureIndex = data.iTextureIndex;
 	
 	CGameObject* pResult = m_pGameInstance->Add_GameObject(m_iLevelID, L"Prototype_UI_GenericUI", m_iLevelID, Engine_Utils::ToWString(data.strTag), &Desc);

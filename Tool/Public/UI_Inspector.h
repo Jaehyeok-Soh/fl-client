@@ -23,9 +23,9 @@ public:
 	void SetUp_Public_Info();
 	void Input_RectTransform();
 	void Input_TextureTag();
+	void Input_UIType();
 
 	HRESULT Setting_Texture();
-
 	HRESULT File_Search(const _string& str);
 	HRESULT Folder_Search(const string& Path);
 

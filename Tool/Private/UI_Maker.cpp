@@ -3,6 +3,7 @@
 #include "ImGui_ToolManager.h"
 #include "ImGui_UIManager.h"
 #include "UIData_Repository.h"
+#include "ToolCanvas.h"
 #include "ToolUI.h"
 #include "ToolLayer.h"
 #include "Engine_Utils.h"
@@ -213,22 +214,11 @@ void CUI_Maker::Make_Canvas()
 			}
 			ImGui::EndChild();
 
-			/* 캔버스 사이즈 세팅하기 ======================================= */
 			const float fSpacing = ImGui::GetStyle().ItemSpacing.x;
 			const float fAvailW = ImGui::GetContentRegionAvail().x;
 			const float fBtnW = (fAvailW - fSpacing) * 0.5f;
-			if (ImGui::Button("CUSTOM SIZE", ImVec2(fBtnW, 0.f)))
-			{
-				m_isCustomSize = TRUE;
-				m_isViewportSize = FALSE;
-			}
-			ImGui::SameLine();
-			if (ImGui::Button("VIEWPORT SIZE", ImVec2(fBtnW, 0.f)))
-			{
-				m_isCustomSize = FALSE;
-				m_isViewportSize = TRUE;
-			}
-			/* 현재 캔버스에 Setter로 값 변경 */
+
+
 			Input_Canvas_TransformInfo();
 		}
 	}
@@ -271,6 +261,10 @@ void CUI_Maker::Make_Canvas()
 				Desc.strTag = m_strCanvasTag;
 				Desc.iLevelIndex = { static_cast<uint32_t>(ELevelType::UI) };
 				Desc.iClientLevelIndex = m_iCurSelectLevelID;
+				Desc.fX = g_iWinSizeX / 2.f;
+				Desc.fY = g_iWinSizeY / 2.f;
+				Desc.fHeight = g_iWinSizeY;
+				Desc.fWidth = g_iWinSizeX;
 				Desc.iEditorSizeX = g_iWinSizeX;
 				Desc.iEditorSizeY = g_iWinSizeY;
 				CGameObject* pResult =
@@ -530,7 +524,7 @@ void CUI_Maker::Make_UI()
 					Desc.iLayerIndex = m_pUIManager->Get_CurLayerIndex();
 					Desc.isAlpha = TRUE;
 					Desc.isInitVisible = TRUE;
-					Desc.strInitTextureTag = "Texture_Boss";
+					Desc.strInitTextureTag = "Prototype_Component_UI_Texture";
 					Desc.iInitTextureIndex = 0;
 
 					if (nullptr != pLayer)
@@ -548,11 +542,8 @@ void CUI_Maker::Make_UI()
 						{
 							CButton::BUTTON_DESC BtnComDesc = {};
 							CImage::IMAGE_DESC ImgComDesc = {};
-							CMonoBehaviour* pCom = dynamic_cast<CMonoBehaviour*>(CButton::Create(BtnComDesc));
+							CMonoBehaviour* pCom = dynamic_cast<CMonoBehaviour*>(CImage::Create(ImgComDesc));
 							pResult->Add_Script_Component(L"Component_UIBase", pCom);
-							pResult->Get_Script_Component(L"Component_UIBase")->Initialize(&BtnComDesc);
-							//pResult->Change_Script_Component(L"Component_UIBase", dynamic_cast<CMonoBehaviour*>(CImage::Create(ImgComDesc)));
-							//m_pGameInstance->Subscribe<OnClickEvent>(pCom, &CButton::OnClick);
 
 							if (FAILED(pLayer->Safe_Add_UI(dynamic_cast<CToolUI*>(pResult))))
 							{
@@ -649,34 +640,12 @@ _bool CUI_Maker::Scrub_Float(const _char* label, const _char* Id, OUT _float* pV
 
 void CUI_Maker::Input_Canvas_TransformInfo()
 {
-	/* 내맘대로 만들겠다 */
-	if (m_isCustomSize)
+	auto* pCanvas = m_pUIManager->Safe_Access_Canvas(m_pUIManager->Get_CurCanvasIndex());
+	if (nullptr != pCanvas)
 	{
-		auto* pCanvas = m_pUIManager->Safe_Access_Canvas(m_pUIManager->Get_CurCanvasIndex());
-
-		/* Width / Height */
-		Scrub_Float("Width :", "CanvasSizeX", pCanvas->Get_Width_Ptr(), 0.1f, 20.f, 0.1f, 1.0f, 120.f);
-		ImGui::SameLine(0.f, 16.f);
-		Scrub_Float("Height :", "CanvasSizeY", pCanvas->Get_Height_Ptr(), 0.1f, 20.f, 0.1f, 1.0f, 120.f);
-
-		/* Pos X / Y / Z */
-		Scrub_Float("X :", "CanvasPosX", pCanvas->Get_PosX_Ptr(), 0.1f, 20.f, 0.1f, 1.0f, 100.f);
-		ImGui::SameLine(0.f, 16.f);
-		Scrub_Float("Y :", "CanvasPosY", pCanvas->Get_PosY_Ptr(), 0.1f, 20.f, 0.1f, 1.0f, 100.f);
-		ImGui::SameLine(0.f, 16.f);
-		Scrub_Float("Z :", "CanvasPosZ", pCanvas->Get_PosZ_Ptr(), 0.1f, 20.f, 0.1f, 1.0f, 100.f);
-
-		pCanvas->Set_isUsingViewport(FALSE);
-	}
-	/* 뷰포트 기준으로 캔버스를 만들겠다 */
-	else if (m_isViewportSize)
-	{
-		auto* pCanvas = m_pUIManager->Safe_Access_Canvas(m_pUIManager->Get_CurCanvasIndex());
-		ImGui::TextDisabled("Width : %.2f", pCanvas->Get_Width());
-		ImGui::SameLine(0.f, 16.f);
-		ImGui::TextDisabled("Height :%.2f", pCanvas->Get_Height());
-
-		/* Pos X / Y / Z */
+		if (ImGui::Button("Reset Pos", ImVec2(0.f, 0.f)))
+			pCanvas->Set_Position((_float)g_iWinSizeX * 0.5f, (_float)g_iWinSizeY * 0.5f, 0.5f);
+		
 		Scrub_Float("X :", "CanvasPosX", pCanvas->Get_PosX_Ptr(), 0.1f, 20.f, 0.1f, 1.0f, 100.f);
 		ImGui::SameLine(0.f, 16.f);
 		Scrub_Float("Y :", "CanvasPosY", pCanvas->Get_PosY_Ptr(), 0.1f, 20.f, 0.1f, 1.0f, 100.f);

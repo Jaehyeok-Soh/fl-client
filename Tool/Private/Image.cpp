@@ -15,6 +15,11 @@ HRESULT CImage::Initialize_Prototype()
 	return S_OK;
 }
 
+HRESULT CImage::Initialize_Prototype(const IMAGE_DESC& Desc)
+{
+	return S_OK;
+}
+
 HRESULT CImage::Initialize(void* pArg)
 {
 	IMAGE_DESC* pDesc = static_cast<IMAGE_DESC*>(pArg);

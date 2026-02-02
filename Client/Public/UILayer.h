@@ -2,6 +2,7 @@
 #include "UIObject.h"
 
 NS_BEGIN(Client)
+class CCanvas;
 class CGenericUI;
 class CUILayer final : public CUIObject
 {
@@ -10,6 +11,7 @@ class CUILayer final : public CUIObject
 public:
 	typedef struct tagUILayerDesc : public UIOBJECT_DESC
 	{
+		CCanvas* pCanvasCache = { nullptr };
 	}UILAYER_DESC;
 
 private:
@@ -38,6 +40,7 @@ private:
 
 private:
 	vector<CGenericUI*> m_vecUIs;
+	CCanvas* m_pParentCanvasCache = { nullptr };
 
 public:
 	static CUILayer* Create(ID3D11Device* pDevice, ID3D11DeviceContext* pDeviceContext);

@@ -2,7 +2,8 @@
 #include "UIObject.h"
 
 NS_BEGIN(Client)
-
+class CCanvas;
+class CUILayer;
 class CGenericUI final : public CUIObject
 {
 	using Super = CUIObject;
@@ -15,6 +16,8 @@ public:
 		_wstring wstrTextureTag;
 		uint32_t iTextureIndex;
 
+		CCanvas* pCanvasCache = { nullptr };
+		CUILayer* pLayerCache = { nullptr };
 	}GENERIC_UI_DESC;
 
 private:
@@ -43,7 +46,6 @@ private:
 
 public:
 	void Set_RectPos(const Vec3& pos) { m_vRectPos = pos; }
-
 	ERectTransform Get_RectTransformType() const { return m_eRectTransformType; }
 
 private:
@@ -51,10 +53,11 @@ private:
 	ERectTransform m_eRectTransformType = { ERectTransform::C };
 	_wstring m_wstrTextureTag = {};
 	uint32_t m_iTextureIndex = {};
-
 	Vec3 m_vRectPos = {};
 	Vec3 m_vRenderPos = {};
 	RECT m_tRenderRect = {};
+	CCanvas* m_pParentCanvasCache = { nullptr };
+	CUILayer* m_pParentLayerCache = { nullptr };
 
 public:
 	static CGenericUI* Create(ID3D11Device* pDevice, ID3D11DeviceContext* pDeviceContext);

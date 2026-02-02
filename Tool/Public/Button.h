@@ -19,6 +19,7 @@ private:
 
 private:
 	HRESULT Initialize_Prototype() override;
+	HRESULT Initialize_Prototype(const BUTTON_DESC& Desc);
 	HRESULT Initialize(void* pArg) override;
 public:
 	void Update(const _float fTimeDelta) override;

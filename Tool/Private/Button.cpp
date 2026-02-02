@@ -15,6 +15,11 @@ HRESULT CButton::Initialize_Prototype()
 	return S_OK;
 }
 
+HRESULT CButton::Initialize_Prototype(const BUTTON_DESC& Desc)
+{
+	return S_OK;
+}
+
 HRESULT CButton::Initialize(void* pArg)
 {
 	BUTTON_DESC* pDesc = static_cast<BUTTON_DESC*>(pArg);
@@ -33,7 +38,7 @@ void CButton::OnClick()
 CButton* CButton::Create(const BUTTON_DESC& Desc)
 {
 	CButton* pInstance = new CButton();
-	if (FAILED(pInstance->Initialize_Prototype()))
+	if (FAILED(pInstance->Initialize_Prototype(Desc)))
 	{
 		MSG_BOX("CButton::Create, Create Failed");
 		Safe_Release(pInstance);

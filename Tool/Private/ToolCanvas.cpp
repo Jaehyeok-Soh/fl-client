@@ -232,7 +232,6 @@ void CToolCanvas::Calc_HitUpdate()
 	}
 }
 
-
 CToolUI* CToolCanvas::Calc_TopUI()
 {
 	CToolUI* pTopUI = { nullptr };
@@ -274,8 +273,8 @@ void CToolCanvas::Sync_Data()
 	m_tCanvasData.fPosX = m_fX;
 	m_tCanvasData.fPosY = m_fY;
 	m_tCanvasData.fPosZ = m_fZ;
-
-	m_tCanvasData.isViewportSize = m_isUsingViewport;
+	m_tCanvasData.iEditorSizeX = g_iWinSizeX;
+	m_tCanvasData.iEditorSizeY = g_iWinSizeY;
 }
 
 HRESULT CToolCanvas::Safe_Add_Layer(CToolLayer* pLayer)

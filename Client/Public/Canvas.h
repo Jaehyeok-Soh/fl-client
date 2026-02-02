@@ -53,10 +53,8 @@ private:
 
 private:
 	vector<CUILayer*> m_vecUILayers;
-
 	CGenericUI* m_pCaptureUI = { nullptr };
 	CGenericUI* m_pHoveringUI = { nullptr };
-
 	_bool m_isPreUIPressing = { FALSE };
 	_bool m_isPreHovering = { FALSE };
 

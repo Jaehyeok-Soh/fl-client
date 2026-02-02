@@ -64,23 +64,23 @@ void CCanvas::Transmit_for_UI()
 			{
 				switch (pUI->Get_RectTransformType())
 				{
-				case Client::ERectTransform::LT: pUI->Set_RectPos(Get_LT());
+				case Client::ERectTransform::LT:	pUI->Set_RectPos(Get_LT());
 					break;
-				case Client::ERectTransform::CT:pUI->Set_RectPos(Get_CT());
+				case Client::ERectTransform::CT:	pUI->Set_RectPos(Get_CT());
 					break;
-				case Client::ERectTransform::RT:pUI->Set_RectPos(Get_RT());
+				case Client::ERectTransform::RT:	pUI->Set_RectPos(Get_RT());
 					break;
-				case Client::ERectTransform::LC:pUI->Set_RectPos(Get_LC());
+				case Client::ERectTransform::LC:	pUI->Set_RectPos(Get_LC());
 					break;
-				case Client::ERectTransform::C:pUI->Set_RectPos(Get_C());
+				case Client::ERectTransform::C:		pUI->Set_RectPos(Get_C());
 					break;
-				case Client::ERectTransform::RC:pUI->Set_RectPos(Get_RC());
+				case Client::ERectTransform::RC:	pUI->Set_RectPos(Get_RC());
 					break;
-				case Client::ERectTransform::LB:pUI->Set_RectPos(Get_LB());
+				case Client::ERectTransform::LB:	pUI->Set_RectPos(Get_LB());
 					break;
-				case Client::ERectTransform::CB:pUI->Set_RectPos(Get_CB());
+				case Client::ERectTransform::CB:	pUI->Set_RectPos(Get_CB());
 					break;
-				case Client::ERectTransform::RB:pUI->Set_RectPos(Get_RB());
+				case Client::ERectTransform::RB:	pUI->Set_RectPos(Get_RB());
 					break;
 				default:
 					break;

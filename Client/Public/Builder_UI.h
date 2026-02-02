@@ -30,6 +30,8 @@ private:
 	map<_string, CCanvas*> m_MapCache;
 	map<_string, CUILayer*> m_MapLayerCache;
 
+	Vec2 m_vAspect = {};
+
 public:
 	static CBuilder_UI* Create(ID3D11Device* pDevice, ID3D11DeviceContext* pDeviceContext, _uint iLevelID);
 	virtual void Free() override;
