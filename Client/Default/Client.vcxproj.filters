@@ -312,6 +312,9 @@
     <ClInclude Include="..\Public\EffectObject.h">
       <Filter>03. GameObject\EffectObject\Child_Effect</Filter>
     </ClInclude>
+    <ClInclude Include="..\Public\Physics_LandScape.h">
+      <Filter>03. GameObject\PhysicsTerrain</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <Image Include="Client.ico">
@@ -458,6 +461,9 @@
     </ClCompile>
     <ClCompile Include="..\Private\EffectObject.cpp">
       <Filter>03. GameObject\EffectObject\Child_Effect</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\Physics_LandScape.cpp">
+      <Filter>03. GameObject\PhysicsTerrain</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

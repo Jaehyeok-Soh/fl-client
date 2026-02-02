@@ -15,6 +15,7 @@
 #include "Shader.h"
 #include "Camera.h"
 #include "Transform.h"
+#include "PhysicsCollider.h"
 //=================
 // Builder
 //=================
@@ -33,6 +34,7 @@
 #include "ColliderPart.h"
 #include "Loader.h"
 #include "Physics_Terrain.h" // physics test
+#include "Physics_LandScape.h" // physics test
 //=================
 // UI
 //=================
@@ -188,8 +190,64 @@ HRESULT CLoader::Loading_For_Logo()
 	}
 #pragma endregion
 
+
+#pragma region PHYSICS
 	// For. Prototype_GameObject_Physics_Terrain
 	m_pGameInstance->Add_Prototype(ENUM_TO_UINT(ELevelType::STATIC), L"Prototype_GameObject_Physics_Terrain", CPhysics_Terrain::Create(m_pDevice, m_pDeviceContext));
+
+	// For. Prototype_GameObject_Physics_Terrain
+	m_pGameInstance->Add_Prototype(ENUM_TO_UINT(ELevelType::STATIC), L"Prototype_GameObject_Physics_LandScape", CPhysics_LandScape::Create(m_pDevice, m_pDeviceContext));
+
+	// 2.1 소재혁 : test // 맵 클라이언트 파싱 기능과 연동 예정 추후 코드 삭제
+	// For. Prototype_Component_Physics_Collider_{modelName}
+	{
+		//// For. Prototype_Component_Model_Collider
+		//{
+		//	std::filesystem::path sampleMapPath = g_wszModelRelativePath;
+		//	sampleMapPath = sampleMapPath / "Map_Collider/Test/Sectors/Model";
+		//	vector<std::filesystem::path> meshFiles;
+		//	std::filesystem::directory_iterator dirIter(sampleMapPath);
+		//	while (dirIter != std::filesystem::end(dirIter))
+		//	{
+		//		if ((*dirIter).is_directory() == false)
+		//			meshFiles.push_back((*dirIter).path());
+
+		//		dirIter++;
+		//	}
+
+		//	for (auto& p : meshFiles)
+		//	{
+		//		CModel::MODEL_ORIGIN_DESC desc = {};
+		//		desc.eType = EModelType::NONANIM;
+		//		desc.iPrototypeLevelIndex = ENUM_TO_UINT(ELevelType::STATIC);
+		//		desc.pMatPreTransform = &matPreTransformScale;
+		//		desc.wstrModelFolderName = p.wstring();
+		//		wstring modelPrototypeTag = L"Prototype_Component_Model_" + p.stem().wstring();
+		//		ADD_PROTOTYPE(ELevelType::STATIC, modelPrototypeTag, CModel::Create(m_pDevice, m_pDeviceContext, &desc));
+
+		//		PHYSICSCOLLIDER_DESC pcDesc{};
+		//		pcDesc.wstrModelPrototypeTag = modelPrototypeTag;
+		//		pcDesc.bIsConvex = false;
+		//		ADD_PROTOTYPE(ELevelType::STATIC, L"Prototype_Component_Physics_Collider_" + desc.wstrModelFolderName, CPhysicsCollider::Create(m_pDevice, m_pDeviceContext, nullptr));
+		//	}
+		//}
+		{
+			CModel::MODEL_ORIGIN_DESC desc = {};
+			desc.eType = EModelType::STATIC;
+			desc.iPrototypeLevelIndex = ENUM_TO_UINT(ELevelType::STATIC);
+			desc.pMatPreTransform = &matPreTransformScale;
+			desc.wstrModelFolderName = L"total_landScape_4x4";
+			wstring modelPrototypeTag = L"Prototype_Component_Model_total_landScape_4x4";
+			ADD_PROTOTYPE(ELevelType::STATIC, modelPrototypeTag, CModel::Create(m_pDevice, m_pDeviceContext, &desc));
+
+			PHYSICSCOLLIDER_DESC pcDesc{};
+			pcDesc.wstrModelPrototypeTag = modelPrototypeTag;
+			pcDesc.bIsConvex = false;
+			ADD_PROTOTYPE(ELevelType::STATIC, L"Prototype_Component_Physics_Collider_total_landScape_4x4", CPhysicsCollider::Create(m_pDevice, m_pDeviceContext, &pcDesc));
+		}
+	}
+#pragma endregion
+
 
 	m_isFinished = true;
 	return S_OK;

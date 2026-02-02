@@ -17,6 +17,7 @@
 //=================
 #include "Player.h"
 #include "CameraMan_Targeter.h"
+#include "Physics_LandScape.h"
 
 //=================
 // UI
@@ -187,6 +188,50 @@ HRESULT CLevel_Logo::Ready_Test_Terrain(const wstring& wstrLayerTag)
 			ENUM_TO_UINT(ELevelType::LOGO),
 			wstrLayerTag, &goDesc)))
 			return E_FAIL;
+	}
+
+	{
+		//std::filesystem::path sampleMapPath = g_wszModelRelativePath;
+		//sampleMapPath = sampleMapPath / "Map_Collider/Test/Sectors/Model";
+		//vector<std::filesystem::path> meshFiles;
+		//std::filesystem::directory_iterator dirIter(sampleMapPath);
+		//while (dirIter != std::filesystem::end(dirIter))
+		//{
+		//	if ((*dirIter).is_directory() == false)
+		//		meshFiles.push_back((*dirIter).path());
+
+		//	dirIter++;
+		//}
+
+		//for (auto& p : meshFiles)
+		//{
+		//	CGameObject* pResult = { nullptr };
+		//	CPhysics_LandScape::PXLANDSCAPE_DESC pxDesc = {};
+		//	CTransform::TRANSFORM_DESC TransformDesc = {};
+		//	TransformDesc.vPosition = { 0.f, 0.f, 0.f };
+		//	pxDesc.pTransform_Desc = &TransformDesc;
+		//	pxDesc.wstrColliderPrototypeName = L"Prototype_Component_Physics_Collider_" + p.stem().wstring();
+
+		//	if (!(pResult = m_pGameInstance->Add_GameObject(ENUM_TO_UINT(ELevelType::STATIC),
+		//		L"Prototype_GameObject_Physics_Terrain",
+		//		ENUM_TO_UINT(ELevelType::LOGO),
+		//		wstrLayerTag, &pxDesc)))
+		//		return E_FAIL;
+		//}
+		{
+			CGameObject* pResult = { nullptr };
+			CPhysics_LandScape::PXLANDSCAPE_DESC pxDesc = {};
+			CTransform::TRANSFORM_DESC TransformDesc = {};
+			TransformDesc.vPosition = { 0.f, 0.f, 0.f };
+			pxDesc.pTransform_Desc = &TransformDesc;
+			pxDesc.wstrColliderPrototypeName = L"Prototype_Component_Physics_Collider_total_landScape_4x4";
+
+			if (!(pResult = m_pGameInstance->Add_GameObject(ENUM_TO_UINT(ELevelType::STATIC),
+				L"Prototype_GameObject_Physics_LandScape",
+				ENUM_TO_UINT(ELevelType::LOGO),
+				wstrLayerTag, &pxDesc)))
+				return E_FAIL;
+		}
 	}
 
 	return S_OK;
