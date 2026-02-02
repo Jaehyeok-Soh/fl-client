@@ -102,6 +102,8 @@ HRESULT CPhysics_LandScape::Ready_PhysicsCollider(wstring prototypeTag)
 {
 	if (FAILED(Add_Component<CPhysicsCollider>(0/*static*/, prototypeTag, nullptr)))
 		return E_FAIL;
+
+	return S_OK;
 }
 
 HRESULT CPhysics_LandScape::Ready_PhysicsRigidBody()
@@ -118,6 +120,8 @@ HRESULT CPhysics_LandScape::Ready_PhysicsRigidBody()
 
 	if (FAILED(Add_Component<CPhysicsRigidBody>(0/*static*/, L"Prototype_Component_Physics_RigidBody", &desc)))
 		return E_FAIL;
+
+	return S_OK;
 }
 
 CPhysics_LandScape* CPhysics_LandScape::Create(ID3D11Device* pDevice, ID3D11DeviceContext* pDeviceContext)

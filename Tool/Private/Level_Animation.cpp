@@ -77,7 +77,7 @@ HRESULT CLevel_Animation::Ready_Camera(const _wstring wstrLayerTag)
 		CGameObject* pResult = { nullptr };
 		CCameraMan::GAMEOBJECT_DESC goDesc = {};
 		CTransform::TRANSFORM_DESC TransformDesc = {};
-		TransformDesc.vPosition = { 0.f, 0.f, -1.f };
+		TransformDesc.TranslationMatrix = Matrix::CreateTranslation(Vec3(0.f,0.f,-1.f));
 		TransformDesc.fMovePerSec = { 6.f };
 		TransformDesc.fRotatePerSec = { 1.f };
 		CCamera::CAMERA_DESC CameraDesc = {};

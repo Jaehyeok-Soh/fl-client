@@ -188,8 +188,8 @@ HRESULT CLevel_Map::Ready_Camera_Layer(const wstring& wstrLayerTag)
 		CGameObject* pResult = { nullptr };
 		CCameraMan::GAMEOBJECT_DESC goDesc = {};
 		CTransform::TRANSFORM_DESC TransformDesc = {};
-		TransformDesc.vPosition = { 0.f, 5.0f, -5.f };
-		TransformDesc.vRotation_Degrees = { 0.f,0.f,0.f};
+		TransformDesc.RotationMatrix = Matrix::CreateRotationX(XMConvertToRadians(45.f));
+		TransformDesc.TranslationMatrix = Matrix::CreateTranslation(Vec3(0.f,5.f,-5.f));
 		TransformDesc.fMovePerSec = { 15.f };
 		TransformDesc.fRotatePerSec = {2.f};
 		CCamera::CAMERA_DESC CameraDesc = {};

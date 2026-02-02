@@ -132,7 +132,7 @@ HRESULT CLevel_Logo::Ready_Player_Layer(const wstring& wstrLayerTag)
 		CTransform::TRANSFORM_DESC transformDesc = {};
 		playerDesc.iLevelIndex = ENUM_TO_UINT(ELevelType::LOGO);
 		playerDesc.wstrBodyModelTag = L"Prototype_Component_Model_Master";
-		transformDesc.vPosition = { 0.f, -0.1f, -20.f };
+		transformDesc.TranslationMatrix = Matrix::CreateTranslation(Vec3(0.f, -0.1f, -20.f));
 		playerDesc.pTransform_Desc = &transformDesc;
 		if (!(pResult = m_pGameInstance->Add_GameObject(ENUM_TO_UINT(ELevelType::STATIC),
 			L"Prototype_GameObject_MainPlayer",
@@ -224,7 +224,6 @@ HRESULT CLevel_Logo::Ready_Test_Terrain(const wstring& wstrLayerTag)
 		CGameObject* pResult = { nullptr };
 		CGameObject::GAMEOBJECT_DESC goDesc = {};
 		CTransform::TRANSFORM_DESC TransformDesc = {};
-		TransformDesc.vPosition = { 0.f, 0.f, 0.f };
 		goDesc.pTransform_Desc = &TransformDesc;
 
 		if (!(pResult = m_pGameInstance->Add_GameObject(ENUM_TO_UINT(ELevelType::STATIC),
@@ -235,18 +234,17 @@ HRESULT CLevel_Logo::Ready_Test_Terrain(const wstring& wstrLayerTag)
 	}
 
 	{
-		//CGameObject* pResult = { nullptr };
-		//CPhysics_LandScape::PXLANDSCAPE_DESC pxDesc = {};
-		//CTransform::TRANSFORM_DESC TransformDesc = {};
-		//TransformDesc.vPosition = { 0.f, 0.f, 0.f };
-		//pxDesc.pTransform_Desc = &TransformDesc;
-		//pxDesc.wstrColliderPrototypeName = L"Prototype_Component_Physics_Collider_total_landScape_4x4";
+		CGameObject* pResult = { nullptr };
+		CPhysics_LandScape::PXLANDSCAPE_DESC pxDesc = {};
+		CTransform::TRANSFORM_DESC TransformDesc = {};
+		pxDesc.pTransform_Desc = &TransformDesc;
+		pxDesc.wstrColliderPrototypeName = L"Prototype_Component_Physics_Collider_total_landScape_4x4";
 
-		//if (!(pResult = m_pGameInstance->Add_GameObject(ENUM_TO_UINT(ELevelType::STATIC),
-		//	L"Prototype_GameObject_Physics_LandScape",
-		//	ENUM_TO_UINT(ELevelType::LOGO),
-		//	wstrLayerTag, &pxDesc)))
-		//	return E_FAIL;
+		if (!(pResult = m_pGameInstance->Add_GameObject(ENUM_TO_UINT(ELevelType::STATIC),
+			L"Prototype_GameObject_Physics_LandScape",
+			ENUM_TO_UINT(ELevelType::LOGO),
+			wstrLayerTag, &pxDesc)))
+			return E_FAIL;
 	}
 
 	return S_OK;

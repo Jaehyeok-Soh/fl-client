@@ -1672,7 +1672,6 @@ void CParticle_System_Panel::Draw_Parts(CToolObject* pGo)
 				CEffectObject::Effect_Desc pEffectDesc = {};
 				CTransform::TRANSFORM_DESC transformDesc = {};
 				// =========    Æ®·£½ºÆû   ============
-				transformDesc.vPosition = { 0.f, 0.0f, 0.f };
 				transformDesc.fRotatePerSec = 1.f;
 				transformDesc.fMovePerSec = 1.f;
 

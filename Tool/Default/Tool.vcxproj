@@ -216,6 +216,7 @@
     <ClInclude Include="..\Public\Tool_Defines.h" />
     <ClInclude Include="..\Public\MainApplication.h" />
     <ClInclude Include="..\Public\Tool_EventDefines.h" />
+    <ClInclude Include="..\Public\Tool_Structs.h" />
     <ClInclude Include="..\Public\UEMapdataLoader.h" />
     <ClInclude Include="..\Public\UEMapdataParser.h" />
     <ClInclude Include="..\Public\UIData_Repository.h" />
@@ -335,6 +336,7 @@
     <ClCompile Include="..\Private\ToolObject.cpp" />
     <ClCompile Include="..\Private\ToolUI.cpp" />
     <ClCompile Include="..\Private\Tool_Defines.cpp" />
+    <ClCompile Include="..\Private\Tool_Structs.cpp" />
     <ClCompile Include="..\Private\UIData_Repository.cpp" />
     <ClCompile Include="..\Private\UI_Hierachy.cpp" />
     <ClCompile Include="..\Private\UI_Inspector.cpp" />

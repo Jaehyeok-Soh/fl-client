@@ -69,6 +69,15 @@ public:
 public:
     PxController* GetController(PHYSICSCCT_DESC* pDesc);
 
+/// <summary>
+/// Collision Filter Shader
+/// </summary>
+public:
+    PxFilterFlags FilterShader(
+        PxFilterObjectAttributes attributes0, PxFilterData filterData0,
+        PxFilterObjectAttributes attributes1, PxFilterData filterData1,
+        PxPairFlags& pairFlags, const void* constantBlock, PxU32 constantBlockSize);
+
 private:
     ID3D11Device* m_pDevice = { nullptr };
     ID3D11DeviceContext* m_pDeviceContext = { nullptr };

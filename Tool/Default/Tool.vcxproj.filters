@@ -205,6 +205,18 @@
     <Filter Include="12. DebugLine\01. DebugLine">
       <UniqueIdentifier>{f4bab261-d522-4da3-ab3e-259ad1d9e20a}</UniqueIdentifier>
     </Filter>
+    <Filter Include="04. Component\Map">
+      <UniqueIdentifier>{ea20cd24-748e-4bdd-a0a7-35c178fc58cb}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="04. Component\Map\Tool_StaticMesh">
+      <UniqueIdentifier>{d82ac746-4abc-4ab0-a328-d317d74841e5}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="98. Defines\Tool_Define">
+      <UniqueIdentifier>{5961eab9-ba1a-4da6-a701-5821ad618484}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="98. Defines\Tool_Struct">
+      <UniqueIdentifier>{e5507130-9d05-4f99-81af-18262481d0a8}</UniqueIdentifier>
+    </Filter>
     <Filter Include="06. ImGui\01. Panel\Animation">
       <UniqueIdentifier>{535a7846-4389-404b-82c0-4227a110de20}</UniqueIdentifier>
     </Filter>
@@ -248,9 +260,6 @@
     </ClInclude>
     <ClInclude Include="..\Public\MainApplication.h">
       <Filter>01. MainApplication</Filter>
-    </ClInclude>
-    <ClInclude Include="..\Public\Tool_Defines.h">
-      <Filter>98. Defines</Filter>
     </ClInclude>
     <ClInclude Include="..\Public\Picking_ToolManager.h">
       <Filter>05. Picking</Filter>
@@ -462,13 +471,23 @@
     <ClInclude Include="..\public\Level_Logo.h">
       <Filter>03. Level\Logo</Filter>
     </ClInclude>
-    <ClInclude Include="..\Public\Button.h" />
-    <ClInclude Include="..\Public\Image.h" />
-    <ClInclude Include="..\public\Level_Logo.h">
-      <Filter>03. Level\Logo</Filter>
+    <ClInclude Include="..\Public\Button.h">
+      <Filter>04. Component\UI\Base\Button</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\Image.h">
+      <Filter>04. Component\UI\Base\Image</Filter>
     </ClInclude>
     <ClInclude Include="..\Public\Builder_UI.h">
       <Filter>09. Builder\UI</Filter>
+    </ClInclude>
+    <ClInclude Include="..\public\Level_Logo.h">
+      <Filter>03. Level\Logo</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\Tool_Defines.h">
+      <Filter>98. Defines\Tool_Define</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\Tool_Structs.h">
+      <Filter>98. Defines\Tool_Struct</Filter>
     </ClInclude>
     <ClInclude Include="..\Public\Panel_Model.h">
       <Filter>06. ImGui\01. Panel\Animation\Panel_Model</Filter>
@@ -590,9 +609,6 @@
     <ClCompile Include="..\Private\Loader.cpp">
       <Filter>03. Level\Loading\Loader</Filter>
     </ClCompile>
-    <ClCompile Include="..\Private\Tool_Defines.cpp">
-      <Filter>98. Defines</Filter>
-    </ClCompile>
     <ClCompile Include="..\Private\UI_Inspector.cpp">
       <Filter>06. ImGui\01. Panel\UI\Inspector</Filter>
     </ClCompile>
@@ -697,6 +713,12 @@
     </ClCompile>
     <ClCompile Include="..\Private\Image.cpp">
       <Filter>04. Component\UI\Base\Image</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\Tool_Defines.cpp">
+      <Filter>98. Defines\Tool_Define</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\Tool_Structs.cpp">
+      <Filter>98. Defines\Tool_Struct</Filter>
     </ClCompile>
     <ClCompile Include="..\Private\Panel_Model.cpp">
       <Filter>06. ImGui\01. Panel\Animation\Panel_Model</Filter>

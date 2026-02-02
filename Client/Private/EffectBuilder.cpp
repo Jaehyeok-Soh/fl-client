@@ -52,9 +52,10 @@ HRESULT EffectBuilder::Create_Effect(const DTO::TEFFECT_ContainerData& data)
 	CTransform::TRANSFORM_DESC pTransDesc = {};
 	pTransDesc.fMovePerSec = 1.f;
 	pTransDesc.fRotatePerSec = 1.f;
-	pTransDesc.vPosition = vPos;
-	pTransDesc.vRotation_Degrees = Engine_Utils::ToEulerDegrees(vQuat);
-	pTransDesc.vScale = vScale;
+	pTransDesc.ScaleMatrix = Matrix::CreateScale(Vec3(vScale));
+	pTransDesc.RotationMatrix = Matrix::CreateFromQuaternion(vQuat);
+	pTransDesc.TranslationMatrix = Matrix::CreateTranslation(Vec3(vPos));
+
 
 	Effect::EFFECT_CONTAINERDESC pDesc = {};
 	pDesc._Effect_SimulationType = (DTO::E_SIMULATION_SPACE)pData._Effect_SimulationType;

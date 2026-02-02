@@ -88,4 +88,5 @@ using namespace SimpleMath;
 #include <dinput.h>
 
 #include "Tool_Defines.h"
+#include "Tool_Structs.h"
 #include "DataDefine_Json.h"

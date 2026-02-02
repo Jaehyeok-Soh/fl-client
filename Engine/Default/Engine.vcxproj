@@ -198,6 +198,7 @@
     <ClCompile Include="..\private\DataStruct_Animation.cpp" />
     <ClCompile Include="..\Private\DataStruct_Effect.cpp" />
     <ClCompile Include="..\Private\DataStruct_Example.cpp" />
+    <ClCompile Include="..\Private\DataStruct_Map.cpp" />
     <ClCompile Include="..\Private\DataStruct_UI.cpp" />
     <ClCompile Include="..\Private\DebugDraw.cpp">
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Use</PrecompiledHeader>
@@ -325,6 +326,7 @@
     <ClInclude Include="..\public\DataStruct_Animation.h" />
     <ClInclude Include="..\Public\DataStruct_Effect.h" />
     <ClInclude Include="..\Public\DataStruct_Example.h" />
+    <ClInclude Include="..\Public\DataStruct_Map.h" />
     <ClInclude Include="..\Public\DataStruct_UI.h" />
     <ClInclude Include="..\Public\DebugDraw.h" />
     <ClInclude Include="..\Public\Delegate.h" />
