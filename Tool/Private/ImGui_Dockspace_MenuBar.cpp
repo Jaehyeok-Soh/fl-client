@@ -283,9 +283,9 @@ void CImGui_Dockspace_MenuBar::Load_EffectData(const wstring& wstrFilePath)
 		CTransform::TRANSFORM_DESC pTransDesc = {};
 		pTransDesc.fMovePerSec = 1.f;
 		pTransDesc.fRotatePerSec = 1.f;
-		pTransDesc.vPosition = vPos;
-		pTransDesc.vRotation_Degrees = Engine_Utils::ToEulerDegrees(vQuat);
-		pTransDesc.vScale = vScale;
+		pTransDesc.ScaleMatrix = Matrix::CreateScale(vScale);
+		pTransDesc.RotationMatrix = Matrix::CreateFromQuaternion(vQuat);
+		pTransDesc.TranslationMatrix = Matrix::CreateTranslation(vPos);
 
 		Effect::EFFECT_CONTAINERDESC pDesc = {};
 		pDesc._Effect_SimulationType = (E_SIMULATION_SPACE)pData._Effect_SimulationType;
@@ -320,10 +320,9 @@ void CImGui_Dockspace_MenuBar::Load_EffectData(const wstring& wstrFilePath)
 
 			CEffectObject::Effect_Desc pEffectDesc = {};
 			CTransform::TRANSFORM_DESC transformDesc = {};
-
-			transformDesc.vPosition = vPos;
-			transformDesc.vScale = vScale;
-			transformDesc.vRotation_Degrees = Engine_Utils::ToEulerDegrees(vQuat); // Quat -> Euler º¯È¯
+			transformDesc.TranslationMatrix = Matrix::CreateScale(vScale);
+			transformDesc.ScaleMatrix = Matrix::CreateTranslation(vPos);
+			transformDesc.RotationMatrix = Matrix::CreateFromQuaternion(vQuat);
 			transformDesc.fRotatePerSec = 1.f;
 			transformDesc.fMovePerSec = 1.f;
 

@@ -29,7 +29,7 @@ private:
 	virtual ~CMapToolManager() = default;
 public:
 	HRESULT					Initialize(ID3D11Device* pDevice , ID3D11DeviceContext* pContext);
-	CMapObject*				Make_Preview(EMapObject_Type Type, void* pArg);
+	CMapObject*				Make_MapObject(EMapObject_Type eType, void* pArg , _bool isPreview = false);
 	HRESULT					Batch_Preview();
 private:
 	HRESULT					Register_MapObjectCloneFactory();

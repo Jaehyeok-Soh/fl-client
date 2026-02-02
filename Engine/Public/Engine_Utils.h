@@ -1,5 +1,6 @@
 #pragma once
 #include "Engine_Define.h"
+#include "json_forward.h"
 
 NS_BEGIN(Engine)
  
@@ -38,6 +39,22 @@ public:
 	static void Set_OnlyFlag(Flags& curFlags, _uint iBitFlag);
 
 	static _float SmoothStep(_float fT) { return fT * fT * (3.f - 2.f * fT); }
+
+
+#pragma region Read Write Json
+
+	static void read_vec3_xyz(const json& _j, Vec3& vOut);
+	static void read_vec3_PitchYawRoll(const json& _j, Vec3& vOut);
+	static void read_vec4_Quat(const json& _j, Quat& vOut);
+
+	static void write_vec3_xyz(json& _j, const Vec3& vOut);
+	static void write_vec3_PitchYawRoll(json& _j, const Vec3& vOut);
+	static void write_vec4_Quat( json& _j, const Quat& vOut);
+
+#pragma endregion
+
+
+
 
 	static string MI_ToString(EMaterialInstanceType eType)
 	{

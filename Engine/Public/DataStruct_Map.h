@@ -2,7 +2,7 @@
 
 #include "ObjectDataBase.h"
 #include "DataEnum.h"
-#include "json_forward.h"
+#include "Engine_Utils.h"
 
 #pragma region 최초 사용법
 /*
@@ -28,147 +28,234 @@
 NS_BEGIN(DTO)
 
 /////////////////-------------------  MAP  -------------------/////////////////
+
 enum class EMapObjectType : _uint
 {
 	STATICMODEL,
-	LIGHT,
+	INSTANCEMODEL,
 	END
 };
 
-inline constexpr _uint g_MapTypeCount{ ENUM_TO_UINT(EMapType::END) };
+inline constexpr _uint g_MapObjectTypeCount{ ENUM_TO_UINT(EMapObjectType::END) };
 
 /* String으로 자동 변환되어서 저당된다  */
 
-NLOHMANN_JSON_SERIALIZE_ENUM(EMapType,
+NLOHMANN_JSON_SERIALIZE_ENUM(EMapObjectType,
 	{
-		{EMapType::STATICMODEL, "STATICMODEL"},
-		{EMapType::LIGHT, "LIGHT"},
-		{EMapType::END, "END"},
+		{EMapObjectType::STATICMODEL, "STATICMODEL"},
+		{EMapObjectType::INSTANCEMODEL, "INSTANCEMODEL"},
+		{EMapObjectType::END, "END"},
 	}
 	)
 
 	/////////////////-------------------  ObjectStruct  -------------------/////////////////
-	struct TExample_LightData
-{
-	static constexpr EMapType eType = EMapType::LIGHT;
-	string strTag{ "" };
 
-	_uint iValue{ 0 };
-	_float iValue2{ 0.0f };
-	_int iValue3{ -1 };
+	typedef struct tagSRT_Data
+{
+	Vec3	vScale{0.f,0.f,0.f};
+	Quat	vQuat{0.f,0.f,0.f,1.f};
+	Vec3	vPosition{ 0.f,0.f,0.f };
+}SRT_DATA;
+
+
+typedef struct tagUsingMaterialInfo
+{
+	bool	isNull{ true };
+
+	/* 참조하고 있는 Origin Mrt Material Json 파일 Path 값 */
+	wstring wstrOriginMtl_JsonFile_Name{};
+	wstring wstrOriginMtl_JsonFile_Path{};
+	/* 그 안에서 뜯어낸 Texutre 바인딩 이름 : Texutre 경로 [ 메테리얼 Json 경로에 꽃아줄 이름 ] */
+	vector < std::pair<wstring, wstring>> vecUsingTextureInfo{};
+}USING_MATERIAL_INFO;
+
+
+typedef struct tagUsingModelInfo
+{
+	wstring wstrName{};
+	wstring wstrPath{};
+
+	/* 모델이 생성되고 난 이후에 저장되는 메테리얼 경로 */
+	wstring wstrMtl_JsonFile_Path{};
+
+	vector<USING_MATERIAL_INFO> vecMaterialInfo{};
+public:
+
+}USING_MODEL_INFO;
+
+struct TMap_InstanceModelData
+{
+	static constexpr EMapObjectType eType = EMapObjectType::STATICMODEL;
+
+	USING_MODEL_INFO tUsingInfo{};
+	vector<SRT_DATA> vecSRTData{};
 };
 
-struct TExample_StaticModelData
+struct TMap_StaticModelData
 {
-	static constexpr EMapType eType = EMapType::STATICMODEL;
-	string strTag{ "" };
+	std::string strTag{ "Map" };
+	static constexpr EMapObjectType eType = EMapObjectType::INSTANCEMODEL;
 
-	_uint iValue{ 0 };
-	_float iValue2{ 0.0f };
-	_int iValue3{ -1 };
+	/* Model Info */
+	USING_MODEL_INFO tUsingModelInfo{};
+	SRT_DATA		 tSRTData{};
 };
 
 
 /////////////////-------------------  to_json, from_json  -------------------/////////////////
-inline void to_json(json& j, const TExample_LightData& data)
+
+
+#pragma region Transform Data
+
+inline void to_json(json& j, const SRT_DATA& tdata)
 {
-	j = json
-	{
-		{ "Type", TExample_LightData::eType },
-		{ "strTag", data.strTag },
-		{ "iValue", data.iValue },
-		{ "iValue2", data.iValue2 },
-		{ "iValue3", data.iValue3 }
-	};
+	Engine_Utils::write_vec3_xyz(j["Scale"], tdata.vScale);
+	Engine_Utils::write_vec4_Quat(j["Quaternion"], tdata.vQuat);
+	Engine_Utils::write_vec3_xyz(j["Position"], tdata.vPosition);
 }
-inline void from_json(const json& j, TExample_LightData& data)
+
+inline void from_json(const json& j, SRT_DATA& tdata)
+{
+	if(j.contains("Scale"))
+		Engine_Utils::read_vec3_xyz(j["Scale"],tdata.vScale);
+
+	if (j.contains("PitchYawRoll"))
+		Engine_Utils::read_vec4_Quat(j["Quaternion"], tdata.vQuat);
+
+	if (j.contains("Position"))
+		Engine_Utils::read_vec3_xyz(j["Position"], tdata.vScale);
+}
+#pragma endregion 
+
+
+
+#pragma region Material Info
+
+void from_json(const json& SaveJson, USING_MATERIAL_INFO& tData)
+{
+	if (tData.isNull == true) return;
+
+	tData.wstrOriginMtl_JsonFile_Name = Engine_Utils::ToWString(SaveJson.value("Name", ""));
+	tData.wstrOriginMtl_JsonFile_Path = Engine_Utils::ToWString(SaveJson.value("Path", ""));
+
+	if (tData.vecUsingTextureInfo.empty()) return;
+
+	//for (auto& pairTextureInfo : tData.vecUsingTextureInfo)
+	//{
+	//	SaveJson["Textures"].push_back({ Engine_Utils::ToString(pairTextureInfo.first), Engine_Utils::ToString(pairTextureInfo.second) });
+	//}
+}
+
+void to_json(json& SaveJson, const USING_MATERIAL_INFO& tData)
+{
+	SaveJson["Name"] = Engine_Utils::ToString(tData.wstrOriginMtl_JsonFile_Name);
+	SaveJson["Path"] = Engine_Utils::ToString(tData.wstrOriginMtl_JsonFile_Path);
+
+	if (tData.vecUsingTextureInfo.empty()) return;
+
+	for (auto& pairTextureInfo : tData.vecUsingTextureInfo)
+	{
+		SaveJson["Textures"].push_back({ Engine_Utils::ToString(pairTextureInfo.first), Engine_Utils::ToString(pairTextureInfo.second) });
+	}
+}
+
+#pragma endregion
+
+
+#pragma region Using Model Info
+
+void from_json(const json& LoadJson, USING_MODEL_INFO& tData)
+{
+	tData.wstrName = Engine_Utils::ToWString(LoadJson.value("Name", ""));
+	tData.wstrName = Engine_Utils::ToWString(LoadJson.value("Path", ""));
+
+	if (LoadJson.contains("Mateiral Info"))
+	{
+
+		auto& MtlJsons = LoadJson["Mateiral Info"];
+		tData.vecMaterialInfo.resize(MtlJsons.size());
+
+		_uint iIndex{};
+		for (auto& MtlJson : MtlJsons)
+		{
+			if (MtlJson.empty())
+				tData.vecMaterialInfo[iIndex].isNull = true;
+			else
+				tData.vecMaterialInfo[iIndex++] = MtlJson;
+		}
+	}
+}
+
+void to_json(json& SaveJson, const USING_MODEL_INFO& tData)
+{
+	SaveJson["Name"] = Engine_Utils::ToString(tData.wstrName);
+	SaveJson["Path"] = Engine_Utils::ToString(tData.wstrPath);
+
+	auto& Material_Json = SaveJson["Mateiral Info"];
+
+	for (auto& Material_Info : tData.vecMaterialInfo)
+	{
+		json Nulljson{};
+		if (!Material_Info.isNull)
+			Nulljson = Material_Info;
+		SaveJson.push_back(Nulljson);
+	}
+}
+
+#pragma endregion
+
+inline void to_json(json& j, const TMap_StaticModelData& data)
+{
+	j["SRT"] = data.tSRTData;
+
+}
+
+inline void from_json(const json& j, TMap_StaticModelData& data)
 {
 	j.at("strTag").get_to(data.strTag);
-	if (j.contains("iValue"))
-		data.iValue = j["iValue"].get<_uint>();
-	if (j.contains("iValue2"))
-		data.iValue2 = j["iValue2"].get<_float>();
-	if (j.contains("iValue3"))
-		data.iValue3 = j["iValue3"].get<_int>();
+
+	if (j.contains("SRT"))
+		data.tSRTData =  j["SRT"];
+	if (j.contains("Model Info"))
+		data.tUsingModelInfo = j["Model Info"];
 }
-inline void to_json(json& j, const TExample_StaticModelData& data)
+
+
+inline void to_json(json& j, const TMap_InstanceModelData& data)
 {
-	j = json
-	{
-		{ "Type", TExample_StaticModelData::eType },
-		{ "strTag", data.strTag },
-		{ "iValue", data.iValue },
-		{ "iValue2", data.iValue2 },
-		{ "iValue3", data.iValue3 }
-	};
+
 }
-inline void from_json(const json& j, TExample_StaticModelData& data)
+inline void from_json(const json& j, TMap_InstanceModelData& data)
 {
-	j.at("strTag").get_to(data.strTag);
-	if (j.contains("iValue"))
-		data.iValue = j["iValue"].get<_uint>();
-	if (j.contains("iValue2"))
-		data.iValue2 = j["iValue2"].get<_float>();
-	if (j.contains("iValue3"))
-		data.iValue3 = j["iValue3"].get<_int>();
+
 }
+
 NS_END
 
 /////////////////-------------------  Wrapping Class  -------------------/////////////////
 
 NS_BEGIN(Engine)
 
-class ENGINE_DLL CExample_LightData final : public IObjectDataBase
-{
-	using Super = IObjectDataBase;
-private:
-	CExample_LightData() = default;
-	virtual ~CExample_LightData() = default;
-public:
-	_uint Get_Type() const override { return ENUM_TO_UINT(DTO::EMapType::LIGHT); }
-	const string& Get_Tag() const override { return m_Data.strTag; }
 
+
+class CData_StaticModel final : public IObjectDataBase
+{
+	// IObjectDataBase을(를) 통해 상속됨
+private:
+	CData_StaticModel() = default;
+	virtual ~CData_StaticModel() = default;
+public:
+
+public:
+	_uint Get_Type() const override;
+	const string& Get_Tag() const override;
 	json ToJson() const override;
 	HRESULT FromJson(const json& j) override;
-
-	const DTO::TExample_LightData& Get_Data() const { return m_Data; }
-	DTO::TExample_LightData& Get_Data() { return m_Data; }
-private:
-	DTO::TExample_LightData m_Data;
-public:
-	static CExample_LightData* Create();
-	virtual void Free() override { Super::Free(); }
 };
 
-class ENGINE_DLL CExample_StaticModel final : public IObjectDataBase
-{
-	using Super = IObjectDataBase;
-private:
-	CExample_StaticModel() = default;
-	virtual ~CExample_StaticModel() = default;
-public:
-	_uint Get_Type() const override { return ENUM_TO_UINT(DTO::EMapType::STATICMODEL); }
-	const string& Get_Tag() const override { return m_Data.strTag; }
-
-	json ToJson() const override;
-	HRESULT FromJson(const json& j) override;
-
-	// 읽기 전용 ( const 참조 )
-	const DTO::TExample_StaticModelData& Get_Data() const { return m_Data; }
-	// 읽기 + 쓰기 전용 ( 참조 )
-	DTO::TExample_StaticModelData& Get_Data() { return m_Data; }
-private:
-	DTO::TExample_StaticModelData m_Data;
-public:
-	static CExample_StaticModel* Create();
-	virtual void Free() override { Super::Free(); }
-};
 
 NS_END
 
 
 
-class CDataStruct_Map : public ObjectDataBase
-{
-};
 

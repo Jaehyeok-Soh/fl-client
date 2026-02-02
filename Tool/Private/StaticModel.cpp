@@ -34,9 +34,10 @@ HRESULT CStaticModel::Initialize(void* pArg)
 
 	STATICMODEL_DESC* pDesc = static_cast<STATICMODEL_DESC*>(pArg);
 
-	m_strModelFileName = Engine_Utils::ToString(pDesc->wstrModelPath);
-	Set_Name(pDesc->wstrModelName);
-	m_eType = pDesc->eType;
+	m_tData = pDesc->tData;
+
+	m_strModelFileName = Engine_Utils::ToString(m_tData.tUsingModelInfo.wstrPath);
+	Set_Name(m_tData.tUsingModelInfo.wstrName);
 
 	if (FAILED(CStaticModel::Ready_Component()))
 		return E_FAIL;

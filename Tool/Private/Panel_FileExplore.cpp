@@ -130,12 +130,14 @@ HRESULT CPanel_FileExplore::Render_FileMoustRightButton(const wstring& wstrPath)
 
 	if (ImGui::Selectable("Make Model"))
 	{
-		CStaticModel::STATICMODEL_DESC tDesc = CStaticModel::STATICMODEL_DESC(EStaticModel_Type::DEFUALT , path(wstrPath).filename().stem() , wstrPath);
+		CStaticModel::STATICMODEL_DESC tDesc{};
+		tDesc.tData.tUsingModelInfo.wstrName = path(wstrPath).filename().stem();
+		tDesc.tData.tUsingModelInfo.wstrPath = wstrPath;
 		tDesc.isLoaded = false;
 		tDesc.iLevelIndex = ENUM_TO_UINT(ELevelType::MAP);
 		tDesc.eState = CMapObject::EState::Preview;
 		tDesc.wstrLayerTag = g_wszStaticModelLayer;
-		m_pMapToolManager->Make_Preview(EMapObject_Type::STATICMODEL ,&tDesc);
+		m_pMapToolManager->Make_MapObject(EMapObject_Type::STATICMODEL ,&tDesc);
 	}
 
 	return S_OK;

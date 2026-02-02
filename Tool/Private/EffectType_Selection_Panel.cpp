@@ -117,7 +117,6 @@ void CEffectType_Selection_Panel::CreateParticleEffect()
 		Effect::TOOLOBJECT_DESC ToolDesc = {};
 		CTransform::TRANSFORM_DESC transformDesc = {};
 		// =========    Æ®·£½ºÆû   ============
-		transformDesc.vPosition = { 0.f, 0.0f, 0.f };
 		transformDesc.fRotatePerSec = 1.f;
 		transformDesc.fMovePerSec = 1.f;
 		ToolDesc.pTransform_Desc = &transformDesc;
@@ -143,7 +142,6 @@ void CEffectType_Selection_Panel::CreateParticleEffect()
 		CEffectObject::Effect_Desc pEffectDesc = {};
 		CTransform::TRANSFORM_DESC transformDesc = {};
 		// =========    Æ®·£½ºÆû   ============
-		transformDesc.vPosition = { 0.f, 0.0f, 0.f };
 		transformDesc.fRotatePerSec = 1.f;
 		transformDesc.fMovePerSec = 1.f;
 

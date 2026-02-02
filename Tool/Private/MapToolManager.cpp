@@ -5,6 +5,7 @@
 #include "ImGui_ToolManager.h"
 #include "Picking_ToolManager.h"
 #include "StaticModel.h"
+#include "MapToolManager.h"
 #include "DebugLine.h"
 
 
@@ -36,8 +37,6 @@ HRESULT CMapToolManager::Initialize(ID3D11Device* pDevice, ID3D11DeviceContext* 
 
 	return S_OK;
 }
-
-
 void	CMapToolManager::Update(float DT)
 {
 	Input_Update(DT);
@@ -110,18 +109,29 @@ void CMapToolManager::DrawImGui_Preview()
 	m_pPreviewMapobject->Draw_ImGui();
 }
 
-CMapObject* CMapToolManager::Make_Preview( EMapObject_Type eType  , void* pArg )
-{
-	CMapObject* pPreviewObject{ nullptr };
 
+
+
+CMapObject* CMapToolManager::Make_MapObject(EMapObject_Type eType, void* pArg, _bool isPreview)
+{
 	auto& Factory = m_arrayMapObjectCloneFactory[ENUM_TO_UINT(eType)];
 
 	if (Factory == nullptr) return nullptr;
 
-	Delete_Preview();
+	CGameObject* pCreatObject{ nullptr };
 
-	return m_pPreviewMapobject =  static_cast<CMapObject*>(Factory(pArg));
+	if (!(pCreatObject = Factory(pArg)))
+	{
+		Safe_Release(pCreatObject);
+		return nullptr;
+	}
+
+	if (isPreview)
+		Delete_Preview();
+
+	return  isPreview == true ? m_pPreviewMapobject = static_cast<CMapObject*>(pCreatObject) : static_cast<CMapObject*>(pCreatObject);
 }
+
 
 HRESULT CMapToolManager::Batch_Preview()
 {
@@ -130,6 +140,7 @@ HRESULT CMapToolManager::Batch_Preview()
 
 HRESULT CMapToolManager::Register_MapObjectCloneFactory()
 {
+
 	m_arrayMapObjectCloneFactory[ENUM_TO_UINT(EMapObject_Type::STATICMODEL)] =
 		[=](void* pArg)->CGameObject* { return m_pGameInstance->Add_GameObject(ENUM_TO_UINT(ELevelType::MAP),L"Prototype_GameObject_StaticModel",
 			ENUM_TO_UINT(ELevelType::MAP),g_wszStaticModelLayer,pArg);};

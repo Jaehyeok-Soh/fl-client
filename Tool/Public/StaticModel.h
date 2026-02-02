@@ -1,5 +1,6 @@
 #pragma once
 #include "MapObject.h"
+#include "UEMapdataParser.h"
 
 class CStaticModel : public CMapObject
 {
@@ -7,20 +8,9 @@ class CStaticModel : public CMapObject
 public:
 	typedef struct tagStaticModel : public CMapObject::MAPOBJECT_DESC
 	{
-		wstring				wstrModelName{ L"" };
-		wstring				wstrModelPath{ L"" };
-
-
-		EStaticModel_Type eType{};
+		STATICMODEL_DATA  tData{};
+		CONVERTED_MAPDATA tLoadData{};
 	public:
-		tagStaticModel(EStaticModel_Type _eType, const wstring _wstrModelName, const wstring& _wstrModelPath)
-			: eType(_eType) , wstrModelName(_wstrModelName) , wstrModelPath(_wstrModelPath)
-		{
-		}
-		tagStaticModel()
-			: eType(EStaticModel_Type::END), wstrModelName(L""), wstrModelPath(L"")
-		{
-		}
 	}STATICMODEL_DESC;
 protected:
 	CStaticModel(EToolObjectType eType, ID3D11Device* pDevice, ID3D11DeviceContext* pDeviceContext);
@@ -48,7 +38,8 @@ public:
 	virtual _bool			Picking(OUT Vec3& vOut)						override;
 	virtual _bool			Export_Data(DTO::ECategory eCategory, CDataDocumentBase* pDocument)		override;
 private:
-	EStaticModel_Type		m_eType{};
+	STATICMODEL_DATA		m_tData{};
+	EStaticModel_Type		m_eType{ EStaticModel_Type::DEFUALT};
 public:
 	static  CStaticModel*	Create(EToolObjectType eType, ID3D11Device* pDevice, ID3D11DeviceContext* pDeviceContext);
 	virtual CGameObject*	Clone(void* pArg)								override;
