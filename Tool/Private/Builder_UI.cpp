@@ -127,7 +127,6 @@ HRESULT CBuilder_UI::Create_GenericUIDTO(const DTO::TUI_GenericUIData& data)
 
 	Desc.strName = data.strTag	;
 	Desc.iRectTransformType = data.iRectTransformType;
-	Desc.iUIType = data.iUIType;
 	Desc.fWidth = data.fWidth;
 	Desc.fHeight = data.fHeight; 
 	Desc.fX = data.fPosX;

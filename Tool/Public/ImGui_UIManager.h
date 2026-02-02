@@ -36,6 +36,8 @@ public:
 	int32_t Get_CurLayerIndex() { return m_iCurLayerIndex; }
 	int32_t Get_CurUIIndex() { return m_iCurUIIndex; }
 
+	const EUIComponentType Get_UIComType() const { return m_eSelectedType; }
+	void Set_UIComType(EUIComponentType etype) { m_eSelectedType = etype; }
 
 	/* 안전하게 원소에 접근하는 함수들 / nullptr 체크 필수 */
 	vector<CToolCanvas*>*	Safe_Access_CanvasVector() { if (m_vecCanvas.empty())return nullptr; return &m_vecCanvas; };
@@ -50,6 +52,8 @@ public:
 private:
 	CGameInstance* m_pGameInstance = { nullptr };
 	vector<CToolCanvas*> m_vecCanvas;
+	EUIComponentType m_eSelectedType = { EUIComponentType::END };
+
 private:
 	int32_t m_iCurCanvasIndex = {};
 	int32_t m_iCurLayerIndex = {};

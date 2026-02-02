@@ -15,6 +15,7 @@ class CLevel_UI final : public CLevel
 		UIMAKER,
 		HIERACHY,
 		INSPECTOR,
+		UICOM_ISPECTOR,
 		END
 	};
 

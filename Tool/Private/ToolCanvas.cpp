@@ -1,6 +1,5 @@
 #include "pch.h"
 #include "ToolCanvas.h"
-#include "Tool_Defines.h"
 #include "ImGui_UIManager.h"
 #include "ToolLayer.h"
 #include "ToolUI.h"

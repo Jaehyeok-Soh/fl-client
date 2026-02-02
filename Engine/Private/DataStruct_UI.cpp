@@ -20,7 +20,6 @@ void to_json(json& j, const TUI_GenericUIData& data)
 		{ "strLayerName", data.strLayerName},
 
 		{ "iRectTransformType", data.iRectTransformType },
-		{ "iUIType", data.iUIType },
 		{ "fWidth", data.fWidth },
 		{ "fHeight", data.fHeight },
 		{ "fPosX", data.fPosX },
@@ -36,7 +35,6 @@ void from_json(const json& j, TUI_GenericUIData& data)
 	j.at("strCanvasName").get_to(data.strCanvasName);
 	j.at("strLayerName").get_to(data.strLayerName);
 	j.at("iRectTransformType").get_to(data.iRectTransformType);
-	j.at("iUIType").get_to(data.iUIType);
 	j.at("fWidth").get_to(data.fWidth);
 	j.at("fHeight").get_to(data.fHeight);
 	j.at("fPosX").get_to(data.fPosX);

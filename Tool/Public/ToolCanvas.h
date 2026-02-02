@@ -1,6 +1,5 @@
 #pragma once
 #include "UIObject.h"
-#include "Tool_Defines.h"
 #include "UIData_Repository.h"
 
 NS_BEGIN(Tool)
@@ -42,6 +41,7 @@ private:
 	HRESULT Bind_ShaderResources();
 	void Calc_HitUpdate();
 	void Sync_Data();
+public:
 	CToolUI* Calc_TopUI();
 public:
 	HRESULT Safe_Add_Layer(CToolLayer* pLayer);
@@ -67,6 +67,7 @@ public:
 	Vec2 Get_CB() { return Vec2{ m_fX, m_fY + m_fHeight * 0.5f }; }						// Center Bottom
 	Vec2 Get_RB() { return Vec2{ m_fX + m_fWidth * 0.5f , m_fY + m_fHeight * 0.5f }; }	// Right Bottom
 	virtual _bool Export_Data(DTO::ECategory eCategory, CDataDocumentBase* pDocument) override;
+	void Set_CaptureUI(CToolUI* pUI) { m_pCaptureUI = pUI; }
 	const DTO::TUI_CanvasData& Get_Data()const { return m_tCanvasData; }
 	DTO::TUI_CanvasData& Get_Data_Ref() { return m_tCanvasData; }
 private:

@@ -23,7 +23,8 @@ public:
 	void SetUp_Public_Info();
 	void Input_RectTransform();
 	void Input_TextureTag();
-	void Input_UIType();
+	void Add_UIComponent();
+	void Edit_Component();
 
 	HRESULT Setting_Texture();
 	HRESULT File_Search(const _string& str);

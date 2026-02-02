@@ -2,14 +2,15 @@
 #include "MonoBehaviour.h"
 
 NS_BEGIN(Tool)
-
+class CToolCanvas;
+class CToolUI;
 class CButton final : public CMonoBehaviour
 {
 	using Super = CMonoBehaviour;
 public:
 	typedef struct tagButtonDesc : public CMonoBehaviour::MONO_DESC
 	{
-
+		CToolUI* pOwner = { nullptr };
 	}BUTTON_DESC;
 
 private:
@@ -23,9 +24,11 @@ private:
 	HRESULT Initialize(void* pArg) override;
 public:
 	void Update(const _float fTimeDelta) override;
-
+	 
 private:
 	void OnClick();
+
+	CToolUI* m_pOwner = { nullptr };
 
 public:
 	static CButton* Create(const BUTTON_DESC& Desc);

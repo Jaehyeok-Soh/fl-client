@@ -31,28 +31,31 @@ HRESULT CUI_Inspector::Initialize_Prototype()
 		m_szArrClientLevelType[i] = m_vecClientLevelType[i].c_str();
 	}
 
-	Folder_Search("../../Resources/Textures/UI");
-	File_Search("../../Resources/Textures/UI");
+	//Folder_Search("../../Resources/Textures/UI");
+	//File_Search("../../Resources/Textures/UI");
 
 	return S_OK;
 }
 
 void CUI_Inspector::Update(const _float fTimeDelta)
 {
+	if (nullptr != m_pSelectedUI)
+		m_pSelectedUI->Set_HitTest();
 }
 
 HRESULT CUI_Inspector::Render(CToolObject* pGo)
 {
 	ImGui::Begin(m_strLabel.c_str(), nullptr, m_Flag);
 
-	Setting_Texture();
-
+	/*Setting_Texture();*/
 	m_pSelectedUI = m_pUIManager->Safe_Access_UI(m_pUIManager->Get_CurUIIndex());
 	if (nullptr != m_pSelectedUI)
 	{
 		SetUp_Public_Info();
 		Input_TextureTag();
-		Input_UIType();
+		Add_UIComponent();
+		Edit_Component();
+
 	}
 
 	ImGui::End();
@@ -189,92 +192,84 @@ void CUI_Inspector::Input_TextureTag()
 	}
 }
 
-void CUI_Inspector::Input_UIType()
+void CUI_Inspector::Add_UIComponent()
 {
 	ImGui::PushID("InspectorTabs");
-
 	ImGui::SeparatorText("UI Base Component");
-	ImGui::BeginChild("InspectorTabsCard", ImVec2(0.f, 400.f), true, ImGuiWindowFlags_NoScrollbar);
+	if (ImGui::Button("Add Component"))
+		ImGui::OpenPopup("##AddComponentPopup");
 
-	ImGui::TextDisabled("Add Component");
-	ImGui::Spacing();
-
-	if (ImGui::BeginTabBar("##InspectorTabBar", ImGuiTabBarFlags_Reorderable | ImGuiTabBarFlags_FittingPolicyScroll))
+	if (ImGui::BeginPopup("##AddComponentPopup"))
 	{
-		if (ImGui::BeginTabItem("Image 2D"))
+		ImGui::TextDisabled("Select component to add");
+		ImGui::Separator();
+
+		if (ImGui::Selectable("Image"))
 		{
-			ImGui::BeginChild("##RectTabCard", ImVec2(0.f, 0.f), false, ImGuiWindowFlags_NoScrollbar);
-
-			//CButton::BUTTON_DESC BtnComDesc = {};
-			//CImage::IMAGE_DESC ImgComDesc = {};
-			//CMonoBehaviour* pCom = dynamic_cast<CMonoBehaviour*>(CButton::Create(BtnComDesc));
-			//m_pSelectedUI->Add_Script_Component(L"Component_UIBase", pCom);
-			//pResult->Change_Script_Component(L"Component_UIBase", dynamic_cast<CMonoBehaviour*>(CImage::Create(ImgComDesc)));
-			//m_pGameInstance->Subscribe<OnClickEvent>(pCom, &CButton::OnClick);
-
-			ImGui::EndChild();
-			ImGui::EndTabItem();
+			if (SUCCEEDED(m_pSelectedUI->Add_UIComponentTypes(EUIComponentType::IMAGE)))
+			{
+				CImage::IMAGE_DESC Desc = {};
+				auto* pCom = dynamic_cast<CMonoBehaviour*>( CImage::Create(Desc));
+				if (FAILED(m_pSelectedUI->Add_Script_Component(UIComponentTypeToWString(EUIComponentType::IMAGE), pCom)))
+					Safe_Release(pCom);
+			}
+			ImGui::CloseCurrentPopup();
 		}
 
-		if (ImGui::BeginTabItem("Image 3D"))
+		if (ImGui::Selectable("Button"))
 		{
-			ImGui::BeginChild("##TextureTabCard", ImVec2(-FLT_MIN, 0.f), false, ImGuiWindowFlags_NoScrollbar);
-
-			ImGui::TextDisabled("Texture selection / tag.");
-			ImGui::Spacing();
-
-			if (nullptr != m_pSelectedUI)
-				Input_TextureTag();
-			else
-				ImGui::TextDisabled("No UI selected.");
-
-			ImGui::EndChild();
-			ImGui::EndTabItem();
+			if (SUCCEEDED(m_pSelectedUI->Add_UIComponentTypes(EUIComponentType::BUTTON)))
+			{
+				CButton::BUTTON_DESC Desc = {};
+				auto* pCom = dynamic_cast<CMonoBehaviour*>(CButton::Create(Desc));
+				if (FAILED(m_pSelectedUI->Add_Script_Component(UIComponentTypeToWString(EUIComponentType::BUTTON), pCom)))
+					Safe_Release(pCom);
+			}
+			ImGui::CloseCurrentPopup();
 		}
 
-		if (ImGui::BeginTabItem("Button"))
+		if (ImGui::Selectable("UI.TransitionPlayer"))
 		{
-			ImGui::BeginChild("##MiscTabCard", ImVec2(-FLT_MIN, 0.f), false, ImGuiWindowFlags_NoScrollbar);
-
-			ImGui::TextDisabled("Extra options.");
-			ImGui::Spacing();
-
-			ImGui::TextDisabled("...");
-
-			ImGui::EndChild();
-			ImGui::EndTabItem();
+			// TODO: Add TransitionPlayer component
+			ImGui::CloseCurrentPopup();
 		}
 
-		if (ImGui::BeginTabItem("Text"))
-		{
-			ImGui::BeginChild("##MiscTabCard", ImVec2(-FLT_MIN, 0.f), false, ImGuiWindowFlags_NoScrollbar);
+		ImGui::EndPopup();
+	}
+	ImGui::Spacing();
+	ImGui::PopID();
+}
 
-			ImGui::TextDisabled("Extra options.");
-			ImGui::Spacing();
+void CUI_Inspector::Edit_Component()
+{
+	static int s_iSelected = -1;
 
-			ImGui::TextDisabled("...");
+	const auto& vec = m_pSelectedUI->Get_UIComponentType_Vector();
+	vector<_string> vecComList;
+	for (const auto& type : vec)
+	{
+		vecComList.push_back(UIComponentTypeToString(type));
+	}
 
-			ImGui::EndChild();
-			ImGui::EndTabItem();
-		}
+	ImGui::TextDisabled("Components");
+	ImGui::BeginChild("CompList", ImVec2(-FLT_MIN, 120.f), true);
 
-		if (ImGui::BeginTabItem("Video"))
-		{
-			ImGui::BeginChild("##MiscTabCard", ImVec2(-FLT_MIN, 0.f), false, ImGuiWindowFlags_NoScrollbar);
-
-			ImGui::TextDisabled("Extra options.");
-			ImGui::Spacing();
-
-			ImGui::TextDisabled("...");
-
-			ImGui::EndChild();
-			ImGui::EndTabItem();
-		}
-		ImGui::EndTabBar();
+	for (int i = 0; i < (int)vecComList.size(); ++i)
+	{
+		const bool selected = (s_iSelected == i);
+		if (ImGui::Selectable(vecComList[i].c_str(), selected))
+			s_iSelected = i;
 	}
 
 	ImGui::EndChild();
-	ImGui::PopID();
+
+	if (s_iSelected >= 0)
+	{
+		ImGui::Text("Selected: %s", vecComList[s_iSelected].c_str());
+		m_pUIManager->Set_UIComType(StringToUIComponentType(vecComList[s_iSelected]));
+	}
+	else
+		ImGui::TextDisabled("Selected: None");
 }
 
 HRESULT CUI_Inspector::Setting_Texture()

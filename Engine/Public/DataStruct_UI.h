@@ -9,6 +9,7 @@ enum class EUIType : _uint
 	CANVAS,
 	LAYER,
 	GENERICUI,
+	UICOMPONENT,
 	END
 };
 inline constexpr _uint g_UITypeCount{ ENUM_TO_UINT(EUIType::END) };
@@ -18,10 +19,30 @@ NLOHMANN_JSON_SERIALIZE_ENUM(EUIType,
 		{EUIType::CANVAS, "CANVAS"},
 		{EUIType::LAYER, "LAYER"},
 		{EUIType::GENERICUI, "GENERICUI"}
+		{EUIType::UICOMPONENT, "UICOMPONENT"}
 	}
 )
 
 /////////////////-------------------  Data Struct  -------------------/////////////////
+struct TUI_Null {};
+struct TUI_FadeTransition { int32_t a; };
+struct TUI_MoveTransition { int32_t b; };
+using MovementTransition = std::variant<TUI_Null, TUI_FadeTransition, TUI_MoveTransition>;
+
+struct TUI_DynamicMovementComponentData
+{
+	_string strOwner;
+	std::pair<uint32_t, MovementTransition> OpeningStrategy;
+	std::pair<uint32_t, MovementTransition> UpdateStrategy;
+	std::pair<uint32_t, MovementTransition> ClosingStrategy;
+};
+
+struct TUI_ImageComponentData
+{
+	_string strOwner;
+	uint32_t iTextureIndex;
+};
+
 struct TUI_GenericUIData
 {
 	static constexpr EUIType eType = EUIType::GENERICUI;
@@ -30,7 +51,6 @@ struct TUI_GenericUIData
 	std::string strLayerName;
 
 	uint32_t iRectTransformType;
-	uint32_t iUIType;
 
 	_float fWidth;
 	_float fHeight;
@@ -62,7 +82,6 @@ struct TUI_CanvasData
 
 	uint32_t iEditorSizeX ;
 	uint32_t iEditorSizeY;
-
 };
 
 /////////////////-------------------  to_json, from_json  -------------------/////////////////
@@ -142,6 +161,11 @@ private:
 public:
 	static CUI_Canvas_DTO* Create() { return new CUI_Canvas_DTO(); }
 	virtual void Free() override { Super::Free(); }
+};
+
+class ENGINE_DLL CUI_DynamicMovementComponent_DTO final : public IObjectDataBase
+{
+
 };
 
 NS_END

@@ -66,7 +66,7 @@ void CToolUI::Update_Priority(const _float fTimeDelta)
 	Set_Size(m_fWidth, m_fHeight);
 	SetUp_RectTransform_Position();
 	SetUp_Visible();
-
+	m_isHitTest = FALSE;
 	m_iInteractState = static_cast<uint32_t>(CUIObject::EInteractState::NONE);
 	Super::Update_Priority(fTimeDelta);
 }
@@ -81,7 +81,6 @@ void CToolUI::Update_Late(const _float fTimeDelta)
 {
 	if (m_isVisible)
 	{
-		Acting_By_InteractState();
 		Super::Update_Late(fTimeDelta);
 	}
 }
@@ -110,37 +109,40 @@ HRESULT CToolUI::Render()
     Get_Component<CVIBuffer>()->Bind_Resource();
     Get_Component<CVIBuffer>()->Render();
 
-	D3D11_VIEWPORT vp = {};
-	UINT numVP = 1;
-	m_pDeviceContext->RSGetViewports(&numVP, &vp);
-	m_pDeviceContext->IASetInputLayout(m_pInputLayout);
-	m_pEffect->SetWorld(DirectX::XMMatrixIdentity());
-	m_pEffect->SetView(DirectX::XMMatrixIdentity());
-	m_pEffect->SetProjection(DirectX::XMMatrixOrthographicOffCenterLH(0.f, vp.Width, vp.Height, 0.f, 0.f, 1.f));
-	m_pEffect->Apply(m_pDeviceContext);
-	m_pBatch->Begin();
-	const DirectX::XMFLOAT4 vColor = { 1.f, 0.f, 0.f, 1.f };
+	if (m_isHitTest)
+	{
+		D3D11_VIEWPORT vp = {};
+		UINT numVP = 1;
+		m_pDeviceContext->RSGetViewports(&numVP, &vp);
+		m_pDeviceContext->IASetInputLayout(m_pInputLayout);
+		m_pEffect->SetWorld(DirectX::XMMatrixIdentity());
+		m_pEffect->SetView(DirectX::XMMatrixIdentity());
+		m_pEffect->SetProjection(DirectX::XMMatrixOrthographicOffCenterLH(0.f, vp.Width, vp.Height, 0.f, 0.f, 1.f));
+		m_pEffect->Apply(m_pDeviceContext);
+		m_pBatch->Begin();
+		const DirectX::XMFLOAT4 vColor = { 1.f, 0.f, 0.f, 1.f };
 
-	// Top
-	m_pBatch->DrawLine(
-		VertexPositionColor{ { (float)m_tRenderRect.left,  (float)m_tRenderRect.top,    m_fZ }, vColor },
-		VertexPositionColor{ { (float)m_tRenderRect.right, (float)m_tRenderRect.top,    m_fZ }, vColor });
+		// Top
+		m_pBatch->DrawLine(
+			VertexPositionColor{ { (float)m_tRenderRect.left-5.f,  (float)m_tRenderRect.top - 5.f,    m_fZ }, vColor },
+			VertexPositionColor{ { (float)m_tRenderRect.right+5.f, (float)m_tRenderRect.top - 5.f,    m_fZ }, vColor });
 
-	// Right
-	m_pBatch->DrawLine(
-		VertexPositionColor{ { (float)m_tRenderRect.right, (float)m_tRenderRect.top,    m_fZ }, vColor },
-		VertexPositionColor{ { (float)m_tRenderRect.right, (float)m_tRenderRect.bottom, m_fZ }, vColor });
+		// Right
+		m_pBatch->DrawLine(
+			VertexPositionColor{ { (float)m_tRenderRect.right+5.f, (float)m_tRenderRect.top-5.f,    m_fZ }, vColor },
+			VertexPositionColor{ { (float)m_tRenderRect.right+5.f, (float)m_tRenderRect.bottom+5.f, m_fZ }, vColor });
 
-	// Bottom
-	m_pBatch->DrawLine(
-		VertexPositionColor{ { (float)m_tRenderRect.right, (float)m_tRenderRect.bottom, m_fZ }, vColor },
-		VertexPositionColor{ { (float)m_tRenderRect.left,  (float)m_tRenderRect.bottom, m_fZ }, vColor });
+		// Bottom
+		m_pBatch->DrawLine(
+			VertexPositionColor{ { (float)m_tRenderRect.right+5.f, (float)m_tRenderRect.bottom+5.f, m_fZ }, vColor },
+			VertexPositionColor{ { (float)m_tRenderRect.left-5.f,  (float)m_tRenderRect.bottom+5.f, m_fZ }, vColor });
 
-	// Left
-	m_pBatch->DrawLine(
-		VertexPositionColor{ { (float)m_tRenderRect.left,  (float)m_tRenderRect.bottom, m_fZ }, vColor },
-		VertexPositionColor{ { (float)m_tRenderRect.left,  (float)m_tRenderRect.top,    m_fZ }, vColor });
-	m_pBatch->End();
+		// Left
+		m_pBatch->DrawLine(
+			VertexPositionColor{ { (float)m_tRenderRect.left-5.f,  (float)m_tRenderRect.bottom+5.f, m_fZ }, vColor },
+			VertexPositionColor{ { (float)m_tRenderRect.left-5.f,  (float)m_tRenderRect.top-5.f,    m_fZ }, vColor });
+		m_pBatch->End();
+	}
 
     return S_OK;
 }
@@ -149,7 +151,6 @@ _bool CToolUI::Calc_HitEvent()
 {
 	if (::PtInRect(&m_tRenderRect, CImGui_ToolManager::GetInstance()->Get_CalculatedMousePos_Point()))
 	{
-		m_isHitTest = TRUE;
 		return TRUE;
 	}
 	return FALSE;
@@ -221,31 +222,12 @@ void CToolUI::SetUp_Visible()
 	m_isVisible = pLayer->Get_isVisible();
 }
 
-void CToolUI::Acting_By_InteractState()
-{
-	if (Engine_Utils::Has_Flag(m_iInteractState, EInteractState::NONE))
-		m_iTextureIndex = 0;
-	if(Engine_Utils::Has_Flag( m_iInteractState, EInteractState::HOVERING_ENTER))
-		m_iTextureIndex = 1;
-	if(Engine_Utils::Has_Flag( m_iInteractState, EInteractState::HOVERING_EXIT))
-		m_iTextureIndex = 2;
-	if(Engine_Utils::Has_Flag( m_iInteractState, EInteractState::PRESS_ENTER))
-		m_iTextureIndex = 3;
-	if(Engine_Utils::Has_Flag( m_iInteractState, EInteractState::PRESSING))
-		m_iTextureIndex = 4;
-	if(Engine_Utils::Has_Flag( m_iInteractState, EInteractState::PRESS_EXIT))
-		m_iTextureIndex = 5;
-	if(Engine_Utils::Has_Flag( m_iInteractState, EInteractState::CLICKED))
-		m_iTextureIndex = 6;
-}
-
 void CToolUI::Sync_Data()
 {
 	m_tUIData.strTag = m_strName;
 	m_tUIData.strCanvasName = m_strCanvasName;
 	m_tUIData.strLayerName = m_strLayerName;
 	m_tUIData.iRectTransformType = static_cast<uint32_t>( m_eRectTransformType);
-	m_tUIData.iUIType = static_cast<uint32_t>(m_eUIType);
 	m_tUIData.fWidth = m_fWidth;
 	m_tUIData.fHeight = m_fHeight;
 	m_tUIData.fPosX = m_fX;
@@ -253,6 +235,55 @@ void CToolUI::Sync_Data()
 	m_tUIData.fPosZ = m_fZ;
 	m_tUIData.strTextureTag = Engine_Utils::ToString(m_wstrTextureTag);
 	m_tUIData.iTextureIndex = m_iTextureIndex;
+}
+
+HRESULT CToolUI::Add_UIComponentTypes(EUIComponentType eType)
+{
+	for (const auto& type : m_vecUIComponentTypes)
+	{
+		if (type == eType)
+		{
+			MSG_BOX("CToolUI::Add_UIComponentTypes, Already has this type");
+			return E_FAIL;
+		}
+	}
+	m_vecUIComponentTypes.push_back(eType);
+	return S_OK;
+}
+
+HRESULT CToolUI::Remove_UIComponentTypes(EUIComponentType eType)
+{
+	uint32_t index = {};
+	for (const auto& type : m_vecUIComponentTypes)
+	{
+		if (type == eType)
+		{
+			m_vecUIComponentTypes.erase(m_vecUIComponentTypes.begin() + index);
+			return S_OK;
+		}
+		index++;
+	}
+	MSG_BOX("CToolUI::Remove_UIComponentTypes, No Type");
+	return E_FAIL;
+}
+
+CMonoBehaviour* CToolUI::Safe_Access_ScriptComponent(EUIComponentType eType)
+{
+	_bool is = { FALSE };
+	for (const auto& type : m_vecUIComponentTypes)
+	{
+		if (type == eType)
+		{
+			is = TRUE;
+			break;
+		}
+	}
+
+	if (is)
+		return Get_Script_Component(UIComponentTypeToWString(eType));
+	else
+		return nullptr;
+
 }
 
 CToolUI* CToolUI::Create(EToolObjectType eType, ID3D11Device* pDevice, ID3D11DeviceContext* pDeviceContext)

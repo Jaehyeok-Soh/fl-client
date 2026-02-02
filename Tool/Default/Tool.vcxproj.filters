@@ -232,6 +232,9 @@
     <Filter Include="06. ImGui\01. Panel\UI\Maker">
       <UniqueIdentifier>{f5fed899-dccb-4d0d-a291-189fd27b3ca2}</UniqueIdentifier>
     </Filter>
+    <Filter Include="06. ImGui\01. Panel\UI\Component">
+      <UniqueIdentifier>{ac792568-75d9-4e4a-84e1-ff4c4adcd6b8}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="framework.h">
@@ -453,12 +456,6 @@
     <ClInclude Include="..\Public\Builder_UI.h">
       <Filter>09. Builder\UI</Filter>
     </ClInclude>
-    <ClInclude Include="..\Public\Button.h">
-      <Filter>04. Component\UI\Base\Button</Filter>
-    </ClInclude>
-    <ClInclude Include="..\Public\Image.h">
-      <Filter>04. Component\UI\Base\Image</Filter>
-    </ClInclude>
     <ClInclude Include="..\public\Level_Logo.h">
       <Filter>03. Level\Logo</Filter>
     </ClInclude>
@@ -475,6 +472,15 @@
     </ClInclude>
     <ClInclude Include="..\Public\AnimObj.h">
       <Filter>02. GameObjects\ContainerObject\AnimModel</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\Button.h">
+      <Filter>04. Component\UI\Base\Button</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\Image.h">
+      <Filter>04. Component\UI\Base\Image</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\UIComponent_Inspector.h">
+      <Filter>06. ImGui\01. Panel\UI\Component</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -703,6 +709,9 @@
     </ClCompile>
     <ClCompile Include="..\Private\AnimObj.cpp">
       <Filter>02. GameObjects\ContainerObject\AnimModel</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\UIComponent_Inspector.cpp">
+      <Filter>06. ImGui\01. Panel\UI\Component</Filter>
     </ClCompile>
   </ItemGroup>
 </Project>
