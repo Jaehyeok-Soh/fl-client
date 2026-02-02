@@ -79,8 +79,6 @@ HRESULT CPlayer::Initialize(void* pArg)
     if (FAILED(Ready_Components(pDesc)))
         return E_FAIL;
 
-    
-
     if (FAILED(Ready_BaseStates()))
         return E_FAIL;
 
@@ -301,9 +299,10 @@ HRESULT CPlayer::Ready_BaseStates()
     // Slide & SlideSky
     {
         CStateBase_Player::PLAYER_STATEBASE_DESC  desc = {};
-        desc.FAniFlags  = CStateBase::STATEANI_FLAG::SA_HasPreAni;
+        desc.FAniFlags = CStateBase::STATEANI_FLAG::SA_HasPreAni;
+        desc.FAniFlags = 0;
         desc.vecPreAnims = {
-                        {-1, Get_AnimationIndex(L"Animation_PlayerMoon_Slide_Start")}
+                        //{-1, Get_AnimationIndex(L"Animation_PlayerMoon_Slide_Start")}
         };
         desc.vecMainAnims = { Get_AnimationIndex(L"Animation_PlayerMoon_Slide_End") ,Get_AnimationIndex(L"Animation_PlayerMoon_SlideInAir_Loop")};
         desc.bBlend     = true;
@@ -328,7 +327,7 @@ HRESULT CPlayer::Ready_BaseStates()
     {
         CStateBase_Player::PLAYER_STATEBASE_DESC  desc = {};
         desc.FAniFlags      = 0;
-        desc.vecMainAnims = { Get_AnimationIndex(L"Animation_PlayerMoon_DodgeBack") };
+        desc.vecMainAnims   = { Get_AnimationIndex(L"Animation_PlayerMoon_DodgeBack") };
         desc.bBlend         = true;
         desc.bLoop          = false;
 
@@ -505,7 +504,7 @@ HRESULT CPlayer::Ready_BaseStates()
         vecChangeState_ByKey[ENUM_TO_SZET(CStateBase_Player::STATEKEY::SHIFT)]          = ENUM_TO_UINT(State::DASHSKY);
         vecChangeState_ByKey[ENUM_TO_SZET(CStateBase_Player::STATEKEY::LCRTL_PRESS)]    = ENUM_TO_UINT(State::END);
         vecChangeState_ByKey[ENUM_TO_SZET(CStateBase_Player::STATEKEY::LCRTL_UP)]       = ENUM_TO_UINT(State::END);
-        vecChangeState_ByKey[ENUM_TO_SZET(CStateBase_Player::STATEKEY::LOOPDONE)]       = ENUM_TO_UINT(State::LAND); //원래는 fall
+        vecChangeState_ByKey[ENUM_TO_SZET(CStateBase_Player::STATEKEY::LOOPDONE)]       = ENUM_TO_UINT(State::IDLE); //원래는 fall
         desc.vecChangeState_ByKey = vecChangeState_ByKey;
 
         desc.tKeyTimer = tKeyTimer;
@@ -528,7 +527,7 @@ HRESULT CPlayer::Ready_BaseStates()
         vecChangeState_ByKey[ENUM_TO_SZET(CStateBase_Player::STATEKEY::SHIFT)]          = ENUM_TO_UINT(State::DASHSKY);
         vecChangeState_ByKey[ENUM_TO_SZET(CStateBase_Player::STATEKEY::LCRTL_PRESS)]    = ENUM_TO_UINT(State::END);
         vecChangeState_ByKey[ENUM_TO_SZET(CStateBase_Player::STATEKEY::LCRTL_UP)]       = ENUM_TO_UINT(State::END);
-        vecChangeState_ByKey[ENUM_TO_SZET(CStateBase_Player::STATEKEY::LOOPDONE)]       = ENUM_TO_UINT(State::LAND); // fall이 맞는데 우선 idle
+        vecChangeState_ByKey[ENUM_TO_SZET(CStateBase_Player::STATEKEY::LOOPDONE)]       = ENUM_TO_UINT(State::IDLE); // fall이 맞는데 우선 idle
         desc.vecChangeState_ByKey = vecChangeState_ByKey;
 
         desc.tKeyTimer = tKeyTimer;
@@ -570,7 +569,7 @@ HRESULT CPlayer::Ready_BaseStates()
 
         desc.FMoves = CStateBase_Player::MOVEFLAGS::PRESS_CHANGE;
         vecChangeState_ByKey[ENUM_TO_SZET(CStateBase_Player::STATEKEY::MOVE)]           = ENUM_TO_UINT(State::WALK);
-        vecChangeState_ByKey[ENUM_TO_SZET(CStateBase_Player::STATEKEY::SPACE)]          = ENUM_TO_UINT(State::END);
+        vecChangeState_ByKey[ENUM_TO_SZET(CStateBase_Player::STATEKEY::SPACE)]          = ENUM_TO_UINT(State::JUMP);
         vecChangeState_ByKey[ENUM_TO_SZET(CStateBase_Player::STATEKEY::SHIFT)]          = ENUM_TO_UINT(State::DASHBACK);
         vecChangeState_ByKey[ENUM_TO_SZET(CStateBase_Player::STATEKEY::LCRTL_PRESS)]    = ENUM_TO_UINT(State::CROUCH);
         vecChangeState_ByKey[ENUM_TO_SZET(CStateBase_Player::STATEKEY::LCRTL_UP)]       = ENUM_TO_UINT(State::END);
@@ -579,7 +578,7 @@ HRESULT CPlayer::Ready_BaseStates()
 
 
         tKeyTimer.bCountTime = true;
-        tKeyTimer.fMaxTime = 0.3f;
+        tKeyTimer.fMaxTime = 0.1f;
         desc.tKeyTimer = tKeyTimer;
 
         if (FAILED(pActionState->Add_State(ENUM_TO_UINT(State::LAND), CState_Land::Create(pActionState, &desc))))

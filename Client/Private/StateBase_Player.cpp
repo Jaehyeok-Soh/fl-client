@@ -51,12 +51,12 @@ void CStateBase_Player::Update(const _float fTimeDelta)
 {
 #ifdef _DEBUG
 	//WINDOW_DEBUG
-	//std::wstring msg = L"State: ";
-	//std::wstring ws(m_strName.begin(), m_strName.end());
-	//msg += ws;
+	std::wstring msg = L"State: ";
+	std::wstring ws(m_strName.begin(), m_strName.end());
+	msg += ws;
 
-	//msg += L" / AniIdx: ";
-	//msg += std::to_wstring(m_iMainAnimIdx);
+	msg += L" / AniIdx: ";
+	msg += std::to_wstring(m_iMainAnimIdx);
 	//SetWindowText(g_hWnd, msg.c_str());
 #endif
 
@@ -81,7 +81,7 @@ void CStateBase_Player::Update(const _float fTimeDelta)
 			return;
 
 		if (Check_JumpKey(fTimeDelta))
- 			return;
+			return;
 
 		if (Check_DashKey(fTimeDelta))
 			return;
