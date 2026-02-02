@@ -510,6 +510,27 @@ void CTransform::Force_Clear()
 	m_fDragK = { 0.f };
 }
 
+void CTransform::MoveArgWorld_ToMyWorld(Matrix& vNewWorld, _bool isChangeThis)
+{
+	vNewWorld *= m_matWorld;
+
+	if (isChangeThis)
+		m_matWorld = vNewWorld;
+}
+
+void CTransform::MoveMyWorld_ToArgWorld(Matrix& vNewWorld, _bool isChangeArg)
+{
+	m_matWorld *= vNewWorld;
+
+	if (isChangeArg)
+		vNewWorld = m_matWorld;
+}
+
+void CTransform::Add_Position(const Vec3& vAddPos)
+{
+	m_matWorld.Translation(Get_Info(TRANSFORM_INFO_STATE::POS) + vAddPos);
+}
+
 CTransform* CTransform::Create()
 {
 	CTransform* pInstance = new CTransform();

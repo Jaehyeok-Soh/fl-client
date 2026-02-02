@@ -3,8 +3,8 @@
 #include "DataDocument_Example.h"
 #include "GameInstance.h"
 
-CBuilder_Example::CBuilder_Example(ID3D11Device* pDevice, ID3D11DeviceContext* pDeviceContext)
-	: Super(pDevice, pDeviceContext)
+CBuilder_Example::CBuilder_Example(ID3D11Device* pDevice, ID3D11DeviceContext* pDeviceContext, _uint iLevelID)
+	: Super(pDevice, pDeviceContext, iLevelID)
 {
 }
 
@@ -73,9 +73,9 @@ HRESULT CBuilder_Example::Create_Light(const DTO::TExample_LightData& data)
 	return S_OK;
 }
 
-CBuilder_Example* CBuilder_Example::Create(ID3D11Device* pDevice, ID3D11DeviceContext* pDeviceContext)
+CBuilder_Example* CBuilder_Example::Create(ID3D11Device* pDevice, ID3D11DeviceContext* pDeviceContext, _uint iLevelID)
 {
-	CBuilder_Example* pInstance = new CBuilder_Example(pDevice, pDeviceContext);
+	CBuilder_Example* pInstance = new CBuilder_Example(pDevice, pDeviceContext, iLevelID);
 	if (FAILED(pInstance->Initialize()))
 	{
 		MSG_BOX("CBuilder_Example::Create, Failed");

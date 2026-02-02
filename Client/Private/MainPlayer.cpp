@@ -55,7 +55,13 @@ HRESULT CMainPlayer::Initialize(void* pArg)
     if (FAILED(Ready_Weapons()))
         return E_FAIL;
 
-    if (FAILED(Add_Component<CPlayerControlContext>(0 /*static*/, L"Prototype_Component_ControlContext_Player", nullptr)))
+
+    CPlayerControlContext::PLAYER_CONTROLCONTEXT_DESC tDesc = {};
+    tDesc.FKeys = CPlayerControlContext::KEYFLAGS::MOVE     | CPlayerControlContext::KEYFLAGS::JUMP
+                | CPlayerControlContext::KEYFLAGS::DASH     | CPlayerControlContext::KEYFLAGS::SPECIAL
+                | CPlayerControlContext::KEYFLAGS::COMBO    | CPlayerControlContext::KEYFLAGS::SKILL1
+                | CPlayerControlContext::KEYFLAGS::SKILL2   | CPlayerControlContext::KEYFLAGS::INTERACT;
+    if (FAILED(Add_Component<CPlayerControlContext>(0 /*static*/, L"Prototype_Component_ControlContext_Player", &tDesc)))
         return E_FAIL;
 
     if (FAILED(Ready_Colliders()))
@@ -92,6 +98,8 @@ HRESULT CMainPlayer::Awake(const _uint iCurrentLevelID)
 void CMainPlayer::Update_Priority(const _float fTimeDelta)
 {
     Super::Update_Priority(fTimeDelta);
+
+    Get_Component<CPlayerControlContext>()->Count_Time(fTimeDelta);
 }
 
 void CMainPlayer::Update(const _float fTimeDelta)

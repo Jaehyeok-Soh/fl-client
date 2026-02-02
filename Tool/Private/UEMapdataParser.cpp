@@ -20,6 +20,8 @@ CUEMapdataParser::CUEMapdataParser()
 HRESULT CUEMapdataParser::Initialize(ID3D11Device* pDevice, ID3D11DeviceContext* pContext)
 {
 	m_vecTypeFilter = { "StaticMeshComponent" , "InstancedStaticMeshComponent" };
+	m_vecMtlTextureFilter = { "PM_Diffuse","PM_Normals","PM_SpecularMasks","PM_Emissive"};
+
 	m_vecOuterFilter = {"LOD"};
 	m_umapConvertedMapData.clear();
 	m_umapUnreal_Map_Data.clear();
@@ -89,7 +91,6 @@ vector<CONVERTED_MAPDATA> CUEMapdataParser::Convert_UE_MapData(const vector<UE_M
 
 		tConvertedData.tUsingModelInfo.wstrName = Engine_Utils::ToWString(tUEMapData.tProperties.tStaticMesh.strObjectName);
 		tConvertedData.tUsingModelInfo.wstrPath = Engine_Utils::ToWString(tUEMapData.tProperties.tStaticMesh.strObjectPath);
-		Change_ModelPath(tConvertedData.tUsingModelInfo.wstrName, tConvertedData.tUsingModelInfo.wstrPath);
 
 		for (auto& Material : tUEMapData.tProperties.tOverrideMaterials.vecObjectInfo)
 		{
@@ -97,6 +98,8 @@ vector<CONVERTED_MAPDATA> CUEMapdataParser::Convert_UE_MapData(const vector<UE_M
 				continue;
 			tConvertedData.tUsingModelInfo.vecMaterialInfo.push_back({ false ,Engine_Utils::ToWString(Material.strObjectName) , Engine_Utils::ToWString(Material.strObjectPath) });
 		}
+		Change_UsingModelInfo(tConvertedData.tUsingModelInfo);
+
 
 		if(tConvertedData.eType == EStaticModel_Type::DEFUALT)
 		{
@@ -136,7 +139,7 @@ void CUEMapdataParser::Change_SRT(Vec3* vScale, Vec3* vPitchYawRoll, Vec3* vPosi
 
 }
 
-void CUEMapdataParser::Change_ModelPath(OUT _wstring& wstrModelName, OUT _wstring& wstrModelPath)
+void CUEMapdataParser::Change_ObjectPath(OUT _wstring& wstrModelName, OUT _wstring& wstrModelPath,EObject_Path_Type eType)
 {
 	wstring wstrName = wstrModelName;
 	wstring wstrPath = wstrModelPath;
@@ -174,11 +177,104 @@ void CUEMapdataParser::Change_ModelPath(OUT _wstring& wstrModelName, OUT _wstrin
 	}
 
 	wstrModelName = path(wstrPath).filename().stem().wstring();
-	wstrModelPath = L"Map/" + path(wstrPath).parent_path().wstring() + L"/Model/" + wstrModelName + L".fbx";
-
+	if (eType == EObject_Path_Type::Mtl)
+	{
+		wstrModelPath = wstring(g_wszAssetRelativePath) + L"Map/" + path(wstrPath).parent_path().wstring()+ L"/" + wstrModelName + L".json";
+		//if (!std::filesystem::exists(wstrModelPath))
+		//	MSG_BOX(" 변환된 Mtl Path 값이 존재하지 않습니다 [ 확인 바람 ] ");
+	}
+	else if (eType == EObject_Path_Type::Model)
+	{
+		wstrModelPath = L"Map/" + path(wstrPath).parent_path().wstring() + L"/Model/" + wstrModelName + L".fbx";
+	}
+	else if (eType == EObject_Path_Type::Tex)
+	{
+		wstrModelPath = wstring(g_wszAssetRelativePath) + L"Map/" + path(wstrPath).parent_path().wstring() + L"/" + wstrModelName + L".png";
+	}
 
 	/* Lies of P */
 	//wstrModelName = path(wstrPath).filename().stem().wstring();
+}
+
+void CUEMapdataParser::Change_UsingModelInfo(OUT USING_MODEL_INFO& tUsingModelInfo)
+{
+	/* Converted 된 이후 Mesh 파일 경로 변환 */
+	Change_ObjectPath(tUsingModelInfo.wstrName,tUsingModelInfo.wstrPath,EObject_Path_Type::Model);
+	/* Converted 된 이후 Material Json이 저장된 경로 변환 */
+	Change_Material_JsonFile_Path(tUsingModelInfo.wstrMtl_JsonFile_Path,tUsingModelInfo.wstrPath);
+
+
+	for (auto& UsingMtlInfo : tUsingModelInfo.vecMaterialInfo)
+	{
+		Change_UsingMaterialInfo(UsingMtlInfo);
+	}
+}
+
+void CUEMapdataParser::Change_Material_JsonFile_Path(OUT wstring& wstrMaterialJsonFilePath, const wstring& wstrModelPath)
+{
+	/* 모델 패스에서 한번뒤로나가서 Meterial 폴더로 변환 */
+	path pathChange{ wstrModelPath };
+	wstring wstrModelName = path(pathChange).filename().stem();
+	pathChange._Remove_filename_and_separator();
+	pathChange = pathChange.parent_path();
+
+	pathChange = g_wszModelRelativePath + pathChange.wstring() + L"/Material";
+
+	if (!std::filesystem::exists(pathChange))
+	{
+		//MSG_BOX(" Model Material 폴더 경로를 찾을 수 없습니다 [  확인 바랍니다 ] ");
+		return;
+	}
+
+	pathChange += L"/" + wstrModelName + L".json";
+
+	if (!std::filesystem::exists(pathChange))
+	{
+		MSG_BOX(" 저장된 모델의 메테리얼 Json 파일 경로를 찾을 수 없습니다 [  확인 바랍니다 ] ");
+		return;
+	}
+
+	wstrMaterialJsonFilePath = pathChange;
+}
+
+void CUEMapdataParser::Change_UsingMaterialInfo(OUT USING_MATERIAL_INFO& tUsingMtlInfo)
+{
+	if (tUsingMtlInfo.isNull == true) return;
+
+	tUsingMtlInfo.vecUsingTextureInfo;
+
+	/* 임마를 다시 변환 시켜줘야 함 */
+	tUsingMtlInfo.wstrOriginMtl_JsonFile_Path;
+
+	Change_ObjectPath(tUsingMtlInfo.wstrOriginMtl_JsonFile_Name, tUsingMtlInfo.wstrOriginMtl_JsonFile_Path,EObject_Path_Type::Mtl);
+	Change_UsingMaterialTexturePath(tUsingMtlInfo);
+}
+
+void CUEMapdataParser::Change_UsingMaterialTexturePath(OUT USING_MATERIAL_INFO& tUsingMtlInfo)
+{
+	if (tUsingMtlInfo.isNull == true) return;
+
+	std::ifstream is (tUsingMtlInfo.wstrOriginMtl_JsonFile_Path);
+
+	if (!is.is_open()) return;
+
+	json LoadJson{};
+	is >> LoadJson;
+
+	if (!LoadJson.contains("Textures")) return;
+
+	auto& j = LoadJson["Textures"];
+	
+	for (auto& MtlTexFilter : m_vecMtlTextureFilter)
+	{
+		if (j.contains(MtlTexFilter))
+		{
+			std::pair<wstring, wstring> TexInfo{ Engine_Utils::ToWString(MtlTexFilter) , Engine_Utils::ToWString(j.value(MtlTexFilter,""))};
+			Change_ObjectPath(TexInfo.second, TexInfo.second,EObject_Path_Type::Tex);
+			tUsingMtlInfo.vecUsingTextureInfo.push_back(TexInfo);
+		}
+	}
+
 }
 
 vector<UE_MAP_DATA>* CUEMapdataParser::Get_Unreal_MapData(const wstring& FindKey)
@@ -410,7 +506,7 @@ void to_json(json& SaveJson, const UE_OVERRIDEMATERIALS& tData)
 		{
 			json Object{};
 			Object = tData.vecObjectInfo[i];
-			Object.push_back(Object);
+			SaveJson.push_back(Object);
 		}
 	}
 }
@@ -481,7 +577,7 @@ void to_json(json& SaveJson, const UE_PROPERTIES& tData)
 
 	SaveJson["StaticMesh"] = tData.tStaticMesh;
 	SaveJson["AttachParent"] = tData.tAttachParent;
-	SaveJson["OverrideMaterials"], tData.tOverrideMaterials;
+	SaveJson["OverrideMaterials"] = tData.tOverrideMaterials;
 
 	write_vec3_xyz(SaveJson["RelativeLocation"], tData.vRelativeLocation);
 	write_vec3_PitchYawRoll(SaveJson["RelativeRotation"], tData.vRelativeRotation);
@@ -543,8 +639,16 @@ void from_json(const json& LoadJson , UE_MAP_DATA& tData)
 
 void to_json(json& SaveJson, const USING_MATERIAL_INFO& tData)
 {
-	SaveJson["Name"] = Engine_Utils::ToString(tData.wstrName);
-	SaveJson["Path"] = Engine_Utils::ToString(tData.wstrPath);
+	SaveJson["Name"] = Engine_Utils::ToString(tData.wstrOriginMtl_JsonFile_Name);
+	SaveJson["Path"] = Engine_Utils::ToString(tData.wstrOriginMtl_JsonFile_Path);
+
+	if (tData.vecUsingTextureInfo.empty()) return;
+
+	for (auto& pairTextureInfo : tData.vecUsingTextureInfo)
+	{
+		SaveJson["Textures"].push_back({ Engine_Utils::ToString(pairTextureInfo.first), Engine_Utils::ToString(pairTextureInfo.second) });
+	}
+
 }
 void to_json(json& SaveJson, const USING_MODEL_INFO& tData)
 {
@@ -572,6 +676,7 @@ void to_json(json& SaveJson, const CONVERTED_MAPDATA& tData)
 }
 
 #pragma endregion
+
 
 void read_vec3_defaultscale(const json& _j, Vec3& vOut)
 {
@@ -617,8 +722,6 @@ void write_vec4_Quat(json& _j, const Quat& vOut)
 	_j["Z"] = vOut.z;
 	_j["W"] = vOut.w;
 }
-
-
 
 
 NS_END

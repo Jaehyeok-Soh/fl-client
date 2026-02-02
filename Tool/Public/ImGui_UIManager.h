@@ -20,7 +20,6 @@ class CImGui_UIManager final : public CBase
 private:
 	CImGui_UIManager();
 	virtual ~CImGui_UIManager() = default;
-
 public:
 	HRESULT Safe_Add_Canvas(CToolCanvas* pCanvas);
 
@@ -50,7 +49,6 @@ public:
 
 private:
 	CGameInstance* m_pGameInstance = { nullptr };
-
 	vector<CToolCanvas*> m_vecCanvas;
 private:
 	int32_t m_iCurCanvasIndex = {};
