@@ -159,8 +159,8 @@ namespace Tool
 	enum class EClientLevelType : unsigned int
 	{
 		STATIC = 0,
-		LOGO,
 		LOADING,
+		LOGO,
 		END
 	};
 

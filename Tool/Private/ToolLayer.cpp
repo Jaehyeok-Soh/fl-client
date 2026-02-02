@@ -39,10 +39,12 @@ HRESULT CToolLayer::Initialize(void* pArg)
 
 	TOOLLAYER_DESC* pDesc = static_cast<TOOLLAYER_DESC*>(pArg);
 	m_strName = pDesc->strTag;
+	m_strCanvasName = pDesc->strCanvasName;
+	m_iCanvasIndex = pDesc->iCanvasIndex;
+	m_isVisible = TRUE;
 
 	if (FAILED(Ready_Components(pDesc)))
 		return E_FAIL;
-
 	return S_OK;
 }
 
@@ -51,7 +53,6 @@ HRESULT CToolLayer::Awake(const _uint iCurrentLevelID)
 	if (FAILED(Super::Awake(iCurrentLevelID)))
 		return E_FAIL;
 
-	Set_SizeToTextureScale();
 	return S_OK;
 }
 
@@ -97,6 +98,7 @@ HRESULT CToolLayer::Bind_ShaderResources()
 void CToolLayer::Sync_Data()
 {
 	m_tLayerData.strTag = m_strName;
+	m_tLayerData.strCanvasName = m_strCanvasName;
 }
 
 HRESULT CToolLayer::Safe_Add_UI(CToolUI* pUI)

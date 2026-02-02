@@ -5,11 +5,17 @@
 #include "ToolLayer.h"
 #include "ToolUI.h"
 
+#include "ImGui_UIManager.h"
 #include "GameInstance.h"
 
 CBuilder_UI::CBuilder_UI(ID3D11Device* pDevice, ID3D11DeviceContext* pDeviceContext, _uint iLevelID)
 	:Super(pDevice, pDeviceContext, iLevelID)
 {
+}
+
+HRESULT CBuilder_UI::Initialize()
+{
+	return S_OK;
 }
 
 HRESULT CBuilder_UI::Build(const CDataDocumentBase& document)
@@ -78,6 +84,9 @@ HRESULT CBuilder_UI::Create_CanvasDTO(const DTO::TUI_CanvasData& data)
 	 if (pResult == nullptr)
 		return E_FAIL;
 
+	 if (FAILED(CImGui_UIManager::GetInstance()->Safe_Add_Canvas(dynamic_cast<CToolCanvas*>(pResult))))
+		 return E_FAIL;
+
 	return S_OK;
 }
 
@@ -91,10 +100,17 @@ HRESULT CBuilder_UI::Create_LayerDTO(const DTO::TUI_LayerData& data)
 	Desc.iLevelIndex = static_cast<uint32_t>(ELevelType::UI);
 
 	Desc.strTag = data.strTag;
-
+	Desc.isInitVisible = TRUE;
 	CGameObject* pResult = m_pGameInstance->Add_GameObject(Desc.iLevelIndex, g_wszPrototypeTagLayer, 
 		Desc.iLevelIndex, Engine_Utils::ToWString( Desc.strTag ), &Desc);
 	if (pResult == nullptr)
+		return E_FAIL;
+	 
+	auto* pCanvas = CImGui_UIManager::GetInstance()->Safe_Access_Canvas(CImGui_UIManager::GetInstance()->Get_CurCanvasIndex());
+	if (nullptr == pCanvas)
+		return E_FAIL;
+
+	if (FAILED(pCanvas->Safe_Add_Layer(dynamic_cast<CToolLayer*>(pResult))))
 		return E_FAIL;
 
 	return S_OK;
@@ -113,18 +129,38 @@ HRESULT CBuilder_UI::Create_GenericUIDTO(const DTO::TUI_GenericUIData& data)
 	Desc.iRectTransformType = data.iRectTransformType;
 	Desc.iUIType = data.iUIType;
 	Desc.fWidth = data.fWidth;
-	Desc.fHeight = data.fHeight;
+	Desc.fHeight = data.fHeight; 
 	Desc.fX = data.fPosX;
 	Desc.fY = data.fPosY;
 	Desc.fZ = data.fPosZ;
+	Desc.strInitTextureTag = data.strTextureTag;
+	Desc.iInitTextureIndex = data.iTextureIndex;
 
-	CGameObject* pResult = m_pGameInstance->Add_GameObject(Desc.iLevelIndex, g_wszPrototypeTagLayer,
+	CGameObject* pResult = m_pGameInstance->Add_GameObject(Desc.iLevelIndex, g_wszPrototypeTagUI,
 		Desc.iLevelIndex, Engine_Utils::ToWString(data.strTag), &Desc);
 
 	if (pResult == nullptr)
 		return E_FAIL;
 
+	auto* pLayer = CImGui_UIManager::GetInstance()->Safe_Access_Layer(CImGui_UIManager::GetInstance()->Get_CurLayerIndex());
+	if (nullptr == pLayer)
+		return E_FAIL;
+
+	if (FAILED(pLayer->Safe_Add_UI(dynamic_cast<CToolUI*>(pResult))))
+		return E_FAIL;
+
 	return S_OK;
+}
+
+CBuilder_UI* CBuilder_UI::Create(ID3D11Device* pDevice, ID3D11DeviceContext* pDeviceContext, _uint iLevelID)
+{
+	CBuilder_UI* pInstance = new CBuilder_UI(pDevice, pDeviceContext, iLevelID);
+	if (FAILED(pInstance->Initialize()))
+	{
+		MSG_BOX("CBuilder_UI::Create, Failed");
+		Safe_Release(pInstance);
+	}
+	return pInstance;
 }
 
 void CBuilder_UI::Free()

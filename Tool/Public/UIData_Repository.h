@@ -35,12 +35,16 @@ private:
 	CUIData_Repository();
 	virtual ~CUIData_Repository() = default;
 
+	void Initialize(ID3D11Device* pDevice, ID3D11DeviceContext* pDeviceContext);
+
 public:
-	HRESULT Load_UIData();
+	HRESULT Load_UIData(const _wstring& strFilePath);
 	HRESULT Save_UIData();
 
 private:
 	CGameInstance* m_pGameInstance = { nullptr };
+	ID3D11Device* m_pDevice = { nullptr };
+	ID3D11DeviceContext* m_pDeviceContext = { nullptr };
 
 public:
 	virtual void Free()override;
@@ -107,7 +111,6 @@ static const _string& RectTransformToString(ERectTransform eType)
 	}
 	return sEMPTY;
 }
-
 static ERectTransform StringToRectTransform(const _string& str)
 {
 	if (::strcmp(str.c_str(), "LT") == 0) return ERectTransform::LT;

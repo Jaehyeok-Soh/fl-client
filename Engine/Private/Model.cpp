@@ -8,6 +8,10 @@
 #include "Material.h"
 #include "MaterialInstance.h"
 #include "ModelAnimation.h"
+
+#include "GameObject.h"
+
+
 #include "GameInstance.h"
 
 CModel::CModel(ID3D11Device* pDevice, ID3D11DeviceContext* pDeviceContext)
@@ -80,7 +84,7 @@ HRESULT CModel::Initialize_Prototype(void* pArg)
 	} break;
 	case EModelType::ANIM:
 	{
-		hr = Load_AnimModel(pDesc->wstrModelFolderName);
+		hr = Load_AnimModel(pDesc->wstrModelFolderName, pDesc->pAniChannelData);
 	} break;
 	case EModelType::BONE:
 	{
@@ -184,7 +188,7 @@ HRESULT CModel::Set_PassByMesh(class CShader* pShader, _uint iMeshIndex)
 
 void CModel::Play_Animation(_float fTimeDelta)
 {
-	m_bIsAnimFinished = m_vecAnimations[m_iCurrentAnimIndex]->Update_TransformationMatrices(m_vecBones, fTimeDelta, m_isAnimLoop);
+	m_bIsAnimFinished = m_vecAnimations[m_iCurrentAnimIndex]->Update_TransformationMatrices(m_vecBones, fTimeDelta, m_isAnimLoop, m_pOwner->Get_Component<CTransform>());
 	
 	for (size_t i = 0; i < m_vecBones.size(); ++i)
 	{
@@ -390,6 +394,14 @@ wstring CModel::Get_MaterialName(_uint iIndex) const
 	return wstring(m_vecMaterials[iIndex]->Get_Name());
 }
 
+_wstring CModel::Get_AnimationName(_uint iAniIndex) const
+{
+	if (iAniIndex >= m_vecAnimations.size())
+		return L"";
+
+	return wstring(m_vecAnimations[iAniIndex]->Get_Name());
+}
+
 void CModel::Set_AnimationPlayRate(_uint iIndex, _float fValue)
 {
 	if (m_vecAnimations[iIndex])
@@ -422,7 +434,7 @@ HRESULT CModel::Load_NonAnimModel(const wstring& wstrModelName)
 	return S_OK;
 }
 
-HRESULT CModel::Load_AnimModel(const wstring& wstrModelName)
+HRESULT CModel::Load_AnimModel(const wstring& wstrModelName, DATA_ANIMCHANNEL* pData)
 {
 	CModelLoader* pModelLoader = CModelLoader::Create(m_pDevice, m_pDeviceContext, wstrModelName.c_str());
 	
@@ -430,7 +442,7 @@ HRESULT CModel::Load_AnimModel(const wstring& wstrModelName)
 		return E_FAIL;
 	if (FAILED(pModelLoader->Read_Material(&m_vecMaterials)))
 		return E_FAIL;
-	if (FAILED(pModelLoader->Read_Animation(&m_vecAnimations)))
+	if (FAILED(pModelLoader->Read_Animation(&m_vecAnimations, pData)))
 		return E_FAIL;
 	
 	Safe_Release(pModelLoader);
@@ -491,8 +503,8 @@ CModel* CModel::Get_Clone(const wstring& wstrPrototypeTag)
 
 void CModel::Blend_Animation(_float fTimeDelta, _float fRatio)
 {
-	m_vecAnimations[m_iPrevAnimIndex]->SetUp_PoseDatasForBlending(m_vecPrevAnimationPose, fTimeDelta);
-	m_vecAnimations[m_iCurrentAnimIndex]->SetUp_PoseDatasForBlending(m_vecCurrAnimationPose, fTimeDelta);
+	m_vecAnimations[m_iPrevAnimIndex]->SetUp_PoseDatasForBlending(m_vecPrevAnimationPose, fTimeDelta, m_pOwner->Get_Component<CTransform>());
+	m_vecAnimations[m_iCurrentAnimIndex]->SetUp_PoseDatasForBlending(m_vecCurrAnimationPose, fTimeDelta, m_pOwner->Get_Component<CTransform>());
 
 	_uint i = {};
 	for (auto& pBone : m_vecBones)

@@ -13,14 +13,25 @@ enum class EUIType : _uint
 };
 inline constexpr _uint g_UITypeCount{ ENUM_TO_UINT(EUIType::END) };
 
+NLOHMANN_JSON_SERIALIZE_ENUM(EUIType,
+	{
+		{EUIType::CANVAS, "CANVAS"},
+		{EUIType::LAYER, "LAYER"},
+		{EUIType::GENERICUI, "GENERICUI"}
+	}
+)
+
 /////////////////-------------------  Data Struct  -------------------/////////////////
 struct TUI_GenericUIData
 {
 	static constexpr EUIType eType = EUIType::GENERICUI;
 	std::string strTag;
-	uint32_t iLayerIndex;
+	std::string strCanvasName;
+	std::string strLayerName;
+
 	uint32_t iRectTransformType;
 	uint32_t iUIType;
+
 	_float fWidth;
 	_float fHeight;
 	_float fPosX;
@@ -34,6 +45,7 @@ struct TUI_LayerData
 {
 	static constexpr EUIType eType = EUIType::LAYER;
 	std::string strTag;
+	std::string strCanvasName;
 };
 
 struct TUI_CanvasData
@@ -41,6 +53,7 @@ struct TUI_CanvasData
 	static constexpr EUIType eType = EUIType::CANVAS;
 	std::string strTag;
 
+	uint32_t iLevelIndex;
 	_float fWidth;
 	_float fHeight;
 	_float fPosX;

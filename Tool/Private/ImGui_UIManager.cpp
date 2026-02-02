@@ -21,7 +21,6 @@ HRESULT CImGui_UIManager::Safe_Add_Canvas(CToolCanvas* pCanvas)
 		return E_FAIL;
 
 	m_vecCanvas.push_back(pCanvas);
-	m_iCurCanvasIndex++;
 	return S_OK;
 }
 
@@ -239,16 +238,6 @@ CToolUI* CImGui_UIManager::Safe_Access_UI(int32_t index)
 void CImGui_UIManager::Free()
 {
 	Safe_Release(m_pGameInstance);
-
-	for (auto* p : m_vecCanvas)
-	{
-		if (nullptr == p)
-			continue;
-
-		Safe_Release(p);
-	}
-	m_vecCanvas.clear();
-
 	Super::Free();
 }
 

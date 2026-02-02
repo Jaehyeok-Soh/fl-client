@@ -1,5 +1,6 @@
 #include "Engine_pch.h"
 #include "DataDocument_UI.h"
+#include "DataStruct_UI.h"
 #pragma push_macro("new")
 #undef new
 #include "json.hpp"
@@ -110,7 +111,7 @@ HRESULT CDataDocument_UI::FromJson(const json& j)
 	if (j.contains("Category"))
 	{
 		const DTO::ECategory eCategory = j.at("Category").get<DTO::ECategory>();
-		if (eCategory != DTO::ECategory::MAP)
+		if (eCategory != DTO::ECategory::UI)
 			return E_FAIL;
 	}
 	else

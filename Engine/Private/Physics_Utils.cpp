@@ -21,7 +21,7 @@ CPhysics_Utils::CPhysics_Utils(ID3D11Device* pDevice, ID3D11DeviceContext* pCont
 HRESULT CPhysics_Utils::Initialize()
 {
 #ifdef _DEBUG
-	m_pBatch = new PrimitiveBatch<VertexPositionColor>(m_pContext, 10000, 10000);
+	m_pBatch = new PrimitiveBatch<VertexPositionColor>(m_pContext, 200000, 200000);
 	m_pEffect = new BasicEffect(m_pDevice);
 	m_pEffect->SetVertexColorEnabled(true);
 

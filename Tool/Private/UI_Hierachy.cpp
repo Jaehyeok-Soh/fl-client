@@ -5,6 +5,7 @@
 #include "ToolUI.h"
 #include "ImGui_ToolManager.h"
 #include "ImGui_UIManager.h"
+#include "GameInstance.h"
 
 CUI_Hierachy::CUI_Hierachy(const _char* pLabel, CLevel* pOwner, ID3D11Device* pDevice, ID3D11DeviceContext* pDeviceContext)
 	:Super(pLabel, pOwner, pDevice, pDeviceContext),
@@ -173,7 +174,15 @@ HRESULT CUI_Hierachy::Render(CToolObject* pGo)
 	ImGui::Text("Selected Root=%d, Child=%d, Grand=%d", s_iSelRoot, s_iSelChild, s_iSelGrand);
 	
 	
+	ImGui::Text("Screen Mouse Pos %d, %d", CGameInstance::GetInstance()->Get_MousePos().x, CGameInstance::GetInstance()->Get_MousePos().y);
+	ImGui::Text("Viewport Mouse Pos %.2f, %.2f", CImGui_ToolManager::GetInstance()->Get_ViewportMousePos().x, CImGui_ToolManager::GetInstance()->Get_ViewportMousePos().y);
+	ImGui::Text("Viewport Size %.2f, %.2f", CImGui_ToolManager::GetInstance()->Get_CurViewportSize().x, CImGui_ToolManager::GetInstance()->Get_CurViewportSize().y);
+
+	auto* pUI = CImGui_UIManager::GetInstance()->Safe_Access_UI(CImGui_UIManager::GetInstance()->Get_CurUIIndex());
+	if(nullptr != pUI)
+		ImGui::Text("ui Render pos %.2f, %.2f", pUI->Get_RenderPos().x, pUI->Get_RenderPos().y);
 	ImGui::End();
+
 	return S_OK;
 }
 

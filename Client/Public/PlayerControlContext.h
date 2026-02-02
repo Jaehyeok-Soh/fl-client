@@ -2,6 +2,9 @@
 #include "Client_Defines.h"
 #include "ControlContext.h"
 
+
+/* 플레이어 키 인풋에 대한 관리를 한다 */
+
 NS_BEGIN(Engine)
 class CGameObject;
 class CCameraMan;
@@ -14,25 +17,46 @@ class CPlayerControlContext final : public CControlContext
 {
 	using Super = CControlContext;
 public:
+	enum KEYFLAGS : Flags
+	{
+		MOVE		= 0x00001
+		, JUMP		= 0x00002
+		, DASH		= 0x00004
+		, SPECIAL   = 0x00008
+		, COMBO		= 0x00010
+		, SKILL1	= 0x00020
+		, SKILL2	= 0x00040
+		, INTERACT	= 0x00080
+	};
+
 	typedef struct tagPlayerControlContextDesc
 	{
-
-	}PLAYERCC_DESC;
+		Flags	FKeys				= {};
+		_float	fDashCountTime		= { 1.f };
+	}PLAYER_CONTROLCONTEXT_DESC;
 private:
 	CPlayerControlContext();
-	explicit CPlayerControlContext(const CControlContext& rhs);
+	explicit CPlayerControlContext(const CPlayerControlContext& rhs);
 	virtual ~CPlayerControlContext() = default;
 
 	virtual HRESULT Initialize_Prototype() override;
 	virtual HRESULT Initialize(void* pArg) override;
 public:
 	virtual HRESULT Awake(const _uint iLevelIndex) override;
+
+public:
+	void Count_Time(const _float fTimeDelta); // 내부에서 키 인풋 쿨타임을 카운트 하기 위함 등
+
 public:
 	_bool Is_FootRayEnabled();
 	void Set_Grounded(_bool bGrounded, const COLMESH_HITINFO* pHit);
 	void Clear_Grounded();
 	ROPE_INFO& Get_RopeInfo() { return m_CurrentRopeInfo; }
 	void Set_RopeInfo(const ROPE_INFO& ropeInfo) { m_CurrentRopeInfo = ropeInfo; }
+	void Set_CheckKey(KEYFLAGS FKey, _bool bOn); // 외부에서 onoff를 해야할 시
+	const TIME_COUNTER& Get_DashRestTimer() { return m_tDashTimeCounter; }
+
+public:
 	virtual _bool Is_LeftAttackPressed() override;
 	virtual _bool Is_RightAttackPressed() override;
 
@@ -56,11 +80,18 @@ public:
 	virtual Vec3 Get_MoveDir() override;
 private:
 	void OnChangeLockonTarget(CGameObject* pGo);
+
 private:
-	DelegateHandle m_hChangeLockon;
-	CCameraMan* m_pOwnerTargetCamera = { nullptr };
-	COLMESH_HITINFO m_CurrentGroundInfo = {};
-	ROPE_INFO m_CurrentRopeInfo = {};
+	DelegateHandle		m_hChangeLockon;
+	CCameraMan*			m_pOwnerTargetCamera	= { nullptr };
+	COLMESH_HITINFO		m_CurrentGroundInfo		= {};
+	ROPE_INFO			m_CurrentRopeInfo		= {};
+
+private:
+	Flags				m_FKeys				= { 0 };
+	_uint				m_iDashRestCount	= { 2 };
+	TIME_COUNTER		m_tDashTimeCounter	= { };
+
 public:
 	static CPlayerControlContext* Create();
 	virtual CComponent* Clone(void* pArg) override;

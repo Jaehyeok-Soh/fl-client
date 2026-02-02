@@ -18,12 +18,6 @@ public:
 	virtual void Update(const _float fTimeDelta)override;
 	virtual HRESULT Render(CToolObject* pGo) override;
 
-	/* 플로우 함수 */
-private:
-
-	/* 기능 */
-private:
-
 private:
 	CImGui_ToolManager* m_pToolManager = { nullptr };
 	ImGuiWindowFlags m_Flag = {};

@@ -8,13 +8,16 @@ class ENGINE_DLL CUIObject abstract : public CGameObject
 	using Super = CGameObject;
 
 public:
-	enum EInteract : uint32_t {
-		NONE		= 0, 
-		HOVER		= 1u << 0,
-		PRESSING	= 1u << 1,
-		CLICK		= 1u << 2,
-		SELECTED	= 1u << 3,
+	enum EInteractState : uint32_t {
+		NONE				= 0, 
+		HOVERING_ENTER		= 1u << 0,
+		HOVERING_EXIT		= 1u << 1,
+		PRESS_ENTER			= 1u << 2,
+		PRESSING			= 1u << 3,
+		PRESS_EXIT			= 1u << 4,
+		CLICKED				= 1u << 4,
 	};
+
 	typedef struct tagUIObjectDesc : public Super::GAMEOBJECT_DESC
 	{
 		_bool isAlpha;
@@ -44,7 +47,6 @@ public:
 	virtual HRESULT Render() override;
 
 public:
-	virtual void Calc_InteractState_Mouse();
 	_float Get_Width() const { return m_fWidth; }
 	_float Get_Height() const { return m_fHeight; }
 	_float Get_PosX() const { return m_fX; }
@@ -59,6 +61,8 @@ public:
 	_bool IsVisible() const { return m_isVisible; }
 	virtual void Set_Visible() { m_isVisible = true; }
 	virtual void Set_Invisible() { m_isVisible = false; }
+	uint32_t Get_InteractState() const { return m_iInteractState; }
+	uint32_t& Get_InteractState_Ref() { return m_iInteractState; }
 	void Located_Left_In_Viewport();
 	void Located_Right_In_Viewport();
 	void Located_Top_In_Viewport();

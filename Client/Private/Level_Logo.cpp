@@ -9,6 +9,7 @@
 //=================
 // Builder
 //=================
+#include "Builder_UI.h"
 #include "Builder_Example.h"
 #include "BuilderSystem.h"
 #include "EffectBuilder.h"
@@ -22,10 +23,15 @@
 #include "CameraMan_Targeter.h"
 #include "Effect.h"
 #include "EffectObject.h"
+#include "Physics_LandScape.h"
 
 //=================
 // UI
 //=================
+#include "DataDocument_UI.h"
+#include "DataStruct_UI.h"
+#include "Canvas.h"
+#include "UILayer.h"
 #include "GenericUI.h"
 
 #include "GameInstance.h"
@@ -72,7 +78,6 @@ HRESULT CLevel_Logo::Awake(const _uint iLevelID)
 	if (FAILED(Ready_Camera_Setting(iLevelID)))
 		return E_FAIL;
 
-	m_pGameInstance->PlayBGM(L"Music_Logo", 0.1f);
 	return S_OK;
 }
 
@@ -96,9 +101,10 @@ HRESULT CLevel_Logo::Render()
 
 HRESULT CLevel_Logo::Ready_Builders()
 {
-	if (FAILED(Ready_Builder(DTO::ECategory::MAP, CBuilder_Example::Create(m_pDevice, m_pDeviceContext, ENUM_TO_UINT(ELevelType::LOGO)))))
+	if (FAILED(Ready_Builder(DTO::ECategory::MAP, CBuilder_Example::Create(m_pDevice, m_pDeviceContext, static_cast<_uint>(ELevelType::LOGO)))))
 		return E_FAIL;
-
+	if (FAILED(Ready_Builder(DTO::ECategory::UI, CBuilder_UI::Create(m_pDevice, m_pDeviceContext, static_cast<_uint>(ELevelType::STATIC)))))
+		return E_FAIL;
 	if (FAILED(Ready_Builder(DTO::ECategory::EFFECT, EffectBuilder::Create(m_pDevice, m_pDeviceContext, ENUM_TO_UINT(ELevelType::LOGO)))))
 		return E_FAIL;
 
@@ -140,8 +146,31 @@ HRESULT CLevel_Logo::Ready_Player_Layer(const wstring& wstrLayerTag)
 
 HRESULT CLevel_Logo::Ready_UI_Layer(const wstring& wstrLayerTag)
 {
+	ELevelType eLevelType = ELevelType::LOGO;
+	DTO::ECategory eCategory = DTO::ECategory::UI;
+	_uint iLevelID = ENUM_TO_UINT(eLevelType);
 
-	
+	if (FAILED(m_pGameInstance->Regist_Document<CDataDocument_UI>(iLevelID, eCategory)))
+		return E_FAIL;
+
+	std::filesystem::path strFolderPath = L"../../Resources/Data/UIData/Logo/";
+	vector<path> vecfiles;
+
+	if (std::filesystem::exists(strFolderPath))
+	{
+		for (auto iter : std::filesystem::directory_iterator(strFolderPath))
+		{
+			if (iter.is_regular_file())
+				vecfiles.push_back(iter.path().stem());
+
+			if (FAILED(m_pGameInstance->Load_File_Json(iLevelID, eCategory, iter.path())))
+				return E_FAIL;
+
+			if (FAILED(Build_File(iLevelID, eCategory, iter.path().stem().string())))
+				return E_FAIL;
+		}
+	}
+
 	return S_OK;
 }
 
@@ -192,7 +221,7 @@ HRESULT CLevel_Logo::Ready_Lights()
 HRESULT CLevel_Logo::Ready_Test_Terrain(const wstring& wstrLayerTag)
 {
 	{
-		CGameObject * pResult = { nullptr };
+		CGameObject* pResult = { nullptr };
 		CGameObject::GAMEOBJECT_DESC goDesc = {};
 		CTransform::TRANSFORM_DESC TransformDesc = {};
 		TransformDesc.vPosition = { 0.f, 0.f, 0.f };
@@ -202,6 +231,21 @@ HRESULT CLevel_Logo::Ready_Test_Terrain(const wstring& wstrLayerTag)
 			L"Prototype_GameObject_Physics_Terrain",
 			ENUM_TO_UINT(ELevelType::LOGO),
 			wstrLayerTag, &goDesc)))
+			return E_FAIL;
+	}
+
+	{
+		CGameObject* pResult = { nullptr };
+		CPhysics_LandScape::PXLANDSCAPE_DESC pxDesc = {};
+		CTransform::TRANSFORM_DESC TransformDesc = {};
+		TransformDesc.vPosition = { 0.f, 0.f, 0.f };
+		pxDesc.pTransform_Desc = &TransformDesc;
+		pxDesc.wstrColliderPrototypeName = L"Prototype_Component_Physics_Collider_total_landScape_4x4";
+
+		if (!(pResult = m_pGameInstance->Add_GameObject(ENUM_TO_UINT(ELevelType::STATIC),
+			L"Prototype_GameObject_Physics_LandScape",
+			ENUM_TO_UINT(ELevelType::LOGO),
+			wstrLayerTag, &pxDesc)))
 			return E_FAIL;
 	}
 
@@ -222,7 +266,7 @@ HRESULT CLevel_Logo::Ready_Camera_Setting(const _uint iLevelIndex)
 CLevel_Logo* CLevel_Logo::Create(ID3D11Device* pDevice, ID3D11DeviceContext* pDeviceContext)
 {
 	CLevel_Logo* pInstance = new CLevel_Logo(pDevice, pDeviceContext);
-	
+
 	if (FAILED(pInstance->Initialize()))
 	{
 		MSG_BOX("CLevel_Logo::Create, Failed");
