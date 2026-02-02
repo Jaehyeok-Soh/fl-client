@@ -1,5 +1,6 @@
 #include "pch.h"
 #include "Image.h"
+#include "ToolUI.h"
 #include "GameInstance.h"
 
 CImage::CImage()
@@ -17,6 +18,7 @@ HRESULT CImage::Initialize_Prototype()
 
 HRESULT CImage::Initialize_Prototype(const IMAGE_DESC& Desc)
 {
+	m_pOwner = Desc.pOwner;
 	return S_OK;
 }
 
@@ -29,6 +31,14 @@ HRESULT CImage::Initialize(void* pArg)
 
 void CImage::Update(const _float fTimeDelta)
 {
+	m_pOwner->Set_TextureIndex(m_iTextureIndex);
+	Sync_Data();
+}
+
+void CImage::Sync_Data()
+{
+	m_tData.strOwner = m_pOwner->Get_Name();
+	m_tData.iTextureIndex = m_iTextureIndex;
 }
 
 CImage* CImage::Create(const IMAGE_DESC& Desc)

@@ -235,6 +235,18 @@
     <Filter Include="06. ImGui\01. Panel\UI\Component">
       <UniqueIdentifier>{ac792568-75d9-4e4a-84e1-ff4c4adcd6b8}</UniqueIdentifier>
     </Filter>
+    <Filter Include="04. Component\UI\Event">
+      <UniqueIdentifier>{b1afee50-372f-47ae-b73e-f7f571b3e669}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="04. Component\UI\Event\Interface">
+      <UniqueIdentifier>{b594e74a-9791-4cba-a5d1-6f84485e1d6d}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="04. Component\UI\Event\Hovering Event">
+      <UniqueIdentifier>{9d2b4fcc-9574-48fb-987b-10121fcd5d24}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="04. Component\UI\Event\Registry">
+      <UniqueIdentifier>{abc79176-4e55-4860-9641-95cfb826ec8d}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="framework.h">
@@ -482,6 +494,15 @@
     <ClInclude Include="..\Public\UIComponent_Inspector.h">
       <Filter>06. ImGui\01. Panel\UI\Component</Filter>
     </ClInclude>
+    <ClInclude Include="..\Public\IUIEvent.h">
+      <Filter>04. Component\UI\Event\Interface</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\UIEvent_Hovering.h">
+      <Filter>04. Component\UI\Event\Hovering Event</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\UI_Action_Registry.h">
+      <Filter>04. Component\UI\Event\Registry</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <Image Include="small.ico">
@@ -712,6 +733,15 @@
     </ClCompile>
     <ClCompile Include="..\Private\UIComponent_Inspector.cpp">
       <Filter>06. ImGui\01. Panel\UI\Component</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\IUIEvent.cpp">
+      <Filter>04. Component\UI\Event\Interface</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\UIEvent_Hovering.cpp">
+      <Filter>04. Component\UI\Event\Hovering Event</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\UI_Action_Registry.cpp">
+      <Filter>04. Component\UI\Event\Registry</Filter>
     </ClCompile>
   </ItemGroup>
 </Project>

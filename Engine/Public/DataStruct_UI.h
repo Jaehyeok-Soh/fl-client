@@ -18,27 +18,46 @@ NLOHMANN_JSON_SERIALIZE_ENUM(EUIType,
 	{
 		{EUIType::CANVAS, "CANVAS"},
 		{EUIType::LAYER, "LAYER"},
-		{EUIType::GENERICUI, "GENERICUI"}
+		{EUIType::GENERICUI, "GENERICUI"},
 		{EUIType::UICOMPONENT, "UICOMPONENT"}
 	}
 )
 
-/////////////////-------------------  Data Struct  -------------------/////////////////
-struct TUI_Null {};
-struct TUI_FadeTransition { int32_t a; };
-struct TUI_MoveTransition { int32_t b; };
-using MovementTransition = std::variant<TUI_Null, TUI_FadeTransition, TUI_MoveTransition>;
-
-struct TUI_DynamicMovementComponentData
+enum class EUIEvent : uint32_t
 {
-	_string strOwner;
-	std::pair<uint32_t, MovementTransition> OpeningStrategy;
-	std::pair<uint32_t, MovementTransition> UpdateStrategy;
-	std::pair<uint32_t, MovementTransition> ClosingStrategy;
+	NONE = 0,
+	HOVER_ENTER,
+	HOVER_EXIT,
+	PRESS_ENTER,
+	PRESS_EXIT,
+	CLICKED,
+	END
+};
+
+NLOHMANN_JSON_SERIALIZE_ENUM(EUIEvent,
+	{
+		{EUIEvent::NONE, "NONE"},
+		{EUIEvent::HOVER_ENTER, "HOVER_ENTER"},
+		{EUIEvent::HOVER_EXIT, "HOVER_EXIT"},
+		{EUIEvent::PRESS_ENTER, "PRESS_ENTER"},
+		{EUIEvent::PRESS_EXIT, "PRESS_EXIT"},
+		{EUIEvent::CLICKED, "CLICKED"},
+	})
+
+/////////////////-------------------  Data Struct  -------------------/////////////////
+
+struct TUI_EventBindRecord
+{
+	std::string strOwnerTag;
+	EUIEvent eEvent = EUIEvent::NONE;
+
+	std::string strActionKey;
+	json Params;
 };
 
 struct TUI_ImageComponentData
 {
+	static constexpr EUIType eType = EUIType::UICOMPONENT;
 	_string strOwner;
 	uint32_t iTextureIndex;
 };

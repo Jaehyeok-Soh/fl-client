@@ -22,13 +22,15 @@ private:
 	HRESULT Initialize_Prototype() override;
 	HRESULT Initialize_Prototype(const BUTTON_DESC& Desc);
 	HRESULT Initialize(void* pArg) override;
+
 public:
 	void Update(const _float fTimeDelta) override;
+	void OnClick();
 	 
 private:
-	void OnClick();
-
 	CToolUI* m_pOwner = { nullptr };
+
+	/* ¸¶¿ì½º¶û »óÈ£ÀÛ¿ë µÆÀ» ¶§ ¹» ÇÒ²«Áö */
 
 public:
 	static CButton* Create(const BUTTON_DESC& Desc);

@@ -153,6 +153,7 @@
     <ClInclude Include="..\Public\Button.h" />
     <ClInclude Include="..\Public\CameraMan_Free.h" />
     <ClInclude Include="..\Public\CEffectObject.h" />
+    <ClInclude Include="..\Public\IUIEvent.h" />
     <ClInclude Include="..\Public\UIComponent_Inspector.h" />
     <ClInclude Include="..\Public\DebugLine.h" />
     <ClInclude Include="..\Public\Effect.h" />
@@ -220,6 +221,8 @@
     <ClInclude Include="..\Public\UEMapdataLoader.h" />
     <ClInclude Include="..\Public\UEMapdataParser.h" />
     <ClInclude Include="..\Public\UIData_Repository.h" />
+    <ClInclude Include="..\Public\UIEvent_Hovering.h" />
+    <ClInclude Include="..\Public\UI_Action_Registry.h" />
     <ClInclude Include="..\Public\UI_Hierachy.h" />
     <ClInclude Include="..\Public\UI_Inspector.h" />
     <ClInclude Include="..\Public\UI_Maker.h" />
@@ -238,6 +241,7 @@
     <ClCompile Include="..\Private\Button.cpp" />
     <ClCompile Include="..\Private\CameraMan_Free.cpp" />
     <ClCompile Include="..\Private\CEffectObject.cpp" />
+    <ClCompile Include="..\Private\IUIEvent.cpp" />
     <ClCompile Include="..\Private\UIComponent_Inspector.cpp" />
     <ClCompile Include="..\Private\DebugLine.cpp" />
     <ClCompile Include="..\Private\Effect.cpp" />
@@ -338,6 +342,8 @@
     <ClCompile Include="..\Private\ToolUI.cpp" />
     <ClCompile Include="..\Private\Tool_Defines.cpp" />
     <ClCompile Include="..\Private\UIData_Repository.cpp" />
+    <ClCompile Include="..\Private\UIEvent_Hovering.cpp" />
+    <ClCompile Include="..\Private\UI_Action_Registry.cpp" />
     <ClCompile Include="..\Private\UI_Hierachy.cpp" />
     <ClCompile Include="..\Private\UI_Inspector.cpp" />
     <ClCompile Include="..\Private\UI_Maker.cpp" />
