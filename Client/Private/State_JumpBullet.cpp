@@ -29,6 +29,8 @@ HRESULT CState_JumpBullet::Start(void* pArg, _bool bForce)
 	if (FAILED(Super::Start(pArg, bForce)))
 		return E_FAIL;
 
+	CStateBase::SetupLook_CameraLook();
+
 	return S_OK;
 }
 
