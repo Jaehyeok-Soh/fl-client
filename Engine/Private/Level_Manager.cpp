@@ -45,6 +45,12 @@ void CLevel_Manager::Update(_float fTimeDelta)
 		m_pCurrentLevel->Update(fTimeDelta);
 }
 
+void CLevel_Manager::Update_Picking()
+{
+	if (m_pCurrentLevel)
+		m_pCurrentLevel->Update_Picking();
+}
+
 HRESULT CLevel_Manager::Render()
 {
 	if (m_pCurrentLevel)

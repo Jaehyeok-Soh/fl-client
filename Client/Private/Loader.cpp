@@ -16,12 +16,15 @@
 #include "Shader.h"
 #include "Camera.h"
 #include "Transform.h"
+#include "PhysicsCollider.h"
 //=================
 // Builder
 //=================
 #include "DataDocument_Example.h"
 #include "DataDocument_Effect.h"
+#include "DataDocument_UI.h"
 #include "Builder_Example.h"
+#include "Builder_UI.h"
 #include "BuilderSystem.h"
 
 //=================
@@ -37,15 +40,19 @@
 #include "Physics_Terrain.h" // physics test
 #include "Effect.h"
 #include "EffectObject.h"
+#include "Physics_LandScape.h" // physics test
 //=================
 // UI
 //=================
+#include "Canvas.h"
+#include "UILayer.h"
 #include "GenericUI.h"
 //=================
 // Resource
 //=================
 #include "TextureBase.h"
 #include "Model.h"
+#include "ModelLoader.h"
 #include "GameInstance.h"
 
 #pragma region Macro
@@ -128,9 +135,12 @@ HRESULT CLoader::Loading_For_Logo()
 
 			if (FAILED(m_pGameInstance->Regist_Document<CDataDocument_Effect>(ENUM_TO_UINT(ELevelType::LOGO), DTO::ECategory::EFFECT)))
 				return E_FAIL;
+
+			if (FAILED(m_pGameInstance->Regist_Document<CDataDocument_UI>(ENUM_TO_UINT(ELevelType::LOGO), DTO::ECategory::MAP)))
+				return E_FAIL;
 		}
-		
-	
+
+
 		// Read Json
 		{
 			if (FAILED(Loading_File(ENUM_TO_UINT(ELevelType::LOGO), DTO::ECategory::EFFECT, L"../../Resources/Data/EffectData/Attack_1.json")))
@@ -147,9 +157,24 @@ HRESULT CLoader::Loading_For_Logo()
 	/////////////////////////////////////////
 #pragma region Resource
 	{
-		if (FAILED(m_pGameInstance->Load_Sounds(L"../../Resources/Sounds")))
+		//if (FAILED(m_pGameInstance->Load_Sounds(L"../../Resources/Sounds")))
+		//	return E_FAIL;
+
+		//if (FAILED(Make_StaticModel_Prototype(ELevelType::LOGO, L"../../Resources/Models/Map/TestMap")))
+		//	return E_FAIL;
+	}
+	if (FAILED(m_pGameInstance->Load_Sounds(L"../../Resources/Sounds")))
+		return E_FAIL;
+
+	// For. Prototype_Component_Button_Test_Texture
+	{
+		CTexture::TEXTURE_COMPONENT_ORIGIN_DESC textureDesc = {};
+		textureDesc.iTextureCount = 16;
+		textureDesc.wstrTexturePath = L"../../Resources/Textures/UI/%d.png";
+		if (FAILED(m_pGameInstance->Add_Prototype(ENUM_TO_UINT(ELevelType::STATIC), L"Texture_Boss", CTexture::Create(&textureDesc))))
 			return E_FAIL;
 	}
+
 #pragma endregion
 
 	//////////////////////////////////////////
@@ -227,11 +252,41 @@ HRESULT CLoader::Loading_For_Logo()
 		ADD_PROTOTYPE(ELevelType::STATIC, L"Prototype_Component_VIBuffer_Particle_Point", CVIBuffer_Particle_Point::Create(m_pDevice, m_pDeviceContext, &ExploDesc));
 		ADD_PROTOTYPE(ELevelType::STATIC, L"Prototype_Component_VIBuffer_Particle_Mesh", CVIBuffer_Particle_Mesh::Create(m_pDevice, m_pDeviceContext, &ExploDesc));
 
+
+		// For. Prototype_UI_Canvas
+		ADD_PROTOTYPE(ELevelType::STATIC, L"Prototype_UI_Canvas", CCanvas::Create(m_pDevice, m_pDeviceContext));
+		// For. Prototype_UI_UILayer
+		ADD_PROTOTYPE(ELevelType::STATIC, L"Prototype_UI_UILayer", CUILayer::Create(m_pDevice, m_pDeviceContext));
+		// For. Prototype_UI_GenericUI
+		ADD_PROTOTYPE(ELevelType::STATIC, L"Prototype_UI_GenericUI", CGenericUI::Create(m_pDevice, m_pDeviceContext));
 	}
 #pragma endregion
 
+
+#pragma region PHYSICS
 	// For. Prototype_GameObject_Physics_Terrain
 	m_pGameInstance->Add_Prototype(ENUM_TO_UINT(ELevelType::STATIC), L"Prototype_GameObject_Physics_Terrain", CPhysics_Terrain::Create(m_pDevice, m_pDeviceContext));
+
+	// For. Prototype_GameObject_Physics_Terrain
+	m_pGameInstance->Add_Prototype(ENUM_TO_UINT(ELevelType::STATIC), L"Prototype_GameObject_Physics_LandScape", CPhysics_LandScape::Create(m_pDevice, m_pDeviceContext));
+
+	// 2.1 소재혁 : test // 맵 클라이언트 파싱 기능과 연동 예정 추후 코드 삭제
+	// For. Prototype_Component_Physics_Collider_{modelName}
+	{
+		CModel::MODEL_ORIGIN_DESC desc = {};
+		desc.eType = EModelType::STATIC;
+		desc.iPrototypeLevelIndex = ENUM_TO_UINT(ELevelType::STATIC);
+		desc.pMatPreTransform = &matPreTransformScale;
+		desc.wstrModelFolderName = L"total_landScape_4x4";
+		wstring modelPrototypeTag = L"Prototype_Component_Model_total_landScape_4x4";
+		ADD_PROTOTYPE(ELevelType::STATIC, modelPrototypeTag, CModel::Create(m_pDevice, m_pDeviceContext, &desc));
+
+		PHYSICSCOLLIDER_DESC pcDesc{};
+		pcDesc.wstrModelPrototypeTag = modelPrototypeTag;
+		pcDesc.bIsConvex = false;
+		ADD_PROTOTYPE(ELevelType::STATIC, L"Prototype_Component_Physics_Collider_total_landScape_4x4", CPhysicsCollider::Create(m_pDevice, m_pDeviceContext, &pcDesc));
+	}
+#pragma endregion
 
 	m_isFinished = true;
 	return S_OK;
@@ -271,7 +326,7 @@ HRESULT CLoader::Loading_Textures(const wstring& wstrFolder)
 			CTextureBase::RESOURCE_BASE_DESC desc = {};
 			desc.wstrName = wstrFileName;
 			desc.wstrPath = entry.path();
-			if(FAILED(m_pGameInstance->Add_Resource(L"Texture_" + wstrFileName, CTextureBase::Create(m_pDevice, m_pDeviceContext, &desc))))
+			if (FAILED(m_pGameInstance->Add_Resource(L"Texture_" + wstrFileName, CTextureBase::Create(m_pDevice, m_pDeviceContext, &desc))))
 				return E_FAIL;
 		}
 	}
@@ -296,12 +351,44 @@ HRESULT CLoader::Loading_Texture(const wstring& wstrFile)
 	return S_OK;
 }
 
+HRESULT CLoader::Make_StaticModel_Prototype(ELevelType eLevelType, const wstring& wstrFilePath)
+{
+	std::filesystem::path filePath{ wstrFilePath };
+	filePath /= "Model";
+	const wstring wstrModelTag = L"Prototype_Component_Model_";
+	const std::filesystem::path basePath = g_wszModelRelativePath;
+	const _uint iPrototypeLevelType = ENUM_TO_UINT(eLevelType);
+	for (const auto& entry : std::filesystem::directory_iterator(filePath))
+	{
+		if (entry.is_regular_file())
+		{
+			if (entry.path().extension() != g_wszMeshExtension)
+				continue;
+
+			std::filesystem::path fileFullPath = entry.path();
+			wstring wstrFileName = fileFullPath.stem();
+			{
+				CBase* pFinded = { nullptr };
+				if (pFinded = m_pGameInstance->Find_Prototype(iPrototypeLevelType, wstrModelTag + wstrFileName))
+					continue;
+			}
+
+			CModel::MODEL_ORIGIN_DESC desc = {};
+			desc.eType = EModelType::STATIC;
+			desc.iPrototypeLevelIndex = iPrototypeLevelType;
+			desc.wstrModelFolderName = fileFullPath.lexically_relative(basePath);
+			m_pGameInstance->Add_Prototype(iPrototypeLevelType, wstrModelTag + wstrFileName, CModel::Create(m_pDevice, m_pDeviceContext, &desc));
+		}
+	}
+
+	return S_OK;
+}
 
 CLoader* CLoader::Create(ID3D11Device* pDevice, ID3D11DeviceContext* pDeviceContext, ELevelType eLoadingLevelID)
 {
 	CLoader* pInstance = new CLoader(pDevice, pDeviceContext, eLoadingLevelID);
-	
-	if(FAILED(pInstance->Initailize()))
+
+	if (FAILED(pInstance->Initailize()))
 	{
 		MSG_BOX("CLoader::Create, Failed");
 		Safe_Release(pInstance);

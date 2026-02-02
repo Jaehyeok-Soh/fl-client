@@ -1,18 +1,18 @@
 #include "pch.h"
 #include "ToolUI.h"
-
 #include "Engine_Utils.h"
 
 /* Components */
 #include "Shader.h"
 #include "VIBuffer_Rect_Tex.h"
 #include "Texture.h"
-#include "GameInstance.h"
 
 #include "ToolCanvas.h"
 #include "ToolLayer.h"
 #include "ImGui_UIManager.h"
+#include "ImGui_ToolManager.h"
 
+#include "GameInstance.h"
 CToolUI::CToolUI(ID3D11Device* pDevice, ID3D11DeviceContext* pDeviceContext)
 	:CUIObject(pDevice, pDeviceContext)
 {
@@ -34,13 +34,16 @@ HRESULT CToolUI::Initialize(void* pArg)
 {
 	TOOLUI_DESC* pDesc = static_cast<TOOLUI_DESC*>(pArg);
 	m_strName = pDesc->strName;
+
+	m_strCanvasName = pDesc->strCanvasName;
+	m_iCanvasIndex = pDesc->iCanvasIndex;
+	m_strLayerName = pDesc->strLayerName;
 	m_iLayerIndex = pDesc->iLayerIndex;
+
 	m_wstrTextureTag = Engine_Utils::ToWString(pDesc->strInitTextureTag);
 	m_iTextureIndex = pDesc->iInitTextureIndex;
-
 	if (FAILED(Super::Initialize(pArg)))
 		return E_FAIL;
-
     if (FAILED(Ready_Components(pDesc)))
         return E_FAIL;
 
@@ -52,6 +55,9 @@ HRESULT CToolUI::Awake(const _uint iCurrentLevelID)
 	if (FAILED(Super::Awake(iCurrentLevelID)))
         return E_FAIL;
 
+	m_pBatch = new PrimitiveBatch<VertexPositionColor>(m_pDeviceContext);
+	m_pEffect = new BasicEffect(m_pDevice);
+	m_pEffect->SetVertexColorEnabled(true);
     return S_OK;
 }
 
@@ -60,6 +66,8 @@ void CToolUI::Update_Priority(const _float fTimeDelta)
 	Set_Size(m_fWidth, m_fHeight);
 	SetUp_RectTransform_Position();
 	SetUp_Visible();
+
+	m_iInteractState = static_cast<uint32_t>(CUIObject::EInteractState::NONE);
 	Super::Update_Priority(fTimeDelta);
 }
 
@@ -72,17 +80,18 @@ void CToolUI::Update(const _float fTimeDelta)
 void CToolUI::Update_Late(const _float fTimeDelta)
 {
 	if (m_isVisible)
+	{
+		Acting_By_InteractState();
 		Super::Update_Late(fTimeDelta);
+	}
 }
 
 void CToolUI::Ready_Before_Render(const _float fTimeDelta)
 {
-
 	if (m_isVisible)
 	{
 		Sync_Data();
 		Super::Ready_Before_Render(fTimeDelta);
-
 	}
 }
 
@@ -101,13 +110,48 @@ HRESULT CToolUI::Render()
     Get_Component<CVIBuffer>()->Bind_Resource();
     Get_Component<CVIBuffer>()->Render();
 
+	D3D11_VIEWPORT vp = {};
+	UINT numVP = 1;
+	m_pDeviceContext->RSGetViewports(&numVP, &vp);
+	m_pDeviceContext->IASetInputLayout(m_pInputLayout);
+	m_pEffect->SetWorld(DirectX::XMMatrixIdentity());
+	m_pEffect->SetView(DirectX::XMMatrixIdentity());
+	m_pEffect->SetProjection(DirectX::XMMatrixOrthographicOffCenterLH(0.f, vp.Width, vp.Height, 0.f, 0.f, 1.f));
+	m_pEffect->Apply(m_pDeviceContext);
+	m_pBatch->Begin();
+	const DirectX::XMFLOAT4 vColor = { 1.f, 0.f, 0.f, 1.f };
+
+	// Top
+	m_pBatch->DrawLine(
+		VertexPositionColor{ { (float)m_tRenderRect.left,  (float)m_tRenderRect.top,    m_fZ }, vColor },
+		VertexPositionColor{ { (float)m_tRenderRect.right, (float)m_tRenderRect.top,    m_fZ }, vColor });
+
+	// Right
+	m_pBatch->DrawLine(
+		VertexPositionColor{ { (float)m_tRenderRect.right, (float)m_tRenderRect.top,    m_fZ }, vColor },
+		VertexPositionColor{ { (float)m_tRenderRect.right, (float)m_tRenderRect.bottom, m_fZ }, vColor });
+
+	// Bottom
+	m_pBatch->DrawLine(
+		VertexPositionColor{ { (float)m_tRenderRect.right, (float)m_tRenderRect.bottom, m_fZ }, vColor },
+		VertexPositionColor{ { (float)m_tRenderRect.left,  (float)m_tRenderRect.bottom, m_fZ }, vColor });
+
+	// Left
+	m_pBatch->DrawLine(
+		VertexPositionColor{ { (float)m_tRenderRect.left,  (float)m_tRenderRect.bottom, m_fZ }, vColor },
+		VertexPositionColor{ { (float)m_tRenderRect.left,  (float)m_tRenderRect.top,    m_fZ }, vColor });
+	m_pBatch->End();
+
     return S_OK;
 }
 
 _bool CToolUI::Calc_HitEvent()
 {
-	if (::PtInRect(&m_tRenderRect, m_pGameInstance->Get_MousePos()))
+	if (::PtInRect(&m_tRenderRect, CImGui_ToolManager::GetInstance()->Get_CalculatedMousePos_Point()))
+	{
+		m_isHitTest = TRUE;
 		return TRUE;
+	}
 	return FALSE;
 }
 
@@ -140,7 +184,7 @@ HRESULT CToolUI::Bind_ShaderResources()
 
 void CToolUI::SetUp_RectTransform_Position()
 {
-	auto* pCanvas = CImGui_UIManager::GetInstance()->Safe_Access_Canvas(CImGui_UIManager::GetInstance()->Get_CurCanvasIndex());
+	auto* pCanvas = CImGui_UIManager::GetInstance()->Safe_Access_Canvas(m_iCanvasIndex);
 	if (nullptr == pCanvas)
 		return;
 
@@ -151,7 +195,7 @@ void CToolUI::SetUp_RectTransform_Position()
 	case Tool::ERectTransform::CT:initPos = pCanvas->Get_CT();break;
 	case Tool::ERectTransform::RT:initPos = pCanvas->Get_RT();break;
 	case Tool::ERectTransform::LC:initPos = pCanvas->Get_LC();break;
-	case Tool::ERectTransform::C:initPos = pCanvas->Get_C();break;
+	case Tool::ERectTransform::C: initPos = pCanvas->Get_C();break;
 	case Tool::ERectTransform::RC:initPos = pCanvas->Get_RC();break;
 	case Tool::ERectTransform::LB:initPos = pCanvas->Get_LB();break;
 	case Tool::ERectTransform::CB:initPos = pCanvas->Get_CB();break;
@@ -177,12 +221,29 @@ void CToolUI::SetUp_Visible()
 	m_isVisible = pLayer->Get_isVisible();
 }
 
-
+void CToolUI::Acting_By_InteractState()
+{
+	if (Engine_Utils::Has_Flag(m_iInteractState, EInteractState::NONE))
+		m_iTextureIndex = 0;
+	if(Engine_Utils::Has_Flag( m_iInteractState, EInteractState::HOVERING_ENTER))
+		m_iTextureIndex = 1;
+	if(Engine_Utils::Has_Flag( m_iInteractState, EInteractState::HOVERING_EXIT))
+		m_iTextureIndex = 2;
+	if(Engine_Utils::Has_Flag( m_iInteractState, EInteractState::PRESS_ENTER))
+		m_iTextureIndex = 3;
+	if(Engine_Utils::Has_Flag( m_iInteractState, EInteractState::PRESSING))
+		m_iTextureIndex = 4;
+	if(Engine_Utils::Has_Flag( m_iInteractState, EInteractState::PRESS_EXIT))
+		m_iTextureIndex = 5;
+	if(Engine_Utils::Has_Flag( m_iInteractState, EInteractState::CLICKED))
+		m_iTextureIndex = 6;
+}
 
 void CToolUI::Sync_Data()
 {
 	m_tUIData.strTag = m_strName;
-	m_tUIData.iLayerIndex = m_iLayerIndex;
+	m_tUIData.strCanvasName = m_strCanvasName;
+	m_tUIData.strLayerName = m_strLayerName;
 	m_tUIData.iRectTransformType = static_cast<uint32_t>( m_eRectTransformType);
 	m_tUIData.iUIType = static_cast<uint32_t>(m_eUIType);
 	m_tUIData.fWidth = m_fWidth;
@@ -218,6 +279,9 @@ CGameObject* CToolUI::Clone(void* pArg)
 
 void CToolUI::Free()
 {
+	Safe_Delete(m_pBatch);
+	Safe_Delete(m_pEffect);
+	Safe_Release(m_pInputLayout);
 	Super::Free();
 }
 

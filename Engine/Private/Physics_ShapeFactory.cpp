@@ -102,8 +102,6 @@ vector<PxShape*> CPhysics_ShapeFactory::MakeShape(PHYSICSCOLLIDER_DESC* pDesc, v
 		if (shape == nullptr)
 			MSG_BOX("ShapeFactory : shape null");
 
-		PxGeometryType::Enum aaaatype = shape->getGeometry().getType();
-
 		PxGeometryHolder geom = shape->getGeometry();
 
 		PxTransform checkPose = PxTransform(PxIdentity) * shape->getLocalPose();

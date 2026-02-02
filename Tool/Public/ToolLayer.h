@@ -14,7 +14,10 @@ class CToolLayer final : public CUIObject
 public:
 	typedef struct tagToolLayerDesc : public Super::UIOBJECT_DESC
 	{
-		_string strTag = {};
+		_string strTag;
+		_string strCanvasName;
+		uint32_t iCanvasIndex;
+
 	}TOOLLAYER_DESC;
 
 private:
@@ -58,6 +61,9 @@ private:
 	vector<CToolUI*> m_vecToolUIs;
 
 	_string m_strName = {};
+	_string m_strCanvasName = {};
+	uint32_t m_iCanvasIndex = {};
+
 public:
 	static CToolLayer* Create(EToolObjectType eType, ID3D11Device* pDevice, ID3D11DeviceContext* pDeviceContext);
 	CGameObject* Clone(void* pArg);

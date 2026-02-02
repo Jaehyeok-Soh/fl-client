@@ -13,6 +13,7 @@ public:
 		uint32_t iUIType;
 		uint32_t iRectTransformType;
 		_wstring wstrTextureTag;
+		uint32_t iTextureIndex;
 
 	}GENERIC_UI_DESC;
 
@@ -33,9 +34,26 @@ public:
 	virtual void Ready_Before_Render(const _float fTimeDelta) override;
 	virtual HRESULT Render() override;
 
+	_bool Calc_HitEvent();
+
 private:
 	HRESULT Ready_Components(GENERIC_UI_DESC* pDesc);
 	HRESULT Bind_ShaderResources();
+
+public:
+	void Set_RectPos(const Vec3& pos) { m_vRectPos = pos; }
+
+	ERectTransform Get_RectTransformType() const { return m_eRectTransformType; }
+
+private:
+	EUiType m_eUIType = { EUiType::IMAGE_2D };
+	ERectTransform m_eRectTransformType = { ERectTransform::C };
+	_wstring m_wstrTextureTag = {};
+	uint32_t m_iTextureIndex = {};
+
+	Vec3 m_vRectPos = {};
+	Vec3 m_vRenderPos = {};
+	RECT m_tRenderRect = {};
 
 public:
 	static CGenericUI* Create(ID3D11Device* pDevice, ID3D11DeviceContext* pDeviceContext);

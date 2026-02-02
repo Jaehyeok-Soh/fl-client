@@ -19,6 +19,7 @@ public:
 	// 객체 생성이 완료되고 Change_Level이 완료되었을 때 호출
 	virtual HRESULT Awake(const _uint iCurrentLevelID);
 	virtual void Update(_float fTimeDelta);
+	virtual void Update_Picking();
 	virtual HRESULT Render();
 	const Vec4& Get_ClearColor() const { return m_vClearColor; }
 public:

@@ -358,26 +358,27 @@ HRESULT CMainApplication::Ready_Static_Prototype()
 	//=================
 	// Physics Component
 	//=================
-	// For. Prototype_Component_Transform
+	// For. Prototype_Component_Physics_CCT
 	{
 		if (FAILED(m_pGameInstance->Add_Prototype(ENUM_TO_UINT(ELevelType::STATIC), L"Prototype_Component_Physics_CCT",
 			CPhysicsCCT::Create(m_pDevice, m_pDeviceContext))))
 			return E_FAIL;
 	}
 
-	// For. Prototype_Component_Transform
+	// For. Prototype_Component_Physics_RigidBody
 	{
 		if (FAILED(m_pGameInstance->Add_Prototype(ENUM_TO_UINT(ELevelType::STATIC), L"Prototype_Component_Physics_RigidBody",
 			CPhysicsRigidBody::Create(m_pDevice, m_pDeviceContext))))
 			return E_FAIL;
 	}
 
-	// For. Prototype_Component_Transform
+	// For. Prototype_Component_Physics_Collider
 	{
 		if (FAILED(m_pGameInstance->Add_Prototype(ENUM_TO_UINT(ELevelType::STATIC), L"Prototype_Component_Physics_Collider",
 			CPhysicsCollider::Create(m_pDevice, m_pDeviceContext, nullptr))))
 			return E_FAIL;
 	}
+
 	return S_OK;
 }
 
