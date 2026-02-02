@@ -220,7 +220,7 @@ HRESULT CPlayer::Ready_BaseStates()
         desc.vecChangeState_ByKey = vecChangeState_ByKey;
 
         tKeyTimer.bCountTime    = true;
-        tKeyTimer.fMaxTime      = 0.15f;
+        tKeyTimer.fMaxTime      = 0.05f;
         desc.tKeyTimer = tKeyTimer;
 
         if (FAILED(pActionState->Add_State(ENUM_TO_UINT(State::IDLE), CState_Idle::Create(pActionState, &desc))))
@@ -235,7 +235,7 @@ HRESULT CPlayer::Ready_BaseStates()
         desc.vecPreAnims = {
                         {ENUM_TO_UINT(State::SLIDE), Get_AnimationIndex(L"Animation_PlayerMoon_Slide_To_Run")}
                         ,{ENUM_TO_UINT(State::LAND), Get_AnimationIndex(L"Animation_PlayerMoon_Land_To_Running")}
-                        //,{-1, Get_AnimationIndex(L"Animation_PlayerMoon_Run_Start_L")}
+                        ,{-1, Get_AnimationIndex(L"Animation_PlayerMoon_Run_Start_L")}
         };
         desc.vecMainAnims = { Get_AnimationIndex(L"Animation_PlayerMoon_Run_Loop") }; // Animation_PlayerMoon_Run_Loop //Animation_Pino_Turn
         desc.bBlend = false;
