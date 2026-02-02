@@ -7,12 +7,12 @@
 #include "ToolUI.h"
 #include "ToolLayer.h"
 #include "Engine_Utils.h"
-#include "ToolCanvas.h"
 
 /* Component */
 #include "Button.h"
 #include "Image.h"
 
+#include "UIAction_Registry.h"
 #include "GameInstance.h"
 
 CUI_Maker::CUI_Maker(const _char* pLabel, CLevel* pOwner, ID3D11Device* pDevice, ID3D11DeviceContext* pDeviceContext)
@@ -545,11 +545,24 @@ void CUI_Maker::Make_UI()
 							CMonoBehaviour* pCom = dynamic_cast<CMonoBehaviour*>(CImage::Create(ImgComDesc));
 							pResult->Add_Script_Component(L"Component_UIBase", pCom);
 
-							if (FAILED(pLayer->Safe_Add_UI(dynamic_cast<CToolUI*>(pResult))))
-							{
-								m_strUIName = "";
-								m_isCreateUI = FALSE;
-								MSG_BOX("CUI_Maker::Make_UI, UI Add Failed");
+							auto* pUI = dynamic_cast<CToolUI*>(pResult);
+							if (nullptr != pUI) {
+								if (FAILED(pLayer->Safe_Add_UI(pUI)))
+								{
+									m_strUIName = "";
+									m_isCreateUI = FALSE;
+									MSG_BOX("CUI_Maker::Make_UI, UI Add Failed");
+								}
+
+								auto fnEnter = CUIAction_Registry::GetInstance()->Build_Action(
+									"SetTextureIndex", json{ {"Index", 1u} });
+
+								pUI->Bind_Action(DTO::EUIEvent::HOVER_ENTER, std::move(fnEnter));
+
+								auto fnExit = CUIAction_Registry::GetInstance()->Build_Action(
+									"SetTextureIndex", json{ {"Index", 2u} });
+
+								pUI->Bind_Action(DTO::EUIEvent::HOVER_EXIT, std::move(fnExit));
 							}
 						}
 					}

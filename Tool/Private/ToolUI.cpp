@@ -157,8 +157,13 @@ _bool CToolUI::Calc_HitEvent()
 {
 	if (::PtInRect(&m_tRenderRect, CImGui_ToolManager::GetInstance()->Get_CalculatedMousePos_Point()))
 	{
+		for (auto& fn : m_vecBindingActions[ENUM_TO_UINT(DTO::EUIEvent::HOVER_ENTER)])
+			fn(m_pActionForMe);
+		
 		return TRUE;
 	}
+	for (auto& fn : m_vecBindingActions[ENUM_TO_UINT(DTO::EUIEvent::HOVER_EXIT)])
+		fn(m_pActionForMe);
 	return FALSE;
 }
 
