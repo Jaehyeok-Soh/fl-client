@@ -102,6 +102,16 @@ HRESULT CPhysics_Module::Initialize()
 			sceneDesc.broadPhaseType = PxBroadPhaseType::eSAP;
 		}
 
+		//////////////////////////////////
+		/// Broad Phase Filtering Mode ///
+		//////////////////////////////////
+		{
+			//sceneDesc.kineKineFilteringMode; // eDEFAULT = eSUPPRESS
+			//sceneDesc.staticKineFilteringMode; // eDEFAULT = eSUPPRESS
+			//sceneDesc.filterShader = FilterShader;
+			//sceneDesc.filterCallback;
+		}
+
 		if (!(m_pScene = m_pPhysics->createScene(sceneDesc)))
 		{
 			MSG_BOX("Failed to created : PxScene");
@@ -236,6 +246,22 @@ PxController* CPhysics_Module::GetController(PHYSICSCCT_DESC* pDesc)
 	return m_pCCTManager->GetController(pDesc);
 }
 
+PxFilterFlags CPhysics_Module::FilterShader(PxFilterObjectAttributes attributes0, PxFilterData filterData0, PxFilterObjectAttributes attributes1, PxFilterData filterData1, PxPairFlags& pairFlags, const void* constantBlock, PxU32 constantBlockSize)
+{
+	if (PxFilterObjectIsTrigger(attributes0) || PxFilterObjectIsTrigger(attributes1))
+	{
+		pairFlags = PxPairFlag::eTRIGGER_DEFAULT;
+		return PxFilterFlag::eDEFAULT;
+	}
+
+	pairFlags = PxPairFlag::eCONTACT_DEFAULT;
+
+	if ((filterData0.word0 & filterData1.word1) && (filterData1.word0 & filterData0.word1))
+		pairFlags |= PxPairFlag::eNOTIFY_TOUCH_FOUND;
+
+	return PxFilterFlag::eDEFAULT;
+}
+
 void CPhysics_Module::ClearPhysics()
 {
 	PX_RELEASE(m_pScene);
@@ -249,9 +275,9 @@ void CPhysics_Module::ClearPhysics()
 		PX_RELEASE(m_pPvd);
 		PX_RELEASE(transport);
 	}
+#endif // _DEBUG
 
 	PxCloseExtensions();
-#endif // _DEBUG
 
 	PX_RELEASE(m_pCudaContextManager);
 	PX_RELEASE(m_pFoundation);
