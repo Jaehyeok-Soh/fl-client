@@ -166,6 +166,9 @@
     <Filter Include="07. System\01. Builder\EffectBuilder">
       <UniqueIdentifier>{0a51c3b4-11ce-445a-904c-410b2a5ef809}</UniqueIdentifier>
     </Filter>
+    <Filter Include="04. Shaders\ComputeShader_Labs">
+      <UniqueIdentifier>{8c14e548-7930-4ec0-b748-e471998a55b9}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="targetver.h">
@@ -520,6 +523,9 @@
     </FxCompile>
     <FxCompile Include="..\..\Shaders\Shader_VtxEffectTexture.hlsl">
       <Filter>04. Shaders</Filter>
+    </FxCompile>
+    <FxCompile Include="..\..\Shaders\Shader_CPT_Effect_Particle.hlsl">
+      <Filter>04. Shaders\ComputeShader_Labs</Filter>
     </FxCompile>
   </ItemGroup>
 </Project>

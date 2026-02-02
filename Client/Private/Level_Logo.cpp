@@ -84,6 +84,18 @@ void CLevel_Logo::Update(const _float fTimeDelta)
 	{
 		m_pGameInstance->Request_AddObject(ENUM_TO_UINT(ELevelType::LOGO), L"POOL_ParticleSystem", ENUM_TO_UINT(ELevelType::LOGO), L"Effect", nullptr);
 	}
+
+	if (m_pGameInstance->KeyButton_Down(DIK_1))
+	{
+		auto list = m_pGameInstance->Get_GameObject_List(ENUM_TO_UINT(ELevelType::LOGO), L"Effect");
+		
+		for (auto pGo : *list)
+		{
+			if(pGo != nullptr)
+				m_pGameInstance->Request_DeleteGameObject(ENUM_TO_UINT(ELevelType::LOGO), L"Effect", pGo);
+		}
+
+	}
 }
 
 HRESULT CLevel_Logo::Render()
