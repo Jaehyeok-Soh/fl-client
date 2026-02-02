@@ -139,8 +139,8 @@ HRESULT CLoader::Loading_For_Logo()
 			if (FAILED(m_pGameInstance->Regist_Document<CDataDocument_UI>(ENUM_TO_UINT(ELevelType::LOGO), DTO::ECategory::MAP)))
 				return E_FAIL;
 		}
-		
-	
+
+
 		// Read Json
 		{
 			if (FAILED(Loading_File(ENUM_TO_UINT(ELevelType::LOGO), DTO::ECategory::EFFECT, L"../../Resources/Data/EffectData/Attack_1.json")))
@@ -163,18 +163,18 @@ HRESULT CLoader::Loading_For_Logo()
 		//if (FAILED(Make_StaticModel_Prototype(ELevelType::LOGO, L"../../Resources/Models/Map/TestMap")))
 		//	return E_FAIL;
 	}
-		if (FAILED(m_pGameInstance->Load_Sounds(L"../../Resources/Sounds")))
-			return E_FAIL;
+	if (FAILED(m_pGameInstance->Load_Sounds(L"../../Resources/Sounds")))
+		return E_FAIL;
 
-		// For. Prototype_Component_Button_Test_Texture
-		{
-			CTexture::TEXTURE_COMPONENT_ORIGIN_DESC textureDesc = {};
-			textureDesc.iTextureCount = 16;
-			textureDesc.wstrTexturePath = L"../../Resources/Textures/UI/%d.png";
-			if (FAILED(m_pGameInstance->Add_Prototype(ENUM_TO_UINT(ELevelType::STATIC), L"Texture_Boss", CTexture::Create(&textureDesc))))
-				return E_FAIL;
-		}
-	
+	// For. Prototype_Component_Button_Test_Texture
+	{
+		CTexture::TEXTURE_COMPONENT_ORIGIN_DESC textureDesc = {};
+		textureDesc.iTextureCount = 16;
+		textureDesc.wstrTexturePath = L"../../Resources/Textures/UI/%d.png";
+		if (FAILED(m_pGameInstance->Add_Prototype(ENUM_TO_UINT(ELevelType::STATIC), L"Texture_Boss", CTexture::Create(&textureDesc))))
+			return E_FAIL;
+	}
+
 #pragma endregion
 
 	//////////////////////////////////////////
@@ -273,53 +273,20 @@ HRESULT CLoader::Loading_For_Logo()
 	// 2.1 소재혁 : test // 맵 클라이언트 파싱 기능과 연동 예정 추후 코드 삭제
 	// For. Prototype_Component_Physics_Collider_{modelName}
 	{
-		//// For. Prototype_Component_Model_Collider
-		//{
-		//	std::filesystem::path sampleMapPath = g_wszModelRelativePath;
-		//	sampleMapPath = sampleMapPath / "Map_Collider/Test/Sectors/Model";
-		//	vector<std::filesystem::path> meshFiles;
-		//	std::filesystem::directory_iterator dirIter(sampleMapPath);
-		//	while (dirIter != std::filesystem::end(dirIter))
-		//	{
-		//		if ((*dirIter).is_directory() == false)
-		//			meshFiles.push_back((*dirIter).path());
+		CModel::MODEL_ORIGIN_DESC desc = {};
+		desc.eType = EModelType::STATIC;
+		desc.iPrototypeLevelIndex = ENUM_TO_UINT(ELevelType::STATIC);
+		desc.pMatPreTransform = &matPreTransformScale;
+		desc.wstrModelFolderName = L"total_landScape_4x4";
+		wstring modelPrototypeTag = L"Prototype_Component_Model_total_landScape_4x4";
+		ADD_PROTOTYPE(ELevelType::STATIC, modelPrototypeTag, CModel::Create(m_pDevice, m_pDeviceContext, &desc));
 
-		//		dirIter++;
-		//	}
-
-		//	for (auto& p : meshFiles)
-		//	{
-		//		CModel::MODEL_ORIGIN_DESC desc = {};
-		//		desc.eType = EModelType::NONANIM;
-		//		desc.iPrototypeLevelIndex = ENUM_TO_UINT(ELevelType::STATIC);
-		//		desc.pMatPreTransform = &matPreTransformScale;
-		//		desc.wstrModelFolderName = p.wstring();
-		//		wstring modelPrototypeTag = L"Prototype_Component_Model_" + p.stem().wstring();
-		//		ADD_PROTOTYPE(ELevelType::STATIC, modelPrototypeTag, CModel::Create(m_pDevice, m_pDeviceContext, &desc));
-
-		//		PHYSICSCOLLIDER_DESC pcDesc{};
-		//		pcDesc.wstrModelPrototypeTag = modelPrototypeTag;
-		//		pcDesc.bIsConvex = false;
-		//		ADD_PROTOTYPE(ELevelType::STATIC, L"Prototype_Component_Physics_Collider_" + desc.wstrModelFolderName, CPhysicsCollider::Create(m_pDevice, m_pDeviceContext, nullptr));
-		//	}
-		//}
-		{
-			CModel::MODEL_ORIGIN_DESC desc = {};
-			desc.eType = EModelType::STATIC;
-			desc.iPrototypeLevelIndex = ENUM_TO_UINT(ELevelType::STATIC);
-			desc.pMatPreTransform = &matPreTransformScale;
-			desc.wstrModelFolderName = L"total_landScape_4x4";
-			wstring modelPrototypeTag = L"Prototype_Component_Model_total_landScape_4x4";
-			ADD_PROTOTYPE(ELevelType::STATIC, modelPrototypeTag, CModel::Create(m_pDevice, m_pDeviceContext, &desc));
-
-			PHYSICSCOLLIDER_DESC pcDesc{};
-			pcDesc.wstrModelPrototypeTag = modelPrototypeTag;
-			pcDesc.bIsConvex = false;
-			ADD_PROTOTYPE(ELevelType::STATIC, L"Prototype_Component_Physics_Collider_total_landScape_4x4", CPhysicsCollider::Create(m_pDevice, m_pDeviceContext, &pcDesc));
-		}
+		PHYSICSCOLLIDER_DESC pcDesc{};
+		pcDesc.wstrModelPrototypeTag = modelPrototypeTag;
+		pcDesc.bIsConvex = false;
+		ADD_PROTOTYPE(ELevelType::STATIC, L"Prototype_Component_Physics_Collider_total_landScape_4x4", CPhysicsCollider::Create(m_pDevice, m_pDeviceContext, &pcDesc));
 	}
 #pragma endregion
-
 
 	m_isFinished = true;
 	return S_OK;
@@ -359,7 +326,7 @@ HRESULT CLoader::Loading_Textures(const wstring& wstrFolder)
 			CTextureBase::RESOURCE_BASE_DESC desc = {};
 			desc.wstrName = wstrFileName;
 			desc.wstrPath = entry.path();
-			if(FAILED(m_pGameInstance->Add_Resource(L"Texture_" + wstrFileName, CTextureBase::Create(m_pDevice, m_pDeviceContext, &desc))))
+			if (FAILED(m_pGameInstance->Add_Resource(L"Texture_" + wstrFileName, CTextureBase::Create(m_pDevice, m_pDeviceContext, &desc))))
 				return E_FAIL;
 		}
 	}
@@ -420,8 +387,8 @@ HRESULT CLoader::Make_StaticModel_Prototype(ELevelType eLevelType, const wstring
 CLoader* CLoader::Create(ID3D11Device* pDevice, ID3D11DeviceContext* pDeviceContext, ELevelType eLoadingLevelID)
 {
 	CLoader* pInstance = new CLoader(pDevice, pDeviceContext, eLoadingLevelID);
-	
-	if(FAILED(pInstance->Initailize()))
+
+	if (FAILED(pInstance->Initailize()))
 	{
 		MSG_BOX("CLoader::Create, Failed");
 		Safe_Release(pInstance);

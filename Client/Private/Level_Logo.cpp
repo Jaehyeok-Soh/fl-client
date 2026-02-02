@@ -162,7 +162,7 @@ HRESULT CLevel_Logo::Ready_UI_Layer(const wstring& wstrLayerTag)
 		{
 			if (iter.is_regular_file())
 				vecfiles.push_back(iter.path().stem());
-		
+
 			if (FAILED(m_pGameInstance->Load_File_Json(iLevelID, eCategory, iter.path())))
 				return E_FAIL;
 
@@ -221,7 +221,7 @@ HRESULT CLevel_Logo::Ready_Lights()
 HRESULT CLevel_Logo::Ready_Test_Terrain(const wstring& wstrLayerTag)
 {
 	{
-		CGameObject * pResult = { nullptr };
+		CGameObject* pResult = { nullptr };
 		CGameObject::GAMEOBJECT_DESC goDesc = {};
 		CTransform::TRANSFORM_DESC TransformDesc = {};
 		TransformDesc.vPosition = { 0.f, 0.f, 0.f };
@@ -235,47 +235,18 @@ HRESULT CLevel_Logo::Ready_Test_Terrain(const wstring& wstrLayerTag)
 	}
 
 	{
-		//std::filesystem::path sampleMapPath = g_wszModelRelativePath;
-		//sampleMapPath = sampleMapPath / "Map_Collider/Test/Sectors/Model";
-		//vector<std::filesystem::path> meshFiles;
-		//std::filesystem::directory_iterator dirIter(sampleMapPath);
-		//while (dirIter != std::filesystem::end(dirIter))
-		//{
-		//	if ((*dirIter).is_directory() == false)
-		//		meshFiles.push_back((*dirIter).path());
+		CGameObject* pResult = { nullptr };
+		CPhysics_LandScape::PXLANDSCAPE_DESC pxDesc = {};
+		CTransform::TRANSFORM_DESC TransformDesc = {};
+		TransformDesc.vPosition = { 0.f, 0.f, 0.f };
+		pxDesc.pTransform_Desc = &TransformDesc;
+		pxDesc.wstrColliderPrototypeName = L"Prototype_Component_Physics_Collider_total_landScape_4x4";
 
-		//	dirIter++;
-		//}
-
-		//for (auto& p : meshFiles)
-		//{
-		//	CGameObject* pResult = { nullptr };
-		//	CPhysics_LandScape::PXLANDSCAPE_DESC pxDesc = {};
-		//	CTransform::TRANSFORM_DESC TransformDesc = {};
-		//	TransformDesc.vPosition = { 0.f, 0.f, 0.f };
-		//	pxDesc.pTransform_Desc = &TransformDesc;
-		//	pxDesc.wstrColliderPrototypeName = L"Prototype_Component_Physics_Collider_" + p.stem().wstring();
-
-		//	if (!(pResult = m_pGameInstance->Add_GameObject(ENUM_TO_UINT(ELevelType::STATIC),
-		//		L"Prototype_GameObject_Physics_Terrain",
-		//		ENUM_TO_UINT(ELevelType::LOGO),
-		//		wstrLayerTag, &pxDesc)))
-		//		return E_FAIL;
-		//}
-		{
-			CGameObject* pResult = { nullptr };
-			CPhysics_LandScape::PXLANDSCAPE_DESC pxDesc = {};
-			CTransform::TRANSFORM_DESC TransformDesc = {};
-			TransformDesc.vPosition = { 0.f, 0.f, 0.f };
-			pxDesc.pTransform_Desc = &TransformDesc;
-			pxDesc.wstrColliderPrototypeName = L"Prototype_Component_Physics_Collider_total_landScape_4x4";
-
-			if (!(pResult = m_pGameInstance->Add_GameObject(ENUM_TO_UINT(ELevelType::STATIC),
-				L"Prototype_GameObject_Physics_LandScape",
-				ENUM_TO_UINT(ELevelType::LOGO),
-				wstrLayerTag, &pxDesc)))
-				return E_FAIL;
-		}
+		if (!(pResult = m_pGameInstance->Add_GameObject(ENUM_TO_UINT(ELevelType::STATIC),
+			L"Prototype_GameObject_Physics_LandScape",
+			ENUM_TO_UINT(ELevelType::LOGO),
+			wstrLayerTag, &pxDesc)))
+			return E_FAIL;
 	}
 
 	return S_OK;
@@ -295,7 +266,7 @@ HRESULT CLevel_Logo::Ready_Camera_Setting(const _uint iLevelIndex)
 CLevel_Logo* CLevel_Logo::Create(ID3D11Device* pDevice, ID3D11DeviceContext* pDeviceContext)
 {
 	CLevel_Logo* pInstance = new CLevel_Logo(pDevice, pDeviceContext);
-	
+
 	if (FAILED(pInstance->Initialize()))
 	{
 		MSG_BOX("CLevel_Logo::Create, Failed");
