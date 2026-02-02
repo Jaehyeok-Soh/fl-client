@@ -61,7 +61,7 @@ HRESULT CBuilder_Map::Create_StaticModel(const DTO::TMap_StaticModelData& tData)
 	tStaticModelDesc.tData.tUsingModelInfo.wstrMtl_JsonFile_Path = tData.tUsingModelInfo.wstrMtl_JsonFile_Path;
 
 
-	_uint iCount = tData.tUsingModelInfo.vecMaterialInfo.size();
+	_uint iCount = static_cast<_uint>(tData.tUsingModelInfo.vecMaterialInfo.size());
 	tStaticModelDesc.tData.tUsingModelInfo.vecMaterialInfo.resize(tData.tUsingModelInfo.vecMaterialInfo.size());
 	for (_uint i = 0; i < iCount; ++i)
 	{

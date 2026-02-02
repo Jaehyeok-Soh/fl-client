@@ -15,6 +15,7 @@ CMapToolManager::CMapToolManager()
 	: m_pGameInstance(CGameInstance::GetInstance())
 	, m_pImGui_ToolManager(CImGui_ToolManager::GetInstance())
 	, m_arrayMapObjectCloneFactory{}
+	, m_pPreviewMapobject(nullptr)
 {
 	Safe_AddRef(m_pGameInstance);
 	m_arrayMapObjectCloneFactory.fill(nullptr);
