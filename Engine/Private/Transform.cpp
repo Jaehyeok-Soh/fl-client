@@ -531,6 +531,17 @@ void CTransform::Add_Position(const Vec3& vAddPos)
 	m_matWorld.Translation(Get_Info(TRANSFORM_INFO_STATE::POS) + vAddPos);
 }
 
+Vec3 CTransform::LocalPos_toMyWorld(const Vec3& vLocalPos, _bool bDir)
+{
+	if (bDir)
+	{
+		return Vec3::TransformNormal(vLocalPos, m_matWorld);
+	}
+
+	else
+		return Vec3::Transform(vLocalPos, m_matWorld);
+}
+
 CTransform* CTransform::Create()
 {
 	CTransform* pInstance = new CTransform();

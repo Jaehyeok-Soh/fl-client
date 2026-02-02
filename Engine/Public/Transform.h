@@ -76,6 +76,7 @@ public:
 	void MoveArgWorld_ToMyWorld(Matrix& vNewWorld, _bool isChangeThis = false);
 	void MoveMyWorld_ToArgWorld(Matrix& vNewWorld, _bool isChangeArg = false);
 	void Add_Position(const Vec3& vAddPos);
+	Vec3 LocalPos_toMyWorld(const Vec3& vLocalPos, _bool bDir);
 
 private:
 	_bool		m_bControll = { false };
