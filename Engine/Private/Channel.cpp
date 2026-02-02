@@ -47,9 +47,6 @@ void CChannel::Update_TransformationMatrix(const vector<class CBone*>& vecBones,
 	if (fCurrentTrackPosition <= 0.f)
 		*pCurrentKeyFrameIndex = 0;
 
-	/* test : root motion */
-	//_bool isMotionBone = (m_iBoneIndex == 2);
-
 	Matrix matTransformation = {};
 	KEYFRAME lastKeyFrame = m_vecKeyframes.back();
 	Vec3 vScale, vTranslation;
@@ -88,12 +85,6 @@ void CChannel::Update_TransformationMatrix(const vector<class CBone*>& vecBones,
 			vRightTranslation	= { 0.f,0.f,0.f };
 		}
 
-		//else if (m_bRootBone)
-		//{
-		//	vLeftTranslation = { 0.f,0.f,0.f };
-		//	vRightTranslation = { 0.f,0.f,0.f };
-		//}
-
 		vScale = Vec3::Lerp(vLeftScale, vRightScale, fRatio);
 		vQuaternion = Quat::Slerp(vLeftQuaternion, vRightQuaternion, fRatio);
 		vTranslation = Vec3::Lerp(vLeftTranslation, vRightTranslation, fRatio);
@@ -107,9 +98,6 @@ void CChannel::SetUp_PoseData(std::span<LOCALSRT> spanLocalSrtData, _float fCurr
 {
 	if (fCurrentTrackPosition <= 0.f)
 		*pCurrentKeyFrameIndex = 0;
-
-	/* test : root motion */
-	//_bool isMotionBone = (m_iBoneIndex == 2);
 
 	Matrix matTransformation = {};
 	KEYFRAME lastKeyFrame = m_vecKeyframes.back();
@@ -150,12 +138,6 @@ void CChannel::SetUp_PoseData(std::span<LOCALSRT> spanLocalSrtData, _float fCurr
 			vLeftTranslation = { 0.f,0.f,0.f };
 			vRightTranslation = { 0.f,0.f,0.f };
 		}
-
-		//else if (m_bRootBone)
-		//{
-		//	vLeftTranslation = { 0.f,0.f,0.f };
-		//	vRightTranslation = { 0.f,0.f,0.f };
-		//}
 
 		vScale			= Vec3::Lerp(vLeftScale, vRightScale, fRatio);
 		vQuaternion		= Quat::Slerp(vLeftQuaternion, vRightQuaternion, fRatio);

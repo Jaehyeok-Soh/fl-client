@@ -3,6 +3,8 @@
 
 NS_BEGIN(Engine)
 
+class CTransform;
+
 class ENGINE_DLL CModel final : public CComponent
 {
 	using Super = CComponent;
@@ -53,7 +55,7 @@ public:
 	HRESULT Render(_uint iMeshIndex);
 	HRESULT Change_Animation(_uint iAnimationIndex, _bool bBlend, _bool isLoop = true, _bool bForce = false);
 	void	Add_Animation(class CModelAnimation* pAnimation) { m_vecAnimations.push_back(pAnimation); }
-	void	Update_Animation(_float fTimeDelta);
+	void	Update_Animation(_float fTimeDelta, CTransform* pOwnerTransform = nullptr);
 	HRESULT Set_PassByMesh(class CShader* pShader, _uint iMeshIndex);
 	HRESULT Bind_Material(class CShader* pShader, _uint iMeshIndex);
 	HRESULT Bind_MaterialInstance(class CShader* pShader, _uint iMeshIndex);
@@ -95,22 +97,22 @@ private:
 	HRESULT Load_OnlyBone(const wstring& wstrModelName);
 	HRESULT Add_Parts(const wstring &wstrPrototypeTag);
 	CModel* Get_Clone(const wstring &wstrPrototypeTag);
-	void Play_Animation(_float fTimeDelta);
-	void Blend_Animation(_float fTimeDelta, _float fRatio);
+	void	Play_Animation(_float fTimeDelta, CTransform* pOwnerTransform = nullptr);
+	void	Blend_Animation(_float fTimeDelta, _float fRatio, CTransform* pOwnerTransform = nullptr);
 
 private:
 	HRESULT Build_AnimationIndexTable();
 	void Begin_AnimationPlayState(AnimationPlayState eState);
-	void Update_AnimationPlayState(const _float fTimeDelta);
+	void Update_AnimationPlayState(const _float fTimeDelta, CTransform* pOwnerTransform = nullptr);
 	void End_AnimationPlayState(AnimationPlayState eState);
 	void Change_AnimationPlayState(AnimationPlayState eState);
 
 	void Play_Begin();
-	void Play_Update(const _float fTimeDelta);
+	void Play_Update(const _float fTimeDelta, CTransform* pOwnerTransform = nullptr);
 	void Play_End();
 
 	void Blend_Begin();
-	void Blend_Update(const _float fTimeDelta);
+	void Blend_Update(const _float fTimeDelta, CTransform* pOwnerTransform = nullptr);
 	void Blend_End();
 private:
 	EModelType m_eType = { EModelType::END };

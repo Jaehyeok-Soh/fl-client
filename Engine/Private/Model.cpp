@@ -9,6 +9,7 @@
 #include "MaterialInstance.h"
 #include "ModelAnimation.h"
 
+#include "Transform.h"
 #include "GameObject.h"
 
 
@@ -172,9 +173,9 @@ HRESULT CModel::Change_Animation(_uint iAnimationIndex, _bool bBlend, _bool isLo
 	return S_OK;
 }
 
-void CModel::Update_Animation(_float fTimeDelta)
+void CModel::Update_Animation(_float fTimeDelta, CTransform* pOwnerTransform)
 {
-	Update_AnimationPlayState(fTimeDelta); 
+	Update_AnimationPlayState(fTimeDelta, pOwnerTransform);
 }
 
 HRESULT CModel::Set_PassByMesh(class CShader* pShader, _uint iMeshIndex)
@@ -184,16 +185,6 @@ HRESULT CModel::Set_PassByMesh(class CShader* pShader, _uint iMeshIndex)
 
 	pShader->Set_Pass(m_vecPasses[iMeshIndex]);
 	return S_OK;
-}
-
-void CModel::Play_Animation(_float fTimeDelta)
-{
-	m_bIsAnimFinished = m_vecAnimations[m_iCurrentAnimIndex]->Update_TransformationMatrices(m_vecBones, fTimeDelta, m_isAnimLoop, m_pOwner->Get_Component<CTransform>());
-	
-	for (size_t i = 0; i < m_vecBones.size(); ++i)
-	{
-		m_vecBones[i]->Update_CombinedTransformMatrix(m_vecBones, m_matPreTransform);
-	}
 }
 
 HRESULT CModel::Render(_uint iMeshIndex)
@@ -501,10 +492,33 @@ CModel* CModel::Get_Clone(const wstring& wstrPrototypeTag)
 	return dynamic_cast<CModel*>(m_pGameInstance->Clone_Prototype(EPrototypeType::COMPONENT, 0/* static */, wstrPrototypeTag));
 }
 
-void CModel::Blend_Animation(_float fTimeDelta, _float fRatio)
+void CModel::Play_Animation(_float fTimeDelta, CTransform* pOwnerTransform)
 {
-	m_vecAnimations[m_iPrevAnimIndex]->SetUp_PoseDatasForBlending(m_vecPrevAnimationPose, fTimeDelta, m_pOwner->Get_Component<CTransform>());
-	m_vecAnimations[m_iCurrentAnimIndex]->SetUp_PoseDatasForBlending(m_vecCurrAnimationPose, fTimeDelta, m_pOwner->Get_Component<CTransform>());
+	if (pOwnerTransform)
+		m_bIsAnimFinished = m_vecAnimations[m_iCurrentAnimIndex]->Update_TransformationMatrices(m_vecBones, fTimeDelta, m_isAnimLoop, pOwnerTransform);
+	else
+		m_bIsAnimFinished = m_vecAnimations[m_iCurrentAnimIndex]->Update_TransformationMatrices(m_vecBones, fTimeDelta, m_isAnimLoop, m_pOwner->Get_Component<CTransform>());
+
+	for (size_t i = 0; i < m_vecBones.size(); ++i)
+	{
+		m_vecBones[i]->Update_CombinedTransformMatrix(m_vecBones, m_matPreTransform);
+	}
+}
+
+void CModel::Blend_Animation(_float fTimeDelta, _float fRatio, CTransform* pOwnerTransform)
+{
+	if (pOwnerTransform)
+	{
+		m_vecAnimations[m_iPrevAnimIndex]->SetUp_PoseDatasForBlending(m_vecPrevAnimationPose, fTimeDelta, pOwnerTransform);
+		m_vecAnimations[m_iCurrentAnimIndex]->SetUp_PoseDatasForBlending(m_vecCurrAnimationPose, fTimeDelta, pOwnerTransform);
+	}
+
+	else
+	{
+		m_vecAnimations[m_iPrevAnimIndex]->SetUp_PoseDatasForBlending(m_vecPrevAnimationPose, fTimeDelta, m_pOwner->Get_Component<CTransform>());
+		m_vecAnimations[m_iCurrentAnimIndex]->SetUp_PoseDatasForBlending(m_vecCurrAnimationPose, fTimeDelta, m_pOwner->Get_Component<CTransform>());
+	}
+
 
 	_uint i = {};
 	for (auto& pBone : m_vecBones)
@@ -566,15 +580,15 @@ void CModel::Begin_AnimationPlayState(AnimationPlayState eState)
 	}
 }
 
-void CModel::Update_AnimationPlayState(const _float fTimeDelta)
+void CModel::Update_AnimationPlayState(const _float fTimeDelta, CTransform* pOwnerTransform)
 {
 	switch (m_eCurrentAnimationState)
 	{
 	case Engine::CModel::PLAY:
-		Play_Update(fTimeDelta);
+		Play_Update(fTimeDelta, pOwnerTransform);
 		break;
 	case Engine::CModel::BLEND:
-		Blend_Update(fTimeDelta);
+		Blend_Update(fTimeDelta, pOwnerTransform);
 		break;
 	}
 }
@@ -603,9 +617,9 @@ void CModel::Play_Begin()
 {
 }
 
-void CModel::Play_Update(const _float fTimeDelta)
+void CModel::Play_Update(const _float fTimeDelta, CTransform* pOwnerTransform)
 {
-	Play_Animation(fTimeDelta);
+	Play_Animation(fTimeDelta, pOwnerTransform);
 }
 
 void CModel::Play_End()
@@ -618,7 +632,7 @@ void CModel::Blend_Begin()
 	m_fBlendedTime = 0.f;
 }
 
-void CModel::Blend_Update(const _float fTimeDelta)
+void CModel::Blend_Update(const _float fTimeDelta, CTransform* pOwnerTransform)
 {
 	if(m_fBlendDuration <= 0.f)
 		Change_AnimationPlayState(PLAY);
@@ -628,7 +642,7 @@ void CModel::Blend_Update(const _float fTimeDelta)
 	{
 		_float fNormalizedTime = std::clamp(m_fBlendedTime / m_fBlendDuration, 0.f, 1.f);
 		_float fRatio = fNormalizedTime * fNormalizedTime * (3.0f - 2.0f * fNormalizedTime);
-		Blend_Animation(fTimeDelta, fRatio);
+		Blend_Animation(fTimeDelta, fRatio, pOwnerTransform);
 	}
 	else
 		Change_AnimationPlayState(PLAY);
