@@ -23,7 +23,7 @@ public:
 		string strName = { "" };
 		std::span<KEYFRAME> spanKeyframes;
 
-		_int iRootBoneIndex = {-1};
+		_int	iRootBoneIndex = {-1};
 	}CHANNEL_DESC;
 private:
 	CChannel();
@@ -47,12 +47,13 @@ private:
 	vector<KEYFRAME>	m_vecKeyframes;
 
 private:
-	_bool				m_bMotionBone	= { false };
+	_bool				m_bRootBone		= { false };
 	Matrix				m_matTrans = {};
 	Vec3				m_vPreRootLocal = Vec3::Zero;
 
 private:
 	void Update_MotionBone(Vec3 vLeftTrans, Vec3 vRightTrans, _float fRatio, CTransform* pOwnerTransform);
+	void Update_MotionBone(Vec3 vLeftTrans, Vec3 vRightTrans , CTransform* pOwnerTransform);
 
 public:
 	static CChannel* Create(const CHANNEL_DESC &desc);
