@@ -13,6 +13,8 @@ public:
 		_int	iIndex			= { -1 };
 		_int	iParentIndex	= { -1 };
 		Matrix	matTransform	= Matrix::Identity;
+
+		_int	iRootMotionBoneIndex = { -1 };
 	}BONE_DESC;
 private:
 	CBone();
@@ -33,12 +35,12 @@ public:
 	_bool Get_IsMotionBone() const { return m_bMotionBone; }
 
 private:
-	_int m_iIndex = { -1 };
-	_int m_iParentIndex = { -1 };
-	Matrix m_matTransform = {};
-	Matrix m_matBindPoseTransform = {};
-	Matrix m_matCombinedTransform = {};
-	_char m_szName[MAX_NAME] = {};
+	_int	m_iIndex				= { -1 };
+	_int	m_iParentIndex			= { -1 };
+	Matrix	m_matTransform			= {};
+	Matrix	m_matBindPoseTransform	= {};
+	Matrix	m_matCombinedTransform	= {};
+	_char	m_szName[MAX_NAME]		= {};
 
 private:
 	_bool m_bMotionBone = { false };

@@ -43,7 +43,7 @@ void CChannel::SetUp_PoseData(std::span<LOCALSRT> spanLocalSrtData, _float fCurr
 {
 }
 
-void CChannel::Update_TransformationMatrix(const vector<class CBone*>& vecBones, _float fCurrentTrackPosition, _uint* pCurrentKeyFrameIndex, CTransform* pOwnerTransform, CPhysicsCCT* pOwnerPhyCCT)
+void CChannel::Update_TransformationMatrix(const vector<class CBone*>& vecBones, _float fCurrentTrackPosition, _uint* pCurrentKeyFrameIndex, CTransform* pOwnerTransform, CPhysicsCCT* pOwnerPhyCCT, const _float fTimeDelta)
 {
 	if (fCurrentTrackPosition <= 0.f)
 		*pCurrentKeyFrameIndex = 0;
@@ -81,7 +81,7 @@ void CChannel::Update_TransformationMatrix(const vector<class CBone*>& vecBones,
 
 		if (m_bRootBone)
 		{
-			Update_MotionBone(vLeftTranslation, vRightTranslation, pOwnerTransform, pOwnerPhyCCT);
+			Update_MotionBone(vLeftTranslation, vRightTranslation, pOwnerTransform, pOwnerPhyCCT, fTimeDelta);
 			vLeftTranslation	= { 0.f,0.f,0.f };
 			vRightTranslation	= { 0.f,0.f,0.f };
 		}
@@ -95,7 +95,7 @@ void CChannel::Update_TransformationMatrix(const vector<class CBone*>& vecBones,
 	vecBones[m_iBoneIndex]->Set_TransformationMatrix(matTransformation);
 }
 
-void CChannel::SetUp_PoseData(std::span<LOCALSRT> spanLocalSrtData, _float fCurrentTrackPosition, _uint* pCurrentKeyFrameIndex, CTransform* pOwnerTransform, CPhysicsCCT* pOwnerPhyCCT)
+void CChannel::SetUp_PoseData(std::span<LOCALSRT> spanLocalSrtData, _float fCurrentTrackPosition, _uint* pCurrentKeyFrameIndex, CTransform* pOwnerTransform, CPhysicsCCT* pOwnerPhyCCT, const _float fTimeDelta)
 {
 	if (fCurrentTrackPosition <= 0.f)
 		*pCurrentKeyFrameIndex = 0;
@@ -120,14 +120,14 @@ void CChannel::SetUp_PoseData(std::span<LOCALSRT> spanLocalSrtData, _float fCurr
 		if (fCurrentTrackPosition >= m_vecKeyframes[(*pCurrentKeyFrameIndex) + 1].fTrackPosition)
 			++(*pCurrentKeyFrameIndex);
 
-		vLeftScale = m_vecKeyframes[(*pCurrentKeyFrameIndex)].vScale;
-		vRightScale = m_vecKeyframes[(*pCurrentKeyFrameIndex) + 1].vScale;
+		vLeftScale			= m_vecKeyframes[(*pCurrentKeyFrameIndex)].vScale;
+		vRightScale			= m_vecKeyframes[(*pCurrentKeyFrameIndex) + 1].vScale;
 
-		vLeftQuaternion = m_vecKeyframes[(*pCurrentKeyFrameIndex)].vQuaterion;
-		vRightQuaternion = m_vecKeyframes[(*pCurrentKeyFrameIndex) + 1].vQuaterion;
+		vLeftQuaternion		= m_vecKeyframes[(*pCurrentKeyFrameIndex)].vQuaterion;
+		vRightQuaternion	= m_vecKeyframes[(*pCurrentKeyFrameIndex) + 1].vQuaterion;
 
-		vLeftTranslation = m_vecKeyframes[(*pCurrentKeyFrameIndex)].vTranslation;
-		vRightTranslation = m_vecKeyframes[(*pCurrentKeyFrameIndex) + 1].vTranslation;
+		vLeftTranslation	= m_vecKeyframes[(*pCurrentKeyFrameIndex)].vTranslation;
+		vRightTranslation	= m_vecKeyframes[(*pCurrentKeyFrameIndex) + 1].vTranslation;
 
 
 		_float		fRatio = (fCurrentTrackPosition - m_vecKeyframes[(*pCurrentKeyFrameIndex)].fTrackPosition) /
@@ -135,9 +135,9 @@ void CChannel::SetUp_PoseData(std::span<LOCALSRT> spanLocalSrtData, _float fCurr
 
 		if (m_bRootBone)
 		{
-			Update_MotionBone(vLeftTranslation, vRightTranslation, pOwnerTransform, pOwnerPhyCCT);
-			vLeftTranslation = { 0.f,0.f,0.f };
-			vRightTranslation = { 0.f,0.f,0.f };
+			Update_MotionBone(vLeftTranslation, vRightTranslation, pOwnerTransform, pOwnerPhyCCT, fTimeDelta);
+			vLeftTranslation	= { 0.f,0.f,0.f };
+			vRightTranslation	= { 0.f,0.f,0.f };
 		}
 
 		vScale			= Vec3::Lerp(vLeftScale, vRightScale, fRatio);
@@ -150,7 +150,7 @@ void CChannel::SetUp_PoseData(std::span<LOCALSRT> spanLocalSrtData, _float fCurr
 	spanLocalSrtData[m_iBoneIndex].vTranslation = vTranslation;
 }
 
-void CChannel::Update_MotionBone(Vec3 vLeftTrans, Vec3 vRightTrans,  CTransform* pOwnerTransform, CPhysicsCCT* pOwnerPhyCCT)
+void CChannel::Update_MotionBone(Vec3 vLeftTrans, Vec3 vRightTrans,  CTransform* pOwnerTransform, CPhysicsCCT* pOwnerPhyCCT, const _float fTimeDelta)
 {
 	if (pOwnerTransform == nullptr ||
 		pOwnerPhyCCT == nullptr)
@@ -161,6 +161,11 @@ void CChannel::Update_MotionBone(Vec3 vLeftTrans, Vec3 vRightTrans,  CTransform*
 	_float fLocalUp		= vLeftTrans.z - vRightTrans.z;
 	_float fLocalLook	= vLeftTrans.y - vRightTrans.y;
 
+	if (fLocalRight == 0
+		&& fLocalUp == 0
+		&& fLocalLook == 0)
+		return;
+
 	Vec3 vOwnerPos		= pOwnerTransform->Get_Info(TRANSFORM_INFO_STATE::POS);
 	Vec3 vOwnerRight	= pOwnerTransform->Get_Info(TRANSFORM_INFO_STATE::RIGHT);
 	Vec3 vOwnerUp		= pOwnerTransform->Get_Info(TRANSFORM_INFO_STATE::UP);
@@ -168,7 +173,7 @@ void CChannel::Update_MotionBone(Vec3 vLeftTrans, Vec3 vRightTrans,  CTransform*
 
 	Vec3 moveDistance = vOwnerRight * fLocalRight + vOwnerUp * fLocalUp + vOwnerLook * fLocalLook;
 
-	pOwnerPhyCCT->Move(moveDistance, 0.0f, 0.016f);
+	pOwnerPhyCCT->Move(moveDistance, 0.0f, fTimeDelta);
 
 	Vec3 finalPos = pOwnerPhyCCT->GetFootPosition();
 

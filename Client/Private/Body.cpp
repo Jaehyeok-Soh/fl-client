@@ -73,8 +73,7 @@ void CBody::Update_Priority(_float fTimeDelta)
 void CBody::Update(_float fTimeDelta)
 {
 	Super::Update(fTimeDelta);
-	CPhysicsCCT* pPlayerCCT = Get_Parent()->Get_Component<CPhysicsCCT>();
-	Get_Component<CModel>()->Update_Animation(fTimeDelta, Get_Parent()->Get_Component<CTransform>(), pPlayerCCT);
+	Get_Component<CModel>()->Update_Animation(fTimeDelta, Get_Parent()->Get_Component<CTransform>(), Get_Parent()->Get_Component<CPhysicsCCT>());
 	if(CCollider* pCollider = Get_Component<CCollider>())
 		pCollider->Update(m_matCombinedWorld);
 }

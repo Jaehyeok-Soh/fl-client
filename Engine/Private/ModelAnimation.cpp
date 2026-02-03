@@ -58,7 +58,7 @@ _bool CModelAnimation::Update_TransformationMatrices(const vector<class CBone*>&
 	_uint iIndex = { 0 };
 	for (auto& pChannel : m_vecChannels)
 	{
-		pChannel->Update_TransformationMatrix(vecBones, m_fCurrentTrackPosition, &m_vecCurrentKeyFrameIndices[iIndex++], pOwnerTransform, pOwnerPhyCCT);
+		pChannel->Update_TransformationMatrix(vecBones, m_fCurrentTrackPosition, &m_vecCurrentKeyFrameIndices[iIndex++], pOwnerTransform, pOwnerPhyCCT, fTimeDelta);
 	}
 	return false;
 }
@@ -74,7 +74,7 @@ void CModelAnimation::SetUp_PoseDatasForBlending(std::span<LOCALSRT> spanLocalSr
 	_uint iIndex = { 0 };
 	for (auto& pChannel : m_vecChannels)
 	{
-		pChannel->SetUp_PoseData(spanLocalSrtData, m_fCurrentTrackPosition, &m_vecCurrentKeyFrameIndices[iIndex++], pOwnerTransform, pOwnerPhyCCT);
+		pChannel->SetUp_PoseData(spanLocalSrtData, m_fCurrentTrackPosition, &m_vecCurrentKeyFrameIndices[iIndex++], pOwnerTransform, pOwnerPhyCCT, fTimeDelta);
 	}
 }
 
