@@ -159,6 +159,7 @@
   <ItemGroup>
     <ClInclude Include="..\Public\Body.h" />
     <ClInclude Include="..\public\Builder_Example.h" />
+    <ClInclude Include="..\Public\Builder_Map.h" />
     <ClInclude Include="..\Public\Builder_UI.h" />
     <ClInclude Include="..\Public\CameraMan_Targeter.h" />
     <ClInclude Include="..\Public\Canvas.h" />
@@ -171,6 +172,7 @@
     <ClInclude Include="..\Public\EffectBuilder.h" />
     <ClInclude Include="..\Public\EffectObject.h" />
     <ClInclude Include="..\Public\GenericUI.h" />
+    <ClInclude Include="..\Public\MapObject.h" />
     <ClInclude Include="..\Public\Physics_LandScape.h" />
     <ClInclude Include="..\Public\Physics_Terrain.h" />
     <ClInclude Include="..\Public\State_CrouchWalk.h" />
@@ -205,6 +207,7 @@
     <ClInclude Include="..\Public\State_RunShort.h" />
     <ClInclude Include="..\Public\State_Slide.h" />
     <ClInclude Include="..\Public\State_Walk.h" />
+    <ClInclude Include="..\Public\StaticModel.h" />
     <ClInclude Include="..\Public\UILayer.h" />
     <ClInclude Include="..\Public\UI_Manager.h" />
     <ClInclude Include="..\Public\Weapon.h" />
@@ -217,6 +220,7 @@
   <ItemGroup>
     <ClCompile Include="..\Private\Body.cpp" />
     <ClCompile Include="..\private\Builder_Example.cpp" />
+    <ClCompile Include="..\Private\Builder_Map.cpp" />
     <ClCompile Include="..\Private\Builder_UI.cpp" />
     <ClCompile Include="..\Private\CameraMan_Targeter.cpp" />
     <ClCompile Include="..\Private\Canvas.cpp" />
@@ -227,6 +231,7 @@
     <ClCompile Include="..\Private\EffectBuilder.cpp" />
     <ClCompile Include="..\Private\EffectObject.cpp" />
     <ClCompile Include="..\Private\GenericUI.cpp" />
+    <ClCompile Include="..\Private\MapObject.cpp" />
     <ClCompile Include="..\Private\Physics_LandScape.cpp" />
     <ClCompile Include="..\Private\State_CrouchWalk.cpp" />
     <ClCompile Include="..\Private\Level_Loading.cpp" />
@@ -260,6 +265,7 @@
     <ClCompile Include="..\Private\State_RunShort.cpp" />
     <ClCompile Include="..\Private\State_Slide.cpp" />
     <ClCompile Include="..\Private\State_Walk.cpp" />
+    <ClCompile Include="..\Private\StaticModel.cpp" />
     <ClCompile Include="..\Private\UILayer.cpp" />
     <ClCompile Include="..\Private\UI_Manager.cpp" />
     <ClCompile Include="..\Private\Weapon.cpp" />

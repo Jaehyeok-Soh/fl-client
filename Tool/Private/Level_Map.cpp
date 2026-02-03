@@ -45,6 +45,7 @@ CLevel_Map::CLevel_Map(ID3D11Device* pDevice, ID3D11DeviceContext* pDeviceContex
 	, m_pUEMapDataParser(CUEMapdataParser::GetInstance())
 	, m_pMapToolManager(CMapToolManager::GetInstance())
 {
+	Safe_AddRef(m_pMapToolManager);
 	Safe_AddRef(m_pImGuiManager);
 	Safe_AddRef(m_pPickingManager);
 	m_arrayImGuiPanel.fill(nullptr);
@@ -54,6 +55,7 @@ HRESULT CLevel_Map::Initialize()
 {
 	if (FAILED(Super::Initialize()))
 		return E_FAIL;
+
 
 	if (FAILED(Ready_MapObject_Layer()))
 		return E_FAIL;
@@ -68,7 +70,6 @@ HRESULT CLevel_Map::Initialize()
 		return E_FAIL;
 
 	m_pUEMapDataParser->Initialize(m_pDevice,m_pDeviceContext);
-	m_pMapToolManager->Initialize(m_pDevice, m_pDeviceContext);
 
 	return S_OK;
 }
@@ -289,9 +290,10 @@ void CLevel_Map::Free()
 
 	Safe_Release(m_pImGuiManager);
 	Safe_Release(m_pPickingManager);
+	Safe_Release(m_pMapToolManager);
 
 	m_pUEMapDataParser->DestroyInstance();
-	m_pMapToolManager->DestroyInstance();
+
 
 
 	Super::Free();

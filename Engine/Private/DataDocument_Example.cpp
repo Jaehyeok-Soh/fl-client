@@ -1,5 +1,6 @@
 #include "Engine_pch.h"
 #include "DataDocument_Example.h"
+#include "DataDocument_Map.h"
 
 
 CDataDocument_Example::CDataDocument_Example()

@@ -21,6 +21,7 @@
 // Builder
 //=================
 #include "DataDocument_Example.h"
+#include "DataDocument_Map.h"
 #include "DataDocument_Effect.h"
 #include "DataDocument_UI.h"
 #include "Builder_Example.h"
@@ -41,6 +42,7 @@
 #include "Effect.h"
 #include "EffectObject.h"
 #include "Physics_LandScape.h" // physics test
+#include "StaticModel.h"
 //=================
 // UI
 //=================
@@ -130,7 +132,7 @@ HRESULT CLoader::Loading_For_Logo()
 	{
 		// Regist Document
 		{
-			if (FAILED(m_pGameInstance->Regist_Document<CDataDocument_Example>(ENUM_TO_UINT(ELevelType::LOGO), DTO::ECategory::MAP)))
+			if (FAILED(m_pGameInstance->Regist_Document<CDataDocument_Map>(ENUM_TO_UINT(ELevelType::LOGO), DTO::ECategory::MAP)))
 				return E_FAIL;
 
 			if (FAILED(m_pGameInstance->Regist_Document<CDataDocument_Effect>(ENUM_TO_UINT(ELevelType::LOGO), DTO::ECategory::EFFECT)))
@@ -155,6 +157,7 @@ HRESULT CLoader::Loading_For_Logo()
 	/////////////////////////////////////////
 	//////////// Ready Resources ////////////
 	/////////////////////////////////////////
+
 #pragma region Resource
 	{
 		//if (FAILED(m_pGameInstance->Load_Sounds(L"../../Resources/Sounds")))
@@ -234,6 +237,10 @@ HRESULT CLoader::Loading_For_Logo()
 		// 이펙트 Object
 		ADD_PROTOTYPE(ELevelType::LOGO, L"Prototype_GameObject_Effect", Effect::Create(m_pDevice, m_pDeviceContext));
 		ADD_PROTOTYPE(ELevelType::LOGO, L"Prototype_GameObject_Effect_Parts", CEffectObject::Create(m_pDevice, m_pDeviceContext));
+
+		/* Map Object */
+		ADD_PROTOTYPE(ELevelType::STATIC, L"Prototype_GameObject_StaticModel", CStaticModel::Create(m_pDevice, m_pDeviceContext));
+
 	}
 #pragma endregion
 
@@ -267,25 +274,7 @@ HRESULT CLoader::Loading_For_Logo()
 	// For. Prototype_GameObject_Physics_Terrain
 	m_pGameInstance->Add_Prototype(ENUM_TO_UINT(ELevelType::STATIC), L"Prototype_GameObject_Physics_Terrain", CPhysics_Terrain::Create(m_pDevice, m_pDeviceContext));
 
-	// For. Prototype_GameObject_Physics_Terrain
-	m_pGameInstance->Add_Prototype(ENUM_TO_UINT(ELevelType::STATIC), L"Prototype_GameObject_Physics_LandScape", CPhysics_LandScape::Create(m_pDevice, m_pDeviceContext));
-
-	// 2.1 소재혁 : test // 맵 클라이언트 파싱 기능과 연동 예정 추후 코드 삭제
-	// For. Prototype_Component_Physics_Collider_{modelName}
-	{
-		CModel::MODEL_ORIGIN_DESC desc = {};
-		desc.eType = EModelType::STATIC;
-		desc.iPrototypeLevelIndex = ENUM_TO_UINT(ELevelType::STATIC);
-		desc.pMatPreTransform = &matPreTransformScale;
-		desc.wstrModelFolderName = L"total_landScape_4x4";
-		wstring modelPrototypeTag = L"Prototype_Component_Model_total_landScape_4x4";
-		ADD_PROTOTYPE(ELevelType::STATIC, modelPrototypeTag, CModel::Create(m_pDevice, m_pDeviceContext, &desc));
-
-		PHYSICSCOLLIDER_DESC pcDesc{};
-		pcDesc.wstrModelPrototypeTag = modelPrototypeTag;
-		pcDesc.bIsConvex = false;
-		ADD_PROTOTYPE(ELevelType::STATIC, L"Prototype_Component_Physics_Collider_total_landScape_4x4", CPhysicsCollider::Create(m_pDevice, m_pDeviceContext, &pcDesc));
-	}
+	/* Map Parsing Test */
 #pragma endregion
 
 	m_isFinished = true;

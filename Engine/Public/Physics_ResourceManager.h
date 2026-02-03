@@ -6,7 +6,20 @@ class CGameInstance;
 
 class CPhysics_ResourceManager final : public CBase
 {
+public:
+    typedef struct tagHeightFieldInfo
+    {
+        PxHeightField* pHeightField = { nullptr };
+        PxHeightFieldGeometry hfGeom = {};
+        PxReal minX = { FLT_MAX }, maxX = { -FLT_MAX };
+        PxReal minZ = { FLT_MAX }, maxZ = { -FLT_MAX };
+        PxU32 numRows = {}, numCols = {};
+        PxReal rowScale = {}, colScale = {};
+    }HEIGHTFIELD_INFO;
+
+private:
 	using Super = CBase;
+
 private:
 	CPhysics_ResourceManager(ID3D11Device* pDevice, ID3D11DeviceContext* pContext, PxPhysics* pPhysics, PxScene* pScene);
 	virtual ~CPhysics_ResourceManager() = default;
@@ -23,6 +36,8 @@ public:
 	vector<PxConvexMesh*> GetConvexMeshes(PHYSICSCOLLIDER_DESC* pDesc);
     void RegisterPhysicsMesh(_uint levelIndex, _wstring prototypeTag);
 
+    vector<HEIGHTFIELD_INFO> GetHeightFields(PHYSICSCOLLIDER_DESC* pDesc);
+     
 public:
     /// <summary>
     /// 지형 물리 모델 생성
@@ -39,6 +54,9 @@ public:
     /// </summary>
     vector<PxConvexMesh*> CreateConvexMeshes(class CModel* model, _bool directionInsertion = true, _uint gaussMapLimit = 16);
     PxConvexMesh* CreateConvexMesh(class CMesh* mesh, PxConvexMeshCookingType::Enum convexMeshCookingType, _bool directionInsertion, PxU32 gaussMapLimit);
+
+    vector<HEIGHTFIELD_INFO> CreateHeightFields(class CModel* model);
+    HEIGHTFIELD_INFO CreateHeightField(class CMesh* mesh);
 
     /// <summary>
     /// 지형 물리 모델 직렬화
@@ -97,6 +115,7 @@ private:
 
     map<_wstring, vector<PxTriangleMesh*>> m_TriangleMeshes;
     map<_wstring, vector<PxConvexMesh*>> m_ConvexMeshes;
+    map<_wstring, vector<HEIGHTFIELD_INFO>> m_HeightFields;
 
     PxMaterial* m_Materials[ENUM_TO_UINT(EPhysicsMaterial::END)] = { nullptr };
     

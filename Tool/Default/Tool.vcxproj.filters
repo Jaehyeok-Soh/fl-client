@@ -244,6 +244,9 @@
     <Filter Include="06. ImGui\01. Panel\UI\Maker">
       <UniqueIdentifier>{f5fed899-dccb-4d0d-a291-189fd27b3ca2}</UniqueIdentifier>
     </Filter>
+    <Filter Include="09. Builder\Map">
+      <UniqueIdentifier>{316c30da-42c6-486a-bbfd-7736152fabec}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="framework.h">
@@ -495,6 +498,9 @@
     <ClInclude Include="..\Public\AnimObj.h">
       <Filter>02. GameObjects\ContainerObject\AnimModel</Filter>
     </ClInclude>
+    <ClInclude Include="..\Public\Builder_Map.h">
+      <Filter>09. Builder\Map</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <Image Include="small.ico">
@@ -725,6 +731,9 @@
     </ClCompile>
     <ClCompile Include="..\Private\AnimObj.cpp">
       <Filter>02. GameObjects\ContainerObject\AnimModel</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\Builder_Map.cpp">
+      <Filter>09. Builder\Map</Filter>
     </ClCompile>
   </ItemGroup>
 </Project>

@@ -172,6 +172,14 @@ namespace Client
 		LT = 0, CT, RT, LC, C, RC, LB, CB, RB, END
 	};
 
+	enum class EMapObject_Type
+	{
+		STATICMODEL,
+		INSTANCEMODEL,
+		END,
+	};
+
+
 	typedef struct tagColMeshHitInformation
 	{
 		class CColMesh* pColMesh = { nullptr };
@@ -221,6 +229,10 @@ namespace Client
 	{
 		std::unordered_map<_uint, std::vector<tagSkillCommand>> umapEventToCommands;
 	}SKILL_PRESET;
+
+
+
+
 
 	inline constexpr wchar_t g_wszTriggerBoxLayer[]{ L"TriggerBox_Layer" };
 	inline constexpr wchar_t g_wszColMeshLayer[]{ L"ColMesh_Layer" };

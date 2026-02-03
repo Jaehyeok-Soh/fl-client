@@ -290,6 +290,7 @@ public:
 	vector<PxShape*> GetMeshShape(PHYSICSCOLLIDER_DESC* pDesc);
 	PxRigidActor* GetActor(PHYSICSRIGIDBODY_DESC* rigidBodyDesc, PHYSICSCOLLIDER_DESC* colliderDesc, vector<PxShape*>& shapes);
 	PxController* GetController(PHYSICSCCT_DESC* pDesc);
+	void RegisterPhysicsMesh(_uint levelIndex, _wstring prototypeTag);
 #ifdef _DEBUG
 	void Physics_Render(PxRigidActor* pActor, XMVECTOR color = DirectX::Colors::White);
 #endif // _DEBUG

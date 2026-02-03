@@ -219,7 +219,7 @@ namespace Tool
 	static EMapObject_Type MapObjectType_StringToType(const string& strType)
 	{
 		if (strType == "STATICMODEL") return EMapObject_Type::STATICMODEL;
-
+		if (strType == "INSTANCEMODEL") return EMapObject_Type::INSTANCEMODEL;
 
 		return EMapObject_Type::END;
 	}
