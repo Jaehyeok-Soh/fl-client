@@ -850,6 +850,11 @@ void CGameInstance::RegisterPhysicsMesh(_uint levelIndex, _wstring prototypeTag)
 	m_pPhysics_Module->RegisterPhysicsMesh(levelIndex, prototypeTag);
 }
 
+_bool CGameInstance::HasNegativeScale(Matrix mat)
+{
+	return m_pPhysics_Module->HasNegativeScale(mat);
+}
+
 #ifdef _DEBUG
 void CGameInstance::Physics_Render(PxRigidActor* pActor, XMVECTOR color)
 {

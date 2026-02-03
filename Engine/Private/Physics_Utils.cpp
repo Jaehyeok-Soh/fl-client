@@ -191,6 +191,13 @@ Matrix CPhysics_Utils::PxTransformToXMMatrix(PxTransform pxTransform)
 	return matQuat * matTrans;
 }
 
+_bool CPhysics_Utils::HasNegativeScale(Matrix mat)
+{
+	Vec4 detVec = XMMatrixDeterminant(mat);
+
+	return XMVectorGetX(detVec) < 0.f;
+}
+
 _bool CPhysics_Utils::RayCast()
 {
 	PxVec3 o3(0.f, 0.f, 0.f);

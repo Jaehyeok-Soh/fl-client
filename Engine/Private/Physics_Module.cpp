@@ -205,6 +205,11 @@ Matrix CPhysics_Module::PxTransformToXMMatrix(PxTransform pxTransform)
 	return m_pUtils->PxTransformToXMMatrix(pxTransform);
 }
 
+_bool CPhysics_Module::HasNegativeScale(Matrix mat)
+{
+	return m_pUtils->HasNegativeScale(mat);
+}
+
 #ifdef _DEBUG
 HRESULT CPhysics_Module::Render(PxRigidActor* pActor, XMVECTOR color)
 {

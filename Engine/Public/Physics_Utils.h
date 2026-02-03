@@ -22,6 +22,8 @@ public:
     PxTransform XMMatrixToPxTransform(Matrix mat);
     Matrix PxTransformToXMMatrix(PxTransform pxTransform);
 
+    _bool HasNegativeScale(Matrix mat);
+
 public:
     _bool RayCast();
 
