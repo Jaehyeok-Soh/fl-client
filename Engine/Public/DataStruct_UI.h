@@ -9,7 +9,7 @@ enum class EUIType : _uint
 	CANVAS,
 	LAYER,
 	GENERICUI,
-	UICOMPONENT,
+	EVENT,
 	END
 };
 inline constexpr _uint g_UITypeCount{ ENUM_TO_UINT(EUIType::END) };
@@ -19,7 +19,7 @@ NLOHMANN_JSON_SERIALIZE_ENUM(EUIType,
 		{EUIType::CANVAS, "CANVAS"},
 		{EUIType::LAYER, "LAYER"},
 		{EUIType::GENERICUI, "GENERICUI"},
-		{EUIType::UICOMPONENT, "UICOMPONENT"}
+		{EUIType::EVENT, "EVENT"}
 	}
 )
 
@@ -45,6 +45,32 @@ NLOHMANN_JSON_SERIALIZE_ENUM(EUIEvent,
 		{EUIEvent::PRESSING, "PRESSING"},
 		{EUIEvent::PRESS_EXIT, "PRESS_EXIT"},
 	})
+	inline std::string UIEventToString(DTO::EUIEvent eType)
+{
+	switch (eType)
+	{
+	case DTO::EUIEvent::NONE: return "NONE";
+	case DTO::EUIEvent::HOVER_ENTER: return "HOVER_ENTER";
+	case DTO::EUIEvent::HOVERING: return "HOVERING";
+	case DTO::EUIEvent::HOVER_EXIT: return "HOVER_EXIT";
+	case DTO::EUIEvent::PRESS_ENTER: return "PRESS_ENTER";
+	case DTO::EUIEvent::PRESSING: return "PRESSING";
+	case DTO::EUIEvent::PRESS_EXIT: return "PRESS_EXIT";
+	default: return "";
+	}
+}
+
+inline DTO::EUIEvent StringToUIEvent(const std::string& str)
+{
+	if (str == "NONE") return DTO::EUIEvent::NONE;
+	else if (str == "HOVER_ENTER") return DTO::EUIEvent::HOVER_ENTER;
+	else if (str == "HOVERING") return DTO::EUIEvent::HOVERING;
+	else if (str == "HOVER_EXIT") return DTO::EUIEvent::HOVER_EXIT;
+	else if (str == "PRESS_ENTER") return DTO::EUIEvent::PRESS_ENTER;
+	else if (str == "PRESSING") return DTO::EUIEvent::PRESSING;
+	else if (str == "PRESS_EXIT") return DTO::EUIEvent::PRESS_EXIT;
+	else return DTO::EUIEvent::END;
+}
 
 enum class EUIFunc
 {
@@ -76,6 +102,8 @@ inline _string UIFunctypeToString(EUIFunc eType)
 
 struct TUI_EventBindData
 {
+	static constexpr EUIType eType = EUIType::EVENT	;
+	std::string strTag;
 	std::string strOwnerTag;
 	EUIEvent eEvent = EUIEvent::NONE;
 	std::string strActionKey;
@@ -137,6 +165,28 @@ NS_END
 /////////////////-------------------  Wrapping Class  -------------------/////////////////
 
 NS_BEGIN(Engine)
+
+class ENGINE_DLL CUI_EventBindData_DTO final : public IObjectDataBase
+{
+	using Super = IObjectDataBase;
+private:
+	CUI_EventBindData_DTO() = default;
+	virtual ~CUI_EventBindData_DTO() = default;
+public:
+	_uint Get_Type() const override { return ENUM_TO_UINT(DTO::EUIType::EVENT); }
+	const _string& Get_Tag() const override { return m_Data.strTag; }
+
+	json ToJson() const override;
+	HRESULT FromJson(const json& j) override;
+
+	const DTO::TUI_EventBindData& Get_Data() const { return m_Data; }
+	DTO::TUI_EventBindData& Get_Data() { return m_Data; }
+private:
+	DTO::TUI_EventBindData m_Data;
+public:
+	static CUI_EventBindData_DTO* Create() { return new CUI_EventBindData_DTO(); }
+	virtual void Free() override { Super::Free(); }
+};
 
 class ENGINE_DLL CUI_GenericUI_DTO final : public IObjectDataBase
 {
@@ -204,9 +254,5 @@ public:
 	virtual void Free() override { Super::Free(); }
 };
 
-class ENGINE_DLL CUI_DynamicMovementComponent_DTO final : public IObjectDataBase
-{
-
-};
 
 NS_END

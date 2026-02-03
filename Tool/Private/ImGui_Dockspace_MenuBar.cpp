@@ -19,6 +19,7 @@
 #include "DataDocument_UI.h"
 #include "ImGui_UIManager.h"
 #include "ToolCanvas.h"
+#include "Builder_UI.h"
 
 // Map
 #include "DataStruct_Map.h"
@@ -27,6 +28,7 @@
 #include "Builder_Map.h"
 // BuilderSystem
 #include "BuilderSystem.h"
+
 
 
 CImGui_Dockspace_MenuBar::CImGui_Dockspace_MenuBar(const _char* pLabel, ID3D11Device* pDevice, ID3D11DeviceContext* pDeviceContext)
@@ -53,6 +55,8 @@ HRESULT	CImGui_Dockspace_MenuBar::Ready_Builder()
 	if (m_pBuilderSystem == nullptr)  return E_FAIL;
 
 	if (FAILED(m_pBuilderSystem->Ready_Builder(DTO::ECategory::MAP, CBuilder_Map::Create(m_pDevice, m_pDeviceContext, ENUM_TO_UINT(ELevelType::MAP)))))
+		return E_FAIL;
+	if (FAILED(m_pBuilderSystem->Ready_Builder(DTO::ECategory::UI, CBuilder_UI::Create(m_pDevice, m_pDeviceContext, ENUM_TO_UINT(ELevelType::UI)))))
 		return E_FAIL;
 
 	return S_OK;
@@ -153,7 +157,6 @@ void CImGui_Dockspace_MenuBar::Load_Data(const wstring& wstrFilePath)
 	switch (eCurentLevel)
 	{
 	case Tool::ELevelType::LOADING:
-
 		break;
 	case Tool::ELevelType::MAP:
 		Load_MapData(wstrFilePath);
@@ -231,20 +234,20 @@ void CImGui_Dockspace_MenuBar::Save_UIData(const wstring& wstrFilePath)
 	DTO::ECategory eCategory = DTO::ECategory::UI;
 	_uint iLevelID = ENUM_TO_UINT(eLevelType);
 
-	const _wstring& strKey = Engine_Utils::ToWString(
+	const _wstring& wstrKey = Engine_Utils::ToWString(
 		CImGui_UIManager::GetInstance()->Safe_Access_Canvas(CImGui_UIManager::GetInstance()->Get_CurCanvasIndex())->Get_Tag());
 
-	_wstring wstrfinalPath = std::filesystem::path(wstrFilePath).parent_path().wstring() + L"\\" + strKey + L".json";
-
+	/* Folder 기준을 Static, Logo 같은 Client Level이나 Prefab으로 저장할거라 선택한 파일의 부모경로 ~~/Static 까지 받아서 Canvas 이름으로 Json 파일 경로를 생성 */
+	_wstring wstrfinalPath = std::filesystem::path(wstrFilePath).parent_path().wstring() + L"\\" + wstrKey + L".json";
 	if (FAILED(m_pGameInstance->Regist_Document<CDataDocument_UI>(iLevelID, eCategory)))
 		return;
 
-	CDataDocumentBase* pDocument = m_pGameInstance->Ensure_Document(iLevelID, eCategory, strKey);
+	/* Canvas Name.json 파일 */
+	CDataDocumentBase* pDocument = m_pGameInstance->Ensure_Document(iLevelID, eCategory, wstrfinalPath);
 	if (pDocument == nullptr)
 		return;
 
-	Request_ExportData(ELevelType::UI, eCategory, strKey, pDocument);
-
+	Request_ExportData(eLevelType, eCategory, wstrKey + L"_Layer", pDocument);
 	m_pGameInstance->Save_File_Json(iLevelID, eCategory, wstrfinalPath);
 }
 
@@ -461,6 +464,17 @@ void CImGui_Dockspace_MenuBar::Load_CameraData(const wstring& wstrFilePath)
 
 void CImGui_Dockspace_MenuBar::Load_UIData(const wstring& wstrFilePath)
 {
+	ELevelType eLevelType = ELevelType::UI;
+	DTO::ECategory eCategory = DTO::ECategory::UI;
+	_uint iLevelID = ENUM_TO_UINT(eLevelType);
+
+	if (FAILED(m_pGameInstance->Regist_Document<CDataDocument_UI>(iLevelID, eCategory)))
+		return;
+
+	if (FAILED(m_pGameInstance->Load_File_Json(iLevelID, eCategory, wstrFilePath)))
+		return;
+
+	m_pBuilderSystem->Build_File(iLevelID, eCategory, path(wstrFilePath).filename().stem().string());
 }
 
 void CImGui_Dockspace_MenuBar::Request_ExportData(ELevelType eLevelID, DTO::ECategory eCategory, const wstring& wstrLayerTag, CDataDocumentBase* pDocument)

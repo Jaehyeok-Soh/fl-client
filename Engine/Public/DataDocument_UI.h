@@ -20,6 +20,7 @@ public:
 	HRESULT Try_Add(const DTO::TUI_CanvasData& data);
 	HRESULT Try_Add(const DTO::TUI_LayerData& data);
 	HRESULT Try_Add(const DTO::TUI_GenericUIData& data);
+	HRESULT Try_Add(DTO::TUI_EventBindData& data);
 private:
 	IObjectDataBase* Create_ObjectData(DTO::EUIType eType);
 	HRESULT Try_Add(IObjectDataBase* pObject);

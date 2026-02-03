@@ -44,6 +44,15 @@ HRESULT CToolUI::Initialize(void* pArg)
 
 	m_wstrTextureTag = Engine_Utils::ToWString(pDesc->strInitTextureTag);
 	m_iTextureIndex = pDesc->iInitTextureIndex;
+
+	m_eRectTransformType = static_cast<ERectTransform>(pDesc->iRectTransformType);
+
+	m_fHeight = pDesc->fHeight;
+	m_fWidth = pDesc->fWidth;
+	m_fX = pDesc->fX;
+	m_fY = pDesc->fY;
+	m_fZ = pDesc->fZ;
+
 	if (FAILED(Super::Initialize(pArg)))
 		return E_FAIL;
     if (FAILED(Ready_Components(pDesc)))

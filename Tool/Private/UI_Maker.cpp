@@ -265,8 +265,10 @@ void CUI_Maker::Make_Canvas()
 				Desc.fWidth = g_iWinSizeX;
 				Desc.iEditorSizeX = g_iWinSizeX;
 				Desc.iEditorSizeY = g_iWinSizeY;
+
+				_wstring wstrLayerTag = Engine_Utils::ToWString(m_strCanvasTag) + L"_Layer";
 				CGameObject* pResult =
-					CGameInstance::GetInstance()->Add_GameObject(Desc.iLevelIndex, g_wszPrototypeTagCanvas, Desc.iLevelIndex, Engine_Utils::ToWString(m_strCanvasTag),&Desc );
+					CGameInstance::GetInstance()->Add_GameObject(Desc.iLevelIndex, g_wszPrototypeTagCanvas, Desc.iLevelIndex, wstrLayerTag, &Desc);
 
 				if (nullptr == pResult)
 				{
@@ -363,9 +365,10 @@ void CUI_Maker::Make_Layer()
 					if(nullptr != pCanvas)
 						Desc.strCanvasName = pCanvas->Get_Tag();
 					Desc.iCanvasIndex = m_pUIManager->Get_CurCanvasIndex();
-
+					
+					_wstring wstrLayerTag = Engine_Utils::ToWString(Desc.strCanvasName) + L"_Layer";
 					CGameObject* pResult =
-						CGameInstance::GetInstance()->Add_GameObject(Desc.iLevelIndex, g_wszPrototypeTagLayer, Desc.iLevelIndex, Engine_Utils::ToWString(m_strLayerTag), &Desc);
+						CGameInstance::GetInstance()->Add_GameObject(Desc.iLevelIndex, g_wszPrototypeTagLayer, Desc.iLevelIndex, wstrLayerTag, &Desc);
 					if (nullptr == pResult)
 					{
 						m_strLayerTag = "";
@@ -527,8 +530,9 @@ void CUI_Maker::Make_UI()
 
 					if (nullptr != pLayer)
 					{
+						_wstring wstrLayerTag = Engine_Utils::ToWString(Desc.strCanvasName) + L"_Layer";
 						CGameObject* pResult =
-							CGameInstance::GetInstance()->Add_GameObject(Desc.iLevelIndex, g_wszPrototypeTagUI, Desc.iLevelIndex, Engine_Utils::ToWString(pLayer->Get_Name()), &Desc);
+							CGameInstance::GetInstance()->Add_GameObject(Desc.iLevelIndex, g_wszPrototypeTagUI, Desc.iLevelIndex, wstrLayerTag, &Desc);
 
 						if (nullptr == pResult)
 						{
