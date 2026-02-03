@@ -1,5 +1,4 @@
 #pragma once
-
 #include "ObjectDataBase.h"
 #include "DataEnum.h"
 #include "Engine_Utils.h"
@@ -29,34 +28,39 @@ NS_BEGIN(DTO)
 
 /////////////////-------------------  MAP  -------------------/////////////////
 
-enum class EMapObjectType : _uint
+enum class EMapObject_Type : _uint
 {
 	STATICMODEL,
 	INSTANCEMODEL,
 	END
 };
 
-inline constexpr _uint g_MapObjectTypeCount{ ENUM_TO_UINT(EMapObjectType::END) };
+inline constexpr _uint g_MapObjectTypeCount{ ENUM_TO_UINT(EMapObject_Type::END) };
 
 /* String으로 자동 변환되어서 저당된다  */
 
-NLOHMANN_JSON_SERIALIZE_ENUM(EMapObjectType,
+NLOHMANN_JSON_SERIALIZE_ENUM(EMapObject_Type,
 	{
-		{EMapObjectType::STATICMODEL, "STATICMODEL"},
-		{EMapObjectType::INSTANCEMODEL, "INSTANCEMODEL"},
-		{EMapObjectType::END, "END"},
+		{EMapObject_Type::STATICMODEL, "STATICMODEL"},
+		{EMapObject_Type::INSTANCEMODEL, "INSTANCEMODEL"},
+		{EMapObject_Type::END, "END"},
 	}
 	)
 
 	/////////////////-------------------  ObjectStruct  -------------------/////////////////
 
+#pragma region Map Data 구조체
+
+
+#pragma region SRT Data
 	typedef struct tagSRT_Data
 {
 	Vec3	vScale{0.f,0.f,0.f};
 	Quat	vQuat{0.f,0.f,0.f,1.f};
 	Vec3	vPosition{ 0.f,0.f,0.f };
 }SRT_DATA;
-
+#pragma endregion
+#pragma region Using Material 
 
 typedef struct tagUsingMaterialInfo
 {
@@ -68,8 +72,8 @@ typedef struct tagUsingMaterialInfo
 	/* 그 안에서 뜯어낸 Texutre 바인딩 이름 : Texutre 경로 [ 메테리얼 Json 경로에 꽃아줄 이름 ] */
 	vector < std::pair<wstring, wstring>> vecUsingTextureInfo{};
 }USING_MATERIAL_INFO;
-
-
+#pragma endregion
+#pragma region Using Model
 typedef struct tagUsingModelInfo
 {
 	wstring wstrName{};
@@ -82,156 +86,63 @@ typedef struct tagUsingModelInfo
 public:
 
 }USING_MODEL_INFO;
+#pragma endregion
 
-struct TMap_InstanceModelData
-{
-	static constexpr EMapObjectType eType = EMapObjectType::STATICMODEL;
+#pragma region Static Model
 
-	USING_MODEL_INFO tUsingInfo{};
-	vector<SRT_DATA> vecSRTData{};
-};
-
-struct TMap_StaticModelData
+typedef struct TMap_StaticModelData 
 {
 	std::string strTag{ "Map" };
-	static constexpr EMapObjectType eType = EMapObjectType::INSTANCEMODEL;
+	static constexpr EMapObject_Type eType = EMapObject_Type::STATICMODEL;
 
 	/* Model Info */
 	USING_MODEL_INFO tUsingModelInfo{};
 	SRT_DATA		 tSRTData{};
-};
+}STATICMODEL_DATA;
+#pragma endregion
+#pragma region Instance Model
+typedef struct TMap_InstanceModelData 
+{
+	static constexpr EMapObject_Type eType = EMapObject_Type::INSTANCEMODEL;
 
+	USING_MODEL_INFO tUsingInfo{};
+	vector<SRT_DATA> vecSRTData{};
+}InstanceModel_Data;
+
+#pragma endregion
+
+#pragma endregion
 
 /////////////////-------------------  to_json, from_json  -------------------/////////////////
-
-
-#pragma region Transform Data
-
-inline void to_json(json& j, const SRT_DATA& tdata)
-{
-	Engine_Utils::write_vec3_xyz(j["Scale"], tdata.vScale);
-	Engine_Utils::write_vec4_Quat(j["Quaternion"], tdata.vQuat);
-	Engine_Utils::write_vec3_xyz(j["Position"], tdata.vPosition);
-}
-
-inline void from_json(const json& j, SRT_DATA& tdata)
-{
-	if(j.contains("Scale"))
-		Engine_Utils::read_vec3_xyz(j["Scale"],tdata.vScale);
-
-	if (j.contains("PitchYawRoll"))
-		Engine_Utils::read_vec4_Quat(j["Quaternion"], tdata.vQuat);
-
-	if (j.contains("Position"))
-		Engine_Utils::read_vec3_xyz(j["Position"], tdata.vScale);
-}
+#pragma region SRT Data
+inline void to_json(json& SaveJson, const SRT_DATA& tData);
+inline void from_json(const json& LoadJson, SRT_DATA& tdata);
 #pragma endregion 
 
+#pragma region Using Material 
 
+void from_json(const json& LoadJson, USING_MATERIAL_INFO& tData);
 
-#pragma region Material Info
-
-void from_json(const json& SaveJson, USING_MATERIAL_INFO& tData)
-{
-	if (tData.isNull == true) return;
-
-	tData.wstrOriginMtl_JsonFile_Name = Engine_Utils::ToWString(SaveJson.value("Name", ""));
-	tData.wstrOriginMtl_JsonFile_Path = Engine_Utils::ToWString(SaveJson.value("Path", ""));
-
-	if (tData.vecUsingTextureInfo.empty()) return;
-
-	//for (auto& pairTextureInfo : tData.vecUsingTextureInfo)
-	//{
-	//	SaveJson["Textures"].push_back({ Engine_Utils::ToString(pairTextureInfo.first), Engine_Utils::ToString(pairTextureInfo.second) });
-	//}
-}
-
-void to_json(json& SaveJson, const USING_MATERIAL_INFO& tData)
-{
-	SaveJson["Name"] = Engine_Utils::ToString(tData.wstrOriginMtl_JsonFile_Name);
-	SaveJson["Path"] = Engine_Utils::ToString(tData.wstrOriginMtl_JsonFile_Path);
-
-	if (tData.vecUsingTextureInfo.empty()) return;
-
-	for (auto& pairTextureInfo : tData.vecUsingTextureInfo)
-	{
-		SaveJson["Textures"].push_back({ Engine_Utils::ToString(pairTextureInfo.first), Engine_Utils::ToString(pairTextureInfo.second) });
-	}
-}
+void to_json(json& SaveJson, const USING_MATERIAL_INFO& tData);
 
 #pragma endregion
 
-
-#pragma region Using Model Info
-
-void from_json(const json& LoadJson, USING_MODEL_INFO& tData)
-{
-	tData.wstrName = Engine_Utils::ToWString(LoadJson.value("Name", ""));
-	tData.wstrName = Engine_Utils::ToWString(LoadJson.value("Path", ""));
-
-	if (LoadJson.contains("Mateiral Info"))
-	{
-
-		auto& MtlJsons = LoadJson["Mateiral Info"];
-		tData.vecMaterialInfo.resize(MtlJsons.size());
-
-		_uint iIndex{};
-		for (auto& MtlJson : MtlJsons)
-		{
-			if (MtlJson.empty())
-				tData.vecMaterialInfo[iIndex].isNull = true;
-			else
-				tData.vecMaterialInfo[iIndex++] = MtlJson;
-		}
-	}
-}
-
-void to_json(json& SaveJson, const USING_MODEL_INFO& tData)
-{
-	SaveJson["Name"] = Engine_Utils::ToString(tData.wstrName);
-	SaveJson["Path"] = Engine_Utils::ToString(tData.wstrPath);
-
-	auto& Material_Json = SaveJson["Mateiral Info"];
-
-	for (auto& Material_Info : tData.vecMaterialInfo)
-	{
-		json Nulljson{};
-		if (!Material_Info.isNull)
-			Nulljson = Material_Info;
-		SaveJson.push_back(Nulljson);
-	}
-}
+#pragma region Using Model
+void from_json(const json& LoadJson, USING_MODEL_INFO& tData);
+void to_json(json& SaveJson, const USING_MODEL_INFO& tData);
 
 #pragma endregion
 
-inline void to_json(json& j, const TMap_StaticModelData& data)
-{
-	j["SRT"] = data.tSRTData;
+#pragma region Static Model
+inline void to_json(json& SaveJson, const TMap_StaticModelData& tData);
+inline void from_json(const json& LoadJson, TMap_StaticModelData& data);
+#pragma endregion
 
-}
-
-inline void from_json(const json& j, TMap_StaticModelData& data)
-{
-	j.at("strTag").get_to(data.strTag);
-
-	if (j.contains("SRT"))
-		data.tSRTData =  j["SRT"];
-	if (j.contains("Model Info"))
-		data.tUsingModelInfo = j["Model Info"];
-}
-
-
-inline void to_json(json& j, const TMap_InstanceModelData& data)
-{
-
-}
-inline void from_json(const json& j, TMap_InstanceModelData& data)
-{
-
-}
-
+#pragma region Instance Model
+inline void to_json(json& j, const TMap_InstanceModelData& data);
+inline void from_json(const json& j, TMap_InstanceModelData& data);
+#pragma endregion
 NS_END
-
 /////////////////-------------------  Wrapping Class  -------------------/////////////////
 
 NS_BEGIN(Engine)
@@ -241,16 +152,26 @@ NS_BEGIN(Engine)
 class CData_StaticModel final : public IObjectDataBase
 {
 	// IObjectDataBase을(를) 통해 상속됨
+	using Super = IObjectDataBase;
 private:
 	CData_StaticModel() = default;
 	virtual ~CData_StaticModel() = default;
 public:
 
 public:
-	_uint Get_Type() const override;
-	const string& Get_Tag() const override;
+	_uint Get_Type() const override { return ENUM_TO_UINT(DTO::EMapObject_Type::STATICMODEL);}
+	const string& Get_Tag() const override { return m_tData.strTag; }
+	
 	json ToJson() const override;
 	HRESULT FromJson(const json& j) override;
+
+	const DTO::STATICMODEL_DATA& Get_Data() const { return m_tData; }
+	DTO::STATICMODEL_DATA& Get_Data() { return m_tData; }
+private:
+	DTO::STATICMODEL_DATA		m_tData{};
+public:
+	static CData_StaticModel* Create() { return new CData_StaticModel(); }
+	virtual void Free() override { Super::Free(); }
 };
 
 

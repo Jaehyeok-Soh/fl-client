@@ -21,6 +21,7 @@
 // Builder
 //=================
 #include "DataDocument_Example.h"
+#include "DataDocument_Map.h"
 #include "DataDocument_Effect.h"
 #include "DataDocument_UI.h"
 #include "Builder_Example.h"
@@ -41,6 +42,7 @@
 #include "Effect.h"
 #include "EffectObject.h"
 #include "Physics_LandScape.h" // physics test
+#include "StaticModel.h"
 //=================
 // UI
 //=================
@@ -130,7 +132,7 @@ HRESULT CLoader::Loading_For_Logo()
 	{
 		// Regist Document
 		{
-			if (FAILED(m_pGameInstance->Regist_Document<CDataDocument_Example>(ENUM_TO_UINT(ELevelType::LOGO), DTO::ECategory::MAP)))
+			if (FAILED(m_pGameInstance->Regist_Document<CDataDocument_Map>(ENUM_TO_UINT(ELevelType::LOGO), DTO::ECategory::MAP)))
 				return E_FAIL;
 
 			if (FAILED(m_pGameInstance->Regist_Document<CDataDocument_Effect>(ENUM_TO_UINT(ELevelType::LOGO), DTO::ECategory::EFFECT)))
@@ -155,6 +157,7 @@ HRESULT CLoader::Loading_For_Logo()
 	/////////////////////////////////////////
 	//////////// Ready Resources ////////////
 	/////////////////////////////////////////
+
 #pragma region Resource
 	{
 		//if (FAILED(m_pGameInstance->Load_Sounds(L"../../Resources/Sounds")))
@@ -234,6 +237,10 @@ HRESULT CLoader::Loading_For_Logo()
 		// ¿Ã∆Â∆Æ Object
 		ADD_PROTOTYPE(ELevelType::LOGO, L"Prototype_GameObject_Effect", Effect::Create(m_pDevice, m_pDeviceContext));
 		ADD_PROTOTYPE(ELevelType::LOGO, L"Prototype_GameObject_Effect_Parts", CEffectObject::Create(m_pDevice, m_pDeviceContext));
+
+		/* Map Object */
+		ADD_PROTOTYPE(ELevelType::STATIC, L"Prototype_GameObject_StaticModel", CStaticModel::Create(m_pDevice, m_pDeviceContext));
+
 	}
 #pragma endregion
 
@@ -286,6 +293,13 @@ HRESULT CLoader::Loading_For_Logo()
 		pcDesc.bIsConvex = false;
 		ADD_PROTOTYPE(ELevelType::STATIC, L"Prototype_Component_Physics_Collider_total_landScape_4x4", CPhysicsCollider::Create(m_pDevice, m_pDeviceContext, &pcDesc));
 	}
+
+	/* Map Parsing Test */
+
+
+
+
+
 #pragma endregion
 
 	m_isFinished = true;

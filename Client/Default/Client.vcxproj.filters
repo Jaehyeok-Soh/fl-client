@@ -178,6 +178,18 @@
     <Filter Include="07. System\01. Builder\EffectBuilder">
       <UniqueIdentifier>{0a51c3b4-11ce-445a-904c-410b2a5ef809}</UniqueIdentifier>
     </Filter>
+    <Filter Include="03. GameObject\MapObject">
+      <UniqueIdentifier>{b160eafb-0791-4bab-a9f6-d8d8d7b9532c}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="03. GameObject\MapObject\00. MapObject">
+      <UniqueIdentifier>{02ac1ef5-8c12-472a-910e-35678c60e01f}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="03. GameObject\MapObject\01. StaticModel">
+      <UniqueIdentifier>{f8de0721-b0eb-4bf1-9048-74bfbfacf39f}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="07. System\01. Builder\Map">
+      <UniqueIdentifier>{8c8cb986-b28e-4058-aca0-3a2b0b85e2e0}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="targetver.h">
@@ -342,6 +354,15 @@
     <ClInclude Include="..\Public\Physics_LandScape.h">
       <Filter>03. GameObject\PhysicsTerrain</Filter>
     </ClInclude>
+    <ClInclude Include="..\Public\MapObject.h">
+      <Filter>03. GameObject\MapObject\00. MapObject</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\StaticModel.h">
+      <Filter>03. GameObject\MapObject\01. StaticModel</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\Builder_Map.h">
+      <Filter>07. System\01. Builder\Map</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <Image Include="Client.ico">
@@ -503,6 +524,15 @@
     </ClCompile>
     <ClCompile Include="..\Private\Physics_LandScape.cpp">
       <Filter>03. GameObject\PhysicsTerrain</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\MapObject.cpp">
+      <Filter>03. GameObject\MapObject\00. MapObject</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\StaticModel.cpp">
+      <Filter>03. GameObject\MapObject\01. StaticModel</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\Builder_Map.cpp">
+      <Filter>07. System\01. Builder\Map</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

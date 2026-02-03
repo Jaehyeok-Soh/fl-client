@@ -1,5 +1,5 @@
-#include "pch.h"
 #include "MapObject.h"
+#include "pch.h"
 #include "Model.h"
 #include "Shader.h"
 #include "StaticModel.h"
@@ -13,6 +13,7 @@ CMapObject::CMapObject(EToolObjectType eType, ID3D11Device* pDevice, ID3D11Devic
 {
     m_arrayMapToolComponent.fill(nullptr);
 }
+
 
 CMapObject::CMapObject(const CMapObject& rhs)
     : CToolObject(rhs), m_eMapObjectType(rhs.m_eMapObjectType), m_isLoaded(rhs.m_isLoaded), m_vImGuiPitchYawRoll{}

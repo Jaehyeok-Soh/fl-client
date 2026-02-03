@@ -12,9 +12,11 @@
 #include "Builder_UI.h"
 #include "Builder_Example.h"
 #include "BuilderSystem.h"
+#include "Builder_Map.h"
 #include "EffectBuilder.h"
 #include "DataStruct_Effect.h"
 #include "DataDocument_Effect.h"
+#include "DataDocument_Map.h"
 
 //=================
 // Object
@@ -58,8 +60,11 @@ HRESULT CLevel_Logo::Initialize()
 	if (FAILED(Ready_Player_Layer(g_wszPlayerLayer)))
 		return E_FAIL;
 
-	if (FAILED(Ready_UI_Layer(g_wszUILayer)))
-		return E_FAIL;
+	//if (FAILED(Ready_DevMap()))
+	//	return E_FAIL;
+
+	//if (FAILED(Ready_UI_Layer(g_wszUILayer)))
+	//	return E_FAIL;
 
 	if (FAILED(Ready_Lights()))
 		return E_FAIL;
@@ -101,7 +106,7 @@ HRESULT CLevel_Logo::Render()
 
 HRESULT CLevel_Logo::Ready_Builders()
 {
-	if (FAILED(Ready_Builder(DTO::ECategory::MAP, CBuilder_Example::Create(m_pDevice, m_pDeviceContext, static_cast<_uint>(ELevelType::LOGO)))))
+	if (FAILED(Ready_Builder(DTO::ECategory::MAP,CBuilder_Map::Create(m_pDevice, m_pDeviceContext, static_cast<_uint>(ELevelType::LOGO)))))
 		return E_FAIL;
 	if (FAILED(Ready_Builder(DTO::ECategory::UI, CBuilder_UI::Create(m_pDevice, m_pDeviceContext, static_cast<_uint>(ELevelType::STATIC)))))
 		return E_FAIL;
@@ -132,7 +137,7 @@ HRESULT CLevel_Logo::Ready_Player_Layer(const wstring& wstrLayerTag)
 		CTransform::TRANSFORM_DESC transformDesc = {};
 		playerDesc.iLevelIndex = ENUM_TO_UINT(ELevelType::LOGO);
 		playerDesc.wstrBodyModelTag = L"Prototype_Component_Model_Master";
-		transformDesc.TranslationMatrix = Matrix::CreateTranslation(Vec3(0.f, -0.1f, -20.f));
+		transformDesc.TranslationMatrix = Matrix::CreateTranslation(Vec3(18.f,12.f,19.f));
 		playerDesc.pTransform_Desc = &transformDesc;
 		if (!(pResult = m_pGameInstance->Add_GameObject(ENUM_TO_UINT(ELevelType::STATIC),
 			L"Prototype_GameObject_MainPlayer",
@@ -246,6 +251,30 @@ HRESULT CLevel_Logo::Ready_Test_Terrain(const wstring& wstrLayerTag)
 			wstrLayerTag, &pxDesc)))
 			return E_FAIL;
 	}
+
+	return S_OK;
+}
+
+HRESULT CLevel_Logo::Ready_DevMap()
+{
+	ELevelType eLevelType = ELevelType::LOGO;
+	DTO::ECategory eCategory = DTO::ECategory::MAP;
+	_uint iLevelID = ENUM_TO_UINT(eLevelType);
+
+	if (FAILED(m_pGameInstance->Regist_Document<CDataDocument_Map>(iLevelID, eCategory)))
+		return E_FAIL;
+
+	std::filesystem::path FilePath = L"../../Resources/Data/MapData/LevelData/DevLevel/DevMap.json";
+	vector<path> vecfiles;
+
+	if (!std::filesystem::exists(FilePath))
+		return E_FAIL;
+
+	if (FAILED(m_pGameInstance->Load_File_Json(iLevelID, eCategory , FilePath )))
+		return E_FAIL;
+
+	if (FAILED(Build_File(iLevelID,eCategory,FilePath.stem().string())))
+		return E_FAIL;
 
 	return S_OK;
 }

@@ -1,5 +1,6 @@
 #pragma once
 #include "Component.h"
+NS_BEGIN(Engine)
 class ENGINE_DLL CPhysicsCCT final : public CComponent
 {
 	using Super = CComponent;
@@ -129,3 +130,4 @@ public:
     virtual void Free() override;
 };
 
+NS_END

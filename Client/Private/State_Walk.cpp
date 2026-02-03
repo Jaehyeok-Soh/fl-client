@@ -37,6 +37,11 @@ HRESULT CState_Walk::Start(void* pArg, _bool bForce)
 
 void CState_Walk::Update(const _float fTimeDelta)
 {
+	if (!Engine_Utils::Has_Flag(m_FAniFlags, STATEANI_FLAG::SA_PreAniDone))
+	{
+		CStateBase::Turn_byCam(fTimeDelta);
+	}
+
 	Super::Update(fTimeDelta);
 
 	//if (Align_Movement(fTimeDelta) == false)	// 8방향 움직임 

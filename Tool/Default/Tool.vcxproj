@@ -149,6 +149,7 @@
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">false</ExcludedFromBuild>
     </ClInclude>
     <ClInclude Include="..\Public\Builder_Example.h" />
+    <ClInclude Include="..\Public\Builder_Map.h" />
     <ClInclude Include="..\Public\Builder_UI.h" />
     <ClInclude Include="..\Public\Button.h" />
     <ClInclude Include="..\Public\CameraMan_Free.h" />
@@ -234,6 +235,7 @@
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">false</ExcludedFromBuild>
     </ClCompile>
     <ClCompile Include="..\Private\Builder_Example.cpp" />
+    <ClCompile Include="..\Private\Builder_Map.cpp" />
     <ClCompile Include="..\Private\Builder_UI.cpp" />
     <ClCompile Include="..\Private\Button.cpp" />
     <ClCompile Include="..\Private\CameraMan_Free.cpp" />

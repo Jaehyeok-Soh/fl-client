@@ -158,6 +158,8 @@ protected:
 	void Set_AnimationPlayRate(_float fSpeed);
 	void Set_JumpCount(_uint iCount);
 
+	void Turn_byCam(const _float fTimeDelta);
+
 	_bool Key_Input(_uint iKey);
 private:
 	

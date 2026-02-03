@@ -481,6 +481,23 @@ void CActionState::Set_JumpCount(_uint iCount)
 	m_pOwnerControlContext->Set_JumpCount(iCount);
 }
 
+void CActionState::Turn_byCam(const _float fTimeDelta)
+{
+	Vec3 vTargetDir = m_pOwnerControlContext->Get_MoveDir();
+	if (::XMVector3Equal(vTargetDir, Vec3::Zero))
+		return;
+
+	CPhysicsCCT* cct = { nullptr };
+	if (cct = m_pOwner->Get_Component<CPhysicsCCT>())
+	{
+		m_pOwnerTransform->Turn_WorldYAxis(vTargetDir, fTimeDelta);
+	}
+	else
+	{
+		m_pOwnerTransform->Turn_WorldYAxis(vTargetDir, fTimeDelta);
+	}
+}
+
 _bool CActionState::Is_Grounded() const
 {
 	return m_pOwnerControlContext->Is_Grounded();

@@ -7,6 +7,7 @@ NS_BEGIN(Engine)
 // CChannel 특정 뼈의 시간에 따른 상태값을 보관
 
 class CTransform;
+class CPhysicsCCT;
 
 class CModelAnimation final : public CResourceBase
 {
@@ -29,8 +30,8 @@ private:
 
 	virtual HRESULT Initialize(void* pArg) override;
 public:
-	_bool Update_TransformationMatrices(const vector<class CBone*>& vecBones, _float fTimeDelta, _bool isLoop, CTransform* pOwnerTransform);
-	void SetUp_PoseDatasForBlending(std::span<LOCALSRT> spanLocalSrtData, _float fTimeDelta, CTransform* pOwnerTransform);
+	_bool Update_TransformationMatrices(const vector<class CBone*>& vecBones, _float fTimeDelta, _bool isLoop, CTransform* pOwnerTransform, CPhysicsCCT* pOwnerPhyCCT);
+	void SetUp_PoseDatasForBlending(std::span<LOCALSRT> spanLocalSrtData, _float fTimeDelta, CTransform* pOwnerTransform, CPhysicsCCT* pOwnerPhyCCT);
 	void Clear();
 
 	_float Get_DurationTime() const { return m_fDuration; }

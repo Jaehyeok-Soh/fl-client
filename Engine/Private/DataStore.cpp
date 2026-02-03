@@ -22,10 +22,18 @@ HRESULT CDataStore::SaveFile_Json(const path& filePath)
 	if (pBase == nullptr)
 		return E_FAIL;
 
-	json j = pBase->ToJson();
-	std::string text = j.dump(4);
+	string strTex{};
+	try {
+		json j = pBase->ToJson();
+		strTex = j.dump(4);
+	}
+	catch (const nlohmann::json::exception& e) {
+		// 여기서 정확한 에러 이유를 알려줍니다 (ID, 메시지 등)
+		std::string errorMsg = e.what();
+		OutputDebugStringA(errorMsg.c_str());
+	}
 
-	if (FAILED(pFileUtil->WriteAllText(text)))
+	if (FAILED(pFileUtil->WriteAllText(strTex)))
 	{
 		MSG_BOX("CMapFile_Manager::SaveData, write failed");
 		Safe_Release(pFileUtil);
