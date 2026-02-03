@@ -17,6 +17,9 @@ public:
 	virtual void Update(const _float fTimeDelta) override;
 	virtual HRESULT End() override;
 
+private:
+	_bool Check_PreMoveKey();
+
 public:
 	static CState_Walk* Create(CActionState* pOwnerComponent, void* pArg = nullptr);
 	virtual void Free() override;
