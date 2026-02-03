@@ -83,13 +83,18 @@ HRESULT CLevel_Effect::Awake(const _uint iLevelID)
 void CLevel_Effect::Update(const _float fTimeDelta)
 {
 	Super::Update(fTimeDelta);
-	m_pPickingManager->Picking();
 
 	for (CImGui_Base* pElement : m_GuiElements)
 	{
 		if (pElement)
 			pElement->Update(fTimeDelta);
 	}
+}
+
+void CLevel_Effect::Update_Picking()
+{
+	Super::Update_Picking();
+	m_pPickingManager->Picking();
 }
 
 HRESULT CLevel_Effect::Render()
@@ -117,7 +122,7 @@ HRESULT CLevel_Effect::Ready_Camera(const wstring& wstrLayerTag)
 		CGameObject* pResult = { nullptr };
 		CCameraMan::GAMEOBJECT_DESC goDesc = {};
 		CTransform::TRANSFORM_DESC TransformDesc = {};
-		TransformDesc.vPosition = { 0.f, 0.f, -1.f };
+		TransformDesc.TranslationMatrix = Matrix::CreateTranslation(0.f,0.f,-1.f);
 		TransformDesc.fMovePerSec = { 6.f };
 		TransformDesc.fRotatePerSec = { 1.f };
 		CCamera::CAMERA_DESC CameraDesc = {};

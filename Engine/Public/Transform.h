@@ -12,13 +12,11 @@ public:
 	constexpr static EComponentType _ID = EComponentType::TRANSFORM;
 	typedef struct tagTransformDesc
 	{
-		_bool bInstance = { false };
-		Vec3 vPosition = { 0.f, 0.f, 0.f };
-		Vec3 vScale = { 1.f, 1.f, 1.f };
-		Vec3 vRotation_Degrees = { 0.f, 0.f, 0.f };
-		Quat vQuaternion = { 0.f, 0.f, 0.f, 1.f };
-		_float fMovePerSec = { 5.f };
-		_float fRotatePerSec = { 8.f };
+		Matrix  ScaleMatrix = Matrix::Identity;
+		Matrix  RotationMatrix = Matrix::Identity;
+		Matrix  TranslationMatrix = Matrix::Identity;
+		_float	fMovePerSec = { 5.f };
+		_float	fRotatePerSec = { 8.f };
 	}TRANSFORM_DESC;
 private:
 	CTransform();
@@ -76,6 +74,7 @@ public:
 	void MoveArgWorld_ToMyWorld(Matrix& vNewWorld, _bool isChangeThis = false);
 	void MoveMyWorld_ToArgWorld(Matrix& vNewWorld, _bool isChangeArg = false);
 	void Add_Position(const Vec3& vAddPos);
+	Vec3 LocalPos_toMyWorld(const Vec3& vLocalPos, _bool bDir);
 
 private:
 	_bool		m_bControll = { false };

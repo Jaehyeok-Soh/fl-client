@@ -149,6 +149,7 @@
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">false</ExcludedFromBuild>
     </ClInclude>
     <ClInclude Include="..\Public\Builder_Example.h" />
+    <ClInclude Include="..\Public\Builder_Map.h" />
     <ClInclude Include="..\Public\Builder_UI.h" />
     <ClInclude Include="..\Public\Button.h" />
     <ClInclude Include="..\Public\CameraMan_Free.h" />
@@ -219,6 +220,7 @@
     <ClInclude Include="..\Public\Tool_Defines.h" />
     <ClInclude Include="..\Public\MainApplication.h" />
     <ClInclude Include="..\Public\Tool_EventDefines.h" />
+    <ClInclude Include="..\Public\Tool_Structs.h" />
     <ClInclude Include="..\Public\UEMapdataLoader.h" />
     <ClInclude Include="..\Public\UEMapdataParser.h" />
     <ClInclude Include="..\Public\UIData_Repository.h" />
@@ -237,6 +239,7 @@
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">false</ExcludedFromBuild>
     </ClCompile>
     <ClCompile Include="..\Private\Builder_Example.cpp" />
+    <ClCompile Include="..\Private\Builder_Map.cpp" />
     <ClCompile Include="..\Private\Builder_UI.cpp" />
     <ClCompile Include="..\Private\Button.cpp" />
     <ClCompile Include="..\Private\CameraMan_Free.cpp" />
@@ -342,6 +345,7 @@
     <ClCompile Include="..\Private\ToolObject.cpp" />
     <ClCompile Include="..\Private\ToolUI.cpp" />
     <ClCompile Include="..\Private\Tool_Defines.cpp" />
+    <ClCompile Include="..\Private\Tool_Structs.cpp" />
     <ClCompile Include="..\Private\UIData_Repository.cpp" />
     <ClCompile Include="..\Private\UIEvent_Hovering.cpp" />
     <ClCompile Include="..\Private\UI_Hierachy.cpp" />

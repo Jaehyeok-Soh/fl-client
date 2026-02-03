@@ -12,6 +12,7 @@ private:
 
 	HRESULT Initialize();
 public:
+
 	virtual HRESULT Awake(const _uint iLevelID) override;
 	virtual void Update(const _float fTimeDelta) override;
 	virtual HRESULT Render() override;

@@ -83,6 +83,8 @@ protected:
 	void Set_AnimationPlayRate(_uint iIndex, _float fSpeed);
 	void Set_JumpCount(_uint iCount);
 
+	void Turn_byCam(const _float fTimeDelta);
+
 	_bool Key_Input(CControlContext::CONTROL_KEY eKey);
 private:
 	HRESULT Set_OwnerComponents();

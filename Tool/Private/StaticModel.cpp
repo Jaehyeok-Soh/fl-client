@@ -2,9 +2,10 @@
 #include "StaticModel.h"
 #include "Mesh.h"
 #include "Model.h"
-#include "DataDocument_Example.h"
-#include "DataStruct_Example.h"
 #include "GameInstance.h"
+#include "Shader.h"
+#include "DataStruct_Map.h"
+#include "DataDocument_Map.h"
 
 CStaticModel::CStaticModel(EToolObjectType eType, ID3D11Device* pDevice, ID3D11DeviceContext* pDeviceContext)
 	: CMapObject(eType, pDevice,pDeviceContext)
@@ -33,7 +34,10 @@ HRESULT CStaticModel::Initialize(void* pArg)
 
 	STATICMODEL_DESC* pDesc = static_cast<STATICMODEL_DESC*>(pArg);
 
-	m_eType = pDesc->eType;
+	m_tData = pDesc->tData;
+
+	m_strModelFileName = Engine_Utils::ToString(m_tData.tUsingModelInfo.wstrPath);
+	Set_Name(m_tData.tUsingModelInfo.wstrName);
 
 	if (FAILED(CStaticModel::Ready_Component()))
 		return E_FAIL;
@@ -43,6 +47,28 @@ HRESULT CStaticModel::Initialize(void* pArg)
 
 HRESULT CStaticModel::Ready_Component()
 {
+	CModel::MODEL_COPY_DESC tDesc{};
+
+	if (FAILED(Add_Component<CShader>(ENUM_TO_UINT(ELevelType::STATIC), L"Prototype_Component_Shader_VtxMesh", nullptr)))
+		return E_FAIL;
+
+	/* CStatic_Model Type ÀÌ¶ó¸é */
+	if (m_eMapObjectType == EMapObject_Type::STATICMODEL)
+	{
+		CModel::MODEL_ORIGIN_DESC tModelDesc{};
+		tModelDesc.eType = EModelType::STATIC;
+		tModelDesc.wstrModelFolderName = Engine_Utils::ToWString(m_strModelFileName);
+		tModelDesc.iPrototypeLevelIndex = ENUM_TO_UINT(ELevelType::MAP);
+		CModel* pModel = CModel::Create(m_pDevice, m_pDeviceContext, &tModelDesc);
+		if (pModel)
+		{
+			if (FAILED(m_pGameInstance->Add_Prototype(tModelDesc.iPrototypeLevelIndex, L"Prototype_Component_Model_" + Engine_Utils::ToWString(m_strName), pModel)))
+				Safe_Release(pModel);
+		}
+		CModel::MODEL_COPY_DESC tModelCopyDesc{};
+		CGameObject::Add_Component<CModel>(tModelDesc.iPrototypeLevelIndex, L"Prototype_Component_Model_" + Engine_Utils::ToWString(m_strName), &tModelCopyDesc);
+	}
+
 	return S_OK;
 }
 
@@ -84,6 +110,24 @@ HRESULT CStaticModel::Render()
 	if (FAILED(Super::Render()))
 		return E_FAIL;
 
+
+	CModel* pModel = CGameObject::Get_Component<CModel>();
+	CShader* pShader = CGameObject::Get_Component<CShader>();
+
+	if (!pModel || !pShader) return S_OK;
+
+	pShader->Bind_TransformData(CGameObject::Get_Component<CTransform>()->Get_WorldMatrix());
+
+	UINT32 iMeshCount = pModel->Get_MeshCount();
+
+
+	for (UINT32 i = 0; i < iMeshCount; ++i)
+	{
+		pModel->Bind_Material(pShader, i);
+		pModel->Bind_MaterialInstance(pShader, i);
+		pShader->Apply();
+		pModel->Render(i);
+	}
 
 	return S_OK;
 }
@@ -142,15 +186,37 @@ _bool CStaticModel::Export_Data(DTO::ECategory eCategory, CDataDocumentBase* pDo
 	if (pDocument->Get_Category() != DTO::ECategory::MAP)
 		return false;
 
-	auto* pExampleDocument = static_cast<CDataDocument_Example*>(pDocument);
+	auto* pMapDocument = static_cast<CDataDocument_Map*>(pDocument);
 
-	DTO::TExample_StaticModelData saveData;
-	saveData.strTag = m_strName;
-	// dto.vPosition = { 1.f, 1.f, 1.f };
-	// dto.vColor = { 1.f, 1.f, 1.f, 1.f };
+	CTransform* pTs = Get_Component<CTransform>();
+	Matrix WorldMatrix = pTs->Get_WorldMatrix();
 
-	pExampleDocument->Try_Add(saveData);
-	return false;
+
+	DTO::TMap_StaticModelData tSave_StaticModleData{};
+	tSave_StaticModleData.strTag = m_strName + std::to_string(m_iObjectID);
+
+	/* SRT */
+	WorldMatrix.Decompose(tSave_StaticModleData.tSRTData.vScale, tSave_StaticModleData.tSRTData.vQuat, tSave_StaticModleData.tSRTData.vPosition);
+
+
+	/* Using Material Info */
+	tSave_StaticModleData.tUsingModelInfo.wstrName = m_tData.tUsingModelInfo.wstrName;
+	tSave_StaticModleData.tUsingModelInfo.wstrPath = m_tData.tUsingModelInfo.wstrPath;
+	tSave_StaticModleData.tUsingModelInfo.wstrMtl_JsonFile_Path;
+
+	for (auto& UsingMaterial : m_tData.tUsingModelInfo.vecMaterialInfo)
+	{
+		DTO::USING_MATERIAL_INFO tSaveMtl{};
+		tSaveMtl.isNull = UsingMaterial.isNull;
+		tSaveMtl.wstrOriginMtl_JsonFile_Name = UsingMaterial.wstrOriginMtl_JsonFile_Name;
+		tSaveMtl.wstrOriginMtl_JsonFile_Path = UsingMaterial.wstrOriginMtl_JsonFile_Path;
+		tSaveMtl.vecUsingTextureInfo = UsingMaterial.vecUsingTextureInfo;
+	}
+
+
+	pMapDocument->Try_Add(tSave_StaticModleData);
+
+	return true;
 }
 
 CStaticModel* CStaticModel::Create(EToolObjectType eType, ID3D11Device* pDevice, ID3D11DeviceContext* pDeviceContext)

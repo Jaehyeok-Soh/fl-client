@@ -99,17 +99,6 @@ HRESULT CPhysics_Terrain::Ready_Physics()
 HRESULT CPhysics_Terrain::Ready_PhysicsCollider()
 {
 	PHYSICSCOLLIDER_DESC desc{};
-	//desc.bIsTrigger = false;
-	//desc.vCenter = { 0.f, 0.f, 0.f };
-	//desc.fRadius = 0.f;
-	//desc.fHeight = 0.f;
-	//desc.vExtents = { 0.f, 0.f, 0.f };
-	//desc.vXAxis = { 0.f, 1.f, 0.f };
-	//desc.eShape = EPhysicsShape::PLANE;
-	//desc.eConvexShape = EPhysicsConvexShape::END;
-	//desc.fMargin = 0.f;
-	//desc.tMaterial = {};
-	//desc.bIsActive = true;
 	desc.bIsTrigger = false;
 	desc.vCenter = { 0.f, -0.5f, 0.f };
 	desc.fRadius = 0.f;
@@ -124,6 +113,8 @@ HRESULT CPhysics_Terrain::Ready_PhysicsCollider()
 
 	if (FAILED(Add_Component<CPhysicsCollider>(0/*static*/, L"Prototype_Component_Physics_Collider", &desc)))
 		return E_FAIL;
+
+	return S_OK;
 }
 
 HRESULT CPhysics_Terrain::Ready_PhysicsRigidBody()
@@ -140,6 +131,8 @@ HRESULT CPhysics_Terrain::Ready_PhysicsRigidBody()
 
 	if (FAILED(Add_Component<CPhysicsRigidBody>(0/*static*/, L"Prototype_Component_Physics_RigidBody", &desc)))
 		return E_FAIL;
+
+	return S_OK;
 }
 
 CPhysics_Terrain* CPhysics_Terrain::Create(ID3D11Device* pDevice, ID3D11DeviceContext* pDeviceContext)

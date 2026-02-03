@@ -191,6 +191,7 @@
     <ClCompile Include="..\Private\DataDefine_Json.cpp" />
     <ClCompile Include="..\private\DataDocumentBase.cpp" />
     <ClCompile Include="..\private\DataDocument_Example.cpp" />
+    <ClCompile Include="..\Private\DataDocument_Map.cpp" />
     <ClCompile Include="..\Private\DataDocument_UI.cpp" />
     <ClCompile Include="..\Private\DataEnum.cpp" />
     <ClCompile Include="..\private\DataRepository.cpp" />
@@ -198,6 +199,7 @@
     <ClCompile Include="..\private\DataStruct_Animation.cpp" />
     <ClCompile Include="..\Private\DataStruct_Effect.cpp" />
     <ClCompile Include="..\Private\DataStruct_Example.cpp" />
+    <ClCompile Include="..\Private\DataStruct_Map.cpp" />
     <ClCompile Include="..\Private\DataStruct_UI.cpp" />
     <ClCompile Include="..\Private\DebugDraw.cpp">
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Use</PrecompiledHeader>
@@ -320,6 +322,7 @@
     <ClInclude Include="..\Public\DataDefine_Json.h" />
     <ClInclude Include="..\public\DataDocumentBase.h" />
     <ClInclude Include="..\public\DataDocument_Example.h" />
+    <ClInclude Include="..\Public\DataDocument_Map.h" />
     <ClInclude Include="..\Public\DataDocument_UI.h" />
     <ClInclude Include="..\Public\DataEnum.h" />
     <ClInclude Include="..\public\DataRepository.h" />
@@ -327,6 +330,7 @@
     <ClInclude Include="..\public\DataStruct_Animation.h" />
     <ClInclude Include="..\Public\DataStruct_Effect.h" />
     <ClInclude Include="..\Public\DataStruct_Example.h" />
+    <ClInclude Include="..\Public\DataStruct_Map.h" />
     <ClInclude Include="..\Public\DataStruct_UI.h" />
     <ClInclude Include="..\Public\DebugDraw.h" />
     <ClInclude Include="..\Public\Delegate.h" />

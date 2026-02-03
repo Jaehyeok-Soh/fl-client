@@ -59,7 +59,7 @@ void CLevel_Loading::Update(const _float fTimeDelta)
 		if (!pNewLevel)
 			return;
 
-		m_pGameInstance->Request_ChangeLevel(ENUM_TO_UINT(m_eNextLevelID), pNewLevel);
+		m_pGameInstance->Immediately_ChangeLevel(ENUM_TO_UINT(m_eNextLevelID), pNewLevel);
 	}
 }
 

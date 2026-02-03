@@ -214,7 +214,6 @@ PxTriangleMesh* CPhysics_ResourceManager::CreateTriangleMesh(CMesh* mesh, _bool 
 
 	const Vec3* vertices = mesh->Get_VertexPositionData();
 	numVertices = mesh->Get_VerticesCount();
-
 	{
 		pxVertices.reserve(numVertices);
 
@@ -222,11 +221,12 @@ PxTriangleMesh* CPhysics_ResourceManager::CreateTriangleMesh(CMesh* mesh, _bool 
 			pxVertices.push_back(PxVec3(vertices[i].x, vertices[i].y, vertices[i].z));
 	}
 
+	_uint numIndices = mesh->Get_IndicesCount();
 	{
 		pxIndices = mesh->Get_IndicesData();
 	}
 
-	return CreateBV34TriangleMesh(numVertices, pxVertices.data(), numVertices / 3, pxIndices, skipMeshCleanup, skipEdgeData, inserted, numTrisPerLeaf);
+	return CreateBV34TriangleMesh(numVertices, pxVertices.data(), numIndices / 3, pxIndices, skipMeshCleanup, skipEdgeData, inserted, numTrisPerLeaf);
 }
 
 vector<PxConvexMesh*> CPhysics_ResourceManager::CreateConvexMeshes(CModel* model, _bool directionInsertion, _uint gaussMapLimit)
@@ -562,8 +562,10 @@ void CPhysics_ResourceManager::Free()
 		PX_RELEASE(m_Materials[i]);
 
 	for (void* ptr : m_MemBlocks)
-		Safe_Delete(ptr);
-
+	{
+		//Safe_Delete(ptr);
+		free(ptr);
+	}
 	m_MemBlocks.clear();
 
 	Safe_Release(m_pGameInstance);

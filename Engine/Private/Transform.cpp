@@ -35,56 +35,8 @@ HRESULT CTransform::Initialize(void* pArg)
 		COMPONENT_DESC* pDesc = static_cast<COMPONENT_DESC*>(pArg);
 		if (pDesc->pTransform_Desc)
 		{
-			TRANSFORM_DESC* pFinalDesc = static_cast<TRANSFORM_DESC*>(pDesc->pTransform_Desc);
-
-			Matrix B =
-			{
-				1,  0,  0,  0,
-				0,  0, -1,  0,
-				0,  1,  0,  0,
-				0,  0,  0,  1
-			};
-			Matrix InvB = B.Transpose();
-
-			Matrix vScale	 = Matrix::CreateScale(pFinalDesc->vScale);
-			Matrix vRotation = Matrix::Identity;
-			if(pFinalDesc->bInstance == false)
-			{
-				float pitch = XMConvertToRadians(pFinalDesc->vRotation_Degrees.x) * 0.5f;
-				float yaw = XMConvertToRadians(pFinalDesc->vRotation_Degrees.y) * 0.5f;
-				float roll = XMConvertToRadians(pFinalDesc->vRotation_Degrees.z) * 0.5f;
-
-				const float SP = sinf(pitch), CP = cosf(pitch);
-				const float SY = sinf(yaw), CY = cosf(yaw);
-				const float SR = sinf(roll), CR = cosf(roll);
-
-				// (x,y,z,w) 순서로 반환 (SimpleMath Quaternion과 동일)
-				Quat q;
-				q.x = CR * SP * SY - SR * CP * CY;
-				q.y = -CR * SP * CY - SR * CP * SY;
-				q.z = CR * CP * SY - SR * SP * CY;
-				q.w = CR * CP * CY + SR * SP * SY;
-
-				// 비교 편의상 부호 표준화(선택): q와 -q는 같은 회전
-				if (q.w < 0.f) q = Quat(-q.x, -q.y, -q.z, -q.w);
-
-				
-				vRotation = Matrix::CreateFromQuaternion(q);
-			}
-			else
-			{
-				Quat qV = pFinalDesc->vQuaternion;
-				if (qV.w < 0.f) qV = Quat(-qV.x, -qV.y, -qV.z, -qV.w);
-
-				vRotation = Matrix::CreateFromQuaternion(qV);
-			}
-
-			Matrix vPos		 = Matrix::CreateTranslation(pFinalDesc->vPosition);
-
-			m_matWorld = vScale*  vRotation  * vPos;
-			m_matWorld = InvB * m_matWorld * B;
-			m_fMovePerSec = pFinalDesc->fMovePerSec;
-			m_fRotatePerSec = pFinalDesc->fRotatePerSec;
+			TRANSFORM_DESC* pTsDesc = static_cast<TRANSFORM_DESC*>(pDesc->pTransform_Desc);
+			m_matWorld = pTsDesc->ScaleMatrix * pTsDesc->RotationMatrix * pTsDesc->TranslationMatrix;
 		}
 	}
 	else
@@ -529,6 +481,17 @@ void CTransform::MoveMyWorld_ToArgWorld(Matrix& vNewWorld, _bool isChangeArg)
 void CTransform::Add_Position(const Vec3& vAddPos)
 {
 	m_matWorld.Translation(Get_Info(TRANSFORM_INFO_STATE::POS) + vAddPos);
+}
+
+Vec3 CTransform::LocalPos_toMyWorld(const Vec3& vLocalPos, _bool bDir)
+{
+	if (bDir)
+	{
+		return Vec3::TransformNormal(vLocalPos, m_matWorld);
+	}
+
+	else
+		return Vec3::Transform(vLocalPos, m_matWorld);
 }
 
 CTransform* CTransform::Create()

@@ -47,7 +47,7 @@ HRESULT CState_Slide::End()
 
 void CState_Slide::OwnMove(const _float fTimeDelta)
 {
-    //CStateBase::Move_Front(fTimeDelta);
+    CStateBase::Move_Front(fTimeDelta);
 }
 
 void CState_Slide::Change_State(STATEKEY eKey)

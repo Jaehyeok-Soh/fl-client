@@ -24,6 +24,7 @@ private:
 public:
 	virtual HRESULT Awake(const _uint iLevelID) override;
 	virtual void Update(const _float fTimeDelta) override;
+	virtual void Update_Picking() override;
 	virtual HRESULT Render() override;
 
 	/* Ready Funcs*/

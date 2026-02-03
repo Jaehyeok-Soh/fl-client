@@ -13,6 +13,7 @@ public:
 	HRESULT	Awake();
 	HRESULT Change_Level(_uint iNewLevelID, class CLevel* pNewLevel);
 	void Update(_float fTimeDelta);
+	void Update_Picking();
 	HRESULT Render();
 	_uint Get_CurrentLevelIndex() const { return m_iCurrentLevelID; }
 	class CLevel* Get_CurrentLevel() { return m_pCurrentLevel; }

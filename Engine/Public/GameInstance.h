@@ -280,9 +280,6 @@ public:
 	void ClearPhysics();
 	PxTransform XMMatrixToPxTransform(Matrix mat);
 	Matrix PxTransformToXMMatrix(PxTransform pxTransform);
-#ifdef _DEBUG
-	void Physics_Render(PxRigidActor* pActor, XMVECTOR color = DirectX::Colors::White);
-#endif // _DEBUG
 	void SerializeStaticMesh(std::filesystem::path path, vector<PxTriangleMesh*> meshes);
 	PxCollection* DeserializeStaticMesh(std::filesystem::path path);
 	void SerializeConvexMesh(std::filesystem::path path, vector<PxConvexMesh*> meshes);
@@ -293,6 +290,9 @@ public:
 	vector<PxShape*> GetMeshShape(PHYSICSCOLLIDER_DESC* pDesc);
 	PxRigidActor* GetActor(PHYSICSRIGIDBODY_DESC* rigidBodyDesc, PHYSICSCOLLIDER_DESC* colliderDesc, vector<PxShape*>& shapes);
 	PxController* GetController(PHYSICSCCT_DESC* pDesc);
+#ifdef _DEBUG
+	void Physics_Render(PxRigidActor* pActor, XMVECTOR color = DirectX::Colors::White);
+#endif // _DEBUG
 #pragma endregion
 
 #pragma region UIACTION_REGISTRY	

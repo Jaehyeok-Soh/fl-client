@@ -1,3 +1,4 @@
+
 #pragma once
 #include "ImGui_Base.h"
 
@@ -5,6 +6,7 @@
 NS_BEGIN(Engine)
 class CGameInstance;
 class CDataDocumentBase;
+class CBuilderSystem;
 NS_END
 
 NS_BEGIN(Tool)
@@ -17,6 +19,9 @@ class CImGui_Dockspace_MenuBar final : public CImGui_Base
 private:
 	CImGui_Dockspace_MenuBar(const _char *pLabel, ID3D11Device* pDevice, ID3D11DeviceContext* pDeviceContext);
 	virtual ~CImGui_Dockspace_MenuBar() = default;
+private:
+	HRESULT	Initialize();
+	HRESULT	Ready_Builder();
 public:
 	virtual HRESULT Render(CToolObject* pGo = nullptr);
 private:
@@ -30,7 +35,6 @@ private:
 	void Save_EffectData(const wstring& wstrFilePath);
 	void Save_CameraData(const wstring& wstrFilePath);
 	void Save_UIData(const wstring& wstrFilePath);
-
 private:
 	void Load_MapData(const wstring& wstrFilePath);
 	void Load_AnimationData(const wstring& wstrFilePath);
@@ -40,7 +44,8 @@ private:
 
 	void Request_ExportData(ELevelType eLevelID, DTO::ECategory eCategory, const wstring& wstrLayerTag, CDataDocumentBase* pDocument);
 private:
-	CGameInstance* m_pGameInstance{nullptr};
+	CGameInstance*	m_pGameInstance{nullptr};
+	CBuilderSystem* m_pBuilderSystem{nullptr};
 public:
 	static CImGui_Dockspace_MenuBar* Create(const _char* pLabel, ID3D11Device* pDevice, ID3D11DeviceContext* pDeviceContext);
 	virtual void Free() override;

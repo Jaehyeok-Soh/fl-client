@@ -45,6 +45,7 @@ CLevel_Map::CLevel_Map(ID3D11Device* pDevice, ID3D11DeviceContext* pDeviceContex
 	, m_pUEMapDataParser(CUEMapdataParser::GetInstance())
 	, m_pMapToolManager(CMapToolManager::GetInstance())
 {
+	Safe_AddRef(m_pMapToolManager);
 	Safe_AddRef(m_pImGuiManager);
 	Safe_AddRef(m_pPickingManager);
 	m_arrayImGuiPanel.fill(nullptr);
@@ -54,6 +55,7 @@ HRESULT CLevel_Map::Initialize()
 {
 	if (FAILED(Super::Initialize()))
 		return E_FAIL;
+
 
 	if (FAILED(Ready_MapObject_Layer()))
 		return E_FAIL;
@@ -68,7 +70,6 @@ HRESULT CLevel_Map::Initialize()
 		return E_FAIL;
 
 	m_pUEMapDataParser->Initialize(m_pDevice,m_pDeviceContext);
-	m_pMapToolManager->Initialize(m_pDevice, m_pDeviceContext);
 
 	return S_OK;
 }
@@ -99,9 +100,6 @@ HRESULT CLevel_Map::Awake(const _uint iLevelID)
 void CLevel_Map::Update(const _float fTimeDelta)
 {
 	Super::Update(fTimeDelta);
-	if(m_pMapToolManager->Get_Preview() == nullptr)
-		m_pPickingManager->Picking();
-
 	m_pMapToolManager->Update(fTimeDelta);
 
 	for (CImGui_Panel* pElement : m_arrayImGuiPanel)
@@ -109,6 +107,13 @@ void CLevel_Map::Update(const _float fTimeDelta)
 		if (pElement)
 			pElement->Update(fTimeDelta);
 	}
+}
+
+void CLevel_Map::Update_Picking()
+{
+	Super::Update_Picking();
+	if (m_pMapToolManager->Get_Preview() == nullptr)
+		m_pPickingManager->Picking();
 }
 
 HRESULT CLevel_Map::Render()
@@ -184,8 +189,8 @@ HRESULT CLevel_Map::Ready_Camera_Layer(const wstring& wstrLayerTag)
 		CGameObject* pResult = { nullptr };
 		CCameraMan::GAMEOBJECT_DESC goDesc = {};
 		CTransform::TRANSFORM_DESC TransformDesc = {};
-		TransformDesc.vPosition = { 0.f, 5.0f, -5.f };
-		TransformDesc.vRotation_Degrees = { 0.f,0.f,0.f};
+		TransformDesc.RotationMatrix = Matrix::CreateRotationX(XMConvertToRadians(45.f));
+		TransformDesc.TranslationMatrix = Matrix::CreateTranslation(Vec3(0.f,5.f,-5.f));
 		TransformDesc.fMovePerSec = { 15.f };
 		TransformDesc.fRotatePerSec = {2.f};
 		CCamera::CAMERA_DESC CameraDesc = {};
@@ -285,9 +290,10 @@ void CLevel_Map::Free()
 
 	Safe_Release(m_pImGuiManager);
 	Safe_Release(m_pPickingManager);
+	Safe_Release(m_pMapToolManager);
 
 	m_pUEMapDataParser->DestroyInstance();
-	m_pMapToolManager->DestroyInstance();
+
 
 
 	Super::Free();

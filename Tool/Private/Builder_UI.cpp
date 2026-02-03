@@ -7,6 +7,7 @@
 
 #include "ImGui_UIManager.h"
 #include "GameInstance.h"
+#include "Builder_Map.h"
 
 CBuilder_UI::CBuilder_UI(ID3D11Device* pDevice, ID3D11DeviceContext* pDeviceContext, _uint iLevelID)
 	:Super(pDevice, pDeviceContext, iLevelID)
@@ -151,6 +152,7 @@ HRESULT CBuilder_UI::Create_GenericUIDTO(const DTO::TUI_GenericUIData& data)
 	return S_OK;
 }
 
+
 CBuilder_UI* CBuilder_UI::Create(ID3D11Device* pDevice, ID3D11DeviceContext* pDeviceContext, _uint iLevelID)
 {
 	CBuilder_UI* pInstance = new CBuilder_UI(pDevice, pDeviceContext, iLevelID);
@@ -161,6 +163,7 @@ CBuilder_UI* CBuilder_UI::Create(ID3D11Device* pDevice, ID3D11DeviceContext* pDe
 	}
 	return pInstance;
 }
+
 
 void CBuilder_UI::Free()
 {

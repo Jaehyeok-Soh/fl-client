@@ -121,11 +121,11 @@ void CGameInstance::Update_Engine(_float fTimeDelta)
 {
 	m_pSound_Manager->Update();
 	m_pInput_Manager->Update();
+	m_pLevel_Manager->Update(fTimeDelta);
 	m_pObject_Manager->Update_Priority(fTimeDelta);
 	m_pObject_Manager->Update(fTimeDelta);
 	m_pCollision_Manager->Update(fTimeDelta);
 	m_pObject_Manager->Update_Late(fTimeDelta);
-	m_pLevel_Manager->Update(fTimeDelta);
 
 	// 피직스 시뮬레이트
 	m_pPhysics_Module->StepPhysics(fTimeDelta);
@@ -133,6 +133,8 @@ void CGameInstance::Update_Engine(_float fTimeDelta)
 	// 메인카메라 업데이트
 	m_pCamera_Manager->Update_ViewMatrix();
 	m_pFrustrum->Update();
+
+	m_pLevel_Manager->Update_Picking();
 
 	// 업데이트 후 마지막
 	m_pObject_Manager->Ready_Before_Render(fTimeDelta);
@@ -807,11 +809,6 @@ Matrix CGameInstance::PxTransformToXMMatrix(PxTransform pxTransform)
 	return m_pPhysics_Module->PxTransformToXMMatrix(pxTransform);
 }
 
-void CGameInstance::Physics_Render(PxRigidActor* pActor, XMVECTOR color)
-{
-	m_pPhysics_Module->Render(pActor, color);
-}
-
 void CGameInstance::SerializeStaticMesh(std::filesystem::path path, vector<PxTriangleMesh*> meshes)
 {
 	m_pPhysics_Module->SerializeStaticMesh(path, meshes);
@@ -851,6 +848,13 @@ PxController* CGameInstance::GetController(PHYSICSCCT_DESC* pDesc)
 {
 	return m_pPhysics_Module->GetController(pDesc);
 }
+
+#ifdef _DEBUG
+void CGameInstance::Physics_Render(PxRigidActor* pActor, XMVECTOR color)
+{
+	m_pPhysics_Module->Render(pActor, color);
+}
+#endif
 #pragma endregion
 
 #pragma region UIACTION_REGISTRY

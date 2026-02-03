@@ -115,14 +115,15 @@ namespace Tool
 	{
 		switch (eType)
 		{
-		case Tool::EStaticModel_Type::DEFUALT: return "DEFUALT";
+		case Tool::EStaticModel_Type::DEFUALT:	return "DEFUALT";
 		case Tool::EStaticModel_Type::INSTANCE:	return "INSTANCE";
-		default		:						return "NONE";
+		default		:							return "NONE";
 		}
 
 
 		return "NONE";
 	}
+
 	static EStaticModel_Type StaticModelType_ToEnum(string streType)
 	{
 		if (streType == "DEFUALT") return EStaticModel_Type::DEFUALT;
@@ -211,13 +212,14 @@ namespace Tool
 	{
 		/* 지형지물 = Terrain = Object */
 		STATICMODEL,
+		INSTANCEMODEL,
 		END,
 	};
 
 	static EMapObject_Type MapObjectType_StringToType(const string& strType)
 	{
 		if (strType == "STATICMODEL") return EMapObject_Type::STATICMODEL;
-
+		if (strType == "INSTANCEMODEL") return EMapObject_Type::INSTANCEMODEL;
 
 		return EMapObject_Type::END;
 	}
