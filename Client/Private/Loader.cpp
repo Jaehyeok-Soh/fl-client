@@ -277,7 +277,7 @@ HRESULT CLoader::Loading_For_Logo()
 		desc.eType = EModelType::STATIC;
 		desc.iPrototypeLevelIndex = ENUM_TO_UINT(ELevelType::STATIC);
 		desc.pMatPreTransform = &matPreTransformScale;
-		desc.wstrModelFolderName = L"total_landScape_4x4";
+		desc.wstrModelFolderName = L"landScape_1x2";
 		wstring modelPrototypeTag = L"Prototype_Component_Model_total_landScape_4x4";
 		ADD_PROTOTYPE(ELevelType::STATIC, modelPrototypeTag, CModel::Create(m_pDevice, m_pDeviceContext, &desc));
 

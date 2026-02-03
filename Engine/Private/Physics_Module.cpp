@@ -30,10 +30,10 @@ HRESULT CPhysics_Module::Initialize()
 
 #ifdef _DEBUG
 	//m_pPvd = PxCreatePvd(*m_pFoundation);
-	//PxPvdTransport* transport = PxDefaultPvdSocketTransportCreate(PVD_HOST, 5425, 10);
+	//PxPvdTransport* transport = PxDefaultPvdFileTransportCreate("D:\\PVD_Record\\phyXDebug.pxd2");
 	////PxPvdTransport* transport = PxDefaultPvdFileTransportCreate(PVD_HOST, 5425, 10);
 	////m_pPvd->connect(*transport, PxPvdInstrumentationFlag::eALL);
-	//m_pPvd->connect(*transport, PxPvdInstrumentationFlag::ePROFILE);
+	//m_pPvd->connect(*transport, PxPvdInstrumentationFlag::eALL);
 #endif // _DEBUG
 
 	if (!(m_pPhysics = PxCreatePhysics(PX_PHYSICS_VERSION, *m_pFoundation, PxTolerancesScale(), true, m_pPvd)))
@@ -65,7 +65,6 @@ HRESULT CPhysics_Module::Initialize()
 		sceneDesc.gravity = PxVec3(0.f, -9.81f, 0.f);
 		m_pDispatcher = PxDefaultCpuDispatcherCreate(4);
 		sceneDesc.cpuDispatcher = m_pDispatcher;
-		sceneDesc.filterShader = PxDefaultSimulationFilterShader;
 
 		if (m_pCudaContextManager)
 		{
@@ -108,7 +107,16 @@ HRESULT CPhysics_Module::Initialize()
 		{
 			//sceneDesc.kineKineFilteringMode; // eDEFAULT = eSUPPRESS
 			//sceneDesc.staticKineFilteringMode; // eDEFAULT = eSUPPRESS
-			//sceneDesc.filterShader = FilterShader;
+		}
+
+		/////////////////////
+		/// Filter Shader ///
+		/////////////////////
+		{
+			// Default Setting
+			//sceneDesc.filterShader = PxDefaultSimulationFilterShader;
+
+			sceneDesc.filterShader = FilterShader;
 			//sceneDesc.filterCallback;
 		}
 
@@ -123,8 +131,8 @@ HRESULT CPhysics_Module::Initialize()
 	//PxPvdSceneClient* pvdClient = m_pScene->getScenePvdClient();
 	//if (pvdClient)
 	//{
-	//	pvdClient->setScenePvdFlag(PxPvdSceneFlag::eTRANSMIT_CONSTRAINTS, true);
-	//	pvdClient->setScenePvdFlag(PxPvdSceneFlag::eTRANSMIT_CONTACTS, true);
+	//	//pvdClient->setScenePvdFlag(PxPvdSceneFlag::eTRANSMIT_CONSTRAINTS, true);
+	//	//pvdClient->setScenePvdFlag(PxPvdSceneFlag::eTRANSMIT_CONTACTS, true);
 	//	pvdClient->setScenePvdFlag(PxPvdSceneFlag::eTRANSMIT_SCENEQUERIES, true);
 	//}
 #endif // _DEBUG
@@ -246,7 +254,10 @@ PxController* CPhysics_Module::GetController(PHYSICSCCT_DESC* pDesc)
 	return m_pCCTManager->GetController(pDesc);
 }
 
-PxFilterFlags CPhysics_Module::FilterShader(PxFilterObjectAttributes attributes0, PxFilterData filterData0, PxFilterObjectAttributes attributes1, PxFilterData filterData1, PxPairFlags& pairFlags, const void* constantBlock, PxU32 constantBlockSize)
+PxFilterFlags CPhysics_Module::FilterShader(
+	PxFilterObjectAttributes attributes0, PxFilterData filterData0,
+	PxFilterObjectAttributes attributes1, PxFilterData filterData1,
+	PxPairFlags& pairFlags, const void* constantBlock, PxU32 constantBlockSize)
 {
 	if (PxFilterObjectIsTrigger(attributes0) || PxFilterObjectIsTrigger(attributes1))
 	{

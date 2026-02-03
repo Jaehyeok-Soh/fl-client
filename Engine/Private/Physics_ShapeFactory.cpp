@@ -2,7 +2,6 @@
 
 #include "GameInstance.h"
 #include "Physics_ShapeFactory.h"
-#include "Physics_ResourceManager.h"
 
 CPhysics_ShapeFactory::CPhysics_ShapeFactory(ID3D11Device* pDevice, ID3D11DeviceContext* pContext, PxPhysics* pPhysics, PxScene* pScene)
 	: m_pGameInstance{ CGameInstance::GetInstance() },
@@ -34,6 +33,12 @@ vector<PxShape*> CPhysics_ShapeFactory::GetShape(PHYSICSCOLLIDER_DESC* pDesc)
 
 vector<PxShape*> CPhysics_ShapeFactory::GetMeshShape(PHYSICSCOLLIDER_DESC* pDesc)
 {
+	if (pDesc->eShape == EPhysicsShape::HEIGHT_FIELD)
+	{
+		//return MakeShape(pDesc, MakeHeightField(pDesc));
+		return MakeHeightFieldShapes(pDesc);
+	}
+
 	if (pDesc->bIsConvex)
 		return MakeShape(pDesc, MakeConvexMeshGeometry(pDesc));
 	else
@@ -93,6 +98,9 @@ vector<PxShape*> CPhysics_ShapeFactory::MakeShape(PHYSICSCOLLIDER_DESC* pDesc, v
 			isValid = geometry.triangleMesh().isValid();
 		}
 		break;
+		case physx::PxGeometryType::eHEIGHTFIELD:
+			isValid = geometry.heightField().isValid();
+			break;
 		}
 
 		if (!isValid)
@@ -123,6 +131,56 @@ vector<PxShape*> CPhysics_ShapeFactory::MakeShape(PHYSICSCOLLIDER_DESC* pDesc, v
 			shape->setFlag(PxShapeFlag::eVISUALIZATION, true);
 			shape->setFlag(PxShapeFlag::eSCENE_QUERY_SHAPE, true);
 		}
+	}
+
+	return result;
+}
+
+vector<PxShape*> CPhysics_ShapeFactory::MakeHeightFieldShapes(PHYSICSCOLLIDER_DESC* pDesc)
+{
+	vector<CPhysics_ResourceManager::HEIGHTFIELD_INFO> hfInfoes = MakeHeightField(pDesc);
+	
+	vector<PxShape*> result;
+
+	PxMaterial* pMaterial = m_pResourceManager->GetMaterial(&pDesc->tMaterial);
+	if (pMaterial == nullptr)
+		MSG_BOX("ShapeFactory : material null");
+
+	for (auto& hf : hfInfoes)
+	{
+		PxGeometryType::Enum type = hf.hfGeom.getType();
+
+		bool isValid = false;
+
+		if (type == physx::PxGeometryType::eHEIGHTFIELD)
+			isValid = hf.hfGeom.isValid();
+		else
+			isValid = false;
+
+		if (!isValid)
+			continue;
+
+		PxShape* shape = m_pPhysics->createShape(hf.hfGeom, *pMaterial);
+		if (shape == nullptr)
+			MSG_BOX("ShapeFactory : shape null");
+
+		PxVec3 offset(hf.minX, 0.f, hf.minZ);
+		
+		shape->setLocalPose(PxTransform(offset));
+
+		if (pDesc->bIsTrigger)
+		{
+			shape->setFlag(PxShapeFlag::eSIMULATION_SHAPE, false);
+			shape->setFlag(PxShapeFlag::eTRIGGER_SHAPE, true);
+		}
+		else
+		{
+			shape->setFlag(PxShapeFlag::eSIMULATION_SHAPE, false);
+			shape->setFlag(PxShapeFlag::eVISUALIZATION, true);
+			shape->setFlag(PxShapeFlag::eSCENE_QUERY_SHAPE, true);
+		}
+
+		result.push_back(shape);
 	}
 
 	return result;
@@ -191,6 +249,53 @@ vector<PxGeometryHolder> CPhysics_ShapeFactory::MakeConvexGeometry(PHYSICSCOLLID
 	default:
 		result.push_back(MakeConvexBox(pDesc));
 		break;
+	}
+
+	return result;
+}
+
+vector<CPhysics_ResourceManager::HEIGHTFIELD_INFO> CPhysics_ShapeFactory::MakeHeightField(PHYSICSCOLLIDER_DESC* pDesc)
+{
+	vector<CPhysics_ResourceManager::HEIGHTFIELD_INFO> result;
+
+	PxReal heightScale = 0.01f;
+
+	if (pDesc->wstrModelPrototypeTag != L"")
+	{
+		auto fields = GetHeightField(pDesc);
+
+		for (auto& field : fields)
+		{
+			PxHeightFieldGeometry hfGeom(
+				field.pHeightField,
+				PxMeshGeometryFlags(),
+				heightScale,
+				field.rowScale,
+				field.colScale);
+
+			field.hfGeom = hfGeom;
+		}
+
+		return fields;
+	}
+
+	if (pDesc->wstrFilePath != L"")
+	{
+		auto fields = GetHeightField(pDesc);
+
+		for (auto& field : fields)
+		{
+			PxHeightFieldGeometry hfGeom(
+				field.pHeightField,
+				PxMeshGeometryFlags(),
+				heightScale,
+				field.rowScale,
+				field.colScale);
+
+			field.hfGeom = hfGeom;
+		}
+
+		return fields;
 	}
 
 	return result;
@@ -314,6 +419,11 @@ vector<PxTriangleMesh*> CPhysics_ShapeFactory::GetTriangleMesh(PHYSICSCOLLIDER_D
 vector<PxConvexMesh*> CPhysics_ShapeFactory::GetConvexMesh(PHYSICSCOLLIDER_DESC* pDesc)
 {
 	return m_pResourceManager->GetConvexMeshes(pDesc);
+}
+
+vector<CPhysics_ResourceManager::HEIGHTFIELD_INFO> CPhysics_ShapeFactory::GetHeightField(PHYSICSCOLLIDER_DESC* pDesc)
+{
+	return m_pResourceManager->GetHeightFields(pDesc);
 }
 
 CPhysics_ShapeFactory* CPhysics_ShapeFactory::Create(ID3D11Device* pDevice, ID3D11DeviceContext* pContext, PxPhysics* pPhysics, PxScene* pScene, CPhysics_ResourceManager* pResourceManager)
