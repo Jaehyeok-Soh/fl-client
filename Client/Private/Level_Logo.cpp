@@ -119,8 +119,8 @@ HRESULT CLevel_Logo::Ready_Builders()
 
 HRESULT CLevel_Logo::Build_Files()
 {
-	if (FAILED(Build_File(ENUM_TO_UINT(ELevelType::LOGO), DTO::ECategory::EFFECT, "Attack_1")))
-		return E_FAIL;
+	//if (FAILED(Build_File(ENUM_TO_UINT(ELevelType::LOGO), DTO::ECategory::EFFECT, "Attack_1")))
+	//	return E_FAIL;
 
 	// For. Example
 	//if (FAILED(Build_File(ENUM_TO_UINT(ELevelType::LOGO), DTO::ECategory::MAP, "asdf")))
