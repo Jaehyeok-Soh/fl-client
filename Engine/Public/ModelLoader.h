@@ -26,7 +26,7 @@ private:
 	HRESULT Initialize(const _tchar* wszModelFolderName);
 public:
 	HRESULT Read_Material(vector<CMaterial*>* vecMaterials);
-	HRESULT Read_Model(EModelType eType, vector<CBone*>* vecBones, vector<CMesh*>* vecMeshes);
+	HRESULT Read_Model(EModelType eType, vector<CBone*>* vecBones, vector<CMesh*>* vecMeshes, CModel::DATA_ANIMCHANNEL* pData = nullptr);
 	HRESULT Read_Animation(vector<CModelAnimation*>* vecAnimations, CModel::DATA_ANIMCHANNEL* pData = nullptr);
 private:
 	HRESULT Create_Channel(class CFileUtils* pFileUtil, _uint iChannelCount,vector<CChannel*>* vecChannels, CModel::DATA_ANIMCHANNEL* pData = nullptr);

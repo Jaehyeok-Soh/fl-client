@@ -143,7 +143,7 @@ HRESULT CModelLoader::Read_Material(vector<CMaterial*>* vecMaterials)
 	return S_OK;
 }
 
-HRESULT CModelLoader::Read_Model(EModelType eType, vector<CBone*>* vecBones, vector<CMesh*>* vecMeshes)
+HRESULT CModelLoader::Read_Model(EModelType eType, vector<CBone*>* vecBones, vector<CMesh*>* vecMeshes, CModel::DATA_ANIMCHANNEL* pData)
 {
 	if (!std::filesystem::exists(m_ModelPath / L"Model"))
 	{
@@ -172,6 +172,11 @@ HRESULT CModelLoader::Read_Model(EModelType eType, vector<CBone*>* vecBones, vec
 			boneDesc.strName = pFileUtil->Read<string>();
 			boneDesc.iParentIndex = pFileUtil->Read<_uint>();
 			boneDesc.matTransform = pFileUtil->Read<Matrix>();
+
+			if (pData)
+			{
+				boneDesc.iRootMotionBoneIndex = pData->iRootBoneIndex;
+			}
 
 				CBone * pNewbone = CBone::Create(&boneDesc);
 			if (!pNewbone)

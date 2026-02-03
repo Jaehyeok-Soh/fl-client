@@ -430,7 +430,7 @@ HRESULT CModel::Load_AnimModel(const wstring& wstrModelName, DATA_ANIMCHANNEL* p
 {
 	CModelLoader* pModelLoader = CModelLoader::Create(m_pDevice, m_pDeviceContext, wstrModelName.c_str());
 	
-	if (FAILED(pModelLoader->Read_Model(m_eType, &m_vecBones, &m_vecMeshes)))
+	if (FAILED(pModelLoader->Read_Model(m_eType, &m_vecBones, &m_vecMeshes, pData)))
 		return E_FAIL;
 	if (FAILED(pModelLoader->Read_Material(&m_vecMaterials)))
 		return E_FAIL;
@@ -532,6 +532,12 @@ void CModel::Blend_Animation(_float fTimeDelta, _float fRatio, CTransform* pOwne
 		vScale = Vec3::Lerp(m_vecPrevAnimationPose[i].vScale, m_vecCurrAnimationPose[i].vScale, fRatio);
 		vQuaternion = Quat::Slerp(m_vecPrevAnimationPose[i].vQuaterion, m_vecCurrAnimationPose[i].vQuaterion, fRatio);
 		vTranslation = Vec3::Lerp(m_vecPrevAnimationPose[i].vTranslation, m_vecCurrAnimationPose[i].vTranslation, fRatio);
+
+		//motion bone ÀÏ¶§ trans : zero·Î ÇØÁÜ
+		if (pBone->Get_IsMotionBone())
+		{
+			vTranslation = Vec3::Zero;
+		}
 		
 		matTransformation = Matrix::CreateScale(vScale) * Matrix::CreateFromQuaternion(vQuaternion) * Matrix::CreateTranslation(vTranslation);
 		pBone->Set_TransformationMatrix(matTransformation);
