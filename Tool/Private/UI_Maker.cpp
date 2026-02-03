@@ -8,11 +8,9 @@
 #include "ToolLayer.h"
 #include "Engine_Utils.h"
 
-/* Component */
-#include "Button.h"
-#include "Image.h"
-
 #include "UIAction_Registry.h"
+#include "DataStruct_UI.h"
+#include "IUIActionForMe.h"
 #include "GameInstance.h"
 
 CUI_Maker::CUI_Maker(const _char* pLabel, CLevel* pOwner, ID3D11Device* pDevice, ID3D11DeviceContext* pDeviceContext)
@@ -525,7 +523,7 @@ void CUI_Maker::Make_UI()
 					Desc.isAlpha = TRUE;
 					Desc.isInitVisible = TRUE;
 					Desc.strInitTextureTag = "Prototype_Component_UI_Texture";
-					Desc.iInitTextureIndex = 0;
+					Desc.iInitTextureIndex = 1;
 
 					if (nullptr != pLayer)
 					{
@@ -540,11 +538,6 @@ void CUI_Maker::Make_UI()
 						}
 						else
 						{
-							CButton::BUTTON_DESC BtnComDesc = {};
-							CImage::IMAGE_DESC ImgComDesc = {};
-							CMonoBehaviour* pCom = dynamic_cast<CMonoBehaviour*>(CImage::Create(ImgComDesc));
-							pResult->Add_Script_Component(L"IMAGE", pCom);
-
 							auto* pUI = dynamic_cast<CToolUI*>(pResult);
 							if (nullptr != pUI) {
 								if (FAILED(pLayer->Safe_Add_UI(pUI)))
@@ -554,17 +547,9 @@ void CUI_Maker::Make_UI()
 									MSG_BOX("CUI_Maker::Make_UI, UI Add Failed");
 								}
 
-								pUI->Add_UIComponentTypes(EUIComponentType::IMAGE);
-
-								auto fnEnter = m_pGameInstance->Get_UIAction_Registry()->Build_Action(
-									"SetTextureIndex", json{ {"Index", 1u} });
-
-								pUI->Bind_Action(DTO::EUIEvent::HOVER_ENTER, std::move(fnEnter));
-
-								auto fnExit = m_pGameInstance->Get_UIAction_Registry()->Build_Action(
-									"SetTextureIndex", json{ {"Index", 2u} });
-
-								pUI->Bind_Action(DTO::EUIEvent::HOVER_EXIT, std::move(fnExit));
+								//pUI->Bind_Action(DTO::EUIEvent::HOVER_ENTER, (DTO::EUIFunc::SET_TEXTURE_INDEX), json{ {"index", 7u} });
+								//pUI->Bind_Action(DTO::EUIEvent::HOVER_EXIT, (DTO::EUIFunc::SET_VISIBLE), json{ {"isVisible", false} });
+								//pUI->Bind_Action(DTO::EUIEvent::HOVER_ENTER, (DTO::EUIFunc::SET_VISIBLE), json{ {"isVisible", false} });
 							}
 						}
 					}

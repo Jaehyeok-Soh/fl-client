@@ -3,9 +3,11 @@
 
 NS_BEGIN(Engine)
 
+
 class ENGINE_DLL IUIActionForMe abstract : public CBase
 {
 	using Super = CBase;
+public:
 
 protected:
 	IUIActionForMe();

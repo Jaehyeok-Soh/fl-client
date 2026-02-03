@@ -1,5 +1,6 @@
 #pragma once
 #include "Base.h"
+#include "DataStruct_UI.h"
 
 NS_BEGIN(Engine)
 
@@ -20,12 +21,12 @@ private:
 	void Initialize_CommonAction();
 
 public:
-	void Register_Factory(const _string& strActionName, FactoryFunc factory);
-	ActionFunc Build_Action(const _string& strActionName, const json& params) const;
+	void Register_Factory(DTO::EUIFunc FuncType, FactoryFunc factory);
+	ActionFunc Build_Action(DTO::EUIFunc FuncType, const json& params) const;
 	void Clear();
 
 private:
-	std::map< _string , FactoryFunc > m_Factories;
+	vector<FactoryFunc > m_Factories;
 
 public:
 	static CUIAction_Registry* Create();

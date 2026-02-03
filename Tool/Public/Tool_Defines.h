@@ -245,48 +245,6 @@ namespace Tool
 
 #pragma endregion
 
-#pragma region UI
-	enum class EUIComponentType
-	{
-		IMAGE = 0,
-		BUTTON,
-		END
-	};
-
-	inline EUIComponentType StringToUIComponentType(const _string& strTag)
-	{
-		if (strTag == "IMAGE")return EUIComponentType::IMAGE;
-		else if (strTag == "BUTTON")return EUIComponentType::BUTTON;
-		else return EUIComponentType::END;
-	}
-	inline EUIComponentType WStringToUIComponentType(const _wstring& strTag)
-	{
-		if (strTag == L"IMAGE")return EUIComponentType::IMAGE;
-		else if (strTag == L"BUTTON")return EUIComponentType::BUTTON;
-		else return EUIComponentType::END;
-	}
-
-	inline	const _string UIComponentTypeToString(EUIComponentType eType)
-	{
-		switch (eType)
-		{
-		case Tool::EUIComponentType::IMAGE:	return "IMAGE";
-		case Tool::EUIComponentType::BUTTON:return "BUTTON";
-		default:return "";
-		}
-	}
-	inline const _wstring UIComponentTypeToWString(EUIComponentType eType)
-	{
-		switch (eType)
-		{
-		case Tool::EUIComponentType::IMAGE:	return L"IMAGE";
-		case Tool::EUIComponentType::BUTTON:return L"BUTTON";
-		default:return L"";
-		}
-	}
-
-#pragma endregion
-
 #pragma region Struct
 
 #pragma endregion

@@ -8,7 +8,30 @@ using json = nlohmann::json;
 
 NS_BEGIN(DTO)
 
+std::string strOwnerTag;
+EUIEvent eEvent = EUIEvent::NONE;
 
+std::string strActionKey;
+json Params;
+
+void to_json(json& j, const TUI_EventBindData& data)
+{
+	j = json
+	{
+		{"strOwnerTag", data.strOwnerTag},
+		{"eEvent", data.eEvent},
+		{"strActionKey", data.strActionKey},
+		{"Params", data.Params}
+	};
+}
+
+void from_json(const json& j, TUI_EventBindData& data)
+{
+	j.at("strOwnerTag").get_to(data.strOwnerTag);
+	j.at("eEvent").get_to(data.eEvent);
+	j.at("strActionKey").get_to(data.strActionKey);
+	j.at("Params").get_to(data.Params);
+}
 
 void to_json(json& j, const TUI_GenericUIData& data)
 {

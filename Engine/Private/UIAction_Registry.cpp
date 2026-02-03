@@ -8,11 +8,12 @@ CUIAction_Registry::CUIAction_Registry()
 
 void CUIAction_Registry::Initialize_CommonAction()
 {
-	// SetVisible : Params = { "Visible": bool }
-	Register_Factory("SetVisible",
+	m_Factories.resize(ENUM_TO_UINT(DTO::EUIFunc::END));
+
+	Register_Factory((DTO::EUIFunc::SET_VISIBLE),
 		[](const json& params) -> ActionFunc
 		{
-			const bool isVisible = params.value("Visible", true);
+			const bool isVisible = params.value("isVisible", true);
 
 			return [isVisible](IUIActionForMe* me)
 				{
@@ -22,11 +23,10 @@ void CUIAction_Registry::Initialize_CommonAction()
 				};
 		});
 
-	// SetTextureIndex : Params = { "Index": uint }
-	Register_Factory("SetTextureIndex",
+	Register_Factory((DTO::EUIFunc::SET_TEXTURE_INDEX),
 		[](const json& params) -> ActionFunc
 		{
-			const uint32_t idx = params.value("Index", 0u);
+			const uint32_t idx = params.value("index", 0u);
 
 			return [idx](IUIActionForMe* me)
 				{
@@ -37,30 +37,26 @@ void CUIAction_Registry::Initialize_CommonAction()
 		});
 }
 
-void CUIAction_Registry::Register_Factory(const _string& strActionName, FactoryFunc factory)
+void CUIAction_Registry::Register_Factory(DTO::EUIFunc FuncType, FactoryFunc factory)
 {
-	if (strActionName.empty() || nullptr == factory)
+	size_t index = ENUM_TO_SZET(FuncType);
+	if (index >= m_Factories.size() || !factory)
 		return;
 
-	auto iter = m_Factories.find(strActionName);
-	if (iter != m_Factories.end())
-	{
-		MSG_BOX("CUIAction_Registry::Register_Factory, Action Name Already Registerd");
-		return;
-	}
-	m_Factories[strActionName] = std::move(factory);
+	m_Factories[index] = std::move(factory);
 }
 
-CUIAction_Registry::ActionFunc CUIAction_Registry::Build_Action(const _string& strActionName, const json& params) const
+CUIAction_Registry::ActionFunc CUIAction_Registry::Build_Action(DTO::EUIFunc FuncType, const json& params) const
 {
-	auto iter = m_Factories.find(strActionName);
-	if (iter == m_Factories.end())
-	{
-		MSG_BOX("CUIAction_Registry::Build_Action, No Action ");
+	size_t index = ENUM_TO_SZET(FuncType);
+	if (index >= m_Factories.size())
 		return ActionFunc{};
-	}
 
-	return iter->second(params);
+	const auto& Factory = m_Factories[index];
+	if (!Factory)
+		return ActionFunc{};
+
+	return Factory(params);
 }
 
 CUIAction_Registry* CUIAction_Registry::Create()

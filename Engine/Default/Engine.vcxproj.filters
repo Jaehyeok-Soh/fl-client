@@ -414,9 +414,6 @@
     <ClCompile Include="..\Private\GameObject.cpp">
       <Filter>00. System\04. GameObject</Filter>
     </ClCompile>
-    <ClCompile Include="..\Private\UIObject.cpp">
-      <Filter>00. System\04. GameObject\UIObject</Filter>
-    </ClCompile>
     <ClCompile Include="..\Private\PartObject.cpp">
       <Filter>00. System\04. GameObject\PartObject</Filter>
     </ClCompile>
@@ -645,13 +642,22 @@
     <ClCompile Include="..\Private\PhysicsCCT.cpp">
       <Filter>00. System\05. Component\PhysicsCCT</Filter>
     </ClCompile>
-    <ClCompile Include="..\private\ThreadWorker.cpp" />
-    <ClCompile Include="..\public\ThreadPool.cpp" />
     <ClCompile Include="..\Private\DataStruct_Map.cpp">
       <Filter>01. Utility\11. DataRepository\Datas\Map\DataStruct_Map</Filter>
     </ClCompile>
     <ClCompile Include="..\Private\DataDocument_Map.cpp">
       <Filter>01. Utility\11. DataRepository\Datas\Map\DataDocument_Map</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\IUIActionForMe.cpp">
+      <Filter>00. System\04. GameObject\UIObject\Interface\Action For Me</Filter>
+    </ClCompile>
+    <ClCompile Include="..\public\ThreadPool.cpp" />
+    <ClCompile Include="..\private\ThreadWorker.cpp" />
+    <ClCompile Include="..\Private\UIAction_Registry.cpp">
+      <Filter>00. System\04. GameObject\UIObject\Registry</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\UIObject.cpp">
+      <Filter>00. System\04. GameObject\UIObject</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -771,9 +777,6 @@
     </ClInclude>
     <ClInclude Include="..\Public\GameObject.h">
       <Filter>00. System\04. GameObject</Filter>
-    </ClInclude>
-    <ClInclude Include="..\Public\UIObject.h">
-      <Filter>00. System\04. GameObject\UIObject</Filter>
     </ClInclude>
     <ClInclude Include="..\Public\PartObject.h">
       <Filter>00. System\04. GameObject\PartObject</Filter>
@@ -1009,13 +1012,22 @@
     <ClInclude Include="..\Public\PhysicsCCT.h">
       <Filter>00. System\05. Component\PhysicsCCT</Filter>
     </ClInclude>
-    <ClInclude Include="..\public\ThreadPool.h" />
-    <ClInclude Include="..\public\ThreadWorker.h" />
     <ClInclude Include="..\Public\DataStruct_Map.h">
       <Filter>01. Utility\11. DataRepository\Datas\Map\DataStruct_Map</Filter>
     </ClInclude>
     <ClInclude Include="..\Public\DataDocument_Map.h">
       <Filter>01. Utility\11. DataRepository\Datas\Map\DataDocument_Map</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\IUIActionForMe.h">
+      <Filter>00. System\04. GameObject\UIObject\Interface\Action For Me</Filter>
+    </ClInclude>
+    <ClInclude Include="..\public\ThreadWorker.h" />
+    <ClInclude Include="..\public\ThreadPool.h" />
+    <ClInclude Include="..\Public\UIAction_Registry.h">
+      <Filter>00. System\04. GameObject\UIObject\Registry</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\UIObject.h">
+      <Filter>00. System\04. GameObject\UIObject</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

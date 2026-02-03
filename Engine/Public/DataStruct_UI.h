@@ -27,10 +27,11 @@ enum class EUIEvent : uint32_t
 {
 	NONE = 0,
 	HOVER_ENTER,
+	HOVERING,
 	HOVER_EXIT,
 	PRESS_ENTER,
+	PRESSING,
 	PRESS_EXIT,
-	CLICKED,
 	END
 };
 
@@ -38,28 +39,47 @@ NLOHMANN_JSON_SERIALIZE_ENUM(EUIEvent,
 	{
 		{EUIEvent::NONE, "NONE"},
 		{EUIEvent::HOVER_ENTER, "HOVER_ENTER"},
+		{EUIEvent::HOVERING, "HOVERING"},
 		{EUIEvent::HOVER_EXIT, "HOVER_EXIT"},
 		{EUIEvent::PRESS_ENTER, "PRESS_ENTER"},
+		{EUIEvent::PRESSING, "PRESSING"},
 		{EUIEvent::PRESS_EXIT, "PRESS_EXIT"},
-		{EUIEvent::CLICKED, "CLICKED"},
 	})
+
+enum class EUIFunc
+{
+	/* (isVisible / bool) */
+	SET_VISIBLE,
+	/* (index / uint) */
+	SET_TEXTURE_INDEX,
+	END
+};
+
+inline EUIFunc StringToUIFunctype(const _string& str)
+{
+	if (str == "SET_VISIBLE")return EUIFunc::SET_VISIBLE;
+	else if (str == "SET_TEXTURE_INDEX")return EUIFunc::SET_TEXTURE_INDEX;
+	else return EUIFunc::END;
+}
+
+inline _string UIFunctypeToString(EUIFunc eType)
+{
+	switch (eType)
+	{
+	case DTO::EUIFunc::SET_VISIBLE: return "SET_VISIBLE";
+	case DTO::EUIFunc::SET_TEXTURE_INDEX: return "SET_TEXTURE_INDEX";
+	default: return "";
+	}
+}
 
 /////////////////-------------------  Data Struct  -------------------/////////////////
 
-struct TUI_EventBindRecord
+struct TUI_EventBindData
 {
 	std::string strOwnerTag;
 	EUIEvent eEvent = EUIEvent::NONE;
-
 	std::string strActionKey;
 	json Params;
-};
-
-struct TUI_ImageComponentData
-{
-	static constexpr EUIType eType = EUIType::UICOMPONENT;
-	_string strOwner;
-	uint32_t iTextureIndex;
 };
 
 struct TUI_GenericUIData
@@ -104,6 +124,8 @@ struct TUI_CanvasData
 };
 
 /////////////////-------------------  to_json, from_json  -------------------/////////////////
+void to_json(json& j, const TUI_EventBindData& data);
+void from_json(const json& j, TUI_EventBindData& data);
 void to_json(json& j, const TUI_GenericUIData& data);
 void from_json(const json& j, TUI_GenericUIData& data);
 void to_json(json& j, const TUI_LayerData& data);

@@ -13,6 +13,7 @@
 #include "ImGui_ToolManager.h"
 #include "UIAction_Tool.h"
 
+#include "UIAction_Registry.h"
 #include "GameInstance.h"
 CToolUI::CToolUI(ID3D11Device* pDevice, ID3D11DeviceContext* pDeviceContext)
 	:CUIObject(pDevice, pDeviceContext)
@@ -79,25 +80,19 @@ void CToolUI::Update_Priority(const _float fTimeDelta)
 
 void CToolUI::Update(const _float fTimeDelta)
 {
-	if(m_isVisible)
-		Super::Update(fTimeDelta);
+	Super::Update(fTimeDelta);
 }
 
 void CToolUI::Update_Late(const _float fTimeDelta)
 {
-	if (m_isVisible)
-	{
-		Super::Update_Late(fTimeDelta);
-	}
+	Super::Update_Late(fTimeDelta);
 }
 
 void CToolUI::Ready_Before_Render(const _float fTimeDelta)
 {
-	if (m_isVisible)
-	{
-		Sync_Data();
-		Super::Ready_Before_Render(fTimeDelta);
-	}
+	Acting_About_State();
+	Sync_Data();
+	Super::Ready_Before_Render(fTimeDelta);
 }
 
 HRESULT CToolUI::Render()
@@ -156,35 +151,70 @@ HRESULT CToolUI::Render()
 _bool CToolUI::Calc_HitEvent()
 {
 	if (::PtInRect(&m_tRenderRect, CImGui_ToolManager::GetInstance()->Get_CalculatedMousePos_Point()))
-	{
-		Excute_Action(DTO::EUIEvent::HOVER_ENTER);
 		return TRUE;
-	}
-	Excute_Action(DTO::EUIEvent::HOVER_EXIT);
 	return FALSE;
 }
 
-HRESULT CToolUI::Bind_Action(DTO::EUIEvent EventType, ActionFunc func)
+HRESULT CToolUI::Bind_Action(DTO::EUIEvent EventType, DTO::EUIFunc FuncType, const json& params)
 {
 	const size_t index = ENUM_TO_SZET(EventType);
 	if (index >= m_vecBindingActions.size())
 		return E_FAIL;
 
-	m_vecBindingActions[index].push_back(std::move(func));
+	DTO::TUI_EventBindData Desc = {};
+	Desc.strOwnerTag = m_strName;
+	Desc.strActionKey = DTO::UIFunctypeToString(FuncType);
+	Desc.eEvent = EventType;
+	Desc.Params = params;
+	m_vecBindingActionData[index].push_back(Desc);
+	auto Func = m_pGameInstance->Get_UIAction_Registry()->Build_Action(FuncType, params);
+	if (!Func)
+		return E_FAIL;
+	m_vecBindingActions[index].push_back(std::move(Func));
 	return S_OK;
 }
 
-void CToolUI::Execute_Actions(DTO::EUIEvent EventType)
+HRESULT CToolUI::ReBind_Action()
 {
-	if (nullptr == m_pActionForMe)
-		return;
+	for (uint32_t i = 0; i < m_vecBindingActionData.size(); ++i)
+	{
+		m_vecBindingActions[i].clear();
+		for (auto& data : m_vecBindingActionData[i])
+		{
+			auto Func = m_pGameInstance->Get_UIAction_Registry()->Build_Action(DTO::StringToUIFunctype( data.strActionKey),data.Params);
+			if (!Func)
+				return E_FAIL;
+			m_vecBindingActions[i].push_back(std::move(Func));
+		}
+	}
+	return S_OK;
+}
 
-	const size_t index = ENUM_TO_SZET(EventType);
-	if (index >= m_vecBindingActions.size())
-		return;
+HRESULT CToolUI::Remove_Action(DTO::EUIEvent EventType, DTO::EUIFunc FuncType)
+{
+	const size_t EventIndex = ENUM_TO_SZET(EventType);
+	if (EventIndex >= m_vecBindingActionData.size())
+		return E_FAIL;
 
-	for (auto& fn : m_vecBindingActions[index])
-		fn(m_pActionForMe);
+	_bool isRemoved = { FALSE };
+	for (auto iter = m_vecBindingActionData[EventIndex].begin(); iter != m_vecBindingActionData[EventIndex].end(); iter++)
+	{
+		if (DTO::StringToUIFunctype(iter->strActionKey) == FuncType)
+		{
+			m_vecBindingActionData[EventIndex].erase(iter);
+			isRemoved = TRUE;
+			break;
+		}
+	}
+	if (!isRemoved)
+	{
+		MSG_BOX("CToolUI::Remove_Action, No Action with Match strActionKey");
+		return E_FAIL;
+	}
+	m_vecBindingActions[EventIndex].clear();
+		if (FAILED(ReBind_Action()))
+			return E_FAIL;
+	return S_OK;
 }
 
 HRESULT CToolUI::Ready_Components(TOOLUI_DESC* pDesc)
@@ -203,6 +233,9 @@ HRESULT CToolUI::Ready_Components(TOOLUI_DESC* pDesc)
 
 HRESULT CToolUI::Excute_Action(DTO::EUIEvent EventType)
 {
+	if (nullptr == m_pActionForMe)
+		return E_FAIL;
+
 	size_t index = ENUM_TO_SZET(EventType);
 	if (index >= m_vecBindingActions.size())
 		return E_FAIL;
@@ -261,7 +294,20 @@ void CToolUI::SetUp_Visible()
 	if (nullptr == pLayer)
 		return;
 
+	if(!m_isVisible)
 	m_isVisible = pLayer->Get_isVisible();
+}
+
+void CToolUI::Acting_About_State()
+{
+	if (Engine_Utils::Has_Flag(m_iInteractState, ENUM_TO_UINT(DTO::EUIEvent::HOVER_ENTER)))
+	{
+		Excute_Action(DTO::EUIEvent::HOVER_ENTER);
+	}
+	else if (Engine_Utils::Has_Flag(m_iInteractState, ENUM_TO_UINT(DTO::EUIEvent::HOVER_EXIT)))
+	{
+		Excute_Action(DTO::EUIEvent::HOVER_EXIT);
+	}
 }
 
 void CToolUI::Sync_Data()
@@ -279,53 +325,19 @@ void CToolUI::Sync_Data()
 	m_tUIData.iTextureIndex = m_iTextureIndex;
 }
 
-HRESULT CToolUI::Add_UIComponentTypes(EUIComponentType eType)
+vector<DTO::TUI_EventBindData>* CToolUI::Safe_Access_EventData(DTO::EUIEvent EventType)
 {
-	for (const auto& type : m_vecUIComponentTypes)
-	{
-		if (type == eType)
-		{
-			MSG_BOX("CToolUI::Add_UIComponentTypes, Already has this type");
-			return E_FAIL;
-		}
-	}
-	m_vecUIComponentTypes.push_back(eType);
-	return S_OK;
-}
+	size_t index = ENUM_TO_SZET(EventType);
 
-HRESULT CToolUI::Remove_UIComponentTypes(EUIComponentType eType)
-{
-	uint32_t index = {};
-	for (const auto& type : m_vecUIComponentTypes)
-	{
-		if (type == eType)
-		{
-			m_vecUIComponentTypes.erase(m_vecUIComponentTypes.begin() + index);
-			return S_OK;
-		}
-		index++;
-	}
-	MSG_BOX("CToolUI::Remove_UIComponentTypes, No Type");
-	return E_FAIL;
-}
-
-CMonoBehaviour* CToolUI::Safe_Access_ScriptComponent(EUIComponentType eType)
-{
-	_bool is = { FALSE };
-	for (const auto& type : m_vecUIComponentTypes)
-	{
-		if (type == eType)
-		{
-			is = TRUE;
-			break;
-		}
-	}
-
-	if (is)
-		return Get_Script_Component(UIComponentTypeToWString(eType));
-	else
+	if (index >= m_vecBindingActionData.size() || m_vecBindingActionData.empty())
 		return nullptr;
 
+	return &m_vecBindingActionData[index];
+}
+
+array<vector<DTO::TUI_EventBindData>, ENUM_TO_UINT(DTO::EUIEvent::END)>* CToolUI::Safe_Access_AllEventData()
+{
+	return &m_vecBindingActionData;
 }
 
 CToolUI* CToolUI::Create(EToolObjectType eType, ID3D11Device* pDevice, ID3D11DeviceContext* pDeviceContext)

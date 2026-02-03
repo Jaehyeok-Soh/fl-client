@@ -46,19 +46,21 @@ public:
 	_bool Calc_HitEvent();
 
 public:
-	HRESULT Bind_Action(DTO::EUIEvent EventType, ActionFunc func);
-	void Execute_Actions(DTO::EUIEvent EventType);
+	HRESULT Bind_Action(DTO::EUIEvent EventType, DTO::EUIFunc FuncType, const json& params);
+	HRESULT Remove_Action(DTO::EUIEvent EventType, DTO::EUIFunc FuncType);
 	IUIActionForMe* Get_ActionForMe() const { return m_pActionForMe; }
+	HRESULT Excute_Action(DTO::EUIEvent EventType);
+	HRESULT ReBind_Action();
 
 private:
 	HRESULT Ready_Components(TOOLUI_DESC* pDesc);
-	HRESULT Excute_Action(DTO::EUIEvent EventType);
 	HRESULT Bind_ShaderResources();
 
-	/* Rect Transform Type에 따라 Pos를 옮기고 RenderPos 저장해둠 */
 	void SetUp_RectTransform_Position();
-	/* Layer의 Visible 상태에 따라 자신의 Visible 상태를 세팅함 */
 	void SetUp_Visible();
+
+	void Acting_About_State();
+
 	void Sync_Data();
 #pragma region GETTER/SETTER
 public:
@@ -75,16 +77,15 @@ public:
 	_float* Get_PosX_Ptr() { return &m_fX; }
 	_float* Get_PosY_Ptr() { return &m_fY; }
 	_float* Get_PosZ_Ptr() { return &m_fZ; }
-	HRESULT Add_UIComponentTypes(EUIComponentType eType);
-	HRESULT Remove_UIComponentTypes(EUIComponentType eType);
-	const vector<EUIComponentType>& Get_UIComponentType_Vector() const { return m_vecUIComponentTypes; };
-
 	const Vec3& Get_RenderPos() const { return m_vRenderPos; }
 	const RECT& Get_RenderRect() const { return m_tRenderRect; }
 	void Set_HitTest() { m_isHitTest = TRUE; };
-	CMonoBehaviour* Safe_Access_ScriptComponent(EUIComponentType eType);
 	const DTO::TUI_GenericUIData& Get_Data()const { return m_tUIData; }
 	DTO::TUI_GenericUIData& Get_Data_Ref() { return m_tUIData; }
+
+	vector<DTO::TUI_EventBindData>* Safe_Access_EventData(DTO::EUIEvent EventType);
+	array< vector<DTO::TUI_EventBindData>, ENUM_TO_UINT(DTO::EUIEvent::END)>* Safe_Access_AllEventData();
+
 #pragma endregion
 
 private:	
@@ -108,12 +109,11 @@ private:
 	RECT m_tRenderRect = {};
 	_bool m_isHitTest = { FALSE };
 
-
-
-	vector<EUIComponentType> m_vecUIComponentTypes;
 	IUIActionForMe* m_pActionForMe = { nullptr };
+	
 	/* 액션들을 이벤트 갯수만큼 정적으로 할당 사실상 vector<ActionFunc>[] 이거임 */
 	array< vector<ActionFunc> , ENUM_TO_UINT(DTO::EUIEvent::END)> m_vecBindingActions;
+	array< vector<DTO::TUI_EventBindData>, ENUM_TO_UINT(DTO::EUIEvent::END)> m_vecBindingActionData;
 
 public:
 	static CToolUI* Create(EToolObjectType eType, ID3D11Device* pDevice, ID3D11DeviceContext* pDeviceContext);

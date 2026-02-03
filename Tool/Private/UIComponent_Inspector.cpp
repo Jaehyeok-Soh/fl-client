@@ -31,23 +31,7 @@ HRESULT CUIComponent_Inspector::Render(CToolObject* pGo)
 	m_pSelectedUI = m_pUIManager->Safe_Access_UI(m_pUIManager->Get_CurUIIndex());
 	if (nullptr != m_pSelectedUI)
 	{
-		const auto* pCom = m_pSelectedUI->Safe_Access_ScriptComponent(m_pUIManager->Get_UIComType());
-		if (nullptr == pCom)
-		{
-			ImGui::TextDisabled("Not Selected Component...");
-		}
-		else
-		{
-			switch (m_pUIManager->Get_UIComType())
-			{
-			case EUIComponentType::IMAGE:
-				Edit_ImageComponent();
-				break;
-			case EUIComponentType::BUTTON:
-				Edit_ButtonComponent();
-				break;
-			}
-		}
+	
 	}
 
 	ImGui::End();
