@@ -304,6 +304,12 @@
     <Filter Include="01. Utility\11. DataRepository\Datas\Map\DataDocument_Map">
       <UniqueIdentifier>{c9ad8f5d-b829-4469-9592-0ca458904b6b}</UniqueIdentifier>
     </Filter>
+    <Filter Include="00. System\07. Resource\Mesh\00. Mesh">
+      <UniqueIdentifier>{bcd8e9eb-f733-4e77-97d2-c221570dab80}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="00. System\07. Resource\Mesh\01. InstanceMesh">
+      <UniqueIdentifier>{1b869a34-a400-4ee2-9d81-a39a890b6515}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="..\Private\Timer.cpp">
@@ -507,9 +513,6 @@
     <ClCompile Include="..\Private\Material.cpp">
       <Filter>00. System\07. Resource\Material</Filter>
     </ClCompile>
-    <ClCompile Include="..\Private\Mesh.cpp">
-      <Filter>00. System\07. Resource\Mesh</Filter>
-    </ClCompile>
     <ClCompile Include="..\Private\Bone.cpp">
       <Filter>00. System\05. Component\Model\Bone</Filter>
     </ClCompile>
@@ -640,6 +643,12 @@
     </ClCompile>
     <ClCompile Include="..\Private\DataDocument_Map.cpp">
       <Filter>01. Utility\11. DataRepository\Datas\Map\DataDocument_Map</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\Mesh.cpp">
+      <Filter>00. System\07. Resource\Mesh\00. Mesh</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\InstanceStaticMesh.cpp">
+      <Filter>00. System\07. Resource\Mesh\01. InstanceMesh</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -868,9 +877,6 @@
     <ClInclude Include="..\Public\Material.h">
       <Filter>00. System\07. Resource\Material</Filter>
     </ClInclude>
-    <ClInclude Include="..\Public\Mesh.h">
-      <Filter>00. System\07. Resource\Mesh</Filter>
-    </ClInclude>
     <ClInclude Include="..\Public\Bone.h">
       <Filter>00. System\05. Component\Model\Bone</Filter>
     </ClInclude>
@@ -1004,6 +1010,12 @@
     </ClInclude>
     <ClInclude Include="..\Public\DataDocument_Map.h">
       <Filter>01. Utility\11. DataRepository\Datas\Map\DataDocument_Map</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\Mesh.h">
+      <Filter>00. System\07. Resource\Mesh\00. Mesh</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\InstanceStaticMesh.h">
+      <Filter>00. System\07. Resource\Mesh\01. InstanceMesh</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

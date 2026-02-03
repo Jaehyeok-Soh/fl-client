@@ -26,6 +26,7 @@ NS_END
 
 NS_BEGIN(DTO)
 
+#pragma region SRT DATA
 void from_json(const json& LoadJson, SRT_DATA& tdata)
 {
 	if (LoadJson.contains("Scale"))
@@ -43,13 +44,15 @@ void to_json(json& SaveJson, const SRT_DATA& tData)
     Engine_Utils::write_vec4_Quat(SaveJson["Quaternion"], tData.vQuat);
     Engine_Utils::write_vec3_xyz(SaveJson["Position"], tData.vPosition);
 }
-void from_json(const json& LoadJson, USING_MATERIAL_INFO& tData)
+#pragma endregion
+
+#pragma region OVERRIDE_MATERIALS
+void from_json(const json& LoadJson, OVERRIDE_MATERIALS& tData)
 {
-	if (tData.isNull == true) return;
+	tData.wstrMtl_JsonFile_Name = Engine_Utils::ToWString(LoadJson.value("Name", ""));
+	tData.wstrMtl_JsonFile_Path = Engine_Utils::ToWString(LoadJson.value("Path", ""));
 
-	tData.wstrOriginMtl_JsonFile_Name = Engine_Utils::ToWString(LoadJson.value("Name", ""));
-	tData.wstrOriginMtl_JsonFile_Path = Engine_Utils::ToWString(LoadJson.value("Path", ""));
-
+	/* 이게 Emtpy면 json 파일을 못 읽어온것 */
 	if (tData.vecUsingTextureInfo.empty()) return;
 
 	if (LoadJson.contains("Textures"))
@@ -63,10 +66,10 @@ void from_json(const json& LoadJson, USING_MATERIAL_INFO& tData)
 		}
 	}
 }
-void to_json(json& SaveJson, const USING_MATERIAL_INFO& tData)
+void to_json(json& SaveJson, const OVERRIDE_MATERIALS& tData)
 {
-	SaveJson["Name"] = Engine_Utils::ToString(tData.wstrOriginMtl_JsonFile_Name);
-	SaveJson["Path"] = Engine_Utils::ToString(tData.wstrOriginMtl_JsonFile_Path);
+	SaveJson["Name"] = Engine_Utils::ToString(tData.wstrMtl_JsonFile_Name);
+	SaveJson["Path"] = Engine_Utils::ToString(tData.wstrMtl_JsonFile_Path);
 
 	if (tData.vecUsingTextureInfo.empty()) return;
 
@@ -75,47 +78,60 @@ void to_json(json& SaveJson, const USING_MATERIAL_INFO& tData)
 		SaveJson["Textures"].push_back({ Engine_Utils::ToString(pairTextureInfo.first), Engine_Utils::ToString(pairTextureInfo.second) });
 	}
 }
+#pragma endregion
+
+#pragma region USING MODEL INFO
 
 void from_json(const json& LoadJson, USING_MODEL_INFO& tData)
 {
 	tData.wstrName = Engine_Utils::ToWString(LoadJson.value("Name", ""));
 	tData.wstrPath = Engine_Utils::ToWString(LoadJson.value("Path", ""));
-	tData.wstrMtl_JsonFile_Path = Engine_Utils::ToWString(LoadJson.value("Meterial Json File Path",""));
+	tData.wstrMtl_JsonFile_Path = Engine_Utils::ToWString(LoadJson.value("Material Json File Path",""));
 
+	/* Override Material Override */
+	tData.vecOverrideMaterial.clear();
+	vector<OVERRIDE_MATERIALS>().swap(tData.vecOverrideMaterial);
 
+	/* 키 값이 있다면 Using Material Info */
 	if (LoadJson.contains("Using Mateiral Info"))
 	{
-
-		auto& MtlJsons = LoadJson["Using Mateiral Info"];
-		tData.vecMaterialInfo.resize(MtlJsons.size());
-
+		auto& MtlJsons = LoadJson["Override Materials"];
+		tData.vecOverrideMaterial.resize(MtlJsons.size());
 		_uint iIndex{};
 		for (auto& MtlJson : MtlJsons)
 		{
-			if (MtlJson.empty())
-				tData.vecMaterialInfo[iIndex].isNull = true;
-			else
-				tData.vecMaterialInfo[iIndex++] = MtlJson;
+			/* Null Check */
+			/* 배열 순번을 지키기위해 존재하지 않는 값이라도 사이즈에 맞게 할당해서 들고있어야 한다 */
+			if (MtlJson.is_null()) // Null Check 후 처리
+				tData.vecOverrideMaterial[iIndex].isNull = true;
+			else // Null이 아니라면 값 대입
+				tData.vecOverrideMaterial[iIndex++] = MtlJson;
 		}
 	}
 }
+
 void to_json(json& SaveJson, const USING_MODEL_INFO& tData)
 {
 	SaveJson["Name"] = Engine_Utils::ToString(tData.wstrName);
 	SaveJson["Path"] = Engine_Utils::ToString(tData.wstrPath);
-	SaveJson["Meterial Json File Path"] = Engine_Utils::ToString(tData.wstrMtl_JsonFile_Path);
+	SaveJson["Material Json File Path"] = Engine_Utils::ToString(tData.wstrMtl_JsonFile_Path);
 
-	auto& Material_Json = SaveJson["Using Mateiral Info"];
-
-	for (auto& Material_Info : tData.vecMaterialInfo)
+	/* 키값이 없어서 할당받지 못했다면 Size가 0 일것 이때도 마찬가지로 키값에서 빼버린다 */
+	if (!tData.vecOverrideMaterial.empty())
 	{
-		json Nulljson{};
-		if (!Material_Info.isNull)
-			Nulljson = Material_Info;
-		Material_Json.push_back(Nulljson);
+		auto& Material_Json = SaveJson["Override Materials"];
+		for (auto& Material_Info : tData.vecOverrideMaterial)
+		{
+			if (Material_Info.isNull)
+				Material_Json.push_back(nullptr);
+			else
+				Material_Json.push_back(Material_Info);
+		}
 	}
 }
+#pragma endregion
 
+#pragma region TMap_StaticModleData
 void to_json(json& SaveJson, const TMap_StaticModelData& tData)
 {
 	SaveJson = json
@@ -134,6 +150,7 @@ void from_json(const json& LoadJson, TMap_StaticModelData& data)
 	if (LoadJson.contains("Using Model Info"))
 		data.tUsingModelInfo = LoadJson["Using Model Info"];
 }
+#pragma endregion
 
 void to_json(json& j, const TMap_InstanceModelData& data)
 {

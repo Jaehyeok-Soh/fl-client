@@ -148,6 +148,14 @@ void CStaticModel::Set_Dead(const wstring& wstrLayerTag)
 
 }
 
+void CStaticModel::Register_OriginSRT(Engine::Flags fResetTypeFlag)
+{
+	/* m_tData -> Origin Data는 절대 불변의 Data */
+	Super::Register_OriginSRT(fResetTypeFlag);
+
+	return;
+}
+
 bool CStaticModel::IntsersectWithPlane(OUT Vec3& vOut)
 {
 	CModel* pModel = Get_Component<CModel>();
@@ -204,12 +212,12 @@ _bool CStaticModel::Export_Data(DTO::ECategory eCategory, CDataDocumentBase* pDo
 	tSave_StaticModleData.tUsingModelInfo.wstrPath = m_tData.tUsingModelInfo.wstrPath;
 	tSave_StaticModleData.tUsingModelInfo.wstrMtl_JsonFile_Path;
 
-	for (auto& UsingMaterial : m_tData.tUsingModelInfo.vecMaterialInfo)
+	for (auto& UsingMaterial : m_tData.tUsingModelInfo.vecOverrideMaterial)
 	{
-		DTO::USING_MATERIAL_INFO tSaveMtl{};
+		DTO::OVERRIDE_MATERIALS tSaveMtl{};
 		tSaveMtl.isNull = UsingMaterial.isNull;
-		tSaveMtl.wstrOriginMtl_JsonFile_Name = UsingMaterial.wstrOriginMtl_JsonFile_Name;
-		tSaveMtl.wstrOriginMtl_JsonFile_Path = UsingMaterial.wstrOriginMtl_JsonFile_Path;
+		tSaveMtl.wstrMtl_JsonFile_Name = UsingMaterial.wstrMtl_JsonFile_Name;
+		tSaveMtl.wstrMtl_JsonFile_Path = UsingMaterial.wstrMtl_JsonFile_Path;
 		tSaveMtl.vecUsingTextureInfo = UsingMaterial.vecUsingTextureInfo;
 	}
 

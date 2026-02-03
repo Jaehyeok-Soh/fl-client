@@ -20,7 +20,7 @@ private:
 	HRESULT Render_Converted_UnrealRawMapData_Button();
 	HRESULT Render_Filtering_UnrealRawMapData_Button();
 private:
-	const wstring m_wstrMapDatPath{L"../../Resources/Data/MapData/"};
+	const wstring m_wstrMapDatPath{L"../../Resources/Data/MapData/RawData"};
 public:
 	static  CPanel_MapDataController* Create(const _char* pLabel, CLevel* pOwner, ID3D11Device* pDevice, ID3D11DeviceContext* pDeviceContext);
 	virtual void Free() override;

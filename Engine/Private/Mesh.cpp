@@ -4,6 +4,7 @@
 #include "Ray.h"
 #include "Shader.h"
 #include "GameInstance.h"
+#include "InstanceStaticMesh.h"
 
 CMesh::CMesh(ID3D11Device* pDevice, ID3D11DeviceContext* pDeviceContext)
 	: Super(pDevice, pDeviceContext)

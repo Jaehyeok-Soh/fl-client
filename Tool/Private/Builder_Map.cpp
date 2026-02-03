@@ -61,14 +61,14 @@ HRESULT CBuilder_Map::Create_StaticModel(const DTO::TMap_StaticModelData& tData)
 	tStaticModelDesc.tData.tUsingModelInfo.wstrMtl_JsonFile_Path = tData.tUsingModelInfo.wstrMtl_JsonFile_Path;
 
 
-	_uint iCount = static_cast<_uint>(tData.tUsingModelInfo.vecMaterialInfo.size());
-	tStaticModelDesc.tData.tUsingModelInfo.vecMaterialInfo.resize(tData.tUsingModelInfo.vecMaterialInfo.size());
+	_uint iCount = static_cast<_uint>(tData.tUsingModelInfo.vecOverrideMaterial.size());
+	tStaticModelDesc.tData.tUsingModelInfo.vecOverrideMaterial.resize(tData.tUsingModelInfo.vecOverrideMaterial.size());
 	for (_uint i = 0; i < iCount; ++i)
 	{
-		tStaticModelDesc.tData.tUsingModelInfo.vecMaterialInfo[i].isNull						= tData.tUsingModelInfo.vecMaterialInfo[i].isNull;
-		tStaticModelDesc.tData.tUsingModelInfo.vecMaterialInfo[i].wstrOriginMtl_JsonFile_Name	= tData.tUsingModelInfo.vecMaterialInfo[i].wstrOriginMtl_JsonFile_Name;
-		tStaticModelDesc.tData.tUsingModelInfo.vecMaterialInfo[i].wstrOriginMtl_JsonFile_Path	= tData.tUsingModelInfo.vecMaterialInfo[i].wstrOriginMtl_JsonFile_Path;
-		tStaticModelDesc.tData.tUsingModelInfo.vecMaterialInfo[i].vecUsingTextureInfo			= tData.tUsingModelInfo.vecMaterialInfo[i].vecUsingTextureInfo;
+		tStaticModelDesc.tData.tUsingModelInfo.vecOverrideMaterial[i].isNull				= tData.tUsingModelInfo.vecOverrideMaterial[i].isNull;
+		tStaticModelDesc.tData.tUsingModelInfo.vecOverrideMaterial[i].wstrMtl_JsonFile_Name	= tData.tUsingModelInfo.vecOverrideMaterial[i].wstrMtl_JsonFile_Name;
+		tStaticModelDesc.tData.tUsingModelInfo.vecOverrideMaterial[i].wstrMtl_JsonFile_Path	= tData.tUsingModelInfo.vecOverrideMaterial[i].wstrMtl_JsonFile_Path;
+		tStaticModelDesc.tData.tUsingModelInfo.vecOverrideMaterial[i].vecUsingTextureInfo	= tData.tUsingModelInfo.vecOverrideMaterial[i].vecUsingTextureInfo;
 	}
 
 	m_pMapToolManager->Make_MapObject(EMapObject_Type::STATICMODEL,&tStaticModelDesc,false);

@@ -62,16 +62,16 @@ NLOHMANN_JSON_SERIALIZE_ENUM(EMapObject_Type,
 #pragma endregion
 #pragma region Using Material 
 
-typedef struct tagUsingMaterialInfo
+typedef struct tagOverrideMaterials
 {
 	bool	isNull{ true };
 
-	/* 참조하고 있는 Origin Mrt Material Json 파일 Path 값 */
-	wstring wstrOriginMtl_JsonFile_Name{};
-	wstring wstrOriginMtl_JsonFile_Path{};
+	/* Override 할때 참조하고 있는 파일 Path 값 */
+	wstring wstrMtl_JsonFile_Name{};
+	wstring wstrMtl_JsonFile_Path{};
 	/* 그 안에서 뜯어낸 Texutre 바인딩 이름 : Texutre 경로 [ 메테리얼 Json 경로에 꽃아줄 이름 ] */
 	vector < std::pair<wstring, wstring>> vecUsingTextureInfo{};
-}USING_MATERIAL_INFO;
+}OVERRIDE_MATERIALS;
 #pragma endregion
 #pragma region Using Model
 typedef struct tagUsingModelInfo
@@ -82,7 +82,7 @@ typedef struct tagUsingModelInfo
 	/* 모델이 생성되고 난 이후에 저장되는 메테리얼 경로 */
 	wstring wstrMtl_JsonFile_Path{};
 
-	vector<USING_MATERIAL_INFO> vecMaterialInfo{};
+	vector<OVERRIDE_MATERIALS> vecOverrideMaterial{};
 public:
 
 }USING_MODEL_INFO;
@@ -121,9 +121,9 @@ inline void from_json(const json& LoadJson, SRT_DATA& tdata);
 
 #pragma region Using Material 
 
-void from_json(const json& LoadJson, USING_MATERIAL_INFO& tData);
+void from_json(const json& LoadJson, OVERRIDE_MATERIALS& tData);
 
-void to_json(json& SaveJson, const USING_MATERIAL_INFO& tData);
+void to_json(json& SaveJson, const OVERRIDE_MATERIALS& tData);
 
 #pragma endregion
 

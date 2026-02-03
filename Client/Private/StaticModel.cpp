@@ -75,7 +75,7 @@ HRESULT CStaticModel::Change_OverrideMtl(STATICMODEL_DESC* pDesc)
 	if (pDesc == nullptr) return E_FAIL;
 
 	/* 없으면 리턴 */
-	if (pDesc->tUsingModelInfo.vecMaterialInfo.empty()) return S_OK;
+	if (pDesc->tUsingModelInfo.vecOverrideMaterial.empty()) return S_OK;
 
 	CModel* pModel = CGameObject::Get_Component<CModel>();
 	if (pModel == nullptr) return E_FAIL;

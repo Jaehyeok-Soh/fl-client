@@ -103,9 +103,6 @@
     <Filter Include="02. GameObjects\Map\00. MapObject\00. MapObject">
       <UniqueIdentifier>{cdb92401-9c8e-484e-b963-3905e522a34c}</UniqueIdentifier>
     </Filter>
-    <Filter Include="02. GameObjects\Map\00. MapObject\01. StaticMesh">
-      <UniqueIdentifier>{2cfbf0d2-bd5d-4728-87d5-d2bb19dfb549}</UniqueIdentifier>
-    </Filter>
     <Filter Include="06. ImGui\01. Panel\Map\Panel_MapObjectList">
       <UniqueIdentifier>{9755e817-fb8d-4b80-9214-161ecfd0e6ce}</UniqueIdentifier>
     </Filter>
@@ -246,6 +243,12 @@
     </Filter>
     <Filter Include="09. Builder\Map">
       <UniqueIdentifier>{316c30da-42c6-486a-bbfd-7736152fabec}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02. GameObjects\Map\00. MapObject\01. StaticModel">
+      <UniqueIdentifier>{2cfbf0d2-bd5d-4728-87d5-d2bb19dfb549}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02. GameObjects\Map\00. MapObject\02. InstanceModel">
+      <UniqueIdentifier>{32494c10-0bf8-420f-a857-a2d263860bfa}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
@@ -397,7 +400,7 @@
       <Filter>02. GameObjects\Map\00. MapObject\00. MapObject</Filter>
     </ClInclude>
     <ClInclude Include="..\Public\StaticModel.h">
-      <Filter>02. GameObjects\Map\00. MapObject\01. StaticMesh</Filter>
+      <Filter>02. GameObjects\Map\00. MapObject\01. StaticModel</Filter>
     </ClInclude>
     <ClInclude Include="..\Public\CParticle_System_Panel.h">
       <Filter>03. Level\Effect\Effect_Panel\Particle_System_Panel</Filter>
@@ -500,6 +503,9 @@
     </ClInclude>
     <ClInclude Include="..\Public\Builder_Map.h">
       <Filter>09. Builder\Map</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\InstanceModel.h">
+      <Filter>02. GameObjects\Map\00. MapObject\02. InstanceModel</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -646,7 +652,7 @@
       <Filter>02. GameObjects\Map\00. MapObject\00. MapObject</Filter>
     </ClCompile>
     <ClCompile Include="..\Private\StaticModel.cpp">
-      <Filter>02. GameObjects\Map\00. MapObject\01. StaticMesh</Filter>
+      <Filter>02. GameObjects\Map\00. MapObject\01. StaticModel</Filter>
     </ClCompile>
     <ClCompile Include="..\Private\Panel_MapDataController.cpp">
       <Filter>06. ImGui\01. Panel\Map\Panel_MapDataControler</Filter>
@@ -734,6 +740,9 @@
     </ClCompile>
     <ClCompile Include="..\Private\Builder_Map.cpp">
       <Filter>09. Builder\Map</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\InstanceModel.cpp">
+      <Filter>02. GameObjects\Map\00. MapObject\02. InstanceModel</Filter>
     </ClCompile>
   </ItemGroup>
 </Project>
