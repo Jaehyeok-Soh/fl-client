@@ -57,7 +57,7 @@ void CStateBase_Player::Update(const _float fTimeDelta)
 
 	msg += L" / AniIdx: ";
 	msg += std::to_wstring(m_iMainAnimIdx);
-	SetWindowText(g_hWnd, msg.c_str());
+	//SetWindowText(g_hWnd, msg.c_str());
 #endif
 
 	Super::Update(fTimeDelta);

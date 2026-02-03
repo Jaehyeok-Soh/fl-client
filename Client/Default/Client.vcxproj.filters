@@ -178,6 +178,12 @@
     <Filter Include="07. System\01. Builder\EffectBuilder">
       <UniqueIdentifier>{0a51c3b4-11ce-445a-904c-410b2a5ef809}</UniqueIdentifier>
     </Filter>
+    <Filter Include="06. FSM\Player\Attack">
+      <UniqueIdentifier>{7ebbc28f-6b61-485b-b6e8-1bfe363c2de3}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="06. FSM\Player\Attack\Melee">
+      <UniqueIdentifier>{2b993293-fadd-49b9-88a4-fc11e29bf8ae}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="targetver.h">

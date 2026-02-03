@@ -1,4 +1,6 @@
 #include "pch.h"
+#include "MainPlayer.h"
+
 #include "Model.h"
 #include "CameraMan.h"
 #include "Collider.h"
@@ -15,14 +17,17 @@
 #include "Camera.h"
 #include "ColliderPart.h"
 #include "PhysicsCCT.h"
-#include "GameInstance.h"
+
+#include "StateBase_Player.h"
+
 #pragma region State
 #include "State_Combo_First.h"
 #include "State_Combo_Second.h"
 #include "State_Combo_Third.h"
 #include "State_Combo_Fourth.h"
 #pragma endregion
-#include "MainPlayer.h"
+#include "GameInstance.h"
+
 
 CMainPlayer::CMainPlayer(ID3D11Device* pDevice, ID3D11DeviceContext* pDeviceContext)
     : Super(pDevice, pDeviceContext)
@@ -153,6 +158,8 @@ void CMainPlayer::OnCollision_Enter(_uint iMyColliderLayer, CCollider* pOther)
 
 void CMainPlayer::OnCollision_Exit(_uint iMyColliderLayer, CCollider* pOther)
 {
+    // 만약 바닥과 충돌이 끝났다면
+    //static_cast<CStateBase_Player*>(Get_Component<CPlayerActionState>()->Get_CurrentState())->Change_State(CStateBase_Player::STATEKEY::LOOPDONE);
 }
 
 #pragma region Legacy

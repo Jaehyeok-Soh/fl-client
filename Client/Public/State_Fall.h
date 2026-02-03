@@ -18,7 +18,14 @@ public:
 	virtual HRESULT End() override;
 
 private:
+	_float m_fFallTimeAcc = {0.f};
+
+private:
+	void Count_FallTime(const _float fTimeDelta);
+
+private:
 	virtual void OwnMove(const _float fTimeDelta) override;
+	virtual void Set_NextStateDesc(_uint iNextState) override;
 
 public:
 	static CState_Fall* Create(CActionState* pOwnerComponent, void* pArg = nullptr);
