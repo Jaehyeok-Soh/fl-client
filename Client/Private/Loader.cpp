@@ -274,8 +274,8 @@ HRESULT CLoader::Loading_For_Logo()
 	// For. Prototype_GameObject_Physics_Terrain
 	m_pGameInstance->Add_Prototype(ENUM_TO_UINT(ELevelType::STATIC), L"Prototype_GameObject_Physics_Terrain", CPhysics_Terrain::Create(m_pDevice, m_pDeviceContext));
 
-	// For. Prototype_GameObject_Physics_Terrain
-	m_pGameInstance->Add_Prototype(ENUM_TO_UINT(ELevelType::STATIC), L"Prototype_GameObject_Physics_LandScape", CPhysics_LandScape::Create(m_pDevice, m_pDeviceContext));
+	//// For. Prototype_GameObject_Physics_Terrain
+	//m_pGameInstance->Add_Prototype(ENUM_TO_UINT(ELevelType::STATIC), L"Prototype_GameObject_Physics_LandScape", CPhysics_LandScape::Create(m_pDevice, m_pDeviceContext));
 
 	// 2.1 소재혁 : test // 맵 클라이언트 파싱 기능과 연동 예정 추후 코드 삭제
 	// For. Prototype_Component_Physics_Collider_{modelName}

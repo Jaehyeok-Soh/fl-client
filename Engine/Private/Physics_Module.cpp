@@ -234,6 +234,11 @@ PxCollection* CPhysics_Module::SerializeConvexMesh(std::filesystem::path path)
 	return nullptr;
 }
 
+void CPhysics_Module::RegisterPhysicsMesh(_uint levelIndex, _wstring prototypeTag)
+{
+	m_pResourceManager->RegisterPhysicsMesh(levelIndex, prototypeTag);
+}
+
 vector<PxShape*> CPhysics_Module::GetShape(PHYSICSCOLLIDER_DESC* pDesc)
 {
 	return m_pShapeFactory->GetShape(pDesc);
