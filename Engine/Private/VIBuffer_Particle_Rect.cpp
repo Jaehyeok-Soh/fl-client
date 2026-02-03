@@ -98,38 +98,38 @@ HRESULT CVIBuffer_Particle_Rect::Initialize_Prototype(void* pArg)
 #pragma endregion
 
 
-#pragma region INSTANCE_BUFFER
-
-    m_InstanceBufferDesc.ByteWidth = m_iInstanceCount * m_iInstanceVertexStride;
-    m_InstanceBufferDesc.Usage = D3D11_USAGE_DYNAMIC;
-    m_InstanceBufferDesc.BindFlags = D3D11_BIND_VERTEX_BUFFER;
-    m_InstanceBufferDesc.CPUAccessFlags = D3D11_CPU_ACCESS_WRITE;
-    m_InstanceBufferDesc.MiscFlags = 0;
-    m_InstanceBufferDesc.StructureByteStride = m_iInstanceVertexStride;
-
-    m_pInstanceVertices = new VTXPARTICLE[m_iInstanceCount];
-    ZeroMemory(m_pInstanceVertices, sizeof(VTXPARTICLE) * m_iInstanceCount);
-
-    m_pSpeeds = new _float[m_iInstanceCount];
-    ZeroMemory(m_pSpeeds, sizeof(_float) * m_iInstanceCount);
-
-    for (size_t i = 0; i < m_iInstanceCount; i++)
-    {
-        _float      fScale = m_pGameInstance->Rand_Float(pParticleDesc->vSize.x, pParticleDesc->vSize.y);
-        m_pSpeeds[i] = m_pGameInstance->Rand_Float(pParticleDesc->vSpeed.x, pParticleDesc->vSpeed.y);
-
-        m_pInstanceVertices[i].vRight = Vec4(fScale, 0.f, 0.f, 0.f);
-        m_pInstanceVertices[i].vUp = Vec4(0.f, fScale, 0.f, 0.f);
-        m_pInstanceVertices[i].vLook = Vec4(0.f, 0.f, fScale, 0.f);
-        m_pInstanceVertices[i].vTranslation = Vec4(
-            m_pGameInstance->Rand_Float(pParticleDesc->vCenter.x - pParticleDesc->vRange.x * 0.5f, pParticleDesc->vCenter.x + pParticleDesc->vRange.x * 0.5f),
-            m_pGameInstance->Rand_Float(pParticleDesc->vCenter.y - pParticleDesc->vRange.y * 0.5f, pParticleDesc->vCenter.y + pParticleDesc->vRange.y * 0.5f),
-            m_pGameInstance->Rand_Float(pParticleDesc->vCenter.z - pParticleDesc->vRange.z * 0.5f, pParticleDesc->vCenter.z + pParticleDesc->vRange.z * 0.5f),
-            1.f
-        );
-
-        m_pInstanceVertices[i].vLifeTime = Vec2(0.f, m_pGameInstance->Rand_Float(pParticleDesc->vLifeTime.x, pParticleDesc->vLifeTime.y));
-    }
+//#pragma region INSTANCE_BUFFER
+//
+//    m_InstanceBufferDesc.ByteWidth = m_iInstanceCount * m_iInstanceVertexStride;
+//    m_InstanceBufferDesc.Usage = D3D11_USAGE_DYNAMIC;
+//    m_InstanceBufferDesc.BindFlags = D3D11_BIND_VERTEX_BUFFER;
+//    m_InstanceBufferDesc.CPUAccessFlags = D3D11_CPU_ACCESS_WRITE;
+//    m_InstanceBufferDesc.MiscFlags = 0;
+//    m_InstanceBufferDesc.StructureByteStride = m_iInstanceVertexStride;
+//
+//    m_pInstanceVertices = new VTXPARTICLE[m_iInstanceCount];
+//    ZeroMemory(m_pInstanceVertices, sizeof(VTXPARTICLE) * m_iInstanceCount);
+//
+//    m_pSpeeds = new _float[m_iInstanceCount];
+//    ZeroMemory(m_pSpeeds, sizeof(_float) * m_iInstanceCount);
+//
+//    for (size_t i = 0; i < m_iInstanceCount; i++)
+//    {
+//        _float      fScale = m_pGameInstance->Rand_Float(pParticleDesc->vSize.x, pParticleDesc->vSize.y);
+//        m_pSpeeds[i] = m_pGameInstance->Rand_Float(pParticleDesc->vSpeed.x, pParticleDesc->vSpeed.y);
+//
+//        m_pInstanceVertices[i].vRight = Vec4(fScale, 0.f, 0.f, 0.f);
+//        m_pInstanceVertices[i].vUp = Vec4(0.f, fScale, 0.f, 0.f);
+//        m_pInstanceVertices[i].vLook = Vec4(0.f, 0.f, fScale, 0.f);
+//        m_pInstanceVertices[i].vTranslation = Vec4(
+//            m_pGameInstance->Rand_Float(pParticleDesc->vCenter.x - pParticleDesc->vRange.x * 0.5f, pParticleDesc->vCenter.x + pParticleDesc->vRange.x * 0.5f),
+//            m_pGameInstance->Rand_Float(pParticleDesc->vCenter.y - pParticleDesc->vRange.y * 0.5f, pParticleDesc->vCenter.y + pParticleDesc->vRange.y * 0.5f),
+//            m_pGameInstance->Rand_Float(pParticleDesc->vCenter.z - pParticleDesc->vRange.z * 0.5f, pParticleDesc->vCenter.z + pParticleDesc->vRange.z * 0.5f),
+//            1.f
+//        );
+//
+//        m_pInstanceVertices[i].vLifeTime = Vec2(0.f, m_pGameInstance->Rand_Float(pParticleDesc->vLifeTime.x, pParticleDesc->vLifeTime.y));
+//    }
 
     Safe_Delete_Array(pVertices);
 #pragma endregion

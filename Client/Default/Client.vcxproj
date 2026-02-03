@@ -302,8 +302,6 @@
     <FxCompile Include="..\..\Shaders\Shader_VtxMesh_SkillEffect.hlsl" />
     <FxCompile Include="..\..\Shaders\Shader_VtxNorTex.hlsl" />
     <FxCompile Include="..\..\Shaders\Shader_VtxPosTex.hlsl" />
-    <FxCompile Include="..\..\Shaders\Shader_VtxPosTex_Particle.hlsl" />
-    <FxCompile Include="..\..\Shaders\Shader_VtxPos_Particle.hlsl" />
     <FxCompile Include="..\..\Shaders\Struct_Defines.hlsl" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />

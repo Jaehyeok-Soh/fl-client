@@ -491,13 +491,7 @@
     <FxCompile Include="..\..\Shaders\Shader_VtxNorTex.hlsl">
       <Filter>04. Shaders</Filter>
     </FxCompile>
-    <FxCompile Include="..\..\Shaders\Shader_VtxPos_Particle.hlsl">
-      <Filter>04. Shaders</Filter>
-    </FxCompile>
     <FxCompile Include="..\..\Shaders\Shader_VtxPosTex.hlsl">
-      <Filter>04. Shaders</Filter>
-    </FxCompile>
-    <FxCompile Include="..\..\Shaders\Shader_VtxPosTex_Particle.hlsl">
       <Filter>04. Shaders</Filter>
     </FxCompile>
     <FxCompile Include="..\..\Shaders\Animation_Defines.hlsl">

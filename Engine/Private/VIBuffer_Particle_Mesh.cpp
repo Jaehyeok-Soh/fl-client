@@ -3,6 +3,8 @@
 #include "GameInstance.h"
 #include "Model.h"
 #include "Mesh.h"
+#include "GameObject.h"
+#include "Shader.h"
 
 CVIBuffer_Particle_Mesh::CVIBuffer_Particle_Mesh(ID3D11Device* pDevice, ID3D11DeviceContext* pDeviceContext)
 	: Super(pDevice, pDeviceContext)
@@ -31,6 +33,7 @@ HRESULT CVIBuffer_Particle_Mesh::Initialize(void* pArg)
 	m_eIndexFormat = m_iIndexStride == 2 ? DXGI_FORMAT::DXGI_FORMAT_R16_UINT : DXGI_FORMAT::DXGI_FORMAT_R32_UINT;
 	m_iVertexBufferCount = 2;
 
+	Set_Owner(pDesc->pOwner);
 	CModel* pModel = pDesc->_Model;
 	if (!pModel) return E_FAIL;
 
@@ -108,37 +111,57 @@ HRESULT CVIBuffer_Particle_Mesh::Initialize(void* pArg)
 		}
 		Safe_Release(pIBStagingBuffer);
 	}
+#pragma region INSTANCE_BUFFER
 
-#pragma region INSTANCE BUFFER
-	
-	m_InstanceBufferDesc.ByteWidth = m_iInstanceCount * m_iInstanceVertexStride;
-	m_InstanceBufferDesc.Usage = D3D11_USAGE_DYNAMIC;
-	m_InstanceBufferDesc.BindFlags = D3D11_BIND_VERTEX_BUFFER;
-	m_InstanceBufferDesc.CPUAccessFlags = D3D11_CPU_ACCESS_WRITE;
-	m_InstanceBufferDesc.MiscFlags = 0;
-	m_InstanceBufferDesc.StructureByteStride = m_iInstanceVertexStride;
-
-	// 인스턴스 갯수만큼 Speed 배열 할당
-	m_pSpeeds = new _float[m_iInstanceCount];
 	m_pInstanceVertices = new VTXPARTICLE[m_iInstanceCount];
 
 	for (size_t i = 0; i < m_iInstanceCount; i++)
 	{
-		_float      fScale = m_pGameInstance->Rand_Float(pDesc->vSize.x, pDesc->vSize.y) * 0.5f;
-		m_pSpeeds[i] = m_pGameInstance->Rand_Float(pDesc->vSpeed.x, pDesc->vSpeed.y);
+		m_pInstanceVertices->vInstanceNumber = (_uint)i;
+	}
 
-		m_pInstanceVertices[i].vRight = Vec4(fScale, 0.f, 0.f, 0.f);
-		m_pInstanceVertices[i].vUp = Vec4(0.f, fScale, 0.f, 0.f);
-		m_pInstanceVertices[i].vLook = Vec4(0.f, 0.f, fScale, 0.f);
-		m_pInstanceVertices[i].vTranslation = Vec4(
+	m_InstanceBufferDesc.ByteWidth = m_iInstanceCount * m_iInstanceVertexStride;
+	m_InstanceBufferDesc.Usage = D3D11_USAGE_DEFAULT; // 초기화용이므로 DEFAULT나 IMMUTABLE
+	m_InstanceBufferDesc.BindFlags = D3D11_BIND_VERTEX_BUFFER;
+	m_InstanceBufferDesc.CPUAccessFlags = 0;
+	m_InstanceBufferDesc.MiscFlags = 0;
+	m_InstanceBufferDesc.StructureByteStride = m_iInstanceVertexStride;
+
+	D3D11_SUBRESOURCE_DATA InstanceInitialData{};
+	InstanceInitialData.pSysMem = m_pInstanceVertices;
+
+	if (FAILED(m_pDevice->CreateBuffer(&m_InstanceBufferDesc, &InstanceInitialData, &m_pVBInstance)))
+		return E_FAIL;
+
+#pragma endregion 
+
+#pragma region COMPUTE_SHADER
+	EFFECT_PARTICLE_IMMU_ELEMENT* pInitialData = new EFFECT_PARTICLE_IMMU_ELEMENT[m_iInstanceCount];
+
+	for (size_t i = 0; i < m_iInstanceCount; i++)
+	{
+		_float      fScale = m_pGameInstance->Rand_Float(pDesc->vSize.x, pDesc->vSize.y) * 0.5f;
+
+		pInitialData[i].fSpeed = m_pGameInstance->Rand_Float(pDesc->vSpeed.x, pDesc->vSpeed.y);
+		pInitialData[i].vParticle_LifeTime = Vec2(0.f, m_pGameInstance->Rand_Float(pDesc->vLifeTime.x, pDesc->vLifeTime.y));
+		pInitialData[i].vRight = Vec4(fScale, 0.f, 0.f, 0.f);
+		pInitialData[i].vUp = Vec4(0.f, fScale, 0.f, 0.f);
+		pInitialData[i].vLook = Vec4(0.f, 0.f, fScale, 0.f);
+		pInitialData[i].vTranslation = Vec4(
 			m_pGameInstance->Rand_Float(pDesc->vCenter.x - pDesc->vRange.x * 0.5f, pDesc->vCenter.x + pDesc->vRange.x * 0.5f),
 			m_pGameInstance->Rand_Float(pDesc->vCenter.y - pDesc->vRange.y * 0.5f, pDesc->vCenter.y + pDesc->vRange.y * 0.5f),
 			m_pGameInstance->Rand_Float(pDesc->vCenter.z - pDesc->vRange.z * 0.5f, pDesc->vCenter.z + pDesc->vRange.z * 0.5f),
 			1.f
 		);
-
-		m_pInstanceVertices[i].vLifeTime = Vec2(0.f, m_pGameInstance->Rand_Float(pDesc->vLifeTime.x, pDesc->vLifeTime.y));
+		pInitialData[i].vParticle_OriginMatrix = Matrix(pInitialData->vRight, pInitialData->vUp, pInitialData->vLook, pInitialData->vTranslation);
 	}
+	CShader* pShader = pDesc->pComputeShader;
+	if (pShader == nullptr)
+	{
+		MSG_BOX("VIBUFFER_PARTICLE_POINT : Can't Bind Effect Compute Data : ERROR SHADER NULLPTR");
+		return E_FAIL;
+	}
+	pShader->Bind_Compute_EffectData(pInitialData, m_iInstanceCount);
 
 #pragma endregion
 
@@ -218,7 +241,7 @@ HRESULT CVIBuffer_Particle_Mesh::Resize_InstanceBuffer(_uint iNumInstanceCount)
 			return E_FAIL;
 
 		m_pDeviceContext->CopyResource(pIBStagingBuffer, pOriginalIB);
-
+		
 		D3D11_MAPPED_SUBRESOURCE IBMappedResource{};
 		if (SUCCEEDED(m_pDeviceContext->Map(pIBStagingBuffer, 0, D3D11_MAP_READ, 0, &IBMappedResource)))
 		{
@@ -251,50 +274,59 @@ HRESULT CVIBuffer_Particle_Mesh::Resize_InstanceBuffer(_uint iNumInstanceCount)
 	m_InstanceBufferDesc.StructureByteStride = m_iInstanceVertexStride;
 
 	// 인스턴스 갯수만큼 Speed 배열 할당
-	m_pSpeeds = new _float[m_iInstanceCount];
+	//m_pSpeeds = new _float[m_iInstanceCount];
 	m_pInstanceVertices = new VTXPARTICLE[m_iInstanceCount];
 
-	if (m_tParticleDesc.isRandomSeed == false)
+#pragma region INSTANCE_BUFFER
+
+	for (size_t i = 0; i < m_iInstanceCount; i++)
 	{
-		for (size_t i = 0; i < m_iInstanceCount; i++)
-		{
-			_float      fScale = m_tParticleDesc.vSize.y * 0.5f;
-			m_pSpeeds[i] = m_tParticleDesc.vSpeed.y;
-
-			m_pInstanceVertices[i].vRight = Vec4(fScale, 0.f, 0.f, 0.f);
-			m_pInstanceVertices[i].vUp = Vec4(0.f, fScale, 0.f, 0.f);
-			m_pInstanceVertices[i].vLook = Vec4(0.f, 0.f, fScale, 0.f);
-			m_pInstanceVertices[i].vTranslation = Vec4(
-				m_tParticleDesc.vCenter.x,
-				m_tParticleDesc.vCenter.y,
-				m_tParticleDesc.vCenter.z,
-				1.f
-			);
-
-			m_pInstanceVertices[i].vLifeTime = Vec2(0.f, m_tParticleDesc.vLifeTime.y);
-		}
+		m_pInstanceVertices->vInstanceNumber = (_uint)i;
 	}
+#pragma endregion 
 
-	else
-	{
-		for (size_t i = 0; i < m_iInstanceCount; i++)
-		{
-			_float      fScale = m_pGameInstance->Rand_Float(m_tParticleDesc.vSize.x, m_tParticleDesc.vSize.y) * 0.5f;
-			m_pSpeeds[i] = m_pGameInstance->Rand_Float(m_tParticleDesc.vSpeed.x, m_tParticleDesc.vSpeed.y);
 
-			m_pInstanceVertices[i].vRight = Vec4(fScale, 0.f, 0.f, 0.f);
-			m_pInstanceVertices[i].vUp = Vec4(0.f, fScale, 0.f, 0.f);
-			m_pInstanceVertices[i].vLook = Vec4(0.f, 0.f, fScale, 0.f);
-			m_pInstanceVertices[i].vTranslation = Vec4(
-				m_pGameInstance->Rand_Float(m_tParticleDesc.vCenter.x - m_tParticleDesc.vRange.x * 0.5f, m_tParticleDesc.vCenter.x + m_tParticleDesc.vRange.x * 0.5f),
-				m_pGameInstance->Rand_Float(m_tParticleDesc.vCenter.y - m_tParticleDesc.vRange.y * 0.5f, m_tParticleDesc.vCenter.y + m_tParticleDesc.vRange.y * 0.5f),
-				m_pGameInstance->Rand_Float(m_tParticleDesc.vCenter.z - m_tParticleDesc.vRange.z * 0.5f, m_tParticleDesc.vCenter.z + m_tParticleDesc.vRange.z * 0.5f),
-				1.f
-			);
+	//if (m_tParticleDesc.isRandomSeed == false)
+	//{
+	//	for (size_t i = 0; i < m_iInstanceCount; i++)
+	//	{
+	//		_float      fScale = m_tParticleDesc.vSize.y * 0.5f;
+	//		m_pSpeeds[i] = m_tParticleDesc.vSpeed.y;
 
-			m_pInstanceVertices[i].vLifeTime = Vec2(0.f, m_pGameInstance->Rand_Float(m_tParticleDesc.vLifeTime.x, m_tParticleDesc.vLifeTime.y));
-		}
-	}
+	//		m_pInstanceVertices[i].vRight = Vec4(fScale, 0.f, 0.f, 0.f);
+	//		m_pInstanceVertices[i].vUp = Vec4(0.f, fScale, 0.f, 0.f);
+	//		m_pInstanceVertices[i].vLook = Vec4(0.f, 0.f, fScale, 0.f);
+	//		m_pInstanceVertices[i].vTranslation = Vec4(
+	//			m_tParticleDesc.vCenter.x,
+	//			m_tParticleDesc.vCenter.y,
+	//			m_tParticleDesc.vCenter.z,
+	//			1.f
+	//		);
+
+	//		m_pInstanceVertices[i].vLifeTime = Vec2(0.f, m_tParticleDesc.vLifeTime.y);
+	//	}
+	//}
+
+	//else
+	//{
+	//	for (size_t i = 0; i < m_iInstanceCount; i++)
+	//	{
+	//		_float      fScale = m_pGameInstance->Rand_Float(m_tParticleDesc.vSize.x, m_tParticleDesc.vSize.y) * 0.5f;
+	//		m_pSpeeds[i] = m_pGameInstance->Rand_Float(m_tParticleDesc.vSpeed.x, m_tParticleDesc.vSpeed.y);
+
+	//		m_pInstanceVertices[i].vRight = Vec4(fScale, 0.f, 0.f, 0.f);
+	//		m_pInstanceVertices[i].vUp = Vec4(0.f, fScale, 0.f, 0.f);
+	//		m_pInstanceVertices[i].vLook = Vec4(0.f, 0.f, fScale, 0.f);
+	//		m_pInstanceVertices[i].vTranslation = Vec4(
+	//			m_pGameInstance->Rand_Float(m_tParticleDesc.vCenter.x - m_tParticleDesc.vRange.x * 0.5f, m_tParticleDesc.vCenter.x + m_tParticleDesc.vRange.x * 0.5f),
+	//			m_pGameInstance->Rand_Float(m_tParticleDesc.vCenter.y - m_tParticleDesc.vRange.y * 0.5f, m_tParticleDesc.vCenter.y + m_tParticleDesc.vRange.y * 0.5f),
+	//			m_pGameInstance->Rand_Float(m_tParticleDesc.vCenter.z - m_tParticleDesc.vRange.z * 0.5f, m_tParticleDesc.vCenter.z + m_tParticleDesc.vRange.z * 0.5f),
+	//			1.f
+	//		);
+
+	//		m_pInstanceVertices[i].vLifeTime = Vec2(0.f, m_pGameInstance->Rand_Float(m_tParticleDesc.vLifeTime.x, m_tParticleDesc.vLifeTime.y));
+	//	}
+	//}
 #pragma endregion
 
 	D3D11_SUBRESOURCE_DATA InstanceInitialData{};

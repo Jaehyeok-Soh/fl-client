@@ -158,7 +158,7 @@ public:
         _float              _Effect_LifeTime = { 5.f };
         _float              _Effect_PlayBackSpeed = { 1.f };
         _float              _Effect_StartSpeed = { 1.f };   // Particle에 영향을 주는 스피드 [개별 배속]
-        int                 _Effect_MaxParticle = { 100 };
+        int                 _Effect_MaxParticle = { 30 };
 
         // ========  이펙트 Radius  ==========
         Vec3                _Effect_Range = { 1.f, 1.f, 1.f };
@@ -268,6 +268,7 @@ private:
     //  ========== 현재 이펙트 sprite Number  ===========
 private:
     _bool              m_bIsTool = { false };
+    class CShader*     m_pComputeShader = { nullptr };
 };
 
 NS_END

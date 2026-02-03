@@ -59,18 +59,21 @@ struct VS_IN_POS_TEX_PARTICLE
     float3 vPosition : POSITION;
     float2 vUV : TEXCOORD0;
     
-    float4 vRight : TEXCOORD1;
-    float4 vUp : TEXCOORD2;
-    float4 vLook : TEXCOORD3;
-    float4 vTranslation : TEXCOORD4;
-    float2 vLifeTime : TEXCOORD5;
+    //float4 vRight : TEXCOORD1;
+    //float4 vUp : TEXCOORD2;
+    //float4 vLook : TEXCOORD3;
+    //float4 vTranslation : TEXCOORD4;
+    //float2 vLifeTime : TEXCOORD5;
 };
 
 struct VS_IN_POS_GS_PARTICLE
 {
     float3 vPosition : POSITION;
-    row_major float4x4 matTransform : WORLD;
-    float2 vLifeTime : TEXCOORD0;
+    //row_major float4x4 matTransform : WORLD;
+    //float2 vLifeTime : TEXCOORD0;
+    
+    // slot 1
+    uint vInstID : TEXCOORD0;
 };
 
 struct VS_IN_INST_MESH_PARTICLE
@@ -82,9 +85,9 @@ struct VS_IN_INST_MESH_PARTICLE
     float3 vBinormal : BINORMAL;
     float2 vUV : TEXCOORD0;
     
-    // Slot 1
-    row_major float4x4 matTransform : WORLD;
-    float2 vLifeTime : TEXCOORD1;
+    //// Slot 1
+    //row_major float4x4 matTransform : WORLD;
+    uint   vInstID : TEXCOORD1;
 };
 
 //////////////////
@@ -320,4 +323,13 @@ struct PS_OUT_BACKBUFFER
     float4 vColor : SV_TARGET0;
 };
 
+////////////////////
+// Compute Shader//
+//////////////////
+
+struct VTXPARTICLE
+{
+    row_major float4x4 matTransform;
+    float2 vLifeTime;
+};
 #endif

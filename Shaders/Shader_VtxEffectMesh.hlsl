@@ -13,7 +13,6 @@
 
 texture2D g_EffectTexture;
 
-
 // Render Flag
 #define BILLBOARD 1 << 0
 #define SCROLL 1 << 1
@@ -74,6 +73,10 @@ struct EffectDesc
     float4 g_EffectColor;
 };
 
+// ========== StruturedBuffer Binding value  ===========  (CS Shader에서 계산해서 넘어온 값.)
+StructuredBuffer<VTXPARTICLE> INSTANCE_OUTPUT;
+
+// ========== ConstantBuffer Binding value  ===========
 cbuffer ConstantBuffer_Effect
 {
     EffectDesc g_Effect;
@@ -290,13 +293,15 @@ float4 SceneTextureSample(float2 UV)
     return g_RenderTargetSceneTexture.Sample(LinearSampler, UV);
 }
 
+
+
 // =========== VS In  ==============
 
 VS_OUT_INST_MESH_PARTICLE VS_DEFAULT(VS_IN_INST_MESH_PARTICLE In)
 {
     VS_OUT_INST_MESH_PARTICLE Out;
 
-    float4 vWorldPos = mul(float4(In.vPosition, 1.f), In.matTransform);
+    float4 vWorldPos = mul(float4(In.vPosition, 1.f), INSTANCE_OUTPUT[In.vInstID].matTransform);
     vWorldPos = mul(float4(vWorldPos), W);
     float4 vViewPos = mul(vWorldPos, V);
     Out.vPosition = mul(vViewPos, P);
@@ -304,14 +309,14 @@ VS_OUT_INST_MESH_PARTICLE VS_DEFAULT(VS_IN_INST_MESH_PARTICLE In)
     Out.vWorldPos = vWorldPos;
     Out.vProjPos = Out.vPosition;
     
-    Out.vNormal = normalize(mul(In.vNormal, (float3x3) In.matTransform));
-    Out.vTangent = normalize(mul(In.vTangent, (float3x3) In.matTransform));
-    Out.vBinormal = normalize(mul(In.vBinormal, (float3x3) In.matTransform));
+    Out.vNormal = normalize(mul(In.vNormal, (float3x3) INSTANCE_OUTPUT[In.vInstID].matTransform));
+    Out.vTangent = normalize(mul(In.vTangent, (float3x3) INSTANCE_OUTPUT[In.vInstID].matTransform));
+    Out.vBinormal = normalize(mul(In.vBinormal, (float3x3) INSTANCE_OUTPUT[In.vInstID].matTransform));
     
     Out.vUV = In.vUV;
     
-    Out.vPSize = float2(length(In.matTransform[0].xyz), length(In.matTransform[1].xyz));
-    Out.vLifeTime = In.vLifeTime;
+    Out.vPSize = float2(length(INSTANCE_OUTPUT[In.vInstID].matTransform[0].xyz), length(INSTANCE_OUTPUT[In.vInstID].matTransform[1].xyz));
+    Out.vLifeTime = INSTANCE_OUTPUT[In.vInstID].vLifeTime;
     
     return Out;
 }
