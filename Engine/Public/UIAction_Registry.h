@@ -7,7 +7,6 @@ class IUIActionForMe;
 
 class ENGINE_DLL CUIAction_Registry final : public CBase
 {
-	DECLARE_SINGLETON(CUIAction_Registry)
 	using Super = CBase;
 public:
 	using ActionFunc = std::function<void(IUIActionForMe*)>;
@@ -23,13 +22,13 @@ private:
 public:
 	void Register_Factory(const _string& strActionName, FactoryFunc factory);
 	ActionFunc Build_Action(const _string& strActionName, const json& params) const;
-
 	void Clear();
 
 private:
 	std::map< _string , FactoryFunc > m_Factories;
 
 public:
+	static CUIAction_Registry* Create();
 	virtual void Free() override;
 };
 

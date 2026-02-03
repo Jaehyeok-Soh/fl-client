@@ -52,6 +52,7 @@ public:
 
 private:
 	HRESULT Ready_Components(TOOLUI_DESC* pDesc);
+	HRESULT Excute_Action(DTO::EUIEvent EventType);
 	HRESULT Bind_ShaderResources();
 
 	/* Rect Transform Type에 따라 Pos를 옮기고 RenderPos 저장해둠 */
@@ -83,7 +84,6 @@ public:
 	void Set_HitTest() { m_isHitTest = TRUE; };
 	CMonoBehaviour* Safe_Access_ScriptComponent(EUIComponentType eType);
 	const DTO::TUI_GenericUIData& Get_Data()const { return m_tUIData; }
-	CToolUI* Get_Self() { return this; }
 	DTO::TUI_GenericUIData& Get_Data_Ref() { return m_tUIData; }
 #pragma endregion
 
@@ -108,10 +108,10 @@ private:
 	RECT m_tRenderRect = {};
 	_bool m_isHitTest = { FALSE };
 
+
+
 	vector<EUIComponentType> m_vecUIComponentTypes;
-
 	IUIActionForMe* m_pActionForMe = { nullptr };
-
 	/* 액션들을 이벤트 갯수만큼 정적으로 할당 사실상 vector<ActionFunc>[] 이거임 */
 	array< vector<ActionFunc> , ENUM_TO_UINT(DTO::EUIEvent::END)> m_vecBindingActions;
 

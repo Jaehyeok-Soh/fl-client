@@ -298,16 +298,16 @@
     <Filter Include="00. System\05. Component\PhysicsCCT">
       <UniqueIdentifier>{20045528-a719-46f9-8133-abf66bb4da37}</UniqueIdentifier>
     </Filter>
-    <Filter Include="01. Utility\16.User Interface">
+    <Filter Include="00. System\04. GameObject\UIObject\Interface">
       <UniqueIdentifier>{627899fc-d0d1-4a99-ac65-dcf99cb32737}</UniqueIdentifier>
     </Filter>
-    <Filter Include="01. Utility\16.User Interface\Action For Me">
+    <Filter Include="00. System\04. GameObject\UIObject\Interface\Action For Me">
       <UniqueIdentifier>{b9ab0a0c-c6af-48ee-891a-d33b6697ebd7}</UniqueIdentifier>
     </Filter>
-    <Filter Include="01. Utility\16.User Interface\Action For Target">
+    <Filter Include="00. System\04. GameObject\UIObject\Interface\Action For Target">
       <UniqueIdentifier>{458e4ee3-ec12-4568-848f-681fb57b8215}</UniqueIdentifier>
     </Filter>
-    <Filter Include="01. Utility\16.User Interface\Registry">
+    <Filter Include="00. System\04. GameObject\UIObject\Registry">
       <UniqueIdentifier>{01d57898-da08-45d1-a15c-f74cab4f144e}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
@@ -642,10 +642,10 @@
     <ClCompile Include="..\private\ThreadWorker.cpp" />
     <ClCompile Include="..\public\ThreadPool.cpp" />
     <ClCompile Include="..\Private\IUIActionForMe.cpp">
-      <Filter>01. Utility\16.User Interface\Action For Me</Filter>
+      <Filter>00. System\04. GameObject\UIObject\Interface\Action For Me</Filter>
     </ClCompile>
     <ClCompile Include="..\Private\UIAction_Registry.cpp">
-      <Filter>01. Utility\16.User Interface\Registry</Filter>
+      <Filter>00. System\04. GameObject\UIObject\Registry</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -1006,10 +1006,10 @@
     <ClInclude Include="..\public\ThreadPool.h" />
     <ClInclude Include="..\public\ThreadWorker.h" />
     <ClInclude Include="..\Public\IUIActionForMe.h">
-      <Filter>01. Utility\16.User Interface\Action For Me</Filter>
+      <Filter>00. System\04. GameObject\UIObject\Interface\Action For Me</Filter>
     </ClInclude>
     <ClInclude Include="..\Public\UIAction_Registry.h">
-      <Filter>01. Utility\16.User Interface\Registry</Filter>
+      <Filter>00. System\04. GameObject\UIObject\Registry</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

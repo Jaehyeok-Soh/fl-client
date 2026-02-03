@@ -23,6 +23,7 @@
 #include "Graphic_Device.h"
 #include "Render_Manager.h"
 #include "Physics_Module.h"
+#include "UIAction_Registry.h"
 
 IMPLEMENT_SINGLETON(CGameInstance)
 
@@ -108,6 +109,9 @@ HRESULT CGameInstance::Initialize_Engine(const ENGINE_DESC& Engine_Desc, _Inout_
 		return E_FAIL;
 
 	if (!(m_pPhysics_Module = CPhysics_Module::Create(*ppDevice, *ppContext)))
+		return E_FAIL;
+
+	if (!(m_pUIAction_Registry = CUIAction_Registry::Create()))
 		return E_FAIL;
 
 	return S_OK;
@@ -849,6 +853,13 @@ PxController* CGameInstance::GetController(PHYSICSCCT_DESC* pDesc)
 }
 #pragma endregion
 
+#pragma region UIACTION_REGISTRY
+CUIAction_Registry* CGameInstance::Get_UIAction_Registry() const
+{ 
+	return m_pUIAction_Registry;
+}
+#pragma endregion
+
 void CGameInstance::Free()
 {
 	Safe_Release(m_pFrustrum);
@@ -868,6 +879,7 @@ void CGameInstance::Free()
 	Safe_Release(m_pGameData_Manager);
 	Safe_Release(m_pPrototype_Manager);
 	Safe_Release(m_pPhysics_Module);
+	Safe_Release(m_pUIAction_Registry);
 	Safe_Release(m_pLevel_Manager);
 	Safe_Release(m_pEvent_Manager);
 	Safe_Release(m_pEventBus_Manager);

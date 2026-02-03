@@ -543,7 +543,7 @@ void CUI_Maker::Make_UI()
 							CButton::BUTTON_DESC BtnComDesc = {};
 							CImage::IMAGE_DESC ImgComDesc = {};
 							CMonoBehaviour* pCom = dynamic_cast<CMonoBehaviour*>(CImage::Create(ImgComDesc));
-							pResult->Add_Script_Component(L"Component_UIBase", pCom);
+							pResult->Add_Script_Component(L"IMAGE", pCom);
 
 							auto* pUI = dynamic_cast<CToolUI*>(pResult);
 							if (nullptr != pUI) {
@@ -554,12 +554,14 @@ void CUI_Maker::Make_UI()
 									MSG_BOX("CUI_Maker::Make_UI, UI Add Failed");
 								}
 
-								auto fnEnter = CUIAction_Registry::GetInstance()->Build_Action(
+								pUI->Add_UIComponentTypes(EUIComponentType::IMAGE);
+
+								auto fnEnter = m_pGameInstance->Get_UIAction_Registry()->Build_Action(
 									"SetTextureIndex", json{ {"Index", 1u} });
 
 								pUI->Bind_Action(DTO::EUIEvent::HOVER_ENTER, std::move(fnEnter));
 
-								auto fnExit = CUIAction_Registry::GetInstance()->Build_Action(
+								auto fnExit = m_pGameInstance->Get_UIAction_Registry()->Build_Action(
 									"SetTextureIndex", json{ {"Index", 2u} });
 
 								pUI->Bind_Action(DTO::EUIEvent::HOVER_EXIT, std::move(fnExit));

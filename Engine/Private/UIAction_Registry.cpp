@@ -2,11 +2,8 @@
 #include "UIAction_Registry.h"
 #include "IUIActionForMe.h"
 
-IMPLEMENT_SINGLETON(CUIAction_Registry)
-
 CUIAction_Registry::CUIAction_Registry()
 {
-	Initialize_CommonAction();
 }
 
 void CUIAction_Registry::Initialize_CommonAction()
@@ -64,6 +61,13 @@ CUIAction_Registry::ActionFunc CUIAction_Registry::Build_Action(const _string& s
 	}
 
 	return iter->second(params);
+}
+
+CUIAction_Registry* CUIAction_Registry::Create()
+{
+	CUIAction_Registry* pInstance = new CUIAction_Registry();
+	pInstance->Initialize_CommonAction();
+	return pInstance;
 }
 
 void CUIAction_Registry::Clear()

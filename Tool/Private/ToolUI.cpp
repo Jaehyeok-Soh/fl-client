@@ -157,13 +157,10 @@ _bool CToolUI::Calc_HitEvent()
 {
 	if (::PtInRect(&m_tRenderRect, CImGui_ToolManager::GetInstance()->Get_CalculatedMousePos_Point()))
 	{
-		for (auto& fn : m_vecBindingActions[ENUM_TO_UINT(DTO::EUIEvent::HOVER_ENTER)])
-			fn(m_pActionForMe);
-		
+		Excute_Action(DTO::EUIEvent::HOVER_ENTER);
 		return TRUE;
 	}
-	for (auto& fn : m_vecBindingActions[ENUM_TO_UINT(DTO::EUIEvent::HOVER_EXIT)])
-		fn(m_pActionForMe);
+	Excute_Action(DTO::EUIEvent::HOVER_EXIT);
 	return FALSE;
 }
 
@@ -201,6 +198,17 @@ HRESULT CToolUI::Ready_Components(TOOLUI_DESC* pDesc)
     if (FAILED(Add_Component<CVIBuffer_Rect_Tex>(0, L"Prototype_Component_VIBuffer_Rect_Tex", pDesc)))
         return E_FAIL;
 
+	return S_OK;
+}
+
+HRESULT CToolUI::Excute_Action(DTO::EUIEvent EventType)
+{
+	size_t index = ENUM_TO_SZET(EventType);
+	if (index >= m_vecBindingActions.size())
+		return E_FAIL;
+
+	for (auto& fn : m_vecBindingActions[index])
+		fn(m_pActionForMe);
 	return S_OK;
 }
 
