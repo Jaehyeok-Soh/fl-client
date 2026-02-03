@@ -61,6 +61,10 @@ void CCameraMan_Targeter::Update(const _float fTimeDelta)
 
 void CCameraMan_Targeter::Update_Late(const _float fTimeDelta)
 {
+    // todo : physic 카메라 충돌시 문제 있을 수 있을수도
+    // 우선 플레이어 움직임 처리 이후에 chase를 하도록 하기 위해서 late로 시점을 내림
+    Chase_Actor(fTimeDelta);
+
     Super::Update_Late(fTimeDelta);
 }
 
@@ -143,7 +147,7 @@ void CCameraMan_Targeter::Normal_Begin()
 
 void CCameraMan_Targeter::Normal_Update_Priority(const _float fDeltaTime)
 {
-    Chase_Actor(fDeltaTime);
+    // Chase_Actor(fDeltaTime);
 }
 
 void CCameraMan_Targeter::Normal_Update(const _float fDeltaTime)
@@ -298,7 +302,7 @@ void CCameraMan_Targeter::Chase_Player(CContainerObject* pPlayer, const _float f
     m_fPitch = std::clamp(m_fPitch_Target, ::XMConvertToRadians(-85.f), ::XMConvertToRadians(85.f));
     m_fYaw = m_fYaw_Target;
 
-    // z축 회전을 제외하고 rotationM을 만들어 look을 만든단
+    // z축 회전을 제외하고 rotationM을 만들어 look을 만든다
     Matrix matRotation = Matrix::CreateFromYawPitchRoll(Vec3(m_fPitch, m_fYaw, 0.f));
     Vec3 vLook = Vec3::TransformNormal(Vec3::Backward, matRotation);
     vLook.Normalize();
