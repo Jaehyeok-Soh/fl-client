@@ -238,20 +238,6 @@ HRESULT CLevel_Logo::Ready_Test_Terrain(const wstring& wstrLayerTag)
 			return E_FAIL;
 	}
 
-	{
-		//CGameObject* pResult = { nullptr };
-		//CPhysics_LandScape::PXLANDSCAPE_DESC pxDesc = {};
-		//CTransform::TRANSFORM_DESC TransformDesc = {};
-		//pxDesc.pTransform_Desc = &TransformDesc;
-		//pxDesc.wstrColliderPrototypeName = L"Prototype_Component_Physics_Collider_total_landScape_4x4";
-
-		//if (!(pResult = m_pGameInstance->Add_GameObject(ENUM_TO_UINT(ELevelType::STATIC),
-		//	L"Prototype_GameObject_Physics_LandScape",
-		//	ENUM_TO_UINT(ELevelType::LOGO),
-		//	wstrLayerTag, &pxDesc)))
-		//	return E_FAIL;
-	}
-
 	return S_OK;
 }
 
