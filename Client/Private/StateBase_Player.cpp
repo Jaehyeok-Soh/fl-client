@@ -44,6 +44,8 @@ HRESULT CStateBase_Player::Start(void* pArg, _bool bForce)
 	if (FAILED(Super::Start(pArg, bForce)))
 		return E_FAIL;
 
+	m_tKeyTimer.fTimeAcc = 0.f;
+
 	return S_OK;
 }
 
@@ -98,8 +100,6 @@ HRESULT CStateBase_Player::End()
 {
 	if (FAILED(Super::End()))
 		return E_FAIL;
-
-	m_tKeyTimer.fTimeAcc = 0.f;
 
 	return S_OK;
 }
