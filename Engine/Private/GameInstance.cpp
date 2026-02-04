@@ -850,9 +850,24 @@ void CGameInstance::RegisterPhysicsMesh(_uint levelIndex, _wstring prototypeTag)
 	m_pPhysics_Module->RegisterPhysicsMesh(levelIndex, prototypeTag);
 }
 
-_bool CGameInstance::HasNegativeScale(Matrix mat)
+_bool CGameInstance::HasNegativeScale(const Matrix& mat)
 {
 	return m_pPhysics_Module->HasNegativeScale(mat);
+}
+
+_int CGameInstance::GetNegativeScaleAxis(const Matrix& mat)
+{
+	return m_pPhysics_Module->GetNegativeScaleAxis(mat);
+}
+
+PxQuat CGameInstance::GetPureRotation(const Matrix& mat)
+{
+	return m_pPhysics_Module->GetPureRotation(mat);
+}
+
+PxVec3 CGameInstance::GetPureScale(const Matrix& mat)
+{
+	return m_pPhysics_Module->GetPureScale(mat);
 }
 
 #ifdef _DEBUG

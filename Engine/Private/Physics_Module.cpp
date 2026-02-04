@@ -210,6 +210,21 @@ _bool CPhysics_Module::HasNegativeScale(Matrix mat)
 	return m_pUtils->HasNegativeScale(mat);
 }
 
+_int CPhysics_Module::GetNegativeScaleAxis(const Matrix& mat)
+{
+	return m_pUtils->GetNegativeScaleAxis(mat);
+}
+
+PxQuat CPhysics_Module::GetPureRotation(Matrix mat)
+{
+	return m_pUtils->GetPureRotation(mat);
+}
+
+PxVec3 CPhysics_Module::GetPureScale(Matrix mat)
+{
+	return m_pUtils->GetPureScale(mat);
+}
+
 #ifdef _DEBUG
 HRESULT CPhysics_Module::Render(PxRigidActor* pActor, XMVECTOR color)
 {

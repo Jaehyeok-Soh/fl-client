@@ -22,7 +22,13 @@ public:
     PxTransform XMMatrixToPxTransform(Matrix mat);
     Matrix PxTransformToXMMatrix(PxTransform pxTransform);
 
-    _bool HasNegativeScale(Matrix mat);
+    _bool HasNegativeScale(const Matrix& mat);
+    _int GetNegativeScaleAxis(const Matrix& mat);
+
+    PxQuat GetPureRotation(const Matrix& mat);
+    PxVec3 GetPureScale(const Matrix& mat);
+
+    Matrix GetUnrealMatrix(const Matrix& mat);
 
 public:
     _bool RayCast();
@@ -50,6 +56,13 @@ private:
     _bool m_bRayHit = { false };
 
     PxMaterial* mtrlEx = { nullptr };
+
+    const Matrix g_UnrealToEngineBasis = Matrix(
+        1.f, 0.f, 0.f, 0.f,
+        0.f, 0.f, -1.f, 0.f,
+        0.f, 1.f, 0.f, 0.f,
+        0.f, 0.f, 0.f, 1.f
+    );
 
 public:
     static CPhysics_Utils* Create(ID3D11Device* pDevice, ID3D11DeviceContext* pContext, PxPhysics* pPhysics, PxScene* pScene);

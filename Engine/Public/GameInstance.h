@@ -291,7 +291,10 @@ public:
 	PxRigidActor* GetActor(PHYSICSRIGIDBODY_DESC* rigidBodyDesc, PHYSICSCOLLIDER_DESC* colliderDesc, vector<PxShape*>& shapes);
 	PxController* GetController(PHYSICSCCT_DESC* pDesc);
 	void RegisterPhysicsMesh(_uint levelIndex, _wstring prototypeTag);
-	_bool HasNegativeScale(Matrix mat);
+	_bool HasNegativeScale(const Matrix& mat);
+	_int GetNegativeScaleAxis(const Matrix& mat);
+	PxQuat GetPureRotation(const Matrix& mat);
+	PxVec3 GetPureScale(const Matrix& mat);
 #ifdef _DEBUG
 	void Physics_Render(PxRigidActor* pActor, XMVECTOR color = DirectX::Colors::White);
 #endif // _DEBUG
