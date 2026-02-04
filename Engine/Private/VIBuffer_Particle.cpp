@@ -98,6 +98,7 @@ void CVIBuffer_Particle::Update_Simulation(CComputeShader* ComputeShader, Vec3 v
 {
 	if (ComputeShader == nullptr) return;
 
+	// 가변 데이터 desc 작성
 	EFFECT_PARTICLE_MU_ELEMENT tMUDesc;
 	tMUDesc.fTimeDelta = fTImeDelta;
 	tMUDesc.iMoveState = ENUM_TO_UINT(eType);
@@ -106,6 +107,7 @@ void CVIBuffer_Particle::Update_Simulation(CComputeShader* ComputeShader, Vec3 v
 	tMUDesc.vLook = vLook;
 	tMUDesc.vPivot = m_tParticleDesc.vPivot;
 	
+	// comshader에 컨스턴트 버퍼를 통해 매 프레임 갱신 : 가변 데이터
 	ComputeShader->Bind_Compute_EffectData(tMUDesc);
 
 	// Compute Shader 실행

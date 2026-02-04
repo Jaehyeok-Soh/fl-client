@@ -25,15 +25,14 @@ class ENGINE_DLL CComputeShader : public CMonoBehaviour
 public:
 	struct Data
 	{
-		string	sBufferName;
-		_uint	iElementSize;
-		_uint	iNumElements;
+		string	sBufferName;	// HLSL 버퍼 이름과 동일하게
+		_uint	iElementSize;	// 구조체 사이즈
+		_uint	iNumElements;	// 바인딩할 구조체 개수 : 뼈 개수
 	};
 
 	typedef struct ComShaderOriginDesc : public CComponent::COMPONENT_DESC
 	{
 		const _tchar* pShaderFilePath = { nullptr };
-		const _char* pEntryPoint = { nullptr };		// shader 내부에서 어떤 함수를 쓸건데
 	}COMSHADER_ORIGIN_DESC;
 
 	typedef struct ComShaderCopyDesc : public CComponent::COMPONENT_DESC
@@ -72,9 +71,6 @@ public:
 	ID3DX11EffectSamplerVariable* Get_Sampler(string name);
 
 public:
-	void	Bind_SRV(_uint iSolt, ID3D11ShaderResourceView* pSRV);
-	void	Bind_UAV(_uint iSolt, ID3D11UnorderedAccessView* pUAV);
-	void	Bind_CB(_uint iSolt, ID3D11Buffer* pCB);
 	void	Dispatch(_uint iX, _uint iY, _uint iZ);
 
 public:

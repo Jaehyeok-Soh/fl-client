@@ -112,6 +112,7 @@ HRESULT CVIBuffer_Particle_Point::Initialize(void* pArg)
 
 
 #pragma region COMPUTE_SHADER
+	// 내가 넣고 싶은 구조체를 채워줌
 	EFFECT_PARTICLE_IMMU_ELEMENT* pInitialData = new EFFECT_PARTICLE_IMMU_ELEMENT[m_iInstanceCount];
 
 	for (size_t i = 0; i < m_iInstanceCount; i++)
@@ -135,12 +136,16 @@ HRESULT CVIBuffer_Particle_Point::Initialize(void* pArg)
 				pInitialData[i].vLook,
 				pInitialData[i].vTranslation);
 	}
+
+	// 구조체를 넘겨 받을 compute shader
 	CComputeShader* pShader = pParticleDesc->pComputeShader;
 	if (pShader == nullptr)
 	{
 		MSG_BOX("VIBUFFER_PARTICLE_POINT : Can't Bind Effect Compute Data : ERROR SHADER NULLPTR");
 		return E_FAIL;
 	}
+
+	// 불변 데이터 바인드
 	pShader->Bind_InputStructuredBuffer_Data(pInitialData, sizeof(EFFECT_PARTICLE_IMMU_ELEMENT), m_iInstanceCount);
 	Safe_Delete_Array(pInitialData);
 #pragma endregion

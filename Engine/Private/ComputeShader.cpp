@@ -61,21 +61,6 @@ HRESULT CComputeShader::Initialize(void* pArg)
 	return S_OK;
 }
 
-void CComputeShader::Bind_SRV(_uint iSolt, ID3D11ShaderResourceView* pSRV)
-{
-	//m_SRVs.push_back({ iSolt, pSRV });
-}
-
-void CComputeShader::Bind_UAV(_uint iSolt, ID3D11UnorderedAccessView* pUAV)
-{
-	//m_UAVs.push_back({ iSolt, pUAV });
-}
-
-void CComputeShader::Bind_CB(_uint iSolt, ID3D11Buffer* pCB)
-{
-	//m_CBs.push_back({ iSolt, pCB });
-}
-
 void CComputeShader::Dispatch(_uint iX, _uint iY, _uint iZ)
 {
 	// GPU <-> GPU 통신은 한쪽이 연결을 끊어줘야 다른쪽 연결도 성공한다.
@@ -320,6 +305,7 @@ HRESULT CComputeShader::Create_StructBuffer(void* pArg)
 			m_pOutputStructedBuffer_UAV->SetUnorderedAccessView(m_pOutputStructedBuffer->Get_UAV());
 		}
 
+		// output 통로 이름
 		if (!Get_SRV(pDesc->Output_SRVBuffer_Name))
 		{
 			MSG_BOX("너님 쉐이더에 OUTPUT Buffer 이름이 그게 아닌뎁쇼");
