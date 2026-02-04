@@ -93,8 +93,9 @@ public:
 	void Bind_KeyFrameData(const SHADER_KEYFRAMEDESC& keyframeDesc);
 
 public:
+	// 컴퓨트 셰이딩용 (사실 최정우용)
 	StructuredBuffer<EFFECT_INSTANCE>* Get_Result_SBuffer() { return m_pEffect_Result_SBuffer; }
-
+	void Resize_Compute_EffectData(_uint count);
 private:
 	HRESULT Load_Shader(const D3D11_INPUT_ELEMENT_DESC* pElements, const _uint iNumElements);
 	void Create_ConstantBuffer();

@@ -8,8 +8,6 @@ NS_END
 
 NS_BEGIN(Tool)
 
-
-
 class CParticle_System_Panel :
     public CImGui_Panel
 {

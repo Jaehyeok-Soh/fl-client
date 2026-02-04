@@ -61,6 +61,7 @@ public:
 	ID3D11UnorderedAccessView** Get_UAV_AddressOf() { return &m_pUAV; }
 
 	HRESULT Copy_Data(const T* data, _uint iCount);
+	HRESULT Resize(_uint iNewNumElements);
 private:
 	ID3D11Device* m_pDevice = { nullptr };
 	ID3D11DeviceContext* m_pDeviceContext = { nullptr };
@@ -173,6 +174,19 @@ inline HRESULT StructuredBuffer<T>::Copy_Data(const T* data, _uint iCount)
 	m_pDeviceContext->UpdateSubresource(m_pBuffer, 0, &destBox, data, 0, 0);
 
 	return S_OK;
+}
+
+template<typename T>
+inline HRESULT StructuredBuffer<T>::Resize(_uint iNewNumElements)
+{
+	if (m_iElementCount == iNewNumElements) return S_OK;
+
+	// 기존 리소스 해제
+	Safe_Release(m_pBuffer);
+	Safe_Release(m_pSRV);
+	Safe_Release(m_pUAV);
+
+	return Initialize(iNewNumElements);
 }
 
 template<typename T>
