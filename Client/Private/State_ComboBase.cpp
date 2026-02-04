@@ -12,7 +12,9 @@ HRESULT CState_ComboBase::Initialize(void* pArg)
 		return E_FAIL;
 
 	PLAYER_COMBOBASE_DESC* pDesc = static_cast<PLAYER_COMBOBASE_DESC*>(pArg);
-	m_vComboTimes = pDesc->vCombo_CheckTimes;
+	m_ComboTimes[0] = pDesc->vCombo_CheckTimes.x;
+	m_ComboTimes[1] = pDesc->vCombo_CheckTimes.y;
+	m_ComboTimes[2] = pDesc->vCombo_CheckTimes.z;
 
 	return S_OK;
 }
@@ -50,15 +52,27 @@ HRESULT CState_ComboBase::End()
 	return S_OK;
 }
 
+void CState_ComboBase::Change_NextCombo()
+{
+	// 다음 콤보 change
+	m_iComboCount++;
+	m_fTimeAcc = 0.f;
+	Request_ChangeAnimation(m_vecMainAnims[m_iComboCount], true, false, true);
+}
+
 void CState_ComboBase::Count_ComboTime(const _float fTimeDelta)
 {
+	// 4번째 일때는 하지 않음
+	if (m_iComboCount == 4)
+		return;
+
 	// key cool time이 다 되었는데 아직 combotime이라면
 	if (m_tKeyTimer.fTimeAcc / m_tKeyTimer.fMaxTime == 1.f &&
 		m_bComboTime)
 	{
 		// comboTime을 카운트 한다
-		m_TComboTime.x += fTimeDelta;
-		if (m_TComboTime.x >= m_TComboTime.y)
+		m_fTimeAcc += fTimeDelta;
+		if (m_fTimeAcc >= m_ComboTimes[m_iComboCount -1])
 		{
 			m_bComboTime = false;
 		}
@@ -72,7 +86,8 @@ void CState_ComboBase::Change_PlayerState(STATEKEY eKey)
 	{
 		if (m_bComboTime)
 		{
-
+			Change_NextCombo();
+			return;
 		}
 	}
 
