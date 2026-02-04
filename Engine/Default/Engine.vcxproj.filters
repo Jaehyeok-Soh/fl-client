@@ -647,7 +647,7 @@
     <ClCompile Include="..\Private\Mesh.cpp">
       <Filter>00. System\07. Resource\Mesh\00. Mesh</Filter>
     </ClCompile>
-    <ClCompile Include="..\Private\InstanceStaticMesh.cpp">
+    <ClCompile Include="..\Private\InstanceMesh.cpp">
       <Filter>00. System\07. Resource\Mesh\01. InstanceMesh</Filter>
     </ClCompile>
   </ItemGroup>
@@ -1014,7 +1014,7 @@
     <ClInclude Include="..\Public\Mesh.h">
       <Filter>00. System\07. Resource\Mesh\00. Mesh</Filter>
     </ClInclude>
-    <ClInclude Include="..\Public\InstanceStaticMesh.h">
+    <ClInclude Include="..\Public\InstanceMesh.h">
       <Filter>00. System\07. Resource\Mesh\01. InstanceMesh</Filter>
     </ClInclude>
   </ItemGroup>

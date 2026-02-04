@@ -180,7 +180,7 @@ typedef struct tagVertexParticleMesh
 }VTXPOS_PARTICLEMESH;
 
 
-typedef struct tagVertexInstanceStaticMesh
+typedef struct tagVertexInstanceMesh
 {
 	static constexpr unsigned int iNumElements = { 9 };
 	static constexpr D3D11_INPUT_ELEMENT_DESC Elements[] =
@@ -198,7 +198,7 @@ typedef struct tagVertexInstanceStaticMesh
 		{ "WORLD", 2, DXGI_FORMAT_R32G32B32A32_FLOAT, 1, D3D11_APPEND_ALIGNED_ELEMENT, D3D11_INPUT_PER_INSTANCE_DATA, 1},
 		{ "WORLD", 3, DXGI_FORMAT_R32G32B32A32_FLOAT, 1, D3D11_APPEND_ALIGNED_ELEMENT, D3D11_INPUT_PER_INSTANCE_DATA, 1},
 	};
-}VTX_INSTANCE_STATICMESH;
+}VTX_INSTANCE_MESH;
 
 
 NS_END

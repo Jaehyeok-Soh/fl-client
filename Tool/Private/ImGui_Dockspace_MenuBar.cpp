@@ -191,7 +191,8 @@ void CImGui_Dockspace_MenuBar::Save_MapData(const wstring& wstrFilePath)
 		return;
 
 	/* 여러개의 layer를 한꺼번에 저장하고 싶다면 Layer Requset ExportData를 집어넣는다 */
-	Request_ExportData(eLevelType, DTO::ECategory::MAP, g_wszStaticModelLayer, pDocument);
+	Request_ExportData(eLevelType, DTO::ECategory::MAP, g_wszStaticModelLayer	, pDocument);
+	Request_ExportData(eLevelType, DTO::ECategory::MAP, g_wszInstanceModelLayer , pDocument);
 
 	m_pGameInstance->Save_File_Json(iLevelID, DTO::ECategory::MAP, wstrFilePath);
 
@@ -261,7 +262,6 @@ void CImGui_Dockspace_MenuBar::Load_MapData(const wstring& wstrFilePath)
 		return;
 
 	m_pBuilderSystem->Build_File(ENUM_TO_UINT(ELevelType::MAP),DTO::ECategory::MAP,path(wstrFilePath).filename().stem().string());
-
 
 	//// 여기까지 성공하면 로드가 된것! 아래 코드는 그냥 테스트용
 	//const CDataDocumentBase* pBase = m_pGameInstance->Get_Document(iLevelID, eCategory,path(wstrFilePath).filename().stem().string());

@@ -21,6 +21,18 @@ HRESULT CData_StaticModel::FromJson(const json& j)
     m_tData = j.get<DTO::STATICMODEL_DATA>();
     return S_OK;
 }
+
+json CData_InstanceModel::ToJson() const
+{
+	return json(m_tData);
+}
+
+HRESULT CData_InstanceModel::FromJson(const json& j)
+{
+	m_tData = j.get<DTO::InstanceModel_Data>();
+	return S_OK;
+}
+
 NS_END
 
 
@@ -53,7 +65,7 @@ void from_json(const json& LoadJson, OVERRIDE_MATERIALS& tData)
 	tData.wstrMtl_JsonFile_Path = Engine_Utils::ToWString(LoadJson.value("Path", ""));
 
 	/* 이게 Emtpy면 json 파일을 못 읽어온것 */
-	if (tData.vecUsingTextureInfo.empty()) return;
+	//if (tData.vecUsingTextureInfo.empty()) return;
 
 	if (LoadJson.contains("Textures"))
 	{
@@ -93,7 +105,7 @@ void from_json(const json& LoadJson, USING_MODEL_INFO& tData)
 	vector<OVERRIDE_MATERIALS>().swap(tData.vecOverrideMaterial);
 
 	/* 키 값이 있다면 Using Material Info */
-	if (LoadJson.contains("Using Mateiral Info"))
+	if (LoadJson.contains("Override Materials"))
 	{
 		auto& MtlJsons = LoadJson["Override Materials"];
 		tData.vecOverrideMaterial.resize(MtlJsons.size());
@@ -131,7 +143,7 @@ void to_json(json& SaveJson, const USING_MODEL_INFO& tData)
 }
 #pragma endregion
 
-#pragma region TMap_StaticModleData
+#pragma region Map_StaticModleData
 void to_json(json& SaveJson, const TMap_StaticModelData& tData)
 {
 	SaveJson = json
@@ -142,21 +154,38 @@ void to_json(json& SaveJson, const TMap_StaticModelData& tData)
 		{ "Using Model Info", tData.tUsingModelInfo}
 	};
 }
-void from_json(const json& LoadJson, TMap_StaticModelData& data)
+void from_json(const json& LoadJson, TMap_StaticModelData& tData)
 {
-	LoadJson.at("strTag").get_to(data.strTag);
+	LoadJson.at("strTag").get_to(tData.strTag);
 	if (LoadJson.contains("SRT"))
-		data.tSRTData = LoadJson["SRT"];
+		tData.tSRTData = LoadJson["SRT"];
 	if (LoadJson.contains("Using Model Info"))
-		data.tUsingModelInfo = LoadJson["Using Model Info"];
+		tData.tUsingModelInfo = LoadJson["Using Model Info"];
 }
 #pragma endregion
 
-void to_json(json& j, const TMap_InstanceModelData& data)
+#pragma region Map InstanceModle
+void to_json(json& SaveJson, const TMap_InstanceModelData& tData)
 {
+	SaveJson = json
+	{
+		{ "Type", tData.eType },
+		{ "strTag", tData.strTag },
+		{ "Usage" , Engine_Utils::D3D11_USAGE_ToString(tData.eInstance_Usage)},
+		{ "SRTs" , tData.vecSRTData},
+		{ "Using Model Info", tData.tUsingModelInfo}
+	};
 }
-void from_json(const json& j, TMap_InstanceModelData& data)
+void from_json(const json& LoadJson, TMap_InstanceModelData& tData)
 {
+	LoadJson.at("strTag").get_to(tData.strTag);
+	if (LoadJson.contains("Usage"))
+		Engine_Utils::D3D11_USAGE_ToEnum(LoadJson["Usage"].get<string>());
+	if (LoadJson.contains("SRTs"))
+		tData.vecSRTData = LoadJson["SRTs"];
+	if (LoadJson.contains("Using Model Info"))
+		tData.tUsingModelInfo = LoadJson["Using Model Info"];
 }
-
+#pragma endregion
 NS_END
+

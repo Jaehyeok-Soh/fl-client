@@ -110,6 +110,7 @@ namespace Tool
 		}
 	}
 #pragma endregion
+
 #pragma region Static Model
 	void from_json(const json& LoadJson, STATICMODEL_DATA& tData)
 	{
@@ -130,5 +131,27 @@ namespace Tool
 	}
 #pragma endregion
 
+#pragma region InstanceModel 
+	void from_json(const json& LoadJson, INSTANCEMODEL_DATA& tData)
+	{
+		if (LoadJson.contains("SRTs"))
+			tData.vecOriginSRT = LoadJson["SRTs"];
+		if (LoadJson.contains("Using Model Info"))
+			tData.tUsingModelInfo = LoadJson["Using Model Info"];
+		if (LoadJson.contains("Usage"))
+			tData.eInstance_Usage = Engine_Utils::D3D11_USAGE_ToEnum(LoadJson["Usage"].get<string>());
+	}
+
+	void to_json(json& SaveJson, const INSTANCEMODEL_DATA& tData)
+	{
+		SaveJson["Using Model Info"] = tData.tUsingModelInfo;
+		if (!tData.vecOriginSRT.empty())
+			SaveJson["SRTs"] = tData.vecOriginSRT;
+
+		SaveJson["Usage"] = Engine_Utils::D3D11_USAGE_ToString(tData.eInstance_Usage);
+	}
+#pragma endregion
+
+#pragma endregion
 
 }

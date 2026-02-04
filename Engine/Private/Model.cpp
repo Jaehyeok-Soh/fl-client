@@ -197,6 +197,16 @@ HRESULT CModel::Render(_uint iMeshIndex)
 	return S_OK;
 }
 
+HRESULT CModel::Render_Instance(_uint iMeshIndex, _uint iInstanceCount)
+{
+	if (FAILED(m_vecMeshes[iMeshIndex]->Bind_Resource()))
+		return E_FAIL;
+
+	m_vecMeshes[iMeshIndex]->Render_Instance(iInstanceCount);
+
+	return S_OK;
+}
+
 HRESULT CModel::Bind_Material(class CShader* pShader, _uint iMeshIndex)
 {
 	if (iMeshIndex >= m_vecMeshes.size())

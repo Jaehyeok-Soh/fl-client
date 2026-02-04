@@ -146,6 +146,10 @@ HRESULT CMapToolManager::Register_MapObjectCloneFactory()
 		[=](void* pArg)->CGameObject* { return m_pGameInstance->Add_GameObject(ENUM_TO_UINT(ELevelType::MAP),L"Prototype_GameObject_StaticModel",
 			ENUM_TO_UINT(ELevelType::MAP),g_wszStaticModelLayer,pArg);};
 
+	m_arrayMapObjectCloneFactory[ENUM_TO_UINT(EMapObject_Type::INSTANCEMODEL)] =
+		[=](void* pArg)->CGameObject* { return m_pGameInstance->Add_GameObject(ENUM_TO_UINT(ELevelType::MAP), L"Prototype_GameObject_InstanceModel",
+			ENUM_TO_UINT(ELevelType::MAP), g_wszInstanceModelLayer, pArg); };
+
 	return S_OK;
 }
 

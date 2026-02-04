@@ -10,6 +10,11 @@ namespace Tool
 		Vec3 vScale{};
 		Quat vQuat{};
 		Vec3 vPosition{};
+	public:
+		Matrix Get_World()
+		{
+			return Matrix::CreateScale(vScale) * Matrix::CreateFromQuaternion(vQuat) * Matrix::CreateTranslation(vPosition);
+		}
 	}SRT_DATA;
 
 	typedef struct tagOverrideMaterials
@@ -58,7 +63,11 @@ namespace Tool
 	typedef struct tagInstanceModel_Data : public MAPDATA_BASE
 	{
 		USING_MODEL_INFO tUsingModelInfo{};
+
+		D3D11_USAGE		 eInstance_Usage{D3D11_USAGE_DEFAULT};
+
 		vector<SRT_DATA> vecOriginSRT{};
+		vector<Matrix>	 vecMatirx{};
 	public:
 		virtual ~tagInstanceModel_Data() {}
 
@@ -68,11 +77,16 @@ namespace Tool
 	void to_json(json& SaveJson, const	 OVERRIDE_MATERIALS& tData);
 	void to_json(json& SaveJson, const	 USING_MODEL_INFO& tData);
 	void to_json(json& SaveJson, const	 STATICMODEL_DATA& tData);
+
+	void to_json(json& SaveJson, const	 STATICMODEL_DATA& tData);
+	void to_json(json& SaveJson, const	 INSTANCEMODEL_DATA& tData);
 	
 	void from_json(const json& LoadJson, SRT_DATA& tData);
 	void from_json(const json& LoadJson, OVERRIDE_MATERIALS& tData);
 	void from_json(const json& LoadJson, USING_MODEL_INFO& tData);
+
 	void from_json(const json& LoadJson, STATICMODEL_DATA& tData);
+	void from_json(const json& LoadJson, INSTANCEMODEL_DATA& tData);
 
 #pragma endregion 
 

@@ -19,6 +19,7 @@ public:
 	HRESULT Render();
 	void Push_RenderObject(RENDER_CATEGORY eCategory, CGameObject* pGO);
 private:	
+
 	HRESULT Render_Priority();
 	HRESULT Render_NoneBlend();
 	HRESULT Render_Lights();

@@ -54,6 +54,7 @@ private:
 	virtual HRESULT Initialize(void* pArg) override;
 public:
 	HRESULT Render(_uint iMeshIndex);
+	HRESULT	Render_Instance(_uint iMeshIndex , _uint iInstanceCount);
 	HRESULT Change_Animation(_uint iAnimationIndex, _bool bBlend, _bool isLoop = true, _bool bForce = false);
 	void	Add_Animation(class CModelAnimation* pAnimation) { m_vecAnimations.push_back(pAnimation); }
 	void	Update_Animation(_float fTimeDelta, CTransform* pOwnerTransform = nullptr, CPhysicsCCT* pOwnerPhyCCT = nullptr);

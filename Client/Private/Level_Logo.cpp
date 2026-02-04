@@ -60,8 +60,8 @@ HRESULT CLevel_Logo::Initialize()
 	if (FAILED(Ready_Player_Layer(g_wszPlayerLayer)))
 		return E_FAIL;
 
-	//if (FAILED(Ready_DevMap()))
-	//	return E_FAIL;
+	if (FAILED(Ready_DevMap()))
+		return E_FAIL;
 
 	//if (FAILED(Ready_UI_Layer(g_wszUILayer)))
 	//	return E_FAIL;
@@ -69,8 +69,8 @@ HRESULT CLevel_Logo::Initialize()
 	if (FAILED(Ready_Lights()))
 		return E_FAIL;
 
-	if (FAILED(Ready_Test_Terrain(L"test_terrain")))
-		return E_FAIL;
+	//if (FAILED(Ready_Test_Terrain(L"test_terrain")))
+	//	return E_FAIL;
 
 	return S_OK;
 }

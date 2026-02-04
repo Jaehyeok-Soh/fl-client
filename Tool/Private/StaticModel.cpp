@@ -210,7 +210,7 @@ _bool CStaticModel::Export_Data(DTO::ECategory eCategory, CDataDocumentBase* pDo
 	/* Using Material Info */
 	tSave_StaticModleData.tUsingModelInfo.wstrName = m_tData.tUsingModelInfo.wstrName;
 	tSave_StaticModleData.tUsingModelInfo.wstrPath = m_tData.tUsingModelInfo.wstrPath;
-	tSave_StaticModleData.tUsingModelInfo.wstrMtl_JsonFile_Path;
+	tSave_StaticModleData.tUsingModelInfo.wstrMtl_JsonFile_Path = m_tData.tUsingModelInfo.wstrMtl_JsonFile_Path;
 
 	for (auto& UsingMaterial : m_tData.tUsingModelInfo.vecOverrideMaterial)
 	{
@@ -219,6 +219,8 @@ _bool CStaticModel::Export_Data(DTO::ECategory eCategory, CDataDocumentBase* pDo
 		tSaveMtl.wstrMtl_JsonFile_Name = UsingMaterial.wstrMtl_JsonFile_Name;
 		tSaveMtl.wstrMtl_JsonFile_Path = UsingMaterial.wstrMtl_JsonFile_Path;
 		tSaveMtl.vecUsingTextureInfo = UsingMaterial.vecUsingTextureInfo;
+
+		tSave_StaticModleData.tUsingModelInfo.vecOverrideMaterial.push_back(tSaveMtl);
 	}
 
 

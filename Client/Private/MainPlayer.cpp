@@ -90,7 +90,7 @@ HRESULT CMainPlayer::Awake(const _uint iCurrentLevelID)
 
     Get_Component<CTransform>()->Set_Info(TRANSFORM_INFO_STATE::POS, Vec3{ 18.f,20.f,19.f });
 
-    Get_Component<CPhysicsCCT>()->Awake();
+    //Get_Component<CPhysicsCCT>()->Awake();
 
     return S_OK;
 }
@@ -573,8 +573,8 @@ HRESULT CMainPlayer::Ready_CCT()
     desc.tMaterial = mtrlDesc;
     desc.pOwner = this;
 
-    if (FAILED(Add_Component<CPhysicsCCT>(0, L"Prototype_Component_Physics_CCT", &desc)))
-        return E_FAIL;
+   // if (FAILED(Add_Component<CPhysicsCCT>(0, L"Prototype_Component_Physics_CCT", &desc)))
+   //     return E_FAIL;
 
     return S_OK;
 }

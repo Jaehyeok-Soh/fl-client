@@ -237,6 +237,7 @@ namespace Client
 	inline constexpr wchar_t g_wszTriggerBoxLayer[]{ L"TriggerBox_Layer" };
 	inline constexpr wchar_t g_wszColMeshLayer[]{ L"ColMesh_Layer" };
 	inline constexpr wchar_t g_wszStaticModelLayer[]{ L"StaticModel_Layer" };
+	inline constexpr wchar_t g_wszInstanceModelLayer[]{ L"InstanceModel_Layer" };
 	inline constexpr wchar_t g_wszBossLayer[]{ L"Boss_Layer" };
 	inline constexpr wchar_t g_wszPlayerLayer[]{ L"Player_Layer" };
 	inline constexpr wchar_t g_wszDynamicCameraLayer[]{ L"DynamicCamera_Layer" };
