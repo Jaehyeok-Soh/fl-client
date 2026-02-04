@@ -1,6 +1,20 @@
 #pragma once
 #include "Component.h"
 
+/*
+* 하나의 Compute Shdaer를 대변한다
+* 하나의 Compute Shader는 하나의 연산을 책임진다
+* 
+* 외부에서 resource들을 바인드 해준다
+* 이 component는 저장된 자료들을 통해 계산을 하고
+* 계산 결과를 정리하고 저장한다.
+*
+* 즉 compute shader 연산을 하기 위한 통로.
+* 정쌤 식 shader component로 생각하면 편할듯 
+* 
+* BUT! 바뀔 수 있다
+*/
+
 NS_BEGIN(Engine)
 
 class ENGINE_DLL CComputeShader final : public CComponent
@@ -9,9 +23,8 @@ class ENGINE_DLL CComputeShader final : public CComponent
 public:
 	typedef struct tagComShaderOriginDesc
 	{
-		const _tchar* pShaderFilePath = { nullptr };
-		_uint iNumElements = { 0 };
-		const D3D11_INPUT_ELEMENT_DESC* pElements = { nullptr };
+		const _tchar* pShaderFilePath	= { nullptr };
+		const _char* pEntryPoint		= { nullptr };		// shader 내부에서 어떤 함수를 쓸건데
 	}COMSHADER_ORIGIN_DESC;
 
 private:
@@ -31,7 +44,7 @@ public:
 	void	Dispatch(_uint iX, _uint iY, _uint iZ);
 
 private:
-	ID3D11ComputeShader*	m_pComShader		= { nullptr };
+	ID3D11ComputeShader*	m_pComputeShader		= { nullptr };
 	ID3D11Device*			m_pDevice			= { nullptr };
 	ID3D11DeviceContext*	m_pDeviceContext	= { nullptr };
 
@@ -44,6 +57,7 @@ private:
 	wstring m_wstrPath = { L"" };
 
 private:
+	HRESULT Ready_ComputeShader(COMSHADER_ORIGIN_DESC* pDesc);
 	void Unbind_ComputeResources();
 
 public:
