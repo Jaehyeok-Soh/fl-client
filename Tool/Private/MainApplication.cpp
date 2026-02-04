@@ -20,6 +20,7 @@
 #include "MonoBehaviour.h"
 #include "Texture.h"
 #include "Shader.h"
+#include "ComputeShader.h"
 #include "Camera.h"
 #include "Transform.h"
 #include "MaterialInstance.h"
@@ -203,14 +204,23 @@ HRESULT CMainApplication::Ready_Static_Prototype()
 			return E_FAIL;
 	}
 
+	//// For. Prototype_Component_Shader_CPT_Effect_Particle
+	//{
+	//	CShader::SHADER_ORIGIN_DESC shaderDesc = {};
+	//	shaderDesc.pShaderFilePath = L"../../Shaders/Shader_CPT_Effect_Particle.hlsl";
+	//	shaderDesc.iNumElements = 0;
+	//	shaderDesc.pElements = nullptr;
+	//	if (FAILED(m_pGameInstance->Add_Prototype(ENUM_TO_UINT(ELevelType::STATIC), L"Prototype_Component_Shader_CPT_Effect_Particle",
+	//		CShader::Create(m_pDevice, m_pDeviceContext, &shaderDesc))))
+	//		return E_FAIL;
+	//}
+
 	// For. Prototype_Component_Shader_CPT_Effect_Particle
 	{
-		CShader::SHADER_ORIGIN_DESC shaderDesc = {};
+		CComputeShader::ComShaderOriginDesc shaderDesc = {};
 		shaderDesc.pShaderFilePath = L"../../Shaders/Shader_CPT_Effect_Particle.hlsl";
-		shaderDesc.iNumElements = 0;
-		shaderDesc.pElements = nullptr;
 		if (FAILED(m_pGameInstance->Add_Prototype(ENUM_TO_UINT(ELevelType::STATIC), L"Prototype_Component_Shader_CPT_Effect_Particle",
-			CShader::Create(m_pDevice, m_pDeviceContext, &shaderDesc))))
+			CComputeShader::Create(m_pDevice, m_pDeviceContext, &shaderDesc))))
 			return E_FAIL;
 	}
 

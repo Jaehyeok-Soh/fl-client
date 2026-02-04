@@ -268,7 +268,6 @@ private:
     //  ========== 현재 이펙트 sprite Number  ===========
 private:
     _bool              m_bIsTool = { false };
-    class CShader*     m_pComputeShader = { nullptr };
 };
 
 NS_END

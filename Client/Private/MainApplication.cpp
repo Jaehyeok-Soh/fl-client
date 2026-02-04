@@ -7,6 +7,7 @@
 #include "VIBuffer_Cube_Tex.h"
 #include "Engine_Utils.h"
 #include "Shader.h"
+#include "ComputeShader.h"
 #include "Character.h"
 #include "Texture.h"
 #include "GameInstance.h"

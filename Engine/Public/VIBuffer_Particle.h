@@ -3,9 +3,6 @@
 
 NS_BEGIN(Engine)
 
-template<typename T>
-class StructuredBuffer;
-
 enum class E_PARTICLE_MOVESTATE
 {
 	NONE,
@@ -16,7 +13,7 @@ enum class E_PARTICLE_MOVESTATE
 };
 
 class CModel;
-class CShader;
+class CComputeShader;
 class CGameObject;
 
 // 추후에 여기에 Random Seed flag 값 들어올 예정.
@@ -39,7 +36,7 @@ public:
 		_bool isRandomSeed = { false };
 		CModel*	pModel = { nullptr };
 		CGameObject* pOwner = { nullptr };
-		CShader* pComputeShader = { nullptr };
+		CComputeShader* pComputeShader = { nullptr };
 	}PARTICLE_ORIGIN_DESC;
 protected:
 	CVIBuffer_Particle(ID3D11Device* pDevice, ID3D11DeviceContext* pDeviceContext);
@@ -53,7 +50,7 @@ public:
 	virtual void Render() override;
 	
 public:
-	virtual void Update_Simulation(CShader* ComputeShader, Vec3 vLook, _float fTimeDelta, E_PARTICLE_MOVESTATE eType);
+	virtual void Update_Simulation(CComputeShader* ComputeShader, Vec3 vLook, _float fTimeDelta, E_PARTICLE_MOVESTATE eType);
 	virtual void Reset_Simulation();
 
 public:

@@ -4,7 +4,7 @@
 #include "Model.h"
 #include "Mesh.h"
 #include "GameObject.h"
-#include "Shader.h"
+#include "ComputeShader.h"
 
 CVIBuffer_Particle_Mesh::CVIBuffer_Particle_Mesh(ID3D11Device* pDevice, ID3D11DeviceContext* pDeviceContext)
 	: Super(pDevice, pDeviceContext)
@@ -160,13 +160,13 @@ HRESULT CVIBuffer_Particle_Mesh::Initialize(void* pArg)
 				pInitialData[i].vLook,
 				pInitialData[i].vTranslation);
 	}
-	CShader* pShader = pDesc->pComputeShader;
+	CComputeShader* pShader = pDesc->pComputeShader;
 	if (pShader == nullptr)
 	{
 		MSG_BOX("VIBUFFER_PARTICLE_POINT : Can't Bind Effect Compute Data : ERROR SHADER NULLPTR");
 		return E_FAIL;
 	}
-	pShader->Bind_Compute_EffectData(pInitialData, m_iInstanceCount);
+	pShader->Bind_InputStructuredBuffer_Data(pInitialData, sizeof(EFFECT_PARTICLE_IMMU_ELEMENT), m_iInstanceCount);
 	Safe_Delete_Array(pInitialData);
 #pragma endregion
 
@@ -275,13 +275,13 @@ HRESULT CVIBuffer_Particle_Mesh::Set_ResizeBuffer_UseRandomSeed()
 				pInitialData[i].vTranslation);
 	}
 
-	CShader* pShader = m_tParticleDesc.pComputeShader;
+	CComputeShader* pShader = m_tParticleDesc.pComputeShader;
 	if (pShader == nullptr)
 	{
 		MSG_BOX("VIBUFFER_PARTICLE_POINT : Can't Bind Effect Compute Data : ERROR SHADER NULLPTR");
 		return E_FAIL;
 	}
-	pShader->Bind_Compute_EffectData(pInitialData, m_iInstanceCount);
+	pShader->Bind_InputStructuredBuffer_Data(pInitialData, sizeof(EFFECT_PARTICLE_IMMU_ELEMENT), m_iInstanceCount);
 	Safe_Delete_Array(pInitialData);
 
 	return S_OK;
@@ -313,13 +313,13 @@ HRESULT CVIBuffer_Particle_Mesh::Set_ResizeBuffer_NoneUseRandomSeed()
 				pInitialData[i].vTranslation);
 	}
 
-	CShader* pShader = m_tParticleDesc.pComputeShader;
+	CComputeShader* pShader = m_tParticleDesc.pComputeShader;
 	if (pShader == nullptr)
 	{
 		MSG_BOX("VIBUFFER_PARTICLE_POINT : Can't Bind Effect Compute Data : ERROR SHADER NULLPTR");
 		return E_FAIL;
 	}
-	pShader->Bind_Compute_EffectData(pInitialData, m_iInstanceCount);
+	pShader->Bind_InputStructuredBuffer_Data(pInitialData, sizeof(EFFECT_PARTICLE_IMMU_ELEMENT), m_iInstanceCount);
 	Safe_Delete_Array(pInitialData);
 
 	return S_OK;

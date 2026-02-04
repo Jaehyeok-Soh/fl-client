@@ -3,7 +3,7 @@
 #include "GameInstance.h"
 #include "StructuredBuffer.h"
 #include "GameObject.h"
-#include "Shader.h"
+#include "ComputeShader.h"
 
 CVIBuffer_Particle::CVIBuffer_Particle(ID3D11Device* pDevice, ID3D11DeviceContext* pDeviceContext)
 	: Super(pDevice, pDeviceContext)
@@ -94,7 +94,7 @@ void CVIBuffer_Particle::Render()
 
 }
 
-void CVIBuffer_Particle::Update_Simulation(CShader* ComputeShader, Vec3 vLook, _float fTImeDelta, E_PARTICLE_MOVESTATE eType)
+void CVIBuffer_Particle::Update_Simulation(CComputeShader* ComputeShader, Vec3 vLook, _float fTImeDelta, E_PARTICLE_MOVESTATE eType)
 {
 	if (ComputeShader == nullptr) return;
 

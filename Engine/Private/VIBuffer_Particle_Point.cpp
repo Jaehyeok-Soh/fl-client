@@ -2,7 +2,7 @@
 #include "VIBuffer_Particle_Point.h"
 #include "GameInstance.h"
 #include "GameObject.h"
-#include "Shader.h"
+#include "ComputeShader.h"
 #include "StructuredBuffer.h"
 
 CVIBuffer_Particle_Point::CVIBuffer_Particle_Point(ID3D11Device* pDevice, ID3D11DeviceContext* pDeviceContext)
@@ -135,13 +135,13 @@ HRESULT CVIBuffer_Particle_Point::Initialize(void* pArg)
 				pInitialData[i].vLook,
 				pInitialData[i].vTranslation);
 	}
-	CShader* pShader = pParticleDesc->pComputeShader;
+	CComputeShader* pShader = pParticleDesc->pComputeShader;
 	if (pShader == nullptr)
 	{
 		MSG_BOX("VIBUFFER_PARTICLE_POINT : Can't Bind Effect Compute Data : ERROR SHADER NULLPTR");
 		return E_FAIL;
 	}
-	pShader->Bind_Compute_EffectData(pInitialData, m_iInstanceCount);
+	pShader->Bind_InputStructuredBuffer_Data(pInitialData, sizeof(EFFECT_PARTICLE_IMMU_ELEMENT), m_iInstanceCount);
 	Safe_Delete_Array(pInitialData);
 #pragma endregion
 

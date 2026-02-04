@@ -2,7 +2,6 @@
 #include "Shader.h"
 #include "Engine_Utils.h"
 #include "Constant_Buffer.h"
-#include "StructuredBuffer.h"
 #include "Material.h"
 #include "GameInstance.h"
 
@@ -52,8 +51,6 @@ CShader::CShader(const CShader& rhs)
 	, m_pDefaultTextures(rhs.m_pDefaultTextures)
 	, m_pEffect_CBuffer(rhs.m_pEffect_CBuffer)
 	, m_pEffectBuffer(rhs.m_pEffectBuffer)
-	, m_pEffect_Mutable_Element_CBuffer(rhs.m_pEffect_Mutable_Element_CBuffer)
-	, m_pEffect_MutableBuffer(rhs.m_pEffect_MutableBuffer)
 
 {
 	Safe_AddRef(m_pDevice);
@@ -85,8 +82,6 @@ CShader::CShader(const CShader& rhs)
 	Safe_AddRef(m_prenderTargetSceneTexture);
 	Safe_AddRef(m_pEffect_CBuffer);
 	Safe_AddRef(m_pEffectBuffer);
-	Safe_AddRef(m_pEffect_Mutable_Element_CBuffer);
-	Safe_AddRef(m_pEffect_MutableBuffer);
 	Safe_AddRef(m_pDefaultTextures);
 	Safe_AddRef(m_pGlobalMask_Effect);
 
@@ -118,7 +113,6 @@ HRESULT CShader::Initialize(void* pArg)
 	if (FAILED(Super::Initialize(pArg)))
 		return E_FAIL;
 
-	Create_StructuredBuffer();
 	return S_OK;
 }
 
@@ -130,28 +124,14 @@ void CShader::Apply()
 
 void CShader::Dispatch(_uint iX, _uint iY, _uint iZ)
 {
-	// 1. Hazard 방지용 해제 (기존 코드 유지)
-	ID3D11ShaderResourceView* nullSRVs[] = { nullptr, nullptr, nullptr, nullptr };
-	m_pDeviceContext->VSSetShaderResources(0, 4, nullSRVs);
-
-	// [중요] 내 인스턴스의 고유 버퍼를 셰이더 변수에 다시 꽂음
-	// 이 작업이 있어야 다른 객체가 덮어쓴 변수 값을 내 것으로 되찾아옴
-	if (m_pEffect_Result_UAV)
-		m_pEffect_Result_UAV->SetUnorderedAccessView(m_pEffect_Result_SBuffer->Get_UAV());
-
-	if (m_pEffect_Immutable_Element_SRV)
-		m_pEffect_Immutable_Element_SRV->SetResource(m_pEffect_Immutable_Element_CBuffer->Get_SRV());
-
-	// 상태 적용 및 실행
 	m_vecTechniques[0].vecPasses[m_iPass].pPass->Apply(0, m_pDeviceContext);
 	m_pDeviceContext->Dispatch(iX, iY, iZ);
 
-	// 즉시 정리 (다음 렌더링 시 SRV로 바로 쓸 수 있도록)
-	ID3D11UnorderedAccessView* nullUAV[] = { nullptr };
-	m_pDeviceContext->CSSetUnorderedAccessViews(0, 1, nullUAV, nullptr);
+	ID3D11ShaderResourceView* null[1] = { 0 };
+	m_pDeviceContext->CSSetShaderResources(0, 1, null);
 
-	ID3D11ShaderResourceView* nullSRV[] = { nullptr };
-	m_pDeviceContext->CSSetShaderResources(0, 1, nullSRV);
+	ID3D11UnorderedAccessView* nullUav[1] = { 0 };
+	m_pDeviceContext->CSSetUnorderedAccessViews(0, 1, nullUav, NULL);
 
 	m_pDeviceContext->CSSetShader(NULL, NULL, 0);
 }
@@ -244,24 +224,6 @@ void CShader::Bind_MaterialInstanceData(const SHADER_MI_DESC& desc)
 void CShader::Bind_EffectData(const SHADER_EFFECT_DESC& desc)
 {
 	m_pEffect_CBuffer->Copy_Data(desc);
-}
-
-void CShader::Bind_Compute_EffectData(const EFFECT_PARTICLE_MU_ELEMENT& desc)
-{
-	m_pEffect_Mutable_Element_CBuffer->Copy_Data(desc);
-}
-
-void CShader::Bind_Compute_EffectData(const EFFECT_PARTICLE_IMMU_ELEMENT* desc, _uint count)
-{
-	m_pEffect_Immutable_Element_CBuffer->Copy_Data(desc, count);
-}
-
-void CShader::Bind_Compute_EffectSRV()
-{
-	if (ID3DX11EffectShaderResourceVariable* pResultSRV = Get_SRV("INSTANCE_OUTPUT"))
-	{
-		pResultSRV->SetResource(m_pEffect_Result_SBuffer->Get_SRV());
-	}
 }
 
 void CShader::Bind_GlobalMask(_uint iMask)
@@ -388,11 +350,6 @@ HRESULT CShader::Bind_BoneData(const SHADER_BONEDESC& boneDesc)
 	return S_OK;
 }
 
-void CShader::Resize_Compute_EffectData(_uint count)
-{
-	m_pEffect_Immutable_Element_CBuffer->Resize(count);
-}
-
 HRESULT CShader::Load_Shader(const D3D11_INPUT_ELEMENT_DESC* pElements, const _uint iNumElements)
 {
 	// Create Effect
@@ -404,13 +361,13 @@ HRESULT CShader::Load_Shader(const D3D11_INPUT_ELEMENT_DESC* pElements, const _u
 		flag = D3DCOMPILE_OPTIMIZATION_LEVEL1;
 #endif   
 		ID3DBlob* pBlob = { nullptr };
- 		if (FAILED(::D3DX11CompileEffectFromFile(Get_Path().c_str(), NULL, D3D_COMPILE_STANDARD_FILE_INCLUDE, flag, 0, m_pDevice, &m_pEffect, &pBlob)))
+		if (FAILED(::D3DX11CompileEffectFromFile(Get_Path().c_str(), NULL, D3D_COMPILE_STANDARD_FILE_INCLUDE, flag, 0, m_pDevice, &m_pEffect, &pBlob)))
 		{
 			if (pBlob)
 			{
 				LPVOID pSrc = pBlob->GetBufferPointer();
 				wstring wstrhi(static_cast<const _tchar*>(pSrc));
- 				_uint i = 0;
+				_uint i = 0;
 			}
 			Safe_Release(pBlob);
 			return E_FAIL;
@@ -438,32 +395,9 @@ HRESULT CShader::Load_Shader(const D3D11_INPUT_ELEMENT_DESC* pElements, const _u
 				pass.pPass->GetVertexShaderDesc(&pass.tVertexShaderDesc);
 				pass.tVertexShaderDesc.pShaderVariable->GetShaderDesc(pass.tVertexShaderDesc.ShaderIndex, &pass.tEffectVsDesc);
 
-				// 버텍스 셰이더 계신가요
-				if (pass.tVertexShaderDesc.pShaderVariable->IsValid())
-				{
-					pass.tVertexShaderDesc.pShaderVariable->GetShaderDesc(pass.tVertexShaderDesc.ShaderIndex, &pass.tEffectVsDesc);
+				if (FAILED(m_pDevice->CreateInputLayout(pElements, iNumElements, pass.tDesc.pIAInputSignature, pass.tDesc.IAInputSignatureSize, &pass.pInputLayout)))
+					return E_FAIL;
 
-					if (pass.tEffectVsDesc.pBytecode != nullptr)
-					{
-						if (FAILED(m_pDevice->CreateInputLayout(pElements, iNumElements,
-							pass.tDesc.pIAInputSignature, pass.tDesc.IAInputSignatureSize, &pass.pInputLayout)))
-						{
-							return E_FAIL;
-						}
-					}
-					else
-					{
-						// Compute Shader 전용 패스 (VS 코드가 없음)
-						// 이펙트 객체가 어엇 너 vertex shader 쓰는구나!!!!!! 하면서 야루~ 하면서 들어올 떄가 있음.
-						pass.pInputLayout = nullptr;
-					}
-				}
-				// 안계시네요..
-				else
-				{
-					pass.pInputLayout = nullptr;
-				}
-				 
 				technique.vecPasses.push_back(pass);
 			}
 
@@ -566,15 +500,6 @@ void CShader::Create_ConstantBuffer()
 		}
 	}
 
-	// Compute_EffectDesc
-	{
-		if (m_pEffect_MutableBuffer = Get_ConstantBuffer("MU_ParticleUpdate"))
-		{
-			m_pEffect_Mutable_Element_CBuffer = CConstant_Buffer<EFFECT_PARTICLE_MU_ELEMENT>::Create(m_pDevice, m_pDeviceContext);
-			m_pEffect_MutableBuffer->SetConstantBuffer(m_pEffect_Mutable_Element_CBuffer->Get_Buffer());
-		}
-	}
-
 	// Texture
 	{
 		m_pTransformTexture = Get_SRV("g_TransformMap");
@@ -592,28 +517,6 @@ void CShader::Create_ConstantBuffer()
 		m_pRenderTargetShadeTexture = Get_SRV("g_RenderTargetShadeTexture");
 		m_pRenderTargetDepthTexture = Get_SRV("g_RenderTargetDepthTexture");
 		m_prenderTargetSceneTexture = Get_SRV("g_RenderTargetSceneTexture");
-	}
-}
-
-void CShader::Create_StructuredBuffer()
-{
-	// Compute_Effect_SRV
-	{
-		if (m_pEffect_Immutable_Element_SRV = Get_SRV("IMMU_EFFECT_PARTICLE"))
-		{
-			m_pEffect_Immutable_Element_CBuffer = StructuredBuffer<EFFECT_PARTICLE_IMMU_ELEMENT>::Create(m_pDevice, m_pDeviceContext, 1000);
-			m_pEffect_Immutable_Element_SRV->SetResource(m_pEffect_Immutable_Element_CBuffer->Get_SRV());
-		}
-	}
-
-	// Compute_Effect_UAV
-	{
-		if (m_pEffect_Result_UAV = Get_UAV("INSTANCE_OUTPUT"))
-		{
-			m_pEffect_Result_SBuffer = StructuredBuffer<EFFECT_INSTANCE>::Create(m_pDevice, m_pDeviceContext, 1000);
-			m_pEffect_Result_UAV->SetUnorderedAccessView(m_pEffect_Result_SBuffer->Get_UAV());
-			Get_SRV("INSTANCE_RESULT_SRV")->SetResource(m_pEffect_Result_SBuffer->Get_SRV());
-		}
 	}
 }
 
@@ -668,16 +571,6 @@ void CShader::Clear_ConstantBuffer()
 	Safe_Release(m_pTransformEffectBuffer);
 	Safe_Release(m_pBone_CBuffer);
 	Safe_Release(m_pBoneEffectBuffer);
-	Safe_Release(m_pEffect_Mutable_Element_CBuffer);
-	Safe_Release(m_pEffect_MutableBuffer);
-}
-
-void CShader::Clear_StructuredBuffer()
-{
-	Safe_Release(m_pEffect_Immutable_Element_CBuffer);
-	Safe_Release(m_pEffect_Immutable_Element_SRV);
-	Safe_Release(m_pEffect_Result_SBuffer);
-	Safe_Release(m_pEffect_Result_UAV);
 }
 
 void CShader::Free()
@@ -690,7 +583,6 @@ void CShader::Free()
 		}
 	}
 	Clear_ConstantBuffer();
-	Clear_StructuredBuffer();
 	Safe_Release(m_pDevice);
 	Safe_Release(m_pDeviceContext);
 	Safe_Release(m_pBlob);
