@@ -292,6 +292,12 @@
   <ItemGroup>
     <FxCompile Include="..\..\Shaders\Animation_Defines.hlsl" />
     <FxCompile Include="..\..\Shaders\Common_Defines.hlsl" />
+    <FxCompile Include="..\..\Shaders\Shader_CPT_Effect_Particle.hlsl">
+      <ShaderType Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Effect</ShaderType>
+      <ShaderType Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Vertex</ShaderType>
+      <ShaderType Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">Vertex</ShaderType>
+      <ShaderType Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Effect</ShaderType>
+    </FxCompile>
     <FxCompile Include="..\..\Shaders\Global_Defines.hlsl" />
     <FxCompile Include="..\..\Shaders\Light_Defines.hlsl" />
     <FxCompile Include="..\..\Shaders\Shader_VtxAnimMesh.hlsl" />
@@ -315,8 +321,6 @@
     <FxCompile Include="..\..\Shaders\Shader_VtxMesh_SkillEffect.hlsl" />
     <FxCompile Include="..\..\Shaders\Shader_VtxNorTex.hlsl" />
     <FxCompile Include="..\..\Shaders\Shader_VtxPosTex.hlsl" />
-    <FxCompile Include="..\..\Shaders\Shader_VtxPosTex_Particle.hlsl" />
-    <FxCompile Include="..\..\Shaders\Shader_VtxPos_Particle.hlsl" />
     <FxCompile Include="..\..\Shaders\Struct_Defines.hlsl" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />

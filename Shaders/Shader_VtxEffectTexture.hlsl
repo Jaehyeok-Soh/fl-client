@@ -71,6 +71,10 @@ struct EffectDesc
     float4 g_EffectColor;
 };
 
+// ========== StruturedBuffer Binding value  ===========  (CS Shader에서 계산해서 넘어온 값.)
+StructuredBuffer<VTXPARTICLE> INSTANCE_OUTPUT;
+
+// ========== ConstantBuffer Binding value  ===========
 cbuffer ConstantBuffer_Effect
 {
     EffectDesc g_Effect;
@@ -289,12 +293,12 @@ VS_OUT_POS_GS_PARTICLE VS_Texture(VS_IN_POS_GS_PARTICLE In)
 {
     VS_OUT_POS_GS_PARTICLE Out;
     
-    vector vPosition = mul(vector(In.vPosition, 1.f), In.matTransform);
+    vector vPosition = mul(vector(In.vPosition, 1.f), INSTANCE_OUTPUT[In.vInstID].matTransform);
     
 
     Out.vPosition = mul(vPosition, W);
-    Out.vPSize = float2(length(In.matTransform._11_12_13), length(In.matTransform._21_22_23));
-    Out.vLifeTime = In.vLifeTime;
+    Out.vPSize = float2(length(INSTANCE_OUTPUT[In.vInstID].matTransform._11_12_13), length(INSTANCE_OUTPUT[In.vInstID].matTransform._21_22_23));
+    Out.vLifeTime = INSTANCE_OUTPUT[In.vInstID].vLifeTime;
     
     return Out;
 }

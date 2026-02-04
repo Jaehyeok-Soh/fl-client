@@ -105,7 +105,9 @@ void CEffectObject::Buffer_Setting()
         {
         case DTO::E_PARTICLETYPE::PARTICLE:
         {
-            Change_Component<CVIBuffer_Particle_Point>(static_cast<CVIBuffer_Particle_Point*>(m_pGameInstance->Clone_Prototype(EPrototypeType::COMPONENT, 0, L"Prototype_Component_VIBuffer_Particle_Point", nullptr)));
+            CVIBuffer_Particle_Point::PARTICLE_POINT_ORIGIN_DESC PointBufferDesc = {};
+            PointBufferDesc.pOwner = this;
+            Change_Component<CVIBuffer_Particle_Point>(static_cast<CVIBuffer_Particle_Point*>(m_pGameInstance->Clone_Prototype(EPrototypeType::COMPONENT, 0, L"Prototype_Component_VIBuffer_Particle_Point", &PointBufferDesc)));
             break;
         }
         case DTO::E_PARTICLETYPE::MESH:
@@ -122,7 +124,9 @@ void CEffectObject::Buffer_Setting()
         }
         case DTO::E_PARTICLETYPE::TEXTURE:
         {
-            Change_Component<CVIBuffer_Particle_Point>(static_cast<CVIBuffer_Particle_Point*>(m_pGameInstance->Clone_Prototype(EPrototypeType::COMPONENT, 0, L"Prototype_Component_VIBuffer_Particle_Point", nullptr)));
+            CVIBuffer_Particle_Point::PARTICLE_POINT_ORIGIN_DESC PointBufferDesc = {};
+            PointBufferDesc.pOwner = this;
+            Change_Component<CVIBuffer_Particle_Point>(static_cast<CVIBuffer_Particle_Point*>(m_pGameInstance->Clone_Prototype(EPrototypeType::COMPONENT, 0, L"Prototype_Component_VIBuffer_Particle_Point", &PointBufferDesc)));
             break;
         }
         }
@@ -376,32 +380,32 @@ void CEffectObject::Update(const _float fTimeDelta)
     case DTO::E_SHAPETYPE::SPREAD:
     {
         CVIBuffer_Particle_Point* pInstance = Get_Component<CVIBuffer_Particle_Point>();
-        if (pInstance) pInstance->Update_Simulation(Vec3{}, TimeT, E_PARTICLE_MOVESTATE::SPREAD);
+        if (pInstance) pInstance->Update_Simulation(Get_Component<CShader>(),Vec3{}, TimeT, E_PARTICLE_MOVESTATE::SPREAD);
         break;
     }
     case DTO::E_SHAPETYPE::DROP:
     {
         CVIBuffer_Particle_Point* pInstance = Get_Component<CVIBuffer_Particle_Point>();
-        if (pInstance) pInstance->Update_Simulation(Vec3{}, TimeT, E_PARTICLE_MOVESTATE::DROP);
+        if (pInstance) pInstance->Update_Simulation(Get_Component<CShader>(), Vec3{}, TimeT, E_PARTICLE_MOVESTATE::DROP);
         break;
     }
     case DTO::E_SHAPETYPE::RISE:
     {
         CVIBuffer_Particle_Point* pInstance = Get_Component<CVIBuffer_Particle_Point>();
-        if (pInstance) pInstance->Update_Simulation(Vec3{}, TimeT, E_PARTICLE_MOVESTATE::RISE);
+        if (pInstance) pInstance->Update_Simulation(Get_Component<CShader>(), Vec3{}, TimeT, E_PARTICLE_MOVESTATE::RISE);
         break;
     }
     case DTO::E_SHAPETYPE::MESH:
     {
         CVIBuffer_Particle_Point* pInstance = Get_Component<CVIBuffer_Particle_Point>();
-        if (pInstance) pInstance->Update_Simulation(Vec3{}, TimeT, E_PARTICLE_MOVESTATE::RISE);
+        if (pInstance) pInstance->Update_Simulation(Get_Component<CShader>(), Vec3{}, TimeT, E_PARTICLE_MOVESTATE::RISE);
         break;
     }
 
     case DTO::E_SHAPETYPE::STRAIGHT:
     {
         CVIBuffer_Particle_Point* pInstance = Get_Component<CVIBuffer_Particle_Point>();
-        if (pInstance) pInstance->Update_Simulation(Get_Component<CTransform>()->Get_Info(TRANSFORM_INFO_STATE::LOOK), TimeT, E_PARTICLE_MOVESTATE::STRAIGHT);
+        if (pInstance) pInstance->Update_Simulation(Get_Component<CShader>(), Get_Component<CTransform>()->Get_Info(TRANSFORM_INFO_STATE::LOOK), TimeT, E_PARTICLE_MOVESTATE::STRAIGHT);
         break;
     }
     }

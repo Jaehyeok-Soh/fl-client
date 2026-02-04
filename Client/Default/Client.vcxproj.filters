@@ -199,6 +199,9 @@
     <Filter Include="03. GameObject\MapObject\02. InstanceModel">
       <UniqueIdentifier>{2be52ba2-2a45-42f4-aa0d-4f0d8e44cbe8}</UniqueIdentifier>
     </Filter>
+    <Filter Include="04. Shaders\ComputeShader_Labs">
+      <UniqueIdentifier>{8c14e548-7930-4ec0-b748-e471998a55b9}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="targetver.h">
@@ -575,13 +578,7 @@
     <FxCompile Include="..\..\Shaders\Shader_VtxNorTex.hlsl">
       <Filter>04. Shaders</Filter>
     </FxCompile>
-    <FxCompile Include="..\..\Shaders\Shader_VtxPos_Particle.hlsl">
-      <Filter>04. Shaders</Filter>
-    </FxCompile>
     <FxCompile Include="..\..\Shaders\Shader_VtxPosTex.hlsl">
-      <Filter>04. Shaders</Filter>
-    </FxCompile>
-    <FxCompile Include="..\..\Shaders\Shader_VtxPosTex_Particle.hlsl">
       <Filter>04. Shaders</Filter>
     </FxCompile>
     <FxCompile Include="..\..\Shaders\Animation_Defines.hlsl">
@@ -610,6 +607,9 @@
     </FxCompile>
     <FxCompile Include="..\..\Shaders\Shader_VtxInstanceMesh.hlsl">
       <Filter>04. Shaders</Filter>
+    </FxCompile>
+    <FxCompile Include="..\..\Shaders\Shader_CPT_Effect_Particle.hlsl">
+      <Filter>04. Shaders\ComputeShader_Labs</Filter>
     </FxCompile>
   </ItemGroup>
 </Project>
