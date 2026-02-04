@@ -22,16 +22,14 @@ void CImGui_StateLayout::Render(CGameObject* pGo)
 	CActionState* pActionState = pGo->Get_Component<CActionState>();
 	string strStateName = pActionState->Get_CurrentStateName();
 
-
-	ImGui::BeginChild("##StateBox", ImVec2(0, 120), true);
-	ImGui::Text(m_strLabel.c_str());
-	ImGui::Separator();
+	ImGui::BeginGroup();
+	ImGui::SeparatorText(m_strLabel.c_str());
 
 	ImGui::Text("State : ");
 	ImGui::SameLine();
 	ImGui::Text(strStateName.c_str());
 
-	ImGui::EndChild();
+	ImGui::EndGroup();
 }
 
 CImGui_StateLayout* CImGui_StateLayout::Create()

@@ -24,13 +24,16 @@ void CImGui_TransformLayout::Render(CGameObject* pGo)
     Matrix matWorld = pTransform->Get_WorldMatrix();
     Vec3 vPos = matWorld.Translation();
 
-    ImGui::BeginChild("##TransformBox", ImVec2(0, 120), true);
-    ImGui::Text(m_strLabel.c_str());
-    ImGui::Separator();
+    ImGui::BeginGroup();
+    ImGui::SeparatorText(m_strLabel.c_str());
 
     ImGui::Text("X: %.3f", vPos.x);
+    ImGui::SameLine();
     ImGui::Text("Y: %.3f", vPos.y);
+    ImGui::SameLine();
     ImGui::Text("Z: %.3f", vPos.z);
+    
+    ImGui::Spacing();
 
     if (ImGui::TreeNode("WorldMatrix"))
     {
@@ -41,7 +44,7 @@ void CImGui_TransformLayout::Render(CGameObject* pGo)
         ImGui::TreePop();
     }
 
-    ImGui::EndChild();
+    ImGui::EndGroup();
 }
 
 CImGui_TransformLayout* CImGui_TransformLayout::Create()
