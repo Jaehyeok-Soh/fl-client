@@ -5,12 +5,13 @@
 NS_BEGIN(Engine)
 
 class IUIActionForMe;
+class IUIActionForTarget;
 
 class ENGINE_DLL CUIAction_Registry final : public CBase
 {
 	using Super = CBase;
 public:
-	using ActionFunc = std::function<void(IUIActionForMe*)>;
+	using ActionFunc = std::function<void(IUIActionForMe*, IUIActionForTarget*)>;
 	using FactoryFunc = std::function<ActionFunc(const json&)>;
 
 private:
@@ -19,10 +20,13 @@ private:
 
 private:
 	void Initialize_CommonAction();
+	void Initialize_CommonTargetAction();
 
 public:
+	/* Action */
 	void Register_Factory(DTO::EUIAction FuncType, FactoryFunc factory);
 	ActionFunc Build_Action(DTO::EUIAction FuncType, const json& params) const;
+
 	void Clear();
 
 private:

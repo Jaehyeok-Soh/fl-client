@@ -668,6 +668,10 @@
     <ClCompile Include="..\Private\UIObject.cpp">
       <Filter>00. System\04. GameObject\UIObject</Filter>
     </ClCompile>
+    <ClCompile Include="..\private\EngineConsole.cpp" />
+    <ClCompile Include="..\Private\IUIActionForTarget.cpp">
+      <Filter>00. System\04. GameObject\UIObject\Interface\Action For Target</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\Public\Timer_Manager.h">
@@ -1037,6 +1041,10 @@
     </ClInclude>
     <ClInclude Include="..\Public\UIObject.h">
       <Filter>00. System\04. GameObject\UIObject</Filter>
+    </ClInclude>
+    <ClInclude Include="..\public\EngineConsole.h" />
+    <ClInclude Include="..\Public\IUIActionForTarget.h">
+      <Filter>00. System\04. GameObject\UIObject\Interface\Action For Target</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

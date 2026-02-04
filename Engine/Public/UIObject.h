@@ -49,10 +49,7 @@ public:
 	void Set_Position(const Vec3& vPosition);
 	void Set_Position(_float fX, _float fY, _float fZ);
 	void Move_Position(_float fX, _float fY, _float fZ);
-	void Set_Pass(_uint iPass) { m_iShaderPass = iPass; }
 	_bool IsVisible() const { return m_isVisible; }
-	virtual void Set_Visible() { m_isVisible = true; }
-	virtual void Set_Invisible() { m_isVisible = false; }
 	uint32_t Get_InteractState() const { return m_iInteractState; }
 	uint32_t& Get_InteractState_Ref() { return m_iInteractState; }
 	void Located_Left_In_Viewport();
@@ -64,8 +61,15 @@ public:
 	void Located_LeftBottom_In_Viewport();
 	void Located_RightBottom_In_Viewport();
 	void Set_SizeToTextureScale();
+
 protected:
 	void SetUp_Rect();
+
+	/* Action */
+public:
+	void Set_Pass(_uint iPass) { m_iShaderPass = iPass; }/* 아직 안함 */
+	virtual void Set_Visible() { m_isVisible = true; }
+	virtual void Set_Invisible() { m_isVisible = false; }
 
 protected:
 	_bool m_isVisible = { false };

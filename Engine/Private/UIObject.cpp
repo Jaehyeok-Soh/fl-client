@@ -191,6 +191,8 @@ void CUIObject::SetUp_Rect()
 	m_tRect.bottom = (LONG)(m_fY + m_fHeight / 2);
 }
 
+
+
 void CUIObject::Free()
 {
 	Super::Free();

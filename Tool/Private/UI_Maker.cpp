@@ -515,11 +515,17 @@ void CUI_Maker::Make_UI()
 					Desc.fWidth = 100.f;
 					Desc.strName = m_strUIName;
 					auto* pCanvas = m_pUIManager->Safe_Access_Canvas(m_pUIManager->Get_CurCanvasIndex());
-					if(nullptr != pCanvas)
+					if (nullptr != pCanvas)
+					{
 						Desc.strCanvasName = pCanvas->Get_Tag();
+						Desc.pCacheCanvas = pCanvas;
+					}
 					auto* pLayer = m_pUIManager->Safe_Access_Layer(m_pUIManager->Get_CurLayerIndex());
-					if(nullptr != pLayer)
+					if (nullptr != pLayer)
+					{
 						Desc.strLayerName = pLayer->Get_Name();
+						Desc.pCacheLayer = pLayer;
+					}
 
 					Desc.iCanvasIndex = m_pUIManager->Get_CurCanvasIndex();
 					Desc.iLayerIndex = m_pUIManager->Get_CurLayerIndex();
@@ -550,10 +556,6 @@ void CUI_Maker::Make_UI()
 									m_isCreateUI = FALSE;
 									MSG_BOX("CUI_Maker::Make_UI, UI Add Failed");
 								}
-
-								//pUI->Bind_Action(DTO::EUIEvent::HOVER_ENTER, (DTO::EUIAction::SET_TEXTURE_INDEX), json{ {"index", 7u} });
-								//pUI->Bind_Action(DTO::EUIEvent::HOVER_EXIT, (DTO::EUIAction::SET_VISIBLE), json{ {"isVisible", false} });
-								//pUI->Bind_Action(DTO::EUIEvent::HOVER_ENTER, (DTO::EUIAction::SET_VISIBLE), json{ {"isVisible", false} });
 							}
 						}
 					}

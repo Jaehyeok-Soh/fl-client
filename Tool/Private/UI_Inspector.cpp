@@ -211,7 +211,20 @@ void CUI_Inspector::Add_Action(DTO::EUIEvent EventType)
 		const _string& strSET_TEXTURE_INDEX = DTO::UIFunctypeToString(DTO::EUIAction::SET_TEXTURE_INDEX);
 		if (ImGui::Selectable(strSET_TEXTURE_INDEX.c_str()))
 		{
-			m_pSelectedUI->Bind_Action(EventType, DTO::EUIAction::SET_TEXTURE_INDEX, json{ {"index", 0u} });
+			m_pSelectedUI->Bind_Action(EventType, DTO::EUIAction::SET_TEXTURE_INDEX, json{ {"uIndex", 0u} });
+
+			ImGui::CloseCurrentPopup();
+		}
+
+		const _string& strSTART_LERP_MOVEMENT = DTO::UIFunctypeToString(DTO::EUIAction::START_LERP_MOVEMENT);
+		if (ImGui::Selectable(strSTART_LERP_MOVEMENT.c_str()))
+		{
+			m_pSelectedUI->Bind_Action(EventType, DTO::EUIAction::START_LERP_MOVEMENT, json{
+		{ "vTargetPos", { { "x", 0.f }, { "y", 0.f }, { "z", 0.f } } },
+		{ "fTargetAlpha", 1.f },
+		{ "fDuration", 0.25f },
+		{ "isPin", false}
+				});
 
 			ImGui::CloseCurrentPopup();
 		}
@@ -227,34 +240,118 @@ void CUI_Inspector::Edit_Action()
 	case DTO::EUIAction::SET_VISIBLE:
 	{
 		auto* pVec = m_pSelectedUI->Safe_Access_EventData(m_eCurEditEvent);
-		if (pVec && !pVec->empty())
-		{
-			bool isVisible = (*pVec)[0].Params.value("isVisible", true);
+		if (!pVec || pVec->empty())
+			break;	
 
-			if (ImGui::Checkbox("isVisible", &isVisible))
-				(*pVec)[0].Params["isVisible"] = isVisible;
+		uint32_t index = {};
+		for (auto& data : *pVec)
+		{
+			if (data.strActionKey == DTO::UIFunctypeToString(DTO::EUIAction::SET_VISIBLE))
+				break;
+			index++;
 		}
+
+		if (index >= pVec->size())
+			break;
+
+		bool isVisible = (*pVec)[index].Params.value("isVisible", true);
+
+		if (ImGui::Checkbox("isVisible", &isVisible))
+			(*pVec)[index].Params["isVisible"] = isVisible;
 
 		break;
 	}
 	case DTO::EUIAction::SET_TEXTURE_INDEX:
 	{
 		auto* pVec = m_pSelectedUI->Safe_Access_EventData(m_eCurEditEvent);
-		if (nullptr == pVec || pVec->empty())
+		if (!pVec || pVec->empty())
 			break;
 
-		auto& j = (*pVec)[0].Params;
+		uint32_t index = {};
+		for (auto& data : *pVec)
+		{
+			if (data.strActionKey == DTO::UIFunctypeToString(DTO::EUIAction::SET_TEXTURE_INDEX))
+				break;
+			index++;
+		}
+		if (index >= pVec->size())
+			break;
 
-		int iValue = static_cast<int>(j.value("index", 0u));
+		auto& j = (*pVec)[index].Params;
+		int iValue = static_cast<int>(j.value("uIndex", 0u));
 
-		if (ImGui::InputInt("index", &iValue))
+		if (ImGui::InputInt("uIndex", &iValue))
 		{
 			if (iValue < 0) iValue = 0;
-			j["index"] = static_cast<uint32_t>(iValue);
+			j["uIndex"] = static_cast<uint32_t>(iValue);
 		}
 
 		break;
 	}
+	case DTO::EUIAction::START_LERP_MOVEMENT:
+	{
+		auto* pVec = m_pSelectedUI->Safe_Access_EventData(m_eCurEditEvent);
+		if (!pVec || pVec->empty())
+			break;
+
+		uint32_t index = {};
+		for (auto& data : *pVec)
+		{
+			if (data.strActionKey == DTO::UIFunctypeToString(DTO::EUIAction::START_LERP_MOVEMENT))
+				break;
+			index++;
+		}
+		if (index >= pVec->size())
+			break;
+
+
+		auto& j = (*pVec)[index].Params;
+
+		if (!j.contains("vTargetPos") || !j["vTargetPos"].is_object())
+			j["vTargetPos"] = json{ {"x", 0.f}, {"y", 0.f}, {"z", 0.f} };
+
+		auto& jPos = j["vTargetPos"];
+
+		float v[3] =
+		{
+			jPos.value("x", 0.f),
+			jPos.value("y", 0.f),
+			jPos.value("z", 0.f)
+		};
+
+		if (ImGui::InputFloat3("vTargetPos", v))
+		{
+			jPos["x"] = v[0];
+			jPos["y"] = v[1];
+			jPos["z"] = v[2];
+		}
+
+		if (ImGui::Button("Apply to Client Aspect"))
+		{
+			jPos["x"] = jPos["x"] * (1280.f/ (_float)g_iWinSizeX);
+			jPos["y"] = jPos["y"] * (720.f/ (_float)g_iWinSizeY);
+			jPos["z"] = jPos["z"] * 1.f;
+		}
+
+		float fTargetAlpha = j.value("fTargetAlpha", 1.f);
+		if (ImGui::InputFloat("fTargetAlpha", &fTargetAlpha))
+		{
+			if (fTargetAlpha < 0.f) fTargetAlpha = 0.f;
+			j["fTargetAlpha"] = fTargetAlpha;
+		}
+
+		float fDuration = j.value("fDuration", 0.f);
+		if (ImGui::InputFloat("fDuration", &fDuration))
+		{
+			if (fDuration < 0.f) fDuration = 0.f;
+			j["fDuration"] = fDuration;
+		}
+
+		bool isPin = j.value("isPin", false);
+		if (ImGui::Checkbox("isPin", &isPin))
+			j["isPin"] = isPin;
+	}
+	break;
 	case DTO::EUIAction::END:
 		break;
 	default:

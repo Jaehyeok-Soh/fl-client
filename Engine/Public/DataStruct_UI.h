@@ -117,10 +117,15 @@ inline DTO::EUIEvent StringToUIEvent(const std::string& str)
 
 enum class EUIAction
 {
-	/* (isVisible / bool) */
+	/* (bool / isVisible) */
 	SET_VISIBLE,
-	/* (index / uint) */
+
+	/* (uint / uIndex) */
 	SET_TEXTURE_INDEX,
+
+	/* (Vec3 / vTargetPos),( _float / fTargetAlpha),( _float / fDuration), (bool / isPin)*/
+	START_LERP_MOVEMENT,
+
 	END
 };
 
@@ -128,6 +133,7 @@ inline EUIAction StringToUIFunctype(const _string& str)
 {
 	if (str == "SET_VISIBLE")return EUIAction::SET_VISIBLE;
 	else if (str == "SET_TEXTURE_INDEX")return EUIAction::SET_TEXTURE_INDEX;
+	else if (str == "START_LERP_MOVEMENT")return EUIAction::START_LERP_MOVEMENT;
 	else return EUIAction::END;
 }
 
@@ -137,6 +143,7 @@ inline _string UIFunctypeToString(EUIAction eType)
 	{
 	case DTO::EUIAction::SET_VISIBLE: return "SET_VISIBLE";
 	case DTO::EUIAction::SET_TEXTURE_INDEX: return "SET_TEXTURE_INDEX";
+	case DTO::EUIAction::START_LERP_MOVEMENT: return "START_LERP_MOVEMENT";
 	default: return "";
 	}
 }

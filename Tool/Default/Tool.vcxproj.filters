@@ -480,12 +480,6 @@
     <ClInclude Include="..\Public\AnimObj.h">
       <Filter>02. GameObjects\ContainerObject\AnimModel</Filter>
     </ClInclude>
-    <ClInclude Include="..\Public\Button.h">
-      <Filter>04. Component\UI\Base\Button</Filter>
-    </ClInclude>
-    <ClInclude Include="..\Public\Image.h">
-      <Filter>04. Component\UI\Base\Image</Filter>
-    </ClInclude>
     <ClInclude Include="..\Public\UIComponent_Inspector.h">
       <Filter>06. ImGui\01. Panel\UI\Component</Filter>
     </ClInclude>
@@ -494,6 +488,9 @@
     </ClInclude>
     <ClInclude Include="..\Public\Builder_Map.h">
       <Filter>09. Builder\Map</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\UITargetAction_Tool.h">
+      <Filter>02. GameObjects\UI\00.Action</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -728,6 +725,9 @@
     </ClCompile>
     <ClCompile Include="..\Private\Builder_Map.cpp">
       <Filter>09. Builder\Map</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\UITargetAction_Tool.cpp">
+      <Filter>02. GameObjects\UI\00.Action</Filter>
     </ClCompile>
   </ItemGroup>
 </Project>

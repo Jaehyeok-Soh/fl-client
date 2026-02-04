@@ -224,6 +224,7 @@
     <ClCompile Include="..\Private\Importer.cpp" />
     <ClCompile Include="..\Private\Input_Manager.cpp" />
     <ClCompile Include="..\Private\IUIActionForMe.cpp" />
+    <ClCompile Include="..\Private\IUIActionForTarget.cpp" />
     <ClCompile Include="..\private\json_forward.cpp" />
     <ClCompile Include="..\Private\Layer.cpp" />
     <ClCompile Include="..\Private\Level.cpp" />
@@ -357,6 +358,7 @@
     <ClInclude Include="..\Public\Importer.h" />
     <ClInclude Include="..\Public\Input_Manager.h" />
     <ClInclude Include="..\Public\IUIActionForMe.h" />
+    <ClInclude Include="..\Public\IUIActionForTarget.h" />
     <ClInclude Include="..\public\json_forward.h" />
     <ClInclude Include="..\Public\Layer.h" />
     <ClInclude Include="..\Public\Level.h" />
