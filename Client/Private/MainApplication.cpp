@@ -211,7 +211,7 @@ HRESULT CMainApplication::Ready_Static_Prototype()
 			CComputeShader::Create(m_pDevice, m_pDeviceContext, &shaderDesc))))
 			return E_FAIL;
 	}
-#pragma endreiogn
+#pragma endregion
 
 #pragma region EFFECT_Shader
 	// For. Prototype_Component_Shader_VtxEffectMesh

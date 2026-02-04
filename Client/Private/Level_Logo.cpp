@@ -96,11 +96,6 @@ void CLevel_Logo::Update(const _float fTimeDelta)
 {
 	Super::Update(fTimeDelta);
 
-	if (m_pGameInstance->KeyButton_Down(DIK_0))
-	{
-		m_pGameInstance->Request_AddObject(ENUM_TO_UINT(ELevelType::LOGO), L"POOL_ParticleSystem", ENUM_TO_UINT(ELevelType::LOGO), L"Effect", nullptr);
-	}
-
 	// TODO : 어디다 두지?
 	static _uint s_iCount = { 0 };
 	if (m_pGameInstance->KeyButton_Down(DIK_LALT))
@@ -125,21 +120,6 @@ void CLevel_Logo::Update(const _float fTimeDelta)
 		}
 #endif
 		m_pGameInstance->Request_CursorMode(m_eCursorMode);
-	}
-}
-
-	if (m_pGameInstance->KeyButton_Down(DIK_1))
-	{
-		auto list = m_pGameInstance->Get_GameObject_List(ENUM_TO_UINT(ELevelType::LOGO), L"Effect");
-		
-		if (list == nullptr) return;
-
-		for (auto pGo : *list)
-		{
-			if(pGo != nullptr)
-				m_pGameInstance->Request_DeleteGameObject(ENUM_TO_UINT(ELevelType::LOGO), L"Effect", pGo);
-		}
-
 	}
 }
 

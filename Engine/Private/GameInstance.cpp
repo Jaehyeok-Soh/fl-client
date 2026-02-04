@@ -369,24 +369,19 @@ void CGameInstance::Request_AddObject(_uint iCloneLevelIndex, const wstring& wst
 void CGameInstance::Request_AddObject(_uint iPrototypeLevelIndex, const wstring& wstrPrototypeTag, _uint iCloneLevelIndex, const wstring& wstrLayerTag, void* pArg, std::function<void(CGameObject*)> onSpawnedCallback)
 {
 	CGameObject* pResult = { nullptr };
-
-	// Pool쪽 먼저 체크
-	pResult = m_pObjectPool_Manager->Spawn(iCloneLevelIndex, wstrPrototypeTag, pArg);
-
-	// Pool에 없으면 Clone
-	if (pResult == nullptr)
-		pResult = static_cast<CGameObject*>(m_pPrototype_Manager->Clone_Prototype(EPrototypeType::GAMEOBJECT, iPrototypeLevelIndex, wstrPrototypeTag, pArg));
+	pResult = static_cast<CGameObject*>(m_pPrototype_Manager->Clone_Prototype(EPrototypeType::GAMEOBJECT, iPrototypeLevelIndex, wstrPrototypeTag, pArg));
 
 	if (pResult)
-	{
-		SpawnEventDesc desc = {};
-		desc.iCloneLevelIndex = static_cast<_int>(iCloneLevelIndex);
-		desc.wstrLayerTag = wstrLayerTag;
-		desc.pClone = pResult;
-		if(onSpawnedCallback)
-			desc.callback = std::move(onSpawnedCallback);
-		m_pEvent_Manager->Push_SpawnEvent(desc);
-	}
+		Request_AddObject(iCloneLevelIndex, wstrLayerTag, pResult, onSpawnedCallback);
+}
+void CGameInstance::Request_AddObject(_uint iPoolLevelIndex, const wstring& wstrPoolTag, _uint iSpawnLevelIndex, void* pArg, std::function<void(CGameObject*)> onSpawnedCallback)
+{
+	CGameObject* pResult = { nullptr };
+	wstring wstrLayerTag = { L"" };
+	pResult = m_pObjectPool_Manager->Spawn(iPoolLevelIndex, wstrPoolTag, wstrLayerTag, pArg);
+
+	if(pResult)
+		Request_AddObject(iSpawnLevelIndex, wstrLayerTag, pResult, onSpawnedCallback);
 }
 void CGameInstance::Request_DeleteGameObject(_uint iCloneLevelIndex, const wstring& wstrLayerTag, CGameObject* pGo)
 {
@@ -397,7 +392,7 @@ void CGameInstance::Request_DeleteGameObject(_uint iCloneLevelIndex, const wstri
 	desc.iClonedLevelIndex = iCloneLevelIndex;
 	desc.wstrLayerTag = wstrLayerTag;
 	desc.pGo = pGo;
-	m_pEvent_Manager->Push_DespawnEvent(desc);	
+	m_pEvent_Manager->Push_DespawnEvent(desc);
 }
 CGameObject* CGameInstance::Get_GameObject(_uint iLevelIndex, const wstring& wstrLayerTag, _uint iObjectIndex)
 {

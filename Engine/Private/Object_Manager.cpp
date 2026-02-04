@@ -95,7 +95,9 @@ void CObject_Manager::Delete_GameObject(_uint iCloneLevelIndex, const wstring& w
 		if (pOwnerPool == nullptr)
 			return;
 
-		if (CLayer* pFindLayer = Find_Layer(iCloneLevelIndex, wstrLayerTag))
+		const wstring& wstrLayerTagFromPool = pOwnerPool->Get_LayerTag();
+
+		if (CLayer* pFindLayer = Find_Layer(iCloneLevelIndex, wstrLayerTagFromPool))
 			pFindLayer->Delete_GameObject(pGo);
 
 		pOwnerPool->Despawn(pGo);
@@ -135,7 +137,8 @@ CGameObject* CObject_Manager::Add_GameObject(_uint iPrototypeLevelIndex, const w
 	CGameObject* pGo = { nullptr };
 
 	// Pool쪽 먼저 체크
-	pGo = m_pPoolManager->Spawn(iPrototypeLevelIndex, wstrPrototypeTag, pArg);
+	wstring wstrLayerTagFromPool = { L"" };
+	pGo = m_pPoolManager->Spawn(iPrototypeLevelIndex, wstrPrototypeTag, wstrLayerTagFromPool, pArg);
 
 	// Pool에 없으면 Clone
 	if (pGo == nullptr)
