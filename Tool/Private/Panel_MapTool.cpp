@@ -104,7 +104,7 @@ HRESULT CPanel_MapTool::Render_CameraSetting()
 			m_pCamera->Set_Fov(fFov * TO_RAD);
 		float fFar = m_pCamera->Get_Far();
 		if (ImGui::DragFloat("Far#Far", &fFar))
-			m_pCamera->Set_Fov(fFar);
+			m_pCamera->Set_Far(fFar);
 
 		CTransform* pTransform = m_pCameraMan->Get_Component<CTransform>();
 

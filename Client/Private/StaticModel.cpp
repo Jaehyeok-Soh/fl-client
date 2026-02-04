@@ -85,7 +85,7 @@ HRESULT CStaticModel::Change_OverrideMtl(STATICMODEL_DESC* pDesc)
 	if (pDesc == nullptr) return E_FAIL;
 
 	/* 없으면 리턴 */
-	if (pDesc->tUsingModelInfo.vecMaterialInfo.empty()) return S_OK;
+	if (pDesc->tUsingModelInfo.vecOverrideMaterial.empty()) return S_OK;
 
 	CModel* pModel = CGameObject::Get_Component<CModel>();
 	if (pModel == nullptr) return E_FAIL;
@@ -142,6 +142,8 @@ HRESULT CStaticModel::Ready_PhysicsRigidBody(STATICMODEL_DESC* pDesc)
 
 	if (FAILED(Add_Component<CPhysicsRigidBody>(0, L"Prototype_Component_Physics_RigidBody", &desc)))
 		return E_FAIL;
+
+	return S_OK;
 }
 
 HRESULT CStaticModel::Awake(const _uint iCurrentLevelID)

@@ -9,6 +9,7 @@
 #include "UI_Maker.h"
 #include "UI_Hierachy.h"
 #include "UI_Inspector.h"
+#include "UIComponent_Inspector.h"
 
 CLevel_UI::CLevel_UI(ID3D11Device* pDevice, ID3D11DeviceContext* pDeviceContext)
 	: Super(pDevice, pDeviceContext)
@@ -81,6 +82,7 @@ HRESULT CLevel_UI::Ready_UI_Inspector()
 	m_GuiElements[ENUM_TO_SZET(Elements::UIMAKER)] = CUI_Maker::Create("[[ UI Creater ]]", this, m_pDevice, m_pDeviceContext);
 	m_GuiElements[ENUM_TO_SZET(Elements::INSPECTOR)] = CUI_Inspector::Create("[[ UI Inspector ]]", this, m_pDevice, m_pDeviceContext);
 	m_GuiElements[ENUM_TO_SZET(Elements::HIERACHY)] = CUI_Hierachy::Create("[[ UI List Viewer ]]", this, m_pDevice, m_pDeviceContext);
+	m_GuiElements[ENUM_TO_SZET(Elements::UICOM_ISPECTOR)] = CUIComponent_Inspector::Create("[[ Component Inspector ]]", this, m_pDevice, m_pDeviceContext);
 
 	return S_OK;
 }

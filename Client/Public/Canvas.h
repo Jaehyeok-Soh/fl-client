@@ -11,6 +11,7 @@ class CCanvas final : public CUIObject
 public:
 	typedef struct tagCanvasDesc : public UIOBJECT_DESC
 	{
+		_string strName;
 	}CANVAS_DESC;
 
 private:
@@ -41,6 +42,7 @@ public:
 	Vec3 Get_CB() { return Vec3{ m_fX, m_fY + m_fHeight * 0.5f, m_fZ }; }						// Center Bottom
 	Vec3 Get_RB() { return Vec3{ m_fX + m_fWidth * 0.5f , m_fY + m_fHeight * 0.5f, m_fZ }; }	// Right Bottom
 
+	const _string& Get_Name() { return m_strName; }
 	vector<CUILayer*>* Get_UILayerVector() { return &m_vecUILayers; }
 
 private:
@@ -56,7 +58,7 @@ private:
 
 	CGenericUI* m_pCaptureUI = { nullptr };
 	CGenericUI* m_pHoveringUI = { nullptr };
-
+	array<CGenericUI*, 2> m_ArrReleasedUI = { nullptr };
 	_bool m_isPreUIPressing = { FALSE };
 	_bool m_isPreHovering = { FALSE };
 

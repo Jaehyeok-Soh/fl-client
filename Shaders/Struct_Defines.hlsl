@@ -87,6 +87,21 @@ struct VS_IN_INST_MESH_PARTICLE
     float2 vLifeTime : TEXCOORD1;
 };
 
+struct VS_IN_INST_MESH
+{
+    // Slot 0
+    float3 vPosition : POSITION;
+    float3 vNormal : NORMAL;
+    float3 vTangent : TANGENT;
+    float3 vBinormal : BINORMAL;
+    float2 vUV : TEXCOORD0;
+    
+    // Slot 1
+    row_major float4x4 matTransform : WORLD;
+};
+
+
+
 //////////////////
 // VertexOutput //
 //////////////////
@@ -126,6 +141,18 @@ struct VS_OUT_POS_TEX_NOR
 };
 
 struct VS_OUT_MESH
+{
+    float4 vPosition : SV_POSITION;
+    float2 vUV : TEXCOORD0;
+    float3 vNormal : NORMAL;
+    float3 vTangent : TANGENT;
+    float3 vBinormal : BINORMAL;
+    
+    float4 vWorldPos : TEXCOORD1;
+    float4 vProjPos : TEXCOORD2;
+};
+
+struct VS_OUT_INST_MESH
 {
     float4 vPosition : SV_POSITION;
     float2 vUV : TEXCOORD0;
@@ -248,6 +275,18 @@ struct PS_IN_POS_TEX_NOR
 };
 
 struct PS_IN_MESH
+{
+    float4 vPosition : SV_POSITION;
+    float2 vUV : TEXCOORD0;
+    float3 vNormal : NORMAL;
+    float3 vTangent : TANGENT;
+    float3 vBinormal : BINORMAL;
+    
+    float4 vWorldPos : TEXCOORD1;
+    float4 vProjPos : TEXCOORD2;
+};
+
+struct PS_IN_INST_MESH
 {
     float4 vPosition : SV_POSITION;
     float2 vUV : TEXCOORD0;

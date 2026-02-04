@@ -197,6 +197,7 @@ namespace Tool
 	inline constexpr _tchar g_wszTriggerBoxLayer[]{ L"TriggerBox_Layer" };
 	inline constexpr _tchar g_wszColMeshLayer[]{ L"ColMesh_Layer" };
 	inline constexpr _tchar g_wszStaticModelLayer[]{ L"StaticModel_Layer" };
+	inline constexpr _tchar g_wszInstanceModelLayer[]{ L"InstanceModel_Layer" };
 	inline constexpr _tchar g_wszCameraLayer[]{ L"Camera_Layer" };
 
 	inline constexpr _tchar g_wszPrototypeTagCanvas[]{ L"Prototype_UI_Canvas" };
@@ -244,7 +245,6 @@ namespace Tool
 
 
 #pragma endregion
-
 
 #pragma region Struct
 

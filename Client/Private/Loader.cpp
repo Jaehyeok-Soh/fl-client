@@ -12,6 +12,7 @@
 #include "VIBuffer_Particle_Rect.h"
 #include "VIBuffer_Particle_Point.h"
 #include "VIBuffer_Particle_Mesh.h"
+#include "InstanceMesh.h"
 #include "VIBuffer_Cube_Tex.h"
 #include "Shader.h"
 #include "Camera.h"
@@ -43,6 +44,7 @@
 #include "EffectObject.h"
 #include "Physics_LandScape.h" // physics test
 #include "StaticModel.h"
+#include "InstanceModel.h"
 //=================
 // UI
 //=================
@@ -169,15 +171,15 @@ HRESULT CLoader::Loading_For_Logo()
 	if (FAILED(m_pGameInstance->Load_Sounds(L"../../Resources/Sounds")))
 		return E_FAIL;
 
-	// For. Prototype_Component_Button_Test_Texture
-	{
-		CTexture::TEXTURE_COMPONENT_ORIGIN_DESC textureDesc = {};
-		textureDesc.iTextureCount = 16;
-		textureDesc.wstrTexturePath = L"../../Resources/Textures/UI/%d.png";
-		if (FAILED(m_pGameInstance->Add_Prototype(ENUM_TO_UINT(ELevelType::STATIC), L"Texture_Boss", CTexture::Create(&textureDesc))))
-			return E_FAIL;
-	}
-
+		// For. Prototype_Component_Button_Test_Texture
+		{
+			CTexture::TEXTURE_COMPONENT_ORIGIN_DESC textureDesc = {};
+			textureDesc.iTextureCount = 22;
+			textureDesc.wstrTexturePath = L"../../Resources/Textures/UI/%d.png";
+			if (FAILED(m_pGameInstance->Add_Prototype(ENUM_TO_UINT(ELevelType::STATIC), L"Prototype_Component_UI_Texture", CTexture::Create(&textureDesc))))
+				return E_FAIL;
+		}
+	
 #pragma endregion
 
 	//////////////////////////////////////////
@@ -220,6 +222,12 @@ HRESULT CLoader::Loading_For_Logo()
 	// For. Prototype_Component_Collider_SPHERE
 	m_pGameInstance->Add_Prototype(ENUM_TO_UINT(ELevelType::STATIC), L"Prototype_Component_Collider_Sphere", CCollider::Create(m_pDevice, m_pDeviceContext, EColliderType::SPHERE));
 
+
+
+	// For. Prototype_Component_Collider_SPHERE
+	m_pGameInstance->Add_Prototype(ENUM_TO_UINT(ELevelType::STATIC), L"Prototype_Component_VIBuffer_InstanceMesh", CInstanceMesh::Create(m_pDevice, m_pDeviceContext));
+
+
 	///////////////////////////////////////
 	//////////// Ready Objects ////////////
 	///////////////////////////////////////
@@ -240,6 +248,7 @@ HRESULT CLoader::Loading_For_Logo()
 
 		/* Map Object */
 		ADD_PROTOTYPE(ELevelType::STATIC, L"Prototype_GameObject_StaticModel", CStaticModel::Create(m_pDevice, m_pDeviceContext));
+		ADD_PROTOTYPE(ELevelType::STATIC, L"Prototype_GameObject_InstanceModel", CInstanceModel::Create(m_pDevice, m_pDeviceContext));
 
 	}
 #pragma endregion

@@ -17,9 +17,6 @@ NS_END
 NS_BEGIN(Tool)
 class CToolUI;
 
-enum class EUiType {
-	IMAGE_2D = 0, IMAGE_3D, BUTTON, TEXT, VIDEO, END
-};
 
 enum class ERectTransform {
 	LT = 0, CT, RT, LC, C, RC, LB, CB, RB, END
@@ -49,39 +46,6 @@ private:
 public:
 	virtual void Free()override;
 };
-
-static const _string& UITypeToString(EUiType eType)
-{
-	switch (eType)
-	{
-	case Tool::EUiType::IMAGE_2D:
-		return "IMAGE_2D";
-	case Tool::EUiType::IMAGE_3D:
-		return "IMAGE_3D";
-	case Tool::EUiType::BUTTON:
-		return "BUTTON";
-	case Tool::EUiType::TEXT:
-		return "TEXT";
-	case Tool::EUiType::VIDEO:
-		return "VIDEO";
-	}
-	return "";
-}
-static EUiType StringToUIType(const _string& str)
-{
-	if (::strcmp(str.c_str(), "IMAGE_2D") == 0)
-		return EUiType::IMAGE_2D;
-	else if (::strcmp(str.c_str(), "IMAGE_3D") == 0)
-		return EUiType::IMAGE_3D;
-	else if (::strcmp(str.c_str(), "BUTTON") == 0)
-		return EUiType::BUTTON;
-	else if (::strcmp(str.c_str(), "TEXT") == 0)
-		return EUiType::TEXT;
-	else if (::strcmp(str.c_str(), "VIDEO") == 0)
-		return EUiType::VIDEO;
-	else
-		return EUiType::END;
-}
 
 static const _string& RectTransformToString(ERectTransform eType)
 {

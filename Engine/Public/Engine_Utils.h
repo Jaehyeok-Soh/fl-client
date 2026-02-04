@@ -51,6 +51,31 @@ public:
 	static void write_vec3_PitchYawRoll(json& _j, const Vec3& vOut);
 	static void write_vec4_Quat( json& _j, const Quat& vOut);
 
+
+	static inline string	D3D11_USAGE_ToString(D3D11_USAGE eUsage)
+	{
+		switch (eUsage)
+		{
+		case D3D11_USAGE_DEFAULT:	return "DEFAULT";
+		case D3D11_USAGE_IMMUTABLE:	return "IMMUTABLE";
+		case D3D11_USAGE_DYNAMIC:	return "DYNAMIC";
+		case D3D11_USAGE_STAGING:	return "STAGING";
+		default:					return "DEFAULT";
+		}
+
+		return "DEFAULT";
+	}
+	static inline D3D11_USAGE	D3D11_USAGE_ToEnum(string strUsage)
+	{
+		if (strUsage == "DEFAULT")		return D3D11_USAGE_DEFAULT;
+		if (strUsage == "IMMUTABLE")	return D3D11_USAGE_IMMUTABLE;
+		if (strUsage == "DYNAMIC")		return D3D11_USAGE_DYNAMIC;
+		if (strUsage == "STAGING")		return D3D11_USAGE_STAGING;
+
+		return D3D11_USAGE_DEFAULT;
+	}
+
+
 #pragma endregion
 
 
