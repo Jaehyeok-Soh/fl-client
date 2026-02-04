@@ -111,40 +111,68 @@ void CPlayerControlContext::Set_CheckKey(KEYFLAGS FKey, _bool bOn)
 
 _bool CPlayerControlContext::Is_LeftAttackPressed()
 {
-	return m_pGameInstance->Mouse_Down(MOUSEKEYSTATE::LB);
+	if (Engine_Utils::Has_Flag(m_FKeys, KEYFLAGS::COMBO) &&
+		m_pGameInstance->Mouse_Down(MOUSEKEYSTATE::LB))
+		return true;
+
+	return false;
 }
 
 _bool CPlayerControlContext::Is_RightAttackPressed()
 {
-	return m_pGameInstance->Mouse_Down(MOUSEKEYSTATE::RB);
+	if (Engine_Utils::Has_Flag(m_FKeys, KEYFLAGS::GUN) &&
+		m_pGameInstance->Mouse_Pressing(MOUSEKEYSTATE::RB))
+		return true;
+
+	return false;
 }
 
 _bool CPlayerControlContext::Is_MovePressed()
 {
-	return m_pGameInstance->KeyButton_Pressing(DIK_W) ||
-		m_pGameInstance->KeyButton_Pressing(DIK_A) ||
-		m_pGameInstance->KeyButton_Pressing(DIK_S) ||
-		m_pGameInstance->KeyButton_Pressing(DIK_D);
+	if (Engine_Utils::Has_Flag(m_FKeys, KEYFLAGS::MOVE) &&
+		(m_pGameInstance->KeyButton_Pressing(DIK_W) ||
+			m_pGameInstance->KeyButton_Pressing(DIK_A) ||
+			m_pGameInstance->KeyButton_Pressing(DIK_S) ||
+			m_pGameInstance->KeyButton_Pressing(DIK_D)))
+		return true;
+
+	return false;
 }
 
 _bool CPlayerControlContext::Is_JumpPressed()
 {
-	return m_pGameInstance->KeyButton_Down(DIK_SPACE);
+	if (Engine_Utils::Has_Flag(m_FKeys, KEYFLAGS::JUMP) &&
+		m_pGameInstance->KeyButton_Down(DIK_SPACE))
+		return true;
+
+	return false;
 }
 
 _bool CPlayerControlContext::Is_WirePressed()
 {
-	return m_pGameInstance->KeyButton_Down(DIK_F);
+	if (Engine_Utils::Has_Flag(m_FKeys, KEYFLAGS::INTERACT) &&
+		m_pGameInstance->KeyButton_Down(DIK_F))
+		return true;
+
+	return false;
 }
 
 _bool CPlayerControlContext::Is_DodgePressed()
 {
-	return m_pGameInstance->KeyButton_Up(DIK_LCONTROL) || m_pGameInstance->KeyButton_None(DIK_LCONTROL);
+	if (Engine_Utils::Has_Flag(m_FKeys, KEYFLAGS::SPECIAL) &&
+		(m_pGameInstance->KeyButton_Up(DIK_LCONTROL) || m_pGameInstance->KeyButton_None(DIK_LCONTROL)))
+		return true;
+
+	return false;
 }
 
 _bool CPlayerControlContext::Is_InteractionPressed()
 {
-	return m_pGameInstance->KeyButton_Down(DIK_F);
+	if (Engine_Utils::Has_Flag(m_FKeys, KEYFLAGS::INTERACT) &&
+		m_pGameInstance->KeyButton_Down(DIK_F))
+		return true;
+
+	return false;
 }
 
 _bool CPlayerControlContext::Is_DashPressed()
@@ -162,37 +190,65 @@ _bool CPlayerControlContext::Is_DashPressed()
 
 _bool CPlayerControlContext::Is_SepcialMovePressed()
 {
-	return m_pGameInstance->KeyButton_Pressing(DIK_LCONTROL);
+	if (Engine_Utils::Has_Flag(m_FKeys, KEYFLAGS::SPECIAL) &&
+		m_pGameInstance->KeyButton_Down(DIK_LCONTROL))
+		return true;
+
+	return false;
 }
 
 _bool CPlayerControlContext::Is_ComboAtt1Pressed()
 {
-	return m_pGameInstance->Mouse_Down(MOUSEKEYSTATE::LB);
+	if (Engine_Utils::Has_Flag(m_FKeys, KEYFLAGS::COMBO) &&
+		m_pGameInstance->Mouse_Down(MOUSEKEYSTATE::LB))
+		return true;
+
+	return false;
 }
 
 _bool CPlayerControlContext::Is_ComboAtt2Pressed()
 {
-	return m_pGameInstance->Mouse_Down(MOUSEKEYSTATE::LB);
+	if (Engine_Utils::Has_Flag(m_FKeys, KEYFLAGS::COMBO) &&
+		m_pGameInstance->Mouse_Down(MOUSEKEYSTATE::LB))
+		return true;
+
+	return false;
 }
 
 _bool CPlayerControlContext::Is_ComboAtt3Pressed()
 {
-	return m_pGameInstance->Mouse_Down(MOUSEKEYSTATE::LB);
+	if (Engine_Utils::Has_Flag(m_FKeys, KEYFLAGS::COMBO) &&
+		m_pGameInstance->Mouse_Down(MOUSEKEYSTATE::LB))
+		return true;
+
+	return false;
 }
 
 _bool CPlayerControlContext::Is_ComboAtt4Pressed()
 {
-	return m_pGameInstance->Mouse_Down(MOUSEKEYSTATE::LB);
+	if (Engine_Utils::Has_Flag(m_FKeys, KEYFLAGS::COMBO) &&
+		m_pGameInstance->Mouse_Down(MOUSEKEYSTATE::LB))
+		return true;
+
+	return false;
 }
 
 _bool CPlayerControlContext::Is_Skill1Pressed()
 {
-	return m_pGameInstance->KeyButton_Down(DIK_Q);
+	if (Engine_Utils::Has_Flag(m_FKeys, KEYFLAGS::SKILL1) &&
+		m_pGameInstance->KeyButton_Down(DIK_E))
+		return true;
+
+	return false;
 }
 
 _bool CPlayerControlContext::Is_Skill2Pressed()
 {
-	return m_pGameInstance->KeyButton_Down(DIK_E);
+	if (Engine_Utils::Has_Flag(m_FKeys, KEYFLAGS::SKILL2) &&
+		m_pGameInstance->KeyButton_Down(DIK_Q))
+		return true;
+
+	return false;
 }
 
 _bool CPlayerControlContext::Is_ChargingAttackPressed()
