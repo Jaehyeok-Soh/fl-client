@@ -38,7 +38,6 @@ public:
 		,SLIDESKY
 
 		,DASHBACK
-		,DASHFRONT
 		,DASHSKY
 
 		,RUNSHORT
