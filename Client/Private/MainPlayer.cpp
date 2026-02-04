@@ -65,7 +65,8 @@ HRESULT CMainPlayer::Initialize(void* pArg)
     tDesc.FKeys = CPlayerControlContext::KEYFLAGS::MOVE     | CPlayerControlContext::KEYFLAGS::JUMP
                 | CPlayerControlContext::KEYFLAGS::DASH     | CPlayerControlContext::KEYFLAGS::SPECIAL
                 | CPlayerControlContext::KEYFLAGS::COMBO    | CPlayerControlContext::KEYFLAGS::SKILL1
-                | CPlayerControlContext::KEYFLAGS::SKILL2   | CPlayerControlContext::KEYFLAGS::INTERACT;
+                | CPlayerControlContext::KEYFLAGS::SKILL2   | CPlayerControlContext::KEYFLAGS::INTERACT |
+                    CPlayerControlContext::KEYFLAGS::GUN;
     if (FAILED(Add_Component<CPlayerControlContext>(0 /*static*/, L"Prototype_Component_ControlContext_Player", &tDesc)))
         return E_FAIL;
 
@@ -580,8 +581,8 @@ HRESULT CMainPlayer::Ready_CCT()
     desc.tMaterial = mtrlDesc;
     desc.pOwner = this;
 
-   // if (FAILED(Add_Component<CPhysicsCCT>(0, L"Prototype_Component_Physics_CCT", &desc)))
-   //     return E_FAIL;
+    if (FAILED(Add_Component<CPhysicsCCT>(0, L"Prototype_Component_Physics_CCT", &desc)))
+        return E_FAIL;
 
     return S_OK;
 }
