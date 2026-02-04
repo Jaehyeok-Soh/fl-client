@@ -112,9 +112,6 @@
     <Filter Include="06. FSM\Player\DashBack">
       <UniqueIdentifier>{902bc6b0-2606-46cf-902c-e58daa3a16a9}</UniqueIdentifier>
     </Filter>
-    <Filter Include="06. FSM\Player\DashFront">
-      <UniqueIdentifier>{b738b353-6637-40f9-9762-6a4027a61b1f}</UniqueIdentifier>
-    </Filter>
     <Filter Include="06. FSM\Player\DashSky">
       <UniqueIdentifier>{39a224de-7994-4a34-8213-33de7f2ffb80}</UniqueIdentifier>
     </Filter>
@@ -303,9 +300,6 @@
     <ClInclude Include="..\Public\State_DashBack.h">
       <Filter>06. FSM\Player\DashBack</Filter>
     </ClInclude>
-    <ClInclude Include="..\Public\State_DashFront.h">
-      <Filter>06. FSM\Player\DashFront</Filter>
-    </ClInclude>
     <ClInclude Include="..\Public\State_DashSky.h">
       <Filter>06. FSM\Player\DashSky</Filter>
     </ClInclude>
@@ -479,9 +473,6 @@
     </ClCompile>
     <ClCompile Include="..\Private\State_DashBack.cpp">
       <Filter>06. FSM\Player\DashBack</Filter>
-    </ClCompile>
-    <ClCompile Include="..\Private\State_DashFront.cpp">
-      <Filter>06. FSM\Player\DashFront</Filter>
     </ClCompile>
     <ClCompile Include="..\Private\State_DashSky.cpp">
       <Filter>06. FSM\Player\DashSky</Filter>

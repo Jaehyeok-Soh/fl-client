@@ -185,7 +185,6 @@
     <ClInclude Include="..\Public\Player.h" />
     <ClInclude Include="..\Public\PlayerActionState.h" />
     <ClInclude Include="..\Public\PlayerControlContext.h" />
-    <ClInclude Include="..\Public\State_DashFront.h" />
     <ClInclude Include="..\Public\StatComponent.h" />
     <ClInclude Include="..\Public\StateBase_Player.h">
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">false</ExcludedFromBuild>
@@ -245,7 +244,6 @@
     <ClCompile Include="..\Private\Player.cpp" />
     <ClCompile Include="..\Private\PlayerActionState.cpp" />
     <ClCompile Include="..\Private\PlayerControlContext.cpp" />
-    <ClCompile Include="..\Private\State_DashFront.cpp" />
     <ClCompile Include="..\Private\StatComponent.cpp" />
     <ClCompile Include="..\Private\StateBase_Player.cpp">
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">false</ExcludedFromBuild>
