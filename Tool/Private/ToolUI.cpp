@@ -71,6 +71,7 @@ HRESULT CToolUI::Awake(const _uint iCurrentLevelID)
 	m_pEffect->SetVertexColorEnabled(true);
 
 	m_pActionForMe = CUIAction_Tool::Create(this);
+	m_iInteractState = static_cast<uint32_t>(DTO::EUIEvent_Flag::NONE);
 	if (nullptr == m_pActionForMe)
 		return E_FAIL;
 
@@ -83,7 +84,6 @@ void CToolUI::Update_Priority(const _float fTimeDelta)
 	SetUp_RectTransform_Position();
 	SetUp_Visible();
 	m_isHitTest = FALSE;
-	m_iInteractState = static_cast<uint32_t>(CUIObject::EInteractState::NONE);
 	Super::Update_Priority(fTimeDelta);
 }
 
@@ -164,7 +164,7 @@ _bool CToolUI::Calc_HitEvent()
 	return FALSE;
 }
 
-HRESULT CToolUI::Bind_Action(DTO::EUIEvent EventType, DTO::EUIFunc FuncType, const json& params)
+HRESULT CToolUI::Bind_Action(DTO::EUIEvent EventType, DTO::EUIAction ActType, const json& params)
 {
 	const size_t index = ENUM_TO_SZET(EventType);
 	if (index >= m_vecBindingActions.size())
@@ -172,11 +172,11 @@ HRESULT CToolUI::Bind_Action(DTO::EUIEvent EventType, DTO::EUIFunc FuncType, con
 
 	DTO::TUI_EventBindData Desc = {};
 	Desc.strOwnerTag = m_strName;
-	Desc.strActionKey = DTO::UIFunctypeToString(FuncType);
+	Desc.strActionKey = DTO::UIFunctypeToString(ActType);
 	Desc.eEvent = EventType;
 	Desc.Params = params;
 	m_vecBindingActionData[index].push_back(Desc);
-	auto Func = m_pGameInstance->Get_UIAction_Registry()->Build_Action(FuncType, params);
+	auto Func = m_pGameInstance->Get_UIAction_Registry()->Build_Action(ActType, params);
 	if (!Func)
 		return E_FAIL;
 	m_vecBindingActions[index].push_back(std::move(Func));
@@ -199,7 +199,7 @@ HRESULT CToolUI::ReBind_Action()
 	return S_OK;
 }
 
-HRESULT CToolUI::Remove_Action(DTO::EUIEvent EventType, DTO::EUIFunc FuncType)
+HRESULT CToolUI::Remove_Action(DTO::EUIEvent EventType, DTO::EUIAction ActType)
 {
 	const size_t EventIndex = ENUM_TO_SZET(EventType);
 	if (EventIndex >= m_vecBindingActionData.size())
@@ -208,7 +208,7 @@ HRESULT CToolUI::Remove_Action(DTO::EUIEvent EventType, DTO::EUIFunc FuncType)
 	_bool isRemoved = { FALSE };
 	for (auto iter = m_vecBindingActionData[EventIndex].begin(); iter != m_vecBindingActionData[EventIndex].end(); iter++)
 	{
-		if (DTO::StringToUIFunctype(iter->strActionKey) == FuncType)
+		if (DTO::StringToUIFunctype(iter->strActionKey) == ActType)
 		{
 			m_vecBindingActionData[EventIndex].erase(iter);
 			isRemoved = TRUE;
@@ -309,13 +309,35 @@ void CToolUI::SetUp_Visible()
 
 void CToolUI::Acting_About_State()
 {
-	if (Engine_Utils::Has_Flag(m_iInteractState, ENUM_TO_UINT(DTO::EUIEvent::HOVER_ENTER)))
+	if(m_iInteractState == DTO::EUIEvent_Flag::NONE)
+		Excute_Action(DTO::EUIEvent::NONE);
+	else
 	{
-		Excute_Action(DTO::EUIEvent::HOVER_ENTER);
-	}
-	else if (Engine_Utils::Has_Flag(m_iInteractState, ENUM_TO_UINT(DTO::EUIEvent::HOVER_EXIT)))
-	{
-		Excute_Action(DTO::EUIEvent::HOVER_EXIT);
+		if (Engine_Utils::Has_Flag(m_iInteractState, DTO::EUIEvent_Flag::PRESS_ENTER))
+		{
+			Excute_Action(DTO::EUIEvent::PRESS_ENTER);
+		}
+		else if (Engine_Utils::Has_Flag(m_iInteractState, DTO::EUIEvent_Flag::PRESS_EXIT))
+		{
+			Excute_Action(DTO::EUIEvent::PRESS_EXIT);
+		}
+		else if (Engine_Utils::Has_Flag(m_iInteractState, DTO::EUIEvent_Flag::HOVER_ENTER))
+		{
+			Excute_Action(DTO::EUIEvent::HOVER_ENTER);
+		}
+		else if (Engine_Utils::Has_Flag(m_iInteractState, DTO::EUIEvent_Flag::HOVER_EXIT))
+		{
+			Excute_Action(DTO::EUIEvent::HOVER_EXIT);
+		}
+
+		if (Engine_Utils::Has_Flag(m_iInteractState, DTO::EUIEvent_Flag::PRESSING))
+		{
+			Excute_Action(DTO::EUIEvent::PRESSING);
+		}
+		else if (Engine_Utils::Has_Flag(m_iInteractState, DTO::EUIEvent_Flag::HOVERING))
+		{
+			Excute_Action(DTO::EUIEvent::HOVERING);
+		}
 	}
 }
 

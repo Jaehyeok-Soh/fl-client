@@ -200,18 +200,18 @@ void CUI_Inspector::Add_Action(DTO::EUIEvent EventType)
 		ImGui::TextDisabled("Select component to add");
 		ImGui::Separator();
 
-		const _string& strSET_VISIBLE = DTO::UIFunctypeToString(DTO::EUIFunc::SET_VISIBLE);
+		const _string& strSET_VISIBLE = DTO::UIFunctypeToString(DTO::EUIAction::SET_VISIBLE);
 		if (ImGui::Selectable(strSET_VISIBLE.c_str()))
 		{
-			m_pSelectedUI->Bind_Action(EventType, DTO::EUIFunc::SET_VISIBLE, json{ {"isVisible", true} });
+			m_pSelectedUI->Bind_Action(EventType, DTO::EUIAction::SET_VISIBLE, json{ {"isVisible", true} });
 
 			ImGui::CloseCurrentPopup();
 		}
 
-		const _string& strSET_TEXTURE_INDEX = DTO::UIFunctypeToString(DTO::EUIFunc::SET_TEXTURE_INDEX);
+		const _string& strSET_TEXTURE_INDEX = DTO::UIFunctypeToString(DTO::EUIAction::SET_TEXTURE_INDEX);
 		if (ImGui::Selectable(strSET_TEXTURE_INDEX.c_str()))
 		{
-			m_pSelectedUI->Bind_Action(EventType, DTO::EUIFunc::SET_TEXTURE_INDEX, json{ {"index", 0u} });
+			m_pSelectedUI->Bind_Action(EventType, DTO::EUIAction::SET_TEXTURE_INDEX, json{ {"index", 0u} });
 
 			ImGui::CloseCurrentPopup();
 		}
@@ -224,7 +224,7 @@ void CUI_Inspector::Edit_Action()
 {
 	switch (m_eCurEditFunc)
 	{
-	case DTO::EUIFunc::SET_VISIBLE:
+	case DTO::EUIAction::SET_VISIBLE:
 	{
 		auto* pVec = m_pSelectedUI->Safe_Access_EventData(m_eCurEditEvent);
 		if (pVec && !pVec->empty())
@@ -237,7 +237,7 @@ void CUI_Inspector::Edit_Action()
 
 		break;
 	}
-	case DTO::EUIFunc::SET_TEXTURE_INDEX:
+	case DTO::EUIAction::SET_TEXTURE_INDEX:
 	{
 		auto* pVec = m_pSelectedUI->Safe_Access_EventData(m_eCurEditEvent);
 		if (nullptr == pVec || pVec->empty())
@@ -255,7 +255,7 @@ void CUI_Inspector::Edit_Action()
 
 		break;
 	}
-	case DTO::EUIFunc::END:
+	case DTO::EUIAction::END:
 		break;
 	default:
 		break;
@@ -267,37 +267,37 @@ void CUI_Inspector::SetUp_Func()
 	if (ImGui::Button("Hover Enter Action", ImVec2(0.f, 30.f)))
 	{
 		m_eCurEditEvent = DTO::EUIEvent::HOVER_ENTER;
-		m_eCurEditFunc = DTO::EUIFunc::END;
+		m_eCurEditFunc = DTO::EUIAction::END;
 	}
 	else if (ImGui::Button("Hover Exit Action",ImVec2(0.f, 30.f)))
 	{
 		m_eCurEditEvent = DTO::EUIEvent::HOVER_EXIT;
-		m_eCurEditFunc = DTO::EUIFunc::END;
+		m_eCurEditFunc = DTO::EUIAction::END;
 	}
 	else if (ImGui::Button("Hovering Action", ImVec2(0.f, 30.f)))
 	{
 		m_eCurEditEvent = DTO::EUIEvent::HOVERING;
-		m_eCurEditFunc = DTO::EUIFunc::END;
+		m_eCurEditFunc = DTO::EUIAction::END;
 	}
 	else if (ImGui::Button("None Action", ImVec2(0.f, 30.f)))
 	{
 		m_eCurEditEvent = DTO::EUIEvent::NONE;
-		m_eCurEditFunc = DTO::EUIFunc::END;
+		m_eCurEditFunc = DTO::EUIAction::END;
 	}
 	else if (ImGui::Button("Press Enter Action", ImVec2(0.f, 30.f)))
 	{
 		m_eCurEditEvent = DTO::EUIEvent::PRESS_ENTER;
-		m_eCurEditFunc = DTO::EUIFunc::END;
+		m_eCurEditFunc = DTO::EUIAction::END;
 	}
 	else if (ImGui::Button("Press Exit Action", ImVec2(0.f, 30.f)))
 	{
 		m_eCurEditEvent = DTO::EUIEvent::PRESS_EXIT;
-		m_eCurEditFunc = DTO::EUIFunc::END;
+		m_eCurEditFunc = DTO::EUIAction::END;
 	}
 	else if (ImGui::Button("Pressing Action", ImVec2(0.f, 30.f)))
 	{
 		m_eCurEditEvent = DTO::EUIEvent::PRESSING;
-		m_eCurEditFunc = DTO::EUIFunc::END;
+		m_eCurEditFunc = DTO::EUIAction::END;
 	}
 
 	Add_Action(m_eCurEditEvent);

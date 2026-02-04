@@ -1,6 +1,5 @@
 #pragma once
 #include "UIObject.h"
-
 #include "UIData_Repository.h"
 
 NS_BEGIN(Engine)
@@ -46,8 +45,8 @@ public:
 	_bool Calc_HitEvent();
 
 public:
-	HRESULT Bind_Action(DTO::EUIEvent EventType, DTO::EUIFunc FuncType, const json& params);
-	HRESULT Remove_Action(DTO::EUIEvent EventType, DTO::EUIFunc FuncType);
+	HRESULT Bind_Action(DTO::EUIEvent EventType, DTO::EUIAction ActType, const json& params);
+	HRESULT Remove_Action(DTO::EUIEvent EventType, DTO::EUIAction ActType);
 	IUIActionForMe* Get_ActionForMe() const { return m_pActionForMe; }
 	HRESULT Excute_Action(DTO::EUIEvent EventType);
 	HRESULT ReBind_Action();

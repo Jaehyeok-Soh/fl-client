@@ -63,8 +63,8 @@ HRESULT CLevel_Logo::Initialize()
 	//if (FAILED(Ready_DevMap()))
 	//	return E_FAIL;
 
-	//if (FAILED(Ready_UI_Layer(g_wszUILayer)))
-	//	return E_FAIL;
+	if (FAILED(Ready_UI_Layer(g_wszUILayer)))
+		return E_FAIL;
 
 	if (FAILED(Ready_Lights()))
 		return E_FAIL;

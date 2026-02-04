@@ -84,10 +84,9 @@ private:
 
 	CToolUI* m_pCaptureUI = {nullptr};
 	CToolUI* m_pHoveringUI = { nullptr };
-
+	array<CToolUI*, 2> m_ArrReleasedUI = {nullptr};
 	_bool m_isPreUIPressing = { FALSE };
 	_bool m_isPreHovering = { FALSE };
-
 public:
 	static CToolCanvas* Create(EToolObjectType eType, ID3D11Device* pDevice, ID3D11DeviceContext* pDeviceContext);
 	CGameObject* Clone(void* pArg);

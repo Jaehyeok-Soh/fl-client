@@ -35,6 +35,49 @@ enum class EUIEvent : uint32_t
 	END
 };
 
+enum EUIEvent_Flag : uint32_t
+{
+	NONE = 0u,
+	HOVER_ENTER = 1u << 1,
+	HOVERING	= 1u << 2,
+	HOVER_EXIT	= 1u << 3,
+	PRESS_ENTER = 1u << 4,
+	PRESSING	= 1u << 5,
+	PRESS_EXIT	= 1u << 6,
+	END			= 1u << 7
+};
+
+inline DTO::EUIEvent EventFlagToEvent(DTO::EUIEvent_Flag eFlag)
+{
+	switch (eFlag)
+	{
+	case DTO::EUIEvent_Flag::NONE:			return DTO::EUIEvent::NONE;
+	case DTO::EUIEvent_Flag::HOVER_ENTER:	return DTO::EUIEvent::HOVER_ENTER;
+	case DTO::EUIEvent_Flag::HOVERING:		return DTO::EUIEvent::HOVERING;
+	case DTO::EUIEvent_Flag::HOVER_EXIT:	return DTO::EUIEvent::HOVER_EXIT;
+	case DTO::EUIEvent_Flag::PRESS_ENTER:	return DTO::EUIEvent::PRESS_ENTER;
+	case DTO::EUIEvent_Flag::PRESSING:		return DTO::EUIEvent::PRESSING;
+	case DTO::EUIEvent_Flag::PRESS_EXIT:	return DTO::EUIEvent::PRESS_EXIT;
+	default:								return DTO::EUIEvent::NONE;
+	}
+}
+
+inline DTO::EUIEvent_Flag EventToEventFlag(DTO::EUIEvent eEvent)
+{
+	switch (eEvent)
+	{
+	case DTO::EUIEvent::NONE:			return DTO::EUIEvent_Flag::NONE;
+	case DTO::EUIEvent::HOVER_ENTER:	return DTO::EUIEvent_Flag::HOVER_ENTER;
+	case DTO::EUIEvent::HOVERING:		return DTO::EUIEvent_Flag::HOVERING;
+	case DTO::EUIEvent::HOVER_EXIT:		return DTO::EUIEvent_Flag::HOVER_EXIT;
+	case DTO::EUIEvent::PRESS_ENTER:	return DTO::EUIEvent_Flag::PRESS_ENTER;
+	case DTO::EUIEvent::PRESSING:		return DTO::EUIEvent_Flag::PRESSING;
+	case DTO::EUIEvent::PRESS_EXIT:		return DTO::EUIEvent_Flag::PRESS_EXIT;
+	default:							return DTO::EUIEvent_Flag::NONE;
+	}
+}
+
+
 NLOHMANN_JSON_SERIALIZE_ENUM(EUIEvent,
 	{
 		{EUIEvent::NONE, "NONE"},
@@ -72,7 +115,7 @@ inline DTO::EUIEvent StringToUIEvent(const std::string& str)
 	else return DTO::EUIEvent::END;
 }
 
-enum class EUIFunc
+enum class EUIAction
 {
 	/* (isVisible / bool) */
 	SET_VISIBLE,
@@ -81,19 +124,19 @@ enum class EUIFunc
 	END
 };
 
-inline EUIFunc StringToUIFunctype(const _string& str)
+inline EUIAction StringToUIFunctype(const _string& str)
 {
-	if (str == "SET_VISIBLE")return EUIFunc::SET_VISIBLE;
-	else if (str == "SET_TEXTURE_INDEX")return EUIFunc::SET_TEXTURE_INDEX;
-	else return EUIFunc::END;
+	if (str == "SET_VISIBLE")return EUIAction::SET_VISIBLE;
+	else if (str == "SET_TEXTURE_INDEX")return EUIAction::SET_TEXTURE_INDEX;
+	else return EUIAction::END;
 }
 
-inline _string UIFunctypeToString(EUIFunc eType)
+inline _string UIFunctypeToString(EUIAction eType)
 {
 	switch (eType)
 	{
-	case DTO::EUIFunc::SET_VISIBLE: return "SET_VISIBLE";
-	case DTO::EUIFunc::SET_TEXTURE_INDEX: return "SET_TEXTURE_INDEX";
+	case DTO::EUIAction::SET_VISIBLE: return "SET_VISIBLE";
+	case DTO::EUIAction::SET_TEXTURE_INDEX: return "SET_TEXTURE_INDEX";
 	default: return "";
 	}
 }

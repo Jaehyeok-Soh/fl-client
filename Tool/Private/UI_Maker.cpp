@@ -551,9 +551,9 @@ void CUI_Maker::Make_UI()
 									MSG_BOX("CUI_Maker::Make_UI, UI Add Failed");
 								}
 
-								//pUI->Bind_Action(DTO::EUIEvent::HOVER_ENTER, (DTO::EUIFunc::SET_TEXTURE_INDEX), json{ {"index", 7u} });
-								//pUI->Bind_Action(DTO::EUIEvent::HOVER_EXIT, (DTO::EUIFunc::SET_VISIBLE), json{ {"isVisible", false} });
-								//pUI->Bind_Action(DTO::EUIEvent::HOVER_ENTER, (DTO::EUIFunc::SET_VISIBLE), json{ {"isVisible", false} });
+								//pUI->Bind_Action(DTO::EUIEvent::HOVER_ENTER, (DTO::EUIAction::SET_TEXTURE_INDEX), json{ {"index", 7u} });
+								//pUI->Bind_Action(DTO::EUIEvent::HOVER_EXIT, (DTO::EUIAction::SET_VISIBLE), json{ {"isVisible", false} });
+								//pUI->Bind_Action(DTO::EUIEvent::HOVER_ENTER, (DTO::EUIAction::SET_VISIBLE), json{ {"isVisible", false} });
 							}
 						}
 					}

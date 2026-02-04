@@ -8,7 +8,8 @@
 #include "Texture.h"
 #include "Shader.h"
 #include "VIBuffer_Rect_Tex.h"
-
+#include "UIAction_Registry.h"
+#include "UIAction_Client.h"
 #include "GameInstance.h"
 
 CGenericUI::CGenericUI(ID3D11Device* pDevice, ID3D11DeviceContext* pDeviceContext)
@@ -32,7 +33,6 @@ HRESULT CGenericUI::Initialize(void* pArg)
 {
 	GENERIC_UI_DESC* pDesc = static_cast<GENERIC_UI_DESC*>(pArg);
 
-	m_eUIType = static_cast<EUiType>(pDesc->iUIType);
 	m_eRectTransformType = static_cast<ERectTransform>(pDesc->iRectTransformType);
 	m_wstrTextureTag = pDesc->wstrTextureTag;
 	m_iTextureIndex = pDesc->iTextureIndex;
@@ -46,6 +46,10 @@ HRESULT CGenericUI::Initialize(void* pArg)
 	if (FAILED(Ready_Components(pDesc)))
 		return E_FAIL;
 
+	m_pActionForMe = CUIAction_Client::Create(this);
+	if (nullptr == m_pActionForMe)
+		return E_FAIL;
+
 	return S_OK;
 }
 
@@ -54,6 +58,8 @@ HRESULT CGenericUI::Awake(const _uint iCurrentLevelID)
 	if (FAILED(Super::Awake(iCurrentLevelID)))
 		return E_FAIL;
 
+	m_iInteractState = static_cast<uint32_t>(DTO::EUIEvent_Flag::NONE);
+
 	return S_OK;
 }
 
@@ -61,7 +67,6 @@ void CGenericUI::Update_Priority(const _float fTimeDelta)
 {
 	if (m_isVisible)
 	{
-		m_iInteractState = 0;
 		Super::Update_Priority(fTimeDelta);
 	}
 }
@@ -123,20 +128,113 @@ _bool CGenericUI::Calc_HitEvent()
 
 void CGenericUI::Acting_By_InteractState()
 {
-	if (Engine_Utils::Has_Flag(m_iInteractState, EInteractState::NONE))
-		m_iTextureIndex = 0;
-	if (Engine_Utils::Has_Flag(m_iInteractState, EInteractState::HOVERING_ENTER))
-		m_iTextureIndex = 1;
-	if (Engine_Utils::Has_Flag(m_iInteractState, EInteractState::HOVERING_EXIT))
-		m_iTextureIndex = 2;
-	if (Engine_Utils::Has_Flag(m_iInteractState, EInteractState::PRESS_ENTER))
-		m_iTextureIndex = 3;
-	if (Engine_Utils::Has_Flag(m_iInteractState, EInteractState::PRESSING))
-		m_iTextureIndex = 4;
-	if (Engine_Utils::Has_Flag(m_iInteractState, EInteractState::PRESS_EXIT))
-		m_iTextureIndex = 5;
-	if (Engine_Utils::Has_Flag(m_iInteractState, EInteractState::CLICKED))
-		m_iTextureIndex = 6;
+	if (m_iInteractState == DTO::EUIEvent_Flag::NONE)
+		Excute_Action(DTO::EUIEvent::NONE);
+	else
+	{
+		if (Engine_Utils::Has_Flag(m_iInteractState, DTO::EUIEvent_Flag::PRESS_ENTER))
+		{
+			Excute_Action(DTO::EUIEvent::PRESS_ENTER);
+		}
+		else if (Engine_Utils::Has_Flag(m_iInteractState, DTO::EUIEvent_Flag::PRESS_EXIT))
+		{
+			Excute_Action(DTO::EUIEvent::PRESS_EXIT);
+		}
+		else if (Engine_Utils::Has_Flag(m_iInteractState, DTO::EUIEvent_Flag::HOVER_ENTER))
+		{
+			Excute_Action(DTO::EUIEvent::HOVER_ENTER);
+		}
+		else if (Engine_Utils::Has_Flag(m_iInteractState, DTO::EUIEvent_Flag::HOVER_EXIT))
+		{
+			Excute_Action(DTO::EUIEvent::HOVER_EXIT);
+		}
+
+		if (Engine_Utils::Has_Flag(m_iInteractState, DTO::EUIEvent_Flag::PRESSING))
+		{
+			Excute_Action(DTO::EUIEvent::PRESSING);
+		}
+		else if (Engine_Utils::Has_Flag(m_iInteractState, DTO::EUIEvent_Flag::HOVERING))
+		{
+			Excute_Action(DTO::EUIEvent::HOVERING);
+		}
+	}
+}
+
+
+HRESULT CGenericUI::Bind_Action(DTO::EUIEvent EventType, DTO::EUIAction ActType, const json& params)
+{
+	const size_t index = ENUM_TO_SZET(EventType);
+	if (index >= m_vecBindingActions.size())
+		return E_FAIL;
+
+	DTO::TUI_EventBindData Desc = {};
+	Desc.strOwnerTag = m_strName;
+	Desc.strActionKey = DTO::UIFunctypeToString(ActType);
+	Desc.eEvent = EventType;
+	Desc.Params = params;
+	m_vecBindingActionData[index].push_back(Desc);
+	auto Func = m_pGameInstance->Get_UIAction_Registry()->Build_Action(ActType, params);
+	if (!Func)
+		return E_FAIL;
+	m_vecBindingActions[index].push_back(std::move(Func));
+	return S_OK;
+}
+
+HRESULT CGenericUI::Remove_Action(DTO::EUIEvent EventType, DTO::EUIAction ActType)
+{
+	const size_t EventIndex = ENUM_TO_SZET(EventType);
+	if (EventIndex >= m_vecBindingActionData.size())
+		return E_FAIL;
+
+	_bool isRemoved = { FALSE };
+	for (auto iter = m_vecBindingActionData[EventIndex].begin(); iter != m_vecBindingActionData[EventIndex].end(); iter++)
+	{
+		if (DTO::StringToUIFunctype(iter->strActionKey) == ActType)
+		{
+			m_vecBindingActionData[EventIndex].erase(iter);
+			isRemoved = TRUE;
+			break;
+		}
+	}
+	if (!isRemoved)
+	{
+		MSG_BOX("CToolUI::Remove_Action, No Action with Match strActionKey");
+		return E_FAIL;
+	}
+	m_vecBindingActions[EventIndex].clear();
+	if (FAILED(ReBind_Action()))
+		return E_FAIL;
+	return S_OK;
+}
+
+HRESULT CGenericUI::Excute_Action(DTO::EUIEvent EventType)
+{
+	if (nullptr == m_pActionForMe)
+		return E_FAIL;
+
+	size_t index = ENUM_TO_SZET(EventType);
+	if (index >= m_vecBindingActions.size())
+		return E_FAIL;
+
+	for (auto& fn : m_vecBindingActions[index])
+		fn(m_pActionForMe);
+	return S_OK;
+}
+
+HRESULT CGenericUI::ReBind_Action()
+{
+	for (uint32_t i = 0; i < m_vecBindingActionData.size(); ++i)
+	{
+		m_vecBindingActions[i].clear();
+		for (auto& data : m_vecBindingActionData[i])
+		{
+			auto Func = m_pGameInstance->Get_UIAction_Registry()->Build_Action(DTO::StringToUIFunctype(data.strActionKey), data.Params);
+			if (!Func)
+				return E_FAIL;
+			m_vecBindingActions[i].push_back(std::move(Func));
+		}
+	}
+	return S_OK;
 }
 
 HRESULT CGenericUI::Ready_Components(GENERIC_UI_DESC* pDesc)
@@ -184,5 +282,6 @@ CGameObject* CGenericUI::Clone(void* pArg)
 
 void CGenericUI::Free()
 {
+	Safe_Release(m_pActionForMe);
 	Super::Free();
 }

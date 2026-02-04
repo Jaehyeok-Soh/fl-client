@@ -59,7 +59,7 @@ private:
 	uint32_t m_iEditFuncCursor = {};
 
 	DTO::EUIEvent m_eCurEditEvent = { DTO::EUIEvent::END };
-	DTO::EUIFunc m_eCurEditFunc = { DTO::EUIFunc::END };
+	DTO::EUIAction m_eCurEditFunc = { DTO::EUIAction::END };
 
 
 private:

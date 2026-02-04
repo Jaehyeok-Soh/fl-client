@@ -23,7 +23,8 @@ private:
 private:
 	CGameInstance* m_pGameInstance = { nullptr };
 
-	vector<CCanvas*>* m_vecCanvas[g_iLevelType_Count] = { nullptr };
+	array<vector<CCanvas*>, g_iLevelType_Count> m_vecCanvas;
+
 public:
 	virtual void Free()override;
 

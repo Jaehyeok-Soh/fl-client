@@ -8,9 +8,9 @@ CUIAction_Registry::CUIAction_Registry()
 
 void CUIAction_Registry::Initialize_CommonAction()
 {
-	m_Factories.resize(ENUM_TO_UINT(DTO::EUIFunc::END));
+	m_Factories.resize(ENUM_TO_UINT(DTO::EUIAction::END));
 
-	Register_Factory((DTO::EUIFunc::SET_VISIBLE),
+	Register_Factory((DTO::EUIAction::SET_VISIBLE),
 		[](const json& params) -> ActionFunc
 		{
 			const bool isVisible = params.value("isVisible", true);
@@ -23,7 +23,7 @@ void CUIAction_Registry::Initialize_CommonAction()
 				};
 		});
 
-	Register_Factory((DTO::EUIFunc::SET_TEXTURE_INDEX),
+	Register_Factory((DTO::EUIAction::SET_TEXTURE_INDEX),
 		[](const json& params) -> ActionFunc
 		{
 			const uint32_t idx = params.value("index", 0u);
@@ -37,7 +37,7 @@ void CUIAction_Registry::Initialize_CommonAction()
 		});
 }
 
-void CUIAction_Registry::Register_Factory(DTO::EUIFunc FuncType, FactoryFunc factory)
+void CUIAction_Registry::Register_Factory(DTO::EUIAction FuncType, FactoryFunc factory)
 {
 	size_t index = ENUM_TO_SZET(FuncType);
 	if (index >= m_Factories.size() || !factory)
@@ -46,7 +46,7 @@ void CUIAction_Registry::Register_Factory(DTO::EUIFunc FuncType, FactoryFunc fac
 	m_Factories[index] = std::move(factory);
 }
 
-CUIAction_Registry::ActionFunc CUIAction_Registry::Build_Action(DTO::EUIFunc FuncType, const json& params) const
+CUIAction_Registry::ActionFunc CUIAction_Registry::Build_Action(DTO::EUIAction FuncType, const json& params) const
 {
 	size_t index = ENUM_TO_SZET(FuncType);
 	if (index >= m_Factories.size())
