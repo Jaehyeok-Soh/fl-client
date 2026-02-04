@@ -1,6 +1,5 @@
 #pragma once
 #include "UIObject.h"
-#include "Tool_Defines.h"
 #include "UIData_Repository.h"
 
 NS_BEGIN(Tool)
@@ -16,6 +15,9 @@ public:
 	{
 		_string strTag;
 		uint32_t iClientLevelIndex;
+
+		uint32_t iEditorSizeX;
+		uint32_t iEditorSizeY;
 	}TOOLCANVAS_DESC;
 
 private:
@@ -39,6 +41,7 @@ private:
 	HRESULT Bind_ShaderResources();
 	void Calc_HitUpdate();
 	void Sync_Data();
+public:
 	CToolUI* Calc_TopUI();
 public:
 	HRESULT Safe_Add_Layer(CToolLayer* pLayer);
@@ -64,6 +67,7 @@ public:
 	Vec2 Get_CB() { return Vec2{ m_fX, m_fY + m_fHeight * 0.5f }; }						// Center Bottom
 	Vec2 Get_RB() { return Vec2{ m_fX + m_fWidth * 0.5f , m_fY + m_fHeight * 0.5f }; }	// Right Bottom
 	virtual _bool Export_Data(DTO::ECategory eCategory, CDataDocumentBase* pDocument) override;
+	void Set_CaptureUI(CToolUI* pUI) { m_pCaptureUI = pUI; }
 	const DTO::TUI_CanvasData& Get_Data()const { return m_tCanvasData; }
 	DTO::TUI_CanvasData& Get_Data_Ref() { return m_tCanvasData; }
 private:
@@ -80,10 +84,9 @@ private:
 
 	CToolUI* m_pCaptureUI = {nullptr};
 	CToolUI* m_pHoveringUI = { nullptr };
-
+	array<CToolUI*, 2> m_ArrReleasedUI = {nullptr};
 	_bool m_isPreUIPressing = { FALSE };
 	_bool m_isPreHovering = { FALSE };
-
 public:
 	static CToolCanvas* Create(EToolObjectType eType, ID3D11Device* pDevice, ID3D11DeviceContext* pDeviceContext);
 	CGameObject* Clone(void* pArg);

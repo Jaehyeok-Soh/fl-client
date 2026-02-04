@@ -53,6 +53,8 @@ private:
 	array<class CRenderTarget*, ENUM_TO_SZET(ERenderTarget::END)>		m_arrRenderTargets;
 	array<list<class CRenderTarget*>, ENUM_TO_SZET(EMRTLayer::END)>		m_arrMRTs;
 
+	ID3D11ShaderResourceView* m_pNullSRVs[128]{ nullptr };
+
 	ID3D11RenderTargetView* m_pBackBuffer = { nullptr };
 	ID3D11DepthStencilView* m_pDSV = { nullptr };
 public:

@@ -6,6 +6,7 @@
 #include "Engine_Utils.h"
 #include "ToolUI.h"
 #include "Texture.h"
+
 #include "GameInstance.h"
 
 CUI_Inspector::CUI_Inspector(const _char* pLabel, CLevel* pOwner, ID3D11Device* pDevice, ID3D11DeviceContext* pDeviceContext)
@@ -28,27 +29,31 @@ HRESULT CUI_Inspector::Initialize_Prototype()
 		m_szArrClientLevelType[i] = m_vecClientLevelType[i].c_str();
 	}
 
-	Folder_Search("../../Resources/Textures/UI");
-	File_Search("../../Resources/Textures/UI");
+	//Folder_Search("../../Resources/Textures/UI");
+	//File_Search("../../Resources/Textures/UI");
 
 	return S_OK;
 }
 
 void CUI_Inspector::Update(const _float fTimeDelta)
 {
+	if (nullptr != m_pSelectedUI)
+		m_pSelectedUI->Set_HitTest();
 }
 
 HRESULT CUI_Inspector::Render(CToolObject* pGo)
 {
 	ImGui::Begin(m_strLabel.c_str(), nullptr, m_Flag);
 
-	Setting_Texture();
-
+	/*Setting_Texture();*/
 	m_pSelectedUI = m_pUIManager->Safe_Access_UI(m_pUIManager->Get_CurUIIndex());
 	if (nullptr != m_pSelectedUI)
 	{
 		SetUp_Public_Info();
 		Input_TextureTag();
+
+		SetUp_Func();
+		Edit_Action();
 	}
 
 	ImGui::End();
@@ -64,7 +69,7 @@ void CUI_Inspector::Input_RectTransform()
 {
 	ImGui::PushID("RectTransform");
 	ImGui::SeparatorText("Rect Transform");
-	ImGui::BeginChild("RectTransformCard", ImVec2(-FLT_MIN, 168.f), true, ImGuiWindowFlags_NoScrollbar);
+	ImGui::BeginChild("RectTransformCard", ImVec2(0, 168.f), true, ImGuiWindowFlags_NoScrollbar);
 	ImGui::TextDisabled("Anchor / pivot preset (3x3).");
 	ImGui::Spacing();
 
@@ -107,7 +112,7 @@ void CUI_Inspector::Input_RectTransform()
 	////////////////////////////
 	// Transform / Size Card
 	ImGui::Spacing();
-	ImGui::BeginChild("RectTransformValuesCard", ImVec2(-FLT_MIN, 112.f), true, ImGuiWindowFlags_NoScrollbar);
+	ImGui::BeginChild("RectTransformValuesCard", ImVec2(0, 112.f), true, ImGuiWindowFlags_NoScrollbar);
 
 	ImGui::TextDisabled("Size and position (local).");
 	ImGui::Spacing();
@@ -128,9 +133,7 @@ void CUI_Inspector::Input_RectTransform()
 		
 		ImGui::EndTable();
 	}
-
 	ImGui::Spacing();
-
 	// Position (X / Y / Z) : 3 columns
 	if (ImGui::BeginTable("##RectPosTable", 3, ImGuiTableFlags_SizingStretchSame))
 	{
@@ -148,7 +151,6 @@ void CUI_Inspector::Input_RectTransform()
 
 		ImGui::EndTable();
 	}
-
 	ImGui::EndChild();
 	ImGui::PopID();
 }
@@ -182,178 +184,156 @@ void CUI_Inspector::Input_TextureTag()
 				_wstring wstrFolderName = f.parent_path().filename().wstring();
 				uint32_t iFileIndex = std::stoi( f.stem().wstring());
 
-				CTexture* pTexture = dynamic_cast<CTexture*>(dynamic_cast<CComponent*>(
-					CGameInstance::GetInstance()->Clone_Prototype(EPrototypeType::COMPONENT, static_cast<uint32_t>(ELevelType::UI),L"Texture_" + wstrFolderName)));
-				if (nullptr == pTexture)
-					return;
-
-				m_pSelectedUI-> Change_Component<CTexture>(pTexture);
 				m_pSelectedUI->Set_TextureIndex(iFileIndex);
-				//m_pUIManager->Safe_Access_UIData_Ptr(m_pUIManager->Get_CurUIIndex())->strTextureTag = Engine_Utils::ToString( L"Texture_" + wstrFolderName);
-				//m_pUIManager->Safe_Access_UIData_Ptr(m_pUIManager->Get_CurUIIndex())->iTextureIndex = iFileIndex;
 			}
 		}
 	}
-
 }
 
-HRESULT CUI_Inspector::Setting_Texture()
-{	
-	// ===========   Diffse Texture  ============
-	ImGui::AlignTextToFramePadding();
-	ImGui::Text("Diffuse Texture"); ImGui::SameLine();
+void CUI_Inspector::Add_Action(DTO::EUIEvent EventType)
+{
+	if (ImGui::Button("Add Action"))
+		ImGui::OpenPopup("##AddActionPopUp");
 
-	if (ImGui::Button("Open Texture Selector##Diffuse_Texture"))
-		ImGui::OpenPopup("TextureSelector##Diffuse_Texture");
-
-	ImGui::SetNextWindowSize(ImVec2(700, 500), ImGuiCond_Appearing);
-
-	if (ImGui::BeginPopupModal("TextureSelector##Diffuse_Texture", NULL))
+	if (ImGui::BeginPopup("##AddActionPopUp"))
 	{
-		ImGui::BeginChild("FolderList", ImVec2(180, 0), true);
-		{
-			ImGui::TextColored(ImVec4(1, 1, 0, 1), "Category");
-			ImGui::Separator();
-
-			for (auto& folderName : m_TextureFolderNames)
-			{
-				// 현재 선택된 폴더면 하이라이트 효과
-				if (ImGui::Selectable(folderName.c_str(), m_strSelectedFolder == folderName))
-				{
-					m_strSelectedFolder = folderName;
-				}
-			}
-		}
-		ImGui::EndChild();
-
-		ImGui::SameLine();
-
-		// --- 우측 : 선택된 폴더 내 텍스처 그리드 창 ---
-		ImGui::BeginChild("TextureGrid", ImVec2(0, 0), true);
-		{
-			ImGui::Text("Folder: %s", m_strSelectedFolder.empty() ? "None" : m_strSelectedFolder.c_str());
-			ImGui::Separator();
-
-			if (!m_strSelectedFolder.empty() && m_TextureMap.count(m_strSelectedFolder))
-			{
-				auto& fileList = m_TextureMap[m_strSelectedFolder];
-				int columns = 5; // 한 줄에 5장씩
-
-				for (int i = 0; i < fileList.size(); ++i)
-				{
-					string fullPath = fileList[i].first;
-					string fileName = fileList[i].second;
-
-					// 리소스 매니저에서 텍스처 가져오기 (태그 명명 규칙 확인해봐!)
-					wstring textureTag = L"Texture_" + Engine_Utils::ToWString(fileName);
-					CTextureBase* pTexture = CGameInstance::GetInstance()->Get_Resource<CTextureBase>(textureTag);
-					ID3D11ShaderResourceView* pSRV = (pTexture) ? pTexture->Get_SRV() : nullptr;
-
-					ImGui::PushID(i);
-					ImGui::BeginGroup();
-
-					if (pSRV)
-					{
-						// 이미지 버튼 크기를 64x64 정도로 키움
-						if (ImGui::ImageButton("##texBtn", (ImTextureID)pSRV, ImVec2(64, 64)))
-						{
-							ImGui::EndGroup(); ImGui::PopID();
-							ImGui::CloseCurrentPopup();
-							break;
-						}
-					}
-					else
-					{
-						ImGui::Button("No Res", ImVec2(64, 64));
-					}
-
-					// 파일명이 너무 길면 잘라서 출력
-					string display = (fileName.length() > 10) ? fileName.substr(0, 8) + ".." : fileName;
-					ImGui::Text(display.c_str());
-
-					ImGui::EndGroup();
-					ImGui::PopID();
-
-					// 가로로 5장 배치 로직
-					if ((i + 1) % columns != 0) ImGui::SameLine(0, 10.f);
-
-					Safe_Release(pTexture);
-				}
-			}
-		}
-		ImGui::EndChild();
-
+		ImGui::TextDisabled("Select component to add");
 		ImGui::Separator();
-		if (ImGui::Button("Close", ImVec2(120, 0))) { ImGui::CloseCurrentPopup(); }
+
+		const _string& strSET_VISIBLE = DTO::UIFunctypeToString(DTO::EUIAction::SET_VISIBLE);
+		if (ImGui::Selectable(strSET_VISIBLE.c_str()))
+		{
+			m_pSelectedUI->Bind_Action(EventType, DTO::EUIAction::SET_VISIBLE, json{ {"isVisible", true} });
+
+			ImGui::CloseCurrentPopup();
+		}
+
+		const _string& strSET_TEXTURE_INDEX = DTO::UIFunctypeToString(DTO::EUIAction::SET_TEXTURE_INDEX);
+		if (ImGui::Selectable(strSET_TEXTURE_INDEX.c_str()))
+		{
+			m_pSelectedUI->Bind_Action(EventType, DTO::EUIAction::SET_TEXTURE_INDEX, json{ {"index", 0u} });
+
+			ImGui::CloseCurrentPopup();
+		}
 
 		ImGui::EndPopup();
 	}
-
-	ImGui::Spacing();
-	return S_OK;
 }
 
-HRESULT CUI_Inspector::File_Search(const string& RootPath)
+void CUI_Inspector::Edit_Action()
 {
-	// 기존 데이터 초기화 (필요시)
-	m_TextureMap.clear();
-	m_TextureFolderNames.clear();
-
-	namespace fs = std::filesystem;
-
-	if (!fs::exists(RootPath)) return E_FAIL;
-
-	for (auto& iter : fs::recursive_directory_iterator(RootPath))
+	switch (m_eCurEditFunc)
 	{
-		// 파일인 경우에만 처리
-		if (iter.is_regular_file())
+	case DTO::EUIAction::SET_VISIBLE:
+	{
+		auto* pVec = m_pSelectedUI->Safe_Access_EventData(m_eCurEditEvent);
+		if (pVec && !pVec->empty())
 		{
-			auto fullPath = iter.path();
-			string strFullPath = Engine_Utils::ToString(fullPath);
-			string fileName = fullPath.filename().string();
-			string pureFileName = Engine_Utils::GetFileNameWithoutExtension(strFullPath);
+			bool isVisible = (*pVec)[0].Params.value("isVisible", true);
 
-			// 파일이 속한 바로 위 폴더 이름 추출
-			string folderName = fullPath.parent_path().filename().string();
+			if (ImGui::Checkbox("isVisible", &isVisible))
+				(*pVec)[0].Params["isVisible"] = isVisible;
+		}
 
-			string ext = fullPath.extension().string();
-			for (auto& c : ext) c = tolower(c);
+		break;
+	}
+	case DTO::EUIAction::SET_TEXTURE_INDEX:
+	{
+		auto* pVec = m_pSelectedUI->Safe_Access_EventData(m_eCurEditEvent);
+		if (nullptr == pVec || pVec->empty())
+			break;
 
-			if (ext == ".png" || ext == ".dds" || ext == ".tga" || ext == ".jpg")
+		auto& j = (*pVec)[0].Params;
+
+		int iValue = static_cast<int>(j.value("index", 0u));
+
+		if (ImGui::InputInt("index", &iValue))
+		{
+			if (iValue < 0) iValue = 0;
+			j["index"] = static_cast<uint32_t>(iValue);
+		}
+
+		break;
+	}
+	case DTO::EUIAction::END:
+		break;
+	default:
+		break;
+	}
+}
+
+void CUI_Inspector::SetUp_Func()
+{
+	if (ImGui::Button("Hover Enter Action", ImVec2(0.f, 30.f)))
+	{
+		m_eCurEditEvent = DTO::EUIEvent::HOVER_ENTER;
+		m_eCurEditFunc = DTO::EUIAction::END;
+	}
+	else if (ImGui::Button("Hover Exit Action",ImVec2(0.f, 30.f)))
+	{
+		m_eCurEditEvent = DTO::EUIEvent::HOVER_EXIT;
+		m_eCurEditFunc = DTO::EUIAction::END;
+	}
+	else if (ImGui::Button("Hovering Action", ImVec2(0.f, 30.f)))
+	{
+		m_eCurEditEvent = DTO::EUIEvent::HOVERING;
+		m_eCurEditFunc = DTO::EUIAction::END;
+	}
+	else if (ImGui::Button("None Action", ImVec2(0.f, 30.f)))
+	{
+		m_eCurEditEvent = DTO::EUIEvent::NONE;
+		m_eCurEditFunc = DTO::EUIAction::END;
+	}
+	else if (ImGui::Button("Press Enter Action", ImVec2(0.f, 30.f)))
+	{
+		m_eCurEditEvent = DTO::EUIEvent::PRESS_ENTER;
+		m_eCurEditFunc = DTO::EUIAction::END;
+	}
+	else if (ImGui::Button("Press Exit Action", ImVec2(0.f, 30.f)))
+	{
+		m_eCurEditEvent = DTO::EUIEvent::PRESS_EXIT;
+		m_eCurEditFunc = DTO::EUIAction::END;
+	}
+	else if (ImGui::Button("Pressing Action", ImVec2(0.f, 30.f)))
+	{
+		m_eCurEditEvent = DTO::EUIEvent::PRESSING;
+		m_eCurEditFunc = DTO::EUIAction::END;
+	}
+
+	Add_Action(m_eCurEditEvent);
+	Action_List(m_eCurEditEvent);
+
+	if (ImGui::Button("Apply Action", ImVec2(0.f, 0.f)))
+	{
+		m_pSelectedUI->ReBind_Action();
+	}
+}
+
+void CUI_Inspector::Action_List(DTO::EUIEvent eType)
+{
+	ImGui::SeparatorText("Action List");
+	const size_t iSelected = ENUM_TO_SZET(m_eCurEditFunc);
+	auto* pVec = m_pSelectedUI->Safe_Access_EventData(m_eCurEditEvent);
+	
+	if (nullptr != pVec)
+	{
+		ImGui::BeginChild("ItemList", ImVec2(0, 100.f), true);
+
+		if (pVec->empty())
+		{
+			ImGui::Text("Empty...");
+		}
+		else
+		{
+			for (size_t i = 0; i < pVec->size(); ++i)
 			{
-				m_TextureMap[folderName].push_back(make_pair(strFullPath, pureFileName));
-
-				if (find(m_TextureFolderNames.begin(), m_TextureFolderNames.end(), folderName) == m_TextureFolderNames.end())
-				{
-					m_TextureFolderNames.push_back(folderName);
-				}
+				const bool selected = (iSelected == i);
+				if (ImGui::Selectable((*pVec)[i].strActionKey.c_str(), selected))
+					m_eCurEditFunc = DTO::StringToUIFunctype((*pVec)[i].strActionKey);
 			}
 		}
+		ImGui::EndChild();
 	}
-	return S_OK;
-}
-
-HRESULT CUI_Inspector::Folder_Search(const string& Path)
-{
-	for (auto iter = std::filesystem::recursive_directory_iterator(Path);
-		iter != std::filesystem::recursive_directory_iterator();
-		++iter)
-	{
-		// 아 여기에 화살표 그으면 되는구나.
-
-		int depth = iter.depth();
-		auto fullpath = iter->path();
-		auto FolderName = iter->path().filename();
-
-		if (iter->is_regular_file())
-		{
-			string m_sFileName = Engine_Utils::GetFileNameWithoutExtension(Engine_Utils::ToString(fullpath));
-			m_TextureFileNames.push_back(make_pair(Engine_Utils::ToString(fullpath), m_sFileName));
-
-		}
-	}
-
-	return S_OK;
 }
 
 _bool CUI_Inspector::Scrub_Float(const _char* label, const _char* Id, OUT _float* pValue, float fValuePerPixel, float fValuePerPixel_fast, float fStep, float fStep_fast, float fSize)

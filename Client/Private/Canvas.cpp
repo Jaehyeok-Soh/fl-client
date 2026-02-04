@@ -34,7 +34,7 @@ HRESULT CCanvas::Initialize_Prototype()
 HRESULT CCanvas::Initialize(void* pArg)
 {
 	CANVAS_DESC* pDesc = static_cast<CANVAS_DESC*>(pArg);
-
+	m_strName = pDesc->strName;
 	if (FAILED(Super::Initialize(pArg)))
 		return E_FAIL;
 
@@ -64,23 +64,23 @@ void CCanvas::Transmit_for_UI()
 			{
 				switch (pUI->Get_RectTransformType())
 				{
-				case Client::ERectTransform::LT: pUI->Set_RectPos(Get_LT());
+				case Client::ERectTransform::LT:	pUI->Set_RectPos(Get_LT());
 					break;
-				case Client::ERectTransform::CT:pUI->Set_RectPos(Get_CT());
+				case Client::ERectTransform::CT:	pUI->Set_RectPos(Get_CT());
 					break;
-				case Client::ERectTransform::RT:pUI->Set_RectPos(Get_RT());
+				case Client::ERectTransform::RT:	pUI->Set_RectPos(Get_RT());
 					break;
-				case Client::ERectTransform::LC:pUI->Set_RectPos(Get_LC());
+				case Client::ERectTransform::LC:	pUI->Set_RectPos(Get_LC());
 					break;
-				case Client::ERectTransform::C:pUI->Set_RectPos(Get_C());
+				case Client::ERectTransform::C:		pUI->Set_RectPos(Get_C());
 					break;
-				case Client::ERectTransform::RC:pUI->Set_RectPos(Get_RC());
+				case Client::ERectTransform::RC:	pUI->Set_RectPos(Get_RC());
 					break;
-				case Client::ERectTransform::LB:pUI->Set_RectPos(Get_LB());
+				case Client::ERectTransform::LB:	pUI->Set_RectPos(Get_LB());
 					break;
-				case Client::ERectTransform::CB:pUI->Set_RectPos(Get_CB());
+				case Client::ERectTransform::CB:	pUI->Set_RectPos(Get_CB());
 					break;
-				case Client::ERectTransform::RB:pUI->Set_RectPos(Get_RB());
+				case Client::ERectTransform::RB:	pUI->Set_RectPos(Get_RB());
 					break;
 				default:
 					break;
@@ -103,6 +103,7 @@ void CCanvas::Update(const _float fTimeDelta)
 
 void CCanvas::Update_Late(const _float fTimeDelta)
 {
+	Calc_HitUpdate();
 	Super::Update_Late(fTimeDelta);
 }
 
@@ -128,12 +129,42 @@ HRESULT CCanvas::Bind_ShaderResources()
 
 void CCanvas::Calc_HitUpdate()
 {
+	if (!m_ArrReleasedUI.empty())
+	{
+		for (auto*& pUI : m_ArrReleasedUI)
+		{
+			if (nullptr != pUI)
+			{
+				pUI->Get_InteractState_Ref() = DTO::EUIEvent_Flag::NONE;
+				pUI = nullptr;
+			}
+		}
+	}
+
+	/* Trigger 이벤트 소비 */
+	if (nullptr != m_pCaptureUI)
+	{
+		Engine_Utils::RemoveSoft_Flag(m_pCaptureUI->Get_InteractState_Ref(), DTO::EUIEvent_Flag::PRESS_ENTER);
+		Engine_Utils::RemoveSoft_Flag(m_pCaptureUI->Get_InteractState_Ref(), DTO::EUIEvent_Flag::PRESS_EXIT);
+		m_pCaptureUI->Get_InteractState_Ref() = DTO::EUIEvent_Flag::NONE;
+	}
+	if (nullptr != m_pHoveringUI)
+	{
+		Engine_Utils::RemoveSoft_Flag(m_pHoveringUI->Get_InteractState_Ref(), DTO::EUIEvent_Flag::HOVER_ENTER);
+		Engine_Utils::RemoveSoft_Flag(m_pHoveringUI->Get_InteractState_Ref(), DTO::EUIEvent_Flag::HOVER_EXIT);
+		m_pHoveringUI->Get_InteractState_Ref() = DTO::EUIEvent_Flag::NONE;
+	}
+
 	/* 누른 순간 */
 	if (MOUSE_LBUTTON_DOWN)
 	{
+		/* 눌린곳에 있는 UI중 가장 위에 있는 애 */
 		m_pCaptureUI = Calc_TopUI();
 		if (nullptr != m_pCaptureUI)
-			Engine_Utils::Add_Flag(m_pCaptureUI->Get_InteractState_Ref(), CUIObject::EInteractState::PRESS_ENTER);
+		{
+			Engine_Utils::Add_Flag(m_pCaptureUI->Get_InteractState_Ref(), DTO::EUIEvent_Flag::PRESS_ENTER);
+			m_isPreUIPressing = TRUE;
+		}
 	}
 	/* 누르고 있을 때 */
 	else if (MOUSE_LBUTTON_HOLD)
@@ -144,19 +175,19 @@ void CCanvas::Calc_HitUpdate()
 			{
 				if (!m_isPreUIPressing)
 				{
-					Engine_Utils::Add_Flag(m_pCaptureUI->Get_InteractState_Ref(), CUIObject::EInteractState::PRESS_ENTER);
+					Engine_Utils::Add_Flag(m_pCaptureUI->Get_InteractState_Ref(), DTO::EUIEvent_Flag::PRESS_ENTER);
 					m_isPreUIPressing = TRUE;
 				}
 				else
 				{
-					Engine_Utils::Add_Flag(m_pCaptureUI->Get_InteractState_Ref(), CUIObject::EInteractState::PRESSING);
+					Engine_Utils::Add_Flag(m_pCaptureUI->Get_InteractState_Ref(), DTO::EUIEvent_Flag::PRESSING);
 				}
 			}
 			else
 			{
 				if (m_isPreUIPressing)
 				{
-					Engine_Utils::Add_Flag(m_pCaptureUI->Get_InteractState_Ref(), CUIObject::EInteractState::PRESS_EXIT);
+					m_pCaptureUI->Get_InteractState_Ref() = DTO::EUIEvent_Flag::NONE;
 					m_isPreUIPressing = FALSE;
 				}
 			}
@@ -167,12 +198,21 @@ void CCanvas::Calc_HitUpdate()
 	{
 		if (nullptr != m_pCaptureUI)
 		{
+			/* 땠을 때 동일한 UI면 */
 			if (m_pCaptureUI->Calc_HitEvent())
 			{
-				Engine_Utils::Add_Flag(m_pCaptureUI->Get_InteractState_Ref(), CUIObject::EInteractState::CLICKED);
+				Engine_Utils::Add_Flag(m_pCaptureUI->Get_InteractState_Ref(), DTO::EUIEvent_Flag::PRESS_EXIT);
+				const uint32_t CaptureUI = 0u;
+				m_ArrReleasedUI[CaptureUI] = m_pCaptureUI;
+				m_pCaptureUI = nullptr;
 			}
+			else
+			{
+				m_pCaptureUI->Get_InteractState_Ref() = DTO::EUIEvent_Flag::NONE;
+				m_pCaptureUI = nullptr;
+			}
+			m_isPreUIPressing = FALSE;
 		}
-		m_pCaptureUI = nullptr;
 	}
 	/* 안 누르고 있을 때*/
 	else
@@ -184,7 +224,9 @@ void CCanvas::Calc_HitUpdate()
 			/* 호버링중인 UI가 있다 */
 			if (nullptr != m_pHoveringUI)
 			{
-				Engine_Utils::Add_Flag(m_pHoveringUI->Get_InteractState_Ref(), CUIObject::EInteractState::HOVERING_EXIT);
+				Engine_Utils::Add_Flag(m_pHoveringUI->Get_InteractState_Ref(), DTO::EUIEvent_Flag::HOVER_EXIT);
+				const uint32_t HoverUI = 1u;
+				m_ArrReleasedUI[HoverUI] = m_pHoveringUI;
 				m_pHoveringUI = nullptr;
 			}
 		}
@@ -194,15 +236,21 @@ void CCanvas::Calc_HitUpdate()
 			if (nullptr == m_pHoveringUI)
 			{
 				m_pHoveringUI = pUI;
-				Engine_Utils::Add_Flag(m_pHoveringUI->Get_InteractState_Ref(), CUIObject::EInteractState::HOVERING_ENTER);
+				Engine_Utils::Add_Flag(m_pHoveringUI->Get_InteractState_Ref(), DTO::EUIEvent_Flag::HOVER_ENTER);
 			}
 			else
 			{
 				if (m_pHoveringUI != pUI)
 				{
-					Engine_Utils::Add_Flag(m_pHoveringUI->Get_InteractState_Ref(), CUIObject::EInteractState::HOVERING_EXIT);
-					Engine_Utils::Add_Flag(pUI->Get_InteractState_Ref(), CUIObject::EInteractState::HOVERING_ENTER);
+					Engine_Utils::Add_Flag(m_pHoveringUI->Get_InteractState_Ref(), DTO::EUIEvent_Flag::HOVER_EXIT);
+					Engine_Utils::Add_Flag(pUI->Get_InteractState_Ref(), DTO::EUIEvent_Flag::HOVER_ENTER);
+					const uint32_t HoverUI = 1u;
+					m_ArrReleasedUI[HoverUI] = m_pHoveringUI;
 					m_pHoveringUI = pUI;
+				}
+				else
+				{
+					Engine_Utils::Add_Flag(m_pHoveringUI->Get_InteractState_Ref(), DTO::EUIEvent_Flag::HOVERING);
 				}
 			}
 		}

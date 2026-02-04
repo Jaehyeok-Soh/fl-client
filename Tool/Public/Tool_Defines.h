@@ -245,7 +245,6 @@ namespace Tool
 
 #pragma endregion
 
-
 #pragma region Struct
 
 #pragma endregion

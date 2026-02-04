@@ -142,6 +142,8 @@ HRESULT CStaticModel::Ready_PhysicsRigidBody(STATICMODEL_DESC* pDesc)
 
 	if (FAILED(Add_Component<CPhysicsRigidBody>(0, L"Prototype_Component_Physics_RigidBody", &desc)))
 		return E_FAIL;
+
+	return S_OK;
 }
 
 HRESULT CStaticModel::Awake(const _uint iCurrentLevelID)

@@ -63,8 +63,8 @@ HRESULT CLevel_Logo::Initialize()
 	if (FAILED(Ready_DevMap()))
 		return E_FAIL;
 
-	//if (FAILED(Ready_UI_Layer(g_wszUILayer)))
-	//	return E_FAIL;
+	if (FAILED(Ready_UI_Layer(g_wszUILayer)))
+		return E_FAIL;
 
 	if (FAILED(Ready_Lights()))
 		return E_FAIL;
@@ -82,6 +82,11 @@ HRESULT CLevel_Logo::Awake(const _uint iLevelID)
 
 	if (FAILED(Ready_Camera_Setting(iLevelID)))
 		return E_FAIL;
+
+	CLOG_TRACE(L"테스트, Logo Awake() 확인");
+	CLOG_INFO(L"테스트, Logo Awake() 확인");
+	CLOG_WARN(L"테스트, Logo Awake() 확인");
+	CLOG_ERROR(L"테스트, Logo Awake() 확인");
 
 	return S_OK;
 }

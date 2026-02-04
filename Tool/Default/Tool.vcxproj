@@ -151,9 +151,10 @@
     <ClInclude Include="..\Public\Builder_Example.h" />
     <ClInclude Include="..\Public\Builder_Map.h" />
     <ClInclude Include="..\Public\Builder_UI.h" />
-    <ClInclude Include="..\Public\Button.h" />
     <ClInclude Include="..\Public\CameraMan_Free.h" />
     <ClInclude Include="..\Public\CEffectObject.h" />
+    <ClInclude Include="..\Public\UIAction_Tool.h" />
+    <ClInclude Include="..\Public\UIComponent_Inspector.h" />
     <ClInclude Include="..\Public\DebugLine.h" />
     <ClInclude Include="..\Public\Effect.h" />
     <ClInclude Include="..\Public\EffectType_Selection_Panel.h" />
@@ -164,7 +165,6 @@
     <ClInclude Include="..\public\Level_Logo.h" />
     <ClInclude Include="..\Public\MapToolManager.h" />
     <ClInclude Include="..\public\Panel_FileExplore.h" />
-    <ClInclude Include="..\Public\Image.h" />
     <ClInclude Include="..\Public\Panel_MapTool.h" />
     <ClInclude Include="..\Public\Panel_Model.h">
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</ExcludedFromBuild>
@@ -237,9 +237,10 @@
     <ClCompile Include="..\Private\Builder_Example.cpp" />
     <ClCompile Include="..\Private\Builder_Map.cpp" />
     <ClCompile Include="..\Private\Builder_UI.cpp" />
-    <ClCompile Include="..\Private\Button.cpp" />
     <ClCompile Include="..\Private\CameraMan_Free.cpp" />
     <ClCompile Include="..\Private\CEffectObject.cpp" />
+    <ClCompile Include="..\Private\UIAction_Tool.cpp" />
+    <ClCompile Include="..\Private\UIComponent_Inspector.cpp" />
     <ClCompile Include="..\Private\DebugLine.cpp" />
     <ClCompile Include="..\Private\Effect.cpp" />
     <ClCompile Include="..\Private\EffectType_Selection_Panel.cpp" />
@@ -249,7 +250,6 @@
     <ClCompile Include="..\Private\Grid.cpp" />
     <ClCompile Include="..\Private\MapToolManager.cpp" />
     <ClCompile Include="..\Private\Panel_FileExplore.cpp" />
-    <ClCompile Include="..\Private\Image.cpp" />
     <ClCompile Include="..\Private\Panel_MapTool.cpp" />
     <ClCompile Include="..\Private\Panel_Model.cpp">
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</ExcludedFromBuild>

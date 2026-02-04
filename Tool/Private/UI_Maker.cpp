@@ -3,15 +3,14 @@
 #include "ImGui_ToolManager.h"
 #include "ImGui_UIManager.h"
 #include "UIData_Repository.h"
+#include "ToolCanvas.h"
 #include "ToolUI.h"
 #include "ToolLayer.h"
 #include "Engine_Utils.h"
-#include "ToolCanvas.h"
 
-/* Component */
-#include "Button.h"
-#include "Image.h"
-
+#include "UIAction_Registry.h"
+#include "DataStruct_UI.h"
+#include "IUIActionForMe.h"
 #include "GameInstance.h"
 
 CUI_Maker::CUI_Maker(const _char* pLabel, CLevel* pOwner, ID3D11Device* pDevice, ID3D11DeviceContext* pDeviceContext)
@@ -213,22 +212,11 @@ void CUI_Maker::Make_Canvas()
 			}
 			ImGui::EndChild();
 
-			/* 캔버스 사이즈 세팅하기 ======================================= */
 			const float fSpacing = ImGui::GetStyle().ItemSpacing.x;
 			const float fAvailW = ImGui::GetContentRegionAvail().x;
 			const float fBtnW = (fAvailW - fSpacing) * 0.5f;
-			if (ImGui::Button("CUSTOM SIZE", ImVec2(fBtnW, 0.f)))
-			{
-				m_isCustomSize = TRUE;
-				m_isViewportSize = FALSE;
-			}
-			ImGui::SameLine();
-			if (ImGui::Button("VIEWPORT SIZE", ImVec2(fBtnW, 0.f)))
-			{
-				m_isCustomSize = FALSE;
-				m_isViewportSize = TRUE;
-			}
-			/* 현재 캔버스에 Setter로 값 변경 */
+
+
 			Input_Canvas_TransformInfo();
 		}
 	}
@@ -271,8 +259,16 @@ void CUI_Maker::Make_Canvas()
 				Desc.strTag = m_strCanvasTag;
 				Desc.iLevelIndex = { static_cast<uint32_t>(ELevelType::UI) };
 				Desc.iClientLevelIndex = m_iCurSelectLevelID;
+				Desc.fX = static_cast<_float>(g_iWinSizeX) / 2.f;
+				Desc.fY = static_cast<_float>(g_iWinSizeY) / 2.f;
+				Desc.fHeight = static_cast<_float>(g_iWinSizeY);
+				Desc.fWidth = static_cast<_float>(g_iWinSizeX);
+				Desc.iEditorSizeX = g_iWinSizeX;
+				Desc.iEditorSizeY = g_iWinSizeY;
+
+				_wstring wstrLayerTag = Engine_Utils::ToWString(m_strCanvasTag) + L"_Layer";
 				CGameObject* pResult =
-					CGameInstance::GetInstance()->Add_GameObject(Desc.iLevelIndex, g_wszPrototypeTagCanvas, Desc.iLevelIndex, Engine_Utils::ToWString(m_strCanvasTag),&Desc );
+					CGameInstance::GetInstance()->Add_GameObject(Desc.iLevelIndex, g_wszPrototypeTagCanvas, Desc.iLevelIndex, wstrLayerTag, &Desc);
 
 				if (nullptr == pResult)
 				{
@@ -369,9 +365,10 @@ void CUI_Maker::Make_Layer()
 					if(nullptr != pCanvas)
 						Desc.strCanvasName = pCanvas->Get_Tag();
 					Desc.iCanvasIndex = m_pUIManager->Get_CurCanvasIndex();
-
+					
+					_wstring wstrLayerTag = Engine_Utils::ToWString(Desc.strCanvasName) + L"_Layer";
 					CGameObject* pResult =
-						CGameInstance::GetInstance()->Add_GameObject(Desc.iLevelIndex, g_wszPrototypeTagLayer, Desc.iLevelIndex, Engine_Utils::ToWString(m_strLayerTag), &Desc);
+						CGameInstance::GetInstance()->Add_GameObject(Desc.iLevelIndex, g_wszPrototypeTagLayer, Desc.iLevelIndex, wstrLayerTag, &Desc);
 					if (nullptr == pResult)
 					{
 						m_strLayerTag = "";
@@ -528,13 +525,14 @@ void CUI_Maker::Make_UI()
 					Desc.iLayerIndex = m_pUIManager->Get_CurLayerIndex();
 					Desc.isAlpha = TRUE;
 					Desc.isInitVisible = TRUE;
-					Desc.strInitTextureTag = "Texture_Boss";
-					Desc.iInitTextureIndex = 0;
+					Desc.strInitTextureTag = "Prototype_Component_UI_Texture";
+					Desc.iInitTextureIndex = 1;
 
 					if (nullptr != pLayer)
 					{
+						_wstring wstrLayerTag = Engine_Utils::ToWString(Desc.strCanvasName) + L"_Layer";
 						CGameObject* pResult =
-							CGameInstance::GetInstance()->Add_GameObject(Desc.iLevelIndex, g_wszPrototypeTagUI, Desc.iLevelIndex, Engine_Utils::ToWString(pLayer->Get_Name()), &Desc);
+							CGameInstance::GetInstance()->Add_GameObject(Desc.iLevelIndex, g_wszPrototypeTagUI, Desc.iLevelIndex, wstrLayerTag, &Desc);
 
 						if (nullptr == pResult)
 						{
@@ -544,19 +542,18 @@ void CUI_Maker::Make_UI()
 						}
 						else
 						{
-							CButton::BUTTON_DESC BtnComDesc = {};
-							CImage::IMAGE_DESC ImgComDesc = {};
-							CMonoBehaviour* pCom = dynamic_cast<CMonoBehaviour*>(CButton::Create(BtnComDesc));
-							pResult->Add_Script_Component(L"Component_UIBase", pCom);
-							pResult->Get_Script_Component(L"Component_UIBase")->Initialize(&BtnComDesc);
-							//pResult->Change_Script_Component(L"Component_UIBase", dynamic_cast<CMonoBehaviour*>(CImage::Create(ImgComDesc)));
-							//m_pGameInstance->Subscribe<OnClickEvent>(pCom, &CButton::OnClick);
+							auto* pUI = dynamic_cast<CToolUI*>(pResult);
+							if (nullptr != pUI) {
+								if (FAILED(pLayer->Safe_Add_UI(pUI)))
+								{
+									m_strUIName = "";
+									m_isCreateUI = FALSE;
+									MSG_BOX("CUI_Maker::Make_UI, UI Add Failed");
+								}
 
-							if (FAILED(pLayer->Safe_Add_UI(dynamic_cast<CToolUI*>(pResult))))
-							{
-								m_strUIName = "";
-								m_isCreateUI = FALSE;
-								MSG_BOX("CUI_Maker::Make_UI, UI Add Failed");
+								//pUI->Bind_Action(DTO::EUIEvent::HOVER_ENTER, (DTO::EUIAction::SET_TEXTURE_INDEX), json{ {"index", 7u} });
+								//pUI->Bind_Action(DTO::EUIEvent::HOVER_EXIT, (DTO::EUIAction::SET_VISIBLE), json{ {"isVisible", false} });
+								//pUI->Bind_Action(DTO::EUIEvent::HOVER_ENTER, (DTO::EUIAction::SET_VISIBLE), json{ {"isVisible", false} });
 							}
 						}
 					}
@@ -647,34 +644,12 @@ _bool CUI_Maker::Scrub_Float(const _char* label, const _char* Id, OUT _float* pV
 
 void CUI_Maker::Input_Canvas_TransformInfo()
 {
-	/* 내맘대로 만들겠다 */
-	if (m_isCustomSize)
+	auto* pCanvas = m_pUIManager->Safe_Access_Canvas(m_pUIManager->Get_CurCanvasIndex());
+	if (nullptr != pCanvas)
 	{
-		auto* pCanvas = m_pUIManager->Safe_Access_Canvas(m_pUIManager->Get_CurCanvasIndex());
-
-		/* Width / Height */
-		Scrub_Float("Width :", "CanvasSizeX", pCanvas->Get_Width_Ptr(), 0.1f, 20.f, 0.1f, 1.0f, 120.f);
-		ImGui::SameLine(0.f, 16.f);
-		Scrub_Float("Height :", "CanvasSizeY", pCanvas->Get_Height_Ptr(), 0.1f, 20.f, 0.1f, 1.0f, 120.f);
-
-		/* Pos X / Y / Z */
-		Scrub_Float("X :", "CanvasPosX", pCanvas->Get_PosX_Ptr(), 0.1f, 20.f, 0.1f, 1.0f, 100.f);
-		ImGui::SameLine(0.f, 16.f);
-		Scrub_Float("Y :", "CanvasPosY", pCanvas->Get_PosY_Ptr(), 0.1f, 20.f, 0.1f, 1.0f, 100.f);
-		ImGui::SameLine(0.f, 16.f);
-		Scrub_Float("Z :", "CanvasPosZ", pCanvas->Get_PosZ_Ptr(), 0.1f, 20.f, 0.1f, 1.0f, 100.f);
-
-		pCanvas->Set_isUsingViewport(FALSE);
-	}
-	/* 뷰포트 기준으로 캔버스를 만들겠다 */
-	else if (m_isViewportSize)
-	{
-		auto* pCanvas = m_pUIManager->Safe_Access_Canvas(m_pUIManager->Get_CurCanvasIndex());
-		ImGui::TextDisabled("Width : %.2f", pCanvas->Get_Width());
-		ImGui::SameLine(0.f, 16.f);
-		ImGui::TextDisabled("Height :%.2f", pCanvas->Get_Height());
-
-		/* Pos X / Y / Z */
+		if (ImGui::Button("Reset Pos", ImVec2(0.f, 0.f)))
+			pCanvas->Set_Position((_float)g_iWinSizeX * 0.5f, (_float)g_iWinSizeY * 0.5f, 0.5f);
+		
 		Scrub_Float("X :", "CanvasPosX", pCanvas->Get_PosX_Ptr(), 0.1f, 20.f, 0.1f, 1.0f, 100.f);
 		ImGui::SameLine(0.f, 16.f);
 		Scrub_Float("Y :", "CanvasPosY", pCanvas->Get_PosY_Ptr(), 0.1f, 20.f, 0.1f, 1.0f, 100.f);
@@ -686,9 +661,7 @@ void CUI_Maker::Input_Canvas_TransformInfo()
 
 		m_pDeviceContext->RSGetViewports(&iNumViewports, &Viewports);
 
-//		*pCanvas->Get_Width_Ptr() = CImGui_ToolManager::GetInstance()->Get_CurViewportSize().x;
 		*pCanvas->Get_Width_Ptr() = Viewports.Width;
-	//	*pCanvas->Get_Height_Ptr() = CImGui_ToolManager::GetInstance()->Get_CurViewportSize().y;
 		*pCanvas->Get_Height_Ptr() = Viewports.Height;
 		pCanvas->Set_isUsingViewport(TRUE);
 	}
