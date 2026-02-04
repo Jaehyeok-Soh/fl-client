@@ -34,7 +34,7 @@ HRESULT CStateBase_Player::Awake(const _uint iLevelIndex)
 	if (FAILED(Super::Awake(iLevelIndex)))
 		return E_FAIL;
 
-	m_iEndState = ENUM_TO_UINT(CPlayer::State::END);
+	m_iEndStateIdx = ENUM_TO_UINT(CPlayer::State::END);
 
 	return S_OK;
 }
@@ -44,21 +44,23 @@ HRESULT CStateBase_Player::Start(void* pArg, _bool bForce)
 	if (FAILED(Super::Start(pArg, bForce)))
 		return E_FAIL;
 
+	m_tKeyTimer.fTimeAcc = 0.f;
+
 	return S_OK;
 }
 
 void CStateBase_Player::Update(const _float fTimeDelta)
 {
-#ifdef _DEBUG
-	//WINDOW_DEBUG
-	std::wstring msg = L"State: ";
-	std::wstring ws(m_strName.begin(), m_strName.end());
-	msg += ws;
-
-	msg += L" / AniIdx: ";
-	msg += std::to_wstring(m_iMainAnimIdx);
-	SetWindowText(g_hWnd, msg.c_str());
-#endif
+//#ifdef _DEBUG
+//	//WINDOW_DEBUG
+//	std::wstring msg = L"State: ";
+//	std::wstring ws(m_strName.begin(), m_strName.end());
+//	msg += ws;
+//
+//	msg += L" / AniIdx: ";
+//	msg += std::to_wstring(m_iMainAnimIdx);
+//	SetWindowText(g_hWnd, msg.c_str());
+//#endif
 
 	Super::Update(fTimeDelta);
 
@@ -73,7 +75,7 @@ void CStateBase_Player::Update(const _float fTimeDelta)
 	{
 		if (!m_bLoop && Is_MainAnimFinished())		// loop가 아닌데 애니메이션이 끝났다면 : pre animation이랑 잘 해야될듯..?
 		{
-			Change_State(STATEKEY::LOOPDONE);			// 다음 state로 change
+			Change_PlayerState(STATEKEY::LOOPDONE);			// 다음 state로 change
 			return;
 		}
 
@@ -81,7 +83,7 @@ void CStateBase_Player::Update(const _float fTimeDelta)
 			return;
 
 		if (Check_JumpKey(fTimeDelta))
- 			return;
+			return;
 
 		if (Check_DashKey(fTimeDelta))
 			return;
@@ -99,16 +101,16 @@ HRESULT CStateBase_Player::End()
 	if (FAILED(Super::End()))
 		return E_FAIL;
 
-	m_tKeyTimer.fTimeAcc = 0.f;
-
 	return S_OK;
 }
 
-void CStateBase_Player::Change_State(STATEKEY eKey)
+void CStateBase_Player::Change_PlayerState(STATEKEY eKey)
 {
 	_uint iNextState = m_vecChangeState_ByKey[ENUM_TO_UINT(eKey)];
 	Set_NextStateDesc(iNextState);		// next state에 대한 desc 작성
 	Request_Change_State(iNextState, &m_tNextStateDesc);	
+
+	/* 플레이어가 이런 state를 이런 애니메이션으로 바꿨다 */
 }
 
 _bool CStateBase_Player::Check_MoveKey(const _float fTimeDelta)
@@ -126,12 +128,13 @@ _bool CStateBase_Player::Check_MoveKey(const _float fTimeDelta)
 
 	if (Engine_Utils::Has_Flag(m_FMoves, MOVEFLAGS::NORMAL))
 	{
-		if (Align_Movement(fTimeDelta) == false)	// 8방향 움직임 
+		if (Align_Movement(fTimeDelta) == false								// 8방향 움직임을 하는데 입력이 없고
+			&&
+			Has_ChangeState(STATEKEY::MOVE))								// change move 키가 있다면
+				
 		{
-			if (Engine_Utils::Has_Flag(m_FMoves, MOVEFLAGS::OWN))
-				return false;
-
-			Change_State(STATEKEY::MOVE);
+			// change state
+			Change_PlayerState(STATEKEY::MOVE);
 			return true;
 		}
 	}
@@ -149,7 +152,7 @@ _bool CStateBase_Player::Check_JumpKey(const _float fTimeDelta)
 	if (Has_ChangeState(STATEKEY::SPACE) &&
 		Key_Input(ENUM_TO_UINT(CControlContext::CONTROL_KEY::JUMP)))
 	{
-		Change_State(STATEKEY::SPACE);
+		Change_PlayerState(STATEKEY::SPACE);
 		return true;
 	}
 
@@ -161,7 +164,7 @@ _bool CStateBase_Player::Check_DashKey(const _float fTimeDelta)
 	if (Has_ChangeState(STATEKEY::SHIFT) &&
 		Key_Input(ENUM_TO_UINT(CControlContext::CONTROL_KEY::DASH)))
 	{
-		Change_State(STATEKEY::SHIFT);
+		Change_PlayerState(STATEKEY::SHIFT);
 		return true;
 	}
 
@@ -173,7 +176,7 @@ _bool CStateBase_Player::Check_CtrlPressKey(const _float fTimeDelta)
 	if (Has_ChangeState(STATEKEY::LCRTL_PRESS) &&
 		Key_Input(ENUM_TO_UINT(CControlContext::CONTROL_KEY::SPECIALMV)))
 	{
-		Change_State(STATEKEY::LCRTL_PRESS);
+		Change_PlayerState(STATEKEY::LCRTL_PRESS);
 		return true;
 	}
 
@@ -185,7 +188,7 @@ _bool CStateBase_Player::Check_CtrlUpKey(const _float fTimeDelta)
 	if (Has_ChangeState(STATEKEY::LCRTL_UP) &&
 		Key_Input(ENUM_TO_UINT(CControlContext::CONTROL_KEY::DODGE)))
 	{
-		Change_State(STATEKEY::LCRTL_UP);
+		Change_PlayerState(STATEKEY::LCRTL_UP);
 		return true;
 	}
 
@@ -195,7 +198,7 @@ _bool CStateBase_Player::Check_CtrlUpKey(const _float fTimeDelta)
 _bool CStateBase_Player::Has_ChangeState(STATEKEY eKey)
 {
 	// state end 이면 state change를 안 한다
-	return m_iEndState != m_vecChangeState_ByKey[ENUM_TO_UINT(eKey)];
+	return m_iEndStateIdx != m_vecChangeState_ByKey[ENUM_TO_UINT(eKey)];
 }
 
 void CStateBase_Player::Free()

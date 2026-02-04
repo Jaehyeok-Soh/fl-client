@@ -63,7 +63,7 @@ HRESULT CDataStore::LoadFile_Json(const path& filePath)
 	}
 
 	T* pDoc = T::Create();
-	if (pDoc->FromJson(j))
+	if (FAILED(pDoc->FromJson(j)))
 	{
 		MSG_BOX("CDataStore::LoadFile_Json, read failed");
 		Safe_Release(pDoc);

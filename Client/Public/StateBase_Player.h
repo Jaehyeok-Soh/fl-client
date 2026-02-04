@@ -40,6 +40,9 @@ public:
 	virtual HRESULT Start(void* pArg, _bool bForce = false) override;
 	virtual void	Update(const _float fTimeDelta) override;
 	virtual HRESULT End() override;
+
+public:
+	virtual void Change_PlayerState(STATEKEY eKey);	// change 랩핑 함수 : 필요시 오버라이드
 	
 protected:
 	Flags					m_FMoves		= { 0 };
@@ -49,24 +52,25 @@ protected:
 
 	STATE_START_DESC		m_tNextStateDesc = {};
 
-protected:
-	virtual void OwnMove(const _float fTimeDelta) {};		// state 내부에서 알아서 움직일때
-	virtual void Set_NextStateDesc(_uint iNextState) {};	// 다음 state에 따라 desc을 작성한다 : 각 state 내부에서
-
-	virtual void CheckAni_WhenStart() {};								// 만약 자체에서 로직을 통해 바꾸고 싶다면
-	virtual void Change_State(STATEKEY eKey);
-
-private:
-	_uint					m_iEndState = { 0 };
-
 	// state가 변환 했다면 true
-private:
+protected:
 	_bool Check_MoveKey(const _float fTimeDelta);
 	_bool Check_JumpKey(const _float fTimeDelta);
 	_bool Check_DashKey(const _float fTimeDelta);
 	_bool Check_CtrlPressKey(const _float fTimeDelta);
 	_bool Check_CtrlUpKey(const _float fTimeDelta);
 
+protected:
+	virtual void OwnMove(const _float fTimeDelta) {};		// state 내부에서 알아서 움직일때
+	virtual void Set_NextStateDesc(_uint iNextState) {};	// 다음 state에 따라 desc을 작성한다 : 각 state 내부에서
+
+	virtual void CheckAni_WhenStart() {};					// 만약 자체에서 로직을 통해 바꾸고 싶다면
+
+
+private:
+	_uint					m_iEndStateIdx = { 0 };			// CPlayer::State::END 캐싱 해둠 : 만약 END면 state change x
+
+private:
 	_bool Has_ChangeState(STATEKEY eKey);
 
 public:

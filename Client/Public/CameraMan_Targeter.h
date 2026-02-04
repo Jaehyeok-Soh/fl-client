@@ -56,7 +56,7 @@ private:
 	void Chase_Actor(const _float fTimeDelta);
 	void Chase_Player(CContainerObject* pObject, const _float fTimeDelta);
 	void OnChangeLockonTarget(CGameObject* pGo);
-	Vec3 Get_HeadWorldPos_FromBody(CBody* pBody, CTransform* pTrnasform);
+	Vec3 Get_CamBoneWorldPos_FromBody(CBody* pBody, CTransform* pTrnasform);
 private:
 	TargeterState m_eCurrentState = { TargeterState::NORMAL };
 	CGameObject* m_pLockonTarget = { nullptr };
@@ -81,7 +81,7 @@ private:
 	_float m_fPitch = { 0.f };
 	_float m_fPitch_Target = { 0.f };
 	
-	_float m_fDistance = { 2.5f };
+	_float m_fDistance = { 3.5f };
 public:
 	static CCameraMan_Targeter* Create(ID3D11Device* pDevice, ID3D11DeviceContext* pDeviceContext);
 	virtual CGameObject* Clone(void* pArg) override;

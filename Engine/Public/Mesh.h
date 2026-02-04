@@ -54,17 +54,17 @@ private:
 	virtual HRESULT Initialize_Prototype(void* pArg) override;
 	virtual HRESULT Initialize(void* pArg) override;
 public:
-	Vec3* Get_Normals(_uint iIndex) const { return m_pNormals; }
-	ESurfaceType* Get_SurfaceTypes(_uint iIndex) { return m_pSurfaceTypes; }
-	_uint Get_MaterialIndex() const { return m_iMaterialIndex; }
-	void Set_MaterialIndex(_uint iIndex) { m_iMaterialIndex = iIndex; }
-	HRESULT Bind_Bones(class CShader* pShader, const vector<class CBone*>& vecBones, _uint iIndexDistance = 0);
-	_bool IsSame(const _char* szName) { return ::strcmp(m_szName, szName) != 0; }
-	_bool IntsersectWithPlane(OUT Vec3& vOut);
-	_bool IntsersectWithPlane(CRay* const pRay, Matrix matWorld, _float fMaxDistance, OUT MESH_RAY_HITINFO& outHit);
+	Vec3*			Get_Normals(_uint iIndex) const { return m_pNormals; }
+	ESurfaceType*	Get_SurfaceTypes(_uint iIndex) { return m_pSurfaceTypes; }
+	_uint			Get_MaterialIndex() const { return m_iMaterialIndex; }
+	void			Set_MaterialIndex(_uint iIndex) { m_iMaterialIndex = iIndex; }
+	HRESULT			Bind_Bones(class CShader* pShader, const vector<class CBone*>& vecBones, _uint iIndexDistance = 0);
+	_bool			IsSame(const _char* szName) { return ::strcmp(m_szName, szName) != 0; }
+	_bool			IntsersectWithPlane(OUT Vec3& vOut);
+	_bool			IntsersectWithPlane(CRay* const pRay, Matrix matWorld, _float fMaxDistance, OUT MESH_RAY_HITINFO& outHit);
 private:
-	HRESULT Load_AnimVertices(std::span<VTXANIMMESH> spanVertex);
-	HRESULT Load_NonAnimVertices(std::span<VTXANIMMESH> spanVertex);
+	HRESULT			Load_AnimVertices(std::span<VTXANIMMESH> spanVertex);
+	HRESULT			Load_NonAnimVertices(std::span<VTXANIMMESH> spanVertex);
 public:
 	// 
 	// HRESULT Bind_Bones()

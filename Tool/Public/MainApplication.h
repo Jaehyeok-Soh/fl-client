@@ -7,6 +7,7 @@ NS_END
 
 NS_BEGIN(Tool)
 
+class CMapToolManager;
 class CImGui_ToolManager;
 
 class CMainApplication : public CBase
@@ -27,6 +28,7 @@ private:
 	HRESULT Ready_Static_Prototype();
 	HRESULT Ready_GuiManager(_uint iWidth, _uint iHeight, ELevelType eStartLevel);
 private:
+	CMapToolManager*	m_pMapToolManager{nullptr};
 	CImGui_ToolManager* m_pImGuiManager = { nullptr };
 	ID3D11Device* m_pDevice = { nullptr };
 	ID3D11DeviceContext* m_pDeviceContext = { nullptr };

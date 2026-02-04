@@ -47,10 +47,10 @@ HRESULT CState_Slide::End()
 
 void CState_Slide::OwnMove(const _float fTimeDelta)
 {
-    //CStateBase::Move_Front(fTimeDelta);
+    CStateBase::Move_Front(fTimeDelta);
 }
 
-void CState_Slide::Change_State(STATEKEY eKey)
+void CState_Slide::Change_PlayerState(STATEKEY eKey)
 {
     if (ENUM_TO_UINT(ANI::SKY) == m_iMainAnimIdx)
     {
@@ -63,7 +63,7 @@ void CState_Slide::Change_State(STATEKEY eKey)
         }
     }
 
-    Super::Change_State(eKey);
+    Super::Change_PlayerState(eKey);
 }
 
 CState_Slide* CState_Slide::Create(CActionState* pOwnerComponent, void* pArg)

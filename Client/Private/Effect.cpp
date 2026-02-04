@@ -58,9 +58,9 @@ HRESULT Effect::Ready_PartsData(void* pArg)
 		CEffectObject::Effect_Desc pEffectDesc = {};
 		CTransform::TRANSFORM_DESC transformDesc = {};
 
-		transformDesc.vPosition = vPos;
-		transformDesc.vScale = vScale;
-		transformDesc.vRotation_Degrees = Engine_Utils::ToEulerDegrees(vQuat); // Quat -> Euler º¯È¯
+		transformDesc.ScaleMatrix = Matrix::CreateScale(Vec3(vScale));
+		transformDesc.RotationMatrix = Matrix::CreateFromQuaternion(vQuat);
+		transformDesc.TranslationMatrix = Matrix::CreateTranslation(Vec3(vPos));
 		transformDesc.fRotatePerSec = 1.f;
 		transformDesc.fMovePerSec = 1.f;
 

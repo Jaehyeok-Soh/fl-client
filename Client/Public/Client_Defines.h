@@ -1,11 +1,13 @@
 #pragma once
 
 #include "Engine_Define.h"
+#include "EngineConsole.h"
 #include <windows.h>
 
 
 extern HWND			g_hWnd;
 extern HINSTANCE	g_hInstance;
+extern _bool		g_bStart;
 
 namespace Client
 {
@@ -164,6 +166,18 @@ namespace Client
 	};
 	inline constexpr size_t g_iLevelType_Count = static_cast<size_t>(ELevelType::END);
 
+	enum class ERectTransform {
+		LT = 0, CT, RT, LC, C, RC, LB, CB, RB, END
+	};
+
+	enum class EMapObject_Type
+	{
+		STATICMODEL,
+		INSTANCEMODEL,
+		END,
+	};
+
+
 	typedef struct tagColMeshHitInformation
 	{
 		class CColMesh* pColMesh = { nullptr };
@@ -214,9 +228,14 @@ namespace Client
 		std::unordered_map<_uint, std::vector<tagSkillCommand>> umapEventToCommands;
 	}SKILL_PRESET;
 
+
+
+
+
 	inline constexpr wchar_t g_wszTriggerBoxLayer[]{ L"TriggerBox_Layer" };
 	inline constexpr wchar_t g_wszColMeshLayer[]{ L"ColMesh_Layer" };
 	inline constexpr wchar_t g_wszStaticModelLayer[]{ L"StaticModel_Layer" };
+	inline constexpr wchar_t g_wszInstanceModelLayer[]{ L"InstanceModel_Layer" };
 	inline constexpr wchar_t g_wszBossLayer[]{ L"Boss_Layer" };
 	inline constexpr wchar_t g_wszPlayerLayer[]{ L"Player_Layer" };
 	inline constexpr wchar_t g_wszDynamicCameraLayer[]{ L"DynamicCamera_Layer" };

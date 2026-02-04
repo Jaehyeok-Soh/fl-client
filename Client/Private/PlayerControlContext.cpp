@@ -1,19 +1,23 @@
 #include "pch.h"
+#include "PlayerControlContext.h"
+
 #include "Client_Defines.h"
 #include "Player.h"
 #include "PlayerActionState.h"
 #include "CameraMan.h"
 
-#include "PlayerControlContext.h"
 #include "GameInstance.h"
+#include "Engine_Utils.h"
 
 CPlayerControlContext::CPlayerControlContext()
 	: Super()
 {
 }
 
-CPlayerControlContext::CPlayerControlContext(const CControlContext& rhs)
+CPlayerControlContext::CPlayerControlContext(const CPlayerControlContext& rhs)
 	: Super(rhs)
+	, m_FKeys{ rhs.m_FKeys }
+	, m_tDashTimeCounter{ rhs.m_tDashTimeCounter }
 {
 }
 
@@ -30,6 +34,10 @@ HRESULT CPlayerControlContext::Initialize(void* pArg)
 	if (FAILED(Super::Initialize(pArg)))
 		return E_FAIL;
 
+	PLAYER_CONTROLCONTEXT_DESC* pDesc = static_cast<PLAYER_CONTROLCONTEXT_DESC*>(pArg);
+	m_FKeys						= pDesc->FKeys;
+	m_tDashTimeCounter.fMaxTime	= pDesc->fDashCountTime;
+
 	return S_OK;
 }
 
@@ -37,6 +45,19 @@ HRESULT CPlayerControlContext::Awake(const _uint iLevelIndex)
 {
 	Set_Gravity(true);
 	return S_OK;
+}
+
+void CPlayerControlContext::Count_Time(const _float fTimeDelta)
+{
+	// dsah가 2보다 작을 때
+	if (m_iDashRestCount < 2)
+	{
+		// cool time을 재고 dashRestcount up
+		if (1.f == m_tDashTimeCounter.CountTime(fTimeDelta))
+		{
+			++m_iDashRestCount;
+		}
+	}
 }
 
 _bool CPlayerControlContext::Is_FootRayEnabled()
@@ -79,6 +100,15 @@ void CPlayerControlContext::Clear_Grounded()
 	m_CurrentGroundInfo = {};
 }
 
+void CPlayerControlContext::Set_CheckKey(KEYFLAGS FKey, _bool bOn)
+{
+	if (bOn)
+		Engine_Utils::Add_Flag(m_FKeys, FKey);
+
+	else
+		Engine_Utils::RemoveHard_Flag(m_FKeys, FKey);
+}
+
 _bool CPlayerControlContext::Is_LeftAttackPressed()
 {
 	return m_pGameInstance->Mouse_Down(MOUSEKEYSTATE::LB);
@@ -119,7 +149,15 @@ _bool CPlayerControlContext::Is_InteractionPressed()
 
 _bool CPlayerControlContext::Is_DashPressed()
 {
-	return m_pGameInstance->KeyButton_Down(DIK_LSHIFT);
+	if (m_iDashRestCount != 0 &&
+		Engine_Utils::Has_Flag(m_FKeys, KEYFLAGS::DASH) &&
+		m_pGameInstance->KeyButton_Down(DIK_LSHIFT))
+	{
+		//--m_iDashRestCount;
+		return true;
+	}
+
+	return false;
 }
 
 _bool CPlayerControlContext::Is_SepcialMovePressed()

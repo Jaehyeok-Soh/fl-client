@@ -24,8 +24,11 @@ private:
 	HRESULT Ready_Camera_Layer(const wstring& wstrLayerTag);
 	HRESULT Ready_Lights();
 	HRESULT Ready_Test_Terrain(const wstring& wstrLayerTag);
+	HRESULT Ready_DevMap();
 
 	HRESULT Ready_Camera_Setting(const _uint iLevelIndex);
+private:
+	ECursorMode m_eCursorMode = ECursorMode::LockedHiddenCenter;
 public:
 	static CLevel_Logo* Create(ID3D11Device* pDevice, ID3D11DeviceContext* pDeviceContext);
 	virtual void Free() override;

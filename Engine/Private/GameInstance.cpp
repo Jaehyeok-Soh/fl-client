@@ -23,6 +23,7 @@
 #include "Graphic_Device.h"
 #include "Render_Manager.h"
 #include "Physics_Module.h"
+#include "UIAction_Registry.h"
 
 IMPLEMENT_SINGLETON(CGameInstance)
 
@@ -110,6 +111,9 @@ HRESULT CGameInstance::Initialize_Engine(const ENGINE_DESC& Engine_Desc, _Inout_
 	if (!(m_pPhysics_Module = CPhysics_Module::Create(*ppDevice, *ppContext)))
 		return E_FAIL;
 
+	if (!(m_pUIAction_Registry = CUIAction_Registry::Create()))
+		return E_FAIL;
+
 	return S_OK;
 }
 
@@ -117,11 +121,11 @@ void CGameInstance::Update_Engine(_float fTimeDelta)
 {
 	m_pSound_Manager->Update();
 	m_pInput_Manager->Update();
+	m_pLevel_Manager->Update(fTimeDelta);
 	m_pObject_Manager->Update_Priority(fTimeDelta);
 	m_pObject_Manager->Update(fTimeDelta);
 	m_pCollision_Manager->Update(fTimeDelta);
 	m_pObject_Manager->Update_Late(fTimeDelta);
-	m_pLevel_Manager->Update(fTimeDelta);
 
 	// 피직스 시뮬레이트
 	m_pPhysics_Module->StepPhysics(fTimeDelta);
@@ -129,6 +133,8 @@ void CGameInstance::Update_Engine(_float fTimeDelta)
 	// 메인카메라 업데이트
 	m_pCamera_Manager->Update_ViewMatrix();
 	m_pFrustrum->Update();
+
+	m_pLevel_Manager->Update_Picking();
 
 	// 업데이트 후 마지막
 	m_pObject_Manager->Ready_Before_Render(fTimeDelta);
@@ -603,11 +609,18 @@ const POINT& CGameInstance::Get_MousePos()
 {
 	return m_pInput_Manager->Get_MousePos();
 }
-void CGameInstance::Set_Capture(_bool bCap)
+void CGameInstance::Request_CursorMode(ECursorMode eMode) noexcept
 {
-	m_pInput_Manager->Set_Capture(bCap);
+	m_pInput_Manager->Request_CursorMode(eMode);
 }
-
+_bool CGameInstance::ShouldIgnoreMouseDelta() noexcept
+{
+	return m_pInput_Manager->ShouldIgnoreMouseDelta();
+}
+void CGameInstance::Force_ReleaseCursor() noexcept
+{
+	m_pInput_Manager->Force_ReleaseCursor();
+}
 #pragma region RESOURCE_MANAGER
 CTextureBase* CGameInstance::GetOrAddTexture(const wstring& wstrKey, void* pArg)
 {
@@ -803,11 +816,6 @@ Matrix CGameInstance::PxTransformToXMMatrix(PxTransform pxTransform)
 	return m_pPhysics_Module->PxTransformToXMMatrix(pxTransform);
 }
 
-void CGameInstance::Physics_Render(PxRigidActor* pActor, XMVECTOR color)
-{
-	m_pPhysics_Module->Render(pActor, color);
-}
-
 void CGameInstance::SerializeStaticMesh(std::filesystem::path path, vector<PxTriangleMesh*> meshes)
 {
 	m_pPhysics_Module->SerializeStaticMesh(path, meshes);
@@ -847,6 +855,25 @@ PxController* CGameInstance::GetController(PHYSICSCCT_DESC* pDesc)
 {
 	return m_pPhysics_Module->GetController(pDesc);
 }
+
+void CGameInstance::RegisterPhysicsMesh(_uint levelIndex, _wstring prototypeTag)
+{
+	m_pPhysics_Module->RegisterPhysicsMesh(levelIndex, prototypeTag);
+}
+
+#ifdef _DEBUG
+void CGameInstance::Physics_Render(PxRigidActor* pActor, XMVECTOR color)
+{
+	m_pPhysics_Module->Render(pActor, color);
+}
+#endif
+#pragma endregion
+
+#pragma region UIACTION_REGISTRY
+CUIAction_Registry* CGameInstance::Get_UIAction_Registry() const
+{ 
+	return m_pUIAction_Registry;
+}
 #pragma endregion
 
 void CGameInstance::Free()
@@ -868,6 +895,7 @@ void CGameInstance::Free()
 	Safe_Release(m_pGameData_Manager);
 	Safe_Release(m_pPrototype_Manager);
 	Safe_Release(m_pPhysics_Module);
+	Safe_Release(m_pUIAction_Registry);
 	Safe_Release(m_pLevel_Manager);
 	Safe_Release(m_pEvent_Manager);
 	Safe_Release(m_pEventBus_Manager);

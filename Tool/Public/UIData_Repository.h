@@ -17,9 +17,6 @@ NS_END
 NS_BEGIN(Tool)
 class CToolUI;
 
-enum class EUiType {
-	IMAGE_2D = 0, IMAGE_3D, BUTTON, TEXT, VIDEO, END
-};
 
 enum class ERectTransform {
 	LT = 0, CT, RT, LC, C, RC, LB, CB, RB, END
@@ -35,49 +32,20 @@ private:
 	CUIData_Repository();
 	virtual ~CUIData_Repository() = default;
 
+	void Initialize(ID3D11Device* pDevice, ID3D11DeviceContext* pDeviceContext);
+
 public:
-	HRESULT Load_UIData();
+	HRESULT Load_UIData(const _wstring& strFilePath);
 	HRESULT Save_UIData();
 
 private:
 	CGameInstance* m_pGameInstance = { nullptr };
+	ID3D11Device* m_pDevice = { nullptr };
+	ID3D11DeviceContext* m_pDeviceContext = { nullptr };
 
 public:
 	virtual void Free()override;
 };
-
-static const _string& UITypeToString(EUiType eType)
-{
-	switch (eType)
-	{
-	case Tool::EUiType::IMAGE_2D:
-		return "IMAGE_2D";
-	case Tool::EUiType::IMAGE_3D:
-		return "IMAGE_3D";
-	case Tool::EUiType::BUTTON:
-		return "BUTTON";
-	case Tool::EUiType::TEXT:
-		return "TEXT";
-	case Tool::EUiType::VIDEO:
-		return "VIDEO";
-	}
-	return "";
-}
-static EUiType StringToUIType(const _string& str)
-{
-	if (::strcmp(str.c_str(), "IMAGE_2D") == 0)
-		return EUiType::IMAGE_2D;
-	else if (::strcmp(str.c_str(), "IMAGE_3D") == 0)
-		return EUiType::IMAGE_3D;
-	else if (::strcmp(str.c_str(), "BUTTON") == 0)
-		return EUiType::BUTTON;
-	else if (::strcmp(str.c_str(), "TEXT") == 0)
-		return EUiType::TEXT;
-	else if (::strcmp(str.c_str(), "VIDEO") == 0)
-		return EUiType::VIDEO;
-	else
-		return EUiType::END;
-}
 
 static const _string& RectTransformToString(ERectTransform eType)
 {
@@ -107,7 +75,6 @@ static const _string& RectTransformToString(ERectTransform eType)
 	}
 	return sEMPTY;
 }
-
 static ERectTransform StringToRectTransform(const _string& str)
 {
 	if (::strcmp(str.c_str(), "LT") == 0) return ERectTransform::LT;

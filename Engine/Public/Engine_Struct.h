@@ -391,6 +391,10 @@ namespace Engine
 		PHYSICSFILTERGROUP eFilterGroup = PHYSICSFILTERGROUP::NONE;
 		unsigned int iFilterMask = {};
 	}PHYSICSCOLLIDER_DESC;
+
+	typedef struct tagPhysicsFilterShader
+	{
+	}PHYSICSFILTERSHADER_DESC;
 #pragma endregion
 
 }

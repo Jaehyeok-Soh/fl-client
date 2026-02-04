@@ -30,10 +30,10 @@ HRESULT CPhysics_Module::Initialize()
 
 #ifdef _DEBUG
 	//m_pPvd = PxCreatePvd(*m_pFoundation);
-	//PxPvdTransport* transport = PxDefaultPvdSocketTransportCreate(PVD_HOST, 5425, 10);
+	//PxPvdTransport* transport = PxDefaultPvdFileTransportCreate("D:\\PVD_Record\\phyXDebug.pxd2");
 	////PxPvdTransport* transport = PxDefaultPvdFileTransportCreate(PVD_HOST, 5425, 10);
 	////m_pPvd->connect(*transport, PxPvdInstrumentationFlag::eALL);
-	//m_pPvd->connect(*transport, PxPvdInstrumentationFlag::ePROFILE);
+	//m_pPvd->connect(*transport, PxPvdInstrumentationFlag::eALL);
 #endif // _DEBUG
 
 	if (!(m_pPhysics = PxCreatePhysics(PX_PHYSICS_VERSION, *m_pFoundation, PxTolerancesScale(), true, m_pPvd)))
@@ -65,7 +65,6 @@ HRESULT CPhysics_Module::Initialize()
 		sceneDesc.gravity = PxVec3(0.f, -9.81f, 0.f);
 		m_pDispatcher = PxDefaultCpuDispatcherCreate(4);
 		sceneDesc.cpuDispatcher = m_pDispatcher;
-		sceneDesc.filterShader = PxDefaultSimulationFilterShader;
 
 		if (m_pCudaContextManager)
 		{
@@ -102,6 +101,25 @@ HRESULT CPhysics_Module::Initialize()
 			sceneDesc.broadPhaseType = PxBroadPhaseType::eSAP;
 		}
 
+		//////////////////////////////////
+		/// Broad Phase Filtering Mode ///
+		//////////////////////////////////
+		{
+			//sceneDesc.kineKineFilteringMode; // eDEFAULT = eSUPPRESS
+			//sceneDesc.staticKineFilteringMode; // eDEFAULT = eSUPPRESS
+		}
+
+		/////////////////////
+		/// Filter Shader ///
+		/////////////////////
+		{
+			// Default Setting
+			//sceneDesc.filterShader = PxDefaultSimulationFilterShader;
+
+			sceneDesc.filterShader = FilterShader;
+			//sceneDesc.filterCallback;
+		}
+
 		if (!(m_pScene = m_pPhysics->createScene(sceneDesc)))
 		{
 			MSG_BOX("Failed to created : PxScene");
@@ -113,8 +131,8 @@ HRESULT CPhysics_Module::Initialize()
 	//PxPvdSceneClient* pvdClient = m_pScene->getScenePvdClient();
 	//if (pvdClient)
 	//{
-	//	pvdClient->setScenePvdFlag(PxPvdSceneFlag::eTRANSMIT_CONSTRAINTS, true);
-	//	pvdClient->setScenePvdFlag(PxPvdSceneFlag::eTRANSMIT_CONTACTS, true);
+	//	//pvdClient->setScenePvdFlag(PxPvdSceneFlag::eTRANSMIT_CONSTRAINTS, true);
+	//	//pvdClient->setScenePvdFlag(PxPvdSceneFlag::eTRANSMIT_CONTACTS, true);
 	//	pvdClient->setScenePvdFlag(PxPvdSceneFlag::eTRANSMIT_SCENEQUERIES, true);
 	//}
 #endif // _DEBUG
@@ -216,6 +234,11 @@ PxCollection* CPhysics_Module::SerializeConvexMesh(std::filesystem::path path)
 	return nullptr;
 }
 
+void CPhysics_Module::RegisterPhysicsMesh(_uint levelIndex, _wstring prototypeTag)
+{
+	m_pResourceManager->RegisterPhysicsMesh(levelIndex, prototypeTag);
+}
+
 vector<PxShape*> CPhysics_Module::GetShape(PHYSICSCOLLIDER_DESC* pDesc)
 {
 	return m_pShapeFactory->GetShape(pDesc);
@@ -236,6 +259,25 @@ PxController* CPhysics_Module::GetController(PHYSICSCCT_DESC* pDesc)
 	return m_pCCTManager->GetController(pDesc);
 }
 
+PxFilterFlags CPhysics_Module::FilterShader(
+	PxFilterObjectAttributes attributes0, PxFilterData filterData0,
+	PxFilterObjectAttributes attributes1, PxFilterData filterData1,
+	PxPairFlags& pairFlags, const void* constantBlock, PxU32 constantBlockSize)
+{
+	if (PxFilterObjectIsTrigger(attributes0) || PxFilterObjectIsTrigger(attributes1))
+	{
+		pairFlags = PxPairFlag::eTRIGGER_DEFAULT;
+		return PxFilterFlag::eDEFAULT;
+	}
+
+	pairFlags = PxPairFlag::eCONTACT_DEFAULT;
+
+	if ((filterData0.word0 & filterData1.word1) && (filterData1.word0 & filterData0.word1))
+		pairFlags |= PxPairFlag::eNOTIFY_TOUCH_FOUND;
+
+	return PxFilterFlag::eDEFAULT;
+}
+
 void CPhysics_Module::ClearPhysics()
 {
 	PX_RELEASE(m_pScene);
@@ -249,9 +291,9 @@ void CPhysics_Module::ClearPhysics()
 		PX_RELEASE(m_pPvd);
 		PX_RELEASE(transport);
 	}
+#endif // _DEBUG
 
 	PxCloseExtensions();
-#endif // _DEBUG
 
 	PX_RELEASE(m_pCudaContextManager);
 	PX_RELEASE(m_pFoundation);

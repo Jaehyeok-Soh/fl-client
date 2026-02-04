@@ -179,6 +179,7 @@
     <ClCompile Include="..\Private\CameraMan.cpp" />
     <ClCompile Include="..\Private\Camera_Manager.cpp" />
     <ClCompile Include="..\Private\ComputeShader.cpp" />
+    <ClCompile Include="..\Private\InstanceMesh.cpp" />
     <ClCompile Include="..\Private\DataDocument_Effect.cpp" />
     <ClCompile Include="..\Private\Cell.cpp" />
     <ClCompile Include="..\Private\Channel.cpp" />
@@ -192,6 +193,7 @@
     <ClCompile Include="..\Private\DataDefine_Json.cpp" />
     <ClCompile Include="..\private\DataDocumentBase.cpp" />
     <ClCompile Include="..\private\DataDocument_Example.cpp" />
+    <ClCompile Include="..\Private\DataDocument_Map.cpp" />
     <ClCompile Include="..\Private\DataDocument_UI.cpp" />
     <ClCompile Include="..\Private\DataEnum.cpp" />
     <ClCompile Include="..\private\DataRepository.cpp" />
@@ -199,6 +201,7 @@
     <ClCompile Include="..\private\DataStruct_Animation.cpp" />
     <ClCompile Include="..\Private\DataStruct_Effect.cpp" />
     <ClCompile Include="..\Private\DataStruct_Example.cpp" />
+    <ClCompile Include="..\Private\DataStruct_Map.cpp" />
     <ClCompile Include="..\Private\DataStruct_UI.cpp" />
     <ClCompile Include="..\Private\DebugDraw.cpp">
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Use</PrecompiledHeader>
@@ -208,6 +211,7 @@
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">NotUsing</PrecompiledHeader>
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|x64'">NotUsing</PrecompiledHeader>
     </ClCompile>
+    <ClCompile Include="..\private\EngineConsole.cpp" />
     <ClCompile Include="..\Private\Engine_Utils.cpp" />
     <ClCompile Include="..\Private\EventBus_Manager.cpp" />
     <ClCompile Include="..\Private\Event_Manager.cpp" />
@@ -221,6 +225,7 @@
     <ClCompile Include="..\Private\Graphic_Device.cpp" />
     <ClCompile Include="..\Private\Importer.cpp" />
     <ClCompile Include="..\Private\Input_Manager.cpp" />
+    <ClCompile Include="..\Private\IUIActionForMe.cpp" />
     <ClCompile Include="..\private\json_forward.cpp" />
     <ClCompile Include="..\Private\Layer.cpp" />
     <ClCompile Include="..\Private\Level.cpp" />
@@ -271,6 +276,7 @@
     <ClCompile Include="..\Private\Timer.cpp" />
     <ClCompile Include="..\Private\Timer_Manager.cpp" />
     <ClCompile Include="..\Private\Transform.cpp" />
+    <ClCompile Include="..\Private\UIAction_Registry.cpp" />
     <ClCompile Include="..\Private\UIObject.cpp" />
     <ClCompile Include="..\Private\VIBuffer.cpp" />
     <ClCompile Include="..\Private\VIBuffer_Cube_Color.cpp" />
@@ -307,6 +313,7 @@
     <ClInclude Include="..\Public\Camera.h" />
     <ClInclude Include="..\Public\CameraMan.h" />
     <ClInclude Include="..\Public\Camera_Manager.h" />
+    <ClInclude Include="..\Public\InstanceMesh.h" />
     <ClInclude Include="..\Public\ComputeShader.h" />
     <ClInclude Include="..\Public\DataDocument_Effect.h" />
     <ClInclude Include="..\Public\Cell.h" />
@@ -321,6 +328,7 @@
     <ClInclude Include="..\Public\DataDefine_Json.h" />
     <ClInclude Include="..\public\DataDocumentBase.h" />
     <ClInclude Include="..\public\DataDocument_Example.h" />
+    <ClInclude Include="..\Public\DataDocument_Map.h" />
     <ClInclude Include="..\Public\DataDocument_UI.h" />
     <ClInclude Include="..\Public\DataEnum.h" />
     <ClInclude Include="..\public\DataRepository.h" />
@@ -328,9 +336,11 @@
     <ClInclude Include="..\public\DataStruct_Animation.h" />
     <ClInclude Include="..\Public\DataStruct_Effect.h" />
     <ClInclude Include="..\Public\DataStruct_Example.h" />
+    <ClInclude Include="..\Public\DataStruct_Map.h" />
     <ClInclude Include="..\Public\DataStruct_UI.h" />
     <ClInclude Include="..\Public\DebugDraw.h" />
     <ClInclude Include="..\Public\Delegate.h" />
+    <ClInclude Include="..\public\EngineConsole.h" />
     <ClInclude Include="..\Public\Engine_Define.h" />
     <ClInclude Include="..\Public\Engine_Enum.h" />
     <ClInclude Include="..\Public\Engine_Function.h" />
@@ -351,6 +361,7 @@
     <ClInclude Include="..\Public\Graphic_Device.h" />
     <ClInclude Include="..\Public\Importer.h" />
     <ClInclude Include="..\Public\Input_Manager.h" />
+    <ClInclude Include="..\Public\IUIActionForMe.h" />
     <ClInclude Include="..\public\json_forward.h" />
     <ClInclude Include="..\Public\Layer.h" />
     <ClInclude Include="..\Public\Level.h" />
@@ -399,6 +410,7 @@
     <ClInclude Include="..\Public\Timer.h" />
     <ClInclude Include="..\Public\Timer_Manager.h" />
     <ClInclude Include="..\Public\Transform.h" />
+    <ClInclude Include="..\Public\UIAction_Registry.h" />
     <ClInclude Include="..\Public\UIObject.h" />
     <ClInclude Include="..\Public\VertexData.h" />
     <ClInclude Include="..\Public\VIBuffer.h" />

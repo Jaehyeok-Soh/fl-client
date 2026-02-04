@@ -14,12 +14,54 @@
 #include "Effect.h"
 #include "CEFfectObject.h"
 
+// UI
+#include "DataStruct_UI.h"
+#include "DataDocument_UI.h"
+#include "ImGui_UIManager.h"
+#include "ToolCanvas.h"
+#include "Builder_UI.h"
+
+// Map
+#include "DataStruct_Map.h"
+#include "DataDocument_Map.h"
+#include "MapToolManager.h"
+#include "Builder_Map.h"
+// BuilderSystem
+#include "BuilderSystem.h"
+
+
+
 CImGui_Dockspace_MenuBar::CImGui_Dockspace_MenuBar(const _char* pLabel, ID3D11Device* pDevice, ID3D11DeviceContext* pDeviceContext)
 	: Super(pLabel, pDevice, pDeviceContext)
 	, m_pGameInstance(CGameInstance::GetInstance())
 {
 	Safe_AddRef(m_pGameInstance);
 }
+
+
+HRESULT	CImGui_Dockspace_MenuBar::Initialize()
+{
+	if (FAILED(Ready_Builder()))
+		return E_FAIL;
+
+	return S_OK;
+}
+
+HRESULT	CImGui_Dockspace_MenuBar::Ready_Builder()
+{
+	/* ReadyBuilder */
+
+	m_pBuilderSystem = CBuilderSystem::Create();
+	if (m_pBuilderSystem == nullptr)  return E_FAIL;
+
+	if (FAILED(m_pBuilderSystem->Ready_Builder(DTO::ECategory::MAP, CBuilder_Map::Create(m_pDevice, m_pDeviceContext, ENUM_TO_UINT(ELevelType::MAP)))))
+		return E_FAIL;
+	if (FAILED(m_pBuilderSystem->Ready_Builder(DTO::ECategory::UI, CBuilder_UI::Create(m_pDevice, m_pDeviceContext, ENUM_TO_UINT(ELevelType::UI)))))
+		return E_FAIL;
+
+	return S_OK;
+}
+
 
 HRESULT CImGui_Dockspace_MenuBar::Render(CToolObject* pGo)
 {
@@ -115,7 +157,6 @@ void CImGui_Dockspace_MenuBar::Load_Data(const wstring& wstrFilePath)
 	switch (eCurentLevel)
 	{
 	case Tool::ELevelType::LOADING:
-
 		break;
 	case Tool::ELevelType::MAP:
 		Load_MapData(wstrFilePath);
@@ -139,46 +180,25 @@ void CImGui_Dockspace_MenuBar::Load_Data(const wstring& wstrFilePath)
 
 void CImGui_Dockspace_MenuBar::Save_MapData(const wstring& wstrFilePath)
 {
-	ELevelType eLevelType = ELevelType::MAP;
-	DTO::ECategory eCategory = DTO::ECategory::MAP;
-	_uint iLevelID = ENUM_TO_UINT(eLevelType);
- 	if (FAILED(m_pGameInstance->Regist_Document<CDataDocument_Example>(iLevelID, eCategory)))
+	/* 내가 저장시킬 최종 카테고리 ex Map / Effect / UI 중에 map 을 선택 */
+	DTO::ECategory eCategory	= DTO::ECategory::MAP;
+
+	ELevelType eLevelType		= ELevelType::MAP;
+	_uint iLevelID				= ENUM_TO_UINT(eLevelType);
+
+ 	if (FAILED(m_pGameInstance->Regist_Document<CDataDocument_Map>(iLevelID, eCategory)))
 		return;
 
 	CDataDocumentBase* pDocument = m_pGameInstance->Ensure_Document(iLevelID, eCategory, wstrFilePath);
 	if (pDocument == nullptr)
 		return;
 
-	CDataDocument_Example* pDoc = static_cast<CDataDocument_Example*>(pDocument);
-	{
-		DTO::TExample_LightData lightData{};
-		lightData.strTag = "Light1";
-		lightData.iValue = 2;
-		lightData.iValue2 = 1.f;
-		lightData.iValue3 = -2;
-		if (FAILED(pDoc->Try_Add(lightData)))
-			return;
-	}
-	{
-		DTO::TExample_StaticModelData staticModelData{};
-		staticModelData.strTag = "model1";
-		staticModelData.iValue = 3;
-		staticModelData.iValue2 = 2.f;
-		staticModelData.iValue3 = -3;
-		if (FAILED(pDoc->Try_Add(staticModelData)))
-			return;
-	}
-	m_pGameInstance->Save_File_Json(iLevelID, eCategory, wstrFilePath);
-	
-	//ELevelType eLevelType = ELevelType::MAP;
-	//_uint iLevelID = ENUM_TO_UINT(eLevelType);
-	//CDataDocumentBase* pDocument = m_pGameInstance->Ensure_Document(iLevelID, DTO::ECategory::MAP, wstrFilePath);
-	//if (pDocument == nullptr)
-	//	return;
+	/* 여러개의 layer를 한꺼번에 저장하고 싶다면 Layer Requset ExportData를 집어넣는다 */
+	Request_ExportData(eLevelType, DTO::ECategory::MAP, g_wszStaticModelLayer	, pDocument);
+	Request_ExportData(eLevelType, DTO::ECategory::MAP, g_wszInstanceModelLayer , pDocument);
 
-	//Request_ExportData(eLevelType, DTO::ECategory::MAP, g_wszStaticModelLayer, pDocument);
+	m_pGameInstance->Save_File_Json(iLevelID, DTO::ECategory::MAP, wstrFilePath);
 
-	//m_pGameInstance->Save_File_Json(iLevelID, DTO::ECategory::MAP, wstrFilePath);
 }
 
 void CImGui_Dockspace_MenuBar::Save_AnimationData(const wstring& wstrFilePath)
@@ -200,7 +220,6 @@ void CImGui_Dockspace_MenuBar::Save_EffectData(const wstring& wstrFilePath)
 	// Effect Container 객체 Layer
 	wstring ContainerObjectLayerTag = L"Effect";
 
-	CDataDocument_Effect* pDoc = static_cast<CDataDocument_Effect*>(pDocument);
 	Request_ExportData(ELevelType::EFFECT, eCategory, ContainerObjectLayerTag, pDocument);
 
 	m_pGameInstance->Save_File_Json(iLevelID, eCategory, wstrFilePath);
@@ -212,6 +231,25 @@ void CImGui_Dockspace_MenuBar::Save_CameraData(const wstring& wstrFilePath)
 
 void CImGui_Dockspace_MenuBar::Save_UIData(const wstring& wstrFilePath)
 {
+	ELevelType eLevelType = ELevelType::UI;
+	DTO::ECategory eCategory = DTO::ECategory::UI;
+	_uint iLevelID = ENUM_TO_UINT(eLevelType);
+
+	const _wstring& wstrKey = Engine_Utils::ToWString(
+		CImGui_UIManager::GetInstance()->Safe_Access_Canvas(CImGui_UIManager::GetInstance()->Get_CurCanvasIndex())->Get_Tag());
+
+	/* Folder 기준을 Static, Logo 같은 Client Level이나 Prefab으로 저장할거라 선택한 파일의 부모경로 ~~/Static 까지 받아서 Canvas 이름으로 Json 파일 경로를 생성 */
+	_wstring wstrfinalPath = std::filesystem::path(wstrFilePath).parent_path().wstring() + L"\\" + wstrKey + L".json";
+	if (FAILED(m_pGameInstance->Regist_Document<CDataDocument_UI>(iLevelID, eCategory)))
+		return;
+
+	/* Canvas Name.json 파일 */
+	CDataDocumentBase* pDocument = m_pGameInstance->Ensure_Document(iLevelID, eCategory, wstrfinalPath);
+	if (pDocument == nullptr)
+		return;
+
+	Request_ExportData(eLevelType, eCategory, wstrKey + L"_Layer", pDocument);
+	m_pGameInstance->Save_File_Json(iLevelID, eCategory, wstrfinalPath);
 }
 
 void CImGui_Dockspace_MenuBar::Load_MapData(const wstring& wstrFilePath)
@@ -220,22 +258,22 @@ void CImGui_Dockspace_MenuBar::Load_MapData(const wstring& wstrFilePath)
 	DTO::ECategory eCategory = DTO::ECategory::MAP;
 	_uint iLevelID = ENUM_TO_UINT(eLevelType);
 
-	if (FAILED(m_pGameInstance->Regist_Document<CDataDocument_Example>(iLevelID, eCategory)))
+	if (FAILED(m_pGameInstance->Regist_Document<CDataDocument_Map>(iLevelID, eCategory)))
 		return;
 
 	if (FAILED(m_pGameInstance->Load_File_Json(iLevelID, eCategory, wstrFilePath)))
 		return;
 
-	// 여기까지 성공하면 로드가 된것! 아래 코드는 그냥 테스트용
-	const CDataDocumentBase* pBase = m_pGameInstance->Get_Document(iLevelID, eCategory, "asdf");
-	const CDataDocument_Example* pTest = static_cast<const CDataDocument_Example*>(pBase);
-	const auto okay = pTest->Get_ListByType(ENUM_TO_UINT(DTO::EMapType::STATICMODEL));
-	const auto okay2 = pTest->Get_ListByType(ENUM_TO_UINT(DTO::EMapType::LIGHT));
-	if (okay.size() > 0 && okay2.size() > 0)
+	m_pBuilderSystem->Build_File(ENUM_TO_UINT(ELevelType::MAP),DTO::ECategory::MAP,path(wstrFilePath).filename().stem().string());
 
-		MSG_BOX("Okay");
-	else
-		MSG_BOX("Failed");
+	//// 여기까지 성공하면 로드가 된것! 아래 코드는 그냥 테스트용
+	//const CDataDocumentBase* pBase = m_pGameInstance->Get_Document(iLevelID, eCategory,path(wstrFilePath).filename().stem().string());
+	//const CDataDocument_Map* pTest = static_cast<const CDataDocument_Map*>(pBase);
+	//const auto okay = pTest->Get_ListByType(ENUM_TO_UINT(DTO::EMapType::STATICMODEL));
+	//if (okay.empty())
+	//	MSG_BOX("Empty");
+	//else
+	//	MSG_BOX("Succsed");
 }
 
 void CImGui_Dockspace_MenuBar::Load_AnimationData(const wstring& wstrFilePath)
@@ -283,9 +321,9 @@ void CImGui_Dockspace_MenuBar::Load_EffectData(const wstring& wstrFilePath)
 		CTransform::TRANSFORM_DESC pTransDesc = {};
 		pTransDesc.fMovePerSec = 1.f;
 		pTransDesc.fRotatePerSec = 1.f;
-		pTransDesc.vPosition = vPos;
-		pTransDesc.vRotation_Degrees = Engine_Utils::ToEulerDegrees(vQuat);
-		pTransDesc.vScale = vScale;
+		pTransDesc.ScaleMatrix = Matrix::CreateScale(vScale);
+		pTransDesc.RotationMatrix = Matrix::CreateFromQuaternion(vQuat);
+		pTransDesc.TranslationMatrix = Matrix::CreateTranslation(vPos);
 
 		Effect::EFFECT_CONTAINERDESC pDesc = {};
 		pDesc._Effect_SimulationType = (E_SIMULATION_SPACE)pData._Effect_SimulationType;
@@ -320,10 +358,9 @@ void CImGui_Dockspace_MenuBar::Load_EffectData(const wstring& wstrFilePath)
 
 			CEffectObject::Effect_Desc pEffectDesc = {};
 			CTransform::TRANSFORM_DESC transformDesc = {};
-
-			transformDesc.vPosition = vPos;
-			transformDesc.vScale = vScale;
-			transformDesc.vRotation_Degrees = Engine_Utils::ToEulerDegrees(vQuat); // Quat -> Euler 변환
+			transformDesc.TranslationMatrix = Matrix::CreateScale(vScale);
+			transformDesc.ScaleMatrix = Matrix::CreateTranslation(vPos);
+			transformDesc.RotationMatrix = Matrix::CreateFromQuaternion(vQuat);
 			transformDesc.fRotatePerSec = 1.f;
 			transformDesc.fMovePerSec = 1.f;
 
@@ -427,6 +464,17 @@ void CImGui_Dockspace_MenuBar::Load_CameraData(const wstring& wstrFilePath)
 
 void CImGui_Dockspace_MenuBar::Load_UIData(const wstring& wstrFilePath)
 {
+	ELevelType eLevelType = ELevelType::UI;
+	DTO::ECategory eCategory = DTO::ECategory::UI;
+	_uint iLevelID = ENUM_TO_UINT(eLevelType);
+
+	if (FAILED(m_pGameInstance->Regist_Document<CDataDocument_UI>(iLevelID, eCategory)))
+		return;
+
+	if (FAILED(m_pGameInstance->Load_File_Json(iLevelID, eCategory, wstrFilePath)))
+		return;
+
+	m_pBuilderSystem->Build_File(iLevelID, eCategory, path(wstrFilePath).filename().stem().string());
 }
 
 void CImGui_Dockspace_MenuBar::Request_ExportData(ELevelType eLevelID, DTO::ECategory eCategory, const wstring& wstrLayerTag, CDataDocumentBase* pDocument)
@@ -447,11 +495,21 @@ void CImGui_Dockspace_MenuBar::Request_ExportData(ELevelType eLevelID, DTO::ECat
 
 CImGui_Dockspace_MenuBar* CImGui_Dockspace_MenuBar::Create(const _char* pLabel, ID3D11Device* pDevice, ID3D11DeviceContext* pDeviceContext)
 {
-	return new CImGui_Dockspace_MenuBar(pLabel, pDevice, pDeviceContext);
+	CImGui_Dockspace_MenuBar* pDockspace = new CImGui_Dockspace_MenuBar(pLabel, pDevice, pDeviceContext);
+
+	if (FAILED(pDockspace->Initialize()))
+	{
+		Safe_Release(pDockspace);
+		MSG_BOX(" Dock Space Menu is failed to Create ");
+		return nullptr;
+	}
+
+	return pDockspace;
 }
 
 void CImGui_Dockspace_MenuBar::Free()
 {
+	Safe_Release(m_pBuilderSystem);
 	Safe_Release(m_pGameInstance);
 	Super::Free();
 }

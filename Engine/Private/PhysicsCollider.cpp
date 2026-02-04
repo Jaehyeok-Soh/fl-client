@@ -15,6 +15,7 @@ CPhysicsCollider::CPhysicsCollider(const CPhysicsCollider& rhs)
 	: Super(rhs)
 	, m_pDevice(rhs.m_pDevice)
 	, m_pDeviceContext(rhs.m_pDeviceContext)
+	, m_pColliderShapes(rhs.m_pColliderShapes)
 {
 	Safe_AddRef(m_pDevice);
 	Safe_AddRef(m_pDeviceContext);
@@ -87,10 +88,12 @@ void CPhysicsCollider::SetCenter(Vec3 vCenter)
 		shape->setLocalPose(PxTransform(PxVec3(vCenter.x, vCenter.y, vCenter.z)));
 }
 
+#ifdef _DEBUG
 void CPhysicsCollider::Render()
 {
 	return;
 }
+#endif
 
 CPhysicsCollider* CPhysicsCollider::Create(ID3D11Device* pDevice, ID3D11DeviceContext* pDeviceContext, void* pArg)
 {

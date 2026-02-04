@@ -9,11 +9,14 @@
 //=================
 // Builder
 //=================
+#include "Builder_UI.h"
 #include "Builder_Example.h"
 #include "BuilderSystem.h"
+#include "Builder_Map.h"
 #include "EffectBuilder.h"
 #include "DataStruct_Effect.h"
 #include "DataDocument_Effect.h"
+#include "DataDocument_Map.h"
 
 //=================
 // Object
@@ -22,10 +25,15 @@
 #include "CameraMan_Targeter.h"
 #include "Effect.h"
 #include "EffectObject.h"
+#include "Physics_LandScape.h"
 
 //=================
 // UI
 //=================
+#include "DataDocument_UI.h"
+#include "DataStruct_UI.h"
+#include "Canvas.h"
+#include "UILayer.h"
 #include "GenericUI.h"
 
 #include "GameInstance.h"
@@ -52,14 +60,17 @@ HRESULT CLevel_Logo::Initialize()
 	if (FAILED(Ready_Player_Layer(g_wszPlayerLayer)))
 		return E_FAIL;
 
+	if (FAILED(Ready_DevMap()))
+		return E_FAIL;
+
 	if (FAILED(Ready_UI_Layer(g_wszUILayer)))
 		return E_FAIL;
 
 	if (FAILED(Ready_Lights()))
 		return E_FAIL;
 
-	if (FAILED(Ready_Test_Terrain(L"test_terrain")))
-		return E_FAIL;
+	//if (FAILED(Ready_Test_Terrain(L"test_terrain")))
+	//	return E_FAIL;
 
 	return S_OK;
 }
@@ -72,7 +83,13 @@ HRESULT CLevel_Logo::Awake(const _uint iLevelID)
 	if (FAILED(Ready_Camera_Setting(iLevelID)))
 		return E_FAIL;
 
-	m_pGameInstance->PlayBGM(L"Music_Logo", 0.1f);
+	CLOG_TRACE(L"테스트, Logo Awake() 확인");
+	CLOG_INFO(L"테스트, Logo Awake() 확인");
+	CLOG_WARN(L"테스트, Logo Awake() 확인");
+	CLOG_ERROR(L"테스트, Logo Awake() 확인");
+
+	m_eCursorMode = ECursorMode::LockedHiddenCenter;
+	m_pGameInstance->Request_CursorMode(m_eCursorMode);
 	return S_OK;
 }
 
@@ -84,6 +101,33 @@ void CLevel_Logo::Update(const _float fTimeDelta)
 	{
 		m_pGameInstance->Request_AddObject(ENUM_TO_UINT(ELevelType::LOGO), L"POOL_ParticleSystem", ENUM_TO_UINT(ELevelType::LOGO), L"Effect", nullptr);
 	}
+
+	// TODO : 어디다 두지?
+	static _uint s_iCount = { 0 };
+	if (m_pGameInstance->KeyButton_Down(DIK_LALT))
+	{
+#ifdef _DEBUG
+		s_iCount = (s_iCount + 1) % 3;
+#else
+		s_iCount = (s_iCount + 1) % 2;
+#endif
+		if (s_iCount == 0)
+		{
+			m_eCursorMode = ECursorMode::LockedHiddenCenter;
+		}
+		else if (s_iCount == 1)
+		{
+			m_eCursorMode = ECursorMode::VisibleClipped;
+		}
+#ifdef _DEBUG
+		else
+		{
+			m_eCursorMode = ECursorMode::VisibleFree;
+		}
+#endif
+		m_pGameInstance->Request_CursorMode(m_eCursorMode);
+	}
+}
 
 	if (m_pGameInstance->KeyButton_Down(DIK_1))
 	{
@@ -110,9 +154,10 @@ HRESULT CLevel_Logo::Render()
 
 HRESULT CLevel_Logo::Ready_Builders()
 {
-	if (FAILED(Ready_Builder(DTO::ECategory::MAP, CBuilder_Example::Create(m_pDevice, m_pDeviceContext, ENUM_TO_UINT(ELevelType::LOGO)))))
+	if (FAILED(Ready_Builder(DTO::ECategory::MAP,CBuilder_Map::Create(m_pDevice, m_pDeviceContext, static_cast<_uint>(ELevelType::LOGO)))))
 		return E_FAIL;
-
+	if (FAILED(Ready_Builder(DTO::ECategory::UI, CBuilder_UI::Create(m_pDevice, m_pDeviceContext, static_cast<_uint>(ELevelType::STATIC)))))
+		return E_FAIL;
 	if (FAILED(Ready_Builder(DTO::ECategory::EFFECT, EffectBuilder::Create(m_pDevice, m_pDeviceContext, ENUM_TO_UINT(ELevelType::LOGO)))))
 		return E_FAIL;
 
@@ -140,7 +185,7 @@ HRESULT CLevel_Logo::Ready_Player_Layer(const wstring& wstrLayerTag)
 		CTransform::TRANSFORM_DESC transformDesc = {};
 		playerDesc.iLevelIndex = ENUM_TO_UINT(ELevelType::LOGO);
 		playerDesc.wstrBodyModelTag = L"Prototype_Component_Model_Master";
-		transformDesc.vPosition = { 0.f, -0.1f, -20.f };
+		transformDesc.TranslationMatrix = Matrix::CreateTranslation(Vec3(18.f,12.f,19.f));
 		playerDesc.pTransform_Desc = &transformDesc;
 		if (!(pResult = m_pGameInstance->Add_GameObject(ENUM_TO_UINT(ELevelType::STATIC),
 			L"Prototype_GameObject_MainPlayer",
@@ -154,8 +199,31 @@ HRESULT CLevel_Logo::Ready_Player_Layer(const wstring& wstrLayerTag)
 
 HRESULT CLevel_Logo::Ready_UI_Layer(const wstring& wstrLayerTag)
 {
+	ELevelType eLevelType = ELevelType::LOGO;
+	DTO::ECategory eCategory = DTO::ECategory::UI;
+	_uint iLevelID = ENUM_TO_UINT(eLevelType);
 
-	
+	if (FAILED(m_pGameInstance->Regist_Document<CDataDocument_UI>(iLevelID, eCategory)))
+		return E_FAIL;
+
+	std::filesystem::path strFolderPath = L"../../Resources/Data/UIData/Logo/";
+	vector<path> vecfiles;
+
+	if (std::filesystem::exists(strFolderPath))
+	{
+		for (auto iter : std::filesystem::directory_iterator(strFolderPath))
+		{
+			if (iter.is_regular_file())
+				vecfiles.push_back(iter.path().stem());
+
+			if (FAILED(m_pGameInstance->Load_File_Json(iLevelID, eCategory, iter.path())))
+				return E_FAIL;
+
+			if (FAILED(Build_File(iLevelID, eCategory, iter.path().stem().string())))
+				return E_FAIL;
+		}
+	}
+
 	return S_OK;
 }
 
@@ -206,10 +274,9 @@ HRESULT CLevel_Logo::Ready_Lights()
 HRESULT CLevel_Logo::Ready_Test_Terrain(const wstring& wstrLayerTag)
 {
 	{
-		CGameObject * pResult = { nullptr };
+		CGameObject* pResult = { nullptr };
 		CGameObject::GAMEOBJECT_DESC goDesc = {};
 		CTransform::TRANSFORM_DESC TransformDesc = {};
-		TransformDesc.vPosition = { 0.f, 0.f, 0.f };
 		goDesc.pTransform_Desc = &TransformDesc;
 
 		if (!(pResult = m_pGameInstance->Add_GameObject(ENUM_TO_UINT(ELevelType::STATIC),
@@ -218,6 +285,30 @@ HRESULT CLevel_Logo::Ready_Test_Terrain(const wstring& wstrLayerTag)
 			wstrLayerTag, &goDesc)))
 			return E_FAIL;
 	}
+
+	return S_OK;
+}
+
+HRESULT CLevel_Logo::Ready_DevMap()
+{
+	ELevelType eLevelType = ELevelType::LOGO;
+	DTO::ECategory eCategory = DTO::ECategory::MAP;
+	_uint iLevelID = ENUM_TO_UINT(eLevelType);
+
+	if (FAILED(m_pGameInstance->Regist_Document<CDataDocument_Map>(iLevelID, eCategory)))
+		return E_FAIL;
+
+	std::filesystem::path FilePath = L"../../Resources/Data/MapData/LevelData/DevLevel/DevMap.json";
+	vector<path> vecfiles;
+
+	if (!std::filesystem::exists(FilePath))
+		return E_FAIL;
+
+	if (FAILED(m_pGameInstance->Load_File_Json(iLevelID, eCategory , FilePath )))
+		return E_FAIL;
+
+	if (FAILED(Build_File(iLevelID,eCategory,FilePath.stem().string())))
+		return E_FAIL;
 
 	return S_OK;
 }
@@ -236,7 +327,7 @@ HRESULT CLevel_Logo::Ready_Camera_Setting(const _uint iLevelIndex)
 CLevel_Logo* CLevel_Logo::Create(ID3D11Device* pDevice, ID3D11DeviceContext* pDeviceContext)
 {
 	CLevel_Logo* pInstance = new CLevel_Logo(pDevice, pDeviceContext);
-	
+
 	if (FAILED(pInstance->Initialize()))
 	{
 		MSG_BOX("CLevel_Logo::Create, Failed");

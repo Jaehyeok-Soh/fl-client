@@ -13,10 +13,11 @@
 #include "GameInstance.h"
 #include "VIBuffer_Rect_Tex.h"
 #include "Level_Loading.h"
+#include "ImGui_ClientDebug.h"
+#include "EngineConsole.h"
 #include "PhysicsRigidBody.h"
 #include "PhysicsCollider.h"
 #include "PhysicsCCT.h"
-
 #include "UI_Manager.h"
 
 USING(Client)
@@ -52,8 +53,18 @@ HRESULT CMainApplication::Initialize()
 	if (FAILED(Ready_Fonts()))
 		return E_FAIL;
 
-	if (FAILED(Start_Level(ELevelType::LOGO)))
+#ifdef _DEBUG
+	CEngineConsole::Initialize();
+	CEngineConsole::Set_Title(L"DebugConsole, 含形虞 含形!");
+	m_pDebugGui = CImGui_ClientDebug::GetInstance();
+	if (m_pDebugGui == nullptr)
 		return E_FAIL;
+	if (FAILED(m_pDebugGui->Initialize(g_hWnd, m_pDevice, m_pDeviceContext)))
+		return E_FAIL;
+#endif
+
+	if (FAILED(Start_Level(ELevelType::LOGO)))
+		return E_FAIL;	
 
 	return S_OK;
 }
@@ -78,7 +89,12 @@ HRESULT CMainApplication::Render()
 	Vec4 ClearColor = { 0.f, 0.f, 1.f, 1.f };
 	m_pGameInstance->Draw_Begin(&ClearColor);
 	m_pGameInstance->Draw();
+#ifdef _DEBUG
+	m_pDebugGui->Render();
+#endif
+
 	m_pGameInstance->Draw_End();
+
 	return S_OK;
 }
 
@@ -149,6 +165,17 @@ HRESULT CMainApplication::Ready_Static_Prototype()
 		shaderDesc.iNumElements = Engine::VTXMESH::iNumElements;
 		shaderDesc.pElements = Engine::VTXMESH::Elements;
 		if (FAILED(m_pGameInstance->Add_Prototype(ENUM_TO_UINT(ELevelType::STATIC), L"Prototype_Component_Shader_VtxMesh",
+			CShader::Create(m_pDevice, m_pDeviceContext, &shaderDesc))))
+			return E_FAIL;
+	}
+
+	// For. Prototype_Component_Shader_InstanceMesh
+	{
+		CShader::SHADER_ORIGIN_DESC shaderDesc = {};
+		shaderDesc.pShaderFilePath = L"../../Shaders/Shader_VtxInstanceMesh.hlsl";
+		shaderDesc.iNumElements = Engine::VTX_INSTANCE_MESH::iNumElements;
+		shaderDesc.pElements = Engine::VTX_INSTANCE_MESH::Elements;
+		if (FAILED(m_pGameInstance->Add_Prototype(ENUM_TO_UINT(ELevelType::STATIC), L"Prototype_Component_Shader_VtxInstanceMesh",
 			CShader::Create(m_pDevice, m_pDeviceContext, &shaderDesc))))
 			return E_FAIL;
 	}
@@ -371,26 +398,27 @@ HRESULT CMainApplication::Ready_Static_Prototype()
 	//=================
 	// Physics Component
 	//=================
-	// For. Prototype_Component_Transform
+	// For. Prototype_Component_Physics_CCT
 	{
 		if (FAILED(m_pGameInstance->Add_Prototype(ENUM_TO_UINT(ELevelType::STATIC), L"Prototype_Component_Physics_CCT",
 			CPhysicsCCT::Create(m_pDevice, m_pDeviceContext))))
 			return E_FAIL;
 	}
 
-	// For. Prototype_Component_Transform
+	// For. Prototype_Component_Physics_RigidBody
 	{
 		if (FAILED(m_pGameInstance->Add_Prototype(ENUM_TO_UINT(ELevelType::STATIC), L"Prototype_Component_Physics_RigidBody",
 			CPhysicsRigidBody::Create(m_pDevice, m_pDeviceContext))))
 			return E_FAIL;
 	}
 
-	// For. Prototype_Component_Transform
+	// For. Prototype_Component_Physics_Collider
 	{
 		if (FAILED(m_pGameInstance->Add_Prototype(ENUM_TO_UINT(ELevelType::STATIC), L"Prototype_Component_Physics_Collider",
 			CPhysicsCollider::Create(m_pDevice, m_pDeviceContext, nullptr))))
 			return E_FAIL;
 	}
+
 	return S_OK;
 }
 
@@ -408,12 +436,17 @@ HRESULT CMainApplication::Ready_Fonts()
 }
 
 void CMainApplication::Free()
-{
+{	
 	Safe_Release(m_pDeviceContext);
 	Safe_Release(m_pDevice);
 	CUI_Manager::GetInstance()->DestroyInstance();
 	m_pGameInstance->Destroy_Engine();
 	Safe_Release(m_pGameInstance);
+
+#ifdef _DEBUG
+	CEngineConsole::Shutdown();
+	m_pDebugGui->DestroyInstance();
+#endif
 	Super::Free();
 }
 

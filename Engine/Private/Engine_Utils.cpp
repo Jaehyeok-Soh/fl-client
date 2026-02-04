@@ -159,7 +159,6 @@ string Engine_Utils::ToString(wstring value)
     return strReturn;
 }
 
-
 string Engine_Utils::GetFileNameFromPath(const string& filePath)
 {
     std::filesystem::path path(filePath);
@@ -248,4 +247,48 @@ void Engine_Utils::Set_OnlyFlag(Flags& curFlags, _uint iBitFlag)
 
     // 3. 해당 플래그만 켜기
     curFlags |= iBitFlag;
+}
+
+void Engine_Utils::read_vec3_xyz(const json& _j, Vec3& vOut)
+{
+    vOut.x = _j.value("X", 0.f);
+    vOut.y = _j.value("Y", 0.f);
+    vOut.z = _j.value("Z", 0.f);
+}
+
+void Engine_Utils::read_vec3_PitchYawRoll(const json& _j, Vec3& vOut)
+{
+    vOut.x = _j.value("Pitch", 0.f);
+    vOut.y = _j.value("Yaw", 0.f);
+    vOut.z = _j.value("Roll", 0.f);
+}
+
+void Engine_Utils::read_vec4_Quat(const json& _j, Quat& vOut)
+{
+    vOut.x = _j.value("X", 0.f);
+    vOut.y = _j.value("Y", 0.f);
+    vOut.z = _j.value("Z", 0.f);
+    vOut.w = _j.value("W", 0.f);
+}
+
+void Engine_Utils::write_vec3_xyz(json& _j, const Vec3& vOut)
+{
+    _j["X"] = vOut.x;
+    _j["Y"] = vOut.y;
+    _j["Z"] = vOut.z;
+}
+
+void Engine_Utils::write_vec3_PitchYawRoll(json& _j, const Vec3& vOut)
+{
+    _j["Pitch"] = vOut.x;
+    _j["Yaw"] = vOut.y;
+    _j["Roll"] = vOut.z;
+}
+
+void Engine_Utils::write_vec4_Quat(json& _j,const  Quat& vOut)
+{
+    _j["X"] = vOut.x;
+    _j["Y"] = vOut.y;
+    _j["Z"] = vOut.z;
+    _j["W"] = vOut.w;
 }

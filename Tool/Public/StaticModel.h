@@ -1,13 +1,15 @@
 #pragma once
 #include "MapObject.h"
+#include "UEMapdataParser.h"
 
 class CStaticModel : public CMapObject
 {
 	using Super = CMapObject;
 public:
-	typedef struct tagStaticMesh : public CMapObject::MAPOBJECT_DESC
+	typedef struct tagStaticModel : public CMapObject::MAPOBJECT_DESC
 	{
-		EStaticModel_Type eType{};
+		STATICMODEL_DATA  tData{};
+	public:
 	}STATICMODEL_DESC;
 protected:
 	CStaticModel(EToolObjectType eType, ID3D11Device* pDevice, ID3D11DeviceContext* pDeviceContext);
@@ -27,6 +29,8 @@ public:
 	virtual void			Draw_ImGui()									override;
 	virtual void			Set_Dead(const wstring& wstrLayerTag)			override;
 public:
+	virtual void			Register_OriginSRT(Engine::Flags fResetTypeFlag)override;
+public:
 	void					Set_StaticModelType(EStaticModel_Type eType) { m_eType = eType; }
 	EStaticModel_Type		Get_StaticModelType() const { return m_eType; }
 private:
@@ -35,7 +39,8 @@ public:
 	virtual _bool			Picking(OUT Vec3& vOut)						override;
 	virtual _bool			Export_Data(DTO::ECategory eCategory, CDataDocumentBase* pDocument)		override;
 private:
-	EStaticModel_Type		m_eType{};
+	STATICMODEL_DATA		m_tData{};
+	EStaticModel_Type		m_eType{ EStaticModel_Type::DEFUALT};
 public:
 	static  CStaticModel*	Create(EToolObjectType eType, ID3D11Device* pDevice, ID3D11DeviceContext* pDeviceContext);
 	virtual CGameObject*	Clone(void* pArg)								override;

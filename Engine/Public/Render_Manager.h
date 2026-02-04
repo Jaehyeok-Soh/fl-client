@@ -19,6 +19,7 @@ public:
 	HRESULT Render();
 	void Push_RenderObject(RENDER_CATEGORY eCategory, CGameObject* pGO);
 private:	
+
 	HRESULT Render_Priority();
 	HRESULT Render_NoneBlend();
 	HRESULT Render_Lights();
@@ -36,7 +37,6 @@ private:
 
 	class CVIBuffer_Rect_Tex* m_pVIBuffer = { nullptr };
 	class CShader* m_pShader = { nullptr };
-
 	Matrix m_matWorld_RT = Matrix::Identity;
 public:
 	static CRender_Manager* Create(ID3D11Device* pDevice, ID3D11DeviceContext* pDeviceContext);

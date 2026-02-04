@@ -31,10 +31,6 @@ private:
 	HRESULT Render_CameraSetting();
 	HRESULT Render_PreViewInfo();
 private:
-	HRESULT	Render_MapObjectList();
-	HRESULT	Render_CamInfo();
-	HRESULT	Render_SelectInfo();
-private:
 
 	CGameInstance* m_pGameInstance{ nullptr };
 	CMapToolManager* m_pMapToolManager{ nullptr };

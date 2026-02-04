@@ -20,7 +20,6 @@ class CImGui_UIManager final : public CBase
 private:
 	CImGui_UIManager();
 	virtual ~CImGui_UIManager() = default;
-
 public:
 	HRESULT Safe_Add_Canvas(CToolCanvas* pCanvas);
 
@@ -37,7 +36,6 @@ public:
 	int32_t Get_CurLayerIndex() { return m_iCurLayerIndex; }
 	int32_t Get_CurUIIndex() { return m_iCurUIIndex; }
 
-
 	/* 안전하게 원소에 접근하는 함수들 / nullptr 체크 필수 */
 	vector<CToolCanvas*>*	Safe_Access_CanvasVector() { if (m_vecCanvas.empty())return nullptr; return &m_vecCanvas; };
 	CToolCanvas*	Safe_Access_Canvas(int32_t index);
@@ -50,8 +48,8 @@ public:
 
 private:
 	CGameInstance* m_pGameInstance = { nullptr };
-
 	vector<CToolCanvas*> m_vecCanvas;
+
 private:
 	int32_t m_iCurCanvasIndex = {};
 	int32_t m_iCurLayerIndex = {};

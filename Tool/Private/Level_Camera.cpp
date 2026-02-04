@@ -34,6 +34,10 @@ void CLevel_Camera::Update(const _float fTimeDelta)
 	Super::Update(fTimeDelta);
 }
 
+void CLevel_Camera::Update_Picking()
+{
+}
+
 HRESULT CLevel_Camera::Render()
 {
 	if (FAILED(Super::Render()))

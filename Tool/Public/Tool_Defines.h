@@ -115,14 +115,15 @@ namespace Tool
 	{
 		switch (eType)
 		{
-		case Tool::EStaticModel_Type::DEFUALT: return "DEFUALT";
+		case Tool::EStaticModel_Type::DEFUALT:	return "DEFUALT";
 		case Tool::EStaticModel_Type::INSTANCE:	return "INSTANCE";
-		default		:						return "NONE";
+		default		:							return "NONE";
 		}
 
 
 		return "NONE";
 	}
+
 	static EStaticModel_Type StaticModelType_ToEnum(string streType)
 	{
 		if (streType == "DEFUALT") return EStaticModel_Type::DEFUALT;
@@ -158,8 +159,8 @@ namespace Tool
 	enum class EClientLevelType : unsigned int
 	{
 		STATIC = 0,
-		LOGO,
 		LOADING,
+		LOGO,
 		END
 	};
 
@@ -196,6 +197,7 @@ namespace Tool
 	inline constexpr _tchar g_wszTriggerBoxLayer[]{ L"TriggerBox_Layer" };
 	inline constexpr _tchar g_wszColMeshLayer[]{ L"ColMesh_Layer" };
 	inline constexpr _tchar g_wszStaticModelLayer[]{ L"StaticModel_Layer" };
+	inline constexpr _tchar g_wszInstanceModelLayer[]{ L"InstanceModel_Layer" };
 	inline constexpr _tchar g_wszCameraLayer[]{ L"Camera_Layer" };
 
 	inline constexpr _tchar g_wszPrototypeTagCanvas[]{ L"Prototype_UI_Canvas" };
@@ -211,13 +213,14 @@ namespace Tool
 	{
 		/* 지형지물 = Terrain = Object */
 		STATICMODEL,
+		INSTANCEMODEL,
 		END,
 	};
 
 	static EMapObject_Type MapObjectType_StringToType(const string& strType)
 	{
 		if (strType == "STATICMODEL") return EMapObject_Type::STATICMODEL;
-
+		if (strType == "INSTANCEMODEL") return EMapObject_Type::INSTANCEMODEL;
 
 		return EMapObject_Type::END;
 	}
@@ -242,7 +245,6 @@ namespace Tool
 
 
 #pragma endregion
-
 
 #pragma region Struct
 

@@ -42,9 +42,9 @@ HRESULT CPhysicsCCT::Initialize(void* pArg)
 
 void CPhysicsCCT::Awake()
 {
-	Vec3 vPos = m_pOwner->Get_Component<CTransform>()->Get_Info(TRANSFORM_INFO_STATE::POS);
+	//Vec3 vPos = m_pOwner->Get_Component<CTransform>()->Get_Info(TRANSFORM_INFO_STATE::POS);
 
-	SetPosition(vPos);
+	//SetPosition(vPos);
 }
 
 void CPhysicsCCT::Update()
@@ -94,7 +94,7 @@ void CPhysicsCCT::SetPosition(Vec3 position)
 Vec3 CPhysicsCCT::GetPosition()
 {
 	PxExtendedVec3 position = m_pController->getPosition();
-	return Vec3((_float)position.x, (_float)position.y - m_fContactOffset, (_float)position.z);
+	return Vec3((_float)position.x, (_float)position.y, (_float)position.z);
 }
 
 void CPhysicsCCT::SetFootPosition(Vec3 pos)
@@ -105,7 +105,7 @@ void CPhysicsCCT::SetFootPosition(Vec3 pos)
 Vec3 CPhysicsCCT::GetFootPosition()
 {
 	PxExtendedVec3 pos = m_pController->getFootPosition();
-	return Vec3((_float)pos.x, (_float)pos.y - m_fContactOffset, (_float)pos.z);
+	return Vec3((_float)pos.x, (_float)pos.y, (_float)pos.z);
 }
 
 Vec3 CPhysicsCCT::GetUpDirection()

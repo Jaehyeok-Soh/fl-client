@@ -298,6 +298,39 @@
     <Filter Include="00. System\05. Component\PhysicsCCT">
       <UniqueIdentifier>{20045528-a719-46f9-8133-abf66bb4da37}</UniqueIdentifier>
     </Filter>
+    <Filter Include="00. System\04. GameObject\UIObject\Interface">
+      <UniqueIdentifier>{627899fc-d0d1-4a99-ac65-dcf99cb32737}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="00. System\04. GameObject\UIObject\Interface\Action For Me">
+      <UniqueIdentifier>{b9ab0a0c-c6af-48ee-891a-d33b6697ebd7}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="00. System\04. GameObject\UIObject\Interface\Action For Target">
+      <UniqueIdentifier>{458e4ee3-ec12-4568-848f-681fb57b8215}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="00. System\04. GameObject\UIObject\Registry">
+      <UniqueIdentifier>{01d57898-da08-45d1-a15c-f74cab4f144e}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="01. Utility\11. DataRepository\Datas\Map\DataStruct_Map">
+      <UniqueIdentifier>{1e9392f0-97f4-4afb-8c29-c6afefc0eb48}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="01. Utility\11. DataRepository\Datas\Map\DataDocument_Map">
+      <UniqueIdentifier>{c9ad8f5d-b829-4469-9592-0ca458904b6b}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="01. Utility\16. Console">
+      <UniqueIdentifier>{aca0ce57-3fd8-4a3f-8270-2289e987fe91}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="00. System\13. ThreadPool">
+      <UniqueIdentifier>{04367fbb-7b98-4fac-a938-9cc777d2f7fd}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="00. System\13. ThreadPool\Worker">
+      <UniqueIdentifier>{fb94a932-18f1-4a22-92f7-cac192556caa}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="00. System\07. Resource\Mesh\00. Mesh">
+      <UniqueIdentifier>{bcd8e9eb-f733-4e77-97d2-c221570dab80}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="00. System\07. Resource\Mesh\01. InstanceMesh">
+      <UniqueIdentifier>{1b869a34-a400-4ee2-9d81-a39a890b6515}</UniqueIdentifier>
+    </Filter>
     <Filter Include="00. System\13. StructuredBuffer">
       <UniqueIdentifier>{043d4a0e-860d-46aa-93fb-251f6c7ba102}</UniqueIdentifier>
     </Filter>
@@ -402,9 +435,6 @@
     <ClCompile Include="..\Private\GameObject.cpp">
       <Filter>00. System\04. GameObject</Filter>
     </ClCompile>
-    <ClCompile Include="..\Private\UIObject.cpp">
-      <Filter>00. System\04. GameObject\UIObject</Filter>
-    </ClCompile>
     <ClCompile Include="..\Private\PartObject.cpp">
       <Filter>00. System\04. GameObject\PartObject</Filter>
     </ClCompile>
@@ -503,9 +533,6 @@
     </ClCompile>
     <ClCompile Include="..\Private\Material.cpp">
       <Filter>00. System\07. Resource\Material</Filter>
-    </ClCompile>
-    <ClCompile Include="..\Private\Mesh.cpp">
-      <Filter>00. System\07. Resource\Mesh</Filter>
     </ClCompile>
     <ClCompile Include="..\Private\Bone.cpp">
       <Filter>00. System\05. Component\Model\Bone</Filter>
@@ -630,6 +657,16 @@
     <ClCompile Include="..\Private\PhysicsCCT.cpp">
       <Filter>00. System\05. Component\PhysicsCCT</Filter>
     </ClCompile>
+    <ClCompile Include="..\Private\DataStruct_Map.cpp">
+      <Filter>01. Utility\11. DataRepository\Datas\Map\DataStruct_Map</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\DataDocument_Map.cpp">
+      <Filter>01. Utility\11. DataRepository\Datas\Map\DataDocument_Map</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\IUIActionForMe.cpp">
+      <Filter>00. System\04. GameObject\UIObject\Interface\Action For Me</Filter>
+    </ClCompile>
+    <ClCompile Include="..\public\ThreadPool.cpp" />
     <ClCompile Include="..\private\ThreadWorker.cpp" />
     <ClCompile Include="..\public\ThreadPool.cpp" />
     <ClCompile Include="..\Private\StructuredBuffer.cpp">
@@ -640,6 +677,18 @@
     </ClCompile>
     <ClCompile Include="..\Private\ComputeShader.cpp">
       <Filter>00. System\05. Component\ComputeShader</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\UIAction_Registry.cpp">
+      <Filter>00. System\04. GameObject\UIObject\Registry</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\UIObject.cpp">
+      <Filter>00. System\04. GameObject\UIObject</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\Mesh.cpp">
+      <Filter>00. System\07. Resource\Mesh\00. Mesh</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\InstanceMesh.cpp">
+      <Filter>00. System\07. Resource\Mesh\01. InstanceMesh</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -760,9 +809,6 @@
     <ClInclude Include="..\Public\GameObject.h">
       <Filter>00. System\04. GameObject</Filter>
     </ClInclude>
-    <ClInclude Include="..\Public\UIObject.h">
-      <Filter>00. System\04. GameObject\UIObject</Filter>
-    </ClInclude>
     <ClInclude Include="..\Public\PartObject.h">
       <Filter>00. System\04. GameObject\PartObject</Filter>
     </ClInclude>
@@ -867,9 +913,6 @@
     </ClInclude>
     <ClInclude Include="..\Public\Material.h">
       <Filter>00. System\07. Resource\Material</Filter>
-    </ClInclude>
-    <ClInclude Include="..\Public\Mesh.h">
-      <Filter>00. System\07. Resource\Mesh</Filter>
     </ClInclude>
     <ClInclude Include="..\Public\Bone.h">
       <Filter>00. System\05. Component\Model\Bone</Filter>
@@ -997,6 +1040,16 @@
     <ClInclude Include="..\Public\PhysicsCCT.h">
       <Filter>00. System\05. Component\PhysicsCCT</Filter>
     </ClInclude>
+    <ClInclude Include="..\Public\DataStruct_Map.h">
+      <Filter>01. Utility\11. DataRepository\Datas\Map\DataStruct_Map</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\DataDocument_Map.h">
+      <Filter>01. Utility\11. DataRepository\Datas\Map\DataDocument_Map</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\IUIActionForMe.h">
+      <Filter>00. System\04. GameObject\UIObject\Interface\Action For Me</Filter>
+    </ClInclude>
+    <ClInclude Include="..\public\ThreadWorker.h" />
     <ClInclude Include="..\public\ThreadPool.h" />
     <ClInclude Include="..\public\ThreadWorker.h" />
     <ClInclude Include="..\Public\StructuredBuffer.h">
@@ -1004,6 +1057,18 @@
     </ClInclude>
     <ClInclude Include="..\Public\ComputeShader.h">
       <Filter>00. System\05. Component\ComputeShader</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\UIAction_Registry.h">
+      <Filter>00. System\04. GameObject\UIObject\Registry</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\UIObject.h">
+      <Filter>00. System\04. GameObject\UIObject</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\Mesh.h">
+      <Filter>00. System\07. Resource\Mesh\00. Mesh</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\InstanceMesh.h">
+      <Filter>00. System\07. Resource\Mesh\01. InstanceMesh</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

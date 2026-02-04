@@ -9,10 +9,12 @@ class ENGINE_DLL CBone final : public CBase
 public:
 	typedef struct tagBoneDesc
 	{
-		string strName = { "" };
-		_int iIndex = { -1 };
-		_int iParentIndex = { -1 };
-		Matrix matTransform = Matrix::Identity;
+		string	strName			= { "" };
+		_int	iIndex			= { -1 };
+		_int	iParentIndex	= { -1 };
+		Matrix	matTransform	= Matrix::Identity;
+
+		_int	iRootMotionBoneIndex = { -1 };
 	}BONE_DESC;
 private:
 	CBone();
@@ -28,13 +30,21 @@ public:
 	_int Get_ParentIndex() const { return m_iParentIndex; }
 	void Update_CombinedTransformMatrix(const vector<CBone*>& Bones, const Matrix& PreTransformMatrix);
 	void Setup_BindPoseTransformMatrix(const vector<CBone*>& Bones, const Matrix& PreTransformMatrix);
+
+public:
+	_bool Get_IsMotionBone() const { return m_bMotionBone; }
+
 private:
-	_int m_iIndex = { -1 };
-	_int m_iParentIndex = { -1 };
-	Matrix m_matTransform = {};
-	Matrix m_matBindPoseTransform = {};
-	Matrix m_matCombinedTransform = {};
-	_char m_szName[MAX_NAME] = {};
+	_int	m_iIndex				= { -1 };
+	_int	m_iParentIndex			= { -1 };
+	Matrix	m_matTransform			= {};
+	Matrix	m_matBindPoseTransform	= {};
+	Matrix	m_matCombinedTransform	= {};
+	_char	m_szName[MAX_NAME]		= {};
+
+private:
+	_bool m_bMotionBone = { false };
+
 public:
 	static CBone* Create(BONE_DESC* pDesc);
 	CBone* Clone();

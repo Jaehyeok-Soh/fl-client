@@ -37,6 +37,27 @@ HRESULT CState_Walk::Start(void* pArg, _bool bForce)
 
 void CState_Walk::Update(const _float fTimeDelta)
 {
+	/* walk pre ani 돌고 있을 때 */
+	if (!Engine_Utils::Has_Flag(m_FAniFlags, STATEANI_FLAG::SA_PreAniDone))
+	{
+		CStateBase::Turn_byCam(fTimeDelta);
+
+		if (Check_PreMoveKey())
+			return;
+
+		if (Super::Check_JumpKey(fTimeDelta))
+			return;
+
+		if (Super::Check_DashKey(fTimeDelta))
+			return;
+
+		if (Super::Check_CtrlPressKey(fTimeDelta))
+			return;
+
+		if (Super::Check_CtrlUpKey(fTimeDelta))
+			return;
+	}
+
 	Super::Update(fTimeDelta);
 
 	//if (Align_Movement(fTimeDelta) == false)	// 8방향 움직임 
@@ -64,6 +85,18 @@ HRESULT CState_Walk::End()
 		return E_FAIL;
 
 	return S_OK;
+}
+
+_bool CState_Walk::Check_PreMoveKey()
+{
+	/* pre ani일때 만약 wasd 키를 받지 않았다면 */
+	if (!CStateBase::Key_Input(ENUM_TO_UINT(CControlContext::CONTROL_KEY::MOVE)))
+	{
+		Change_PlayerState(Super::STATEKEY::MOVE);
+		return true;
+	}
+
+	return false;
 }
 
 CState_Walk* CState_Walk::Create(CActionState* pOwnerComponent, void* pArg)

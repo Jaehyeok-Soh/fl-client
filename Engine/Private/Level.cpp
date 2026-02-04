@@ -31,6 +31,10 @@ void CLevel::Update(_float fTimeDelta)
 {
 }
 
+void CLevel::Update_Picking()
+{
+}
+
 HRESULT CLevel::Render()
 {
 	return S_OK;

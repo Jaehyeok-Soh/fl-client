@@ -94,28 +94,6 @@ HRESULT CUIObject::Render()
 	return S_OK;
 }
 
-void CUIObject::Calc_InteractState_Mouse()
-{
-	if (::PtInRect(&m_tRect, m_pGameInstance->Get_MousePos()))
-	{
-		Engine_Utils::Add_Flag(m_iInteractState, EInteract::HOVER);
-
-		if (MOUSE_LBUTTON_DOWN)
-		{
-			Engine_Utils::Add_Flag(m_iInteractState, EInteract::CLICK);
-		}
-		if (MOUSE_LBUTTON_HOLD)
-		{
-			Engine_Utils::Add_Flag(m_iInteractState, EInteract::PRESSING);
-		}
-		if (MOUSE_LBUTTON_UP)
-		{
-		}
-	}
-	else
-	{
-	}
-}
 
 void CUIObject::Set_Size(_float fWidth, _float fHeight)
 {

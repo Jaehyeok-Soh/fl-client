@@ -1,4 +1,6 @@
 #include "pch.h"
+#include "MainPlayer.h"
+
 #include "Model.h"
 #include "CameraMan.h"
 #include "Collider.h"
@@ -15,14 +17,20 @@
 #include "Camera.h"
 #include "ColliderPart.h"
 #include "PhysicsCCT.h"
-#include "GameInstance.h"
+
+#include "StateBase_Player.h"
+
 #pragma region State
 #include "State_Combo_First.h"
 #include "State_Combo_Second.h"
 #include "State_Combo_Third.h"
 #include "State_Combo_Fourth.h"
 #pragma endregion
-#include "MainPlayer.h"
+#include "GameInstance.h"
+
+// Test
+#include "ImGui_ClientDebug.h"
+
 
 CMainPlayer::CMainPlayer(ID3D11Device* pDevice, ID3D11DeviceContext* pDeviceContext)
     : Super(pDevice, pDeviceContext)
@@ -55,7 +63,13 @@ HRESULT CMainPlayer::Initialize(void* pArg)
     if (FAILED(Ready_Weapons()))
         return E_FAIL;
 
-    if (FAILED(Add_Component<CPlayerControlContext>(0 /*static*/, L"Prototype_Component_ControlContext_Player", nullptr)))
+
+    CPlayerControlContext::PLAYER_CONTROLCONTEXT_DESC tDesc = {};
+    tDesc.FKeys = CPlayerControlContext::KEYFLAGS::MOVE     | CPlayerControlContext::KEYFLAGS::JUMP
+                | CPlayerControlContext::KEYFLAGS::DASH     | CPlayerControlContext::KEYFLAGS::SPECIAL
+                | CPlayerControlContext::KEYFLAGS::COMBO    | CPlayerControlContext::KEYFLAGS::SKILL1
+                | CPlayerControlContext::KEYFLAGS::SKILL2   | CPlayerControlContext::KEYFLAGS::INTERACT;
+    if (FAILED(Add_Component<CPlayerControlContext>(0 /*static*/, L"Prototype_Component_ControlContext_Player", &tDesc)))
         return E_FAIL;
 
     if (FAILED(Ready_Colliders()))
@@ -82,16 +96,19 @@ HRESULT CMainPlayer::Awake(const _uint iCurrentLevelID)
     if (FAILED(Get_Component<CControlContext>()->Awake(iCurrentLevelID)))
         return E_FAIL;
 
-    Get_Component<CTransform>()->Set_Info(TRANSFORM_INFO_STATE::POS, Vec3{ 0.f, 0.f, 2.f });
+    Get_Component<CTransform>()->Set_Info(TRANSFORM_INFO_STATE::POS, Vec3{ 18.f,20.f,19.f });
 
-    Get_Component<CPhysicsCCT>()->Awake();
+    //Get_Component<CPhysicsCCT>()->Awake();
 
+    CImGui_ClientDebug::GetInstance()->Set_Player(this);
     return S_OK;
 }
 
 void CMainPlayer::Update_Priority(const _float fTimeDelta)
 {
     Super::Update_Priority(fTimeDelta);
+
+    Get_Component<CPlayerControlContext>()->Count_Time(fTimeDelta);
 }
 
 void CMainPlayer::Update(const _float fTimeDelta)
@@ -145,6 +162,8 @@ void CMainPlayer::OnCollision_Enter(_uint iMyColliderLayer, CCollider* pOther)
 
 void CMainPlayer::OnCollision_Exit(_uint iMyColliderLayer, CCollider* pOther)
 {
+    // 만약 바닥과 충돌이 끝났다면
+    //static_cast<CStateBase_Player*>(Get_Component<CPlayerActionState>()->Get_CurrentState())->Change_State(CStateBase_Player::STATEKEY::LOOPDONE);
 }
 
 #pragma region Legacy
@@ -565,8 +584,8 @@ HRESULT CMainPlayer::Ready_CCT()
     desc.tMaterial = mtrlDesc;
     desc.pOwner = this;
 
-    if (FAILED(Add_Component<CPhysicsCCT>(0, L"Prototype_Component_Physics_CCT", &desc)))
-        return E_FAIL;
+   // if (FAILED(Add_Component<CPhysicsCCT>(0, L"Prototype_Component_Physics_CCT", &desc)))
+   //     return E_FAIL;
 
     return S_OK;
 }
@@ -595,6 +614,7 @@ CGameObject* CMainPlayer::Clone(void* pArg)
 
 void CMainPlayer::Free()
 {
+    CImGui_ClientDebug::GetInstance()->Set_Player(nullptr);
     Safe_Release(m_pMoveRay);
     Safe_Release(m_pFootRay);
     Super::Free();

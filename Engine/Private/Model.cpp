@@ -8,6 +8,12 @@
 #include "Material.h"
 #include "MaterialInstance.h"
 #include "ModelAnimation.h"
+
+#include "PhysicsCCT.h"
+#include "Transform.h"
+#include "GameObject.h"
+
+
 #include "GameInstance.h"
 
 CModel::CModel(ID3D11Device* pDevice, ID3D11DeviceContext* pDeviceContext)
@@ -80,7 +86,7 @@ HRESULT CModel::Initialize_Prototype(void* pArg)
 	} break;
 	case EModelType::ANIM:
 	{
-		hr = Load_AnimModel(pDesc->wstrModelFolderName);
+		hr = Load_AnimModel(pDesc->wstrModelFolderName, pDesc->pAniChannelData);
 	} break;
 	case EModelType::BONE:
 	{
@@ -168,9 +174,9 @@ HRESULT CModel::Change_Animation(_uint iAnimationIndex, _bool bBlend, _bool isLo
 	return S_OK;
 }
 
-void CModel::Update_Animation(_float fTimeDelta)
+void CModel::Update_Animation(_float fTimeDelta, CTransform* pOwnerTransform, CPhysicsCCT* pOwnerPhyCCT)
 {
-	Update_AnimationPlayState(fTimeDelta); 
+	Update_AnimationPlayState(fTimeDelta, pOwnerTransform, pOwnerPhyCCT);
 }
 
 HRESULT CModel::Set_PassByMesh(class CShader* pShader, _uint iMeshIndex)
@@ -182,22 +188,22 @@ HRESULT CModel::Set_PassByMesh(class CShader* pShader, _uint iMeshIndex)
 	return S_OK;
 }
 
-void CModel::Play_Animation(_float fTimeDelta)
-{
-	m_bIsAnimFinished = m_vecAnimations[m_iCurrentAnimIndex]->Update_TransformationMatrices(m_vecBones, fTimeDelta, m_isAnimLoop);
-	
-	for (size_t i = 0; i < m_vecBones.size(); ++i)
-	{
-		m_vecBones[i]->Update_CombinedTransformMatrix(m_vecBones, m_matPreTransform);
-	}
-}
-
 HRESULT CModel::Render(_uint iMeshIndex)
 {
 	if (FAILED(m_vecMeshes[iMeshIndex]->Bind_Resource()))
 		return E_FAIL;
 
 	m_vecMeshes[iMeshIndex]->Render();
+	return S_OK;
+}
+
+HRESULT CModel::Render_Instance(_uint iMeshIndex, _uint iInstanceCount)
+{
+	if (FAILED(m_vecMeshes[iMeshIndex]->Bind_Resource()))
+		return E_FAIL;
+
+	m_vecMeshes[iMeshIndex]->Render_Instance(iInstanceCount);
+
 	return S_OK;
 }
 
@@ -355,6 +361,19 @@ _float CModel::Get_AnimElpasedTimeSeconds() const
 	return m_vecAnimations[m_iCurrentAnimIndex]->Get_ElpasedTimeSeconds();
 }
 
+_int CModel::Get_CurrentAnimationIndex() const
+{
+	return m_iCurrentAnimIndex;
+}
+
+wstring CModel::Get_CurrentAnimationName() const
+{
+	if (m_iCurrentAnimIndex < 0 || m_iCurrentAnimIndex >= m_vecAnimations.size())
+		return L"NULL";
+		
+	return m_vecAnimations[m_iCurrentAnimIndex]->Get_Name();
+}
+
 _bool CModel::Is_AnimTrackPositionBetween(_float fStartRatio, _float fEndRatio)
 {
 	return m_vecAnimations[m_iCurrentAnimIndex]->Is_TrackPositionBetween(fStartRatio, fEndRatio);
@@ -390,6 +409,14 @@ wstring CModel::Get_MaterialName(_uint iIndex) const
 	return wstring(m_vecMaterials[iIndex]->Get_Name());
 }
 
+_wstring CModel::Get_AnimationName(_uint iAniIndex) const
+{
+	if (iAniIndex >= m_vecAnimations.size())
+		return L"";
+
+	return wstring(m_vecAnimations[iAniIndex]->Get_Name());
+}
+
 void CModel::Set_AnimationPlayRate(_uint iIndex, _float fValue)
 {
 	if (m_vecAnimations[iIndex])
@@ -422,15 +449,15 @@ HRESULT CModel::Load_NonAnimModel(const wstring& wstrModelName)
 	return S_OK;
 }
 
-HRESULT CModel::Load_AnimModel(const wstring& wstrModelName)
+HRESULT CModel::Load_AnimModel(const wstring& wstrModelName, DATA_ANIMCHANNEL* pData)
 {
 	CModelLoader* pModelLoader = CModelLoader::Create(m_pDevice, m_pDeviceContext, wstrModelName.c_str());
 	
-	if (FAILED(pModelLoader->Read_Model(m_eType, &m_vecBones, &m_vecMeshes)))
+	if (FAILED(pModelLoader->Read_Model(m_eType, &m_vecBones, &m_vecMeshes, pData)))
 		return E_FAIL;
 	if (FAILED(pModelLoader->Read_Material(&m_vecMaterials)))
 		return E_FAIL;
-	if (FAILED(pModelLoader->Read_Animation(&m_vecAnimations)))
+	if (FAILED(pModelLoader->Read_Animation(&m_vecAnimations, pData)))
 		return E_FAIL;
 	
 	Safe_Release(pModelLoader);
@@ -489,10 +516,33 @@ CModel* CModel::Get_Clone(const wstring& wstrPrototypeTag)
 	return dynamic_cast<CModel*>(m_pGameInstance->Clone_Prototype(EPrototypeType::COMPONENT, 0/* static */, wstrPrototypeTag));
 }
 
-void CModel::Blend_Animation(_float fTimeDelta, _float fRatio)
+void CModel::Play_Animation(_float fTimeDelta, CTransform* pOwnerTransform, CPhysicsCCT* pOwnerPhyCCT)
 {
-	m_vecAnimations[m_iPrevAnimIndex]->SetUp_PoseDatasForBlending(m_vecPrevAnimationPose, fTimeDelta);
-	m_vecAnimations[m_iCurrentAnimIndex]->SetUp_PoseDatasForBlending(m_vecCurrAnimationPose, fTimeDelta);
+	if (pOwnerTransform)
+		m_bIsAnimFinished = m_vecAnimations[m_iCurrentAnimIndex]->Update_TransformationMatrices(m_vecBones, fTimeDelta, m_isAnimLoop, pOwnerTransform, pOwnerPhyCCT);
+	else
+		m_bIsAnimFinished = m_vecAnimations[m_iCurrentAnimIndex]->Update_TransformationMatrices(m_vecBones, fTimeDelta, m_isAnimLoop, m_pOwner->Get_Component<CTransform>(), m_pOwner->Get_Component<CPhysicsCCT>());
+
+	for (size_t i = 0; i < m_vecBones.size(); ++i)
+	{
+		m_vecBones[i]->Update_CombinedTransformMatrix(m_vecBones, m_matPreTransform);
+	}
+}
+
+void CModel::Blend_Animation(_float fTimeDelta, _float fRatio, CTransform* pOwnerTransform, CPhysicsCCT* pOwnerPhyCCT)
+{
+	if (pOwnerTransform)
+	{
+		m_vecAnimations[m_iPrevAnimIndex]->SetUp_PoseDatasForBlending(m_vecPrevAnimationPose, fTimeDelta, pOwnerTransform, pOwnerPhyCCT);
+		m_vecAnimations[m_iCurrentAnimIndex]->SetUp_PoseDatasForBlending(m_vecCurrAnimationPose, fTimeDelta, pOwnerTransform, pOwnerPhyCCT);
+	}
+
+	else
+	{
+		m_vecAnimations[m_iPrevAnimIndex]->SetUp_PoseDatasForBlending(m_vecPrevAnimationPose, fTimeDelta, m_pOwner->Get_Component<CTransform>(), m_pOwner->Get_Component<CPhysicsCCT>());
+		m_vecAnimations[m_iCurrentAnimIndex]->SetUp_PoseDatasForBlending(m_vecCurrAnimationPose, fTimeDelta, m_pOwner->Get_Component<CTransform>(), m_pOwner->Get_Component<CPhysicsCCT>());
+	}
+
 
 	_uint i = {};
 	for (auto& pBone : m_vecBones)
@@ -505,6 +555,12 @@ void CModel::Blend_Animation(_float fTimeDelta, _float fRatio)
 		vScale = Vec3::Lerp(m_vecPrevAnimationPose[i].vScale, m_vecCurrAnimationPose[i].vScale, fRatio);
 		vQuaternion = Quat::Slerp(m_vecPrevAnimationPose[i].vQuaterion, m_vecCurrAnimationPose[i].vQuaterion, fRatio);
 		vTranslation = Vec3::Lerp(m_vecPrevAnimationPose[i].vTranslation, m_vecCurrAnimationPose[i].vTranslation, fRatio);
+
+		//motion bone ÀÏ¶§ trans : zero·Î ÇØÁÜ
+		if (pBone->Get_IsMotionBone())
+		{
+			vTranslation = Vec3::Zero;
+		}
 		
 		matTransformation = Matrix::CreateScale(vScale) * Matrix::CreateFromQuaternion(vQuaternion) * Matrix::CreateTranslation(vTranslation);
 		pBone->Set_TransformationMatrix(matTransformation);
@@ -554,15 +610,15 @@ void CModel::Begin_AnimationPlayState(AnimationPlayState eState)
 	}
 }
 
-void CModel::Update_AnimationPlayState(const _float fTimeDelta)
+void CModel::Update_AnimationPlayState(const _float fTimeDelta, CTransform* pOwnerTransform, CPhysicsCCT* pOwnerPhyCCT)
 {
 	switch (m_eCurrentAnimationState)
 	{
 	case Engine::CModel::PLAY:
-		Play_Update(fTimeDelta);
+		Play_Update(fTimeDelta, pOwnerTransform, pOwnerPhyCCT);
 		break;
 	case Engine::CModel::BLEND:
-		Blend_Update(fTimeDelta);
+		Blend_Update(fTimeDelta, pOwnerTransform, pOwnerPhyCCT);
 		break;
 	}
 }
@@ -591,9 +647,9 @@ void CModel::Play_Begin()
 {
 }
 
-void CModel::Play_Update(const _float fTimeDelta)
+void CModel::Play_Update(const _float fTimeDelta, CTransform* pOwnerTransform, CPhysicsCCT* pOwnerPhyCCT)
 {
-	Play_Animation(fTimeDelta);
+	Play_Animation(fTimeDelta, pOwnerTransform, pOwnerPhyCCT);
 }
 
 void CModel::Play_End()
@@ -606,7 +662,7 @@ void CModel::Blend_Begin()
 	m_fBlendedTime = 0.f;
 }
 
-void CModel::Blend_Update(const _float fTimeDelta)
+void CModel::Blend_Update(const _float fTimeDelta, CTransform* pOwnerTransform, CPhysicsCCT* pOwnerPhyCCT)
 {
 	if(m_fBlendDuration <= 0.f)
 		Change_AnimationPlayState(PLAY);
@@ -616,7 +672,11 @@ void CModel::Blend_Update(const _float fTimeDelta)
 	{
 		_float fNormalizedTime = std::clamp(m_fBlendedTime / m_fBlendDuration, 0.f, 1.f);
 		_float fRatio = fNormalizedTime * fNormalizedTime * (3.0f - 2.0f * fNormalizedTime);
-		Blend_Animation(fTimeDelta, fRatio);
+
+		if(pOwnerTransform)
+			Blend_Animation(fTimeDelta, fRatio, pOwnerTransform, pOwnerPhyCCT);
+		else
+			Blend_Animation(fTimeDelta, fRatio, m_pOwner->Get_Component<CTransform>(), m_pOwner->Get_Component<CPhysicsCCT>());
 	}
 	else
 		Change_AnimationPlayState(PLAY);

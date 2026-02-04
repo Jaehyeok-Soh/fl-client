@@ -8,29 +8,41 @@ using json = nlohmann::json;
 
 NS_BEGIN(DTO)
 
-NLOHMANN_JSON_SERIALIZE_ENUM(EUIType,
+void to_json(json& j, const TUI_EventBindData& data)
+{
+	j = json
 	{
-		{EUIType::CANVAS, "CANVAS"},
-		{EUIType::LAYER, "LAYER"},
-		{EUIType::GENERICUI, "GENERICUI"}
-	}
-)	
-
+		{ "Type", TUI_EventBindData::eType },
+		{ "strTag", data.strTag },
+		{"strOwnerTag", data.strOwnerTag},
+		{"eEvent", data.eEvent},
+		{"strActionKey", data.strActionKey},
+		{"Params", data.Params}
+	};
+}
+void from_json(const json& j, TUI_EventBindData& data)
+{
+	j.at("strTag").get_to(data.strTag);
+	j.at("strOwnerTag").get_to(data.strOwnerTag);
+	j.at("eEvent").get_to(data.eEvent);
+	j.at("strActionKey").get_to(data.strActionKey);
+	j.at("Params").get_to(data.Params);
+}
 void to_json(json& j, const TUI_GenericUIData& data)
 {
 	j = json
 	{
 		{ "Type", TUI_GenericUIData::eType },
 		{ "strTag", data.strTag },
-		{ "iLayerIndex", data.iLayerIndex },
+		{ "strCanvasName", data.strCanvasName },
+		{ "strLayerName", data.strLayerName},
+
 		{ "iRectTransformType", data.iRectTransformType },
-		{ "iUIType", data.iUIType },
 		{ "fWidth", data.fWidth },
 		{ "fHeight", data.fHeight },
 		{ "fPosX", data.fPosX },
 		{ "fPosY", data.fPosY },
 		{ "fPosZ", data.fPosZ },
-
 		{ "strTextureTag", data.strTextureTag },
 		{ "iTextureIndex", data.iTextureIndex },
 	};
@@ -38,9 +50,9 @@ void to_json(json& j, const TUI_GenericUIData& data)
 void from_json(const json& j, TUI_GenericUIData& data)
 {
 	j.at("strTag").get_to(data.strTag);
-	j.at("iLayerIndex").get_to(data.iLayerIndex);
+	j.at("strCanvasName").get_to(data.strCanvasName);
+	j.at("strLayerName").get_to(data.strLayerName);
 	j.at("iRectTransformType").get_to(data.iRectTransformType);
-	j.at("iUIType").get_to(data.iUIType);
 	j.at("fWidth").get_to(data.fWidth);
 	j.at("fHeight").get_to(data.fHeight);
 	j.at("fPosX").get_to(data.fPosX);
@@ -55,11 +67,13 @@ void to_json(json& j, const TUI_LayerData& data)
 	{
 		{ "Type", TUI_LayerData::eType },
 		{ "strTag", data.strTag },
+		{ "strCanvasName", data.strCanvasName },
 	};
 }
 void from_json(const json& j, TUI_LayerData& data)
 {
 	j.at("strTag").get_to(data.strTag);
+	j.at("strCanvasName").get_to(data.strCanvasName);
 }
 void to_json(json& j, const TUI_CanvasData& data)
 {
@@ -67,22 +81,27 @@ void to_json(json& j, const TUI_CanvasData& data)
 	{
 		{ "Type", TUI_CanvasData::eType },
 		{ "strTag", data.strTag },
+		{ "iLevelIndex", data.iLevelIndex },
 		{ "fWidth", data.fWidth },
 		{ "fHeight", data.fHeight },
 		{ "fPosX", data.fPosX },
 		{ "fPosY", data.fPosY },
 		{ "fPosZ", data.fPosZ },
+		{ "iEditorSizeX", data.iEditorSizeX },
+		{ "iEditorSizeY", data.iEditorSizeY },
 	};
 }
-
 void from_json(const json& j, TUI_CanvasData& data)
 {
 	j.at("strTag").get_to(data.strTag);
+	j.at("iLevelIndex").get_to(data.iLevelIndex);
 	j.at("fWidth").get_to(data.fWidth);
 	j.at("fHeight").get_to(data.fHeight);
 	j.at("fPosX").get_to(data.fPosX);
 	j.at("fPosY").get_to(data.fPosY);
 	j.at("fPosZ").get_to(data.fPosZ);
+	j.at("iEditorSizeX").get_to(data.iEditorSizeX);
+	j.at("iEditorSizeY").get_to(data.iEditorSizeY);
 }
 
 NS_END
@@ -120,6 +139,17 @@ json CUI_Canvas_DTO::ToJson() const
 HRESULT CUI_Canvas_DTO::FromJson(const json& j)
 {
 	m_Data = j.get<DTO::TUI_CanvasData>();
+	return S_OK;
+}
+
+json CUI_EventBindData_DTO::ToJson() const
+{
+	return json(m_Data);
+}
+
+HRESULT CUI_EventBindData_DTO::FromJson(const json& j)
+{
+	m_Data = j.get<DTO::TUI_EventBindData>();
 	return S_OK;
 }
 

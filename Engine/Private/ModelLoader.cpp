@@ -10,7 +10,7 @@
 #include "Channel.h"
 #include "Bone.h"
 #include "Mesh.h"
-#include "Model.h"
+//#include "Model.h"
 #include "Material.h"
 #include "GameInstance.h"
 
@@ -143,7 +143,7 @@ HRESULT CModelLoader::Read_Material(vector<CMaterial*>* vecMaterials)
 	return S_OK;
 }
 
-HRESULT CModelLoader::Read_Model(EModelType eType, vector<CBone*>* vecBones, vector<CMesh*>* vecMeshes)
+HRESULT CModelLoader::Read_Model(EModelType eType, vector<CBone*>* vecBones, vector<CMesh*>* vecMeshes, CModel::DATA_ANIMCHANNEL* pData)
 {
 	if (!std::filesystem::exists(m_ModelPath / L"Model"))
 	{
@@ -151,7 +151,7 @@ HRESULT CModelLoader::Read_Model(EModelType eType, vector<CBone*>* vecBones, vec
 		return E_FAIL;
 	}
 
-	if(vecBones)
+	if (vecBones)
 	{
 		CFileUtils* pFileUtil = CFileUtils::Create();
 		std::filesystem::path bonePath = m_ModelPath / L"Model" / m_wstrModelName;
@@ -162,7 +162,7 @@ HRESULT CModelLoader::Read_Model(EModelType eType, vector<CBone*>* vecBones, vec
 			MSG_BOX("CModel::Read_Model, Bonefile open failed");
 			return E_FAIL;
 		}
-		
+
 		_uint iBoneCount = pFileUtil->Read<_uint>();
 		vecBones->reserve(iBoneCount);
 		CBone::BONE_DESC boneDesc = {};
@@ -172,7 +172,13 @@ HRESULT CModelLoader::Read_Model(EModelType eType, vector<CBone*>* vecBones, vec
 			boneDesc.strName = pFileUtil->Read<string>();
 			boneDesc.iParentIndex = pFileUtil->Read<_uint>();
 			boneDesc.matTransform = pFileUtil->Read<Matrix>();
-			CBone* pNewbone = CBone::Create(&boneDesc);
+
+			if (pData)
+			{
+				boneDesc.iRootMotionBoneIndex = pData->iRootBoneIndex;
+			}
+
+				CBone * pNewbone = CBone::Create(&boneDesc);
 			if (!pNewbone)
 			{
 				Safe_Release(pFileUtil);
@@ -190,8 +196,8 @@ HRESULT CModelLoader::Read_Model(EModelType eType, vector<CBone*>* vecBones, vec
 
 		Safe_Release(pFileUtil);
 	}
-	
-	if(vecMeshes)
+
+	if (vecMeshes)
 	{
 		CFileUtils* pFileUtil = CFileUtils::Create();
 		std::filesystem::path meshPath = m_ModelPath / L"Model" / m_wstrModelName;
@@ -282,7 +288,7 @@ HRESULT CModelLoader::Read_Model(EModelType eType, vector<CBone*>* vecBones, vec
 	return S_OK;
 }
 
-HRESULT CModelLoader::Read_Animation(vector<CModelAnimation*>* vecAnimations)
+HRESULT CModelLoader::Read_Animation(vector<CModelAnimation*>* vecAnimations, CModel::DATA_ANIMCHANNEL* pData)
 {
 	std::filesystem::path AnimationFolerPath = m_ModelPath / L"Animation";
 	if (!std::filesystem::exists(AnimationFolerPath))
@@ -302,7 +308,7 @@ HRESULT CModelLoader::Read_Animation(vector<CModelAnimation*>* vecAnimations)
 		{
 			return entry.is_regular_file();
 		});
-	
+
 	vecAnimations->reserve(iFileCount);
 	dirItr_Begin = std::filesystem::directory_iterator{ AnimationFolerPath };
 
@@ -320,7 +326,7 @@ HRESULT CModelLoader::Read_Animation(vector<CModelAnimation*>* vecAnimations)
 			return E_FAIL;
 		}
 
-		wstring wstrAnimationame = AnimationClipPath.stem();		
+		wstring wstrAnimationame = AnimationClipPath.stem();
 		wstring wstrResourceTag = L"Animation_" + m_wstrModelName + L"_" + wstrAnimationame;
 		if (pNewAnimation = m_pGameInstance->Get_Resource<CModelAnimation>(wstrResourceTag))
 		{
@@ -335,9 +341,15 @@ HRESULT CModelLoader::Read_Animation(vector<CModelAnimation*>* vecAnimations)
 		desc.fDuration = pFileUtil->Read<_float>();
 		desc.fTickPerSecond = pFileUtil->Read<_float>();
 		desc.iChannelCount = pFileUtil->Read<_uint>();
+		if (pData)
+		{
+			desc.bRootAni	= pData->bRootAni;
+			desc.bMixAni	= pData->bMixAni;
+		}
+
 		vector<CChannel*> vecChannels;
 		vecChannels.reserve(desc.iChannelCount);
-		if (FAILED(Create_Channel(pFileUtil, desc.iChannelCount, &vecChannels)))
+		if (FAILED(Create_Channel(pFileUtil, desc.iChannelCount, &vecChannels, pData)))
 		{
 			Safe_Release(pFileUtil);
 			return E_FAIL;
@@ -365,7 +377,7 @@ HRESULT CModelLoader::Read_Animation(vector<CModelAnimation*>* vecAnimations)
 	return S_OK;
 }
 
-HRESULT CModelLoader::Create_Channel(CFileUtils* pFileUtil, _uint iChannelCount,vector<CChannel*>* vecChannels)
+HRESULT CModelLoader::Create_Channel(CFileUtils* pFileUtil, _uint iChannelCount, vector<CChannel*>* vecChannels, CModel::DATA_ANIMCHANNEL* pData)
 {
 	if (!pFileUtil || !vecChannels || iChannelCount <= 0)
 		return E_FAIL;
@@ -391,6 +403,12 @@ HRESULT CModelLoader::Create_Channel(CFileUtils* pFileUtil, _uint iChannelCount,
 		}
 		std::span<KEYFRAME> spanKeyframes(vecKeyframes.data(), vecKeyframes.size());
 		desc.spanKeyframes = spanKeyframes;
+
+		if (pData)
+		{
+			desc.iRootBoneIndex = pData->iRootBoneIndex;
+		}
+
 		CChannel* pNewChannel = CChannel::Create(desc);
 		if (!pNewChannel)
 			return E_FAIL;

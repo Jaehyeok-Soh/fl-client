@@ -45,6 +45,7 @@ HRESULT CPanel_MapObjectList::Initialize()
 HRESULT CPanel_MapObjectList::Ready_LayerTag()
 {
 	lstrcpyW(m_wszMapObjectLayerTag[ENUM_TO_UINT(EMapObject_Type::STATICMODEL)],g_wszStaticModelLayer);
+	lstrcpyW(m_wszMapObjectLayerTag[ENUM_TO_UINT(EMapObject_Type::INSTANCEMODEL)],g_wszInstanceModelLayer);
 	return S_OK;
 }
 
@@ -113,46 +114,56 @@ HRESULT CPanel_MapObjectList::Render_MapObjectList()
 	ImGui::Separator();
 
 
-	if (ImGui::CollapsingHeader("List"))
+	if (ImGui::CollapsingHeader("Map Object List"))
 	{
-		list<CGameObject*>* pListStaticModelLayer = m_pGameInstance->Get_GameObject_List(ENUM_TO_UINT(ELevelType::MAP), g_wszStaticModelLayer);
-
-		if (!pListStaticModelLayer || pListStaticModelLayer->empty())
+		_uint i = 0;
+		for (auto& MapObjectList : m_arrayMapObjectList)
 		{
-			ImGui::Text(" Empty Layer");
-		}
-		else
-		{
-			UINT32 iIndex = 0;
-			for (auto& StaticMesh : *pListStaticModelLayer)
+			list<CGameObject*>* pListStaticModelLayer = MapObjectList;
+			string strListName = Engine_Utils::ToString(wstring(m_wszMapObjectLayerTag[i]));
+			if (ImGui::TreeNode(strListName.c_str()))
 			{
-				if (StaticMesh)
+
+				if (!pListStaticModelLayer || pListStaticModelLayer->empty())
 				{
-					CStaticModel* pStaticModel = static_cast<CStaticModel*>(StaticMesh);
-					string strModelName = pStaticModel->Get_Name();
-
-					if ( m_pSelectMapObject  &&  StaticMesh == m_pSelectMapObject)
-						ImGui::TextColored(ImVec4(1.0, 0.f, 0.f, 1.f), strModelName.c_str());
-					else
-					{
-						if (strlen(m_szFindName) > 0)
-						{
-							if (strModelName.find(m_szFindName) == string::npos)
-								continue;
-							else
-								ImGui::Text(pStaticModel->Get_Name().c_str());
-						}
-						else
-							ImGui::Text(pStaticModel->Get_Name().c_str());
-					}
-
-
-					if (ImGui::IsItemClicked(ImGuiMouseButton_Left))
-						static_cast<CLevel_Map*>(m_pOwnerLevel)->On_ChangeSelectedObject(pStaticModel);
-					else if (ImGui::IsItemClicked(ImGuiMouseButton_Right))
-							m_pCamera->Get_Component<CTransform>()->Set_Info(TRANSFORM_INFO_STATE::POS, pStaticModel->Get_Component<CTransform>()->Get_Info(TRANSFORM_INFO_STATE::POS));
+					ImGui::Text(" Empty Layer");
 				}
+				else
+				{
+					UINT32 iIndex = 0;
+					for (auto& StaticMesh : *pListStaticModelLayer)
+					{
+						if (StaticMesh)
+						{
+							CStaticModel* pStaticModel = static_cast<CStaticModel*>(StaticMesh);
+							string strModelName = pStaticModel->Get_Name();
+
+							if (m_pSelectMapObject && StaticMesh == m_pSelectMapObject)
+								ImGui::TextColored(ImVec4(1.0, 0.f, 0.f, 1.f), strModelName.c_str());
+							else
+							{
+								if (strlen(m_szFindName) > 0)
+								{
+									if (strModelName.find(m_szFindName) == string::npos)
+										continue;
+									else
+										ImGui::Text(pStaticModel->Get_Name().c_str());
+								}
+								else
+									ImGui::Text(pStaticModel->Get_Name().c_str());
+							}
+
+
+							if (ImGui::IsItemClicked(ImGuiMouseButton_Left))
+								static_cast<CLevel_Map*>(m_pOwnerLevel)->On_ChangeSelectedObject(pStaticModel);
+							else if (ImGui::IsItemClicked(ImGuiMouseButton_Right))
+								m_pCamera->Get_Component<CTransform>()->Set_Info(TRANSFORM_INFO_STATE::POS, pStaticModel->Get_Component<CTransform>()->Get_Info(TRANSFORM_INFO_STATE::POS));
+						}
+					}
+				}
+				ImGui::TreePop();
 			}
+			++i;
 		}
 	}
 
