@@ -56,6 +56,7 @@ HRESULT CMainApplication::Initialize()
 
 #ifdef _DEBUG
 	CEngineConsole::Initialize();
+	CEngineConsole::Set_Title(L"DebugConsole, 含形虞 含形!");
 #endif
 
 	return S_OK;
