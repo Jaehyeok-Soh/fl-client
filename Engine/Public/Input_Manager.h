@@ -33,10 +33,19 @@ public:
 	HRESULT Initialize(HINSTANCE hInst, HWND hWnd);
 	void	Update();
 	void	Clear();
-	void	Set_Capture(_bool bCap) { m_bCaptrue = bCap; }
-
+	_bool	ShouldIgnoreMouseDelta() noexcept { return m_iIgnoreMouseDeltaFrames >= 1; }
+	void	Request_CursorMode(ECursorMode eMode) noexcept { m_eRequstedMode = eMode; }
+	void	Force_ReleaseCursor() noexcept;
 private:
-	_bool					m_bCaptrue = { false };
+	void	Apply_CursorMode_IfNeeded();
+	void	Apply_CursorMode(ECursorMode eMode);
+	void	Force_ShowCursor(_bool bShow);
+	void	Clip_ToClient(_bool bEnable);
+	void	SetCursor_ToCenter();
+private:
+	ECursorMode				m_eRequstedMode = ECursorMode::END;
+	ECursorMode				m_eAppliedMode = ECursorMode::END;
+	_int					m_iIgnoreMouseDeltaFrames = 0;
 	HWND					m_hWnd = { NULL };
 	LPDIRECTINPUT8			m_pInputSDK = { nullptr };
 	LPDIRECTINPUTDEVICE8	m_pKeyboard = { nullptr };

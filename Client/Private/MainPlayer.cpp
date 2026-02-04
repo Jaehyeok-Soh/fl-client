@@ -28,6 +28,9 @@
 #pragma endregion
 #include "GameInstance.h"
 
+// Test
+#include "ImGui_ClientDebug.h"
+
 
 CMainPlayer::CMainPlayer(ID3D11Device* pDevice, ID3D11DeviceContext* pDeviceContext)
     : Super(pDevice, pDeviceContext)
@@ -98,6 +101,7 @@ HRESULT CMainPlayer::Awake(const _uint iCurrentLevelID)
 
     //Get_Component<CPhysicsCCT>()->Awake();
 
+    CImGui_ClientDebug::GetInstance()->Set_Player(this);
     return S_OK;
 }
 
@@ -611,6 +615,7 @@ CGameObject* CMainPlayer::Clone(void* pArg)
 
 void CMainPlayer::Free()
 {
+    CImGui_ClientDebug::GetInstance()->Set_Player(nullptr);
     Safe_Release(m_pMoveRay);
     Safe_Release(m_pFootRay);
     Super::Free();

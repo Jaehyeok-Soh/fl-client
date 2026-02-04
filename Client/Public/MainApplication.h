@@ -7,6 +7,8 @@ NS_END
 
 NS_BEGIN(Client)
 
+class CImGui_ClientDebug;
+
 class CMainApplication final : public CBase
 {
 	using Super = CBase;
@@ -32,6 +34,9 @@ public:
 	static CMainApplication* Create();
 private:
 	CGameInstance*	m_pGameInstance		= { nullptr };
+#ifdef _DEBUG
+	CImGui_ClientDebug* m_pDebugGui = { nullptr };
+#endif
 };
 
 NS_END

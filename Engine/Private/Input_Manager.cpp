@@ -129,20 +129,27 @@ void CInput_Manager::Update(void)
 	m_pKeyboard->GetDeviceState(256, m_byKeyState.data());
 	::memcpy(&m_PreMouseState, &m_MouseState, sizeof(DIMOUSESTATE));
 	m_pMouse->GetDeviceState(sizeof(DIMOUSESTATE), &m_MouseState);
-	
+
+	if (::IsWindow(m_hWnd) == false)
+		return;
+
+	Apply_CursorMode_IfNeeded();
+
+	if (m_iIgnoreMouseDeltaFrames > 0)
+	{
+		m_MouseState.lX = 0;
+		m_MouseState.lY = 0;
+		m_MouseState.lZ = 0;
+		--m_iIgnoreMouseDeltaFrames;
+	}
+	if(m_eAppliedMode != ECursorMode::LockedHiddenCenter)
+	{
+		m_MouseState.lX = 0;
+		m_MouseState.lY = 0;
+	}
+
 	::GetCursorPos(&m_MousePos);
 	::ScreenToClient(m_hWnd, &m_MousePos);
-
-	if (m_bCaptrue)
-	{
-		POINT center{};
-		RECT rc{};
-		::GetClientRect(m_hWnd, &rc);
-		center.x = (rc.right - rc.left) / 2;
-		center.y = (rc.bottom - rc.top) / 2;
-		::ClientToScreen(m_hWnd, &center);
-		::SetCursorPos(center.x, center.y);
-	}	
 }
 
 CInput_Manager* CInput_Manager::Create(HINSTANCE hInstance, HWND hWnd)
@@ -162,6 +169,110 @@ void CInput_Manager::Clear()
 {
 	m_preKeyState.fill(0);
 	m_byKeyState.fill(0);
+}
+
+void CInput_Manager::Force_ReleaseCursor() noexcept
+{
+	m_eRequstedMode = ECursorMode::VisibleFree;
+
+	if (m_eAppliedMode != ECursorMode::VisibleFree)
+	{
+		Apply_CursorMode(ECursorMode::VisibleFree);
+		m_eAppliedMode = ECursorMode::VisibleFree;
+		m_iIgnoreMouseDeltaFrames = 2;
+	}
+}
+
+void CInput_Manager::Apply_CursorMode_IfNeeded()
+{
+	const _bool bForcegroundGame = (::GetForegroundWindow() == m_hWnd);
+	ECursorMode eFinalWanted = bForcegroundGame ? m_eRequstedMode : ECursorMode::VisibleFree;
+
+	if (eFinalWanted == m_eAppliedMode)
+	{
+		if (m_eAppliedMode == ECursorMode::LockedHiddenCenter)
+			SetCursor_ToCenter();
+
+		return;
+	}
+
+	Apply_CursorMode(eFinalWanted);
+	m_eAppliedMode = eFinalWanted;
+
+	m_iIgnoreMouseDeltaFrames = 1;
+
+	if (m_eAppliedMode == ECursorMode::LockedHiddenCenter)
+		SetCursor_ToCenter();
+}
+
+void CInput_Manager::Apply_CursorMode(ECursorMode eMode)
+{
+	switch (eMode)
+	{
+	case ECursorMode::LockedHiddenCenter:
+	{
+		Force_ShowCursor(false);
+		Clip_ToClient(true);
+	} break;
+	case ECursorMode::VisibleClipped:
+	{
+		Force_ShowCursor(true);
+		Clip_ToClient(true);
+	} break;
+	case ECursorMode::VisibleFree:
+	default:
+	{
+		Force_ShowCursor(true);
+		Clip_ToClient(false);
+	} break;
+	}
+}
+
+void CInput_Manager::Force_ShowCursor(_bool bShow)
+{
+	if (bShow)
+	{
+		while (::ShowCursor(TRUE) < 0) {}
+	}
+	else
+	{
+		while (::ShowCursor(FALSE) >= 0) {}
+	}
+}
+
+void CInput_Manager::Clip_ToClient(_bool bEnable)
+{
+	if (bEnable == false)
+	{
+		::ClipCursor(nullptr);
+		return;
+	}
+
+	RECT rt{};
+	::GetClientRect(m_hWnd, &rt);
+
+	POINT LT{ rt.left, rt.top };
+	POINT RB{ rt.right, rt.bottom };
+	::ClientToScreen(m_hWnd, &LT);
+	::ClientToScreen(m_hWnd, &RB);
+
+	RECT rtClip{ LT.x, LT.y, RB.x, RB.y };
+	::ClipCursor(&rtClip);
+}
+
+void CInput_Manager::SetCursor_ToCenter()
+{
+	RECT rt{};
+	::GetClientRect(m_hWnd, &rt);
+
+	POINT LT{ rt.left, rt.top };
+	POINT RB{ rt.right, rt.bottom };
+	::ClientToScreen(m_hWnd, &LT);
+	::ClientToScreen(m_hWnd, &RB);
+
+	const _int iX = (LT.x + RB.x) / 2;
+	const _int iY = (LT.y + RB.y) / 2;
+	::SetCursorPos(iX, iY);
 }
 
 void CInput_Manager::Free()

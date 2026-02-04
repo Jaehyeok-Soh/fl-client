@@ -179,7 +179,9 @@ public:
 	_bool Mouse_Pressing(MOUSEKEYSTATE eMouseKeyID);
 	_long Get_DIMouseMove(MOUSEMOVESTATE eMouseState);
 	const POINT& Get_MousePos();
-	void Set_Capture(_bool bCap);
+	_bool ShouldIgnoreMouseDelta() noexcept;
+	void Request_CursorMode(ECursorMode eMode) noexcept;
+	void Force_ReleaseCursor() noexcept;
 #pragma endregion
 
 #pragma region RESOURCE_MANAGER

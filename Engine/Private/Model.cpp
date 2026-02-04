@@ -361,6 +361,19 @@ _float CModel::Get_AnimElpasedTimeSeconds() const
 	return m_vecAnimations[m_iCurrentAnimIndex]->Get_ElpasedTimeSeconds();
 }
 
+_int CModel::Get_CurrentAnimationIndex() const
+{
+	return m_iCurrentAnimIndex;
+}
+
+wstring CModel::Get_CurrentAnimationName() const
+{
+	if (m_iCurrentAnimIndex < 0 || m_iCurrentAnimIndex >= m_vecAnimations.size())
+		return L"NULL";
+		
+	return m_vecAnimations[m_iCurrentAnimIndex]->Get_Name();
+}
+
 _bool CModel::Is_AnimTrackPositionBetween(_float fStartRatio, _float fEndRatio)
 {
 	return m_vecAnimations[m_iCurrentAnimIndex]->Is_TrackPositionBetween(fStartRatio, fEndRatio);

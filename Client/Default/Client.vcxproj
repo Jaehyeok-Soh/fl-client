@@ -164,6 +164,8 @@
     <ClInclude Include="..\Public\CameraMan_Targeter.h" />
     <ClInclude Include="..\Public\Canvas.h" />
     <ClInclude Include="..\Public\InstanceModel.h" />
+    <ClInclude Include="..\public\ImGuiBase.h" />
+    <ClInclude Include="..\public\ImGui_ClientDebug.h" />
     <ClInclude Include="..\Public\Client_Defines.h" />
     <ClInclude Include="..\Public\Client_EventDefine.h" />
     <ClInclude Include="..\Public\ColliderPart.h" />
@@ -173,6 +175,21 @@
     <ClInclude Include="..\Public\EffectBuilder.h" />
     <ClInclude Include="..\Public\EffectObject.h" />
     <ClInclude Include="..\Public\GenericUI.h" />
+    <ClInclude Include="..\Public\imconfig.h" />
+    <ClInclude Include="..\Public\imfilebrowser.h" />
+    <ClInclude Include="..\Public\imgui.h" />
+    <ClInclude Include="..\Public\imgui_impl_dx11.h" />
+    <ClInclude Include="..\Public\imgui_impl_win32.h" />
+    <ClInclude Include="..\public\ImGui_Inspector.h" />
+    <ClInclude Include="..\Public\imgui_internal.h" />
+    <ClInclude Include="..\public\ImGui_Layout.h" />
+    <ClInclude Include="..\public\ImGui_PlayerInspector.h" />
+    <ClInclude Include="..\public\ImGui_StateLayout.h" />
+    <ClInclude Include="..\Public\imgui_stdlib.h" />
+    <ClInclude Include="..\public\ImGui_TransformLayout.h" />
+    <ClInclude Include="..\Public\imstb_rectpack.h" />
+    <ClInclude Include="..\Public\imstb_textedit.h" />
+    <ClInclude Include="..\Public\imstb_truetype.h" />
     <ClInclude Include="..\Public\MapObject.h" />
     <ClInclude Include="..\Public\Physics_LandScape.h" />
     <ClInclude Include="..\Public\Physics_Terrain.h" />
@@ -238,6 +255,45 @@
     <ClCompile Include="..\Private\EffectBuilder.cpp" />
     <ClCompile Include="..\Private\EffectObject.cpp" />
     <ClCompile Include="..\Private\GenericUI.cpp" />
+    <ClCompile Include="..\Private\imgui.cpp">
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">NotUsing</PrecompiledHeader>
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|x64'">NotUsing</PrecompiledHeader>
+    </ClCompile>
+    <ClCompile Include="..\private\ImGuiBase.cpp" />
+    <ClCompile Include="..\private\ImGui_ClientDebug.cpp" />
+    <ClCompile Include="..\Private\imgui_demo.cpp">
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">NotUsing</PrecompiledHeader>
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|x64'">NotUsing</PrecompiledHeader>
+    </ClCompile>
+    <ClCompile Include="..\Private\imgui_draw.cpp">
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">NotUsing</PrecompiledHeader>
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|x64'">NotUsing</PrecompiledHeader>
+    </ClCompile>
+    <ClCompile Include="..\Private\imgui_impl_dx11.cpp">
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">NotUsing</PrecompiledHeader>
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|x64'">NotUsing</PrecompiledHeader>
+    </ClCompile>
+    <ClCompile Include="..\Private\imgui_impl_win32.cpp">
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">NotUsing</PrecompiledHeader>
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|x64'">NotUsing</PrecompiledHeader>
+    </ClCompile>
+    <ClCompile Include="..\private\ImGui_Inspector.cpp" />
+    <ClCompile Include="..\private\ImGui_Layout.cpp" />
+    <ClCompile Include="..\private\ImGui_PlayerInspector.cpp" />
+    <ClCompile Include="..\private\ImGui_StateLayout.cpp" />
+    <ClCompile Include="..\Private\imgui_stdlib.cpp">
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">NotUsing</PrecompiledHeader>
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|x64'">NotUsing</PrecompiledHeader>
+    </ClCompile>
+    <ClCompile Include="..\Private\imgui_tables.cpp">
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">NotUsing</PrecompiledHeader>
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|x64'">NotUsing</PrecompiledHeader>
+    </ClCompile>
+    <ClCompile Include="..\private\ImGui_TransformLayout.cpp" />
+    <ClCompile Include="..\Private\imgui_widgets.cpp">
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">NotUsing</PrecompiledHeader>
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|x64'">NotUsing</PrecompiledHeader>
+    </ClCompile>
     <ClCompile Include="..\Private\MapObject.cpp" />
     <ClCompile Include="..\Private\Physics_LandScape.cpp" />
     <ClCompile Include="..\Private\State_ComboBase.cpp" />

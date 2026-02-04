@@ -13,6 +13,7 @@
 #include "GameInstance.h"
 #include "VIBuffer_Rect_Tex.h"
 #include "Level_Loading.h"
+#include "ImGui_ClientDebug.h"
 #include "EngineConsole.h"
 #include "PhysicsRigidBody.h"
 #include "PhysicsCollider.h"
@@ -52,13 +53,18 @@ HRESULT CMainApplication::Initialize()
 	if (FAILED(Ready_Fonts()))
 		return E_FAIL;
 
-	if (FAILED(Start_Level(ELevelType::LOGO)))
-		return E_FAIL;
-
 #ifdef _DEBUG
 	CEngineConsole::Initialize();
 	CEngineConsole::Set_Title(L"DebugConsole, 含形虞 含形!");
+	m_pDebugGui = CImGui_ClientDebug::GetInstance();
+	if (m_pDebugGui == nullptr)
+		return E_FAIL;
+	if (FAILED(m_pDebugGui->Initialize(g_hWnd, m_pDevice, m_pDeviceContext)))
+		return E_FAIL;
 #endif
+
+	if (FAILED(Start_Level(ELevelType::LOGO)))
+		return E_FAIL;	
 
 	return S_OK;
 }
@@ -83,7 +89,12 @@ HRESULT CMainApplication::Render()
 	Vec4 ClearColor = { 0.f, 0.f, 1.f, 1.f };
 	m_pGameInstance->Draw_Begin(&ClearColor);
 	m_pGameInstance->Draw();
+#ifdef _DEBUG
+	m_pDebugGui->Render();
+#endif
+
 	m_pGameInstance->Draw_End();
+
 	return S_OK;
 }
 
@@ -413,16 +424,17 @@ HRESULT CMainApplication::Ready_Fonts()
 }
 
 void CMainApplication::Free()
-{
-#ifdef _DEBUG
-	CEngineConsole::Shutdown();
-#endif
-
+{	
 	Safe_Release(m_pDeviceContext);
 	Safe_Release(m_pDevice);
 	CUI_Manager::GetInstance()->DestroyInstance();
 	m_pGameInstance->Destroy_Engine();
 	Safe_Release(m_pGameInstance);
+
+#ifdef _DEBUG
+	CEngineConsole::Shutdown();
+	m_pDebugGui->DestroyInstance();
+#endif
 	Super::Free();
 }
 

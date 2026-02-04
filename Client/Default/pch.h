@@ -37,11 +37,15 @@ using namespace physx;
 using json = nlohmann::json;
 #pragma pop_macro("new")
 
-//#pragma push_macro("new")
-//#undef new
-//#include <PxPhysicsAPI.h>
-//#include <PxPhysics.h>
-//#pragma pop_macro("new")
+#define IMGUI_DEFINE_MATH_OPERATORS
+#pragma push_macro("new")
+#undef new
+#include "imgui.h"
+#include "imgui_internal.h"
+#include "imgui_impl_win32.h"
+#include "imgui_impl_dx11.h"
+#include "imgui_stdlib.h"
+#pragma pop_macro("new")
 
 
 #include <string>
