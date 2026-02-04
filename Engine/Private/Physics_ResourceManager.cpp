@@ -147,6 +147,46 @@ void CPhysics_ResourceManager::RegisterPhysicsMesh(_uint levelIndex, _wstring pr
 	m_MeshResourceTag.emplace(prototypeTag, levelIndex);
 }
 
+vector<CPhysics_ResourceManager::HEIGHTFIELD_INFO> CPhysics_ResourceManager::GetHeightFields(PHYSICSCOLLIDER_DESC* pDesc)
+{
+	map<_wstring, vector<HEIGHTFIELD_INFO>>::iterator iter;
+
+	_bool bFind = { false };
+	if (pDesc->wstrModelPrototypeTag != L"")
+	{
+		iter = m_HeightFields.find(pDesc->wstrModelPrototypeTag);
+
+		if (iter != m_HeightFields.end())
+		{
+			bFind = true;
+			return iter->second;
+		}
+	}
+
+	if (pDesc->wstrFilePath != L"")
+	{
+		iter = m_HeightFields.find(pDesc->wstrFilePath);
+
+		if (iter != m_HeightFields.end())
+		{
+			bFind = true;
+			return iter->second;
+		}
+	}
+
+	vector<HEIGHTFIELD_INFO> result;
+
+	// make height field
+	if (pDesc->wstrModelPrototypeTag != L"")
+	{
+		CModel* model = static_cast<CModel*>(m_pGameInstance->Find_Prototype(m_MeshResourceTag[pDesc->wstrModelPrototypeTag], pDesc->wstrModelPrototypeTag));
+		result = CreateHeightFields(model);
+		m_HeightFields.emplace(pDesc->wstrModelPrototypeTag, result);
+	}
+
+	return result;
+}
+
 vector<PxTriangleMesh*> CPhysics_ResourceManager::CreateTriangleMeshes(CModel* model, _bool skipMeshCleanup, _bool skipEdgeData, _bool inserted, const PxU32 numTrisPerLeaf)
 {
 	// [옵션 1: 정석 (오프라인 쿠킹용)]
@@ -326,6 +366,157 @@ PxConvexMesh* CPhysics_ResourceManager::CreateConvexMesh(CMesh* mesh, PxConvexMe
 	}
 
 	return convex;
+}
+
+vector<CPhysics_ResourceManager::HEIGHTFIELD_INFO> CPhysics_ResourceManager::CreateHeightFields(CModel* model)
+{
+	vector<HEIGHTFIELD_INFO> result{};
+
+	vector<CMesh*> meshes;
+	_uint NumMesh = model->Get_MeshCount();
+
+	meshes.reserve(NumMesh);
+	for (_uint i = 0; i < NumMesh; i++)
+		meshes.push_back(model->Get_Mesh(i));
+
+	for (auto& mesh : meshes)
+	{
+		if (mesh->Get_VerticesCount() <= 0)
+			continue;
+
+		result.push_back(CreateHeightField(mesh));
+	}
+
+	return result;
+}
+
+CPhysics_ResourceManager::HEIGHTFIELD_INFO CPhysics_ResourceManager::CreateHeightField(CMesh* mesh)
+{
+	HEIGHTFIELD_INFO heightFieldInfo{};
+
+	PxU32 numVertices = mesh->Get_VerticesCount();
+	const Vec3* vertices = mesh->Get_VertexPositionData();
+
+	PxReal minX = FLT_MAX, maxX = -FLT_MAX;
+	PxReal minZ = FLT_MAX, maxZ = -FLT_MAX;
+
+	for (_uint i = 0; i < numVertices; i++)
+	{
+		if (vertices[i].x < minX) minX = vertices[i].x;
+		if (vertices[i].x > maxX) maxX = vertices[i].x;
+		if (vertices[i].z < minZ) minZ = vertices[i].z;
+		if (vertices[i].z > maxZ) maxZ = vertices[i].z;
+	}
+
+	PxU32 numRows = 127;
+	PxU32 numCols = 127;
+	//PxU32 numRows = (PxU32)sqrt((_float)numVertices);
+	//PxU32 numCols = numRows;
+
+	PxReal rowScale = (maxZ - minZ) / (_float)(numRows - 1);
+	PxReal colScale = (maxX - minX) / (_float)(numCols - 1);
+	//PxReal rowScale = 100.f;
+	//PxReal colScale = 100.f;
+
+	PxReal heightQuantization = 100.0f;
+
+	vector<PxI16> heightBuffer(numRows * numCols, SHRT_MIN);
+
+	for (_uint i = 0; i < numVertices; i++)
+	{
+		PxI32 col = (PxI32)floor(((vertices[i].x - minX) / colScale) + 0.5f);
+		PxI32 row = (PxI32)floor(((vertices[i].z - minZ) / rowScale) + 0.5f);
+
+		if (col < 0 || col >= (PxI32)numCols || row < 0 || row >= (PxI32)numRows)
+			continue;
+
+		PxU32 index = (row * numCols) + col;
+
+		PxI16 h = (PxI16)(vertices[i].y * heightQuantization);
+
+		if (h > heightBuffer[index])
+		{
+			heightBuffer[index] = h;
+		}
+	}
+
+	for (PxU32 r = 0; r < numRows; r++)
+	{
+		for (PxU32 c = 0; c < numCols; c++)
+		{
+			PxU32 index = r * numCols + c;
+			
+			if (heightBuffer[index] == SHRT_MIN)
+			{
+				PxI32 sum = 0;
+				PxI32 count = 0;
+
+				if (r > 0 && heightBuffer[index - numCols] > SHRT_MIN)
+				{
+					sum += heightBuffer[index - numCols];
+					count++;
+				}
+
+				if (r < numRows - 1 && heightBuffer[index + numCols] > SHRT_MIN)
+				{
+					sum += heightBuffer[index + numCols];
+					count++;
+				}
+
+				if (c > 0 && heightBuffer[index - 1] > SHRT_MIN)
+				{
+					sum += heightBuffer[index - 1];
+					count++;
+				}
+
+				if (count > 0)
+					heightBuffer[index] = (PxI16)(sum / count);
+				else
+					heightBuffer[index] = 0;
+			}
+		}
+	}
+
+	vector<PxHeightFieldSample> samples(numRows * numCols);
+	for (PxU32 i = 0; i < samples.size(); i++)
+	{
+		samples[i].height = heightBuffer[i];
+		samples[i].materialIndex0 = 0;
+		samples[i].clearTessFlag();
+		samples[i].setTessFlag();
+	}
+
+	PxHeightFieldDesc hfDesc;
+	hfDesc.format = PxHeightFieldFormat::eS16_TM;
+	hfDesc.nbColumns = numCols;
+	hfDesc.nbRows = numRows;
+	hfDesc.samples.data = samples.data();
+	hfDesc.samples.stride = sizeof(PxHeightFieldSample);
+
+	PxHeightField* pHeightField = PxCreateHeightField(hfDesc);
+	//PxHeightField* pHeightField = PxCreateHeightField(hfDesc, m_pPhysics->getPhysicsInsertionCallback());
+	//PxHeightField* pHeightField = m_pPhysics->createHeightField();
+	//PxCookHeightField(hfDesc, );
+
+	if (!pHeightField)
+	{
+		MSG_BOX("Failed to Created : Physics ShapeFactory Height Field");
+		return heightFieldInfo;
+	}
+
+	{
+		heightFieldInfo.minX = minX;
+		heightFieldInfo.maxX = maxX;
+		heightFieldInfo.minZ = minZ;
+		heightFieldInfo.maxZ = maxZ;
+		heightFieldInfo.numRows = numRows;
+		heightFieldInfo.numCols = numCols;
+		heightFieldInfo.rowScale = rowScale;
+		heightFieldInfo.colScale = colScale;
+		heightFieldInfo.pHeightField = pHeightField;
+	}
+
+	return heightFieldInfo;
 }
 
 void CPhysics_ResourceManager::SerializeStaticMesh(std::filesystem::path path, vector<PxTriangleMesh*> meshes)
@@ -560,6 +751,39 @@ void CPhysics_ResourceManager::Free()
 {
 	for (size_t i = 0; i < ENUM_TO_UINT(EPhysicsMaterial::END); i++)
 		PX_RELEASE(m_Materials[i]);
+
+	{
+		for (auto& triMeshes : m_TriangleMeshes)
+		{
+			for (auto& triMesh : triMeshes.second)
+				PX_RELEASE(triMesh);
+
+			triMeshes.second.clear();
+		}
+		m_TriangleMeshes.clear();
+	}
+
+	{
+		for (auto& conMeshes : m_ConvexMeshes)
+		{
+			for (auto& conMesh : conMeshes.second)
+				PX_RELEASE(conMesh);
+
+			conMeshes.second.clear();
+		}
+		m_ConvexMeshes.clear();
+	}
+
+	{
+		for (auto& heightFields : m_HeightFields)
+		{
+			for (auto& heightField : heightFields.second)
+				PX_RELEASE(heightField.pHeightField);
+
+			heightFields.second.clear();
+		}
+		m_HeightFields.clear();
+	}
 
 	for (void* ptr : m_MemBlocks)
 	{

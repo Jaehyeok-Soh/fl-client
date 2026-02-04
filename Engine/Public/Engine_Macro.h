@@ -6,6 +6,18 @@
 #define			ENUM_TO_CHAR(ENUM)			static_cast<unsigned char>(ENUM)
 #define			PURE						= 0
 
+#if defined(_DEBUG)
+#define CLOG_TRACE(msg) CEngineConsole::Log(ELogLevel::Trace, (msg))
+#define CLOG_INFO(msg)  CEngineConsole::Log(ELogLevel::Info,  (msg))
+#define CLOG_WARN(msg)  CEngineConsole::Log(ELogLevel::Warn,  (msg))
+#define CLOG_ERROR(msg) CEngineConsole::Log(ELogLevel::Error, (msg))
+#else
+#define CLOG_TRACE(msg) ((void)0)
+#define CLOG_INFO(msg)  ((void)0)
+#define CLOG_WARN(msg)  ((void)0)
+#define CLOG_ERROR(msg) ((void)0)
+#endif
+
 #ifndef			MSG_BOX
 #define			MSG_BOX(_message)			MessageBox(nullptr, TEXT(_message), L"System Message", MB_OK)
 #endif

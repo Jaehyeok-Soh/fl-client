@@ -52,7 +52,16 @@ HRESULT CRenderTarget_Manager::Begin_MRT(EMRTLayer eMRTLayer)
     if (nullptr == pMRTList)
         return E_FAIL;
 
+    // 원본 랜더타겟 백버퍼 RTV, DSV를 저장
     m_pDeviceContext->OMGetRenderTargets(1, &m_pBackBuffer, &m_pDSV);
+
+    // VS와 PS의 SRV를 0 ~ 127번까지 nullptr로 채워준다
+    // Wraning이 뜨는데, 그 의미는
+    // 아래 RTV로 세팅하려는 리소스가 이미 다른 셰이더 단계에 바인딩된 상태
+    // 때문에 같은 리소스를 동시에 읽기(SRV), 쓰기(RTV/UAV/DSV)로 묶는게 금지
+    // 그래서 디버그 레이어가 충돌을 막기 위해 강제로 NULL 언바인드 했다는 경고문이 쏟아진다.
+    m_pDeviceContext->VSSetShaderResources(0, 128, m_pNullSRVs);
+    m_pDeviceContext->PSSetShaderResources(0, 128, m_pNullSRVs);
 
     ID3D11RenderTargetView* pRTVs[8]{ nullptr };
     _uint   iRenderTargetCount = { };
@@ -74,7 +83,6 @@ HRESULT CRenderTarget_Manager::End_MRT()
     };
 
     m_pDeviceContext->OMSetRenderTargets(8, pRenderTargets, m_pDSV);
-
     Safe_Release(m_pBackBuffer);
     Safe_Release(m_pDSV);
 

@@ -849,6 +849,11 @@ PxController* CGameInstance::GetController(PHYSICSCCT_DESC* pDesc)
 	return m_pPhysics_Module->GetController(pDesc);
 }
 
+void CGameInstance::RegisterPhysicsMesh(_uint levelIndex, _wstring prototypeTag)
+{
+	m_pPhysics_Module->RegisterPhysicsMesh(levelIndex, prototypeTag);
+}
+
 #ifdef _DEBUG
 void CGameInstance::Physics_Render(PxRigidActor* pActor, XMVECTOR color)
 {

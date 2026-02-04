@@ -316,6 +316,15 @@
     <Filter Include="01. Utility\11. DataRepository\Datas\Map\DataDocument_Map">
       <UniqueIdentifier>{c9ad8f5d-b829-4469-9592-0ca458904b6b}</UniqueIdentifier>
     </Filter>
+    <Filter Include="01. Utility\16. Console">
+      <UniqueIdentifier>{aca0ce57-3fd8-4a3f-8270-2289e987fe91}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="00. System\13. ThreadPool">
+      <UniqueIdentifier>{04367fbb-7b98-4fac-a938-9cc777d2f7fd}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="00. System\13. ThreadPool\Worker">
+      <UniqueIdentifier>{fb94a932-18f1-4a22-92f7-cac192556caa}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="..\Private\Timer.cpp">

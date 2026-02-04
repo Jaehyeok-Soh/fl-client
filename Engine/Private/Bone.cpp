@@ -15,6 +15,8 @@ HRESULT CBone::Initialize(BONE_DESC* pDesc)
     m_matTransform = pDesc->matTransform;
     m_matCombinedTransform = Matrix::Identity;
 
+    m_bMotionBone = (pDesc->iRootMotionBoneIndex == m_iIndex);
+
     return S_OK;
 }
 
