@@ -259,10 +259,10 @@ void CUI_Maker::Make_Canvas()
 				Desc.strTag = m_strCanvasTag;
 				Desc.iLevelIndex = { static_cast<uint32_t>(ELevelType::UI) };
 				Desc.iClientLevelIndex = m_iCurSelectLevelID;
-				Desc.fX = g_iWinSizeX / 2.f;
-				Desc.fY = g_iWinSizeY / 2.f;
-				Desc.fHeight = g_iWinSizeY;
-				Desc.fWidth = g_iWinSizeX;
+				Desc.fX = static_cast<_float>(g_iWinSizeX) / 2.f;
+				Desc.fY = static_cast<_float>(g_iWinSizeY) / 2.f;
+				Desc.fHeight = static_cast<_float>(g_iWinSizeY);
+				Desc.fWidth = static_cast<_float>(g_iWinSizeX);
 				Desc.iEditorSizeX = g_iWinSizeX;
 				Desc.iEditorSizeY = g_iWinSizeY;
 
