@@ -88,6 +88,8 @@ HRESULT CLevel_Logo::Awake(const _uint iLevelID)
 	CLOG_WARN(L"테스트, Logo Awake() 확인");
 	CLOG_ERROR(L"테스트, Logo Awake() 확인");
 
+	m_eCursorMode = ECursorMode::LockedHiddenCenter;
+	m_pGameInstance->Request_CursorMode(m_eCursorMode);
 	return S_OK;
 }
 
@@ -98,6 +100,32 @@ void CLevel_Logo::Update(const _float fTimeDelta)
 	if (m_pGameInstance->KeyButton_Down(DIK_0))
 	{
 		m_pGameInstance->Request_AddObject(ENUM_TO_UINT(ELevelType::LOGO), L"POOL_ParticleSystem", ENUM_TO_UINT(ELevelType::LOGO), L"Effect", nullptr);
+	}
+
+	// TODO : 어디다 두지?
+	static _uint s_iCount = { 0 };
+	if (m_pGameInstance->KeyButton_Down(DIK_LALT))
+	{
+#ifdef _DEBUG
+		s_iCount = (s_iCount + 1) % 3;
+#else
+		s_iCount = (s_iCount + 1) % 2;
+#endif
+		if (s_iCount == 0)
+		{
+			m_eCursorMode = ECursorMode::LockedHiddenCenter;
+		}
+		else if (s_iCount == 1)
+		{
+			m_eCursorMode = ECursorMode::VisibleClipped;
+		}
+#ifdef _DEBUG
+		else
+		{
+			m_eCursorMode = ECursorMode::VisibleFree;
+		}
+#endif
+		m_pGameInstance->Request_CursorMode(m_eCursorMode);
 	}
 }
 

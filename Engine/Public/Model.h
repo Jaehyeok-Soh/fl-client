@@ -83,6 +83,8 @@ public:
 	_float Get_AnimDurationTime() const;
 	_float Get_AnimNormalizedTime() const;
 	_float Get_AnimElpasedTimeSeconds() const;
+	_int Get_CurrentAnimationIndex() const;
+	wstring Get_CurrentAnimationName() const;
 	_bool Is_AnimFinished() const { return m_bIsAnimFinished; }
 	_bool Is_AnimTrackPositionBetween(_float fStartRatio, _float fEndRatio);
 	_bool Is_AnimTrackPositionAt(_float fRatio);
