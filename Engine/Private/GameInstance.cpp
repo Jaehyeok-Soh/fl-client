@@ -605,11 +605,18 @@ const POINT& CGameInstance::Get_MousePos()
 {
 	return m_pInput_Manager->Get_MousePos();
 }
-void CGameInstance::Set_Capture(_bool bCap)
+void CGameInstance::Request_CursorMode(ECursorMode eMode) noexcept
 {
-	m_pInput_Manager->Set_Capture(bCap);
+	m_pInput_Manager->Request_CursorMode(eMode);
 }
-
+_bool CGameInstance::ShouldIgnoreMouseDelta() noexcept
+{
+	return m_pInput_Manager->ShouldIgnoreMouseDelta();
+}
+void CGameInstance::Force_ReleaseCursor() noexcept
+{
+	m_pInput_Manager->Force_ReleaseCursor();
+}
 #pragma region RESOURCE_MANAGER
 CTextureBase* CGameInstance::GetOrAddTexture(const wstring& wstrKey, void* pArg)
 {

@@ -15,6 +15,14 @@ namespace Engine
 	enum class ELINE { AB, BC, CA, END };
 	enum class RENDER_CATEGORY : unsigned int { PRIORITY, BLEND, NONEBLEND, NONELIGHT, BLENDUI, UI, END };
 	enum class DEFFERRED { DEBUG, DIRECTIONAL, POINT, COMBINED, END };
+	enum class ECursorMode : unsigned int
+	{
+		LockedHiddenCenter,
+		VisibleClipped,
+		VisibleFree,
+		END
+	};
+
 	//===================
 	// GameObject
 	//===================
