@@ -89,6 +89,8 @@ void CLevel_Logo::Update(const _float fTimeDelta)
 	{
 		auto list = m_pGameInstance->Get_GameObject_List(ENUM_TO_UINT(ELevelType::LOGO), L"Effect");
 		
+		if (list == nullptr) return;
+
 		for (auto pGo : *list)
 		{
 			if(pGo != nullptr)
@@ -119,8 +121,8 @@ HRESULT CLevel_Logo::Ready_Builders()
 
 HRESULT CLevel_Logo::Build_Files()
 {
-	//if (FAILED(Build_File(ENUM_TO_UINT(ELevelType::LOGO), DTO::ECategory::EFFECT, "Attack_1")))
-	//	return E_FAIL;
+	if (FAILED(Build_File(ENUM_TO_UINT(ELevelType::LOGO), DTO::ECategory::EFFECT, "Attack_1")))
+		return E_FAIL;
 
 	// For. Example
 	//if (FAILED(Build_File(ENUM_TO_UINT(ELevelType::LOGO), DTO::ECategory::MAP, "asdf")))

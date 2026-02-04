@@ -174,6 +174,18 @@ HRESULT CMainApplication::Ready_Static_Prototype()
 			CShader::Create(m_pDevice, m_pDeviceContext, &shaderDesc))))
 			return E_FAIL;
 	}
+
+#pragma region Compute_Shader
+	// For. Prototype_Component_Shader_CPT_Effect_Particle
+	{
+		CComputeShader::ComShaderOriginDesc shaderDesc = {};
+		shaderDesc.pShaderFilePath = L"../../Shaders/Shader_CPT_Effect_Particle.hlsl";
+		if (FAILED(m_pGameInstance->Add_Prototype(ENUM_TO_UINT(ELevelType::STATIC), L"Prototype_Component_Shader_CPT_Effect_Particle",
+			CComputeShader::Create(m_pDevice, m_pDeviceContext, &shaderDesc))))
+			return E_FAIL;
+	}
+#pragma endreiogn
+
 #pragma region EFFECT_Shader
 	// For. Prototype_Component_Shader_VtxEffectMesh
 	{

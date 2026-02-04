@@ -35,6 +35,8 @@ CComputeShader::CComputeShader(const CComputeShader& rhs)
 	Safe_AddRef(m_pDeviceContext);
 	Safe_AddRef(m_pBlob);
 	Safe_AddRef(m_pEffect);
+	Safe_AddRef(m_pEffect_Mutable_Element_CBuffer);
+	Safe_AddRef(m_pEffect_MutableBuffer);
 }
 
 HRESULT CComputeShader::Initialize_Prototype(void* pArg)
