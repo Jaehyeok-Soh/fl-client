@@ -90,7 +90,7 @@ HRESULT CVIBuffer_Particle_Point::Initialize(void* pArg)
 
 	for (size_t i = 0; i < m_iInstanceCount; i++)
 	{
-		m_pInstanceVertices->vInstanceNumber = (_uint)i;
+		m_pInstanceVertices[i].vInstanceNumber = (_uint)i;
 	}
 
 	m_InstanceBufferDesc.ByteWidth = m_iInstanceCount * m_iInstanceVertexStride;
@@ -118,7 +118,7 @@ HRESULT CVIBuffer_Particle_Point::Initialize(void* pArg)
 	{
 		_float      fScale = m_pGameInstance->Rand_Float(pParticleDesc->vSize.x, pParticleDesc->vSize.y) * 0.5f;
 
-		pInitialData[i].fSpeed = m_pGameInstance->Rand_Float(pParticleDesc->vSpeed.x, pParticleDesc->vSpeed.y);
+		pInitialData[i].fSpeed = 1.f;
 		pInitialData[i].vParticle_LifeTime = Vec2(0.f, m_pGameInstance->Rand_Float(pParticleDesc->vLifeTime.x, pParticleDesc->vLifeTime.y));
 		pInitialData[i].vRight = Vec4(fScale, 0.f, 0.f, 0.f);
 		pInitialData[i].vUp = Vec4(0.f, fScale, 0.f, 0.f);
@@ -129,7 +129,11 @@ HRESULT CVIBuffer_Particle_Point::Initialize(void* pArg)
 			m_pGameInstance->Rand_Float(pParticleDesc->vCenter.z - pParticleDesc->vRange.z * 0.5f, pParticleDesc->vCenter.z + pParticleDesc->vRange.z * 0.5f),
 			1.f
 		);
-		pInitialData[i].vParticle_OriginMatrix = Matrix(pInitialData->vRight, pInitialData->vUp, pInitialData->vLook, pInitialData->vTranslation);
+		pInitialData[i].vParticle_OriginMatrix =
+			Matrix(pInitialData[i].vRight,
+				pInitialData[i].vUp,
+				pInitialData[i].vLook,
+				pInitialData[i].vTranslation);
 	}
 	CShader* pShader = pParticleDesc->pComputeShader;
 	if (pShader == nullptr)
@@ -138,7 +142,7 @@ HRESULT CVIBuffer_Particle_Point::Initialize(void* pArg)
 		return E_FAIL;
 	}
 	pShader->Bind_Compute_EffectData(pInitialData, m_iInstanceCount);
-
+	Safe_Delete_Array(pInitialData);
 #pragma endregion
 
 	return S_OK;
@@ -155,12 +159,28 @@ HRESULT CVIBuffer_Particle_Point::Resize_InstanceBuffer(_uint iNumInstanceCount)
 	Safe_Delete_Array(m_pSpeeds);
 
 	// 새로운 버퍼 생성
-	m_pInstanceVertices = new VTXPARTICLE[m_iInstanceCount];
 	m_InstanceBufferDesc.ByteWidth = m_iInstanceCount * m_iInstanceVertexStride;
 	m_ePrimitiveType = D3D_PRIMITIVE_TOPOLOGY_POINTLIST;
 
 	m_pSpeeds = new _float[m_iInstanceCount];
 	::ZeroMemory(m_pSpeeds, sizeof(_float) * m_iInstanceCount);
+
+	m_pInstanceVertices = new VTXPARTICLE[m_iInstanceCount];
+
+	for (size_t i = 0; i < m_iInstanceCount; i++)
+	{
+		m_pInstanceVertices[i].vInstanceNumber = (_uint)i;
+	}
+
+	m_InstanceBufferDesc.ByteWidth = m_iInstanceCount * m_iInstanceVertexStride;
+	m_InstanceBufferDesc.Usage = D3D11_USAGE_DEFAULT; // 초기화용이므로 DEFAULT나 IMMUTABLE
+	m_InstanceBufferDesc.BindFlags = D3D11_BIND_VERTEX_BUFFER;
+	m_InstanceBufferDesc.CPUAccessFlags = 0;
+	m_InstanceBufferDesc.MiscFlags = 0;
+	m_InstanceBufferDesc.StructureByteStride = m_iInstanceVertexStride;
+
+	D3D11_SUBRESOURCE_DATA InstanceInitialData{};
+	InstanceInitialData.pSysMem = m_pInstanceVertices;
 
 	// 버퍼를 재할당 했다면 입자들 생명주기 등등 전부 새롭게.
 
@@ -205,9 +225,6 @@ HRESULT CVIBuffer_Particle_Point::Resize_InstanceBuffer(_uint iNumInstanceCount)
 	//		m_pInstanceVertices[i].vLifeTime = Vec2(0.f, m_pGameInstance->Rand_Float(m_tParticleDesc.vLifeTime.x, m_tParticleDesc.vLifeTime.y));
 	//	}
 	//}
-
-	D3D11_SUBRESOURCE_DATA InstanceInitialData{};
-	InstanceInitialData.pSysMem = m_pInstanceVertices;
 
 	return m_pDevice->CreateBuffer(&m_InstanceBufferDesc, &InstanceInitialData, &m_pVBInstance);
 }

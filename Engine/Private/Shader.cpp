@@ -130,14 +130,28 @@ void CShader::Apply()
 
 void CShader::Dispatch(_uint iX, _uint iY, _uint iZ)
 {
+	// 1. Hazard 방지용 해제 (기존 코드 유지)
+	ID3D11ShaderResourceView* nullSRVs[] = { nullptr, nullptr, nullptr, nullptr };
+	m_pDeviceContext->VSSetShaderResources(0, 4, nullSRVs);
+
+	// [중요] 내 인스턴스의 고유 버퍼를 셰이더 변수에 다시 꽂음
+	// 이 작업이 있어야 다른 객체가 덮어쓴 변수 값을 내 것으로 되찾아옴
+	if (m_pEffect_Result_UAV)
+		m_pEffect_Result_UAV->SetUnorderedAccessView(m_pEffect_Result_SBuffer->Get_UAV());
+
+	if (m_pEffect_Immutable_Element_SRV)
+		m_pEffect_Immutable_Element_SRV->SetResource(m_pEffect_Immutable_Element_CBuffer->Get_SRV());
+
+	// 상태 적용 및 실행
 	m_vecTechniques[0].vecPasses[m_iPass].pPass->Apply(0, m_pDeviceContext);
 	m_pDeviceContext->Dispatch(iX, iY, iZ);
 
-	ID3D11ShaderResourceView* null[1] = { 0 };
-	m_pDeviceContext->CSSetShaderResources(0, 1, null);
+	// 즉시 정리 (다음 렌더링 시 SRV로 바로 쓸 수 있도록)
+	ID3D11UnorderedAccessView* nullUAV[] = { nullptr };
+	m_pDeviceContext->CSSetUnorderedAccessViews(0, 1, nullUAV, nullptr);
 
-	ID3D11UnorderedAccessView* nullUav[1] = { 0 };
-	m_pDeviceContext->CSSetUnorderedAccessViews(0, 1, nullUav, NULL);
+	ID3D11ShaderResourceView* nullSRV[] = { nullptr };
+	m_pDeviceContext->CSSetShaderResources(0, 1, nullSRV);
 
 	m_pDeviceContext->CSSetShader(NULL, NULL, 0);
 }
@@ -372,6 +386,11 @@ HRESULT CShader::Bind_BoneData(const SHADER_BONEDESC& boneDesc)
 {
 	m_pBone_CBuffer->Copy_Data(boneDesc);
 	return S_OK;
+}
+
+void CShader::Resize_Compute_EffectData(_uint count)
+{
+	m_pEffect_Immutable_Element_CBuffer->Resize(count);
 }
 
 HRESULT CShader::Load_Shader(const D3D11_INPUT_ELEMENT_DESC* pElements, const _uint iNumElements)

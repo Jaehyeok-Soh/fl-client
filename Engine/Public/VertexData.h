@@ -112,7 +112,7 @@ typedef struct tagVertexAnimationMesh
 typedef struct tagVertexInstance
 {
 	unsigned int		vInstanceNumber = { 0 };
-	SimpleMath::Vector3	vPadding = { 0.f, 0.f, 0.f };
+	//SimpleMath::Vector3	vPadding = { 0.f, 0.f, 0.f };
 }VTXPARTICLE;
 
 typedef struct tagEffectInstance

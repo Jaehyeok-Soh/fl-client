@@ -111,7 +111,7 @@ void CVIBuffer_Particle::Update_Simulation(CShader* ComputeShader, Vec3 vLook, _
 	// Compute Shader ½ÇÇà
 	//ComputeShader->Dispatch(1, 1, 1);
 	_uint iGroupX = (m_iInstanceCount + 31) / 32;
-	ComputeShader->Dispatch(iGroupX, 1, 1);
+	ComputeShader->Dispatch(32, 1, 1);
 }
 
 //void CVIBuffer_Particle::Drop(_float fTimeDelta)

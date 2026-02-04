@@ -105,7 +105,9 @@ void CEffectObject::Buffer_Setting()
         {
         case DTO::E_PARTICLETYPE::PARTICLE:
         {
-            Change_Component<CVIBuffer_Particle_Point>(static_cast<CVIBuffer_Particle_Point*>(m_pGameInstance->Clone_Prototype(EPrototypeType::COMPONENT, 0, L"Prototype_Component_VIBuffer_Particle_Point", nullptr)));
+            CVIBuffer_Particle_Point::PARTICLE_POINT_ORIGIN_DESC PointBufferDesc = {};
+            PointBufferDesc.pOwner = this;
+            Change_Component<CVIBuffer_Particle_Point>(static_cast<CVIBuffer_Particle_Point*>(m_pGameInstance->Clone_Prototype(EPrototypeType::COMPONENT, 0, L"Prototype_Component_VIBuffer_Particle_Point", &PointBufferDesc)));
             break;
         }
         case DTO::E_PARTICLETYPE::MESH:
@@ -122,7 +124,9 @@ void CEffectObject::Buffer_Setting()
         }
         case DTO::E_PARTICLETYPE::TEXTURE:
         {
-            Change_Component<CVIBuffer_Particle_Point>(static_cast<CVIBuffer_Particle_Point*>(m_pGameInstance->Clone_Prototype(EPrototypeType::COMPONENT, 0, L"Prototype_Component_VIBuffer_Particle_Point", nullptr)));
+            CVIBuffer_Particle_Point::PARTICLE_POINT_ORIGIN_DESC PointBufferDesc = {};
+            PointBufferDesc.pOwner = this;
+            Change_Component<CVIBuffer_Particle_Point>(static_cast<CVIBuffer_Particle_Point*>(m_pGameInstance->Clone_Prototype(EPrototypeType::COMPONENT, 0, L"Prototype_Component_VIBuffer_Particle_Point", &PointBufferDesc)));
             break;
         }
         }

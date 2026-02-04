@@ -67,11 +67,11 @@ void CS_Main(int3 dtid : SV_DispatchThreadID)
     currentData.vLifeTime.x += g_InputB.fTimeDelta;
 
 //  상태별 이동 로직 (DROP 예시)
-    if (g_InputB.MoveFlag == 3)
-    {
+    //if (g_InputB.MoveFlag == 3)
+    //{
     // 이전 위치(currentData)에서 속도(input)만큼 더 이동시킨다.
         currentData.matTransform._42 -= input.vSpeed * g_InputB.fTimeDelta * g_InputB.fStartSpeed;
-    }
+    //}
 
 //  루프(리셋) 처리
     if (g_InputB.IsLoop && currentData.vLifeTime.x >= currentData.vLifeTime.y)
