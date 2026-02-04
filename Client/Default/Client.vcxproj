@@ -204,7 +204,10 @@
     <ClInclude Include="..\Public\State_JumpBullet.h" />
     <ClInclude Include="..\Public\State_JumpDouble.h" />
     <ClInclude Include="..\Public\State_Land.h" />
-    <ClInclude Include="..\Public\State_MoonCombo.h" />
+    <ClInclude Include="..\Public\State_MoonCombo.h">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">true</ExcludedFromBuild>
+    </ClInclude>
     <ClInclude Include="..\Public\State_RunLoop.h" />
     <ClInclude Include="..\Public\State_RunShort.h" />
     <ClInclude Include="..\Public\State_Slide.h" />
@@ -265,7 +268,10 @@
     <ClCompile Include="..\Private\State_JumpBullet.cpp" />
     <ClCompile Include="..\Private\State_JumpDouble.cpp" />
     <ClCompile Include="..\Private\State_Land.cpp" />
-    <ClCompile Include="..\Private\State_MoonCombo.cpp" />
+    <ClCompile Include="..\Private\State_MoonCombo.cpp">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">true</ExcludedFromBuild>
+    </ClCompile>
     <ClCompile Include="..\Private\State_RunLoop.cpp" />
     <ClCompile Include="..\Private\State_RunShort.cpp" />
     <ClCompile Include="..\Private\State_Slide.cpp" />
