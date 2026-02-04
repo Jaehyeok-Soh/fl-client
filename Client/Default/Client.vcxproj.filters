@@ -178,9 +178,6 @@
     <Filter Include="06. FSM\Player\Attack">
       <UniqueIdentifier>{7ebbc28f-6b61-485b-b6e8-1bfe363c2de3}</UniqueIdentifier>
     </Filter>
-    <Filter Include="06. FSM\Player\Attack\Melee">
-      <UniqueIdentifier>{2b993293-fadd-49b9-88a4-fc11e29bf8ae}</UniqueIdentifier>
-    </Filter>
     <Filter Include="03. GameObject\MapObject">
       <UniqueIdentifier>{b160eafb-0791-4bab-a9f6-d8d8d7b9532c}</UniqueIdentifier>
     </Filter>
@@ -201,6 +198,12 @@
     </Filter>
     <Filter Include="04. Shaders\ComputeShader_Labs">
       <UniqueIdentifier>{8c14e548-7930-4ec0-b748-e471998a55b9}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="06. FSM\Player\Attack\Combo">
+      <UniqueIdentifier>{c441f698-d661-4b43-9a38-86ca6478bcfe}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="06. FSM\Player\Attack\Combo\Moon">
+      <UniqueIdentifier>{03a248e9-eb08-4143-a1f8-99a1bbf2dbc8}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
@@ -379,7 +382,10 @@
       <Filter>03. GameObject\MapObject\02. InstanceModel</Filter>
     </ClInclude>
     <ClInclude Include="..\Public\State_ComboBase.h">
-      <Filter>06. FSM\Player\Attack</Filter>
+      <Filter>06. FSM\Player\Attack\Combo</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\State_MoonCombo.h">
+      <Filter>06. FSM\Player\Attack\Combo\Moon</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -556,7 +562,10 @@
       <Filter>03. GameObject\MapObject\02. InstanceModel</Filter>
     </ClCompile>
     <ClCompile Include="..\Private\State_ComboBase.cpp">
-      <Filter>06. FSM\Player\Attack</Filter>
+      <Filter>06. FSM\Player\Attack\Combo</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\State_MoonCombo.cpp">
+      <Filter>06. FSM\Player\Attack\Combo\Moon</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
