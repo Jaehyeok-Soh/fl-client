@@ -76,9 +76,47 @@ HRESULT CPanel_MapDataController::Render_ConvertedList()
 
 	ImGui::SeparatorText(" [ Batch ] Converted Map Data");
 
-	if (ImGui::Button(" [ Batch ] Converted Map Data"))
+	if (ImGui::Button(" [ Batch Select ] "))
 	{
 		m_pUEMapdataParser->Batch_UnrealRawMapData(Engine_Utils::ToWString(strSelectPath).c_str());
+	}
+
+	ImGui::SameLine();
+
+	if (ImGui::Button(" [ Batch By Folder ] "))
+	{
+		IFileOpenDialog* pFileOpenDialog{ nullptr };
+		CoCreateInstance(CLSID_FileOpenDialog, NULL, CLSCTX_ALL, IID_IFileOpenDialog, reinterpret_cast<void**>(&pFileOpenDialog));
+		if (pFileOpenDialog)
+		{
+			pFileOpenDialog->SetOptions(FOS_PICKFOLDERS);
+			if (pFileOpenDialog->Show(nullptr) == S_OK)
+			{
+				IShellItem* pItem;
+				LPWSTR pFilePath{ nullptr };
+				if (pFileOpenDialog->GetResult(&pItem) == S_OK)
+				{
+					pItem->GetDisplayName(SIGDN_FILESYSPATH, &pFilePath);
+
+					for (auto& Path : std::filesystem::directory_iterator(pFilePath))
+					{
+						path FilePath = Path.path();
+						if (!std::filesystem::is_regular_file(FilePath))
+							continue;
+						if (FilePath.extension() != L".json")
+							continue;
+						if (FilePath.filename().string().find("_Converted") != std::string::npos)
+							continue;
+						if (FilePath.filename().string().find("_Filtering") != std::string::npos)
+							continue;
+						m_pUEMapdataParser->Batch_UnrealRawMapData(FilePath.c_str());
+					}
+
+					Safe_Release(pItem);
+				}	
+			}
+			Safe_Release(pFileOpenDialog);
+		}
 	}
 
 	ImGui::Separator();
@@ -87,7 +125,7 @@ HRESULT CPanel_MapDataController::Render_ConvertedList()
 
 	ImGui::SeparatorText("[ Save Filtering ] Map Data");
 
-	if (ImGui::Button("Save Filtering Map Data"))
+	if (ImGui::Button("[ Save Filtering Map ]  Data"))
 	{
 		m_pUEMapdataParser->Save_FilteringRawMapData(Engine_Utils::ToWString(strSelectPath).c_str());
 	}
@@ -113,15 +151,6 @@ HRESULT CPanel_MapDataController::Render_Converted_UnrealRawMapData_Button()
 
 	if (ImGui::CollapsingHeader(" [ Function ] : Converted Raw Data"))
 	{
-		//if (ImGui::InputFloat("Convert Position Mul Scale", &m_fMulScale))
-		//	m_pUEMapdataParser->Set_MulScale(m_fMulScale);
-
-		//if (ImGui::TreeNode(" Mul PitchYawRoll Setting"))
-		//{
-		//	ImGui::DragFloat3("Mul_PitchYawRoll", &m_pUEMapdataParser->m_vMulPitchYawRoll.x , 0.5f);
-		//	ImGui::TreePop();
-		//}
-
 
 		ImGui::SeparatorText("[ Load All ] Raw Map Data");
 
@@ -145,7 +174,7 @@ HRESULT CPanel_MapDataController::Render_Converted_UnrealRawMapData_Button()
 				if (wstrFileName.find(m_pUEMapdataParser->m_WstringFiltering) != wstring::npos)
 					continue;
 
-				m_pUEMapdataParser->Convert_UnrealRawMapData(FullPath.wstring().c_str());
+				m_pUEMapdataParser->Convert_UnrealRawMapData(std::filesystem::absolute(FullPath).c_str());
 			}
 		}
 
@@ -170,7 +199,7 @@ HRESULT CPanel_MapDataController::Render_Converted_UnrealRawMapData_Button()
 			if (::GetOpenFileNameW(&ofn) == TRUE)
 			{
 				wstring result = szFile;
-				m_pUEMapdataParser->Convert_UnrealRawMapData(result.c_str());
+				m_pUEMapdataParser->Convert_UnrealRawMapData(std::filesystem::absolute(result).c_str());
 			}
 		}
 

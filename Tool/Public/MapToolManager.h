@@ -18,7 +18,6 @@ class CImGui_ToolManager;
 
 using MapObjectCloneFactory = std::function<CGameObject*(void* pArg)>;
 
-
 class CMapToolManager : public CBase
 {
 public:

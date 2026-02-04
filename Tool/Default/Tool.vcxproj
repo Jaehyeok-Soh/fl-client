@@ -162,6 +162,7 @@
     <ClInclude Include="..\Public\Folder.h" />
     <ClInclude Include="..\Public\Grid.h" />
     <ClInclude Include="..\Public\imfilebrowser.h" />
+    <ClInclude Include="..\Public\InstanceModel.h" />
     <ClInclude Include="..\public\Level_Logo.h" />
     <ClInclude Include="..\Public\MapToolManager.h" />
     <ClInclude Include="..\public\Panel_FileExplore.h" />
@@ -246,6 +247,9 @@
     <ClCompile Include="..\Private\EffectType_Selection_Panel.cpp" />
     <ClCompile Include="..\Private\File.cpp" />
     <ClCompile Include="..\Private\Folder.cpp" />
+    <ClCompile Include="..\Private\InstanceModel.cpp">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">false</ExcludedFromBuild>
+    </ClCompile>
     <ClCompile Include="..\private\Level_Logo.cpp" />
     <ClCompile Include="..\Private\Grid.cpp" />
     <ClCompile Include="..\Private\MapToolManager.cpp" />

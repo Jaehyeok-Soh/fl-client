@@ -53,7 +53,7 @@ public:
 public:
 
 	void					Reset_SRT(Engine::Flags fResetTypeFlag);
-	void					Register_OriginSRT(Engine::Flags fResetTypeFlag);
+	virtual void			Register_OriginSRT(Engine::Flags fResetTypeFlag);
 public:
 	HRESULT					Add_MapToolComponent(CMapObject::COMPONENT eType);
 public:

@@ -23,6 +23,7 @@ public:
 	virtual HRESULT Build(const CDataDocumentBase& document) override;
 private:
 	HRESULT Create_StaticModel(const DTO::TMap_StaticModelData& tData);
+	HRESULT	Create_InstanceModel(const DTO::TMap_InstanceModelData& tData);
 private:
 	CGameInstance*		m_pGameInstance{ nullptr };
 	CMapToolManager*	m_pMapToolManager{nullptr};

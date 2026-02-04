@@ -24,6 +24,7 @@
 #include "Transform.h"
 #include "MapToolManager.h"
 #include "MaterialInstance.h"
+#include "InstanceMesh.h"
 #include "GameInstance.h"
 
 USING(Tool)
@@ -155,6 +156,17 @@ HRESULT CMainApplication::Ready_Static_Prototype()
 			return E_FAIL;
 	}
 
+	// For. Prototype_Component_Shader_VtxInstanceMesh
+	{
+		CShader::SHADER_ORIGIN_DESC shaderDesc = {};
+		shaderDesc.pShaderFilePath = L"../../Shaders/Shader_VtxInstanceMesh.hlsl";
+		shaderDesc.iNumElements = Engine::VTX_INSTANCE_MESH::iNumElements;
+		shaderDesc.pElements = Engine::VTX_INSTANCE_MESH::Elements;
+		if (FAILED(m_pGameInstance->Add_Prototype(ENUM_TO_UINT(ELevelType::STATIC), L"Prototype_Component_Shader_VtxInstanceMesh",
+			CShader::Create(m_pDevice, m_pDeviceContext, &shaderDesc))))
+			return E_FAIL;
+	}
+
 	// For. Prototype_Component_Shader_AnimMesh
 	{
 		CShader::SHADER_ORIGIN_DESC shaderDesc = {};
@@ -229,6 +241,12 @@ HRESULT CMainApplication::Ready_Static_Prototype()
 		return E_FAIL;
 
 
+
+	//=================
+	// InstanceMesh
+	//=================
+	if (FAILED(m_pGameInstance->Add_Prototype(ENUM_TO_UINT(ELevelType::STATIC), L"Prototype_Component_VIBuffer_InstanceMesh", CInstanceMesh::Create(m_pDevice, m_pDeviceContext))))
+		return E_FAIL;
 
 
 	//=================

@@ -58,20 +58,25 @@ NLOHMANN_JSON_SERIALIZE_ENUM(EMapObject_Type,
 	Vec3	vScale{0.f,0.f,0.f};
 	Quat	vQuat{0.f,0.f,0.f,1.f};
 	Vec3	vPosition{ 0.f,0.f,0.f };
+public:
+	Matrix  Get_World()
+	{
+		return Matrix::CreateScale(vScale) * Matrix::CreateFromQuaternion(vQuat) * Matrix::CreateTranslation(vPosition);
+	}
 }SRT_DATA;
 #pragma endregion
 #pragma region Using Material 
 
-typedef struct tagUsingMaterialInfo
+typedef struct tagOverrideMaterials
 {
 	bool	isNull{ true };
 
-	/* 참조하고 있는 Origin Mrt Material Json 파일 Path 값 */
-	wstring wstrOriginMtl_JsonFile_Name{};
-	wstring wstrOriginMtl_JsonFile_Path{};
+	/* Override 할때 참조하고 있는 파일 Path 값 */
+	wstring wstrMtl_JsonFile_Name{};
+	wstring wstrMtl_JsonFile_Path{};
 	/* 그 안에서 뜯어낸 Texutre 바인딩 이름 : Texutre 경로 [ 메테리얼 Json 경로에 꽃아줄 이름 ] */
 	vector < std::pair<wstring, wstring>> vecUsingTextureInfo{};
-}USING_MATERIAL_INFO;
+}OVERRIDE_MATERIALS;
 #pragma endregion
 #pragma region Using Model
 typedef struct tagUsingModelInfo
@@ -82,7 +87,7 @@ typedef struct tagUsingModelInfo
 	/* 모델이 생성되고 난 이후에 저장되는 메테리얼 경로 */
 	wstring wstrMtl_JsonFile_Path{};
 
-	vector<USING_MATERIAL_INFO> vecMaterialInfo{};
+	vector<OVERRIDE_MATERIALS> vecOverrideMaterial{};
 public:
 
 }USING_MODEL_INFO;
@@ -92,7 +97,7 @@ public:
 
 typedef struct TMap_StaticModelData 
 {
-	std::string strTag{ "Map" };
+	std::string strTag{ "Static Model" };
 	static constexpr EMapObject_Type eType = EMapObject_Type::STATICMODEL;
 
 	/* Model Info */
@@ -103,12 +108,14 @@ typedef struct TMap_StaticModelData
 #pragma region Instance Model
 typedef struct TMap_InstanceModelData 
 {
+	std::string strTag{ "Instance Model" };
 	static constexpr EMapObject_Type eType = EMapObject_Type::INSTANCEMODEL;
 
-	USING_MODEL_INFO tUsingInfo{};
+	D3D11_USAGE		 eInstance_Usage{D3D11_USAGE_DEFAULT};
+
+	USING_MODEL_INFO tUsingModelInfo{};
 	vector<SRT_DATA> vecSRTData{};
 }InstanceModel_Data;
-
 #pragma endregion
 
 #pragma endregion
@@ -121,9 +128,9 @@ inline void from_json(const json& LoadJson, SRT_DATA& tdata);
 
 #pragma region Using Material 
 
-void from_json(const json& LoadJson, USING_MATERIAL_INFO& tData);
+void from_json(const json& LoadJson, OVERRIDE_MATERIALS& tData);
 
-void to_json(json& SaveJson, const USING_MATERIAL_INFO& tData);
+void to_json(json& SaveJson, const OVERRIDE_MATERIALS& tData);
 
 #pragma endregion
 
@@ -135,12 +142,12 @@ void to_json(json& SaveJson, const USING_MODEL_INFO& tData);
 
 #pragma region Static Model
 inline void to_json(json& SaveJson, const TMap_StaticModelData& tData);
-inline void from_json(const json& LoadJson, TMap_StaticModelData& data);
+inline void from_json(const json& LoadJson, TMap_StaticModelData& tData);
 #pragma endregion
 
 #pragma region Instance Model
-inline void to_json(json& j, const TMap_InstanceModelData& data);
-inline void from_json(const json& j, TMap_InstanceModelData& data);
+inline void to_json(json& SaveJson, const TMap_InstanceModelData& tData);
+inline void from_json(const json& LoadJson, TMap_InstanceModelData& tData);
 #pragma endregion
 NS_END
 /////////////////-------------------  Wrapping Class  -------------------/////////////////
@@ -171,6 +178,28 @@ private:
 	DTO::STATICMODEL_DATA		m_tData{};
 public:
 	static CData_StaticModel* Create() { return new CData_StaticModel(); }
+	virtual void Free() override { Super::Free(); }
+};
+
+class CData_InstanceModel final : public IObjectDataBase
+{
+	using Super = IObjectDataBase;
+private:
+	CData_InstanceModel() = default;
+	virtual ~CData_InstanceModel() = default;
+public:
+	_uint			Get_Type() const override { return ENUM_TO_UINT(DTO::EMapObject_Type::INSTANCEMODEL); }
+	const string&	Get_Tag() const override { return m_tData.strTag; }
+
+	json			ToJson() const override;
+	HRESULT			FromJson(const json& j) override;
+
+	const DTO::InstanceModel_Data&	Get_Data() const { return m_tData; }
+	DTO::InstanceModel_Data&		Get_Data() { return m_tData; }
+private:
+	DTO::InstanceModel_Data		m_tData{};
+public:
+	static CData_InstanceModel* Create() { return new CData_InstanceModel; }
 	virtual void Free() override { Super::Free(); }
 };
 

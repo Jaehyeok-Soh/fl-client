@@ -20,11 +20,11 @@ NS_BEGIN(Tool)
 
 class CMapToolManager;
 
-typedef struct tagParsedMapdataOuter PARSED_MAPDATA_OUTER;
-typedef struct tagUnreal_Map_Data	 UE_MAP_DATA;
-typedef struct tagCONVERTED_MAPDATA   CONVERTED_MAPDATA;
-typedef struct tagUsingModelInfo   USING_MODEL_INFO;
-typedef struct tagUsingMaterialInfo   USING_MATERIAL_INFO;
+typedef struct tagParsedMapdataOuter	PARSED_MAPDATA_OUTER;
+typedef struct tagUnreal_Map_Data		UE_MAP_DATA;
+typedef struct tagCONVERTED_MAPDATA		CONVERTED_MAPDATA;
+typedef struct tagUsingModelInfo		USING_MODEL_INFO;
+typedef struct tagOverrideMaterials		OVERRIDE_MATERIALS;
 
 
 class CUEMapdataParser final : public CBase
@@ -54,8 +54,8 @@ private:
 	void						Change_ObjectPath(OUT _wstring& wstrModelName , OUT _wstring& wstrModelPath , EObject_Path_Type eType);
 	void						Change_UsingModelInfo(OUT USING_MODEL_INFO& tUsingModelInfo);
 	void						Change_Material_JsonFile_Path(OUT wstring& wstrMaterialJsonFilePath,const wstring& wstrModelPath);
-	void						Change_UsingMaterialInfo(OUT USING_MATERIAL_INFO& tUsingMtlInfo);
-	void						Change_UsingMaterialTexturePath(OUT USING_MATERIAL_INFO& tUsingMtlInfo);
+	void						Change_OverrideMaterials(OUT OVERRIDE_MATERIALS& tUsingMtlInfo);
+	void						Change_UsingMaterialTexturePath(OUT OVERRIDE_MATERIALS& tUsingMtlInfo);
 public:
 	HRESULT Initialize(ID3D11Device* pDevice, ID3D11DeviceContext* pContext);
 public:
@@ -191,32 +191,6 @@ void from_json(const json& LoadJson, UE_PROPERTIES& tData);
 
 void to_json(json& SaveJson , const	  UE_MAP_DATA& tData);
 void from_json(const json& LoadJson , UE_MAP_DATA& tData);
-
-
-#pragma endregion
-
-
-#pragma region Raw Data를 Convert 하고난 이후의 데이터를 담을 구조체
-
-
-typedef struct tagCONVERTED_MAPDATA
-{
-	/* Type */
-	EStaticModel_Type eType{};
-	/* Model Info */
-	USING_MODEL_INFO tUsingModelInfo{};
-
-	/* SRT */
-	Vec3			 vPosition{ 0.f,0.f,0.f };
-	Vec3			 vPitchYawRoll{0.f,0.f,0.f};
-	Vec4			 vQuaternion{ 0.f, 0.f, 0.f, 1.f };
-	Vec3			 vScale{1.f,1.f,1.f};
-}CONVERTED_MAPDATA;
-
-
-void to_json(json& SaveJson, const	 USING_MATERIAL_INFO& tData);
-void to_json(json& SaveJson, const	 USING_MODEL_INFO& tData);
-void to_json(json& SaveJson, const	 CONVERTED_MAPDATA& tData);
 
 
 #pragma endregion

@@ -69,8 +69,8 @@ HRESULT CLevel_Logo::Initialize()
 	if (FAILED(Ready_Lights()))
 		return E_FAIL;
 
-	if (FAILED(Ready_Test_Terrain(L"test_terrain")))
-		return E_FAIL;
+	//if (FAILED(Ready_Test_Terrain(L"test_terrain")))
+	//	return E_FAIL;
 
 	return S_OK;
 }
