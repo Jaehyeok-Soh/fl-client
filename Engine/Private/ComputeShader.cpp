@@ -11,7 +11,14 @@ CComputeShader::CComputeShader(ID3D11Device* pDevice, ID3D11DeviceContext* pDevi
 }
 
 CComputeShader::CComputeShader(const CComputeShader& rhs)
+	: Super(rhs)
+	, m_pComputeShader(rhs.m_pComputeShader)
+	, m_pDevice(rhs.m_pDevice)
+	, m_pDeviceContext(rhs.m_pDeviceContext)
 {
+	Safe_AddRef(m_pComputeShader);
+	Safe_AddRef(m_pDevice);
+	Safe_AddRef(m_pDeviceContext);
 }
 
 HRESULT CComputeShader::Initialize_Prototype(void* pArg)
@@ -184,6 +191,7 @@ void CComputeShader::Free()
 		Safe_Release(pPair.second);
 	m_CBs.clear();
 
+	Safe_Release(m_pComputeShader);
 	Safe_Release(m_pDevice);
 	Safe_Release(m_pDeviceContext);
 }
