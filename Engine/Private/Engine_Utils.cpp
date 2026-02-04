@@ -159,7 +159,6 @@ string Engine_Utils::ToString(wstring value)
     return strReturn;
 }
 
-
 string Engine_Utils::GetFileNameFromPath(const string& filePath)
 {
     std::filesystem::path path(filePath);

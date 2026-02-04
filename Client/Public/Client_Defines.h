@@ -1,6 +1,7 @@
 #pragma once
 
 #include "Engine_Define.h"
+#include "EngineConsole.h"
 #include <windows.h>
 
 
