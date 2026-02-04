@@ -33,6 +33,7 @@ HRESULT CUILayer::Initialize_Prototype()
 HRESULT CUILayer::Initialize(void* pArg)
 {
 	UILAYER_DESC* pDesc = static_cast<UILAYER_DESC*>(pArg);
+	m_pParentCanvasCache = pDesc->pCanvasCache;
 
 	if (FAILED(Super::Initialize(pArg)))
 		return E_FAIL;

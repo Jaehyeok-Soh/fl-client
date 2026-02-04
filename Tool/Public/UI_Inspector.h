@@ -23,11 +23,11 @@ public:
 	void SetUp_Public_Info();
 	void Input_RectTransform();
 	void Input_TextureTag();
+	void Add_Action(DTO::EUIEvent EventType);
+	void Edit_Action();
 
-	HRESULT Setting_Texture();
-
-	HRESULT File_Search(const _string& str);
-	HRESULT Folder_Search(const string& Path);
+	void SetUp_Func();
+	void Action_List(DTO::EUIEvent eType);
 
 private:
 	/// <summary>
@@ -54,6 +54,13 @@ private:
 
 	CToolUI* m_pSelectedUI = { nullptr };
 	uint32_t m_iRectTransformIndex = {};
+
+	uint32_t m_iEditEventCursor = {};
+	uint32_t m_iEditFuncCursor = {};
+
+	DTO::EUIEvent m_eCurEditEvent = { DTO::EUIEvent::END };
+	DTO::EUIAction m_eCurEditFunc = { DTO::EUIAction::END };
+
 
 private:
 	// ======== ImGui 값이 변동 됐다는걸 알리는 변수 ========

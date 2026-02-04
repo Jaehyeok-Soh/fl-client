@@ -12,10 +12,10 @@
 #include "GameInstance.h"
 #include "VIBuffer_Rect_Tex.h"
 #include "Level_Loading.h"
+#include "EngineConsole.h"
 #include "PhysicsRigidBody.h"
 #include "PhysicsCollider.h"
 #include "PhysicsCCT.h"
-
 #include "UI_Manager.h"
 
 USING(Client)
@@ -53,6 +53,11 @@ HRESULT CMainApplication::Initialize()
 
 	if (FAILED(Start_Level(ELevelType::LOGO)))
 		return E_FAIL;
+
+#ifdef _DEBUG
+	CEngineConsole::Initialize();
+	CEngineConsole::Set_Title(L"DebugConsole, 含形虞 含形!");
+#endif
 
 	return S_OK;
 }
@@ -408,6 +413,10 @@ HRESULT CMainApplication::Ready_Fonts()
 
 void CMainApplication::Free()
 {
+#ifdef _DEBUG
+	CEngineConsole::Shutdown();
+#endif
+
 	Safe_Release(m_pDeviceContext);
 	Safe_Release(m_pDevice);
 	CUI_Manager::GetInstance()->DestroyInstance();

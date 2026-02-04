@@ -63,8 +63,8 @@ HRESULT CLevel_Logo::Initialize()
 	if (FAILED(Ready_DevMap()))
 		return E_FAIL;
 
-	//if (FAILED(Ready_UI_Layer(g_wszUILayer)))
-	//	return E_FAIL;
+	if (FAILED(Ready_UI_Layer(g_wszUILayer)))
+		return E_FAIL;
 
 	if (FAILED(Ready_Lights()))
 		return E_FAIL;
@@ -82,6 +82,11 @@ HRESULT CLevel_Logo::Awake(const _uint iLevelID)
 
 	if (FAILED(Ready_Camera_Setting(iLevelID)))
 		return E_FAIL;
+
+	CLOG_TRACE(L"테스트, Logo Awake() 확인");
+	CLOG_INFO(L"테스트, Logo Awake() 확인");
+	CLOG_WARN(L"테스트, Logo Awake() 확인");
+	CLOG_ERROR(L"테스트, Logo Awake() 확인");
 
 	return S_OK;
 }
@@ -235,20 +240,6 @@ HRESULT CLevel_Logo::Ready_Test_Terrain(const wstring& wstrLayerTag)
 			L"Prototype_GameObject_Physics_Terrain",
 			ENUM_TO_UINT(ELevelType::LOGO),
 			wstrLayerTag, &goDesc)))
-			return E_FAIL;
-	}
-
-	{
-		CGameObject* pResult = { nullptr };
-		CPhysics_LandScape::PXLANDSCAPE_DESC pxDesc = {};
-		CTransform::TRANSFORM_DESC TransformDesc = {};
-		pxDesc.pTransform_Desc = &TransformDesc;
-		pxDesc.wstrColliderPrototypeName = L"Prototype_Component_Physics_Collider_total_landScape_4x4";
-
-		if (!(pResult = m_pGameInstance->Add_GameObject(ENUM_TO_UINT(ELevelType::STATIC),
-			L"Prototype_GameObject_Physics_LandScape",
-			ENUM_TO_UINT(ELevelType::LOGO),
-			wstrLayerTag, &pxDesc)))
 			return E_FAIL;
 	}
 

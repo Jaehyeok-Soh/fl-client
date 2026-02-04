@@ -1,6 +1,7 @@
 #pragma once
 
 #include "Engine_Define.h"
+#include "EngineConsole.h"
 #include <windows.h>
 
 
@@ -163,10 +164,6 @@ namespace Client
 		END
 	};
 	inline constexpr size_t g_iLevelType_Count = static_cast<size_t>(ELevelType::END);
-
-	enum class EUiType {
-		IMAGE_2D = 0, IMAGE_3D, BUTTON, TEXT, VIDEO, END
-	};
 
 	enum class ERectTransform {
 		LT = 0, CT, RT, LC, C, RC, LB, CB, RB, END

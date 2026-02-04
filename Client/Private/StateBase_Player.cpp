@@ -44,6 +44,8 @@ HRESULT CStateBase_Player::Start(void* pArg, _bool bForce)
 	if (FAILED(Super::Start(pArg, bForce)))
 		return E_FAIL;
 
+	m_tKeyTimer.fTimeAcc = 0.f;
+
 	return S_OK;
 }
 
@@ -57,7 +59,7 @@ void CStateBase_Player::Update(const _float fTimeDelta)
 
 	msg += L" / AniIdx: ";
 	msg += std::to_wstring(m_iMainAnimIdx);
-	//SetWindowText(g_hWnd, msg.c_str());
+	SetWindowText(g_hWnd, msg.c_str());
 #endif
 
 	Super::Update(fTimeDelta);
@@ -73,7 +75,7 @@ void CStateBase_Player::Update(const _float fTimeDelta)
 	{
 		if (!m_bLoop && Is_MainAnimFinished())		// loop가 아닌데 애니메이션이 끝났다면 : pre animation이랑 잘 해야될듯..?
 		{
-			Change_State(STATEKEY::LOOPDONE);			// 다음 state로 change
+			Change_PlayerState(STATEKEY::LOOPDONE);			// 다음 state로 change
 			return;
 		}
 
@@ -99,12 +101,10 @@ HRESULT CStateBase_Player::End()
 	if (FAILED(Super::End()))
 		return E_FAIL;
 
-	m_tKeyTimer.fTimeAcc = 0.f;
-
 	return S_OK;
 }
 
-void CStateBase_Player::Change_State(STATEKEY eKey)
+void CStateBase_Player::Change_PlayerState(STATEKEY eKey)
 {
 	_uint iNextState = m_vecChangeState_ByKey[ENUM_TO_UINT(eKey)];
 	Set_NextStateDesc(iNextState);		// next state에 대한 desc 작성
@@ -134,7 +134,7 @@ _bool CStateBase_Player::Check_MoveKey(const _float fTimeDelta)
 				
 		{
 			// change state
-			Change_State(STATEKEY::MOVE);
+			Change_PlayerState(STATEKEY::MOVE);
 			return true;
 		}
 	}
@@ -152,7 +152,7 @@ _bool CStateBase_Player::Check_JumpKey(const _float fTimeDelta)
 	if (Has_ChangeState(STATEKEY::SPACE) &&
 		Key_Input(ENUM_TO_UINT(CControlContext::CONTROL_KEY::JUMP)))
 	{
-		Change_State(STATEKEY::SPACE);
+		Change_PlayerState(STATEKEY::SPACE);
 		return true;
 	}
 
@@ -164,7 +164,7 @@ _bool CStateBase_Player::Check_DashKey(const _float fTimeDelta)
 	if (Has_ChangeState(STATEKEY::SHIFT) &&
 		Key_Input(ENUM_TO_UINT(CControlContext::CONTROL_KEY::DASH)))
 	{
-		Change_State(STATEKEY::SHIFT);
+		Change_PlayerState(STATEKEY::SHIFT);
 		return true;
 	}
 
@@ -176,7 +176,7 @@ _bool CStateBase_Player::Check_CtrlPressKey(const _float fTimeDelta)
 	if (Has_ChangeState(STATEKEY::LCRTL_PRESS) &&
 		Key_Input(ENUM_TO_UINT(CControlContext::CONTROL_KEY::SPECIALMV)))
 	{
-		Change_State(STATEKEY::LCRTL_PRESS);
+		Change_PlayerState(STATEKEY::LCRTL_PRESS);
 		return true;
 	}
 
@@ -188,7 +188,7 @@ _bool CStateBase_Player::Check_CtrlUpKey(const _float fTimeDelta)
 	if (Has_ChangeState(STATEKEY::LCRTL_UP) &&
 		Key_Input(ENUM_TO_UINT(CControlContext::CONTROL_KEY::DODGE)))
 	{
-		Change_State(STATEKEY::LCRTL_UP);
+		Change_PlayerState(STATEKEY::LCRTL_UP);
 		return true;
 	}
 

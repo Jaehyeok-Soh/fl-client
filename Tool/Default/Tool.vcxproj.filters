@@ -133,15 +133,6 @@
     <Filter Include="98. Defines\pch">
       <UniqueIdentifier>{6a433bfc-3f5f-420f-ac46-69cffb0edf23}</UniqueIdentifier>
     </Filter>
-    <Filter Include="02. GameObjects\UI\UI">
-      <UniqueIdentifier>{6a558198-77c1-41fb-9345-05c1fc4f9daf}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="02. GameObjects\UI\Canvas">
-      <UniqueIdentifier>{5d6846d5-10a5-4a42-bb54-26c8e2fde4ee}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="02. GameObjects\UI\Layer">
-      <UniqueIdentifier>{d0269bd1-6673-49d6-8c4d-8c813644618a}</UniqueIdentifier>
-    </Filter>
     <Filter Include="09. Builder">
       <UniqueIdentifier>{afa9ad94-11da-4af6-822f-8784ae7231ad}</UniqueIdentifier>
     </Filter>
@@ -168,18 +159,6 @@
     </Filter>
     <Filter Include="09. Builder\UI">
       <UniqueIdentifier>{00ebdf0c-5d5b-4d6a-beeb-19cd527d2574}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="04. Component\UI">
-      <UniqueIdentifier>{37b8805b-b8b2-4d8e-9462-7b66ccfd88b8}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="04. Component\UI\Base">
-      <UniqueIdentifier>{c62f88ef-46c8-4765-a55f-bdeabb264ca2}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="04. Component\UI\Base\Button">
-      <UniqueIdentifier>{fe6349f9-32ea-4a8b-95ea-73a5755222d8}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="04. Component\UI\Base\Image">
-      <UniqueIdentifier>{a104c8ef-1845-4c86-bc3a-8a16759efc49}</UniqueIdentifier>
     </Filter>
     <Filter Include="07. UE_Mapdata\01. MapDataLoader">
       <UniqueIdentifier>{434ecd0b-d87d-4fef-959a-113592ac3a30}</UniqueIdentifier>
@@ -240,6 +219,21 @@
     </Filter>
     <Filter Include="06. ImGui\01. Panel\UI\Maker">
       <UniqueIdentifier>{f5fed899-dccb-4d0d-a291-189fd27b3ca2}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="06. ImGui\01. Panel\UI\Component">
+      <UniqueIdentifier>{ac792568-75d9-4e4a-84e1-ff4c4adcd6b8}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02. GameObjects\UI\00.Action">
+      <UniqueIdentifier>{5aad0370-bb04-419c-a027-b5551686fa23}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02. GameObjects\UI\01.Canvas">
+      <UniqueIdentifier>{5d6846d5-10a5-4a42-bb54-26c8e2fde4ee}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02. GameObjects\UI\02.Layer">
+      <UniqueIdentifier>{d0269bd1-6673-49d6-8c4d-8c813644618a}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02. GameObjects\UI\03.UI">
+      <UniqueIdentifier>{6a558198-77c1-41fb-9345-05c1fc4f9daf}</UniqueIdentifier>
     </Filter>
     <Filter Include="09. Builder\Map">
       <UniqueIdentifier>{316c30da-42c6-486a-bbfd-7736152fabec}</UniqueIdentifier>
@@ -382,10 +376,10 @@
       <Filter>08. UIData\Manager</Filter>
     </ClInclude>
     <ClInclude Include="..\Public\ToolUI.h">
-      <Filter>02. GameObjects\UI\UI</Filter>
+      <Filter>02. GameObjects\UI\03.UI</Filter>
     </ClInclude>
     <ClInclude Include="..\Public\ToolCanvas.h">
-      <Filter>02. GameObjects\UI\Canvas</Filter>
+      <Filter>02. GameObjects\UI\01.Canvas</Filter>
     </ClInclude>
     <ClInclude Include="..\Public\ToolObject.h">
       <Filter>02. GameObjects</Filter>
@@ -424,7 +418,7 @@
       <Filter>98. Defines\pch</Filter>
     </ClInclude>
     <ClInclude Include="..\Public\ToolLayer.h">
-      <Filter>02. GameObjects\UI\Layer</Filter>
+      <Filter>02. GameObjects\UI\02.Layer</Filter>
     </ClInclude>
     <ClInclude Include="..\Public\Builder_Example.h">
       <Filter>09. Builder\Example</Filter>
@@ -468,20 +462,8 @@
     <ClInclude Include="..\Public\Builder_UI.h">
       <Filter>09. Builder\UI</Filter>
     </ClInclude>
-    <ClInclude Include="..\Public\Button.h">
-      <Filter>04. Component\UI\Base\Button</Filter>
-    </ClInclude>
-    <ClInclude Include="..\Public\Image.h">
-      <Filter>04. Component\UI\Base\Image</Filter>
-    </ClInclude>
     <ClInclude Include="..\public\Level_Logo.h">
       <Filter>03. Level\Logo</Filter>
-    </ClInclude>
-    <ClInclude Include="..\Public\Button.h">
-      <Filter>04. Component\UI\Base\Button</Filter>
-    </ClInclude>
-    <ClInclude Include="..\Public\Image.h">
-      <Filter>04. Component\UI\Base\Image</Filter>
     </ClInclude>
     <ClInclude Include="..\Public\Builder_UI.h">
       <Filter>09. Builder\UI</Filter>
@@ -500,6 +482,18 @@
     </ClInclude>
     <ClInclude Include="..\Public\AnimObj.h">
       <Filter>02. GameObjects\ContainerObject\AnimModel</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\Button.h">
+      <Filter>04. Component\UI\Base\Button</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\Image.h">
+      <Filter>04. Component\UI\Base\Image</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\UIComponent_Inspector.h">
+      <Filter>06. ImGui\01. Panel\UI\Component</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\UIAction_Tool.h">
+      <Filter>02. GameObjects\UI\00.Action</Filter>
     </ClInclude>
     <ClInclude Include="..\Public\Builder_Map.h">
       <Filter>09. Builder\Map</Filter>
@@ -634,10 +628,10 @@
       <Filter>08. UIData\Manager</Filter>
     </ClCompile>
     <ClCompile Include="..\Private\ToolUI.cpp">
-      <Filter>02. GameObjects\UI\UI</Filter>
+      <Filter>02. GameObjects\UI\03.UI</Filter>
     </ClCompile>
     <ClCompile Include="..\Private\ToolCanvas.cpp">
-      <Filter>02. GameObjects\UI\Canvas</Filter>
+      <Filter>02. GameObjects\UI\01.Canvas</Filter>
     </ClCompile>
     <ClCompile Include="..\Private\ToolObject.cpp">
       <Filter>02. GameObjects</Filter>
@@ -679,7 +673,7 @@
       <Filter>98. Defines\pch</Filter>
     </ClCompile>
     <ClCompile Include="..\Private\ToolLayer.cpp">
-      <Filter>02. GameObjects\UI\Layer</Filter>
+      <Filter>02. GameObjects\UI\02.Layer</Filter>
     </ClCompile>
     <ClCompile Include="..\Private\Builder_Example.cpp">
       <Filter>09. Builder\Example</Filter>
@@ -720,12 +714,6 @@
     <ClCompile Include="..\Private\Builder_UI.cpp">
       <Filter>09. Builder\UI</Filter>
     </ClCompile>
-    <ClCompile Include="..\Private\Button.cpp">
-      <Filter>04. Component\UI\Base\Button</Filter>
-    </ClCompile>
-    <ClCompile Include="..\Private\Image.cpp">
-      <Filter>04. Component\UI\Base\Image</Filter>
-    </ClCompile>
     <ClCompile Include="..\Private\Tool_Defines.cpp">
       <Filter>98. Defines\Tool_Define</Filter>
     </ClCompile>
@@ -737,6 +725,12 @@
     </ClCompile>
     <ClCompile Include="..\Private\AnimObj.cpp">
       <Filter>02. GameObjects\ContainerObject\AnimModel</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\UIComponent_Inspector.cpp">
+      <Filter>06. ImGui\01. Panel\UI\Component</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\UIAction_Tool.cpp">
+      <Filter>02. GameObjects\UI\00.Action</Filter>
     </ClCompile>
     <ClCompile Include="..\Private\Builder_Map.cpp">
       <Filter>09. Builder\Map</Filter>

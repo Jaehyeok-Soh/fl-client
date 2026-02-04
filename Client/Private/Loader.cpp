@@ -171,15 +171,15 @@ HRESULT CLoader::Loading_For_Logo()
 	if (FAILED(m_pGameInstance->Load_Sounds(L"../../Resources/Sounds")))
 		return E_FAIL;
 
-	// For. Prototype_Component_Button_Test_Texture
-	{
-		CTexture::TEXTURE_COMPONENT_ORIGIN_DESC textureDesc = {};
-		textureDesc.iTextureCount = 16;
-		textureDesc.wstrTexturePath = L"../../Resources/Textures/UI/%d.png";
-		if (FAILED(m_pGameInstance->Add_Prototype(ENUM_TO_UINT(ELevelType::STATIC), L"Texture_Boss", CTexture::Create(&textureDesc))))
-			return E_FAIL;
-	}
-
+		// For. Prototype_Component_Button_Test_Texture
+		{
+			CTexture::TEXTURE_COMPONENT_ORIGIN_DESC textureDesc = {};
+			textureDesc.iTextureCount = 22;
+			textureDesc.wstrTexturePath = L"../../Resources/Textures/UI/%d.png";
+			if (FAILED(m_pGameInstance->Add_Prototype(ENUM_TO_UINT(ELevelType::STATIC), L"Prototype_Component_UI_Texture", CTexture::Create(&textureDesc))))
+				return E_FAIL;
+		}
+	
 #pragma endregion
 
 	//////////////////////////////////////////
@@ -283,32 +283,7 @@ HRESULT CLoader::Loading_For_Logo()
 	// For. Prototype_GameObject_Physics_Terrain
 	m_pGameInstance->Add_Prototype(ENUM_TO_UINT(ELevelType::STATIC), L"Prototype_GameObject_Physics_Terrain", CPhysics_Terrain::Create(m_pDevice, m_pDeviceContext));
 
-	// For. Prototype_GameObject_Physics_Terrain
-	m_pGameInstance->Add_Prototype(ENUM_TO_UINT(ELevelType::STATIC), L"Prototype_GameObject_Physics_LandScape", CPhysics_LandScape::Create(m_pDevice, m_pDeviceContext));
-
-	// 2.1 소재혁 : test // 맵 클라이언트 파싱 기능과 연동 예정 추후 코드 삭제
-	// For. Prototype_Component_Physics_Collider_{modelName}
-	{
-		CModel::MODEL_ORIGIN_DESC desc = {};
-		desc.eType = EModelType::STATIC;
-		desc.iPrototypeLevelIndex = ENUM_TO_UINT(ELevelType::STATIC);
-		desc.pMatPreTransform = &matPreTransformScale;
-		desc.wstrModelFolderName = L"total_landScape_4x4";
-		wstring modelPrototypeTag = L"Prototype_Component_Model_total_landScape_4x4";
-		ADD_PROTOTYPE(ELevelType::STATIC, modelPrototypeTag, CModel::Create(m_pDevice, m_pDeviceContext, &desc));
-
-		PHYSICSCOLLIDER_DESC pcDesc{};
-		pcDesc.wstrModelPrototypeTag = modelPrototypeTag;
-		pcDesc.bIsConvex = false;
-		ADD_PROTOTYPE(ELevelType::STATIC, L"Prototype_Component_Physics_Collider_total_landScape_4x4", CPhysicsCollider::Create(m_pDevice, m_pDeviceContext, &pcDesc));
-	}
-
 	/* Map Parsing Test */
-
-
-
-
-
 #pragma endregion
 
 	m_isFinished = true;

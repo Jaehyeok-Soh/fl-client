@@ -5,4 +5,3 @@ class CGameObject;
 NS_END
 
 struct ChangeSelectedObject { using Signature = void(CGameObject* pGo); };
-struct OnClickEvent { using Signature = void(); };

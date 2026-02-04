@@ -1,6 +1,8 @@
 #pragma once
 #include "Base.h"
 
+#include "Physics_ResourceManager.h"
+
 NS_BEGIN(Engine)
 
 class CPhysics_ResourceManager;
@@ -20,9 +22,11 @@ public:
 
 private:
     vector<PxShape*> MakeShape(PHYSICSCOLLIDER_DESC* pDesc, vector<PxGeometryHolder> geometries);
+    vector<PxShape*> MakeHeightFieldShapes(PHYSICSCOLLIDER_DESC* pDesc);
 
     vector<PxGeometryHolder> MakeGeometry(PHYSICSCOLLIDER_DESC* pDesc);
     vector<PxGeometryHolder> MakeConvexGeometry(PHYSICSCOLLIDER_DESC* pDesc);
+    vector<CPhysics_ResourceManager::HEIGHTFIELD_INFO> MakeHeightField(PHYSICSCOLLIDER_DESC* pDesc);
 
     vector<PxGeometryHolder> MakeTriangleMeshGeometry(PHYSICSCOLLIDER_DESC* pDesc);
     vector<PxGeometryHolder> MakeConvexMeshGeometry(PHYSICSCOLLIDER_DESC* pDesc);
@@ -41,6 +45,7 @@ private:
 
     vector<PxTriangleMesh*> GetTriangleMesh(PHYSICSCOLLIDER_DESC* pDesc);
     vector<PxConvexMesh*> GetConvexMesh(PHYSICSCOLLIDER_DESC* pDesc);
+    vector<CPhysics_ResourceManager::HEIGHTFIELD_INFO> GetHeightField(PHYSICSCOLLIDER_DESC* pDesc);
 
 private:
     class CGameInstance* m_pGameInstance = { nullptr };

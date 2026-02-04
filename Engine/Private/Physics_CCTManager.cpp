@@ -85,6 +85,8 @@ PxController* CPhysics_CCTManager::MakeCapsuleController(PHYSICSCCT_DESC* pDesc)
 	desc.height = pDesc->fHeight;
 	desc.material = m_pResourceManager->GetMaterial(&pDesc->tMaterial);
 
+	desc.stepOffset = 1.5f;
+
 	return m_pControllerManager->createController(desc);
 }
 

@@ -184,6 +184,7 @@ namespace Engine
 		CAPSULE,
 		BOX,
 		PLANE,
+		HEIGHT_FIELD,
 		END
 	};
 	//===================
@@ -246,17 +247,31 @@ namespace Engine
 		CONTINUOUS_SPECULATIVE,
 		END
 	};
-	enum class PHYSICSFILTERGROUP
+	enum class PHYSICSFILTERGROUP : PxU32
 	{
 		PLAYER = 1 << 0,
-		OBJECT1 = 1 << 1,
-		OBJECT2 = 1 << 2,
-		MAP = 1 << 3,
-		ATTACK = 1 << 4,
-		SKILL = 1 << 5,
-		ATTACK_BULLET = 1 << 6,
-		SKILL_BULLET = 1 << 7,
-		NONE = 1 << 8,
+		ATTACK = 1 << 1,
+		SKILL = 1 << 2,
+		ATTACK_PROJECTTILE = 1 << 3,
+		SKILL_PROJECTTILE = 1 << 4,
+		 
+		MONSTER = 1 << 5,
+		MONSTER_ATTACK = 1 << 6,
+		MONSTER_SKILL = 1 << 7,
+		MONSTER_ATTACK_PROJECTTILE = 1 << 8,
+		MONSTER_SKILL_PROJECTTILE = 1 << 9,
+
+		MAP = 1 << 10,
+
+		OBJECT1 = 1 << 11,
+		OBJECT2 = 1 << 12,
+
+		TRIGGER_UI = 1 << 13,
+		TRIGGER_QUEST = 1 << 14,
+		TRIGGER_SPAWN = 1 << 15,
+		TRIGGER_DIRECTION = 1 << 16,
+
+		NONE = 1 << 17,
 		END
 	};
 }

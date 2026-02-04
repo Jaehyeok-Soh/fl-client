@@ -1,12 +1,17 @@
 #pragma once
 #include "UIObject.h"
-#include "Tool_Defines.h"
 #include "UIData_Repository.h"
+
+NS_BEGIN(Engine)
+class IUIActionForMe;
+NS_END
 
 NS_BEGIN(Tool)
 class CToolUI final : public CUIObject
 {
 	using Super = CUIObject;
+	using ActionFunc = std::function<void(IUIActionForMe*)>;
+
 public:
 	typedef struct tagToolUIDesc : public Super::UIOBJECT_DESC
 	{
@@ -20,7 +25,6 @@ public:
 		_string strInitTextureTag;
 		uint32_t iInitTextureIndex;
 		uint32_t iRectTransformType;
-		uint32_t iUIType;
 	}TOOLUI_DESC;
 
 private:
@@ -39,15 +43,23 @@ public:
 	virtual void Ready_Before_Render(const _float fTimeDelta) override;
 	virtual HRESULT Render() override;
 	_bool Calc_HitEvent();
+
+public:
+	HRESULT Bind_Action(DTO::EUIEvent EventType, DTO::EUIAction ActType, const json& params);
+	HRESULT Remove_Action(DTO::EUIEvent EventType, DTO::EUIAction ActType);
+	IUIActionForMe* Get_ActionForMe() const { return m_pActionForMe; }
+	HRESULT Excute_Action(DTO::EUIEvent EventType);
+	HRESULT ReBind_Action();
+
 private:
 	HRESULT Ready_Components(TOOLUI_DESC* pDesc);
 	HRESULT Bind_ShaderResources();
 
-	/* Rect Transform Type에 따라 Pos를 옮기고 RenderPos 저장해둠 */
 	void SetUp_RectTransform_Position();
-	/* Layer의 Visible 상태에 따라 자신의 Visible 상태를 세팅함 */
 	void SetUp_Visible();
-	void Acting_By_InteractState();
+
+	void Acting_About_State();
+
 	void Sync_Data();
 #pragma region GETTER/SETTER
 public:
@@ -55,8 +67,6 @@ public:
 	void Set_Name(const _string& str) { m_strName = str; }
 	ERectTransform Get_RectTransformType() const { return m_eRectTransformType; }
 	void Set_RectTransformType(ERectTransform value) { m_eRectTransformType = value; }
-	EUiType Get_UIType() const { return m_eUIType; }
-	void Set_UIType(EUiType value) { m_eUIType = value; }
 	const _wstring& Get_TextureTag() const { return m_wstrTextureTag; }
 	void Set_TextureTag(const _wstring& value) { m_wstrTextureTag = value; }
 	uint32_t Get_TextureIndex() const { return m_iTextureIndex; }
@@ -67,9 +77,14 @@ public:
 	_float* Get_PosY_Ptr() { return &m_fY; }
 	_float* Get_PosZ_Ptr() { return &m_fZ; }
 	const Vec3& Get_RenderPos() const { return m_vRenderPos; }
+	const RECT& Get_RenderRect() const { return m_tRenderRect; }
+	void Set_HitTest() { m_isHitTest = TRUE; };
 	const DTO::TUI_GenericUIData& Get_Data()const { return m_tUIData; }
-	CToolUI* Get_Self() { return this; }
 	DTO::TUI_GenericUIData& Get_Data_Ref() { return m_tUIData; }
+
+	vector<DTO::TUI_EventBindData>* Safe_Access_EventData(DTO::EUIEvent EventType);
+	array< vector<DTO::TUI_EventBindData>, ENUM_TO_UINT(DTO::EUIEvent::END)>* Safe_Access_AllEventData();
+
 #pragma endregion
 
 private:	
@@ -86,13 +101,18 @@ private:
 	uint32_t m_iLayerIndex = {};
 
 	ERectTransform m_eRectTransformType = { ERectTransform::C };
-	EUiType m_eUIType = { EUiType::IMAGE_2D };
 	_wstring m_wstrTextureTag = {};
 	uint32_t m_iTextureIndex = {};
 
 	Vec3 m_vRenderPos = {};
 	RECT m_tRenderRect = {};
 	_bool m_isHitTest = { FALSE };
+
+	IUIActionForMe* m_pActionForMe = { nullptr };
+	
+	/* 액션들을 이벤트 갯수만큼 정적으로 할당 사실상 vector<ActionFunc>[] 이거임 */
+	array< vector<ActionFunc> , ENUM_TO_UINT(DTO::EUIEvent::END)> m_vecBindingActions;
+	array< vector<DTO::TUI_EventBindData>, ENUM_TO_UINT(DTO::EUIEvent::END)> m_vecBindingActionData;
 
 public:
 	static CToolUI* Create(EToolObjectType eType, ID3D11Device* pDevice, ID3D11DeviceContext* pDeviceContext);

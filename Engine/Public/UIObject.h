@@ -8,15 +8,7 @@ class ENGINE_DLL CUIObject abstract : public CGameObject
 	using Super = CGameObject;
 
 public:
-	enum EInteractState : uint32_t {
-		NONE				= 0, 
-		HOVERING_ENTER		= 1u << 0,
-		HOVERING_EXIT		= 1u << 1,
-		PRESS_ENTER			= 1u << 2,
-		PRESSING			= 1u << 3,
-		PRESS_EXIT			= 1u << 4,
-		CLICKED				= 1u << 4,
-	};
+
 
 	typedef struct tagUIObjectDesc : public Super::GAMEOBJECT_DESC
 	{
