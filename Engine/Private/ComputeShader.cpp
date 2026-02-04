@@ -1,6 +1,9 @@
 #include "Engine_pch.h"
 #include "ComputeShader.h"
 
+// has class
+#include "StructuredBuffer.h"
+
 CComputeShader::CComputeShader(ID3D11Device* pDevice, ID3D11DeviceContext* pDeviceContext)
 	: Super()
 	, m_pDevice(pDevice)
@@ -47,31 +50,31 @@ HRESULT CComputeShader::Initialize(void* pArg)
 
 void CComputeShader::Bind_SRV(_uint iSolt, ID3D11ShaderResourceView* pSRV)
 {
-	m_SRVs.push_back({ iSolt, pSRV });
+	//m_SRVs.push_back({ iSolt, pSRV });
 }
 
 void CComputeShader::Bind_UAV(_uint iSolt, ID3D11UnorderedAccessView* pUAV)
 {
-	m_UAVs.push_back({ iSolt, pUAV });
+	//m_UAVs.push_back({ iSolt, pUAV });
 }
 
 void CComputeShader::Bind_CB(_uint iSolt, ID3D11Buffer* pCB)
 {
-	m_CBs.push_back({ iSolt, pCB });
+	//m_CBs.push_back({ iSolt, pCB });
 }
 
 void CComputeShader::Dispatch(_uint iX, _uint iY, _uint iZ)
 {
 	m_pDeviceContext->CSSetShader(m_pComputeShader, nullptr, 0);
 
-	for (auto& srv : m_SRVs)
-		m_pDeviceContext->CSSetShaderResources(srv.first, 1, &srv.second);
+	//for (auto& srv : m_SRVs)
+	//	m_pDeviceContext->CSSetShaderResources(srv.first, 1, &srv.second);
 
-	for (auto& uav : m_UAVs)
-		m_pDeviceContext->CSSetUnorderedAccessViews(uav.first, 1, &uav.second, NULL);
+	//for (auto& uav : m_UAVs)
+	//	m_pDeviceContext->CSSetUnorderedAccessViews(uav.first, 1, &uav.second, NULL);
 
-	for (auto& cb : m_CBs)
-		m_pDeviceContext->CSSetConstantBuffers(cb.first, 1, &cb.second);
+	//for (auto& cb : m_CBs)
+	//	m_pDeviceContext->CSSetConstantBuffers(cb.first, 1, &cb.second);
 
 	m_pDeviceContext->Dispatch(iX, iY, iZ);
 
@@ -139,18 +142,18 @@ void CComputeShader::Unbind_ComputeResources()
 	ID3D11UnorderedAccessView*	nullUAV[1]	= { nullptr };
 	ID3D11Buffer*				nullCB[1]	= { nullptr };
 
-	for (auto& srv : m_SRVs)
-		m_pDeviceContext->CSSetShaderResources(srv.first, 1, nullSRV);
+	//for (auto& srv : m_SRVs)
+	//	m_pDeviceContext->CSSetShaderResources(srv.first, 1, nullSRV);
 
-	for (auto& uav : m_UAVs)
-		m_pDeviceContext->CSSetUnorderedAccessViews(uav.first, 1, nullUAV, nullptr);
+	//for (auto& uav : m_UAVs)
+	//	m_pDeviceContext->CSSetUnorderedAccessViews(uav.first, 1, nullUAV, nullptr);
 
-	for (auto& cb : m_CBs)
-		m_pDeviceContext->CSSetConstantBuffers(cb.first, 1, nullCB);
+	//for (auto& cb : m_CBs)
+	//	m_pDeviceContext->CSSetConstantBuffers(cb.first, 1, nullCB);
 
-	m_SRVs.clear();
-	m_UAVs.clear();
-	m_CBs.clear();
+	//m_SRVs.clear();
+	//m_UAVs.clear();
+	//m_CBs.clear();
 }
 
 CComputeShader* CComputeShader::Create(ID3D11Device* pDevice, ID3D11DeviceContext* pDeviceContext, void* pArg)
@@ -178,18 +181,6 @@ CComponent* CComputeShader::Clone(void* pArg)
 void CComputeShader::Free()
 {
 	__super::Free();
-
-	for (auto& pPair : m_SRVs)
-		Safe_Release(pPair.second);
-	m_SRVs.clear();
-
-	for (auto& pPair : m_UAVs)
-		Safe_Release(pPair.second);
-	m_UAVs.clear();
-
-	for (auto& pPair : m_CBs)
-		Safe_Release(pPair.second);
-	m_CBs.clear();
 
 	Safe_Release(m_pComputeShader);
 	Safe_Release(m_pDevice);
