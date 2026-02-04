@@ -276,43 +276,49 @@ _int CPhysics_Utils::GetNegativeScaleAxis(const Matrix& mat)
 	//ver3
 	////////////////////////////////////////////////////////////////////////////////////
 
-	// 1. 언리얼 기준 행렬로 변환
+// 1. 언리얼 기준 행렬로 변환
 	Matrix matUE = GetUnrealMatrix(mat);
 
 	Vec3 u = Vec3(matUE._11, matUE._12, matUE._13);
 	Vec3 v = Vec3(matUE._21, matUE._22, matUE._23);
 	Vec3 w = Vec3(matUE._31, matUE._32, matUE._33);
 
+	// [안전장치] 스케일이 0인 경우 NaN 방지
+	if (u.LengthSquared() < 1e-6f || v.LengthSquared() < 1e-6f || w.LengthSquared() < 1e-6f)
+		return -1; // 스케일이 0이면 그냥 정상 처리 (어차피 안 보임)
+
 	u.Normalize(); v.Normalize(); w.Normalize();
 
-	// 2. 점수 계산
+	// 2. 언리얼 기준 Det 검사
+	float det = u.Cross(v).Dot(w);
+
+	// ★ 핵심: Det가 양수(정상)라면 여기서 무조건 -1 리턴
+	// Z-180도 회전 같은 "정상 모델"은 여기서 완벽하게 걸러짐.
+	if (det > -1e-4f)
+	{
+		return -1;
+	}
+
+	// 3. 점수 계산 (Det < 0 인 경우만 진입)
+	// (-1, -1, -1) 같은 케이스도 여기로 들어옴
 	float scoreX = -u.x + v.y + w.z;
 	float scoreY = u.x - v.y + w.z;
 	float scoreZ = u.x + v.y - w.z;
 
-	// 3. [최종 수정] "압도적인 1등"인지 검사 (동점자 처리)
+	// 4. [매핑] UE X -> Eng X(0), UE Y -> Eng Z(2), UE Z -> Eng Y(1)
 
-	// 가장 높은 점수 찾기
-	float maxScore = max(scoreX, max(scoreY, scoreZ));
+	// ★ 수정: 동점자 체크 삭제.
+	// (-1, -1, -1)인 경우 점수가 모두 같지만, 
+	// 이 경우에도 0, 1, 2 중 하나를 리턴해야 PhysX 행렬을 양수로 보정할 수 있음.
 
-	// 1등과 비슷한 점수가 몇 개인지 세어봅니다.
-	int tieCount = 0;
-	if (abs(scoreX - maxScore) < 0.1f) tieCount++;
-	if (abs(scoreY - maxScore) < 0.1f) tieCount++;
-	if (abs(scoreZ - maxScore) < 0.1f) tieCount++;
+	if (scoreX >= scoreY && scoreX >= scoreZ)
+		return 0; // UE X반전 -> 엔진 X반전 (동점일 때 X 우선)
 
-	// ★ 핵심: 1등이 2명 이상이면(예: Z-180 회전은 X,Y 동점) -> 미러링 아님!
-	// 진짜 미러링은 혼자서 3점이고 나머지는 -1점이라 tieCount가 무조건 1임.
-	if (tieCount > 1)
-	{
-		return -1; // "이건 미러링이 아니라 그냥 회전입니다. 건드리지 마세요."
-	}
+	else if (scoreY > scoreX && scoreY >= scoreZ)
+		return 2; // UE Y반전 -> 엔진 Z반전
 
-	// 4. 여기까지 왔으면 진짜 미러링임 (범인 색출)
-	// 매핑: UE X -> Eng X(0), UE Y -> Eng Z(2), UE Z -> Eng Y(1)
-	if (scoreX >= scoreY && scoreX >= scoreZ) return 0;
-	else if (scoreY > scoreX && scoreY >= scoreZ) return 2;
-	else return 1;
+	else
+		return 1; // UE Z반전 -> 엔진 Y반전
 }
 
 PxQuat CPhysics_Utils::GetPureRotation(const Matrix& mat)
