@@ -377,37 +377,37 @@ void CEffectObject::Update(const _float fTimeDelta)
     case DTO::E_SHAPETYPE::NONE:
         break;
 
-    case DTO::E_SHAPETYPE::SPREAD:
-    {
-        CVIBuffer_Particle_Point* pInstance = Get_Component<CVIBuffer_Particle_Point>();
-        if (pInstance) pInstance->Update_Simulation(Get_Component<CShader>(),Vec3{}, TimeT, E_PARTICLE_MOVESTATE::SPREAD);
-        break;
-    }
-    case DTO::E_SHAPETYPE::DROP:
-    {
-        CVIBuffer_Particle_Point* pInstance = Get_Component<CVIBuffer_Particle_Point>();
-        if (pInstance) pInstance->Update_Simulation(Get_Component<CShader>(), Vec3{}, TimeT, E_PARTICLE_MOVESTATE::DROP);
-        break;
-    }
-    case DTO::E_SHAPETYPE::RISE:
-    {
-        CVIBuffer_Particle_Point* pInstance = Get_Component<CVIBuffer_Particle_Point>();
-        if (pInstance) pInstance->Update_Simulation(Get_Component<CShader>(), Vec3{}, TimeT, E_PARTICLE_MOVESTATE::RISE);
-        break;
-    }
-    case DTO::E_SHAPETYPE::MESH:
-    {
-        CVIBuffer_Particle_Point* pInstance = Get_Component<CVIBuffer_Particle_Point>();
-        if (pInstance) pInstance->Update_Simulation(Get_Component<CShader>(), Vec3{}, TimeT, E_PARTICLE_MOVESTATE::RISE);
-        break;
-    }
+    //case DTO::E_SHAPETYPE::SPREAD:
+    //{
+    //    CVIBuffer_Particle_Point* pInstance = Get_Component<CVIBuffer_Particle_Point>();
+    //    if (pInstance) pInstance->Update_Simulation(Get_Component<CShader>(),Vec3{}, TimeT, E_PARTICLE_MOVESTATE::SPREAD);
+    //    break;
+    //}
+    //case DTO::E_SHAPETYPE::DROP:
+    //{
+    //    CVIBuffer_Particle_Point* pInstance = Get_Component<CVIBuffer_Particle_Point>();
+    //    if (pInstance) pInstance->Update_Simulation(Get_Component<CShader>(), Vec3{}, TimeT, E_PARTICLE_MOVESTATE::DROP);
+    //    break;
+    //}
+    //case DTO::E_SHAPETYPE::RISE:
+    //{
+    //    CVIBuffer_Particle_Point* pInstance = Get_Component<CVIBuffer_Particle_Point>();
+    //    if (pInstance) pInstance->Update_Simulation(Get_Component<CShader>(), Vec3{}, TimeT, E_PARTICLE_MOVESTATE::RISE);
+    //    break;
+    //}
+    //case DTO::E_SHAPETYPE::MESH:
+    //{
+    //    CVIBuffer_Particle_Point* pInstance = Get_Component<CVIBuffer_Particle_Point>();
+    //    if (pInstance) pInstance->Update_Simulation(Get_Component<CShader>(), Vec3{}, TimeT, E_PARTICLE_MOVESTATE::RISE);
+    //    break;
+    //}
 
-    case DTO::E_SHAPETYPE::STRAIGHT:
-    {
-        CVIBuffer_Particle_Point* pInstance = Get_Component<CVIBuffer_Particle_Point>();
-        if (pInstance) pInstance->Update_Simulation(Get_Component<CShader>(), Get_Component<CTransform>()->Get_Info(TRANSFORM_INFO_STATE::LOOK), TimeT, E_PARTICLE_MOVESTATE::STRAIGHT);
-        break;
-    }
+    //case DTO::E_SHAPETYPE::STRAIGHT:
+    //{
+    //    CVIBuffer_Particle_Point* pInstance = Get_Component<CVIBuffer_Particle_Point>();
+    //    if (pInstance) pInstance->Update_Simulation(Get_Component<CShader>(), Get_Component<CTransform>()->Get_Info(TRANSFORM_INFO_STATE::LOOK), TimeT, E_PARTICLE_MOVESTATE::STRAIGHT);
+    //    break;
+    //}
     }
 }
 
