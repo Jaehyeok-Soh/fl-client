@@ -375,6 +375,9 @@
     <ClInclude Include="..\Public\InstanceModel.h">
       <Filter>03. GameObject\MapObject\02. InstanceModel</Filter>
     </ClInclude>
+    <ClInclude Include="..\Public\State_ComboBase.h">
+      <Filter>06. FSM\Player\Attack</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <Image Include="Client.ico">
@@ -548,6 +551,9 @@
     </ClCompile>
     <ClCompile Include="..\Private\InstanceModel.cpp">
       <Filter>03. GameObject\MapObject\02. InstanceModel</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\State_ComboBase.cpp">
+      <Filter>06. FSM\Player\Attack</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

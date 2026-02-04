@@ -176,6 +176,7 @@
     <ClInclude Include="..\Public\MapObject.h" />
     <ClInclude Include="..\Public\Physics_LandScape.h" />
     <ClInclude Include="..\Public\Physics_Terrain.h" />
+    <ClInclude Include="..\Public\State_ComboBase.h" />
     <ClInclude Include="..\Public\State_CrouchWalk.h" />
     <ClInclude Include="..\Public\Level_Loading.h" />
     <ClInclude Include="..\Public\Level_Logo.h" />
@@ -235,6 +236,7 @@
     <ClCompile Include="..\Private\GenericUI.cpp" />
     <ClCompile Include="..\Private\MapObject.cpp" />
     <ClCompile Include="..\Private\Physics_LandScape.cpp" />
+    <ClCompile Include="..\Private\State_ComboBase.cpp" />
     <ClCompile Include="..\Private\State_CrouchWalk.cpp" />
     <ClCompile Include="..\Private\Level_Loading.cpp" />
     <ClCompile Include="..\Private\Level_Logo.cpp" />
