@@ -3,6 +3,7 @@
 
 // has?
 #include "Player.h"
+#include "PlayerControlContext.h"
 
 // manager
 #include "GameInstance.h"
@@ -92,6 +93,15 @@ void CStateBase_Player::Update(const _float fTimeDelta)
 			return;
 
 		if (Check_CtrlUpKey(fTimeDelta))
+			return;
+
+		if (Check_MeleeKey(fTimeDelta))
+			return;
+
+		if (Check_RangeKey(fTimeDelta))
+			return;
+
+		if (Check_SkillKey(fTimeDelta))
 			return;
 	}
 }
@@ -189,6 +199,56 @@ _bool CStateBase_Player::Check_CtrlUpKey(const _float fTimeDelta)
 		Key_Input(ENUM_TO_UINT(CControlContext::CONTROL_KEY::DODGE)))
 	{
 		Change_PlayerState(STATEKEY::LCRTL_UP);
+		return true;
+	}
+
+	return false;
+}
+
+_bool CStateBase_Player::Check_MeleeKey(const _float fTimeDelta)
+{
+	if (Has_ChangeState(STATEKEY::CHARGE) &&
+		Key_Input(ENUM_TO_UINT(CControlContext::CONTROL_KEY::CHARGATT)))
+	{
+		Change_PlayerState(STATEKEY::CHARGE);
+		return true;
+	}
+
+	else if (Has_ChangeState(STATEKEY::LM) &&
+		Key_Input(ENUM_TO_UINT(CControlContext::CONTROL_KEY::LATT)))
+	{
+		Change_PlayerState(STATEKEY::LM);
+		return true;
+	}
+
+	return false;
+}
+
+_bool CStateBase_Player::Check_RangeKey(const _float fTimeDelta)
+{
+	if (Has_ChangeState(STATEKEY::RM) &&
+		Key_Input(ENUM_TO_UINT(CControlContext::CONTROL_KEY::RATT)))
+	{
+		Change_PlayerState(STATEKEY::RM);
+		return true;
+	}
+
+	return false;
+}
+
+_bool CStateBase_Player::Check_SkillKey(const _float fTimeDelta)
+{
+	if (Has_ChangeState(STATEKEY::E) &&
+		Key_Input(ENUM_TO_UINT(CControlContext::CONTROL_KEY::SKILL1)))
+	{
+		Change_PlayerState(STATEKEY::E);
+		return true;
+	}
+
+	else if(Has_ChangeState(STATEKEY::Q) &&
+		Key_Input(ENUM_TO_UINT(CControlContext::CONTROL_KEY::SKILL2)))
+	{
+		Change_PlayerState(STATEKEY::Q);
 		return true;
 	}
 
