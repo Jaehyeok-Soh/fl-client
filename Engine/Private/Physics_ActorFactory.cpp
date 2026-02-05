@@ -42,14 +42,27 @@ PxRigidActor* CPhysics_ActorFactory::MakeStatic(PHYSICSRIGIDBODY_DESC* rigidBody
 {
 	Matrix mat = *rigidBodyDesc->pOwnerMatrix;
 
-	PxVec3 vPos = PxVec3(mat._41, mat._42, mat._43);
-	PxQuat pQuat = m_pGameInstance->GetPureRotation(mat);
+	//PxVec3 vPos = PxVec3(mat._41, mat._42, mat._43);
+	//PxQuat pQuat = m_pGameInstance->GetPureRotation(mat);
 	PxVec3 pScale(rigidBodyDesc->vScale_Isolated.x, rigidBodyDesc->vScale_Isolated.y, rigidBodyDesc->vScale_Isolated.z);
 
-	PxTransform transform(vPos, pQuat);
+	//PxTransform transform(vPos, pQuat);
+	PxTransform transform = m_pGameInstance->XMMatrixToPxTransform(mat);
+
 	PxRigidStatic* staticActor = m_pPhysics->createRigidStatic(transform);
 	for (auto& shape : shapes)
 	{
+		PxShape* newShape = nullptr;
+		PxMaterial* pMaterial = nullptr;
+
+		PxU32 matCount = shape->getNbMaterials();
+		if (matCount > 0)
+		{
+			vector<PxMaterial*> materials(matCount);
+			shape->getMaterials(materials.data(), matCount);
+			pMaterial = materials[0];
+		}
+
 		if (shape->getGeometry().getType() == PxGeometryType::ePLANE)
 		{
 			PxTransform localPose(PxVec3(0), PxQuat(PxHalfPi, PxVec3(0, 0, 1)));
@@ -63,10 +76,23 @@ PxRigidActor* CPhysics_ActorFactory::MakeStatic(PHYSICSRIGIDBODY_DESC* rigidBody
 
 			triGeom.scale = PxMeshScale(pScale);
 
-			shape->setGeometry(triGeom);
+			if (pMaterial)
+				newShape = m_pPhysics->createShape(triGeom, *pMaterial);
+		}
+		else
+		{
+			continue;
 		}
 
-		staticActor->attachShape(*shape);
+		if (newShape)
+		{
+			newShape->setQueryFilterData(shape->getQueryFilterData());
+			newShape->setSimulationFilterData(shape->getSimulationFilterData());
+			newShape->setFlags(shape->getFlags());
+
+			staticActor->attachShape(*newShape);
+			PX_RELEASE(newShape);
+		}
 	}
 
 	return staticActor;
