@@ -25,6 +25,8 @@
 #include "State_Combo_Second.h"
 #include "State_Combo_Third.h"
 #include "State_Combo_Fourth.h"
+
+#include "State_MoonCombo.h"
 #pragma endregion
 #include "GameInstance.h"
 
@@ -80,6 +82,9 @@ HRESULT CMainPlayer::Initialize(void* pArg)
         return E_FAIL;
 
     if (FAILED(Ready_CCT()))
+        return E_FAIL;
+
+    if (FAILED(Ready_AttackStates()))
         return E_FAIL;
 
     return S_OK;
@@ -586,6 +591,32 @@ HRESULT CMainPlayer::Ready_CCT()
     desc.pOwner = this;
 
     if (FAILED(Add_Component<CPhysicsCCT>(0, L"Prototype_Component_Physics_CCT", &desc)))
+        return E_FAIL;
+
+    return S_OK;
+}
+
+HRESULT CMainPlayer::Ready_AttackStates()
+{
+    CPlayerActionState* pActionState = { nullptr };
+    CModel* pModel = Get_Part<CBody>(ENUM_TO_UINT(Part::BODY))->Get_Component<CModel>();
+    if (!pModel)
+        return E_FAIL;
+
+    if (!(pActionState = Get_Component<CPlayerActionState>()))
+        return E_FAIL;
+
+    CState_MoonCombo::MOONCOMBO_DESC tDesc = {};
+    tDesc.vCombo_CheckTimes = Vec4{ 0.9f,0.9f,1.5f,2.f };
+    tDesc.iSlideAnimIdx     = Get_AnimationIndex(L"Animation_PlayerMoon_Sword_SlideAttack");
+    tDesc.iFirstAnimIdx     = Get_AnimationIndex(L"Animation_PlayerMoon_Sword_RunAttack_01");
+    tDesc.iSecondAnimIdx    = Get_AnimationIndex(L"Animation_PlayerMoon_Sword_RunAttack_02");
+    tDesc.iThirdAnimIdx     = Get_AnimationIndex(L"Animation_PlayerMoon_Sword_RunAttack_03");
+    tDesc.iFourthAnimIdx    = Get_AnimationIndex(L"Animation_PlayerMoon_Sword_RunAttack_04");
+    tDesc.iEndStateIndex = ENUM_TO_UINT(State::END);
+
+
+    if (FAILED(pActionState->Add_State(ENUM_TO_UINT(State::COMBO), CState_MoonCombo::Create(pActionState, &tDesc))))
         return E_FAIL;
 
     return S_OK;
