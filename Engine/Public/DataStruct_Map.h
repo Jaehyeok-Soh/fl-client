@@ -69,7 +69,7 @@ public:
 
 typedef struct tagOverrideMaterials
 {
-	bool	isNull{ true };
+	bool	isNull{ false };
 
 	/* Override 할때 참조하고 있는 파일 Path 값 */
 	wstring wstrMtl_JsonFile_Name{};

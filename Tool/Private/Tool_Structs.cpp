@@ -135,7 +135,7 @@ namespace Tool
 	void from_json(const json& LoadJson, INSTANCEMODEL_DATA& tData)
 	{
 		if (LoadJson.contains("SRTs"))
-			tData.vecOriginSRT = LoadJson["SRTs"];
+			tData.vecSRT = LoadJson["SRTs"];
 		if (LoadJson.contains("Using Model Info"))
 			tData.tUsingModelInfo = LoadJson["Using Model Info"];
 		if (LoadJson.contains("Usage"))
@@ -145,8 +145,8 @@ namespace Tool
 	void to_json(json& SaveJson, const INSTANCEMODEL_DATA& tData)
 	{
 		SaveJson["Using Model Info"] = tData.tUsingModelInfo;
-		if (!tData.vecOriginSRT.empty())
-			SaveJson["SRTs"] = tData.vecOriginSRT;
+		if (!tData.vecSRT.empty())
+			SaveJson["SRTs"] = tData.vecSRT;
 
 		SaveJson["Usage"] = Engine_Utils::D3D11_USAGE_ToString(tData.eInstance_Usage);
 	}

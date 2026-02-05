@@ -19,7 +19,7 @@ namespace Tool
 
 	typedef struct tagOverrideMaterials
 	{
-		bool	isNull{ true };
+		bool	isNull{ false };
 		/* 참조하고 있는 Origin Mrt Material Json 파일 Path 값 */
 		wstring wstrMtl_JsonFile_Name{};
 		wstring wstrMtl_JsonFile_Path{};
@@ -66,7 +66,7 @@ namespace Tool
 
 		D3D11_USAGE		 eInstance_Usage{D3D11_USAGE_DEFAULT};
 
-		vector<SRT_DATA> vecOriginSRT{};
+		vector<SRT_DATA> vecSRT{};
 		vector<Matrix>	 vecMatirx{};
 	public:
 		virtual ~tagInstanceModel_Data() {}

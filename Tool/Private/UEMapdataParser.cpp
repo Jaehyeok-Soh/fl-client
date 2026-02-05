@@ -161,7 +161,7 @@ vector<MAPDATA_BASE*> CUEMapdataParser::Convert_UE_MapData(const vector<UE_MAP_D
 				tSRTData.vQuat = qV;
 				Change_SRT(tSRTData);
 
-				pInstanceModel_Data->vecOriginSRT.push_back(tSRTData);
+				pInstanceModel_Data->vecSRT.push_back(tSRTData);
 			}
 			pMapDataBase = pInstanceModel_Data;
 		}

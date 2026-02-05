@@ -1,6 +1,6 @@
 #pragma once
 #include "GameObject.h"
-
+#include "../../Engine/Public/DataStruct_Map.h"
 
 NS_BEGIN(Client)
 
