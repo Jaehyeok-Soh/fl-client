@@ -48,6 +48,7 @@ public:
 	void Acting_By_InteractState();
 
 public:
+	HRESULT Bind_Action(const DTO::TUI_EventBindData& data);
 	HRESULT Bind_Action(DTO::EUIEvent EventType, DTO::EUIAction ActType, const json& params);
 	HRESULT Remove_Action(DTO::EUIEvent EventType, DTO::EUIAction ActType);
 	IUIActionForMe* Get_ActionForMe() const { return m_pActionForMe; }

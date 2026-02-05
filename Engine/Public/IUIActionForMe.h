@@ -18,7 +18,7 @@ public:
 	virtual const _string& Get_Tag() const PURE;
 
 	virtual void Start_Lerp_Movement(const Vec3& vTargetPos, const _float fTargetAlpha, const _float& fDuration, _bool isPin)PURE;
-
+	
 public:
 	virtual void Free()override;
 };

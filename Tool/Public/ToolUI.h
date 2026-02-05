@@ -50,10 +50,12 @@ public:
 	_bool Calc_HitEvent();
 
 public:
-	HRESULT Bind_Action(DTO::EUIEvent EventType, DTO::EUIAction ActType, const json& params);
+	HRESULT Bind_Action(const DTO::TUI_EventBindData& data);
+	HRESULT Bind_Action(DTO::EUIEvent eEvent, DTO::EUIAction eAction, const json& params);
 	HRESULT Remove_Action(DTO::EUIEvent EventType, DTO::EUIAction ActType);
 	IUIActionForMe* Get_ActionForMe() const { return m_pActionForMe; }
 	HRESULT Excute_Action(DTO::EUIEvent EventType);
+	HRESULT Excute_Specific_Action(DTO::EUIEvent EventType, DTO::EUIAction eAction);
 	HRESULT ReBind_Action();
 
 private:
@@ -100,6 +102,7 @@ public:
 	void Start_Return_Lerp_Movement();
 	void Lerp_Movement(const _float fTimeDelta);
 	void Return_Lerp_Movement(const _float fTimeDelta);
+
 	/* Action Variable */
 private:
 	uint32_t m_iTextureIndex = {};

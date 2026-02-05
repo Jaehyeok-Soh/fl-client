@@ -31,7 +31,7 @@ CToolLayer* CUITargetAction_Tool::Find_Layer(const _string& strLayerTag)
     return pLayer;
 }
 
-void CUITargetAction_Tool::Trigger_All_Canvas(uint32_t iLevelIndex, const _string& strCanvasTag)
+void CUITargetAction_Tool::Trigger_All_Canvas(uint32_t iLevelIndex, const _string& strCanvasTag, DTO::EUIAction eAction, const json& jTargetActionParam)
 {
     auto* pCanvas = Find_Canvas(strCanvasTag);
     if (nullptr == pCanvas)
@@ -47,30 +47,32 @@ void CUITargetAction_Tool::Trigger_All_Canvas(uint32_t iLevelIndex, const _strin
         if (nullptr == pUIVec)
             continue;
 
-        for (auto* pUI : *pUIVec)
-            Engine_Utils::Add_Flag(pUI->Get_InteractState_Ref(), DTO::EUIEvent_Flag::INVOKED);
+        for (auto* pUI : *pUIVec)        
+            m_pGameInstance->Get_UIAction_Registry()->Build_Action(eAction, jTargetActionParam)(pUI->Get_ActionForMe(), this);
     }
 }
 
-void CUITargetAction_Tool::Trigger_All_Layer(uint32_t iLevelIndex, const _string& strLayerTag)
+void CUITargetAction_Tool::Trigger_All_Layer(uint32_t iLevelIndex, const _string& strLayerTag, DTO::EUIAction eAction, const json& jTargetActionParam)
 {
     auto* pLayer = Find_Layer(strLayerTag);
     if (nullptr == pLayer)
         return;
+
     auto* pUIVec = pLayer->Safe_Access_UIObject_Vector_Ptr();
     if (nullptr == pUIVec)
         return;
+
     for (auto* pUI : *pUIVec)
-        Engine_Utils::Add_Flag(pUI->Get_InteractState_Ref(), DTO::EUIEvent_Flag::INVOKED);
+        m_pGameInstance->Get_UIAction_Registry()->Build_Action(eAction, jTargetActionParam)(pUI->Get_ActionForMe(), this);
 }
 
-void CUITargetAction_Tool::Trigger_TargetUI(uint32_t iLevelIndex, const _string& strUITag)
+void CUITargetAction_Tool::Trigger_TargetUI(uint32_t iLevelIndex, const _string& strUITag, DTO::EUIAction eAction, const json& jTargetActionParam)
 {
     auto* pUI = CImGui_UIManager::GetInstance()->Find_UI(strUITag);
     if (nullptr == pUI)
         return;
 
-    Engine_Utils::Add_Flag(pUI->Get_InteractState_Ref(), DTO::EUIEvent_Flag::INVOKED);
+    m_pGameInstance->Get_UIAction_Registry()->Build_Action(eAction, jTargetActionParam)(pUI->Get_ActionForMe(), this);
 }
 
 CUITargetAction_Tool* CUITargetAction_Tool::Create(CToolUI* pUI)

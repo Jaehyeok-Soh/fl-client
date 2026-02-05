@@ -15,8 +15,9 @@ void to_json(json& j, const TUI_EventBindData& data)
 		{ "Type", TUI_EventBindData::eType },
 		{ "strTag", data.strTag },
 		{"strOwnerTag", data.strOwnerTag},
+		{"strTargetTag", data.strTargetTag},
 		{"eEvent", data.eEvent},
-		{"strActionKey", data.strActionKey},
+		{"eAction", data.eAction},
 		{"Params", data.Params}
 	};
 }
@@ -24,8 +25,9 @@ void from_json(const json& j, TUI_EventBindData& data)
 {
 	j.at("strTag").get_to(data.strTag);
 	j.at("strOwnerTag").get_to(data.strOwnerTag);
+	j.at("strTargetTag").get_to(data.strTargetTag);
 	j.at("eEvent").get_to(data.eEvent);
-	j.at("strActionKey").get_to(data.strActionKey);
+	j.at("eAction").get_to(data.eAction);
 	j.at("Params").get_to(data.Params);
 }
 void to_json(json& j, const TUI_GenericUIData& data)

@@ -29,6 +29,14 @@ public:
 	void SetUp_Func();
 	void Action_List(DTO::EUIEvent eType);
 
+	json* Find_Params(const DTO::EUIAction eAction);
+
+	void Edit_Set_Visible(json& jParams);
+	void Edit_Set_Texture_Index(json& jParams);
+	void Edit_Start_Lerp_Movement(json& jParams);
+	void Trigger_All_Canvas(json& jParams);
+	void Trigger_All_Layer(json& jParams);
+	void Trigger_Target_UI(json& jParams);
 private:
 	/// <summary>
 	/// 드래그(스크럽) 방식으로 실수 값을 편집하는 ImGui용 유틸리티 함수.

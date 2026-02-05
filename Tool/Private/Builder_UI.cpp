@@ -198,7 +198,7 @@ HRESULT CBuilder_UI::Create_EventBindDataDTO(const DTO::TUI_EventBindData& data)
 	if (iter == m_pUICache.end())
 		return E_FAIL;
 
-	if (FAILED(iter->second->Bind_Action(data.eEvent, DTO::StringToUIFunctype(data.strActionKey), data.Params)))
+	if (FAILED(iter->second->Bind_Action(data)))
 		return E_FAIL;
 
 	return S_OK;

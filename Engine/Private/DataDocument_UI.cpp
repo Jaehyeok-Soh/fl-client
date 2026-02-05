@@ -41,7 +41,7 @@ HRESULT CDataDocument_UI::Try_Add(const DTO::TUI_GenericUIData& data)
 HRESULT CDataDocument_UI::Try_Add( DTO::TUI_EventBindData& data)
 {
 	IObjectDataBase* pObjectBase = Create_ObjectData(DTO::EUIType::EVENT);
-	std::string strKey = data.strOwnerTag + data.strActionKey + UIEventToString(data.eEvent);
+	std::string strKey = data.strOwnerTag + UIActionTypeToString(data.eAction)+ UIEventToString(data.eEvent);
 	data.strTag = strKey;
 	static_cast<CUI_EventBindData_DTO*>(pObjectBase)->Get_Data() = data;
 

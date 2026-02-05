@@ -178,6 +178,25 @@ void CGenericUI::Acting_By_InteractState()
 	}
 }
 
+HRESULT CGenericUI::Bind_Action(const DTO::TUI_EventBindData& data)
+{
+	const size_t index = ENUM_TO_SZET(data.eEvent);
+	if (index >= m_vecBindingActions.size())
+		return E_FAIL;
+
+	DTO::TUI_EventBindData Desc = {};
+	Desc.strOwnerTag			= m_strName;
+	Desc.eAction				= data.eAction;
+	Desc.eEvent					= data.eEvent;
+	Desc.Params					= data.Params;
+	Desc.strTargetTag			= data.strTargetTag;
+	m_vecBindingActionData[index].push_back(Desc);
+	auto Func = m_pGameInstance->Get_UIAction_Registry()->Build_Action(data.eAction, data.Params);
+	if (!Func)
+		return E_FAIL;
+	m_vecBindingActions[index].push_back(std::move(Func));
+	return S_OK;
+}
 
 HRESULT CGenericUI::Bind_Action(DTO::EUIEvent EventType, DTO::EUIAction ActType, const json& params)
 {
@@ -187,9 +206,10 @@ HRESULT CGenericUI::Bind_Action(DTO::EUIEvent EventType, DTO::EUIAction ActType,
 
 	DTO::TUI_EventBindData Desc = {};
 	Desc.strOwnerTag = m_strName;
-	Desc.strActionKey = DTO::UIFunctypeToString(ActType);
+	Desc.eAction = ActType;
 	Desc.eEvent = EventType;
 	Desc.Params = params;
+	Desc.strTargetTag = "";
 	m_vecBindingActionData[index].push_back(Desc);
 	auto Func = m_pGameInstance->Get_UIAction_Registry()->Build_Action(ActType, params);
 	if (!Func)
@@ -207,7 +227,7 @@ HRESULT CGenericUI::Remove_Action(DTO::EUIEvent EventType, DTO::EUIAction ActTyp
 	_bool isRemoved = { FALSE };
 	for (auto iter = m_vecBindingActionData[EventIndex].begin(); iter != m_vecBindingActionData[EventIndex].end(); iter++)
 	{
-		if (DTO::StringToUIFunctype(iter->strActionKey) == ActType)
+		if (iter->eAction == ActType)
 		{
 			m_vecBindingActionData[EventIndex].erase(iter);
 			isRemoved = TRUE;
@@ -246,7 +266,7 @@ HRESULT CGenericUI::ReBind_Action()
 		m_vecBindingActions[i].clear();
 		for (auto& data : m_vecBindingActionData[i])
 		{
-			auto Func = m_pGameInstance->Get_UIAction_Registry()->Build_Action(DTO::StringToUIFunctype(data.strActionKey), data.Params);
+			auto Func = m_pGameInstance->Get_UIAction_Registry()->Build_Action(data.eAction, data.Params);
 			if (!Func)
 				return E_FAIL;
 			m_vecBindingActions[i].push_back(std::move(Func));

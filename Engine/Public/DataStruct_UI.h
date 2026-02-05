@@ -134,19 +134,30 @@ enum class EUIAction
 	/* (Vec3 / vTargetPos),( _float / fTargetAlpha),( _float / fDuration), (bool / isPin)*/
 	START_LERP_MOVEMENT,
 	
-	/* (_string / strCanvasTag)*/
+	/* (iLevelIndex / uint), (strCanvasTag / string) , (eAction / DTO::EUIAction), (jTargetActionParam / json::object() ) */
 	TRIGGER_ALL_CANVAS,
 
-	/* (_string / strLayerTag)*/
+	/* (iLevelIndex / uint), (strLayerTag / string) , (eAction / DTO::EUIAction), (jTargetActionParam / json::object() ) */
 	TRIGGER_ALL_LAYER,
 	
-	/* (_string / strUITag)*/
+	/* (iLevelIndex / uint), (strUITag / string) , (eAction / DTO::EUIAction), (jTargetActionParam / json::object() ) */
 	TRIGGER_TARGET_UI,
 	
 	END
 };
 
-inline EUIAction StringToUIFunctype(const _string& str)
+NLOHMANN_JSON_SERIALIZE_ENUM(EUIAction,
+	{
+		{EUIAction::SET_VISIBLE, "SET_VISIBLE"},
+		{EUIAction::SET_TEXTURE_INDEX, "SET_TEXTURE_INDEX"},
+		{EUIAction::START_LERP_MOVEMENT, "START_LERP_MOVEMENT"},
+		{EUIAction::TRIGGER_ALL_CANVAS, "TRIGGER_ALL_CANVAS"},
+		{EUIAction::TRIGGER_ALL_LAYER, "TRIGGER_ALL_LAYER" },
+		{EUIAction::TRIGGER_TARGET_UI, "TRIGGER_TARGET_UI" },
+	}
+)
+
+inline EUIAction StringToUIActiontype(const _string& str)
 {
 	if (str == "SET_VISIBLE")return EUIAction::SET_VISIBLE;
 	else if (str == "SET_TEXTURE_INDEX")return EUIAction::SET_TEXTURE_INDEX;
@@ -157,7 +168,7 @@ inline EUIAction StringToUIFunctype(const _string& str)
 	else return EUIAction::END;
 }
 
-inline _string UIFunctypeToString(EUIAction eType)
+inline _string UIActionTypeToString(EUIAction eType)
 {
 	switch (eType)
 	{
@@ -178,8 +189,9 @@ struct TUI_EventBindData
 	static constexpr EUIType eType = EUIType::EVENT	;
 	std::string strTag;
 	std::string strOwnerTag;
+	std::string strTargetTag = {""};
 	EUIEvent eEvent = EUIEvent::NONE;
-	std::string strActionKey;
+	EUIAction eAction;
 	json Params;
 };
 

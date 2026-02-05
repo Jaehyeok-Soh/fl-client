@@ -72,12 +72,14 @@ void CUIAction_Registry::Initialize_CommonTargetAction()
 		{
 			const uint32_t iLevelIndex = params.value("iLevelIndex", 0u);
 			const _string strCanvasTag = params.value("strCanvasTag", "");
-			return [iLevelIndex,strCanvasTag](IUIActionForMe*, IUIActionForTarget* target)
+			DTO::EUIAction eAction = params.value("eAction", DTO::EUIAction::END);
+			const json jTargetActionParam = params.value("jTargetActionParam", json::object());
+			return [iLevelIndex,strCanvasTag, eAction, jTargetActionParam](IUIActionForMe*, IUIActionForTarget* target)
 				{
 					if (nullptr == target)
 						return;
 
-					target->Trigger_All_Canvas(iLevelIndex, strCanvasTag);
+					target->Trigger_All_Canvas(iLevelIndex, strCanvasTag, eAction, jTargetActionParam);
 				};
 		});
 
@@ -86,12 +88,14 @@ void CUIAction_Registry::Initialize_CommonTargetAction()
 		{
 			const uint32_t iLevelIndex = params.value("iLevelIndex", 0u);
 			const _string strLayerTag = params.value("strLayerTag", "");
-			return [iLevelIndex,strLayerTag](IUIActionForMe*, IUIActionForTarget* target)
+			DTO::EUIAction eAction = params.value("eAction", DTO::EUIAction::END);
+			const json jTargetActionParam = params.value("jTargetActionParam", json::object());
+			return [iLevelIndex,strLayerTag, eAction, jTargetActionParam](IUIActionForMe*, IUIActionForTarget* target)
 				{
 					if (nullptr == target)
 						return;
 
-					target->Trigger_All_Layer(iLevelIndex,strLayerTag);
+					target->Trigger_All_Layer(iLevelIndex,strLayerTag, eAction, jTargetActionParam);
 				};
 		});
 
@@ -100,28 +104,30 @@ void CUIAction_Registry::Initialize_CommonTargetAction()
 		{
 			const uint32_t iLevelIndex = params.value("iLevelIndex", 0u);
 			const _string strUITag = params.value("strUITag", "");
-			return [iLevelIndex,strUITag](IUIActionForMe*, IUIActionForTarget* target)
+			DTO::EUIAction eAction = params.value("eAction", DTO::EUIAction::END);
+			const json jTargetActionParam = params.value("jTargetActionParam", json::object());
+			return [iLevelIndex,strUITag, eAction, jTargetActionParam](IUIActionForMe*, IUIActionForTarget* target)
 				{
 					if (nullptr == target)
 						return;
 
-					target->Trigger_TargetUI(iLevelIndex,strUITag);
+					target->Trigger_TargetUI(iLevelIndex,strUITag, eAction, jTargetActionParam);
 				};
 		});
 }
 
-void CUIAction_Registry::Register_Factory(DTO::EUIAction FuncType, FactoryFunc factory)
+void CUIAction_Registry::Register_Factory(DTO::EUIAction ActionType, FactoryFunc factory)
 {
-	size_t index = ENUM_TO_SZET(FuncType);
+	size_t index = ENUM_TO_SZET(ActionType);
 	if (index >= m_Factories.size() || !factory)
 		return;
 
 	m_Factories[index] = std::move(factory);
 }
 
-CUIAction_Registry::ActionFunc CUIAction_Registry::Build_Action(DTO::EUIAction FuncType, const json& params) const
+CUIAction_Registry::ActionFunc CUIAction_Registry::Build_Action(DTO::EUIAction ActionType, const json& params) const
 {
-	size_t index = ENUM_TO_SZET(FuncType);
+	size_t index = ENUM_TO_SZET(ActionType);
 	if (index >= m_Factories.size())
 		return ActionFunc{};
 

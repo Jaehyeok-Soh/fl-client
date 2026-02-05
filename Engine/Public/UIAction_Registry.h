@@ -24,8 +24,8 @@ private:
 
 public:
 	/* Action */
-	void Register_Factory(DTO::EUIAction FuncType, FactoryFunc factory);
-	ActionFunc Build_Action(DTO::EUIAction FuncType, const json& params) const;
+	void Register_Factory(DTO::EUIAction ActionType, FactoryFunc factory);
+	ActionFunc Build_Action(DTO::EUIAction ActionType, const json& params) const;
 
 	void Clear();
 
