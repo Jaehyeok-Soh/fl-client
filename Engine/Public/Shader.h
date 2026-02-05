@@ -76,6 +76,7 @@ public:
 	void Bind_MaterialData(const SHADER_MATERIALDESC& desc);
 	void Bind_MaterialInstanceData(const SHADER_MI_DESC& desc);
 	void Bind_EffectData(const SHADER_EFFECT_DESC& desc);
+	//void Bind_Compute_EffectSRV();
 	void Bind_GlobalMask(_uint iMask);
 	HRESULT Bind_DefaultTexture(ID3D11ShaderResourceView* pSRV);
 	HRESULT Bind_CubeTexture(ID3D11ShaderResourceView* pSRV);
@@ -85,6 +86,7 @@ public:
 	void Bind_TransformTexture(ID3D11ShaderResourceView* pSRV);
 	HRESULT Bind_BoneData(const SHADER_BONEDESC& boneDesc);
 	void Bind_KeyFrameData(const SHADER_KEYFRAMEDESC& keyframeDesc);
+
 private:
 	HRESULT Load_Shader(const D3D11_INPUT_ELEMENT_DESC* pElements, const _uint iNumElements);
 	void Create_ConstantBuffer();
@@ -103,6 +105,7 @@ private:
 	ID3D11DeviceContext* m_pDeviceContext = { nullptr };
 
 	// Global
+	// ===========  CONSTANT BUFFER   =========== 
 	ID3DX11EffectConstantBuffer* m_pGlobalEffectBuffer = { nullptr };
 	ID3DX11EffectConstantBuffer* m_pInvEffectBuffer = { nullptr };
 	ID3DX11EffectConstantBuffer* m_pGlobalLightEffectBuffer = { nullptr };
@@ -125,10 +128,23 @@ private:
 	CConstant_Buffer<SHADER_KEYFRAMEDESC>* m_pKeyFrame_CBuffer = { nullptr };
 	ID3DX11EffectConstantBuffer* m_pKeyFrameEffectBuffer = { nullptr };
 
-	// Mr.Choi Ver
 	CConstant_Buffer<SHADER_EFFECT_DESC>* m_pEffect_CBuffer = { nullptr };
 	ID3DX11EffectConstantBuffer* m_pEffectBuffer = { nullptr };
 
+	// ===========  STRUCTURED BUFFER   =========== 
+				// EFFECT PARTICLE DATA
+	// <INPUT>
+
+
+	// <INPUT>
+	//StructuredBuffer<EFFECT_PARTICLE_IMMU_ELEMENT>* m_pEffect_Immutable_Element_CBuffer = { nullptr };
+	//ID3DX11EffectShaderResourceVariable* m_pEffect_Immutable_Element_SRV = { nullptr };
+	//
+	//// <OUTPUT>
+	//StructuredBuffer<EFFECT_INSTANCE>* m_pEffect_Result_SBuffer = { nullptr };
+	//ID3DX11EffectUnorderedAccessViewVariable* m_pEffect_Result_UAV = { nullptr };
+
+	//  ===========   ===========    =========== 
 
 	ID3DX11EffectScalarVariable* m_pGlobalMask_Effect = { nullptr };
 

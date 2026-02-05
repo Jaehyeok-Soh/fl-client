@@ -4,7 +4,7 @@
 #include "Canvas.h"
 #include "UILayer.h"
 #include "GenericUI.h"
-
+#include"UI_Manager.h"
 #include "GameInstance.h"
 
 CBuilder_UI::CBuilder_UI(ID3D11Device* pDevice, ID3D11DeviceContext* pDeviceContext, _uint iLevelID)
@@ -77,6 +77,13 @@ HRESULT CBuilder_UI::Build(const CDataDocumentBase& document)
 		}
 	}
 
+	if (FAILED(CUI_Manager::GetInstance()->Swap_MapCanvasCache(m_iLevelID, std::move(m_MapCanvasCache))))
+		return E_FAIL;
+	if (FAILED(CUI_Manager::GetInstance()->Swap_MapUILayerCache(m_iLevelID, std::move(m_MapLayerCache))))
+		return E_FAIL;
+	if (FAILED(CUI_Manager::GetInstance()->Swap_MapGenericUICache(m_iLevelID, std::move(m_pMapUICache))))
+		return E_FAIL;
+
 	return S_OK;
 }
 
@@ -85,18 +92,16 @@ HRESULT CBuilder_UI::Create_CanvasDTO(const DTO::TUI_CanvasData& data)
 	if (data.eType != DTO::EUIType::CANVAS)
 		return E_FAIL;
 
-	CCanvas::CANVAS_DESC Desc = {};
-	Desc.iLevelIndex = data.iLevelIndex;
-	Desc.strName = data.strTag;
-	m_vAspect.x = (_float)g_iWinSizeX / (_float)data.iEditorSizeX;
-	m_vAspect.y = (_float)g_iWinSizeY / (_float)data.iEditorSizeY;
-
-	Desc.fX = data.fPosX * m_vAspect.x;
-	Desc.fY = data.fPosY * m_vAspect.y;
-	Desc.fZ = data.fPosZ;
-
-	Desc.fWidth = m_vViewportSIze.x;
-	Desc.fHeight = m_vViewportSIze.y;
+	CCanvas::CANVAS_DESC Desc	= {};
+	Desc.iLevelIndex			= data.iLevelIndex;
+	Desc.strName				= data.strTag;
+	m_vAspect.x					= (_float)g_iWinSizeX / (_float)data.iEditorSizeX;
+	m_vAspect.y					= (_float)g_iWinSizeY / (_float)data.iEditorSizeY;
+	Desc.fX						= data.fPosX * m_vAspect.x;
+	Desc.fY						= data.fPosY * m_vAspect.y;
+	Desc.fZ						= data.fPosZ;
+	Desc.fWidth					= m_vViewportSIze.x;
+	Desc.fHeight				= m_vViewportSIze.y;
 
 	const _wstring wstrLayerTag = Engine_Utils::ToWString(data.strTag) + L"_Layer";
 	CGameObject* pResult = m_pGameInstance->Add_GameObject(m_iLevelID, L"Prototype_UI_Canvas", m_iLevelID, wstrLayerTag, &Desc);
@@ -108,6 +113,9 @@ HRESULT CBuilder_UI::Create_CanvasDTO(const DTO::TUI_CanvasData& data)
 		return E_FAIL;
 
 	m_MapCanvasCache.emplace(data.strTag, pCanvas);
+	
+	if (FAILED(CUI_Manager::GetInstance()->Add_VecCanvasCache(m_iLevelID, pCanvas)))
+		return E_FAIL;
 
 	return S_OK;
 }
@@ -117,8 +125,9 @@ HRESULT CBuilder_UI::Create_LayerDTO(const DTO::TUI_LayerData& data)
 	if (data.eType != DTO::EUIType::LAYER)
 		return E_FAIL;
 
-	CUILayer::UILAYER_DESC Desc = {};
-	Desc.isInitVisible = TRUE;
+	CUILayer::UILAYER_DESC Desc		= {};
+	Desc.isInitVisible				= TRUE;
+
 	auto iter = m_MapCanvasCache.find(data.strCanvasName);
 	if (iter == m_MapCanvasCache.end())
 		return E_FAIL;
@@ -135,6 +144,10 @@ HRESULT CBuilder_UI::Create_LayerDTO(const DTO::TUI_LayerData& data)
 
 	iter->second->Get_UILayerVector()->push_back(pLayer);
 	m_MapLayerCache.emplace(data.strTag, pLayer);
+
+	if (FAILED(CUI_Manager::GetInstance()->Add_VecUILayerCache(m_iLevelID, pLayer)))
+		return E_FAIL;
+
 	return S_OK;
 }
 
@@ -144,15 +157,16 @@ HRESULT CBuilder_UI::Create_GenericUIDTO(const DTO::TUI_GenericUIData& data)
 		return E_FAIL;
 
 	CGenericUI::GENERIC_UI_DESC Desc = {};
-	Desc.iRectTransformType = data.iRectTransformType;
-	Desc.fWidth = data.fWidth * m_vAspect.x;
-	Desc.fHeight = data.fHeight * m_vAspect.y;
-	Desc.fX = data.fPosX * m_vAspect.x;
-	Desc.fY = data.fPosY * m_vAspect.y;
-	Desc.fZ = data.fPosZ;
-	Desc.wstrTextureTag = L"Prototype_Component_UI_Texture";
-	Desc.iTextureIndex = data.iTextureIndex;
-	Desc.isAlpha = TRUE;
+	Desc.iRectTransformType		= data.iRectTransformType;
+	Desc.fWidth					= data.fWidth * m_vAspect.x;
+	Desc.fHeight				= data.fHeight * m_vAspect.y;
+	Desc.fX						= data.fPosX * m_vAspect.x;
+	Desc.fY						= data.fPosY * m_vAspect.y;
+	Desc.fZ						= data.fPosZ;
+	Desc.wstrTextureTag			= L"Prototype_Component_UI_Texture";
+	Desc.iTextureIndex			= data.iTextureIndex;
+	Desc.isAlpha				= TRUE;
+
 	auto iter = m_MapCanvasCache.find(data.strCanvasName);
 	if (iter == m_MapCanvasCache.end())
 		return E_FAIL;
@@ -172,6 +186,10 @@ HRESULT CBuilder_UI::Create_GenericUIDTO(const DTO::TUI_GenericUIData& data)
 
 	Layeriter->second->Get_UIVector()->push_back(pUI);
 	m_pMapUICache.emplace(data.strTag, pUI);
+
+	if (FAILED(CUI_Manager::GetInstance()->Add_VecGenericUICache(m_iLevelID, pUI)))
+		return E_FAIL;
+
 	return S_OK;
 }
 

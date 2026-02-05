@@ -250,6 +250,9 @@ void CCameraMan_Targeter::Update_Input(const _float fTimeDelta)
     if (!m_pActor)
         return;
 
+    if (m_pGameInstance->ShouldIgnoreMouseDelta())
+        return;
+
     _long iMouseMove = {};
     if (iMouseMove = GET_MOUSE_MOVE_X)
     {

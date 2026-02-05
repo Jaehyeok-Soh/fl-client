@@ -369,24 +369,19 @@ void CGameInstance::Request_AddObject(_uint iCloneLevelIndex, const wstring& wst
 void CGameInstance::Request_AddObject(_uint iPrototypeLevelIndex, const wstring& wstrPrototypeTag, _uint iCloneLevelIndex, const wstring& wstrLayerTag, void* pArg, std::function<void(CGameObject*)> onSpawnedCallback)
 {
 	CGameObject* pResult = { nullptr };
-
-	// Pool쪽 먼저 체크
-	pResult = m_pObjectPool_Manager->Spawn(iCloneLevelIndex, wstrPrototypeTag, pArg);
-
-	// Pool에 없으면 Clone
-	if (pResult == nullptr)
-		pResult = static_cast<CGameObject*>(m_pPrototype_Manager->Clone_Prototype(EPrototypeType::GAMEOBJECT, iPrototypeLevelIndex, wstrPrototypeTag, pArg));
+	pResult = static_cast<CGameObject*>(m_pPrototype_Manager->Clone_Prototype(EPrototypeType::GAMEOBJECT, iPrototypeLevelIndex, wstrPrototypeTag, pArg));
 
 	if (pResult)
-	{
-		SpawnEventDesc desc = {};
-		desc.iCloneLevelIndex = static_cast<_int>(iCloneLevelIndex);
-		desc.wstrLayerTag = wstrLayerTag;
-		desc.pClone = pResult;
-		if(onSpawnedCallback)
-			desc.callback = std::move(onSpawnedCallback);
-		m_pEvent_Manager->Push_SpawnEvent(desc);
-	}
+		Request_AddObject(iCloneLevelIndex, wstrLayerTag, pResult, onSpawnedCallback);
+}
+void CGameInstance::Request_AddObject(_uint iPoolLevelIndex, const wstring& wstrPoolTag, _uint iSpawnLevelIndex, void* pArg, std::function<void(CGameObject*)> onSpawnedCallback)
+{
+	CGameObject* pResult = { nullptr };
+	wstring wstrLayerTag = { L"" };
+	pResult = m_pObjectPool_Manager->Spawn(iPoolLevelIndex, wstrPoolTag, wstrLayerTag, pArg);
+
+	if(pResult)
+		Request_AddObject(iSpawnLevelIndex, wstrLayerTag, pResult, onSpawnedCallback);
 }
 void CGameInstance::Request_DeleteGameObject(_uint iCloneLevelIndex, const wstring& wstrLayerTag, CGameObject* pGo)
 {
@@ -397,7 +392,7 @@ void CGameInstance::Request_DeleteGameObject(_uint iCloneLevelIndex, const wstri
 	desc.iClonedLevelIndex = iCloneLevelIndex;
 	desc.wstrLayerTag = wstrLayerTag;
 	desc.pGo = pGo;
-	m_pEvent_Manager->Push_DespawnEvent(desc);	
+	m_pEvent_Manager->Push_DespawnEvent(desc);
 }
 CGameObject* CGameInstance::Get_GameObject(_uint iLevelIndex, const wstring& wstrLayerTag, _uint iObjectIndex)
 {
@@ -609,11 +604,18 @@ const POINT& CGameInstance::Get_MousePos()
 {
 	return m_pInput_Manager->Get_MousePos();
 }
-void CGameInstance::Set_Capture(_bool bCap)
+void CGameInstance::Request_CursorMode(ECursorMode eMode) noexcept
 {
-	m_pInput_Manager->Set_Capture(bCap);
+	m_pInput_Manager->Request_CursorMode(eMode);
 }
-
+_bool CGameInstance::ShouldIgnoreMouseDelta() noexcept
+{
+	return m_pInput_Manager->ShouldIgnoreMouseDelta();
+}
+void CGameInstance::Force_ReleaseCursor() noexcept
+{
+	m_pInput_Manager->Force_ReleaseCursor();
+}
 #pragma region RESOURCE_MANAGER
 CTextureBase* CGameInstance::GetOrAddTexture(const wstring& wstrKey, void* pArg)
 {
@@ -839,7 +841,7 @@ vector<PxShape*> CGameInstance::GetMeshShape(PHYSICSCOLLIDER_DESC* pDesc)
 	return m_pPhysics_Module->GetMeshShape(pDesc);
 }
 
-PxRigidActor* CGameInstance::GetActor(PHYSICSRIGIDBODY_DESC* rigidBodyDesc, PHYSICSCOLLIDER_DESC* colliderDesc, vector<PxShape*>& shapes)
+vector<PxRigidActor*> CGameInstance::GetActor(PHYSICSRIGIDBODY_DESC* rigidBodyDesc, PHYSICSCOLLIDER_DESC* colliderDesc, vector<PxShape*>& shapes)
 {
 	return m_pPhysics_Module->GetActor(rigidBodyDesc, colliderDesc, shapes);
 }
@@ -852,6 +854,26 @@ PxController* CGameInstance::GetController(PHYSICSCCT_DESC* pDesc)
 void CGameInstance::RegisterPhysicsMesh(_uint levelIndex, _wstring prototypeTag)
 {
 	m_pPhysics_Module->RegisterPhysicsMesh(levelIndex, prototypeTag);
+}
+
+_bool CGameInstance::HasNegativeScale(const Matrix& mat)
+{
+	return m_pPhysics_Module->HasNegativeScale(mat);
+}
+
+_int CGameInstance::GetNegativeScaleAxis(const Matrix& mat)
+{
+	return m_pPhysics_Module->GetNegativeScaleAxis(mat);
+}
+
+PxQuat CGameInstance::GetPureRotation(const Matrix& mat)
+{
+	return m_pPhysics_Module->GetPureRotation(mat);
+}
+
+PxVec3 CGameInstance::GetPureScale(const Matrix& mat)
+{
+	return m_pPhysics_Module->GetPureScale(mat);
 }
 
 #ifdef _DEBUG

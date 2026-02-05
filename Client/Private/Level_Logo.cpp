@@ -69,9 +69,6 @@ HRESULT CLevel_Logo::Initialize()
 	if (FAILED(Ready_Lights()))
 		return E_FAIL;
 
-	//if (FAILED(Ready_Test_Terrain(L"test_terrain")))
-	//	return E_FAIL;
-
 	return S_OK;
 }
 
@@ -88,6 +85,8 @@ HRESULT CLevel_Logo::Awake(const _uint iLevelID)
 	CLOG_WARN(L"테스트, Logo Awake() 확인");
 	CLOG_ERROR(L"테스트, Logo Awake() 확인");
 
+	m_eCursorMode = ECursorMode::LockedHiddenCenter;
+	m_pGameInstance->Request_CursorMode(m_eCursorMode);
 	return S_OK;
 }
 
@@ -95,9 +94,30 @@ void CLevel_Logo::Update(const _float fTimeDelta)
 {
 	Super::Update(fTimeDelta);
 
-	if (m_pGameInstance->KeyButton_Down(DIK_0))
+	// TODO : 어디다 두지?
+	static _uint s_iCount = { 0 };
+	if (m_pGameInstance->KeyButton_Down(DIK_LALT))
 	{
-		m_pGameInstance->Request_AddObject(ENUM_TO_UINT(ELevelType::LOGO), L"POOL_ParticleSystem", ENUM_TO_UINT(ELevelType::LOGO), L"Effect", nullptr);
+#ifdef _DEBUG
+		s_iCount = (s_iCount + 1) % 3;
+#else
+		s_iCount = (s_iCount + 1) % 2;
+#endif
+		if (s_iCount == 0)
+		{
+			m_eCursorMode = ECursorMode::LockedHiddenCenter;
+		}
+		else if (s_iCount == 1)
+		{
+			m_eCursorMode = ECursorMode::VisibleClipped;
+		}
+#ifdef _DEBUG
+		else
+		{
+			m_eCursorMode = ECursorMode::VisibleFree;
+		}
+#endif
+		m_pGameInstance->Request_CursorMode(m_eCursorMode);
 	}
 }
 
@@ -228,24 +248,6 @@ HRESULT CLevel_Logo::Ready_Lights()
 	return S_OK;
 }
 
-HRESULT CLevel_Logo::Ready_Test_Terrain(const wstring& wstrLayerTag)
-{
-	{
-		CGameObject* pResult = { nullptr };
-		CGameObject::GAMEOBJECT_DESC goDesc = {};
-		CTransform::TRANSFORM_DESC TransformDesc = {};
-		goDesc.pTransform_Desc = &TransformDesc;
-
-		if (!(pResult = m_pGameInstance->Add_GameObject(ENUM_TO_UINT(ELevelType::STATIC),
-			L"Prototype_GameObject_Physics_Terrain",
-			ENUM_TO_UINT(ELevelType::LOGO),
-			wstrLayerTag, &goDesc)))
-			return E_FAIL;
-	}
-
-	return S_OK;
-}
-
 HRESULT CLevel_Logo::Ready_DevMap()
 {
 	ELevelType eLevelType = ELevelType::LOGO;
@@ -255,7 +257,8 @@ HRESULT CLevel_Logo::Ready_DevMap()
 	if (FAILED(m_pGameInstance->Regist_Document<CDataDocument_Map>(iLevelID, eCategory)))
 		return E_FAIL;
 
-	std::filesystem::path FilePath = L"../../Resources/Data/MapData/LevelData/DevLevel/DevMap.json";
+	//std::filesystem::path FilePath = L"../../Resources/Data/MapData/LevelData/DevLevel/DevMap.json";
+	std::filesystem::path FilePath = L"../../Resources/Data/MapData/Test_So/Ailixian_Train01_Art_Test_So.json";
 	vector<path> vecfiles;
 
 	if (!std::filesystem::exists(FilePath))

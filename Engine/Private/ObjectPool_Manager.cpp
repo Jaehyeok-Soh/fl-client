@@ -54,7 +54,7 @@ CObjectPool* CObjectPool_Manager::Get_Pool(_uint iLevelIndex, const wstring& wst
 	return Find_Pool(iLevelIndex, wstrPoolTag);
 }
 
-CGameObject* CObjectPool_Manager::Spawn(_uint iLevelIndex, const wstring& wstrPoolTag, void* pArg)
+CGameObject* CObjectPool_Manager::Spawn(_uint iLevelIndex, const wstring& wstrPoolTag, OUT wstring& wstrLayerTag_OUT, void* pArg)
 {
 	if (Is_OutOfRange(iLevelIndex))
 		return nullptr;
@@ -63,6 +63,7 @@ CGameObject* CObjectPool_Manager::Spawn(_uint iLevelIndex, const wstring& wstrPo
 	if (pPool == nullptr)
 		return nullptr;
 
+	wstrLayerTag_OUT = pPool->Get_LayerTag();
 	return pPool->Spawn(pArg);
 }
 

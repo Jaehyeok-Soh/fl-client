@@ -17,6 +17,8 @@ ATOM                MyRegisterClass(HINSTANCE hInstance);
 BOOL                InitInstance(HINSTANCE, int);
 LRESULT CALLBACK    WndProc(HWND, UINT, WPARAM, LPARAM);
 
+extern IMGUI_IMPL_API LRESULT ImGui_ImplWin32_WndProcHandler(HWND hWnd, UINT msg, WPARAM wParam, LPARAM lParam);
+
 int APIENTRY wWinMain(_In_ HINSTANCE hInstance,
     _In_opt_ HINSTANCE hPrevInstance,
     _In_ LPWSTR    lpCmdLine,
@@ -47,7 +49,7 @@ int APIENTRY wWinMain(_In_ HINSTANCE hInstance,
     MSG msg;
     msg.message = WM_NULL;
 
-    ::ShowCursor(FALSE);
+    ::ShowCursor(TRUE);
 
     CGameInstance* pGameInstance = CGameInstance::GetInstance();
     Safe_AddRef(pGameInstance);
@@ -152,6 +154,9 @@ BOOL InitInstance(HINSTANCE hInstance, int nCmdShow)
 
 LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 {
+    if (ImGui_ImplWin32_WndProcHandler(hWnd, message, wParam, lParam))
+        return true;
+
     switch (message)
     {
     case WM_COMMAND:
@@ -167,6 +172,11 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
         }
     }
     break;
+    case WM_SYSCOMMAND:
+    {
+        if ((wParam & 0xFFF0) == SC_KEYMENU)
+            return 0;
+    } break;
     case WM_PAINT:
     {
         PAINTSTRUCT ps;
@@ -191,12 +201,7 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
             _bool bActive = wParam != 0;
             if (bActive == false)
             {
-                CGameInstance::GetInstance()->Set_Capture(false);
-            }
-            else
-            {
-                ::ShowCursor(FALSE);
-                CGameInstance::GetInstance()->Set_Capture(true);
+                CGameInstance::GetInstance()->Force_ReleaseCursor();
             }
         }
     } break;
@@ -204,7 +209,7 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
     {
         if (g_bStart)
         {
-            CGameInstance::GetInstance()->Set_Capture(false);
+            CGameInstance::GetInstance()->Force_ReleaseCursor();
         }
     } break;
     case WM_DESTROY:

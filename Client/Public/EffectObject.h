@@ -90,6 +90,12 @@ protected:
     virtual HRESULT Initialize_Prototype() override;
     virtual HRESULT Initialize(void* pArg) override;
 
+    virtual HRESULT Ready_Component(void* pArg);
+    virtual HRESULT Ready_Component_Shader();
+    virtual HRESULT Ready_Component_Texture();
+    virtual HRESULT Ready_Component_Buffer(void* pArg);
+    virtual HRESULT Ready_Component_Model(void* pArg);
+
 public:
     virtual HRESULT Awake(const _uint iCurrentLevelID) override;
     virtual void Update_Priority(const _float fDT) override;
@@ -116,25 +122,14 @@ public:
 private:
     //  ==========  Shader Binding Setting  =============
     HRESULT Bind_ShaderResource();
-
-    void Bind_ShaderResource_Particles();
-    void Bind_ShaderResource_Meshes();
-    void Bind_ShaderResource_Trails();
-
 private:
     void TimeCalculate(const _float fDT);
 public:
     void TimeReset(Effect_Desc Desc);
 
 public:
-    const string& Get_Name() const { return m_szName; }
-    void Set_Name(const string& Name) { m_szName = Name; }
-
-
-public:
     const DTO::E_EffectSystemType& Get_EffectType() { return m_tEffectDesc.eEffectSystemType; }
     const Effect_Desc& Get_EffectDesc() { return m_tEffectDesc; }
-    void Set_EffectDesc(const Effect_Desc& Desc);
 
 public:
     static CEffectObject* Create(ID3D11Device* pDevice, ID3D11DeviceContext* pDeviceContext);
