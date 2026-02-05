@@ -51,6 +51,12 @@ public:
 		,FALL
 		,LAND
 
+		,COMBO
+		,GUN
+		,CHARGE
+		,SKILL1
+		,SKILL2
+
 		,END
 	};
 protected:
