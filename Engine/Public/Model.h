@@ -93,6 +93,7 @@ public:
 	wstring Get_MaterialName(_uint iIndex) const;
 	wstring Get_AnimationName(_uint iIdex) const;
 	void Set_AnimationPlayRate(_uint iIndex, _float fValue);
+	const _float Get_BlentTime()  { return m_fBlendedTime; }
 private:
 	HRESULT Load_StaticModel(const wstring& wstrModelName);
 	HRESULT Load_NonAnimModel(const wstring &wstrModelName);
@@ -118,6 +119,8 @@ private:
 	void Blend_Begin();
 	void Blend_Update(const _float fTimeDelta, CTransform* pOwnerTransform = nullptr, CPhysicsCCT* pOwnerPhyCCT = nullptr);
 	void Blend_End();
+
+
 private:
 	EModelType m_eType = { EModelType::END };
 	Matrix m_matPreTransform = {};
@@ -145,6 +148,7 @@ private:
 	vector<class CModelAnimation*> m_vecAnimations;
 	vector<LOCALSRT> m_vecPrevAnimationPose;
 	vector<LOCALSRT> m_vecCurrAnimationPose;
+
 public:
 	static CModel* Create(ID3D11Device* pDevice, ID3D11DeviceContext* pDeviceContext, void* pArg);
 	virtual CComponent* Clone(void* pArg) override;

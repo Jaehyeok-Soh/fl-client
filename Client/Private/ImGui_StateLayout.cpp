@@ -2,6 +2,11 @@
 #include "ImGui_StateLayout.h"
 #include "GameObject.h"
 #include "ActionState.h"
+
+#include "ContainerObject.h"
+#include "Body.h"
+#include "Model.h"
+
 #include "GameInstance.h"
 
 CImGui_StateLayout::CImGui_StateLayout()
@@ -24,6 +29,9 @@ void CImGui_StateLayout::Render(CGameObject* pGo)
 	_uint	iMainIdx		= pActionState->Get_CurrentState()->Get_MainAnimIdx();
 	_float	fStateTime		= pActionState->Get_CurrentState()->Get_StateElapsedTime();
 
+	CModel* pModel = static_cast<CContainerObject*>(pGo)->Get_Part<CBody>(0)->Get_Component<CModel>();
+	_float fBlendTime = pModel->Get_BlentTime();
+
 	ImGui::BeginGroup();
 	ImGui::SeparatorText(m_strLabel.c_str());
 
@@ -38,6 +46,10 @@ void CImGui_StateLayout::Render(CGameObject* pGo)
 	ImGui::Text("State Duration : ");
 	ImGui::SameLine();
 	ImGui::Text("%f", fStateTime);
+
+	ImGui::Text("BlendTime : ");
+	ImGui::SameLine();
+	ImGui::Text("%f", fBlendTime);
 
 	ImGui::EndGroup();
 }
