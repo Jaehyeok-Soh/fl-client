@@ -338,6 +338,24 @@ namespace Engine
 		const Matrix* pOwnerMatrix = { nullptr };
 	}PHYSICSRIGIDBODY_DESC;
 
+	typedef struct tagPass
+	{
+		ID3DX11EffectPass* pPass = { nullptr };
+		wstring wstrName = L"";
+		D3DX11_PASS_DESC tDesc = {};
+		D3DX11_PASS_SHADER_DESC tVertexShaderDesc = {};
+		D3DX11_EFFECT_SHADER_DESC tEffectVsDesc = {};
+		vector<D3D11_SIGNATURE_PARAMETER_DESC> vecSignatureDescs;
+	} PASS;
+
+	typedef struct tagTechnique
+	{
+		ID3DX11EffectTechnique* pTechnique = { nullptr };
+		wstring wstrName = L"";
+		D3DX11_TECHNIQUE_DESC tDesc = {};
+		vector<tagPass> vecPasses;
+	} TECHNIQUE;
+
 	typedef struct tagPhysicsCollider
 	{
 		///////////////////////////

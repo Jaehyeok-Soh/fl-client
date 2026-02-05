@@ -337,6 +337,12 @@
     <Filter Include="00. System\05. Component\ComputeShader">
       <UniqueIdentifier>{4feedbe9-5864-4dd4-800f-c296ed47108e}</UniqueIdentifier>
     </Filter>
+    <Filter Include="01. Utility\17. ShaderAsset">
+      <UniqueIdentifier>{779baf32-b44b-4193-8174-c44fb4e66b53}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="01. Utility\17. ShaderAsset\Manager">
+      <UniqueIdentifier>{1d5a15d2-b9e8-44c5-8397-f596f8c5189a}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="..\Private\Timer.cpp">
@@ -696,6 +702,15 @@
     </ClCompile>
     <ClCompile Include="..\private\EngineConsole.cpp">
       <Filter>01. Utility\16. Console</Filter>
+    </ClCompile>
+    <ClCompile Include="..\private\FxEffectAsset.cpp">
+      <Filter>01. Utility\17. ShaderAsset</Filter>
+    </ClCompile>
+    <ClCompile Include="..\private\ShaderAsset_Manager.cpp">
+      <Filter>01. Utility\17. ShaderAsset\Manager</Filter>
+    </ClCompile>
+    <ClCompile Include="..\private\FxShaderVariant.cpp">
+      <Filter>01. Utility\17. ShaderAsset</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -1083,6 +1098,15 @@
     </ClInclude>
     <ClInclude Include="..\public\EngineConsole.h">
       <Filter>01. Utility\16. Console</Filter>
+    </ClInclude>
+    <ClInclude Include="..\public\FxEffectAsset.h">
+      <Filter>01. Utility\17. ShaderAsset</Filter>
+    </ClInclude>
+    <ClInclude Include="..\public\ShaderAsset_Manager.h">
+      <Filter>01. Utility\17. ShaderAsset\Manager</Filter>
+    </ClInclude>
+    <ClInclude Include="..\public\FxShaderVariant.h">
+      <Filter>01. Utility\17. ShaderAsset</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
