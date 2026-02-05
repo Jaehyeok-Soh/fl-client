@@ -228,10 +228,6 @@ private:
     //  ==========  Shader Binding Setting  =============
     HRESULT Bind_ShaderResource();
 
-    void Bind_ShaderResource_Particles();
-    void Bind_ShaderResource_Meshes();
-    void Bind_ShaderResource_Trails();
-
 private:
     void TimeCalculate(const _float fDT);
 public:

@@ -56,7 +56,7 @@ public:
 public:
 	const PARTICLE_ORIGIN_DESC& Get_ParticleDesc() { return m_tParticleDesc; }
 	virtual void Set_ParticleDesc(const PARTICLE_ORIGIN_DESC& Desc) {}
-	virtual HRESULT Resize_InstanceBuffer(_uint iNumInstanceCount) { return S_OK; }
+	virtual HRESULT Resize_InstanceBuffer(const PARTICLE_ORIGIN_DESC& Desc) { return S_OK; }
 
 public:
 	virtual _uint   Get_InstanceCount() { return m_iInstanceCount; }

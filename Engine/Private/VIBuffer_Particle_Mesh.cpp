@@ -27,154 +27,17 @@ HRESULT CVIBuffer_Particle_Mesh::Initialize_Prototype(void* pArg)
 HRESULT CVIBuffer_Particle_Mesh::Initialize(void* pArg)
 {
 	// 슬롯 0번을 채워주기 위해서 값을 복사해온다.
-	PARTICLE_Mesh_ORIGIN_DESC* pDesc = static_cast<PARTICLE_Mesh_ORIGIN_DESC*>(pArg);
-	m_iInstanceVertexStride = sizeof(VTXPARTICLE);
-	m_ePrimitiveType = D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST;
-	m_eIndexFormat = m_iIndexStride == 2 ? DXGI_FORMAT::DXGI_FORMAT_R16_UINT : DXGI_FORMAT::DXGI_FORMAT_R32_UINT;
-	m_iVertexBufferCount = 2;
+	PARTICLE_ORIGIN_DESC* pDesc = static_cast<PARTICLE_ORIGIN_DESC*>(pArg);
+	if (pDesc == nullptr) return E_FAIL;
+	else m_tParticleDesc = *pDesc;
 
-	// 오너 설정하기.
-	Set_Owner(pDesc->pOwner);
-	CModel* pModel = pDesc->_Model;
-	if (!pModel) return E_FAIL;
-
- 	_uint pMeshCount = pModel->Get_MeshCount();
-	CMesh* pMesh = pModel->Get_Mesh(0);
-	ID3D11Buffer* pOriginalVB = pMesh->Get_VBBuffer();
-
-	D3D11_BUFFER_DESC bufferDesc;
-	pOriginalVB->GetDesc(&bufferDesc);
-
-	D3D11_BUFFER_DESC StagingDesc = bufferDesc;
-	StagingDesc.Usage = D3D11_USAGE_STAGING;
-	StagingDesc.BindFlags = 0; 
-	StagingDesc.CPUAccessFlags = D3D11_CPU_ACCESS_READ;
-	StagingDesc.MiscFlags = 0;
-
-	ID3D11Buffer* pStagingBuffer = nullptr;
-	if (FAILED(m_pDevice->CreateBuffer(&StagingDesc, nullptr, &pStagingBuffer)))
-		return E_FAIL;
-
-	m_pDeviceContext->CopyResource(pStagingBuffer, pOriginalVB);
-
-	D3D11_MAPPED_SUBRESOURCE MappedResource{};
-	if (SUCCEEDED(m_pDeviceContext->Map(pStagingBuffer, 0, D3D11_MAP_READ, 0, &MappedResource)))
-	{
-		m_iVertexCount = bufferDesc.ByteWidth / sizeof(VTXMESH);
-		m_iVertexStride = sizeof(VTXMESH);
-
-		D3D11_BUFFER_DESC NewVBDesc = bufferDesc;
-		NewVBDesc.Usage = D3D11_USAGE_DEFAULT;
-		NewVBDesc.BindFlags = D3D11_BIND_VERTEX_BUFFER;
-		NewVBDesc.CPUAccessFlags = 0;
-
-		D3D11_SUBRESOURCE_DATA InitData{};
-		InitData.pSysMem = MappedResource.pData;
-
-		m_pDevice->CreateBuffer(&NewVBDesc, &InitData, &m_pVB);
-		m_pDeviceContext->Unmap(pStagingBuffer, 0);
-	}
-	Safe_Release(pStagingBuffer);
-	{
-		ID3D11Buffer* pOriginalIB = pMesh->Get_IBBuffer();
-		D3D11_BUFFER_DESC IBDesc;
-		pOriginalIB->GetDesc(&IBDesc);
-
-		D3D11_BUFFER_DESC IBStagingDesc = IBDesc;
-		IBStagingDesc.Usage = D3D11_USAGE_STAGING;
-		IBStagingDesc.BindFlags = 0;
-		IBStagingDesc.CPUAccessFlags = D3D11_CPU_ACCESS_READ;
-		IBStagingDesc.MiscFlags = 0;
-
-		ID3D11Buffer* pIBStagingBuffer = nullptr;
-		if (FAILED(m_pDevice->CreateBuffer(&IBStagingDesc, nullptr, &pIBStagingBuffer)))
-			return E_FAIL;
-
-		m_pDeviceContext->CopyResource(pIBStagingBuffer, pOriginalIB);
-
-		D3D11_MAPPED_SUBRESOURCE IBMappedResource{};
-		if (SUCCEEDED(m_pDeviceContext->Map(pIBStagingBuffer, 0, D3D11_MAP_READ, 0, &IBMappedResource)))
-		{
-			D3D11_BUFFER_DESC NewIBDesc = IBDesc;
-			NewIBDesc.Usage = D3D11_USAGE_DEFAULT;
-			NewIBDesc.BindFlags = D3D11_BIND_INDEX_BUFFER;
-			NewIBDesc.CPUAccessFlags = 0;
-
-			D3D11_SUBRESOURCE_DATA IBInitData{};
-			IBInitData.pSysMem = IBMappedResource.pData;
-
-			if (FAILED(m_pDevice->CreateBuffer(&NewIBDesc, &IBInitData, &m_pIB))) 
-				return E_FAIL;
-
-			m_iIndexCountPerInstance = IBDesc.ByteWidth / (m_eIndexFormat == DXGI_FORMAT_R32_UINT ? sizeof(_uint) : sizeof(_short));
-
-			m_pDeviceContext->Unmap(pIBStagingBuffer, 0);
-		}
-		Safe_Release(pIBStagingBuffer);
-	}
-#pragma region INSTANCE_BUFFER
-
-	m_pInstanceVertices = new VTXPARTICLE[m_iInstanceCount];
-
-	for (size_t i = 0; i < m_iInstanceCount; i++)
-	{
-		m_pInstanceVertices[i].vInstanceNumber = (_uint)i;
-	}
-
-	m_InstanceBufferDesc.ByteWidth = m_iInstanceCount * m_iInstanceVertexStride;
-	m_InstanceBufferDesc.Usage = D3D11_USAGE_DEFAULT; // 초기화용이므로 DEFAULT나 IMMUTABLE
-	m_InstanceBufferDesc.BindFlags = D3D11_BIND_VERTEX_BUFFER;
-	m_InstanceBufferDesc.CPUAccessFlags = 0;
-	m_InstanceBufferDesc.MiscFlags = 0;
-	m_InstanceBufferDesc.StructureByteStride = m_iInstanceVertexStride;
-
-	D3D11_SUBRESOURCE_DATA InstanceInitialData{};
-	InstanceInitialData.pSysMem = m_pInstanceVertices;
-
-	if (FAILED(m_pDevice->CreateBuffer(&m_InstanceBufferDesc, &InstanceInitialData, &m_pVBInstance)))
-		return E_FAIL;
-
-#pragma endregion 
-
-#pragma region COMPUTE_SHADER
-	EFFECT_PARTICLE_IMMU_ELEMENT* pInitialData = new EFFECT_PARTICLE_IMMU_ELEMENT[m_iInstanceCount];
-
-	for (size_t i = 0; i < m_iInstanceCount; i++)
-	{
-		_float      fScale = m_pGameInstance->Rand_Float(pDesc->vSize.x, pDesc->vSize.y) * 0.5f;
-
-		pInitialData[i].fSpeed = 1.f;
-		pInitialData[i].vParticle_LifeTime = Vec2(0.f, m_pGameInstance->Rand_Float(pDesc->vLifeTime.x, pDesc->vLifeTime.y));
-		pInitialData[i].vRight = Vec4(fScale, 0.f, 0.f, 0.f);
-		pInitialData[i].vUp = Vec4(0.f, fScale, 0.f, 0.f);
-		pInitialData[i].vLook = Vec4(0.f, 0.f, fScale, 0.f);
-		pInitialData[i].vTranslation = Vec4(
-			m_pGameInstance->Rand_Float(pDesc->vCenter.x - pDesc->vRange.x * 0.5f, pDesc->vCenter.x + pDesc->vRange.x * 0.5f),
-			m_pGameInstance->Rand_Float(pDesc->vCenter.y - pDesc->vRange.y * 0.5f, pDesc->vCenter.y + pDesc->vRange.y * 0.5f),
-			m_pGameInstance->Rand_Float(pDesc->vCenter.z - pDesc->vRange.z * 0.5f, pDesc->vCenter.z + pDesc->vRange.z * 0.5f),
-			1.f
-		);
-		pInitialData[i].vParticle_OriginMatrix =
-			Matrix(pInitialData[i].vRight,
-				pInitialData[i].vUp,
-				pInitialData[i].vLook,
-				pInitialData[i].vTranslation);
-	}
-	CComputeShader* pShader = pDesc->pComputeShader;
-	if (pShader == nullptr)
-	{
-		MSG_BOX("VIBUFFER_PARTICLE_POINT : Can't Bind Effect Compute Data : ERROR SHADER NULLPTR");
-		return E_FAIL;
-	}
-	pShader->Bind_InputStructuredBuffer_Data(pInitialData, sizeof(EFFECT_PARTICLE_IMMU_ELEMENT), m_iInstanceCount);
-	Safe_Delete_Array(pInitialData);
-#pragma endregion
+	Resize_InstanceBuffer(*pDesc);
 
 	return S_OK;
 }
 
 //  =============   새로 버퍼 할당  ==============
-HRESULT CVIBuffer_Particle_Mesh::Resize_InstanceBuffer(_uint iNumInstanceCount)
+HRESULT CVIBuffer_Particle_Mesh::Resize_InstanceBuffer(const PARTICLE_ORIGIN_DESC& Desc)
 {
 	if (m_tParticleDesc.pModel == nullptr) return E_FAIL;
 	// 매쉬 하나만 들고오기 (어차피 이펙트 객체는 매쉬가 1개.)
@@ -184,7 +47,7 @@ HRESULT CVIBuffer_Particle_Mesh::Resize_InstanceBuffer(_uint iNumInstanceCount)
 	m_iInstanceVertexStride = sizeof(VTXPARTICLE);
 	m_ePrimitiveType = D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST;
 	m_eIndexFormat = m_iIndexStride == 2 ? DXGI_FORMAT::DXGI_FORMAT_R16_UINT : DXGI_FORMAT::DXGI_FORMAT_R32_UINT;
-	m_iInstanceCount = iNumInstanceCount;
+	m_iInstanceCount = Desc.iInstnaceCount;
 
 	// 기존 버퍼 해제
 	Safe_Release(m_pVBInstance);
@@ -198,30 +61,12 @@ HRESULT CVIBuffer_Particle_Mesh::Resize_InstanceBuffer(_uint iNumInstanceCount)
 	// 인스턴스 버퍼 재할당.
 	Set_Instance_Buffer();
 
-	if (m_tParticleDesc.isRandomSeed == false)
-		Set_ResizeBuffer_UseRandomSeed();
+	if (Desc.isRandomSeed == false)
+		Set_ResizeBuffer_NoneUseRandomSeed();
 
 	else
-		Set_ResizeBuffer_NoneUseRandomSeed();
+		Set_ResizeBuffer_UseRandomSeed();
 		
-		//for (size_t i = 0; i < m_iInstanceCount; i++)
-		//{
-		//	_float      fScale = m_pGameInstance->Rand_Float(m_tParticleDesc.vSize.x, m_tParticleDesc.vSize.y) * 0.5f;
-		//	m_pSpeeds[i] = m_pGameInstance->Rand_Float(m_tParticleDesc.vSpeed.x, m_tParticleDesc.vSpeed.y);
-
-		//	m_pInstanceVertices[i].vRight = Vec4(fScale, 0.f, 0.f, 0.f);
-		//	m_pInstanceVertices[i].vUp = Vec4(0.f, fScale, 0.f, 0.f);
-		//	m_pInstanceVertices[i].vLook = Vec4(0.f, 0.f, fScale, 0.f);
-		//	m_pInstanceVertices[i].vTranslation = Vec4(
-		//		m_pGameInstance->Rand_Float(m_tParticleDesc.vCenter.x - m_tParticleDesc.vRange.x * 0.5f, m_tParticleDesc.vCenter.x + m_tParticleDesc.vRange.x * 0.5f),
-		//		m_pGameInstance->Rand_Float(m_tParticleDesc.vCenter.y - m_tParticleDesc.vRange.y * 0.5f, m_tParticleDesc.vCenter.y + m_tParticleDesc.vRange.y * 0.5f),
-		//		m_pGameInstance->Rand_Float(m_tParticleDesc.vCenter.z - m_tParticleDesc.vRange.z * 0.5f, m_tParticleDesc.vCenter.z + m_tParticleDesc.vRange.z * 0.5f),
-		//		1.f
-		//	);
-
-		//	m_pInstanceVertices[i].vLifeTime = Vec2(0.f, m_pGameInstance->Rand_Float(m_tParticleDesc.vLifeTime.x, m_tParticleDesc.vLifeTime.y));
-		//}
-
 	D3D11_SUBRESOURCE_DATA InstanceInitialData{};
 	InstanceInitialData.pSysMem = m_pInstanceVertices;
 
@@ -230,24 +75,12 @@ HRESULT CVIBuffer_Particle_Mesh::Resize_InstanceBuffer(_uint iNumInstanceCount)
 
 void CVIBuffer_Particle_Mesh::Set_ParticleDesc(const PARTICLE_ORIGIN_DESC& Desc)
 {
-	if (m_iInstanceCount != Desc.iInstnaceCount ||
-		m_tParticleDesc.vSize.x != Desc.vSize.x ||
-		m_tParticleDesc.vSize.y != Desc.vSize.y ||
-		m_tParticleDesc.vRange.x != Desc.vRange.x ||
-		m_tParticleDesc.vRange.y != Desc.vRange.y ||
-		m_tParticleDesc.vRange.z != Desc.vRange.z ||
-		m_tParticleDesc.isRandomSeed != Desc.isRandomSeed ||
-		m_tParticleDesc.pModel != Desc.pModel ||
-		m_tParticleDesc.vLifeTime.y != Desc.vLifeTime.y)
-	{
-		// 인스턴스 할 갯수가 줄었다면 버퍼 재할당하자
-		m_tParticleDesc = Desc;
-		Resize_InstanceBuffer(Desc.iInstnaceCount);
-	}
-
+	// 그냥 매프레임 resize 갈겨 난 몰라
+	Resize_InstanceBuffer(Desc);
 	m_fStartSpeeds = Desc.m_fStartSpeeds;
 	m_bIsLoop = Desc.isLoop;
 	m_vPivot = Desc.vPivot;
+	m_tParticleDesc = Desc;
 }
 
 HRESULT CVIBuffer_Particle_Mesh::Set_ResizeBuffer_UseRandomSeed()
@@ -281,7 +114,7 @@ HRESULT CVIBuffer_Particle_Mesh::Set_ResizeBuffer_UseRandomSeed()
 		MSG_BOX("VIBUFFER_PARTICLE_POINT : Can't Bind Effect Compute Data : ERROR SHADER NULLPTR");
 		return E_FAIL;
 	}
-	pShader->Bind_InputStructuredBuffer_Data(pInitialData, sizeof(EFFECT_PARTICLE_IMMU_ELEMENT), m_iInstanceCount);
+	pShader->Resize_InputStruct(pInitialData, sizeof(EFFECT_PARTICLE_IMMU_ELEMENT), m_iInstanceCount);
 	Safe_Delete_Array(pInitialData);
 
 	return S_OK;
@@ -300,12 +133,7 @@ HRESULT CVIBuffer_Particle_Mesh::Set_ResizeBuffer_NoneUseRandomSeed()
 		pInitialData[i].vRight = Vec4(fScale, 0.f, 0.f, 0.f);
 		pInitialData[i].vUp = Vec4(0.f, fScale, 0.f, 0.f);
 		pInitialData[i].vLook = Vec4(0.f, 0.f, fScale, 0.f);
-		pInitialData[i].vTranslation = Vec4(
-			m_pGameInstance->Rand_Float(m_tParticleDesc.vCenter.x - m_tParticleDesc.vRange.x * 0.5f, m_tParticleDesc.vCenter.x + m_tParticleDesc.vRange.x * 0.5f),
-			m_pGameInstance->Rand_Float(m_tParticleDesc.vCenter.y - m_tParticleDesc.vRange.y * 0.5f, m_tParticleDesc.vCenter.y + m_tParticleDesc.vRange.y * 0.5f),
-			m_pGameInstance->Rand_Float(m_tParticleDesc.vCenter.z - m_tParticleDesc.vRange.z * 0.5f, m_tParticleDesc.vCenter.z + m_tParticleDesc.vRange.z * 0.5f),
-			1.f
-		);
+		pInitialData[i].vTranslation = Vec4(0.f, 0.f, 0.f, 1.f);
 		pInitialData[i].vParticle_OriginMatrix =
 			Matrix(pInitialData[i].vRight,
 				pInitialData[i].vUp,
@@ -319,7 +147,7 @@ HRESULT CVIBuffer_Particle_Mesh::Set_ResizeBuffer_NoneUseRandomSeed()
 		MSG_BOX("VIBUFFER_PARTICLE_POINT : Can't Bind Effect Compute Data : ERROR SHADER NULLPTR");
 		return E_FAIL;
 	}
-	pShader->Bind_InputStructuredBuffer_Data(pInitialData, sizeof(EFFECT_PARTICLE_IMMU_ELEMENT), m_iInstanceCount);
+	pShader->Resize_InputStruct(pInitialData, sizeof(EFFECT_PARTICLE_IMMU_ELEMENT), m_iInstanceCount);
 	Safe_Delete_Array(pInitialData);
 
 	return S_OK;

@@ -34,14 +34,15 @@ HRESULT CEffectObject::Initialize(void* pArg)
         return E_FAIL;
     }
 
-    if (FAILED(Component_Setting(pArg)))
-        return E_FAIL;
-
     if (FAILED(EffectDesc_Initialize(pArg)))
     {
         MSG_BOX("Initialize Failed : CEffectObject -__super::EffectDesc_Initialize(pArg)");
         return E_FAIL;
     }
+
+    if (FAILED(Component_Setting(pArg)))
+        return E_FAIL;
+
 
     Effect_Desc* pDesc = static_cast<Effect_Desc*>(pArg);
     if (pDesc != nullptr)
@@ -168,7 +169,7 @@ void CEffectObject::Buffer_Setting()
                 MeshBufferDesc.vSpeed = Vec2{ 0.f, 3.f };
                 MeshBufferDesc.isRandomSeed = m_tEffectDesc._Effect_IsRandomSeed;
                 MeshBufferDesc.pComputeShader = static_cast<CComputeShader*>(Get_Script_Component(L"ComputeShader"));
-                MeshBufferDesc._Model = pInstance;
+                MeshBufferDesc.pModel = pInstance;
                 MeshBufferDesc.pOwner = this;
 
                 Change_Component<CVIBuffer_Particle_Mesh>(static_cast<CVIBuffer_Particle_Mesh*>(m_pGameInstance->Clone_Prototype(EPrototypeType::COMPONENT, ENUM_TO_UINT(ELevelType::EFFECT), L"Prototype_Component_VIBuffer_Particle_Mesh", &MeshBufferDesc)));
@@ -201,10 +202,14 @@ void CEffectObject::Particle_Setting()
 {
     if (m_tEffectDesc.eEffectType == E_EFFECTTYPE::Particle)
     {
-        CVIBuffer_Particle_Point* pInstance = Get_Component<CVIBuffer_Particle_Point>();
-        auto pDesc = pInstance->Get_ParticleDesc();
+        CVIBuffer_Particle* pInstance = nullptr;
+        if(m_tEffectDesc.eEffectParticleType != E_PARTICLETYPE::MESH)
+            pInstance = Get_Component<CVIBuffer_Particle_Point>();
+        else
+            pInstance = Get_Component<CVIBuffer_Particle_Mesh>();
 
-        CVIBuffer_Particle_Point::PARTICLE_POINT_ORIGIN_DESC desc = {};
+        auto pDesc = pInstance->Get_ParticleDesc();
+        CVIBuffer_Particle::PARTICLE_ORIGIN_DESC desc = {};
 
         desc.iInstnaceCount = m_tEffectDesc._Effect_MaxParticle;
         desc.isLoop = m_tEffectDesc._Effect_Looping;
@@ -526,26 +531,6 @@ HRESULT CEffectObject::Render()
     if (FAILED(Super::Render()))
         return E_FAIL;
 
-    switch (m_tEffectDesc.eEffectType)
-    {
-    case E_EFFECTTYPE::Particle:
-        // 파티클 타입에 따라 어떤 형식으로 분사하고.
-        // 어떤 종류를 파티클로 지정할 것인지. (Mesh, Particle, Texture) 3가지 타입.
-        // Texture일 때, 빌보드를 먹일 것인가?
-        Bind_ShaderResource_Particles();
-        break;
-
-    case E_EFFECTTYPE::Mesh:
-        // 매쉬를 그리고 스크롤 때리는 것. 로직 작성
-        Bind_ShaderResource_Meshes();
-        break;
-
-    case E_EFFECTTYPE::Trail:
-        // 무조건 SIMULATIONSPACE_ WORLD 타입으로 
-        Bind_ShaderResource_Trails();
-        break;
-    }
-
     // ===========  셰이더에 값 바인딩  ===========
     if (FAILED(Bind_ShaderResource()))
         return E_FAIL;
@@ -571,29 +556,6 @@ void CEffectObject::Set_Dead(const wstring& wstrLayerTag)
 {
 }
 
-void CEffectObject::Bind_ShaderResource_Particles()
-{
-    switch (m_tEffectDesc.eEffectParticleType)
-    {
-    case E_PARTICLETYPE::NONE:
-        break;
-
-    case E_PARTICLETYPE::PARTICLE:
-        Get_Component<CShader>()->Set_Pass(0);
-        break;
-
-    case E_PARTICLETYPE::TEXTURE:
-        Get_Component<CShader>()->Set_Pass(0);
-        break;
-
-    case E_PARTICLETYPE::MESH:
-        Get_Component<CShader>()->Set_Pass(0);
-        break;
-    }
-    // 어떤 종류를 파티클로 지정할 것인지. (Mesh, Particle, Texture) 3가지 타입.
-
-    // Texture일 때, 빌보드를 먹일 것인가?
-}
 
 void CEffectObject::TimeReset(Effect_Desc Desc)
 {
@@ -628,16 +590,6 @@ void CEffectObject::TimeCalculate(const _float fDT)
             m_tEffectDesc.m_iCurSpriteNumber = (_uint)(fActiveTime * m_tEffectDesc._Effect_AnimSpeed) % iTotalFrame;
         }
     }
-}
-
-void CEffectObject::Bind_ShaderResource_Meshes()
-{
-    Get_Component<CShader>()->Set_Pass(0);
-}
-
-void CEffectObject::Bind_ShaderResource_Trails()
-{
-    Get_Component<CShader>()->Set_Pass(0);
 }
 
 CEffectObject* CEffectObject::Create(EToolObjectType eType, ID3D11Device* pDevice, ID3D11DeviceContext* pDeviceContext)
