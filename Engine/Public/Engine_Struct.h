@@ -326,6 +326,7 @@ namespace Engine
 
 	typedef struct tagPhysicsRigidBody
 	{
+		SimpleMath::Vector3 vScale_Isolated = {};
 		EPhysicsActorType eType = { EPhysicsActorType::STATIC };
 		EPhysicsCollisionDetection detection = { EPhysicsCollisionDetection::DISCRETE };
 		float fDensity = { 10.f };

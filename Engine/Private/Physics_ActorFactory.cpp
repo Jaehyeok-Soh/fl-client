@@ -40,10 +40,13 @@ PxRigidActor* CPhysics_ActorFactory::GetActor(PHYSICSRIGIDBODY_DESC* rigidBodyDe
 
 PxRigidActor* CPhysics_ActorFactory::MakeStatic(PHYSICSRIGIDBODY_DESC* rigidBodyDesc, PHYSICSCOLLIDER_DESC* colliderDesc, vector<PxShape*>& shapes)
 {
-	if (m_pGameInstance->HasNegativeScale(*rigidBodyDesc->pOwnerMatrix))
-		return MakeStatic_NegativeScale(rigidBodyDesc, colliderDesc, shapes);
+	Matrix mat = *rigidBodyDesc->pOwnerMatrix;
 
-	PxTransform transform = m_pGameInstance->XMMatrixToPxTransform(*rigidBodyDesc->pOwnerMatrix);
+	PxVec3 vPos = PxVec3(mat._41, mat._42, mat._43);
+	PxQuat pQuat = m_pGameInstance->GetPureRotation(mat);
+	PxVec3 pScale(rigidBodyDesc->vScale_Isolated.x, rigidBodyDesc->vScale_Isolated.y, rigidBodyDesc->vScale_Isolated.z);
+
+	PxTransform transform(vPos, pQuat);
 	PxRigidStatic* staticActor = m_pPhysics->createRigidStatic(transform);
 	for (auto& shape : shapes)
 	{
@@ -51,6 +54,16 @@ PxRigidActor* CPhysics_ActorFactory::MakeStatic(PHYSICSRIGIDBODY_DESC* rigidBody
 		{
 			PxTransform localPose(PxVec3(0), PxQuat(PxHalfPi, PxVec3(0, 0, 1)));
 			shape->setLocalPose(localPose);
+		}
+
+		else if (shape->getGeometry().getType() == PxGeometryType::eTRIANGLEMESH)
+		{
+			PxGeometryHolder geom = shape->getGeometry();
+			PxTriangleMeshGeometry triGeom = geom.triangleMesh();
+
+			triGeom.scale = PxMeshScale(pScale);
+
+			shape->setGeometry(triGeom);
 		}
 
 		staticActor->attachShape(*shape);
@@ -61,11 +74,28 @@ PxRigidActor* CPhysics_ActorFactory::MakeStatic(PHYSICSRIGIDBODY_DESC* rigidBody
 
 PxRigidActor* CPhysics_ActorFactory::MakeDynamic(PHYSICSRIGIDBODY_DESC* rigidBodyDesc, PHYSICSCOLLIDER_DESC* colliderDesc, vector<PxShape*>& shapes)
 {
-	PxTransform transform = m_pGameInstance->XMMatrixToPxTransform(*rigidBodyDesc->pOwnerMatrix);
+	Matrix mat = *rigidBodyDesc->pOwnerMatrix;
 
+	PxVec3 vPos = PxVec3(mat._41, mat._42, mat._43);
+	PxQuat pQuat = m_pGameInstance->GetPureRotation(mat);
+	PxVec3 pScale(rigidBodyDesc->vScale_Isolated.x, rigidBodyDesc->vScale_Isolated.y, rigidBodyDesc->vScale_Isolated.z);
+
+	PxTransform transform(vPos, pQuat);
 	PxRigidDynamic* dynamicActor = m_pPhysics->createRigidDynamic(transform);
 	for (auto& shape : shapes)
+	{
+		if (shape->getGeometry().getType() == PxGeometryType::eCONVEXMESH)
+		{
+			PxGeometryHolder geom = shape->getGeometry();
+			PxConvexMeshGeometry convexGeom = geom.convexMesh();
+
+			convexGeom.scale = PxMeshScale(pScale);
+			
+			shape->setGeometry(convexGeom);
+		}
+
 		dynamicActor->attachShape(*shape);
+	}
 
 	PxRigidBodyExt::updateMassAndInertia(*dynamicActor, rigidBodyDesc->fDensity);
 

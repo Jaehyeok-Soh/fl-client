@@ -42,6 +42,8 @@ HRESULT CStaticModel::Initialize(void* pArg)
 	if (FAILED(CStaticModel::Change_OverrideMtl(pDesc)))
 		return E_FAIL;
 
+	Get_Component<CTransform>()->Set_Scale(pDesc->vScale_Isolated); // TEST: 소재혁 임시 추가
+
 	return S_OK;
 }
 
@@ -139,6 +141,7 @@ HRESULT CStaticModel::Ready_PhysicsRigidBody(STATICMODEL_DESC* pDesc)
 	desc.fLinearDamping = 0.f;
 	desc.fAngularDamping = 0.f;
 	desc.pOwnerMatrix = &Get_Component<CTransform>()->Get_WorldMatrix();
+	desc.vScale_Isolated = pDesc->vScale_Isolated;
 
 	if (FAILED(Add_Component<CPhysicsRigidBody>(0, L"Prototype_Component_Physics_RigidBody", &desc)))
 		return E_FAIL;
