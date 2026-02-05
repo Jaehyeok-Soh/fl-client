@@ -9,7 +9,8 @@ class CImGui_PlayerInspector final : public CImGui_Inspector
 private:
 	enum ELayoutType : unsigned int
 	{
-		Transform = 0,
+		Frame = 0,
+		Transform,
 		State,
 		COUNT
 	};
