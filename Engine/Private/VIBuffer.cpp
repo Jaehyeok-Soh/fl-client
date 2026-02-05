@@ -107,6 +107,11 @@ void CVIBuffer::Render()
 	m_pDeviceContext->DrawIndexed(m_iIndexCount, 0, 0);
 }
 
+void CVIBuffer::Render_Instance(_uint iInstanceCount)
+{
+	m_pDeviceContext->DrawIndexedInstanced( m_iIndexCount , iInstanceCount , 0 , 0 , 0);
+}
+
 HRESULT CVIBuffer::Bind_Resource()
 {
 	ID3D11Buffer* pVertexBuffers[] =

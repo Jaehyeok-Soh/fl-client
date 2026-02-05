@@ -3,6 +3,7 @@
 #include "MapToolManager.h"
 #include "GameInstance.h"
 #include "StaticModel.h"
+#include "InstanceModel.h"
 
 CBuilder_Map::CBuilder_Map(ID3D11Device* pDevice, ID3D11DeviceContext* pDeviceContext, _uint iLevelID)
 	: CBuilderBase(pDevice,pDeviceContext,iLevelID) , m_pGameInstance(CGameInstance::GetInstance()) , m_pMapToolManager(CMapToolManager::GetInstance())
@@ -20,25 +21,33 @@ HRESULT	CBuilder_Map::Initialize()
 
 HRESULT CBuilder_Map::Build(const CDataDocumentBase& document)
 {
-
 	const auto& doc = static_cast<const CDataDocument_Map&>(document);
 	// For. StaticModel
 	{
 		const vector<Engine::IObjectDataBase*> vecList = doc.Get_ListByType(ENUM_TO_UINT(DTO::EMapObject_Type::STATICMODEL));
 		for (const auto& pObjectData : vecList)
 		{
+			pObjectData->Get_Type();
 			const auto* pStaticModelData = static_cast<const Engine::CData_StaticModel*>(pObjectData);
 			if (FAILED(Create_StaticModel(pStaticModelData->Get_Data())))
 				return E_FAIL;
 		}
 	}
-
+	// For. InstanceModel
+	{
+		const vector<Engine::IObjectDataBase*> vecList = doc.Get_ListByType(ENUM_TO_UINT(DTO::EMapObject_Type::INSTANCEMODEL));
+		for (const auto& pObjectData : vecList)
+		{
+			const auto* pInstanceModelData = static_cast<const Engine::CData_InstanceModel*>(pObjectData);
+			if (FAILED(Create_InstanceModel(pInstanceModelData->Get_Data())))
+				return E_FAIL;
+		}
+	}
 	return S_OK;
 }
 
 HRESULT CBuilder_Map::Create_StaticModel(const DTO::TMap_StaticModelData& tData)
 {
-
 	CStaticModel::STATICMODEL_DESC tStaticModelDesc{};
 	tStaticModelDesc.tData.eMapObjectType = EMapObject_Type::STATICMODEL;
 	tStaticModelDesc.wstrLayerTag = g_wszStaticModelLayer;
@@ -61,18 +70,57 @@ HRESULT CBuilder_Map::Create_StaticModel(const DTO::TMap_StaticModelData& tData)
 	tStaticModelDesc.tData.tUsingModelInfo.wstrMtl_JsonFile_Path = tData.tUsingModelInfo.wstrMtl_JsonFile_Path;
 
 
-	_uint iCount = static_cast<_uint>(tData.tUsingModelInfo.vecMaterialInfo.size());
-	tStaticModelDesc.tData.tUsingModelInfo.vecMaterialInfo.resize(tData.tUsingModelInfo.vecMaterialInfo.size());
-	for (_uint i = 0; i < iCount; ++i)
+	if(!tData.tUsingModelInfo.vecOverrideMaterial.empty())
 	{
-		tStaticModelDesc.tData.tUsingModelInfo.vecMaterialInfo[i].isNull						= tData.tUsingModelInfo.vecMaterialInfo[i].isNull;
-		tStaticModelDesc.tData.tUsingModelInfo.vecMaterialInfo[i].wstrOriginMtl_JsonFile_Name	= tData.tUsingModelInfo.vecMaterialInfo[i].wstrOriginMtl_JsonFile_Name;
-		tStaticModelDesc.tData.tUsingModelInfo.vecMaterialInfo[i].wstrOriginMtl_JsonFile_Path	= tData.tUsingModelInfo.vecMaterialInfo[i].wstrOriginMtl_JsonFile_Path;
-		tStaticModelDesc.tData.tUsingModelInfo.vecMaterialInfo[i].vecUsingTextureInfo			= tData.tUsingModelInfo.vecMaterialInfo[i].vecUsingTextureInfo;
+		_uint iCount = static_cast<_uint>(tData.tUsingModelInfo.vecOverrideMaterial.size());
+		tStaticModelDesc.tData.tUsingModelInfo.vecOverrideMaterial.resize(iCount);
+
+		for (_uint i = 0; i < iCount; ++i)
+		{
+			tStaticModelDesc.tData.tUsingModelInfo.vecOverrideMaterial[i].isNull = tData.tUsingModelInfo.vecOverrideMaterial[i].isNull;
+			tStaticModelDesc.tData.tUsingModelInfo.vecOverrideMaterial[i].wstrMtl_JsonFile_Name = tData.tUsingModelInfo.vecOverrideMaterial[i].wstrMtl_JsonFile_Name;
+			tStaticModelDesc.tData.tUsingModelInfo.vecOverrideMaterial[i].wstrMtl_JsonFile_Path = tData.tUsingModelInfo.vecOverrideMaterial[i].wstrMtl_JsonFile_Path;
+			tStaticModelDesc.tData.tUsingModelInfo.vecOverrideMaterial[i].vecUsingTextureInfo = tData.tUsingModelInfo.vecOverrideMaterial[i].vecUsingTextureInfo;
+		}
 	}
 
 	m_pMapToolManager->Make_MapObject(EMapObject_Type::STATICMODEL,&tStaticModelDesc,false);
 
+	return S_OK;
+}
+
+HRESULT CBuilder_Map::Create_InstanceModel(const DTO::TMap_InstanceModelData& tData)
+{
+	CInstanceModel::INSTANCEMODEL_DESC tInstanceModelDesc{};
+	tInstanceModelDesc.iLevelIndex = ENUM_TO_UINT(ELevelType::MAP);
+	tInstanceModelDesc.isLoaded = true;
+	tInstanceModelDesc.eState = CMapObject::EState::Default;
+	tInstanceModelDesc.eType = EMapObject_Type::INSTANCEMODEL;
+	tInstanceModelDesc.wstrLayerTag = g_wszInstanceModelLayer;
+
+	tInstanceModelDesc.tData.eInstance_Usage = tData.eInstance_Usage;
+
+	tInstanceModelDesc.tData.vecOriginSRT.resize(tData.vecSRTData.size());
+	memcpy(tInstanceModelDesc.tData.vecOriginSRT.data() , tData.vecSRTData.data(), sizeof(SRT_DATA) * tData.vecSRTData.size() );
+
+	/* Using Model Info  */
+	tInstanceModelDesc.tData.tUsingModelInfo.wstrName = tData.tUsingModelInfo.wstrName;
+	tInstanceModelDesc.tData.tUsingModelInfo.wstrPath = tData.tUsingModelInfo.wstrPath;
+	tInstanceModelDesc.tData.tUsingModelInfo.wstrMtl_JsonFile_Path = tData.tUsingModelInfo.wstrMtl_JsonFile_Path;
+
+	if (!tData.tUsingModelInfo.vecOverrideMaterial.empty())
+	{
+		_uint iCount = static_cast<_uint>(tData.tUsingModelInfo.vecOverrideMaterial.size());
+		tInstanceModelDesc.tData.tUsingModelInfo.vecOverrideMaterial.resize(iCount);
+		for (_uint i = 0; i < iCount; ++i)
+		{
+			tInstanceModelDesc.tData.tUsingModelInfo.vecOverrideMaterial[i].isNull = tData.tUsingModelInfo.vecOverrideMaterial[i].isNull;
+			tInstanceModelDesc.tData.tUsingModelInfo.vecOverrideMaterial[i].wstrMtl_JsonFile_Name = tData.tUsingModelInfo.vecOverrideMaterial[i].wstrMtl_JsonFile_Name;
+			tInstanceModelDesc.tData.tUsingModelInfo.vecOverrideMaterial[i].wstrMtl_JsonFile_Path = tData.tUsingModelInfo.vecOverrideMaterial[i].wstrMtl_JsonFile_Path;
+			tInstanceModelDesc.tData.tUsingModelInfo.vecOverrideMaterial[i].vecUsingTextureInfo = tData.tUsingModelInfo.vecOverrideMaterial[i].vecUsingTextureInfo;
+		}
+	}
+	m_pMapToolManager->Make_MapObject(EMapObject_Type::INSTANCEMODEL,&tInstanceModelDesc, false);
 	return S_OK;
 }
 

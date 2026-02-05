@@ -54,6 +54,7 @@ private:
 	virtual HRESULT Initialize(void* pArg) override;
 public:
 	HRESULT Render(_uint iMeshIndex);
+	HRESULT	Render_Instance(_uint iMeshIndex , _uint iInstanceCount);
 	HRESULT Change_Animation(_uint iAnimationIndex, _bool bBlend, _bool isLoop = true, _bool bForce = false);
 	void	Add_Animation(class CModelAnimation* pAnimation) { m_vecAnimations.push_back(pAnimation); }
 	void	Update_Animation(_float fTimeDelta, CTransform* pOwnerTransform = nullptr, CPhysicsCCT* pOwnerPhyCCT = nullptr);
@@ -82,6 +83,8 @@ public:
 	_float Get_AnimDurationTime() const;
 	_float Get_AnimNormalizedTime() const;
 	_float Get_AnimElpasedTimeSeconds() const;
+	_int Get_CurrentAnimationIndex() const;
+	wstring Get_CurrentAnimationName() const;
 	_bool Is_AnimFinished() const { return m_bIsAnimFinished; }
 	_bool Is_AnimTrackPositionBetween(_float fStartRatio, _float fEndRatio);
 	_bool Is_AnimTrackPositionAt(_float fRatio);

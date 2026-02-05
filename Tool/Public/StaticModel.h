@@ -9,7 +9,6 @@ public:
 	typedef struct tagStaticModel : public CMapObject::MAPOBJECT_DESC
 	{
 		STATICMODEL_DATA  tData{};
-		CONVERTED_MAPDATA tLoadData{};
 	public:
 	}STATICMODEL_DESC;
 protected:
@@ -29,6 +28,8 @@ public:
 	virtual HRESULT			Render()										override;
 	virtual void			Draw_ImGui()									override;
 	virtual void			Set_Dead(const wstring& wstrLayerTag)			override;
+public:
+	virtual void			Register_OriginSRT(Engine::Flags fResetTypeFlag)override;
 public:
 	void					Set_StaticModelType(EStaticModel_Type eType) { m_eType = eType; }
 	EStaticModel_Type		Get_StaticModelType() const { return m_eType; }

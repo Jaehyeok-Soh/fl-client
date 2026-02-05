@@ -75,6 +75,13 @@ HRESULT CDataDocument_Map::Try_Add(const DTO::STATICMODEL_DATA& data)
 	return Try_Add(pObjectBase);
 }
 
+HRESULT CDataDocument_Map::Try_Add(const DTO::InstanceModel_Data& data)
+{
+	IObjectDataBase* pObjectBase = Create_ObjectData(DTO::EMapObject_Type::INSTANCEMODEL);
+	static_cast<CData_InstanceModel*>(pObjectBase)->Get_Data() = data;
+	return Try_Add(pObjectBase);
+}
+
 
 IObjectDataBase* CDataDocument_Map::Create_ObjectData(DTO::EMapObject_Type eType)
 {
@@ -82,6 +89,8 @@ IObjectDataBase* CDataDocument_Map::Create_ObjectData(DTO::EMapObject_Type eType
 	{
 	case DTO::EMapObject_Type::STATICMODEL:
 		return CData_StaticModel::Create();
+	case DTO::EMapObject_Type::INSTANCEMODEL:
+		return CData_InstanceModel::Create();
 	default:
 		return nullptr;
 	}

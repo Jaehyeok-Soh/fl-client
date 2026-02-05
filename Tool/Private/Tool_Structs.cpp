@@ -40,19 +40,19 @@ namespace Tool
 		tData.wstrMtl_JsonFile_Path = Engine_Utils::ToWString(LoadJson.value("Meterial Json File Path", ""));
 
 
-		if (LoadJson.contains("Using Mateiral Info"))
+		if (LoadJson.contains("Override Materials"))
 		{
-
-			auto& MtlJsons = LoadJson["Using Mateiral Info"];
-			tData.vecMaterialInfo.resize(MtlJsons.size());
+			auto& MtlJsons = LoadJson["Override Materials"];
+			tData.vecOverrideMaterial.resize(MtlJsons.size());
 
 			_uint iIndex{};
 			for (auto& MtlJson : MtlJsons)
 			{
 				if (MtlJson.empty())
-					tData.vecMaterialInfo[iIndex].isNull = true;
+					tData.vecOverrideMaterial[iIndex].isNull = true;
 				else
-					tData.vecMaterialInfo[iIndex++] = MtlJson;
+					tData.vecOverrideMaterial[iIndex] = MtlJson;
+				iIndex++;
 			}
 		}
 	}
@@ -62,30 +62,29 @@ namespace Tool
 		SaveJson["Path"] = Engine_Utils::ToString(tData.wstrPath);
 		SaveJson["Meterial Json File Path"] = Engine_Utils::ToString(tData.wstrMtl_JsonFile_Path);
 
-
-		auto& Material_Json = SaveJson["Using Mateiral Info"];
-
-		for (auto& Material_Info : tData.vecMaterialInfo)
+		if (!tData.vecOverrideMaterial.empty())
 		{
-			if (Material_Info.isNull == true)
+			auto& Material_Json = SaveJson["Override Materials"];
+
+			for (auto& Material_Info : tData.vecOverrideMaterial)
 			{
 				json NullJson{};
+				if (!Material_Info.isNull)
+					NullJson = Material_Info;
 				Material_Json.push_back(NullJson);
 			}
-			Material_Json.push_back(Material_Info);
 		}
 	}
 
 #pragma endregion
 #pragma region Using Material
-	void from_json(const json& SaveJson, USING_MATERIAL_INFO& tData)
+	void from_json(const json& SaveJson, OVERRIDE_MATERIALS& tData)
 	{
 		if (tData.isNull == true) return;
 
-		tData.wstrOriginMtl_JsonFile_Name = Engine_Utils::ToWString(SaveJson.value("Name", ""));
-		tData.wstrOriginMtl_JsonFile_Path = Engine_Utils::ToWString(SaveJson.value("Path", ""));
+		tData.wstrMtl_JsonFile_Name = Engine_Utils::ToWString(SaveJson.value("Name", ""));
+		tData.wstrMtl_JsonFile_Path = Engine_Utils::ToWString(SaveJson.value("Path", ""));
 
-		if (tData.vecUsingTextureInfo.empty()) return;
 
 		if (SaveJson.contains("Textures"))
 		{
@@ -99,13 +98,11 @@ namespace Tool
 		}
 	}
 
-	void Tool::to_json(json& SaveJson, const USING_MATERIAL_INFO& tData)
+	void Tool::to_json(json& SaveJson, const OVERRIDE_MATERIALS& tData)
 	{
 
-		SaveJson["Name"] = Engine_Utils::ToString(tData.wstrOriginMtl_JsonFile_Name);
-		SaveJson["Path"] = Engine_Utils::ToString(tData.wstrOriginMtl_JsonFile_Path);
-
-		if (tData.vecUsingTextureInfo.empty()) return;
+		SaveJson["Name"] = Engine_Utils::ToString(tData.wstrMtl_JsonFile_Name);
+		SaveJson["Path"] = Engine_Utils::ToString(tData.wstrMtl_JsonFile_Path);
 
 		for (auto& pairTextureInfo : tData.vecUsingTextureInfo)
 		{
@@ -113,6 +110,7 @@ namespace Tool
 		}
 	}
 #pragma endregion
+
 #pragma region Static Model
 	void from_json(const json& LoadJson, STATICMODEL_DATA& tData)
 	{
@@ -124,7 +122,7 @@ namespace Tool
 
 	void Tool::to_json(json& SaveJson, const STATICMODEL_DATA& tData)
 	{
-
+		
 		Engine_Utils::write_vec3_xyz(SaveJson["SRT"]["Scale"], tData.tOriginSRT.vScale);
 		Engine_Utils::write_vec3_xyz(SaveJson["SRT"]["Position"], tData.tOriginSRT.vPosition);
 		Engine_Utils::write_vec4_Quat(SaveJson["SRT"]["Rotation"], tData.tOriginSRT.vQuat);
@@ -133,5 +131,27 @@ namespace Tool
 	}
 #pragma endregion
 
+#pragma region InstanceModel 
+	void from_json(const json& LoadJson, INSTANCEMODEL_DATA& tData)
+	{
+		if (LoadJson.contains("SRTs"))
+			tData.vecOriginSRT = LoadJson["SRTs"];
+		if (LoadJson.contains("Using Model Info"))
+			tData.tUsingModelInfo = LoadJson["Using Model Info"];
+		if (LoadJson.contains("Usage"))
+			tData.eInstance_Usage = Engine_Utils::D3D11_USAGE_ToEnum(LoadJson["Usage"].get<string>());
+	}
+
+	void to_json(json& SaveJson, const INSTANCEMODEL_DATA& tData)
+	{
+		SaveJson["Using Model Info"] = tData.tUsingModelInfo;
+		if (!tData.vecOriginSRT.empty())
+			SaveJson["SRTs"] = tData.vecOriginSRT;
+
+		SaveJson["Usage"] = Engine_Utils::D3D11_USAGE_ToString(tData.eInstance_Usage);
+	}
+#pragma endregion
+
+#pragma endregion
 
 }

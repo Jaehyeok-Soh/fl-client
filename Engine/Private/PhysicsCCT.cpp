@@ -42,9 +42,9 @@ HRESULT CPhysicsCCT::Initialize(void* pArg)
 
 void CPhysicsCCT::Awake()
 {
-	Vec3 vPos = m_pOwner->Get_Component<CTransform>()->Get_Info(TRANSFORM_INFO_STATE::POS);
+	//Vec3 vPos = m_pOwner->Get_Component<CTransform>()->Get_Info(TRANSFORM_INFO_STATE::POS);
 
-	SetPosition(vPos);
+	//SetPosition(vPos);
 }
 
 void CPhysicsCCT::Update()

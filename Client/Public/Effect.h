@@ -55,10 +55,6 @@ protected:
 	void Update_CombinedWorldMatrix(const Matrix* pMatParent);
 
 public:
-	const string& Get_Name() const { return m_szName; }
-	void Set_Name(const string& Name) { m_szName = Name; }
-
-public:
 	static Effect* Create(ID3D11Device* pDevice, ID3D11DeviceContext* pDeviceContext);
 	virtual CGameObject* Clone(void* pArg);
 	virtual void Free() override;

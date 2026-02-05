@@ -59,18 +59,21 @@ struct VS_IN_POS_TEX_PARTICLE
     float3 vPosition : POSITION;
     float2 vUV : TEXCOORD0;
     
-    float4 vRight : TEXCOORD1;
-    float4 vUp : TEXCOORD2;
-    float4 vLook : TEXCOORD3;
-    float4 vTranslation : TEXCOORD4;
-    float2 vLifeTime : TEXCOORD5;
+    //float4 vRight : TEXCOORD1;
+    //float4 vUp : TEXCOORD2;
+    //float4 vLook : TEXCOORD3;
+    //float4 vTranslation : TEXCOORD4;
+    //float2 vLifeTime : TEXCOORD5;
 };
 
 struct VS_IN_POS_GS_PARTICLE
 {
     float3 vPosition : POSITION;
-    row_major float4x4 matTransform : WORLD;
-    float2 vLifeTime : TEXCOORD0;
+    //row_major float4x4 matTransform : WORLD;
+    //float2 vLifeTime : TEXCOORD0;
+    
+    // slot 1
+    uint vInstID : TEXCOORD0;
 };
 
 struct VS_IN_INST_MESH_PARTICLE
@@ -82,10 +85,29 @@ struct VS_IN_INST_MESH_PARTICLE
     float3 vBinormal : BINORMAL;
     float2 vUV : TEXCOORD0;
     
+    //// Slot 1
+    //row_major float4x4 matTransform : WORLD;
+    uint   vInstID : TEXCOORD1;
+};
+
+struct VS_IN_INST_MESH
+{
+    // Slot 0
+    float3 vPosition : POSITION;
+    float3 vNormal : NORMAL;
+    float3 vTangent : TANGENT;
+    float3 vBinormal : BINORMAL;
+    float2 vUV : TEXCOORD0;
+    
     // Slot 1
     row_major float4x4 matTransform : WORLD;
-    float2 vLifeTime : TEXCOORD1;
+    
+    
+    // GPU 가 알아서 추가해주는 Instance 번호
+    uint iCurInstanceID : SV_InstanceID;
 };
+
+
 
 //////////////////
 // VertexOutput //
@@ -135,6 +157,20 @@ struct VS_OUT_MESH
     
     float4 vWorldPos : TEXCOORD1;
     float4 vProjPos : TEXCOORD2;
+};
+
+struct VS_OUT_INST_MESH
+{
+    float4 vPosition : SV_POSITION;
+    float2 vUV : TEXCOORD0;
+    float3 vNormal : NORMAL;
+    float3 vTangent : TANGENT;
+    float3 vBinormal : BINORMAL;
+    
+    float4 vWorldPos : TEXCOORD1;
+    float4 vProjPos : TEXCOORD2;
+
+    uint iCurInstanceID : TEXCOORD3;
 };
 
 struct VS_OUT_SKELETON
@@ -259,6 +295,20 @@ struct PS_IN_MESH
     float4 vProjPos : TEXCOORD2;
 };
 
+struct PS_IN_INST_MESH
+{
+    float4 vPosition : SV_POSITION;
+    float2 vUV : TEXCOORD0;
+    float3 vNormal : NORMAL;
+    float3 vTangent : TANGENT;
+    float3 vBinormal : BINORMAL;
+    
+    float4 vWorldPos : TEXCOORD1;
+    float4 vProjPos : TEXCOORD2;
+    uint iCurInstanceID : TEXCOORD3;
+   
+};
+
 struct PS_IN_SKELETON
 {
     float4 vPosition : SV_POSITION;
@@ -320,4 +370,13 @@ struct PS_OUT_BACKBUFFER
     float4 vColor : SV_TARGET0;
 };
 
+////////////////////
+// Compute Shader//
+//////////////////
+
+struct VTXPARTICLE
+{
+    row_major float4x4 matTransform;
+    float2 vLifeTime;
+};
 #endif

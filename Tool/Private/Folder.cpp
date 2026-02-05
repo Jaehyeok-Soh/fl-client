@@ -4,7 +4,7 @@
 #include "File.h"
 #include "GameInstance.h"
 
-CFolder::CFolder()
+CFolder::CFolder()                                     
 	: CBase(), m_pGameInstance(CGameInstance::GetInstance())
      , m_pContext(nullptr) , m_pDevice(nullptr) , m_pParentFloder(nullptr)
 {

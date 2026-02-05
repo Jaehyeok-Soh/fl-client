@@ -28,6 +28,7 @@ protected:
 	virtual HRESULT Initialize(void* pArg) override;
 public:
 	virtual void Render() override;
+	virtual void Render_Instance(_uint iInstacneCount);
 	virtual HRESULT Bind_Resource();
 
 	D3D11_USAGE Get_VB_Usage() const { return m_VB_Usage; }
