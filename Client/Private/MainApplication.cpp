@@ -7,11 +7,13 @@
 #include "VIBuffer_Cube_Tex.h"
 #include "Engine_Utils.h"
 #include "Shader.h"
+#include "ComputeShader.h"
 #include "Character.h"
 #include "Texture.h"
 #include "GameInstance.h"
 #include "VIBuffer_Rect_Tex.h"
 #include "Level_Loading.h"
+#include "ImGui_ClientDebug.h"
 #include "EngineConsole.h"
 #include "PhysicsRigidBody.h"
 #include "PhysicsCollider.h"
@@ -51,13 +53,18 @@ HRESULT CMainApplication::Initialize()
 	if (FAILED(Ready_Fonts()))
 		return E_FAIL;
 
-	if (FAILED(Start_Level(ELevelType::LOGO)))
-		return E_FAIL;
-
 #ifdef _DEBUG
 	CEngineConsole::Initialize();
 	CEngineConsole::Set_Title(L"DebugConsole, 含形虞 含形!");
+	m_pDebugGui = CImGui_ClientDebug::GetInstance();
+	if (m_pDebugGui == nullptr)
+		return E_FAIL;
+	if (FAILED(m_pDebugGui->Initialize(g_hWnd, m_pDevice, m_pDeviceContext)))
+		return E_FAIL;
 #endif
+
+	if (FAILED(Start_Level(ELevelType::LOGO)))
+		return E_FAIL;	
 
 	return S_OK;
 }
@@ -82,7 +89,12 @@ HRESULT CMainApplication::Render()
 	Vec4 ClearColor = { 0.f, 0.f, 1.f, 1.f };
 	m_pGameInstance->Draw_Begin(&ClearColor);
 	m_pGameInstance->Draw();
+#ifdef _DEBUG
+	m_pDebugGui->Render();
+#endif
+
 	m_pGameInstance->Draw_End();
+
 	return S_OK;
 }
 
@@ -114,15 +126,15 @@ HRESULT CMainApplication::Ready_Static_Prototype()
 	}
 
 	// For. Prototype_Component_Shader_VtxPos_Particle
-	{
-		CShader::SHADER_ORIGIN_DESC shaderDesc = {};
-		shaderDesc.pShaderFilePath = L"../../Shaders/Shader_VtxPos_Particle.hlsl";
-		shaderDesc.iNumElements = Engine::VTXPOS_PARTICLE::iNumElements;
-		shaderDesc.pElements = Engine::VTXPOS_PARTICLE::Elements;
-		if (FAILED(m_pGameInstance->Add_Prototype(ENUM_TO_UINT(ELevelType::STATIC), L"Prototype_Component_Shader_VtxPos_Particle",
-			CShader::Create(m_pDevice, m_pDeviceContext, &shaderDesc))))
-			return E_FAIL;
-	}
+	//{
+	//	CShader::SHADER_ORIGIN_DESC shaderDesc = {};
+	//	shaderDesc.pShaderFilePath = L"../../Shaders/Shader_VtxPos_Particle.hlsl";
+	//	shaderDesc.iNumElements = Engine::VTXPOS_PARTICLE::iNumElements;
+	//	shaderDesc.pElements = Engine::VTXPOS_PARTICLE::Elements;
+	//	if (FAILED(m_pGameInstance->Add_Prototype(ENUM_TO_UINT(ELevelType::STATIC), L"Prototype_Component_Shader_VtxPos_Particle",
+	//		CShader::Create(m_pDevice, m_pDeviceContext, &shaderDesc))))
+	//		return E_FAIL;
+	//}
 
 	// For. Prototype_Component_Shader_VtxMesh_SkillEffect
 	{
@@ -189,6 +201,18 @@ HRESULT CMainApplication::Ready_Static_Prototype()
 			CShader::Create(m_pDevice, m_pDeviceContext, &shaderDesc))))
 			return E_FAIL;
 	}
+
+#pragma region Compute_Shader
+	// For. Prototype_Component_Shader_CPT_Effect_Particle
+	{
+		CComputeShader::ComShaderOriginDesc shaderDesc = {};
+		shaderDesc.pShaderFilePath = L"../../Shaders/Shader_CPT_Effect_Particle.hlsl";
+		if (FAILED(m_pGameInstance->Add_Prototype(ENUM_TO_UINT(ELevelType::STATIC), L"Prototype_Component_Shader_CPT_Effect_Particle",
+			CComputeShader::Create(m_pDevice, m_pDeviceContext, &shaderDesc))))
+			return E_FAIL;
+	}
+#pragma endregion
+
 #pragma region EFFECT_Shader
 	// For. Prototype_Component_Shader_VtxEffectMesh
 	{
@@ -412,16 +436,17 @@ HRESULT CMainApplication::Ready_Fonts()
 }
 
 void CMainApplication::Free()
-{
-#ifdef _DEBUG
-	CEngineConsole::Shutdown();
-#endif
-
+{	
 	Safe_Release(m_pDeviceContext);
 	Safe_Release(m_pDevice);
 	CUI_Manager::GetInstance()->DestroyInstance();
 	m_pGameInstance->Destroy_Engine();
 	Safe_Release(m_pGameInstance);
+
+#ifdef _DEBUG
+	CEngineConsole::Shutdown();
+	m_pDebugGui->DestroyInstance();
+#endif
 	Super::Free();
 }
 

@@ -202,6 +202,33 @@
     <Filter Include="03. GameObject\MapObject\02. InstanceModel">
       <UniqueIdentifier>{2be52ba2-2a45-42f4-aa0d-4f0d8e44cbe8}</UniqueIdentifier>
     </Filter>
+    <Filter Include="99. ETC\01. ImGui">
+      <UniqueIdentifier>{aa2685d2-18f6-417c-ba8e-cf78608c7618}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="07. System\02. Debug_ImGui">
+      <UniqueIdentifier>{d4543967-6d08-419a-ad9e-aa4e953bd61f}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="07. System\02. Debug_ImGui\Inspector">
+      <UniqueIdentifier>{82f89ad1-c551-4868-8388-3d21f36c43d8}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="07. System\02. Debug_ImGui\ImGuiBase">
+      <UniqueIdentifier>{9fbb367b-4faa-448c-a302-857cca40b4ea}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="07. System\02. Debug_ImGui\Inspector\Player">
+      <UniqueIdentifier>{e56eb5ab-6ccc-4be7-935b-8756a82b5757}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="07. System\02. Debug_ImGui\Layout">
+      <UniqueIdentifier>{1dbf159f-2786-4b5f-a54a-a7fa44eac4d0}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="07. System\02. Debug_ImGui\Layout\Transform">
+      <UniqueIdentifier>{75112bf1-2fde-4f84-a058-ff26cbe40c27}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="07. System\02. Debug_ImGui\Layout\ActionState">
+      <UniqueIdentifier>{08101873-1d09-4a2d-9022-d599b7d73c9d}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="04. Shaders\ComputeShader_Labs">
+      <UniqueIdentifier>{8c14e548-7930-4ec0-b748-e471998a55b9}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="targetver.h">
@@ -381,6 +408,57 @@
     <ClInclude Include="..\Public\InstanceModel.h">
       <Filter>03. GameObject\MapObject\02. InstanceModel</Filter>
     </ClInclude>
+    <ClInclude Include="..\Public\imconfig.h">
+      <Filter>99. ETC\01. ImGui</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\imfilebrowser.h">
+      <Filter>99. ETC\01. ImGui</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\imgui.h">
+      <Filter>99. ETC\01. ImGui</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\imgui_impl_dx11.h">
+      <Filter>99. ETC\01. ImGui</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\imgui_impl_win32.h">
+      <Filter>99. ETC\01. ImGui</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\imgui_internal.h">
+      <Filter>99. ETC\01. ImGui</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\imgui_stdlib.h">
+      <Filter>99. ETC\01. ImGui</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\imstb_rectpack.h">
+      <Filter>99. ETC\01. ImGui</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\imstb_textedit.h">
+      <Filter>99. ETC\01. ImGui</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\imstb_truetype.h">
+      <Filter>99. ETC\01. ImGui</Filter>
+    </ClInclude>
+    <ClInclude Include="..\public\ImGui_ClientDebug.h">
+      <Filter>07. System\02. Debug_ImGui</Filter>
+    </ClInclude>
+    <ClInclude Include="..\public\ImGui_Layout.h">
+      <Filter>07. System\02. Debug_ImGui\Layout</Filter>
+    </ClInclude>
+    <ClInclude Include="..\public\ImGui_Inspector.h">
+      <Filter>07. System\02. Debug_ImGui\Inspector</Filter>
+    </ClInclude>
+    <ClInclude Include="..\public\ImGuiBase.h">
+      <Filter>07. System\02. Debug_ImGui\ImGuiBase</Filter>
+    </ClInclude>
+    <ClInclude Include="..\public\ImGui_TransformLayout.h">
+      <Filter>07. System\02. Debug_ImGui\Layout\Transform</Filter>
+    </ClInclude>
+    <ClInclude Include="..\public\ImGui_StateLayout.h">
+      <Filter>07. System\02. Debug_ImGui\Layout\ActionState</Filter>
+    </ClInclude>
+    <ClInclude Include="..\public\ImGui_PlayerInspector.h">
+      <Filter>07. System\02. Debug_ImGui\Inspector\Player</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <Image Include="Client.ico">
@@ -558,6 +636,51 @@
     <ClCompile Include="..\Private\InstanceModel.cpp">
       <Filter>03. GameObject\MapObject\02. InstanceModel</Filter>
     </ClCompile>
+    <ClCompile Include="..\Private\imgui_widgets.cpp">
+      <Filter>99. ETC\01. ImGui</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\imgui.cpp">
+      <Filter>99. ETC\01. ImGui</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\imgui_demo.cpp">
+      <Filter>99. ETC\01. ImGui</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\imgui_draw.cpp">
+      <Filter>99. ETC\01. ImGui</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\imgui_impl_dx11.cpp">
+      <Filter>99. ETC\01. ImGui</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\imgui_impl_win32.cpp">
+      <Filter>99. ETC\01. ImGui</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\imgui_stdlib.cpp">
+      <Filter>99. ETC\01. ImGui</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\imgui_tables.cpp">
+      <Filter>99. ETC\01. ImGui</Filter>
+    </ClCompile>
+    <ClCompile Include="..\private\ImGui_ClientDebug.cpp">
+      <Filter>07. System\02. Debug_ImGui</Filter>
+    </ClCompile>
+    <ClCompile Include="..\private\ImGui_Layout.cpp">
+      <Filter>07. System\02. Debug_ImGui\Layout</Filter>
+    </ClCompile>
+    <ClCompile Include="..\private\ImGui_Inspector.cpp">
+      <Filter>07. System\02. Debug_ImGui\Inspector</Filter>
+    </ClCompile>
+    <ClCompile Include="..\private\ImGuiBase.cpp">
+      <Filter>07. System\02. Debug_ImGui\ImGuiBase</Filter>
+    </ClCompile>
+    <ClCompile Include="..\private\ImGui_TransformLayout.cpp">
+      <Filter>07. System\02. Debug_ImGui\Layout\Transform</Filter>
+    </ClCompile>
+    <ClCompile Include="..\private\ImGui_StateLayout.cpp">
+      <Filter>07. System\02. Debug_ImGui\Layout\ActionState</Filter>
+    </ClCompile>
+    <ClCompile Include="..\private\ImGui_PlayerInspector.cpp">
+      <Filter>07. System\02. Debug_ImGui\Inspector\Player</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <FxCompile Include="..\..\Shaders\Shader_VtxAnimMesh.hlsl">
@@ -578,13 +701,7 @@
     <FxCompile Include="..\..\Shaders\Shader_VtxNorTex.hlsl">
       <Filter>04. Shaders</Filter>
     </FxCompile>
-    <FxCompile Include="..\..\Shaders\Shader_VtxPos_Particle.hlsl">
-      <Filter>04. Shaders</Filter>
-    </FxCompile>
     <FxCompile Include="..\..\Shaders\Shader_VtxPosTex.hlsl">
-      <Filter>04. Shaders</Filter>
-    </FxCompile>
-    <FxCompile Include="..\..\Shaders\Shader_VtxPosTex_Particle.hlsl">
       <Filter>04. Shaders</Filter>
     </FxCompile>
     <FxCompile Include="..\..\Shaders\Animation_Defines.hlsl">
@@ -613,6 +730,9 @@
     </FxCompile>
     <FxCompile Include="..\..\Shaders\Shader_VtxInstanceMesh.hlsl">
       <Filter>04. Shaders</Filter>
+    </FxCompile>
+    <FxCompile Include="..\..\Shaders\Shader_CPT_Effect_Particle.hlsl">
+      <Filter>04. Shaders\ComputeShader_Labs</Filter>
     </FxCompile>
   </ItemGroup>
 </Project>

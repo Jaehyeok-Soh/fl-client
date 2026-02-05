@@ -113,6 +113,7 @@ public:
 	void					Request_AddObject(_uint iCloneLevelIndex, const wstring& wstrLayerTag, CGameObject* pGo, std::function<void(CGameObject*)> onSpawnedCallback = nullptr);
 	void					Request_AddObject(_uint iPrototypeLevelIndex, const wstring& wstrPrototypeTag,
 							_uint iCloneLevelIndex, const wstring& wstrLayerTag, void* pArg = nullptr, std::function<void(CGameObject*)> onSpawnedCallback = nullptr);
+	void					Request_AddObject(_uint iPoolLevelIndex, const wstring& wstrPoolTag, _uint iSpawnLevelIndex, void* pArg, std::function<void(CGameObject*)> onSpawnedCallback = nullptr);
 	void					Request_DeleteGameObject(_uint iCloneLevelIndex, const wstring& wstrLayerTag, CGameObject* pGo);
 
 	CGameObject*			Get_GameObject(_uint iLevelIndex, const wstring& wstrLayerTag, _uint iObjectIndex);
@@ -179,7 +180,9 @@ public:
 	_bool Mouse_Pressing(MOUSEKEYSTATE eMouseKeyID);
 	_long Get_DIMouseMove(MOUSEMOVESTATE eMouseState);
 	const POINT& Get_MousePos();
-	void Set_Capture(_bool bCap);
+	_bool ShouldIgnoreMouseDelta() noexcept;
+	void Request_CursorMode(ECursorMode eMode) noexcept;
+	void Force_ReleaseCursor() noexcept;
 #pragma endregion
 
 #pragma region RESOURCE_MANAGER

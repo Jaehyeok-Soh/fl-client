@@ -20,7 +20,7 @@ namespace Engine
 	}TOOL_DESC;
 #pragma endregion
 
-#pragma region Shader
+#pragma region Shader_ConstantBuffer
 	typedef struct tagShaderGlobalDesc
 	{
 		Matrix matView = Matrix::Identity;
@@ -175,6 +175,37 @@ namespace Engine
 	}SHADER_INST_TWEENDESC;
 #pragma endregion
 
+#pragma region Shader_StructuredBuffer
+
+	// 불변 데이터 (한번 바인딩 하면 바뀌지 않는 데이터)
+	typedef struct tagEffect_Particle_IMMU_ELEMENT
+	{
+		SimpleMath::Vector4		vRight = { 0.f, 0.f, 0.f, 0.f };
+		SimpleMath::Vector4		vUp = { 0.f, 0.f, 0.f, 0.f };
+		SimpleMath::Vector4		vLook = { 0.f, 0.f, 0.f, 0.f };
+		SimpleMath::Vector4		vTranslation = { 0.f, 0.f, 0.f, 1.f };
+		SimpleMath::Vector2		vParticle_LifeTime = { 0.f, 0.f };
+
+		// 연산용 Speed 함수
+		float fSpeed = { 1.f };
+		float fPadding = { 1.f };
+		SimpleMath::Matrix vParticle_OriginMatrix = {};
+	}EFFECT_PARTICLE_IMMU_ELEMENT;
+
+	// 가변 데이터 (CS에서 값이 계속 바뀌는 것들)
+	typedef struct tagEffect_Particle_MU_ELEMENT
+	{
+		float				fTimeDelta = { 0.f };		// 시간 값
+		float				fStartSpeed = { 0.f };		// 배속
+		float				fEndSpeed = {};
+		unsigned  int		iMoveState = { 0}; // State를 flag에 담아서 보내기
+		int					bIsLoop = { 0 };
+
+		SimpleMath::Vector3	vPivot = {};	// Spread시 기준점
+		SimpleMath::Vector3 vLook = {};		// Straight시 방향
+		float				vPadding1 = {};
+	}EFFECT_PARTICLE_MU_ELEMENT;
+#pragma endregion
 	union COLLIDER_ID
 	{
 		struct

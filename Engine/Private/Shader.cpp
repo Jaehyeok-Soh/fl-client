@@ -361,13 +361,13 @@ HRESULT CShader::Load_Shader(const D3D11_INPUT_ELEMENT_DESC* pElements, const _u
 		flag = D3DCOMPILE_OPTIMIZATION_LEVEL1;
 #endif   
 		ID3DBlob* pBlob = { nullptr };
- 		if (FAILED(::D3DX11CompileEffectFromFile(Get_Path().c_str(), NULL, D3D_COMPILE_STANDARD_FILE_INCLUDE, flag, 0, m_pDevice, &m_pEffect, &pBlob)))
+		if (FAILED(::D3DX11CompileEffectFromFile(Get_Path().c_str(), NULL, D3D_COMPILE_STANDARD_FILE_INCLUDE, flag, 0, m_pDevice, &m_pEffect, &pBlob)))
 		{
 			if (pBlob)
 			{
 				LPVOID pSrc = pBlob->GetBufferPointer();
 				wstring wstrhi(static_cast<const _tchar*>(pSrc));
- 				_uint i = 0;
+				_uint i = 0;
 			}
 			Safe_Release(pBlob);
 			return E_FAIL;
@@ -397,7 +397,7 @@ HRESULT CShader::Load_Shader(const D3D11_INPUT_ELEMENT_DESC* pElements, const _u
 
 				if (FAILED(m_pDevice->CreateInputLayout(pElements, iNumElements, pass.tDesc.pIAInputSignature, pass.tDesc.IAInputSignatureSize, &pass.pInputLayout)))
 					return E_FAIL;
-				 
+
 				technique.vecPasses.push_back(pass);
 			}
 
