@@ -375,6 +375,9 @@
     <ClInclude Include="..\Public\UIAction_Client.h">
       <Filter>03. GameObject\UIObjects\04.Action</Filter>
     </ClInclude>
+    <ClInclude Include="..\Public\UITargetAction_Client.h">
+      <Filter>03. GameObject\UIObjects\04.Action</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <Image Include="Client.ico">
@@ -547,6 +550,9 @@
       <Filter>07. System\01. Builder\Map</Filter>
     </ClCompile>
     <ClCompile Include="..\Private\UIAction_Client.cpp">
+      <Filter>03. GameObject\UIObjects\04.Action</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\UITargetAction_Client.cpp">
       <Filter>03. GameObject\UIObjects\04.Action</Filter>
     </ClCompile>
   </ItemGroup>

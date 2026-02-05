@@ -68,6 +68,10 @@ HRESULT CBuilder_UI::Build(const CDataDocumentBase& document)
 				return E_FAIL;
 		}
 	}
+
+	CImGui_UIManager::GetInstance()->Move_CanvasCache(m_pCanvasCache);
+	CImGui_UIManager::GetInstance()->Move_LayerCache(m_pLayerCache);
+	CImGui_UIManager::GetInstance()->Move_UICache(m_pUICache);
 	return S_OK;
 }
 

@@ -258,6 +258,8 @@ HRESULT CToolUI::Excute_Action(DTO::EUIEvent EventType)
 {
 	if (nullptr == m_pActionForMe)
 		return E_FAIL;
+	if (nullptr == m_pActionForTarget)
+		return E_FAIL;
 
 	size_t index = ENUM_TO_SZET(EventType);
 	if (index >= m_vecBindingActions.size())
@@ -267,6 +269,7 @@ HRESULT CToolUI::Excute_Action(DTO::EUIEvent EventType)
 		fn(m_pActionForMe, m_pActionForTarget);
 	return S_OK;
 }
+
 
 HRESULT CToolUI::Bind_ShaderResources()
 {
@@ -326,6 +329,13 @@ void CToolUI::SetUp_Visible()
 
 void CToolUI::Acting_About_State()
 {
+	if (Engine_Utils::Has_Flag(m_iInteractState, DTO::EUIEvent_Flag::INVOKED))
+	{
+		Excute_Action(DTO::EUIEvent::INVOKED);
+		Engine_Utils::RemoveSoft_Flag(m_iInteractState, DTO::EUIEvent_Flag::INVOKED);
+		return;
+	}
+
 	if(m_iInteractState == DTO::EUIEvent_Flag::NONE)
 		Excute_Action(DTO::EUIEvent::NONE);
 	else

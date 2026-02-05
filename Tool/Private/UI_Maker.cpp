@@ -278,8 +278,15 @@ void CUI_Maker::Make_Canvas()
 				}
 				else
 				{
-					if(FAILED(m_pUIManager->Safe_Add_Canvas(dynamic_cast<CToolCanvas*>(pResult))))
-						ImGui::PopID();
+					auto* pCanvas = dynamic_cast<CToolCanvas*>(pResult);
+					if (nullptr != pCanvas)
+					{
+						if(FAILED(m_pUIManager->Safe_Add_Canvas(pCanvas)))
+							ImGui::PopID();
+							
+						if(FAILED(m_pUIManager->Safe_Add_CanvasCache(m_strCanvasTag, pCanvas)))
+							ImGui::PopID();
+					}
 				}
 				m_strCanvasTag = "";
 				m_isCreateCanvas = FALSE;
@@ -380,11 +387,23 @@ void CUI_Maker::Make_Layer()
 						CToolCanvas* pCanvas = m_pUIManager->Safe_Access_Canvas(m_pUIManager->Get_CurCanvasIndex());
 						if (nullptr != pCanvas)
 						{
-							if (FAILED(pCanvas->Safe_Add_Layer(dynamic_cast<CToolLayer*>(pResult))))
+							auto* pLayer = dynamic_cast<CToolLayer*>(pResult);
+							if (nullptr != pLayer)
 							{
-								m_strLayerTag = "";
-								m_isCreateLayer = FALSE;
-								MSG_BOX("CUI_Maker::Make_Layers, Layer Add Failed");
+
+								if (FAILED(pCanvas->Safe_Add_Layer(pLayer)))
+								{
+									m_strLayerTag = "";
+									m_isCreateLayer = FALSE;
+									MSG_BOX("CUI_Maker::Make_Layers, Layer Add Failed");
+								}
+
+								if (FAILED(m_pUIManager->Safe_Add_LayerCache(m_strLayerTag, pLayer)))
+								{
+									m_strLayerTag = "";
+									m_isCreateLayer = FALSE;
+									MSG_BOX("CUI_Maker::Make_Layers, Layer Add Failed");
+								}
 							}
 						}
 					}
@@ -551,6 +570,13 @@ void CUI_Maker::Make_UI()
 							auto* pUI = dynamic_cast<CToolUI*>(pResult);
 							if (nullptr != pUI) {
 								if (FAILED(pLayer->Safe_Add_UI(pUI)))
+								{
+									m_strUIName = "";
+									m_isCreateUI = FALSE;
+									MSG_BOX("CUI_Maker::Make_UI, UI Add Failed");
+								}
+
+								if(FAILED(m_pUIManager->Safe_Add_UICache(m_strUIName, pUI)))
 								{
 									m_strUIName = "";
 									m_isCreateUI = FALSE;

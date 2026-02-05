@@ -67,6 +67,47 @@ void CUIAction_Registry::Initialize_CommonAction()
 
 void CUIAction_Registry::Initialize_CommonTargetAction()
 {
+	Register_Factory((DTO::EUIAction::TRIGGER_ALL_CANVAS),
+		[](const json& params) -> ActionFunc
+		{
+			const uint32_t iLevelIndex = params.value("iLevelIndex", 0u);
+			const _string strCanvasTag = params.value("strCanvasTag", "");
+			return [iLevelIndex,strCanvasTag](IUIActionForMe*, IUIActionForTarget* target)
+				{
+					if (nullptr == target)
+						return;
+
+					target->Trigger_All_Canvas(iLevelIndex, strCanvasTag);
+				};
+		});
+
+	Register_Factory((DTO::EUIAction::TRIGGER_ALL_LAYER),
+		[](const json& params) -> ActionFunc
+		{
+			const uint32_t iLevelIndex = params.value("iLevelIndex", 0u);
+			const _string strLayerTag = params.value("strLayerTag", "");
+			return [iLevelIndex,strLayerTag](IUIActionForMe*, IUIActionForTarget* target)
+				{
+					if (nullptr == target)
+						return;
+
+					target->Trigger_All_Layer(iLevelIndex,strLayerTag);
+				};
+		});
+
+	Register_Factory((DTO::EUIAction::TRIGGER_TARGET_UI),
+		[](const json& params) -> ActionFunc
+		{
+			const uint32_t iLevelIndex = params.value("iLevelIndex", 0u);
+			const _string strUITag = params.value("strUITag", "");
+			return [iLevelIndex,strUITag](IUIActionForMe*, IUIActionForTarget* target)
+				{
+					if (nullptr == target)
+						return;
+
+					target->Trigger_TargetUI(iLevelIndex,strUITag);
+				};
+		});
 }
 
 void CUIAction_Registry::Register_Factory(DTO::EUIAction FuncType, FactoryFunc factory)
@@ -95,6 +136,7 @@ CUIAction_Registry* CUIAction_Registry::Create()
 {
 	CUIAction_Registry* pInstance = new CUIAction_Registry();
 	pInstance->Initialize_CommonAction();
+	pInstance->Initialize_CommonTargetAction();
 	return pInstance;
 }
 

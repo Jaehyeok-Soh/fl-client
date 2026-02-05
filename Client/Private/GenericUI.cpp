@@ -10,6 +10,7 @@
 #include "VIBuffer_Rect_Tex.h"
 #include "UIAction_Registry.h"
 #include "UIAction_Client.h"
+#include "UITargetAction_Client.h"
 #include "GameInstance.h"
 
 CGenericUI::CGenericUI(ID3D11Device* pDevice, ID3D11DeviceContext* pDeviceContext)
@@ -49,6 +50,12 @@ HRESULT CGenericUI::Initialize(void* pArg)
 	m_pActionForMe = CUIAction_Client::Create(this);
 	if (nullptr == m_pActionForMe)
 		return E_FAIL;
+	m_pActionForTarget = CUITargetAction_Client::Create(this);
+	if (nullptr == m_pActionForTarget)
+	{
+		Safe_Release(m_pActionForMe);
+		return E_FAIL;
+	}
 
 	return S_OK;
 }
@@ -89,7 +96,11 @@ void CGenericUI::Update(const _float fTimeDelta)
 void CGenericUI::Update_Late(const _float fTimeDelta)
 {
 	if (m_isVisible)
+	{
+		Lerp_Movement(fTimeDelta);
+		Return_Lerp_Movement(fTimeDelta);
 		Super::Update_Late(fTimeDelta);
+	}
 }
 
 void CGenericUI::Ready_Before_Render(const _float fTimeDelta)
@@ -128,6 +139,13 @@ _bool CGenericUI::Calc_HitEvent()
 
 void CGenericUI::Acting_By_InteractState()
 {
+	if (Engine_Utils::Has_Flag(m_iInteractState, DTO::EUIEvent_Flag::INVOKED))
+	{
+		Excute_Action(DTO::EUIEvent::INVOKED);
+		Engine_Utils::RemoveSoft_Flag(m_iInteractState, DTO::EUIEvent_Flag::INVOKED);
+		return;
+	}
+
 	if (m_iInteractState == DTO::EUIEvent_Flag::NONE)
 		Excute_Action(DTO::EUIEvent::NONE);
 	else
@@ -217,7 +235,7 @@ HRESULT CGenericUI::Excute_Action(DTO::EUIEvent EventType)
 		return E_FAIL;
 
 	for (auto& fn : m_vecBindingActions[index])
-		fn(m_pActionForMe);
+		fn(m_pActionForMe, m_pActionForTarget);
 	return S_OK;
 }
 
@@ -258,6 +276,101 @@ HRESULT CGenericUI::Bind_ShaderResources()
 	return S_OK;
 }
 
+void CGenericUI::Start_Lerp_Movement(const Vec3& vTargetPos, const _float fTargetAlpha, const _float& fDuration, _bool isPin)
+{
+	m_vLerpMovement_StartPos = m_vRenderPos; /* vRenderPos -> Local */
+	m_vLerpMovement_TargetPos = vTargetPos; /* vTargetPos -> Local */
+
+	m_fLerpMovement_TargetAlpha = fTargetAlpha;
+	m_fLerpMovement_Duration = fDuration;
+	m_fLerpMovement_TimeAcc = 0.f;
+	m_isPlaying_Lerp_Movement = true;
+	m_isLerpMovement_Pin = isPin;
+}
+
+void CGenericUI::Start_Return_Lerp_Movement()
+{
+	m_vLerpMovement_StartPos = m_vMoveOffset;
+	m_vLerpMovement_TargetPos = Vec3{ 0.f, 0.f, 0.f };
+
+	m_fLerpMovement_TimeAcc = 0.f;
+	m_isPlaying_Return_Lerp_Movement = true;
+	m_isMoved = false;
+}
+
+void CGenericUI::Lerp_Movement(const _float fTimeDelta)
+{
+	if (!m_isPlaying_Lerp_Movement || m_isMoved || m_isPlaying_Return_Lerp_Movement)
+		return;
+
+	if (m_fLerpMovement_Duration <= 0.f)
+	{
+		m_vMoveOffset = m_vLerpMovement_TargetPos - m_vLerpMovement_StartPos;
+		m_isPlaying_Lerp_Movement = false;
+		return;
+	}
+
+	m_fLerpMovement_TimeAcc += fTimeDelta;
+
+	_float t = m_fLerpMovement_TimeAcc / m_fLerpMovement_Duration;
+	if (t >= 1.f) t = 1.f;
+	else if (t <= 0.f) t = 0.f;
+
+	_float s = t;
+	if (m_fLerpMovement_TargetAlpha > 0.f)
+		s = 1.f - powf(1.f - t, m_fLerpMovement_TargetAlpha);
+
+	m_vMoveOffset = (m_vLerpMovement_TargetPos - m_vLerpMovement_StartPos) * s;
+
+	if (t >= 1.f)
+	{
+		if (m_isLerpMovement_Pin)
+		{
+			m_vMoveOffset = m_vLerpMovement_TargetPos - m_vLerpMovement_StartPos;
+			m_isMoved = TRUE;
+		}
+		else
+		{
+			Start_Return_Lerp_Movement();
+		}
+
+		m_isPlaying_Lerp_Movement = false;
+	}
+}
+
+void CGenericUI::Return_Lerp_Movement(const _float fTimeDelta)
+{
+	if (!m_isPlaying_Return_Lerp_Movement || m_isPlaying_Lerp_Movement)
+		return;
+
+	if (m_fLerpMovement_Duration <= 0.f)
+	{
+		m_vMoveOffset = Vec3{ 0.f, 0.f, 0.f };
+		m_isPlaying_Return_Lerp_Movement = false;
+		m_isMoved = false;
+		return;
+	}
+
+	m_fLerpMovement_TimeAcc += fTimeDelta;
+
+	_float t = m_fLerpMovement_TimeAcc / m_fLerpMovement_Duration;
+	if (t >= 1.f) t = 1.f;
+	else if (t <= 0.f) t = 0.f;
+
+	_float s = t;
+	if (m_fLerpMovement_TargetAlpha > 0.f)
+		s = 1.f - powf(1.f - t, m_fLerpMovement_TargetAlpha);
+
+	m_vMoveOffset = m_vLerpMovement_StartPos + (m_vLerpMovement_TargetPos - m_vLerpMovement_StartPos) * s;
+
+	if (t >= 1.f)
+	{
+		m_vMoveOffset = Vec3{ 0.f, 0.f, 0.f };
+		m_isMoved = false;
+		m_isPlaying_Return_Lerp_Movement = false;
+	}
+}
+
 CGenericUI* CGenericUI::Create(ID3D11Device* pDevice, ID3D11DeviceContext* pDeviceContext)
 {
 	CGenericUI* pInstance = new CGenericUI(pDevice, pDeviceContext);
@@ -283,5 +396,6 @@ CGameObject* CGenericUI::Clone(void* pArg)
 void CGenericUI::Free()
 {
 	Safe_Release(m_pActionForMe);
+	Safe_Release(m_pActionForTarget);
 	Super::Free();
 }

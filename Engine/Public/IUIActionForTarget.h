@@ -13,8 +13,9 @@ protected:
 	virtual ~IUIActionForTarget() = default;
 
 public:
-	virtual CGameObject* Find_GameObject(const _string& strTag)PURE;
-	virtual CComponent* Find_Component(const _string& strTag)PURE;
+	virtual void Trigger_All_Canvas(uint32_t iLevelIndex, const _string& strCanvasTag)PURE;
+	virtual void Trigger_All_Layer(uint32_t iLevelIndex, const _string& strLayerTag)PURE;
+	virtual void Trigger_TargetUI(uint32_t iLevelIndex, const _string& strUITag)PURE;
 
 public:
 	virtual void Free()override;
