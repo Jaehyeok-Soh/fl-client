@@ -326,7 +326,6 @@ namespace Engine
 
 	typedef struct tagPhysicsRigidBody
 	{
-		SimpleMath::Vector3 vScale_Isolated = {};
 		EPhysicsActorType eType = { EPhysicsActorType::STATIC };
 		EPhysicsCollisionDetection detection = { EPhysicsCollisionDetection::DISCRETE };
 		float fDensity = { 10.f };
@@ -336,7 +335,8 @@ namespace Engine
 		float fLinearDamping = {};
 		float fAngularDamping = {};
 
-		const Matrix* pOwnerMatrix = { nullptr };
+		vector<Matrix> pOwnerMatrices;
+		vector<SimpleMath::Vector3> vScale_Isolated;
 	}PHYSICSRIGIDBODY_DESC;
 
 	typedef struct tagPhysicsCollider

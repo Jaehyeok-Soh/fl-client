@@ -140,8 +140,8 @@ HRESULT CStaticModel::Ready_PhysicsRigidBody(STATICMODEL_DESC* pDesc)
 	desc.bIsKinematic = false;
 	desc.fLinearDamping = 0.f;
 	desc.fAngularDamping = 0.f;
-	desc.pOwnerMatrix = &Get_Component<CTransform>()->Get_WorldMatrix();
-	desc.vScale_Isolated = pDesc->vScale_Isolated;
+	desc.pOwnerMatrices.push_back(Get_Component<CTransform>()->Get_WorldMatrix());
+	desc.vScale_Isolated.push_back(pDesc->vScale_Isolated);
 
 	if (FAILED(Add_Component<CPhysicsRigidBody>(0, L"Prototype_Component_Physics_RigidBody", &desc)))
 		return E_FAIL;

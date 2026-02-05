@@ -66,7 +66,7 @@ public:
 /// Actor Factory : RigidBody »ý¼º
 /// </summary>
 public:
-    PxRigidActor* GetActor(PHYSICSRIGIDBODY_DESC* rigidBodyDesc, PHYSICSCOLLIDER_DESC* colliderDesc, vector<PxShape*>& shapes);
+    vector<PxRigidActor*> GetActor(PHYSICSRIGIDBODY_DESC* rigidBodyDesc, PHYSICSCOLLIDER_DESC* colliderDesc, vector<PxShape*>& shapes);
 
 /// <summary>
 /// Character Controller Manager

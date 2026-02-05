@@ -11,6 +11,7 @@ public:
 	typedef struct tagStaticModel_Desc : public CMapObject::MAPOBJECT_DESC
 	{
 		DTO::USING_MODEL_INFO	 tUsingModelInfo{};
+		Vec3					 vScale_Isolated = {};
 	}STATICMODEL_DESC;
 public:
 	CStaticModel(ID3D11Device* pDevice , ID3D11DeviceContext* pContext);

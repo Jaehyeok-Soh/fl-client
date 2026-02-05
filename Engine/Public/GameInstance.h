@@ -291,7 +291,7 @@ public:
 	void DeserializeLevel(std::filesystem::path path) {}
 	vector<PxShape*> GetShape(PHYSICSCOLLIDER_DESC* pDesc);
 	vector<PxShape*> GetMeshShape(PHYSICSCOLLIDER_DESC* pDesc);
-	PxRigidActor* GetActor(PHYSICSRIGIDBODY_DESC* rigidBodyDesc, PHYSICSCOLLIDER_DESC* colliderDesc, vector<PxShape*>& shapes);
+	vector<PxRigidActor*> GetActor(PHYSICSRIGIDBODY_DESC* rigidBodyDesc, PHYSICSCOLLIDER_DESC* colliderDesc, vector<PxShape*>& shapes);
 	PxController* GetController(PHYSICSCCT_DESC* pDesc);
 	void RegisterPhysicsMesh(_uint levelIndex, _wstring prototypeTag);
 	_bool HasNegativeScale(const Matrix& mat);
