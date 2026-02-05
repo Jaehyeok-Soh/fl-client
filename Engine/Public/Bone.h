@@ -24,10 +24,8 @@ private:
 public:
 	_bool Compare_Name(const _char* pName) { return !::strcmp(pName, m_szName); }
 	void Set_TransformationMatrix(const Matrix& matTransformation) { m_matTransform = matTransformation; }
-	const Matrix& Get_LocalTransform() { return m_matTransform; }
 	const Matrix& Get_CombinedTransformMatrix() { return m_matCombinedTransform; }
 	const Matrix& Get_BindPoseTransformMatrix() { return m_matBindPoseTransform; }
-	void Set_LocalTransMatrixPos(Vec3 vPos);
 	_int Get_Index() const { return m_iIndex; }
 	_int Get_ParentIndex() const { return m_iParentIndex; }
 	void Update_CombinedTransformMatrix(const vector<CBone*>& Bones, const Matrix& PreTransformMatrix);
