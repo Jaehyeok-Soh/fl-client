@@ -205,7 +205,7 @@ HRESULT CPlayer::Ready_BaseStates()
                                 ,{ENUM_TO_UINT(State::SLIDE), Get_AnimationIndex(L"Animation_PlayerMoon_Crouch_To_Stand")}
                                 ,{ENUM_TO_UINT(State::RUNLOOP), Get_AnimationIndex(L"Animation_PlayerMoon_Run_Stop_L_Acc")}
         };
-        desc.vecMainAnims   = { Get_AnimationIndex(L"Animation_PlayerMoon_Sword_RunAttack_04") }; //Animation_PlayerMoon_Idle //Animation_Pino_Combo_Slash1
+        desc.vecMainAnims   = { Get_AnimationIndex(L"Animation_PlayerMoon_Idle") }; //Animation_PlayerMoon_Idle //Animation_Pino_Combo_Slash1
         desc.bBlend         = true;
         desc.bLoop          = true;
 

@@ -37,6 +37,7 @@ CModel::CModel(const CModel& rhs)
 	, m_vecMaterialInstances(rhs.m_vecMaterialInstances)
 	, m_umapAnimationIndexTable(rhs.m_umapAnimationIndexTable)
 	, m_pMasterMesh(rhs.m_pMasterMesh)
+	, m_iRootBoneIdx(rhs.m_iRootBoneIdx)
 {
 	m_vecPrevAnimationPose.resize(rhs.m_vecPrevAnimationPose.size());
 	m_vecCurrAnimationPose.resize(rhs.m_vecCurrAnimationPose.size());
@@ -459,6 +460,11 @@ HRESULT CModel::Load_AnimModel(const wstring& wstrModelName, DATA_ANIMCHANNEL* p
 		return E_FAIL;
 	if (FAILED(pModelLoader->Read_Animation(&m_vecAnimations, pData)))
 		return E_FAIL;
+
+	if (pData)
+	{
+		m_iRootBoneIdx = pData->iRootBoneIndex;
+	}
 	
 	Safe_Release(pModelLoader);
 	return S_OK;
@@ -533,8 +539,8 @@ void CModel::Blend_Animation(_float fTimeDelta, _float fRatio, CTransform* pOwne
 {
 	if (pOwnerTransform)
 	{
-		m_vecAnimations[m_iPrevAnimIndex]->SetUp_PoseDatasForBlending(m_vecPrevAnimationPose, fTimeDelta, pOwnerTransform, pOwnerPhyCCT);
-		m_vecAnimations[m_iCurrentAnimIndex]->SetUp_PoseDatasForBlending(m_vecCurrAnimationPose, fTimeDelta, pOwnerTransform, pOwnerPhyCCT);
+		m_vecAnimations[m_iPrevAnimIndex]->SetUp_PoseDatasForBlending(m_vecPrevAnimationPose, fTimeDelta, nullptr, pOwnerPhyCCT);
+		m_vecAnimations[m_iCurrentAnimIndex]->SetUp_PoseDatasForBlending(m_vecCurrAnimationPose, fTimeDelta, nullptr, pOwnerPhyCCT);
 	}
 
 	else
@@ -566,6 +572,28 @@ void CModel::Blend_Animation(_float fTimeDelta, _float fRatio, CTransform* pOwne
 		pBone->Set_TransformationMatrix(matTransformation);
 		++i;
 	}
+
+	// 루트 모션을 꺼내 온다
+	Vec3 vCurRootPos = (m_vecBones[m_iRootBoneIdx]->Get_LocalTransform()).Translation();
+	Vec3 vDelta = m_vPreRootPos - vCurRootPos;
+
+	m_vPreRootPos = vCurRootPos;
+
+	// 캐릭터를 이동시킨다
+	Vec3 vOwnerRight = pOwnerTransform->Get_Info(TRANSFORM_INFO_STATE::RIGHT);
+	Vec3 vOwnerUp = pOwnerTransform->Get_Info(TRANSFORM_INFO_STATE::UP);
+	Vec3 vOwnerLook = pOwnerTransform->Get_Info(TRANSFORM_INFO_STATE::LOOK);
+
+	Vec3 moveDistance = vOwnerRight * vDelta.x + vOwnerUp * vDelta.z + vOwnerLook * vDelta.y;
+
+	pOwnerPhyCCT->Move(moveDistance, 0.0f, fTimeDelta);
+
+	Vec3 finalPos = pOwnerPhyCCT->GetFootPosition();
+
+	pOwnerTransform->Set_Info(TRANSFORM_INFO_STATE::POS, finalPos);
+
+	// 루트 translation을 제거
+	m_vecBones[m_iRootBoneIdx]->Set_LocalTransMatrixPos(Vec3::Zero);
 
 	for (size_t i = 0; i < m_vecBones.size(); ++i)
 	{
@@ -660,6 +688,9 @@ void CModel::Play_End()
 void CModel::Blend_Begin()
 {
 	m_fBlendedTime = 0.f;
+
+	if (m_iRootBoneIdx > 0)
+		m_vPreRootPos = m_vecBones[m_iRootBoneIdx]->Get_LocalTransform().Translation();
 }
 
 void CModel::Blend_Update(const _float fTimeDelta, CTransform* pOwnerTransform, CPhysicsCCT* pOwnerPhyCCT)

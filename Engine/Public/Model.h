@@ -149,6 +149,10 @@ private:
 	vector<LOCALSRT> m_vecPrevAnimationPose;
 	vector<LOCALSRT> m_vecCurrAnimationPose;
 
+private:
+	_int m_iRootBoneIdx = { -1 };
+	Vec3 m_vPreRootPos = Vec3::Zero;
+
 public:
 	static CModel* Create(ID3D11Device* pDevice, ID3D11DeviceContext* pDeviceContext, void* pArg);
 	virtual CComponent* Clone(void* pArg) override;

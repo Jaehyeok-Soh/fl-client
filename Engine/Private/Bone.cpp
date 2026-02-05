@@ -20,6 +20,11 @@ HRESULT CBone::Initialize(BONE_DESC* pDesc)
     return S_OK;
 }
 
+void CBone::Set_LocalTransMatrixPos(Vec3 vPos)
+{
+    m_matTransform.Translation(vPos);
+}
+
 void CBone::Update_CombinedTransformMatrix(const vector<CBone*>& Bones, const Matrix& PreTransformMatrix)
 {
 
