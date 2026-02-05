@@ -32,6 +32,8 @@ enum class EUIEvent : uint32_t
 	PRESS_ENTER,
 	PRESSING,
 	PRESS_EXIT,
+
+	INVOKED,
 	END
 };
 
@@ -44,7 +46,8 @@ enum EUIEvent_Flag : uint32_t
 	PRESS_ENTER = 1u << 4,
 	PRESSING	= 1u << 5,
 	PRESS_EXIT	= 1u << 6,
-	END			= 1u << 7
+	INVOKED		= 1u << 7,
+	END			= 1u << 8
 };
 
 inline DTO::EUIEvent EventFlagToEvent(DTO::EUIEvent_Flag eFlag)
@@ -58,6 +61,7 @@ inline DTO::EUIEvent EventFlagToEvent(DTO::EUIEvent_Flag eFlag)
 	case DTO::EUIEvent_Flag::PRESS_ENTER:	return DTO::EUIEvent::PRESS_ENTER;
 	case DTO::EUIEvent_Flag::PRESSING:		return DTO::EUIEvent::PRESSING;
 	case DTO::EUIEvent_Flag::PRESS_EXIT:	return DTO::EUIEvent::PRESS_EXIT;
+	case DTO::EUIEvent_Flag::INVOKED:		return DTO::EUIEvent::INVOKED;
 	default:								return DTO::EUIEvent::NONE;
 	}
 }
@@ -73,6 +77,7 @@ inline DTO::EUIEvent_Flag EventToEventFlag(DTO::EUIEvent eEvent)
 	case DTO::EUIEvent::PRESS_ENTER:	return DTO::EUIEvent_Flag::PRESS_ENTER;
 	case DTO::EUIEvent::PRESSING:		return DTO::EUIEvent_Flag::PRESSING;
 	case DTO::EUIEvent::PRESS_EXIT:		return DTO::EUIEvent_Flag::PRESS_EXIT;
+	case DTO::EUIEvent::INVOKED:		return DTO::EUIEvent_Flag::INVOKED;
 	default:							return DTO::EUIEvent_Flag::NONE;
 	}
 }
@@ -87,6 +92,7 @@ NLOHMANN_JSON_SERIALIZE_ENUM(EUIEvent,
 		{EUIEvent::PRESS_ENTER, "PRESS_ENTER"},
 		{EUIEvent::PRESSING, "PRESSING"},
 		{EUIEvent::PRESS_EXIT, "PRESS_EXIT"},
+		{EUIEvent::INVOKED, "INVOKED"},
 	})
 	inline std::string UIEventToString(DTO::EUIEvent eType)
 {
@@ -99,6 +105,7 @@ NLOHMANN_JSON_SERIALIZE_ENUM(EUIEvent,
 	case DTO::EUIEvent::PRESS_ENTER: return "PRESS_ENTER";
 	case DTO::EUIEvent::PRESSING: return "PRESSING";
 	case DTO::EUIEvent::PRESS_EXIT: return "PRESS_EXIT";
+	case DTO::EUIEvent::INVOKED: return "INVOKED";
 	default: return "";
 	}
 }
@@ -112,15 +119,30 @@ inline DTO::EUIEvent StringToUIEvent(const std::string& str)
 	else if (str == "PRESS_ENTER") return DTO::EUIEvent::PRESS_ENTER;
 	else if (str == "PRESSING") return DTO::EUIEvent::PRESSING;
 	else if (str == "PRESS_EXIT") return DTO::EUIEvent::PRESS_EXIT;
+	else if (str == "INVOKED") return DTO::EUIEvent::INVOKED;
 	else return DTO::EUIEvent::END;
 }
 
 enum class EUIAction
 {
-	/* (isVisible / bool) */
+	/* (bool / isVisible) */
 	SET_VISIBLE,
-	/* (index / uint) */
+
+	/* (uint / uIndex) */
 	SET_TEXTURE_INDEX,
+
+	/* (Vec3 / vTargetPos),( _float / fTargetAlpha),( _float / fDuration), (bool / isPin)*/
+	START_LERP_MOVEMENT,
+	
+	/* (_string / strCanvasTag)*/
+	TRIGGER_ALL_CANVAS,
+
+	/* (_string / strLayerTag)*/
+	TRIGGER_ALL_LAYER,
+	
+	/* (_string / strUITag)*/
+	TRIGGER_TARGET_UI,
+	
 	END
 };
 
@@ -128,6 +150,10 @@ inline EUIAction StringToUIFunctype(const _string& str)
 {
 	if (str == "SET_VISIBLE")return EUIAction::SET_VISIBLE;
 	else if (str == "SET_TEXTURE_INDEX")return EUIAction::SET_TEXTURE_INDEX;
+	else if (str == "START_LERP_MOVEMENT")return EUIAction::START_LERP_MOVEMENT;
+	else if (str == "TRIGGER_ALL_CANVAS")return EUIAction::TRIGGER_ALL_CANVAS;
+	else if (str == "TRIGGER_ALL_LAYER")return EUIAction::TRIGGER_ALL_LAYER;
+	else if (str == "TRIGGER_TARGET_UI")return EUIAction::TRIGGER_TARGET_UI;
 	else return EUIAction::END;
 }
 
@@ -137,6 +163,10 @@ inline _string UIFunctypeToString(EUIAction eType)
 	{
 	case DTO::EUIAction::SET_VISIBLE: return "SET_VISIBLE";
 	case DTO::EUIAction::SET_TEXTURE_INDEX: return "SET_TEXTURE_INDEX";
+	case DTO::EUIAction::START_LERP_MOVEMENT: return "START_LERP_MOVEMENT";
+	case DTO::EUIAction::TRIGGER_ALL_CANVAS: return "TRIGGER_ALL_CANVAS";
+	case DTO::EUIAction::TRIGGER_ALL_LAYER: return "TRIGGER_ALL_LAYER";
+	case DTO::EUIAction::TRIGGER_TARGET_UI: return "TRIGGER_TARGET_UI";
 	default: return "";
 	}
 }

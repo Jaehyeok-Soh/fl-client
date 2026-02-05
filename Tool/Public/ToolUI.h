@@ -1,20 +1,25 @@
 #pragma once
 #include "UIObject.h"
 #include "UIData_Repository.h"
+#include "UIAction_Registry.h"
 
 NS_BEGIN(Engine)
 class IUIActionForMe;
 NS_END
 
 NS_BEGIN(Tool)
+class CToolCanvas;
+class CToolLayer;
 class CToolUI final : public CUIObject
 {
 	using Super = CUIObject;
-	using ActionFunc = std::function<void(IUIActionForMe*)>;
 
 public:
 	typedef struct tagToolUIDesc : public Super::UIOBJECT_DESC
 	{
+		CToolCanvas* pCacheCanvas = { nullptr };
+		CToolLayer* pCacheLayer = { nullptr };
+
 		_string strName;
 
 		_string strCanvasName;
@@ -56,6 +61,7 @@ private:
 	HRESULT Bind_ShaderResources();
 
 	void SetUp_RectTransform_Position();
+	Vec2 Calc_RectTransformPosition();
 	void SetUp_Visible();
 
 	void Acting_About_State();
@@ -70,7 +76,6 @@ public:
 	const _wstring& Get_TextureTag() const { return m_wstrTextureTag; }
 	void Set_TextureTag(const _wstring& value) { m_wstrTextureTag = value; }
 	uint32_t Get_TextureIndex() const { return m_iTextureIndex; }
-	void Set_TextureIndex(uint32_t value) { m_iTextureIndex = value; }
 	_float* Get_WIdth_Ptr() { return &m_fWidth; }
 	_float* Get_Height_Ptr() { return &m_fHeight; }
 	_float* Get_PosX_Ptr() { return &m_fX; }
@@ -87,10 +92,41 @@ public:
 
 #pragma endregion
 
+	/* Action */
+public:
+	void Set_TextureIndex(uint32_t index) { m_iTextureIndex = index; }
+
+	void Start_Lerp_Movement(const Vec3& vTargetPos, const _float fTargetAlpha, const _float& fDuration, _bool isPin);
+	void Start_Return_Lerp_Movement();
+	void Lerp_Movement(const _float fTimeDelta);
+	void Return_Lerp_Movement(const _float fTimeDelta);
+	/* Action Variable */
+private:
+	uint32_t m_iTextureIndex = {};
+
+	/*Start_Lerp_Movement*/
+	_bool m_isPlaying_Lerp_Movement = { false };
+	Vec3 m_vLerpMovement_StartPos = {};
+	Vec3 m_vLerpMovement_TargetPos = {};
+	_float m_fLerpMovement_TargetAlpha = {};
+	_float m_fLerpMovement_Duration = {};
+	_float m_fLerpMovement_TimeAcc = {};
+	_bool m_isLerpMovement_Pin = {};
+	_bool m_isMoved = {false};
+	Vec3 m_vMoveOffset = {};
+	Vec3 m_vLerpMovement_StartOffset;
+	Vec3 m_vLerpMovement_TargetOffset;
+	/*Start_Lerp_Movement*/
+
+	/* Start_Return_Lerp_Movement */
+	_bool m_isPlaying_Return_Lerp_Movement = { false };
+	/* Start_Return_Lerp_Movement */
+
 private:	
 	PrimitiveBatch<DirectX::VertexPositionColor>* m_pBatch = { nullptr };
 	BasicEffect* m_pEffect = { nullptr };
 	ID3D11InputLayout* m_pInputLayout = { nullptr };
+
 private:
 	DTO::TUI_GenericUIData m_tUIData = {};
 
@@ -100,18 +136,21 @@ private:
 	_string m_strLayerName = {};
 	uint32_t m_iLayerIndex = {};
 
+	CToolCanvas* m_pCacheCanvas = { nullptr };
+	CToolLayer* m_pCacheLayer = { nullptr };
+
 	ERectTransform m_eRectTransformType = { ERectTransform::C };
 	_wstring m_wstrTextureTag = {};
-	uint32_t m_iTextureIndex = {};
 
 	Vec3 m_vRenderPos = {};
 	RECT m_tRenderRect = {};
 	_bool m_isHitTest = { FALSE };
 
 	IUIActionForMe* m_pActionForMe = { nullptr };
+	IUIActionForTarget* m_pActionForTarget = { nullptr };
 	
 	/* 액션들을 이벤트 갯수만큼 정적으로 할당 사실상 vector<ActionFunc>[] 이거임 */
-	array< vector<ActionFunc> , ENUM_TO_UINT(DTO::EUIEvent::END)> m_vecBindingActions;
+	array< vector<Engine::CUIAction_Registry::ActionFunc> , ENUM_TO_UINT(DTO::EUIEvent::END)> m_vecBindingActions;
 	array< vector<DTO::TUI_EventBindData>, ENUM_TO_UINT(DTO::EUIEvent::END)> m_vecBindingActionData;
 
 public:

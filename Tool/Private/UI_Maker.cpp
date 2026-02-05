@@ -278,8 +278,15 @@ void CUI_Maker::Make_Canvas()
 				}
 				else
 				{
-					if(FAILED(m_pUIManager->Safe_Add_Canvas(dynamic_cast<CToolCanvas*>(pResult))))
-						ImGui::PopID();
+					auto* pCanvas = dynamic_cast<CToolCanvas*>(pResult);
+					if (nullptr != pCanvas)
+					{
+						if(FAILED(m_pUIManager->Safe_Add_Canvas(pCanvas)))
+							ImGui::PopID();
+							
+						if(FAILED(m_pUIManager->Safe_Add_CanvasCache(m_strCanvasTag, pCanvas)))
+							ImGui::PopID();
+					}
 				}
 				m_strCanvasTag = "";
 				m_isCreateCanvas = FALSE;
@@ -380,11 +387,23 @@ void CUI_Maker::Make_Layer()
 						CToolCanvas* pCanvas = m_pUIManager->Safe_Access_Canvas(m_pUIManager->Get_CurCanvasIndex());
 						if (nullptr != pCanvas)
 						{
-							if (FAILED(pCanvas->Safe_Add_Layer(dynamic_cast<CToolLayer*>(pResult))))
+							auto* pLayer = dynamic_cast<CToolLayer*>(pResult);
+							if (nullptr != pLayer)
 							{
-								m_strLayerTag = "";
-								m_isCreateLayer = FALSE;
-								MSG_BOX("CUI_Maker::Make_Layers, Layer Add Failed");
+
+								if (FAILED(pCanvas->Safe_Add_Layer(pLayer)))
+								{
+									m_strLayerTag = "";
+									m_isCreateLayer = FALSE;
+									MSG_BOX("CUI_Maker::Make_Layers, Layer Add Failed");
+								}
+
+								if (FAILED(m_pUIManager->Safe_Add_LayerCache(m_strLayerTag, pLayer)))
+								{
+									m_strLayerTag = "";
+									m_isCreateLayer = FALSE;
+									MSG_BOX("CUI_Maker::Make_Layers, Layer Add Failed");
+								}
 							}
 						}
 					}
@@ -515,11 +534,17 @@ void CUI_Maker::Make_UI()
 					Desc.fWidth = 100.f;
 					Desc.strName = m_strUIName;
 					auto* pCanvas = m_pUIManager->Safe_Access_Canvas(m_pUIManager->Get_CurCanvasIndex());
-					if(nullptr != pCanvas)
+					if (nullptr != pCanvas)
+					{
 						Desc.strCanvasName = pCanvas->Get_Tag();
+						Desc.pCacheCanvas = pCanvas;
+					}
 					auto* pLayer = m_pUIManager->Safe_Access_Layer(m_pUIManager->Get_CurLayerIndex());
-					if(nullptr != pLayer)
+					if (nullptr != pLayer)
+					{
 						Desc.strLayerName = pLayer->Get_Name();
+						Desc.pCacheLayer = pLayer;
+					}
 
 					Desc.iCanvasIndex = m_pUIManager->Get_CurCanvasIndex();
 					Desc.iLayerIndex = m_pUIManager->Get_CurLayerIndex();
@@ -551,9 +576,12 @@ void CUI_Maker::Make_UI()
 									MSG_BOX("CUI_Maker::Make_UI, UI Add Failed");
 								}
 
-								//pUI->Bind_Action(DTO::EUIEvent::HOVER_ENTER, (DTO::EUIAction::SET_TEXTURE_INDEX), json{ {"index", 7u} });
-								//pUI->Bind_Action(DTO::EUIEvent::HOVER_EXIT, (DTO::EUIAction::SET_VISIBLE), json{ {"isVisible", false} });
-								//pUI->Bind_Action(DTO::EUIEvent::HOVER_ENTER, (DTO::EUIAction::SET_VISIBLE), json{ {"isVisible", false} });
+								if(FAILED(m_pUIManager->Safe_Add_UICache(m_strUIName, pUI)))
+								{
+									m_strUIName = "";
+									m_isCreateUI = FALSE;
+									MSG_BOX("CUI_Maker::Make_UI, UI Add Failed");
+								}
 							}
 						}
 					}

@@ -46,9 +46,24 @@ public:
 	vector<CToolUI*>* Safe_Access_UIVector();
 	CToolUI*		Safe_Access_UI(int32_t index);
 
+	void Move_CanvasCache(map<_string, CToolCanvas*> CanvasCache) { m_MapCanvasCache = std::move(CanvasCache); }
+	void Move_LayerCache(map<_string, CToolLayer*> LayerCache) { m_MapLayerCache = std::move(LayerCache); }
+	void Move_UICache(map<_string, CToolUI*> ToolCache) { m_MapUICache = std::move(ToolCache); }
+
+	HRESULT Safe_Add_CanvasCache(const _string& strTag, CToolCanvas* pCache);
+	HRESULT Safe_Add_LayerCache(const _string& strTag, CToolLayer* pCache);
+	HRESULT Safe_Add_UICache(const _string& strTag, CToolUI* pCache);
+
+	CToolCanvas* Find_Canvas(const _string& strTag);
+	CToolLayer* Find_Layer(const _string& strTag);
+	CToolUI* Find_UI(const _string& strTag);
 private:
 	CGameInstance* m_pGameInstance = { nullptr };
 	vector<CToolCanvas*> m_vecCanvas;
+
+	map<_string, CToolCanvas*> m_MapCanvasCache;
+	map<_string, CToolLayer*> m_MapLayerCache;
+	map<_string, CToolUI*> m_MapUICache;
 
 private:
 	int32_t m_iCurCanvasIndex = {};
