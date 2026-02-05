@@ -254,6 +254,14 @@ void CUI_Inspector::Add_Action(DTO::EUIEvent EventType)
 
 			ImGui::CloseCurrentPopup();
 		}
+
+		const _string& strSTART_RETURN_LERP_MOVEMENT = DTO::UIActionTypeToString(DTO::EUIAction::START_RETURN_LERP_MOVEMENT);
+		if (ImGui::Selectable(strSTART_RETURN_LERP_MOVEMENT.c_str()))
+		{
+			m_pSelectedUI->Bind_Action(EventType, DTO::EUIAction::START_RETURN_LERP_MOVEMENT,json{});
+
+			ImGui::CloseCurrentPopup();
+		}
 		ImGui::EndPopup();
 	}
 }
@@ -272,6 +280,7 @@ void CUI_Inspector::Edit_Action()
 	case DTO::EUIAction::TRIGGER_ALL_CANVAS:Trigger_All_Canvas(*j); break;
 	case DTO::EUIAction::TRIGGER_ALL_LAYER: Trigger_All_Layer(*j); break;
 	case DTO::EUIAction::TRIGGER_TARGET_UI: Trigger_Target_UI(*j); break;
+	case DTO::EUIAction::START_RETURN_LERP_MOVEMENT: Edit_Start_Return_Lerp_Movement(*j); break;
 	case DTO::EUIAction::END:
 		break;
 	default:
@@ -292,7 +301,6 @@ void CUI_Inspector::SetUp_Func()
 	if (ImGui::Button("Press Exit Action",	ImVec2(w, h))) { m_eCurEditEvent = DTO::EUIEvent::PRESS_EXIT;  m_eCurEditFunc = DTO::EUIAction::END; }
 	if (ImGui::Button("Pressing Action",	ImVec2(w, h))) { m_eCurEditEvent = DTO::EUIEvent::PRESSING;    m_eCurEditFunc = DTO::EUIAction::END; }
 	if (ImGui::Button("Invoked Action",		ImVec2(w, h))) { m_eCurEditEvent = DTO::EUIEvent::INVOKED;     m_eCurEditFunc = DTO::EUIAction::END; }
-
 
 	Add_Action(m_eCurEditEvent);
 	Action_List(m_eCurEditEvent);
@@ -469,24 +477,17 @@ void CUI_Inspector::Trigger_All_Canvas(json& jParams)
 		}
 	}
 
-	static const DTO::EUIAction kTargetActions[] =
-	{
-		DTO::EUIAction::SET_VISIBLE,
-		DTO::EUIAction::SET_TEXTURE_INDEX,
-		DTO::EUIAction::START_LERP_MOVEMENT
-	};
-
 	if (!jParams.contains("eAction"))
-		jParams["eAction"] = kTargetActions[0];
+		jParams["eAction"] = m_ArrUIAction[0];
 
-	DTO::EUIAction curAct = jParams.value("eAction", kTargetActions[0]);
+	DTO::EUIAction curAct = jParams.value("eAction", m_ArrUIAction[0]);
 	DTO::EUIAction newAct = curAct;
 
 	{
 		const _string curName = DTO::UIActionTypeToString(curAct);
 		if (ImGui::BeginCombo("eAction", curName.c_str()))
 		{
-			for (auto act : kTargetActions)
+			for (auto act : m_ArrUIAction)
 			{
 				const _string name = DTO::UIActionTypeToString(act);
 				const bool isSelected = (act == curAct);
@@ -522,6 +523,8 @@ void CUI_Inspector::Trigger_All_Canvas(json& jParams)
 				{ "isPin", false }
 			};
 			break;
+		case DTO::EUIAction::START_RETURN_LERP_MOVEMENT:
+			break;
 		default:
 			jParams["jTargetActionParam"] = json::object();
 			break;
@@ -550,7 +553,9 @@ void CUI_Inspector::Trigger_All_Canvas(json& jParams)
 		if (!inner.contains("isPin")) inner["isPin"] = false;
 		Edit_Start_Lerp_Movement(inner);
 		break;
-
+	case DTO::EUIAction::START_RETURN_LERP_MOVEMENT:
+		Edit_Start_Lerp_Movement(inner);
+		break;
 	default:
 		ImGui::TextDisabled("No editable params for this action.");
 		break;
@@ -615,25 +620,17 @@ void CUI_Inspector::Trigger_All_Layer(json& jParams)
 		}
 	}
 
-	// 2) Inner Action Type
-	static const DTO::EUIAction kTargetActions[] =
-	{
-		DTO::EUIAction::SET_VISIBLE,
-		DTO::EUIAction::SET_TEXTURE_INDEX,
-		DTO::EUIAction::START_LERP_MOVEMENT
-	};
-
 	if (!jParams.contains("eAction"))
-		jParams["eAction"] = kTargetActions[0];
+		jParams["eAction"] = m_ArrUIAction[0];
 
-	DTO::EUIAction curAct = jParams.value("eAction", kTargetActions[0]);
+	DTO::EUIAction curAct = jParams.value("eAction", m_ArrUIAction[0]);
 	DTO::EUIAction newAct = curAct;
 
 	{
 		const _string curName = DTO::UIActionTypeToString(curAct);
 		if (ImGui::BeginCombo("eAction", curName.c_str()))
 		{
-			for (auto act : kTargetActions)
+			for (auto act : m_ArrUIAction)
 			{
 				const _string name = DTO::UIActionTypeToString(act);
 				const bool isSelected = (act == curAct);
@@ -674,7 +671,8 @@ void CUI_Inspector::Trigger_All_Layer(json& jParams)
 				{ "isPin", false }
 			};
 			break;
-
+		case DTO::EUIAction::START_RETURN_LERP_MOVEMENT:
+			break;
 		default:
 			jParams["jTargetActionParam"] = json::object();
 			break;
@@ -704,7 +702,9 @@ void CUI_Inspector::Trigger_All_Layer(json& jParams)
 		if (!inner.contains("isPin")) inner["isPin"] = false;
 		Edit_Start_Lerp_Movement(inner);
 		break;
-
+	case DTO::EUIAction::START_RETURN_LERP_MOVEMENT:
+		Edit_Start_Lerp_Movement(inner);
+		break;
 	default:
 		ImGui::TextDisabled("No editable params for this action.");
 		break;
@@ -775,25 +775,17 @@ void CUI_Inspector::Trigger_Target_UI(json& jParams)
 		}
 	}
 
-	// 2) Inner Action Type
-	static const DTO::EUIAction kTargetActions[] =
-	{
-		DTO::EUIAction::SET_VISIBLE,
-		DTO::EUIAction::SET_TEXTURE_INDEX,
-		DTO::EUIAction::START_LERP_MOVEMENT
-	};
-
 	if (!jParams.contains("eAction"))
-		jParams["eAction"] = kTargetActions[0];
+		jParams["eAction"] = m_ArrUIAction[0];
 
-	DTO::EUIAction curAct = jParams.value("eAction", kTargetActions[0]);
+	DTO::EUIAction curAct = jParams.value("eAction", m_ArrUIAction[0]);
 	DTO::EUIAction newAct = curAct;
 
 	{
 		const _string curName = DTO::UIActionTypeToString(curAct);
 		if (ImGui::BeginCombo("eAction", curName.c_str()))
 		{
-			for (auto act : kTargetActions)
+			for (auto act : m_ArrUIAction)
 			{
 				const _string name = DTO::UIActionTypeToString(act);
 				const bool isSelected = (act == curAct);
@@ -834,6 +826,9 @@ void CUI_Inspector::Trigger_Target_UI(json& jParams)
 				{ "isPin", false }
 			};
 			break;
+		
+		case DTO::EUIAction::START_RETURN_LERP_MOVEMENT:
+			break;
 
 		default:
 			jParams["jTargetActionParam"] = json::object();
@@ -865,6 +860,9 @@ void CUI_Inspector::Trigger_Target_UI(json& jParams)
 		Edit_Start_Lerp_Movement(inner);
 		break;
 
+	case DTO::EUIAction::START_RETURN_LERP_MOVEMENT:
+		Edit_Start_Return_Lerp_Movement(inner);
+		break;
 	default:
 		ImGui::TextDisabled("No editable params for this action.");
 		break;
@@ -873,7 +871,10 @@ void CUI_Inspector::Trigger_Target_UI(json& jParams)
 	ImGui::PopID();
 }
 
+void CUI_Inspector::Edit_Start_Return_Lerp_Movement(json& jParams)
+{
 
+}
 
 _bool CUI_Inspector::Scrub_Float(const _char* label, const _char* Id, OUT _float* pValue, float fValuePerPixel, float fValuePerPixel_fast, float fStep, float fStep_fast, float fSize)
 {

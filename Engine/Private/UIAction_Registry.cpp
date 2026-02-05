@@ -63,6 +63,17 @@ void CUIAction_Registry::Initialize_CommonAction()
 					me->Start_Lerp_Movement(vTargetPos, fTargetAlpha, fDuration, isPin);
 				};
 		});
+
+	Register_Factory((DTO::EUIAction::START_RETURN_LERP_MOVEMENT),
+		[](const json& params) -> ActionFunc
+		{
+			return [](IUIActionForMe* me, IUIActionForTarget*)
+				{
+					if (nullptr == me)
+						return;
+					me->Start_Return_Lerp_Movement();
+				};
+		});
 }
 
 void CUIAction_Registry::Initialize_CommonTargetAction()

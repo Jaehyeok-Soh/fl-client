@@ -101,8 +101,12 @@ void CToolUI::Update_Priority(const _float fTimeDelta)
 
 void CToolUI::Update(const _float fTimeDelta)
 {
+	if (m_isDisable)
+		return;
+
 	Lerp_Movement(fTimeDelta);
 	Return_Lerp_Movement(fTimeDelta);
+
 	Super::Update(fTimeDelta);
 }
 
@@ -173,8 +177,12 @@ HRESULT CToolUI::Render()
 
 _bool CToolUI::Calc_HitEvent()
 {
+	if (m_isDisable)
+		return FALSE;
+
 	if (::PtInRect(&m_tRenderRect, CImGui_ToolManager::GetInstance()->Get_CalculatedMousePos_Point()))
 		return TRUE;
+
 	return FALSE;
 }
 
@@ -445,6 +453,7 @@ void CToolUI::Start_Lerp_Movement(const Vec3& vTargetPos, const _float fTargetAl
 	m_fLerpMovement_TimeAcc = 0.f;
 	m_isPlaying_Lerp_Movement = true;
 	m_isLerpMovement_Pin = isPin;
+	m_isAction = true; /* 咀记 吝 */
 }
 
 void CToolUI::Start_Return_Lerp_Movement()
@@ -454,18 +463,21 @@ void CToolUI::Start_Return_Lerp_Movement()
 
 	m_fLerpMovement_TimeAcc = 0.f;
 	m_isPlaying_Return_Lerp_Movement = true;
-	m_isMoved = false;
+	m_isAction = true; /* 咀记 吝 */
 }
 
 void CToolUI::Lerp_Movement(const _float fTimeDelta)
 {
-	if (!m_isPlaying_Lerp_Movement || m_isMoved || m_isPlaying_Return_Lerp_Movement)
+	if (!m_isPlaying_Lerp_Movement || m_isPlaying_Return_Lerp_Movement)
 		return;
+
+	m_isAction = true; /* 咀记 吝 */
 
 	if (m_fLerpMovement_Duration <= 0.f)
 	{
 		m_vMoveOffset =  m_vLerpMovement_TargetPos - m_vLerpMovement_StartPos;
 		m_isPlaying_Lerp_Movement = false;
+		m_isAction = false; /* 咀记 场 */
 		return;
 	}
 
@@ -493,6 +505,7 @@ void CToolUI::Lerp_Movement(const _float fTimeDelta)
 			Start_Return_Lerp_Movement();
 		}
 
+		m_isAction = false; /* 咀记 场 */
 		m_isPlaying_Lerp_Movement = false;
 	}
 }
@@ -502,11 +515,13 @@ void CToolUI::Return_Lerp_Movement(const _float fTimeDelta)
 	if (!m_isPlaying_Return_Lerp_Movement || m_isPlaying_Lerp_Movement)
 		return;
 
+	m_isAction = true; /* 咀记 吝 */
+
 	if (m_fLerpMovement_Duration <= 0.f)
 	{
 		m_vMoveOffset = Vec3{ 0.f, 0.f, 0.f };
 		m_isPlaying_Return_Lerp_Movement = false;
-		m_isMoved = false;
+		m_isAction = false; /* 咀记 场 */
 		return;
 	}
 
@@ -525,9 +540,14 @@ void CToolUI::Return_Lerp_Movement(const _float fTimeDelta)
 	if (t >= 1.f)
 	{
 		m_vMoveOffset = Vec3{ 0.f, 0.f, 0.f };
-		m_isMoved = false;
 		m_isPlaying_Return_Lerp_Movement = false;
+		m_isAction = false; /* 咀记 场 */
 	}
+}
+
+void CToolUI::Set_isDisable(_bool isDisable)
+{
+	m_isDisable = isDisable;
 }
 
 CToolUI* CToolUI::Create(EToolObjectType eType, ID3D11Device* pDevice, ID3D11DeviceContext* pDeviceContext)

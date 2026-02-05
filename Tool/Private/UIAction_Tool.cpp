@@ -14,6 +14,10 @@ void CUIAction_Tool::Set_Visible(bool isVisible)
     if (nullptr == m_pOwner)
         return;
 
+    /* 액션중이거나 비활성화 객체면 */
+    if (m_pOwner->Get_isAction() || m_pOwner->Get_isDisable())
+        return;
+
     if (isVisible)
         m_pOwner->Set_Visible();
     else
@@ -25,9 +29,12 @@ void CUIAction_Tool::Set_TextureIndex(uint32_t index)
     if (nullptr == m_pOwner)
         return;
 
+    /* 액션중이거나 비활성화 객체면 */
+    if (m_pOwner->Get_isAction() || m_pOwner->Get_isDisable())
+        return;
+
     m_pOwner->Set_TextureIndex(index);
 }
-
 
 const _string& CUIAction_Tool::Get_Tag() const
 {
@@ -37,7 +44,20 @@ const _string& CUIAction_Tool::Get_Tag() const
 
 void CUIAction_Tool::Start_Lerp_Movement(const Vec3& vTargetPos, const _float fTargetAlpha, const _float& fDuration, _bool isPin)
 {
+    /* 액션중이거나 비활성화 객체면 */
+    if (m_pOwner->Get_isAction() || m_pOwner->Get_isDisable())
+        return;
+
     m_pOwner->Start_Lerp_Movement(vTargetPos, fTargetAlpha, fDuration, isPin);
+}
+
+void CUIAction_Tool::Start_Return_Lerp_Movement()
+{
+    /* 액션중이거나 비활성화 객체면 */
+    if (m_pOwner->Get_isAction() || m_pOwner->Get_isDisable())
+        return;
+
+    m_pOwner->Start_Return_Lerp_Movement();
 }
 
 CUIAction_Tool* CUIAction_Tool::Create(CToolUI* pUI)

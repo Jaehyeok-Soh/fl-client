@@ -89,6 +89,9 @@ public:
 	const DTO::TUI_GenericUIData& Get_Data()const { return m_tUIData; }
 	DTO::TUI_GenericUIData& Get_Data_Ref() { return m_tUIData; }
 
+	_bool Get_isAction() const { return m_isAction; }
+	_bool Get_isDisable() const { return m_isDisable; }
+
 	vector<DTO::TUI_EventBindData>* Safe_Access_EventData(DTO::EUIEvent EventType);
 	array< vector<DTO::TUI_EventBindData>, ENUM_TO_UINT(DTO::EUIEvent::END)>* Safe_Access_AllEventData();
 
@@ -97,11 +100,12 @@ public:
 	/* Action */
 public:
 	void Set_TextureIndex(uint32_t index) { m_iTextureIndex = index; }
-
 	void Start_Lerp_Movement(const Vec3& vTargetPos, const _float fTargetAlpha, const _float& fDuration, _bool isPin);
 	void Start_Return_Lerp_Movement();
 	void Lerp_Movement(const _float fTimeDelta);
 	void Return_Lerp_Movement(const _float fTimeDelta);
+
+	void Set_isDisable(_bool isDisable);
 
 	/* Action Variable */
 private:
@@ -125,6 +129,9 @@ private:
 	_bool m_isPlaying_Return_Lerp_Movement = { false };
 	/* Start_Return_Lerp_Movement */
 
+	/* Set_isDisable */
+	_bool m_isDisable = { false };
+	/* Set_isDisable */
 private:	
 	PrimitiveBatch<DirectX::VertexPositionColor>* m_pBatch = { nullptr };
 	BasicEffect* m_pEffect = { nullptr };
@@ -148,6 +155,8 @@ private:
 	Vec3 m_vRenderPos = {};
 	RECT m_tRenderRect = {};
 	_bool m_isHitTest = { FALSE };
+
+	_bool m_isAction = { false };
 
 	IUIActionForMe* m_pActionForMe = { nullptr };
 	IUIActionForTarget* m_pActionForTarget = { nullptr };

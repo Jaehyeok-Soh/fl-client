@@ -142,6 +142,9 @@ enum class EUIAction
 	
 	/* (iLevelIndex / uint), (strUITag / string) , (eAction / DTO::EUIAction), (jTargetActionParam / json::object() ) */
 	TRIGGER_TARGET_UI,
+
+	/* () */
+	START_RETURN_LERP_MOVEMENT,
 	
 	END
 };
@@ -154,6 +157,7 @@ NLOHMANN_JSON_SERIALIZE_ENUM(EUIAction,
 		{EUIAction::TRIGGER_ALL_CANVAS, "TRIGGER_ALL_CANVAS"},
 		{EUIAction::TRIGGER_ALL_LAYER, "TRIGGER_ALL_LAYER" },
 		{EUIAction::TRIGGER_TARGET_UI, "TRIGGER_TARGET_UI" },
+		{EUIAction::START_RETURN_LERP_MOVEMENT, "START_RETURN_LERP_MOVEMENT" },
 	}
 )
 
@@ -165,6 +169,7 @@ inline EUIAction StringToUIActiontype(const _string& str)
 	else if (str == "TRIGGER_ALL_CANVAS")return EUIAction::TRIGGER_ALL_CANVAS;
 	else if (str == "TRIGGER_ALL_LAYER")return EUIAction::TRIGGER_ALL_LAYER;
 	else if (str == "TRIGGER_TARGET_UI")return EUIAction::TRIGGER_TARGET_UI;
+	else if (str == "START_RETURN_LERP_MOVEMENT")return EUIAction::START_RETURN_LERP_MOVEMENT;
 	else return EUIAction::END;
 }
 
@@ -178,6 +183,7 @@ inline _string UIActionTypeToString(EUIAction eType)
 	case DTO::EUIAction::TRIGGER_ALL_CANVAS: return "TRIGGER_ALL_CANVAS";
 	case DTO::EUIAction::TRIGGER_ALL_LAYER: return "TRIGGER_ALL_LAYER";
 	case DTO::EUIAction::TRIGGER_TARGET_UI: return "TRIGGER_TARGET_UI";
+	case DTO::EUIAction::START_RETURN_LERP_MOVEMENT: return "START_RETURN_LERP_MOVEMENT";
 	default: return "";
 	}
 }

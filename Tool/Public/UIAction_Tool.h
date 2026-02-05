@@ -15,6 +15,7 @@ public:
 	void Set_TextureIndex(_uint index) override;
 	const _string& Get_Tag() const override;
 	void Start_Lerp_Movement(const Vec3& vTargetPos, const _float fTargetAlpha, const _float& fDuration, _bool isPin) override;
+	void Start_Return_Lerp_Movement() override;
 
 
 private:

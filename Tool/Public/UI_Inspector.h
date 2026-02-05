@@ -37,6 +37,7 @@ public:
 	void Trigger_All_Canvas(json& jParams);
 	void Trigger_All_Layer(json& jParams);
 	void Trigger_Target_UI(json& jParams);
+	void Edit_Start_Return_Lerp_Movement(json& jParams);
 private:
 	/// <summary>
 	/// 드래그(스크럽) 방식으로 실수 값을 편집하는 ImGui용 유틸리티 함수.
@@ -69,6 +70,13 @@ private:
 	DTO::EUIEvent m_eCurEditEvent = { DTO::EUIEvent::END };
 	DTO::EUIAction m_eCurEditFunc = { DTO::EUIAction::END };
 
+	array<DTO::EUIAction, ENUM_TO_UINT(DTO::EUIAction::END)> m_ArrUIAction =
+	{
+		DTO::EUIAction::SET_VISIBLE,
+		DTO::EUIAction::SET_TEXTURE_INDEX,
+		DTO::EUIAction::START_LERP_MOVEMENT,
+		DTO::EUIAction::START_RETURN_LERP_MOVEMENT
+	};
 
 private:
 	// ======== ImGui 값이 변동 됐다는걸 알리는 변수 ========

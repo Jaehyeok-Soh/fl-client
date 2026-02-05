@@ -83,7 +83,8 @@ void CUIObject::Update_Late(const _float fTimeDelta)
 void CUIObject::Ready_Before_Render(const _float fTimeDelta)
 {
 	Super::Ready_Before_Render(fTimeDelta);
-	m_pGameInstance->Push_RenderObject(RENDER_CATEGORY::UI, this);
+	if(m_isVisible)
+		m_pGameInstance->Push_RenderObject(RENDER_CATEGORY::UI, this);
 }
 
 HRESULT CUIObject::Render()

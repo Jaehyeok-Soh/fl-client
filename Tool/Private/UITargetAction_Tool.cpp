@@ -47,8 +47,13 @@ void CUITargetAction_Tool::Trigger_All_Canvas(uint32_t iLevelIndex, const _strin
         if (nullptr == pUIVec)
             continue;
 
-        for (auto* pUI : *pUIVec)        
+        for (auto* pUI : *pUIVec)
+        {
+            /* 액션중이면 외부 입력 무시 */
+            if (pUI->Get_isAction())
+                continue;
             m_pGameInstance->Get_UIAction_Registry()->Build_Action(eAction, jTargetActionParam)(pUI->Get_ActionForMe(), this);
+        }
     }
 }
 
@@ -63,13 +68,22 @@ void CUITargetAction_Tool::Trigger_All_Layer(uint32_t iLevelIndex, const _string
         return;
 
     for (auto* pUI : *pUIVec)
+    {
+        /* 액션중이면 외부 입력 무시 */
+        if (pUI->Get_isAction())
+            continue;
         m_pGameInstance->Get_UIAction_Registry()->Build_Action(eAction, jTargetActionParam)(pUI->Get_ActionForMe(), this);
+    }
 }
 
 void CUITargetAction_Tool::Trigger_TargetUI(uint32_t iLevelIndex, const _string& strUITag, DTO::EUIAction eAction, const json& jTargetActionParam)
 {
     auto* pUI = CImGui_UIManager::GetInstance()->Find_UI(strUITag);
     if (nullptr == pUI)
+        return;
+
+    /* 액션중이면 외부 입력 무시 */
+    if (pUI->Get_isAction())
         return;
 
     m_pGameInstance->Get_UIAction_Registry()->Build_Action(eAction, jTargetActionParam)(pUI->Get_ActionForMe(), this);
