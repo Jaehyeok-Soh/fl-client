@@ -331,19 +331,6 @@ PxQuat CPhysics_Utils::GetPureRotation(const Matrix& mat)
 	v.Normalize();
 	w.Normalize();
 
-	_int negativeAxis = GetNegativeScaleAxis(mat);
-
-	if (negativeAxis != -1)
-	{
-		switch (negativeAxis)
-		{
-		case 0: u *= -1.0f; break; // X 스케일 반전이면 -> 회전 X축 반전
-		case 1: v *= -1.0f; break; // Y 스케일 반전이면 -> 회전 Y축 반전
-		case 2: w *= -1.0f; break; // Z 스케일 반전이면 -> 회전 Z축 반전
-		default: u *= -1.0f; break; // 안전장치
-		}
-	}
-
 	PxMat33 pMat(
 		PxVec3(u.x, u.y, u.z),
 		PxVec3(v.x, v.y, v.z),
@@ -368,20 +355,6 @@ PxVec3 CPhysics_Utils::GetPureScale(const Matrix& mat)
 	u.Normalize();
 	v.Normalize();
 	w.Normalize();
-
-	float det = u.Cross(v).Dot(w);
-
-	_int negativeScaleAxis = GetNegativeScaleAxis(mat);
-	if (negativeScaleAxis != -1)
-	{
-		switch (negativeScaleAxis)
-		{
-		case 0: scale.x *= -1.f; break;
-		case 1: scale.y *= -1.f; break;
-		case 2: scale.z *= -1.f; break;
-		default: scale.x *= -1.f; break;
-		}
-	}
 
 	return scale;
 }

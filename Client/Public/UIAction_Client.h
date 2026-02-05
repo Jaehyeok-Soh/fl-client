@@ -14,6 +14,7 @@ public:
 	void Set_Visible(bool isVisible) override;
 	void Set_TextureIndex(_uint index) override;
 	const _string& Get_Tag() const override;
+	void Start_Lerp_Movement(const Vec3& vTargetPos, const _float fTargetAlpha, const _float& fDuration, _bool isPin) override;
 
 private:
 	CGenericUI* m_pOwner = { nullptr };

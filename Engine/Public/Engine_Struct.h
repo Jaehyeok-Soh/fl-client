@@ -335,7 +335,8 @@ namespace Engine
 		float fLinearDamping = {};
 		float fAngularDamping = {};
 
-		const Matrix* pOwnerMatrix = { nullptr };
+		vector<Matrix> pOwnerMatrices;
+		vector<SimpleMath::Vector3> vScale_Isolated;
 	}PHYSICSRIGIDBODY_DESC;
 
 	typedef struct tagPhysicsCollider
