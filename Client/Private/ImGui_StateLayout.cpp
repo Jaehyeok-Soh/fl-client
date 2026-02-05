@@ -20,7 +20,9 @@ void CImGui_StateLayout::Render(CGameObject* pGo)
 		return;
 
 	CActionState* pActionState = pGo->Get_Component<CActionState>();
-	string strStateName = pActionState->Get_CurrentStateName();
+	string	strStateName	= pActionState->Get_CurrentStateName();
+	_uint	iMainIdx		= pActionState->Get_CurrentState()->Get_MainAnimIdx();
+	_float	fStateTime		= pActionState->Get_CurrentState()->Get_StateElapsedTime();
 
 	ImGui::BeginGroup();
 	ImGui::SeparatorText(m_strLabel.c_str());
@@ -28,6 +30,14 @@ void CImGui_StateLayout::Render(CGameObject* pGo)
 	ImGui::Text("State : ");
 	ImGui::SameLine();
 	ImGui::Text(strStateName.c_str());
+
+	ImGui::Text("Main Ani Idx : ");
+	ImGui::SameLine();
+	ImGui::Text("%u", iMainIdx);
+
+	ImGui::Text("State Duration : ");
+	ImGui::SameLine();
+	ImGui::Text("%f", fStateTime);
 
 	ImGui::EndGroup();
 }
