@@ -102,30 +102,51 @@ PxRigidActor* CPhysics_ActorFactory::MakeStatic_NegativeScale(PHYSICSRIGIDBODY_D
 
 	for (auto& shape : shapes)
 	{
+		PxShape* newShape = nullptr;
+		PxMaterial* pMaterial = nullptr;
+
+		PxU32 matCount = shape->getNbMaterials();
+		if (matCount > 0)
+		{
+			vector<PxMaterial*> materials(matCount);
+			shape->getMaterials(materials.data(), matCount);
+			pMaterial = materials[0];
+		}
+
 		if (shape->getGeometry().getType() == PxGeometryType::eTRIANGLEMESH)
 		{
 			PxGeometryHolder geom = shape->getGeometry();
 			PxTriangleMeshGeometry triGeom = geom.triangleMesh();
 
-			triGeom.scale.scale.x *= pScale.x;
-			triGeom.scale.scale.y *= pScale.y;
-			triGeom.scale.scale.z *= pScale.z;
+			triGeom.scale = PxMeshScale(pScale);
 
-			shape->setGeometry(triGeom);
+			if (pMaterial)
+				newShape = m_pPhysics->createShape(triGeom, *pMaterial);
 		}
 		else if (shape->getGeometry().getType() == PxGeometryType::eCONVEXMESH)
 		{
 			PxGeometryHolder geom = shape->getGeometry();
 			PxConvexMeshGeometry convexGeom = geom.convexMesh();
 
-			convexGeom.scale.scale.x *= pScale.x;
-			convexGeom.scale.scale.y *= pScale.y;
-			convexGeom.scale.scale.z *= pScale.z;
+			convexGeom.scale = PxMeshScale(pScale);
 
-			shape->setGeometry(convexGeom);
+			if (pMaterial)
+				newShape = m_pPhysics->createShape(convexGeom, *pMaterial);
+		}
+		else
+		{
+			continue;
 		}
 
-		staticActor->attachShape(*shape);
+		if (newShape)
+		{
+			newShape->setQueryFilterData(shape->getQueryFilterData());
+			newShape->setSimulationFilterData(shape->getSimulationFilterData());
+			newShape->setFlags(shape->getFlags());
+
+			staticActor->attachShape(*newShape);
+			PX_RELEASE(newShape);
+		}
 	}
 
 	return staticActor;
