@@ -82,13 +82,13 @@ void CGenericUI::Update(const _float fTimeDelta)
 {
 	if (m_isVisible)
 	{
-		Vec3 vPos = Vec3{ m_vRectPos.x + m_fX, m_vRectPos.y + m_fY, m_fZ };
-		Move_Position(vPos.x, vPos.y, vPos.z);
+		m_vRenderPos = Vec3{ m_vRectPos.x + m_vMoveOffset.x + m_fX, m_vRectPos.y + m_vMoveOffset.y + m_fY, m_fZ };
+		Move_Position(m_vRenderPos.x, m_vRenderPos.y, m_vRenderPos.z);
 
-		m_tRenderRect.left	= static_cast<LONG>(vPos.x - (m_fWidth * 0.5f));
-		m_tRenderRect.right = static_cast<LONG>(vPos.x + (m_fWidth * 0.5f));
-		m_tRenderRect.top	= static_cast<LONG>(vPos.y - (m_fHeight * 0.5f));
-		m_tRenderRect.bottom = static_cast<LONG>(vPos.y + (m_fHeight * 0.5f));
+		m_tRenderRect.left		= static_cast<LONG>(m_vRenderPos.x - (m_fWidth * 0.5f));
+		m_tRenderRect.right		= static_cast<LONG>(m_vRenderPos.x + (m_fWidth * 0.5f));
+		m_tRenderRect.top		= static_cast<LONG>(m_vRenderPos.y - (m_fHeight * 0.5f));
+		m_tRenderRect.bottom	= static_cast<LONG>(m_vRenderPos.y + (m_fHeight * 0.5f));
 		Super::Update(fTimeDelta);
 	}
 }
