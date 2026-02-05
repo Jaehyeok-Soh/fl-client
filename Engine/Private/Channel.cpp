@@ -133,12 +133,12 @@ void CChannel::SetUp_PoseData(std::span<LOCALSRT> spanLocalSrtData, _float fCurr
 		_float		fRatio = (fCurrentTrackPosition - m_vecKeyframes[(*pCurrentKeyFrameIndex)].fTrackPosition) /
 			(m_vecKeyframes[(*pCurrentKeyFrameIndex) + 1].fTrackPosition - m_vecKeyframes[(*pCurrentKeyFrameIndex)].fTrackPosition);
 
-		//if (m_bRootBone)
-		//{
-		//	Update_MotionBone(vLeftTranslation, vRightTranslation, pOwnerTransform, pOwnerPhyCCT, fTimeDelta);
-		//	vLeftTranslation	= { 0.f,0.f,0.f };
-		//	vRightTranslation	= { 0.f,0.f,0.f };
-		//}
+		if (m_bRootBone)
+		{
+			Update_MotionBone(vLeftTranslation, vRightTranslation, pOwnerTransform, pOwnerPhyCCT, fTimeDelta);
+			vLeftTranslation	= { 0.f,0.f,0.f };
+			vRightTranslation	= { 0.f,0.f,0.f };
+		}
 
 		vScale			= Vec3::Lerp(vLeftScale, vRightScale, fRatio);
 		vQuaternion		= Quat::Slerp(vLeftQuaternion, vRightQuaternion, fRatio);

@@ -565,6 +565,21 @@ void CModel::Blend_Animation(_float fTimeDelta, _float fRatio, CTransform* pOwne
 		//motion bone 일때 trans : zero로 해줌
 		if (pBone->Get_IsMotionBone())
 		{
+			//Vec3 vDelta = m_vecPrevAnimationPose[i].vTranslation - m_vecCurrAnimationPose[i].vTranslation;
+
+			//// 캐릭터를 이동시킨다
+			//Vec3 vOwnerRight = pOwnerTransform->Get_Info(TRANSFORM_INFO_STATE::RIGHT);
+			//Vec3 vOwnerUp = pOwnerTransform->Get_Info(TRANSFORM_INFO_STATE::UP);
+			//Vec3 vOwnerLook = pOwnerTransform->Get_Info(TRANSFORM_INFO_STATE::LOOK);
+
+			//Vec3 moveDistance = vOwnerRight * vDelta.x + vOwnerUp * vDelta.z + vOwnerLook * vDelta.y;
+
+			//pOwnerPhyCCT->Move(moveDistance, 0.0f, fTimeDelta);
+
+			//Vec3 finalPos = pOwnerPhyCCT->GetFootPosition();
+
+			//pOwnerTransform->Set_Info(TRANSFORM_INFO_STATE::POS, finalPos);
+
 			vTranslation = Vec3::Zero;
 		}
 		
@@ -573,27 +588,16 @@ void CModel::Blend_Animation(_float fTimeDelta, _float fRatio, CTransform* pOwne
 		++i;
 	}
 
-	// 루트 모션을 꺼내 온다
-	Vec3 vCurRootPos = (m_vecBones[m_iRootBoneIdx]->Get_LocalTransform()).Translation();
-	Vec3 vDelta = m_vPreRootPos - vCurRootPos;
+	//// 루트 모션을 꺼내 온다
+	//Vec3 vCurRootPos = (m_vecBones[m_iRootBoneIdx]->Get_LocalTransform()).Translation();
+	//Vec3 vDelta = m_vPreRootPos - vCurRootPos;
 
-	m_vPreRootPos = vCurRootPos;
+	//m_vPreRootPos = vCurRootPos;
 
-	// 캐릭터를 이동시킨다
-	Vec3 vOwnerRight = pOwnerTransform->Get_Info(TRANSFORM_INFO_STATE::RIGHT);
-	Vec3 vOwnerUp = pOwnerTransform->Get_Info(TRANSFORM_INFO_STATE::UP);
-	Vec3 vOwnerLook = pOwnerTransform->Get_Info(TRANSFORM_INFO_STATE::LOOK);
 
-	Vec3 moveDistance = vOwnerRight * vDelta.x + vOwnerUp * vDelta.z + vOwnerLook * vDelta.y;
 
-	pOwnerPhyCCT->Move(moveDistance, 0.0f, fTimeDelta);
-
-	Vec3 finalPos = pOwnerPhyCCT->GetFootPosition();
-
-	pOwnerTransform->Set_Info(TRANSFORM_INFO_STATE::POS, finalPos);
-
-	// 루트 translation을 제거
-	m_vecBones[m_iRootBoneIdx]->Set_LocalTransMatrixPos(Vec3::Zero);
+	//// 루트 translation을 제거
+	//m_vecBones[m_iRootBoneIdx]->Set_LocalTransMatrixPos(Vec3::Zero);
 
 	for (size_t i = 0; i < m_vecBones.size(); ++i)
 	{

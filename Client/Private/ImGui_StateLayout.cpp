@@ -31,6 +31,7 @@ void CImGui_StateLayout::Render(CGameObject* pGo)
 
 	CModel* pModel = static_cast<CContainerObject*>(pGo)->Get_Part<CBody>(0)->Get_Component<CModel>();
 	_float fBlendTime = pModel->Get_BlentTime();
+	_int iAnimIdx = pModel->Get_CurrentAnimationIndex();
 
 	ImGui::BeginGroup();
 	ImGui::SeparatorText(m_strLabel.c_str());
@@ -42,6 +43,10 @@ void CImGui_StateLayout::Render(CGameObject* pGo)
 	ImGui::Text("Main Ani Idx : ");
 	ImGui::SameLine();
 	ImGui::Text("%u", iMainIdx);
+
+	ImGui::Text("Model Ani Idx : ");
+	ImGui::SameLine();
+	ImGui::Text("%u", iAnimIdx);
 
 	ImGui::Text("State Duration : ");
 	ImGui::SameLine();
