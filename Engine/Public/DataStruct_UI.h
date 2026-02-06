@@ -125,27 +125,30 @@ inline DTO::EUIEvent StringToUIEvent(const std::string& str)
 
 enum class EUIAction
 {
-	/* (bool / isVisible) */
+	/* (bool / isVisible), (float / fDelay) */
 	SET_VISIBLE,
 
-	/* (uint / uIndex) */
+	/* (uint / uIndex), (float / fDelay) */
 	SET_TEXTURE_INDEX,
 
-	/* (Vec3 / vTargetPos),( _float / fTargetAlpha),( _float / fDuration), (bool / isPin)*/
+	/* (Vec3 / vTargetPos),( _float / fTargetAlpha),( _float / fDuration), (bool / isPin), (float / fDelay) */
 	START_LERP_MOVEMENT,
 	
-	/* (iLevelIndex / uint), (strCanvasTag / string) , (eAction / DTO::EUIAction), (jTargetActionParam / json::object() ) */
+	/* (iLevelIndex / uint), (strCanvasTag / string) , (eAction / DTO::EUIAction), (jTargetActionParam / json::object() ), (float / fDelay) */
 	TRIGGER_ALL_CANVAS,
 
-	/* (iLevelIndex / uint), (strLayerTag / string) , (eAction / DTO::EUIAction), (jTargetActionParam / json::object() ) */
+	/* (iLevelIndex / uint), (strLayerTag / string) , (eAction / DTO::EUIAction), (jTargetActionParam / json::object() ), (float / fDelay) */
 	TRIGGER_ALL_LAYER,
 	
-	/* (iLevelIndex / uint), (strUITag / string) , (eAction / DTO::EUIAction), (jTargetActionParam / json::object() ) */
+	/* (iLevelIndex / uint), (strUITag / string) , (eAction / DTO::EUIAction), (jTargetActionParam / json::object() ), (float / fDelay) */
 	TRIGGER_TARGET_UI,
 
-	/* () */
+	/* (float / fDelay) */
 	START_RETURN_LERP_MOVEMENT,
 	
+	/* (float / fStartAlpha), (float / fTargetAlpha), (float / fDuration) , (float / fDelay)*/
+	START_FADE,
+
 	END
 };
 
@@ -158,6 +161,7 @@ NLOHMANN_JSON_SERIALIZE_ENUM(EUIAction,
 		{EUIAction::TRIGGER_ALL_LAYER, "TRIGGER_ALL_LAYER" },
 		{EUIAction::TRIGGER_TARGET_UI, "TRIGGER_TARGET_UI" },
 		{EUIAction::START_RETURN_LERP_MOVEMENT, "START_RETURN_LERP_MOVEMENT" },
+		{EUIAction::START_FADE, "START_FADE" },
 	}
 )
 
@@ -170,6 +174,7 @@ inline EUIAction StringToUIActiontype(const _string& str)
 	else if (str == "TRIGGER_ALL_LAYER")return EUIAction::TRIGGER_ALL_LAYER;
 	else if (str == "TRIGGER_TARGET_UI")return EUIAction::TRIGGER_TARGET_UI;
 	else if (str == "START_RETURN_LERP_MOVEMENT")return EUIAction::START_RETURN_LERP_MOVEMENT;
+	else if (str == "START_FADE")return EUIAction::START_FADE;
 	else return EUIAction::END;
 }
 
@@ -177,13 +182,14 @@ inline _string UIActionTypeToString(EUIAction eType)
 {
 	switch (eType)
 	{
-	case DTO::EUIAction::SET_VISIBLE: return "SET_VISIBLE";
-	case DTO::EUIAction::SET_TEXTURE_INDEX: return "SET_TEXTURE_INDEX";
-	case DTO::EUIAction::START_LERP_MOVEMENT: return "START_LERP_MOVEMENT";
-	case DTO::EUIAction::TRIGGER_ALL_CANVAS: return "TRIGGER_ALL_CANVAS";
-	case DTO::EUIAction::TRIGGER_ALL_LAYER: return "TRIGGER_ALL_LAYER";
-	case DTO::EUIAction::TRIGGER_TARGET_UI: return "TRIGGER_TARGET_UI";
-	case DTO::EUIAction::START_RETURN_LERP_MOVEMENT: return "START_RETURN_LERP_MOVEMENT";
+	case EUIAction::SET_VISIBLE: return "SET_VISIBLE";
+	case EUIAction::SET_TEXTURE_INDEX: return "SET_TEXTURE_INDEX";
+	case EUIAction::START_LERP_MOVEMENT: return "START_LERP_MOVEMENT";
+	case EUIAction::TRIGGER_ALL_CANVAS: return "TRIGGER_ALL_CANVAS";
+	case EUIAction::TRIGGER_ALL_LAYER: return "TRIGGER_ALL_LAYER";
+	case EUIAction::TRIGGER_TARGET_UI: return "TRIGGER_TARGET_UI";
+	case EUIAction::START_RETURN_LERP_MOVEMENT: return "START_RETURN_LERP_MOVEMENT";
+	case EUIAction::START_FADE: return "START_FADE";
 	default: return "";
 	}
 }

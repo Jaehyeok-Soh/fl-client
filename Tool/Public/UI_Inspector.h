@@ -30,6 +30,7 @@ public:
 	void Action_List(DTO::EUIEvent eType);
 
 	json* Find_Params(const DTO::EUIAction eAction);
+	void Edit_TargetParams(json& jParams);
 
 	void Edit_Set_Visible(json& jParams);
 	void Edit_Set_Texture_Index(json& jParams);
@@ -38,6 +39,8 @@ public:
 	void Trigger_All_Layer(json& jParams);
 	void Trigger_Target_UI(json& jParams);
 	void Edit_Start_Return_Lerp_Movement(json& jParams);
+	void Edit_Start_Fade(json& jParams);
+
 private:
 	/// <summary>
 	/// 드래그(스크럽) 방식으로 실수 값을 편집하는 ImGui용 유틸리티 함수.
@@ -65,7 +68,7 @@ private:
 	uint32_t m_iRectTransformIndex = {};
 
 	uint32_t m_iEditEventCursor = {};
-	uint32_t m_iEditFuncCursor = {};
+	uint32_t m_iEditActCursor = {};
 
 	DTO::EUIEvent m_eCurEditEvent = { DTO::EUIEvent::END };
 	DTO::EUIAction m_eCurEditFunc = { DTO::EUIAction::END };
@@ -75,8 +78,26 @@ private:
 		DTO::EUIAction::SET_VISIBLE,
 		DTO::EUIAction::SET_TEXTURE_INDEX,
 		DTO::EUIAction::START_LERP_MOVEMENT,
-		DTO::EUIAction::START_RETURN_LERP_MOVEMENT
+		DTO::EUIAction::START_RETURN_LERP_MOVEMENT,
+		DTO::EUIAction::TRIGGER_ALL_CANVAS,
+		DTO::EUIAction::TRIGGER_ALL_LAYER,
+		DTO::EUIAction::TRIGGER_TARGET_UI,
+		DTO::EUIAction::START_FADE,
 	};
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 private:
 	// ======== ImGui 값이 변동 됐다는걸 알리는 변수 ========

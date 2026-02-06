@@ -104,8 +104,11 @@ void CToolUI::Update(const _float fTimeDelta)
 	if (m_isDisable)
 		return;
 
+	Delay_Queue(fTimeDelta);
+	
 	Lerp_Movement(fTimeDelta);
 	Return_Lerp_Movement(fTimeDelta);
+	Fade(fTimeDelta);
 
 	Super::Update(fTimeDelta);
 }
@@ -184,6 +187,34 @@ _bool CToolUI::Calc_HitEvent()
 		return TRUE;
 
 	return FALSE;
+}
+
+void CToolUI::Delay_Queue(const _float fTimeDelta)
+{
+	for (size_t i = 0; i < m_vecActionQueue.size(); )
+	{
+		m_vecActionQueue[i].fRemain -= fTimeDelta;
+		if (m_vecActionQueue[i].fRemain <= 0.f)
+		{
+			auto Func = std::move(m_vecActionQueue[i].Func);
+
+			m_vecActionQueue[i] = std::move(m_vecActionQueue.back());
+			m_vecActionQueue.pop_back();
+
+			if (Func)
+				Func(m_pActionForMe, m_pActionForTarget);
+
+			continue;
+		}
+		i++;
+	}
+}
+
+HRESULT CToolUI::Push_Action(const _float fDelay, Engine::CUIAction_Registry::ActionFunc Func)
+{
+	//if(fDelay < )
+	m_vecActionQueue.push_back(SCHEDULE_DESC{ fDelay, Func });
+	return S_OK;
 }
 
 HRESULT CToolUI::Bind_Action(const DTO::TUI_EventBindData& data)
@@ -285,6 +316,9 @@ HRESULT CToolUI::Ready_Components(TOOLUI_DESC* pDesc)
 
 HRESULT CToolUI::Excute_Action(DTO::EUIEvent EventType)
 {
+	if (m_isAction)
+		return S_OK;
+
 	if (nullptr == m_pActionForMe)
 		return E_FAIL;
 	if (nullptr == m_pActionForTarget)
@@ -324,6 +358,9 @@ HRESULT CToolUI::Bind_ShaderResources()
 
     if (FAILED(Get_Component<CTexture>()->Bind_ShaderResource(pShader, m_iTextureIndex)))
         return E_FAIL;
+
+	if (FAILED(pShader->Get_Variable("g_fHpBarRatio")->SetRawValue(&m_fFade_ResultAlpha, 0, sizeof(_float))))
+		return E_FAIL;
 
     return S_OK;
 }
@@ -414,17 +451,17 @@ void CToolUI::Acting_About_State()
 
 void CToolUI::Sync_Data()
 {
-	m_tUIData.strTag = m_strName;
-	m_tUIData.strCanvasName = m_strCanvasName;
-	m_tUIData.strLayerName = m_strLayerName;
-	m_tUIData.iRectTransformType = static_cast<uint32_t>( m_eRectTransformType);
-	m_tUIData.fWidth = m_fWidth;
-	m_tUIData.fHeight = m_fHeight;
-	m_tUIData.fPosX = m_fX;
-	m_tUIData.fPosY = m_fY;
-	m_tUIData.fPosZ = m_fZ;
-	m_tUIData.strTextureTag = Engine_Utils::ToString(m_wstrTextureTag);
-	m_tUIData.iTextureIndex = m_iTextureIndex;
+	m_tUIData.strTag				= m_strName;
+	m_tUIData.strCanvasName			= m_strCanvasName;
+	m_tUIData.strLayerName			= m_strLayerName;
+	m_tUIData.iRectTransformType	= static_cast<uint32_t>( m_eRectTransformType);
+	m_tUIData.fWidth				= m_fWidth;
+	m_tUIData.fHeight				= m_fHeight;
+	m_tUIData.fPosX					= m_fX;
+	m_tUIData.fPosY					= m_fY;
+	m_tUIData.fPosZ					= m_fZ;
+	m_tUIData.strTextureTag			= Engine_Utils::ToString(m_wstrTextureTag);
+	m_tUIData.iTextureIndex			= m_iTextureIndex;
 }
 
 vector<DTO::TUI_EventBindData>* CToolUI::Safe_Access_EventData(DTO::EUIEvent EventType)
@@ -442,7 +479,6 @@ array<vector<DTO::TUI_EventBindData>, ENUM_TO_UINT(DTO::EUIEvent::END)>* CToolUI
 	return &m_vecBindingActionData;
 }
 
-
 void CToolUI::Start_Lerp_Movement(const Vec3& vTargetPos, const _float fTargetAlpha, const _float& fDuration, _bool isPin)
 {
 	m_vLerpMovement_StartPos = m_vRenderPos; /* vRenderPos -> Local */
@@ -453,7 +489,6 @@ void CToolUI::Start_Lerp_Movement(const Vec3& vTargetPos, const _float fTargetAl
 	m_fLerpMovement_TimeAcc = 0.f;
 	m_isPlaying_Lerp_Movement = true;
 	m_isLerpMovement_Pin = isPin;
-	m_isAction = true; /* 액션 중 */
 }
 
 void CToolUI::Start_Return_Lerp_Movement()
@@ -463,7 +498,6 @@ void CToolUI::Start_Return_Lerp_Movement()
 
 	m_fLerpMovement_TimeAcc = 0.f;
 	m_isPlaying_Return_Lerp_Movement = true;
-	m_isAction = true; /* 액션 중 */
 }
 
 void CToolUI::Lerp_Movement(const _float fTimeDelta)
@@ -548,6 +582,47 @@ void CToolUI::Return_Lerp_Movement(const _float fTimeDelta)
 void CToolUI::Set_isDisable(_bool isDisable)
 {
 	m_isDisable = isDisable;
+}
+
+void CToolUI::Start_Fade(const _float fStartAlpha, const _float fTargetAlpha, const _float fDuration)
+{
+	m_fFade_StartAlpha = fStartAlpha;
+	m_fFade_ResultAlpha = fStartAlpha;
+	m_fFade_TargetAlpha = fTargetAlpha;
+	m_fFade_Duration = fDuration;
+	m_fFade_TimeAcc = 0.f;
+	m_isPlaying_Fade = true;
+
+	Get_Component<CShader>()->Set_Pass(2);
+}
+
+void CToolUI::Fade(const _float fTimeDelta)
+{
+	if (!m_isPlaying_Fade)
+		return;
+
+	m_isAction = true;
+
+	if (m_fFade_Duration <= 0.f)
+	{
+		m_fFade_ResultAlpha = m_fFade_TargetAlpha;
+		m_isPlaying_Fade = false;
+		m_isAction = false;
+
+		return;
+	}
+
+	m_fFade_TimeAcc += fTimeDelta;
+	_float t = m_fFade_TimeAcc / m_fFade_Duration;
+
+	if (t >= 1.f)
+	{
+		t = 1.f;
+		m_isAction = false;
+		m_isPlaying_Fade = false;
+	}
+
+	m_fFade_ResultAlpha = m_fFade_StartAlpha + (m_fFade_TargetAlpha - m_fFade_StartAlpha) * t;
 }
 
 CToolUI* CToolUI::Create(EToolObjectType eType, ID3D11Device* pDevice, ID3D11DeviceContext* pDeviceContext)

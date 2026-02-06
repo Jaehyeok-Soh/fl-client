@@ -201,24 +201,21 @@ void CUI_Inspector::Add_Action(DTO::EUIEvent EventType)
 		ImGui::TextDisabled("Select component to add");
 		ImGui::Separator();
 
-		const _string& strSET_VISIBLE = DTO::UIActionTypeToString(DTO::EUIAction::SET_VISIBLE);
-		if (ImGui::Selectable(strSET_VISIBLE.c_str()))
+		if (ImGui::Selectable(DTO::UIActionTypeToString(DTO::EUIAction::SET_VISIBLE).c_str()))
 		{
 			m_pSelectedUI->Bind_Action(EventType, DTO::EUIAction::SET_VISIBLE, json{ {"isVisible", true} });
 
 			ImGui::CloseCurrentPopup();
 		}
 
-		const _string& strSET_TEXTURE_INDEX = DTO::UIActionTypeToString(DTO::EUIAction::SET_TEXTURE_INDEX);
-		if (ImGui::Selectable(strSET_TEXTURE_INDEX.c_str()))
+		if (ImGui::Selectable(DTO::UIActionTypeToString(DTO::EUIAction::SET_TEXTURE_INDEX).c_str()))
 		{
 			m_pSelectedUI->Bind_Action(EventType, DTO::EUIAction::SET_TEXTURE_INDEX, json{ {"uIndex", 0u} });
 
 			ImGui::CloseCurrentPopup();
 		}
 
-		const _string& strSTART_LERP_MOVEMENT = DTO::UIActionTypeToString(DTO::EUIAction::START_LERP_MOVEMENT);
-		if (ImGui::Selectable(strSTART_LERP_MOVEMENT.c_str()))
+		if (ImGui::Selectable(DTO::UIActionTypeToString(DTO::EUIAction::START_LERP_MOVEMENT).c_str()))
 		{
 			m_pSelectedUI->Bind_Action(EventType, DTO::EUIAction::START_LERP_MOVEMENT, json{
 		{ "vTargetPos", { { "x", 0.f }, { "y", 0.f }, { "z", 0.f } } },
@@ -230,24 +227,21 @@ void CUI_Inspector::Add_Action(DTO::EUIEvent EventType)
 			ImGui::CloseCurrentPopup();
 		}
 
-		const _string& strTRIGGER_ALL_CANVAS = DTO::UIActionTypeToString(DTO::EUIAction::TRIGGER_ALL_CANVAS);
-		if (ImGui::Selectable(strTRIGGER_ALL_CANVAS.c_str()))
+		if (ImGui::Selectable(DTO::UIActionTypeToString(DTO::EUIAction::TRIGGER_ALL_CANVAS).c_str()))
 		{
 			m_pSelectedUI->Bind_Action(EventType, DTO::EUIAction::TRIGGER_ALL_CANVAS,
 				json{ {"iLevelIndex", 0u}, { "strCanvasTag", "" }, {"eAction", DTO::EUIAction::END}, { "jTargetActionParam", json::object() } });
 
 			ImGui::CloseCurrentPopup();
 		}
-		const _string& strTRIGGER_ALL_LAYER = DTO::UIActionTypeToString(DTO::EUIAction::TRIGGER_ALL_LAYER);
-		if (ImGui::Selectable(strTRIGGER_ALL_LAYER.c_str()))
+		if (ImGui::Selectable(DTO::UIActionTypeToString(DTO::EUIAction::TRIGGER_ALL_LAYER).c_str()))
 		{
 			m_pSelectedUI->Bind_Action(EventType, DTO::EUIAction::TRIGGER_ALL_LAYER, 
 				json{ {"iLevelIndex", 0u}, { "strLayerTag", "" }, {"eAction", DTO::EUIAction::END}, { "jTargetActionParam", json::object() } });
 
 			ImGui::CloseCurrentPopup();
 		}
-		const _string& strTRIGGER_TARGET_UI = DTO::UIActionTypeToString(DTO::EUIAction::TRIGGER_TARGET_UI);
-		if (ImGui::Selectable(strTRIGGER_TARGET_UI.c_str()))
+		if (ImGui::Selectable(DTO::UIActionTypeToString(DTO::EUIAction::TRIGGER_TARGET_UI).c_str()))
 		{
 			m_pSelectedUI->Bind_Action(EventType, DTO::EUIAction::TRIGGER_TARGET_UI, 
 				json{ {"iLevelIndex", 0u}, { "strUITag", "" }, {"eAction", DTO::EUIAction::END}, { "jTargetActionParam", json::object() } });
@@ -255,10 +249,16 @@ void CUI_Inspector::Add_Action(DTO::EUIEvent EventType)
 			ImGui::CloseCurrentPopup();
 		}
 
-		const _string& strSTART_RETURN_LERP_MOVEMENT = DTO::UIActionTypeToString(DTO::EUIAction::START_RETURN_LERP_MOVEMENT);
-		if (ImGui::Selectable(strSTART_RETURN_LERP_MOVEMENT.c_str()))
+		if (ImGui::Selectable(DTO::UIActionTypeToString(DTO::EUIAction::START_RETURN_LERP_MOVEMENT).c_str()))
 		{
-			m_pSelectedUI->Bind_Action(EventType, DTO::EUIAction::START_RETURN_LERP_MOVEMENT,json{});
+			m_pSelectedUI->Bind_Action(EventType, DTO::EUIAction::START_RETURN_LERP_MOVEMENT, json{});
+
+			ImGui::CloseCurrentPopup();
+		}
+
+		if (ImGui::Selectable(DTO::UIActionTypeToString(DTO::EUIAction::START_FADE).c_str()))
+		{
+			m_pSelectedUI->Bind_Action(EventType, DTO::EUIAction::START_FADE, json{ {"fStartAlpha", 0.f },{"fTargetAlpha", 1.f },{"fDuration", 0.f } });
 
 			ImGui::CloseCurrentPopup();
 		}
@@ -274,13 +274,14 @@ void CUI_Inspector::Edit_Action()
 
 	switch (m_eCurEditFunc)
 	{
-	case DTO::EUIAction::SET_VISIBLE:Edit_Set_Visible(*j);break;
-	case DTO::EUIAction::SET_TEXTURE_INDEX:Edit_Set_Texture_Index(*j);break;
-	case DTO::EUIAction::START_LERP_MOVEMENT:Edit_Start_Lerp_Movement(*j);break;
-	case DTO::EUIAction::TRIGGER_ALL_CANVAS:Trigger_All_Canvas(*j); break;
-	case DTO::EUIAction::TRIGGER_ALL_LAYER: Trigger_All_Layer(*j); break;
-	case DTO::EUIAction::TRIGGER_TARGET_UI: Trigger_Target_UI(*j); break;
-	case DTO::EUIAction::START_RETURN_LERP_MOVEMENT: Edit_Start_Return_Lerp_Movement(*j); break;
+	case DTO::EUIAction::SET_VISIBLE:					Edit_Set_Visible(*j);break;
+	case DTO::EUIAction::SET_TEXTURE_INDEX:				Edit_Set_Texture_Index(*j);break;
+	case DTO::EUIAction::START_LERP_MOVEMENT:			Edit_Start_Lerp_Movement(*j);break;
+	case DTO::EUIAction::TRIGGER_ALL_CANVAS:			Trigger_All_Canvas(*j); break;
+	case DTO::EUIAction::TRIGGER_ALL_LAYER:				Trigger_All_Layer(*j); break;
+	case DTO::EUIAction::TRIGGER_TARGET_UI:				Trigger_Target_UI(*j); break;
+	case DTO::EUIAction::START_RETURN_LERP_MOVEMENT:	Edit_Start_Return_Lerp_Movement(*j); break;
+	case DTO::EUIAction::START_FADE:					Edit_Start_Fade(*j); break;
 	case DTO::EUIAction::END:
 		break;
 	default:
@@ -313,7 +314,6 @@ void CUI_Inspector::SetUp_Func()
 
 void CUI_Inspector::Action_List(DTO::EUIEvent eType)
 {
-
 	ImGui::SeparatorText(DTO::UIEventToString(m_eCurEditEvent).c_str());
 	const size_t iSelected = ENUM_TO_SZET(m_eCurEditFunc);
 	auto* pVec = m_pSelectedUI->Safe_Access_EventData(m_eCurEditEvent);
@@ -331,8 +331,29 @@ void CUI_Inspector::Action_List(DTO::EUIEvent eType)
 			for (size_t i = 0; i < pVec->size(); ++i)
 			{
 				const bool selected = (iSelected == i);
-				if (ImGui::Selectable( DTO::UIActionTypeToString( (*pVec)[i].eAction).c_str(), selected))
-					m_eCurEditFunc = DTO::StringToUIActiontype(DTO::UIActionTypeToString((*pVec)[i].eAction));
+
+				const _string baseName = DTO::UIActionTypeToString((*pVec)[i].eAction);
+
+				// 표시용: 같은 이름이면 뒤에 1,2,3... 붙이기
+				int dupIndex = 0;
+				for (size_t j = 0; j < i; ++j)
+				{
+					if (DTO::UIActionTypeToString((*pVec)[j].eAction) == baseName)
+						++dupIndex;
+				}
+
+				_string displayName = baseName;
+				if (dupIndex > 0)
+					displayName += " " + std::to_string(dupIndex);
+
+				// ID는 i로 유니크하게 (표시와 ID 분리)
+				_string label = displayName + "##Action_" + std::to_string(i);
+
+				if (ImGui::Selectable(label.c_str(), selected))
+				{
+					m_iEditActCursor = i;
+					m_eCurEditFunc = (*pVec)[i].eAction;
+				}
 			}
 		}
 		ImGui::EndChild();
@@ -345,12 +366,106 @@ json* CUI_Inspector::Find_Params(const DTO::EUIAction eAction)
 	if (!pVec || pVec->empty())
 		return nullptr;
 
-	for (auto& data : *pVec)
+	if (m_iEditActCursor > pVec->size())
+		return nullptr;
+
+	return &((*pVec)[m_iEditActCursor].Params);
+}
+
+void CUI_Inspector::Edit_TargetParams(json& jParams)
+{	
+	if (!jParams.contains("eAction"))
+		jParams["eAction"] = m_ArrUIAction[0];
+
+	DTO::EUIAction curAct = jParams.value("eAction", m_ArrUIAction[0]);
+	DTO::EUIAction newAct = curAct;
+
 	{
-		if (data.eAction == eAction)
-			return &data.Params;
+		const _string curName = DTO::UIActionTypeToString(curAct);
+		if (ImGui::BeginCombo("eAction", curName.c_str()))
+		{
+			for (auto act : m_ArrUIAction)
+			{
+				const _string name = DTO::UIActionTypeToString(act);
+				const bool isSelected = (act == curAct);
+				if (ImGui::Selectable(name.c_str(), isSelected))
+					newAct = act;
+				if (isSelected) ImGui::SetItemDefaultFocus();
+			}
+			ImGui::EndCombo();
+		}
 	}
-	return nullptr;
+
+	if (!jParams.contains("jTargetActionParam") || !jParams["jTargetActionParam"].is_object())
+		jParams["jTargetActionParam"] = json::object();
+
+	if (newAct != curAct)
+	{
+		jParams["eAction"] = newAct;
+		curAct = newAct;
+
+		switch (curAct)
+		{
+		case DTO::EUIAction::SET_VISIBLE:
+			jParams["jTargetActionParam"] = json{ {"isVisible", true} };
+			break;
+		case DTO::EUIAction::SET_TEXTURE_INDEX:
+			jParams["jTargetActionParam"] = json{ {"uIndex", 0u} };
+			break;
+		case DTO::EUIAction::START_LERP_MOVEMENT:
+			jParams["jTargetActionParam"] = json{
+				{ "vTargetPos", { { "x", 0.f }, { "y", 0.f }, { "z", 0.f } } },
+				{ "fTargetAlpha", 1.f },
+				{ "fDuration", 0.25f },
+				{ "isPin", false }
+			};
+			break;
+		case DTO::EUIAction::START_RETURN_LERP_MOVEMENT:
+			break;
+		case DTO::EUIAction::START_FADE:
+			jParams["jTargetActionParam"] = json{ {"fStartAlpha", 0.f },{"fTargetAlpha", 1.f },{"fDuration", 0.f } };
+			break;
+		default:
+			jParams["jTargetActionParam"] = json::object();
+			break;
+		}
+	}
+
+	auto& inner = jParams["jTargetActionParam"];
+
+	switch (curAct)
+	{
+	case DTO::EUIAction::SET_VISIBLE:
+		if (!inner.contains("isVisible")) inner["isVisible"] = true;
+		Edit_Set_Visible(inner);
+		break;
+
+	case DTO::EUIAction::SET_TEXTURE_INDEX:
+		if (!inner.contains("uIndex")) inner["uIndex"] = 0u;
+		Edit_Set_Texture_Index(inner);
+		break;
+
+	case DTO::EUIAction::START_LERP_MOVEMENT:
+		if (!inner.contains("vTargetPos") || !inner["vTargetPos"].is_object())
+			inner["vTargetPos"] = json{ {"x", 0.f}, {"y", 0.f}, {"z", 0.f} };
+		if (!inner.contains("fTargetAlpha")) inner["fTargetAlpha"] = 1.f;
+		if (!inner.contains("fDuration")) inner["fDuration"] = 0.25f;
+		if (!inner.contains("isPin")) inner["isPin"] = false;
+		Edit_Start_Lerp_Movement(inner);
+		break;
+	case DTO::EUIAction::START_RETURN_LERP_MOVEMENT:
+		Edit_Start_Lerp_Movement(inner);
+		break;
+	case DTO::EUIAction::START_FADE:
+		if (!inner.contains("fStartAlpha"))inner["fStartAlpha"] = 0.f;
+		if (!inner.contains("fTargetAlpha"))inner["fTargetAlpha"] = 1.f;
+		if (!inner.contains("fDuration"))inner["fDuration"] = 0.f;
+		Edit_Start_Fade(inner);
+		break;
+	default:
+		ImGui::TextDisabled("No editable params for this action.");
+		break;
+	}
 }
 
 void CUI_Inspector::Edit_Set_Visible(json& jParams)
@@ -476,91 +591,7 @@ void CUI_Inspector::Trigger_All_Canvas(json& jParams)
 			ImGui::EndCombo();
 		}
 	}
-
-	if (!jParams.contains("eAction"))
-		jParams["eAction"] = m_ArrUIAction[0];
-
-	DTO::EUIAction curAct = jParams.value("eAction", m_ArrUIAction[0]);
-	DTO::EUIAction newAct = curAct;
-
-	{
-		const _string curName = DTO::UIActionTypeToString(curAct);
-		if (ImGui::BeginCombo("eAction", curName.c_str()))
-		{
-			for (auto act : m_ArrUIAction)
-			{
-				const _string name = DTO::UIActionTypeToString(act);
-				const bool isSelected = (act == curAct);
-				if (ImGui::Selectable(name.c_str(), isSelected))
-					newAct = act;
-				if (isSelected) ImGui::SetItemDefaultFocus();
-			}
-			ImGui::EndCombo();
-		}
-	}
-
-	if (!jParams.contains("jTargetActionParam") || !jParams["jTargetActionParam"].is_object())
-		jParams["jTargetActionParam"] = json::object();
-
-	if (newAct != curAct)
-	{
-		jParams["eAction"] = newAct;
-		curAct = newAct;
-
-		switch (curAct)
-		{
-		case DTO::EUIAction::SET_VISIBLE:
-			jParams["jTargetActionParam"] = json{ {"isVisible", true} };
-			break;
-		case DTO::EUIAction::SET_TEXTURE_INDEX:
-			jParams["jTargetActionParam"] = json{ {"uIndex", 0u} };
-			break;
-		case DTO::EUIAction::START_LERP_MOVEMENT:
-			jParams["jTargetActionParam"] = json{
-				{ "vTargetPos", { { "x", 0.f }, { "y", 0.f }, { "z", 0.f } } },
-				{ "fTargetAlpha", 1.f },
-				{ "fDuration", 0.25f },
-				{ "isPin", false }
-			};
-			break;
-		case DTO::EUIAction::START_RETURN_LERP_MOVEMENT:
-			break;
-		default:
-			jParams["jTargetActionParam"] = json::object();
-			break;
-		}
-	}
-
-	auto& inner = jParams["jTargetActionParam"];
-
-	switch (curAct)
-	{
-	case DTO::EUIAction::SET_VISIBLE:
-		if (!inner.contains("isVisible")) inner["isVisible"] = true;
-		Edit_Set_Visible(inner);
-		break;
-
-	case DTO::EUIAction::SET_TEXTURE_INDEX:
-		if (!inner.contains("uIndex")) inner["uIndex"] = 0u;
-		Edit_Set_Texture_Index(inner);
-		break;
-
-	case DTO::EUIAction::START_LERP_MOVEMENT:
-		if (!inner.contains("vTargetPos") || !inner["vTargetPos"].is_object())
-			inner["vTargetPos"] = json{ {"x", 0.f}, {"y", 0.f}, {"z", 0.f} };
-		if (!inner.contains("fTargetAlpha")) inner["fTargetAlpha"] = 1.f;
-		if (!inner.contains("fDuration")) inner["fDuration"] = 0.25f;
-		if (!inner.contains("isPin")) inner["isPin"] = false;
-		Edit_Start_Lerp_Movement(inner);
-		break;
-	case DTO::EUIAction::START_RETURN_LERP_MOVEMENT:
-		Edit_Start_Lerp_Movement(inner);
-		break;
-	default:
-		ImGui::TextDisabled("No editable params for this action.");
-		break;
-	}
-
+	Edit_TargetParams(jParams);
 	ImGui::PopID();
 }
 
@@ -620,95 +651,7 @@ void CUI_Inspector::Trigger_All_Layer(json& jParams)
 		}
 	}
 
-	if (!jParams.contains("eAction"))
-		jParams["eAction"] = m_ArrUIAction[0];
-
-	DTO::EUIAction curAct = jParams.value("eAction", m_ArrUIAction[0]);
-	DTO::EUIAction newAct = curAct;
-
-	{
-		const _string curName = DTO::UIActionTypeToString(curAct);
-		if (ImGui::BeginCombo("eAction", curName.c_str()))
-		{
-			for (auto act : m_ArrUIAction)
-			{
-				const _string name = DTO::UIActionTypeToString(act);
-				const bool isSelected = (act == curAct);
-
-				if (ImGui::Selectable(name.c_str(), isSelected))
-					newAct = act;
-
-				if (isSelected) ImGui::SetItemDefaultFocus();
-			}
-			ImGui::EndCombo();
-		}
-	}
-
-	// 3) Inner Params default 생성/교체
-	if (!jParams.contains("jTargetActionParam") || !jParams["jTargetActionParam"].is_object())
-		jParams["jTargetActionParam"] = json::object();
-
-	if (newAct != curAct)
-	{
-		jParams["eAction"] = newAct;
-		curAct = newAct;
-
-		switch (curAct)
-		{
-		case DTO::EUIAction::SET_VISIBLE:
-			jParams["jTargetActionParam"] = json{ {"isVisible", true} };
-			break;
-
-		case DTO::EUIAction::SET_TEXTURE_INDEX:
-			jParams["jTargetActionParam"] = json{ {"uIndex", 0u} };
-			break;
-
-		case DTO::EUIAction::START_LERP_MOVEMENT:
-			jParams["jTargetActionParam"] = json{
-				{ "vTargetPos", { { "x", 0.f }, { "y", 0.f }, { "z", 0.f } } },
-				{ "fTargetAlpha", 1.f },
-				{ "fDuration", 0.25f },
-				{ "isPin", false }
-			};
-			break;
-		case DTO::EUIAction::START_RETURN_LERP_MOVEMENT:
-			break;
-		default:
-			jParams["jTargetActionParam"] = json::object();
-			break;
-		}
-	}
-
-	// 4) Inner Params 편집 (기존 Edit_* 재사용)
-	auto& inner = jParams["jTargetActionParam"];
-
-	switch (curAct)
-	{
-	case DTO::EUIAction::SET_VISIBLE:
-		if (!inner.contains("isVisible")) inner["isVisible"] = true;
-		Edit_Set_Visible(inner);
-		break;
-
-	case DTO::EUIAction::SET_TEXTURE_INDEX:
-		if (!inner.contains("uIndex")) inner["uIndex"] = 0u;
-		Edit_Set_Texture_Index(inner);
-		break;
-
-	case DTO::EUIAction::START_LERP_MOVEMENT:
-		if (!inner.contains("vTargetPos") || !inner["vTargetPos"].is_object())
-			inner["vTargetPos"] = json{ {"x", 0.f}, {"y", 0.f}, {"z", 0.f} };
-		if (!inner.contains("fTargetAlpha")) inner["fTargetAlpha"] = 1.f;
-		if (!inner.contains("fDuration")) inner["fDuration"] = 0.25f;
-		if (!inner.contains("isPin")) inner["isPin"] = false;
-		Edit_Start_Lerp_Movement(inner);
-		break;
-	case DTO::EUIAction::START_RETURN_LERP_MOVEMENT:
-		Edit_Start_Lerp_Movement(inner);
-		break;
-	default:
-		ImGui::TextDisabled("No editable params for this action.");
-		break;
-	}
+	Edit_TargetParams(jParams);
 	ImGui::PopID();
 }
 
@@ -774,106 +717,41 @@ void CUI_Inspector::Trigger_Target_UI(json& jParams)
 			ImGui::EndCombo();
 		}
 	}
-
-	if (!jParams.contains("eAction"))
-		jParams["eAction"] = m_ArrUIAction[0];
-
-	DTO::EUIAction curAct = jParams.value("eAction", m_ArrUIAction[0]);
-	DTO::EUIAction newAct = curAct;
-
-	{
-		const _string curName = DTO::UIActionTypeToString(curAct);
-		if (ImGui::BeginCombo("eAction", curName.c_str()))
-		{
-			for (auto act : m_ArrUIAction)
-			{
-				const _string name = DTO::UIActionTypeToString(act);
-				const bool isSelected = (act == curAct);
-
-				if (ImGui::Selectable(name.c_str(), isSelected))
-					newAct = act;
-
-				if (isSelected) ImGui::SetItemDefaultFocus();
-			}
-			ImGui::EndCombo();
-		}
-	}
-
-	// 3) Inner Params default 생성/교체
-	if (!jParams.contains("jTargetActionParam") || !jParams["jTargetActionParam"].is_object())
-		jParams["jTargetActionParam"] = json::object();
-
-	if (newAct != curAct)
-	{
-		jParams["eAction"] = newAct;
-		curAct = newAct;
-
-		switch (curAct)
-		{
-		case DTO::EUIAction::SET_VISIBLE:
-			jParams["jTargetActionParam"] = json{ {"isVisible", true} };
-			break;
-
-		case DTO::EUIAction::SET_TEXTURE_INDEX:
-			jParams["jTargetActionParam"] = json{ {"uIndex", 0u} };
-			break;
-
-		case DTO::EUIAction::START_LERP_MOVEMENT:
-			jParams["jTargetActionParam"] = json{
-				{ "vTargetPos", { { "x", 0.f }, { "y", 0.f }, { "z", 0.f } } },
-				{ "fTargetAlpha", 1.f },
-				{ "fDuration", 0.25f },
-				{ "isPin", false }
-			};
-			break;
-		
-		case DTO::EUIAction::START_RETURN_LERP_MOVEMENT:
-			break;
-
-		default:
-			jParams["jTargetActionParam"] = json::object();
-			break;
-		}
-	}
-
-	// 4) Inner Params 편집 (기존 Edit_* 재사용)
-	auto& inner = jParams["jTargetActionParam"];
-
-	switch (curAct)
-	{
-	case DTO::EUIAction::SET_VISIBLE:
-		if (!inner.contains("isVisible")) inner["isVisible"] = true;
-		Edit_Set_Visible(inner);
-		break;
-
-	case DTO::EUIAction::SET_TEXTURE_INDEX:
-		if (!inner.contains("uIndex")) inner["uIndex"] = 0u;
-		Edit_Set_Texture_Index(inner);
-		break;
-
-	case DTO::EUIAction::START_LERP_MOVEMENT:
-		if (!inner.contains("vTargetPos") || !inner["vTargetPos"].is_object())
-			inner["vTargetPos"] = json{ {"x", 0.f}, {"y", 0.f}, {"z", 0.f} };
-		if (!inner.contains("fTargetAlpha")) inner["fTargetAlpha"] = 1.f;
-		if (!inner.contains("fDuration")) inner["fDuration"] = 0.25f;
-		if (!inner.contains("isPin")) inner["isPin"] = false;
-		Edit_Start_Lerp_Movement(inner);
-		break;
-
-	case DTO::EUIAction::START_RETURN_LERP_MOVEMENT:
-		Edit_Start_Return_Lerp_Movement(inner);
-		break;
-	default:
-		ImGui::TextDisabled("No editable params for this action.");
-		break;
-	}
-
+	Edit_TargetParams(jParams);
 	ImGui::PopID();
 }
 
 void CUI_Inspector::Edit_Start_Return_Lerp_Movement(json& jParams)
 {
 
+}
+
+void CUI_Inspector::Edit_Start_Fade(json& jParams)
+{
+	if (!jParams.contains("fStartAlpha") || !jParams.contains("fTargetAlpha") || !jParams.contains("fDuration"))
+		return;
+
+	float a[2] =
+	{
+		jParams.value("fStartAlpha", 0.f),
+		jParams.value("fTargetAlpha", 1.f)
+	};
+
+	float fDuration = jParams.value("fDuration", 0.1f);
+
+	// 알파만 0~1 범위
+	if (ImGui::SliderFloat2("Alpha (0~1)", a, 0.f, 1.f, "%.3f", ImGuiSliderFlags_AlwaysClamp))
+	{
+		jParams["fStartAlpha"] = a[0];
+		jParams["fTargetAlpha"] = a[1];
+	}
+
+	// duration은 자유(보통 0 이상만 보장)
+	if (ImGui::DragFloat("Duration", &fDuration, 0.01f, 0.f, 0.f, "%.3f")) // max=0.f면 제한 없음
+	{
+		if (fDuration < 0.f) fDuration = 0.f; // 필요하면
+		jParams["fDuration"] = fDuration;
+	}
 }
 
 _bool CUI_Inspector::Scrub_Float(const _char* label, const _char* Id, OUT _float* pValue, float fValuePerPixel, float fValuePerPixel_fast, float fStep, float fStep_fast, float fSize)

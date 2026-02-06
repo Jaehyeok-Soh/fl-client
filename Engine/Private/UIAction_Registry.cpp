@@ -17,12 +17,12 @@ void CUIAction_Registry::Initialize_CommonAction()
 		[](const json& params) -> ActionFunc
 		{
 			const bool isVisible = params.value("isVisible", true);
-
-			return [isVisible](IUIActionForMe* me, IUIActionForTarget*)
+			const _float fDelay = params.value("fDelay", 0.f);
+			return [isVisible, fDelay](IUIActionForMe* me, IUIActionForTarget*)
 				{
 					if (nullptr == me)
 						return;
-					me->Set_Visible(isVisible);
+					me->Set_Visible(isVisible, fDelay);
 				};
 		});
 
@@ -31,11 +31,12 @@ void CUIAction_Registry::Initialize_CommonAction()
 		{
 			const uint32_t idx = params.value("uIndex", 0u);
 
-			return [idx](IUIActionForMe* me, IUIActionForTarget*)
+			const _float fDelay = params.value("fDelay", 0.f);
+			return [idx, fDelay](IUIActionForMe* me, IUIActionForTarget*)
 				{
 					if (nullptr == me)
 						return;
-					me->Set_TextureIndex(idx);
+					me->Set_TextureIndex(idx, fDelay);
 				};
 		});
 
@@ -43,6 +44,7 @@ void CUIAction_Registry::Initialize_CommonAction()
 		[](const json& params) -> ActionFunc
 		{
 			Vec3 vTargetPos = Vec3{ 0.f, 0.f, 0.f };
+			const _float fDelay = params.value("fDelay", 0.f);
 			if (params.contains("vTargetPos"))
 			{
 				const auto& jPos = params["vTargetPos"];
@@ -55,23 +57,41 @@ void CUIAction_Registry::Initialize_CommonAction()
 			const _float fDuration = params.value("fDuration", 0.f);
 			const _bool isPin = params.value("isPin", false);
 
-			return [vTargetPos, fTargetAlpha, fDuration, isPin](IUIActionForMe* me, IUIActionForTarget*)
+			return [vTargetPos, fTargetAlpha, fDuration, isPin, fDelay](IUIActionForMe* me, IUIActionForTarget*)
 				{
 					if (nullptr == me)
 						return;
 
-					me->Start_Lerp_Movement(vTargetPos, fTargetAlpha, fDuration, isPin);
+					me->Start_Lerp_Movement(vTargetPos, fTargetAlpha, fDuration, isPin, fDelay);
 				};
 		});
 
 	Register_Factory((DTO::EUIAction::START_RETURN_LERP_MOVEMENT),
 		[](const json& params) -> ActionFunc
 		{
-			return [](IUIActionForMe* me, IUIActionForTarget*)
+			const _float fDelay = params.value("fDelay", 0.f);
+			return [fDelay](IUIActionForMe* me, IUIActionForTarget*)
 				{
 					if (nullptr == me)
 						return;
-					me->Start_Return_Lerp_Movement();
+					me->Start_Return_Lerp_Movement(fDelay);
+				};
+		});
+
+	Register_Factory((DTO::EUIAction::START_FADE),
+		[](const json& params) -> ActionFunc
+		{
+			const _float fStartAlpha = params.value("fStartAlpha", 0.f);
+			const _float fTargetAlpha = params.value("fTargetAlpha", 1.f);
+			const _float fDuration = params.value("fDuration", 0.f);
+
+			const _float fDelay = params.value("fDelay", 0.f);
+			return [fStartAlpha, fTargetAlpha, fDuration, fDelay](IUIActionForMe* me, IUIActionForTarget*)
+				{
+					if (nullptr == me)
+						return;
+
+					me->Start_Fade(fStartAlpha, fTargetAlpha, fDuration, fDelay);
 				};
 		});
 }

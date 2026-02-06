@@ -9,13 +9,9 @@ CUIAction_Tool::CUIAction_Tool(CToolUI* pUI)
 {
 }
 
-void CUIAction_Tool::Set_Visible(bool isVisible)
+void CUIAction_Tool::Set_Visible(bool isVisible, const _float fDelay)
 {
     if (nullptr == m_pOwner)
-        return;
-
-    /* 액션중이거나 비활성화 객체면 */
-    if (m_pOwner->Get_isAction() || m_pOwner->Get_isDisable())
         return;
 
     if (isVisible)
@@ -24,13 +20,9 @@ void CUIAction_Tool::Set_Visible(bool isVisible)
         m_pOwner->Set_Invisible();
 }
 
-void CUIAction_Tool::Set_TextureIndex(uint32_t index)
+void CUIAction_Tool::Set_TextureIndex(uint32_t index, const _float fDelay)
 {
     if (nullptr == m_pOwner)
-        return;
-
-    /* 액션중이거나 비활성화 객체면 */
-    if (m_pOwner->Get_isAction() || m_pOwner->Get_isDisable())
         return;
 
     m_pOwner->Set_TextureIndex(index);
@@ -42,22 +34,19 @@ const _string& CUIAction_Tool::Get_Tag() const
     return (m_pOwner != nullptr) ? m_pOwner->Get_Name() : sEmpty;
 }
 
-void CUIAction_Tool::Start_Lerp_Movement(const Vec3& vTargetPos, const _float fTargetAlpha, const _float& fDuration, _bool isPin)
+void CUIAction_Tool::Start_Lerp_Movement(const Vec3& vTargetPos, const _float fTargetAlpha, const _float& fDuration, _bool isPin, const _float fDelay)
 {
-    /* 액션중이거나 비활성화 객체면 */
-    if (m_pOwner->Get_isAction() || m_pOwner->Get_isDisable())
-        return;
-
     m_pOwner->Start_Lerp_Movement(vTargetPos, fTargetAlpha, fDuration, isPin);
 }
 
-void CUIAction_Tool::Start_Return_Lerp_Movement()
+void CUIAction_Tool::Start_Return_Lerp_Movement(const _float fDelay)
 {
-    /* 액션중이거나 비활성화 객체면 */
-    if (m_pOwner->Get_isAction() || m_pOwner->Get_isDisable())
-        return;
-
     m_pOwner->Start_Return_Lerp_Movement();
+}
+
+void CUIAction_Tool::Start_Fade(const _float fStartAlpha, const _float fTargetAlpha, const _float fDuration, const _float fDelay)
+{    
+    m_pOwner->Start_Fade(fStartAlpha, fTargetAlpha, fDuration);
 }
 
 CUIAction_Tool* CUIAction_Tool::Create(CToolUI* pUI)

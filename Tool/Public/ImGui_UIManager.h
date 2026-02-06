@@ -57,6 +57,7 @@ public:
 	CToolCanvas* Find_Canvas(const _string& strTag);
 	CToolLayer* Find_Layer(const _string& strTag);
 	CToolUI* Find_UI(const _string& strTag);
+
 private:
 	CGameInstance* m_pGameInstance = { nullptr };
 	vector<CToolCanvas*> m_vecCanvas;

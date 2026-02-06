@@ -33,6 +33,10 @@ CToolLayer* CUITargetAction_Tool::Find_Layer(const _string& strLayerTag)
 
 void CUITargetAction_Tool::Trigger_All_Canvas(uint32_t iLevelIndex, const _string& strCanvasTag, DTO::EUIAction eAction, const json& jTargetActionParam)
 {
+    auto action = m_pGameInstance->Get_UIAction_Registry()->Build_Action(eAction, jTargetActionParam);
+    if (!action)
+        return;
+
     auto* pCanvas = Find_Canvas(strCanvasTag);
     if (nullptr == pCanvas)
         return;
@@ -52,13 +56,18 @@ void CUITargetAction_Tool::Trigger_All_Canvas(uint32_t iLevelIndex, const _strin
             /* 액션중이면 외부 입력 무시 */
             if (pUI->Get_isAction())
                 continue;
-            m_pGameInstance->Get_UIAction_Registry()->Build_Action(eAction, jTargetActionParam)(pUI->Get_ActionForMe(), this);
+
+            action(pUI->Get_ActionForMe(), this);
         }
     }
 }
 
 void CUITargetAction_Tool::Trigger_All_Layer(uint32_t iLevelIndex, const _string& strLayerTag, DTO::EUIAction eAction, const json& jTargetActionParam)
 {
+    auto action = m_pGameInstance->Get_UIAction_Registry()->Build_Action(eAction, jTargetActionParam);
+    if (!action)
+        return;
+
     auto* pLayer = Find_Layer(strLayerTag);
     if (nullptr == pLayer)
         return;
@@ -72,12 +81,17 @@ void CUITargetAction_Tool::Trigger_All_Layer(uint32_t iLevelIndex, const _string
         /* 액션중이면 외부 입력 무시 */
         if (pUI->Get_isAction())
             continue;
-        m_pGameInstance->Get_UIAction_Registry()->Build_Action(eAction, jTargetActionParam)(pUI->Get_ActionForMe(), this);
+
+        action(pUI->Get_ActionForMe(), this);
     }
 }
 
 void CUITargetAction_Tool::Trigger_TargetUI(uint32_t iLevelIndex, const _string& strUITag, DTO::EUIAction eAction, const json& jTargetActionParam)
 {
+    auto action = m_pGameInstance->Get_UIAction_Registry()->Build_Action(eAction, jTargetActionParam);
+    if (!action)
+        return;
+
     auto* pUI = CImGui_UIManager::GetInstance()->Find_UI(strUITag);
     if (nullptr == pUI)
         return;
@@ -86,7 +100,7 @@ void CUITargetAction_Tool::Trigger_TargetUI(uint32_t iLevelIndex, const _string&
     if (pUI->Get_isAction())
         return;
 
-    m_pGameInstance->Get_UIAction_Registry()->Build_Action(eAction, jTargetActionParam)(pUI->Get_ActionForMe(), this);
+    action(pUI->Get_ActionForMe(), this);
 }
 
 CUITargetAction_Tool* CUITargetAction_Tool::Create(CToolUI* pUI)

@@ -18,10 +18,11 @@ PS_OUT PS_MAIN(PS_IN_POS_TEX input)
     return output;
 }
 
-PS_OUT PS_HPBAR(PS_IN_POS_TEX input)
+PS_OUT PS_FADE(PS_IN_POS_TEX input)
 {
     PS_OUT output;
-    output.vColor = (input.vUV.x <= input.fHP) ? float4(0.6f, 0.1f, 0.1f, 1.f) : float4(0.6f, 0.6f, 0.1f, 1.f);
+    output.vColor = g_DefaultTextures[DEFAULT].Sample(LinearSampler, input.vUV);
+    output.vColor.a *= g_fHpBarRatio;
     return output;
 }
 
@@ -66,7 +67,8 @@ technique11 T0
 {
     PASS_RS_DS_BS_VP(Default, RS_Default, DS_Default, BS_Default, VS_MAIN, PS_MAIN)
     PASS_RS_DS_BS_VP(P1, RS_Default, DS_Default, BS_AlphaBlend, VS_MAIN, PS_MAIN)
-    PASS_RS_DS_BS_VP(HpBar, RS_Default, DS_Default, BS_Default, VS_MAIN, PS_HPBAR)
+    PASS_RS_DS_BS_VP(Fade, RS_Default, DS_Default, BS_AlphaBlend, VS_MAIN, PS_FADE)
+
     PASS_RS_DS_BS_VP(SkillIcon, RS_Default, DS_Default, BS_Default, VS_MAIN, PS_SKILLICON)
     PASS_RS_DS_BS_VP(UIHpBar, RS_Default, DS_Default, BS_Default, VS_MAIN, PS_UIHPBAR)
     PASS_RS_DS_BS_VP(UILockon, RS_Default, DS_Default, BS_AlphaBlend, VS_MAIN, PS_LOCKON)

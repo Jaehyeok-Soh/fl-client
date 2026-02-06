@@ -32,6 +32,12 @@ public:
 		uint32_t iRectTransformType;
 	}TOOLUI_DESC;
 
+	typedef struct tagScheduleDesc
+	{
+		_float fRemain = {};
+		Engine::CUIAction_Registry::ActionFunc Func;
+	}SCHEDULE_DESC;
+
 private:
 	CToolUI(ID3D11Device* pDevice, ID3D11DeviceContext* pDeviceContext);
 	CToolUI(const CToolUI& rhs);
@@ -49,6 +55,7 @@ public:
 	virtual HRESULT Render() override;
 	_bool Calc_HitEvent();
 
+
 public:
 	HRESULT Bind_Action(const DTO::TUI_EventBindData& data);
 	HRESULT Bind_Action(DTO::EUIEvent eEvent, DTO::EUIAction eAction, const json& params);
@@ -57,6 +64,9 @@ public:
 	HRESULT Excute_Action(DTO::EUIEvent EventType);
 	HRESULT Excute_Specific_Action(DTO::EUIEvent EventType, DTO::EUIAction eAction);
 	HRESULT ReBind_Action();
+
+	void Delay_Queue(const _float fTimeDelta);
+	HRESULT Push_Action(const _float fDelay, Engine::CUIAction_Registry::ActionFunc Func);
 
 private:
 	HRESULT Ready_Components(TOOLUI_DESC* pDesc);
@@ -105,7 +115,10 @@ public:
 	void Lerp_Movement(const _float fTimeDelta);
 	void Return_Lerp_Movement(const _float fTimeDelta);
 
-	void Set_isDisable(_bool isDisable);
+	void Set_isDisable(_bool isDisable);/* 아직 바인드 안함 */
+
+	void Start_Fade(const _float fStartAlpha, const _float fTargetAlpha, const _float fDuration); /* 아직 바인드 안함 */
+	void Fade(const _float fTimeDelta);
 
 	/* Action Variable */
 private:
@@ -121,8 +134,6 @@ private:
 	_bool m_isLerpMovement_Pin = {};
 	_bool m_isMoved = {false};
 	Vec3 m_vMoveOffset = {};
-	Vec3 m_vLerpMovement_StartOffset;
-	Vec3 m_vLerpMovement_TargetOffset;
 	/*Start_Lerp_Movement*/
 
 	/* Start_Return_Lerp_Movement */
@@ -132,6 +143,16 @@ private:
 	/* Set_isDisable */
 	_bool m_isDisable = { false };
 	/* Set_isDisable */
+
+	/* Start_Fade */
+	_bool m_isPlaying_Fade = { false };
+	_float m_fFade_StartAlpha = {};
+	_float m_fFade_TargetAlpha = {};
+	_float m_fFade_ResultAlpha = {1.f};
+	_float m_fFade_Duration = {};
+	_float m_fFade_TimeAcc = {};
+	/* Start_Fade */
+
 private:	
 	PrimitiveBatch<DirectX::VertexPositionColor>* m_pBatch = { nullptr };
 	BasicEffect* m_pEffect = { nullptr };
@@ -164,6 +185,9 @@ private:
 	/* 액션들을 이벤트 갯수만큼 정적으로 할당 사실상 vector<ActionFunc>[] 이거임 */
 	array< vector<Engine::CUIAction_Registry::ActionFunc> , ENUM_TO_UINT(DTO::EUIEvent::END)> m_vecBindingActions;
 	array< vector<DTO::TUI_EventBindData>, ENUM_TO_UINT(DTO::EUIEvent::END)> m_vecBindingActionData;
+
+	vector<SCHEDULE_DESC> m_vecActionQueue;
+	list<SCHEDULE_DESC> m_listReleaseAction;
 
 public:
 	static CToolUI* Create(EToolObjectType eType, ID3D11Device* pDevice, ID3D11DeviceContext* pDeviceContext);
