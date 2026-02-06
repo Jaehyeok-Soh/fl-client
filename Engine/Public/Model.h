@@ -38,6 +38,8 @@ public:
 		std::span<const _int> spanShaderPassesByMesh;
 	}MODEL_COPY_DESC;
 
+	using BONE_GROUP = vector<_uint>; // 본을 계층 별로 묶기 위함
+	
 private:
 	enum AnimationPlayState
 	{
@@ -120,6 +122,8 @@ private:
 	void Blend_Update(const _float fTimeDelta, CTransform* pOwnerTransform = nullptr, CPhysicsCCT* pOwnerPhyCCT = nullptr);
 	void Blend_End();
 
+private:
+	void Make_BoneGroup();
 
 private:
 	EModelType m_eType = { EModelType::END };
@@ -151,7 +155,10 @@ private:
 
 private:
 	_int m_iRootBoneIdx = { -1 };
-	Vec3 m_vPreRootPos = Vec3::Zero;
+
+	// compute shading 변수
+private:
+	vector<BONE_GROUP> m_vecBoneGroups;
 
 public:
 	static CModel* Create(ID3D11Device* pDevice, ID3D11DeviceContext* pDeviceContext, void* pArg);

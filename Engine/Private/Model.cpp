@@ -464,6 +464,8 @@ HRESULT CModel::Load_AnimModel(const wstring& wstrModelName, DATA_ANIMCHANNEL* p
 	{
 		m_iRootBoneIdx = pData->iRootBoneIndex;
 	}
+
+	Make_BoneGroup();
 	
 	Safe_Release(pModelLoader);
 	return S_OK;
@@ -690,6 +692,36 @@ void CModel::Blend_Update(const _float fTimeDelta, CTransform* pOwnerTransform, 
 void CModel::Blend_End()
 {
 	m_fBlendedTime = 0.f;
+}
+
+void CModel::Make_BoneGroup()
+{
+	m_vecBoneGroups.clear();
+
+	// 자신의 깊이 기록용 벡터
+	vector<_int> boneDepth(m_vecBones.size(), 0); 
+
+	// bone을 순회
+	for (size_t i = 0; i < m_vecBones.size(); ++i)
+	{
+		_int iParent = m_vecBones[i]->Get_ParentIndex();
+
+		// 부모의 깊이를 통해 내 깊이를 구한다
+		{
+			if (iParent >= 0)
+				boneDepth[i] = boneDepth[iParent] + 1;
+			else
+				boneDepth[i] = 0;
+		}
+
+		// 깊이를 통해 boneGroup에 넣는다
+		{
+			if (m_vecBoneGroups.size() <= boneDepth[i])
+				m_vecBoneGroups.resize(boneDepth[i] + 1);
+
+			m_vecBoneGroups[boneDepth[i]].push_back((_uint)i);
+		}
+	}
 }
 
 CModel* CModel::Create(ID3D11Device* pDevice, ID3D11DeviceContext* pDeviceContext, void* pArg)
