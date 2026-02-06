@@ -2,6 +2,10 @@
 #include "ToolObject.h"
 
 
+NS_BEGIN(Engine)
+class CMaterial;
+NS_END
+
 NS_BEGIN(Tool)
 
 class CMapObject abstract : public CToolObject
@@ -16,19 +20,10 @@ public:
 
 	enum class EState
 	{
-		Preview,
 		Default,
 		Select,
+		Preview,
 		END,
-	};
-
-	enum EReset_Type
-	{
-		NONE = 0,
-		S = 1 << 0,
-		R = 1 << 1,
-		T = 1 << 2,
-		END 
 	};
 
 	typedef struct tagMapObjectDesc : public CToolObject::TOOLOBJECT_DESC
@@ -46,25 +41,31 @@ protected:
 	virtual ~CMapObject() = default;
 
 public:
-
 	virtual HRESULT			Initialize_Prototype()							override;
 	virtual HRESULT			Initialize(void* pArg)							override;
 	HRESULT					Ready_Component();
-public:
+	HRESULT					Ready_OverrideMtl(const USING_MODEL_INFO& tUsingModelInfo);
 
-	void					Reset_SRT(Engine::Flags fResetTypeFlag);
-	virtual void			Register_OriginSRT(Engine::Flags fResetTypeFlag);
 public:
 	HRESULT					Add_MapToolComponent(CMapObject::COMPONENT eType);
 public:
 	void					Set_MapObjectState(CMapObject::EState eState) { m_eMapObjectState = eState; }
+	void					Set_MapObjectType(EMapObject_Type eType) { m_eMapObjectType = eType; }
 public:
-
-	Vec3					Get_OriginScale();
-	Vec3					Get_OriginDegree();
-	Vec3					Get_OriginPosition();
+	virtual void			Reset_OriginTransform(_uint iIndex);
+	void					Override_OriginTransform(_uint iIndex);
+public:
+	SimpleMath::Matrix		Get_OriginTransform(_uint iIndex);
+public:
+	EMapObject_Type			Get_MapObjectType() const { return m_eMapObjectType;}
 	CMapObject::EState		Get_MapObjectState()  const { return m_eMapObjectState; }
-
+	bool					Get_IsUseOverrideMtl() const { return m_iUseOverrideMaterials; }
+	vector<CMaterial*>		Get_OverrideMtls()		const { return m_vecOverrideMaterials; }
+	vector<wstring>			Get_OverrideMtlsName() const;
+	vector<wstring>			Get_TotalUseMtlsName();
+	virtual vector<SRT_DATA>		Get_SRTDatas()  { return vector<SRT_DATA>();}
+	virtual USING_MODEL_INFO		Get_UsingModelInfo() const { return USING_MODEL_INFO();}
+public:
 public:
 
 	virtual HRESULT			Awake(const _uint iCurrentLevelID)				override;
@@ -76,20 +77,15 @@ public:
 	virtual void			Draw_ImGui()override;
 
 protected:
+
 	EMapObject_Type			m_eMapObjectType{ EMapObject_Type::END };
 	EState					m_eMapObjectState{ EState::Default};
-
+	bool					m_iUseOverrideMaterials{false};
+	vector<CMaterial*>		m_vecOverrideMaterials;
 	bool					m_isLoaded{false};
-	bool					m_isRegisterSRT{false};
+	vector<SRT_DATA>		m_vecOriginSRTs{};
+
 	void*					m_pDesc{nullptr};
-
-
-	Vec3					m_vOriginScale{};
-	Vec3					m_vOriginDegree{};
-	Vec3					m_vOriginPosition{};
-
-	Vec3					m_vImGuiPitchYawRoll{};
-	Quat					m_vImGuiQuat{};
 
 	array< CMonoBehaviour*, ENUM_TO_UINT(CMapObject::COMPONENT::END)> m_arrayMapToolComponent{};
 

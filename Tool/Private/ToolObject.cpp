@@ -97,6 +97,17 @@ void CToolObject::Set_Dead(const wstring& wstrLayerTag)
     m_pGameInstance->Broadcast<ChangeSelectedObject>(nullptr);
 }
 
+Matrix CToolObject::Get_WorldMatrix()
+{
+    return Get_Component<CTransform>()->Get_WorldMatrix();
+}
+
+void CToolObject::Set_WorldMatrix(const Matrix& WorldMatrix)
+{
+    return Get_Component<CTransform>()->Set_WorldMatrix(WorldMatrix);
+}
+
+
 void CToolObject::Set_Visible()
 {
     m_bVisible = true;
