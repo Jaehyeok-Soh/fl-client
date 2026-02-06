@@ -166,7 +166,6 @@ void CChannel::Update_MotionBone(Vec3 vLeftTrans, Vec3 vRightTrans,  CTransform*
 		&& fLocalLook == 0)
 		return;
 
-	Vec3 vOwnerPos		= pOwnerTransform->Get_Info(TRANSFORM_INFO_STATE::POS);
 	Vec3 vOwnerRight	= pOwnerTransform->Get_Info(TRANSFORM_INFO_STATE::RIGHT);
 	Vec3 vOwnerUp		= pOwnerTransform->Get_Info(TRANSFORM_INFO_STATE::UP);
 	Vec3 vOwnerLook		= pOwnerTransform->Get_Info(TRANSFORM_INFO_STATE::LOOK);

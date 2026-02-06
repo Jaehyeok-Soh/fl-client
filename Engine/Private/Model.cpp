@@ -42,6 +42,8 @@ CModel::CModel(const CModel& rhs)
 	m_vecPrevAnimationPose.resize(rhs.m_vecPrevAnimationPose.size());
 	m_vecCurrAnimationPose.resize(rhs.m_vecCurrAnimationPose.size());
 
+	m_vecBoneGroups = rhs.m_vecBoneGroups;
+
 	m_vecAnimations.reserve(rhs.m_vecAnimations.size());
 	for (auto& pAnimation : rhs.m_vecAnimations)
 		m_vecAnimations.push_back(pAnimation->Clone());
