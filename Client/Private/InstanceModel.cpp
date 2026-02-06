@@ -5,6 +5,11 @@
 #include "InstanceMesh.h"
 #include "GameInstance.h"
 
+#include "PhysicsCollider.h"
+#include "PhysicsRigidBody.h"
+
+#include "Mesh.h"
+
 CInstanceModel::CInstanceModel(ID3D11Device* pDevice, ID3D11DeviceContext* pContext)
 	: CMapObject(pDevice, pContext),m_vecMatrix{}
 {
@@ -15,7 +20,6 @@ CInstanceModel::CInstanceModel(const CInstanceModel& rhs)
 	: CMapObject(rhs), m_vecMatrix{rhs.m_vecMatrix}
 {
 }
-
 
 HRESULT CInstanceModel::Initialize_Prototype()
 {
@@ -31,17 +35,25 @@ HRESULT CInstanceModel::Initialize(void* pArg)
 		return E_FAIL;
 
 	CInstanceModel::INSTANCEMODEL_DESC* pDesc = static_cast<CInstanceModel::INSTANCEMODEL_DESC*>(pArg);
+	CInstanceModel::INSTANCEMODEL_DESC copiedDesc = *pDesc;
 
 	Set_Name(pDesc->tData.tUsingModelInfo.wstrName);
 
 	for (auto& SRTData : pDesc->tData.vecSRTData)
 	{
+		SRTData.vScale = SRTData.vScale_Isolated;
 		m_vecMatrix.push_back(SRTData.Get_World());
 	}
 
-
+	
 
 	if (FAILED(CInstanceModel::Ready_Component(pDesc)))
+		return E_FAIL;
+
+	if (FAILED(CMapObject::Ready_OverrideMtl(pDesc->tData.tUsingModelInfo)))
+		return E_FAIL;
+	
+	if (FAILED(CInstanceModel::Ready_PhysicsComponent(&copiedDesc)))
 		return E_FAIL;
 
 	return S_OK;
@@ -63,6 +75,8 @@ HRESULT CInstanceModel::Ready_Component(INSTANCEMODEL_DESC* pDesc)
 	{
 		if (FAILED(m_pGameInstance->Add_Prototype(tModelDesc.iPrototypeLevelIndex, L"Prototype_Component_Model_" + pDesc->tData.tUsingModelInfo.wstrName, pModel)))
 			Safe_Release(pModel);
+		else
+			m_pGameInstance->RegisterPhysicsMesh(tModelDesc.iPrototypeLevelIndex, L"Prototype_Component_Model_" + pDesc->tData.tUsingModelInfo.wstrName);
 	}
 	CModel::MODEL_COPY_DESC tModelCopyDesc{};
 	CGameObject::Add_Component<CModel>(tModelDesc.iPrototypeLevelIndex, L"Prototype_Component_Model_" + pDesc->tData.tUsingModelInfo.wstrName, &tModelCopyDesc);
@@ -78,11 +92,68 @@ HRESULT CInstanceModel::Ready_Component(INSTANCEMODEL_DESC* pDesc)
 	return S_OK;
 }
 
+HRESULT CInstanceModel::Ready_PhysicsComponent(INSTANCEMODEL_DESC* pDesc)
+{
+	HRESULT result{};
+
+	if (FAILED(Ready_PhysicsCollider(pDesc)))
+		result = E_FAIL;
+
+	if (FAILED(Ready_PhysicsRigidBody(pDesc)))
+		result = E_FAIL;
+
+	return result;
+}
+
+HRESULT CInstanceModel::Ready_PhysicsCollider(INSTANCEMODEL_DESC* pDesc)
+{
+	PHYSICSCOLLIDER_DESC pcDesc{};
+	pcDesc.wstrModelPrototypeTag = L"Prototype_Component_Model_" + pDesc->tData.tUsingModelInfo.wstrName;
+	pcDesc.bIsConvex = false;
+
+	CPhysicsCollider* pCollider = CPhysicsCollider::Create(m_pDevice, m_pDeviceContext, &pcDesc);
+	if (pCollider)
+	{
+		if (FAILED(m_pGameInstance->Add_Prototype(pDesc->iLevelIndex, L"Prototype_Component_Physics_Collider_" + pDesc->tData.tUsingModelInfo.wstrName, pCollider)))
+			Safe_Release(pCollider);
+	}
+
+	if (FAILED(Add_Component<CPhysicsCollider>(pDesc->iLevelIndex, L"Prototype_Component_Physics_Collider_" + pDesc->tData.tUsingModelInfo.wstrName, nullptr)))
+		return E_FAIL;
+
+	return S_OK;
+}
+
+HRESULT CInstanceModel::Ready_PhysicsRigidBody(INSTANCEMODEL_DESC* pDesc)
+{
+	PHYSICSRIGIDBODY_DESC desc{};
+	desc.eType = EPhysicsActorType::STATIC;
+	desc.detection = EPhysicsCollisionDetection::DISCRETE;
+	desc.fDensity = 10.f;
+	desc.bUseGravity = false;
+	desc.bIsKinematic = false;
+	desc.fLinearDamping = 0.f;
+	desc.fAngularDamping = 0.f;
+
+	for (size_t i = 0; i < pDesc->tData.vecSRTData.size(); i++)
+	{
+		auto& srtData = pDesc->tData.vecSRTData[i];
+		auto instWorld = srtData.Get_World();
+		desc.pOwnerMatrices.push_back(instWorld);
+		desc.vScale_Isolated.push_back(pDesc->tData.vecSRTData[i].vScale_Isolated);
+	}
+
+	if (FAILED(Add_Component<CPhysicsRigidBody>(0, L"Prototype_Component_Physics_RigidBody", &desc)))
+		return E_FAIL;
+
+	return S_OK;
+}
+
 HRESULT CInstanceModel::Awake(const _uint iCurrentLevelID)
 {
 	/* Instance Model 위치 값이 들어갈 예정 */
 
-
+	Get_Component<CPhysicsRigidBody>()->Awake();
 
 	return S_OK;
 }
@@ -107,6 +178,10 @@ void CInstanceModel::Ready_Before_Render(const _float fTimeDelta)
 	Super::Ready_Before_Render(fTimeDelta);
 
 	m_pGameInstance->Push_RenderObject(RENDER_CATEGORY::NONEBLEND , this);
+
+#ifdef _DEBUG
+	m_pGameInstance->Push_DebugComponent(Get_Component<CPhysicsRigidBody>());
+#endif // _DEBUG
 }
 
 HRESULT CInstanceModel::Render()
@@ -127,16 +202,37 @@ HRESULT CInstanceModel::Render()
 	/* 1번 슬롯에 Instance 미리 바인딩 */
 	pInstMesh->Bind_Instance(1);
 
-	for (_uint i = 0; i < iMeshCount; ++i)
+	if (!m_iUseOverrideMaterials)
 	{
-		pModel->Bind_Material(pShader, i);
-		pModel->Bind_MaterialInstance(pShader, i);
-		pShader->Apply();
-		pModel->Render_Instance(i, iInstacnceCount);
+		for (UINT32 i = 0; i < iMeshCount; ++i)
+		{
+			pModel->Bind_Material(pShader, i);
+			pModel->Bind_MaterialInstance(pShader, i);
+			pShader->Apply();
+			pModel->Render_Instance(i, iInstacnceCount);
+		}
 	}
+	else
+	{
+		_uint iConnectedIndex{ 0 };
+		for (UINT32 i = 0; i < iMeshCount; ++i)
+		{
+			iConnectedIndex = pModel->Get_Mesh(i)->Get_MaterialIndex();
+			if (!m_vecOverrideMaterials[iConnectedIndex])
+			{
+				pModel->Bind_Material(pShader, i);
+				pModel->Bind_MaterialInstance(pShader, i);
+			}
+			else
+			{
+				m_vecOverrideMaterials[iConnectedIndex]->Bind_ShaderResource(pShader);
+				pModel->Bind_MaterialInstance(pShader, i);
+			}
 
-	pInstMesh->Unbind_Resource(1);
-
+			pShader->Apply();
+			pModel->Render_Instance(i, iInstacnceCount);
+		}
+	}
 
 	return S_OK;
 }

@@ -50,6 +50,16 @@ HRESULT CPanel_MapTool::Render(CToolObject* pGo)
 		}
 	}
 
+	if (ImGui::CollapsingHeader(" Map Tool Setting "))
+	{
+		if (FAILED(Render_ChekcAndBind()))
+		{
+			ImGui::TreePop();
+			return E_FAIL;
+		}
+	}
+
+
 	ImGui::End();
 
 	Render_PreViewInfo();
@@ -67,6 +77,20 @@ HRESULT CPanel_MapTool::Render_RaySetting()
 
 	return S_OK;
 }
+
+HRESULT CPanel_MapTool::Render_ChekcAndBind()
+{
+	ImGui::SeparatorText(" Chekc Static & Instance Model  Merget InstanceModel ");
+
+
+	if (ImGui::Button(" Bind Staitc & Instance Model To Instance Model "))
+		m_pMapToolManager->Check_And_Bind();
+
+
+	ImGui::Separator();
+	return S_OK;
+}
+
 
 HRESULT CPanel_MapTool::Render_CameraSetting()
 {

@@ -49,12 +49,17 @@ void from_json(const json& LoadJson, SRT_DATA& tdata)
 
 	if (LoadJson.contains("Position"))
 		Engine_Utils::read_vec3_xyz(LoadJson["Position"], tdata.vPosition);
+
+	if (LoadJson.contains("Scale_Isolate"))
+		Engine_Utils::read_vec3_xyz(LoadJson["Scale_Isolate"], tdata.vScale_Isolated); // TEST: 소재혁 임시 추가
 }
 void to_json(json& SaveJson, const SRT_DATA& tData)
 {
     Engine_Utils::write_vec3_xyz(SaveJson["Scale"], tData.vScale);
     Engine_Utils::write_vec4_Quat(SaveJson["Quaternion"], tData.vQuat);
     Engine_Utils::write_vec3_xyz(SaveJson["Position"], tData.vPosition);
+
+	Engine_Utils::write_vec3_xyz(SaveJson["Scale_Isolate"], tData.vScale_Isolated); // TEST: 소재혁 임시 추가
 }
 #pragma endregion
 

@@ -58,6 +58,7 @@ NLOHMANN_JSON_SERIALIZE_ENUM(EMapObject_Type,
 	Vec3	vScale{0.f,0.f,0.f};
 	Quat	vQuat{0.f,0.f,0.f,1.f};
 	Vec3	vPosition{ 0.f,0.f,0.f };
+	Vec3	vScale_Isolated{}; //TEST: 소재혁 임시 추가
 public:
 	Matrix  Get_World()
 	{
@@ -69,7 +70,7 @@ public:
 
 typedef struct tagOverrideMaterials
 {
-	bool	isNull{ true };
+	bool	isNull{ false };
 
 	/* Override 할때 참조하고 있는 파일 Path 값 */
 	wstring wstrMtl_JsonFile_Name{};

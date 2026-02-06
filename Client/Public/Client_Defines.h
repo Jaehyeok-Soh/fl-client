@@ -230,6 +230,31 @@ namespace Client
 
 
 
+#pragma region MapObject
+
+	/* Tool°ú 1¤§1 ´ëÀÀ */
+	static _uint Get_IndexByMaterialSlotName(const wstring& wstrSlotName)
+	{
+
+		if (wstrSlotName == L"PM_Diffuse")
+			return aiTextureType_DIFFUSE - 1;
+		else if (wstrSlotName == L"PM_Normals")\
+			return aiTextureType_NORMALS - 1;
+		else if (wstrSlotName == L"PM_SpecularMasks")
+			return aiTextureType_SPECULAR - 1;
+		else if (wstrSlotName == L"PM_Emissive")
+			return aiTextureType_EMISSIVE - 1;
+		else if (wstrSlotName == L"PM_Ambient")
+			return aiTextureType_AMBIENT - 1;
+
+
+		return 0;
+	}
+	
+
+#pragma	endregion
+
+
 
 
 	inline constexpr wchar_t g_wszTriggerBoxLayer[]{ L"TriggerBox_Layer" };

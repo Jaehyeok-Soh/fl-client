@@ -12,9 +12,11 @@
 #include "ImGui_UIManager.h"
 #include "ImGui_ToolManager.h"
 #include "UIAction_Tool.h"
+#include "UITargetAction_Tool.h"
 
 #include "UIAction_Registry.h"
 #include "GameInstance.h"
+
 CToolUI::CToolUI(ID3D11Device* pDevice, ID3D11DeviceContext* pDeviceContext)
 	:CUIObject(pDevice, pDeviceContext)
 {
@@ -53,6 +55,8 @@ HRESULT CToolUI::Initialize(void* pArg)
 	m_fY = pDesc->fY;
 	m_fZ = pDesc->fZ;
 
+	m_pCacheCanvas = pDesc->pCacheCanvas;
+	m_pCacheLayer = pDesc->pCacheLayer;
 	if (FAILED(Super::Initialize(pArg)))
 		return E_FAIL;
     if (FAILED(Ready_Components(pDesc)))
@@ -70,10 +74,18 @@ HRESULT CToolUI::Awake(const _uint iCurrentLevelID)
 	m_pEffect = new BasicEffect(m_pDevice);
 	m_pEffect->SetVertexColorEnabled(true);
 
-	m_pActionForMe = CUIAction_Tool::Create(this);
 	m_iInteractState = static_cast<uint32_t>(DTO::EUIEvent_Flag::NONE);
+
+	m_pActionForMe = CUIAction_Tool::Create(this);
 	if (nullptr == m_pActionForMe)
 		return E_FAIL;
+
+	m_pActionForTarget = CUITargetAction_Tool::Create(this);
+	if (nullptr == m_pActionForTarget)
+	{
+		Safe_Release(m_pActionForMe);
+		return E_FAIL;
+	}
 
     return S_OK;
 }
@@ -89,6 +101,8 @@ void CToolUI::Update_Priority(const _float fTimeDelta)
 
 void CToolUI::Update(const _float fTimeDelta)
 {
+	Lerp_Movement(fTimeDelta);
+	Return_Lerp_Movement(fTimeDelta);
 	Super::Update(fTimeDelta);
 }
 
@@ -244,15 +258,18 @@ HRESULT CToolUI::Excute_Action(DTO::EUIEvent EventType)
 {
 	if (nullptr == m_pActionForMe)
 		return E_FAIL;
+	if (nullptr == m_pActionForTarget)
+		return E_FAIL;
 
 	size_t index = ENUM_TO_SZET(EventType);
 	if (index >= m_vecBindingActions.size())
 		return E_FAIL;
 
 	for (auto& fn : m_vecBindingActions[index])
-		fn(m_pActionForMe);
+		fn(m_pActionForMe, m_pActionForTarget);
 	return S_OK;
 }
+
 
 HRESULT CToolUI::Bind_ShaderResources()
 {
@@ -269,32 +286,35 @@ HRESULT CToolUI::Bind_ShaderResources()
 
 void CToolUI::SetUp_RectTransform_Position()
 {
-	auto* pCanvas = CImGui_UIManager::GetInstance()->Safe_Access_Canvas(m_iCanvasIndex);
-	if (nullptr == pCanvas)
+	if (nullptr == m_pCacheCanvas)
 		return;
 
-	Vec2 initPos = {};
+	Vec2 initPos = Calc_RectTransformPosition();
+
+	m_vRenderPos = Vec3{ initPos.x + m_vMoveOffset.x + m_fX, initPos.y + m_vMoveOffset.y + m_fY, m_fZ };
+	Move_Position(m_vRenderPos.x , m_vRenderPos.y , m_vRenderPos.z);
+
+	m_tRenderRect.left		= static_cast<LONG>(initPos.x + m_vMoveOffset.x + m_fX - (m_fWidth * 0.5f));
+	m_tRenderRect.right		= static_cast<LONG>(initPos.x + m_vMoveOffset.x + m_fX + (m_fWidth * 0.5f));
+	m_tRenderRect.top		= static_cast<LONG>(initPos.y + m_vMoveOffset.y + m_fY - (m_fHeight * 0.5f));
+	m_tRenderRect.bottom	= static_cast<LONG>(initPos.y + m_vMoveOffset.y + m_fY + (m_fHeight * 0.5f));
+}
+
+Vec2 CToolUI::Calc_RectTransformPosition()
+{
 	switch (m_eRectTransformType)
 	{
-	case Tool::ERectTransform::LT:initPos = pCanvas->Get_LT();break;
-	case Tool::ERectTransform::CT:initPos = pCanvas->Get_CT();break;
-	case Tool::ERectTransform::RT:initPos = pCanvas->Get_RT();break;
-	case Tool::ERectTransform::LC:initPos = pCanvas->Get_LC();break;
-	case Tool::ERectTransform::C: initPos = pCanvas->Get_C();break;
-	case Tool::ERectTransform::RC:initPos = pCanvas->Get_RC();break;
-	case Tool::ERectTransform::LB:initPos = pCanvas->Get_LB();break;
-	case Tool::ERectTransform::CB:initPos = pCanvas->Get_CB();break;
-	case Tool::ERectTransform::RB:initPos = pCanvas->Get_RB();break;
-	default:initPos = pCanvas->Get_C();break;
+	case Tool::ERectTransform::LT:return m_pCacheCanvas->Get_LT();
+	case Tool::ERectTransform::CT:return m_pCacheCanvas->Get_CT();
+	case Tool::ERectTransform::RT:return m_pCacheCanvas->Get_RT();
+	case Tool::ERectTransform::LC:return m_pCacheCanvas->Get_LC();
+	case Tool::ERectTransform::C: return m_pCacheCanvas->Get_C();
+	case Tool::ERectTransform::RC:return m_pCacheCanvas->Get_RC();
+	case Tool::ERectTransform::LB:return m_pCacheCanvas->Get_LB();
+	case Tool::ERectTransform::CB:return m_pCacheCanvas->Get_CB();
+	case Tool::ERectTransform::RB:return m_pCacheCanvas->Get_RB();
+	default:return m_pCacheCanvas->Get_C();
 	}
-
-	Move_Position(initPos.x + m_fX, initPos.y + m_fY, m_fZ);
-	m_vRenderPos = Vec3{ initPos.x + m_fX, initPos.y + m_fY, m_fZ };
-
-	m_tRenderRect.left		= static_cast<LONG>(initPos.x + m_fX - (m_fWidth * 0.5f));
-	m_tRenderRect.right		= static_cast<LONG>(initPos.x + m_fX + (m_fWidth * 0.5f));
-	m_tRenderRect.top		= static_cast<LONG>(initPos.y + m_fY - (m_fHeight * 0.5f));
-	m_tRenderRect.bottom	= static_cast<LONG>(initPos.y + m_fY + (m_fHeight * 0.5f));
 }
 
 void CToolUI::SetUp_Visible()
@@ -309,6 +329,13 @@ void CToolUI::SetUp_Visible()
 
 void CToolUI::Acting_About_State()
 {
+	if (Engine_Utils::Has_Flag(m_iInteractState, DTO::EUIEvent_Flag::INVOKED))
+	{
+		Excute_Action(DTO::EUIEvent::INVOKED);
+		Engine_Utils::RemoveSoft_Flag(m_iInteractState, DTO::EUIEvent_Flag::INVOKED);
+		return;
+	}
+
 	if(m_iInteractState == DTO::EUIEvent_Flag::NONE)
 		Excute_Action(DTO::EUIEvent::NONE);
 	else
@@ -371,6 +398,102 @@ array<vector<DTO::TUI_EventBindData>, ENUM_TO_UINT(DTO::EUIEvent::END)>* CToolUI
 	return &m_vecBindingActionData;
 }
 
+
+void CToolUI::Start_Lerp_Movement(const Vec3& vTargetPos, const _float fTargetAlpha, const _float& fDuration, _bool isPin)
+{
+	m_vLerpMovement_StartPos = m_vRenderPos; /* vRenderPos -> Local */
+	m_vLerpMovement_TargetPos = vTargetPos; /* vTargetPos -> Local */
+
+	m_fLerpMovement_TargetAlpha = fTargetAlpha;
+	m_fLerpMovement_Duration = fDuration;
+	m_fLerpMovement_TimeAcc = 0.f;
+	m_isPlaying_Lerp_Movement = true;
+	m_isLerpMovement_Pin = isPin;
+}
+
+void CToolUI::Start_Return_Lerp_Movement()
+{
+	m_vLerpMovement_StartPos = m_vMoveOffset;
+	m_vLerpMovement_TargetPos = Vec3{ 0.f, 0.f, 0.f };
+
+	m_fLerpMovement_TimeAcc = 0.f;
+	m_isPlaying_Return_Lerp_Movement = true;
+	m_isMoved = false;
+}
+
+void CToolUI::Lerp_Movement(const _float fTimeDelta)
+{
+	if (!m_isPlaying_Lerp_Movement || m_isMoved || m_isPlaying_Return_Lerp_Movement)
+		return;
+
+	if (m_fLerpMovement_Duration <= 0.f)
+	{
+		m_vMoveOffset =  m_vLerpMovement_TargetPos - m_vLerpMovement_StartPos;
+		m_isPlaying_Lerp_Movement = false;
+		return;
+	}
+
+	m_fLerpMovement_TimeAcc += fTimeDelta;
+
+	_float t = m_fLerpMovement_TimeAcc / m_fLerpMovement_Duration;
+	if (t >= 1.f) t = 1.f;
+	else if (t <= 0.f) t = 0.f;
+
+	_float s = t;
+	if (m_fLerpMovement_TargetAlpha > 0.f)
+		s = 1.f - powf(1.f - t, m_fLerpMovement_TargetAlpha);
+
+	m_vMoveOffset = (m_vLerpMovement_TargetPos - m_vLerpMovement_StartPos) * s;
+
+	if (t >= 1.f)
+	{
+		if (m_isLerpMovement_Pin)
+		{
+			m_vMoveOffset = m_vLerpMovement_TargetPos - m_vLerpMovement_StartPos;
+			m_isMoved = TRUE;
+		}
+		else
+		{
+			Start_Return_Lerp_Movement();
+		}
+
+		m_isPlaying_Lerp_Movement = false;
+	}
+}
+
+void CToolUI::Return_Lerp_Movement(const _float fTimeDelta)
+{
+	if (!m_isPlaying_Return_Lerp_Movement || m_isPlaying_Lerp_Movement)
+		return;
+
+	if (m_fLerpMovement_Duration <= 0.f)
+	{
+		m_vMoveOffset = Vec3{ 0.f, 0.f, 0.f };
+		m_isPlaying_Return_Lerp_Movement = false;
+		m_isMoved = false;
+		return;
+	}
+
+	m_fLerpMovement_TimeAcc += fTimeDelta;
+
+	_float t = m_fLerpMovement_TimeAcc / m_fLerpMovement_Duration;
+	if (t >= 1.f) t = 1.f;
+	else if (t <= 0.f) t = 0.f;
+
+	_float s = t;
+	if (m_fLerpMovement_TargetAlpha > 0.f)
+		s = 1.f - powf(1.f - t, m_fLerpMovement_TargetAlpha);
+
+	m_vMoveOffset = m_vLerpMovement_StartPos + (m_vLerpMovement_TargetPos - m_vLerpMovement_StartPos) * s;
+
+	if (t >= 1.f)
+	{
+		m_vMoveOffset = Vec3{ 0.f, 0.f, 0.f };
+		m_isMoved = false;
+		m_isPlaying_Return_Lerp_Movement = false;
+	}
+}
+
 CToolUI* CToolUI::Create(EToolObjectType eType, ID3D11Device* pDevice, ID3D11DeviceContext* pDeviceContext)
 {
 	CToolUI* pInstance = new CToolUI(pDevice, pDeviceContext);
@@ -399,6 +522,7 @@ void CToolUI::Free()
 	Safe_Delete(m_pEffect);
 	Safe_Release(m_pInputLayout);
 	Safe_Release(m_pActionForMe);
+	Safe_Release(m_pActionForTarget);
 	Super::Free();
 }
 

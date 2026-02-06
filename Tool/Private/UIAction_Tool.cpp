@@ -28,10 +28,16 @@ void CUIAction_Tool::Set_TextureIndex(uint32_t index)
     m_pOwner->Set_TextureIndex(index);
 }
 
+
 const _string& CUIAction_Tool::Get_Tag() const
 {
     static const _string sEmpty = "";
     return (m_pOwner != nullptr) ? m_pOwner->Get_Name() : sEmpty;
+}
+
+void CUIAction_Tool::Start_Lerp_Movement(const Vec3& vTargetPos, const _float fTargetAlpha, const _float& fDuration, _bool isPin)
+{
+    m_pOwner->Start_Lerp_Movement(vTargetPos, fTargetAlpha, fDuration, isPin);
 }
 
 CUIAction_Tool* CUIAction_Tool::Create(CToolUI* pUI)
@@ -46,3 +52,4 @@ void CUIAction_Tool::Free()
 {
     Super::Free();
 }
+

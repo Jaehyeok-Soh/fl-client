@@ -4,6 +4,8 @@
 #include "ImGui_Dockspace_TabBar.h"
 #include "ToolObject.h"
 #include "Level_Loading.h"
+#include "MapObject.h"
+#include "InstanceModel.h"
 
 IMPLEMENT_SINGLETON(CImGui_ToolManager)
 
@@ -94,8 +96,7 @@ void CImGui_ToolManager::ImGuizmo_Render(CToolObject* pSelectedObject)
 		const Matrix& matProj = m_pGameInstance->Get_ProjMatrix();
 
 		// Object Transform
-		CTransform* pTransform = pSelectedObject->Get_Component<CTransform>();
-		Matrix matWorld = pTransform->Get_WorldMatrix();
+		Matrix		matWorld   = pSelectedObject->Get_WorldMatrix();
 
 		// snapping
 		_bool bSnap = KEY_BUTTON_HOLD(DIK_LSHIFT);
@@ -126,17 +127,7 @@ void CImGui_ToolManager::ImGuizmo_Render(CToolObject* pSelectedObject)
 			, ImGuizmo::WORLD, *matWorld.m, nullptr, bSnap ? snapValues : nullptr);
 
 		if (ImGuizmo::IsUsing())
-		{
-			// float translation[3];
-			// float rotation[3];
-			// float scale[3];
-			// ImGuizmo::DecomposeMatrixToComponents(*matWorld.m, translation, rotation, scale);
-
-			pTransform->Set_Info(TRANSFORM_INFO_STATE::RIGHT, matWorld.Right());
-			pTransform->Set_Info(TRANSFORM_INFO_STATE::UP, matWorld.Up());
-			pTransform->Set_Info(TRANSFORM_INFO_STATE::LOOK, matWorld.Backward());
-			pTransform->Set_Info(TRANSFORM_INFO_STATE::POS, matWorld.Translation());
-		}
+			pSelectedObject->Set_WorldMatrix(matWorld);
 	}
 	else
 		m_eGuizmoState = EGuizmoState::TRANSLATION;

@@ -501,6 +501,9 @@
     <ClInclude Include="..\Public\Gravity_Force.h">
       <Filter>03. Level\Effect\Effect\Gravity_Force</Filter>
     </ClInclude>
+    <ClInclude Include="..\Public\UITargetAction_Tool.h">
+      <Filter>02. GameObjects\UI\00.Action</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <Image Include="small.ico">
@@ -740,6 +743,9 @@
     </ClCompile>
     <ClCompile Include="..\Private\Gravity_Force.cpp">
       <Filter>03. Level\Effect\Effect\Gravity_Force</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\UITargetAction_Tool.cpp">
+      <Filter>02. GameObjects\UI\00.Action</Filter>
     </ClCompile>
   </ItemGroup>
 </Project>

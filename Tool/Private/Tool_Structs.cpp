@@ -24,12 +24,17 @@ namespace Tool
 
 		if (LoadJson.contains("Position"))
 			Engine_Utils::read_vec3_xyz(LoadJson["Position"], tData.vPosition);
+
+		if (LoadJson.contains("Scale_Isolate"))
+			Engine_Utils::read_vec3_xyz(LoadJson["Scale_Isolate"], tData.vScale_Isolated); // TEST: 소재혁 임시 추가
 	}
 	void to_json(json& SaveJson, const SRT_DATA& tData)
 	{
 		Engine_Utils::write_vec3_xyz(SaveJson["Scale"], tData.vScale);
 		Engine_Utils::write_vec4_Quat(SaveJson["Quaternion"], tData.vQuat);
 		Engine_Utils::write_vec3_xyz(SaveJson["Position"], tData.vPosition);
+
+		Engine_Utils::write_vec3_xyz(SaveJson["Scale_Isolate"], tData.vScale_Isolated); // TEST: 소재혁 임시 추가
 	}
 #pragma endregion
 #pragma region Using Model 
@@ -135,7 +140,7 @@ namespace Tool
 	void from_json(const json& LoadJson, INSTANCEMODEL_DATA& tData)
 	{
 		if (LoadJson.contains("SRTs"))
-			tData.vecOriginSRT = LoadJson["SRTs"];
+			tData.vecSRT = LoadJson["SRTs"];
 		if (LoadJson.contains("Using Model Info"))
 			tData.tUsingModelInfo = LoadJson["Using Model Info"];
 		if (LoadJson.contains("Usage"))
@@ -145,8 +150,8 @@ namespace Tool
 	void to_json(json& SaveJson, const INSTANCEMODEL_DATA& tData)
 	{
 		SaveJson["Using Model Info"] = tData.tUsingModelInfo;
-		if (!tData.vecOriginSRT.empty())
-			SaveJson["SRTs"] = tData.vecOriginSRT;
+		if (!tData.vecSRT.empty())
+			SaveJson["SRTs"] = tData.vecSRT;
 
 		SaveJson["Usage"] = Engine_Utils::D3D11_USAGE_ToString(tData.eInstance_Usage);
 	}

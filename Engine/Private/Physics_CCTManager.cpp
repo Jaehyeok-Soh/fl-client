@@ -68,11 +68,13 @@ void CPhysics_CCTManager::ReleaseCCTManager()
 PxController* CPhysics_CCTManager::MakeBoxController(PHYSICSCCT_DESC* pDesc)
 {
 	PxBoxControllerDesc desc{};
-	desc.contactOffset = 0.1f;
 	desc.halfSideExtent = pDesc->vExtens.x / 2.f;
 	desc.halfHeight = pDesc->vExtens.y / 2.f;
 	desc.halfForwardExtent = pDesc->vExtens.z / 2.f;
 	desc.material = m_pResourceManager->GetMaterial(&pDesc->tMaterial);
+
+	desc.contactOffset = 0.1f;
+	desc.stepOffset = 0.5f;
 
 	return m_pControllerManager->createController(desc);
 }
@@ -80,12 +82,12 @@ PxController* CPhysics_CCTManager::MakeBoxController(PHYSICSCCT_DESC* pDesc)
 PxController* CPhysics_CCTManager::MakeCapsuleController(PHYSICSCCT_DESC* pDesc)
 {
 	PxCapsuleControllerDesc desc{};
-	desc.contactOffset = 0.1f;
 	desc.radius = pDesc->fRadius;
 	desc.height = pDesc->fHeight;
 	desc.material = m_pResourceManager->GetMaterial(&pDesc->tMaterial);
 
-	desc.stepOffset = 1.5f;
+	desc.contactOffset = 0.1f;
+	desc.stepOffset = 0.5f;
 
 	return m_pControllerManager->createController(desc);
 }

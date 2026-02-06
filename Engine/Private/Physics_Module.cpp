@@ -205,6 +205,26 @@ Matrix CPhysics_Module::PxTransformToXMMatrix(PxTransform pxTransform)
 	return m_pUtils->PxTransformToXMMatrix(pxTransform);
 }
 
+_bool CPhysics_Module::HasNegativeScale(Matrix mat)
+{
+	return m_pUtils->HasNegativeScale(mat);
+}
+
+_int CPhysics_Module::GetNegativeScaleAxis(const Matrix& mat)
+{
+	return m_pUtils->GetNegativeScaleAxis(mat);
+}
+
+PxQuat CPhysics_Module::GetPureRotation(Matrix mat)
+{
+	return m_pUtils->GetPureRotation(mat);
+}
+
+PxVec3 CPhysics_Module::GetPureScale(Matrix mat)
+{
+	return m_pUtils->GetPureScale(mat);
+}
+
 #ifdef _DEBUG
 HRESULT CPhysics_Module::Render(PxRigidActor* pActor, XMVECTOR color)
 {
@@ -249,7 +269,7 @@ vector<PxShape*> CPhysics_Module::GetMeshShape(PHYSICSCOLLIDER_DESC* pDesc)
 	return m_pShapeFactory->GetMeshShape(pDesc);
 }
 
-PxRigidActor* CPhysics_Module::GetActor(PHYSICSRIGIDBODY_DESC* rigidBodyDesc, PHYSICSCOLLIDER_DESC* colliderDesc, vector<PxShape*>& shapes)
+vector<PxRigidActor*> CPhysics_Module::GetActor(PHYSICSRIGIDBODY_DESC* rigidBodyDesc, PHYSICSCOLLIDER_DESC* colliderDesc, vector<PxShape*>& shapes)
 {
 	return m_pActorFactory->GetActor(rigidBodyDesc, colliderDesc, shapes);
 }

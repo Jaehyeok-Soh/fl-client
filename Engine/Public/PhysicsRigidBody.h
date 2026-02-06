@@ -30,7 +30,7 @@ private:
 	ID3D11DeviceContext* m_pDeviceContext = { nullptr };
 
 private:
-	PxRigidActor* m_pActor = { nullptr };
+	vector<PxRigidActor*> m_pActors = { nullptr };
 	PHYSICSRIGIDBODY_DESC m_tDesc = {};
 
 public:
