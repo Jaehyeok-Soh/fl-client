@@ -101,6 +101,7 @@ HRESULT CInstanceModel::Ready_SRTData()
 
 	for (auto& SRTData : m_tData.vecSRT)
 	{
+		SRTData.vScale = SRTData.vScale_Isolated;
 		Matrix WorldMatrix = SRTData.Get_World();
 		m_tData.vecMatirx.push_back(WorldMatrix);
 	}
@@ -335,6 +336,11 @@ _bool CInstanceModel::Export_Data(DTO::ECategory eCategory, CDataDocumentBase* p
 	tSave_InstanceModleData.strTag = m_strName + std::to_string(m_iObjectID);
 
 	/* SRT */
+	{
+		// PhysX 충돌체 초기화용 괴도 소재혁
+		for (auto& srtData : m_tData.vecSRT)
+			srtData.vScale = Vec3(1.f, 1.f, 1.f);
+	}
 	tSave_InstanceModleData.vecSRTData.resize(m_tData.vecSRT.size());
 	memcpy(tSave_InstanceModleData.vecSRTData.data(), m_tData.vecSRT.data(), sizeof(SRT_DATA) * m_tData.vecSRT.size());
 

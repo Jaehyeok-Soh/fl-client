@@ -318,6 +318,7 @@ void CPhysics_Module::Check_Leak()
 	logMsg += L"Convex Meshes: " + std::to_wstring(convexMeshCount) + L"\n";
 
 	CLOG_INFO(logMsg);
+	OutputDebugStringW(logMsg.c_str());
 }
 
 void CPhysics_Module::ClearPhysics()

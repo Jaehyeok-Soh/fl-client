@@ -52,7 +52,7 @@ HRESULT CBuilder_Map::Create_StaticModel(const DTO::TMap_StaticModelData& tData)
 	Client::CStaticModel::STATICMODEL_DESC tStaticModelDesc{};
 	tStaticModelDesc.tUsingModelInfo = tData.tUsingModelInfo;
 	tStaticModelDesc.iLevelIndex = ENUM_TO_UINT(ELevelType::LOGO);
-	tStaticModelDesc.vScale_Isolated = tData.tSRTData.vScale_Isolated; // TEST: 소재혁 임시 추가
+	tStaticModelDesc.vScale_Isolated = tData.tSRTData.vScale_Isolated;
 
 	CTransform::TRANSFORM_DESC tTsDesc{};
 	tTsDesc.ScaleMatrix = Matrix::CreateScale(tData.tSRTData.vScale);

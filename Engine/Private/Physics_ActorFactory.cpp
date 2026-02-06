@@ -1,6 +1,8 @@
 #include "Engine_pch.h"
 
 #include "GameInstance.h"
+#include "EngineConsole.h"
+
 #include "Physics_ActorFactory.h"
 
 CPhysics_ActorFactory::CPhysics_ActorFactory(ID3D11Device* pDevice, ID3D11DeviceContext* pContext, PxPhysics* pPhysics, PxScene* pScene)
@@ -120,6 +122,12 @@ PxRigidActor* CPhysics_ActorFactory::MakeStatic(const Matrix world, Vec3 scale, 
 			PX_RELEASE(newShape);
 		}
 	}
+
+	//if (staticActor->getNbShapes() == 0)
+	//{
+	//	PX_RELEASE(staticActor);
+	//	return staticActor;
+	//}
 
 	return staticActor;
 }

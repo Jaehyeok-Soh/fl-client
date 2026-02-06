@@ -254,6 +254,7 @@ _bool CStaticModel::Export_Data(DTO::ECategory eCategory, CDataDocumentBase* pDo
 
 	/* SRT */
 	WorldMatrix.Decompose(tSave_StaticModleData.tSRTData.vScale, tSave_StaticModleData.tSRTData.vQuat, tSave_StaticModleData.tSRTData.vPosition);
+	tSave_StaticModleData.tSRTData.vScale = Vec3(1.f, 1.f, 1.f);
 	tSave_StaticModleData.tSRTData.vScale_Isolated = m_tData.tOriginSRT.vScale_Isolated;
 
 	/* Using Material Info */

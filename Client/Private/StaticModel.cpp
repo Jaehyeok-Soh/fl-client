@@ -44,9 +44,7 @@ HRESULT CStaticModel::Initialize(void* pArg)
 	if (FAILED(CMapObject::Ready_OverrideMtl(pDesc->tUsingModelInfo)))
 		return E_FAIL;
 
-
-	Get_Component<CTransform>()->Set_Scale(pDesc->vScale_Isolated); // TEST: 소재혁 임시 추가
-
+	Get_Component<CTransform>()->Set_Scale(pDesc->vScale_Isolated);
 
 	return S_OK;
 }

@@ -96,6 +96,11 @@ CComponent* CPhysicsRigidBody::Clone(void* pArg)
 
 void CPhysicsRigidBody::Free()
 {
+	for (auto& actor : m_pActors)
+		PX_RELEASE(actor);
+
+	m_pActors.clear();
+
 	Safe_Release(m_pDeviceContext);
 	Safe_Release(m_pDevice);
 
