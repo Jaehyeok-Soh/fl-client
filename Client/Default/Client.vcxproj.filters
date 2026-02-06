@@ -112,9 +112,6 @@
     <Filter Include="06. FSM\Player\DashBack">
       <UniqueIdentifier>{902bc6b0-2606-46cf-902c-e58daa3a16a9}</UniqueIdentifier>
     </Filter>
-    <Filter Include="06. FSM\Player\DashFront">
-      <UniqueIdentifier>{b738b353-6637-40f9-9762-6a4027a61b1f}</UniqueIdentifier>
-    </Filter>
     <Filter Include="06. FSM\Player\DashSky">
       <UniqueIdentifier>{39a224de-7994-4a34-8213-33de7f2ffb80}</UniqueIdentifier>
     </Filter>
@@ -181,9 +178,6 @@
     <Filter Include="06. FSM\Player\Attack">
       <UniqueIdentifier>{7ebbc28f-6b61-485b-b6e8-1bfe363c2de3}</UniqueIdentifier>
     </Filter>
-    <Filter Include="06. FSM\Player\Attack\Melee">
-      <UniqueIdentifier>{2b993293-fadd-49b9-88a4-fc11e29bf8ae}</UniqueIdentifier>
-    </Filter>
     <Filter Include="03. GameObject\MapObject">
       <UniqueIdentifier>{b160eafb-0791-4bab-a9f6-d8d8d7b9532c}</UniqueIdentifier>
     </Filter>
@@ -201,6 +195,15 @@
     </Filter>
     <Filter Include="03. GameObject\MapObject\02. InstanceModel">
       <UniqueIdentifier>{2be52ba2-2a45-42f4-aa0d-4f0d8e44cbe8}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="04. Shaders\ComputeShader_Labs">
+      <UniqueIdentifier>{8c14e548-7930-4ec0-b748-e471998a55b9}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="06. FSM\Player\Attack\Combo">
+      <UniqueIdentifier>{c441f698-d661-4b43-9a38-86ca6478bcfe}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="06. FSM\Player\Attack\Combo\Moon">
+      <UniqueIdentifier>{03a248e9-eb08-4143-a1f8-99a1bbf2dbc8}</UniqueIdentifier>
     </Filter>
     <Filter Include="99. ETC\01. ImGui">
       <UniqueIdentifier>{aa2685d2-18f6-417c-ba8e-cf78608c7618}</UniqueIdentifier>
@@ -329,9 +332,6 @@
     </ClInclude>
     <ClInclude Include="..\Public\State_DashBack.h">
       <Filter>06. FSM\Player\DashBack</Filter>
-    </ClInclude>
-    <ClInclude Include="..\Public\State_DashFront.h">
-      <Filter>06. FSM\Player\DashFront</Filter>
     </ClInclude>
     <ClInclude Include="..\Public\State_DashSky.h">
       <Filter>06. FSM\Player\DashSky</Filter>
@@ -462,6 +462,12 @@
     <ClInclude Include="..\Public\UITargetAction_Client.h">
       <Filter>03. GameObject\UIObjects\04.Action</Filter>
     </ClInclude>
+    <ClInclude Include="..\Public\State_ComboBase.h">
+      <Filter>06. FSM\Player\Attack\Combo</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\State_MoonCombo.h">
+      <Filter>06. FSM\Player\Attack\Combo\Moon</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <Image Include="Client.ico">
@@ -560,9 +566,6 @@
     </ClCompile>
     <ClCompile Include="..\Private\State_DashBack.cpp">
       <Filter>06. FSM\Player\DashBack</Filter>
-    </ClCompile>
-    <ClCompile Include="..\Private\State_DashFront.cpp">
-      <Filter>06. FSM\Player\DashFront</Filter>
     </ClCompile>
     <ClCompile Include="..\Private\State_DashSky.cpp">
       <Filter>06. FSM\Player\DashSky</Filter>

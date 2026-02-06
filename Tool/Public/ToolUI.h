@@ -35,7 +35,7 @@ public:
 	typedef struct tagScheduleDesc
 	{
 		_float fRemain = {};
-		Engine::CUIAction_Registry::ActionFunc Func;
+		std::function<void()> Func;
 	}SCHEDULE_DESC;
 
 private:
@@ -66,7 +66,7 @@ public:
 	HRESULT ReBind_Action();
 
 	void Delay_Queue(const _float fTimeDelta);
-	HRESULT Push_Action(const _float fDelay, Engine::CUIAction_Registry::ActionFunc Func);
+	void Push_DelayAction(const _float fDelay, std::function<void()>&& Func);
 
 private:
 	HRESULT Ready_Components(TOOLUI_DESC* pDesc);
@@ -117,7 +117,7 @@ public:
 
 	void Set_isDisable(_bool isDisable);/* 아직 바인드 안함 */
 
-	void Start_Fade(const _float fStartAlpha, const _float fTargetAlpha, const _float fDuration); /* 아직 바인드 안함 */
+	void Start_Fade(const _float fStartAlpha, const _float fTargetAlpha, const _float fDuration);
 	void Fade(const _float fTimeDelta);
 
 	/* Action Variable */
@@ -187,7 +187,6 @@ private:
 	array< vector<DTO::TUI_EventBindData>, ENUM_TO_UINT(DTO::EUIEvent::END)> m_vecBindingActionData;
 
 	vector<SCHEDULE_DESC> m_vecActionQueue;
-	list<SCHEDULE_DESC> m_listReleaseAction;
 
 public:
 	static CToolUI* Create(EToolObjectType eType, ID3D11Device* pDevice, ID3D11DeviceContext* pDeviceContext);

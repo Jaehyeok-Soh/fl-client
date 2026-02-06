@@ -27,6 +27,12 @@ public:
 		CUILayer* pLayerCache = { nullptr };
 	}GENERIC_UI_DESC;
 
+	typedef struct tagScheduleDesc
+	{
+		_float fRemain = {};
+		std::function<void()> Func;
+	}SCHEDULE_DESC;
+
 private:
 	CGenericUI(ID3D11Device* pDevice, ID3D11DeviceContext* pDeviceContext);
 	CGenericUI(const CGenericUI& rhs);
@@ -53,7 +59,11 @@ public:
 	HRESULT Remove_Action(DTO::EUIEvent EventType, DTO::EUIAction ActType);
 	IUIActionForMe* Get_ActionForMe() const { return m_pActionForMe; }
 	HRESULT Excute_Action(DTO::EUIEvent EventType);
+	HRESULT Excute_Specific_Action(DTO::EUIEvent EventType, DTO::EUIAction eAction);
 	HRESULT ReBind_Action();
+
+	void Delay_Queue(const _float fTimeDelta);
+	void Push_DelayAction(const _float fDelay, std::function<void()>&& Func);
 
 private:
 	HRESULT Ready_Components(GENERIC_UI_DESC* pDesc);
@@ -70,6 +80,8 @@ public:
 	void Start_Return_Lerp_Movement();
 	void Lerp_Movement(const _float fTimeDelta);
 	void Return_Lerp_Movement(const _float fTimeDelta);
+	void Start_Fade(const _float fStartAlpha, const _float fTargetAlpha, const _float fDuration);
+	void Fade(const _float fTimeDelta);
 
 	/* Action Variable */
 private:
@@ -91,6 +103,19 @@ private:
 	_bool m_isPlaying_Return_Lerp_Movement = { false };
 	/* Start_Return_Lerp_Movement */
 
+	/* Set_isDisable */
+	_bool m_isDisable = { false };
+	/* Set_isDisable */
+
+	/* Start_Fade */
+	_bool m_isPlaying_Fade = { false };
+	_float m_fFade_StartAlpha = {};
+	_float m_fFade_TargetAlpha = {};
+	_float m_fFade_ResultAlpha = { 1.f };
+	_float m_fFade_Duration = {};
+	_float m_fFade_TimeAcc = {};
+	/* Start_Fade */
+
 private:
 	ERectTransform m_eRectTransformType = { ERectTransform::C };
 	_wstring m_wstrTextureTag = {};
@@ -104,10 +129,13 @@ private:
 	IUIActionForMe* m_pActionForMe = { nullptr };
 	IUIActionForTarget* m_pActionForTarget = { nullptr };
 
+	_bool m_isAction = { false };
 
 	/* 액션들을 이벤트 갯수만큼 정적으로 할당 사실상 vector<ActionFunc>[] 이거임 */
 	array< vector<CUIAction_Registry::ActionFunc>, ENUM_TO_UINT(DTO::EUIEvent::END)> m_vecBindingActions;
 	array< vector<DTO::TUI_EventBindData>, ENUM_TO_UINT(DTO::EUIEvent::END)> m_vecBindingActionData;
+
+	vector<SCHEDULE_DESC> m_vecActionQueue;
 
 public:
 	static CGenericUI* Create(ID3D11Device* pDevice, ID3D11DeviceContext* pDeviceContext);

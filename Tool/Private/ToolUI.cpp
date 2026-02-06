@@ -183,6 +183,9 @@ _bool CToolUI::Calc_HitEvent()
 	if (m_isDisable)
 		return FALSE;
 
+	if (m_vecActionQueue.size() > 0)
+		return FALSE;
+
 	if (::PtInRect(&m_tRenderRect, CImGui_ToolManager::GetInstance()->Get_CalculatedMousePos_Point()))
 		return TRUE;
 
@@ -196,13 +199,9 @@ void CToolUI::Delay_Queue(const _float fTimeDelta)
 		m_vecActionQueue[i].fRemain -= fTimeDelta;
 		if (m_vecActionQueue[i].fRemain <= 0.f)
 		{
-			auto Func = std::move(m_vecActionQueue[i].Func);
-
+			m_vecActionQueue[i].Func();
 			m_vecActionQueue[i] = std::move(m_vecActionQueue.back());
 			m_vecActionQueue.pop_back();
-
-			if (Func)
-				Func(m_pActionForMe, m_pActionForTarget);
 
 			continue;
 		}
@@ -210,11 +209,19 @@ void CToolUI::Delay_Queue(const _float fTimeDelta)
 	}
 }
 
-HRESULT CToolUI::Push_Action(const _float fDelay, Engine::CUIAction_Registry::ActionFunc Func)
+void CToolUI::Push_DelayAction(const _float fDelay, std::function<void()>&& Func)
 {
-	//if(fDelay < )
-	m_vecActionQueue.push_back(SCHEDULE_DESC{ fDelay, Func });
-	return S_OK;
+	if (0.f >= fDelay)
+	{
+		Func();
+		return;
+	}
+	else
+	{
+		m_vecActionQueue.push_back(SCHEDULE_DESC{ fDelay, std::move(Func) });
+		return;
+	}
+
 }
 
 HRESULT CToolUI::Bind_Action(const DTO::TUI_EventBindData& data)

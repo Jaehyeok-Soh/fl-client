@@ -72,44 +72,37 @@ HRESULT CGenericUI::Awake(const _uint iCurrentLevelID)
 
 void CGenericUI::Update_Priority(const _float fTimeDelta)
 {
-	if (m_isVisible)
-	{
-		Super::Update_Priority(fTimeDelta);
-	}
+	Super::Update_Priority(fTimeDelta);
 }
 
 void CGenericUI::Update(const _float fTimeDelta)
 {
-	if (m_isVisible)
-	{
-		m_vRenderPos = Vec3{ m_vRectPos.x + m_vMoveOffset.x + m_fX, m_vRectPos.y + m_vMoveOffset.y + m_fY, m_fZ };
-		Move_Position(m_vRenderPos.x, m_vRenderPos.y, m_vRenderPos.z);
+	m_vRenderPos = Vec3{ m_vRectPos.x + m_vMoveOffset.x + m_fX, m_vRectPos.y + m_vMoveOffset.y + m_fY, m_fZ };
+	Move_Position(m_vRenderPos.x, m_vRenderPos.y, m_vRenderPos.z);
 
-		m_tRenderRect.left		= static_cast<LONG>(m_vRenderPos.x - (m_fWidth * 0.5f));
-		m_tRenderRect.right		= static_cast<LONG>(m_vRenderPos.x + (m_fWidth * 0.5f));
-		m_tRenderRect.top		= static_cast<LONG>(m_vRenderPos.y - (m_fHeight * 0.5f));
-		m_tRenderRect.bottom	= static_cast<LONG>(m_vRenderPos.y + (m_fHeight * 0.5f));
-		Super::Update(fTimeDelta);
-	}
+	m_tRenderRect.left		= static_cast<LONG>(m_vRenderPos.x - (m_fWidth * 0.5f));
+	m_tRenderRect.right		= static_cast<LONG>(m_vRenderPos.x + (m_fWidth * 0.5f));
+	m_tRenderRect.top		= static_cast<LONG>(m_vRenderPos.y - (m_fHeight * 0.5f));
+	m_tRenderRect.bottom	= static_cast<LONG>(m_vRenderPos.y + (m_fHeight * 0.5f));
+	Super::Update(fTimeDelta);
 }
 
 void CGenericUI::Update_Late(const _float fTimeDelta)
 {
-	if (m_isVisible)
-	{
-		Lerp_Movement(fTimeDelta);
-		Return_Lerp_Movement(fTimeDelta);
-		Super::Update_Late(fTimeDelta);
-	}
+	if (m_isDisable)
+		return;
+
+	Delay_Queue(fTimeDelta);
+
+	Lerp_Movement(fTimeDelta);
+	Return_Lerp_Movement(fTimeDelta);
+	Fade(fTimeDelta);
 }
 
 void CGenericUI::Ready_Before_Render(const _float fTimeDelta)
 {
-	if (m_isVisible)
-	{
-		Acting_By_InteractState();
-		Super::Ready_Before_Render(fTimeDelta);
-	}
+	Acting_By_InteractState();
+	Super::Ready_Before_Render(fTimeDelta);
 }
 
 HRESULT CGenericUI::Render()
@@ -259,6 +252,21 @@ HRESULT CGenericUI::Excute_Action(DTO::EUIEvent EventType)
 	return S_OK;
 }
 
+HRESULT CGenericUI::Excute_Specific_Action(DTO::EUIEvent EventType, DTO::EUIAction eAction)
+{
+	uint32_t index = {};
+	for (const auto& pActData : m_vecBindingActionData[ENUM_TO_UINT(EventType)])
+	{
+		if (pActData.eAction == eAction)
+		{
+			m_vecBindingActions[ENUM_TO_UINT(EventType)][index](m_pActionForMe, m_pActionForTarget);
+			return S_OK;
+		}
+		index++;
+	}
+	return E_FAIL;
+}
+
 HRESULT CGenericUI::ReBind_Action()
 {
 	for (uint32_t i = 0; i < m_vecBindingActionData.size(); ++i)
@@ -273,6 +281,38 @@ HRESULT CGenericUI::ReBind_Action()
 		}
 	}
 	return S_OK;
+}
+
+void CGenericUI::Delay_Queue(const _float fTimeDelta)
+{
+	for (size_t i = 0; i < m_vecActionQueue.size(); )
+	{
+		m_vecActionQueue[i].fRemain -= fTimeDelta;
+		if (m_vecActionQueue[i].fRemain <= 0.f)
+		{
+			m_vecActionQueue[i].Func();
+			m_vecActionQueue[i] = std::move(m_vecActionQueue.back());
+			m_vecActionQueue.pop_back();
+
+			continue;
+		}
+		i++;
+	}
+}
+
+void CGenericUI::Push_DelayAction(const _float fDelay, std::function<void()>&& Func)
+{
+	if (0.f >= fDelay)
+	{
+		Func();
+		return;
+	}
+	else
+	{
+		m_vecActionQueue.push_back(SCHEDULE_DESC{ fDelay, std::move(Func) });
+		return;
+	}
+
 }
 
 HRESULT CGenericUI::Ready_Components(GENERIC_UI_DESC* pDesc)
@@ -292,6 +332,8 @@ HRESULT CGenericUI::Bind_ShaderResources()
 	if (FAILED(Get_Component<CTransform>()->Bind_ShaderResource(pShader)))
 		return E_FAIL;
 	if (FAILED(Get_Component<CTexture>()->Bind_ShaderResource(pShader, m_iTextureIndex)))
+		return E_FAIL;
+	if (FAILED(pShader->Get_Variable("g_fHpBarRatio")->SetRawValue(&m_fFade_ResultAlpha, 0, sizeof(_float))))
 		return E_FAIL;
 	return S_OK;
 }
@@ -315,18 +357,20 @@ void CGenericUI::Start_Return_Lerp_Movement()
 
 	m_fLerpMovement_TimeAcc = 0.f;
 	m_isPlaying_Return_Lerp_Movement = true;
-	m_isMoved = false;
 }
 
 void CGenericUI::Lerp_Movement(const _float fTimeDelta)
 {
-	if (!m_isPlaying_Lerp_Movement || m_isMoved || m_isPlaying_Return_Lerp_Movement)
+	if (!m_isPlaying_Lerp_Movement || m_isPlaying_Return_Lerp_Movement)
 		return;
+
+	m_isAction = true; /* 咀记 吝 */
 
 	if (m_fLerpMovement_Duration <= 0.f)
 	{
 		m_vMoveOffset = m_vLerpMovement_TargetPos - m_vLerpMovement_StartPos;
 		m_isPlaying_Lerp_Movement = false;
+		m_isAction = false; /* 咀记 场 */
 		return;
 	}
 
@@ -354,6 +398,7 @@ void CGenericUI::Lerp_Movement(const _float fTimeDelta)
 			Start_Return_Lerp_Movement();
 		}
 
+		m_isAction = false; /* 咀记 场 */
 		m_isPlaying_Lerp_Movement = false;
 	}
 }
@@ -363,11 +408,13 @@ void CGenericUI::Return_Lerp_Movement(const _float fTimeDelta)
 	if (!m_isPlaying_Return_Lerp_Movement || m_isPlaying_Lerp_Movement)
 		return;
 
+	m_isAction = true; /* 咀记 吝 */
+
 	if (m_fLerpMovement_Duration <= 0.f)
 	{
 		m_vMoveOffset = Vec3{ 0.f, 0.f, 0.f };
 		m_isPlaying_Return_Lerp_Movement = false;
-		m_isMoved = false;
+		m_isAction = false; /* 咀记 场 */
 		return;
 	}
 
@@ -386,9 +433,50 @@ void CGenericUI::Return_Lerp_Movement(const _float fTimeDelta)
 	if (t >= 1.f)
 	{
 		m_vMoveOffset = Vec3{ 0.f, 0.f, 0.f };
-		m_isMoved = false;
 		m_isPlaying_Return_Lerp_Movement = false;
+		m_isAction = false; /* 咀记 场 */
 	}
+}
+
+void CGenericUI::Start_Fade(const _float fStartAlpha, const _float fTargetAlpha, const _float fDuration)
+{
+	m_fFade_StartAlpha = fStartAlpha;
+	m_fFade_ResultAlpha = fStartAlpha;
+	m_fFade_TargetAlpha = fTargetAlpha;
+	m_fFade_Duration = fDuration;
+	m_fFade_TimeAcc = 0.f;
+	m_isPlaying_Fade = true;
+
+	Get_Component<CShader>()->Set_Pass(2);
+}
+
+void CGenericUI::Fade(const _float fTimeDelta)
+{
+	if (!m_isPlaying_Fade)
+		return;
+
+	m_isAction = true;
+
+	if (m_fFade_Duration <= 0.f)
+	{
+		m_fFade_ResultAlpha = m_fFade_TargetAlpha;
+		m_isPlaying_Fade = false;
+		m_isAction = false;
+
+		return;
+	}
+
+	m_fFade_TimeAcc += fTimeDelta;
+	_float t = m_fFade_TimeAcc / m_fFade_Duration;
+
+	if (t >= 1.f)
+	{
+		t = 1.f;
+		m_isAction = false;
+		m_isPlaying_Fade = false;
+	}
+
+	m_fFade_ResultAlpha = m_fFade_StartAlpha + (m_fFade_TargetAlpha - m_fFade_StartAlpha) * t;
 }
 
 CGenericUI* CGenericUI::Create(ID3D11Device* pDevice, ID3D11DeviceContext* pDeviceContext)

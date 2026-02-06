@@ -203,14 +203,14 @@ void CUI_Inspector::Add_Action(DTO::EUIEvent EventType)
 
 		if (ImGui::Selectable(DTO::UIActionTypeToString(DTO::EUIAction::SET_VISIBLE).c_str()))
 		{
-			m_pSelectedUI->Bind_Action(EventType, DTO::EUIAction::SET_VISIBLE, json{ {"isVisible", true} });
+			m_pSelectedUI->Bind_Action(EventType, DTO::EUIAction::SET_VISIBLE, json{ {"isVisible", true}, {"fDelay", 0.f} });
 
 			ImGui::CloseCurrentPopup();
 		}
 
 		if (ImGui::Selectable(DTO::UIActionTypeToString(DTO::EUIAction::SET_TEXTURE_INDEX).c_str()))
 		{
-			m_pSelectedUI->Bind_Action(EventType, DTO::EUIAction::SET_TEXTURE_INDEX, json{ {"uIndex", 0u} });
+			m_pSelectedUI->Bind_Action(EventType, DTO::EUIAction::SET_TEXTURE_INDEX, json{ {"uIndex", 0u}, {"fDelay", 0.f} });
 
 			ImGui::CloseCurrentPopup();
 		}
@@ -221,7 +221,7 @@ void CUI_Inspector::Add_Action(DTO::EUIEvent EventType)
 		{ "vTargetPos", { { "x", 0.f }, { "y", 0.f }, { "z", 0.f } } },
 		{ "fTargetAlpha", 1.f },
 		{ "fDuration", 0.25f },
-		{ "isPin", false}
+		{ "isPin", false}, {"fDelay", 0.f}
 				});
 
 			ImGui::CloseCurrentPopup();
@@ -251,14 +251,14 @@ void CUI_Inspector::Add_Action(DTO::EUIEvent EventType)
 
 		if (ImGui::Selectable(DTO::UIActionTypeToString(DTO::EUIAction::START_RETURN_LERP_MOVEMENT).c_str()))
 		{
-			m_pSelectedUI->Bind_Action(EventType, DTO::EUIAction::START_RETURN_LERP_MOVEMENT, json{});
+			m_pSelectedUI->Bind_Action(EventType, DTO::EUIAction::START_RETURN_LERP_MOVEMENT, json{ {"fDelay", 0.f} });
 
 			ImGui::CloseCurrentPopup();
 		}
 
 		if (ImGui::Selectable(DTO::UIActionTypeToString(DTO::EUIAction::START_FADE).c_str()))
 		{
-			m_pSelectedUI->Bind_Action(EventType, DTO::EUIAction::START_FADE, json{ {"fStartAlpha", 0.f },{"fTargetAlpha", 1.f },{"fDuration", 0.f } });
+			m_pSelectedUI->Bind_Action(EventType, DTO::EUIAction::START_FADE, json{ {"fStartAlpha", 0.f },{"fTargetAlpha", 1.f },{"fDuration", 0.f }, {"fDelay", 0.f} });
 
 			ImGui::CloseCurrentPopup();
 		}
@@ -446,25 +446,31 @@ void CUI_Inspector::Edit_TargetParams(json& jParams)
 		{
 		case DTO::EUIAction::SET_VISIBLE:
 			jParams["jTargetActionParam"] = json{ {"isVisible", true} };
+			jParams["fDelay"] = json{ {"fDelay", 0.f} };
 			break;
 		case DTO::EUIAction::SET_TEXTURE_INDEX:
 			jParams["jTargetActionParam"] = json{ {"uIndex", 0u} };
+			jParams["fDelay"] = json{ {"fDelay", 0.f} };
 			break;
 		case DTO::EUIAction::START_LERP_MOVEMENT:
 			jParams["jTargetActionParam"] = json{
 				{ "vTargetPos", { { "x", 0.f }, { "y", 0.f }, { "z", 0.f } } },
 				{ "fTargetAlpha", 1.f },
 				{ "fDuration", 0.25f },
-				{ "isPin", false }
+				{ "isPin", false },
+				{ "fDelay", 0.f}
 			};
 			break;
 		case DTO::EUIAction::START_RETURN_LERP_MOVEMENT:
+			jParams["fDelay"] = json{ {"fDelay", 0.f} };
 			break;
 		case DTO::EUIAction::START_FADE:
 			jParams["jTargetActionParam"] = json{ {"fStartAlpha", 0.f },{"fTargetAlpha", 1.f },{"fDuration", 0.f } };
+			jParams["fDelay"] = json{ {"fDelay", 0.f} };
 			break;
 		default:
 			jParams["jTargetActionParam"] = json::object();
+			jParams["fDelay"] = json{ {"fDelay", 0.f} };
 			break;
 		}
 	}
@@ -475,11 +481,13 @@ void CUI_Inspector::Edit_TargetParams(json& jParams)
 	{
 	case DTO::EUIAction::SET_VISIBLE:
 		if (!inner.contains("isVisible")) inner["isVisible"] = true;
+		if (!inner.contains("fDelay")) inner["fDelay"] = true;
 		Edit_Set_Visible(inner);
 		break;
 
 	case DTO::EUIAction::SET_TEXTURE_INDEX:
 		if (!inner.contains("uIndex")) inner["uIndex"] = 0u;
+		if (!inner.contains("fDelay")) inner["fDelay"] = true;
 		Edit_Set_Texture_Index(inner);
 		break;
 
@@ -489,15 +497,18 @@ void CUI_Inspector::Edit_TargetParams(json& jParams)
 		if (!inner.contains("fTargetAlpha")) inner["fTargetAlpha"] = 1.f;
 		if (!inner.contains("fDuration")) inner["fDuration"] = 0.25f;
 		if (!inner.contains("isPin")) inner["isPin"] = false;
+		if (!inner.contains("fDelay")) inner["fDelay"] = true;
 		Edit_Start_Lerp_Movement(inner);
 		break;
 	case DTO::EUIAction::START_RETURN_LERP_MOVEMENT:
+		if (!inner.contains("fDelay")) inner["fDelay"] = true;
 		Edit_Start_Lerp_Movement(inner);
 		break;
 	case DTO::EUIAction::START_FADE:
 		if (!inner.contains("fStartAlpha"))inner["fStartAlpha"] = 0.f;
 		if (!inner.contains("fTargetAlpha"))inner["fTargetAlpha"] = 1.f;
 		if (!inner.contains("fDuration"))inner["fDuration"] = 0.f;
+		if (!inner.contains("fDelay")) inner["fDelay"] = true;
 		Edit_Start_Fade(inner);
 		break;
 	default:
@@ -515,6 +526,14 @@ void CUI_Inspector::Edit_Set_Visible(json& jParams)
 
 	if (ImGui::Checkbox("isVisible", &isVisible))
 		jParams["isVisible"] = isVisible;
+
+
+	_float fDelay = static_cast<_float>(jParams.value("fDelay", 0.f));
+	if (ImGui::InputFloat("fDelay", &fDelay))
+	{
+		if (fDelay < 0.f) fDelay = 0.f;
+		jParams["fDelay"] = static_cast<_float>(fDelay);
+	}
 }
 
 void CUI_Inspector::Edit_Set_Texture_Index(json& jParams)
@@ -527,6 +546,13 @@ void CUI_Inspector::Edit_Set_Texture_Index(json& jParams)
 	{
 		if (iValue < 0) iValue = 0;
 		jParams["uIndex"] = static_cast<uint32_t>(iValue);
+	}
+
+	_float fDelay = static_cast<_float>(jParams.value("fDelay", 0.f));
+	if (ImGui::InputFloat("fDelay", &fDelay))
+	{
+		if (fDelay < 0.f) fDelay = 0.f;
+		jParams["fDelay"] = static_cast<_float>(fDelay);
 	}
 }
 
@@ -580,6 +606,14 @@ void CUI_Inspector::Edit_Start_Lerp_Movement(json& jParams)
 	bool isPin = jParams.value("isPin", false);
 	if (ImGui::Checkbox("isPin", &isPin))
 		jParams["isPin"] = isPin;
+
+
+	_float fDelay = static_cast<_float>(jParams.value("fDelay", 0.f));
+	if (ImGui::InputFloat("fDelay", &fDelay))
+	{
+		if (fDelay < 0.f) fDelay = 0.f;
+		jParams["fDelay"] = static_cast<_float>(fDelay);
+	}
 }
 
 void CUI_Inspector::Trigger_All_Canvas(json& jParams)
@@ -762,6 +796,12 @@ void CUI_Inspector::Trigger_Target_UI(json& jParams)
 void CUI_Inspector::Edit_Start_Return_Lerp_Movement(json& jParams)
 {
 
+	_float fDelay = static_cast<_float>(jParams.value("fDelay", 0.f));
+	if (ImGui::InputFloat("fDelay", &fDelay))
+	{
+		if (fDelay < 0.f) fDelay = 0.f;
+		jParams["fDelay"] = static_cast<_float>(fDelay);
+	}
 }
 
 void CUI_Inspector::Edit_Start_Fade(json& jParams)
@@ -789,6 +829,12 @@ void CUI_Inspector::Edit_Start_Fade(json& jParams)
 	{
 		if (fDuration < 0.f) fDuration = 0.f; // 필요하면
 		jParams["fDuration"] = fDuration;
+	}
+	_float fDelay = static_cast<_float>(jParams.value("fDelay", 0.f));
+	if (ImGui::InputFloat("fDelay", &fDelay))
+	{
+		if (fDelay < 0.f) fDelay = 0.f;
+		jParams["fDelay"] = static_cast<_float>(fDelay);
 	}
 }
 
