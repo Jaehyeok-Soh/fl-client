@@ -161,7 +161,7 @@ vector<MAPDATA_BASE*> CUEMapdataParser::Convert_UE_MapData(const vector<UE_MAP_D
 				tSRTData.vQuat = qV;
 				Change_SRT(tSRTData);
 
-				pInstanceModel_Data->vecOriginSRT.push_back(tSRTData);
+				pInstanceModel_Data->vecSRT.push_back(tSRTData);
 			}
 			pMapDataBase = pInstanceModel_Data;
 		}
@@ -173,9 +173,9 @@ vector<MAPDATA_BASE*> CUEMapdataParser::Convert_UE_MapData(const vector<UE_MAP_D
 
 void CUEMapdataParser::Change_SRT(OUT SRT_DATA& tSRT_Data)
 {
-	Matrix ScaleMatrix		= Matrix::Identity;
-	//Matrix ScaleMatrix		= Matrix::CreateScale(tSRT_Data.vScale); // TEST: 소재혁 임시 수정
+	//Matrix ScaleMatrix		= Matrix::Identity;
 	tSRT_Data.vScale_Isolated = tSRT_Data.vScale; // TEST: 소재혁 임시 추가
+	Matrix ScaleMatrix		= Matrix::CreateScale(tSRT_Data.vScale); // TEST: 소재혁 임시 수정
 	Matrix TransMatrix		= Matrix::CreateTranslation(tSRT_Data.vPosition * m_fMulScale);
 	Matrix RotationMatrix	= Matrix::CreateFromQuaternion(tSRT_Data.vQuat);
 

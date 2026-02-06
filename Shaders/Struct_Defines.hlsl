@@ -134,7 +134,6 @@ struct VS_OUT_POS_TEX
 {
     float4 vPosition : SV_POSITION;
     float2 vUV : TEXCOORD0;
-    float fHP : TEXCOORD1;
 };
 
 struct VS_OUT_POS_TEX_NOR
@@ -270,7 +269,6 @@ struct PS_IN_POS_TEX
 {
     float4 vPosition : SV_POSITION;
     float2 vUV : TEXCOORD0;
-    float fHP : TEXCOORD1;
 };
 
 struct PS_IN_POS_TEX_NOR

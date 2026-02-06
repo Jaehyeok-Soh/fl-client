@@ -8,6 +8,8 @@
 #include "PhysicsCollider.h"
 #include "PhysicsRigidBody.h"
 
+#include "Mesh.h"
+
 CInstanceModel::CInstanceModel(ID3D11Device* pDevice, ID3D11DeviceContext* pContext)
 	: CMapObject(pDevice, pContext),m_vecMatrix{}
 {
@@ -43,9 +45,14 @@ HRESULT CInstanceModel::Initialize(void* pArg)
 		m_vecMatrix.push_back(SRTData.Get_World());
 	}
 
+	
+
 	if (FAILED(CInstanceModel::Ready_Component(pDesc)))
 		return E_FAIL;
 
+	if (FAILED(CMapObject::Ready_OverrideMtl(pDesc->tData.tUsingModelInfo)))
+		return E_FAIL;
+	
 	if (FAILED(CInstanceModel::Ready_PhysicsComponent(&copiedDesc)))
 		return E_FAIL;
 
@@ -195,16 +202,37 @@ HRESULT CInstanceModel::Render()
 	/* 1번 슬롯에 Instance 미리 바인딩 */
 	pInstMesh->Bind_Instance(1);
 
-	for (_uint i = 0; i < iMeshCount; ++i)
+	if (!m_iUseOverrideMaterials)
 	{
-		pModel->Bind_Material(pShader, i);
-		pModel->Bind_MaterialInstance(pShader, i);
-		pShader->Apply();
-		pModel->Render_Instance(i, iInstacnceCount);
+		for (UINT32 i = 0; i < iMeshCount; ++i)
+		{
+			pModel->Bind_Material(pShader, i);
+			pModel->Bind_MaterialInstance(pShader, i);
+			pShader->Apply();
+			pModel->Render_Instance(i, iInstacnceCount);
+		}
 	}
+	else
+	{
+		_uint iConnectedIndex{ 0 };
+		for (UINT32 i = 0; i < iMeshCount; ++i)
+		{
+			iConnectedIndex = pModel->Get_Mesh(i)->Get_MaterialIndex();
+			if (!m_vecOverrideMaterials[iConnectedIndex])
+			{
+				pModel->Bind_Material(pShader, i);
+				pModel->Bind_MaterialInstance(pShader, i);
+			}
+			else
+			{
+				m_vecOverrideMaterials[iConnectedIndex]->Bind_ShaderResource(pShader);
+				pModel->Bind_MaterialInstance(pShader, i);
+			}
 
-	pInstMesh->Unbind_Resource(1);
-
+			pShader->Apply();
+			pModel->Render_Instance(i, iInstacnceCount);
+		}
+	}
 
 	return S_OK;
 }

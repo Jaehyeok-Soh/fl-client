@@ -203,6 +203,7 @@ namespace Tool
 	inline constexpr _tchar g_wszPrototypeTagCanvas[]{ L"Prototype_UI_Canvas" };
 	inline constexpr _tchar g_wszPrototypeTagLayer[]{ L"Prototype_UI_Layer" };
 	inline constexpr _tchar g_wszPrototypeTagUI[]{ L"Prototype_UI_UI" };
+
 #pragma region Enum
 
 
@@ -238,6 +239,37 @@ namespace Tool
 
 	}
 
+	static _uint Get_IndexByMaterialSlotName(const wstring& wstrSlotName)
+	{
+
+		if (wstrSlotName == L"PM_Diffuse")
+			return aiTextureType_DIFFUSE - 1;
+		else if (wstrSlotName == L"PM_Normals")\
+			return aiTextureType_NORMALS - 1;
+		else if (wstrSlotName == L"PM_SpecularMasks")
+			return aiTextureType_SPECULAR - 1;
+		else if (wstrSlotName == L"PM_Emissive")
+			return aiTextureType_EMISSIVE - 1;
+		else if (wstrSlotName == L"PM_Ambient")
+			return aiTextureType_AMBIENT - 1;
+
+
+		return 0;
+	}
+
+	static string Get_MaterialSlotNameAssimp(aiTextureType eType)
+	{
+		if (eType == aiTextureType_DIFFUSE)
+			return "PM_Diffuse";
+		else if (eType == aiTextureType_NORMALS)
+			return "PM_Normals";
+		else if (eType == aiTextureType_SPECULAR)
+			return "PM_SpecularMasks";
+		else if (eType == aiTextureType_AMBIENT)
+			return "PM_Ambient";
+
+		return string();
+	}
 
 	/*-----------------------------------------------------------*/
 

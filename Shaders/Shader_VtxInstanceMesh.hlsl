@@ -12,7 +12,7 @@ int g_iSelectInstanceID = { -1 };
 
 VS_OUT_INST_MESH VS_MAIN(VS_IN_INST_MESH input)
 {
-    VS_OUT_INST_MESH Out;
+    VS_OUT_INST_MESH Out = (VS_OUT_INST_MESH)0;
     
     //월드 좌표 재구성
     
@@ -28,7 +28,7 @@ VS_OUT_INST_MESH VS_MAIN(VS_IN_INST_MESH input)
 
 VS_OUT_INST_MESH VS_SELECT(VS_IN_INST_MESH input)
 {
-    VS_OUT_INST_MESH Out;
+    VS_OUT_INST_MESH Out = (VS_OUT_INST_MESH) 0;
     
     //월드 좌표 재구성
     
@@ -48,7 +48,7 @@ VS_OUT_INST_MESH VS_SELECT(VS_IN_INST_MESH input)
 
 PS_OUT_DEFFERED PS_MAIN(PS_IN_INST_MESH input)
 {
-    PS_OUT_DEFFERED output;
+    PS_OUT_DEFFERED output = (PS_OUT_DEFFERED)0;
     
     float4 vDiffuse = 1.f;
     Compute_Diffse(vDiffuse, input.vUV);
@@ -69,7 +69,7 @@ PS_OUT_DEFFERED PS_MAIN(PS_IN_INST_MESH input)
 
 PS_OUT_DEFFERED PS_SELECT(PS_IN_INST_MESH input)
 {
-    PS_OUT_DEFFERED output;
+    PS_OUT_DEFFERED output = (PS_OUT_DEFFERED) 0;
     
     float4 vDiffuse = 1.f;
     Compute_Diffse(vDiffuse, input.vUV);

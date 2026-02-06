@@ -20,19 +20,21 @@ public:
 	virtual HRESULT			Initialize(void* pArg)							override;
 	HRESULT					Ready_Component();
 public:
-	virtual HRESULT			Awake(const _uint iCurrentLevelID)				override;
-	virtual void			Update_Priority(const _float fTimeDelta)		override;
-	virtual void			Update(const _float fTimeDelta)					override;
-	virtual void			Update_Late(const _float fTimeDelta)			override;
-	virtual void			Ready_Before_Render(const _float fTimeDelta)	override;
-	virtual HRESULT			Render()										override;
-	virtual void			Draw_ImGui()									override;
-	virtual void			Set_Dead(const wstring& wstrLayerTag)			override;
-public:
-	virtual void			Register_OriginSRT(Engine::Flags fResetTypeFlag)override;
+	virtual HRESULT			 Awake(const _uint iCurrentLevelID)				override;
+	virtual void			 Update_Priority(const _float fTimeDelta)		override;
+	virtual void			 Update(const _float fTimeDelta)					override;
+	virtual void			 Update_Late(const _float fTimeDelta)			override;
+	virtual void			 Ready_Before_Render(const _float fTimeDelta)	override;
+	virtual HRESULT			 Render()										override;
+	virtual void			 Draw_ImGui()									override;
+	virtual void			 Set_Dead(const wstring& wstrLayerTag)			override;
+	virtual USING_MODEL_INFO Get_UsingModelInfo() const { return m_tData.tUsingModelInfo; }
+	virtual vector<SRT_DATA> Get_SRTDatas() override;
+
 public:
 	void					Set_StaticModelType(EStaticModel_Type eType) { m_eType = eType; }
 	EStaticModel_Type		Get_StaticModelType() const { return m_eType; }
+	STATICMODEL_DATA		Get_Data() const { return m_tData; }
 private:
 	bool					IntsersectWithPlane(OUT Vec3& vOut);
 public:

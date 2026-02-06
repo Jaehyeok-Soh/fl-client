@@ -9,6 +9,7 @@
 #include "MaterialInstance.h"
 #include "ModelAnimation.h"
 
+#include "GameDataManager.h"
 #include "PhysicsCCT.h"
 #include "Transform.h"
 #include "GameObject.h"
@@ -216,6 +217,8 @@ HRESULT CModel::Bind_Material(class CShader* pShader, _uint iMeshIndex)
 
 	return m_vecMaterials[m_vecMeshes[iMeshIndex]->Get_MaterialIndex()]->Bind_ShaderResource(pShader);
 }
+
+
 
 HRESULT CModel::Bind_MaterialInstance(CShader* pShader, _uint iMeshIndex)
 {

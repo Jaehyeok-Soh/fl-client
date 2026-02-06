@@ -5,10 +5,13 @@ NS_BEGIN(Engine)
 class CGameInstance;
 class CCameraMan;
 class CCamera;
+class CModel;
 NS_END
 
 
 NS_BEGIN(Tool)
+
+struct tagOverrideMaterials;
 
 class CImGui_Layout_Transform;
 class CMapObject;
@@ -25,12 +28,20 @@ private:
 public:
 	virtual HRESULT Render(CToolObject* pGo)override;
 	virtual void Update(const _float fTimeDelta)override;
-	
 	HRESULT	Update_MapObjectList();
+
+	void	Reset_SelectValue();
 
 private:
 	HRESULT	Render_MapObjectList();
 	HRESULT	Render_SelectInfo();
+	HRESULT	Render_StaticModel();
+	HRESULT	Render_InstanceModel();
+
+private:
+	HRESULT	Render_ModelInfo(Tool::USING_MODEL_INFO& tModelInfo ,CModel* pModel);
+	HRESULT	Render_SelectOverrideMaterialInfo();
+	HRESULT	Render_SelectOriginMaterialInfo();
 private:
 
 	CGameInstance*				m_pGameInstance{nullptr};
@@ -43,10 +54,25 @@ private:
 	CImGui_Layout_Transform*	m_pTransformLayout{nullptr};
 	CMapObject*					m_pSelectMapObject{nullptr};
 
-	_uint						m_fOriginSRTFlag{};
-
 	CCameraMan*					m_pCamera{nullptr};
 	CCamera*					m_pCameraCom{nullptr};
+
+	_int						m_iSelectInstanceID{};
+	_int						m_iSelectLayerTag{};
+
+	_uint						m_iSelectOverrideMtlTextureID{ 0 };
+	_int						m_iSelectOverrideMtlID{ -1 };
+
+
+	_uint						m_iSelectOriginMtlTexture{ 0 };
+	_bool						m_isShowOriginMtlInfo{};
+	array<string,ENUM_TO_UINT(EMaterialTextureType::MAX_COUNT)>	 m_arrayOriginMtlUsingTexturesName{};
+	string						m_strOriginMtlName{};
+	string						m_strOriginMtlPath{};
+
+	ImVec2						m_vTextureInfoTableSize{ ImVec2(0,50) };
+
+	uintptr_t					m_uptrPreSelectObject{0};
 
 public:
 	static  CPanel_MapObjectList* Create(const _char* pLabel, CLevel* pOwner, ID3D11Device* pDevice, ID3D11DeviceContext* pDeviceContext);

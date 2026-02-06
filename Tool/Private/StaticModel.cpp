@@ -6,6 +6,8 @@
 #include "Shader.h"
 #include "DataStruct_Map.h"
 #include "DataDocument_Map.h"
+#include "AsTypes.h"
+#include "Texture.h"
 
 CStaticModel::CStaticModel(EToolObjectType eType, ID3D11Device* pDevice, ID3D11DeviceContext* pDeviceContext)
 	: CMapObject(eType, pDevice,pDeviceContext)
@@ -39,8 +41,22 @@ HRESULT CStaticModel::Initialize(void* pArg)
 	m_strModelFileName = Engine_Utils::ToString(m_tData.tUsingModelInfo.wstrPath);
 	Set_Name(m_tData.tUsingModelInfo.wstrName);
 
+
+
 	if (FAILED(CStaticModel::Ready_Component()))
 		return E_FAIL;
+
+
+	if (FAILED(CMapObject::Ready_OverrideMtl(m_tData.tUsingModelInfo)))
+		return E_FAIL;
+
+
+	if (m_isLoaded == true)
+	{
+		m_vecOriginSRTs.push_back(m_tData.tOriginSRT);
+	}
+
+	Get_Component<CTransform>()->Set_Scale(m_tData.tOriginSRT.vScale_Isolated);
 
 	return S_OK;
 }
@@ -121,13 +137,38 @@ HRESULT CStaticModel::Render()
 	UINT32 iMeshCount = pModel->Get_MeshCount();
 
 
-	for (UINT32 i = 0; i < iMeshCount; ++i)
+	if (!m_iUseOverrideMaterials)
 	{
-		pModel->Bind_Material(pShader, i);
-		pModel->Bind_MaterialInstance(pShader, i);
-		pShader->Apply();
-		pModel->Render(i);
+		for (UINT32 i = 0; i < iMeshCount; ++i)
+		{
+			pModel->Bind_Material(pShader, i);
+			pModel->Bind_MaterialInstance(pShader, i);
+			pShader->Apply();
+			pModel->Render(i);
+		}
 	}
+	else
+	{
+		_uint iConnectedIndex{0};
+		for (UINT32 i = 0; i < iMeshCount; ++i)
+		{
+			iConnectedIndex = pModel->Get_Mesh(i)->Get_MaterialIndex();
+			if (!m_vecOverrideMaterials[iConnectedIndex])
+			{
+				pModel->Bind_Material(pShader, i);
+				pModel->Bind_MaterialInstance(pShader, i);
+			}	
+			else
+			{
+				m_vecOverrideMaterials[iConnectedIndex]->Bind_ShaderResource(pShader);
+				pModel->Bind_MaterialInstance(pShader, i);
+			}
+
+			pShader->Apply();
+			pModel->Render(i);
+		}
+	}
+
 
 	return S_OK;
 }
@@ -148,13 +189,20 @@ void CStaticModel::Set_Dead(const wstring& wstrLayerTag)
 
 }
 
-void CStaticModel::Register_OriginSRT(Engine::Flags fResetTypeFlag)
+vector<SRT_DATA> CStaticModel::Get_SRTDatas()
 {
-	/* m_tData -> Origin Data는 절대 불변의 Data */
-	Super::Register_OriginSRT(fResetTypeFlag);
+	CTransform* pTs = CGameObject::Get_Component<CTransform>();
+	vector<SRT_DATA> vecResult{};
+	
+	SRT_DATA tData{};
 
-	return;
+	SimpleMath::Matrix WorldMatrix = pTs->Get_WorldMatrix();
+	WorldMatrix.Decompose( tData.vScale , tData.vQuat , tData.vPosition);
+
+	vecResult.push_back(tData);
+	return  vecResult;
 }
+
 
 bool CStaticModel::IntsersectWithPlane(OUT Vec3& vOut)
 {
@@ -188,6 +236,7 @@ _bool CStaticModel::Picking(OUT Vec3& vOut)
 
 _bool CStaticModel::Export_Data(DTO::ECategory eCategory, CDataDocumentBase* pDocument)
 {
+
 	if (eCategory != DTO::ECategory::MAP || pDocument == nullptr)
 		return false;
 
@@ -222,6 +271,7 @@ _bool CStaticModel::Export_Data(DTO::ECategory eCategory, CDataDocumentBase* pDo
 
 		tSave_StaticModleData.tUsingModelInfo.vecOverrideMaterial.push_back(tSaveMtl);
 	}
+
 
 
 	pMapDocument->Try_Add(tSave_StaticModleData);
@@ -259,5 +309,6 @@ CGameObject* CStaticModel::Clone(void* pArg)
 
 void CStaticModel::Free()
 {
+
 	Super::Free();
 }

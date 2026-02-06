@@ -260,7 +260,7 @@ HRESULT CLevel_Logo::Ready_DevMap()
 	if (FAILED(m_pGameInstance->Regist_Document<CDataDocument_Map>(iLevelID, eCategory)))
 		return E_FAIL;
 
-	std::filesystem::path FilePath = L"../../Resources/Data/MapData/LevelData/DevLevel/Ailixian_Train01_Art.json";
+	std::filesystem::path FilePath = L"../../Resources/Data/MapData/LevelData/DevLevel/DevMap.json";
 	//std::filesystem::path FilePath = L"../../Resources/Data/MapData/Test_So/Ailixian_Train01_Art_Test_So.json";
 	vector<path> vecfiles;
 

@@ -14,9 +14,12 @@ NS_BEGIN(Tool)
 
 class CMapObject;
 class CImGui_ToolManager;
-
+class CLevel_Map;
 
 using MapObjectCloneFactory = std::function<CGameObject*(void* pArg)>;
+using PairKey = std::pair<wstring, vector<wstring>>;
+
+
 
 class CMapToolManager : public CBase
 {
@@ -41,9 +44,14 @@ public:
 	void					Delete_Preview();
 	void					DrawImGui_Preview();
 public:
+	HRESULT					Check_And_Bind();
+public:
+	void					Set_LevelMap(CLevel_Map* pLevelMap) { m_pLevelMap = pLevelMap; }
 	void					Set_MouseRange(float fMouseRange) { m_fMouseRange = fMouseRange; }
 	void					Set_MouseWheelPos(float fMouseWheelPos) { m_fMouseWheelSpeed = fMouseWheelPos; }
+	void					Set_MakeMapObjectType(EMapObject_Type eType) { m_eMakeMapObjectType = eType ; }
 public:
+	EMapObject_Type			Get_MakeMapObjectType() const { return m_eMakeMapObjectType; }
 	CMapObject*				Get_Preview()			const { return m_pPreviewMapobject; }
 	const float&			Get_MouseRange()		const { return m_fMouseRange; }
 	const float&			Get_MouseWheelSpeed()   const { return m_fMouseRange; }
@@ -52,6 +60,10 @@ private:
 	ID3D11DeviceContext*	m_pContext{};
 	CMapObject*				m_pPreviewMapobject{};
 	CGameInstance*			m_pGameInstance{ nullptr };
+
+	EMapObject_Type			m_eMakeMapObjectType{EMapObject_Type::STATICMODEL};
+
+	CLevel_Map*				m_pLevelMap{nullptr};
 
 	float					m_fMouseRange{};
 	float					m_fMouseWheelSpeed{};
