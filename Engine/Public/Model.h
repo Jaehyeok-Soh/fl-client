@@ -5,6 +5,7 @@ NS_BEGIN(Engine)
 
 class CTransform;
 class CPhysicsCCT;
+class CComputeShader;
 
 class ENGINE_DLL CModel final : public CComponent
 {
@@ -124,6 +125,7 @@ private:
 
 private:
 	void Make_BoneGroup();
+	void Update_BoneCombineTransformMatrix(CComputeShader* pBoneComShader);
 
 private:
 	EModelType m_eType = { EModelType::END };

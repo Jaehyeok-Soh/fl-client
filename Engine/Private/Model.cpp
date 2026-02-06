@@ -12,6 +12,7 @@
 #include "GameDataManager.h"
 #include "PhysicsCCT.h"
 #include "Transform.h"
+#include "ComputeShader.h"
 #include "GameObject.h"
 
 
@@ -726,6 +727,20 @@ void CModel::Make_BoneGroup()
 
 			m_vecBoneGroups[boneDepth[i]].push_back((_uint)i);
 		}
+	}
+}
+
+void CModel::Update_BoneCombineTransformMatrix(CComputeShader* pBoneComShader)
+{
+	if (pBoneComShader == nullptr)
+		return;
+
+	// bone group 별로 디스패치를 한다
+	for (auto& BoneGroup : m_vecBoneGroups)
+	{
+		// dispatch
+		_uint iGroupX = BoneGroup.size() / 32 + 1;
+		pBoneComShader->Dispatch(iGroupX,1,1);
 	}
 }
 

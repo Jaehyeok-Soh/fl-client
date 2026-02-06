@@ -206,6 +206,28 @@ namespace Engine
 		float				vPadding1 = {};
 	}EFFECT_PARTICLE_MU_ELEMENT;
 #pragma endregion
+
+#pragma region Model_ComShader_Structures
+
+	/* Bone ComShader*/
+	// 불변 데이터
+	typedef struct tagBone_Immu_Element
+	{
+		int			iParentIndex = {-1};
+		SimpleMath::Matrix matPreTransform = {};
+
+		SimpleMath::Vector3 vPadding = {};
+	}CS_IMMU_BONE;
+
+	// 가변 데이터
+	typedef struct tagBone_Mu_Element
+	{
+		int			iBoneIndex = { -1 };
+		SimpleMath::Matrix matLocalTransform = {};
+
+		SimpleMath::Vector3 vPadding = {};
+	}CS_MU_BONE;
+#pragma endregion
 	union COLLIDER_ID
 	{
 		struct
