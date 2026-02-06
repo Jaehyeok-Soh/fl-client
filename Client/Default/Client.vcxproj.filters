@@ -229,6 +229,9 @@
     <Filter Include="04. Shaders\ComputeShader_Labs">
       <UniqueIdentifier>{8c14e548-7930-4ec0-b748-e471998a55b9}</UniqueIdentifier>
     </Filter>
+    <Filter Include="07. System\02. Debug_ImGui\Layout\Frame">
+      <UniqueIdentifier>{d522fe25-0bdb-43db-847a-41084decceb6}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="targetver.h">
@@ -462,6 +465,9 @@
     <ClInclude Include="..\Public\UITargetAction_Client.h">
       <Filter>03. GameObject\UIObjects\04.Action</Filter>
     </ClInclude>
+    <ClInclude Include="..\public\ImGui_FrameLayout.h">
+      <Filter>07. System\02. Debug_ImGui\Layout\Frame</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <Image Include="Client.ico">
@@ -686,6 +692,9 @@
     </ClCompile>
     <ClCompile Include="..\Private\UITargetAction_Client.cpp">
       <Filter>03. GameObject\UIObjects\04.Action</Filter>
+    </ClCompile>
+    <ClCompile Include="..\private\ImGui_FrameLayout.cpp">
+      <Filter>07. System\02. Debug_ImGui\Layout\Frame</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
