@@ -11,9 +11,9 @@
 struct KEYFRAME
 {
     float3  vScale;
+    float   fTrackPosition;
     float4  vQuat;
     float3  vTranslation;
-    float   fTrackPosition;
     
     float   fPadding;
 };
@@ -34,7 +34,7 @@ struct MU_ELEMENT
     float   fCurTrackPosition;
     uint    iAnimIndex;
     
-    float3  vPadding3;
+    float2  vPadding2;
 };
 
 cbuffer MU_Track
@@ -45,11 +45,13 @@ cbuffer MU_Track
 // out put
 struct CHANNEL_OUTPUT
 {
-    row_major float4x4  matLerpedTransform;
+    float3              vScale;
     uint                iCurKeyFrameIndex;
-    uint                iAnimIndex;
     
-    float2              vPadding3;
+    float4              vQuat;
+    
+    float3              vTranslation;
+    uint                iAnimIndex;
 };
 
 StructuredBuffer<KEYFRAME>      IMMU_KEYFRAMS;          // 한 애니메이션에 대한 모든 keyframe 정보를 일차원 배열로 들고 있는다
@@ -85,7 +87,6 @@ void CS_Main(uint3 id : SV_DispatchThreadID)
     }
     
     // 함수 지역 변수 셋팅    
-    row_major float4x4 matResult;
     KEYFRAME lastKeyFrame = IMMU_KEYFRAMS[iLastFrameIdx];
     float3 vScale, vTranslation;
     float4 vQuat;
@@ -135,12 +136,11 @@ void CS_Main(uint3 id : SV_DispatchThreadID)
             vTranslation = lerp(vLeftTrans, vRightTrans, fRatio);
     }
     
-    // 행렬 완성
-    matResult = mul(mul(CreateScale(vScale), CreateRotaionMat_FromQuaternion(vQuat)), CreatTranslation(vTranslation));
-    
     // 결과 값 바인드
-    UPDATE_DATA[iBoneIdx].iCurKeyFrameIndex = iCurKeyFrameIndex;
-    UPDATE_DATA[iBoneIdx].matLerpedTransform    = matResult;
+    UPDATE_DATA[iBoneIdx].iCurKeyFrameIndex     = iCurKeyFrameIndex;
+    UPDATE_DATA[iBoneIdx].vScale                = vScale;
+    UPDATE_DATA[iBoneIdx].vQuat                 = vQuat;
+    UPDATE_DATA[iBoneIdx].vTranslation          = vTranslation;
 }
 
 technique11 T0

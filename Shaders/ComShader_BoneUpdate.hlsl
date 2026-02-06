@@ -5,18 +5,21 @@
 struct IMMU_ELEMENT
 {
     int                 iParentIndex;
-    row_major float4x4  matPreTransform;
-    
     float3              vPadding3;
+    
+    row_major float4x4  matPreTransform;
 };
 
 // 가변 데이터
 struct MU_ELEMENT
 {
-    int                iMyIdx;
-    row_major float4x4 matLocalTransform;
+    int                 iMyIdx;
+    float3              vScale;
     
-    float3              vPadding3;
+    float4              vQuat;
+    
+    float3              vTranslation;
+    float               Padding2;
 };
 
 // out put
@@ -41,11 +44,16 @@ void CS_Main(uint3 id : SV_DispatchThreadID)
     uint iBoneIdx = MU_DATA[iGroupIdx].iMyIdx;
 
     int iParentIdx = IMMU_BONEDATA[iBoneIdx].iParentIndex;
+    
+    // 완성된 srt로 나의 local matrix 생성
+    float4x4 matLocal = mul(mul(CreateScale(MU_DATA[iBoneIdx].vScale), CreateRotaion_FromQuat(MU_DATA[iBoneIdx].vQuat)), 
+                                CreateTranslation(MU_DATA[iBoneIdx].vTranslation));
 
+    // parent transform 구해옴
     float4x4 matParent =
         (iParentIdx < 0) ? IMMU_BONEDATA[iBoneIdx].matPreTransform : BONECOMBINED_TRANSFORMS[iParentIdx].matCombinedTransform;
 
-    BONECOMBINED_TRANSFORMS[iBoneIdx] = mul(MU_DATA[iGroupIdx].matLocalTransform, matParent);
+    BONECOMBINED_TRANSFORMS[iBoneIdx] = mul(matLocal, matParent);
 }
 
 technique11 T0

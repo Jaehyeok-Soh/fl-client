@@ -157,7 +157,7 @@ float4x4 Get_BoneMatrix(VS_IN_SKELECTON input)
 }
 
 // scale 青纺, roation 青纺, translation 青纺 积己 窃荐
-float4x4 CreateRotaionMat_FromQuaternion(float4 Quat)
+float4x4 CreateRotaion_FromQuat(float4 Quat)
 {
     Quat = normalize(Quat);
     
@@ -186,7 +186,7 @@ float4x4 CreateScale(float3 Scale)
     );
 }
 
-float4x4 CreatTranslation(float3 Translation)
+float4x4 CreateTranslation(float3 Translation)
 {
     return float4x4(
     1, 0, 0, 0,
