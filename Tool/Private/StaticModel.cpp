@@ -137,37 +137,40 @@ HRESULT CStaticModel::Render()
 	UINT32 iMeshCount = pModel->Get_MeshCount();
 
 
-	if (!m_iUseOverrideMaterials)
+	for (UINT32 i = 0; i < iMeshCount; ++i)
 	{
-		for (UINT32 i = 0; i < iMeshCount; ++i)
-		{
-			pModel->Bind_Material(pShader, i);
-			pModel->Bind_MaterialInstance(pShader, i);
-			pShader->Apply();
-			pModel->Render(i);
-		}
+		pModel->Bind_Material(pShader, i);
+		pModel->Bind_MaterialInstance(pShader, i);
+		pShader->Apply();
+		pModel->Render(i);
 	}
-	else
-	{
-		_uint iConnectedIndex{0};
-		for (UINT32 i = 0; i < iMeshCount; ++i)
-		{
-			iConnectedIndex = pModel->Get_Mesh(i)->Get_MaterialIndex();
-			if (!m_vecOverrideMaterials[iConnectedIndex])
-			{
-				pModel->Bind_Material(pShader, i);
-				pModel->Bind_MaterialInstance(pShader, i);
-			}	
-			else
-			{
-				m_vecOverrideMaterials[iConnectedIndex]->Bind_ShaderResource(pShader);
-				pModel->Bind_MaterialInstance(pShader, i);
-			}
 
-			pShader->Apply();
-			pModel->Render(i);
-		}
-	}
+
+	//if (!m_iUseOverrideMaterials)
+	//{
+
+	//}
+	//else
+	//{
+	//	_uint iConnectedIndex{0};
+	//	for (UINT32 i = 0; i < iMeshCount; ++i)
+	//	{
+	//		iConnectedIndex = pModel->Get_Mesh(i)->Get_MaterialIndex();
+	//		if (!m_vecOverrideMaterials[iConnectedIndex])
+	//		{
+	//			pModel->Bind_Material(pShader, i);
+	//			pModel->Bind_MaterialInstance(pShader, i);
+	//		}	
+	//		else
+	//		{
+	//			m_vecOverrideMaterials[iConnectedIndex]->Bind_ShaderResource(pShader);
+	//			pModel->Bind_MaterialInstance(pShader, i);
+	//		}
+
+	//		pShader->Apply();
+	//		pModel->Render(i);
+	//	}
+	//}
 
 
 	return S_OK;
@@ -271,7 +274,6 @@ _bool CStaticModel::Export_Data(DTO::ECategory eCategory, CDataDocumentBase* pDo
 
 		tSave_StaticModleData.tUsingModelInfo.vecOverrideMaterial.push_back(tSaveMtl);
 	}
-
 
 
 	pMapDocument->Try_Add(tSave_StaticModleData);

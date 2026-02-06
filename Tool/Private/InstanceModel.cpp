@@ -160,37 +160,48 @@ HRESULT CInstanceModel::Render()
 	pInstMesh->Bind_Instance(1);
 	pShader->Set_Pass(ENUM_TO_UINT(m_eMapObjectState));
 
-	if (!m_iUseOverrideMaterials)
-	{
-		for (UINT32 i = 0; i < iMeshCount; ++i)
-		{
-			pModel->Bind_Material(pShader, i);
-			pModel->Bind_MaterialInstance(pShader, i);
-			pShader->Apply();
-			pModel->Render_Instance(i, iInstacnceCount);
-		}
-	}
-	else
-	{
-		_uint iConnectedIndex{ 0 };
-		for (UINT32 i = 0; i < iMeshCount; ++i)
-		{
-			iConnectedIndex = pModel->Get_Mesh(i)->Get_MaterialIndex();
-			if (!m_vecOverrideMaterials[iConnectedIndex])
-			{
-				pModel->Bind_Material(pShader, i);
-				pModel->Bind_MaterialInstance(pShader, i);
-			}
-			else
-			{
-				m_vecOverrideMaterials[iConnectedIndex]->Bind_ShaderResource(pShader);
-				pModel->Bind_MaterialInstance(pShader, i);
-			}
 
-			pShader->Apply();
-			pModel->Render_Instance(i  , iInstacnceCount);
-		}
+
+	for (UINT32 i = 0; i < iMeshCount; ++i)
+	{
+		pModel->Bind_Material(pShader, i);
+		pModel->Bind_MaterialInstance(pShader, i);
+		pShader->Apply();
+		pModel->Render_Instance(i, iInstacnceCount);
 	}
+
+
+	//if (!m_iUseOverrideMaterials)
+	//{
+	//	for (UINT32 i = 0; i < iMeshCount; ++i)
+	//	{
+	//		pModel->Bind_Material(pShader, i);
+	//		pModel->Bind_MaterialInstance(pShader, i);
+	//		pShader->Apply();
+	//		pModel->Render_Instance(i, iInstacnceCount);
+	//	}
+	//}
+	//else
+	//{
+	//	_uint iConnectedIndex{ 0 };
+	//	for (UINT32 i = 0; i < iMeshCount; ++i)
+	//	{
+	//		iConnectedIndex = pModel->Get_Mesh(i)->Get_MaterialIndex();
+	//		if (!m_vecOverrideMaterials[iConnectedIndex])
+	//		{
+	//			pModel->Bind_Material(pShader, i);
+	//			pModel->Bind_MaterialInstance(pShader, i);
+	//		}
+	//		else
+	//		{
+	//			m_vecOverrideMaterials[iConnectedIndex]->Bind_ShaderResource(pShader);
+	//			pModel->Bind_MaterialInstance(pShader, i);
+	//		}
+
+	//		pShader->Apply();
+	//		pModel->Render_Instance(i  , iInstacnceCount);
+	//	}
+	//}
 
 
 	return S_OK;

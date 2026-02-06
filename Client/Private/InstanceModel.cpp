@@ -202,37 +202,46 @@ HRESULT CInstanceModel::Render()
 	/* 1번 슬롯에 Instance 미리 바인딩 */
 	pInstMesh->Bind_Instance(1);
 
-	if (!m_iUseOverrideMaterials)
+	for (UINT32 i = 0; i < iMeshCount; ++i)
 	{
-		for (UINT32 i = 0; i < iMeshCount; ++i)
-		{
-			pModel->Bind_Material(pShader, i);
-			pModel->Bind_MaterialInstance(pShader, i);
-			pShader->Apply();
-			pModel->Render_Instance(i, iInstacnceCount);
-		}
+		pModel->Bind_Material(pShader, i);
+		pModel->Bind_MaterialInstance(pShader, i);
+		pShader->Apply();
+		pModel->Render_Instance(i, iInstacnceCount);
 	}
-	else
-	{
-		_uint iConnectedIndex{ 0 };
-		for (UINT32 i = 0; i < iMeshCount; ++i)
-		{
-			iConnectedIndex = pModel->Get_Mesh(i)->Get_MaterialIndex();
-			if (!m_vecOverrideMaterials[iConnectedIndex])
-			{
-				pModel->Bind_Material(pShader, i);
-				pModel->Bind_MaterialInstance(pShader, i);
-			}
-			else
-			{
-				m_vecOverrideMaterials[iConnectedIndex]->Bind_ShaderResource(pShader);
-				pModel->Bind_MaterialInstance(pShader, i);
-			}
 
-			pShader->Apply();
-			pModel->Render_Instance(i, iInstacnceCount);
-		}
-	}
+
+	//if (!m_iUseOverrideMaterials)
+	//{
+	//	for (UINT32 i = 0; i < iMeshCount; ++i)
+	//	{
+	//		pModel->Bind_Material(pShader, i);
+	//		pModel->Bind_MaterialInstance(pShader, i);
+	//		pShader->Apply();
+	//		pModel->Render_Instance(i, iInstacnceCount);
+	//	}
+	//}
+	//else
+	//{
+	//	_uint iConnectedIndex{ 0 };
+	//	for (UINT32 i = 0; i < iMeshCount; ++i)
+	//	{
+	//		iConnectedIndex = pModel->Get_Mesh(i)->Get_MaterialIndex();
+	//		if (!m_vecOverrideMaterials[iConnectedIndex])
+	//		{
+	//			pModel->Bind_Material(pShader, i);
+	//			pModel->Bind_MaterialInstance(pShader, i);
+	//		}
+	//		else
+	//		{
+	//			m_vecOverrideMaterials[iConnectedIndex]->Bind_ShaderResource(pShader);
+	//			pModel->Bind_MaterialInstance(pShader, i);
+	//		}
+
+	//		pShader->Apply();
+	//		pModel->Render_Instance(i, iInstacnceCount);
+	//	}
+	//}
 
 	return S_OK;
 }
