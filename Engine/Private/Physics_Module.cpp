@@ -2,6 +2,8 @@
 
 #include "GameInstance.h"
 
+#include "EngineConsole.h"
+
 #include "Physics_Module.h"
 #include "Physics_ResourceManager.h"
 #include "Physics_Utils.h"
@@ -298,8 +300,30 @@ PxFilterFlags CPhysics_Module::FilterShader(
 	return PxFilterFlag::eDEFAULT;
 }
 
+void CPhysics_Module::Check_Leak()
+{
+	if (!m_pScene) return;
+
+	_uint staticActorCount = m_pScene->getNbActors(PxActorTypeFlag::eRIGID_STATIC);
+	_uint dynamicActorCount = m_pScene->getNbActors(PxActorTypeFlag::eRIGID_DYNAMIC);
+
+	_uint triMeshCount = m_pPhysics->getNbTriangleMeshes();
+	_uint convexMeshCount = m_pPhysics->getNbConvexMeshes();
+
+	wstring logMsg = L" [PhysX Leak Check] \n";
+
+	logMsg += L"Static Actors: " + std::to_wstring(staticActorCount) + L"\n";
+	logMsg += L"Dynamic Actors: " + std::to_wstring(dynamicActorCount) + L"\n";
+	logMsg += L"Tri Meshes: " + std::to_wstring(triMeshCount) + L"\n";
+	logMsg += L"Convex Meshes: " + std::to_wstring(convexMeshCount) + L"\n";
+
+	CLOG_INFO(logMsg);
+}
+
 void CPhysics_Module::ClearPhysics()
 {
+	Check_Leak();
+
 	PX_RELEASE(m_pScene);
 	PX_RELEASE(m_pDispatcher);
 	PX_RELEASE(m_pPhysics);
