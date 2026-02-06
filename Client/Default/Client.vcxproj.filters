@@ -462,6 +462,9 @@
     <ClInclude Include="..\public\ImGui_PlayerInspector.h">
       <Filter>07. System\02. Debug_ImGui\Inspector\Player</Filter>
     </ClInclude>
+    <ClInclude Include="..\Public\UITargetAction_Client.h">
+      <Filter>03. GameObject\UIObjects\04.Action</Filter>
+    </ClInclude>
     <ClInclude Include="..\public\ImGui_FrameLayout.h">
       <Filter>07. System\02. Debug_ImGui\Layout\Frame</Filter>
     </ClInclude>
@@ -686,6 +689,9 @@
     </ClCompile>
     <ClCompile Include="..\private\ImGui_PlayerInspector.cpp">
       <Filter>07. System\02. Debug_ImGui\Inspector\Player</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\UITargetAction_Client.cpp">
+      <Filter>03. GameObject\UIObjects\04.Action</Filter>
     </ClCompile>
     <ClCompile Include="..\private\ImGui_FrameLayout.cpp">
       <Filter>07. System\02. Debug_ImGui\Layout\Frame</Filter>

@@ -29,9 +29,9 @@ private:
 	HRESULT Create_EventBindDataDTO(const DTO::TUI_EventBindData& data);
 
 private:
-	map<_string, CCanvas*> m_MapCanvasCache;
-	map<_string, CUILayer*> m_MapLayerCache;
-	map<_string, CGenericUI* >m_pMapUICache;
+	unordered_map<_string, CCanvas*> m_MapCanvasCache;
+	unordered_map<_string, CUILayer*> m_MapLayerCache;
+	unordered_map<_string, CGenericUI* >m_pMapUICache;
 
 	Vec2 m_vAspect = {};
 	Vec2 m_vViewportSIze = {};

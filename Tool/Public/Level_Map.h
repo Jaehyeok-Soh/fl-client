@@ -46,11 +46,15 @@ private:
 	HRESULT			Ready_DebugLine();
 	void			Ready_Event();
 	void			Release_Event();
+
+private:
+	void			Set_MapObjectListPanel_ResetSelectValue();
 public:
 	void			On_ChangeSelectedObject(CGameObject* pGo);
 	void			On_CreateMode(_bool bValue);
 	CToolObject*	Get_SelectToolObject() { return m_pSelectedObject; }
-	void			Set_SelectToolObject(CToolObject* pToolObject) { m_pSelectedObject = pToolObject; }
+
+	void			Set_SelectToolObjectNull();
 private:
 	_bool m_bCreateMode = { false };
 	class CImGui_ToolManager* m_pImGuiManager = { nullptr };

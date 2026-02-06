@@ -11,6 +11,7 @@ public:
 	typedef struct tagStaticModel_Desc : public CMapObject::MAPOBJECT_DESC
 	{
 		DTO::USING_MODEL_INFO	 tUsingModelInfo{};
+		Vec3					 vScale_Isolated = {};
 	}STATICMODEL_DESC;
 public:
 	CStaticModel(ID3D11Device* pDevice , ID3D11DeviceContext* pContext);
@@ -20,7 +21,6 @@ private:
 	virtual HRESULT			Initialize_Prototype()							override;
 	virtual HRESULT			Initialize(void* pArg)							override;
 	HRESULT					Ready_Component(STATICMODEL_DESC* pDesc);
-	HRESULT					Change_OverrideMtl(STATICMODEL_DESC* pDesc);
 	
 	HRESULT					Ready_PhysicsComponent(STATICMODEL_DESC* pDesc);
 	HRESULT					Ready_PhysicsCollider(STATICMODEL_DESC* pDesc);

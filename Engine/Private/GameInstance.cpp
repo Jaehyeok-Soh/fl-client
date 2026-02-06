@@ -855,7 +855,7 @@ vector<PxShape*> CGameInstance::GetMeshShape(PHYSICSCOLLIDER_DESC* pDesc)
 	return m_pPhysics_Module->GetMeshShape(pDesc);
 }
 
-PxRigidActor* CGameInstance::GetActor(PHYSICSRIGIDBODY_DESC* rigidBodyDesc, PHYSICSCOLLIDER_DESC* colliderDesc, vector<PxShape*>& shapes)
+vector<PxRigidActor*> CGameInstance::GetActor(PHYSICSRIGIDBODY_DESC* rigidBodyDesc, PHYSICSCOLLIDER_DESC* colliderDesc, vector<PxShape*>& shapes)
 {
 	return m_pPhysics_Module->GetActor(rigidBodyDesc, colliderDesc, shapes);
 }
@@ -868,6 +868,26 @@ PxController* CGameInstance::GetController(PHYSICSCCT_DESC* pDesc)
 void CGameInstance::RegisterPhysicsMesh(_uint levelIndex, _wstring prototypeTag)
 {
 	m_pPhysics_Module->RegisterPhysicsMesh(levelIndex, prototypeTag);
+}
+
+_bool CGameInstance::HasNegativeScale(const Matrix& mat)
+{
+	return m_pPhysics_Module->HasNegativeScale(mat);
+}
+
+_int CGameInstance::GetNegativeScaleAxis(const Matrix& mat)
+{
+	return m_pPhysics_Module->GetNegativeScaleAxis(mat);
+}
+
+PxQuat CGameInstance::GetPureRotation(const Matrix& mat)
+{
+	return m_pPhysics_Module->GetPureRotation(mat);
+}
+
+PxVec3 CGameInstance::GetPureScale(const Matrix& mat)
+{
+	return m_pPhysics_Module->GetPureScale(mat);
 }
 
 #ifdef _DEBUG
@@ -904,12 +924,12 @@ void CGameInstance::Free()
 	Safe_Release(m_pGameData_Manager);
 	Safe_Release(m_pPrototype_Manager);
 	Safe_Release(m_pPhysics_Module);
-	Safe_Release(m_pUIAction_Registry);
 	Safe_Release(m_pLevel_Manager);
 	Safe_Release(m_pEvent_Manager);
 	Safe_Release(m_pEventBus_Manager);
 	Safe_Release(m_pShaderAsset_Manager);
 	Safe_Release(m_pResource_Manager);
+	Safe_Release(m_pUIAction_Registry);
 	Safe_Release(m_pGraphic_Device);
 	Super::Free();
 }

@@ -116,7 +116,7 @@ HRESULT CPhysics_LandScape::Ready_PhysicsRigidBody()
 	desc.bIsKinematic = false;
 	desc.fLinearDamping = 0.f;
 	desc.fAngularDamping = 0.f;
-	desc.pOwnerMatrix = &Get_Component<CTransform>()->Get_WorldMatrix();
+	desc.pOwnerMatrices.push_back(Get_Component<CTransform>()->Get_WorldMatrix());
 
 	if (FAILED(Add_Component<CPhysicsRigidBody>(0/*static*/, L"Prototype_Component_Physics_RigidBody", &desc)))
 		return E_FAIL;

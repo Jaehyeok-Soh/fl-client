@@ -235,6 +235,54 @@ CToolUI* CImGui_UIManager::Safe_Access_UI(int32_t index)
 	return pUI;
 }
 
+HRESULT CImGui_UIManager::Safe_Add_CanvasCache(const _string& strTag, CToolCanvas* pCache)
+{
+	auto iter = m_MapCanvasCache.find(strTag);
+	if (iter != m_MapCanvasCache.end())
+		return E_FAIL;
+	m_MapCanvasCache.emplace(strTag, pCache);
+	return S_OK;
+}
+HRESULT CImGui_UIManager::Safe_Add_LayerCache(const _string& strTag, CToolLayer* pCache)
+{
+	auto iter = m_MapLayerCache.find(strTag);
+	if (iter != m_MapLayerCache.end())
+		return E_FAIL;
+	m_MapLayerCache.emplace(strTag, pCache);
+	return S_OK;
+}
+HRESULT CImGui_UIManager::Safe_Add_UICache(const _string& strTag, CToolUI* pCache)
+{
+	auto iter = m_MapUICache.find(strTag);
+	if (iter != m_MapUICache.end())
+		return E_FAIL;
+	m_MapUICache.emplace(strTag, pCache);
+	return S_OK;
+}
+CToolCanvas* CImGui_UIManager::Find_Canvas(const _string& strTag)
+{
+	auto iter = m_MapCanvasCache.find(strTag);
+	if (iter == m_MapCanvasCache.end())
+		return nullptr;
+	return iter->second;
+}
+
+CToolLayer* CImGui_UIManager::Find_Layer(const _string& strTag)
+{
+	auto iter = m_MapLayerCache.find(strTag);
+	if (iter == m_MapLayerCache.end())
+		return nullptr;
+	return iter->second;
+}
+
+CToolUI* CImGui_UIManager::Find_UI(const _string& strTag)
+{
+	auto iter = m_MapUICache.find(strTag);
+	if (iter == m_MapUICache.end())
+		return nullptr;
+	return iter->second;
+}
+
 void CImGui_UIManager::Free()
 {
 	Safe_Release(m_pGameInstance);

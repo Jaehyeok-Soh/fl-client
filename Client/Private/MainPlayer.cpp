@@ -96,9 +96,9 @@ HRESULT CMainPlayer::Awake(const _uint iCurrentLevelID)
     if (FAILED(Get_Component<CControlContext>()->Awake(iCurrentLevelID)))
         return E_FAIL;
 
-    Get_Component<CTransform>()->Set_Info(TRANSFORM_INFO_STATE::POS, Vec3{ 18.f,20.f,19.f });
+    Get_Component<CTransform>()->Set_Info(TRANSFORM_INFO_STATE::POS, Vec3{ 18.f,30.f,19.f });
 
-    //Get_Component<CPhysicsCCT>()->Awake();
+    Get_Component<CPhysicsCCT>()->Awake();
 
     CImGui_ClientDebug::GetInstance()->Set_Player(this);
     return S_OK;
@@ -584,8 +584,8 @@ HRESULT CMainPlayer::Ready_CCT()
     desc.tMaterial = mtrlDesc;
     desc.pOwner = this;
 
-   // if (FAILED(Add_Component<CPhysicsCCT>(0, L"Prototype_Component_Physics_CCT", &desc)))
-   //     return E_FAIL;
+    if (FAILED(Add_Component<CPhysicsCCT>(0, L"Prototype_Component_Physics_CCT", &desc)))
+        return E_FAIL;
 
     return S_OK;
 }

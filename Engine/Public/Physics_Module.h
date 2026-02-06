@@ -32,6 +32,10 @@ public:
 public:
     PxTransform XMMatrixToPxTransform(Matrix mat);
     Matrix PxTransformToXMMatrix(PxTransform pxTransform);
+    _bool HasNegativeScale(Matrix mat);
+    _int GetNegativeScaleAxis(const Matrix& mat);
+    PxQuat GetPureRotation(Matrix mat);
+    PxVec3 GetPureScale(Matrix mat);
 #ifdef _DEBUG
     HRESULT Render(PxRigidActor* pActor, XMVECTOR color = DirectX::Colors::White);
 #endif // _DEBUG
@@ -62,7 +66,7 @@ public:
 /// Actor Factory : RigidBody »ý¼º
 /// </summary>
 public:
-    PxRigidActor* GetActor(PHYSICSRIGIDBODY_DESC* rigidBodyDesc, PHYSICSCOLLIDER_DESC* colliderDesc, vector<PxShape*>& shapes);
+    vector<PxRigidActor*> GetActor(PHYSICSRIGIDBODY_DESC* rigidBodyDesc, PHYSICSCOLLIDER_DESC* colliderDesc, vector<PxShape*>& shapes);
 
 /// <summary>
 /// Character Controller Manager

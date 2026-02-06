@@ -1,11 +1,12 @@
 #include "pch.h"
 #include "StaticModel.h"
 #include "Model.h"
-#include "GameInstance.h"
+#include "Mesh.h"
 #include "Shader.h"
 
 #include "PhysicsCollider.h"
 #include "PhysicsRigidBody.h"
+#include "GameInstance.h"
 
 CStaticModel::CStaticModel(ID3D11Device* pDevice, ID3D11DeviceContext* pDeviceContext)
 	: CMapObject(pDevice, pDeviceContext)
@@ -39,8 +40,13 @@ HRESULT CStaticModel::Initialize(void* pArg)
 	if (FAILED(CStaticModel::Ready_Component(pDesc)))
 		return E_FAIL;
 
-	if (FAILED(CStaticModel::Change_OverrideMtl(pDesc)))
+
+	if (FAILED(CMapObject::Ready_OverrideMtl(pDesc->tUsingModelInfo)))
 		return E_FAIL;
+
+
+	Get_Component<CTransform>()->Set_Scale(pDesc->vScale_Isolated); // TEST: 소재혁 임시 추가
+
 
 	return S_OK;
 }
@@ -76,22 +82,6 @@ HRESULT CStaticModel::Ready_Component(STATICMODEL_DESC* pDesc)
 		if (FAILED(Ready_PhysicsComponent(pDesc)))
 			MSG_BOX("Failed to ready physics component : CStaticModel");
 	}
-
-	return S_OK;
-}
-
-HRESULT CStaticModel::Change_OverrideMtl(STATICMODEL_DESC* pDesc)
-{
-	if (pDesc == nullptr) return E_FAIL;
-
-	/* 없으면 리턴 */
-	if (pDesc->tUsingModelInfo.vecOverrideMaterial.empty()) return S_OK;
-
-	CModel* pModel = CGameObject::Get_Component<CModel>();
-	if (pModel == nullptr) return E_FAIL;
-
-	/* 머테리얼 생성하고 Change Material 불릴 예정 */
-
 
 	return S_OK;
 }
@@ -138,7 +128,8 @@ HRESULT CStaticModel::Ready_PhysicsRigidBody(STATICMODEL_DESC* pDesc)
 	desc.bIsKinematic = false;
 	desc.fLinearDamping = 0.f;
 	desc.fAngularDamping = 0.f;
-	desc.pOwnerMatrix = &Get_Component<CTransform>()->Get_WorldMatrix();
+	desc.pOwnerMatrices.push_back(Get_Component<CTransform>()->Get_WorldMatrix());
+	desc.vScale_Isolated.push_back(pDesc->vScale_Isolated);
 
 	if (FAILED(Add_Component<CPhysicsRigidBody>(0, L"Prototype_Component_Physics_RigidBody", &desc)))
 		return E_FAIL;
@@ -201,12 +192,36 @@ HRESULT CStaticModel::Render()
 	UINT32 iMeshCount = pModel->Get_MeshCount();
 
 
-	for (UINT32 i = 0; i < iMeshCount; ++i)
+	if (!m_iUseOverrideMaterials)
 	{
-		pModel->Bind_Material(pShader, i);
-		pModel->Bind_MaterialInstance(pShader, i);
-		pShader->Apply();
-		pModel->Render(i);
+		for (UINT32 i = 0; i < iMeshCount; ++i)
+		{
+			pModel->Bind_Material(pShader, i);
+			pModel->Bind_MaterialInstance(pShader, i);
+			pShader->Apply();
+			pModel->Render(i);
+		}
+	}
+	else
+	{
+		_uint iConnectedIndex{ 0 };
+		for (UINT32 i = 0; i < iMeshCount; ++i)
+		{
+			iConnectedIndex = pModel->Get_Mesh(i)->Get_MaterialIndex();
+			if (!m_vecOverrideMaterials[iConnectedIndex])
+			{
+				pModel->Bind_Material(pShader, i);
+				pModel->Bind_MaterialInstance(pShader, i);
+			}
+			else
+			{
+				m_vecOverrideMaterials[iConnectedIndex]->Bind_ShaderResource(pShader);
+				pModel->Bind_MaterialInstance(pShader, i);
+			}
+
+			pShader->Apply();
+			pModel->Render(i);
+		}
 	}
 
 	return S_OK;
