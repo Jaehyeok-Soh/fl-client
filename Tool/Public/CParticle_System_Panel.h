@@ -89,6 +89,7 @@ private:
     // ======== ImGui 값이 변동 됐다는걸 알리는 변수 ========
     _bool               m_bModified = false;
     int                 m_iSelectPartsIndex = 0;
+    _uint               m_iSelectPartsType = 0;
     string              m_strSelectedFolder = "";
 
     // ======== 이미지의 회전정보를 담고 있는 배열 ==========

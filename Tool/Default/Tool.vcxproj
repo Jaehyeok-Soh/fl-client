@@ -153,6 +153,7 @@
     <ClInclude Include="..\Public\Builder_UI.h" />
     <ClInclude Include="..\Public\CameraMan_Free.h" />
     <ClInclude Include="..\Public\CEffectObject.h" />
+    <ClInclude Include="..\Public\Gravity_Force.h" />
     <ClInclude Include="..\Public\UIAction_Tool.h" />
     <ClInclude Include="..\Public\UIComponent_Inspector.h" />
     <ClInclude Include="..\Public\DebugLine.h" />
@@ -240,6 +241,7 @@
     <ClCompile Include="..\Private\Builder_UI.cpp" />
     <ClCompile Include="..\Private\CameraMan_Free.cpp" />
     <ClCompile Include="..\Private\CEffectObject.cpp" />
+    <ClCompile Include="..\Private\Gravity_Force.cpp" />
     <ClCompile Include="..\Private\UIAction_Tool.cpp" />
     <ClCompile Include="..\Private\UIComponent_Inspector.cpp" />
     <ClCompile Include="..\Private\DebugLine.cpp" />

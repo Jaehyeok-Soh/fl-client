@@ -186,6 +186,7 @@ void Effect::Update_CombinedWorldMatrix(const Matrix* pMatParent)
 
 void Effect::Set_Dead(const wstring& wstrLayerTag)
 {
+	Super::Set_Dead(wstrLayerTag);
 }
 
 Effect* Effect::Create(EToolObjectType eType, ID3D11Device* pDevice, ID3D11DeviceContext* pDeviceContext)

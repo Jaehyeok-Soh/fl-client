@@ -44,12 +44,15 @@ HRESULT CVIBuffer_Particle_Mesh::Resize_InstanceBuffer(const PARTICLE_ORIGIN_DES
 	CMesh* pMesh = m_tParticleDesc.pModel->Get_Mesh(0);
 
 	// Stride 재설정
+	m_iVertexBufferCount = 2;
 	m_iInstanceVertexStride = sizeof(VTXPARTICLE);
 	m_ePrimitiveType = D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST;
 	m_eIndexFormat = m_iIndexStride == 2 ? DXGI_FORMAT::DXGI_FORMAT_R16_UINT : DXGI_FORMAT::DXGI_FORMAT_R32_UINT;
 	m_iInstanceCount = Desc.iInstnaceCount;
 
 	// 기존 버퍼 해제
+	Safe_Release(m_pVB); // 원본 메쉬 VB도 해제하고 삭제
+	Safe_Release(m_pIB);
 	Safe_Release(m_pVBInstance);
 	Safe_Delete_Array(m_pInstanceVertices);
 	Safe_Delete_Array(m_pSpeeds);
@@ -89,9 +92,9 @@ HRESULT CVIBuffer_Particle_Mesh::Set_ResizeBuffer_UseRandomSeed()
 
 	for (size_t i = 0; i < m_iInstanceCount; i++)
 	{
-		_float      fScale = m_tParticleDesc.vSize.y * 0.5f;
+		_float      fScale = m_tParticleDesc.vSize.y;
 		pInitialData[i].fSpeed = 1.f;
-		pInitialData[i].vParticle_LifeTime = Vec2(0.f, m_pGameInstance->Rand_Float(m_tParticleDesc.vLifeTime.x, m_tParticleDesc.vLifeTime.y));
+		pInitialData[i].vParticle_LifeTime = Vec2(0.f, m_tParticleDesc.vLifeTime.y);
 		pInitialData[i].vRight = Vec4(fScale, 0.f, 0.f, 0.f);
 		pInitialData[i].vUp = Vec4(0.f, fScale, 0.f, 0.f);
 		pInitialData[i].vLook = Vec4(0.f, 0.f, fScale, 0.f);
@@ -126,10 +129,10 @@ HRESULT CVIBuffer_Particle_Mesh::Set_ResizeBuffer_NoneUseRandomSeed()
 
 	for (size_t i = 0; i < m_iInstanceCount; i++)
 	{
-		_float      fScale = m_pGameInstance->Rand_Float(m_tParticleDesc.vSize.x, m_tParticleDesc.vSize.y) * 0.5f;
+		_float      fScale = m_tParticleDesc.vSize.y;
 
 		pInitialData[i].fSpeed = 1.f;
-		pInitialData[i].vParticle_LifeTime = Vec2(0.f, m_pGameInstance->Rand_Float(m_tParticleDesc.vLifeTime.x, m_tParticleDesc.vLifeTime.y));
+		pInitialData[i].vParticle_LifeTime = Vec2(0.f, m_tParticleDesc.vLifeTime.y);
 		pInitialData[i].vRight = Vec4(fScale, 0.f, 0.f, 0.f);
 		pInitialData[i].vUp = Vec4(0.f, fScale, 0.f, 0.f);
 		pInitialData[i].vLook = Vec4(0.f, 0.f, fScale, 0.f);

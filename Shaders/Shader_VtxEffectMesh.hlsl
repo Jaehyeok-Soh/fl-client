@@ -473,8 +473,7 @@ float4 PS_DISTOTION(VS_OUT_INST_MESH_PARTICLE In) : SV_Target0
 
     refractionColor = SceneTextureSample(distortionUV);
     
-    float lifeAlpha = 1.0f - (In.vLifeTime.x / In.vLifeTime.y);
-    refractionColor.a *= lifeAlpha;
+   
     
         // ==========               알파 클리핑                   =========
     
@@ -521,8 +520,8 @@ float4 PS_SWORDEFFECT(VS_OUT_INST_MESH_PARTICLE In) :SV_Target0
 
     refractionColor = SceneTextureSample(distortionUV);
     
-    float lifeAlpha = 1.0f - (In.vLifeTime.x / In.vLifeTime.y);
-    refractionColor.a *= lifeAlpha;
+    //float lifeAlpha = 1.0f - (In.vLifeTime.x / In.vLifeTime.y);
+    //refractionColor.a *= lifeAlpha;
     
         // ==========               알파 클리핑                   =========
     

@@ -7,6 +7,8 @@
 #include "VIBuffer_Particle_Point.h"
 #include "GameInstance.h"
 #include "Texture.h"
+#include "Gravity_Force.h"
+#include "Tool_PartObject.h"
 
 CParticle_System_Panel::CParticle_System_Panel(const _char* pLabel, CLevel* pOwner, ID3D11Device* pDevice, ID3D11DeviceContext* pDeviceContext)
 	:CImGui_Panel(pLabel, pOwner, pDevice, pDeviceContext)
@@ -307,6 +309,27 @@ void CParticle_System_Panel::Draw_ParticleSystem(CToolObject* pGo)
 			}
 			ImGui::TreePop();
 		}
+
+		// ===========   Position & Rotation & Scale =============
+		ImGui::AlignTextToFramePadding();
+
+		if (ImGui::TreeNode("Transform##Position"))
+		{
+			// 어차피 gizmo 연동이 되어있음.
+			CTransform* pTranform = static_cast<Effect*>(pGo)->Get_Part<CEffectObject>(m_iSelectPartsIndex)->Get_Component<CTransform>();
+			Vec3 Position = pTranform->Get_Info(TRANSFORM_INFO_STATE::POS);
+			Vec3 Scale = pTranform->Get_Scaled();
+
+			ImGui::DragFloat3(" ##Transform_ParticleSystem", &Position.x, 0.1f, 0.f, 100.f);
+			pTranform->Set_Info(TRANSFORM_INFO_STATE::POS, Position);
+			ImGui::Text("ObjectPos : (%g, %g, %g)", Position.x, Position.y, Position.z);
+			ImGui::Text("ObjectScale : (%g, %g, %g)", Scale.x, Scale.y, Scale.z);
+
+			ImGui::TreePop();
+		}
+
+
+
 			// Gravity Source - 중력이 어디서 오는지 결정한다. 물리 상수 (9.8ms^2)
 			// Gravity Modifier - 중력의 영향을 얼마나 강하게 받을지 정하는 배수. 0이면 무중력, 1이면 설정된 중력만큼 아래로 떨어진다.
 
@@ -349,14 +372,8 @@ void CParticle_System_Panel::Draw_ParticleSystem(CToolObject* pGo)
 
 			ImGui::TreePop();
 		}
-	
-		// Simulation Speed - 전체 이펙트의 재생 속도 배수입니다. 2라면 2배속으로 빠르게 움직입니다.
-		// Delta Time - 시간 계산 방식을 정합니다. 게임 속도에 맞춰진 Scaled 시간인가?
-		// Scaling Mode - 부모 오브젝트의 크기가 변할 때 파티클이 어떻게 반응할지 결정
-// 
-		// Play On Awake* - 파티클 시스템이 씬에 생성되자마자 즉시 재생될지 여부를 결정한다.
-		// Emitter Velocity Mode - 파티클이 방출될 때, 본체의 속도를 어떻게 계산할지 정합니다.
-		// Max Particles = 동시에 존재할 수 있는 최대 입자 개수. 이 값만큼 iNSTANCE bUFFER의 크기를 잡아두면 성능상 좋음
+
+		// ===========  파티클 갯수  ===================
 
 		ImGui::AlignTextToFramePadding();
 		if (ImGui::TreeNode("Max Particles##Particle System"))
@@ -364,6 +381,48 @@ void CParticle_System_Panel::Draw_ParticleSystem(CToolObject* pGo)
 			m_bModified |= ImGui::InputInt("##MaxParticles", &m_tCurrentDesc._Effect_MaxParticle, 0);
 			ImGui::TreePop();
 		}
+
+		// ===========  파티클 중력 계산  ==============
+
+		if (ImGui::CollapsingHeader("Physics / Gravity"))
+		{
+			ImGui::Spacing();
+
+			// 중력 배수
+			// 0이면 무중력, 1이면 표준 중력, -1이면 반중력(위로 솟구침)
+			ImGui::AlignTextToFramePadding();
+			ImGui::Text("Gravity Modifier");
+			ImGui::SameLine(140);
+			ImGui::SetNextItemWidth(-1.0f);
+			if (ImGui::DragFloat("##GravityModifier", &m_tCurrentDesc._Effect_GravityModifier, 0.05f, -10.f, 10.f, "%.2f x g"))
+			{
+				// 실제 중력값에 배수를 곱해서 갱신한다.
+				m_tCurrentDesc._Effect_Gravity_Value = m_tCurrentDesc._Effect_GravityModifier * 9.81f;
+				m_bModified |= true;
+			}
+
+			ImGui::AlignTextToFramePadding();
+			ImGui::Text("Gravity Direction");
+			ImGui::SameLine(140);
+			ImGui::SetNextItemWidth(-1.0f);
+			if (ImGui::DragFloat3("##GravityDir", &m_tCurrentDesc._Effect_GravityDir.x, 0.1f, -1.f, 1.f))
+			{
+				m_bModified = true;
+			}
+
+			ImGui::Spacing();
+			ImGui::TextColored(ImVec4(0.7f, 0.7f, 0.7f, 1.f), "Final Gravity: %.2f m/s^2", m_tCurrentDesc._Effect_Gravity_Value);
+			ImGui::Separator();
+		}
+
+
+		// Simulation Speed - 전체 이펙트의 재생 속도 배수입니다. 2라면 2배속으로 빠르게 움직입니다.
+		// Delta Time - 시간 계산 방식을 정합니다. 게임 속도에 맞춰진 Scaled 시간인가?
+		// Scaling Mode - 부모 오브젝트의 크기가 변할 때 파티클이 어떻게 반응할지 결정
+// 
+		// Play On Awake* - 파티클 시스템이 씬에 생성되자마자 즉시 재생될지 여부를 결정한다.
+		// Emitter Velocity Mode - 파티클이 방출될 때, 본체의 속도를 어떻게 계산할지 정합니다.
+		// Max Particles = 동시에 존재할 수 있는 최대 입자 개수. 이 값만큼 iNSTANCE bUFFER의 크기를 잡아두면 성능상 좋음
 
 		// Auto Random Seed - 난수 Seed를 다르게 생성해서 입자 모양이 랜덤하게 변한다.
 		// Stop Action - 이펙트가 완전히 끝났을 때 해당 오브젝트를 어떻게 처리할지 정한다.
@@ -431,6 +490,15 @@ void CParticle_System_Panel::Draw_ParticleSystem(CToolObject* pGo)
 				ImGui::TreePop();
 				return;
 			}
+
+			const char* shapeNames[] = { "NONE", "SPREAD", "DROP", "RISE", "MESH", "STRAIGHT" };
+			int currentIndex = (int)m_tCurrentDesc._Effect_ShapeType;
+
+			ImGui::Spacing();
+			ImGui::Text("Selected Shape: "); ImGui::SameLine();
+			ImGui::TextColored(ImVec4(1.0f, 1.0f, 0.0f, 1.0f), "%s", shapeNames[currentIndex]);
+			ImGui::Separator();
+
 			ImGui::TreePop();
 		}
 
@@ -980,22 +1048,6 @@ void CParticle_System_Panel::Draw_ParticleSystem(CToolObject* pGo)
 		}
 
 #pragma endregion
-
-		// ===========   Position & Rotation & Scale =============
-		ImGui::AlignTextToFramePadding();
-
-		if (ImGui::TreeNode("Transform##Position"))
-		{
-			// 어차피 gizmo 연동이 되어있음.
-			CTransform* pTranform = pGo->Get_Component<CTransform>();
-			Vec3 Position = pTranform->Get_Info(TRANSFORM_INFO_STATE::POS);
-			Vec3 Scale = pTranform->Get_Scaled();
-
-			ImGui::Text("ObjectPos : (%g, %g, %g)", Position.x, Position.y, Position.z);
-			ImGui::Text("ObjectScale : (%g, %g, %g)", Scale.x, Scale.y, Scale.z);
-
-			ImGui::TreePop();
-		}
 	}
 
 	// ==========  Position & Rotation & Scale ===========
@@ -1216,7 +1268,7 @@ void CParticle_System_Panel::Draw_ParticleSystem(CToolObject* pGo)
 					return true;
 				},
 				(void*)&m_PParticleTypeList, (int)m_PParticleTypeList.size(), 2))
-			{ 
+			{
 				m_bModified |= true;
 			}
 
@@ -1227,7 +1279,7 @@ void CParticle_System_Panel::Draw_ParticleSystem(CToolObject* pGo)
 			case 1:
 				m_tCurrentDesc.eEffectParticleType = E_PARTICLETYPE::TEXTURE; break;
 			case 2:
-				m_tCurrentDesc.eEffectParticleType = E_PARTICLETYPE::MESH; 
+				m_tCurrentDesc.eEffectParticleType = E_PARTICLETYPE::MESH;
 				Make_MeshSelectButton();
 				break;
 			default:
@@ -1235,11 +1287,19 @@ void CParticle_System_Panel::Draw_ParticleSystem(CToolObject* pGo)
 				break;
 			}
 
+			// =============   어떤 ParticleType 선택중이니   ==============
+			ImGui::Text("Current ParticleType: "); ImGui::SameLine();
+			ImGui::TextColored(ImVec4(0.3f, 0.3f, 1.0f, 1.0f), "%s", m_PParticleTypeList[ParticleNumber].c_str());
+			ImGui::Spacing();
+
+			ImGui::Text("Current Model: "); ImGui::SameLine();
+			ImGui::TextColored(ImVec4(0.5f, 0.5f, 0.7f, 1.0f), "%ls", m_tCurrentDesc._Effect_Model_Tag.c_str());
+
 			ImGui::TreePop();
 			ImGui::Spacing();
 		}
 
-		// ===========   Shader List  ============
+		// ===========   Shader List   ============
 		ImGui::AlignTextToFramePadding();
 		if (ImGui::TreeNode("Shader List"))
 		{
@@ -1262,6 +1322,19 @@ void CParticle_System_Panel::Draw_ParticleSystem(CToolObject* pGo)
 				m_bModified |= true;
 			}
 
+			// =============   어떤 Shader 선택중이니   ==============
+			ImGui::Text("Current Shader: "); ImGui::SameLine();
+
+			if (!m_tCurrentDesc._Effect_Shader_Tag.empty())
+			{
+				ImGui::TextColored(ImVec4(0.7f, 0.7f, 1.0f, 1.0f), "%ls", m_tCurrentDesc._Effect_Shader_Tag.c_str());
+			}
+			else
+			{
+				ImGui::TextColored(ImVec4(1.0f, 0.0f, 0.0f, 1.0f), "NONE");
+			}
+			ImGui::Spacing();
+
 			if (ImGui::TreeNode("SHADER PASS LIST##RENDERER"))
 			{
 				static int ShaderPassNumber = {};
@@ -1270,28 +1343,20 @@ void CParticle_System_Panel::Draw_ParticleSystem(CToolObject* pGo)
 
 				switch (m_tCurrentDesc.eEffectParticleType)
 				{
-					case E_PARTICLETYPE::NONE:
-					{
-						break;
-					}
-					case E_PARTICLETYPE::PARTICLE:
-					{
-						m_PParticleTypeList.push_back("DEFAULT_PARTICLE");
-						break;
-					}
-					case E_PARTICLETYPE::TEXTURE:
-					{
-						m_PParticleTypeList.push_back("DEFAULT_TEXTURE");
-						break;
-					}
-					case E_PARTICLETYPE::MESH:
-					{
-						m_PParticleTypeList.push_back("DEFAULT_MESH");
-						m_PParticleTypeList.push_back("BULLET");
-						m_PParticleTypeList.push_back("TRAIL");
-						m_PParticleTypeList.push_back("DISTOTION");
-						break;
-					}
+				case E_PARTICLETYPE::NONE:
+					break;
+				case E_PARTICLETYPE::PARTICLE:
+					m_PParticleTypeList.push_back("DEFAULT_PARTICLE");
+					break;
+				case E_PARTICLETYPE::TEXTURE:
+					m_PParticleTypeList.push_back("DEFAULT_TEXTURE");
+					break;
+				case E_PARTICLETYPE::MESH:
+					m_PParticleTypeList.push_back("DEFAULT_MESH");
+					m_PParticleTypeList.push_back("BULLET");
+					m_PParticleTypeList.push_back("TRAIL");
+					m_PParticleTypeList.push_back("DISTOTION");
+					break;
 				}
 
 				if (m_PParticleTypeList.size() <= ShaderPassNumber)
@@ -1314,6 +1379,20 @@ void CParticle_System_Panel::Draw_ParticleSystem(CToolObject* pGo)
 					m_bModified |= true;
 					m_tCurrentDesc._Effect_ShaderPass = (ShaderPassNumber);
 				}
+
+				// =============   어떤 Shader Pass 선택중이니   ==============
+				ImGui::Text("Current Type: ##ShaderPassList"); ImGui::SameLine();
+				int iTextIdx = (int)m_tCurrentDesc.eEffectParticleType;
+
+				if (iTextIdx > 0)
+				{
+					ImGui::TextColored(ImVec4(1.0f, 0.5f, 0.0f, 1.0f), "%s", m_PParticleTypeList[ShaderPassNumber].c_str());
+				}
+				else
+				{
+					ImGui::TextColored(ImVec4(1.0f, 0.0f, 0.0f, 1.0f), "NONE");
+				}
+
 				ImGui::TreePop();
 				ImGui::Spacing();
 			}
@@ -1607,115 +1686,155 @@ void CParticle_System_Panel::Draw_Parts(CToolObject* pGo)
 {
 	ImGui::Begin("Effect Parts Setting");
 
-	// ContainerObject의 Parts List를 들고오고 size를 통해 Index 조작도 되게끔 한다.
 	Effect* pInstance = static_cast<Effect*>(pGo);
-	if (pInstance == nullptr)
-	{
-		ImGui::End();
-		return;
-	}
+	if (pInstance == nullptr) { ImGui::End(); return; }
 
-	static int PartIndex = {};
-	auto PartsList = pInstance->Get_PartList();
-	
-	PartIndex = static_cast<int>(PartsList.size()) - 1;
+	auto& PartsList = pInstance->Get_PartList();
+
+	// 삭제 등으로 인덱스가 범위를 벗어났을 때만 보정
+	if (m_iSelectPartsIndex >= (int)PartsList.size())
+		m_iSelectPartsIndex = max(0, (int)PartsList.size() - 1);
+
+	int iCurrentIdx = m_iSelectPartsIndex;
 
 	if (ImGui::TreeNode("Effect_PartsList##Effect_PartsList"))
 	{
 		std::vector<const char*> iTems;
-		iTems.reserve(static_cast<int>(PartsList.size()));
+		iTems.reserve(PartsList.size());
 
 		for (auto& parts : PartsList)
-			iTems.push_back(parts->Get_Name().c_str());
-		
-		if (ImGui::ListBox("##PartsSelector", &PartIndex, iTems.data(), static_cast<int>(iTems.size()), 6))
 		{
-			m_iSelectPartsIndex = PartIndex;
-			m_bModified |= true;
+			if (parts)
+				iTems.push_back(parts->Get_Name().c_str());
+		}
 
-			if ((iTems.size() - 1) < PartIndex)
+		if (ImGui::ListBox("##PartsSelector", &iCurrentIdx, iTems.data(), (int)iTems.size(), 6))
+		{
+			m_iSelectPartsIndex = iCurrentIdx;
+			m_bModified = true;
+
+			CEffectObject* pSelectdPart = nullptr;
+			
+			// ===========================  타입 검사  =================================
+
+			if (dynamic_cast<CEffectObject*>(pInstance->Get_Part<CEffectObject>(m_iSelectPartsIndex)))
 			{
-				ImGui::TreePop();
-				ImGui::End();
-				return;
+				m_iSelectPartsType = ENUM_TO_UINT(E_PartsObjectID::Effect_Particle);
 			}
 
-			CEffectObject* pSelectdPart = static_cast<Effect*>(pGo)->Get_Part<CEffectObject>(m_iSelectPartsIndex);
+			else if (dynamic_cast<CGravity_Force*>(pInstance->Get_Part<CGravity_Force>(m_iSelectPartsIndex)))
+			{
+				m_iSelectPartsType = ENUM_TO_UINT(E_PartsObjectID::Effect_ForceField);
+			}
+				
+			pInstance->Get_Part<CEffectObject>(m_iSelectPartsIndex);
 			if (pSelectdPart)
 				m_tCurrentDesc = pSelectdPart->Get_EffectDesc();
 		}
 
+		if (!iTems.empty())
+		{
+			ImGui::Text("Current Part: "); ImGui::SameLine();
+			ImGui::TextColored(ImVec4(0.7f, 0.7f, 1.0f, 1.0f), "%s", iTems[m_iSelectPartsIndex]);
+		}
+		ImGui::Spacing();
 		ImGui::TreePop();
 	}
+
 	if (ImGui::TreeNode("Edit##Part_Setting"))
 	{
 		if (ImGui::TreeNode("Create##Part_Setting"))
 		{
-			// 이름 짓기
+			static int iSelectedPartType = 0; // 0: NONE, 1: Particle, 2: ForceField
+			const char* pPartTypeNames[] = { "NONE (Select Type!)", "Effect_Particle", "Effect_ForceField" };
+
+			ImGui::TextColored(ImVec4(1.f, 1.f, 0.f, 1.f), "Select Part Type");
+			ImGui::Combo("##PartTypeCombo", &iSelectedPartType, pPartTypeNames, IM_ARRAYSIZE(pPartTypeNames));
+			ImGui::Spacing();
+
 			static char nameBuf[128] = {};
-			string effectName = static_cast<Effect*>(pGo)->Get_Part<CEffectObject>(PartIndex)->Get_Name();
+			if (nameBuf[0] == '\0') strncpy_s(nameBuf, "NEW_PARTS", _TRUNCATE);
 
-			if (nameBuf[0] == '\0' && !effectName.empty())
+			ImGui::TextColored(ImVec4(1.f, 1.f, 0.f, 1.f), "Set Part Name");
+			ImGui::InputText("##CreateName_PartSetting", nameBuf, IM_ARRAYSIZE(nameBuf));
+			ImGui::Spacing();
+
+			if (iSelectedPartType == 0)
 			{
-				std::string tmp = effectName;
-				strncpy_s(nameBuf, sizeof(nameBuf), tmp.c_str(), _TRUNCATE);
+				ImGui::PushStyleColor(ImGuiCol_Button, ImVec4(0.3f, 0.3f, 0.3f, 1.f));
+				ImGui::Button("Select Type First");
+				ImGui::PopStyleColor();
+				ImGui::TextColored(ImVec4(1.f, 0.f, 0.f, 1.f), "Warning: Part type must not be NONE.");
 			}
-			// ImGui에서 입력 받기
-			ImGui::InputText("##ChangeName_PartSetting", nameBuf, IM_ARRAYSIZE(nameBuf)); ImGui::SameLine();
-			effectName = nameBuf;
-			
-			if (ImGui::Button("Create##Part_ObjectSetting"))
+			else
 			{
-				// =========	Create	  ==============
-				CGameObject* pResult = { nullptr };
+				if (ImGui::Button("Create##Part_ObjectSetting", ImVec2(ImGui::GetContentRegionAvail().x, 0)))
+				{
+					CEffectObject::Effect_Desc pEffectDesc = {};
+					CTransform::TRANSFORM_DESC transformDesc = {};
+					transformDesc.fRotatePerSec = 1.f;
+					transformDesc.fMovePerSec = 1.f;
 
-				CEffectObject::Effect_Desc pEffectDesc = {};
-				CTransform::TRANSFORM_DESC transformDesc = {};
-				// =========    트랜스폼   ============
-				transformDesc.fRotatePerSec = 1.f;
-				transformDesc.fMovePerSec = 1.f;
+					pEffectDesc.pMatParent = &(pGo->Get_Component<CTransform>()->Get_WorldMatrix());
+					pEffectDesc.pTransform_Desc = &transformDesc;
+					pEffectDesc.iLevelIndex = ENUM_TO_UINT(ELevelType::EFFECT);
 
-				pEffectDesc.pMatParent = &(pGo->Get_Component<CTransform>()->Get_WorldMatrix());
-				pEffectDesc.pTransform_Desc = &transformDesc;
+					*(E_PartsObjectID*)&pEffectDesc.iPartsID = (E_PartsObjectID)iSelectedPartType;
 
-				pEffectDesc.wstrLayerTag = L"Effect_Parts";
-				pEffectDesc.iLevelIndex = ENUM_TO_UINT(ELevelType::EFFECT);
-				// ========     이펙트 타입   =========
-				pEffectDesc.eEffectSystemType = E_EffectSystemType::Particle;
-				pEffectDesc.eEffectType = E_EFFECTTYPE::Particle;
+					// 타입에 따른 기본 설정 분기
+					if ((E_PartsObjectID)iSelectedPartType == E_PartsObjectID::Effect_Particle)
+					{
+						pEffectDesc.wstrLayerTag = L"Effect_Part_Particles";
+						pEffectDesc.iPartsID = E_PartsObjectID::Effect_Particle;
+					}
 
-				// =========   이펙트 Color Value   ===============
-				pEffectDesc._Effect_Color = Vec4{ 0.f, 0.f, 0.f, 1.f };
+					else if ((E_PartsObjectID)iSelectedPartType == E_PartsObjectID::Effect_ForceField)
+					{
+						pEffectDesc.wstrLayerTag = L"Effect_Part_ForceField";
+						pEffectDesc.iPartsID = E_PartsObjectID::Effect_ForceField;
+					}
 
-				// ========  이펙트 Material 설정   ===========
-				pEffectDesc._Effect_Model_Tag = {};
-				pEffectDesc._Effect_Shader_Tag = {};
-				pEffectDesc._Effect_DiffuseTexture_Tag = {};
-				pEffectDesc._Effect_NoiseTexture_Tag = {};
-				pEffectDesc._Effect_DiffuseTexture_Tag = {};
-				pEffectDesc._Effect_ShaderPass = {};
+					else
+						pEffectDesc.eEffectType = E_EFFECTTYPE::NONE;
 
-				pEffectDesc._Effect_TileCount = CEffectObject::_uint2{ 0, 0 };
+					pEffectDesc._Effect_Color = Vec4{ 0.f, 0.f, 0.f, 1.f };
+					pEffectDesc._Effect_StartScale = { 1.f, 1.f, 1.f };
+					pEffectDesc._Effect_EndScale = { 1.f, 1.f, 1.f };
 
-				// =======   이펙트 스크롤 Value   ===========
-				pEffectDesc._Effect_ScrollSpeed = { 0.f, 0.f };
+					// 파츠 추가
+					if((E_PartsObjectID)iSelectedPartType == E_PartsObjectID::Effect_Particle)
+						pInstance->Add_Part(static_cast<_uint>(PartsList.size()), ENUM_TO_UINT(ELevelType::EFFECT), L"Prototype_GameObject_Effect_Part_Particle", &pEffectDesc);
 
-				// ========   이펙트 왜곡 Scale Value   ==========
-				pEffectDesc._Effect_DistortionScale = { 0.f, 0.f };
+					else if((E_PartsObjectID)iSelectedPartType == E_PartsObjectID::Effect_ForceField)
+						pInstance->Add_Part(static_cast<_uint>(PartsList.size()), ENUM_TO_UINT(ELevelType::EFFECT), L"Prototype_GameObject_Effect_Part_ForceField", &pEffectDesc);
 
-				// ==========   이펙트 Sacle Value   ==============
-				pEffectDesc._Effect_StartScale = { 1.f, 1.f, 1.f };
-				pEffectDesc._Effect_EndScale = { 1.f, 1.f, 1.f };
+					Tool_PartObject* pNewPart = nullptr;
 
-				static_cast<Effect*>(pGo)->Add_Part(static_cast<_uint>(PartsList.size()), ENUM_TO_UINT(ELevelType::EFFECT), L"Prototype_GameObject_Effect_Parts", &pEffectDesc);
-				static_cast<Effect*>(pGo)->Get_Part<CEffectObject>(PartsList.size())->Set_Name(effectName);
+					if (pNewPart = pInstance->Get_Part<CEffectObject>((_uint)PartsList.size() - 1))
+					{
+						pNewPart = pInstance->Get_Part<CEffectObject>((_uint)PartsList.size() - 1);
+					}
+
+					else if (pNewPart = pInstance->Get_Part<CGravity_Force>((_uint)PartsList.size() - 1))
+					{
+						pNewPart = pInstance->Get_Part<CGravity_Force>((_uint)PartsList.size() - 1);
+					}
+	
+					if (pNewPart)
+					{
+						pNewPart->Set_Name(nameBuf);
+						pNewPart->Awake(ENUM_TO_UINT(ELevelType::EFFECT));
+						m_iSelectPartsIndex = (int)PartsList.size() - 1; 
+						m_iSelectPartsType = iSelectedPartType;
+					}
+				}
 			}
 			ImGui::TreePop();
 		}
 		if (ImGui::TreeNode("Name Change##Part_Setting"))
 		{
 			static char nameBuf[128] = {};
-			string effectName = static_cast<Effect*>(pGo)->Get_Part<CEffectObject>(PartIndex)->Get_Name();
+			string effectName = static_cast<Effect*>(pGo)->Get_Part<CEffectObject>(m_iSelectPartsIndex)->Get_Name();
 
 			if (nameBuf[0] == '\0' && !effectName.empty())
 			{
@@ -1728,8 +1847,22 @@ void CParticle_System_Panel::Draw_Parts(CToolObject* pGo)
 			if (ImGui::Button("SAVE"))
 			{
 				effectName = nameBuf;
-				static_cast<Effect*>(pGo)->Get_Part<CEffectObject>(PartIndex)->Set_Name(effectName);
+				static_cast<Effect*>(pGo)->Get_Part<CEffectObject>(m_iSelectPartsIndex)->Set_Name(effectName);
 			}
+			ImGui::TreePop();
+		}
+
+		if (ImGui::TreeNode("Delete##Part_Setting"))
+		{
+			if (ImGui::Button("Delete##Part_SettingButton"))
+			{
+				static_cast<Effect*>(pGo)->Remove_Part(m_iSelectPartsIndex);
+
+				m_iSelectPartsIndex--;
+				if (m_iSelectPartsIndex <= 0)
+					m_iSelectPartsIndex = 0;
+			}
+
 			ImGui::TreePop();
 		}
 

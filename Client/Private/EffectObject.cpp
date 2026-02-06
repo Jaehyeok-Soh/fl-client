@@ -180,7 +180,7 @@ HRESULT CEffectObject::Ready_Component_Buffer(void* pArg)
                 MeshBufferDesc.vSpeed = Vec2{ 1.f, 2.f };
                 MeshBufferDesc.isRandomSeed = m_tEffectDesc._Effect_IsRandomSeed;
                 MeshBufferDesc.pComputeShader = static_cast<CComputeShader*>(Get_Script_Component(L"ComputeShader"));
-                MeshBufferDesc._Model = pInstance;
+                MeshBufferDesc.pModel = pInstance;
                 MeshBufferDesc.pOwner = this;
 
                 if (FAILED(Add_Component<CVIBuffer_Particle_Mesh>(static_cast<CVIBuffer_Particle_Mesh*>(m_pGameInstance->Clone_Prototype(EPrototypeType::COMPONENT, 0, L"Prototype_Component_VIBuffer_Particle_Mesh", &MeshBufferDesc)))))

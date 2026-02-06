@@ -195,15 +195,28 @@ namespace Engine
 	// 가변 데이터 (CS에서 값이 계속 바뀌는 것들)
 	typedef struct tagEffect_Particle_MU_ELEMENT
 	{
+		// 시간 제어 관련
 		float				fTimeDelta = { 0.f };		// 시간 값
-		float				fStartSpeed = { 0.f };		// 배속
-		float				fEndSpeed = {};
-		unsigned  int		iMoveState = { 0}; // State를 flag에 담아서 보내기
-		int					bIsLoop = { 0 };
+		float				fTotalTime = { 0.f };
+		float				fDuration = { 0.f };
+		float				fStartDelay = { 0.f };
 
+		// 상태 플래그
+		unsigned int		iMoveState = { 0 };
+		int					bIsLoop = { 0 };
+		int					bIsReset = { 0 };
+		float				fGravity = { 9.8f };
+
+		// 위치 및 방향
 		SimpleMath::Vector3	vPivot = {};	// Spread시 기준점
 		SimpleMath::Vector3 vLook = {};		// Straight시 방향
-		float				vPadding1 = {};
+		float				fStartSpeed = { 0.f };
+
+		float				fSpiralRaduis = { 0.f };
+		float				fSpiralSpeed = { 0.f };
+		SimpleMath::Vector3 Padding1 = { 0.f, 0.f, 0.f };
+		// 
+
 	}EFFECT_PARTICLE_MU_ELEMENT;
 #pragma endregion
 	union COLLIDER_ID

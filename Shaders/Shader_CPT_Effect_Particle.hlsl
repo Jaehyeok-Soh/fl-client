@@ -4,6 +4,13 @@
 #include "Struct_Defines.hlsl"
 
 // 불변 데이터
+#define NONE 0
+#define SPREAD 1
+#define DROP 2
+#define RISE 3
+#define MESH 4
+#define STARIGHT 5
+
 struct IMMU_ELEMENT
 {
     float4             vRight;
@@ -22,14 +29,20 @@ struct IMMU_ELEMENT
 struct MU_ELEMENT
 {
     float               fTimeDelta;
-    float               fStartSpeed;
-    float               fEndSpeed;
-    uint                MoveFlag;
-    int                 IsLoop;
+    float               fTotalTime;
+    float               fDuration;
+    float               fStartDelay;
+    
+    float               iMoveState;
+    int                 bIsLoop;
+    uint                bIsReset;
+    float               fGravity;
     
     float3              vPivot;
     float3              vLook;
-    float              vPadding1;
+    float               fStartSpeed;
+    float               fSpiralRaduis;
+    float               fSpiralSpeed;
 };
 
 
@@ -67,12 +80,12 @@ void CS_Main(int3 dtid : SV_DispatchThreadID)
     currentData.vLifeTime.x += g_InputB.fTimeDelta;
 
 //  상태별 이동 로직 (DROP 예시)
-    //if (g_InputB.MoveFlag == 3)
-    //{
-    // 이전 위치(currentData)에서 속도(input)만큼 더 이동시킨다.
+    if (g_InputB.iMoveState == 3)
+    {
         currentData.matTransform._42 -= input.vSpeed * g_InputB.fTimeDelta * g_InputB.fStartSpeed;
-    //}
+    }
     
+    if (g_InputB.iMoveState == MESH)
     {
         
     }
@@ -86,7 +99,7 @@ void CS_Main(int3 dtid : SV_DispatchThreadID)
     }
 
 //  루프(리셋) 처리
-    if (g_InputB.IsLoop && currentData.vLifeTime.x >= currentData.vLifeTime.y)
+    if (g_InputB.bIsLoop && currentData.vLifeTime.x >= currentData.vLifeTime.y)
     {
         currentData.vLifeTime.x = 0.0f; // 다음 프레임에 상단 if문에 걸려 초기화됨
     }

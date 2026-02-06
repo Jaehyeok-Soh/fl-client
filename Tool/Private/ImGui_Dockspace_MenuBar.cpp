@@ -218,7 +218,7 @@ void CImGui_Dockspace_MenuBar::Save_EffectData(const wstring& wstrFilePath)
 		return;
 
 	// Effect Container °´Ã¼ Layer
-	wstring ContainerObjectLayerTag = L"Effect";
+	wstring ContainerObjectLayerTag = L"Effect_Layer";
 
 	Request_ExportData(ELevelType::EFFECT, eCategory, ContainerObjectLayerTag, pDocument);
 
@@ -327,7 +327,7 @@ void CImGui_Dockspace_MenuBar::Load_EffectData(const wstring& wstrFilePath)
 
 		Effect::EFFECT_CONTAINERDESC pDesc = {};
 		pDesc._Effect_SimulationType = (E_SIMULATION_SPACE)pData._Effect_SimulationType;
-		pDesc.wstrLayerTag = L"Effect";
+		pDesc.wstrLayerTag = L"Effect_Layer";
 		pDesc.iLevelIndex = iLevelID;
 		pDesc.pTransform_Desc = &pTransDesc;
 

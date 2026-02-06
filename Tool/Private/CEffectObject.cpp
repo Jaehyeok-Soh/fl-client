@@ -395,7 +395,8 @@ HRESULT CEffectObject::Bind_ShaderResource()
 
 HRESULT CEffectObject::Awake(const _uint iCurrentLevelID)
 {
-    // 절대로 절대로 Loader에서 불리면 안된다.
+    Super::Awake(iCurrentLevelID);
+
     return S_OK;
 }
 
@@ -526,6 +527,21 @@ void CEffectObject::Preview_Texture_Reset()
 
 }
 
+bool CEffectObject::IntsersectWithPlane(OUT Vec3& vOut)
+{
+    CModel* pModel = Get_Component<CModel>();
+    if (pModel == nullptr)  return false;
+
+    _uint iMeshCount = pModel->Get_MeshCount();
+    for (_uint i = 0; i < iMeshCount; ++i)
+    {
+        if (pModel->Get_Mesh(i)->IntsersectWithPlane(vOut))
+            return true;
+    }
+    return false;
+}
+
+
 HRESULT CEffectObject::Render()
 {
     if (FAILED(Super::Render()))
@@ -540,7 +556,18 @@ HRESULT CEffectObject::Render()
 
 _bool CEffectObject::Picking(OUT Vec3& vOut)
 {
-    return _bool();
+    const Matrix& matWorld = Get_Component<CTransform>()->Get_WorldMatrix();
+    Matrix matLocal = {};
+
+    matLocal = matWorld.Invert();
+    m_pGameInstance->TransformRayToLocalSpace(matLocal);
+
+    if (IntsersectWithPlane(vOut))
+    {
+        vOut = Vec3::Transform(vOut, matWorld);
+        return true;
+    }
+    return false;
 }
 
 _bool CEffectObject::Export_Data(DTO::ECategory eCategory, CDataDocumentBase* pDocument)
@@ -550,10 +577,12 @@ _bool CEffectObject::Export_Data(DTO::ECategory eCategory, CDataDocumentBase* pD
 
 void CEffectObject::Draw_ImGui()
 {
+    Super::Draw_ImGui();
 }
 
 void CEffectObject::Set_Dead(const wstring& wstrLayerTag)
 {
+    Super::Set_Dead(wstrLayerTag);
 }
 
 

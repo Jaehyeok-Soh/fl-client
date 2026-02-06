@@ -162,6 +162,14 @@ public:
 
         // ========  이펙트 Radius  ==========
         Vec3                _Effect_Range = { 1.f, 1.f, 1.f };
+        float               _Effect_Spiral_Radius = { 1.f };
+        float               _Effect_Spiral_Speed = { 1.f };
+
+        // ========  중력 값들   ==============
+        float               _Effect_Gravity_Value = { 9.8f };
+        float               _Effect_GravityModifier = { 0.f };
+        Vec3                _Effect_GravityDir = { 0.f, 0.f, 0.f };
+        
 
         // ========  이펙트 Texture Flag  =======
         _uint               _Effect_TextureFlag = {};
@@ -212,6 +220,7 @@ public:
     virtual void Draw_ImGui() override;
     virtual void Set_Dead(const wstring& wstrLayerTag) override;
 
+    bool IntsersectWithPlane(OUT Vec3& vOut);
 public:
     //  ==========  초기 Component 설정  ================
     HRESULT EffectDesc_Initialize(void* pArg);
@@ -223,6 +232,7 @@ public:
     void Buffer_Setting();
 
     void Particle_Setting();
+
 
 private:
     //  ==========  Shader Binding Setting  =============

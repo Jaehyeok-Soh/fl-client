@@ -216,6 +216,8 @@ HRESULT CVIBuffer_Particle_Point::Set_InstanceBuffer()
 
 HRESULT CVIBuffer_Particle_Point::Bind_Resource()
 {
+	m_pDeviceContext->IASetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY_POINTLIST);
+
 	ID3D11Buffer* pVertexBuffers[] = {
 		m_pVB,
 		m_pVBInstance
