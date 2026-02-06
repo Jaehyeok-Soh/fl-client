@@ -13,12 +13,16 @@ private:
 	HRESULT Initialize();
 
 public:
-    PxRigidActor* GetActor(PHYSICSRIGIDBODY_DESC* rigidBodyDesc, PHYSICSCOLLIDER_DESC* colliderDesc, vector<PxShape*>& shapes);
+    vector<PxRigidActor*> GetActor(PHYSICSRIGIDBODY_DESC* rigidBodyDesc, PHYSICSCOLLIDER_DESC* colliderDesc, vector<PxShape*>& shapes);
 
 private:
-    PxRigidActor* MakeStatic(PHYSICSRIGIDBODY_DESC* rigidBodyDesc, PHYSICSCOLLIDER_DESC* colliderDesc, vector<PxShape*>& shapes);
-    PxRigidActor* MakeDynamic(PHYSICSRIGIDBODY_DESC* rigidBodyDesc, PHYSICSCOLLIDER_DESC* colliderDesc, vector<PxShape*>& shapes);
-    PxRigidActor* MakeKinematic(PHYSICSRIGIDBODY_DESC* rigidBodyDesc, PHYSICSCOLLIDER_DESC* colliderDesc, vector<PxShape*>& shapes);
+    vector<PxRigidActor*> MakeStatics(PHYSICSRIGIDBODY_DESC* rigidBodyDesc, PHYSICSCOLLIDER_DESC* colliderDesc, vector<PxShape*>& shapes);
+    vector<PxRigidActor*> MakeDynamics(PHYSICSRIGIDBODY_DESC* rigidBodyDesc, PHYSICSCOLLIDER_DESC* colliderDesc, vector<PxShape*>& shapes);
+    vector<PxRigidActor*> MakeKinematics(PHYSICSRIGIDBODY_DESC* rigidBodyDesc, PHYSICSCOLLIDER_DESC* colliderDesc, vector<PxShape*>& shapes);
+
+    PxRigidActor* MakeStatic(const Matrix world, Vec3 scale, vector<PxShape*>& shapes);
+    PxRigidActor* MakeDynamic(const Matrix world, Vec3 scale, _float density, vector<PxShape*>& shapes);
+    PxRigidActor* MakeKinematic(const Matrix world, Vec3 scale, _float density, vector<PxShape*>& shapes);
 
 private:
     class CGameInstance* m_pGameInstance = { nullptr };

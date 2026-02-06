@@ -251,9 +251,19 @@ _bool CActionState::Align_Movement(const _float fTimeDelta)
 
 		_float moveps = m_pOwnerTransform->Get_MovePerSec();
 		Vec3 disp = turnedLook * moveps * fTimeDelta;
+
+		_float fDelta = m_fVerticalSpeed * fTimeDelta;
 		CCTFlags = cct->Move(disp, 0.01f, fTimeDelta);
 
+		if (CCTFlags & PxControllerCollisionFlag::eCOLLISION_DOWN)
+			m_fVerticalSpeed = 0.f;
+
 		Vec3 finalPos = cct->GetFootPosition();
+		Vec3 currentPos = m_pOwnerTransform->Get_Info(TRANSFORM_INFO_STATE::POS);
+
+		_float yLerp = std::lerp(currentPos.y, finalPos.y, fTimeDelta * 15.f);
+		finalPos.y = yLerp;
+		Vec3 lerpPos = Vec3::Lerp(currentPos, finalPos, fTimeDelta * 0.001f);
 
 		m_pOwnerTransform->Set_Info(TRANSFORM_INFO_STATE::POS, finalPos);
 	}
@@ -318,6 +328,10 @@ void CActionState::Apply_Gravity_CCT(const _float fTimeDelta)
 		CCTFlags = cct->Move(vUp, 0.01f, fTimeDelta);
 
 		Vec3 finalPos = cct->GetFootPosition();
+		Vec3 currentPos = m_pOwnerTransform->Get_Info(TRANSFORM_INFO_STATE::POS);
+
+		_float yLerp = std::lerp(currentPos.y, finalPos.y, fTimeDelta);
+		finalPos.y = yLerp;
 
 		m_pOwnerTransform->Set_Info(TRANSFORM_INFO_STATE::POS, finalPos);
 

@@ -229,6 +229,9 @@
     <Filter Include="07. System\02. Debug_ImGui\Layout\ActionState">
       <UniqueIdentifier>{08101873-1d09-4a2d-9022-d599b7d73c9d}</UniqueIdentifier>
     </Filter>
+    <Filter Include="04. Shaders\ComputeShader_Labs">
+      <UniqueIdentifier>{8c14e548-7930-4ec0-b748-e471998a55b9}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="targetver.h">
@@ -462,6 +465,9 @@
     <ClInclude Include="..\Public\State_MoonCombo.h">
       <Filter>06. FSM\Player\Attack\Combo\Moon</Filter>
     </ClInclude>
+    <ClInclude Include="..\Public\UITargetAction_Client.h">
+      <Filter>03. GameObject\UIObjects\04.Action</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <Image Include="Client.ico">
@@ -686,6 +692,9 @@
     </ClCompile>
     <ClCompile Include="..\Private\State_MoonCombo.cpp">
       <Filter>06. FSM\Player\Attack\Combo\Moon</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\UITargetAction_Client.cpp">
+      <Filter>03. GameObject\UIObjects\04.Action</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

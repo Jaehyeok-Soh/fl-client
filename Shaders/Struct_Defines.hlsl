@@ -101,6 +101,10 @@ struct VS_IN_INST_MESH
     
     // Slot 1
     row_major float4x4 matTransform : WORLD;
+    
+    
+    // GPU 가 알아서 추가해주는 Instance 번호
+    uint iCurInstanceID : SV_InstanceID;
 };
 
 
@@ -165,6 +169,8 @@ struct VS_OUT_INST_MESH
     
     float4 vWorldPos : TEXCOORD1;
     float4 vProjPos : TEXCOORD2;
+
+    uint iCurInstanceID : TEXCOORD3;
 };
 
 struct VS_OUT_SKELETON
@@ -299,6 +305,8 @@ struct PS_IN_INST_MESH
     
     float4 vWorldPos : TEXCOORD1;
     float4 vProjPos : TEXCOORD2;
+    uint iCurInstanceID : TEXCOORD3;
+   
 };
 
 struct PS_IN_SKELETON

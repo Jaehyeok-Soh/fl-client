@@ -142,7 +142,7 @@ void CInput_Manager::Update(void)
 		m_MouseState.lZ = 0;
 		--m_iIgnoreMouseDeltaFrames;
 	}
-	if(m_eAppliedMode != ECursorMode::LockedHiddenCenter)
+	if(m_eAppliedMode != ECursorMode::LockedHiddenCenter && m_eAppliedMode != ECursorMode::Tool)
 	{
 		m_MouseState.lX = 0;
 		m_MouseState.lY = 0;

@@ -45,11 +45,15 @@ void CPhysicsRigidBody::Awake()
 		return;
 	}
 
-	m_pActor = m_pGameInstance->GetActor(&m_tDesc,
-		collider->GetDesc(),
-		collider->GetShapes());
+	PHYSICSCOLLIDER_DESC* colDesc = collider->GetDesc();
+	vector<PxShape*> shapes = collider->GetShapes();
 
-	m_pGameInstance->AddActor(m_pActor);
+	m_pActors = m_pGameInstance->GetActor(&m_tDesc,
+		colDesc,
+		shapes);
+
+	for (auto& actor : m_pActors)
+		m_pGameInstance->AddActor(actor);
 }
 
 void CPhysicsRigidBody::Update()
@@ -61,7 +65,8 @@ void CPhysicsRigidBody::Update()
 #ifdef _DEBUG
 void CPhysicsRigidBody::Render()
 {
-	return 	m_pGameInstance->Physics_Render(m_pActor);
+	for (auto& actor : m_pActors)
+		m_pGameInstance->Physics_Render(actor);
 }
 #endif // _DEBUG
 

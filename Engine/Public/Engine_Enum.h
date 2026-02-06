@@ -17,9 +17,10 @@ namespace Engine
 	enum class DEFFERRED { DEBUG, DIRECTIONAL, POINT, COMBINED, END };
 	enum class ECursorMode : unsigned int
 	{
-		LockedHiddenCenter,
+		LockedHiddenCenter = 0,
 		VisibleClipped,
 		VisibleFree,
+		Tool,
 		END
 	};
 

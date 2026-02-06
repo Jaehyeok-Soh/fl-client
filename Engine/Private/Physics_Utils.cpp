@@ -114,7 +114,7 @@ HRESULT CPhysics_Utils::Render(PxRigidActor* pActor, XMVECTOR color)
 
 			DX::DrawGrid(m_pBatch, XMLoadFloat4(&gridAxis1), XMLoadFloat4(&gridAxis2), origin, numDiv, numDiv);
 		}
-			break;
+		break;
 		case physx::PxGeometryType::eCAPSULE:
 		{
 			PxCapsuleGeometry capsule = geom.capsule();
@@ -184,11 +184,187 @@ Matrix CPhysics_Utils::PxTransformToXMMatrix(PxTransform pxTransform)
 
 	Quat vQuat(pxTransform.q.x, pxTransform.q.y, pxTransform.q.z, pxTransform.q.w);
 	Vec4 vTrans(pxTransform.p.x, pxTransform.p.y, pxTransform.p.z, 1.f);
-	
+
 	matQuat = XMMatrixRotationQuaternion(vQuat);
 	matTrans = XMMatrixTranslation(vTrans.x, vTrans.y, vTrans.z);
 
 	return matQuat * matTrans;
+}
+
+_bool CPhysics_Utils::HasNegativeScale(const Matrix& mat)
+{
+	Vec4 detVec = XMMatrixDeterminant(mat);
+	if (XMVectorGetX(detVec) >= -1e-4)
+		return false;
+
+	Matrix matUE = GetUnrealMatrix(mat);
+	Vec4 detVecUE = XMMatrixDeterminant(matUE);
+
+	return XMVectorGetX(detVecUE) < -1e-4f;
+}
+
+_int CPhysics_Utils::GetNegativeScaleAxis(const Matrix& mat)
+{
+	//ver1
+	////////////////////////////////////////////////////////////////////////////////////
+
+	//Vec3 u = Vec3(mat._11, mat._12, mat._13);
+	//Vec3 v = Vec3(mat._21, mat._22, mat._23);
+	//Vec3 w = Vec3(mat._31, mat._32, mat._33);
+
+	//u.Normalize();
+	//v.Normalize();
+	//w.Normalize();
+
+	//float det = u.Cross(v).Dot(w);
+
+	//if (det > -1e-4f)
+	//{
+	//	return -1;
+	//}
+
+	//float scoreX = -u.x + v.y + w.z;
+
+	//float scoreY = u.x - v.y + w.z;
+
+	//float scoreZ = u.x + v.y - w.z;
+
+	//if (scoreX >= scoreY && scoreX >= scoreZ)
+	//	return 0; // "X축이 음수 스케일입니다"
+
+	//else if (scoreY > scoreX && scoreY >= scoreZ)
+	//	return 1; // "Y축이 음수 스케일입니다"
+
+	//else
+	//	return 2; // "Z축이 음수 스케일입니다"
+	
+	//ver2
+	////////////////////////////////////////////////////////////////////////////////////
+
+	//Matrix matUE = GetUnrealMatrix(mat);
+
+	//Vec3 u = Vec3(matUE._11, matUE._12, matUE._13);
+	//Vec3 v = Vec3(matUE._21, matUE._22, matUE._23);
+	//Vec3 w = Vec3(matUE._31, matUE._32, matUE._33);
+
+	//u.Normalize();
+	//v.Normalize();
+	//w.Normalize();
+
+	//float det = u.Cross(v).Dot(w);
+
+	//if (det > -1e-4f)
+	//{
+	//	return -1;
+	//}
+
+	//float scoreX = -u.x + v.y + w.z;
+
+	//float scoreY = u.x - v.y + w.z;
+
+	//float scoreZ = u.x + v.y - w.z;
+
+	//if (scoreX >= scoreY && scoreX >= scoreZ)
+	//	return 0; // Unreal X Flip -> Engine X Flip
+
+	//else if (scoreY > scoreX && scoreY >= scoreZ)
+	//	return 2; // Unreal Y Flip -> Engine Z Flip
+
+	//else
+	//	return 1; // Unreal Z Flip -> Engine Y Flip
+
+	//ver3
+	////////////////////////////////////////////////////////////////////////////////////
+
+// 1. 언리얼 기준 행렬로 변환
+	Matrix matUE = GetUnrealMatrix(mat);
+
+	Vec3 u = Vec3(matUE._11, matUE._12, matUE._13);
+	Vec3 v = Vec3(matUE._21, matUE._22, matUE._23);
+	Vec3 w = Vec3(matUE._31, matUE._32, matUE._33);
+
+	// [안전장치] 스케일이 0인 경우 NaN 방지
+	if (u.LengthSquared() < 1e-6f || v.LengthSquared() < 1e-6f || w.LengthSquared() < 1e-6f)
+		return -1; // 스케일이 0이면 그냥 정상 처리 (어차피 안 보임)
+
+	u.Normalize(); v.Normalize(); w.Normalize();
+
+	// 2. 언리얼 기준 Det 검사
+	float det = u.Cross(v).Dot(w);
+
+	// ★ 핵심: Det가 양수(정상)라면 여기서 무조건 -1 리턴
+	// Z-180도 회전 같은 "정상 모델"은 여기서 완벽하게 걸러짐.
+	if (det > -1e-4f)
+	{
+		return -1;
+	}
+
+	// 3. 점수 계산 (Det < 0 인 경우만 진입)
+	// (-1, -1, -1) 같은 케이스도 여기로 들어옴
+	float scoreX = -u.x + v.y + w.z;
+	float scoreY = u.x - v.y + w.z;
+	float scoreZ = u.x + v.y - w.z;
+
+	// 4. [매핑] UE X -> Eng X(0), UE Y -> Eng Z(2), UE Z -> Eng Y(1)
+
+	// ★ 수정: 동점자 체크 삭제.
+	// (-1, -1, -1)인 경우 점수가 모두 같지만, 
+	// 이 경우에도 0, 1, 2 중 하나를 리턴해야 PhysX 행렬을 양수로 보정할 수 있음.
+
+	if (scoreX >= scoreY && scoreX >= scoreZ)
+		return 0; // UE X반전 -> 엔진 X반전 (동점일 때 X 우선)
+
+	else if (scoreY > scoreX && scoreY >= scoreZ)
+		return 2; // UE Y반전 -> 엔진 Z반전
+
+	else
+		return 1; // UE Z반전 -> 엔진 Y반전
+}
+
+PxQuat CPhysics_Utils::GetPureRotation(const Matrix& mat)
+{
+	Vec3 u = Vec3(mat._11, mat._12, mat._13);
+	Vec3 v = Vec3(mat._21, mat._22, mat._23);
+	Vec3 w = Vec3(mat._31, mat._32, mat._33);
+
+	u.Normalize();
+	v.Normalize();
+	w.Normalize();
+
+	PxMat33 pMat(
+		PxVec3(u.x, u.y, u.z),
+		PxVec3(v.x, v.y, v.z),
+		PxVec3(w.x, w.y, w.z)
+	);
+
+	return PxQuat(pMat);
+}
+
+PxVec3 CPhysics_Utils::GetPureScale(const Matrix& mat)
+{
+	Vec3 u = Vec3(mat._11, mat._12, mat._13);
+	Vec3 v = Vec3(mat._21, mat._22, mat._23);
+	Vec3 w = Vec3(mat._31, mat._32, mat._33);
+
+	PxVec3 scale(u.Length(), v.Length(), w.Length());
+
+	if (scale.x < 1e-4f) scale.x = 1.f;
+	if (scale.y < 1e-4f) scale.y = 1.f;
+	if (scale.z < 1e-4f) scale.z = 1.f;
+
+	u.Normalize();
+	v.Normalize();
+	w.Normalize();
+
+	return scale;
+}
+
+Matrix CPhysics_Utils::GetUnrealMatrix(const Matrix& mat)
+{
+	Matrix matBasis = g_UnrealToEngineBasis;
+	Matrix matBasisInv = matBasis.Transpose();
+
+	return matBasis * mat * matBasisInv;
 }
 
 _bool CPhysics_Utils::RayCast()

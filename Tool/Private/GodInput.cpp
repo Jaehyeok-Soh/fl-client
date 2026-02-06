@@ -2,6 +2,7 @@
 #include "GameObject.h"
 #include "Transform.h"
 #include "GameInstance.h"
+#include "ImGui_ToolManager.h"
 #include "GodInput.h"
 
 CGodInput::CGodInput()
@@ -63,15 +64,18 @@ void CGodInput::Update(const _float fTimeDelta)
 
     if (MOUSE_RBUTTON_HOLD)
     {
-        _long iMouseMove = {0};
-        if (iMouseMove = GET_MOUSE_MOVE_X)
+        if (CImGui_ToolManager::GetInstance()->IsOutofViewport() == false)
         {
-            Get_Owner()->Get_Component<CTransform>()->Turn(Vec3::Up, fTimeDelta * iMouseMove * 0.3f);
-        }
-        iMouseMove = {0};
-        if (iMouseMove = GET_MOUSE_MOVE_Y)
-        {
-            Get_Owner()->Get_Component<CTransform>()->Turn(Get_Owner()->Get_Component<CTransform>()->Get_Info(TRANSFORM_INFO_STATE::RIGHT), fTimeDelta * iMouseMove * 0.3f);
+            _long iMouseMove = { 0 };
+            if (iMouseMove = GET_MOUSE_MOVE_X)
+            {
+                Get_Owner()->Get_Component<CTransform>()->Turn(Vec3::Up, fTimeDelta * iMouseMove * 0.3f);
+            }
+            iMouseMove = { 0 };
+            if (iMouseMove = GET_MOUSE_MOVE_Y)
+            {
+                Get_Owner()->Get_Component<CTransform>()->Turn(Get_Owner()->Get_Component<CTransform>()->Get_Info(TRANSFORM_INFO_STATE::RIGHT), fTimeDelta * iMouseMove * 0.3f);
+            }
         }
     }
 }

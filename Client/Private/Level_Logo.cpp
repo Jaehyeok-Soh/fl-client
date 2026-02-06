@@ -97,11 +97,6 @@ void CLevel_Logo::Update(const _float fTimeDelta)
 {
 	Super::Update(fTimeDelta);
 
-	if (m_pGameInstance->KeyButton_Down(DIK_0))
-	{
-		m_pGameInstance->Request_AddObject(ENUM_TO_UINT(ELevelType::LOGO), L"POOL_ParticleSystem", ENUM_TO_UINT(ELevelType::LOGO), L"Effect", nullptr);
-	}
-
 	// TODO : 어디다 두지?
 	static _uint s_iCount = { 0 };
 	if (m_pGameInstance->KeyButton_Down(DIK_LALT))
@@ -151,8 +146,8 @@ HRESULT CLevel_Logo::Ready_Builders()
 
 HRESULT CLevel_Logo::Build_Files()
 {
-	//if (FAILED(Build_File(ENUM_TO_UINT(ELevelType::LOGO), DTO::ECategory::EFFECT, "Attack_1")))
-	//	return E_FAIL;
+	if (FAILED(Build_File(ENUM_TO_UINT(ELevelType::LOGO), DTO::ECategory::EFFECT, "Attack_1")))
+		return E_FAIL;
 
 	// For. Example
 	//if (FAILED(Build_File(ENUM_TO_UINT(ELevelType::LOGO), DTO::ECategory::MAP, "asdf")))
@@ -256,24 +251,6 @@ HRESULT CLevel_Logo::Ready_Lights()
 	return S_OK;
 }
 
-HRESULT CLevel_Logo::Ready_Test_Terrain(const wstring& wstrLayerTag)
-{
-	{
-		CGameObject* pResult = { nullptr };
-		CGameObject::GAMEOBJECT_DESC goDesc = {};
-		CTransform::TRANSFORM_DESC TransformDesc = {};
-		goDesc.pTransform_Desc = &TransformDesc;
-
-		if (!(pResult = m_pGameInstance->Add_GameObject(ENUM_TO_UINT(ELevelType::STATIC),
-			L"Prototype_GameObject_Physics_Terrain",
-			ENUM_TO_UINT(ELevelType::LOGO),
-			wstrLayerTag, &goDesc)))
-			return E_FAIL;
-	}
-
-	return S_OK;
-}
-
 HRESULT CLevel_Logo::Ready_DevMap()
 {
 	ELevelType eLevelType = ELevelType::LOGO;
@@ -283,7 +260,8 @@ HRESULT CLevel_Logo::Ready_DevMap()
 	if (FAILED(m_pGameInstance->Regist_Document<CDataDocument_Map>(iLevelID, eCategory)))
 		return E_FAIL;
 
-	std::filesystem::path FilePath = L"../../Resources/Data/MapData/LevelData/DevLevel/DevMap.json";
+	//std::filesystem::path FilePath = L"../../Resources/Data/MapData/LevelData/DevLevel/DevMap.json";
+	std::filesystem::path FilePath = L"../../Resources/Data/MapData/Test_So/Ailixian_Train01_Art_Test_So.json";
 	vector<path> vecfiles;
 
 	if (!std::filesystem::exists(FilePath))

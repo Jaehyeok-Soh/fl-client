@@ -43,7 +43,7 @@ private:
 	void	Clip_ToClient(_bool bEnable);
 	void	SetCursor_ToCenter();
 private:
-	ECursorMode				m_eRequstedMode = ECursorMode::END;
+	ECursorMode				m_eRequstedMode = ECursorMode::VisibleFree;
 	ECursorMode				m_eAppliedMode = ECursorMode::END;
 	_int					m_iIgnoreMouseDeltaFrames = 0;
 	HWND					m_hWnd = { NULL };

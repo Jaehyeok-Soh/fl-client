@@ -667,7 +667,15 @@
       <Filter>00. System\04. GameObject\UIObject\Interface\Action For Me</Filter>
     </ClCompile>
     <ClCompile Include="..\public\ThreadPool.cpp" />
-    <ClCompile Include="..\private\ThreadWorker.cpp" />
+    <ClCompile Include="..\Private\StructuredBuffer.cpp">
+      <Filter>00. System\13. StructuredBuffer</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\Shader.cpp">
+      <Filter>00. System\05. Component\Shader</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\ComputeShader.cpp">
+      <Filter>00. System\05. Component\ComputeShader</Filter>
+    </ClCompile>
     <ClCompile Include="..\Private\UIAction_Registry.cpp">
       <Filter>00. System\04. GameObject\UIObject\Registry</Filter>
     </ClCompile>
@@ -680,15 +688,18 @@
     <ClCompile Include="..\Private\InstanceMesh.cpp">
       <Filter>00. System\07. Resource\Mesh\01. InstanceMesh</Filter>
     </ClCompile>
-    <ClCompile Include="..\public\ThreadPool.cpp" />
-    <ClCompile Include="..\Private\StructuredBuffer.cpp">
-      <Filter>00. System\13. StructuredBuffer</Filter>
+    <ClCompile Include="..\private\ThreadWorker.cpp">
+      <Filter>00. System\13. ThreadPool\Worker</Filter>
     </ClCompile>
-    <ClCompile Include="..\Private\Shader.cpp">
-      <Filter>00. System\05. Component\Shader</Filter>
+    <ClCompile Include="..\public\ThreadPool.cpp">
+      <Filter>00. System\13. ThreadPool</Filter>
     </ClCompile>
-    <ClCompile Include="..\Private\ComputeShader.cpp">
-      <Filter>00. System\05. Component\ComputeShader</Filter>
+    <ClCompile Include="..\private\EngineConsole.cpp">
+      <Filter>01. Utility\16. Console</Filter>
+    </ClCompile>
+    <ClCompile Include="..\private\EngineConsole.cpp" />
+    <ClCompile Include="..\Private\IUIActionForTarget.cpp">
+      <Filter>00. System\04. GameObject\UIObject\Interface\Action For Target</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -1050,7 +1061,12 @@
       <Filter>00. System\04. GameObject\UIObject\Interface\Action For Me</Filter>
     </ClInclude>
     <ClInclude Include="..\public\ThreadWorker.h" />
-    <ClInclude Include="..\public\ThreadPool.h" />
+    <ClInclude Include="..\Public\StructuredBuffer.h">
+      <Filter>00. System\13. StructuredBuffer</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\ComputeShader.h">
+      <Filter>00. System\05. Component\ComputeShader</Filter>
+    </ClInclude>
     <ClInclude Include="..\Public\UIAction_Registry.h">
       <Filter>00. System\04. GameObject\UIObject\Registry</Filter>
     </ClInclude>
@@ -1063,12 +1079,18 @@
     <ClInclude Include="..\Public\InstanceMesh.h">
       <Filter>00. System\07. Resource\Mesh\01. InstanceMesh</Filter>
     </ClInclude>
-    <ClInclude Include="..\public\ThreadWorker.h" />
-    <ClInclude Include="..\Public\StructuredBuffer.h">
-      <Filter>00. System\13. StructuredBuffer</Filter>
+    <ClInclude Include="..\public\ThreadWorker.h">
+      <Filter>00. System\13. ThreadPool\Worker</Filter>
     </ClInclude>
-    <ClInclude Include="..\Public\ComputeShader.h">
-      <Filter>00. System\05. Component\ComputeShader</Filter>
+    <ClInclude Include="..\public\ThreadPool.h">
+      <Filter>00. System\13. ThreadPool</Filter>
+    </ClInclude>
+    <ClInclude Include="..\public\EngineConsole.h">
+      <Filter>01. Utility\16. Console</Filter>
+    </ClInclude>
+    <ClInclude Include="..\public\EngineConsole.h" />
+    <ClInclude Include="..\Public\IUIActionForTarget.h">
+      <Filter>00. System\04. GameObject\UIObject\Interface\Action For Target</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

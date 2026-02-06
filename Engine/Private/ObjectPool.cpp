@@ -14,6 +14,7 @@ HRESULT CObjectPool::Initialize(const wstring& wstrLayerTag, void* pArg, CGameOb
 
 	m_iTotalCount = iPoolCapacityCount;
 	m_vecObjects.reserve(m_iTotalCount);
+	m_wstrLayerTag = wstrLayerTag;
 
 	if (FAILED(Ready_Objects(pArg, pSeed)))
 	{

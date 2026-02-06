@@ -34,6 +34,11 @@ const _string& CUIAction_Client::Get_Tag() const
     return (m_pOwner != nullptr) ? m_pOwner->Get_Tag() : sEmpty;
 }
 
+void CUIAction_Client::Start_Lerp_Movement(const Vec3& vTargetPos, const _float fTargetAlpha, const _float& fDuration, _bool isPin)
+{
+    m_pOwner->Start_Lerp_Movement(vTargetPos, fTargetAlpha, fDuration, isPin);
+}
+
 CUIAction_Client* CUIAction_Client::Create(CGenericUI* pUI)
 {
     if (nullptr == pUI)
@@ -46,5 +51,6 @@ void CUIAction_Client::Free()
 {
     Super::Free();
 }
+
 
 

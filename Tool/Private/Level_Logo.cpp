@@ -12,6 +12,8 @@ CLevel_Logo::CLevel_Logo(ID3D11Device* pDevice, ID3D11DeviceContext* pDeviceCont
 
 HRESULT CLevel_Logo::Initialize()
 {
+
+	m_pGameInstance->Request_CursorMode(ECursorMode::Tool);
 	return S_OK;
 }
 
