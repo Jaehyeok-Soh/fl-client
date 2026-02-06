@@ -3,6 +3,11 @@
 
 // 하나의 채널의 SRT를 보간을 통해 뼈 localMatrix를 계산한다
 
+// 하나의 애니메이션에 대한 정보를 가지고 업데이트를 도는거임
+// 즉 애니메이션이 바뀌면 값들을 처리해줘야함
+
+// IMMU_KEYFRAMS, IMMU_CHANNELDATAS 값 다시 바인드
+
 struct KEYFRAME
 {
     float3  vScale;
@@ -27,13 +32,14 @@ struct IMMU_ELEMENT
 struct MU_ELEMENT
 {
     float   fCurTrackPosition;
+    uint    iAnimIndex;
     
     float3  vPadding3;
 };
 
 cbuffer MU_Track
 {
-    MU_ELEMENT g_InputTrackData;
+    MU_ELEMENT g_InputData;
 };
 
 // out put
@@ -41,6 +47,7 @@ struct CHANNEL_OUTPUT
 {
     row_major float4x4  matLerpedTransform;
     uint                iCurKeyFrameIndex;
+    uint                iAnimIndex;
     float3              vPadding3;
 };
 
@@ -57,17 +64,24 @@ void CS_Main(uint3 id : SV_DispatchThreadID)
     // 받은 정보 정리
     uint iChannelIdx        = id.x;
     uint iBoneIdx           = IMMU_CHANNELDATAS[iChannelIdx].iBoneIndex;
-    bool bRootMotionBone    = IMMU_CHANNELDATAS[iChannelIdx].iRootMotionBoneIndex;
+    bool bRootMotionBone    = (IMMU_CHANNELDATAS[iChannelIdx].iRootMotionBoneIndex == iBoneIdx);
     
     uint iFirstFrameIdx     = IMMU_CHANNELDATAS[iChannelIdx].iKeyStart;
     uint iLastFrameIdx      = iFirstFrameIdx + IMMU_CHANNELDATAS[iChannelIdx].iKeyCount - 1;
     
-    float fCurrentTrackPosition = g_InputTrackData.fCurTrackPosition;
-    float fCurKeyFrameIndex     = UPDATE_DATA[iBoneIdx].iCurKeyFrameIndex;
+    float fCurrentTrackPosition = g_InputData.fCurTrackPosition;
+    uint iCurKeyFrameIndex = UPDATE_DATA[iBoneIdx].iCurKeyFrameIndex;
     
     // frame 정렬
     if (fCurrentTrackPosition <= 0.f)
-        fCurKeyFrameIndex = 0.f;
+        iCurKeyFrameIndex = 0;
+    
+    // animation 바뀌었는지 체크
+    if (UPDATE_DATA[iBoneIdx].iAnimIndex != g_InputData.iAnimIndex)
+    {
+        iCurKeyFrameIndex = 0;
+        UPDATE_DATA[iBoneIdx].iAnimIndex = g_InputData.iAnimIndex;
+    }
     
     // 함수 지역 변수 셋팅    
     row_major float4x4 matResult;
@@ -90,22 +104,26 @@ void CS_Main(uint3 id : SV_DispatchThreadID)
         float4 vLeftQuat, vRightQuat;
         float3 vLeftTrans, vRightTrans;
         
-        if (fCurrentTrackPosition >= IMMU_KEYFRAMS[iFirstFrameIdx + fCurKeyFrameIndex + 1].fTrackPosition)
-            fCurKeyFrameIndex++;
+        // 범위 체크
+        if (iCurKeyFrameIndex + 1 < IMMU_CHANNELDATAS[iChannelIdx].iKeyCount &&
+            fCurrentTrackPosition >= IMMU_KEYFRAMS[iFirstFrameIdx + iCurKeyFrameIndex + 1].fTrackPosition)
+        {
+            iCurKeyFrameIndex++;
+        }
         
         // 이전 이후 프레임의 SRT 꺼내옴
-        vLeftScale = IMMU_KEYFRAMS[iFirstFrameIdx + fCurKeyFrameIndex].vScale;
-        vRightScale = IMMU_KEYFRAMS[iFirstFrameIdx + fCurKeyFrameIndex + 1].vScale;
+        vLeftScale = IMMU_KEYFRAMS[iFirstFrameIdx + iCurKeyFrameIndex].vScale;
+        vRightScale = IMMU_KEYFRAMS[iFirstFrameIdx + iCurKeyFrameIndex + 1].vScale;
 
-        vLeftQuat = IMMU_KEYFRAMS[iFirstFrameIdx + fCurKeyFrameIndex].vQuat;
-        vRightQuat = IMMU_KEYFRAMS[iFirstFrameIdx + fCurKeyFrameIndex + 1].vQuat;
+        vLeftQuat = IMMU_KEYFRAMS[iFirstFrameIdx + iCurKeyFrameIndex].vQuat;
+        vRightQuat = IMMU_KEYFRAMS[iFirstFrameIdx + iCurKeyFrameIndex + 1].vQuat;
 
-        vLeftTrans = IMMU_KEYFRAMS[iFirstFrameIdx + fCurKeyFrameIndex].vTranslation;
-        vRightTrans = IMMU_KEYFRAMS[iFirstFrameIdx + fCurKeyFrameIndex + 1].vTranslation;
+        vLeftTrans = IMMU_KEYFRAMS[iFirstFrameIdx + iCurKeyFrameIndex].vTranslation;
+        vRightTrans = IMMU_KEYFRAMS[iFirstFrameIdx + iCurKeyFrameIndex + 1].vTranslation;
         
         // 보간 값
-        float fRatio = (fCurrentTrackPosition - IMMU_KEYFRAMS[iFirstFrameIdx + fCurKeyFrameIndex].fTrackPosition) /
-			(IMMU_KEYFRAMS[iFirstFrameIdx + fCurKeyFrameIndex + 1].fTrackPosition - IMMU_KEYFRAMS[iFirstFrameIdx + fCurKeyFrameIndex].fTrackPosition);
+        float fRatio = (fCurrentTrackPosition - IMMU_KEYFRAMS[iFirstFrameIdx + iCurKeyFrameIndex].fTrackPosition) /
+			(IMMU_KEYFRAMS[iFirstFrameIdx + iCurKeyFrameIndex + 1].fTrackPosition - IMMU_KEYFRAMS[iFirstFrameIdx + iCurKeyFrameIndex].fTrackPosition);
         
        // SRT 보간
         vScale  = lerp(vLeftScale, vRightScale, fRatio);
@@ -120,7 +138,7 @@ void CS_Main(uint3 id : SV_DispatchThreadID)
     matResult = mul(mul(CreateScale(vScale), CreateRotaionMat_FromQuaternion(vQuat)), CreatTranslation(vTranslation));
     
     // 결과 값 바인드
-    UPDATE_DATA[iBoneIdx].iCurKeyFrameIndex     = fCurKeyFrameIndex;
+    UPDATE_DATA[iBoneIdx].iCurKeyFrameIndex = iCurKeyFrameIndex;
     UPDATE_DATA[iBoneIdx].matLerpedTransform    = matResult;
 }
 
