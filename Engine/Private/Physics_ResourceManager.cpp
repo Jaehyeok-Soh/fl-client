@@ -750,14 +750,19 @@ CPhysics_ResourceManager* CPhysics_ResourceManager::Create(ID3D11Device* pDevice
 void CPhysics_ResourceManager::Free()
 {
 	for (size_t i = 0; i < ENUM_TO_UINT(EPhysicsMaterial::END); i++)
-		PX_RELEASE(m_Materials[i]);
+	{
+		if (m_Materials[i])
+			PX_RELEASE(m_Materials[i]);
+	}
 
 	{
 		for (auto& triMeshes : m_TriangleMeshes)
 		{
 			for (auto& triMesh : triMeshes.second)
-				PX_RELEASE(triMesh);
-
+			{
+				if (triMesh)
+					PX_RELEASE(triMesh);
+			}
 			triMeshes.second.clear();
 		}
 		m_TriangleMeshes.clear();
@@ -767,8 +772,10 @@ void CPhysics_ResourceManager::Free()
 		for (auto& conMeshes : m_ConvexMeshes)
 		{
 			for (auto& conMesh : conMeshes.second)
-				PX_RELEASE(conMesh);
-
+			{
+				if (conMesh)
+					PX_RELEASE(conMesh);
+			}
 			conMeshes.second.clear();
 		}
 		m_ConvexMeshes.clear();
@@ -778,7 +785,10 @@ void CPhysics_ResourceManager::Free()
 		for (auto& heightFields : m_HeightFields)
 		{
 			for (auto& heightField : heightFields.second)
-				PX_RELEASE(heightField.pHeightField);
+			{
+				if (heightField.pHeightField)
+					PX_RELEASE(heightField.pHeightField);
+			}
 
 			heightFields.second.clear();
 		}

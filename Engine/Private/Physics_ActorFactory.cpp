@@ -123,11 +123,11 @@ PxRigidActor* CPhysics_ActorFactory::MakeStatic(const Matrix world, Vec3 scale, 
 		}
 	}
 
-	//if (staticActor->getNbShapes() == 0)
-	//{
-	//	PX_RELEASE(staticActor);
-	//	return staticActor;
-	//}
+	if (staticActor->getNbShapes() == 0)
+	{
+		PX_RELEASE(staticActor);
+		return staticActor;
+	}
 
 	return staticActor;
 }
