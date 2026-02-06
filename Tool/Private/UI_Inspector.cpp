@@ -294,14 +294,52 @@ void CUI_Inspector::SetUp_Func()
 	const float h = 20.f;
 	const float w = ImGui::GetContentRegionAvail().x;
 
-	if (ImGui::Button("Hover Enter Action", ImVec2(w, h))) { m_eCurEditEvent = DTO::EUIEvent::HOVER_ENTER; m_eCurEditFunc = DTO::EUIAction::END; }
-	if (ImGui::Button("Hover Exit Action",	ImVec2(w, h))) { m_eCurEditEvent = DTO::EUIEvent::HOVER_EXIT;  m_eCurEditFunc = DTO::EUIAction::END; }
-	if (ImGui::Button("Hovering Action",	ImVec2(w, h))) { m_eCurEditEvent = DTO::EUIEvent::HOVERING;    m_eCurEditFunc = DTO::EUIAction::END; }
-	if (ImGui::Button("None Action",		ImVec2(w, h))) { m_eCurEditEvent = DTO::EUIEvent::NONE;        m_eCurEditFunc = DTO::EUIAction::END; }
-	if (ImGui::Button("Press Enter Action", ImVec2(w, h))) { m_eCurEditEvent = DTO::EUIEvent::PRESS_ENTER; m_eCurEditFunc = DTO::EUIAction::END; }
-	if (ImGui::Button("Press Exit Action",	ImVec2(w, h))) { m_eCurEditEvent = DTO::EUIEvent::PRESS_EXIT;  m_eCurEditFunc = DTO::EUIAction::END; }
-	if (ImGui::Button("Pressing Action",	ImVec2(w, h))) { m_eCurEditEvent = DTO::EUIEvent::PRESSING;    m_eCurEditFunc = DTO::EUIAction::END; }
-	if (ImGui::Button("Invoked Action",		ImVec2(w, h))) { m_eCurEditEvent = DTO::EUIEvent::INVOKED;     m_eCurEditFunc = DTO::EUIAction::END; }
+	if (ImGui::Button("Hover Enter Action", ImVec2(w, h))) {
+		m_eCurEditEvent = DTO::EUIEvent::HOVER_ENTER; m_eCurEditFunc = DTO::EUIAction::END;
+		m_iEditActCursor = 0;
+	}
+	if (ImGui::Button("Hover Exit Action",	ImVec2(w, h))) 
+	{ 
+		m_eCurEditEvent = DTO::EUIEvent::HOVER_EXIT; 
+		m_eCurEditFunc = DTO::EUIAction::END; 
+		m_iEditActCursor = 0;
+	}
+	if (ImGui::Button("Hovering Action",	ImVec2(w, h))) 
+	{ 
+		m_eCurEditEvent = DTO::EUIEvent::HOVERING;    
+		m_eCurEditFunc = DTO::EUIAction::END; 
+		m_iEditActCursor = 0;
+	}
+	if (ImGui::Button("None Action",		ImVec2(w, h))) 
+	{ 
+		m_eCurEditEvent = DTO::EUIEvent::NONE;        
+		m_eCurEditFunc = DTO::EUIAction::END;
+		m_iEditActCursor = 0;
+	}
+	if (ImGui::Button("Press Enter Action", ImVec2(w, h))) 
+	{ 
+		m_eCurEditEvent = DTO::EUIEvent::PRESS_ENTER; 
+		m_eCurEditFunc = DTO::EUIAction::END; 
+		m_iEditActCursor = 0;
+	}
+	if (ImGui::Button("Press Exit Action",	ImVec2(w, h))) 
+	{ 
+		m_eCurEditEvent = DTO::EUIEvent::PRESS_EXIT;  
+		m_eCurEditFunc = DTO::EUIAction::END; 
+		m_iEditActCursor = 0;
+	}
+	if (ImGui::Button("Pressing Action",	ImVec2(w, h))) 
+	{ 
+		m_eCurEditEvent = DTO::EUIEvent::PRESSING;    
+		m_eCurEditFunc = DTO::EUIAction::END; 
+		m_iEditActCursor = 0;
+	}
+	if (ImGui::Button("Invoked Action",		ImVec2(w, h))) 
+	{ 
+		m_eCurEditEvent = DTO::EUIEvent::INVOKED;     
+		m_eCurEditFunc = DTO::EUIAction::END; 
+		m_iEditActCursor = 0;
+	}
 
 	Add_Action(m_eCurEditEvent);
 	Action_List(m_eCurEditEvent);
