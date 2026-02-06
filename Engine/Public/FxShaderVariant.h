@@ -14,6 +14,7 @@ private:
 public:
 	HRESULT Build_InputLayouts(EVtxLayout layout);
 	ID3D11InputLayout* Get_InputLayout(size_t iPassIndex) const;
+	CFxEffectAsset* Get_EffectAsset() { return m_pOwner; }
 private:
 	CFxEffectAsset* m_pOwner{ nullptr };
 	ID3D11Device* m_pDevice{ nullptr };
@@ -22,10 +23,6 @@ private:
 public:
 	static CFxShaderVariant* Create(ID3D11Device* pDevice, ID3D11DeviceContext* pDeviceContext, CFxEffectAsset* pOwner);
 	virtual void Free() override;
-
-	friend class CShader;
-	friend class CComputeShader;
-	friend class CShaderAsset_Manager;
 };
 
 NS_END

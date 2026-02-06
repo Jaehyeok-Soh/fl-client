@@ -67,9 +67,9 @@ HRESULT CShader::Initialize(void* pArg)
 
 void CShader::Apply()
 {
-	auto* pOwner = m_pVariant->m_pOwner;
+	auto* pEffectAsset = m_pVariant->Get_EffectAsset();
 	m_pDeviceContext->IASetInputLayout(m_pVariant->Get_InputLayout(m_iPass));
-	pOwner->Get_Pass(m_iPass)->Apply(0, m_pDeviceContext);
+	pEffectAsset->Get_Pass(m_iPass)->Apply(0, m_pDeviceContext);
 }
 
 //void CShader::Dispatch(_uint iX, _uint iY, _uint iZ)
@@ -88,77 +88,77 @@ void CShader::Apply()
 
 ID3DX11EffectVariable* CShader::Get_Variable(string name)
 {
-	return m_pVariant->m_pOwner->Get_Variable(name);
+	return m_pVariant->Get_EffectAsset()->Get_Variable(name);
 }
 
 ID3DX11EffectScalarVariable* CShader::Get_Scalar(string name)
 {
-	return m_pVariant->m_pOwner->Get_Scalar(name);
+	return m_pVariant->Get_EffectAsset()->Get_Scalar(name);
 }
 
 ID3DX11EffectVectorVariable* CShader::Get_Vector(string name)
 {
-	return m_pVariant->m_pOwner->Get_Vector(name);
+	return m_pVariant->Get_EffectAsset()->Get_Vector(name);
 }
 
 ID3DX11EffectMatrixVariable* CShader::Get_Matrix(string name)
 {
-	return m_pVariant->m_pOwner->Get_Matrix(name);
+	return m_pVariant->Get_EffectAsset()->Get_Matrix(name);
 }
 
 ID3DX11EffectStringVariable* CShader::Get_String(string name)
 {
-	return  m_pVariant->m_pOwner->Get_String(name);
+	return  m_pVariant->Get_EffectAsset()->Get_String(name);
 }
 
 ID3DX11EffectShaderResourceVariable* CShader::Get_SRV(string name)
 {
-	return m_pVariant->m_pOwner->Get_SRV(name);
+	return m_pVariant->Get_EffectAsset()->Get_SRV(name);
 }
 
 ID3DX11EffectRenderTargetViewVariable* CShader::Get_RTV(string name)
 {
-	return m_pVariant->m_pOwner->Get_RTV(name);
+	return m_pVariant->Get_EffectAsset()->Get_RTV(name);
 }
 
 ID3DX11EffectDepthStencilViewVariable* CShader::Get_DSV(string name)
 {
-	return m_pVariant->m_pOwner->Get_DSV(name);
+	return m_pVariant->Get_EffectAsset()->Get_DSV(name);
 }
 
 ID3DX11EffectUnorderedAccessViewVariable* CShader::Get_UAV(string name)
 {
-	return m_pVariant->m_pOwner->Get_UAV(name);
+	return m_pVariant->Get_EffectAsset()->Get_UAV(name);
 }
 
 ID3DX11EffectConstantBuffer* CShader::Get_ConstantBuffer(string name)
 {
-	return m_pVariant->m_pOwner->Get_ConstantBuffer(name);
+	return m_pVariant->Get_EffectAsset()->Get_ConstantBuffer(name);
 }
 
 ID3DX11EffectShaderVariable* CShader::Get_Shader(string name)
 {
-	return m_pVariant->m_pOwner->Get_Shader(name);
+	return m_pVariant->Get_EffectAsset()->Get_Shader(name);
 }
 
 ID3DX11EffectBlendVariable* CShader::Get_Blend(string name)
 {
-	return m_pVariant->m_pOwner->Get_Blend(name);
+	return m_pVariant->Get_EffectAsset()->Get_Blend(name);
 }
 
 ID3DX11EffectDepthStencilVariable* CShader::Get_DepthStencil(string name)
 {
-	return m_pVariant->m_pOwner->Get_DepthStencil(name);
+	return m_pVariant->Get_EffectAsset()->Get_DepthStencil(name);
 }
 
 ID3DX11EffectRasterizerVariable* CShader::Get_Rasterizer(string name)
 {
-	return m_pVariant->m_pOwner->Get_Rasterizer(name);
+	return m_pVariant->Get_EffectAsset()->Get_Rasterizer(name);
 }
 
 ID3DX11EffectSamplerVariable* CShader::Get_Sampler(string name)
 {
-	return m_pVariant->m_pOwner->Get_Sampler(name);
+	return m_pVariant->Get_EffectAsset()->Get_Sampler(name);
 }
 
 void CShader::Bind_MaterialData(const SHADER_MATERIALDESC& desc)
@@ -178,25 +178,25 @@ void CShader::Bind_EffectData(const SHADER_EFFECT_DESC& desc)
 
 void CShader::Bind_GlobalMask(_uint iMask)
 {
-	auto* BindingCache = &m_pVariant->m_pOwner->m_tBindingCache;
+	auto* BindingCache = m_pVariant->Get_EffectAsset()->Get_BindingCache();
 	BindingCache->pG_TextureMask->SetInt((_int)iMask);
 }
 
 HRESULT CShader::Bind_DefaultTexture(ID3D11ShaderResourceView* pSRV)
 {
-	auto* BindingCache = &m_pVariant->m_pOwner->m_tBindingCache;
+	auto* BindingCache = m_pVariant->Get_EffectAsset()->Get_BindingCache();
 	return BindingCache->pSRV_Textures->SetResource(pSRV);
 }
 
 HRESULT CShader::Bind_CubeTexture(ID3D11ShaderResourceView* pSRV)
 {
-	auto* BindingCache = &m_pVariant->m_pOwner->m_tBindingCache;
+	auto* BindingCache = m_pVariant->Get_EffectAsset()->Get_BindingCache();
 	return BindingCache->pSRV_Cube->SetResource(pSRV);
 }
 
 HRESULT CShader::Bind_DefaultTextures(ID3D11ShaderResourceView** ppSRV, _uint iCount)
 {
-	auto* BindingCache = &m_pVariant->m_pOwner->m_tBindingCache;
+	auto* BindingCache = m_pVariant->Get_EffectAsset()->Get_BindingCache();
 	return BindingCache->pSRV_Textures->SetResourceArray(ppSRV, 0, iCount);
 }
 
@@ -219,7 +219,7 @@ HRESULT CShader::Bind_RenderTargetTexture(ID3D11ShaderResourceView* pTexture)
 	if (pTexture == nullptr)
 		return E_FAIL;
 
-	auto* BindingCache = &m_pVariant->m_pOwner->m_tBindingCache;
+	auto* BindingCache = m_pVariant->Get_EffectAsset()->Get_BindingCache();
 	BindingCache->pSRV_RT->SetResource(pTexture);
 	return S_OK;
 }
@@ -229,7 +229,7 @@ HRESULT CShader::Bind_RenderTargetDiffuseTexture(ID3D11ShaderResourceView* pText
 	if (pTexture == nullptr)
 		return E_FAIL;
 
-	auto* BindingCache = &m_pVariant->m_pOwner->m_tBindingCache;
+	auto* BindingCache = m_pVariant->Get_EffectAsset()->Get_BindingCache();
 	BindingCache->pSRV_RT_Diffuse->SetResource(pTexture);
 	return S_OK;
 }
@@ -239,7 +239,7 @@ HRESULT CShader::Bind_RenderTargetNormalTexture(ID3D11ShaderResourceView* pTextu
 	if (pTexture == nullptr)
 		return E_FAIL;
 
-	auto* BindingCache = &m_pVariant->m_pOwner->m_tBindingCache;
+	auto* BindingCache = m_pVariant->Get_EffectAsset()->Get_BindingCache();
 	BindingCache->pSRV_RT_Normal->SetResource(pTexture);
 	return S_OK;
 }
@@ -249,7 +249,7 @@ HRESULT CShader::Bind_RenderTargetShadeTexture(ID3D11ShaderResourceView* pTextur
 	if (pTexture == nullptr)
 		return E_FAIL;
 
-	auto* BindingCache = &m_pVariant->m_pOwner->m_tBindingCache;
+	auto* BindingCache = m_pVariant->Get_EffectAsset()->Get_BindingCache();
 	BindingCache->pSRV_RT_Shade->SetResource(pTexture);
 	return S_OK;
 }
@@ -259,7 +259,7 @@ HRESULT CShader::Bind_RenderTargetDepthTexture(ID3D11ShaderResourceView* pTextur
 	if (pTexture == nullptr)
 		return E_FAIL;
 
-	auto* BindingCache = &m_pVariant->m_pOwner->m_tBindingCache;
+	auto* BindingCache = m_pVariant->Get_EffectAsset()->Get_BindingCache();
 	BindingCache->pSRV_RT_Depth->SetResource(pTexture);
 	return S_OK;
 }
@@ -269,7 +269,7 @@ HRESULT CShader::Bind_DiffuseTexture(ID3D11ShaderResourceView* pDiffuse)
 	if (pDiffuse == nullptr)
 		return E_FAIL;
 
-	auto* BindingCache = &m_pVariant->m_pOwner->m_tBindingCache;
+	auto* BindingCache = m_pVariant->Get_EffectAsset()->Get_BindingCache();
 	BindingCache->pSRV_Material->SetResourceArray(&pDiffuse, 0, 1);
 	BindingCache->pG_MaterialMask->SetInt(1 << ENUM_TO_UINT(EMaterialTextureType::DIFFUSE));
 	return S_OK;
@@ -280,26 +280,26 @@ HRESULT CShader::Bind_RenderTargetSceneTexture(ID3D11ShaderResourceView* pScene)
 	if (pScene == nullptr)
 		return E_FAIL;
 
-	auto* BindingCache = &m_pVariant->m_pOwner->m_tBindingCache;
+	auto* BindingCache = m_pVariant->Get_EffectAsset()->Get_BindingCache();
 	BindingCache->pSRV_RT_Scene->SetResource(pScene);
 	return S_OK;
 }
 
 void CShader::Bind_MaterialTextures(ID3D11ShaderResourceView** ppSRV, _uint iCount)
 {
-	auto* BindingCache = &m_pVariant->m_pOwner->m_tBindingCache;
+	auto* BindingCache = m_pVariant->Get_EffectAsset()->Get_BindingCache();
 	BindingCache->pSRV_Material->SetResourceArray(ppSRV, 0, iCount);
 }
 
 void CShader::Bind_MaterialMask(_short iMask)
 {
-	auto* BindingCache = &m_pVariant->m_pOwner->m_tBindingCache;
+	auto* BindingCache = m_pVariant->Get_EffectAsset()->Get_BindingCache();
 	BindingCache->pG_MaterialMask->SetInt(iMask);
 }
 
 void CShader::Bind_TransformTexture(ID3D11ShaderResourceView* pSRV)
 {
-	auto* BindingCache = &m_pVariant->m_pOwner->m_tBindingCache;
+	auto* BindingCache = m_pVariant->Get_EffectAsset()->Get_BindingCache();
 	BindingCache->pSRV_Transform->SetResource(pSRV);
 }
 
@@ -315,7 +315,7 @@ HRESULT CShader::Bind_BoneData(const SHADER_BONEDESC& boneDesc)
 }
 void CShader::Create_ConstantBuffer()
 {
-	auto *pCache = &m_pVariant->m_pOwner->m_tBindingCache;
+	auto *pCache = m_pVariant->Get_EffectAsset()->Get_BindingCache();
 
 	if (pCache->pCB_Bone)
 	{

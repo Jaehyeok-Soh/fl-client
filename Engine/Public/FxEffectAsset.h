@@ -53,6 +53,7 @@ public:
 	ID3DX11Effect* Get_Effect() { return m_pEffect; }
 	const vector<tagPass>& Get_Passes(_uint iTechnique = 0) const { return m_vecTechniques[iTechnique].vecPasses; }
 	const wstring& Get_Path() const { return m_wstrPath; }
+	FXBINDING_CACHE* Get_BindingCache() { return &m_tBindingCache; }
 
 	ID3DX11EffectVariable* Get_Variable(string name);
 	ID3DX11EffectScalarVariable* Get_Scalar(string name);
@@ -84,10 +85,6 @@ private:
 public:
 	static CFxEffectAsset* Create(ID3D11Device* pDevice, ID3D11DeviceContext* pDeviceContext);
 	virtual void Free() override;
-
-	friend class CShader;
-	friend class CComputeShader;
-	friend class CShaderAsset_Manager;
 };
 
 NS_END
