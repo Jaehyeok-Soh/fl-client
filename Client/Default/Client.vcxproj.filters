@@ -761,7 +761,10 @@
     <FxCompile Include="..\..\Shaders\ComShader_BoneUpdate.hlsl">
       <Filter>04. Shaders\ComputeShader_Labs</Filter>
     </FxCompile>
-    <FxCompile Include="..\..\Shaders\ComShader_ChannelUpdate.hlsl">
+    <FxCompile Include="..\..\Shaders\ComShader_AnimBlend.hlsl">
+      <Filter>04. Shaders\ComputeShader_Labs</Filter>
+    </FxCompile>
+    <FxCompile Include="..\..\Shaders\ComShader_AnimEvaluate.hlsl">
       <Filter>04. Shaders\ComputeShader_Labs</Filter>
     </FxCompile>
   </ItemGroup>
