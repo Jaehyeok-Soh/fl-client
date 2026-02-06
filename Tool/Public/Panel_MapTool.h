@@ -28,6 +28,7 @@ public:
 	HRESULT	Update_MapObjectList();
 private:
 	HRESULT Render_RaySetting();
+	HRESULT	Render_ChekcAndBind();
 	HRESULT Render_CameraSetting();
 	HRESULT Render_PreViewInfo();
 private:

@@ -122,6 +122,38 @@ void CInstanceMesh::Unbind_Resource(_uint iSlotNum)
 	m_pDeviceContext->IASetVertexBuffers(iSlotNum , m_iVertexBufferCount , pInstanceBuffer , iVertexStrides , iOffsets);
 }
 
+void CInstanceMesh::Update_Matrix(const Matrix& WorldMatrix, _uint iIndex)
+{
+	if (m_tInstanceVertexBufferDesc.Usage != D3D11_USAGE_DYNAMIC)
+		return;
+	D3D11_MAPPED_SUBRESOURCE pResource{ nullptr };
+
+	m_pDeviceContext->Map(m_pVB, 0, D3D11_MAP_WRITE_NO_OVERWRITE, 0, &pResource);
+
+	VTX_INSTANCE* pVtxMatrix = reinterpret_cast<VTX_INSTANCE*>(pResource.pData);
+
+	memcpy(&pVtxMatrix[iIndex].vRight.x , &WorldMatrix._11 , sizeof(VTX_INSTANCE) );
+
+	m_pDeviceContext->Unmap(m_pVB, 0);
+}
+
+void CInstanceMesh::Update_Matrix(const vector<Matrix>& vecWorldMatrix, _uint iIndex)
+{
+	if (m_tInstanceVertexBufferDesc.Usage != D3D11_USAGE_DYNAMIC)
+		return;
+	D3D11_MAPPED_SUBRESOURCE pResource{ nullptr };
+
+	m_pDeviceContext->Map(m_pVB, 0, D3D11_MAP_WRITE_NO_OVERWRITE, 0, &pResource);
+
+	VTX_INSTANCE* pVtxMatrix = reinterpret_cast<VTX_INSTANCE*>(pResource.pData);
+
+	//memcpy(&pVtxMatrix[iIndex].vRight.x, &WorldMatrix._11, sizeof(VTX_INSTANCE));
+
+	m_pDeviceContext->Unmap(m_pVB, 0);
+
+	return;
+}
+
 
 
 CInstanceMesh* CInstanceMesh::Create(ID3D11Device* pDevice, ID3D11DeviceContext* pDeviceContext)

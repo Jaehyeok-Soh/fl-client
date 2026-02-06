@@ -100,8 +100,8 @@ HRESULT CBuilder_Map::Create_InstanceModel(const DTO::TMap_InstanceModelData& tD
 
 	tInstanceModelDesc.tData.eInstance_Usage = tData.eInstance_Usage;
 
-	tInstanceModelDesc.tData.vecOriginSRT.resize(tData.vecSRTData.size());
-	memcpy(tInstanceModelDesc.tData.vecOriginSRT.data() , tData.vecSRTData.data(), sizeof(SRT_DATA) * tData.vecSRTData.size() );
+	tInstanceModelDesc.tData.vecSRT.resize(tData.vecSRTData.size());
+	memcpy(tInstanceModelDesc.tData.vecSRT.data() , tData.vecSRTData.data(), sizeof(SRT_DATA) * tData.vecSRTData.size() );
 
 	/* Using Model Info  */
 	tInstanceModelDesc.tData.tUsingModelInfo.wstrName = tData.tUsingModelInfo.wstrName;

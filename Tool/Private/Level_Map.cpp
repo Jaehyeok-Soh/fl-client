@@ -13,7 +13,7 @@
 #include "ToolObject.h"
 #include "CameraMan_Free.h"
 #include "UEMapDataLoader.h"
-
+#include "MapObject.h"
 ///////////
 // ImGui //
 ///////////
@@ -70,6 +70,8 @@ HRESULT CLevel_Map::Initialize()
 		return E_FAIL;
 
 	m_pUEMapDataParser->Initialize(m_pDevice,m_pDeviceContext);
+
+	m_pMapToolManager->Set_LevelMap(this);
 
 	return S_OK;
 }
@@ -133,7 +135,6 @@ HRESULT CLevel_Map::Render()
 	m_pImGuiManager->Render_Viewport(m_pSelectedObject);
 	m_pImGuiManager->Render_End();
 
-
 	return S_OK;
 }
 
@@ -159,23 +160,55 @@ HRESULT CLevel_Map::Reday_Gui()
 	return S_OK;
 }
 
+void CLevel_Map::Set_MapObjectListPanel_ResetSelectValue()
+{
+	static_cast<CPanel_MapObjectList*>(m_arrayImGuiPanel[static_cast<_uint>(Elements::ObjectList)])->Reset_SelectValue();
+}
+
 void CLevel_Map::On_ChangeSelectedObject(CGameObject* pGo)
 {
 	if (pGo)
 	{
 		if (CToolObject* pToolGo = dynamic_cast<CToolObject*>(pGo))
 		{
+			if (m_pSelectedObject)
+				static_cast<CMapObject*>(m_pSelectedObject)->Set_MapObjectState(CMapObject::EState::Default);
+
+			if (m_pSelectedObject != pToolGo)
+			{
+				static_cast<CPanel_MapObjectList*>(m_arrayImGuiPanel[ENUM_TO_UINT(Elements::ObjectList)])->Reset_SelectValue();
+			}
 			m_pSelectedObject = pToolGo;
+			static_cast<CMapObject*>(m_pSelectedObject)->Set_MapObjectState(CMapObject::EState::Select);
+
 			return;
 		}
 	}
-	if (!ImGuizmo::IsOver() && !ImGuizmo::IsUsing())
+	else
+	{
+		if (m_pSelectedObject)
+			static_cast<CMapObject*>(m_pSelectedObject)->Set_MapObjectState(CMapObject::EState::Default);
 		m_pSelectedObject = nullptr;
+		static_cast<CPanel_MapObjectList*>(m_arrayImGuiPanel[ENUM_TO_UINT(Elements::ObjectList)])->Reset_SelectValue();
+	}
+
+	if (!ImGuizmo::IsOver() && !ImGuizmo::IsUsing())
+	{
+		Set_SelectToolObjectNull();
+	}
 }
 
 void CLevel_Map::On_CreateMode(_bool bValue)
 {
 	m_bCreateMode = bValue;
+}
+
+void CLevel_Map::Set_SelectToolObjectNull()
+{
+	if (m_pSelectedObject)
+		static_cast<CMapObject*>(m_pSelectedObject)->Set_MapObjectState(CMapObject::EState::Default);
+	m_pSelectedObject = nullptr;
+	Set_MapObjectListPanel_ResetSelectValue();
 }
 
 HRESULT CLevel_Map::Ready_MapObject_Layer()
@@ -290,6 +323,8 @@ void CLevel_Map::Free()
 
 	Safe_Release(m_pImGuiManager);
 	Safe_Release(m_pPickingManager);
+
+	m_pMapToolManager->Set_LevelMap(nullptr);
 	Safe_Release(m_pMapToolManager);
 
 	m_pUEMapDataParser->DestroyInstance();

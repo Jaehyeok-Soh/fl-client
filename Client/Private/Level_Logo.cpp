@@ -143,8 +143,8 @@ HRESULT CLevel_Logo::Ready_Builders()
 
 HRESULT CLevel_Logo::Build_Files()
 {
-	if (FAILED(Build_File(ENUM_TO_UINT(ELevelType::LOGO), DTO::ECategory::EFFECT, "Attack_1")))
-		return E_FAIL;
+	//if (FAILED(Build_File(ENUM_TO_UINT(ELevelType::LOGO), DTO::ECategory::EFFECT, "Attack_1")))
+	//	return E_FAIL;
 
 	// For. Example
 	//if (FAILED(Build_File(ENUM_TO_UINT(ELevelType::LOGO), DTO::ECategory::MAP, "asdf")))
@@ -258,6 +258,7 @@ HRESULT CLevel_Logo::Ready_DevMap()
 		return E_FAIL;
 
 	std::filesystem::path FilePath = L"../../Resources/Data/MapData/LevelData/DevLevel/DevMap.json";
+	//std::filesystem::path FilePath = L"../../Resources/Data/MapData/Test_So/Ailixian_Train01_Art_Test_So.json";
 	vector<path> vecfiles;
 
 	if (!std::filesystem::exists(FilePath))

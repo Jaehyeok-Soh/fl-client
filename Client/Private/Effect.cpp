@@ -32,8 +32,8 @@ HRESULT Effect::Initialize(void* pArg)
 	if (FAILED(Super::Initialize(pArg)))
 		return E_FAIL;
 
-	if (FAILED(Ready_PartsData(pArg)))
-		return E_FAIL;
+	//if (FAILED(Ready_PartsData(pArg)))
+	//	return E_FAIL;
 
 	return S_OK;
 }

@@ -29,6 +29,9 @@ public:
 	virtual void	Render()		override;
 	void			Unbind_Resource(_uint iSlotNum);
 public:
+	void			Update_Matrix(const Matrix& WorldMatrix, _uint iIndex);
+	void			Update_Matrix(const vector<Matrix>& vMatrix , _uint iIndex);
+public:
 	_uint			Get_InstanceCount() const { return m_iInstanceCount; }
 public:
 private:
