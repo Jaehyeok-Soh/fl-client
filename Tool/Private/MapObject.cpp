@@ -5,19 +5,21 @@
 #include "StaticModel.h"
 #include "Engine_Utils.h"
 #include "GameInstance.h"
+#include "Material.h"
+#include "AsTypes.h"
 
 USING(Tool)
 
 CMapObject::CMapObject(EToolObjectType eType, ID3D11Device* pDevice, ID3D11DeviceContext* pDeviceContext)
-    : CToolObject(eType, pDevice, pDeviceContext), m_vImGuiPitchYawRoll{}, m_isLoaded{ false }, m_isRegisterSRT{false}
+    : CToolObject(eType, pDevice, pDeviceContext), m_isLoaded{ false }, m_vecOverrideMaterials{} , m_iUseOverrideMaterials{false}
 {
     m_arrayMapToolComponent.fill(nullptr);
 }
 
 
 CMapObject::CMapObject(const CMapObject& rhs)
-    : CToolObject(rhs), m_eMapObjectType(rhs.m_eMapObjectType), m_isLoaded(rhs.m_isLoaded), m_vImGuiPitchYawRoll{}
-    , m_isRegisterSRT{false}
+    : CToolObject(rhs), m_eMapObjectType(rhs.m_eMapObjectType), m_isLoaded(rhs.m_isLoaded), m_vecOverrideMaterials{rhs.m_vecOverrideMaterials}
+     ,m_iUseOverrideMaterials(rhs.m_iUseOverrideMaterials)
 {
 }
 
@@ -38,14 +40,10 @@ HRESULT CMapObject::Initialize(void* pArg)
     m_isLoaded                = pDesc->isLoaded;
     m_eMapObjectState         = pDesc->eState;
 
+
     if (FAILED(CMapObject::Ready_Component()))
         return E_FAIL;
 
-
-    if (m_isLoaded)
-    {
-        Register_OriginSRT( EReset_Type::S | EReset_Type::R | EReset_Type::T);
-    }
 
     return S_OK;
 }
@@ -55,49 +53,77 @@ HRESULT CMapObject::Ready_Component()
     return S_OK;
 }
 
-void CMapObject::Reset_SRT(Engine::Flags fResetTypeFlag)
+
+HRESULT CMapObject::Ready_OverrideMtl(const USING_MODEL_INFO& tUsingModelInfo)
 {
-    if (!m_isLoaded && !m_isRegisterSRT)
+
+    if (tUsingModelInfo.vecOverrideMaterial.empty())
+        m_iUseOverrideMaterials = false;
+    else
     {
-        MSG_BOX(" None Load Or None Register SRT");
-        return;
+        for (auto& OverrideMtl : tUsingModelInfo.vecOverrideMaterial)
+        {
+            if (!OverrideMtl.isNull)
+                m_iUseOverrideMaterials = true;
+        }
     }
 
-    CTransform* pTransfrom = Get_Component<CTransform>();
-    if (pTransfrom == nullptr) return;
+    if (!m_iUseOverrideMaterials) return S_OK;
+
+    size_t iSizeMtl = Get_Component<CModel>()->Get_MaterialCount();
+    size_t iSizeeOverrideMtl = tUsingModelInfo.vecOverrideMaterial.size();
+
+    m_vecOverrideMaterials.resize(max(iSizeMtl, iSizeeOverrideMtl));
 
 
-    if (Engine_Utils::Has_Flag(fResetTypeFlag, ENUM_TO_UINT(EReset_Type::S)))
-        pTransfrom->Set_Scale(m_vOriginScale);
-    if (Engine_Utils::Has_Flag(fResetTypeFlag, ENUM_TO_UINT(EReset_Type::R)))
-        pTransfrom->Rotation(XMConvertToRadians(m_vOriginDegree.x), XMConvertToRadians(m_vOriginDegree.y), XMConvertToRadians(m_vOriginDegree.z));
-    if (Engine_Utils::Has_Flag(fResetTypeFlag, ENUM_TO_UINT(EReset_Type::T)))
-        pTransfrom->Set_Info(TRANSFORM_INFO_STATE::POS , m_vOriginPosition);
+    CTextureBase::RESOURCE_BASE_DESC tResourceTextureOriginDecs{};
 
-    return;
-}
+    CMaterial::MATERIAL_DESC tDesc{};
 
-void CMapObject::Register_OriginSRT(Engine::Flags fResetTypeFlag)
-{
-    m_isRegisterSRT = true;
+    /* 여기다가 경로를 집어넣어서 진행해주면된다 */
+    vector<std::string> vecMateiralTexturePath{};
+    vecMateiralTexturePath.resize(ENUM_TO_UINT(EMaterialTextureType::MAX_COUNT));
 
+    _uint iIndex{};
+    for (auto& OverrideMtl : tUsingModelInfo.vecOverrideMaterial)
+    {
+        if (OverrideMtl.isNull)
+        {
+            iIndex++;
+            continue;
+        }
 
-    CTransform* pTransfrom = Get_Component<CTransform>();
-    if (pTransfrom == nullptr) return;
+        for (auto& pairTexturePath : OverrideMtl.vecUsingTextureInfo)
+        {
+            tResourceTextureOriginDecs.wstrPath = pairTexturePath.second;
+            tResourceTextureOriginDecs.wstrName = path(pairTexturePath.second).filename().stem().wstring();
+            CTextureBase* pBase = m_pGameInstance->GetOrAddTexture(tResourceTextureOriginDecs.wstrName, &tResourceTextureOriginDecs);
+            Safe_Release(pBase);
 
-    Vec3 vScale{};
-    Quat vRotation{};
-    Vec3 vPos{};
+            vecMateiralTexturePath[Get_IndexByMaterialSlotName(pairTexturePath.first)]
+                = Engine_Utils::ToString(tResourceTextureOriginDecs.wstrName);
+        }
 
-    Matrix WorldMatrix = pTransfrom->Get_WorldMatrix();
-    WorldMatrix.Decompose(vScale , vRotation , vPos);
+        CMaterial* pMtl = m_pGameInstance->Get_Resource<CMaterial>(OverrideMtl.wstrMtl_JsonFile_Name);
+        if (pMtl == nullptr)
+        {
+            tDesc.wstrName = OverrideMtl.wstrMtl_JsonFile_Name;
+            tDesc.wstrPath = OverrideMtl.wstrMtl_JsonFile_Path;
+            tDesc.spanTags = vecMateiralTexturePath;
+            m_pGameInstance->Add_Resource<CMaterial>(tDesc.wstrName, CMaterial::Create(m_pDevice, m_pDeviceContext, &tDesc));
+            pMtl = m_pGameInstance->Get_Resource<CMaterial>(OverrideMtl.wstrMtl_JsonFile_Name);
+        }
 
-    if (Engine_Utils::Has_Flag(fResetTypeFlag, ENUM_TO_UINT(EReset_Type::S)))
-        m_vOriginScale = pTransfrom->Get_Scaled();
-    if (Engine_Utils::Has_Flag(fResetTypeFlag, ENUM_TO_UINT(EReset_Type::R)))
-        m_vOriginDegree = vRotation.ToEuler() * To_DEGREE;
-    if (Engine_Utils::Has_Flag(fResetTypeFlag, ENUM_TO_UINT(EReset_Type::T)))
-        m_vOriginPosition = vPos;
+        if (pMtl == nullptr)  return E_FAIL;
+        /* Override Mtl 값 가져오기 */
+        m_vecOverrideMaterials[iIndex++] = pMtl;
+
+        /* 비우기 */
+        std::fill(vecMateiralTexturePath.begin(), vecMateiralTexturePath.end(), "");
+    }
+
+    return S_OK;
+
 }
 
 HRESULT CMapObject::Add_MapToolComponent(CMapObject::COMPONENT eType)
@@ -105,19 +131,77 @@ HRESULT CMapObject::Add_MapToolComponent(CMapObject::COMPONENT eType)
     return S_OK;
 }
 
-Vec3 CMapObject::Get_OriginScale()
+void CMapObject::Reset_OriginTransform(_uint iIndex)
 {
-    return m_vOriginScale;
+    if (iIndex >= m_vecOriginSRTs.size())
+        return;
+
+    CTransform* pTransform = Get_Component<CTransform>();
+
+    pTransform->Set_WorldMatrix( m_vecOriginSRTs[iIndex].Get_World() );
 }
 
-Vec3 CMapObject::Get_OriginDegree()
+void CMapObject::Override_OriginTransform(_uint iIndex)
 {
-    return m_vOriginDegree;
+    if (iIndex >= m_vecOriginSRTs.size())
+        return;
+
+    CTransform* pTransform = Get_Component<CTransform>();
+
+    SimpleMath::Matrix WorldMatrix = pTransform->Get_WorldMatrix();
+    SRT_DATA& tChangeSRT = m_vecOriginSRTs[iIndex];
+    WorldMatrix.Decompose(tChangeSRT.vScale,tChangeSRT.vQuat,tChangeSRT.vPosition);
 }
 
-Vec3 CMapObject::Get_OriginPosition()
+SimpleMath::Matrix CMapObject::Get_OriginTransform(_uint iIndex)
 {
-    return m_vOriginPosition;
+    return m_vecOriginSRTs[iIndex].Get_World();
+}
+
+
+
+vector<wstring> CMapObject::Get_OverrideMtlsName() const
+{
+    if (m_iUseOverrideMaterials == false)
+        return vector<wstring>();
+
+    vector<wstring> vecResult{};
+
+    for (auto& Mtl : m_vecOverrideMaterials)
+    {
+        if (Mtl == nullptr)
+            vecResult.push_back(0);
+        else
+            vecResult.push_back(Mtl->Get_Name());
+    }
+
+    return vecResult;
+}
+
+vector<wstring> CMapObject::Get_TotalUseMtlsName()
+{
+    vector<wstring> vecResult{};
+    
+    CModel* pModel = Get_Component<CModel>();
+    _uint iCount = Get_Component<CModel>()->Get_MaterialCount();
+    
+    if (m_iUseOverrideMaterials == false)
+    {
+        for (_uint i = 0; i < iCount; ++i)
+            vecResult.push_back(pModel->Get_MaterialName(i));
+        return vecResult;
+    }
+
+
+    for (_uint i = 0; i < iCount; ++i)
+    {
+        if (m_vecOverrideMaterials[i])
+            vecResult.push_back(m_vecOverrideMaterials[i]->Get_Name());
+        else
+            vecResult.push_back(pModel->Get_MaterialName(i));
+    }
+
+    return vecResult;
 }
 
 HRESULT CMapObject::Awake(const _uint iCurrentLevelID)
@@ -157,6 +241,9 @@ HRESULT CMapObject::Render()
 {
     if (FAILED(Super::Render()))
         return E_FAIL;
+
+
+
 
     return S_OK;
 }
@@ -242,8 +329,10 @@ void CMapObject::Draw_ImGui()
 
 void CMapObject::Free()
 { 
-    Super::Free();
+    for (auto& OverrideMtl : m_vecOverrideMaterials)
+        Safe_Release(OverrideMtl);
 
+    Super::Free();
 
 
 }

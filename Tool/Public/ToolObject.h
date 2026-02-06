@@ -32,6 +32,10 @@ public:
 	virtual _bool Picking(OUT Vec3& vOut) PURE;
 	virtual void Draw_ImGui();
 	virtual void Set_Dead(const wstring& wstrLayerTag) override;
+
+	/* 기즈모 관련함수 */
+	virtual Matrix Get_WorldMatrix() ;
+	virtual void   Set_WorldMatrix(const Matrix& WorldMatrix ) ;
 public:
 	virtual void Set_Visible();
 	virtual void Set_Invisible();
@@ -40,6 +44,7 @@ public:
 	const string& Get_Name() const { return m_strName; }
 	const string& Get_TypeName() const { return m_strObjectType; }
 	EToolObjectType Get_Type() const { return m_eType; }
+	const string& Get_ModelFileName() const { return m_strModelFileName; }
 	const wstring& Get_LayerTag() const { return m_wstrLayerTag; }
 	void Update_CombinedWorldMatrix(const Matrix &matParent);
 private:

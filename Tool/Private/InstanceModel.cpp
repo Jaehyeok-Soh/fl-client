@@ -6,16 +6,18 @@
 #include "DataDocument_Map.h"
 #include "Engine_Utils.h"
 #include "GameInstance.h"
+#include "Mesh.h"
 
 CInstanceModel::CInstanceModel(EToolObjectType eType, ID3D11Device* pDevice, ID3D11DeviceContext* pContext)
-	: CMapObject(eType,pDevice,pContext)
+	: CMapObject(eType, pDevice, pContext), m_iSelectInstanceID{0}
 {
-
+	m_eMapObjectType = EMapObject_Type::INSTANCEMODEL;
 }
 
 CInstanceModel::CInstanceModel(const CInstanceModel& rhs)
-	: CMapObject(rhs)
+	: CMapObject(rhs), m_iSelectInstanceID{rhs.m_iSelectInstanceID }
 {
+	m_eMapObjectType = EMapObject_Type::INSTANCEMODEL;
 }
 
 HRESULT Tool::CInstanceModel::Initialize_Prototype()
@@ -37,13 +39,29 @@ HRESULT CInstanceModel::Initialize(void* pArg)
 	m_strModelFileName = Engine_Utils::ToString(m_tData.tUsingModelInfo.wstrPath);
 	Set_Name(m_tData.tUsingModelInfo.wstrName);
 	
+	if (m_tData.tUsingModelInfo.vecOverrideMaterial.empty())
+		m_iUseOverrideMaterials = false;
+	else
+	{
+		for (auto& OverrideMtl : m_tData.tUsingModelInfo.vecOverrideMaterial)
+		{
+			if (!OverrideMtl.isNull)
+				m_iUseOverrideMaterials = true;
+		}
+		m_vecOverrideMaterials.resize(m_tData.tUsingModelInfo.vecOverrideMaterial.size());
+	}
 
-	for (auto& SRTData : pDesc->tData.vecOriginSRT)
-		m_tData.vecMatirx.push_back(SRTData.Get_World());
+	if (FAILED(CInstanceModel::Ready_SRTData()))
+		return E_FAIL;
 
 
 	if (FAILED(CInstanceModel::Ready_Component()))
 		return E_FAIL;
+
+
+	if (FAILED(CMapObject::Ready_OverrideMtl(m_tData.tUsingModelInfo)))
+		return E_FAIL;
+
 
 	return S_OK;
 }
@@ -78,10 +96,26 @@ HRESULT CInstanceModel::Ready_Component()
 	return S_OK;
 }
 
+HRESULT CInstanceModel::Ready_SRTData()
+{
+
+	for (auto& SRTData : m_tData.vecSRT)
+	{
+		SRTData.vScale = SRTData.vScale_Isolated;
+		Matrix WorldMatrix = SRTData.Get_World();
+		m_tData.vecMatirx.push_back(WorldMatrix);
+	}
+
+	m_vecOriginSRTs.resize(m_tData.vecSRT.size());
+	memcpy(m_vecOriginSRTs.data(), m_tData.vecSRT.data(), sizeof(SRT_DATA) * m_tData.vecSRT.size());
+
+	return S_OK;
+}
+
 HRESULT CInstanceModel::Awake(const _uint iCurrentLevelID)
 {
-	/* Instance Model 위치 값이 들어갈 예정 */
-	/* 처음 생성시 위치값이 이미 들어감 */
+	if (FAILED(Super::Awake(iCurrentLevelID)))
+		return E_FAIL;
 
 	return S_OK;
 }
@@ -112,9 +146,9 @@ HRESULT CInstanceModel::Render()
 	if (FAILED(Super::Render()))
 		return E_FAIL;
 
-	CShader* pShader			= CGameObject::Get_Component<CShader>();
-	CModel* pModel				= CGameObject::Get_Component<CModel>();
-	CTransform* pTransform		= CGameObject::Get_Component<CTransform>();
+	CShader*	   pShader		= CGameObject::Get_Component<CShader>();
+	CModel*		   pModel		= CGameObject::Get_Component<CModel>();
+	CTransform*    pTransform	= CGameObject::Get_Component<CTransform>();
 	CInstanceMesh* pInstMesh	= CGameObject::Get_Component<CInstanceMesh>();
 
 	if (pShader == nullptr || pModel == nullptr || pTransform == nullptr ) return E_FAIL;
@@ -123,17 +157,41 @@ HRESULT CInstanceModel::Render()
 	_uint iInstacnceCount	= pInstMesh->Get_InstanceCount();
 
 	/* 1번 슬롯에 Instance 미리 바인딩 */
+
 	pInstMesh->Bind_Instance(1);
+	pShader->Set_Pass(ENUM_TO_UINT(m_eMapObjectState));
 
-	for (_uint i = 0; i < iMeshCount ; ++i)
+	if (!m_iUseOverrideMaterials)
 	{
-		pModel->Bind_Material(pShader, i);
-		pModel->Bind_MaterialInstance(pShader, i);
-		pShader->Apply();
-		pModel->Render_Instance(i , iInstacnceCount);
+		for (UINT32 i = 0; i < iMeshCount; ++i)
+		{
+			pModel->Bind_Material(pShader, i);
+			pModel->Bind_MaterialInstance(pShader, i);
+			pShader->Apply();
+			pModel->Render_Instance(i, iInstacnceCount);
+		}
 	}
+	else
+	{
+		_uint iConnectedIndex{ 0 };
+		for (UINT32 i = 0; i < iMeshCount; ++i)
+		{
+			iConnectedIndex = pModel->Get_Mesh(i)->Get_MaterialIndex();
+			if (!m_vecOverrideMaterials[iConnectedIndex])
+			{
+				pModel->Bind_Material(pShader, i);
+				pModel->Bind_MaterialInstance(pShader, i);
+			}
+			else
+			{
+				m_vecOverrideMaterials[iConnectedIndex]->Bind_ShaderResource(pShader);
+				pModel->Bind_MaterialInstance(pShader, i);
+			}
 
-	pInstMesh->Unbind_Resource(1);
+			pShader->Apply();
+			pModel->Render_Instance(i  , iInstacnceCount);
+		}
+	}
 
 
 	return S_OK;
@@ -141,6 +199,11 @@ HRESULT CInstanceModel::Render()
 
 void CInstanceModel::Draw_ImGui()
 {
+	if (ImGui::TreeNode("Instant Model"))
+	{
+
+		ImGui::TreePop();
+	}
 }
 
 CInstanceModel* CInstanceModel::Create(EToolObjectType eType, ID3D11Device* pDevice, ID3D11DeviceContext* pContext)
@@ -177,8 +240,80 @@ void CInstanceModel::Free()
 	Super::Free();
 }
 
+
+Matrix CInstanceModel::Get_WorldMatrix()
+{
+	return m_tData.vecMatirx[m_iSelectInstanceID];
+}
+
+void CInstanceModel::Set_WorldMatrix(const Matrix& WorldMatrix)
+{
+	m_tData.vecMatirx[m_iSelectInstanceID] = WorldMatrix;
+	SRT_DATA& tSRT_Data = m_tData.vecSRT[m_iSelectInstanceID];
+	m_tData.vecMatirx[m_iSelectInstanceID].Decompose(tSRT_Data.vScale , tSRT_Data.vQuat , tSRT_Data.vPosition);
+	Get_Component<CInstanceMesh>()->Update_Matrix(WorldMatrix,m_iSelectInstanceID);
+}
+
+void CInstanceModel::Reset_OriginTransform(_uint iIndex)
+{
+	m_tData.vecSRT[iIndex] = m_vecOriginSRTs[iIndex];
+	m_tData.vecMatirx[iIndex] = m_tData.vecSRT[iIndex].Get_World();
+	Update_InstanceWorldMatrix(iIndex);
+	return;
+}
+
+/* 내 현재 Index 값에 맞게 Instance버퍼 업데이트함수 */
+void CInstanceModel::Update_InstanceWorldMatrix(_uint iIndex)
+{
+	Get_Component<CInstanceMesh>()->Update_Matrix( m_tData.vecMatirx[iIndex] , iIndex );
+}
+
+void CInstanceModel::Update_InstanceWorldMatirx(const SimpleMath::Matrix& WorldMatrix, _uint iIndex)
+{
+	m_tData.vecMatirx[iIndex] = WorldMatrix;
+	m_tData.vecMatirx[iIndex].Decompose(m_tData.vecSRT[iIndex].vScale , m_tData.vecSRT[iIndex].vQuat , m_tData.vecSRT[iIndex].vPosition);
+	Get_Component<CInstanceMesh>()->Update_Matrix(WorldMatrix , iIndex);
+}
+
+bool  CInstanceModel::IntsersectWithPlane(OUT Vec3& vOut)
+{
+	CModel* pModel = Get_Component<CModel>();
+	if (pModel == nullptr)  return false;
+
+	_uint iMeshCount = pModel->Get_MeshCount();
+	for (_uint i = 0; i < iMeshCount; ++i)
+	{
+		if (pModel->Get_Mesh(i)->IntsersectWithPlane(vOut))
+		{
+			return true;
+		}
+	}
+	return false;
+}
+
+
 _bool CInstanceModel::Picking(OUT Vec3& vOut)
 {
+	Matrix InvWorldMatrix{};
+	/* Matrix 를 업데이트 시켜준다 */
+	_uint iIndex = 0;
+	for (auto& World : m_tData.vecMatirx)
+	{
+		InvWorldMatrix = World.Invert();
+
+		m_pGameInstance->TransformRayToLocalSpace(InvWorldMatrix);
+
+		if (IntsersectWithPlane(vOut))
+		{
+			vOut = Vec3::Transform(vOut , World);
+			m_iSelectInstanceID = iIndex;
+			return true;
+		}
+		iIndex++;
+	}
+
+	m_iSelectInstanceID = 0;
+
 	return false;
 }
 
@@ -201,8 +336,17 @@ _bool CInstanceModel::Export_Data(DTO::ECategory eCategory, CDataDocumentBase* p
 	tSave_InstanceModleData.strTag = m_strName + std::to_string(m_iObjectID);
 
 	/* SRT */
-	tSave_InstanceModleData.vecSRTData.resize(m_tData.vecOriginSRT.size());
-	memcpy(tSave_InstanceModleData.vecSRTData.data(), m_tData.vecOriginSRT.data(), sizeof(SRT_DATA) * m_tData.vecOriginSRT.size());
+	{
+		// PhysX 충돌체 초기화용 괴도 소재혁
+		for (auto& srtData : m_tData.vecSRT)
+		{
+			srtData.vScale_Isolated = srtData.vScale;
+			srtData.vScale = Vec3(1.f, 1.f, 1.f);
+		}
+	}
+
+	tSave_InstanceModleData.vecSRTData.resize(m_tData.vecSRT.size());
+	memcpy(tSave_InstanceModleData.vecSRTData.data(), m_tData.vecSRT.data(), sizeof(SRT_DATA) * m_tData.vecSRT.size());
 
 	/* Using Material Info */
 	tSave_InstanceModleData.tUsingModelInfo.wstrName = m_tData.tUsingModelInfo.wstrName;

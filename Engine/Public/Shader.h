@@ -6,24 +6,7 @@ NS_BEGIN(Engine)
 template<typename T>
 class CConstant_Buffer;
 
-typedef struct tagPass
-{
-	ID3DX11EffectPass* pPass = { nullptr };
-	ID3D11InputLayout* pInputLayout = { nullptr };
-	wstring wstrName = L"";
-	D3DX11_PASS_DESC tDesc = {};
-	D3DX11_PASS_SHADER_DESC tVertexShaderDesc = {};
-	D3DX11_EFFECT_SHADER_DESC tEffectVsDesc = {};
-	vector<D3D11_SIGNATURE_PARAMETER_DESC> vecSignatureDescs;
-} PASS;
-
-typedef struct tagTechnique
-{
-	ID3DX11EffectTechnique* pTechnique = { nullptr };
-	wstring wstrName = L"";
-	D3DX11_TECHNIQUE_DESC tDesc = {};
-	vector<tagPass> vecPasses;
-} TECHNIQUE;
+class CFxShaderVariant;
 
 class ENGINE_DLL CShader final : public CComponent
 {
@@ -33,8 +16,7 @@ public:
 	typedef struct tagShaderOriginDesc
 	{
 		const _tchar* pShaderFilePath = { nullptr };
-		_uint iNumElements = { 0 };
-		const D3D11_INPUT_ELEMENT_DESC* pElements = { nullptr };
+		EVtxLayout eLayout = EVtxLayout::NONE;
 	}SHADER_ORIGIN_DESC;
 private:
 	CShader(ID3D11Device* pDevice, ID3D11DeviceContext* pDeviceContext);
@@ -45,7 +27,6 @@ public:
 	virtual HRESULT Initialize(void* pArg);
 public:
 	void Apply();
-	void Dispatch(_uint iX, _uint iY, _uint iZ);
 	void Set_Pass(_uint iPass) { m_iPass = iPass; }
 
 	ID3DX11EffectVariable* Get_Variable(string name);
@@ -76,7 +57,6 @@ public:
 	void Bind_MaterialData(const SHADER_MATERIALDESC& desc);
 	void Bind_MaterialInstanceData(const SHADER_MI_DESC& desc);
 	void Bind_EffectData(const SHADER_EFFECT_DESC& desc);
-	//void Bind_Compute_EffectSRV();
 	void Bind_GlobalMask(_uint iMask);
 	HRESULT Bind_DefaultTexture(ID3D11ShaderResourceView* pSRV);
 	HRESULT Bind_CubeTexture(ID3D11ShaderResourceView* pSRV);
@@ -88,77 +68,22 @@ public:
 	void Bind_KeyFrameData(const SHADER_KEYFRAMEDESC& keyframeDesc);
 
 private:
-	HRESULT Load_Shader(const D3D11_INPUT_ELEMENT_DESC* pElements, const _uint iNumElements);
 	void Create_ConstantBuffer();
 	void Clear_ConstantBuffer();
-	const wstring &Get_Path() const { return m_wstrPath; }
 private:
-	_bool m_bInit = { false };
 	_uint m_iPass = { 0 };
-	wstring m_wstrPath = { L"" };
-	ID3DBlob* m_pBlob = { nullptr };
-	ID3DX11Effect* m_pEffect = { nullptr };
-	D3DX11_EFFECT_DESC m_tEffectDesc = {};
-	vector<TECHNIQUE> m_vecTechniques;
+	
+	CFxShaderVariant* m_pVariant{ nullptr };
+	ID3D11Device* m_pDevice{ nullptr };
+	ID3D11DeviceContext* m_pDeviceContext{ nullptr };
 
-	ID3D11Device* m_pDevice = { nullptr };
-	ID3D11DeviceContext* m_pDeviceContext = { nullptr };
-
-	// Global
-	// ===========  CONSTANT BUFFER   =========== 
-	ID3DX11EffectConstantBuffer* m_pGlobalEffectBuffer = { nullptr };
-	ID3DX11EffectConstantBuffer* m_pInvEffectBuffer = { nullptr };
-	ID3DX11EffectConstantBuffer* m_pGlobalLightEffectBuffer = { nullptr };
-
-	ID3DX11EffectShaderResourceVariable*  m_pMaterialSRV_Effect;
-	ID3DX11EffectScalarVariable* m_pMaterialMask_Effect = { nullptr };
-
-	CConstant_Buffer<SHADER_BONEDESC>* m_pBone_CBuffer = { nullptr };
-	ID3DX11EffectConstantBuffer* m_pBoneEffectBuffer = { nullptr };
-
-	CConstant_Buffer<SHADER_MATERIALDESC>* m_pMaterial_CBuffer = { nullptr };
-	ID3DX11EffectConstantBuffer* m_pMaterialEffectBuffer = { nullptr };
-
-	CConstant_Buffer<SHADER_MI_DESC>* m_pMI_CBuffer = { nullptr };
-	ID3DX11EffectConstantBuffer* m_pMI_EffectBuffer = { nullptr };
-
-	CConstant_Buffer<SHADER_TRANSFORMDESC>* m_pTransform_CBuffer = { nullptr };
-	ID3DX11EffectConstantBuffer* m_pTransformEffectBuffer = { nullptr };
-
-	CConstant_Buffer<SHADER_KEYFRAMEDESC>* m_pKeyFrame_CBuffer = { nullptr };
-	ID3DX11EffectConstantBuffer* m_pKeyFrameEffectBuffer = { nullptr };
-
-	CConstant_Buffer<SHADER_EFFECT_DESC>* m_pEffect_CBuffer = { nullptr };
-	ID3DX11EffectConstantBuffer* m_pEffectBuffer = { nullptr };
-
-	// ===========  STRUCTURED BUFFER   =========== 
-				// EFFECT PARTICLE DATA
-	// <INPUT>
-
-
-	// <INPUT>
-	//StructuredBuffer<EFFECT_PARTICLE_IMMU_ELEMENT>* m_pEffect_Immutable_Element_CBuffer = { nullptr };
-	//ID3DX11EffectShaderResourceVariable* m_pEffect_Immutable_Element_SRV = { nullptr };
-	//
-	//// <OUTPUT>
-	//StructuredBuffer<EFFECT_INSTANCE>* m_pEffect_Result_SBuffer = { nullptr };
-	//ID3DX11EffectUnorderedAccessViewVariable* m_pEffect_Result_UAV = { nullptr };
-
-	//  ===========   ===========    =========== 
-
-	ID3DX11EffectScalarVariable* m_pGlobalMask_Effect = { nullptr };
-
-	ID3DX11EffectShaderResourceVariable* m_pTransformTexture = { nullptr };
-	ID3DX11EffectShaderResourceVariable* m_pRenderTargetTexture = { nullptr };
-	ID3DX11EffectShaderResourceVariable* m_pRenderTargetDiffuseTexture = { nullptr };
-	ID3DX11EffectShaderResourceVariable* m_pRenderTargetNormalTexture = { nullptr };
-	ID3DX11EffectShaderResourceVariable* m_pRenderTargetShadeTexture = { nullptr };
-	ID3DX11EffectShaderResourceVariable* m_pRenderTargetDepthTexture = { nullptr };
-	// Effect Shader 전용 텍스처
-	ID3DX11EffectShaderResourceVariable* m_prenderTargetSceneTexture = { nullptr };	// 유니티에서 SceneTexture라고 하더라.
-
-	ID3DX11EffectShaderResourceVariable* m_pDefaultTextures = { nullptr };
-	ID3DX11EffectShaderResourceVariable* m_pCubeTexture = { nullptr };
+	// TODO - 나중에 풀링 / 프레임소스
+	CConstant_Buffer<SHADER_BONEDESC>* m_pBone_CBuffer{ nullptr };
+	CConstant_Buffer<SHADER_MATERIALDESC>* m_pMaterial_CBuffer{ nullptr };
+	CConstant_Buffer<SHADER_MI_DESC>* m_pMI_CBuffer{ nullptr };
+	CConstant_Buffer<SHADER_TRANSFORMDESC>* m_pTransform_CBuffer{ nullptr };
+	CConstant_Buffer<SHADER_KEYFRAMEDESC>* m_pKeyFrame_CBuffer{ nullptr };
+	CConstant_Buffer<SHADER_EFFECT_DESC>* m_pEffect_CBuffer{ nullptr };
 public:
 	static CShader* Create(ID3D11Device* pDevice, ID3D11DeviceContext* pContext, void* pArg);
 	virtual CComponent* Clone(void* pArg) override;

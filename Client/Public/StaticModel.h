@@ -21,7 +21,6 @@ private:
 	virtual HRESULT			Initialize_Prototype()							override;
 	virtual HRESULT			Initialize(void* pArg)							override;
 	HRESULT					Ready_Component(STATICMODEL_DESC* pDesc);
-	HRESULT					Change_OverrideMtl(STATICMODEL_DESC* pDesc);
 	
 	HRESULT					Ready_PhysicsComponent(STATICMODEL_DESC* pDesc);
 	HRESULT					Ready_PhysicsCollider(STATICMODEL_DESC* pDesc);

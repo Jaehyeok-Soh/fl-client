@@ -6,6 +6,14 @@ class CGameInstance;
 class CGameObject;
 class CShader;
 
+/*
+* NONEBLEND = Opaque
+* BLEND = Transparent
+* NONELIGHT = Forward Special Pass
+* UI/BLENDUI = UI Queue
+* PRIORITY = Pre-pass
+*/
+
 class CRender_Manager final : public CBase
 {
 	using Super = CBase;

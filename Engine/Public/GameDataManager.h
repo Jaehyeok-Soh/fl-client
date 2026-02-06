@@ -13,7 +13,8 @@ private:
 	HRESULT Initialize();
 public:
 
-private:
+public:
+	static ID3D11ShaderResourceView* Make_ShaderResourceViewColor(_uint A, _uint R, _uint G, _uint B,ID3D11Device* pDevice, ID3D11DeviceContext* pContext);
 
 private:
 

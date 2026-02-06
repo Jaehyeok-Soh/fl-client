@@ -18,6 +18,7 @@
 NS_BEGIN(Engine)
 
 class StructuredBuffer;
+class CFxEffectAsset;
 
 class ENGINE_DLL CComputeShader : public CMonoBehaviour
 {
@@ -33,6 +34,8 @@ public:
 	typedef struct ComShaderOriginDesc : public CComponent::COMPONENT_DESC
 	{
 		const _tchar* pShaderFilePath = { nullptr };
+		// EVtxLayout eLayout = EVtxLayout::NONE;  // InputLayout 없으니까
+		const _char* pEntryPoint = { nullptr };		// shader 내부에서 어떤 함수를 쓸건데
 	}COMSHADER_ORIGIN_DESC;
 
 	typedef struct ComShaderCopyDesc : public CComponent::COMPONENT_DESC
@@ -104,9 +107,6 @@ private:
 private:
 	HRESULT Ready_ComputeShader(COMSHADER_ORIGIN_DESC* pDesc);
 private:
-	const wstring& Get_Path() const { return m_wstrPath; }
-
-private:
 	HRESULT Create_ConstantBuffer();
 	HRESULT Create_StructBuffer(void* pArg);
 
@@ -114,14 +114,8 @@ private:
 	void Clear_StructBuffer();
 
 private:
-	_bool m_bInit = { false };
+	CFxEffectAsset* m_pOwner{ nullptr }; // .hlsl 파일 객체화
 	_uint m_iPass = { 0 };
-	wstring m_wstrPath = { L"" };
-	ID3DBlob* m_pBlob = { nullptr };
-	ID3DX11Effect* m_pEffect = { nullptr };
-	D3DX11_EFFECT_DESC m_tEffectDesc = {};
-	vector<TECHNIQUE> m_vecTechniques;
-
 private:
 	ID3D11ComputeShader* m_pComputeShader = { nullptr };
 	ID3D11Device* m_pDevice = { nullptr };

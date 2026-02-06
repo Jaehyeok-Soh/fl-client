@@ -191,8 +191,7 @@ HRESULT CRender_Manager::Set_Components()
 
 		CShader::SHADER_ORIGIN_DESC desc = {};
 		desc.pShaderFilePath = L"../../Shaders/Shader_Deffered.hlsl";
-		desc.iNumElements = Engine::VTXPOSTEX::iNumElements;
-		desc.pElements = Engine::VTXPOSTEX::Elements;
+		desc.eLayout = EVtxLayout::VTXPOSTEX;
 		if (!(m_pShader = CShader::Create(m_pDevice, m_pDeviceContext, &desc)))
 			return E_FAIL;
 	}
