@@ -17,8 +17,8 @@ _bool CPicking_ToolManager::Picking()
 	//if (!MOUSE_LBUTTON_DOWN || ImGuizmo::IsUsing() || ImGuizmo::IsOver()) return false;
 	//if (ImGuizmo::IsOver())
 	//	return false;
-	//if (ImGuizmo::IsUsing())
-	//	return false;
+	if (ImGuizmo::IsUsing())
+		return false;
 	if (!MOUSE_LBUTTON_DOWN)
 		return false;
 

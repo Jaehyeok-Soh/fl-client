@@ -56,6 +56,8 @@ HRESULT CStaticModel::Initialize(void* pArg)
 		m_vecOriginSRTs.push_back(m_tData.tOriginSRT);
 	}
 
+	Get_Component<CTransform>()->Set_Scale(m_tData.tOriginSRT.vScale_Isolated);
+
 	return S_OK;
 }
 

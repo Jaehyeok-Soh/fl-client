@@ -1,6 +1,12 @@
 #pragma once
 #include "GameObject.h"
-#include "../../Engine/Public/DataStruct_Map.h"
+#include "DataStruct_Map.h"
+
+NS_BEGIN(Engine)
+
+class CMaterial;
+NS_END
+
 
 NS_BEGIN(Client)
 
@@ -22,10 +28,10 @@ protected:
 	explicit CMapObject(const CMapObject& rhs);
 	virtual ~CMapObject() = default;
 public:
-
 	virtual HRESULT			Initialize_Prototype()							override;
 	virtual HRESULT			Initialize(void* pArg)							override;
 	HRESULT					Ready_Component();
+	HRESULT					Ready_OverrideMtl(const DTO::USING_MODEL_INFO& tUsingModelInfo);
 public:
 	HRESULT					Add_MapToolComponent(CMapObject::COMPONENT eType);
 public:
@@ -38,6 +44,11 @@ public:
 protected:
 	Client::EMapObject_Type			m_eMapObjectType{ Client::EMapObject_Type::END };
 	array< CMonoBehaviour*, ENUM_TO_UINT(Client::CMapObject::COMPONENT::END)> m_arrayMapToolComponent{};
+
+
+	bool					m_iUseOverrideMaterials{ false };
+	vector<CMaterial*>		m_vecOverrideMaterials{};
+
 public:
 	virtual void			Free()	override;
 };
