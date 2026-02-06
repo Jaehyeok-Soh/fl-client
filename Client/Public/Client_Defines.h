@@ -185,7 +185,6 @@ namespace Client
 		Vec3 vNormal = { 0.f, 1.f, 0.f };
 		_float fDistance = D3D11_FLOAT32_MAX;
 		_int iTriangleIndex = -1;
-		ESurfaceType eSurfaceType = ESurfaceType::NONE;
 	}COLMESH_HITINFO;
 
 	typedef struct tagWallSpaceInformation

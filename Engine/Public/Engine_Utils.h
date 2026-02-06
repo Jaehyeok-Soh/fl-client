@@ -43,6 +43,8 @@ public:
 
 	static _float SmoothStep(_float fT) { return fT * fT * (3.f - 2.f * fT); }
 
+	static BoundingBox MakeAABB_FromMinMax(const Vec3 &vMin, const Vec3 &vMax);
+	static BoundingSphere MakeSphere_FromMinMax(const Vec3& vMin, const Vec3& vMax);
 
 #pragma region Read Write Json
 

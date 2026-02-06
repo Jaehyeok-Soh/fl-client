@@ -100,16 +100,6 @@ namespace Engine
 		END
 	};
 	inline constexpr size_t g_ResourceTypeCount = static_cast<size_t>(EResourceType::END);
-	//===================
-	// CollideMesh
-	//===================
-	enum class ESurfaceType : unsigned int
-	{
-		NONE = 0,
-		GROUND,
-		WALL,
-		CEILING,
-	};
 
 	//===================
 	// Model

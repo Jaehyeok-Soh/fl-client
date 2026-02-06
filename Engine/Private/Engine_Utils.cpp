@@ -269,6 +269,22 @@ void Engine_Utils::Set_OnlyFlag(Flags& curFlags, _uint iBitFlag)
     curFlags |= iBitFlag;
 }
 
+BoundingBox Engine_Utils::MakeAABB_FromMinMax(const Vec3& vMin, const Vec3& vMax)
+{
+    BoundingBox boundingBox;
+    XMFLOAT3 vPoints[2] = { vMin, vMax };
+    BoundingBox::CreateFromPoints(boundingBox, 2, vPoints, sizeof(XMFLOAT3));
+    return boundingBox;
+}
+
+BoundingSphere Engine_Utils::MakeSphere_FromMinMax(const Vec3& vMin, const Vec3& vMax)
+{
+    BoundingSphere boundingSphere;
+    XMFLOAT3 vPoints[2] = { vMin, vMax };
+    BoundingSphere::CreateFromPoints(boundingSphere, 2, vPoints, sizeof(XMFLOAT3));
+    return boundingSphere;
+}
+
 void Engine_Utils::read_vec3_xyz(const json& _j, Vec3& vOut)
 {
     vOut.x = _j.value("X", 0.f);

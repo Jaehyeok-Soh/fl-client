@@ -104,7 +104,7 @@ namespace Engine
 
 	typedef struct tagShaderBoneDesc
 	{
-		SimpleMath::Matrix transforms[MAX_BONE_TRANSFORMS];
+		SimpleMath::Matrix transforms[MAX_BONE_TRANSFORMS]{ SimpleMath::Matrix::Identity};
 	}SHADER_BONEDESC;
 
 	struct AnimationData
