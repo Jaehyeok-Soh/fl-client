@@ -7,13 +7,16 @@ struct IMMU_ELEMENT
     int                 iParentIndex;
     row_major float4x4  matPreTransform;
     
-    float3 fPadding;
+    float3              vPadding3;
 };
 
 // 가변 데이터
 struct MU_ELEMENT
 {
+    int                iMyIdx;
     row_major float4x4 matLocalTransform;
+    
+    float3              vPadding3;
 };
 
 // out put
@@ -24,7 +27,7 @@ struct BONE_OUTPUT
 
 
 StructuredBuffer<IMMU_ELEMENT>  IMMU_BONEDATA;
-StructuredBuffer<MU_ELEMENT>    LOCAL_TRANSFORMS;
+StructuredBuffer<MU_ELEMENT>    MU_DATA;
 
 RWStructuredBuffer<BONE_OUTPUT> BONECOMBINED_TRANSFORMS;
 
@@ -33,14 +36,16 @@ RWStructuredBuffer<BONE_OUTPUT> BONECOMBINED_TRANSFORMS;
 [numthreads(32, 1, 1)]
 void CS_Main(uint3 id : SV_DispatchThreadID)
 {
-    uint i = id.x;
+    // 알맞는 인덱스 들고옴
+    uint iGroupIdx = id.x; // group 내에 idx
+    uint iBoneIdx = MU_DATA[iGroupIdx].iMyIdx;
 
-    int iParent = IMMU_BONEDATA[i].iParentIndex;
+    int iParentIdx = IMMU_BONEDATA[iBoneIdx].iParentIndex;
 
     float4x4 matParent =
-        (iParent < 0) ? IMMU_BONEDATA[i].matPreTransform : BONECOMBINED_TRANSFORMS[iParent].matCombinedTransform;
+        (iParentIdx < 0) ? IMMU_BONEDATA[iBoneIdx].matPreTransform : BONECOMBINED_TRANSFORMS[iParentIdx].matCombinedTransform;
 
-    BONECOMBINED_TRANSFORMS[i] = mul(LOCAL_TRANSFORMS[i].matLocalTransform, matParent);
+    BONECOMBINED_TRANSFORMS[iBoneIdx] = mul(MU_DATA[iGroupIdx].matLocalTransform, matParent);
 }
 
 technique11 T0
