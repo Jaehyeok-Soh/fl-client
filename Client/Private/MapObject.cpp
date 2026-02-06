@@ -165,6 +165,12 @@ void CMapObject::Free()
 		Safe_Release(Com);
 	}
 
+    for (auto& OverrideMtl : m_vecOverrideMaterials)
+    {
+        Safe_Release(OverrideMtl);
+    }
+
+
 	Super::Free();
 
 }
