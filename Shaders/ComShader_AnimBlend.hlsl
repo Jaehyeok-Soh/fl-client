@@ -3,6 +3,7 @@
 
 // 각 채널에서 transform을 만든 다음
 // 그 두개의 transform을 선형 보간 한다
+// 뼈 기준으로 들어옴
 
 struct KEYFRAME
 {
@@ -17,7 +18,9 @@ struct KEYFRAME
 // 불변 데이터
 struct IMMU_ELEMENT
 {
-    int     iRootMotionBoneIndex;   // root motion일 경우 tralation을 0으로 만들기 위함
+    int iRootMotionBoneIndex; // root motion일 경우 tralation을 0으로 만들기 위함
+    
+    float3 vPadding3;
 };
 
 // 가변 데이터
@@ -35,13 +38,10 @@ cbuffer MU_Track
 // out put
 struct CHANNEL_OUTPUT
 {
-    row_major float4x4  matLerpedTransform;
-    
-    uint                iPreKeyFrameIndex;
-    uint                iPreAnimIndex;
+    row_major float4x4  matLerpedTransform;     // 찐찐찐 최종 local
 };
 
-StructuredBuffer<MU_ELEMENT>    MU_TRANSFORMS; // 한 애니메이션에 대한 모든 keyframe 정보를 일차원 배열로 들고 있는다
+StructuredBuffer<MU_ELEMENT>    MU_TRANSFORMS;  // 한 애니메이션에 대한 모든 keyframe 정보를 일차원 배열로 들고 있는다
 StructuredBuffer<IMMU_ELEMENT>  IMMU_CURCHANNELDATAS;       // 한 채널에 대한 정보들            :  이 애니메이션 channel 수 만큼
 
 RWStructuredBuffer<CHANNEL_OUTPUT> UPDATE_DATA;         // bone 인덱스랑 1 : 1 매칭 -> bone update때 문제 없도록 하기 위함

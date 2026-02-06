@@ -48,7 +48,8 @@ struct CHANNEL_OUTPUT
     row_major float4x4  matLerpedTransform;
     uint                iCurKeyFrameIndex;
     uint                iAnimIndex;
-    float3              vPadding3;
+    
+    float2              vPadding3;
 };
 
 StructuredBuffer<KEYFRAME>      IMMU_KEYFRAMS;          // 한 애니메이션에 대한 모든 keyframe 정보를 일차원 배열로 들고 있는다
