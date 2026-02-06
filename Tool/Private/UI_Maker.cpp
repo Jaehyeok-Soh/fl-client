@@ -127,7 +127,9 @@ void CUI_Maker::UIData_IO()
 	ImGui::Spacing();
 
 	if (DrawBottomFullButton("Clear All"))
-		int a = 0;
+	{
+		m_pUIManager->Clear();
+	}
 
 	ImGui::EndChild();
 

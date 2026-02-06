@@ -167,13 +167,6 @@ CGameObject* CToolLayer::Clone(void* pArg)
 void CToolLayer::Free()
 {
 	Safe_Release(m_pUIManager);
-
-	for (auto* p : m_vecToolUIs)
-	{
-		if (nullptr == p)
-			continue;
-		Safe_Release(p);
-	}
 	m_vecToolUIs.clear();
 	Super::Free();
 }

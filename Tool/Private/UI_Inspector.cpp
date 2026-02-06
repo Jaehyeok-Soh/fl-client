@@ -38,8 +38,7 @@ HRESULT CUI_Inspector::Initialize_Prototype()
 
 void CUI_Inspector::Update(const _float fTimeDelta)
 {
-	if (nullptr != m_pSelectedUI)
-		m_pSelectedUI->Set_HitTest();
+
 }
 
 HRESULT CUI_Inspector::Render(CToolObject* pGo)
@@ -50,6 +49,7 @@ HRESULT CUI_Inspector::Render(CToolObject* pGo)
 	m_pSelectedUI = m_pUIManager->Safe_Access_UI(m_pUIManager->Get_CurUIIndex());
 	if (nullptr != m_pSelectedUI)
 	{
+		m_pSelectedUI->Set_HitTest();
 		SetUp_Public_Info();
 		Input_TextureTag();
 
@@ -152,6 +152,9 @@ void CUI_Inspector::Input_RectTransform()
 
 		ImGui::EndTable();
 	}
+
+	ImGui::InputFloat("Alpha", &m_pSelectedUI->Get_Alpha_Ref());
+
 	ImGui::EndChild();
 	ImGui::PopID();
 }

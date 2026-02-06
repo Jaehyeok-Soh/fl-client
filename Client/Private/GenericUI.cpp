@@ -329,6 +329,8 @@ HRESULT CGenericUI::Ready_Components(GENERIC_UI_DESC* pDesc)
 HRESULT CGenericUI::Bind_ShaderResources()
 {
 	CShader* pShader = Get_Component<CShader>();
+	pShader->Set_Pass(1);
+
 	if (FAILED(Get_Component<CTransform>()->Bind_ShaderResource(pShader)))
 		return E_FAIL;
 	if (FAILED(Get_Component<CTexture>()->Bind_ShaderResource(pShader, m_iTextureIndex)))

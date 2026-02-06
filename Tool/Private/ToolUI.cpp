@@ -57,6 +57,7 @@ HRESULT CToolUI::Initialize(void* pArg)
 
 	m_pCacheCanvas = pDesc->pCacheCanvas;
 	m_pCacheLayer = pDesc->pCacheLayer;
+
 	if (FAILED(Super::Initialize(pArg)))
 		return E_FAIL;
     if (FAILED(Ready_Components(pDesc)))
@@ -95,7 +96,7 @@ void CToolUI::Update_Priority(const _float fTimeDelta)
 	Set_Size(m_fWidth, m_fHeight);
 	SetUp_RectTransform_Position();
 	SetUp_Visible();
-	m_isHitTest = FALSE;
+	Get_Component<CShader>()->Set_Pass(2);
 	Super::Update_Priority(fTimeDelta);
 }
 
@@ -174,6 +175,8 @@ HRESULT CToolUI::Render()
 			VertexPositionColor{ { (float)m_tRenderRect.left-5.f,  (float)m_tRenderRect.top-5.f,    m_fZ }, vColor });
 		m_pBatch->End();
 	}
+
+	m_isHitTest = FALSE;
 
     return S_OK;
 }
@@ -407,12 +410,8 @@ Vec2 CToolUI::Calc_RectTransformPosition()
 
 void CToolUI::SetUp_Visible()
 {
-	CToolLayer* pLayer = CImGui_UIManager::GetInstance()->Safe_Access_Layer(m_iLayerIndex);
-	if (nullptr == pLayer)
-		return;
-
-	if(!m_isVisible)
-	m_isVisible = pLayer->Get_isVisible();
+	if(nullptr != m_pCacheLayer)
+		m_isVisible = m_pCacheLayer->Get_isVisible();
 }
 
 void CToolUI::Acting_About_State()

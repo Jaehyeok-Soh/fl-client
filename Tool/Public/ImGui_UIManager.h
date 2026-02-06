@@ -58,6 +58,8 @@ public:
 	CToolLayer* Find_Layer(const _string& strTag);
 	CToolUI* Find_UI(const _string& strTag);
 
+	void Clear();
+
 private:
 	CGameInstance* m_pGameInstance = { nullptr };
 	vector<CToolCanvas*> m_vecCanvas;

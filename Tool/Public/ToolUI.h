@@ -99,6 +99,7 @@ public:
 	const DTO::TUI_GenericUIData& Get_Data()const { return m_tUIData; }
 	DTO::TUI_GenericUIData& Get_Data_Ref() { return m_tUIData; }
 
+	_float& Get_Alpha_Ref() { return m_fFade_ResultAlpha; }
 	_bool Get_isAction() const { return m_isAction; }
 	_bool Get_isDisable() const { return m_isDisable; }
 

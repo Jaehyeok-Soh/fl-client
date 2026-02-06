@@ -22,7 +22,7 @@ CToolCanvas::CToolCanvas(ID3D11Device* pDevice, ID3D11DeviceContext* pDeviceCont
 }
 
 CToolCanvas::CToolCanvas(const CToolCanvas& rhs)
-	:CUIObject(rhs)
+	: CUIObject(rhs)
 {
 }
 
@@ -36,6 +36,14 @@ HRESULT CToolCanvas::Initialize_Prototype()
 
 HRESULT CToolCanvas::Initialize(void* pArg)
 {
+	m_pUIManager = { nullptr };
+	m_tCanvasData = {};
+	m_vecToolLayers.clear();
+	m_pCaptureUI = {nullptr};
+	m_pHoveringUI = { nullptr };
+	m_ArrReleasedUI = {nullptr};
+
+
 	TOOLCANVAS_DESC* pDesc = static_cast<TOOLCANVAS_DESC*>(pArg);
 	m_strTag = pDesc->strTag;
 	m_iClientLevelIndex = pDesc->iClientLevelIndex;
@@ -66,7 +74,6 @@ HRESULT CToolCanvas::Awake(const _uint iCurrentLevelID)
 
 	if (FAILED(m_pDevice->CreateInputLayout(VertexPositionColor::InputElements, VertexPositionColor::InputElementCount, pShaderInput, iShaderInputLenght, &m_pInputLayout)))
 		return E_FAIL;
-
 	return S_OK;
 }
 
@@ -413,6 +420,11 @@ _bool CToolCanvas::Export_Data(DTO::ECategory eCategory, CDataDocumentBase* pDoc
 	return TRUE;
 }
 
+void CToolCanvas::Clear()
+{
+	m_vecToolLayers.clear();
+}
+
 CToolCanvas* CToolCanvas::Create(EToolObjectType eType, ID3D11Device* pDevice, ID3D11DeviceContext* pDeviceContext)
 {
 	CToolCanvas* pInstance = new CToolCanvas(pDevice, pDeviceContext);
@@ -441,13 +453,7 @@ void CToolCanvas::Free()
 	Safe_Delete(m_pBatch);
 	Safe_Delete(m_pEffect);
 	Safe_Release(m_pInputLayout);
-	for (auto* p : m_vecToolLayers)
-	{
-		if (nullptr == p)
-			continue;
-		Safe_Release(p);
-	}
-	m_vecToolLayers.clear();
+	Clear();
 	Super::Free();
 }
 

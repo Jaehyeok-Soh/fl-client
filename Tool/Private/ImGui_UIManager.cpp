@@ -283,6 +283,29 @@ CToolUI* CImGui_UIManager::Find_UI(const _string& strTag)
 	return iter->second;
 }
 
+void CImGui_UIManager::Clear()
+{
+	m_iCurCanvasIndex = {};
+	m_iCurLayerIndex = {};
+	m_iCurUIIndex = {};
+	vector<_string> VecLayerTag;
+	for (const auto* pCanvas : m_vecCanvas)
+	{
+		VecLayerTag.push_back(pCanvas->Get_Tag() + "_Layer");
+	}
+
+	m_MapCanvasCache.clear();
+	m_MapLayerCache.clear();
+	m_MapUICache.clear();
+
+	m_vecCanvas.clear();
+
+	for (_string strLayerTag : VecLayerTag)
+	{
+		m_pGameInstance->Clear_Layer(ENUM_TO_UINT(ELevelType::UI), Engine_Utils::ToWString(strLayerTag));
+	}
+}
+
 void CImGui_UIManager::Free()
 {
 	Safe_Release(m_pGameInstance);

@@ -70,6 +70,8 @@ public:
 	void Set_CaptureUI(CToolUI* pUI) { m_pCaptureUI = pUI; }
 	const DTO::TUI_CanvasData& Get_Data()const { return m_tCanvasData; }
 	DTO::TUI_CanvasData& Get_Data_Ref() { return m_tCanvasData; }
+
+	void Clear();
 private:
 	PrimitiveBatch<DirectX::VertexPositionColor>* m_pBatch = { nullptr };
 	BasicEffect* m_pEffect = { nullptr };
@@ -87,6 +89,7 @@ private:
 	array<CToolUI*, 2> m_ArrReleasedUI = {nullptr};
 	_bool m_isPreUIPressing = { FALSE };
 	_bool m_isPreHovering = { FALSE };
+
 public:
 	static CToolCanvas* Create(EToolObjectType eType, ID3D11Device* pDevice, ID3D11DeviceContext* pDeviceContext);
 	CGameObject* Clone(void* pArg);
