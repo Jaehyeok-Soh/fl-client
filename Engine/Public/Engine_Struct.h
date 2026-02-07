@@ -227,18 +227,6 @@ namespace Engine
 		SimpleMath::Vector3 Padding0 = {};
 	}CS_MU_BONEIDX;
 
-	// 가변 데이터 : gpu
-	typedef struct tagBone_Mu_Element
-	{
-		SimpleMath::Vector3 vScale = { 1.f,1.f,1.f };
-		float  Padding0 = {};
-
-		SimpleMath::Vector4 vQuat = {};
-
-		SimpleMath::Vector3 vTranslation = {};
-		float  Padding1 = {};
-	}CS_MU_BONESRT;
-
 	// output : 만약 바로 vs로 넘긴다면 필요 없지만
 	// 충돌이나 여기 저기에서 사용할 수 있어서 일단 만들어 둠
 	typedef struct tagBone_Output
@@ -273,13 +261,10 @@ namespace Engine
 	// 가변 데이터 : cpu
 	typedef struct tagBone_Mu_Track
 	{
-		SimpleMath::Vector3 vScale = { 1.f,1.f,1.f };
-		float  Padding0;
+		float				fCurTrackPosition = { 0 };
+		unsigned int		iAnimIndex = { 0 };
 
-		SimpleMath::Vector4 vQuat = {};
-
-		SimpleMath::Vector3 vTranslation = {};
-		float  Padding1;
+		SimpleMath::Vector2  Padding0;
 	}CS_MU_TRACK;
 
 	// output
@@ -297,19 +282,19 @@ namespace Engine
 
 #pragma region ANIM_Blendd_CS
 	// 불변 데이터
-	typedef struct tagAnimE_Immu_KeyFrame
+	typedef struct tagAnimB_Immu_Root
 	{
 		int     iRootMotionBoneIndex = {-1}; // root motion일 경우 tralation을 0으로 만들기 위함
 
 		SimpleMath::Vector3  Padding0 = {};
-	}CS_IMMU_ANIM_KEYFRAME;
+	}CS_IMMU_ANIM_ROOT;
 
 	// 가변 데이터
-	typedef struct tagAnimE_Immu_ChannelData
+	typedef struct tagAnimB_Immu_Ratio
 	{
 		float   fRatio						= { 0.f };
 		SimpleMath::Vector3  Padding0		= {};
-	}CS_IMMU_CHANNELDATA;
+	}CS_MU_ANIM_RATIO;
 
 	// output
 	//typedef struct tagBone_Output
@@ -325,6 +310,8 @@ namespace Engine
 #pragma endregion
 
 #pragma endregion
+
+
 	union COLLIDER_ID
 	{
 		struct

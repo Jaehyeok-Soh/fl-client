@@ -34,7 +34,7 @@ struct MU_ELEMENT
     float   fCurTrackPosition;
     uint    iAnimIndex;
     
-    float2  vPadding2;
+    float2 Padding0;
 };
 
 // out put
