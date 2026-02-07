@@ -235,6 +235,15 @@
     <Filter Include="07. System\02. Debug_ImGui\Layout\Frame">
       <UniqueIdentifier>{d522fe25-0bdb-43db-847a-41084decceb6}</UniqueIdentifier>
     </Filter>
+    <Filter Include="04. Shaders\ComputeShaders">
+      <UniqueIdentifier>{f29a8226-048f-4c41-b7e7-685b07e919a6}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="04. Shaders\ComputeShaders\Animation">
+      <UniqueIdentifier>{e1116719-99e0-40e9-9464-40e6a3d04d71}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="04. Shaders\ComputeShaders\Effect">
+      <UniqueIdentifier>{a5cd0610-f7dc-4f6d-ba0f-ebf5e8e2dd1e}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="targetver.h">
@@ -759,13 +768,13 @@
       <Filter>04. Shaders\ComputeShader_Labs</Filter>
     </FxCompile>
     <FxCompile Include="..\..\Shaders\ComShader_BoneUpdate.hlsl">
-      <Filter>04. Shaders\ComputeShader_Labs</Filter>
-    </FxCompile>
-    <FxCompile Include="..\..\Shaders\ComShader_AnimBlend.hlsl">
-      <Filter>04. Shaders\ComputeShader_Labs</Filter>
+      <Filter>04. Shaders\ComputeShaders\Animation</Filter>
     </FxCompile>
     <FxCompile Include="..\..\Shaders\ComShader_AnimEvaluate.hlsl">
-      <Filter>04. Shaders\ComputeShader_Labs</Filter>
+      <Filter>04. Shaders\ComputeShaders\Animation</Filter>
+    </FxCompile>
+    <FxCompile Include="..\..\Shaders\ComShader_AnimBlend.hlsl">
+      <Filter>04. Shaders\ComputeShaders\Animation</Filter>
     </FxCompile>
   </ItemGroup>
 </Project>
