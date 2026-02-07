@@ -35,6 +35,11 @@ struct BONE_OUTPUT
 };
 
 
+cbuffer BoneGroupCB
+{
+    uint g_iGroupBoneCount;
+};
+
 StructuredBuffer<IMMU_ELEMENT>  IMMU_BONEDATA;
 StructuredBuffer<MU_ELEMENT>    MU_INDEXES;
 StructuredBuffer<MU_SRT>        MU_SRTS;
@@ -49,6 +54,9 @@ void CS_Main(uint3 id : SV_DispatchThreadID)
     // 알맞는 인덱스 들고옴
     uint iGroupIdx = id.x; // group 내에 idx
     uint iBoneIdx = MU_INDEXES[iGroupIdx].iMyIdx;
+    
+    if (iGroupIdx >= g_iGroupBoneCount)
+        return;
 
     int iParentIdx = IMMU_BONEDATA[iBoneIdx].iParentIndex;
     

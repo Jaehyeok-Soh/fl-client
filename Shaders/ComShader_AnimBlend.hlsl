@@ -5,14 +5,6 @@
 // 그 두개의 transform을 선형 보간 한다
 // 뼈 기준으로 들어옴
 
-// 불변 데이터
-struct IMMU_ELEMENT
-{
-    int     iRootMotionBoneIndex; // root motion일 경우 tralation을 0으로 만들기 위함
-    
-    float3  Padding0;
-};
-
 // 가변 데이터 : gpu
 struct MU_SRT
 {
@@ -26,10 +18,11 @@ struct MU_SRT
 };
 
 // 가변 데이터 : cpu
-struct MU_ELEMENT_ONCE
+struct MU_ELEMENT_ONCE  
 {
+    int     iRootMotionBoneIndex; // root motion일 경우 tralation을 0으로 만들기 위함
     float   fRatio;
-    float3  Padding0;
+    float2  Padding0;
 };
 
 // out put
@@ -42,11 +35,6 @@ struct BLENDANIM_OUTPUT
     
     float3  vTranslation;
     float   Padding1;
-};
-
-cbuffer IMMU_ROOTMOTION
-{
-    IMMU_ELEMENT g_InputIMMU;
 };
 
 cbuffer MU_RATIO
@@ -71,7 +59,7 @@ void CS_Main(uint3 id : SV_DispatchThreadID)
     vScale = lerp(MU_PRETRANSFORMS[iBoneIdx].vScale, MU_CURTRANSFORMS[iBoneIdx].vScale, g_InputMU.fRatio);
     vQuat = normalize(lerp(MU_PRETRANSFORMS[iBoneIdx].vQuat, MU_CURTRANSFORMS[iBoneIdx].vQuat, g_InputMU.fRatio));
     
-    if (g_InputIMMU.iRootMotionBoneIndex == iBoneIdx)
+    if (g_InputMU.iRootMotionBoneIndex == iBoneIdx)
         vTranslation = float3(0.f, 0.f, 0.f);
     else
         vTranslation = lerp(MU_PRETRANSFORMS[iBoneIdx].vTranslation, MU_CURTRANSFORMS[iBoneIdx].vTranslation, g_InputMU.fRatio);
