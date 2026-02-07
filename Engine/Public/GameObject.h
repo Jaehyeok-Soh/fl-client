@@ -83,6 +83,7 @@ public:
 public:
 	void Set_Name(const string& strName);
 	void Set_Name(const wstring& wstrName);
+	const string& Get_Name() const { return m_strName; }
 private:
 	void Update_Script_Components(const _float fTimeDelta);
 	void Safe_Release_Component();

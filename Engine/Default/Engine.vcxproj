@@ -252,6 +252,7 @@
     <ClCompile Include="..\private\ObjectPool_Manager.cpp" />
     <ClCompile Include="..\Private\Object_Manager.cpp" />
     <ClCompile Include="..\private\ObjectPool.cpp" />
+    <ClCompile Include="..\private\Octree_Manager.cpp" />
     <ClCompile Include="..\Private\PartObject.cpp" />
     <ClCompile Include="..\Private\PhysicsCCT.cpp" />
     <ClCompile Include="..\Private\PhysicsCollider.cpp" />
@@ -390,6 +391,7 @@
     <ClInclude Include="..\public\ObjectPool_Manager.h" />
     <ClInclude Include="..\Public\Object_Manager.h" />
     <ClInclude Include="..\public\ObjectPool.h" />
+    <ClInclude Include="..\public\Octree_Manager.h" />
     <ClInclude Include="..\Public\PartObject.h" />
     <ClInclude Include="..\Public\PhysicsCCT.h" />
     <ClInclude Include="..\Public\PhysicsCollider.h" />

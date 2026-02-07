@@ -4,6 +4,7 @@
 #include "Font_Manager.h"
 #include "Event_Manager.h"
 #include "ObjectPool_Manager.h"
+#include "Octree_Manager.h"
 #include "GameDataManager.h"
 #include "Collision_Manager.h"
 #include "Constant_Buffer.h"
@@ -118,6 +119,9 @@ HRESULT CGameInstance::Initialize_Engine(const ENGINE_DESC& Engine_Desc, _Inout_
 	if (!(m_pUIAction_Registry = CUIAction_Registry::Create()))
 		return E_FAIL;
 
+	if (!(m_pOctree_Manager = COctree_Manager::Create()))
+		return E_FAIL;
+
 	return S_OK;
 }
 
@@ -184,6 +188,7 @@ void CGameInstance::Clear(_uint iLevelID)
 {
 	m_pDataRepository->Clear(iLevelID);
 	m_pObjectPool_Manager->All_Despawn_StaticLevel();
+	m_pOctree_Manager->Clear();
 	m_pObject_Manager->Clear(iLevelID);
 	m_pObjectPool_Manager->Clear(iLevelID);
 	m_pPrototype_Manager->Clear(iLevelID);
@@ -660,6 +665,11 @@ const CDataDocumentBase* CGameInstance::Get_Document(_uint iLevelID, DTO::ECateg
 #pragma endregion
 
 
+HRESULT CGameInstance::Ready_Octree(const OCTREE_DESC& desc)
+{
+	return m_pOctree_Manager->Initialize(desc);
+}
+
 void CGameInstance::Push_RenderObject(RENDER_CATEGORY eCategory, CGameObject* pGO)
 {
 	m_pRender_Manager->Push_RenderObject(eCategory, pGO);
@@ -726,6 +736,7 @@ void CGameInstance::Destroy_Engine()
 	Safe_Release(m_pFont_Manager);
 	Safe_Release(m_pRenderTarget_Manager);
 	Safe_Release(m_pCamera_Manager);
+	Safe_Release(m_pOctree_Manager);
 	Safe_Release(m_pObject_Manager);
 	Safe_Release(m_pObjectPool_Manager);
 	Safe_Release(m_pCollision_Manager);
@@ -921,6 +932,7 @@ void CGameInstance::Free()
 	Safe_Release(m_pRender_Manager);
 	Safe_Release(m_pRenderTarget_Manager);
 	Safe_Release(m_pCamera_Manager);
+	Safe_Release(m_pOctree_Manager);
 	Safe_Release(m_pObject_Manager);
 	Safe_Release(m_pObjectPool_Manager);
 	Safe_Release(m_pCollision_Manager);

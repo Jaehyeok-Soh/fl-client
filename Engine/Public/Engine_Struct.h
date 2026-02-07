@@ -339,6 +339,15 @@ namespace Engine
 		vector<SimpleMath::Vector3> vScale_Isolated;
 	}PHYSICSRIGIDBODY_DESC;
 
+	typedef struct tagOctreeDesc
+	{
+		BoundingBox rootBounds;
+		int iMaxDepth{ 5 };
+		float fLooseFactor{ 1.3f };
+		float fMinNodeSizeXZ{ 2.0f }; // Extents와 비교할거라 중심에서의 거리
+		size_t iMaxItemsPerLeaf{ 64 };
+	}OCTREE_DESC;
+
 	typedef struct tagPass
 	{
 		ID3DX11EffectPass* pPass = { nullptr };

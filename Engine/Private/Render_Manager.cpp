@@ -6,6 +6,7 @@
 #include "VIBuffer_Rect_Tex.h"
 #include "Shader.h"
 #include "RenderTarget.h"
+#include "Octree_Manager.h"
 #include "GameInstance.h"
 
 CRender_Manager::CRender_Manager(ID3D11Device* pDevice, ID3D11DeviceContext* pDeviceContext)
@@ -301,6 +302,14 @@ HRESULT CRender_Manager::Render_NoneBlend()
 		return E_FAIL;
 
 	BoundingFrustum* pFrustrum = m_pGameInstance->Get_BoundingFrustrum_World();
+
+	vector<CGameObject*> vecVisible;
+#ifdef _DEBUG
+	OCTREE_QUERY_STATS tStats{};
+	// m_pGameInstance->m_pOctree_Manager->Query_Visible(*pFrustrum)
+#else
+
+#endif
 
 	for (CGameObject* pElement : m_renderObjects[ENUM_TO_UINT(RENDER_CATEGORY::NONEBLEND)])
 	{

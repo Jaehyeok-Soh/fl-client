@@ -34,11 +34,13 @@ NS_BEGIN(Engine)
 enum class CameraType;
 struct DelegateHandle;
 class CCollider;
+class COctree;
 class CGameObject;
 class CCameraMan;
 class CLayer;
 class CFxEffectAsset;
 class CFxShaderVariant;
+
 
 class ENGINE_DLL CGameInstance final : public CBase
 {
@@ -215,6 +217,10 @@ public:
 	HRESULT Regist_Document(_uint iLevelID, DTO::ECategory eCategory);
 #pragma endregion
 
+#pragma region OCTREE_MANAGER
+	HRESULT Ready_Octree(const OCTREE_DESC& desc);
+#pragma endregion
+
 #pragma region RENDER_MANAGER
 	inline void Push_RenderObject(RENDER_CATEGORY eCategory, CGameObject* pGO);
 	inline void Push_DebugComponent(class CComponent* pComp);
@@ -324,6 +330,7 @@ private:
 	class CDataRepository* m_pDataRepository = { nullptr };
 	class CTimer_Manager* m_pTimer_Manager = { nullptr };
 	class CSound_Manager* m_pSound_Manager = { nullptr };
+	class COctree_Manager* m_pOctree_Manager = { nullptr };
 	class CFont_Manager* m_pFont_Manager = { nullptr };
 	class CGraphic_Device* m_pGraphic_Device = { nullptr };
 	class CLevel_Manager* m_pLevel_Manager = { nullptr };
@@ -348,6 +355,8 @@ private:
 	std::mt19937_64 m_rng;
 public:
 	virtual void			Free() override;
+
+	friend class CRender_Manager;
 };
 
 #pragma region RESOURCE_MANAGER

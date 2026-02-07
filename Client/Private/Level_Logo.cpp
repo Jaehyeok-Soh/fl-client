@@ -80,13 +80,13 @@ HRESULT CLevel_Logo::Awake(const _uint iLevelID)
 	if (FAILED(Ready_Camera_Setting(iLevelID)))
 		return E_FAIL;
 
+	m_eCursorMode = ECursorMode::LockedHiddenCenter;
+	m_pGameInstance->Request_CursorMode(m_eCursorMode);
+
 	CLOG_TRACE(L"테스트, Logo Awake() 확인");
 	CLOG_INFO(L"테스트, Logo Awake() 확인");
 	CLOG_WARN(L"테스트, Logo Awake() 확인");
 	CLOG_ERROR(L"테스트, Logo Awake() 확인");
-
-	m_eCursorMode = ECursorMode::LockedHiddenCenter;
-	m_pGameInstance->Request_CursorMode(m_eCursorMode);
 	return S_OK;
 }
 
@@ -281,6 +281,13 @@ HRESULT CLevel_Logo::Ready_Camera_Setting(const _uint iLevelIndex)
 	CGameObject* pPlayer = m_pGameInstance->Get_GameObject_Front(iLevelIndex, g_wszPlayerLayer);
 	m_pGameInstance->Change_Target(pPlayer);
 	m_pGameInstance->Ready_Frustrum();
+	return S_OK;
+}
+
+HRESULT CLevel_Logo::Ready_Octree()
+{
+	OCTREE_DESC desc{};
+	// desc.rootBounds = BoundingBox(, );
 	return S_OK;
 }
 
