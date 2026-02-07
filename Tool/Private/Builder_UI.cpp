@@ -114,7 +114,7 @@ HRESULT CBuilder_UI::Create_GenericUIDTO(const DTO::TUI_GenericUIData& data)
 	Desc.strInitTextureTag = data.strTextureTag;
 	Desc.iInitTextureIndex = data.iTextureIndex;
 	Desc.strCanvasName = data.strCanvasName;
-	Desc.isInitVisible = TRUE;
+	Desc.isInitVisible = data.isVisible;
 
 	auto iterCanvas = m_pCanvasCache.find(Desc.strCanvasName);
 	if (iterCanvas != m_pCanvasCache.end())

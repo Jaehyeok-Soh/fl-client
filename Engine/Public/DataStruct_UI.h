@@ -216,6 +216,8 @@ struct TUI_GenericUIData
 	_float fPosZ;
 	_string strTextureTag;
 	uint32_t iTextureIndex;
+	_bool isVisible;
+
 };
 
 struct TUI_CanvasData

@@ -266,12 +266,20 @@ HRESULT CLoader::Loading_For_UI()
 	// Resource Component
 	//=================
 
-	// For. Prototype_Component_Button_Test_Texture
+	// For. Prototype_Component_UI_Playable_Texture
+	{
+		CTexture::TEXTURE_COMPONENT_ORIGIN_DESC textureDesc = {};
+		textureDesc.iTextureCount = 11;
+		textureDesc.wstrTexturePath = L"../../Resources/Textures/UI/Playable/%d.png";
+		if (FAILED(m_pGameInstance->Add_Prototype(ENUM_TO_UINT(ELevelType::UI), L"Prototype_Component_UI_Playable_Texture", CTexture::Create(&textureDesc))))
+			return E_FAIL;
+	}
+	// For. Prototype_Component_UI_Menu_Texture
 	{
 		CTexture::TEXTURE_COMPONENT_ORIGIN_DESC textureDesc = {};
 		textureDesc.iTextureCount = 24;
-		textureDesc.wstrTexturePath = L"../../Resources/Textures/UI/%d.png";
-		if (FAILED(m_pGameInstance->Add_Prototype(ENUM_TO_UINT(ELevelType::UI), L"Prototype_Component_UI_Texture", CTexture::Create(&textureDesc))))
+		textureDesc.wstrTexturePath = L"../../Resources/Textures/UI/Menu/%d.png";
+		if (FAILED(m_pGameInstance->Add_Prototype(ENUM_TO_UINT(ELevelType::UI), L"Prototype_Component_UI_Menu_Texture", CTexture::Create(&textureDesc))))
 			return E_FAIL;
 	}
 

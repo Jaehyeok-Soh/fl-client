@@ -45,7 +45,8 @@ float4 g_vColor_B;
 
 uint g_iGlobalMask = 0;
 
-float g_fHpBarRatio;
+float g_AlphaRatio;
+float g_ProgressRatio;
 float g_fU0;
 float g_fU1;
 

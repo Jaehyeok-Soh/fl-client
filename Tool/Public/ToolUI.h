@@ -8,11 +8,11 @@ NS_END
 
 NS_BEGIN(Tool)
 class CToolCanvas;
-class CToolLayer;
 class CToolUI;
 
 class CUIAction_Scheduler;
 class CUIAction_Player;
+
 class CToolUI final : public CUIObject
 {
 	using Super = CUIObject;
@@ -21,8 +21,6 @@ public:
 	typedef struct tagToolUIDesc : public Super::UIOBJECT_DESC
 	{
 		CToolCanvas* pCacheCanvas = { nullptr };
-		CToolLayer* pCacheLayer = { nullptr };
-
 		_string strName;
 
 		_string strCanvasName;
@@ -102,6 +100,10 @@ public:
 	DTO::TUI_GenericUIData& Get_Data_Ref() { return m_tUIData; }
 
 	_float& Get_Alpha_Ref() { return m_fFade_ResultAlpha; }
+	_bool& Get_InitVisible() { return m_isVisible; }
+
+	HRESULT Request_Change_Texture(const _wstring& wstrTextureTag);
+
 	_bool Get_isAction() const { return m_isAction; }
 	_bool Get_isDisable() const { return m_isDisable; }
 
@@ -109,6 +111,8 @@ public:
 	array< vector<DTO::TUI_EventBindData>, ENUM_TO_UINT(DTO::EUIEvent::END)>* Safe_Access_AllEventData();
 
 	void  Set_MoveOffset(const Vec3& offset) { m_vMoveOffset = offset; }
+	void  Set_ProgressUV(const _float fProgress) { m_fProgress_UV = fProgress; }
+
 #pragma endregion
 
 	/* Action */
@@ -124,6 +128,8 @@ private:
 	uint32_t m_iTextureIndex = {};
 
 	Vec3 m_vMoveOffset = {};
+	_float m_fFade_ResultAlpha = {1.f};
+	_float m_fProgress_UV = { 1.f };
 
 	/* Set_isDisable */
 	_bool m_isDisable = { false };
@@ -133,7 +139,6 @@ private:
 	_bool m_isPlaying_Fade = { false };
 	_float m_fFade_StartAlpha = {};
 	_float m_fFade_TargetAlpha = {};
-	_float m_fFade_ResultAlpha = {1.f};
 	_float m_fFade_Duration = {};
 	_float m_fFade_TimeAcc = {};
 	/* Start_Fade */
@@ -153,7 +158,6 @@ private:
 	uint32_t m_iLayerIndex = {};
 
 	CToolCanvas* m_pCacheCanvas = { nullptr };
-	CToolLayer* m_pCacheLayer = { nullptr };
 
 	ERectTransform m_eRectTransformType = { ERectTransform::C };
 	_wstring m_wstrTextureTag = {};
@@ -173,7 +177,6 @@ private:
 
 	CUIAction_Scheduler* m_pScheduler = { nullptr };
 	CUIAction_Player* m_pActionPlayer = { nullptr };
-
 
 public:
 	static CToolUI* Create(EToolObjectType eType, ID3D11Device* pDevice, ID3D11DeviceContext* pDeviceContext);

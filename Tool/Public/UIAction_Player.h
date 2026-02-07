@@ -22,6 +22,14 @@ public:
 		_float	fAlpha;
 	}MOVE_DESC;
 
+	typedef struct tagProgressStateDesc
+	{
+		_float fStartUV;
+		_float fTargetUV;
+		_float fDuration;
+		_float fAlpha;
+	}PROGRESS_DESC;
+
 private:
 	CUIAction_Player();
 	CUIAction_Player(const CUIAction_Player& rhs);
@@ -48,6 +56,12 @@ private:
 	_float	m_fLerpMovement_TimeAcc = {};
 	_bool	m_isMoved = { false };
 	Vec3	m_vMoveOffset = {};
+#pragma endregion
+
+#pragma region /////Progress Bar/////////////////////////////////////////////////////////
+public:
+	void Start_Progress(PROGRESS_DESC* pDesc);
+
 #pragma endregion
 
 

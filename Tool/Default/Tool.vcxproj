@@ -223,7 +223,6 @@
     <ClInclude Include="..\Public\UEMapdataLoader.h" />
     <ClInclude Include="..\Public\UEMapdataParser.h" />
     <ClInclude Include="..\Public\UITargetAction_Tool.h" />
-    <ClInclude Include="..\Public\UIValue_Binder.h" />
     <ClInclude Include="..\Public\UI_Hierachy.h" />
     <ClInclude Include="..\Public\UI_Inspector.h" />
     <ClInclude Include="..\Public\UI_Maker.h" />
@@ -347,7 +346,6 @@
     <ClCompile Include="..\Private\Tool_Defines.cpp" />
     <ClCompile Include="..\Private\Tool_Structs.cpp" />
     <ClCompile Include="..\Private\UITargetAction_Tool.cpp" />
-    <ClCompile Include="..\Private\UIValue_Binder.cpp" />
     <ClCompile Include="..\Private\UI_Hierachy.cpp" />
     <ClCompile Include="..\Private\UI_Inspector.cpp" />
     <ClCompile Include="..\Private\UI_Maker.cpp" />

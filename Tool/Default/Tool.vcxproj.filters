@@ -247,9 +247,6 @@
     <Filter Include="04. Component\UI\Move Action">
       <UniqueIdentifier>{a226d932-f8be-47e4-8cde-55b605295ae1}</UniqueIdentifier>
     </Filter>
-    <Filter Include="04. Component\UI\Value Binder">
-      <UniqueIdentifier>{f8361268-6c1c-44e7-a1f9-5c9e25b3f307}</UniqueIdentifier>
-    </Filter>
     <Filter Include="02. GameObjects\UI\02.UI">
       <UniqueIdentifier>{6a558198-77c1-41fb-9345-05c1fc4f9daf}</UniqueIdentifier>
     </Filter>
@@ -507,9 +504,6 @@
     <ClInclude Include="..\Public\UIAction_Player.h">
       <Filter>04. Component\UI\Move Action</Filter>
     </ClInclude>
-    <ClInclude Include="..\Public\UIValue_Binder.h">
-      <Filter>04. Component\UI\Value Binder</Filter>
-    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <Image Include="small.ico">
@@ -749,9 +743,6 @@
     </ClCompile>
     <ClCompile Include="..\Private\UIAction_Player.cpp">
       <Filter>04. Component\UI\Move Action</Filter>
-    </ClCompile>
-    <ClCompile Include="..\Private\UIValue_Binder.cpp">
-      <Filter>04. Component\UI\Value Binder</Filter>
     </ClCompile>
   </ItemGroup>
 </Project>

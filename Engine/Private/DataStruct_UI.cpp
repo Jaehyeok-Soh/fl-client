@@ -46,6 +46,7 @@ void to_json(json& j, const TUI_GenericUIData& data)
 		{ "fPosZ", data.fPosZ },
 		{ "strTextureTag", data.strTextureTag },
 		{ "iTextureIndex", data.iTextureIndex },
+		{ "isVisible", data.isVisible },
 	};
 }
 void from_json(const json& j, TUI_GenericUIData& data)
@@ -60,6 +61,7 @@ void from_json(const json& j, TUI_GenericUIData& data)
 	j.at("fPosZ").get_to(data.fPosZ);
 	j.at("strTextureTag").get_to(data.strTextureTag);
 	j.at("iTextureIndex").get_to(data.iTextureIndex);
+	j.at("isVisible").get_to(data.isVisible);
 }
 void to_json(json& j, const TUI_CanvasData& data)
 {

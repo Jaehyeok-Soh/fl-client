@@ -15,7 +15,6 @@
 
 #include "UIAction_Scheduler.h"
 #include "UIAction_Player.h"
-#include "UIValue_Binder.h"
 #include "UIAction_Registry.h"
 #include "GameInstance.h"
 
@@ -58,9 +57,6 @@ HRESULT CToolUI::Initialize(void* pArg)
 	m_fZ = pDesc->fZ;
 
 	m_pCacheCanvas = pDesc->pCacheCanvas;
-	m_pCacheLayer = pDesc->pCacheLayer;
-
-
 
 	if (FAILED(Super::Initialize(pArg)))
 		return E_FAIL;
@@ -317,9 +313,6 @@ HRESULT CToolUI::Ready_Components(TOOLUI_DESC* pDesc)
 			return E_FAIL;
 	}
 
-	CUIValue_Binder::VALUE_BINDER_DESC Desc = {};
-
-
 	/* 새로추가 */
 
 	return S_OK;
@@ -368,7 +361,10 @@ HRESULT CToolUI::Bind_ShaderResources()
     if (FAILED(Get_Component<CTexture>()->Bind_ShaderResource(pShader, m_iTextureIndex)))
         return E_FAIL;
 
-	if (FAILED(pShader->Get_Variable("g_fHpBarRatio")->SetRawValue(&m_fFade_ResultAlpha, 0, sizeof(_float))))
+	if (FAILED(pShader->Get_Variable("g_AlphaFade")->SetRawValue(&m_fFade_ResultAlpha, 0, sizeof(_float))))
+		return E_FAIL;
+
+	if (FAILED(pShader->Get_Variable("g_ProgressRatio")->SetRawValue(&m_fProgress_UV, 0, sizeof(_float))))
 		return E_FAIL;
 
     return S_OK;
@@ -464,6 +460,17 @@ void CToolUI::Sync_Data()
 	m_tUIData.fPosZ					= m_fZ;
 	m_tUIData.strTextureTag			= Engine_Utils::ToString(m_wstrTextureTag);
 	m_tUIData.iTextureIndex			= m_iTextureIndex;
+	m_tUIData.isVisible = m_isVisible;
+}
+
+HRESULT CToolUI::Request_Change_Texture(const _wstring& wstrTextureTag)
+{
+	auto* pTexture = dynamic_cast<CComponent*>(m_pGameInstance->
+		Clone_Prototype(EPrototypeType::COMPONENT, ENUM_TO_UINT(ELevelType::UI), wstrTextureTag, nullptr));
+	if (nullptr == pTexture)
+		return E_FAIL;
+
+	Change_Component<CTexture>(dynamic_cast<CTexture*>(pTexture));
 }
 
 vector<DTO::TUI_EventBindData>* CToolUI::Safe_Access_EventData(DTO::EUIEvent EventType)

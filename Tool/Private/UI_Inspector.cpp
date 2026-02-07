@@ -152,6 +152,7 @@ void CUI_Inspector::Input_RectTransform()
 	}
 
 	ImGui::InputFloat("Alpha", &m_pSelectedUI->Get_Alpha_Ref());
+	ImGui::Checkbox("Visible", &m_pSelectedUI->Get_InitVisible());
 
 	ImGui::EndChild();
 	ImGui::PopID();
@@ -185,7 +186,9 @@ void CUI_Inspector::Input_TextureTag()
 			{
 				_wstring wstrFolderName = f.parent_path().filename().wstring();
 				uint32_t iFileIndex = std::stoi( f.stem().wstring());
-
+				_wstring wstrTextureTag = L"Prototype_Component_UI_" + wstrFolderName + L"_Texture";
+				m_pSelectedUI->Set_TextureTag(wstrTextureTag);
+				m_pSelectedUI->Request_Change_Texture(wstrTextureTag);
 				m_pSelectedUI->Set_TextureIndex(iFileIndex);
 			}
 		}

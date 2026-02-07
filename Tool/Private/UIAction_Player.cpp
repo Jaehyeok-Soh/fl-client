@@ -89,6 +89,11 @@ void CUIAction_Player::Apply_Lerp_Movement()
 	m_pOwner->Set_MoveOffset(m_vMoveOffset);
 }
 
+void CUIAction_Player::Start_Progress(PROGRESS_DESC* pDesc)
+{
+
+}
+
 CUIAction_Player* CUIAction_Player::Create(ACTION_PLAYER_DESC* pDesc)
 {
 	CUIAction_Player* pInstance = new CUIAction_Player();
