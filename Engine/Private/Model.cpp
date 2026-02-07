@@ -549,7 +549,7 @@ void CModel::Blend_Animation(_float fTimeDelta, _float fRatio, CTransform* pOwne
 		m_vecAnimations[m_iPrevAnimIndex]->SetUp_PoseDatasForBlending(m_vecPrevAnimationPose, fTimeDelta, nullptr, pOwnerPhyCCT);
 		m_vecAnimations[m_iCurrentAnimIndex]->SetUp_PoseDatasForBlending(m_vecCurrAnimationPose, fTimeDelta, nullptr, pOwnerPhyCCT);
 	}
-
+	
 	else
 	{
 		m_vecAnimations[m_iPrevAnimIndex]->SetUp_PoseDatasForBlending(m_vecPrevAnimationPose, fTimeDelta, m_pOwner->Get_Component<CTransform>(), m_pOwner->Get_Component<CPhysicsCCT>());
@@ -610,12 +610,12 @@ HRESULT CModel::Build_AnimationIndexTable()
 	return S_OK;
 }
 
-void CModel::Begin_AnimationPlayState(AnimationPlayState eState)
+void CModel::Begin_AnimationPlayState(AnimationPlayState eState, CComputeShader* pAnimEComShader)
 {
 	switch (eState)
 	{
 	case Engine::CModel::PLAY:
-		Play_Begin();
+		Play_Begin(pAnimEComShader);
 		break;
 	case Engine::CModel::BLEND:
 		Blend_Begin();
@@ -656,8 +656,10 @@ void CModel::Change_AnimationPlayState(AnimationPlayState eState)
 	m_eCurrentAnimationState = eState;
 }
 
-void CModel::Play_Begin()
+void CModel::Play_Begin(CComputeShader* pAnimEComShader)
 {
+	if(pAnimEComShader)
+		m_vecAnimations[m_iCurrentAnimIndex]->Bind_AnimationEData(pAnimEComShader);
 }
 
 void CModel::Play_Update(const _float fTimeDelta, CTransform* pOwnerTransform, CPhysicsCCT* pOwnerPhyCCT)
@@ -738,10 +740,45 @@ void CModel::Update_BoneCombineTransformMatrix(CComputeShader* pBoneComShader)
 	// bone group 별로 디스패치를 한다
 	for (auto& BoneGroup : m_vecBoneGroups)
 	{
+		// 가변 데이터 desc 작성..? 어떻게...??
+
 		// dispatch
 		_uint iGroupX = BoneGroup.size() / 32 + 1;
 		pBoneComShader->Dispatch(iGroupX,1,1);
 	}
+}
+
+void CModel::Blend_Animation(CComputeShader* pBoneComShader, CComputeShader* pAnimEComShader, CComputeShader* pAnimBlendCS, _float fTimeDelta, _float fRatio, CTransform* pOwnerTransform, CPhysicsCCT* pOwnerPhyCCT)
+{
+	if (pOwnerTransform)
+	{
+		m_vecAnimations[m_iPrevAnimIndex]->Update_BlendAnimation(pAnimEComShader, fTimeDelta, nullptr, pOwnerPhyCCT);
+		m_vecAnimations[m_iCurrentAnimIndex]->Update_BlendAnimation(pAnimEComShader, fTimeDelta, nullptr, pOwnerPhyCCT);
+	}
+
+	else
+	{
+		m_vecAnimations[m_iPrevAnimIndex]->Update_BlendAnimation(pAnimEComShader, fTimeDelta, m_pOwner->Get_Component<CTransform>(), m_pOwner->Get_Component<CPhysicsCCT>());
+		m_vecAnimations[m_iCurrentAnimIndex]->Update_BlendAnimation(pAnimEComShader, fTimeDelta, m_pOwner->Get_Component<CTransform>(), m_pOwner->Get_Component<CPhysicsCCT>());
+	}
+
+	Lerp_Animation(pAnimBlendCS, fRatio);
+
+	Update_BoneCombineTransformMatrix(pBoneComShader);
+}
+
+void CModel::Lerp_Animation(CComputeShader* pAnimBlendCS, _float fRatio)
+{
+	// 가변 데이터 작성
+	CS_MU_ANIMB tMuDesc{};
+	tMuDesc.fRatio = fRatio;
+	tMuDesc.iRootMotionBoneIndex = m_iRootBoneIdx;
+
+	pAnimBlendCS->Bind_Compute_BlendMu(tMuDesc);
+
+	// dispatch
+	_uint iGroupX = (m_vecBones.size() + 31) / 32;
+	pAnimBlendCS->Dispatch(iGroupX, 1, 1);
 }
 
 CModel* CModel::Create(ID3D11Device* pDevice, ID3D11DeviceContext* pDeviceContext, void* pArg)

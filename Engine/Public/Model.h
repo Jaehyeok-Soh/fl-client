@@ -97,6 +97,8 @@ public:
 	wstring Get_AnimationName(_uint iIdex) const;
 	void Set_AnimationPlayRate(_uint iIndex, _float fValue);
 	const _float Get_BlentTime()  { return m_fBlendedTime; }
+
+	// load func
 private:
 	HRESULT Load_StaticModel(const wstring& wstrModelName);
 	HRESULT Load_NonAnimModel(const wstring &wstrModelName);
@@ -110,12 +112,12 @@ private:
 
 private:
 	HRESULT Build_AnimationIndexTable();
-	void Begin_AnimationPlayState(AnimationPlayState eState);
+	void Begin_AnimationPlayState(AnimationPlayState eState, CComputeShader* pAnimEComShader = nullptr);
 	void Update_AnimationPlayState(const _float fTimeDelta, CTransform* pOwnerTransform = nullptr, CPhysicsCCT* pOwnerPhyCCT = nullptr);
 	void End_AnimationPlayState(AnimationPlayState eState);
 	void Change_AnimationPlayState(AnimationPlayState eState);
 
-	void Play_Begin();
+	void Play_Begin(CComputeShader* pAnimEComShader = nullptr);
 	void Play_Update(const _float fTimeDelta, CTransform* pOwnerTransform = nullptr, CPhysicsCCT* pOwnerPhyCCT = nullptr);
 	void Play_End();
 
@@ -126,6 +128,10 @@ private:
 private:
 	void Make_BoneGroup();
 	void Update_BoneCombineTransformMatrix(CComputeShader* pBoneComShader);
+	void Blend_Animation(CComputeShader* pBoneComShader, CComputeShader* pAnimEComShader, CComputeShader* pAnimBlendCS
+		,_float fTimeDelta , _float fRatio, CTransform* pOwnerTransform = nullptr, CPhysicsCCT* pOwnerPhyCCT = nullptr);
+	void Lerp_Animation(CComputeShader* pAnimBlendCS, _float fRatio);
+	void Bind_BoneMuData(CComputeShader* pBoneComShader);
 
 private:
 	EModelType m_eType = { EModelType::END };

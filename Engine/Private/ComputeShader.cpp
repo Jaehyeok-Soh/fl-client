@@ -25,6 +25,10 @@ CComputeShader::CComputeShader(const CComputeShader& rhs)
 	, m_pDeviceContext(rhs.m_pDeviceContext)
 	, m_pEffect_Mutable_Element_CBuffer(rhs.m_pEffect_Mutable_Element_CBuffer)
 	, m_pEffect_MutableBuffer(rhs.m_pEffect_MutableBuffer)
+	, m_pAnimE_Mutable_Element_CBuffer(rhs.m_pAnimE_Mutable_Element_CBuffer)
+	, m_pAnimE_MutableBuffer(rhs.m_pAnimE_MutableBuffer)
+	, m_pAnimB_Mutable_Element_CBuffer(rhs.m_pAnimB_Mutable_Element_CBuffer)
+	, m_pAnimB_MutableBuffer(rhs.m_pAnimB_MutableBuffer)
 
 {
 	Safe_AddRef(m_pOwner);
@@ -33,6 +37,12 @@ CComputeShader::CComputeShader(const CComputeShader& rhs)
 	Safe_AddRef(m_pDeviceContext);
 	Safe_AddRef(m_pEffect_Mutable_Element_CBuffer);
 	Safe_AddRef(m_pEffect_MutableBuffer);
+
+	Safe_AddRef(m_pAnimE_Mutable_Element_CBuffer);
+	Safe_AddRef(m_pAnimE_MutableBuffer);
+
+	Safe_AddRef(m_pAnimB_Mutable_Element_CBuffer);
+	Safe_AddRef(m_pAnimB_MutableBuffer);
 }
 
 HRESULT CComputeShader::Initialize_Prototype(void* pArg)
@@ -219,6 +229,15 @@ void CComputeShader::Bind_Compute_EffectData(const EFFECT_PARTICLE_MU_ELEMENT& d
 	m_pEffect_Mutable_Element_CBuffer->Copy_Data(desc);
 }
 
+void CComputeShader::Bind_Compute_Track(const CS_MU_TRACK& desc)
+{
+	m_pAnimE_Mutable_Element_CBuffer->Copy_Data(desc);
+}
+
+void CComputeShader::Bind_Compute_BlendMu(const CS_MU_ANIMB& desc)
+{
+	m_pAnimB_Mutable_Element_CBuffer->Copy_Data(desc);
+}
 
 #pragma endregion
 
@@ -229,6 +248,20 @@ HRESULT CComputeShader::Create_ConstantBuffer()
 	{
 		m_pEffect_Mutable_Element_CBuffer = CConstant_Buffer<EFFECT_PARTICLE_MU_ELEMENT>::Create(m_pDevice, m_pDeviceContext);
 		m_pEffect_MutableBuffer->SetConstantBuffer(m_pEffect_Mutable_Element_CBuffer->Get_Buffer());
+	}
+
+	// AnimE 전용
+	if (m_pAnimE_MutableBuffer = Get_ConstantBuffer("MU_Track"))
+	{
+		m_pAnimE_Mutable_Element_CBuffer = CConstant_Buffer<CS_MU_TRACK>::Create(m_pDevice, m_pDeviceContext);
+		m_pAnimE_MutableBuffer->SetConstantBuffer(m_pAnimE_Mutable_Element_CBuffer->Get_Buffer());
+	}
+
+	// AnimB 전용
+	if (m_pAnimB_MutableBuffer = Get_ConstantBuffer("MU_RATIO"))
+	{
+		m_pAnimB_Mutable_Element_CBuffer = CConstant_Buffer<CS_MU_ANIM_RATIO>::Create(m_pDevice, m_pDeviceContext);
+		m_pAnimB_MutableBuffer->SetConstantBuffer(m_pAnimB_Mutable_Element_CBuffer->Get_Buffer());
 	}
 
 	return S_OK;
@@ -301,6 +334,11 @@ void CComputeShader::Clear_ConstantBuffer()
 	Safe_Release(m_pEffect_Mutable_Element_CBuffer);
 	Safe_Release(m_pEffect_MutableBuffer);
 
+	Safe_Release(m_pAnimE_Mutable_Element_CBuffer);
+	Safe_Release(m_pAnimE_MutableBuffer);
+
+	Safe_Release(m_pAnimB_Mutable_Element_CBuffer);
+	Safe_Release(m_pAnimB_MutableBuffer);
 }
 
 void CComputeShader::Clear_StructBuffer()

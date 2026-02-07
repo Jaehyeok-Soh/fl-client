@@ -87,6 +87,9 @@ public:
 public:
 	// Constant Buffer Àü¿ë
 	void Bind_Compute_EffectData(const EFFECT_PARTICLE_MU_ELEMENT& desc);
+	void Bind_Compute_Track(const CS_MU_TRACK& desc);
+	void Bind_Compute_BlendMu(const CS_MU_ANIMB& desc);
+
 
 public:
 	void	Resize_InputStruct(void* pArg, _uint iElementSize, _uint iNumElements);
@@ -100,8 +103,14 @@ private:
 	ID3DX11EffectUnorderedAccessViewVariable* m_pOutputStructedBuffer_UAV = { nullptr };
 
 	//  ===================   ConstantBuffer   ====================
-	CConstant_Buffer<EFFECT_PARTICLE_MU_ELEMENT>* m_pEffect_Mutable_Element_CBuffer = { nullptr };
-	ID3DX11EffectConstantBuffer* m_pEffect_MutableBuffer = { nullptr };
+	CConstant_Buffer<EFFECT_PARTICLE_MU_ELEMENT>*	m_pEffect_Mutable_Element_CBuffer	= { nullptr };
+	ID3DX11EffectConstantBuffer*					m_pEffect_MutableBuffer				= { nullptr };
+
+	CConstant_Buffer<CS_MU_TRACK>*		m_pAnimE_Mutable_Element_CBuffer	= { nullptr };
+	ID3DX11EffectConstantBuffer*		m_pAnimE_MutableBuffer				= { nullptr };
+
+	CConstant_Buffer<CS_MU_ANIMB>* m_pAnimB_Mutable_Element_CBuffer	= { nullptr };
+	ID3DX11EffectConstantBuffer*		m_pAnimB_MutableBuffer				= { nullptr };
 
 	// SHader
 private:
