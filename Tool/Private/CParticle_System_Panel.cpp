@@ -577,6 +577,46 @@ void CParticle_System_Panel::Draw_ParticleSystem(CToolObject* pGo)
 
 	if (ImGui::CollapsingHeader("Shape"))
 	{
+		// E_EMISSION_TYPE 설정하기
+		if (ImGui::TreeNode("EmissionType Setting##Effect_List"))
+		{
+			vector<string> m_pEmissionList;
+			m_pEmissionList.clear();
+
+			m_pEmissionList.push_back("BOX");
+			m_pEmissionList.push_back("CIRCLE");
+			m_pEmissionList.push_back("SPHERE");
+			m_pEmissionList.push_back("CONE");
+
+			std::vector<const char*> iTems;
+			iTems.reserve(static_cast<int>(m_pEmissionList.size()));
+
+			for (auto& str : m_pEmissionList)
+				iTems.push_back(str.c_str());
+
+			if (ImGui::ListBox("", &m_iSelectedEmissionIdx, iTems.data(), static_cast<int>(m_pEmissionList.size()), 6))
+			{
+				m_bModified |= true;
+				m_tCurrentDesc._Effect_EmissionType = (E_EMISSION_TYPE)m_iSelectedEmissionIdx;
+			}
+
+			if ((iTems.size() - 1) < m_iSelectedEmissionIdx)
+			{
+				ImGui::TreePop();
+				return;
+			}
+
+			const char* EmissionNames[] = { "BOX", "CIRCLE", "SPHERE", "CONE" };
+			int currentIndex = (int)m_tCurrentDesc._Effect_EmissionType;
+
+			ImGui::Spacing();
+			ImGui::Text("Selected EmissionType: "); ImGui::SameLine();
+			ImGui::TextColored(ImVec4(1.0f, 1.0f, 1.0f, 1.0f), "%s", EmissionNames[currentIndex]);
+			ImGui::Separator();
+
+			ImGui::TreePop();
+		}
+
 		if (ImGui::TreeNode("Shape_EffectList##Effect_List"))
 		{
 			vector<string> m_pShapeList;
@@ -596,7 +636,21 @@ void CParticle_System_Panel::Draw_ParticleSystem(CToolObject* pGo)
 			for (auto& str : m_pShapeList)
 				iTems.push_back(str.c_str());
 
-			m_bModified |= ImGui::ListBox("", &m_iSelectedShapeIdx, iTems.data(), static_cast<int>(m_pShapeList.size()), 6);
+			if (ImGui::ListBox("", &m_iSelectedShapeIdx, iTems.data(), static_cast<int>(m_pShapeList.size()), 6))
+			{
+				m_bModified |= true;
+
+
+				switch (m_iSelectedShapeIdx) {
+				case 0: m_tCurrentDesc._Effect_ShapeType = E_SHAPETYPE::NONE; break;
+				case 1: m_tCurrentDesc._Effect_ShapeType = E_SHAPETYPE::DROP; break;
+				case 2: m_tCurrentDesc._Effect_ShapeType = E_SHAPETYPE::RISE; break;
+				case 3: m_tCurrentDesc._Effect_ShapeType = E_SHAPETYPE::SPREAD; break;
+				case 4: m_tCurrentDesc._Effect_ShapeType = E_SHAPETYPE::STRAIGHT; break;
+				case 5: m_tCurrentDesc._Effect_ShapeType = E_SHAPETYPE::SPIRAL; break;
+				case 6: m_tCurrentDesc._Effect_ShapeType = E_SHAPETYPE::DNA; break;
+				}
+			}
 
 			if ((iTems.size() - 1) < m_iSelectedShapeIdx)
 			{
@@ -613,16 +667,7 @@ void CParticle_System_Panel::Draw_ParticleSystem(CToolObject* pGo)
 			ImGui::Separator();
 
 			ImGui::TreePop();
-		}
 
-		switch (m_iSelectedShapeIdx){
-		case 0: m_tCurrentDesc._Effect_ShapeType = E_SHAPETYPE::NONE; break;
-		case 1: m_tCurrentDesc._Effect_ShapeType = E_SHAPETYPE::DROP; break;
-		case 2: m_tCurrentDesc._Effect_ShapeType = E_SHAPETYPE::RISE; break;
-		case 3: m_tCurrentDesc._Effect_ShapeType = E_SHAPETYPE::SPREAD; break;
-		case 4: m_tCurrentDesc._Effect_ShapeType = E_SHAPETYPE::STRAIGHT; break;
-		case 5: m_tCurrentDesc._Effect_ShapeType = E_SHAPETYPE::SPIRAL; break; 
-		case 6: m_tCurrentDesc._Effect_ShapeType = E_SHAPETYPE::DNA; break; 
 		}
 
 		// ============   Distortion   Scale 설정하기   ===========
@@ -1849,6 +1894,7 @@ void CParticle_System_Panel::Draw_Parts(CToolObject* pGo)
 				m_tCurrentDesc = pSelectdPart->Get_EffectDesc();
 
 				// 툴에서 사용하는 인덱스 변수들을 구조체 값에 맞춰서 복사하기.
+				m_iSelectedEmissionIdx = (int)m_tCurrentDesc._Effect_EmissionType;
 				m_iSelectedShaderIdx = (int)m_tCurrentDesc._Effect_ShapeType;
 				m_iSelcetedParticleTypeIdx = (int)m_tCurrentDesc.eEffectParticleType;
 				m_iSelectedShaderPassIdx = m_tCurrentDesc._Effect_ShaderPass;

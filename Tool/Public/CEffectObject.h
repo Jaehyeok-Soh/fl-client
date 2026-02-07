@@ -42,6 +42,14 @@ enum class E_SHAPETYPE
     DNA,
 };
 
+enum class E_EMISSION_TYPE
+{
+    BOX = 0,
+    CIRCLE = 1,
+    SPHERE = 2,
+    CONE = 3,
+};
+
 enum class E_RENDER_TYPE
 {
     NONE = 0,
@@ -119,7 +127,7 @@ public:
         E_PARTICLETYPE eEffectParticleType = E_PARTICLETYPE::PARTICLE;
         E_EFFECTTYPE eEffectType = E_EFFECTTYPE::Particle;
         E_SHAPETYPE _Effect_ShapeType = E_SHAPETYPE::SPREAD;
-
+        E_EMISSION_TYPE _Effect_EmissionType = E_EMISSION_TYPE::BOX;
         // ========  ¿Ã∆Â∆Æ Material º≥¡§   ===========
         wstring     _Effect_Model_Tag = {};
         wstring     _Effect_DiffuseTexture_Tag = {};

@@ -39,6 +39,7 @@ public:
 		CModel*	pModel = { nullptr };
 		CGameObject* pOwner = { nullptr };
 		CComputeShader* pComputeShader = { nullptr };
+		_uint  EmissionFlagType = { 0 };
 	}PARTICLE_ORIGIN_DESC;
 protected:
 	CVIBuffer_Particle(ID3D11Device* pDevice, ID3D11DeviceContext* pDeviceContext);

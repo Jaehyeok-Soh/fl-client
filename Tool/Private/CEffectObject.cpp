@@ -95,6 +95,7 @@ HRESULT CEffectObject::Component_Setting(void* pArg)
     pParticleDesc.isRandomSeed = m_tEffectDesc._Effect_IsRandomSeed;
     pParticleDesc.pOwner = this;
     pParticleDesc.pComputeShader = static_cast<CComputeShader*>(Get_Script_Component(L"ComputeShader"));
+    pParticleDesc.EmissionFlagType = (_uint)m_tEffectDesc._Effect_EmissionType;
 
     if (FAILED(Add_Component<CVIBuffer_Particle_Point>(ENUM_TO_UINT(ELevelType::EFFECT), L"Prototype_Component_VIBuffer_Particle_Point", &pParticleDesc)))
         return E_FAIL;
@@ -154,6 +155,7 @@ void CEffectObject::Buffer_Setting()
             pParticleDesc.isRandomSeed = m_tEffectDesc._Effect_IsRandomSeed;
             pParticleDesc.pOwner = this;
             pParticleDesc.pComputeShader = static_cast<CComputeShader*>(Get_Script_Component(L"ComputeShader"));
+            pParticleDesc.EmissionFlagType = (_uint)m_tEffectDesc._Effect_EmissionType;
 
             Change_Component<CVIBuffer_Particle_Point>(static_cast<CVIBuffer_Particle_Point*>(m_pGameInstance->Clone_Prototype(EPrototypeType::COMPONENT, ENUM_TO_UINT(ELevelType::EFFECT), L"Prototype_Component_VIBuffer_Particle_Point", &pParticleDesc)));
             break;
@@ -177,6 +179,7 @@ void CEffectObject::Buffer_Setting()
                 MeshBufferDesc.pComputeShader = static_cast<CComputeShader*>(Get_Script_Component(L"ComputeShader"));
                 MeshBufferDesc.pModel = pInstance;
                 MeshBufferDesc.pOwner = this;
+                MeshBufferDesc.EmissionFlagType = (_uint)m_tEffectDesc._Effect_EmissionType;
 
                 Change_Component<CVIBuffer_Particle_Mesh>(static_cast<CVIBuffer_Particle_Mesh*>(m_pGameInstance->Clone_Prototype(EPrototypeType::COMPONENT, ENUM_TO_UINT(ELevelType::EFFECT), L"Prototype_Component_VIBuffer_Particle_Mesh", &MeshBufferDesc)));
             }
@@ -196,6 +199,7 @@ void CEffectObject::Buffer_Setting()
             pParticleDesc.isRandomSeed = m_tEffectDesc._Effect_IsRandomSeed;
             pParticleDesc.pOwner = this;
             pParticleDesc.pComputeShader = static_cast<CComputeShader*>(Get_Script_Component(L"ComputeShader"));
+            pParticleDesc.EmissionFlagType = (_uint)m_tEffectDesc._Effect_EmissionType;
 
             Change_Component<CVIBuffer_Particle_Point>(static_cast<CVIBuffer_Particle_Point*>(m_pGameInstance->Clone_Prototype(EPrototypeType::COMPONENT, ENUM_TO_UINT(ELevelType::EFFECT), L"Prototype_Component_VIBuffer_Particle_Point", &pParticleDesc)));
             break;
@@ -229,6 +233,7 @@ void CEffectObject::Particle_Setting()
         desc.pModel = Get_Component<CModel>();
         desc.pOwner = this;
         desc.pComputeShader = static_cast<CComputeShader*>(Get_Script_Component(L"ComputeShader"));
+        desc.EmissionFlagType = (_uint)m_tEffectDesc._Effect_EmissionType;
 
         pInstance->Set_ParticleDesc(desc);
     }

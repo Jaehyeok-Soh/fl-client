@@ -5,6 +5,11 @@
 #include "ComputeShader.h"
 #include "StructuredBuffer.h"
 
+#define BOX 0
+#define CIRCLE 1
+#define SPHERE 2
+#define CONE 3
+
 CVIBuffer_Particle_Point::CVIBuffer_Particle_Point(ID3D11Device* pDevice, ID3D11DeviceContext* pDeviceContext)
 	: Super(pDevice, pDeviceContext)
 {
@@ -163,12 +168,66 @@ HRESULT CVIBuffer_Particle_Point::Set_ResizeBuffer_UseRandomSeed()
 		pInitialData[i].vRight = Vec4(fScale, 0.f, 0.f, 0.f);
 		pInitialData[i].vUp = Vec4(0.f, fScale, 0.f, 0.f);
 		pInitialData[i].vLook = Vec4(0.f, 0.f, fScale, 0.f);
-		pInitialData[i].vTranslation = Vec4(
-			m_pGameInstance->Rand_Float(m_tParticleDesc.vCenter.x - m_tParticleDesc.vRange.x * 0.5f, m_tParticleDesc.vCenter.x + m_tParticleDesc.vRange.x * 0.5f),
-			m_pGameInstance->Rand_Float(m_tParticleDesc.vCenter.y - m_tParticleDesc.vRange.y * 0.5f, m_tParticleDesc.vCenter.y + m_tParticleDesc.vRange.y * 0.5f),
-			m_pGameInstance->Rand_Float(m_tParticleDesc.vCenter.z - m_tParticleDesc.vRange.z * 0.5f, m_tParticleDesc.vCenter.z + m_tParticleDesc.vRange.z * 0.5f),
-			1.f
-		);
+		// ======== Emission Type에 따른 위치 계산 ========
+		SimpleMath::Vector3 vPos = m_tParticleDesc.vCenter;
+
+		switch (m_tParticleDesc.EmissionFlagType)
+		{
+		case BOX:
+		{
+			vPos.x += m_pGameInstance->Rand_Float(-m_tParticleDesc.vRange.x * 0.5f, m_tParticleDesc.vRange.x * 0.5f);
+			vPos.y += m_pGameInstance->Rand_Float(-m_tParticleDesc.vRange.y * 0.5f, m_tParticleDesc.vRange.y * 0.5f);
+			vPos.z += m_pGameInstance->Rand_Float(-m_tParticleDesc.vRange.z * 0.5f, m_tParticleDesc.vRange.z * 0.5f);
+			break;
+		}
+
+		case CIRCLE:
+		{
+			_float fRadius = m_tParticleDesc.vRange.x;
+			_float fAngle = m_pGameInstance->Rand_Float(0.f, DirectX::XM_2PI);
+
+			vPos.x += cos(fAngle) * fRadius;
+			vPos.y += sin(fAngle) * fRadius;
+			break;
+		}
+		case SPHERE:
+		{
+			_float fPhi = m_pGameInstance->Rand_Float(0.f, DirectX::XM_2PI);
+			_float fTheta = acos(m_pGameInstance->Rand_Float(-1.f, 1.f));
+
+			Vec3 vUnitVector;
+			vUnitVector.x = sin(fTheta) * cos(fPhi);
+			vUnitVector.y = sin(fTheta) * sin(fPhi);
+			vUnitVector.z = cos(fTheta);
+
+			// 반지름과 부피 적용
+			_float fRadius = m_tParticleDesc.vRange.x * m_pGameInstance->Rand_Float(0.f, 1.f);
+			vPos += vUnitVector * fRadius;
+			break;
+		}
+
+		case CONE:
+		{
+			// vRange.x : 밑면 반지름으로 쓰기
+			// vRange.y : 원뿔 각도 
+
+			_float fRadius = m_tParticleDesc.vRange.x * m_pGameInstance->Rand_Float(0.f, 1.f);
+			_float fAngle = m_pGameInstance->Rand_Float(0.f, DirectX::XM_2PI);
+
+			// 밑면 위치 Circle과 동일함.
+			Vec3 vBottomPos;
+			vBottomPos.x = cos(fAngle) * fRadius;
+			vBottomPos.z = sin(fAngle) * fRadius;
+			vBottomPos.y = 0.f;
+
+			// 원뿔 위쪽으로 퍼지는 오프셋
+			vPos += vBottomPos;
+			break;
+		}
+		}
+
+		pInitialData[i].vTranslation = Vec4(vPos.x, vPos.y, vPos.z, 1.f);
+
 		pInitialData[i].vParticle_OriginMatrix =
 			Matrix(pInitialData[i].vRight,
 				pInitialData[i].vUp,

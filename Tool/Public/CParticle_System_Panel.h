@@ -102,6 +102,7 @@ private:
 
     // static 대신에 사용할 툴 내부 상태용 인덱스들
     int m_iSelectedShapeIdx = 0;
+    int m_iSelectedEmissionIdx = 0;
     int m_iSelcetedParticleTypeIdx = 0;
     int m_iSelectedShaderIdx = 0;
     int m_iSelectedShaderPassIdx = 0;
