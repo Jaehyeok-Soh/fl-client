@@ -12,9 +12,10 @@ struct IMMU_KEYFRAME
 {
     float3  vScale;
     float   fTrackPosition;
-    float4  vQuat;
-    float3  vTranslation;
     
+    float4  vQuat;
+    
+    float3  vTranslation;
     float   fPadding0;
 };
 
@@ -34,19 +35,19 @@ struct MU_ELEMENT
     float   fCurTrackPosition;
     uint    iAnimIndex;
     
-    float2 Padding0;
+    float2  Padding0;
 };
 
 // out put
 struct CHANNEL_OUTPUT
 {
     float3              vScale;
-    uint                iCurKeyFrameIndex;
+    float               Padding0;
     
     float4              vQuat;
     
     float3              vTranslation;
-    uint                iAnimIndex;
+    float               Padding1;
 };
 
 cbuffer MU_Track
@@ -58,6 +59,32 @@ StructuredBuffer<IMMU_KEYFRAME> IMMU_KEYFRAMS; // 한 애니메이션에 대한 모든 keyf
 StructuredBuffer<IMMU_ELEMENT>  IMMU_CHANNELDATAS;      // 한 채널에 대한 정보들            :  이 애니메이션 channel 수 만큼
 
 RWStructuredBuffer<CHANNEL_OUTPUT> UPDATE_DATA;         // bone 인덱스랑 1 : 1 매칭 -> bone update때 문제 없도록 하기 위함
+
+
+uint BinarySearchKeyframe(float trackPos, uint firstIdx, uint keyCount)
+{
+    uint low = 0;
+    uint high = keyCount - 1;
+
+    // 최대 7회 (2^7 = 128)
+    [unroll]
+    for (uint iter = 0; iter < 7; ++iter)
+    {
+        if (low + 1 >= high)
+            break;
+
+        uint mid = (low + high) >> 1;
+
+        float midPos = IMMU_KEYFRAMS[firstIdx + mid].fTrackPosition;
+
+        if (trackPos < midPos)
+            high = mid;
+        else
+            low = mid;
+    }
+
+    return low; // left index (local)
+}
 
 
 // Warp/Wavefront는 32명씩 묶여서 연산을 한다.
@@ -73,17 +100,16 @@ void CS_Main(uint3 id : SV_DispatchThreadID)
     uint iLastFrameIdx      = iFirstFrameIdx + IMMU_CHANNELDATAS[iChannelIdx].iKeyCount - 1;
     
     float fCurrentTrackPosition = g_InputData.fCurTrackPosition;
-    uint iCurKeyFrameIndex = UPDATE_DATA[iBoneIdx].iCurKeyFrameIndex;
+    
+    // key 맵핑이 아니라 trackpositoin을 통해 left, right index 구한다
+    uint iLeftIndex = iLastFrameIdx -1;
+    uint iRightIndex = iLastFrameIdx;
     
     // frame 정렬
     if (fCurrentTrackPosition <= 0.f)
-        iCurKeyFrameIndex = 0;
-    
-    // animation 바뀌었는지 체크
-    if (UPDATE_DATA[iBoneIdx].iAnimIndex != g_InputData.iAnimIndex)
     {
-        iCurKeyFrameIndex = 0;
-        UPDATE_DATA[iBoneIdx].iAnimIndex = g_InputData.iAnimIndex;
+        iLeftIndex = iFirstFrameIdx;
+        iRightIndex = iFirstFrameIdx+1;
     }
     
     // 함수 지역 변수 셋팅    
@@ -106,26 +132,25 @@ void CS_Main(uint3 id : SV_DispatchThreadID)
         float4 vLeftQuat, vRightQuat;
         float3 vLeftTrans, vRightTrans;
         
-        // 범위 체크
-        if (iCurKeyFrameIndex + 1 < IMMU_CHANNELDATAS[iChannelIdx].iKeyCount &&
-            fCurrentTrackPosition >= IMMU_KEYFRAMS[iFirstFrameIdx + iCurKeyFrameIndex + 1].fTrackPosition)
-        {
-            iCurKeyFrameIndex++;
-        }
+        // left index와 right index를 구함
+        uint localLeft = BinarySearchKeyframe(fCurrentTrackPosition, iFirstFrameIdx, IMMU_CHANNELDATAS[iChannelIdx].iKeyCount);
+
+        uint iLeftIndex = iFirstFrameIdx + localLeft;
+        uint iRightIndex = iLeftIndex + 1;
         
         // 이전 이후 프레임의 SRT 꺼내옴
-        vLeftScale = IMMU_KEYFRAMS[iFirstFrameIdx + iCurKeyFrameIndex].vScale;
-        vRightScale = IMMU_KEYFRAMS[iFirstFrameIdx + iCurKeyFrameIndex + 1].vScale;
+        vLeftScale = IMMU_KEYFRAMS[iLeftIndex].vScale;
+        vRightScale = IMMU_KEYFRAMS[iRightIndex].vScale;
 
-        vLeftQuat = IMMU_KEYFRAMS[iFirstFrameIdx + iCurKeyFrameIndex].vQuat;
-        vRightQuat = IMMU_KEYFRAMS[iFirstFrameIdx + iCurKeyFrameIndex + 1].vQuat;
+        vLeftQuat = IMMU_KEYFRAMS[iLeftIndex].vQuat;
+        vRightQuat = IMMU_KEYFRAMS[iRightIndex].vQuat;
 
-        vLeftTrans = IMMU_KEYFRAMS[iFirstFrameIdx + iCurKeyFrameIndex].vTranslation;
-        vRightTrans = IMMU_KEYFRAMS[iFirstFrameIdx + iCurKeyFrameIndex + 1].vTranslation;
+        vLeftTrans = IMMU_KEYFRAMS[iLeftIndex].vTranslation;
+        vRightTrans = IMMU_KEYFRAMS[iRightIndex].vTranslation;
         
         // 보간 값
-        float fRatio = (fCurrentTrackPosition - IMMU_KEYFRAMS[iFirstFrameIdx + iCurKeyFrameIndex].fTrackPosition) /
-			(IMMU_KEYFRAMS[iFirstFrameIdx + iCurKeyFrameIndex + 1].fTrackPosition - IMMU_KEYFRAMS[iFirstFrameIdx + iCurKeyFrameIndex].fTrackPosition);
+        float fRatio = (fCurrentTrackPosition - IMMU_KEYFRAMS[iLeftIndex].fTrackPosition) /
+			(IMMU_KEYFRAMS[iRightIndex].fTrackPosition - IMMU_KEYFRAMS[iLeftIndex].fTrackPosition);
         
        // SRT 보간
         vScale  = lerp(vLeftScale, vRightScale, fRatio);
@@ -137,7 +162,7 @@ void CS_Main(uint3 id : SV_DispatchThreadID)
     }
     
     // 결과 값 바인드
-    UPDATE_DATA[iBoneIdx].iCurKeyFrameIndex     = iCurKeyFrameIndex;
+
     UPDATE_DATA[iBoneIdx].vScale                = vScale;
     UPDATE_DATA[iBoneIdx].vQuat                 = vQuat;
     UPDATE_DATA[iBoneIdx].vTranslation          = vTranslation;
