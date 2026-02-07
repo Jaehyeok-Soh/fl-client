@@ -24,22 +24,6 @@ public:
 	void SetUp_Public_Info();
 	void Input_RectTransform();
 	void Input_TextureTag();
-	void Add_Action(DTO::EUIEvent EventType);
-	void Edit_Action();
-
-	void SetUp_Func();
-	void Action_List(DTO::EUIEvent eType);
-
-	json* Find_Params(const DTO::EUIAction eAction);
-	void Edit_TargetParams(json& jParams);
-
-	void Edit_Set_Visible(json& jParams);
-	void Edit_Set_Texture_Index(json& jParams);
-	void Edit_Start_Lerp_Movement(json& jParams);
-	void Trigger_All_Canvas(json& jParams);
-	void Trigger_Target_UI(json& jParams);
-	void Edit_Start_Return_Lerp_Movement(json& jParams);
-	void Edit_Start_Fade(json& jParams);
 
 private:
 	/// <summary>
@@ -67,22 +51,7 @@ private:
 	CToolUI* m_pSelectedUI = { nullptr };
 	uint32_t m_iRectTransformIndex = {};
 
-	uint32_t m_iEditEventCursor = {};
-	uint32_t m_iEditActCursor = {};
 
-	DTO::EUIEvent m_eCurEditEvent = { DTO::EUIEvent::END };
-	DTO::EUIAction m_eCurEditFunc = { DTO::EUIAction::END };
-
-	array<DTO::EUIAction, ENUM_TO_UINT(DTO::EUIAction::END)> m_ArrUIAction =
-	{
-		DTO::EUIAction::SET_VISIBLE,
-		DTO::EUIAction::SET_TEXTURE_INDEX,
-		DTO::EUIAction::START_LERP_MOVEMENT,
-		DTO::EUIAction::START_RETURN_LERP_MOVEMENT,
-		DTO::EUIAction::TRIGGER_ALL_CANVAS,
-		DTO::EUIAction::TRIGGER_TARGET_UI,
-		DTO::EUIAction::START_FADE,
-	};
 
 
 

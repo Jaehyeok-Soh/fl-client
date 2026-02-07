@@ -54,17 +54,6 @@ HRESULT CBuilder_UI::Build(const CDataDocumentBase& document)
 		}
 	}
 
-	// For. Event
-	{
-		const vector<Engine::IObjectDataBase*> vecDataList = doc.Get_ListByType(ENUM_TO_UINT(DTO::EUIType::EVENT));
-		for (const auto& pObjectData : vecDataList)
-		{
-			const auto* pDto = static_cast<const Engine::CUI_EventBindData_DTO*>(pObjectData);
-			if (FAILED(Create_EventBindDataDTO(pDto->Get_Data())))
-				return E_FAIL;
-		}
-	}
-
 	if (FAILED(CUI_Manager::GetInstance()->Swap_MapCanvasCache(m_iLevelID, std::move(m_MapCanvasCache))))
 		return E_FAIL;
 	if (FAILED(CUI_Manager::GetInstance()->Swap_MapGenericUICache(m_iLevelID, std::move(m_pMapUICache))))
@@ -139,21 +128,6 @@ HRESULT CBuilder_UI::Create_GenericUIDTO(const DTO::TUI_GenericUIData& data)
 	m_pMapUICache.emplace(data.strTag, pUI);
 
 	if (FAILED(CUI_Manager::GetInstance()->Add_VecGenericUICache(m_iLevelID, pUI)))
-		return E_FAIL;
-
-	return S_OK;
-}
-
-HRESULT CBuilder_UI::Create_EventBindDataDTO(const DTO::TUI_EventBindData& data)
-{
-	if (data.eType != DTO::EUIType::EVENT)
-		return E_FAIL;
-
-	auto iter = m_pMapUICache.find(data.strOwnerTag);
-	if (iter == m_pMapUICache.end())
-		return E_FAIL;
-
-	if (FAILED(iter->second->Bind_Action(data)))
 		return E_FAIL;
 
 	return S_OK;

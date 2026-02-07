@@ -184,9 +184,6 @@
     <Filter Include="07. System\01. Builder\Map">
       <UniqueIdentifier>{8c8cb986-b28e-4058-aca0-3a2b0b85e2e0}</UniqueIdentifier>
     </Filter>
-    <Filter Include="03. GameObject\UIObjects\04.Action">
-      <UniqueIdentifier>{3ddc639a-e37a-4e32-9249-6cb9fc8982e3}</UniqueIdentifier>
-    </Filter>
     <Filter Include="03. GameObject\MapObject\02. InstanceModel">
       <UniqueIdentifier>{2be52ba2-2a45-42f4-aa0d-4f0d8e44cbe8}</UniqueIdentifier>
     </Filter>
@@ -228,6 +225,9 @@
     </Filter>
     <Filter Include="03. GameObject\UIObjects\02.UI">
       <UniqueIdentifier>{6d2a781d-ab40-4385-b96c-b3366f4eaba6}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="03. GameObject\UIObjects\02.UI\PlayerHP">
+      <UniqueIdentifier>{d1da7a10-7b69-4f7d-9c38-81e993488207}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
@@ -396,9 +396,6 @@
     <ClInclude Include="..\Public\Builder_Map.h">
       <Filter>07. System\01. Builder\Map</Filter>
     </ClInclude>
-    <ClInclude Include="..\Public\UIAction_Client.h">
-      <Filter>03. GameObject\UIObjects\04.Action</Filter>
-    </ClInclude>
     <ClInclude Include="..\Public\InstanceModel.h">
       <Filter>03. GameObject\MapObject\02. InstanceModel</Filter>
     </ClInclude>
@@ -453,10 +450,10 @@
     <ClInclude Include="..\public\ImGui_PlayerInspector.h">
       <Filter>07. System\02. Debug_ImGui\Inspector\Player</Filter>
     </ClInclude>
-    <ClInclude Include="..\Public\UITargetAction_Client.h">
-      <Filter>03. GameObject\UIObjects\04.Action</Filter>
-    </ClInclude>
     <ClInclude Include="..\Public\State_DashFront.h" />
+    <ClInclude Include="..\Public\UIPlayer_HP.h">
+      <Filter>03. GameObject\UIObjects\02.UI\PlayerHP</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <Image Include="Client.ico">
@@ -622,9 +619,6 @@
     <ClCompile Include="..\Private\Builder_Map.cpp">
       <Filter>07. System\01. Builder\Map</Filter>
     </ClCompile>
-    <ClCompile Include="..\Private\UIAction_Client.cpp">
-      <Filter>03. GameObject\UIObjects\04.Action</Filter>
-    </ClCompile>
     <ClCompile Include="..\Private\InstanceModel.cpp">
       <Filter>03. GameObject\MapObject\02. InstanceModel</Filter>
     </ClCompile>
@@ -673,10 +667,10 @@
     <ClCompile Include="..\private\ImGui_PlayerInspector.cpp">
       <Filter>07. System\02. Debug_ImGui\Inspector\Player</Filter>
     </ClCompile>
-    <ClCompile Include="..\Private\UITargetAction_Client.cpp">
-      <Filter>03. GameObject\UIObjects\04.Action</Filter>
-    </ClCompile>
     <ClCompile Include="..\Private\State_DashFront.cpp" />
+    <ClCompile Include="..\Private\UIPlayer_HP.cpp">
+      <Filter>03. GameObject\UIObjects\02.UI\PlayerHP</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <FxCompile Include="..\..\Shaders\Shader_VtxAnimMesh.hlsl">

@@ -23,7 +23,6 @@ public:
 private:
 	HRESULT Create_CanvasDTO(const DTO::TUI_CanvasData& data);
 	HRESULT Create_GenericUIDTO(const DTO::TUI_GenericUIData& data);
-	HRESULT Create_EventBindDataDTO(const DTO::TUI_EventBindData& data);
 
 private:
 	map<_string, CToolCanvas* > m_pCanvasCache;

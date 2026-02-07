@@ -270,8 +270,6 @@ HRESULT CLoader::Loading_For_Logo()
 
 		// For. Prototype_UI_Canvas
 		ADD_PROTOTYPE(ELevelType::STATIC, L"Prototype_UI_Canvas", CCanvas::Create(m_pDevice, m_pDeviceContext));
-		// For. Prototype_UI_GenericUI
-		ADD_PROTOTYPE(ELevelType::STATIC, L"Prototype_UI_GenericUI", CGenericUI::Create(m_pDevice, m_pDeviceContext));
 	}
 #pragma endregion
 

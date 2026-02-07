@@ -31,7 +31,6 @@ enum class EUIEvent : uint32_t
 	PRESS_ENTER,
 	PRESSING,
 	PRESS_EXIT,
-
 	INVOKED,
 	END
 };
@@ -93,7 +92,8 @@ NLOHMANN_JSON_SERIALIZE_ENUM(EUIEvent,
 		{EUIEvent::PRESS_EXIT, "PRESS_EXIT"},
 		{EUIEvent::INVOKED, "INVOKED"},
 	})
-	inline std::string UIEventToString(DTO::EUIEvent eType)
+
+inline std::string UIEventToString(DTO::EUIEvent eType)
 {
 	switch (eType)
 	{
@@ -122,92 +122,45 @@ inline DTO::EUIEvent StringToUIEvent(const std::string& str)
 	else return DTO::EUIEvent::END;
 }
 
-enum class EUIAction
+enum class EUIClassType
 {
-	/* (bool / isVisible), (float / fDelay) */
-	SET_VISIBLE,
-
-	/* (uint / uIndex), (float / fDelay) */
-	SET_TEXTURE_INDEX,
-
-	/* (Vec3 / vTargetPos),( _float / fTargetAlpha),( _float / fDuration), (bool / isPin), (float / fDelay) */
-	START_LERP_MOVEMENT,
-	
-	/* (iLevelIndex / uint), (strCanvasTag / string) , (eAction / DTO::EUIAction), (jTargetActionParam / json::object() ), (float / fDelay) */
-	TRIGGER_ALL_CANVAS,
-
-	/* (iLevelIndex / uint), (strUITag / string) , (eAction / DTO::EUIAction), (jTargetActionParam / json::object() ), (float / fDelay) */
-	TRIGGER_TARGET_UI,
-
-	/* (float / fDelay) */
-	START_RETURN_LERP_MOVEMENT,
-	
-	/* (float / fStartAlpha), (float / fTargetAlpha), (float / fDuration) , (float / fDelay)*/
-	START_FADE,
-
+	PLAYER_HP,
 	END
 };
 
-NLOHMANN_JSON_SERIALIZE_ENUM(EUIAction,
-	{
-		{EUIAction::SET_VISIBLE, "SET_VISIBLE"},
-		{EUIAction::SET_TEXTURE_INDEX, "SET_TEXTURE_INDEX"},
-		{EUIAction::START_LERP_MOVEMENT, "START_LERP_MOVEMENT"},
-		{EUIAction::TRIGGER_ALL_CANVAS, "TRIGGER_ALL_CANVAS"},
-		{EUIAction::TRIGGER_TARGET_UI, "TRIGGER_TARGET_UI" },
-		{EUIAction::START_RETURN_LERP_MOVEMENT, "START_RETURN_LERP_MOVEMENT" },
-		{EUIAction::START_FADE, "START_FADE" },
-	}
-)
-
-inline EUIAction StringToUIActiontype(const _string& str)
-{
-	if (str == "SET_VISIBLE")return EUIAction::SET_VISIBLE;
-	else if (str == "SET_TEXTURE_INDEX")return EUIAction::SET_TEXTURE_INDEX;
-	else if (str == "START_LERP_MOVEMENT")return EUIAction::START_LERP_MOVEMENT;
-	else if (str == "TRIGGER_ALL_CANVAS")return EUIAction::TRIGGER_ALL_CANVAS;
-	else if (str == "TRIGGER_TARGET_UI")return EUIAction::TRIGGER_TARGET_UI;
-	else if (str == "START_RETURN_LERP_MOVEMENT")return EUIAction::START_RETURN_LERP_MOVEMENT;
-	else if (str == "START_FADE")return EUIAction::START_FADE;
-	else return EUIAction::END;
-}
-
-inline _string UIActionTypeToString(EUIAction eType)
+inline std::string UIClassTypeToString(EUIClassType eType)
 {
 	switch (eType)
 	{
-	case EUIAction::SET_VISIBLE: return "SET_VISIBLE";
-	case EUIAction::SET_TEXTURE_INDEX: return "SET_TEXTURE_INDEX";
-	case EUIAction::START_LERP_MOVEMENT: return "START_LERP_MOVEMENT";
-	case EUIAction::TRIGGER_ALL_CANVAS: return "TRIGGER_ALL_CANVAS";
-	case EUIAction::TRIGGER_TARGET_UI: return "TRIGGER_TARGET_UI";
-	case EUIAction::START_RETURN_LERP_MOVEMENT: return "START_RETURN_LERP_MOVEMENT";
-	case EUIAction::START_FADE: return "START_FADE";
+	case EUIClassType::PLAYER_HP: return "PLAYER_HP";
+	case EUIClassType::END: return "END";
 	default: return "";
 	}
 }
 
-/////////////////-------------------  Data Struct  -------------------/////////////////
-
-struct TUI_EventBindData
+inline EUIClassType StringToUIClassType(const std::string& str)
 {
-	static constexpr EUIType eType = EUIType::EVENT	;
-	std::string strTag;
-	std::string strOwnerTag;
-	std::string strTargetTag = {""};
-	EUIEvent eEvent = EUIEvent::NONE;
-	EUIAction eAction;
-	json Params;
-};
+	if (str == "PLAYER_HP") return EUIClassType::PLAYER_HP;
+	else return EUIClassType::END;
+}
+
+NLOHMANN_JSON_SERIALIZE_ENUM(EUIClassType,
+	{
+		{EUIClassType::PLAYER_HP, "PLAYER_HP"},
+	})
+
+
+/////////////////-------------------  Data Struct  -------------------/////////////////
 
 struct TUI_GenericUIData
 {
 	static constexpr EUIType eType = EUIType::GENERICUI;
+	EUIClassType eClassType;
+
 	std::string strTag;
 	std::string strCanvasName;
 
 	uint32_t iRectTransformType;
-
 
 	_float fWidth;
 	_float fHeight;
@@ -217,7 +170,6 @@ struct TUI_GenericUIData
 	_string strTextureTag;
 	uint32_t iTextureIndex;
 	_bool isVisible;
-
 };
 
 struct TUI_CanvasData
@@ -237,8 +189,6 @@ struct TUI_CanvasData
 };
 
 /////////////////-------------------  to_json, from_json  -------------------/////////////////
-void to_json(json& j, const TUI_EventBindData& data);
-void from_json(const json& j, TUI_EventBindData& data);
 void to_json(json& j, const TUI_GenericUIData& data);
 void from_json(const json& j, TUI_GenericUIData& data);
 void to_json(json& j, const TUI_CanvasData& data);
@@ -247,28 +197,6 @@ NS_END
 /////////////////-------------------  Wrapping Class  -------------------/////////////////
 
 NS_BEGIN(Engine)
-
-class ENGINE_DLL CUI_EventBindData_DTO final : public IObjectDataBase
-{
-	using Super = IObjectDataBase;
-private:
-	CUI_EventBindData_DTO() = default;
-	virtual ~CUI_EventBindData_DTO() = default;
-public:
-	_uint Get_Type() const override { return ENUM_TO_UINT(DTO::EUIType::EVENT); }
-	const _string& Get_Tag() const override { return m_Data.strTag; }
-
-	json ToJson() const override;
-	HRESULT FromJson(const json& j) override;
-
-	const DTO::TUI_EventBindData& Get_Data() const { return m_Data; }
-	DTO::TUI_EventBindData& Get_Data() { return m_Data; }
-private:
-	DTO::TUI_EventBindData m_Data;
-public:
-	static CUI_EventBindData_DTO* Create() { return new CUI_EventBindData_DTO(); }
-	virtual void Free() override { Super::Free(); }
-};
 
 class ENGINE_DLL CUI_GenericUI_DTO final : public IObjectDataBase
 {

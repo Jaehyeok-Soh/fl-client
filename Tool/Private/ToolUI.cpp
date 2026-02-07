@@ -10,12 +10,8 @@
 #include "ToolCanvas.h"
 #include "ImGui_UIManager.h"
 #include "ImGui_ToolManager.h"
-#include "UIAction_Tool.h"
-#include "UITargetAction_Tool.h"
 
-#include "UIAction_Scheduler.h"
-#include "UIAction_Player.h"
-#include "UIAction_Registry.h"
+#include "UIButton_Component.h"
 #include "GameInstance.h"
 
 CToolUI::CToolUI(ID3D11Device* pDevice, ID3D11DeviceContext* pDeviceContext)
@@ -96,8 +92,6 @@ void CToolUI::Update(const _float fTimeDelta)
 	if (m_isDisable)
 		return;
 
-	Fade(fTimeDelta);
-
 	Super::Update(fTimeDelta);
 }
 
@@ -115,19 +109,6 @@ void CToolUI::Ready_Before_Render(const _float fTimeDelta)
 
 HRESULT CToolUI::Render()
 {
-	if (!m_isVisible)
-		return S_OK;
-
-	if (FAILED(Super::Render()))
-		return E_FAIL;
-
-    if (FAILED(Bind_ShaderResources()))
-        return E_FAIL;
-
-    Get_Component<CShader>()->Apply();
-    Get_Component<CVIBuffer>()->Bind_Resource();
-    Get_Component<CVIBuffer>()->Render();
-
 	if (m_isHitTest)
 	{
 		D3D11_VIEWPORT vp = {};
@@ -179,96 +160,6 @@ _bool CToolUI::Calc_HitEvent()
 	return FALSE;
 }
 
-HRESULT CToolUI::Bind_Action(const DTO::TUI_EventBindData& data)
-{
-	const size_t index = ENUM_TO_SZET(data.eEvent);
-	if (index >= m_vecBindingActions.size())
-		return E_FAIL;
-
-	DTO::TUI_EventBindData Desc = {};
-	Desc.strOwnerTag			= m_strName;
-	Desc.eAction				= data.eAction;
-	Desc.eEvent					= data.eEvent;
-	Desc.Params					= data.Params;
-	Desc.strTargetTag			= data.strTargetTag;
-
-	m_vecBindingActionData[index].push_back(Desc);
-	auto Func = m_pGameInstance->Get_UIAction_Registry()->Build_Action(data.eAction, data.Params);
-	if (!Func) {
-		return E_FAIL;
-	}
-	m_vecBindingActions[index].push_back(std::move(Func));
-	return S_OK;
-}
-
-HRESULT CToolUI::Bind_Action(DTO::EUIEvent EventType, DTO::EUIAction ActType, const json& params)
-{
-	const size_t index = ENUM_TO_SZET(EventType);
-	if (index >= m_vecBindingActions.size())
-		return E_FAIL;
-
-	DTO::TUI_EventBindData Desc = {};
-	Desc.strOwnerTag = m_strName;
-	Desc.eAction = ActType;
-	Desc.eEvent = EventType;
-	Desc.Params = params;
-	Desc.strTargetTag = "";
-	m_vecBindingActionData[index].push_back(Desc);
-	auto Func = m_pGameInstance->Get_UIAction_Registry()->Build_Action(ActType, params);
-	if (!Func)
-		return E_FAIL;
-	m_vecBindingActions[index].push_back(std::move(Func));
-	return S_OK;
-}
-
-HRESULT CToolUI::ReBind_Action()
-{
-	for (uint32_t i = 0; i < m_vecBindingActionData.size(); ++i)
-	{
-		m_vecBindingActions[i].clear();
-		for (auto& data : m_vecBindingActionData[i])
-		{
-			auto Func = m_pGameInstance->Get_UIAction_Registry()->Build_Action(data.eAction,data.Params);
-			if (!Func)
-				return E_FAIL;
-			m_vecBindingActions[i].push_back(std::move(Func));
-		}
-	}
-	return S_OK;
-}
-
-void CToolUI::Request_Add_Action(const _float fDelay, Engine::CUIAction_Registry::ActionFunc Func)
-{
-	m_pScheduler->Push_Action_Scheduler(fDelay, std::move(Func));
-}
-
-HRESULT CToolUI::Remove_Action(DTO::EUIEvent EventType, DTO::EUIAction ActType)
-{
-	const size_t EventIndex = ENUM_TO_SZET(EventType);
-	if (EventIndex >= m_vecBindingActionData.size())
-		return E_FAIL;
-
-	_bool isRemoved = { FALSE };
-	for (auto iter = m_vecBindingActionData[EventIndex].begin(); iter != m_vecBindingActionData[EventIndex].end(); iter++)
-	{
-		if (iter->eAction == ActType)
-		{
-			m_vecBindingActionData[EventIndex].erase(iter);
-			isRemoved = TRUE;
-			break;
-		}
-	}
-	if (!isRemoved)
-	{
-		MSG_BOX("CToolUI::Remove_Action, No Action with Match strActionKey");
-		return E_FAIL;
-	}
-	m_vecBindingActions[EventIndex].clear();
-		if (FAILED(ReBind_Action()))
-			return E_FAIL;
-	return S_OK;
-}
-
 HRESULT CToolUI::Ready_Components(TOOLUI_DESC* pDesc)
 { 
 	if (FAILED(Add_Component<CTexture>(ENUM_TO_UINT(ELevelType::UI), m_wstrTextureTag, pDesc)))
@@ -280,75 +171,11 @@ HRESULT CToolUI::Ready_Components(TOOLUI_DESC* pDesc)
     if (FAILED(Add_Component<CVIBuffer_Rect_Tex>(0, L"Prototype_Component_VIBuffer_Rect_Tex", pDesc)))
         return E_FAIL;
 
-	m_pActionForMe = CUIAction_Tool::Create(this);
-	if (nullptr == m_pActionForMe)
+	auto* p = CUIButton_Component::Create();
+	if (FAILED(Add_Script_Component(L"UIButton_Component", p)))
 		return E_FAIL;
-
-	m_pActionForTarget = CUITargetAction_Tool::Create(this);
-	if (nullptr == m_pActionForTarget)
-	{
-		Safe_Release(m_pActionForMe);
-		return E_FAIL;
-	}
-	/* 새로추가 */
-	/* For . Script_Component_UIAction_Scheduler */
-	{
-		CUIAction_Scheduler::ACTION_SCHEDULER_DESC Desc = {};
-		Desc.pActionAgent = m_pActionForMe;
-		Desc.pActionTarget = m_pActionForTarget;
-		m_pScheduler = CUIAction_Scheduler::Create(&Desc);
-		if (nullptr == m_pScheduler)
-			return E_FAIL;
-		if (FAILED(Add_Script_Component(L"Script_Component_UIAction_Scheduler", m_pScheduler)))
-			return E_FAIL;
-	}
-	/* For . Script_Component_UIAction_Player */
-	{
-		CUIAction_Player::ACTION_PLAYER_DESC Desc = {};
-		Desc.pOwner = this;
-		m_pActionPlayer = CUIAction_Player::Create(&Desc);
-		if (nullptr == m_pActionPlayer)
-			return E_FAIL;
-		if (FAILED(Add_Script_Component(L"Script_Component_UIAction_Player", m_pActionPlayer)))
-			return E_FAIL;
-	}
-
-	/* 새로추가 */
 
 	return S_OK;
-}
-
-HRESULT CToolUI::Excute_Action(DTO::EUIEvent EventType)
-{
-	if (m_isAction)
-		return S_OK;
-	if (nullptr == m_pActionForMe)
-		return E_FAIL;
-	if (nullptr == m_pActionForTarget)
-		return E_FAIL;
-
-	size_t index = ENUM_TO_SZET(EventType);
-	if (index >= m_vecBindingActions.size())
-		return E_FAIL;
-
-	for (auto& fn : m_vecBindingActions[index])
-		fn(m_pActionForMe, m_pActionForTarget);
-	return S_OK;
-}
-
-HRESULT CToolUI::Excute_Specific_Action(DTO::EUIEvent EventType, DTO::EUIAction eAction)
-{
-	uint32_t index = {};
-	for (const auto& pActData : m_vecBindingActionData[ENUM_TO_UINT(EventType)])
-	{
-		if (pActData.eAction == eAction)
-		{
-			m_vecBindingActions[ENUM_TO_UINT(EventType)][index](m_pActionForMe, m_pActionForTarget);
-			return S_OK;
-		}
-		index++;
-	}
-	return E_FAIL;
 }
 
 HRESULT CToolUI::Bind_ShaderResources()
@@ -411,39 +238,32 @@ void CToolUI::Acting_About_State()
 {
 	if (Engine_Utils::Has_Flag(m_iInteractState, DTO::EUIEvent_Flag::INVOKED))
 	{
-		Excute_Action(DTO::EUIEvent::INVOKED);
-		Engine_Utils::RemoveSoft_Flag(m_iInteractState, DTO::EUIEvent_Flag::INVOKED);
-		return;
 	}
 
-	if(m_iInteractState == DTO::EUIEvent_Flag::NONE)
-		Excute_Action(DTO::EUIEvent::NONE);
+	if (m_iInteractState == DTO::EUIEvent_Flag::NONE)
+	{
+
+	}
 	else
 	{
 		if (Engine_Utils::Has_Flag(m_iInteractState, DTO::EUIEvent_Flag::PRESS_ENTER))
 		{
-			Excute_Action(DTO::EUIEvent::PRESS_ENTER);
 		}
 		else if (Engine_Utils::Has_Flag(m_iInteractState, DTO::EUIEvent_Flag::PRESS_EXIT))
 		{
-			Excute_Action(DTO::EUIEvent::PRESS_EXIT);
 		}
 		else if (Engine_Utils::Has_Flag(m_iInteractState, DTO::EUIEvent_Flag::HOVER_ENTER))
 		{
-			Excute_Action(DTO::EUIEvent::HOVER_ENTER);
 		}
 		else if (Engine_Utils::Has_Flag(m_iInteractState, DTO::EUIEvent_Flag::HOVER_EXIT))
 		{
-			Excute_Action(DTO::EUIEvent::HOVER_EXIT);
 		}
 
 		if (Engine_Utils::Has_Flag(m_iInteractState, DTO::EUIEvent_Flag::PRESSING))
 		{
-			Excute_Action(DTO::EUIEvent::PRESSING);
 		}
 		else if (Engine_Utils::Has_Flag(m_iInteractState, DTO::EUIEvent_Flag::HOVERING))
 		{
-			Excute_Action(DTO::EUIEvent::HOVERING);
 		}
 	}
 }
@@ -460,7 +280,7 @@ void CToolUI::Sync_Data()
 	m_tUIData.fPosZ					= m_fZ;
 	m_tUIData.strTextureTag			= Engine_Utils::ToString(m_wstrTextureTag);
 	m_tUIData.iTextureIndex			= m_iTextureIndex;
-	m_tUIData.isVisible = m_isVisible;
+	m_tUIData.isVisible				= m_isVisible;
 }
 
 HRESULT CToolUI::Request_Change_Texture(const _wstring& wstrTextureTag)
@@ -473,80 +293,14 @@ HRESULT CToolUI::Request_Change_Texture(const _wstring& wstrTextureTag)
 	Change_Component<CTexture>(dynamic_cast<CTexture*>(pTexture));
 }
 
-vector<DTO::TUI_EventBindData>* CToolUI::Safe_Access_EventData(DTO::EUIEvent EventType)
-{
-	size_t index = ENUM_TO_SZET(EventType);
-
-	if (index >= m_vecBindingActionData.size() || m_vecBindingActionData.empty())
-		return nullptr;
-
-	return &m_vecBindingActionData[index];
-}
-
-array<vector<DTO::TUI_EventBindData>, ENUM_TO_UINT(DTO::EUIEvent::END)>* CToolUI::Safe_Access_AllEventData()
-{
-	return &m_vecBindingActionData;
-}
-
-void CToolUI::Start_Lerp_Movement(const Vec3& vTargetPos, const _float fTargetAlpha, const _float& fDuration, _bool isPin)
-{
-	CUIAction_Player::MOVE_DESC Desc = {};
-	Desc.vTargetPos	= vTargetPos;
-	Desc.fAlpha		= fTargetAlpha;
-	Desc.fDuration	= fDuration;
-	Desc.vStartPos	= Vec3{ m_vRenderPos.x, m_vRenderPos.y, m_vRenderPos.z };
-	m_pActionPlayer->Start_Lerp_Movement(&Desc);
-}
-
 void CToolUI::Set_isDisable(_bool isDisable)
 {
 	m_isDisable = isDisable;
 }
 
-void CToolUI::Start_Fade(const _float fStartAlpha, const _float fTargetAlpha, const _float fDuration)
+CToolUI* CToolUI::Create(EToolObjectType eType, ID3D11Device* pDevice, ID3D11DeviceContext* pContext)
 {
-	m_fFade_StartAlpha	= fStartAlpha;
-	m_fFade_ResultAlpha = fStartAlpha;
-	m_fFade_TargetAlpha = fTargetAlpha;
-	m_fFade_Duration	= fDuration;
-	m_fFade_TimeAcc		= 0.f;
-	m_isPlaying_Fade	= true;
-
-	Get_Component<CShader>()->Set_Pass(2);
-}
-
-void CToolUI::Fade(const _float fTimeDelta)
-{
-	if (!m_isPlaying_Fade)
-		return;
-
-	m_isAction = true;
-
-	if (m_fFade_Duration <= 0.f)
-	{
-		m_fFade_ResultAlpha = m_fFade_TargetAlpha;
-		m_isPlaying_Fade = false;
-		m_isAction = false;
-
-		return;
-	}
-
-	m_fFade_TimeAcc += fTimeDelta;
-	_float t = m_fFade_TimeAcc / m_fFade_Duration;
-
-	if (t >= 1.f)
-	{
-		t = 1.f;
-		m_isAction = false;
-		m_isPlaying_Fade = false;
-	}
-
-	m_fFade_ResultAlpha = m_fFade_StartAlpha + (m_fFade_TargetAlpha - m_fFade_StartAlpha) * t;
-}
-
-CToolUI* CToolUI::Create(EToolObjectType eType, ID3D11Device* pDevice, ID3D11DeviceContext* pDeviceContext)
-{
-	CToolUI* pInstance = new CToolUI(pDevice, pDeviceContext);
+	CToolUI* pInstance = new CToolUI(pDevice, pContext);
 	if (FAILED(pInstance->Initialize_Prototype()))
 	{
 		MSG_BOX("CToolUI::Create, Create Failed");
@@ -571,8 +325,7 @@ void CToolUI::Free()
 	Safe_Delete(m_pBatch);
 	Safe_Delete(m_pEffect);
 	Safe_Release(m_pInputLayout);
-	Safe_Release(m_pActionForMe);
-	Safe_Release(m_pActionForTarget);
 	Super::Free();
 }
+
 

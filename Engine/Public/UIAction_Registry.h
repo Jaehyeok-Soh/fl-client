@@ -22,13 +22,6 @@ private:
 	void Initialize_CommonAction();
 	void Initialize_CommonTargetAction();
 
-public:
-	/* Action */
-	void Register_Factory(DTO::EUIAction ActionType, FactoryFunc factory);
-	ActionFunc Build_Action(DTO::EUIAction ActionType, const json& params) const;
-
-	void Clear();
-
 private:
 	vector<FactoryFunc > m_Factories;
 

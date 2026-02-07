@@ -223,9 +223,6 @@
     <Filter Include="06. ImGui\01. Panel\UI\Component">
       <UniqueIdentifier>{ac792568-75d9-4e4a-84e1-ff4c4adcd6b8}</UniqueIdentifier>
     </Filter>
-    <Filter Include="02. GameObjects\UI\00.Action">
-      <UniqueIdentifier>{5aad0370-bb04-419c-a027-b5551686fa23}</UniqueIdentifier>
-    </Filter>
     <Filter Include="02. GameObjects\UI\01.Canvas">
       <UniqueIdentifier>{5d6846d5-10a5-4a42-bb54-26c8e2fde4ee}</UniqueIdentifier>
     </Filter>
@@ -237,15 +234,6 @@
     </Filter>
     <Filter Include="02. GameObjects\Map\00. MapObject\02. InstanceModel">
       <UniqueIdentifier>{32494c10-0bf8-420f-a857-a2d263860bfa}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="04. Component\UI">
-      <UniqueIdentifier>{defeb0ce-bda6-42d8-acb4-5b51e8cc0b0f}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="04. Component\UI\Action Scheduler">
-      <UniqueIdentifier>{41ac1706-bbb0-485c-9cc3-45e4a1cbe688}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="04. Component\UI\Move Action">
-      <UniqueIdentifier>{a226d932-f8be-47e4-8cde-55b605295ae1}</UniqueIdentifier>
     </Filter>
     <Filter Include="02. GameObjects\UI\02.UI">
       <UniqueIdentifier>{6a558198-77c1-41fb-9345-05c1fc4f9daf}</UniqueIdentifier>
@@ -486,23 +474,11 @@
     <ClInclude Include="..\Public\UIComponent_Inspector.h">
       <Filter>06. ImGui\01. Panel\UI\Component</Filter>
     </ClInclude>
-    <ClInclude Include="..\Public\UIAction_Tool.h">
-      <Filter>02. GameObjects\UI\00.Action</Filter>
-    </ClInclude>
     <ClInclude Include="..\Public\Builder_Map.h">
       <Filter>09. Builder\Map</Filter>
     </ClInclude>
     <ClInclude Include="..\Public\InstanceModel.h">
       <Filter>02. GameObjects\Map\00. MapObject\02. InstanceModel</Filter>
-    </ClInclude>
-    <ClInclude Include="..\Public\UITargetAction_Tool.h">
-      <Filter>02. GameObjects\UI\00.Action</Filter>
-    </ClInclude>
-    <ClInclude Include="..\Public\UIAction_Scheduler.h">
-      <Filter>04. Component\UI\Action Scheduler</Filter>
-    </ClInclude>
-    <ClInclude Include="..\Public\UIAction_Player.h">
-      <Filter>04. Component\UI\Move Action</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -726,23 +702,11 @@
     <ClCompile Include="..\Private\UIComponent_Inspector.cpp">
       <Filter>06. ImGui\01. Panel\UI\Component</Filter>
     </ClCompile>
-    <ClCompile Include="..\Private\UIAction_Tool.cpp">
-      <Filter>02. GameObjects\UI\00.Action</Filter>
-    </ClCompile>
     <ClCompile Include="..\Private\Builder_Map.cpp">
       <Filter>09. Builder\Map</Filter>
     </ClCompile>
     <ClCompile Include="..\Private\InstanceModel.cpp">
       <Filter>02. GameObjects\Map\00. MapObject\02. InstanceModel</Filter>
-    </ClCompile>
-    <ClCompile Include="..\Private\UITargetAction_Tool.cpp">
-      <Filter>02. GameObjects\UI\00.Action</Filter>
-    </ClCompile>
-    <ClCompile Include="..\Private\UIAction_Scheduler.cpp">
-      <Filter>04. Component\UI\Action Scheduler</Filter>
-    </ClCompile>
-    <ClCompile Include="..\Private\UIAction_Player.cpp">
-      <Filter>04. Component\UI\Move Action</Filter>
     </ClCompile>
   </ItemGroup>
 </Project>

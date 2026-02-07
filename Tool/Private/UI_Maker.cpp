@@ -6,9 +6,7 @@
 #include "ToolUI.h"
 #include "Engine_Utils.h"
 
-#include "UIAction_Registry.h"
 #include "DataStruct_UI.h"
-#include "IUIActionForMe.h"
 #include "GameInstance.h"
 
 CUI_Maker::CUI_Maker(const _char* pLabel, CLevel* pOwner, ID3D11Device* pDevice, ID3D11DeviceContext* pDeviceContext)

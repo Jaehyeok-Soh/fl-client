@@ -353,19 +353,6 @@ _bool CToolCanvas::Export_Data(DTO::ECategory eCategory, CDataDocumentBase* pDoc
 	{
 		if (FAILED(pDoc->Try_Add(pUI->Get_Data())))
 			return FALSE;
-
-		auto* pAllEvent = pUI->Safe_Access_AllEventData();
-		if (nullptr != pAllEvent)
-		{
-			for (size_t e = 0; e < pAllEvent->size(); ++e)
-			{
-				for (auto& bind : (*pAllEvent)[e])
-				{
-					if (FAILED(pDoc->Try_Add(bind)))
-						return FALSE;
-				}
-			}
-		}
 	}
 
 	return TRUE;

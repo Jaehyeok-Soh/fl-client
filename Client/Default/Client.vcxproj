@@ -226,8 +226,7 @@
     <ClInclude Include="..\Public\State_Slide.h" />
     <ClInclude Include="..\Public\State_Walk.h" />
     <ClInclude Include="..\Public\StaticModel.h" />
-    <ClInclude Include="..\Public\UIAction_Client.h" />
-    <ClInclude Include="..\Public\UITargetAction_Client.h" />
+    <ClInclude Include="..\Public\UIPlayer_HP.h" />
     <ClInclude Include="..\Public\UI_Manager.h" />
     <ClInclude Include="..\Public\Weapon.h" />
     <ClInclude Include="Client.h" />
@@ -325,8 +324,7 @@
     <ClCompile Include="..\Private\State_Slide.cpp" />
     <ClCompile Include="..\Private\State_Walk.cpp" />
     <ClCompile Include="..\Private\StaticModel.cpp" />
-    <ClCompile Include="..\Private\UIAction_Client.cpp" />
-    <ClCompile Include="..\Private\UITargetAction_Client.cpp" />
+    <ClCompile Include="..\Private\UIPlayer_HP.cpp" />
     <ClCompile Include="..\Private\UI_Manager.cpp" />
     <ClCompile Include="..\Private\Weapon.cpp" />
     <ClCompile Include="..\Public\Physics_Terrain.cpp" />

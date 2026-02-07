@@ -47,16 +47,6 @@ HRESULT CBuilder_UI::Build(const CDataDocumentBase& document)
 				return E_FAIL;
 		}
 	}
-	// For. Event
-	{
-		const vector<Engine::IObjectDataBase*> vecDataList = doc.Get_ListByType(ENUM_TO_UINT(DTO::EUIType::EVENT));
-		for (const auto& pObjectData : vecDataList)
-		{
-			const auto* pDto = static_cast<const Engine::CUI_EventBindData_DTO*>(pObjectData);
-			if (FAILED(Create_EventBindDataDTO(pDto->Get_Data())))
-				return E_FAIL;
-		}
-	}
 
 	CImGui_UIManager::GetInstance()->Move_CanvasCache(m_pCanvasCache);
 	CImGui_UIManager::GetInstance()->Move_UICache(m_pUICache);
@@ -133,21 +123,6 @@ HRESULT CBuilder_UI::Create_GenericUIDTO(const DTO::TUI_GenericUIData& data)
 		return E_FAIL;
 
 	m_pUICache.emplace(data.strTag, pUI);
-
-	return S_OK;
-}
-
-HRESULT CBuilder_UI::Create_EventBindDataDTO(const DTO::TUI_EventBindData& data)
-{
-	if (data.eType != DTO::EUIType::EVENT)
-		return E_FAIL;
-
-	auto iter = m_pUICache.find(data.strOwnerTag);
-	if (iter == m_pUICache.end())
-		return E_FAIL;
-
-	if (FAILED(iter->second->Bind_Action(data)))
-		return E_FAIL;
 
 	return S_OK;
 }

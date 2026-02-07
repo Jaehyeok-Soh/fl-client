@@ -8,33 +8,12 @@ using json = nlohmann::json;
 
 NS_BEGIN(DTO)
 
-void to_json(json& j, const TUI_EventBindData& data)
-{
-	j = json
-	{
-		{ "Type", TUI_EventBindData::eType },
-		{ "strTag", data.strTag },
-		{"strOwnerTag", data.strOwnerTag},
-		{"strTargetTag", data.strTargetTag},
-		{"eEvent", data.eEvent},
-		{"eAction", data.eAction},
-		{"Params", data.Params}
-	};
-}
-void from_json(const json& j, TUI_EventBindData& data)
-{
-	j.at("strTag").get_to(data.strTag);
-	j.at("strOwnerTag").get_to(data.strOwnerTag);
-	j.at("strTargetTag").get_to(data.strTargetTag);
-	j.at("eEvent").get_to(data.eEvent);
-	j.at("eAction").get_to(data.eAction);
-	j.at("Params").get_to(data.Params);
-}
 void to_json(json& j, const TUI_GenericUIData& data)
 {
 	j = json
 	{
 		{ "Type", TUI_GenericUIData::eType },
+		{ "eClassType",data.eClassType},
 		{ "strTag", data.strTag },
 		{ "strCanvasName", data.strCanvasName },
 
@@ -51,6 +30,7 @@ void to_json(json& j, const TUI_GenericUIData& data)
 }
 void from_json(const json& j, TUI_GenericUIData& data)
 {
+	j.at("eClassType").get_to(data.eClassType);
 	j.at("strTag").get_to(data.strTag);
 	j.at("strCanvasName").get_to(data.strCanvasName);
 	j.at("iRectTransformType").get_to(data.iRectTransformType);
@@ -119,15 +99,5 @@ HRESULT CUI_Canvas_DTO::FromJson(const json& j)
 	return S_OK;
 }
 
-json CUI_EventBindData_DTO::ToJson() const
-{
-	return json(m_Data);
-}
-
-HRESULT CUI_EventBindData_DTO::FromJson(const json& j)
-{
-	m_Data = j.get<DTO::TUI_EventBindData>();
-	return S_OK;
-}
 
 NS_END;

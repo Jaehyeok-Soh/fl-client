@@ -69,6 +69,8 @@ private:
 
 	int32_t m_iRectTransformIndex = {4};
 
+	uint32_t m_iUIClassIndex = {};
+
 private:
 	int32_t m_iCurSelectLevelID = {};
 	vector<_string> m_vecLayers;

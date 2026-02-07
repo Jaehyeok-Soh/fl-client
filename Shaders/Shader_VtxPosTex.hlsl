@@ -75,8 +75,4 @@ technique11 T0
     PASS_RS_DS_BS_VP(P1, RS_Default, DS_Default, BS_AlphaBlend, VS_MAIN, PS_MAIN)
     PASS_RS_DS_BS_VP(Fade, RS_Default, DS_Default, BS_AlphaBlend, VS_MAIN, PS_FADE)
     PASS_RS_DS_BS_VP(Progress, RS_Default, DS_Default, BS_AlphaBlend, VS_MAIN, PS_PROGRESS)
-
-    PASS_RS_DS_BS_VP(SkillIcon, RS_Default, DS_Default, BS_Default, VS_MAIN, PS_SKILLICON)
-    PASS_RS_DS_BS_VP(UIHpBar, RS_Default, DS_Default, BS_Default, VS_MAIN, PS_UIHPBAR)
-    PASS_RS_DS_BS_VP(UILockon, RS_Default, DS_Default, BS_AlphaBlend, VS_MAIN, PS_LOCKON)
 };
