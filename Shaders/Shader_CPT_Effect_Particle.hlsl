@@ -5,11 +5,18 @@
 
 // 불변 데이터
 #define NONE 0
-#define SPREAD 1
-#define DROP 2
-#define RISE 3
-#define MESH 4
-#define STARIGHT 5
+#define DROP 1
+#define RISE 2
+#define SPREAD 3 
+#define STARIGHT 4
+#define SPIRAL 5
+#define DNA 6
+
+// 시간 데이터
+#define PLAY 0
+#define PAUSE 1
+#define RESET 2
+#define STOP 3
 
 struct IMMU_ELEMENT
 {
@@ -33,16 +40,20 @@ struct MU_ELEMENT
     float               fDuration;
     float               fStartDelay;
     
-    float               iMoveState;
+    uint                iMoveState;
     int                 bIsLoop;
-    uint                bIsReset;
+    uint                iTimeFlag;
     float               fGravity;
     
     float3              vPivot;
+    float               fPadding1;
     float3              vLook;
+    float               fPadding2;
+    
     float               fStartSpeed;
-    float               fSpiralRaduis;
+    float               fSpiralRadius;
     float               fSpiralSpeed;
+    float               fPadding3;
 };
 
 
@@ -70,6 +81,22 @@ void CS_Main(int3 dtid : SV_DispatchThreadID)
 
 //  만약 수명이 0이거나 방금 리셋되었다면, 초기 Matrix를 사용한다.
 //  이렇게 하면 CPU가 gOutput을 초기화해서 던져줄 필요가 없음!
+    
+    if (g_InputB.iTimeFlag == RESET || g_InputB.iTimeFlag == STOP)
+    {
+        currentData.matTransform = input.vOriginMatrix;
+        currentData.vLifeTime.x = 0.f;
+        currentData.vLifeTime.y = input.vLifeTime.y;
+        
+        INSTANCE_OUTPUT[dtid.x] = currentData;
+        
+        if (g_InputB.iTimeFlag == STOP)
+        {
+            return;
+        }
+    }
+
+   
     if (currentData.vLifeTime.x <= 0.0f)
     {
         currentData.matTransform = input.vOriginMatrix;
@@ -80,18 +107,23 @@ void CS_Main(int3 dtid : SV_DispatchThreadID)
     currentData.vLifeTime.x += g_InputB.fTimeDelta;
 
 //  상태별 이동 로직 (DROP 예시)
-    if (g_InputB.iMoveState == 3)
+    if (g_InputB.iMoveState == DROP)
     {
-        currentData.matTransform._42 -= input.vSpeed * g_InputB.fTimeDelta * g_InputB.fStartSpeed;
+        currentData.matTransform._42 -= input.vSpeed * g_InputB.fTimeDelta * 1.f;
     }
     
-    if (g_InputB.iMoveState == MESH)
+    if (g_InputB.iMoveState == RISE)
     {
-        
+        currentData.matTransform._42 += input.vSpeed * g_InputB.fTimeDelta * 1.f;
     }
     
+    if (g_InputB.iMoveState == SPREAD)
     {
-        
+    //   기준점(Pivot)에서 생성 위치(Translation)로 향하는 방향 벡터 계산
+        float3 vDir = normalize(input.vTranslation.xyz - g_InputB.vPivot);
+    
+    //   방향 * 시간 * 속도를 곱해 위치 업데이트
+        currentData.matTransform._41_42_43 += vDir * g_InputB.fTimeDelta * g_InputB.fStartSpeed;
     }
     
     {

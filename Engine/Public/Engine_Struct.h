@@ -204,17 +204,20 @@ namespace Engine
 		// 상태 플래그
 		unsigned int		iMoveState = { 0 };
 		int					bIsLoop = { 0 };
-		int					bIsReset = { 0 };
+		unsigned int		iTimeFlag = {};
 		float				fGravity = { 9.8f };
 
 		// 위치 및 방향
 		SimpleMath::Vector3	vPivot = {};	// Spread시 기준점
+		float Padding1 = {};
 		SimpleMath::Vector3 vLook = {};		// Straight시 방향
-		float				fStartSpeed = { 0.f };
+		float Padding2 = {};
 
-		float				fSpiralRaduis = { 0.f };
+		float				fStartSpeed = { 0.f };
+		float				fSpiralRadius = { 0.f };
 		float				fSpiralSpeed = { 0.f };
-		SimpleMath::Vector3 Padding1 = { 0.f, 0.f, 0.f };
+		float				Padding3 = {};
+
 		// 
 
 	}EFFECT_PARTICLE_MU_ELEMENT;

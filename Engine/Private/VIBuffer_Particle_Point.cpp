@@ -127,7 +127,7 @@ HRESULT CVIBuffer_Particle_Point::Set_ResizeBuffer_NoneUseRandomSeed()
 		_float      fScale = m_pGameInstance->Rand_Float(m_tParticleDesc.vSize.x, m_tParticleDesc.vSize.y) * 0.5f;
 
 		pInitialData[i].fSpeed = 1.f;
-		pInitialData[i].vParticle_LifeTime = Vec2(0.f, m_pGameInstance->Rand_Float(m_tParticleDesc.vLifeTime.x, m_tParticleDesc.vLifeTime.y));
+		pInitialData[i].vParticle_LifeTime = Vec2(0.2f, m_pGameInstance->Rand_Float(m_tParticleDesc.vLifeTime.x + 0.2f, m_tParticleDesc.vLifeTime.y));
 		pInitialData[i].vRight = Vec4(fScale, 0.f, 0.f, 0.f);
 		pInitialData[i].vUp = Vec4(0.f, fScale, 0.f, 0.f);
 		pInitialData[i].vLook = Vec4(0.f, 0.f, fScale, 0.f);

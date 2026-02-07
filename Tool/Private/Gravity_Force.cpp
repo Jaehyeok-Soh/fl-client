@@ -62,11 +62,15 @@ void CGravity_Force::Update_Late(const _float fTimeDelta)
 void CGravity_Force::Ready_Before_Render(const _float fTimeDelta)
 {
     Super::Ready_Before_Render(fTimeDelta);
+#ifdef _DEBUG
+    m_pGameInstance->Push_RenderObject(RENDER_CATEGORY::NONELIGHT, this);
+#endif
     Super::Update_CombinedWorldMatrix(m_pMatParent);
 }
 
 HRESULT CGravity_Force::Render()
 {
+#ifdef _DEBUG
     if (FAILED(Super::Render()))
         return E_FAIL;
 
@@ -76,7 +80,7 @@ HRESULT CGravity_Force::Render()
 
     if (!pModel || !pShader) return S_OK;
 
-    pShader->Bind_TransformData(CGameObject::Get_Component<CTransform>()->Get_WorldMatrix());
+    pShader->Bind_TransformData(m_CombineWorldMatrix);
 
     UINT32 iMeshCount = pModel->Get_MeshCount();
 
@@ -88,7 +92,7 @@ HRESULT CGravity_Force::Render()
         pShader->Apply();
         pModel->Render(i);
     }
-
+#endif
     return S_OK;
 }
 

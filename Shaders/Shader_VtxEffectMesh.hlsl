@@ -214,33 +214,6 @@ float2 Get90DegreeRotatedUV(float2 InUV, uint PackedFlags, uint TextureIndex)
 
 // ======== 사진 Rotation 함수들 =======
 
-// ========  Texture Flags  ==========
-
-bool HasDefaultTexture()
-{
-    return (g_Effect.g_TextureFlags & (1 << 0)) != 0;
-}
-
-bool HasNoiseTexture()
-{
-    return (g_Effect.g_TextureFlags & (1 << 1)) != 0;
-}
-
-bool HasMaskTexture()
-{
-    return (g_Effect.g_TextureFlags & (1 << 2)) != 0;
-}
-
-bool HasGradationTexture()
-{
-    return (g_Effect.g_TextureFlags & (1 << 3)) != 0;
-}
-
-bool HasTrailTexture()
-{
-    return (g_Effect.g_TextureFlags & (1 << 4)) != 0;
-}
-
 // ========= SamplerState Flags ===========
     // Diffuse
 float4 SampleTextureWithFlags(Texture2D tex, uint flags, uint Shift, float2 uv) // texture라는 이름을 사용하지 못함
@@ -336,7 +309,7 @@ float4 PS_DEFAULT(VS_OUT_INST_MESH_PARTICLE In) : SV_Target0
     float4 noiseSample = {0.5f, 1.f, 1.f, 1.f};
     float2 finalUV = In.vUV;
     
-    if (HasNoiseTexture())
+    if (Has(g_Effect.g_TextureFlags, NOISETEXTURE))
     {
         noiseSample = NoiseTextureSample(noiseUV);
     }
@@ -344,7 +317,7 @@ float4 PS_DEFAULT(VS_OUT_INST_MESH_PARTICLE In) : SV_Target0
     
     //=======               디스토션 (왜곡) 로직            ===========
 
-    if (HasNoiseTexture())
+    if (Has(g_Effect.g_TextureFlags, NOISETEXTURE))
     {
             // (NoiseValue - 0.5f) -> -0.5 ~ 0.5 범위로 흔들기
         finalUV.x += (noiseValue - 0.5f) * g_Effect.g_DistortionScale.x;
@@ -363,7 +336,7 @@ float4 PS_DEFAULT(VS_OUT_INST_MESH_PARTICLE In) : SV_Target0
 
     float4 DiffuseSample = { 1.f, 1.f, 1.f, 1.f };
     
-    if (HasDefaultTexture())
+    if (Has(g_Effect.g_TextureFlags, DEFAULTTEXTURE))
     {
         DiffuseSample = DefaultTextureSample(finalUV);
     }
@@ -380,7 +353,7 @@ float4 PS_DEFAULT(VS_OUT_INST_MESH_PARTICLE In) : SV_Target0
     
     // ==========   미리 지정한 이펙트 색깔을 곱해서 출력하기   =========
     
-        return float4(DiffuseSample.rgb * g_Effect.g_EffectColor.rgb, finalAlpha);
+        return float4(DiffuseSample.rgb + g_Effect.g_EffectColor.rgb, finalAlpha);
 }
 
 float4 PS_BULLET(VS_OUT_INST_MESH_PARTICLE In) : SV_Target0
@@ -392,14 +365,14 @@ float4 PS_BULLET(VS_OUT_INST_MESH_PARTICLE In) : SV_Target0
     float4 GradientSample = { 1.f, 1.f, 1.f, 1.f };
     float noiseValue;
     
-    if (HasNoiseTexture())
+    if (Has(g_Effect.g_TextureFlags, NOISETEXTURE))
     {
         float2 noiseUV = Get90DegreeRotatedUV(In.vUV, g_Effect.g_RotationFlags, NOISETEXTURE);
         noiseUV += g_Effect.g_ScrollOffset;
         noiseSample = NoiseTextureSample(noiseUV);
         
         // 지금 바인딩 되어있는 Gradation 텍스처가 있는지 확인한다.
-        if (HasGradationTexture())
+        if (Has(g_Effect.g_TextureFlags, GRADATIONTEXTURE))
         {
             GradientSample = GradationTextureSample(Get90DegreeRotatedUV(In.vUV, g_Effect.g_RotationFlags, GRADATIONTEXTURE));
             noiseValue = Float_Operation(noiseSample.r, GradientSample.r, g_Effect.g_OperatorFlags);
@@ -417,7 +390,7 @@ float4 PS_BULLET(VS_OUT_INST_MESH_PARTICLE In) : SV_Target0
         }
     }
     // =======      디스토션 처리된 UV로 Diffuse Texture 샘플링 =======
-    if (HasDefaultTexture())
+    if (Has(g_Effect.g_TextureFlags, DEFAULTTEXTURE))
     {
         DiffuseSample = DefaultTextureSample(Get90DegreeRotatedUV(finalUV, g_Effect.g_RotationFlags, DEFAULTTEXTURE));
     }
@@ -446,14 +419,14 @@ float4 PS_DISTOTION(VS_OUT_INST_MESH_PARTICLE In) : SV_Target0
     float4 MaskSample = { 1.f, 1.f, 1.f, 1.f };
     float noiseValue;
     
-    if (HasNoiseTexture())
+    if (Has(g_Effect.g_TextureFlags, NOISETEXTURE))
     {
         float2 noiseUV = Get90DegreeRotatedUV(In.vUV, g_Effect.g_RotationFlags, NOISETEXTURE);
         noiseUV += g_Effect.g_ScrollOffset;
         noiseSample = NoiseTextureSample(noiseUV);
         
         // 지금 바인딩 되어있는 Gradation 텍스처가 있는지 확인한다.
-        if (HasMaskTexture())
+        if (Has(g_Effect.g_TextureFlags, MASKINGTEXTURE))
         {
             MaskSample = MaskTextureSample(Get90DegreeRotatedUV(In.vUV, g_Effect.g_RotationFlags, MASKINGTEXTURE));
             noiseValue = Float_Operation(noiseSample.r, MaskSample.r, MUL);
@@ -491,45 +464,49 @@ float4 PS_SWORDEFFECT(VS_OUT_INST_MESH_PARTICLE In) :SV_Target0
     float4 DiffuseSample = { 1.f, 1.f, 1.f, 1.f };
     float4 noiseSample = { 0.5f, 1.f, 1.f, 1.f };
     float4 MaskSample = { 1.f, 1.f, 1.f, 1.f };
+    float4 GradationSample = { 1.f, 1.f, 1.f, 1.f };
     float noiseValue;
+    float4 finalSwordColor = { 1.f, 1.f, 1.f, 1.f };
     
-    if (HasNoiseTexture())
+    finalSwordColor += g_Effect.g_EffectColor;
+    
+    if (Has(g_Effect.g_TextureFlags, DEFAULTTEXTURE))
     {
-        float2 noiseUV = Get90DegreeRotatedUV(In.vUV, g_Effect.g_RotationFlags, NOISETEXTURE);
-        noiseUV += g_Effect.g_ScrollOffset;
-        noiseSample = NoiseTextureSample(noiseUV);
+        // 1. 내가 가진 기본 텍스처의 알파값에 Opacity 20배를 한다. 
+        // 2. 그 알파값을 0~1까지로 clamp를 한다.
+        // 3. Append를 사용하여 float4(x,y,z,w)를 구해준다.
         
-        // 지금 바인딩 되어있는 Gradation 텍스처가 있는지 확인한다.
-        if (HasMaskTexture())
-        {
-            MaskSample = MaskTextureSample(Get90DegreeRotatedUV(In.vUV, g_Effect.g_RotationFlags, MASKINGTEXTURE));
-            noiseValue = Float_Operation(noiseSample.r, MaskSample.r, MUL);
-        }
-        
-        finalUV.x = Float_Operation(noiseValue, g_Effect.g_DistortionScale.x, MUL);
-        finalUV.y = Float_Operation(noiseValue, g_Effect.g_DistortionScale.y, MUL);
+        float opacity = 20.f;
+        DiffuseSample = DefaultTextureSample(finalUV);
+        finalSwordColor = float4(DiffuseSample.xyz, clamp(Float_Operation(DiffuseSample.a, opacity, MUL), 0.f, 1.f));
     }
-        // 클립 좌표계에서 내 위치 찾아서 UV좌표 꺼내오기.
-    float2 ScreenUV = In.vProjPos.xy / In.vProjPos.w;
-    ScreenUV = ScreenUV * 0.5f + 0.5f;
-    
-    float2 distortionUV = ScreenUV + finalUV;
-    float4 refractionColor = float4(1.f, 1.f, 1.f, 1.f);
-    
-    // 이 UV 좌표로 SceneTexture를 샘플링한다.
 
-    refractionColor = SceneTextureSample(distortionUV);
+    if (Has(g_Effect.g_TextureFlags, GRADATIONTEXTURE))
+    {
+        // 1. 그라데이션 텍스처를 스크롤을 한다.
+        if (HasScroll())
+        {
+            float2 GradationUV = finalUV = ScrollUV_Calculator(g_Effect.g_RenderFlags, finalUV);
+            GradationSample = GradationTextureSample(Get90DegreeRotatedUV(GradationUV, g_Effect.g_RotationFlags, GRADATIONTEXTURE));
+        }
+        // 2. 그라데이션 텍스처의 Sample한 값을 finalSwordColor의 alpha에 곱한다.
+        finalSwordColor.a *= GradationSample.r;
+    }
     
-    //float lifeAlpha = 1.0f - (In.vLifeTime.x / In.vLifeTime.y);
-    //refractionColor.a *= lifeAlpha;
+    
+    // 유니티의 Color over LifeTime 로직
+        float lifeAlpha = 1.0f - (In.vLifeTime.x / In.vLifeTime.y);
+    finalSwordColor.a *= lifeAlpha;
+    
+    finalSwordColor *= g_Effect.g_EffectColor;
     
         // ==========               알파 클리핑                   =========
+    if (finalSwordColor.a < g_Effect.g_DiscardValue)
+        discard;
     
-    //if (refractionColor.a < g_Effect.g_DiscardValue)
-    //    discard;
-    
-    // ==========   미리 지정한 이펙트 색깔을 곱해서 출력하기   =========
-    return float4(refractionColor.rgb, refractionColor.a);
+    // ==========   미리 지정한 이펙트 색깔을 더하기 출력하기   =========
+    return finalSwordColor;
+
 }
 
 technique11 T0
@@ -538,7 +515,7 @@ technique11 T0
     {
         SetRasterizerState(RS_Default_CullNone);
         SetDepthStencilState(DS_Default, 0);
-        SetBlendState(BS_Default, float4(0.f, 0.f, 0.f, 0.f), 0xffffffff);
+        SetBlendState(BS_AlphaBlend, float4(0.f, 0.f, 0.f, 0.f), 0xffffffff);
         SetVertexShader(CompileShader(vs_5_0, VS_DEFAULT()));
         GeometryShader = NULL;
         SetPixelShader(CompileShader(ps_5_0, PS_DEFAULT()));
@@ -578,7 +555,7 @@ technique11 T0
     {
         SetRasterizerState(RS_Default_CullNone);
         SetDepthStencilState(DS_Default, 0);
-        SetBlendState(BS_Default, float4(0.f, 0.f, 0.f, 0.f), 0xffffffff);
+        SetBlendState(BS_AlphaBlend, float4(0.f, 0.f, 0.f, 0.f), 0xffffffff);
         SetVertexShader(CompileShader(vs_5_0, VS_DEFAULT()));
         GeometryShader = NULL;
         SetPixelShader(CompileShader(ps_5_0, PS_SWORDEFFECT()));

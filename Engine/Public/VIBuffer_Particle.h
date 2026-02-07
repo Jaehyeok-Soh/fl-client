@@ -5,11 +5,13 @@ NS_BEGIN(Engine)
 
 enum class E_PARTICLE_MOVESTATE
 {
-	NONE,
+	NONE = 0,
 	DROP,
 	RISE,
 	SPREAD,
 	STRAIGHT,
+	SPIRAL,
+	DNA
 };
 
 class CModel;
@@ -50,7 +52,7 @@ public:
 	virtual void Render() override;
 	
 public:
-	virtual void Update_Simulation(CComputeShader* ComputeShader, Vec3 vLook, _float fTimeDelta, E_PARTICLE_MOVESTATE eType);
+	virtual void Update_Simulation(CComputeShader* ComputeShader, Vec3 vLook, _float fTImeDelta, _uint TimeFlag, E_PARTICLE_MOVESTATE eType);
 	virtual void Reset_Simulation();
 
 public:

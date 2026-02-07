@@ -10,6 +10,11 @@
 #include "StructuredBuffer.h"
 #include "GameInstance.h"
 
+#define PLAY 0
+#define PAUSE 1
+#define RESET 2
+#define STOP 3
+
 CEffectObject::CEffectObject(EToolObjectType eType, ID3D11Device* pDevice, ID3D11DeviceContext* pDeviceContext)
     :Tool_PartObject(eType, pDevice, pDeviceContext)
 {
@@ -118,6 +123,7 @@ HRESULT CEffectObject::EffectDesc_Initialize(void* pArg)
 void CEffectObject::Set_EffectDesc(const Effect_Desc& Desc)
 {
     m_tEffectDesc = Desc;
+    TimeFlagRequest(RESET);
 
     Model_Setting(m_tEffectDesc._Effect_Model_Tag);
     Texture_Setting(m_tEffectDesc._Effect_DiffuseTexture_Tag);
@@ -402,17 +408,23 @@ HRESULT CEffectObject::Awake(const _uint iCurrentLevelID)
 
 void CEffectObject::Update_Priority(const _float fDT)
 {
-    if (m_tEffectDesc._Effect_TimeStop) return;
-
     // 임시 방편 Speed
     Super::Update_Priority(fDT * m_tEffectDesc._Effect_PlayBackSpeed);
 }
 
 void CEffectObject::Update(const _float fTimeDelta)
 {
-    //if (m_tEffectDesc._Effect_TimeStop) return;
+    float TimeFlag = 0.f;
 
-    _float TimeT = m_tEffectDesc._Effect_PlayBackSpeed * fTimeDelta;
+    switch (m_tEffectDesc._Effect_TimeFlag)
+    {
+    case PLAY: TimeFlag = 1.f; break;
+    case PAUSE:TimeFlag = 0.f; break;
+    case RESET: TimeFlag = 1.f; break;
+    case STOP: TimeFlag = 0.f; break;
+    }
+
+    _float TimeT = m_tEffectDesc._Effect_PlayBackSpeed * fTimeDelta * TimeFlag;
     m_fTimeAccumulation += TimeT; // 전체 시간 누적
 
     //  ========   Start Delay 체크   ========   
@@ -431,8 +443,10 @@ void CEffectObject::Update(const _float fTimeDelta)
     {
         if (m_tEffectDesc._Effect_Looping)
         {
-            m_fTimeAccumulation = m_tEffectDesc._Effect_StartDelay; // 리셋
+            m_fTimeAccumulation = 0.f; // 완전 리셋
             fActiveTime = 0.f;
+            m_vScrollOffset = { 0.f, 0.f }; // 스크롤 값도 완전 초기화
+
             // 루프 시 파티클 버퍼 리셋이 필요하다면 호출
             auto pVIBuffer = Get_Component<CVIBuffer_Particle_Point>();
             if (pVIBuffer) pVIBuffer->Reset_Simulation();
@@ -453,6 +467,7 @@ void CEffectObject::Update(const _float fTimeDelta)
     Get_Component<CTransform>()->Set_Scale(vCurrentScale);
 
     TimeCalculate(TimeT);
+    Update_Rotation_Lerp(TimeT, fRatio);
     Super::Update(TimeT);
     // == 스크롤 값 == 
 
@@ -465,32 +480,39 @@ void CEffectObject::Update(const _float fTimeDelta)
     case E_SHAPETYPE::SPREAD:
     {
         CVIBuffer_Particle_Point* pInstance = Get_Component<CVIBuffer_Particle_Point>();
-        if (pInstance) pInstance->Update_Simulation(CTShader, Vec3{}, TimeT, E_PARTICLE_MOVESTATE::SPREAD);
+        if (pInstance) pInstance->Update_Simulation(CTShader, Vec3{}, TimeT, m_tEffectDesc._Effect_TimeFlag, E_PARTICLE_MOVESTATE::SPREAD);
         break;
     }
     case E_SHAPETYPE::DROP:
     {
         CVIBuffer_Particle_Point* pInstance = Get_Component<CVIBuffer_Particle_Point>();
-        if (pInstance) pInstance->Update_Simulation(CTShader, Vec3{}, TimeT, E_PARTICLE_MOVESTATE::DROP);
+        if (pInstance) pInstance->Update_Simulation(CTShader, Vec3{}, TimeT, m_tEffectDesc._Effect_TimeFlag, E_PARTICLE_MOVESTATE::DROP);
         break;
     }
     case E_SHAPETYPE::RISE:
     {
         CVIBuffer_Particle_Point* pInstance = Get_Component<CVIBuffer_Particle_Point>();
-        if (pInstance) pInstance->Update_Simulation(CTShader, Vec3{}, TimeT, E_PARTICLE_MOVESTATE::RISE);
+        if (pInstance) pInstance->Update_Simulation(CTShader, Vec3{}, TimeT, m_tEffectDesc._Effect_TimeFlag, E_PARTICLE_MOVESTATE::RISE);
         break;
     }
-    case E_SHAPETYPE::MESH:
+    case E_SHAPETYPE::SPIRAL:
     {
         CVIBuffer_Particle_Point* pInstance = Get_Component<CVIBuffer_Particle_Point>();
-        if (pInstance) pInstance->Update_Simulation(CTShader, Vec3{}, TimeT, E_PARTICLE_MOVESTATE::RISE);
+        if (pInstance) pInstance->Update_Simulation(CTShader, Vec3{}, TimeT, m_tEffectDesc._Effect_TimeFlag, E_PARTICLE_MOVESTATE::SPIRAL);
+        break;
+    }
+
+    case E_SHAPETYPE::DNA:
+    {
+        CVIBuffer_Particle_Point* pInstance = Get_Component<CVIBuffer_Particle_Point>();
+        if (pInstance) pInstance->Update_Simulation(CTShader, Vec3{}, TimeT, m_tEffectDesc._Effect_TimeFlag, E_PARTICLE_MOVESTATE::DNA);
         break;
     }
 
     case E_SHAPETYPE::STRAIGHT:
     {
         CVIBuffer_Particle_Point* pInstance = Get_Component<CVIBuffer_Particle_Point>();
-        if (pInstance) pInstance->Update_Simulation(CTShader, Get_Component<CTransform>()->Get_Info(TRANSFORM_INFO_STATE::LOOK), TimeT, E_PARTICLE_MOVESTATE::STRAIGHT);
+        if (pInstance) pInstance->Update_Simulation(CTShader, Get_Component<CTransform>()->Get_Info(TRANSFORM_INFO_STATE::LOOK), TimeT, m_tEffectDesc._Effect_TimeFlag, E_PARTICLE_MOVESTATE::STRAIGHT);
         break;
     }
     }
@@ -498,8 +520,6 @@ void CEffectObject::Update(const _float fTimeDelta)
 
 void CEffectObject::Update_Late(const _float fTimeDelta)
 {
-    if (m_tEffectDesc._Effect_TimeStop) return;
-
     _float TimeT = m_tEffectDesc._Effect_PlayBackSpeed * fTimeDelta;
 
     Super::Update_Late(TimeT);
@@ -529,15 +549,15 @@ void CEffectObject::Preview_Texture_Reset()
 
 bool CEffectObject::IntsersectWithPlane(OUT Vec3& vOut)
 {
-    CModel* pModel = Get_Component<CModel>();
-    if (pModel == nullptr)  return false;
+    //CModel* pModel = Get_Component<CModel>();
+    //if (pModel == nullptr)  return false;
 
-    _uint iMeshCount = pModel->Get_MeshCount();
-    for (_uint i = 0; i < iMeshCount; ++i)
-    {
-        if (pModel->Get_Mesh(i)->IntsersectWithPlane(vOut))
-            return true;
-    }
+    //_uint iMeshCount = pModel->Get_MeshCount();
+    //for (_uint i = 0; i < iMeshCount; ++i)
+    //{
+    //    if (pModel->Get_Mesh(i)->IntsersectWithPlane(vOut))
+    //        return true;
+    //}
     return false;
 }
 
@@ -556,17 +576,17 @@ HRESULT CEffectObject::Render()
 
 _bool CEffectObject::Picking(OUT Vec3& vOut)
 {
-    const Matrix& matWorld = Get_Component<CTransform>()->Get_WorldMatrix();
-    Matrix matLocal = {};
+    //const Matrix& matWorld = Get_Component<CTransform>()->Get_WorldMatrix();
+    //Matrix matLocal = {};
 
-    matLocal = matWorld.Invert();
-    m_pGameInstance->TransformRayToLocalSpace(matLocal);
+    //matLocal = matWorld.Invert();
+    //m_pGameInstance->TransformRayToLocalSpace(matLocal);
 
-    if (IntsersectWithPlane(vOut))
-    {
-        vOut = Vec3::Transform(vOut, matWorld);
-        return true;
-    }
+    //if (IntsersectWithPlane(vOut))
+    //{
+    //    vOut = Vec3::Transform(vOut, matWorld);
+    //    return true;
+    //}
     return false;
 }
 
@@ -586,17 +606,45 @@ void CEffectObject::Set_Dead(const wstring& wstrLayerTag)
 }
 
 
-void CEffectObject::TimeReset(Effect_Desc Desc)
+void CEffectObject::TimeFlagRequest(_uint iTimeFlag)
 {
-    m_vScrollOffset = Vec2{ 0.f, 0.f };
-    m_fTimeAccumulation = 0.f; // 시간 초기화
-    m_bIsStarted = false;      // 시작 상태 초기화
+    m_tEffectDesc._Effect_TimeFlag = iTimeFlag;
 
-    // Transform 스케일도 Start Scale로 원복
-    Get_Component<CTransform>()->Set_Scale(m_tEffectDesc._Effect_StartScale);
+    if (iTimeFlag == RESET)
+    {
+        m_bIsStarted = false;
+        m_fTimeAccumulation = 0.f;
+        m_vScrollOffset = Vec2{ 0.f, 0.f };
+        m_vAccumulatedRotation = { 0.f, 0.f, 0.f };
 
-    m_tPrevEffectDesc = m_tEffectDesc = Desc;
-    Set_EffectDesc(m_tEffectDesc);
+        auto CTShader = static_cast<CComputeShader*>(Get_Script_Component(L"ComputeShader"));
+        CVIBuffer_Particle_Point* pInstance = Get_Component<CVIBuffer_Particle_Point>();
+        if (pInstance && CTShader)
+            pInstance->Update_Simulation(CTShader, Vec3{}, 0.f, RESET, (E_PARTICLE_MOVESTATE)m_tEffectDesc._Effect_ShapeType);
+
+        // 리셋 직후 바로 PLAY 상태로 전이시켜서 셰이더가 다음 루프를 돌게 함
+        m_tEffectDesc._Effect_TimeFlag = PLAY;
+        Set_Visible();
+    }
+    else if (iTimeFlag == STOP)
+    {
+        m_bIsStarted = false;
+        m_fTimeAccumulation = 0.f;
+        m_vScrollOffset = Vec2{ 0.f, 0.f };
+        m_vAccumulatedRotation = { 0.f, 0.f, 0.f }; 
+
+        auto CTShader = static_cast<CComputeShader*>(Get_Script_Component(L"ComputeShader"));
+        CVIBuffer_Particle_Point* pInstance = Get_Component<CVIBuffer_Particle_Point>();
+        if (pInstance && CTShader)
+            pInstance->Update_Simulation(CTShader, Vec3{}, 0.f, STOP, (E_PARTICLE_MOVESTATE)m_tEffectDesc._Effect_ShapeType);
+
+        m_fTimeAccumulation = 0.f;
+        Set_Invisible();
+        // Stop은 PLAY로 바꾸지 않고 그대로 둠
+    }
+
+    else
+        Set_Visible();
 }
 
 void CEffectObject::TimeCalculate(const _float fDT)
@@ -606,8 +654,7 @@ void CEffectObject::TimeCalculate(const _float fDT)
     if (fActiveTime < 0.f) fActiveTime = 0.f;
 
     // ======= [스크롤 값] ==========
-    m_vScrollOffset.x += fDT * m_tEffectDesc._Effect_ScrollSpeed.x;
-    m_vScrollOffset.y += fDT * m_tEffectDesc._Effect_ScrollSpeed.y;
+    m_vScrollOffset += fDT * m_tEffectDesc._Effect_ScrollSpeed;
 
     // ======= [스프라이트 애니메이션] =======
     if ((m_tEffectDesc._Effect_RenderFlag & (1 << 5)) && m_tEffectDesc._Effect_bPlayAnim)
@@ -615,9 +662,117 @@ void CEffectObject::TimeCalculate(const _float fDT)
         _uint iTotalFrame = m_tEffectDesc._Effect_TileCount.x * m_tEffectDesc._Effect_TileCount.y;
         if (iTotalFrame > 0)
         {
-            // TimeAccumulation 대신 fActiveTime을 사용하여 Delay 이후부터 0프레임 시작
-            m_tEffectDesc.m_iCurSpriteNumber = (_uint)(fActiveTime * m_tEffectDesc._Effect_AnimSpeed) % iTotalFrame;
+            _uint iFrame = (_uint)(fActiveTime * m_tEffectDesc._Effect_AnimSpeed);
+
+            if (m_tEffectDesc._Effect_Looping)
+                m_tEffectDesc.m_iCurSpriteNumber = iFrame % iTotalFrame;
+            else
+                m_tEffectDesc.m_iCurSpriteNumber = std::min(iFrame, iTotalFrame - 1);
         }
+    }
+}
+
+float CEffectObject::Sample_GravityCurve(const vector<Gravity_CurveKey>& vecCurve, float fLifeRatio)
+{
+    // 키 프레임 데이터가 없다면 기본 1.0f 반환
+    if (vecCurve.empty())
+        return 1.0f;
+
+    // 데이터가 만약에 하나라면 그놈만 반환하기.
+    if (vecCurve.size() == 1)
+        return vecCurve[0].fValue;
+
+    // 비율이 범위를 벗어나면 처음이나 끝으로 clamp하기.
+    if (fLifeRatio <= vecCurve.front().fTimeKey) return vecCurve.front().fValue;
+    if (fLifeRatio >= vecCurve.back().fTimeKey) return vecCurve.back().fValue;
+
+    // 현재 비율이 위치한 key frame 찾기.
+    for (size_t i = 0; i < vecCurve.size() - 1; ++i)
+    {
+        if (fLifeRatio >= vecCurve[i].fTimeKey && fLifeRatio <= vecCurve[i + 1].fTimeKey)
+        {
+            // 두 키 프레임 사이의 진행도 계산
+            float fDeltaTime = vecCurve[i + 1].fTimeKey - vecCurve[i].fTimeKey;
+            float fLerpRatio = (fLifeRatio - vecCurve[i].fTimeKey) / fDeltaTime;
+
+            // 선형보간
+            return vecCurve[i].fValue + (vecCurve[i + 1].fValue - vecCurve[i].fValue) * fLerpRatio;
+        }
+    }
+}
+
+void CEffectObject::Update_Gravity_Force(float fLifeRatio)
+{
+    // << 자연 중력 계산 >>
+    float fGlobalCurveMod = 1.f;
+    if (m_tEffectDesc._bUseGlobalGravityCurve)
+        fGlobalCurveMod = Sample_GravityCurve(m_tEffectDesc._vecGlobalGravityCurve, fLifeRatio);
+
+    // 최종 자연 중력 벡터 = 방향 * 기본 세기 * 전체 배수 * 커브 배수
+    Vec3 vFianlGlobalGravity = m_tEffectDesc._Effect_GravityDir * m_tEffectDesc._Effect_Gravity_Value * m_tEffectDesc._Effect_GravityModifier * fGlobalCurveMod;
+
+    // << 외부 중력 계산 >>
+    float fExternalCurveMod = 1.0f;
+    if (m_tEffectDesc._bUseExternalForceCurve)
+        fExternalCurveMod = Sample_GravityCurve(m_tEffectDesc._vecExternalForceCurve, fLifeRatio);
+
+    // Force Field 
+    float fFinalExternalStrength = m_tEffectDesc.fExternalForceStrength * fExternalCurveMod;
+
+    // TODO: 이 값들을 Compute Shader에게 넘겨주기.
+    //       vecCurve의 fTime은 반드시 오름차순으로 정렬해주기. Sort 한번 해주는 것이 좋다.
+    //       fDeltaTime이 아주 작을 떄 나누기 에러가 날 수 있다. 조심하자.
+
+}
+
+float CEffectObject::Sample_RotationCurve(const vector<Rotation_CurveKey>& vecCurve, float fLifeRatio)
+{
+    if (vecCurve.empty()) return 0.f;
+    if (vecCurve.size() == 1) return vecCurve[0].fValue;
+
+    if (fLifeRatio <= vecCurve.front().fTimeKey) return vecCurve.front().fValue;
+    if (fLifeRatio >= vecCurve.back().fTimeKey) return vecCurve.back().fValue;
+
+    for (size_t i = 0; i < vecCurve.size() - 1; ++i)
+    {
+        if (fLifeRatio >= vecCurve[i].fTimeKey && fLifeRatio <= vecCurve[i + 1].fTimeKey)
+        {
+            float fDeltaTime = vecCurve[i + 1].fTimeKey - vecCurve[i].fTimeKey;
+            float fLerpRatio = (fLifeRatio - vecCurve[i].fTimeKey) / fDeltaTime;
+
+            // 각 축별로 부드럽게 보간해서 현재 시점의 회전값 반환
+            return vecCurve[i].fValue + (vecCurve[i + 1].fValue - vecCurve[i].fValue) * fLerpRatio;
+        }
+    }
+
+    return 0.f;
+}
+
+void CEffectObject::Update_Rotation_Lerp(float fDT, float fRatio)
+{
+    if (m_tEffectDesc._bUseRotationCurve)
+    {
+        // 1. 각 축별 커브에서 '진행도 비율' 가져오기.
+        // 이때 그래프의 Y축은 0.0(시작) ~ 1.0(완료) 비율이어야 해!
+        Vec3 vCurveRatio;
+        vCurveRatio.x = Sample_RotationCurve(m_tEffectDesc._vecRotationCurveX, fRatio);
+        vCurveRatio.y = Sample_RotationCurve(m_tEffectDesc._vecRotationCurveY, fRatio);
+        vCurveRatio.z = Sample_RotationCurve(m_tEffectDesc._vecRotationCurveZ, fRatio);
+
+        // [핵심 공식] 
+        // 최종 회전 = 시작 각도 + (전체 목표 회전량 * 현재 커브 진행 비율)
+        // 이렇게 하면 커브 값이 1.0에 도달했을 때 딱 TargetRotation만큼만 돌아있게 돼.
+        Vec3 vFinalRot;
+        vFinalRot.x = m_tEffectDesc._Effect_StartRotation.x + (m_tEffectDesc._Effect_TargetRotation.x * vCurveRatio.x);
+        vFinalRot.y = m_tEffectDesc._Effect_StartRotation.y + (m_tEffectDesc._Effect_TargetRotation.y * vCurveRatio.y);
+        vFinalRot.z = m_tEffectDesc._Effect_StartRotation.z + (m_tEffectDesc._Effect_TargetRotation.z * vCurveRatio.z);
+
+        // 3. 변환 후 적용
+        Get_Component<CTransform>()->Rotation(
+            DirectX::XMConvertToRadians(vFinalRot.x),
+            DirectX::XMConvertToRadians(vFinalRot.y),
+            DirectX::XMConvertToRadians(vFinalRot.z)
+        );
     }
 }
 
