@@ -73,8 +73,6 @@ HRESULT CToolUI::Awake(const _uint iCurrentLevelID)
 
 	m_iInteractState = static_cast<uint32_t>(DTO::EUIEvent_Flag::NONE);
 
-
-
     return S_OK;
 }
 
@@ -83,7 +81,7 @@ void CToolUI::Update_Priority(const _float fTimeDelta)
 	Set_Size(m_fWidth, m_fHeight);
 	SetUp_RectTransform_Position();
 	SetUp_Visible();
-	Get_Component<CShader>()->Set_Pass(2);
+	Get_Component<CShader>()->Set_Pass(1);
 	Super::Update_Priority(fTimeDelta);
 }
 
@@ -109,6 +107,19 @@ void CToolUI::Ready_Before_Render(const _float fTimeDelta)
 
 HRESULT CToolUI::Render()
 {
+	if (!m_isVisible)
+		return S_OK;
+
+	if (FAILED(Super::Render()))
+		return E_FAIL;
+
+	if (FAILED(Bind_ShaderResources()))
+		return E_FAIL;
+
+	Get_Component<CShader>()->Apply();
+	Get_Component<CVIBuffer>()->Bind_Resource();
+	Get_Component<CVIBuffer>()->Render();
+
 	if (m_isHitTest)
 	{
 		D3D11_VIEWPORT vp = {};
@@ -162,7 +173,7 @@ _bool CToolUI::Calc_HitEvent()
 
 HRESULT CToolUI::Ready_Components(TOOLUI_DESC* pDesc)
 { 
-	if (FAILED(Add_Component<CTexture>(ENUM_TO_UINT(ELevelType::UI), m_wstrTextureTag, pDesc)))
+	if (FAILED(Add_Component<CTexture>(ENUM_TO_UINT(ELevelType::STATIC), L"Prototype_Component_Texture_Empty", pDesc)))
         return E_FAIL;
 
     if (FAILED(Add_Component<CShader>(0, L"Prototype_Component_Shader_VtxPosTex", pDesc)))
@@ -171,8 +182,7 @@ HRESULT CToolUI::Ready_Components(TOOLUI_DESC* pDesc)
     if (FAILED(Add_Component<CVIBuffer_Rect_Tex>(0, L"Prototype_Component_VIBuffer_Rect_Tex", pDesc)))
         return E_FAIL;
 
-	auto* p = CUIButton_Component::Create();
-	if (FAILED(Add_Script_Component(L"UIButton_Component", p)))
+	if (FAILED(Add_Script_Component(L"UIButton_Component", CUIButton_Component::Create())))
 		return E_FAIL;
 
 	return S_OK;
@@ -185,14 +195,14 @@ HRESULT CToolUI::Bind_ShaderResources()
     if (FAILED(Get_Component<CTransform>()->Bind_ShaderResource(pShader)))
         return E_FAIL;
 
-    if (FAILED(Get_Component<CTexture>()->Bind_ShaderResource(pShader, m_iTextureIndex)))
+    if (FAILED(Get_Component<CTexture>()->Bind_ShaderResourceBuffer(pShader)))
         return E_FAIL;
 
-	if (FAILED(pShader->Get_Variable("g_AlphaFade")->SetRawValue(&m_fFade_ResultAlpha, 0, sizeof(_float))))
-		return E_FAIL;
+	//if (FAILED(pShader->Get_Variable("g_AlphaFade")->SetRawValue(&m_fFade_ResultAlpha, 0, sizeof(_float))))
+	//	return E_FAIL;
 
-	if (FAILED(pShader->Get_Variable("g_ProgressRatio")->SetRawValue(&m_fProgress_UV, 0, sizeof(_float))))
-		return E_FAIL;
+	//if (FAILED(pShader->Get_Variable("g_ProgressRatio")->SetRawValue(&m_fProgress_UV, 0, sizeof(_float))))
+	//	return E_FAIL;
 
     return S_OK;
 }
@@ -281,16 +291,13 @@ void CToolUI::Sync_Data()
 	m_tUIData.strTextureTag			= Engine_Utils::ToString(m_wstrTextureTag);
 	m_tUIData.iTextureIndex			= m_iTextureIndex;
 	m_tUIData.isVisible				= m_isVisible;
+	m_tUIData.eClassType			= m_eClassType;
 }
 
-HRESULT CToolUI::Request_Change_Texture(const _wstring& wstrTextureTag)
+HRESULT CToolUI::Request_Change_Texture()
 {
-	auto* pTexture = dynamic_cast<CComponent*>(m_pGameInstance->
-		Clone_Prototype(EPrototypeType::COMPONENT, ENUM_TO_UINT(ELevelType::UI), wstrTextureTag, nullptr));
-	if (nullptr == pTexture)
+	if (FAILED(Get_Component<CTexture>()->Add_DefaultTexture(m_wstrTextureTag, 0)))
 		return E_FAIL;
-
-	Change_Component<CTexture>(dynamic_cast<CTexture*>(pTexture));
 }
 
 void CToolUI::Set_isDisable(_bool isDisable)

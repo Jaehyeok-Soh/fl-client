@@ -238,6 +238,12 @@
     <Filter Include="02. GameObjects\UI\02.UI">
       <UniqueIdentifier>{6a558198-77c1-41fb-9345-05c1fc4f9daf}</UniqueIdentifier>
     </Filter>
+    <Filter Include="04. Component\UI">
+      <UniqueIdentifier>{8ef29a04-df46-407a-be7c-116b135d8267}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="04. Component\UI\Button">
+      <UniqueIdentifier>{6cc6e7a0-a1a7-4992-af08-cc0604618e37}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="framework.h">
@@ -480,6 +486,9 @@
     <ClInclude Include="..\Public\InstanceModel.h">
       <Filter>02. GameObjects\Map\00. MapObject\02. InstanceModel</Filter>
     </ClInclude>
+    <ClInclude Include="..\Public\UIButton_Component.h">
+      <Filter>04. Component\UI\Button</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <Image Include="small.ico">
@@ -707,6 +716,9 @@
     </ClCompile>
     <ClCompile Include="..\Private\InstanceModel.cpp">
       <Filter>02. GameObjects\Map\00. MapObject\02. InstanceModel</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\UIButton_Component.cpp">
+      <Filter>04. Component\UI\Button</Filter>
     </ClCompile>
   </ItemGroup>
 </Project>

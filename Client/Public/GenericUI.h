@@ -38,7 +38,7 @@ public:
 	_bool Calc_HitEvent();
 	void Acting_By_InteractState();
 
-private:
+protected:
 	HRESULT Ready_Components(GENERIC_UI_DESC* pDesc);
 	HRESULT Bind_ShaderResources();
 

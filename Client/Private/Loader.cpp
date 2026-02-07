@@ -50,6 +50,7 @@
 //=================
 #include "Canvas.h"
 #include "GenericUI.h"
+#include "UIPlayer_HP.h"
 //=================
 // Resource
 //=================
@@ -171,13 +172,12 @@ HRESULT CLoader::Loading_For_Logo()
 		return E_FAIL;
 
 		// For. Prototype_Component_Button_Test_Texture
-		{
-			CTexture::TEXTURE_COMPONENT_ORIGIN_DESC textureDesc = {};
-			textureDesc.iTextureCount = 24;
-			textureDesc.wstrTexturePath = L"../../Resources/Textures/UI/%d.png";
-			if (FAILED(m_pGameInstance->Add_Prototype(ENUM_TO_UINT(ELevelType::STATIC), L"Prototype_Component_UI_Texture", CTexture::Create(&textureDesc))))
-				return E_FAIL;
-		}
+	{
+		if (FAILED(Loading_Textures(L"../../Resources/Textures/UI/Playable/")))
+			return E_FAIL;
+		if (FAILED(Loading_Textures(L"../../Resources/Textures/UI/Menu/")))
+			return E_FAIL;
+	}	
 	
 #pragma endregion
 
@@ -270,6 +270,7 @@ HRESULT CLoader::Loading_For_Logo()
 
 		// For. Prototype_UI_Canvas
 		ADD_PROTOTYPE(ELevelType::STATIC, L"Prototype_UI_Canvas", CCanvas::Create(m_pDevice, m_pDeviceContext));
+		ADD_PROTOTYPE(ELevelType::STATIC, L"Prototype_UI_PLAYER_HP", CUIPlayer_HP::Create(m_pDevice, m_pDeviceContext));
 	}
 #pragma endregion
 

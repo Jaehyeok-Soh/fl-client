@@ -30,19 +30,15 @@ HRESULT CUIPlayer_HP::Initialize_Prototype()
 HRESULT CUIPlayer_HP::Initialize(void* pArg)
 {
 	PLAYER_HP_DESC* pDesc = static_cast<PLAYER_HP_DESC*>(pArg);
-
-	m_eRectTransformType = static_cast<ERectTransform>(pDesc->iRectTransformType);
-	m_wstrTextureTag = pDesc->wstrTextureTag;
-	m_iTextureIndex = pDesc->iTextureIndex;
-
-	m_pParentCanvasCache = pDesc->pCanvasCache;
-
 	if (FAILED(Super::Initialize(pArg)))
 		return E_FAIL;
-
 	if (FAILED(Ready_Components(pDesc)))
 		return E_FAIL;
 
+	if (FAILED(Get_Component<CTexture>()->Add_DefaultTexture(m_wstrTextureTag, 0)))
+		return E_FAIL;
+
+	Get_Component<CShader>()->Set_Pass(3);
 	return S_OK;
 }
 
@@ -50,8 +46,6 @@ HRESULT CUIPlayer_HP::Awake(const _uint iCurrentLevelID)
 {
 	if (FAILED(Super::Awake(iCurrentLevelID)))
 		return E_FAIL;
-
-	m_iInteractState = static_cast<uint32_t>(DTO::EUIEvent_Flag::NONE);
 
 	return S_OK;
 }
@@ -63,13 +57,6 @@ void CUIPlayer_HP::Update_Priority(const _float fTimeDelta)
 
 void CUIPlayer_HP::Update(const _float fTimeDelta)
 {
-	m_vRenderPos = Vec3{ m_vRectPos.x + m_vMoveOffset.x + m_fX, m_vRectPos.y + m_vMoveOffset.y + m_fY, m_fZ };
-	Move_Position(m_vRenderPos.x, m_vRenderPos.y, m_vRenderPos.z);
-
-	m_tRenderRect.left = static_cast<LONG>(m_vRenderPos.x - (m_fWidth * 0.5f));
-	m_tRenderRect.right = static_cast<LONG>(m_vRenderPos.x + (m_fWidth * 0.5f));
-	m_tRenderRect.top = static_cast<LONG>(m_vRenderPos.y - (m_fHeight * 0.5f));
-	m_tRenderRect.bottom = static_cast<LONG>(m_vRenderPos.y + (m_fHeight * 0.5f));
 	Super::Update(fTimeDelta);
 }
 
@@ -104,7 +91,7 @@ HRESULT CUIPlayer_HP::Render()
 
 HRESULT CUIPlayer_HP::Ready_Components(PLAYER_HP_DESC* pDesc)
 {
-	if (FAILED(Add_Component<CTexture>(ENUM_TO_UINT(ELevelType::STATIC), m_wstrTextureTag, pDesc)))
+	if (FAILED(Add_Component<CTexture>(ENUM_TO_UINT(ELevelType::STATIC), L"Prototype_Component_Texture_Empty", pDesc)))
 		return E_FAIL;
 	if (FAILED(Add_Component<CShader>(0, L"Prototype_Component_Shader_VtxPosTex", pDesc)))
 		return E_FAIL;
@@ -118,9 +105,8 @@ HRESULT CUIPlayer_HP::Bind_ShaderResources()
 	CShader* pShader = Get_Component<CShader>();
 	if (FAILED(Get_Component<CTransform>()->Bind_ShaderResource(pShader)))
 		return E_FAIL;
-	if (FAILED(Get_Component<CTexture>()->Bind_ShaderResource(pShader, m_iTextureIndex)))
+	if (FAILED(Get_Component<CTexture>()->Bind_ShaderResourceBuffer(pShader)))
 		return E_FAIL;
-
 	return S_OK;
 }
 

@@ -24,6 +24,7 @@ public:
 	void SetUp_Public_Info();
 	void Input_RectTransform();
 	void Input_TextureTag();
+	void SetUp_ClassTag();
 
 private:
 	/// <summary>
@@ -51,6 +52,8 @@ private:
 	CToolUI* m_pSelectedUI = { nullptr };
 	uint32_t m_iRectTransformIndex = {};
 
+
+	std::vector<_string> m_VecClassTag;
 
 
 

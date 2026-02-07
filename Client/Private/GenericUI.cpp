@@ -31,17 +31,13 @@ HRESULT CGenericUI::Initialize_Prototype()
 HRESULT CGenericUI::Initialize(void* pArg)
 {
 	GENERIC_UI_DESC* pDesc = static_cast<GENERIC_UI_DESC*>(pArg);
-
-	m_eRectTransformType = static_cast<ERectTransform>(pDesc->iRectTransformType);
-	m_wstrTextureTag = pDesc->wstrTextureTag;
-	m_iTextureIndex = pDesc->iTextureIndex;
-
-	m_pParentCanvasCache = pDesc->pCanvasCache;
+	
+	m_eRectTransformType	= static_cast<ERectTransform>(pDesc->iRectTransformType);
+	m_wstrTextureTag		= pDesc->wstrTextureTag;
+	m_iTextureIndex			= pDesc->iTextureIndex;
+	m_pParentCanvasCache	= pDesc->pCanvasCache;
 
 	if (FAILED(Super::Initialize(pArg)))
-		return E_FAIL;
-
-	if (FAILED(Ready_Components(pDesc)))
 		return E_FAIL;
 
 	return S_OK;
@@ -70,6 +66,7 @@ void CGenericUI::Update(const _float fTimeDelta)
 	m_tRenderRect.right		= static_cast<LONG>(m_vRenderPos.x + (m_fWidth * 0.5f));
 	m_tRenderRect.top		= static_cast<LONG>(m_vRenderPos.y - (m_fHeight * 0.5f));
 	m_tRenderRect.bottom	= static_cast<LONG>(m_vRenderPos.y + (m_fHeight * 0.5f));
+
 	Super::Update(fTimeDelta);
 }
 
@@ -80,25 +77,13 @@ void CGenericUI::Update_Late(const _float fTimeDelta)
 
 void CGenericUI::Ready_Before_Render(const _float fTimeDelta)
 {
-	Acting_By_InteractState();
 	Super::Ready_Before_Render(fTimeDelta);
 }
 
 HRESULT CGenericUI::Render()
 {
-	if (!m_isVisible)
-		return S_OK;
-
 	if (FAILED(Super::Render()))
 		return E_FAIL;
-
-	if (FAILED(Bind_ShaderResources()))
-		return E_FAIL;
-
-	Get_Component<CShader>()->Apply();
-	Get_Component<CVIBuffer>()->Bind_Resource();
-	Get_Component<CVIBuffer>()->Render();
-
 	return S_OK;
 }
 
@@ -145,23 +130,11 @@ void CGenericUI::Acting_By_InteractState()
 
 HRESULT CGenericUI::Ready_Components(GENERIC_UI_DESC* pDesc)
 {
-	if (FAILED(Add_Component<CTexture>(ENUM_TO_UINT(ELevelType::STATIC), m_wstrTextureTag, pDesc)))
-		return E_FAIL;
-	if (FAILED(Add_Component<CShader>(0, L"Prototype_Component_Shader_VtxPosTex", pDesc)))
-		return E_FAIL;
-	if (FAILED(Add_Component<CVIBuffer_Rect_Tex>(0, L"Prototype_Component_VIBuffer_Rect_Tex", pDesc)))
-		return E_FAIL;
 	return S_OK;
 }
 
 HRESULT CGenericUI::Bind_ShaderResources()
 {
-	CShader* pShader = Get_Component<CShader>();
-	if (FAILED(Get_Component<CTransform>()->Bind_ShaderResource(pShader)))
-		return E_FAIL;
-	if (FAILED(Get_Component<CTexture>()->Bind_ShaderResource(pShader, m_iTextureIndex)))
-		return E_FAIL;
-
 	return S_OK;
 }
 

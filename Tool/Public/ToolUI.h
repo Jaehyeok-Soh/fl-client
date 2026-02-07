@@ -75,13 +75,17 @@ public:
 	_float& Get_Alpha_Ref() { return m_fFade_ResultAlpha; }
 	_bool& Get_InitVisible() { return m_isVisible; }
 
-	HRESULT Request_Change_Texture(const _wstring& wstrTextureTag);
+	HRESULT Request_Change_Texture();
 
 	_bool Get_isAction() const { return m_isAction; }
 	_bool Get_isDisable() const { return m_isDisable; }
 
 	void  Set_MoveOffset(const Vec3& offset) { m_vMoveOffset = offset; }
 	void  Set_ProgressUV(const _float fProgress) { m_fProgress_UV = fProgress; }
+
+	void Set_UIClassType(DTO::EUIClassType eType) { m_eClassType = eType; }
+	DTO::EUIClassType Get_UIClassType() const { return m_eClassType; }
+
 #pragma endregion
 
 	/* Action */
@@ -115,6 +119,8 @@ private:
 
 protected:
 	DTO::TUI_GenericUIData m_tUIData = {};
+	DTO::EUIClassType m_eClassType = {};
+
 	_string m_strName = {};
 	_string m_strCanvasName = {};
 	uint32_t m_iCanvasIndex = {};

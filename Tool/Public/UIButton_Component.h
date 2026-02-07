@@ -1,7 +1,7 @@
 #pragma once
 #include "MonoBehaviour.h"
 
-NS_BEGIN(Engine)
+NS_BEGIN(Tool)
 
 class CUIButton_Component final : public CMonoBehaviour
 {

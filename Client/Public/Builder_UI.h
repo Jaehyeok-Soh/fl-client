@@ -1,6 +1,7 @@
 #pragma once
 #include "BuilderBase.h"
 #include "DataDocument_UI.h"
+#include "GenericUI.h"
 
 NS_BEGIN(Engine)
 class CDataDocumentBase;
@@ -8,7 +9,6 @@ NS_END
 
 NS_BEGIN(Client)
 class CCanvas;
-class CGenericUI;
 class CBuilder_UI final : public CBuilderBase
 {
 	using Super = CBuilderBase;
@@ -22,6 +22,9 @@ public:
 private:
 	HRESULT Create_CanvasDTO(const DTO::TUI_CanvasData& data);
 	HRESULT Create_GenericUIDTO(const DTO::TUI_GenericUIData& data);
+
+	HRESULT Register_Class(DTO::EUIClassType eClassType, const DTO::TUI_GenericUIData& data, CCanvas* pCanvas);
+	CGenericUI::GENERIC_UI_DESC Make_DefaultInfo(const DTO::TUI_GenericUIData& data, CCanvas* pCanvas);
 
 private:
 	unordered_map<_string, CCanvas*> m_MapCanvasCache;

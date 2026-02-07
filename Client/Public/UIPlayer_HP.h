@@ -8,14 +8,8 @@ class CUIPlayer_HP final : public CGenericUI
 {
 	using Super = CGenericUI;
 public:
-	typedef struct tagUIPlayerHPDesc : public UIOBJECT_DESC
+	typedef struct tagUIPlayerHPDesc : public GENERIC_UI_DESC
 	{
-		uint32_t iUIType;
-		uint32_t iRectTransformType;
-		_wstring wstrTextureTag;
-		uint32_t iTextureIndex;
-
-		CCanvas* pCanvasCache = { nullptr };
 	}PLAYER_HP_DESC;
 
 private:

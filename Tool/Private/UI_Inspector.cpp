@@ -27,10 +27,9 @@ HRESULT CUI_Inspector::Initialize_Prototype()
 		m_vecClientLevelType[i] = (ClientleveltypeToString(static_cast<EClientLevelType>(i)));
 		m_szArrClientLevelType[i] = m_vecClientLevelType[i].c_str();
 	}
-
-	//Folder_Search("../../Resources/Textures/UI");
-	//File_Search("../../Resources/Textures/UI");
-
+	m_VecClassTag.reserve(ENUM_TO_UINT(DTO::EUIClassType::END));
+	for (uint32_t i = 0; i < ENUM_TO_UINT(DTO::EUIClassType::END); ++i)
+		m_VecClassTag.push_back(DTO::UIClassTypeToString(static_cast<DTO::EUIClassType>(i)));
 	return S_OK;
 }
 
@@ -50,7 +49,7 @@ HRESULT CUI_Inspector::Render(CToolObject* pGo)
 		m_pSelectedUI->Set_HitTest();
 		SetUp_Public_Info();
 		Input_TextureTag();
-
+		SetUp_ClassTag();
 	}
 
 	ImGui::End();
@@ -182,14 +181,41 @@ void CUI_Inspector::Input_TextureTag()
 			std::filesystem::path f(result);
 			if (f.extension().wstring() == L".png" || f.extension().wstring() == L".dds")
 			{
-				_wstring wstrFolderName = f.parent_path().filename().wstring();
-				uint32_t iFileIndex = std::stoi( f.stem().wstring());
-				_wstring wstrTextureTag = L"Prototype_Component_UI_" + wstrFolderName + L"_Texture";
-				m_pSelectedUI->Set_TextureTag(wstrTextureTag);
-				m_pSelectedUI->Request_Change_Texture(wstrTextureTag);
-				m_pSelectedUI->Set_TextureIndex(iFileIndex);
+				m_pSelectedUI->Set_TextureTag(L"Texture_" + f.stem().wstring());
+				m_pSelectedUI->Request_Change_Texture();
 			}
 		}
+	}
+}
+
+void CUI_Inspector::SetUp_ClassTag()
+{
+	if (nullptr == m_pSelectedUI)
+		return;
+
+	int cur = (int)m_pSelectedUI->Get_UIClassType(); // 
+	cur = (cur < 0) ? 0 : (cur >= (int)m_VecClassTag.size() ? (int)m_VecClassTag.size() - 1 : cur);
+
+	const char* preview = m_VecClassTag.empty() ? "" : m_VecClassTag[cur].c_str();
+
+	bool changed = false;
+
+	if (ImGui::BeginCombo("UI Class", preview))
+	{
+		for (int i = 0; i < (int)m_VecClassTag.size(); ++i)
+		{
+			const bool isSelected = (cur == i);
+			if (ImGui::Selectable(m_VecClassTag[i].c_str(), isSelected))
+			{
+				cur = i; 
+				m_pSelectedUI->Set_UIClassType(static_cast<DTO::EUIClassType>(i));
+				changed = true;
+			}
+
+			if (isSelected)
+				ImGui::SetItemDefaultFocus();
+		}
+		ImGui::EndCombo();
 	}
 }
 
@@ -248,7 +274,6 @@ CUI_Inspector* CUI_Inspector::Create(const _char* pLabel, CLevel* pOwner, ID3D11
 		MSG_BOX("CUI_Inspector::Create, Failed");
 		Safe_Release(pInstance);
 	}
-
 	return pInstance;
 }
 

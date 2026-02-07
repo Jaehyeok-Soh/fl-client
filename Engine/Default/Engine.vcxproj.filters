@@ -704,9 +704,6 @@
       <Filter>01. Utility\16. Console</Filter>
     </ClCompile>
     <ClCompile Include="..\private\EngineConsole.cpp" />
-    <ClCompile Include="..\Private\UIButton_Component.cpp">
-      <Filter>00. System\05. Component\UI\Button</Filter>
-    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\Public\Timer_Manager.h">
@@ -1092,9 +1089,6 @@
       <Filter>01. Utility\16. Console</Filter>
     </ClInclude>
     <ClInclude Include="..\public\EngineConsole.h" />
-    <ClInclude Include="..\Public\UIButton_Component.h">
-      <Filter>00. System\05. Component\UI\Button</Filter>
-    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <FxCompile Include="..\..\Shaders\Shader_Deffered.hlsl">

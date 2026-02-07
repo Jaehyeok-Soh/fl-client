@@ -276,7 +276,6 @@
     <ClCompile Include="..\Private\Timer_Manager.cpp" />
     <ClCompile Include="..\Private\Transform.cpp" />
     <ClCompile Include="..\Private\UIAction_Registry.cpp" />
-    <ClCompile Include="..\Private\UIButton_Component.cpp" />
     <ClCompile Include="..\Private\UIObject.cpp" />
     <ClCompile Include="..\Private\VIBuffer.cpp" />
     <ClCompile Include="..\Private\VIBuffer_Cube_Color.cpp" />
@@ -410,7 +409,6 @@
     <ClInclude Include="..\Public\Timer_Manager.h" />
     <ClInclude Include="..\Public\Transform.h" />
     <ClInclude Include="..\Public\UIAction_Registry.h" />
-    <ClInclude Include="..\Public\UIButton_Component.h" />
     <ClInclude Include="..\Public\UIObject.h" />
     <ClInclude Include="..\Public\VertexData.h" />
     <ClInclude Include="..\Public\VIBuffer.h" />

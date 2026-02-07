@@ -3,6 +3,8 @@
 
 #include "Canvas.h"
 #include "GenericUI.h"
+#include "UIPlayer_HP.h"
+
 #include"UI_Manager.h"
 #include "GameInstance.h"
 
@@ -107,30 +109,74 @@ HRESULT CBuilder_UI::Create_GenericUIDTO(const DTO::TUI_GenericUIData& data)
 	Desc.fX						= data.fPosX * m_vAspect.x;
 	Desc.fY						= data.fPosY * m_vAspect.y;
 	Desc.fZ						= data.fPosZ;
-	Desc.wstrTextureTag			= L"Prototype_Component_UI_Texture";
+	Desc.wstrTextureTag			= Engine_Utils::ToWString(data.strTextureTag);
 	Desc.iTextureIndex			= data.iTextureIndex;
-	Desc.isAlpha				= TRUE;
+	Desc.isAlpha				= data.isVisible;
 
 	auto iter = m_MapCanvasCache.find(data.strCanvasName);
 	if (iter == m_MapCanvasCache.end())
 		return E_FAIL;
 
-	const _wstring wstrLayerTag = Engine_Utils::ToWString(iter->second->Get_Name()) + L"_Layer";
-	CGameObject* pResult = m_pGameInstance->Add_GameObject(m_iLevelID, L"Prototype_UI_GenericUI", m_iLevelID, wstrLayerTag, &Desc);
+	if (FAILED(Register_Class(data.eClassType, data, iter->second)))
+		return E_FAIL;
+
+	return S_OK;
+}
+
+HRESULT CBuilder_UI::Register_Class(DTO::EUIClassType eClassType, const DTO::TUI_GenericUIData& data, CCanvas* pCanvas)
+{
+	if (nullptr == pCanvas)
+		return E_FAIL;
+
+	CGenericUI::GENERIC_UI_DESC DefaultDesc = Make_DefaultInfo(data, pCanvas);
+	const _wstring wstrLayerTag = Engine_Utils::ToWString(pCanvas->Get_Name()) + L"_Layer";
+	const _wstring wstrProtoTag = L"Prototype_UI_" + Engine_Utils::ToWString(DTO::UIClassTypeToString(eClassType));
+
+	CGameObject* pResult = nullptr;
+
+	if (eClassType == DTO::EUIClassType::PLAYER_HP)
+	{
+		CUIPlayer_HP::PLAYER_HP_DESC PlayerHPDesc = {};
+		static_cast<CGenericUI::GENERIC_UI_DESC&>(PlayerHPDesc) = DefaultDesc;
+
+		pResult = m_pGameInstance->Add_GameObject(m_iLevelID, wstrProtoTag, m_iLevelID, wstrLayerTag, &PlayerHPDesc);
+	}
+	else
+	{
+		pResult = m_pGameInstance->Add_GameObject(m_iLevelID, wstrProtoTag, m_iLevelID, wstrLayerTag, &DefaultDesc);
+	}
+
 	if (pResult == nullptr)
 		return E_FAIL;
-	
+
 	auto* pUI = dynamic_cast<CGenericUI*>(pResult);
 	if (nullptr == pUI)
 		return E_FAIL;
 
-	iter->second->Get_UIVector()->push_back(pUI);
+	pCanvas->Get_UIVector()->push_back(pUI);
 	m_pMapUICache.emplace(data.strTag, pUI);
 
 	if (FAILED(CUI_Manager::GetInstance()->Add_VecGenericUICache(m_iLevelID, pUI)))
 		return E_FAIL;
 
 	return S_OK;
+}
+
+CGenericUI::GENERIC_UI_DESC CBuilder_UI::Make_DefaultInfo(const DTO::TUI_GenericUIData& data, CCanvas* pCanvas)
+{
+	CGenericUI::GENERIC_UI_DESC Desc = {};
+	Desc.iRectTransformType = data.iRectTransformType;
+	Desc.fWidth				= data.fWidth * m_vAspect.x;
+	Desc.fHeight			= data.fHeight * m_vAspect.y;
+	Desc.fX					= data.fPosX * m_vAspect.x;
+	Desc.fY					= data.fPosY * m_vAspect.y;
+	Desc.fZ					= data.fPosZ;
+	Desc.wstrTextureTag		= Engine_Utils::ToWString(data.strTextureTag);
+	Desc.iTextureIndex		= data.iTextureIndex;
+	Desc.isAlpha			= TRUE;
+	Desc.isInitVisible		= data.isVisible;
+	Desc.pCanvasCache		= pCanvas;
+	return Desc;
 }
 
 CBuilder_UI* CBuilder_UI::Create(ID3D11Device* pDevice, ID3D11DeviceContext* pDeviceContext, _uint iLevelID)

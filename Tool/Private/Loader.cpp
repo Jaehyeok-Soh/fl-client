@@ -265,24 +265,10 @@ HRESULT CLoader::Loading_For_UI()
 	//=================
 	// Resource Component
 	//=================
-
-	// For. Prototype_Component_UI_Playable_Texture
-	{
-		CTexture::TEXTURE_COMPONENT_ORIGIN_DESC textureDesc = {};
-		textureDesc.iTextureCount = 11;
-		textureDesc.wstrTexturePath = L"../../Resources/Textures/UI/Playable/%d.png";
-		if (FAILED(m_pGameInstance->Add_Prototype(ENUM_TO_UINT(ELevelType::UI), L"Prototype_Component_UI_Playable_Texture", CTexture::Create(&textureDesc))))
-			return E_FAIL;
-	}
-	// For. Prototype_Component_UI_Menu_Texture
-	{
-		CTexture::TEXTURE_COMPONENT_ORIGIN_DESC textureDesc = {};
-		textureDesc.iTextureCount = 24;
-		textureDesc.wstrTexturePath = L"../../Resources/Textures/UI/Menu/%d.png";
-		if (FAILED(m_pGameInstance->Add_Prototype(ENUM_TO_UINT(ELevelType::UI), L"Prototype_Component_UI_Menu_Texture", CTexture::Create(&textureDesc))))
-			return E_FAIL;
-	}
-
+	if (FAILED(Loading_Textures(L"../../Resources/Textures/UI/Playable/")))
+		return E_FAIL;
+	if (FAILED(Loading_Textures(L"../../Resources/Textures/UI/Menu/")))
+		return E_FAIL;
 
 	//=================
 	// UI Objects
