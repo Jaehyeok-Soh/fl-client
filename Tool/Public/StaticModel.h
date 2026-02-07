@@ -30,7 +30,7 @@ public:
 	virtual void			 Set_Dead(const wstring& wstrLayerTag)			override;
 	virtual USING_MODEL_INFO Get_UsingModelInfo() const { return m_tData.tUsingModelInfo; }
 	virtual vector<SRT_DATA> Get_SRTDatas() override;
-
+	virtual _bool			 IntersectWithFrustrum(BoundingFrustum* pFrustrum) override;
 public:
 	void					Set_StaticModelType(EStaticModel_Type eType) { m_eType = eType; }
 	EStaticModel_Type		Get_StaticModelType() const { return m_eType; }

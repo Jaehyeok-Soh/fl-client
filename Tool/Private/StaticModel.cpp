@@ -4,6 +4,7 @@
 #include "Model.h"
 #include "GameInstance.h"
 #include "Shader.h"
+#include "Bounds.h"
 #include "DataStruct_Map.h"
 #include "DataDocument_Map.h"
 #include "AsTypes.h"
@@ -40,8 +41,6 @@ HRESULT CStaticModel::Initialize(void* pArg)
 
 	m_strModelFileName = Engine_Utils::ToString(m_tData.tUsingModelInfo.wstrPath);
 	Set_Name(m_tData.tUsingModelInfo.wstrName);
-
-
 
 	if (FAILED(CStaticModel::Ready_Component()))
 		return E_FAIL;
@@ -83,8 +82,19 @@ HRESULT CStaticModel::Ready_Component()
 		}
 		CModel::MODEL_COPY_DESC tModelCopyDesc{};
 		CGameObject::Add_Component<CModel>(tModelDesc.iPrototypeLevelIndex, L"Prototype_Component_Model_" + Engine_Utils::ToWString(m_strName), &tModelCopyDesc);
+		
+		CMesh* pMesh = Get_Component<CModel>()->Get_Mesh(0);
+		// BoundsComponent
+		{
+			CBounds::BOUND_COMP_DESC desc{};
+			desc.fRatio = 0.5f;
+			desc.pMinMax = pMesh->Get_MinMax();
+			if (FAILED(Add_Component<CBounds>(tModelDesc.iPrototypeLevelIndex, L"Prototype_Component_Bounds", &desc)))
+				return E_FAIL;
+			
+			Get_Component<CBounds>()->Update_BoundingDesc(Get_Component<CTransform>()->Get_WorldMatrix());
+		}
 	}
-
 	return S_OK;
 }
 
@@ -119,6 +129,11 @@ void CStaticModel::Update_Late(const _float fTimeDelta)
 void CStaticModel::Ready_Before_Render(const _float fTimeDelta)
 {
 	Super::Ready_Before_Render(fTimeDelta);
+#ifdef _DEBUG
+	CBounds *pBounds = Get_Component<CBounds>();
+	if(pBounds != nullptr)
+		m_pGameInstance->Push_DebugComponent(pBounds);
+#endif
 }
 
 HRESULT CStaticModel::Render()
@@ -203,11 +218,25 @@ vector<SRT_DATA> CStaticModel::Get_SRTDatas()
 	return  vecResult;
 }
 
+_bool CStaticModel::IntersectWithFrustrum(BoundingFrustum* pFrustrum)
+{
+	CBounds* pBounds = Get_Component<CBounds>();
+	if (pBounds == nullptr)
+		return false;
+
+	return pBounds->IntersectWith_Frustrum(pFrustrum);
+}
+
 
 bool CStaticModel::IntsersectWithPlane(OUT Vec3& vOut)
 {
 	CModel* pModel = Get_Component<CModel>();
 	if (pModel == nullptr)  return false;
+	CBounds* pBounds = Get_Component<CBounds>();
+	
+	if (pBounds)
+		if (pBounds->IntersectWithRay_Local(vOut) == false)
+			return false;
 
 	_uint iMeshCount = pModel->Get_MeshCount();
 	for (_uint i = 0; i < iMeshCount; ++i)

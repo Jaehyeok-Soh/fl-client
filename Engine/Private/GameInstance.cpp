@@ -745,13 +745,17 @@ void CGameInstance::Destroy_Engine()
 }
 
 #pragma region FRUSTRUM
-HRESULT CGameInstance::Frustrum_Init()
+void CGameInstance::Ready_Frustrum()
 {
-	return m_pFrustrum->Initialize();
+	m_pFrustrum->Initialize();
 }
-_bool CGameInstance::Culling_AABB(CCollider* pCollider)
+BoundingFrustum* CGameInstance::Get_BoundingFrustrum_Local()
 {
-	return m_pFrustrum->Culling(pCollider);
+	return m_pFrustrum->Get_BoundingFrustrum_Local();
+}
+BoundingFrustum* CGameInstance::Get_BoundingFrustrum_World()
+{
+	return m_pFrustrum->Get_BoundingFrustrum_World();
 }
 #pragma endregion
 

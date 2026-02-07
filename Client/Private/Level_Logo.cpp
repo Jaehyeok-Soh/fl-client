@@ -280,6 +280,7 @@ HRESULT CLevel_Logo::Ready_Camera_Setting(const _uint iLevelIndex)
 	m_pGameInstance->Change_MainCamera(CameraType::DYNAMIC, g_MainActorCameraName);
 	CGameObject* pPlayer = m_pGameInstance->Get_GameObject_Front(iLevelIndex, g_wszPlayerLayer);
 	m_pGameInstance->Change_Target(pPlayer);
+	m_pGameInstance->Ready_Frustrum();
 	return S_OK;
 }
 

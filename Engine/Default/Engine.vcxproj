@@ -227,6 +227,7 @@
     <ClCompile Include="..\Private\Graphic_Device.cpp" />
     <ClCompile Include="..\Private\Importer.cpp" />
     <ClCompile Include="..\Private\Input_Manager.cpp" />
+    <ClCompile Include="..\private\Bounds.cpp" />
     <ClCompile Include="..\Private\IUIActionForMe.cpp" />
     <ClCompile Include="..\Private\IUIActionForTarget.cpp" />
     <ClCompile Include="..\private\json_forward.cpp" />
@@ -367,6 +368,7 @@
     <ClInclude Include="..\Public\Graphic_Device.h" />
     <ClInclude Include="..\Public\Importer.h" />
     <ClInclude Include="..\Public\Input_Manager.h" />
+    <ClInclude Include="..\public\Bounds.h" />
     <ClInclude Include="..\Public\IUIActionForMe.h" />
     <ClInclude Include="..\Public\IUIActionForTarget.h" />
     <ClInclude Include="..\public\json_forward.h" />

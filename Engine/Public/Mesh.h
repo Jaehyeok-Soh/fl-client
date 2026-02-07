@@ -2,14 +2,7 @@
 #include "VIBuffer.h"
 
 NS_BEGIN(Engine)
-
 class CRay;
-
-typedef struct tagLocalBound
-{
-	BoundingBox AABB{};
-	BoundingSphere Sphere{};
-}LOCAL_BOUND;
 
 typedef struct tagMeshRayHitInformation
 {
@@ -57,7 +50,7 @@ public:
 	}MESH_ORIGIN_DESC;
 private:
 	CMesh(ID3D11Device* pDevice, ID3D11DeviceContext* pDeviceContext);
-	explicit CMesh(const CMesh& rhs);
+	CMesh(const CMesh& rhs);
 	virtual ~CMesh() = default;
 
 	virtual HRESULT Initialize_Prototype(void* pArg) override;
@@ -70,6 +63,7 @@ public:
 	_bool			IsSame(const _char* szName) { return ::strcmp(m_szName, szName) != 0; }
 	_bool			IntsersectWithPlane(OUT Vec3& vOut);
 	_bool			IntsersectWithPlane(CRay* const pRay, Matrix matWorld, _float fMaxDistance, OUT MESH_RAY_HITINFO& outHit);
+	const			Vec3* Get_MinMax() const { return m_pMinMax; }
 private:
 	HRESULT			Load_AnimVertices(std::span<VTXANIMMESH> spanVertex);
 	HRESULT			Load_NonAnimVertices(std::span<VTXANIMMESH> spanVertex);
@@ -85,8 +79,6 @@ private:
 	_uint m_iOffsetMatrixCount = { 0 };
 
 	SHADER_BONEDESC m_tBoneMatrices;
-
-	LOCAL_BOUND* m_pLocalBound{ nullptr };
 	Vec3* m_pMinMax{nullptr};
 	_uint* m_pAffectBoneIndices{ nullptr };
 	Matrix* m_pOffsetMatrices{ nullptr };

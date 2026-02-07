@@ -92,7 +92,6 @@ HRESULT CLevel_Map::Awake(const _uint iLevelID)
 	Ready_Event();
 	m_pImGuiManager->Ready_Events();
 
-
 	/* Batch */
 
 
@@ -269,7 +268,7 @@ HRESULT CLevel_Map::Ready_Camera_Setting(const _uint iLevelID)
 	CCameraMan* pFreeCamera = static_cast<CCameraMan*>(m_pGameInstance->Get_GameObject_Back(iLevelID, L"Camera_Layer"));
 	m_pGameInstance->Add_Camera(CameraType::STATIC, g_FreeCameraName, pFreeCamera);
 	m_pGameInstance->Change_MainCamera(CameraType::STATIC, g_FreeCameraName);
-
+	m_pGameInstance->Ready_Frustrum();
 	return S_OK;
 }
 

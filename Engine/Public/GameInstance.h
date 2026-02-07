@@ -255,8 +255,9 @@ public:
 #pragma endregion
 
 #pragma region FRUSTRUM
-	HRESULT Frustrum_Init();
-	_bool Culling_AABB(class CCollider* pCollider);
+	void Ready_Frustrum();
+	BoundingFrustum* Get_BoundingFrustrum_Local();
+	BoundingFrustum* Get_BoundingFrustrum_World();
 #pragma endregion
 
 #pragma region RENDERTARGET_MANAGER

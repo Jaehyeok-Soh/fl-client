@@ -18,7 +18,6 @@ CMesh::CMesh(const CMesh& rhs)
 	, m_iOffsetMatrixCount(rhs.m_iOffsetMatrixCount)
 	, m_tBoneMatrices(rhs.m_tBoneMatrices)
 	, m_pMinMax(rhs.m_pMinMax)
-	, m_pLocalBound(rhs.m_pLocalBound)
 	, m_pOffsetMatrices(rhs.m_pOffsetMatrices)
 	, m_pAffectBoneIndices(rhs.m_pAffectBoneIndices)
 	, m_pNormals(rhs.m_pNormals)
@@ -63,13 +62,8 @@ HRESULT CMesh::Initialize_Prototype(void* pArg)
 
 	if (pDesc->iMinMaxCount > 0)
 	{
-		m_bHasMinMax = true;
-		m_pMinMax = new Vec3[2];
+		m_pMinMax = new Vec3[pDesc->iMinMaxCount];
 		::memcpy(m_pMinMax, pDesc->spanMinMax.data(), sizeof(Vec3) * 2);
-
-		m_pLocalBound = new LOCAL_BOUND();
-		m_pLocalBound->AABB = Engine_Utils::MakeAABB_FromMinMax(m_pMinMax[0], m_pMinMax[1]);
-		m_pLocalBound->Sphere = Engine_Utils::MakeSphere_FromMinMax(m_pMinMax[0], m_pMinMax[1]);
 	}
 
 	m_pVertexPositions = new SimpleMath::Vector3[m_iVertexCount];
@@ -141,7 +135,7 @@ HRESULT CMesh::Initialize_Prototype(void* pArg)
 			vNormal.Normalize();
 			m_pNormals[i] = vNormal;
 		}
-	}
+	} 
 
 	return S_OK;
 }
@@ -166,6 +160,9 @@ HRESULT CMesh::Bind_Bones(CShader* pShader, const vector<CBone*>& vecBones, _uin
 
 _bool CMesh::IntsersectWithPlane(OUT Vec3& vOut)
 {
+	if (m_iIndexCount == 0 || !m_pVertexPositions || !m_pIndices)
+		return false;
+
 	const _uint iTriangleCount = m_iIndexCount / 3;
 	_uint iIndex = { 0 };
 	for (_uint i = 0; i < iTriangleCount; ++i)
@@ -311,7 +308,6 @@ void CMesh::Free()
 { 
 	if (IsClone() == false)
 	{
-		Safe_Delete(m_pLocalBound);
 		Safe_Delete_Array(m_pOffsetMatrices);
 		Safe_Delete_Array(m_pNormals);
 		Safe_Delete_Array(m_pAffectBoneIndices);

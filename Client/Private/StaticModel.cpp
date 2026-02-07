@@ -3,6 +3,7 @@
 #include "Model.h"
 #include "Mesh.h"
 #include "Shader.h"
+#include "Bounds.h"
 
 #include "PhysicsCollider.h"
 #include "PhysicsRigidBody.h"
@@ -76,6 +77,18 @@ HRESULT CStaticModel::Ready_Component(STATICMODEL_DESC* pDesc)
 		}
 		CModel::MODEL_COPY_DESC tModelCopyDesc{};
 		CGameObject::Add_Component<CModel>(tModelDesc.iPrototypeLevelIndex, L"Prototype_Component_Model_" + pDesc->tUsingModelInfo.wstrName, &tModelCopyDesc);
+
+		CMesh* pMesh = Get_Component<CModel>()->Get_Mesh(0);
+		// BoundsComponent
+		{
+			CBounds::BOUND_COMP_DESC desc{};
+			desc.fRatio = 0.5f;
+			desc.pMinMax = pMesh->Get_MinMax();
+			if (FAILED(Add_Component<CBounds>(0, L"Prototype_Component_Bounds", &desc)))
+				return E_FAIL;
+
+			Get_Component<CBounds>()->Update_BoundingDesc(Get_Component<CTransform>()->Get_WorldMatrix());
+		}
 	}
 
 	{
@@ -227,7 +240,14 @@ HRESULT CStaticModel::Render()
 	return S_OK;
 }
 
+_bool CStaticModel::IntersectWithFrustrum(BoundingFrustum* pFrustrum)
+{
+	CBounds* pBounds = Get_Component<CBounds>();
+	if (pBounds == nullptr)
+		return false;
 
+	return pBounds->IntersectWith_Frustrum(pFrustrum);
+}
 
 CStaticModel* CStaticModel::Create(ID3D11Device* pDevice, ID3D11DeviceContext* pDeviceContext)
 {

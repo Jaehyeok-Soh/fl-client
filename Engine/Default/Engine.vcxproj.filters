@@ -343,6 +343,9 @@
     <Filter Include="01. Utility\17. ShaderAsset\Manager">
       <UniqueIdentifier>{1d5a15d2-b9e8-44c5-8397-f596f8c5189a}</UniqueIdentifier>
     </Filter>
+    <Filter Include="00. System\05. Component\BoundComponent">
+      <UniqueIdentifier>{64605b68-7467-472b-adf5-fb36564873e4}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="..\Private\Timer.cpp">
@@ -700,9 +703,6 @@
     <ClCompile Include="..\public\ThreadPool.cpp">
       <Filter>00. System\13. ThreadPool</Filter>
     </ClCompile>
-    <ClCompile Include="..\private\EngineConsole.cpp">
-      <Filter>01. Utility\16. Console</Filter>
-    </ClCompile>
     <ClCompile Include="..\private\EngineConsole.cpp" />
     <ClCompile Include="..\Private\IUIActionForTarget.cpp">
       <Filter>00. System\04. GameObject\UIObject\Interface\Action For Target</Filter>
@@ -715,6 +715,12 @@
     </ClCompile>
     <ClCompile Include="..\private\FxShaderVariant.cpp">
       <Filter>01. Utility\17. ShaderAsset</Filter>
+    </ClCompile>
+    <ClCompile Include="..\private\EngineConsole.cpp">
+      <Filter>01. Utility\16. Console</Filter>
+    </ClCompile>
+    <ClCompile Include="..\private\Bounds.cpp">
+      <Filter>00. System\05. Component\BoundComponent</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -1100,9 +1106,6 @@
     <ClInclude Include="..\public\ThreadPool.h">
       <Filter>00. System\13. ThreadPool</Filter>
     </ClInclude>
-    <ClInclude Include="..\public\EngineConsole.h">
-      <Filter>01. Utility\16. Console</Filter>
-    </ClInclude>
     <ClInclude Include="..\public\EngineConsole.h" />
     <ClInclude Include="..\Public\IUIActionForTarget.h">
       <Filter>00. System\04. GameObject\UIObject\Interface\Action For Target</Filter>
@@ -1115,6 +1118,12 @@
     </ClInclude>
     <ClInclude Include="..\public\FxShaderVariant.h">
       <Filter>01. Utility\17. ShaderAsset</Filter>
+    </ClInclude>
+    <ClInclude Include="..\public\EngineConsole.h">
+      <Filter>01. Utility\16. Console</Filter>
+    </ClInclude>
+    <ClInclude Include="..\public\Bounds.h">
+      <Filter>00. System\05. Component\BoundComponent</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

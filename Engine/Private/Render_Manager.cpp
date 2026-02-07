@@ -300,12 +300,16 @@ HRESULT CRender_Manager::Render_NoneBlend()
 	if (FAILED(m_pGameInstance->Begin_MRT(EMRTLayer::GameObjects)))
 		return E_FAIL;
 
+	BoundingFrustum* pFrustrum = m_pGameInstance->Get_BoundingFrustrum_World();
+
 	for (CGameObject* pElement : m_renderObjects[ENUM_TO_UINT(RENDER_CATEGORY::NONEBLEND)])
 	{
+		if (pElement->IntersectWithFrustrum(pFrustrum) == false)
+			continue;
+
 		if (FAILED(pElement->Render()))
 			return E_FAIL;
 
-		Safe_Release(pElement);
 	}
 	m_renderObjects[ENUM_TO_UINT(RENDER_CATEGORY::NONEBLEND)].clear();
 
@@ -456,14 +460,14 @@ HRESULT CRender_Manager::Render_Debug()
 
 	m_pShader->Set_Pass(ENUM_TO_UINT(DEFFERRED::DEBUG));
 
-	if (FAILED(m_pVIBuffer->Bind_Resource()))
-		return E_FAIL;
+	//if (FAILED(m_pVIBuffer->Bind_Resource()))
+	//	return E_FAIL;
 
-	if (FAILED(m_pGameInstance->Debug_RT_Render(EMRTLayer::GameObjects, m_pShader, m_pVIBuffer)))
-		return E_FAIL;
+	//if (FAILED(m_pGameInstance->Debug_RT_Render(EMRTLayer::GameObjects, m_pShader, m_pVIBuffer)))
+	//	return E_FAIL;
 
-	if (FAILED(m_pGameInstance->Debug_RT_Render(EMRTLayer::LightAcc, m_pShader, m_pVIBuffer)))
-		return E_FAIL;
+	//if (FAILED(m_pGameInstance->Debug_RT_Render(EMRTLayer::LightAcc, m_pShader, m_pVIBuffer)))
+	//	return E_FAIL;
 
 	return S_OK;
 }

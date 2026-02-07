@@ -20,17 +20,6 @@ HRESULT CFrustrum::Initialize()
     return S_OK;
 }
 
-_bool CFrustrum::Culling(CCollider* pCollider)
-{
-    if (m_pWorldBounding)
-    {
-        BoundingBox* pBounding = static_cast<CBounding_AABB*>(pCollider->Get_Bounding())->Get_Desc();
-        return m_pWorldBounding->Intersects(*pBounding);
-    }
-
-    return false;
-}
-
 void CFrustrum::Update()
 {
     if (m_pWorldBounding)

@@ -14,6 +14,7 @@
 #include "VIBuffer_Particle_Mesh.h"
 #include "InstanceMesh.h"
 #include "VIBuffer_Cube_Tex.h"
+#include "Bounds.h"
 #include "Shader.h"
 #include "Camera.h"
 #include "Transform.h"
@@ -221,7 +222,8 @@ HRESULT CLoader::Loading_For_Logo()
 	m_pGameInstance->Add_Prototype(ENUM_TO_UINT(ELevelType::STATIC), L"Prototype_Component_Collider_OBB", CCollider::Create(m_pDevice, m_pDeviceContext, EColliderType::OBB));
 	// For. Prototype_Component_Collider_SPHERE
 	m_pGameInstance->Add_Prototype(ENUM_TO_UINT(ELevelType::STATIC), L"Prototype_Component_Collider_Sphere", CCollider::Create(m_pDevice, m_pDeviceContext, EColliderType::SPHERE));
-
+	// For. Prototype_Component_Bounds
+	m_pGameInstance->Add_Prototype(ENUM_TO_UINT(ELevelType::STATIC), L"Prototype_Component_Bounds", CBounds::Create(m_pDevice, m_pDeviceContext));
 
 
 	// For. Prototype_Component_Collider_SPHERE

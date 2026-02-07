@@ -77,6 +77,7 @@ namespace Engine
 		ACTIONSTATE,
 		CAMERA,
 		SHADER,
+		BOUND,
 		//
 		PX_RIGIDBODY,
 		PX_COLLIDER,
