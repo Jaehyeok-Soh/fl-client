@@ -245,7 +245,7 @@ namespace Engine
 		SimpleMath::Vector4  vQuat = {};
 
 		SimpleMath::Vector3  vTranslation = {};
-		float   fPadding0 = {0.f};
+		float   fPadding0 = { 0.f };
 	}CS_IMMU_ANIM_KEYFRAME;
 
 	// 불변 데이터 : cpu
@@ -256,15 +256,14 @@ namespace Engine
 
 		unsigned int    iKeyStart = { 0 };              // 키프레임 시작 위치
 		unsigned int    iKeyCount = { 0 };              // 키프레임 개수
-	}CS_IMMU_CHANNELDATA;
+	}CS_IMMU_ANIM_CHANNELDATA;
 
 	// 가변 데이터 : cpu
 	typedef struct tagBone_Mu_Track
 	{
-		float				fCurTrackPosition = { 0 };
-		unsigned int		iAnimIndex = { 0 };
+		float   fCurTrackPosition = { 0.f };
 
-		SimpleMath::Vector2  Padding0;
+		SimpleMath::Vector3  Padding0 = {};
 	}CS_MU_TRACK;
 
 	// output
@@ -281,20 +280,13 @@ namespace Engine
 #pragma endregion
 
 #pragma region ANIM_Blendd_CS
-	// 불변 데이터
-	typedef struct tagAnimB_Immu_Root
-	{
-		int     iRootMotionBoneIndex = {-1}; // root motion일 경우 tralation을 0으로 만들기 위함
-
-		SimpleMath::Vector3  Padding0 = {};
-	}CS_IMMU_ANIM_ROOT;
-
 	// 가변 데이터
 	typedef struct tagAnimB_Immu_Ratio
 	{
-		float   fRatio						= { 0.f };
-		SimpleMath::Vector3  Padding0		= {};
-	}CS_MU_ANIM_RATIO;
+		float					fRatio = { 0.f };
+		int						iRootMotionBoneIndex = { -1 }; // root motion일 경우 tralation을 0으로 만들기 위함
+		SimpleMath::Vector2		Padding0 = {};
+	}CS_MU_ANIMB;
 
 	// output
 	//typedef struct tagBone_Output
