@@ -5,7 +5,7 @@
 struct IMMU_ELEMENT
 {
     int                 iParentIndex;
-    float3              Padding;
+    float3              Padding0;
     
     row_major float4x4  matPreTransform;
 };
@@ -13,13 +13,19 @@ struct IMMU_ELEMENT
 // 가변 데이터
 struct MU_ELEMENT
 {
-    int                 iMyIdx;
-    float3              vScale;
+    uint                 iMyIdx;
+    float3              Padding0;
+};
+
+struct MU_SRT
+{
+    float3 vScale;
+    float  Padding0;
     
-    float4              vQuat;
+    float4 vQuat;
     
-    float3              vTranslation;
-    float               Padding;
+    float3 vTranslation;
+    float  Padding1;
 };
 
 // out put
@@ -30,7 +36,8 @@ struct BONE_OUTPUT
 
 
 StructuredBuffer<IMMU_ELEMENT>  IMMU_BONEDATA;
-StructuredBuffer<MU_ELEMENT>    MU_DATA;
+StructuredBuffer<MU_ELEMENT>    MU_INDEXES;
+StructuredBuffer<MU_SRT>        MU_SRTS;
 
 RWStructuredBuffer<BONE_OUTPUT> BONECOMBINED_TRANSFORMS;
 
@@ -41,19 +48,19 @@ void CS_Main(uint3 id : SV_DispatchThreadID)
 {
     // 알맞는 인덱스 들고옴
     uint iGroupIdx = id.x; // group 내에 idx
-    uint iBoneIdx = MU_DATA[iGroupIdx].iMyIdx;
+    uint iBoneIdx = MU_INDEXES[iGroupIdx].iMyIdx;
 
     int iParentIdx = IMMU_BONEDATA[iBoneIdx].iParentIndex;
     
     // 완성된 srt로 나의 local matrix 생성
-    float4x4 matLocal = mul(mul(CreateScale(MU_DATA[iBoneIdx].vScale), CreateRotaion_FromQuat(MU_DATA[iBoneIdx].vQuat)), 
-                                CreateTranslation(MU_DATA[iBoneIdx].vTranslation));
+    float4x4 matLocal = mul(mul(CreateScale(MU_SRTS[iBoneIdx].vScale), CreateRotaion_FromQuat(MU_SRTS[iBoneIdx].vQuat)),
+                                CreateTranslation(MU_SRTS[iBoneIdx].vTranslation));
 
     // parent transform 구해옴
     float4x4 matParent =
         (iParentIdx < 0) ? IMMU_BONEDATA[iBoneIdx].matPreTransform : BONECOMBINED_TRANSFORMS[iParentIdx].matCombinedTransform;
 
-    BONECOMBINED_TRANSFORMS[iBoneIdx] = mul(matLocal, matParent);
+    BONECOMBINED_TRANSFORMS[iBoneIdx].matCombinedTransform = mul(matLocal, matParent);
 }
 
 technique11 T0

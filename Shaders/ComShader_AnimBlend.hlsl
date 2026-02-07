@@ -10,45 +10,38 @@ struct IMMU_ELEMENT
 {
     int     iRootMotionBoneIndex; // root motion일 경우 tralation을 0으로 만들기 위함
     
-    float3  vPadding3;
+    float3  Padding0;
 };
 
-// 가변 데이터
-struct MU_ELEMENT
+// 가변 데이터 : gpu
+struct MU_SRT
 {
-    float3  vPreScale;
+    float3  vScale;
+    float   Padding0;
+    
+    float4  vQuat;
+    
+    float3  vTranslation;
     float   Padding1;
-    
-    float4  vPreQuat;
-    
-    float3  vPreTranslation;
-    float   Padding2;
-    
-    float3  vCurScale;
-    float   Padding3;
-    
-    float4  vCurQuat;
-    
-    float3  vCurTranslation;
-    float   Padding4;
 };
 
+// 가변 데이터 : cpu
 struct MU_ELEMENT_ONCE
 {
     float   fRatio;
-    float3  Padding1;
+    float3  Padding0;
 };
 
 // out put
 struct BLENDANIM_OUTPUT
 {
     float3  vScale;
-    float   Padding1;
+    float   Padding0;
     
     float4  vQuat;
     
     float3  vTranslation;
-    float   Padding2;
+    float   Padding1;
 };
 
 cbuffer IMMU_ROOTMOTION
@@ -60,7 +53,8 @@ cbuffer MU_RATIO
 {
     MU_ELEMENT_ONCE g_InputMU;
 };
-StructuredBuffer<MU_ELEMENT>    MU_TRANSFORMS;
+StructuredBuffer<MU_SRT> MU_PRETRANSFORMS;
+StructuredBuffer<MU_SRT> MU_CURTRANSFORMS;
 
 RWStructuredBuffer<BLENDANIM_OUTPUT> UPDATE_DATA; // bone 인덱스랑 1 : 1 매칭 -> bone update때 문제 없도록 하기 위함
 
@@ -74,13 +68,13 @@ void CS_Main(uint3 id : SV_DispatchThreadID)
     float4 vQuat;
     
     // SRT 보간
-    vScale = lerp(MU_TRANSFORMS[iBoneIdx].vPreScale, MU_TRANSFORMS[iBoneIdx].vCurScale, g_InputMU.fRatio);
-    vQuat = normalize(lerp(MU_TRANSFORMS[iBoneIdx].vPreQuat, MU_TRANSFORMS[iBoneIdx].vCurQuat, g_InputMU.fRatio));
+    vScale = lerp(MU_PRETRANSFORMS[iBoneIdx].vScale, MU_CURTRANSFORMS[iBoneIdx].vScale, g_InputMU.fRatio);
+    vQuat = normalize(lerp(MU_PRETRANSFORMS[iBoneIdx].vQuat, MU_CURTRANSFORMS[iBoneIdx].vQuat, g_InputMU.fRatio));
     
     if (g_InputIMMU.iRootMotionBoneIndex == iBoneIdx)
         vTranslation = float3(0.f, 0.f, 0.f);
     else
-        vTranslation = lerp(MU_TRANSFORMS[iBoneIdx].vPreTranslation, MU_TRANSFORMS[iBoneIdx].vCurTranslation, g_InputMU.fRatio);
+        vTranslation = lerp(MU_PRETRANSFORMS[iBoneIdx].vTranslation, MU_CURTRANSFORMS[iBoneIdx].vTranslation, g_InputMU.fRatio);
     
     // 값 저장
     UPDATE_DATA[iBoneIdx].vScale        = vScale;

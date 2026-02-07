@@ -8,14 +8,14 @@
 
 // IMMU_KEYFRAMS, IMMU_CHANNELDATAS 값 다시 바인드
 
-struct KEYFRAME
+struct IMMU_KEYFRAME
 {
     float3  vScale;
     float   fTrackPosition;
     float4  vQuat;
     float3  vTranslation;
     
-    float   fPadding;
+    float   fPadding0;
 };
 
 // 불변 데이터
@@ -28,18 +28,13 @@ struct IMMU_ELEMENT
     uint    iKeyCount;              // 키프레임 개수
 };
 
-// 가변 데이터
+// 가변 데이터 : cpu
 struct MU_ELEMENT
 {
     float   fCurTrackPosition;
     uint    iAnimIndex;
     
     float2  vPadding2;
-};
-
-cbuffer MU_Track
-{
-    MU_ELEMENT g_InputData;
 };
 
 // out put
@@ -54,7 +49,12 @@ struct CHANNEL_OUTPUT
     uint                iAnimIndex;
 };
 
-StructuredBuffer<KEYFRAME>      IMMU_KEYFRAMS;          // 한 애니메이션에 대한 모든 keyframe 정보를 일차원 배열로 들고 있는다
+cbuffer MU_Track
+{
+    MU_ELEMENT g_InputData;
+};
+
+StructuredBuffer<IMMU_KEYFRAME> IMMU_KEYFRAMS; // 한 애니메이션에 대한 모든 keyframe 정보를 일차원 배열로 들고 있는다
 StructuredBuffer<IMMU_ELEMENT>  IMMU_CHANNELDATAS;      // 한 채널에 대한 정보들            :  이 애니메이션 channel 수 만큼
 
 RWStructuredBuffer<CHANNEL_OUTPUT> UPDATE_DATA;         // bone 인덱스랑 1 : 1 매칭 -> bone update때 문제 없도록 하기 위함
@@ -87,7 +87,7 @@ void CS_Main(uint3 id : SV_DispatchThreadID)
     }
     
     // 함수 지역 변수 셋팅    
-    KEYFRAME lastKeyFrame = IMMU_KEYFRAMS[iLastFrameIdx];
+    IMMU_KEYFRAME lastKeyFrame = IMMU_KEYFRAMS[iLastFrameIdx];
     float3 vScale, vTranslation;
     float4 vQuat;
     
