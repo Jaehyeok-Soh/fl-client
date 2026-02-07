@@ -5,7 +5,7 @@
 struct IMMU_ELEMENT
 {
     int                 iParentIndex;
-    float3              vPadding3;
+    float3              vPadding3;///
     
     row_major float4x4  matPreTransform;
 };
