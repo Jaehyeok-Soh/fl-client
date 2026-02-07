@@ -111,6 +111,7 @@ HRESULT CStaticModel::Ready_PhysicsCollider(STATICMODEL_DESC* pDesc)
 	}
 	
 	PHYSICSCOLLIDER_DESC pcDetailDesc{};
+	pcDetailDesc.bSetOnlyFilter = true;
 	pcDetailDesc.eFilterLayer = PHYSICSFILTERGROUP::Enum::MAP;
 	pcDetailDesc.iFilterMask =
 		PHYSICSFILTERGROUP::Enum::PLAYER

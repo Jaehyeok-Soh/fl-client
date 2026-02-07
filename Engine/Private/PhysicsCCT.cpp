@@ -225,6 +225,8 @@ CComponent* CPhysicsCCT::Clone(void* pArg)
 
 void CPhysicsCCT::Free()
 {
+	ReleaseController();
+
 	Safe_Release(m_pDevice);
 	Safe_Release(m_pDeviceContext);
 

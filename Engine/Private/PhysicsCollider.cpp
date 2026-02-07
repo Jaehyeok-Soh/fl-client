@@ -58,10 +58,13 @@ HRESULT CPhysicsCollider::Initialize(void* pArg)
 	m_tDesc.eFilterLayer = pDesc->eFilterLayer;
 	m_tDesc.iFilterMask = pDesc->iFilterMask;
 
-	vector<PxShape*> shapes = m_pGameInstance->GetShape(pDesc);
+	if (!pDesc->bSetOnlyFilter)
+	{
+		vector<PxShape*> shapes = m_pGameInstance->GetShape(pDesc);
 
-	for (auto& shape : shapes)
-		m_pColliderShapes.push_back(shape);
+		for (auto& shape : shapes)
+			m_pColliderShapes.push_back(shape);
+	}
 
 	SetCollisionFilter();
 

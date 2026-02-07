@@ -414,6 +414,7 @@ namespace Engine
 		////////////////////////
 		/// Collision Filter ///
 		////////////////////////
+		bool bSetOnlyFilter = { false };
 		PHYSICSFILTERGROUP::Enum eFilterLayer = PHYSICSFILTERGROUP::Enum::NONE;
 		unsigned int iFilterMask = {};
 	}PHYSICSCOLLIDER_DESC;

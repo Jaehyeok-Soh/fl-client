@@ -219,7 +219,7 @@ HRESULT CRender_Manager::Render()
 		return E_FAIL;
 
 	m_pGameInstance->Setup_ViewProj_ToCBuffer();
-	
+
 	if (FAILED(Render_NonLights()))
 		return E_FAIL;
 
@@ -227,7 +227,7 @@ HRESULT CRender_Manager::Render()
 		return E_FAIL;
 
 	m_pGameInstance->Setup_UIViewProj_ToCBuffer();
-	
+
 	if (FAILED(Render_UI()))
 		return E_FAIL;
 
@@ -244,7 +244,12 @@ HRESULT CRender_Manager::Render()
 			return E_FAIL;
 	}
 	else
+	{
+		for (auto& pDebugCom : m_debugComponents)
+			Safe_Release(pDebugCom);
+
 		m_debugComponents.clear();
+	}
 #endif
 
 	return S_OK;
