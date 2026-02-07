@@ -243,6 +243,8 @@ HRESULT CRender_Manager::Render()
 		if (FAILED(Render_Debug()))
 			return E_FAIL;
 	}
+	else
+		m_debugComponents.clear();
 #endif
 
 	return S_OK;

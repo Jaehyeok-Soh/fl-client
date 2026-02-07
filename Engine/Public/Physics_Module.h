@@ -8,6 +8,7 @@ class CPhysics_ResourceManager;
 class CPhysics_ShapeFactory;
 class CPhysics_ActorFactory;
 class CPhysics_CCTManager;
+class CPhysics_FilterEventCallback;
 
 class CPhysics_Module final : public CBase
 {
@@ -111,6 +112,7 @@ private:
     CPhysics_ShapeFactory* m_pShapeFactory = { nullptr };
     CPhysics_ActorFactory* m_pActorFactory = { nullptr };
     CPhysics_CCTManager* m_pCCTManager = { nullptr };
+    CPhysics_FilterEventCallback* m_pFilterEventCallback = { nullptr };
 
 public:
     static CPhysics_Module* Create(ID3D11Device* pDevice, ID3D11DeviceContext* pContext);

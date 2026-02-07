@@ -110,7 +110,21 @@ HRESULT CStaticModel::Ready_PhysicsCollider(STATICMODEL_DESC* pDesc)
 			Safe_Release(pCollider);
 	}
 	
-	if (FAILED(Add_Component<CPhysicsCollider>(pDesc->iLevelIndex, L"Prototype_Component_Physics_Collider_" + pDesc->tUsingModelInfo.wstrName, nullptr)))
+	PHYSICSCOLLIDER_DESC pcDetailDesc{};
+	pcDetailDesc.eFilterLayer = PHYSICSFILTERGROUP::Enum::MAP;
+	pcDetailDesc.iFilterMask =
+		PHYSICSFILTERGROUP::Enum::PLAYER
+		| PHYSICSFILTERGROUP::Enum::ATTACK
+		| PHYSICSFILTERGROUP::Enum::SKILL
+		| PHYSICSFILTERGROUP::Enum::ATTACK_PROJECTTILE
+		| PHYSICSFILTERGROUP::Enum::SKILL_PROJECTTILE
+		| PHYSICSFILTERGROUP::Enum::MONSTER
+		| PHYSICSFILTERGROUP::Enum::MONSTER_ATTACK
+		| PHYSICSFILTERGROUP::Enum::MONSTER_ATTACK_PROJECTTILE
+		| PHYSICSFILTERGROUP::Enum::MONSTER_SKILL
+		| PHYSICSFILTERGROUP::Enum::MONSTER_SKILL_PROJECTTILE;
+
+	if (FAILED(Add_Component<CPhysicsCollider>(pDesc->iLevelIndex, L"Prototype_Component_Physics_Collider_" + pDesc->tUsingModelInfo.wstrName, &pcDetailDesc)))
 		return E_FAIL;
 
 	return S_OK;

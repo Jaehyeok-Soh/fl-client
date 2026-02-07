@@ -248,6 +248,16 @@ void CGameObject::Set_Name(const wstring& wstrName)
     m_strName = Engine_Utils::ToString(wstrName);
 }
 
+string CGameObject::Get_Name()
+{
+    return m_strName;
+}
+
+wstring CGameObject::Get_WName()
+{
+    return Engine_Utils::ToWString(m_strName);
+}
+
 /// <summary>
 /// <para>ScriptComponent를 일괄적으로 Update호출하는 함수</para>
 /// GameObject Update에서 Default로 호출되고 있다.

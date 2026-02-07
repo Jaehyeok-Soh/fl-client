@@ -88,19 +88,29 @@ void CColliderPart::Ready_Before_Render(_float fTimeDelta)
 #endif
 }
 
-void CColliderPart::OnCollision(_uint iMyColliderLayer, CCollider* pOther)
+void CColliderPart::OnCollision(_uint iMyColliderLayer, CGameObject* pOther)
 {
 	Get_Parent()->OnCollision(iMyColliderLayer, pOther);
 }
 
-void CColliderPart::OnCollision_Enter(_uint iMyColliderLayer, CCollider* pOther)
+void CColliderPart::OnCollision_Enter(_uint iMyColliderLayer, CGameObject* pOther)
 {
 	Get_Parent()->OnCollision_Enter(iMyColliderLayer, pOther);
 }
 
-void CColliderPart::OnCollision_Exit(_uint iMyColliderLayer, CCollider* pOther)
+void CColliderPart::OnCollision_Exit(_uint iMyColliderLayer, CGameObject* pOther)
 {
 	Get_Parent()->OnCollision_Exit(iMyColliderLayer, pOther);
+}
+
+void CColliderPart::OnTrigger_Enter(_uint iMyColliderLayer, CGameObject* pOther)
+{
+	Get_Parent()->OnTrigger_Enter(iMyColliderLayer, pOther);
+}
+
+void CColliderPart::OnTrigger_Exit(_uint iMyColliderLayer, CGameObject* pOther)
+{
+	Get_Parent()->OnTrigger_Exit(iMyColliderLayer, pOther);
 }
 
 HRESULT CColliderPart::Render()

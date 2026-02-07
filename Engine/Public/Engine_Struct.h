@@ -308,6 +308,9 @@ namespace Engine
 
 	typedef struct tagPhysicsCCT
 	{
+		class CGameObject* pOwner = { nullptr };
+		bool bIsPlayer = { false };
+
 		EPhysicsCCTType eType = { EPhysicsCCTType::CAPSULE };
 		const Matrix* pOwnerMatrix = { nullptr };
 		float fRadius = {};
@@ -321,7 +324,11 @@ namespace Engine
 		////////////////
 		PHYSICSMATERIAL_DESC tMaterial = {};
 
-		class CGameObject* pOwner = { nullptr };
+		////////////////////////
+		/// Collision Filter ///
+		////////////////////////
+		PHYSICSFILTERGROUP::Enum eFilterLayer = PHYSICSFILTERGROUP::Enum::NONE;
+		unsigned int iFilterMask = {};
 	}PHYSICSCCT_DESC;
 
 	typedef struct tagPhysicsRigidBody
@@ -407,7 +414,7 @@ namespace Engine
 		////////////////////////
 		/// Collision Filter ///
 		////////////////////////
-		PHYSICSFILTERGROUP eFilterGroup = PHYSICSFILTERGROUP::NONE;
+		PHYSICSFILTERGROUP::Enum eFilterLayer = PHYSICSFILTERGROUP::Enum::NONE;
 		unsigned int iFilterMask = {};
 	}PHYSICSCOLLIDER_DESC;
 

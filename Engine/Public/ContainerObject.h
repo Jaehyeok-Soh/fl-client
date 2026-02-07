@@ -21,6 +21,11 @@ public:
 	virtual void Ready_Before_Render(_float fTimeDelta) override;
 	virtual void Set_AttackCollider(_uint iPartIndex, _bool bActive, ATTACK_DESC* pDesc);
 	virtual HRESULT Render() override;
+	virtual void OnCollision(_uint iMyColliderLayer, CGameObject* pOther) override;
+	virtual void OnCollision_Enter(_uint iMyColliderLayer, CGameObject* pOther) override;
+	virtual void OnCollision_Exit(_uint iMyColliderLayer, CGameObject* pOther) override;
+	virtual void OnTrigger_Enter(_uint iMyColliderLayer, CGameObject* pOther) override;
+	virtual void OnTrigger_Exit(_uint iMyColliderLayer, CGameObject* pOther) override;
 public:
 	template<typename T>
 	T* Get_Part(_uint iPartID);

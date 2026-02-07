@@ -87,15 +87,23 @@ void CPartObject::Set_AttackCollider(_bool bActive, ATTACK_DESC* pDesc)
 	pCollider->Set_Active(bActive);
 }
 
-void CPartObject::OnCollision(_uint iMyColliderLayer, CCollider* pOther)
+void CPartObject::OnCollision(_uint iMyColliderLayer, CGameObject* pOther)
 {
 }
 
-void CPartObject::OnCollision_Enter(_uint iMyColliderLayer, CCollider* pOther)
+void CPartObject::OnCollision_Enter(_uint iMyColliderLayer, CGameObject* pOther)
 {
 }
 
-void CPartObject::OnCollision_Exit(_uint iMyColliderLayer, CCollider* pOther)
+void CPartObject::OnCollision_Exit(_uint iMyColliderLayer, CGameObject* pOther)
+{
+}
+
+void CPartObject::OnTrigger_Enter(_uint iMyColliderLayer, CGameObject* pOther)
+{
+}
+
+void CPartObject::OnTrigger_Exit(_uint iMyColliderLayer, CGameObject* pOther)
 {
 }
 

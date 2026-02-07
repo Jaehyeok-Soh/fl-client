@@ -55,10 +55,15 @@ HRESULT CPhysicsCollider::Initialize(void* pArg)
 	m_tDesc.tMaterial = pDesc->tMaterial;
 	m_tDesc.bIsActive = pDesc->bIsActive;
 
+	m_tDesc.eFilterLayer = pDesc->eFilterLayer;
+	m_tDesc.iFilterMask = pDesc->iFilterMask;
+
 	vector<PxShape*> shapes = m_pGameInstance->GetShape(pDesc);
 
 	for (auto& shape : shapes)
 		m_pColliderShapes.push_back(shape);
+
+	SetCollisionFilter();
 
 	return S_OK;
 }
@@ -87,6 +92,12 @@ void CPhysicsCollider::SetCenter(Vec3 vCenter)
 {
 	for (auto* shape : m_pColliderShapes)
 		shape->setLocalPose(PxTransform(PxVec3(vCenter.x, vCenter.y, vCenter.z)));
+}
+
+void CPhysicsCollider::SetCollisionFilter()
+{
+	for (auto& shape : m_pColliderShapes)
+		shape->setSimulationFilterData(PxFilterData(m_tDesc.eFilterLayer, m_tDesc.iFilterMask, 0, 0));
 }
 
 #ifdef _DEBUG

@@ -10,6 +10,7 @@
 #include "Physics_ShapeFactory.h"
 #include "Physics_CCTManager.h"
 #include "Physics_ActorFactory.h"
+#include "Physics_FilterEventCallback.h"
 
 CPhysics_Module::CPhysics_Module(ID3D11Device* pDevice, ID3D11DeviceContext* pDeviceContext)
 	: m_pDevice(pDevice)
@@ -120,9 +121,10 @@ HRESULT CPhysics_Module::Initialize()
 		{
 			// Default Setting
 			//sceneDesc.filterShader = PxDefaultSimulationFilterShader;
-
 			sceneDesc.filterShader = FilterShader;
-			//sceneDesc.filterCallback;
+			
+			m_pFilterEventCallback = CPhysics_FilterEventCallback::Create();
+			sceneDesc.simulationEventCallback = m_pFilterEventCallback;
 		}
 
 		if (!(m_pScene = m_pPhysics->createScene(sceneDesc)))
@@ -291,16 +293,24 @@ PxFilterFlags CPhysics_Module::FilterShader(
 {
 	if (PxFilterObjectIsTrigger(attributes0) || PxFilterObjectIsTrigger(attributes1))
 	{
-		pairFlags = PxPairFlag::eTRIGGER_DEFAULT;
+		if ((filterData0.word0 & filterData1.word1) && (filterData1.word0 & filterData0.word1))
+		{
+			pairFlags = PxPairFlag::eTRIGGER_DEFAULT;
+			return PxFilterFlag::eDEFAULT;
+		}
+		return PxFilterFlag::eSUPPRESS;
+	}
+
+	if ((filterData0.word0 & filterData1.word1) && (filterData1.word0 & filterData0.word1))
+	{
+		pairFlags = PxPairFlag::eCONTACT_DEFAULT
+			| PxPairFlag::eNOTIFY_TOUCH_FOUND
+			| PxPairFlag::eNOTIFY_TOUCH_LOST
+			| PxPairFlag::eNOTIFY_TOUCH_PERSISTS;
 		return PxFilterFlag::eDEFAULT;
 	}
 
-	pairFlags = PxPairFlag::eCONTACT_DEFAULT;
-
-	if ((filterData0.word0 & filterData1.word1) && (filterData1.word0 & filterData0.word1))
-		pairFlags |= PxPairFlag::eNOTIFY_TOUCH_FOUND;
-
-	return PxFilterFlag::eDEFAULT;
+	return PxFilterFlag::eSUPPRESS;
 }
 
 void CPhysics_Module::Check_Leak()
@@ -343,6 +353,9 @@ void CPhysics_Module::ClearPhysics()
 		PX_RELEASE(m_pScene);
 
 	Check_Leak();
+
+	if (m_pFilterEventCallback)
+		Safe_Release(m_pFilterEventCallback);
 
 	if (m_pDispatcher)
 		PX_RELEASE(m_pDispatcher);

@@ -25,9 +25,11 @@ public:
 	virtual void Update_Late(_float fTimeDelta) override;
 	virtual void Ready_Before_Render(const _float fTimeDelta) override;
 	virtual HRESULT Render() override;
-	virtual void OnCollision(_uint iMyColliderLayer, CCollider* pOther) override;
-	virtual void OnCollision_Enter(_uint iMyColliderLayer, CCollider* pOther) override;
-	virtual void OnCollision_Exit(_uint iMyColliderLayer, CCollider* pOther) override;
+	virtual void OnCollision(_uint iMyColliderLayer, CGameObject* pOther) override;
+	virtual void OnCollision_Enter(_uint iMyColliderLayer, CGameObject* pOther) override;
+	virtual void OnCollision_Exit(_uint iMyColliderLayer, CGameObject* pOther) override;
+	virtual void OnTrigger_Enter(_uint iMyColliderLayer, CGameObject* pOther) override;
+	virtual void OnTrigger_Exit(_uint iMyColliderLayer, CGameObject* pOther) override;
 public:
 	virtual void Set_AttackCollider(_bool bActive, ATTACK_DESC* pDesc);
 	ATTACK_DESC* Get_AttackDesc() { return &m_CurrentAttackDesc; }

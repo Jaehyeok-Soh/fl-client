@@ -343,6 +343,12 @@
     <Filter Include="01. Utility\17. ShaderAsset\Manager">
       <UniqueIdentifier>{1d5a15d2-b9e8-44c5-8397-f596f8c5189a}</UniqueIdentifier>
     </Filter>
+    <Filter Include="00. System\12. PhysX\EventCallback">
+      <UniqueIdentifier>{2ab0629b-6e4b-4ae3-9927-b4868c706bf2}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="00. System\12. PhysX\Character\HitReport">
+      <UniqueIdentifier>{705a6d42-dae5-4737-9ce3-59cb6eb8a9ae}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="..\Private\Timer.cpp">
@@ -715,6 +721,15 @@
     </ClCompile>
     <ClCompile Include="..\private\FxShaderVariant.cpp">
       <Filter>01. Utility\17. ShaderAsset</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\Physics_FilterEventCallback.cpp">
+      <Filter>00. System\12. PhysX\EventCallback</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\Physics_UserHitReport.cpp">
+      <Filter>00. System\12. PhysX\Character\HitReport</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\Physics_NPCHitReport.cpp">
+      <Filter>00. System\12. PhysX\Character\HitReport</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -1115,6 +1130,15 @@
     </ClInclude>
     <ClInclude Include="..\public\FxShaderVariant.h">
       <Filter>01. Utility\17. ShaderAsset</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\Physics_FilterEventCallback.h">
+      <Filter>00. System\12. PhysX\EventCallback</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\Physics_UserHitReport.h">
+      <Filter>00. System\12. PhysX\Character\HitReport</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\Physics_NPCHitReport.h">
+      <Filter>00. System\12. PhysX\Character\HitReport</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

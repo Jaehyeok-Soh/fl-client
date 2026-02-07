@@ -33,6 +33,8 @@ public:
 	PHYSICSCOLLIDER_DESC* GetDesc() { return &m_tDesc; }
 	void SetCenter(Vec3 vCenter);
 
+	void SetCollisionFilter();
+
 private:
 	ID3D11Device* m_pDevice = { nullptr };
 	ID3D11DeviceContext* m_pDeviceContext = { nullptr };
