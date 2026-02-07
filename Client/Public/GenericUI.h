@@ -10,7 +10,6 @@ NS_END
 
 NS_BEGIN(Client)
 class CCanvas;
-class CUILayer;
 class CGenericUI final : public CUIObject
 {
 	using Super = CUIObject;
@@ -24,7 +23,6 @@ public:
 		uint32_t iTextureIndex;
 
 		CCanvas* pCanvasCache = { nullptr };
-		CUILayer* pLayerCache = { nullptr };
 	}GENERIC_UI_DESC;
 
 	typedef struct tagScheduleDesc
@@ -124,7 +122,6 @@ private:
 	Vec3 m_vRenderPos = {};
 	RECT m_tRenderRect = {};
 	CCanvas* m_pParentCanvasCache = { nullptr };
-	CUILayer* m_pParentLayerCache = { nullptr };
 
 	IUIActionForMe* m_pActionForMe = { nullptr };
 	IUIActionForTarget* m_pActionForTarget = { nullptr };

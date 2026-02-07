@@ -1,11 +1,11 @@
 #pragma once
 #include "UIObject.h"
-#include "UIData_Repository.h"
+#include "DataStruct_UI.h"
 
 NS_BEGIN(Tool)
 
 class CImGui_UIManager;
-class CToolLayer;
+class CToolUI;
 
 class CToolCanvas final : public CUIObject
 {
@@ -44,14 +44,11 @@ private:
 public:
 	CToolUI* Calc_TopUI();
 public:
-	HRESULT Safe_Add_Layer(CToolLayer* pLayer);
-	vector<CToolLayer*>* Safe_Access_LayerObject_Vector_Ptr();
-	CToolLayer* Safe_Access_LayerObject_Ptr(int32_t index);
-	CToolLayer* Safe_Access_CurLayerObject_Ptr();
+	HRESULT Safe_Add_UI(CToolUI* pUI);
+	vector<CToolUI*>* Safe_Access_UI_Vector();
+
 	const _string& Get_Tag() const { return m_strTag; }
 	void Set_Tag(const _string& Tag) { m_strTag = Tag; }
-	_bool Get_isUsingViewport() const { return m_isUsingViewport; }
-	void Set_isUsingViewport(_bool is) { m_isUsingViewport = is; }
 	_float* Get_Width_Ptr() { return &m_fWidth; }
 	_float* Get_Height_Ptr() { return &m_fHeight; }
 	_float* Get_PosX_Ptr() { return &m_fX; }
@@ -71,18 +68,17 @@ public:
 	const DTO::TUI_CanvasData& Get_Data()const { return m_tCanvasData; }
 	DTO::TUI_CanvasData& Get_Data_Ref() { return m_tCanvasData; }
 
-	void Clear();
 private:
 	PrimitiveBatch<DirectX::VertexPositionColor>* m_pBatch = { nullptr };
 	BasicEffect* m_pEffect = { nullptr };
 	ID3D11InputLayout* m_pInputLayout = { nullptr };
+
 private:
 	CImGui_UIManager* m_pUIManager = { nullptr };
 	DTO::TUI_CanvasData m_tCanvasData = {};
-	vector<CToolLayer*> m_vecToolLayers;
+
 	uint32_t m_iClientLevelIndex = {};
 	_string m_strTag;
-	_bool m_isUsingViewport;
 
 	CToolUI* m_pCaptureUI = {nullptr};
 	CToolUI* m_pHoveringUI = { nullptr };
@@ -90,6 +86,7 @@ private:
 	_bool m_isPreUIPressing = { FALSE };
 	_bool m_isPreHovering = { FALSE };
 
+	vector<CToolUI*> m_vecToolUI;
 public:
 	static CToolCanvas* Create(EToolObjectType eType, ID3D11Device* pDevice, ID3D11DeviceContext* pDeviceContext);
 	CGameObject* Clone(void* pArg);

@@ -3,7 +3,6 @@
 #include "Tool_Defines.h"
 
 #include "ToolCanvas.h"
-#include "ToolLayer.h"
 #include "ToolUI.h"
 #include "GameInstance.h"
 #include "ImGui_UIManager.h"
@@ -23,14 +22,6 @@ CToolCanvas* CUITargetAction_Tool::Find_Canvas(const _string& Find_Canvas)
     return pCanvas;
 }
 
-CToolLayer* CUITargetAction_Tool::Find_Layer(const _string& strLayerTag)
-{
-    auto* pLayer = CImGui_UIManager::GetInstance()->Find_Layer(strLayerTag);
-    if (nullptr == pLayer)
-        return nullptr;
-    return pLayer;
-}
-
 void CUITargetAction_Tool::Trigger_All_Canvas(uint32_t iLevelIndex, const _string& strCanvasTag, DTO::EUIAction eAction, const json& jTargetActionParam)
 {
     auto action = m_pGameInstance->Get_UIAction_Registry()->Build_Action(eAction, jTargetActionParam);
@@ -41,38 +32,7 @@ void CUITargetAction_Tool::Trigger_All_Canvas(uint32_t iLevelIndex, const _strin
     if (nullptr == pCanvas)
         return;
 
-    auto* pLayerVec = pCanvas->Safe_Access_LayerObject_Vector_Ptr();
-    if (nullptr == pLayerVec)
-        return;
-
-    for (auto* pLayer : *pLayerVec)
-    {     
-        auto* pUIVec = pLayer->Safe_Access_UIObject_Vector_Ptr();
-        if (nullptr == pUIVec)
-            continue;
-
-        for (auto* pUI : *pUIVec)
-        {
-            /* 액션중이면 외부 입력 무시 */
-            if (pUI->Get_isAction())
-                continue;
-
-            action(pUI->Get_ActionForMe(), this);
-        }
-    }
-}
-
-void CUITargetAction_Tool::Trigger_All_Layer(uint32_t iLevelIndex, const _string& strLayerTag, DTO::EUIAction eAction, const json& jTargetActionParam)
-{
-    auto action = m_pGameInstance->Get_UIAction_Registry()->Build_Action(eAction, jTargetActionParam);
-    if (!action)
-        return;
-
-    auto* pLayer = Find_Layer(strLayerTag);
-    if (nullptr == pLayer)
-        return;
-
-    auto* pUIVec = pLayer->Safe_Access_UIObject_Vector_Ptr();
+    auto* pUIVec = pCanvas->Safe_Access_UI_Vector();
     if (nullptr == pUIVec)
         return;
 

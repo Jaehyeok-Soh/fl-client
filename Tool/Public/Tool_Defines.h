@@ -277,6 +277,53 @@ namespace Tool
 
 
 #pragma endregion
+#pragma region UI
+	enum class ERectTransform {
+		LT = 0, CT, RT, LC, C, RC, LB, CB, RB, END
+	};
+
+	static const _string& RectTransformToString(ERectTransform eType)
+	{
+		static const _string sLT = "LT";
+		static const _string sCT = "CT";
+		static const _string sRT = "RT";
+		static const _string sLC = "LC";
+		static const _string sC = "C";
+		static const _string sRC = "RC";
+		static const _string sLB = "LB";
+		static const _string sCB = "CB";
+		static const _string sRB = "RB";
+		static const _string sEMPTY = "";
+
+		switch (eType)
+		{
+		case ERectTransform::LT: return sLT;
+		case ERectTransform::CT: return sCT;
+		case ERectTransform::RT: return sRT;
+		case ERectTransform::LC: return sLC;
+		case ERectTransform::C:  return sC;
+		case ERectTransform::RC: return sRC;
+		case ERectTransform::LB: return sLB;
+		case ERectTransform::CB: return sCB;
+		case ERectTransform::RB: return sRB;
+		default: break;
+		}
+		return sEMPTY;
+	}
+	static ERectTransform StringToRectTransform(const _string& str)
+	{
+		if (::strcmp(str.c_str(), "LT") == 0) return ERectTransform::LT;
+		if (::strcmp(str.c_str(), "CT") == 0) return ERectTransform::CT;
+		if (::strcmp(str.c_str(), "RT") == 0) return ERectTransform::RT;
+		if (::strcmp(str.c_str(), "LC") == 0) return ERectTransform::LC;
+		if (::strcmp(str.c_str(), "C") == 0) return ERectTransform::C;
+		if (::strcmp(str.c_str(), "RC") == 0) return ERectTransform::RC;
+		if (::strcmp(str.c_str(), "LB") == 0) return ERectTransform::LB;
+		if (::strcmp(str.c_str(), "CB") == 0) return ERectTransform::CB;
+		if (::strcmp(str.c_str(), "RB") == 0) return ERectTransform::RB;
+		return ERectTransform::END;
+	}
+#pragma endregion
 
 #pragma region Struct
 

@@ -18,7 +18,6 @@ protected:
 
 public:
 	virtual void Trigger_All_Canvas(uint32_t iLevelIndex, const _string& strCanvasTag, DTO::EUIAction eAction, const json& jTargetActionParam)PURE;
-	virtual void Trigger_All_Layer(uint32_t iLevelIndex, const _string& strLayerTag, DTO::EUIAction eAction, const json& jTargetActionParam)PURE;
 	virtual void Trigger_TargetUI(uint32_t iLevelIndex, const _string& strUITag, DTO::EUIAction eAction, const json& jTargetActionParam)PURE;
 
 public:

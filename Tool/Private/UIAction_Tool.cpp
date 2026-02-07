@@ -16,32 +16,40 @@ void CUIAction_Tool::Set_Visible(bool isVisible, const _float fDelay)
 
     if (0.f >= fDelay)
     {
-        if (isVisible) m_pOwner->Set_Visible();
-        else           m_pOwner->Set_Invisible();
+        if (isVisible)
+        {
+            m_pOwner->Set_Visible();
+        }
+        else
+        {
+            m_pOwner->Set_Invisible();
+        }
         return;
     }
 
-    auto* pOwner = m_pOwner;
-    pOwner->Push_DelayAction(fDelay, [pOwner, isVisible]()
+    CToolUI *pOwner = m_pOwner;
+    pOwner->Request_Add_Action(fDelay,
+        [pOwner, isVisible](Engine::IUIActionForMe*, Engine::IUIActionForTarget*)
         {
-            if (isVisible) pOwner->Set_Visible();
-            else           pOwner->Set_Invisible();
+            if (isVisible)
+            {
+                pOwner->Set_Visible();
+            }
+            else
+            {
+                pOwner->Set_Invisible();
+            }
         });
 }
 
-void CUIAction_Tool::Set_TextureIndex(uint32_t index, const _float fDelay)
+void CUIAction_Tool::Set_TextureIndex(_uint index, const _float fDelay)
 {
     if (nullptr == m_pOwner)
         return;
 
-    if (0.f >= fDelay)
-    {
-        m_pOwner->Set_TextureIndex(index);
-        return;
-    }
-
-    auto* pOwner = m_pOwner;
-    pOwner->Push_DelayAction(fDelay, [pOwner, index]()
+    CToolUI* pOwner = m_pOwner;
+    pOwner->Request_Add_Action(fDelay,
+        [pOwner, index](Engine::IUIActionForMe*, Engine::IUIActionForTarget*)
         {
             pOwner->Set_TextureIndex(index);
         });
@@ -58,14 +66,9 @@ void CUIAction_Tool::Start_Lerp_Movement(const Vec3& vTargetPos, const _float fT
     if (nullptr == m_pOwner)
         return;
 
-    if (0.f >= fDelay)
-    {
-        m_pOwner->Start_Lerp_Movement(vTargetPos, fTargetAlpha, fDuration, isPin);
-        return;
-    }
-
-    auto* pOwner = m_pOwner;
-    pOwner->Push_DelayAction(fDelay, [pOwner, vTargetPos, fTargetAlpha, fDuration, isPin]()
+    CToolUI* pOwner = m_pOwner;
+    pOwner->Request_Add_Action(fDelay,
+        [pOwner, vTargetPos, fTargetAlpha, fDuration, isPin] (Engine::IUIActionForMe*, Engine::IUIActionForTarget*)
         {
             pOwner->Start_Lerp_Movement(vTargetPos, fTargetAlpha, fDuration, isPin);
         });
@@ -76,16 +79,10 @@ void CUIAction_Tool::Start_Return_Lerp_Movement(const _float fDelay)
     if (nullptr == m_pOwner)
         return;
 
-    if (0.f >= fDelay)
-    {
-        m_pOwner->Start_Return_Lerp_Movement();
-        return;
-    }
-
-    auto* pOwner = m_pOwner;
-    pOwner->Push_DelayAction(fDelay, [pOwner]()
+    CToolUI* pOwner = m_pOwner;
+    pOwner->Request_Add_Action(fDelay,
+        [pOwner](Engine::IUIActionForMe*, Engine::IUIActionForTarget*)
         {
-            pOwner->Start_Return_Lerp_Movement();
         });
 }
 
@@ -94,14 +91,9 @@ void CUIAction_Tool::Start_Fade(const _float fStartAlpha, const _float fTargetAl
     if (nullptr == m_pOwner)
         return;
 
-    if (0.f >= fDelay)
-    {
-        m_pOwner->Start_Fade(fStartAlpha, fTargetAlpha, fDuration);
-        return;
-    }
-
-    auto* pOwner = m_pOwner;
-    pOwner->Push_DelayAction(fDelay, [pOwner, fStartAlpha, fTargetAlpha, fDuration]()
+    CToolUI* pOwner = m_pOwner;
+    pOwner->Request_Add_Action(fDelay,
+        [pOwner, fStartAlpha, fTargetAlpha, fDuration] (Engine::IUIActionForMe*, Engine::IUIActionForTarget*)
         {
             pOwner->Start_Fade(fStartAlpha, fTargetAlpha, fDuration);
         });

@@ -114,22 +114,6 @@ void CUIAction_Registry::Initialize_CommonTargetAction()
 				};
 		});
 
-	Register_Factory((DTO::EUIAction::TRIGGER_ALL_LAYER),
-		[](const json& params) -> ActionFunc
-		{
-			const uint32_t iLevelIndex = params.value("iLevelIndex", 0u);
-			const _string strLayerTag = params.value("strLayerTag", "");
-			DTO::EUIAction eAction = params.value("eAction", DTO::EUIAction::END);
-			const json jTargetActionParam = params.value("jTargetActionParam", json::object());
-			return [iLevelIndex,strLayerTag, eAction, jTargetActionParam](IUIActionForMe*, IUIActionForTarget* target)
-				{
-					if (nullptr == target)
-						return;
-
-					target->Trigger_All_Layer(iLevelIndex,strLayerTag, eAction, jTargetActionParam);
-				};
-		});
-
 	Register_Factory((DTO::EUIAction::TRIGGER_TARGET_UI),
 		[](const json& params) -> ActionFunc
 		{

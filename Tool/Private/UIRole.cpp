@@ -43,11 +43,11 @@ void CUIAction_Player::Start_Lerp_Movement(MOVE_DESC* pDesc)
 
 	m_isPlaying_Lerp_Movement = TRUE;
 
-	m_vLerpMovement_StartPos	= pDesc->vStartPos;
-	m_vLerpMovement_TargetPos	= pDesc->vTargetPos;
+	m_vLerpMovement_StartPos = pDesc->vStartPos;
+	m_vLerpMovement_TargetPos = pDesc->vTargetPos;
 	m_fLerpMovement_TargetAlpha = pDesc->fAlpha;
-	m_fLerpMovement_Duration	= pDesc->fDuration;
-	m_fLerpMovement_TimeAcc		= 0.f;
+	m_fLerpMovement_Duration = pDesc->fDuration;
+	m_fLerpMovement_TimeAcc = 0.f;
 }
 
 void CUIAction_Player::Lerp_Movement(const _float fTimeDelta)
@@ -65,9 +65,9 @@ void CUIAction_Player::Lerp_Movement(const _float fTimeDelta)
 	m_fLerpMovement_TimeAcc += fTimeDelta;
 
 	_float t = m_fLerpMovement_TimeAcc / m_fLerpMovement_Duration;
-	if (t >= 1.f) 
+	if (t >= 1.f)
 		t = 1.f;
-	else if (t <= 0.f) 
+	else if (t <= 0.f)
 		t = 0.f;
 
 	_float s = t;

@@ -49,7 +49,6 @@
 // UI
 //=================
 #include "Canvas.h"
-#include "UILayer.h"
 #include "GenericUI.h"
 //=================
 // Resource
@@ -271,8 +270,6 @@ HRESULT CLoader::Loading_For_Logo()
 
 		// For. Prototype_UI_Canvas
 		ADD_PROTOTYPE(ELevelType::STATIC, L"Prototype_UI_Canvas", CCanvas::Create(m_pDevice, m_pDeviceContext));
-		// For. Prototype_UI_UILayer
-		ADD_PROTOTYPE(ELevelType::STATIC, L"Prototype_UI_UILayer", CUILayer::Create(m_pDevice, m_pDeviceContext));
 		// For. Prototype_UI_GenericUI
 		ADD_PROTOTYPE(ELevelType::STATIC, L"Prototype_UI_GenericUI", CGenericUI::Create(m_pDevice, m_pDeviceContext));
 	}

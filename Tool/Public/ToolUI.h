@@ -1,6 +1,5 @@
 #pragma once
 #include "UIObject.h"
-#include "UIData_Repository.h"
 #include "UIAction_Registry.h"
 
 NS_BEGIN(Engine)
@@ -10,6 +9,10 @@ NS_END
 NS_BEGIN(Tool)
 class CToolCanvas;
 class CToolLayer;
+class CToolUI;
+
+class CUIAction_Scheduler;
+class CUIAction_Player;
 class CToolUI final : public CUIObject
 {
 	using Super = CUIObject;
@@ -55,19 +58,18 @@ public:
 	virtual HRESULT Render() override;
 	_bool Calc_HitEvent();
 
-
 public:
 	HRESULT Bind_Action(const DTO::TUI_EventBindData& data);
 	HRESULT Bind_Action(DTO::EUIEvent eEvent, DTO::EUIAction eAction, const json& params);
 	HRESULT Remove_Action(DTO::EUIEvent EventType, DTO::EUIAction ActType);
-	IUIActionForMe* Get_ActionForMe() const { return m_pActionForMe; }
 	HRESULT Excute_Action(DTO::EUIEvent EventType);
 	HRESULT Excute_Specific_Action(DTO::EUIEvent EventType, DTO::EUIAction eAction);
 	HRESULT ReBind_Action();
 
-	void Delay_Queue(const _float fTimeDelta);
-	void Push_DelayAction(const _float fDelay, std::function<void()>&& Func);
-
+	IUIActionForMe* Get_ActionForMe() const { return m_pActionForMe; }
+	IUIActionForTarget* Get_ActionForTarget() const { return m_pActionForTarget; }
+	void Request_Add_Action(const _float fDelay, Engine::CUIAction_Registry::ActionFunc Func);
+	
 private:
 	HRESULT Ready_Components(TOOLUI_DESC* pDesc);
 	HRESULT Bind_ShaderResources();
@@ -106,40 +108,22 @@ public:
 	vector<DTO::TUI_EventBindData>* Safe_Access_EventData(DTO::EUIEvent EventType);
 	array< vector<DTO::TUI_EventBindData>, ENUM_TO_UINT(DTO::EUIEvent::END)>* Safe_Access_AllEventData();
 
+	void  Set_MoveOffset(const Vec3& offset) { m_vMoveOffset = offset; }
 #pragma endregion
 
 	/* Action */
 public:
 	void Set_TextureIndex(uint32_t index) { m_iTextureIndex = index; }
 	void Start_Lerp_Movement(const Vec3& vTargetPos, const _float fTargetAlpha, const _float& fDuration, _bool isPin);
-	void Start_Return_Lerp_Movement();
-	void Lerp_Movement(const _float fTimeDelta);
-	void Return_Lerp_Movement(const _float fTimeDelta);
-
 	void Set_isDisable(_bool isDisable);/* 아직 바인드 안함 */
 
 	void Start_Fade(const _float fStartAlpha, const _float fTargetAlpha, const _float fDuration);
 	void Fade(const _float fTimeDelta);
 
-	/* Action Variable */
 private:
 	uint32_t m_iTextureIndex = {};
 
-	/*Start_Lerp_Movement*/
-	_bool m_isPlaying_Lerp_Movement = { false };
-	Vec3 m_vLerpMovement_StartPos = {};
-	Vec3 m_vLerpMovement_TargetPos = {};
-	_float m_fLerpMovement_TargetAlpha = {};
-	_float m_fLerpMovement_Duration = {};
-	_float m_fLerpMovement_TimeAcc = {};
-	_bool m_isLerpMovement_Pin = {};
-	_bool m_isMoved = {false};
 	Vec3 m_vMoveOffset = {};
-	/*Start_Lerp_Movement*/
-
-	/* Start_Return_Lerp_Movement */
-	_bool m_isPlaying_Return_Lerp_Movement = { false };
-	/* Start_Return_Lerp_Movement */
 
 	/* Set_isDisable */
 	_bool m_isDisable = { false };
@@ -187,7 +171,9 @@ private:
 	array< vector<Engine::CUIAction_Registry::ActionFunc> , ENUM_TO_UINT(DTO::EUIEvent::END)> m_vecBindingActions;
 	array< vector<DTO::TUI_EventBindData>, ENUM_TO_UINT(DTO::EUIEvent::END)> m_vecBindingActionData;
 
-	vector<SCHEDULE_DESC> m_vecActionQueue;
+	CUIAction_Scheduler* m_pScheduler = { nullptr };
+	CUIAction_Player* m_pActionPlayer = { nullptr };
+
 
 public:
 	static CToolUI* Create(EToolObjectType eType, ID3D11Device* pDevice, ID3D11DeviceContext* pDeviceContext);

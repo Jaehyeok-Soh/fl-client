@@ -9,7 +9,6 @@
 #include "Shader.h"
 #include "VIBuffer_Rect_Tex.h"
 
-#include "UILayer.h"
 #include "GenericUI.h"
 
 #include "GameInstance.h"
@@ -53,38 +52,32 @@ HRESULT CCanvas::Awake(const _uint iCurrentLevelID)
 
 void CCanvas::Transmit_for_UI()
 {
-	for (auto* pLayer : m_vecUILayers)
+	for (auto* pUI : m_vecUI)
 	{
-		if (!pLayer->IsVisible())
-			continue;
-
-		for (auto* pUI : *pLayer->Get_UIVector())
+		if (nullptr != pUI)
 		{
-			if (nullptr != pUI)
+			switch (pUI->Get_RectTransformType())
 			{
-				switch (pUI->Get_RectTransformType())
-				{
-				case Client::ERectTransform::LT:	pUI->Set_RectPos(Get_LT());
-					break;
-				case Client::ERectTransform::CT:	pUI->Set_RectPos(Get_CT());
-					break;
-				case Client::ERectTransform::RT:	pUI->Set_RectPos(Get_RT());
-					break;
-				case Client::ERectTransform::LC:	pUI->Set_RectPos(Get_LC());
-					break;
-				case Client::ERectTransform::C:		pUI->Set_RectPos(Get_C());
-					break;
-				case Client::ERectTransform::RC:	pUI->Set_RectPos(Get_RC());
-					break;
-				case Client::ERectTransform::LB:	pUI->Set_RectPos(Get_LB());
-					break;
-				case Client::ERectTransform::CB:	pUI->Set_RectPos(Get_CB());
-					break;
-				case Client::ERectTransform::RB:	pUI->Set_RectPos(Get_RB());
-					break;
-				default:
-					break;
-				}
+			case Client::ERectTransform::LT:	pUI->Set_RectPos(Get_LT());
+				break;
+			case Client::ERectTransform::CT:	pUI->Set_RectPos(Get_CT());
+				break;
+			case Client::ERectTransform::RT:	pUI->Set_RectPos(Get_RT());
+				break;
+			case Client::ERectTransform::LC:	pUI->Set_RectPos(Get_LC());
+				break;
+			case Client::ERectTransform::C:		pUI->Set_RectPos(Get_C());
+				break;
+			case Client::ERectTransform::RC:	pUI->Set_RectPos(Get_RC());
+				break;
+			case Client::ERectTransform::LB:	pUI->Set_RectPos(Get_LB());
+				break;
+			case Client::ERectTransform::CB:	pUI->Set_RectPos(Get_CB());
+				break;
+			case Client::ERectTransform::RB:	pUI->Set_RectPos(Get_RB());
+				break;
+			default:
+				break;
 			}
 		}
 	}
@@ -261,24 +254,16 @@ CGenericUI* CCanvas::Calc_TopUI()
 {
 	CGenericUI* pTopUI = { nullptr };
 
-	for (CUILayer* pLayer : m_vecUILayers)
+	for (CGenericUI* pUI : m_vecUI)
 	{
-		if (!pLayer->IsVisible())
-			continue;
-
-		auto* vecUI = pLayer->Get_UIVector();
-		for (CGenericUI* pUI : *vecUI)
+		if (pUI->Calc_HitEvent())
 		{
-			/* UI안에 마우스가 있으면 TRUE */
-			if (pUI->Calc_HitEvent())
+			if (nullptr == pTopUI)
+				pTopUI = pUI;
+			else
 			{
-				if (nullptr == pTopUI)
+				if (pTopUI->Get_PosZ() < pUI->Get_PosZ())
 					pTopUI = pUI;
-				else
-				{
-					if (pTopUI->Get_PosZ() < pUI->Get_PosZ())
-						pTopUI = pUI;
-				}
 			}
 		}
 	}

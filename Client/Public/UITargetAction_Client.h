@@ -17,7 +17,6 @@ private:
 public:
 	
 	void Trigger_All_Canvas(uint32_t iLevelIndex, const _string& strCanvasTag, DTO::EUIAction eAction, const json& jTargetActionParam) override;
-	void Trigger_All_Layer(uint32_t iLevelIndex, const _string& strLayerTag, DTO::EUIAction eAction, const json& jTargetActionParam) override;
 	void Trigger_TargetUI(uint32_t iLevelIndex, const _string& strUITag, DTO::EUIAction eAction, const json& jTargetActionParam) override;
 
 private:

@@ -145,6 +145,7 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClInclude Include="..\Public\UIAction_Player.h" />
     <ClInclude Include="..\Public\AnimObj.h">
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">false</ExcludedFromBuild>
     </ClInclude>
@@ -153,6 +154,7 @@
     <ClInclude Include="..\Public\Builder_UI.h" />
     <ClInclude Include="..\Public\CameraMan_Free.h" />
     <ClInclude Include="..\Public\CEffectObject.h" />
+    <ClInclude Include="..\Public\UIAction_Scheduler.h" />
     <ClInclude Include="..\Public\UIAction_Tool.h" />
     <ClInclude Include="..\Public\UIComponent_Inspector.h" />
     <ClInclude Include="..\Public\DebugLine.h" />
@@ -170,7 +172,6 @@
     <ClInclude Include="..\Public\Panel_Model.h">
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</ExcludedFromBuild>
     </ClInclude>
-    <ClInclude Include="..\Public\ToolLayer.h" />
     <ClInclude Include="..\Public\Tool_ContainerObject.h" />
     <ClInclude Include="..\Public\Tool_PartObject.h" />
     <ClInclude Include="..\Public\GodInput.h" />
@@ -221,8 +222,8 @@
     <ClInclude Include="..\Public\Tool_Structs.h" />
     <ClInclude Include="..\Public\UEMapdataLoader.h" />
     <ClInclude Include="..\Public\UEMapdataParser.h" />
-    <ClInclude Include="..\Public\UIData_Repository.h" />
     <ClInclude Include="..\Public\UITargetAction_Tool.h" />
+    <ClInclude Include="..\Public\UIValue_Binder.h" />
     <ClInclude Include="..\Public\UI_Hierachy.h" />
     <ClInclude Include="..\Public\UI_Inspector.h" />
     <ClInclude Include="..\Public\UI_Maker.h" />
@@ -233,6 +234,7 @@
     <ClInclude Include="Tool.h" />
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="..\Private\UIAction_Player.cpp" />
     <ClCompile Include="..\Private\AnimObj.cpp">
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">false</ExcludedFromBuild>
     </ClCompile>
@@ -241,6 +243,7 @@
     <ClCompile Include="..\Private\Builder_UI.cpp" />
     <ClCompile Include="..\Private\CameraMan_Free.cpp" />
     <ClCompile Include="..\Private\CEffectObject.cpp" />
+    <ClCompile Include="..\Private\UIAction_Scheduler.cpp" />
     <ClCompile Include="..\Private\UIAction_Tool.cpp" />
     <ClCompile Include="..\Private\UIComponent_Inspector.cpp" />
     <ClCompile Include="..\Private\DebugLine.cpp" />
@@ -259,7 +262,6 @@
     <ClCompile Include="..\Private\Panel_Model.cpp">
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</ExcludedFromBuild>
     </ClCompile>
-    <ClCompile Include="..\Private\ToolLayer.cpp" />
     <ClCompile Include="..\Private\Tool_ContainerObject.cpp" />
     <ClCompile Include="..\Private\Tool_PartObject.cpp" />
     <ClCompile Include="..\Private\GodInput.cpp" />
@@ -344,8 +346,8 @@
     <ClCompile Include="..\Private\ToolUI.cpp" />
     <ClCompile Include="..\Private\Tool_Defines.cpp" />
     <ClCompile Include="..\Private\Tool_Structs.cpp" />
-    <ClCompile Include="..\Private\UIData_Repository.cpp" />
     <ClCompile Include="..\Private\UITargetAction_Tool.cpp" />
+    <ClCompile Include="..\Private\UIValue_Binder.cpp" />
     <ClCompile Include="..\Private\UI_Hierachy.cpp" />
     <ClCompile Include="..\Private\UI_Inspector.cpp" />
     <ClCompile Include="..\Private\UI_Maker.cpp" />

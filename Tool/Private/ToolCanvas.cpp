@@ -1,7 +1,6 @@
 #include "pch.h"
 #include "ToolCanvas.h"
 #include "ImGui_UIManager.h"
-#include "ToolLayer.h"
 #include "ToolUI.h"
 #include "Engine_Utils.h"
 /* Components */
@@ -38,7 +37,6 @@ HRESULT CToolCanvas::Initialize(void* pArg)
 {
 	m_pUIManager = { nullptr };
 	m_tCanvasData = {};
-	m_vecToolLayers.clear();
 	m_pCaptureUI = {nullptr};
 	m_pHoveringUI = { nullptr };
 	m_ArrReleasedUI = {nullptr};
@@ -289,31 +287,36 @@ CToolUI* CToolCanvas::Calc_TopUI()
 {
 	CToolUI* pTopUI = { nullptr };
 
-	for (CToolLayer* pLayer : m_vecToolLayers)
+	for (CToolUI* pUI : m_vecToolUI)
 	{
-		if (!pLayer->Get_isVisible())
-			continue;
-
-		auto* vecUI = pLayer->Safe_Access_UIObject_Vector_Ptr();
-		if (nullptr == vecUI)
-			continue;
-
-		for (CToolUI* pUI : *vecUI)
+		if (pUI->Calc_HitEvent())
 		{
-			/* UI안에 마우스가 있으면 TRUE */
-			if (pUI->Calc_HitEvent())
+			if (nullptr == pTopUI)
+				pTopUI = pUI;
+			else
 			{
-				if (nullptr == pTopUI)
+				if (pTopUI->Get_PosZ() < pUI->Get_PosZ())
 					pTopUI = pUI;
-				else
-				{
-					if (pTopUI->Get_PosZ() < pUI->Get_PosZ())
-						pTopUI = pUI;
-				}
 			}
 		}
 	}
 	return pTopUI;
+}
+
+HRESULT CToolCanvas::Safe_Add_UI(CToolUI* pUI)
+{
+	if (nullptr == pUI)
+		return E_FAIL;
+	m_vecToolUI.push_back(pUI);
+	return S_OK;
+}
+
+vector<CToolUI*>* CToolCanvas::Safe_Access_UI_Vector()
+{
+	if (m_vecToolUI.empty())
+		return nullptr;
+
+	return &m_vecToolUI;
 }
 
 void CToolCanvas::Sync_Data()
@@ -330,46 +333,6 @@ void CToolCanvas::Sync_Data()
 	m_tCanvasData.iEditorSizeY = g_iWinSizeY;
 }
 
-HRESULT CToolCanvas::Safe_Add_Layer(CToolLayer* pLayer)
-{
-	if (nullptr == pLayer)
-		return E_FAIL;
-
-	m_vecToolLayers.push_back(pLayer);
-	return S_OK;
-}
-
-vector<CToolLayer*>* CToolCanvas::Safe_Access_LayerObject_Vector_Ptr()
-{
-	if (m_vecToolLayers.empty())
-		return nullptr;
-	return &m_vecToolLayers;
-}
-
-CToolLayer* CToolCanvas::Safe_Access_LayerObject_Ptr(int32_t index)
-{
-	if (m_vecToolLayers.empty())
-		return nullptr;
-
-	int32_t NumLayer = static_cast<int32_t>(m_vecToolLayers.size());
-	if (index >= NumLayer || index < 0)
-		return nullptr;
-
-	return m_vecToolLayers[index];
-}
-
-CToolLayer* CToolCanvas::Safe_Access_CurLayerObject_Ptr()
-{
-	if (m_vecToolLayers.empty())
-		return nullptr;
-
-	int32_t NumLayer = static_cast<int32_t>(m_vecToolLayers.size());
-	if (m_pUIManager->Get_CurCanvasIndex() >= NumLayer || m_pUIManager->Get_CurCanvasIndex() < 0)
-		return nullptr;
-
-	return m_vecToolLayers[m_pUIManager->Get_CurCanvasIndex()];
-}
-
 _bool CToolCanvas::Export_Data(DTO::ECategory eCategory, CDataDocumentBase* pDocument)
 {
 	ELevelType eLevelType = ELevelType::UI;
@@ -383,46 +346,29 @@ _bool CToolCanvas::Export_Data(DTO::ECategory eCategory, CDataDocumentBase* pDoc
 	if (FAILED(pDoc->Try_Add(m_tCanvasData)))
 		return FALSE;
 
-	/* Canvas에 저장된 Layer 저장 */
-	if (m_vecToolLayers.empty())
+	if (m_vecToolUI.empty())
 		return FALSE;
 
-	for (auto* pLayer : m_vecToolLayers)
+	for (auto* pUI : m_vecToolUI)
 	{
-		if (FAILED(pDoc->Try_Add(pLayer->Get_Data())))
+		if (FAILED(pDoc->Try_Add(pUI->Get_Data())))
 			return FALSE;
 
-
-		/* Layer에 저장된 UI 저장 */
-		auto* pUIVec = pLayer->Safe_Access_UIObject_Vector_Ptr();
-		if (nullptr == pUIVec)
-			continue;
-		for (auto* pUI : *pUIVec)
+		auto* pAllEvent = pUI->Safe_Access_AllEventData();
+		if (nullptr != pAllEvent)
 		{
-			if (FAILED(pDoc->Try_Add(pUI->Get_Data())))
-				return FALSE;
-
-			auto* pAllEvent = pUI->Safe_Access_AllEventData();
-			if (nullptr != pAllEvent)
+			for (size_t e = 0; e < pAllEvent->size(); ++e)
 			{
-				for (size_t e = 0; e < pAllEvent->size(); ++e)
+				for (auto& bind : (*pAllEvent)[e])
 				{
-					for (auto& bind : (*pAllEvent)[e])
-					{
-						if (FAILED(pDoc->Try_Add(bind)))
-							return FALSE;
-					}
+					if (FAILED(pDoc->Try_Add(bind)))
+						return FALSE;
 				}
 			}
 		}
 	}
 
 	return TRUE;
-}
-
-void CToolCanvas::Clear()
-{
-	m_vecToolLayers.clear();
 }
 
 CToolCanvas* CToolCanvas::Create(EToolObjectType eType, ID3D11Device* pDevice, ID3D11DeviceContext* pDeviceContext)
@@ -453,7 +399,6 @@ void CToolCanvas::Free()
 	Safe_Delete(m_pBatch);
 	Safe_Delete(m_pEffect);
 	Safe_Release(m_pInputLayout);
-	Clear();
 	Super::Free();
 }
 

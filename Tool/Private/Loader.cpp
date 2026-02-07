@@ -25,7 +25,6 @@
 // UI
 //=================
 #include "ToolCanvas.h"
-#include "ToolLayer.h"
 #include "ToolUI.h"
 
 //=================
@@ -284,11 +283,6 @@ HRESULT CLoader::Loading_For_UI()
 	// For. Prototype_UI_Canvas
 	{
 		if (FAILED(m_pGameInstance->Add_Prototype(ENUM_TO_UINT(ELevelType::UI), g_wszPrototypeTagCanvas, CToolCanvas::Create(EToolObjectType::UI, m_pDevice, m_pDeviceContext))))
-			return E_FAIL;
-	}
-	// For. Prototype_UI_Layer
-	{
-		if (FAILED(m_pGameInstance->Add_Prototype(ENUM_TO_UINT(ELevelType::UI), g_wszPrototypeTagLayer, CToolLayer::Create(EToolObjectType::UI, m_pDevice, m_pDeviceContext))))
 			return E_FAIL;
 	}
 	// For. Prototype_UI_UI

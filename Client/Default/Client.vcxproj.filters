@@ -169,12 +169,6 @@
     <Filter Include="03. GameObject\UIObjects\01.Canvas">
       <UniqueIdentifier>{bef61798-c2ef-48e4-8db0-faf0d1677c2d}</UniqueIdentifier>
     </Filter>
-    <Filter Include="03. GameObject\UIObjects\02.Layer">
-      <UniqueIdentifier>{54739f16-d1ed-490f-b95b-8ee9350dd97f}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="03. GameObject\UIObjects\03.UI">
-      <UniqueIdentifier>{6d2a781d-ab40-4385-b96c-b3366f4eaba6}</UniqueIdentifier>
-    </Filter>
     <Filter Include="06. FSM\Player\Attack">
       <UniqueIdentifier>{7ebbc28f-6b61-485b-b6e8-1bfe363c2de3}</UniqueIdentifier>
     </Filter>
@@ -231,6 +225,9 @@
     </Filter>
     <Filter Include="04. Shaders\ComputeShader_Labs">
       <UniqueIdentifier>{8c14e548-7930-4ec0-b748-e471998a55b9}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="03. GameObject\UIObjects\02.UI">
+      <UniqueIdentifier>{6d2a781d-ab40-4385-b96c-b3366f4eaba6}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
@@ -379,10 +376,7 @@
       <Filter>07. System\01. Builder\UI</Filter>
     </ClInclude>
     <ClInclude Include="..\Public\GenericUI.h">
-      <Filter>03. GameObject\UIObjects\03.UI</Filter>
-    </ClInclude>
-    <ClInclude Include="..\Public\UILayer.h">
-      <Filter>03. GameObject\UIObjects\02.Layer</Filter>
+      <Filter>03. GameObject\UIObjects\02.UI</Filter>
     </ClInclude>
     <ClInclude Include="..\Public\Canvas.h">
       <Filter>03. GameObject\UIObjects\01.Canvas</Filter>
@@ -462,12 +456,7 @@
     <ClInclude Include="..\Public\UITargetAction_Client.h">
       <Filter>03. GameObject\UIObjects\04.Action</Filter>
     </ClInclude>
-    <ClInclude Include="..\Public\State_ComboBase.h">
-      <Filter>06. FSM\Player\Attack\Combo</Filter>
-    </ClInclude>
-    <ClInclude Include="..\Public\State_MoonCombo.h">
-      <Filter>06. FSM\Player\Attack\Combo\Moon</Filter>
-    </ClInclude>
+    <ClInclude Include="..\Public\State_DashFront.h" />
   </ItemGroup>
   <ItemGroup>
     <Image Include="Client.ico">
@@ -613,10 +602,7 @@
       <Filter>07. System\01. Builder\UI</Filter>
     </ClCompile>
     <ClCompile Include="..\Private\GenericUI.cpp">
-      <Filter>03. GameObject\UIObjects\03.UI</Filter>
-    </ClCompile>
-    <ClCompile Include="..\Private\UILayer.cpp">
-      <Filter>03. GameObject\UIObjects\02.Layer</Filter>
+      <Filter>03. GameObject\UIObjects\02.UI</Filter>
     </ClCompile>
     <ClCompile Include="..\Private\Canvas.cpp">
       <Filter>03. GameObject\UIObjects\01.Canvas</Filter>
@@ -690,6 +676,7 @@
     <ClCompile Include="..\Private\UITargetAction_Client.cpp">
       <Filter>03. GameObject\UIObjects\04.Action</Filter>
     </ClCompile>
+    <ClCompile Include="..\Private\State_DashFront.cpp" />
   </ItemGroup>
   <ItemGroup>
     <FxCompile Include="..\..\Shaders\Shader_VtxAnimMesh.hlsl">

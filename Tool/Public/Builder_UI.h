@@ -8,7 +8,6 @@ NS_END
 
 NS_BEGIN(Tool)
 class CToolCanvas;
-class CToolLayer;
 class CToolUI;
 
 class CBuilder_UI final : public CBuilderBase
@@ -23,13 +22,11 @@ public:
 	virtual HRESULT Build(const CDataDocumentBase& document) override;
 private:
 	HRESULT Create_CanvasDTO(const DTO::TUI_CanvasData& data);
-	HRESULT Create_LayerDTO(const DTO::TUI_LayerData& data);
 	HRESULT Create_GenericUIDTO(const DTO::TUI_GenericUIData& data);
 	HRESULT Create_EventBindDataDTO(const DTO::TUI_EventBindData& data);
 
 private:
 	map<_string, CToolCanvas* > m_pCanvasCache;
-	map<_string, CToolLayer* > m_pLayerCache;
 	map<_string, CToolUI* > m_pUICache;
 
 public:

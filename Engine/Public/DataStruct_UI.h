@@ -7,9 +7,9 @@ NS_BEGIN(DTO)
 enum class EUIType : _uint
 {
 	CANVAS,
-	LAYER,
 	GENERICUI,
 	EVENT,
+	VALUE,
 	END
 };
 inline constexpr _uint g_UITypeCount{ ENUM_TO_UINT(EUIType::END) };
@@ -17,7 +17,6 @@ inline constexpr _uint g_UITypeCount{ ENUM_TO_UINT(EUIType::END) };
 NLOHMANN_JSON_SERIALIZE_ENUM(EUIType,
 	{
 		{EUIType::CANVAS, "CANVAS"},
-		{EUIType::LAYER, "LAYER"},
 		{EUIType::GENERICUI, "GENERICUI"},
 		{EUIType::EVENT, "EVENT"}
 	}
@@ -137,9 +136,6 @@ enum class EUIAction
 	/* (iLevelIndex / uint), (strCanvasTag / string) , (eAction / DTO::EUIAction), (jTargetActionParam / json::object() ), (float / fDelay) */
 	TRIGGER_ALL_CANVAS,
 
-	/* (iLevelIndex / uint), (strLayerTag / string) , (eAction / DTO::EUIAction), (jTargetActionParam / json::object() ), (float / fDelay) */
-	TRIGGER_ALL_LAYER,
-	
 	/* (iLevelIndex / uint), (strUITag / string) , (eAction / DTO::EUIAction), (jTargetActionParam / json::object() ), (float / fDelay) */
 	TRIGGER_TARGET_UI,
 
@@ -158,7 +154,6 @@ NLOHMANN_JSON_SERIALIZE_ENUM(EUIAction,
 		{EUIAction::SET_TEXTURE_INDEX, "SET_TEXTURE_INDEX"},
 		{EUIAction::START_LERP_MOVEMENT, "START_LERP_MOVEMENT"},
 		{EUIAction::TRIGGER_ALL_CANVAS, "TRIGGER_ALL_CANVAS"},
-		{EUIAction::TRIGGER_ALL_LAYER, "TRIGGER_ALL_LAYER" },
 		{EUIAction::TRIGGER_TARGET_UI, "TRIGGER_TARGET_UI" },
 		{EUIAction::START_RETURN_LERP_MOVEMENT, "START_RETURN_LERP_MOVEMENT" },
 		{EUIAction::START_FADE, "START_FADE" },
@@ -171,7 +166,6 @@ inline EUIAction StringToUIActiontype(const _string& str)
 	else if (str == "SET_TEXTURE_INDEX")return EUIAction::SET_TEXTURE_INDEX;
 	else if (str == "START_LERP_MOVEMENT")return EUIAction::START_LERP_MOVEMENT;
 	else if (str == "TRIGGER_ALL_CANVAS")return EUIAction::TRIGGER_ALL_CANVAS;
-	else if (str == "TRIGGER_ALL_LAYER")return EUIAction::TRIGGER_ALL_LAYER;
 	else if (str == "TRIGGER_TARGET_UI")return EUIAction::TRIGGER_TARGET_UI;
 	else if (str == "START_RETURN_LERP_MOVEMENT")return EUIAction::START_RETURN_LERP_MOVEMENT;
 	else if (str == "START_FADE")return EUIAction::START_FADE;
@@ -186,7 +180,6 @@ inline _string UIActionTypeToString(EUIAction eType)
 	case EUIAction::SET_TEXTURE_INDEX: return "SET_TEXTURE_INDEX";
 	case EUIAction::START_LERP_MOVEMENT: return "START_LERP_MOVEMENT";
 	case EUIAction::TRIGGER_ALL_CANVAS: return "TRIGGER_ALL_CANVAS";
-	case EUIAction::TRIGGER_ALL_LAYER: return "TRIGGER_ALL_LAYER";
 	case EUIAction::TRIGGER_TARGET_UI: return "TRIGGER_TARGET_UI";
 	case EUIAction::START_RETURN_LERP_MOVEMENT: return "START_RETURN_LERP_MOVEMENT";
 	case EUIAction::START_FADE: return "START_FADE";
@@ -212,9 +205,9 @@ struct TUI_GenericUIData
 	static constexpr EUIType eType = EUIType::GENERICUI;
 	std::string strTag;
 	std::string strCanvasName;
-	std::string strLayerName;
 
 	uint32_t iRectTransformType;
+
 
 	_float fWidth;
 	_float fHeight;
@@ -223,13 +216,6 @@ struct TUI_GenericUIData
 	_float fPosZ;
 	_string strTextureTag;
 	uint32_t iTextureIndex;
-};
-
-struct TUI_LayerData
-{
-	static constexpr EUIType eType = EUIType::LAYER;
-	std::string strTag;
-	std::string strCanvasName;
 };
 
 struct TUI_CanvasData
@@ -253,12 +239,9 @@ void to_json(json& j, const TUI_EventBindData& data);
 void from_json(const json& j, TUI_EventBindData& data);
 void to_json(json& j, const TUI_GenericUIData& data);
 void from_json(const json& j, TUI_GenericUIData& data);
-void to_json(json& j, const TUI_LayerData& data);
-void from_json(const json& j, TUI_LayerData& data);
 void to_json(json& j, const TUI_CanvasData& data);
 void from_json(const json& j, TUI_CanvasData& data);
 NS_END
-
 /////////////////-------------------  Wrapping Class  -------------------/////////////////
 
 NS_BEGIN(Engine)
@@ -304,28 +287,6 @@ private:
 	DTO::TUI_GenericUIData m_Data;
 public:
 	static CUI_GenericUI_DTO* Create() { return new CUI_GenericUI_DTO(); }
-	virtual void Free() override { Super::Free(); }
-};
-
-class ENGINE_DLL CUI_Layer_DTO final : public IObjectDataBase
-{
-	using Super = IObjectDataBase;
-private:
-	CUI_Layer_DTO() = default;
-	virtual ~CUI_Layer_DTO() = default;
-public:
-	_uint Get_Type() const override { return ENUM_TO_UINT(DTO::EUIType::LAYER); }
-	const std::string& Get_Tag() const override { return m_Data.strTag; }
-
-	json ToJson() const override;
-	HRESULT FromJson(const json& j) override;
-
-	const DTO::TUI_LayerData& Get_Data() const { return m_Data; }
-	DTO::TUI_LayerData& Get_Data() { return m_Data; }
-private:
-	DTO::TUI_LayerData m_Data;
-public:
-	static CUI_Layer_DTO* Create() { return new CUI_Layer_DTO(); }
 	virtual void Free() override { Super::Free(); }
 };
 

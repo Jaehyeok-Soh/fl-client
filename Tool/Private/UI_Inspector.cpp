@@ -2,10 +2,8 @@
 #include "UI_Inspector.h"
 #include "ImGui_ToolManager.h"
 #include "ImGui_UIManager.h"
-#include "UIData_Repository.h"
 #include "Engine_Utils.h"
 #include "ToolCanvas.h"
-#include "ToolLayer.h"
 #include "ToolUI.h"
 #include "Texture.h"
 #include "GameInstance.h"
@@ -237,13 +235,6 @@ void CUI_Inspector::Add_Action(DTO::EUIEvent EventType)
 
 			ImGui::CloseCurrentPopup();
 		}
-		if (ImGui::Selectable(DTO::UIActionTypeToString(DTO::EUIAction::TRIGGER_ALL_LAYER).c_str()))
-		{
-			m_pSelectedUI->Bind_Action(EventType, DTO::EUIAction::TRIGGER_ALL_LAYER, 
-				json{ {"iLevelIndex", 0u}, { "strLayerTag", "" }, {"eAction", DTO::EUIAction::END}, { "jTargetActionParam", json::object() } });
-
-			ImGui::CloseCurrentPopup();
-		}
 		if (ImGui::Selectable(DTO::UIActionTypeToString(DTO::EUIAction::TRIGGER_TARGET_UI).c_str()))
 		{
 			m_pSelectedUI->Bind_Action(EventType, DTO::EUIAction::TRIGGER_TARGET_UI, 
@@ -281,7 +272,6 @@ void CUI_Inspector::Edit_Action()
 	case DTO::EUIAction::SET_TEXTURE_INDEX:				Edit_Set_Texture_Index(*j);break;
 	case DTO::EUIAction::START_LERP_MOVEMENT:			Edit_Start_Lerp_Movement(*j);break;
 	case DTO::EUIAction::TRIGGER_ALL_CANVAS:			Trigger_All_Canvas(*j); break;
-	case DTO::EUIAction::TRIGGER_ALL_LAYER:				Trigger_All_Layer(*j); break;
 	case DTO::EUIAction::TRIGGER_TARGET_UI:				Trigger_Target_UI(*j); break;
 	case DTO::EUIAction::START_RETURN_LERP_MOVEMENT:	Edit_Start_Return_Lerp_Movement(*j); break;
 	case DTO::EUIAction::START_FADE:					Edit_Start_Fade(*j); break;
@@ -670,66 +660,6 @@ void CUI_Inspector::Trigger_All_Canvas(json& jParams)
 	ImGui::PopID();
 }
 
-void CUI_Inspector::Trigger_All_Layer(json& jParams)
-{
-	ImGui::PushID("TRIGGER_ALL_LAYER");
-
-	//{
-	//	int iLevel = static_cast<int>(jParams.value("iLevelIndex", 0u));
-	//	if (ImGui::InputInt("iLevelIndex", &iLevel))
-	//	{
-	//		if (iLevel < 0) iLevel = 0;
-	//		jParams["iLevelIndex"] = static_cast<uint32_t>(iLevel);
-	//	}
-	//}
-
-	// 1) Layer Tag
-	auto* pCanvasVec = m_pUIManager->Safe_Access_CanvasVector();
-	if (nullptr != pCanvasVec)
-	{
-		vector<_string> VecLayerTag;
-		for (auto* pCanvas : *pCanvasVec)
-		{
-			auto* pLayerVec = pCanvas->Safe_Access_LayerObject_Vector_Ptr();
-			if (nullptr == pLayerVec)
-				continue;
-
-			for (auto* pLayer : *pLayerVec)
-				VecLayerTag.push_back(pLayer->Get_Name());
-		}
-
-		if (!jParams.contains("strLayerTag") || !jParams["strLayerTag"].is_string())
-			jParams["strLayerTag"] = VecLayerTag.empty() ? "" : VecLayerTag[0];
-
-		_string curTag = jParams["strLayerTag"].get<_string>();
-
-		int curIndex = 0;
-		for (int i = 0; i < (int)VecLayerTag.size(); ++i)
-		{
-			if (VecLayerTag[i] == curTag) { curIndex = i; break; }
-		}
-
-		const char* preview = VecLayerTag.empty() ? "" : VecLayerTag[curIndex].c_str();
-		if (ImGui::BeginCombo("strLayerTag", preview))
-		{
-			for (int i = 0; i < (int)VecLayerTag.size(); ++i)
-			{
-				const bool isSelected = (i == curIndex);
-				if (ImGui::Selectable(VecLayerTag[i].c_str(), isSelected))
-				{
-					curIndex = i;
-					jParams["strLayerTag"] = VecLayerTag[i];
-				}
-				if (isSelected) ImGui::SetItemDefaultFocus();
-			}
-			ImGui::EndCombo();
-		}
-	}
-
-	Edit_TargetParams(jParams);
-	ImGui::PopID();
-}
-
 void CUI_Inspector::Trigger_Target_UI(json& jParams)
 {
 	ImGui::PushID("TRIGGER_TARGET_UI");
@@ -750,19 +680,12 @@ void CUI_Inspector::Trigger_Target_UI(json& jParams)
 		vector<_string> VecUITag;
 		for (auto* pCanvas : *pCanvasVec)
 		{
-			auto* pLayerVec = pCanvas->Safe_Access_LayerObject_Vector_Ptr();
-			if (nullptr == pLayerVec)
+			auto* pUIvec = pCanvas->Safe_Access_UI_Vector();
+			if (nullptr == pUIvec)
 				continue;
 
-			for (auto* pLayer : *pLayerVec)
-			{
-				auto* pUIvec = pLayer->Safe_Access_UIObject_Vector_Ptr();
-				if (nullptr == pUIvec)
-					continue;
-
-				for (auto* pUI : *pUIvec)
-					VecUITag.push_back(pUI->Get_Name());
-			}
+			for (auto* pUI : *pUIvec)
+				VecUITag.push_back(pUI->Get_Name());
 		}
 
 		if (!jParams.contains("strUITag") || !jParams["strUITag"].is_string())

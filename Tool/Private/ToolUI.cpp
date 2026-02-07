@@ -8,12 +8,14 @@
 #include "Texture.h"
 
 #include "ToolCanvas.h"
-#include "ToolLayer.h"
 #include "ImGui_UIManager.h"
 #include "ImGui_ToolManager.h"
 #include "UIAction_Tool.h"
 #include "UITargetAction_Tool.h"
 
+#include "UIAction_Scheduler.h"
+#include "UIAction_Player.h"
+#include "UIValue_Binder.h"
 #include "UIAction_Registry.h"
 #include "GameInstance.h"
 
@@ -58,6 +60,8 @@ HRESULT CToolUI::Initialize(void* pArg)
 	m_pCacheCanvas = pDesc->pCacheCanvas;
 	m_pCacheLayer = pDesc->pCacheLayer;
 
+
+
 	if (FAILED(Super::Initialize(pArg)))
 		return E_FAIL;
     if (FAILED(Ready_Components(pDesc)))
@@ -77,16 +81,7 @@ HRESULT CToolUI::Awake(const _uint iCurrentLevelID)
 
 	m_iInteractState = static_cast<uint32_t>(DTO::EUIEvent_Flag::NONE);
 
-	m_pActionForMe = CUIAction_Tool::Create(this);
-	if (nullptr == m_pActionForMe)
-		return E_FAIL;
 
-	m_pActionForTarget = CUITargetAction_Tool::Create(this);
-	if (nullptr == m_pActionForTarget)
-	{
-		Safe_Release(m_pActionForMe);
-		return E_FAIL;
-	}
 
     return S_OK;
 }
@@ -105,10 +100,6 @@ void CToolUI::Update(const _float fTimeDelta)
 	if (m_isDisable)
 		return;
 
-	Delay_Queue(fTimeDelta);
-	
-	Lerp_Movement(fTimeDelta);
-	Return_Lerp_Movement(fTimeDelta);
 	Fade(fTimeDelta);
 
 	Super::Update(fTimeDelta);
@@ -186,45 +177,10 @@ _bool CToolUI::Calc_HitEvent()
 	if (m_isDisable)
 		return FALSE;
 
-	if (m_vecActionQueue.size() > 0)
-		return FALSE;
-
 	if (::PtInRect(&m_tRenderRect, CImGui_ToolManager::GetInstance()->Get_CalculatedMousePos_Point()))
 		return TRUE;
 
 	return FALSE;
-}
-
-void CToolUI::Delay_Queue(const _float fTimeDelta)
-{
-	for (size_t i = 0; i < m_vecActionQueue.size(); )
-	{
-		m_vecActionQueue[i].fRemain -= fTimeDelta;
-		if (m_vecActionQueue[i].fRemain <= 0.f)
-		{
-			m_vecActionQueue[i].Func();
-			m_vecActionQueue[i] = std::move(m_vecActionQueue.back());
-			m_vecActionQueue.pop_back();
-
-			continue;
-		}
-		i++;
-	}
-}
-
-void CToolUI::Push_DelayAction(const _float fDelay, std::function<void()>&& Func)
-{
-	if (0.f >= fDelay)
-	{
-		Func();
-		return;
-	}
-	else
-	{
-		m_vecActionQueue.push_back(SCHEDULE_DESC{ fDelay, std::move(Func) });
-		return;
-	}
-
 }
 
 HRESULT CToolUI::Bind_Action(const DTO::TUI_EventBindData& data)
@@ -234,15 +190,17 @@ HRESULT CToolUI::Bind_Action(const DTO::TUI_EventBindData& data)
 		return E_FAIL;
 
 	DTO::TUI_EventBindData Desc = {};
-	Desc.strOwnerTag = m_strName;
-	Desc.eAction = data.eAction;
-	Desc.eEvent = data.eEvent;
-	Desc.Params = data.Params;
-	Desc.strTargetTag = data.strTargetTag;
+	Desc.strOwnerTag			= m_strName;
+	Desc.eAction				= data.eAction;
+	Desc.eEvent					= data.eEvent;
+	Desc.Params					= data.Params;
+	Desc.strTargetTag			= data.strTargetTag;
+
 	m_vecBindingActionData[index].push_back(Desc);
 	auto Func = m_pGameInstance->Get_UIAction_Registry()->Build_Action(data.eAction, data.Params);
-	if (!Func)
+	if (!Func) {
 		return E_FAIL;
+	}
 	m_vecBindingActions[index].push_back(std::move(Func));
 	return S_OK;
 }
@@ -283,6 +241,11 @@ HRESULT CToolUI::ReBind_Action()
 	return S_OK;
 }
 
+void CToolUI::Request_Add_Action(const _float fDelay, Engine::CUIAction_Registry::ActionFunc Func)
+{
+	m_pScheduler->Push_Action_Scheduler(fDelay, std::move(Func));
+}
+
 HRESULT CToolUI::Remove_Action(DTO::EUIEvent EventType, DTO::EUIAction ActType)
 {
 	const size_t EventIndex = ENUM_TO_SZET(EventType);
@@ -321,6 +284,44 @@ HRESULT CToolUI::Ready_Components(TOOLUI_DESC* pDesc)
     if (FAILED(Add_Component<CVIBuffer_Rect_Tex>(0, L"Prototype_Component_VIBuffer_Rect_Tex", pDesc)))
         return E_FAIL;
 
+	m_pActionForMe = CUIAction_Tool::Create(this);
+	if (nullptr == m_pActionForMe)
+		return E_FAIL;
+
+	m_pActionForTarget = CUITargetAction_Tool::Create(this);
+	if (nullptr == m_pActionForTarget)
+	{
+		Safe_Release(m_pActionForMe);
+		return E_FAIL;
+	}
+	/* 새로추가 */
+	/* For . Script_Component_UIAction_Scheduler */
+	{
+		CUIAction_Scheduler::ACTION_SCHEDULER_DESC Desc = {};
+		Desc.pActionAgent = m_pActionForMe;
+		Desc.pActionTarget = m_pActionForTarget;
+		m_pScheduler = CUIAction_Scheduler::Create(&Desc);
+		if (nullptr == m_pScheduler)
+			return E_FAIL;
+		if (FAILED(Add_Script_Component(L"Script_Component_UIAction_Scheduler", m_pScheduler)))
+			return E_FAIL;
+	}
+	/* For . Script_Component_UIAction_Player */
+	{
+		CUIAction_Player::ACTION_PLAYER_DESC Desc = {};
+		Desc.pOwner = this;
+		m_pActionPlayer = CUIAction_Player::Create(&Desc);
+		if (nullptr == m_pActionPlayer)
+			return E_FAIL;
+		if (FAILED(Add_Script_Component(L"Script_Component_UIAction_Player", m_pActionPlayer)))
+			return E_FAIL;
+	}
+
+	CUIValue_Binder::VALUE_BINDER_DESC Desc = {};
+
+
+	/* 새로추가 */
+
 	return S_OK;
 }
 
@@ -328,7 +329,6 @@ HRESULT CToolUI::Excute_Action(DTO::EUIEvent EventType)
 {
 	if (m_isAction)
 		return S_OK;
-
 	if (nullptr == m_pActionForMe)
 		return E_FAIL;
 	if (nullptr == m_pActionForTarget)
@@ -357,7 +357,6 @@ HRESULT CToolUI::Excute_Specific_Action(DTO::EUIEvent EventType, DTO::EUIAction 
 	}
 	return E_FAIL;
 }
-
 
 HRESULT CToolUI::Bind_ShaderResources()
 {
@@ -410,8 +409,6 @@ Vec2 CToolUI::Calc_RectTransformPosition()
 
 void CToolUI::SetUp_Visible()
 {
-	if(nullptr != m_pCacheLayer)
-		m_isVisible = m_pCacheLayer->Get_isVisible();
 }
 
 void CToolUI::Acting_About_State()
@@ -459,7 +456,6 @@ void CToolUI::Sync_Data()
 {
 	m_tUIData.strTag				= m_strName;
 	m_tUIData.strCanvasName			= m_strCanvasName;
-	m_tUIData.strLayerName			= m_strLayerName;
 	m_tUIData.iRectTransformType	= static_cast<uint32_t>( m_eRectTransformType);
 	m_tUIData.fWidth				= m_fWidth;
 	m_tUIData.fHeight				= m_fHeight;
@@ -487,102 +483,12 @@ array<vector<DTO::TUI_EventBindData>, ENUM_TO_UINT(DTO::EUIEvent::END)>* CToolUI
 
 void CToolUI::Start_Lerp_Movement(const Vec3& vTargetPos, const _float fTargetAlpha, const _float& fDuration, _bool isPin)
 {
-	m_vLerpMovement_StartPos = m_vRenderPos; /* vRenderPos -> Local */
-	m_vLerpMovement_TargetPos = vTargetPos; /* vTargetPos -> Local */
-
-	m_fLerpMovement_TargetAlpha = fTargetAlpha;
-	m_fLerpMovement_Duration = fDuration;
-	m_fLerpMovement_TimeAcc = 0.f;
-	m_isPlaying_Lerp_Movement = true;
-	m_isLerpMovement_Pin = isPin;
-}
-
-void CToolUI::Start_Return_Lerp_Movement()
-{
-	m_vLerpMovement_StartPos = m_vMoveOffset;
-	m_vLerpMovement_TargetPos = Vec3{ 0.f, 0.f, 0.f };
-
-	m_fLerpMovement_TimeAcc = 0.f;
-	m_isPlaying_Return_Lerp_Movement = true;
-}
-
-void CToolUI::Lerp_Movement(const _float fTimeDelta)
-{
-	if (!m_isPlaying_Lerp_Movement || m_isPlaying_Return_Lerp_Movement)
-		return;
-
-	m_isAction = true; /* 액션 중 */
-
-	if (m_fLerpMovement_Duration <= 0.f)
-	{
-		m_vMoveOffset =  m_vLerpMovement_TargetPos - m_vLerpMovement_StartPos;
-		m_isPlaying_Lerp_Movement = false;
-		m_isAction = false; /* 액션 끝 */
-		return;
-	}
-
-	m_fLerpMovement_TimeAcc += fTimeDelta;
-
-	_float t = m_fLerpMovement_TimeAcc / m_fLerpMovement_Duration;
-	if (t >= 1.f) t = 1.f;
-	else if (t <= 0.f) t = 0.f;
-
-	_float s = t;
-	if (m_fLerpMovement_TargetAlpha > 0.f)
-		s = 1.f - powf(1.f - t, m_fLerpMovement_TargetAlpha);
-
-	m_vMoveOffset = (m_vLerpMovement_TargetPos - m_vLerpMovement_StartPos) * s;
-
-	if (t >= 1.f)
-	{
-		if (m_isLerpMovement_Pin)
-		{
-			m_vMoveOffset = m_vLerpMovement_TargetPos - m_vLerpMovement_StartPos;
-			m_isMoved = TRUE;
-		}
-		else
-		{
-			Start_Return_Lerp_Movement();
-		}
-
-		m_isAction = false; /* 액션 끝 */
-		m_isPlaying_Lerp_Movement = false;
-	}
-}
-
-void CToolUI::Return_Lerp_Movement(const _float fTimeDelta)
-{
-	if (!m_isPlaying_Return_Lerp_Movement || m_isPlaying_Lerp_Movement)
-		return;
-
-	m_isAction = true; /* 액션 중 */
-
-	if (m_fLerpMovement_Duration <= 0.f)
-	{
-		m_vMoveOffset = Vec3{ 0.f, 0.f, 0.f };
-		m_isPlaying_Return_Lerp_Movement = false;
-		m_isAction = false; /* 액션 끝 */
-		return;
-	}
-
-	m_fLerpMovement_TimeAcc += fTimeDelta;
-
-	_float t = m_fLerpMovement_TimeAcc / m_fLerpMovement_Duration;
-	if (t >= 1.f) t = 1.f;
-	else if (t <= 0.f) t = 0.f;
-
-	_float s = t;
-	if (m_fLerpMovement_TargetAlpha > 0.f)
-		s = 1.f - powf(1.f - t, m_fLerpMovement_TargetAlpha);
-
-	m_vMoveOffset = m_vLerpMovement_StartPos + (m_vLerpMovement_TargetPos - m_vLerpMovement_StartPos) * s;
-
-	if (t >= 1.f)
-	{
-		m_vMoveOffset = Vec3{ 0.f, 0.f, 0.f };
-		m_isPlaying_Return_Lerp_Movement = false;
-		m_isAction = false; /* 액션 끝 */
-	}
+	CUIAction_Player::MOVE_DESC Desc = {};
+	Desc.vTargetPos	= vTargetPos;
+	Desc.fAlpha		= fTargetAlpha;
+	Desc.fDuration	= fDuration;
+	Desc.vStartPos	= Vec3{ m_vRenderPos.x, m_vRenderPos.y, m_vRenderPos.z };
+	m_pActionPlayer->Start_Lerp_Movement(&Desc);
 }
 
 void CToolUI::Set_isDisable(_bool isDisable)
@@ -592,12 +498,12 @@ void CToolUI::Set_isDisable(_bool isDisable)
 
 void CToolUI::Start_Fade(const _float fStartAlpha, const _float fTargetAlpha, const _float fDuration)
 {
-	m_fFade_StartAlpha = fStartAlpha;
+	m_fFade_StartAlpha	= fStartAlpha;
 	m_fFade_ResultAlpha = fStartAlpha;
 	m_fFade_TargetAlpha = fTargetAlpha;
-	m_fFade_Duration = fDuration;
-	m_fFade_TimeAcc = 0.f;
-	m_isPlaying_Fade = true;
+	m_fFade_Duration	= fDuration;
+	m_fFade_TimeAcc		= 0.f;
+	m_isPlaying_Fade	= true;
 
 	Get_Component<CShader>()->Set_Pass(2);
 }

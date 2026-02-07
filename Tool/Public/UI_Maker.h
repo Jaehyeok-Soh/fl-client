@@ -1,6 +1,5 @@
 #pragma once
 #include "ImGui_Panel.h"
-#include "UIData_Repository.h"
 
 NS_BEGIN(Engine)
 class CGameInstance;
@@ -28,7 +27,6 @@ private:
 	void UIData_IO();
 	void SetUp_Level();
 	void Make_Canvas();
-	void Make_Layer();
 	void Make_UI();
 
 	/// <summary>

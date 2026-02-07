@@ -2,7 +2,6 @@
 #include "UITargetAction_Client.h"
 #include "Client_Defines.h"
 #include "Canvas.h"
-#include "UILayer.h"
 #include "GenericUI.h"
 #include "UI_Manager.h"
 #include "GameInstance.h"
@@ -21,16 +20,6 @@ void CUITargetAction_Client::Trigger_All_Canvas(uint32_t iLevelIndex, const _str
 		return;
 	
 	for (auto* pUI : *AllUIVec)          
-		m_pGameInstance->Get_UIAction_Registry()->Build_Action(eAction, jTargetActionParam)(pUI->Get_ActionForMe(), this);
-}
-
-void CUITargetAction_Client::Trigger_All_Layer(uint32_t iLevelIndex, const _string& strLayerTag, DTO::EUIAction eAction, const json& jTargetActionParam)
-{
-	auto* LayerUIVec = CUI_Manager::GetInstance()->Find_GenericUI_Vector(iLevelIndex, strLayerTag);
-	if (nullptr == LayerUIVec)
-		return;
-
-	for (auto* pUI : *LayerUIVec)
 		m_pGameInstance->Get_UIAction_Registry()->Build_Action(eAction, jTargetActionParam)(pUI->Get_ActionForMe(), this);
 }
 

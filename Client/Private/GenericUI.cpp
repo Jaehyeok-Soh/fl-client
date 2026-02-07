@@ -39,7 +39,6 @@ HRESULT CGenericUI::Initialize(void* pArg)
 	m_iTextureIndex = pDesc->iTextureIndex;
 
 	m_pParentCanvasCache = pDesc->pCanvasCache;
-	m_pParentLayerCache = pDesc->pLayerCache;
 
 	if (FAILED(Super::Initialize(pArg)))
 		return E_FAIL;

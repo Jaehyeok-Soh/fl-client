@@ -1,10 +1,11 @@
 #pragma once
 #include "ImGui_Panel.h"
-#include "UIData_Repository.h"
+#include "DataStruct_UI.h"
 
 NS_BEGIN(Tool)
 class CImGui_ToolManager;
 class CImGui_UIManager;
+class CToolUI;
 
 class CUI_Inspector final : public CImGui_Panel
 {
@@ -36,7 +37,6 @@ public:
 	void Edit_Set_Texture_Index(json& jParams);
 	void Edit_Start_Lerp_Movement(json& jParams);
 	void Trigger_All_Canvas(json& jParams);
-	void Trigger_All_Layer(json& jParams);
 	void Trigger_Target_UI(json& jParams);
 	void Edit_Start_Return_Lerp_Movement(json& jParams);
 	void Edit_Start_Fade(json& jParams);
@@ -80,7 +80,6 @@ private:
 		DTO::EUIAction::START_LERP_MOVEMENT,
 		DTO::EUIAction::START_RETURN_LERP_MOVEMENT,
 		DTO::EUIAction::TRIGGER_ALL_CANVAS,
-		DTO::EUIAction::TRIGGER_ALL_LAYER,
 		DTO::EUIAction::TRIGGER_TARGET_UI,
 		DTO::EUIAction::START_FADE,
 	};
