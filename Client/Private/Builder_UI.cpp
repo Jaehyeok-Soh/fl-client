@@ -1,12 +1,10 @@
 #include "pch.h"
 #include "Builder_UI.h"
-
 #include "Canvas.h"
 #include "GenericUI.h"
 #include "UIPlayer_HP.h"
 #include "UIMonster_HP.h"
-
-#include"UI_Manager.h"
+#include "UI_Manager.h"
 #include "GameInstance.h"
 
 CBuilder_UI::CBuilder_UI(ID3D11Device* pDevice, ID3D11DeviceContext* pDeviceContext, _uint iLevelID)
