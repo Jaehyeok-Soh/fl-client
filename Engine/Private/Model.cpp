@@ -49,7 +49,6 @@ CModel::CModel(const CModel& rhs)
 	{
 		m_vecBoneGroups.push_back(pBoneGroup);
 		Safe_AddRef(pBoneGroup.pIndexBuffer);
-		Safe_AddRef(pBoneGroup.pInputGroupSB_SRV);
 	}
 
 	m_vecAnimations.reserve(rhs.m_vecAnimations.size());
@@ -123,6 +122,9 @@ HRESULT CModel::Initialize_Prototype(void* pArg)
 	m_vecCurrAnimationPose.resize(m_vecBones.size());
 	for (size_t i = 0; i < m_vecBones.size(); ++i)
 		m_vecBones[i]->Setup_BindPoseTransformMatrix(m_vecBones, m_matPreTransform);
+
+	Make_BoneGroup(); // bone을 그룹별로 만든다
+	Make_GroupBuffers(); // group buffer만 우선 생성
 
 	return S_OK;
 }
@@ -435,6 +437,26 @@ void CModel::Set_AnimationPlayRate(_uint iIndex, _float fValue)
 		m_vecAnimations[iIndex]->Set_PlayRate(fValue);
 }
 
+HRESULT CModel::Ready_CSs(CComputeShader* pBoneShader, CComputeShader* pAnimESahder)
+{
+	if (pBoneShader)
+	{
+		Bind_BoneImmuData(pBoneShader);
+	}
+
+	// 애니메이션 buffer binding
+	if (pAnimESahder)
+	{
+		for (auto& pAnim : m_vecAnimations)
+		{
+			if(FAILED(pAnim->Ready_BindBuffers(pAnimESahder)))
+				return E_FAIL;
+		}
+	}
+
+	return S_OK;
+}
+
 HRESULT CModel::Load_StaticModel(const wstring& wstrModelName)
 {
 	CModelLoader* pModelLoader = CModelLoader::Create(m_pDevice, m_pDeviceContext, wstrModelName.c_str());
@@ -662,7 +684,7 @@ void CModel::Change_AnimationPlayState(AnimationPlayState eState)
 	m_eCurrentAnimationState = eState;
 }
 
-void CModel::Play_Animation(CComputeShader* pAnimEComShader, CComputeShader* pBoneComShader, _float fTimeDelta, CTransform* pOwnerTransform = nullptr, CPhysicsCCT* pOwnerPhyCCT = nullptr)
+void CModel::Play_Animation(CComputeShader* pAnimEComShader, CComputeShader* pBoneComShader, _float fTimeDelta, CTransform* pOwnerTransform , CPhysicsCCT* pOwnerPhyCCT)
 {
 	// animation update
 	m_vecAnimations[m_iCurrentAnimIndex]->Update_TransformMatrices(pAnimEComShader, fTimeDelta, m_isAnimLoop, pOwnerTransform, pOwnerPhyCCT);
@@ -751,39 +773,15 @@ void CModel::Make_BoneGroup()
 	}
 }
 
-void CModel::Make_GroupBuffers(CComputeShader* pBoneShader)
+void CModel::Make_GroupBuffers()
 {
-	if (!pBoneShader)
-		return;
-
 	// 그룹을 순회
 	for (size_t i = 0; i < m_vecBoneGroups.size(); i++)
 	{
 		_uint iGroupSize = _uint(m_vecBoneGroups[i].BoneIndices.size());
 
-		// 한 그룹당 하나의 structuredBuffer 필요
-		CS_MU_BONEIDX* pIniailData = new CS_MU_BONEIDX[iGroupSize];
-
-		// CS_MU_BONEIDX에 값 바인딩
-		for (auto& pBoneIndex : m_vecBoneGroups[i].BoneIndices)
-		{
-			pIniailData[i].iMyIdx = pBoneIndex;
-			pIniailData[i].Padding0 = Vec3::Zero;
-		}
-
 		// SB class 생성
 		m_vecBoneGroups[i].pIndexBuffer = StructuredBuffer::Create(m_pDevice, m_pDeviceContext, sizeof(CS_MU_BONEIDX), iGroupSize);
-		
-		// SB class에 값 넣어주기
-		m_vecBoneGroups[i].pIndexBuffer->Copy_Data(pIniailData, sizeof(CS_MU_BONEIDX), iGroupSize);
-
-		// 4. SRV 연결
-		m_vecBoneGroups[i].pInputGroupSB_SRV = pBoneShader->Get_SRV("MU_INDEXES");
-		m_vecBoneGroups[i].pInputGroupSB_SRV->SetResource(m_vecBoneGroups[i].pIndexBuffer->Get_SRV());
-
-
-		// 5. 동적배열 정리
-		Safe_Delete_Array(pIniailData);
 	}
 }
 
@@ -869,6 +867,38 @@ void CModel::Bind_BoneImmuData(CComputeShader* pBoneComShader)
 	Safe_Delete_Array(pInitialData);
 }
 
+void CModel::Bind_BufferSRV(CComputeShader* pBoneComShader)
+{
+	if (!pBoneComShader)
+		return;
+
+	// 그룹을 순회
+	for (size_t i = 0; i < m_vecBoneGroups.size(); i++)
+	{
+		_uint iGroupSize = _uint(m_vecBoneGroups[i].BoneIndices.size());
+
+		// 한 그룹당 하나의 structuredBuffer 필요
+		CS_MU_BONEIDX* pIniailData = new CS_MU_BONEIDX[iGroupSize];
+
+		// CS_MU_BONEIDX에 값 바인딩
+		for (size_t j = 0; j < m_vecBoneGroups[i].BoneIndices.size(); j++)
+		{
+			pIniailData[j].iMyIdx = m_vecBoneGroups[i].BoneIndices[j];
+			pIniailData[j].Padding0 = Vec3::Zero;
+		}
+
+		// SB class에 값 넣어주기
+		m_vecBoneGroups[i].pIndexBuffer->Copy_Data(pIniailData, sizeof(CS_MU_BONEIDX), iGroupSize);
+
+		// 4. SRV 연결
+		m_vecBoneGroups[i].pInputGroupSB_SRV = pBoneComShader->Get_SRV("MU_INDEXES");
+		m_vecBoneGroups[i].pInputGroupSB_SRV->SetResource(m_vecBoneGroups[i].pIndexBuffer->Get_SRV());
+
+		// 5. 동적배열 정리
+		Safe_Delete_Array(pIniailData);
+	}
+}
+
 CModel* CModel::Create(ID3D11Device* pDevice, ID3D11DeviceContext* pDeviceContext, void* pArg)
 {
 	CModel* pInstance = new CModel(pDevice, pDeviceContext);
@@ -911,9 +941,10 @@ void CModel::Free()
 	for (auto& pBoneGroup : m_vecBoneGroups)
 	{
 		Safe_Release(pBoneGroup.pIndexBuffer);
-		Safe_Release(pBoneGroup.pInputGroupSB_SRV);
-	}
 
+		if(!IsClone())
+			Safe_Release(pBoneGroup.pInputGroupSB_SRV);
+	}
 	
 	Safe_Release(m_pMasterMesh);
 

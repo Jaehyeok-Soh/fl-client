@@ -33,6 +33,7 @@ public:
 		wstring wstrModelFolderName = { L"" };
 
 		DATA_ANIMCHANNEL* pAniChannelData = { nullptr };
+
 	}MODEL_ORIGIN_DESC;
 	typedef struct tagModelCopyDesc
 	{
@@ -118,6 +119,8 @@ public:
 	void Set_AnimationPlayRate(_uint iIndex, _float fValue);
 	const _float Get_BlentTime()  { return m_fBlendedTime; }
 
+	HRESULT Ready_CSs(CComputeShader* pBoneShader, CComputeShader* pAnimESahder);
+
 	// load func
 private:
 	HRESULT Load_StaticModel(const wstring& wstrModelName);
@@ -149,12 +152,13 @@ private:
 
 private:
 	void Make_BoneGroup();
-	void Make_GroupBuffers(CComputeShader* pBoneShader);
+	void Make_GroupBuffers();
 	void Update_BoneCombineTransformMatrix(CComputeShader* pBoneComShader);
 	void Blend_Animation(CComputeShader* pBoneComShader, CComputeShader* pAnimEComShader, CComputeShader* pAnimBlendCS
 		,_float fTimeDelta , _float fRatio, CTransform* pOwnerTransform = nullptr, CPhysicsCCT* pOwnerPhyCCT = nullptr);
 	void Lerp_Animation(CComputeShader* pAnimBlendCS, _float fRatio);
 	void Bind_BoneImmuData(CComputeShader* pBoneComShader);
+	void Bind_BufferSRV(CComputeShader* pBoneComShader);
 
 private:
 	EModelType m_eType = { EModelType::END };
