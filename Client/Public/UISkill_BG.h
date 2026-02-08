@@ -5,19 +5,19 @@
 NS_BEGIN(Client)
 class CCanvas;
 class CStatComponent;
-class CUIMonster_HP final : public CGenericUI
+class CUISkill_BG final : public CGenericUI
 {
 	using Super = CGenericUI;
 public:
-	typedef struct tagUIMonsterHPDesc : public GENERIC_UI_DESC
+	typedef struct tagUISkillBGDesc : public GENERIC_UI_DESC
 	{
-		CStatComponent* pTargetStat;
-	}MONSTER_HP_DESC;
+
+	}SKILL_BG_DESC;
 
 private:
-	CUIMonster_HP(ID3D11Device* pDevice, ID3D11DeviceContext* pDeviceContext);
-	CUIMonster_HP(const CUIMonster_HP& rhs);
-	virtual ~CUIMonster_HP() = default;
+	CUISkill_BG(ID3D11Device* pDevice, ID3D11DeviceContext* pDeviceContext);
+	CUISkill_BG(const CUISkill_BG& rhs);
+	virtual ~CUISkill_BG() = default;
 
 public:
 	HRESULT Initialize_Prototype() override;
@@ -32,15 +32,11 @@ public:
 	virtual HRESULT Render() override;
 
 private:
-	HRESULT Ready_Components(MONSTER_HP_DESC* pDesc);
+	HRESULT Ready_Components(SKILL_BG_DESC* pDesc);
 	HRESULT Bind_ShaderResources();
 
-private:
-	CStatComponent* m_pTargetStat = { nullptr };
-	uint32_t m_iFillDir = {};
-
 public:
-	static CUIMonster_HP* Create(ID3D11Device* pDevice, ID3D11DeviceContext* pDeviceContext);
+	static CUISkill_BG* Create(ID3D11Device* pDevice, ID3D11DeviceContext* pDeviceContext);
 	CGameObject* Clone(void* pArg);
 	virtual void Free()override;
 };

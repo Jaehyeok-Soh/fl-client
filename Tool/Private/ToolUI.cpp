@@ -226,6 +226,9 @@ HRESULT CToolUI::Bind_ShaderResources()
 
 		if (FAILED(pShader->Get_Variable("g_iFillDir")->SetRawValue(&m_iFillDir, 0, sizeof(uint32_t))))
 			return E_FAIL;
+
+		if (FAILED(pShader->Get_Variable("g_fDelay")->SetRawValue(&m_fDelay, 0, sizeof(_float))))
+			return E_FAIL;
 	}
 
     return S_OK;
@@ -323,6 +326,7 @@ void CToolUI::Sync_Data()
 	m_tUIData.isUseColorTint 		= m_isUseColorTint;
 	m_tUIData.vColorTint 			= m_vColorTint;
 	m_tUIData.iShaderPass			= m_iShaderPass;
+	m_tUIData.fDelay				= m_fDelay;
 }
 
 HRESULT CToolUI::Request_Change_Texture()

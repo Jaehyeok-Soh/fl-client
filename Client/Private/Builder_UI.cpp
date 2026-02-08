@@ -3,8 +3,8 @@
 
 #include "Canvas.h"
 #include "GenericUI.h"
-#include "UIPlayer_HP.h"
-#include "UIMonster_HP.h"
+#include "UIProgress_Bar.h"
+#include "UIJust_Image.h"
 
 #include"UI_Manager.h"
 #include "GameInstance.h"
@@ -124,19 +124,18 @@ HRESULT CBuilder_UI::Register_Class(DTO::EUIClassType eClassType, const DTO::TUI
 
 	CGameObject* pResult = nullptr;
 
-	if (eClassType == DTO::EUIClassType::PLAYER_HP)
+	if (eClassType == DTO::EUIClassType::PROGRESS_BAR)
 	{
-		CUIPlayer_HP::PLAYER_HP_DESC PlayerHPDesc = {};
-		static_cast<CGenericUI::GENERIC_UI_DESC&>(PlayerHPDesc) = DefaultDesc;
-		/* ÇÃ·¹ÀÌ¾î ½ºÅÈ ÄÄÆ÷³ÍÆ® */
-		pResult = m_pGameInstance->Add_GameObject(m_iLevelID, wstrProtoTag, m_iLevelID, wstrLayerTag, &PlayerHPDesc);
+		CUIProgress_Bar::PROGRESS_BAR_DESC Desc = {};
+		static_cast<CGenericUI::GENERIC_UI_DESC&>(Desc) = DefaultDesc;
+		Desc.eOwner = data.eOwnerType;
+		pResult		= m_pGameInstance->Add_GameObject(m_iLevelID, wstrProtoTag, m_iLevelID, wstrLayerTag, &Desc);
 	}
-	else if (eClassType == DTO::EUIClassType::MONSTER_HP)
+	else if (eClassType == DTO::EUIClassType::JUST_IMAGE)
 	{
-		CUIMonster_HP::MONSTER_HP_DESC MonsterDesc = {};
-		static_cast<CGenericUI::GENERIC_UI_DESC&>(MonsterDesc) = DefaultDesc;
-		/* ¸ó½ºÅÍ ½ºÅÈ ÄÄÆ÷³ÍÆ® */
-		pResult = m_pGameInstance->Add_GameObject(m_iLevelID, wstrProtoTag, m_iLevelID, wstrLayerTag, &MonsterDesc);
+		CUIJust_Image::JUST_IMAGE_DESC JustImageDesc= {};
+		static_cast<CGenericUI::GENERIC_UI_DESC&>(JustImageDesc) = DefaultDesc;
+		pResult = m_pGameInstance->Add_GameObject(m_iLevelID, wstrProtoTag, m_iLevelID, wstrLayerTag, &JustImageDesc);
 	}
 	else
 	{
@@ -176,7 +175,8 @@ CGenericUI::GENERIC_UI_DESC CBuilder_UI::Make_DefaultInfo(const DTO::TUI_Generic
 	Desc.isUseColorTint		= data.isUseColorTint;
 	Desc.vColorTint			= data.vColorTint;
 	Desc.iShaderPass		= data.iShaderPass;
-
+	Desc.fDelay				= data.fDelay;
+	Desc.iFillDir			= data.iFillDir;
 	return Desc;
 }
 

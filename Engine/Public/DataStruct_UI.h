@@ -24,8 +24,8 @@ NLOHMANN_JSON_SERIALIZE_ENUM(EUIType,
 
 enum class EUIClassType
 {
-	PLAYER_HP,
-	MONSTER_HP,
+	PROGRESS_BAR,
+	JUST_IMAGE,
 	END
 };
 
@@ -33,8 +33,8 @@ inline std::string UIClassTypeToString(EUIClassType eType)
 {
 	switch (eType)
 	{
-	case EUIClassType::PLAYER_HP: return "PLAYER_HP";
-	case EUIClassType::MONSTER_HP: return "MONSTER_HP";
+	case EUIClassType::PROGRESS_BAR: return "PROGRESS_BAR";
+	case EUIClassType::JUST_IMAGE: return "JUST_IMAGE";
 	case EUIClassType::END: return "END";
 	default: return "";
 	}
@@ -42,15 +42,15 @@ inline std::string UIClassTypeToString(EUIClassType eType)
 
 inline EUIClassType StringToUIClassType(const std::string& str)
 {
-	if (str == "PLAYER_HP") return EUIClassType::PLAYER_HP;
-	else if (str == "MONSTER_HP") return EUIClassType::MONSTER_HP;
+	if (str == "PROGRESS_BAR") return EUIClassType::PROGRESS_BAR;
+	else if (str == "JUST_IMAGE") return EUIClassType::JUST_IMAGE;
 	else return EUIClassType::END;
 }
 
 NLOHMANN_JSON_SERIALIZE_ENUM(EUIClassType,
 	{
-		{EUIClassType::PLAYER_HP, "PLAYER_HP"},
-		{EUIClassType::MONSTER_HP, "MONSTER_HP"},
+		{EUIClassType::PROGRESS_BAR, "PROGRESS_BAR"},
+		{EUIClassType::JUST_IMAGE, "JUST_IMAGE"},
 	})
 
 enum EComponentTypeFlag
@@ -62,9 +62,9 @@ enum EComponentTypeFlag
 enum class EUIOwnerType
 {
 	NONE_OWNER,
-	PLAYER,
-	MONSTER,
-	BOSS,
+	PLAYER_HP,
+	PLAYER_ARMOR,
+	PLAYER_ENERGY,
 	END
 };
 
@@ -73,9 +73,9 @@ inline std::string UIOwnertypeToString(EUIOwnerType eType)
 	switch (eType)
 	{
 	case EUIOwnerType::NONE_OWNER: return "NONE_OWNER";
-	case EUIOwnerType::PLAYER: return "PLAYER";
-	case EUIOwnerType::MONSTER: return "MONSTER";
-	case EUIOwnerType::BOSS: return "BOSS";
+	case EUIOwnerType::PLAYER_HP: return "PLAYER_HP";
+	case EUIOwnerType::PLAYER_ARMOR: return "PLAYER_ARMOR";
+	case EUIOwnerType::PLAYER_ENERGY: return "PLAYER_ENERGY";
 	case EUIOwnerType::END: return "END";
 	default: return "";
 	}
@@ -84,61 +84,61 @@ inline std::string UIOwnertypeToString(EUIOwnerType eType)
 inline EUIOwnerType StringToUIOwnertype(const std::string& str)
 {
 	if (str == "NONE_OWNER") return EUIOwnerType::NONE_OWNER;
-	else if (str == "PLAYER") return EUIOwnerType::PLAYER;
-	else if (str == "MONSTER") return EUIOwnerType::MONSTER;
-	else if (str == "BOSS") return EUIOwnerType::BOSS;
+	else if (str == "PLAYER_HP") return EUIOwnerType::PLAYER_HP;
+	else if (str == "PLAYER_ARMOR") return EUIOwnerType::PLAYER_ARMOR;
+	else if (str == "PLAYER_ENERGY") return EUIOwnerType::PLAYER_ENERGY;
 	else return EUIOwnerType::END;
 }
 
 NLOHMANN_JSON_SERIALIZE_ENUM(EUIOwnerType,
 	{
 		{EUIOwnerType::NONE_OWNER, "NONE_OWNER"},
-		{EUIOwnerType::PLAYER, "PLAYER"},
-		{EUIOwnerType::MONSTER, "MONSTER"},
-		{EUIOwnerType::BOSS, "BOSS"},
+		{EUIOwnerType::PLAYER_HP, "PLAYER_HP"},
+		{EUIOwnerType::PLAYER_ARMOR, "PLAYER_ARMOR"},
+		{EUIOwnerType::PLAYER_ENERGY, "PLAYER_ENERGY"},
 	})
 
 /////////////////-------------------  Data Struct  -------------------/////////////////
-
-struct TProgress_ComponentData
+struct TUI_ActionBindData
 {
-
+	std::string strOwnerName;
 };
 
 struct TUI_GenericUIData
 {
 	static constexpr EUIType eType = EUIType::GENERICUI;
-	EUIClassType eClassType;
-	std::string strTag;
-	std::string strCanvasName;
-	uint32_t iRectTransformType;
-	_float fWidth;
-	_float fHeight;
-	_float fPosX;
-	_float fPosY;
-	_float fPosZ;
-	_string strTextureTag;
-	_bool isVisible;
-	uint32_t iComponentFlag;
-	EUIOwnerType eOwnerType;
-	_bool isUseColorTint;
-	Vec4 vColorTint;
-	int32_t iShaderPass;
-	int32_t iFillDir;
+	EUIClassType	eClassType;
+	std::string		strTag;
+	std::string		strCanvasName;
+	uint32_t		iRectTransformType;
+	_float			fWidth;
+	_float			fHeight;
+	_float			fPosX;
+	_float			fPosY;
+	_float			fPosZ;
+	_string			strTextureTag;
+	_bool			isVisible;
+	uint32_t		iComponentFlag;
+	EUIOwnerType	eOwnerType;
+	_bool			isUseColorTint;
+	Vec4			vColorTint;
+	int32_t			iShaderPass;
+	int32_t			iFillDir;
+	_float			fDelay;
 };
 
 struct TUI_CanvasData
 {
 	static constexpr EUIType eType = EUIType::CANVAS;
 	std::string strTag;
-	uint32_t iLevelIndex;
-	_float fWidth;
-	_float fHeight;
-	_float fPosX;
-	_float fPosY;
-	_float fPosZ;
-	uint32_t iEditorSizeX ;
-	uint32_t iEditorSizeY;
+	uint32_t	iLevelIndex;
+	_float		fWidth;
+	_float		fHeight;
+	_float		fPosX;
+	_float		fPosY;
+	_float		fPosZ;
+	uint32_t	iEditorSizeX ;
+	uint32_t	iEditorSizeY;
 };
 
 /////////////////-------------------  to_json, from_json  -------------------/////////////////

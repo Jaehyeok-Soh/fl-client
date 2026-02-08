@@ -30,6 +30,7 @@ void to_json(json& j, const TUI_GenericUIData& data)
 		{ "vColorTint", {{ "x", data.vColorTint.x },{ "y", data.vColorTint.y },{ "z", data.vColorTint.z },{ "w", data.vColorTint.w }}},
 		{ "iShaderPass", data.iShaderPass },
 		{ "iFillDir", data.iFillDir },
+		{ "fDelay", data.fDelay },
 	};
 }
 void from_json(const json& j, TUI_GenericUIData& data)
@@ -55,6 +56,7 @@ void from_json(const json& j, TUI_GenericUIData& data)
 	jt.at("w").get_to(data.vColorTint.w);
 	j.at("iShaderPass").get_to(data.iShaderPass);
 	j.at("iFillDir").get_to(data.iFillDir);
+	j.at("fDelay").get_to(data.fDelay);
 }
 
 void to_json(json& j, const TUI_CanvasData& data)

@@ -13,7 +13,9 @@ VS_OUT_POS_TEX VS_MAIN(VS_IN_POS_TEX input)
 PS_OUT PS_MAIN(PS_IN_POS_TEX input)
 {
     PS_OUT output;
-    output.vColor = g_DefaultTextures[DEFAULT].Sample(LinearSampler, input.vUV);
+    output.vColor = g_DefaultTextures[DEFAULT].Sample(PointSampler, input.vUV);
+    if(output.vColor.a < 0.3f)
+        discard;
     return output;
 }
 
@@ -27,7 +29,7 @@ PS_OUT PS_COLOR(PS_IN_POS_TEX input)
 PS_OUT PS_FADE(PS_IN_POS_TEX input)
 {
     PS_OUT output;
-    vector vColor = g_DefaultTextures[0].Sample(LinearSampler, input.vUV);
+    vector vColor = g_DefaultTextures[0].Sample(PointSampler, input.vUV);
     vColor.a *= g_fAlphaRatio;
     output.vColor = vColor;
     return output;
@@ -42,22 +44,21 @@ PS_OUT PS_PROGRESS(PS_IN_POS_TEX input)
     if (g_isColor)
         output.vColor = g_vColorTint;
     else
-        output.vColor = g_DefaultTextures[0].Sample(LinearSampler, input.vUV);
+        output.vColor = g_DefaultTextures[0].Sample(PointSampler, input.vUV);
     
-    if (g_iFillDir == 0)
+    if (g_iFillDir == 0) 
         mask = step(uv.x, g_fProgressRatio);        //right -> left
     else if (g_iFillDir == 1)
         mask = step(1.0f - uv.x, g_fProgressRatio); //left -> right
     else if (g_iFillDir == 2)
         mask = step(1.0f - uv.y, g_fProgressRatio); //up -> down
-    else
+    else if (g_iFillDir == 3)
         mask = step(uv.y, g_fProgressRatio); //down -> up
-
-    output.vColor.a *= mask;
+    
+    if (mask <= 0.0f)
+        discard;
     return output;
 }
-
-
 
 
 

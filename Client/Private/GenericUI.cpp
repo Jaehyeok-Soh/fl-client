@@ -8,7 +8,6 @@
 #include "Texture.h"
 #include "Shader.h"
 #include "VIBuffer_Rect_Tex.h"
-#include "UIProgress_Component.h"
 #include "GameInstance.h"
 
 CGenericUI::CGenericUI(ID3D11Device* pDevice, ID3D11DeviceContext* pDeviceContext)
@@ -41,7 +40,8 @@ HRESULT CGenericUI::Initialize(void* pArg)
 	m_vColorTint			= pDesc->vColorTint;
 	m_iShaderPass			= pDesc->iShaderPass;
 	m_iFillDir				= pDesc->iFillDir;
-
+	m_fDelay				= pDesc->fDelay;
+	m_fAlpha_Ratio			= 1.f;
 	if (FAILED(Super::Initialize(pArg)))
 		return E_FAIL;
 
@@ -148,6 +148,8 @@ HRESULT CGenericUI::Ready_Components(GENERIC_UI_DESC* pDesc)
 HRESULT CGenericUI::Bind_ShaderResources()
 {
 	CShader* pShader = Get_Component<CShader>();
+	pShader->Set_Pass(m_iShaderPass);
+
 	if (m_iShaderPass == ENUM_TO_UINT(EUIShaderPass::DEFAULT))
 	{
 		if (FAILED(Get_Component<CTexture>()->Bind_ShaderResourceBuffer(pShader)))

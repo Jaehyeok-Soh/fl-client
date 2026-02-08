@@ -392,6 +392,11 @@ void CUI_Inspector::SetUp_ShaderPass()
 			if (ImGui::Combo("Fill Dir", &dir, dirs, IM_ARRAYSIZE(dirs)))
 				m_pSelectedUI->Set_FillDir((uint32_t)dir);
 
+			_float fDelay = m_pSelectedUI->Get_Delay();
+			ImGui::SetNextItemWidth(150.f);
+			if (ImGui::DragFloat("Delay", &fDelay, 0.01f, 0.f, 1.f))
+				m_pSelectedUI->Set_Delay(fDelay);
+
 			break;
 		}
 		default:

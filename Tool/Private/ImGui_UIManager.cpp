@@ -39,6 +39,9 @@ void CImGui_UIManager::Safe_Change_Canvas(int32_t iNewCanvasIndex)
 	m_iCurCanvasIndex = iNewCanvasIndex;
 
 	auto* pUIVec = m_vecCanvas[m_iCurCanvasIndex]->Safe_Access_UI_Vector();
+	if (nullptr == pUIVec)
+		return;
+
 	int32_t iNumUIData = static_cast<int32_t>(pUIVec->size());
 
 	if (m_iCurUIIndex < 0)

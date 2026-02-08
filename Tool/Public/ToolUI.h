@@ -22,6 +22,7 @@ public:
 		_bool isUseColorTint;
 		Vec4 vColorTint;
 		int32_t iFillDir;
+		_float fDelay;
 	}TOOLUI_DESC;
 
 protected:
@@ -71,18 +72,20 @@ public:
 	void Set_TextureTag(const _wstring& value) { m_wstrTextureTag = value; }
 	void Set_HitTest() { m_isHitTest = TRUE; };
 
-	Vec4 Get_ColorTint()			{ return m_vColorTint; }
-	Vec4& Get_ColorTint_Ref()		{ return m_vColorTint; }
-	_float Get_AlphaRatio()			{ return m_fTestAlpha; }
-	_float& Get_AlphaRatio_Ref()	{ return m_fTestAlpha; }
-	_bool Get_isUseColorTint()		{ return m_isUseColorTint; }
-	_float Get_ProgressRatio()		{ return m_fTestProgress; }
-	int32_t Get_FillDir()			{ return m_iFillDir; }
-	void Set_ColorTint(Vec4 v)		{ m_vColorTint = v; }
-	void Set_AlphaRatio(_float f)	{ m_fTestAlpha = f; }
-	void Set_isUseColorTint(_bool is) { m_isUseColorTint = is; }
-	void Set_ProgressRatio(_float f) { m_fTestProgress = f; }
-	void Set_FillDir(int32_t i)		{ m_iFillDir = i; }
+	Vec4 Get_ColorTint()			const	{ return m_vColorTint; }
+	Vec4& Get_ColorTint_Ref()				{ return m_vColorTint; }
+	_float Get_AlphaRatio()			const	{ return m_fTestAlpha; }
+	_float& Get_AlphaRatio_Ref()			{ return m_fTestAlpha; }
+	_bool Get_isUseColorTint()		const	{ return m_isUseColorTint; }
+	_float Get_ProgressRatio()		const	{ return m_fTestProgress; }
+	int32_t Get_FillDir()			const	{ return m_iFillDir; }
+	_float Get_Delay()				const	{ return m_fDelay; }
+	void Set_ColorTint(Vec4 v)				{ m_vColorTint = v; }
+	void Set_AlphaRatio(_float f)			{ m_fTestAlpha = f; }
+	void Set_isUseColorTint(_bool is)		{ m_isUseColorTint = is; }
+	void Set_ProgressRatio(_float f)		{ m_fTestProgress = f; }
+	void Set_FillDir(int32_t i)				{ m_iFillDir = i; }
+	void Set_Delay(_float f)				{ m_fDelay = f; }
 
 	_float& Get_TestProgress_Ref() { return m_fTestProgress; }
 	int32_t& Get_FillDir_Ref() { return m_iFillDir; }
@@ -128,6 +131,8 @@ protected:
 	Vec4 m_vColorTint					= {};
 	int32_t m_iShaderPass				= {};
 	DTO::EUIOwnerType m_eOwnerType		= {};
+	int32_t m_iFillDir					= {};
+	_float m_fDelay						= {};
 
 	// Local Values
 	Vec3 m_vRenderPos		= {};
@@ -136,7 +141,6 @@ protected:
 	_bool m_isAction		= { false };
 	Vec3 m_vMoveOffset		= {};
 	_float m_fTestProgress	= { 1.f };
-	int32_t m_iFillDir		= {};
 	_bool m_isDisable		= { false };
 	_float m_fTestAlpha = {};
 

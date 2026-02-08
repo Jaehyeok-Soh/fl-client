@@ -226,23 +226,32 @@
     <Filter Include="03. GameObject\UIObjects\02.UI">
       <UniqueIdentifier>{6d2a781d-ab40-4385-b96c-b3366f4eaba6}</UniqueIdentifier>
     </Filter>
-    <Filter Include="03. GameObject\UIObjects\02.UI\PlayerHP">
-      <UniqueIdentifier>{d1da7a10-7b69-4f7d-9c38-81e993488207}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="05. Component\UI">
-      <UniqueIdentifier>{d566c138-8d97-4d90-bf67-45caf8c4f1fc}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="05. Component\UI\Progress">
-      <UniqueIdentifier>{317fb20e-0076-4a23-a3a3-c903265adeb8}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="05. Component\UI\Button">
-      <UniqueIdentifier>{300c8870-4f30-4497-8311-06763127827b}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="03. GameObject\UIObjects\02.UI\MonsterHP">
-      <UniqueIdentifier>{beb7d1a4-337d-48de-b4df-4fb246247658}</UniqueIdentifier>
-    </Filter>
     <Filter Include="07. System\02. Debug_ImGui\Layout\Frame">
       <UniqueIdentifier>{d522fe25-0bdb-43db-847a-41084decceb6}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="03. GameObject\UIObjects\02.UI\Object Hp Bar">
+      <UniqueIdentifier>{b4a063b3-dce2-44fe-b144-1c538e80b685}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="03. GameObject\UIObjects\02.UI\Object Hp Bar\00.DelayHp">
+      <UniqueIdentifier>{e7c198ff-f549-43b1-adc4-915748d45127}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="03. GameObject\UIObjects\02.UI\Object Hp Bar\01.PlayerHP">
+      <UniqueIdentifier>{d1da7a10-7b69-4f7d-9c38-81e993488207}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="03. GameObject\UIObjects\02.UI\Object Hp Bar\02.MonsterHP">
+      <UniqueIdentifier>{beb7d1a4-337d-48de-b4df-4fb246247658}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="03. GameObject\UIObjects\02.UI\Image">
+      <UniqueIdentifier>{6d340ec4-9fd3-485b-bb1c-8989cfd57761}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="03. GameObject\UIObjects\02.UI\Image\SkillBG">
+      <UniqueIdentifier>{f1acf951-62e0-4e8b-b106-6fd9b77c5697}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="03. GameObject\UIObjects\02.UI\Image\JustImage">
+      <UniqueIdentifier>{fd843193-a085-4c64-9708-e0849b95da7d}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="03. GameObject\UIObjects\02.UI\Object Hp Bar\Progress Bar">
+      <UniqueIdentifier>{bd7da17c-04aa-4842-8652-0f67ca4cf8ad}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
@@ -466,20 +475,20 @@
       <Filter>07. System\02. Debug_ImGui\Inspector\Player</Filter>
     </ClInclude>
     <ClInclude Include="..\Public\State_DashFront.h" />
-    <ClInclude Include="..\Public\UIPlayer_HP.h">
-      <Filter>03. GameObject\UIObjects\02.UI\PlayerHP</Filter>
-    </ClInclude>
-    <ClInclude Include="..\Public\UIProgress_Component.h">
-      <Filter>05. Component\UI\Progress</Filter>
-    </ClInclude>
-    <ClInclude Include="..\Public\UIButton_Component.h">
-      <Filter>05. Component\UI\Button</Filter>
-    </ClInclude>
-    <ClInclude Include="..\Public\UIMonster_HP.h">
-      <Filter>03. GameObject\UIObjects\02.UI\MonsterHP</Filter>
-    </ClInclude>
     <ClInclude Include="..\public\ImGui_FrameLayout.h">
       <Filter>07. System\02. Debug_ImGui\Layout\Frame</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Private\UIDelay_HP.h">
+      <Filter>03. GameObject\UIObjects\02.UI\Object Hp Bar\00.DelayHp</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\UIJust_Image.h">
+      <Filter>03. GameObject\UIObjects\02.UI\Image\JustImage</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\UISkill_BG.h">
+      <Filter>03. GameObject\UIObjects\02.UI\Image\SkillBG</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\UIProgress_Bar.h">
+      <Filter>03. GameObject\UIObjects\02.UI\Object Hp Bar\Progress Bar</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -695,20 +704,20 @@
       <Filter>07. System\02. Debug_ImGui\Inspector\Player</Filter>
     </ClCompile>
     <ClCompile Include="..\Private\State_DashFront.cpp" />
-    <ClCompile Include="..\Private\UIPlayer_HP.cpp">
-      <Filter>03. GameObject\UIObjects\02.UI\PlayerHP</Filter>
-    </ClCompile>
-    <ClCompile Include="..\Private\UIProgress_Component.cpp">
-      <Filter>05. Component\UI\Progress</Filter>
-    </ClCompile>
-    <ClCompile Include="..\Private\UIButton_Component.cpp">
-      <Filter>05. Component\UI\Button</Filter>
-    </ClCompile>
-    <ClCompile Include="..\Private\UIMonster_HP.cpp">
-      <Filter>03. GameObject\UIObjects\02.UI\MonsterHP</Filter>
-    </ClCompile>
     <ClCompile Include="..\private\ImGui_FrameLayout.cpp">
       <Filter>07. System\02. Debug_ImGui\Layout\Frame</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\UIDelay_HP.cpp">
+      <Filter>03. GameObject\UIObjects\02.UI\Object Hp Bar\00.DelayHp</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\UIJust_Image.cpp">
+      <Filter>03. GameObject\UIObjects\02.UI\Image\JustImage</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\UISkill_BG.cpp">
+      <Filter>03. GameObject\UIObjects\02.UI\Image\SkillBG</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\UIProgress_Bar.cpp">
+      <Filter>03. GameObject\UIObjects\02.UI\Object Hp Bar\Progress Bar</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
