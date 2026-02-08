@@ -226,6 +226,19 @@ namespace Engine
 #pragma region Model_ComShader_Structures
 
 #pragma region BONE_CS
+
+	// output
+	typedef struct tagSRT
+	{
+		SimpleMath::Vector3         vScale;
+		float						Padding0;
+	
+		SimpleMath::Vector4			vQuat;
+
+		SimpleMath::Vector3			vTranslation;
+		float						Padding1;
+	}CS_SRT;
+	 
 	// 불변 데이터
 	typedef struct tagBone_Immu_Element
 	{
@@ -289,18 +302,6 @@ namespace Engine
 
 		SimpleMath::Vector3  Padding0 = {};
 	}CS_MU_TRACK;
-
-	// output
-	//typedef struct tagBone_Output
-	//{
-	//	float3              vScale;
-	//	uint                iCurKeyFrameIndex;
-
-	//	float4              vQuat;
-
-	//	float3              vTranslation;
-	//	uint                iAnimIndex
-	//}CS_OUT_ANIME;
 #pragma endregion
 
 #pragma region ANIM_Blendd_CS

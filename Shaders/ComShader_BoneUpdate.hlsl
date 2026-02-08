@@ -23,7 +23,7 @@ struct MU_BoneNums
     float3 Padding0;
 };
 
-struct MU_SRT
+struct SRT
 {
     float3 vScale;
     float  Padding0;
@@ -48,7 +48,7 @@ cbuffer MU_BONENUMS
 
 StructuredBuffer<IMMU_ELEMENT>  IMMU_BONEDATA;
 StructuredBuffer<MU_ELEMENT>    MU_INDEXES;
-StructuredBuffer<MU_SRT>        MU_SRTS;
+StructuredBuffer<SRT>           MU_SRTS;
 
 RWStructuredBuffer<BONE_OUTPUT> BONECOMBINED_TRANSFORMS;
 

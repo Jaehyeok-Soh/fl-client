@@ -6,7 +6,7 @@
 // 뼈 기준으로 들어옴
 
 // 가변 데이터 : gpu
-struct MU_SRT
+struct SRT
 {
     float3  vScale;
     float   Padding0;
@@ -25,26 +25,15 @@ struct MU_ELEMENT_ONCE
     float2  Padding0;
 };
 
-// out put
-struct BLENDANIM_OUTPUT
-{
-    float3  vScale;
-    float   Padding0;
-    
-    float4  vQuat;
-    
-    float3  vTranslation;
-    float   Padding1;
-};
-
 cbuffer MU_RATIO
 {
     MU_ELEMENT_ONCE g_InputMU;
 };
-StructuredBuffer<MU_SRT> MU_PRETRANSFORMS;
-StructuredBuffer<MU_SRT> MU_CURTRANSFORMS;
+StructuredBuffer<SRT> MU_PRETRANSFORMS;
+StructuredBuffer<SRT> MU_CURTRANSFORMS;
 
-RWStructuredBuffer<BLENDANIM_OUTPUT> UPDATE_DATA; // bone 인덱스랑 1 : 1 매칭 -> bone update때 문제 없도록 하기 위함
+RWStructuredBuffer<SRT> BLEND_OUTPUT; // bone 인덱스랑 1 : 1 매칭 -> bone update때 문제 없도록 하기 위함
+StructuredBuffer<SRT>   BLEND_OUTPUT_SRV; 
 
 // Warp/Wavefront는 32명씩 묶여서 연산을 한다.
 [numthreads(32, 1, 1)]
@@ -65,9 +54,9 @@ void CS_Main(uint3 id : SV_DispatchThreadID)
         vTranslation = lerp(MU_PRETRANSFORMS[iBoneIdx].vTranslation, MU_CURTRANSFORMS[iBoneIdx].vTranslation, g_InputMU.fRatio);
     
     // 값 저장
-    UPDATE_DATA[iBoneIdx].vScale        = vScale;
-    UPDATE_DATA[iBoneIdx].vQuat         = vQuat;
-    UPDATE_DATA[iBoneIdx].vTranslation  = vTranslation;
+    BLEND_OUTPUT[iBoneIdx].vScale = vScale;
+    BLEND_OUTPUT[iBoneIdx].vQuat = vQuat;
+    BLEND_OUTPUT[iBoneIdx].vTranslation = vTranslation;
 }
 
 technique11 T0

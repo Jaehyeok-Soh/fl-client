@@ -38,7 +38,7 @@ struct MU_ELEMENT
 };
 
 // out put
-struct CHANNEL_OUTPUT
+struct SRT
 {
     float3              vScale;
     float               Padding0;
@@ -57,7 +57,8 @@ cbuffer MU_Track
 StructuredBuffer<IMMU_KEYFRAME> IMMU_KEYFRAMS;          // 한 애니메이션에 대한 모든 keyframe 정보를 일차원 배열로 들고 있는다
 StructuredBuffer<IMMU_ELEMENT>  IMMU_CHANNELDATAS;      // 한 채널에 대한 정보들            :  이 애니메이션 channel 수 만큼
 
-RWStructuredBuffer<CHANNEL_OUTPUT> UPDATE_DATA;         // bone 인덱스랑 1 : 1 매칭 -> bone update때 문제 없도록 하기 위함
+RWStructuredBuffer<SRT> CHANNEL_OUTPUT; // bone 인덱스랑 1 : 1 매칭 -> bone update때 문제 없도록 하기 위함
+StructuredBuffer<SRT>   CHANNEL_OUTPUT_SRV;
 
 
 uint BinarySearchKeyframe(float trackPos, uint firstIdx, uint keyCount)
@@ -162,9 +163,9 @@ void CS_Main(uint3 id : SV_DispatchThreadID)
     
     // 결과 값 바인드
 
-    UPDATE_DATA[iBoneIdx].vScale                = vScale;
-    UPDATE_DATA[iBoneIdx].vQuat                 = vQuat;
-    UPDATE_DATA[iBoneIdx].vTranslation          = vTranslation;
+    CHANNEL_OUTPUT[iBoneIdx].vScale = vScale;
+    CHANNEL_OUTPUT[iBoneIdx].vQuat = vQuat;
+    CHANNEL_OUTPUT[iBoneIdx].vTranslation = vTranslation;
 }
 
 technique11 T0
