@@ -82,15 +82,13 @@ HRESULT StructuredBuffer::Copy_Data(void* data, _uint iElementSize, _uint iCount
 
 HRESULT StructuredBuffer::Resize(void* data, _uint iElementSize, _uint iNewNumElements)
 {
-	if (m_iElementCount == iNewNumElements) return S_OK;
-
 	// 기존 리소스 해제
 	Safe_Release(m_pBuffer);
 	Safe_Release(m_pSRV);
 	Safe_Release(m_pUAV);
 
 	Initialize(iElementSize, iNewNumElements);
-	Copy_Data(data, iElementSize, iNewNumElements);
+	return Copy_Data(data, iElementSize, iNewNumElements);
 }
 
 StructuredBuffer* StructuredBuffer::Create(ID3D11Device* pDevice, ID3D11DeviceContext* pDeviceContext, _uint iElementSize, _uint iNumElements)

@@ -244,12 +244,16 @@ HRESULT CLoader::Loading_For_Effect()
 	}
 
 	/* Effect Data Model */
+	wstring basicBoxPath = L"../../Resources/Models/Map/Level/BasicShapes/Model/";
+
 	CUEMapDataLoader* pMapDataLoader = CUEMapDataLoader::Create(m_pDevice, m_pDeviceContext);
 	if (pMapDataLoader == nullptr) return E_FAIL;
 	if (FAILED(pMapDataLoader->Make_Prototype(ENUM_TO_UINT(ELevelType::EFFECT), L"../../Resources/Models/Effect_FBX/blade/Model/")))
 		return E_FAIL;
+	if (FAILED(pMapDataLoader->Make_Prototype(ENUM_TO_UINT(ELevelType::EFFECT), basicBoxPath)))
+		return E_FAIL;
 	Safe_Release(pMapDataLoader);
-
+	
 	Loading_Textures_Effect(L"../../Resources/Textures/Effect");
 
 	m_isFinished = true;

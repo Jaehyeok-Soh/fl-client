@@ -57,7 +57,8 @@ _int CPhysics_CCTManager::GetNumCharacterControllers()
 
 void CPhysics_CCTManager::ReleaseCharacter(PxController* cct)
 {
-	PX_RELEASE(cct);
+	if (cct)
+		PX_RELEASE(cct);
 }
 
 void CPhysics_CCTManager::ReleaseCCTManager()
@@ -110,7 +111,9 @@ void CPhysics_CCTManager::Free()
 	Safe_Release(m_pResourceManager);
 
 	ReleaseCCTManager();
-	PX_RELEASE(m_pControllerManager);
+
+	if (m_pControllerManager)
+		PX_RELEASE(m_pControllerManager);
 
 	Safe_Release(m_pDevice);
 	Safe_Release(m_pContext);

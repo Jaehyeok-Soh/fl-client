@@ -752,13 +752,13 @@ void CGameInstance::Destroy_Engine()
 	Safe_Release(m_pPicking);
 	Safe_Release(m_pGameData_Manager);
 	Safe_Release(m_pPrototype_Manager);
-	Safe_Release(m_pPhysics_Module);
 	Safe_Release(m_pLevel_Manager);
 	Safe_Release(m_pLight_Manager);
 	Safe_Release(m_pEvent_Manager);
 	Safe_Release(m_pEventBus_Manager);
 	Safe_Release(m_pShaderAsset_Manager);
 	Safe_Release(m_pResource_Manager);
+	Safe_Release(m_pPhysics_Module);
 	Safe_Release(m_pGraphic_Device);
 
 	CGameInstance::GetInstance()->DestroyInstance();
@@ -948,13 +948,13 @@ void CGameInstance::Free()
 	Safe_Release(m_pPicking);
 	Safe_Release(m_pGameData_Manager);
 	Safe_Release(m_pPrototype_Manager);
-	Safe_Release(m_pPhysics_Module);
 	Safe_Release(m_pLevel_Manager);
 	Safe_Release(m_pEvent_Manager);
 	Safe_Release(m_pEventBus_Manager);
 	Safe_Release(m_pShaderAsset_Manager);
 	Safe_Release(m_pResource_Manager);
 	Safe_Release(m_pUIAction_Registry);
+	Safe_Release(m_pPhysics_Module);
 	Safe_Release(m_pGraphic_Device);
 	Super::Free();
 }

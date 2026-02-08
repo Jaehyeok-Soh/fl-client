@@ -3,6 +3,13 @@
 
 NS_BEGIN(Tool)
 
+enum class E_PartsObjectID
+{
+	NONE = 0,
+	Effect_Particle,
+	Effect_ForceField,
+};
+
 class Tool_PartObject :
     public CToolObject
 {
@@ -11,6 +18,7 @@ public:
 	typedef struct tagPartObjectDesc : public Super::TOOLOBJECT_DESC
 	{
 		const Matrix* pMatParent = { nullptr };
+		E_PartsObjectID iPartsID = {};
 	}PARTOBJ_DESC;
 
 protected:
@@ -34,6 +42,8 @@ public:
 
 public:
 	void Set_Parent(CGameObject* pGo);
+	void Set_ToolPartsObjectID(E_PartsObjectID eID) { m_iToolObjectID = eID; }
+	const E_PartsObjectID& Get_ToolPartsObjectID() {return m_iToolObjectID;}
 	CGameObject* Get_Parent() { return m_pParentObject; }
 
 protected:
@@ -51,6 +61,8 @@ public:
 	virtual CGameObject* Clone(void* pArg) = 0;
 	virtual void Free() override;
 
+private:
+	E_PartsObjectID		m_iToolObjectID = E_PartsObjectID::NONE;
 };
 
 NS_END
