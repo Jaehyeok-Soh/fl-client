@@ -3,7 +3,7 @@
 #include "Folder.h"
 #include "File.h"
 #include "MapToolManager.h"
-#include "StaticModel.h"
+#include "MapObject.h"
 
 CPanel_FileExplore::CPanel_FileExplore(const _char* pLabel, CLevel* pOwner, ID3D11Device* pDevice, ID3D11DeviceContext* pDeviceContext)
 	: CImGui_Panel(pLabel, pOwner, pDevice, pDeviceContext), m_pImFileBrowser{}
@@ -130,14 +130,14 @@ HRESULT CPanel_FileExplore::Render_FileMoustRightButton(const wstring& wstrPath)
 
 	if (ImGui::Selectable("Make Model"))
 	{
-		CStaticModel::STATICMODEL_DESC tDesc{};
-		tDesc.tData.tUsingModelInfo.wstrName = path(wstrPath).filename().stem();
-		tDesc.tData.tUsingModelInfo.wstrPath = wstrPath;
-		tDesc.isLoaded = false;
-		tDesc.iLevelIndex = ENUM_TO_UINT(ELevelType::MAP);
-		tDesc.eState = CMapObject::EState::Preview;
-		tDesc.wstrLayerTag = g_wszStaticModelLayer;
-		m_pMapToolManager->Make_MapObject(EMapObject_Type::STATICMODEL ,&tDesc);
+		//CStaticModel::STATICMODEL_DESC tDesc{};
+		//tDesc.tData.tUsingModelInfo.wstrName = path(wstrPath).filename().stem();
+		//tDesc.tData.tUsingModelInfo.wstrPath = wstrPath;
+		//tDesc.isLoaded = false;
+		//tDesc.iLevelIndex = ENUM_TO_UINT(ELevelType::MAP);
+		//tDesc.eState = CMapObject::EState::Preview;
+		//tDesc.wstrLayerTag = g_wszStaticModelLayer;
+		//m_pMapToolManager->Make_MapObject(EMapObject_Type::STATICMODEL ,&tDesc);
 	}
 
 	return S_OK;

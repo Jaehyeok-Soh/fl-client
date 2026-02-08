@@ -22,6 +22,7 @@ VS_OUT_INST_MESH VS_MAIN(VS_IN_INST_MESH input)
     Out.vNormal = normalize(mul(input.vNormal, (float3x3) input.matTransform));
     Out.vTangent = normalize(mul(input.vTangent, (float3x3) input.matTransform));
     Out.vBinormal = normalize(mul(input.vBinormal, (float3x3) input.matTransform));
+   
     
     return Out;
 }
@@ -45,7 +46,7 @@ VS_OUT_INST_MESH VS_SELECT(VS_IN_INST_MESH input)
     return Out;
 }
 
-
+                                                                                                                           
 PS_OUT_DEFFERED PS_MAIN(PS_IN_INST_MESH input)
 {
     PS_OUT_DEFFERED output = (PS_OUT_DEFFERED)0;
@@ -61,6 +62,9 @@ PS_OUT_DEFFERED PS_MAIN(PS_IN_INST_MESH input)
     
     output.vDepth = float4(input.vProjPos.z / input.vProjPos.w, input.vProjPos.w, 0.f, 0.f);
     
+    
+    if(output.vDiffuse.a < 0.1f)
+        discard;
     
     
     return output;

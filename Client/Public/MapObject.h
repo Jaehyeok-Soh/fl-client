@@ -22,6 +22,7 @@ public:
 	typedef struct tagMapObjectDesc : public CGameObject::GAMEOBJECT_DESC
 	{
 		Client::EMapObject_Type		eType{ Client::EMapObject_Type::END };
+		vector<DTO::SRT_DATA>		vecSRT{};
 	}MAPOBJECT_DESC;
 protected:
 	CMapObject(ID3D11Device* pDevice, ID3D11DeviceContext* pContext);

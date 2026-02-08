@@ -169,28 +169,14 @@ void from_json(const json& LoadJson, TMap_StaticModelData& tData)
 }
 #pragma endregion
 
-#pragma region Map InstanceModle
-void to_json(json& SaveJson, const TMap_InstanceModelData& tData)
-{
-	SaveJson = json
-	{
-		{ "Type", tData.eType },
-		{ "strTag", tData.strTag },
-		{ "Usage" , Engine_Utils::D3D11_USAGE_ToString(tData.eInstance_Usage)},
-		{ "SRTs" , tData.vecSRTData},
-		{ "Using Model Info", tData.tUsingModelInfo}
-	};
-}
-void from_json(const json& LoadJson, TMap_InstanceModelData& tData)
-{
-	LoadJson.at("strTag").get_to(tData.strTag);
-	if (LoadJson.contains("Usage"))
-		Engine_Utils::D3D11_USAGE_ToEnum(LoadJson["Usage"].get<string>());
-	if (LoadJson.contains("SRTs"))
-		tData.vecSRTData = LoadJson["SRTs"];
-	if (LoadJson.contains("Using Model Info"))
-		tData.tUsingModelInfo = LoadJson["Using Model Info"];
-}
-#pragma endregion
 NS_END
 
+json CData_MapObject::ToJson() const
+{
+	return json();
+}
+
+HRESULT CData_MapObject::FromJson(const json& j)
+{
+	return E_NOTIMPL;
+}

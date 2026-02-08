@@ -162,7 +162,6 @@
     <ClInclude Include="..\Public\Folder.h" />
     <ClInclude Include="..\Public\Grid.h" />
     <ClInclude Include="..\Public\imfilebrowser.h" />
-    <ClInclude Include="..\Public\InstanceModel.h" />
     <ClInclude Include="..\public\Level_Logo.h" />
     <ClInclude Include="..\Public\MapToolManager.h" />
     <ClInclude Include="..\public\Panel_FileExplore.h" />
@@ -211,7 +210,6 @@
     <ClInclude Include="..\Public\Panel_ModelConverter.h" />
     <ClInclude Include="..\Public\CParticle_System_Panel.h" />
     <ClInclude Include="..\Public\Picking_ToolManager.h" />
-    <ClInclude Include="..\Public\StaticModel.h" />
     <ClInclude Include="..\Public\ToolCanvas.h" />
     <ClInclude Include="..\Public\ToolObject.h" />
     <ClInclude Include="..\Public\ToolUI.h" />
@@ -248,9 +246,6 @@
     <ClCompile Include="..\Private\EffectType_Selection_Panel.cpp" />
     <ClCompile Include="..\Private\File.cpp" />
     <ClCompile Include="..\Private\Folder.cpp" />
-    <ClCompile Include="..\Private\InstanceModel.cpp">
-      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">false</ExcludedFromBuild>
-    </ClCompile>
     <ClCompile Include="..\private\Level_Logo.cpp" />
     <ClCompile Include="..\Private\Grid.cpp" />
     <ClCompile Include="..\Private\MapToolManager.cpp" />
@@ -338,7 +333,6 @@
     <ClCompile Include="..\Private\Panel_ModelConverter.cpp" />
     <ClCompile Include="..\Private\CParticle_System_Panel.cpp" />
     <ClCompile Include="..\Private\Picking_ToolManager.cpp" />
-    <ClCompile Include="..\Private\StaticModel.cpp" />
     <ClCompile Include="..\Private\ToolCanvas.cpp" />
     <ClCompile Include="..\Private\ToolObject.cpp" />
     <ClCompile Include="..\Private\ToolUI.cpp" />

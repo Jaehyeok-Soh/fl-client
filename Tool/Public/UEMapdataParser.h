@@ -65,15 +65,15 @@ public:
 	void						Set_MulScale(float fMulScale) { m_fMulScale = fMulScale; }
 	float						Get_MulScale() const { return m_fMulScale; }
 
-	vector<wstring>			   Get_ConvertedFilePathList();
+	vector<wstring>				Get_ConvertedFilePathList();
 
 public:
-	HRESULT					   Convert_UnrealRawMapData(const wchar_t* wszUERawDataJsonFile);
-	HRESULT					   Batch_UnrealRawMapData(const wchar_t* wwszFilePath);
+	HRESULT						Convert_UnrealRawMapData(const wchar_t* wszUERawDataJsonFile);
+	HRESULT						Batch_UnrealRawMapData(const wchar_t* wwszFilePath);
 
 public:
-	HRESULT					   Save_ConvertedRawMapData(const wchar_t* wszFilePath);
-	HRESULT					   Save_FilteringRawMapData(const wchar_t* wszFilePath);
+	HRESULT						Save_ConvertedRawMapData(const wchar_t* wszFilePath);
+	HRESULT						Save_FilteringRawMapData(const wchar_t* wszFilePath);
 
 public:
 	const wstring			m_WstringConverted{ L"_Converted.json" };

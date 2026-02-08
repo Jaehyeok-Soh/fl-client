@@ -61,16 +61,11 @@ void	CMapObject::Update(const _float fTimeDelta)
 void	CMapObject::Update_Late(const _float fTimeelta)
 {
 	Super::Update_Late(fTimeelta);
-
-
-
 }
 void	CMapObject::Ready_Before_Render(const _float fTimeDelta)
 {
 	Super::Ready_Before_Render(fTimeDelta);
 }
-
-
 
 HRESULT CMapObject::Ready_OverrideMtl(const DTO::USING_MODEL_INFO& tUsingModelInfo)
 {
@@ -110,38 +105,52 @@ HRESULT CMapObject::Ready_OverrideMtl(const DTO::USING_MODEL_INFO& tUsingModelIn
             iIndex++;
             continue;
         }
+        /* Mtl Json 파일이 있는지 확인 */
+        if (!std::filesystem::exists(OverrideMtl.wstrMtl_JsonFile_Path))
+        {
+            //MessageBox(nullptr  , OverrideMtl.wstrMtl_JsonFile_Path.c_str() , MB_OK , 0);
+            continue;
+        }
 
+        bool isFailed{ false };
         for (auto& pairTexturePath : OverrideMtl.vecUsingTextureInfo)
         {
             tResourceTextureOriginDecs.wstrPath = pairTexturePath.second;
             tResourceTextureOriginDecs.wstrName = path(pairTexturePath.second).filename().stem().wstring();
             CTextureBase* pBase = m_pGameInstance->GetOrAddTexture(tResourceTextureOriginDecs.wstrName, &tResourceTextureOriginDecs);
-            Safe_Release(pBase);
+            if (!pBase)
+            {
+                /* Mtl Json 파일은 있어서 텍스처경로를 읽었지만 텍스처에 그 경로가 없을경우  */
+                MessageBox(nullptr, wstring(L" Ovrride Mtl Make Texture Failed(Check File): " + tResourceTextureOriginDecs.wstrPath).c_str(), MB_OK, 0);
+                isFailed = true;
+                break;
+            }
+            else
+                Safe_Release(pBase);
 
             vecMateiralTexturePath[Get_IndexByMaterialSlotName(pairTexturePath.first)]
                 = Engine_Utils::ToString(tResourceTextureOriginDecs.wstrName);
         }
-
-        CMaterial* pMtl = m_pGameInstance->Get_Resource<CMaterial>(OverrideMtl.wstrMtl_JsonFile_Name);
-        if (pMtl == nullptr)
+        if (!isFailed)
         {
-            tDesc.wstrName = OverrideMtl.wstrMtl_JsonFile_Name;
-            tDesc.wstrPath = OverrideMtl.wstrMtl_JsonFile_Path;
-            tDesc.spanTags = vecMateiralTexturePath;
-            m_pGameInstance->Add_Resource<CMaterial>(tDesc.wstrName, CMaterial::Create(m_pDevice, m_pDeviceContext, &tDesc));
-            pMtl = m_pGameInstance->Get_Resource<CMaterial>(OverrideMtl.wstrMtl_JsonFile_Name);
+            CMaterial* pMtl = m_pGameInstance->Get_Resource<CMaterial>(OverrideMtl.wstrMtl_JsonFile_Name);
+
+            if (pMtl == nullptr)
+            {
+                tDesc.wstrName = OverrideMtl.wstrMtl_JsonFile_Name;
+                tDesc.wstrPath = OverrideMtl.wstrMtl_JsonFile_Path;
+                tDesc.spanTags = vecMateiralTexturePath;
+                m_pGameInstance->Add_Resource<CMaterial>(tDesc.wstrName, CMaterial::Create(m_pDevice, m_pDeviceContext, &tDesc));
+                pMtl = m_pGameInstance->Get_Resource<CMaterial>(OverrideMtl.wstrMtl_JsonFile_Name);
+            }
+            m_vecOverrideMaterials[iIndex] = pMtl;
         }
 
-        if (pMtl == nullptr)  return E_FAIL;
-        /* Override Mtl 값 가져오기 */
-        m_vecOverrideMaterials[iIndex++] = pMtl;
-
-        /* 비우기 */
         std::fill(vecMateiralTexturePath.begin(), vecMateiralTexturePath.end(), "");
+        ++iIndex;
     }
 
     return S_OK;
-
 }
 
 

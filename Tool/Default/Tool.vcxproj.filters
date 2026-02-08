@@ -244,6 +244,9 @@
     <Filter Include="02. GameObjects\Map\00. MapObject\02. InstanceModel">
       <UniqueIdentifier>{32494c10-0bf8-420f-a857-a2d263860bfa}</UniqueIdentifier>
     </Filter>
+    <Filter Include="02. GameObjects\Map\00. MapObject\03. BatchObject">
+      <UniqueIdentifier>{4cbea894-fe8a-484a-b84b-a0522058102a}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="framework.h">
@@ -393,9 +396,6 @@
     <ClInclude Include="..\Public\MapObject.h">
       <Filter>02. GameObjects\Map\00. MapObject\00. MapObject</Filter>
     </ClInclude>
-    <ClInclude Include="..\Public\StaticModel.h">
-      <Filter>02. GameObjects\Map\00. MapObject\01. StaticModel</Filter>
-    </ClInclude>
     <ClInclude Include="..\Public\CParticle_System_Panel.h">
       <Filter>03. Level\Effect\Effect_Panel\Particle_System_Panel</Filter>
     </ClInclude>
@@ -491,9 +491,6 @@
     </ClInclude>
     <ClInclude Include="..\Public\Builder_Map.h">
       <Filter>09. Builder\Map</Filter>
-    </ClInclude>
-    <ClInclude Include="..\Public\InstanceModel.h">
-      <Filter>02. GameObjects\Map\00. MapObject\02. InstanceModel</Filter>
     </ClInclude>
     <ClInclude Include="..\Public\UITargetAction_Tool.h">
       <Filter>02. GameObjects\UI\00.Action</Filter>
@@ -642,9 +639,6 @@
     <ClCompile Include="..\Private\MapObject.cpp">
       <Filter>02. GameObjects\Map\00. MapObject\00. MapObject</Filter>
     </ClCompile>
-    <ClCompile Include="..\Private\StaticModel.cpp">
-      <Filter>02. GameObjects\Map\00. MapObject\01. StaticModel</Filter>
-    </ClCompile>
     <ClCompile Include="..\Private\Panel_MapDataController.cpp">
       <Filter>06. ImGui\01. Panel\Map\Panel_MapDataControler</Filter>
     </ClCompile>
@@ -731,9 +725,6 @@
     </ClCompile>
     <ClCompile Include="..\Private\Builder_Map.cpp">
       <Filter>09. Builder\Map</Filter>
-    </ClCompile>
-    <ClCompile Include="..\Private\InstanceModel.cpp">
-      <Filter>02. GameObjects\Map\00. MapObject\02. InstanceModel</Filter>
     </ClCompile>
     <ClCompile Include="..\Private\UITargetAction_Tool.cpp">
       <Filter>02. GameObjects\UI\00.Action</Filter>

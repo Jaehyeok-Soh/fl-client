@@ -135,6 +135,7 @@ HRESULT CStaticModel::Ready_PhysicsRigidBody(STATICMODEL_DESC* pDesc)
 		return E_FAIL;
 
 	return S_OK;
+
 }
 
 HRESULT CStaticModel::Awake(const _uint iCurrentLevelID)
