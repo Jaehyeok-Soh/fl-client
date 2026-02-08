@@ -195,7 +195,11 @@ HRESULT CModelAnimation::Ready_Buffers(CComputeShader* pAnimESahder)
 	// 3. struct buffer class 생성
 	m_pKeyFrameBuffer = StructuredBuffer::Create(m_pDevice, m_pDeviceContext, sizeof(CS_IMMU_ANIM_KEYFRAME), m_iKeyFrameBufferSize);
 	m_pChannelDataBuffer = StructuredBuffer::Create(m_pDevice, m_pDeviceContext, sizeof(CS_IMMU_ANIM_CHANNELDATA), m_iChannelSize);
-	
+
+	// 4. buffer에 값 넣어줌
+	m_pKeyFrameBuffer->Copy_Data(pIniailKeyData, sizeof(CS_IMMU_ANIM_KEYFRAME), m_iKeyFrameBufferSize);
+	m_pChannelDataBuffer->Copy_Data(pIniailChannelData, sizeof(CS_IMMU_ANIM_CHANNELDATA), m_iChannelSize);
+
 	// 4. SRV 연결
 	m_pInputKeySB_SRV = pAnimESahder->Get_SRV("IMMU_KEYFRAMS");
 	m_pInputKeySB_SRV->SetResource(m_pKeyFrameBuffer->Get_SRV());
