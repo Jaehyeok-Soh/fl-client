@@ -124,9 +124,6 @@
     <Filter Include="98. Defines\pch">
       <UniqueIdentifier>{6a433bfc-3f5f-420f-ac46-69cffb0edf23}</UniqueIdentifier>
     </Filter>
-    <Filter Include="98. Defines\pch">
-      <UniqueIdentifier>{6a433bfc-3f5f-420f-ac46-69cffb0edf23}</UniqueIdentifier>
-    </Filter>
     <Filter Include="09. Builder">
       <UniqueIdentifier>{afa9ad94-11da-4af6-822f-8784ae7231ad}</UniqueIdentifier>
     </Filter>
@@ -465,12 +462,6 @@
     <ClInclude Include="..\public\Level_Logo.h">
       <Filter>03. Level\Logo</Filter>
     </ClInclude>
-    <ClInclude Include="..\Public\Builder_UI.h">
-      <Filter>09. Builder\UI</Filter>
-    </ClInclude>
-    <ClInclude Include="..\public\Level_Logo.h">
-      <Filter>03. Level\Logo</Filter>
-    </ClInclude>
     <ClInclude Include="..\Public\Tool_Defines.h">
       <Filter>98. Defines\Tool_Define</Filter>
     </ClInclude>
@@ -495,8 +486,6 @@
     <ClInclude Include="..\Public\Gravity_Force.h">
       <Filter>03. Level\Effect\Effect\Gravity_Force</Filter>
     </ClInclude>
-    <ClInclude Include="..\Public\UITargetAction_Tool.h">
-      <Filter>02. GameObjects\UI\00.Action</Filter>
     <ClInclude Include="..\Public\UIButton_Component.h">
       <Filter>04. Component\UI\Button</Filter>
     </ClInclude>
@@ -734,8 +723,6 @@
     <ClCompile Include="..\Private\Gravity_Force.cpp">
       <Filter>03. Level\Effect\Effect\Gravity_Force</Filter>
     </ClCompile>
-    <ClCompile Include="..\Private\UITargetAction_Tool.cpp">
-      <Filter>02. GameObjects\UI\00.Action</Filter>
     <ClCompile Include="..\Private\UIButton_Component.cpp">
       <Filter>04. Component\UI\Button</Filter>
     </ClCompile>
