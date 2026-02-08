@@ -84,6 +84,7 @@ HRESULT CEffectObject::Ready_Component_Shader()
         ShaderDesc.Input_StructBuffer.sBufferName = "IMMU_EFFECT_PARTICLE";
         ShaderDesc.Input_StructBuffer.iElementSize = sizeof(EFFECT_PARTICLE_IMMU_ELEMENT);
         ShaderDesc.Input_StructBuffer.iNumElements = m_tEffectDesc._Effect_MaxParticle;
+        ShaderDesc.InputBufferNum = 1;
 
         // 출력 버퍼
         ShaderDesc.OutPut_StructBuffer.sBufferName = "INSTANCE_OUTPUT";

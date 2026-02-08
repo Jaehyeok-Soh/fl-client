@@ -149,7 +149,7 @@ HRESULT CVIBuffer_Particle_Point::Set_ResizeBuffer_NoneUseRandomSeed()
 		MSG_BOX("VIBUFFER_PARTICLE_POINT : Can't Bind Effect Compute Data : ERROR SHADER NULLPTR");
 		return E_FAIL;
 	}
-	pShader->Resize_InputStruct(pInitialData, sizeof(EFFECT_PARTICLE_IMMU_ELEMENT), m_iInstanceCount);
+	pShader->Resize_InputStruct(0, pInitialData, sizeof(EFFECT_PARTICLE_IMMU_ELEMENT), m_iInstanceCount);
 	Safe_Delete_Array(pInitialData);
 
 	return S_OK;
@@ -240,7 +240,7 @@ HRESULT CVIBuffer_Particle_Point::Set_ResizeBuffer_UseRandomSeed()
 		MSG_BOX("VIBUFFER_PARTICLE_POINT : Can't Bind Effect Compute Data : ERROR SHADER NULLPTR");
 		return E_FAIL;
 	}
-	pShader->Resize_InputStruct(pInitialData, sizeof(EFFECT_PARTICLE_IMMU_ELEMENT), m_iInstanceCount);
+	pShader->Resize_InputStruct(0, pInitialData, sizeof(EFFECT_PARTICLE_IMMU_ELEMENT), m_iInstanceCount);
 	Safe_Delete_Array(pInitialData);
 
 	return S_OK;

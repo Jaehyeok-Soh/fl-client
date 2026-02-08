@@ -360,7 +360,8 @@ void CEffectObject::Update(const _float fTimeDelta)
     case DTO::E_SHAPETYPE::SPREAD:
     {
         CVIBuffer_Particle_Point* pInstance = Get_Component<CVIBuffer_Particle_Point>();
-        if (pInstance) pInstance->Update_Simulation(CTShader, Vec3{}, fTimeDelta, E_PARTICLE_MOVESTATE::SPREAD);
+        if (pInstance) pInstance->Update_Simulation(CTShader, Vec3{}, fTimeDelta, 
+            E_PARTICLE_MOVESTATE::SPREAD);
         break;
     }
     case DTO::E_SHAPETYPE::DROP:

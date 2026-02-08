@@ -39,8 +39,11 @@ public:
 	typedef struct ComShaderCopyDesc : public CComponent::COMPONENT_DESC
 	{
 		Data	Input_StructBuffer;
+		_uint	InputBufferNum;
+
 		Data	OutPut_StructBuffer;
 		string	Output_SRVBuffer_Name;
+
 	}COMSHADER_COPY_DESC;
 
 private:
@@ -72,32 +75,31 @@ public:
 	ID3DX11EffectSamplerVariable* Get_Sampler(string name);
 
 public:
-	void	Bind_SRV(_uint iSolt, ID3D11ShaderResourceView* pSRV);
-	void	Bind_UAV(_uint iSolt, ID3D11UnorderedAccessView* pUAV);
-	void	Bind_CB(_uint iSolt, ID3D11Buffer* pCB);
+	void	Bind_InputStructuredBuffer(_uint Index, ID3DX11EffectShaderResourceVariable* pSRV, StructuredBuffer* pSB);
 	void	Dispatch(_uint iX, _uint iY, _uint iZ);
 
 public:
-	StructuredBuffer* Get_Input_Buffer() { return m_pInputStructedBuffer; }
-	StructuredBuffer* Get_Output_Buffer() { return m_pOutputStructedBuffer; }
+	StructuredBuffer* Get_Input_Buffer(_uint Index);
+	StructuredBuffer* Get_Output_Buffer();
 
 public:
 	// Struct Buffer 전용
-	void Bind_InputStructuredBuffer_Data(void* pArg, _uint iElementSize, _uint iNumElements);
+	void Bind_InputStructuredBuffer_Data(_uint Index, void* pArg, _uint iElementSize, _uint iNumElements);
 
 public:
 	// Constant Buffer 전용
 	void Bind_Compute_EffectData(const EFFECT_PARTICLE_MU_ELEMENT& desc);
 
 public:
-	void	Resize_InputStruct(void* pArg, _uint iElementSize, _uint iNumElements);
-	void	Resize_OutputStruct(void* pArg, _uint iElementSize, _uint iNumElements);
+	void	Resize_InputStruct(_uint Index, void* pArg, _uint iElementSize, _uint iNumElements);
+	void	Resize_OutputStruct(_uint Index, void* pArg, _uint iElementSize, _uint iNumElements);
 
 private:
-	StructuredBuffer* m_pInputStructedBuffer = nullptr;
-	ID3DX11EffectShaderResourceVariable* m_pInputStructedBuffer_SRV = { nullptr };
+	//StructuredBuffer* m_pInputStructedBuffer = nullptr;
+	//ID3DX11EffectShaderResourceVariable* m_pInputStructedBuffer_SRV = { nullptr };
 
 	//std::map<string, std::pair<ID3DX11EffectShaderResourceVariable*, StructuredBuffer*>>	m_pInputStructuredBuffer = {};
+	std::vector<std::pair<ID3DX11EffectShaderResourceVariable*, StructuredBuffer*>>	m_pInputStructuredBuffer = {};
 
 	StructuredBuffer* m_pOutputStructedBuffer = nullptr;
 	ID3DX11EffectUnorderedAccessViewVariable* m_pOutputStructedBuffer_UAV = { nullptr };
