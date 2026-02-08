@@ -173,9 +173,10 @@ vector<MAPDATA_BASE*> CUEMapdataParser::Convert_UE_MapData(const vector<UE_MAP_D
 
 void CUEMapdataParser::Change_SRT(OUT SRT_DATA& tSRT_Data)
 {
-	//Matrix ScaleMatrix		= Matrix::Identity;
-	tSRT_Data.vScale_Isolated = tSRT_Data.vScale; // TEST: 소재혁 임시 추가
-	Matrix ScaleMatrix		= Matrix::CreateScale(tSRT_Data.vScale); // TEST: 소재혁 임시 수정
+	tSRT_Data.vScale_Isolated = tSRT_Data.vScale;
+	std::swap(tSRT_Data.vScale_Isolated.y, tSRT_Data.vScale_Isolated.z);
+	//Matrix ScaleMatrix		= Matrix::CreateScale(tSRT_Data.vScale);
+	Matrix ScaleMatrix		= Matrix::Identity;
 	Matrix TransMatrix		= Matrix::CreateTranslation(tSRT_Data.vPosition * m_fMulScale);
 	Matrix RotationMatrix	= Matrix::CreateFromQuaternion(tSRT_Data.vQuat);
 

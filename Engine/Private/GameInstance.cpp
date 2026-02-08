@@ -18,6 +18,7 @@
 #include "CameraMan.h"
 #include "Camera_Manager.h"
 #include "Level_Manager.h"
+#include "ShaderAsset_Manager.h"
 #include "DataRepository.h"
 #include "Input_Manager.h"
 #include "Graphic_Device.h"
@@ -85,6 +86,9 @@ HRESULT CGameInstance::Initialize_Engine(const ENGINE_DESC& Engine_Desc, _Inout_
 		return E_FAIL;
 
 	if (!(m_pSound_Manager = CSound_Manager::Create()))
+		return E_FAIL;
+
+	if (!(m_pShaderAsset_Manager = CShaderAsset_Manager::Create(*ppDevice, *ppContext)))
 		return E_FAIL;
 
 	if (!(m_pLight_Manager = CLight_Manager::Create(*ppDevice, *ppContext)))
@@ -249,9 +253,18 @@ const Vec3& CGameInstance::Picking_Get_RayDir(bool isLocal) const
 {
 	return m_pPicking->Get_RayDir(isLocal);
 }
-
-
 #pragma endregion
+
+#pragma region SHADERASSET_MANAGER
+CFxEffectAsset* CGameInstance::GetOrCreate_FxEffectAsset(const path& filePath)
+{
+	return m_pShaderAsset_Manager->GetOrCreate_FxEffectAsset(filePath);
+}
+CFxShaderVariant* CGameInstance::GetOrCreate_Variant(const path& filePath, EVtxLayout eVertexLayoutID)
+{
+	return m_pShaderAsset_Manager->GetOrCreate_Variant(filePath, eVertexLayoutID);
+}
+#pragma endregion 
 
 #pragma region LEVEL_MANAGER
 HRESULT CGameInstance::Immediately_ChangeLevel(_uint iNewLevelID, CLevel* pNewLevel)
@@ -719,12 +732,13 @@ void CGameInstance::Destroy_Engine()
 	Safe_Release(m_pPicking);
 	Safe_Release(m_pGameData_Manager);
 	Safe_Release(m_pPrototype_Manager);
-	Safe_Release(m_pPhysics_Module);
 	Safe_Release(m_pLevel_Manager);
 	Safe_Release(m_pLight_Manager);
 	Safe_Release(m_pEvent_Manager);
 	Safe_Release(m_pEventBus_Manager);
+	Safe_Release(m_pShaderAsset_Manager);
 	Safe_Release(m_pResource_Manager);
+	Safe_Release(m_pPhysics_Module);
 	Safe_Release(m_pGraphic_Device);
 
 	CGameInstance::GetInstance()->DestroyInstance();
@@ -909,12 +923,13 @@ void CGameInstance::Free()
 	Safe_Release(m_pPicking);
 	Safe_Release(m_pGameData_Manager);
 	Safe_Release(m_pPrototype_Manager);
-	Safe_Release(m_pPhysics_Module);
 	Safe_Release(m_pLevel_Manager);
 	Safe_Release(m_pEvent_Manager);
 	Safe_Release(m_pEventBus_Manager);
+	Safe_Release(m_pShaderAsset_Manager);
 	Safe_Release(m_pResource_Manager);
 	Safe_Release(m_pUIAction_Registry);
+	Safe_Release(m_pPhysics_Module);
 	Safe_Release(m_pGraphic_Device);
 	Super::Free();
 }

@@ -1,5 +1,6 @@
 #include "Engine_pch.h"
 #include "Engine_Utils.h"
+#include <cctype>
 #include <fstream>
 #include <filesystem>
 
@@ -87,6 +88,25 @@ void Engine_Utils::Add_Text(OUT wstring& wstr_out, const wstring& wstrfind, cons
     {
         wstr_out.insert(sztFinalPos, wstradd);
     }
+}
+
+wstring Engine_Utils::To_Lower(wstring s)
+{
+    for (auto& wch : s)
+        wch = static_cast<wchar_t>(::towlower(wch));
+    return s;
+}
+
+wstring Engine_Utils::Normalize_PathKey(const path& filePath)
+{
+    path src = filePath.lexically_normal();
+    wstring wstr = src.generic_wstring();
+    return To_Lower(src);
+}
+
+void Engine_Utils::Hash_HasCombine(size_t& seed, size_t value)
+{
+    seed ^= value + 0x9e3779b97f4a7c15ULL + (seed << 6) + (seed >> 2);
 }
 
 string Engine_Utils::NormalizePath(const std::filesystem::path& path)
