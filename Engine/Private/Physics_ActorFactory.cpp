@@ -83,14 +83,6 @@ PxRigidActor* CPhysics_ActorFactory::MakeStatic(const Matrix world, Vec3 scale, 
 		PxShape* newShape = nullptr;
 		PxMaterial* pMaterial = nullptr;
 
-		PxU32 matCount = shape->getNbMaterials();
-		if (matCount > 0)
-		{
-			vector<PxMaterial*> materials(matCount);
-			shape->getMaterials(materials.data(), matCount);
-			pMaterial = materials[0];
-		}
-
 		if (shape->getGeometry().getType() == PxGeometryType::ePLANE)
 		{
 			PxTransform localPose(PxVec3(0), PxQuat(PxHalfPi, PxVec3(0, 0, 1)));
@@ -104,23 +96,43 @@ PxRigidActor* CPhysics_ActorFactory::MakeStatic(const Matrix world, Vec3 scale, 
 
 			triGeom.scale = PxMeshScale(pScale);
 
-			if (pMaterial)
-				newShape = m_pPhysics->createShape(triGeom, *pMaterial);
+			if (!shape->isExclusive() && shape->getReferenceCount() > 0)
+			{
+				PxU32 matCount = shape->getNbMaterials();
+				if (matCount > 0)
+				{
+					vector<PxMaterial*> materials(matCount);
+					shape->getMaterials(materials.data(), matCount);
+					pMaterial = materials[0];
+				}
+
+				if (pMaterial)
+					newShape = m_pPhysics->createShape(triGeom, *pMaterial);
+			}
+			else
+			{
+				shape->setGeometry(triGeom);
+			}
 		}
 		else
 		{
 			continue;
 		}
 
-		if (newShape)
+		if (!shape->isExclusive() && shape->getReferenceCount() > 0)
 		{
-			newShape->setQueryFilterData(shape->getQueryFilterData());
-			newShape->setSimulationFilterData(shape->getSimulationFilterData());
-			newShape->setFlags(shape->getFlags());
+			if (newShape)
+			{
+				newShape->setQueryFilterData(shape->getQueryFilterData());
+				newShape->setSimulationFilterData(shape->getSimulationFilterData());
+				newShape->setFlags(shape->getFlags());
 
-			staticActor->attachShape(*newShape);
-			PX_RELEASE(newShape);
+				staticActor->attachShape(*newShape);
+				PX_RELEASE(newShape);
+			}
 		}
+		else
+			staticActor->attachShape(*shape);
 	}
 
 	return staticActor;

@@ -5,8 +5,7 @@
 
 NS_BEGIN(Engine)
 
-class CPhysics_FilterEventCallback :
-    public CBase , public PxSimulationEventCallback
+class CPhysics_FilterEventCallback final : public CBase , public PxSimulationEventCallback
 {
     typedef struct tagGameObjectInfo
     {

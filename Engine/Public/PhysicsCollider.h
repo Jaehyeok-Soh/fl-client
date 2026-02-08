@@ -31,9 +31,22 @@ public:
 
 	vector<PxShape*>& GetShapes() { return m_pColliderShapes; }
 	PHYSICSCOLLIDER_DESC* GetDesc() { return &m_tDesc; }
-	void SetCenter(Vec3 vCenter);
+	
+	CPhysicsCollider* SetTransform(_uint iIndex, const Matrix& matWorld);
+	CPhysicsCollider* SetTransform(const Matrix& matWorld);
+	
+	CPhysicsCollider* SetCenter(_uint iIndex, Vec3 vCenter);
+	CPhysicsCollider* SetCenter(Vec3 vCenter);
+
+	CPhysicsCollider* Rotation(_uint iIndex, Quat vQuat);
+	CPhysicsCollider* Rotation(Quat vQuat);
 
 	void SetCollisionFilter();
+
+private:
+	void UpdateActor();
+
+	void DeepCopy_Shapes(vector<PxShape*>& shapes);
 
 private:
 	ID3D11Device* m_pDevice = { nullptr };

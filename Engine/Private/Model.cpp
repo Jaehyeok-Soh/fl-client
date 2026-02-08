@@ -377,6 +377,11 @@ wstring CModel::Get_CurrentAnimationName() const
 	return m_vecAnimations[m_iCurrentAnimIndex]->Get_Name();
 }
 
+_float CModel::Get_AnimTrackPosition() const
+{
+	return m_vecAnimations[m_iCurrentAnimIndex]->Get_TrackPosition();
+}
+
 _bool CModel::Is_AnimTrackPositionBetween(_float fStartRatio, _float fEndRatio)
 {
 	return m_vecAnimations[m_iCurrentAnimIndex]->Is_TrackPositionBetween(fStartRatio, fEndRatio);

@@ -33,12 +33,13 @@ public:
 public:
     PxTransform XMMatrixToPxTransform(Matrix mat);
     Matrix PxTransformToXMMatrix(PxTransform pxTransform);
-    _bool HasNegativeScale(Matrix mat);
-    _int GetNegativeScaleAxis(const Matrix& mat);
     PxQuat GetPureRotation(Matrix mat);
     PxVec3 GetPureScale(Matrix mat);
+    _bool Execute_Overlap(PxGeometry& shape, PxTransform transform, OUT PxOverlapBuffer hit, PxQueryFilterData& filterData, PxQueryFilterCallback* filterCallback);
+    class CPhysics_QueryFilterCallback* GetQueryFilterCallback();
 #ifdef _DEBUG
     HRESULT Render(PxRigidActor* pActor, XMVECTOR color = DirectX::Colors::White);
+    HRESULT Render(const PxGeometry& geom, const PxTransform& transform, XMVECTOR color = DirectX::Colors::White);
 #endif // _DEBUG
 
 /// <summary>
@@ -62,6 +63,8 @@ public:
 public:
     vector<PxShape*> GetShape(PHYSICSCOLLIDER_DESC* pDesc);
     vector<PxShape*> GetMeshShape(PHYSICSCOLLIDER_DESC* pDesc);
+
+    vector<PxShape*> CopyShapes(vector<PxShape*>& shapes);
 
 /// <summary>
 /// Actor Factory : RigidBody »ý¼º

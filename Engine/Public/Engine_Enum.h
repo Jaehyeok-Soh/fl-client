@@ -81,6 +81,7 @@ namespace Engine
 		PX_RIGIDBODY,
 		PX_COLLIDER,
 		PX_CCT,
+		PX_ATTACKOVERLAP,
 		//
 		SCRIPT,
 		
@@ -259,7 +260,7 @@ namespace Engine
 
 	typedef struct tagPhysicsFilterGroup
 	{
-		enum Enum : PxU32
+		enum Enum : unsigned int
 		{
 			PLAYER = 1 << 0,
 			ATTACK = 1 << 1,

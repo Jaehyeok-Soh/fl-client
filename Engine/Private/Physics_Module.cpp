@@ -212,16 +212,6 @@ Matrix CPhysics_Module::PxTransformToXMMatrix(PxTransform pxTransform)
 	return m_pUtils->PxTransformToXMMatrix(pxTransform);
 }
 
-_bool CPhysics_Module::HasNegativeScale(Matrix mat)
-{
-	return m_pUtils->HasNegativeScale(mat);
-}
-
-_int CPhysics_Module::GetNegativeScaleAxis(const Matrix& mat)
-{
-	return m_pUtils->GetNegativeScaleAxis(mat);
-}
-
 PxQuat CPhysics_Module::GetPureRotation(Matrix mat)
 {
 	return m_pUtils->GetPureRotation(mat);
@@ -232,6 +222,16 @@ PxVec3 CPhysics_Module::GetPureScale(Matrix mat)
 	return m_pUtils->GetPureScale(mat);
 }
 
+_bool CPhysics_Module::Execute_Overlap(PxGeometry& shape, PxTransform transform, OUT PxOverlapBuffer hit, PxQueryFilterData& filterData, PxQueryFilterCallback* filterCallback)
+{
+	return m_pUtils->Execute_Overlap(shape, transform, hit, filterData, filterCallback);
+}
+
+CPhysics_QueryFilterCallback* CPhysics_Module::GetQueryFilterCallback()
+{
+	return m_pUtils->GetQueryFilterCallback();
+}
+
 #ifdef _DEBUG
 HRESULT CPhysics_Module::Render(PxRigidActor* pActor, XMVECTOR color)
 {
@@ -239,6 +239,13 @@ HRESULT CPhysics_Module::Render(PxRigidActor* pActor, XMVECTOR color)
 		return S_OK;
 
 	return m_pUtils->Render(pActor, color);
+}
+HRESULT CPhysics_Module::Render(const PxGeometry& geom, const PxTransform& transform, XMVECTOR color)
+{
+	if (!m_bEnabledDebugDraw)
+		return S_OK;
+
+	return m_pUtils->Render(geom, transform, color);
 }
 #endif // _DEBUG
 
@@ -274,6 +281,11 @@ vector<PxShape*> CPhysics_Module::GetShape(PHYSICSCOLLIDER_DESC* pDesc)
 vector<PxShape*> CPhysics_Module::GetMeshShape(PHYSICSCOLLIDER_DESC* pDesc)
 {
 	return m_pShapeFactory->GetMeshShape(pDesc);
+}
+
+vector<PxShape*> CPhysics_Module::CopyShapes(vector<PxShape*>& shapes)
+{
+	return m_pShapeFactory->CopyShapes(shapes);
 }
 
 vector<PxRigidActor*> CPhysics_Module::GetActor(PHYSICSRIGIDBODY_DESC* rigidBodyDesc, PHYSICSCOLLIDER_DESC* colliderDesc, vector<PxShape*>& shapes)

@@ -349,6 +349,12 @@
     <Filter Include="00. System\12. PhysX\Character\HitReport">
       <UniqueIdentifier>{705a6d42-dae5-4737-9ce3-59cb6eb8a9ae}</UniqueIdentifier>
     </Filter>
+    <Filter Include="00. System\05. Component\PhysicsAttackOverlap">
+      <UniqueIdentifier>{e6051635-bcb9-47b1-967c-a11e89a75828}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="00. System\05. Component\PhysicsAttackOverlap\ActiveAttackOverlap">
+      <UniqueIdentifier>{4d33d802-f923-4ecf-a8e4-2086a6c36141}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="..\Private\Timer.cpp">
@@ -730,6 +736,15 @@
     </ClCompile>
     <ClCompile Include="..\Private\Physics_NPCHitReport.cpp">
       <Filter>00. System\12. PhysX\Character\HitReport</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\PhysicsAttackOverlap.cpp">
+      <Filter>00. System\05. Component\PhysicsAttackOverlap</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\ActiveAttackOverlap.cpp">
+      <Filter>00. System\05. Component\PhysicsAttackOverlap\ActiveAttackOverlap</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\Physics_QueryFilterCallback.cpp">
+      <Filter>00. System\12. PhysX\EventCallback</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -1139,6 +1154,15 @@
     </ClInclude>
     <ClInclude Include="..\Public\Physics_NPCHitReport.h">
       <Filter>00. System\12. PhysX\Character\HitReport</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\PhysicsAttackOverlap.h">
+      <Filter>00. System\05. Component\PhysicsAttackOverlap</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\ActiveAttackOverlap.h">
+      <Filter>00. System\05. Component\PhysicsAttackOverlap\ActiveAttackOverlap</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\Physics_QueryFilterCallback.h">
+      <Filter>00. System\12. PhysX\EventCallback</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
