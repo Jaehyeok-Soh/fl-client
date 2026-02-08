@@ -57,9 +57,9 @@ PS_OUT PS_PROGRESS(PS_IN_POS_TEX input)
     
     if (mask <= 0.0f)
         discard;
+    
     return output;
 }
-
 
 
 PS_OUT PS_LOCKON(PS_IN_POS_TEX input)

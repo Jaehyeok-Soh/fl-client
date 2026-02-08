@@ -23,6 +23,7 @@ public:
 		Vec4 vColorTint;
 		int32_t iFillDir;
 		_float fDelay;
+		DTO::EUIOwnerType eOwnerType;
 	}TOOLUI_DESC;
 
 protected:

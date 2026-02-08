@@ -46,11 +46,17 @@ HRESULT CToolUI::Initialize(void* pArg)
 	m_vColorTint			= pDesc->vColorTint;
 	m_iShaderPass			= pDesc->iShaderPass;
 	m_iFillDir				= pDesc->iFillDir;
+	m_fDelay				= pDesc->fDelay;
+	m_eOwnerType			= pDesc->eOwnerType;
 
 	if (FAILED(Super::Initialize(pArg)))
 		return E_FAIL;
     if (FAILED(Ready_Components(pDesc)))
         return E_FAIL;
+
+	if (FAILED(Get_Component<CTexture>()->Add_DefaultTexture(m_wstrTextureTag, 0)))
+		return E_FAIL;
+
 
     return S_OK;
 }
