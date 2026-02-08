@@ -656,6 +656,19 @@ void CModel::Change_AnimationPlayState(AnimationPlayState eState)
 	m_eCurrentAnimationState = eState;
 }
 
+void CModel::Play_Animation(CComputeShader* pAnimEComShader, CComputeShader* pBoneComShader, _float fTimeDelta, CTransform* pOwnerTransform = nullptr, CPhysicsCCT* pOwnerPhyCCT = nullptr)
+{
+	// animation update
+	m_vecAnimations[m_iCurrentAnimIndex]->Update_TransformMatrices(pAnimEComShader, fTimeDelta, m_isAnimLoop, pOwnerTransform, pOwnerPhyCCT);
+
+	// animation 결과 blendCS에 bind
+	pBoneComShader->Bind_InputStructuredBuffer(ENUM_TO_UINT(CS_SB_IDX::MU_SRTS),
+		pAnimEComShader->Get_SRV("CHANNEL_OUTPUT_SRV"), pAnimEComShader->Get_Output_Buffer());
+
+	// bone updatezd
+	Update_BoneCombineTransformMatrix(pBoneComShader);
+}
+
 void CModel::Play_Begin(CComputeShader* pAnimEComShader)
 {
 	if(pAnimEComShader)
@@ -797,16 +810,24 @@ void CModel::Blend_Animation(CComputeShader* pBoneComShader, CComputeShader* pAn
 	if (pOwnerTransform)
 	{
 		m_vecAnimations[m_iPrevAnimIndex]->Update_BlendAnimation(pAnimEComShader, fTimeDelta, nullptr, pOwnerPhyCCT);
+		
+		// animation 결과 blendCS에 bind
+		pAnimBlendCS->Bind_InputStructuredBuffer(ENUM_TO_UINT(BLENDCS_SB_IDX::MU_PRESRT),
+			pAnimEComShader->Get_SRV("CHANNEL_OUTPUT_SRV"), pAnimEComShader->Get_Output_Buffer());
+		
+		
 		m_vecAnimations[m_iCurrentAnimIndex]->Update_BlendAnimation(pAnimEComShader, fTimeDelta, nullptr, pOwnerPhyCCT);
-	}
 
-	else
-	{
-		m_vecAnimations[m_iPrevAnimIndex]->Update_BlendAnimation(pAnimEComShader, fTimeDelta, m_pOwner->Get_Component<CTransform>(), m_pOwner->Get_Component<CPhysicsCCT>());
-		m_vecAnimations[m_iCurrentAnimIndex]->Update_BlendAnimation(pAnimEComShader, fTimeDelta, m_pOwner->Get_Component<CTransform>(), m_pOwner->Get_Component<CPhysicsCCT>());
+		// animation 결과 blendCS에 bind
+		pAnimBlendCS->Bind_InputStructuredBuffer(ENUM_TO_UINT(BLENDCS_SB_IDX::MU_CURSRT),
+			pAnimEComShader->Get_SRV("CHANNEL_OUTPUT_SRV"), pAnimEComShader->Get_Output_Buffer());
 	}
 
 	Lerp_Animation(pAnimBlendCS, fRatio);
+
+	// animation 결과 bone cs에 bind
+	pBoneComShader->Bind_InputStructuredBuffer(ENUM_TO_UINT(CModel::CS_SB_IDX::MU_SRTS),
+		pAnimBlendCS->Get_SRV("BLEND_OUTPUT_SRV"), pAnimBlendCS->Get_Output_Buffer());
 
 	Update_BoneCombineTransformMatrix(pBoneComShader);
 }

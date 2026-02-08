@@ -58,8 +58,16 @@ private:
 	enum class CS_SB_IDX : _uint
 	{
 		IMMU_BONE,
-		MU_GROUPIDX
+		MU_GROUPIDX,
+		MU_SRTS
 	};
+
+	enum class BLENDCS_SB_IDX : _uint
+	{
+		MU_PRESRT
+		, MU_CURSRT
+	};
+
 private:
 	CModel(ID3D11Device* pDevice, ID3D11DeviceContext* pDeviceContext);
 	explicit CModel(const CModel& rhs);
@@ -128,6 +136,8 @@ private:
 	void Update_AnimationPlayState(const _float fTimeDelta, CTransform* pOwnerTransform = nullptr, CPhysicsCCT* pOwnerPhyCCT = nullptr);
 	void End_AnimationPlayState(AnimationPlayState eState);
 	void Change_AnimationPlayState(AnimationPlayState eState);
+
+	void Play_Animation(CComputeShader* pAnimEComShader, CComputeShader* pBoneComShader, _float fTimeDelta, CTransform* pOwnerTransform = nullptr, CPhysicsCCT* pOwnerPhyCCT = nullptr);
 
 	void Play_Begin(CComputeShader* pAnimEComShader = nullptr);
 	void Play_Update(const _float fTimeDelta, CTransform* pOwnerTransform = nullptr, CPhysicsCCT* pOwnerPhyCCT = nullptr);

@@ -92,7 +92,7 @@ _bool CModelAnimation::Is_TrackPositionBetween(_float fStartRatio, _float fEndRa
 	return Is_TrackPositionAt(fStartRatio) && (Is_TrackPositionAt(fEndRatio) == false);
 }
 
-_bool CModelAnimation::Update_TransformMatrices(CComputeShader* pAnimEShader, _float fTimeDelta, _bool isLoop, CTransform* pOwnerTransform, CPhysicsCCT* pOwnerPhyCCT)
+_bool CModelAnimation::Update_TransformMatrices(CComputeShader* pAnimECS,_float fTimeDelta, _bool isLoop, CTransform* pOwnerTransform, CPhysicsCCT* pOwnerPhyCCT)
 {
 	// track 계산
 	m_fCurrentTrackPosition += m_fTickPerSecond * fTimeDelta;
@@ -108,12 +108,11 @@ _bool CModelAnimation::Update_TransformMatrices(CComputeShader* pAnimEShader, _f
 	// 가변 데이터 작성
 	CS_MU_TRACK tMuDesc{};
 	tMuDesc.fCurTrackPosition = m_fCurrentTrackPosition;
-	pAnimEShader->Bind_Compute_Track(tMuDesc);
+	pAnimECS->Bind_Compute_Track(tMuDesc);
 	
 	// dispatch
 	_uint iGroupX = (m_iChannelCount + 31) / 32;
-	pAnimEShader->Dispatch(iGroupX, 1, 1);
-
+	pAnimECS->Dispatch(iGroupX, 1, 1);
 
 	//m_iRootChannelIdx
 	if(m_iRootChannelIdx> 0)
@@ -122,10 +121,10 @@ _bool CModelAnimation::Update_TransformMatrices(CComputeShader* pAnimEShader, _f
 	return false;
 }
 
-void CModelAnimation::Update_BlendAnimation(CComputeShader* pAnimEShader, _float fTimeDelta, CTransform* pOwnerTransform, CPhysicsCCT* pOwnerPhyCCT)
+void CModelAnimation::Update_BlendAnimation(CComputeShader* pAnimECS, _float fTimeDelta, CTransform* pOwnerTransform, CPhysicsCCT* pOwnerPhyCCT)
 {
 	//내 애니메이션 정보 전달
-	Bind_AnimationEData(pAnimEShader);
+	Bind_AnimationEData(pAnimECS);
 
 	m_fCurrentTrackPosition += m_fTickPerSecond * fTimeDelta;
 	if (m_fCurrentTrackPosition >= m_fDuration)
@@ -136,11 +135,11 @@ void CModelAnimation::Update_BlendAnimation(CComputeShader* pAnimEShader, _float
 	// 가변 데이터 작성
 	CS_MU_TRACK tMuDesc{};
 	tMuDesc.fCurTrackPosition = m_fCurrentTrackPosition;
-	pAnimEShader->Bind_Compute_Track(tMuDesc);
+	pAnimECS->Bind_Compute_Track(tMuDesc);
 
 	// dispatch
 	_uint iGroupX = (m_iChannelCount + 31) / 32;
-	pAnimEShader->Dispatch(iGroupX, 1, 1);
+	pAnimECS->Dispatch(iGroupX, 1, 1);
 
 	//m_iRootChannelIdx
 	if (m_iRootChannelIdx > 0)
