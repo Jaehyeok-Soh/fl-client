@@ -14,7 +14,7 @@
 #include "Transform.h"
 #include "ComputeShader.h"
 #include "GameObject.h"
-
+#include "StructuredBuffer.h"
 
 #include "GameInstance.h"
 
@@ -727,8 +727,42 @@ void CModel::Make_BoneGroup()
 			if (m_vecBoneGroups.size() <= boneDepth[i])
 				m_vecBoneGroups.resize(boneDepth[i] + 1);
 
-			m_vecBoneGroups[boneDepth[i]].push_back((_uint)i);
+			m_vecBoneGroups[boneDepth[i]].BoneIndices.push_back((_uint)i);
 		}
+	}
+}
+
+void CModel::Make_GroupBuffers(CComputeShader* pBoneShader)
+{
+	if (!pBoneShader)
+		return;
+
+	// 그룹을 순회
+	for (size_t i = 0; i < m_vecBoneGroups.size(); i++)
+	{
+		// 한 그룹당 하나의 structuredBuffer 필요
+		CS_MU_BONEIDX* pIniailData = new CS_MU_BONEIDX[m_vecBoneGroups[i].BoneIndices.size()];
+
+		// CS_MU_BONEIDX에 값 바인딩
+		for (auto& pBoneIndex : m_vecBoneGroups[i].BoneIndices)
+		{
+			pIniailData[i].iMyIdx = pBoneIndex;
+			pIniailData[i].Padding0 = Vec3::Zero;
+		}
+
+		// SB class 생성
+		m_vecBoneGroups[i].pIndexBuffer = StructuredBuffer::Create(m_pDevice, m_pDeviceContext, sizeof(CS_MU_BONEIDX), m_vecBoneGroups[i].BoneIndices.size());
+		
+		// SB class에 값 넣어주기
+		m_vecBoneGroups[i].pIndexBuffer->Copy_Data(pIniailData, sizeof(CS_MU_BONEIDX), m_vecBoneGroups[i].BoneIndices.size());
+
+		// 4. SRV 연결
+		m_vecBoneGroups[i].pInputGroupSB_SRV = pBoneShader->Get_SRV("MU_INDEXES");
+		m_vecBoneGroups[i].pInputGroupSB_SRV->SetResource(m_vecBoneGroups[i].pIndexBuffer->Get_SRV());
+
+
+		// 5. 동적배열 정리
+		Safe_Delete_Array(pIniailData);
 	}
 }
 
@@ -738,12 +772,20 @@ void CModel::Update_BoneCombineTransformMatrix(CComputeShader* pBoneComShader)
 		return;
 
 	// bone group 별로 디스패치를 한다
-	for (auto& BoneGroup : m_vecBoneGroups)
+	for (auto& pBoneGroup : m_vecBoneGroups)
 	{
 		// 가변 데이터 desc 작성..? 어떻게...??
+		_uint iBoneNums = pBoneGroup.BoneIndices.size();
+
+		//pBoneComShader->pBoneGroup.pIndexBuffer 를 넘겨준다
+
+		// 가변 데이터 : GroupNum 작성
+		CS_MU_GROUPNUMS tMuDesc{};
+		tMuDesc.iGroupBoneNums = iBoneNums;
+		pBoneComShader->Bind_Compute_BoneMuCB(tMuDesc);
 
 		// dispatch
-		_uint iGroupX = BoneGroup.size() / 32 + 1;
+		_uint iGroupX = (iBoneNums + 31) / 32;
 		pBoneComShader->Dispatch(iGroupX,1,1);
 	}
 }
@@ -779,6 +821,20 @@ void CModel::Lerp_Animation(CComputeShader* pAnimBlendCS, _float fRatio)
 	// dispatch
 	_uint iGroupX = (m_vecBones.size() + 31) / 32;
 	pAnimBlendCS->Dispatch(iGroupX, 1, 1);
+}
+
+void CModel::Bind_BoneImmuData(CComputeShader* pBoneComShader)
+{
+	CS_IMMU_BONE* pInitialData = new CS_IMMU_BONE[m_vecBones.size()];
+	
+	for (size_t i = 0; i < m_vecBones.size(); i++)
+	{
+		pInitialData[i].iParentIndex = m_vecBones[i]->Get_ParentIndex();
+		pInitialData[i].matPreTransform = m_matPreTransform;
+		pInitialData[i].Padding0 = Vector3::Zero;
+	}
+	pBoneComShader->Bind_InputStructuredBuffer_Data(pInitialData, sizeof(CS_IMMU_BONE), m_vecBones.size());
+	Safe_Delete_Array(pInitialData);
 }
 
 CModel* CModel::Create(ID3D11Device* pDevice, ID3D11DeviceContext* pDeviceContext, void* pArg)

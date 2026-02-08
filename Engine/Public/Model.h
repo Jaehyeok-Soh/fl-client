@@ -6,6 +6,7 @@ NS_BEGIN(Engine)
 class CTransform;
 class CPhysicsCCT;
 class CComputeShader;
+class StructuredBuffer;
 
 class ENGINE_DLL CModel final : public CComponent
 {
@@ -39,7 +40,12 @@ public:
 		std::span<const _int> spanShaderPassesByMesh;
 	}MODEL_COPY_DESC;
 
-	using BONE_GROUP = vector<_uint>; // º»À» °èÃþ º°·Î ¹­±â À§ÇÔ
+	struct BONE_GROUP
+	{
+		vector<_uint>							BoneIndices;
+		StructuredBuffer*						pIndexBuffer		= { nullptr };
+		ID3DX11EffectShaderResourceVariable*	pInputGroupSB_SRV	= { nullptr };
+	};
 	
 private:
 	enum AnimationPlayState
@@ -127,11 +133,12 @@ private:
 
 private:
 	void Make_BoneGroup();
+	void Make_GroupBuffers(CComputeShader* pBoneShader);
 	void Update_BoneCombineTransformMatrix(CComputeShader* pBoneComShader);
 	void Blend_Animation(CComputeShader* pBoneComShader, CComputeShader* pAnimEComShader, CComputeShader* pAnimBlendCS
 		,_float fTimeDelta , _float fRatio, CTransform* pOwnerTransform = nullptr, CPhysicsCCT* pOwnerPhyCCT = nullptr);
 	void Lerp_Animation(CComputeShader* pAnimBlendCS, _float fRatio);
-	void Bind_BoneMuData(CComputeShader* pBoneComShader);
+	void Bind_BoneImmuData(CComputeShader* pBoneComShader);
 
 private:
 	EModelType m_eType = { EModelType::END };
