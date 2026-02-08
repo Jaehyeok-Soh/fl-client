@@ -97,6 +97,8 @@ private:
 	StructuredBuffer* m_pInputStructedBuffer = nullptr;
 	ID3DX11EffectShaderResourceVariable* m_pInputStructedBuffer_SRV = { nullptr };
 
+	//std::map<string, std::pair<ID3DX11EffectShaderResourceVariable*, StructuredBuffer*>>	m_pInputStructuredBuffer = {};
+
 	StructuredBuffer* m_pOutputStructedBuffer = nullptr;
 	ID3DX11EffectUnorderedAccessViewVariable* m_pOutputStructedBuffer_UAV = { nullptr };
 

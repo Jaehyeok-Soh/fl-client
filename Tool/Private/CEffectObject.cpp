@@ -33,36 +33,47 @@ HRESULT CEffectObject::Initialize_Prototype()
 
 HRESULT CEffectObject::Initialize(void* pArg)
 {
+    Effect_Desc* pDesc = static_cast<Effect_Desc*>(pArg);
+    if (pDesc != nullptr)
+        m_tEffectDesc = *pDesc;
+
     if (FAILED(__super::Initialize(pArg)))
     {
         MSG_BOX("Initialize Failed : CEffectObject -__super::Initialize(pArg)");
         return E_FAIL;
     }
 
-    if (FAILED(EffectDesc_Initialize(pArg)))
-    {
-        MSG_BOX("Initialize Failed : CEffectObject -__super::EffectDesc_Initialize(pArg)");
+    if (FAILED(Ready_Component(pArg)))
         return E_FAIL;
-    }
-
-    if (FAILED(Component_Setting(pArg)))
-        return E_FAIL;
-
-
-    Effect_Desc* pDesc = static_cast<Effect_Desc*>(pArg);
-    if (pDesc != nullptr)
-        m_tEffectDesc = *pDesc;
 
     return S_OK;
 }
 
-HRESULT CEffectObject::Component_Setting(void* pArg)
+HRESULT CEffectObject::Ready_Component(void* pArg)
 {
-    // Default 값으로 Shader 세팅
+    if (FAILED(Ready_Component_Shader()))
+        return E_FAIL;
+
+    if (FAILED(Ready_Component_Texture()))
+        return E_FAIL;
+
+    if (FAILED(Ready_Component_Model(pArg)))
+        return E_FAIL;
+
+    if (FAILED(Ready_Component_Buffer(pArg)))
+        return E_FAIL;
+
+    return S_OK;
+}
+
+HRESULT CEffectObject::Ready_Component_Shader()
+{
+    // ========   Rendering Shader   ========
     {
         CShader::SHADER_ORIGIN_DESC ShaderDesc = {};
-        if (FAILED(Add_Component<CShader>(0, L"Prototype_Component_Shader_VtxEffectParticle", &ShaderDesc)))
-            return E_FAIL;
+        wstring ShaderTag = L"Prototype_Component_";
+        Add_Component<CShader>(0, ShaderTag + m_tEffectDesc._Effect_Shader_Tag, &ShaderDesc);
+        Get_Component<CShader>()->Set_Pass(m_tEffectDesc._Effect_ShaderPass);
     }
 
     // Compute Shader 세팅
@@ -83,41 +94,134 @@ HRESULT CEffectObject::Component_Setting(void* pArg)
             return E_FAIL;
     }
 
-    CVIBuffer_Particle_Point::PARTICLE_POINT_ORIGIN_DESC pParticleDesc = {};
-    pParticleDesc.iInstnaceCount = m_tEffectDesc._Effect_MaxParticle;
-    pParticleDesc.isLoop = m_tEffectDesc._Effect_Looping;
-    pParticleDesc.vLifeTime.x = pParticleDesc.vLifeTime.x;
-    pParticleDesc.vLifeTime.y = m_tEffectDesc._Effect_LifeTime;
-    pParticleDesc.vRange = m_tEffectDesc._Effect_Range;
-    pParticleDesc.m_fStartSpeeds = m_tEffectDesc._Effect_StartSpeed;
-    pParticleDesc.vSize = m_tEffectDesc._Effect_ParticleSize;
-    pParticleDesc.vSpeed = Vec2{ 0.f, 3.f };
-    pParticleDesc.isRandomSeed = m_tEffectDesc._Effect_IsRandomSeed;
-    pParticleDesc.pOwner = this;
-    pParticleDesc.pComputeShader = static_cast<CComputeShader*>(Get_Script_Component(L"ComputeShader"));
-    pParticleDesc.EmissionFlagType = (_uint)m_tEffectDesc._Effect_EmissionType;
+    return S_OK;
+}
 
-    if (FAILED(Add_Component<CVIBuffer_Particle_Point>(ENUM_TO_UINT(ELevelType::EFFECT), L"Prototype_Component_VIBuffer_Particle_Point", &pParticleDesc)))
-        return E_FAIL;
+HRESULT CEffectObject::Ready_Component_Texture()
+{
+    CTexture::TEXTURE_COMPONENT_ORIGIN_DESC desc = {};
+    wstring s = L"Texture_";
 
-    // Default 값으로 Texture 세팅
+    // 빈 깡통 텍스처로 교체해주고.
+
+    if (Get_Component<CTexture>())
     {
-        CTexture::TEXTURE_COMPONENT_ORIGIN_DESC desc = {};
-        if (FAILED(Add_Component<CTexture>(0, L"Prototype_Component_Texture_Default", &desc)))
-            return E_FAIL;
+        Change_Component<CTexture>(static_cast<CTexture*>(m_pGameInstance->Clone_Prototype(EPrototypeType::COMPONENT, 0, L"Prototype_Component_Texture_Empty", &desc)));
+
+        CTexture* pInstance = Get_Component<CTexture>();
+        if (pInstance)
+        {
+            Get_Component<CTexture>()->Add_DefaultTexture(s + m_tEffectDesc._Effect_DiffuseTexture_Tag, ENUM_TO_UINT(TEXTURETYPE::DIFFUSE));
+            Get_Component<CTexture>()->Add_DefaultTexture(s + m_tEffectDesc._Effect_NoiseTexture_Tag, ENUM_TO_UINT(TEXTURETYPE::NOISE));
+            Get_Component<CTexture>()->Add_DefaultTexture(s + m_tEffectDesc._Effect_MaskingTexture_Tag, ENUM_TO_UINT(TEXTURETYPE::MASKING));
+            Get_Component<CTexture>()->Add_DefaultTexture(s + m_tEffectDesc._Effect_GradationTexture_Tag, ENUM_TO_UINT(TEXTURETYPE::GRADATION));
+        }
+    }
+
+    else
+    {
+        Add_Component<CTexture>(0, L"Prototype_Component_Texture_Empty", &desc);
+
+        CTexture* pInstance = Get_Component<CTexture>();
+        if (pInstance)
+        {
+            Get_Component<CTexture>()->Add_DefaultTexture(s + m_tEffectDesc._Effect_DiffuseTexture_Tag, ENUM_TO_UINT(TEXTURETYPE::DIFFUSE));
+            Get_Component<CTexture>()->Add_DefaultTexture(s + m_tEffectDesc._Effect_NoiseTexture_Tag, ENUM_TO_UINT(TEXTURETYPE::NOISE));
+            Get_Component<CTexture>()->Add_DefaultTexture(s + m_tEffectDesc._Effect_MaskingTexture_Tag, ENUM_TO_UINT(TEXTURETYPE::MASKING));
+            Get_Component<CTexture>()->Add_DefaultTexture(s + m_tEffectDesc._Effect_GradationTexture_Tag, ENUM_TO_UINT(TEXTURETYPE::GRADATION));
+        }
     }
 
     return S_OK;
 }
 
-HRESULT CEffectObject::EffectDesc_Initialize(void* pArg)
+HRESULT CEffectObject::Ready_Component_Model(void* pArg)
 {
-    Effect_Desc* pEffectDesc = static_cast<Effect_Desc*>(pArg);
+    CModel::MODEL_COPY_DESC pModelDesc = {};
+    wstring s = L"Prototype_Component_Model_";
 
-    if (pEffectDesc == nullptr)
-        return E_FAIL;
+    if (m_tEffectDesc.eEffectParticleType == E_PARTICLETYPE::MESH)
+    {
+        if (FAILED(Add_Component<CModel>(ENUM_TO_UINT(ELevelType::EFFECT), s + m_tEffectDesc._Effect_Model_Tag, &pModelDesc)))
+            return E_FAIL;
+    } 
 
-    m_tEffectDesc = *pEffectDesc;
+    return S_OK;
+}
+
+HRESULT CEffectObject::Ready_Component_Buffer(void* pArg)
+{
+    Effect_Desc* pDesc = static_cast<Effect_Desc*>(pArg);
+
+    switch (m_tEffectDesc.eEffectParticleType)
+    {
+    case E_PARTICLETYPE::PARTICLE:
+    {
+        CVIBuffer_Particle_Point::PARTICLE_POINT_ORIGIN_DESC pParticleDesc = {};
+        pParticleDesc.iInstnaceCount = m_tEffectDesc._Effect_MaxParticle;
+        pParticleDesc.isLoop = m_tEffectDesc._Effect_Looping;
+        pParticleDesc.vLifeTime.x = 0;
+        pParticleDesc.vLifeTime.y = m_tEffectDesc._Effect_LifeTime;
+        pParticleDesc.vRange = m_tEffectDesc._Effect_Range;
+        pParticleDesc.m_fStartSpeeds = m_tEffectDesc._Effect_StartSpeed;
+        pParticleDesc.vSize = m_tEffectDesc._Effect_ParticleSize;
+        pParticleDesc.vSpeed = Vec2{ 1.f, 2.f };
+        pParticleDesc.isRandomSeed = m_tEffectDesc._Effect_IsRandomSeed;
+        pParticleDesc.pOwner = this;
+        pParticleDesc.pComputeShader = static_cast<CComputeShader*>(Get_Script_Component(L"ComputeShader"));
+        pParticleDesc.EmissionFlagType = (_uint)m_tEffectDesc._Effect_EmissionType;
+
+        if (FAILED(Add_Component<CVIBuffer_Particle_Point>(static_cast<CVIBuffer_Particle_Point*>(m_pGameInstance->Clone_Prototype(EPrototypeType::COMPONENT, ENUM_TO_UINT(ELevelType::EFFECT), L"Prototype_Component_VIBuffer_Particle_Point", &pParticleDesc)))))
+            return E_FAIL;
+        break;
+    }
+    case E_PARTICLETYPE::MESH:
+    {
+        // 모델이 있을 때.
+        if (Get_Component<CModel>())
+        {
+            CModel* pInstance = Get_Component<CModel>();
+            CVIBuffer_Particle_Mesh::PARTICLE_Mesh_ORIGIN_DESC MeshBufferDesc = {};
+            MeshBufferDesc.iInstnaceCount = m_tEffectDesc._Effect_MaxParticle;
+            MeshBufferDesc.isLoop = m_tEffectDesc._Effect_Looping;
+            MeshBufferDesc.vLifeTime.x = MeshBufferDesc.vLifeTime.x;
+            MeshBufferDesc.vLifeTime.y = m_tEffectDesc._Effect_LifeTime;
+            MeshBufferDesc.vRange = m_tEffectDesc._Effect_Range;
+            MeshBufferDesc.m_fStartSpeeds = m_tEffectDesc._Effect_StartSpeed;
+            MeshBufferDesc.vSize = m_tEffectDesc._Effect_ParticleSize;
+            MeshBufferDesc.vSpeed = Vec2{ 1.f, 2.f };
+            MeshBufferDesc.isRandomSeed = m_tEffectDesc._Effect_IsRandomSeed;
+            MeshBufferDesc.pComputeShader = static_cast<CComputeShader*>(Get_Script_Component(L"ComputeShader"));
+            MeshBufferDesc.pModel = pInstance;
+            MeshBufferDesc.pOwner = this;
+            MeshBufferDesc.EmissionFlagType = (_uint)m_tEffectDesc._Effect_EmissionType;
+
+            if (FAILED(Add_Component<CVIBuffer_Particle_Mesh>(static_cast<CVIBuffer_Particle_Mesh*>(m_pGameInstance->Clone_Prototype(EPrototypeType::COMPONENT, ENUM_TO_UINT(ELevelType::EFFECT), L"Prototype_Component_VIBuffer_Particle_Mesh", &MeshBufferDesc)))))
+                return E_FAIL;
+        }
+        break;
+    }
+    case E_PARTICLETYPE::TEXTURE:
+    {
+        CVIBuffer_Particle_Point::PARTICLE_POINT_ORIGIN_DESC pParticleDesc = {};
+        pParticleDesc.iInstnaceCount = m_tEffectDesc._Effect_MaxParticle;
+        pParticleDesc.isLoop = m_tEffectDesc._Effect_Looping;
+        pParticleDesc.vLifeTime.x = pParticleDesc.vLifeTime.x;
+        pParticleDesc.vLifeTime.y = m_tEffectDesc._Effect_LifeTime;
+        pParticleDesc.vRange = m_tEffectDesc._Effect_Range;
+        pParticleDesc.m_fStartSpeeds = m_tEffectDesc._Effect_StartSpeed;
+        pParticleDesc.vSize = m_tEffectDesc._Effect_ParticleSize;
+        pParticleDesc.vSpeed = Vec2{ 1.f, 2.f };
+        pParticleDesc.isRandomSeed = m_tEffectDesc._Effect_IsRandomSeed;
+        pParticleDesc.pOwner = this;
+        pParticleDesc.pComputeShader = static_cast<CComputeShader*>(Get_Script_Component(L"ComputeShader"));
+        pParticleDesc.EmissionFlagType = (_uint)m_tEffectDesc._Effect_EmissionType;
+
+        if (FAILED(Add_Component<CVIBuffer_Particle_Point>(static_cast<CVIBuffer_Particle_Point*>(m_pGameInstance->Clone_Prototype(EPrototypeType::COMPONENT, ENUM_TO_UINT(ELevelType::EFFECT), L"Prototype_Component_VIBuffer_Particle_Point", &pParticleDesc)))))
+            return E_FAIL;
+    }
+    }
+
     return S_OK;
 }
 
@@ -278,7 +382,7 @@ void CEffectObject::Texture_Setting(const wstring& TextureName)
 
     else
     {
-        Add_Component<CTexture>(0, s + m_tEffectDesc._Effect_DiffuseTexture_Tag, &desc);
+        Add_Component<CTexture>(0, L"Prototype_Component_Texture_Empty", &desc);
 
         CTexture* pInstance = Get_Component<CTexture>();
         if (pInstance)

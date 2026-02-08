@@ -60,8 +60,8 @@ HRESULT CEffectObject::EffectDesc_Initialize(void* pArg)
 
 HRESULT CEffectObject::Ready_Component(void* pArg)
 {
-    //if (FAILED(Ready_Component_Shader()))
-    //    return E_FAIL;
+    if (FAILED(Ready_Component_Shader()))
+        return E_FAIL;
 
     if (FAILED(Ready_Component_Texture()))
         return E_FAIL;

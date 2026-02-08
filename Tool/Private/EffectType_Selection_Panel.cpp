@@ -151,23 +151,46 @@ void CEffectType_Selection_Panel::CreateParticleEffect()
 		pEffectDesc.pTransform_Desc = &transformDesc;
 		pEffectDesc.iPartsID = E_PartsObjectID::Effect_Particle;
 
-		pEffectDesc.wstrLayerTag = L"Effect_Parts";
+		pEffectDesc.wstrLayerTag = L"Effect_Part_Particles";
 		pEffectDesc.iLevelIndex = ENUM_TO_UINT(ELevelType::EFFECT);
+
+		// ========     ºŒ¿Ã¥ı º±≈√   =========
+		pEffectDesc._Effect_Shader_Tag = L"Shader_VtxEffectParticle";
+		pEffectDesc._Effect_ShaderPass = 0;
+
 		// ========     ¿Ã∆Â∆Æ ≈∏¿‘   =========
 		pEffectDesc.eEffectSystemType = E_EffectSystemType::Particle;
 		pEffectDesc.eEffectType = E_EFFECTTYPE::Particle;
+		pEffectDesc.eEffectSystemType = E_EffectSystemType::Particle;
+		pEffectDesc._Effect_EmissionType = E_EMISSION_TYPE::BOX;
+		pEffectDesc._Effect_ShapeType = E_SHAPETYPE::SPREAD;
 
 		// =========   ¿Ã∆Â∆Æ Color Value   ===============
 		pEffectDesc._Effect_Color = Vec4{ 0.f, 0.f, 0.f, 1.f };
 
+		// =========   ¿Ã∆Â∆Æ SRT   ============
+		pEffectDesc._Effect_StartScale = { 1.f, 1.f, 1.f };
+		pEffectDesc._Effect_EndScale = { 1.f, 1.f, 1.f };
+		
+		pEffectDesc._Effect_StartRotation = { 0.f, 0.f, 0.f };
+		pEffectDesc._Effect_TargetRotation = { 0.f, 0.f, 0.f };
+
+		// =========   πˆ∆€ ªÁ¿Ã¡Ó   ======================
+		pEffectDesc._Effect_MaxParticle = { 30 };
+		pEffectDesc._Effect_Looping = { true };
+		pEffectDesc._Effect_LifeTime = { 5.f };
+		pEffectDesc._Effect_Range = { 1.f, 1.f, 1.f };
+		pEffectDesc._Effect_StartSpeed = { 1.f };
+		pEffectDesc._Effect_ParticleSize = { 0.05f, 0.15f };
+		pEffectDesc._Effect_IsRandomSeed = { true };
+		pEffectDesc._Effect_StartDelay = 0.f;
+		pEffectDesc._Effect_PlayBackSpeed = 1.f;
 
 		// ========  ¿Ã∆Â∆Æ Material º≥¡§   ===========
 		pEffectDesc._Effect_Model_Tag = {};
-		pEffectDesc._Effect_Shader_Tag = {};
 		pEffectDesc._Effect_DiffuseTexture_Tag = {};
 		pEffectDesc._Effect_NoiseTexture_Tag = {};
 		pEffectDesc._Effect_DiffuseTexture_Tag = {};
-		pEffectDesc._Effect_ShaderPass = {};
 
 		pEffectDesc._Effect_TileCount = CEffectObject::_uint2{0, 0};
 

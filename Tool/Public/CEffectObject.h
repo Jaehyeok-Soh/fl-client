@@ -74,29 +74,6 @@ enum class E_SAMPLERSTATE_FLAG
     PointSampler
 };
 
-enum class E_RASTERIZESTATE_FLAG
-{
-    RS_Default,
-    RS_Default_CullFront,
-    RS_Default_CullNone,
-    RS_Wire,
-};
-
-enum class E_BLENDSTATE_FLAG
-{
-    BS_Default,
-    BS_AlphaBlend,
-    BS_Blend,
-};
-
-enum class E_DEPTHSTENCILSTATE_FLAG
-{
-    DS_Default,
-    DS_Disabled,
-    DS_ReadOnly,
-    DS_Write,
-};
-
 // 비트 플래그로 파티클 종류 지정하기.
 // 비트 플래그로 로컬 좌표 따라갈것인지, 월드 좌표 따라갈 것인지 정하기.
 
@@ -267,8 +244,11 @@ public:
     bool IntsersectWithPlane(OUT Vec3& vOut);
 public:
     //  ==========  초기 Component 설정  ================
-    HRESULT EffectDesc_Initialize(void* pArg);
-    HRESULT Component_Setting(void* pArg);
+    HRESULT Ready_Component(void* pArg);
+    HRESULT Ready_Component_Shader();
+    HRESULT Ready_Component_Texture();
+    HRESULT Ready_Component_Model(void* pArg);
+    HRESULT Ready_Component_Buffer(void* pArg);
 
     void Model_Setting(const wstring& Name);
     void Shader_Setting(const wstring& Name);

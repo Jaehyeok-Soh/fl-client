@@ -316,18 +316,18 @@ void CParticle_System_Panel::Draw_ParticleSystem(CToolObject* pGo)
 				static Vec3 StartRotation = { 0.f, 0.f, 0.f };
 
 				ImGui::SeparatorText("Rotation 3D Convert To Radian - X Y Z - ");
-				m_bModified |= ImGui::DragFloat3("##StartRotationX_3D", &StartRotation.x, 0.1f, 0.f, 360.f); ImGui::Spacing();
+				m_bModified |= ImGui::DragFloat3("##StartRotationX_3D", &m_tCurrentDesc._Effect_StartRotation.x, 0.1f, 0.f, 360.f); ImGui::Spacing();
 
 				CEffectObject* pInstance = static_cast<Effect*>(pGo)->Get_Part<CEffectObject>(m_iSelectPartsIndex);
 				CTransform* pTransform = pInstance->Get_Component<CTransform>();
 
-				if (pTransform)
+	/*			if (pTransform)
 					pTransform->Rotation(
 						DirectX::XMConvertToRadians(StartRotation.x),
 						DirectX::XMConvertToRadians(StartRotation.y),
 						DirectX::XMConvertToRadians(StartRotation.z));
 
-				m_tCurrentDesc._Effect_StartRotation = StartRotation;
+				m_tCurrentDesc._Effect_StartRotation = StartRotation;*/
 			}
 			ImGui::TreePop();
 		}
@@ -667,7 +667,6 @@ void CParticle_System_Panel::Draw_ParticleSystem(CToolObject* pGo)
 			ImGui::Separator();
 
 			ImGui::TreePop();
-
 		}
 
 		// ============   Distortion   Scale 설정하기   ===========
@@ -1970,6 +1969,18 @@ void CParticle_System_Panel::Draw_Parts(CToolObject* pGo)
 					pEffectDesc._Effect_Color = Vec4{ 0.f, 0.f, 0.f, 1.f };
 					pEffectDesc._Effect_StartScale = { 1.f, 1.f, 1.f };
 					pEffectDesc._Effect_EndScale = { 1.f, 1.f, 1.f };
+
+					// ========     셰이더 선택   =========
+					pEffectDesc._Effect_Shader_Tag = L"Shader_VtxEffectParticle";
+					pEffectDesc._Effect_ShaderPass = 0;
+
+					// ========     이펙트 타입   =========
+					pEffectDesc.eEffectSystemType = E_EffectSystemType::Particle;
+					pEffectDesc.eEffectType = E_EFFECTTYPE::Particle;
+					pEffectDesc.eEffectSystemType = E_EffectSystemType::Particle;
+					pEffectDesc._Effect_EmissionType = E_EMISSION_TYPE::BOX;
+					pEffectDesc._Effect_ShapeType = E_SHAPETYPE::SPREAD;
+
 
 					// 파츠 추가
 					if((E_PartsObjectID)iSelectedPartType == E_PartsObjectID::Effect_Particle)
