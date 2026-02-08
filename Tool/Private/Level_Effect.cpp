@@ -14,6 +14,7 @@
 #include "CameraMan_Free.h"
 #include "CEffectObject.h"
 #include "Effect.h"
+#include "Gravity_Force.h"
 
 ///////////
 // ImGui //
@@ -21,6 +22,7 @@
 #include "ImGui_Base.h"
 #include "CParticle_System_Panel.h"
 #include "EffectType_Selection_Panel.h"
+#include "DebugLine.h"
 
 /////////////
 // Manager //
@@ -54,6 +56,9 @@ HRESULT CLevel_Effect::Initialize()
 		return E_FAIL;
 
 	if (FAILED(Ready_EffectObjectSetting()))
+		return E_FAIL;
+
+	if (FAILED(Ready_DebugLine()))
 		return E_FAIL;
 
 	m_vClearColor = { 0.3f, 0.3f, 0.3f, 1.f };
@@ -176,10 +181,26 @@ HRESULT CLevel_Effect::Ready_Gui()
 	return S_OK;
 }
 
+HRESULT CLevel_Effect::Ready_DebugLine()
+{
+	CDebugLine::DEBUGLINE_DESC tDesc{};
+	tDesc.vColor_X = { 0.f,1.f,0.f,1.f };
+	tDesc.vColor_Z = { 1.f,0.f,0.f,1.f };
+
+	CTransform::TRANSFORM_DESC tTsDesc{};
+	tDesc.pTransform_Desc = &tTsDesc;
+
+	m_pGameInstance->Add_GameObject(ENUM_TO_UINT(ELevelType::STATIC), L"Prototype_GameObject_DebugLine", ENUM_TO_UINT(ELevelType::MAP), L"Layer_DebugLine",
+		&tDesc);
+
+	return S_OK;
+}
+
 HRESULT CLevel_Effect::Ready_EffectObjectSetting()
 {
 	m_pGameInstance->Add_Prototype(ENUM_TO_UINT(ELevelType::EFFECT), L"Prototype_GameObject_Effect", Effect::Create(EToolObjectType::MESHEFFECT, m_pDevice, m_pDeviceContext));
-	m_pGameInstance->Add_Prototype(ENUM_TO_UINT(ELevelType::EFFECT), L"Prototype_GameObject_Effect_Parts", CEffectObject::Create(EToolObjectType::MESHEFFECT, m_pDevice, m_pDeviceContext));
+	m_pGameInstance->Add_Prototype(ENUM_TO_UINT(ELevelType::EFFECT), L"Prototype_GameObject_Effect_Part_Particle", CEffectObject::Create(EToolObjectType::MESHEFFECT, m_pDevice, m_pDeviceContext));
+	m_pGameInstance->Add_Prototype(ENUM_TO_UINT(ELevelType::EFFECT), L"Prototype_GameObject_Effect_Part_ForceField", CGravity_Force::Create(EToolObjectType::MESHEFFECT, m_pDevice, m_pDeviceContext));
 	
 	return S_OK;
 }

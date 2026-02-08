@@ -112,9 +112,6 @@
     <Filter Include="06. FSM\Player\DashBack">
       <UniqueIdentifier>{902bc6b0-2606-46cf-902c-e58daa3a16a9}</UniqueIdentifier>
     </Filter>
-    <Filter Include="06. FSM\Player\DashFront">
-      <UniqueIdentifier>{b738b353-6637-40f9-9762-6a4027a61b1f}</UniqueIdentifier>
-    </Filter>
     <Filter Include="06. FSM\Player\DashSky">
       <UniqueIdentifier>{39a224de-7994-4a34-8213-33de7f2ffb80}</UniqueIdentifier>
     </Filter>
@@ -172,17 +169,8 @@
     <Filter Include="03. GameObject\UIObjects\01.Canvas">
       <UniqueIdentifier>{bef61798-c2ef-48e4-8db0-faf0d1677c2d}</UniqueIdentifier>
     </Filter>
-    <Filter Include="03. GameObject\UIObjects\02.Layer">
-      <UniqueIdentifier>{54739f16-d1ed-490f-b95b-8ee9350dd97f}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="03. GameObject\UIObjects\03.UI">
-      <UniqueIdentifier>{6d2a781d-ab40-4385-b96c-b3366f4eaba6}</UniqueIdentifier>
-    </Filter>
     <Filter Include="06. FSM\Player\Attack">
       <UniqueIdentifier>{7ebbc28f-6b61-485b-b6e8-1bfe363c2de3}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="06. FSM\Player\Attack\Melee">
-      <UniqueIdentifier>{2b993293-fadd-49b9-88a4-fc11e29bf8ae}</UniqueIdentifier>
     </Filter>
     <Filter Include="03. GameObject\MapObject">
       <UniqueIdentifier>{b160eafb-0791-4bab-a9f6-d8d8d7b9532c}</UniqueIdentifier>
@@ -196,11 +184,17 @@
     <Filter Include="07. System\01. Builder\Map">
       <UniqueIdentifier>{8c8cb986-b28e-4058-aca0-3a2b0b85e2e0}</UniqueIdentifier>
     </Filter>
-    <Filter Include="03. GameObject\UIObjects\04.Action">
-      <UniqueIdentifier>{3ddc639a-e37a-4e32-9249-6cb9fc8982e3}</UniqueIdentifier>
-    </Filter>
     <Filter Include="03. GameObject\MapObject\02. InstanceModel">
       <UniqueIdentifier>{2be52ba2-2a45-42f4-aa0d-4f0d8e44cbe8}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="04. Shaders\ComputeShader_Labs">
+      <UniqueIdentifier>{8c14e548-7930-4ec0-b748-e471998a55b9}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="06. FSM\Player\Attack\Combo">
+      <UniqueIdentifier>{c441f698-d661-4b43-9a38-86ca6478bcfe}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="06. FSM\Player\Attack\Combo\Moon">
+      <UniqueIdentifier>{03a248e9-eb08-4143-a1f8-99a1bbf2dbc8}</UniqueIdentifier>
     </Filter>
     <Filter Include="99. ETC\01. ImGui">
       <UniqueIdentifier>{aa2685d2-18f6-417c-ba8e-cf78608c7618}</UniqueIdentifier>
@@ -228,6 +222,27 @@
     </Filter>
     <Filter Include="04. Shaders\ComputeShader_Labs">
       <UniqueIdentifier>{8c14e548-7930-4ec0-b748-e471998a55b9}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="03. GameObject\UIObjects\02.UI">
+      <UniqueIdentifier>{6d2a781d-ab40-4385-b96c-b3366f4eaba6}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="03. GameObject\UIObjects\02.UI\PlayerHP">
+      <UniqueIdentifier>{d1da7a10-7b69-4f7d-9c38-81e993488207}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="05. Component\UI">
+      <UniqueIdentifier>{d566c138-8d97-4d90-bf67-45caf8c4f1fc}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="05. Component\UI\Progress">
+      <UniqueIdentifier>{317fb20e-0076-4a23-a3a3-c903265adeb8}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="05. Component\UI\Button">
+      <UniqueIdentifier>{300c8870-4f30-4497-8311-06763127827b}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="03. GameObject\UIObjects\02.UI\MonsterHP">
+      <UniqueIdentifier>{beb7d1a4-337d-48de-b4df-4fb246247658}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="07. System\02. Debug_ImGui\Layout\Frame">
+      <UniqueIdentifier>{d522fe25-0bdb-43db-847a-41084decceb6}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
@@ -330,9 +345,6 @@
     <ClInclude Include="..\Public\State_DashBack.h">
       <Filter>06. FSM\Player\DashBack</Filter>
     </ClInclude>
-    <ClInclude Include="..\Public\State_DashFront.h">
-      <Filter>06. FSM\Player\DashFront</Filter>
-    </ClInclude>
     <ClInclude Include="..\Public\State_DashSky.h">
       <Filter>06. FSM\Player\DashSky</Filter>
     </ClInclude>
@@ -379,10 +391,7 @@
       <Filter>07. System\01. Builder\UI</Filter>
     </ClInclude>
     <ClInclude Include="..\Public\GenericUI.h">
-      <Filter>03. GameObject\UIObjects\03.UI</Filter>
-    </ClInclude>
-    <ClInclude Include="..\Public\UILayer.h">
-      <Filter>03. GameObject\UIObjects\02.Layer</Filter>
+      <Filter>03. GameObject\UIObjects\02.UI</Filter>
     </ClInclude>
     <ClInclude Include="..\Public\Canvas.h">
       <Filter>03. GameObject\UIObjects\01.Canvas</Filter>
@@ -401,6 +410,9 @@
     </ClInclude>
     <ClInclude Include="..\Public\Builder_Map.h">
       <Filter>07. System\01. Builder\Map</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\InstanceModel.h">
+      <Filter>03. GameObject\MapObject\02. InstanceModel</Filter>
     </ClInclude>
     <ClInclude Include="..\Public\UIAction_Client.h">
       <Filter>03. GameObject\UIObjects\04.Action</Filter>
@@ -456,8 +468,21 @@
     <ClInclude Include="..\public\ImGui_PlayerInspector.h">
       <Filter>07. System\02. Debug_ImGui\Inspector\Player</Filter>
     </ClInclude>
-    <ClInclude Include="..\Public\UITargetAction_Client.h">
-      <Filter>03. GameObject\UIObjects\04.Action</Filter>
+    <ClInclude Include="..\Public\State_DashFront.h" />
+    <ClInclude Include="..\Public\UIPlayer_HP.h">
+      <Filter>03. GameObject\UIObjects\02.UI\PlayerHP</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\UIProgress_Component.h">
+      <Filter>05. Component\UI\Progress</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\UIButton_Component.h">
+      <Filter>05. Component\UI\Button</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\UIMonster_HP.h">
+      <Filter>03. GameObject\UIObjects\02.UI\MonsterHP</Filter>
+    </ClInclude>
+    <ClInclude Include="..\public\ImGui_FrameLayout.h">
+      <Filter>07. System\02. Debug_ImGui\Layout\Frame</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -558,9 +583,6 @@
     <ClCompile Include="..\Private\State_DashBack.cpp">
       <Filter>06. FSM\Player\DashBack</Filter>
     </ClCompile>
-    <ClCompile Include="..\Private\State_DashFront.cpp">
-      <Filter>06. FSM\Player\DashFront</Filter>
-    </ClCompile>
     <ClCompile Include="..\Private\State_DashSky.cpp">
       <Filter>06. FSM\Player\DashSky</Filter>
     </ClCompile>
@@ -607,10 +629,7 @@
       <Filter>07. System\01. Builder\UI</Filter>
     </ClCompile>
     <ClCompile Include="..\Private\GenericUI.cpp">
-      <Filter>03. GameObject\UIObjects\03.UI</Filter>
-    </ClCompile>
-    <ClCompile Include="..\Private\UILayer.cpp">
-      <Filter>03. GameObject\UIObjects\02.Layer</Filter>
+      <Filter>03. GameObject\UIObjects\02.UI</Filter>
     </ClCompile>
     <ClCompile Include="..\Private\Canvas.cpp">
       <Filter>03. GameObject\UIObjects\01.Canvas</Filter>
@@ -629,6 +648,9 @@
     </ClCompile>
     <ClCompile Include="..\Private\Builder_Map.cpp">
       <Filter>07. System\01. Builder\Map</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\InstanceModel.cpp">
+      <Filter>03. GameObject\MapObject\02. InstanceModel</Filter>
     </ClCompile>
     <ClCompile Include="..\Private\UIAction_Client.cpp">
       <Filter>03. GameObject\UIObjects\04.Action</Filter>
@@ -678,8 +700,21 @@
     <ClCompile Include="..\private\ImGui_PlayerInspector.cpp">
       <Filter>07. System\02. Debug_ImGui\Inspector\Player</Filter>
     </ClCompile>
-    <ClCompile Include="..\Private\UITargetAction_Client.cpp">
-      <Filter>03. GameObject\UIObjects\04.Action</Filter>
+    <ClCompile Include="..\Private\State_DashFront.cpp" />
+    <ClCompile Include="..\Private\UIPlayer_HP.cpp">
+      <Filter>03. GameObject\UIObjects\02.UI\PlayerHP</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\UIProgress_Component.cpp">
+      <Filter>05. Component\UI\Progress</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\UIButton_Component.cpp">
+      <Filter>05. Component\UI\Button</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\UIMonster_HP.cpp">
+      <Filter>03. GameObject\UIObjects\02.UI\MonsterHP</Filter>
+    </ClCompile>
+    <ClCompile Include="..\private\ImGui_FrameLayout.cpp">
+      <Filter>07. System\02. Debug_ImGui\Layout\Frame</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

@@ -166,9 +166,6 @@ namespace Client
 	};
 	inline constexpr size_t g_iLevelType_Count = static_cast<size_t>(ELevelType::END);
 
-	enum class ERectTransform {
-		LT = 0, CT, RT, LC, C, RC, LB, CB, RB, END
-	};
 
 	enum class EMapObject_Type
 	{
@@ -265,6 +262,144 @@ namespace Client
 
 
 #pragma	endregion
+
+#pragma region UI
+
+	enum class ERectTransform {
+		LT = 0, CT, RT, LC, C, RC, LB, CB, RB, END
+	};
+
+	enum class EUIEvent : uint32_t
+	{
+		NONE = 0,
+		HOVER_ENTER,
+		HOVERING,
+		HOVER_EXIT,
+		PRESS_ENTER,
+		PRESSING,
+		PRESS_EXIT,
+		INVOKED,
+		END
+	};
+
+	enum EUIEvent_Flag : uint32_t
+	{
+		NONE = 0u,
+		HOVER_ENTER = 1u << 1,
+		HOVERING = 1u << 2,
+		HOVER_EXIT = 1u << 3,
+		PRESS_ENTER = 1u << 4,
+		PRESSING = 1u << 5,
+		PRESS_EXIT = 1u << 6,
+		INVOKED = 1u << 7,
+		END = 1u << 8
+	};
+
+	inline EUIEvent EventFlagToEvent(EUIEvent_Flag eFlag)
+	{
+		switch (eFlag)
+		{
+		case EUIEvent_Flag::NONE:			return EUIEvent::NONE;
+		case EUIEvent_Flag::HOVER_ENTER:	return EUIEvent::HOVER_ENTER;
+		case EUIEvent_Flag::HOVERING:		return EUIEvent::HOVERING;
+		case EUIEvent_Flag::HOVER_EXIT:	return EUIEvent::HOVER_EXIT;
+		case EUIEvent_Flag::PRESS_ENTER:	return EUIEvent::PRESS_ENTER;
+		case EUIEvent_Flag::PRESSING:		return EUIEvent::PRESSING;
+		case EUIEvent_Flag::PRESS_EXIT:	return EUIEvent::PRESS_EXIT;
+		case EUIEvent_Flag::INVOKED:		return EUIEvent::INVOKED;
+		default:								return EUIEvent::NONE;
+		}
+	}
+
+	inline EUIEvent_Flag EventToEventFlag(EUIEvent eEvent)
+	{
+		switch (eEvent)
+		{
+		case EUIEvent::NONE:			return EUIEvent_Flag::NONE;
+		case EUIEvent::HOVER_ENTER:	return EUIEvent_Flag::HOVER_ENTER;
+		case EUIEvent::HOVERING:		return EUIEvent_Flag::HOVERING;
+		case EUIEvent::HOVER_EXIT:		return EUIEvent_Flag::HOVER_EXIT;
+		case EUIEvent::PRESS_ENTER:	return EUIEvent_Flag::PRESS_ENTER;
+		case EUIEvent::PRESSING:		return EUIEvent_Flag::PRESSING;
+		case EUIEvent::PRESS_EXIT:		return EUIEvent_Flag::PRESS_EXIT;
+		case EUIEvent::INVOKED:		return EUIEvent_Flag::INVOKED;
+		default:							return EUIEvent_Flag::NONE;
+		}
+	}
+
+
+	NLOHMANN_JSON_SERIALIZE_ENUM(EUIEvent,
+		{
+			{EUIEvent::NONE, "NONE"},
+			{EUIEvent::HOVER_ENTER, "HOVER_ENTER"},
+			{EUIEvent::HOVERING, "HOVERING"},
+			{EUIEvent::HOVER_EXIT, "HOVER_EXIT"},
+			{EUIEvent::PRESS_ENTER, "PRESS_ENTER"},
+			{EUIEvent::PRESSING, "PRESSING"},
+			{EUIEvent::PRESS_EXIT, "PRESS_EXIT"},
+			{EUIEvent::INVOKED, "INVOKED"},
+		})
+
+		inline std::string UIEventToString(EUIEvent eType)
+	{
+		switch (eType)
+		{
+		case EUIEvent::NONE: return "NONE";
+		case EUIEvent::HOVER_ENTER: return "HOVER_ENTER";
+		case EUIEvent::HOVERING: return "HOVERING";
+		case EUIEvent::HOVER_EXIT: return "HOVER_EXIT";
+		case EUIEvent::PRESS_ENTER: return "PRESS_ENTER";
+		case EUIEvent::PRESSING: return "PRESSING";
+		case EUIEvent::PRESS_EXIT: return "PRESS_EXIT";
+		case EUIEvent::INVOKED: return "INVOKED";
+		default: return "";
+		}
+	}
+
+	inline EUIEvent StringToUIEvent(const std::string& str)
+	{
+		if (str == "NONE") return EUIEvent::NONE;
+		else if (str == "HOVER_ENTER") return EUIEvent::HOVER_ENTER;
+		else if (str == "HOVERING") return EUIEvent::HOVERING;
+		else if (str == "HOVER_EXIT") return EUIEvent::HOVER_EXIT;
+		else if (str == "PRESS_ENTER") return EUIEvent::PRESS_ENTER;
+		else if (str == "PRESSING") return EUIEvent::PRESSING;
+		else if (str == "PRESS_EXIT") return EUIEvent::PRESS_EXIT;
+		else if (str == "INVOKED") return EUIEvent::INVOKED;
+		else return EUIEvent::END;
+	}
+
+	enum class EUIShaderPass
+	{
+		DEFAULT = 0,
+		DEFAULT_ALPHA,
+		COLOR,
+		FADE,
+		PROGRESS,
+		END
+	};
+	inline std::string UIShaderPassToString(EUIShaderPass eType)
+	{
+		switch (eType)
+		{
+		case EUIShaderPass::DEFAULT: return "DEFAULT";
+		case EUIShaderPass::DEFAULT_ALPHA: return "DEFAULT_ALPHA";
+		case EUIShaderPass::COLOR: return "COLOR";
+		case EUIShaderPass::FADE: return "FADE";
+		case EUIShaderPass::PROGRESS: return "PROGRESS";
+		default: return "";
+		}
+	}
+	inline EUIShaderPass StringToUIShaderPass(const std::string& str)
+	{
+		if (str == "DEFAULT") return EUIShaderPass::DEFAULT;
+		else if (str == "DEFAULT_ALPHA") return EUIShaderPass::DEFAULT_ALPHA;
+		else if (str == "COLOR") return EUIShaderPass::COLOR;
+		else if (str == "FADE") return EUIShaderPass::FADE;
+		else if (str == "PROGRESS") return EUIShaderPass::PROGRESS;
+		else return EUIShaderPass::DEFAULT;
+	}
+#pragma endregion
 
 
 

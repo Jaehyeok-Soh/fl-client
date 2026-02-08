@@ -94,17 +94,18 @@ void CVIBuffer_Particle::Render()
 
 }
 
-void CVIBuffer_Particle::Update_Simulation(CComputeShader* ComputeShader, Vec3 vLook, _float fTImeDelta, E_PARTICLE_MOVESTATE eType)
+void CVIBuffer_Particle::Update_Simulation(CComputeShader* ComputeShader, Vec3 vLook, _float fTImeDelta, _uint TimeFlag, E_PARTICLE_MOVESTATE eType)
 {
 	if (ComputeShader == nullptr) return;
 
 	EFFECT_PARTICLE_MU_ELEMENT tMUDesc;
 	tMUDesc.fTimeDelta = fTImeDelta;
 	tMUDesc.iMoveState = ENUM_TO_UINT(eType);
-	tMUDesc.bIsLoop = m_tParticleDesc.isLoop;
+	tMUDesc.bIsLoop = m_tParticleDesc.isLoop; 
 	tMUDesc.fStartSpeed = m_tParticleDesc.m_fStartSpeeds;
 	tMUDesc.vLook = vLook;
 	tMUDesc.vPivot = m_tParticleDesc.vPivot;
+	tMUDesc.iTimeFlag = TimeFlag;
 	
 	ComputeShader->Bind_Compute_EffectData(tMUDesc);
 

@@ -33,7 +33,6 @@
 #include "DataDocument_UI.h"
 #include "DataStruct_UI.h"
 #include "Canvas.h"
-#include "UILayer.h"
 #include "GenericUI.h"
 
 #include "GameInstance.h"
@@ -258,7 +257,6 @@ HRESULT CLevel_Logo::Ready_DevMap()
 		return E_FAIL;
 
 	std::filesystem::path FilePath = L"../../Resources/Data/MapData/LevelData/DevLevel/DevMap.json";
-	//std::filesystem::path FilePath = L"../../Resources/Data/MapData/Test_So/Ailixian_Train01_Art_Test_So.json";
 	vector<path> vecfiles;
 
 	if (!std::filesystem::exists(FilePath))

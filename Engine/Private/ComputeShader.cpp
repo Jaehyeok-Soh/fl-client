@@ -1,10 +1,12 @@
 #include "Engine_pch.h"
 #include "ComputeShader.h"
+#include "FxEffectAsset.h"
 #include "Engine_Utils.h"
 
 // has class
 #include "StructuredBuffer.h"
 #include "Constant_Buffer.h"
+#include "GameInstance.h"
 
 CComputeShader::CComputeShader(ID3D11Device* pDevice, ID3D11DeviceContext* pDeviceContext)
 	: Super()
@@ -17,12 +19,7 @@ CComputeShader::CComputeShader(ID3D11Device* pDevice, ID3D11DeviceContext* pDevi
 
 CComputeShader::CComputeShader(const CComputeShader& rhs)
 	: Super(rhs)
-	, m_bInit(rhs.m_bInit)
-	, m_wstrPath(rhs.m_wstrPath)
-	, m_pBlob(rhs.m_pBlob)
-	, m_pEffect(rhs.m_pEffect)
-	, m_tEffectDesc(rhs.m_tEffectDesc)
-	, m_vecTechniques(rhs.m_vecTechniques)
+	, m_pOwner(rhs.m_pOwner)
 	, m_pComputeShader(rhs.m_pComputeShader)
 	, m_pDevice(rhs.m_pDevice)
 	, m_pDeviceContext(rhs.m_pDeviceContext)
@@ -30,11 +27,10 @@ CComputeShader::CComputeShader(const CComputeShader& rhs)
 	, m_pEffect_MutableBuffer(rhs.m_pEffect_MutableBuffer)
 
 {
+	Safe_AddRef(m_pOwner);
 	Safe_AddRef(m_pComputeShader);
 	Safe_AddRef(m_pDevice);
 	Safe_AddRef(m_pDeviceContext);
-	Safe_AddRef(m_pBlob);
-	Safe_AddRef(m_pEffect);
 	Safe_AddRef(m_pEffect_Mutable_Element_CBuffer);
 	Safe_AddRef(m_pEffect_MutableBuffer);
 }
@@ -45,7 +41,6 @@ HRESULT CComputeShader::Initialize_Prototype(void* pArg)
 		return E_FAIL;
 
 	COMSHADER_ORIGIN_DESC* pDesc = static_cast<COMSHADER_ORIGIN_DESC*>(pArg);
-	m_wstrPath = pDesc->pShaderFilePath;
 
 	if (FAILED(Ready_ComputeShader(pDesc)))
 		return E_FAIL;
@@ -63,20 +58,12 @@ HRESULT CComputeShader::Initialize(void* pArg)
 	return S_OK;
 }
 
-void CComputeShader::Bind_SRV(_uint iSolt, ID3D11ShaderResourceView* pSRV)
+void CComputeShader::Bind_InputStructuredBuffer(_uint Index, ID3DX11EffectShaderResourceVariable* pSRV, StructuredBuffer* pSB)
 {
-	//m_SRVs.push_back({ iSolt, pSRV });
+	// 없는 인덱스에 접근할거면 터질거긴한데 일부러 방어코드 작성안함. 디버깅용.
+	m_pInputStructuredBuffer[Index] = std::make_pair(pSRV, pSB);
 }
 
-void CComputeShader::Bind_UAV(_uint iSolt, ID3D11UnorderedAccessView* pUAV)
-{
-	//m_UAVs.push_back({ iSolt, pUAV });
-}
-
-void CComputeShader::Bind_CB(_uint iSolt, ID3D11Buffer* pCB)
-{
-	//m_CBs.push_back({ iSolt, pCB });
-}
 
 void CComputeShader::Dispatch(_uint iX, _uint iY, _uint iZ)
 {
@@ -89,10 +76,14 @@ void CComputeShader::Dispatch(_uint iX, _uint iY, _uint iZ)
 
 	if (m_pOutputStructedBuffer_UAV)
 		m_pOutputStructedBuffer_UAV->SetUnorderedAccessView(m_pOutputStructedBuffer->Get_UAV());
-	if (m_pInputStructedBuffer_SRV)
-		m_pInputStructedBuffer_SRV->SetResource(m_pInputStructedBuffer->Get_SRV());
 
-	m_vecTechniques[0].vecPasses[m_iPass].pPass->Apply(0, m_pDeviceContext);
+	for (auto SB : m_pInputStructuredBuffer)
+	{
+		if (SB.first)
+			SB.first->SetResource(SB.second->Get_SRV());
+	}
+
+	m_pOwner->Get_Pass(m_iPass)->Apply(0, m_pDeviceContext);
 
 	m_pDeviceContext->CSSetShader(m_pComputeShader, nullptr, 0);
 	m_pDeviceContext->Dispatch(iX, iY, iZ);
@@ -103,68 +94,27 @@ void CComputeShader::Dispatch(_uint iX, _uint iY, _uint iZ)
 	m_pDeviceContext->CSSetShader(nullptr, nullptr, 0);
 }
 
-void CComputeShader::Resize_InputStruct(void* pArg, _uint iElementSize, _uint iNumElements)
+void CComputeShader::Resize_InputStruct(_uint iIndex, void* pArg, _uint iElementSize, _uint iNumElements)
 {
-	m_pInputStructedBuffer->Resize(pArg, iElementSize, iNumElements);
+	m_pInputStructuredBuffer[iIndex].second->Resize(pArg, iElementSize, iNumElements);
 }
 
-void CComputeShader::Resize_OutputStruct(void* pArg, _uint iElementSize, _uint iNumElements)
+void CComputeShader::Resize_OutputStruct(_uint iIndex, void* pArg, _uint iElementSize, _uint iNumElements)
 {
 	m_pOutputStructedBuffer->Resize(pArg, iElementSize, iNumElements);
 }
 
 HRESULT CComputeShader::Ready_ComputeShader(COMSHADER_ORIGIN_DESC* pDesc)
 {
-	// 1. Effect 컴파일 및 생성
+	m_pOwner = m_pGameInstance->GetOrCreate_FxEffectAsset(pDesc->pShaderFilePath);
+	if (m_pOwner == nullptr)
+		return E_FAIL;
+	Safe_AddRef(m_pOwner);
+	ID3DX11EffectPass* pPass = m_pOwner->Get_Pass(0);
+	if (pPass == nullptr)
+		return E_FAIL;
+
 	{
-		_uint flag = 0;
-#ifdef _DEBUG
-		flag = D3DCOMPILE_DEBUG | D3DCOMPILE_SKIP_OPTIMIZATION;
-#else
-		flag = D3DCOMPILE_OPTIMIZATION_LEVEL1;
-#endif   
-		ID3DBlob* pErrorBlob = nullptr;
-		if (FAILED(::D3DX11CompileEffectFromFile(m_wstrPath.c_str(), NULL, D3D_COMPILE_STANDARD_FILE_INCLUDE, flag, 0, m_pDevice, &m_pEffect, &pErrorBlob)))
-		{
-			if (pErrorBlob)
-			{
-				/*MSG_BOX((const char*)pErrorBlob->GetBufferPointer());*/
-				Safe_Release(pErrorBlob);
-			}
-			return E_FAIL;
-		}
-		Safe_Release(pErrorBlob);
-	}
-
-	// 일반적인 Shader와 다르게 Input Layout이 없기 떄문에 검사조차 실행하지 않는다.
-	{
-		m_pEffect->GetDesc(&m_tEffectDesc);
-
-		// 하나의 CS 함수만 가짐.
-		ID3DX11EffectTechnique* pTechnique = m_pEffect->GetTechniqueByIndex(0);
-		ID3DX11EffectPass* pPass = pTechnique->GetPassByIndex(0);
-
-		D3DX11_PASS_DESC passDesc;
-		pPass->GetDesc(&passDesc);
-
-		for (_uint i = 0; i < m_tEffectDesc.Techniques; ++i)
-		{
-			TECHNIQUE technique;
-			technique.pTechnique = m_pEffect->GetTechniqueByIndex(i);
-			technique.pTechnique->GetDesc(&technique.tDesc);
-
-			for (_uint j = 0; j < technique.tDesc.Passes; ++j)
-			{
-				PASS pass;
-				pass.pPass = technique.pTechnique->GetPassByIndex(j);
-				pass.pPass->GetDesc(&pass.tDesc);
-				pass.pInputLayout = nullptr;
-
-				technique.vecPasses.push_back(pass);
-			}
-			m_vecTechniques.push_back(technique);
-		}
-
 		D3DX11_PASS_SHADER_DESC csDesc;
 		// 패스로부터 Compute Shader 정보를 가져온다
 		if (FAILED(pPass->GetComputeShaderDesc(&csDesc)))
@@ -192,85 +142,94 @@ HRESULT CComputeShader::Ready_ComputeShader(COMSHADER_ORIGIN_DESC* pDesc)
 #pragma region EffectVariable
 ID3DX11EffectVariable* CComputeShader::Get_Variable(string name)
 {
-	return m_pEffect->GetVariableByName(name.c_str());
+	return m_pOwner->Get_Variable(name);
 }
 
 ID3DX11EffectScalarVariable* CComputeShader::Get_Scalar(string name)
 {
-	return m_pEffect->GetVariableByName(name.c_str())->AsScalar();
+	return m_pOwner->Get_Scalar(name);
 }
 
 ID3DX11EffectVectorVariable* CComputeShader::Get_Vector(string name)
 {
-	return m_pEffect->GetVariableByName(name.c_str())->AsVector();
+	return m_pOwner->Get_Vector(name);
 }
 
 ID3DX11EffectMatrixVariable* CComputeShader::Get_Matrix(string name)
 {
-	return m_pEffect->GetVariableByName(name.c_str())->AsMatrix();
+	return m_pOwner->Get_Matrix(name);
 }
 
 ID3DX11EffectStringVariable* CComputeShader::Get_String(string name)
 {
-	return  m_pEffect->GetVariableByName(name.c_str())->AsString();
+	return m_pOwner->Get_String(name);
 }
 
 ID3DX11EffectShaderResourceVariable* CComputeShader::Get_SRV(string name)
 {
-	return m_pEffect->GetVariableByName(name.c_str())->AsShaderResource();
+	return m_pOwner->Get_SRV(name);
 }
 
 ID3DX11EffectRenderTargetViewVariable* CComputeShader::Get_RTV(string name)
 {
-	return m_pEffect->GetVariableByName(name.c_str())->AsRenderTargetView();
+	return m_pOwner->Get_RTV(name);
 }
 
 ID3DX11EffectDepthStencilViewVariable* CComputeShader::Get_DSV(string name)
 {
-	return m_pEffect->GetVariableByName(name.c_str())->AsDepthStencilView();
+	return m_pOwner->Get_DSV(name);
 }
 
 ID3DX11EffectUnorderedAccessViewVariable* CComputeShader::Get_UAV(string name)
 {
-	return m_pEffect->GetVariableByName(name.c_str())->AsUnorderedAccessView();
+	return m_pOwner->Get_UAV(name);
 }
 
 ID3DX11EffectConstantBuffer* CComputeShader::Get_ConstantBuffer(string name)
 {
-	return m_pEffect->GetConstantBufferByName(name.c_str());
+	return m_pOwner->Get_ConstantBuffer(name);
 }
 
 ID3DX11EffectShaderVariable* CComputeShader::Get_Shader(string name)
 {
-	return m_pEffect->GetVariableByName(name.c_str())->AsShader();
+	return m_pOwner->Get_Shader(name);
 }
 
 ID3DX11EffectBlendVariable* CComputeShader::Get_Blend(string name)
 {
-	return m_pEffect->GetVariableByName(name.c_str())->AsBlend();
+	return m_pOwner->Get_Blend(name);
 }
 
 ID3DX11EffectDepthStencilVariable* CComputeShader::Get_DepthStencil(string name)
 {
-	return m_pEffect->GetVariableByName(name.c_str())->AsDepthStencil();
+	return m_pOwner->Get_DepthStencil(name);
 }
 
 ID3DX11EffectRasterizerVariable* CComputeShader::Get_Rasterizer(string name)
 {
-	return m_pEffect->GetVariableByName(name.c_str())->AsRasterizer();
+	return m_pOwner->Get_Rasterizer(name);
 }
 
 ID3DX11EffectSamplerVariable* CComputeShader::Get_Sampler(string name)
 {
-	return m_pEffect->GetVariableByName(name.c_str())->AsSampler();
+	return m_pOwner->Get_Sampler(name);
 }
 
 #pragma endregion
 
-
-void CComputeShader::Bind_InputStructuredBuffer_Data(void* pArg, _uint iElementSize, _uint iNumElements)
+StructuredBuffer* CComputeShader::Get_Input_Buffer(_uint iIndex)
 {
-	m_pInputStructedBuffer->Copy_Data(pArg, iElementSize, iNumElements);
+	return m_pInputStructuredBuffer[iIndex].second;
+}
+
+StructuredBuffer* CComputeShader::Get_Output_Buffer()
+{
+	return m_pOutputStructedBuffer;
+}
+
+void CComputeShader::Bind_InputStructuredBuffer_Data(_uint iIndex, void* pArg, _uint iElementSize, _uint iNumElements)
+{
+	m_pInputStructuredBuffer[iIndex].second->Copy_Data(pArg, iElementSize, iNumElements);
 }
 
 #pragma region BINDING_CONSTANTBUFFER
@@ -279,7 +238,6 @@ void CComputeShader::Bind_Compute_EffectData(const EFFECT_PARTICLE_MU_ELEMENT& d
 {
 	m_pEffect_Mutable_Element_CBuffer->Copy_Data(desc);
 }
-
 
 #pragma endregion
 
@@ -298,7 +256,8 @@ HRESULT CComputeShader::Create_ConstantBuffer()
 HRESULT CComputeShader::Create_StructBuffer(void* pArg)
 {
 	COMSHADER_COPY_DESC* pDesc = static_cast<COMSHADER_COPY_DESC*>(pArg);
-	
+	m_pInputStructuredBuffer.resize(pDesc->InputBufferNum);
+
 	if (pDesc == nullptr)
 	{
 		MSG_BOX("Compute Shader Desc is NULL : COPY");
@@ -307,10 +266,14 @@ HRESULT CComputeShader::Create_StructBuffer(void* pArg)
 
 	// ======   Input Data 생성   ======
 	{
-		if (m_pInputStructedBuffer_SRV = Get_SRV(pDesc->Input_StructBuffer.sBufferName))
+		// 단일 버퍼인 사람을 위한 것.
+		if (m_pInputStructuredBuffer.size() != 0)
 		{
-			m_pInputStructedBuffer = StructuredBuffer::Create(m_pDevice, m_pDeviceContext, pDesc->Input_StructBuffer.iElementSize, pDesc->Input_StructBuffer.iNumElements);
-			m_pInputStructedBuffer_SRV->SetResource(m_pInputStructedBuffer->Get_SRV());
+			if (m_pInputStructuredBuffer[0].first = Get_SRV(pDesc->Input_StructBuffer.sBufferName))
+			{
+				m_pInputStructuredBuffer[0].second = StructuredBuffer::Create(m_pDevice, m_pDeviceContext, pDesc->Input_StructBuffer.iElementSize, pDesc->Input_StructBuffer.iNumElements);
+				m_pInputStructuredBuffer[0].first->SetResource(m_pInputStructuredBuffer[0].second->Get_SRV());
+			}
 		}
 	}
 
@@ -365,29 +328,24 @@ void CComputeShader::Clear_ConstantBuffer()
 
 void CComputeShader::Clear_StructBuffer()
 {
-	Safe_Release(m_pInputStructedBuffer);
-	Safe_Release(m_pInputStructedBuffer_SRV);
+	for (auto SB : m_pInputStructuredBuffer)
+	{
+		Safe_Release(SB.first);
+		Safe_Release(SB.second);
+	}
+
 	Safe_Release(m_pOutputStructedBuffer);
 	Safe_Release(m_pOutputStructedBuffer_UAV);
 }
 
 void CComputeShader::Free()
 {
-	for (auto& Technique : m_vecTechniques)
-	{
-		for (auto& Pass : Technique.vecPasses)
-		{
-			Safe_Release(Pass.pInputLayout);
-		}
-	}
-
 	Clear_ConstantBuffer();
 	Clear_StructBuffer();
 
+	Safe_Release(m_pOwner);
 	Safe_Release(m_pComputeShader);
 	Safe_Release(m_pDevice);
 	Safe_Release(m_pDeviceContext);
-	Safe_Release(m_pBlob);
-	Safe_Release(m_pEffect);
 	Super::Free();
 }

@@ -38,7 +38,7 @@ void CEffectType_Selection_Panel::DrawEffectList()
 	if (ImGui::TreeNode("Container_EffectList##Effect_List"))
 	{
 		m_pEffectList.clear();
-		auto EffectList = m_pGameInstance->Get_GameObject_List(ENUM_TO_UINT(ELevelType::EFFECT), L"Effect");
+		auto EffectList = m_pGameInstance->Get_GameObject_List(ENUM_TO_UINT(ELevelType::EFFECT), L"Effect_Layer");
 
 		if (EffectList == nullptr)
 		{
@@ -103,6 +103,8 @@ HRESULT CEffectType_Selection_Panel::Render(CToolObject* pGo)
 
 	m_eSelectedEffectType = E_EffectSystemType::None;
 
+	EditEffect();
+
 	ImGui::End();
 	
 	return S_OK;
@@ -121,7 +123,7 @@ void CEffectType_Selection_Panel::CreateParticleEffect()
 		transformDesc.fMovePerSec = 1.f;
 		ToolDesc.pTransform_Desc = &transformDesc;
 
-		ToolDesc.wstrLayerTag = L"Effect";
+		ToolDesc.wstrLayerTag = L"Effect_Layer";
 
 		if (!(pEffectContainer = static_cast<CToolObject*>(m_pGameInstance->Add_GameObject(ENUM_TO_UINT(ELevelType::EFFECT),
 			L"Prototype_GameObject_Effect",
@@ -147,24 +149,48 @@ void CEffectType_Selection_Panel::CreateParticleEffect()
 
 		pEffectDesc.pMatParent = &(pEffectContainer->Get_Component<CTransform>()->Get_WorldMatrix());
 		pEffectDesc.pTransform_Desc = &transformDesc;
+		pEffectDesc.iPartsID = E_PartsObjectID::Effect_Particle;
 
-		pEffectDesc.wstrLayerTag = L"Effect_Parts";
+		pEffectDesc.wstrLayerTag = L"Effect_Part_Particles";
 		pEffectDesc.iLevelIndex = ENUM_TO_UINT(ELevelType::EFFECT);
+
+		// ========     셰이더 선택   =========
+		pEffectDesc._Effect_Shader_Tag = L"Shader_VtxEffectParticle";
+		pEffectDesc._Effect_ShaderPass = 0;
+
 		// ========     이펙트 타입   =========
 		pEffectDesc.eEffectSystemType = E_EffectSystemType::Particle;
 		pEffectDesc.eEffectType = E_EFFECTTYPE::Particle;
+		pEffectDesc.eEffectSystemType = E_EffectSystemType::Particle;
+		pEffectDesc._Effect_EmissionType = E_EMISSION_TYPE::BOX;
+		pEffectDesc._Effect_ShapeType = E_SHAPETYPE::SPREAD;
 
 		// =========   이펙트 Color Value   ===============
 		pEffectDesc._Effect_Color = Vec4{ 0.f, 0.f, 0.f, 1.f };
 
+		// =========   이펙트 SRT   ============
+		pEffectDesc._Effect_StartScale = { 1.f, 1.f, 1.f };
+		pEffectDesc._Effect_EndScale = { 1.f, 1.f, 1.f };
+		
+		pEffectDesc._Effect_StartRotation = { 0.f, 0.f, 0.f };
+		pEffectDesc._Effect_TargetRotation = { 0.f, 0.f, 0.f };
+
+		// =========   버퍼 사이즈   ======================
+		pEffectDesc._Effect_MaxParticle = { 30 };
+		pEffectDesc._Effect_Looping = { true };
+		pEffectDesc._Effect_LifeTime = { 5.f };
+		pEffectDesc._Effect_Range = { 1.f, 1.f, 1.f };
+		pEffectDesc._Effect_StartSpeed = { 1.f };
+		pEffectDesc._Effect_ParticleSize = { 0.05f, 0.15f };
+		pEffectDesc._Effect_IsRandomSeed = { true };
+		pEffectDesc._Effect_StartDelay = 0.f;
+		pEffectDesc._Effect_PlayBackSpeed = 1.f;
 
 		// ========  이펙트 Material 설정   ===========
 		pEffectDesc._Effect_Model_Tag = {};
-		pEffectDesc._Effect_Shader_Tag = {};
 		pEffectDesc._Effect_DiffuseTexture_Tag = {};
 		pEffectDesc._Effect_NoiseTexture_Tag = {};
 		pEffectDesc._Effect_DiffuseTexture_Tag = {};
-		pEffectDesc._Effect_ShaderPass = {};
 
 		pEffectDesc._Effect_TileCount = CEffectObject::_uint2{0, 0};
 
@@ -179,8 +205,10 @@ void CEffectType_Selection_Panel::CreateParticleEffect()
 		pEffectDesc._Effect_StartScale = { 1.f, 1.f, 1.f };
 		pEffectDesc._Effect_EndScale = { 1.f, 1.f, 1.f };
 
-		static_cast<Effect*>(pEffectContainer)->Add_Part(0, ENUM_TO_UINT(ELevelType::EFFECT), L"Prototype_GameObject_Effect_Parts", &pEffectDesc);
-		static_cast<Effect*>(pEffectContainer)->Get_Part<CEffectObject>(0)->Set_Name("DEFAULT_EFFECT");
+		static_cast<Effect*>(pEffectContainer)->Add_Part(0, ENUM_TO_UINT(ELevelType::EFFECT), L"Prototype_GameObject_Effect_Part_Particle", &pEffectDesc);
+		CEffectObject* pEFfectOBject = static_cast<Effect*>(pEffectContainer)->Get_Part<CEffectObject>(0);
+		pEFfectOBject->Set_Name("DEFAULT_EFFECT");
+		pEFfectOBject->Awake(ENUM_TO_UINT(ELevelType::EFFECT));
 	}
 }
 
@@ -197,6 +225,44 @@ void CEffectType_Selection_Panel::CreateLineEffect()
 void CEffectType_Selection_Panel::CreateTrailEffect()
 {
 
+}
+
+void CEffectType_Selection_Panel::EditEffect()
+{
+	if(ImGui::TreeNode("Edit##Container_EffectList"))
+	{
+		if (ImGui::TreeNode("Name Change##Container_EffectList"))
+		{
+			static char nameBuf[128] = {};
+			string effectName = static_cast<Effect*>(*m_ppTargetSlot)->Get_Name();
+
+			if (nameBuf[0] == '\0' && !effectName.empty())
+			{
+				std::string tmp = effectName;
+				strncpy_s(nameBuf, sizeof(nameBuf), tmp.c_str(), _TRUNCATE);
+			}
+			// ImGui에서 입력 받기
+			ImGui::InputText(" ##Container_EffectList", nameBuf, IM_ARRAYSIZE(nameBuf)); ImGui::SameLine();
+
+			if (ImGui::Button("SAVE"))
+			{
+				effectName = nameBuf;
+				static_cast<Effect*>(*m_ppTargetSlot)->Set_Name(effectName);
+			}
+			ImGui::TreePop();
+		}
+
+		if (ImGui::TreeNode("Delete##Container_EffectList"))
+		{
+			if (ImGui::Button("Delete##Container_EffectList"))
+			{
+				static_cast<Effect*>(*m_ppTargetSlot)->Set_Dead(L"Effect_Layer");
+			}
+
+			ImGui::TreePop();
+		}
+		ImGui::TreePop();
+	}
 }
 
 wstring CEffectType_Selection_Panel::TypeToString(E_EffectSystemType eType)

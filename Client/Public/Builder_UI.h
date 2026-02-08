@@ -1,17 +1,14 @@
 #pragma once
 #include "BuilderBase.h"
 #include "DataDocument_UI.h"
+#include "GenericUI.h"
 
 NS_BEGIN(Engine)
 class CDataDocumentBase;
 NS_END
 
 NS_BEGIN(Client)
-
 class CCanvas;
-class CUILayer;
-class CGenericUI;
-
 class CBuilder_UI final : public CBuilderBase
 {
 	using Super = CBuilderBase;
@@ -24,13 +21,13 @@ public:
 	virtual HRESULT Build(const CDataDocumentBase& document) override;
 private:
 	HRESULT Create_CanvasDTO(const DTO::TUI_CanvasData& data);
-	HRESULT Create_LayerDTO(const DTO::TUI_LayerData& data);
 	HRESULT Create_GenericUIDTO(const DTO::TUI_GenericUIData& data);
-	HRESULT Create_EventBindDataDTO(const DTO::TUI_EventBindData& data);
+
+	HRESULT Register_Class(DTO::EUIClassType eClassType, const DTO::TUI_GenericUIData& data, CCanvas* pCanvas);
+	CGenericUI::GENERIC_UI_DESC Make_DefaultInfo(const DTO::TUI_GenericUIData& data, CCanvas* pCanvas);
 
 private:
 	unordered_map<_string, CCanvas*> m_MapCanvasCache;
-	unordered_map<_string, CUILayer*> m_MapLayerCache;
 	unordered_map<_string, CGenericUI* >m_pMapUICache;
 
 	Vec2 m_vAspect = {};

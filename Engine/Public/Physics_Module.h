@@ -83,6 +83,8 @@ public:
         PxFilterObjectAttributes attributes0, PxFilterData filterData0,
         PxFilterObjectAttributes attributes1, PxFilterData filterData1,
         PxPairFlags& pairFlags, const void* constantBlock, PxU32 constantBlockSize);
+    
+    void Check_Leak();
 
 private:
     ID3D11Device* m_pDevice = { nullptr };

@@ -6,7 +6,6 @@
 #include "ImGui_ToolManager.h"
 #include "Level_Loading.h"
 #include "ImGui_UIManager.h"
-#include "UIData_Repository.h"
 //=================
 // GameObject
 //=================
@@ -116,9 +115,7 @@ HRESULT CMainApplication::Ready_Static_Prototype()
 	{
 		CShader::SHADER_ORIGIN_DESC shaderDesc = {};
 		shaderDesc.pShaderFilePath = L"../../Shaders/Shader_VtxCol.hlsl";
-		shaderDesc.iNumElements = 
-			VTXPOSCOL::iNumElements;
-		shaderDesc.pElements = Engine::VTXPOSCOL::Elements;
+		shaderDesc.eLayout = EVtxLayout::VTXPOSCOL;
 		if (FAILED(m_pGameInstance->Add_Prototype(ENUM_TO_UINT(ELevelType::STATIC), L"Prototype_Component_Shader_VtxCol",
 			CShader::Create(m_pDevice, m_pDeviceContext, &shaderDesc))))
 			return E_FAIL;
@@ -128,8 +125,7 @@ HRESULT CMainApplication::Ready_Static_Prototype()
 	{
 		CShader::SHADER_ORIGIN_DESC shaderDesc = {};
 		shaderDesc.pShaderFilePath = L"../../Shaders/Shader_VtxPosTex.hlsl";
-		shaderDesc.iNumElements = Engine::VTXPOSTEX::iNumElements;
-		shaderDesc.pElements = Engine::VTXPOSTEX::Elements;
+		shaderDesc.eLayout = EVtxLayout::VTXPOSTEX;
 		if (FAILED(m_pGameInstance->Add_Prototype(ENUM_TO_UINT(ELevelType::STATIC), L"Prototype_Component_Shader_VtxPosTex",
 			CShader::Create(m_pDevice, m_pDeviceContext, &shaderDesc))))
 			return E_FAIL;
@@ -139,8 +135,7 @@ HRESULT CMainApplication::Ready_Static_Prototype()
 	{
 		CShader::SHADER_ORIGIN_DESC shaderDesc = {};
 		shaderDesc.pShaderFilePath = L"../../Shaders/Shader_VtxNorTex.hlsl";
-		shaderDesc.iNumElements = Engine::VTXNORTEX::iNumElements;
-		shaderDesc.pElements = Engine::VTXNORTEX::Elements;
+		shaderDesc.eLayout = EVtxLayout::VTXNORTEX;
 		if (FAILED(m_pGameInstance->Add_Prototype(ENUM_TO_UINT(ELevelType::STATIC), L"Prototype_Component_Shader_VtxNorTex",
 			CShader::Create(m_pDevice, m_pDeviceContext, &shaderDesc))))
 			return E_FAIL;
@@ -150,8 +145,7 @@ HRESULT CMainApplication::Ready_Static_Prototype()
 	{
 		CShader::SHADER_ORIGIN_DESC shaderDesc = {};
 		shaderDesc.pShaderFilePath = L"../../Shaders/Shader_VtxMesh.hlsl";
-		shaderDesc.iNumElements = Engine::VTXMESH::iNumElements;
-		shaderDesc.pElements = Engine::VTXMESH::Elements;
+		shaderDesc.eLayout = EVtxLayout::VTXMESH;
 		if (FAILED(m_pGameInstance->Add_Prototype(ENUM_TO_UINT(ELevelType::STATIC), L"Prototype_Component_Shader_VtxMesh",
 			CShader::Create(m_pDevice, m_pDeviceContext, &shaderDesc))))
 			return E_FAIL;
@@ -161,8 +155,7 @@ HRESULT CMainApplication::Ready_Static_Prototype()
 	{
 		CShader::SHADER_ORIGIN_DESC shaderDesc = {};
 		shaderDesc.pShaderFilePath = L"../../Shaders/Shader_VtxInstanceMesh.hlsl";
-		shaderDesc.iNumElements = Engine::VTX_INSTANCE_MESH::iNumElements;
-		shaderDesc.pElements = Engine::VTX_INSTANCE_MESH::Elements;
+		shaderDesc.eLayout = EVtxLayout::VTX_INSTANCE_MESH;
 		if (FAILED(m_pGameInstance->Add_Prototype(ENUM_TO_UINT(ELevelType::STATIC), L"Prototype_Component_Shader_VtxInstanceMesh",
 			CShader::Create(m_pDevice, m_pDeviceContext, &shaderDesc))))
 			return E_FAIL;
@@ -172,8 +165,7 @@ HRESULT CMainApplication::Ready_Static_Prototype()
 	{
 		CShader::SHADER_ORIGIN_DESC shaderDesc = {};
 		shaderDesc.pShaderFilePath = L"../../Shaders/Shader_VtxAnimMesh.hlsl";
-		shaderDesc.iNumElements = Engine::VTXANIMMESH::iNumElements;
-		shaderDesc.pElements = Engine::VTXANIMMESH::Elements;
+		shaderDesc.eLayout = EVtxLayout::VTXANIMMESH;
 		if (FAILED(m_pGameInstance->Add_Prototype(ENUM_TO_UINT(ELevelType::STATIC), L"Prototype_Component_Shader_AnimMesh",
 			CShader::Create(m_pDevice, m_pDeviceContext, &shaderDesc))))
 			return E_FAIL;
@@ -183,8 +175,7 @@ HRESULT CMainApplication::Ready_Static_Prototype()
 	{
 		CShader::SHADER_ORIGIN_DESC shaderDesc = {};
 		shaderDesc.pShaderFilePath = L"../../Shaders/Shader_VtxMesh_SkillEffect.hlsl";
-		shaderDesc.iNumElements = Engine::VTXMESH::iNumElements;
-		shaderDesc.pElements = Engine::VTXMESH::Elements;
+		shaderDesc.eLayout = EVtxLayout::VTXMESH;
 		if (FAILED(m_pGameInstance->Add_Prototype(ENUM_TO_UINT(ELevelType::STATIC), L"Prototype_Component_Shader_VtxMesh_SkillEffect",
 			CShader::Create(m_pDevice, m_pDeviceContext, &shaderDesc))))
 			return E_FAIL;
@@ -194,8 +185,7 @@ HRESULT CMainApplication::Ready_Static_Prototype()
 	{
 		CShader::SHADER_ORIGIN_DESC shaderDesc = {};
 		shaderDesc.pShaderFilePath = L"../../Shaders/Shader_VtxEffectMesh.hlsl";
-		shaderDesc.iNumElements = Engine::VTXPOS_PARTICLEMESH::iNumElements;
-		shaderDesc.pElements = Engine::VTXPOS_PARTICLEMESH::Elements;
+		shaderDesc.eLayout = EVtxLayout::VTXPOS_PARTICLEMESH;
  		if (FAILED(m_pGameInstance->Add_Prototype(ENUM_TO_UINT(ELevelType::STATIC), L"Prototype_Component_Shader_VtxEffectMesh",
 			CShader::Create(m_pDevice, m_pDeviceContext, &shaderDesc))))
 			return E_FAIL;
@@ -205,8 +195,7 @@ HRESULT CMainApplication::Ready_Static_Prototype()
 	{
 		CShader::SHADER_ORIGIN_DESC shaderDesc = {};
 		shaderDesc.pShaderFilePath = L"../../Shaders/Shader_VtxEffectParticle.hlsl";
-		shaderDesc.iNumElements = Engine::VTXPOS_PARTICLE::iNumElements;
-		shaderDesc.pElements = Engine::VTXPOS_PARTICLE::Elements;
+		shaderDesc.eLayout = EVtxLayout::VTXPOS_PARTICLE;
 		if (FAILED(m_pGameInstance->Add_Prototype(ENUM_TO_UINT(ELevelType::STATIC), L"Prototype_Component_Shader_VtxEffectParticle",
 			CShader::Create(m_pDevice, m_pDeviceContext, &shaderDesc))))
 			return E_FAIL;
@@ -216,23 +205,11 @@ HRESULT CMainApplication::Ready_Static_Prototype()
 	{
 		CShader::SHADER_ORIGIN_DESC shaderDesc = {};
 		shaderDesc.pShaderFilePath = L"../../Shaders/Shader_VtxEffectTexture.hlsl";
-		shaderDesc.iNumElements = Engine::VTXPOS_PARTICLE::iNumElements;
-		shaderDesc.pElements = Engine::VTXPOS_PARTICLE::Elements;
+		shaderDesc.eLayout = EVtxLayout::VTXPOS_PARTICLE;
 		if (FAILED(m_pGameInstance->Add_Prototype(ENUM_TO_UINT(ELevelType::STATIC), L"Prototype_Component_Shader_VtxEffectTexture",
 			CShader::Create(m_pDevice, m_pDeviceContext, &shaderDesc))))
 			return E_FAIL;
 	}
-
-	//// For. Prototype_Component_Shader_CPT_Effect_Particle
-	//{
-	//	CShader::SHADER_ORIGIN_DESC shaderDesc = {};
-	//	shaderDesc.pShaderFilePath = L"../../Shaders/Shader_CPT_Effect_Particle.hlsl";
-	//	shaderDesc.iNumElements = 0;
-	//	shaderDesc.pElements = nullptr;
-	//	if (FAILED(m_pGameInstance->Add_Prototype(ENUM_TO_UINT(ELevelType::STATIC), L"Prototype_Component_Shader_CPT_Effect_Particle",
-	//		CShader::Create(m_pDevice, m_pDeviceContext, &shaderDesc))))
-	//		return E_FAIL;
-	//}
 
 	// For. Prototype_Component_Shader_CPT_Effect_Particle
 	{
@@ -406,7 +383,6 @@ void CMainApplication::Free()
 {
 	Safe_Release(m_pImGuiManager);
 	CPicking_ToolManager::GetInstance()->DestroyInstance();
-	CUIData_Repository::GetInstance()->DestroyInstance();
 	CImGui_UIManager::GetInstance()->DestroyInstance();
 	CMapToolManager::GetInstance()->DestroyInstance();
 	Safe_Release(m_pGameInstance);

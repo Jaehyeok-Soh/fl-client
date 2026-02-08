@@ -23,7 +23,6 @@
 // UI
 //=================
 #include "ToolCanvas.h"
-#include "ToolLayer.h"
 #include "ToolUI.h"
 //=================
 // Map
@@ -242,12 +241,16 @@ HRESULT CLoader::Loading_For_Effect()
 	}
 
 	/* Effect Data Model */
+	wstring basicBoxPath = L"../../Resources/Models/Map/Level/BasicShapes/Model/";
+
 	CUEMapDataLoader* pMapDataLoader = CUEMapDataLoader::Create(m_pDevice, m_pDeviceContext);
 	if (pMapDataLoader == nullptr) return E_FAIL;
 	if (FAILED(pMapDataLoader->Make_Prototype(ENUM_TO_UINT(ELevelType::EFFECT), L"../../Resources/Models/Effect_FBX/blade/Model/")))
 		return E_FAIL;
+	if (FAILED(pMapDataLoader->Make_Prototype(ENUM_TO_UINT(ELevelType::EFFECT), basicBoxPath)))
+		return E_FAIL;
 	Safe_Release(pMapDataLoader);
-
+	
 	Loading_Textures_Effect(L"../../Resources/Textures/Effect");
 
 	m_isFinished = true;
@@ -266,16 +269,10 @@ HRESULT CLoader::Loading_For_UI()
 	//=================
 	// Resource Component
 	//=================
-
-	// For. Prototype_Component_Button_Test_Texture
-	{
-		CTexture::TEXTURE_COMPONENT_ORIGIN_DESC textureDesc = {};
-		textureDesc.iTextureCount = 22;
-		textureDesc.wstrTexturePath = L"../../Resources/Textures/UI/%d.png";
-		if (FAILED(m_pGameInstance->Add_Prototype(ENUM_TO_UINT(ELevelType::UI), L"Prototype_Component_UI_Texture", CTexture::Create(&textureDesc))))
-			return E_FAIL;
-	}
-
+	if (FAILED(Loading_Textures(L"../../Resources/Textures/UI/Playable/")))
+		return E_FAIL;
+	if (FAILED(Loading_Textures(L"../../Resources/Textures/UI/Menu/")))
+		return E_FAIL;
 
 	//=================
 	// UI Objects
@@ -284,11 +281,6 @@ HRESULT CLoader::Loading_For_UI()
 	// For. Prototype_UI_Canvas
 	{
 		if (FAILED(m_pGameInstance->Add_Prototype(ENUM_TO_UINT(ELevelType::UI), g_wszPrototypeTagCanvas, CToolCanvas::Create(EToolObjectType::UI, m_pDevice, m_pDeviceContext))))
-			return E_FAIL;
-	}
-	// For. Prototype_UI_Layer
-	{
-		if (FAILED(m_pGameInstance->Add_Prototype(ENUM_TO_UINT(ELevelType::UI), g_wszPrototypeTagLayer, CToolLayer::Create(EToolObjectType::UI, m_pDevice, m_pDeviceContext))))
 			return E_FAIL;
 	}
 	// For. Prototype_UI_UI

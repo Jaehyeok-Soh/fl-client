@@ -1,10 +1,11 @@
 #pragma once
 #include "ImGui_Panel.h"
-#include "UIData_Repository.h"
+#include "DataStruct_UI.h"
 
 NS_BEGIN(Tool)
 class CImGui_ToolManager;
 class CImGui_UIManager;
+class CToolUI;
 
 class CUI_Inspector final : public CImGui_Panel
 {
@@ -23,11 +24,13 @@ public:
 	void SetUp_Public_Info();
 	void Input_RectTransform();
 	void Input_TextureTag();
-	void Add_Action(DTO::EUIEvent EventType);
-	void Edit_Action();
+	void SetUp_Class();
+	void SetUp_Owner();
+	void SetUp_Component();
 
-	void SetUp_Func();
-	void Action_List(DTO::EUIEvent eType);
+	void SetUp_ShaderPass();
+
+	void SetUp_UIProgress();
 
 private:
 	/// <summary>
@@ -45,6 +48,8 @@ private:
 	_bool Scrub_Float(const _char* label, const _char* Id, OUT _float* pValue,
 		float fValuePerPixel = 0.01f, float fScale = 10.f, float fStep = 0.1f, float fStep_fast = 1.0f, float fSize = 100.f);
 
+	bool Begin_Card(const char* Label, const char* ID, float fHeight);
+	void End_Card();
 private:
 	CImGui_ToolManager* m_pToolManager = { nullptr };
 	CImGui_UIManager* m_pUIManager = { nullptr };
@@ -55,11 +60,27 @@ private:
 	CToolUI* m_pSelectedUI = { nullptr };
 	uint32_t m_iRectTransformIndex = {};
 
-	uint32_t m_iEditEventCursor = {};
-	uint32_t m_iEditFuncCursor = {};
 
-	DTO::EUIEvent m_eCurEditEvent = { DTO::EUIEvent::END };
-	DTO::EUIAction m_eCurEditFunc = { DTO::EUIAction::END };
+	std::vector<_string> m_VecClassTag;
+	std::vector<_string> m_VecOwnerTag;
+	std::vector<_string> m_VecShaderPassTag;
+
+	ImVec2 m_vLastCardPos = {};
+	ImVec2 m_vLastCardSize = {};
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 private:

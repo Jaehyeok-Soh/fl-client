@@ -224,6 +224,11 @@
     <ClInclude Include="..\Public\State_RunShort.h" />
     <ClInclude Include="..\Public\State_Slide.h" />
     <ClInclude Include="..\Public\State_Walk.h" />
+    <ClInclude Include="..\Public\StaticModel.h" />
+    <ClInclude Include="..\Public\UIButton_Component.h" />
+    <ClInclude Include="..\Public\UIMonster_HP.h" />
+    <ClInclude Include="..\Public\UIPlayer_HP.h" />
+    <ClInclude Include="..\Public\UIProgress_Component.h" />
     <ClInclude Include="..\Public\StaticObject.h" />
     <ClInclude Include="..\Public\UIAction_Client.h" />
     <ClInclude Include="..\Public\UILayer.h" />
@@ -323,6 +328,11 @@
     <ClCompile Include="..\Private\State_RunShort.cpp" />
     <ClCompile Include="..\Private\State_Slide.cpp" />
     <ClCompile Include="..\Private\State_Walk.cpp" />
+    <ClCompile Include="..\Private\StaticModel.cpp" />
+    <ClCompile Include="..\Private\UIButton_Component.cpp" />
+    <ClCompile Include="..\Private\UIMonster_HP.cpp" />
+    <ClCompile Include="..\Private\UIPlayer_HP.cpp" />
+    <ClCompile Include="..\Private\UIProgress_Component.cpp" />
     <ClCompile Include="..\Private\StaticObject.cpp" />
     <ClCompile Include="..\Private\UIAction_Client.cpp" />
     <ClCompile Include="..\Private\UILayer.cpp" />

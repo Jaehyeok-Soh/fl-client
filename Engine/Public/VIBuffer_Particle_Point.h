@@ -21,8 +21,15 @@ private:
 public:
 	virtual HRESULT Bind_Resource() override;
 	virtual void Render() override;
-	virtual HRESULT Resize_InstanceBuffer(_uint iNumInstanceCount) override;
+	virtual HRESULT Resize_InstanceBuffer(const PARTICLE_ORIGIN_DESC& Desc) override;
 	virtual void Set_ParticleDesc(const PARTICLE_ORIGIN_DESC& desc) override;
+
+public:
+	virtual HRESULT Set_VertexBuffer(const PARTICLE_ORIGIN_DESC& Desc);
+	virtual HRESULT Set_ResizeBuffer_UseRandomSeed();
+	virtual HRESULT Set_ResizeBuffer_NoneUseRandomSeed();
+	virtual HRESULT Set_InstanceBuffer();
+
 public:
 	static CVIBuffer_Particle_Point* Create(ID3D11Device* pDevice, ID3D11DeviceContext* pDeviceContext, void* pArg);
 	virtual CComponent* Clone(void* pArg) override;

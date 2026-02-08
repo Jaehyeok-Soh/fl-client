@@ -46,14 +46,17 @@ void CPhysicsRigidBody::Awake()
 	}
 
 	PHYSICSCOLLIDER_DESC* colDesc = collider->GetDesc();
-	vector<PxShape*> shapes = collider->GetShapes();
+	vector<PxShape*>* shapes = &collider->GetShapes();
 
 	m_pActors = m_pGameInstance->GetActor(&m_tDesc,
 		colDesc,
-		shapes);
+		*shapes);
 
 	for (auto& actor : m_pActors)
-		m_pGameInstance->AddActor(actor);
+	{
+		if (actor)
+			m_pGameInstance->AddActor(actor);
+	}
 }
 
 void CPhysicsRigidBody::Update()
@@ -96,6 +99,14 @@ CComponent* CPhysicsRigidBody::Clone(void* pArg)
 
 void CPhysicsRigidBody::Free()
 {
+	for (auto& actor : m_pActors)
+	{
+		if (actor)
+			PX_RELEASE(actor);
+	}
+
+	m_pActors.clear();
+
 	Safe_Release(m_pDeviceContext);
 	Safe_Release(m_pDevice);
 

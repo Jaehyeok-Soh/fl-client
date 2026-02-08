@@ -43,7 +43,7 @@ public:
 	Vec3 Get_RB() { return Vec3{ m_fX + m_fWidth * 0.5f , m_fY + m_fHeight * 0.5f, m_fZ }; }	// Right Bottom
 
 	const _string& Get_Name() { return m_strName; }
-	vector<CUILayer*>* Get_UILayerVector() { return &m_vecUILayers; }
+	vector<CGenericUI*>* Get_UIVector() { return &m_vecUI; }
 
 private:
 	HRESULT Ready_Components(CANVAS_DESC* pDesc);
@@ -54,7 +54,7 @@ private:
 	CGenericUI* Calc_TopUI();
 
 private:
-	vector<CUILayer*> m_vecUILayers;
+	vector<CGenericUI*> m_vecUI;
 
 	CGenericUI* m_pCaptureUI = { nullptr };
 	CGenericUI* m_pHoveringUI = { nullptr };
