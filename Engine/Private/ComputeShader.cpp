@@ -82,7 +82,8 @@ void CComputeShader::Dispatch(_uint iX, _uint iY, _uint iZ)
 		if (SB.first)
 			SB.first->SetResource(SB.second->Get_SRV());
 	}
-	m_vecTechniques[0].vecPasses[m_iPass].pPass->Apply(0, m_pDeviceContext);
+
+	m_pOwner->Get_Pass(m_iPass)->Apply(0, m_pDeviceContext);
 
 	m_pDeviceContext->CSSetShader(m_pComputeShader, nullptr, 0);
 	m_pDeviceContext->Dispatch(iX, iY, iZ);

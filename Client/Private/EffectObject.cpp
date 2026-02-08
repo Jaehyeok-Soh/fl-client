@@ -11,6 +11,11 @@
 #include "StructuredBuffer.h"
 #include "GameInstance.h"
 
+#define PLAY 0
+#define PAUSE 1
+#define RESET 2
+#define STOP 3
+
 CEffectObject::CEffectObject(ID3D11Device* pDevice, ID3D11DeviceContext* pDeviceContext)
     :CPartObject(pDevice, pDeviceContext)
 {
@@ -360,33 +365,39 @@ void CEffectObject::Update(const _float fTimeDelta)
     case DTO::E_SHAPETYPE::SPREAD:
     {
         CVIBuffer_Particle_Point* pInstance = Get_Component<CVIBuffer_Particle_Point>();
-        if (pInstance) pInstance->Update_Simulation(CTShader, Vec3{}, fTimeDelta, 
-            E_PARTICLE_MOVESTATE::SPREAD);
+        if (pInstance) pInstance->Update_Simulation(CTShader, Vec3{}, fTimeDelta, m_tEffectDesc._Effect_TimeFlag, E_PARTICLE_MOVESTATE::SPREAD);
         break;
     }
     case DTO::E_SHAPETYPE::DROP:
     {
         CVIBuffer_Particle_Point* pInstance = Get_Component<CVIBuffer_Particle_Point>();
-        if (pInstance) pInstance->Update_Simulation(CTShader, Vec3{}, fTimeDelta, E_PARTICLE_MOVESTATE::DROP);
+        if (pInstance) pInstance->Update_Simulation(CTShader, Vec3{}, fTimeDelta, m_tEffectDesc._Effect_TimeFlag, E_PARTICLE_MOVESTATE::DROP);
         break;
     }
     case DTO::E_SHAPETYPE::RISE:
     {
         CVIBuffer_Particle_Point* pInstance = Get_Component<CVIBuffer_Particle_Point>();
-        if (pInstance) pInstance->Update_Simulation(CTShader, Vec3{}, fTimeDelta, E_PARTICLE_MOVESTATE::RISE);
+        if (pInstance) pInstance->Update_Simulation(CTShader, Vec3{}, fTimeDelta, m_tEffectDesc._Effect_TimeFlag, E_PARTICLE_MOVESTATE::RISE);
         break;
     }
-    case DTO::E_SHAPETYPE::MESH:
+    case DTO::E_SHAPETYPE::SPIRAL:
     {
         CVIBuffer_Particle_Point* pInstance = Get_Component<CVIBuffer_Particle_Point>();
-        if (pInstance) pInstance->Update_Simulation(CTShader, Vec3{}, fTimeDelta, E_PARTICLE_MOVESTATE::RISE);
+        if (pInstance) pInstance->Update_Simulation(CTShader, Vec3{}, fTimeDelta, m_tEffectDesc._Effect_TimeFlag, E_PARTICLE_MOVESTATE::SPIRAL);
+        break;
+    }
+
+    case DTO::E_SHAPETYPE::DNA:
+    {
+        CVIBuffer_Particle_Point* pInstance = Get_Component<CVIBuffer_Particle_Point>();
+        if (pInstance) pInstance->Update_Simulation(CTShader, Vec3{}, fTimeDelta, m_tEffectDesc._Effect_TimeFlag, E_PARTICLE_MOVESTATE::DNA);
         break;
     }
 
     case DTO::E_SHAPETYPE::STRAIGHT:
     {
         CVIBuffer_Particle_Point* pInstance = Get_Component<CVIBuffer_Particle_Point>();
-        if (pInstance) pInstance->Update_Simulation(CTShader, Get_Component<CTransform>()->Get_Info(TRANSFORM_INFO_STATE::LOOK), fTimeDelta, E_PARTICLE_MOVESTATE::STRAIGHT);
+        if (pInstance) pInstance->Update_Simulation(CTShader, Get_Component<CTransform>()->Get_Info(TRANSFORM_INFO_STATE::LOOK), fTimeDelta, m_tEffectDesc._Effect_TimeFlag, E_PARTICLE_MOVESTATE::STRAIGHT);
         break;
     }
     }
