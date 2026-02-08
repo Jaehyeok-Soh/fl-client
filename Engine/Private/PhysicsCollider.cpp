@@ -122,6 +122,17 @@ CComponent* CPhysicsCollider::Clone(void* pArg)
 
 void CPhysicsCollider::Free()
 {
+	if (IsClone() != true)
+	{
+		for (auto& shape : m_pColliderShapes)
+		{
+			if (shape != nullptr && shape->isReleasable())
+				PX_RELEASE(shape);
+		}
+	}
+
+	m_pColliderShapes.clear();
+
 	Safe_Release(m_pDeviceContext);
 	Safe_Release(m_pDevice);
 

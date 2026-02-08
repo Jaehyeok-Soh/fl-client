@@ -11,7 +11,7 @@ namespace Tool
 		Quat vQuat{};
 		Vec3 vPosition{};
 
-		Vec3 vScale_Isolated{}; //TEST: 소재혁 임시 추가
+		Vec3 vScale_Isolated{};
 	public:
 		Matrix Get_World()
 		{

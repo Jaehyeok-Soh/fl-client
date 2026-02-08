@@ -73,6 +73,13 @@ HRESULT CComputeShader::Initialize(void* pArg)
 	return S_OK;
 }
 
+void CComputeShader::Bind_InputStructuredBuffer(_uint Index, ID3DX11EffectShaderResourceVariable* pSRV, StructuredBuffer* pSB)
+{
+	// 없는 인덱스에 접근할거면 터질거긴한데 일부러 방어코드 작성안함. 디버깅용.
+	m_pInputStructuredBuffer[Index] = std::make_pair(pSRV, pSB);
+}
+
+
 void CComputeShader::Dispatch(_uint iX, _uint iY, _uint iZ)
 {
 	// GPU <-> GPU 통신은 한쪽이 연결을 끊어줘야 다른쪽 연결도 성공한다.
@@ -84,8 +91,12 @@ void CComputeShader::Dispatch(_uint iX, _uint iY, _uint iZ)
 
 	if (m_pOutputStructedBuffer_UAV)
 		m_pOutputStructedBuffer_UAV->SetUnorderedAccessView(m_pOutputStructedBuffer->Get_UAV());
-	if (m_pInputStructedBuffer_SRV)
-		m_pInputStructedBuffer_SRV->SetResource(m_pInputStructedBuffer->Get_SRV());
+
+	for (auto SB : m_pInputStructuredBuffer)
+	{
+		if (SB.first)
+			SB.first->SetResource(SB.second->Get_SRV());
+	}
 
 	m_pOwner->Get_Pass(m_iPass)->Apply(0, m_pDeviceContext);
 
@@ -98,12 +109,12 @@ void CComputeShader::Dispatch(_uint iX, _uint iY, _uint iZ)
 	m_pDeviceContext->CSSetShader(nullptr, nullptr, 0);
 }
 
-void CComputeShader::Resize_InputStruct(void* pArg, _uint iElementSize, _uint iNumElements)
+void CComputeShader::Resize_InputStruct(_uint iIndex, void* pArg, _uint iElementSize, _uint iNumElements)
 {
-	m_pInputStructedBuffer->Resize(pArg, iElementSize, iNumElements);
+	m_pInputStructuredBuffer[iIndex].second->Resize(pArg, iElementSize, iNumElements);
 }
 
-void CComputeShader::Resize_OutputStruct(void* pArg, _uint iElementSize, _uint iNumElements)
+void CComputeShader::Resize_OutputStruct(_uint iIndex, void* pArg, _uint iElementSize, _uint iNumElements)
 {
 	m_pOutputStructedBuffer->Resize(pArg, iElementSize, iNumElements);
 }
@@ -221,9 +232,19 @@ ID3DX11EffectSamplerVariable* CComputeShader::Get_Sampler(string name)
 
 #pragma endregion
 
-void CComputeShader::Bind_InputStructuredBuffer_Data(void* pArg, _uint iElementSize, _uint iNumElements)
+StructuredBuffer* CComputeShader::Get_Input_Buffer(_uint iIndex)
 {
-	m_pInputStructedBuffer->Copy_Data(pArg, iElementSize, iNumElements);
+	return m_pInputStructuredBuffer[iIndex].second;
+}
+
+StructuredBuffer* CComputeShader::Get_Output_Buffer()
+{
+	return m_pOutputStructedBuffer;
+}
+
+void CComputeShader::Bind_InputStructuredBuffer_Data(_uint iIndex, void* pArg, _uint iElementSize, _uint iNumElements)
+{
+	m_pInputStructuredBuffer[iIndex].second->Copy_Data(pArg, iElementSize, iNumElements);
 }
 
 #pragma region BINDING_CONSTANTBUFFER
@@ -286,7 +307,8 @@ HRESULT CComputeShader::Create_ConstantBuffer()
 HRESULT CComputeShader::Create_StructBuffer(void* pArg)
 {
 	COMSHADER_COPY_DESC* pDesc = static_cast<COMSHADER_COPY_DESC*>(pArg);
-	
+	m_pInputStructuredBuffer.resize(pDesc->InputBufferNum);
+
 	if (pDesc == nullptr)
 	{
 		MSG_BOX("Compute Shader Desc is NULL : COPY");
@@ -295,10 +317,14 @@ HRESULT CComputeShader::Create_StructBuffer(void* pArg)
 
 	// ======   Input Data 생성   ======
 	{
-		if (m_pInputStructedBuffer_SRV = Get_SRV(pDesc->Input_StructBuffer.sBufferName))
+		// 단일 버퍼인 사람을 위한 것.
+		if (m_pInputStructuredBuffer.size() != 0)
 		{
-			m_pInputStructedBuffer = StructuredBuffer::Create(m_pDevice, m_pDeviceContext, pDesc->Input_StructBuffer.iElementSize, pDesc->Input_StructBuffer.iNumElements);
-			m_pInputStructedBuffer_SRV->SetResource(m_pInputStructedBuffer->Get_SRV());
+			if (m_pInputStructuredBuffer[0].first = Get_SRV(pDesc->Input_StructBuffer.sBufferName))
+			{
+				m_pInputStructuredBuffer[0].second = StructuredBuffer::Create(m_pDevice, m_pDeviceContext, pDesc->Input_StructBuffer.iElementSize, pDesc->Input_StructBuffer.iNumElements);
+				m_pInputStructuredBuffer[0].first->SetResource(m_pInputStructuredBuffer[0].second->Get_SRV());
+			}
 		}
 	}
 
@@ -362,8 +388,12 @@ void CComputeShader::Clear_ConstantBuffer()
 
 void CComputeShader::Clear_StructBuffer()
 {
-	Safe_Release(m_pInputStructedBuffer);
-	Safe_Release(m_pInputStructedBuffer_SRV);
+	for (auto SB : m_pInputStructuredBuffer)
+	{
+		Safe_Release(SB.first);
+		Safe_Release(SB.second);
+	}
+
 	Safe_Release(m_pOutputStructedBuffer);
 	Safe_Release(m_pOutputStructedBuffer_UAV);
 }

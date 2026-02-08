@@ -12,7 +12,6 @@ class ENGINE_DLL CVIBuffer_Particle_Mesh final :
 public:
 	typedef struct tagVIBuffer_Particle_Mesh_Desc : public CVIBuffer_Particle::PARTICLE_ORIGIN_DESC
 	{
-		CModel*		_Model = nullptr;
 	}PARTICLE_Mesh_ORIGIN_DESC;
 private:
 	CVIBuffer_Particle_Mesh(ID3D11Device* pDevice, ID3D11DeviceContext* pDeviceContext);
@@ -23,7 +22,7 @@ private:
 	virtual HRESULT Initialize(void* pArg) override;
 
 public:
-	virtual HRESULT Resize_InstanceBuffer(_uint iNumInstanceCount) override;
+	virtual HRESULT Resize_InstanceBuffer(const PARTICLE_ORIGIN_DESC& Desc) override;
 	virtual void Set_ParticleDesc(const PARTICLE_ORIGIN_DESC& desc) override;
 
 private:

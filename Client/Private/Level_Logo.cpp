@@ -261,7 +261,6 @@ HRESULT CLevel_Logo::Ready_DevMap()
 		return E_FAIL;
 
 	std::filesystem::path FilePath = L"../../Resources/Data/MapData/LevelData/DevLevel/DevMap.json";
-	//std::filesystem::path FilePath = L"../../Resources/Data/MapData/Test_So/Ailixian_Train01_Art_Test_So.json";
 	vector<path> vecfiles;
 
 	if (!std::filesystem::exists(FilePath))
