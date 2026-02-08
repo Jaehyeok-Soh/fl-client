@@ -22,13 +22,13 @@ CModelAnimation::CModelAnimation(const CModelAnimation& rhs)
 	, m_pKeyFrameBuffer(rhs.m_pKeyFrameBuffer)
 	, m_pInputKeySB_SRV(rhs.m_pInputKeySB_SRV)
 	, m_pChannelDataBuffer(rhs.m_pChannelDataBuffer)
-	, m_pInputChannelSB_SRV(rhs.m_pInputChannelSB_SRV)
+	, m_iKeyFrameBufferSize(rhs.m_iKeyFrameBufferSize)
+	, m_iChannelSize(rhs.m_iChannelSize)
+	, m_iRootBoneIdx(rhs.m_iRootBoneIdx)
+	, m_iRootChannelIdx(rhs.m_iRootChannelIdx)
 {
 	Safe_AddRef(m_pKeyFrameBuffer);
 	Safe_AddRef(m_pInputKeySB_SRV);
-
-	Safe_AddRef(m_pChannelDataBuffer);
-	Safe_AddRef(m_pInputChannelSB_SRV);
 
 	for (auto& pElement : m_vecChannels)
 		Safe_AddRef(pElement);
@@ -51,6 +51,9 @@ HRESULT CModelAnimation::Initialize(void* pArg)
 		::memcpy(m_vecChannels.data(), pDesc->spanChannels.data(), sizeof(CChannel*) * m_iChannelCount);
 	}
 	else
+		return E_FAIL;
+
+	if (FAILED(Ready_Buffers()))
 		return E_FAIL;
 
 	return S_OK;
@@ -162,7 +165,7 @@ void CModelAnimation::Bind_AnimationEData(CComputeShader* pAnimEShader)
 	pAnimEShader->Bind_InputStructuredBuffer(ENUM_TO_UINT(CS_SB_IDX::IMMU_CHANNELDATA), m_pInputChannelSB_SRV, m_pChannelDataBuffer);
 }
 
-HRESULT CModelAnimation::Ready_Buffers(CComputeShader* pAnimESahder)
+HRESULT CModelAnimation::Ready_Buffers()
 {
 	// 1. 버퍼의 사이즈를 할당한다
 	m_iChannelSize = _uint(m_vecChannels.size());
@@ -172,11 +175,20 @@ HRESULT CModelAnimation::Ready_Buffers(CComputeShader* pAnimESahder)
 		m_iKeyFrameBufferSize += _uint(pChannel->Get_KeyFrames().size());
 	}
 
-	CS_IMMU_ANIM_KEYFRAME* pIniailKeyData			= new CS_IMMU_ANIM_KEYFRAME[m_iKeyFrameBufferSize];
-	CS_IMMU_ANIM_CHANNELDATA* pIniailChannelData	= new CS_IMMU_ANIM_CHANNELDATA[m_iChannelSize];
+	// 3. struct buffer class 생성
+	m_pKeyFrameBuffer = StructuredBuffer::Create(m_pDevice, m_pDeviceContext, sizeof(CS_IMMU_ANIM_KEYFRAME), m_iKeyFrameBufferSize);
+	m_pChannelDataBuffer = StructuredBuffer::Create(m_pDevice, m_pDeviceContext, sizeof(CS_IMMU_ANIM_CHANNELDATA), m_iChannelSize);
+
+	return S_OK;
+}
+
+HRESULT CModelAnimation::Ready_BindBuffers(CComputeShader* pAnimESahder)
+{
+	CS_IMMU_ANIM_KEYFRAME* pIniailKeyData = new CS_IMMU_ANIM_KEYFRAME[m_iKeyFrameBufferSize];
+	CS_IMMU_ANIM_CHANNELDATA* pIniailChannelData = new CS_IMMU_ANIM_CHANNELDATA[m_iChannelSize];
 
 	// 2. 버퍼 내용을 쓴다
-	for (size_t i = 0 ; i < m_vecChannels.size() ; i++)
+	for (size_t i = 0; i < m_vecChannels.size(); i++)
 	{
 		vector<KEYFRAME> KeyFrames = m_vecChannels[i]->Get_KeyFrames();
 
@@ -201,13 +213,17 @@ HRESULT CModelAnimation::Ready_Buffers(CComputeShader* pAnimESahder)
 			m_iRootChannelIdx = (_uint)i;
 	}
 
-	// 3. struct buffer class 생성
-	m_pKeyFrameBuffer = StructuredBuffer::Create(m_pDevice, m_pDeviceContext, sizeof(CS_IMMU_ANIM_KEYFRAME), m_iKeyFrameBufferSize);
-	m_pChannelDataBuffer = StructuredBuffer::Create(m_pDevice, m_pDeviceContext, sizeof(CS_IMMU_ANIM_CHANNELDATA), m_iChannelSize);
-
 	// 4. buffer에 값 넣어줌
 	m_pKeyFrameBuffer->Copy_Data(pIniailKeyData, sizeof(CS_IMMU_ANIM_KEYFRAME), m_iKeyFrameBufferSize);
 	m_pChannelDataBuffer->Copy_Data(pIniailChannelData, sizeof(CS_IMMU_ANIM_CHANNELDATA), m_iChannelSize);
+
+	// 5. 동적배열 정리
+	Safe_Delete_Array(pIniailKeyData);
+	Safe_Delete_Array(pIniailChannelData);
+
+	if (m_pKeyFrameBuffer == nullptr ||
+		m_pChannelDataBuffer == nullptr)
+		return E_FAIL;
 
 	// 4. SRV 연결
 	m_pInputKeySB_SRV = pAnimESahder->Get_SRV("IMMU_KEYFRAMS");
@@ -215,13 +231,9 @@ HRESULT CModelAnimation::Ready_Buffers(CComputeShader* pAnimESahder)
 
 	m_pInputChannelSB_SRV = pAnimESahder->Get_SRV("IMMU_CHANNELDATAS");
 	m_pInputChannelSB_SRV->SetResource(m_pChannelDataBuffer->Get_SRV());
-	
-	// 5. 동적배열 정리
-	Safe_Delete_Array(pIniailKeyData);
-	Safe_Delete_Array(pIniailChannelData);
 
-	if (m_pKeyFrameBuffer == nullptr ||
-		m_pChannelDataBuffer == nullptr)
+	if (m_pInputKeySB_SRV == nullptr ||
+		m_pInputChannelSB_SRV == nullptr)
 		return E_FAIL;
 
 	return S_OK;
@@ -251,8 +263,12 @@ void CModelAnimation::Free()
 
 	Safe_Release(m_pKeyFrameBuffer);
 	Safe_Release(m_pChannelDataBuffer);
-	Safe_Release(m_pInputKeySB_SRV);
-	Safe_Release(m_pInputChannelSB_SRV);
+
+	if (!IsClone())
+	{
+		Safe_Release(m_pInputKeySB_SRV);
+		Safe_Release(m_pInputChannelSB_SRV);
+	}
 
 	Super::Free();
 }

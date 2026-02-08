@@ -55,6 +55,7 @@ public:
 	_bool	Update_TransformMatrices(CComputeShader* pAnimECS, _float fTimeDelta, _bool isLoop, CTransform* pOwnerTransform, CPhysicsCCT* pOwnerPhyCCT);
 	void	Update_BlendAnimation(CComputeShader* pAnimECS, _float fTimeDelta, CTransform* pOwnerTransform, CPhysicsCCT* pOwnerPhyCCT);
 	void	Bind_AnimationEData(CComputeShader* pAnimEShader);
+	HRESULT Ready_BindBuffers(CComputeShader* pAnimESahder);
 
 private:
 	_uint m_iChannelCount = { 0 };
@@ -80,7 +81,7 @@ private:
 	_int m_iRootChannelIdx = { -1 };
 
 private:
-	HRESULT Ready_Buffers(CComputeShader* pAnimESahder);
+	HRESULT Ready_Buffers();
 	
 public:
 	static CModelAnimation* Create(ID3D11Device* pDevice, ID3D11DeviceContext* pDeviceContext, void* pArg);
