@@ -175,32 +175,52 @@ void CUI_Inspector::Input_RectTransform()
 
 void CUI_Inspector::Input_TextureTag()
 {
-	if (ImGui::Button("Select Texture"))
+	_bool& isUseColorTint = m_pSelectedUI->Get_UseColorTint();
+	ImGui::Checkbox("Use ColorTint", &isUseColorTint);
+
+	if (isUseColorTint)
 	{
-		OPENFILENAMEW ofn{};
-		_tchar szFile[MAX_PATH] = { 0 };
+		Vec4& tint = m_pSelectedUI->Get_ColorTint_Ref();
 
-		ofn.lStructSize = sizeof(OPENFILENAMEW);
-		ofn.hwndOwner = g_hWnd;
-		ofn.lpstrFile = szFile;
-		ofn.nMaxFile = MAX_PATH; 
-		ofn.lpstrFilter =
-			L"Image Files (*.png;*.dds)\0*.png;*.dds\0"
-			L"Png Files (*.png)\0*.png\0"
-			L"Dds Files (*.dds)\0*.dds\0"
-			L"All Files (*.*)\0*.*\0\0";
-		ofn.nFilterIndex = 1;
-		ofn.Flags = OFN_PATHMUSTEXIST | OFN_FILEMUSTEXIST | OFN_NOCHANGEDIR;
+		float fColor[4] = { tint.x, tint.y, tint.z, tint.w };
 
-		if (::GetOpenFileNameW(&ofn) == TRUE)
+		if (ImGui::SliderFloat4("Color Tint", fColor, 0.f, 1.f))
 		{
-			_wstring result = szFile; 
+			tint.x = fColor[0];
+			tint.y = fColor[1];
+			tint.z = fColor[2];
+			tint.w = fColor[3];
+		}
+	}
+	else
+	{
+		if (ImGui::Button("Select Texture"))
+		{
+			OPENFILENAMEW ofn{};
+			_tchar szFile[MAX_PATH] = { 0 };
 
-			std::filesystem::path f(result);
-			if (f.extension().wstring() == L".png" || f.extension().wstring() == L".dds")
+			ofn.lStructSize = sizeof(OPENFILENAMEW);
+			ofn.hwndOwner = g_hWnd;
+			ofn.lpstrFile = szFile;
+			ofn.nMaxFile = MAX_PATH; 
+			ofn.lpstrFilter =
+				L"Image Files (*.png;*.dds)\0*.png;*.dds\0"
+				L"Png Files (*.png)\0*.png\0"
+				L"Dds Files (*.dds)\0*.dds\0"
+				L"All Files (*.*)\0*.*\0\0";
+			ofn.nFilterIndex = 1;
+			ofn.Flags = OFN_PATHMUSTEXIST | OFN_FILEMUSTEXIST | OFN_NOCHANGEDIR;
+
+			if (::GetOpenFileNameW(&ofn) == TRUE)
 			{
-				m_pSelectedUI->Set_TextureTag(L"Texture_" + f.stem().wstring());
-				m_pSelectedUI->Request_Change_Texture();
+				_wstring result = szFile; 
+
+				std::filesystem::path f(result);
+				if (f.extension().wstring() == L".png" || f.extension().wstring() == L".dds")
+				{
+					m_pSelectedUI->Set_TextureTag(L"Texture_" + f.stem().wstring());
+					m_pSelectedUI->Request_Change_Texture();
+				}
 			}
 		}
 	}

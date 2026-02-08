@@ -88,6 +88,8 @@ public:
 	void  Set_Progress(const _float fProgress) { m_fTestProgress = fProgress; }
 
 	uint32_t& Get_ComponentFlag() { return m_iComponentFlag; }
+	Vec4& Get_ColorTint_Ref() { return m_vColorTint; }
+	_bool& Get_UseColorTint() { return m_isUseColorTint; }
 
 	DTO::EUIClassType Get_UIClassType() const { return m_eClassType; }
 	DTO::EUIOwnerType Get_UIOwnerType() const { return m_eOwnerType; }
@@ -141,6 +143,8 @@ protected:
 	ERectTransform m_eRectTransformType = { ERectTransform::C };
 	_wstring m_wstrTextureTag = {};
 	uint32_t m_iComponentFlag = {};
+	_bool m_isUseColorTint = {};
+	Vec4 m_vColorTint = {};
 
 	DTO::EUIOwnerType m_eOwnerType = {};
 	Vec3 m_vRenderPos = {};

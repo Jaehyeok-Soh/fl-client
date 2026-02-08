@@ -21,7 +21,6 @@ HRESULT CUIProgress_Component::Initialize_Prototype(CGenericUI* pOwner)
 	if (!pOwner)
 		return E_FAIL;
 	m_pOwner = pOwner;
-	m_pOwner->Request_Chnage_ShaderPass(3);
 
 	return S_OK;
 }

@@ -38,7 +38,8 @@ HRESULT CGenericUI::Initialize(void* pArg)
 	m_iTextureIndex			= pDesc->iTextureIndex;
 	m_iComponentFlag		= pDesc->iComponentFlag;
 	m_pParentCanvasCache	= pDesc->pCanvasCache;
-
+	m_isUseColorTint		= pDesc->isUseColorTint;
+	m_vColorTint			= pDesc->vColorTint;
 	if (FAILED(Super::Initialize(pArg)))
 		return E_FAIL;
 
@@ -138,11 +139,6 @@ HRESULT CGenericUI::Ready_Components(GENERIC_UI_DESC* pDesc)
 		return E_FAIL;
 	if (FAILED(Add_Component<CVIBuffer_Rect_Tex>(0, L"Prototype_Component_VIBuffer_Rect_Tex", pDesc)))
 		return E_FAIL;
-
-	if (Engine_Utils::Has_Flag(m_iComponentFlag, DTO::EComponentTypeFlag::PROGRESS_COMPONENT))
-	{
-		Add_Script_Component(L"UIProgress_Component", CUIProgress_Component::Create(this));
-	}	
 
 	return S_OK;
 }

@@ -199,13 +199,30 @@ HRESULT CToolUI::Bind_ShaderResources()
         return E_FAIL;
 
 
-	if (Get_Script_Component(L"UIProgress_Component"))
+	if (m_isUseColorTint)
 	{
-		pShader->Set_Pass(3);
-		if (FAILED(pShader->Get_Variable("g_fProgressRatio")->SetRawValue(&m_fTestProgress, 0, sizeof(_float))))
-			return E_FAIL;
-		if (FAILED(pShader->Get_Variable("g_iFillDir")->SetRawValue(&m_iFillDir, 0, sizeof(uint32_t))))
-			return E_FAIL;
+		if (Get_Script_Component(L"UIProgress_Component"))
+		{
+			pShader->Set_Pass(4);
+			if (FAILED(pShader->Get_Variable("g_fProgressRatio")->SetRawValue(&m_fTestProgress, 0, sizeof(_float))))
+				return E_FAIL;
+			if (FAILED(pShader->Get_Variable("g_iFillDir")->SetRawValue(&m_iFillDir, 0, sizeof(uint32_t))))
+				return E_FAIL;
+			if (FAILED(pShader->Get_Variable("g_vColorTint")->SetRawValue(&m_vColorTint, 0, sizeof(Vec4))))
+				return E_FAIL;
+		}
+	}
+	else
+	{
+		if (Get_Script_Component(L"UIProgress_Component"))
+		{
+			pShader->Set_Pass(3);
+			if (FAILED(pShader->Get_Variable("g_fProgressRatio")->SetRawValue(&m_fTestProgress, 0, sizeof(_float))))
+				return E_FAIL;
+			if (FAILED(pShader->Get_Variable("g_iFillDir")->SetRawValue(&m_iFillDir, 0, sizeof(uint32_t))))
+				return E_FAIL;
+
+		}
 	}
 
 
@@ -299,6 +316,8 @@ void CToolUI::Sync_Data()
 	m_tUIData.eClassType			= m_eClassType;
 	m_tUIData.iComponentFlag		= m_iComponentFlag;
 	m_tUIData.eOwnerType 			= m_eOwnerType;
+	m_tUIData.isUseColorTint 		= m_isUseColorTint;
+	m_tUIData.vColorTint 			= m_vColorTint;
 }
 
 HRESULT CToolUI::Request_Change_Texture()

@@ -362,7 +362,7 @@ void CUI_Maker::Make_UI()
 					Desc.iCanvasIndex = m_pUIManager->Get_CurCanvasIndex();
 					Desc.isAlpha = TRUE;
 					Desc.isInitVisible = TRUE;
-					Desc.strInitTextureTag = "Prototype_Component_UI_Menu_Texture";
+					Desc.strInitTextureTag = "Prototype_Component_Texture_Empty";
 					Desc.iInitTextureIndex = 1;
 
 					_wstring wstrLayerTag = Engine_Utils::ToWString(pCanvas->Get_Tag()) + L"_Layer";

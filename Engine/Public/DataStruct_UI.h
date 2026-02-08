@@ -22,10 +22,10 @@ NLOHMANN_JSON_SERIALIZE_ENUM(EUIType,
 	}
 )
 
-
 enum class EUIClassType
 {
-	PROGRESS,
+	PLAYER_HP,
+	MONSTER_HP,
 	END
 };
 
@@ -33,7 +33,8 @@ inline std::string UIClassTypeToString(EUIClassType eType)
 {
 	switch (eType)
 	{
-	case EUIClassType::PROGRESS: return "PROGRESS";
+	case EUIClassType::PLAYER_HP: return "PLAYER_HP";
+	case EUIClassType::MONSTER_HP: return "MONSTER_HP";
 	case EUIClassType::END: return "END";
 	default: return "";
 	}
@@ -41,13 +42,15 @@ inline std::string UIClassTypeToString(EUIClassType eType)
 
 inline EUIClassType StringToUIClassType(const std::string& str)
 {
-	if (str == "PROGRESS") return EUIClassType::PROGRESS;
+	if (str == "PLAYER_HP") return EUIClassType::PLAYER_HP;
+	else if (str == "MONSTER_HP") return EUIClassType::MONSTER_HP;
 	else return EUIClassType::END;
 }
 
 NLOHMANN_JSON_SERIALIZE_ENUM(EUIClassType,
 	{
-		{EUIClassType::PROGRESS, "PROGRESS"},
+		{EUIClassType::PLAYER_HP, "PLAYER_HP"},
+		{EUIClassType::MONSTER_HP, "MONSTER_HP"},
 	})
 
 enum EComponentTypeFlag
@@ -97,6 +100,11 @@ NLOHMANN_JSON_SERIALIZE_ENUM(EUIOwnerType,
 
 /////////////////-------------------  Data Struct  -------------------/////////////////
 
+struct TProgress_ComponentData
+{
+
+};
+
 struct TUI_GenericUIData
 {
 	static constexpr EUIType eType = EUIType::GENERICUI;
@@ -118,6 +126,9 @@ struct TUI_GenericUIData
 
 	uint32_t iComponentFlag;
 	EUIOwnerType eOwnerType;
+
+	_bool isUseColorTint;
+	Vec4 vColorTint;
 };
 
 struct TUI_CanvasData

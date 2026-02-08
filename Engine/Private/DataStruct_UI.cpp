@@ -29,6 +29,8 @@ void to_json(json& j, const TUI_GenericUIData& data)
 
 		{ "iComponentFlag", data.iComponentFlag },
 		{ "eOwnerType", data.eOwnerType },
+		{ "isUseColorTint", data.isUseColorTint },
+		{ "vColorTint", {{ "x", data.vColorTint.x },{ "y", data.vColorTint.y },{ "z", data.vColorTint.z },{ "w", data.vColorTint.w }}},
 	};
 }
 void from_json(const json& j, TUI_GenericUIData& data)
@@ -48,7 +50,15 @@ void from_json(const json& j, TUI_GenericUIData& data)
 
 	j.at("iComponentFlag").get_to(data.iComponentFlag);
 	j.at("eOwnerType").get_to(data.eOwnerType);
+	j.at("isUseColorTint").get_to(data.isUseColorTint);
+
+	const auto& jt = j.at("vColorTint");
+	jt.at("x").get_to(data.vColorTint.x);
+	jt.at("y").get_to(data.vColorTint.y);
+	jt.at("z").get_to(data.vColorTint.z);
+	jt.at("w").get_to(data.vColorTint.w);
 }
+
 void to_json(json& j, const TUI_CanvasData& data)
 {
 	j = json

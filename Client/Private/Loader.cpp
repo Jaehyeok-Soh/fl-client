@@ -51,6 +51,7 @@
 #include "Canvas.h"
 #include "GenericUI.h"
 #include "UIPlayer_HP.h"
+#include "UIMonster_HP.h"
 //=================
 // Resource
 //=================
@@ -268,9 +269,7 @@ HRESULT CLoader::Loading_For_Logo()
 		ADD_PROTOTYPE(ELevelType::STATIC, L"Prototype_Component_VIBuffer_Particle_Mesh", CVIBuffer_Particle_Mesh::Create(m_pDevice, m_pDeviceContext, &ExploDesc));
 
 
-		// For. Prototype_UI_Canvas
-		ADD_PROTOTYPE(ELevelType::STATIC, L"Prototype_UI_Canvas", CCanvas::Create(m_pDevice, m_pDeviceContext));
-		ADD_PROTOTYPE(ELevelType::STATIC, L"Prototype_UI_PLAYER_HP", CUIPlayer_HP::Create(m_pDevice, m_pDeviceContext));
+
 	}
 #pragma endregion
 
@@ -280,6 +279,12 @@ HRESULT CLoader::Loading_For_Logo()
 	m_pGameInstance->Add_Prototype(ENUM_TO_UINT(ELevelType::STATIC), L"Prototype_GameObject_Physics_Terrain", CPhysics_Terrain::Create(m_pDevice, m_pDeviceContext));
 
 	/* Map Parsing Test */
+#pragma endregion
+
+#pragma region UI
+	ADD_PROTOTYPE(ELevelType::STATIC, L"Prototype_UI_Canvas", CCanvas::Create(m_pDevice, m_pDeviceContext));
+	ADD_PROTOTYPE(ELevelType::STATIC, L"Prototype_UI_PLAYER_HP", CUIPlayer_HP::Create(m_pDevice, m_pDeviceContext));
+	ADD_PROTOTYPE(ELevelType::STATIC, L"Prototype_UI_MONSTER_HP", CUIMonster_HP::Create(m_pDevice, m_pDeviceContext));
 #pragma endregion
 
 	m_isFinished = true;

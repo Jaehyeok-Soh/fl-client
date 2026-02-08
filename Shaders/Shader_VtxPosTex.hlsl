@@ -48,6 +48,28 @@ PS_OUT PS_PROGRESS(PS_IN_POS_TEX input)
     return output;
 }
 
+PS_OUT PS_UIHPBAR(PS_IN_POS_TEX input)
+{
+    PS_OUT output;
+
+    float2 uv = input.vUV;
+    float mask = 1.0f;
+
+    if (g_iFillDir == 0)
+        mask = step(uv.x, g_fProgressRatio); //right
+    else if (g_iFillDir == 1)
+        mask = step(1.0f - uv.x, g_fProgressRatio); //left
+    else if (g_iFillDir == 2)
+        mask = step(uv.y, g_fProgressRatio); //up
+    else
+        mask = step(1.0f - uv.y, g_fProgressRatio); //down
+
+    output.vColor = g_vColorTint;
+    output.vColor.a *= mask;
+
+    return output;
+}
+
 PS_OUT PS_SKILLICON(PS_IN_POS_TEX input)
 {
     PS_OUT output;
@@ -58,21 +80,6 @@ PS_OUT PS_SKILLICON(PS_IN_POS_TEX input)
     
     float4 vIcon = g_DefaultTextures[1].Sample(LinearSampler, input.vUV);
     output.vColor = vIconMask * vIcon;
-    return output;
-}
-
-PS_OUT PS_UIHPBAR(PS_IN_POS_TEX input)
-{
-    PS_OUT output;
-    float4 vTexture = g_DefaultTextures[0].Sample(LinearSampler, input.vUV);
-    if (ALPHA_TEST(vTexture.a, 0.2f))
-        discard;
-    
-    float fNewUVX = (input.vUV.x - g_fU0) / (g_fU1 - g_fU0);
-    float fFill = step(fNewUVX, input.fHP);
-    float4 vFillColor = { 0.1f, 0.7f, 0.1f, 1.f };
-    float4 vEmptyColor = { 0.6f, 0.3f, 0.1f, 1.f };
-    output.vColor = lerp(vEmptyColor, vFillColor, fFill);
     return output;
 }
 
@@ -91,4 +98,5 @@ technique11 T0
     PASS_RS_DS_BS_VP(P1, RS_Default, DS_Default, BS_AlphaBlend, VS_MAIN, PS_MAIN)
     PASS_RS_DS_BS_VP(Fade, RS_Default, DS_Default, BS_AlphaBlend, VS_MAIN, PS_FADE)
     PASS_RS_DS_BS_VP(Progress, RS_Default, DS_Default, BS_AlphaBlend, VS_MAIN, PS_PROGRESS)
+    PASS_RS_DS_BS_VP(HpBar, RS_Default, DS_Default, BS_AlphaBlend, VS_MAIN, PS_UIHPBAR)
 };

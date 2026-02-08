@@ -8,6 +8,8 @@
 #include "Texture.h"
 #include "Shader.h"
 #include "VIBuffer_Rect_Tex.h"
+#include "UIProgress_Component.h"
+#include "StatComponent.h"
 #include "GameInstance.h"
 
 CUIPlayer_HP::CUIPlayer_HP(ID3D11Device* pDevice, ID3D11DeviceContext* pDeviceContext)
@@ -30,15 +32,23 @@ HRESULT CUIPlayer_HP::Initialize_Prototype()
 HRESULT CUIPlayer_HP::Initialize(void* pArg)
 {
 	PLAYER_HP_DESC* pDesc = static_cast<PLAYER_HP_DESC*>(pArg);
+	m_pTargetStat = pDesc->pTargetStat;
 	if (FAILED(Super::Initialize(pArg)))
 		return E_FAIL;
 	if (FAILED(Ready_Components(pDesc)))
 		return E_FAIL;
 
-	if (FAILED(Get_Component<CTexture>()->Add_DefaultTexture(m_wstrTextureTag, 0)))
-		return E_FAIL;
+	if (!m_isUseColorTint)
+	{
+		if (FAILED(Get_Component<CTexture>()->Add_DefaultTexture(m_wstrTextureTag, 0)))
+			return E_FAIL;
+		Get_Component<CShader>()->Set_Pass(3);
+	}
+	else
+	{
+		Get_Component<CShader>()->Set_Pass(4);
+	}
 
-	Get_Component<CShader>()->Set_Pass(3);
 	return S_OK;
 }
 
@@ -91,6 +101,7 @@ HRESULT CUIPlayer_HP::Render()
 
 HRESULT CUIPlayer_HP::Ready_Components(PLAYER_HP_DESC* pDesc)
 {
+	Super::Ready_Components(pDesc);
 	return S_OK;
 }
 
@@ -99,8 +110,24 @@ HRESULT CUIPlayer_HP::Bind_ShaderResources()
 	CShader* pShader = Get_Component<CShader>();
 	if (FAILED(Get_Component<CTransform>()->Bind_ShaderResource(pShader)))
 		return E_FAIL;
-	if (FAILED(Get_Component<CTexture>()->Bind_ShaderResourceBuffer(pShader)))
+	if (!m_isUseColorTint)
+	{
+		if (FAILED(Get_Component<CTexture>()->Bind_ShaderResourceBuffer(pShader)))
+			return E_FAIL;
+	}
+
+
+	_float HpRatio = 0.5f; //m_pTargetStat->Get_HealthRatio();
+	if (FAILED(pShader->Get_Variable("g_fProgressRatio")->SetRawValue(&HpRatio, 0, sizeof(_float))))
 		return E_FAIL;
+
+	m_iFillDir = CUIProgress_Component::eFillDir::LEFT;
+	if (FAILED(pShader->Get_Variable("g_iFillDir")->SetRawValue(&m_iFillDir, 0, sizeof(uint32_t))))
+		return E_FAIL;
+
+	if (FAILED(pShader->Get_Variable("g_vColorTint")->SetRawValue(&m_vColorTint, 0, sizeof(Vec4))))
+		return E_FAIL;
+
 	return S_OK;
 }
 

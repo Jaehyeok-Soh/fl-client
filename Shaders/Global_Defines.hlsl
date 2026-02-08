@@ -50,6 +50,9 @@ float g_fAlphaRatio;
 float g_fProgressRatio;
 int g_iFillDir;
 
+float4 g_vColorTint;
+float4 g_vHitColorTint;
+
 float g_fU0;
 float g_fU1;
 

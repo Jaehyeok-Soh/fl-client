@@ -9,10 +9,10 @@ class CUIMonster_HP final : public CGenericUI
 {
 	using Super = CGenericUI;
 public:
-	typedef struct tagUIPlayerHPDesc : public GENERIC_UI_DESC
+	typedef struct tagUIMonsterHPDesc : public GENERIC_UI_DESC
 	{
 		CStatComponent* pTargetStat;
-	}PLAYER_HP_DESC;
+	}MONSTER_HP_DESC;
 
 private:
 	CUIMonster_HP(ID3D11Device* pDevice, ID3D11DeviceContext* pDeviceContext);
@@ -32,11 +32,12 @@ public:
 	virtual HRESULT Render() override;
 
 private:
-	HRESULT Ready_Components(PLAYER_HP_DESC* pDesc);
+	HRESULT Ready_Components(MONSTER_HP_DESC* pDesc);
 	HRESULT Bind_ShaderResources();
 
 private:
 	CStatComponent* m_pTargetStat = { nullptr };
+	uint32_t m_iFillDir = {};
 
 public:
 	static CUIMonster_HP* Create(ID3D11Device* pDevice, ID3D11DeviceContext* pDeviceContext);

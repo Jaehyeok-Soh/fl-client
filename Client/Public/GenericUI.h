@@ -15,6 +15,8 @@ public:
 		_wstring wstrTextureTag;
 		uint32_t iTextureIndex;
 		uint32_t iComponentFlag;
+		_bool isUseColorTint;
+		Vec4 vColorTint;
 		CCanvas* pCanvasCache = { nullptr };
 	}GENERIC_UI_DESC;
 
@@ -59,6 +61,8 @@ protected:
 	Vec3 m_vMoveOffset = {};
 	uint32_t m_iComponentFlag = {};
 	uint32_t m_iOwnerType = {};
+	_bool m_isUseColorTint = {false};
+	Vec4 m_vColorTint = {};
 
 public:
 	virtual void Free()override;

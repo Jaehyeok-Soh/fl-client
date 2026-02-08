@@ -35,6 +35,10 @@ private:
 	HRESULT Ready_Components(PLAYER_HP_DESC* pDesc);
 	HRESULT Bind_ShaderResources();
 
+private:
+	CStatComponent* m_pTargetStat = { nullptr };
+	uint32_t m_iFillDir = {};
+
 public:
 	static CUIPlayer_HP* Create(ID3D11Device* pDevice, ID3D11DeviceContext* pDeviceContext);
 	CGameObject* Clone(void* pArg);

@@ -8,6 +8,7 @@
 #include "Texture.h"
 #include "Shader.h"
 #include "VIBuffer_Rect_Tex.h"
+#include "UIProgress_Component.h"
 #include "StatComponent.h"
 #include "GameInstance.h"
 
@@ -30,7 +31,9 @@ HRESULT CUIMonster_HP::Initialize_Prototype()
 
 HRESULT CUIMonster_HP::Initialize(void* pArg)
 {
-	PLAYER_HP_DESC* pDesc = static_cast<PLAYER_HP_DESC*>(pArg);
+	MONSTER_HP_DESC* pDesc = static_cast<MONSTER_HP_DESC*>(pArg);
+	m_pTargetStat = pDesc->pTargetStat;
+
 	if (FAILED(Super::Initialize(pArg)))
 		return E_FAIL;
 	if (FAILED(Ready_Components(pDesc)))
@@ -89,7 +92,7 @@ HRESULT CUIMonster_HP::Render()
 	return S_OK;
 }
 
-HRESULT CUIMonster_HP::Ready_Components(PLAYER_HP_DESC* pDesc)
+HRESULT CUIMonster_HP::Ready_Components(MONSTER_HP_DESC* pDesc)
 {
 	return S_OK;
 }
@@ -106,9 +109,11 @@ HRESULT CUIMonster_HP::Bind_ShaderResources()
 	{
 		pShader->Set_Pass(3);
 		
-		if (FAILED(pShader->Get_Variable("g_fProgressRatio")->SetRawValue(&m_pTargetStat->Get_HealthRatio(), 0, sizeof(_float))))
+		_float HpRatio = m_pTargetStat->Get_HealthRatio();
+		if (FAILED(pShader->Get_Variable("g_fProgressRatio")->SetRawValue(&HpRatio, 0, sizeof(_float))))
 			return E_FAIL;
-
+		
+		m_iFillDir = CUIProgress_Component::eFillDir::LEFT;
 		if (FAILED(pShader->Get_Variable("g_iFillDir")->SetRawValue(&m_iFillDir, 0, sizeof(uint32_t))))
 			return E_FAIL;
 	}
