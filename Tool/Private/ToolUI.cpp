@@ -35,25 +35,16 @@ HRESULT CToolUI::Initialize_Prototype()
 HRESULT CToolUI::Initialize(void* pArg)
 {
 	TOOLUI_DESC* pDesc = static_cast<TOOLUI_DESC*>(pArg);
-	m_strName = pDesc->strName;
-
-	m_strCanvasName = pDesc->strCanvasName;
-	m_iCanvasIndex = pDesc->iCanvasIndex;
-	m_strLayerName = pDesc->strLayerName;
-	m_iLayerIndex = pDesc->iLayerIndex;
-
-	m_wstrTextureTag = Engine_Utils::ToWString(pDesc->strInitTextureTag);
-	m_iTextureIndex = pDesc->iInitTextureIndex;
-
-	m_eRectTransformType = static_cast<ERectTransform>(pDesc->iRectTransformType);
-
-	m_fHeight = pDesc->fHeight;
-	m_fWidth = pDesc->fWidth;
-	m_fX = pDesc->fX;
-	m_fY = pDesc->fY;
-	m_fZ = pDesc->fZ;
-
-	m_pCacheCanvas = pDesc->pCacheCanvas;
+	
+	m_strName				= pDesc->strName;
+	m_strCanvasName			= pDesc->strCanvasName;
+	m_iCanvasIndex			= pDesc->iCanvasIndex;
+	m_wstrTextureTag		= Engine_Utils::ToWString(pDesc->strInitTextureTag);
+	m_eRectTransformType	= static_cast<ERectTransform>(pDesc->iRectTransformType);
+	m_pCacheCanvas			= pDesc->pCacheCanvas;
+	m_isUseColorTint		= pDesc->isUseColorTint;
+	m_vColorTint			= pDesc->vColorTint;
+	m_iShaderPass			= pDesc->iShaderPass;
 
 	if (FAILED(Super::Initialize(pArg)))
 		return E_FAIL;
@@ -68,12 +59,10 @@ HRESULT CToolUI::Awake(const _uint iCurrentLevelID)
 	if (FAILED(Super::Awake(iCurrentLevelID)))
         return E_FAIL;
 
-	m_pBatch = new PrimitiveBatch<VertexPositionColor>(m_pDeviceContext);
-	m_pEffect = new BasicEffect(m_pDevice);
+	m_pBatch	= new PrimitiveBatch<VertexPositionColor>(m_pDeviceContext);
+	m_pEffect	= new BasicEffect(m_pDevice);
 	m_pEffect->SetVertexColorEnabled(true);
-
 	m_iInteractState = static_cast<uint32_t>(EUIEvent_Flag::NONE);
-
     return S_OK;
 }
 
@@ -176,9 +165,6 @@ HRESULT CToolUI::Ready_Components(TOOLUI_DESC* pDesc)
 	if (FAILED(Add_Component<CTexture>(ENUM_TO_UINT(ELevelType::STATIC), L"Prototype_Component_Texture_Empty", pDesc)))
         return E_FAIL;
 
-    if (FAILED(Add_Component<CShader>(0, L"Prototype_Component_Shader_VtxPosTex", pDesc)))
-        return E_FAIL;
-
     if (FAILED(Add_Component<CVIBuffer_Rect_Tex>(0, L"Prototype_Component_VIBuffer_Rect_Tex", pDesc)))
         return E_FAIL;
 
@@ -198,33 +184,48 @@ HRESULT CToolUI::Bind_ShaderResources()
     if (FAILED(Get_Component<CTexture>()->Bind_ShaderResourceBuffer(pShader)))
         return E_FAIL;
 
+	pShader->Set_Pass(m_iShaderPass);
 
-	if (m_isUseColorTint)
+	if (m_iShaderPass == ENUM_TO_UINT(EUIShaderPass::DEFAULT))
 	{
-		if (Get_Script_Component(L"UIProgress_Component"))
-		{
-			pShader->Set_Pass(4);
-			if (FAILED(pShader->Get_Variable("g_fProgressRatio")->SetRawValue(&m_fTestProgress, 0, sizeof(_float))))
-				return E_FAIL;
-			if (FAILED(pShader->Get_Variable("g_iFillDir")->SetRawValue(&m_iFillDir, 0, sizeof(uint32_t))))
-				return E_FAIL;
-			if (FAILED(pShader->Get_Variable("g_vColorTint")->SetRawValue(&m_vColorTint, 0, sizeof(Vec4))))
-				return E_FAIL;
-		}
+		if (FAILED(Get_Component<CTexture>()->Bind_ShaderResourceBuffer(pShader)))
+			return E_FAIL;
 	}
-	else
+	else if (m_iShaderPass == ENUM_TO_UINT(EUIShaderPass::DEFAULT_ALPHA))
 	{
-		if (Get_Script_Component(L"UIProgress_Component"))
-		{
-			pShader->Set_Pass(3);
-			if (FAILED(pShader->Get_Variable("g_fProgressRatio")->SetRawValue(&m_fTestProgress, 0, sizeof(_float))))
-				return E_FAIL;
-			if (FAILED(pShader->Get_Variable("g_iFillDir")->SetRawValue(&m_iFillDir, 0, sizeof(uint32_t))))
-				return E_FAIL;
-
-		}
+		if (FAILED(Get_Component<CTexture>()->Bind_ShaderResourceBuffer(pShader)))
+			return E_FAIL;
 	}
+	else if (m_iShaderPass == ENUM_TO_UINT(EUIShaderPass::COLOR))
+	{
+		if (FAILED(pShader->Get_Variable("g_vColorTint")->SetRawValue(&m_vColorTint, 0, sizeof(Vec4))))
+			return E_FAIL;
+	}
+	else if (m_iShaderPass == ENUM_TO_UINT(EUIShaderPass::FADE))
+	{
+		if (FAILED(Get_Component<CTexture>()->Bind_ShaderResourceBuffer(pShader)))
+			return E_FAIL;
 
+		if (FAILED(pShader->Get_Variable("g_fAlphaRatio")->SetRawValue(&m_vColorTint, 0, sizeof(_float))))
+			return E_FAIL;
+	}
+	else if (m_iShaderPass == ENUM_TO_UINT(EUIShaderPass::PROGRESS))
+	{
+		if (FAILED(Get_Component<CTexture>()->Bind_ShaderResourceBuffer(pShader)))
+			return E_FAIL;
+
+		if (FAILED(pShader->Get_Variable("g_isColor")->SetRawValue(&m_isUseColorTint, 0, sizeof(_bool))))
+			return E_FAIL;
+
+		if (FAILED(pShader->Get_Variable("g_vColorTint")->SetRawValue(&m_vColorTint, 0, sizeof(Vec4))))
+			return E_FAIL;
+
+		if (FAILED(pShader->Get_Variable("g_fProgressRatio")->SetRawValue(&m_fTestProgress, 0, sizeof(_float))))
+			return E_FAIL;
+
+		if (FAILED(pShader->Get_Variable("g_iFillDir")->SetRawValue(&m_iFillDir, 0, sizeof(uint32_t))))
+			return E_FAIL;
+	}
 
     return S_OK;
 }
@@ -302,22 +303,25 @@ void CToolUI::Acting_About_State()
 
 void CToolUI::Sync_Data()
 {
-	m_tUIData.strTag				= m_strName;
-	m_tUIData.strCanvasName			= m_strCanvasName;
-	m_tUIData.iRectTransformType	= static_cast<uint32_t>( m_eRectTransformType);
+	// UI Object Values
 	m_tUIData.fWidth				= m_fWidth;
 	m_tUIData.fHeight				= m_fHeight;
 	m_tUIData.fPosX					= m_fX;
 	m_tUIData.fPosY					= m_fY;
 	m_tUIData.fPosZ					= m_fZ;
-	m_tUIData.strTextureTag			= Engine_Utils::ToString(m_wstrTextureTag);
-	m_tUIData.iTextureIndex			= m_iTextureIndex;
 	m_tUIData.isVisible				= m_isVisible;
+
+	// Tool UI Values
+	m_tUIData.strTag				= m_strName;
+	m_tUIData.strCanvasName			= m_strCanvasName;
+	m_tUIData.iRectTransformType	= static_cast<uint32_t>( m_eRectTransformType);
+	m_tUIData.strTextureTag			= Engine_Utils::ToString(m_wstrTextureTag);
 	m_tUIData.eClassType			= m_eClassType;
 	m_tUIData.iComponentFlag		= m_iComponentFlag;
 	m_tUIData.eOwnerType 			= m_eOwnerType;
 	m_tUIData.isUseColorTint 		= m_isUseColorTint;
 	m_tUIData.vColorTint 			= m_vColorTint;
+	m_tUIData.iShaderPass			= m_iShaderPass;
 }
 
 HRESULT CToolUI::Request_Change_Texture()
@@ -329,11 +333,6 @@ HRESULT CToolUI::Request_Change_Texture()
 void CToolUI::Request_Chnage_ShaderPass(uint32_t pass)
 {
 	Get_Component<CShader>()->Set_Pass(pass);
-}
-
-void CToolUI::Set_isDisable(_bool isDisable)
-{
-	m_isDisable = isDisable;
 }
 
 CToolUI* CToolUI::Create(EToolObjectType eType, ID3D11Device* pDevice, ID3D11DeviceContext* pContext)

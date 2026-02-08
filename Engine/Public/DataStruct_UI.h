@@ -109,12 +109,9 @@ struct TUI_GenericUIData
 {
 	static constexpr EUIType eType = EUIType::GENERICUI;
 	EUIClassType eClassType;
-
 	std::string strTag;
 	std::string strCanvasName;
-
 	uint32_t iRectTransformType;
-
 	_float fWidth;
 	_float fHeight;
 	_float fPosX;
@@ -123,26 +120,23 @@ struct TUI_GenericUIData
 	_string strTextureTag;
 	uint32_t iTextureIndex;
 	_bool isVisible;
-
 	uint32_t iComponentFlag;
 	EUIOwnerType eOwnerType;
-
 	_bool isUseColorTint;
 	Vec4 vColorTint;
+	int32_t iShaderPass;
 };
 
 struct TUI_CanvasData
 {
 	static constexpr EUIType eType = EUIType::CANVAS;
 	std::string strTag;
-
 	uint32_t iLevelIndex;
 	_float fWidth;
 	_float fHeight;
 	_float fPosX;
 	_float fPosY;
 	_float fPosZ;
-
 	uint32_t iEditorSizeX ;
 	uint32_t iEditorSizeY;
 };

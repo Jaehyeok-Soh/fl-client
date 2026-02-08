@@ -14,16 +14,14 @@ public:
 	{
 		CToolCanvas* pCacheCanvas = { nullptr };
 		_string strName;
-
 		_string strCanvasName;
 		uint32_t iCanvasIndex;
-		_string strLayerName;
-		uint32_t iLayerIndex;
-
 		_string strInitTextureTag;
 		uint32_t iInitTextureIndex;
 		uint32_t iRectTransformType;
-
+		int32_t iShaderPass;
+		_bool isUseColorTint;
+		Vec4 vColorTint;
 	}TOOLUI_DESC;
 
 protected:
@@ -55,25 +53,24 @@ protected:
 #pragma region GETTER/SETTER
 public:
 	const _string& Get_Name()const { return m_strName; }
-	void Set_Name(const _string& str) { m_strName = str; }
 	ERectTransform Get_RectTransformType() const { return m_eRectTransformType; }
-	void Set_RectTransformType(ERectTransform value) { m_eRectTransformType = value; }
 	const _wstring& Get_TextureTag() const { return m_wstrTextureTag; }
-	void Set_TextureTag(const _wstring& value) { m_wstrTextureTag = value; }
-	uint32_t Get_TextureIndex() const { return m_iTextureIndex; }
 	_float* Get_WIdth_Ptr() { return &m_fWidth; }
 	_float* Get_Height_Ptr() { return &m_fHeight; }
 	_float* Get_PosX_Ptr() { return &m_fX; }
 	_float* Get_PosY_Ptr() { return &m_fY; }
 	_float* Get_PosZ_Ptr() { return &m_fZ; }
-	const Vec3& Get_RenderPos() const { return m_vRenderPos; }
-	const RECT& Get_RenderRect() const { return m_tRenderRect; }
-	void Set_HitTest() { m_isHitTest = TRUE; };
 	const DTO::TUI_GenericUIData& Get_Data()const { return m_tUIData; }
 	DTO::TUI_GenericUIData& Get_Data_Ref() { return m_tUIData; }
-
-	_float& Get_Alpha_Ref() { return m_fFade_ResultAlpha; }
+	const Vec3& Get_RenderPos() const { return m_vRenderPos; }
+	const RECT& Get_RenderRect() const { return m_tRenderRect; }
 	_bool& Get_InitVisible() { return m_isVisible; }
+
+	void Set_Name(const _string& str) { m_strName = str; }
+	void Set_RectTransformType(ERectTransform value) { m_eRectTransformType = value; }
+	void Set_TextureTag(const _wstring& value) { m_wstrTextureTag = value; }
+	void Set_HitTest() { m_isHitTest = TRUE; };
+
 
 	_float& Get_TestProgress_Ref() { return m_fTestProgress; }
 	int32_t& Get_FillDir_Ref() { return m_iFillDir; }
@@ -90,73 +87,58 @@ public:
 	uint32_t& Get_ComponentFlag() { return m_iComponentFlag; }
 	Vec4& Get_ColorTint_Ref() { return m_vColorTint; }
 	_bool& Get_UseColorTint() { return m_isUseColorTint; }
+	int32_t Get_ShaderPass()const { return m_iShaderPass; }
+	void Set_ShaderPass(int32_t pass) { m_iShaderPass = pass; }
 
 	DTO::EUIClassType Get_UIClassType() const { return m_eClassType; }
 	DTO::EUIOwnerType Get_UIOwnerType() const { return m_eOwnerType; }
 	void Set_UIClassType(DTO::EUIClassType eType) { m_eClassType = eType; }
 	void Set_UIOwnerType(DTO::EUIOwnerType eType) { m_eOwnerType = eType; }
-
 #pragma endregion
 
-	/* Action */
-public:
-	void Set_TextureIndex(uint32_t index) { m_iTextureIndex = index; }
-	void Set_isDisable(_bool isDisable);/* 아직 바인드 안함 */
-
-protected:
-	uint32_t m_iTextureIndex = {};
-
-	Vec3 m_vMoveOffset = {};
-	_float m_fFade_ResultAlpha = {1.f};
-
-	_float m_fTestProgress = { 1.f };
-	int32_t m_iFillDir = {};
-
-
-	/* Set_isDisable */
-	_bool m_isDisable = { false };
-	/* Set_isDisable */
-
-	/* Start_Fade */
-	_bool m_isPlaying_Fade = { false };
-	_float m_fFade_StartAlpha = {};
-	_float m_fFade_TargetAlpha = {};
-	_float m_fFade_Duration = {};
-	_float m_fFade_TimeAcc = {};
-	/* Start_Fade */
-
-private:	
+private:
+	// Debug
 	PrimitiveBatch<DirectX::VertexPositionColor>* m_pBatch = { nullptr };
 	BasicEffect* m_pEffect = { nullptr };
 	ID3D11InputLayout* m_pInputLayout = { nullptr };
 
 protected:
-	DTO::TUI_GenericUIData m_tUIData = {};
-	DTO::EUIClassType m_eClassType = {};
-
-	_string m_strName = {};
-	_string m_strCanvasName = {};
-	uint32_t m_iCanvasIndex = {};
-	_string m_strLayerName = {};
-	uint32_t m_iLayerIndex = {};
-	CToolCanvas* m_pCacheCanvas = { nullptr };
+	// Client Bind Values
+	DTO::TUI_GenericUIData m_tUIData	= {};
+	DTO::EUIClassType m_eClassType		= {};
+	_string m_strName					= {};
+	_string m_strCanvasName				= {};
+	uint32_t m_iCanvasIndex				= {};
+	CToolCanvas* m_pCacheCanvas			= { nullptr };
 	ERectTransform m_eRectTransformType = { ERectTransform::C };
-	_wstring m_wstrTextureTag = {};
-	uint32_t m_iComponentFlag = {};
-	_bool m_isUseColorTint = {};
-	Vec4 m_vColorTint = {};
+	_wstring m_wstrTextureTag			= {};
+	uint32_t m_iComponentFlag			= {};
+	_bool m_isUseColorTint				= {};
+	Vec4 m_vColorTint					= {};
+	int32_t m_iShaderPass				= {};
+	DTO::EUIOwnerType m_eOwnerType		= {};
 
-	DTO::EUIOwnerType m_eOwnerType = {};
-	Vec3 m_vRenderPos = {};
-	RECT m_tRenderRect = {};
-	_bool m_isHitTest = { FALSE };
-	_bool m_isAction = { false };
+	// Local Values
+	Vec3 m_vRenderPos		= {};
+	RECT m_tRenderRect		= {};
+	_bool m_isHitTest		= { FALSE };
+	_bool m_isAction		= { false };
+	Vec3 m_vMoveOffset		= {};
+	_float m_fTestProgress	= { 1.f };
+	int32_t m_iFillDir		= {};
+	_bool m_isDisable		= { false };
+
+	// Func Values
+	_bool m_isPlaying_Fade		= { false };
+	_float m_fFade_StartAlpha	= {};
+	_float m_fFade_TargetAlpha	= {};
+	_float m_fFade_Duration		= {};
+	_float m_fFade_TimeAcc		= {};
 
 public:
 	static CToolUI* Create(EToolObjectType eType, ID3D11Device* pDevice, ID3D11DeviceContext* pContext);
 	CGameObject* Clone(void* pArg) override;
 	virtual void Free() override;
-
 };
 
 NS_END

@@ -116,7 +116,6 @@ HRESULT CUIPlayer_HP::Bind_ShaderResources()
 			return E_FAIL;
 	}
 
-
 	_float HpRatio = 0.5f; //m_pTargetStat->Get_HealthRatio();
 	if (FAILED(pShader->Get_Variable("g_fProgressRatio")->SetRawValue(&HpRatio, 0, sizeof(_float))))
 		return E_FAIL;

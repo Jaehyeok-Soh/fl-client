@@ -28,6 +28,8 @@ public:
 	void SetUp_Owner();
 	void SetUp_Component();
 
+	void SetUp_ShaderPass();
+
 	void SetUp_UIProgress();
 
 private:
@@ -61,6 +63,7 @@ private:
 
 	std::vector<_string> m_VecClassTag;
 	std::vector<_string> m_VecOwnerTag;
+	std::vector<_string> m_VecShaderPassTag;
 
 	ImVec2 m_vLastCardPos = {};
 	ImVec2 m_vLastCardSize = {};

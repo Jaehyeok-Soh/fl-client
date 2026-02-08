@@ -32,9 +32,9 @@ HRESULT CUIObject::Initialize(void* pArg)
 
 	m_isVisible = pDesc->isInitVisible;
 	m_eCategory = (pDesc->isAlpha ? RENDER_CATEGORY::BLENDUI : RENDER_CATEGORY::UI);
-
 	m_fX = pDesc->fX;
 	m_fY = pDesc->fY;
+	m_fZ = pDesc->fZ;
 	m_fWidth = 1.f;
 	m_fHeight = 1.f;
 

@@ -423,6 +423,42 @@ namespace Tool
 		else if (str == "INVOKED") return EUIEvent::INVOKED;
 		else return EUIEvent::END;
 	}
+
+	enum class EUIShaderPass
+	{
+		DEFAULT = 0,
+		DEFAULT_ALPHA,
+		COLOR,
+		FADE,
+		PROGRESS,
+		END
+	};
+
+	inline std::string UIShaderPassToString(EUIShaderPass eType)
+	{
+		switch (eType)
+		{
+		case EUIShaderPass::DEFAULT: return "DEFAULT";
+		case EUIShaderPass::DEFAULT_ALPHA: return "DEFAULT_ALPHA";
+		case EUIShaderPass::COLOR: return "COLOR";
+		case EUIShaderPass::FADE: return "FADE";
+		case EUIShaderPass::PROGRESS: return "PROGRESS";
+		default: return "";
+		}
+	}
+
+	inline EUIShaderPass StringToUIShaderPass(const std::string& str)
+	{
+		if (str == "DEFAULT") return EUIShaderPass::DEFAULT;
+		else if (str == "DEFAULT_ALPHA") return EUIShaderPass::DEFAULT_ALPHA;
+		else if (str == "COLOR") return EUIShaderPass::COLOR;
+		else if (str == "FADE") return EUIShaderPass::FADE;
+		else if (str == "PROGRESS") return EUIShaderPass::PROGRESS;
+		else return EUIShaderPass::DEFAULT;
+	}
+
+
+
 #pragma endregion
 
 #pragma region Struct

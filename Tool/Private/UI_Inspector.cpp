@@ -37,6 +37,11 @@ HRESULT CUI_Inspector::Initialize_Prototype()
 	for (uint32_t i = 0; i < ENUM_TO_UINT(DTO::EUIOwnerType::END); ++i)
 		m_VecOwnerTag.push_back(DTO::UIOwnertypeToString(static_cast<DTO::EUIOwnerType>(i)));
 
+
+	m_VecShaderPassTag.reserve(ENUM_TO_UINT(EUIShaderPass::END));
+	for (uint32_t i = 0; i < ENUM_TO_UINT(EUIShaderPass::END); ++i)
+		m_VecShaderPassTag.push_back(UIShaderPassToString(static_cast<EUIShaderPass>(i)));
+
 	return S_OK;
 }
 
@@ -56,6 +61,7 @@ HRESULT CUI_Inspector::Render(CToolObject* pGo)
 		m_pSelectedUI->Set_HitTest();
 		SetUp_Public_Info();
 		Input_TextureTag();
+		SetUp_ShaderPass();
 		
 		if (Begin_Card("SetUp Default Setting", "##SetUp_Default_Setting", 100.f))
 		{
@@ -65,7 +71,6 @@ HRESULT CUI_Inspector::Render(CToolObject* pGo)
 		End_Card();
 
 		SetUp_Component();
-
 		if(m_pSelectedUI->Get_Script_Component(L"UIProgress_Component"))
 			SetUp_UIProgress();
 	}
@@ -298,6 +303,104 @@ void CUI_Inspector::SetUp_Component()
 			m_pSelectedUI->Get_ComponentFlag() |= DTO::EComponentTypeFlag::PROGRESS_COMPONENT;
 		}
 	}
+	End_Card();
+}
+
+void CUI_Inspector::SetUp_ShaderPass()
+{
+	if(Begin_Card("Set ShaderPass", "Shader_Pass", 100.f))
+	{
+		if (nullptr == m_pSelectedUI)
+			return;
+
+		int cur = (int)m_pSelectedUI->Get_ShaderPass();
+		cur = (cur < 0) ? 0 : (cur >= (int)m_VecShaderPassTag.size() ? (int)m_VecShaderPassTag.size() - 1 : cur);
+
+		const char* preview = m_VecShaderPassTag.empty() ? "" : m_VecShaderPassTag[cur].c_str();
+
+		bool changed = false;
+
+		if (ImGui::BeginCombo("Select Shader Pass", preview))
+		{
+			for (int i = 0; i < (int)m_VecShaderPassTag.size(); ++i)
+			{
+				const bool isSelected = (cur == i);
+				if (ImGui::Selectable(m_VecShaderPassTag[i].c_str(), isSelected))
+				{
+					cur = i;
+					m_pSelectedUI->Set_ShaderPass((i));
+					changed = true;
+				}
+
+				if (isSelected)
+					ImGui::SetItemDefaultFocus();
+			}
+			ImGui::EndCombo();
+		}
+		switch ((EUIShaderPass)cur)
+		{
+		case EUIShaderPass::DEFAULT:
+		case EUIShaderPass::DEFAULT_ALPHA:
+		{
+			ImGui::TextDisabled("No Params");
+			break;
+		}
+
+		case EUIShaderPass::COLOR:
+		{
+			Vec4 vColorTint = m_pSelectedUI->Get_ColorTint();
+			ImGui::SetNextItemWidth(150.f);
+			if (ImGui::DragFloat4("Color Tint", (float*)&vColorTint, 0.01f, 0.f, 1.f))
+				m_pSelectedUI->Set_ColorTint(vColorTint);
+			break;
+		}
+
+		case EUIShaderPass::FADE:
+		{
+			_float fAlphaRatio = m_pSelectedUI->Get_AlphaRatio();
+			ImGui::SetNextItemWidth(150.f);
+			if (ImGui::DragFloat("Alpha Ratio", &fAlphaRatio, 0.01f, 0.f, 1.f))
+				m_pSelectedUI->Set_AlphaRatio(fAlphaRatio);
+			break;
+		}
+
+		case EUIShaderPass::PROGRESS:
+		{
+			_bool isUseColorTint = m_pSelectedUI->Get_isUseColorTint();
+			if (ImGui::Checkbox("Use Color Tint", (bool*)&isUseColorTint))
+				m_pSelectedUI->Set_isUseColorTint(isUseColorTint);
+
+			Vec4 vColorTint = m_pSelectedUI->Get_ColorTint();
+			ImGui::SetNextItemWidth(150.f);
+			if (ImGui::DragFloat4("Color Tint", (float*)&vColorTint, 0.01f, 0.f, 1.f))
+				m_pSelectedUI->Set_ColorTint(vColorTint);
+
+			_float fProgress = m_pSelectedUI->Get_ProgressRatio();
+			ImGui::SetNextItemWidth(150.f);
+			if (ImGui::DragFloat("Progress Ratio", &fProgress, 0.01f, 0.f, 1.f))
+				m_pSelectedUI->Set_ProgressRatio(fProgress);
+
+			uint32_t iFillDir = m_pSelectedUI->Get_FillDir();
+			const char* dirs[] = { "Right", "Left", "Up", "Down" };
+			int dir = (iFillDir > 3u) ? 0 : (int)iFillDir;
+
+			ImGui::SetNextItemWidth(150.f);
+			if (ImGui::Combo("Fill Dir", &dir, dirs, IM_ARRAYSIZE(dirs)))
+				m_pSelectedUI->Set_FillDir((uint32_t)dir);
+
+			break;
+		}
+
+		default:
+			break;
+		}
+	}
+
+	}
+
+
+
+
 	End_Card();
 }
 
