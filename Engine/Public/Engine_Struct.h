@@ -227,6 +227,14 @@ namespace Engine
 		SimpleMath::Vector3 Padding0 = {};
 	}CS_MU_BONEIDX;
 
+	// 가변 데이터 : cpu
+	typedef struct tagBone_Mu_Group
+	{
+		unsigned int		iGroupBoneNums = {0};
+
+		SimpleMath::Vector3 Padding0 = {};
+	}CS_MU_GROUPNUMS;
+
 	// output : 만약 바로 vs로 넘긴다면 필요 없지만
 	// 충돌이나 여기 저기에서 사용할 수 있어서 일단 만들어 둠
 	typedef struct tagBone_Output

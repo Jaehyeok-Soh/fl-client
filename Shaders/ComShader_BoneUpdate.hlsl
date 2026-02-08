@@ -17,6 +17,12 @@ struct MU_ELEMENT
     float3              Padding0;
 };
 
+struct MU_BoneNums
+{
+    uint iBoneNums;
+    float3 Padding0;
+};
+
 struct MU_SRT
 {
     float3 vScale;
@@ -35,9 +41,9 @@ struct BONE_OUTPUT
 };
 
 
-cbuffer BoneGroupCB
+cbuffer MU_BONENUMS
 {
-    uint g_iGroupBoneCount;
+    MU_BoneNums g_iGroupBoneCount;
 };
 
 StructuredBuffer<IMMU_ELEMENT>  IMMU_BONEDATA;
