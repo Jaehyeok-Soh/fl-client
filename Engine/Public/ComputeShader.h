@@ -43,6 +43,8 @@ public:
 		Data	Input_StructBuffer;
 		_uint	InputBufferNum;
 
+		_bool bMakeSB = { true };
+
 		Data	OutPut_StructBuffer;
 		string	Output_SRVBuffer_Name;
 

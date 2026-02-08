@@ -318,7 +318,9 @@ HRESULT CComputeShader::Create_StructBuffer(void* pArg)
 	// ======   Input Data 생성   ======
 	{
 		// 단일 버퍼인 사람을 위한 것.
-		if (m_pInputStructuredBuffer.size() != 0)
+
+		// sb를 처음에 만들어서 쓰겠다면
+		if (pDesc->bMakeSB)
 		{
 			if (m_pInputStructuredBuffer[0].first = Get_SRV(pDesc->Input_StructBuffer.sBufferName))
 			{
