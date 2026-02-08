@@ -45,6 +45,9 @@ private:
 		float fValuePerPixel = 0.01f,float fScale = 10.f, float fStep = 0.1f, float fStep_fast = 1.0f, float fSize = 100.f);
 	
 	void Input_Canvas_TransformInfo();
+
+	bool Begin_Card(const char* Label, const char* ID, float fHeight);
+	void End_Card();
 private:
 	CImGui_ToolManager* m_pToolManager = { nullptr };
 	CImGui_UIManager* m_pUIManager = { nullptr };
@@ -74,6 +77,9 @@ private:
 private:
 	int32_t m_iCurSelectLevelID = {};
 	vector<_string> m_vecLayers;
+private:
+	ImVec2 m_vLastCardPos = {};
+	ImVec2 m_vLastCardSize = {};
 
 public:
 	static CUI_Maker* Create(const _char* pLabel, CLevel* pOwner, ID3D11Device* pDevice, ID3D11DeviceContext* pDeviceContext);

@@ -503,6 +503,40 @@ void CUI_Maker::Input_Canvas_TransformInfo()
 	}
 }
 
+bool CUI_Maker::Begin_Card(const char* Label, const char* ID, float fHeight)
+{
+	ImGui::PushID(ID);
+
+	if (Label && Label[0] != '\0')
+		ImGui::SeparatorText(Label);
+
+	m_vLastCardPos = ImGui::GetCursorScreenPos();
+	m_vLastCardSize = ImVec2(ImGui::GetContentRegionAvail().x, fHeight);
+
+	auto* dl = ImGui::GetWindowDrawList();
+	dl->AddRectFilled(m_vLastCardPos,
+		ImVec2(m_vLastCardPos.x + m_vLastCardSize.x, m_vLastCardPos.y + m_vLastCardSize.y),
+		IM_COL32(30, 30, 30, 200), 8.0f);
+
+	dl->AddRect(m_vLastCardPos,
+		ImVec2(m_vLastCardPos.x + m_vLastCardSize.x, m_vLastCardPos.y + m_vLastCardSize.y),
+		IM_COL32(90, 90, 90, 255), 8.0f);
+
+	ImGui::SetCursorScreenPos(ImVec2(m_vLastCardPos.x + 10.0f, m_vLastCardPos.y + 10.0f));
+	return ImGui::BeginChild("CardInner", ImVec2(m_vLastCardSize.x - 20.0f, m_vLastCardSize.y - 20.0f),
+		false, ImGuiWindowFlags_NoScrollbar);
+}
+
+void CUI_Maker::End_Card()
+{
+	ImGui::EndChild();
+
+	ImGui::SetCursorScreenPos(m_vLastCardPos);
+	ImGui::Dummy(m_vLastCardSize);
+
+	ImGui::PopID();
+}
+
 CUI_Maker* CUI_Maker::Create(const _char* pLabel, CLevel* pOwner, ID3D11Device* pDevice, ID3D11DeviceContext* pDeviceContext)
 {
 	CUI_Maker* pInstance = new CUI_Maker(pLabel, pOwner, pDevice, pDeviceContext);

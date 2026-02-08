@@ -161,7 +161,7 @@ void CToolCanvas::Calc_HitUpdate()
 		{
 			if (nullptr != pUI)
 			{
-				pUI->Get_InteractState_Ref() = DTO::EUIEvent_Flag::NONE;
+				pUI->Get_InteractState_Ref() = EUIEvent_Flag::NONE;
 				pUI = nullptr;
 			}
 		}
@@ -170,15 +170,15 @@ void CToolCanvas::Calc_HitUpdate()
 	/* Trigger 이벤트 소비 */
 	if (nullptr != m_pCaptureUI)
 	{
-		Engine_Utils::RemoveSoft_Flag(m_pCaptureUI->Get_InteractState_Ref(), DTO::EUIEvent_Flag::PRESS_ENTER);
-		Engine_Utils::RemoveSoft_Flag(m_pCaptureUI->Get_InteractState_Ref(), DTO::EUIEvent_Flag::PRESS_EXIT);
-		m_pCaptureUI->Get_InteractState_Ref() =  DTO::EUIEvent_Flag::NONE;
+		Engine_Utils::RemoveSoft_Flag(m_pCaptureUI->Get_InteractState_Ref(), EUIEvent_Flag::PRESS_ENTER);
+		Engine_Utils::RemoveSoft_Flag(m_pCaptureUI->Get_InteractState_Ref(), EUIEvent_Flag::PRESS_EXIT);
+		m_pCaptureUI->Get_InteractState_Ref() =  EUIEvent_Flag::NONE;
 	}
 	if (nullptr != m_pHoveringUI)
 	{
-		Engine_Utils::RemoveSoft_Flag(m_pHoveringUI->Get_InteractState_Ref(), DTO::EUIEvent_Flag::HOVER_ENTER);
-		Engine_Utils::RemoveSoft_Flag(m_pHoveringUI->Get_InteractState_Ref(), DTO::EUIEvent_Flag::HOVER_EXIT);
-		m_pHoveringUI->Get_InteractState_Ref() =  DTO::EUIEvent_Flag::NONE;
+		Engine_Utils::RemoveSoft_Flag(m_pHoveringUI->Get_InteractState_Ref(), EUIEvent_Flag::HOVER_ENTER);
+		Engine_Utils::RemoveSoft_Flag(m_pHoveringUI->Get_InteractState_Ref(), EUIEvent_Flag::HOVER_EXIT);
+		m_pHoveringUI->Get_InteractState_Ref() =  EUIEvent_Flag::NONE;
 	}
 
 	/* 누른 순간 */
@@ -188,7 +188,7 @@ void CToolCanvas::Calc_HitUpdate()
 		m_pCaptureUI = Calc_TopUI();
 		if (nullptr != m_pCaptureUI)
 		{
-			Engine_Utils::Add_Flag(m_pCaptureUI->Get_InteractState_Ref(), DTO::EUIEvent_Flag::PRESS_ENTER);
+			Engine_Utils::Add_Flag(m_pCaptureUI->Get_InteractState_Ref(), EUIEvent_Flag::PRESS_ENTER);
 			m_isPreUIPressing = TRUE;
 		}
 	}
@@ -201,19 +201,19 @@ void CToolCanvas::Calc_HitUpdate()
 			{
 				if (!m_isPreUIPressing)
 				{
-					Engine_Utils::Add_Flag(m_pCaptureUI->Get_InteractState_Ref(), DTO::EUIEvent_Flag::PRESS_ENTER);
+					Engine_Utils::Add_Flag(m_pCaptureUI->Get_InteractState_Ref(), EUIEvent_Flag::PRESS_ENTER);
 					m_isPreUIPressing = TRUE;
 				}
 				else
 				{
-					Engine_Utils::Add_Flag(m_pCaptureUI->Get_InteractState_Ref(), DTO::EUIEvent_Flag::PRESSING);
+					Engine_Utils::Add_Flag(m_pCaptureUI->Get_InteractState_Ref(), EUIEvent_Flag::PRESSING);
 				}
 			}
 			else
 			{
 				if (m_isPreUIPressing)
 				{
-					m_pCaptureUI->Get_InteractState_Ref() = DTO::EUIEvent_Flag::NONE;
+					m_pCaptureUI->Get_InteractState_Ref() = EUIEvent_Flag::NONE;
 					m_isPreUIPressing = FALSE;
 				}
 			}
@@ -227,14 +227,14 @@ void CToolCanvas::Calc_HitUpdate()
 			/* 땠을 때 동일한 UI면 */
 			if (m_pCaptureUI->Calc_HitEvent())
 			{
-				Engine_Utils::Add_Flag(m_pCaptureUI->Get_InteractState_Ref(), DTO::EUIEvent_Flag::PRESS_EXIT);
+				Engine_Utils::Add_Flag(m_pCaptureUI->Get_InteractState_Ref(), EUIEvent_Flag::PRESS_EXIT);
 				const uint32_t CaptureUI = 0u;
 				m_ArrReleasedUI[CaptureUI] = m_pCaptureUI;
 				m_pCaptureUI = nullptr;
 			}
 			else
 			{
-				m_pCaptureUI->Get_InteractState_Ref() = DTO::EUIEvent_Flag::NONE;
+				m_pCaptureUI->Get_InteractState_Ref() = EUIEvent_Flag::NONE;
 				m_pCaptureUI = nullptr;
 			}
 			m_isPreUIPressing = FALSE;
@@ -250,7 +250,7 @@ void CToolCanvas::Calc_HitUpdate()
 			/* 호버링중인 UI가 있다 */
 			if (nullptr != m_pHoveringUI)
 			{
-				Engine_Utils::Add_Flag(m_pHoveringUI->Get_InteractState_Ref(), DTO::EUIEvent_Flag::HOVER_EXIT);
+				Engine_Utils::Add_Flag(m_pHoveringUI->Get_InteractState_Ref(), EUIEvent_Flag::HOVER_EXIT);
 				const uint32_t HoverUI = 1u;
 				m_ArrReleasedUI[HoverUI] = m_pHoveringUI;
 				m_pHoveringUI = nullptr;
@@ -262,21 +262,21 @@ void CToolCanvas::Calc_HitUpdate()
 			if (nullptr == m_pHoveringUI)
 			{
 				m_pHoveringUI = pUI;
-				Engine_Utils::Add_Flag(m_pHoveringUI->Get_InteractState_Ref(), DTO::EUIEvent_Flag::HOVER_ENTER);
+				Engine_Utils::Add_Flag(m_pHoveringUI->Get_InteractState_Ref(), EUIEvent_Flag::HOVER_ENTER);
 			}
 			else
 			{
 				if (m_pHoveringUI != pUI)
 				{
-					Engine_Utils::Add_Flag(m_pHoveringUI->Get_InteractState_Ref(), DTO::EUIEvent_Flag::HOVER_EXIT);
-					Engine_Utils::Add_Flag(pUI->Get_InteractState_Ref(), DTO::EUIEvent_Flag::HOVER_ENTER);
+					Engine_Utils::Add_Flag(m_pHoveringUI->Get_InteractState_Ref(), EUIEvent_Flag::HOVER_EXIT);
+					Engine_Utils::Add_Flag(pUI->Get_InteractState_Ref(), EUIEvent_Flag::HOVER_ENTER);
 					const uint32_t HoverUI = 1u;
 					m_ArrReleasedUI[HoverUI] = m_pHoveringUI;
 					m_pHoveringUI = pUI;
 				}
 				else
 				{
-					Engine_Utils::Add_Flag(m_pHoveringUI->Get_InteractState_Ref(), DTO::EUIEvent_Flag::HOVERING);
+					Engine_Utils::Add_Flag(m_pHoveringUI->Get_InteractState_Ref(), EUIEvent_Flag::HOVERING);
 				}
 			}
 		}

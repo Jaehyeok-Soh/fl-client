@@ -244,6 +244,9 @@
     <Filter Include="04. Component\UI\Button">
       <UniqueIdentifier>{6cc6e7a0-a1a7-4992-af08-cc0604618e37}</UniqueIdentifier>
     </Filter>
+    <Filter Include="04. Component\UI\Progress">
+      <UniqueIdentifier>{27815419-4fa4-4be0-9d62-f21f634f2338}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="framework.h">
@@ -489,6 +492,9 @@
     <ClInclude Include="..\Public\UIButton_Component.h">
       <Filter>04. Component\UI\Button</Filter>
     </ClInclude>
+    <ClInclude Include="..\Public\UIProgress_Component.h">
+      <Filter>04. Component\UI\Progress</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <Image Include="small.ico">
@@ -719,6 +725,9 @@
     </ClCompile>
     <ClCompile Include="..\Private\UIButton_Component.cpp">
       <Filter>04. Component\UI\Button</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\UIProgress_Component.cpp">
+      <Filter>04. Component\UI\Progress</Filter>
     </ClCompile>
   </ItemGroup>
 </Project>

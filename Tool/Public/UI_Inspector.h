@@ -24,7 +24,11 @@ public:
 	void SetUp_Public_Info();
 	void Input_RectTransform();
 	void Input_TextureTag();
-	void SetUp_ClassTag();
+	void SetUp_Class();
+	void SetUp_Owner();
+	void SetUp_Component();
+
+	void SetUp_UIProgress();
 
 private:
 	/// <summary>
@@ -42,6 +46,8 @@ private:
 	_bool Scrub_Float(const _char* label, const _char* Id, OUT _float* pValue,
 		float fValuePerPixel = 0.01f, float fScale = 10.f, float fStep = 0.1f, float fStep_fast = 1.0f, float fSize = 100.f);
 
+	bool Begin_Card(const char* Label, const char* ID, float fHeight);
+	void End_Card();
 private:
 	CImGui_ToolManager* m_pToolManager = { nullptr };
 	CImGui_UIManager* m_pUIManager = { nullptr };
@@ -54,6 +60,10 @@ private:
 
 
 	std::vector<_string> m_VecClassTag;
+	std::vector<_string> m_VecOwnerTag;
+
+	ImVec2 m_vLastCardPos = {};
+	ImVec2 m_vLastCardSize = {};
 
 
 

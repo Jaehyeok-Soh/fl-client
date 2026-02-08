@@ -26,6 +26,9 @@ void to_json(json& j, const TUI_GenericUIData& data)
 		{ "strTextureTag", data.strTextureTag },
 		{ "iTextureIndex", data.iTextureIndex },
 		{ "isVisible", data.isVisible },
+
+		{ "iComponentFlag", data.iComponentFlag },
+		{ "eOwnerType", data.eOwnerType },
 	};
 }
 void from_json(const json& j, TUI_GenericUIData& data)
@@ -42,6 +45,9 @@ void from_json(const json& j, TUI_GenericUIData& data)
 	j.at("strTextureTag").get_to(data.strTextureTag);
 	j.at("iTextureIndex").get_to(data.iTextureIndex);
 	j.at("isVisible").get_to(data.isVisible);
+
+	j.at("iComponentFlag").get_to(data.iComponentFlag);
+	j.at("eOwnerType").get_to(data.eOwnerType);
 }
 void to_json(json& j, const TUI_CanvasData& data)
 {

@@ -14,7 +14,7 @@ public:
 		uint32_t iRectTransformType;
 		_wstring wstrTextureTag;
 		uint32_t iTextureIndex;
-
+		uint32_t iComponentFlag;
 		CCanvas* pCanvasCache = { nullptr };
 	}GENERIC_UI_DESC;
 
@@ -57,6 +57,8 @@ protected:
 	RECT m_tRenderRect = {};
 	CCanvas* m_pParentCanvasCache = { nullptr };
 	Vec3 m_vMoveOffset = {};
+	uint32_t m_iComponentFlag = {};
+	uint32_t m_iOwnerType = {};
 
 public:
 	virtual void Free()override;

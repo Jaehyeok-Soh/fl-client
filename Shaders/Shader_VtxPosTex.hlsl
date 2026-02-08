@@ -21,14 +21,30 @@ PS_OUT PS_FADE(PS_IN_POS_TEX input)
 {
     PS_OUT output;
     output.vColor = g_DefaultTextures[DEFAULT].Sample(LinearSampler, input.vUV);
-    output.vColor.a *= g_AlphaRatio;
+    output.vColor.a *= g_fAlphaRatio;
     return output;
 }
 
 PS_OUT PS_PROGRESS(PS_IN_POS_TEX input)
 {
     PS_OUT output;
-    output.vColor = g_DefaultTextures[DEFAULT].Sample(LinearSampler, input.vUV * g_ProgressRatio);
+
+    float2 uv = input.vUV;
+    float mask = 1.0f;
+
+    if (g_iFillDir == 0)
+        mask = step(uv.x, g_fProgressRatio);//right
+    else if (g_iFillDir == 1)
+        mask = step(1.0f - uv.x, g_fProgressRatio);//left
+    else if (g_iFillDir == 2)
+        mask = step(uv.y, g_fProgressRatio);//up
+    else
+        mask = step(1.0f - uv.y, g_fProgressRatio); //down
+
+    output.vColor = g_DefaultTextures[DEFAULT].Sample(LinearSampler, uv);
+    output.vColor.a *= mask;
+    //output.vColor = vector(1, 0, 0, 1);
+
     return output;
 }
 

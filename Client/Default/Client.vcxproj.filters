@@ -229,6 +229,18 @@
     <Filter Include="03. GameObject\UIObjects\02.UI\PlayerHP">
       <UniqueIdentifier>{d1da7a10-7b69-4f7d-9c38-81e993488207}</UniqueIdentifier>
     </Filter>
+    <Filter Include="05. Component\UI">
+      <UniqueIdentifier>{d566c138-8d97-4d90-bf67-45caf8c4f1fc}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="05. Component\UI\Progress">
+      <UniqueIdentifier>{317fb20e-0076-4a23-a3a3-c903265adeb8}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="05. Component\UI\Button">
+      <UniqueIdentifier>{300c8870-4f30-4497-8311-06763127827b}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="03. GameObject\UIObjects\02.UI\MonsterHP">
+      <UniqueIdentifier>{beb7d1a4-337d-48de-b4df-4fb246247658}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="targetver.h">
@@ -454,6 +466,15 @@
     <ClInclude Include="..\Public\UIPlayer_HP.h">
       <Filter>03. GameObject\UIObjects\02.UI\PlayerHP</Filter>
     </ClInclude>
+    <ClInclude Include="..\Public\UIProgress_Component.h">
+      <Filter>05. Component\UI\Progress</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\UIButton_Component.h">
+      <Filter>05. Component\UI\Button</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\UIMonster_HP.h">
+      <Filter>03. GameObject\UIObjects\02.UI\MonsterHP</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <Image Include="Client.ico">
@@ -670,6 +691,15 @@
     <ClCompile Include="..\Private\State_DashFront.cpp" />
     <ClCompile Include="..\Private\UIPlayer_HP.cpp">
       <Filter>03. GameObject\UIObjects\02.UI\PlayerHP</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\UIProgress_Component.cpp">
+      <Filter>05. Component\UI\Progress</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\UIButton_Component.cpp">
+      <Filter>05. Component\UI\Button</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\UIMonster_HP.cpp">
+      <Filter>03. GameObject\UIObjects\02.UI\MonsterHP</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

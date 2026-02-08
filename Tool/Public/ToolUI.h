@@ -75,16 +75,24 @@ public:
 	_float& Get_Alpha_Ref() { return m_fFade_ResultAlpha; }
 	_bool& Get_InitVisible() { return m_isVisible; }
 
-	HRESULT Request_Change_Texture();
+	_float& Get_TestProgress_Ref() { return m_fTestProgress; }
+	int32_t& Get_FillDir_Ref() { return m_iFillDir; }
+
+ 	HRESULT Request_Change_Texture();
+	void Request_Chnage_ShaderPass(uint32_t pass);
 
 	_bool Get_isAction() const { return m_isAction; }
 	_bool Get_isDisable() const { return m_isDisable; }
 
 	void  Set_MoveOffset(const Vec3& offset) { m_vMoveOffset = offset; }
-	void  Set_ProgressUV(const _float fProgress) { m_fProgress_UV = fProgress; }
+	void  Set_Progress(const _float fProgress) { m_fTestProgress = fProgress; }
 
-	void Set_UIClassType(DTO::EUIClassType eType) { m_eClassType = eType; }
+	uint32_t& Get_ComponentFlag() { return m_iComponentFlag; }
+
 	DTO::EUIClassType Get_UIClassType() const { return m_eClassType; }
+	DTO::EUIOwnerType Get_UIOwnerType() const { return m_eOwnerType; }
+	void Set_UIClassType(DTO::EUIClassType eType) { m_eClassType = eType; }
+	void Set_UIOwnerType(DTO::EUIOwnerType eType) { m_eOwnerType = eType; }
 
 #pragma endregion
 
@@ -98,7 +106,10 @@ protected:
 
 	Vec3 m_vMoveOffset = {};
 	_float m_fFade_ResultAlpha = {1.f};
-	_float m_fProgress_UV = { 1.f };
+
+	_float m_fTestProgress = { 1.f };
+	int32_t m_iFillDir = {};
+
 
 	/* Set_isDisable */
 	_bool m_isDisable = { false };
@@ -129,6 +140,9 @@ protected:
 	CToolCanvas* m_pCacheCanvas = { nullptr };
 	ERectTransform m_eRectTransformType = { ERectTransform::C };
 	_wstring m_wstrTextureTag = {};
+	uint32_t m_iComponentFlag = {};
+
+	DTO::EUIOwnerType m_eOwnerType = {};
 	Vec3 m_vRenderPos = {};
 	RECT m_tRenderRect = {};
 	_bool m_isHitTest = { FALSE };

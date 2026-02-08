@@ -1,5 +1,5 @@
 #include "pch.h"
-#include "UIPlayer_HP.h"
+#include "UIMonster_HP.h"
 #include "Client_Defines.h"
 
 //=================
@@ -8,33 +8,33 @@
 #include "Texture.h"
 #include "Shader.h"
 #include "VIBuffer_Rect_Tex.h"
+#include "StatComponent.h"
 #include "GameInstance.h"
 
-CUIPlayer_HP::CUIPlayer_HP(ID3D11Device* pDevice, ID3D11DeviceContext* pDeviceContext)
+CUIMonster_HP::CUIMonster_HP(ID3D11Device* pDevice, ID3D11DeviceContext* pDeviceContext)
 	:CGenericUI(pDevice, pDeviceContext)
 {
 }
 
-CUIPlayer_HP::CUIPlayer_HP(const CUIPlayer_HP& rhs)
+CUIMonster_HP::CUIMonster_HP(const CUIMonster_HP& rhs)
 	:CGenericUI(rhs)
 {
 }
 
-HRESULT CUIPlayer_HP::Initialize_Prototype()
+HRESULT CUIMonster_HP::Initialize_Prototype()
 {
 	if (FAILED(Super::Initialize_Prototype()))
 		return E_FAIL;
 	return S_OK;
 }
 
-HRESULT CUIPlayer_HP::Initialize(void* pArg)
+HRESULT CUIMonster_HP::Initialize(void* pArg)
 {
 	PLAYER_HP_DESC* pDesc = static_cast<PLAYER_HP_DESC*>(pArg);
 	if (FAILED(Super::Initialize(pArg)))
 		return E_FAIL;
 	if (FAILED(Ready_Components(pDesc)))
 		return E_FAIL;
-
 	if (FAILED(Get_Component<CTexture>()->Add_DefaultTexture(m_wstrTextureTag, 0)))
 		return E_FAIL;
 
@@ -42,7 +42,7 @@ HRESULT CUIPlayer_HP::Initialize(void* pArg)
 	return S_OK;
 }
 
-HRESULT CUIPlayer_HP::Awake(const _uint iCurrentLevelID)
+HRESULT CUIMonster_HP::Awake(const _uint iCurrentLevelID)
 {
 	if (FAILED(Super::Awake(iCurrentLevelID)))
 		return E_FAIL;
@@ -50,28 +50,28 @@ HRESULT CUIPlayer_HP::Awake(const _uint iCurrentLevelID)
 	return S_OK;
 }
 
-void CUIPlayer_HP::Update_Priority(const _float fTimeDelta)
+void CUIMonster_HP::Update_Priority(const _float fTimeDelta)
 {
 	Super::Update_Priority(fTimeDelta);
 }
 
-void CUIPlayer_HP::Update(const _float fTimeDelta)
+void CUIMonster_HP::Update(const _float fTimeDelta)
 {
 	Super::Update(fTimeDelta);
 }
 
-void CUIPlayer_HP::Update_Late(const _float fTimeDelta)
+void CUIMonster_HP::Update_Late(const _float fTimeDelta)
 {
 	Super::Update_Late(fTimeDelta);
 }
 
-void CUIPlayer_HP::Ready_Before_Render(const _float fTimeDelta)
+void CUIMonster_HP::Ready_Before_Render(const _float fTimeDelta)
 {
 	Acting_By_InteractState();
 	Super::Ready_Before_Render(fTimeDelta);
 }
 
-HRESULT CUIPlayer_HP::Render()
+HRESULT CUIMonster_HP::Render()
 {
 	if (!m_isVisible)
 		return S_OK;
@@ -89,44 +89,56 @@ HRESULT CUIPlayer_HP::Render()
 	return S_OK;
 }
 
-HRESULT CUIPlayer_HP::Ready_Components(PLAYER_HP_DESC* pDesc)
+HRESULT CUIMonster_HP::Ready_Components(PLAYER_HP_DESC* pDesc)
 {
 	return S_OK;
 }
 
-HRESULT CUIPlayer_HP::Bind_ShaderResources()
+HRESULT CUIMonster_HP::Bind_ShaderResources()
 {
 	CShader* pShader = Get_Component<CShader>();
 	if (FAILED(Get_Component<CTransform>()->Bind_ShaderResource(pShader)))
 		return E_FAIL;
 	if (FAILED(Get_Component<CTexture>()->Bind_ShaderResourceBuffer(pShader)))
 		return E_FAIL;
+
+	if (Get_Script_Component(L"UIProgress_Component"))
+	{
+		pShader->Set_Pass(3);
+		
+		if (FAILED(pShader->Get_Variable("g_fProgressRatio")->SetRawValue(&m_pTargetStat->Get_HealthRatio(), 0, sizeof(_float))))
+			return E_FAIL;
+
+		if (FAILED(pShader->Get_Variable("g_iFillDir")->SetRawValue(&m_iFillDir, 0, sizeof(uint32_t))))
+			return E_FAIL;
+	}
+
 	return S_OK;
 }
 
-CUIPlayer_HP* CUIPlayer_HP::Create(ID3D11Device* pDevice, ID3D11DeviceContext* pDeviceContext)
+CUIMonster_HP* CUIMonster_HP::Create(ID3D11Device* pDevice, ID3D11DeviceContext* pDeviceContext)
 {
-	CUIPlayer_HP* pInstance = new CUIPlayer_HP(pDevice, pDeviceContext);
+	CUIMonster_HP* pInstance = new CUIMonster_HP(pDevice, pDeviceContext);
 	if (FAILED(pInstance->Initialize_Prototype()))
 	{
-		MSG_BOX("CUIPlayer_HP::Create, Create Failed");
+		MSG_BOX("CUIMonster_HP::Create, Create Failed");
 		Safe_Release(pInstance);
 	}
 	return pInstance;
 }
 
-CGameObject* CUIPlayer_HP::Clone(void* pArg)
+CGameObject* CUIMonster_HP::Clone(void* pArg)
 {
-	CUIPlayer_HP* pInstance = new CUIPlayer_HP(*this);
+	CUIMonster_HP* pInstance = new CUIMonster_HP(*this);
 	if (FAILED(pInstance->Initialize(pArg)))
 	{
-		MSG_BOX("CUIPlayer_HP::Clone, Clone Failed");
+		MSG_BOX("CUIMonster_HP::Clone, Clone Failed");
 		Safe_Release(pInstance);
 	}
 	return pInstance;
 }
 
-void CUIPlayer_HP::Free()
+void CUIMonster_HP::Free()
 {
 	Super::Free();
 }

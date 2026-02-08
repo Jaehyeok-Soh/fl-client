@@ -9,6 +9,7 @@
 #include "Shader.h"
 #include "VIBuffer_Rect_Tex.h"
 #include "UIAction_Registry.h"
+#include "UIProgress_Component.h"
 #include "GameInstance.h"
 
 CGenericUI::CGenericUI(ID3D11Device* pDevice, ID3D11DeviceContext* pDeviceContext)
@@ -35,6 +36,7 @@ HRESULT CGenericUI::Initialize(void* pArg)
 	m_eRectTransformType	= static_cast<ERectTransform>(pDesc->iRectTransformType);
 	m_wstrTextureTag		= pDesc->wstrTextureTag;
 	m_iTextureIndex			= pDesc->iTextureIndex;
+	m_iComponentFlag		= pDesc->iComponentFlag;
 	m_pParentCanvasCache	= pDesc->pCanvasCache;
 
 	if (FAILED(Super::Initialize(pArg)))
@@ -48,7 +50,7 @@ HRESULT CGenericUI::Awake(const _uint iCurrentLevelID)
 	if (FAILED(Super::Awake(iCurrentLevelID)))
 		return E_FAIL;
 
-	m_iInteractState = static_cast<uint32_t>(DTO::EUIEvent_Flag::NONE);
+	m_iInteractState = static_cast<uint32_t>(EUIEvent_Flag::NONE);
 	return S_OK;
 }
 
@@ -96,33 +98,33 @@ _bool CGenericUI::Calc_HitEvent()
 
 void CGenericUI::Acting_By_InteractState()
 {
-	if (Engine_Utils::Has_Flag(m_iInteractState, DTO::EUIEvent_Flag::INVOKED))
+	if (Engine_Utils::Has_Flag(m_iInteractState, EUIEvent_Flag::INVOKED))
 	{
 	}
 
-	if (m_iInteractState == DTO::EUIEvent_Flag::NONE)
+	if (m_iInteractState == EUIEvent_Flag::NONE)
 	{
 
 	}
 	else
 	{
-		if (Engine_Utils::Has_Flag(m_iInteractState, DTO::EUIEvent_Flag::PRESS_ENTER))
+		if (Engine_Utils::Has_Flag(m_iInteractState, EUIEvent_Flag::PRESS_ENTER))
 		{
 		}
-		else if (Engine_Utils::Has_Flag(m_iInteractState, DTO::EUIEvent_Flag::PRESS_EXIT))
+		else if (Engine_Utils::Has_Flag(m_iInteractState, EUIEvent_Flag::PRESS_EXIT))
 		{
 		}
-		else if (Engine_Utils::Has_Flag(m_iInteractState, DTO::EUIEvent_Flag::HOVER_ENTER))
+		else if (Engine_Utils::Has_Flag(m_iInteractState, EUIEvent_Flag::HOVER_ENTER))
 		{
 		}
-		else if (Engine_Utils::Has_Flag(m_iInteractState, DTO::EUIEvent_Flag::HOVER_EXIT))
+		else if (Engine_Utils::Has_Flag(m_iInteractState, EUIEvent_Flag::HOVER_EXIT))
 		{
 		}
 
-		if (Engine_Utils::Has_Flag(m_iInteractState, DTO::EUIEvent_Flag::PRESSING))
+		if (Engine_Utils::Has_Flag(m_iInteractState, EUIEvent_Flag::PRESSING))
 		{
 		}
-		else if (Engine_Utils::Has_Flag(m_iInteractState, DTO::EUIEvent_Flag::HOVERING))
+		else if (Engine_Utils::Has_Flag(m_iInteractState, EUIEvent_Flag::HOVERING))
 		{
 		}
 	}
@@ -130,6 +132,18 @@ void CGenericUI::Acting_By_InteractState()
 
 HRESULT CGenericUI::Ready_Components(GENERIC_UI_DESC* pDesc)
 {
+	if (FAILED(Add_Component<CTexture>(ENUM_TO_UINT(ELevelType::STATIC), L"Prototype_Component_Texture_Empty", pDesc)))
+		return E_FAIL;
+	if (FAILED(Add_Component<CShader>(0, L"Prototype_Component_Shader_VtxPosTex", pDesc)))
+		return E_FAIL;
+	if (FAILED(Add_Component<CVIBuffer_Rect_Tex>(0, L"Prototype_Component_VIBuffer_Rect_Tex", pDesc)))
+		return E_FAIL;
+
+	if (Engine_Utils::Has_Flag(m_iComponentFlag, DTO::EComponentTypeFlag::PROGRESS_COMPONENT))
+	{
+		Add_Script_Component(L"UIProgress_Component", CUIProgress_Component::Create(this));
+	}	
+
 	return S_OK;
 }
 

@@ -5,7 +5,7 @@
 NS_BEGIN(Client)
 class CCanvas;
 class CStatComponent;
-class CUIPlayer_HP final : public CGenericUI
+class CUIMonster_HP final : public CGenericUI
 {
 	using Super = CGenericUI;
 public:
@@ -15,9 +15,9 @@ public:
 	}PLAYER_HP_DESC;
 
 private:
-	CUIPlayer_HP(ID3D11Device* pDevice, ID3D11DeviceContext* pDeviceContext);
-	CUIPlayer_HP(const CUIPlayer_HP& rhs);
-	virtual ~CUIPlayer_HP() = default;
+	CUIMonster_HP(ID3D11Device* pDevice, ID3D11DeviceContext* pDeviceContext);
+	CUIMonster_HP(const CUIMonster_HP& rhs);
+	virtual ~CUIMonster_HP() = default;
 
 public:
 	HRESULT Initialize_Prototype() override;
@@ -35,8 +35,11 @@ private:
 	HRESULT Ready_Components(PLAYER_HP_DESC* pDesc);
 	HRESULT Bind_ShaderResources();
 
+private:
+	CStatComponent* m_pTargetStat = { nullptr };
+
 public:
-	static CUIPlayer_HP* Create(ID3D11Device* pDevice, ID3D11DeviceContext* pDeviceContext);
+	static CUIMonster_HP* Create(ID3D11Device* pDevice, ID3D11DeviceContext* pDeviceContext);
 	CGameObject* Clone(void* pArg);
 	virtual void Free()override;
 };

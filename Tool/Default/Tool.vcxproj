@@ -220,6 +220,7 @@
     <ClInclude Include="..\Public\Tool_Structs.h" />
     <ClInclude Include="..\Public\UEMapdataLoader.h" />
     <ClInclude Include="..\Public\UEMapdataParser.h" />
+    <ClInclude Include="..\Public\UIProgress_Component.h" />
     <ClInclude Include="..\Public\UI_Hierachy.h" />
     <ClInclude Include="..\Public\UI_Inspector.h" />
     <ClInclude Include="..\Public\UI_Maker.h" />
@@ -340,6 +341,7 @@
     <ClCompile Include="..\Private\ToolUI.cpp" />
     <ClCompile Include="..\Private\Tool_Defines.cpp" />
     <ClCompile Include="..\Private\Tool_Structs.cpp" />
+    <ClCompile Include="..\Private\UIProgress_Component.cpp" />
     <ClCompile Include="..\Private\UI_Hierachy.cpp" />
     <ClCompile Include="..\Private\UI_Inspector.cpp" />
     <ClCompile Include="..\Private\UI_Maker.cpp" />

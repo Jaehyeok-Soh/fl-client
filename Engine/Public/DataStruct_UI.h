@@ -22,109 +22,10 @@ NLOHMANN_JSON_SERIALIZE_ENUM(EUIType,
 	}
 )
 
-enum class EUIEvent : uint32_t
-{
-	NONE = 0,
-	HOVER_ENTER,
-	HOVERING,
-	HOVER_EXIT,
-	PRESS_ENTER,
-	PRESSING,
-	PRESS_EXIT,
-	INVOKED,
-	END
-};
-
-enum EUIEvent_Flag : uint32_t
-{
-	NONE = 0u,
-	HOVER_ENTER = 1u << 1,
-	HOVERING	= 1u << 2,
-	HOVER_EXIT	= 1u << 3,
-	PRESS_ENTER = 1u << 4,
-	PRESSING	= 1u << 5,
-	PRESS_EXIT	= 1u << 6,
-	INVOKED		= 1u << 7,
-	END			= 1u << 8
-};
-
-inline DTO::EUIEvent EventFlagToEvent(DTO::EUIEvent_Flag eFlag)
-{
-	switch (eFlag)
-	{
-	case DTO::EUIEvent_Flag::NONE:			return DTO::EUIEvent::NONE;
-	case DTO::EUIEvent_Flag::HOVER_ENTER:	return DTO::EUIEvent::HOVER_ENTER;
-	case DTO::EUIEvent_Flag::HOVERING:		return DTO::EUIEvent::HOVERING;
-	case DTO::EUIEvent_Flag::HOVER_EXIT:	return DTO::EUIEvent::HOVER_EXIT;
-	case DTO::EUIEvent_Flag::PRESS_ENTER:	return DTO::EUIEvent::PRESS_ENTER;
-	case DTO::EUIEvent_Flag::PRESSING:		return DTO::EUIEvent::PRESSING;
-	case DTO::EUIEvent_Flag::PRESS_EXIT:	return DTO::EUIEvent::PRESS_EXIT;
-	case DTO::EUIEvent_Flag::INVOKED:		return DTO::EUIEvent::INVOKED;
-	default:								return DTO::EUIEvent::NONE;
-	}
-}
-
-inline DTO::EUIEvent_Flag EventToEventFlag(DTO::EUIEvent eEvent)
-{
-	switch (eEvent)
-	{
-	case DTO::EUIEvent::NONE:			return DTO::EUIEvent_Flag::NONE;
-	case DTO::EUIEvent::HOVER_ENTER:	return DTO::EUIEvent_Flag::HOVER_ENTER;
-	case DTO::EUIEvent::HOVERING:		return DTO::EUIEvent_Flag::HOVERING;
-	case DTO::EUIEvent::HOVER_EXIT:		return DTO::EUIEvent_Flag::HOVER_EXIT;
-	case DTO::EUIEvent::PRESS_ENTER:	return DTO::EUIEvent_Flag::PRESS_ENTER;
-	case DTO::EUIEvent::PRESSING:		return DTO::EUIEvent_Flag::PRESSING;
-	case DTO::EUIEvent::PRESS_EXIT:		return DTO::EUIEvent_Flag::PRESS_EXIT;
-	case DTO::EUIEvent::INVOKED:		return DTO::EUIEvent_Flag::INVOKED;
-	default:							return DTO::EUIEvent_Flag::NONE;
-	}
-}
-
-
-NLOHMANN_JSON_SERIALIZE_ENUM(EUIEvent,
-	{
-		{EUIEvent::NONE, "NONE"},
-		{EUIEvent::HOVER_ENTER, "HOVER_ENTER"},
-		{EUIEvent::HOVERING, "HOVERING"},
-		{EUIEvent::HOVER_EXIT, "HOVER_EXIT"},
-		{EUIEvent::PRESS_ENTER, "PRESS_ENTER"},
-		{EUIEvent::PRESSING, "PRESSING"},
-		{EUIEvent::PRESS_EXIT, "PRESS_EXIT"},
-		{EUIEvent::INVOKED, "INVOKED"},
-	})
-
-inline std::string UIEventToString(DTO::EUIEvent eType)
-{
-	switch (eType)
-	{
-	case DTO::EUIEvent::NONE: return "NONE";
-	case DTO::EUIEvent::HOVER_ENTER: return "HOVER_ENTER";
-	case DTO::EUIEvent::HOVERING: return "HOVERING";
-	case DTO::EUIEvent::HOVER_EXIT: return "HOVER_EXIT";
-	case DTO::EUIEvent::PRESS_ENTER: return "PRESS_ENTER";
-	case DTO::EUIEvent::PRESSING: return "PRESSING";
-	case DTO::EUIEvent::PRESS_EXIT: return "PRESS_EXIT";
-	case DTO::EUIEvent::INVOKED: return "INVOKED";
-	default: return "";
-	}
-}
-
-inline DTO::EUIEvent StringToUIEvent(const std::string& str)
-{
-	if (str == "NONE") return DTO::EUIEvent::NONE;
-	else if (str == "HOVER_ENTER") return DTO::EUIEvent::HOVER_ENTER;
-	else if (str == "HOVERING") return DTO::EUIEvent::HOVERING;
-	else if (str == "HOVER_EXIT") return DTO::EUIEvent::HOVER_EXIT;
-	else if (str == "PRESS_ENTER") return DTO::EUIEvent::PRESS_ENTER;
-	else if (str == "PRESSING") return DTO::EUIEvent::PRESSING;
-	else if (str == "PRESS_EXIT") return DTO::EUIEvent::PRESS_EXIT;
-	else if (str == "INVOKED") return DTO::EUIEvent::INVOKED;
-	else return DTO::EUIEvent::END;
-}
 
 enum class EUIClassType
 {
-	PLAYER_HP,
+	PROGRESS,
 	END
 };
 
@@ -132,7 +33,7 @@ inline std::string UIClassTypeToString(EUIClassType eType)
 {
 	switch (eType)
 	{
-	case EUIClassType::PLAYER_HP: return "PLAYER_HP";
+	case EUIClassType::PROGRESS: return "PROGRESS";
 	case EUIClassType::END: return "END";
 	default: return "";
 	}
@@ -140,15 +41,59 @@ inline std::string UIClassTypeToString(EUIClassType eType)
 
 inline EUIClassType StringToUIClassType(const std::string& str)
 {
-	if (str == "PLAYER_HP") return EUIClassType::PLAYER_HP;
+	if (str == "PROGRESS") return EUIClassType::PROGRESS;
 	else return EUIClassType::END;
 }
 
 NLOHMANN_JSON_SERIALIZE_ENUM(EUIClassType,
 	{
-		{EUIClassType::PLAYER_HP, "PLAYER_HP"},
+		{EUIClassType::PROGRESS, "PROGRESS"},
 	})
 
+enum EComponentTypeFlag
+{
+	BUTTON_COMPONENT = 1 << 0,
+	PROGRESS_COMPONENT = 1 << 1
+};
+
+enum class EUIOwnerType
+{
+	NONE_OWNER,
+	PLAYER,
+	MONSTER,
+	BOSS,
+	END
+};
+
+inline std::string UIOwnertypeToString(EUIOwnerType eType)
+{
+	switch (eType)
+	{
+	case EUIOwnerType::NONE_OWNER: return "NONE_OWNER";
+	case EUIOwnerType::PLAYER: return "PLAYER";
+	case EUIOwnerType::MONSTER: return "MONSTER";
+	case EUIOwnerType::BOSS: return "BOSS";
+	case EUIOwnerType::END: return "END";
+	default: return "";
+	}
+}
+
+inline EUIOwnerType StringToUIOwnertype(const std::string& str)
+{
+	if (str == "NONE_OWNER") return EUIOwnerType::NONE_OWNER;
+	else if (str == "PLAYER") return EUIOwnerType::PLAYER;
+	else if (str == "MONSTER") return EUIOwnerType::MONSTER;
+	else if (str == "BOSS") return EUIOwnerType::BOSS;
+	else return EUIOwnerType::END;
+}
+
+NLOHMANN_JSON_SERIALIZE_ENUM(EUIOwnerType,
+	{
+		{EUIOwnerType::NONE_OWNER, "NONE_OWNER"},
+		{EUIOwnerType::PLAYER, "PLAYER"},
+		{EUIOwnerType::MONSTER, "MONSTER"},
+		{EUIOwnerType::BOSS, "BOSS"},
+	})
 
 /////////////////-------------------  Data Struct  -------------------/////////////////
 
@@ -170,6 +115,9 @@ struct TUI_GenericUIData
 	_string strTextureTag;
 	uint32_t iTextureIndex;
 	_bool isVisible;
+
+	uint32_t iComponentFlag;
+	EUIOwnerType eOwnerType;
 };
 
 struct TUI_CanvasData

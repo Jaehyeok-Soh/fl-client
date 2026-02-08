@@ -6,6 +6,7 @@
 #include "ToolCanvas.h"
 #include "ToolUI.h"
 #include "Texture.h"
+#include "UIProgress_Component.h"
 #include "GameInstance.h"
 
 CUI_Inspector::CUI_Inspector(const _char* pLabel, CLevel* pOwner, ID3D11Device* pDevice, ID3D11DeviceContext* pDeviceContext)
@@ -27,9 +28,15 @@ HRESULT CUI_Inspector::Initialize_Prototype()
 		m_vecClientLevelType[i] = (ClientleveltypeToString(static_cast<EClientLevelType>(i)));
 		m_szArrClientLevelType[i] = m_vecClientLevelType[i].c_str();
 	}
+
 	m_VecClassTag.reserve(ENUM_TO_UINT(DTO::EUIClassType::END));
 	for (uint32_t i = 0; i < ENUM_TO_UINT(DTO::EUIClassType::END); ++i)
 		m_VecClassTag.push_back(DTO::UIClassTypeToString(static_cast<DTO::EUIClassType>(i)));
+
+	m_VecOwnerTag.reserve(ENUM_TO_UINT(DTO::EUIOwnerType::END));
+	for (uint32_t i = 0; i < ENUM_TO_UINT(DTO::EUIOwnerType::END); ++i)
+		m_VecOwnerTag.push_back(DTO::UIOwnertypeToString(static_cast<DTO::EUIOwnerType>(i)));
+
 	return S_OK;
 }
 
@@ -49,7 +56,18 @@ HRESULT CUI_Inspector::Render(CToolObject* pGo)
 		m_pSelectedUI->Set_HitTest();
 		SetUp_Public_Info();
 		Input_TextureTag();
-		SetUp_ClassTag();
+		
+		if (Begin_Card("SetUp Default Setting", "##SetUp_Default_Setting", 100.f))
+		{
+			SetUp_Class();
+			SetUp_Owner();
+		}
+		End_Card();
+
+		SetUp_Component();
+
+		if(m_pSelectedUI->Get_Script_Component(L"UIProgress_Component"))
+			SetUp_UIProgress();
 	}
 
 	ImGui::End();
@@ -188,12 +206,12 @@ void CUI_Inspector::Input_TextureTag()
 	}
 }
 
-void CUI_Inspector::SetUp_ClassTag()
+void CUI_Inspector::SetUp_Class()
 {
 	if (nullptr == m_pSelectedUI)
 		return;
 
-	int cur = (int)m_pSelectedUI->Get_UIClassType(); // 
+	int cur = (int)m_pSelectedUI->Get_UIClassType();
 	cur = (cur < 0) ? 0 : (cur >= (int)m_VecClassTag.size() ? (int)m_VecClassTag.size() - 1 : cur);
 
 	const char* preview = m_VecClassTag.empty() ? "" : m_VecClassTag[cur].c_str();
@@ -217,6 +235,57 @@ void CUI_Inspector::SetUp_ClassTag()
 		}
 		ImGui::EndCombo();
 	}
+}
+
+void CUI_Inspector::SetUp_Owner()
+{
+	if (nullptr == m_pSelectedUI)
+		return;
+
+	int cur = (int)m_pSelectedUI->Get_UIOwnerType();
+	cur = (cur < 0) ? 0 : (cur >= (int)m_VecOwnerTag.size() ? (int)m_VecOwnerTag.size() - 1 : cur);
+
+	const char* preview = m_VecOwnerTag.empty() ? "" : m_VecOwnerTag[cur].c_str();
+
+	bool changed = false;
+
+	if (ImGui::BeginCombo("UI Owner", preview))
+	{
+		for (int i = 0; i < (int)m_VecOwnerTag.size(); ++i)
+		{
+			const bool isSelected = (cur == i);
+			if (ImGui::Selectable(m_VecOwnerTag[i].c_str(), isSelected))
+			{
+				cur = i;
+				m_pSelectedUI->Set_UIOwnerType(static_cast<DTO::EUIOwnerType>(i));
+				changed = true;
+			}
+
+			if (isSelected)
+				ImGui::SetItemDefaultFocus();
+		}
+		ImGui::EndCombo();
+	}
+}
+
+void CUI_Inspector::SetUp_Component()
+{
+	if(Begin_Card("Add Component", "Card_AddComponent", 100.f))
+	{
+		if (ImGui::Button("Add Progress Component"))
+		{
+			m_pSelectedUI->Add_Script_Component(L"UIProgress_Component", CUIProgress_Component::Create(m_pSelectedUI));
+			m_pSelectedUI->Get_ComponentFlag() |= DTO::EComponentTypeFlag::PROGRESS_COMPONENT;
+		}
+	}
+	End_Card();
+}
+
+void CUI_Inspector::SetUp_UIProgress()
+{
+	ImGui::SliderFloat("Progress", &m_pSelectedUI->Get_TestProgress_Ref(), 1.f, 0.f);
+	const char* items[] = { "L2R", "R2L", "B2T", "T2B" };
+	ImGui::Combo("FillDir", &m_pSelectedUI->Get_FillDir_Ref(), items, IM_ARRAYSIZE(items));
 }
 
 _bool CUI_Inspector::Scrub_Float(const _char* label, const _char* Id, OUT _float* pValue, float fValuePerPixel, float fValuePerPixel_fast, float fStep, float fStep_fast, float fSize)
@@ -263,6 +332,41 @@ _bool CUI_Inspector::Scrub_Float(const _char* label, const _char* Id, OUT _float
 	ImGui::PopID();
 
 	return changed;
+}
+
+
+bool CUI_Inspector::Begin_Card(const char* Label, const char* ID, float fHeight)
+{
+	ImGui::PushID(ID);
+
+	if (Label && Label[0] != '\0')
+		ImGui::SeparatorText(Label);
+
+	m_vLastCardPos = ImGui::GetCursorScreenPos();
+	m_vLastCardSize = ImVec2(ImGui::GetContentRegionAvail().x, fHeight);
+
+	auto* dl = ImGui::GetWindowDrawList();
+	dl->AddRectFilled(m_vLastCardPos,
+		ImVec2(m_vLastCardPos.x + m_vLastCardSize.x, m_vLastCardPos.y + m_vLastCardSize.y),
+		IM_COL32(30, 30, 30, 200), 8.0f);
+
+	dl->AddRect(m_vLastCardPos,
+		ImVec2(m_vLastCardPos.x + m_vLastCardSize.x, m_vLastCardPos.y + m_vLastCardSize.y),
+		IM_COL32(90, 90, 90, 255), 8.0f);
+
+	ImGui::SetCursorScreenPos(ImVec2(m_vLastCardPos.x + 10.0f, m_vLastCardPos.y + 10.0f));
+	return ImGui::BeginChild("CardInner", ImVec2(m_vLastCardSize.x - 20.0f, m_vLastCardSize.y - 20.0f),
+		false, ImGuiWindowFlags_NoScrollbar);
+}
+
+void CUI_Inspector::End_Card()
+{
+	ImGui::EndChild();
+
+	ImGui::SetCursorScreenPos(m_vLastCardPos);
+	ImGui::Dummy(m_vLastCardSize);
+
+	ImGui::PopID();
 }
 
 CUI_Inspector* CUI_Inspector::Create(const _char* pLabel, CLevel* pOwner, ID3D11Device* pDevice, ID3D11DeviceContext* pDeviceContext)

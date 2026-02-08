@@ -12,6 +12,7 @@
 #include "ImGui_ToolManager.h"
 
 #include "UIButton_Component.h"
+#include "UIProgress_Component.h"
 #include "GameInstance.h"
 
 CToolUI::CToolUI(ID3D11Device* pDevice, ID3D11DeviceContext* pDeviceContext)
@@ -71,7 +72,7 @@ HRESULT CToolUI::Awake(const _uint iCurrentLevelID)
 	m_pEffect = new BasicEffect(m_pDevice);
 	m_pEffect->SetVertexColorEnabled(true);
 
-	m_iInteractState = static_cast<uint32_t>(DTO::EUIEvent_Flag::NONE);
+	m_iInteractState = static_cast<uint32_t>(EUIEvent_Flag::NONE);
 
     return S_OK;
 }
@@ -81,7 +82,6 @@ void CToolUI::Update_Priority(const _float fTimeDelta)
 	Set_Size(m_fWidth, m_fHeight);
 	SetUp_RectTransform_Position();
 	SetUp_Visible();
-	Get_Component<CShader>()->Set_Pass(1);
 	Super::Update_Priority(fTimeDelta);
 }
 
@@ -198,11 +198,16 @@ HRESULT CToolUI::Bind_ShaderResources()
     if (FAILED(Get_Component<CTexture>()->Bind_ShaderResourceBuffer(pShader)))
         return E_FAIL;
 
-	//if (FAILED(pShader->Get_Variable("g_AlphaFade")->SetRawValue(&m_fFade_ResultAlpha, 0, sizeof(_float))))
-	//	return E_FAIL;
 
-	//if (FAILED(pShader->Get_Variable("g_ProgressRatio")->SetRawValue(&m_fProgress_UV, 0, sizeof(_float))))
-	//	return E_FAIL;
+	if (Get_Script_Component(L"UIProgress_Component"))
+	{
+		pShader->Set_Pass(3);
+		if (FAILED(pShader->Get_Variable("g_fProgressRatio")->SetRawValue(&m_fTestProgress, 0, sizeof(_float))))
+			return E_FAIL;
+		if (FAILED(pShader->Get_Variable("g_iFillDir")->SetRawValue(&m_iFillDir, 0, sizeof(uint32_t))))
+			return E_FAIL;
+	}
+
 
     return S_OK;
 }
@@ -246,33 +251,33 @@ void CToolUI::SetUp_Visible()
 
 void CToolUI::Acting_About_State()
 {
-	if (Engine_Utils::Has_Flag(m_iInteractState, DTO::EUIEvent_Flag::INVOKED))
+	if (Engine_Utils::Has_Flag(m_iInteractState, EUIEvent_Flag::INVOKED))
 	{
 	}
 
-	if (m_iInteractState == DTO::EUIEvent_Flag::NONE)
+	if (m_iInteractState == EUIEvent_Flag::NONE)
 	{
 
 	}
 	else
 	{
-		if (Engine_Utils::Has_Flag(m_iInteractState, DTO::EUIEvent_Flag::PRESS_ENTER))
+		if (Engine_Utils::Has_Flag(m_iInteractState, EUIEvent_Flag::PRESS_ENTER))
 		{
 		}
-		else if (Engine_Utils::Has_Flag(m_iInteractState, DTO::EUIEvent_Flag::PRESS_EXIT))
+		else if (Engine_Utils::Has_Flag(m_iInteractState, EUIEvent_Flag::PRESS_EXIT))
 		{
 		}
-		else if (Engine_Utils::Has_Flag(m_iInteractState, DTO::EUIEvent_Flag::HOVER_ENTER))
+		else if (Engine_Utils::Has_Flag(m_iInteractState, EUIEvent_Flag::HOVER_ENTER))
 		{
 		}
-		else if (Engine_Utils::Has_Flag(m_iInteractState, DTO::EUIEvent_Flag::HOVER_EXIT))
+		else if (Engine_Utils::Has_Flag(m_iInteractState, EUIEvent_Flag::HOVER_EXIT))
 		{
 		}
 
-		if (Engine_Utils::Has_Flag(m_iInteractState, DTO::EUIEvent_Flag::PRESSING))
+		if (Engine_Utils::Has_Flag(m_iInteractState, EUIEvent_Flag::PRESSING))
 		{
 		}
-		else if (Engine_Utils::Has_Flag(m_iInteractState, DTO::EUIEvent_Flag::HOVERING))
+		else if (Engine_Utils::Has_Flag(m_iInteractState, EUIEvent_Flag::HOVERING))
 		{
 		}
 	}
@@ -292,12 +297,19 @@ void CToolUI::Sync_Data()
 	m_tUIData.iTextureIndex			= m_iTextureIndex;
 	m_tUIData.isVisible				= m_isVisible;
 	m_tUIData.eClassType			= m_eClassType;
+	m_tUIData.iComponentFlag		= m_iComponentFlag;
+	m_tUIData.eOwnerType 			= m_eOwnerType;
 }
 
 HRESULT CToolUI::Request_Change_Texture()
 {
 	if (FAILED(Get_Component<CTexture>()->Add_DefaultTexture(m_wstrTextureTag, 0)))
 		return E_FAIL;
+}
+
+void CToolUI::Request_Chnage_ShaderPass(uint32_t pass)
+{
+	Get_Component<CShader>()->Set_Pass(pass);
 }
 
 void CToolUI::Set_isDisable(_bool isDisable)
