@@ -3,14 +3,18 @@
 #include "Body.h"
 
 #include "Player.h"
-#include "GameInstance.h"
+
+#include "Bone.h"
+
+// components
 #include "ActionState.h"
 #include "Shader.h"
 #include "Collider.h"
-#include "Bone.h"
 #include "Model.h"
 #include "PhysicsCCT.h"
+#include "ComputeShader.h"
 
+#include "GameInstance.h"
 
 CBody::CBody(ID3D11Device* pDevice, ID3D11DeviceContext* pDeviceContext)
 	: Super(pDevice, pDeviceContext)
@@ -37,6 +41,9 @@ HRESULT CBody::Initialize(void* pArg)
 
 	BODY_DESC* pDesc = static_cast<BODY_DESC*>(pArg);
 	if (FAILED(Ready_Components(pDesc)))
+		return E_FAIL;
+
+	if (FAILED(Ready_ComputeShader()))
 		return E_FAIL;
 
 	m_iHead_Index = Get_Component<CModel>()->Get_BoneIndex("head");
@@ -290,6 +297,79 @@ HRESULT CBody::Ready_Components(BODY_DESC* pDesc)
 
 HRESULT CBody::Bind_ShaderResources()
 {
+	return S_OK;
+}
+
+HRESULT CBody::Ready_ComputeShader()
+{
+	_uint iBoneNums = Get_Component<CModel>()->Get_BoneCount();
+	// ========   Compute Shader : Bone  ========
+	{
+		CComputeShader::ComShaderCopyDesc ShaderDesc = {};
+		ShaderDesc.Output_SRVBuffer_Name = "BONECOMBINED_TRANSFORMS_SRV";
+
+		ShaderDesc.InputBufferNum = 3;
+		// 입력 버퍼
+		ShaderDesc.Input_StructBuffer.sBufferName = "IMMU_BONEDATA";
+		ShaderDesc.Input_StructBuffer.iElementSize = sizeof(CS_IMMU_BONE);
+		ShaderDesc.Input_StructBuffer.iNumElements = iBoneNums;
+
+		// 출력 버퍼
+		ShaderDesc.OutPut_StructBuffer.sBufferName = "BONECOMBINED_TRANSFORMS";
+		ShaderDesc.OutPut_StructBuffer.iElementSize = sizeof(CS_OUT_BONE);
+		ShaderDesc.OutPut_StructBuffer.iNumElements = iBoneNums;
+
+		if (FAILED(Add_Script_Component(L"ComputeShader_Bone", L"Prototype_Component_Shader_BondUpdate", &ShaderDesc)))
+			return E_FAIL;
+	}
+
+	// ========   Compute Shader : AnimE  ========
+	{
+		CComputeShader::ComShaderCopyDesc ShaderDesc = {};
+		ShaderDesc.Output_SRVBuffer_Name = "CHANNEL_OUTPUT_SRV";
+
+		ShaderDesc.InputBufferNum = 2;
+		ShaderDesc.bMakeSB = false;
+		//// 입력 버퍼
+		//ShaderDesc.Input_StructBuffer.sBufferName = "IMMU_EFFECT_PARTICLE";
+		//ShaderDesc.Input_StructBuffer.iElementSize = sizeof(EFFECT_PARTICLE_IMMU_ELEMENT);
+		//ShaderDesc.Input_StructBuffer.iNumElements = m_tEffectDesc._Effect_MaxParticle;
+
+		// 출력 버퍼
+		ShaderDesc.OutPut_StructBuffer.sBufferName = "CHANNEL_OUTPUT";
+		ShaderDesc.OutPut_StructBuffer.iElementSize = sizeof(CS_SRT);
+		ShaderDesc.OutPut_StructBuffer.iNumElements = iBoneNums;
+
+		if (FAILED(Add_Script_Component(L"ComputeShader_AnimE", L"Prototype_Component_Shader_AnimEv", &ShaderDesc)))
+			return E_FAIL;
+	}
+
+	// ========   Compute Shader : AnimB  ========
+	{
+		CComputeShader::ComShaderCopyDesc ShaderDesc = {};
+		ShaderDesc.Output_SRVBuffer_Name = "BLEND_OUTPUT_SRV";
+
+		ShaderDesc.InputBufferNum = 2;
+		ShaderDesc.bMakeSB = false;
+		//// 입력 버퍼
+		//ShaderDesc.Input_StructBuffer.sBufferName = "IMMU_EFFECT_PARTICLE";
+		//ShaderDesc.Input_StructBuffer.iElementSize = sizeof(EFFECT_PARTICLE_IMMU_ELEMENT);
+		//ShaderDesc.Input_StructBuffer.iNumElements = iBoneNums;
+
+		// 출력 버퍼
+		ShaderDesc.OutPut_StructBuffer.sBufferName = "BLEND_OUTPUT";
+		ShaderDesc.OutPut_StructBuffer.iElementSize = sizeof(CS_SRT);
+		ShaderDesc.OutPut_StructBuffer.iNumElements = iBoneNums;
+
+		if (FAILED(Add_Script_Component(L"ComputeShader_AnimB", L"Prototype_Component_Shader_AnimB", &ShaderDesc)))
+			return E_FAIL;
+	}
+
+
+	if (FAILED(Get_Component<CModel>()->Ready_CSs(static_cast<CComputeShader*>(Get_Script_Component(L"ComputeShader_Bone")),
+		static_cast<CComputeShader*>(Get_Script_Component(L"ComputeShader_AnimE")))))
+		return E_FAIL;
+
 	return S_OK;
 }
 
