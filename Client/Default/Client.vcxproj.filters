@@ -411,12 +411,6 @@
     <ClInclude Include="..\Public\Builder_Map.h">
       <Filter>07. System\01. Builder\Map</Filter>
     </ClInclude>
-    <ClInclude Include="..\Public\InstanceModel.h">
-      <Filter>03. GameObject\MapObject\02. InstanceModel</Filter>
-    </ClInclude>
-    <ClInclude Include="..\Public\UIAction_Client.h">
-      <Filter>03. GameObject\UIObjects\04.Action</Filter>
-    </ClInclude>
     <ClInclude Include="..\Public\imconfig.h">
       <Filter>99. ETC\01. ImGui</Filter>
     </ClInclude>
@@ -481,8 +475,8 @@
     <ClInclude Include="..\Public\UIMonster_HP.h">
       <Filter>03. GameObject\UIObjects\02.UI\MonsterHP</Filter>
     </ClInclude>
-    <ClInclude Include="..\public\ImGui_FrameLayout.h">
-      <Filter>07. System\02. Debug_ImGui\Layout\Frame</Filter>
+    <ClInclude Include="..\Public\ImGui_FrameLayout.h">
+      <Filter>99. ETC</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -649,12 +643,6 @@
     <ClCompile Include="..\Private\Builder_Map.cpp">
       <Filter>07. System\01. Builder\Map</Filter>
     </ClCompile>
-    <ClCompile Include="..\Private\InstanceModel.cpp">
-      <Filter>03. GameObject\MapObject\02. InstanceModel</Filter>
-    </ClCompile>
-    <ClCompile Include="..\Private\UIAction_Client.cpp">
-      <Filter>03. GameObject\UIObjects\04.Action</Filter>
-    </ClCompile>
     <ClCompile Include="..\Private\imgui_widgets.cpp">
       <Filter>99. ETC\01. ImGui</Filter>
     </ClCompile>
@@ -713,8 +701,8 @@
     <ClCompile Include="..\Private\UIMonster_HP.cpp">
       <Filter>03. GameObject\UIObjects\02.UI\MonsterHP</Filter>
     </ClCompile>
-    <ClCompile Include="..\private\ImGui_FrameLayout.cpp">
-      <Filter>07. System\02. Debug_ImGui\Layout\Frame</Filter>
+    <ClCompile Include="..\Private\ImGui_FrameLayout.cpp">
+      <Filter>99. ETC</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

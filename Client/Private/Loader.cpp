@@ -174,10 +174,10 @@ HRESULT CLoader::Loading_For_Logo()
 
 		// For. Prototype_Component_Button_Test_Texture
 	{
-		if (FAILED(Loading_Textures(L"../../Resources/Textures/UI/Playable/")))
-			return E_FAIL;
-		if (FAILED(Loading_Textures(L"../../Resources/Textures/UI/Menu/")))
-			return E_FAIL;
+		//if (FAILED(Loading_Textures(L"../../Resources/Textures/UI/Playable/")))
+		//	return E_FAIL;
+		//if (FAILED(Loading_Textures(L"../../Resources/Textures/UI/Menu/")))
+		//	return E_FAIL;
 	}	
 	
 #pragma endregion
