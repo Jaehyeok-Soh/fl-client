@@ -26,6 +26,13 @@ public:
 		_bool bMixAni		= {false};
 		_int iRootBondIndex = { -1 };
 	}MODELANIM_DESC;
+
+private:
+	enum class CS_SB_IDX : _uint
+	{
+		IMMU_KEYFRAME
+		, IMMU_CHANNELDATA
+	};
 private:
 	CModelAnimation(ID3D11Device* pDevice, ID3D11DeviceContext* pDeviceContext);
 	explicit CModelAnimation(const CModelAnimation& rhs);

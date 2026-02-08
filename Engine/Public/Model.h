@@ -54,6 +54,12 @@ private:
 		BLEND,
 		END
 	};
+
+	enum class CS_SB_IDX : _uint
+	{
+		IMMU_BONE,
+		MU_GROUPIDX
+	};
 private:
 	CModel(ID3D11Device* pDevice, ID3D11DeviceContext* pDeviceContext);
 	explicit CModel(const CModel& rhs);

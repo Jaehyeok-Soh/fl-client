@@ -108,7 +108,6 @@ _bool CModelAnimation::Update_TransformMatrices(CComputeShader* pAnimEShader, _f
 	// 가변 데이터 작성
 	CS_MU_TRACK tMuDesc{};
 	tMuDesc.fCurTrackPosition = m_fCurrentTrackPosition;
-
 	pAnimEShader->Bind_Compute_Track(tMuDesc);
 	
 	// dispatch
@@ -119,6 +118,8 @@ _bool CModelAnimation::Update_TransformMatrices(CComputeShader* pAnimEShader, _f
 	//m_iRootChannelIdx
 	if(m_iRootChannelIdx> 0)
 		m_vecChannels[(size_t)m_iRootChannelIdx]->Move_OnwerTransform(m_fCurrentTrackPosition, &m_vecCurrentKeyFrameIndices[(size_t)m_iRootChannelIdx], pOwnerTransform, pOwnerPhyCCT, fTimeDelta);
+
+	return false;
 }
 
 void CModelAnimation::Update_BlendAnimation(CComputeShader* pAnimEShader, _float fTimeDelta, CTransform* pOwnerTransform, CPhysicsCCT* pOwnerPhyCCT)
@@ -135,7 +136,6 @@ void CModelAnimation::Update_BlendAnimation(CComputeShader* pAnimEShader, _float
 	// 가변 데이터 작성
 	CS_MU_TRACK tMuDesc{};
 	tMuDesc.fCurTrackPosition = m_fCurrentTrackPosition;
-
 	pAnimEShader->Bind_Compute_Track(tMuDesc);
 
 	// dispatch
@@ -149,18 +149,18 @@ void CModelAnimation::Update_BlendAnimation(CComputeShader* pAnimEShader, _float
 
 void CModelAnimation::Bind_AnimationEData(CComputeShader* pAnimEShader)
 {
-	//pAnimEShader->m_pKeyFrameBuffer 할당
-	//pAnimEShader->m_pChannelDataBuffer 할당
+	pAnimEShader->Bind_InputStructuredBuffer(ENUM_TO_UINT(CS_SB_IDX::IMMU_KEYFRAME), m_pInputKeySB_SRV, m_pKeyFrameBuffer);
+	pAnimEShader->Bind_InputStructuredBuffer(ENUM_TO_UINT(CS_SB_IDX::IMMU_CHANNELDATA), m_pInputChannelSB_SRV, m_pChannelDataBuffer);
 }
 
 HRESULT CModelAnimation::Ready_Buffers(CComputeShader* pAnimESahder)
 {
 	// 1. 버퍼의 사이즈를 할당한다
-	m_iChannelSize = m_vecChannels.size();
+	m_iChannelSize = _uint(m_vecChannels.size());
 	m_iKeyFrameBufferSize = 0;
 	for (auto& pChannel : m_vecChannels)
 	{
-		m_iKeyFrameBufferSize += pChannel->Get_KeyFrames().size();
+		m_iKeyFrameBufferSize += _uint(pChannel->Get_KeyFrames().size());
 	}
 
 	CS_IMMU_ANIM_KEYFRAME* pIniailKeyData			= new CS_IMMU_ANIM_KEYFRAME[m_iKeyFrameBufferSize];
@@ -183,13 +183,13 @@ HRESULT CModelAnimation::Ready_Buffers(CComputeShader* pAnimESahder)
 
 		// 2.2 채널당 정보이므로 여기서 작성
 		pIniailChannelData[i].iBoneIndex = m_vecChannels[i]->Get_BoneIndex();
-		pIniailChannelData[i].iKeyStart = i;
-		pIniailChannelData[i].iKeyCount = KeyFrames.size();
+		pIniailChannelData[i].iKeyStart = (_uint)i;
+		pIniailChannelData[i].iKeyCount = _uint(KeyFrames.size());
 		pIniailChannelData[i].iBoneIndex = m_iRootBoneIdx;
 
 		// 2.3 root channel 캐싱
-		if (i == m_iRootBoneIdx)
-			m_iRootChannelIdx = i;
+		if ((_uint)i == m_iRootBoneIdx)
+			m_iRootChannelIdx = (_uint)i;
 	}
 
 	// 3. struct buffer class 생성
