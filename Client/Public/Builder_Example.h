@@ -18,7 +18,6 @@ private:
 public:
 	virtual HRESULT Build(const CDataDocumentBase& document) override;
 private:
-	HRESULT Create_StaticModel(const DTO::TExample_StaticModelData& data);
 	HRESULT Create_Light(const DTO::TExample_LightData& data);
 public:
 	static CBuilder_Example* Create(ID3D11Device *pDevice, ID3D11DeviceContext* pDeviceContext, _uint iLevelID);

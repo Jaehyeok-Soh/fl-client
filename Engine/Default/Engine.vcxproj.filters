@@ -298,15 +298,6 @@
     <Filter Include="00. System\05. Component\PhysicsCCT">
       <UniqueIdentifier>{20045528-a719-46f9-8133-abf66bb4da37}</UniqueIdentifier>
     </Filter>
-    <Filter Include="00. System\04. GameObject\UIObject\Interface">
-      <UniqueIdentifier>{627899fc-d0d1-4a99-ac65-dcf99cb32737}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="00. System\04. GameObject\UIObject\Interface\Action For Me">
-      <UniqueIdentifier>{b9ab0a0c-c6af-48ee-891a-d33b6697ebd7}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="00. System\04. GameObject\UIObject\Interface\Action For Target">
-      <UniqueIdentifier>{458e4ee3-ec12-4568-848f-681fb57b8215}</UniqueIdentifier>
-    </Filter>
     <Filter Include="00. System\04. GameObject\UIObject\Registry">
       <UniqueIdentifier>{01d57898-da08-45d1-a15c-f74cab4f144e}</UniqueIdentifier>
     </Filter>
@@ -334,8 +325,26 @@
     <Filter Include="00. System\13. StructuredBuffer">
       <UniqueIdentifier>{043d4a0e-860d-46aa-93fb-251f6c7ba102}</UniqueIdentifier>
     </Filter>
-    <Filter Include="00. System\05. Component\ComputeShader">
+    <Filter Include="00. System\05. Component\Monobehaviour\ComputeShader">
       <UniqueIdentifier>{4feedbe9-5864-4dd4-800f-c296ed47108e}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="00. System\05. Component\UI">
+      <UniqueIdentifier>{63e4016f-9de4-4010-9f15-6cdb60c3a1c5}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="00. System\05. Component\UI\Button">
+      <UniqueIdentifier>{619a4d0f-5877-4b59-b8fe-d608c0002ca9}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="00. System\05. Component\UI\Image">
+      <UniqueIdentifier>{62d4c7dc-e7fd-45c4-a6dd-d4395a31a8fa}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="00. System\05. Component\UI\Animation">
+      <UniqueIdentifier>{f5eda1b2-5f65-4883-b379-0958f78369e9}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="00. System\05. Component\UI\ProgressBar">
+      <UniqueIdentifier>{fb0ac1bf-6120-4c2b-8969-f88bf22cb583}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="00. System\05. Component\UI\Text">
+      <UniqueIdentifier>{3ede7861-9ecf-4960-a353-747f06083501}</UniqueIdentifier>
     </Filter>
     <Filter Include="01. Utility\17. ShaderAsset">
       <UniqueIdentifier>{779baf32-b44b-4193-8174-c44fb4e66b53}</UniqueIdentifier>
@@ -681,9 +690,6 @@
     <ClCompile Include="..\Private\DataDocument_Map.cpp">
       <Filter>01. Utility\11. DataRepository\Datas\Map\DataDocument_Map</Filter>
     </ClCompile>
-    <ClCompile Include="..\Private\IUIActionForMe.cpp">
-      <Filter>00. System\04. GameObject\UIObject\Interface\Action For Me</Filter>
-    </ClCompile>
     <ClCompile Include="..\public\ThreadPool.cpp" />
     <ClCompile Include="..\Private\StructuredBuffer.cpp">
       <Filter>00. System\13. StructuredBuffer</Filter>
@@ -692,7 +698,7 @@
       <Filter>00. System\05. Component\Shader</Filter>
     </ClCompile>
     <ClCompile Include="..\Private\ComputeShader.cpp">
-      <Filter>00. System\05. Component\ComputeShader</Filter>
+      <Filter>00. System\05. Component\Monobehaviour\ComputeShader</Filter>
     </ClCompile>
     <ClCompile Include="..\Private\UIAction_Registry.cpp">
       <Filter>00. System\04. GameObject\UIObject\Registry</Filter>
@@ -1102,15 +1108,12 @@
     <ClInclude Include="..\Public\DataDocument_Map.h">
       <Filter>01. Utility\11. DataRepository\Datas\Map\DataDocument_Map</Filter>
     </ClInclude>
-    <ClInclude Include="..\Public\IUIActionForMe.h">
-      <Filter>00. System\04. GameObject\UIObject\Interface\Action For Me</Filter>
-    </ClInclude>
     <ClInclude Include="..\public\ThreadWorker.h" />
     <ClInclude Include="..\Public\StructuredBuffer.h">
       <Filter>00. System\13. StructuredBuffer</Filter>
     </ClInclude>
     <ClInclude Include="..\Public\ComputeShader.h">
-      <Filter>00. System\05. Component\ComputeShader</Filter>
+      <Filter>00. System\05. Component\Monobehaviour\ComputeShader</Filter>
     </ClInclude>
     <ClInclude Include="..\Public\UIAction_Registry.h">
       <Filter>00. System\04. GameObject\UIObject\Registry</Filter>

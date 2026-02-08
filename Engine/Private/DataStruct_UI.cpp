@@ -8,35 +8,14 @@ using json = nlohmann::json;
 
 NS_BEGIN(DTO)
 
-void to_json(json& j, const TUI_EventBindData& data)
-{
-	j = json
-	{
-		{ "Type", TUI_EventBindData::eType },
-		{ "strTag", data.strTag },
-		{"strOwnerTag", data.strOwnerTag},
-		{"eEvent", data.eEvent},
-		{"strActionKey", data.strActionKey},
-		{"Params", data.Params}
-	};
-}
-void from_json(const json& j, TUI_EventBindData& data)
-{
-	j.at("strTag").get_to(data.strTag);
-	j.at("strOwnerTag").get_to(data.strOwnerTag);
-	j.at("eEvent").get_to(data.eEvent);
-	j.at("strActionKey").get_to(data.strActionKey);
-	j.at("Params").get_to(data.Params);
-}
 void to_json(json& j, const TUI_GenericUIData& data)
 {
 	j = json
 	{
 		{ "Type", TUI_GenericUIData::eType },
+		{ "eClassType",data.eClassType},
 		{ "strTag", data.strTag },
 		{ "strCanvasName", data.strCanvasName },
-		{ "strLayerName", data.strLayerName},
-
 		{ "iRectTransformType", data.iRectTransformType },
 		{ "fWidth", data.fWidth },
 		{ "fHeight", data.fHeight },
@@ -44,14 +23,20 @@ void to_json(json& j, const TUI_GenericUIData& data)
 		{ "fPosY", data.fPosY },
 		{ "fPosZ", data.fPosZ },
 		{ "strTextureTag", data.strTextureTag },
-		{ "iTextureIndex", data.iTextureIndex },
+		{ "isVisible", data.isVisible },
+		{ "iComponentFlag", data.iComponentFlag },
+		{ "eOwnerType", data.eOwnerType },
+		{ "isUseColorTint", data.isUseColorTint },
+		{ "vColorTint", {{ "x", data.vColorTint.x },{ "y", data.vColorTint.y },{ "z", data.vColorTint.z },{ "w", data.vColorTint.w }}},
+		{ "iShaderPass", data.iShaderPass },
+		{ "iFillDir", data.iFillDir },
 	};
 }
 void from_json(const json& j, TUI_GenericUIData& data)
 {
+	j.at("eClassType").get_to(data.eClassType);
 	j.at("strTag").get_to(data.strTag);
 	j.at("strCanvasName").get_to(data.strCanvasName);
-	j.at("strLayerName").get_to(data.strLayerName);
 	j.at("iRectTransformType").get_to(data.iRectTransformType);
 	j.at("fWidth").get_to(data.fWidth);
 	j.at("fHeight").get_to(data.fHeight);
@@ -59,22 +44,19 @@ void from_json(const json& j, TUI_GenericUIData& data)
 	j.at("fPosY").get_to(data.fPosY);
 	j.at("fPosZ").get_to(data.fPosZ);
 	j.at("strTextureTag").get_to(data.strTextureTag);
-	j.at("iTextureIndex").get_to(data.iTextureIndex);
+	j.at("isVisible").get_to(data.isVisible);
+	j.at("iComponentFlag").get_to(data.iComponentFlag);
+	j.at("eOwnerType").get_to(data.eOwnerType);
+	j.at("isUseColorTint").get_to(data.isUseColorTint);
+	const auto& jt = j.at("vColorTint");
+	jt.at("x").get_to(data.vColorTint.x);
+	jt.at("y").get_to(data.vColorTint.y);
+	jt.at("z").get_to(data.vColorTint.z);
+	jt.at("w").get_to(data.vColorTint.w);
+	j.at("iShaderPass").get_to(data.iShaderPass);
+	j.at("iFillDir").get_to(data.iFillDir);
 }
-void to_json(json& j, const TUI_LayerData& data)
-{
-	j = json
-	{
-		{ "Type", TUI_LayerData::eType },
-		{ "strTag", data.strTag },
-		{ "strCanvasName", data.strCanvasName },
-	};
-}
-void from_json(const json& j, TUI_LayerData& data)
-{
-	j.at("strTag").get_to(data.strTag);
-	j.at("strCanvasName").get_to(data.strCanvasName);
-}
+
 void to_json(json& j, const TUI_CanvasData& data)
 {
 	j = json
@@ -120,17 +102,6 @@ HRESULT CUI_GenericUI_DTO::FromJson(const json& j)
 	return S_OK;
 }
 
-json CUI_Layer_DTO::ToJson() const
-{
-	return json(m_Data);
-}
-
-HRESULT CUI_Layer_DTO::FromJson(const json& j)
-{
-	m_Data = j.get<DTO::TUI_LayerData>();
-	return S_OK;
-}
-
 json CUI_Canvas_DTO::ToJson() const
 {
 	return json(m_Data);
@@ -142,15 +113,5 @@ HRESULT CUI_Canvas_DTO::FromJson(const json& j)
 	return S_OK;
 }
 
-json CUI_EventBindData_DTO::ToJson() const
-{
-	return json(m_Data);
-}
-
-HRESULT CUI_EventBindData_DTO::FromJson(const json& j)
-{
-	m_Data = j.get<DTO::TUI_EventBindData>();
-	return S_OK;
-}
 
 NS_END;

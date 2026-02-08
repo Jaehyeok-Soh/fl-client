@@ -33,9 +33,11 @@ public:
 	virtual void Draw_ImGui();
 	virtual void Set_Dead(const wstring& wstrLayerTag) override;
 
-	/* 기즈모 관련함수 */
-	virtual Matrix Get_WorldMatrix() ;
-	virtual void   Set_WorldMatrix(const Matrix& WorldMatrix ) ;
+	virtual bool	Get_SRT( OUT  Vec3& vOutScale , OUT Quat& vQuat , OUT Vec3& vPosition  );
+	
+	virtual void	Set_WorldMatrix(const Matrix& WorldMatrix);
+	virtual void	Set_WorldMatrix(const Vec3& vScale, const Quat& vQuat ,const Vec3& vPosition);
+	virtual Matrix  Get_WorldMatrix();
 public:
 	virtual void Set_Visible();
 	virtual void Set_Invisible();

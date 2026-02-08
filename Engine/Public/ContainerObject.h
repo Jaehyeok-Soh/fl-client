@@ -29,6 +29,7 @@ public:
 public:
 	template<typename T>
 	T* Get_Part(_uint iPartID);
+	
 	void Remove_Part(_uint iPartID);
 	HRESULT Add_Part(class CPartObject* pPart, _uint iPartID);
 	HRESULT Add_Part(_uint iPartID, _uint iPrototypeLevelIndex,const  wstring &wstrPrototypeTag, void* pArg);

@@ -1,8 +1,7 @@
 #include "pch.h"
 #include "Builder_Map.h"
 #include "GameInstance.h"
-#include "StaticModel.h"
-#include "InstanceModel.h"
+#include "StaticObject.h"
 #include "DataDocument_Map.h"
 
 CBuilder_Map::CBuilder_Map(ID3D11Device* pDevice, ID3D11DeviceContext* pDeviceContext, _uint iLevelID)
@@ -22,71 +21,48 @@ HRESULT	CBuilder_Map::Initialize()
 HRESULT CBuilder_Map::Build(const CDataDocumentBase& document)
 {
 	const auto& doc = static_cast<const CDataDocument_Map&>(document);
-	// For. StaticModel
+	// For. StaticObject
 	{
-		const vector<Engine::IObjectDataBase*> vecList = doc.Get_ListByType(ENUM_TO_UINT(DTO::EMapObject_Type::STATICMODEL));
+		const vector<Engine::IObjectDataBase*> vecList = doc.Get_ListByType(ENUM_TO_UINT(DTO::EMapObject_Type::MAPOBJECT));
 		for (const auto& pObjectData : vecList)
 		{
-			const auto* pStaticModelData = static_cast<const Engine::CData_StaticModel*>(pObjectData);
-			if (FAILED(Create_StaticModel(pStaticModelData->Get_Data())))
-				return E_FAIL;
-		}
-	}
+			const auto* pStaticObjectData = static_cast<const Engine::CData_MapObject*>(pObjectData);
+	
+			DTO::TMap_MapObjectData tData = pStaticObjectData->Get_Data();
 
-	// For. StaticModel
-	{
-		const vector<Engine::IObjectDataBase*> vecList = doc.Get_ListByType(ENUM_TO_UINT(DTO::EMapObject_Type::INSTANCEMODEL));
-		for (const auto& pObjectData : vecList)
-		{
-			const auto* pInstanceModel = static_cast<const Engine::CData_InstanceModel*>(pObjectData);
-			if (FAILED(Create_InstanceModel(pInstanceModel->Get_Data())))
-				return E_FAIL;
+			DTO::EClientMakePath eClientMakePath = static_cast<DTO::EClientMakePath>(tData.eClientMakePath);
+
+			switch (eClientMakePath)
+			{
+			case DTO::EClientMakePath::StaticObject:	Create_StaticObject(tData); break;
+			default:									return E_FAIL;
+			}
 		}
 	}
 
 	return S_OK;
 }
 
-HRESULT CBuilder_Map::Create_StaticModel(const DTO::TMap_StaticModelData& tData)
+HRESULT CBuilder_Map::Create_StaticObject(const DTO::TMap_MapObjectData& tData)
 {
-	Client::CStaticModel::STATICMODEL_DESC tStaticModelDesc{};
-	tStaticModelDesc.tUsingModelInfo = tData.tUsingModelInfo;
-	tStaticModelDesc.iLevelIndex = ENUM_TO_UINT(ELevelType::LOGO);
-	tStaticModelDesc.vScale_Isolated = tData.tSRTData.vScale_Isolated;
+	CStaticObject::STATICOBJECT_DESC tStaticObjectDesc{};
 
-	CTransform::TRANSFORM_DESC tTsDesc{};
-	tTsDesc.ScaleMatrix = Matrix::CreateScale(tData.tSRTData.vScale);
-	tTsDesc.RotationMatrix = Matrix::CreateFromQuaternion(tData.tSRTData.vQuat);
-	tTsDesc.TranslationMatrix = Matrix::CreateTranslation(tData.tSRTData.vPosition);
-	tStaticModelDesc.pTransform_Desc = &tTsDesc;
+	tStaticObjectDesc.iLevelIndex		 = tData.eClientLevelType;
+	tStaticObjectDesc.isUELoaded		 = tData.isUELoaded;
+	tStaticObjectDesc.eMapObjectDrawType = static_cast<EMapObject_DrawType>(tData.eMapObjectDrawType);
+	tStaticObjectDesc.wstrModelPath		 = Engine_Utils::ToWString(tData.strModelPath);
+
+	/* 여기서 Desc가 따로 필요한 객체라면 알잘딱 static_cast로 부여받기 */
 
 
-	CGameObject* pResult{nullptr};
-	if (!(pResult = m_pGameInstance->Add_GameObject(ENUM_TO_UINT(ELevelType::STATIC), L"Prototype_GameObject_StaticModel", tStaticModelDesc.iLevelIndex
-		, g_wszStaticModelLayer, &tStaticModelDesc)))
+	/* SRT DATA */
+	for (auto& SRT_DATA : tData.vecSRTs)
 	{
-		Safe_Release(pResult);
-		return E_FAIL;
+		tStaticObjectDesc.vecSRT.push_back(SRT_DATA);
 	}
 
-	return S_OK;
-}
 
-HRESULT CBuilder_Map::Create_InstanceModel(const DTO::TMap_InstanceModelData& tData)
-{
-	CInstanceModel::INSTANCEMODEL_DESC tInstanceModelDesc{};
-	tInstanceModelDesc.iLevelIndex = ENUM_TO_UINT(ELevelType::LOGO);
-	tInstanceModelDesc.eType = EMapObject_Type::INSTANCEMODEL;
-	tInstanceModelDesc.tData = tData;
-
-
-	CGameObject* pResult{ nullptr };
-	if (!(pResult = m_pGameInstance->Add_GameObject(ENUM_TO_UINT(ELevelType::STATIC), L"Prototype_GameObject_InstanceModel", tInstanceModelDesc.iLevelIndex
-		, g_wszInstanceModelLayer, &tInstanceModelDesc)))
-	{
-		Safe_Release(pResult);
-		return E_FAIL;
-	}
+	m_pGameInstance->Add_GameObject( ENUM_TO_UINT(ELevelType::STATIC),L"Prototype_GameObject_StaticObject", tStaticObjectDesc.iLevelIndex , g_wszStaticObjectLayer,&tStaticObjectDesc);
 
 	return S_OK;
 }

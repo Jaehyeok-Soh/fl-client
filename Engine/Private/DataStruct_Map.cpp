@@ -11,27 +11,28 @@ using json = nlohmann::json;
 
 NS_BEGIN(Engine)
 
-json CData_StaticModel::ToJson() const
-{
-    return json(m_tData);
-}
 
-HRESULT CData_StaticModel::FromJson(const json& j)
-{
-    m_tData = j.get<DTO::STATICMODEL_DATA>();
-    return S_OK;
-}
 
-json CData_InstanceModel::ToJson() const
+json CData_MapObject::ToJson() const
 {
 	return json(m_tData);
 }
 
-HRESULT CData_InstanceModel::FromJson(const json& j)
+HRESULT CData_MapObject::FromJson(const json& j)
 {
-	m_tData = j.get<DTO::InstanceModel_Data>();
+	m_tData = j.get<DTO::TMap_MapObjectData>();
 	return S_OK;
 }
+
+void CData_MapObject::Free()
+{
+	for (auto& Desc : m_tData.vecClientMakePathDesc)
+
+		Safe_Delete(Desc);
+
+	Super::Free();
+}
+
 
 NS_END
 
@@ -146,51 +147,78 @@ void to_json(json& SaveJson, const USING_MODEL_INFO& tData)
 		}
 	}
 }
+
 #pragma endregion
 
 #pragma region Map_StaticModleData
-void to_json(json& SaveJson, const TMap_StaticModelData& tData)
+inline void to_json(json& SaveJson, const DTO::TMap_MapObjectData& tData)
 {
 	SaveJson = json
 	{
-		{ "Type", TMap_StaticModelData::eType },
 		{ "strTag", tData.strTag },
-		{ "SRT" , tData.tSRTData},
-		{ "Using Model Info", tData.tUsingModelInfo}
+		{ "UE Loaded"  , tData.isUELoaded},
+		{ "Draw Type" , tData.eMapObjectDrawType},
+		{ "Client Make Path" , tData.eClientMakePath},
+		{ "Client Level Type", tData.eClientLevelType},
+		{ "Model Path" , tData.strModelPath},
+		{ "SRT" , tData.vecSRTs},
 	};
+
+	if (!tData.vecClientMakePathDesc.empty())
+	{
+		auto& DescJson = SaveJson["Client Make Path Desc"];
+
+		for (auto& Desc : tData.vecClientMakePathDesc)
+		{
+			json BufferJson{nullptr};
+
+			if (!Desc)
+			{
+				DescJson.push_back(nullptr);
+				continue;
+			}
+			Desc->To_Json(BufferJson);
+			DescJson.push_back(BufferJson);
+		}
+	}
+
 }
-void from_json(const json& LoadJson, TMap_StaticModelData& tData)
+inline void from_json(const json& LoadJson, DTO::TMap_MapObjectData& tData)
 {
 	LoadJson.at("strTag").get_to(tData.strTag);
+
+	if (LoadJson.contains("UE Loaded"))
+		tData.isUELoaded =  LoadJson["UE Loaded"].get<_bool>();
+
+
+	/* Type 3개  */
+	if (LoadJson.contains("Draw Type"))
+		LoadJson["Draw Type"].get_to(tData.eMapObjectDrawType);
+
+	if (LoadJson.contains("Client Make Path"))
+		LoadJson["Client Make Path"].get_to(tData.eClientMakePath);
+
+	if (LoadJson.contains("Client Level Type"))
+		LoadJson["Client Level Type"].get_to(tData.eClientLevelType);
+
+
+	if (LoadJson.contains("Model Path"))
+		tData.strModelPath = LoadJson["Model Path"].get<string>();
+
+
 	if (LoadJson.contains("SRT"))
-		tData.tSRTData = LoadJson["SRT"];
-	if (LoadJson.contains("Using Model Info"))
-		tData.tUsingModelInfo = LoadJson["Using Model Info"];
-}
-#pragma endregion
+		tData.vecSRTs = LoadJson["SRT"].get<vector<SRT_DATA>>();
 
-#pragma region Map InstanceModle
-void to_json(json& SaveJson, const TMap_InstanceModelData& tData)
-{
-	SaveJson = json
+	if (LoadJson.contains("Client Make Path Desc"))
 	{
-		{ "Type", tData.eType },
-		{ "strTag", tData.strTag },
-		{ "Usage" , Engine_Utils::D3D11_USAGE_ToString(tData.eInstance_Usage)},
-		{ "SRTs" , tData.vecSRTData},
-		{ "Using Model Info", tData.tUsingModelInfo}
-	};
-}
-void from_json(const json& LoadJson, TMap_InstanceModelData& tData)
-{
-	LoadJson.at("strTag").get_to(tData.strTag);
-	if (LoadJson.contains("Usage"))
-		Engine_Utils::D3D11_USAGE_ToEnum(LoadJson["Usage"].get<string>());
-	if (LoadJson.contains("SRTs"))
-		tData.vecSRTData = LoadJson["SRTs"];
-	if (LoadJson.contains("Using Model Info"))
-		tData.tUsingModelInfo = LoadJson["Using Model Info"];
+		/* 추후 로직 추가 Json 파일로 Desc을 받아서 생성할만한 애들이 아직 없음 */
+		/* 잔디 할떄 해보자 */
+
+
+	}
+
+
 }
 #pragma endregion
-NS_END
 
+NS_END

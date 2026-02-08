@@ -10,6 +10,9 @@ NS_END
 
 NS_BEGIN(Client)
 
+
+/* Desc를 받을떄 조심할점 받는쪽에 new로 할당받아서 들어오기 떄문에 받고나서의 데이터를 확인해야한다 */
+
 class CMapObject abstract : public CGameObject
 {
 	using Super = CGameObject;
@@ -21,7 +24,10 @@ public:
 public:
 	typedef struct tagMapObjectDesc : public CGameObject::GAMEOBJECT_DESC
 	{
-		Client::EMapObject_Type		eType{ Client::EMapObject_Type::END };
+		_bool						isUELoaded{false};
+		EMapObject_DrawType			eMapObjectDrawType{EMapObject_DrawType::END};
+		wstring						wstrModelPath{};
+		vector<DTO::SRT_DATA>		vecSRT{};
 	}MAPOBJECT_DESC;
 protected:
 	CMapObject(ID3D11Device* pDevice, ID3D11DeviceContext* pContext);
@@ -30,7 +36,8 @@ protected:
 public:
 	virtual HRESULT			Initialize_Prototype()							override;
 	virtual HRESULT			Initialize(void* pArg)							override;
-	HRESULT					Ready_Component();
+	HRESULT					Ready_Transform(MAPOBJECT_DESC* pDesc);
+	HRESULT					Ready_Component(MAPOBJECT_DESC* pDesc);
 	HRESULT					Ready_OverrideMtl(const DTO::USING_MODEL_INFO& tUsingModelInfo);
 public:
 	HRESULT					Add_MapToolComponent(CMapObject::COMPONENT eType);
@@ -41,14 +48,13 @@ public:
 	virtual void			Update_Late(const _float fTimeelta)				override;
 	virtual void			Ready_Before_Render(const _float fTimeDelta)	override;
 	virtual HRESULT			Render()										override;
+	HRESULT					Render_Instance();
+	HRESULT					Render_Default();
 protected:
-	Client::EMapObject_Type			m_eMapObjectType{ Client::EMapObject_Type::END };
-	array< CMonoBehaviour*, ENUM_TO_UINT(Client::CMapObject::COMPONENT::END)> m_arrayMapToolComponent{};
-
-
-	bool					m_iUseOverrideMaterials{ false };
-	vector<CMaterial*>		m_vecOverrideMaterials{};
-
+	_bool					m_isUELoaded{false};
+	EMapObject_DrawType		m_eMapObjectDrawType{EMapObject_DrawType::Default};
+	EMapObject_Type			m_eMapObjectType{ EMapObject_Type::END };
+	vector<Matrix>			m_vecMatrix{};
 public:
 	virtual void			Free()	override;
 };

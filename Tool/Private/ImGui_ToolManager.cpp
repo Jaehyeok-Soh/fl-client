@@ -5,7 +5,6 @@
 #include "ToolObject.h"
 #include "Level_Loading.h"
 #include "MapObject.h"
-#include "InstanceModel.h"
 
 IMPLEMENT_SINGLETON(CImGui_ToolManager)
 
@@ -96,6 +95,7 @@ void CImGui_ToolManager::ImGuizmo_Render(CToolObject* pSelectedObject)
 		const Matrix& matProj = m_pGameInstance->Get_ProjMatrix();
 
 		// Object Transform
+
 		Matrix		matWorld   = pSelectedObject->Get_WorldMatrix();
 
 		// snapping
@@ -126,8 +126,11 @@ void CImGui_ToolManager::ImGuizmo_Render(CToolObject* pSelectedObject)
 		ImGuizmo::Manipulate(*matView.m, *matProj.m, operation
 			, ImGuizmo::WORLD, *matWorld.m, nullptr, bSnap ? snapValues : nullptr);
 
+
 		if (ImGuizmo::IsUsing())
+		{
 			pSelectedObject->Set_WorldMatrix(matWorld);
+		}
 	}
 	else
 		m_eGuizmoState = EGuizmoState::TRANSLATION;
