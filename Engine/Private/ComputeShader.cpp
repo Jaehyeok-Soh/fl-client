@@ -29,6 +29,8 @@ CComputeShader::CComputeShader(const CComputeShader& rhs)
 	, m_pAnimE_MutableBuffer(rhs.m_pAnimE_MutableBuffer)
 	, m_pAnimB_Mutable_Element_CBuffer(rhs.m_pAnimB_Mutable_Element_CBuffer)
 	, m_pAnimB_MutableBuffer(rhs.m_pAnimB_MutableBuffer)
+	, m_pBone_Mutable_Element_CBuffer(rhs.m_pBone_Mutable_Element_CBuffer)
+	, m_pBone_MutableBuffer(rhs.m_pBone_MutableBuffer)
 
 {
 	Safe_AddRef(m_pOwner);
@@ -43,6 +45,9 @@ CComputeShader::CComputeShader(const CComputeShader& rhs)
 
 	Safe_AddRef(m_pAnimB_Mutable_Element_CBuffer);
 	Safe_AddRef(m_pAnimB_MutableBuffer);
+
+	Safe_AddRef(m_pBone_Mutable_Element_CBuffer);
+	Safe_AddRef(m_pBone_MutableBuffer);
 }
 
 HRESULT CComputeShader::Initialize_Prototype(void* pArg)
@@ -216,7 +221,6 @@ ID3DX11EffectSamplerVariable* CComputeShader::Get_Sampler(string name)
 
 #pragma endregion
 
-
 void CComputeShader::Bind_InputStructuredBuffer_Data(void* pArg, _uint iElementSize, _uint iNumElements)
 {
 	m_pInputStructedBuffer->Copy_Data(pArg, iElementSize, iNumElements);
@@ -237,6 +241,11 @@ void CComputeShader::Bind_Compute_Track(const CS_MU_TRACK& desc)
 void CComputeShader::Bind_Compute_BlendMu(const CS_MU_ANIMB& desc)
 {
 	m_pAnimB_Mutable_Element_CBuffer->Copy_Data(desc);
+}
+
+void CComputeShader::Bind_Compute_BoneMuCB(const CS_MU_GROUPNUMS& desc)
+{
+	m_pBone_Mutable_Element_CBuffer->Copy_Data(desc);
 }
 
 #pragma endregion
@@ -260,8 +269,15 @@ HRESULT CComputeShader::Create_ConstantBuffer()
 	// AnimB 전용
 	if (m_pAnimB_MutableBuffer = Get_ConstantBuffer("MU_RATIO"))
 	{
-		m_pAnimB_Mutable_Element_CBuffer = CConstant_Buffer<CS_MU_ANIM_RATIO>::Create(m_pDevice, m_pDeviceContext);
+		m_pAnimB_Mutable_Element_CBuffer = CConstant_Buffer<CS_MU_ANIMB>::Create(m_pDevice, m_pDeviceContext);
 		m_pAnimB_MutableBuffer->SetConstantBuffer(m_pAnimB_Mutable_Element_CBuffer->Get_Buffer());
+	}
+
+	// Bone 전용
+	if (m_pBone_MutableBuffer = Get_ConstantBuffer("MU_BONENUMS"))
+	{
+		m_pBone_Mutable_Element_CBuffer = CConstant_Buffer<CS_MU_GROUPNUMS>::Create(m_pDevice, m_pDeviceContext);
+		m_pBone_MutableBuffer->SetConstantBuffer(m_pBone_Mutable_Element_CBuffer->Get_Buffer());
 	}
 
 	return S_OK;
@@ -339,6 +355,9 @@ void CComputeShader::Clear_ConstantBuffer()
 
 	Safe_Release(m_pAnimB_Mutable_Element_CBuffer);
 	Safe_Release(m_pAnimB_MutableBuffer);
+
+	Safe_Release(m_pBone_Mutable_Element_CBuffer);
+	Safe_Release(m_pBone_MutableBuffer);
 }
 
 void CComputeShader::Clear_StructBuffer()

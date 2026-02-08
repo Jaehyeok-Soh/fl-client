@@ -89,7 +89,7 @@ public:
 	void Bind_Compute_EffectData(const EFFECT_PARTICLE_MU_ELEMENT& desc);
 	void Bind_Compute_Track(const CS_MU_TRACK& desc);
 	void Bind_Compute_BlendMu(const CS_MU_ANIMB& desc);
-
+	void Bind_Compute_BoneMuCB(const CS_MU_GROUPNUMS& desc);
 
 public:
 	void	Resize_InputStruct(void* pArg, _uint iElementSize, _uint iNumElements);
@@ -109,8 +109,11 @@ private:
 	CConstant_Buffer<CS_MU_TRACK>*		m_pAnimE_Mutable_Element_CBuffer	= { nullptr };
 	ID3DX11EffectConstantBuffer*		m_pAnimE_MutableBuffer				= { nullptr };
 
-	CConstant_Buffer<CS_MU_ANIMB>* m_pAnimB_Mutable_Element_CBuffer	= { nullptr };
+	CConstant_Buffer<CS_MU_ANIMB>*		m_pAnimB_Mutable_Element_CBuffer	= { nullptr };
 	ID3DX11EffectConstantBuffer*		m_pAnimB_MutableBuffer				= { nullptr };
+
+	CConstant_Buffer<CS_MU_GROUPNUMS>*	m_pBone_Mutable_Element_CBuffer		= { nullptr };
+	ID3DX11EffectConstantBuffer*		m_pBone_MutableBuffer				= { nullptr };
 
 	// SHader
 private:
@@ -121,7 +124,7 @@ private:
 
 	void Clear_ConstantBuffer();
 	void Clear_StructBuffer();
-
+	
 private:
 	CFxEffectAsset* m_pOwner{ nullptr }; // .hlsl ÆÄÀÏ °´Ã¼È­
 	_uint m_iPass = { 0 };
