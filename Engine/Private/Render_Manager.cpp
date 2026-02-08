@@ -7,6 +7,7 @@
 #include "Shader.h"
 #include "RenderTarget.h"
 #include "Octree_Manager.h"
+#include "EngineConsole.h"
 #include "GameInstance.h"
 
 CRender_Manager::CRender_Manager(ID3D11Device* pDevice, ID3D11DeviceContext* pDeviceContext)
@@ -302,25 +303,37 @@ HRESULT CRender_Manager::Render_NoneBlend()
 		return E_FAIL;
 
 	BoundingFrustum* pFrustrum = m_pGameInstance->Get_BoundingFrustrum_World();
-
 	vector<CGameObject*> vecVisible;
-#ifdef _DEBUG
+	// 디버그용
 	OCTREE_QUERY_STATS tStats{};
-	// m_pGameInstance->m_pOctree_Manager->Query_Visible(*pFrustrum)
-#else
-
+	m_pGameInstance->m_pOctree_Manager->Query_Visible(*pFrustrum, RENDER_CATEGORY::NONEBLEND, vecVisible, &tStats);
+	
+#ifdef _DEBUG
+	static uint32_t sFrame = 0;
+	if ((sFrame++ % 60) == 0)
+	{
+		// 없으면 m_umapEntries.size()를 출력하거나 getter 추가
+		string strLog{ "OCTREELOG, visitedNodes: " + std::to_string(tStats.iVisitedNodes) +
+			" tested: " + std::to_string(tStats.iTestedEntries) +
+			" visible: " + std::to_string(tStats.iVisibleOut) };
+		CLOG_INFO(strLog);
+	}
 #endif
 
-	for (CGameObject* pElement : m_renderObjects[ENUM_TO_UINT(RENDER_CATEGORY::NONEBLEND)])
+	for (CGameObject* pElement : vecVisible)
 	{
-		if (pElement->IntersectWithFrustrum(pFrustrum) == false)
-			continue;
-
 		if (FAILED(pElement->Render()))
 			return E_FAIL;
-
 	}
-	m_renderObjects[ENUM_TO_UINT(RENDER_CATEGORY::NONEBLEND)].clear();
+
+
+	//for (CGameObject* pElement : m_renderObjects[ENUM_TO_UINT(RENDER_CATEGORY::NONEBLEND)])
+	//{
+	//	if (FAILED(pElement->Render()))
+	//		return E_FAIL;
+
+	//}
+	//m_renderObjects[ENUM_TO_UINT(RENDER_CATEGORY::NONEBLEND)].clear();
 
 	if (FAILED(m_pGameInstance->End_MRT()))
 		return E_FAIL;

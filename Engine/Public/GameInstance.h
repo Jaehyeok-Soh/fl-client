@@ -34,7 +34,6 @@ NS_BEGIN(Engine)
 enum class CameraType;
 struct DelegateHandle;
 class CCollider;
-class COctree;
 class CGameObject;
 class CCameraMan;
 class CLayer;
@@ -218,6 +217,7 @@ public:
 #pragma endregion
 
 #pragma region OCTREE_MANAGER
+	HRESULT Register_Octree(CGameObject* pGo, RENDER_CATEGORY eCategory, const BoundingBox& AABB, _bool bDynamic = false);
 	HRESULT Ready_Octree(const OCTREE_DESC& desc);
 #pragma endregion
 

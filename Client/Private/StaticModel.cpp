@@ -82,7 +82,7 @@ HRESULT CStaticModel::Ready_Component(STATICMODEL_DESC* pDesc)
 		// BoundsComponent
 		{
 			CBounds::BOUND_COMP_DESC desc{};
-			desc.fRatio = 0.5f;
+			desc.fRatio = 1.f;
 			desc.pMinMax = pMesh->Get_MinMax();
 			if (FAILED(Add_Component<CBounds>(0, L"Prototype_Component_Bounds", &desc)))
 				return E_FAIL;
@@ -93,7 +93,10 @@ HRESULT CStaticModel::Ready_Component(STATICMODEL_DESC* pDesc)
 
 	{
 		if (FAILED(Ready_PhysicsComponent(pDesc)))
+		{
 			MSG_BOX("Failed to ready physics component : CStaticModel");
+			return E_FAIL;
+		}
 	}
 
 	return S_OK;
@@ -181,9 +184,6 @@ void CStaticModel::Update_Late(const _float fTimeDelta)
 void CStaticModel::Ready_Before_Render(const _float fTimeDelta)
 {
 	Super::Ready_Before_Render(fTimeDelta);
-
-	m_pGameInstance->Push_RenderObject(RENDER_CATEGORY::NONEBLEND, this);
-
 #ifdef _DEBUG
 	m_pGameInstance->Push_DebugComponent(Get_Component<CPhysicsRigidBody>());
 #endif // _DEBUG

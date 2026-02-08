@@ -34,6 +34,7 @@ public:
 	_bool IntersectWith_Frustrum(BoundingFrustum* pFrustrum);
 	_bool IntersectWithRay_World(OUT Vec3& vOut);
 	_bool IntersectWithRay_Local(OUT Vec3& vOut);
+	BoundingBox* Get_WolrdAABB();
 private:
 	MESH_BOUNDS m_tBounds{};
 	ID3D11Device* m_pDevice{ nullptr };

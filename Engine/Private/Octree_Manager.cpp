@@ -99,17 +99,18 @@ void COctree_Manager::Update_AABB(CGameObject* pGo, const BoundingBox& newAABB)
 	}
 }
 
-#ifdef _DEBUG
 void COctree_Manager::Query_Visible(const BoundingFrustum& frustrum, RENDER_CATEGORY eCategory, OUT vector<CGameObject*>& outObjects, OUT OCTREE_QUERY_STATS* pDebugStat) const
 {
 	outObjects.clear();
 	Query_Node(m_pRoot, frustrum, eCategory, outObjects, pDebugStat);
+
+	pDebugStat->iVisibleOut = (_uint)outObjects.size();
 }
 void COctree_Manager::Query_Node(OCTREE_NODE* pNode, const BoundingFrustum& frustrum, RENDER_CATEGORY eCtegory, OUT vector<CGameObject*>& outObjects, OUT OCTREE_QUERY_STATS* pDebugStat) const
 {
 	if (pNode == nullptr)
 		return;
-
+	
 	// Entry Frustrum 테스트 시도 횟수
 	++(*pDebugStat).iVisitedNodes;
 
@@ -134,7 +135,6 @@ void COctree_Manager::Query_Node(OCTREE_NODE* pNode, const BoundingFrustum& frus
 			Query_Node(pNode->pChilds[i], frustrum, eCtegory, outObjects, pDebugStat);
 	}
 }
-#else
 void COctree_Manager::Query_Visible(const BoundingFrustum& frustrum, RENDER_CATEGORY eCategory, OUT vector<CGameObject*> &outObjects) const
 {
 	outObjects.clear();
@@ -164,7 +164,6 @@ void COctree_Manager::Query_Node(OCTREE_NODE* pNode, const BoundingFrustum& frus
 			Query_Node(pNode->pChilds[i], frustrum, eCtegory, outObjects);
 	}
 }
-#endif
 void COctree_Manager::Clear()
 {
 	for (auto& Pair : m_umapEntries)
@@ -237,19 +236,25 @@ void COctree_Manager::Remove_FromOwner(OCTREE_ENTRY* pEntry)
 		return;
 
 	OCTREE_NODE* pNode = pEntry->pOwner;
-	const size_t iIndex = pEntry->iOwnerIndex;
-	const size_t iLastIndex = pNode->vecItems.size() - 1;
+	const size_t iSize = pNode->vecItems.size();
 
 #ifdef _DEBUG
-	if (pEntry->iOwnerIndex >= pNode->vecItems.size())
+	if (pEntry->iOwnerIndex >= iSize)
+	{
+		pEntry->pOwner = nullptr;
+		pEntry->iOwnerIndex = 0;
 		CLOG_ERROR("COctree_Manager::Remove_FromOwner(), iOwnerIndex가 비정상적입니다. 메모리 오염 발생 가능성 높음");
+	}
 #endif
+
+	const size_t iIndex = pEntry->iOwnerIndex;
+	const size_t iLastIndex = iSize - 1;
 
 	// 삭제 된것과 마지막 Index 스왑 정렬
 	if (iIndex != iLastIndex)
 	{
 		pNode->vecItems[iIndex] = pNode->vecItems[iLastIndex];
-		pNode->vecItems[iLastIndex]->iOwnerIndex = iIndex;
+		pNode->vecItems[iIndex]->iOwnerIndex = iIndex;
 	}
 	pNode->vecItems.pop_back();
 
@@ -261,7 +266,7 @@ void COctree_Manager::Split(OCTREE_NODE* pNode)
 {
 #ifdef _DEBUG
 	size_t iBefore = pNode->vecItems.size();
-	size_t iMoved = 0;
+	size_t iMovedToChild = 0;
 #endif
 
 	// 트리 상에 Leaf에 쌓인 Item들 중 Child에 완전 포함 되는것만 내려보냄
@@ -283,22 +288,20 @@ void COctree_Manager::Split(OCTREE_NODE* pNode)
 		{
 			pEntry->pOwner = nullptr;
 			Insert(pNode->pChilds[iIndex], pEntry);
+#ifdef _DEBUG
+			++iMovedToChild;
+#endif
 		}
 		// 그렇지 못한 Entry들은 Remain에 다시 넣기
 		else
-		{
-#ifdef _DEBUG
-			++iMoved;
-#endif
 			vecReamin.push_back(pEntry);
-		}
 	}
 
 #ifdef _DEBUG
 	string strLog{ "노드의 깊이: " + std::to_string(pNode->iDepth)
 		+ "이전 아이템 사이즈: " + std::to_string(iBefore)
-		+ "Remain에 넣은 횟수: " + std::to_string(iMoved)
-		+ "이후 아이템 사이즈: " + std::to_string(pNode->vecItems.size()) };
+		+ "Child로 내려간 횟수: " + std::to_string(iMovedToChild)
+		+ "Remain 사이즈: " + std::to_string(vecReamin.size()) };
 	CLOG_INFO("COctree_Manager::Split(), " + strLog);
 #endif
 
@@ -326,8 +329,8 @@ void COctree_Manager::Insert(OCTREE_NODE* pNode, OCTREE_ENTRY* pEntry)
 			CLOG_INFO("=================");
 			CLOG_INFO("오브젝트 이름: " + strName);
 			CLOG_INFO("오브젝트 위치: " + strPos);
-			CLOG_INFO("노드 깊이: " + pNode->iDepth);
-			CLOG_INFO("노드 아이템 개수: " + pNode->vecItems.size());
+			CLOG_INFO("노드 깊이: " + std::to_string(pNode->iDepth));
+			CLOG_INFO("노드 아이템 개수: " + std::to_string(pNode->vecItems.size()));
 			CLOG_ERROR("COctree_Manager::Insert(), non-root node DISJOINT, 노드에 쌓입니다. bound, looseFactor를 조정하세요");
 		}
 #endif

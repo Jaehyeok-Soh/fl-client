@@ -665,6 +665,15 @@ const CDataDocumentBase* CGameInstance::Get_Document(_uint iLevelID, DTO::ECateg
 #pragma endregion
 
 
+HRESULT CGameInstance::Register_Octree(CGameObject* pGo, RENDER_CATEGORY eCategory, const BoundingBox& AABB, _bool bDynamic)
+{
+	OCTREE_ENTRY* pEntry = m_pOctree_Manager->Register(pGo, eCategory, AABB, bDynamic);
+	if (pEntry == nullptr)
+		return E_FAIL;
+
+	return S_OK;
+}
+
 HRESULT CGameInstance::Ready_Octree(const OCTREE_DESC& desc)
 {
 	return m_pOctree_Manager->Initialize(desc);

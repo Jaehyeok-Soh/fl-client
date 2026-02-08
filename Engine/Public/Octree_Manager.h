@@ -41,14 +41,12 @@ typedef struct tagOctreeNode
 	}
 }OCTREE_NODE;
 
-#ifdef _DEBUG
 typedef struct tagOctreeQueryStats
 {
 	_uint iVisitedNodes{ 0 };
 	_uint iTestedEntries{ 0 };
 	_uint iVisibleOut{ 0 };
 }OCTREE_QUERY_STATS;
-#endif
 
 class COctree_Manager final : public CBase
 {
@@ -61,17 +59,16 @@ public:
 	OCTREE_ENTRY* Register(CGameObject* pGo, RENDER_CATEGORY eCategory, const BoundingBox& AABB, _bool bDynamic = false);
 	void Unregister(CGameObject* pGo);
 	void Update_AABB(CGameObject* pGo, const BoundingBox& newAABB);
-#ifdef _DEBUG
 private:
 	void Query_Node(OCTREE_NODE* pNode, const BoundingFrustum& frustrum, RENDER_CATEGORY eCtegory, OUT vector<CGameObject*>& outObjects, OUT OCTREE_QUERY_STATS* pDebugStat) const;
 public:
 	void Query_Visible(const BoundingFrustum& frustrum, RENDER_CATEGORY eCategory, OUT vector<CGameObject*>& outObjects, OUT OCTREE_QUERY_STATS* pDebugStat) const;
-#else
+#pragma region 나중에 안정화 될때는 아래 함수로 바꾸기
 private:
 	void Query_Node(OCTREE_NODE* pNode, const BoundingFrustum& frustrum, RENDER_CATEGORY eCtegory, OUT vector<CGameObject*>& outObjects) const;
 public:
 	void Query_Visible(const BoundingFrustum& frustrum, RENDER_CATEGORY eCategory, OUT vector<CGameObject*>& outObjects) const;
-#endif
+#pragma endregion
 	void Clear();
 private:
 	BoundingBox Make_Loose(const BoundingBox &boundingBox, _float fLooseFactor);

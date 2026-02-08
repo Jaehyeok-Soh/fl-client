@@ -132,6 +132,14 @@ _bool CBounds::IntersectWithRay_Local(OUT Vec3& vOut)
 	return true;
 }
 
+BoundingBox* CBounds::Get_WolrdAABB()
+{
+	if (m_tBounds.pAABB == nullptr)
+		return nullptr;
+		
+	return m_tBounds.pAABB->Get_Desc();
+}
+
 
 CBounds* CBounds::Create(ID3D11Device* pDevice, ID3D11DeviceContext* pDeviceContext)
 {
