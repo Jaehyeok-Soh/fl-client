@@ -8,7 +8,6 @@
 #include "Texture.h"
 #include "Shader.h"
 #include "VIBuffer_Rect_Tex.h"
-#include "UIAction_Registry.h"
 #include "UIProgress_Component.h"
 #include "GameInstance.h"
 
@@ -40,9 +39,13 @@ HRESULT CGenericUI::Initialize(void* pArg)
 	m_pParentCanvasCache	= pDesc->pCanvasCache;
 	m_isUseColorTint		= pDesc->isUseColorTint;
 	m_vColorTint			= pDesc->vColorTint;
+	m_iShaderPass			= pDesc->iShaderPass;
+	m_iFillDir				= pDesc->iFillDir;
+
 	if (FAILED(Super::Initialize(pArg)))
 		return E_FAIL;
 
+	Get_Component<CShader>()->Set_Pass(m_iShaderPass);
 	return S_OK;
 }
 
@@ -105,7 +108,6 @@ void CGenericUI::Acting_By_InteractState()
 
 	if (m_iInteractState == EUIEvent_Flag::NONE)
 	{
-
 	}
 	else
 	{
@@ -145,6 +147,48 @@ HRESULT CGenericUI::Ready_Components(GENERIC_UI_DESC* pDesc)
 
 HRESULT CGenericUI::Bind_ShaderResources()
 {
+	CShader* pShader = Get_Component<CShader>();
+	if (m_iShaderPass == ENUM_TO_UINT(EUIShaderPass::DEFAULT))
+	{
+		if (FAILED(Get_Component<CTexture>()->Bind_ShaderResourceBuffer(pShader)))
+			return E_FAIL;
+	}
+	else if (m_iShaderPass == ENUM_TO_UINT(EUIShaderPass::DEFAULT_ALPHA))
+	{
+		if (FAILED(Get_Component<CTexture>()->Bind_ShaderResourceBuffer(pShader)))
+			return E_FAIL;
+	}
+	else if (m_iShaderPass == ENUM_TO_UINT(EUIShaderPass::COLOR))
+	{
+		if (FAILED(pShader->Get_Variable("g_vColorTint")->SetRawValue(&m_vColorTint, 0, sizeof(Vec4))))
+			return E_FAIL;
+	}
+	else if (m_iShaderPass == ENUM_TO_UINT(EUIShaderPass::FADE))
+	{
+		if (FAILED(Get_Component<CTexture>()->Bind_ShaderResourceBuffer(pShader)))
+			return E_FAIL;
+
+		if (FAILED(pShader->Get_Variable("g_fAlphaRatio")->SetRawValue(&m_fAlpha_Ratio, 0, sizeof(_float))))
+			return E_FAIL;
+	}
+	else if (m_iShaderPass == ENUM_TO_UINT(EUIShaderPass::PROGRESS))
+	{
+		if (FAILED(Get_Component<CTexture>()->Bind_ShaderResourceBuffer(pShader)))
+			return E_FAIL;
+
+		if (FAILED(pShader->Get_Variable("g_isColor")->SetRawValue(&m_isUseColorTint, 0, sizeof(_bool))))
+			return E_FAIL;
+
+		if (FAILED(pShader->Get_Variable("g_vColorTint")->SetRawValue(&m_vColorTint, 0, sizeof(Vec4))))
+			return E_FAIL;
+
+		if (FAILED(pShader->Get_Variable("g_fProgressRatio")->SetRawValue(&m_fProgress_Ratio, 0, sizeof(_float))))
+			return E_FAIL;
+
+		if (FAILED(pShader->Get_Variable("g_iFillDir")->SetRawValue(&m_iFillDir, 0, sizeof(uint32_t))))
+			return E_FAIL;
+	}
+
 	return S_OK;
 }
 

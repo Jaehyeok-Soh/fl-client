@@ -67,6 +67,20 @@ void CUIPlayer_HP::Update_Priority(const _float fTimeDelta)
 
 void CUIPlayer_HP::Update(const _float fTimeDelta)
 {
+	if (MOUSE_LBUTTON_HOLD)
+	{
+		m_fProgress_Ratio += fTimeDelta;
+		if (m_fProgress_Ratio > 0.9f)
+			m_fProgress_Ratio = 0.9f;
+	}
+	else if (MOUSE_RBUTTON_HOLD)
+	{
+		m_fProgress_Ratio -= fTimeDelta;
+		if (m_fProgress_Ratio < 0.1f)
+			m_fProgress_Ratio = 0.1f;
+	}
+
+
 	Super::Update(fTimeDelta);
 }
 
@@ -110,22 +124,9 @@ HRESULT CUIPlayer_HP::Bind_ShaderResources()
 	CShader* pShader = Get_Component<CShader>();
 	if (FAILED(Get_Component<CTransform>()->Bind_ShaderResource(pShader)))
 		return E_FAIL;
-	if (!m_isUseColorTint)
-	{
-		if (FAILED(Get_Component<CTexture>()->Bind_ShaderResourceBuffer(pShader)))
-			return E_FAIL;
-	}
 
-	_float HpRatio = 0.5f; //m_pTargetStat->Get_HealthRatio();
-	if (FAILED(pShader->Get_Variable("g_fProgressRatio")->SetRawValue(&HpRatio, 0, sizeof(_float))))
-		return E_FAIL;
-
-	m_iFillDir = CUIProgress_Component::eFillDir::LEFT;
-	if (FAILED(pShader->Get_Variable("g_iFillDir")->SetRawValue(&m_iFillDir, 0, sizeof(uint32_t))))
-		return E_FAIL;
-
-	if (FAILED(pShader->Get_Variable("g_vColorTint")->SetRawValue(&m_vColorTint, 0, sizeof(Vec4))))
-		return E_FAIL;
+	Super::Bind_ShaderResources();
+	pShader->Set_Pass(m_iShaderPass);
 
 	return S_OK;
 }

@@ -1,7 +1,6 @@
 #pragma once
 #include "UIObject.h"
-#include "UIAction_Registry.h"
-
+#include "DataStruct_UI.h"
 
 NS_BEGIN(Tool)
 class CToolCanvas;
@@ -22,6 +21,7 @@ public:
 		int32_t iShaderPass;
 		_bool isUseColorTint;
 		Vec4 vColorTint;
+		int32_t iFillDir;
 	}TOOLUI_DESC;
 
 protected:
@@ -71,6 +71,18 @@ public:
 	void Set_TextureTag(const _wstring& value) { m_wstrTextureTag = value; }
 	void Set_HitTest() { m_isHitTest = TRUE; };
 
+	Vec4 Get_ColorTint()			{ return m_vColorTint; }
+	Vec4& Get_ColorTint_Ref()		{ return m_vColorTint; }
+	_float Get_AlphaRatio()			{ return m_fTestAlpha; }
+	_float& Get_AlphaRatio_Ref()	{ return m_fTestAlpha; }
+	_bool Get_isUseColorTint()		{ return m_isUseColorTint; }
+	_float Get_ProgressRatio()		{ return m_fTestProgress; }
+	int32_t Get_FillDir()			{ return m_iFillDir; }
+	void Set_ColorTint(Vec4 v)		{ m_vColorTint = v; }
+	void Set_AlphaRatio(_float f)	{ m_fTestAlpha = f; }
+	void Set_isUseColorTint(_bool is) { m_isUseColorTint = is; }
+	void Set_ProgressRatio(_float f) { m_fTestProgress = f; }
+	void Set_FillDir(int32_t i)		{ m_iFillDir = i; }
 
 	_float& Get_TestProgress_Ref() { return m_fTestProgress; }
 	int32_t& Get_FillDir_Ref() { return m_iFillDir; }
@@ -85,7 +97,6 @@ public:
 	void  Set_Progress(const _float fProgress) { m_fTestProgress = fProgress; }
 
 	uint32_t& Get_ComponentFlag() { return m_iComponentFlag; }
-	Vec4& Get_ColorTint_Ref() { return m_vColorTint; }
 	_bool& Get_UseColorTint() { return m_isUseColorTint; }
 	int32_t Get_ShaderPass()const { return m_iShaderPass; }
 	void Set_ShaderPass(int32_t pass) { m_iShaderPass = pass; }
@@ -127,6 +138,7 @@ protected:
 	_float m_fTestProgress	= { 1.f };
 	int32_t m_iFillDir		= {};
 	_bool m_isDisable		= { false };
+	_float m_fTestAlpha = {};
 
 	// Func Values
 	_bool m_isPlaying_Fade		= { false };

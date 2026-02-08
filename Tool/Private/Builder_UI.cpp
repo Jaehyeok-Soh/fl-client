@@ -5,7 +5,6 @@
 #include "ToolUI.h"
 
 #include "ImGui_UIManager.h"
-#include "UIAction_Registry.h"
 #include "GameInstance.h"
 
 CBuilder_UI::CBuilder_UI(ID3D11Device* pDevice, ID3D11DeviceContext* pDeviceContext, _uint iLevelID)
@@ -94,17 +93,20 @@ HRESULT CBuilder_UI::Create_GenericUIDTO(const DTO::TUI_GenericUIData& data)
 	CToolUI::TOOLUI_DESC Desc = {};
 	Desc.iLevelIndex = static_cast<uint32_t>(ELevelType::UI);
 
-	Desc.strName = data.strTag;
+	Desc.strName			= data.strTag;
 	Desc.iRectTransformType = data.iRectTransformType;
-	Desc.fWidth = data.fWidth;
-	Desc.fHeight = data.fHeight; 
-	Desc.fX = data.fPosX;
-	Desc.fY = data.fPosY;
-	Desc.fZ = data.fPosZ;
-	Desc.strInitTextureTag = data.strTextureTag;
-	Desc.iInitTextureIndex = data.iTextureIndex;
-	Desc.strCanvasName = data.strCanvasName;
-	Desc.isInitVisible = data.isVisible;
+	Desc.fWidth				= data.fWidth;
+	Desc.fHeight			= data.fHeight; 
+	Desc.fX					= data.fPosX;
+	Desc.fY					= data.fPosY;
+	Desc.fZ					= data.fPosZ;
+	Desc.strInitTextureTag	= data.strTextureTag;
+	Desc.strCanvasName		= data.strCanvasName;
+	Desc.isInitVisible		= data.isVisible;
+	Desc.isUseColorTint		= data.isUseColorTint;
+	Desc.vColorTint			= data.vColorTint;
+	Desc.iShaderPass		= data.iShaderPass;
+	Desc.iFillDir			= data.iFillDir;
 
 	auto iterCanvas = m_pCanvasCache.find(Desc.strCanvasName);
 	if (iterCanvas != m_pCanvasCache.end())

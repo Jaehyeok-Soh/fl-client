@@ -148,8 +148,8 @@ HRESULT CLoader::Loading_For_Logo()
 
 		// Read Json
 		{
-			if (FAILED(Loading_File(ENUM_TO_UINT(ELevelType::LOGO), DTO::ECategory::EFFECT, L"../../Resources/Data/EffectData/Attack_1.json")))
-				return E_FAIL;
+			//if (FAILED(Loading_File(ENUM_TO_UINT(ELevelType::LOGO), DTO::ECategory::EFFECT, L"../../Resources/Data/EffectData/Attack_1.json")))
+			//	return E_FAIL;
 			// For. Example
 			// if (FAILED(Loading_File(ENUM_TO_UINT(ELevelType::LOGO), DTO::ECategory::MAP, L"asdf")))
 			// 	return E_FAIL;

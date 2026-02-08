@@ -49,9 +49,9 @@ PS_OUT PS_PROGRESS(PS_IN_POS_TEX input)
     else if (g_iFillDir == 1)
         mask = step(1.0f - uv.x, g_fProgressRatio); //left -> right
     else if (g_iFillDir == 2)
-        mask = step(uv.y, g_fProgressRatio);        //up -> down
+        mask = step(1.0f - uv.y, g_fProgressRatio); //up -> down
     else
-        mask = step(1.0f - uv.y, g_fProgressRatio); //down -> up
+        mask = step(uv.y, g_fProgressRatio); //down -> up
 
     output.vColor.a *= mask;
     return output;
@@ -60,22 +60,6 @@ PS_OUT PS_PROGRESS(PS_IN_POS_TEX input)
 
 
 
-
-
-
-
-PS_OUT PS_SKILLICON(PS_IN_POS_TEX input)
-{
-    PS_OUT output;
-    float4 vIconMask = g_DefaultTextures[0].Sample(LinearSampler, input.vUV);
-    if (ALPHA_TEST(vIconMask.a, 0.2f))
-        discard;
-    vIconMask *= (input.vUV.y >= 1.f - input.fHP) ? float4(0.3f, 0.3f, 0.3f, 1.f) : 1.f;
-    
-    float4 vIcon = g_DefaultTextures[1].Sample(LinearSampler, input.vUV);
-    output.vColor = vIconMask * vIcon;
-    return output;
-}
 
 PS_OUT PS_LOCKON(PS_IN_POS_TEX input)
 {

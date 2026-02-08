@@ -17,6 +17,8 @@ public:
 		uint32_t iComponentFlag;
 		_bool isUseColorTint;
 		Vec4 vColorTint;
+		int32_t iShaderPass;
+		int32_t iFillDir;
 		CCanvas* pCanvasCache = { nullptr };
 	}GENERIC_UI_DESC;
 
@@ -40,6 +42,9 @@ public:
 	_bool Calc_HitEvent();
 	void Acting_By_InteractState();
 
+	// virtual void Trigger_Enter_Target()PURE;
+	// virtual void Trigger_Exit_Target()PURE;
+
 protected:
 	HRESULT Ready_Components(GENERIC_UI_DESC* pDesc);
 	HRESULT Bind_ShaderResources();
@@ -52,21 +57,25 @@ public:
 
 protected:
 	ERectTransform m_eRectTransformType = { ERectTransform::C };
-	_wstring m_wstrTextureTag = {};
-	uint32_t m_iTextureIndex = {};
-	Vec3 m_vRectPos = {};
-	Vec3 m_vRenderPos = {};
-	RECT m_tRenderRect = {};
-	CCanvas* m_pParentCanvasCache = { nullptr };
-	Vec3 m_vMoveOffset = {};
-	uint32_t m_iComponentFlag = {};
-	uint32_t m_iOwnerType = {};
-	_bool m_isUseColorTint = {false};
-	Vec4 m_vColorTint = {};
+	_wstring m_wstrTextureTag			= {};
+	uint32_t m_iTextureIndex			= {};
+	Vec3 m_vRectPos						= {};
+	Vec3 m_vRenderPos					= {};
+	RECT m_tRenderRect					= {};
+	CCanvas* m_pParentCanvasCache		= { nullptr };
+	Vec3 m_vMoveOffset					= {};
+	uint32_t m_iComponentFlag			= {};
+	uint32_t m_iOwnerType				= {};
+
+	// Shader Bind Values
+	_bool m_isUseColorTint				= {false};
+	Vec4 m_vColorTint					= {};
+	_float m_fAlpha_Ratio				= {};
+	_float m_fProgress_Ratio			= {};
+	int32_t m_iFillDir					= {};
 
 public:
 	virtual void Free()override;
-
 };
 
 NS_END

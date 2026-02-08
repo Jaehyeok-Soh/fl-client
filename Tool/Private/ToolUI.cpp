@@ -45,6 +45,7 @@ HRESULT CToolUI::Initialize(void* pArg)
 	m_isUseColorTint		= pDesc->isUseColorTint;
 	m_vColorTint			= pDesc->vColorTint;
 	m_iShaderPass			= pDesc->iShaderPass;
+	m_iFillDir				= pDesc->iFillDir;
 
 	if (FAILED(Super::Initialize(pArg)))
 		return E_FAIL;
@@ -206,7 +207,7 @@ HRESULT CToolUI::Bind_ShaderResources()
 		if (FAILED(Get_Component<CTexture>()->Bind_ShaderResourceBuffer(pShader)))
 			return E_FAIL;
 
-		if (FAILED(pShader->Get_Variable("g_fAlphaRatio")->SetRawValue(&m_vColorTint, 0, sizeof(_float))))
+		if (FAILED(pShader->Get_Variable("g_fAlphaRatio")->SetRawValue(&m_fTestAlpha, 0, sizeof(_float))))
 			return E_FAIL;
 	}
 	else if (m_iShaderPass == ENUM_TO_UINT(EUIShaderPass::PROGRESS))

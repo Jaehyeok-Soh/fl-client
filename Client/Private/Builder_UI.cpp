@@ -169,13 +169,14 @@ CGenericUI::GENERIC_UI_DESC CBuilder_UI::Make_DefaultInfo(const DTO::TUI_Generic
 	Desc.fY					= data.fPosY * m_vAspect.y;
 	Desc.fZ					= data.fPosZ;
 	Desc.wstrTextureTag		= Engine_Utils::ToWString(data.strTextureTag);
-	Desc.iTextureIndex		= data.iTextureIndex;
 	Desc.isAlpha			= TRUE;
 	Desc.isInitVisible		= data.isVisible;
 	Desc.pCanvasCache		= pCanvas;
 	Desc.iComponentFlag		= data.iComponentFlag;
 	Desc.isUseColorTint		= data.isUseColorTint;
 	Desc.vColorTint			= data.vColorTint;
+	Desc.iShaderPass		= data.iShaderPass;
+
 	return Desc;
 }
 

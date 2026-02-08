@@ -171,7 +171,7 @@ void CUI_Inspector::Input_RectTransform()
 		ImGui::EndTable();
 	}
 
-	ImGui::InputFloat("Alpha", &m_pSelectedUI->Get_Alpha_Ref());
+	ImGui::InputFloat("Alpha", &m_pSelectedUI->Get_AlphaRatio_Ref());
 	ImGui::Checkbox("Visible", &m_pSelectedUI->Get_InitVisible());
 
 	ImGui::EndChild();
@@ -340,12 +340,18 @@ void CUI_Inspector::SetUp_ShaderPass()
 		switch ((EUIShaderPass)cur)
 		{
 		case EUIShaderPass::DEFAULT:
-		case EUIShaderPass::DEFAULT_ALPHA:
 		{
 			ImGui::TextDisabled("No Params");
 			break;
 		}
-
+		case EUIShaderPass::DEFAULT_ALPHA:
+		{
+			_float fAlphaRatio = m_pSelectedUI->Get_AlphaRatio();
+			ImGui::SetNextItemWidth(150.f);
+			if (ImGui::DragFloat("Alpha Ratio", &fAlphaRatio, 0.01f, 0.f, 1.f))
+				m_pSelectedUI->Set_AlphaRatio(fAlphaRatio);
+			break;
+		}
 		case EUIShaderPass::COLOR:
 		{
 			Vec4 vColorTint = m_pSelectedUI->Get_ColorTint();
@@ -354,7 +360,6 @@ void CUI_Inspector::SetUp_ShaderPass()
 				m_pSelectedUI->Set_ColorTint(vColorTint);
 			break;
 		}
-
 		case EUIShaderPass::FADE:
 		{
 			_float fAlphaRatio = m_pSelectedUI->Get_AlphaRatio();
@@ -363,7 +368,6 @@ void CUI_Inspector::SetUp_ShaderPass()
 				m_pSelectedUI->Set_AlphaRatio(fAlphaRatio);
 			break;
 		}
-
 		case EUIShaderPass::PROGRESS:
 		{
 			_bool isUseColorTint = m_pSelectedUI->Get_isUseColorTint();
@@ -390,16 +394,10 @@ void CUI_Inspector::SetUp_ShaderPass()
 
 			break;
 		}
-
 		default:
 			break;
 		}
 	}
-
-	}
-
-
-
 
 	End_Card();
 }

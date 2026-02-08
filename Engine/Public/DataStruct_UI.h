@@ -118,13 +118,13 @@ struct TUI_GenericUIData
 	_float fPosY;
 	_float fPosZ;
 	_string strTextureTag;
-	uint32_t iTextureIndex;
 	_bool isVisible;
 	uint32_t iComponentFlag;
 	EUIOwnerType eOwnerType;
 	_bool isUseColorTint;
 	Vec4 vColorTint;
 	int32_t iShaderPass;
+	int32_t iFillDir;
 };
 
 struct TUI_CanvasData
