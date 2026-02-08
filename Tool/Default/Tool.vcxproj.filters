@@ -124,12 +124,6 @@
     <Filter Include="98. Defines\pch">
       <UniqueIdentifier>{6a433bfc-3f5f-420f-ac46-69cffb0edf23}</UniqueIdentifier>
     </Filter>
-    <Filter Include="03. Level\Effect\Effect_Object">
-      <UniqueIdentifier>{c7c882ca-f31c-44ed-bfc0-c6a26939bb11}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="03. Level\Effect\Effect_Object\Effect">
-      <UniqueIdentifier>{484f6f3e-8e60-44ee-bc6e-9752b2de029b}</UniqueIdentifier>
-    </Filter>
     <Filter Include="98. Defines\pch">
       <UniqueIdentifier>{6a433bfc-3f5f-420f-ac46-69cffb0edf23}</UniqueIdentifier>
     </Filter>
@@ -234,6 +228,15 @@
     </Filter>
     <Filter Include="02. GameObjects\Map\00. MapObject\02. InstanceModel">
       <UniqueIdentifier>{32494c10-0bf8-420f-a857-a2d263860bfa}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="03. Level\Effect\Effect">
+      <UniqueIdentifier>{484f6f3e-8e60-44ee-bc6e-9752b2de029b}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="03. Level\Effect\Effect\Effect_Object">
+      <UniqueIdentifier>{c7c882ca-f31c-44ed-bfc0-c6a26939bb11}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="03. Level\Effect\Effect\Gravity_Force">
+      <UniqueIdentifier>{2f5ef054-3cbc-47dd-ad16-41a470fea0e8}</UniqueIdentifier>
     </Filter>
     <Filter Include="02. GameObjects\UI\02.UI">
       <UniqueIdentifier>{6a558198-77c1-41fb-9345-05c1fc4f9daf}</UniqueIdentifier>
@@ -403,7 +406,7 @@
       <Filter>03. Level\Effect\Effect_Panel\EffectType_Selection</Filter>
     </ClInclude>
     <ClInclude Include="..\Public\CEffectObject.h">
-      <Filter>03. Level\Effect\Effect_Object</Filter>
+      <Filter>03. Level\Effect\Effect\Effect_Object</Filter>
     </ClInclude>
     <ClInclude Include="..\Public\Tool_ContainerObject.h">
       <Filter>02. GameObjects\ContainerObject</Filter>
@@ -412,7 +415,7 @@
       <Filter>02. GameObjects\PartObject</Filter>
     </ClInclude>
     <ClInclude Include="..\Public\Effect.h">
-      <Filter>03. Level\Effect\Effect_Object\Effect</Filter>
+      <Filter>03. Level\Effect\Effect</Filter>
     </ClInclude>
     <ClInclude Include="pch.h">
       <Filter>98. Defines\pch</Filter>
@@ -489,6 +492,11 @@
     <ClInclude Include="..\Public\InstanceModel.h">
       <Filter>02. GameObjects\Map\00. MapObject\02. InstanceModel</Filter>
     </ClInclude>
+    <ClInclude Include="..\Public\Gravity_Force.h">
+      <Filter>03. Level\Effect\Effect\Gravity_Force</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\UITargetAction_Tool.h">
+      <Filter>02. GameObjects\UI\00.Action</Filter>
     <ClInclude Include="..\Public\UIButton_Component.h">
       <Filter>04. Component\UI\Button</Filter>
     </ClInclude>
@@ -649,16 +657,13 @@
       <Filter>03. Level\Effect\Effect_Panel\EffectType_Selection</Filter>
     </ClCompile>
     <ClCompile Include="..\Private\CEffectObject.cpp">
-      <Filter>03. Level\Effect\Effect_Object</Filter>
+      <Filter>03. Level\Effect\Effect\Effect_Object</Filter>
     </ClCompile>
     <ClCompile Include="..\Private\Tool_ContainerObject.cpp">
       <Filter>02. GameObjects\ContainerObject</Filter>
     </ClCompile>
     <ClCompile Include="..\Private\Tool_PartObject.cpp">
       <Filter>02. GameObjects\PartObject</Filter>
-    </ClCompile>
-    <ClCompile Include="..\Private\Effect.cpp">
-      <Filter>03. Level\Effect\Effect_Object\Effect</Filter>
     </ClCompile>
     <ClCompile Include="pch.cpp">
       <Filter>98. Defines\pch</Filter>
@@ -723,6 +728,14 @@
     <ClCompile Include="..\Private\InstanceModel.cpp">
       <Filter>02. GameObjects\Map\00. MapObject\02. InstanceModel</Filter>
     </ClCompile>
+    <ClCompile Include="..\Private\Effect.cpp">
+      <Filter>03. Level\Effect\Effect</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\Gravity_Force.cpp">
+      <Filter>03. Level\Effect\Effect\Gravity_Force</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\UITargetAction_Tool.cpp">
+      <Filter>02. GameObjects\UI\00.Action</Filter>
     <ClCompile Include="..\Private\UIButton_Component.cpp">
       <Filter>04. Component\UI\Button</Filter>
     </ClCompile>

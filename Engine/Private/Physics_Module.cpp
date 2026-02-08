@@ -2,6 +2,8 @@
 
 #include "GameInstance.h"
 
+#include "EngineConsole.h"
+
 #include "Physics_Module.h"
 #include "Physics_ResourceManager.h"
 #include "Physics_Utils.h"
@@ -48,13 +50,16 @@ HRESULT CPhysics_Module::Initialize()
 	/// Create CUDA context ///
 	///////////////////////////
 	{
-		PxCudaContextManagerDesc cudaContextManagerDesc{};
-		m_pCudaContextManager = PxCreateCudaContextManager(*m_pFoundation, cudaContextManagerDesc, PxGetProfilerCallback());
-		if (m_pCudaContextManager)
-		{
-			if (!m_pCudaContextManager->contextIsValid())
-				PX_RELEASE(m_pCudaContextManager);
-		}
+		//PxCudaContextManagerDesc cudaContextManagerDesc{};
+		//m_pCudaContextManager = PxCreateCudaContextManager(*m_pFoundation, cudaContextManagerDesc, PxGetProfilerCallback());
+		//if (m_pCudaContextManager)
+		//{
+		//	if (!m_pCudaContextManager->contextIsValid())
+		//	{
+		//		if (m_pCudaContextManager)
+		//			PX_RELEASE(m_pCudaContextManager);
+		//	}
+		//}
 	}
 
 	///////////////////
@@ -298,25 +303,71 @@ PxFilterFlags CPhysics_Module::FilterShader(
 	return PxFilterFlag::eDEFAULT;
 }
 
+void CPhysics_Module::Check_Leak()
+{
+	_uint staticActorCount = { 0 };
+	_uint dynamicActorCount = { 0 };
+
+	if (m_pScene)
+	{
+		staticActorCount = m_pScene->getNbActors(PxActorTypeFlag::eRIGID_STATIC);
+		dynamicActorCount = m_pScene->getNbActors(PxActorTypeFlag::eRIGID_DYNAMIC);
+	}
+
+	_uint triMeshCount = m_pPhysics->getNbTriangleMeshes();
+	_uint convexMeshCount = m_pPhysics->getNbConvexMeshes();
+
+	wstring logMsg = L" [PhysX Leak Check] \n";
+	logMsg += L"Static Actors: " + std::to_wstring(staticActorCount) + L"\n";
+	logMsg += L"Dynamic Actors: " + std::to_wstring(dynamicActorCount) + L"\n";
+
+	logMsg += L"Tri Meshes: " + std::to_wstring(triMeshCount) + L"\n";
+	logMsg += L"Convex Meshes: " + std::to_wstring(convexMeshCount) + L"\n";
+
+	CLOG_INFO(logMsg);
+
+	OutputDebugStringW(L"----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- \r ");
+	OutputDebugStringW(L"                                                                            PhysX Leak Checker \r ");
+	OutputDebugStringW(L"----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- \r ");
+
+	OutputDebugStringW(logMsg.c_str());
+
+	OutputDebugStringW(L"----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- \r ");
+	OutputDebugStringW(L"                                                                          PhysX Leak Checker END \r ");
+	OutputDebugStringW(L"----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- \r ");
+}
+
 void CPhysics_Module::ClearPhysics()
 {
-	PX_RELEASE(m_pScene);
-	PX_RELEASE(m_pDispatcher);
-	PX_RELEASE(m_pPhysics);
+	if (m_pScene)
+		PX_RELEASE(m_pScene);
+
+	Check_Leak();
+
+	if (m_pDispatcher)
+		PX_RELEASE(m_pDispatcher);
+
+	if (m_pPhysics)
+		PX_RELEASE(m_pPhysics);
 
 #ifdef _DEBUG
 	if (m_pPvd)
 	{
 		PxPvdTransport* transport = m_pPvd->getTransport();
 		PX_RELEASE(m_pPvd);
-		PX_RELEASE(transport);
+
+		if (transport)
+			PX_RELEASE(transport);
 	}
 #endif // _DEBUG
 
 	PxCloseExtensions();
 
-	PX_RELEASE(m_pCudaContextManager);
-	PX_RELEASE(m_pFoundation);
+	if (m_pCudaContextManager)
+		PX_RELEASE(m_pCudaContextManager);
+
+	if (m_pFoundation)
+		PX_RELEASE(m_pFoundation);
 }
 
 CPhysics_Module* CPhysics_Module::Create(ID3D11Device* pDevice, ID3D11DeviceContext* pContext)
@@ -337,8 +388,10 @@ void CPhysics_Module::Free()
 	Safe_Release(m_pCCTManager);
 	Safe_Release(m_pActorFactory);
 	Safe_Release(m_pShapeFactory);
-	Safe_Release(m_pResourceManager);
 	Safe_Release(m_pUtils);
+	
+	PX_RELEASE(m_pScene);
+	Safe_Release(m_pResourceManager);
 
 	ClearPhysics();
 

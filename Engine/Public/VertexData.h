@@ -2,6 +2,33 @@
 
 NS_BEGIN(Engine)
 
+///////////////
+///// 필독 /////
+///////////////
+/*
+* VTX 정보 늘릴 때마다 이 헤더파일의 가장 아래에 LayoutDesc 작성을 해주어야함!
+* enum class에 추가 및 매칭되는 Index에 Desc 추가!
+* 현재 FxShaderVariant에서 InputLayout을 생성할때 아래 전역 배열을 참조하기때문에
+* Index 순서도 매우 중요!
+*/
+
+enum class EVtxLayout : unsigned int
+{
+	VTXPOS = 0,
+	VTXPOSCOL,
+	VTXPOSTEX,
+	VTXCUBE,
+	VTXNORTEX,
+	VTXMESH,
+	VTXANIMMESH,
+	VTXPOSTEX_PARTICLE,
+	VTXPOS_PARTICLE,
+	VTXPOS_PARTICLEMESH,
+	VTX_INSTANCE_MESH,
+	NONE, // ComputeShade용
+	END
+};
+
 typedef struct tagVertexData
 {
 	SimpleMath::Vector3 vPosition = { 0.f, 0.f, 0.f };
@@ -209,5 +236,25 @@ typedef struct tagVertexInstanceMesh
 	};
 }VTX_INSTANCE_MESH;
 
+struct LayoutDesc
+{
+	const D3D11_INPUT_ELEMENT_DESC* pElement{ nullptr };
+	unsigned int iCount{ 0 };
+};
 
+static const LayoutDesc g_layoutTable[ENUM_TO_UINT(EVtxLayout::END)] =
+{
+	{VTXPOS::Elements, VTXPOS::iNumElements},
+	{VTXPOSCOL::Elements, VTXPOSCOL::iNumElements},
+	{VTXPOSTEX::Elements, VTXPOSTEX::iNumElements},
+	{VTXCUBE::Elements, VTXCUBE::iNumElements},
+	{VTXNORTEX::Elements, VTXNORTEX::iNumElements},
+	{VTXMESH::Elements, VTXMESH::iNumElements},
+	{VTXANIMMESH::Elements, VTXANIMMESH::iNumElements},
+	{VTXPOSTEX_PARTICLE::Elements, VTXPOSTEX_PARTICLE::iNumElements},
+	{VTXPOS_PARTICLE::Elements, VTXPOS_PARTICLE::iNumElements},
+	{VTXPOS_PARTICLEMESH::Elements, VTXPOS_PARTICLEMESH::iNumElements},
+	{VTX_INSTANCE_MESH::Elements, VTX_INSTANCE_MESH::iNumElements},
+	{} // NONE 도 Index 맞춰서
+};
 NS_END

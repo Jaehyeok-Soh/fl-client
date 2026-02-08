@@ -37,6 +37,8 @@ class CCollider;
 class CGameObject;
 class CCameraMan;
 class CLayer;
+class CFxEffectAsset;
+class CFxShaderVariant;
 
 class ENGINE_DLL CGameInstance final : public CBase
 {
@@ -77,6 +79,11 @@ public:
 	const Vec3&				Picking_Get_RayPos(bool isLocal = false) const;
 	const Vec3&				Picking_Get_RayDir(bool isLocal = false) const;
 
+#pragma endregion
+
+#pragma region SHADERASSET_MANAGER
+	CFxEffectAsset* GetOrCreate_FxEffectAsset(const path& filePath);
+	CFxShaderVariant* GetOrCreate_Variant(const path& filePath, EVtxLayout eVertexLayoutID);
 #pragma endregion
 
 #pragma region LEVEL_MANAGER
@@ -333,6 +340,7 @@ private:
 	class CRenderTarget_Manager* m_pRenderTarget_Manager = { nullptr };
 	class CPicking* m_pPicking = { nullptr };
 	class CFrustrum* m_pFrustrum = { nullptr };
+	class CShaderAsset_Manager* m_pShaderAsset_Manager = { nullptr };
 	class CPhysics_Module* m_pPhysics_Module = { nullptr };
 	class CUIAction_Registry* m_pUIAction_Registry = { nullptr };
 private:

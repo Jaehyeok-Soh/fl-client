@@ -241,6 +241,9 @@
     <Filter Include="03. GameObject\UIObjects\02.UI\MonsterHP">
       <UniqueIdentifier>{beb7d1a4-337d-48de-b4df-4fb246247658}</UniqueIdentifier>
     </Filter>
+    <Filter Include="07. System\02. Debug_ImGui\Layout\Frame">
+      <UniqueIdentifier>{d522fe25-0bdb-43db-847a-41084decceb6}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="targetver.h">
@@ -475,6 +478,9 @@
     <ClInclude Include="..\Public\UIMonster_HP.h">
       <Filter>03. GameObject\UIObjects\02.UI\MonsterHP</Filter>
     </ClInclude>
+    <ClInclude Include="..\public\ImGui_FrameLayout.h">
+      <Filter>07. System\02. Debug_ImGui\Layout\Frame</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <Image Include="Client.ico">
@@ -700,6 +706,9 @@
     </ClCompile>
     <ClCompile Include="..\Private\UIMonster_HP.cpp">
       <Filter>03. GameObject\UIObjects\02.UI\MonsterHP</Filter>
+    </ClCompile>
+    <ClCompile Include="..\private\ImGui_FrameLayout.cpp">
+      <Filter>07. System\02. Debug_ImGui\Layout\Frame</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

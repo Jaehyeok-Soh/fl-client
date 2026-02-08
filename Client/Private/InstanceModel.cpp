@@ -42,10 +42,9 @@ HRESULT CInstanceModel::Initialize(void* pArg)
 	for (auto& SRTData : pDesc->tData.vecSRTData)
 	{
 		SRTData.vScale = SRTData.vScale_Isolated;
-		m_vecMatrix.push_back(SRTData.Get_World());
+		Matrix WorldMatrix = SRTData.Get_World();
+		m_vecMatrix.push_back(WorldMatrix);
 	}
-
-	
 
 	if (FAILED(CInstanceModel::Ready_Component(pDesc)))
 		return E_FAIL;

@@ -325,7 +325,7 @@
     <Filter Include="00. System\13. StructuredBuffer">
       <UniqueIdentifier>{043d4a0e-860d-46aa-93fb-251f6c7ba102}</UniqueIdentifier>
     </Filter>
-    <Filter Include="00. System\05. Component\ComputeShader">
+    <Filter Include="00. System\05. Component\Monobehaviour\ComputeShader">
       <UniqueIdentifier>{4feedbe9-5864-4dd4-800f-c296ed47108e}</UniqueIdentifier>
     </Filter>
     <Filter Include="00. System\05. Component\UI">
@@ -345,6 +345,12 @@
     </Filter>
     <Filter Include="00. System\05. Component\UI\Text">
       <UniqueIdentifier>{3ede7861-9ecf-4960-a353-747f06083501}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="01. Utility\17. ShaderAsset">
+      <UniqueIdentifier>{779baf32-b44b-4193-8174-c44fb4e66b53}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="01. Utility\17. ShaderAsset\Manager">
+      <UniqueIdentifier>{1d5a15d2-b9e8-44c5-8397-f596f8c5189a}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
@@ -680,7 +686,7 @@
       <Filter>00. System\05. Component\Shader</Filter>
     </ClCompile>
     <ClCompile Include="..\Private\ComputeShader.cpp">
-      <Filter>00. System\05. Component\ComputeShader</Filter>
+      <Filter>00. System\05. Component\Monobehaviour\ComputeShader</Filter>
     </ClCompile>
     <ClCompile Include="..\Private\UIAction_Registry.cpp">
       <Filter>00. System\04. GameObject\UIObject\Registry</Filter>
@@ -704,6 +710,18 @@
       <Filter>01. Utility\16. Console</Filter>
     </ClCompile>
     <ClCompile Include="..\private\EngineConsole.cpp" />
+    <ClCompile Include="..\Private\IUIActionForTarget.cpp">
+      <Filter>00. System\04. GameObject\UIObject\Interface\Action For Target</Filter>
+    </ClCompile>
+    <ClCompile Include="..\private\FxEffectAsset.cpp">
+      <Filter>01. Utility\17. ShaderAsset</Filter>
+    </ClCompile>
+    <ClCompile Include="..\private\ShaderAsset_Manager.cpp">
+      <Filter>01. Utility\17. ShaderAsset\Manager</Filter>
+    </ClCompile>
+    <ClCompile Include="..\private\FxShaderVariant.cpp">
+      <Filter>01. Utility\17. ShaderAsset</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\Public\Timer_Manager.h">
@@ -1065,7 +1083,7 @@
       <Filter>00. System\13. StructuredBuffer</Filter>
     </ClInclude>
     <ClInclude Include="..\Public\ComputeShader.h">
-      <Filter>00. System\05. Component\ComputeShader</Filter>
+      <Filter>00. System\05. Component\Monobehaviour\ComputeShader</Filter>
     </ClInclude>
     <ClInclude Include="..\Public\UIAction_Registry.h">
       <Filter>00. System\04. GameObject\UIObject\Registry</Filter>
@@ -1089,6 +1107,18 @@
       <Filter>01. Utility\16. Console</Filter>
     </ClInclude>
     <ClInclude Include="..\public\EngineConsole.h" />
+    <ClInclude Include="..\Public\IUIActionForTarget.h">
+      <Filter>00. System\04. GameObject\UIObject\Interface\Action For Target</Filter>
+    </ClInclude>
+    <ClInclude Include="..\public\FxEffectAsset.h">
+      <Filter>01. Utility\17. ShaderAsset</Filter>
+    </ClInclude>
+    <ClInclude Include="..\public\ShaderAsset_Manager.h">
+      <Filter>01. Utility\17. ShaderAsset\Manager</Filter>
+    </ClInclude>
+    <ClInclude Include="..\public\FxShaderVariant.h">
+      <Filter>01. Utility\17. ShaderAsset</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <FxCompile Include="..\..\Shaders\Shader_Deffered.hlsl">

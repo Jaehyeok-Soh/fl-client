@@ -115,12 +115,6 @@ void Tool_ContainerObject::Draw_ImGui()
 void Tool_ContainerObject::Set_Dead(const wstring& wstrLayerTag)
 {
 	Super::Set_Dead(wstrLayerTag);
-
-	for (Tool_PartObject*& pPart : m_vecPartObjects)
-	{
-		if (pPart)
-			pPart->Set_Dead(wstrLayerTag);
-	}
 }
 
 
@@ -131,10 +125,14 @@ vector<class Tool_PartObject*>& Tool_ContainerObject::Get_PartList()
 
 void Tool_ContainerObject::Remove_Part(_uint iPartID)
 {
+	if (iPartID >= m_vecPartObjects.size())
+		return;
+
 	if (m_vecPartObjects[iPartID])
 		Safe_Release(m_vecPartObjects[iPartID]);
 
 	m_vecPartObjects[iPartID] = nullptr;
+	m_vecPartObjects.erase(m_vecPartObjects.begin() + iPartID);
 }
 
 HRESULT Tool_ContainerObject::Add_Part(Tool_PartObject* pPart, _uint iPartID)

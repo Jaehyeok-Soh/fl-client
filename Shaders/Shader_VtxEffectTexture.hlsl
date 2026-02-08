@@ -413,7 +413,14 @@ float4 PS_Texture(GS_OUT_EFFECT_PARTICLE In) : SV_TARGET0
     if (finalAlpha < g_Effect.g_DiscardValue)
         discard;
     
-    return float4(DiffuseColor.rgb * g_Effect.g_EffectColor.rgb * 1.0f, finalAlpha);
+    // =========== 사진 검은색 부분 자르기 ==========
+    float3 finalColor = float3(DiffuseColor.rgb * g_Effect.g_EffectColor.rgb * 1.0f);
+    // 휘도 계산 공식
+    float brightness = dot(finalColor.rgb, float3(0.2126f, 0.7152f, 0.0722f));
+    if (brightness < 0.05f)
+        discard;
+    
+        return float4(finalColor.xyz, finalAlpha);
 }
 
 
@@ -424,6 +431,16 @@ technique11 T0
         SetRasterizerState(RS_Default_CullNone);
         SetDepthStencilState(DS_Default, 0);
         SetBlendState(BS_Default, float4(0.f, 0.f, 0.f, 0.f), 0xffffffff);
+        SetVertexShader(CompileShader(vs_5_0, VS_Texture()));
+        SetGeometryShader(CompileShader(gs_5_0, GS_Texture()));
+        SetPixelShader(CompileShader(ps_5_0, PS_Texture()));
+    }
+
+    pass Texture_BlendEffect
+    {
+        SetRasterizerState(RS_Default_CullNone);
+        SetDepthStencilState(DS_Default, 0);
+        SetBlendState(BS_AlphaBlend, float4(0.f, 0.f, 0.f, 0.f), 0xffffffff);
         SetVertexShader(CompileShader(vs_5_0, VS_Texture()));
         SetGeometryShader(CompileShader(gs_5_0, GS_Texture()));
         SetPixelShader(CompileShader(ps_5_0, PS_Texture()));

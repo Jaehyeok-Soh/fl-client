@@ -195,15 +195,31 @@ namespace Engine
 	// 가변 데이터 (CS에서 값이 계속 바뀌는 것들)
 	typedef struct tagEffect_Particle_MU_ELEMENT
 	{
+		// 시간 제어 관련
 		float				fTimeDelta = { 0.f };		// 시간 값
-		float				fStartSpeed = { 0.f };		// 배속
-		float				fEndSpeed = {};
-		unsigned  int		iMoveState = { 0}; // State를 flag에 담아서 보내기
-		int					bIsLoop = { 0 };
+		float				fTotalTime = { 0.f };
+		float				fDuration = { 0.f };
+		float				fStartDelay = { 0.f };
 
+		// 상태 플래그
+		unsigned int		iMoveState = { 0 };
+		int					bIsLoop = { 0 };
+		unsigned int		iTimeFlag = {};
+		float				fGravity = { 9.8f };
+
+		// 위치 및 방향
 		SimpleMath::Vector3	vPivot = {};	// Spread시 기준점
+		float Padding1 = {};
 		SimpleMath::Vector3 vLook = {};		// Straight시 방향
-		float				vPadding1 = {};
+		float Padding2 = {};
+
+		float				fStartSpeed = { 0.f };
+		float				fSpiralRadius = { 0.f };
+		float				fSpiralSpeed = { 0.f };
+		float				Padding3 = {};
+
+		// 
+
 	}EFFECT_PARTICLE_MU_ELEMENT;
 #pragma endregion
 	union COLLIDER_ID
@@ -338,6 +354,24 @@ namespace Engine
 		vector<Matrix> pOwnerMatrices;
 		vector<SimpleMath::Vector3> vScale_Isolated;
 	}PHYSICSRIGIDBODY_DESC;
+
+	typedef struct tagPass
+	{
+		ID3DX11EffectPass* pPass = { nullptr };
+		wstring wstrName = L"";
+		D3DX11_PASS_DESC tDesc = {};
+		D3DX11_PASS_SHADER_DESC tVertexShaderDesc = {};
+		D3DX11_EFFECT_SHADER_DESC tEffectVsDesc = {};
+		vector<D3D11_SIGNATURE_PARAMETER_DESC> vecSignatureDescs;
+	} PASS;
+
+	typedef struct tagTechnique
+	{
+		ID3DX11EffectTechnique* pTechnique = { nullptr };
+		wstring wstrName = L"";
+		D3DX11_TECHNIQUE_DESC tDesc = {};
+		vector<tagPass> vecPasses;
+	} TECHNIQUE;
 
 	typedef struct tagPhysicsCollider
 	{

@@ -181,7 +181,8 @@ void CPhysicsCCT::GetController()
 
 void CPhysicsCCT::ReleaseController()
 {
-	PX_RELEASE(m_pController);
+	if (m_pController)
+		PX_RELEASE(m_pController);
 }
 
 CPhysicsCCT* CPhysicsCCT::Create(ID3D11Device* pDevice, ID3D11DeviceContext* pDeviceContext)
