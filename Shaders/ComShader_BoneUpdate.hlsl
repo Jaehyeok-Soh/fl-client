@@ -51,6 +51,7 @@ StructuredBuffer<MU_ELEMENT>    MU_INDEXES;
 StructuredBuffer<SRT>           MU_SRTS;
 
 RWStructuredBuffer<BONE_OUTPUT> BONECOMBINED_TRANSFORMS;
+StructuredBuffer<BONE_OUTPUT> BONECOMBINED_TRANSFORMS_SRV;
 
 
 // Warp/Wavefront는 32명씩 묶여서 연산을 한다.
@@ -61,7 +62,7 @@ void CS_Main(uint3 id : SV_DispatchThreadID)
     uint iGroupIdx = id.x; // group 내에 idx
     uint iBoneIdx = MU_INDEXES[iGroupIdx].iMyIdx;
     
-    if (iGroupIdx >= g_iGroupBoneCount)
+    if (iGroupIdx >= g_iGroupBoneCount.iBoneNums)
         return;
 
     int iParentIdx = IMMU_BONEDATA[iBoneIdx].iParentIndex;
