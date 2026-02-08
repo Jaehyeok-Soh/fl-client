@@ -174,11 +174,11 @@ private:
 	AnimationPlayState m_eCurrentAnimationState = { AnimationPlayState::PLAY };
 	_bool m_isAnimLoop = { false };
 	_bool m_bIsAnimFinished = { false };
-	_float m_fBlendedTime = { 0.f };
-	const _float m_fBlendDuration = { 0.18f };
-	_uint m_iAnimationCount = { 0 };
-	_uint m_iCurrentAnimIndex = { 0 };
-	_uint m_iPrevAnimIndex = { 0 };
+	_float m_fBlendedTime			= { 0.f };
+	const _float m_fBlendDuration	= { 0.18f };
+	_uint m_iAnimationCount			= { 0 };
+	_uint m_iCurrentAnimIndex		= { 0 };
+	_uint m_iPrevAnimIndex			= { 0 };
 	unordered_map<wstring, size_t> m_umapAnimationIndexTable;
 	vector<class CModelAnimation*> m_vecAnimations;
 	vector<LOCALSRT> m_vecPrevAnimationPose;

@@ -19,7 +19,17 @@ CModelAnimation::CModelAnimation(const CModelAnimation& rhs)
 	, m_fCurrentTrackPosition(rhs.m_fCurrentTrackPosition)
 	, m_fTickPerSecond(rhs.m_fTickPerSecond)
 	, m_fDuration(rhs.m_fDuration)
+	, m_pKeyFrameBuffer(rhs.m_pKeyFrameBuffer)
+	, m_pInputKeySB_SRV(rhs.m_pInputKeySB_SRV)
+	, m_pChannelDataBuffer(rhs.m_pChannelDataBuffer)
+	, m_pInputChannelSB_SRV(rhs.m_pInputChannelSB_SRV)
 {
+	Safe_AddRef(m_pKeyFrameBuffer);
+	Safe_AddRef(m_pInputKeySB_SRV);
+
+	Safe_AddRef(m_pChannelDataBuffer);
+	Safe_AddRef(m_pInputChannelSB_SRV);
+
 	for (auto& pElement : m_vecChannels)
 		Safe_AddRef(pElement);
 }

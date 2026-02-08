@@ -44,7 +44,13 @@ CModel::CModel(const CModel& rhs)
 	m_vecPrevAnimationPose.resize(rhs.m_vecPrevAnimationPose.size());
 	m_vecCurrAnimationPose.resize(rhs.m_vecCurrAnimationPose.size());
 
-	m_vecBoneGroups = rhs.m_vecBoneGroups;
+	m_vecBoneGroups.reserve(rhs.m_vecBoneGroups.size());
+	for (auto& pBoneGroup : rhs.m_vecBoneGroups)
+	{
+		m_vecBoneGroups.push_back(pBoneGroup);
+		Safe_AddRef(pBoneGroup.pIndexBuffer);
+		Safe_AddRef(pBoneGroup.pInputGroupSB_SRV);
+	}
 
 	m_vecAnimations.reserve(rhs.m_vecAnimations.size());
 	for (auto& pAnimation : rhs.m_vecAnimations)
@@ -901,6 +907,13 @@ void CModel::Free()
 
 	for (auto& pAnimation : m_vecAnimations)
 		Safe_Release(pAnimation);
+
+	for (auto& pBoneGroup : m_vecBoneGroups)
+	{
+		Safe_Release(pBoneGroup.pIndexBuffer);
+		Safe_Release(pBoneGroup.pInputGroupSB_SRV);
+	}
+
 	
 	Safe_Release(m_pMasterMesh);
 
