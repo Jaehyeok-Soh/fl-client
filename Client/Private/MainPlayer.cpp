@@ -78,8 +78,8 @@ HRESULT CMainPlayer::Initialize(void* pArg)
     if (FAILED(Ready_Ray()))
         return E_FAIL;
 
-    if (FAILED(Ready_CCT()))
-        return E_FAIL;
+    //if (FAILED(Ready_CCT()))
+    //    return E_FAIL;
 
     return S_OK;
 }
@@ -98,7 +98,7 @@ HRESULT CMainPlayer::Awake(const _uint iCurrentLevelID)
 
     Get_Component<CTransform>()->Set_Info(TRANSFORM_INFO_STATE::POS, Vec3{ 18.f,30.f,19.f });
 
-    Get_Component<CPhysicsCCT>()->Awake();
+    //Get_Component<CPhysicsCCT>()->Awake();
 
     CImGui_ClientDebug::GetInstance()->Set_Player(this);
     return S_OK;

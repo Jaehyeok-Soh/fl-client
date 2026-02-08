@@ -194,8 +194,7 @@ void CImGui_Dockspace_MenuBar::Save_MapData(const wstring& wstrFilePath)
 		return;
 
 	/* 여러개의 layer를 한꺼번에 저장하고 싶다면 Layer Requset ExportData를 집어넣는다 */
-	Request_ExportData(eLevelType, DTO::ECategory::MAP, g_wszStaticModelLayer	, pDocument);
-	Request_ExportData(eLevelType, DTO::ECategory::MAP, g_wszInstanceModelLayer , pDocument);
+	Request_ExportData(eLevelType, DTO::ECategory::MAP, g_wszMapObjectLayer , pDocument);
 
 	m_pGameInstance->Save_File_Json(iLevelID, DTO::ECategory::MAP, wstrFilePath);
 

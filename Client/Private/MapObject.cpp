@@ -2,6 +2,7 @@
 #include "Model.h"
 #include "Shader.h"
 #include "MapObject.h"
+#include "InstanceMesh.h"
 #include "GameInstance.h"
 
 CMapObject::CMapObject(ID3D11Device* pDevice, ID3D11DeviceContext* pContext)
@@ -10,7 +11,10 @@ CMapObject::CMapObject(ID3D11Device* pDevice, ID3D11DeviceContext* pContext)
 }
 
 CMapObject::CMapObject(const CMapObject& rhs)
-	: CGameObject(rhs), m_eMapObjectType(rhs.m_eMapObjectType)
+	: CGameObject(rhs), m_eMapObjectType(rhs.m_eMapObjectType) 
+    , m_eMapObjectDrawType{ rhs.m_eMapObjectDrawType }
+    , m_isUELoaded{rhs.m_isUELoaded}
+    , m_vecMatrix{rhs.m_vecMatrix }
 {
 }
 
@@ -28,12 +32,95 @@ HRESULT	CMapObject::Initialize(void* pArg)
 	if(FAILED(Super::Initialize(pArg)))
 		return E_FAIL;
 
+    MAPOBJECT_DESC* pDesc = static_cast<MAPOBJECT_DESC*>(pArg);
+
+
+    m_isUELoaded    = pDesc->isUELoaded;
+    m_eMapObjectDrawType = pDesc->eMapObjectDrawType;
+    m_strName       = path(pDesc->wstrModelPath).filename().stem().string();
+
+
+    if (FAILED(Ready_Transform(pDesc)))
+        return E_FAIL;
+
+    if (FAILED(Ready_Component(pDesc)))
+        return E_FAIL;
+
 
 	return S_OK;
 }
 
-HRESULT	CMapObject::Ready_Component()
+HRESULT CMapObject::Ready_Transform(MAPOBJECT_DESC* pDesc)
 {
+    if (pDesc->vecSRT.empty())
+        return E_FAIL;
+
+    if (m_eMapObjectDrawType == EMapObject_DrawType::Instance)
+    {
+        for (auto& SRT : pDesc->vecSRT)
+            m_vecMatrix.push_back(SRT.Get_World());
+    }
+    else
+    {
+        /* Transform 에 등록 */
+        Get_Component<CTransform>()->Set_WorldMatrix(pDesc->vecSRT.front().Get_World());
+    }
+
+
+    return S_OK;
+}
+
+
+HRESULT	CMapObject::Ready_Component(MAPOBJECT_DESC* pDesc)
+{
+    m_eMapObjectDrawType == EMapObject_DrawType::Instance ?
+        Add_Component<CShader>(ENUM_TO_UINT(ELevelType::STATIC), L"Prototype_Component_Shader_VtxInstanceMesh", nullptr)
+        : Add_Component<CShader>(ENUM_TO_UINT(ELevelType::STATIC), L"Prototype_Component_Shader_VtxMesh", nullptr);
+
+    const wstring wstrModelTag = L"Prototype_Component_Model_";
+
+
+    if (m_eMapObjectDrawType != EMapObject_DrawType::Collider)
+    {
+        wstring wstrFileName = path(pDesc->wstrModelPath).filename().stem();
+        wstrFileName = wstrModelTag + wstrFileName;
+        CBase* pFinded = { nullptr };
+
+        if (pFinded = m_pGameInstance->Find_Prototype(pDesc->iLevelIndex, wstrFileName))
+        {
+            Add_Component<CModel>(pDesc->iLevelIndex, wstrFileName, nullptr);
+        }
+        else
+        {
+            /* Model 생성 */
+            CModel::MODEL_ORIGIN_DESC tModelDesc{};
+            tModelDesc.eType = EModelType::STATIC;
+            tModelDesc.wstrModelFolderName = pDesc->wstrModelPath;
+            tModelDesc.iPrototypeLevelIndex = pDesc->iLevelIndex;
+            CModel* pModel = CModel::Create(m_pDevice, m_pDeviceContext, &tModelDesc);
+            
+            if (FAILED(m_pGameInstance->Add_Prototype(pDesc->iLevelIndex, wstrFileName, pModel)))
+                return E_FAIL;
+            else
+            {
+                m_pGameInstance->RegisterPhysicsMesh(tModelDesc.iPrototypeLevelIndex , wstrFileName);
+                Add_Component<CModel>(pDesc->iLevelIndex , wstrFileName  , nullptr );
+            }
+        }
+    }
+
+
+    if (m_eMapObjectDrawType == EMapObject_DrawType::Instance)
+    {
+        /* InstanceMehs  */
+        CInstanceMesh::INSTANCEMESH_DESC tInstanceMeshDesc{};
+        tInstanceMeshDesc.IB_Usage = D3D11_USAGE_DYNAMIC;
+        tInstanceMeshDesc.VB_Usage = D3D11_USAGE_DYNAMIC;
+        tInstanceMeshDesc.vecInstanceMatrixPointer = &m_vecMatrix;
+        Add_Component<CInstanceMesh>(ENUM_TO_UINT(ELevelType::STATIC), L"Prototype_Component_VIBuffer_InstanceMesh", &tInstanceMeshDesc);
+    }
+
+
 	return S_OK;
 }
 
@@ -70,85 +157,85 @@ void	CMapObject::Ready_Before_Render(const _float fTimeDelta)
 HRESULT CMapObject::Ready_OverrideMtl(const DTO::USING_MODEL_INFO& tUsingModelInfo)
 {
 
-    if (tUsingModelInfo.vecOverrideMaterial.empty())
-        m_iUseOverrideMaterials = false;
-    else
-    {
-        for (auto& OverrideMtl : tUsingModelInfo.vecOverrideMaterial)
-        {
-            if (!OverrideMtl.isNull)
-                m_iUseOverrideMaterials = true;
-        }
-    }
+    //if (tUsingModelInfo.vecOverrideMaterial.empty())
+    //    m_iUseOverrideMaterials = false;
+    //else
+    //{
+    //    for (auto& OverrideMtl : tUsingModelInfo.vecOverrideMaterial)
+    //    {
+    //        if (!OverrideMtl.isNull)
+    //            m_iUseOverrideMaterials = true;
+    //    }
+    //}
 
-    if (!m_iUseOverrideMaterials) return S_OK;
+    //if (!m_iUseOverrideMaterials) return S_OK;
 
-    size_t iSizeMtl = Get_Component<CModel>()->Get_MaterialCount();
-    size_t iSizeeOverrideMtl = tUsingModelInfo.vecOverrideMaterial.size();
+    //size_t iSizeMtl = Get_Component<CModel>()->Get_MaterialCount();
+    //size_t iSizeeOverrideMtl = tUsingModelInfo.vecOverrideMaterial.size();
 
-    m_vecOverrideMaterials.resize(max(iSizeMtl, iSizeeOverrideMtl));
+    //m_vecOverrideMaterials.resize(max(iSizeMtl, iSizeeOverrideMtl));
 
 
-    CTextureBase::RESOURCE_BASE_DESC tResourceTextureOriginDecs{};
+    //CTextureBase::RESOURCE_BASE_DESC tResourceTextureOriginDecs{};
 
-    CMaterial::MATERIAL_DESC tDesc{};
+    //CMaterial::MATERIAL_DESC tDesc{};
 
-    /* 여기다가 경로를 집어넣어서 진행해주면된다 */
-    vector<std::string> vecMateiralTexturePath{};
-    vecMateiralTexturePath.resize(ENUM_TO_UINT(EMaterialTextureType::MAX_COUNT));
+    ///* 여기다가 경로를 집어넣어서 진행해주면된다 */
+    //vector<std::string> vecMateiralTexturePath{};
+    //vecMateiralTexturePath.resize(ENUM_TO_UINT(EMaterialTextureType::MAX_COUNT));
 
-    _uint iIndex{};
-    for (auto& OverrideMtl : tUsingModelInfo.vecOverrideMaterial)
-    {
-        if (OverrideMtl.isNull)
-        {
-            iIndex++;
-            continue;
-        }
-        /* Mtl Json 파일이 있는지 확인 */
-        if (!std::filesystem::exists(OverrideMtl.wstrMtl_JsonFile_Path))
-        {
-            //MessageBox(nullptr  , OverrideMtl.wstrMtl_JsonFile_Path.c_str() , MB_OK , 0);
-            continue;
-        }
+    //_uint iIndex{};
+    //for (auto& OverrideMtl : tUsingModelInfo.vecOverrideMaterial)
+    //{
+    //    if (OverrideMtl.isNull)
+    //    {
+    //        iIndex++;
+    //        continue;
+    //    }
+    //    /* Mtl Json 파일이 있는지 확인 */
+    //    if (!std::filesystem::exists(OverrideMtl.wstrMtl_JsonFile_Path))
+    //    {
+    //        //MessageBox(nullptr  , OverrideMtl.wstrMtl_JsonFile_Path.c_str() , MB_OK , 0);
+    //        continue;
+    //    }
 
-        bool isFailed{ false };
-        for (auto& pairTexturePath : OverrideMtl.vecUsingTextureInfo)
-        {
-            tResourceTextureOriginDecs.wstrPath = pairTexturePath.second;
-            tResourceTextureOriginDecs.wstrName = path(pairTexturePath.second).filename().stem().wstring();
-            CTextureBase* pBase = m_pGameInstance->GetOrAddTexture(tResourceTextureOriginDecs.wstrName, &tResourceTextureOriginDecs);
-            if (!pBase)
-            {
-                /* Mtl Json 파일은 있어서 텍스처경로를 읽었지만 텍스처에 그 경로가 없을경우  */
-                MessageBox(nullptr, wstring(L" Ovrride Mtl Make Texture Failed(Check File): " + tResourceTextureOriginDecs.wstrPath).c_str(), MB_OK, 0);
-                isFailed = true;
-                break;
-            }
-            else
-                Safe_Release(pBase);
+    //    bool isFailed{ false };
+    //    for (auto& pairTexturePath : OverrideMtl.vecUsingTextureInfo)
+    //    {
+    //        tResourceTextureOriginDecs.wstrPath = pairTexturePath.second;
+    //        tResourceTextureOriginDecs.wstrName = path(pairTexturePath.second).filename().stem().wstring();
+    //        CTextureBase* pBase = m_pGameInstance->GetOrAddTexture(tResourceTextureOriginDecs.wstrName, &tResourceTextureOriginDecs);
+    //        if (!pBase)
+    //        {
+    //            /* Mtl Json 파일은 있어서 텍스처경로를 읽었지만 텍스처에 그 경로가 없을경우  */
+    //            MessageBox(nullptr, wstring(L" Ovrride Mtl Make Texture Failed(Check File): " + tResourceTextureOriginDecs.wstrPath).c_str(), MB_OK, 0);
+    //            isFailed = true;
+    //            break;
+    //        }
+    //        else
+    //            Safe_Release(pBase);
 
-            vecMateiralTexturePath[Get_IndexByMaterialSlotName(pairTexturePath.first)]
-                = Engine_Utils::ToString(tResourceTextureOriginDecs.wstrName);
-        }
-        if (!isFailed)
-        {
-            CMaterial* pMtl = m_pGameInstance->Get_Resource<CMaterial>(OverrideMtl.wstrMtl_JsonFile_Name);
+    //        vecMateiralTexturePath[Get_IndexByMaterialSlotName(pairTexturePath.first)]
+    //            = Engine_Utils::ToString(tResourceTextureOriginDecs.wstrName);
+    //    }
+    //    if (!isFailed)
+    //    {
+    //        CMaterial* pMtl = m_pGameInstance->Get_Resource<CMaterial>(OverrideMtl.wstrMtl_JsonFile_Name);
 
-            if (pMtl == nullptr)
-            {
-                tDesc.wstrName = OverrideMtl.wstrMtl_JsonFile_Name;
-                tDesc.wstrPath = OverrideMtl.wstrMtl_JsonFile_Path;
-                tDesc.spanTags = vecMateiralTexturePath;
-                m_pGameInstance->Add_Resource<CMaterial>(tDesc.wstrName, CMaterial::Create(m_pDevice, m_pDeviceContext, &tDesc));
-                pMtl = m_pGameInstance->Get_Resource<CMaterial>(OverrideMtl.wstrMtl_JsonFile_Name);
-            }
-            m_vecOverrideMaterials[iIndex] = pMtl;
-        }
+    //        if (pMtl == nullptr)
+    //        {
+    //            tDesc.wstrName = OverrideMtl.wstrMtl_JsonFile_Name;
+    //            tDesc.wstrPath = OverrideMtl.wstrMtl_JsonFile_Path;
+    //            tDesc.spanTags = vecMateiralTexturePath;
+    //            m_pGameInstance->Add_Resource<CMaterial>(tDesc.wstrName, CMaterial::Create(m_pDevice, m_pDeviceContext, &tDesc));
+    //            pMtl = m_pGameInstance->Get_Resource<CMaterial>(OverrideMtl.wstrMtl_JsonFile_Name);
+    //        }
+    //        m_vecOverrideMaterials[iIndex] = pMtl;
+    //    }
 
-        std::fill(vecMateiralTexturePath.begin(), vecMateiralTexturePath.end(), "");
-        ++iIndex;
-    }
+    //    std::fill(vecMateiralTexturePath.begin(), vecMateiralTexturePath.end(), "");
+    //    ++iIndex;
+    //}
 
     return S_OK;
 }
@@ -159,27 +246,63 @@ HRESULT CMapObject::Ready_OverrideMtl(const DTO::USING_MODEL_INFO& tUsingModelIn
 
 HRESULT	CMapObject::Render()
 {
-	if (Super::Render())
+	if (FAILED(Super::Render()))
 		return E_FAIL;
 
-	return S_OK;
+
+    return m_eMapObjectDrawType == EMapObject_DrawType::Instance ? Render_Instance() : m_eMapObjectDrawType == EMapObject_DrawType::Default ? Render_Default() : S_OK ;
+
+}
+
+HRESULT	CMapObject::Render_Instance()
+{
+    CShader* pShader = Get_Component<CShader>();                    if (pShader == nullptr)             return E_FAIL;
+    CModel* pModel = Get_Component<CModel>();                       if (pModel == nullptr)              return E_FAIL;
+    CTransform* pTransform = Get_Component<CTransform>();           if (pTransform == nullptr)          return E_FAIL;
+    CInstanceMesh* pInstanceMesh = Get_Component<CInstanceMesh>();  if (pInstanceMesh == nullptr)       return E_FAIL;
+
+    _uint iMeshCount = static_cast<_uint>(pModel->Get_MeshCount());
+    _uint iInstanceCount = pInstanceMesh->Get_InstanceCount();
+
+    pInstanceMesh->Bind_Instance(1);
+    for (_uint i = 0; i < iMeshCount; ++i)
+    {
+        pModel->Bind_Material(pShader, i);
+        pModel->Bind_MaterialInstance(pShader, i);
+        pShader->Apply();
+        pModel->Render_Instance(i, iInstanceCount);
+    }
+    pInstanceMesh->Unbind_Resource(1);
+
+    return S_OK;
+}
+
+HRESULT	CMapObject::Render_Default()
+{
+    CShader* pShader        = Get_Component<CShader>();      if (pShader == nullptr)         return E_FAIL;
+    CModel* pModel          = Get_Component<CModel>();       if (pModel == nullptr)          return E_FAIL;
+    CTransform* pTransform  = Get_Component<CTransform>();   if (pTransform == nullptr)      return E_FAIL;
+
+
+    /* WorldMatrix 바인딩 */
+    pShader->Bind_TransformData(pTransform->Get_WorldMatrix());
+    _uint iMeshCount = static_cast<_uint>(pModel->Get_MeshCount());
+
+    for (_uint i = 0; i < iMeshCount; ++i)
+    {
+        pModel->Bind_Material(pShader, i);
+        pModel->Bind_MaterialInstance(pShader, i);
+        pShader->Apply();
+        pModel->Render(i);
+    }
+
+    return S_OK;
 }
 
 
 void CMapObject::Free()
 {
-
-	for (auto& Com : m_arrayMapToolComponent)
-	{
-		Safe_Release(Com);
-	}
-
-    for (auto& OverrideMtl : m_vecOverrideMaterials)
-    {
-        Safe_Release(OverrideMtl);
-    }
-
-
 	Super::Free();
+
 
 }

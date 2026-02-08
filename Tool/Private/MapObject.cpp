@@ -8,6 +8,8 @@
 #include "MapToolManager.h"
 #include "InstanceMesh.h"
 #include "Engine_Utils.h"
+#include "DataDocument_Map.h"
+#include "DataStruct_Map.h"
 #include "GameInstance.h"
 
 
@@ -20,7 +22,7 @@ CMapObject::CMapObject(EToolObjectType eType, ID3D11Device* pDevice, ID3D11Devic
     , m_wstrModelPath{L""}
     , m_vecClientMakePathDesc{}
 {
-    m_arrayMapToolComponent.fill(nullptr);
+
 }
 
 
@@ -63,7 +65,7 @@ HRESULT CMapObject::Initialize(void* pArg)
     
 
     /* Model != None */
-    if (m_eMapObjectDrawType != EMapObject_DrawType::None)
+    if (m_eMapObjectDrawType != EMapObject_DrawType::Collider)
     {
         /* Path 값과 모델 네임 입력 */
         m_strModelFileName = Engine_Utils::ToString(path(pDesc->tUsingModelInfo.wstrName));
@@ -305,7 +307,7 @@ HRESULT CMapObject::Add_MapToolComponent(CMapObject::COMPONENT eType)
 
 void CMapObject::Reset_OriginTransform()
 {
-    if (m_eMapObjectDrawType == EMapObject_DrawType::None || m_eMapObjectDrawType == EMapObject_DrawType::Default)
+    if (m_eMapObjectDrawType == EMapObject_DrawType::Collider || m_eMapObjectDrawType == EMapObject_DrawType::Default)
         Get_Component<CTransform>()->Set_WorldMatrix(m_vecOriginSRTs[0].Get_World());
 
     else if (m_eMapObjectDrawType == EMapObject_DrawType::Instance)
@@ -321,7 +323,7 @@ void CMapObject::Reset_OriginTransform()
 
 void CMapObject::Override_OriginTransform()
 {
-    if (m_eMapObjectDrawType == EMapObject_DrawType::None || m_eMapObjectDrawType == EMapObject_DrawType::Default)
+    if (m_eMapObjectDrawType == EMapObject_DrawType::Collider || m_eMapObjectDrawType == EMapObject_DrawType::Default)
     {
         /* 내 SRT값으로 Origin SRT값 갱신 */
         m_vecOriginSRTs[0] = m_vecSRTs[0];
@@ -612,7 +614,7 @@ HRESULT CMapObject::Render()
 
     switch (m_eMapObjectDrawType)
     {
-    case Tool::EMapObject_DrawType::None:                                       return S_OK;
+    case Tool::EMapObject_DrawType::Collider:                                   return S_OK;
     case Tool::EMapObject_DrawType::Default:    if (FAILED(Render_Default()))   return E_FAIL; break;
     case Tool::EMapObject_DrawType::Instance:   if (FAILED(Render_Instance()))  return E_FAIL;   break;
     default:                                                                    return E_FAIL;
@@ -674,6 +676,55 @@ _bool CMapObject::Picking(OUT Vec3& vOut)
     m_iSelectedInstanceID = 0;
 
     return false;
+}
+
+_bool CMapObject::Export_Data(DTO::ECategory eCategory, CDataDocumentBase* pDocument)
+{
+    if (eCategory != DTO::ECategory::MAP)
+        return false;
+
+    CDataDocument_Map* pMapDoc = static_cast<CDataDocument_Map*>(pDocument);
+
+    if (pMapDoc == nullptr) 
+        return false;
+
+    DTO::TMap_MapObjectData tData{};
+
+    tData.strTag = m_strName + std::to_string(m_iObjectID);
+
+    tData.isUELoaded = m_isUELoaded;
+    tData.eMapObjectDrawType = ENUM_TO_UINT(m_eMapObjectDrawType);
+    tData.eClientLevelType = ENUM_TO_UINT(m_eClientLevelType);
+    tData.eClientMakePath = ENUM_TO_UINT(m_eClientMakePath);
+    
+
+    tData.strModelPath = Engine_Utils::ToString(m_wstrModelPath);
+
+
+    if (!m_vecClientMakePathDesc.empty())
+    {
+        for (auto& Desc : m_vecClientMakePathDesc)
+        {
+            /* 안쪽에서 new로 동적할당해서 복사생성해준다 필수 관문 */
+            tData.vecClientMakePathDesc.push_back(CMapToolManager::GetInstance()->Make_Client_MakePathDesc(m_eClientMakePath, Desc));
+        }
+    }
+
+
+    for (auto& My_SRT : m_vecSRTs)
+    {
+        DTO::SRT_DATA tSRT{};
+        tSRT.vScale_Isolated = My_SRT.vScale_Isolated;
+        tSRT.vScale = My_SRT.vScale;
+        tSRT.vQuat = My_SRT.vQuat;
+        tSRT.vPosition = My_SRT.vPosition;
+        tData.vecSRTs.push_back(tSRT);
+    }
+
+    if (FAILED(pMapDoc->Try_Add(tData)))
+        return false;
+
+    return true;
 }
 
 
@@ -790,10 +841,5 @@ void CMapObject::Free()
     for (auto& Desc : m_vecClientMakePathDesc)
         Safe_Delete(Desc);
 
-    for (auto& Script : m_arrayMapToolComponent)
-        Safe_Release(Script);
-
     Super::Free();
-
-
 }

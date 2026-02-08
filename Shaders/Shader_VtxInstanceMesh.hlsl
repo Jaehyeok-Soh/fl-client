@@ -88,7 +88,7 @@ PS_OUT_DEFFERED PS_SELECT(PS_IN_INST_MESH input)
     
     
     
-    if (g_iSelectInstanceID == input.iCurInstanceID)
+    if (g_iSelectInstanceID == (int)input.iCurInstanceID)
     {
         output.vDiffuse.rgb = lerp(vDiffuse.rgb, float3(1.0f, 0.0f, 0.0f), 0.8f);
     }

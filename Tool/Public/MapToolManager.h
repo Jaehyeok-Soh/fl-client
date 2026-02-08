@@ -7,6 +7,7 @@
 NS_BEGIN(Engine)
 
 class  CGameInstance;
+struct CLIENT_MAKEPATH_DESC_BASE;
 
 NS_END
 
@@ -41,7 +42,7 @@ public:
 	void					Mouse_Update(float DT);
 	void					Preview_Update(float DT);
 public:
-	CLIENT_MAKEPATH_DESC_BASE* Make_Client_MakePathDesc( EClientMakePath eClientMakePath  ,CLIENT_MAKEPATH_DESC_BASE* pPrototype = nullptr);
+	CLIENT_MAKEPATH_DESC_BASE* Make_Client_MakePathDesc( EClientMakePath eClientMakePath  , CLIENT_MAKEPATH_DESC_BASE* pPrototype = nullptr);
 
 	HRESULT					Change_Instance_To_OtherDrawType(CMapObject* pChangeMapObject, EMapObject_DrawType eChangeType);
 	void					Delete_Preview();
@@ -65,6 +66,7 @@ public:
 	EClientMakePath			Get_MakeMapObjectClientMakePath()	const { return m_eMakeMapObjectClientMakePath; }
 	EMapObject_DrawType		Get_MakeMapObjectDrawType()			const { return m_eMakeMapObjectDrawType; }
 private:
+
 	ID3D11Device*			m_pDevice{};
 	ID3D11DeviceContext*	m_pContext{};
 	

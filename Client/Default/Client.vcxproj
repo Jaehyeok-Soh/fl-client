@@ -163,7 +163,6 @@
     <ClInclude Include="..\Public\Builder_UI.h" />
     <ClInclude Include="..\Public\CameraMan_Targeter.h" />
     <ClInclude Include="..\Public\Canvas.h" />
-    <ClInclude Include="..\Public\InstanceModel.h" />
     <ClInclude Include="..\public\ImGuiBase.h" />
     <ClInclude Include="..\public\ImGui_ClientDebug.h" />
     <ClInclude Include="..\Public\Client_Defines.h" />
@@ -225,7 +224,7 @@
     <ClInclude Include="..\Public\State_RunShort.h" />
     <ClInclude Include="..\Public\State_Slide.h" />
     <ClInclude Include="..\Public\State_Walk.h" />
-    <ClInclude Include="..\Public\StaticModel.h" />
+    <ClInclude Include="..\Public\StaticObject.h" />
     <ClInclude Include="..\Public\UIAction_Client.h" />
     <ClInclude Include="..\Public\UILayer.h" />
     <ClInclude Include="..\Public\UITargetAction_Client.h" />
@@ -244,7 +243,6 @@
     <ClCompile Include="..\Private\Builder_UI.cpp" />
     <ClCompile Include="..\Private\CameraMan_Targeter.cpp" />
     <ClCompile Include="..\Private\Canvas.cpp" />
-    <ClCompile Include="..\Private\InstanceModel.cpp" />
     <ClCompile Include="..\Private\ColliderPart.cpp" />
     <ClCompile Include="..\Private\ComboContainer.cpp" />
     <ClCompile Include="..\Private\ComboState.cpp" />
@@ -325,7 +323,7 @@
     <ClCompile Include="..\Private\State_RunShort.cpp" />
     <ClCompile Include="..\Private\State_Slide.cpp" />
     <ClCompile Include="..\Private\State_Walk.cpp" />
-    <ClCompile Include="..\Private\StaticModel.cpp" />
+    <ClCompile Include="..\Private\StaticObject.cpp" />
     <ClCompile Include="..\Private\UIAction_Client.cpp" />
     <ClCompile Include="..\Private\UILayer.cpp" />
     <ClCompile Include="..\Private\UITargetAction_Client.cpp" />

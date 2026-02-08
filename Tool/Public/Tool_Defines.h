@@ -131,8 +131,6 @@ namespace Tool
 		return EStaticModel_Type::END;
 	}
 
-
-
 	static std::string TypeToString(EToolObjectType eType)
 	{
 		switch (eType)
@@ -235,7 +233,7 @@ namespace Tool
 #pragma region MapObject Draw Type
 	enum class EMapObject_DrawType
 	{
-		None,
+		Collider,
 		Default,	/* NoneAnim Model */
 		Instance,	/* NoneAnim Mdel Instance Mesh */
 		END
@@ -245,7 +243,7 @@ namespace Tool
 	{
 		switch (eType)
 		{
-		case Tool::EMapObject_DrawType::None:		return "None";
+		case Tool::EMapObject_DrawType::Collider:	return "Collider";
 		case Tool::EMapObject_DrawType::Default:	return "Default";
 		case Tool::EMapObject_DrawType::Instance:	return "Instance";
 		default:									return "UnKnown";
@@ -255,12 +253,13 @@ namespace Tool
 
 	static EMapObject_DrawType EMapObject_DrawType_ToEnum(std::string strType)
 	{
-		if (strType == "None") return Tool::EMapObject_DrawType::None;
-		else if (strType == "Default") return Tool::EMapObject_DrawType::Default;
+		if (strType == "None")			return Tool::EMapObject_DrawType::Collider;
+		else if (strType == "Default")	return Tool::EMapObject_DrawType::Default;
 		else if (strType == "Instance") return Tool::EMapObject_DrawType::Instance;
 
 		return Tool::EMapObject_DrawType::END;
 	};
+
 #pragma endregion
 
 #pragma region Client Make Path

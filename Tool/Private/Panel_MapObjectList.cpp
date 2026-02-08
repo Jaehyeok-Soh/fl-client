@@ -520,7 +520,7 @@ HRESULT CPanel_MapObjectList::Render_ModelInfo()
 {
 	if (m_pSelectMapObject == nullptr) return E_FAIL;
 
-	if (m_pSelectMapObject->Get_MapObjectDrawType() == EMapObject_DrawType::None)
+	if (m_pSelectMapObject->Get_MapObjectDrawType() == EMapObject_DrawType::Collider)
 	{
 		ImGui::Text(" Model Info is Empty.. ");
 		return S_OK;

@@ -43,8 +43,8 @@
 #include "Effect.h"
 #include "EffectObject.h"
 #include "Physics_LandScape.h" // physics test
-#include "StaticModel.h"
-#include "InstanceModel.h"
+#include "StaticObject.h"
+
 //=================
 // UI
 //=================
@@ -165,7 +165,7 @@ HRESULT CLoader::Loading_For_Logo()
 		//if (FAILED(m_pGameInstance->Load_Sounds(L"../../Resources/Sounds")))
 		//	return E_FAIL;
 
-		//if (FAILED(Make_StaticModel_Prototype(ELevelType::LOGO, L"../../Resources/Models/Map/TestMap")))
+		//if (FAILED(Make_StaticObject_Prototype(ELevelType::LOGO, L"../../Resources/Models/Map/TestMap")))
 		//	return E_FAIL;
 	}
 	if (FAILED(m_pGameInstance->Load_Sounds(L"../../Resources/Sounds")))
@@ -247,8 +247,7 @@ HRESULT CLoader::Loading_For_Logo()
 		ADD_PROTOTYPE(ELevelType::LOGO, L"Prototype_GameObject_Effect_Parts", CEffectObject::Create(m_pDevice, m_pDeviceContext));
 
 		/* Map Object */
-		ADD_PROTOTYPE(ELevelType::STATIC, L"Prototype_GameObject_StaticModel", CStaticModel::Create(m_pDevice, m_pDeviceContext));
-		ADD_PROTOTYPE(ELevelType::STATIC, L"Prototype_GameObject_InstanceModel", CInstanceModel::Create(m_pDevice, m_pDeviceContext));
+		ADD_PROTOTYPE(ELevelType::STATIC, L"Prototype_GameObject_StaticObject", CStaticObject::Create(m_pDevice, m_pDeviceContext));
 
 	}
 #pragma endregion
@@ -349,7 +348,7 @@ HRESULT CLoader::Loading_Texture(const wstring& wstrFile)
 	return S_OK;
 }
 
-HRESULT CLoader::Make_StaticModel_Prototype(ELevelType eLevelType, const wstring& wstrFilePath)
+HRESULT CLoader::Make_StaticObject_Prototype(ELevelType eLevelType, const wstring& wstrFilePath)
 {
 	std::filesystem::path filePath{ wstrFilePath };
 	filePath /= "Model";

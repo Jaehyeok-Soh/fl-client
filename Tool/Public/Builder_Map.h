@@ -21,6 +21,7 @@ private:
 	HRESULT		Initialize();
 public:
 	virtual HRESULT Build(const CDataDocumentBase& document) override;
+	HRESULT			Create_MapObject(const DTO::TMap_MapObjectData& tData);
 private:
 	CGameInstance*		m_pGameInstance{ nullptr };
 	CMapToolManager*	m_pMapToolManager{nullptr};

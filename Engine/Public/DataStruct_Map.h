@@ -5,14 +5,14 @@
 
 
 NS_BEGIN(Engine)
-typedef struct tagClientMakePathDesc_Base
+struct CLIENT_MAKEPATH_DESC_BASE
 {
 public:
-	virtual ~tagClientMakePathDesc_Base() {};
+	virtual ~CLIENT_MAKEPATH_DESC_BASE() {};
 public:
 	virtual void	from_Json(const json& LoadJson)PURE;
 	virtual void	To_Json(json& SaveJson)PURE;
-}CLIENT_MAKEPATH_DESC_BASE;
+};
 NS_END
 
 NS_BEGIN(DTO)
@@ -21,29 +21,70 @@ NS_BEGIN(DTO)
 
 enum class EMapObject_Type : _uint
 {
-	STATICMODEL,
-	INSTANCEMODEL,
+	MAPOBJECT,
 	END
 };
 
-enum class EMapObject_Type : _uint
+enum class EClientLevelType : unsigned int
 {
+	STATIC = 0,
+	LOADING,
+	LOGO,
+	END
+};
 
+enum class EMapObject_DrawType
+{
+	Collider,
+	Default,
+	Instance,
+	END
+};
+
+enum class EClientMakePath
+{
+	StaticObject,
 	END
 };
 
 
 inline constexpr _uint g_MapObjectTypeCount{ ENUM_TO_UINT(EMapObject_Type::END) };
+inline constexpr _uint g_MapObjecTDrawTypeCount{ ENUM_TO_UINT(EMapObject_DrawType::END) };
+inline constexpr _uint g_ClientLevelType{ ENUM_TO_UINT(EClientLevelType::END) };
+inline constexpr _uint g_ClientMakePath{ ENUM_TO_UINT(EClientMakePath::END)};
 
 /* String으로 자동 변환되어서 저당된다  */
 
 NLOHMANN_JSON_SERIALIZE_ENUM(EMapObject_Type,
 	{
-		{EMapObject_Type::STATICMODEL, "STATICMODEL"},
-		{EMapObject_Type::INSTANCEMODEL, "INSTANCEMODEL"},
-		{EMapObject_Type::END, "END"},
+		{EMapObject_Type::MAPOBJECT, "MAPOBJECT"},
+		{EMapObject_Type::END, "UnKnown"},
 	}
 	)
+
+NLOHMANN_JSON_SERIALIZE_ENUM(EClientLevelType,
+		{
+			{EClientLevelType::LOADING, "LOADING"},
+			{EClientLevelType::LOGO,	"LOGO"},
+			{EClientLevelType::STATIC,	"STATIC"},
+			{EClientLevelType::END,		"UnKnown"},
+		}
+		)
+NLOHMANN_JSON_SERIALIZE_ENUM(EMapObject_DrawType,
+		{
+			{EMapObject_DrawType::Collider, "Collider"},
+			{EMapObject_DrawType::Default,	"Default"},
+			{EMapObject_DrawType::Instance,	"Instance"},
+			{EMapObject_DrawType::END,		"END"},
+		}
+		)
+
+	NLOHMANN_JSON_SERIALIZE_ENUM(EClientMakePath,
+		{
+			{EClientMakePath::StaticObject, "StaticObject"},
+			{EClientMakePath::END,			"Unknown"},
+		}
+		)
 
 	/////////////////-------------------  ObjectStruct  -------------------/////////////////
 
@@ -99,22 +140,17 @@ typedef struct TMap_MapObjectData
 	/* UE Load Check */
 	bool								isUELoaded{ false };
 	string								strTag{};
- 
+	string								strModelPath{ "" };
 
 	/* Client Make Level Type */
-	string								strClientLevelType{};
-	string								strClientMakePath{};
-	string								str
+	_uint	eClientMakePath{};
+	_uint	eClientLevelType{};
+	_uint	eMapObjectDrawType{};
 
-	/* Model Info */
-	USING_MODEL_INFO					tUsingModelInfo{};
-	
 	/* SRT Data , Cient Make Path Desc */
 	vector<SRT_DATA>					vecSRTs{};
 	vector<CLIENT_MAKEPATH_DESC_BASE*>	vecClientMakePathDesc{};
-};
-
-
+}MAPOBJECTDATA;
 #pragma endregion
 
 #pragma endregion
@@ -158,19 +194,19 @@ private:
 public:
 
 public:
-	_uint Get_Type() const override { return ENUM_TO_UINT(DTO::EMapObject_Type::STATICMODEL);}
+	_uint Get_Type() const override { return ENUM_TO_UINT(DTO::EMapObject_Type::MAPOBJECT);}
 	const string& Get_Tag() const override { return m_tData.strTag; }
 	
 	json	ToJson() const override;
 	HRESULT FromJson(const json& j) override;
 
-	const DTO::TMap_MapObjectData& Get_Data() const { return m_tData; }
-	DTO::TMap_MapObjectData& Get_Data() { return m_tData; }
+	const DTO::TMap_MapObjectData&	Get_Data() const { return m_tData; }
+	DTO::TMap_MapObjectData&		Get_Data() { return m_tData; }
 private:
 	DTO::TMap_MapObjectData		m_tData{};
 public:
 	static CData_MapObject* Create() { return new CData_MapObject(); }
-	virtual void Free() override { Super::Free(); }
+	virtual void Free() override;
 };
 
 

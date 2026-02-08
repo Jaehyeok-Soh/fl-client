@@ -1,12 +1,13 @@
 #include "pch.h"
 #include "MapToolManager.h"
-#include "GameInstance.h"
 #include "MapObject.h"
 #include "ImGui_ToolManager.h"
 #include "Picking_ToolManager.h"
 #include "DebugLine.h"
 #include "Model.h"
+#include "DataStruct_Map.h"
 #include "Level_Map.h"
+#include "GameInstance.h"
 
 IMPLEMENT_SINGLETON(CMapToolManager)
 

@@ -42,7 +42,7 @@ public:
 		vector<Tool::SRT_DATA>				vecSRTs{};
 
 		/* 사용할 Draw 방법과 모델관련 */
-		EMapObject_DrawType					eMapObjectDrawType{ EMapObject_DrawType::None };
+		EMapObject_DrawType					eMapObjectDrawType{ EMapObject_DrawType::Default };
 
 
 		Tool::tagUsingModelInfo				tUsingModelInfo{};
@@ -156,14 +156,14 @@ public:
 public:
 	_bool								IntsersectWithPlane(OUT Vec3& vOut);
 	_bool								Picking(OUT Vec3& vOut);
-
+	virtual _bool						Export_Data(DTO::ECategory eCategory, CDataDocumentBase* pDocument)override;
 private:
 
 	HRESULT								Render_Default();
 	HRESULT								Render_Instance();
 
 protected:
-	
+
 	EMapObject_Type					m_eMapObjectType	{ EMapObject_Type::END };
 	EMapObject_DrawType				m_eMapObjectDrawType{ EMapObject_DrawType::Default };
 	std::wstring					m_wstrModelPath		{ L"" };
@@ -183,16 +183,17 @@ protected:
 
 	/* Instance 전용 Select ID */
 	_int							m_iSelectedInstanceID{0};
-	/* Override Material을 담아줄 변수 */
-	vector<CMaterial*>				m_vecOverrideMaterials;
-	bool							m_isUseOverrideMaterials{false};
 
 	/* SRT Data */
 	vector<Tool::SRT_DATA>			m_vecOriginSRTs{};	//
 	vector<Tool::SRT_DATA>			m_vecSRTs{};
 
-	/* 추후 MapObject Component 를 들고있을 멤버변수 */
-	array< CMonoBehaviour*, ENUM_TO_UINT(CMapObject::COMPONENT::END)>	m_arrayMapToolComponent{};
+
+	/* 임시 패기처분 */
+	/* Override Material을 담아줄 변수 */
+	vector<CMaterial*>				m_vecOverrideMaterials;
+	bool							m_isUseOverrideMaterials{ false };
+
 public:
 	static CMapObject*		Create(EToolObjectType eType, ID3D11Device* pDevice, ID3D11DeviceContext* pContext);
 	virtual CGameObject*	Clone(void* pArg);
