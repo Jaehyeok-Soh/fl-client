@@ -290,7 +290,7 @@ public:
 	void ClearPhysics();
 	PxTransform XMMatrixToPxTransform(Matrix mat);
 	Matrix PxTransformToXMMatrix(PxTransform pxTransform);
-	_bool Execute_Overlap(PxGeometry& shape, PxTransform transform, OUT PxOverlapBuffer hit, PxQueryFilterData& filterData, PxQueryFilterCallback* filterCallback);
+	_bool Execute_Overlap(PxGeometry& shape, PxTransform& transform, OUT PxOverlapBuffer hit, PxQueryFilterData& filterData, PxQueryFilterCallback* filterCallback);
 	class CPhysics_QueryFilterCallback* GetQueryFilterCallback();
 	void SerializeStaticMesh(std::filesystem::path path, vector<PxTriangleMesh*> meshes);
 	PxCollection* DeserializeStaticMesh(std::filesystem::path path);

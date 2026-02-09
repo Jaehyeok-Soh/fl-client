@@ -145,7 +145,8 @@ HRESULT CPhysics_Utils::Render(PxRigidActor* pActor, XMVECTOR color)
 			break;
 		case physx::PxGeometryType::eTRIANGLEMESH:
 		{
-			DX::DrawMesh(m_pBatch, geom, globalPose, matWorld);
+			if (m_bIsOnMeshDebug)
+				DX::DrawMesh(m_pBatch, geom, globalPose, matWorld);
 		}
 		break;
 		case physx::PxGeometryType::eHEIGHTFIELD:
@@ -329,7 +330,7 @@ _bool CPhysics_Utils::RayCast()
 	return m_bRayHit;
 }
 
-_bool CPhysics_Utils::Execute_Overlap(PxGeometry& shape, PxTransform transform, OUT PxOverlapBuffer hit, PxQueryFilterData& filterData, PxQueryFilterCallback* filterCallback)
+_bool CPhysics_Utils::Execute_Overlap(PxGeometry& shape, PxTransform& transform, OUT PxOverlapBuffer hit, PxQueryFilterData& filterData, PxQueryFilterCallback* filterCallback)
 {
 	return m_pScene->overlap(shape, transform, hit, filterData, filterCallback);
 }
@@ -337,6 +338,11 @@ _bool CPhysics_Utils::Execute_Overlap(PxGeometry& shape, PxTransform transform, 
 CPhysics_QueryFilterCallback* CPhysics_Utils::GetQueryFilterCallback()
 {
 	return CPhysics_QueryFilterCallback::Create();
+}
+
+void CPhysics_Utils::SetMeshDebugState()
+{
+	m_bIsOnMeshDebug = !m_bIsOnMeshDebug;
 }
 
 CPhysics_Utils* CPhysics_Utils::Create(ID3D11Device* pDevice, ID3D11DeviceContext* pContext, PxPhysics* pPhysics, PxScene* pScene)

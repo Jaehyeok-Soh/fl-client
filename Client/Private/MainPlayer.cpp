@@ -81,6 +81,8 @@ HRESULT CMainPlayer::Initialize(void* pArg)
     if (FAILED(Ready_CCT()))
         return E_FAIL;
 
+    
+
     return S_OK;
 }
 

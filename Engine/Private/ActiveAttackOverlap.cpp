@@ -1,6 +1,7 @@
 #include "Engine_pch.h"
 #include "ActiveAttackOverlap.h"
 #include "GameInstance.h"
+#include "EngineConsole.h"
 
 #include "GameObject.h"
 
@@ -13,6 +14,8 @@ CActiveAttackOverlap::CActiveAttackOverlap()
 
 HRESULT CActiveAttackOverlap::Initialize()
 {
+	m_strEventString = L"[On collision enter : Attac Overlap]\n";
+
 	return S_OK;
 }
 
@@ -27,9 +30,12 @@ void CActiveAttackOverlap::Update(_float fTimeDelta)
 
 	Tick(fTimeDelta);
 
-	_bool bResult = m_pGameInstance->Execute_Overlap(m_tHitboxDesc->geometry.any(), m_pxTransform, hitBuffer, m_tHitboxDesc->filterData, (PxQueryFilterCallback*)m_tHitboxDesc->filterCallback);
-
-	if (bResult)
+	if (m_pGameInstance->Execute_Overlap(
+		m_tHitboxDesc->geometry.any(),
+		m_pxTransform,
+		hitBuffer,
+		m_tHitboxDesc->filterData,
+		(PxQueryFilterCallback*)m_tHitboxDesc->filterCallback))
 	{
 		for (PxU32 i = 0; i < hitBuffer.nbTouches; i++)
 		{
@@ -38,8 +44,11 @@ void CActiveAttackOverlap::Update(_float fTimeDelta)
 			if (CheckAlreadyHit(hitObject))
 				continue;
 
-			hitObject->OnCollision_Enter(m_tHitboxDesc->eFilterLayer, m_pOwner);
+#ifdef _DEBUG
+			Debug_Log(hitObject);
+#endif // _DEBUG
 
+			hitObject->OnCollision_Enter(m_tHitboxDesc->eFilterLayer, m_pOwner);
 			m_hitObjects.insert(hitObject);
 		}
 	}
@@ -96,7 +105,26 @@ _bool CActiveAttackOverlap::CheckAlreadyHit(CGameObject* hitObject)
 #ifdef _DEBUG
 void CActiveAttackOverlap::Render()
 {
-	m_pGameInstance->Physics_Render(m_tHitboxDesc->geometry.any(), m_pxTransform);
+	m_pGameInstance->Physics_Render(m_tHitboxDesc->geometry.any(), m_pxTransform, DirectX::Colors::DarkTurquoise);
+}
+
+void CActiveAttackOverlap::Debug_Log(CGameObject* hitObject)
+{
+	wstring logHeader = m_strEventString;
+	wstring leftInfo = {};
+	wstring rightInfo = {};
+
+	if (m_pOwner)
+		leftInfo = m_pOwner->Get_WName() + L", ID : " + std::to_wstring(m_pOwner->Get_ID()) + L"\n";
+	else
+		leftInfo = L"NULL\n";
+
+	if (hitObject)
+		rightInfo = hitObject->Get_WName() + L", ID : " + std::to_wstring(hitObject->Get_ID()) + L"\n";
+	else
+		rightInfo = L"NULL\n";
+
+	CLOG_INFO(logHeader + leftInfo + rightInfo);
 }
 #endif // _DEBUG
 

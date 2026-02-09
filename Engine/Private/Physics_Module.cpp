@@ -194,6 +194,8 @@ void CPhysics_Module::StepPhysics(_float fTimeDelta)
 #ifdef _DEBUG
 	if (KEY_BUTTON_DOWN(DIK_F1))
 		m_bEnabledDebugDraw = !m_bEnabledDebugDraw;
+	if (KEY_BUTTON_DOWN(DIK_F2))
+		m_pUtils->SetMeshDebugState();
 #endif // _DEBUG
 }
 
@@ -222,7 +224,7 @@ PxVec3 CPhysics_Module::GetPureScale(Matrix mat)
 	return m_pUtils->GetPureScale(mat);
 }
 
-_bool CPhysics_Module::Execute_Overlap(PxGeometry& shape, PxTransform transform, OUT PxOverlapBuffer hit, PxQueryFilterData& filterData, PxQueryFilterCallback* filterCallback)
+_bool CPhysics_Module::Execute_Overlap(PxGeometry& shape, PxTransform& transform, OUT PxOverlapBuffer hit, PxQueryFilterData& filterData, PxQueryFilterCallback* filterCallback)
 {
 	return m_pUtils->Execute_Overlap(shape, transform, hit, filterData, filterCallback);
 }
