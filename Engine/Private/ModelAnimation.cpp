@@ -121,6 +121,7 @@ _bool CModelAnimation::Update_TransformMatrices(CComputeShader* pAnimECS,_float 
 	// 가변 데이터 작성
 	CS_MU_TRACK tMuDesc{};
 	tMuDesc.fCurTrackPosition = m_fCurrentTrackPosition;
+	tMuDesc.iChannelCount = m_iChannelCount;
 	pAnimECS->Bind_Compute_Track(tMuDesc);
 	
 	// dispatch
@@ -187,26 +188,30 @@ HRESULT CModelAnimation::Ready_BindBuffers(CComputeShader* pAnimESahder)
 	CS_IMMU_ANIM_KEYFRAME* pIniailKeyData = new CS_IMMU_ANIM_KEYFRAME[m_iKeyFrameBufferSize];
 	CS_IMMU_ANIM_CHANNELDATA* pIniailChannelData = new CS_IMMU_ANIM_CHANNELDATA[m_iChannelSize];
 
+	_uint iKeyAcc = {};
+
 	// 2. 버퍼 내용을 쓴다
 	for (size_t i = 0; i < m_vecChannels.size(); i++)
 	{
 		vector<KEYFRAME> KeyFrames = m_vecChannels[i]->Get_KeyFrames();
 
 		// 2.1 key frame은 그대로 받기
-		for (auto& KeyFrame : KeyFrames)
+		for(size_t j =  0 ; j< KeyFrames.size() ; j++)
 		{
-			pIniailKeyData[i].vScale = KeyFrame.vScale;
-			pIniailKeyData[i].vQuat = KeyFrame.vQuaterion;
-			pIniailKeyData[i].vTranslation = KeyFrame.vTranslation;
-			pIniailKeyData[i].fTrackPosition = KeyFrame.fTrackPosition;
-			pIniailKeyData[i].fPadding0 = 0.f;
+			pIniailKeyData[iKeyAcc + j].vScale = KeyFrames[j].vScale;
+			pIniailKeyData[iKeyAcc + j].vQuat = KeyFrames[j].vQuaterion;
+			pIniailKeyData[iKeyAcc + j].vTranslation = KeyFrames[j].vTranslation;
+			pIniailKeyData[iKeyAcc + j].fTrackPosition = KeyFrames[j].fTrackPosition;
+			pIniailKeyData[iKeyAcc + j].fPadding0 = 0.f;
 		}
 
 		// 2.2 채널당 정보이므로 여기서 작성
 		pIniailChannelData[i].iBoneIndex = m_vecChannels[i]->Get_BoneIndex();
-		pIniailChannelData[i].iKeyStart = (_uint)i;
+		pIniailChannelData[i].iKeyStart = iKeyAcc;
 		pIniailChannelData[i].iKeyCount = _uint(KeyFrames.size());
-		pIniailChannelData[i].iBoneIndex = m_iRootBoneIdx;
+		pIniailChannelData[i].iRootMotionBoneIndex = m_iRootBoneIdx;
+
+		iKeyAcc += _uint(KeyFrames.size());
 
 		// 2.3 root channel 캐싱
 		if ((_uint)i == m_iRootBoneIdx)
