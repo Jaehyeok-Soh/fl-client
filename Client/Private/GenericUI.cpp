@@ -8,9 +8,7 @@
 #include "Texture.h"
 #include "Shader.h"
 #include "VIBuffer_Rect_Tex.h"
-#include "UIAction_Registry.h"
-#include "UIAction_Client.h"
-#include "UITargetAction_Client.h"
+#include "UIProgress_Component.h"
 #include "GameInstance.h"
 
 CGenericUI::CGenericUI(ID3D11Device* pDevice, ID3D11DeviceContext* pDeviceContext)
@@ -33,30 +31,21 @@ HRESULT CGenericUI::Initialize_Prototype()
 HRESULT CGenericUI::Initialize(void* pArg)
 {
 	GENERIC_UI_DESC* pDesc = static_cast<GENERIC_UI_DESC*>(pArg);
-
-	m_eRectTransformType = static_cast<ERectTransform>(pDesc->iRectTransformType);
-	m_wstrTextureTag = pDesc->wstrTextureTag;
-	m_iTextureIndex = pDesc->iTextureIndex;
-
-	m_pParentCanvasCache = pDesc->pCanvasCache;
-	m_pParentLayerCache = pDesc->pLayerCache;
+	
+	m_eRectTransformType	= static_cast<ERectTransform>(pDesc->iRectTransformType);
+	m_wstrTextureTag		= pDesc->wstrTextureTag;
+	m_iTextureIndex			= pDesc->iTextureIndex;
+	m_iComponentFlag		= pDesc->iComponentFlag;
+	m_pParentCanvasCache	= pDesc->pCanvasCache;
+	m_isUseColorTint		= pDesc->isUseColorTint;
+	m_vColorTint			= pDesc->vColorTint;
+	m_iShaderPass			= pDesc->iShaderPass;
+	m_iFillDir				= pDesc->iFillDir;
 
 	if (FAILED(Super::Initialize(pArg)))
 		return E_FAIL;
 
-	if (FAILED(Ready_Components(pDesc)))
-		return E_FAIL;
-
-	m_pActionForMe = CUIAction_Client::Create(this);
-	if (nullptr == m_pActionForMe)
-		return E_FAIL;
-	m_pActionForTarget = CUITargetAction_Client::Create(this);
-	if (nullptr == m_pActionForTarget)
-	{
-		Safe_Release(m_pActionForMe);
-		return E_FAIL;
-	}
-
+	Get_Component<CShader>()->Set_Pass(m_iShaderPass);
 	return S_OK;
 }
 
@@ -65,68 +54,42 @@ HRESULT CGenericUI::Awake(const _uint iCurrentLevelID)
 	if (FAILED(Super::Awake(iCurrentLevelID)))
 		return E_FAIL;
 
-	m_iInteractState = static_cast<uint32_t>(DTO::EUIEvent_Flag::NONE);
-
+	m_iInteractState = static_cast<uint32_t>(EUIEvent_Flag::NONE);
 	return S_OK;
 }
 
 void CGenericUI::Update_Priority(const _float fTimeDelta)
 {
-	if (m_isVisible)
-	{
-		Super::Update_Priority(fTimeDelta);
-	}
+	Super::Update_Priority(fTimeDelta);
 }
 
 void CGenericUI::Update(const _float fTimeDelta)
 {
-	if (m_isVisible)
-	{
-		m_vRenderPos = Vec3{ m_vRectPos.x + m_vMoveOffset.x + m_fX, m_vRectPos.y + m_vMoveOffset.y + m_fY, m_fZ };
-		Move_Position(m_vRenderPos.x, m_vRenderPos.y, m_vRenderPos.z);
+	m_vRenderPos = Vec3{ m_vRectPos.x + m_vMoveOffset.x + m_fX, m_vRectPos.y + m_vMoveOffset.y + m_fY, m_fZ };
+	Move_Position(m_vRenderPos.x, m_vRenderPos.y, m_vRenderPos.z);
 
-		m_tRenderRect.left		= static_cast<LONG>(m_vRenderPos.x - (m_fWidth * 0.5f));
-		m_tRenderRect.right		= static_cast<LONG>(m_vRenderPos.x + (m_fWidth * 0.5f));
-		m_tRenderRect.top		= static_cast<LONG>(m_vRenderPos.y - (m_fHeight * 0.5f));
-		m_tRenderRect.bottom	= static_cast<LONG>(m_vRenderPos.y + (m_fHeight * 0.5f));
-		Super::Update(fTimeDelta);
-	}
+	m_tRenderRect.left		= static_cast<LONG>(m_vRenderPos.x - (m_fWidth * 0.5f));
+	m_tRenderRect.right		= static_cast<LONG>(m_vRenderPos.x + (m_fWidth * 0.5f));
+	m_tRenderRect.top		= static_cast<LONG>(m_vRenderPos.y - (m_fHeight * 0.5f));
+	m_tRenderRect.bottom	= static_cast<LONG>(m_vRenderPos.y + (m_fHeight * 0.5f));
+
+	Super::Update(fTimeDelta);
 }
 
 void CGenericUI::Update_Late(const _float fTimeDelta)
 {
-	if (m_isVisible)
-	{
-		Lerp_Movement(fTimeDelta);
-		Return_Lerp_Movement(fTimeDelta);
-		Super::Update_Late(fTimeDelta);
-	}
+	Super::Update_Late(fTimeDelta);
 }
 
 void CGenericUI::Ready_Before_Render(const _float fTimeDelta)
 {
-	if (m_isVisible)
-	{
-		Acting_By_InteractState();
-		Super::Ready_Before_Render(fTimeDelta);
-	}
+	Super::Ready_Before_Render(fTimeDelta);
 }
 
 HRESULT CGenericUI::Render()
 {
-	if (!m_isVisible)
-		return S_OK;
-
 	if (FAILED(Super::Render()))
 		return E_FAIL;
-
-	if (FAILED(Bind_ShaderResources()))
-		return E_FAIL;
-
-	Get_Component<CShader>()->Apply();
-	Get_Component<CVIBuffer>()->Bind_Resource();
-	Get_Component<CVIBuffer>()->Render();
-
 	return S_OK;
 }
 
@@ -139,263 +102,97 @@ _bool CGenericUI::Calc_HitEvent()
 
 void CGenericUI::Acting_By_InteractState()
 {
-	if (Engine_Utils::Has_Flag(m_iInteractState, DTO::EUIEvent_Flag::INVOKED))
+	if (Engine_Utils::Has_Flag(m_iInteractState, EUIEvent_Flag::INVOKED))
 	{
-		Excute_Action(DTO::EUIEvent::INVOKED);
-		Engine_Utils::RemoveSoft_Flag(m_iInteractState, DTO::EUIEvent_Flag::INVOKED);
-		return;
 	}
 
-	if (m_iInteractState == DTO::EUIEvent_Flag::NONE)
-		Excute_Action(DTO::EUIEvent::NONE);
+	if (m_iInteractState == EUIEvent_Flag::NONE)
+	{
+	}
 	else
 	{
-		if (Engine_Utils::Has_Flag(m_iInteractState, DTO::EUIEvent_Flag::PRESS_ENTER))
+		if (Engine_Utils::Has_Flag(m_iInteractState, EUIEvent_Flag::PRESS_ENTER))
 		{
-			Excute_Action(DTO::EUIEvent::PRESS_ENTER);
 		}
-		else if (Engine_Utils::Has_Flag(m_iInteractState, DTO::EUIEvent_Flag::PRESS_EXIT))
+		else if (Engine_Utils::Has_Flag(m_iInteractState, EUIEvent_Flag::PRESS_EXIT))
 		{
-			Excute_Action(DTO::EUIEvent::PRESS_EXIT);
 		}
-		else if (Engine_Utils::Has_Flag(m_iInteractState, DTO::EUIEvent_Flag::HOVER_ENTER))
+		else if (Engine_Utils::Has_Flag(m_iInteractState, EUIEvent_Flag::HOVER_ENTER))
 		{
-			Excute_Action(DTO::EUIEvent::HOVER_ENTER);
 		}
-		else if (Engine_Utils::Has_Flag(m_iInteractState, DTO::EUIEvent_Flag::HOVER_EXIT))
+		else if (Engine_Utils::Has_Flag(m_iInteractState, EUIEvent_Flag::HOVER_EXIT))
 		{
-			Excute_Action(DTO::EUIEvent::HOVER_EXIT);
 		}
 
-		if (Engine_Utils::Has_Flag(m_iInteractState, DTO::EUIEvent_Flag::PRESSING))
+		if (Engine_Utils::Has_Flag(m_iInteractState, EUIEvent_Flag::PRESSING))
 		{
-			Excute_Action(DTO::EUIEvent::PRESSING);
 		}
-		else if (Engine_Utils::Has_Flag(m_iInteractState, DTO::EUIEvent_Flag::HOVERING))
+		else if (Engine_Utils::Has_Flag(m_iInteractState, EUIEvent_Flag::HOVERING))
 		{
-			Excute_Action(DTO::EUIEvent::HOVERING);
 		}
 	}
-}
-
-
-HRESULT CGenericUI::Bind_Action(DTO::EUIEvent EventType, DTO::EUIAction ActType, const json& params)
-{
-	const size_t index = ENUM_TO_SZET(EventType);
-	if (index >= m_vecBindingActions.size())
-		return E_FAIL;
-
-	DTO::TUI_EventBindData Desc = {};
-	Desc.strOwnerTag = m_strName;
-	Desc.strActionKey = DTO::UIFunctypeToString(ActType);
-	Desc.eEvent = EventType;
-	Desc.Params = params;
-	m_vecBindingActionData[index].push_back(Desc);
-	auto Func = m_pGameInstance->Get_UIAction_Registry()->Build_Action(ActType, params);
-	if (!Func)
-		return E_FAIL;
-	m_vecBindingActions[index].push_back(std::move(Func));
-	return S_OK;
-}
-
-HRESULT CGenericUI::Remove_Action(DTO::EUIEvent EventType, DTO::EUIAction ActType)
-{
-	const size_t EventIndex = ENUM_TO_SZET(EventType);
-	if (EventIndex >= m_vecBindingActionData.size())
-		return E_FAIL;
-
-	_bool isRemoved = { FALSE };
-	for (auto iter = m_vecBindingActionData[EventIndex].begin(); iter != m_vecBindingActionData[EventIndex].end(); iter++)
-	{
-		if (DTO::StringToUIFunctype(iter->strActionKey) == ActType)
-		{
-			m_vecBindingActionData[EventIndex].erase(iter);
-			isRemoved = TRUE;
-			break;
-		}
-	}
-	if (!isRemoved)
-	{
-		MSG_BOX("CToolUI::Remove_Action, No Action with Match strActionKey");
-		return E_FAIL;
-	}
-	m_vecBindingActions[EventIndex].clear();
-	if (FAILED(ReBind_Action()))
-		return E_FAIL;
-	return S_OK;
-}
-
-HRESULT CGenericUI::Excute_Action(DTO::EUIEvent EventType)
-{
-	if (nullptr == m_pActionForMe)
-		return E_FAIL;
-
-	size_t index = ENUM_TO_SZET(EventType);
-	if (index >= m_vecBindingActions.size())
-		return E_FAIL;
-
-	for (auto& fn : m_vecBindingActions[index])
-		fn(m_pActionForMe, m_pActionForTarget);
-	return S_OK;
-}
-
-HRESULT CGenericUI::ReBind_Action()
-{
-	for (uint32_t i = 0; i < m_vecBindingActionData.size(); ++i)
-	{
-		m_vecBindingActions[i].clear();
-		for (auto& data : m_vecBindingActionData[i])
-		{
-			auto Func = m_pGameInstance->Get_UIAction_Registry()->Build_Action(DTO::StringToUIFunctype(data.strActionKey), data.Params);
-			if (!Func)
-				return E_FAIL;
-			m_vecBindingActions[i].push_back(std::move(Func));
-		}
-	}
-	return S_OK;
 }
 
 HRESULT CGenericUI::Ready_Components(GENERIC_UI_DESC* pDesc)
 {
-	if (FAILED(Add_Component<CTexture>(ENUM_TO_UINT(ELevelType::STATIC), m_wstrTextureTag, pDesc)))
+	if (FAILED(Add_Component<CTexture>(ENUM_TO_UINT(ELevelType::STATIC), L"Prototype_Component_Texture_Empty", pDesc)))
 		return E_FAIL;
 	if (FAILED(Add_Component<CShader>(0, L"Prototype_Component_Shader_VtxPosTex", pDesc)))
 		return E_FAIL;
 	if (FAILED(Add_Component<CVIBuffer_Rect_Tex>(0, L"Prototype_Component_VIBuffer_Rect_Tex", pDesc)))
 		return E_FAIL;
+
 	return S_OK;
 }
 
 HRESULT CGenericUI::Bind_ShaderResources()
 {
 	CShader* pShader = Get_Component<CShader>();
-	if (FAILED(Get_Component<CTransform>()->Bind_ShaderResource(pShader)))
-		return E_FAIL;
-	if (FAILED(Get_Component<CTexture>()->Bind_ShaderResource(pShader, m_iTextureIndex)))
-		return E_FAIL;
+	if (m_iShaderPass == ENUM_TO_UINT(EUIShaderPass::DEFAULT))
+	{
+		if (FAILED(Get_Component<CTexture>()->Bind_ShaderResourceBuffer(pShader)))
+			return E_FAIL;
+	}
+	else if (m_iShaderPass == ENUM_TO_UINT(EUIShaderPass::DEFAULT_ALPHA))
+	{
+		if (FAILED(Get_Component<CTexture>()->Bind_ShaderResourceBuffer(pShader)))
+			return E_FAIL;
+	}
+	else if (m_iShaderPass == ENUM_TO_UINT(EUIShaderPass::COLOR))
+	{
+		if (FAILED(pShader->Get_Variable("g_vColorTint")->SetRawValue(&m_vColorTint, 0, sizeof(Vec4))))
+			return E_FAIL;
+	}
+	else if (m_iShaderPass == ENUM_TO_UINT(EUIShaderPass::FADE))
+	{
+		if (FAILED(Get_Component<CTexture>()->Bind_ShaderResourceBuffer(pShader)))
+			return E_FAIL;
+
+		if (FAILED(pShader->Get_Variable("g_fAlphaRatio")->SetRawValue(&m_fAlpha_Ratio, 0, sizeof(_float))))
+			return E_FAIL;
+	}
+	else if (m_iShaderPass == ENUM_TO_UINT(EUIShaderPass::PROGRESS))
+	{
+		if (FAILED(Get_Component<CTexture>()->Bind_ShaderResourceBuffer(pShader)))
+			return E_FAIL;
+
+		if (FAILED(pShader->Get_Variable("g_isColor")->SetRawValue(&m_isUseColorTint, 0, sizeof(_bool))))
+			return E_FAIL;
+
+		if (FAILED(pShader->Get_Variable("g_vColorTint")->SetRawValue(&m_vColorTint, 0, sizeof(Vec4))))
+			return E_FAIL;
+
+		if (FAILED(pShader->Get_Variable("g_fProgressRatio")->SetRawValue(&m_fProgress_Ratio, 0, sizeof(_float))))
+			return E_FAIL;
+
+		if (FAILED(pShader->Get_Variable("g_iFillDir")->SetRawValue(&m_iFillDir, 0, sizeof(uint32_t))))
+			return E_FAIL;
+	}
+
 	return S_OK;
-}
-
-void CGenericUI::Start_Lerp_Movement(const Vec3& vTargetPos, const _float fTargetAlpha, const _float& fDuration, _bool isPin)
-{
-	m_vLerpMovement_StartPos = m_vRenderPos; /* vRenderPos -> Local */
-	m_vLerpMovement_TargetPos = vTargetPos; /* vTargetPos -> Local */
-
-	m_fLerpMovement_TargetAlpha = fTargetAlpha;
-	m_fLerpMovement_Duration = fDuration;
-	m_fLerpMovement_TimeAcc = 0.f;
-	m_isPlaying_Lerp_Movement = true;
-	m_isLerpMovement_Pin = isPin;
-}
-
-void CGenericUI::Start_Return_Lerp_Movement()
-{
-	m_vLerpMovement_StartPos = m_vMoveOffset;
-	m_vLerpMovement_TargetPos = Vec3{ 0.f, 0.f, 0.f };
-
-	m_fLerpMovement_TimeAcc = 0.f;
-	m_isPlaying_Return_Lerp_Movement = true;
-	m_isMoved = false;
-}
-
-void CGenericUI::Lerp_Movement(const _float fTimeDelta)
-{
-	if (!m_isPlaying_Lerp_Movement || m_isMoved || m_isPlaying_Return_Lerp_Movement)
-		return;
-
-	if (m_fLerpMovement_Duration <= 0.f)
-	{
-		m_vMoveOffset = m_vLerpMovement_TargetPos - m_vLerpMovement_StartPos;
-		m_isPlaying_Lerp_Movement = false;
-		return;
-	}
-
-	m_fLerpMovement_TimeAcc += fTimeDelta;
-
-	_float t = m_fLerpMovement_TimeAcc / m_fLerpMovement_Duration;
-	if (t >= 1.f) t = 1.f;
-	else if (t <= 0.f) t = 0.f;
-
-	_float s = t;
-	if (m_fLerpMovement_TargetAlpha > 0.f)
-		s = 1.f - powf(1.f - t, m_fLerpMovement_TargetAlpha);
-
-	m_vMoveOffset = (m_vLerpMovement_TargetPos - m_vLerpMovement_StartPos) * s;
-
-	if (t >= 1.f)
-	{
-		if (m_isLerpMovement_Pin)
-		{
-			m_vMoveOffset = m_vLerpMovement_TargetPos - m_vLerpMovement_StartPos;
-			m_isMoved = TRUE;
-		}
-		else
-		{
-			Start_Return_Lerp_Movement();
-		}
-
-		m_isPlaying_Lerp_Movement = false;
-	}
-}
-
-void CGenericUI::Return_Lerp_Movement(const _float fTimeDelta)
-{
-	if (!m_isPlaying_Return_Lerp_Movement || m_isPlaying_Lerp_Movement)
-		return;
-
-	if (m_fLerpMovement_Duration <= 0.f)
-	{
-		m_vMoveOffset = Vec3{ 0.f, 0.f, 0.f };
-		m_isPlaying_Return_Lerp_Movement = false;
-		m_isMoved = false;
-		return;
-	}
-
-	m_fLerpMovement_TimeAcc += fTimeDelta;
-
-	_float t = m_fLerpMovement_TimeAcc / m_fLerpMovement_Duration;
-	if (t >= 1.f) t = 1.f;
-	else if (t <= 0.f) t = 0.f;
-
-	_float s = t;
-	if (m_fLerpMovement_TargetAlpha > 0.f)
-		s = 1.f - powf(1.f - t, m_fLerpMovement_TargetAlpha);
-
-	m_vMoveOffset = m_vLerpMovement_StartPos + (m_vLerpMovement_TargetPos - m_vLerpMovement_StartPos) * s;
-
-	if (t >= 1.f)
-	{
-		m_vMoveOffset = Vec3{ 0.f, 0.f, 0.f };
-		m_isMoved = false;
-		m_isPlaying_Return_Lerp_Movement = false;
-	}
-}
-
-CGenericUI* CGenericUI::Create(ID3D11Device* pDevice, ID3D11DeviceContext* pDeviceContext)
-{
-	CGenericUI* pInstance = new CGenericUI(pDevice, pDeviceContext);
-	if (FAILED(pInstance->Initialize_Prototype()))
-	{
-		MSG_BOX("CGenericUI::Create, Create Failed");
-		Safe_Release(pInstance);
-	}
-	return pInstance;
-}
-
-CGameObject* CGenericUI::Clone(void* pArg)
-{
-	CGenericUI* pInstance = new CGenericUI(*this);
-	if (FAILED(pInstance->Initialize(pArg)))
-	{
-		MSG_BOX("CGenericUI::Clone, Clone Failed");
-		Safe_Release(pInstance);
-	}
-	return pInstance;
 }
 
 void CGenericUI::Free()
 {
-	Safe_Release(m_pActionForMe);
-	Safe_Release(m_pActionForTarget);
 	Super::Free();
 }

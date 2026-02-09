@@ -43,12 +43,12 @@ HRESULT CDataDocument_Map::FromJson(const json& j)
 
 	for (const auto& object : j["Objects"])
 	{
-		if (object.contains("Type") == false)
-			return E_FAIL;
+		//if (object.contains("Client Make Path") == false)
+		//	return E_FAIL;
 
-		const DTO::EMapObject_Type eType = object.at("Type").get<DTO::EMapObject_Type>();
+		//const DTO::EMapObject_Type eType = object.at("Type").get<DTO::EMapObject_Type>();
 
-		IObjectDataBase* pObjectDataBase = Create_ObjectData(eType);
+		IObjectDataBase* pObjectDataBase = CData_MapObject::Create();
 		if (pObjectDataBase == nullptr)
 			return E_FAIL;
 
@@ -68,35 +68,15 @@ HRESULT CDataDocument_Map::FromJson(const json& j)
 	return S_OK;
 }
 
-HRESULT CDataDocument_Map::Try_Add(const DTO::STATICMODEL_DATA& data)
-{
-	IObjectDataBase* pObjectBase = Create_ObjectData(DTO::EMapObject_Type::STATICMODEL);
-	static_cast<CData_StaticModel*>(pObjectBase)->Get_Data() = data;
-	return Try_Add(pObjectBase);
-}
 
-HRESULT CDataDocument_Map::Try_Add(const DTO::InstanceModel_Data& data)
+HRESULT CDataDocument_Map::Try_Add(const DTO::TMap_MapObjectData& data)
 {
-	IObjectDataBase* pObjectBase = Create_ObjectData(DTO::EMapObject_Type::INSTANCEMODEL);
-	static_cast<CData_InstanceModel*>(pObjectBase)->Get_Data() = data;
+	CData_MapObject* pObjectBase = CData_MapObject::Create();
+	pObjectBase->Get_Data() = data;
 	return Try_Add(pObjectBase);
 }
 
 
-IObjectDataBase* CDataDocument_Map::Create_ObjectData(DTO::EMapObject_Type eType)
-{
-	switch (eType)
-	{
-	case DTO::EMapObject_Type::STATICMODEL:
-		return CData_StaticModel::Create();
-	case DTO::EMapObject_Type::INSTANCEMODEL:
-		return CData_InstanceModel::Create();
-	default:
-		return nullptr;
-	}
-
-	return nullptr;
-}
 
 
 HRESULT CDataDocument_Map::Try_Add(IObjectDataBase* pObject)

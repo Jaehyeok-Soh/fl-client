@@ -10,6 +10,7 @@
 #include "Physics_ShapeFactory.h"
 #include "Physics_CCTManager.h"
 #include "Physics_ActorFactory.h"
+#include "Physics_FilterEventCallback.h"
 
 CPhysics_Module::CPhysics_Module(ID3D11Device* pDevice, ID3D11DeviceContext* pDeviceContext)
 	: m_pDevice(pDevice)
@@ -120,9 +121,10 @@ HRESULT CPhysics_Module::Initialize()
 		{
 			// Default Setting
 			//sceneDesc.filterShader = PxDefaultSimulationFilterShader;
-
 			sceneDesc.filterShader = FilterShader;
-			//sceneDesc.filterCallback;
+			
+			m_pFilterEventCallback = CPhysics_FilterEventCallback::Create();
+			sceneDesc.simulationEventCallback = m_pFilterEventCallback;
 		}
 
 		if (!(m_pScene = m_pPhysics->createScene(sceneDesc)))
@@ -210,16 +212,6 @@ Matrix CPhysics_Module::PxTransformToXMMatrix(PxTransform pxTransform)
 	return m_pUtils->PxTransformToXMMatrix(pxTransform);
 }
 
-_bool CPhysics_Module::HasNegativeScale(Matrix mat)
-{
-	return m_pUtils->HasNegativeScale(mat);
-}
-
-_int CPhysics_Module::GetNegativeScaleAxis(const Matrix& mat)
-{
-	return m_pUtils->GetNegativeScaleAxis(mat);
-}
-
 PxQuat CPhysics_Module::GetPureRotation(Matrix mat)
 {
 	return m_pUtils->GetPureRotation(mat);
@@ -230,6 +222,16 @@ PxVec3 CPhysics_Module::GetPureScale(Matrix mat)
 	return m_pUtils->GetPureScale(mat);
 }
 
+_bool CPhysics_Module::Execute_Overlap(PxGeometry& shape, PxTransform transform, OUT PxOverlapBuffer hit, PxQueryFilterData& filterData, PxQueryFilterCallback* filterCallback)
+{
+	return m_pUtils->Execute_Overlap(shape, transform, hit, filterData, filterCallback);
+}
+
+CPhysics_QueryFilterCallback* CPhysics_Module::GetQueryFilterCallback()
+{
+	return m_pUtils->GetQueryFilterCallback();
+}
+
 #ifdef _DEBUG
 HRESULT CPhysics_Module::Render(PxRigidActor* pActor, XMVECTOR color)
 {
@@ -237,6 +239,13 @@ HRESULT CPhysics_Module::Render(PxRigidActor* pActor, XMVECTOR color)
 		return S_OK;
 
 	return m_pUtils->Render(pActor, color);
+}
+HRESULT CPhysics_Module::Render(const PxGeometry& geom, const PxTransform& transform, XMVECTOR color)
+{
+	if (!m_bEnabledDebugDraw)
+		return S_OK;
+
+	return m_pUtils->Render(geom, transform, color);
 }
 #endif // _DEBUG
 
@@ -274,6 +283,11 @@ vector<PxShape*> CPhysics_Module::GetMeshShape(PHYSICSCOLLIDER_DESC* pDesc)
 	return m_pShapeFactory->GetMeshShape(pDesc);
 }
 
+vector<PxShape*> CPhysics_Module::CopyShapes(vector<PxShape*>& shapes)
+{
+	return m_pShapeFactory->CopyShapes(shapes);
+}
+
 vector<PxRigidActor*> CPhysics_Module::GetActor(PHYSICSRIGIDBODY_DESC* rigidBodyDesc, PHYSICSCOLLIDER_DESC* colliderDesc, vector<PxShape*>& shapes)
 {
 	return m_pActorFactory->GetActor(rigidBodyDesc, colliderDesc, shapes);
@@ -291,16 +305,24 @@ PxFilterFlags CPhysics_Module::FilterShader(
 {
 	if (PxFilterObjectIsTrigger(attributes0) || PxFilterObjectIsTrigger(attributes1))
 	{
-		pairFlags = PxPairFlag::eTRIGGER_DEFAULT;
+		if ((filterData0.word0 & filterData1.word1) && (filterData1.word0 & filterData0.word1))
+		{
+			pairFlags = PxPairFlag::eTRIGGER_DEFAULT;
+			return PxFilterFlag::eDEFAULT;
+		}
+		return PxFilterFlag::eSUPPRESS;
+	}
+
+	if ((filterData0.word0 & filterData1.word1) && (filterData1.word0 & filterData0.word1))
+	{
+		pairFlags = PxPairFlag::eCONTACT_DEFAULT
+			| PxPairFlag::eNOTIFY_TOUCH_FOUND
+			| PxPairFlag::eNOTIFY_TOUCH_LOST
+			| PxPairFlag::eNOTIFY_TOUCH_PERSISTS;
 		return PxFilterFlag::eDEFAULT;
 	}
 
-	pairFlags = PxPairFlag::eCONTACT_DEFAULT;
-
-	if ((filterData0.word0 & filterData1.word1) && (filterData1.word0 & filterData0.word1))
-		pairFlags |= PxPairFlag::eNOTIFY_TOUCH_FOUND;
-
-	return PxFilterFlag::eDEFAULT;
+	return PxFilterFlag::eSUPPRESS;
 }
 
 void CPhysics_Module::Check_Leak()
@@ -343,6 +365,9 @@ void CPhysics_Module::ClearPhysics()
 		PX_RELEASE(m_pScene);
 
 	Check_Leak();
+
+	if (m_pFilterEventCallback)
+		Safe_Release(m_pFilterEventCallback);
 
 	if (m_pDispatcher)
 		PX_RELEASE(m_pDispatcher);

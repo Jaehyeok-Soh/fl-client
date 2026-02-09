@@ -86,17 +86,17 @@ void CCollider::Update(const Matrix &matWorld)
 
 void CCollider::OnCollision_Enter(CCollider* pOther)
 {
-	m_pOwner->OnCollision_Enter(m_iLayer, pOther);
+	m_pOwner->OnCollision_Enter(m_iLayer, nullptr);
 }
 
 void CCollider::OnCollision(CCollider* pOther)
 {
-	m_pOwner->OnCollision(m_iLayer, pOther);
+	m_pOwner->OnCollision(m_iLayer, nullptr);
 }
 
 void CCollider::OnCollision_Exit(CCollider* pOther)
 {
-	m_pOwner->OnCollision_Exit(m_iLayer, pOther);
+	m_pOwner->OnCollision_Exit(m_iLayer, nullptr);
 }
 
 _bool CCollider::Intersect(CCollider* pOther)

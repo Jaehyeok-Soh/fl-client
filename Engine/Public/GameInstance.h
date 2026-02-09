@@ -297,6 +297,8 @@ public:
 	void ClearPhysics();
 	PxTransform XMMatrixToPxTransform(Matrix mat);
 	Matrix PxTransformToXMMatrix(PxTransform pxTransform);
+	_bool Execute_Overlap(PxGeometry& shape, PxTransform transform, OUT PxOverlapBuffer hit, PxQueryFilterData& filterData, PxQueryFilterCallback* filterCallback);
+	class CPhysics_QueryFilterCallback* GetQueryFilterCallback();
 	void SerializeStaticMesh(std::filesystem::path path, vector<PxTriangleMesh*> meshes);
 	PxCollection* DeserializeStaticMesh(std::filesystem::path path);
 	void SerializeConvexMesh(std::filesystem::path path, vector<PxConvexMesh*> meshes);
@@ -305,15 +307,15 @@ public:
 	void DeserializeLevel(std::filesystem::path path) {}
 	vector<PxShape*> GetShape(PHYSICSCOLLIDER_DESC* pDesc);
 	vector<PxShape*> GetMeshShape(PHYSICSCOLLIDER_DESC* pDesc);
+	vector<PxShape*> CopyShapes(vector<PxShape*>& shapes);
 	vector<PxRigidActor*> GetActor(PHYSICSRIGIDBODY_DESC* rigidBodyDesc, PHYSICSCOLLIDER_DESC* colliderDesc, vector<PxShape*>& shapes);
 	PxController* GetController(PHYSICSCCT_DESC* pDesc);
 	void RegisterPhysicsMesh(_uint levelIndex, _wstring prototypeTag);
-	_bool HasNegativeScale(const Matrix& mat);
-	_int GetNegativeScaleAxis(const Matrix& mat);
 	PxQuat GetPureRotation(const Matrix& mat);
 	PxVec3 GetPureScale(const Matrix& mat);
 #ifdef _DEBUG
 	void Physics_Render(PxRigidActor* pActor, XMVECTOR color = DirectX::Colors::White);
+	void Physics_Render(const PxGeometry& geom, const PxTransform& transform, XMVECTOR color = DirectX::Colors::White);
 #endif // _DEBUG
 #pragma endregion
 

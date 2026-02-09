@@ -20,9 +20,9 @@ private:
     vector<PxRigidActor*> MakeDynamics(PHYSICSRIGIDBODY_DESC* rigidBodyDesc, PHYSICSCOLLIDER_DESC* colliderDesc, vector<PxShape*>& shapes);
     vector<PxRigidActor*> MakeKinematics(PHYSICSRIGIDBODY_DESC* rigidBodyDesc, PHYSICSCOLLIDER_DESC* colliderDesc, vector<PxShape*>& shapes);
 
-    PxRigidActor* MakeStatic(const Matrix world, Vec3 scale, vector<PxShape*>& shapes);
-    PxRigidActor* MakeDynamic(const Matrix world, Vec3 scale, _float density, vector<PxShape*>& shapes);
-    PxRigidActor* MakeKinematic(const Matrix world, Vec3 scale, _float density, vector<PxShape*>& shapes);
+    PxRigidActor* MakeStatic(const Matrix& world, PHYSICS_SRT& srt, vector<PxShape*>& shapes);
+    PxRigidActor* MakeDynamic(const Matrix& world, PHYSICS_SRT& srt, _float density, vector<PxShape*>& shapes);
+    PxRigidActor* MakeKinematic(const Matrix& world, PHYSICS_SRT& srt, _float density, vector<PxShape*>& shapes);
 
 private:
     class CGameInstance* m_pGameInstance = { nullptr };

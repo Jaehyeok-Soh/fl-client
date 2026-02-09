@@ -1,23 +1,23 @@
 #pragma once
-#include "UIObject.h"
+#include "GenericUI.h"
+#include "DataStruct_UI.h"
 
 NS_BEGIN(Client)
 class CCanvas;
-class CGenericUI;
-class CUILayer final : public CUIObject
+class CStatComponent;
+class CUIMonster_HP final : public CGenericUI
 {
-	using Super = CUIObject;
-
+	using Super = CGenericUI;
 public:
-	typedef struct tagUILayerDesc : public UIOBJECT_DESC
+	typedef struct tagUIMonsterHPDesc : public GENERIC_UI_DESC
 	{
-		CCanvas* pCanvasCache = { nullptr };
-	}UILAYER_DESC;
+		CStatComponent* pTargetStat;
+	}MONSTER_HP_DESC;
 
 private:
-	CUILayer(ID3D11Device* pDevice, ID3D11DeviceContext* pDeviceContext);
-	CUILayer(const CUILayer& rhs);
-	virtual ~CUILayer() = default;
+	CUIMonster_HP(ID3D11Device* pDevice, ID3D11DeviceContext* pDeviceContext);
+	CUIMonster_HP(const CUIMonster_HP& rhs);
+	virtual ~CUIMonster_HP() = default;
 
 public:
 	HRESULT Initialize_Prototype() override;
@@ -25,28 +25,24 @@ public:
 
 public:
 	virtual HRESULT Awake(const _uint iCurrentLevelID) override;
-	void Transmit_for_UI();
 	virtual void Update_Priority(const _float fTimeDelta) override;
 	virtual void Update(const _float fTimeDelta) override;
 	virtual void Update_Late(const _float fTimeDelta) override;
 	virtual void Ready_Before_Render(const _float fTimeDelta) override;
 	virtual HRESULT Render() override;
 
-	vector<CGenericUI*>* Get_UIVector() { return &m_vecUIs; }
-	
 private:
-	HRESULT Ready_Components(UILAYER_DESC* pDesc);
+	HRESULT Ready_Components(MONSTER_HP_DESC* pDesc);
 	HRESULT Bind_ShaderResources();
 
 private:
-	vector<CGenericUI*> m_vecUIs;
-	CCanvas* m_pParentCanvasCache = { nullptr };
+	CStatComponent* m_pTargetStat = { nullptr };
+	uint32_t m_iFillDir = {};
 
 public:
-	static CUILayer* Create(ID3D11Device* pDevice, ID3D11DeviceContext* pDeviceContext);
+	static CUIMonster_HP* Create(ID3D11Device* pDevice, ID3D11DeviceContext* pDeviceContext);
 	CGameObject* Clone(void* pArg);
 	virtual void Free()override;
-
 };
 
 NS_END

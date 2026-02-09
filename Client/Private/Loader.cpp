@@ -44,14 +44,15 @@
 #include "Effect.h"
 #include "EffectObject.h"
 #include "Physics_LandScape.h" // physics test
-#include "StaticModel.h"
-#include "InstanceModel.h"
+#include "StaticObject.h"
+
 //=================
 // UI
 //=================
 #include "Canvas.h"
-#include "UILayer.h"
 #include "GenericUI.h"
+#include "UIPlayer_HP.h"
+#include "UIMonster_HP.h"
 //=================
 // Resource
 //=================
@@ -148,8 +149,8 @@ HRESULT CLoader::Loading_For_Logo()
 
 		// Read Json
 		{
-			if (FAILED(Loading_File(ENUM_TO_UINT(ELevelType::LOGO), DTO::ECategory::EFFECT, L"../../Resources/Data/EffectData/Attack_1.json")))
-				return E_FAIL;
+			//if (FAILED(Loading_File(ENUM_TO_UINT(ELevelType::LOGO), DTO::ECategory::EFFECT, L"../../Resources/Data/EffectData/Attack_1.json")))
+			//	return E_FAIL;
 			// For. Example
 			// if (FAILED(Loading_File(ENUM_TO_UINT(ELevelType::LOGO), DTO::ECategory::MAP, L"asdf")))
 			// 	return E_FAIL;
@@ -166,20 +167,19 @@ HRESULT CLoader::Loading_For_Logo()
 		//if (FAILED(m_pGameInstance->Load_Sounds(L"../../Resources/Sounds")))
 		//	return E_FAIL;
 
-		//if (FAILED(Make_StaticModel_Prototype(ELevelType::LOGO, L"../../Resources/Models/Map/TestMap")))
+		//if (FAILED(Make_StaticObject_Prototype(ELevelType::LOGO, L"../../Resources/Models/Map/TestMap")))
 		//	return E_FAIL;
 	}
 	if (FAILED(m_pGameInstance->Load_Sounds(L"../../Resources/Sounds")))
 		return E_FAIL;
 
 		// For. Prototype_Component_Button_Test_Texture
-		{
-			CTexture::TEXTURE_COMPONENT_ORIGIN_DESC textureDesc = {};
-			textureDesc.iTextureCount = 22;
-			textureDesc.wstrTexturePath = L"../../Resources/Textures/UI/%d.png";
-			if (FAILED(m_pGameInstance->Add_Prototype(ENUM_TO_UINT(ELevelType::STATIC), L"Prototype_Component_UI_Texture", CTexture::Create(&textureDesc))))
-				return E_FAIL;
-		}
+	{
+		//if (FAILED(Loading_Textures(L"../../Resources/Textures/UI/Playable/")))
+		//	return E_FAIL;
+		//if (FAILED(Loading_Textures(L"../../Resources/Textures/UI/Menu/")))
+		//	return E_FAIL;
+	}	
 	
 #pragma endregion
 
@@ -249,8 +249,7 @@ HRESULT CLoader::Loading_For_Logo()
 		ADD_PROTOTYPE(ELevelType::LOGO, L"Prototype_GameObject_Effect_Parts", CEffectObject::Create(m_pDevice, m_pDeviceContext));
 
 		/* Map Object */
-		ADD_PROTOTYPE(ELevelType::STATIC, L"Prototype_GameObject_StaticModel", CStaticModel::Create(m_pDevice, m_pDeviceContext));
-		ADD_PROTOTYPE(ELevelType::STATIC, L"Prototype_GameObject_InstanceModel", CInstanceModel::Create(m_pDevice, m_pDeviceContext));
+		ADD_PROTOTYPE(ELevelType::STATIC, L"Prototype_GameObject_StaticObject", CStaticObject::Create(m_pDevice, m_pDeviceContext));
 
 	}
 #pragma endregion
@@ -271,12 +270,7 @@ HRESULT CLoader::Loading_For_Logo()
 		ADD_PROTOTYPE(ELevelType::STATIC, L"Prototype_Component_VIBuffer_Particle_Mesh", CVIBuffer_Particle_Mesh::Create(m_pDevice, m_pDeviceContext, &ExploDesc));
 
 
-		// For. Prototype_UI_Canvas
-		ADD_PROTOTYPE(ELevelType::STATIC, L"Prototype_UI_Canvas", CCanvas::Create(m_pDevice, m_pDeviceContext));
-		// For. Prototype_UI_UILayer
-		ADD_PROTOTYPE(ELevelType::STATIC, L"Prototype_UI_UILayer", CUILayer::Create(m_pDevice, m_pDeviceContext));
-		// For. Prototype_UI_GenericUI
-		ADD_PROTOTYPE(ELevelType::STATIC, L"Prototype_UI_GenericUI", CGenericUI::Create(m_pDevice, m_pDeviceContext));
+
 	}
 #pragma endregion
 
@@ -286,6 +280,12 @@ HRESULT CLoader::Loading_For_Logo()
 	m_pGameInstance->Add_Prototype(ENUM_TO_UINT(ELevelType::STATIC), L"Prototype_GameObject_Physics_Terrain", CPhysics_Terrain::Create(m_pDevice, m_pDeviceContext));
 
 	/* Map Parsing Test */
+#pragma endregion
+
+#pragma region UI
+	ADD_PROTOTYPE(ELevelType::STATIC, L"Prototype_UI_Canvas", CCanvas::Create(m_pDevice, m_pDeviceContext));
+	ADD_PROTOTYPE(ELevelType::STATIC, L"Prototype_UI_PLAYER_HP", CUIPlayer_HP::Create(m_pDevice, m_pDeviceContext));
+	ADD_PROTOTYPE(ELevelType::STATIC, L"Prototype_UI_MONSTER_HP", CUIMonster_HP::Create(m_pDevice, m_pDeviceContext));
 #pragma endregion
 
 	m_isFinished = true;
@@ -351,7 +351,7 @@ HRESULT CLoader::Loading_Texture(const wstring& wstrFile)
 	return S_OK;
 }
 
-HRESULT CLoader::Make_StaticModel_Prototype(ELevelType eLevelType, const wstring& wstrFilePath)
+HRESULT CLoader::Make_StaticObject_Prototype(ELevelType eLevelType, const wstring& wstrFilePath)
 {
 	std::filesystem::path filePath{ wstrFilePath };
 	filePath /= "Model";

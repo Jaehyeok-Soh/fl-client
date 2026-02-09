@@ -98,19 +98,29 @@ void CWeapon::Ready_Before_Render(_float fTimeDelta)
 #endif
 }
 
-void CWeapon::OnCollision(_uint iMyColliderLayer, CCollider* pOther)
+void CWeapon::OnCollision(_uint iMyColliderLayer, CGameObject* pOther)
 {
 	Get_Parent()->OnCollision(iMyColliderLayer, pOther);
 }
 
-void CWeapon::OnCollision_Enter(_uint iMyColliderLayer, CCollider* pOther)
+void CWeapon::OnCollision_Enter(_uint iMyColliderLayer, CGameObject* pOther)
 {
 	Get_Parent()->OnCollision_Enter(iMyColliderLayer, pOther);
 }
 
-void CWeapon::OnCollision_Exit(_uint iMyColliderLayer, CCollider* pOther)
+void CWeapon::OnCollision_Exit(_uint iMyColliderLayer, CGameObject* pOther)
 {
 	Get_Parent()->OnCollision_Exit(iMyColliderLayer, pOther);
+}
+
+void CWeapon::OnTrigger_Enter(_uint iMyColliderLayer, CGameObject* pOther)
+{
+	Get_Parent()->OnTrigger_Enter(iMyColliderLayer, pOther);
+}
+
+void CWeapon::OnTrigger_Exit(_uint iMyColliderLayer, CGameObject* pOther)
+{
+	Get_Parent()->OnTrigger_Exit(iMyColliderLayer, pOther);
 }
 
 HRESULT CWeapon::Render()

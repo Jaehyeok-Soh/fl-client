@@ -2,6 +2,10 @@
 #include "PhysicsCollider.h"
 #include "GameInstance.h"
 
+#include "GameObject.h"
+
+#include "PhysicsRigidBody.h"
+
 CPhysicsCollider::CPhysicsCollider(ID3D11Device* pDevice, ID3D11DeviceContext* pDeviceContext)
 	: Super()
 	, m_pDevice(pDevice)
@@ -15,11 +19,13 @@ CPhysicsCollider::CPhysicsCollider(const CPhysicsCollider& rhs)
 	: Super(rhs)
 	, m_pDevice(rhs.m_pDevice)
 	, m_pDeviceContext(rhs.m_pDeviceContext)
-	, m_pColliderShapes(rhs.m_pColliderShapes)
 	, m_tDesc(rhs.m_tDesc)
 {
 	Safe_AddRef(m_pDevice);
 	Safe_AddRef(m_pDeviceContext);
+
+	auto srcShapes = rhs.m_pColliderShapes;
+	DeepCopy_Shapes(srcShapes);
 }
 
 HRESULT CPhysicsCollider::Initialize_Prototype(void* pArg)
@@ -55,10 +61,18 @@ HRESULT CPhysicsCollider::Initialize(void* pArg)
 	m_tDesc.tMaterial = pDesc->tMaterial;
 	m_tDesc.bIsActive = pDesc->bIsActive;
 
-	vector<PxShape*> shapes = m_pGameInstance->GetShape(pDesc);
+	m_tDesc.eFilterLayer = pDesc->eFilterLayer;
+	m_tDesc.iFilterMask = pDesc->iFilterMask;
 
-	for (auto& shape : shapes)
-		m_pColliderShapes.push_back(shape);
+	if (!pDesc->bSetOnlyFilter)
+	{
+		vector<PxShape*> shapes = m_pGameInstance->GetShape(pDesc);
+
+		for (auto& shape : shapes)
+			m_pColliderShapes.push_back(shape);
+	}
+
+	SetCollisionFilter();
 
 	return S_OK;
 }
@@ -83,10 +97,95 @@ void CPhysicsCollider::OnCollisionExit(PxRigidActor* _pOther)
 {
 }
 
-void CPhysicsCollider::SetCenter(Vec3 vCenter)
+CPhysicsCollider* CPhysicsCollider::SetTransform(_uint iIndex, const Matrix& matWorld)
+{
+	PxTransform ptf = m_pGameInstance->XMMatrixToPxTransform(matWorld);
+
+	m_pColliderShapes[iIndex]->setLocalPose(ptf);
+
+	UpdateActor();
+
+	return this;
+}
+
+CPhysicsCollider* CPhysicsCollider::SetTransform(const Matrix& matWorld)
+{
+	PxTransform ptf = m_pGameInstance->XMMatrixToPxTransform(matWorld);
+
+	for (auto* shape : m_pColliderShapes)
+		shape->setLocalPose(ptf);
+
+	UpdateActor();
+
+	return this;
+}
+
+CPhysicsCollider* CPhysicsCollider::SetCenter(Vec3 vCenter)
 {
 	for (auto* shape : m_pColliderShapes)
 		shape->setLocalPose(PxTransform(PxVec3(vCenter.x, vCenter.y, vCenter.z)));
+
+	UpdateActor();
+
+	return this;
+}
+
+CPhysicsCollider* CPhysicsCollider::SetCenter(_uint iIndex, Vec3 vCenter)
+{
+	m_pColliderShapes[iIndex]->setLocalPose(PxTransform(PxVec3(vCenter.x, vCenter.y, vCenter.z)));
+
+	UpdateActor();
+
+	return this;
+}
+
+CPhysicsCollider* CPhysicsCollider::Rotation(_uint iIndex, Quat vQuat)
+{
+	m_pColliderShapes[iIndex]->setLocalPose(PxTransform(PxQuat(vQuat.x, vQuat.y, vQuat.z, vQuat.w)));
+
+	UpdateActor();
+
+	return this;
+}
+
+CPhysicsCollider* CPhysicsCollider::Rotation(Quat vQuat)
+{
+	PxQuat pq(vQuat.x, vQuat.y, vQuat.z, vQuat.w);
+
+	for (auto* shape : m_pColliderShapes)
+		shape->setLocalPose(PxTransform(pq));
+
+	UpdateActor();
+
+	return this;
+}
+
+void CPhysicsCollider::SetCollisionFilter()
+{
+	for (auto& shape : m_pColliderShapes)
+		shape->setSimulationFilterData(PxFilterData(m_tDesc.eFilterLayer, m_tDesc.iFilterMask, 0, 0));
+}
+
+void CPhysicsCollider::UpdateActor()
+{
+	for (auto& shape : m_pColliderShapes)
+	{
+		PxActor* actor = shape->getActor();
+		_float density = (static_cast<CGameObject*>(actor->userData))->Get_Component<CPhysicsRigidBody>()->GetDesc()->fDensity;
+
+		if (actor && actor->getType() != PxActorType::eRIGID_STATIC)
+			PxRigidBodyExt::updateMassAndInertia(*static_cast<PxRigidDynamic*>(actor), density);
+	}
+}
+
+void CPhysicsCollider::DeepCopy_Shapes(vector<PxShape*>& shapes)
+{
+	for (auto& shape : m_pColliderShapes)
+		PX_RELEASE(shape);
+
+	m_pColliderShapes.clear();
+
+	m_pColliderShapes = m_pGameInstance->CopyShapes(shapes);
 }
 
 #ifdef _DEBUG
@@ -122,13 +221,10 @@ CComponent* CPhysicsCollider::Clone(void* pArg)
 
 void CPhysicsCollider::Free()
 {
-	if (IsClone() != true)
+	for (auto& shape : m_pColliderShapes)
 	{
-		for (auto& shape : m_pColliderShapes)
-		{
-			if (shape != nullptr && shape->isReleasable())
-				PX_RELEASE(shape);
-		}
+		if (shape != nullptr && shape->isReleasable())
+			PX_RELEASE(shape);
 	}
 
 	m_pColliderShapes.clear();

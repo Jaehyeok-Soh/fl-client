@@ -45,6 +45,14 @@ float4 g_vColor_B;
 
 uint g_iGlobalMask = 0;
 
+float g_fAlphaRatio;
+
+float g_fProgressRatio;
+int g_iFillDir;
+bool g_isColor;
+float4 g_vColorTint;
+float4 g_vHitColorTint;
+
 /////////
 // SRV //
 /////////

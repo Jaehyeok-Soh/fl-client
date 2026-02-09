@@ -3,49 +3,88 @@
 #include "DataEnum.h"
 #include "Engine_Utils.h"
 
-#pragma region 최초 사용법
-/*
-* - 각 Category당
-*	 데이터 .h, .cpp (ex. DataStruct_Exmaple)
-*    CDoucmentBase 상속 객체 (ex. DataDocument_Example)
-*	 Tool, Client쪽 Builder 상속 객체 (ex. Builder_Example)
-* - 아래 규칙에 따라 struct, to_json, from_json, wrapper class 선언
-* - 만든 Struct헤더 DataDefine_Json.h헤더에 추가
-*/
-#pragma endregion
 
-/*
-* 1. 각 Struct는 Type을 가지며 강제 한다.
-* 2. Struct 최상단에는 Type과 Tag가 선언 한다.
-* 3. 구조체와 wrapper클래스를 1대1로 만들어야 한다.
-*		데이터를 담는 struct, 그걸 wrapping하고 타입을 구분하기위한 class로 역할 분리
-*		WarpperClass Engine_DLL 필수
-*		cpp에도 구조체, enum class 에는 DTO 네임스페이스, 엔진선언부에는 Engine 네임스페이스
-*		json이 헤더에 노출된다면?
-*		헤더에는 전방선언용 "json_forward.h"선언, 헤더에서 json.hpp 인클루드 금지
-*/
+NS_BEGIN(Engine)
+struct CLIENT_MAKEPATH_DESC_BASE
+{
+public:
+	virtual ~CLIENT_MAKEPATH_DESC_BASE() {};
+public:
+	virtual void	from_Json(const json& LoadJson)PURE;
+	virtual void	To_Json(json& SaveJson)PURE;
+};
+NS_END
+
 NS_BEGIN(DTO)
 
 /////////////////-------------------  MAP  -------------------/////////////////
 
 enum class EMapObject_Type : _uint
 {
-	STATICMODEL,
-	INSTANCEMODEL,
+	MAPOBJECT,
 	END
 };
 
+enum class EClientLevelType : unsigned int
+{
+	STATIC = 0,
+	LOADING,
+	LOGO,
+	END
+};
+
+enum class EMapObject_DrawType
+{
+	Collider,
+	Default,
+	Instance,
+	END
+};
+
+enum class EClientMakePath
+{
+	StaticObject,
+	END
+};
+
+
 inline constexpr _uint g_MapObjectTypeCount{ ENUM_TO_UINT(EMapObject_Type::END) };
+inline constexpr _uint g_MapObjecTDrawTypeCount{ ENUM_TO_UINT(EMapObject_DrawType::END) };
+inline constexpr _uint g_ClientLevelType{ ENUM_TO_UINT(EClientLevelType::END) };
+inline constexpr _uint g_ClientMakePath{ ENUM_TO_UINT(EClientMakePath::END)};
 
 /* String으로 자동 변환되어서 저당된다  */
 
 NLOHMANN_JSON_SERIALIZE_ENUM(EMapObject_Type,
 	{
-		{EMapObject_Type::STATICMODEL, "STATICMODEL"},
-		{EMapObject_Type::INSTANCEMODEL, "INSTANCEMODEL"},
-		{EMapObject_Type::END, "END"},
+		{EMapObject_Type::MAPOBJECT, "MAPOBJECT"},
+		{EMapObject_Type::END, "UnKnown"},
 	}
 	)
+
+NLOHMANN_JSON_SERIALIZE_ENUM(EClientLevelType,
+		{
+			{EClientLevelType::LOADING, "LOADING"},
+			{EClientLevelType::LOGO,	"LOGO"},
+			{EClientLevelType::STATIC,	"STATIC"},
+			{EClientLevelType::END,		"UnKnown"},
+		}
+		)
+NLOHMANN_JSON_SERIALIZE_ENUM(EMapObject_DrawType,
+		{
+			{EMapObject_DrawType::Collider, "Collider"},
+			{EMapObject_DrawType::Default,	"Default"},
+			{EMapObject_DrawType::Instance,	"Instance"},
+			{EMapObject_DrawType::END,		"END"},
+		}
+		)
+
+	NLOHMANN_JSON_SERIALIZE_ENUM(EClientMakePath,
+		{
+			{EClientMakePath::StaticObject, "StaticObject"},
+			{EClientMakePath::END,			"Unknown"},
+		}
+		)
 
 	/////////////////-------------------  ObjectStruct  -------------------/////////////////
 
@@ -94,29 +133,24 @@ public:
 }USING_MODEL_INFO;
 #pragma endregion
 
-#pragma region Static Model
+#pragma region MapObject
 
-typedef struct TMap_StaticModelData 
+typedef struct TMap_MapObjectData
 {
-	std::string strTag{ "Static Model" };
-	static constexpr EMapObject_Type eType = EMapObject_Type::STATICMODEL;
+	/* UE Load Check */
+	bool								isUELoaded{ false };
+	string								strTag{};
+	string								strModelPath{ "" };
 
-	/* Model Info */
-	USING_MODEL_INFO tUsingModelInfo{};
-	SRT_DATA		 tSRTData{};
-}STATICMODEL_DATA;
-#pragma endregion
-#pragma region Instance Model
-typedef struct TMap_InstanceModelData 
-{
-	std::string strTag{ "Instance Model" };
-	static constexpr EMapObject_Type eType = EMapObject_Type::INSTANCEMODEL;
+	/* Client Make Level Type */
+	_uint	eClientMakePath{};
+	_uint	eClientLevelType{};
+	_uint	eMapObjectDrawType{};
 
-	D3D11_USAGE		 eInstance_Usage{D3D11_USAGE_DEFAULT};
-
-	USING_MODEL_INFO tUsingModelInfo{};
-	vector<SRT_DATA> vecSRTData{};
-}InstanceModel_Data;
+	/* SRT Data , Cient Make Path Desc */
+	vector<SRT_DATA>					vecSRTs{};
+	vector<CLIENT_MAKEPATH_DESC_BASE*>	vecClientMakePathDesc{};
+}MAPOBJECTDATA;
 #pragma endregion
 
 #pragma endregion
@@ -141,67 +175,38 @@ void to_json(json& SaveJson, const USING_MODEL_INFO& tData);
 
 #pragma endregion
 
-#pragma region Static Model
-inline void to_json(json& SaveJson, const TMap_StaticModelData& tData);
-inline void from_json(const json& LoadJson, TMap_StaticModelData& tData);
+#pragma region Map Object
+inline void to_json(json& SaveJson, const TMap_MapObjectData& tData);
+inline void from_json(const json& LoadJson, TMap_MapObjectData& tData);
 #pragma endregion
 
-#pragma region Instance Model
-inline void to_json(json& SaveJson, const TMap_InstanceModelData& tData);
-inline void from_json(const json& LoadJson, TMap_InstanceModelData& tData);
-#pragma endregion
 NS_END
 /////////////////-------------------  Wrapping Class  -------------------/////////////////
-
 NS_BEGIN(Engine)
 
-
-
-class CData_StaticModel final : public IObjectDataBase
+class CData_MapObject final : public IObjectDataBase
 {
 	// IObjectDataBase을(를) 통해 상속됨
 	using Super = IObjectDataBase;
 private:
-	CData_StaticModel() = default;
-	virtual ~CData_StaticModel() = default;
+	CData_MapObject() = default;
+	virtual ~CData_MapObject() = default;
 public:
 
 public:
-	_uint Get_Type() const override { return ENUM_TO_UINT(DTO::EMapObject_Type::STATICMODEL);}
+	_uint Get_Type() const override { return ENUM_TO_UINT(DTO::EMapObject_Type::MAPOBJECT);}
 	const string& Get_Tag() const override { return m_tData.strTag; }
 	
-	json ToJson() const override;
+	json	ToJson() const override;
 	HRESULT FromJson(const json& j) override;
 
-	const DTO::STATICMODEL_DATA& Get_Data() const { return m_tData; }
-	DTO::STATICMODEL_DATA& Get_Data() { return m_tData; }
+	const DTO::TMap_MapObjectData&	Get_Data() const { return m_tData; }
+	DTO::TMap_MapObjectData&		Get_Data() { return m_tData; }
 private:
-	DTO::STATICMODEL_DATA		m_tData{};
+	DTO::TMap_MapObjectData		m_tData{};
 public:
-	static CData_StaticModel* Create() { return new CData_StaticModel(); }
-	virtual void Free() override { Super::Free(); }
-};
-
-class CData_InstanceModel final : public IObjectDataBase
-{
-	using Super = IObjectDataBase;
-private:
-	CData_InstanceModel() = default;
-	virtual ~CData_InstanceModel() = default;
-public:
-	_uint			Get_Type() const override { return ENUM_TO_UINT(DTO::EMapObject_Type::INSTANCEMODEL); }
-	const string&	Get_Tag() const override { return m_tData.strTag; }
-
-	json			ToJson() const override;
-	HRESULT			FromJson(const json& j) override;
-
-	const DTO::InstanceModel_Data&	Get_Data() const { return m_tData; }
-	DTO::InstanceModel_Data&		Get_Data() { return m_tData; }
-private:
-	DTO::InstanceModel_Data		m_tData{};
-public:
-	static CData_InstanceModel* Create() { return new CData_InstanceModel; }
-	virtual void Free() override { Super::Free(); }
+	static CData_MapObject* Create() { return new CData_MapObject(); }
+	virtual void Free() override;
 };
 
 

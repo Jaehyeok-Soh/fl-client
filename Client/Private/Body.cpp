@@ -94,19 +94,29 @@ void CBody::Ready_Before_Render(_float fTimeDelta)
 
 }
 
-void CBody::OnCollision(_uint iMyColliderLayer, CCollider* pOther)
+void CBody::OnCollision(_uint iMyColliderLayer, CGameObject* pOther)
 {
 	Get_Parent()->OnCollision(iMyColliderLayer, pOther);
 }
 
-void CBody::OnCollision_Enter(_uint iMyColliderLayer, CCollider* pOther)
+void CBody::OnCollision_Enter(_uint iMyColliderLayer, CGameObject* pOther)
 {
 	Get_Parent()->OnCollision_Enter(iMyColliderLayer, pOther);
 }
 
-void CBody::OnCollision_Exit(_uint iMyColliderLayer, CCollider* pOther)
+void CBody::OnCollision_Exit(_uint iMyColliderLayer, CGameObject* pOther)
 {
 	Get_Parent()->OnCollision_Exit(iMyColliderLayer, pOther);
+}
+
+void CBody::OnTrigger_Enter(_uint iMyColliderLayer, CGameObject* pOther)
+{
+	Get_Parent()->OnTrigger_Enter(iMyColliderLayer, pOther);
+}
+
+void CBody::OnTrigger_Exit(_uint iMyColliderLayer, CGameObject* pOther)
+{
+	Get_Parent()->OnTrigger_Exit(iMyColliderLayer, pOther);
 }
 
 _bool CBody::On_Hit(_uint iCollideMyLayer, ATTACK_DESC* pDesc, CGameObject* pOther)

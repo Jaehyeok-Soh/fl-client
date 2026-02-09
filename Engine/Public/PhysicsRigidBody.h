@@ -19,7 +19,39 @@ private:
 
 public:
 	void Awake();
-	void Update();
+	void Update(const Matrix& matWorld);
+	
+	CPhysicsRigidBody* SetUserData(_uint iIndex, CGameObject* pObject);
+	CPhysicsRigidBody* SetUserData(CGameObject* pObject);
+
+	PHYSICSRIGIDBODY_DESC* GetDesc() { return &m_tDesc; }
+
+	//////////////////////
+	/// Only kinematic ///
+	CPhysicsRigidBody* SetTransform(_uint iIndex, const Matrix& matWorld);
+	CPhysicsRigidBody* SetTransform(const Matrix& matWorld);
+
+	CPhysicsRigidBody* SetPosition(_uint iIndex, Vec3 vCenter);
+	CPhysicsRigidBody* SetPosition(Vec3 vCenter);
+
+	CPhysicsRigidBody* Rotation(_uint iIndex, Quat vQuat);
+	CPhysicsRigidBody* Rotation(Quat vQuat);
+
+	CPhysicsRigidBody* Move(_uint iIndex, Vec3 vDist, _float fTimeDelta);
+	CPhysicsRigidBody* Move(Vec3 vDist, _float fTimeDelta);
+	/// Only kinematic ///
+	//////////////////////
+
+	////////////////////
+	/// Only dynamic ///
+	CPhysicsRigidBody* Shot(_uint iIndex, Vec3 vDist, _float fTimeDelta);
+	//가속도
+	//각가속도
+	//질량
+	//중력
+	//힘
+	/// Only dynamic ///
+	////////////////////
 
 #ifdef _DEBUG
 	void Render();

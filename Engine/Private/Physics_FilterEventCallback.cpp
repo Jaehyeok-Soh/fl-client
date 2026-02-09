@@ -1,0 +1,176 @@
+#include "Engine_pch.h"
+
+#include "Physics_FilterEventCallback.h"
+
+#include "GameInstance.h"
+#include "EngineConsole.h"
+
+#include "PhysicsCollider.h"
+
+void CPhysics_FilterEventCallback::onContact(const PxContactPairHeader& pairHeader, const PxContactPair* pairs, PxU32 nbPairs)
+{
+	GAMEOBJECTINFO info = Get_GameObject(pairHeader.actors[0]->userData, pairHeader.actors[1]->userData);
+
+	for (PxU32 i = 0; i < nbPairs; i++)
+	{
+		if (pairs[i].events & PxPairFlag::eNOTIFY_TOUCH_FOUND)
+		{
+			// On collision enter
+			m_arrCollisionEvent[COLLISIONEVENT::Enum::ON_COLLISION_ENTER](info);
+		}
+
+		else if (pairs[i].events & PxPairFlag::eNOTIFY_TOUCH_PERSISTS)
+		{
+			// On collision
+			m_arrCollisionEvent[COLLISIONEVENT::Enum::ON_COLLISION_STAY](info);
+		}
+
+		else if (pairs[i].events & PxPairFlag::eNOTIFY_TOUCH_LOST)
+		{
+			// On collision exit
+			m_arrCollisionEvent[COLLISIONEVENT::Enum::ON_COLLISION_EXIT](info);
+		}
+	}
+}
+
+void CPhysics_FilterEventCallback::onTrigger(PxTriggerPair* pairs, PxU32 count)
+{
+	for (PxU32 i = 0; i < count; i++)
+	{
+		GAMEOBJECTINFO info = Get_GameObject(pairs[i].triggerActor->userData, pairs[i].otherActor->userData);
+
+		if (pairs[i].status & PxPairFlag::eNOTIFY_TOUCH_FOUND)
+		{
+			// On trigger enter
+			m_arrCollisionEvent[COLLISIONEVENT::Enum::ON_TRIGGER_ENTER](info);
+		}
+
+		else if (pairs[i].status & PxPairFlag::eNOTIFY_TOUCH_LOST)
+		{
+			// On trigger exit
+			m_arrCollisionEvent[COLLISIONEVENT::Enum::ON_TRIGGER_EXIT](info);
+		}
+	}
+}
+
+CPhysics_FilterEventCallback::CPhysics_FilterEventCallback()
+{
+}
+
+HRESULT CPhysics_FilterEventCallback::Initialize()
+{
+	Ready_EventCallChain();
+
+	m_arrEventString[COLLISIONEVENT::Enum::ON_COLLISION_ENTER] = L"[On collision enter]\n";
+	m_arrEventString[COLLISIONEVENT::Enum::ON_COLLISION_STAY] = L"[On collision stay]\n";
+	m_arrEventString[COLLISIONEVENT::Enum::ON_COLLISION_EXIT] = L"[On collision exit]\n";
+	m_arrEventString[COLLISIONEVENT::Enum::ON_TRIGGER_ENTER] = L"[On trigger enter]\n";
+	m_arrEventString[COLLISIONEVENT::Enum::ON_TRIGGER_EXIT] = L"[On trigger exit]\n";
+
+	return S_OK;
+}
+
+CGameObject* CPhysics_FilterEventCallback::Conversion_GameObject(void* userData)
+{
+	return static_cast<CGameObject*>(userData);
+}
+
+CPhysics_FilterEventCallback::GAMEOBJECTINFO CPhysics_FilterEventCallback::Get_GameObject(void* leftArgs, void* rightArgs)
+{
+	CGameObject* leftObject = Conversion_GameObject(leftArgs);
+	PHYSICSCOLLIDER_DESC* leftColliderDesc = { nullptr };
+	if (leftObject)
+		leftColliderDesc = leftObject->Get_Component<CPhysicsCollider>()->GetDesc();
+
+	CGameObject* rightObject = Conversion_GameObject(rightArgs);
+	PHYSICSCOLLIDER_DESC* rightColliderDesc = { nullptr };
+	if (rightObject)
+		rightColliderDesc = rightObject->Get_Component<CPhysicsCollider>()->GetDesc();
+
+	return GAMEOBJECTINFO(leftObject, leftColliderDesc, rightObject, rightColliderDesc);
+}
+
+void CPhysics_FilterEventCallback::Ready_EventCallChain()
+{
+	m_arrCollisionEvent[COLLISIONEVENT::Enum::ON_COLLISION_ENTER] = [=](GAMEOBJECTINFO& info) {
+		info.leftObject->OnCollision_Enter(info.rightColliderDesc->eFilterLayer, info.rightObject);
+		info.rightObject->OnCollision_Enter(info.leftColliderDesc->eFilterLayer, info.leftObject);
+#ifdef _DEBUG
+		Debug_Log(COLLISIONEVENT::Enum::ON_COLLISION_ENTER, info);
+#endif // _DEBUG
+		};
+
+	m_arrCollisionEvent[COLLISIONEVENT::Enum::ON_COLLISION_STAY] = [=](GAMEOBJECTINFO& info) {
+		info.leftObject->OnCollision(info.rightColliderDesc->eFilterLayer, info.rightObject);
+		info.rightObject->OnCollision(info.leftColliderDesc->eFilterLayer, info.leftObject);
+#ifdef _DEBUG
+		Debug_Log(COLLISIONEVENT::Enum::ON_COLLISION_STAY, info);
+#endif // _DEBUG
+		};
+
+	m_arrCollisionEvent[COLLISIONEVENT::Enum::ON_COLLISION_EXIT] = [=](GAMEOBJECTINFO& info) {
+		info.leftObject->OnCollision_Exit(info.rightColliderDesc->eFilterLayer, info.rightObject);
+		info.rightObject->OnCollision_Exit(info.leftColliderDesc->eFilterLayer, info.leftObject);
+#ifdef _DEBUG
+		Debug_Log(COLLISIONEVENT::Enum::ON_COLLISION_EXIT, info);
+#endif // _DEBUG
+		};
+
+	m_arrCollisionEvent[COLLISIONEVENT::Enum::ON_TRIGGER_ENTER] = [=](GAMEOBJECTINFO& info) {
+		info.leftObject->OnTrigger_Enter(info.rightColliderDesc->eFilterLayer, info.rightObject);
+		info.rightObject->OnTrigger_Enter(info.leftColliderDesc->eFilterLayer, info.leftObject);
+#ifdef _DEBUG
+		Debug_Log(COLLISIONEVENT::Enum::ON_TRIGGER_ENTER, info);
+#endif // _DEBUG
+		};
+
+	m_arrCollisionEvent[COLLISIONEVENT::Enum::ON_TRIGGER_EXIT] = [=](GAMEOBJECTINFO& info) {
+		info.leftObject->OnTrigger_Exit(info.rightColliderDesc->eFilterLayer, info.rightObject);
+		info.rightObject->OnTrigger_Exit(info.leftColliderDesc->eFilterLayer, info.leftObject);
+#ifdef _DEBUG
+		Debug_Log(COLLISIONEVENT::Enum::ON_TRIGGER_EXIT, info);
+#endif // _DEBUG
+		};
+}
+
+#ifdef _DEBUG
+void CPhysics_FilterEventCallback::Debug_Log(COLLISIONEVENT::Enum event, GAMEOBJECTINFO& info)
+{
+	if (event == COLLISIONEVENT::Enum::END)
+		return;
+
+	wstring logHeader = m_arrEventString[event];
+	wstring leftInfo = {};
+	wstring rightInfo = {};
+
+	if (info.leftObject)
+		leftInfo = info.leftName + L", ID : " + std::to_wstring(info.leftID) + L"\n";
+	else
+		leftInfo = L"NULL\n";
+
+	if (info.rightObject)
+		rightInfo = info.leftName + L", ID : " + std::to_wstring(info.leftID) + L"\n";
+	else
+		rightInfo = L"NULL\n";
+
+	CLOG_INFO(logHeader + leftInfo + rightInfo);
+}
+#endif // _DEBUG
+
+CPhysics_FilterEventCallback* CPhysics_FilterEventCallback::Create()
+{
+	CPhysics_FilterEventCallback* pInstance = new CPhysics_FilterEventCallback();
+
+	if (FAILED(pInstance->Initialize()))
+	{
+		MSG_BOX("Failed to Created : CPhysics_FilterEventCallback");
+		Safe_Release(pInstance);
+	}
+
+	return pInstance;
+}
+
+void CPhysics_FilterEventCallback::Free()
+{
+	Super::Free();
+}

@@ -1,14 +1,13 @@
 #include "pch.h"
 #include "MapToolManager.h"
-#include "GameInstance.h"
 #include "MapObject.h"
 #include "ImGui_ToolManager.h"
 #include "Picking_ToolManager.h"
-#include "StaticModel.h"
-#include "InstanceModel.h"
 #include "DebugLine.h"
 #include "Model.h"
+#include "DataStruct_Map.h"
 #include "Level_Map.h"
+#include "GameInstance.h"
 
 IMPLEMENT_SINGLETON(CMapToolManager)
 
@@ -39,6 +38,7 @@ HRESULT CMapToolManager::Initialize(ID3D11Device* pDevice, ID3D11DeviceContext* 
 
 	return S_OK;
 }
+
 void	CMapToolManager::Update(float DT)
 {
 	Input_Update(DT);
@@ -95,6 +95,75 @@ void CMapToolManager::Preview_Update(float DT)
 	return;
 }
 
+CLIENT_MAKEPATH_DESC_BASE* CMapToolManager::Make_Client_MakePathDesc(EClientMakePath eClientMakePath ,CLIENT_MAKEPATH_DESC_BASE* pPrototype)
+{
+	CLIENT_MAKEPATH_DESC_BASE* pDesc{nullptr};
+
+	switch (eClientMakePath)
+	{
+	case Tool::EClientMakePath::StaticObject:	return nullptr;
+	default:									return nullptr;
+	}
+
+	return pDesc;
+}
+
+HRESULT CMapToolManager::Change_Instance_To_OtherDrawType(CMapObject* pChangeMapObject , EMapObject_DrawType eChangeType)
+{
+	/* 이미 한번 모델이 생성된 객체 */
+
+	if (pChangeMapObject == nullptr) return E_FAIL;
+	CMapObject::MAPOBJECT_DESC tDesc{};
+
+	tDesc.eClientLevelType				= pChangeMapObject->Get_ClientLevelType();
+	tDesc.eClientMakePath				= pChangeMapObject->Get_ClientMakePath();
+	tDesc.eMapObjectDrawType			= eChangeType;
+	tDesc.eState						= pChangeMapObject->Get_MapObjectState();
+	tDesc.isUELoaded					= pChangeMapObject->Get_IsUELoaded();
+	tDesc.isLoaded						= pChangeMapObject->Get_IsLoaded();
+	tDesc.wstrLayerTag					= g_wszMapObjectLayer;
+	tDesc.tUsingModelInfo.wstrPath		= pChangeMapObject->Get_ModelPath();
+	tDesc.tUsingModelInfo.wstrName		= Engine_Utils::ToWString(pChangeMapObject->Get_ModelFileName());
+
+	vector<SRT_DATA> vecSRTData			= pChangeMapObject->Get_SRTDatas();
+	vector<CLIENT_MAKEPATH_DESC_BASE*> vecClientMakePathDesc = pChangeMapObject->Get_ClientMakePathDescs();
+
+	CGameObject* pResult{ nullptr };
+
+	_uint iCount =  ENUM_TO_UINT(vecSRTData.size());
+
+	for (_uint i = 0; i < iCount; ++i)
+	{
+		/* SRT 하나만 Push 하고 하나씩 생성 */
+		tDesc.vecSRTs.clear();
+		tDesc.vecClientMakePathDesc.clear();
+
+		tDesc.vecSRTs.push_back(vecSRTData[i]);
+		tDesc.vecSRTs.back().Update_World();
+
+		CLIENT_MAKEPATH_DESC_BASE* pClientMakePathDesc{ nullptr };
+		if (!vecClientMakePathDesc.empty())
+		{
+			/* Description Type집이넣어서 Desc 복사생성해서 뱉어주는 함수 */
+			/* Empty가 아니였기 떄문에 new로 알아서 생성되어서 나올예정 */
+			pClientMakePathDesc = Make_Client_MakePathDesc(tDesc.eClientMakePath , vecClientMakePathDesc[i]);
+		}
+
+		pResult = Make_MapObject(&tDesc);
+
+		if (pResult == nullptr)
+		{
+			/* 실패했을시 누수처리 */
+			Safe_Delete(pClientMakePathDesc);
+			return E_FAIL;
+		}
+	}
+
+	pChangeMapObject->Set_Dead(pChangeMapObject->Get_LayerTag());
+
+	return S_OK;
+}
+
 void CMapToolManager::Delete_Preview()
 {
 	if (m_pPreviewMapobject)
@@ -132,51 +201,44 @@ HRESULT CMapToolManager::Check_And_Bind()
 
 	for (auto& MapObject : vecMapObject)
 	{
-		PairKey Key{};
-		if (!MapObject)
-			continue;
-		CMapObject* pMapObject = static_cast<CMapObject*>(MapObject);
-		CModel* pModel = pMapObject->Get_Component<CModel>();
-		if (!pModel)
-			continue;
-		Key.first = pMapObject->Get_UsingModelInfo().wstrName;
-		Key.second =  pMapObject->Get_TotalUseMtlsName();
-		mapSameModels[Key].push_back(static_cast<CMapObject*>(pMapObject));
-	}
+	//	PairKey Key{};
+	//	if (!MapObject)
+	//		continue;
+	//	CMapObject* pMapObject = static_cast<CMapObject*>(MapObject);
+	//	CModel* pModel = pMapObject->Get_Component<CModel>();
+	//	if (!pModel)
+	//		continue;
+	//	Key.first = pMapObject->Get_UsingModelInfo().wstrName;
+	//	Key.second =  pMapObject->Get_TotalUseMtlsName();
+	//	mapSameModels[Key].push_back(static_cast<CMapObject*>(pMapObject));
+	//}
 
-	CInstanceModel::INSTANCEMODEL_DESC tInstanceModelDesc{};
-	tInstanceModelDesc.isLoaded = true;
-	tInstanceModelDesc.eType = EMapObject_Type::INSTANCEMODEL;
-	tInstanceModelDesc.iLevelIndex = ENUM_TO_UINT(ELevelType::MAP);
-	tInstanceModelDesc.eState = CMapObject::EState::Default;
-	tInstanceModelDesc.wstrLayerTag = g_wszInstanceModelLayer;
+	//for (auto& Key : mapSameModels)
+	//{
+	//	for (auto& MapObject : Key.second)
+	//	{
+	//		if (!MapObject) continue;
 
-	for (auto& Key : mapSameModels)
-	{
-		for (auto& MapObject : Key.second)
-		{
-			if (!MapObject) continue;
+	//		EMapObject_Type eMapObjectType = MapObject->Get_MapObjectType();
+	//		if (eMapObjectType != EMapObject_Type::STATICMODEL && eMapObjectType != EMapObject_Type::INSTANCEMODEL) continue;
 
-			EMapObject_Type eMapObjectType = MapObject->Get_MapObjectType();
-			if (eMapObjectType != EMapObject_Type::STATICMODEL && eMapObjectType != EMapObject_Type::INSTANCEMODEL) continue;
-
-			vector<SRT_DATA> vecSRTData = MapObject->Get_SRTDatas();
-			tInstanceModelDesc.tData.vecSRT.insert(tInstanceModelDesc.tData.vecSRT.end() , vecSRTData.begin() , vecSRTData.end());
-		} 
-		if (tInstanceModelDesc.tData.vecSRT.size() <= 1)
-		{
-			tInstanceModelDesc.tData.vecSRT.clear();
-			continue;
-		}
-		else
-		{
-			tInstanceModelDesc.tData.tUsingModelInfo = Key.second.front()->Get_UsingModelInfo();
-			Make_MapObject(EMapObject_Type::INSTANCEMODEL, &tInstanceModelDesc);
-			tInstanceModelDesc.tData.vecSRT.clear();
-			for (auto& MapObject : Key.second)
-				m_pGameInstance->Request_DeleteGameObject(ENUM_TO_UINT(ELevelType::MAP), MapObject->Get_MapObjectType() ==  EMapObject_Type::STATICMODEL ?
-					g_wszStaticModelLayer : g_wszInstanceModelLayer, MapObject);
-		}
+	//		vector<SRT_DATA> vecSRTData = MapObject->Get_SRTDatas();
+	//		tInstanceModelDesc.tData.vecSRT.insert(tInstanceModelDesc.tData.vecSRT.end() , vecSRTData.begin() , vecSRTData.end());
+	//	} 
+	//	if (tInstanceModelDesc.tData.vecSRT.size() <= 1)
+	//	{
+	//		tInstanceModelDesc.tData.vecSRT.clear();
+	//		continue;
+	//	}
+	//	else
+	//	{
+	//		tInstanceModelDesc.tData.tUsingModelInfo = Key.second.front()->Get_UsingModelInfo();
+	//		Make_MapObject(EMapObject_Type::INSTANCEMODEL, &tInstanceModelDesc);
+	//		tInstanceModelDesc.tData.vecSRT.clear();
+	//		for (auto& MapObject : Key.second)
+	//			m_pGameInstance->Request_DeleteGameObject(ENUM_TO_UINT(ELevelType::MAP), MapObject->Get_MapObjectType() ==  EMapObject_Type::STATICMODEL ?
+	//				g_wszStaticModelLayer : g_wszInstanceModelLayer, MapObject);
+	//	}
 	}
 
 	/* 그리고 한개짜리인 */
@@ -186,18 +248,13 @@ HRESULT CMapToolManager::Check_And_Bind()
 	return S_OK;
 }
 
-
-
-
-CMapObject* CMapToolManager::Make_MapObject(EMapObject_Type eType, void* pArg, _bool isPreview)
+CMapObject* CMapToolManager::Make_MapObject(void* pArg, _bool isPreview)
 {
-	auto& Factory = m_arrayMapObjectCloneFactory[ENUM_TO_UINT(eType)];
-
-	if (Factory == nullptr) return nullptr;
+	if ( m_funcMapObjectCloneFactory == nullptr) return nullptr;
 
 	CGameObject* pCreatObject{ nullptr };
 
-	if (!(pCreatObject = Factory(pArg)))
+	if (!(pCreatObject = m_funcMapObjectCloneFactory(pArg)))
 	{
 		Safe_Release(pCreatObject);
 		return nullptr;
@@ -218,13 +275,9 @@ HRESULT CMapToolManager::Batch_Preview()
 HRESULT CMapToolManager::Register_MapObjectCloneFactory()
 {
 
-	m_arrayMapObjectCloneFactory[ENUM_TO_UINT(EMapObject_Type::STATICMODEL)] =
-		[=](void* pArg)->CGameObject* { return m_pGameInstance->Add_GameObject(ENUM_TO_UINT(ELevelType::MAP),L"Prototype_GameObject_StaticModel",
-			ENUM_TO_UINT(ELevelType::MAP),g_wszStaticModelLayer,pArg);};
-
-	m_arrayMapObjectCloneFactory[ENUM_TO_UINT(EMapObject_Type::INSTANCEMODEL)] =
-		[=](void* pArg)->CGameObject* { return m_pGameInstance->Add_GameObject(ENUM_TO_UINT(ELevelType::MAP), L"Prototype_GameObject_InstanceModel",
-			ENUM_TO_UINT(ELevelType::MAP), g_wszInstanceModelLayer, pArg); };
+	m_funcMapObjectCloneFactory =
+		[=](void* pArg)->CGameObject* { return m_pGameInstance->Add_GameObject(ENUM_TO_UINT(ELevelType::MAP), L"Prototype_GameObject_MapObject",
+			ENUM_TO_UINT(ELevelType::MAP), g_wszMapObjectLayer, pArg); };
 
 	return S_OK;
 }

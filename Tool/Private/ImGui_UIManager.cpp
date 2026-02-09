@@ -3,7 +3,6 @@
 #include "Tool_Defines.h"
 #include "Engine_Utils.h"
 #include "ToolCanvas.h"
-#include "ToolLayer.h"
 #include "ToolUI.h"
 #include "GameInstance.h"
 
@@ -29,7 +28,6 @@ void CImGui_UIManager::Safe_Change_Canvas(int32_t iNewCanvasIndex)
 	if (m_vecCanvas.empty() || iNewCanvasIndex < 0)
 	{
 		m_iCurCanvasIndex = -1;
-		m_iCurLayerIndex = -1;
 		m_iCurUIIndex = -1;
 		return;
 	}
@@ -40,64 +38,11 @@ void CImGui_UIManager::Safe_Change_Canvas(int32_t iNewCanvasIndex)
 
 	m_iCurCanvasIndex = iNewCanvasIndex;
 
-	auto* pLayerVec = m_vecCanvas[m_iCurCanvasIndex]->Safe_Access_LayerObject_Vector_Ptr();
-	if (nullptr == pLayerVec)
-	{
-		m_iCurLayerIndex = -1;
-		m_iCurUIIndex = -1;
-		return;
-	}
-
-	int32_t iNumLayerData = static_cast<int32_t>(pLayerVec->size());
-
-	if (m_iCurLayerIndex < 0)
-		m_iCurLayerIndex = 0;
-	if (m_iCurLayerIndex >= iNumLayerData)
-		m_iCurLayerIndex = iNumLayerData - 1;
-
-	auto* pUIvec = (*pLayerVec)[m_iCurLayerIndex]->Safe_Access_UIObject_Vector_Ptr();
-	if (nullptr == pUIvec)
-	{
-		m_iCurUIIndex = -1;
-		return;
-	}
-
-	int32_t iNumUIData = static_cast<int32_t>(pUIvec->size());
+	auto* pUIVec = m_vecCanvas[m_iCurCanvasIndex]->Safe_Access_UI_Vector();
+	int32_t iNumUIData = static_cast<int32_t>(pUIVec->size());
 
 	if (m_iCurUIIndex < 0)
 		m_iCurUIIndex = 0;
-	if (m_iCurUIIndex >= iNumUIData)
-		m_iCurUIIndex = iNumUIData - 1;
-}
-
-void CImGui_UIManager::Safe_Change_Layer(int32_t iNewLayerIndex)
-{
-	if (-1 == m_iCurCanvasIndex)
-		return;
-
-	auto* pLayerVec = m_vecCanvas[m_iCurCanvasIndex]->Safe_Access_LayerObject_Vector_Ptr();
-	if (nullptr == pLayerVec || iNewLayerIndex < 0)
-	{
-		m_iCurLayerIndex = -1;
-		m_iCurUIIndex = -1;
-		return;
-	}
-
-	int32_t iNumLayerData = static_cast<int32_t>(pLayerVec->size());
-	if (iNewLayerIndex >= iNumLayerData)
-		return;
-
-	m_iCurLayerIndex = iNewLayerIndex;
-
-	auto* pUIVec = (*pLayerVec)[m_iCurLayerIndex]->Safe_Access_UIObject_Vector_Ptr();
-	if (nullptr == pUIVec)
-	{
-		m_iCurUIIndex = -1;
-		return;
-	}
-
-	int32_t iNumUIData = static_cast<int32_t>(pUIVec->size());
-	
 	if (m_iCurUIIndex >= iNumUIData)
 		m_iCurUIIndex = iNumUIData - 1;
 }
@@ -107,18 +52,7 @@ void CImGui_UIManager::Safe_Change_UI(int32_t iNewUIIndex)
 	if (-1 == m_iCurCanvasIndex)
 		return;
 
-	if (-1 == m_iCurLayerIndex)
-		return;
-
-	auto* pLayer = Safe_Access_Layer(m_iCurLayerIndex);
-	if (nullptr == pLayer)
-	{
-		m_iCurLayerIndex = -1;
-		m_iCurUIIndex = -1;
-		return;
-	}
-
-	auto* pUIVec = pLayer->Safe_Access_UIObject_Vector_Ptr();
+	auto* pUIVec = m_vecCanvas[m_iCurCanvasIndex]->Safe_Access_UI_Vector();
 	if (nullptr == pUIVec || iNewUIIndex < 0)
 	{
 		m_iCurUIIndex = -1;
@@ -139,28 +73,16 @@ int32_t CImGui_UIManager::Get_NumCanvas()
 	return static_cast<int32_t>(m_vecCanvas.size());
 }
 
-int32_t CImGui_UIManager::Get_NumLayer()
-{
-	CToolCanvas* pCanvas = Safe_Access_Canvas(m_iCurCanvasIndex);
-	if (nullptr == pCanvas)
-		return 0;
-
-	if (nullptr == pCanvas->Safe_Access_LayerObject_Vector_Ptr())
-		return 0;
-
-	return static_cast<int32_t>(pCanvas->Safe_Access_LayerObject_Vector_Ptr()->size());
-}
-
 int32_t CImGui_UIManager::Get_NumUI()
 {
-	CToolLayer* pLayer = Safe_Access_Layer(m_iCurLayerIndex);
-	if (nullptr == pLayer)
+	if (m_vecCanvas.empty())
 		return 0;
 
-	if (nullptr == pLayer->Safe_Access_UIObject_Vector_Ptr())
+	auto* pUIVec = m_vecCanvas[m_iCurCanvasIndex]->Safe_Access_UI_Vector();
+	if (nullptr == pUIVec)
 		return 0;
 
-	return static_cast<int32_t>(pLayer->Safe_Access_UIObject_Vector_Ptr()->size());
+	return static_cast<int32_t>(pUIVec->size());
 }
 
 CToolCanvas* CImGui_UIManager::Safe_Access_Canvas(int32_t index)
@@ -175,64 +97,29 @@ CToolCanvas* CImGui_UIManager::Safe_Access_Canvas(int32_t index)
 	return m_vecCanvas[index];
 }
 
-vector<CToolLayer*>* CImGui_UIManager::Safe_Access_LayerVector()
-{
-	/* 현재 Canvas에 접근 */
-	CToolCanvas* pCanvas = Safe_Access_Canvas(m_iCurCanvasIndex);
-	if (nullptr == pCanvas)
-		return nullptr;
-
-	/* 현재 Canvas가 가진 Layer Vector에 접근 */
-	vector<CToolLayer*>* pLayerVec = pCanvas->Safe_Access_LayerObject_Vector_Ptr();
-	if (nullptr == pLayerVec)
-		return nullptr;
-
-	return pLayerVec;
-}
-
-CToolLayer* CImGui_UIManager::Safe_Access_Layer(int32_t index)
-{
-	/* 현재 Canvas에 접근 */
-	CToolCanvas* pCanvas = Safe_Access_Canvas(m_iCurCanvasIndex);
-	if (nullptr == pCanvas)
-		return nullptr;
-
-	/* index번째 Layer Vector에 접근, [Vector.empty / index >= Vector.size / index < 0] -> nullptr */
-	CToolLayer* pLayer = pCanvas->Safe_Access_LayerObject_Ptr(index);
-	if (nullptr == pLayer)
-		return nullptr;
-
-	return pLayer;
-}
-
 vector<CToolUI*>* CImGui_UIManager::Safe_Access_UIVector()
 {
-	/* 현재 Layer에 접근 */
-	CToolLayer* pLayer = Safe_Access_Layer(m_iCurLayerIndex);
-	if (nullptr == pLayer)
+	if (m_iCurCanvasIndex >= m_vecCanvas.size())
 		return nullptr;
 
-	/* 현재 Layer가 가진 UI Vector에 접근 */
-	vector<CToolUI*>* pUIVector = pLayer->Safe_Access_UIObject_Vector_Ptr();
-	if (nullptr == pUIVector)
-		return nullptr;
-
-	return pUIVector;
+	auto* pUIVec = m_vecCanvas[m_iCurCanvasIndex]->Safe_Access_UI_Vector();
+	return pUIVec;
 }
 
 CToolUI* CImGui_UIManager::Safe_Access_UI(int32_t index)
 {
-	/* 현재 Layer에 접근 */
-	CToolLayer* pLayer = Safe_Access_Layer(m_iCurLayerIndex);
-	if (nullptr == pLayer)
+	if (m_iCurCanvasIndex >= m_vecCanvas.size())
 		return nullptr;
 
-	/* index번째 UI Vector에 접근, [Vector.empty / index >= Vector.size / index < 0] -> nullptr */
-	CToolUI* pUI = pLayer->Safe_Access_UIObject_Ptr(index);
-	if (nullptr == pUI)
+	auto* pUIVec = m_vecCanvas[m_iCurCanvasIndex]->Safe_Access_UI_Vector();
+	if (nullptr == pUIVec)
+		return nullptr;
+	
+	int32_t iNumUI = static_cast<int32_t> (pUIVec->size());
+	if ( index >= iNumUI)
 		return nullptr;
 
-	return pUI;
+	return (*pUIVec)[index];
 }
 
 HRESULT CImGui_UIManager::Safe_Add_CanvasCache(const _string& strTag, CToolCanvas* pCache)
@@ -243,14 +130,7 @@ HRESULT CImGui_UIManager::Safe_Add_CanvasCache(const _string& strTag, CToolCanva
 	m_MapCanvasCache.emplace(strTag, pCache);
 	return S_OK;
 }
-HRESULT CImGui_UIManager::Safe_Add_LayerCache(const _string& strTag, CToolLayer* pCache)
-{
-	auto iter = m_MapLayerCache.find(strTag);
-	if (iter != m_MapLayerCache.end())
-		return E_FAIL;
-	m_MapLayerCache.emplace(strTag, pCache);
-	return S_OK;
-}
+
 HRESULT CImGui_UIManager::Safe_Add_UICache(const _string& strTag, CToolUI* pCache)
 {
 	auto iter = m_MapUICache.find(strTag);
@@ -267,20 +147,33 @@ CToolCanvas* CImGui_UIManager::Find_Canvas(const _string& strTag)
 	return iter->second;
 }
 
-CToolLayer* CImGui_UIManager::Find_Layer(const _string& strTag)
-{
-	auto iter = m_MapLayerCache.find(strTag);
-	if (iter == m_MapLayerCache.end())
-		return nullptr;
-	return iter->second;
-}
-
 CToolUI* CImGui_UIManager::Find_UI(const _string& strTag)
 {
 	auto iter = m_MapUICache.find(strTag);
 	if (iter == m_MapUICache.end())
 		return nullptr;
 	return iter->second;
+}
+
+void CImGui_UIManager::Clear()
+{
+	m_iCurCanvasIndex = {};
+	m_iCurUIIndex = {};
+	vector<_string> VecLayerTag;
+	for (const auto* pCanvas : m_vecCanvas)
+	{
+		VecLayerTag.push_back(pCanvas->Get_Tag() + "_Layer");
+	}
+
+	m_MapCanvasCache.clear();
+	m_MapUICache.clear();
+
+	m_vecCanvas.clear();
+
+	for (_string strLayerTag : VecLayerTag)
+	{
+		m_pGameInstance->Clear_Layer(ENUM_TO_UINT(ELevelType::UI), Engine_Utils::ToWString(strLayerTag));
+	}
 }
 
 void CImGui_UIManager::Free()

@@ -7,7 +7,6 @@
 #include "ToolObject.h"
 #include "Model.h"
 #include "UEMapdataParser.h"
-#include "StaticModel.h"
 #include "GameInstance.h"
 
 CUEMapDataLoader::CUEMapDataLoader(ID3D11Device* pDevice, ID3D11DeviceContext* pDeviceContext)

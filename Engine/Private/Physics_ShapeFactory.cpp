@@ -45,6 +45,45 @@ vector<PxShape*> CPhysics_ShapeFactory::GetMeshShape(PHYSICSCOLLIDER_DESC* pDesc
 		return MakeShape(pDesc, MakeTriangleMeshGeometry(pDesc));
 }
 
+vector<PxShape*> CPhysics_ShapeFactory::CopyShapes(vector<PxShape*>& shapes)
+{
+	vector<PxShape*> result;
+
+	result.reserve(shapes.size());
+
+	for (auto& srcShape : shapes)
+	{
+		PxGeometryHolder geom = srcShape->getGeometry();
+
+		PxMaterial* pMaterial = { nullptr };
+		if (srcShape->getNbMaterials() > 0)
+		{
+			PxMaterial* mats[1];
+			srcShape->getMaterials(mats, 1);
+			pMaterial = mats[0];
+		}
+
+		if (pMaterial == nullptr)
+			continue;
+
+		PxShape* pNewShape = m_pPhysics->createShape(geom.any(), *pMaterial);
+
+		if (pNewShape)
+		{
+			pNewShape->setLocalPose(srcShape->getLocalPose());
+			pNewShape->setSimulationFilterData(srcShape->getSimulationFilterData());
+			pNewShape->setQueryFilterData(srcShape->getQueryFilterData());
+			pNewShape->setFlags(srcShape->getFlags());
+			pNewShape->setContactOffset(srcShape->getContactOffset());
+			pNewShape->setRestOffset(srcShape->getRestOffset());
+
+			result.push_back(pNewShape);
+		}
+	}
+
+	return result;
+}
+
 vector<PxShape*> CPhysics_ShapeFactory::MakeShape(PHYSICSCOLLIDER_DESC* pDesc, vector<PxGeometryHolder> geometries)
 {
 	vector<PxShape*> result;

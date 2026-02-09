@@ -4,27 +4,22 @@
 
 NS_BEGIN(Client)
 
-class CStaticModel final  : public CMapObject
+class CStaticObject final  : public CMapObject
 {
 	using Super = CMapObject;
 public:
-	typedef struct tagStaticModel_Desc : public CMapObject::MAPOBJECT_DESC
+	typedef struct tagStaticObject_Desc : public CMapObject::MAPOBJECT_DESC
 	{
-		DTO::USING_MODEL_INFO	 tUsingModelInfo{};
 		Vec3					 vScale_Isolated = {};
-	}STATICMODEL_DESC;
+	}STATICOBJECT_DESC;
 public:
-	CStaticModel(ID3D11Device* pDevice , ID3D11DeviceContext* pContext);
-	CStaticModel(const CStaticModel& rhs);
-	virtual ~CStaticModel() = default;
+	CStaticObject(ID3D11Device* pDevice , ID3D11DeviceContext* pContext);
+	CStaticObject(const CStaticObject& rhs);
+	virtual ~CStaticObject() = default;
 private:
 	virtual HRESULT			Initialize_Prototype()							override;
 	virtual HRESULT			Initialize(void* pArg)							override;
-	HRESULT					Ready_Component(STATICMODEL_DESC* pDesc);
-	
-	HRESULT					Ready_PhysicsComponent(STATICMODEL_DESC* pDesc);
-	HRESULT					Ready_PhysicsCollider(STATICMODEL_DESC* pDesc);
-	HRESULT					Ready_PhysicsRigidBody(STATICMODEL_DESC* pDesc);
+	HRESULT					Ready_Component(STATICOBJECT_DESC* pDesc);
 public:
 	virtual HRESULT			Awake(const _uint iCurrentLevelID)				override;
 	virtual void			Update_Priority(const _float fTimeDelta)		override;
@@ -36,7 +31,7 @@ public:
 private:
 
 public:
-	static CStaticModel* Create(ID3D11Device* pDevice, ID3D11DeviceContext* pContext);
+	static CStaticObject* Create(ID3D11Device* pDevice, ID3D11DeviceContext* pContext);
 	virtual CGameObject* Clone(void* pArg)								override;
 	virtual void Free() override;
 };

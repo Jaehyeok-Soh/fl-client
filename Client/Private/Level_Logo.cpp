@@ -33,7 +33,6 @@
 #include "DataDocument_UI.h"
 #include "DataStruct_UI.h"
 #include "Canvas.h"
-#include "UILayer.h"
 #include "GenericUI.h"
 
 //=================

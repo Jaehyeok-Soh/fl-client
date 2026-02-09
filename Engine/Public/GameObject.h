@@ -35,9 +35,11 @@ public:
 	virtual void Update(const _float fTimeDelta);
 	virtual void Update_Late(const _float fTimeDelta);
 	virtual void Ready_Before_Render(const _float fTimeDelta);
-	virtual void OnCollision(_uint iMyColliderLayer, CCollider* pOther) {}
-	virtual void OnCollision_Enter(_uint iMyColliderLayer, CCollider* pOther) {}
-	virtual void OnCollision_Exit(_uint iMyColliderLayer, CCollider* pOther) {}
+	virtual void OnCollision(_uint iMyColliderLayer, CGameObject* pOther) {}
+	virtual void OnCollision_Enter(_uint iMyColliderLayer, CGameObject* pOther) {}
+	virtual void OnCollision_Exit(_uint iMyColliderLayer, CGameObject* pOther) {}
+	virtual void OnTrigger_Enter(_uint iMyColliderLayer, CGameObject* pOther) {}
+	virtual void OnTrigger_Exit(_uint iMyColliderLayer, CGameObject* pOther) {}
 	virtual _bool Picking(OUT Vec3& vOut) { return false; }
 	virtual HRESULT Render();
 	virtual HRESULT Spawn_FromPool(void* pArg) { return S_OK; }
@@ -83,7 +85,11 @@ public:
 public:
 	void Set_Name(const string& strName);
 	void Set_Name(const wstring& wstrName);
-	const string& Get_Name() const { return m_strName; }
+
+	string Get_Name();
+	wstring Get_WName();
+
+	uint64 Get_ID() { return m_iObjectID; }
 private:
 	void Update_Script_Components(const _float fTimeDelta);
 	void Safe_Release_Component();

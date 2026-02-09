@@ -163,6 +163,7 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="..\Private\ActionState.cpp" />
+    <ClCompile Include="..\Private\ActiveAttackOverlap.cpp" />
     <ClCompile Include="..\Private\AsTypes.cpp" />
     <ClCompile Include="..\Private\Base.cpp">
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Use</PrecompiledHeader>
@@ -228,8 +229,6 @@
     <ClCompile Include="..\Private\Importer.cpp" />
     <ClCompile Include="..\Private\Input_Manager.cpp" />
     <ClCompile Include="..\private\Bounds.cpp" />
-    <ClCompile Include="..\Private\IUIActionForMe.cpp" />
-    <ClCompile Include="..\Private\IUIActionForTarget.cpp" />
     <ClCompile Include="..\private\json_forward.cpp" />
     <ClCompile Include="..\Private\Layer.cpp" />
     <ClCompile Include="..\Private\Level.cpp" />
@@ -254,11 +253,16 @@
     <ClCompile Include="..\private\ObjectPool.cpp" />
     <ClCompile Include="..\private\Octree_Manager.cpp" />
     <ClCompile Include="..\Private\PartObject.cpp" />
+    <ClCompile Include="..\Private\PhysicsAttackOverlap.cpp" />
     <ClCompile Include="..\Private\PhysicsCCT.cpp" />
     <ClCompile Include="..\Private\PhysicsCollider.cpp" />
     <ClCompile Include="..\Private\PhysicsRigidBody.cpp" />
     <ClCompile Include="..\Private\Physics_ActorFactory.cpp" />
+    <ClCompile Include="..\Private\Physics_NPCHitReport.cpp" />
+    <ClCompile Include="..\Private\Physics_QueryFilterCallback.cpp" />
+    <ClCompile Include="..\Private\Physics_UserHitReport.cpp" />
     <ClCompile Include="..\Private\Physics_CCTManager.cpp" />
+    <ClCompile Include="..\Private\Physics_FilterEventCallback.cpp" />
     <ClCompile Include="..\Private\Physics_Module.cpp" />
     <ClCompile Include="..\Private\Physics_ResourceManager.cpp" />
     <ClCompile Include="..\Private\Physics_ShapeFactory.cpp" />
@@ -307,6 +311,7 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\Public\ActionState.h" />
+    <ClInclude Include="..\Public\ActiveAttackOverlap.h" />
     <ClInclude Include="..\Public\AsTypes.h" />
     <ClInclude Include="..\Public\Base.h" />
     <ClInclude Include="..\Public\Bone.h" />
@@ -370,8 +375,6 @@
     <ClInclude Include="..\Public\Importer.h" />
     <ClInclude Include="..\Public\Input_Manager.h" />
     <ClInclude Include="..\public\Bounds.h" />
-    <ClInclude Include="..\Public\IUIActionForMe.h" />
-    <ClInclude Include="..\Public\IUIActionForTarget.h" />
     <ClInclude Include="..\public\json_forward.h" />
     <ClInclude Include="..\Public\Layer.h" />
     <ClInclude Include="..\Public\Level.h" />
@@ -393,11 +396,16 @@
     <ClInclude Include="..\public\ObjectPool.h" />
     <ClInclude Include="..\public\Octree_Manager.h" />
     <ClInclude Include="..\Public\PartObject.h" />
+    <ClInclude Include="..\Public\PhysicsAttackOverlap.h" />
     <ClInclude Include="..\Public\PhysicsCCT.h" />
     <ClInclude Include="..\Public\PhysicsCollider.h" />
     <ClInclude Include="..\Public\PhysicsRigidBody.h" />
     <ClInclude Include="..\Public\Physics_ActorFactory.h" />
+    <ClInclude Include="..\Public\Physics_NPCHitReport.h" />
+    <ClInclude Include="..\Public\Physics_QueryFilterCallback.h" />
+    <ClInclude Include="..\Public\Physics_UserHitReport.h" />
     <ClInclude Include="..\Public\Physics_CCTManager.h" />
+    <ClInclude Include="..\Public\Physics_FilterEventCallback.h" />
     <ClInclude Include="..\Public\Physics_Module.h" />
     <ClInclude Include="..\Public\Physics_ResourceManager.h" />
     <ClInclude Include="..\Public\Physics_ShapeFactory.h" />
