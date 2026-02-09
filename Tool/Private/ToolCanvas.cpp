@@ -323,14 +323,14 @@ void CToolCanvas::Sync_Data()
 {
 	m_tCanvasData.strTag = m_strTag;
 
-	m_tCanvasData.iLevelIndex = m_iClientLevelIndex;
-	m_tCanvasData.fWidth = m_fWidth;
-	m_tCanvasData.fHeight = m_fHeight;
-	m_tCanvasData.fPosX = m_fX;
-	m_tCanvasData.fPosY = m_fY;
-	m_tCanvasData.fPosZ = m_fZ;
-	m_tCanvasData.iEditorSizeX = g_iWinSizeX;
-	m_tCanvasData.iEditorSizeY = g_iWinSizeY;
+	m_tCanvasData.iLevelIndex	= m_iClientLevelIndex;
+	m_tCanvasData.fWidth		= m_fWidth;
+	m_tCanvasData.fHeight		= m_fHeight;
+	m_tCanvasData.fPosX			= m_fX;
+	m_tCanvasData.fPosY			= m_fY;
+	m_tCanvasData.fPosZ			= m_fZ;
+	m_tCanvasData.iEditorSizeX	= g_iWinSizeX;
+	m_tCanvasData.iEditorSizeY	= g_iWinSizeY;
 }
 
 _bool CToolCanvas::Export_Data(DTO::ECategory eCategory, CDataDocumentBase* pDocument)
@@ -353,8 +353,18 @@ _bool CToolCanvas::Export_Data(DTO::ECategory eCategory, CDataDocumentBase* pDoc
 	{
 		if (FAILED(pDoc->Try_Add(pUI->Get_Data())))
 			return FALSE;
-	}
 
+		if (pUI->Get_UIClassType() == DTO::EUIClassType::UI_TEXT)
+		{
+			if (FAILED(pDoc->Try_Add(pUI->Get_TextData())))
+				return FALSE;
+		}
+		else if (pUI->Get_UIClassType() == DTO::EUIClassType::TRIGGER)
+		{
+			if (FAILED(pDoc->Try_Add(pUI->Get_TriggerData())))
+				return FALSE;
+		}
+	}
 	return TRUE;
 }
 

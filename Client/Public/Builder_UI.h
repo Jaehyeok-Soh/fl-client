@@ -23,12 +23,19 @@ private:
 	HRESULT Create_CanvasDTO(const DTO::TUI_CanvasData& data);
 	HRESULT Create_GenericUIDTO(const DTO::TUI_GenericUIData& data);
 
+	// Data Create
+	HRESULT Create_TextDTO(const DTO::TUI_TextData& data);
+
+
 	HRESULT Register_Class(DTO::EUIClassType eClassType, const DTO::TUI_GenericUIData& data, CCanvas* pCanvas);
 	CGenericUI::GENERIC_UI_DESC Make_DefaultInfo(const DTO::TUI_GenericUIData& data, CCanvas* pCanvas);
 
 private:
 	unordered_map<_string, CCanvas*> m_MapCanvasCache;
 	unordered_map<_string, CGenericUI* >m_pMapUICache;
+
+	// Data Cache 
+	unordered_map<_string, DTO::TUI_TextData> m_MapTextDataCache;
 
 	Vec2 m_vAspect = {};
 	Vec2 m_vViewportSIze = {};

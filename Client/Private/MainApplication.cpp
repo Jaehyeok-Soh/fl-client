@@ -400,6 +400,9 @@ HRESULT CMainApplication::Ready_Fonts()
 	if (FAILED(m_pGameInstance->Add_Font(L"Font_Default", L"../../Resources/Fonts/156ex.spritefont")))
 		return E_FAIL;
 
+	if (FAILED(m_pGameInstance->Add_Font(L"Basic_Font_12", L"../../Resources/Fonts/Basic_Font_12.spritefont")))
+		return E_FAIL;
+
 	return S_OK;
 }
 

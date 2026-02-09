@@ -229,18 +229,6 @@
     <Filter Include="07. System\02. Debug_ImGui\Layout\Frame">
       <UniqueIdentifier>{d522fe25-0bdb-43db-847a-41084decceb6}</UniqueIdentifier>
     </Filter>
-    <Filter Include="03. GameObject\UIObjects\02.UI\Object Hp Bar">
-      <UniqueIdentifier>{b4a063b3-dce2-44fe-b144-1c538e80b685}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="03. GameObject\UIObjects\02.UI\Object Hp Bar\00.DelayHp">
-      <UniqueIdentifier>{e7c198ff-f549-43b1-adc4-915748d45127}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="03. GameObject\UIObjects\02.UI\Object Hp Bar\01.PlayerHP">
-      <UniqueIdentifier>{d1da7a10-7b69-4f7d-9c38-81e993488207}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="03. GameObject\UIObjects\02.UI\Object Hp Bar\02.MonsterHP">
-      <UniqueIdentifier>{beb7d1a4-337d-48de-b4df-4fb246247658}</UniqueIdentifier>
-    </Filter>
     <Filter Include="03. GameObject\UIObjects\02.UI\Image">
       <UniqueIdentifier>{6d340ec4-9fd3-485b-bb1c-8989cfd57761}</UniqueIdentifier>
     </Filter>
@@ -250,8 +238,11 @@
     <Filter Include="03. GameObject\UIObjects\02.UI\Image\JustImage">
       <UniqueIdentifier>{fd843193-a085-4c64-9708-e0849b95da7d}</UniqueIdentifier>
     </Filter>
-    <Filter Include="03. GameObject\UIObjects\02.UI\Object Hp Bar\Progress Bar">
+    <Filter Include="03. GameObject\UIObjects\02.UI\Progress Bar">
       <UniqueIdentifier>{bd7da17c-04aa-4842-8652-0f67ca4cf8ad}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="03. GameObject\UIObjects\02.UI\Text">
+      <UniqueIdentifier>{4c552970-7965-46f3-85ec-73d256c4eba8}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
@@ -478,9 +469,6 @@
     <ClInclude Include="..\public\ImGui_FrameLayout.h">
       <Filter>07. System\02. Debug_ImGui\Layout\Frame</Filter>
     </ClInclude>
-    <ClInclude Include="..\Private\UIDelay_HP.h">
-      <Filter>03. GameObject\UIObjects\02.UI\Object Hp Bar\00.DelayHp</Filter>
-    </ClInclude>
     <ClInclude Include="..\Public\UIJust_Image.h">
       <Filter>03. GameObject\UIObjects\02.UI\Image\JustImage</Filter>
     </ClInclude>
@@ -488,7 +476,10 @@
       <Filter>03. GameObject\UIObjects\02.UI\Image\SkillBG</Filter>
     </ClInclude>
     <ClInclude Include="..\Public\UIProgress_Bar.h">
-      <Filter>03. GameObject\UIObjects\02.UI\Object Hp Bar\Progress Bar</Filter>
+      <Filter>03. GameObject\UIObjects\02.UI\Progress Bar</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\UIText.h">
+      <Filter>03. GameObject\UIObjects\02.UI\Text</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -707,9 +698,6 @@
     <ClCompile Include="..\private\ImGui_FrameLayout.cpp">
       <Filter>07. System\02. Debug_ImGui\Layout\Frame</Filter>
     </ClCompile>
-    <ClCompile Include="..\Private\UIDelay_HP.cpp">
-      <Filter>03. GameObject\UIObjects\02.UI\Object Hp Bar\00.DelayHp</Filter>
-    </ClCompile>
     <ClCompile Include="..\Private\UIJust_Image.cpp">
       <Filter>03. GameObject\UIObjects\02.UI\Image\JustImage</Filter>
     </ClCompile>
@@ -717,7 +705,10 @@
       <Filter>03. GameObject\UIObjects\02.UI\Image\SkillBG</Filter>
     </ClCompile>
     <ClCompile Include="..\Private\UIProgress_Bar.cpp">
-      <Filter>03. GameObject\UIObjects\02.UI\Object Hp Bar\Progress Bar</Filter>
+      <Filter>03. GameObject\UIObjects\02.UI\Progress Bar</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\UIText.cpp">
+      <Filter>03. GameObject\UIObjects\02.UI\Text</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

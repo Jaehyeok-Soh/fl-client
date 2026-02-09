@@ -162,6 +162,8 @@ HRESULT CGenericUI::Bind_ShaderResources()
 	}
 	else if (m_iShaderPass == ENUM_TO_UINT(EUIShaderPass::COLOR))
 	{
+		if (FAILED(Get_Component<CTexture>()->Bind_ShaderResourceBuffer(pShader)))
+			return E_FAIL;
 		if (FAILED(pShader->Get_Variable("g_vColorTint")->SetRawValue(&m_vColorTint, 0, sizeof(Vec4))))
 			return E_FAIL;
 	}

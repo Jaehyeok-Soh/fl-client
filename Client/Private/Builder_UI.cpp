@@ -5,6 +5,7 @@
 #include "GenericUI.h"
 #include "UIProgress_Bar.h"
 #include "UIJust_Image.h"
+#include "UIText.h"
 
 #include"UI_Manager.h"
 #include "GameInstance.h"
@@ -42,6 +43,17 @@ HRESULT CBuilder_UI::Build(const CDataDocumentBase& document)
 			const auto* pDto = static_cast<const Engine::CUI_Canvas_DTO*>(pDtoBase);
 			/* 데이터를 보유한 클래스에서 데이터를 추출 -> 오브젝트 매니저 레이어에 추가까지 */
 			if (FAILED(Create_CanvasDTO(pDto->Get_Data())))
+				return E_FAIL;
+		}
+	}
+
+	// For. TextData
+	{
+		const vector<Engine::IObjectDataBase*> vecDataList = doc.Get_ListByType(ENUM_TO_UINT(DTO::EUIType::UI_TEXT));
+		for (const auto& pObjectData : vecDataList)
+		{
+			const auto* pDto = static_cast<const Engine::CUI_Text_DTO*>(pObjectData);
+			if (FAILED(Create_TextDTO(pDto->Get_Data())))
 				return E_FAIL;
 		}
 	}
@@ -113,6 +125,15 @@ HRESULT CBuilder_UI::Create_GenericUIDTO(const DTO::TUI_GenericUIData& data)
 	return S_OK;
 }
 
+HRESULT CBuilder_UI::Create_TextDTO(const DTO::TUI_TextData& data)
+{
+	if (data.eType != DTO::EUIType::UI_TEXT)
+		return E_FAIL;
+
+	m_MapTextDataCache.emplace(data.strOwnerName, data);
+	return S_OK;
+}
+
 HRESULT CBuilder_UI::Register_Class(DTO::EUIClassType eClassType, const DTO::TUI_GenericUIData& data, CCanvas* pCanvas)
 {
 	if (nullptr == pCanvas)
@@ -130,6 +151,17 @@ HRESULT CBuilder_UI::Register_Class(DTO::EUIClassType eClassType, const DTO::TUI
 		static_cast<CGenericUI::GENERIC_UI_DESC&>(Desc) = DefaultDesc;
 		Desc.eOwner = data.eOwnerType;
 		pResult		= m_pGameInstance->Add_GameObject(m_iLevelID, wstrProtoTag, m_iLevelID, wstrLayerTag, &Desc);
+	}
+	else if (eClassType == DTO::EUIClassType::UI_TEXT)
+	{
+		CUIText::TEXT_DESC Desc = {};
+		static_cast<CGenericUI::GENERIC_UI_DESC&>(Desc) = DefaultDesc;
+		Desc.eOwner = data.eOwnerType;
+		auto iter = m_MapTextDataCache.find(data.strTag);
+		if (iter == m_MapTextDataCache.end())
+			return E_FAIL;
+		Desc.wstrText = iter->second.wstrText;
+		pResult = m_pGameInstance->Add_GameObject(m_iLevelID, wstrProtoTag, m_iLevelID, wstrLayerTag, &Desc);
 	}
 	else if (eClassType == DTO::EUIClassType::JUST_IMAGE)
 	{

@@ -1,0 +1,178 @@
+#include "pch.h"
+#include "UIText.h"
+#include "Client_Defines.h"
+
+//=================
+// Component
+//=================
+#include "Texture.h"
+#include "Shader.h"
+#include "VIBuffer_Rect_Tex.h"
+#include "StatComponent.h"
+#include "GameInstance.h"
+
+CUIText::CUIText(ID3D11Device* pDevice, ID3D11DeviceContext* pDeviceContext)
+	:CGenericUI(pDevice, pDeviceContext)
+{
+}
+
+CUIText::CUIText(const CUIText& rhs)
+	:CGenericUI(rhs)
+{
+}
+
+HRESULT CUIText::Initialize_Prototype()
+{
+	if (FAILED(Super::Initialize_Prototype()))
+		return E_FAIL;
+	return S_OK;
+}
+
+HRESULT CUIText::Initialize(void* pArg)
+{
+	TEXT_DESC* pDesc = static_cast<TEXT_DESC*>(pArg);
+	m_pTargetStat = pDesc->pTargetStat;
+	m_eOwnerType = pDesc->eOwner;
+	m_wstrText = pDesc->wstrText;
+
+	if (FAILED(Super::Initialize(pArg)))
+		return E_FAIL;
+	if (FAILED(Ready_Components(pDesc)))
+		return E_FAIL;
+
+	if (FAILED(Attach_Personal_Info()))
+		return E_FAIL;
+
+	m_vFontPos = Vec2{ m_fX, m_fY };
+	return S_OK;
+}
+
+HRESULT CUIText::Attach_Personal_Info()
+{
+	switch (m_eOwnerType)
+	{
+	case DTO::EUIOwnerType::NONE_OWNER:
+		return S_OK;
+	case DTO::EUIOwnerType::PLAYER_HP:
+	{
+		m_pTargetStat;
+		return S_OK;
+	}
+	case DTO::EUIOwnerType::PLAYER_LV:
+	{
+		m_pTargetStat;
+		return S_OK;
+	}
+	case DTO::EUIOwnerType::PLAYER_ENERGY:
+	{
+		m_pTargetStat;
+		return S_OK;
+	}
+	case DTO::EUIOwnerType::END:
+	default:
+		return E_FAIL;
+	}
+
+
+	return S_OK;
+}
+
+HRESULT CUIText::Awake(const _uint iCurrentLevelID)
+{
+	if (FAILED(Super::Awake(iCurrentLevelID)))
+		return E_FAIL;
+
+	return S_OK;
+}
+
+void CUIText::Update_Priority(const _float fTimeDelta)
+{
+	Super::Update_Priority(fTimeDelta);
+}
+
+void CUIText::Update(const _float fTimeDelta)
+{
+	Super::Update(fTimeDelta);
+}
+
+void CUIText::Update_Late(const _float fTimeDelta)
+{
+	m_wstrText = L"¾È³ç";
+	m_vFontColor = Vec4{ 1.f, 0.f, 0.f, 1.f };
+	//m_vFontPos.x = m_vRenderPos.x;
+	//m_vFontPos.y = m_vRenderPos.y;
+	m_vFontPos = Vec2{100.f, 100.f };
+
+
+	Super::Update_Late(fTimeDelta);
+}
+
+void CUIText::Ready_Before_Render(const _float fTimeDelta)
+{
+	Acting_By_InteractState();
+	Super::Ready_Before_Render(fTimeDelta);
+}
+
+HRESULT CUIText::Render()
+{
+	if (!m_isVisible)
+		return S_OK;
+
+	if (FAILED(Super::Render()))
+		return E_FAIL;
+
+	if (FAILED(Bind_ShaderResources()))
+		return E_FAIL;
+
+	Get_Component<CShader>()->Apply();
+	Get_Component<CVIBuffer>()->Bind_Resource();
+	Get_Component<CVIBuffer>()->Render();
+
+	if (FAILED(m_pGameInstance->Draw_Text(L"Font_Default", m_wstrText.c_str(), m_vFontPos, m_vFontColor)))
+		return E_FAIL;
+	return S_OK;
+}
+
+HRESULT CUIText::Ready_Components(TEXT_DESC* pDesc)
+{
+	Super::Ready_Components(pDesc);
+	return S_OK;
+}
+
+HRESULT CUIText::Bind_ShaderResources()
+{
+	CShader* pShader = Get_Component<CShader>();
+	if (FAILED(Get_Component<CTransform>()->Bind_ShaderResource(pShader)))
+		return E_FAIL;
+
+	Super::Bind_ShaderResources();
+
+	return S_OK;
+}
+
+CUIText* CUIText::Create(ID3D11Device* pDevice, ID3D11DeviceContext* pDeviceContext)
+{
+	CUIText* pInstance = new CUIText(pDevice, pDeviceContext);
+	if (FAILED(pInstance->Initialize_Prototype()))
+	{
+		MSG_BOX("CUIText::Create, Create Failed");
+		Safe_Release(pInstance);
+	}
+	return pInstance;
+}
+
+CGameObject* CUIText::Clone(void* pArg)
+{
+	CUIText* pInstance = new CUIText(*this);
+	if (FAILED(pInstance->Initialize(pArg)))
+	{
+		MSG_BOX("CUIText::Clone, Clone Failed");
+		Safe_Release(pInstance);
+	}
+	return pInstance;
+}
+
+void CUIText::Free()
+{
+	Super::Free();
+}

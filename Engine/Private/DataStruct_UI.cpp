@@ -8,6 +8,58 @@ using json = nlohmann::json;
 
 NS_BEGIN(DTO)
 
+void to_json(json& j, const TUI_TriggerData& data)
+{
+	j = json
+	{
+		{"Type", TUI_TriggerData::eType},
+		{"strTag", data.strTag},
+		{"strOwnerName", data.strOwnerName},
+
+		{"vecHoverEnterTriggerCanvas",	data.vecHoverEnterTriggerCanvas},
+		{"vecHoverEnterTriggerUI",		data.vecHoverEnterTriggerUI},
+		{"vecHoverExitTriggerCanvas",	data.vecHoverExitTriggerCanvas},
+		{"vecHoverExitTriggerUI",		data.vecHoverExitTriggerUI},
+
+		{"vecPressEnterTriggerCanvas",	data.vecPressEnterTriggerCanvas},
+		{"vecPressEnterTriggerUI",		data.vecPressEnterTriggerUI},
+		{"vecPressExitTriggerCanvas",	data.vecPressExitTriggerCanvas},
+		{"vecPressExitTriggerUI",		data.vecPressExitTriggerUI},
+	};
+}
+
+void from_json(const json& j, TUI_TriggerData& data)
+{
+	j.at("strTag").get_to(data.strTag);
+	j.at("strOwnerName").get_to(data.strOwnerName);
+
+	data.vecHoverEnterTriggerCanvas = j.value("vecHoverEnterTriggerCanvas", std::vector<std::string>{});
+	data.vecHoverEnterTriggerUI = j.value("vecHoverEnterTriggerUI", std::vector<std::string>{});
+	data.vecHoverExitTriggerCanvas = j.value("vecHoverExitTriggerCanvas", std::vector<std::string>{});
+	data.vecHoverExitTriggerUI = j.value("vecHoverExitTriggerUI", std::vector<std::string>{});
+
+	data.vecPressEnterTriggerCanvas = j.value("vecPressEnterTriggerCanvas", std::vector<std::string>{});
+	data.vecPressEnterTriggerUI = j.value("vecPressEnterTriggerUI", std::vector<std::string>{});
+	data.vecPressExitTriggerCanvas = j.value("vecPressExitTriggerCanvas", std::vector<std::string>{});
+	data.vecPressExitTriggerUI = j.value("vecPressExitTriggerUI", std::vector<std::string>{});
+}
+
+void to_json(json& j, const TUI_TextData& data)
+{
+	j = json
+	{
+		{"Type", TUI_TextData::eType },
+		{"strTag", data.strTag},
+		{"strOwnerName", data.strOwnerName},
+		{"wstrText", data.wstrText},
+	};
+}
+void from_json(const json& j, TUI_TextData& data)
+{
+	j.at("strTag").get_to(data.strTag);
+	j.at("strOwnerName").get_to(data.strOwnerName);
+	j.at("wstrText").get_to(data.wstrText);
+}
 void to_json(json& j, const TUI_GenericUIData& data)
 {
 	j = json
@@ -92,6 +144,28 @@ NS_END
 
 
 NS_BEGIN(Engine)
+
+json CUI_Trigger_DTO::ToJson() const
+{
+	return json(m_Data);
+}
+
+HRESULT CUI_Trigger_DTO::FromJson(const json& j)
+{
+	m_Data = j.get<DTO::TUI_TriggerData>();
+	return S_OK;
+}
+
+json CUI_Text_DTO::ToJson() const
+{
+	return json(m_Data);
+}
+
+HRESULT CUI_Text_DTO::FromJson(const json& j)
+{
+	m_Data = j.get<DTO::TUI_TextData>();
+	return S_OK;
+}
 
 json CUI_GenericUI_DTO::ToJson() const
 {

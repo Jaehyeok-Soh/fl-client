@@ -22,6 +22,10 @@ PS_OUT PS_MAIN(PS_IN_POS_TEX input)
 PS_OUT PS_COLOR(PS_IN_POS_TEX input)
 {
     PS_OUT output;
+    output.vColor = g_DefaultTextures[DEFAULT].Sample(PointSampler, input.vUV);
+    if (output.vColor.a < 0.3f)
+        discard;
+    
     output.vColor = g_vColorTint;
     return output;
 }

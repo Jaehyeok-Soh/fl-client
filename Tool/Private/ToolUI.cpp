@@ -35,7 +35,7 @@ HRESULT CToolUI::Initialize_Prototype()
 HRESULT CToolUI::Initialize(void* pArg)
 {
 	TOOLUI_DESC* pDesc = static_cast<TOOLUI_DESC*>(pArg);
-	
+	m_eClassType			= pDesc->eClassType;
 	m_strName				= pDesc->strName;
 	m_strCanvasName			= pDesc->strCanvasName;
 	m_iCanvasIndex			= pDesc->iCanvasIndex;
@@ -49,14 +49,29 @@ HRESULT CToolUI::Initialize(void* pArg)
 	m_fDelay				= pDesc->fDelay;
 	m_eOwnerType			= pDesc->eOwnerType;
 
+	{
+		m_tUITextData			= pDesc->tTextData;
+		m_wstrText_TextData = m_tUITextData.wstrText;
+		m_vFontColor_TextData = m_tUITextData.vFontColor;
+	}
+
+	{
+		m_vecHoverEnterTriggerCanvas	= m_tUITriggerData.vecHoverEnterTriggerCanvas;
+		m_vecHoverEnterTriggerUI		= m_tUITriggerData.vecHoverEnterTriggerUI;
+		m_vecHoverExitTriggerCanvas		= m_tUITriggerData.vecHoverExitTriggerCanvas;
+		m_vecHoverExitTriggerUI			= m_tUITriggerData.vecHoverExitTriggerUI;
+		m_vecPressEnterTriggerCanvas	= m_tUITriggerData.vecPressEnterTriggerCanvas;
+		m_vecPressEnterTriggerUI		= m_tUITriggerData.vecPressEnterTriggerUI;
+		m_vecPressExitTriggerCanvas		= m_tUITriggerData.vecPressExitTriggerCanvas;
+		m_vecPressExitTriggerUI			= m_tUITriggerData.vecPressExitTriggerUI;
+	}
+
 	if (FAILED(Super::Initialize(pArg)))
 		return E_FAIL;
     if (FAILED(Ready_Components(pDesc)))
         return E_FAIL;
-
 	if (FAILED(Get_Component<CTexture>()->Add_DefaultTexture(m_wstrTextureTag, 0)))
 		return E_FAIL;
-
 
     return S_OK;
 }
@@ -237,6 +252,12 @@ HRESULT CToolUI::Bind_ShaderResources()
 			return E_FAIL;
 	}
 
+	if(m_eClassType == DTO::EUIClassType::UI_TEXT)
+	{
+		Vec2 fontPos = Vec2{ m_vRenderPos.x, m_vRenderPos.y };
+		if (FAILED(m_pGameInstance->Draw_Text(L"Font_Default", m_wstrText_TextData.c_str(), fontPos, m_vFontColor_TextData)))
+			return E_FAIL;
+	}
     return S_OK;
 }
 
@@ -333,6 +354,59 @@ void CToolUI::Sync_Data()
 	m_tUIData.vColorTint 			= m_vColorTint;
 	m_tUIData.iShaderPass			= m_iShaderPass;
 	m_tUIData.fDelay				= m_fDelay;
+
+	if (m_eClassType == DTO::EUIClassType::UI_TEXT)
+	{
+		Sync_TextData();
+	}
+	else if (m_eClassType == DTO::EUIClassType::TRIGGER)
+	{
+		Stnc_TriggerData();
+	}
+}
+
+void CToolUI::Sync_TextData()
+{
+	m_tUITextData.strTag = m_strName + "_TextData";
+	m_tUITextData.strOwnerName = m_strName;
+	m_tUITextData.wstrText = m_wstrText_TextData;
+}
+
+void CToolUI::Stnc_TriggerData()
+{
+	m_tUITriggerData.strTag = m_strName + "_TriggerData";
+	m_tUITriggerData.strOwnerName = m_strName;
+	m_tUITriggerData.vecHoverEnterTriggerCanvas = m_vecHoverEnterTriggerCanvas;
+	m_tUITriggerData.vecHoverEnterTriggerUI = m_vecHoverEnterTriggerUI;
+	m_tUITriggerData.vecHoverExitTriggerCanvas = m_vecHoverExitTriggerCanvas;
+	m_tUITriggerData.vecHoverExitTriggerUI = m_vecHoverExitTriggerUI;
+	m_tUITriggerData.vecPressEnterTriggerCanvas = m_vecPressEnterTriggerCanvas;
+	m_tUITriggerData.vecPressEnterTriggerUI = m_vecPressEnterTriggerUI;
+	m_tUITriggerData.vecPressExitTriggerCanvas = m_vecPressExitTriggerCanvas;
+	m_tUITriggerData.vecPressExitTriggerUI = m_vecPressExitTriggerUI;
+}
+
+_bool CToolUI::Add_Tag(vector<_string>& vec, const _string& str)
+{
+	if (str == "")
+		return false;
+
+	if (std::find(vec.begin(), vec.end(), str) != vec.end())
+		return false;
+	vec.push_back(str);
+	return true;
+}
+
+_bool CToolUI::Remove_Tag(vector<_string>& vec, const _string& str)
+{
+	if (str == "")
+		return false;
+
+	auto it = std::find(vec.begin(), vec.end(), str);
+	if (it == vec.end())
+		return false;
+	vec.erase(it);
+	return true;
 }
 
 HRESULT CToolUI::Request_Change_Texture()

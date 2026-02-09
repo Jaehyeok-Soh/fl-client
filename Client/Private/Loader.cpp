@@ -51,6 +51,7 @@
 #include "Canvas.h"
 #include "GenericUI.h"
 #include "UIProgress_Bar.h"
+#include "UIText.h"
 #include "UIJust_Image.h"
 //=================
 // Resource
@@ -286,6 +287,7 @@ HRESULT CLoader::Loading_For_Logo()
 #pragma region UI
 	ADD_PROTOTYPE(ELevelType::LOGO, L"Prototype_UI_Canvas", CCanvas::Create(m_pDevice, m_pDeviceContext));
 	ADD_PROTOTYPE(ELevelType::LOGO, L"Prototype_UI_PROGRESS_BAR", CUIProgress_Bar::Create(m_pDevice, m_pDeviceContext));
+	ADD_PROTOTYPE(ELevelType::LOGO, L"Prototype_UI_TEXT", CUIText::Create(m_pDevice, m_pDeviceContext));
 	ADD_PROTOTYPE(ELevelType::LOGO, L"Prototype_UI_JUST_IMAGE", CUIJust_Image::Create(m_pDevice, m_pDeviceContext));
 #pragma endregion
 
