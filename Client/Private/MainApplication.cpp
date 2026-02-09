@@ -90,7 +90,7 @@ HRESULT CMainApplication::Render()
 	m_pGameInstance->Draw_Begin(&ClearColor);
 	m_pGameInstance->Draw();
 #ifdef _DEBUG
-	m_pDebugGui->Render();
+	//m_pDebugGui->Render();
 #endif
 
 	m_pGameInstance->Draw_End();
@@ -183,11 +183,11 @@ HRESULT CMainApplication::Ready_Static_Prototype()
 			return E_FAIL;
 	}
 
-	// For. Prototype_Component_Shader_BondUpdate
+	// For. Prototype_Component_Shader_BondCombine
 	{
 		CComputeShader::ComShaderOriginDesc shaderDesc = {};
-		shaderDesc.pShaderFilePath = L"../../Shaders/ComShader_BoneUpdate.hlsl";
-		if (FAILED(m_pGameInstance->Add_Prototype(ENUM_TO_UINT(ELevelType::STATIC), L"Prototype_Component_Shader_BondUpdate",
+		shaderDesc.pShaderFilePath = L"../../Shaders/ComShader_BoneCombine.hlsl";
+		if (FAILED(m_pGameInstance->Add_Prototype(ENUM_TO_UINT(ELevelType::STATIC), L"Prototype_Component_Shader_BondCombine",
 			CComputeShader::Create(m_pDevice, m_pDeviceContext, &shaderDesc))))
 			return E_FAIL;
 	}

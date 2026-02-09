@@ -80,7 +80,14 @@ void CBody::Update_Priority(_float fTimeDelta)
 void CBody::Update(_float fTimeDelta)
 {
 	Super::Update(fTimeDelta);
-	Get_Component<CModel>()->Update_Animation(fTimeDelta, Get_Parent()->Get_Component<CTransform>(), Get_Parent()->Get_Component<CPhysicsCCT>());
+
+	CComputeShader* pBonCS = static_cast<CComputeShader*>(Get_Script_Component(TEXT("ComputeShader_BoneCombine")));
+	CComputeShader* pAnimECS = static_cast<CComputeShader*>(Get_Script_Component(TEXT("ComputeShader_AnimE")));
+	CComputeShader* pAnimBCS = static_cast<CComputeShader*>(Get_Script_Component(TEXT("ComputeShader_AnimB")));
+
+	Get_Component<CModel>()->Update_Animation(pBonCS, pAnimECS, pAnimBCS,
+		fTimeDelta, Get_Parent()->Get_Component<CTransform>(), Get_Parent()->Get_Component<CPhysicsCCT>());
+
 	if(CCollider* pCollider = Get_Component<CCollider>())
 		pCollider->Update(m_matCombinedWorld);
 }
@@ -319,7 +326,7 @@ HRESULT CBody::Ready_ComputeShader()
 		ShaderDesc.OutPut_StructBuffer.iElementSize = sizeof(CS_OUT_BONE);
 		ShaderDesc.OutPut_StructBuffer.iNumElements = iBoneNums;
 
-		if (FAILED(Add_Script_Component(L"ComputeShader_Bone", L"Prototype_Component_Shader_BondUpdate", &ShaderDesc)))
+		if (FAILED(Add_Script_Component(L"ComputeShader_BoneCombine", L"Prototype_Component_Shader_BondCombine", &ShaderDesc)))
 			return E_FAIL;
 	}
 
@@ -366,7 +373,7 @@ HRESULT CBody::Ready_ComputeShader()
 	}
 
 
-	if (FAILED(Get_Component<CModel>()->Ready_CSs(static_cast<CComputeShader*>(Get_Script_Component(L"ComputeShader_Bone")),
+	if (FAILED(Get_Component<CModel>()->Ready_CSs(static_cast<CComputeShader*>(Get_Script_Component(L"ComputeShader_BoneCombine")),
 		static_cast<CComputeShader*>(Get_Script_Component(L"ComputeShader_AnimE")))))
 		return E_FAIL;
 
