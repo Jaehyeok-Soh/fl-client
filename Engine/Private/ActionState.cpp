@@ -39,6 +39,7 @@ HRESULT CActionState::Initialize(void* pArg)
 	m_iStateCount = pDesc->iStateCount;
 	m_vecStates.resize(m_iStateCount);
 	m_pOwnerModel = pDesc->pOwnerModel;
+	m_pOwnerAnimECS = pDesc->pOwnerAnimECS;
 
 	return S_OK;
 }
@@ -184,7 +185,7 @@ HRESULT CActionState::Request_ChangeAnimation(_uint iAnimationIndex, _bool bBlen
 	if (m_pOwnerModel == nullptr)
 		return E_FAIL;
 
-	return m_pOwnerModel->Change_Animation(iAnimationIndex, bBlend, bLoop, bForce);
+	return m_pOwnerModel->Change_Animation(iAnimationIndex, bBlend, bLoop, bForce, m_pOwnerAnimECS);
 }
 
 _float CActionState::Get_AnimElpasedTimeSeconds()

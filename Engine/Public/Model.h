@@ -79,9 +79,9 @@ private:
 public:
 	HRESULT Render(_uint iMeshIndex);
 	HRESULT	Render_Instance(_uint iMeshIndex , _uint iInstanceCount);
-	HRESULT Change_Animation(_uint iAnimationIndex, _bool bBlend, _bool isLoop = true, _bool bForce = false);
+	HRESULT Change_Animation(_uint iAnimationIndex, _bool bBlend, _bool isLoop = true, _bool bForce = false, CComputeShader* pAnimEComShader = nullptr);
 	void	Add_Animation(class CModelAnimation* pAnimation) { m_vecAnimations.push_back(pAnimation); }
-	void	Update_Animation(_float fTimeDelta, CTransform* pOwnerTransform = nullptr, CPhysicsCCT* pOwnerPhyCCT = nullptr);
+	void	Update_Animation(CComputeShader* pBoneComBineCS, CComputeShader* pAnimEComShader, CComputeShader* pAnimBlendCS, _float fTimeDelta, CTransform* pOwnerTransform = nullptr, CPhysicsCCT* pOwnerPhyCCT = nullptr);
 	HRESULT Set_PassByMesh(class CShader* pShader, _uint iMeshIndex);
 	HRESULT Bind_Material(class CShader* pShader, _uint iMeshIndex);
 	HRESULT Bind_MaterialInstance(class CShader* pShader, _uint iMeshIndex);
@@ -119,7 +119,7 @@ public:
 	void Set_AnimationPlayRate(_uint iIndex, _float fValue);
 	const _float Get_BlentTime()  { return m_fBlendedTime; }
 
-	HRESULT Ready_CSs(CComputeShader* pBoneShader, CComputeShader* pAnimESahder);
+	HRESULT Ready_CSs(CComputeShader* pBoneComBineCS, CComputeShader* pAnimEvalCS);
 
 	// load func
 private:
@@ -133,32 +133,35 @@ private:
 	void	Play_Animation(_float fTimeDelta, CTransform* pOwnerTransform = nullptr, CPhysicsCCT* pOwnerPhyCCT = nullptr);
 	void	Blend_Animation(_float fTimeDelta, _float fRatio, CTransform* pOwnerTransform = nullptr, CPhysicsCCT* pOwnerPhyCCT = nullptr);
 
+	void Play_Animation(CComputeShader* pBoneComBineCS, CComputeShader* pAnimEvalCS, _float fTimeDelta, CTransform* pOwnerTransform = nullptr, CPhysicsCCT* pOwnerPhyCCT = nullptr);
+
+	void Blend_Animation(CComputeShader* pBoneComBineCS, CComputeShader* pAnimEvalCS, CComputeShader* pAnimBlendCS
+		, _float fTimeDelta, _float fRatio, CTransform* pOwnerTransform = nullptr, CPhysicsCCT* pOwnerPhyCCT = nullptr);
+
 private:
 	HRESULT Build_AnimationIndexTable();
-	void Begin_AnimationPlayState(AnimationPlayState eState, CComputeShader* pAnimEComShader = nullptr);
-	void Update_AnimationPlayState(const _float fTimeDelta, CTransform* pOwnerTransform = nullptr, CPhysicsCCT* pOwnerPhyCCT = nullptr);
+	void Begin_AnimationPlayState(AnimationPlayState eState, CComputeShader* pAnimEvalCS = nullptr);
+	void Update_AnimationPlayState(CComputeShader* pBoneComBineCS, CComputeShader* pAnimEvalCS, CComputeShader* pAnimBlendCS, const _float fTimeDelta, CTransform* pOwnerTransform = nullptr, CPhysicsCCT* pOwnerPhyCCT = nullptr);
 	void End_AnimationPlayState(AnimationPlayState eState);
-	void Change_AnimationPlayState(AnimationPlayState eState);
+	void Change_AnimationPlayState(AnimationPlayState eState, CComputeShader* pAnimEvalCS = nullptr);
 
-	void Play_Animation(CComputeShader* pAnimEComShader, CComputeShader* pBoneComShader, _float fTimeDelta, CTransform* pOwnerTransform = nullptr, CPhysicsCCT* pOwnerPhyCCT = nullptr);
 
-	void Play_Begin(CComputeShader* pAnimEComShader = nullptr);
-	void Play_Update(const _float fTimeDelta, CTransform* pOwnerTransform = nullptr, CPhysicsCCT* pOwnerPhyCCT = nullptr);
+
+	void Play_Begin(CComputeShader* pAnimEvalCS = nullptr);
+	void Play_Update(CComputeShader* pBoneComBineCS, CComputeShader* pAnimEvalCS, const _float fTimeDelta, CTransform* pOwnerTransform = nullptr, CPhysicsCCT* pOwnerPhyCCT = nullptr);
 	void Play_End();
 
 	void Blend_Begin();
-	void Blend_Update(const _float fTimeDelta, CTransform* pOwnerTransform = nullptr, CPhysicsCCT* pOwnerPhyCCT = nullptr);
+	void Blend_Update(CComputeShader* pBoneComBineCS, CComputeShader* pAnimEvalCS, CComputeShader* pAnimBlendCS, const _float fTimeDelta, CTransform* pOwnerTransform = nullptr, CPhysicsCCT* pOwnerPhyCCT = nullptr);
 	void Blend_End();
 
 private:
 	void Make_BoneGroup();
 	void Make_GroupBuffers();
-	void Update_BoneCombineTransformMatrix(CComputeShader* pBoneComShader);
-	void Blend_Animation(CComputeShader* pBoneComShader, CComputeShader* pAnimEComShader, CComputeShader* pAnimBlendCS
-		,_float fTimeDelta , _float fRatio, CTransform* pOwnerTransform = nullptr, CPhysicsCCT* pOwnerPhyCCT = nullptr);
+	void Update_BoneCombineTransformMatrix(CComputeShader* pBoneComBineCS);
 	void Lerp_Animation(CComputeShader* pAnimBlendCS, _float fRatio);
-	void Bind_BoneImmuData(CComputeShader* pBoneComShader);
-	void Bind_BufferSRV(CComputeShader* pBoneComShader);
+	void Bind_BoneImmuData(CComputeShader* pBoneComBineCS);
+	void Bind_BufferSRV(CComputeShader* pBoneComBineCS);
 
 private:
 	EModelType m_eType = { EModelType::END };
