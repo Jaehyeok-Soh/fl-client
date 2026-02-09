@@ -347,6 +347,13 @@ namespace Engine
 		unsigned int iFilterMask = {};
 	}PHYSICSCCT_DESC;
 
+	typedef struct tagPhysicsSRT
+	{
+		SimpleMath::Vector3 vScale = {};
+		SimpleMath::Quaternion vQuat = {};
+		SimpleMath::Vector3 vPosition = {};
+	}PHYSICS_SRT;
+
 	typedef struct tagPhysicsRigidBody
 	{
 		EPhysicsActorType eType = { EPhysicsActorType::STATIC };
@@ -359,7 +366,7 @@ namespace Engine
 		float fAngularDamping = {};
 
 		vector<Matrix> pOwnerMatrices;
-		vector<SimpleMath::Vector3> vScale_Isolated;
+		vector<PHYSICS_SRT> vecSRT{};
 	}PHYSICSRIGIDBODY_DESC;
 
 	typedef struct tagPass

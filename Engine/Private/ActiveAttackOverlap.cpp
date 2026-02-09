@@ -4,8 +4,6 @@
 
 #include "GameObject.h"
 
-#include "PhysicsAttackOverlap.h"
-
 CActiveAttackOverlap::CActiveAttackOverlap()
 	: Super(),
 	m_pGameInstance{ CGameInstance::GetInstance() }
@@ -29,7 +27,7 @@ void CActiveAttackOverlap::Update(_float fTimeDelta)
 
 	Tick(fTimeDelta);
 
-	_bool bResult = m_pGameInstance->Execute_Overlap(m_tHitboxDesc->geometry, m_pxTransform, hitBuffer, m_tHitboxDesc->filterData, (PxQueryFilterCallback*)m_tHitboxDesc->filterCallback);
+	_bool bResult = m_pGameInstance->Execute_Overlap(m_tHitboxDesc->geometry.any(), m_pxTransform, hitBuffer, m_tHitboxDesc->filterData, (PxQueryFilterCallback*)m_tHitboxDesc->filterCallback);
 
 	if (bResult)
 	{
@@ -98,7 +96,7 @@ _bool CActiveAttackOverlap::CheckAlreadyHit(CGameObject* hitObject)
 #ifdef _DEBUG
 void CActiveAttackOverlap::Render()
 {
-	m_pGameInstance->Physics_Render(m_tHitboxDesc->geometry, m_pxTransform);
+	m_pGameInstance->Physics_Render(m_tHitboxDesc->geometry.any(), m_pxTransform);
 }
 #endif // _DEBUG
 

@@ -1,6 +1,8 @@
 #pragma once
 #include "Component.h"
 
+#include "Physics_QueryFilterCallback.h"
+
 NS_BEGIN(Engine)
 
 class CActiveAttackOverlap;
@@ -19,7 +21,7 @@ public:
 	{
 		_wstring wstrName = {};
 		
-		PxGeometry geometry;
+		PxGeometryHolder geometry;
 		PxQueryFilterData filterData;
 		Matrix matOffset;
 		CPhysics_QueryFilterCallback* filterCallback = { nullptr };
@@ -88,7 +90,7 @@ private:
 	ATTACKOVERLAP_DESC m_tDesc = {};
 
 	const Matrix* m_pOwnerMatrix = { nullptr };
-	const CModel* m_pOwnerModel = { nullptr };
+	CModel* m_pOwnerModel = { nullptr };
 
 	class CPhysics_QueryFilterCallback* m_pFilterCallback = { nullptr };
 

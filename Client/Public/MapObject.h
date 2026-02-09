@@ -39,6 +39,10 @@ public:
 	HRESULT					Ready_Transform(MAPOBJECT_DESC* pDesc);
 	HRESULT					Ready_Component(MAPOBJECT_DESC* pDesc);
 	HRESULT					Ready_OverrideMtl(const DTO::USING_MODEL_INFO& tUsingModelInfo);
+
+	HRESULT					Ready_PhysicsComponent(MAPOBJECT_DESC* pDesc);
+	HRESULT					Ready_PhysicsCollider(MAPOBJECT_DESC* pDesc);
+	HRESULT					Ready_PhysicsRigidBody(MAPOBJECT_DESC* pDesc);
 public:
 	HRESULT					Add_MapToolComponent(CMapObject::COMPONENT eType);
 public:

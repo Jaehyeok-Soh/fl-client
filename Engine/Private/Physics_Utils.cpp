@@ -144,9 +144,9 @@ HRESULT CPhysics_Utils::Render(PxRigidActor* pActor, XMVECTOR color)
 		case physx::PxGeometryType::eTETRAHEDRONMESH:
 			break;
 		case physx::PxGeometryType::eTRIANGLEMESH:
-		//{
-		//	DX::DrawMesh(m_pBatch, geom, globalPose, matWorld);
-		//}
+		{
+			DX::DrawMesh(m_pBatch, geom, globalPose, matWorld);
+		}
 		break;
 		case physx::PxGeometryType::eHEIGHTFIELD:
 			break;

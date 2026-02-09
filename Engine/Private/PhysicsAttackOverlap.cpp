@@ -7,7 +7,6 @@
 #include "ActiveAttackOverlap.h"
 
 #include "Model.h"
-#include "Physics_QueryFilterCallback.h"
 
 CPhysicsAttackOverlap::CPhysicsAttackOverlap()
 	: Super()

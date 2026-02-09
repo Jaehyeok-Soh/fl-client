@@ -20,10 +20,6 @@ private:
 	virtual HRESULT			Initialize_Prototype()							override;
 	virtual HRESULT			Initialize(void* pArg)							override;
 	HRESULT					Ready_Component(STATICOBJECT_DESC* pDesc);
-	
-	HRESULT					Ready_PhysicsComponent(STATICOBJECT_DESC* pDesc);
-	HRESULT					Ready_PhysicsCollider(STATICOBJECT_DESC* pDesc);
-	HRESULT					Ready_PhysicsRigidBody(STATICOBJECT_DESC* pDesc);
 public:
 	virtual HRESULT			Awake(const _uint iCurrentLevelID)				override;
 	virtual void			Update_Priority(const _float fTimeDelta)		override;

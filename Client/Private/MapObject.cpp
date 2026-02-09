@@ -4,6 +4,8 @@
 #include "MapObject.h"
 #include "InstanceMesh.h"
 #include "GameInstance.h"
+#include "PhysicsCollider.h"
+#include "PhysicsRigidBody.h"
 
 CMapObject::CMapObject(ID3D11Device* pDevice, ID3D11DeviceContext* pContext)
 	: CGameObject(pDevice, pContext), m_eMapObjectType{EMapObject_Type::END}
@@ -55,17 +57,14 @@ HRESULT CMapObject::Ready_Transform(MAPOBJECT_DESC* pDesc)
     if (pDesc->vecSRT.empty())
         return E_FAIL;
 
-    if (m_eMapObjectDrawType == EMapObject_DrawType::Instance)
-    {
-        for (auto& SRT : pDesc->vecSRT)
-            m_vecMatrix.push_back(SRT.Get_World());
-    }
-    else
+    for (auto& SRT : pDesc->vecSRT)
+        m_vecMatrix.push_back(SRT.Get_World());
+
+    if (m_eMapObjectDrawType != EMapObject_DrawType::Instance)
     {
         /* Transform ¿¡ µî·Ï */
         Get_Component<CTransform>()->Set_WorldMatrix(pDesc->vecSRT.front().Get_World());
     }
-
 
     return S_OK;
 }
@@ -120,6 +119,8 @@ HRESULT	CMapObject::Ready_Component(MAPOBJECT_DESC* pDesc)
         Add_Component<CInstanceMesh>(ENUM_TO_UINT(ELevelType::STATIC), L"Prototype_Component_VIBuffer_InstanceMesh", &tInstanceMeshDesc);
     }
 
+    if (FAILED(Ready_PhysicsComponent(pDesc)))
+        return E_FAIL;
 
 	return S_OK;
 }
@@ -133,6 +134,8 @@ HRESULT	CMapObject::Awake(const _uint iCurrentLevelID)
 {
 	if (FAILED(Super::Awake(iCurrentLevelID)))
 		return E_FAIL;
+
+	Get_Component<CPhysicsRigidBody>()->Awake();
 
 	return S_OK;
 }
@@ -236,6 +239,61 @@ HRESULT CMapObject::Ready_OverrideMtl(const DTO::USING_MODEL_INFO& tUsingModelIn
     //    std::fill(vecMateiralTexturePath.begin(), vecMateiralTexturePath.end(), "");
     //    ++iIndex;
     //}
+
+    return S_OK;
+}
+
+HRESULT CMapObject::Ready_PhysicsComponent(MAPOBJECT_DESC* pDesc)
+{
+    HRESULT result{};
+
+    if (FAILED(Ready_PhysicsCollider(pDesc)))
+        result = E_FAIL;
+
+    if (FAILED(Ready_PhysicsRigidBody(pDesc)))
+        result = E_FAIL;
+
+    return result;
+}
+
+HRESULT CMapObject::Ready_PhysicsCollider(MAPOBJECT_DESC* pDesc)
+{
+    PHYSICSCOLLIDER_DESC pcDesc{};
+    wstring wstrModelName = path(pDesc->wstrModelPath).filename().stem().wstring();
+
+    pcDesc.wstrModelPrototypeTag = L"Prototype_Component_Model_" + wstrModelName;
+    pcDesc.bIsConvex = false;
+
+    CPhysicsCollider* pCollider = CPhysicsCollider::Create(m_pDevice, m_pDeviceContext, &pcDesc);
+    if (pCollider)
+    {
+        if (FAILED(m_pGameInstance->Add_Prototype(pDesc->iLevelIndex, L"Prototype_Component_Physics_Collider_" + wstrModelName, pCollider)))
+            Safe_Release(pCollider);
+    }
+
+    if (FAILED(Add_Component<CPhysicsCollider>(pDesc->iLevelIndex, L"Prototype_Component_Physics_Collider_" + wstrModelName, nullptr)))
+        return E_FAIL;
+
+    return S_OK;
+}
+
+HRESULT CMapObject::Ready_PhysicsRigidBody(MAPOBJECT_DESC* pDesc)
+{
+    PHYSICSRIGIDBODY_DESC desc{};
+    desc.eType = EPhysicsActorType::STATIC;
+    desc.detection = EPhysicsCollisionDetection::DISCRETE;
+    desc.fDensity = 10.f;
+    desc.bUseGravity = false;
+    desc.bIsKinematic = false;
+    desc.fLinearDamping = 0.f;
+    desc.fAngularDamping = 0.f;
+    desc.pOwnerMatrices = m_vecMatrix;
+
+    for (auto& srt : pDesc->vecSRT)
+        desc.vecSRT.emplace_back(srt.vScale, srt.vQuat, srt.vPosition);
+
+    if (FAILED(Add_Component<CPhysicsRigidBody>(0, L"Prototype_Component_Physics_RigidBody", &desc)))
+        return E_FAIL;
 
     return S_OK;
 }

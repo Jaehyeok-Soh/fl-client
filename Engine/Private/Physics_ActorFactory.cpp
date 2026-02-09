@@ -45,7 +45,7 @@ vector<PxRigidActor*> CPhysics_ActorFactory::MakeStatics(PHYSICSRIGIDBODY_DESC* 
 	vector<PxRigidActor*> result;
 
 	for (size_t i = 0; i < rigidBodyDesc->pOwnerMatrices.size(); i++)
-		result.push_back(MakeStatic(rigidBodyDesc->pOwnerMatrices[i], rigidBodyDesc->vScale_Isolated[i], shapes));
+		result.push_back(MakeStatic(rigidBodyDesc->pOwnerMatrices[i], rigidBodyDesc->vecSRT[i], shapes));
 
 	return result;
 }
@@ -55,7 +55,7 @@ vector<PxRigidActor*> CPhysics_ActorFactory::MakeDynamics(PHYSICSRIGIDBODY_DESC*
 	vector<PxRigidActor*> result;
 
 	for (size_t i = 0; i < rigidBodyDesc->pOwnerMatrices.size(); i++)
-		result.push_back(MakeDynamic(rigidBodyDesc->pOwnerMatrices[i], rigidBodyDesc->vScale_Isolated[i], rigidBodyDesc->fDensity, shapes));
+		result.push_back(MakeDynamic(rigidBodyDesc->pOwnerMatrices[i], rigidBodyDesc->vecSRT[i], rigidBodyDesc->fDensity, shapes));
 
 	return result;
 }
@@ -65,18 +65,20 @@ vector<PxRigidActor*> CPhysics_ActorFactory::MakeKinematics(PHYSICSRIGIDBODY_DES
 	vector<PxRigidActor*> result;
 
 	for (size_t i = 0; i < rigidBodyDesc->pOwnerMatrices.size(); i++)
-		result.push_back(MakeKinematic(rigidBodyDesc->pOwnerMatrices[i], rigidBodyDesc->vScale_Isolated[i], rigidBodyDesc->fDensity, shapes));
+		result.push_back(MakeKinematic(rigidBodyDesc->pOwnerMatrices[i], rigidBodyDesc->vecSRT[i], rigidBodyDesc->fDensity, shapes));
 
 	return result;
 }
 
-PxRigidActor* CPhysics_ActorFactory::MakeStatic(const Matrix world, Vec3 scale, vector<PxShape*>& shapes)
+PxRigidActor* CPhysics_ActorFactory::MakeStatic(const Matrix& world, PHYSICS_SRT& srt, vector<PxShape*>& shapes)
 {
-	Matrix mat = world;
+	PxTransform transform(
+		PxVec3(srt.vPosition.x, srt.vPosition.y, srt.vPosition.z),
+		PxQuat(srt.vQuat.x, srt.vQuat.y, srt.vQuat.z, srt.vQuat.w)
+	);
 
-	PxVec3 pScale(scale.x, scale.y, scale.z);
+	PxVec3 scale(srt.vScale.x, srt.vScale.y, srt.vScale.z);
 
-	PxTransform transform = m_pGameInstance->XMMatrixToPxTransform(mat);
 	PxRigidStatic* staticActor = m_pPhysics->createRigidStatic(transform);
 	for (auto& shape : shapes)
 	{
@@ -94,7 +96,7 @@ PxRigidActor* CPhysics_ActorFactory::MakeStatic(const Matrix world, Vec3 scale, 
 			PxGeometryHolder geom = shape->getGeometry();
 			PxTriangleMeshGeometry triGeom = geom.triangleMesh();
 
-			triGeom.scale = PxMeshScale(pScale);
+			triGeom.scale = PxMeshScale(scale);
 
 			if (!shape->isExclusive() && shape->getReferenceCount() > 0)
 			{
@@ -132,21 +134,21 @@ PxRigidActor* CPhysics_ActorFactory::MakeStatic(const Matrix world, Vec3 scale, 
 			}
 		}
 		else
+		{
 			staticActor->attachShape(*shape);
+		}
 	}
 
 	return staticActor;
 }
 
-PxRigidActor* CPhysics_ActorFactory::MakeDynamic(const Matrix world, Vec3 scale, _float density, vector<PxShape*>& shapes)
+PxRigidActor* CPhysics_ActorFactory::MakeDynamic(const Matrix& world, PHYSICS_SRT& srt, _float density, vector<PxShape*>& shapes)
 {
-	Matrix mat = world;
+	PxVec3 vPos(srt.vPosition.x, srt.vPosition.y, srt.vPosition.z);
+	PxQuat vQuat(srt.vQuat.x, srt.vQuat.y, srt.vQuat.z, srt.vQuat.w);
+	PxVec3 vScale(srt.vScale.x, srt.vScale.y, srt.vScale.z);
 
-	PxVec3 vPos = PxVec3(mat._41, mat._42, mat._43);
-	PxQuat pQuat = m_pGameInstance->GetPureRotation(mat);
-	PxVec3 pScale(scale.x, scale.y, scale.z);
-
-	PxTransform transform(vPos, pQuat);
+	PxTransform transform(vPos, vQuat);
 	PxRigidDynamic* dynamicActor = m_pPhysics->createRigidDynamic(transform);
 	for (auto& shape : shapes)
 	{
@@ -155,7 +157,7 @@ PxRigidActor* CPhysics_ActorFactory::MakeDynamic(const Matrix world, Vec3 scale,
 			PxGeometryHolder geom = shape->getGeometry();
 			PxConvexMeshGeometry convexGeom = geom.convexMesh();
 
-			convexGeom.scale = PxMeshScale(pScale);
+			convexGeom.scale = PxMeshScale(vScale);
 
 			shape->setGeometry(convexGeom);
 		}
@@ -168,7 +170,7 @@ PxRigidActor* CPhysics_ActorFactory::MakeDynamic(const Matrix world, Vec3 scale,
 	return dynamicActor;
 }
 
-PxRigidActor* CPhysics_ActorFactory::MakeKinematic(const Matrix world, Vec3 scale, _float density, vector<PxShape*>& shapes)
+PxRigidActor* CPhysics_ActorFactory::MakeKinematic(const Matrix& world, PHYSICS_SRT& srt, _float density, vector<PxShape*>& shapes)
 {
 	PxTransform transform = m_pGameInstance->XMMatrixToPxTransform(world);
 

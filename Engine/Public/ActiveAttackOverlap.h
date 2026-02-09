@@ -1,6 +1,8 @@
 #pragma once
 #include "Base.h"
 
+#include "PhysicsAttackOverlap.h"
+
 NS_BEGIN(Engine)
 
 class CGameInstance;

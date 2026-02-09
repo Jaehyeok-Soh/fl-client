@@ -355,14 +355,20 @@
     <Filter Include="00. System\12. PhysX\EventCallback">
       <UniqueIdentifier>{2ab0629b-6e4b-4ae3-9927-b4868c706bf2}</UniqueIdentifier>
     </Filter>
-    <Filter Include="00. System\12. PhysX\Character\HitReport">
-      <UniqueIdentifier>{705a6d42-dae5-4737-9ce3-59cb6eb8a9ae}</UniqueIdentifier>
-    </Filter>
     <Filter Include="00. System\05. Component\PhysicsAttackOverlap">
       <UniqueIdentifier>{e6051635-bcb9-47b1-967c-a11e89a75828}</UniqueIdentifier>
     </Filter>
     <Filter Include="00. System\05. Component\PhysicsAttackOverlap\ActiveAttackOverlap">
       <UniqueIdentifier>{4d33d802-f923-4ecf-a8e4-2086a6c36141}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="00. System\12. PhysX\EventCallback\SceneQuery">
+      <UniqueIdentifier>{b1faa8b0-a688-43ec-a747-ba82ea06409a}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="00. System\12. PhysX\EventCallback\Filter">
+      <UniqueIdentifier>{b3ce137c-4c98-4b87-a3c3-15c7b8d189b7}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="00. System\12. PhysX\EventCallback\HitReport">
+      <UniqueIdentifier>{856de793-e16e-4bd4-a349-a625fb27b924}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
@@ -722,9 +728,6 @@
       <Filter>01. Utility\16. Console</Filter>
     </ClCompile>
     <ClCompile Include="..\private\EngineConsole.cpp" />
-    <ClCompile Include="..\Private\IUIActionForTarget.cpp">
-      <Filter>00. System\04. GameObject\UIObject\Interface\Action For Target</Filter>
-    </ClCompile>
     <ClCompile Include="..\private\FxEffectAsset.cpp">
       <Filter>01. Utility\17. ShaderAsset</Filter>
     </ClCompile>
@@ -734,15 +737,6 @@
     <ClCompile Include="..\private\FxShaderVariant.cpp">
       <Filter>01. Utility\17. ShaderAsset</Filter>
     </ClCompile>
-    <ClCompile Include="..\Private\Physics_FilterEventCallback.cpp">
-      <Filter>00. System\12. PhysX\EventCallback</Filter>
-    </ClCompile>
-    <ClCompile Include="..\Private\Physics_UserHitReport.cpp">
-      <Filter>00. System\12. PhysX\Character\HitReport</Filter>
-    </ClCompile>
-    <ClCompile Include="..\Private\Physics_NPCHitReport.cpp">
-      <Filter>00. System\12. PhysX\Character\HitReport</Filter>
-    </ClCompile>
     <ClCompile Include="..\Private\PhysicsAttackOverlap.cpp">
       <Filter>00. System\05. Component\PhysicsAttackOverlap</Filter>
     </ClCompile>
@@ -750,7 +744,16 @@
       <Filter>00. System\05. Component\PhysicsAttackOverlap\ActiveAttackOverlap</Filter>
     </ClCompile>
     <ClCompile Include="..\Private\Physics_QueryFilterCallback.cpp">
-      <Filter>00. System\12. PhysX\EventCallback</Filter>
+      <Filter>00. System\12. PhysX\EventCallback\SceneQuery</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\Physics_FilterEventCallback.cpp">
+      <Filter>00. System\12. PhysX\EventCallback\Filter</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\Physics_NPCHitReport.cpp">
+      <Filter>00. System\12. PhysX\EventCallback\HitReport</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\Physics_UserHitReport.cpp">
+      <Filter>00. System\12. PhysX\EventCallback\HitReport</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -1137,9 +1140,6 @@
       <Filter>01. Utility\16. Console</Filter>
     </ClInclude>
     <ClInclude Include="..\public\EngineConsole.h" />
-    <ClInclude Include="..\Public\IUIActionForTarget.h">
-      <Filter>00. System\04. GameObject\UIObject\Interface\Action For Target</Filter>
-    </ClInclude>
     <ClInclude Include="..\public\FxEffectAsset.h">
       <Filter>01. Utility\17. ShaderAsset</Filter>
     </ClInclude>
@@ -1149,15 +1149,6 @@
     <ClInclude Include="..\public\FxShaderVariant.h">
       <Filter>01. Utility\17. ShaderAsset</Filter>
     </ClInclude>
-    <ClInclude Include="..\Public\Physics_FilterEventCallback.h">
-      <Filter>00. System\12. PhysX\EventCallback</Filter>
-    </ClInclude>
-    <ClInclude Include="..\Public\Physics_UserHitReport.h">
-      <Filter>00. System\12. PhysX\Character\HitReport</Filter>
-    </ClInclude>
-    <ClInclude Include="..\Public\Physics_NPCHitReport.h">
-      <Filter>00. System\12. PhysX\Character\HitReport</Filter>
-    </ClInclude>
     <ClInclude Include="..\Public\PhysicsAttackOverlap.h">
       <Filter>00. System\05. Component\PhysicsAttackOverlap</Filter>
     </ClInclude>
@@ -1165,7 +1156,16 @@
       <Filter>00. System\05. Component\PhysicsAttackOverlap\ActiveAttackOverlap</Filter>
     </ClInclude>
     <ClInclude Include="..\Public\Physics_QueryFilterCallback.h">
-      <Filter>00. System\12. PhysX\EventCallback</Filter>
+      <Filter>00. System\12. PhysX\EventCallback\SceneQuery</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\Physics_FilterEventCallback.h">
+      <Filter>00. System\12. PhysX\EventCallback\Filter</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\Physics_UserHitReport.h">
+      <Filter>00. System\12. PhysX\EventCallback\HitReport</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\Physics_NPCHitReport.h">
+      <Filter>00. System\12. PhysX\EventCallback\HitReport</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
