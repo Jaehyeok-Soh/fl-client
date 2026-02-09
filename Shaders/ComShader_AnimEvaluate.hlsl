@@ -33,8 +33,9 @@ struct IMMU_ELEMENT
 struct MU_ELEMENT
 {
     float   fCurTrackPosition;
+    uint    iChannelCount;
     
-    float3  Padding0;
+    float2  Padding0;
 };
 
 // out put
@@ -93,6 +94,10 @@ void CS_Main(uint3 id : SV_DispatchThreadID)
 {
     // 받은 정보 정리
     uint iChannelIdx        = id.x;
+    
+    if (iChannelIdx >= g_InputData.iChannelCount)
+        return;
+    
     uint iBoneIdx           = IMMU_CHANNELDATAS[iChannelIdx].iBoneIndex;
     bool bRootMotionBone    = (IMMU_CHANNELDATAS[iChannelIdx].iRootMotionBoneIndex == iBoneIdx);
     

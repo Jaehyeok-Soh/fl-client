@@ -225,7 +225,11 @@ namespace Engine
 
 #pragma region Model_ComShader_Structures
 
-#pragma region BONE_CS
+#pragma region BONEFIANL_CS
+
+#pragma endregion
+
+#pragma region BONECOM_CS
 
 	// output
 	typedef struct tagSRT
@@ -299,8 +303,9 @@ namespace Engine
 	typedef struct tagBone_Mu_Track
 	{
 		float   fCurTrackPosition = { 0.f };
+		unsigned int iChannelCount = { 0 };
 
-		SimpleMath::Vector3  Padding0 = {};
+		SimpleMath::Vector2  Padding0 = {};
 	}CS_MU_TRACK;
 #pragma endregion
 
@@ -308,9 +313,11 @@ namespace Engine
 	// 가변 데이터
 	typedef struct tagAnimB_Immu_Ratio
 	{
-		float					fRatio = { 0.f };
 		int						iRootMotionBoneIndex = { -1 }; // root motion일 경우 tralation을 0으로 만들기 위함
-		SimpleMath::Vector2		Padding0 = {};
+		float					fRatio = { 0.f };
+
+		unsigned int     iBoneCount = {0};
+		float  Padding0 = { 0.f };
 	}CS_MU_ANIMB;
 
 	// output

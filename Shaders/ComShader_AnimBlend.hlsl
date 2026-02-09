@@ -22,7 +22,8 @@ struct MU_ELEMENT_ONCE
 {
     int     iRootMotionBoneIndex; // root motion일 경우 tralation을 0으로 만들기 위함
     float   fRatio;
-    float2  Padding0;
+    uint     iBoneCount;
+    float  Padding0;
 };
 
 cbuffer MU_RATIO
@@ -40,6 +41,9 @@ StructuredBuffer<SRT>   BLEND_OUTPUT_SRV;
 void CS_Main(uint3 id : SV_DispatchThreadID)
 {
     uint iBoneIdx = id.x;
+    
+    if (iBoneIdx >= g_InputMU.iBoneCount)
+        return;
     
     float3 vScale, vTranslation;
     float4 vQuat;
