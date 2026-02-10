@@ -38,7 +38,7 @@ public:
 
 		/* Client에서 생성될 Class 연결 및 같이 넘겨줄 Desc */
 		EClientMakePath						eClientMakePath{ EClientMakePath::StaticObject };
-		vector<CLIENT_MAKEPATH_DESC_BASE*>	vecClientMakePathDesc{nullptr};
+		vector<CLIENT_MAKEPATH_DESC_BASE*>	vecClientMakePathDesc{};
 		vector<Tool::SRT_DATA>				vecSRTs{};
 
 		/* 사용할 Draw 방법과 모델관련 */

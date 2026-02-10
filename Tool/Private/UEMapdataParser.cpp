@@ -535,6 +535,7 @@ HRESULT CUEMapdataParser::Batch_UnrealRawMapData(const wchar_t* wszFileName)
 			tDesc.vecSRTs = tData.vecSRT;
 			tDesc.wstrLayerTag = g_wszMapObjectLayer;
 			tDesc.tUsingModelInfo = tData.tUsingModelInfo;
+			tDesc.vecClientMakePathDesc.clear();
 
 			tDesc.eMapObjectDrawType = (tDesc.vecSRTs.size() > 1) ? EMapObject_DrawType::Instance : EMapObject_DrawType::Default;
 
