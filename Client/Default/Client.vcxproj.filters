@@ -487,15 +487,15 @@
     <ClInclude Include="..\Public\ImGui_FrameLayout.h">
       <Filter>99. ETC</Filter>
     </ClInclude>
-<ClInclude Include="..\Public\Builder_AttackOverlap.h">
-  <Filter>07. System\01. Builder\Builder_AttackOverlap</Filter>
-</ClInclude>
-<ClInclude Include="..\Public\Monster_Dummy.h">
-  <Filter>03. GameObject\ContainerObjects\Monster</Filter>
-</ClInclude>
-<ClInclude Include="..\Public\UITrigger.h">
-  <Filter>03. GameObject\UIObjects\02.UI\Trigger</Filter>
-</ClInclude>
+    <ClInclude Include="..\Public\Builder_AttackOverlap.h">
+      <Filter>07. System\01. Builder\Builder_AttackOverlap</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\Monster_Dummy.h">
+      <Filter>03. GameObject\ContainerObjects\Monster</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\UITrigger.h">
+      <Filter>03. GameObject\UIObjects\02.UI\Trigger</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <Image Include="Client.ico">
@@ -580,12 +580,6 @@
     <ClCompile Include="..\Private\StateBase_Player.cpp">
       <Filter>06. FSM\Player</Filter>
     </ClCompile>
-    <ClCompile Include="..\Private\State_Walk.cpp">
-      <Filter>06. FSM\Player\Walk</Filter>
-    </ClCompile>
-    <ClCompile Include="..\Private\State_RunLoop.cpp">
-      <Filter>06. FSM\Player\RunLoop</Filter>
-    </ClCompile>
     <ClCompile Include="..\Private\State_Crouch.cpp">
       <Filter>06. FSM\Player\Crouch</Filter>
     </ClCompile>
@@ -609,12 +603,6 @@
     </ClCompile>
     <ClCompile Include="..\Private\State_JumpBack.cpp">
       <Filter>06. FSM\Player\JumpBack</Filter>
-    </ClCompile>
-    <ClCompile Include="..\Private\State_RunShort.cpp">
-      <Filter>06. FSM\Player\RunShort</Filter>
-    </ClCompile>
-    <ClCompile Include="..\Private\State_Slide.cpp">
-      <Filter>06. FSM\Player\Slide</Filter>
     </ClCompile>
     <ClCompile Include="..\Private\UI_Manager.cpp">
       <Filter>03. GameObject\UIObjects\00.Manager</Filter>
@@ -730,6 +718,18 @@
     </ClCompile>
     <ClCompile Include="..\Private\UITrigger.cpp">
       <Filter>03. GameObject\UIObjects\02.UI\Trigger</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\State_Walk.cpp">
+      <Filter>06. FSM\Player\Walk</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\State_RunLoop.cpp">
+      <Filter>06. FSM\Player\RunLoop</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\State_RunShort.cpp">
+      <Filter>06. FSM\Player\RunShort</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\State_Slide.cpp">
+      <Filter>06. FSM\Player\Slide</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

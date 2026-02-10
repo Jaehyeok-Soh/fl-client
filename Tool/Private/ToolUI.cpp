@@ -10,9 +10,6 @@
 #include "ToolCanvas.h"
 #include "ImGui_UIManager.h"
 #include "ImGui_ToolManager.h"
-
-#include "UIButton_Component.h"
-#include "UIProgress_Component.h"
 #include "GameInstance.h"
 
 CToolUI::CToolUI(ID3D11Device* pDevice, ID3D11DeviceContext* pDeviceContext)
@@ -190,9 +187,6 @@ HRESULT CToolUI::Ready_Components(TOOLUI_DESC* pDesc)
 
     if (FAILED(Add_Component<CVIBuffer_Rect_Tex>(0, L"Prototype_Component_VIBuffer_Rect_Tex", pDesc)))
         return E_FAIL;
-
-	if (FAILED(Add_Script_Component(L"UIButton_Component", CUIButton_Component::Create())))
-		return E_FAIL;
 
 	return S_OK;
 }
