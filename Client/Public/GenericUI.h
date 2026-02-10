@@ -4,6 +4,7 @@
 
 NS_BEGIN(Client)
 class CCanvas;
+class CUI_Manager;
 class CGenericUI abstract : public CUIObject
 {
 	using Super = CUIObject;
@@ -19,6 +20,7 @@ public:
 		Vec4 vColorTint;
 		int32_t iShaderPass;
 		int32_t iFillDir;
+		_float fDelay;
 		CCanvas* pCanvasCache = { nullptr };
 	}GENERIC_UI_DESC;
 
@@ -42,8 +44,8 @@ public:
 	_bool Calc_HitEvent();
 	void Acting_By_InteractState();
 
-	// virtual void Trigger_Enter_Target()PURE;
-	// virtual void Trigger_Exit_Target()PURE;
+	 //virtual void Trigger_Enter_Target()PURE;
+	 //virtual void Trigger_Exit_Target()PURE;
 
 protected:
 	HRESULT Ready_Components(GENERIC_UI_DESC* pDesc);
@@ -54,6 +56,10 @@ public:
 	ERectTransform Get_RectTransformType() const { return m_eRectTransformType; }
 	void Set_TextureIndex(_uint index) { m_iTextureIndex = index; }
 	const _string& Get_Tag() { return m_strName; }
+
+protected:
+	CUI_Manager* m_pUIManager = { nullptr };	
+	uint32_t m_iLevelID = {};
 
 protected:
 	ERectTransform m_eRectTransformType = { ERectTransform::C };
@@ -71,8 +77,10 @@ protected:
 	_bool m_isUseColorTint				= {false};
 	Vec4 m_vColorTint					= {};
 	_float m_fAlpha_Ratio				= {};
-	_float m_fProgress_Ratio			= {};
+	_float m_fProgress_Ratio			= {1.f};
 	int32_t m_iFillDir					= {};
+	_float m_fDelay						= {};
+	int32_t m_iFlip						= { ENUM_TO_UINT(EUIFlip::NONE) };
 
 public:
 	virtual void Free()override;

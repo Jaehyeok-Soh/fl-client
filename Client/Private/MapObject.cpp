@@ -189,15 +189,14 @@ void	CMapObject::Update_Late(const _float fTimeelta)
 void	CMapObject::Ready_Before_Render(const _float fTimeDelta)
 {
 	Super::Ready_Before_Render(fTimeDelta);
-#ifdef _DEBUG
-    if (m_eMapObjectDrawType == EMapObject_DrawType::Instance)
-        m_pGameInstance->Push_DebugComponent(Get_Component<CBounds>());
-#endif
+//#ifdef _DEBUG
+//    if (m_eMapObjectDrawType == EMapObject_DrawType::Instance)
+//        m_pGameInstance->Push_DebugComponent(Get_Component<CBounds>());
+//#endif
 }
 
 HRESULT CMapObject::Ready_OverrideMtl(const DTO::USING_MODEL_INFO& tUsingModelInfo)
 {
-
     //if (tUsingModelInfo.vecOverrideMaterial.empty())
     //    m_iUseOverrideMaterials = false;
     //else

@@ -399,6 +399,17 @@ HRESULT CMainApplication::Ready_Fonts()
 	if (FAILED(m_pGameInstance->Add_Font(L"Font_Default", L"../../Resources/Fonts/156ex.spritefont")))
 		return E_FAIL;
 
+	if (FAILED(m_pGameInstance->Add_Font(L"Title_KR_6", L"../../Resources/Fonts/Title_KR_6.spritefont")))
+		return E_FAIL;
+	if (FAILED(m_pGameInstance->Add_Font(L"Title_KR_8", L"../../Resources/Fonts/Title_KR_8.spritefont")))
+		return E_FAIL;
+	if (FAILED(m_pGameInstance->Add_Font(L"Title_KR_10", L"../../Resources/Fonts/Title_KR_10.spritefont")))
+		return E_FAIL;
+	if (FAILED(m_pGameInstance->Add_Font(L"Title_KR_12", L"../../Resources/Fonts/Title_KR_12.spritefont")))
+		return E_FAIL;
+	if (FAILED(m_pGameInstance->Add_Font(L"Title_KR_14", L"../../Resources/Fonts/Title_KR_14.spritefont")))
+		return E_FAIL;
+
 	return S_OK;
 }
 

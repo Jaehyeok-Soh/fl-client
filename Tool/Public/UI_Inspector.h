@@ -26,11 +26,11 @@ public:
 	void Input_TextureTag();
 	void SetUp_Class();
 	void SetUp_Owner();
-	void SetUp_Component();
 
 	void SetUp_ShaderPass();
-
 	void SetUp_UIProgress();
+	void SetUp_TextData();
+	void SetUp_TriggerData();
 
 private:
 	/// <summary>
@@ -65,11 +65,20 @@ private:
 	std::vector<_string> m_VecOwnerTag;
 	std::vector<_string> m_VecShaderPassTag;
 
+	// Trigger Values
+	_bool m_isHoverEnter	= {FALSE};
+	_bool m_isHoverExit		= {FALSE};
+	_bool m_isPressEnter	= {FALSE};
+	_bool m_isPressExit		= {FALSE};
+	_string m_strTriggerUIName_UserInput = {};
+	_string m_strTriggerUIName = {};
+	_string m_strTriggerCanvasName = {};
+
 	ImVec2 m_vLastCardPos = {};
 	ImVec2 m_vLastCardSize = {};
 
 
-
+	
 
 
 

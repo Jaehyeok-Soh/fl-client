@@ -55,8 +55,10 @@
 //=================
 #include "Canvas.h"
 #include "GenericUI.h"
-#include "UIPlayer_HP.h"
-#include "UIMonster_HP.h"
+#include "UIProgress_Bar.h"
+#include "UIText.h"
+#include "UIJust_Image.h"
+#include "UITrigger.h"
 //=================
 // Resource
 //=================
@@ -189,10 +191,16 @@ HRESULT CLoader::Loading_For_Logo()
 
 		// For. Prototype_Component_Button_Test_Texture
 	{
-		//if (FAILED(Loading_Textures(L"../../Resources/Textures/UI/Playable/")))
-		//	return E_FAIL;
-		//if (FAILED(Loading_Textures(L"../../Resources/Textures/UI/Menu/")))
-		//	return E_FAIL;
+		if (FAILED(Loading_Textures(L"../../Resources/Textures/UI/Playable/")))
+			return E_FAIL;
+		if (FAILED(Loading_Textures(L"../../Resources/Textures/UI/Menu/")))
+			return E_FAIL;
+		if (FAILED(Loading_Textures(L"../../Resources/Textures/UI/Battle/")))
+			return E_FAIL;
+		if (FAILED(Loading_Textures(L"../../Resources/Textures/UI/Key/")))
+			return E_FAIL;
+		if (FAILED(Loading_Textures(L"../../Resources/Textures/UI/WeaponIcon/")))
+			return E_FAIL;
 	}	
 	
 #pragma endregion
@@ -299,9 +307,11 @@ HRESULT CLoader::Loading_For_Logo()
 #pragma endregion
 
 #pragma region UI
-	ADD_PROTOTYPE(ELevelType::STATIC, L"Prototype_UI_Canvas", CCanvas::Create(m_pDevice, m_pDeviceContext));
-	ADD_PROTOTYPE(ELevelType::STATIC, L"Prototype_UI_PLAYER_HP", CUIPlayer_HP::Create(m_pDevice, m_pDeviceContext));
-	ADD_PROTOTYPE(ELevelType::STATIC, L"Prototype_UI_MONSTER_HP", CUIMonster_HP::Create(m_pDevice, m_pDeviceContext));
+	ADD_PROTOTYPE(ELevelType::LOGO, L"Prototype_UI_Canvas",			CCanvas::Create(m_pDevice, m_pDeviceContext));
+	ADD_PROTOTYPE(ELevelType::LOGO, L"Prototype_UI_PROGRESS_BAR",	CUIProgress_Bar::Create(m_pDevice, m_pDeviceContext));
+	ADD_PROTOTYPE(ELevelType::LOGO, L"Prototype_UI_UI_TEXT",		CUIText::Create(m_pDevice, m_pDeviceContext));
+	ADD_PROTOTYPE(ELevelType::LOGO, L"Prototype_UI_JUST_IMAGE",		CUIJust_Image::Create(m_pDevice, m_pDeviceContext));
+	ADD_PROTOTYPE(ELevelType::LOGO, L"Prototype_UI_TRIGGER",		CUITrigger::Create(m_pDevice, m_pDeviceContext));
 #pragma endregion
 
 	m_isFinished = true;
@@ -336,8 +346,12 @@ HRESULT CLoader::Loading_Textures(const wstring& wstrFolder)
 	for (const auto& entry : std::filesystem::directory_iterator(wstrFolder))
 	{
 		wstring wstrFileName = { L"" };
+		_wstring ext = { L"" };
 		if (entry.is_regular_file())
 		{
+			ext = entry.path().extension().wstring();
+			if (ext == L".ini")
+				continue;
 			wstrFileName = entry.path().filename().lexically_normal().stem();
 			CTextureBase::RESOURCE_BASE_DESC desc = {};
 			desc.wstrName = wstrFileName;
@@ -407,12 +421,16 @@ HRESULT CLoader::Build_Prototype()
 
 	if (FAILED(Build_Files()))
 		return E_FAIL;
+
+	return S_OK;
 }
 
 HRESULT CLoader::Build_Files()
 {
 	if (FAILED(Ready_AttackOverlap()))
 		return E_FAIL;
+
+	return S_OK;
 }
 
 HRESULT CLoader::Ready_AttackOverlap()
@@ -432,6 +450,8 @@ HRESULT CLoader::Ready_AttackOverlap()
 
 	if (FAILED(m_pBuilderSystem->Build_File(iLevelID, eCategory, FilePath.stem().string())))
 		return E_FAIL;
+
+	return S_OK;
 }
 
 CLoader* CLoader::Create(ID3D11Device* pDevice, ID3D11DeviceContext* pDeviceContext, ELevelType eLoadingLevelID)

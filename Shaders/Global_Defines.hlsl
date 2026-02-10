@@ -47,11 +47,12 @@ uint g_iGlobalMask = 0;
 
 float g_fAlphaRatio;
 
-float g_fProgressRatio;
-int g_iFillDir;
-bool g_isColor;
-float4 g_vColorTint;
-float4 g_vHitColorTint;
+float   g_fProgressRatio;
+int     g_iFillDir;
+bool    g_isColor;
+float4  g_vColorTint;
+float   g_fDelay;
+int     g_iFlip;
 
 /////////
 // SRV //

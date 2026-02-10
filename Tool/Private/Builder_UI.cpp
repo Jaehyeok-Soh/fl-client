@@ -36,6 +36,16 @@ HRESULT CBuilder_UI::Build(const CDataDocumentBase& document)
 				return E_FAIL;
 		}
 	}
+	// For. Text
+	{
+		const vector<Engine::IObjectDataBase*> vecDataList = doc.Get_ListByType(ENUM_TO_UINT(DTO::EUIType::UI_TEXT));
+		for (const auto& pObjectData : vecDataList)
+		{
+			const auto* pDto = static_cast<const Engine::CUI_Text_DTO*>(pObjectData);
+			if (FAILED(Create_TextDTO(pDto->Get_Data())))
+				return E_FAIL;
+		}
+	}
 	// For. GenericUI
 	{
 		const vector<Engine::IObjectDataBase*> vecDataList = doc.Get_ListByType(ENUM_TO_UINT(DTO::EUIType::GENERICUI));
@@ -49,6 +59,10 @@ HRESULT CBuilder_UI::Build(const CDataDocumentBase& document)
 
 	CImGui_UIManager::GetInstance()->Move_CanvasCache(m_pCanvasCache);
 	CImGui_UIManager::GetInstance()->Move_UICache(m_pUICache);
+
+	m_TextDataCache.clear();
+	m_TriggerDataCache.clear();
+
 	return S_OK;
 }
 
@@ -92,7 +106,7 @@ HRESULT CBuilder_UI::Create_GenericUIDTO(const DTO::TUI_GenericUIData& data)
 	/* 데이터를 이용해서 Object 만들기 */
 	CToolUI::TOOLUI_DESC Desc = {};
 	Desc.iLevelIndex = static_cast<uint32_t>(ELevelType::UI);
-
+	Desc.eClassType			= data.eClassType;
 	Desc.strName			= data.strTag;
 	Desc.iRectTransformType = data.iRectTransformType;
 	Desc.fWidth				= data.fWidth;
@@ -107,7 +121,25 @@ HRESULT CBuilder_UI::Create_GenericUIDTO(const DTO::TUI_GenericUIData& data)
 	Desc.vColorTint			= data.vColorTint;
 	Desc.iShaderPass		= data.iShaderPass;
 	Desc.iFillDir			= data.iFillDir;
+	Desc.iFlip				= data.iFlip;
+	Desc.fDelay				= data.fDelay;
+	if (data.eClassType == DTO::EUIClassType::UI_TEXT)
+	{
+		auto iter = m_TextDataCache.find(data.strTag);
+		if (iter == m_TextDataCache.end())
+			return E_FAIL;
 
+		Desc.tTextData = iter->second;
+	}
+	else if (data.eClassType == DTO::EUIClassType::TRIGGER)
+	{
+		auto iter = m_TriggerDataCache.find(data.strTag);
+		if (iter == m_TriggerDataCache.end())
+			return E_FAIL;
+
+		Desc.tTriggerData = iter->second;
+	}
+	
 	auto iterCanvas = m_pCanvasCache.find(Desc.strCanvasName);
 	if (iterCanvas != m_pCanvasCache.end())
 		Desc.pCacheCanvas = iterCanvas->second;
@@ -126,6 +158,24 @@ HRESULT CBuilder_UI::Create_GenericUIDTO(const DTO::TUI_GenericUIData& data)
 
 	m_pUICache.emplace(data.strTag, pUI);
 
+	return S_OK;
+}
+
+HRESULT CBuilder_UI::Create_TextDTO(const DTO::TUI_TextData& data)
+{
+	if (data.eType != DTO::EUIType::UI_TEXT)
+		return E_FAIL;
+
+	m_TextDataCache.emplace(data.strOwnerName, data);
+	return S_OK;
+}
+
+HRESULT CBuilder_UI::Create_TriggerDTO(const DTO::TUI_TriggerData& data)
+{
+	if (data.eType != DTO::EUIType::TRIGGER)
+		return E_FAIL;
+
+	m_TriggerDataCache.emplace(data.strOwnerName, data);
 	return S_OK;
 }
 

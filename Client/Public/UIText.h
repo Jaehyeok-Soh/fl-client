@@ -3,25 +3,30 @@
 #include "DataStruct_UI.h"
 
 NS_BEGIN(Client)
-class CCanvas;
 class CStatComponent;
-class CUIPlayer_HP final : public CGenericUI
+class CUIText final : public CGenericUI
 {
 	using Super = CGenericUI;
 public:
-	typedef struct tagUIPlayerHPDesc : public GENERIC_UI_DESC
+	typedef struct tagUITextDesc : public GENERIC_UI_DESC
 	{
 		CStatComponent* pTargetStat;
-	}PLAYER_HP_DESC;
+		DTO::EUIOwnerType eOwner;
+		_wstring wstrText;
+		Vec4 vFontColor;
+
+	}UI_TEXT_DESC;
 
 private:
-	CUIPlayer_HP(ID3D11Device* pDevice, ID3D11DeviceContext* pDeviceContext);
-	CUIPlayer_HP(const CUIPlayer_HP& rhs);
-	virtual ~CUIPlayer_HP() = default;
+	CUIText(ID3D11Device* pDevice, ID3D11DeviceContext* pDeviceContext);
+	CUIText(const CUIText& rhs);
+	virtual ~CUIText() = default;
 
 public:
 	HRESULT Initialize_Prototype() override;
 	HRESULT Initialize(void* pArg) override;
+
+	HRESULT Attach_Personal_Info();
 
 public:
 	virtual HRESULT Awake(const _uint iCurrentLevelID) override;
@@ -32,15 +37,19 @@ public:
 	virtual HRESULT Render() override;
 
 private:
-	HRESULT Ready_Components(PLAYER_HP_DESC* pDesc);
+	HRESULT Ready_Components(UI_TEXT_DESC* pDesc);
 	HRESULT Bind_ShaderResources();
 
 private:
 	CStatComponent* m_pTargetStat = { nullptr };
-	uint32_t m_iFillDir = {};
+	DTO::EUIOwnerType m_eOwnerType = {};
+
+	_wstring m_wstrText = {};
+	Vec2 m_vFontPos = {};
+	Vec4 m_vFontColor = {};
 
 public:
-	static CUIPlayer_HP* Create(ID3D11Device* pDevice, ID3D11DeviceContext* pDeviceContext);
+	static CUIText* Create(ID3D11Device* pDevice, ID3D11DeviceContext* pDeviceContext);
 	CGameObject* Clone(void* pArg);
 	virtual void Free()override;
 };

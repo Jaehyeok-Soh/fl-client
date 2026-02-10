@@ -283,15 +283,15 @@ namespace Client
 
 	enum EUIEvent_Flag : uint32_t
 	{
-		NONE = 0u,
+		NONE		= 0u,
 		HOVER_ENTER = 1u << 1,
-		HOVERING = 1u << 2,
-		HOVER_EXIT = 1u << 3,
+		HOVERING	= 1u << 2,
+		HOVER_EXIT	= 1u << 3,
 		PRESS_ENTER = 1u << 4,
-		PRESSING = 1u << 5,
-		PRESS_EXIT = 1u << 6,
-		INVOKED = 1u << 7,
-		END = 1u << 8
+		PRESSING	= 1u << 5,
+		PRESS_EXIT	= 1u << 6,
+		INVOKED		= 1u << 7,
+		END			= 1u << 8
 	};
 
 	inline EUIEvent EventFlagToEvent(EUIEvent_Flag eFlag)
@@ -301,12 +301,12 @@ namespace Client
 		case EUIEvent_Flag::NONE:			return EUIEvent::NONE;
 		case EUIEvent_Flag::HOVER_ENTER:	return EUIEvent::HOVER_ENTER;
 		case EUIEvent_Flag::HOVERING:		return EUIEvent::HOVERING;
-		case EUIEvent_Flag::HOVER_EXIT:	return EUIEvent::HOVER_EXIT;
+		case EUIEvent_Flag::HOVER_EXIT:		return EUIEvent::HOVER_EXIT;
 		case EUIEvent_Flag::PRESS_ENTER:	return EUIEvent::PRESS_ENTER;
 		case EUIEvent_Flag::PRESSING:		return EUIEvent::PRESSING;
-		case EUIEvent_Flag::PRESS_EXIT:	return EUIEvent::PRESS_EXIT;
+		case EUIEvent_Flag::PRESS_EXIT:		return EUIEvent::PRESS_EXIT;
 		case EUIEvent_Flag::INVOKED:		return EUIEvent::INVOKED;
-		default:								return EUIEvent::NONE;
+		default:							return EUIEvent::NONE;
 		}
 	}
 
@@ -315,10 +315,10 @@ namespace Client
 		switch (eEvent)
 		{
 		case EUIEvent::NONE:			return EUIEvent_Flag::NONE;
-		case EUIEvent::HOVER_ENTER:	return EUIEvent_Flag::HOVER_ENTER;
+		case EUIEvent::HOVER_ENTER:		return EUIEvent_Flag::HOVER_ENTER;
 		case EUIEvent::HOVERING:		return EUIEvent_Flag::HOVERING;
 		case EUIEvent::HOVER_EXIT:		return EUIEvent_Flag::HOVER_EXIT;
-		case EUIEvent::PRESS_ENTER:	return EUIEvent_Flag::PRESS_ENTER;
+		case EUIEvent::PRESS_ENTER:		return EUIEvent_Flag::PRESS_ENTER;
 		case EUIEvent::PRESSING:		return EUIEvent_Flag::PRESSING;
 		case EUIEvent::PRESS_EXIT:		return EUIEvent_Flag::PRESS_EXIT;
 		case EUIEvent::INVOKED:		return EUIEvent_Flag::INVOKED;
@@ -398,6 +398,15 @@ namespace Client
 		else if (str == "PROGRESS") return EUIShaderPass::PROGRESS;
 		else return EUIShaderPass::DEFAULT;
 	}
+
+	enum class EUIFlip
+	{
+		NONE = 0,
+		FILP_X,
+		FLIP_Y,
+		FLIP_XY,
+		END
+	};
 #pragma endregion
 
 

@@ -12,6 +12,7 @@ public:
 	typedef struct tagToolUIDesc : public Super::UIOBJECT_DESC
 	{
 		CToolCanvas* pCacheCanvas = { nullptr };
+		DTO::EUIClassType eClassType;
 		_string strName;
 		_string strCanvasName;
 		uint32_t iCanvasIndex;
@@ -22,6 +23,12 @@ public:
 		_bool isUseColorTint;
 		Vec4 vColorTint;
 		int32_t iFillDir;
+		_float fDelay;
+		int32_t iFlip;
+		DTO::EUIOwnerType eOwnerType;
+		DTO::TUI_TextData tTextData;
+		DTO::TUI_TriggerData tTriggerData;
+
 	}TOOLUI_DESC;
 
 protected:
@@ -50,6 +57,8 @@ protected:
 	void SetUp_Visible();
 	void Acting_About_State();
 	void Sync_Data();
+	void Sync_TextData();
+	void Stnc_TriggerData();
 #pragma region GETTER/SETTER
 public:
 	const _string& Get_Name()const { return m_strName; }
@@ -62,6 +71,8 @@ public:
 	_float* Get_PosZ_Ptr() { return &m_fZ; }
 	const DTO::TUI_GenericUIData& Get_Data()const { return m_tUIData; }
 	DTO::TUI_GenericUIData& Get_Data_Ref() { return m_tUIData; }
+	const DTO::TUI_TextData& Get_TextData()const { return m_tUITextData; }
+	const DTO::TUI_TriggerData& Get_TriggerData()const { return m_tUITriggerData; }
 	const Vec3& Get_RenderPos() const { return m_vRenderPos; }
 	const RECT& Get_RenderRect() const { return m_tRenderRect; }
 	_bool& Get_InitVisible() { return m_isVisible; }
@@ -71,19 +82,55 @@ public:
 	void Set_TextureTag(const _wstring& value) { m_wstrTextureTag = value; }
 	void Set_HitTest() { m_isHitTest = TRUE; };
 
-	Vec4 Get_ColorTint()			{ return m_vColorTint; }
-	Vec4& Get_ColorTint_Ref()		{ return m_vColorTint; }
-	_float Get_AlphaRatio()			{ return m_fTestAlpha; }
-	_float& Get_AlphaRatio_Ref()	{ return m_fTestAlpha; }
-	_bool Get_isUseColorTint()		{ return m_isUseColorTint; }
-	_float Get_ProgressRatio()		{ return m_fTestProgress; }
-	int32_t Get_FillDir()			{ return m_iFillDir; }
-	void Set_ColorTint(Vec4 v)		{ m_vColorTint = v; }
-	void Set_AlphaRatio(_float f)	{ m_fTestAlpha = f; }
-	void Set_isUseColorTint(_bool is) { m_isUseColorTint = is; }
-	void Set_ProgressRatio(_float f) { m_fTestProgress = f; }
-	void Set_FillDir(int32_t i)		{ m_iFillDir = i; }
+	Vec4 Get_ColorTint()			const	{ return m_vColorTint; }
+	Vec4& Get_ColorTint_Ref()				{ return m_vColorTint; }
+	_float Get_AlphaRatio()			const	{ return m_fTestAlpha; }
+	_float& Get_AlphaRatio_Ref()			{ return m_fTestAlpha; }
+	_bool Get_isUseColorTint()		const	{ return m_isUseColorTint; }
+	_float Get_ProgressRatio()		const	{ return m_fTestProgress; }
+	int32_t Get_FillDir()			const	{ return m_iFillDir; }
+	_float Get_Delay()				const	{ return m_fDelay; }
+	const _wstring& Get_Text()		const	{ return m_wstrText_TextData; }
+	Vec4& Get_FontColor()					{ return m_vFontColor_TextData; }
 
+	const vector<_string>& Get_vecHoverEnterTriggerCanvas() const { return m_vecHoverEnterTriggerCanvas; }
+	const vector<_string>& Get_vecHoverEnterTriggerUI() const { return m_vecHoverEnterTriggerUI; }
+	const vector<_string>& Get_vecHoverExitTriggerCanvas() const { return m_vecHoverExitTriggerCanvas; }
+	const vector<_string>& Get_vecHoverExitTriggerUI() const { return m_vecHoverExitTriggerUI; }
+	const vector<_string>& Get_vecPressEnterTriggerCanvas() const { return m_vecPressEnterTriggerCanvas; }
+	const vector<_string>& Get_vecPressEnterTriggerUI() const { return m_vecPressEnterTriggerUI; }
+	const vector<_string>& Get_vecPressExitTriggerCanvas() const { return m_vecPressExitTriggerCanvas; }
+	const vector<_string>& Get_vecPressExitTriggerUI() const { return m_vecPressExitTriggerUI; }
+	int32_t Get_Flip()				const	{ return m_iFlip; }
+
+	void Set_ColorTint(Vec4 v)				{ m_vColorTint = v; }
+	void Set_AlphaRatio(_float f)			{ m_fTestAlpha = f; }
+	void Set_isUseColorTint(_bool is)		{ m_isUseColorTint = is; }
+	void Set_ProgressRatio(_float f)		{ m_fTestProgress = f; }
+	void Set_FillDir(int32_t i)				{ m_iFillDir = i; }
+	void Set_Delay(_float f)				{ m_fDelay = f; }
+	void Set_Text(const _wstring& wstr)		{ m_wstrText_TextData = wstr; }
+	void Set_Flip(int32_t i)				{ m_iFlip = i; }
+
+	_bool Add_Tag(vector<_string>& vec, const _string& str);
+	_bool Remove_Tag(vector<_string>& vec, const _string& str);
+	_bool Add_vecHoverEnterTriggerCanvas(const std::string& str) { return Add_Tag(m_vecHoverEnterTriggerCanvas, str); }
+	_bool Add_vecHoverEnterTriggerUI(const std::string& str) { return Add_Tag(m_vecHoverEnterTriggerUI, str); }
+	_bool Add_vecHoverExitTriggerCanvas(const std::string& str) { return Add_Tag(m_vecHoverExitTriggerCanvas, str); }
+	_bool Add_vecHoverExitTriggerUI(const std::string& str) { return Add_Tag(m_vecHoverExitTriggerUI, str); }
+	_bool Add_vecPressEnterTriggerCanvas(const std::string& str) { return Add_Tag(m_vecPressEnterTriggerCanvas, str); }
+	_bool Add_vecPressEnterTriggerUI(const std::string& str) { return Add_Tag(m_vecPressEnterTriggerUI, str); }
+	_bool Add_vecPressExitTriggerCanvas(const std::string& str) { return Add_Tag(m_vecPressExitTriggerCanvas, str); }
+	_bool Add_vecPressExitTriggerUI(const std::string& str) { return Add_Tag(m_vecPressExitTriggerUI, str); }
+
+	_bool Remove_vecHoverEnterTriggerCanvas(const std::string& str) { return Remove_Tag(m_vecHoverEnterTriggerCanvas, str); }
+	_bool Remove_vecHoverEnterTriggerUI(const std::string& str) { return Remove_Tag(m_vecHoverEnterTriggerUI, str); }
+	_bool Remove_vecHoverExitTriggerCanvas(const std::string& str) { return Remove_Tag(m_vecHoverExitTriggerCanvas, str); }
+	_bool Remove_vecHoverExitTriggerUI(const std::string& str) { return Remove_Tag(m_vecHoverExitTriggerUI, str); }
+	_bool Remove_vecPressEnterTriggerCanvas(const std::string& str) { return Remove_Tag(m_vecPressEnterTriggerCanvas, str); }
+	_bool Remove_vecPressEnterTriggerUI(const std::string& str) { return Remove_Tag(m_vecPressEnterTriggerUI, str); }
+	_bool Remove_vecPressExitTriggerCanvas(const std::string& str) { return Remove_Tag(m_vecPressExitTriggerCanvas, str); }
+	_bool Remove_vecPressExitTriggerUI(const std::string& str) { return Remove_Tag(m_vecPressExitTriggerUI, str); }
 	_float& Get_TestProgress_Ref() { return m_fTestProgress; }
 	int32_t& Get_FillDir_Ref() { return m_iFillDir; }
 
@@ -105,6 +152,7 @@ public:
 	DTO::EUIOwnerType Get_UIOwnerType() const { return m_eOwnerType; }
 	void Set_UIClassType(DTO::EUIClassType eType) { m_eClassType = eType; }
 	void Set_UIOwnerType(DTO::EUIOwnerType eType) { m_eOwnerType = eType; }
+
 #pragma endregion
 
 private:
@@ -128,6 +176,25 @@ protected:
 	Vec4 m_vColorTint					= {};
 	int32_t m_iShaderPass				= {};
 	DTO::EUIOwnerType m_eOwnerType		= {};
+	int32_t m_iFillDir					= {};
+	_float m_fDelay						= {};
+	int32_t m_iFlip						= { ENUM_TO_UINT(EUIFlip::NONE) };
+
+	// Client Bind Values Text Data
+	DTO::TUI_TextData m_tUITextData		= {};
+	std::wstring m_wstrText_TextData	= {};
+	Vec4 m_vFontColor_TextData			= {};
+
+	// Client Bind Values Trigger Data
+	DTO::TUI_TriggerData m_tUITriggerData = {};
+	vector<std::string> m_vecHoverEnterTriggerCanvas;
+	vector<std::string> m_vecHoverEnterTriggerUI;
+	vector<std::string> m_vecHoverExitTriggerCanvas;
+	vector<std::string> m_vecHoverExitTriggerUI;
+	vector<std::string> m_vecPressEnterTriggerCanvas;
+	vector<std::string> m_vecPressEnterTriggerUI;
+	vector<std::string> m_vecPressExitTriggerCanvas;
+	vector<std::string> m_vecPressExitTriggerUI;
 
 	// Local Values
 	Vec3 m_vRenderPos		= {};
@@ -136,16 +203,8 @@ protected:
 	_bool m_isAction		= { false };
 	Vec3 m_vMoveOffset		= {};
 	_float m_fTestProgress	= { 1.f };
-	int32_t m_iFillDir		= {};
 	_bool m_isDisable		= { false };
-	_float m_fTestAlpha = {};
-
-	// Func Values
-	_bool m_isPlaying_Fade		= { false };
-	_float m_fFade_StartAlpha	= {};
-	_float m_fFade_TargetAlpha	= {};
-	_float m_fFade_Duration		= {};
-	_float m_fFade_TimeAcc		= {};
+	_float m_fTestAlpha		= {};
 
 public:
 	static CToolUI* Create(EToolObjectType eType, ID3D11Device* pDevice, ID3D11DeviceContext* pContext);
