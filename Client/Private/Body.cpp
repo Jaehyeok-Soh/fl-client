@@ -312,7 +312,7 @@ HRESULT CBody::Bind_ShaderResources()
 HRESULT CBody::Ready_ComputeShader()
 {
 	_uint iBoneNums = Get_Component<CModel>()->Get_BoneCount();
-	// ========   Compute Shader : Bone  ========
+	// ========   Compute Shader : BoneMesh  ========
 	{
 		CComputeShader::ComShaderCopyDesc ShaderDesc = {};
 		ShaderDesc.Output_SRVBuffer_Name = "BONEFNIMAL_TRANSFORMS_SRV";
@@ -333,7 +333,7 @@ HRESULT CBody::Ready_ComputeShader()
 			return E_FAIL;
 	}
 
-	// ========   Compute Shader : Bone  ========
+	// ========   Compute Shader : BoneCombine  ========
 	{
 		CComputeShader::ComShaderCopyDesc ShaderDesc = {};
 		ShaderDesc.Output_SRVBuffer_Name = "BONECOMBINED_TRANSFORMS_SRV";
