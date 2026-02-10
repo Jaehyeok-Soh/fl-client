@@ -135,11 +135,12 @@ HRESULT CPanel_MapObjectList::Render_MapObjectList()
 		m_pSelectMapObject = nullptr;
 		static_cast<CLevel_Map*>(m_pOwnerLevel)->Set_SelectToolObjectNull();
 		for (_uint i = 0; i < static_cast<_uint>(EMapObject_Type::END); ++i)
-			m_pGameInstance->Clear_Layer(ENUM_TO_UINT(ELevelType::MAP) , m_wszMapObjectLayerTag[i]);
+			m_pGameInstance->Clear_Layer(ENUM_TO_UINT(ELevelType::MAP) , g_wszMapObjectLayer );
 	}
 
 	ImGui::Separator();
 
+	ImGui::NewLine();
 
 	m_strBuffer = m_eShowMapObjectFilter == EClientMakePath::END ? "All" : ClientMakePath_ToString(m_eShowMapObjectFilter);
 
@@ -169,9 +170,13 @@ HRESULT CPanel_MapObjectList::Render_MapObjectList()
 				if (!GameObject)
 					continue;
 				bool isDelete{ false };
+				
+				static_cast<CLevel_Map*>(m_pOwnerLevel)->On_ChangeSelectedObject(nullptr);
 
 				if (m_eShowMapObjectFilter == EClientMakePath::END || static_cast<CMapObject*>(GameObject)->Get_ClientMakePath() == m_eShowMapObjectFilter)
+				{
 					m_pGameInstance->Request_DeleteGameObject(ENUM_TO_UINT(ELevelType::MAP) , g_wszMapObjectLayer  , GameObject );
+				}
 			}
 		}
 	}
@@ -280,17 +285,18 @@ HRESULT CPanel_MapObjectList::Render_SelectMaterial()
 
 HRESULT CPanel_MapObjectList::Render_Description()
 {
-
 	Update_SelectObject();
 
 	if (m_pSelectMapObject == nullptr)
+	{
+		ImGui::TextWrapped("  None Select Object  ");
 		return S_OK;
+	}
 
 
-	vector<CLIENT_MAKEPATH_DESC_BASE*> pDescVec =  m_pSelectMapObject->Get_ClientMakePathDescs();
+	CLIENT_MAKEPATH_DESC_BASE* pDesc = m_pSelectMapObject->Get_ClientMakePathDesc();
 
-
-	if (pDescVec.empty())
+	if (pDesc == nullptr)
 	{
 		ImGui::TextWrapped(" This Object Don't Need Description ");
 		return S_OK;
@@ -300,23 +306,12 @@ HRESULT CPanel_MapObjectList::Render_Description()
 	ImGui::SeparatorText(" Description Info ");
 
 	EClientMakePath ePath = m_pSelectMapObject->Get_ClientMakePath();
-
-
-	for (auto& Desc : pDescVec)
+	
+	switch (ePath)
 	{
-		if (!Desc)
-			continue;
-		/* 각자 구조체 안에서 설정할 수 있게 만들어야한다 */
-		
-		switch (ePath)
-		{
-		case Tool::EClientMakePath::StaticObject: ImGuiUpdate_StaticObject_Desc(static_cast<STATICOBJECT_DESC*>(Desc));		break;
-		default:																											break;
-		}
-
-
+	case Tool::EClientMakePath::StaticObject: ImGuiUpdate_StaticObject_Desc(static_cast<STATICOBJECT_DESC*>(pDesc));	return S_OK;
+	default:																											return E_FAIL;
 	}
-
 
 
 

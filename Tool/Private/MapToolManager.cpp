@@ -110,15 +110,12 @@ void CMapToolManager::Preview_Update(float DT)
 
 CLIENT_MAKEPATH_DESC_BASE* CMapToolManager::Make_Client_MakePathDesc(EClientMakePath eClientMakePath ,CLIENT_MAKEPATH_DESC_BASE* pPrototype)
 {
-	CLIENT_MAKEPATH_DESC_BASE* pDesc{nullptr};
+	return Engine::Create_ClientMakePathDesc(static_cast<DTO::EClientMakePath>(eClientMakePath), pPrototype);
+}
 
-	switch (eClientMakePath)
-	{
-	case Tool::EClientMakePath::StaticObject:	return pPrototype == nullptr ? new STATICOBJECT_DESC : new STATICOBJECT_DESC(*static_cast<STATICOBJECT_DESC*>(pPrototype));
-	default:									return nullptr;
-	}
-
-	return pDesc;
+_bool CMapToolManager::IsExist_ClientMakePathDesc(EClientMakePath eClientMakePath)
+{
+	return Engine::IsExist_ClientMakePathDesc(static_cast<DTO::EClientMakePath>(eClientMakePath));
 }
 
 HRESULT CMapToolManager::Change_Instance_To_OtherDrawType(CMapObject* pChangeMapObject, EMapObject_DrawType eChangeType)
@@ -231,21 +228,21 @@ void CMapToolManager::DrawImGui_Preview()
 	m_pPreviewMapobject->Draw_ImGui();
 }
 
-HRESULT CMapToolManager::Check_And_Bind()
+HRESULT CMapToolManager::Check_And_Bind_FromUE()
 {
-	list<CGameObject*>* pStaticModelList = m_pGameInstance->Get_GameObject_List(ENUM_TO_UINT(ELevelType::MAP) , g_wszStaticModelLayer);
-	list<CGameObject*>* pInstanceModelList = m_pGameInstance->Get_GameObject_List(ENUM_TO_UINT(ELevelType::MAP), g_wszInstanceModelLayer);
+	list<CGameObject*>* pUEMapObject = m_pGameInstance->Get_GameObject_List(ENUM_TO_UINT(ELevelType::MAP) , g_wszMapObjectLayer);
+
+	if (pUEMapObject == nullptr)  return S_OK;
 
 	if (m_pLevelMap)
 		m_pLevelMap->On_ChangeSelectedObject(nullptr);
 
 	/* 미리 한곳으로 합치기 */
-	vector<CGameObject*> vecMapObject{};
-
-	size_t iAllSize = (pStaticModelList == nullptr ? 0 : pStaticModelList->size()) + (pInstanceModelList == nullptr ? 0 : pInstanceModelList->size());
-	vecMapObject.reserve(iAllSize);
-	if(pStaticModelList) vecMapObject.insert(vecMapObject.end() , pStaticModelList->begin(), pStaticModelList->end());
-	if(pInstanceModelList) vecMapObject.insert(vecMapObject.end() , pInstanceModelList->begin(), pInstanceModelList->end());
+	vector<CMapObject*> vecMapObject{};
+	/* Section 별로 Instance를 하고싶은데 */
+	//vecMapObject.reserve(iAllSize);
+	//if(pStaticModelList) vecMapObject.insert(vecMapObject.end() , pStaticModelList->begin(), pStaticModelList->end());
+	//if(pInstanceModelList) vecMapObject.insert(vecMapObject.end() , pInstanceModelList->begin(), pInstanceModelList->end());
 
 	/* 사용하는 모델주소가 같은 StaticModel을 모아둘 장소 */
 	map<PairKey, vector<CMapObject*> > mapSameModels{};
@@ -381,7 +378,20 @@ HRESULT CMapToolManager::Batch_Preview()
 	}
 	else
 	{
-		_uint iBatchIndex = m_pPreviewMapobject->Get_InstanceCount() - 1;
+
+		_uint iCount = m_pPreviewMapobject->Get_InstanceCount();
+		_uint iBatchIndex = iCount - 1;
+
+		if (m_tBrushModeOption.isUseGroupCount)
+		{
+			if (iCount == m_tBrushModeOption.iMaxGroupMaxCount +1)
+			{
+				MSG_BOX(" Brush로 그릴 수 있는 그룹 최대 인스턴생 개수에 도달했습니다 새로 생성 OR 인스턴싱 그룹 Max Count를 조절해주세요 ");
+				return S_OK;
+			}
+		}
+
+
 		SRT_DATA tSRT{};
 		Get_SRT_BrushData(tSRT.vScale , tSRT.vQuat , tSRT.vPosition);
 		tSRT.Update_World();

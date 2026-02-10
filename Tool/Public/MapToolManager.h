@@ -32,6 +32,9 @@ typedef struct tagBrushModeOption
 	
 	bool	isOnNormal{false};
 
+	bool	isUseGroupCount{false};
+	_int	iMaxGroupMaxCount{};
+
 	bool	isUsePlacementSpacing{ false };
 	float	fPlacementSpacing = 0.5f;
 
@@ -52,6 +55,21 @@ public:
 		ImGui::Checkbox(" Is On Normal "  , &this->isOnNormal);
 		ImGui::NewLine();
 
+		ImGui::Checkbox(" Use Placement Spacing  ", &this->isUsePlacementSpacing);
+		ImGui::BeginDisabled(!this->isUsePlacementSpacing);
+		ImGui::SetNextItemWidth(ImGui::GetContentRegionAvail().x * 0.7f);
+		ImGui::DragFloat(" Placement Spacing ", &this->fPlacementSpacing, 0.1f, 0.f, 100.f, "%.2f");
+		ImGui::EndDisabled();
+		ImGui::NewLine();
+
+
+		ImGui::Checkbox(" Use GroupCount  ", &this->isUseGroupCount);
+		ImGui::BeginDisabled(!this->isUseGroupCount);
+		ImGui::SetNextItemWidth(ImGui::GetContentRegionAvail().x * 0.7f);
+		ImGui::DragInt(" Group MaxCount ", &this->iMaxGroupMaxCount ,1 , 0 , 200 );
+		ImGui::EndDisabled();
+		ImGui::NewLine();
+
 
 		ImGui::Checkbox(" Use Brush Scale " , &this->isUseBrushScale);
 		ImGui::SameLine();
@@ -70,13 +88,6 @@ public:
 		ImGui::SetNextItemWidth(ImGui::GetContentRegionAvail().x * 0.7f);
 		ImGui::SliderFloat3("Brush Rotation", &this->vBrushRotation.x, 0.f, 360.f, "%.2f");
 		ImGui::EndDisabled();
-
-		ImGui::Checkbox(" Use Placement Spacing  ", &this->isUsePlacementSpacing);
-		ImGui::BeginDisabled(!this->isUsePlacementSpacing);
-		ImGui::SetNextItemWidth(ImGui::GetContentRegionAvail().x * 0.7f);
-		ImGui::DragFloat(" Placement Spacing " , &this->fPlacementSpacing, 0.1f , 0.f , 100.f , "%.2f");
-		ImGui::EndDisabled();
-		ImGui::NewLine();
 
 		ImGui::Checkbox(" Use Random Rotation Y ", &this->isUseRandomYRotation );
 		ImGui::BeginDisabled(!this->isUseRandomYRotation);
@@ -123,22 +134,23 @@ public:
 	void					Preview_Update(float DT);
 public:
 	CLIENT_MAKEPATH_DESC_BASE* Make_Client_MakePathDesc( EClientMakePath eClientMakePath  , CLIENT_MAKEPATH_DESC_BASE* pPrototype = nullptr);
+	_bool						IsExist_ClientMakePathDesc(EClientMakePath eClientMakePath);
 
 	HRESULT						Change_Instance_To_OtherDrawType(CMapObject* pChangeMapObject, EMapObject_DrawType eChangeType);
 	HRESULT						Change_Default_To_OtherDrawType(CMapObject* pChangeMapObject, EMapObject_DrawType eChangeType);
 	void						Delete_Preview();
 	void						DrawImGui_Preview();
 public:
-	HRESULT						Check_And_Bind();
+	HRESULT						Check_And_Bind_FromUE();
 	void						Get_SRT_BrushData(Vec3& vOutScale , Quat& vOutQuat , Vec3& vOutPosition);
 public:
-	void						Set_PreviewMapObject(CMapObject* pMapObject) { m_pPreviewMapobject = pMapObject; }
-	void						Set_BrushScale(const Vec3& vScale) { m_tBrushModeOption.vBrushScale = vScale; }
-	void						Set_BrushRotation(const Vec3 vDegree) { m_tBrushModeOption.vBrushRotation = vDegree; }
+	void						Set_PreviewMapObject(CMapObject* pMapObject)							{ m_pPreviewMapobject = pMapObject; }
+	void						Set_BrushScale(const Vec3& vScale)										{ m_tBrushModeOption.vBrushScale = vScale; }
+	void						Set_BrushRotation(const Vec3 vDegree)									{ m_tBrushModeOption.vBrushRotation = vDegree; }
 	void						Set_BrushRotation(const Quat& vQuat);
-	void						Set_LevelMap(CLevel_Map* pLevelMap) { m_pLevelMap = pLevelMap; }
-	void						Set_MouseRange(float fMouseRange) { m_fMouseRange = fMouseRange; }
-	void						Set_MouseWheelPos(float fMouseWheelPos) { m_fMouseWheelSpeed = fMouseWheelPos; }
+	void						Set_LevelMap(CLevel_Map* pLevelMap)										{ m_pLevelMap = pLevelMap; }
+	void						Set_MouseRange(float fMouseRange)										{ m_fMouseRange = fMouseRange; }
+	void						Set_MouseWheelPos(float fMouseWheelPos)									{ m_fMouseWheelSpeed = fMouseWheelPos; }
 
 	void						Set_MapToolObjectBatchMode(EMapToolObjectBatchMode eType)				{ m_eMapTooObjectBatchMode = eType; }
 	void						Set_MakeMapObjectClientMakePath(EClientMakePath eClientMakePathType)	{ m_eMakeMapObjectClientMakePath = eClientMakePathType; }
@@ -201,6 +213,9 @@ private:
 
 
 	Vec3					m_vLastPlacedPos{ 0.f, 0.f, 0.f };
+
+
+	_int					m_iCurGroupCount{0};
 
 private:
 	virtual void Free() override;

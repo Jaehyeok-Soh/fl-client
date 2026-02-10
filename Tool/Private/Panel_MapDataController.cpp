@@ -76,10 +76,19 @@ HRESULT CPanel_MapDataController::Render_ConvertedList()
 
 	ImGui::SeparatorText(" [ Batch ] Converted Map Data");
 
+
+	ImGui::SeparatorText("Use Pre Bind Instance");
+	_bool isUse = m_pUEMapdataParser->Get_IsUseCheckAndBindInstance();
+	if (ImGui::Checkbox("Use Pre Bind Instance", &isUse))
+		m_pUEMapdataParser->Set_IsUseCheckAndBindInstance(isUse);
+	ImGui::Separator();
+
+
 	if (ImGui::Button(" [ Batch Select ] "))
 	{
 		m_pUEMapdataParser->Batch_UnrealRawMapData(Engine_Utils::ToWString(strSelectPath).c_str());
 	}
+
 
 	ImGui::SameLine();
 
