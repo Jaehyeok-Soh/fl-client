@@ -90,6 +90,7 @@ enum class EMapObject_DrawType
 enum class EClientMakePath
 {
 	StaticObject,
+	Test,
 	END
 };
 
@@ -128,6 +129,7 @@ NLOHMANN_JSON_SERIALIZE_ENUM(EMapObject_DrawType,
 	NLOHMANN_JSON_SERIALIZE_ENUM(EClientMakePath,
 		{
 			{EClientMakePath::StaticObject, "StaticObject"},
+			{EClientMakePath::Test, "Test"},
 			{EClientMakePath::END,			"Unknown"},
 		}
 		)
@@ -263,7 +265,8 @@ NS_END
 
 NS_BEGIN(Engine)
 
-inline CLIENT_MAKEPATH_DESC_BASE* Create_ClinetPathDesc(DTO::EClientMakePath ePath);
+ENGINE_DLL CLIENT_MAKEPATH_DESC_BASE* Create_ClientMakePathDesc(DTO::EClientMakePath ePath, CLIENT_MAKEPATH_DESC_BASE* pSource =nullptr);
+ENGINE_DLL _bool					  IsExist_ClientMakePathDesc(DTO::EClientMakePath ePath);
 
 NS_END
 

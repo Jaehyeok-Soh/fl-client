@@ -144,7 +144,7 @@ public:
 
 	_int								Get_SelectedInstanceID()	const	 { return m_iSelectedInstanceID; }
 	vector<CLIENT_MAKEPATH_DESC_BASE*>	Get_ClientMakePathDescs()			 { return m_vecClientMakePathDesc; }
-	CLIENT_MAKEPATH_DESC_BASE*			Get_ClientMakePathDesc(_uint iIndex = g_Uint_NoneIndex);
+	CLIENT_MAKEPATH_DESC_BASE*			Get_ClientMakePathDesc(_int iIndex = -1);
 public:
 
 	virtual HRESULT						Awake(const _uint iCurrentLevelID)				override;

@@ -110,15 +110,12 @@ void CMapToolManager::Preview_Update(float DT)
 
 CLIENT_MAKEPATH_DESC_BASE* CMapToolManager::Make_Client_MakePathDesc(EClientMakePath eClientMakePath ,CLIENT_MAKEPATH_DESC_BASE* pPrototype)
 {
-	CLIENT_MAKEPATH_DESC_BASE* pDesc{nullptr};
+	return Engine::Create_ClientMakePathDesc(static_cast<DTO::EClientMakePath>(eClientMakePath), pPrototype);
+}
 
-	switch (eClientMakePath)
-	{
-	case Tool::EClientMakePath::StaticObject:	return pPrototype == nullptr ? new STATICOBJECT_DESC : new STATICOBJECT_DESC(*static_cast<STATICOBJECT_DESC*>(pPrototype));
-	default:									return nullptr;
-	}
-
-	return pDesc;
+_bool CMapToolManager::IsExist_ClientMakePathDesc(EClientMakePath eClientMakePath)
+{
+	return Engine::IsExist_ClientMakePathDesc(static_cast<DTO::EClientMakePath>(eClientMakePath));
 }
 
 HRESULT CMapToolManager::Change_Instance_To_OtherDrawType(CMapObject* pChangeMapObject, EMapObject_DrawType eChangeType)
@@ -381,7 +378,20 @@ HRESULT CMapToolManager::Batch_Preview()
 	}
 	else
 	{
-		_uint iBatchIndex = m_pPreviewMapobject->Get_InstanceCount() - 1;
+
+		_uint iCount = m_pPreviewMapobject->Get_InstanceCount();
+		_uint iBatchIndex = iCount - 1;
+
+		if (m_tBrushModeOption.isUseGroupCount)
+		{
+			if (iCount == m_tBrushModeOption.iMaxGroupMaxCount +1)
+			{
+				MSG_BOX(" Brush로 그릴 수 있는 그룹 최대 인스턴생 개수에 도달했습니다 새로 생성 OR 인스턴싱 그룹 Max Count를 조절해주세요 ");
+				return S_OK;
+			}
+		}
+
+
 		SRT_DATA tSRT{};
 		Get_SRT_BrushData(tSRT.vScale , tSRT.vQuat , tSRT.vPosition);
 		tSRT.Update_World();

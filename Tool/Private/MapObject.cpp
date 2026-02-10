@@ -181,14 +181,11 @@ HRESULT CMapObject::Ready_ClientMakePath(CMapObject::MAPOBJECT_DESC* pDesc)
 
     for (_uint i = 0; i < iCount; ++i)
     {
-        // 3. 소스가 있으면 원본을, 없으면 nullptr를 전달
-        // Factory(Make_Client_MakePathDesc)가 내부에서 nullptr 체크 후 처리함
         CLIENT_MAKEPATH_DESC_BASE* pPrototype = isHasSource ? pDesc->vecClientMakePathDesc[i] : nullptr;
-
         CLIENT_MAKEPATH_DESC_BASE* pNewDesc = CMapToolManager::GetInstance()->Make_Client_MakePathDesc(m_eClientMakePath, pPrototype);
 
         if (nullptr == pNewDesc)
-            return S_OK; // 생성 실패 시 중단하는 기존 로직 유지
+            return S_OK; //
 
         m_vecClientMakePathDesc.push_back(pNewDesc);
     }
@@ -483,6 +480,7 @@ void CMapObject::Set_ClientMakePath(EClientMakePath eClientMakePath)
 
     m_eClientMakePath = eClientMakePath;
 
+    /* 현재 Instance 개수만큼 생성된다 */
     for (auto& SRT : m_vecSRTs)
     {
         /* 동적할당 받아서 나온다  */
@@ -567,6 +565,15 @@ void CMapObject::Add_InstanceData(const SRT_DATA& tData)
     {
         MSG_BOX(" Add SRT Data is failed ");
     }
+
+    /* Desc 복사 생성 받기 */
+    if (!m_vecClientMakePathDesc.empty())
+    {
+        CLIENT_MAKEPATH_DESC_BASE* pDescBase = CMapToolManager::GetInstance()->Make_Client_MakePathDesc(m_eClientMakePath ,m_vecClientMakePathDesc[m_iSelectedInstanceID]);
+        m_vecClientMakePathDesc.push_back(pDescBase);
+    }
+    
+
 }
 
 void CMapObject::Delete_InstanceData(_int iIndex)
@@ -687,12 +694,17 @@ vector<wstring> CMapObject::Get_TotalUseMtlsName()
     return vecResult;
 }
 
-CLIENT_MAKEPATH_DESC_BASE* CMapObject::Get_ClientMakePathDesc(_uint iIndex)
+
+CLIENT_MAKEPATH_DESC_BASE* CMapObject::Get_ClientMakePathDesc(_int iIndex)
 {
-    return iIndex != g_Uint_NoneIndex ?
-        iIndex >= m_vecClientMakePathDesc.size() ? nullptr : m_vecClientMakePathDesc[iIndex]
-        :
-        m_iSelectedInstanceID >= m_vecClientMakePathDesc.size() ?  nullptr : m_vecClientMakePathDesc[m_iSelectedInstanceID];
+    if (m_vecClientMakePathDesc.empty()) return nullptr;
+
+    _int OutIndex = iIndex == -1 ? m_iSelectedInstanceID : iIndex;
+
+    if (OutIndex >= m_vecClientMakePathDesc.size())
+        return nullptr;
+    
+    return m_vecClientMakePathDesc[OutIndex];
 }
 
 HRESULT CMapObject::Awake(const _uint iCurrentLevelID)

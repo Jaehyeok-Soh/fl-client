@@ -299,6 +299,7 @@ namespace Tool
 	enum class EClientMakePath
 	{
 		StaticObject,
+		Test,
 		END,
 	};
 
@@ -307,13 +308,15 @@ namespace Tool
 		switch (eType)
 		{
 		case Tool::EClientMakePath::StaticObject:	return "StaticObject";
+		case Tool::EClientMakePath::Test:			return "Test";
 		default:									return "Unknown";
 		}
 	};
 
 	static EClientMakePath ClientMakePath_ToEnum(string strType)
 	{
-		if (strType == "StaticObject") return EClientMakePath::StaticObject;
+		if (strType == "StaticObject")	return EClientMakePath::StaticObject;
+		if (strType == "Test")			return EClientMakePath::Test;
 
 		return EClientMakePath::END;
 	}
