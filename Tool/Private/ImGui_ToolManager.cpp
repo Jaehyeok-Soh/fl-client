@@ -350,6 +350,23 @@ HRESULT CImGui_ToolManager::Ready_Events()
 	return S_OK;
 }
 
+_bool CImGui_ToolManager::Get_MousePosInViewPort() const
+{
+	POINT			vScreenPos;
+	::GetCursorPos(&vScreenPos);
+
+	const uint32_t LT = 0;
+	const uint32_t RB = 1;
+
+	if (vScreenPos.x < m_vViewportBounds[LT].x) return false;
+	if (vScreenPos.y < m_vViewportBounds[LT].y) return false;
+
+	if (vScreenPos.x > m_vViewportBounds[RB].x) return false;
+	if (vScreenPos.y > m_vViewportBounds[RB].y) return false;
+
+	return true;
+}
+
 void CImGui_ToolManager::Render_End()
 {
 	ImGuiIO& io = ImGui::GetIO();

@@ -122,6 +122,41 @@ void CInstanceMesh::Unbind_Resource(_uint iSlotNum)
 	m_pDeviceContext->IASetVertexBuffers(iSlotNum , m_iVertexBufferCount , pInstanceBuffer , iVertexStrides , iOffsets);
 }
 
+HRESULT CInstanceMesh::ReMake_InstanceBuffer(vector<Matrix>* vecInstanceMatrixPointer)
+{
+	if (vecInstanceMatrixPointer == nullptr) return E_FAIL;
+
+	Safe_Release(m_pVB);
+
+	CVIBuffer::VIBUFFER_ORIGIN_DESC tVIBufferDesc{};
+	tVIBufferDesc.VB_Usage = this->m_VB_Usage;
+	tVIBufferDesc.IB_Usage = this->m_IB_Usage;
+
+	/* Usage Setting */
+	if (FAILED(Super::Initialize_Prototype(&tVIBufferDesc)))
+		return E_FAIL;
+
+	m_iVertexBufferCount = 1;
+	m_iVertexStride = sizeof(VTX_INSTANCE);
+	m_iVertexCount = 1;
+	m_iInstanceCount = ENUM_TO_UINT(vecInstanceMatrixPointer->size());
+
+	m_tInstanceVertexBufferDesc.ByteWidth = sizeof(VTX_INSTANCE) * m_iInstanceCount;
+	m_tInstanceVertexBufferDesc.StructureByteStride = m_iVertexStride;
+	m_tInstanceVertexBufferDesc.BindFlags = D3D11_BIND_VERTEX_BUFFER;
+	m_tInstanceVertexBufferDesc.Usage = m_VB_Usage;
+	m_tInstanceVertexBufferDesc.CPUAccessFlags = m_VB_CPUAccesFlag;
+	m_tInstanceVertexBufferDesc.MiscFlags = 0;
+
+	D3D11_SUBRESOURCE_DATA      InstanceInitialData{};
+	InstanceInitialData.pSysMem = vecInstanceMatrixPointer->data();
+
+	if (FAILED(m_pDevice->CreateBuffer(&m_tInstanceVertexBufferDesc, &InstanceInitialData, &m_pVB)))
+		return E_FAIL;
+
+	return S_OK;
+}
+
 void CInstanceMesh::Update_Matrix(const Matrix& WorldMatrix, _uint iIndex)
 {
 	if (m_tInstanceVertexBufferDesc.Usage != D3D11_USAGE_DYNAMIC)

@@ -3,6 +3,7 @@
 #include "GameInstance.h"
 
 #include "GameObject.h"
+#include "PartObject.h"
 
 #include "ActiveAttackOverlap.h"
 
@@ -50,7 +51,7 @@ void CPhysicsAttackOverlap::Awake()
 		m_eventPool.push(poolingItem);
 	}
 
-	m_pOwnerMatrix = &Get_Owner()->Get_Component<CTransform>()->Get_WorldMatrix();
+	m_pOwnerMatrix = & static_cast<CPartObject*>(Get_Owner())->Get_Parent()->Get_Component<CTransform>()->Get_WorldMatrix();
 
 	m_pFilterCallback = m_pGameInstance->GetQueryFilterCallback();
 	m_pFilterCallback->SetOwner(Get_Owner());
@@ -112,9 +113,12 @@ void CPhysicsAttackOverlap::CheckAnim()
 				if (m_eventPool.empty())
 					continue;
 
+				if (attackDesc.tHitboxDesc.geometry.getType() == -1)
+					continue;
+
 				auto& event = m_eventPool.front();
 				m_eventPool.pop();
-
+				
 				event->Set(&attackDesc.tHitboxDesc, *m_pOwnerMatrix, m_pOwner);
 				m_activeEvents.push_back(event);
 			}
@@ -149,13 +153,17 @@ void CPhysicsAttackOverlap::Ready_OverlapInfo()
 		}
 		
 		vector<PxShape*> shapes = m_pGameInstance->GetShape(&desc);
-		event.tHitboxDesc.geometry = shapes.front()->getGeometry();
+		if (shapes.size() > 0)
+			event.tHitboxDesc.geometry = shapes.front()->getGeometry();
+		else
+			continue;
+		
 		for (auto& shape : shapes)
 			PX_RELEASE(shape);
 
 		event.tHitboxDesc.filterData.data.word0 = event.tHitboxDesc.eFilterLayer;
 		event.tHitboxDesc.filterData.data.word1 = event.tHitboxDesc.iFilterMask;
-		event.tHitboxDesc.filterData.flags = PxQueryFlag::eDYNAMIC | PxQueryFlag::eNO_BLOCK;
+		event.tHitboxDesc.filterData.flags = PxQueryFlag::ePREFILTER | PxQueryFlag::eDYNAMIC | PxQueryFlag::eNO_BLOCK;
 		event.tHitboxDesc.matOffset = Matrix::CreateTranslation(event.tHitboxDesc.vOffset);
 
 		event.tHitboxDesc.filterCallback = m_pFilterCallback;

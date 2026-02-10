@@ -39,6 +39,7 @@ public:
 #ifdef _DEBUG
 public:
 	void Render();
+	void Debug_Log(CGameObject* hitObject);
 #endif
 
 private:
@@ -57,6 +58,8 @@ private:
 	vector<PxOverlapHit> hitResults;
 	PxOverlapBuffer hitBuffer;
 	std::set<CGameObject*> m_hitObjects;
+
+	wstring m_strEventString = {};
 
 public:
 	static CActiveAttackOverlap* Create();

@@ -22,7 +22,7 @@ public:
 		_wstring wstrName = {};
 		
 		PxGeometryHolder geometry;
-		PxQueryFilterData filterData;
+		PxQueryFilterData filterData = { PxQueryFilterData() };
 		Matrix matOffset;
 		CPhysics_QueryFilterCallback* filterCallback = { nullptr };
 
@@ -44,6 +44,7 @@ public:
 
 	typedef struct tagAttackEvent
 	{
+		_wstring wstrDescription = {};
 		_uint fAnimIndex = {};
 		_float fStartTrackPosition = {};
 		HITBOX_DESC tHitboxDesc;

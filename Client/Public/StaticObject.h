@@ -11,6 +11,7 @@ public:
 	typedef struct tagStaticObject_Desc : public CMapObject::MAPOBJECT_DESC
 	{
 		Vec3					 vScale_Isolated = {};
+		wstring					 wstrTest{L""};
 	}STATICOBJECT_DESC;
 public:
 	CStaticObject(ID3D11Device* pDevice , ID3D11DeviceContext* pContext);
@@ -28,7 +29,7 @@ public:
 	virtual void			Ready_Before_Render(const _float fTimeDelta)	override;
 	virtual HRESULT			Render()										override;
 private:
-
+	wstring					wstrText{L""};
 public:
 	static CStaticObject* Create(ID3D11Device* pDevice, ID3D11DeviceContext* pContext);
 	virtual CGameObject* Clone(void* pArg)								override;

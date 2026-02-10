@@ -52,7 +52,7 @@ HRESULT CLevel_Logo::Initialize()
 	if (FAILED(Super::Initialize()))
 		return E_FAIL;
 
-	if (FAILED(Ready_Builders()))
+	if (FAILED(Build_Prototype()))
 		return E_FAIL;
 
 	if (FAILED(Build_Files()))
@@ -71,6 +71,9 @@ HRESULT CLevel_Logo::Initialize()
 		return E_FAIL;
 
 	if (FAILED(Ready_Lights()))
+		return E_FAIL;
+
+	if (FAILED(Ready_Monster()))
 		return E_FAIL;
 
 	return S_OK;
@@ -136,7 +139,7 @@ HRESULT CLevel_Logo::Render()
 	return S_OK;
 }
 
-HRESULT CLevel_Logo::Ready_Builders()
+HRESULT CLevel_Logo::Build_Prototype()
 {
 	if (FAILED(Ready_Builder(DTO::ECategory::MAP,CBuilder_Map::Create(m_pDevice, m_pDeviceContext, static_cast<_uint>(ELevelType::LOGO)))))
 		return E_FAIL;
@@ -275,6 +278,21 @@ HRESULT CLevel_Logo::Ready_DevMap()
 
 	if (FAILED(Build_File(iLevelID,eCategory,FilePath.stem().string())))
 		return E_FAIL;
+
+	return S_OK;
+}
+
+HRESULT CLevel_Logo::Ready_Monster()
+{
+	{
+		CGameObject* pResult = { nullptr };
+
+		if (!(pResult = m_pGameInstance->Add_GameObject(ENUM_TO_UINT(ELevelType::LOGO),
+			L"Prototype_GameObject_Monster_Dummy",
+			ENUM_TO_UINT(ELevelType::LOGO),
+			L"Monster", nullptr)))
+			return E_FAIL;
+	}
 
 	return S_OK;
 }

@@ -119,7 +119,7 @@ void CPhysics_UserHitReport::Debug_Log(HITEVENT::Enum event, GAMEOBJECTINFO& inf
 		leftInfo = L"NULL\n";
 	
 	if (info.rightObject)
-		rightInfo = info.leftName + L", ID : " + std::to_wstring(info.leftID) + L"\n";
+		rightInfo = info.rightName + L", ID : " + std::to_wstring(info.rightID) + L"\n";
 	else
 		rightInfo = L"NULL\n";
 

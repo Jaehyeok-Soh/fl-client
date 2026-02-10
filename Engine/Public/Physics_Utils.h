@@ -31,9 +31,13 @@ public:
 public:
     _bool RayCast();
 
-    _bool Execute_Overlap(PxGeometry& shape, PxTransform transform, OUT PxOverlapBuffer hit, PxQueryFilterData& filterData, PxQueryFilterCallback* filterCallback);
+    _bool Execute_Overlap(PxGeometry& shape, PxTransform& transform, OUT PxOverlapBuffer& hit, PxQueryFilterData& filterData, PxQueryFilterCallback* filterCallback);
 
     class CPhysics_QueryFilterCallback* GetQueryFilterCallback();
+
+#ifdef _DEBUG
+    void SetMeshDebugState();
+#endif // _DEBUG
 
 private:
     class CGameInstance* m_pGameInstance = { nullptr };
@@ -48,6 +52,8 @@ private:
     ID3D11InputLayout* m_pInputLayout = { nullptr };
     const PxU32 m_iMaxRenderShape = { 20 };
     ID3D11DepthStencilState* m_pDSS = { nullptr };
+
+    _bool m_bIsOnMeshDebug = { false };
 #endif
 
 private:

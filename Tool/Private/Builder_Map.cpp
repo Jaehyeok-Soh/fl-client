@@ -40,28 +40,18 @@ HRESULT CBuilder_Map::Build(const CDataDocumentBase& document)
 HRESULT CBuilder_Map::Create_MapObject(const DTO::TMap_MapObjectData& tData)
 {
 	CMapObject::MAPOBJECT_DESC tDesc{};
-	tDesc.eClientLevelType	= static_cast<EClientLevelType>(tData.eClientLevelType);
-	tDesc.eClientMakePath	= static_cast<EClientMakePath>(tData.eClientMakePath);
-	tDesc.eMapObjectDrawType = static_cast<EMapObject_DrawType>(tData.eMapObjectDrawType);
+	tDesc.eClientLevelType					= static_cast<EClientLevelType>(tData.eClientLevelType);
+	tDesc.eClientMakePath					= static_cast<EClientMakePath>(tData.eClientMakePath);
+	tDesc.eMapObjectDrawType				= static_cast<EMapObject_DrawType>(tData.eMapObjectDrawType);
 
 	tDesc.isUELoaded = tData.isUELoaded;
 	tDesc.isLoaded = true;
 	
 	
-	tDesc.tUsingModelInfo.wstrName = path(tData.strModelPath).filename().stem();
-	tDesc.tUsingModelInfo.wstrPath = Engine_Utils::ToWString(tData.strModelPath);
-	
-
-	/* 생성하지 않은  */
-	if (!tData.vecClientMakePathDesc.empty())
-	{
-		for (auto& DTO_Desc : tData.vecClientMakePathDesc)
-		{
-			/* 안쪽에서 new로 동적할당해서 복사생성해준다 필수 관문 */
-			tDesc.vecClientMakePathDesc.push_back(m_pMapToolManager->Make_Client_MakePathDesc(tDesc.eClientMakePath, DTO_Desc));
-		}
-	}
-
+	tDesc.tUsingModelInfo.wstrName			= path(tData.strModelPath).filename().stem();
+	tDesc.tUsingModelInfo.wstrPath			= Engine_Utils::ToWString(tData.strModelPath);
+	tDesc.vecClientMakePathDesc				= tData.vecClientMakePathDesc;
+	tDesc.wstrLayerTag						= g_wszMapObjectLayer;
 
 	for (auto& DTO_SRTDATA : tData.vecSRTs)
 	{

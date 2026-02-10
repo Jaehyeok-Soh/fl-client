@@ -1,736 +1,717 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
-	<ItemGroup>
-		<Filter Include="00. Default">
-			<UniqueIdentifier>{3d3e8058-a3dd-4bb7-973b-02861a6a1e0b}</UniqueIdentifier>
-		</Filter>
-		<Filter Include="98. Defines">
-			<UniqueIdentifier>{db9350a6-0a7a-4cf2-8059-c0703abded55}</UniqueIdentifier>
-		</Filter>
-		<Filter Include="99. ETC">
-			<UniqueIdentifier>{0b1b07a4-b609-4fd8-a064-8c12c9458d3f}</UniqueIdentifier>
-		</Filter>
-		<Filter Include="99. ETC\99. Andromeda">
-			<UniqueIdentifier>{22cb062d-7f39-486d-886c-bc44b81a8b4d}</UniqueIdentifier>
-		</Filter>
-		<Filter Include="02. GameObjects">
-			<UniqueIdentifier>{a2605915-b5f6-4baa-afa6-abfe355bb097}</UniqueIdentifier>
-		</Filter>
-		<Filter Include="05. Picking">
-			<UniqueIdentifier>{d9601722-b784-4d5f-afb2-aa6a6cfef0d8}</UniqueIdentifier>
-		</Filter>
-		<Filter Include="06. ImGui">
-			<UniqueIdentifier>{f9dd71ac-23ce-49b7-a610-4730fc1cf6aa}</UniqueIdentifier>
-		</Filter>
-		<Filter Include="03. Level">
-			<UniqueIdentifier>{924e0878-2431-4c68-80a2-ea22ab01f383}</UniqueIdentifier>
-		</Filter>
-		<Filter Include="04. Component">
-			<UniqueIdentifier>{a5bce9c1-8524-4d44-b90e-d125e3b10e0d}</UniqueIdentifier>
-		</Filter>
-		<Filter Include="03. Level\Animation">
-			<UniqueIdentifier>{a871dc62-300e-4186-92a8-946a4ba30b58}</UniqueIdentifier>
-		</Filter>
-		<Filter Include="03. Level\Camera">
-			<UniqueIdentifier>{9a31fb8a-7d89-4e95-9798-7837f77e445c}</UniqueIdentifier>
-		</Filter>
-		<Filter Include="03. Level\Assimp">
-			<UniqueIdentifier>{2f791368-f1de-41f0-af14-0d229b89c310}</UniqueIdentifier>
-		</Filter>
-		<Filter Include="03. Level\Effect">
-			<UniqueIdentifier>{df7591e1-a21f-463c-a229-5189b6ea1f0f}</UniqueIdentifier>
-		</Filter>
-		<Filter Include="03. Level\Loading">
-			<UniqueIdentifier>{ab106c3c-868b-4d70-aff0-e12423f75dac}</UniqueIdentifier>
-		</Filter>
-		<Filter Include="03. Level\Map">
-			<UniqueIdentifier>{bfb9a5ad-1a88-4d8d-be1d-3cef17ba8de7}</UniqueIdentifier>
-		</Filter>
-		<Filter Include="04. Component\GodInput">
-			<UniqueIdentifier>{a5f5d30c-7f0b-4ffe-9625-ac76026564d1}</UniqueIdentifier>
-		</Filter>
-		<Filter Include="99. ETC\01. ImGui">
-			<UniqueIdentifier>{bc995b09-6115-4df2-9e5f-2f8df8bb16fd}</UniqueIdentifier>
-		</Filter>
-		<Filter Include="99. ETC\02. ImGuizmo">
-			<UniqueIdentifier>{89310886-cedb-47e3-85b6-5c20571d5b8e}</UniqueIdentifier>
-		</Filter>
-		<Filter Include="03. Level\UI">
-			<UniqueIdentifier>{66fc69c0-77cb-48e3-8ed2-01108d04329a}</UniqueIdentifier>
-		</Filter>
-		<Filter Include="06. ImGui\00. Manager">
-			<UniqueIdentifier>{904601f9-ece0-4d51-a81e-58dafec6721a}</UniqueIdentifier>
-		</Filter>
-		<Filter Include="06. ImGui\01. Panel">
-			<UniqueIdentifier>{5ab28e72-f996-48e6-95ae-2c238243172a}</UniqueIdentifier>
-		</Filter>
-		<Filter Include="06. ImGui\02. Layout">
-			<UniqueIdentifier>{c9d08718-e84e-41ca-ac3b-8320fc9704bf}</UniqueIdentifier>
-		</Filter>
-		<Filter Include="06. ImGui\03. Dockspace">
-			<UniqueIdentifier>{cb832581-9e3a-4970-a2fe-921fceca3c24}</UniqueIdentifier>
-		</Filter>
-		<Filter Include="06. ImGui\02. Layout\Transform">
-			<UniqueIdentifier>{07c1c70c-f95a-43d2-a4c7-b08e5189b132}</UniqueIdentifier>
-		</Filter>
-		<Filter Include="02. GameObjects\Camera">
-			<UniqueIdentifier>{2b12e5f2-bf70-4b4d-9b74-c22127d59e07}</UniqueIdentifier>
-		</Filter>
-		<Filter Include="07. UE_Mapdata">
-			<UniqueIdentifier>{0e98bf15-ae63-42d7-96db-f5fefb93e6f9}</UniqueIdentifier>
-		</Filter>
-		<Filter Include="03. Level\Loading\Loader">
-			<UniqueIdentifier>{afe44f16-d8bc-4485-94d6-01fb36c16207}</UniqueIdentifier>
-		</Filter>
-		<Filter Include="02. GameObjects\UI">
-			<UniqueIdentifier>{0db6a6bb-4c91-4d50-87bc-383b7b30d4b5}</UniqueIdentifier>
-		</Filter>
-		<Filter Include="01. MainApplication">
-			<UniqueIdentifier>{b2ad5ea6-fa9c-42e2-920e-65fa32a6965c}</UniqueIdentifier>
-		</Filter>
-		<Filter Include="02. GameObjects\Map">
-			<UniqueIdentifier>{2318f38b-6d39-4c06-902a-133043782e03}</UniqueIdentifier>
-		</Filter>
-		<Filter Include="02. GameObjects\Map\00. MapObject">
-			<UniqueIdentifier>{c7045980-bb80-4be0-8ca4-288e4abc51ca}</UniqueIdentifier>
-		</Filter>
-		<Filter Include="06. ImGui\01. Panel\Map">
-			<UniqueIdentifier>{b4e4e477-acb3-4c83-a84e-a16a77ffbe18}</UniqueIdentifier>
-		</Filter>
-		<Filter Include="06. ImGui\01. Panel\Asimp">
-			<UniqueIdentifier>{1502112a-c44e-484f-85c7-3e71f9a1a6b0}</UniqueIdentifier>
-		</Filter>
-		<Filter Include="02. GameObjects\Map\00. MapObject\00. MapObject">
-			<UniqueIdentifier>{cdb92401-9c8e-484e-b963-3905e522a34c}</UniqueIdentifier>
-		</Filter>
-		<Filter Include="06. ImGui\01. Panel\Map\Panel_MapObjectList">
-			<UniqueIdentifier>{9755e817-fb8d-4b80-9214-161ecfd0e6ce}</UniqueIdentifier>
-		</Filter>
-		<Filter Include="06. ImGui\01. Panel\Map\Panel_MapDataControler">
-			<UniqueIdentifier>{418b41f9-ac00-471b-99f0-07f9141edff7}</UniqueIdentifier>
-		</Filter>
-		<Filter Include="03. Level\Effect\Effect_Panel">
-			<UniqueIdentifier>{dcfafedc-a3a5-47ae-a71f-86669a2e7b2c}</UniqueIdentifier>
-		</Filter>
-		<Filter Include="03. Level\Effect\Effect_Panel\Particle_System_Panel">
-			<UniqueIdentifier>{0680a4ef-f6b5-4f4c-9344-5a85832793a5}</UniqueIdentifier>
-		</Filter>
-		<Filter Include="03. Level\Effect\Effect_Panel\EffectType_Selection">
-			<UniqueIdentifier>{c616f463-edcd-4d20-919c-9de9a390d678}</UniqueIdentifier>
-		</Filter>
-		<Filter Include="02. GameObjects\PartObject">
-			<UniqueIdentifier>{ab8f52ba-9548-4d59-96fd-3e11792c6f59}</UniqueIdentifier>
-		</Filter>
-		<Filter Include="98. Defines\pch">
-			<UniqueIdentifier>{6a433bfc-3f5f-420f-ac46-69cffb0edf23}</UniqueIdentifier>
-		</Filter>
-		<Filter Include="09. Builder">
-			<UniqueIdentifier>{afa9ad94-11da-4af6-822f-8784ae7231ad}</UniqueIdentifier>
-		</Filter>
-		<Filter Include="09. Builder\Example">
-			<UniqueIdentifier>{9970cc5b-f703-4b3a-8311-0fc2a45575d8}</UniqueIdentifier>
-		</Filter>
-		<Filter Include="08. UIData">
-			<UniqueIdentifier>{566d6d02-9c34-4ed7-beae-db2b024e4049}</UniqueIdentifier>
-		</Filter>
-		<Filter Include="08. UIData\Manager">
-			<UniqueIdentifier>{6d36fbe4-59ee-4223-946d-8f5f4bc5d255}</UniqueIdentifier>
-		</Filter>
-		<Filter Include="06. ImGui\01. Panel\Map\File">
-			<UniqueIdentifier>{052f47e7-8ad0-46fe-9e82-68a1541c2501}</UniqueIdentifier>
-		</Filter>
-		<Filter Include="10. Folder">
-			<UniqueIdentifier>{4df4c641-6c22-41c1-a9af-09c6188b9065}</UniqueIdentifier>
-		</Filter>
-		<Filter Include="11. File">
-			<UniqueIdentifier>{eba6acec-ecab-4a90-8b8e-1c78ded4b5e3}</UniqueIdentifier>
-		</Filter>
-		<Filter Include="03. Level\Logo">
-			<UniqueIdentifier>{6b4ad873-673f-4c55-a2cf-8ed6c0b3e198}</UniqueIdentifier>
-		</Filter>
-		<Filter Include="09. Builder\UI">
-			<UniqueIdentifier>{00ebdf0c-5d5b-4d6a-beeb-19cd527d2574}</UniqueIdentifier>
-		</Filter>
-		<Filter Include="07. UE_Mapdata\01. MapDataLoader">
-			<UniqueIdentifier>{434ecd0b-d87d-4fef-959a-113592ac3a30}</UniqueIdentifier>
-		</Filter>
-		<Filter Include="07. UE_Mapdata\02. MapDataPaser">
-			<UniqueIdentifier>{1fe68a57-8a50-4f80-80f6-1cdca50a3217}</UniqueIdentifier>
-		</Filter>
-		<Filter Include="07. UE_Mapdata\00. MapObjectManager">
-			<UniqueIdentifier>{828aac90-c7f0-43d9-bf6b-523eb4f90cbc}</UniqueIdentifier>
-		</Filter>
-		<Filter Include="06. ImGui\01. Panel\Map\Panel_MapTool">
-			<UniqueIdentifier>{4812e337-4689-478b-9ab4-fdb519dcef02}</UniqueIdentifier>
-		</Filter>
-		<Filter Include="12. DebugLine">
-			<UniqueIdentifier>{a6816b7e-ec64-446e-b029-75a5db0148fa}</UniqueIdentifier>
-		</Filter>
-		<Filter Include="12. DebugLine\00. Grid">
-			<UniqueIdentifier>{1bd055f2-0e4d-4c86-a144-7f3505e280f8}</UniqueIdentifier>
-		</Filter>
-		<Filter Include="12. DebugLine\01. DebugLine">
-			<UniqueIdentifier>{f4bab261-d522-4da3-ab3e-259ad1d9e20a}</UniqueIdentifier>
-		</Filter>
-		<Filter Include="04. Component\Map">
-			<UniqueIdentifier>{ea20cd24-748e-4bdd-a0a7-35c178fc58cb}</UniqueIdentifier>
-		</Filter>
-		<Filter Include="04. Component\Map\Tool_StaticMesh">
-			<UniqueIdentifier>{d82ac746-4abc-4ab0-a328-d317d74841e5}</UniqueIdentifier>
-		</Filter>
-		<Filter Include="98. Defines\Tool_Define">
-			<UniqueIdentifier>{5961eab9-ba1a-4da6-a701-5821ad618484}</UniqueIdentifier>
-		</Filter>
-		<Filter Include="98. Defines\Tool_Struct">
-			<UniqueIdentifier>{e5507130-9d05-4f99-81af-18262481d0a8}</UniqueIdentifier>
-		</Filter>
-		<Filter Include="06. ImGui\01. Panel\Animation">
-			<UniqueIdentifier>{535a7846-4389-404b-82c0-4227a110de20}</UniqueIdentifier>
-		</Filter>
-		<Filter Include="06. ImGui\01. Panel\Animation\Panel_Model">
-			<UniqueIdentifier>{b345042e-f3b0-46e3-8816-dfb4c3df7229}</UniqueIdentifier>
-		</Filter>
-		<Filter Include="06. ImGui\01. Panel\Animation\Panel_Animation">
-			<UniqueIdentifier>{bfd46406-ca40-4922-afe3-9c0cfdad63c2}</UniqueIdentifier>
-		</Filter>
-		<Filter Include="02. GameObjects\ContainerObject">
-			<UniqueIdentifier>{849c5ab9-53df-4b2a-8a78-5d3fb0f5bf4a}</UniqueIdentifier>
-		</Filter>
-		<Filter Include="02. GameObjects\ContainerObject\AnimModel">
-			<UniqueIdentifier>{c92b61a1-bb6a-4cd8-ab0e-69498fa9e46d}</UniqueIdentifier>
-		</Filter>
-		<Filter Include="06. ImGui\01. Panel\UI">
-			<UniqueIdentifier>{25cb433e-dd0f-4224-8a4f-fdf58f05f1a8}</UniqueIdentifier>
-		</Filter>
-		<Filter Include="06. ImGui\01. Panel\UI\Inspector">
-			<UniqueIdentifier>{098b7047-0c8e-4fe8-b63d-f281e3eaa593}</UniqueIdentifier>
-		</Filter>
-		<Filter Include="06. ImGui\01. Panel\UI\Hierachy">
-			<UniqueIdentifier>{ba50b2d3-2e46-434e-92e4-771e393bc34b}</UniqueIdentifier>
-		</Filter>
-		<Filter Include="06. ImGui\01. Panel\UI\Maker">
-			<UniqueIdentifier>{f5fed899-dccb-4d0d-a291-189fd27b3ca2}</UniqueIdentifier>
-		</Filter>
-		<Filter Include="06. ImGui\01. Panel\UI\Component">
-			<UniqueIdentifier>{ac792568-75d9-4e4a-84e1-ff4c4adcd6b8}</UniqueIdentifier>
-		</Filter>
-		<Filter Include="02. GameObjects\UI\01.Canvas">
-			<UniqueIdentifier>{5d6846d5-10a5-4a42-bb54-26c8e2fde4ee}</UniqueIdentifier>
-		</Filter>
-		<Filter Include="09. Builder\Map">
-			<UniqueIdentifier>{316c30da-42c6-486a-bbfd-7736152fabec}</UniqueIdentifier>
-		</Filter>
-		<Filter Include="02. GameObjects\Map\00. MapObject\01. StaticModel">
-			<UniqueIdentifier>{2cfbf0d2-bd5d-4728-87d5-d2bb19dfb549}</UniqueIdentifier>
-		</Filter>
-		<Filter Include="02. GameObjects\Map\00. MapObject\02. InstanceModel">
-			<UniqueIdentifier>{32494c10-0bf8-420f-a857-a2d263860bfa}</UniqueIdentifier>
-		</Filter>
-		<Filter Include="03. Level\Effect\Effect\Effect_Object">
-			<UniqueIdentifier>{c7c882ca-f31c-44ed-bfc0-c6a26939bb11}</UniqueIdentifier>
-		</Filter>
-		<Filter Include="03. Level\Effect\Effect\Gravity_Force">
-			<UniqueIdentifier>{2f5ef054-3cbc-47dd-ad16-41a470fea0e8}</UniqueIdentifier>
-		</Filter>
-		<Filter Include="02. GameObjects\UI\02.UI">
-			<UniqueIdentifier>{6a558198-77c1-41fb-9345-05c1fc4f9daf}</UniqueIdentifier>
-		</Filter>
-		<Filter Include="04. Component\UI">
-			<UniqueIdentifier>{8ef29a04-df46-407a-be7c-116b135d8267}</UniqueIdentifier>
-		</Filter>
-		<Filter Include="04. Component\UI\Button">
-			<UniqueIdentifier>{6cc6e7a0-a1a7-4992-af08-cc0604618e37}</UniqueIdentifier>
-		</Filter>
-		<Filter Include="04. Component\UI\Progress">
-			<UniqueIdentifier>{27815419-4fa4-4be0-9d62-f21f634f2338}</UniqueIdentifier>
-		</Filter>
-		<Filter Include="02. GameObjects\Map\00. MapObject\03. BatchObject">
-			<UniqueIdentifier>{4cbea894-fe8a-484a-b84b-a0522058102a}</UniqueIdentifier>
-		</Filter>
-		<Filter Include="02. GameObjects\UI\00.Action">
-			<UniqueIdentifier>{566d6d02-9c34-4ed7-beae-db2b024e4049}</UniqueIdentifier>
-		</Filter>
-	</ItemGroup>
-	<ItemGroup>
-		<ClInclude Include="framework.h">
-			<Filter>99. ETC\99. Andromeda</Filter>
-		</ClInclude>
-		<ClInclude Include="Resource.h">
-			<Filter>99. ETC\99. Andromeda</Filter>
-		</ClInclude>
-		<ClInclude Include="targetver.h">
-			<Filter>99. ETC\99. Andromeda</Filter>
-		</ClInclude>
-		<ClInclude Include="Tool.h">
-			<Filter>00. Default</Filter>
-		</ClInclude>
-		<ClInclude Include="..\Public\MainApplication.h">
-			<Filter>01. MainApplication</Filter>
-		</ClInclude>
-		<ClInclude Include="..\Public\Picking_ToolManager.h">
-			<Filter>05. Picking</Filter>
-		</ClInclude>
-		<ClInclude Include="..\Public\Level_Map.h">
-			<Filter>03. Level\Map</Filter>
-		</ClInclude>
-		<ClInclude Include="..\Public\Level_Loading.h">
-			<Filter>03. Level\Loading</Filter>
-		</ClInclude>
-		<ClInclude Include="..\Public\Level_Effect.h">
-			<Filter>03. Level\Effect</Filter>
-		</ClInclude>
-		<ClInclude Include="..\Public\Level_Camera.h">
-			<Filter>03. Level\Camera</Filter>
-		</ClInclude>
-		<ClInclude Include="..\Public\Level_Assimp.h">
-			<Filter>03. Level\Assimp</Filter>
-		</ClInclude>
-		<ClInclude Include="..\Public\Level_Animation.h">
-			<Filter>03. Level\Animation</Filter>
-		</ClInclude>
-		<ClInclude Include="..\Public\GodInput.h">
-			<Filter>04. Component\GodInput</Filter>
-		</ClInclude>
-		<ClInclude Include="..\Public\imstb_rectpack.h">
-			<Filter>99. ETC\01. ImGui</Filter>
-		</ClInclude>
-		<ClInclude Include="..\Public\imstb_textedit.h">
-			<Filter>99. ETC\01. ImGui</Filter>
-		</ClInclude>
-		<ClInclude Include="..\Public\imstb_truetype.h">
-			<Filter>99. ETC\01. ImGui</Filter>
-		</ClInclude>
-		<ClInclude Include="..\Public\imconfig.h">
-			<Filter>99. ETC\01. ImGui</Filter>
-		</ClInclude>
-		<ClInclude Include="..\Public\imgui.h">
-			<Filter>99. ETC\01. ImGui</Filter>
-		</ClInclude>
-		<ClInclude Include="..\Public\imgui_impl_dx11.h">
-			<Filter>99. ETC\01. ImGui</Filter>
-		</ClInclude>
-		<ClInclude Include="..\Public\imgui_impl_win32.h">
-			<Filter>99. ETC\01. ImGui</Filter>
-		</ClInclude>
-		<ClInclude Include="..\Public\imgui_internal.h">
-			<Filter>99. ETC\01. ImGui</Filter>
-		</ClInclude>
-		<ClInclude Include="..\Public\imgui_stdlib.h">
-			<Filter>99. ETC\01. ImGui</Filter>
-		</ClInclude>
-		<ClInclude Include="..\Public\GraphEditor.h">
-			<Filter>99. ETC\02. ImGuizmo</Filter>
-		</ClInclude>
-		<ClInclude Include="..\Public\ImCurveEdit.h">
-			<Filter>99. ETC\02. ImGuizmo</Filter>
-		</ClInclude>
-		<ClInclude Include="..\Public\ImGradient.h">
-			<Filter>99. ETC\02. ImGuizmo</Filter>
-		</ClInclude>
-		<ClInclude Include="..\Public\ImGuizmo.h">
-			<Filter>99. ETC\02. ImGuizmo</Filter>
-		</ClInclude>
-		<ClInclude Include="..\Public\ImSequencer.h">
-			<Filter>99. ETC\02. ImGuizmo</Filter>
-		</ClInclude>
-		<ClInclude Include="..\Public\ImZoomSlider.h">
-			<Filter>99. ETC\02. ImGuizmo</Filter>
-		</ClInclude>
-		<ClInclude Include="..\Public\Tool_EventDefines.h">
-			<Filter>98. Defines</Filter>
-		</ClInclude>
-		<ClInclude Include="..\public\Level_UI.h">
-			<Filter>03. Level\UI</Filter>
-		</ClInclude>
-		<ClInclude Include="..\Public\ImGui_ToolManager.h">
-			<Filter>06. ImGui\00. Manager</Filter>
-		</ClInclude>
-		<ClInclude Include="..\Public\ImGui_Base.h">
-			<Filter>06. ImGui</Filter>
-		</ClInclude>
-		<ClInclude Include="..\Public\ImGui_Panel.h">
-			<Filter>06. ImGui\01. Panel</Filter>
-		</ClInclude>
-		<ClInclude Include="..\Public\ImGui_Layout.h">
-			<Filter>06. ImGui\02. Layout</Filter>
-		</ClInclude>
-		<ClInclude Include="..\Public\ImGui_Dockspace_MenuBar.h">
-			<Filter>06. ImGui\03. Dockspace</Filter>
-		</ClInclude>
-		<ClInclude Include="..\Public\ImGui_Dockspace_TabBar.h">
-			<Filter>06. ImGui\03. Dockspace</Filter>
-		</ClInclude>
-		<ClInclude Include="..\Public\ImGui_Layout_Transform.h">
-			<Filter>06. ImGui\02. Layout\Transform</Filter>
-		</ClInclude>
-		<ClInclude Include="..\Public\CameraMan_Free.h">
-			<Filter>02. GameObjects\Camera</Filter>
-		</ClInclude>
-		<ClInclude Include="..\Public\Loader.h">
-			<Filter>03. Level\Loading\Loader</Filter>
-		</ClInclude>
-		<ClInclude Include="..\Public\UI_Inspector.h">
-			<Filter>06. ImGui\01. Panel\UI\Inspector</Filter>
-		</ClInclude>
-		<ClInclude Include="..\Public\UI_Hierachy.h">
-			<Filter>06. ImGui\01. Panel\UI\Hierachy</Filter>
-		</ClInclude>
-		<ClInclude Include="..\Public\ImGui_UIManager.h">
-			<Filter>08. UIData\Manager</Filter>
-		</ClInclude>
-		<ClInclude Include="..\Public\ToolUI.h">
-			<Filter>02. GameObjects\UI\02.UI</Filter>
-		</ClInclude>
-		<ClInclude Include="..\Public\ToolCanvas.h">
-			<Filter>02. GameObjects\UI\01.Canvas</Filter>
-		</ClInclude>
-		<ClInclude Include="..\Public\ToolObject.h">
-			<Filter>02. GameObjects</Filter>
-		</ClInclude>
-		<ClInclude Include="..\Public\Panel_MapObjectList.h">
-			<Filter>06. ImGui\01. Panel\Map\Panel_MapObjectList</Filter>
-		</ClInclude>
-		<ClInclude Include="..\Public\Panel_ModelConverter.h">
-			<Filter>06. ImGui\01. Panel\Asimp</Filter>
-		</ClInclude>
-		<ClInclude Include="..\Public\MapObject.h">
-			<Filter>02. GameObjects\Map\00. MapObject\00. MapObject</Filter>
-		</ClInclude>
-		<ClInclude Include="..\Public\CParticle_System_Panel.h">
-			<Filter>03. Level\Effect\Effect_Panel\Particle_System_Panel</Filter>
-		</ClInclude>
-		<ClInclude Include="..\Public\EffectType_Selection_Panel.h">
-			<Filter>03. Level\Effect\Effect_Panel\EffectType_Selection</Filter>
-		</ClInclude>
-		<ClInclude Include="..\Public\CEffectObject.h">
-			<Filter>03. Level\Effect\Effect\Effect_Object</Filter>
-		</ClInclude>
-		<ClInclude Include="..\Public\Tool_ContainerObject.h">
-			<Filter>02. GameObjects\ContainerObject</Filter>
-		</ClInclude>
-		<ClInclude Include="..\Public\Tool_PartObject.h">
-			<Filter>02. GameObjects\PartObject</Filter>
-		</ClInclude>
-		<ClInclude Include="..\Public\Effect.h">
-			<Filter>03. Level\Effect\Effect</Filter>
-		</ClInclude>
-		<ClInclude Include="pch.h">
-			<Filter>98. Defines\pch</Filter>
-		</ClInclude>
-		<ClInclude Include="..\Public\Builder_Example.h">
-			<Filter>09. Builder\Example</Filter>
-		</ClInclude>
-		<ClInclude Include="..\Public\UI_Maker.h">
-			<Filter>06. ImGui\01. Panel\UI\Maker</Filter>
-		</ClInclude>
-		<ClInclude Include="..\Public\imfilebrowser.h">
-			<Filter>99. ETC\01. ImGui</Filter>
-		</ClInclude>
-		<ClInclude Include="..\public\Panel_FileExplore.h">
-			<Filter>06. ImGui\01. Panel\Map\File</Filter>
-		</ClInclude>
-		<ClInclude Include="..\Public\Folder.h">
-			<Filter>10. Folder</Filter>
-		</ClInclude>
-		<ClInclude Include="..\Public\File.h">
-			<Filter>11. File</Filter>
-		</ClInclude>
-		<ClInclude Include="..\Public\UEMapdataLoader.h">
-			<Filter>07. UE_Mapdata\01. MapDataLoader</Filter>
-		</ClInclude>
-		<ClInclude Include="..\Public\UEMapdataParser.h">
-			<Filter>07. UE_Mapdata\02. MapDataPaser</Filter>
-		</ClInclude>
-		<ClInclude Include="..\Public\MapToolManager.h">
-			<Filter>07. UE_Mapdata\00. MapObjectManager</Filter>
-		</ClInclude>
-		<ClInclude Include="..\Public\Panel_MapTool.h">
-			<Filter>06. ImGui\01. Panel\Map\Panel_MapTool</Filter>
-		</ClInclude>
-		<ClInclude Include="..\Public\Panel_MapDataController.h">
-			<Filter>06. ImGui\01. Panel\Map\Panel_MapDataControler</Filter>
-		</ClInclude>
-		<ClInclude Include="..\Public\Grid.h">
-			<Filter>12. DebugLine\00. Grid</Filter>
-		</ClInclude>
-		<ClInclude Include="..\Public\DebugLine.h">
-			<Filter>12. DebugLine\01. DebugLine</Filter>
-		</ClInclude>
-		<ClInclude Include="..\Public\Builder_UI.h">
-			<Filter>09. Builder\UI</Filter>
-		</ClInclude>
-		<ClInclude Include="..\public\Level_Logo.h">
-			<Filter>03. Level\Logo</Filter>
-		</ClInclude>
-		<ClInclude Include="..\Public\Tool_Defines.h">
-			<Filter>98. Defines\Tool_Define</Filter>
-		</ClInclude>
-		<ClInclude Include="..\Public\Tool_Structs.h">
-			<Filter>98. Defines\Tool_Struct</Filter>
-		</ClInclude>
-		<ClInclude Include="..\Public\Panel_Model.h">
-			<Filter>06. ImGui\01. Panel\Animation\Panel_Model</Filter>
-		</ClInclude>
-		<ClInclude Include="..\Public\AnimObj.h">
-			<Filter>02. GameObjects\ContainerObject\AnimModel</Filter>
-		</ClInclude>
-		<ClInclude Include="..\Public\UIComponent_Inspector.h">
-			<Filter>06. ImGui\01. Panel\UI\Component</Filter>
-		</ClInclude>
-		<ClInclude Include="..\Public\Builder_Map.h">
-			<Filter>09. Builder\Map</Filter>
-		</ClInclude>
-		<ClInclude Include="..\Public\InstanceModel.h">
-			<Filter>02. GameObjects\Map\00. MapObject\02. InstanceModel</Filter>
-		</ClInclude>
-		<ClInclude Include="..\Public\Gravity_Force.h">
-			<Filter>03. Level\Effect\Effect\Gravity_Force</Filter>
-		</ClInclude>
-		<ClInclude Include="..\Public\UITargetAction_Tool.h">
-			<Filter>02. GameObjects\UI\00.Action</Filter>
-		</ClInclude>
-		<ClInclude Include="..\Public\UIButton_Component.h">
-			<Filter>04. Component\UI\Button</Filter>
-		</ClInclude>
-		<ClInclude Include="..\Public\UIProgress_Component.h">
-			<Filter>04. Component\UI\Progress</Filter>
-		</ClInclude>
-	</ItemGroup>
-	<ItemGroup>
-		<Image Include="small.ico">
-			<Filter>99. ETC\99. Andromeda</Filter>
-		</Image>
-		<Image Include="Tool.ico">
-			<Filter>99. ETC\99. Andromeda</Filter>
-		</Image>
-	</ItemGroup>
-	<ItemGroup>
-		<ResourceCompile Include="Tool.rc">
-			<Filter>99. ETC\99. Andromeda</Filter>
-		</ResourceCompile>
-	</ItemGroup>
-	<ItemGroup>
-		<ClCompile Include="Tool.cpp">
-			<Filter>00. Default</Filter>
-		</ClCompile>
-		<ClCompile Include="..\Private\MainApplication.cpp">
-			<Filter>01. MainApplication</Filter>
-		</ClCompile>
-		<ClCompile Include="..\Private\Picking_ToolManager.cpp">
-			<Filter>05. Picking</Filter>
-		</ClCompile>
-		<ClCompile Include="..\Private\Level_Animation.cpp">
-			<Filter>03. Level\Animation</Filter>
-		</ClCompile>
-		<ClCompile Include="..\Private\Level_Assimp.cpp">
-			<Filter>03. Level\Assimp</Filter>
-		</ClCompile>
-		<ClCompile Include="..\Private\Level_Camera.cpp">
-			<Filter>03. Level\Camera</Filter>
-		</ClCompile>
-		<ClCompile Include="..\Private\Level_Loading.cpp">
-			<Filter>03. Level\Loading</Filter>
-		</ClCompile>
-		<ClCompile Include="..\Private\Level_Map.cpp">
-			<Filter>03. Level\Map</Filter>
-		</ClCompile>
-		<ClCompile Include="..\Private\Level_Effect.cpp">
-			<Filter>03. Level\Effect</Filter>
-		</ClCompile>
-		<ClCompile Include="..\Private\GodInput.cpp">
-			<Filter>04. Component\GodInput</Filter>
-		</ClCompile>
-		<ClCompile Include="..\Private\imgui_impl_win32.cpp">
-			<Filter>99. ETC\01. ImGui</Filter>
-		</ClCompile>
-		<ClCompile Include="..\Private\imgui_stdlib.cpp">
-			<Filter>99. ETC\01. ImGui</Filter>
-		</ClCompile>
-		<ClCompile Include="..\Private\imgui_tables.cpp">
-			<Filter>99. ETC\01. ImGui</Filter>
-		</ClCompile>
-		<ClCompile Include="..\Private\imgui_widgets.cpp">
-			<Filter>99. ETC\01. ImGui</Filter>
-		</ClCompile>
-		<ClCompile Include="..\Private\imgui.cpp">
-			<Filter>99. ETC\01. ImGui</Filter>
-		</ClCompile>
-		<ClCompile Include="..\Private\imgui_demo.cpp">
-			<Filter>99. ETC\01. ImGui</Filter>
-		</ClCompile>
-		<ClCompile Include="..\Private\imgui_draw.cpp">
-			<Filter>99. ETC\01. ImGui</Filter>
-		</ClCompile>
-		<ClCompile Include="..\Private\imgui_impl_dx11.cpp">
-			<Filter>99. ETC\01. ImGui</Filter>
-		</ClCompile>
-		<ClCompile Include="..\Private\GraphEditor.cpp">
-			<Filter>99. ETC\02. ImGuizmo</Filter>
-		</ClCompile>
-		<ClCompile Include="..\Private\ImCurveEdit.cpp">
-			<Filter>99. ETC\02. ImGuizmo</Filter>
-		</ClCompile>
-		<ClCompile Include="..\Private\ImGradient.cpp">
-			<Filter>99. ETC\02. ImGuizmo</Filter>
-		</ClCompile>
-		<ClCompile Include="..\Private\ImGuizmo.cpp">
-			<Filter>99. ETC\02. ImGuizmo</Filter>
-		</ClCompile>
-		<ClCompile Include="..\Private\ImSequencer.cpp">
-			<Filter>99. ETC\02. ImGuizmo</Filter>
-		</ClCompile>
-		<ClCompile Include="..\private\Level_UI.cpp">
-			<Filter>03. Level\UI</Filter>
-		</ClCompile>
-		<ClCompile Include="..\Private\ImGui_ToolManager.cpp">
-			<Filter>06. ImGui\00. Manager</Filter>
-		</ClCompile>
-		<ClCompile Include="..\Private\ImGui_Base.cpp">
-			<Filter>06. ImGui</Filter>
-		</ClCompile>
-		<ClCompile Include="..\Private\ImGui_Panel.cpp">
-			<Filter>06. ImGui\01. Panel</Filter>
-		</ClCompile>
-		<ClCompile Include="..\Private\ImGui_Layout.cpp">
-			<Filter>06. ImGui\02. Layout</Filter>
-		</ClCompile>
-		<ClCompile Include="..\Private\ImGui_Dockspace_TabBar.cpp">
-			<Filter>06. ImGui\03. Dockspace</Filter>
-		</ClCompile>
-		<ClCompile Include="..\Private\ImGui_Dockspace_MenuBar.cpp">
-			<Filter>06. ImGui\03. Dockspace</Filter>
-		</ClCompile>
-		<ClCompile Include="..\Private\ImGui_Layout_Transform.cpp">
-			<Filter>06. ImGui\02. Layout\Transform</Filter>
-		</ClCompile>
-		<ClCompile Include="..\Private\CameraMan_Free.cpp">
-			<Filter>02. GameObjects\Camera</Filter>
-		</ClCompile>
-		<ClCompile Include="..\Private\Loader.cpp">
-			<Filter>03. Level\Loading\Loader</Filter>
-		</ClCompile>
-		<ClCompile Include="..\Private\UI_Inspector.cpp">
-			<Filter>06. ImGui\01. Panel\UI\Inspector</Filter>
-		</ClCompile>
-		<ClCompile Include="..\Private\UI_Hierachy.cpp">
-			<Filter>06. ImGui\01. Panel\UI\Hierachy</Filter>
-		</ClCompile>
-		<ClCompile Include="..\Private\ImGui_UIManager.cpp">
-			<Filter>08. UIData\Manager</Filter>
-		</ClCompile>
-		<ClCompile Include="..\Private\ToolUI.cpp">
-			<Filter>02. GameObjects\UI\02.UI</Filter>
-		</ClCompile>
-		<ClCompile Include="..\Private\ToolCanvas.cpp">
-			<Filter>02. GameObjects\UI\01.Canvas</Filter>
-		</ClCompile>
-		<ClCompile Include="..\Private\ToolObject.cpp">
-			<Filter>02. GameObjects</Filter>
-		</ClCompile>
-		<ClCompile Include="..\Private\Panel_MapObjectList.cpp">
-			<Filter>06. ImGui\01. Panel\Map\Panel_MapObjectList</Filter>
-		</ClCompile>
-		<ClCompile Include="..\Private\Panel_ModelConverter.cpp">
-			<Filter>06. ImGui\01. Panel\Asimp</Filter>
-		</ClCompile>
-		<ClCompile Include="..\Private\MapObject.cpp">
-			<Filter>02. GameObjects\Map\00. MapObject\00. MapObject</Filter>
-		</ClCompile>
-		<ClCompile Include="..\Private\Panel_MapDataController.cpp">
-			<Filter>06. ImGui\01. Panel\Map\Panel_MapDataControler</Filter>
-		</ClCompile>
-		<ClCompile Include="..\Private\CParticle_System_Panel.cpp">
-			<Filter>03. Level\Effect\Effect_Panel\Particle_System_Panel</Filter>
-		</ClCompile>
-		<ClCompile Include="..\Private\EffectType_Selection_Panel.cpp">
-			<Filter>03. Level\Effect\Effect_Panel\EffectType_Selection</Filter>
-		</ClCompile>
-		<ClCompile Include="..\Private\CEffectObject.cpp">
-			<Filter>03. Level\Effect\Effect\Effect_Object</Filter>
-		</ClCompile>
-		<ClCompile Include="..\Private\Tool_ContainerObject.cpp">
-			<Filter>02. GameObjects\ContainerObject</Filter>
-		</ClCompile>
-		<ClCompile Include="..\Private\Tool_PartObject.cpp">
-			<Filter>02. GameObjects\PartObject</Filter>
-		</ClCompile>
-		<ClCompile Include="pch.cpp">
-			<Filter>98. Defines\pch</Filter>
-		</ClCompile>
-		<ClCompile Include="..\Private\Builder_Example.cpp">
-			<Filter>09. Builder\Example</Filter>
-		</ClCompile>
-		<ClCompile Include="..\Private\UI_Maker.cpp">
-			<Filter>06. ImGui\01. Panel\UI\Maker</Filter>
-		</ClCompile>
-		<ClCompile Include="..\Private\Panel_FileExplore.cpp">
-			<Filter>06. ImGui\01. Panel\Map\File</Filter>
-		</ClCompile>
-		<ClCompile Include="..\Private\Folder.cpp">
-			<Filter>10. Folder</Filter>
-		</ClCompile>
-		<ClCompile Include="..\Private\File.cpp">
-			<Filter>11. File</Filter>
-		</ClCompile>
-		<ClCompile Include="..\Private\UEMapdataLoader.cpp">
-			<Filter>07. UE_Mapdata\01. MapDataLoader</Filter>
-		</ClCompile>
-		<ClCompile Include="..\Private\UEMapdataParser.cpp">
-			<Filter>07. UE_Mapdata\02. MapDataPaser</Filter>
-		</ClCompile>
-		<ClCompile Include="..\Private\MapToolManager.cpp">
-			<Filter>07. UE_Mapdata\00. MapObjectManager</Filter>
-		</ClCompile>
-		<ClCompile Include="..\Private\Panel_MapTool.cpp">
-			<Filter>06. ImGui\01. Panel\Map\Panel_MapTool</Filter>
-		</ClCompile>
-		<ClCompile Include="..\Private\Grid.cpp">
-			<Filter>12. DebugLine\00. Grid</Filter>
-		</ClCompile>
-		<ClCompile Include="..\Private\DebugLine.cpp">
-			<Filter>12. DebugLine\01. DebugLine</Filter>
-		</ClCompile>
-		<ClCompile Include="..\private\Level_Logo.cpp">
-			<Filter>03. Level\Logo</Filter>
-		</ClCompile>
-		<ClCompile Include="..\Private\Builder_UI.cpp">
-			<Filter>09. Builder\UI</Filter>
-		</ClCompile>
-		<ClCompile Include="..\Private\Tool_Defines.cpp">
-			<Filter>98. Defines\Tool_Define</Filter>
-		</ClCompile>
-		<ClCompile Include="..\Private\Tool_Structs.cpp">
-			<Filter>98. Defines\Tool_Struct</Filter>
-		</ClCompile>
-		<ClCompile Include="..\Private\Panel_Model.cpp">
-			<Filter>06. ImGui\01. Panel\Animation\Panel_Model</Filter>
-		</ClCompile>
-		<ClCompile Include="..\Private\AnimObj.cpp">
-			<Filter>02. GameObjects\ContainerObject\AnimModel</Filter>
-		</ClCompile>
-		<ClCompile Include="..\Private\UIComponent_Inspector.cpp">
-			<Filter>06. ImGui\01. Panel\UI\Component</Filter>
-		</ClCompile>
-		<ClCompile Include="..\Private\Builder_Map.cpp">
-			<Filter>09. Builder\Map</Filter>
-		</ClCompile>
-		<ClCompile Include="..\Private\InstanceModel.cpp">
-			<Filter>02. GameObjects\Map\00. MapObject\02. InstanceModel</Filter>
-		</ClCompile>
-		<ClCompile Include="..\Private\Effect.cpp">
-			<Filter>03. Level\Effect\Effect</Filter>
-		</ClCompile>
-		<ClCompile Include="..\Private\Gravity_Force.cpp">
-			<Filter>03. Level\Effect\Effect\Gravity_Force</Filter>
-		</ClCompile>
-		<ClCompile Include="..\Private\UIButton_Component.cpp">
-			<Filter>04. Component\UI\Button</Filter>
-		</ClCompile>
-		<ClCompile Include="..\Private\UIProgress_Component.cpp">
-			<Filter>04. Component\UI\Progress</Filter>
-		</ClCompile>
-		<ClCompile Include="..\Private\UITargetAction_Tool.cpp">
-			<Filter>02. GameObjects\UI\00.Action</Filter>
-		</ClCompile>
-	</ItemGroup>
+  <ItemGroup>
+    <Filter Include="00. Default">
+      <UniqueIdentifier>{3d3e8058-a3dd-4bb7-973b-02861a6a1e0b}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="98. Defines">
+      <UniqueIdentifier>{db9350a6-0a7a-4cf2-8059-c0703abded55}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="99. ETC">
+      <UniqueIdentifier>{0b1b07a4-b609-4fd8-a064-8c12c9458d3f}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="99. ETC\99. Andromeda">
+      <UniqueIdentifier>{22cb062d-7f39-486d-886c-bc44b81a8b4d}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02. GameObjects">
+      <UniqueIdentifier>{a2605915-b5f6-4baa-afa6-abfe355bb097}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="05. Picking">
+      <UniqueIdentifier>{d9601722-b784-4d5f-afb2-aa6a6cfef0d8}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="06. ImGui">
+      <UniqueIdentifier>{f9dd71ac-23ce-49b7-a610-4730fc1cf6aa}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="03. Level">
+      <UniqueIdentifier>{924e0878-2431-4c68-80a2-ea22ab01f383}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="04. Component">
+      <UniqueIdentifier>{a5bce9c1-8524-4d44-b90e-d125e3b10e0d}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="03. Level\Animation">
+      <UniqueIdentifier>{a871dc62-300e-4186-92a8-946a4ba30b58}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="03. Level\Camera">
+      <UniqueIdentifier>{9a31fb8a-7d89-4e95-9798-7837f77e445c}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="03. Level\Assimp">
+      <UniqueIdentifier>{2f791368-f1de-41f0-af14-0d229b89c310}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="03. Level\Effect">
+      <UniqueIdentifier>{df7591e1-a21f-463c-a229-5189b6ea1f0f}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="03. Level\Loading">
+      <UniqueIdentifier>{ab106c3c-868b-4d70-aff0-e12423f75dac}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="03. Level\Map">
+      <UniqueIdentifier>{bfb9a5ad-1a88-4d8d-be1d-3cef17ba8de7}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="04. Component\GodInput">
+      <UniqueIdentifier>{a5f5d30c-7f0b-4ffe-9625-ac76026564d1}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="99. ETC\01. ImGui">
+      <UniqueIdentifier>{bc995b09-6115-4df2-9e5f-2f8df8bb16fd}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="99. ETC\02. ImGuizmo">
+      <UniqueIdentifier>{89310886-cedb-47e3-85b6-5c20571d5b8e}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="03. Level\UI">
+      <UniqueIdentifier>{66fc69c0-77cb-48e3-8ed2-01108d04329a}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="06. ImGui\00. Manager">
+      <UniqueIdentifier>{904601f9-ece0-4d51-a81e-58dafec6721a}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="06. ImGui\01. Panel">
+      <UniqueIdentifier>{5ab28e72-f996-48e6-95ae-2c238243172a}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="06. ImGui\02. Layout">
+      <UniqueIdentifier>{c9d08718-e84e-41ca-ac3b-8320fc9704bf}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="06. ImGui\03. Dockspace">
+      <UniqueIdentifier>{cb832581-9e3a-4970-a2fe-921fceca3c24}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="06. ImGui\02. Layout\Transform">
+      <UniqueIdentifier>{07c1c70c-f95a-43d2-a4c7-b08e5189b132}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02. GameObjects\Camera">
+      <UniqueIdentifier>{2b12e5f2-bf70-4b4d-9b74-c22127d59e07}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="07. UE_Mapdata">
+      <UniqueIdentifier>{0e98bf15-ae63-42d7-96db-f5fefb93e6f9}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="03. Level\Loading\Loader">
+      <UniqueIdentifier>{afe44f16-d8bc-4485-94d6-01fb36c16207}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02. GameObjects\UI">
+      <UniqueIdentifier>{0db6a6bb-4c91-4d50-87bc-383b7b30d4b5}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="01. MainApplication">
+      <UniqueIdentifier>{b2ad5ea6-fa9c-42e2-920e-65fa32a6965c}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02. GameObjects\Map">
+      <UniqueIdentifier>{2318f38b-6d39-4c06-902a-133043782e03}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02. GameObjects\Map\00. MapObject">
+      <UniqueIdentifier>{c7045980-bb80-4be0-8ca4-288e4abc51ca}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="06. ImGui\01. Panel\Map">
+      <UniqueIdentifier>{b4e4e477-acb3-4c83-a84e-a16a77ffbe18}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="06. ImGui\01. Panel\Asimp">
+      <UniqueIdentifier>{1502112a-c44e-484f-85c7-3e71f9a1a6b0}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02. GameObjects\Map\00. MapObject\00. MapObject">
+      <UniqueIdentifier>{cdb92401-9c8e-484e-b963-3905e522a34c}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="06. ImGui\01. Panel\Map\Panel_MapObjectList">
+      <UniqueIdentifier>{9755e817-fb8d-4b80-9214-161ecfd0e6ce}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="06. ImGui\01. Panel\Map\Panel_MapDataControler">
+      <UniqueIdentifier>{418b41f9-ac00-471b-99f0-07f9141edff7}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="03. Level\Effect\Effect_Panel">
+      <UniqueIdentifier>{dcfafedc-a3a5-47ae-a71f-86669a2e7b2c}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="03. Level\Effect\Effect_Panel\Particle_System_Panel">
+      <UniqueIdentifier>{0680a4ef-f6b5-4f4c-9344-5a85832793a5}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="03. Level\Effect\Effect_Panel\EffectType_Selection">
+      <UniqueIdentifier>{c616f463-edcd-4d20-919c-9de9a390d678}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02. GameObjects\PartObject">
+      <UniqueIdentifier>{ab8f52ba-9548-4d59-96fd-3e11792c6f59}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="98. Defines\pch">
+      <UniqueIdentifier>{6a433bfc-3f5f-420f-ac46-69cffb0edf23}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="09. Builder">
+      <UniqueIdentifier>{afa9ad94-11da-4af6-822f-8784ae7231ad}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="09. Builder\Example">
+      <UniqueIdentifier>{9970cc5b-f703-4b3a-8311-0fc2a45575d8}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="08. UIData">
+      <UniqueIdentifier>{566d6d02-9c34-4ed7-beae-db2b024e4049}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="08. UIData\Manager">
+      <UniqueIdentifier>{6d36fbe4-59ee-4223-946d-8f5f4bc5d255}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="06. ImGui\01. Panel\Map\File">
+      <UniqueIdentifier>{052f47e7-8ad0-46fe-9e82-68a1541c2501}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="10. Folder">
+      <UniqueIdentifier>{4df4c641-6c22-41c1-a9af-09c6188b9065}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="11. File">
+      <UniqueIdentifier>{eba6acec-ecab-4a90-8b8e-1c78ded4b5e3}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="03. Level\Logo">
+      <UniqueIdentifier>{6b4ad873-673f-4c55-a2cf-8ed6c0b3e198}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="09. Builder\UI">
+      <UniqueIdentifier>{00ebdf0c-5d5b-4d6a-beeb-19cd527d2574}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="07. UE_Mapdata\01. MapDataLoader">
+      <UniqueIdentifier>{434ecd0b-d87d-4fef-959a-113592ac3a30}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="07. UE_Mapdata\02. MapDataPaser">
+      <UniqueIdentifier>{1fe68a57-8a50-4f80-80f6-1cdca50a3217}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="07. UE_Mapdata\00. MapObjectManager">
+      <UniqueIdentifier>{828aac90-c7f0-43d9-bf6b-523eb4f90cbc}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="06. ImGui\01. Panel\Map\Panel_MapTool">
+      <UniqueIdentifier>{4812e337-4689-478b-9ab4-fdb519dcef02}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="12. DebugLine">
+      <UniqueIdentifier>{a6816b7e-ec64-446e-b029-75a5db0148fa}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="12. DebugLine\00. Grid">
+      <UniqueIdentifier>{1bd055f2-0e4d-4c86-a144-7f3505e280f8}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="12. DebugLine\01. DebugLine">
+      <UniqueIdentifier>{f4bab261-d522-4da3-ab3e-259ad1d9e20a}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="04. Component\Map">
+      <UniqueIdentifier>{ea20cd24-748e-4bdd-a0a7-35c178fc58cb}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="04. Component\Map\Tool_StaticMesh">
+      <UniqueIdentifier>{d82ac746-4abc-4ab0-a328-d317d74841e5}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="98. Defines\Tool_Define">
+      <UniqueIdentifier>{5961eab9-ba1a-4da6-a701-5821ad618484}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="98. Defines\Tool_Struct">
+      <UniqueIdentifier>{e5507130-9d05-4f99-81af-18262481d0a8}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="06. ImGui\01. Panel\Animation">
+      <UniqueIdentifier>{535a7846-4389-404b-82c0-4227a110de20}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="06. ImGui\01. Panel\Animation\Panel_Model">
+      <UniqueIdentifier>{b345042e-f3b0-46e3-8816-dfb4c3df7229}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="06. ImGui\01. Panel\Animation\Panel_Animation">
+      <UniqueIdentifier>{bfd46406-ca40-4922-afe3-9c0cfdad63c2}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02. GameObjects\ContainerObject">
+      <UniqueIdentifier>{849c5ab9-53df-4b2a-8a78-5d3fb0f5bf4a}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02. GameObjects\ContainerObject\AnimModel">
+      <UniqueIdentifier>{c92b61a1-bb6a-4cd8-ab0e-69498fa9e46d}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="06. ImGui\01. Panel\UI">
+      <UniqueIdentifier>{25cb433e-dd0f-4224-8a4f-fdf58f05f1a8}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="06. ImGui\01. Panel\UI\Inspector">
+      <UniqueIdentifier>{098b7047-0c8e-4fe8-b63d-f281e3eaa593}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="06. ImGui\01. Panel\UI\Hierachy">
+      <UniqueIdentifier>{ba50b2d3-2e46-434e-92e4-771e393bc34b}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="06. ImGui\01. Panel\UI\Maker">
+      <UniqueIdentifier>{f5fed899-dccb-4d0d-a291-189fd27b3ca2}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="06. ImGui\01. Panel\UI\Component">
+      <UniqueIdentifier>{ac792568-75d9-4e4a-84e1-ff4c4adcd6b8}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02. GameObjects\UI\01.Canvas">
+      <UniqueIdentifier>{5d6846d5-10a5-4a42-bb54-26c8e2fde4ee}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="09. Builder\Map">
+      <UniqueIdentifier>{316c30da-42c6-486a-bbfd-7736152fabec}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02. GameObjects\Map\00. MapObject\01. StaticModel">
+      <UniqueIdentifier>{2cfbf0d2-bd5d-4728-87d5-d2bb19dfb549}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02. GameObjects\Map\00. MapObject\02. InstanceModel">
+      <UniqueIdentifier>{32494c10-0bf8-420f-a857-a2d263860bfa}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02. GameObjects\UI\02.UI">
+      <UniqueIdentifier>{6a558198-77c1-41fb-9345-05c1fc4f9daf}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="04. Component\UI">
+      <UniqueIdentifier>{8ef29a04-df46-407a-be7c-116b135d8267}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="04. Component\UI\Button">
+      <UniqueIdentifier>{6cc6e7a0-a1a7-4992-af08-cc0604618e37}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="04. Component\UI\Progress">
+      <UniqueIdentifier>{27815419-4fa4-4be0-9d62-f21f634f2338}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02. GameObjects\Map\00. MapObject\03. BatchObject">
+      <UniqueIdentifier>{4cbea894-fe8a-484a-b84b-a0522058102a}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02. GameObjects\UI\00.Action">
+      <UniqueIdentifier>{566d6d02-9c34-4ed7-beae-db2b024e4049}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="99. ETC\03. Tool Shader">
+      <UniqueIdentifier>{94f2837f-0795-42b2-b135-340ce4d67014}</UniqueIdentifier>
+    </Filter>
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="framework.h">
+      <Filter>99. ETC\99. Andromeda</Filter>
+    </ClInclude>
+    <ClInclude Include="Resource.h">
+      <Filter>99. ETC\99. Andromeda</Filter>
+    </ClInclude>
+    <ClInclude Include="targetver.h">
+      <Filter>99. ETC\99. Andromeda</Filter>
+    </ClInclude>
+    <ClInclude Include="Tool.h">
+      <Filter>00. Default</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\MainApplication.h">
+      <Filter>01. MainApplication</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\Picking_ToolManager.h">
+      <Filter>05. Picking</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\Level_Map.h">
+      <Filter>03. Level\Map</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\Level_Loading.h">
+      <Filter>03. Level\Loading</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\Level_Effect.h">
+      <Filter>03. Level\Effect</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\Level_Camera.h">
+      <Filter>03. Level\Camera</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\Level_Assimp.h">
+      <Filter>03. Level\Assimp</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\Level_Animation.h">
+      <Filter>03. Level\Animation</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\GodInput.h">
+      <Filter>04. Component\GodInput</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\imstb_rectpack.h">
+      <Filter>99. ETC\01. ImGui</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\imstb_textedit.h">
+      <Filter>99. ETC\01. ImGui</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\imstb_truetype.h">
+      <Filter>99. ETC\01. ImGui</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\imconfig.h">
+      <Filter>99. ETC\01. ImGui</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\imgui.h">
+      <Filter>99. ETC\01. ImGui</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\imgui_impl_dx11.h">
+      <Filter>99. ETC\01. ImGui</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\imgui_impl_win32.h">
+      <Filter>99. ETC\01. ImGui</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\imgui_internal.h">
+      <Filter>99. ETC\01. ImGui</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\imgui_stdlib.h">
+      <Filter>99. ETC\01. ImGui</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\GraphEditor.h">
+      <Filter>99. ETC\02. ImGuizmo</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\ImCurveEdit.h">
+      <Filter>99. ETC\02. ImGuizmo</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\ImGradient.h">
+      <Filter>99. ETC\02. ImGuizmo</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\ImGuizmo.h">
+      <Filter>99. ETC\02. ImGuizmo</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\ImSequencer.h">
+      <Filter>99. ETC\02. ImGuizmo</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\ImZoomSlider.h">
+      <Filter>99. ETC\02. ImGuizmo</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\Tool_EventDefines.h">
+      <Filter>98. Defines</Filter>
+    </ClInclude>
+    <ClInclude Include="..\public\Level_UI.h">
+      <Filter>03. Level\UI</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\ImGui_ToolManager.h">
+      <Filter>06. ImGui\00. Manager</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\ImGui_Base.h">
+      <Filter>06. ImGui</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\ImGui_Panel.h">
+      <Filter>06. ImGui\01. Panel</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\ImGui_Layout.h">
+      <Filter>06. ImGui\02. Layout</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\ImGui_Dockspace_MenuBar.h">
+      <Filter>06. ImGui\03. Dockspace</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\ImGui_Dockspace_TabBar.h">
+      <Filter>06. ImGui\03. Dockspace</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\ImGui_Layout_Transform.h">
+      <Filter>06. ImGui\02. Layout\Transform</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\CameraMan_Free.h">
+      <Filter>02. GameObjects\Camera</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\Loader.h">
+      <Filter>03. Level\Loading\Loader</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\UI_Inspector.h">
+      <Filter>06. ImGui\01. Panel\UI\Inspector</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\UI_Hierachy.h">
+      <Filter>06. ImGui\01. Panel\UI\Hierachy</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\ImGui_UIManager.h">
+      <Filter>08. UIData\Manager</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\ToolUI.h">
+      <Filter>02. GameObjects\UI\02.UI</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\ToolCanvas.h">
+      <Filter>02. GameObjects\UI\01.Canvas</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\ToolObject.h">
+      <Filter>02. GameObjects</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\Panel_MapObjectList.h">
+      <Filter>06. ImGui\01. Panel\Map\Panel_MapObjectList</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\Panel_ModelConverter.h">
+      <Filter>06. ImGui\01. Panel\Asimp</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\MapObject.h">
+      <Filter>02. GameObjects\Map\00. MapObject\00. MapObject</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\CParticle_System_Panel.h">
+      <Filter>03. Level\Effect\Effect_Panel\Particle_System_Panel</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\EffectType_Selection_Panel.h">
+      <Filter>03. Level\Effect\Effect_Panel\EffectType_Selection</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\Tool_ContainerObject.h">
+      <Filter>02. GameObjects\ContainerObject</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\Tool_PartObject.h">
+      <Filter>02. GameObjects\PartObject</Filter>
+    </ClInclude>
+    <ClInclude Include="pch.h">
+      <Filter>98. Defines\pch</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\Builder_Example.h">
+      <Filter>09. Builder\Example</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\UI_Maker.h">
+      <Filter>06. ImGui\01. Panel\UI\Maker</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\imfilebrowser.h">
+      <Filter>99. ETC\01. ImGui</Filter>
+    </ClInclude>
+    <ClInclude Include="..\public\Panel_FileExplore.h">
+      <Filter>06. ImGui\01. Panel\Map\File</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\Folder.h">
+      <Filter>10. Folder</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\File.h">
+      <Filter>11. File</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\UEMapdataLoader.h">
+      <Filter>07. UE_Mapdata\01. MapDataLoader</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\UEMapdataParser.h">
+      <Filter>07. UE_Mapdata\02. MapDataPaser</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\MapToolManager.h">
+      <Filter>07. UE_Mapdata\00. MapObjectManager</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\Panel_MapTool.h">
+      <Filter>06. ImGui\01. Panel\Map\Panel_MapTool</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\Panel_MapDataController.h">
+      <Filter>06. ImGui\01. Panel\Map\Panel_MapDataControler</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\Grid.h">
+      <Filter>12. DebugLine\00. Grid</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\DebugLine.h">
+      <Filter>12. DebugLine\01. DebugLine</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\Builder_UI.h">
+      <Filter>09. Builder\UI</Filter>
+    </ClInclude>
+    <ClInclude Include="..\public\Level_Logo.h">
+      <Filter>03. Level\Logo</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\Tool_Defines.h">
+      <Filter>98. Defines\Tool_Define</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\Tool_Structs.h">
+      <Filter>98. Defines\Tool_Struct</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\Panel_Model.h">
+      <Filter>06. ImGui\01. Panel\Animation\Panel_Model</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\AnimObj.h">
+      <Filter>02. GameObjects\ContainerObject\AnimModel</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\UIComponent_Inspector.h">
+      <Filter>06. ImGui\01. Panel\UI\Component</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\Builder_Map.h">
+      <Filter>09. Builder\Map</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\UIButton_Component.h">
+      <Filter>04. Component\UI\Button</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\UIProgress_Component.h">
+      <Filter>04. Component\UI\Progress</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\CEffectObject.h" />
+    <ClInclude Include="..\Public\Gravity_Force.h" />
+    <ClInclude Include="..\Public\Effect.h" />
+  </ItemGroup>
+  <ItemGroup>
+    <Image Include="small.ico">
+      <Filter>99. ETC\99. Andromeda</Filter>
+    </Image>
+    <Image Include="Tool.ico">
+      <Filter>99. ETC\99. Andromeda</Filter>
+    </Image>
+  </ItemGroup>
+  <ItemGroup>
+    <ResourceCompile Include="Tool.rc">
+      <Filter>99. ETC\99. Andromeda</Filter>
+    </ResourceCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="Tool.cpp">
+      <Filter>00. Default</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\MainApplication.cpp">
+      <Filter>01. MainApplication</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\Picking_ToolManager.cpp">
+      <Filter>05. Picking</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\Level_Animation.cpp">
+      <Filter>03. Level\Animation</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\Level_Assimp.cpp">
+      <Filter>03. Level\Assimp</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\Level_Camera.cpp">
+      <Filter>03. Level\Camera</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\Level_Loading.cpp">
+      <Filter>03. Level\Loading</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\Level_Map.cpp">
+      <Filter>03. Level\Map</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\Level_Effect.cpp">
+      <Filter>03. Level\Effect</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\GodInput.cpp">
+      <Filter>04. Component\GodInput</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\imgui_impl_win32.cpp">
+      <Filter>99. ETC\01. ImGui</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\imgui_stdlib.cpp">
+      <Filter>99. ETC\01. ImGui</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\imgui_tables.cpp">
+      <Filter>99. ETC\01. ImGui</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\imgui_widgets.cpp">
+      <Filter>99. ETC\01. ImGui</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\imgui.cpp">
+      <Filter>99. ETC\01. ImGui</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\imgui_demo.cpp">
+      <Filter>99. ETC\01. ImGui</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\imgui_draw.cpp">
+      <Filter>99. ETC\01. ImGui</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\imgui_impl_dx11.cpp">
+      <Filter>99. ETC\01. ImGui</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\GraphEditor.cpp">
+      <Filter>99. ETC\02. ImGuizmo</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\ImCurveEdit.cpp">
+      <Filter>99. ETC\02. ImGuizmo</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\ImGradient.cpp">
+      <Filter>99. ETC\02. ImGuizmo</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\ImGuizmo.cpp">
+      <Filter>99. ETC\02. ImGuizmo</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\ImSequencer.cpp">
+      <Filter>99. ETC\02. ImGuizmo</Filter>
+    </ClCompile>
+    <ClCompile Include="..\private\Level_UI.cpp">
+      <Filter>03. Level\UI</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\ImGui_ToolManager.cpp">
+      <Filter>06. ImGui\00. Manager</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\ImGui_Base.cpp">
+      <Filter>06. ImGui</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\ImGui_Panel.cpp">
+      <Filter>06. ImGui\01. Panel</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\ImGui_Layout.cpp">
+      <Filter>06. ImGui\02. Layout</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\ImGui_Dockspace_TabBar.cpp">
+      <Filter>06. ImGui\03. Dockspace</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\ImGui_Dockspace_MenuBar.cpp">
+      <Filter>06. ImGui\03. Dockspace</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\ImGui_Layout_Transform.cpp">
+      <Filter>06. ImGui\02. Layout\Transform</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\CameraMan_Free.cpp">
+      <Filter>02. GameObjects\Camera</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\Loader.cpp">
+      <Filter>03. Level\Loading\Loader</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\UI_Inspector.cpp">
+      <Filter>06. ImGui\01. Panel\UI\Inspector</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\UI_Hierachy.cpp">
+      <Filter>06. ImGui\01. Panel\UI\Hierachy</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\ImGui_UIManager.cpp">
+      <Filter>08. UIData\Manager</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\ToolUI.cpp">
+      <Filter>02. GameObjects\UI\02.UI</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\ToolCanvas.cpp">
+      <Filter>02. GameObjects\UI\01.Canvas</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\ToolObject.cpp">
+      <Filter>02. GameObjects</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\Panel_MapObjectList.cpp">
+      <Filter>06. ImGui\01. Panel\Map\Panel_MapObjectList</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\Panel_ModelConverter.cpp">
+      <Filter>06. ImGui\01. Panel\Asimp</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\MapObject.cpp">
+      <Filter>02. GameObjects\Map\00. MapObject\00. MapObject</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\Panel_MapDataController.cpp">
+      <Filter>06. ImGui\01. Panel\Map\Panel_MapDataControler</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\CParticle_System_Panel.cpp">
+      <Filter>03. Level\Effect\Effect_Panel\Particle_System_Panel</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\EffectType_Selection_Panel.cpp">
+      <Filter>03. Level\Effect\Effect_Panel\EffectType_Selection</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\Tool_ContainerObject.cpp">
+      <Filter>02. GameObjects\ContainerObject</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\Tool_PartObject.cpp">
+      <Filter>02. GameObjects\PartObject</Filter>
+    </ClCompile>
+    <ClCompile Include="pch.cpp">
+      <Filter>98. Defines\pch</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\Builder_Example.cpp">
+      <Filter>09. Builder\Example</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\UI_Maker.cpp">
+      <Filter>06. ImGui\01. Panel\UI\Maker</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\Panel_FileExplore.cpp">
+      <Filter>06. ImGui\01. Panel\Map\File</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\Folder.cpp">
+      <Filter>10. Folder</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\File.cpp">
+      <Filter>11. File</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\UEMapdataLoader.cpp">
+      <Filter>07. UE_Mapdata\01. MapDataLoader</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\UEMapdataParser.cpp">
+      <Filter>07. UE_Mapdata\02. MapDataPaser</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\MapToolManager.cpp">
+      <Filter>07. UE_Mapdata\00. MapObjectManager</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\Panel_MapTool.cpp">
+      <Filter>06. ImGui\01. Panel\Map\Panel_MapTool</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\Grid.cpp">
+      <Filter>12. DebugLine\00. Grid</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\DebugLine.cpp">
+      <Filter>12. DebugLine\01. DebugLine</Filter>
+    </ClCompile>
+    <ClCompile Include="..\private\Level_Logo.cpp">
+      <Filter>03. Level\Logo</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\Builder_UI.cpp">
+      <Filter>09. Builder\UI</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\Tool_Defines.cpp">
+      <Filter>98. Defines\Tool_Define</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\Tool_Structs.cpp">
+      <Filter>98. Defines\Tool_Struct</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\Panel_Model.cpp">
+      <Filter>06. ImGui\01. Panel\Animation\Panel_Model</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\AnimObj.cpp">
+      <Filter>02. GameObjects\ContainerObject\AnimModel</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\UIComponent_Inspector.cpp">
+      <Filter>06. ImGui\01. Panel\UI\Component</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\Builder_Map.cpp">
+      <Filter>09. Builder\Map</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\UIButton_Component.cpp">
+      <Filter>04. Component\UI\Button</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\UIProgress_Component.cpp">
+      <Filter>04. Component\UI\Progress</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\CEffectObject.cpp" />
+    <ClCompile Include="..\Private\Gravity_Force.cpp" />
+    <ClCompile Include="..\Private\Effect.cpp" />
+  </ItemGroup>
+  <ItemGroup>
+    <FxCompile Include="..\..\Shaders\Shader_VtxInstanceMesh_Tool.hlsl">
+      <Filter>99. ETC\03. Tool Shader</Filter>
+    </FxCompile>
+    <FxCompile Include="..\..\Shaders\Shader_VtxMesh_Tool.hlsl">
+      <Filter>99. ETC\03. Tool Shader</Filter>
+    </FxCompile>
+  </ItemGroup>
 </Project>

@@ -57,6 +57,8 @@ HRESULT CMainPlayer::Initialize(void* pArg)
     if (FAILED(Super::Initialize(pArg)))
         return E_FAIL;
 
+    Set_Name("Eun_bi");
+
     if (FAILED(Ready_Ability()))
         return E_FAIL;
 
@@ -80,6 +82,8 @@ HRESULT CMainPlayer::Initialize(void* pArg)
 
     if (FAILED(Ready_CCT()))
         return E_FAIL;
+
+    
 
     return S_OK;
 }

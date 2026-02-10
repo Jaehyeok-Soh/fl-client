@@ -34,11 +34,11 @@ public:
 		bool					isLoaded	{ false };
 
 		/* Client에서 생성할 LevelType */
-		EClientLevelType		eClientLevelType{ EClientLevelType::LOGO };
+		EClientLevelType					eClientLevelType{ EClientLevelType::LOGO };
 
 		/* Client에서 생성될 Class 연결 및 같이 넘겨줄 Desc */
 		EClientMakePath						eClientMakePath{ EClientMakePath::StaticObject };
-		vector<CLIENT_MAKEPATH_DESC_BASE*>	vecClientMakePathDesc{nullptr};
+		vector<CLIENT_MAKEPATH_DESC_BASE*>	vecClientMakePathDesc{};
 		vector<Tool::SRT_DATA>				vecSRTs{};
 
 		/* 사용할 Draw 방법과 모델관련 */
@@ -50,7 +50,6 @@ public:
 
 		/* 현재 MapObject의 상태를 나타내준다 EState 등등 */
 		CMapObject::EState					eState{CMapObject::EState::Default};
-
 	}MAPOBJECT_DESC;
 
 protected:
@@ -66,6 +65,7 @@ private:
 	HRESULT							Ready_Component();
 	HRESULT							Ready_ClientMakePath(CMapObject::MAPOBJECT_DESC* pDesc);
 	HRESULT							Ready_OverrideMtl(const USING_MODEL_INFO& tUsingModelInfo);
+	_bool							Check_OutBound(_int iIndex) const;
 private:
 	HRESULT							Change_Instance_To_Default();
 public:
@@ -73,20 +73,19 @@ public:
 	HRESULT							Add_MapToolComponent(CMapObject::COMPONENT eType);
 public:
 
-	void							Reset_OriginTransform();
-	void							Override_OriginTransform();
+	void							Reset_OriginTransform(_int iIndex = -1);
+	void							Override_OriginTransform(_int iIndex = -1);
 
 	/* 기능 관련 */
 public:
 
-	void							Update_InstanceWorldMatrix(_bool isAllUpdate = false);
+	void								Update_InstanceWorldMatrix(_bool isAllUpdate , _int iIndex = -1);
 
 public:
-	virtual bool					Get_SRT(OUT  Vec3& vOutScale, OUT Quat& vQuat, OUT Vec3& vPosition)override;
-	virtual Matrix					Get_WorldMatrix()override;
-	virtual void					Set_WorldMatrix(const Vec3& vScale, const Quat& vQuat, const Vec3& vPosition) override;
-	virtual void					Set_WorldMatrix(const Matrix& WorldMatrix)override;
-
+	virtual bool						Get_SRT(OUT  Vec3& vOutScale, OUT Quat& vQuat, OUT Vec3& vPosition)override;
+	virtual Matrix						Get_WorldMatrix()override;
+	virtual void						Set_WorldMatrix(const Vec3& vScale, const Quat& vQuat, const Vec3& vPosition) override;
+	virtual void						Set_WorldMatrix(const Matrix& WorldMatrix)override;
 
 	/* MapObject Type 관련 */
 	void								Set_MapObjectState(CMapObject::EState eState)	{ m_eMapObjectState = eState; }
@@ -99,12 +98,15 @@ public:
 	void								Set_SelectedInstanceID(_int iID)				{ if (m_eMapObjectDrawType != EMapObject_DrawType::Instance) return; m_iSelectedInstanceID = iID; }
 
 	/* SRT Data 관련 */
-	void								Set_SRTDatas(const vector<SRT_DATA>& vecSRTDatas) { m_vecSRTs = m_vecSRTs; }
-	void								Set_SRTData(const Vec3& vScale , const Quat vQuat , const Vec3 vPosition);
+	void								Add_InstanceData( const  SRT_DATA& tData  );
+	void								Delete_InstanceData(_int iIndex = -1);
 
-	void								Set_Scale(const Vec3& vScale);
-	void								Set_Position(const Vec3& vPosition);
-	void								Set_Quaternion(const Quat& vQuat);
+	void								Set_SRTDatas(const vector<SRT_DATA>& vecSRTDatas) { m_vecSRTs = m_vecSRTs; }
+	void								Set_SRTData(const Vec3& vScale , const Quat vQuat , const Vec3 vPosition  , _int iIndex = -1 );
+
+	void								Set_Scale(const Vec3& vScale , _int iIndex = -1);
+	void								Set_Position(const Vec3& vPosition , _int iIndex = -1);
+	void								Set_Quaternion(const Quat& vQuat , _int iIndex = -1);
 
 	void								Set_IsUseOverrideMaterial(_bool isUse) { m_isUseOverrideMaterials = isUse; }
 
@@ -118,11 +120,11 @@ public:
 
 	/* SRT Data 관련 */
 	const vector< Tool::SRT_DATA >&		Get_SRTDatas(bool isOrigin) const { return isOrigin == true ? m_vecOriginSRTs : m_vecSRTs; }
-	const SRT_DATA&						Get_SRTData(_uint iIndex, bool isOrigin) const { return isOrigin == true ? m_vecOriginSRTs[iIndex] : m_vecSRTs[iIndex]; }
+	const SRT_DATA&						Get_SRTData(bool isOrigin, _int iIndex = -1) const;
 	
-	const Vec3&							Get_Scale()					const;
-	const Quat&							Get_Quaternion()			const;
-	const Vec3&							Get_Position()				const;
+	Vec3								Get_Scale(_int iIndex = -1 )		const;
+	Quat								Get_Quaternion(_int iIndex = -1 )	const;
+	Vec3								Get_Position(_int iIndex = -1 )	const;
 
 	/* Type관련 */
 	EMapObject_Type						Get_MapObjectType()			const	{ return m_eMapObjectType;}
@@ -142,7 +144,7 @@ public:
 
 	_int								Get_SelectedInstanceID()	const	 { return m_iSelectedInstanceID; }
 	vector<CLIENT_MAKEPATH_DESC_BASE*>	Get_ClientMakePathDescs()			 { return m_vecClientMakePathDesc; }
-	CLIENT_MAKEPATH_DESC_BASE*		Get_ClientMakePathDesc(_uint iIndex = g_Uint_NoneIndex);
+	CLIENT_MAKEPATH_DESC_BASE*			Get_ClientMakePathDesc(_int iIndex = -1);
 public:
 
 	virtual HRESULT						Awake(const _uint iCurrentLevelID)				override;
@@ -163,6 +165,8 @@ private:
 	HRESULT								Render_Instance();
 
 protected:
+	bool							m_isBatced{false};
+
 
 	EMapObject_Type					m_eMapObjectType	{ EMapObject_Type::END };
 	EMapObject_DrawType				m_eMapObjectDrawType{ EMapObject_DrawType::Default };
@@ -196,6 +200,8 @@ protected:
 
 public:
 	static CMapObject*		Create(EToolObjectType eType, ID3D11Device* pDevice, ID3D11DeviceContext* pContext);
+
+	static CMapObject*		Clone(CMapObject* pPrototype  , const SRT_DATA& tSRT );
 	virtual CGameObject*	Clone(void* pArg);
 	virtual void			Free()									override;
 };

@@ -56,6 +56,7 @@ public:
 	//CBone* Get_EffectMouseSocket();
 private:
 	HRESULT Ready_Components(BODY_DESC *pDesc);
+	HRESULT Ready_AttackOverlap();
 	HRESULT Bind_ShaderResources();
 private:
 	_int m_iHead_Index = { 0 };

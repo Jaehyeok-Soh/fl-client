@@ -9,10 +9,13 @@
 #include "Panel_MapTool.h"
 #include "Model.h"
 #include <fstream>
+#include "MapToolManager.h"
 #include "InstanceMesh.h"
 #include "AsTypes.h"
 #include "Mesh.h"
 #include "MapObject.h"
+#include "DataStruct_Map.h"
+#include "GameInstance.h"
 
 USING(Tool)
 
@@ -45,8 +48,6 @@ HRESULT CPanel_MapObjectList::Initialize()
 
 HRESULT CPanel_MapObjectList::Ready_LayerTag()
 {
-	lstrcpyW(m_wszMapObjectLayerTag[ENUM_TO_UINT(EMapObject_Type::STATICMODEL)],g_wszStaticModelLayer);
-	lstrcpyW(m_wszMapObjectLayerTag[ENUM_TO_UINT(EMapObject_Type::INSTANCEMODEL)],g_wszInstanceModelLayer);
 	return S_OK;
 }
 
@@ -73,8 +74,7 @@ void CPanel_MapObjectList::Update(const _float fTimeDelta)
 {
 	Super::Update(fTimeDelta);
 
-	m_pSelectMapObject = static_cast<CMapObject*>(static_cast<CLevel_Map*>(m_pOwnerLevel)->Get_SelectToolObject());
-
+	Update_SelectObject();
 }
 
 
@@ -84,6 +84,11 @@ HRESULT CPanel_MapObjectList::Update_MapObjectList()
 
 
 	return S_OK;
+}
+
+void CPanel_MapObjectList::Update_SelectObject()
+{
+	m_pSelectMapObject = static_cast<CMapObject*>(static_cast<CLevel_Map*>(m_pOwnerLevel)->Get_SelectToolObject());
 }
 
 
@@ -113,6 +118,9 @@ HRESULT CPanel_MapObjectList::Render_MapObjectList()
 {
 	ImGui::Begin(m_strLabel.c_str());
 
+
+	Update_SelectObject();
+
 	if (FAILED(Update_MapObjectList()))
 	{
 		ImGui::End();
@@ -127,11 +135,12 @@ HRESULT CPanel_MapObjectList::Render_MapObjectList()
 		m_pSelectMapObject = nullptr;
 		static_cast<CLevel_Map*>(m_pOwnerLevel)->Set_SelectToolObjectNull();
 		for (_uint i = 0; i < static_cast<_uint>(EMapObject_Type::END); ++i)
-			m_pGameInstance->Clear_Layer(ENUM_TO_UINT(ELevelType::MAP) , m_wszMapObjectLayerTag[i]);
+			m_pGameInstance->Clear_Layer(ENUM_TO_UINT(ELevelType::MAP) , g_wszMapObjectLayer );
 	}
 
 	ImGui::Separator();
 
+	ImGui::NewLine();
 
 	m_strBuffer = m_eShowMapObjectFilter == EClientMakePath::END ? "All" : ClientMakePath_ToString(m_eShowMapObjectFilter);
 
@@ -161,9 +170,13 @@ HRESULT CPanel_MapObjectList::Render_MapObjectList()
 				if (!GameObject)
 					continue;
 				bool isDelete{ false };
+				
+				static_cast<CLevel_Map*>(m_pOwnerLevel)->On_ChangeSelectedObject(nullptr);
 
 				if (m_eShowMapObjectFilter == EClientMakePath::END || static_cast<CMapObject*>(GameObject)->Get_ClientMakePath() == m_eShowMapObjectFilter)
+				{
 					m_pGameInstance->Request_DeleteGameObject(ENUM_TO_UINT(ELevelType::MAP) , g_wszMapObjectLayer  , GameObject );
+				}
 			}
 		}
 	}
@@ -197,7 +210,7 @@ HRESULT CPanel_MapObjectList::Render_MapObjectList()
 			}
 
 			CMapObject* pMapObject = static_cast<CMapObject*>(GameObject);
-			if (m_eShowMapObjectFilter != EClientMakePath::END && m_eShowMapObjectFilter == pMapObject->Get_ClientMakePath())
+			if (m_eShowMapObjectFilter != EClientMakePath::END && m_eShowMapObjectFilter != pMapObject->Get_ClientMakePath())
 			{
 				iIndex++;
 				continue;
@@ -244,6 +257,9 @@ HRESULT CPanel_MapObjectList::Render_MapObjectList()
 
 HRESULT CPanel_MapObjectList::Render_SelectMaterial()
 {
+
+	Update_SelectObject();
+
 	if (m_pSelectMaterial == nullptr)
 	{
 		ImGui::Text(" Select Material Emtpy ");
@@ -269,30 +285,33 @@ HRESULT CPanel_MapObjectList::Render_SelectMaterial()
 
 HRESULT CPanel_MapObjectList::Render_Description()
 {
+	Update_SelectObject();
+
 	if (m_pSelectMapObject == nullptr)
+	{
+		ImGui::TextWrapped("  None Select Object  ");
 		return S_OK;
+	}
 
 
-	//vector<CLIENT_MAKEPATH_DESC_BASE*>* pDescVec =  m_pSelectMapObject->Get_ClientMakePathDescs();
+	CLIENT_MAKEPATH_DESC_BASE* pDesc = m_pSelectMapObject->Get_ClientMakePathDesc();
 
-
-	//if (pDescVec->empty())
-	//{
-	//	ImGui::TextWrapped(" This Object Don't Need Description ");
-	//	return S_OK;
-	//}
+	if (pDesc == nullptr)
+	{
+		ImGui::TextWrapped(" This Object Don't Need Description ");
+		return S_OK;
+	}
 
 
 	ImGui::SeparatorText(" Description Info ");
 
-	//for (auto& Desc : *pDescVec)
-	//{
-	//	if (Desc)
-	//		continue;
-	//	/* 각자 구조체 안에서 설정할 수 있게 만들어야한다 */
-	//	
-	//}
-
+	EClientMakePath ePath = m_pSelectMapObject->Get_ClientMakePath();
+	
+	switch (ePath)
+	{
+	case Tool::EClientMakePath::StaticObject: ImGuiUpdate_StaticObject_Desc(static_cast<STATICOBJECT_DESC*>(pDesc));	return S_OK;
+	default:																											return E_FAIL;
+	}
 
 
 
@@ -301,6 +320,9 @@ HRESULT CPanel_MapObjectList::Render_Description()
 
 HRESULT CPanel_MapObjectList::Render_TransformInfo()
 {
+
+	Update_SelectObject();
+
 	if (m_pSelectMapObject == nullptr) return S_OK;
 
 	ImGui::SeparatorText("Reset / Resister");
@@ -344,6 +366,10 @@ HRESULT CPanel_MapObjectList::Render_SelectInfo()
 {
 	ImGui::Begin(" Select Info ");
 
+
+	Update_SelectObject();
+
+
 	if (m_pSelectMapObject == nullptr)
 	{
 		ImGui::Text(" Select Map Object is Empty ");
@@ -357,11 +383,11 @@ HRESULT CPanel_MapObjectList::Render_SelectInfo()
 		ImGui::NewLine();
 
 
-		ImGui::SeparatorText(" Delete & Cancel ");
+		ImGui::SeparatorText(" Delete & Cancel & Brush ");
 
 #pragma region Delete 
 
-		if (ImGui::Button(" Delete "))
+		if (ImGui::Button(" Delete [ Warning : [Instance] Draw Object All Delete ] "))
 		{
 			m_pGameInstance->Request_DeleteGameObject(ENUM_TO_UINT(ELevelType::MAP), m_pSelectMapObject->Get_LayerTag(), m_pSelectMapObject);
 			static_cast<CLevel_Map*>(m_pOwnerLevel)->On_ChangeSelectedObject(nullptr);
@@ -374,8 +400,6 @@ HRESULT CPanel_MapObjectList::Render_SelectInfo()
 
 #pragma region Cancel Select
 
-		ImGui::SameLine();
-
 		if (ImGui::Button(" Cancel Select "))
 		{
 			static_cast<CLevel_Map*>(m_pOwnerLevel)->On_ChangeSelectedObject(nullptr);
@@ -383,6 +407,31 @@ HRESULT CPanel_MapObjectList::Render_SelectInfo()
 			ImGui::End();
 			return S_OK;
 		}
+
+#pragma endregion
+
+		ImGui::SameLine();
+
+#pragma region Cancel Select
+
+		if (ImGui::Button("  Brush Sclae Rotation Set  "))
+		{
+			//if (CMapToolManager::GetInstance()->Get_PrevieObject() != nullptr)
+			//{
+			//	MSG_BOX(" Preview Object가 존재하고 있습니다 안전한 사용을 위해 프리뷰 오브젝트가 없을떄 등록이 가능합니다 ");
+			//	ImGui::End();
+			//	return S_OK;
+			//}
+
+			SRT_DATA tSRT = m_pSelectMapObject->Get_SRTData(false);
+			
+			/* Brush  */
+			CMapToolManager::GetInstance()->Set_BrushScale(tSRT.vScale);
+			CMapToolManager::GetInstance()->Set_BrushRotation(tSRT.vQuat);
+			ImGui::End();
+			return S_OK;
+		}
+
 #pragma endregion
 
 		ImGui::Separator();
@@ -401,6 +450,7 @@ HRESULT CPanel_MapObjectList::Render_SelectInfo()
 		ImGui::NewLine();
 
 #pragma region Draw Type
+
 		ImGui::SeparatorText("Draw Type");
 		m_iBuffer = ENUM_TO_UINT(m_pSelectMapObject->Get_MapObjectDrawType());
 		if (ImGui::BeginCombo("##Draw_Type", EMapObject_DrawType_ToString(static_cast<EMapObject_DrawType>(m_iBuffer)).c_str()))
@@ -479,11 +529,77 @@ HRESULT CPanel_MapObjectList::Render_SelectInfo()
 			m_pSelectMapObject->Set_SelectedInstanceID(m_iSelectInstanceID);
 		}
 
-		if(ImGui::SliderInt("Instance", &m_iSelectInstanceID, 0, iCountInstance - 1, "Instance %d"))
+		if (ImGui::SliderInt("Instance", &m_iSelectInstanceID, 0, iCountInstance - 1, "Instance %d"))
 			m_pSelectMapObject->Set_SelectedInstanceID(m_iSelectInstanceID);
 
 		ImGui::Separator();
 
+		if (m_pSelectMapObject->Get_MapObjectDrawType() == EMapObject_DrawType::Instance)
+		{
+			ImGui::SeparatorText(" Instance Add & Delete ");
+
+			if (ImGui::Button(" Add Instance "))
+			{
+				if (CMapToolManager::GetInstance()->Get_PrevieObject() != nullptr)
+				{
+					MSG_BOX(" 프리뷰 오브젝트가 존재하고 있습니다 안전을 위해 Preview 오브젝트를 먼저 제거 해주세요 ");
+					ImGui::End();
+					return S_OK;
+				}
+
+				CMapToolManager* pMapToolMgr = CMapToolManager::GetInstance();
+				SRT_DATA tSRT;
+				if (pMapToolMgr->Get_MapToolObjectBatchMode() == EMapToolObjectBatchMode::Brush)
+					pMapToolMgr->Get_SRT_BrushData(tSRT.vScale, tSRT.vQuat, tSRT.vPosition);
+				else
+					tSRT = m_pSelectMapObject->Get_SRTData(false); // 현재 선택된 놈의SRT를 복제
+				tSRT.Update_World();
+				m_pSelectMapObject->Add_InstanceData(tSRT);
+				pMapToolMgr->Set_PreviewMapObject(m_pSelectMapObject);
+			}
+
+			if (ImGui::Button(" Delete Instance "))
+			{
+				if (CMapToolManager::GetInstance()->Get_PrevieObject() != nullptr)
+				{
+					MSG_BOX(" 프리뷰 오브젝트가 존재하고 있습니다 안전을 위해 Preview 오브젝트를 먼저 제거 해주세요 ");
+					ImGui::End();
+					return S_OK;
+				}
+
+				m_pSelectMapObject->Delete_InstanceData();
+				ImGui::End();
+				return S_OK;
+			}
+
+		}
+		
+		else
+		{
+			ImGui::SeparatorText(" Add Object");
+
+			if (ImGui::Button(" Add "))
+			{
+				if (CMapToolManager::GetInstance()->Get_PrevieObject() != nullptr)
+				{
+					MSG_BOX(" 프리뷰 오브젝트가 존재하고 있습니다 안전을 위해 Preview 오브젝트를 먼저 제거 해주세요 ");
+					ImGui::End();
+					return S_OK;
+				}
+				/* Brush  */
+				CMapToolManager* pMapToolMgr = CMapToolManager::GetInstance();
+				SRT_DATA tSRT;
+
+				if (pMapToolMgr->Get_MapToolObjectBatchMode() == EMapToolObjectBatchMode::Brush)
+					pMapToolMgr->Get_SRT_BrushData(tSRT.vScale, tSRT.vQuat, tSRT.vPosition);
+				else
+					tSRT = m_pSelectMapObject->Get_SRTData(false);
+
+				/* 똑같은 Object 생성해야함... */
+				tSRT.Update_World();
+				pMapToolMgr->Set_PreviewMapObject(CMapObject::Clone(m_pSelectMapObject, tSRT));
+			}
+		}
 
 		if (ImGui::BeginTabBar("Detail Info"))
 		{
@@ -495,15 +611,20 @@ HRESULT CPanel_MapObjectList::Render_SelectInfo()
 				ImGui::EndTabItem();
 			}
 
-#pragma region Transform
 			if (ImGui::BeginTabItem(" Transform "))
 			{
 
 				Render_TransformInfo();
 
 				ImGui::EndTabItem();
+			}
 
-#pragma endregion
+			if (ImGui::BeginTabItem(" Descriptioin "))
+			{
+
+				Render_Description();
+
+				ImGui::EndTabItem();
 			}
 
 			ImGui::EndTabBar();
@@ -518,7 +639,12 @@ HRESULT CPanel_MapObjectList::Render_SelectInfo()
 
 HRESULT CPanel_MapObjectList::Render_ModelInfo()
 {
+	Update_SelectObject();
+
+
 	if (m_pSelectMapObject == nullptr) return E_FAIL;
+
+
 
 	if (m_pSelectMapObject->Get_MapObjectDrawType() == EMapObject_DrawType::Collider)
 	{
@@ -591,6 +717,7 @@ HRESULT CPanel_MapObjectList::Render_SelectOverrideMaterialInfo()
 {
 	//ImGui::Begin(" Override Material Info ");
 
+	Update_SelectObject();
 
 	//if ( m_iSelectOverrideMtlID == -1 || m_pSelectMapObject == nullptr )
 	//{
@@ -676,6 +803,8 @@ HRESULT CPanel_MapObjectList::Render_SelectOriginMaterialInfo()
 {
 	ImGui::Begin(" Origin Material Info ");
 
+	Update_SelectObject();
+
 	if ( !m_pSelectMapObject || m_pSelectMaterial == nullptr)
 	{
 		ImGui::Text(" Origin Material Is Empty");
@@ -748,6 +877,7 @@ HRESULT CPanel_MapObjectList::Render_SelectOriginMaterialInfo()
 }
 
 
+
 CPanel_MapObjectList* CPanel_MapObjectList::Create(const _char* pLabel, CLevel* pOwner, ID3D11Device* pDevice, ID3D11DeviceContext* pDeviceContext)
 {
 	CPanel_MapObjectList* pPanel = new CPanel_MapObjectList(pLabel, pOwner, pDevice, pDeviceContext);
@@ -770,3 +900,31 @@ void CPanel_MapObjectList::Free()
 	Safe_Release(m_pTransformLayout);
 	Safe_Release(m_pGameInstance);
 }
+
+
+
+#pragma region Desc
+
+
+#pragma region StaticObject
+
+void CPanel_MapObjectList::ImGuiUpdate_StaticObject_Desc(STATICOBJECT_DESC* pDesc)
+{
+	if (pDesc == nullptr) return;
+
+	string strText = Engine_Utils::ToString(pDesc->wstrTest);
+
+
+	ImGui::Text(" Test Text => [ %s ] " , strText.c_str());
+
+	if (ImGui::InputText(" Test ", &strText))
+		pDesc->wstrTest = Engine_Utils::ToWString(strText);
+
+
+
+	return;
+}
+
+#pragma endregion
+
+#pragma endregion

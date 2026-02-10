@@ -69,46 +69,65 @@ void CPanel_FileExplore::FileWindow()
 {
 	ImGui::Begin("File Window");
 
-	ImVec2 ButtonSize = ImVec2(64, 64);
-
-
 	if (m_vecFiles.empty())
 	{
-		ImGui::Text("File is Empty In Floder....");
+		ImGui::TextDisabled("File is Empty In Folder....");
 	}
-
 	else
 	{
-		int iCount = 0;
-		int iColumnMax = 4;
+		// 1. 그리드 배치를 위한 컬럼 설정 (창 너비에 따라 자동 조절)
+		float padding = 16.0f;
+		float thumbnailSize = 64.0f;
+		float cellSize = thumbnailSize + padding;
 
-		for (auto& File : m_vecFiles)
+		float panelWidth = ImGui::GetContentRegionAvail().x;
+		int columnCount = (int)(panelWidth / cellSize);
+		if (columnCount < 1) columnCount = 1;
+
+		if (ImGui::BeginTable("FileGrid", columnCount))
 		{
-			FileInfo tInfo = File->Get_FileInfo();
-			string strName = Engine_Utils::ToString(tInfo.wstrFileNameEXT);
-
-
-			ImGui::TextWrapped(strName.c_str());
-
-			ImVec2 p = ImGui::GetCursorScreenPos(); // 현재 커서 위치 저장
-
-			if (ImGui::IsItemHovered())
+			int iCount = 0;
+			for (auto& File : m_vecFiles)
 			{
-				ImGui::GetWindowDrawList()->AddRectFilled(
-					ImGui::GetItemRectMin(), ImGui::GetItemRectMax(),
-					ImGui::GetColorU32(ImGuiCol_HeaderHovered)
-				);
+				ImGui::TableNextColumn();
+				ImGui::PushID(iCount);
+
+				FileInfo tInfo = File->Get_FileInfo();
+				string strName = Engine_Utils::ToString(tInfo.wstrFileNameEXT);
+
+
+				bool isSelected = false;
+				ImGui::BeginGroup();
+
+				ImGui::Button("FILE", ImVec2(thumbnailSize, thumbnailSize));
+
+				string popupId = "FileOptionPopup##" + std::to_string(iCount);
+
+				ImGui::SetCursorPosY(ImGui::GetCursorPosY() - thumbnailSize - ImGui::GetStyle().ItemSpacing.y);
+				if (ImGui::Selectable("##Selectable", isSelected, ImGuiSelectableFlags_AllowOverlap, ImVec2(thumbnailSize, thumbnailSize + 20.0f)))
+				{
+					// 클릭 시 로직 (파일 선택 등)
+				}
+
+				if (ImGui::BeginPopupContextItem(popupId.c_str()))
+				{
+					if (ImGui::Selectable("Make Model"))
+					{
+						Render_MakeModelFilePath(tInfo.wstrFileFullPath);
+					}
+					ImGui::Separator();
+
+					ImGui::EndPopup();
+				}
+
+				// 파일 이름 표시 (말줄임표 기능 포함)
+				ImGui::TextWrapped(strName.c_str());
+				ImGui::EndGroup();
+
+				ImGui::PopID();
+				iCount++;
 			}
-
-			string popupId = "FileOptionPopup##" + strName + std::to_string(iCount);
-
-			if (ImGui::BeginPopupContextItem(popupId.c_str()))
-			{
-				Render_FileMoustRightButton(File->Get_FileInfo().wstrFileFullPath);
-				ImGui::EndPopup();
-			}
-
-			iCount++;
+			ImGui::EndTable();
 		}
 	}
 
@@ -116,29 +135,36 @@ void CPanel_FileExplore::FileWindow()
 }
 
 
-HRESULT CPanel_FileExplore::Render_FileMoustRightButton(const wstring& wstrPath)
+HRESULT CPanel_FileExplore::Render_MakeModelFilePath(const wstring& wstrPath)
 {
 	if (wstrPath.empty()) return E_FAIL;
 
 	path FullPath = wstrPath;
 	wstring wstrExt = FullPath.extension();
 
-
-
 	if ( wstrExt  != g_wszMeshExtension) return S_OK;
 
+	CMapObject::MAPOBJECT_DESC tMapObjectDesc{};
+	tMapObjectDesc.eClientLevelType = m_pMapToolManager->Get_MakeMapObejctClientLevelType();
+	tMapObjectDesc.eClientMakePath = m_pMapToolManager->Get_MakeMapObjectClientMakePath();
+	tMapObjectDesc.eMapObjectDrawType = m_pMapToolManager->Get_MakeMapObjectDrawType();
+	tMapObjectDesc.iLevelIndex = ENUM_TO_UINT(ELevelType::MAP);
+	tMapObjectDesc.tUsingModelInfo.wstrPath = FullPath;
+	tMapObjectDesc.tUsingModelInfo.wstrName = path(wstrPath).filename().stem();
+	tMapObjectDesc.eState = CMapObject::EState::Preview;
+	tMapObjectDesc.isLoaded = false;
+	tMapObjectDesc.isUELoaded = false;
+	tMapObjectDesc.wstrLayerTag = g_wszMapObjectLayer;
+	SRT_DATA tData{};
+	tMapObjectDesc.vecSRTs.push_back(tData);
 
-	if (ImGui::Selectable("Make Model"))
-	{
-		//CStaticModel::STATICMODEL_DESC tDesc{};
-		//tDesc.tData.tUsingModelInfo.wstrName = path(wstrPath).filename().stem();
-		//tDesc.tData.tUsingModelInfo.wstrPath = wstrPath;
-		//tDesc.isLoaded = false;
-		//tDesc.iLevelIndex = ENUM_TO_UINT(ELevelType::MAP);
-		//tDesc.eState = CMapObject::EState::Preview;
-		//tDesc.wstrLayerTag = g_wszStaticModelLayer;
-		//m_pMapToolManager->Make_MapObject(EMapObject_Type::STATICMODEL ,&tDesc);
-	}
+	m_pMapToolManager->Set_BrushScale(tData.vScale);
+	m_pMapToolManager->Set_BrushRotation(tData.vQuat);
+
+	m_pMapToolManager->Make_MapObject(&tMapObjectDesc, true);
+
+
+
 
 	return S_OK;
 }
@@ -186,11 +212,13 @@ void CPanel_FileExplore::FileFindWindow()
 		ImGui::Text(" Search File Is None.. ");
 	else
 	{
-		_uint iIndex{};
-		//char  szBeginPopupContextItem[MAX_PATH];
+		_int iIndex{};
+
 
 		for (auto& FilePath : m_vecFindFilePathList)
 		{
+			ImGui::PushID(iIndex);
+
 			path pathFile = path(FilePath);
 			string strFilePath = path(pathFile).string();
 			string strFileName = pathFile.filename().string();
@@ -205,13 +233,20 @@ void CPanel_FileExplore::FileFindWindow()
 				);
 			}
 
-			string strID = "PopupContextItem##" + std::to_string(iIndex);
+			string popupId = "FileOptionPopup##" + std::to_string(iIndex);
 
-			if (ImGui::BeginPopupContextItem(strID.c_str()))
+			if (ImGui::BeginPopupContextItem(popupId.c_str()))
 			{
-				Render_FileMoustRightButton(FilePath);
+				if (ImGui::Selectable("Make Model"))
+				{
+					Render_MakeModelFilePath(pathFile);
+				}
+				ImGui::Separator();
+
 				ImGui::EndPopup();
 			}
+			iIndex++;
+			ImGui::PopID();
 		}
 	}
 

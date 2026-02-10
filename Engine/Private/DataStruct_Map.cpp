@@ -166,23 +166,27 @@ inline void to_json(json& SaveJson, const DTO::TMap_MapObjectData& tData)
 
 	if (!tData.vecClientMakePathDesc.empty())
 	{
-		auto& DescJson = SaveJson["Client Make Path Desc"];
-
-		for (auto& Desc : tData.vecClientMakePathDesc)
+		if (IsExist_ClientMakePathDesc(static_cast<DTO::EClientMakePath>(tData.eClientMakePath)))
 		{
-			json BufferJson{nullptr};
+			auto& DescJson = SaveJson["Client Make Path Desc"];
 
-			if (!Desc)
+			for (auto& Desc : tData.vecClientMakePathDesc)
 			{
-				DescJson.push_back(nullptr);
-				continue;
+				json BufferJson = json::object();
+
+				if (!Desc)
+				{
+					DescJson.push_back(nullptr);
+					continue;
+				}
+				Desc->to_Json(BufferJson);
+				DescJson.push_back(BufferJson);
 			}
-			Desc->To_Json(BufferJson);
-			DescJson.push_back(BufferJson);
 		}
 	}
 
 }
+
 inline void from_json(const json& LoadJson, DTO::TMap_MapObjectData& tData)
 {
 	LoadJson.at("strTag").get_to(tData.strTag);
@@ -211,14 +215,68 @@ inline void from_json(const json& LoadJson, DTO::TMap_MapObjectData& tData)
 
 	if (LoadJson.contains("Client Make Path Desc"))
 	{
-		/* 추후 로직 추가 Json 파일로 Desc을 받아서 생성할만한 애들이 아직 없음 */
-		/* 잔디 할떄 해보자 */
+		for (auto& DescJson : LoadJson["Client Make Path Desc"])
+		{
+			if (DescJson.is_null()) continue;
+			CLIENT_MAKEPATH_DESC_BASE* pDescBase = Engine::Create_ClientMakePathDesc(static_cast<DTO::EClientMakePath>(tData.eClientMakePath),nullptr);
+			if (!pDescBase) continue;
+			pDescBase->from_Json(DescJson);
+			tData.vecClientMakePathDesc.push_back(pDescBase);
+		} 
+	}
+}
+#pragma endregion
+
+NS_END
 
 
+
+#pragma region Client Make Path Desc
+
+
+NS_BEGIN(Engine)
+
+
+inline CLIENT_MAKEPATH_DESC_BASE* Create_ClientMakePathDesc(DTO::EClientMakePath ePath , CLIENT_MAKEPATH_DESC_BASE* pSource)
+{
+	switch (ePath)
+	{
+	case DTO::EClientMakePath::StaticObject: return pSource == nullptr ? new STATICOBJECT_DESC : new STATICOBJECT_DESC(*static_cast<STATICOBJECT_DESC*>(pSource));
+	case DTO::EClientMakePath::Test:		 return nullptr;
+	default:								 return nullptr;
 	}
 
-
+	return nullptr;
 }
+
+inline _bool IsExist_ClientMakePathDesc(DTO::EClientMakePath ePath)
+{
+	CLIENT_MAKEPATH_DESC_BASE* pCheck = Create_ClientMakePathDesc( ePath , nullptr);
+	/* Description이 있는지 없는지 체크하는기능 */
+	if (pCheck)
+	{
+		Safe_Delete(pCheck);
+		return true;
+	}
+	return false;
+}
+
+
+
+void STATICOBJECT_DESC::from_Json(const json& LoadJson)
+{
+	/* Desc 키값으로 들어온다 */
+	this->wstrTest = Engine_Utils::ToWString(LoadJson["Test"].get<string>());
+	return;
+}
+
+void STATICOBJECT_DESC::to_Json(json& SaveJson)
+{
+	SaveJson["Test"] = Engine_Utils::ToString(this->wstrTest);
+
+	return;
+}
+
 #pragma endregion
 
 NS_END

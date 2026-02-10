@@ -38,9 +38,11 @@ CMapObject::CMapObject(const CMapObject& rhs)
     , m_vecOriginSRTs{rhs.m_vecOriginSRTs }
     , m_vecSRTs{rhs.m_vecSRTs }
     , m_wstrModelPath(rhs.m_wstrModelPath)
+    , m_isBatced{ rhs .m_isBatced}
 {
+    /*  Description을 어케해주는게 좋을려나...  */
 
-}
+} 
 
 HRESULT CMapObject::Initialize_Prototype()
 {
@@ -65,6 +67,9 @@ HRESULT CMapObject::Initialize(void* pArg)
     m_eMapObjectDrawType        = pDesc->eMapObjectDrawType;
     
 
+    if (m_isLoaded == true)
+        m_isBatced = true;
+
     /* Model != None */
     if (m_eMapObjectDrawType != EMapObject_DrawType::Collider)
     {
@@ -84,8 +89,6 @@ HRESULT CMapObject::Initialize(void* pArg)
     if (FAILED(Ready_ClientMakePath(pDesc)))
         return E_FAIL;
 
-    if (FAILED(Ready_OverrideMtl(pDesc->tUsingModelInfo)))
-        return E_FAIL;
 
     return S_OK;
 }
@@ -126,8 +129,8 @@ HRESULT CMapObject::Ready_Component()
     /* ReadyShader Shader */
 
     m_eMapObjectDrawType == EMapObject_DrawType::Instance ?
-                Add_Component<CShader>(ENUM_TO_UINT(ELevelType::STATIC), L"Prototype_Component_Shader_VtxInstanceMesh", nullptr)
-            :   Add_Component<CShader>(ENUM_TO_UINT(ELevelType::STATIC), L"Prototype_Component_Shader_VtxMesh", nullptr);
+                Add_Component<CShader>(ENUM_TO_UINT(ELevelType::STATIC), L"Prototype_Component_Shader_VtxInstanceMesh_Tool", nullptr)
+            :   Add_Component<CShader>(ENUM_TO_UINT(ELevelType::STATIC), L"Prototype_Component_Shader_VtxMesh_Tool", nullptr);
      
 
     /* 먼저 File Name으로 가져오고 */
@@ -168,33 +171,24 @@ HRESULT CMapObject::Ready_Component()
 
 HRESULT CMapObject::Ready_ClientMakePath(CMapObject::MAPOBJECT_DESC* pDesc)
 {
-    if (pDesc == nullptr) return E_FAIL;
+    if (nullptr == pDesc) return E_FAIL;
 
     m_vecClientMakePathDesc.clear();
 
-    if (m_isLoaded == true)
-    {
-        /* Desc이 Empty인 상태는 이 Make Path 가 Desc이 필요로 하지않는다 */
-        if (pDesc->vecClientMakePathDesc.empty())
-            return S_OK;
+    bool isHasSource = !pDesc->vecClientMakePathDesc.empty();
+    _uint iCount = isHasSource ? (_uint)pDesc->vecClientMakePathDesc.size() : Get_InstanceCount();
 
-        for (auto& Desc : pDesc->vecClientMakePathDesc)
-        {
-            m_vecClientMakePathDesc.push_back(Desc);
-        }
-    }
+    m_vecClientMakePathDesc.reserve(iCount);
 
-    /* Load된게 아니라면 */
-    else
+    for (_uint i = 0; i < iCount; ++i)
     {
-        for (auto& SRT : m_vecSRTs)
-        {
-            /* 동적할당 받아서 나온다  */
-            CLIENT_MAKEPATH_DESC_BASE* pDesc = CMapToolManager::GetInstance()->Make_Client_MakePathDesc(m_eClientMakePath);
-            if (!pDesc)
-                return S_OK;
-            m_vecClientMakePathDesc.push_back(pDesc);
-        }
+        CLIENT_MAKEPATH_DESC_BASE* pPrototype = isHasSource ? pDesc->vecClientMakePathDesc[i] : nullptr;
+        CLIENT_MAKEPATH_DESC_BASE* pNewDesc = CMapToolManager::GetInstance()->Make_Client_MakePathDesc(m_eClientMakePath, pPrototype);
+
+        if (nullptr == pNewDesc)
+            return S_OK; //
+
+        m_vecClientMakePathDesc.push_back(pNewDesc);
     }
 
     return S_OK;
@@ -290,6 +284,22 @@ HRESULT CMapObject::Ready_OverrideMtl(const USING_MODEL_INFO& tUsingModelInfo)
 
 }
 
+_bool CMapObject::Check_OutBound(_int iIndex) const
+{
+    if (iIndex == -1)
+    {
+        if (m_iSelectedInstanceID >= m_vecSRTs.size())
+            return false;
+    }
+    else
+    {
+        if (iIndex >= m_vecSRTs.size())
+            return false;
+    }
+
+    return true;
+}
+
 HRESULT CMapObject::Change_Instance_To_Default()
 {
     /* InstanceMesh 제거 */
@@ -306,42 +316,47 @@ HRESULT CMapObject::Add_MapToolComponent(CMapObject::COMPONENT eType)
 }
 
 
-void CMapObject::Reset_OriginTransform()
+void CMapObject::Reset_OriginTransform(_int iIndex)
 {
-    if (m_eMapObjectDrawType == EMapObject_DrawType::Collider || m_eMapObjectDrawType == EMapObject_DrawType::Default)
-        Get_Component<CTransform>()->Set_WorldMatrix(m_vecOriginSRTs[0].Get_World());
+    if (!Check_OutBound(iIndex))
+        return;
 
-    else if (m_eMapObjectDrawType == EMapObject_DrawType::Instance)
-    {
-        if (m_iSelectedInstanceID >= m_vecOriginSRTs.size())
-            return;
+    _int Index = iIndex == -1 ? m_iSelectedInstanceID : iIndex;
+    if (Index < 0) return;
+   
 
-        m_vecSRTs[m_iSelectedInstanceID] = m_vecOriginSRTs[m_iSelectedInstanceID];
-        Update_InstanceWorldMatrix(false);
-    }
+    m_vecSRTs[Index] =  m_vecOriginSRTs[Index];
+    m_vecSRTs[Index].Update_World();
+
+
+    if (m_eMapObjectDrawType == EMapObject_DrawType::Instance)
+        Update_InstanceWorldMatrix(false, Index);
+    else
+        Get_Component<CTransform>()->Set_WorldMatrix(m_vecSRTs[Index].Get_World());
 
 }
 
-void CMapObject::Override_OriginTransform()
+void CMapObject::Override_OriginTransform(_int iIndex)
 {
-    if (m_eMapObjectDrawType == EMapObject_DrawType::Collider || m_eMapObjectDrawType == EMapObject_DrawType::Default)
-    {
-        /* 내 SRT값으로 Origin SRT값 갱신 */
-        m_vecOriginSRTs[0] = m_vecSRTs[0];
-    }
+    if (!Check_OutBound(iIndex))
+        return;
 
-    else if (m_eMapObjectDrawType == EMapObject_DrawType::Instance)
-    {
-        if (m_iSelectedInstanceID >= m_vecOriginSRTs.size())
-            return;
-        m_vecOriginSRTs[m_iSelectedInstanceID] = m_vecSRTs[m_iSelectedInstanceID];
-    }
+    _int Index = iIndex == -1 ? m_iSelectedInstanceID : iIndex;
+    if (Index < 0) return;
+
+    m_vecOriginSRTs[Index] = m_vecSRTs[Index];
 }
 
-void CMapObject::Update_InstanceWorldMatrix(_bool isAllUpdate)
+void CMapObject::Update_InstanceWorldMatrix(_bool isAllUpdate, _int iIndex)
 {
     if (m_eMapObjectDrawType != EMapObject_DrawType::Instance)
         return;
+
+    if (!Check_OutBound(iIndex))
+        return;
+
+    _uint Index = iIndex == -1 ? m_iSelectedInstanceID : static_cast<_uint>(iIndex);
+
 
     D3D11_MAPPED_SUBRESOURCE SubResource{ nullptr };
 
@@ -357,7 +372,7 @@ void CMapObject::Update_InstanceWorldMatrix(_bool isAllUpdate)
     {
         if (m_iSelectedInstanceID >= m_vecSRTs.size())
             return;
-        memcpy(&pInstance[m_iSelectedInstanceID], &m_vecSRTs[m_iSelectedInstanceID].WorldMatrix._11, sizeof(Matrix));
+        memcpy(&pInstance[Index], &m_vecSRTs[Index].WorldMatrix._11, sizeof(Matrix));
     }
     else
     {
@@ -410,44 +425,47 @@ void CMapObject::Set_WorldMatrix(const Matrix& WorldMatrix)
 }
 
 
-
-void CMapObject::Set_Scale(const Vec3& vScale)
+void CMapObject::Set_Scale(const Vec3& vScale ,_int iIndex)
 {
-    if (m_iSelectedInstanceID >= m_vecSRTs.size())
+    if (!Check_OutBound(iIndex))
         return;
-    
-    m_vecSRTs[m_iSelectedInstanceID].Update_Scale(vScale);
+
+    _uint Index = iIndex == -1 ?  m_iSelectedInstanceID : static_cast<_uint>(iIndex);
+    m_vecSRTs[Index].Update_Scale(vScale);
+
 
     if (m_eMapObjectDrawType == EMapObject_DrawType::Instance)
         Update_InstanceWorldMatrix(false);
     else
-        Get_Component<CTransform>()->Set_WorldMatrix(m_vecSRTs[m_iSelectedInstanceID].Get_World());
+        Get_Component<CTransform>()->Set_WorldMatrix(m_vecSRTs[Index].Get_World());
 }
 
-void CMapObject::Set_Position(const Vec3& vPosition)
+void CMapObject::Set_Position(const Vec3& vPosition , _int iIndex)
 {
-    if (m_iSelectedInstanceID >= m_vecSRTs.size())
+    if (!Check_OutBound(iIndex))
         return;
 
-    m_vecSRTs[m_iSelectedInstanceID].Update_Position(vPosition);
+    _uint Index = iIndex == -1  ? m_iSelectedInstanceID : static_cast<_int>(iIndex);
+    m_vecSRTs[Index].Update_Position(vPosition);
 
     if (m_eMapObjectDrawType == EMapObject_DrawType::Instance)
-        Update_InstanceWorldMatrix(false);
+        Update_InstanceWorldMatrix(false,iIndex);
     else
-        Get_Component<CTransform>()->Set_WorldMatrix(m_vecSRTs[m_iSelectedInstanceID].Get_World());
+        Get_Component<CTransform>()->Set_WorldMatrix(m_vecSRTs[Index].Get_World());
 }
 
-void CMapObject::Set_Quaternion(const Quat& vQuat)
+void CMapObject::Set_Quaternion(const Quat& vQuat ,_int iIndex)
 {
-    if (m_iSelectedInstanceID >= m_vecSRTs.size())
+    if (!Check_OutBound(iIndex))
         return;
 
-    m_vecSRTs[m_iSelectedInstanceID].Update_Quat(vQuat);
+    _uint Index = iIndex == -1 ? m_iSelectedInstanceID : static_cast<_int>(iIndex);
+    m_vecSRTs[Index].Update_Quat(vQuat);
 
     if (m_eMapObjectDrawType == EMapObject_DrawType::Instance)
         Update_InstanceWorldMatrix(false);
     else
-        Get_Component<CTransform>()->Set_WorldMatrix(m_vecSRTs[m_iSelectedInstanceID].Get_World());
+        Get_Component<CTransform>()->Set_WorldMatrix(m_vecSRTs[Index].Get_World());
 }
 
 
@@ -463,6 +481,7 @@ void CMapObject::Set_ClientMakePath(EClientMakePath eClientMakePath)
 
     m_eClientMakePath = eClientMakePath;
 
+    /* 현재 Instance 개수만큼 생성된다 */
     for (auto& SRT : m_vecSRTs)
     {
         /* 동적할당 받아서 나온다  */
@@ -477,8 +496,14 @@ void CMapObject::Set_ClientMakePath(EClientMakePath eClientMakePath)
 
 void CMapObject::Set_MapObjectDrawType(EMapObject_DrawType eDrawType)
 {
-
     if (m_eMapObjectDrawType == eDrawType) return;
+
+    if (eDrawType == EMapObject_DrawType::Collider)
+    {
+        MSG_BOX("콜라이더 타입은 추후 추가예정");
+        return;
+    }
+
 
     if (m_eMapObjectDrawType == EMapObject_DrawType::Instance)
     {
@@ -491,15 +516,123 @@ void CMapObject::Set_MapObjectDrawType(EMapObject_DrawType eDrawType)
                 return;
             }
         }
+    }
 
+    /* Instance로 변경 */
+    if (m_eMapObjectDrawType == EMapObject_DrawType::Default)
+    {
+        /* Draw 에서 Instance로 변경 */
+        m_eMapObjectDrawType = eDrawType;
+        m_iSelectedInstanceID = 0;
+        
+        SRT_DATA& tCurSRT = m_vecSRTs.front();
+        vector<Matrix> vecWorldMatrix{};
+        vecWorldMatrix.push_back(tCurSRT.WorldMatrix);
+
+        CInstanceMesh::INSTANCEMESH_DESC tDesc{};
+        tDesc.vecInstanceMatrixPointer = &vecWorldMatrix;
+        tDesc.VB_Usage = D3D11_USAGE_DYNAMIC;
+        tDesc.IB_Usage = D3D11_USAGE_DYNAMIC;
+        Add_Component<CInstanceMesh>(ENUM_TO_UINT(ELevelType::STATIC), L"Prototype_Component_VIBuffer_InstanceMesh", &tDesc);
+
+        CGameObject::Remove_Component<CShader>();
+        Add_Component<CShader>(ENUM_TO_UINT(ELevelType::STATIC), L"Prototype_Component_Shader_VtxInstanceMesh_Tool", nullptr);
     }
 
     return;
 }
 
-void CMapObject::Set_SRTData(const Vec3& vScale, const Quat vQuat, const Vec3 vPosition)
+void CMapObject::Add_InstanceData(const SRT_DATA& tData)
 {
-    if ( m_iSelectedInstanceID >= m_vecSRTs.size() )  return;
+    if (m_eMapObjectDrawType != EMapObject_DrawType::Instance)
+        return;
+
+    /* 데이터를 추가한뒤 버퍼 재할당 */
+    m_vecSRTs.push_back(tData);
+    m_vecSRTs.back().Update_World();
+    m_vecOriginSRTs.push_back(tData);
+    m_vecOriginSRTs.back().Update_World();
+
+    /* 버퍼 재할당 */
+
+    CInstanceMesh* pInstanceMesh = Get_Component<CInstanceMesh>();
+    if (pInstanceMesh == nullptr) return;
+    vector<Matrix> vecMatrix{};
+    vecMatrix.reserve(m_vecSRTs.size());
+    for(auto& SRT : m_vecSRTs)
+        vecMatrix.push_back(SRT.WorldMatrix);
+
+    if(FAILED(pInstanceMesh->ReMake_InstanceBuffer(&vecMatrix)))
+    {
+        MSG_BOX(" Add SRT Data is failed ");
+    }
+
+    /* Desc 복사 생성 받기 */
+    if (!m_vecClientMakePathDesc.empty())
+    {
+        CLIENT_MAKEPATH_DESC_BASE* pDescBase = CMapToolManager::GetInstance()->Make_Client_MakePathDesc(m_eClientMakePath ,m_vecClientMakePathDesc[m_iSelectedInstanceID]);
+        m_vecClientMakePathDesc.push_back(pDescBase);
+    }
+    
+
+}
+
+void CMapObject::Delete_InstanceData(_int iIndex)
+{
+    if (m_eMapObjectDrawType != EMapObject_DrawType::Instance)
+        return;
+
+    if (Get_InstanceCount() <= 1)
+    {
+        Set_Dead(this->m_wstrLayerTag);
+        return;
+    }
+  
+
+
+    if (!Check_OutBound(iIndex))
+        return;
+
+
+
+    _uint iDeleteIndex = iIndex == -1 ? m_iSelectedInstanceID : static_cast<_uint>(iIndex);
+    if (iDeleteIndex < 0) return;
+
+   
+    vector<Matrix> vecWorldMatrix{};
+    vecWorldMatrix.reserve(m_vecSRTs.size());
+
+    auto Originiter = m_vecOriginSRTs.begin();
+    auto Curiter = m_vecSRTs.begin();
+
+    for (_uint i = 0 ;  i < (_uint)m_vecSRTs.size(); ++i)
+    { 
+        if (iDeleteIndex == i)
+        {
+            Curiter = m_vecSRTs.erase(Curiter);
+            Originiter = m_vecOriginSRTs.erase(Originiter);
+        }
+        else
+        {
+            m_vecSRTs[i].Update_World();
+            vecWorldMatrix.push_back(m_vecSRTs[i].Get_World());
+
+            Originiter++;
+            Curiter++;
+        }
+    }
+
+    CInstanceMesh* pInstanceMesh = Get_Component<CInstanceMesh>();
+    if (pInstanceMesh == nullptr)  return;
+    pInstanceMesh->ReMake_InstanceBuffer(&vecWorldMatrix);
+}
+
+
+void CMapObject::Set_SRTData(const Vec3& vScale, const Quat vQuat, const Vec3 vPosition , _int iIndex)
+{
+    if (!Check_OutBound(iIndex))
+        return;
+
 
     /* SRT DATA Update */
     m_vecSRTs[m_iSelectedInstanceID].Update_World(vScale , vQuat , vPosition);
@@ -562,12 +695,17 @@ vector<wstring> CMapObject::Get_TotalUseMtlsName()
     return vecResult;
 }
 
-CLIENT_MAKEPATH_DESC_BASE* CMapObject::Get_ClientMakePathDesc(_uint iIndex)
+
+CLIENT_MAKEPATH_DESC_BASE* CMapObject::Get_ClientMakePathDesc(_int iIndex)
 {
-    return iIndex != g_Uint_NoneIndex ?
-        iIndex >= m_vecClientMakePathDesc.size() ? nullptr : m_vecClientMakePathDesc[iIndex]
-        :
-        m_iSelectedInstanceID >= m_vecClientMakePathDesc.size() ?  nullptr : m_vecClientMakePathDesc[m_iSelectedInstanceID];
+    if (m_vecClientMakePathDesc.empty()) return nullptr;
+
+    _int OutIndex = iIndex == -1 ? m_iSelectedInstanceID : iIndex;
+
+    if (OutIndex >= m_vecClientMakePathDesc.size())
+        return nullptr;
+    
+    return m_vecClientMakePathDesc[OutIndex];
 }
 
 HRESULT CMapObject::Awake(const _uint iCurrentLevelID)
@@ -711,7 +849,6 @@ _bool CMapObject::Export_Data(DTO::ECategory eCategory, CDataDocumentBase* pDocu
         }
     }
 
-
     for (auto& My_SRT : m_vecSRTs)
     {
         DTO::SRT_DATA tSRT{};
@@ -737,19 +874,33 @@ _int CMapObject::Get_InstanceCount()
     return pInsMesh->Get_InstanceCount();
 }
 
-const Vec3& CMapObject::Get_Scale() const
+const SRT_DATA& CMapObject::Get_SRTData(bool isOrigin, _int iIndex) const
 {
-    return m_vecSRTs[m_iSelectedInstanceID].vScale;
+    _uint Index = iIndex == -1 ? m_iSelectedInstanceID : static_cast<_uint>(iIndex);
+    return isOrigin == true ? m_vecOriginSRTs[Index] : m_vecSRTs[Index];
 }
 
-const Quat& CMapObject::Get_Quaternion() const
+Vec3 CMapObject::Get_Scale(_int iIndex) const
 {
-    return m_vecSRTs[m_iSelectedInstanceID].vQuat;
+    if (!Check_OutBound(iIndex))
+        return Vec3();
+    return iIndex ==-1 ? m_vecSRTs[m_iSelectedInstanceID].vScale : m_vecSRTs[iIndex].vScale;
 }
 
-const Vec3& CMapObject::Get_Position() const
+Quat CMapObject::Get_Quaternion(_int iIndex) const
 {
-    return m_vecSRTs[m_iSelectedInstanceID].vPosition;
+    if (!Check_OutBound(iIndex))
+        return Quat();
+
+    return iIndex == -1 ? m_vecSRTs[m_iSelectedInstanceID].vQuat : m_vecSRTs[iIndex].vQuat;
+}
+
+Vec3 CMapObject::Get_Position(_int iIndex) const
+{
+    if (!Check_OutBound(iIndex))
+        return Vec3();
+
+    return iIndex == -1 ? m_vecSRTs[m_iSelectedInstanceID].vPosition : m_vecSRTs[iIndex].vPosition;
 }
 
 
@@ -816,6 +967,40 @@ CMapObject* CMapObject::Create(EToolObjectType eType, ID3D11Device* pDevice, ID3
     }
 
     return pMapObject;
+}
+
+
+
+CMapObject* CMapObject::Clone(CMapObject* pPrototype, const SRT_DATA& tSRT)
+{
+    if (pPrototype->m_eMapObjectDrawType == EMapObject_DrawType::Instance)
+    {
+        pPrototype->Add_InstanceData(tSRT);
+        return pPrototype;
+    }
+    else
+    {
+        CMapObject::MAPOBJECT_DESC tDesc{};
+        tDesc.eClientLevelType = pPrototype->m_eClientLevelType;
+        tDesc.eClientMakePath = pPrototype->m_eClientMakePath;
+        tDesc.eMapObjectDrawType = pPrototype->m_eMapObjectDrawType;
+        tDesc.isUELoaded = pPrototype->m_isUELoaded;
+        tDesc.isLoaded = false;
+        tDesc.iLevelIndex = ENUM_TO_UINT(ELevelType::MAP);
+        tDesc.tUsingModelInfo.wstrPath = pPrototype->m_wstrModelPath;
+        tDesc.tUsingModelInfo.wstrName = path(pPrototype->m_wstrModelPath).stem();
+        tDesc.eState = CMapObject::EState::Preview;
+
+        tDesc.vecSRTs.push_back(tSRT);
+        tDesc.vecSRTs.front().Update_World();
+        tDesc.wstrLayerTag = g_wszMapObjectLayer;
+        tDesc.vecClientMakePathDesc = pPrototype->m_vecClientMakePathDesc;
+
+
+        return   
+            static_cast<CMapObject*>(CGameInstance::GetInstance()->Add_GameObject(
+                tDesc.iLevelIndex, L"Prototype_GameObject_MapObject", tDesc.iLevelIndex, g_wszMapObjectLayer, &tDesc));
+    }
 }
 
 CGameObject* CMapObject::Clone(void* pArg)
