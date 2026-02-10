@@ -227,6 +227,21 @@ namespace Engine
 
 #pragma region BONEFIANL_CS
 
+	typedef struct tagBoneMeshCB
+	{
+		unsigned int				iAffectBoneNums = { 0 };
+		unsigned int				iTotalBoneNums = { 0 };
+		SimpleMath::Vector2			Padding0 = {};
+	}CS_CB_ME_BONEMESH;
+
+	typedef struct tagBoneMeshIMMU
+	{
+		unsigned int				iAffectBoneIndex = { 0 };
+		SimpleMath::Vector3			Padding0 = {};
+
+		SimpleMath::Matrix			matOffsetTransform = {};
+	}CS_IMMU_BONEMESH;
+
 #pragma endregion
 
 #pragma region BONECOM_CS

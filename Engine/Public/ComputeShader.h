@@ -96,6 +96,7 @@ public:
 	void Bind_Compute_Track(const CS_MU_TRACK& desc);
 	void Bind_Compute_BlendMu(const CS_MU_ANIMB& desc);
 	void Bind_Compute_BoneMuCB(const CS_MU_GROUPNUMS& desc);
+	void Bind_Compute_BoneMeshCB(const CS_CB_ME_BONEMESH& desc);
 
 public:
 	void	Resize_InputStruct(_uint Index, void* pArg, _uint iElementSize, _uint iNumElements);
@@ -124,6 +125,9 @@ private:
 	CConstant_Buffer<CS_MU_GROUPNUMS>*	m_pBone_Mutable_Element_CBuffer		= { nullptr };
 	ID3DX11EffectConstantBuffer*		m_pBone_MutableBuffer				= { nullptr };
 
+	CConstant_Buffer<CS_CB_ME_BONEMESH>*	m_pBoneMesh_Mutable_Element_CBuffer		= { nullptr };
+	ID3DX11EffectConstantBuffer*			m_pBoneMesh_MutableBuffer				= { nullptr };
+
 	// SHader
 private:
 	HRESULT Ready_ComputeShader(COMSHADER_ORIGIN_DESC* pDesc);
@@ -138,9 +142,9 @@ private:
 	CFxEffectAsset* m_pOwner{ nullptr }; // .hlsl ÆÄÀÏ °´Ã¼È­
 	_uint m_iPass = { 0 };
 private:
-	ID3D11ComputeShader* m_pComputeShader = { nullptr };
-	ID3D11Device* m_pDevice = { nullptr };
-	ID3D11DeviceContext* m_pDeviceContext = { nullptr };
+	ID3D11ComputeShader*	m_pComputeShader	= { nullptr };
+	ID3D11Device*			m_pDevice			= { nullptr };
+	ID3D11DeviceContext*	m_pDeviceContext	= { nullptr };
 
 public:
 	static CComputeShader* Create(ID3D11Device* pDevice, ID3D11DeviceContext* pDeviceContext, void* pArg);

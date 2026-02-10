@@ -31,6 +31,8 @@ CComputeShader::CComputeShader(const CComputeShader& rhs)
 	, m_pAnimB_MutableBuffer(rhs.m_pAnimB_MutableBuffer)
 	, m_pBone_Mutable_Element_CBuffer(rhs.m_pBone_Mutable_Element_CBuffer)
 	, m_pBone_MutableBuffer(rhs.m_pBone_MutableBuffer)
+	, m_pBoneMesh_Mutable_Element_CBuffer(rhs.m_pBoneMesh_Mutable_Element_CBuffer)
+	, m_pBoneMesh_MutableBuffer(rhs.m_pBoneMesh_MutableBuffer)
 
 {
 	Safe_AddRef(m_pOwner);
@@ -48,6 +50,9 @@ CComputeShader::CComputeShader(const CComputeShader& rhs)
 
 	Safe_AddRef(m_pBone_Mutable_Element_CBuffer);
 	Safe_AddRef(m_pBone_MutableBuffer);
+
+	Safe_AddRef(m_pBoneMesh_Mutable_Element_CBuffer);
+	Safe_AddRef(m_pBoneMesh_MutableBuffer);
 }
 
 HRESULT CComputeShader::Initialize_Prototype(void* pArg)
@@ -269,6 +274,11 @@ void CComputeShader::Bind_Compute_BoneMuCB(const CS_MU_GROUPNUMS& desc)
 	m_pBone_Mutable_Element_CBuffer->Copy_Data(desc);
 }
 
+void CComputeShader::Bind_Compute_BoneMeshCB(const CS_CB_ME_BONEMESH& desc)
+{
+	m_pBoneMesh_Mutable_Element_CBuffer->Copy_Data(desc);
+}
+
 #pragma endregion
 
 HRESULT CComputeShader::Create_ConstantBuffer()
@@ -294,11 +304,18 @@ HRESULT CComputeShader::Create_ConstantBuffer()
 		m_pAnimB_MutableBuffer->SetConstantBuffer(m_pAnimB_Mutable_Element_CBuffer->Get_Buffer());
 	}
 
-	// Bone 전용
+	// BoneCombine 전용
 	if (m_pBone_MutableBuffer = Get_ConstantBuffer("MU_BONENUMS"))
 	{
 		m_pBone_Mutable_Element_CBuffer = CConstant_Buffer<CS_MU_GROUPNUMS>::Create(m_pDevice, m_pDeviceContext);
 		m_pBone_MutableBuffer->SetConstantBuffer(m_pBone_Mutable_Element_CBuffer->Get_Buffer());
+	}
+
+	// BoneMesh 전용
+	if (m_pBoneMesh_MutableBuffer = Get_ConstantBuffer("MU_MESHBONENUMS"))
+	{
+		m_pBoneMesh_Mutable_Element_CBuffer = CConstant_Buffer<CS_CB_ME_BONEMESH>::Create(m_pDevice, m_pDeviceContext);
+		m_pBoneMesh_MutableBuffer->SetConstantBuffer(m_pBoneMesh_Mutable_Element_CBuffer->Get_Buffer());
 	}
 
 	return S_OK;
@@ -386,6 +403,9 @@ void CComputeShader::Clear_ConstantBuffer()
 
 	Safe_Release(m_pBone_Mutable_Element_CBuffer);
 	Safe_Release(m_pBone_MutableBuffer);
+
+	Safe_Release(m_pBoneMesh_Mutable_Element_CBuffer);
+	Safe_Release(m_pBoneMesh_MutableBuffer);
 }
 
 void CComputeShader::Clear_StructBuffer()
