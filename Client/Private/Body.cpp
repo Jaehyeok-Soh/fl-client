@@ -312,7 +312,7 @@ HRESULT CBody::Ready_AttackOverlap()
 	if (FAILED(Add_Component<CPhysicsAttackOverlap>(0, L"Prototype_Component_AttackOverlap_PlayerMoon", nullptr)))
 		return E_FAIL;
 
-	Get_Component<CPhysicsAttackOverlap>()->Set_Owner(this);
+	return S_OK;
 }
 
 HRESULT CBody::Bind_ShaderResources()

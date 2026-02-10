@@ -547,14 +547,14 @@ HRESULT CRender_Manager::Render_Debug()
 
 	m_pShader->Set_Pass(ENUM_TO_UINT(DEFFERRED::DEBUG));
 
-	//if (FAILED(m_pVIBuffer->Bind_Resource()))
-	//	return E_FAIL;
+	if (FAILED(m_pVIBuffer->Bind_Resource()))
+		return E_FAIL;
 
-	//if (FAILED(m_pGameInstance->Debug_RT_Render(EMRTLayer::GameObjects, m_pShader, m_pVIBuffer)))
-	//	return E_FAIL;
+	if (FAILED(m_pGameInstance->Debug_RT_Render(EMRTLayer::GameObjects, m_pShader, m_pVIBuffer)))
+		return E_FAIL;
 
-	//if (FAILED(m_pGameInstance->Debug_RT_Render(EMRTLayer::LightAcc, m_pShader, m_pVIBuffer)))
-	//	return E_FAIL;
+	if (FAILED(m_pGameInstance->Debug_RT_Render(EMRTLayer::LightAcc, m_pShader, m_pVIBuffer)))
+		return E_FAIL;
 
 	return S_OK;
 }

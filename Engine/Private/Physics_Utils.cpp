@@ -340,10 +340,12 @@ CPhysics_QueryFilterCallback* CPhysics_Utils::GetQueryFilterCallback()
 	return CPhysics_QueryFilterCallback::Create();
 }
 
+#ifdef _DEBUG
 void CPhysics_Utils::SetMeshDebugState()
 {
 	m_bIsOnMeshDebug = !m_bIsOnMeshDebug;
 }
+#endif
 
 CPhysics_Utils* CPhysics_Utils::Create(ID3D11Device* pDevice, ID3D11DeviceContext* pContext, PxPhysics* pPhysics, PxScene* pScene)
 {
