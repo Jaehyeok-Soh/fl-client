@@ -149,6 +149,9 @@ void CS_Main(uint3 id : SV_DispatchThreadID)
 
         vLeftQuat = IMMU_KEYFRAMS[iLeftIndex].vQuat;
         vRightQuat = IMMU_KEYFRAMS[iRightIndex].vQuat;
+    
+        if (dot(vLeftQuat, vRightQuat) < 0.0f)
+            vRightQuat = -vRightQuat;
 
         vLeftTrans = IMMU_KEYFRAMS[iLeftIndex].vTranslation;
         vRightTrans = IMMU_KEYFRAMS[iRightIndex].vTranslation;
