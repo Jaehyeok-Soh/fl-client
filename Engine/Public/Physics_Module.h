@@ -35,7 +35,7 @@ public:
     Matrix PxTransformToXMMatrix(PxTransform pxTransform);
     PxQuat GetPureRotation(Matrix mat);
     PxVec3 GetPureScale(Matrix mat);
-    _bool Execute_Overlap(PxGeometry& shape, PxTransform& transform, OUT PxOverlapBuffer hit, PxQueryFilterData& filterData, PxQueryFilterCallback* filterCallback);
+    _bool Execute_Overlap(PxGeometry& shape, PxTransform& transform, OUT PxOverlapBuffer& hit, PxQueryFilterData& filterData, PxQueryFilterCallback* filterCallback);
     class CPhysics_QueryFilterCallback* GetQueryFilterCallback();
 #ifdef _DEBUG
     HRESULT Render(PxRigidActor* pActor, XMVECTOR color = DirectX::Colors::White);

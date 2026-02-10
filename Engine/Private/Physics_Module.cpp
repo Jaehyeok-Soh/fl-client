@@ -224,7 +224,7 @@ PxVec3 CPhysics_Module::GetPureScale(Matrix mat)
 	return m_pUtils->GetPureScale(mat);
 }
 
-_bool CPhysics_Module::Execute_Overlap(PxGeometry& shape, PxTransform& transform, OUT PxOverlapBuffer hit, PxQueryFilterData& filterData, PxQueryFilterCallback* filterCallback)
+_bool CPhysics_Module::Execute_Overlap(PxGeometry& shape, PxTransform& transform, OUT PxOverlapBuffer& hit, PxQueryFilterData& filterData, PxQueryFilterCallback* filterCallback)
 {
 	return m_pUtils->Execute_Overlap(shape, transform, hit, filterData, filterCallback);
 }

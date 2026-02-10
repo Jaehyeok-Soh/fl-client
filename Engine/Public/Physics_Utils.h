@@ -31,7 +31,7 @@ public:
 public:
     _bool RayCast();
 
-    _bool Execute_Overlap(PxGeometry& shape, PxTransform& transform, OUT PxOverlapBuffer hit, PxQueryFilterData& filterData, PxQueryFilterCallback* filterCallback);
+    _bool Execute_Overlap(PxGeometry& shape, PxTransform& transform, OUT PxOverlapBuffer& hit, PxQueryFilterData& filterData, PxQueryFilterCallback* filterCallback);
 
     class CPhysics_QueryFilterCallback* GetQueryFilterCallback();
 

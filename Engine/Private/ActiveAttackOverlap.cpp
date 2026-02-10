@@ -37,6 +37,10 @@ void CActiveAttackOverlap::Update(_float fTimeDelta)
 		m_tHitboxDesc->filterData,
 		(PxQueryFilterCallback*)m_tHitboxDesc->filterCallback))
 	{
+		if (hitBuffer.hasBlock)
+		{
+			auto a = 1;
+		}
 		for (PxU32 i = 0; i < hitBuffer.nbTouches; i++)
 		{
 			CGameObject* hitObject = static_cast<CGameObject*>(hitBuffer.touches[i].actor->userData);

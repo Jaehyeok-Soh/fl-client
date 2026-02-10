@@ -330,7 +330,7 @@ _bool CPhysics_Utils::RayCast()
 	return m_bRayHit;
 }
 
-_bool CPhysics_Utils::Execute_Overlap(PxGeometry& shape, PxTransform& transform, OUT PxOverlapBuffer hit, PxQueryFilterData& filterData, PxQueryFilterCallback* filterCallback)
+_bool CPhysics_Utils::Execute_Overlap(PxGeometry& shape, PxTransform& transform, OUT PxOverlapBuffer& hit, PxQueryFilterData& filterData, PxQueryFilterCallback* filterCallback)
 {
 	return m_pScene->overlap(shape, transform, hit, filterData, filterCallback);
 }

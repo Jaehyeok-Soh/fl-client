@@ -39,6 +39,22 @@ HRESULT CPhysicsCCT::Initialize(void* pArg)
 
 	m_fContactOffset = m_pController->getContactOffset();
 	
+	auto cctActor = m_pController->getActor();
+	PxShape* cctShape = { nullptr };
+	if (cctActor->getNbShapes() > 0)
+		cctActor->getShapes(&cctShape, 1);
+
+	if (cctShape)
+	{
+		PxFilterData filterData;
+		filterData.word0 = m_tDesc.eFilterLayer;
+		filterData.word1 = m_tDesc.iFilterMask;
+		cctShape->setSimulationFilterData(filterData);
+		cctShape->setQueryFilterData(filterData);
+		cctShape->setFlag(PxShapeFlag::eSCENE_QUERY_SHAPE, true);
+		cctShape->setFlag(PxShapeFlag::eSIMULATION_SHAPE, true);
+	}
+
 	return S_OK;
 }
 
@@ -169,6 +185,7 @@ void CPhysicsCCT::CacheReset()
 void CPhysicsCCT::SetUserData(void* data)
 {
 	m_pController->setUserData(data);
+	m_pController->getActor()->userData = data;
 }
 
 void CPhysicsCCT::GetState(PxControllerState& outState)
