@@ -85,7 +85,7 @@ public:
 	HRESULT Set_PassByMesh(class CShader* pShader, _uint iMeshIndex);
 	HRESULT Bind_Material(class CShader* pShader, _uint iMeshIndex);
 	HRESULT Bind_MaterialInstance(class CShader* pShader, _uint iMeshIndex);
-	HRESULT Bind_Bones(class CShader* pShader, _uint iMeshIndex, _uint iIndexDistance = 0);
+	HRESULT Bind_Bones(class CShader* pShader, _uint iMeshIndex, CComputeShader* pBoneMeshCS, CComputeShader* pBoneCombineCS, _uint iIndexDistance = 0);
 	HRESULT Bind_Masterbones(class CShader* pShader, _uint iIndexDistance);
 public:
 	HRESULT Change_ShaderPassByMseh(_uint iMeshIndex, _uint iPass);
@@ -119,8 +119,8 @@ public:
 	void Set_AnimationPlayRate(_uint iIndex, _float fValue);
 	const _float Get_BlentTime()  { return m_fBlendedTime; }
 
-	HRESULT Ready_CSs(CComputeShader* pBoneComBineCS, CComputeShader* pAnimEvalCS);
-
+	HRESULT Ready_CSs(CComputeShader* pBoneMeshCS, CComputeShader* pBoneComBineCS, CComputeShader* pAnimEvalCS);
+	
 	// load func
 private:
 	HRESULT Load_StaticModel(const wstring& wstrModelName);
@@ -140,14 +140,14 @@ private:
 
 private:
 	HRESULT Build_AnimationIndexTable();
-	void Begin_AnimationPlayState(AnimationPlayState eState, CComputeShader* pAnimEvalCS = nullptr);
+	void Begin_AnimationPlayState(AnimationPlayState eState, CComputeShader* pAnimEvalCS = nullptr, _uint iAnimationIndex =0);
 	void Update_AnimationPlayState(CComputeShader* pBoneComBineCS, CComputeShader* pAnimEvalCS, CComputeShader* pAnimBlendCS, const _float fTimeDelta, CTransform* pOwnerTransform = nullptr, CPhysicsCCT* pOwnerPhyCCT = nullptr);
 	void End_AnimationPlayState(AnimationPlayState eState);
-	void Change_AnimationPlayState(AnimationPlayState eState, CComputeShader* pAnimEvalCS = nullptr);
+	void Change_AnimationPlayState(AnimationPlayState eState, CComputeShader* pAnimEvalCS = nullptr, _uint iAnimationIndex =0);
 
 
 
-	void Play_Begin(CComputeShader* pAnimEvalCS = nullptr);
+	void Play_Begin(CComputeShader* pAnimEvalCS = nullptr, _uint iAnimationIndex =0);
 	void Play_Update(CComputeShader* pBoneComBineCS, CComputeShader* pAnimEvalCS, const _float fTimeDelta, CTransform* pOwnerTransform = nullptr, CPhysicsCCT* pOwnerPhyCCT = nullptr);
 	void Play_End();
 

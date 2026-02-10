@@ -28,7 +28,10 @@ CModelAnimation::CModelAnimation(const CModelAnimation& rhs)
 	, m_iRootChannelIdx(rhs.m_iRootChannelIdx)
 {
 	Safe_AddRef(m_pKeyFrameBuffer);
-	Safe_AddRef(m_pInputKeySB_SRV);
+	//Safe_AddRef(m_pInputKeySB_SRV);
+
+	Safe_AddRef(m_pChannelDataBuffer);
+	//Safe_AddRef(m_pInputChannelSB_SRV);
 
 	for (auto& pElement : m_vecChannels)
 		Safe_AddRef(pElement);
@@ -105,7 +108,7 @@ _bool CModelAnimation::Is_TrackPositionBetween(_float fStartRatio, _float fEndRa
 	return Is_TrackPositionAt(fStartRatio) && (Is_TrackPositionAt(fEndRatio) == false);
 }
 
-_bool CModelAnimation::Update_TransformMatrices(CComputeShader* pAnimECS,_float fTimeDelta, _bool isLoop, CTransform* pOwnerTransform, CPhysicsCCT* pOwnerPhyCCT)
+_bool CModelAnimation::Update_TransformMatrices(CComputeShader* pAnimECS,_float fTimeDelta, _bool isLoop, CTransform* pOwnerTransform, CPhysicsCCT* pOwnerPhyCCT, _uint iTotalBoneNum)
 {
 	// track 계산
 	m_fCurrentTrackPosition += m_fTickPerSecond * fTimeDelta;
@@ -125,7 +128,7 @@ _bool CModelAnimation::Update_TransformMatrices(CComputeShader* pAnimECS,_float 
 	pAnimECS->Bind_Compute_Track(tMuDesc);
 	
 	// dispatch
-	_uint iGroupX = (m_iChannelCount + 31) / 32;
+	_uint iGroupX = (iTotalBoneNum + 31) / 32;
 	pAnimECS->Dispatch(iGroupX, 1, 1);
 
 	//m_iRootChannelIdx
@@ -135,7 +138,7 @@ _bool CModelAnimation::Update_TransformMatrices(CComputeShader* pAnimECS,_float 
 	return false;
 }
 
-void CModelAnimation::Update_BlendAnimation(CComputeShader* pAnimECS, _float fTimeDelta, CTransform* pOwnerTransform, CPhysicsCCT* pOwnerPhyCCT)
+void CModelAnimation::Update_BlendAnimation(CComputeShader* pAnimECS, _float fTimeDelta, CTransform* pOwnerTransform, CPhysicsCCT* pOwnerPhyCCT, _uint iTotalBoneNum)
 {
 	//내 애니메이션 정보 전달
 	Bind_AnimationEData(pAnimECS);
@@ -149,10 +152,11 @@ void CModelAnimation::Update_BlendAnimation(CComputeShader* pAnimECS, _float fTi
 	// 가변 데이터 작성
 	CS_MU_TRACK tMuDesc{};
 	tMuDesc.fCurTrackPosition = m_fCurrentTrackPosition;
+	tMuDesc.iChannelCount = m_iChannelCount;
 	pAnimECS->Bind_Compute_Track(tMuDesc);
 
 	// dispatch
-	_uint iGroupX = (m_iChannelCount + 31) / 32;
+	_uint iGroupX = (iTotalBoneNum + 31) / 32;
 	pAnimECS->Dispatch(iGroupX, 1, 1);
 
 	//m_iRootChannelIdx
@@ -179,6 +183,10 @@ HRESULT CModelAnimation::Ready_Buffers()
 	// 3. struct buffer class 생성
 	m_pKeyFrameBuffer = StructuredBuffer::Create(m_pDevice, m_pDeviceContext, sizeof(CS_IMMU_ANIM_KEYFRAME), m_iKeyFrameBufferSize);
 	m_pChannelDataBuffer = StructuredBuffer::Create(m_pDevice, m_pDeviceContext, sizeof(CS_IMMU_ANIM_CHANNELDATA), m_iChannelSize);
+	
+	if (m_pKeyFrameBuffer == nullptr ||
+		m_pChannelDataBuffer == nullptr)
+		return E_FAIL;
 
 	return S_OK;
 }
@@ -207,6 +215,19 @@ HRESULT CModelAnimation::Ready_BindBuffers(CComputeShader* pAnimESahder)
 
 		// 2.2 채널당 정보이므로 여기서 작성
 		pIniailChannelData[i].iBoneIndex = m_vecChannels[i]->Get_BoneIndex();
+
+
+		// 여기 걸리면 model cs 수정 필요
+		if (m_vecChannels[i]->Get_BoneIndex() < 0)
+		{
+			MSG_BOX("Warnning : Channel Bone Index < 0");
+		}
+
+		if (KeyFrames.size() == 1)
+		{
+			MSG_BOX("Warnning : Channel Frame Has One!!!!!");
+		}
+
 		pIniailChannelData[i].iKeyStart = iKeyAcc;
 		pIniailChannelData[i].iKeyCount = _uint(KeyFrames.size());
 		pIniailChannelData[i].iRootMotionBoneIndex = m_iRootBoneIdx;
@@ -214,7 +235,7 @@ HRESULT CModelAnimation::Ready_BindBuffers(CComputeShader* pAnimESahder)
 		iKeyAcc += _uint(KeyFrames.size());
 
 		// 2.3 root channel 캐싱
-		if ((_uint)i == m_iRootBoneIdx)
+		if (m_vecChannels[i]->Get_BoneIndex() == m_iRootBoneIdx)
 			m_iRootChannelIdx = (_uint)i;
 	}
 

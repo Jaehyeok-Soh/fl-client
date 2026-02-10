@@ -152,10 +152,16 @@ void CChannel::SetUp_PoseData(std::span<LOCALSRT> spanLocalSrtData, _float fCurr
 
 void CChannel::Move_OnwerTransform(_float fCurrentTrackPosition, _uint* pCurrentKeyFrameIndex, CTransform* pOwnerTransform, CPhysicsCCT* pOwnerPhyCCT, const _float fTimeDelta)
 {
-	if (m_bRootBone)
+	//if (m_bRootBone)
 	{
 		if (fCurrentTrackPosition <= 0.f)
 			*pCurrentKeyFrameIndex = 0;
+
+		KEYFRAME lastKeyFrame = m_vecKeyframes.back();
+		if (fCurrentTrackPosition >= lastKeyFrame.fTrackPosition)
+		{
+			return;
+		}
 
 		if (fCurrentTrackPosition >= m_vecKeyframes[(*pCurrentKeyFrameIndex) + 1].fTrackPosition)
 			++(*pCurrentKeyFrameIndex);

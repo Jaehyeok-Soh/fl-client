@@ -3,6 +3,10 @@
 #include "Bone.h"
 #include "Ray.h"
 #include "Shader.h"
+
+#include "ComputeShader.h"
+#include "StructuredBuffer.h"
+
 #include "GameInstance.h"
 
 CMesh::CMesh(ID3D11Device* pDevice, ID3D11DeviceContext* pDeviceContext)
@@ -22,7 +26,16 @@ CMesh::CMesh(const CMesh& rhs)
 	, m_pNormals(rhs.m_pNormals)
 	, m_pSurfaceTypes(rhs.m_pSurfaceTypes)
 {
+
+	//Safe_AddRef(m_pInputKeySB_SRV);
+
 	::strcpy_s(m_szName, rhs.m_szName);
+
+	if (m_eModelType == EModelType::ANIM)
+	{
+		m_pBoneMesh_ImmuBuffer = rhs.m_pBoneMesh_ImmuBuffer;
+		Safe_AddRef(m_pBoneMesh_ImmuBuffer);
+	}
 }
 
 // ModelLoader가 PreMatrix, Bone 등 처리 다 해서 넘기기
@@ -66,11 +79,13 @@ HRESULT CMesh::Initialize_Prototype(void* pArg)
 	}
 
 	HRESULT hr = {};
-	switch (pDesc->eModelType)
+	m_eModelType = pDesc->eModelType;
+	switch (m_eModelType)
 	{
 	case EModelType::ANIM:
 	{
 		hr = Load_AnimVertices(pDesc->spanVertex);
+		Ready_CS_Buffer();
 	} break;
 	case EModelType::NONANIM:
 	{
@@ -159,8 +174,46 @@ HRESULT CMesh::Bind_Bones(CShader* pShader, const vector<CBone*>& vecBones, _uin
 	{
 		m_boneMatrices.transforms[i + iIndexDistance]
 			= m_vecOffsetMatrices[i] * vecBones[m_vecAffectBoneIndices[i]]->Get_CombinedTransformMatrix();
-	}
+	}	
+
 	return pShader->Bind_BoneData(m_boneMatrices);
+}
+
+HRESULT CMesh::Bind_Bones(CShader* pShader, CComputeShader* pBoneMeshCS,CComputeShader* pBoneCombineCS, _uint iTotalBoneNum, _uint iIndexDistance)
+{
+	// null 체크
+	if (pShader			== nullptr ||
+		pBoneMeshCS		== nullptr ||
+		pBoneCombineCS	== nullptr)
+		return E_FAIL;
+
+	// 현재 mesh가 들고 있는 정보 : offsetMat, affect idx 전달
+	pBoneMeshCS->Bind_InputStructuredBuffer(ENUM_TO_UINT(CS_BONEMESH_IDX::IMMU_OFFSETMAT), m_pBoneMeshSB_SRV, m_pBoneMesh_ImmuBuffer);
+
+	// boneCombine 정보 전달
+	pBoneMeshCS->Bind_InputStructuredBuffer(ENUM_TO_UINT(CS_BONEMESH_IDX::MU_COMBINEMAT),
+		pBoneMeshCS->Get_SRV("MU_COMBINEMAT"), pBoneCombineCS->Get_Output_Buffer());
+
+	// 가변 데이터 작성
+	CS_CB_ME_BONEMESH tMuDesc{};
+	tMuDesc.iAffectBoneNums = m_iAffectBoneCount;
+	tMuDesc.iTotalBoneNums = iTotalBoneNum;
+	pBoneMeshCS->Bind_Compute_BoneMeshCB(tMuDesc);
+
+	// dispatch
+	_uint iGroupX = (iTotalBoneNum + 31) / 32;
+	pBoneMeshCS->Dispatch(iGroupX, 1, 1);
+
+	// Compute 셰이더가 들고있는 SRV를, Default Shader한테 SRV 꽂아주기.
+	{
+		ID3D11ShaderResourceView* pResultSRV = pBoneMeshCS->Get_Output_Buffer()->Get_SRV();
+
+		ID3DX11EffectShaderResourceVariable* pSRVar = pShader->Get_SRV("MU_BONEMATS");
+		if (pSRVar)
+			pSRVar->SetResource(pResultSRV);
+	}
+
+	return S_OK;
 }
 
 _bool CMesh::IntsersectWithPlane(OUT Vec3& vOut)
@@ -285,6 +338,45 @@ HRESULT CMesh::Load_NonAnimVertices(std::span<VTXANIMMESH> spanVertex)
 	return S_OK;
 }
 
+HRESULT CMesh::Ready_CS_Buffer()
+{
+	m_pBoneMesh_ImmuBuffer = StructuredBuffer::Create(m_pDevice, m_pDeviceContext, sizeof(CS_IMMU_BONEMESH), static_cast<_uint>(m_vecAffectBoneIndices.size()));
+
+	if (m_pBoneMesh_ImmuBuffer == nullptr)
+		return E_FAIL;
+
+	return S_OK;
+}
+
+HRESULT CMesh::Ready_BindCSBuffer(CComputeShader* pBoneMeshCS)
+{
+	_uint iAffectSize = static_cast<_uint>(m_vecAffectBoneIndices.size());
+	CS_IMMU_BONEMESH* pIniailData = new CS_IMMU_BONEMESH[iAffectSize];
+
+	// 2. 버퍼 내용을 쓴다
+	for (size_t i = 0; i < m_vecAffectBoneIndices.size(); ++i)
+	{
+		pIniailData[i].iAffectBoneIndex = m_vecAffectBoneIndices[i];
+		pIniailData[i].matOffsetTransform = m_vecOffsetMatrices[i];
+		pIniailData[i].Padding0 = Vector3::Zero;
+	}
+
+	// 4. buffer에 값 넣어줌
+	m_pBoneMesh_ImmuBuffer->Copy_Data(pIniailData, sizeof(CS_IMMU_BONEMESH), iAffectSize);
+
+	// 5. 동적배열 정리
+	Safe_Delete_Array(pIniailData);
+
+	// 4. SRV 연결
+	m_pBoneMeshSB_SRV = pBoneMeshCS->Get_SRV("IMMU_OFFSETMAT");
+	m_pBoneMeshSB_SRV->SetResource(m_pBoneMesh_ImmuBuffer->Get_SRV());
+
+	if (m_pBoneMeshSB_SRV == nullptr)
+		return E_FAIL;
+
+	return S_OK;
+}
+
 CMesh* CMesh::Create(ID3D11Device* pDevice, ID3D11DeviceContext* pDeviceContext, void* pArg)
 {
 	CMesh* pInstance = new CMesh(pDevice, pDeviceContext);
@@ -314,5 +406,15 @@ void CMesh::Free()
 		Safe_Delete_Array(m_pNormals);
 		Safe_Delete_Array(m_pSurfaceTypes);
 	}
+
+	if (m_eModelType == EModelType::ANIM)
+	{
+		Safe_Release(m_pBoneMesh_ImmuBuffer);
+		if (IsClone() == false)
+		{
+			Safe_Release(m_pBoneMeshSB_SRV);
+		}
+	}
+
 	Super::Free();
 }
