@@ -85,6 +85,7 @@ public:
 public:
 	StructuredBuffer* Get_Input_Buffer(_uint Index);
 	StructuredBuffer* Get_Output_Buffer();
+	void Set_OutputStructuredBuffer(StructuredBuffer* pSB); // output 버퍼 빼돌리기 위함
 
 public:
 	// Struct Buffer 전용

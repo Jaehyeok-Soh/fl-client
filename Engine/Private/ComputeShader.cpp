@@ -247,6 +247,15 @@ StructuredBuffer* CComputeShader::Get_Output_Buffer()
 	return m_pOutputStructedBuffer;
 }
 
+void CComputeShader::Set_OutputStructuredBuffer(StructuredBuffer* pSB)
+{
+	m_pOutputStructedBuffer = pSB;
+	m_pOutputStructedBuffer_UAV->SetUnorderedAccessView(pSB->Get_UAV());
+
+	//// SRV도 같이 교체
+	//m_pOutputSRV->SetResource(pSB->Get_SRV());
+}
+
 void CComputeShader::Bind_InputStructuredBuffer_Data(_uint iIndex, void* pArg, _uint iElementSize, _uint iNumElements)
 {
 	m_pInputStructuredBuffer[iIndex].second->Copy_Data(pArg, iElementSize, iNumElements);
