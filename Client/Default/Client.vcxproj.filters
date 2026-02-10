@@ -767,13 +767,16 @@
     <FxCompile Include="..\..\Shaders\Shader_CPT_Effect_Particle.hlsl">
       <Filter>04. Shaders\ComputeShader_Labs</Filter>
     </FxCompile>
-    <FxCompile Include="..\..\Shaders\ComShader_BoneUpdate.hlsl">
+    <FxCompile Include="..\..\Shaders\ComShader_BoneCombine.hlsl">
       <Filter>04. Shaders\ComputeShaders\Animation</Filter>
     </FxCompile>
     <FxCompile Include="..\..\Shaders\ComShader_AnimEvaluate.hlsl">
       <Filter>04. Shaders\ComputeShaders\Animation</Filter>
     </FxCompile>
     <FxCompile Include="..\..\Shaders\ComShader_AnimBlend.hlsl">
+      <Filter>04. Shaders\ComputeShaders\Animation</Filter>
+    </FxCompile>
+    <FxCompile Include="..\..\Shaders\ComShader_BoneMesh.hlsl">
       <Filter>04. Shaders\ComputeShaders\Animation</Filter>
     </FxCompile>
   </ItemGroup>

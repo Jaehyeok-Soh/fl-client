@@ -136,12 +136,14 @@ HRESULT CBody::Render()
 	CShader* pShader = Get_Component<CShader>();
 	CModel* pModel = Get_Component<CModel>();
 	_uint iMeshCount = pModel->Get_MeshCount();
+	CComputeShader* pBoneMeshCS = static_cast<CComputeShader*>(Get_Script_Component(TEXT("ComputeShader_BoneMesh")));
+	CComputeShader* pBoneCombineCS = static_cast<CComputeShader*>(Get_Script_Component(TEXT("ComputeShader_BoneCombine")));
 
 	pShader->Bind_TransformData(m_matCombinedWorld);
 	for (_uint i = 0; i < iMeshCount; ++i)
 	{
 		pModel->Bind_Material(pShader, i);
-		pModel->Bind_Bones(pShader, i);
+		pModel->Bind_Bones(pShader, i, pBoneMeshCS, pBoneCombineCS);
 		pShader->Apply();
 		pModel->Render(i);
 	}
@@ -313,6 +315,27 @@ HRESULT CBody::Ready_ComputeShader()
 	// ========   Compute Shader : Bone  ========
 	{
 		CComputeShader::ComShaderCopyDesc ShaderDesc = {};
+		ShaderDesc.Output_SRVBuffer_Name = "BONEFNIMAL_TRANSFORMS_SRV";
+
+		ShaderDesc.InputBufferNum = 2;
+		ShaderDesc.bMakeSB = false;
+		//// 입력 버퍼
+		//ShaderDesc.Input_StructBuffer.sBufferName = "IMMU_BONEDATA";
+		//ShaderDesc.Input_StructBuffer.iElementSize = sizeof(CS_IMMU_BONE);
+		//ShaderDesc.Input_StructBuffer.iNumElements = iBoneNums;
+
+		// 출력 버퍼
+		ShaderDesc.OutPut_StructBuffer.sBufferName	= "BONEFNIMAL_TRANSFORMS";
+		ShaderDesc.OutPut_StructBuffer.iElementSize = sizeof(CS_OUT_BONE);
+		ShaderDesc.OutPut_StructBuffer.iNumElements = iBoneNums;
+
+		if (FAILED(Add_Script_Component(L"ComputeShader_BoneMesh", L"Prototype_Component_Shader_BoneMesh", &ShaderDesc)))
+			return E_FAIL;
+	}
+
+	// ========   Compute Shader : Bone  ========
+	{
+		CComputeShader::ComShaderCopyDesc ShaderDesc = {};
 		ShaderDesc.Output_SRVBuffer_Name = "BONECOMBINED_TRANSFORMS_SRV";
 
 		ShaderDesc.InputBufferNum = 3;
@@ -372,9 +395,12 @@ HRESULT CBody::Ready_ComputeShader()
 			return E_FAIL;
 	}
 
+	CComputeShader* pBoneMeshCS = static_cast<CComputeShader*>(Get_Script_Component(TEXT("ComputeShader_BoneMesh")));
+	CComputeShader* pBonCombineCS = static_cast<CComputeShader*>(Get_Script_Component(TEXT("ComputeShader_BoneCombine")));
+	CComputeShader* pAnimECS = static_cast<CComputeShader*>(Get_Script_Component(TEXT("ComputeShader_AnimE")));
 
-	if (FAILED(Get_Component<CModel>()->Ready_CSs(static_cast<CComputeShader*>(Get_Script_Component(L"ComputeShader_BoneCombine")),
-		static_cast<CComputeShader*>(Get_Script_Component(L"ComputeShader_AnimE")))))
+
+	if (FAILED(Get_Component<CModel>()->Ready_CSs(pBoneMeshCS, pBonCombineCS, pAnimECS)))
 		return E_FAIL;
 
 	return S_OK;
