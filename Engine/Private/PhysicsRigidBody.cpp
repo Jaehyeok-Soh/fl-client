@@ -59,10 +59,96 @@ void CPhysicsRigidBody::Awake()
 	}
 }
 
-void CPhysicsRigidBody::Update()
+void CPhysicsRigidBody::Update(const Matrix& matWorld)
 {
 	// TODO : get rigidbody state
 	// TODO : set transform
+}
+
+CPhysicsRigidBody* CPhysicsRigidBody::SetUserData(_uint iIndex, CGameObject* pObject)
+{
+	m_pActors[iIndex]->userData = static_cast<void*>(pObject);
+
+	return this;
+}
+
+CPhysicsRigidBody* CPhysicsRigidBody::SetUserData(CGameObject* pObject)
+{
+	void* userData = static_cast<void*>(pObject);
+
+	for (auto& actor : m_pActors)
+		actor->userData = userData;
+
+	return this;
+}
+
+CPhysicsRigidBody* CPhysicsRigidBody::SetTransform(_uint iIndex, const Matrix& matWorld)
+{
+	if (m_tDesc.eType != EPhysicsActorType::KINEMATIC)
+		return this;
+
+	return this;
+}
+
+CPhysicsRigidBody* CPhysicsRigidBody::SetTransform(const Matrix& matWorld)
+{
+	if (m_tDesc.eType != EPhysicsActorType::KINEMATIC)
+		return this;
+
+	return this;
+}
+
+CPhysicsRigidBody* CPhysicsRigidBody::SetPosition(_uint iIndex, Vec3 vCenter)
+{
+	if (m_tDesc.eType != EPhysicsActorType::KINEMATIC)
+		return this;
+
+	return this;
+}
+
+CPhysicsRigidBody* CPhysicsRigidBody::SetPosition(Vec3 vCenter)
+{
+	if (m_tDesc.eType != EPhysicsActorType::KINEMATIC)
+		return this;
+
+	return this;
+}
+
+CPhysicsRigidBody* CPhysicsRigidBody::Rotation(_uint iIndex, Quat vQuat)
+{
+	if (m_tDesc.eType != EPhysicsActorType::KINEMATIC)
+		return this;
+
+	return this;
+}
+
+CPhysicsRigidBody* CPhysicsRigidBody::Rotation(Quat vQuat)
+{
+	if (m_tDesc.eType != EPhysicsActorType::KINEMATIC)
+		return this;
+
+	return this;
+}
+
+CPhysicsRigidBody* CPhysicsRigidBody::Move(_uint iIndex, Vec3 vDist, _float fTimeDelta)
+{
+	if (m_tDesc.eType != EPhysicsActorType::KINEMATIC)
+		return this;
+
+	return this;
+}
+
+CPhysicsRigidBody* CPhysicsRigidBody::Move(Vec3 vDist, _float fTimeDelta)
+{
+	if (m_tDesc.eType != EPhysicsActorType::KINEMATIC)
+		return this;
+
+	return this;
+}
+
+CPhysicsRigidBody* CPhysicsRigidBody::Shot(_uint iIndex, Vec3 vDist, _float fTimeDelta)
+{
+	return this;
 }
 
 #ifdef _DEBUG

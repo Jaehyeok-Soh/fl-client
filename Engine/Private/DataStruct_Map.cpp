@@ -11,27 +11,28 @@ using json = nlohmann::json;
 
 NS_BEGIN(Engine)
 
-json CData_StaticModel::ToJson() const
-{
-    return json(m_tData);
-}
 
-HRESULT CData_StaticModel::FromJson(const json& j)
-{
-    m_tData = j.get<DTO::STATICMODEL_DATA>();
-    return S_OK;
-}
 
-json CData_InstanceModel::ToJson() const
+json CData_MapObject::ToJson() const
 {
 	return json(m_tData);
 }
 
-HRESULT CData_InstanceModel::FromJson(const json& j)
+HRESULT CData_MapObject::FromJson(const json& j)
 {
-	m_tData = j.get<DTO::InstanceModel_Data>();
+	m_tData = j.get<DTO::TMap_MapObjectData>();
 	return S_OK;
 }
+
+void CData_MapObject::Free()
+{
+	for (auto& Desc : m_tData.vecClientMakePathDesc)
+
+		Safe_Delete(Desc);
+
+	Super::Free();
+}
+
 
 NS_END
 
@@ -146,51 +147,136 @@ void to_json(json& SaveJson, const USING_MODEL_INFO& tData)
 		}
 	}
 }
+
 #pragma endregion
 
 #pragma region Map_StaticModleData
-void to_json(json& SaveJson, const TMap_StaticModelData& tData)
+inline void to_json(json& SaveJson, const DTO::TMap_MapObjectData& tData)
 {
 	SaveJson = json
 	{
-		{ "Type", TMap_StaticModelData::eType },
 		{ "strTag", tData.strTag },
-		{ "SRT" , tData.tSRTData},
-		{ "Using Model Info", tData.tUsingModelInfo}
+		{ "UE Loaded"  , tData.isUELoaded},
+		{ "Draw Type" , tData.eMapObjectDrawType},
+		{ "Client Make Path" , tData.eClientMakePath},
+		{ "Client Level Type", tData.eClientLevelType},
+		{ "Model Path" , tData.strModelPath},
+		{ "SRT" , tData.vecSRTs},
 	};
+
+	if (!tData.vecClientMakePathDesc.empty())
+	{
+		if (IsExist_ClientMakePathDesc(static_cast<DTO::EClientMakePath>(tData.eClientMakePath)))
+		{
+			auto& DescJson = SaveJson["Client Make Path Desc"];
+
+			for (auto& Desc : tData.vecClientMakePathDesc)
+			{
+				json BufferJson = json::object();
+
+				if (!Desc)
+				{
+					DescJson.push_back(nullptr);
+					continue;
+				}
+				Desc->to_Json(BufferJson);
+				DescJson.push_back(BufferJson);
+			}
+		}
+	}
+
 }
-void from_json(const json& LoadJson, TMap_StaticModelData& tData)
+
+inline void from_json(const json& LoadJson, DTO::TMap_MapObjectData& tData)
 {
 	LoadJson.at("strTag").get_to(tData.strTag);
+
+	if (LoadJson.contains("UE Loaded"))
+		tData.isUELoaded =  LoadJson["UE Loaded"].get<_bool>();
+
+
+	/* Type 3개  */
+	if (LoadJson.contains("Draw Type"))
+		LoadJson["Draw Type"].get_to(tData.eMapObjectDrawType);
+
+	if (LoadJson.contains("Client Make Path"))
+		LoadJson["Client Make Path"].get_to(tData.eClientMakePath);
+
+	if (LoadJson.contains("Client Level Type"))
+		LoadJson["Client Level Type"].get_to(tData.eClientLevelType);
+
+
+	if (LoadJson.contains("Model Path"))
+		tData.strModelPath = LoadJson["Model Path"].get<string>();
+
+
 	if (LoadJson.contains("SRT"))
-		tData.tSRTData = LoadJson["SRT"];
-	if (LoadJson.contains("Using Model Info"))
-		tData.tUsingModelInfo = LoadJson["Using Model Info"];
+		tData.vecSRTs = LoadJson["SRT"].get<vector<SRT_DATA>>();
+
+	if (LoadJson.contains("Client Make Path Desc"))
+	{
+		for (auto& DescJson : LoadJson["Client Make Path Desc"])
+		{
+			if (DescJson.is_null()) continue;
+			CLIENT_MAKEPATH_DESC_BASE* pDescBase = Engine::Create_ClientMakePathDesc(static_cast<DTO::EClientMakePath>(tData.eClientMakePath),nullptr);
+			if (!pDescBase) continue;
+			pDescBase->from_Json(DescJson);
+			tData.vecClientMakePathDesc.push_back(pDescBase);
+		} 
+	}
 }
 #pragma endregion
 
-#pragma region Map InstanceModle
-void to_json(json& SaveJson, const TMap_InstanceModelData& tData)
-{
-	SaveJson = json
-	{
-		{ "Type", tData.eType },
-		{ "strTag", tData.strTag },
-		{ "Usage" , Engine_Utils::D3D11_USAGE_ToString(tData.eInstance_Usage)},
-		{ "SRTs" , tData.vecSRTData},
-		{ "Using Model Info", tData.tUsingModelInfo}
-	};
-}
-void from_json(const json& LoadJson, TMap_InstanceModelData& tData)
-{
-	LoadJson.at("strTag").get_to(tData.strTag);
-	if (LoadJson.contains("Usage"))
-		Engine_Utils::D3D11_USAGE_ToEnum(LoadJson["Usage"].get<string>());
-	if (LoadJson.contains("SRTs"))
-		tData.vecSRTData = LoadJson["SRTs"];
-	if (LoadJson.contains("Using Model Info"))
-		tData.tUsingModelInfo = LoadJson["Using Model Info"];
-}
-#pragma endregion
 NS_END
 
+
+
+#pragma region Client Make Path Desc
+
+
+NS_BEGIN(Engine)
+
+
+inline CLIENT_MAKEPATH_DESC_BASE* Create_ClientMakePathDesc(DTO::EClientMakePath ePath , CLIENT_MAKEPATH_DESC_BASE* pSource)
+{
+	switch (ePath)
+	{
+	case DTO::EClientMakePath::StaticObject: return pSource == nullptr ? new STATICOBJECT_DESC : new STATICOBJECT_DESC(*static_cast<STATICOBJECT_DESC*>(pSource));
+	case DTO::EClientMakePath::Test:		 return nullptr;
+	default:								 return nullptr;
+	}
+
+	return nullptr;
+}
+
+inline _bool IsExist_ClientMakePathDesc(DTO::EClientMakePath ePath)
+{
+	CLIENT_MAKEPATH_DESC_BASE* pCheck = Create_ClientMakePathDesc( ePath , nullptr);
+	/* Description이 있는지 없는지 체크하는기능 */
+	if (pCheck)
+	{
+		Safe_Delete(pCheck);
+		return true;
+	}
+	return false;
+}
+
+
+
+void STATICOBJECT_DESC::from_Json(const json& LoadJson)
+{
+	/* Desc 키값으로 들어온다 */
+	this->wstrTest = Engine_Utils::ToWString(LoadJson["Test"].get<string>());
+	return;
+}
+
+void STATICOBJECT_DESC::to_Json(json& SaveJson)
+{
+	SaveJson["Test"] = Engine_Utils::ToString(this->wstrTest);
+
+	return;
+}
+
+#pragma endregion
+
+NS_END

@@ -412,6 +412,8 @@ HRESULT CToolUI::Request_Change_Texture()
 {
 	if (FAILED(Get_Component<CTexture>()->Add_DefaultTexture(m_wstrTextureTag, 0)))
 		return E_FAIL;
+
+	return S_OK;
 }
 
 void CToolUI::Request_Chnage_ShaderPass(uint32_t pass)

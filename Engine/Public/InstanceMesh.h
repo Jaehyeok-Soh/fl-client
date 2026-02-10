@@ -29,6 +29,7 @@ public:
 	virtual void	Render()		override;
 	void			Unbind_Resource(_uint iSlotNum);
 public:
+	HRESULT			ReMake_InstanceBuffer(vector<Matrix>* vecInstanceMatrixPointer);
 	void			Update_Matrix(const Matrix& WorldMatrix, _uint iIndex);
 	void			Update_Matrix(const vector<Matrix>& vMatrix , _uint iIndex);
 public:

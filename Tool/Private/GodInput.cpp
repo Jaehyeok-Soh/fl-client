@@ -34,6 +34,10 @@ void CGodInput::Update(const _float fTimeDelta)
     if (m_isGodStop)
         return;
    
+    //ImGuiIO& io =  ImGui::GetIO();
+    //if (io.WantCaptureKeyboard)
+    //    return;
+    
 
     if (KEY_BUTTON_HOLD(DIK_W))
     {

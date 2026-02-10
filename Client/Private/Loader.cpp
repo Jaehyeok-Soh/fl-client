@@ -28,6 +28,9 @@
 #include "Builder_Example.h"
 #include "Builder_UI.h"
 #include "BuilderSystem.h"
+#include "Builder_AttackOverlap.h"
+#include "DataStruct_AttackOverlap.h"
+#include "DataDocument_AttackOverlap.h"
 
 //=================
 // Object
@@ -43,8 +46,9 @@
 #include "Effect.h"
 #include "EffectObject.h"
 #include "Physics_LandScape.h" // physics test
-#include "StaticModel.h"
-#include "InstanceModel.h"
+#include "StaticObject.h"
+#include "Monster_Dummy.h" // test
+
 //=================
 // UI
 //=================
@@ -81,6 +85,8 @@ CLoader::CLoader(ID3D11Device* pDevice, ID3D11DeviceContext* pDeviceContext, ELe
 
 HRESULT CLoader::Initailize()
 {
+	m_pBuilderSystem = CBuilderSystem::Create();
+
 	try
 	{
 		m_LoadingThread = std::thread(
@@ -145,8 +151,16 @@ HRESULT CLoader::Loading_For_Logo()
 
 			if (FAILED(m_pGameInstance->Regist_Document<CDataDocument_UI>(ENUM_TO_UINT(ELevelType::LOGO), DTO::ECategory::MAP)))
 				return E_FAIL;
+
+			if (FAILED(m_pGameInstance->Regist_Document<CDataDocument_AttackOverlap>(ENUM_TO_UINT(ELevelType::LOGO), DTO::ECategory::OVERLAP_SCRIPT)))
+				return E_FAIL;
 		}
 
+		// Build prototype
+		{
+			if (FAILED(Build_Prototype()))
+				return E_FAIL;
+		}
 
 		// Read Json
 		{
@@ -168,7 +182,7 @@ HRESULT CLoader::Loading_For_Logo()
 		//if (FAILED(m_pGameInstance->Load_Sounds(L"../../Resources/Sounds")))
 		//	return E_FAIL;
 
-		//if (FAILED(Make_StaticModel_Prototype(ELevelType::LOGO, L"../../Resources/Models/Map/TestMap")))
+		//if (FAILED(Make_StaticObject_Prototype(ELevelType::LOGO, L"../../Resources/Models/Map/TestMap")))
 		//	return E_FAIL;
 	}
 	if (FAILED(m_pGameInstance->Load_Sounds(L"../../Resources/Sounds")))
@@ -255,9 +269,10 @@ HRESULT CLoader::Loading_For_Logo()
 		ADD_PROTOTYPE(ELevelType::LOGO, L"Prototype_GameObject_Effect_Parts", CEffectObject::Create(m_pDevice, m_pDeviceContext));
 
 		/* Map Object */
-		ADD_PROTOTYPE(ELevelType::STATIC, L"Prototype_GameObject_StaticModel", CStaticModel::Create(m_pDevice, m_pDeviceContext));
-		ADD_PROTOTYPE(ELevelType::STATIC, L"Prototype_GameObject_InstanceModel", CInstanceModel::Create(m_pDevice, m_pDeviceContext));
+		ADD_PROTOTYPE(ELevelType::STATIC, L"Prototype_GameObject_StaticObject", CStaticObject::Create(m_pDevice, m_pDeviceContext));
 
+		/* Monster Object */
+		ADD_PROTOTYPE(ELevelType::LOGO, L"Prototype_GameObject_Monster_Dummy", CMonster_Dummy::Create(m_pDevice, m_pDeviceContext));
 	}
 #pragma endregion
 
@@ -364,7 +379,7 @@ HRESULT CLoader::Loading_Texture(const wstring& wstrFile)
 	return S_OK;
 }
 
-HRESULT CLoader::Make_StaticModel_Prototype(ELevelType eLevelType, const wstring& wstrFilePath)
+HRESULT CLoader::Make_StaticObject_Prototype(ELevelType eLevelType, const wstring& wstrFilePath)
 {
 	std::filesystem::path filePath{ wstrFilePath };
 	filePath /= "Model";
@@ -397,6 +412,40 @@ HRESULT CLoader::Make_StaticModel_Prototype(ELevelType eLevelType, const wstring
 	return S_OK;
 }
 
+HRESULT CLoader::Build_Prototype()
+{
+	if (FAILED(m_pBuilderSystem->Ready_Builder(DTO::ECategory::OVERLAP_SCRIPT, CBuilder_AttackOverlap::Create(m_pDevice, m_pDeviceContext, ENUM_TO_UINT(ELevelType::LOGO)))))
+		return E_FAIL;
+
+	if (FAILED(Build_Files()))
+		return E_FAIL;
+}
+
+HRESULT CLoader::Build_Files()
+{
+	if (FAILED(Ready_AttackOverlap()))
+		return E_FAIL;
+}
+
+HRESULT CLoader::Ready_AttackOverlap()
+{
+	ELevelType eLevelType = ELevelType::LOGO;
+	DTO::ECategory eCategory = DTO::ECategory::OVERLAP_SCRIPT;
+	_uint iLevelID = ENUM_TO_UINT(eLevelType);
+
+	std::filesystem::path FilePath = L"../../Resources/Data/AttackOverlapData/PlayerMoon_155_Animations_Fixed.json";
+	vector<path> vecfiles;
+
+	if (!std::filesystem::exists(FilePath))
+		return E_FAIL;
+
+	if (FAILED(m_pGameInstance->Load_File_Json(iLevelID, eCategory, FilePath)))
+		return E_FAIL;
+
+	if (FAILED(m_pBuilderSystem->Build_File(iLevelID, eCategory, FilePath.stem().string())))
+		return E_FAIL;
+}
+
 CLoader* CLoader::Create(ID3D11Device* pDevice, ID3D11DeviceContext* pDeviceContext, ELevelType eLoadingLevelID)
 {
 	CLoader* pInstance = new CLoader(pDevice, pDeviceContext, eLoadingLevelID);
@@ -417,6 +466,7 @@ void CLoader::Free()
 		m_LoadingThread.join();
 	}
 
+	Safe_Release(m_pBuilderSystem);
 	Safe_Release(m_pGameInstance);
 	Safe_Release(m_pDeviceContext);
 	Safe_Release(m_pDevice);

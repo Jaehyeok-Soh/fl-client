@@ -244,6 +244,12 @@
     <Filter Include="03. GameObject\UIObjects\02.UI\Text">
       <UniqueIdentifier>{4c552970-7965-46f3-85ec-73d256c4eba8}</UniqueIdentifier>
     </Filter>
+    <Filter Include="07. System\01. Builder\Builder_AttackOverlap">
+      <UniqueIdentifier>{c1589ec0-b521-4810-8e66-71ed1cf97227}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="03. GameObject\ContainerObjects\Monster">
+      <UniqueIdentifier>{a9cba2b5-38c2-4050-8518-588960127889}</UniqueIdentifier>
+    </Filter>
     <Filter Include="03. GameObject\UIObjects\02.UI\Trigger">
       <UniqueIdentifier>{48b4a088-d124-4a5f-a826-7eac6ea855f7}</UniqueIdentifier>
     </Filter>
@@ -408,14 +414,11 @@
     <ClInclude Include="..\Public\MapObject.h">
       <Filter>03. GameObject\MapObject\00. MapObject</Filter>
     </ClInclude>
-    <ClInclude Include="..\Public\StaticModel.h">
+    <ClInclude Include="..\Public\StaticObject.h">
       <Filter>03. GameObject\MapObject\01. StaticModel</Filter>
     </ClInclude>
     <ClInclude Include="..\Public\Builder_Map.h">
       <Filter>07. System\01. Builder\Map</Filter>
-    </ClInclude>
-    <ClInclude Include="..\Public\InstanceModel.h">
-      <Filter>03. GameObject\MapObject\02. InstanceModel</Filter>
     </ClInclude>
     <ClInclude Include="..\Public\imconfig.h">
       <Filter>99. ETC\01. ImGui</Filter>
@@ -484,6 +487,14 @@
     <ClInclude Include="..\Public\UIText.h">
       <Filter>03. GameObject\UIObjects\02.UI\Text</Filter>
     </ClInclude>
+    <ClInclude Include="..\Public\ImGui_FrameLayout.h">
+      <Filter>99. ETC</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\Builder_AttackOverlap.h">
+      <Filter>07. System\01. Builder\Builder_AttackOverlap</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\Monster_Dummy.h">
+      <Filter>03. GameObject\ContainerObjects\Monster</Filter>
     <ClInclude Include="..\Public\UITrigger.h">
       <Filter>03. GameObject\UIObjects\02.UI\Trigger</Filter>
     </ClInclude>
@@ -646,14 +657,11 @@
     <ClCompile Include="..\Private\MapObject.cpp">
       <Filter>03. GameObject\MapObject\00. MapObject</Filter>
     </ClCompile>
-    <ClCompile Include="..\Private\StaticModel.cpp">
+    <ClCompile Include="..\Private\StaticObject.cpp">
       <Filter>03. GameObject\MapObject\01. StaticModel</Filter>
     </ClCompile>
     <ClCompile Include="..\Private\Builder_Map.cpp">
       <Filter>07. System\01. Builder\Map</Filter>
-    </ClCompile>
-    <ClCompile Include="..\Private\InstanceModel.cpp">
-      <Filter>03. GameObject\MapObject\02. InstanceModel</Filter>
     </ClCompile>
     <ClCompile Include="..\Private\imgui_widgets.cpp">
       <Filter>99. ETC\01. ImGui</Filter>
@@ -716,6 +724,14 @@
     <ClCompile Include="..\Private\UIText.cpp">
       <Filter>03. GameObject\UIObjects\02.UI\Text</Filter>
     </ClCompile>
+    <ClCompile Include="..\Private\ImGui_FrameLayout.cpp">
+      <Filter>99. ETC</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\Builder_AttackOverlap.cpp">
+      <Filter>07. System\01. Builder\Builder_AttackOverlap</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\Monster_Dummy.cpp">
+      <Filter>03. GameObject\ContainerObjects\Monster</Filter>
     <ClCompile Include="..\Private\UITrigger.cpp">
       <Filter>03. GameObject\UIObjects\02.UI\Trigger</Filter>
     </ClCompile>

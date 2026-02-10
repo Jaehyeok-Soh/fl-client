@@ -169,8 +169,7 @@ namespace Client
 
 	enum class EMapObject_Type
 	{
-		STATICMODEL,
-		INSTANCEMODEL,
+		StaticObject,
 		END,
 	};
 
@@ -229,6 +228,7 @@ namespace Client
 
 #pragma region MapObject
 
+
 	/* Tool°ú 1¤§1 ´ëÀÀ */
 	static _uint Get_IndexByMaterialSlotName(const wstring& wstrSlotName)
 	{
@@ -248,6 +248,18 @@ namespace Client
 		return 0;
 	}
 	
+
+	enum class EMapObject_DrawType
+	{
+		Collider,
+		Default,
+		Instance,
+		END,
+	};
+
+	
+
+
 
 #pragma	endregion
 
@@ -403,7 +415,7 @@ namespace Client
 
 	inline constexpr wchar_t g_wszTriggerBoxLayer[]{ L"TriggerBox_Layer" };
 	inline constexpr wchar_t g_wszColMeshLayer[]{ L"ColMesh_Layer" };
-	inline constexpr wchar_t g_wszStaticModelLayer[]{ L"StaticModel_Layer" };
+	inline constexpr wchar_t g_wszStaticObjectLayer[]{ L"StaticObject_Layer" };
 	inline constexpr wchar_t g_wszInstanceModelLayer[]{ L"InstanceModel_Layer" };
 	inline constexpr wchar_t g_wszBossLayer[]{ L"Boss_Layer" };
 	inline constexpr wchar_t g_wszPlayerLayer[]{ L"Player_Layer" };

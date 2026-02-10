@@ -52,7 +52,12 @@ HRESULT CPanel_MapTool::Render(CToolObject* pGo)
 
 	if (ImGui::CollapsingHeader(" Map Tool Setting "))
 	{
-		if (FAILED(Render_ChekcAndBind()))
+		if (FAILED(Render_CheckAndBind()))
+		{
+			ImGui::TreePop();
+			return E_FAIL;
+		}
+		if (FAILED(Render_MakeMapObjectSetting()))
 		{
 			ImGui::TreePop();
 			return E_FAIL;
@@ -78,16 +83,131 @@ HRESULT CPanel_MapTool::Render_RaySetting()
 	return S_OK;
 }
 
-HRESULT CPanel_MapTool::Render_ChekcAndBind()
+HRESULT CPanel_MapTool::Render_CheckAndBind()
 {
 	ImGui::SeparatorText(" Chekc Static & Instance Model  Merget InstanceModel ");
 
-
+	/* UE Model Data 전용 */
 	if (ImGui::Button(" Bind Staitc & Instance Model To Instance Model "))
-		m_pMapToolManager->Check_And_Bind();
+		m_pMapToolManager->Check_And_Bind_FromUE();
 
 
 	ImGui::Separator();
+	return S_OK;
+}
+
+HRESULT CPanel_MapTool::Render_MakeMapObjectSetting()
+{
+
+	ImGui::SeparatorText(" Map Object Batch Mode ");
+
+#pragma region Batch Mode
+
+	ImGui::NewLine();
+
+	m_iBuffer = static_cast<_int>(m_pMapToolManager->Get_MapToolObjectBatchMode());
+	m_strBuffer = MapToolObjectBatchMode_ToString(static_cast<EMapToolObjectBatchMode>(m_iBuffer));
+	if (ImGui::BeginCombo("##MapObjectBatchMode", m_strBuffer.c_str()))
+	{
+		for (_int i = 0; i < static_cast<_uint>(EMapToolObjectBatchMode::END); ++i)
+		{
+			bool isSelected = i == m_iBuffer;
+			if (ImGui::Selectable(MapToolObjectBatchMode_ToString(static_cast<EMapToolObjectBatchMode>(i)).c_str(), &isSelected))
+				m_pMapToolManager->Set_MapToolObjectBatchMode(static_cast<EMapToolObjectBatchMode>(i));
+			if (isSelected)
+				ImGui::SetItemDefaultFocus();
+		}
+		ImGui::EndCombo();
+	}
+
+
+	if (ImGui::TreeNode(" Brush Option Setting "))
+	{
+		m_pMapToolManager->m_tBrushModeOption.Render_ImGui();
+		ImGui::TreePop();
+	}
+
+	ImGui::NewLine();
+
+	ImGui::Separator();
+
+#pragma endregion
+
+	ImGui::SeparatorText("Make Map Object Setting");
+
+	ImGui::NewLine();
+
+	ImGui::SeparatorText(" Level Type ");
+
+#pragma region Draw Type
+
+	m_iBuffer = static_cast<_int>(m_pMapToolManager->Get_MakeMapObejctClientLevelType());
+	m_strBuffer = ClientleveltypeToString(static_cast<EClientLevelType>(m_iBuffer));
+	if (ImGui::BeginCombo("##ClientLevelType", m_strBuffer.c_str()))
+	{
+		for (_int i = 0; i < static_cast<_uint>(EClientLevelType::END); ++i)
+		{
+			bool isSelected = i == m_iBuffer;
+			if (ImGui::Selectable(ClientleveltypeToString(static_cast<EClientLevelType>(i)).c_str(), &isSelected))
+				m_pMapToolManager->Set_MakeMapObjectClientLevelType(static_cast<EClientLevelType>(i));
+			if (isSelected)
+				ImGui::SetItemDefaultFocus();
+		}
+		ImGui::EndCombo();
+	}
+
+#pragma endregion
+
+	ImGui::Separator();
+
+
+	ImGui::SeparatorText(" Draw Type ");
+
+#pragma region Draw Type
+
+	m_iBuffer = static_cast<_int>(m_pMapToolManager->Get_MakeMapObjectDrawType());
+	m_strBuffer = EMapObject_DrawType_ToString(static_cast<EMapObject_DrawType>(m_iBuffer));
+	if (ImGui::BeginCombo("##DrawType", m_strBuffer.c_str()))
+	{
+		for (_int i = 0; i < static_cast<_uint>(EMapObject_DrawType::END); ++i)
+		{
+			bool isSelected = i == m_iBuffer;
+			if (ImGui::Selectable(EMapObject_DrawType_ToString(static_cast<EMapObject_DrawType>(i)).c_str(), &isSelected))
+				m_pMapToolManager->Set_MakeMapObjectDrawType(static_cast<EMapObject_DrawType>(i));
+			if (isSelected)
+				ImGui::SetItemDefaultFocus();
+		}
+
+		ImGui::EndCombo();
+	}
+
+
+#pragma endregion
+
+	ImGui::Separator();
+
+	ImGui::SeparatorText(" Cliet Make Path Setting ");
+
+#pragma region Client Make Path Combo
+	m_iBuffer = static_cast<_int>(m_pMapToolManager->Get_MakeMapObjectClientMakePath());
+	m_strBuffer = ClientMakePath_ToString(static_cast<EClientMakePath>(m_iBuffer));
+	if (ImGui::BeginCombo("##ClientMakePath", m_strBuffer.c_str()))
+	{
+		for (_int i = 0; i < static_cast<_uint>(EClientMakePath::END); ++i)
+		{
+			bool isSelected = i == m_iBuffer;
+			if (ImGui::Selectable(ClientMakePath_ToString(static_cast<EClientMakePath>(i)).c_str(), &isSelected))
+				m_pMapToolManager->Set_MakeMapObjectClientMakePath(static_cast<EClientMakePath>(i));
+			if (isSelected)
+				ImGui::SetItemDefaultFocus();
+		}
+		ImGui::EndCombo();
+	}
+#pragma endregion
+
+	ImGui::Separator();
+
+
 	return S_OK;
 }
 
@@ -138,7 +258,7 @@ HRESULT CPanel_MapTool::Render_CameraSetting()
 		if (ImGui::DragFloat(" Move Speed ", &fMoveSpeed, 0.1f))
 			pTransform->Set_MovePerSec(fMoveSpeed);
 
-		if (ImGui::DragFloat(" Rotation Speed ", &fMoveSpeed, 0.1f))
+		if (ImGui::DragFloat(" Rotation Speed ", &fMoveTurnSpeed, 0.1f))
 			pTransform->Set_RotatePerSec(fMoveTurnSpeed);
 
 
@@ -164,9 +284,64 @@ HRESULT CPanel_MapTool::Render_PreViewInfo()
 	ImGui::Separator();
 
 	if (ImGui::Button(" Delete "))
+	{
 		m_pMapToolManager->Delete_Preview();
+		ImGui::End();
+		return S_OK;
+	}
 
 	ImGui::Separator();
+
+	ImGui::NewLine();
+
+	ImGui::SeparatorText(" Model Info ");
+
+	ImGui::Text( " Model Name => [ %s ] " , m_pMapToolManager->m_pPreviewMapobject->Get_ModelFileName().c_str());
+
+	ImGui::Separator();
+
+	Vec3 vScale,vPosition;
+	Quat vQuat{};
+
+	m_pMapToolManager->m_pPreviewMapobject->Get_SRT(vScale, vQuat,vPosition);
+
+
+	if (ImGui::BeginTable("SRT_Quat_Display", 5, ImGuiTableFlags_BordersInnerV | ImGuiTableFlags_RowBg))
+	{
+		// 헤더 설정
+		ImGui::TableSetupColumn("Type", ImGuiTableColumnFlags_WidthFixed, 80.0f);
+		ImGui::TableSetupColumn("X", ImGuiTableColumnFlags_WidthStretch);
+		ImGui::TableSetupColumn("Y", ImGuiTableColumnFlags_WidthStretch);
+		ImGui::TableSetupColumn("Z", ImGuiTableColumnFlags_WidthStretch);
+		ImGui::TableSetupColumn("W", ImGuiTableColumnFlags_WidthStretch);
+		ImGui::TableHeadersRow();
+
+		// --- Position 행 ---
+		ImGui::TableNextRow();
+		ImGui::TableSetColumnIndex(0); ImGui::TextUnformatted("Position");
+		ImGui::TableSetColumnIndex(1); ImGui::TextColored(ImVec4(1.0f, 0.4f, 0.4f, 1.0f), "%.2f", vPosition.x);
+		ImGui::TableSetColumnIndex(2); ImGui::TextColored(ImVec4(0.4f, 1.0f, 0.4f, 1.0f), "%.2f", vPosition.y);
+		ImGui::TableSetColumnIndex(3); ImGui::TextColored(ImVec4(0.4f, 0.4f, 1.0f, 1.0f), "%.2f", vPosition.z);
+		ImGui::TableSetColumnIndex(4); ImGui::TextUnformatted("-"); // Position은 W가 없음
+
+		// --- Rotation 행 (Quaternion) ---
+		ImGui::TableNextRow();
+		ImGui::TableSetColumnIndex(0); ImGui::TextUnformatted("Quat Rot");
+		ImGui::TableSetColumnIndex(1); ImGui::Text("%.4f", vQuat.x);
+		ImGui::TableSetColumnIndex(2); ImGui::Text("%.4f", vQuat.y);
+		ImGui::TableSetColumnIndex(3); ImGui::Text("%.4f", vQuat.z);
+		ImGui::TableSetColumnIndex(4); ImGui::Text("%.4f", vQuat.w);
+
+		// --- Scale 행 ---
+		ImGui::TableNextRow();
+		ImGui::TableSetColumnIndex(0); ImGui::TextUnformatted("Scale");
+		ImGui::TableSetColumnIndex(1); ImGui::Text("%.2f", vScale.x);
+		ImGui::TableSetColumnIndex(2); ImGui::Text("%.2f", vScale.y);
+		ImGui::TableSetColumnIndex(3); ImGui::Text("%.2f", vScale.z);
+		ImGui::TableSetColumnIndex(4); ImGui::TextUnformatted("-"); // Scale도 W가 없음
+
+		ImGui::EndTable();
+	}
 
 
 	m_pMapToolManager->DrawImGui_Preview();

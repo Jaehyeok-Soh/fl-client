@@ -24,7 +24,7 @@ private:
 	HRESULT	Render_MapObjectList();
 	HRESULT	Render_CamInfo();
 	HRESULT	Render_SelectInfo();
-	HRESULT Render_FileMoustRightButton(const wstring& wstrPath);
+	HRESULT Render_MakeModelFilePath(const wstring& wstrPath);
 private:
 	void						FloderWindow();
 	void						FileWindow();

@@ -4,6 +4,8 @@
 NS_BEGIN(Engine)
 
 class CPhysics_ResourceManager;
+class CPhysics_UserHitReport;
+class CPhysics_NPCHitReport;
 
 class CPhysics_CCTManager final : public CBase
 {
@@ -50,6 +52,9 @@ private:
     PxPhysics* m_pPhysics = { nullptr };
     PxScene* m_pScene = { nullptr };
     PxControllerManager* m_pControllerManager = { nullptr };
+
+    CPhysics_UserHitReport* m_pUserHitReport = { nullptr };
+    CPhysics_NPCHitReport* m_pNPCHitReport = { nullptr };
 
 public:
     static CPhysics_CCTManager* Create(ID3D11Device* pDevice, ID3D11DeviceContext* pContext, PxPhysics* pPhysics, PxScene* pScene, CPhysics_ResourceManager* pResourceManager);

@@ -1,6 +1,5 @@
 #include "pch.h"
 #include "Builder_UI.h"
-
 #include "Canvas.h"
 #include "GenericUI.h"
 #include "UIProgress_Bar.h"

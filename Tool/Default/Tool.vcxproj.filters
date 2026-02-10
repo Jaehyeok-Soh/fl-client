@@ -226,15 +226,6 @@
     <Filter Include="02. GameObjects\Map\00. MapObject\02. InstanceModel">
       <UniqueIdentifier>{32494c10-0bf8-420f-a857-a2d263860bfa}</UniqueIdentifier>
     </Filter>
-    <Filter Include="03. Level\Effect\Effect">
-      <UniqueIdentifier>{484f6f3e-8e60-44ee-bc6e-9752b2de029b}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="03. Level\Effect\Effect\Effect_Object">
-      <UniqueIdentifier>{c7c882ca-f31c-44ed-bfc0-c6a26939bb11}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="03. Level\Effect\Effect\Gravity_Force">
-      <UniqueIdentifier>{2f5ef054-3cbc-47dd-ad16-41a470fea0e8}</UniqueIdentifier>
-    </Filter>
     <Filter Include="02. GameObjects\UI\02.UI">
       <UniqueIdentifier>{6a558198-77c1-41fb-9345-05c1fc4f9daf}</UniqueIdentifier>
     </Filter>
@@ -246,6 +237,15 @@
     </Filter>
     <Filter Include="04. Component\UI\Progress">
       <UniqueIdentifier>{27815419-4fa4-4be0-9d62-f21f634f2338}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02. GameObjects\Map\00. MapObject\03. BatchObject">
+      <UniqueIdentifier>{4cbea894-fe8a-484a-b84b-a0522058102a}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02. GameObjects\UI\00.Action">
+      <UniqueIdentifier>{566d6d02-9c34-4ed7-beae-db2b024e4049}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="99. ETC\03. Tool Shader">
+      <UniqueIdentifier>{94f2837f-0795-42b2-b135-340ce4d67014}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
@@ -393,26 +393,17 @@
     <ClInclude Include="..\Public\MapObject.h">
       <Filter>02. GameObjects\Map\00. MapObject\00. MapObject</Filter>
     </ClInclude>
-    <ClInclude Include="..\Public\StaticModel.h">
-      <Filter>02. GameObjects\Map\00. MapObject\01. StaticModel</Filter>
-    </ClInclude>
     <ClInclude Include="..\Public\CParticle_System_Panel.h">
       <Filter>03. Level\Effect\Effect_Panel\Particle_System_Panel</Filter>
     </ClInclude>
     <ClInclude Include="..\Public\EffectType_Selection_Panel.h">
       <Filter>03. Level\Effect\Effect_Panel\EffectType_Selection</Filter>
     </ClInclude>
-    <ClInclude Include="..\Public\CEffectObject.h">
-      <Filter>03. Level\Effect\Effect\Effect_Object</Filter>
-    </ClInclude>
     <ClInclude Include="..\Public\Tool_ContainerObject.h">
       <Filter>02. GameObjects\ContainerObject</Filter>
     </ClInclude>
     <ClInclude Include="..\Public\Tool_PartObject.h">
       <Filter>02. GameObjects\PartObject</Filter>
-    </ClInclude>
-    <ClInclude Include="..\Public\Effect.h">
-      <Filter>03. Level\Effect\Effect</Filter>
     </ClInclude>
     <ClInclude Include="pch.h">
       <Filter>98. Defines\pch</Filter>
@@ -480,18 +471,15 @@
     <ClInclude Include="..\Public\Builder_Map.h">
       <Filter>09. Builder\Map</Filter>
     </ClInclude>
-    <ClInclude Include="..\Public\InstanceModel.h">
-      <Filter>02. GameObjects\Map\00. MapObject\02. InstanceModel</Filter>
-    </ClInclude>
-    <ClInclude Include="..\Public\Gravity_Force.h">
-      <Filter>03. Level\Effect\Effect\Gravity_Force</Filter>
-    </ClInclude>
     <ClInclude Include="..\Public\UIButton_Component.h">
       <Filter>04. Component\UI\Button</Filter>
     </ClInclude>
     <ClInclude Include="..\Public\UIProgress_Component.h">
       <Filter>04. Component\UI\Progress</Filter>
     </ClInclude>
+    <ClInclude Include="..\Public\CEffectObject.h" />
+    <ClInclude Include="..\Public\Gravity_Force.h" />
+    <ClInclude Include="..\Public\Effect.h" />
   </ItemGroup>
   <ItemGroup>
     <Image Include="small.ico">
@@ -633,9 +621,6 @@
     <ClCompile Include="..\Private\MapObject.cpp">
       <Filter>02. GameObjects\Map\00. MapObject\00. MapObject</Filter>
     </ClCompile>
-    <ClCompile Include="..\Private\StaticModel.cpp">
-      <Filter>02. GameObjects\Map\00. MapObject\01. StaticModel</Filter>
-    </ClCompile>
     <ClCompile Include="..\Private\Panel_MapDataController.cpp">
       <Filter>06. ImGui\01. Panel\Map\Panel_MapDataControler</Filter>
     </ClCompile>
@@ -644,9 +629,6 @@
     </ClCompile>
     <ClCompile Include="..\Private\EffectType_Selection_Panel.cpp">
       <Filter>03. Level\Effect\Effect_Panel\EffectType_Selection</Filter>
-    </ClCompile>
-    <ClCompile Include="..\Private\CEffectObject.cpp">
-      <Filter>03. Level\Effect\Effect\Effect_Object</Filter>
     </ClCompile>
     <ClCompile Include="..\Private\Tool_ContainerObject.cpp">
       <Filter>02. GameObjects\ContainerObject</Filter>
@@ -714,20 +696,22 @@
     <ClCompile Include="..\Private\Builder_Map.cpp">
       <Filter>09. Builder\Map</Filter>
     </ClCompile>
-    <ClCompile Include="..\Private\InstanceModel.cpp">
-      <Filter>02. GameObjects\Map\00. MapObject\02. InstanceModel</Filter>
-    </ClCompile>
-    <ClCompile Include="..\Private\Effect.cpp">
-      <Filter>03. Level\Effect\Effect</Filter>
-    </ClCompile>
-    <ClCompile Include="..\Private\Gravity_Force.cpp">
-      <Filter>03. Level\Effect\Effect\Gravity_Force</Filter>
-    </ClCompile>
     <ClCompile Include="..\Private\UIButton_Component.cpp">
       <Filter>04. Component\UI\Button</Filter>
     </ClCompile>
     <ClCompile Include="..\Private\UIProgress_Component.cpp">
       <Filter>04. Component\UI\Progress</Filter>
     </ClCompile>
+    <ClCompile Include="..\Private\CEffectObject.cpp" />
+    <ClCompile Include="..\Private\Gravity_Force.cpp" />
+    <ClCompile Include="..\Private\Effect.cpp" />
+  </ItemGroup>
+  <ItemGroup>
+    <FxCompile Include="..\..\Shaders\Shader_VtxInstanceMesh_Tool.hlsl">
+      <Filter>99. ETC\03. Tool Shader</Filter>
+    </FxCompile>
+    <FxCompile Include="..\..\Shaders\Shader_VtxMesh_Tool.hlsl">
+      <Filter>99. ETC\03. Tool Shader</Filter>
+    </FxCompile>
   </ItemGroup>
 </Project>

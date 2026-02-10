@@ -27,14 +27,19 @@ public:
 	virtual void Update(const _float fTimeDelta)override;
 	HRESULT	Update_MapObjectList();
 private:
+
 	HRESULT Render_RaySetting();
-	HRESULT	Render_ChekcAndBind();
 	HRESULT Render_CameraSetting();
 	HRESULT Render_PreViewInfo();
+
+	/* MapTool Setting Render */
+	HRESULT	Render_CheckAndBind();
+	HRESULT	Render_MakeMapObjectSetting();
+
 private:
 
-	CGameInstance* m_pGameInstance{ nullptr };
-	CMapToolManager* m_pMapToolManager{ nullptr };
+	CGameInstance*			m_pGameInstance{ nullptr };
+	CMapToolManager*		m_pMapToolManager{ nullptr };
 
 private:
 	ID3D11Device*			m_pDevice{ nullptr };
@@ -45,6 +50,11 @@ private:
 private:
 	float					m_fFixRayRange{};
 	float					m_fFixMouseWheelSpeed{};
+
+	_int					m_iBuffer{};
+	string					m_strBuffer{};
+	char					m_szBuffer[MAX_PATH];
+
 public:
 	static  CPanel_MapTool* Create(const _char* pLabel, CLevel* pOwner, ID3D11Device* pDevice, ID3D11DeviceContext* pDeviceContext);
 	virtual void Free() override;

@@ -118,8 +118,8 @@ CToolUI* CImGui_UIManager::Safe_Access_UI(int32_t index)
 	if (nullptr == pUIVec)
 		return nullptr;
 	
-	uint32_t iNumUI = pUIVec->size();
-	if (index >= iNumUI)
+	int32_t iNumUI = static_cast<int32_t> (pUIVec->size());
+	if ( index >= iNumUI)
 		return nullptr;
 
 	return (*pUIVec)[index];

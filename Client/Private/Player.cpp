@@ -127,16 +127,16 @@ void CPlayer::Ready_Before_Render(const _float fTimeDelta)
 
     Vec3 vPos = pTrans->Get_Info(TRANSFORM_INFO_STATE::POS);
 
-    float x = vPos.x;
-    float y = vPos.y;
-    float z = vPos.z;
+    //float x = vPos.x;
+    //float y = vPos.y;
+    //float z = vPos.z;
 
-    char buf[128];
-    sprintf_s(buf, "Position : %.3f, %.3f, %.3f\n", x, y, z);
-    OutputDebugStringA(buf);
+    //char buf[128];
+    //sprintf_s(buf, "Position : %.3f, %.3f, %.3f\n", x, y, z);
+    //OutputDebugStringA(buf);
 
-    wchar_t buf2[128];
-    swprintf_s(buf2, L"Position : %.3f, %.3f, %.3f", x, y, z);
+    //wchar_t buf2[128];
+    //swprintf_s(buf2, L"Position : %.3f, %.3f, %.3f", x, y, z);
     //SetWindowText(g_hWnd, buf);
 #endif
 

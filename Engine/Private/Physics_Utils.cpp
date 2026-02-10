@@ -3,6 +3,7 @@
 #include "GameInstance.h"
 #include "Physics_ResourceManager.h"
 #include "Physics_Utils.h"
+#include "Physics_QueryFilterCallback.h"
 
 #include "DebugDraw.h"
 
@@ -144,7 +145,8 @@ HRESULT CPhysics_Utils::Render(PxRigidActor* pActor, XMVECTOR color)
 			break;
 		case physx::PxGeometryType::eTRIANGLEMESH:
 		{
-			DX::DrawMesh(m_pBatch, geom, globalPose, matWorld);
+			if (m_bIsOnMeshDebug)
+				DX::DrawMesh(m_pBatch, geom, globalPose, matWorld);
 		}
 		break;
 		case physx::PxGeometryType::eHEIGHTFIELD:
@@ -159,6 +161,86 @@ HRESULT CPhysics_Utils::Render(PxRigidActor* pActor, XMVECTOR color)
 			break;
 		}
 	}
+
+	m_pBatch->End();
+
+	return S_OK;
+}
+
+HRESULT CPhysics_Utils::Render(const PxGeometry& geom, const PxTransform& transform, XMVECTOR color)
+{
+	m_pEffect->SetWorld(Matrix::Identity);
+	m_pEffect->SetView(m_pGameInstance->Get_ViewMatrix());
+	m_pEffect->SetProjection(m_pGameInstance->Get_ProjMatrix());
+
+	m_pEffect->Apply(m_pContext);
+	m_pContext->IASetInputLayout(m_pInputLayout);
+
+	m_pContext->OMSetDepthStencilState(m_pDSS, 0);
+
+	m_pContext->IASetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY_LINELIST);
+
+	m_pBatch->Begin();
+
+		Matrix pxMatrix = PxTransformToXMMatrix(transform);
+		XMMATRIX matWorld = XMLoadFloat4x4(&pxMatrix);
+
+		switch (geom.getType())
+		{
+		case physx::PxGeometryType::eSPHERE:
+		{
+			PxSphereGeometry sphere = static_cast<const PxSphereGeometry&>(geom);
+			BoundingSphere boundingSphere{};
+			boundingSphere.Radius = sphere.radius;
+			boundingSphere.Center = Vec3(transform.p.x, transform.p.y, transform.p.z);
+			DX::Draw(m_pBatch, boundingSphere);
+		}
+		break;
+		case physx::PxGeometryType::ePLANE:
+		break;
+		case physx::PxGeometryType::eCAPSULE:
+		{
+			PxCapsuleGeometry capsule = static_cast<const PxCapsuleGeometry&>(geom);
+			BoundingSphere boundingSphereHead{};
+			boundingSphereHead.Radius = capsule.radius + 0.1f;
+			boundingSphereHead.Center = Vec3(transform.p.x, transform.p.y - 0.1f, transform.p.z);
+			DX::DrawCapsule(m_pBatch, boundingSphereHead, capsule.halfHeight + 0.1f);
+		}
+		break;
+		case physx::PxGeometryType::eBOX:
+		{
+			PxBoxGeometry box = static_cast<const PxBoxGeometry&>(geom);
+			BoundingOrientedBox boundingObb{};
+			boundingObb.Extents = Vec3(box.halfExtents.x, box.halfExtents.y, box.halfExtents.z);
+			boundingObb.Center = Vec3(transform.p.x, transform.p.y, transform.p.z);
+			boundingObb.Orientation = Vec4(transform.q.x, transform.q.y, transform.q.z, transform.q.w);
+			DX::Draw(m_pBatch, boundingObb);
+		}
+		break;
+		case physx::PxGeometryType::eCONVEXCORE:
+			break;
+		case physx::PxGeometryType::eCONVEXMESH:
+			break;
+		case physx::PxGeometryType::ePARTICLESYSTEM:
+			break;
+		case physx::PxGeometryType::eTETRAHEDRONMESH:
+			break;
+		case physx::PxGeometryType::eTRIANGLEMESH:
+			//{
+			//	DX::DrawMesh(m_pBatch, geom, globalPose, matWorld);
+			//}
+			break;
+		case physx::PxGeometryType::eHEIGHTFIELD:
+			break;
+		case physx::PxGeometryType::eCUSTOM:
+			break;
+		case physx::PxGeometryType::eGEOMETRY_COUNT:
+			break;
+		case physx::PxGeometryType::eINVALID:
+			break;
+		default:
+			break;
+		}
 
 	m_pBatch->End();
 
@@ -189,136 +271,6 @@ Matrix CPhysics_Utils::PxTransformToXMMatrix(PxTransform pxTransform)
 	matTrans = XMMatrixTranslation(vTrans.x, vTrans.y, vTrans.z);
 
 	return matQuat * matTrans;
-}
-
-_bool CPhysics_Utils::HasNegativeScale(const Matrix& mat)
-{
-	Vec4 detVec = XMMatrixDeterminant(mat);
-	if (XMVectorGetX(detVec) >= -1e-4)
-		return false;
-
-	Matrix matUE = GetUnrealMatrix(mat);
-	Vec4 detVecUE = XMMatrixDeterminant(matUE);
-
-	return XMVectorGetX(detVecUE) < -1e-4f;
-}
-
-_int CPhysics_Utils::GetNegativeScaleAxis(const Matrix& mat)
-{
-	//ver1
-	////////////////////////////////////////////////////////////////////////////////////
-
-	//Vec3 u = Vec3(mat._11, mat._12, mat._13);
-	//Vec3 v = Vec3(mat._21, mat._22, mat._23);
-	//Vec3 w = Vec3(mat._31, mat._32, mat._33);
-
-	//u.Normalize();
-	//v.Normalize();
-	//w.Normalize();
-
-	//float det = u.Cross(v).Dot(w);
-
-	//if (det > -1e-4f)
-	//{
-	//	return -1;
-	//}
-
-	//float scoreX = -u.x + v.y + w.z;
-
-	//float scoreY = u.x - v.y + w.z;
-
-	//float scoreZ = u.x + v.y - w.z;
-
-	//if (scoreX >= scoreY && scoreX >= scoreZ)
-	//	return 0; // "X축이 음수 스케일입니다"
-
-	//else if (scoreY > scoreX && scoreY >= scoreZ)
-	//	return 1; // "Y축이 음수 스케일입니다"
-
-	//else
-	//	return 2; // "Z축이 음수 스케일입니다"
-	
-	//ver2
-	////////////////////////////////////////////////////////////////////////////////////
-
-	//Matrix matUE = GetUnrealMatrix(mat);
-
-	//Vec3 u = Vec3(matUE._11, matUE._12, matUE._13);
-	//Vec3 v = Vec3(matUE._21, matUE._22, matUE._23);
-	//Vec3 w = Vec3(matUE._31, matUE._32, matUE._33);
-
-	//u.Normalize();
-	//v.Normalize();
-	//w.Normalize();
-
-	//float det = u.Cross(v).Dot(w);
-
-	//if (det > -1e-4f)
-	//{
-	//	return -1;
-	//}
-
-	//float scoreX = -u.x + v.y + w.z;
-
-	//float scoreY = u.x - v.y + w.z;
-
-	//float scoreZ = u.x + v.y - w.z;
-
-	//if (scoreX >= scoreY && scoreX >= scoreZ)
-	//	return 0; // Unreal X Flip -> Engine X Flip
-
-	//else if (scoreY > scoreX && scoreY >= scoreZ)
-	//	return 2; // Unreal Y Flip -> Engine Z Flip
-
-	//else
-	//	return 1; // Unreal Z Flip -> Engine Y Flip
-
-	//ver3
-	////////////////////////////////////////////////////////////////////////////////////
-
-// 1. 언리얼 기준 행렬로 변환
-	Matrix matUE = GetUnrealMatrix(mat);
-
-	Vec3 u = Vec3(matUE._11, matUE._12, matUE._13);
-	Vec3 v = Vec3(matUE._21, matUE._22, matUE._23);
-	Vec3 w = Vec3(matUE._31, matUE._32, matUE._33);
-
-	// [안전장치] 스케일이 0인 경우 NaN 방지
-	if (u.LengthSquared() < 1e-6f || v.LengthSquared() < 1e-6f || w.LengthSquared() < 1e-6f)
-		return -1; // 스케일이 0이면 그냥 정상 처리 (어차피 안 보임)
-
-	u.Normalize(); v.Normalize(); w.Normalize();
-
-	// 2. 언리얼 기준 Det 검사
-	float det = u.Cross(v).Dot(w);
-
-	// ★ 핵심: Det가 양수(정상)라면 여기서 무조건 -1 리턴
-	// Z-180도 회전 같은 "정상 모델"은 여기서 완벽하게 걸러짐.
-	if (det > -1e-4f)
-	{
-		return -1;
-	}
-
-	// 3. 점수 계산 (Det < 0 인 경우만 진입)
-	// (-1, -1, -1) 같은 케이스도 여기로 들어옴
-	float scoreX = -u.x + v.y + w.z;
-	float scoreY = u.x - v.y + w.z;
-	float scoreZ = u.x + v.y - w.z;
-
-	// 4. [매핑] UE X -> Eng X(0), UE Y -> Eng Z(2), UE Z -> Eng Y(1)
-
-	// ★ 수정: 동점자 체크 삭제.
-	// (-1, -1, -1)인 경우 점수가 모두 같지만, 
-	// 이 경우에도 0, 1, 2 중 하나를 리턴해야 PhysX 행렬을 양수로 보정할 수 있음.
-
-	if (scoreX >= scoreY && scoreX >= scoreZ)
-		return 0; // UE X반전 -> 엔진 X반전 (동점일 때 X 우선)
-
-	else if (scoreY > scoreX && scoreY >= scoreZ)
-		return 2; // UE Y반전 -> 엔진 Z반전
-
-	else
-		return 1; // UE Z반전 -> 엔진 Y반전
 }
 
 PxQuat CPhysics_Utils::GetPureRotation(const Matrix& mat)
@@ -376,6 +328,21 @@ _bool CPhysics_Utils::RayCast()
 		return m_bRayHit;//m_RayCastHitBuffer.block.actor
 
 	return m_bRayHit;
+}
+
+_bool CPhysics_Utils::Execute_Overlap(PxGeometry& shape, PxTransform& transform, OUT PxOverlapBuffer& hit, PxQueryFilterData& filterData, PxQueryFilterCallback* filterCallback)
+{
+	return m_pScene->overlap(shape, transform, hit, filterData, filterCallback);
+}
+
+CPhysics_QueryFilterCallback* CPhysics_Utils::GetQueryFilterCallback()
+{
+	return CPhysics_QueryFilterCallback::Create();
+}
+
+void CPhysics_Utils::SetMeshDebugState()
+{
+	m_bIsOnMeshDebug = !m_bIsOnMeshDebug;
 }
 
 CPhysics_Utils* CPhysics_Utils::Create(ID3D11Device* pDevice, ID3D11DeviceContext* pContext, PxPhysics* pPhysics, PxScene* pScene)
