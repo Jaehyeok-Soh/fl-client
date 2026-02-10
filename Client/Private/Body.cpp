@@ -35,6 +35,8 @@ HRESULT CBody::Initialize(void* pArg)
 	if (FAILED(Super::Initialize(pArg)))
 		return E_FAIL;
 
+	Set_Name("Eun_bi");
+
 	BODY_DESC* pDesc = static_cast<BODY_DESC*>(pArg);
 	if (FAILED(Ready_Components(pDesc)))
 		return E_FAIL;

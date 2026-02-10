@@ -32,6 +32,8 @@ HRESULT CMonster_Dummy::Initialize(void* pArg)
 	if (FAILED(Super::Initialize(pArg)))
 		return E_FAIL;
 
+	Set_Name("Monster_Dummy");
+
 	if (FAILED(Ready_PartObjects()))
 		return E_FAIL;
 
