@@ -40,6 +40,8 @@ CModel::CModel(const CModel& rhs)
 	, m_umapAnimationIndexTable(rhs.m_umapAnimationIndexTable)
 	, m_pMasterMesh(rhs.m_pMasterMesh)
 	, m_iRootBoneIdx(rhs.m_iRootBoneIdx)
+	, m_pPreSB(rhs.m_pPreSB)
+	, m_pCurSB(rhs.m_pCurSB)
 {
 	m_vecPrevAnimationPose.resize(rhs.m_vecPrevAnimationPose.size());
 	m_vecCurrAnimationPose.resize(rhs.m_vecCurrAnimationPose.size());
@@ -67,6 +69,9 @@ CModel::CModel(const CModel& rhs)
 
 	for (auto& pMaterialInstance : m_vecMaterialInstances)
 		Safe_AddRef(pMaterialInstance);
+	
+	Safe_AddRef(m_pPreSB);
+	Safe_AddRef(m_pCurSB);
 
 	Safe_AddRef(m_pMasterMesh);
 	Safe_AddRef(m_pDevice);
@@ -460,6 +465,8 @@ HRESULT CModel::Ready_CSs(CComputeShader* pBoneMeshCS, CComputeShader* pBoneComB
 				return E_FAIL;
 		}
 
+		Ready_SB(pAnimEvalCS);
+
 
 		// 1. CHANNEL_OUTPUT 초기화
 		CS_SRT* pIniailData = new CS_SRT[Get_BoneCount()];
@@ -528,9 +535,10 @@ HRESULT CModel::Load_AnimModel(const wstring& wstrModelName, DATA_ANIMCHANNEL* p
 		m_iRootBoneIdx = pData->iRootBoneIndex;
 	}
 
-	Make_BoneGroup(); // bone을 그룹별로 만든다
-	Make_GroupBuffers(); // group buffer만 우선 생성
-	
+	Make_BoneGroup();		// bone을 그룹별로 만든다
+	Make_GroupBuffers();	// group buffer만 우선 생성
+	Make_SB();
+
 	Safe_Release(pModelLoader);
 	return S_OK;
 }
@@ -818,6 +826,12 @@ void CModel::Make_GroupBuffers()
 	}
 }
 
+void CModel::Make_SB()
+{
+	m_pPreSB = StructuredBuffer::Create(m_pDevice, m_pDeviceContext, sizeof(CS_SRT), Get_BoneCount());
+	m_pCurSB = StructuredBuffer::Create(m_pDevice, m_pDeviceContext, sizeof(CS_SRT), Get_BoneCount());
+}
+
 void CModel::Update_BoneCombineTransformMatrix(CComputeShader* pBoneComBineCS)
 {
 	if (pBoneComBineCS == nullptr)
@@ -846,17 +860,25 @@ void CModel::Blend_Animation(CComputeShader* pBoneComBineCS, CComputeShader* pAn
 {
 	if (pOwnerTransform)
 	{
+		StructuredBuffer* pOriginSB = pAnimEvalCS->Get_Output_Buffer();
+
+		pAnimEvalCS->Set_OutputStructuredBuffer(m_pPreSB);
+
 		m_vecAnimations[m_iPrevAnimIndex]->Update_BlendAnimation(pAnimEvalCS, fTimeDelta, nullptr, pOwnerPhyCCT, Get_BoneCount());
 
 		// animation 결과 blendCS에 bind
 		pAnimBlendCS->Bind_InputStructuredBuffer(ENUM_TO_UINT(BLENDCS_SB_IDX::MU_PRESRT),
-			pAnimBlendCS->Get_SRV("MU_PRETRANSFORMS"), pAnimEvalCS->Get_Output_Buffer());
-		
+			pAnimBlendCS->Get_SRV("MU_PRETRANSFORMS"), m_pPreSB);
+
+		pAnimEvalCS->Set_OutputStructuredBuffer(m_pCurSB);
+		// cur anim update
 		m_vecAnimations[m_iCurrentAnimIndex]->Update_BlendAnimation(pAnimEvalCS, fTimeDelta, nullptr, pOwnerPhyCCT, Get_BoneCount());
 
 		// animation 결과 blendCS에 bind
 		pAnimBlendCS->Bind_InputStructuredBuffer(ENUM_TO_UINT(BLENDCS_SB_IDX::MU_CURSRT),
-			pAnimBlendCS->Get_SRV("MU_CURTRANSFORMS"), pAnimEvalCS->Get_Output_Buffer());
+			pAnimBlendCS->Get_SRV("MU_CURTRANSFORMS"), m_pCurSB);
+
+		pAnimEvalCS->Set_OutputStructuredBuffer(pOriginSB);
 	}
 
 	Lerp_Animation(pAnimBlendCS, fRatio);
@@ -879,7 +901,7 @@ void CModel::Lerp_Animation(CComputeShader* pAnimBlendCS, _float fRatio)
 	pAnimBlendCS->Bind_Compute_BlendMu(tMuDesc);
 
 	// dispatch
-	_uint iGroupX = ((_uint)m_vecBones.size() + 31) / 32;
+	_uint iGroupX = (Get_BoneCount() + 31) / 32;
 	pAnimBlendCS->Dispatch(iGroupX, 1, 1);
 }
 
@@ -932,6 +954,12 @@ void CModel::Bind_BufferSRV(CComputeShader* pBoneComBineCS)
 	}
 }
 
+void CModel::Ready_SB(CComputeShader* pAnimEvalCS)
+{
+	pAnimEvalCS->Get_SRV("BLEND_OUTPUT_SRV")->SetResource(m_pPreSB->Get_SRV());
+	pAnimEvalCS->Get_SRV("BLEND_OUTPUT_SRV")->SetResource(m_pCurSB->Get_SRV());
+}
+
 CModel* CModel::Create(ID3D11Device* pDevice, ID3D11DeviceContext* pDeviceContext, void* pArg)
 {
 	CModel* pInstance = new CModel(pDevice, pDeviceContext);
@@ -971,12 +999,19 @@ void CModel::Free()
 	for (auto& pAnimation : m_vecAnimations)
 		Safe_Release(pAnimation);
 
-	for (auto& pBoneGroup : m_vecBoneGroups)
-	{
-		Safe_Release(pBoneGroup.pIndexBuffer);
 
-		if(!IsClone())
-			Safe_Release(pBoneGroup.pInputGroupSB_SRV);
+	if (m_eType == EModelType::ANIM)
+	{
+		for (auto& pBoneGroup : m_vecBoneGroups)
+		{
+			Safe_Release(pBoneGroup.pIndexBuffer);
+
+			if (!IsClone())
+				Safe_Release(pBoneGroup.pInputGroupSB_SRV);
+		}
+
+		Safe_Release(m_pPreSB);
+		Safe_Release(m_pCurSB);
 	}
 	
 	Safe_Release(m_pMasterMesh);

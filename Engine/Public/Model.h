@@ -158,10 +158,12 @@ private:
 private:
 	void Make_BoneGroup();
 	void Make_GroupBuffers();
+	void Make_SB();
 	void Update_BoneCombineTransformMatrix(CComputeShader* pBoneComBineCS);
 	void Lerp_Animation(CComputeShader* pAnimBlendCS, _float fRatio);
 	void Bind_BoneImmuData(CComputeShader* pBoneComBineCS);
 	void Bind_BufferSRV(CComputeShader* pBoneComBineCS);
+	void Ready_SB(CComputeShader* pAnimEvalCS);
 
 private:
 	EModelType m_eType = { EModelType::END };
@@ -182,7 +184,7 @@ private:
 	_bool m_isAnimLoop = { false };
 	_bool m_bIsAnimFinished = { false };
 	_float m_fBlendedTime			= { 0.f };
-	const _float m_fBlendDuration	= { 0.18f };
+	const _float m_fBlendDuration	= { 0.2f };
 	_uint m_iAnimationCount			= { 0 };
 	_uint m_iCurrentAnimIndex		= { 0 };
 	_uint m_iPrevAnimIndex			= { 0 };
@@ -197,6 +199,8 @@ private:
 	// compute shading º¯¼ö
 private:
 	vector<BONE_GROUP> m_vecBoneGroups;
+	StructuredBuffer* m_pPreSB = { nullptr };
+	StructuredBuffer* m_pCurSB = { nullptr };
 
 public:
 	static CModel* Create(ID3D11Device* pDevice, ID3D11DeviceContext* pDeviceContext, void* pArg);
