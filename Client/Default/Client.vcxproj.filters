@@ -472,9 +472,6 @@
       <Filter>07. System\02. Debug_ImGui\Inspector\Player</Filter>
     </ClInclude>
     <ClInclude Include="..\Public\State_DashFront.h" />
-    <ClInclude Include="..\public\ImGui_FrameLayout.h">
-      <Filter>07. System\02. Debug_ImGui\Layout\Frame</Filter>
-    </ClInclude>
     <ClInclude Include="..\Public\UIJust_Image.h">
       <Filter>03. GameObject\UIObjects\02.UI\Image\JustImage</Filter>
     </ClInclude>
@@ -490,14 +487,15 @@
     <ClInclude Include="..\Public\ImGui_FrameLayout.h">
       <Filter>99. ETC</Filter>
     </ClInclude>
-    <ClInclude Include="..\Public\Builder_AttackOverlap.h">
-      <Filter>07. System\01. Builder\Builder_AttackOverlap</Filter>
-    </ClInclude>
-    <ClInclude Include="..\Public\Monster_Dummy.h">
-      <Filter>03. GameObject\ContainerObjects\Monster</Filter>
-    <ClInclude Include="..\Public\UITrigger.h">
-      <Filter>03. GameObject\UIObjects\02.UI\Trigger</Filter>
-    </ClInclude>
+<ClInclude Include="..\Public\Builder_AttackOverlap.h">
+  <Filter>07. System\01. Builder\Builder_AttackOverlap</Filter>
+</ClInclude>
+<ClInclude Include="..\Public\Monster_Dummy.h">
+  <Filter>03. GameObject\ContainerObjects\Monster</Filter>
+</ClInclude>
+<ClInclude Include="..\Public\UITrigger.h">
+  <Filter>03. GameObject\UIObjects\02.UI\Trigger</Filter>
+</ClInclude>
   </ItemGroup>
   <ItemGroup>
     <Image Include="Client.ico">
@@ -709,9 +707,6 @@
       <Filter>07. System\02. Debug_ImGui\Inspector\Player</Filter>
     </ClCompile>
     <ClCompile Include="..\Private\State_DashFront.cpp" />
-    <ClCompile Include="..\private\ImGui_FrameLayout.cpp">
-      <Filter>07. System\02. Debug_ImGui\Layout\Frame</Filter>
-    </ClCompile>
     <ClCompile Include="..\Private\UIJust_Image.cpp">
       <Filter>03. GameObject\UIObjects\02.UI\Image\JustImage</Filter>
     </ClCompile>
@@ -732,6 +727,7 @@
     </ClCompile>
     <ClCompile Include="..\Private\Monster_Dummy.cpp">
       <Filter>03. GameObject\ContainerObjects\Monster</Filter>
+    </ClCompile>
     <ClCompile Include="..\Private\UITrigger.cpp">
       <Filter>03. GameObject\UIObjects\02.UI\Trigger</Filter>
     </ClCompile>
