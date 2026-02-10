@@ -48,6 +48,7 @@ protected:
     HRESULT Create_Preview_Resources();
     // ========= Texture Window =========
     void UpdateRotationFlags();
+    void Draw_TextureSelectorPopup(const char* popupID, wstring& outTag);
     // ========= Renderer Button â ===========
     void Make_MeshSelectButton();
 #pragma endregion

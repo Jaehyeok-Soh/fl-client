@@ -189,6 +189,18 @@ _bool Effect::Export_Data(DTO::ECategory eCategory, CDataDocumentBase* pDocument
         for (const auto& key : tPartDesc._vecRotationCurveZ)
             tPartData._vecRotationCurveZ.push_back({ key.fTimeKey, key.fValue });
 
+        //=======  개별 텍스처 스크롤 가중치 복원 =======
+        tPartData._Effect_DiffuseTexture_ScrollWeight = tPartDesc._Effect_DiffuseTexture_ScrollWeight;
+        tPartData._Effect_NoiseTexture_ScrollWeight = tPartDesc._Effect_NoiseTexture_ScrollWeight;
+        tPartData._Effect_MaskingTexture_ScrollWeight = tPartDesc._Effect_MaskingTexture_ScrollWeight;
+        tPartData._Effect_GradationTexture_ScrollWeight = tPartDesc._Effect_GradationTexture_ScrollWeight;
+
+        //=======  툴 전용 스크롤 체크박스 상태 복원 =======
+        tPartData._Effect_Tool_UseScroll_Diffuse = tPartDesc._Effect_Tool_UseScroll_Diffuse;
+        tPartData._Effect_Tool_UseScroll_Noise = tPartDesc._Effect_Tool_UseScroll_Noise;
+        tPartData._Effect_Tool_UseScroll_Masking = tPartDesc._Effect_Tool_UseScroll_Masking;
+        tPartData._Effect_Tool_UseScroll_Gradation = tPartDesc._Effect_Tool_UseScroll_Gradation;
+
         // =========== 플래그 및 툴 전용 데이터 ===========
         tPartData._Effect_TextureFlag = tPartDesc._Effect_TextureFlag;
         tPartData._Effect_RenderFlag = tPartDesc._Effect_RenderFlag;

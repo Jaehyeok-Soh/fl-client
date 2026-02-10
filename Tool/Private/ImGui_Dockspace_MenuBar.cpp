@@ -459,6 +459,18 @@ void CImGui_Dockspace_MenuBar::Load_EffectData(const wstring& wstrFilePath)
 			ConvertRotCurve(Part._vecRotationCurveY, pEffectDesc._vecRotationCurveY);
 			ConvertRotCurve(Part._vecRotationCurveZ, pEffectDesc._vecRotationCurveZ);
 
+			//=======  개별 텍스처 스크롤 가중치 복원 =======
+			pEffectDesc._Effect_DiffuseTexture_ScrollWeight = Part._Effect_DiffuseTexture_ScrollWeight;
+			pEffectDesc._Effect_NoiseTexture_ScrollWeight = Part._Effect_NoiseTexture_ScrollWeight;
+			pEffectDesc._Effect_MaskingTexture_ScrollWeight = Part._Effect_MaskingTexture_ScrollWeight;
+			pEffectDesc._Effect_GradationTexture_ScrollWeight = Part._Effect_GradationTexture_ScrollWeight;
+
+			//=======  툴 전용 스크롤 체크박스 상태 복원 =======
+			pEffectDesc._Effect_Tool_UseScroll_Diffuse = Part._Effect_Tool_UseScroll_Diffuse;
+			pEffectDesc._Effect_Tool_UseScroll_Noise = Part._Effect_Tool_UseScroll_Noise;
+			pEffectDesc._Effect_Tool_UseScroll_Masking = Part._Effect_Tool_UseScroll_Masking;
+			pEffectDesc._Effect_Tool_UseScroll_Gradation = Part._Effect_Tool_UseScroll_Gradation;
+
 			// =========== 렌더링/텍스처 비트 플래그 =============
 			pEffectDesc._Effect_TextureFlag = Part._Effect_TextureFlag;
 			pEffectDesc._Effect_RenderFlag = Part._Effect_RenderFlag;

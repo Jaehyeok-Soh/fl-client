@@ -116,6 +116,8 @@ HRESULT CEffectObject::Ready_Component_Texture()
             Get_Component<CTexture>()->Add_DefaultTexture(s + m_tEffectDesc._Effect_NoiseTexture_Tag, ENUM_TO_UINT(TEXTURETYPE::NOISE));
             Get_Component<CTexture>()->Add_DefaultTexture(s + m_tEffectDesc._Effect_MaskingTexture_Tag, ENUM_TO_UINT(TEXTURETYPE::MASKING));
             Get_Component<CTexture>()->Add_DefaultTexture(s + m_tEffectDesc._Effect_GradationTexture_Tag, ENUM_TO_UINT(TEXTURETYPE::GRADATION));
+            Get_Component<CTexture>()->Add_DefaultTexture(s + m_tEffectDesc._Effect_DissolveTexture_Tag, ENUM_TO_UINT(TEXTURETYPE::DISSOLVE));
+            Get_Component<CTexture>()->Add_DefaultTexture(s + m_tEffectDesc._Effect_GlowTexture_Tag, ENUM_TO_UINT(TEXTURETYPE::GLOW));
         }
     }
 
@@ -130,6 +132,8 @@ HRESULT CEffectObject::Ready_Component_Texture()
             Get_Component<CTexture>()->Add_DefaultTexture(s + m_tEffectDesc._Effect_NoiseTexture_Tag, ENUM_TO_UINT(TEXTURETYPE::NOISE));
             Get_Component<CTexture>()->Add_DefaultTexture(s + m_tEffectDesc._Effect_MaskingTexture_Tag, ENUM_TO_UINT(TEXTURETYPE::MASKING));
             Get_Component<CTexture>()->Add_DefaultTexture(s + m_tEffectDesc._Effect_GradationTexture_Tag, ENUM_TO_UINT(TEXTURETYPE::GRADATION));
+            Get_Component<CTexture>()->Add_DefaultTexture(s + m_tEffectDesc._Effect_DissolveTexture_Tag, ENUM_TO_UINT(TEXTURETYPE::DISSOLVE));
+            Get_Component<CTexture>()->Add_DefaultTexture(s + m_tEffectDesc._Effect_GlowTexture_Tag, ENUM_TO_UINT(TEXTURETYPE::GLOW));
         }
     }
 
@@ -378,6 +382,8 @@ void CEffectObject::Texture_Setting(const wstring& TextureName)
             Get_Component<CTexture>()->Add_DefaultTexture(s + m_tEffectDesc._Effect_NoiseTexture_Tag, ENUM_TO_UINT(TEXTURETYPE::NOISE));
             Get_Component<CTexture>()->Add_DefaultTexture(s + m_tEffectDesc._Effect_MaskingTexture_Tag, ENUM_TO_UINT(TEXTURETYPE::MASKING));
             Get_Component<CTexture>()->Add_DefaultTexture(s + m_tEffectDesc._Effect_GradationTexture_Tag, ENUM_TO_UINT(TEXTURETYPE::GRADATION));
+            Get_Component<CTexture>()->Add_DefaultTexture(s + m_tEffectDesc._Effect_DissolveTexture_Tag, ENUM_TO_UINT(TEXTURETYPE::DISSOLVE));
+            Get_Component<CTexture>()->Add_DefaultTexture(s + m_tEffectDesc._Effect_GlowTexture_Tag, ENUM_TO_UINT(TEXTURETYPE::GLOW));
         }
     }
 
@@ -392,6 +398,8 @@ void CEffectObject::Texture_Setting(const wstring& TextureName)
             Get_Component<CTexture>()->Add_DefaultTexture(s + m_tEffectDesc._Effect_NoiseTexture_Tag, ENUM_TO_UINT(TEXTURETYPE::NOISE));
             Get_Component<CTexture>()->Add_DefaultTexture(s + m_tEffectDesc._Effect_MaskingTexture_Tag, ENUM_TO_UINT(TEXTURETYPE::MASKING));
             Get_Component<CTexture>()->Add_DefaultTexture(s + m_tEffectDesc._Effect_GradationTexture_Tag, ENUM_TO_UINT(TEXTURETYPE::GRADATION));
+            Get_Component<CTexture>()->Add_DefaultTexture(s + m_tEffectDesc._Effect_DissolveTexture_Tag, ENUM_TO_UINT(TEXTURETYPE::DISSOLVE));
+            Get_Component<CTexture>()->Add_DefaultTexture(s + m_tEffectDesc._Effect_GlowTexture_Tag, ENUM_TO_UINT(TEXTURETYPE::GLOW));
         }
     }
 
@@ -458,11 +466,17 @@ HRESULT CEffectObject::Bind_ShaderResource()
         pDesc.SpriteColCount = m_tEffectDesc._Effect_TileCount.x;
         pDesc.SpriteRowCount = m_tEffectDesc._Effect_TileCount.y;
         pDesc.CurSpriteIndex = m_tEffectDesc.m_iCurSpriteNumber;
-        pDesc.Padding2 = { 0.f };
+        pDesc.LifeRatio = m_tEffectDesc._Effect_ApearRatio;
 
         pDesc.vDistortionScale = m_tEffectDesc._Effect_DistortionScale;
         pDesc.vEffectColor = m_tEffectDesc._Effect_Color;
         pDesc.vScrollOffset = m_vScrollOffset;
+
+        pDesc.DiffuseTexture_ScrollWeight = m_tEffectDesc._Effect_DiffuseTexture_ScrollWeight;
+        pDesc.NoiseTexture_ScrollWeight = m_tEffectDesc._Effect_NoiseTexture_ScrollWeight;
+        pDesc.MaskingTexture_ScrollWeight = m_tEffectDesc._Effect_MaskingTexture_ScrollWeight;
+        pDesc.GradationTexture_ScrollWeight = m_tEffectDesc._Effect_GradationTexture_ScrollWeight;
+
         pShader->Bind_EffectData(pDesc);
 
         // Compute 셰이더가 들고있는 SRV를, Default Shader한테 SRV 꽂아주기.

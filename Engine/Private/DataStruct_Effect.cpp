@@ -107,6 +107,18 @@ void to_json(json& j, const TEFFECT_PartsData& data)
         {"AnimationSpeed", data._Effect_AnimSpeed},
         {"SpriteNumber", data.m_iCurSpriteNumber},
 
+        // -- 스크롤 속도 배율 (Weight) 저장 ---
+        {"DiffuseTexture_ScrollWeight", {{"x", data._Effect_DiffuseTexture_ScrollWeight.x}, {"y", data._Effect_DiffuseTexture_ScrollWeight.y}}},
+        {"NoiseTexture_ScrollWeight", {{"x", data._Effect_NoiseTexture_ScrollWeight.x}, {"y", data._Effect_NoiseTexture_ScrollWeight.y}}},
+        {"MaskingTexture_ScrollWeight", {{"x", data._Effect_MaskingTexture_ScrollWeight.x}, {"y", data._Effect_MaskingTexture_ScrollWeight.y}}},
+        {"GradationTexture_ScrollWeight", {{"x", data._Effect_GradationTexture_ScrollWeight.x}, {"y", data._Effect_GradationTexture_ScrollWeight.y}}},
+
+        // --- 툴 UI 전용 스크롤 체크박스 상태 저장 ---
+        {"Tool_UseScroll_Diffuse", data._Effect_Tool_UseScroll_Diffuse},
+        {"Tool_UseScroll_Noise", data._Effect_Tool_UseScroll_Noise},
+        {"Tool_UseScroll_Masking", data._Effect_Tool_UseScroll_Masking},
+        {"Tool_UseScroll_Gradation", data._Effect_Tool_UseScroll_Gradation},
+
         // --- Physics & Gravity (커브 포함) ---
         {"GravityBase", {{"Val", data._Effect_Gravity_Value}, {"Mod", data._Effect_GravityModifier}}},
         {"GravityDir", {{"x", data._Effect_GravityDir.x}, {"y", data._Effect_GravityDir.y}, {"z", data._Effect_GravityDir.z}}},
@@ -228,6 +240,29 @@ void from_json(const json& j, TEFFECT_PartsData& data)
     data._Effect_TileCount.y = j.at("TileCount").at("y").get<_uint>();
     j.at("PlayAnimation").get_to(data._Effect_bPlayAnim);
     j.at("AnimationSpeed").get_to(data._Effect_AnimSpeed);
+
+    if (j.contains("DiffuseTexture_ScrollWeight")) {
+        data._Effect_DiffuseTexture_ScrollWeight.x = j.at("DiffuseTexture_ScrollWeight").at("x").get<float>();
+        data._Effect_DiffuseTexture_ScrollWeight.y = j.at("DiffuseTexture_ScrollWeight").at("y").get<float>();
+    }
+    if (j.contains("NoiseTexture_ScrollWeight")) {
+        data._Effect_NoiseTexture_ScrollWeight.x = j.at("NoiseTexture_ScrollWeight").at("x").get<float>();
+        data._Effect_NoiseTexture_ScrollWeight.y = j.at("NoiseTexture_ScrollWeight").at("y").get<float>();
+    }
+    if (j.contains("MaskingTexture_ScrollWeight")) {
+        data._Effect_MaskingTexture_ScrollWeight.x = j.at("MaskingTexture_ScrollWeight").at("x").get<float>();
+        data._Effect_MaskingTexture_ScrollWeight.y = j.at("MaskingTexture_ScrollWeight").at("y").get<float>();
+    }
+    if (j.contains("GradationTexture_ScrollWeight")) {
+        data._Effect_GradationTexture_ScrollWeight.x = j.at("GradationTexture_ScrollWeight").at("x").get<float>();
+        data._Effect_GradationTexture_ScrollWeight.y = j.at("GradationTexture_ScrollWeight").at("y").get<float>();
+    }
+
+    // --- 툴 UI 체크박스 상태 복구 ---
+    if (j.contains("Tool_UseScroll_Diffuse")) j.at("Tool_UseScroll_Diffuse").get_to(data._Effect_Tool_UseScroll_Diffuse);
+    if (j.contains("Tool_UseScroll_Noise")) j.at("Tool_UseScroll_Noise").get_to(data._Effect_Tool_UseScroll_Noise);
+    if (j.contains("Tool_UseScroll_Masking")) j.at("Tool_UseScroll_Masking").get_to(data._Effect_Tool_UseScroll_Masking);
+    if (j.contains("Tool_UseScroll_Gradation")) j.at("Tool_UseScroll_Gradation").get_to(data._Effect_Tool_UseScroll_Gradation);
 
     // Physics & Rotation Settings
     data._Effect_Gravity_Value = j.at("GravityBase").at("Val").get<float>();

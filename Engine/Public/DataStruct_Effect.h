@@ -152,6 +152,19 @@ struct TEFFECT_PartsData
     _bool               _Effect_Tool_RightScroll = { false };
     _bool               _Effect_Tool_DownScroll = { false };
 
+    // + 텍스처별 스크롤 값 적용
+    Vec2                _Effect_DiffuseTexture_ScrollWeight = { 1.f, 1.f };
+    Vec2                _Effect_NoiseTexture_ScrollWeight = { 1.f, 1.f };
+    Vec2                _Effect_MaskingTexture_ScrollWeight = { 1.f, 1.f };
+    Vec2                _Effect_GradationTexture_ScrollWeight = { 1.f, 1.f };
+
+    // 툴용 텍스처 스크롤 
+
+    _bool               _Effect_Tool_UseScroll_Diffuse = { false };
+    _bool               _Effect_Tool_UseScroll_Noise = { false };
+    _bool               _Effect_Tool_UseScroll_Masking = { false };
+    _bool               _Effect_Tool_UseScroll_Gradation = { false };
+
     // SamplerState 몇번 쓸거니
     int               _Effect_Tool_DiffuseSamplerState_Flag = {};
     int               _Effect_Tool_NoiseSamplerState_Flag = {};

@@ -249,7 +249,7 @@ HRESULT CEffectObject::Bind_ShaderResource()
         pDesc.SpriteColCount = m_tEffectDesc._Effect_TileCount.x;
         pDesc.SpriteRowCount = m_tEffectDesc._Effect_TileCount.y;
         pDesc.CurSpriteIndex = m_tEffectDesc.m_iCurSpriteNumber;
-        pDesc.Padding2 = { 0.f };
+        pDesc.LifeRatio = { 0.f };
 
         pDesc.vDistortionScale = m_tEffectDesc._Effect_DistortionScale;
         pDesc.vEffectColor = m_tEffectDesc._Effect_Color;

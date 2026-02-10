@@ -84,7 +84,7 @@ namespace Engine
 	{
 		unsigned int iTextureFlags = { 0 };
 		unsigned int iRenderFlags = { 0 };
-		unsigned int  iSamplerStateFlags = {0};
+		unsigned int  iSamplerStateFlags = { 0 };
 		float iDiscardValue = { 0.f };
 
 		unsigned int iOperatorFlags = { 0 };
@@ -95,11 +95,16 @@ namespace Engine
 		unsigned int SpriteColCount = {};		// 가로 프레임 수
 		unsigned int SpriteRowCount = {};		// 세로 프레임 수
 		unsigned int CurSpriteIndex = {};		// 현재 스프라이트 인덱스
-		float		 Padding2 = {};
+		float		 LifeRatio = {};
 
 		SimpleMath::Vector2 vScrollOffset = { 0.f, 0.f };
 		SimpleMath::Vector2 vDistortionScale = { 0.f, 0.f };
 		SimpleMath::Vector4 vEffectColor = { 0.f, 0.f, 0.f, 0.f };
+
+		SimpleMath::Vector2 DiffuseTexture_ScrollWeight = { 0.f, 0.f };
+		SimpleMath::Vector2 NoiseTexture_ScrollWeight = { 0.f, 0.f };
+		SimpleMath::Vector2 MaskingTexture_ScrollWeight = { 0.f, 0.f };
+		SimpleMath::Vector2 GradationTexture_ScrollWeight = { 0.f, 0.f };
 	}SHADER_EFFECT_DESC;
 
 	typedef struct tagShaderBoneDesc

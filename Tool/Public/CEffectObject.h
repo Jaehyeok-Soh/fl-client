@@ -29,6 +29,8 @@ enum class TEXTURETYPE
     GRADATION = 3,
     TRAIL = 4,
     NORMAL = 5,
+    GLOW = 6,
+    DISSOLVE = 7,
 };
 
 enum class E_SHAPETYPE
@@ -113,6 +115,8 @@ public:
         wstring     _Effect_GradationTexture_Tag = {};
         wstring     _Effect_TrailTexture_Tag = {};
         wstring     _Effect_NormalTexture_Tag = {};
+        wstring     _Effect_DissolveTexture_Tag = {};
+        wstring     _Effect_GlowTexture_Tag = {};
 
         wstring     _Effect_Shader_Path = {};
         wstring     _Effect_Shader_Tag = {};
@@ -137,6 +141,7 @@ public:
         _uint               _Effect_TimeFlag = {};
         _float              _Effect_StartDelay = { 0.f };
         _float              _Effect_LifeTime = { 5.f };
+        _float              _Effect_ApearRatio = { 0.f };
 
         // =========   이펙트 Sprite 사용 여부    ============
         bool                 _Effect_bUseSprite = {};
@@ -169,7 +174,7 @@ public:
         float               _Effect_Gravity_Value = { 9.8f };           // 물리적 기준값
         float               _Effect_GravityModifier = { 0.f };          // 전체적인 On / off 기능
         Vec3                _Effect_GravityDir = { 0.f, -1.f, 0.f };    // 중력 방향
-        
+
         // ==============  중력 커브  ==============
         bool                     _bUseGlobalGravityCurve = false;   // 커브 사용 여부 플래그
         vector<Gravity_CurveKey> _vecGlobalGravityCurve;  // 시간대별 0.0~1.0 비율값
@@ -177,13 +182,13 @@ public:
         bool                     _bUseExternalForceCurve = false;   // 외부 중력(Force Field) 커브 여부
         float                    fExternalForceStrength = 1.0f; // 커브 안 쓸 때 기본값
         vector<Gravity_CurveKey> _vecExternalForceCurve;  // 외부 중력용 시간대별 비율값 
-        
+
         // ==============  회전 값들   ==============
        // 3D Start Rotation 값
-        Vec3                    _Effect_StartRotation = {0.f, 0.f, 0.f};    // 초기 회전각을 얼마로 고정할건데?
+        Vec3                    _Effect_StartRotation = { 0.f, 0.f, 0.f };    // 초기 회전각을 얼마로 고정할건데?
         Vec3                    _Effect_TargetRotation = { 0.f, 0.f, 0.f }; // 얼만큼 회전시킬건데?
         bool                    _bUseStartRotation = false;
-       // X,Y,Z 축 분리
+        // X,Y,Z 축 분리
         vector<Rotation_CurveKey> _vecRotationCurveX;
         vector<Rotation_CurveKey> _vecRotationCurveY;
         vector<Rotation_CurveKey> _vecRotationCurveZ;
@@ -205,6 +210,8 @@ public:
         _bool               _Effect_Tool_NoiseTexture = { false };
         _bool               _Effect_Tool_MaskingTexture = { false };
         _bool               _Effect_Tool_GradationTexture = { false };
+        _bool               _Effect_Tool_DissolveTexture = { false };
+        _bool               _Effect_Tool_GlowTexture = { false };
 
         // 빌보드는 있니, 스크롤은 먹이니
         _bool               _Effect_Tool_UseBillboard = { false };
@@ -212,12 +219,28 @@ public:
         _bool               _Effect_Tool_RightScroll = { false };
         _bool               _Effect_Tool_DownScroll = { false };
 
+        // + 텍스처별 스크롤 값 적용
+        Vec2                _Effect_DiffuseTexture_ScrollWeight = { 1.f, 1.f };
+        Vec2                _Effect_NoiseTexture_ScrollWeight = { 1.f, 1.f };
+        Vec2                _Effect_MaskingTexture_ScrollWeight = { 1.f, 1.f };
+        Vec2                _Effect_GradationTexture_ScrollWeight = { 1.f, 1.f };
+        Vec2                _Effect_DissolveTexture_ScrollWeight = { 1.f, 1.f };
+
+
+        // 툴용 텍스처 스크롤 
+
+        _bool               _Effect_Tool_UseScroll_Diffuse = { false };
+        _bool               _Effect_Tool_UseScroll_Noise = { false };
+        _bool               _Effect_Tool_UseScroll_Masking = { false };
+        _bool               _Effect_Tool_UseScroll_Gradation = { false };
+        _bool               _Effect_Tool_UseScroll_Dissolve = { false };
+        _bool               _Effect_Tool_UseScroll_Glow = { false };
+
         // SamplerState 몇번 쓸거니
         int               _Effect_Tool_DiffuseSamplerState_Flag = {};
         int               _Effect_Tool_NoiseSamplerState_Flag = {};
         int               _Effect_Tool_MaskingSamplerState_Flag = {};
         int               _Effect_Tool_GradationSamplerState_Flag = {};
-
         // 
     }Effect_Desc;
 
