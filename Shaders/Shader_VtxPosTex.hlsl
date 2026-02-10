@@ -13,7 +13,20 @@ VS_OUT_POS_TEX VS_MAIN(VS_IN_POS_TEX input)
 PS_OUT PS_MAIN(PS_IN_POS_TEX input)
 {
     PS_OUT output;
-    output.vColor = g_DefaultTextures[DEFAULT].Sample(PointSampler, input.vUV);
+    float2 uv = input.vUV;
+    // Flip X
+    if (g_iFlip == 1)
+        uv.x = 1.0f - uv.x;
+    // Flip Y
+    else if (g_iFlip == 2)   
+        uv.y = 1.0f - uv.y;
+    // Flip XY
+    else if (g_iFlip == 3)   
+    {
+        uv.x = 1.0f - uv.x;
+        uv.y = 1.0f - uv.y;
+    }
+    output.vColor = g_DefaultTextures[DEFAULT].Sample(PointSampler, uv);
     if(output.vColor.a < 0.3f)
         discard;
     return output;
@@ -22,7 +35,20 @@ PS_OUT PS_MAIN(PS_IN_POS_TEX input)
 PS_OUT PS_COLOR(PS_IN_POS_TEX input)
 {
     PS_OUT output;
-    output.vColor = g_DefaultTextures[DEFAULT].Sample(PointSampler, input.vUV);
+    float2 uv = input.vUV;
+    // Flip X
+    if (g_iFlip == 1)
+        uv.x = 1.0f - uv.x;
+    // Flip Y
+    else if (g_iFlip == 2)   
+        uv.y = 1.0f - uv.y;
+    // Flip XY
+    else if (g_iFlip == 3)
+    {
+        uv.x = 1.0f - uv.x;
+        uv.y = 1.0f - uv.y;
+    }
+    output.vColor = g_DefaultTextures[DEFAULT].Sample(PointSampler, uv);
     if (output.vColor.a < 0.3f)
         discard;
     
@@ -33,7 +59,21 @@ PS_OUT PS_COLOR(PS_IN_POS_TEX input)
 PS_OUT PS_FADE(PS_IN_POS_TEX input)
 {
     PS_OUT output;
-    vector vColor = g_DefaultTextures[0].Sample(PointSampler, input.vUV);
+    float2 uv = input.vUV;
+    // Flip X
+    if (g_iFlip == 1)
+        uv.x = 1.0f - uv.x;
+    // Flip Y
+    else if (g_iFlip == 2)   
+        uv.y = 1.0f - uv.y;
+    // Flip XY
+    else if (g_iFlip == 3)
+    {
+        uv.x = 1.0f - uv.x;
+        uv.y = 1.0f - uv.y;
+    }
+    
+    vector vColor = g_DefaultTextures[0].Sample(PointSampler, uv);
     vColor.a *= g_fAlphaRatio;
     output.vColor = vColor;
     return output;
@@ -44,11 +84,24 @@ PS_OUT PS_PROGRESS(PS_IN_POS_TEX input)
     PS_OUT output;
     float2 uv = input.vUV;
     float mask = 1.0f;
-
+    
+    // Flip X
+    if (g_iFlip == 1)
+        uv.x = 1.0f - uv.x;
+    // Flip Y
+    else if (g_iFlip == 2)   
+        uv.y = 1.0f - uv.y;
+    // Flip XY
+    else if (g_iFlip == 3)
+    {
+        uv.x = 1.0f - uv.x;
+        uv.y = 1.0f - uv.y;
+    }
+    
     if (g_isColor)
         output.vColor = g_vColorTint;
     else
-        output.vColor = g_DefaultTextures[0].Sample(PointSampler, input.vUV);
+        output.vColor = g_DefaultTextures[0].Sample(PointSampler, uv);
     
     if (g_iFillDir == 0) 
         mask = step(uv.x, g_fProgressRatio);        //right -> left

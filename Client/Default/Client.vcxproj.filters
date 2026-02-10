@@ -244,6 +244,9 @@
     <Filter Include="03. GameObject\UIObjects\02.UI\Text">
       <UniqueIdentifier>{4c552970-7965-46f3-85ec-73d256c4eba8}</UniqueIdentifier>
     </Filter>
+    <Filter Include="03. GameObject\UIObjects\02.UI\Trigger">
+      <UniqueIdentifier>{48b4a088-d124-4a5f-a826-7eac6ea855f7}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="targetver.h">
@@ -481,6 +484,9 @@
     <ClInclude Include="..\Public\UIText.h">
       <Filter>03. GameObject\UIObjects\02.UI\Text</Filter>
     </ClInclude>
+    <ClInclude Include="..\Public\UITrigger.h">
+      <Filter>03. GameObject\UIObjects\02.UI\Trigger</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <Image Include="Client.ico">
@@ -709,6 +715,9 @@
     </ClCompile>
     <ClCompile Include="..\Private\UIText.cpp">
       <Filter>03. GameObject\UIObjects\02.UI\Text</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\UITrigger.cpp">
+      <Filter>03. GameObject\UIObjects\02.UI\Trigger</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

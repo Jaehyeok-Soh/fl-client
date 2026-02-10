@@ -3,30 +3,31 @@
 #include "DataStruct_UI.h"
 
 NS_BEGIN(Client)
-class CStatComponent;
-class CUIText final : public CGenericUI
+class CCanvas;
+class CGenericUI;
+class CUITrigger final : public CGenericUI
 {
 	using Super = CGenericUI;
 public:
-	typedef struct tagUITextDesc : public GENERIC_UI_DESC
+	typedef struct tagTriggerUIDesc : public GENERIC_UI_DESC
 	{
-		CStatComponent* pTargetStat;
 		DTO::EUIOwnerType eOwner;
-		_wstring wstrText;
-		Vec4 vFontColor;
+		DTO::TUI_TriggerData tTriggerData;
+	}UI_TRIGGER_DESC;
 
-	}UI_TEXT_DESC;
+	enum class ETriggerEventType { HOVER_ENTER, HOVER_EXIT, PRESS_ENTER, PRESS_EXIT, END };
 
 private:
-	CUIText(ID3D11Device* pDevice, ID3D11DeviceContext* pDeviceContext);
-	CUIText(const CUIText& rhs);
-	virtual ~CUIText() = default;
+	CUITrigger(ID3D11Device* pDevice, ID3D11DeviceContext* pDeviceContext);
+	CUITrigger(const CUITrigger& rhs);
+	virtual ~CUITrigger() = default;
 
 public:
 	HRESULT Initialize_Prototype() override;
 	HRESULT Initialize(void* pArg) override;
 
 	HRESULT Attach_Personal_Info();
+	HRESULT Bind_Cache();
 
 public:
 	virtual HRESULT Awake(const _uint iCurrentLevelID) override;
@@ -37,19 +38,18 @@ public:
 	virtual HRESULT Render() override;
 
 private:
-	HRESULT Ready_Components(UI_TEXT_DESC* pDesc);
+	HRESULT Ready_Components(UI_TRIGGER_DESC* pDesc);
 	HRESULT Bind_ShaderResources();
 
-private:
-	CStatComponent* m_pTargetStat = { nullptr };
-	DTO::EUIOwnerType m_eOwnerType = {};
+	array<vector<CCanvas*>, ENUM_TO_UINT(ETriggerEventType::END)> m_pTriggerCanvas;
+	array<vector<CGenericUI*>, ENUM_TO_UINT(ETriggerEventType::END)> m_pTriggerUI;
 
-	_wstring m_wstrText = {};
-	Vec2 m_vFontPos = {};
-	Vec4 m_vFontColor = {};
+private:
+	DTO::EUIOwnerType m_eOwnerType = {};
+	DTO::TUI_TriggerData m_tTriggerData = {};
 
 public:
-	static CUIText* Create(ID3D11Device* pDevice, ID3D11DeviceContext* pDeviceContext);
+	static CUITrigger* Create(ID3D11Device* pDevice, ID3D11DeviceContext* pDeviceContext);
 	CGameObject* Clone(void* pArg);
 	virtual void Free()override;
 };

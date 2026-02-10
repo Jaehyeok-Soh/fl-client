@@ -231,6 +231,7 @@
     <ClInclude Include="..\Public\UIProgress_Bar.h" />
     <ClInclude Include="..\Public\UISkill_BG.h" />
     <ClInclude Include="..\Public\UIText.h" />
+    <ClInclude Include="..\Public\UITrigger.h" />
     <ClInclude Include="..\Public\UI_Manager.h" />
     <ClInclude Include="..\Public\Weapon.h" />
     <ClInclude Include="Client.h" />
@@ -333,6 +334,7 @@
     <ClCompile Include="..\Private\UIProgress_Bar.cpp" />
     <ClCompile Include="..\Private\UISkill_BG.cpp" />
     <ClCompile Include="..\Private\UIText.cpp" />
+    <ClCompile Include="..\Private\UITrigger.cpp" />
     <ClCompile Include="..\Private\UI_Manager.cpp" />
     <ClCompile Include="..\Private\Weapon.cpp" />
     <ClCompile Include="..\Public\Physics_Terrain.cpp" />

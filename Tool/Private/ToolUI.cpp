@@ -48,10 +48,11 @@ HRESULT CToolUI::Initialize(void* pArg)
 	m_iFillDir				= pDesc->iFillDir;
 	m_fDelay				= pDesc->fDelay;
 	m_eOwnerType			= pDesc->eOwnerType;
+	m_iFlip					= pDesc->iFlip;
 
 	{
 		m_tUITextData			= pDesc->tTextData;
-		m_wstrText_TextData = m_tUITextData.wstrText;
+		m_wstrText_TextData = Engine_Utils::ToWString(m_tUITextData.strText);
 		m_vFontColor_TextData = m_tUITextData.vFontColor;
 	}
 
@@ -208,15 +209,17 @@ HRESULT CToolUI::Bind_ShaderResources()
 
 	pShader->Set_Pass(m_iShaderPass);
 
+	if (FAILED(Get_Component<CTexture>()->Bind_ShaderResourceBuffer(pShader)))
+		return E_FAIL;
+
+	if (FAILED(pShader->Get_Variable("g_iFlip")->SetRawValue(&m_iFlip, 0, sizeof(int32_t))))
+		return E_FAIL;
+
 	if (m_iShaderPass == ENUM_TO_UINT(EUIShaderPass::DEFAULT))
 	{
-		if (FAILED(Get_Component<CTexture>()->Bind_ShaderResourceBuffer(pShader)))
-			return E_FAIL;
 	}
 	else if (m_iShaderPass == ENUM_TO_UINT(EUIShaderPass::DEFAULT_ALPHA))
 	{
-		if (FAILED(Get_Component<CTexture>()->Bind_ShaderResourceBuffer(pShader)))
-			return E_FAIL;
 	}
 	else if (m_iShaderPass == ENUM_TO_UINT(EUIShaderPass::COLOR))
 	{
@@ -225,17 +228,11 @@ HRESULT CToolUI::Bind_ShaderResources()
 	}
 	else if (m_iShaderPass == ENUM_TO_UINT(EUIShaderPass::FADE))
 	{
-		if (FAILED(Get_Component<CTexture>()->Bind_ShaderResourceBuffer(pShader)))
-			return E_FAIL;
-
 		if (FAILED(pShader->Get_Variable("g_fAlphaRatio")->SetRawValue(&m_fTestAlpha, 0, sizeof(_float))))
 			return E_FAIL;
 	}
 	else if (m_iShaderPass == ENUM_TO_UINT(EUIShaderPass::PROGRESS))
 	{
-		if (FAILED(Get_Component<CTexture>()->Bind_ShaderResourceBuffer(pShader)))
-			return E_FAIL;
-
 		if (FAILED(pShader->Get_Variable("g_isColor")->SetRawValue(&m_isUseColorTint, 0, sizeof(_bool))))
 			return E_FAIL;
 
@@ -354,6 +351,7 @@ void CToolUI::Sync_Data()
 	m_tUIData.vColorTint 			= m_vColorTint;
 	m_tUIData.iShaderPass			= m_iShaderPass;
 	m_tUIData.fDelay				= m_fDelay;
+	m_tUIData.iFlip					= m_iFlip;
 
 	if (m_eClassType == DTO::EUIClassType::UI_TEXT)
 	{
@@ -369,7 +367,8 @@ void CToolUI::Sync_TextData()
 {
 	m_tUITextData.strTag = m_strName + "_TextData";
 	m_tUITextData.strOwnerName = m_strName;
-	m_tUITextData.wstrText = m_wstrText_TextData;
+	m_tUITextData.strText = Engine_Utils::ToString(m_wstrText_TextData);
+	m_tUITextData.vFontColor = m_vFontColor_TextData;
 }
 
 void CToolUI::Stnc_TriggerData()

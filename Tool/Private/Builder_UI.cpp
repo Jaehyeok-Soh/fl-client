@@ -121,7 +121,8 @@ HRESULT CBuilder_UI::Create_GenericUIDTO(const DTO::TUI_GenericUIData& data)
 	Desc.vColorTint			= data.vColorTint;
 	Desc.iShaderPass		= data.iShaderPass;
 	Desc.iFillDir			= data.iFillDir;
-
+	Desc.iFlip				= data.iFlip;
+	Desc.fDelay				= data.fDelay;
 	if (data.eClassType == DTO::EUIClassType::UI_TEXT)
 	{
 		auto iter = m_TextDataCache.find(data.strTag);

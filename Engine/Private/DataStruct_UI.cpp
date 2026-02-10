@@ -51,14 +51,20 @@ void to_json(json& j, const TUI_TextData& data)
 		{"Type", TUI_TextData::eType },
 		{"strTag", data.strTag},
 		{"strOwnerName", data.strOwnerName},
-		{"wstrText", data.wstrText},
+		{"strText", data.strText},
+		{ "vFontColor", {{ "x", data.vFontColor.x },{ "y", data.vFontColor.y },{ "z", data.vFontColor.z },{ "w", data.vFontColor.w }}},
 	};
 }
 void from_json(const json& j, TUI_TextData& data)
 {
 	j.at("strTag").get_to(data.strTag);
 	j.at("strOwnerName").get_to(data.strOwnerName);
-	j.at("wstrText").get_to(data.wstrText);
+	j.at("strText").get_to(data.strText);
+	const auto& jt = j.at("vFontColor");
+	jt.at("x").get_to(data.vFontColor.x);
+	jt.at("y").get_to(data.vFontColor.y);
+	jt.at("z").get_to(data.vFontColor.z);
+	jt.at("w").get_to(data.vFontColor.w);
 }
 void to_json(json& j, const TUI_GenericUIData& data)
 {
@@ -83,6 +89,7 @@ void to_json(json& j, const TUI_GenericUIData& data)
 		{ "iShaderPass", data.iShaderPass },
 		{ "iFillDir", data.iFillDir },
 		{ "fDelay", data.fDelay },
+		{ "iFlip", data.iFlip },
 	};
 }
 void from_json(const json& j, TUI_GenericUIData& data)
@@ -109,6 +116,7 @@ void from_json(const json& j, TUI_GenericUIData& data)
 	j.at("iShaderPass").get_to(data.iShaderPass);
 	j.at("iFillDir").get_to(data.iFillDir);
 	j.at("fDelay").get_to(data.fDelay);
+	j.at("iFlip").get_to(data.iFlip);
 }
 
 void to_json(json& j, const TUI_CanvasData& data)

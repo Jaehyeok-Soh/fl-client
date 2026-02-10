@@ -53,6 +53,7 @@
 #include "UIProgress_Bar.h"
 #include "UIText.h"
 #include "UIJust_Image.h"
+#include "UITrigger.h"
 //=================
 // Resource
 //=================
@@ -181,6 +182,10 @@ HRESULT CLoader::Loading_For_Logo()
 			return E_FAIL;
 		if (FAILED(Loading_Textures(L"../../Resources/Textures/UI/Battle/")))
 			return E_FAIL;
+		if (FAILED(Loading_Textures(L"../../Resources/Textures/UI/Key/")))
+			return E_FAIL;
+		if (FAILED(Loading_Textures(L"../../Resources/Textures/UI/WeaponIcon/")))
+			return E_FAIL;
 	}	
 	
 #pragma endregion
@@ -285,10 +290,11 @@ HRESULT CLoader::Loading_For_Logo()
 #pragma endregion
 
 #pragma region UI
-	ADD_PROTOTYPE(ELevelType::LOGO, L"Prototype_UI_Canvas", CCanvas::Create(m_pDevice, m_pDeviceContext));
-	ADD_PROTOTYPE(ELevelType::LOGO, L"Prototype_UI_PROGRESS_BAR", CUIProgress_Bar::Create(m_pDevice, m_pDeviceContext));
-	ADD_PROTOTYPE(ELevelType::LOGO, L"Prototype_UI_TEXT", CUIText::Create(m_pDevice, m_pDeviceContext));
-	ADD_PROTOTYPE(ELevelType::LOGO, L"Prototype_UI_JUST_IMAGE", CUIJust_Image::Create(m_pDevice, m_pDeviceContext));
+	ADD_PROTOTYPE(ELevelType::LOGO, L"Prototype_UI_Canvas",			CCanvas::Create(m_pDevice, m_pDeviceContext));
+	ADD_PROTOTYPE(ELevelType::LOGO, L"Prototype_UI_PROGRESS_BAR",	CUIProgress_Bar::Create(m_pDevice, m_pDeviceContext));
+	ADD_PROTOTYPE(ELevelType::LOGO, L"Prototype_UI_UI_TEXT",		CUIText::Create(m_pDevice, m_pDeviceContext));
+	ADD_PROTOTYPE(ELevelType::LOGO, L"Prototype_UI_JUST_IMAGE",		CUIJust_Image::Create(m_pDevice, m_pDeviceContext));
+	ADD_PROTOTYPE(ELevelType::LOGO, L"Prototype_UI_TRIGGER",		CUITrigger::Create(m_pDevice, m_pDeviceContext));
 #pragma endregion
 
 	m_isFinished = true;

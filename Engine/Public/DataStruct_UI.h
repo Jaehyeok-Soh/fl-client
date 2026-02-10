@@ -118,7 +118,7 @@ struct TUI_TextData
 	std::string		strTag;
 	std::string		strOwnerName;
 	std::string		strFontTag;
-	std::wstring	wstrText;
+	std::string	    strText;
 	Vec4			vFontColor;	
 };
 
@@ -160,6 +160,7 @@ struct TUI_GenericUIData
 	int32_t			iShaderPass;
 	int32_t			iFillDir;
 	_float			fDelay;
+	int32_t			iFlip;
 };
 
 struct TUI_CanvasData

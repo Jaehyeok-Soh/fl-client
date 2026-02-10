@@ -8,16 +8,21 @@
 #include "Texture.h"
 #include "Shader.h"
 #include "VIBuffer_Rect_Tex.h"
+#include "UI_Manager.h"
 #include "GameInstance.h"
 
 CGenericUI::CGenericUI(ID3D11Device* pDevice, ID3D11DeviceContext* pDeviceContext)
-	:CUIObject(pDevice, pDeviceContext)
+	:CUIObject(pDevice, pDeviceContext),
+	m_pUIManager(CUI_Manager::GetInstance())
 {
+	Safe_AddRef(m_pUIManager);
 }
 
 CGenericUI::CGenericUI(const CGenericUI& rhs)
-	:CUIObject(rhs)
+	:CUIObject(rhs),
+	m_pUIManager(CUI_Manager::GetInstance())
 {
+	Safe_AddRef(m_pUIManager);
 }
 
 HRESULT CGenericUI::Initialize_Prototype()
@@ -30,7 +35,7 @@ HRESULT CGenericUI::Initialize_Prototype()
 HRESULT CGenericUI::Initialize(void* pArg)
 {
 	GENERIC_UI_DESC* pDesc = static_cast<GENERIC_UI_DESC*>(pArg);
-	
+	m_iLevelID				= pDesc->iLevelIndex;
 	m_eRectTransformType	= static_cast<ERectTransform>(pDesc->iRectTransformType);
 	m_wstrTextureTag		= pDesc->wstrTextureTag;
 	m_iTextureIndex			= pDesc->iTextureIndex;
@@ -150,6 +155,12 @@ HRESULT CGenericUI::Bind_ShaderResources()
 	CShader* pShader = Get_Component<CShader>();
 	pShader->Set_Pass(m_iShaderPass);
 
+	if (FAILED(Get_Component<CTexture>()->Bind_ShaderResourceBuffer(pShader)))
+		return E_FAIL;
+
+	if (FAILED(pShader->Get_Variable("g_iFlip")->SetRawValue(&m_iFlip, 0, sizeof(int32_t))))
+		return E_FAIL;
+
 	if (m_iShaderPass == ENUM_TO_UINT(EUIShaderPass::DEFAULT))
 	{
 		if (FAILED(Get_Component<CTexture>()->Bind_ShaderResourceBuffer(pShader)))
@@ -177,8 +188,7 @@ HRESULT CGenericUI::Bind_ShaderResources()
 	}
 	else if (m_iShaderPass == ENUM_TO_UINT(EUIShaderPass::PROGRESS))
 	{
-		if (FAILED(Get_Component<CTexture>()->Bind_ShaderResourceBuffer(pShader)))
-			return E_FAIL;
+
 
 		if (FAILED(pShader->Get_Variable("g_isColor")->SetRawValue(&m_isUseColorTint, 0, sizeof(_bool))))
 			return E_FAIL;
@@ -192,11 +202,11 @@ HRESULT CGenericUI::Bind_ShaderResources()
 		if (FAILED(pShader->Get_Variable("g_iFillDir")->SetRawValue(&m_iFillDir, 0, sizeof(uint32_t))))
 			return E_FAIL;
 	}
-
 	return S_OK;
 }
 
 void CGenericUI::Free()
 {
+	Safe_Release(m_pUIManager);
 	Super::Free();
 }

@@ -4,6 +4,7 @@
 
 NS_BEGIN(Client)
 class CCanvas;
+class CUI_Manager;
 class CGenericUI abstract : public CUIObject
 {
 	using Super = CUIObject;
@@ -57,6 +58,10 @@ public:
 	const _string& Get_Tag() { return m_strName; }
 
 protected:
+	CUI_Manager* m_pUIManager = { nullptr };	
+	uint32_t m_iLevelID = {};
+
+protected:
 	ERectTransform m_eRectTransformType = { ERectTransform::C };
 	_wstring m_wstrTextureTag			= {};
 	uint32_t m_iTextureIndex			= {};
@@ -72,9 +77,10 @@ protected:
 	_bool m_isUseColorTint				= {false};
 	Vec4 m_vColorTint					= {};
 	_float m_fAlpha_Ratio				= {};
-	_float m_fProgress_Ratio			= {};
+	_float m_fProgress_Ratio			= {1.f};
 	int32_t m_iFillDir					= {};
 	_float m_fDelay						= {};
+	int32_t m_iFlip						= { ENUM_TO_UINT(EUIFlip::NONE) };
 
 public:
 	virtual void Free()override;

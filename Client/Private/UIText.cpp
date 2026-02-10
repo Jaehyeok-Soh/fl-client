@@ -30,10 +30,11 @@ HRESULT CUIText::Initialize_Prototype()
 
 HRESULT CUIText::Initialize(void* pArg)
 {
-	TEXT_DESC* pDesc = static_cast<TEXT_DESC*>(pArg);
-	m_pTargetStat = pDesc->pTargetStat;
-	m_eOwnerType = pDesc->eOwner;
-	m_wstrText = pDesc->wstrText;
+	UI_TEXT_DESC* pDesc = static_cast<UI_TEXT_DESC*>(pArg);
+	m_pTargetStat	= pDesc->pTargetStat;
+	m_eOwnerType	= pDesc->eOwner;
+	m_wstrText		= pDesc->wstrText;
+	m_vFontColor	= pDesc->vFontColor;
 
 	if (FAILED(Super::Initialize(pArg)))
 		return E_FAIL;
@@ -42,7 +43,6 @@ HRESULT CUIText::Initialize(void* pArg)
 
 	if (FAILED(Attach_Personal_Info()))
 		return E_FAIL;
-
 	m_vFontPos = Vec2{ m_fX, m_fY };
 	return S_OK;
 }
@@ -73,7 +73,6 @@ HRESULT CUIText::Attach_Personal_Info()
 		return E_FAIL;
 	}
 
-
 	return S_OK;
 }
 
@@ -97,12 +96,8 @@ void CUIText::Update(const _float fTimeDelta)
 
 void CUIText::Update_Late(const _float fTimeDelta)
 {
-	m_wstrText = L"¾È³ç";
-	m_vFontColor = Vec4{ 1.f, 0.f, 0.f, 1.f };
-	//m_vFontPos.x = m_vRenderPos.x;
-	//m_vFontPos.y = m_vRenderPos.y;
-	m_vFontPos = Vec2{100.f, 100.f };
-
+	m_vFontPos.x = m_vRenderPos.x;
+	m_vFontPos.y = m_vRenderPos.y;
 
 	Super::Update_Late(fTimeDelta);
 }
@@ -128,12 +123,12 @@ HRESULT CUIText::Render()
 	Get_Component<CVIBuffer>()->Bind_Resource();
 	Get_Component<CVIBuffer>()->Render();
 
-	if (FAILED(m_pGameInstance->Draw_Text(L"Font_Default", m_wstrText.c_str(), m_vFontPos, m_vFontColor)))
+	if (FAILED(m_pGameInstance->Draw_Text(L"Title_KR_8", m_wstrText.c_str(), m_vFontPos, m_vFontColor)))
 		return E_FAIL;
 	return S_OK;
 }
 
-HRESULT CUIText::Ready_Components(TEXT_DESC* pDesc)
+HRESULT CUIText::Ready_Components(UI_TEXT_DESC* pDesc)
 {
 	Super::Ready_Components(pDesc);
 	return S_OK;

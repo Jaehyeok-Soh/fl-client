@@ -24,6 +24,7 @@ public:
 		Vec4 vColorTint;
 		int32_t iFillDir;
 		_float fDelay;
+		int32_t iFlip;
 		DTO::EUIOwnerType eOwnerType;
 		DTO::TUI_TextData tTextData;
 		DTO::TUI_TriggerData tTriggerData;
@@ -100,6 +101,7 @@ public:
 	const vector<_string>& Get_vecPressEnterTriggerUI() const { return m_vecPressEnterTriggerUI; }
 	const vector<_string>& Get_vecPressExitTriggerCanvas() const { return m_vecPressExitTriggerCanvas; }
 	const vector<_string>& Get_vecPressExitTriggerUI() const { return m_vecPressExitTriggerUI; }
+	int32_t Get_Flip()				const	{ return m_iFlip; }
 
 	void Set_ColorTint(Vec4 v)				{ m_vColorTint = v; }
 	void Set_AlphaRatio(_float f)			{ m_fTestAlpha = f; }
@@ -108,6 +110,7 @@ public:
 	void Set_FillDir(int32_t i)				{ m_iFillDir = i; }
 	void Set_Delay(_float f)				{ m_fDelay = f; }
 	void Set_Text(const _wstring& wstr)		{ m_wstrText_TextData = wstr; }
+	void Set_Flip(int32_t i)				{ m_iFlip = i; }
 
 	_bool Add_Tag(vector<_string>& vec, const _string& str);
 	_bool Remove_Tag(vector<_string>& vec, const _string& str);
@@ -175,6 +178,7 @@ protected:
 	DTO::EUIOwnerType m_eOwnerType		= {};
 	int32_t m_iFillDir					= {};
 	_float m_fDelay						= {};
+	int32_t m_iFlip						= { ENUM_TO_UINT(EUIFlip::NONE) };
 
 	// Client Bind Values Text Data
 	DTO::TUI_TextData m_tUITextData		= {};

@@ -52,7 +52,7 @@ int     g_iFillDir;
 bool    g_isColor;
 float4  g_vColorTint;
 float   g_fDelay;
-float4  g_vHitColorTint;
+int     g_iFlip;
 
 /////////
 // SRV //

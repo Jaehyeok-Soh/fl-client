@@ -60,7 +60,6 @@ HRESULT CUI_Inspector::Render(CToolObject* pGo)
 	{
 		m_pSelectedUI->Set_HitTest();
 		SetUp_Public_Info();
-		Input_TextureTag();
 		SetUp_ShaderPass();
 		
 		if (Begin_Card("SetUp Default Setting", "##SetUp_Default_Setting", 100.f))
@@ -495,6 +494,27 @@ void CUI_Inspector::SetUp_ShaderPass()
 			}
 			ImGui::EndCombo();
 		}
+
+		Input_TextureTag();
+		
+		if (ImGui::Button("No Flip"))
+		{
+			m_pSelectedUI->Set_Flip(ENUM_TO_UINT(EUIFlip::NONE));
+		}
+		ImGui::SameLine();
+		if (ImGui::Button("Flip X")) {
+			m_pSelectedUI->Set_Flip(ENUM_TO_UINT(EUIFlip::FLIP_X));
+	
+		}
+		ImGui::SameLine();
+		if (ImGui::Button("Flip Y")) {
+			m_pSelectedUI->Set_Flip(ENUM_TO_UINT(EUIFlip::FLIP_Y));
+		}
+		ImGui::SameLine();
+		if (ImGui::Button("Flip XY")) {
+			m_pSelectedUI->Set_Flip(ENUM_TO_UINT(EUIFlip::FLIP_XY));
+		}
+
 		switch ((EUIShaderPass)cur)
 		{
 		case EUIShaderPass::DEFAULT:
