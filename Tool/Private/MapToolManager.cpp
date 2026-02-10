@@ -228,21 +228,21 @@ void CMapToolManager::DrawImGui_Preview()
 	m_pPreviewMapobject->Draw_ImGui();
 }
 
-HRESULT CMapToolManager::Check_And_Bind()
+HRESULT CMapToolManager::Check_And_Bind_FromUE()
 {
-	list<CGameObject*>* pStaticModelList = m_pGameInstance->Get_GameObject_List(ENUM_TO_UINT(ELevelType::MAP) , g_wszStaticModelLayer);
-	list<CGameObject*>* pInstanceModelList = m_pGameInstance->Get_GameObject_List(ENUM_TO_UINT(ELevelType::MAP), g_wszInstanceModelLayer);
+	list<CGameObject*>* pUEMapObject = m_pGameInstance->Get_GameObject_List(ENUM_TO_UINT(ELevelType::MAP) , g_wszMapObjectLayer);
+
+	if (pUEMapObject == nullptr)  return S_OK;
 
 	if (m_pLevelMap)
 		m_pLevelMap->On_ChangeSelectedObject(nullptr);
 
 	/* 미리 한곳으로 합치기 */
-	vector<CGameObject*> vecMapObject{};
-
-	size_t iAllSize = (pStaticModelList == nullptr ? 0 : pStaticModelList->size()) + (pInstanceModelList == nullptr ? 0 : pInstanceModelList->size());
-	vecMapObject.reserve(iAllSize);
-	if(pStaticModelList) vecMapObject.insert(vecMapObject.end() , pStaticModelList->begin(), pStaticModelList->end());
-	if(pInstanceModelList) vecMapObject.insert(vecMapObject.end() , pInstanceModelList->begin(), pInstanceModelList->end());
+	vector<CMapObject*> vecMapObject{};
+	/* Section 별로 Instance를 하고싶은데 */
+	//vecMapObject.reserve(iAllSize);
+	//if(pStaticModelList) vecMapObject.insert(vecMapObject.end() , pStaticModelList->begin(), pStaticModelList->end());
+	//if(pInstanceModelList) vecMapObject.insert(vecMapObject.end() , pInstanceModelList->begin(), pInstanceModelList->end());
 
 	/* 사용하는 모델주소가 같은 StaticModel을 모아둘 장소 */
 	map<PairKey, vector<CMapObject*> > mapSameModels{};

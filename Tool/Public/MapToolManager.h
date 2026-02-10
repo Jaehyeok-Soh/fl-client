@@ -141,7 +141,7 @@ public:
 	void						Delete_Preview();
 	void						DrawImGui_Preview();
 public:
-	HRESULT						Check_And_Bind();
+	HRESULT						Check_And_Bind_FromUE();
 	void						Get_SRT_BrushData(Vec3& vOutScale , Quat& vOutQuat , Vec3& vOutPosition);
 public:
 	void						Set_PreviewMapObject(CMapObject* pMapObject)							{ m_pPreviewMapobject = pMapObject; }

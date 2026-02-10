@@ -89,7 +89,7 @@ HRESULT CPanel_MapTool::Render_CheckAndBind()
 
 	/* UE Model Data Àü¿ë */
 	if (ImGui::Button(" Bind Staitc & Instance Model To Instance Model "))
-		m_pMapToolManager->Check_And_Bind();
+		m_pMapToolManager->Check_And_Bind_FromUE();
 
 
 	ImGui::Separator();
