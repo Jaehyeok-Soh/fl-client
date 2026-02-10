@@ -8,19 +8,19 @@
 CMesh::CMesh(ID3D11Device* pDevice, ID3D11DeviceContext* pDeviceContext)
 	: Super(pDevice, pDeviceContext)
 {
-	for (Matrix& matBone : m_boneMatrices.transforms)
-		matBone = Matrix::Identity;
 }
 
 CMesh::CMesh(const CMesh& rhs)
 	: Super(rhs)
+	, m_bHasMinMax(rhs.m_bHasMinMax)
 	, m_iMaterialIndex(rhs.m_iMaterialIndex)
 	, m_iAffectBoneCount(rhs.m_iAffectBoneCount)
-	, m_vecAffectBoneIndices(rhs.m_vecAffectBoneIndices)
-	, m_boneMatrices(rhs.m_boneMatrices)
-	, m_vecOffsetMatrices(rhs.m_vecOffsetMatrices)
+	, m_iOffsetMatrixCount(rhs.m_iOffsetMatrixCount)
+	, m_tBoneMatrices(rhs.m_tBoneMatrices)
+	, m_pMinMax(rhs.m_pMinMax)
+	, m_pOffsetMatrices(rhs.m_pOffsetMatrices)
+	, m_pAffectBoneIndices(rhs.m_pAffectBoneIndices)
 	, m_pNormals(rhs.m_pNormals)
-	, m_pSurfaceTypes(rhs.m_pSurfaceTypes)
 {
 	::strcpy_s(m_szName, rhs.m_szName);
 }
@@ -46,17 +46,24 @@ HRESULT CMesh::Initialize_Prototype(void* pArg)
 	m_eIndexFormat = DXGI_FORMAT::DXGI_FORMAT_R32_UINT;
 	m_iIndexCount = pDesc->iIndexCount;
 
-	m_iAffectBoneCount = pDesc->iAffectBoneCount;
-	if (m_iAffectBoneCount > 0)
+	if (pDesc->iAffectBoneCount > 0)
 	{
-		m_vecAffectBoneIndices.resize(m_iAffectBoneCount);
-		::memcpy(m_vecAffectBoneIndices.data(), pDesc->spanAffectBoneIndex.data(), sizeof(_uint) * m_iAffectBoneCount);
+		m_iAffectBoneCount = pDesc->iAffectBoneCount;
+		m_pAffectBoneIndices = new _uint[m_iAffectBoneCount];
+		::memcpy(m_pAffectBoneIndices, pDesc->spanAffectBoneIndex.data(), sizeof(_uint) * m_iAffectBoneCount);
 	}
 
 	if (pDesc->iOffsetMatricesCount > 0)
 	{
-		m_vecOffsetMatrices.resize(pDesc->iOffsetMatricesCount);
-		::memcpy(m_vecOffsetMatrices.data(), pDesc->spanOffsetMatrices.data(), sizeof(Matrix) * pDesc->iOffsetMatricesCount);
+		m_iOffsetMatrixCount = pDesc->iOffsetMatricesCount;
+		m_pOffsetMatrices = new Matrix[m_iOffsetMatrixCount];
+		::memcpy(m_pOffsetMatrices, pDesc->spanOffsetMatrices.data(), sizeof(Matrix) * m_iOffsetMatrixCount);
+	}
+
+	if (pDesc->iMinMaxCount > 0)
+	{
+		m_pMinMax = new Vec3[pDesc->iMinMaxCount];
+		::memcpy(m_pMinMax, pDesc->spanMinMax.data(), sizeof(Vec3) * 2);
 	}
 
 	m_pVertexPositions = new SimpleMath::Vector3[m_iVertexCount];
@@ -115,7 +122,6 @@ HRESULT CMesh::Initialize_Prototype(void* pArg)
 		const _uint iTriangleCount = m_iIndexCount / 3;
 
 		m_pNormals = new Vec3[iTriangleCount];
-		m_pSurfaceTypes = new ESurfaceType[iTriangleCount];
 		_uint iIndex = { 0 };
 		for (_uint i = 0; i < iTriangleCount; ++i)
 		{
@@ -127,20 +133,9 @@ HRESULT CMesh::Initialize_Prototype(void* pArg)
 			Vec3 vAC = vC - vA;
 			Vec3 vNormal = vAB.Cross(vAC);
 			vNormal.Normalize();
-
-			ESurfaceType eType = ESurfaceType::CEILING;
-			const _float fDot = vNormal.Dot(Vec3::Up);
-			const _float fCosGroundMax = ::cosf(::XMConvertToRadians(50.f));
-
-			if (fDot >= fCosGroundMax)
-				eType = ESurfaceType::GROUND;
-			else if (fDot > -0.1f)
-				eType = ESurfaceType::WALL;
-
 			m_pNormals[i] = vNormal;
-			m_pSurfaceTypes[i] = eType;
 		}
-	}
+	} 
 
 	return S_OK;
 }
@@ -155,16 +150,19 @@ HRESULT CMesh::Initialize(void* pArg)
 
 HRESULT CMesh::Bind_Bones(CShader* pShader, const vector<CBone*>& vecBones, _uint iIndexDistance)
 {
-	for (size_t i = 0; i < m_vecAffectBoneIndices.size(); ++i)
+	for (size_t i = 0; i < m_iAffectBoneCount; ++i)
 	{
-		m_boneMatrices.transforms[i + iIndexDistance]
-			= m_vecOffsetMatrices[i] * vecBones[m_vecAffectBoneIndices[i]]->Get_CombinedTransformMatrix();
+		m_tBoneMatrices.transforms[i + iIndexDistance]
+			= m_pOffsetMatrices[i] * vecBones[m_pAffectBoneIndices[i]]->Get_CombinedTransformMatrix();
 	}
-	return pShader->Bind_BoneData(m_boneMatrices);
+	return pShader->Bind_BoneData(m_tBoneMatrices);
 }
 
 _bool CMesh::IntsersectWithPlane(OUT Vec3& vOut)
 {
+	if (m_iIndexCount == 0 || !m_pVertexPositions || !m_pIndices)
+		return false;
+
 	const _uint iTriangleCount = m_iIndexCount / 3;
 	_uint iIndex = { 0 };
 	for (_uint i = 0; i < iTriangleCount; ++i)
@@ -215,7 +213,6 @@ _bool CMesh::IntsersectWithPlane(CRay* const pRay, Matrix matWorld, _float fMaxD
 		bestHit.fDistance = fDistance;
 		bestHit.iTriangleIndex = static_cast<_int>(i);
 		bestHit.vNormal = m_pNormals[i];
-		bestHit.eSurfaceType = m_pSurfaceTypes[i];
 		bestHit.vHitPos = vHitted;
 		bHit = true;
 	}
@@ -311,8 +308,10 @@ void CMesh::Free()
 { 
 	if (IsClone() == false)
 	{
+		Safe_Delete_Array(m_pOffsetMatrices);
 		Safe_Delete_Array(m_pNormals);
-		Safe_Delete_Array(m_pSurfaceTypes);
+		Safe_Delete_Array(m_pAffectBoneIndices);
+		Safe_Delete_Array(m_pMinMax);
 	}
 	Super::Free();
 }

@@ -10,6 +10,7 @@ public:
 	typedef struct tagBoundingAABBDesc : public Super::tagBoundingDesc
 	{
 		Vec3 vExtens = {};
+		Vec3* pMinMax{ nullptr };
 	}BOUNDING_AABB_DESC;
 private:
 	CBounding_AABB(ID3D11Device* pDevice, ID3D11DeviceContext* pDeviceContext);

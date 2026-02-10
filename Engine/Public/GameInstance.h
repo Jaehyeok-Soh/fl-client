@@ -40,6 +40,7 @@ class CLayer;
 class CFxEffectAsset;
 class CFxShaderVariant;
 
+
 class ENGINE_DLL CGameInstance final : public CBase
 {
 	using Super = CBase;
@@ -97,6 +98,7 @@ public:
 
 #pragma region TIMER_MANAGER
 	_float					Get_TimeDelta(const _tchar* pTimerTag);
+	void					Set_MaxTimeDelta(const _tchar* pTimerTag, _float fMaxTimeDelta);
 	HRESULT					Add_Timer(const _tchar* pTimerTag);
 	void					Remove_Timer(const _tchar* pTimerTag);
 	void					Compute_TimeDelta(const _tchar* pTimerTag);
@@ -215,6 +217,12 @@ public:
 	HRESULT Regist_Document(_uint iLevelID, DTO::ECategory eCategory);
 #pragma endregion
 
+#pragma region OCTREE_MANAGER
+	HRESULT Register_Octree(CGameObject* pGo, RENDER_CATEGORY eCategory, const BoundingBox& AABB, _bool bDynamic = false);
+	void Unregister(CGameObject* pGo);
+	HRESULT Ready_Octree(const OCTREE_DESC& desc);
+#pragma endregion
+
 #pragma region RENDER_MANAGER
 	inline void Push_RenderObject(RENDER_CATEGORY eCategory, CGameObject* pGO);
 	inline void Push_DebugComponent(class CComponent* pComp);
@@ -255,8 +263,14 @@ public:
 #pragma endregion
 
 #pragma region FRUSTRUM
-	HRESULT Frustrum_Init();
-	_bool Culling_AABB(class CCollider* pCollider);
+	void Ready_Frustrum(); 
+	_float Get_FrustrumMidStart() const;
+	_float Get_FrustrumFarStart() const;
+	void Resize_SplitFrustrum(const _float fMidStart, const _float fFarStart);
+	EFrustrumTier Classify_BySplitFrustrum(const BoundingBox &AABB);
+	EFrustrumTier Classify_BySplitFrustrum(const BoundingSphere& Sphere);
+	BoundingFrustum* Get_BoundingFrustrum_Local();
+	BoundingFrustum* Get_BoundingFrustrum_World();
 #pragma endregion
 
 #pragma region RENDERTARGET_MANAGER
@@ -325,6 +339,7 @@ private:
 	class CDataRepository* m_pDataRepository = { nullptr };
 	class CTimer_Manager* m_pTimer_Manager = { nullptr };
 	class CSound_Manager* m_pSound_Manager = { nullptr };
+	class COctree_Manager* m_pOctree_Manager = { nullptr };
 	class CFont_Manager* m_pFont_Manager = { nullptr };
 	class CGraphic_Device* m_pGraphic_Device = { nullptr };
 	class CLevel_Manager* m_pLevel_Manager = { nullptr };
@@ -349,6 +364,8 @@ private:
 	std::mt19937_64 m_rng;
 public:
 	virtual void			Free() override;
+
+	friend class CRender_Manager;
 };
 
 #pragma region RESOURCE_MANAGER

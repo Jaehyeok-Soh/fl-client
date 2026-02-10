@@ -42,6 +42,10 @@ private:
 	ID3D11DeviceContext* m_pDeviceContext = { nullptr };
 	CGameInstance* m_pGameInstance = { nullptr };
 	list<class CGameObject*> m_renderObjects[ENUM_TO_UINT(RENDER_CATEGORY::END)];
+	vector<class CGameObject*> m_filteredRenderObjects;
+	vector<class CGameObject*> m_visibleNear;
+	vector<class CGameObject*> m_visibleMid;
+	vector<class CGameObject*> m_visibleFar;
 
 	class CVIBuffer_Rect_Tex* m_pVIBuffer = { nullptr };
 	class CShader* m_pShader = { nullptr };

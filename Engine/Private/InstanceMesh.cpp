@@ -167,26 +167,27 @@ void CInstanceMesh::Update_Matrix(const Matrix& WorldMatrix, _uint iIndex)
 
 	VTX_INSTANCE* pVtxMatrix = reinterpret_cast<VTX_INSTANCE*>(pResource.pData);
 
-	memcpy(&pVtxMatrix[iIndex].vRight.x , &WorldMatrix._11 , sizeof(VTX_INSTANCE) );
+	::memcpy(&pVtxMatrix[iIndex].vRight.x , &WorldMatrix._11 , sizeof(VTX_INSTANCE) );
 
 	m_pDeviceContext->Unmap(m_pVB, 0);
 }
 
-void CInstanceMesh::Update_Matrix(const vector<Matrix>& vecWorldMatrix, _uint iIndex)
+void CInstanceMesh::Update_Matrix(const vector<Matrix>& vecWorldMatrix)
 {
 	if (m_tInstanceVertexBufferDesc.Usage != D3D11_USAGE_DYNAMIC)
 		return;
+
 	D3D11_MAPPED_SUBRESOURCE pResource{ nullptr };
+
+	m_iVisibleInstanceCount = (std::min)((_uint)vecWorldMatrix.size(), m_iInstanceCount);
 
 	m_pDeviceContext->Map(m_pVB, 0, D3D11_MAP_WRITE_NO_OVERWRITE, 0, &pResource);
 
 	VTX_INSTANCE* pVtxMatrix = reinterpret_cast<VTX_INSTANCE*>(pResource.pData);
 
-	//memcpy(&pVtxMatrix[iIndex].vRight.x, &WorldMatrix._11, sizeof(VTX_INSTANCE));
+	::memcpy(pVtxMatrix, vecWorldMatrix.data(), sizeof(VTX_INSTANCE) * m_iVisibleInstanceCount);
 
 	m_pDeviceContext->Unmap(m_pVB, 0);
-
-	return;
 }
 
 

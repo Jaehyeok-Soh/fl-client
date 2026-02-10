@@ -555,6 +555,14 @@ namespace Tool
 		else return EUIShaderPass::DEFAULT;
 	}
 
+	enum class EUIFlip
+	{
+		NONE = 0,
+		FLIP_X,
+		FLIP_Y,
+		FLIP_XY,
+		END
+	};
 
 
 #pragma endregion

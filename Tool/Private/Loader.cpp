@@ -10,6 +10,7 @@
 #include "Model.h"
 #include "Collider.h"
 #include "Shader.h"
+#include "Bounds.h"
 #include "MonoBehaviour.h"
 #include "Camera.h"
 #include "VIBuffer_Line_Color.h"
@@ -129,7 +130,8 @@ HRESULT CLoader::Loading_For_Map()
 	m_pGameInstance->Add_Prototype(ENUM_TO_UINT(ELevelType::MAP), L"Prototype_Component_Collider_AABB", CCollider::Create(m_pDevice, m_pDeviceContext, EColliderType::AABB));
 	// For. Prototype_Component_Collider_OBB
 	m_pGameInstance->Add_Prototype(ENUM_TO_UINT(ELevelType::MAP), L"Prototype_Component_Collider_OBB", CCollider::Create(m_pDevice, m_pDeviceContext, EColliderType::OBB));
-
+	// For. Prototype_Component_Bounds
+	m_pGameInstance->Add_Prototype(ENUM_TO_UINT(ELevelType::MAP), L"Prototype_Component_Bounds", CBounds::Create(m_pDevice, m_pDeviceContext));
 
 
 
@@ -273,6 +275,12 @@ HRESULT CLoader::Loading_For_UI()
 		return E_FAIL;
 	if (FAILED(Loading_Textures(L"../../Resources/Textures/UI/Menu/")))
 		return E_FAIL;
+	if (FAILED(Loading_Textures(L"../../Resources/Textures/UI/Battle/")))
+		return E_FAIL;
+	if (FAILED(Loading_Textures(L"../../Resources/Textures/UI/Key/")))
+		return E_FAIL;
+	if (FAILED(Loading_Textures(L"../../Resources/Textures/UI/WeaponIcon/")))
+		return E_FAIL;
 
 	//=================
 	// UI Objects
@@ -312,12 +320,17 @@ HRESULT CLoader::Loading_Textures(const wstring& wstrFolder)
 			++iFileCount;
 		}
 	}
-
+	/* 바탕화면 경로(C:\Users\...\Desktop) 쪽은 특히 desktop.ini가 흔합니다. 절대 바탕화면에 프로젝트를 두지마 */
 	for (const auto& entry : std::filesystem::directory_iterator(wstrFolder))
 	{
 		wstring wstrFileName = { L"" };
+		_wstring ext = { L"" };
 		if (entry.is_regular_file())
 		{
+			ext = entry.path().extension().wstring();
+			if (ext == L".ini")
+				continue;
+
 			wstrFileName = entry.path().filename().lexically_normal().stem();
 			CTextureBase::RESOURCE_BASE_DESC desc = {};
 			desc.wstrName = wstrFileName;

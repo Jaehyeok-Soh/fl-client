@@ -9,7 +9,7 @@ class CTimer final : public CBase
 public:
 
 private:
-	static constexpr  _float	m_fMax_TimeDelta = { 0.07f };
+	_float	m_fMax_TimeDelta = { 0.07f };
 private:
 	CTimer();
 	virtual ~CTimer() = default;
@@ -17,6 +17,7 @@ private:
 	HRESULT Initialize();
 public:
 	_float Get_TimeDelta() const { return m_fTimeDelta; }
+	void Set_MaxTimeDelta(_float fMax) { m_fMax_TimeDelta = fMax; }
 public:
 	void Update_Timer();
 

@@ -3,8 +3,10 @@
 #include "DataStruct_Map.h"
 
 NS_BEGIN(Engine)
-
+class CMesh;
+class CModel;
 class CMaterial;
+class CInstanceMesh;
 NS_END
 
 
@@ -54,11 +56,18 @@ public:
 	virtual HRESULT			Render()										override;
 	HRESULT					Render_Instance();
 	HRESULT					Render_Default();
+private:
+	void					Compute_InstanceGroupMinMax(const Vec3* pComputedFinalMinMax, OUT Vec3 *pMinMax);
+	_bool					Compute_ModelLocalMinMax(CModel* pModel, OUT Vec3 outMinMax[2]);
+	void					Filtering_Visible(OUT _uint &iInstanceCount);
+	HRESULT					Update_InstanceBuffer(CInstanceMesh* pMesh);
 protected:
 	_bool					m_isUELoaded{false};
 	EMapObject_DrawType		m_eMapObjectDrawType{EMapObject_DrawType::Default};
 	EMapObject_Type			m_eMapObjectType{ EMapObject_Type::END };
 	vector<Matrix>			m_vecMatrix{};
+	vector<Matrix>			m_vecVisibleMatrix{};
+	vector<_uint>			m_vecVisibleIndex{};
 public:
 	virtual void			Free()	override;
 };

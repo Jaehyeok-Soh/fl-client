@@ -6,6 +6,7 @@
 #include "Model.h"
 #include "Mesh.h"
 #include "MapToolManager.h"
+#include "Bounds.h"
 #include "InstanceMesh.h"
 #include "Engine_Utils.h"
 #include "DataDocument_Map.h"

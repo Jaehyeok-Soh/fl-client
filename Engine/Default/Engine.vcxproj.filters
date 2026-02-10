@@ -379,6 +379,15 @@
     <Filter Include="01. Utility\11. DataRepository\Datas\AttackOverlap\DataDocument_AttackOverlap">
       <UniqueIdentifier>{ba016891-d2b6-4e37-b979-2e9525d75917}</UniqueIdentifier>
     </Filter>
+    <Filter Include="00. System\05. Component\BoundComponent">
+      <UniqueIdentifier>{64605b68-7467-472b-adf5-fb36564873e4}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="01. Utility\18. Octree">
+      <UniqueIdentifier>{020a9a6a-236d-4f19-8912-4b423daf9a79}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="01. Utility\18. Octree\Manager">
+      <UniqueIdentifier>{387a5e34-f34d-4735-97f9-f936bc8925d4}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="..\Private\Timer.cpp">
@@ -733,10 +742,6 @@
     <ClCompile Include="..\public\ThreadPool.cpp">
       <Filter>00. System\13. ThreadPool</Filter>
     </ClCompile>
-    <ClCompile Include="..\private\EngineConsole.cpp">
-      <Filter>01. Utility\16. Console</Filter>
-    </ClCompile>
-    <ClCompile Include="..\private\EngineConsole.cpp" />
     <ClCompile Include="..\private\FxEffectAsset.cpp">
       <Filter>01. Utility\17. ShaderAsset</Filter>
     </ClCompile>
@@ -769,6 +774,15 @@
     </ClCompile>
     <ClCompile Include="..\Private\DataDocument_AttackOverlap.cpp">
       <Filter>01. Utility\11. DataRepository\Datas\AttackOverlap\DataDocument_AttackOverlap</Filter>
+    </ClCompile>
+    <ClCompile Include="..\private\Bounds.cpp">
+      <Filter>00. System\05. Component\BoundComponent</Filter>
+    </ClCompile>
+    <ClCompile Include="..\private\Octree_Manager.cpp">
+      <Filter>01. Utility\18. Octree\Manager</Filter>
+    </ClCompile>
+    <ClCompile Include="..\private\EngineConsole.cpp">
+      <Filter>01. Utility\16. Console</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -1151,10 +1165,6 @@
     <ClInclude Include="..\public\ThreadPool.h">
       <Filter>00. System\13. ThreadPool</Filter>
     </ClInclude>
-    <ClInclude Include="..\public\EngineConsole.h">
-      <Filter>01. Utility\16. Console</Filter>
-    </ClInclude>
-    <ClInclude Include="..\public\EngineConsole.h" />
     <ClInclude Include="..\public\FxEffectAsset.h">
       <Filter>01. Utility\17. ShaderAsset</Filter>
     </ClInclude>
@@ -1187,6 +1197,15 @@
     </ClInclude>
     <ClInclude Include="..\Public\DataDocument_AttackOverlap.h">
       <Filter>01. Utility\11. DataRepository\Datas\AttackOverlap\DataDocument_AttackOverlap</Filter>
+    </ClInclude>
+    <ClInclude Include="..\public\Bounds.h">
+      <Filter>00. System\05. Component\BoundComponent</Filter>
+    </ClInclude>
+    <ClInclude Include="..\public\Octree_Manager.h">
+      <Filter>01. Utility\18. Octree\Manager</Filter>
+    </ClInclude>
+    <ClInclude Include="..\public\EngineConsole.h">
+      <Filter>01. Utility\16. Console</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

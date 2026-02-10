@@ -2,6 +2,7 @@
 #include "Builder_Map.h"
 #include "GameInstance.h"
 #include "StaticObject.h"
+#include "Bounds.h"
 #include "DataDocument_Map.h"
 
 CBuilder_Map::CBuilder_Map(ID3D11Device* pDevice, ID3D11DeviceContext* pDeviceContext, _uint iLevelID)

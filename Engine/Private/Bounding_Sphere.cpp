@@ -14,9 +14,17 @@ CBounding_Sphere::CBounding_Sphere(ID3D11Device* pDevice, ID3D11DeviceContext* p
 HRESULT CBounding_Sphere::Initialize(const BOUNDING_DESC* pInitialDesc)
 {
     const BOUNDING_SPHERE_DESC* pDesc = static_cast<const BOUNDING_SPHERE_DESC*>(pInitialDesc);
-
-    m_pOriginalDesc = new BoundingSphere(pDesc->vCenter, pDesc->fRadius);
-    m_pDesc = new BoundingSphere(*m_pOriginalDesc);
+    if (pDesc->pMinMax == nullptr)
+    {
+        m_pOriginalDesc = new BoundingSphere(pDesc->vCenter, pDesc->fRadius);
+        m_pDesc = new BoundingSphere(*m_pOriginalDesc);
+    }
+    else
+    {
+        m_pOriginalDesc = new BoundingSphere;
+        BoundingSphere::CreateFromPoints(*m_pOriginalDesc, 2, pDesc->pMinMax, sizeof(Vec3));
+        m_pDesc = new BoundingSphere(*m_pOriginalDesc);
+    }
 
     return S_OK;
 }

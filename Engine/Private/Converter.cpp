@@ -179,6 +179,9 @@ void CConverter::Read_Meshes()
 
 		if (m_eType != ConvertType::ANIM)
 		{
+			pCurrentMesh->vecMinMax.resize(2);
+			pCurrentMesh->vecMinMax[0] = { FLT_MAX, FLT_MAX , FLT_MAX };
+			pCurrentMesh->vecMinMax[1] = { -FLT_MAX, -FLT_MAX , -FLT_MAX };
 			for (_uint v = 0; v < iVertexCount; ++v)
 			{
 				::memcpy(&pCurrentMesh->vecVertices[v].vPosition, &pAiMesh->mVertices[v], sizeof(Vec3));
@@ -191,6 +194,16 @@ void CConverter::Read_Meshes()
 				pCurrentMesh->vecVertices[v].vNormal = Vec3::TransformNormal(pCurrentMesh->vecVertices[v].vNormal, matPreTransform);
 				pCurrentMesh->vecVertices[v].vTangent = Vec3::TransformNormal(pCurrentMesh->vecVertices[v].vTangent, matPreTransform);
 				pCurrentMesh->vecVertices[v].vBinormal = Vec3::TransformNormal(pCurrentMesh->vecVertices[v].vBinormal, matPreTransform);
+
+				const Vec3 &vPos = pCurrentMesh->vecVertices[v].vPosition;
+				Vec3& vMin = pCurrentMesh->vecMinMax[0];
+				Vec3& vMax = pCurrentMesh->vecMinMax[1];
+				vMin.x = (std::min)(vMin.x, vPos.x);
+				vMin.y = (std::min)(vMin.y, vPos.y);
+				vMin.z = (std::min)(vMin.z, vPos.z);
+				vMax.x = (std::max)(vMax.x, vPos.x);
+				vMax.y = (std::max)(vMax.y, vPos.y);
+				vMax.z = (std::max)(vMax.z, vPos.z);
 			}
 		}
 		else
@@ -447,6 +460,11 @@ HRESULT CConverter::Export_ModelData()
 			pFileUtil->Write<_uint>((_uint)pElement->vecOffsetMatrices.size());
 			if (!pElement->vecOffsetMatrices.empty())
 				pFileUtil->Write(&pElement->vecOffsetMatrices[0], sizeof(Matrix) * (_uint)pElement->vecOffsetMatrices.size());
+
+			// MinMax
+			pFileUtil->Write<_uint>((_uint)pElement->vecMinMax.size());
+			if(!pElement->vecMinMax.empty())
+				pFileUtil->Write(&pElement->vecMinMax[0], sizeof(Vec3) * (_uint)pElement->vecMinMax.size());
 		}
 		
 		Safe_Release(pFileUtil);

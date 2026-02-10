@@ -96,6 +96,9 @@ HRESULT CMainApplication::Ready_Static_Prototype()
 	if (FAILED(m_pGameInstance->Add_Prototype(ENUM_TO_UINT(ELevelType::STATIC), L"Prototype_Component_VIBuffer_Line_Color", CVIBuffer_Line_Color::Create(m_pDevice, m_pDeviceContext, nullptr))))
 		return E_FAIL;
 
+	if (FAILED(m_pGameInstance->Add_Font(L"Font_Default", L"../../Resources/Fonts/156ex.spritefont")))
+		return E_FAIL;
+
 	// For. Prototype_Component_Texture_Default
 	{
 		CTexture::TEXTURE_COMPONENT_ORIGIN_DESC textureDesc = {};

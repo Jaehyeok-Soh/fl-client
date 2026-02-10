@@ -20,6 +20,15 @@ _float CTimer_Manager::Get_TimeDelta(const _tchar* pTimerTag)
 	return pTimer->Get_TimeDelta();
 }
 
+void CTimer_Manager::Set_MaxTimeDelta(const _tchar* pTimerTag, _float fMaxTimeDelta)
+{
+	CTimer* pTimer = Find_Timer(pTimerTag);
+	if (pTimer == nullptr)
+		return;
+
+	pTimer->Set_MaxTimeDelta(fMaxTimeDelta);
+}
+
 HRESULT CTimer_Manager::Add_Timer(const _tchar* pTimerTag)
 {
 	CTimer* pTimer = Find_Timer(pTimerTag);

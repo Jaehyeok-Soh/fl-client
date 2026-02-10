@@ -179,6 +179,8 @@
     <ClInclude Include="..\Public\imfilebrowser.h" />
     <ClInclude Include="..\Public\imgui.h" />
     <ClInclude Include="..\Public\ImGui_FrameLayout.h" />
+    <ClInclude Include="..\public\ImGui_FrustrumLayout.h" />
+    <ClInclude Include="..\public\ImGui_GlobalInspector.h" />
     <ClInclude Include="..\Public\imgui_impl_dx11.h" />
     <ClInclude Include="..\Public\imgui_impl_win32.h" />
     <ClInclude Include="..\public\ImGui_Inspector.h" />
@@ -227,11 +229,12 @@
     <ClInclude Include="..\Public\State_RunShort.h" />
     <ClInclude Include="..\Public\State_Slide.h" />
     <ClInclude Include="..\Public\State_Walk.h" />
-    <ClInclude Include="..\Public\UIButton_Component.h" />
-    <ClInclude Include="..\Public\UIMonster_HP.h" />
-    <ClInclude Include="..\Public\UIPlayer_HP.h" />
-    <ClInclude Include="..\Public\UIProgress_Component.h" />
     <ClInclude Include="..\Public\StaticObject.h" />
+    <ClInclude Include="..\Public\UIJust_Image.h" />
+    <ClInclude Include="..\Public\UIProgress_Bar.h" />
+    <ClInclude Include="..\Public\UISkill_BG.h" />
+    <ClInclude Include="..\Public\UIText.h" />
+    <ClInclude Include="..\Public\UITrigger.h" />
     <ClInclude Include="..\Public\UI_Manager.h" />
     <ClInclude Include="..\Public\Weapon.h" />
     <ClInclude Include="Client.h" />
@@ -270,6 +273,8 @@
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|x64'">NotUsing</PrecompiledHeader>
     </ClCompile>
     <ClCompile Include="..\Private\ImGui_FrameLayout.cpp" />
+    <ClCompile Include="..\private\ImGui_FrustrumLayout.cpp" />
+    <ClCompile Include="..\private\ImGui_GlobalInspector.cpp" />
     <ClCompile Include="..\Private\imgui_impl_dx11.cpp">
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">NotUsing</PrecompiledHeader>
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|x64'">NotUsing</PrecompiledHeader>
@@ -330,11 +335,12 @@
     <ClCompile Include="..\Private\State_RunShort.cpp" />
     <ClCompile Include="..\Private\State_Slide.cpp" />
     <ClCompile Include="..\Private\State_Walk.cpp" />
-    <ClCompile Include="..\Private\UIButton_Component.cpp" />
-    <ClCompile Include="..\Private\UIMonster_HP.cpp" />
-    <ClCompile Include="..\Private\UIPlayer_HP.cpp" />
-    <ClCompile Include="..\Private\UIProgress_Component.cpp" />
     <ClCompile Include="..\Private\StaticObject.cpp" />
+    <ClCompile Include="..\Private\UIJust_Image.cpp" />
+    <ClCompile Include="..\Private\UIProgress_Bar.cpp" />
+    <ClCompile Include="..\Private\UISkill_BG.cpp" />
+    <ClCompile Include="..\Private\UIText.cpp" />
+    <ClCompile Include="..\Private\UITrigger.cpp" />
     <ClCompile Include="..\Private\UI_Manager.cpp" />
     <ClCompile Include="..\Private\Weapon.cpp" />
     <ClCompile Include="..\Public\Physics_Terrain.cpp" />

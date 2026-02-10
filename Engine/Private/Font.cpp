@@ -22,7 +22,7 @@ HRESULT CFont::Draw_Text(SpriteBatch* pBatch, const _tchar* pText, const Vec2& v
 	Vec2 vFinalPos = vPosition;
 	vFinalPos.x -= vSize.x * 0.5f;
 	vFinalPos.y -= vSize.y * 0.5f;
-	m_pFont->DrawString(pBatch, pText, vFinalPos, vColor);
+	m_pFont->DrawString(pBatch, pText, vFinalPos, vColor, 0.f, Vec2{0.f, 0.f}, 1.f);
 	return S_OK;
 }
 
