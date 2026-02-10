@@ -35,10 +35,12 @@ cbuffer TweenBuffer
     TweenFrameDesc TweenFrames;
 };
 
-cbuffer BoneBuffer
+struct BONE_MAT
 {
-    row_major float4x4 BoneTransforms[MAX_BONE_TRANSFORMS];
+    row_major float4x4 matBoneTransform;
 };
+
+StructuredBuffer<BONE_MAT> MU_BONEMATS;
 
 uint g_iBoneIndex;
 Texture2DArray g_TransformMap;
@@ -148,10 +150,10 @@ float4x4 Get_AnimationMatrix(VS_IN_SKELECTON input)
 float4x4 Get_BoneMatrix(VS_IN_SKELECTON input)
 {
     float4x4 matBone =
-    BoneTransforms[input.vBlendIndices.x] * input.vBlendWeight.x +
-    BoneTransforms[input.vBlendIndices.y] * input.vBlendWeight.y +
-    BoneTransforms[input.vBlendIndices.z] * input.vBlendWeight.z +
-    BoneTransforms[input.vBlendIndices.w] * input.vBlendWeight.w;
+    MU_BONEMATS[input.vBlendIndices.x].matBoneTransform * input.vBlendWeight.x +
+    MU_BONEMATS[input.vBlendIndices.y].matBoneTransform * input.vBlendWeight.y +
+    MU_BONEMATS[input.vBlendIndices.z].matBoneTransform * input.vBlendWeight.z +
+    MU_BONEMATS[input.vBlendIndices.w].matBoneTransform * input.vBlendWeight.w;
     
     return matBone;
 }

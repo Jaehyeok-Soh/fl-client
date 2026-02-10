@@ -34,13 +34,6 @@ struct SRT
     float  Padding1;
 };
 
-// out put
-struct BONE_OUTPUT
-{
-    row_major float4x4 matCombinedTransform;
-};
-
-
 cbuffer MU_BONENUMS
 {
     MU_BoneNums g_iGroupBoneCount;
@@ -50,8 +43,8 @@ StructuredBuffer<IMMU_ELEMENT>  IMMU_BONEDATA;
 StructuredBuffer<MU_ELEMENT>    MU_INDEXES;
 StructuredBuffer<SRT>           MU_SRTS;
 
-RWStructuredBuffer<BONE_OUTPUT> BONECOMBINED_TRANSFORMS;
-StructuredBuffer<BONE_OUTPUT> BONECOMBINED_TRANSFORMS_SRV;
+RWStructuredBuffer<BONE_MAT> BONECOMBINED_TRANSFORMS;
+StructuredBuffer<BONE_MAT> BONECOMBINED_TRANSFORMS_SRV;
 
 
 // Warp/Wavefront는 32명씩 묶여서 연산을 한다.
@@ -73,9 +66,9 @@ void CS_Main(uint3 id : SV_DispatchThreadID)
 
     // parent transform 구해옴
     float4x4 matParent =
-        (iParentIdx < 0) ? IMMU_BONEDATA[iBoneIdx].matPreTransform : BONECOMBINED_TRANSFORMS[iParentIdx].matCombinedTransform;
+        (iParentIdx < 0) ? IMMU_BONEDATA[iBoneIdx].matPreTransform : BONECOMBINED_TRANSFORMS[iParentIdx].matBoneTransform;
 
-    BONECOMBINED_TRANSFORMS[iBoneIdx].matCombinedTransform = mul(matLocal, matParent);
+    BONECOMBINED_TRANSFORMS[iBoneIdx].matBoneTransform = mul(matLocal, matParent);
 }
 
 technique11 T0
