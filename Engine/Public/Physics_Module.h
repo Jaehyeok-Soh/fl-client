@@ -8,6 +8,7 @@ class CPhysics_ResourceManager;
 class CPhysics_ShapeFactory;
 class CPhysics_ActorFactory;
 class CPhysics_CCTManager;
+class CPhysics_FilterEventCallback;
 
 class CPhysics_Module final : public CBase
 {
@@ -32,12 +33,13 @@ public:
 public:
     PxTransform XMMatrixToPxTransform(Matrix mat);
     Matrix PxTransformToXMMatrix(PxTransform pxTransform);
-    _bool HasNegativeScale(Matrix mat);
-    _int GetNegativeScaleAxis(const Matrix& mat);
     PxQuat GetPureRotation(Matrix mat);
     PxVec3 GetPureScale(Matrix mat);
+    _bool Execute_Overlap(PxGeometry& shape, PxTransform& transform, OUT PxOverlapBuffer& hit, PxQueryFilterData& filterData, PxQueryFilterCallback* filterCallback);
+    class CPhysics_QueryFilterCallback* GetQueryFilterCallback();
 #ifdef _DEBUG
     HRESULT Render(PxRigidActor* pActor, XMVECTOR color = DirectX::Colors::White);
+    HRESULT Render(const PxGeometry& geom, const PxTransform& transform, XMVECTOR color = DirectX::Colors::White);
 #endif // _DEBUG
 
 /// <summary>
@@ -61,6 +63,8 @@ public:
 public:
     vector<PxShape*> GetShape(PHYSICSCOLLIDER_DESC* pDesc);
     vector<PxShape*> GetMeshShape(PHYSICSCOLLIDER_DESC* pDesc);
+
+    vector<PxShape*> CopyShapes(vector<PxShape*>& shapes);
 
 /// <summary>
 /// Actor Factory : RigidBody »ý¼º
@@ -111,6 +115,7 @@ private:
     CPhysics_ShapeFactory* m_pShapeFactory = { nullptr };
     CPhysics_ActorFactory* m_pActorFactory = { nullptr };
     CPhysics_CCTManager* m_pCCTManager = { nullptr };
+    CPhysics_FilterEventCallback* m_pFilterEventCallback = { nullptr };
 
 public:
     static CPhysics_Module* Create(ID3D11Device* pDevice, ID3D11DeviceContext* pContext);

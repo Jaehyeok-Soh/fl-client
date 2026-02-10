@@ -158,6 +158,7 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClInclude Include="..\Public\Body.h" />
+    <ClInclude Include="..\Public\Builder_AttackOverlap.h" />
     <ClInclude Include="..\public\Builder_Example.h" />
     <ClInclude Include="..\Public\Builder_Map.h" />
     <ClInclude Include="..\Public\Builder_UI.h" />
@@ -191,6 +192,7 @@
     <ClInclude Include="..\Public\imstb_textedit.h" />
     <ClInclude Include="..\Public\imstb_truetype.h" />
     <ClInclude Include="..\Public\MapObject.h" />
+    <ClInclude Include="..\Public\Monster_Dummy.h" />
     <ClInclude Include="..\Public\Physics_LandScape.h" />
     <ClInclude Include="..\Public\Physics_Terrain.h" />
     <ClInclude Include="..\Public\State_CrouchWalk.h" />
@@ -240,6 +242,7 @@
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="..\Private\Body.cpp" />
+    <ClCompile Include="..\Private\Builder_AttackOverlap.cpp" />
     <ClCompile Include="..\private\Builder_Example.cpp" />
     <ClCompile Include="..\Private\Builder_Map.cpp" />
     <ClCompile Include="..\Private\Builder_UI.cpp" />
@@ -293,6 +296,7 @@
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|x64'">NotUsing</PrecompiledHeader>
     </ClCompile>
     <ClCompile Include="..\Private\MapObject.cpp" />
+    <ClCompile Include="..\Private\Monster_Dummy.cpp" />
     <ClCompile Include="..\Private\Physics_LandScape.cpp" />
     <ClCompile Include="..\Private\State_CrouchWalk.cpp" />
     <ClCompile Include="..\Private\Level_Loading.cpp" />

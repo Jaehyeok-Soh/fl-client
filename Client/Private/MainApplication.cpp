@@ -22,7 +22,6 @@
 
 USING(Client)
 
-
 CMainApplication::CMainApplication()
 	: m_pGameInstance (CGameInstance::GetInstance())
 {

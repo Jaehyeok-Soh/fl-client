@@ -98,6 +98,26 @@ HRESULT CContainerObject::Render()
 	return S_OK;
 }
 
+void CContainerObject::OnCollision(_uint iMyColliderLayer, CGameObject* pOther)
+{
+}
+
+void CContainerObject::OnCollision_Enter(_uint iMyColliderLayer, CGameObject* pOther)
+{
+}
+
+void CContainerObject::OnCollision_Exit(_uint iMyColliderLayer, CGameObject* pOther)
+{
+}
+
+void CContainerObject::OnTrigger_Enter(_uint iMyColliderLayer, CGameObject* pOther)
+{
+}
+
+void CContainerObject::OnTrigger_Exit(_uint iMyColliderLayer, CGameObject* pOther)
+{
+}
+
 void CContainerObject::Remove_Part(_uint iPartID)
 {
 	if (m_vecPartObjects[iPartID])

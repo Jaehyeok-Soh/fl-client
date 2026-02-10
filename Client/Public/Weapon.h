@@ -32,9 +32,11 @@ public:
 	virtual void Update(_float fTimeDelta) override;
 	virtual void Update_Late(_float fTimeDelta) override;
 	virtual void Ready_Before_Render(_float fTimeDelta) override;
-	virtual void OnCollision(_uint iMyColliderLayer, CCollider* pOther) override;
-	virtual void OnCollision_Enter(_uint iMyColliderLayer, CCollider* pOther) override;
-	virtual void OnCollision_Exit(_uint iMyColliderLayer, CCollider* pOther) override;
+	virtual void OnCollision(_uint iMyColliderLayer, CGameObject* pOther) override;
+	virtual void OnCollision_Enter(_uint iMyColliderLayer, CGameObject* pOther) override;
+	virtual void OnCollision_Exit(_uint iMyColliderLayer, CGameObject* pOther) override;
+	virtual void OnTrigger_Enter(_uint iMyColliderLayer, CGameObject* pOther) override;
+	virtual void OnTrigger_Exit(_uint iMyColliderLayer, CGameObject* pOther) override;
 	virtual HRESULT Render() override;
 	void Set_HandSocket();
 	void Set_DefaultSocket();

@@ -825,6 +825,16 @@ Matrix CGameInstance::PxTransformToXMMatrix(PxTransform pxTransform)
 	return m_pPhysics_Module->PxTransformToXMMatrix(pxTransform);
 }
 
+_bool CGameInstance::Execute_Overlap(PxGeometry& shape, PxTransform& transform, OUT PxOverlapBuffer& hit, PxQueryFilterData& filterData, PxQueryFilterCallback* filterCallback)
+{
+	return m_pPhysics_Module->Execute_Overlap(shape, transform, hit, filterData, filterCallback);
+}
+
+CPhysics_QueryFilterCallback* CGameInstance::GetQueryFilterCallback()
+{
+	return m_pPhysics_Module->GetQueryFilterCallback();
+}
+
 void CGameInstance::SerializeStaticMesh(std::filesystem::path path, vector<PxTriangleMesh*> meshes)
 {
 	m_pPhysics_Module->SerializeStaticMesh(path, meshes);
@@ -855,6 +865,11 @@ vector<PxShape*> CGameInstance::GetMeshShape(PHYSICSCOLLIDER_DESC* pDesc)
 	return m_pPhysics_Module->GetMeshShape(pDesc);
 }
 
+vector<PxShape*> CGameInstance::CopyShapes(vector<PxShape*>& shapes)
+{
+	return m_pPhysics_Module->CopyShapes(shapes);
+}
+
 vector<PxRigidActor*> CGameInstance::GetActor(PHYSICSRIGIDBODY_DESC* rigidBodyDesc, PHYSICSCOLLIDER_DESC* colliderDesc, vector<PxShape*>& shapes)
 {
 	return m_pPhysics_Module->GetActor(rigidBodyDesc, colliderDesc, shapes);
@@ -868,16 +883,6 @@ PxController* CGameInstance::GetController(PHYSICSCCT_DESC* pDesc)
 void CGameInstance::RegisterPhysicsMesh(_uint levelIndex, _wstring prototypeTag)
 {
 	m_pPhysics_Module->RegisterPhysicsMesh(levelIndex, prototypeTag);
-}
-
-_bool CGameInstance::HasNegativeScale(const Matrix& mat)
-{
-	return m_pPhysics_Module->HasNegativeScale(mat);
-}
-
-_int CGameInstance::GetNegativeScaleAxis(const Matrix& mat)
-{
-	return m_pPhysics_Module->GetNegativeScaleAxis(mat);
 }
 
 PxQuat CGameInstance::GetPureRotation(const Matrix& mat)
@@ -894,6 +899,10 @@ PxVec3 CGameInstance::GetPureScale(const Matrix& mat)
 void CGameInstance::Physics_Render(PxRigidActor* pActor, XMVECTOR color)
 {
 	m_pPhysics_Module->Render(pActor, color);
+}
+void CGameInstance::Physics_Render(const PxGeometry& geom, const PxTransform& transform, XMVECTOR color)
+{
+	m_pPhysics_Module->Render(geom, transform, color);
 }
 #endif
 #pragma endregion

@@ -244,6 +244,12 @@
     <Filter Include="07. System\02. Debug_ImGui\Layout\Frame">
       <UniqueIdentifier>{d522fe25-0bdb-43db-847a-41084decceb6}</UniqueIdentifier>
     </Filter>
+    <Filter Include="07. System\01. Builder\Builder_AttackOverlap">
+      <UniqueIdentifier>{c1589ec0-b521-4810-8e66-71ed1cf97227}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="03. GameObject\ContainerObjects\Monster">
+      <UniqueIdentifier>{a9cba2b5-38c2-4050-8518-588960127889}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="targetver.h">
@@ -478,6 +484,12 @@
     <ClInclude Include="..\Public\ImGui_FrameLayout.h">
       <Filter>99. ETC</Filter>
     </ClInclude>
+    <ClInclude Include="..\Public\Builder_AttackOverlap.h">
+      <Filter>07. System\01. Builder\Builder_AttackOverlap</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\Monster_Dummy.h">
+      <Filter>03. GameObject\ContainerObjects\Monster</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <Image Include="Client.ico">
@@ -703,6 +715,12 @@
     </ClCompile>
     <ClCompile Include="..\Private\ImGui_FrameLayout.cpp">
       <Filter>99. ETC</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\Builder_AttackOverlap.cpp">
+      <Filter>07. System\01. Builder\Builder_AttackOverlap</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\Monster_Dummy.cpp">
+      <Filter>03. GameObject\ContainerObjects\Monster</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

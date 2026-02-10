@@ -57,6 +57,8 @@ HRESULT CMainPlayer::Initialize(void* pArg)
     if (FAILED(Super::Initialize(pArg)))
         return E_FAIL;
 
+    Set_Name("Eun_bi");
+
     if (FAILED(Ready_Ability()))
         return E_FAIL;
 
@@ -78,8 +80,10 @@ HRESULT CMainPlayer::Initialize(void* pArg)
     if (FAILED(Ready_Ray()))
         return E_FAIL;
 
-    //if (FAILED(Ready_CCT()))
-    //    return E_FAIL;
+    if (FAILED(Ready_CCT()))
+        return E_FAIL;
+
+    
 
     return S_OK;
 }
@@ -98,7 +102,7 @@ HRESULT CMainPlayer::Awake(const _uint iCurrentLevelID)
 
     Get_Component<CTransform>()->Set_Info(TRANSFORM_INFO_STATE::POS, Vec3{ 18.f,30.f,19.f });
 
-    //Get_Component<CPhysicsCCT>()->Awake();
+    Get_Component<CPhysicsCCT>()->Awake();
 
     CImGui_ClientDebug::GetInstance()->Set_Player(this);
     return S_OK;
@@ -150,20 +154,28 @@ HRESULT CMainPlayer::Render()
     return S_OK;
 }
 
-void CMainPlayer::OnCollision(_uint iMyColliderLayer, CCollider* pOther)
+void CMainPlayer::OnCollision(_uint iMyColliderLayer, CGameObject* pOther)
 {
 }
 
-void CMainPlayer::OnCollision_Enter(_uint iMyColliderLayer, CCollider* pOther)
+void CMainPlayer::OnCollision_Enter(_uint iMyColliderLayer, CGameObject* pOther)
 {
     ECollideLayer eMyLayer = static_cast<ECollideLayer>(iMyColliderLayer);
     // _bool bAttackHit = Try_AttackHit(eMyLayer, pOther);
 }
 
-void CMainPlayer::OnCollision_Exit(_uint iMyColliderLayer, CCollider* pOther)
+void CMainPlayer::OnCollision_Exit(_uint iMyColliderLayer, CGameObject* pOther)
 {
     // 만약 바닥과 충돌이 끝났다면
     //static_cast<CStateBase_Player*>(Get_Component<CPlayerActionState>()->Get_CurrentState())->Change_State(CStateBase_Player::STATEKEY::LOOPDONE);
+}
+
+void CMainPlayer::OnTrigger_Enter(_uint iMyColliderLayer, CGameObject* pOther)
+{
+}
+
+void CMainPlayer::OnTrigger_Exit(_uint iMyColliderLayer, CGameObject* pOther)
+{
 }
 
 #pragma region Legacy
@@ -572,6 +584,8 @@ HRESULT CMainPlayer::Ready_Ray()
 HRESULT CMainPlayer::Ready_CCT()
 {
     PHYSICSCCT_DESC desc;
+    desc.pOwner = this;
+    desc.bIsPlayer = true;
     desc.eType = EPhysicsCCTType::CAPSULE;
     desc.pOwnerMatrix = &Get_Component<CTransform>()->Get_WorldMatrix();
     desc.fRadius = 0.5f;
@@ -580,9 +594,22 @@ HRESULT CMainPlayer::Ready_CCT()
 
     PHYSICSMATERIAL_DESC mtrlDesc{};
     mtrlDesc.eMaterial = EPhysicsMaterial::PLAYER;
-
     desc.tMaterial = mtrlDesc;
-    desc.pOwner = this;
+
+    desc.eFilterLayer = PHYSICSFILTERGROUP::Enum::PLAYER;
+    desc.iFilterMask =
+        PHYSICSFILTERGROUP::Enum::MONSTER
+        | PHYSICSFILTERGROUP::Enum::MONSTER_ATTACK
+        | PHYSICSFILTERGROUP::Enum::MONSTER_ATTACK_PROJECTTILE
+        | PHYSICSFILTERGROUP::Enum::MONSTER_SKILL
+        | PHYSICSFILTERGROUP::Enum::MONSTER_SKILL_PROJECTTILE
+        | PHYSICSFILTERGROUP::Enum::MAP
+        | PHYSICSFILTERGROUP::Enum::OBJECT1
+        | PHYSICSFILTERGROUP::Enum::OBJECT2
+        | PHYSICSFILTERGROUP::Enum::TRIGGER_UI
+        | PHYSICSFILTERGROUP::Enum::TRIGGER_QUEST
+        | PHYSICSFILTERGROUP::Enum::TRIGGER_SPAWN
+        | PHYSICSFILTERGROUP::Enum::TRIGGER_DIRECTION;
 
     if (FAILED(Add_Component<CPhysicsCCT>(0, L"Prototype_Component_Physics_CCT", &desc)))
         return E_FAIL;
