@@ -74,9 +74,6 @@ void CStaticObject::Update_Late(const _float fTimeDelta)
 void CStaticObject::Ready_Before_Render(const _float fTimeDelta)
 {
 	Super::Ready_Before_Render(fTimeDelta);
-
-	m_pGameInstance->Push_RenderObject(RENDER_CATEGORY::NONEBLEND, this);
-
 #ifdef _DEBUG
 	m_pGameInstance->Push_DebugComponent(Get_Component<CPhysicsRigidBody>());
 #endif // _DEBUG

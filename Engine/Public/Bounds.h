@@ -30,13 +30,20 @@ private:
 	virtual HRESULT Initialize_Prototype() override;
 	virtual HRESULT Initialize(void* pArg) override;
 public:
+	HRESULT Add_SubBounds(const Vec3* pMinMax, span<Matrix> spanInstanceMatrix, _float fRatio = 1.f);
 	void Update_BoundingDesc(const Matrix& matWorld);
 	_bool IntersectWith_Frustrum(BoundingFrustum* pFrustrum);
-	_bool IntersectWithRay_World(OUT Vec3& vOut);
-	_bool IntersectWithRay_Local(OUT Vec3& vOut);
+	void IntersectWith_Frustrum_SubBounds(BoundingFrustum* pFrustrum,OUT vector<_uint> &vecVisibleIndex);
+	_bool IntersectWithRay_World(OUT Vec3& vOut, OUT _int& iIndex);
+	_bool IntersectWithRay_Local(OUT Vec3& vOut, OUT _int& iIndex);
 	BoundingBox* Get_WolrdAABB();
 private:
+	CBounding_Sphere *Create_Sphere(Vec3* pMinMax);
+	CBounding_AABB *Create_AABB(Vec3* pMinMax);
+	void Clear_SubBounds();
+private:
 	MESH_BOUNDS m_tBounds{};
+	vector<MESH_BOUNDS> m_vecSubBounds;
 	ID3D11Device* m_pDevice{ nullptr };
 	ID3D11DeviceContext* m_pDeviceContext{ nullptr };
 public:

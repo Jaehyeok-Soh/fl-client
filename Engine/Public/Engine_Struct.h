@@ -375,7 +375,7 @@ namespace Engine
 		int iMaxDepth{ 5 };
 		float fLooseFactor{ 1.3f };
 		float fMinNodeSizeXZ{ 2.0f }; // Extents와 비교할거라 중심에서의 거리
-		size_t iMaxItemsPerLeaf{ 64 };
+		size_t iMaxItemsPerLeaf{ 128 };
 	}OCTREE_DESC;
 
 	typedef struct tagPass

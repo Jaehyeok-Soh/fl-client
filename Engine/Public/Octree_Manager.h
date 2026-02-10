@@ -63,7 +63,7 @@ private:
 	void Query_Node(OCTREE_NODE* pNode, const BoundingFrustum& frustrum, RENDER_CATEGORY eCtegory, OUT vector<CGameObject*>& outObjects, OUT OCTREE_QUERY_STATS* pDebugStat) const;
 public:
 	void Query_Visible(const BoundingFrustum& frustrum, RENDER_CATEGORY eCategory, OUT vector<CGameObject*>& outObjects, OUT OCTREE_QUERY_STATS* pDebugStat) const;
-#pragma region 나중에 안정화 될때는 아래 함수로 바꾸기
+#pragma region 나중에 최종 제출 될때는 아래 함수로 바꾸기
 private:
 	void Query_Node(OCTREE_NODE* pNode, const BoundingFrustum& frustrum, RENDER_CATEGORY eCtegory, OUT vector<CGameObject*>& outObjects) const;
 public:

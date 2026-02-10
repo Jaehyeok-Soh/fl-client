@@ -5,6 +5,7 @@
 #include "Camera.h"
 #include "VIBuffer_Rect_Tex.h"
 #include "Shader.h"
+#include "Bounds.h"
 #include "RenderTarget.h"
 #include "Octree_Manager.h"
 #include "EngineConsole.h"
@@ -18,6 +19,10 @@ CRender_Manager::CRender_Manager(ID3D11Device* pDevice, ID3D11DeviceContext* pDe
 	Safe_AddRef(m_pGameInstance);
 	Safe_AddRef(m_pDevice);
 	Safe_AddRef(m_pDeviceContext);
+	m_filteredRenderObjects.reserve(10000);
+	m_visibleNear.reserve(10000);
+	m_visibleMid.reserve(10000);
+	m_visibleFar.reserve(10000);
 }
 
 HRESULT CRender_Manager::Initialize()
@@ -310,11 +315,10 @@ HRESULT CRender_Manager::Render_NoneBlend()
 		return E_FAIL;
 
 	BoundingFrustum* pFrustrum = m_pGameInstance->Get_BoundingFrustrum_World();
-	vector<CGameObject*> vecVisible;
 	// 디버그용
 	OCTREE_QUERY_STATS tStats{};
-	m_pGameInstance->m_pOctree_Manager->Query_Visible(*pFrustrum, RENDER_CATEGORY::NONEBLEND, vecVisible, &tStats);
-	
+	m_pGameInstance->m_pOctree_Manager->Query_Visible(*pFrustrum, RENDER_CATEGORY::NONEBLEND, m_filteredRenderObjects, &tStats);
+
 #ifdef _DEBUG
 	static uint32_t sFrame = 0;
 	if ((sFrame++ % 60) == 0)
@@ -327,21 +331,75 @@ HRESULT CRender_Manager::Render_NoneBlend()
 	}
 #endif
 
-	for (CGameObject* pElement : vecVisible)
-	{
-		if (FAILED(pElement->Render()))
-			return E_FAIL;
-	}
-
-
-	//for (CGameObject* pElement : m_renderObjects[ENUM_TO_UINT(RENDER_CATEGORY::NONEBLEND)])
+	//for (CGameObject* pElement : m_filteredRenderObjects)
 	//{
 	//	if (FAILED(pElement->Render()))
+	//	{
+	//		m_filteredRenderObjects.clear();
 	//		return E_FAIL;
-
+	//	}
 	//}
-	//m_renderObjects[ENUM_TO_UINT(RENDER_CATEGORY::NONEBLEND)].clear();
+	//m_filteredRenderObjects.clear();
 
+	for (CGameObject* pElement : m_filteredRenderObjects)
+	{
+		if (pElement == nullptr)
+			continue;
+
+		CBounds *pBounds = pElement->Get_Component<CBounds>();
+		BoundingBox *pAABB = pBounds->Get_WolrdAABB();
+		const EFrustrumTier eTier = m_pGameInstance->Classify_BySplitFrustrum(*pAABB);
+		switch (eTier)
+		{
+		case EFrustrumTier::Near: m_visibleNear.push_back(pElement); break;
+		case EFrustrumTier::Mid:  m_visibleMid.push_back(pElement);  break;
+		case EFrustrumTier::Far:  m_visibleFar.push_back(pElement);  break;
+		default:
+			break;
+		}
+	}
+	m_filteredRenderObjects.clear();
+
+
+	for (CGameObject* pElement : m_visibleNear)
+	{
+		if (FAILED(pElement->Render()))
+		{
+			m_visibleNear.clear();
+			m_visibleMid.clear();
+			m_visibleFar.clear();
+			return E_FAIL;
+		}
+	}
+
+	for (CGameObject* pElement : m_visibleMid)
+	{
+		if (FAILED(pElement->Render()))
+		{
+			m_visibleNear.clear();
+			m_visibleMid.clear();
+			m_visibleFar.clear();
+			return E_FAIL;
+		}
+	}
+
+	m_visibleNear.clear();
+	m_visibleMid.clear();
+	m_visibleFar.clear();
+
+	for (CGameObject* pElement : m_renderObjects[ENUM_TO_UINT(RENDER_CATEGORY::NONEBLEND)])
+	{
+		if (FAILED(pElement->Render()))
+		{
+			Safe_Release(pElement);
+			m_renderObjects[ENUM_TO_UINT(RENDER_CATEGORY::NONEBLEND)].clear();
+			return E_FAIL;
+		}
+
+		Safe_Release(pElement);
+	}
+	m_renderObjects[ENUM_TO_UINT(RENDER_CATEGORY::NONEBLEND)].clear();
+	
 	if (FAILED(m_pGameInstance->End_MRT()))
 		return E_FAIL;
 

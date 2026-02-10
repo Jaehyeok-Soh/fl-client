@@ -38,6 +38,8 @@ public:
 	void Set_ViewHeight(_float fViewHeight) { m_fViewHeight = fViewHeight; Update_Proj(); }
 	_float Get_Far() const { return m_fFar; }
 	void Set_Far(_float fFar) { m_fFar = fFar; Update_Proj(); }
+	_float Get_Near() const { return m_fNear; }
+	void Set_Near(_float fNear) { m_fNear = fNear; Update_Proj(); }
 private:
 	void Update_Proj();
 private:

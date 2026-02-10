@@ -244,6 +244,12 @@
     <Filter Include="07. System\02. Debug_ImGui\Layout\Frame">
       <UniqueIdentifier>{d522fe25-0bdb-43db-847a-41084decceb6}</UniqueIdentifier>
     </Filter>
+    <Filter Include="07. System\02. Debug_ImGui\Layout\Frustrum">
+      <UniqueIdentifier>{bfce2568-6c1b-4d14-9071-f78dd8aba44c}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="07. System\02. Debug_ImGui\Inspector\Global">
+      <UniqueIdentifier>{ff13b3dc-1ddc-457a-a989-4a75e72737e2}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="targetver.h">
@@ -475,8 +481,14 @@
     <ClInclude Include="..\Public\UIMonster_HP.h">
       <Filter>03. GameObject\UIObjects\02.UI\MonsterHP</Filter>
     </ClInclude>
+    <ClInclude Include="..\public\ImGui_FrustrumLayout.h">
+      <Filter>07. System\02. Debug_ImGui\Layout\Frustrum</Filter>
+    </ClInclude>
+    <ClInclude Include="..\public\ImGui_GlobalInspector.h">
+      <Filter>07. System\02. Debug_ImGui\Inspector\Global</Filter>
+    </ClInclude>
     <ClInclude Include="..\Public\ImGui_FrameLayout.h">
-      <Filter>99. ETC</Filter>
+      <Filter>07. System\02. Debug_ImGui\Layout\Frame</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -701,8 +713,14 @@
     <ClCompile Include="..\Private\UIMonster_HP.cpp">
       <Filter>03. GameObject\UIObjects\02.UI\MonsterHP</Filter>
     </ClCompile>
+    <ClCompile Include="..\private\ImGui_FrustrumLayout.cpp">
+      <Filter>07. System\02. Debug_ImGui\Layout\Frustrum</Filter>
+    </ClCompile>
+    <ClCompile Include="..\private\ImGui_GlobalInspector.cpp">
+      <Filter>07. System\02. Debug_ImGui\Inspector\Global</Filter>
+    </ClCompile>
     <ClCompile Include="..\Private\ImGui_FrameLayout.cpp">
-      <Filter>99. ETC</Filter>
+      <Filter>07. System\02. Debug_ImGui\Layout\Frame</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

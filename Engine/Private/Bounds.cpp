@@ -69,23 +69,38 @@ HRESULT CBounds::Initialize(void* pArg)
 	Vec3 vFinalMinMax[2]{ (pDesc->pMinMax[0]) * pDesc->fRatio ,
 						(pDesc->pMinMax[1]) * pDesc->fRatio };
 
-	{
-		CBounding_AABB::BOUNDING_AABB_DESC desc{};
-		desc.pMinMax = vFinalMinMax;
-		m_tBounds.pAABB = CBounding_AABB::Create(m_pDevice, m_pDeviceContext, &desc);
-	}
-	if (m_tBounds.pAABB == nullptr)
+	if (!(m_tBounds.pAABB = Create_AABB(vFinalMinMax)))
 		return E_FAIL;
 
-	{
-		vFinalMinMax[0] *= 1.3f;
-		vFinalMinMax[1] *= 1.3f;
-		CBounding_Sphere::BOUNDING_SPHERE_DESC desc{};
-		desc.pMinMax = vFinalMinMax;
-		m_tBounds.pSphere = CBounding_Sphere::Create(m_pDevice, m_pDeviceContext, &desc);
-	}
-	if (m_tBounds.pSphere == nullptr)
+	vFinalMinMax[0] *= 1.3f;
+	vFinalMinMax[1] *= 1.3f;
+
+	if (!(m_tBounds.pSphere = Create_Sphere(vFinalMinMax)))
 		return E_FAIL;
+
+	return S_OK;
+}
+
+HRESULT CBounds::Add_SubBounds(const Vec3* pMinMax, span<Matrix> spanInstanceMatrix, _float fRatio)
+{
+	m_vecSubBounds.resize(spanInstanceMatrix.size());
+
+	Vec3 vAABBMinMax[2]{ (pMinMax[0]) * fRatio ,
+						(pMinMax[1]) * fRatio };
+	Vec3 vSphereMinMax[2]{ vAABBMinMax[0] *= 1.3f,
+						vAABBMinMax[1] *= 1.3f };
+
+	for (size_t i = 0; i < spanInstanceMatrix.size(); ++i)
+	{
+		if (!(m_vecSubBounds[i].pAABB = Create_AABB(vAABBMinMax)))
+			return E_FAIL;
+
+		if (!(m_vecSubBounds[i].pSphere = Create_Sphere(vSphereMinMax)))
+			return E_FAIL;
+
+		m_vecSubBounds[i].pAABB->Update(spanInstanceMatrix[i]);
+		m_vecSubBounds[i].pSphere->Update(spanInstanceMatrix[i]);
+	}
 
 	return S_OK;
 }
@@ -110,7 +125,23 @@ _bool CBounds::IntersectWith_Frustrum(BoundingFrustum* pFrustrum)
 	return true;
 }
 
-_bool CBounds::IntersectWithRay_World(OUT Vec3& vOut)
+void CBounds::IntersectWith_Frustrum_SubBounds(BoundingFrustum* pFrustrum, OUT vector<_uint>& vecVisibleIndex)
+{
+	vecVisibleIndex.clear();
+
+	for (_uint i = 0; i < (_uint)m_vecSubBounds.size(); ++i)
+	{
+		if (pFrustrum->Contains(*m_vecSubBounds[i].pSphere->Get_Desc()) == ContainmentType::DISJOINT)
+			continue;
+
+		if (pFrustrum->Contains(*m_vecSubBounds[i].pAABB->Get_Desc()) == ContainmentType::DISJOINT)
+			continue;
+
+		vecVisibleIndex.push_back(i);
+	}
+}
+
+_bool CBounds::IntersectWithRay_World(OUT Vec3& vOut, OUT _int &iIndex)
 {
 	if (m_tBounds.pSphere->IntersectWithRay_World(m_pGameInstance, vOut) == false)
 		return false;
@@ -118,10 +149,25 @@ _bool CBounds::IntersectWithRay_World(OUT Vec3& vOut)
 	if (m_tBounds.pAABB->IntersectWithRay_World(m_pGameInstance, vOut) == false)
 		return false;
 
+	for (size_t i = 0; i < m_vecSubBounds.size(); ++i)
+	{
+		auto& Element = m_vecSubBounds[i];
+
+		if (Element.pSphere->IntersectWithRay_World(m_pGameInstance, vOut) == false)
+			continue;
+
+		if (Element.pAABB->IntersectWithRay_World(m_pGameInstance, vOut) == false)
+			continue;
+
+		iIndex = i;
+		return true;
+	}
+
+	iIndex = 0;
 	return true;
 }
 
-_bool CBounds::IntersectWithRay_Local(OUT Vec3& vOut)
+_bool CBounds::IntersectWithRay_Local(OUT Vec3& vOut, OUT _int& iIndex)
 {
 	if (m_tBounds.pSphere->IntersectWithRay_Local(m_pGameInstance, vOut) == false)
 		return false;
@@ -129,6 +175,21 @@ _bool CBounds::IntersectWithRay_Local(OUT Vec3& vOut)
 	if (m_tBounds.pAABB->IntersectWithRay_Local(m_pGameInstance, vOut) == false)
 		return false;
 
+	for (size_t i = 0; i < m_vecSubBounds.size(); ++i)
+	{
+		auto& Element = m_vecSubBounds[i];
+
+		if (Element.pSphere->IntersectWithRay_World(m_pGameInstance, vOut) == false)
+			continue;
+
+		if (Element.pAABB->IntersectWithRay_World(m_pGameInstance, vOut) == false)
+			continue;
+
+		iIndex = i;
+		return true;
+	}
+
+	iIndex = 0;
 	return true;
 }
 
@@ -138,6 +199,34 @@ BoundingBox* CBounds::Get_WolrdAABB()
 		return nullptr;
 		
 	return m_tBounds.pAABB->Get_Desc();
+}
+
+CBounding_Sphere* CBounds::Create_Sphere(Vec3* pMinMax)
+{
+	CBounding_Sphere* pSphere{ nullptr };
+	CBounding_Sphere::BOUNDING_SPHERE_DESC desc{};
+	desc.pMinMax = pMinMax;
+	pSphere = CBounding_Sphere::Create(m_pDevice, m_pDeviceContext, &desc);
+	return pSphere;
+}
+
+CBounding_AABB* CBounds::Create_AABB(Vec3* pMinMax)
+{
+	CBounding_AABB* pAABB{ nullptr };
+	CBounding_AABB::BOUNDING_AABB_DESC desc{};
+	desc.pMinMax = pMinMax;
+	pAABB = CBounding_AABB::Create(m_pDevice, m_pDeviceContext, &desc);
+	return pAABB;
+}
+
+void CBounds::Clear_SubBounds()
+{
+	for (auto& pElement : m_vecSubBounds)
+	{
+		Safe_Release(pElement.pAABB);
+		Safe_Release(pElement.pSphere);
+	}
+	m_vecSubBounds.clear();
 }
 
 
@@ -173,6 +262,7 @@ void CBounds::Free()
 	}
 	Safe_Release(m_pInputLayout);
 #endif
+	Clear_SubBounds();
 	Safe_Release(m_tBounds.pSphere);
 	Safe_Release(m_tBounds.pAABB);
 	Safe_Release(m_pDevice);
@@ -193,7 +283,13 @@ void CBounds::Render()
 	m_pDeviceContext->IASetInputLayout(m_pInputLayout);
 
 	m_pBatch->Begin();
-	m_tBounds.pAABB->Render(m_pBatch, false);
+	m_tBounds.pAABB->Render(m_pBatch, true);
+	//m_tBounds.pSphere->Render(m_pBatch, true);
+	for (size_t i = 0; i < m_vecSubBounds.size(); ++i)
+	{
+		m_vecSubBounds[i].pAABB->Render(m_pBatch, false);
+		//m_vecSubBounds[i].pSphere->Render(m_pBatch, false);
+	}
 	m_pBatch->End();
 }
 #endif

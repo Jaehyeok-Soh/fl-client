@@ -733,7 +733,6 @@
     <ClCompile Include="..\public\ThreadPool.cpp">
       <Filter>00. System\13. ThreadPool</Filter>
     </ClCompile>
-    <ClCompile Include="..\private\EngineConsole.cpp" />
     <ClCompile Include="..\private\FxEffectAsset.cpp">
       <Filter>01. Utility\17. ShaderAsset</Filter>
     </ClCompile>
@@ -766,6 +765,9 @@
     </ClCompile>
     <ClCompile Include="..\private\Octree_Manager.cpp">
       <Filter>01. Utility\18. Octree\Manager</Filter>
+    </ClCompile>
+    <ClCompile Include="..\private\EngineConsole.cpp">
+      <Filter>01. Utility\16. Console</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -1148,7 +1150,6 @@
     <ClInclude Include="..\public\ThreadPool.h">
       <Filter>00. System\13. ThreadPool</Filter>
     </ClInclude>
-    <ClInclude Include="..\public\EngineConsole.h" />
     <ClInclude Include="..\public\FxEffectAsset.h">
       <Filter>01. Utility\17. ShaderAsset</Filter>
     </ClInclude>
@@ -1181,6 +1182,9 @@
     </ClInclude>
     <ClInclude Include="..\public\Octree_Manager.h">
       <Filter>01. Utility\18. Octree\Manager</Filter>
+    </ClInclude>
+    <ClInclude Include="..\public\EngineConsole.h">
+      <Filter>01. Utility\16. Console</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

@@ -293,7 +293,7 @@ HRESULT CLevel_Logo::Ready_Camera_Setting(const _uint iLevelIndex)
 HRESULT CLevel_Logo::Ready_Octree()
 {
 	// 순회하며 OCTREE BOX 사이즈 검출
-	auto* pList = m_pGameInstance->Get_GameObject_List(ENUM_TO_UINT(ELevelType::LOGO), g_wszStaticModelLayer);
+	auto* pList = m_pGameInstance->Get_GameObject_List(ENUM_TO_UINT(ELevelType::LOGO), g_wszStaticObjectLayer);
 	
 	// Registe에 필요한 Object, Bound 버퍼 reserve
 	vector<CGameObject*> vecWillReigstObject;
@@ -316,16 +316,13 @@ HRESULT CLevel_Logo::Ready_Octree()
 			vecWillRegistBounds.push_back(pBounds->Get_WolrdAABB());
 			const BoundingBox& AABB = *pBounds->Get_WolrdAABB();
 
-			const Vec3 bMin = AABB.Center - AABB.Extents;
-			const Vec3 bMax = AABB.Center + AABB.Extents;
+			Vec3 vElementMinMax[2] =
+			{
+				AABB.Center - AABB.Extents,
+				AABB.Center + AABB.Extents
+			};
 
-			vMin.x = (std::min)(vMin.x, bMin.x);
-			vMin.y = (std::min)(vMin.y, bMin.y);
-			vMin.z = (std::min)(vMin.z, bMin.z);
-
-			vMax.x = (std::max)(vMax.x, bMax.x);
-			vMax.y = (std::max)(vMax.y, bMax.y);
-			vMax.z = (std::max)(vMax.z, bMax.z);
+			Engine_Utils::Merge_MinMax(vElementMinMax, vMin, vMax);
 		}
 
 		// 안맞으면 FAIL
@@ -354,7 +351,7 @@ HRESULT CLevel_Logo::Ready_Octree()
 
 
 		// RootBounds 생성
-		OCTREE_DESC desc{};
+ 		OCTREE_DESC desc{};
 		desc.rootBounds = BoundingBox(vFinalCenter, vFinalExtents);
 		if (FAILED(m_pGameInstance->Ready_Octree(desc)))
 			return E_FAIL;

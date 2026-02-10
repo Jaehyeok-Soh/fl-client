@@ -152,6 +152,16 @@ namespace Engine
 		END
 	};
 	//===================
+	// MovementMode
+	//===================
+	enum class EFrustrumTier : unsigned int
+	{
+		Near = 0,
+		Mid,
+		Far,
+		None
+	};
+	//===================
 	// MaterialType
 	//===================
 	enum class EMaterialTextureType : unsigned int

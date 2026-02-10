@@ -30,13 +30,14 @@ public:
 	void			Unbind_Resource(_uint iSlotNum);
 public:
 	void			Update_Matrix(const Matrix& WorldMatrix, _uint iIndex);
-	void			Update_Matrix(const vector<Matrix>& vMatrix , _uint iIndex);
+	void			Update_Matrix(const vector<Matrix>& vMatrix);
 public:
 	_uint			Get_InstanceCount() const { return m_iInstanceCount; }
 public:
 private:
 	D3D11_BUFFER_DESC				m_tInstanceVertexBufferDesc{};
 	_uint							m_iInstanceCount{};
+	_uint							m_iVisibleInstanceCount{};
 public:
 	static  CInstanceMesh*			Create(ID3D11Device* pDevice, ID3D11DeviceContext* pDeviceContext);
 	virtual CComponent*				Clone(void* pArg) override;

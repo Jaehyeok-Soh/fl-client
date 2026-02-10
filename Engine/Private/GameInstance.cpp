@@ -195,7 +195,6 @@ void CGameInstance::Clear(_uint iLevelID)
 	m_pInput_Manager->Clear();
 	m_pCamera_Manager->Clear();
 	m_pEventBus_Manager->Clear_All();
-	m_pFrustrum->Clear();
 	m_pSound_Manager->StopAll();
 }
 
@@ -315,7 +314,10 @@ _float CGameInstance::Get_TimeDelta(const _tchar* pTimerTag)
 {
 	return m_pTimer_Manager->Get_TimeDelta(pTimerTag);
 }
-
+void CGameInstance::Set_MaxTimeDelta(const _tchar* pTimerTag, _float fMaxTimeDelta)
+{
+	m_pTimer_Manager->Set_MaxTimeDelta(pTimerTag, fMaxTimeDelta);
+}
 HRESULT CGameInstance::Add_Timer(const _tchar* pTimerTag)
 {
 	return m_pTimer_Manager->Add_Timer(pTimerTag);
@@ -664,7 +666,7 @@ const CDataDocumentBase* CGameInstance::Get_Document(_uint iLevelID, DTO::ECateg
 }
 #pragma endregion
 
-
+#pragma region OCTREE_MANAGER
 HRESULT CGameInstance::Register_Octree(CGameObject* pGo, RENDER_CATEGORY eCategory, const BoundingBox& AABB, _bool bDynamic)
 {
 	OCTREE_ENTRY* pEntry = m_pOctree_Manager->Register(pGo, eCategory, AABB, bDynamic);
@@ -674,11 +676,16 @@ HRESULT CGameInstance::Register_Octree(CGameObject* pGo, RENDER_CATEGORY eCatego
 	return S_OK;
 }
 
+void CGameInstance::Unregister(CGameObject* pGo)
+{
+	m_pOctree_Manager->Unregister(pGo);
+}
+
 HRESULT CGameInstance::Ready_Octree(const OCTREE_DESC& desc)
 {
 	return m_pOctree_Manager->Initialize(desc);
 }
-
+#pragma endregion
 void CGameInstance::Push_RenderObject(RENDER_CATEGORY eCategory, CGameObject* pGO)
 {
 	m_pRender_Manager->Push_RenderObject(eCategory, pGO);
@@ -768,6 +775,26 @@ void CGameInstance::Destroy_Engine()
 void CGameInstance::Ready_Frustrum()
 {
 	m_pFrustrum->Initialize();
+}
+_float CGameInstance::Get_FrustrumMidStart() const
+{
+	return m_pFrustrum->Get_MidStart();
+}
+_float CGameInstance::Get_FrustrumFarStart() const
+{
+	return m_pFrustrum->Get_FarStart();
+}
+void CGameInstance::Resize_SplitFrustrum(const _float fMidStart, const _float fFarStart)
+{
+	m_pFrustrum->Resize_SplitFrustrum(fMidStart, fFarStart);
+}
+EFrustrumTier CGameInstance::Classify_BySplitFrustrum(const BoundingBox& AABB)
+{
+	return m_pFrustrum->Classify_BySplitFrustrum(AABB);
+}
+EFrustrumTier CGameInstance::Classify_BySplitFrustrum(const BoundingSphere& Sphere)
+{
+	return m_pFrustrum->Classify_BySplitFrustrum(Sphere);
 }
 BoundingFrustum* CGameInstance::Get_BoundingFrustrum_Local()
 {

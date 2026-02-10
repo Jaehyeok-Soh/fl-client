@@ -27,7 +27,6 @@ public:
 	virtual void			Update_Late(const _float fTimeDelta)			override;
 	virtual void			Ready_Before_Render(const _float fTimeDelta)	override;
 	virtual HRESULT			Render()										override;
-	virtual _bool			IntersectWithFrustrum(BoundingFrustum* pFrustrum) override;
 private:
 
 public:

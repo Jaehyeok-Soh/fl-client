@@ -101,7 +101,6 @@ void COctree_Manager::Update_AABB(CGameObject* pGo, const BoundingBox& newAABB)
 
 void COctree_Manager::Query_Visible(const BoundingFrustum& frustrum, RENDER_CATEGORY eCategory, OUT vector<CGameObject*>& outObjects, OUT OCTREE_QUERY_STATS* pDebugStat) const
 {
-	outObjects.clear();
 	Query_Node(m_pRoot, frustrum, eCategory, outObjects, pDebugStat);
 
 	pDebugStat->iVisibleOut = (_uint)outObjects.size();
