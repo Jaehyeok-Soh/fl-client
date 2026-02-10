@@ -49,6 +49,8 @@ HRESULT CStaticObject::Initialize(void* pArg)
 HRESULT CStaticObject::Ready_Component(STATICOBJECT_DESC* pDesc)
 {
 
+
+
 	return S_OK;
 }
 

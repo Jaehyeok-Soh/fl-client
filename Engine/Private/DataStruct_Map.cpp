@@ -170,14 +170,14 @@ inline void to_json(json& SaveJson, const DTO::TMap_MapObjectData& tData)
 
 		for (auto& Desc : tData.vecClientMakePathDesc)
 		{
-			json BufferJson{nullptr};
+			json BufferJson = json::object();
 
 			if (!Desc)
 			{
 				DescJson.push_back(nullptr);
 				continue;
 			}
-			Desc->To_Json(BufferJson);
+			Desc->to_Json(BufferJson);
 			DescJson.push_back(BufferJson);
 		}
 	}
@@ -213,12 +213,55 @@ inline void from_json(const json& LoadJson, DTO::TMap_MapObjectData& tData)
 	{
 		/* 추후 로직 추가 Json 파일로 Desc을 받아서 생성할만한 애들이 아직 없음 */
 		/* 잔디 할떄 해보자 */
+		for (auto& DescJson : LoadJson["Client Make Path Desc"])
+		{
+			if (DescJson.is_null()) continue;
+			CLIENT_MAKEPATH_DESC_BASE* pDescBase = Engine::Create_ClinetPathDesc(static_cast<DTO::EClientMakePath>(tData.eClientMakePath));
+			if (!pDescBase) continue;
+			pDescBase->from_Json(DescJson);
+			tData.vecClientMakePathDesc.push_back(pDescBase);
+		}
+	}
+}
+#pragma endregion
+
+NS_END
 
 
+
+#pragma region Client Make Path Desc
+
+
+NS_BEGIN(Engine)
+
+
+inline CLIENT_MAKEPATH_DESC_BASE* Create_ClinetPathDesc(DTO::EClientMakePath ePath)
+{
+	switch (ePath)
+	{
+	case DTO::EClientMakePath::StaticObject: return new STATICOBJECT_DESC;
+	default:								 return nullptr;
 	}
 
-
+	return nullptr;
 }
+
+
+
+void STATICOBJECT_DESC::from_Json(const json& LoadJson)
+{
+	/* Desc 키값으로 들어온다 */
+	this->wstrTest = Engine_Utils::ToWString(LoadJson["Test"].get<string>());
+	return;
+}
+
+void STATICOBJECT_DESC::to_Json(json& SaveJson)
+{
+	SaveJson["Test"] = Engine_Utils::ToString(this->wstrTest);
+
+	return;
+}
+
 #pragma endregion
 
 NS_END

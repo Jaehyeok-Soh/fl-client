@@ -14,7 +14,6 @@ namespace Tool
         Matrix WorldMatrix{Matrix::Identity};
 
         Vec3 vScale_Isolated{}; //TEST: 소재혁 임시 추가
-
     public:
         Matrix Get_World()
         {

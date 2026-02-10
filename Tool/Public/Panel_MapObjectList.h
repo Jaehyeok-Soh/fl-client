@@ -6,6 +6,7 @@ class CGameInstance;
 class CCameraMan;
 class CCamera;
 class CModel;
+struct STATICOBJECT_DESC;
 NS_END
 
 
@@ -29,6 +30,7 @@ public:
 	virtual HRESULT Render(CToolObject* pGo)override;
 	virtual void Update(const _float fTimeDelta)override;
 	HRESULT	Update_MapObjectList();
+	void	Update_SelectObject();
 
 	void	Reset_SelectValue();
 
@@ -46,6 +48,11 @@ private:
 
 	HRESULT	Render_SelectOverrideMaterialInfo();
 	HRESULT	Render_SelectOriginMaterialInfo();
+
+
+private:
+	
+	void						ImGuiUpdate_StaticObject_Desc(STATICOBJECT_DESC* pDesc);
 
 private:
 

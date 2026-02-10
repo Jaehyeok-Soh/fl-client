@@ -1,18 +1,64 @@
 #pragma once
 #include "ObjectDataBase.h"
 #include "DataEnum.h"
+#include "json_forward.h"
 #include "Engine_Utils.h"
 
 
+
 NS_BEGIN(Engine)
-struct CLIENT_MAKEPATH_DESC_BASE
+struct ENGINE_DLL CLIENT_MAKEPATH_DESC_BASE
 {
 public:
+	explicit CLIENT_MAKEPATH_DESC_BASE()
+	{
+
+	}
+	/* 작성 권장 */
+	explicit CLIENT_MAKEPATH_DESC_BASE(const CLIENT_MAKEPATH_DESC_BASE& rhs)
+	{
+		return;
+	}
 	virtual ~CLIENT_MAKEPATH_DESC_BASE() {};
 public:
 	virtual void	from_Json(const json& LoadJson)PURE;
-	virtual void	To_Json(json& SaveJson)PURE;
+	virtual void	to_Json(json& SaveJson)PURE;
 };
+
+#pragma region 파싱용 Description 작성
+
+#pragma region Static Object
+
+struct ENGINE_DLL STATICOBJECT_DESC : public CLIENT_MAKEPATH_DESC_BASE
+{
+	using Super = CLIENT_MAKEPATH_DESC_BASE;
+	wstring			wstrTest{ L"" };
+public:
+	explicit STATICOBJECT_DESC()
+		: wstrTest{ L"" }
+	{
+	}
+	explicit STATICOBJECT_DESC(const STATICOBJECT_DESC& rhs)
+		: CLIENT_MAKEPATH_DESC_BASE(rhs), wstrTest(rhs.wstrTest)
+	{
+		return;
+	}
+	virtual ~STATICOBJECT_DESC() {};
+public:
+	virtual void from_Json(const json& LoadJson);
+	virtual void to_Json(json& SaveJson);
+};
+
+
+#pragma endregion
+
+
+
+
+
+
+#pragma endregion
+
 NS_END
 
 NS_BEGIN(DTO)
@@ -213,5 +259,12 @@ public:
 NS_END
 
 
+
+
+NS_BEGIN(Engine)
+
+inline CLIENT_MAKEPATH_DESC_BASE* Create_ClinetPathDesc(DTO::EClientMakePath ePath);
+
+NS_END
 
 

@@ -99,6 +99,40 @@ HRESULT CPanel_MapTool::Render_CheckAndBind()
 HRESULT CPanel_MapTool::Render_MakeMapObjectSetting()
 {
 
+	ImGui::SeparatorText(" Map Object Batch Mode ");
+
+#pragma region Batch Mode
+
+	ImGui::NewLine();
+
+	m_iBuffer = static_cast<_int>(m_pMapToolManager->Get_MapToolObjectBatchMode());
+	m_strBuffer = MapToolObjectBatchMode_ToString(static_cast<EMapToolObjectBatchMode>(m_iBuffer));
+	if (ImGui::BeginCombo("##MapObjectBatchMode", m_strBuffer.c_str()))
+	{
+		for (_int i = 0; i < static_cast<_uint>(EMapToolObjectBatchMode::END); ++i)
+		{
+			bool isSelected = i == m_iBuffer;
+			if (ImGui::Selectable(MapToolObjectBatchMode_ToString(static_cast<EMapToolObjectBatchMode>(i)).c_str(), &isSelected))
+				m_pMapToolManager->Set_MapToolObjectBatchMode(static_cast<EMapToolObjectBatchMode>(i));
+			if (isSelected)
+				ImGui::SetItemDefaultFocus();
+		}
+		ImGui::EndCombo();
+	}
+
+
+	if (ImGui::TreeNode(" Brush Option Setting "))
+	{
+		m_pMapToolManager->m_tBrushModeOption.Render_ImGui();
+		ImGui::TreePop();
+	}
+
+	ImGui::NewLine();
+
+	ImGui::Separator();
+
+#pragma endregion
+
 	ImGui::SeparatorText("Make Map Object Setting");
 
 	ImGui::NewLine();
@@ -146,6 +180,7 @@ HRESULT CPanel_MapTool::Render_MakeMapObjectSetting()
 
 		ImGui::EndCombo();
 	}
+
 
 #pragma endregion
 
@@ -249,9 +284,64 @@ HRESULT CPanel_MapTool::Render_PreViewInfo()
 	ImGui::Separator();
 
 	if (ImGui::Button(" Delete "))
+	{
 		m_pMapToolManager->Delete_Preview();
+		ImGui::End();
+		return S_OK;
+	}
 
 	ImGui::Separator();
+
+	ImGui::NewLine();
+
+	ImGui::SeparatorText(" Model Info ");
+
+	ImGui::Text( " Model Name => [ %s ] " , m_pMapToolManager->m_pPreviewMapobject->Get_ModelFileName().c_str());
+
+	ImGui::Separator();
+
+	Vec3 vScale,vPosition;
+	Quat vQuat{};
+
+	m_pMapToolManager->m_pPreviewMapobject->Get_SRT(vScale, vQuat,vPosition);
+
+
+	if (ImGui::BeginTable("SRT_Quat_Display", 5, ImGuiTableFlags_BordersInnerV | ImGuiTableFlags_RowBg))
+	{
+		// 헤더 설정
+		ImGui::TableSetupColumn("Type", ImGuiTableColumnFlags_WidthFixed, 80.0f);
+		ImGui::TableSetupColumn("X", ImGuiTableColumnFlags_WidthStretch);
+		ImGui::TableSetupColumn("Y", ImGuiTableColumnFlags_WidthStretch);
+		ImGui::TableSetupColumn("Z", ImGuiTableColumnFlags_WidthStretch);
+		ImGui::TableSetupColumn("W", ImGuiTableColumnFlags_WidthStretch);
+		ImGui::TableHeadersRow();
+
+		// --- Position 행 ---
+		ImGui::TableNextRow();
+		ImGui::TableSetColumnIndex(0); ImGui::TextUnformatted("Position");
+		ImGui::TableSetColumnIndex(1); ImGui::TextColored(ImVec4(1.0f, 0.4f, 0.4f, 1.0f), "%.2f", vPosition.x);
+		ImGui::TableSetColumnIndex(2); ImGui::TextColored(ImVec4(0.4f, 1.0f, 0.4f, 1.0f), "%.2f", vPosition.y);
+		ImGui::TableSetColumnIndex(3); ImGui::TextColored(ImVec4(0.4f, 0.4f, 1.0f, 1.0f), "%.2f", vPosition.z);
+		ImGui::TableSetColumnIndex(4); ImGui::TextUnformatted("-"); // Position은 W가 없음
+
+		// --- Rotation 행 (Quaternion) ---
+		ImGui::TableNextRow();
+		ImGui::TableSetColumnIndex(0); ImGui::TextUnformatted("Quat Rot");
+		ImGui::TableSetColumnIndex(1); ImGui::Text("%.4f", vQuat.x);
+		ImGui::TableSetColumnIndex(2); ImGui::Text("%.4f", vQuat.y);
+		ImGui::TableSetColumnIndex(3); ImGui::Text("%.4f", vQuat.z);
+		ImGui::TableSetColumnIndex(4); ImGui::Text("%.4f", vQuat.w);
+
+		// --- Scale 행 ---
+		ImGui::TableNextRow();
+		ImGui::TableSetColumnIndex(0); ImGui::TextUnformatted("Scale");
+		ImGui::TableSetColumnIndex(1); ImGui::Text("%.2f", vScale.x);
+		ImGui::TableSetColumnIndex(2); ImGui::Text("%.2f", vScale.y);
+		ImGui::TableSetColumnIndex(3); ImGui::Text("%.2f", vScale.z);
+		ImGui::TableSetColumnIndex(4); ImGui::TextUnformatted("-"); // Scale도 W가 없음
+
+		ImGui::EndTable();
+	}
 
 
 	m_pMapToolManager->DrawImGui_Preview();

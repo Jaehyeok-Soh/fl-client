@@ -96,6 +96,38 @@ namespace Tool
 	};
 	inline constexpr size_t g_iLevelType_Count = static_cast<size_t>(ELevelType::END);
 
+
+#pragma region MapToolObjectBatchMode
+	enum class EMapToolObjectBatchMode
+	{
+		Single,     
+		Brush,
+		END
+	};
+
+	static string MapToolObjectBatchMode_ToString(EMapToolObjectBatchMode eType)
+	{
+
+		switch (eType)
+		{
+		case Tool::EMapToolObjectBatchMode::Single:	return "Single";
+		case Tool::EMapToolObjectBatchMode::Brush:	return "Brush";
+		default:									return "Unknown";
+		}
+
+		return "Unknown";
+	}
+
+	static EMapToolObjectBatchMode MapObjectBatchMode_ToEnum(string strType)
+	{
+		if (strType == "Single") return EMapToolObjectBatchMode::Single;
+		if (strType == "Brush")	 return EMapToolObjectBatchMode::Brush;
+
+		return EMapToolObjectBatchMode::END;
+	}
+
+#pragma endregion
+
 	enum class EToolObjectType : unsigned int
 	{
 		MAPOBJECT,
