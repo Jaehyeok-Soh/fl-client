@@ -159,7 +159,7 @@ _bool CBounds::IntersectWithRay_World(OUT Vec3& vOut, OUT _int &iIndex)
 		if (Element.pAABB->IntersectWithRay_World(m_pGameInstance, vOut) == false)
 			continue;
 
-		iIndex = i;
+		iIndex = static_cast<_int>(i);
 		return true;
 	}
 
@@ -185,7 +185,7 @@ _bool CBounds::IntersectWithRay_Local(OUT Vec3& vOut, OUT _int& iIndex)
 		if (Element.pAABB->IntersectWithRay_World(m_pGameInstance, vOut) == false)
 			continue;
 
-		iIndex = i;
+		iIndex = static_cast<_int>(i);
 		return true;
 	}
 

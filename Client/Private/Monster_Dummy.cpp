@@ -45,6 +45,8 @@ HRESULT CMonster_Dummy::Initialize(void* pArg)
 
 	//if (FAILED(Ready_Ability()))
 	//	return E_FAIL;
+
+	return S_OK;
 }
 
 HRESULT CMonster_Dummy::Awake(const _uint iCurrentLevelID)
