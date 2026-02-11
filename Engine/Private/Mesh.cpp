@@ -336,7 +336,7 @@ HRESULT CMesh::Load_NonAnimVertices(std::span<VTXANIMMESH> spanVertex)
 
 HRESULT CMesh::Ready_CS_Buffer()
 {
-	m_pBoneMesh_ImmuBuffer = StructuredBuffer::Create(m_pDevice, m_pDeviceContext, sizeof(CS_IMMU_BONEMESH), static_cast<_uint>(m_vecAffectBoneIndices.size()));
+	m_pBoneMesh_ImmuBuffer = StructuredBuffer::Create(m_pDevice, m_pDeviceContext, sizeof(CS_IMMU_BONEMESH), m_iAffectBoneCount);
 
 	if (m_pBoneMesh_ImmuBuffer == nullptr)
 		return E_FAIL;
@@ -346,14 +346,14 @@ HRESULT CMesh::Ready_CS_Buffer()
 
 HRESULT CMesh::Ready_BindCSBuffer(CComputeShader* pBoneMeshCS)
 {
-	_uint iAffectSize = static_cast<_uint>(m_vecAffectBoneIndices.size());
+	_uint iAffectSize = m_iAffectBoneCount;
 	CS_IMMU_BONEMESH* pIniailData = new CS_IMMU_BONEMESH[iAffectSize];
 
 	// 2. 버퍼 내용을 쓴다
-	for (size_t i = 0; i < m_vecAffectBoneIndices.size(); ++i)
+	for (size_t i = 0; i < m_iAffectBoneCount; ++i)
 	{
-		pIniailData[i].iAffectBoneIndex = m_vecAffectBoneIndices[i];
-		pIniailData[i].matOffsetTransform = m_vecOffsetMatrices[i];
+		pIniailData[i].iAffectBoneIndex = m_pAffectBoneIndices[i];
+		pIniailData[i].matOffsetTransform = m_pOffsetMatrices[i];
 		pIniailData[i].Padding0 = Vector3::Zero;
 	}
 

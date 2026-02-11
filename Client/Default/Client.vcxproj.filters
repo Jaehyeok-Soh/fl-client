@@ -497,6 +497,7 @@
     </ClInclude>
     <ClInclude Include="..\Public\UITargetAction_Client.h">
       <Filter>03. GameObject\UIObjects\04.Action</Filter>
+    </ClInclude>
     <ClInclude Include="..\Public\UIJust_Image.h">
       <Filter>03. GameObject\UIObjects\02.UI\Image\JustImage</Filter>
     </ClInclude>
@@ -766,6 +767,7 @@
     </ClCompile>
     <ClCompile Include="..\Private\State_Slide.cpp">
       <Filter>06. FSM\Player\Slide</Filter>
+    </ClCompile>
     <ClCompile Include="..\Private\State_ComboBase.cpp">
       <Filter>06. FSM\Player\Attack\Combo</Filter>
     </ClCompile>

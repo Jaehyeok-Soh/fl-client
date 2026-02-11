@@ -127,6 +127,7 @@ public:
 	void Set_AnimationPlayRate(_uint iIndex, _float fValue);
 	const _float Get_BlentTime()  { return m_fBlendedTime; }
 	_float								Get_AnimTrackPosition() const;
+	const vector<class CMaterial*>& Get_Materials() const { return m_vecMaterials; };
 
 	HRESULT Ready_ComputeShaders(CComputeShader* pBoneMeshCS, CComputeShader* pBoneComBineCS, CComputeShader* pAnimEvalCS, CComputeShader* pAnimBlendCS, CComputeShader* pGetBoneCS = nullptr);
 	
