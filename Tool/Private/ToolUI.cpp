@@ -210,7 +210,7 @@ HRESULT CToolUI::Bind_ShaderResources()
         return E_FAIL;
 
 	pShader->Set_Pass(m_iShaderPass);
-	if (FAILED(Get_Component<CTexture>()->Bind_ShaderResourceBuffer(pShader)))
+ 	if (FAILED(Get_Component<CTexture>()->Bind_ShaderResourceBuffer(pShader)))
 		return E_FAIL;
 	if (FAILED(pShader->Get_Variable("g_iFlip")->SetRawValue(&m_iFlip, 0, sizeof(int32_t))))
 		return E_FAIL;

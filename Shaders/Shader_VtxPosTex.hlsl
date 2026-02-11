@@ -75,8 +75,8 @@ PS_OUT PS_FADE(PS_IN_POS_TEX input)
     }
     
     vector vColor = g_DefaultTextures[0].Sample(PointSampler, uv);
-    output.vColor = vColor;
     vColor.a *= g_fAlphaRatio;
+    output.vColor = vColor;
     return output;
 }
 

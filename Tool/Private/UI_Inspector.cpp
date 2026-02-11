@@ -302,9 +302,157 @@ void CUI_Inspector::SetUp_TextData()
 	End_Card();
 }
 
+//void CUI_Inspector::SetUp_TriggerData()
+//{
+//	if (Begin_Card("Set Trigger Data", "TriggerData", 200.f))
+//	{
+//		if (ImGui::Button("Add Hover Enter Target"))
+//		{
+//			m_isHoverEnter = TRUE;
+//			m_isHoverExit = FALSE;
+//			m_isPressEnter = FALSE;
+//			m_isPressExit = FALSE;
+//		}
+//		if (ImGui::Button("Add Hover Exit Target"))
+//		{
+//			m_isHoverEnter = FALSE;
+//			m_isHoverExit = TRUE;
+//			m_isPressEnter = FALSE;
+//			m_isPressExit = FALSE;
+//		}
+//		if (ImGui::Button("Add Press Enter Target"))
+//		{
+//			m_isHoverEnter = FALSE;
+//			m_isHoverExit = FALSE;
+//			m_isPressEnter = TRUE;
+//			m_isPressExit = FALSE;
+//		}
+//		if (ImGui::Button("Add Press Exit Target"))
+//		{
+//			m_isHoverEnter = FALSE;
+//			m_isHoverExit = FALSE;
+//			m_isPressEnter = FALSE;
+//			m_isPressExit = TRUE;
+//		}
+//
+//		auto* pUIVec = m_pUIManager->Safe_Access_UIVector();
+//		if (nullptr == pUIVec)
+//		{
+//			End_Card();
+//			return;
+//		}
+//		auto* pCanvasVec = m_pUIManager->Safe_Access_CanvasVector();
+//		if (nullptr == pCanvasVec)
+//		{
+//			End_Card();
+//			return;
+//		}
+//		vector<_string> vecUINames;
+//		vecUINames.reserve(pUIVec->size());
+//		for (auto* pUI : *pUIVec)
+//			vecUINames.push_back(pUI->Get_Name());
+//
+//		vector<_string> vecCanvasNames;
+//		vecCanvasNames.reserve(pCanvasVec->size());
+//		for (auto* pCanvas : *pCanvasVec)
+//			vecCanvasNames.push_back(pCanvas->Get_Tag());
+//
+//		if (m_isHoverEnter)
+//		{
+//			const float fH = 80.f;
+//			const float fAvail = ImGui::GetContentRegionAvail().x;
+//			const float fGap = ImGui::GetStyle().ItemSpacing.x;
+//			const float fHalf = (fAvail - fGap) * 0.5f;
+//
+//			ImGui::BeginChild("Trigger UI List", ImVec2(fHalf, fH), true);
+//			for (const auto& name : m_pSelectedUI->Get_vecHoverEnterTriggerUI())
+//			{
+//				const bool isSelected = (m_strTriggerUIName == name);
+//				if (ImGui::Selectable(name.c_str(), isSelected))
+//					m_strTriggerUIName = name;
+//			}
+//			ImGui::EndChild();
+//			ImGui::SameLine();
+//			ImGui::BeginChild("Trigger Canvas List", ImVec2(0.f, fH), true);
+//			for (const auto& name : m_pSelectedUI->Get_vecHoverEnterTriggerCanvas())
+//			{
+//				const bool isSelected = (m_strTriggerCanvasName == name);
+//				if (ImGui::Selectable(name.c_str(), isSelected))
+//					m_strTriggerCanvasName = name;
+//			}
+//			ImGui::EndChild();
+//			if (ImGui::Button("Remove Trigger UI"))
+//			{
+//				m_pSelectedUI->Remove_vecHoverEnterTriggerUI(m_strTriggerUIName);
+//			}
+//			ImGui::SameLine();
+//			if (ImGui::Button("Remove Trigger Canvas"))
+//			{
+//				m_pSelectedUI->Remove_vecHoverEnterTriggerCanvas(m_strTriggerCanvasName);
+//			}
+//			ImGui::InputText("Hover Enter Trigger UI", &m_strTriggerUIName_UserInput);
+//			if (ImGui::Button("Add Hover Enter Trigger UI User Input"))
+//			{
+//				if (!m_pSelectedUI->Add_vecHoverEnterTriggerUI(m_strTriggerUIName_UserInput))
+//				{
+//					MSG_BOX("이미 존재하는 이름");
+//				}
+//			}
+//			if (ImGui::BeginCombo("Pick Trigger UI", m_strTriggerUIName.c_str()))
+//			{
+//				for (const auto& name : vecUINames)
+//				{
+//					const bool isSelected = (m_strTriggerUIName == name);
+//					if (ImGui::Selectable(name.c_str(), isSelected))
+//						m_strTriggerUIName = name;
+//					if (isSelected)
+//						ImGui::SetItemDefaultFocus();
+//				}
+//				ImGui::EndCombo();
+//			}
+//			if (ImGui::Button("Add Hover Enter Trigger UI"))
+//			{
+//				if (!m_pSelectedUI->Add_vecHoverEnterTriggerUI(m_strTriggerUIName))
+//				{
+//					MSG_BOX("이미 존재하는 이름");
+//				}
+//			}
+//			if (ImGui::BeginCombo("Canvas Names", m_strTriggerCanvasName.c_str()))
+//			{
+//				for (const auto& tag : vecCanvasNames)
+//				{
+//					const bool isSelected = (m_strTriggerCanvasName == tag);
+//					if (ImGui::Selectable(tag.c_str(), isSelected))
+//						m_strTriggerCanvasName = tag;
+//					if (isSelected)
+//						ImGui::SetItemDefaultFocus();
+//				}
+//				ImGui::EndCombo();
+//			}
+//			if (ImGui::Button("Add Hover Enter Trigger Canvas"))
+//			{
+//				if (!m_pSelectedUI->Add_vecHoverEnterTriggerCanvas(m_strTriggerCanvasName))
+//				{
+//					MSG_BOX("이미 존재하는 이름");
+//				}
+//			}
+//		}
+//		else if (m_isHoverExit)
+//		{
+//		}
+//		else if (m_isPressEnter)
+//		{
+//		}
+//		else if (m_isPressExit)
+//		{
+//		}
+//	}
+//	End_Card();
+//}
+
 void CUI_Inspector::SetUp_TriggerData()
 {
-	if (Begin_Card("Set Trigger Data", "TriggerData", 200.f))
+	if (Begin_Card("Set Trigger Data", "TriggerData", 400.f))
 	{
 		if (ImGui::Button("Add Hover Enter Target"))
 		{
@@ -335,27 +483,38 @@ void CUI_Inspector::SetUp_TriggerData()
 			m_isPressExit = TRUE;
 		}
 
-		auto* pUIVec = m_pUIManager->Safe_Access_UIVector();
-		if (nullptr == pUIVec)
-		{
-			End_Card();
-			return;
-		}
 		auto* pCanvasVec = m_pUIManager->Safe_Access_CanvasVector();
 		if (nullptr == pCanvasVec)
 		{
 			End_Card();
 			return;
 		}
-		vector<_string> vecUINames;
-		vecUINames.reserve(pUIVec->size());
-		for (auto* pUI : *pUIVec)
-			vecUINames.push_back(pUI->Get_Name());
 
+		vector<_string> vecUINames;
 		vector<_string> vecCanvasNames;
 		vecCanvasNames.reserve(pCanvasVec->size());
+
 		for (auto* pCanvas : *pCanvasVec)
+		{
+			if (nullptr == pCanvas)
+				continue;
+
 			vecCanvasNames.push_back(pCanvas->Get_Tag());
+
+			/* Canvas 안의 모든 UI 이름 수집 */
+			auto* pUIVec = pCanvas->Safe_Access_UI_Vector(); // Canvas가 UIVector 접근 함수를 제공한다고 가정
+			if (nullptr == pUIVec)
+				continue;
+
+			vecUINames.reserve(vecUINames.size() + pUIVec->size());
+			for (auto* pUI : *pUIVec)
+			{
+				if (nullptr == pUI)
+					continue;
+
+				vecUINames.push_back(pUI->Get_Name());
+			}
+		}
 
 		if (m_isHoverEnter)
 		{
@@ -364,7 +523,7 @@ void CUI_Inspector::SetUp_TriggerData()
 			const float fGap = ImGui::GetStyle().ItemSpacing.x;
 			const float fHalf = (fAvail - fGap) * 0.5f;
 
-			ImGui::BeginChild("Trigger UI List", ImVec2(fHalf, fH), true);
+			ImGui::BeginChild("Trigger UI List##HoverEnter", ImVec2(fHalf, fH), true);
 			for (const auto& name : m_pSelectedUI->Get_vecHoverEnterTriggerUI())
 			{
 				const bool isSelected = (m_strTriggerUIName == name);
@@ -373,7 +532,7 @@ void CUI_Inspector::SetUp_TriggerData()
 			}
 			ImGui::EndChild();
 			ImGui::SameLine();
-			ImGui::BeginChild("Trigger Canvas List", ImVec2(0.f, fH), true);
+			ImGui::BeginChild("Trigger Canvas List##HoverEnter", ImVec2(0.f, fH), true);
 			for (const auto& name : m_pSelectedUI->Get_vecHoverEnterTriggerCanvas())
 			{
 				const bool isSelected = (m_strTriggerCanvasName == name);
@@ -381,24 +540,24 @@ void CUI_Inspector::SetUp_TriggerData()
 					m_strTriggerCanvasName = name;
 			}
 			ImGui::EndChild();
-			if (ImGui::Button("Remove Trigger UI"))
+			if (ImGui::Button("Remove Trigger UI##HoverEnter"))
 			{
 				m_pSelectedUI->Remove_vecHoverEnterTriggerUI(m_strTriggerUIName);
 			}
 			ImGui::SameLine();
-			if (ImGui::Button("Remove Trigger Canvas"))
+			if (ImGui::Button("Remove Trigger Canvas##HoverEnter"))
 			{
 				m_pSelectedUI->Remove_vecHoverEnterTriggerCanvas(m_strTriggerCanvasName);
 			}
 			ImGui::InputText("Hover Enter Trigger UI", &m_strTriggerUIName_UserInput);
-			if (ImGui::Button("Add Hover Enter Trigger UI User Input"))
+			if (ImGui::Button("Add Hover Enter Trigger UI User Input##HoverEnter"))
 			{
 				if (!m_pSelectedUI->Add_vecHoverEnterTriggerUI(m_strTriggerUIName_UserInput))
 				{
 					MSG_BOX("이미 존재하는 이름");
 				}
 			}
-			if (ImGui::BeginCombo("Pick Trigger UI", m_strTriggerUIName.c_str()))
+			if (ImGui::BeginCombo("Pick Trigger UI##HoverEnter", m_strTriggerUIName.c_str()))
 			{
 				for (const auto& name : vecUINames)
 				{
@@ -410,14 +569,14 @@ void CUI_Inspector::SetUp_TriggerData()
 				}
 				ImGui::EndCombo();
 			}
-			if (ImGui::Button("Add Hover Enter Trigger UI"))
+			if (ImGui::Button("Add Hover Enter Trigger UI##HoverEnter"))
 			{
 				if (!m_pSelectedUI->Add_vecHoverEnterTriggerUI(m_strTriggerUIName))
 				{
 					MSG_BOX("이미 존재하는 이름");
 				}
 			}
-			if (ImGui::BeginCombo("Canvas Names", m_strTriggerCanvasName.c_str()))
+			if (ImGui::BeginCombo("Canvas Names##HoverEnter", m_strTriggerCanvasName.c_str()))
 			{
 				for (const auto& tag : vecCanvasNames)
 				{
@@ -429,7 +588,7 @@ void CUI_Inspector::SetUp_TriggerData()
 				}
 				ImGui::EndCombo();
 			}
-			if (ImGui::Button("Add Hover Enter Trigger Canvas"))
+			if (ImGui::Button("Add Hover Enter Trigger Canvas##HoverEnter"))
 			{
 				if (!m_pSelectedUI->Add_vecHoverEnterTriggerCanvas(m_strTriggerCanvasName))
 				{
@@ -439,16 +598,248 @@ void CUI_Inspector::SetUp_TriggerData()
 		}
 		else if (m_isHoverExit)
 		{
+			const float fH = 80.f;
+			const float fAvail = ImGui::GetContentRegionAvail().x;
+			const float fGap = ImGui::GetStyle().ItemSpacing.x;
+			const float fHalf = (fAvail - fGap) * 0.5f;
+
+			ImGui::BeginChild("Trigger UI List##HoverExit", ImVec2(fHalf, fH), true);
+			for (const auto& name : m_pSelectedUI->Get_vecHoverExitTriggerUI())
+			{
+				const bool isSelected = (m_strTriggerUIName == name);
+				if (ImGui::Selectable(name.c_str(), isSelected))
+					m_strTriggerUIName = name;
+			}
+			ImGui::EndChild();
+			ImGui::SameLine();
+			ImGui::BeginChild("Trigger Canvas List##HoverExit", ImVec2(0.f, fH), true);
+			for (const auto& name : m_pSelectedUI->Get_vecHoverExitTriggerCanvas())
+			{
+				const bool isSelected = (m_strTriggerCanvasName == name);
+				if (ImGui::Selectable(name.c_str(), isSelected))
+					m_strTriggerCanvasName = name;
+			}
+			ImGui::EndChild();
+			if (ImGui::Button("Remove Trigger UI##HoverExit"))
+			{
+				m_pSelectedUI->Remove_vecHoverExitTriggerUI(m_strTriggerUIName);
+			}
+			ImGui::SameLine();
+			if (ImGui::Button("Remove Trigger Canvas##HoverExit"))
+			{
+				m_pSelectedUI->Remove_vecHoverExitTriggerCanvas(m_strTriggerCanvasName);
+			}
+			ImGui::InputText("Hover Exit Trigger UI", &m_strTriggerUIName_UserInput);
+			if (ImGui::Button("Add Hover Exit Trigger UI User Input##HoverExit"))
+			{
+				if (!m_pSelectedUI->Add_vecHoverExitTriggerUI(m_strTriggerUIName_UserInput))
+				{
+					MSG_BOX("이미 존재하는 이름");
+				}
+			}
+			if (ImGui::BeginCombo("Pick Trigger UI##HoverExit", m_strTriggerUIName.c_str()))
+			{
+				for (const auto& name : vecUINames)
+				{
+					const bool isSelected = (m_strTriggerUIName == name);
+					if (ImGui::Selectable(name.c_str(), isSelected))
+						m_strTriggerUIName = name;
+					if (isSelected)
+						ImGui::SetItemDefaultFocus();
+				}
+				ImGui::EndCombo();
+			}
+			if (ImGui::Button("Add Hover Exit Trigger UI##HoverExit"))
+			{
+				if (!m_pSelectedUI->Add_vecHoverExitTriggerUI(m_strTriggerUIName))
+				{
+					MSG_BOX("이미 존재하는 이름");
+				}
+			}
+			if (ImGui::BeginCombo("Canvas Names##HoverExit", m_strTriggerCanvasName.c_str()))
+			{
+				for (const auto& tag : vecCanvasNames)
+				{
+					const bool isSelected = (m_strTriggerCanvasName == tag);
+					if (ImGui::Selectable(tag.c_str(), isSelected))
+						m_strTriggerCanvasName = tag;
+					if (isSelected)
+						ImGui::SetItemDefaultFocus();
+				}
+				ImGui::EndCombo();
+			}
+			if (ImGui::Button("Add Hover Exit Trigger Canvas##HoverExit"))
+			{
+				if (!m_pSelectedUI->Add_vecHoverExitTriggerCanvas(m_strTriggerCanvasName))
+				{
+					MSG_BOX("이미 존재하는 이름");
+				}
+			}
 		}
 		else if (m_isPressEnter)
 		{
+			const float fH = 80.f;
+			const float fAvail = ImGui::GetContentRegionAvail().x;
+			const float fGap = ImGui::GetStyle().ItemSpacing.x;
+			const float fHalf = (fAvail - fGap) * 0.5f;
+
+			ImGui::BeginChild("Trigger UI List##PressEnter", ImVec2(fHalf, fH), true);
+			for (const auto& name : m_pSelectedUI->Get_vecPressEnterTriggerUI())
+			{
+				const bool isSelected = (m_strTriggerUIName == name);
+				if (ImGui::Selectable(name.c_str(), isSelected))
+					m_strTriggerUIName = name;
+			}
+			ImGui::EndChild();
+			ImGui::SameLine();
+			ImGui::BeginChild("Trigger Canvas List##PressEnter", ImVec2(0.f, fH), true);
+			for (const auto& name : m_pSelectedUI->Get_vecPressEnterTriggerCanvas())
+			{
+				const bool isSelected = (m_strTriggerCanvasName == name);
+				if (ImGui::Selectable(name.c_str(), isSelected))
+					m_strTriggerCanvasName = name;
+			}
+			ImGui::EndChild();
+			if (ImGui::Button("Remove Trigger UI##PressEnter"))
+			{
+				m_pSelectedUI->Remove_vecPressEnterTriggerUI(m_strTriggerUIName);
+			}
+			ImGui::SameLine();
+			if (ImGui::Button("Remove Trigger Canvas##PressEnter"))
+			{
+				m_pSelectedUI->Remove_vecPressEnterTriggerCanvas(m_strTriggerCanvasName);
+			}
+			ImGui::InputText("Press Enter Trigger UI", &m_strTriggerUIName_UserInput);
+			if (ImGui::Button("Add Press Enter Trigger UI User Input##PressEnter"))
+			{
+				if (!m_pSelectedUI->Add_vecPressEnterTriggerUI(m_strTriggerUIName_UserInput))
+				{
+					MSG_BOX("이미 존재하는 이름");
+				}
+			}
+			if (ImGui::BeginCombo("Pick Trigger UI##PressEnter", m_strTriggerUIName.c_str()))
+			{
+				for (const auto& name : vecUINames)
+				{
+					const bool isSelected = (m_strTriggerUIName == name);
+					if (ImGui::Selectable(name.c_str(), isSelected))
+						m_strTriggerUIName = name;
+					if (isSelected)
+						ImGui::SetItemDefaultFocus();
+				}
+				ImGui::EndCombo();
+			}
+			if (ImGui::Button("Add Press Enter Trigger UI##PressEnter"))
+			{
+				if (!m_pSelectedUI->Add_vecPressEnterTriggerUI(m_strTriggerUIName))
+				{
+					MSG_BOX("이미 존재하는 이름");
+				}
+			}
+			if (ImGui::BeginCombo("Canvas Names##PressEnter", m_strTriggerCanvasName.c_str()))
+			{
+				for (const auto& tag : vecCanvasNames)
+				{
+					const bool isSelected = (m_strTriggerCanvasName == tag);
+					if (ImGui::Selectable(tag.c_str(), isSelected))
+						m_strTriggerCanvasName = tag;
+					if (isSelected)
+						ImGui::SetItemDefaultFocus();
+				}
+				ImGui::EndCombo();
+			}
+			if (ImGui::Button("Add Press Enter Trigger Canvas##PressEnter"))
+			{
+				if (!m_pSelectedUI->Add_vecPressEnterTriggerCanvas(m_strTriggerCanvasName))
+				{
+					MSG_BOX("이미 존재하는 이름");
+				}
+			}
 		}
 		else if (m_isPressExit)
 		{
+			const float fH = 80.f;
+			const float fAvail = ImGui::GetContentRegionAvail().x;
+			const float fGap = ImGui::GetStyle().ItemSpacing.x;
+			const float fHalf = (fAvail - fGap) * 0.5f;
+
+			ImGui::BeginChild("Trigger UI List##PressExit", ImVec2(fHalf, fH), true);
+			for (const auto& name : m_pSelectedUI->Get_vecPressExitTriggerUI())
+			{
+				const bool isSelected = (m_strTriggerUIName == name);
+				if (ImGui::Selectable(name.c_str(), isSelected))
+					m_strTriggerUIName = name;
+			}
+			ImGui::EndChild();
+			ImGui::SameLine();
+			ImGui::BeginChild("Trigger Canvas List##PressExit", ImVec2(0.f, fH), true);
+			for (const auto& name : m_pSelectedUI->Get_vecPressExitTriggerCanvas())
+			{
+				const bool isSelected = (m_strTriggerCanvasName == name);
+				if (ImGui::Selectable(name.c_str(), isSelected))
+					m_strTriggerCanvasName = name;
+			}
+			ImGui::EndChild();
+			if (ImGui::Button("Remove Trigger UI##PressExit"))
+			{
+				m_pSelectedUI->Remove_vecPressExitTriggerUI(m_strTriggerUIName);
+			}
+			ImGui::SameLine();
+			if (ImGui::Button("Remove Trigger Canvas##PressExit"))
+			{
+				m_pSelectedUI->Remove_vecPressExitTriggerCanvas(m_strTriggerCanvasName);
+			}
+			ImGui::InputText("Press Exit Trigger UI", &m_strTriggerUIName_UserInput);
+			if (ImGui::Button("Add Press Exit Trigger UI User Input##PressExit"))
+			{
+				if (!m_pSelectedUI->Add_vecPressExitTriggerUI(m_strTriggerUIName_UserInput))
+				{
+					MSG_BOX("이미 존재하는 이름");
+				}
+			}
+			if (ImGui::BeginCombo("Pick Trigger UI##PressExit", m_strTriggerUIName.c_str()))
+			{
+				for (const auto& name : vecUINames)
+				{
+					const bool isSelected = (m_strTriggerUIName == name);
+					if (ImGui::Selectable(name.c_str(), isSelected))
+						m_strTriggerUIName = name;
+					if (isSelected)
+						ImGui::SetItemDefaultFocus();
+				}
+				ImGui::EndCombo();
+			}
+			if (ImGui::Button("Add Press Exit Trigger UI##PressExit"))
+			{
+				if (!m_pSelectedUI->Add_vecPressExitTriggerUI(m_strTriggerUIName))
+				{
+					MSG_BOX("이미 존재하는 이름");
+				}
+			}
+			if (ImGui::BeginCombo("Canvas Names##PressExit", m_strTriggerCanvasName.c_str()))
+			{
+				for (const auto& tag : vecCanvasNames)
+				{
+					const bool isSelected = (m_strTriggerCanvasName == tag);
+					if (ImGui::Selectable(tag.c_str(), isSelected))
+						m_strTriggerCanvasName = tag;
+					if (isSelected)
+						ImGui::SetItemDefaultFocus();
+				}
+				ImGui::EndCombo();
+			}
+			if (ImGui::Button("Add Press Exit Trigger Canvas##PressExit"))
+			{
+				if (!m_pSelectedUI->Add_vecPressExitTriggerCanvas(m_strTriggerCanvasName))
+				{
+					MSG_BOX("이미 존재하는 이름");
+				}
+			}
 		}
 	}
 	End_Card();
 }
+
 
 void CUI_Inspector::SetUp_DImageData()
 {
