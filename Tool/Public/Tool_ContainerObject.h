@@ -33,6 +33,9 @@ public:
 	template<typename T>
 	T* Get_Part(_uint iPartID);
 
+	template<typename T>
+	T* Get_Part(const string& name);
+
 	vector<class Tool_PartObject*>& Get_PartList();
 	void Remove_Part(_uint iPartID);
 	HRESULT Add_Part(class Tool_PartObject* pPart, _uint iPartID);
@@ -54,7 +57,21 @@ T* Tool_ContainerObject::Get_Part(_uint iPartID)
 	if (!m_vecPartObjects[iPartID])
 		return nullptr;
 
-	return static_cast<T*>(m_vecPartObjects[iPartID]);
+	return dynamic_cast<T*>(m_vecPartObjects[iPartID]);
+}
+
+template<typename T>
+T* Tool_ContainerObject::Get_Part(const string& name)
+{
+	for (auto Part : m_vecPartObjects)
+	{
+		if (Part && name == Part->Get_Name())
+		{
+			return dynamic_cast<T*>(Part);
+		}
+	}
+
+	return nullptr;
 }
 
 

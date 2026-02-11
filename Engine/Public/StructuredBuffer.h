@@ -80,11 +80,11 @@ public:
 	HRESULT Resize(void* data, _uint iElementSize, _uint iNewNumElements);
 
 private:
-	ID3D11Device* m_pDevice = { nullptr };
-	ID3D11DeviceContext* m_pDeviceContext = { nullptr };
-	ID3D11Buffer* m_pBuffer = { nullptr };
-	ID3D11ShaderResourceView* m_pSRV = { nullptr };
-	ID3D11UnorderedAccessView* m_pUAV = { nullptr };
+	ID3D11Device*					m_pDevice = { nullptr };
+	ID3D11DeviceContext*			m_pDeviceContext = { nullptr };
+	ID3D11Buffer*					m_pBuffer = { nullptr };
+	ID3D11ShaderResourceView*		m_pSRV = { nullptr };
+	ID3D11UnorderedAccessView*		m_pUAV = { nullptr };
 
 public:
 	_uint m_iElementCount = 0;

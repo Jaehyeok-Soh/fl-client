@@ -195,17 +195,162 @@ namespace Engine
 	// 가변 데이터 (CS에서 값이 계속 바뀌는 것들)
 	typedef struct tagEffect_Particle_MU_ELEMENT
 	{
+		// 시간 제어 관련
 		float				fTimeDelta = { 0.f };		// 시간 값
-		float				fStartSpeed = { 0.f };		// 배속
-		float				fEndSpeed = {};
-		unsigned  int		iMoveState = { 0}; // State를 flag에 담아서 보내기
-		int					bIsLoop = { 0 };
+		float				fTotalTime = { 0.f };
+		float				fDuration = { 0.f };
+		float				fStartDelay = { 0.f };
 
+		// 상태 플래그
+		unsigned int		iMoveState = { 0 };
+		int					bIsLoop = { 0 };
+		unsigned int		iTimeFlag = {};
+		float				fGravity = { 9.8f };
+
+		// 위치 및 방향
 		SimpleMath::Vector3	vPivot = {};	// Spread시 기준점
+		float Padding1 = {};
 		SimpleMath::Vector3 vLook = {};		// Straight시 방향
-		float				vPadding1 = {};
+		float Padding2 = {};
+
+		float				fStartSpeed = { 0.f };
+		float				fSpiralRadius = { 0.f };
+		float				fSpiralSpeed = { 0.f };
+		float				Padding3 = {};
+
+		// 
+
 	}EFFECT_PARTICLE_MU_ELEMENT;
 #pragma endregion
+
+#pragma region Model_ComShader_Structures
+
+#pragma region BONEFIANL_CS
+
+	typedef struct tagBoneMeshCB
+	{
+		unsigned int				iAffectBoneNums = { 0 };
+		unsigned int				iTotalBoneNums = { 0 };
+		SimpleMath::Vector2			Padding0 = {};
+	}CS_CB_MU_BONEMESH;
+
+	typedef struct tagBoneMeshIMMU
+	{
+		unsigned int				iAffectBoneIndex = { 0 };
+		SimpleMath::Vector3			Padding0 = {};
+
+		SimpleMath::Matrix			matOffsetTransform = {};
+	}CS_IMMU_BONEMESH;
+
+#pragma endregion
+
+#pragma region BONECOM_CS
+
+	// output
+	typedef struct tagSRT
+	{
+		SimpleMath::Vector3         vScale;
+		float						Padding0;
+	
+		SimpleMath::Vector4			vQuat;
+
+		SimpleMath::Vector3			vTranslation;
+		float						Padding1;
+	}CS_SRT;
+	 
+	// 불변 데이터
+	typedef struct tagBone_Immu_Element
+	{
+		int			iParentIndex = { -1 };
+		SimpleMath::Vector3 Padding0 = {};
+
+		SimpleMath::Matrix matPreTransform = {};
+	}CS_IMMU_BONE;
+
+	// 가변 데이터 : cpu
+	typedef struct tagBone_Mu_Element
+	{
+		int			iMyIdx = { -1 };
+
+		SimpleMath::Vector3 Padding0 = {};
+	}CS_MU_BONEIDX;
+
+	// 가변 데이터 : cpu
+	typedef struct tagBone_Mu_Group
+	{
+		unsigned int		iGroupBoneNums = {0};
+
+		SimpleMath::Vector3 Padding0 = {};
+	}CS_MU_GROUPNUMS;
+
+	// output : 만약 바로 vs로 넘긴다면 필요 없지만
+	// 충돌이나 여기 저기에서 사용할 수 있어서 일단 만들어 둠
+	typedef struct tagBone_Output
+	{
+		SimpleMath::Matrix matCombinedTransform = { };
+	}CS_OUT_BONE;
+#pragma endregion
+
+#pragma region ANIM_EVAL_CS
+	// 불변 데이터
+	typedef struct tagAnimE_Immu_KeyFrame
+	{
+		SimpleMath::Vector3  vScale = { 1.f,1.f,1.f };
+		float   fTrackPosition = { 0.f };
+
+		SimpleMath::Vector4  vQuat = {};
+
+		SimpleMath::Vector3  vTranslation = {};
+		float   fPadding0 = { 0.f };
+	}CS_IMMU_ANIM_KEYFRAME;
+
+	// 불변 데이터 : cpu
+	typedef struct tagAnimE_Immu_ChannelData
+	{
+		int     iBoneIndex = { -1 };             // 내 bone transform을 잘 업데이트 하기 위함
+		int     iRootMotionBoneIndex = { -1 };   // root motion일 경우 tralation을 0으로 만들기 위함
+
+		unsigned int    iKeyStart = { 0 };              // 키프레임 시작 위치
+		unsigned int    iKeyCount = { 0 };              // 키프레임 개수
+	}CS_IMMU_ANIM_CHANNELDATA;
+
+	// 가변 데이터 : cpu
+	typedef struct tagBone_Mu_Track
+	{
+		float   fCurTrackPosition = { 0.f };
+		unsigned int iChannelCount = { 0 };
+
+		SimpleMath::Vector2  Padding0 = {};
+	}CS_MU_TRACK;
+#pragma endregion
+
+#pragma region ANIM_Blendd_CS
+	// 가변 데이터
+	typedef struct tagAnimB_Immu_Ratio
+	{
+		int						iRootMotionBoneIndex = { -1 }; // root motion일 경우 tralation을 0으로 만들기 위함
+		float					fRatio = { 0.f };
+
+		unsigned int     iBoneCount = {0};
+		float  Padding0 = { 0.f };
+	}CS_MU_ANIMB;
+
+	// output
+	//typedef struct tagBone_Output
+	//{
+	//	float3              vScale;
+	//	uint                iCurKeyFrameIndex;
+
+	//	float4              vQuat;
+
+	//	float3              vTranslation;
+	//	uint                iAnimIndex
+	//}CS_OUT_ANIME;
+#pragma endregion
+
+#pragma endregion
+
+
 	union COLLIDER_ID
 	{
 		struct

@@ -13,6 +13,18 @@ public:
     using _uint2 = struct { _uint x; _uint y; };
 
 public:
+    typedef struct tagEffectGravityCurveKey
+    {
+        float fTimeKey = { 0.f };           // 0 ~ 1까지. 태어나서 죽을 때까지의 곡선
+        float fValue = { 0.f };
+    }Gravity_CurveKey;
+
+    typedef struct tagEffectRotationCurveKey
+    {
+        float fTimeKey; // 0.0 ~ 1.0 
+        float fValue; // 각 축별 회전값 (Degree 또는 Radian)
+    }Rotation_CurveKey;
+
     typedef struct tagEffectObjectDesc : public Super::PARTOBJ_DESC
     {
         // ========     이펙트 타입   =========
@@ -20,7 +32,7 @@ public:
         DTO::E_PARTICLETYPE eEffectParticleType = DTO::E_PARTICLETYPE::PARTICLE;
         DTO::E_EFFECTTYPE eEffectType = DTO::E_EFFECTTYPE::Particle;
         DTO::E_SHAPETYPE _Effect_ShapeType = DTO::E_SHAPETYPE::SPREAD;
-
+        DTO::E_EMISSION_TYPE _Effect_EmissionType = DTO::E_EMISSION_TYPE::BOX;
         // ========  이펙트 Material 설정   ===========
         wstring     _Effect_Model_Tag = {};
         wstring     _Effect_DiffuseTexture_Tag = {};
@@ -48,31 +60,65 @@ public:
         Vec4     _Effect_Color = { 1.f, 0.f, 0.f, 1.f };
         float    _Effect_DiscardValue = { 0.05f };
 
-        // =========   이펙트 Sprite 사용 여부    ============
-        bool        _Effect_bUseSprite = {};
-        _uint2      _Effect_TileCount = {};
-        bool        _Effect_bPlayAnim = { false };
-        _float      _Effect_AnimSpeed = { 1.0f };
-        _uint       m_iCurSpriteNumber = {};
+        // =========   시간 관련 값  ================
+        // 0 : Play, 1 : Pause,  2: Reset, 3:  Stop
+        _uint               _Effect_TimeFlag = {};
+        _float              _Effect_StartDelay = { 0.f };
+        _float              _Effect_LifeTime = { 5.f };
 
+        // =========   이펙트 Sprite 사용 여부    ============
+        bool                 _Effect_bUseSprite = {};
+        _uint2               _Effect_TileCount = {};
+        bool                 _Effect_bPlayAnim = { false };
+        _float               _Effect_AnimSpeed = { 1.0f };
+        _uint                m_iCurSpriteNumber = {};
 
         // =========   이펙트 Emission 전용   =============
-        _float      _Effect_RateOverTime = {};
-        _float      _Effect_RateOverDistance = {};
+        _float              _Effect_RateOverTime = {};
+        _float              _Effect_RateOverDistance = {};
 
         // ========   이펙트 파티클 전용   ============
         Vec2                _Effect_ParticleSize = { 0.05f, 0.15f };
         _float              _Effect_Duration = { 5.f };
         _bool               _Effect_Looping = { true };
         _bool               _Effect_IsRandomSeed = { true };
-        _float              _Effect_StartDelay = { 0.f };
-        _float              _Effect_LifeTime = { 5.f };
+
         _float              _Effect_PlayBackSpeed = { 1.f };
         _float              _Effect_StartSpeed = { 1.f };   // Particle에 영향을 주는 스피드 [개별 배속]
-        int                 _Effect_MaxParticle = { 100 };
+        int                 _Effect_MaxParticle = { 30 };
 
         // ========  이펙트 Radius  ==========
         Vec3                _Effect_Range = { 1.f, 1.f, 1.f };
+        float               _Effect_Spiral_Radius = { 1.f };
+        float               _Effect_Spiral_Speed = { 1.f };
+
+        // ==============  중력 값들   ==============
+        // Base Data
+        float               _Effect_Gravity_Value = { 9.8f };           // 물리적 기준값
+        float               _Effect_GravityModifier = { 0.f };          // 전체적인 On / off 기능
+        Vec3                _Effect_GravityDir = { 0.f, -1.f, 0.f };    // 중력 방향
+
+        // ==============  중력 커브  ==============
+        bool                     _bUseGlobalGravityCurve = false;   // 커브 사용 여부 플래그
+        vector<Gravity_CurveKey> _vecGlobalGravityCurve;  // 시간대별 0.0~1.0 비율값
+
+        bool                     _bUseExternalForceCurve = false;   // 외부 중력(Force Field) 커브 여부
+        float                    fExternalForceStrength = 1.0f; // 커브 안 쓸 때 기본값
+        vector<Gravity_CurveKey> _vecExternalForceCurve;  // 외부 중력용 시간대별 비율값 
+
+        // ==============  회전 값들   ==============
+       // 3D Start Rotation 값
+        Vec3                    _Effect_StartRotation = { 0.f, 0.f, 0.f };    // 초기 회전각을 얼마로 고정할건데?
+        Vec3                    _Effect_TargetRotation = { 0.f, 0.f, 0.f }; // 얼만큼 회전시킬건데?
+        bool                    _bUseStartRotation = false;
+        // X,Y,Z 축 분리
+        vector<Rotation_CurveKey> _vecRotationCurveX;
+        vector<Rotation_CurveKey> _vecRotationCurveY;
+        vector<Rotation_CurveKey> _vecRotationCurveZ;
+
+        bool _bUseRotationCurve = false;
+        bool _bSeparateAxes = false;
+
 
         // ========  이펙트 Texture Flag  =======
         _uint               _Effect_TextureFlag = {};
@@ -80,6 +126,26 @@ public:
         _uint               _Effect_SamplerStateFlag = {};
         _uint               _Effect_TextureRotationFlag = {};
         _uint               _Effect_TextureOperatorFlag = {};
+
+        // ========  툴용 Flag ========
+        // Texture 쓰니?
+        _bool               _Effect_Tool_DiffuseTexture = { false };
+        _bool               _Effect_Tool_NoiseTexture = { false };
+        _bool               _Effect_Tool_MaskingTexture = { false };
+        _bool               _Effect_Tool_GradationTexture = { false };
+
+        // 빌보드는 있니, 스크롤은 먹이니
+        _bool               _Effect_Tool_UseBillboard = { false };
+        _bool               _Effect_Tool_UseScroll = { false };
+        _bool               _Effect_Tool_RightScroll = { false };
+        _bool               _Effect_Tool_DownScroll = { false };
+
+        // SamplerState 몇번 쓸거니
+        int               _Effect_Tool_DiffuseSamplerState_Flag = {};
+        int               _Effect_Tool_NoiseSamplerState_Flag = {};
+        int               _Effect_Tool_MaskingSamplerState_Flag = {};
+        int               _Effect_Tool_GradationSamplerState_Flag = {};
+
     }Effect_Desc;
 
 protected:

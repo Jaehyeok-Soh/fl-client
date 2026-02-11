@@ -6,6 +6,7 @@
 #include "ContainerObject.h"
 #include "Body.h"
 #include "Model.h"
+#include "Bone.h"
 
 #include "GameInstance.h"
 
@@ -32,6 +33,7 @@ void CImGui_StateLayout::Render(CGameObject* pGo)
 	CModel* pModel = static_cast<CContainerObject*>(pGo)->Get_Part<CBody>(0)->Get_Component<CModel>();
 	_float fBlendTime = pModel->Get_BlentTime();
 	_int iAnimIdx = pModel->Get_CurrentAnimationIndex();
+	Vector3 vCamBonePos = pModel->Get_Bone(417)->Get_CombinedTransformMatrix().Translation();
 
 	ImGui::BeginGroup();
 	ImGui::SeparatorText(m_strLabel.c_str());
@@ -40,11 +42,11 @@ void CImGui_StateLayout::Render(CGameObject* pGo)
 	ImGui::SameLine();
 	ImGui::Text(strStateName.c_str());
 
-	ImGui::Text("Main Ani Idx : ");
+	ImGui::Text("Main Ani Idx : "); // state 내부에서 anim idx
 	ImGui::SameLine();
 	ImGui::Text("%u", iMainIdx);
 
-	ImGui::Text("Model Ani Idx : ");
+	ImGui::Text("Model Ani Idx : "); // model에서 바인딩된 anim idx
 	ImGui::SameLine();
 	ImGui::Text("%u", iAnimIdx);
 
@@ -55,6 +57,14 @@ void CImGui_StateLayout::Render(CGameObject* pGo)
 	ImGui::Text("BlendTime : ");
 	ImGui::SameLine();
 	ImGui::Text("%f", fBlendTime);
+
+	ImGui::Text("CamBone Pos : ");
+	ImGui::SameLine();
+	ImGui::Text("%f", vCamBonePos.x);
+	ImGui::SameLine();
+	ImGui::Text("%f", vCamBonePos.y);
+	ImGui::SameLine();
+	ImGui::Text("%f", vCamBonePos.z);
 
 	ImGui::EndGroup();
 }

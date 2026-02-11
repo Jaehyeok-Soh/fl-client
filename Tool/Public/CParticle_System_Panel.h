@@ -24,35 +24,42 @@ protected:
     HRESULT ResourceFolderSearch(E_EFFECT_RESOURCETYPE eType, const string& Path);
     HRESULT ResourceFileSearch(E_EFFECT_RESOURCETYPE eType, const string& Path);
 
+    // 공용
+protected:
+    void Draw_Parts(CToolObject* pGo);
+
+    // Particle_System :: EffectParticle
 
 protected:
+#pragma region EffectParticle
     //  =======  시간 계산  =========
     void Time_Calculator(const float fDT);
-
     void Binding_EffectDesc(CToolObject* pGo);
-
     //  =======  그리기 Window 창  =======
     void Draw_Timer(CToolObject* pGo);
     void Draw_ParticleSystem(CToolObject* pGo);
-
-protected:
     void Draw_EffectColor(CToolObject* pGo);
-    void Draw_Parts(CToolObject* pGo);
     void Draw_Drop_Texture(CToolObject* pGo);
     void Draw_Rotation_Texture(CToolObject* pGo);
     void Draw_Sprite_Texture(CToolObject* pGo);
-
     // Draw_Preview Texture Setting 함수
     void Draw_Preview_Texture(CToolObject* pGo);
     HRESULT Create_CanvasEffect();
     HRESULT Create_Preview_Resources();
-
-    // Texture Window 함수들
+    // ========= Texture Window =========
     void UpdateRotationFlags();
-
-protected:
     // ========= Renderer Button 창 ===========
     void Make_MeshSelectButton();
+#pragma endregion
+
+#pragma region KEY_FRAME함수
+#pragma endregion
+
+protected:
+#pragma region EffectForceField
+    void Draw_ForceField_Window(CToolObject* pGo);
+
+#pragma endregion
 
 public:
     void Update(const _float fDT) override;
@@ -88,8 +95,19 @@ private:
 private:
     // ======== ImGui 값이 변동 됐다는걸 알리는 변수 ========
     _bool               m_bModified = false;
+    _bool               m_bIsObjectChanged = false;
     int                 m_iSelectPartsIndex = 0;
+    _uint               m_iSelectPartsType = 0;
     string              m_strSelectedFolder = "";
+
+    // static 대신에 사용할 툴 내부 상태용 인덱스들
+    int m_iSelectedShapeIdx = 0;
+    int m_iSelectedEmissionIdx = 0;
+    int m_iSelcetedParticleTypeIdx = 0;
+    int m_iSelectedShaderIdx = 0;
+    int m_iSelectedShaderPassIdx = 0;
+    float m_vSelectedColor[4] = { 1.f, 1.f, 1.f, 1.f };
+    _int m_iSelectedRotationAxis = { 0 };
 
     // ======== 이미지의 회전정보를 담고 있는 배열 ==========
     bool                m_bShowRotationModal = false;

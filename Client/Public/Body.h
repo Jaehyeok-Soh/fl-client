@@ -55,6 +55,7 @@ public:
 private:
 	HRESULT Ready_Components(BODY_DESC *pDesc);
 	HRESULT Bind_ShaderResources();
+	HRESULT Ready_ComputeShader();
 private:
 	_int m_iHead_Index = { 0 };
 	_int m_iNeck_Index = { 0 };

@@ -28,6 +28,7 @@ HRESULT Tool_PartObject::Initialize(void* pArg)
 
 	PARTOBJ_DESC* pDesc = static_cast<PARTOBJ_DESC*>(pArg);
 	m_pMatParent = pDesc->pMatParent;
+	m_iToolObjectID = pDesc->iPartsID;
 
 	return S_OK;
 }

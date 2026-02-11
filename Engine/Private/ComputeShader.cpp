@@ -25,6 +25,14 @@ CComputeShader::CComputeShader(const CComputeShader& rhs)
 	, m_pDeviceContext(rhs.m_pDeviceContext)
 	, m_pEffect_Mutable_Element_CBuffer(rhs.m_pEffect_Mutable_Element_CBuffer)
 	, m_pEffect_MutableBuffer(rhs.m_pEffect_MutableBuffer)
+	, m_pAnimE_Mutable_Element_CBuffer(rhs.m_pAnimE_Mutable_Element_CBuffer)
+	, m_pAnimE_MutableBuffer(rhs.m_pAnimE_MutableBuffer)
+	, m_pAnimB_Mutable_Element_CBuffer(rhs.m_pAnimB_Mutable_Element_CBuffer)
+	, m_pAnimB_MutableBuffer(rhs.m_pAnimB_MutableBuffer)
+	, m_pBone_Mutable_Element_CBuffer(rhs.m_pBone_Mutable_Element_CBuffer)
+	, m_pBone_MutableBuffer(rhs.m_pBone_MutableBuffer)
+	, m_pBoneMesh_Mutable_Element_CBuffer(rhs.m_pBoneMesh_Mutable_Element_CBuffer)
+	, m_pBoneMesh_MutableBuffer(rhs.m_pBoneMesh_MutableBuffer)
 
 {
 	Safe_AddRef(m_pOwner);
@@ -33,6 +41,18 @@ CComputeShader::CComputeShader(const CComputeShader& rhs)
 	Safe_AddRef(m_pDeviceContext);
 	Safe_AddRef(m_pEffect_Mutable_Element_CBuffer);
 	Safe_AddRef(m_pEffect_MutableBuffer);
+
+	Safe_AddRef(m_pAnimE_Mutable_Element_CBuffer);
+	Safe_AddRef(m_pAnimE_MutableBuffer);
+
+	Safe_AddRef(m_pAnimB_Mutable_Element_CBuffer);
+	Safe_AddRef(m_pAnimB_MutableBuffer);
+
+	Safe_AddRef(m_pBone_Mutable_Element_CBuffer);
+	Safe_AddRef(m_pBone_MutableBuffer);
+
+	Safe_AddRef(m_pBoneMesh_Mutable_Element_CBuffer);
+	Safe_AddRef(m_pBoneMesh_MutableBuffer);
 }
 
 HRESULT CComputeShader::Initialize_Prototype(void* pArg)
@@ -58,6 +78,13 @@ HRESULT CComputeShader::Initialize(void* pArg)
 	return S_OK;
 }
 
+void CComputeShader::Bind_InputStructuredBuffer(_uint Index, ID3DX11EffectShaderResourceVariable* pSRV, StructuredBuffer* pSB)
+{
+	// 없는 인덱스에 접근할거면 터질거긴한데 일부러 방어코드 작성안함. 디버깅용.
+	m_pInputStructuredBuffer[Index] = std::make_pair(pSRV, pSB);
+}
+
+
 void CComputeShader::Dispatch(_uint iX, _uint iY, _uint iZ)
 {
 	// GPU <-> GPU 통신은 한쪽이 연결을 끊어줘야 다른쪽 연결도 성공한다.
@@ -69,8 +96,12 @@ void CComputeShader::Dispatch(_uint iX, _uint iY, _uint iZ)
 
 	if (m_pOutputStructedBuffer_UAV)
 		m_pOutputStructedBuffer_UAV->SetUnorderedAccessView(m_pOutputStructedBuffer->Get_UAV());
-	if (m_pInputStructedBuffer_SRV)
-		m_pInputStructedBuffer_SRV->SetResource(m_pInputStructedBuffer->Get_SRV());
+
+	for (auto SB : m_pInputStructuredBuffer)
+	{
+		if (SB.first)
+			SB.first->SetResource(SB.second->Get_SRV());
+	}
 
 	m_pOwner->Get_Pass(m_iPass)->Apply(0, m_pDeviceContext);
 
@@ -83,12 +114,12 @@ void CComputeShader::Dispatch(_uint iX, _uint iY, _uint iZ)
 	m_pDeviceContext->CSSetShader(nullptr, nullptr, 0);
 }
 
-void CComputeShader::Resize_InputStruct(void* pArg, _uint iElementSize, _uint iNumElements)
+void CComputeShader::Resize_InputStruct(_uint iIndex, void* pArg, _uint iElementSize, _uint iNumElements)
 {
-	m_pInputStructedBuffer->Resize(pArg, iElementSize, iNumElements);
+	m_pInputStructuredBuffer[iIndex].second->Resize(pArg, iElementSize, iNumElements);
 }
 
-void CComputeShader::Resize_OutputStruct(void* pArg, _uint iElementSize, _uint iNumElements)
+void CComputeShader::Resize_OutputStruct(_uint iIndex, void* pArg, _uint iElementSize, _uint iNumElements)
 {
 	m_pOutputStructedBuffer->Resize(pArg, iElementSize, iNumElements);
 }
@@ -206,10 +237,28 @@ ID3DX11EffectSamplerVariable* CComputeShader::Get_Sampler(string name)
 
 #pragma endregion
 
-
-void CComputeShader::Bind_InputStructuredBuffer_Data(void* pArg, _uint iElementSize, _uint iNumElements)
+StructuredBuffer* CComputeShader::Get_Input_Buffer(_uint iIndex)
 {
-	m_pInputStructedBuffer->Copy_Data(pArg, iElementSize, iNumElements);
+	return m_pInputStructuredBuffer[iIndex].second;
+}
+
+StructuredBuffer* CComputeShader::Get_Output_Buffer()
+{
+	return m_pOutputStructedBuffer;
+}
+
+void CComputeShader::Set_OutputStructuredBuffer(StructuredBuffer* pSB)
+{
+	m_pOutputStructedBuffer = pSB;
+	m_pOutputStructedBuffer_UAV->SetUnorderedAccessView(pSB->Get_UAV());
+
+	//// SRV도 같이 교체
+	//m_pOutputSRV->SetResource(pSB->Get_SRV());
+}
+
+void CComputeShader::Bind_InputStructuredBuffer_Data(_uint iIndex, void* pArg, _uint iElementSize, _uint iNumElements)
+{
+	m_pInputStructuredBuffer[iIndex].second->Copy_Data(pArg, iElementSize, iNumElements);
 }
 
 #pragma region BINDING_CONSTANTBUFFER
@@ -219,6 +268,25 @@ void CComputeShader::Bind_Compute_EffectData(const EFFECT_PARTICLE_MU_ELEMENT& d
 	m_pEffect_Mutable_Element_CBuffer->Copy_Data(desc);
 }
 
+void CComputeShader::Bind_Compute_Track(const CS_MU_TRACK& desc)
+{
+	m_pAnimE_Mutable_Element_CBuffer->Copy_Data(desc);
+}
+
+void CComputeShader::Bind_Compute_BlendMu(const CS_MU_ANIMB& desc)
+{
+	m_pAnimB_Mutable_Element_CBuffer->Copy_Data(desc);
+}
+
+void CComputeShader::Bind_Compute_BoneMuCB(const CS_MU_GROUPNUMS& desc)
+{
+	m_pBone_Mutable_Element_CBuffer->Copy_Data(desc);
+}
+
+void CComputeShader::Bind_Compute_BoneMeshCB(const CS_CB_MU_BONEMESH& desc)
+{
+	m_pBoneMesh_Mutable_Element_CBuffer->Copy_Data(desc);
+}
 
 #pragma endregion
 
@@ -231,13 +299,42 @@ HRESULT CComputeShader::Create_ConstantBuffer()
 		m_pEffect_MutableBuffer->SetConstantBuffer(m_pEffect_Mutable_Element_CBuffer->Get_Buffer());
 	}
 
+	// AnimE 전용
+	if (m_pAnimE_MutableBuffer = Get_ConstantBuffer("MU_Track"))
+	{
+		m_pAnimE_Mutable_Element_CBuffer = CConstant_Buffer<CS_MU_TRACK>::Create(m_pDevice, m_pDeviceContext);
+		m_pAnimE_MutableBuffer->SetConstantBuffer(m_pAnimE_Mutable_Element_CBuffer->Get_Buffer());
+	}
+
+	// AnimB 전용
+	if (m_pAnimB_MutableBuffer = Get_ConstantBuffer("MU_RATIO"))
+	{
+		m_pAnimB_Mutable_Element_CBuffer = CConstant_Buffer<CS_MU_ANIMB>::Create(m_pDevice, m_pDeviceContext);
+		m_pAnimB_MutableBuffer->SetConstantBuffer(m_pAnimB_Mutable_Element_CBuffer->Get_Buffer());
+	}
+
+	// BoneCombine 전용
+	if (m_pBone_MutableBuffer = Get_ConstantBuffer("MU_BONENUMS"))
+	{
+		m_pBone_Mutable_Element_CBuffer = CConstant_Buffer<CS_MU_GROUPNUMS>::Create(m_pDevice, m_pDeviceContext);
+		m_pBone_MutableBuffer->SetConstantBuffer(m_pBone_Mutable_Element_CBuffer->Get_Buffer());
+	}
+
+	// BoneMesh 전용
+	if (m_pBoneMesh_MutableBuffer = Get_ConstantBuffer("MU_MESHBONENUMS"))
+	{
+		m_pBoneMesh_Mutable_Element_CBuffer = CConstant_Buffer<CS_CB_MU_BONEMESH>::Create(m_pDevice, m_pDeviceContext);
+		m_pBoneMesh_MutableBuffer->SetConstantBuffer(m_pBoneMesh_Mutable_Element_CBuffer->Get_Buffer());
+	}
+
 	return S_OK;
 }
 
 HRESULT CComputeShader::Create_StructBuffer(void* pArg)
 {
 	COMSHADER_COPY_DESC* pDesc = static_cast<COMSHADER_COPY_DESC*>(pArg);
-	
+	m_pInputStructuredBuffer.resize(pDesc->InputBufferNum);
+
 	if (pDesc == nullptr)
 	{
 		MSG_BOX("Compute Shader Desc is NULL : COPY");
@@ -246,10 +343,16 @@ HRESULT CComputeShader::Create_StructBuffer(void* pArg)
 
 	// ======   Input Data 생성   ======
 	{
-		if (m_pInputStructedBuffer_SRV = Get_SRV(pDesc->Input_StructBuffer.sBufferName))
+		// 단일 버퍼인 사람을 위한 것.
+
+		// sb를 처음에 만들어서 쓰겠다면
+		if (pDesc->bMakeSB)
 		{
-			m_pInputStructedBuffer = StructuredBuffer::Create(m_pDevice, m_pDeviceContext, pDesc->Input_StructBuffer.iElementSize, pDesc->Input_StructBuffer.iNumElements);
-			m_pInputStructedBuffer_SRV->SetResource(m_pInputStructedBuffer->Get_SRV());
+			if (m_pInputStructuredBuffer[0].first = Get_SRV(pDesc->Input_StructBuffer.sBufferName))
+			{
+				m_pInputStructuredBuffer[0].second = StructuredBuffer::Create(m_pDevice, m_pDeviceContext, pDesc->Input_StructBuffer.iElementSize, pDesc->Input_StructBuffer.iNumElements);
+				m_pInputStructuredBuffer[0].first->SetResource(m_pInputStructuredBuffer[0].second->Get_SRV());
+			}
 		}
 	}
 
@@ -301,12 +404,27 @@ void CComputeShader::Clear_ConstantBuffer()
 	Safe_Release(m_pEffect_Mutable_Element_CBuffer);
 	Safe_Release(m_pEffect_MutableBuffer);
 
+	Safe_Release(m_pAnimE_Mutable_Element_CBuffer);
+	Safe_Release(m_pAnimE_MutableBuffer);
+
+	Safe_Release(m_pAnimB_Mutable_Element_CBuffer);
+	Safe_Release(m_pAnimB_MutableBuffer);
+
+	Safe_Release(m_pBone_Mutable_Element_CBuffer);
+	Safe_Release(m_pBone_MutableBuffer);
+
+	Safe_Release(m_pBoneMesh_Mutable_Element_CBuffer);
+	Safe_Release(m_pBoneMesh_MutableBuffer);
 }
 
 void CComputeShader::Clear_StructBuffer()
 {
-	Safe_Release(m_pInputStructedBuffer);
-	Safe_Release(m_pInputStructedBuffer_SRV);
+	for (auto SB : m_pInputStructuredBuffer)
+	{
+		Safe_Release(SB.first);
+		Safe_Release(SB.second);
+	}
+
 	Safe_Release(m_pOutputStructedBuffer);
 	Safe_Release(m_pOutputStructedBuffer_UAV);
 }

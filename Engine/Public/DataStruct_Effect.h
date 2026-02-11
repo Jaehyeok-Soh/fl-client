@@ -13,11 +13,23 @@ enum class E_PARTICLETYPE { NONE = 0, PARTICLE, TEXTURE, MESH };
 enum class E_SAMPLERSTATE_FLAG { LinearSampler, LinearClampSampler, LinearBorderSampler, LinearMirrorSampler, PointSampler };
 enum class E_TEXTURETYPE { DIFFUSE = 0, NOISE, MASKING, GRADATION, TRAIL, NORMAL };
 enum class E_EffectSystemType { NONE = 0, Particle, ForceField, Line, Trail };
-enum class E_SHAPETYPE { NONE = 0, SPREAD, DROP, RISE, MESH, STRAIGHT };
+enum class E_SHAPETYPE { NONE = 0, DROP, RISE, SPREAD, STRAIGHT, SPIRAL, DNA };
 enum class E_SIMULATION_SPACE { NONE = 0, LOCAL, WORLD };
+enum class E_EMISSION_TYPE { BOX = 0, CIRCLE, SPHERE, CONE };
 enum class EEffectType : _uint{ EFFECT_CONTAINER, EFFECT_PARTS, END};
 inline constexpr _uint g_EffectTypeCount{ ENUM_TO_UINT(EEffectType::END) };
 
+struct Gravity_CurveKey 
+{
+    float fTimeKey = { 0.f };
+    float fValue = { 0.f };
+};
+
+struct Rotation_CurveKey
+{
+    float fTimeKey = { 0.f };
+    float fValue = { 0.f };
+};
 
 struct TEFFECT_PartsData
 {
@@ -25,13 +37,13 @@ struct TEFFECT_PartsData
     std::string strTag{ "EffectObject" };
     std::string EffectPartsName = {};
     std::string ParentsName = {};
-
     Matrix      vWorldMatrix = {};
 
     _uint eEffectSystemType = ENUM_TO_UINT(E_EffectSystemType::Particle);
     _uint eEffectParticleType = ENUM_TO_UINT(E_PARTICLETYPE::PARTICLE);
     _uint eEffectType = ENUM_TO_UINT(E_EFFECTTYPE::Particle);
     _uint _Effect_ShapeType = ENUM_TO_UINT(E_SHAPETYPE::SPREAD);
+    _uint _Effect_EmissionType = ENUM_TO_UINT(E_EMISSION_TYPE::BOX);
 
     // ========  이펙트 Material 설정   ===========
     wstring     _Effect_Model_Tag = {};
@@ -60,8 +72,11 @@ struct TEFFECT_PartsData
     Vec4     _Effect_Color = { 1.f, 0.f, 0.f, 1.f };
     float    _Effect_DiscardValue = { 0.05f };
 
-    // =========   Tool용 시간 값   ================
-    bool      _Effect_TimeStop = true;
+    // =========   시간 관련 값  ================
+    // 0 : Play, 1 : Pause,  2: Reset, 3:  Stop
+    _uint               _Effect_TimeFlag = {};
+    _float              _Effect_StartDelay = { 0.f };
+    _float              _Effect_LifeTime = { 5.f };
 
     // =========   이펙트 Sprite 사용 여부    ============
     bool        _Effect_bUseSprite = {};
@@ -80,14 +95,42 @@ struct TEFFECT_PartsData
     _float              _Effect_Duration = { 5.f };
     _bool               _Effect_Looping = { true };
     _bool               _Effect_IsRandomSeed = { true };
-    _float              _Effect_StartDelay = { 0.f };
-    _float              _Effect_LifeTime = { 5.f };
+
     _float              _Effect_PlayBackSpeed = { 1.f };
     _float              _Effect_StartSpeed = { 1.f };   // Particle에 영향을 주는 스피드 [개별 배속]
     int                 _Effect_MaxParticle = { 100 };
 
     // ========  이펙트 Radius  ==========
     Vec3                _Effect_Range = { 1.f, 1.f, 1.f };
+    float               _Effect_Spiral_Radius = { 1.f };
+    float               _Effect_Spiral_Speed = { 1.f };
+
+    // ==============  중력 값들   ==============
+// Base Data
+    float               _Effect_Gravity_Value = { 9.8f };           // 물리적 기준값
+    float               _Effect_GravityModifier = { 0.f };          // 전체적인 On / off 기능
+    Vec3                _Effect_GravityDir = { 0.f, -1.f, 0.f };    // 중력 방향
+
+    // ==============  중력 커브  ==============
+    bool                     _bUseGlobalGravityCurve = false;   // 커브 사용 여부 플래그
+    vector<Gravity_CurveKey> _vecGlobalGravityCurve;  // 시간대별 0.0~1.0 비율값
+
+    bool                     _bUseExternalForceCurve = false;   // 외부 중력(Force Field) 커브 여부
+    float                    fExternalForceStrength = 1.0f; // 커브 안 쓸 때 기본값
+    vector<Gravity_CurveKey> _vecExternalForceCurve;  // 외부 중력용 시간대별 비율값 
+
+    // ==============  회전 값들   ==============
+// 3D Start Rotation 값
+    Vec3                    _Effect_StartRotation = { 0.f, 0.f, 0.f };    // 초기 회전각을 얼마로 고정할건데?
+    Vec3                    _Effect_TargetRotation = { 0.f, 0.f, 0.f }; // 얼만큼 회전시킬건데?
+    bool                    _bUseStartRotation = false;
+    // X,Y,Z 축 분리
+    vector<Rotation_CurveKey> _vecRotationCurveX;
+    vector<Rotation_CurveKey> _vecRotationCurveY;
+    vector<Rotation_CurveKey> _vecRotationCurveZ;
+
+    bool _bUseRotationCurve = false;
+    bool _bSeparateAxes = false;
 
     // ========  이펙트 Texture Flag  =======
     _uint               _Effect_TextureFlag = {};
