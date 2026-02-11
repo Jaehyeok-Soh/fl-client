@@ -45,6 +45,20 @@ HRESULT CDataDocument_UI::Try_Add(const DTO::TUI_TriggerData& data)
 	return Try_Add(pObjectBase);
 }
 
+HRESULT CDataDocument_UI::Try_Add(const DTO::TUI_ButtonTriggerData& data)
+{
+	IObjectDataBase* pObjectBase = Create_ObjectData(DTO::EUIType::BUTTON_TRIGGER);
+	static_cast<CUI_ButtonTrigger_DTO*>(pObjectBase)->Get_Data() = data;
+	return Try_Add(pObjectBase);
+}
+
+HRESULT CDataDocument_UI::Try_Add(const DTO::TUI_DImageData& data)
+{
+	IObjectDataBase* pObjectBase = Create_ObjectData(DTO::EUIType::DYNAMIC_IMAGE);
+	static_cast<CUI_DImage_DTO*>(pObjectBase)->Get_Data() = data;
+	return Try_Add(pObjectBase);
+}
+
 IObjectDataBase* CDataDocument_UI::Create_ObjectData(DTO::EUIType eType)
 {
 	switch (eType)
@@ -57,6 +71,10 @@ IObjectDataBase* CDataDocument_UI::Create_ObjectData(DTO::EUIType eType)
 		return CUI_Text_DTO::Create();
 	case DTO::EUIType::TRIGGER:
 		return CUI_Trigger_DTO::Create();
+	case DTO::EUIType::BUTTON_TRIGGER:
+		return CUI_ButtonTrigger_DTO::Create();
+	case DTO::EUIType::DYNAMIC_IMAGE:
+		return CUI_DImage_DTO::Create();
 	}
 	return nullptr;
 }
@@ -65,20 +83,17 @@ HRESULT CDataDocument_UI::Try_Add(IObjectDataBase* pObject)
 {
 	if (pObject == nullptr)
 		return E_FAIL;
-
 	const string& strTag = pObject->Get_Tag();
 	if (strTag.empty() == true)
 	{
 		Safe_Release(pObject);
 		return E_FAIL;
 	}
-
 	if (m_AllTags.find(strTag) != m_AllTags.end())
 	{
 		Safe_Release(pObject);
 		return E_FAIL;
 	}
-
 	m_AllTags.insert(strTag);
 	/* Type */
 	const _uint iType = pObject->Get_Type();
@@ -152,7 +167,6 @@ HRESULT CDataDocument_UI::FromJson(const json& j)
 			return E_FAIL;
 		}
 	}
-
 	return S_OK;
 }
 

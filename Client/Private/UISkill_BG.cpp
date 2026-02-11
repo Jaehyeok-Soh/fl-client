@@ -12,12 +12,12 @@
 #include "GameInstance.h"
 
 CUISkill_BG::CUISkill_BG(ID3D11Device* pDevice, ID3D11DeviceContext* pDeviceContext)
-	:CGenericUI(pDevice, pDeviceContext)
+	:CUIDynamic_Image(pDevice, pDeviceContext)
 {
 }
 
 CUISkill_BG::CUISkill_BG(const CUISkill_BG& rhs)
-	:CGenericUI(rhs)
+	:CUIDynamic_Image(rhs)
 {
 }
 
@@ -35,6 +35,30 @@ HRESULT CUISkill_BG::Initialize(void* pArg)
 		return E_FAIL;
 	if (FAILED(Ready_Components(pDesc)))
 		return E_FAIL;
+	return S_OK;
+}
+
+HRESULT CUISkill_BG::Attach_Personal_Info()
+{
+	switch (m_eDImageSubClass)
+	{
+	case DTO::EUIDImageSubClassType::NONE_OWNER:
+		return S_OK;
+	case DTO::EUIDImageSubClassType::PLAYER_E:
+		return S_OK;
+	case DTO::EUIDImageSubClassType::PLAYER_Q:
+		return S_OK;
+	case DTO::EUIDImageSubClassType::PLAYER_Z:
+		return S_OK;
+	case DTO::EUIDImageSubClassType::PLAYER_GUN:
+		return S_OK;
+	case DTO::EUIDImageSubClassType::PLAYER_DODGE:
+		return S_OK;
+	case DTO::EUIDImageSubClassType::PLAYER_SKILL_END:
+	case DTO::EUIDImageSubClassType::END:
+	default:
+		return E_FAIL;
+	}
 
 	return S_OK;
 }
@@ -49,6 +73,7 @@ HRESULT CUISkill_BG::Awake(const _uint iCurrentLevelID)
 
 void CUISkill_BG::Update_Priority(const _float fTimeDelta)
 {
+	Trigger_User_Use_Skill();
 	Super::Update_Priority(fTimeDelta);
 }
 
@@ -60,6 +85,42 @@ void CUISkill_BG::Update(const _float fTimeDelta)
 void CUISkill_BG::Update_Late(const _float fTimeDelta)
 {
 	Super::Update_Late(fTimeDelta);
+
+	if (m_isUseSkillEventStart)
+	{
+		m_vColorTint.w += fTimeDelta * 10.f;
+		if (m_vColorTint.w >= 1.f)
+		{
+			m_isUseSkillEventStart = FALSE;
+			m_isUseSkillEvnetEnd = TRUE;
+			m_vColorTint.w = 1.f;
+		}
+	}
+	else if(m_isUseSkillEvnetEnd)
+	{
+		m_vColorTint.w -= fTimeDelta;
+		if (m_vColorTint.w <= 0.f)
+		{
+			m_isUseSkillEvnetEnd = FALSE;
+			m_vColorTint.w = 0.f;
+		}
+	}
+
+	if (m_isUseDodgeEventStart)
+	{
+		m_vColorTint.w += fTimeDelta * 10.f;
+		if (m_vColorTint.w >= 1.f)
+		{
+			m_isUseDodgeEventStart = FALSE;
+			m_isUseDodgeEventEnd = TRUE;
+			m_vColorTint.w = 0.8f;
+		}
+	}
+	else if (m_isUseDodgeEventEnd)
+	{
+		m_fProgress_Ratio -= fTimeDelta ;
+	}
+
 }
 
 void CUISkill_BG::Ready_Before_Render(const _float fTimeDelta)
@@ -86,9 +147,39 @@ HRESULT CUISkill_BG::Render()
 	return S_OK;
 }
 
+void CUISkill_BG::Trigger_User_Use_Skill()
+{
+	if (m_isUseSkillEventStart)
+		return;
+
+	if (KEY_BUTTON_DOWN(DIK_E))
+	{
+		if (m_eDImageSubClass == DTO::EUIDImageSubClassType::PLAYER_E)
+			m_isUseSkillEventStart = TRUE;
+	}
+	else if (KEY_BUTTON_DOWN(DIK_Q))
+	{
+		if (m_eDImageSubClass == DTO::EUIDImageSubClassType::PLAYER_Q)
+			m_isUseSkillEventStart = TRUE;
+	}
+	else if (KEY_BUTTON_DOWN(DIK_Z))
+	{
+		if (m_eDImageSubClass == DTO::EUIDImageSubClassType::PLAYER_Z)
+			m_isUseSkillEventStart = TRUE;
+	}
+	else if (KEY_BUTTON_DOWN(DIK_LSHIFT))
+	{
+		if (m_eDImageSubClass == DTO::EUIDImageSubClassType::PLAYER_DODGE)
+		{
+			m_isUseDodgeEventStart = TRUE;
+			m_vColorTint.w = 0.f;
+			m_fProgress_Ratio = 1.f;
+		}
+	}
+}
+
 HRESULT CUISkill_BG::Ready_Components(SKILL_BG_DESC* pDesc)
 {
-	Super::Ready_Components(pDesc);
 	return S_OK;
 }
 
@@ -97,10 +188,6 @@ HRESULT CUISkill_BG::Bind_ShaderResources()
 	CShader* pShader = Get_Component<CShader>();
 	if (FAILED(Get_Component<CTransform>()->Bind_ShaderResource(pShader)))
 		return E_FAIL;
-
-	Super::Bind_ShaderResources();
-	pShader->Set_Pass(m_iShaderPass);
-
 	return S_OK;
 }
 

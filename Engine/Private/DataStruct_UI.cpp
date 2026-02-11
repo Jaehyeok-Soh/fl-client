@@ -8,6 +8,46 @@ using json = nlohmann::json;
 
 NS_BEGIN(DTO)
 
+void to_json(json& j, const TUI_DImageData& data)
+{ 
+	j = json
+	{
+		{ "Type", TUI_DImageData::eType },
+		{ "strTag", data.strTag },
+		{ "strOwnerName", data.strOwnerName },
+		{ "eDISubClassType", data.eDISubClassType },
+	};
+}
+
+void from_json(const json& j, TUI_DImageData& data)
+{
+	j.at("strTag").get_to(data.strTag);
+	j.at("strOwnerName").get_to(data.strOwnerName);
+	j.at("eDISubClassType").get_to(data.eDISubClassType);
+}
+
+void to_json(json& j, const TUI_ButtonTriggerData& data)
+{
+	j = json
+	{
+		{"Type", TUI_TriggerData::eType},
+		{"strTag", data.strTag},
+		{"strOwnerName", data.strOwnerName},
+		{"strKeyMapping", data.strKeyMapping},
+		{"vecTriggerCanvas", data.vecTriggerCanvas},
+		{"vecTriggerUI", data.vecTriggerUI},
+	};
+}
+
+void from_json(const json& j, TUI_ButtonTriggerData& data)
+{
+	j.at("strTag").get_to(data.strTag);
+	j.at("strOwnerName").get_to(data.strOwnerName);
+	j.at("strKeyMapping").get_to(data.strKeyMapping);
+	j.at("vecTriggerCanvas").get_to(data.vecTriggerCanvas);
+	j.at("vecTriggerUI").get_to(data.vecTriggerUI);
+}
+
 void to_json(json& j, const TUI_TriggerData& data)
 {
 	j = json
@@ -83,13 +123,14 @@ void to_json(json& j, const TUI_GenericUIData& data)
 		{ "strTextureTag", data.strTextureTag },
 		{ "isVisible", data.isVisible },
 		{ "iComponentFlag", data.iComponentFlag },
-		{ "eOwnerType", data.eOwnerType },
+		{ "eSubClassType", data.eSubClassType },
 		{ "isUseColorTint", data.isUseColorTint },
 		{ "vColorTint", {{ "x", data.vColorTint.x },{ "y", data.vColorTint.y },{ "z", data.vColorTint.z },{ "w", data.vColorTint.w }}},
 		{ "iShaderPass", data.iShaderPass },
 		{ "iFillDir", data.iFillDir },
 		{ "fDelay", data.fDelay },
 		{ "iFlip", data.iFlip },
+		{ "fAlphaRatio", data.fAlphaRatio },
 	};
 }
 void from_json(const json& j, TUI_GenericUIData& data)
@@ -106,7 +147,7 @@ void from_json(const json& j, TUI_GenericUIData& data)
 	j.at("strTextureTag").get_to(data.strTextureTag);
 	j.at("isVisible").get_to(data.isVisible);
 	j.at("iComponentFlag").get_to(data.iComponentFlag);
-	j.at("eOwnerType").get_to(data.eOwnerType);
+	j.at("eSubClassType").get_to(data.eSubClassType);
 	j.at("isUseColorTint").get_to(data.isUseColorTint);
 	const auto& jt = j.at("vColorTint");
 	jt.at("x").get_to(data.vColorTint.x);
@@ -117,6 +158,7 @@ void from_json(const json& j, TUI_GenericUIData& data)
 	j.at("iFillDir").get_to(data.iFillDir);
 	j.at("fDelay").get_to(data.fDelay);
 	j.at("iFlip").get_to(data.iFlip);
+	j.at("fAlphaRatio").get_to(data.fAlphaRatio);
 }
 
 void to_json(json& j, const TUI_CanvasData& data)
@@ -152,6 +194,28 @@ NS_END
 
 
 NS_BEGIN(Engine)
+
+json CUI_DImage_DTO::ToJson() const
+{
+	return json(m_Data);
+}
+
+HRESULT CUI_DImage_DTO::FromJson(const json& j)
+{
+	m_Data = j.get<DTO::TUI_DImageData>();
+	return S_OK;
+}
+
+json CUI_ButtonTrigger_DTO::ToJson() const
+{
+	return json(m_Data);
+}
+
+HRESULT CUI_ButtonTrigger_DTO::FromJson(const json& j)
+{
+	m_Data = j.get<DTO::TUI_ButtonTriggerData>();
+	return S_OK;
+}
 
 json CUI_Trigger_DTO::ToJson() const
 {
@@ -196,6 +260,5 @@ HRESULT CUI_Canvas_DTO::FromJson(const json& j)
 	m_Data = j.get<DTO::TUI_CanvasData>();
 	return S_OK;
 }
-
 
 NS_END;

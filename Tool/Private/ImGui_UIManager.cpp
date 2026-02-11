@@ -170,13 +170,56 @@ void CImGui_UIManager::Clear()
 
 	m_MapCanvasCache.clear();
 	m_MapUICache.clear();
-
 	m_vecCanvas.clear();
-
+	m_vecSortUI.clear();
+	
 	for (_string strLayerTag : VecLayerTag)
 	{
 		m_pGameInstance->Clear_Layer(ENUM_TO_UINT(ELevelType::UI), Engine_Utils::ToWString(strLayerTag));
 	}
+}
+
+void CImGui_UIManager::Add_RenderGroup()
+{
+	if (m_isSort)
+	{
+		Sort_UI();
+		m_isSort = FALSE;
+	}
+
+	for (auto* pUI : m_vecSortUI)
+	{
+		CGameObject* pObj = dynamic_cast<CGameObject*>(pUI);
+		if (nullptr == pObj)
+			continue;
+
+		m_pGameInstance->Push_RenderObject(RENDER_CATEGORY::UI, pObj);
+	}
+}
+
+void CImGui_UIManager::Request_SortUI()
+{
+	m_isSort = TRUE;
+}
+
+void CImGui_UIManager::Sort_UI()
+{
+	for (auto* pCanvas : m_vecCanvas)
+	{
+		auto* pUIVec = pCanvas->Safe_Access_UI_Vector();
+		if (nullptr == pUIVec)
+			continue;
+		for (auto* pUI : *pUIVec)
+		{
+			m_vecSortUI.push_back(pUI);
+		}
+	}
+
+	/* Z가 큰 순서대로 렌더 그룹에 넣기 */
+	std::sort(m_vecSortUI.begin(), m_vecSortUI.end(), [](const CToolUI* pUI1, const CToolUI* pUI2)
+		{
+			return pUI1->Get_PosZ() > pUI2->Get_PosZ();
+		});
 }
 
 void CImGui_UIManager::Free()

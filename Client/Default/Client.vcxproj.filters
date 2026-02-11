@@ -232,9 +232,6 @@
     <Filter Include="03. GameObject\UIObjects\02.UI\Image">
       <UniqueIdentifier>{6d340ec4-9fd3-485b-bb1c-8989cfd57761}</UniqueIdentifier>
     </Filter>
-    <Filter Include="03. GameObject\UIObjects\02.UI\Image\SkillBG">
-      <UniqueIdentifier>{f1acf951-62e0-4e8b-b106-6fd9b77c5697}</UniqueIdentifier>
-    </Filter>
     <Filter Include="03. GameObject\UIObjects\02.UI\Image\JustImage">
       <UniqueIdentifier>{fd843193-a085-4c64-9708-e0849b95da7d}</UniqueIdentifier>
     </Filter>
@@ -252,6 +249,12 @@
     </Filter>
     <Filter Include="03. GameObject\UIObjects\02.UI\Trigger">
       <UniqueIdentifier>{48b4a088-d124-4a5f-a826-7eac6ea855f7}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="03. GameObject\UIObjects\02.UI\Image\Dynamic Image">
+      <UniqueIdentifier>{3a479948-c2c8-4326-9dcd-9a9c7536eb7e}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="03. GameObject\UIObjects\02.UI\Image\Dynamic Image\SkillBG">
+      <UniqueIdentifier>{f1acf951-62e0-4e8b-b106-6fd9b77c5697}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
@@ -476,7 +479,7 @@
       <Filter>03. GameObject\UIObjects\02.UI\Image\JustImage</Filter>
     </ClInclude>
     <ClInclude Include="..\Public\UISkill_BG.h">
-      <Filter>03. GameObject\UIObjects\02.UI\Image\SkillBG</Filter>
+      <Filter>03. GameObject\UIObjects\02.UI\Image\Dynamic Image\SkillBG</Filter>
     </ClInclude>
     <ClInclude Include="..\Public\UIProgress_Bar.h">
       <Filter>03. GameObject\UIObjects\02.UI\Progress Bar</Filter>
@@ -495,6 +498,10 @@
     </ClInclude>
     <ClInclude Include="..\Public\UITrigger.h">
       <Filter>03. GameObject\UIObjects\02.UI\Trigger</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\UIButton_Trigger.h" />
+    <ClInclude Include="..\Public\UIDynamic_Image.h">
+      <Filter>03. GameObject\UIObjects\02.UI\Image\Dynamic Image</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -699,7 +706,7 @@
       <Filter>03. GameObject\UIObjects\02.UI\Image\JustImage</Filter>
     </ClCompile>
     <ClCompile Include="..\Private\UISkill_BG.cpp">
-      <Filter>03. GameObject\UIObjects\02.UI\Image\SkillBG</Filter>
+      <Filter>03. GameObject\UIObjects\02.UI\Image\Dynamic Image\SkillBG</Filter>
     </ClCompile>
     <ClCompile Include="..\Private\UIProgress_Bar.cpp">
       <Filter>03. GameObject\UIObjects\02.UI\Progress Bar</Filter>
@@ -730,6 +737,10 @@
     </ClCompile>
     <ClCompile Include="..\Private\State_Slide.cpp">
       <Filter>06. FSM\Player\Slide</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\UIButton_Trigger.cpp" />
+    <ClCompile Include="..\Private\UIDynamic_Image.cpp">
+      <Filter>03. GameObject\UIObjects\02.UI\Image\Dynamic Image</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

@@ -145,6 +145,9 @@ HRESULT CLevel_Logo::Build_Prototype()
 
 HRESULT CLevel_Logo::Build_Files()
 {
+	ELevelType eLevelType = ELevelType::LOGO;
+	_uint iLevelID = ENUM_TO_UINT(eLevelType);
+
 	//if (FAILED(Build_File(ENUM_TO_UINT(ELevelType::LOGO), DTO::ECategory::EFFECT, "Attack_1")))
 	//	return E_FAIL;
 
@@ -152,6 +155,21 @@ HRESULT CLevel_Logo::Build_Files()
 	//if (FAILED(Build_File(ENUM_TO_UINT(ELevelType::LOGO), DTO::ECategory::MAP, "asdf")))
 	//	return E_FAIL;
 
+	DTO::ECategory eCategory = DTO::ECategory::UI;
+	if (FAILED(m_pGameInstance->Regist_Document<CDataDocument_UI>(iLevelID, eCategory)))
+		return E_FAIL;
+	std::filesystem::path strUIFolderPath = L"../../Resources/Data/UIData/Logo/";
+	if (std::filesystem::exists(strUIFolderPath))
+	{
+		for (auto iter : std::filesystem::directory_iterator(strUIFolderPath))
+		{
+			if (FAILED(m_pGameInstance->Load_File_Json(iLevelID, eCategory, iter.path())))
+				return E_FAIL;
+
+			if (FAILED(Build_File(iLevelID, eCategory, iter.path().stem().string())))
+				return E_FAIL;
+		}
+	}
 	return S_OK;
 }
 
@@ -178,31 +196,6 @@ HRESULT CLevel_Logo::Ready_Player_Layer(const wstring& wstrLayerTag)
 
 HRESULT CLevel_Logo::Ready_UI_Layer(const wstring& wstrLayerTag)
 {
-	ELevelType eLevelType = ELevelType::LOGO;
-	DTO::ECategory eCategory = DTO::ECategory::UI;
-	_uint iLevelID = ENUM_TO_UINT(eLevelType);
-
-	if (FAILED(m_pGameInstance->Regist_Document<CDataDocument_UI>(iLevelID, eCategory)))
-		return E_FAIL;
-
-	std::filesystem::path strFolderPath = L"../../Resources/Data/UIData/Logo/";
-	vector<path> vecfiles;
-
-	if (std::filesystem::exists(strFolderPath))
-	{
-		for (auto iter : std::filesystem::directory_iterator(strFolderPath))
-		{
-			if (iter.is_regular_file())
-				vecfiles.push_back(iter.path().stem());
-
-			if (FAILED(m_pGameInstance->Load_File_Json(iLevelID, eCategory, iter.path())))
-				return E_FAIL;
-
-			if (FAILED(Build_File(iLevelID, eCategory, iter.path().stem().string())))
-				return E_FAIL;
-		}
-	}
-
 	return S_OK;
 }
 

@@ -80,8 +80,12 @@ protected:
 	_uint m_iShaderPass = { 0 };
 	_float m_fX = {};
 	_float m_fY = {};
+	/* 정렬 순서 */
 	_float m_fZ = {};
 	
+	/* 포지션 */
+	Vec3 m_vWorldPos = {};
+
 	_float m_fWidth = {};
 	_float m_fHeight = {};
 	_float m_fAspect = {};

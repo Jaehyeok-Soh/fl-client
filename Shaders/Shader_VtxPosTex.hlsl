@@ -26,6 +26,7 @@ PS_OUT PS_MAIN(PS_IN_POS_TEX input)
         uv.x = 1.0f - uv.x;
         uv.y = 1.0f - uv.y;
     }
+    
     output.vColor = g_DefaultTextures[DEFAULT].Sample(PointSampler, uv);
     if(output.vColor.a < 0.3f)
         discard;
@@ -74,8 +75,8 @@ PS_OUT PS_FADE(PS_IN_POS_TEX input)
     }
     
     vector vColor = g_DefaultTextures[0].Sample(PointSampler, uv);
-    vColor.a *= g_fAlphaRatio;
     output.vColor = vColor;
+    vColor.a *= g_fAlphaRatio;
     return output;
 }
 
@@ -85,7 +86,7 @@ PS_OUT PS_PROGRESS(PS_IN_POS_TEX input)
     float2 uv = input.vUV;
     float mask = 1.0f;
     
-    // Flip X
+       // Flip X
     if (g_iFlip == 1)
         uv.x = 1.0f - uv.x;
     // Flip Y
@@ -98,10 +99,14 @@ PS_OUT PS_PROGRESS(PS_IN_POS_TEX input)
         uv.y = 1.0f - uv.y;
     }
     
-    if (g_isColor)
-        output.vColor = g_vColorTint;
-    else
-        output.vColor = g_DefaultTextures[0].Sample(PointSampler, uv);
+    vector vColor = g_DefaultTextures[0].Sample(PointSampler, uv);
+    if(vColor.a < 0.3f)
+        discard;
+    
+    if (g_iColor == 1)
+        vColor = g_vColorTint;
+    
+    output.vColor = vColor;
     
     if (g_iFillDir == 0) 
         mask = step(uv.x, g_fProgressRatio);        //right -> left
@@ -130,9 +135,9 @@ PS_OUT PS_LOCKON(PS_IN_POS_TEX input)
 
 technique11 T0
 {
-    PASS_RS_DS_BS_VP(Default, RS_Default, DS_Default, BS_Default, VS_MAIN, PS_MAIN)
-    PASS_RS_DS_BS_VP(DefaultAlpha, RS_Default, DS_Default, BS_AlphaBlend, VS_MAIN, PS_MAIN)
-    PASS_RS_DS_BS_VP(Color, RS_Default, DS_Default, BS_AlphaBlend, VS_MAIN, PS_COLOR)
-    PASS_RS_DS_BS_VP(Fade, RS_Default, DS_Default, BS_AlphaBlend, VS_MAIN, PS_FADE)
-    PASS_RS_DS_BS_VP(Progress, RS_Default, DS_Default, BS_AlphaBlend, VS_MAIN, PS_PROGRESS)
+    PASS_RS_DS_BS_VP(Default, RS_Default, DS_Disabled, BS_Default, VS_MAIN, PS_MAIN)
+    PASS_RS_DS_BS_VP(DefaultAlpha, RS_Default, DS_Disabled, BS_AlphaBlend, VS_MAIN, PS_MAIN)
+    PASS_RS_DS_BS_VP(Color, RS_Default, DS_Disabled, BS_AlphaBlend, VS_MAIN, PS_COLOR)
+    PASS_RS_DS_BS_VP(Fade, RS_Default, DS_Disabled, BS_AlphaBlend, VS_MAIN, PS_FADE)
+    PASS_RS_DS_BS_VP(Progress, RS_Default, DS_Disabled, BS_AlphaBlend, VS_MAIN, PS_PROGRESS)
 };

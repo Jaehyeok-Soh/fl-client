@@ -293,7 +293,7 @@ void CUI_Maker::Make_UI()
 {
 	ImGui::PushID("UISection");
 	ImGui::SeparatorText("UI");
-	ImGui::BeginChild("UICard", ImVec2(0, 240.f), true, ImGuiWindowFlags_NoScrollbar);
+	ImGui::BeginChild("UICard", ImVec2(0, 400.f), true, ImGuiWindowFlags_NoScrollbar);
 	ImGui::TextDisabled("Create / manage UI in current layer.");
 	ImGui::Spacing();
 
@@ -363,7 +363,6 @@ void CUI_Maker::Make_UI()
 					Desc.isAlpha = TRUE;
 					Desc.isInitVisible = TRUE;
 					Desc.strInitTextureTag = "Prototype_Component_Texture_Empty";
-					Desc.iInitTextureIndex = 1;
 
 					_wstring wstrLayerTag = Engine_Utils::ToWString(pCanvas->Get_Tag()) + L"_Layer";
 					CGameObject* pResult =
@@ -392,6 +391,7 @@ void CUI_Maker::Make_UI()
 								m_isCreateUI = FALSE;
 								MSG_BOX("CUI_Maker::Make_UI, UI Add Failed");
 							}
+							CImGui_UIManager::GetInstance()->Request_SortUI();
 						}
 					}
 					m_strUIName = "";
@@ -406,7 +406,7 @@ void CUI_Maker::Make_UI()
 	ImGui::Spacing();
 
 	ImGui::TextDisabled("Select UI");
-	ImGui::BeginChild("UIList", ImVec2(0, 120.f), true);
+	ImGui::BeginChild("UIList", ImVec2(0.f,500.f), true);
 	auto* pUIVec = m_pUIManager->Safe_Access_UIVector();
 	const int32_t iNumUI = m_pUIManager->Get_NumUI();
 

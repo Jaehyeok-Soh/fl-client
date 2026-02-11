@@ -391,6 +391,7 @@ void CMainApplication::Update(const _float fTimeDelta)
 	m_pGameInstance->Flush_All();
 
 	m_pGameInstance->Update_Engine(fTimeDelta);
+	CImGui_UIManager::GetInstance()->Add_RenderGroup();
 }
 
 HRESULT CMainApplication::Render()

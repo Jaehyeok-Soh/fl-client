@@ -32,6 +32,7 @@ HRESULT CUIProgress_Bar::Initialize(void* pArg)
 {
 	PROGRESS_BAR_DESC* pDesc = static_cast<PROGRESS_BAR_DESC*>(pArg);
 	m_pTargetStat = pDesc->pTargetStat;
+	m_eSubClassType = pDesc->eOwner;
 	if (FAILED(Super::Initialize(pArg)))
 		return E_FAIL;
 	if (FAILED(Ready_Components(pDesc)))
@@ -39,32 +40,33 @@ HRESULT CUIProgress_Bar::Initialize(void* pArg)
 
 	if (FAILED(Attach_Personal_Info()))
 		return E_FAIL;
-	
+
 	return S_OK;
 }
 
 HRESULT CUIProgress_Bar::Attach_Personal_Info()
 {
-	switch (m_eOwnerType)
+	switch (m_eSubClassType)
 	{
-	case DTO::EUIOwnerType::NONE_OWNER:
+	case DTO::EUISubClassType::NONE_OWNER:
 		return S_OK;
-	case DTO::EUIOwnerType::PLAYER_HP:
+	case DTO::EUISubClassType::PLAYER_HP:
+	{
+		m_pTargetStat;
+		m_vOriginColor = m_vColorTint;
+		return S_OK;
+	}
+	case DTO::EUISubClassType::PLAYER_ARMOR:
 	{
 		m_pTargetStat;
 		return S_OK;
 	}
-	case DTO::EUIOwnerType::PLAYER_ARMOR:
+	case DTO::EUISubClassType::PLAYER_ENERGY:
 	{
 		m_pTargetStat;
 		return S_OK;
 	}
-	case DTO::EUIOwnerType::PLAYER_ENERGY:
-	{
-		m_pTargetStat;
-		return S_OK;
-	}
-	case DTO::EUIOwnerType::END:
+	case DTO::EUISubClassType::END:
 	default:
 		return E_FAIL;
 	}
@@ -82,6 +84,8 @@ HRESULT CUIProgress_Bar::Awake(const _uint iCurrentLevelID)
 
 void CUIProgress_Bar::Update_Priority(const _float fTimeDelta)
 {
+	Super::Update_Priority(fTimeDelta);
+
 	if (m_pGameInstance->KeyButton_Down(DIK_1))
 		m_fCurRatio = 0.1f;
 	if (m_pGameInstance->KeyButton_Down(DIK_2))
@@ -89,7 +93,35 @@ void CUIProgress_Bar::Update_Priority(const _float fTimeDelta)
 	if (m_pGameInstance->KeyButton_Down(DIK_3))
 		m_fCurRatio = 0.9f;
 
-	Super::Update_Priority(fTimeDelta);
+
+	if (m_eSubClassType == DTO::EUISubClassType::PLAYER_HP)
+	{
+		if (m_fProgress_Ratio < 0.3f)
+		{
+			if (!m_isStartLowHp)
+			{
+				m_isStartLowHp = TRUE;
+				m_isEndLowHp = FALSE;
+
+				m_vOriginColor = m_vColorTint;
+				m_fTickTimeAcc = 1.f;
+			}
+		}
+		else
+		{
+			if (!m_isEndLowHp)
+			{
+				m_isStartLowHp = FALSE;
+				m_isEndLowHp = TRUE;
+				m_vColorTint = m_vOriginColor;
+			}
+		}
+
+		if (m_isStartLowHp)
+		{
+			Low_HP(fTimeDelta);
+		}
+	}
 }
 
 void CUIProgress_Bar::Update(const _float fTimeDelta)
@@ -141,8 +173,8 @@ void CUIProgress_Bar::Update_Late(const _float fTimeDelta)
 
 void CUIProgress_Bar::Ready_Before_Render(const _float fTimeDelta)
 {
-	Acting_By_InteractState();
 	Super::Ready_Before_Render(fTimeDelta);
+	Acting_By_InteractState();
 }
 
 HRESULT CUIProgress_Bar::Render()
@@ -165,19 +197,39 @@ HRESULT CUIProgress_Bar::Render()
 
 HRESULT CUIProgress_Bar::Ready_Components(PROGRESS_BAR_DESC* pDesc)
 {
-	Super::Ready_Components(pDesc);
 	return S_OK;
 }
 
 HRESULT CUIProgress_Bar::Bind_ShaderResources()
 {
+	Super::Bind_ShaderResources();
+
 	CShader* pShader = Get_Component<CShader>();
 	if (FAILED(Get_Component<CTransform>()->Bind_ShaderResource(pShader)))
 		return E_FAIL;
 
-	Super::Bind_ShaderResources();
-
 	return S_OK;
+}
+
+void CUIProgress_Bar::Low_HP(const _float fTimeDelta)
+{
+	m_vColorTint = Vec4{ 1.f, 0.f, 0.f, 1.f };
+	
+	if (m_fTickTimeAcc >= 1.f)
+		m_isHPPaulse = FALSE;
+	else if (m_fTickTimeAcc < 0.3f)
+		m_isHPPaulse = TRUE;
+
+	if (m_isHPPaulse)
+	{
+		m_fTickTimeAcc += fTimeDelta;
+	}
+	else
+	{
+		m_fTickTimeAcc -= fTimeDelta;
+	}
+
+	m_vColorTint.x *= m_fTickTimeAcc;
 }
 
 CUIProgress_Bar* CUIProgress_Bar::Create(ID3D11Device* pDevice, ID3D11DeviceContext* pDeviceContext)

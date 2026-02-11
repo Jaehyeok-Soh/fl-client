@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="utf-8"?>
+﻿<?xml version="1.0" encoding="utf-8"?>
 <Project DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <ItemGroup Label="ProjectConfigurations">
     <ProjectConfiguration Include="Debug|Win32">
@@ -228,6 +228,8 @@
     <ClInclude Include="..\Public\State_Slide.h" />
     <ClInclude Include="..\Public\State_Walk.h" />
     <ClInclude Include="..\Public\StaticObject.h" />
+    <ClInclude Include="..\Public\UIButton_Trigger.h" />
+    <ClInclude Include="..\Public\UIDynamic_Image.h" />
     <ClInclude Include="..\Public\UIJust_Image.h" />
     <ClInclude Include="..\Public\UIProgress_Bar.h" />
     <ClInclude Include="..\Public\UISkill_BG.h" />
@@ -332,6 +334,8 @@
     <ClCompile Include="..\Private\State_Slide.cpp" />
     <ClCompile Include="..\Private\State_Walk.cpp" />
     <ClCompile Include="..\Private\StaticObject.cpp" />
+    <ClCompile Include="..\Private\UIButton_Trigger.cpp" />
+    <ClCompile Include="..\Private\UIDynamic_Image.cpp" />
     <ClCompile Include="..\Private\UIJust_Image.cpp" />
     <ClCompile Include="..\Private\UIProgress_Bar.cpp" />
     <ClCompile Include="..\Private\UISkill_BG.cpp" />

@@ -33,15 +33,18 @@ HRESULT CUI_Inspector::Initialize_Prototype()
 	for (uint32_t i = 0; i < ENUM_TO_UINT(DTO::EUIClassType::END); ++i)
 		m_VecClassTag.push_back(DTO::UIClassTypeToString(static_cast<DTO::EUIClassType>(i)));
 
-	m_VecOwnerTag.reserve(ENUM_TO_UINT(DTO::EUIOwnerType::END));
-	for (uint32_t i = 0; i < ENUM_TO_UINT(DTO::EUIOwnerType::END); ++i)
-		m_VecOwnerTag.push_back(DTO::UIOwnertypeToString(static_cast<DTO::EUIOwnerType>(i)));
+	m_VecOwnerTag.reserve(ENUM_TO_UINT(DTO::EUISubClassType::END));
+	for (uint32_t i = 0; i < ENUM_TO_UINT(DTO::EUISubClassType::END); ++i)
+		m_VecOwnerTag.push_back(DTO::UISubClasstypeToString(static_cast<DTO::EUISubClassType>(i)));
 
 
 	m_VecShaderPassTag.reserve(ENUM_TO_UINT(EUIShaderPass::END));
 	for (uint32_t i = 0; i < ENUM_TO_UINT(EUIShaderPass::END); ++i)
 		m_VecShaderPassTag.push_back(UIShaderPassToString(static_cast<EUIShaderPass>(i)));
 
+	m_VecDImageSubClassTag.reserve(ENUM_TO_UINT(DTO::EUIDImageSubClassType::END));
+	for (uint32_t i = 0; i < ENUM_TO_UINT(DTO::EUIDImageSubClassType::END); ++i)
+		m_VecDImageSubClassTag.push_back(DTO::UIDImageSubTypeToString(static_cast<DTO::EUIDImageSubClassType>(i)));
 	return S_OK;
 }
 
@@ -77,6 +80,10 @@ HRESULT CUI_Inspector::Render(CToolObject* pGo)
 		else if (m_pSelectedUI->Get_UIClassType() == DTO::EUIClassType::TRIGGER)
 		{
 			SetUp_TriggerData();
+		}
+		else if (m_pSelectedUI->Get_UIClassType() == DTO::EUIClassType::DYNAMIC_IMAGE)
+		{
+			SetUp_DImageData();
 		}
 	}
 
@@ -171,7 +178,8 @@ void CUI_Inspector::Input_RectTransform()
 
 		ImGui::TableNextColumn();
 		ImGui::SetNextItemWidth(-FLT_MIN);
-		Scrub_Float("UIPosZ", "##UIObjectPosZ", m_pSelectedUI->Get_PosZ_Ptr(), 0.1f, 20.f, 0.1f, 10.0f, 100.f);
+		if (Scrub_Float("UIPosZ", "##UIObjectPosZ", m_pSelectedUI->Get_PosZ_Ptr(), 0.1f, 20.f, 0.1f, 10.0f, 100.f))
+			m_pUIManager->Request_SortUI();
 
 		ImGui::EndTable();
 	}
@@ -185,52 +193,32 @@ void CUI_Inspector::Input_RectTransform()
 
 void CUI_Inspector::Input_TextureTag()
 {
-	_bool& isUseColorTint = m_pSelectedUI->Get_UseColorTint();
-	ImGui::Checkbox("Use ColorTint", &isUseColorTint);
-
-	if (isUseColorTint)
+	if (ImGui::Button("Select Texture"))
 	{
-		Vec4& tint = m_pSelectedUI->Get_ColorTint_Ref();
+		OPENFILENAMEW ofn{};
+		_tchar szFile[MAX_PATH] = { 0 };
 
-		float fColor[4] = { tint.x, tint.y, tint.z, tint.w };
+		ofn.lStructSize = sizeof(OPENFILENAMEW);
+		ofn.hwndOwner = g_hWnd;
+		ofn.lpstrFile = szFile;
+		ofn.nMaxFile = MAX_PATH; 
+		ofn.lpstrFilter =
+			L"Image Files (*.png;*.dds)\0*.png;*.dds\0"
+			L"Png Files (*.png)\0*.png\0"
+			L"Dds Files (*.dds)\0*.dds\0"
+			L"All Files (*.*)\0*.*\0\0";
+		ofn.nFilterIndex = 1;
+		ofn.Flags = OFN_PATHMUSTEXIST | OFN_FILEMUSTEXIST | OFN_NOCHANGEDIR;
 
-		if (ImGui::SliderFloat4("Color Tint", fColor, 0.f, 1.f))
+		if (::GetOpenFileNameW(&ofn) == TRUE)
 		{
-			tint.x = fColor[0];
-			tint.y = fColor[1];
-			tint.z = fColor[2];
-			tint.w = fColor[3];
-		}
-	}
-	else
-	{
-		if (ImGui::Button("Select Texture"))
-		{
-			OPENFILENAMEW ofn{};
-			_tchar szFile[MAX_PATH] = { 0 };
+			_wstring result = szFile; 
 
-			ofn.lStructSize = sizeof(OPENFILENAMEW);
-			ofn.hwndOwner = g_hWnd;
-			ofn.lpstrFile = szFile;
-			ofn.nMaxFile = MAX_PATH; 
-			ofn.lpstrFilter =
-				L"Image Files (*.png;*.dds)\0*.png;*.dds\0"
-				L"Png Files (*.png)\0*.png\0"
-				L"Dds Files (*.dds)\0*.dds\0"
-				L"All Files (*.*)\0*.*\0\0";
-			ofn.nFilterIndex = 1;
-			ofn.Flags = OFN_PATHMUSTEXIST | OFN_FILEMUSTEXIST | OFN_NOCHANGEDIR;
-
-			if (::GetOpenFileNameW(&ofn) == TRUE)
+			std::filesystem::path f(result);
+			if (f.extension().wstring() == L".png" || f.extension().wstring() == L".dds")
 			{
-				_wstring result = szFile; 
-
-				std::filesystem::path f(result);
-				if (f.extension().wstring() == L".png" || f.extension().wstring() == L".dds")
-				{
-					m_pSelectedUI->Set_TextureTag(L"Texture_" + f.stem().wstring());
-					m_pSelectedUI->Request_Change_Texture();
-				}
+				m_pSelectedUI->Set_TextureTag(L"Texture_" + f.stem().wstring());
+				m_pSelectedUI->Request_Change_Texture();
 			}
 		}
 	}
@@ -272,14 +260,14 @@ void CUI_Inspector::SetUp_Owner()
 	if (nullptr == m_pSelectedUI)
 		return;
 
-	int cur = (int)m_pSelectedUI->Get_UIOwnerType();
+	int cur = (int)m_pSelectedUI->Get_UISubClassType();
 	cur = (cur < 0) ? 0 : (cur >= (int)m_VecOwnerTag.size() ? (int)m_VecOwnerTag.size() - 1 : cur);
 
 	const char* preview = m_VecOwnerTag.empty() ? "" : m_VecOwnerTag[cur].c_str();
 
 	bool changed = false;
 
-	if (ImGui::BeginCombo("UI Owner", preview))
+	if (ImGui::BeginCombo("UI Sub Class", preview))
 	{
 		for (int i = 0; i < (int)m_VecOwnerTag.size(); ++i)
 		{
@@ -287,7 +275,7 @@ void CUI_Inspector::SetUp_Owner()
 			if (ImGui::Selectable(m_VecOwnerTag[i].c_str(), isSelected))
 			{
 				cur = i;
-				m_pSelectedUI->Set_UIOwnerType(static_cast<DTO::EUIOwnerType>(i));
+				m_pSelectedUI->Set_UISubClassType(static_cast<DTO::EUISubClassType>(i));
 				changed = true;
 			}
 
@@ -359,7 +347,6 @@ void CUI_Inspector::SetUp_TriggerData()
 			End_Card();
 			return;
 		}
-
 		vector<_string> vecUINames;
 		vecUINames.reserve(pUIVec->size());
 		for (auto* pUI : *pUIVec)
@@ -458,6 +445,41 @@ void CUI_Inspector::SetUp_TriggerData()
 		}
 		else if (m_isPressExit)
 		{
+		}
+	}
+	End_Card();
+}
+
+void CUI_Inspector::SetUp_DImageData()
+{
+	if (Begin_Card("Dynamic Image", "DImage", 100.f))
+	{
+		if (nullptr == m_pSelectedUI)
+			return;
+
+		_int cur = static_cast<_int>(m_pSelectedUI->Get_UIDImageSubClassType());
+		cur = (cur < 0) ? 0 : (cur >= static_cast<_int>(m_VecDImageSubClassTag.size()) ? static_cast<_int>(m_VecDImageSubClassTag.size() - 1) : cur);
+		
+		const _char* preview = m_VecDImageSubClassTag.empty() ? "" : m_VecDImageSubClassTag[cur].c_str();
+
+		_bool changed = false;
+
+		if (ImGui::BeginCombo("Select Dynamic Image SubClass Type", preview))
+		{
+			for (size_t i = 0; i < m_VecDImageSubClassTag.size(); ++i)
+			{
+				const _bool isSelected = (cur == i);
+				if (ImGui::Selectable(m_VecDImageSubClassTag[i].c_str(), isSelected))
+				{
+					cur = i;
+					m_pSelectedUI->Set_UIDImageSubClassType(static_cast<DTO::EUIDImageSubClassType>(i));
+					changed = true;
+				}
+
+				if (isSelected)
+					ImGui::SetItemDefaultFocus();
+			}
+			ImGui::EndCombo();
 		}
 	}
 	End_Card();
