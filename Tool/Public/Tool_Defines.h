@@ -35,6 +35,7 @@ extern HINSTANCE	g_hInstance;
 #define	TO_RAD  (XM_PI / 180.f)
 #define	To_DEGREE ( 180.f / XM_PI )
 
+
 namespace Tool
 {
 	extern unsigned int g_iWinSizeX;
@@ -95,6 +96,38 @@ namespace Tool
 	};
 	inline constexpr size_t g_iLevelType_Count = static_cast<size_t>(ELevelType::END);
 
+
+#pragma region MapToolObjectBatchMode
+	enum class EMapToolObjectBatchMode
+	{
+		Single,     
+		Brush,
+		END
+	};
+
+	static string MapToolObjectBatchMode_ToString(EMapToolObjectBatchMode eType)
+	{
+
+		switch (eType)
+		{
+		case Tool::EMapToolObjectBatchMode::Single:	return "Single";
+		case Tool::EMapToolObjectBatchMode::Brush:	return "Brush";
+		default:									return "Unknown";
+		}
+
+		return "Unknown";
+	}
+
+	static EMapToolObjectBatchMode MapObjectBatchMode_ToEnum(string strType)
+	{
+		if (strType == "Single") return EMapToolObjectBatchMode::Single;
+		if (strType == "Brush")	 return EMapToolObjectBatchMode::Brush;
+
+		return EMapToolObjectBatchMode::END;
+	}
+
+#pragma endregion
+
 	enum class EToolObjectType : unsigned int
 	{
 		MAPOBJECT,
@@ -111,7 +144,7 @@ namespace Tool
 	};
 
 
-	static string StaticModelType_ToString(EStaticModel_Type eType)
+	static std::string StaticModelType_ToString(EStaticModel_Type eType)
 	{
 		switch (eType)
 		{
@@ -120,20 +153,17 @@ namespace Tool
 		default		:							return "NONE";
 		}
 
-
 		return "NONE";
 	}
 
-	static EStaticModel_Type StaticModelType_ToEnum(string streType)
+	static EStaticModel_Type StaticModelType_ToEnum(std::string streType)
 	{
 		if (streType == "DEFUALT") return EStaticModel_Type::DEFUALT;
 		if (streType == "INSTANCE") return EStaticModel_Type::INSTANCE;
 		return EStaticModel_Type::END;
 	}
 
-
-
-	static string TypeToString(EToolObjectType eType)
+	static std::string TypeToString(EToolObjectType eType)
 	{
 		switch (eType)
 		{
@@ -146,7 +176,7 @@ namespace Tool
 		return "NONE";
 	}
 
-	static EToolObjectType StringToType(const string& strType)
+	static EToolObjectType StringToType(const std::string& strType)
 	{
 		if (::strcmp(strType.c_str(), "MAPOBJECT") == 0)  return EToolObjectType::MAPOBJECT;
 		else if (::strcmp(strType.c_str(), "MESHEFFECT") == 0) return EToolObjectType::MESHEFFECT;
@@ -166,7 +196,7 @@ namespace Tool
 
 	inline constexpr size_t	g_iClientLevelType_Count = static_cast<size_t>(EClientLevelType::END);
 
-	static string ClientleveltypeToString(EClientLevelType eType)
+	static std::string ClientleveltypeToString(EClientLevelType eType)
 	{
 		switch (eType)
 		{
@@ -190,6 +220,7 @@ namespace Tool
 			return EClientLevelType::END;
 	}
 
+	inline constexpr _tchar g_wszMapObjectLayer[]{ L"MapObject_Layer" };
 	inline constexpr _tchar g_wszStaticLightLayer[]{ L"StaticLight_Layer" };
 	inline constexpr _tchar g_wszMeshEffectPresetPath[]{ L"../../Resources/Data/EffectData/EffectMeshPreset.json" };
 	inline constexpr _tchar g_wszMeshPreviewLayer[]{ L"MeshPreview_Layer" };
@@ -204,10 +235,14 @@ namespace Tool
 	inline constexpr _tchar g_wszPrototypeTagLayer[]{ L"Prototype_UI_Layer" };
 	inline constexpr _tchar g_wszPrototypeTagUI[]{ L"Prototype_UI_UI" };
 
+
+	inline constexpr _uint  g_Uint_NoneIndex{ 0xFFFFFFFF };
+
 #pragma region Enum
 
 
 #pragma region Map
+
 	// Don't Touch , Talk Before Touch //
 	/*----------------------- Map Tool ---------------------------*/
 	enum class EMapObject_Type
@@ -218,15 +253,78 @@ namespace Tool
 		END,
 	};
 
-	static EMapObject_Type MapObjectType_StringToType(const string& strType)
+	static EMapObject_Type MapObjectType_StringToType(const std::string& strType)
 	{
 		if (strType == "STATICMODEL") return EMapObject_Type::STATICMODEL;
 		if (strType == "INSTANCEMODEL") return EMapObject_Type::INSTANCEMODEL;
 
 		return EMapObject_Type::END;
+	};
+
+
+#pragma region MapObject Draw Type
+	enum class EMapObject_DrawType
+	{
+		Collider,
+		Default,	/* NoneAnim Model */
+		Instance,	/* NoneAnim Mdel Instance Mesh */
+		END
+	};
+
+	static std::string EMapObject_DrawType_ToString(EMapObject_DrawType eType)
+	{
+		switch (eType)
+		{
+		case Tool::EMapObject_DrawType::Collider:	return "Collider";
+		case Tool::EMapObject_DrawType::Default:	return "Default";
+		case Tool::EMapObject_DrawType::Instance:	return "Instance";
+		default:									return "UnKnown";
+		};
+		return "Unknown";
+	};
+
+	static EMapObject_DrawType EMapObject_DrawType_ToEnum(std::string strType)
+	{
+		if (strType == "None")			return Tool::EMapObject_DrawType::Collider;
+		else if (strType == "Default")	return Tool::EMapObject_DrawType::Default;
+		else if (strType == "Instance") return Tool::EMapObject_DrawType::Instance;
+
+		return Tool::EMapObject_DrawType::END;
+	};
+
+#pragma endregion
+
+#pragma region Client Make Path
+
+	enum class EClientMakePath
+	{
+		StaticObject,
+		Test,
+		END,
+	};
+
+	static string ClientMakePath_ToString(EClientMakePath eType)
+	{
+		switch (eType)
+		{
+		case Tool::EClientMakePath::StaticObject:	return "StaticObject";
+		case Tool::EClientMakePath::Test:			return "Test";
+		default:									return "Unknown";
+		}
+	};
+
+	static EClientMakePath ClientMakePath_ToEnum(string strType)
+	{
+		if (strType == "StaticObject")	return EClientMakePath::StaticObject;
+		if (strType == "Test")			return EClientMakePath::Test;
+
+		return EClientMakePath::END;
 	}
 
-	static string MapObjectType_TypeToString(EMapObject_Type eType)
+
+#pragma endregion
+
+	static std::string MapObjectType_TypeToString(EMapObject_Type eType)
 	{
 
 		switch (eType)
@@ -239,7 +337,7 @@ namespace Tool
 
 	}
 
-	static _uint Get_IndexByMaterialSlotName(const wstring& wstrSlotName)
+	static _uint Get_IndexByMaterialSlotName(const std::wstring& wstrSlotName)
 	{
 
 		if (wstrSlotName == L"PM_Diffuse")
@@ -274,6 +372,197 @@ namespace Tool
 	/*-----------------------------------------------------------*/
 
 #pragma endregion
+
+
+#pragma endregion
+#pragma region UI
+	enum class ERectTransform {
+		LT = 0, CT, RT, LC, C, RC, LB, CB, RB, END
+	};
+
+	static const _string& RectTransformToString(ERectTransform eType)
+	{
+		static const _string sLT = "LT";
+		static const _string sCT = "CT";
+		static const _string sRT = "RT";
+		static const _string sLC = "LC";
+		static const _string sC = "C";
+		static const _string sRC = "RC";
+		static const _string sLB = "LB";
+		static const _string sCB = "CB";
+		static const _string sRB = "RB";
+		static const _string sEMPTY = "";
+
+		switch (eType)
+		{
+		case ERectTransform::LT: return sLT;
+		case ERectTransform::CT: return sCT;
+		case ERectTransform::RT: return sRT;
+		case ERectTransform::LC: return sLC;
+		case ERectTransform::C:  return sC;
+		case ERectTransform::RC: return sRC;
+		case ERectTransform::LB: return sLB;
+		case ERectTransform::CB: return sCB;
+		case ERectTransform::RB: return sRB;
+		default: break;
+		}
+		return sEMPTY;
+	}
+	static ERectTransform StringToRectTransform(const _string& str)
+	{
+		if (::strcmp(str.c_str(), "LT") == 0) return ERectTransform::LT;
+		if (::strcmp(str.c_str(), "CT") == 0) return ERectTransform::CT;
+		if (::strcmp(str.c_str(), "RT") == 0) return ERectTransform::RT;
+		if (::strcmp(str.c_str(), "LC") == 0) return ERectTransform::LC;
+		if (::strcmp(str.c_str(), "C") == 0) return ERectTransform::C;
+		if (::strcmp(str.c_str(), "RC") == 0) return ERectTransform::RC;
+		if (::strcmp(str.c_str(), "LB") == 0) return ERectTransform::LB;
+		if (::strcmp(str.c_str(), "CB") == 0) return ERectTransform::CB;
+		if (::strcmp(str.c_str(), "RB") == 0) return ERectTransform::RB;
+		return ERectTransform::END;
+	}
+
+	enum class EUIEvent : uint32_t
+	{
+		NONE = 0,
+		HOVER_ENTER,
+		HOVERING,
+		HOVER_EXIT,
+		PRESS_ENTER,
+		PRESSING,
+		PRESS_EXIT,
+		INVOKED,
+		END
+	};
+
+	enum EUIEvent_Flag : uint32_t
+	{
+		NONE = 0u,
+		HOVER_ENTER = 1u << 1,
+		HOVERING = 1u << 2,
+		HOVER_EXIT = 1u << 3,
+		PRESS_ENTER = 1u << 4,
+		PRESSING = 1u << 5,
+		PRESS_EXIT = 1u << 6,
+		INVOKED = 1u << 7,
+		END = 1u << 8
+	};
+
+	inline EUIEvent EventFlagToEvent(EUIEvent_Flag eFlag)
+	{
+		switch (eFlag)
+		{
+		case EUIEvent_Flag::NONE:			return EUIEvent::NONE;
+		case EUIEvent_Flag::HOVER_ENTER:	return EUIEvent::HOVER_ENTER;
+		case EUIEvent_Flag::HOVERING:		return EUIEvent::HOVERING;
+		case EUIEvent_Flag::HOVER_EXIT:	return EUIEvent::HOVER_EXIT;
+		case EUIEvent_Flag::PRESS_ENTER:	return EUIEvent::PRESS_ENTER;
+		case EUIEvent_Flag::PRESSING:		return EUIEvent::PRESSING;
+		case EUIEvent_Flag::PRESS_EXIT:	return EUIEvent::PRESS_EXIT;
+		case EUIEvent_Flag::INVOKED:		return EUIEvent::INVOKED;
+		default:								return EUIEvent::NONE;
+		}
+	}
+
+	inline EUIEvent_Flag EventToEventFlag(EUIEvent eEvent)
+	{
+		switch (eEvent)
+		{
+		case EUIEvent::NONE:			return EUIEvent_Flag::NONE;
+		case EUIEvent::HOVER_ENTER:	return EUIEvent_Flag::HOVER_ENTER;
+		case EUIEvent::HOVERING:		return EUIEvent_Flag::HOVERING;
+		case EUIEvent::HOVER_EXIT:		return EUIEvent_Flag::HOVER_EXIT;
+		case EUIEvent::PRESS_ENTER:	return EUIEvent_Flag::PRESS_ENTER;
+		case EUIEvent::PRESSING:		return EUIEvent_Flag::PRESSING;
+		case EUIEvent::PRESS_EXIT:		return EUIEvent_Flag::PRESS_EXIT;
+		case EUIEvent::INVOKED:		return EUIEvent_Flag::INVOKED;
+		default:							return EUIEvent_Flag::NONE;
+		}
+	}
+
+
+	NLOHMANN_JSON_SERIALIZE_ENUM(EUIEvent,
+		{
+			{EUIEvent::NONE, "NONE"},
+			{EUIEvent::HOVER_ENTER, "HOVER_ENTER"},
+			{EUIEvent::HOVERING, "HOVERING"},
+			{EUIEvent::HOVER_EXIT, "HOVER_EXIT"},
+			{EUIEvent::PRESS_ENTER, "PRESS_ENTER"},
+			{EUIEvent::PRESSING, "PRESSING"},
+			{EUIEvent::PRESS_EXIT, "PRESS_EXIT"},
+			{EUIEvent::INVOKED, "INVOKED"},
+		})
+
+		inline std::string UIEventToString(EUIEvent eType)
+	{
+		switch (eType)
+		{
+		case EUIEvent::NONE: return "NONE";
+		case EUIEvent::HOVER_ENTER: return "HOVER_ENTER";
+		case EUIEvent::HOVERING: return "HOVERING";
+		case EUIEvent::HOVER_EXIT: return "HOVER_EXIT";
+		case EUIEvent::PRESS_ENTER: return "PRESS_ENTER";
+		case EUIEvent::PRESSING: return "PRESSING";
+		case EUIEvent::PRESS_EXIT: return "PRESS_EXIT";
+		case EUIEvent::INVOKED: return "INVOKED";
+		default: return "";
+		}
+	}
+
+	inline EUIEvent StringToUIEvent(const std::string& str)
+	{
+		if (str == "NONE") return EUIEvent::NONE;
+		else if (str == "HOVER_ENTER") return EUIEvent::HOVER_ENTER;
+		else if (str == "HOVERING") return EUIEvent::HOVERING;
+		else if (str == "HOVER_EXIT") return EUIEvent::HOVER_EXIT;
+		else if (str == "PRESS_ENTER") return EUIEvent::PRESS_ENTER;
+		else if (str == "PRESSING") return EUIEvent::PRESSING;
+		else if (str == "PRESS_EXIT") return EUIEvent::PRESS_EXIT;
+		else if (str == "INVOKED") return EUIEvent::INVOKED;
+		else return EUIEvent::END;
+	}
+
+	enum class EUIShaderPass
+	{
+		DEFAULT = 0,
+		DEFAULT_ALPHA,
+		COLOR,
+		FADE,
+		PROGRESS,
+		END
+	};
+
+	inline std::string UIShaderPassToString(EUIShaderPass eType)
+	{
+		switch (eType)
+		{
+		case EUIShaderPass::DEFAULT: return "DEFAULT";
+		case EUIShaderPass::DEFAULT_ALPHA: return "DEFAULT_ALPHA";
+		case EUIShaderPass::COLOR: return "COLOR";
+		case EUIShaderPass::FADE: return "FADE";
+		case EUIShaderPass::PROGRESS: return "PROGRESS";
+		default: return "";
+		}
+	}
+
+	inline EUIShaderPass StringToUIShaderPass(const std::string& str)
+	{
+		if (str == "DEFAULT") return EUIShaderPass::DEFAULT;
+		else if (str == "DEFAULT_ALPHA") return EUIShaderPass::DEFAULT_ALPHA;
+		else if (str == "COLOR") return EUIShaderPass::COLOR;
+		else if (str == "FADE") return EUIShaderPass::FADE;
+		else if (str == "PROGRESS") return EUIShaderPass::PROGRESS;
+		else return EUIShaderPass::DEFAULT;
+	}
+
+	enum class EUIFlip
+	{
+		NONE = 0,
+		FLIP_X,
+		FLIP_Y,
+		FLIP_XY,
+		END
+	};
 
 
 #pragma endregion

@@ -35,7 +35,25 @@ HRESULT CPhysicsCCT::Initialize(void* pArg)
 	GetController();
 	SetUserData(static_cast<void*>(m_tDesc.pOwner));
 
+	SetCollisionFilter();
+
 	m_fContactOffset = m_pController->getContactOffset();
+	
+	auto cctActor = m_pController->getActor();
+	PxShape* cctShape = { nullptr };
+	if (cctActor->getNbShapes() > 0)
+		cctActor->getShapes(&cctShape, 1);
+
+	if (cctShape)
+	{
+		PxFilterData filterData;
+		filterData.word0 = m_tDesc.eFilterLayer;
+		filterData.word1 = m_tDesc.iFilterMask;
+		cctShape->setSimulationFilterData(filterData);
+		cctShape->setQueryFilterData(filterData);
+		cctShape->setFlag(PxShapeFlag::eSCENE_QUERY_SHAPE, true);
+		cctShape->setFlag(PxShapeFlag::eSIMULATION_SHAPE, true);
+	}
 
 	return S_OK;
 }
@@ -167,6 +185,7 @@ void CPhysicsCCT::CacheReset()
 void CPhysicsCCT::SetUserData(void* data)
 {
 	m_pController->setUserData(data);
+	m_pController->getActor()->userData = data;
 }
 
 void CPhysicsCCT::GetState(PxControllerState& outState)
@@ -183,6 +202,18 @@ void CPhysicsCCT::ReleaseController()
 {
 	if (m_pController)
 		PX_RELEASE(m_pController);
+}
+
+void CPhysicsCCT::SetCollisionFilter()
+{
+	_uint numShape = m_pController->getActor()->getNbShapes();
+	vector<PxShape*> shapes(numShape);
+	m_pController->getActor()->getShapes(shapes.data(), numShape);
+
+	PxFilterData filter(m_tDesc.eFilterLayer, m_tDesc.iFilterMask, 0, 0);
+
+	for (auto& shape : shapes)
+		shape->setSimulationFilterData(filter);
 }
 
 CPhysicsCCT* CPhysicsCCT::Create(ID3D11Device* pDevice, ID3D11DeviceContext* pDeviceContext)
@@ -211,6 +242,8 @@ CComponent* CPhysicsCCT::Clone(void* pArg)
 
 void CPhysicsCCT::Free()
 {
+	ReleaseController();
+
 	Safe_Release(m_pDevice);
 	Safe_Release(m_pDeviceContext);
 

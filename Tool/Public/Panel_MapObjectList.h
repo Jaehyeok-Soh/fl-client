@@ -6,6 +6,7 @@ class CGameInstance;
 class CCameraMan;
 class CCamera;
 class CModel;
+struct STATICOBJECT_DESC;
 NS_END
 
 
@@ -29,25 +30,35 @@ public:
 	virtual HRESULT Render(CToolObject* pGo)override;
 	virtual void Update(const _float fTimeDelta)override;
 	HRESULT	Update_MapObjectList();
+	void	Update_SelectObject();
 
 	void	Reset_SelectValue();
 
 private:
 	HRESULT	Render_MapObjectList();
 	HRESULT	Render_SelectInfo();
-	HRESULT	Render_StaticModel();
-	HRESULT	Render_InstanceModel();
 
 private:
-	HRESULT	Render_ModelInfo(Tool::USING_MODEL_INFO& tModelInfo ,CModel* pModel);
+
+	HRESULT	Render_ModelInfo();
+	HRESULT	Render_SelectMaterial();
+	HRESULT	Render_Description();
+
+	HRESULT	Render_TransformInfo();
+
 	HRESULT	Render_SelectOverrideMaterialInfo();
 	HRESULT	Render_SelectOriginMaterialInfo();
+
+
+private:
+	
+	void						ImGuiUpdate_StaticObject_Desc(STATICOBJECT_DESC* pDesc);
+
 private:
 
 	CGameInstance*				m_pGameInstance{nullptr};
 
 	wchar_t						m_wszMapObjectLayerTag[ENUM_TO_UINT(EMapObject_Type::END)][MAX_PATH];
-	array<list<CGameObject*>*,	ENUM_TO_UINT(EMapObject_Type::END)> m_arrayMapObjectList{};
 
 	char						m_szFindName[MAX_PATH];
 
@@ -57,16 +68,24 @@ private:
 	CCameraMan*					m_pCamera{nullptr};
 	CCamera*					m_pCameraCom{nullptr};
 
+
+	string						m_strBuffer{};
+	_int						m_iBuffer{};
+
 	_int						m_iSelectInstanceID{};
 	_int						m_iSelectLayerTag{};
 
 	_uint						m_iSelectOverrideMtlTextureID{ 0 };
 	_int						m_iSelectOverrideMtlID{ -1 };
 
+	EClientMakePath				m_eShowMapObjectFilter{ EClientMakePath::END };
+
+	list<CGameObject*>*			m_pLayer{nullptr};
+	
+	CMaterial*					m_pSelectMaterial{nullptr};
+	_int						m_iSelectMaterialIndex{0};
 
 	_uint						m_iSelectOriginMtlTexture{ 0 };
-	_bool						m_isShowOriginMtlInfo{};
-	array<string,ENUM_TO_UINT(EMaterialTextureType::MAX_COUNT)>	 m_arrayOriginMtlUsingTexturesName{};
 	string						m_strOriginMtlName{};
 	string						m_strOriginMtlPath{};
 

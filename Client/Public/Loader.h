@@ -37,11 +37,18 @@ private:
 	HRESULT Loading_Textures(const wstring &wstrFolder);
 	HRESULT Loading_Texture(const wstring& wstrFile);
 	// 복수, 단일 mesh가 들어있는 폴더, 파일 넣으면 가능
-	HRESULT Make_StaticModel_Prototype(ELevelType eType, const wstring& wstrFolderPath);
+	HRESULT Make_StaticObject_Prototype(ELevelType eType, const wstring& wstrFolderPath);
+
+	HRESULT Build_Prototype();
+	HRESULT Build_Files();
+	HRESULT Ready_AttackOverlap();
+
 private:
 	ID3D11Device* m_pDevice = { nullptr };
 	ID3D11DeviceContext* m_pDeviceContext = { nullptr };
 	class CGameInstance* m_pGameInstance = { nullptr };
+
+	CBuilderSystem* m_pBuilderSystem = { nullptr };
 
 	ELevelType m_eLoadingLevelID = { ELevelType::END };
 	std::thread m_LoadingThread = {};

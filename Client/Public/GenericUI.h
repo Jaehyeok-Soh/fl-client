@@ -1,20 +1,13 @@
 #pragma once
 #include "UIObject.h"
 #include "DataStruct_UI.h"
-#include "UIAction_Registry.h"
-
-NS_BEGIN(Engine)
-class IUIActionForMe;
-class IUIActionForTarget;
-NS_END
 
 NS_BEGIN(Client)
 class CCanvas;
-class CUILayer;
-class CGenericUI final : public CUIObject
+class CUI_Manager;
+class CGenericUI abstract : public CUIObject
 {
 	using Super = CUIObject;
-
 public:
 	typedef struct tagGenericUIDesc : public UIOBJECT_DESC
 	{
@@ -22,12 +15,16 @@ public:
 		uint32_t iRectTransformType;
 		_wstring wstrTextureTag;
 		uint32_t iTextureIndex;
-
+		uint32_t iComponentFlag;
+		_bool isUseColorTint;
+		Vec4 vColorTint;
+		int32_t iShaderPass;
+		int32_t iFillDir;
+		_float fDelay;
 		CCanvas* pCanvasCache = { nullptr };
-		CUILayer* pLayerCache = { nullptr };
 	}GENERIC_UI_DESC;
 
-private:
+protected :
 	CGenericUI(ID3D11Device* pDevice, ID3D11DeviceContext* pDeviceContext);
 	CGenericUI(const CGenericUI& rhs);
 	virtual ~CGenericUI() = default;
@@ -47,72 +44,46 @@ public:
 	_bool Calc_HitEvent();
 	void Acting_By_InteractState();
 
-public:
-	HRESULT Bind_Action(DTO::EUIEvent EventType, DTO::EUIAction ActType, const json& params);
-	HRESULT Remove_Action(DTO::EUIEvent EventType, DTO::EUIAction ActType);
-	IUIActionForMe* Get_ActionForMe() const { return m_pActionForMe; }
-	HRESULT Excute_Action(DTO::EUIEvent EventType);
-	HRESULT ReBind_Action();
+	 //virtual void Trigger_Enter_Target()PURE;
+	 //virtual void Trigger_Exit_Target()PURE;
 
-private:
+protected:
 	HRESULT Ready_Components(GENERIC_UI_DESC* pDesc);
 	HRESULT Bind_ShaderResources();
 
-	/* Action */
 public:
 	void Set_RectPos(const Vec3& pos) { m_vRectPos = pos; }
 	ERectTransform Get_RectTransformType() const { return m_eRectTransformType; }
 	void Set_TextureIndex(_uint index) { m_iTextureIndex = index; }
 	const _string& Get_Tag() { return m_strName; }
 
-	void Start_Lerp_Movement(const Vec3& vTargetPos, const _float fTargetAlpha, const _float& fDuration, _bool isPin);
-	void Start_Return_Lerp_Movement();
-	void Lerp_Movement(const _float fTimeDelta);
-	void Return_Lerp_Movement(const _float fTimeDelta);
+protected:
+	CUI_Manager* m_pUIManager = { nullptr };	
+	uint32_t m_iLevelID = {};
 
-	/* Action Variable */
-private:
-	/*Start_Lerp_Movement*/
-	_bool m_isPlaying_Lerp_Movement = { false };
-	Vec3 m_vLerpMovement_StartPos = {};
-	Vec3 m_vLerpMovement_TargetPos = {};
-	_float m_fLerpMovement_TargetAlpha = {};
-	_float m_fLerpMovement_Duration = {};
-	_float m_fLerpMovement_TimeAcc = {};
-	_bool m_isLerpMovement_Pin = {};
-	_bool m_isMoved = { false };
-	Vec3 m_vMoveOffset = {};
-	Vec3 m_vLerpMovement_StartOffset;
-	Vec3 m_vLerpMovement_TargetOffset;
-	/*Start_Lerp_Movement*/
-
-	/* Start_Return_Lerp_Movement */
-	_bool m_isPlaying_Return_Lerp_Movement = { false };
-	/* Start_Return_Lerp_Movement */
-
-private:
+protected:
 	ERectTransform m_eRectTransformType = { ERectTransform::C };
-	_wstring m_wstrTextureTag = {};
-	uint32_t m_iTextureIndex = {};
-	Vec3 m_vRectPos = {};
-	Vec3 m_vRenderPos = {};
-	RECT m_tRenderRect = {};
-	CCanvas* m_pParentCanvasCache = { nullptr };
-	CUILayer* m_pParentLayerCache = { nullptr };
+	_wstring m_wstrTextureTag			= {};
+	uint32_t m_iTextureIndex			= {};
+	Vec3 m_vRectPos						= {};
+	Vec3 m_vRenderPos					= {};
+	RECT m_tRenderRect					= {};
+	CCanvas* m_pParentCanvasCache		= { nullptr };
+	Vec3 m_vMoveOffset					= {};
+	uint32_t m_iComponentFlag			= {};
+	uint32_t m_iOwnerType				= {};
 
-	IUIActionForMe* m_pActionForMe = { nullptr };
-	IUIActionForTarget* m_pActionForTarget = { nullptr };
-
-
-	/* 액션들을 이벤트 갯수만큼 정적으로 할당 사실상 vector<ActionFunc>[] 이거임 */
-	array< vector<CUIAction_Registry::ActionFunc>, ENUM_TO_UINT(DTO::EUIEvent::END)> m_vecBindingActions;
-	array< vector<DTO::TUI_EventBindData>, ENUM_TO_UINT(DTO::EUIEvent::END)> m_vecBindingActionData;
+	// Shader Bind Values
+	_bool m_isUseColorTint				= {false};
+	Vec4 m_vColorTint					= {};
+	_float m_fAlpha_Ratio				= {};
+	_float m_fProgress_Ratio			= {1.f};
+	int32_t m_iFillDir					= {};
+	_float m_fDelay						= {};
+	int32_t m_iFlip						= { ENUM_TO_UINT(EUIFlip::NONE) };
 
 public:
-	static CGenericUI* Create(ID3D11Device* pDevice, ID3D11DeviceContext* pDeviceContext);
-	CGameObject* Clone(void* pArg);
 	virtual void Free()override;
-
 };
 
 NS_END

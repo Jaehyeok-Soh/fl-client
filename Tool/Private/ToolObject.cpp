@@ -97,14 +97,26 @@ void CToolObject::Set_Dead(const wstring& wstrLayerTag)
     m_pGameInstance->Broadcast<ChangeSelectedObject>(nullptr);
 }
 
+void CToolObject::Set_WorldMatrix(const Matrix& WorldMatrix)
+{
+    Get_Component<CTransform>()->Set_WorldMatrix(WorldMatrix);
+}
+
+void CToolObject::Set_WorldMatrix(const Vec3& vScale, const Quat& vQuat, const Vec3& vPosition)
+{
+    Matrix matWorld = Matrix::CreateScale(vScale) * Matrix::CreateFromQuaternion(vQuat) * Matrix::CreateTranslation(vPosition);
+    Get_Component<CTransform>()->Set_WorldMatrix(matWorld);
+}
+
 Matrix CToolObject::Get_WorldMatrix()
 {
     return Get_Component<CTransform>()->Get_WorldMatrix();
 }
 
-void CToolObject::Set_WorldMatrix(const Matrix& WorldMatrix)
+bool CToolObject::Get_SRT(OUT Vec3& vOutScale, OUT Quat& vQuat, OUT Vec3& vPosition)
 {
-    return Get_Component<CTransform>()->Set_WorldMatrix(WorldMatrix);
+    Matrix WorldMatrix = Get_Component<CTransform>()->Get_WorldMatrix();
+    return WorldMatrix.Decompose(vOutScale , vQuat, vPosition);
 }
 
 
@@ -116,6 +128,10 @@ void CToolObject::Set_Visible()
 void CToolObject::Set_Invisible()
 {
     m_bVisible = false;
+}
+
+void CToolObject::Update_CombinedWorldMatrix(const Matrix& matParent)
+{
 }
 
 HRESULT CToolObject::Set_TypeString()

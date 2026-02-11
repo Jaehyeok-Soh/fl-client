@@ -16,9 +16,17 @@ HRESULT CBounding_AABB::Initialize(const BOUNDING_DESC* pInitializeDesc)
     if (pInitializeDesc)
     {
         const BOUNDING_AABB_DESC* pDesc = static_cast<const BOUNDING_AABB_DESC*>(pInitializeDesc);
-        
-        m_pOriginalDesc = new  BoundingBox(pDesc->vCenter, pDesc->vExtens);
-        m_pDesc = new BoundingBox(*m_pOriginalDesc);
+        if (pDesc->pMinMax == nullptr)
+        {
+            m_pOriginalDesc = new  BoundingBox(pDesc->vCenter, pDesc->vExtens);
+            m_pDesc = new BoundingBox(*m_pOriginalDesc);
+        }
+        else
+        {
+            m_pOriginalDesc = new BoundingBox;
+            BoundingBox::CreateFromPoints(*m_pOriginalDesc, pDesc->pMinMax[0], pDesc->pMinMax[1]);
+            m_pDesc = new BoundingBox(*m_pOriginalDesc);
+        }
     }
 
     return S_OK;
@@ -26,11 +34,7 @@ HRESULT CBounding_AABB::Initialize(const BOUNDING_DESC* pInitializeDesc)
 
 void CBounding_AABB::Update(const Matrix &matWorld)
 {
-    Matrix matSrc = matWorld;
-    matSrc.Right(Vec4::UnitX * matWorld.Right());
-    matSrc.Up(Vec4::UnitY * matWorld.Up());
-    matSrc.Backward(-Vec4::UnitZ * matWorld.Backward());
-    m_pOriginalDesc->Transform(*m_pDesc, matSrc);
+    m_pOriginalDesc->Transform(*m_pDesc, matWorld);
 }
 
 _bool CBounding_AABB::Intersect_Bounding(EColliderType eType, CBounding* pOther)

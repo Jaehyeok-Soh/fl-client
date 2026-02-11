@@ -20,47 +20,27 @@ HRESULT CBuilder_Example::Build(const CDataDocumentBase& document)
 
 
 	const auto& doc = static_cast<const CDataDocument_Example&>(document);
-	// For. StaticModel
-	{
-		const vector<Engine::IObjectDataBase*> vecList = doc.Get_ListByType(ENUM_TO_UINT(DTO::EMapType::STATICMODEL));
-		for (const auto& pObjectData : vecList)
-		{
-			const auto* pStaticModelData = static_cast<const Engine::CExample_StaticModel*>(pObjectData);
-			if (FAILED(Create_StaticModel(pStaticModelData->Get_Data())))
-				return E_FAIL;
-		}
-	}
-	// For. Light
-	{
-		const vector<Engine::IObjectDataBase*> vecList = doc.Get_ListByType(ENUM_TO_UINT(DTO::EMapType::LIGHT));
-		for (const auto& pObjectData : vecList)
-		{
-			const auto* pLightData = static_cast<const Engine::CExample_LightData*>(pObjectData);
-			if (FAILED(Create_Light(pLightData->Get_Data())))
-				return E_FAIL;
-		}
-	}
+	// For. 
 
-	return S_OK;
-}
-
-HRESULT CBuilder_Example::Create_StaticModel(const DTO::TExample_StaticModelData& data)
-{
-	if (data.eType != DTO::EMapType::STATICMODEL)
-		return E_FAIL;
-
-	// CStaticModel::STATICMODEL_DESC desc = {};
-	//
-	// desc Ã¤¿ì±â = data....
-	//
-	// CGameObject* pResult = m_pGameInstance->Add_GameObject(
-	//	iLevelIndex,
-	//	L"Prototype_GameObject_ColMesh",
-	//	iLevelIndex,
-	//	g_wszColMeshLayer, &desc);
-
-	// if (pResult == nullptr)
-	//	return E_FAIL;
+	//{
+	//	const vector<Engine::IObjectDataBase*> vecList = doc.Get_ListByType(ENUM_TO_UINT(DTO::EMapType::StaticObject));
+	//	for (const auto& pObjectData : vecList)
+	//	{
+	//		const auto* pStaticObjectData = static_cast<const Engine::CExample_StaticObject*>(pObjectData);
+	//		if (FAILED(Create_StaticObject(pStaticObjectData->Get_Data())))
+	//			return E_FAIL;
+	//	}
+	//}
+	//// For. Light
+	//{
+	//	const vector<Engine::IObjectDataBase*> vecList = doc.Get_ListByType(ENUM_TO_UINT(DTO::EMapType::LIGHT));
+	//	for (const auto& pObjectData : vecList)
+	//	{
+	//		const auto* pLightData = static_cast<const Engine::CExample_LightData*>(pObjectData);
+	//		if (FAILED(Create_Light(pLightData->Get_Data())))
+	//			return E_FAIL;
+	//	}
+	//}
 
 	return S_OK;
 }

@@ -823,6 +823,8 @@ float CEffectObject::Sample_GravityCurve(const vector<Gravity_CurveKey>& vecCurv
             return vecCurve[i].fValue + (vecCurve[i + 1].fValue - vecCurve[i].fValue) * fLerpRatio;
         }
     }
+
+    return 0.f;
 }
 
 void CEffectObject::Update_Gravity_Force(float fLifeRatio)

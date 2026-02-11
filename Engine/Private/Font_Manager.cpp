@@ -41,7 +41,8 @@ HRESULT CFont_Manager::Draw_Text(const _wstring& strFontTag, const _tchar* pText
 
     m_pBatch->Begin();
 
-    pFont->Draw_Text(m_pBatch, pText, vPosition, vColor);
+    if (FAILED(pFont->Draw_Text(m_pBatch, pText, vPosition, vColor)))
+        return E_FAIL;
 
     m_pBatch->End();
 

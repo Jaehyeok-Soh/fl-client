@@ -109,7 +109,7 @@ namespace Engine
 
 	typedef struct tagShaderBoneDesc
 	{
-		SimpleMath::Matrix transforms[MAX_BONE_TRANSFORMS];
+		SimpleMath::Matrix transforms[MAX_BONE_TRANSFORMS]{ SimpleMath::Matrix::Identity};
 	}SHADER_BONEDESC;
 
 	struct AnimationData
@@ -329,6 +329,9 @@ namespace Engine
 
 	typedef struct tagPhysicsCCT
 	{
+		class CGameObject* pOwner = { nullptr };
+		bool bIsPlayer = { false };
+
 		EPhysicsCCTType eType = { EPhysicsCCTType::CAPSULE };
 		const Matrix* pOwnerMatrix = { nullptr };
 		float fRadius = {};
@@ -342,8 +345,19 @@ namespace Engine
 		////////////////
 		PHYSICSMATERIAL_DESC tMaterial = {};
 
-		class CGameObject* pOwner = { nullptr };
+		////////////////////////
+		/// Collision Filter ///
+		////////////////////////
+		PHYSICSFILTERGROUP::Enum eFilterLayer = PHYSICSFILTERGROUP::Enum::NONE;
+		unsigned int iFilterMask = {};
 	}PHYSICSCCT_DESC;
+
+	typedef struct tagPhysicsSRT
+	{
+		SimpleMath::Vector3 vScale = {};
+		SimpleMath::Quaternion vQuat = {};
+		SimpleMath::Vector3 vPosition = {};
+	}PHYSICS_SRT;
 
 	typedef struct tagPhysicsRigidBody
 	{
@@ -357,8 +371,17 @@ namespace Engine
 		float fAngularDamping = {};
 
 		vector<Matrix> pOwnerMatrices;
-		vector<SimpleMath::Vector3> vScale_Isolated;
+		vector<PHYSICS_SRT> vecSRT{};
 	}PHYSICSRIGIDBODY_DESC;
+
+	typedef struct tagOctreeDesc
+	{
+		BoundingBox rootBounds;
+		int iMaxDepth{ 5 };
+		float fLooseFactor{ 1.3f };
+		float fMinNodeSizeXZ{ 2.0f }; // Extents와 비교할거라 중심에서의 거리
+		size_t iMaxItemsPerLeaf{ 128 };
+	}OCTREE_DESC;
 
 	typedef struct tagPass
 	{
@@ -428,7 +451,8 @@ namespace Engine
 		////////////////////////
 		/// Collision Filter ///
 		////////////////////////
-		PHYSICSFILTERGROUP eFilterGroup = PHYSICSFILTERGROUP::NONE;
+		bool bSetOnlyFilter = { false };
+		PHYSICSFILTERGROUP::Enum eFilterLayer = PHYSICSFILTERGROUP::Enum::NONE;
 		unsigned int iFilterMask = {};
 	}PHYSICSCOLLIDER_DESC;
 

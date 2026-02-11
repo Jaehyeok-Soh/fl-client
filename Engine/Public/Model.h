@@ -85,12 +85,14 @@ public:
 	_float Get_AnimElpasedTimeSeconds() const;
 	_int Get_CurrentAnimationIndex() const;
 	wstring Get_CurrentAnimationName() const;
+	_float Get_AnimTrackPosition() const;
 	_bool Is_AnimFinished() const { return m_bIsAnimFinished; }
 	_bool Is_AnimTrackPositionBetween(_float fStartRatio, _float fEndRatio);
 	_bool Is_AnimTrackPositionAt(_float fRatio);
 	_bool Is_AnimTrackPositionAtHalf() const;
 	_int Get_AnimationIndex(const wstring& wstrName);
 	wstring Get_MaterialName(_uint iIndex) const;
+	const vector<class CMaterial*>&	Get_Materials() const { return m_vecMaterials; };
 	wstring Get_AnimationName(_uint iIdex) const;
 	void Set_AnimationPlayRate(_uint iIndex, _float fValue);
 private:

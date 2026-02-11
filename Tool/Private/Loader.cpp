@@ -10,6 +10,7 @@
 #include "Model.h"
 #include "Collider.h"
 #include "Shader.h"
+#include "Bounds.h"
 #include "MonoBehaviour.h"
 #include "Camera.h"
 #include "VIBuffer_Line_Color.h"
@@ -17,17 +18,17 @@
 //=================
 // Object
 //=================
-#include "StaticModel.h"
-#include "InstanceModel.h"
 #include "Tool_ContainerObject.h"
 #include "Tool_PartObject.h"
 //=================
 // UI
 //=================
 #include "ToolCanvas.h"
-#include "ToolLayer.h"
 #include "ToolUI.h"
-
+//=================
+// Map
+//=================
+#include "MapObject.h"
 //=================
 // Resource
 //=================
@@ -129,7 +130,8 @@ HRESULT CLoader::Loading_For_Map()
 	m_pGameInstance->Add_Prototype(ENUM_TO_UINT(ELevelType::MAP), L"Prototype_Component_Collider_AABB", CCollider::Create(m_pDevice, m_pDeviceContext, EColliderType::AABB));
 	// For. Prototype_Component_Collider_OBB
 	m_pGameInstance->Add_Prototype(ENUM_TO_UINT(ELevelType::MAP), L"Prototype_Component_Collider_OBB", CCollider::Create(m_pDevice, m_pDeviceContext, EColliderType::OBB));
-
+	// For. Prototype_Component_Bounds
+	m_pGameInstance->Add_Prototype(ENUM_TO_UINT(ELevelType::MAP), L"Prototype_Component_Bounds", CBounds::Create(m_pDevice, m_pDeviceContext));
 
 
 
@@ -147,8 +149,7 @@ HRESULT CLoader::Loading_For_Map()
 	//=================
 	// CGameObject
 	//=================
-	m_pGameInstance->Add_Prototype(ENUM_TO_UINT(ELevelType::MAP), L"Prototype_GameObject_StaticModel",	 CStaticModel::Create(EToolObjectType::MAPOBJECT, m_pDevice, m_pDeviceContext));
-	m_pGameInstance->Add_Prototype(ENUM_TO_UINT(ELevelType::MAP), L"Prototype_GameObject_InstanceModel", CInstanceModel::Create(EToolObjectType::MAPOBJECT, m_pDevice, m_pDeviceContext));
+	m_pGameInstance->Add_Prototype(ENUM_TO_UINT(ELevelType::MAP), L"Prototype_GameObject_MapObject", CMapObject::Create(EToolObjectType::MAPOBJECT,m_pDevice, m_pDeviceContext));
 
 
 
@@ -270,16 +271,16 @@ HRESULT CLoader::Loading_For_UI()
 	//=================
 	// Resource Component
 	//=================
-
-	// For. Prototype_Component_Button_Test_Texture
-	{
-		CTexture::TEXTURE_COMPONENT_ORIGIN_DESC textureDesc = {};
-		textureDesc.iTextureCount = 22;
-		textureDesc.wstrTexturePath = L"../../Resources/Textures/UI/%d.png";
-		if (FAILED(m_pGameInstance->Add_Prototype(ENUM_TO_UINT(ELevelType::UI), L"Prototype_Component_UI_Texture", CTexture::Create(&textureDesc))))
-			return E_FAIL;
-	}
-
+	if (FAILED(Loading_Textures(L"../../Resources/Textures/UI/Playable/")))
+		return E_FAIL;
+	if (FAILED(Loading_Textures(L"../../Resources/Textures/UI/Menu/")))
+		return E_FAIL;
+	if (FAILED(Loading_Textures(L"../../Resources/Textures/UI/Battle/")))
+		return E_FAIL;
+	if (FAILED(Loading_Textures(L"../../Resources/Textures/UI/Key/")))
+		return E_FAIL;
+	if (FAILED(Loading_Textures(L"../../Resources/Textures/UI/WeaponIcon/")))
+		return E_FAIL;
 
 	//=================
 	// UI Objects
@@ -288,11 +289,6 @@ HRESULT CLoader::Loading_For_UI()
 	// For. Prototype_UI_Canvas
 	{
 		if (FAILED(m_pGameInstance->Add_Prototype(ENUM_TO_UINT(ELevelType::UI), g_wszPrototypeTagCanvas, CToolCanvas::Create(EToolObjectType::UI, m_pDevice, m_pDeviceContext))))
-			return E_FAIL;
-	}
-	// For. Prototype_UI_Layer
-	{
-		if (FAILED(m_pGameInstance->Add_Prototype(ENUM_TO_UINT(ELevelType::UI), g_wszPrototypeTagLayer, CToolLayer::Create(EToolObjectType::UI, m_pDevice, m_pDeviceContext))))
 			return E_FAIL;
 	}
 	// For. Prototype_UI_UI
@@ -324,12 +320,17 @@ HRESULT CLoader::Loading_Textures(const wstring& wstrFolder)
 			++iFileCount;
 		}
 	}
-
+	/* 바탕화면 경로(C:\Users\...\Desktop) 쪽은 특히 desktop.ini가 흔합니다. 절대 바탕화면에 프로젝트를 두지마 */
 	for (const auto& entry : std::filesystem::directory_iterator(wstrFolder))
 	{
 		wstring wstrFileName = { L"" };
+		_wstring ext = { L"" };
 		if (entry.is_regular_file())
 		{
+			ext = entry.path().extension().wstring();
+			if (ext == L".ini")
+				continue;
+
 			wstrFileName = entry.path().filename().lexically_normal().stem();
 			CTextureBase::RESOURCE_BASE_DESC desc = {};
 			desc.wstrName = wstrFileName;

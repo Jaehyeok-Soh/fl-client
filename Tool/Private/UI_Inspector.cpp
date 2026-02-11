@@ -2,12 +2,11 @@
 #include "UI_Inspector.h"
 #include "ImGui_ToolManager.h"
 #include "ImGui_UIManager.h"
-#include "UIData_Repository.h"
 #include "Engine_Utils.h"
 #include "ToolCanvas.h"
-#include "ToolLayer.h"
 #include "ToolUI.h"
 #include "Texture.h"
+#include "UIProgress_Component.h"
 #include "GameInstance.h"
 
 CUI_Inspector::CUI_Inspector(const _char* pLabel, CLevel* pOwner, ID3D11Device* pDevice, ID3D11DeviceContext* pDeviceContext)
@@ -30,16 +29,25 @@ HRESULT CUI_Inspector::Initialize_Prototype()
 		m_szArrClientLevelType[i] = m_vecClientLevelType[i].c_str();
 	}
 
-	//Folder_Search("../../Resources/Textures/UI");
-	//File_Search("../../Resources/Textures/UI");
+	m_VecClassTag.reserve(ENUM_TO_UINT(DTO::EUIClassType::END));
+	for (uint32_t i = 0; i < ENUM_TO_UINT(DTO::EUIClassType::END); ++i)
+		m_VecClassTag.push_back(DTO::UIClassTypeToString(static_cast<DTO::EUIClassType>(i)));
+
+	m_VecOwnerTag.reserve(ENUM_TO_UINT(DTO::EUIOwnerType::END));
+	for (uint32_t i = 0; i < ENUM_TO_UINT(DTO::EUIOwnerType::END); ++i)
+		m_VecOwnerTag.push_back(DTO::UIOwnertypeToString(static_cast<DTO::EUIOwnerType>(i)));
+
+
+	m_VecShaderPassTag.reserve(ENUM_TO_UINT(EUIShaderPass::END));
+	for (uint32_t i = 0; i < ENUM_TO_UINT(EUIShaderPass::END); ++i)
+		m_VecShaderPassTag.push_back(UIShaderPassToString(static_cast<EUIShaderPass>(i)));
 
 	return S_OK;
 }
 
 void CUI_Inspector::Update(const _float fTimeDelta)
 {
-	if (nullptr != m_pSelectedUI)
-		m_pSelectedUI->Set_HitTest();
+
 }
 
 HRESULT CUI_Inspector::Render(CToolObject* pGo)
@@ -50,11 +58,26 @@ HRESULT CUI_Inspector::Render(CToolObject* pGo)
 	m_pSelectedUI = m_pUIManager->Safe_Access_UI(m_pUIManager->Get_CurUIIndex());
 	if (nullptr != m_pSelectedUI)
 	{
+		m_pSelectedUI->Set_HitTest();
 		SetUp_Public_Info();
-		Input_TextureTag();
+		SetUp_ShaderPass();
+		
+		if (Begin_Card("SetUp Default Setting", "##SetUp_Default_Setting", 100.f))
+		{
+			SetUp_Class();
+			SetUp_Owner();
+		}
+		End_Card();
 
-		SetUp_Func();
-		Edit_Action();
+
+		if (m_pSelectedUI->Get_UIClassType() == DTO::EUIClassType::UI_TEXT)
+		{
+			SetUp_TextData();
+		}
+		else if (m_pSelectedUI->Get_UIClassType() == DTO::EUIClassType::TRIGGER)
+		{
+			SetUp_TriggerData();
+		}
 	}
 
 	ImGui::End();
@@ -152,475 +175,420 @@ void CUI_Inspector::Input_RectTransform()
 
 		ImGui::EndTable();
 	}
+
+	ImGui::InputFloat("Alpha", &m_pSelectedUI->Get_AlphaRatio_Ref());
+	ImGui::Checkbox("Visible", &m_pSelectedUI->Get_InitVisible());
+
 	ImGui::EndChild();
 	ImGui::PopID();
 }
 
 void CUI_Inspector::Input_TextureTag()
 {
-	if (ImGui::Button("Select Texture"))
+	_bool& isUseColorTint = m_pSelectedUI->Get_UseColorTint();
+	ImGui::Checkbox("Use ColorTint", &isUseColorTint);
+
+	if (isUseColorTint)
 	{
-		OPENFILENAMEW ofn{};
-		_tchar szFile[MAX_PATH] = { 0 };
+		Vec4& tint = m_pSelectedUI->Get_ColorTint_Ref();
 
-		ofn.lStructSize = sizeof(OPENFILENAMEW);
-		ofn.hwndOwner = g_hWnd;
-		ofn.lpstrFile = szFile;
-		ofn.nMaxFile = MAX_PATH; 
-		ofn.lpstrFilter =
-			L"Image Files (*.png;*.dds)\0*.png;*.dds\0"
-			L"Png Files (*.png)\0*.png\0"
-			L"Dds Files (*.dds)\0*.dds\0"
-			L"All Files (*.*)\0*.*\0\0";
-		ofn.nFilterIndex = 1;
-		ofn.Flags = OFN_PATHMUSTEXIST | OFN_FILEMUSTEXIST | OFN_NOCHANGEDIR;
+		float fColor[4] = { tint.x, tint.y, tint.z, tint.w };
 
-		if (::GetOpenFileNameW(&ofn) == TRUE)
+		if (ImGui::SliderFloat4("Color Tint", fColor, 0.f, 1.f))
 		{
-			_wstring result = szFile; 
+			tint.x = fColor[0];
+			tint.y = fColor[1];
+			tint.z = fColor[2];
+			tint.w = fColor[3];
+		}
+	}
+	else
+	{
+		if (ImGui::Button("Select Texture"))
+		{
+			OPENFILENAMEW ofn{};
+			_tchar szFile[MAX_PATH] = { 0 };
 
-			std::filesystem::path f(result);
-			if (f.extension().wstring() == L".png" || f.extension().wstring() == L".dds")
+			ofn.lStructSize = sizeof(OPENFILENAMEW);
+			ofn.hwndOwner = g_hWnd;
+			ofn.lpstrFile = szFile;
+			ofn.nMaxFile = MAX_PATH; 
+			ofn.lpstrFilter =
+				L"Image Files (*.png;*.dds)\0*.png;*.dds\0"
+				L"Png Files (*.png)\0*.png\0"
+				L"Dds Files (*.dds)\0*.dds\0"
+				L"All Files (*.*)\0*.*\0\0";
+			ofn.nFilterIndex = 1;
+			ofn.Flags = OFN_PATHMUSTEXIST | OFN_FILEMUSTEXIST | OFN_NOCHANGEDIR;
+
+			if (::GetOpenFileNameW(&ofn) == TRUE)
 			{
-				_wstring wstrFolderName = f.parent_path().filename().wstring();
-				uint32_t iFileIndex = std::stoi( f.stem().wstring());
+				_wstring result = szFile; 
 
-				m_pSelectedUI->Set_TextureIndex(iFileIndex);
-			}
-		}
-	}
-}
-
-void CUI_Inspector::Add_Action(DTO::EUIEvent EventType)
-{
-	if (ImGui::Button("Add Action"))
-		ImGui::OpenPopup("##AddActionPopUp");
-
-	if (ImGui::BeginPopup("##AddActionPopUp"))
-	{
-		ImGui::TextDisabled("Select component to add");
-		ImGui::Separator();
-
-		const _string& strSET_VISIBLE = DTO::UIFunctypeToString(DTO::EUIAction::SET_VISIBLE);
-		if (ImGui::Selectable(strSET_VISIBLE.c_str()))
-		{
-			m_pSelectedUI->Bind_Action(EventType, DTO::EUIAction::SET_VISIBLE, json{ {"isVisible", true} });
-
-			ImGui::CloseCurrentPopup();
-		}
-
-		const _string& strSET_TEXTURE_INDEX = DTO::UIFunctypeToString(DTO::EUIAction::SET_TEXTURE_INDEX);
-		if (ImGui::Selectable(strSET_TEXTURE_INDEX.c_str()))
-		{
-			m_pSelectedUI->Bind_Action(EventType, DTO::EUIAction::SET_TEXTURE_INDEX, json{ {"uIndex", 0u} });
-
-			ImGui::CloseCurrentPopup();
-		}
-
-		const _string& strSTART_LERP_MOVEMENT = DTO::UIFunctypeToString(DTO::EUIAction::START_LERP_MOVEMENT);
-		if (ImGui::Selectable(strSTART_LERP_MOVEMENT.c_str()))
-		{
-			m_pSelectedUI->Bind_Action(EventType, DTO::EUIAction::START_LERP_MOVEMENT, json{
-		{ "vTargetPos", { { "x", 0.f }, { "y", 0.f }, { "z", 0.f } } },
-		{ "fTargetAlpha", 1.f },
-		{ "fDuration", 0.25f },
-		{ "isPin", false}
-				});
-
-			ImGui::CloseCurrentPopup();
-		}
-
-		const _string& strTRIGGER_ALL_CANVAS = DTO::UIFunctypeToString(DTO::EUIAction::TRIGGER_ALL_CANVAS);
-		if (ImGui::Selectable(strTRIGGER_ALL_CANVAS.c_str()))
-		{
-			m_pSelectedUI->Bind_Action(EventType, DTO::EUIAction::TRIGGER_ALL_CANVAS, json{ {"iLevelIndex", 0u}, { "strCanvasTag", "" }});
-
-			ImGui::CloseCurrentPopup();
-		}
-		const _string& strTRIGGER_ALL_LAYER = DTO::UIFunctypeToString(DTO::EUIAction::TRIGGER_ALL_LAYER);
-		if (ImGui::Selectable(strTRIGGER_ALL_LAYER.c_str()))
-		{
-			m_pSelectedUI->Bind_Action(EventType, DTO::EUIAction::TRIGGER_ALL_LAYER, json{ {"iLevelIndex", 0u},{"strLayerTag", ""} });
-
-			ImGui::CloseCurrentPopup();
-		}
-		const _string& strTRIGGER_TARGET_UI = DTO::UIFunctypeToString(DTO::EUIAction::TRIGGER_TARGET_UI);
-		if (ImGui::Selectable(strTRIGGER_TARGET_UI.c_str()))
-		{
-			m_pSelectedUI->Bind_Action(EventType, DTO::EUIAction::TRIGGER_TARGET_UI, json{ {"iLevelIndex", 0u},{"strUITag", ""} });
-
-			ImGui::CloseCurrentPopup();
-		}
-		ImGui::EndPopup();
-	}
-}
-
-void CUI_Inspector::Edit_Action()
-{
-	switch (m_eCurEditFunc)
-	{
-	case DTO::EUIAction::SET_VISIBLE:
-	{
-		auto* pVec = m_pSelectedUI->Safe_Access_EventData(m_eCurEditEvent);
-		if (!pVec || pVec->empty())
-			break;	
-
-		uint32_t index = {};
-		for (auto& data : *pVec)
-		{
-			if (data.strActionKey == DTO::UIFunctypeToString(DTO::EUIAction::SET_VISIBLE))
-				break;
-			index++;
-		}
-
-		if (index >= pVec->size())
-			break;
-
-		bool isVisible = (*pVec)[index].Params.value("isVisible", true);
-
-		if (ImGui::Checkbox("isVisible", &isVisible))
-			(*pVec)[index].Params["isVisible"] = isVisible;
-
-		break;
-	}
-	case DTO::EUIAction::SET_TEXTURE_INDEX:
-	{
-		auto* pVec = m_pSelectedUI->Safe_Access_EventData(m_eCurEditEvent);
-		if (!pVec || pVec->empty())
-			break;
-
-		uint32_t index = {};
-		for (auto& data : *pVec)
-		{
-			if (data.strActionKey == DTO::UIFunctypeToString(DTO::EUIAction::SET_TEXTURE_INDEX))
-				break;
-			index++;
-		}
-		if (index >= pVec->size())
-			break;
-
-		auto& j = (*pVec)[index].Params;
-		int iValue = static_cast<int>(j.value("uIndex", 0u));
-
-		if (ImGui::InputInt("uIndex", &iValue))
-		{
-			if (iValue < 0) iValue = 0;
-			j["uIndex"] = static_cast<uint32_t>(iValue);
-		}
-
-		break;
-	}
-	case DTO::EUIAction::START_LERP_MOVEMENT:
-	{
-		auto* pVec = m_pSelectedUI->Safe_Access_EventData(m_eCurEditEvent);
-		if (!pVec || pVec->empty())
-			break;
-
-		uint32_t index = {};
-		for (auto& data : *pVec)
-		{
-			if (data.strActionKey == DTO::UIFunctypeToString(DTO::EUIAction::START_LERP_MOVEMENT))
-				break;
-			index++;
-		}
-		if (index >= pVec->size())
-			break;
-
-
-		auto& j = (*pVec)[index].Params;
-
-		if (!j.contains("vTargetPos") || !j["vTargetPos"].is_object())
-			j["vTargetPos"] = json{ {"x", 0.f}, {"y", 0.f}, {"z", 0.f} };
-
-		auto& jPos = j["vTargetPos"];
-
-		float v[3] =
-		{
-			jPos.value("x", 0.f),
-			jPos.value("y", 0.f),
-			jPos.value("z", 0.f)
-		};
-
-		if (ImGui::InputFloat3("vTargetPos", v))
-		{
-			jPos["x"] = v[0];
-			jPos["y"] = v[1];
-			jPos["z"] = v[2];
-		}
-
-		if (ImGui::Button("Apply to Client Aspect"))
-		{
-			jPos["x"] = jPos["x"] * (1280.f/ (_float)g_iWinSizeX);
-			jPos["y"] = jPos["y"] * (720.f/ (_float)g_iWinSizeY);
-			jPos["z"] = jPos["z"] * 1.f;
-		}
-
-		float fTargetAlpha = j.value("fTargetAlpha", 1.f);
-		if (ImGui::InputFloat("fTargetAlpha", &fTargetAlpha))
-		{
-			if (fTargetAlpha < 0.f) fTargetAlpha = 0.f;
-			j["fTargetAlpha"] = fTargetAlpha;
-		}
-
-		float fDuration = j.value("fDuration", 0.f);
-		if (ImGui::InputFloat("fDuration", &fDuration))
-		{
-			if (fDuration < 0.f) fDuration = 0.f;
-			j["fDuration"] = fDuration;
-		}
-
-		bool isPin = j.value("isPin", false);
-		if (ImGui::Checkbox("isPin", &isPin))
-			j["isPin"] = isPin;
-	}
-	break;
-	case DTO::EUIAction::TRIGGER_ALL_CANVAS:
-	{
-		auto* pVec = m_pSelectedUI->Safe_Access_EventData(m_eCurEditEvent);
-		if (!pVec || pVec->empty())
-			break;
-
-		uint32_t index = {};
-		for (auto& data : *pVec)
-		{
-			if (data.strActionKey == DTO::UIFunctypeToString(DTO::EUIAction::TRIGGER_ALL_CANVAS))
-				break;
-			index++;
-		}
-
-		if (index >= pVec->size())
-			break;
-
-		auto& j = (*pVec)[index].Params;
-
-		auto* pCanvasVec = m_pUIManager->Safe_Access_CanvasVector();
-		if (nullptr != pCanvasVec)
-		{
-			vector<_string> VecCanvasTag;
-			for (auto* pCanvas : *pCanvasVec)
-			{
-				VecCanvasTag.push_back(pCanvas->Get_Tag());
-			}
-			if (!j.contains("strCanvasTag") || !j["strCanvasTag"].is_string())
-				j["strCanvasTag"] = VecCanvasTag.empty() ? "" : VecCanvasTag[0];
-
-			_string curTag = j["strCanvasTag"].get<_string>();
-
-			int curIndex = 0;
-			for (int i = 0; i < (int)VecCanvasTag.size(); ++i)
-			{
-				if (VecCanvasTag[i] == curTag) { curIndex = i; break; }
-			}
-
-			const char* preview = VecCanvasTag.empty() ? "" : VecCanvasTag[curIndex].c_str();
-			if (ImGui::BeginCombo("strCanvasTag", preview))
-			{
-				for (int i = 0; i < (int)VecCanvasTag.size(); ++i)
+				std::filesystem::path f(result);
+				if (f.extension().wstring() == L".png" || f.extension().wstring() == L".dds")
 				{
-					const bool isSelected = (i == curIndex);
-					if (ImGui::Selectable(VecCanvasTag[i].c_str(), isSelected))
-					{
-						curIndex = i;
-						j["strCanvasTag"] = VecCanvasTag[i];
-					}
-					if (isSelected) ImGui::SetItemDefaultFocus();
+					m_pSelectedUI->Set_TextureTag(L"Texture_" + f.stem().wstring());
+					m_pSelectedUI->Request_Change_Texture();
+				}
+			}
+		}
+	}
+}
+
+void CUI_Inspector::SetUp_Class()
+{
+	if (nullptr == m_pSelectedUI)
+		return;
+
+	int cur = (int)m_pSelectedUI->Get_UIClassType();
+	cur = (cur < 0) ? 0 : (cur >= (int)m_VecClassTag.size() ? (int)m_VecClassTag.size() - 1 : cur);
+
+	const char* preview = m_VecClassTag.empty() ? "" : m_VecClassTag[cur].c_str();
+
+	bool changed = false;
+
+	if (ImGui::BeginCombo("UI Class", preview))
+	{
+		for (int i = 0; i < (int)m_VecClassTag.size(); ++i)
+		{
+			const bool isSelected = (cur == i);
+			if (ImGui::Selectable(m_VecClassTag[i].c_str(), isSelected))
+			{
+				cur = i; 
+				m_pSelectedUI->Set_UIClassType(static_cast<DTO::EUIClassType>(i));
+				changed = true;
+			}
+
+			if (isSelected)
+				ImGui::SetItemDefaultFocus();
+		}
+		ImGui::EndCombo();
+	}
+}
+
+void CUI_Inspector::SetUp_Owner()
+{
+	if (nullptr == m_pSelectedUI)
+		return;
+
+	int cur = (int)m_pSelectedUI->Get_UIOwnerType();
+	cur = (cur < 0) ? 0 : (cur >= (int)m_VecOwnerTag.size() ? (int)m_VecOwnerTag.size() - 1 : cur);
+
+	const char* preview = m_VecOwnerTag.empty() ? "" : m_VecOwnerTag[cur].c_str();
+
+	bool changed = false;
+
+	if (ImGui::BeginCombo("UI Owner", preview))
+	{
+		for (int i = 0; i < (int)m_VecOwnerTag.size(); ++i)
+		{
+			const bool isSelected = (cur == i);
+			if (ImGui::Selectable(m_VecOwnerTag[i].c_str(), isSelected))
+			{
+				cur = i;
+				m_pSelectedUI->Set_UIOwnerType(static_cast<DTO::EUIOwnerType>(i));
+				changed = true;
+			}
+
+			if (isSelected)
+				ImGui::SetItemDefaultFocus();
+		}
+		ImGui::EndCombo();
+	}
+}
+
+void CUI_Inspector::SetUp_TextData()
+{
+	if(Begin_Card("SetUp TextData", "Card_TextData", 100.f))
+	{
+		_string strText = Engine_Utils::ToString( m_pSelectedUI->Get_Text());
+		ImGui::InputText("Text", &strText);
+		m_pSelectedUI->Set_Text(Engine_Utils::ToWString(strText));
+
+		auto& vColor = m_pSelectedUI->Get_FontColor();
+		float col[4] = { vColor.x, vColor.y, vColor.z, vColor.w };
+		if (ImGui::ColorEdit4("FontColor", col))
+			vColor = Vec4{ col[0], col[1], col[2], col[3] };
+	}
+	End_Card();
+}
+
+void CUI_Inspector::SetUp_TriggerData()
+{
+	if (Begin_Card("Set Trigger Data", "TriggerData", 200.f))
+	{
+		if (ImGui::Button("Add Hover Enter Target"))
+		{
+			m_isHoverEnter = TRUE;
+			m_isHoverExit = FALSE;
+			m_isPressEnter = FALSE;
+			m_isPressExit = FALSE;
+		}
+		if (ImGui::Button("Add Hover Exit Target"))
+		{
+			m_isHoverEnter = FALSE;
+			m_isHoverExit = TRUE;
+			m_isPressEnter = FALSE;
+			m_isPressExit = FALSE;
+		}
+		if (ImGui::Button("Add Press Enter Target"))
+		{
+			m_isHoverEnter = FALSE;
+			m_isHoverExit = FALSE;
+			m_isPressEnter = TRUE;
+			m_isPressExit = FALSE;
+		}
+		if (ImGui::Button("Add Press Exit Target"))
+		{
+			m_isHoverEnter = FALSE;
+			m_isHoverExit = FALSE;
+			m_isPressEnter = FALSE;
+			m_isPressExit = TRUE;
+		}
+
+		auto* pUIVec = m_pUIManager->Safe_Access_UIVector();
+		if (nullptr == pUIVec)
+		{
+			End_Card();
+			return;
+		}
+		auto* pCanvasVec = m_pUIManager->Safe_Access_CanvasVector();
+		if (nullptr == pCanvasVec)
+		{
+			End_Card();
+			return;
+		}
+
+		vector<_string> vecUINames;
+		vecUINames.reserve(pUIVec->size());
+		for (auto* pUI : *pUIVec)
+			vecUINames.push_back(pUI->Get_Name());
+
+		vector<_string> vecCanvasNames;
+		vecCanvasNames.reserve(pCanvasVec->size());
+		for (auto* pCanvas : *pCanvasVec)
+			vecCanvasNames.push_back(pCanvas->Get_Tag());
+
+		if (m_isHoverEnter)
+		{
+			const float fH = 80.f;
+			const float fAvail = ImGui::GetContentRegionAvail().x;
+			const float fGap = ImGui::GetStyle().ItemSpacing.x;
+			const float fHalf = (fAvail - fGap) * 0.5f;
+
+			ImGui::BeginChild("Trigger UI List", ImVec2(fHalf, fH), true);
+			for (const auto& name : m_pSelectedUI->Get_vecHoverEnterTriggerUI())
+			{
+				const bool isSelected = (m_strTriggerUIName == name);
+				if (ImGui::Selectable(name.c_str(), isSelected))
+					m_strTriggerUIName = name;
+			}
+			ImGui::EndChild();
+			ImGui::SameLine();
+			ImGui::BeginChild("Trigger Canvas List", ImVec2(0.f, fH), true);
+			for (const auto& name : m_pSelectedUI->Get_vecHoverEnterTriggerCanvas())
+			{
+				const bool isSelected = (m_strTriggerCanvasName == name);
+				if (ImGui::Selectable(name.c_str(), isSelected))
+					m_strTriggerCanvasName = name;
+			}
+			ImGui::EndChild();
+			if (ImGui::Button("Remove Trigger UI"))
+			{
+				m_pSelectedUI->Remove_vecHoverEnterTriggerUI(m_strTriggerUIName);
+			}
+			ImGui::SameLine();
+			if (ImGui::Button("Remove Trigger Canvas"))
+			{
+				m_pSelectedUI->Remove_vecHoverEnterTriggerCanvas(m_strTriggerCanvasName);
+			}
+			ImGui::InputText("Hover Enter Trigger UI", &m_strTriggerUIName_UserInput);
+			if (ImGui::Button("Add Hover Enter Trigger UI User Input"))
+			{
+				if (!m_pSelectedUI->Add_vecHoverEnterTriggerUI(m_strTriggerUIName_UserInput))
+				{
+					MSG_BOX("이미 존재하는 이름");
+				}
+			}
+			if (ImGui::BeginCombo("Pick Trigger UI", m_strTriggerUIName.c_str()))
+			{
+				for (const auto& name : vecUINames)
+				{
+					const bool isSelected = (m_strTriggerUIName == name);
+					if (ImGui::Selectable(name.c_str(), isSelected))
+						m_strTriggerUIName = name;
+					if (isSelected)
+						ImGui::SetItemDefaultFocus();
 				}
 				ImGui::EndCombo();
 			}
-		}
-		break;
-	}
-	case DTO::EUIAction::TRIGGER_ALL_LAYER:
-	{
-		auto* pVec = m_pSelectedUI->Safe_Access_EventData(m_eCurEditEvent);
-		if (!pVec || pVec->empty())
-			break;
-
-		uint32_t index = {};
-		for (auto& data : *pVec)
-		{
-			if (data.strActionKey == DTO::UIFunctypeToString(DTO::EUIAction::TRIGGER_ALL_LAYER))
-				break;
-			index++;
-		}
-
-		if (index >= pVec->size())
-			break;
-
-		auto& j = (*pVec)[index].Params;
-
-		auto* pCanvasVec = m_pUIManager->Safe_Access_CanvasVector();
-		if (nullptr != pCanvasVec)
-		{
-			vector<_string> VecLayerTag;
-			for (auto* pCanvas : *pCanvasVec)
+			if (ImGui::Button("Add Hover Enter Trigger UI"))
 			{
-				auto* pLayerVec = pCanvas->Safe_Access_LayerObject_Vector_Ptr();
-				if (nullptr == pLayerVec)
-					continue;
-
-				for (auto* pLayer : *pLayerVec)
+				if (!m_pSelectedUI->Add_vecHoverEnterTriggerUI(m_strTriggerUIName))
 				{
-					VecLayerTag.push_back(pLayer->Get_Name());
+					MSG_BOX("이미 존재하는 이름");
 				}
 			}
-			if (!j.contains("strLayerTag") || !j["strLayerTag"].is_string())
-				j["strLayerTag"] = VecLayerTag.empty() ? "" : VecLayerTag[0];
-
-			_string curTag = j["strLayerTag"].get<_string>();
-
-			int curIndex = 0;
-			for (int i = 0; i < (int)VecLayerTag.size(); ++i)
+			if (ImGui::BeginCombo("Canvas Names", m_strTriggerCanvasName.c_str()))
 			{
-				if (VecLayerTag[i] == curTag) { curIndex = i; break; }
-			}
-
-			const char* preview = VecLayerTag.empty() ? "" : VecLayerTag[curIndex].c_str();
-			if (ImGui::BeginCombo("strLayerTag", preview))
-			{
-				for (int i = 0; i < (int)VecLayerTag.size(); ++i)
+				for (const auto& tag : vecCanvasNames)
 				{
-					const bool isSelected = (i == curIndex);
-					if (ImGui::Selectable(VecLayerTag[i].c_str(), isSelected))
-					{
-						curIndex = i;
-						j["strLayerTag"] = VecLayerTag[i];
-					}
-					if (isSelected) ImGui::SetItemDefaultFocus();
+					const bool isSelected = (m_strTriggerCanvasName == tag);
+					if (ImGui::Selectable(tag.c_str(), isSelected))
+						m_strTriggerCanvasName = tag;
+					if (isSelected)
+						ImGui::SetItemDefaultFocus();
 				}
 				ImGui::EndCombo();
 			}
-		}
-		break;
-	}
-	case DTO::EUIAction::TRIGGER_TARGET_UI:
-	{
-		auto* pVec = m_pSelectedUI->Safe_Access_EventData(m_eCurEditEvent);
-		if (!pVec || pVec->empty())
-			break;
-
-		uint32_t index = {};
-		for (auto& data : *pVec)
-		{
-			if (data.strActionKey == DTO::UIFunctypeToString(DTO::EUIAction::TRIGGER_TARGET_UI))
-				break;
-			index++;
-		}
-
-		if (index >= pVec->size())
-			break;
-
-		auto& j = (*pVec)[index].Params;
-
-		auto* pCanvasVec = m_pUIManager->Safe_Access_CanvasVector();
-		if (nullptr != pCanvasVec)
-		{
-			vector<_string> VecUITag;
-			for (auto* pCanvas : *pCanvasVec)
+			if (ImGui::Button("Add Hover Enter Trigger Canvas"))
 			{
-				auto* pLayerVec = pCanvas->Safe_Access_LayerObject_Vector_Ptr();
-				if (nullptr == pLayerVec)
-					continue;
-
-				for (auto* pLayer : *pLayerVec)
+				if (!m_pSelectedUI->Add_vecHoverEnterTriggerCanvas(m_strTriggerCanvasName))
 				{
-					auto* pUIvec = pLayer->Safe_Access_UIObject_Vector_Ptr();
-					if (nullptr == pUIvec)
-						continue;
-					
-					for (auto* pUI : *pUIvec)
-					{
-						VecUITag.push_back(pUI->Get_Name());
-					}
+					MSG_BOX("이미 존재하는 이름");
 				}
 			}
-			if (!j.contains("strUITag") || !j["strUITag"].is_string())
-				j["strUITag"] = VecUITag.empty() ? "" : VecUITag[0];
-
-			_string curTag = j["strUITag"].get<_string>();
-
-			int curIndex = 0;
-			for (int i = 0; i < (int)VecUITag.size(); ++i)
-			{
-				if (VecUITag[i] == curTag) { curIndex = i; break; }
-			}
-
-			const char* preview = VecUITag.empty() ? "" : VecUITag[curIndex].c_str();
-			if (ImGui::BeginCombo("strUITag", preview))
-			{
-				for (int i = 0; i < (int)VecUITag.size(); ++i)
-				{
-					const bool isSelected = (i == curIndex);
-					if (ImGui::Selectable(VecUITag[i].c_str(), isSelected))
-					{
-						curIndex = i;
-						j["strUITag"] = VecUITag[i];
-					}
-					if (isSelected) ImGui::SetItemDefaultFocus();
-				}
-				ImGui::EndCombo();
-			}
 		}
-		break;
+		else if (m_isHoverExit)
+		{
+		}
+		else if (m_isPressEnter)
+		{
+		}
+		else if (m_isPressExit)
+		{
+		}
 	}
-
-	case DTO::EUIAction::END:
-		break;
-	default:
-		break;
-	}
+	End_Card();
 }
 
-void CUI_Inspector::SetUp_Func()
+void CUI_Inspector::SetUp_ShaderPass()
 {
-	const float h = 20.f;
-	const float w = ImGui::GetContentRegionAvail().x;
-
-	if (ImGui::Button("Hover Enter Action", ImVec2(w, h))) { m_eCurEditEvent = DTO::EUIEvent::HOVER_ENTER; m_eCurEditFunc = DTO::EUIAction::END; }
-	if (ImGui::Button("Hover Exit Action",	ImVec2(w, h))) { m_eCurEditEvent = DTO::EUIEvent::HOVER_EXIT;  m_eCurEditFunc = DTO::EUIAction::END; }
-	if (ImGui::Button("Hovering Action",	ImVec2(w, h))) { m_eCurEditEvent = DTO::EUIEvent::HOVERING;    m_eCurEditFunc = DTO::EUIAction::END; }
-	if (ImGui::Button("None Action",		ImVec2(w, h))) { m_eCurEditEvent = DTO::EUIEvent::NONE;        m_eCurEditFunc = DTO::EUIAction::END; }
-	if (ImGui::Button("Press Enter Action", ImVec2(w, h))) { m_eCurEditEvent = DTO::EUIEvent::PRESS_ENTER; m_eCurEditFunc = DTO::EUIAction::END; }
-	if (ImGui::Button("Press Exit Action",	ImVec2(w, h))) { m_eCurEditEvent = DTO::EUIEvent::PRESS_EXIT;  m_eCurEditFunc = DTO::EUIAction::END; }
-	if (ImGui::Button("Pressing Action",	ImVec2(w, h))) { m_eCurEditEvent = DTO::EUIEvent::PRESSING;    m_eCurEditFunc = DTO::EUIAction::END; }
-	if (ImGui::Button("Invoked Action",		ImVec2(w, h))) { m_eCurEditEvent = DTO::EUIEvent::INVOKED;     m_eCurEditFunc = DTO::EUIAction::END; }
-
-
-	Add_Action(m_eCurEditEvent);
-	Action_List(m_eCurEditEvent);
-
-	if (ImGui::Button("Apply Action", ImVec2(0.f, 0.f)))
+	if(Begin_Card("Set ShaderPass", "Shader_Pass", 100.f))
 	{
-		m_pSelectedUI->ReBind_Action();
-	}
-}
+		if (nullptr == m_pSelectedUI)
+			return;
 
-void CUI_Inspector::Action_List(DTO::EUIEvent eType)
-{
+		int cur = (int)m_pSelectedUI->Get_ShaderPass();
+		cur = (cur < 0) ? 0 : (cur >= (int)m_VecShaderPassTag.size() ? (int)m_VecShaderPassTag.size() - 1 : cur);
 
-	ImGui::SeparatorText(DTO::UIEventToString(m_eCurEditEvent).c_str());
-	const size_t iSelected = ENUM_TO_SZET(m_eCurEditFunc);
-	auto* pVec = m_pSelectedUI->Safe_Access_EventData(m_eCurEditEvent);
+		const char* preview = m_VecShaderPassTag.empty() ? "" : m_VecShaderPassTag[cur].c_str();
+
+		bool changed = false;
+
+		if (ImGui::BeginCombo("Select Shader Pass", preview))
+		{
+			for (int i = 0; i < (int)m_VecShaderPassTag.size(); ++i)
+			{
+				const bool isSelected = (cur == i);
+				if (ImGui::Selectable(m_VecShaderPassTag[i].c_str(), isSelected))
+				{
+					cur = i;
+					m_pSelectedUI->Set_ShaderPass((i));
+					changed = true;
+				}
+
+				if (isSelected)
+					ImGui::SetItemDefaultFocus();
+			}
+			ImGui::EndCombo();
+		}
+
+		Input_TextureTag();
+		
+		if (ImGui::Button("No Flip"))
+		{
+			m_pSelectedUI->Set_Flip(ENUM_TO_UINT(EUIFlip::NONE));
+		}
+		ImGui::SameLine();
+		if (ImGui::Button("Flip X")) {
+			m_pSelectedUI->Set_Flip(ENUM_TO_UINT(EUIFlip::FLIP_X));
 	
-	if (nullptr != pVec)
-	{
-		ImGui::BeginChild("ItemList", ImVec2(0, 100.f), true);
+		}
+		ImGui::SameLine();
+		if (ImGui::Button("Flip Y")) {
+			m_pSelectedUI->Set_Flip(ENUM_TO_UINT(EUIFlip::FLIP_Y));
+		}
+		ImGui::SameLine();
+		if (ImGui::Button("Flip XY")) {
+			m_pSelectedUI->Set_Flip(ENUM_TO_UINT(EUIFlip::FLIP_XY));
+		}
 
-		if (pVec->empty())
+		switch ((EUIShaderPass)cur)
 		{
-			ImGui::Text("Empty...");
-		}
-		else
+		case EUIShaderPass::DEFAULT:
 		{
-			for (size_t i = 0; i < pVec->size(); ++i)
-			{
-				const bool selected = (iSelected == i);
-				if (ImGui::Selectable((*pVec)[i].strActionKey.c_str(), selected))
-					m_eCurEditFunc = DTO::StringToUIFunctype((*pVec)[i].strActionKey);
-			}
+			ImGui::TextDisabled("No Params");
+			break;
 		}
-		ImGui::EndChild();
+		case EUIShaderPass::DEFAULT_ALPHA:
+		{
+			_float fAlphaRatio = m_pSelectedUI->Get_AlphaRatio();
+			ImGui::SetNextItemWidth(150.f);
+			if (ImGui::DragFloat("Alpha Ratio", &fAlphaRatio, 0.01f, 0.f, 1.f))
+				m_pSelectedUI->Set_AlphaRatio(fAlphaRatio);
+			break;
+		}
+		case EUIShaderPass::COLOR:
+		{
+			Vec4 vColorTint = m_pSelectedUI->Get_ColorTint();
+			ImGui::SetNextItemWidth(150.f);
+			if (ImGui::DragFloat4("Color Tint", (float*)&vColorTint, 0.01f, 0.f, 1.f))
+				m_pSelectedUI->Set_ColorTint(vColorTint);
+			break;
+		}
+		case EUIShaderPass::FADE:
+		{
+			_float fAlphaRatio = m_pSelectedUI->Get_AlphaRatio();
+			ImGui::SetNextItemWidth(150.f);
+			if (ImGui::DragFloat("Alpha Ratio", &fAlphaRatio, 0.01f, 0.f, 1.f))
+				m_pSelectedUI->Set_AlphaRatio(fAlphaRatio);
+			break;
+		}
+		case EUIShaderPass::PROGRESS:
+		{
+			_bool isUseColorTint = m_pSelectedUI->Get_isUseColorTint();
+			if (ImGui::Checkbox("Use Color Tint", (bool*)&isUseColorTint))
+				m_pSelectedUI->Set_isUseColorTint(isUseColorTint);
+
+			Vec4 vColorTint = m_pSelectedUI->Get_ColorTint();
+			ImGui::SetNextItemWidth(150.f);
+			if (ImGui::DragFloat4("Color Tint", (float*)&vColorTint, 0.01f, 0.f, 1.f))
+				m_pSelectedUI->Set_ColorTint(vColorTint);
+
+			_float fProgress = m_pSelectedUI->Get_ProgressRatio();
+			ImGui::SetNextItemWidth(150.f);
+			if (ImGui::DragFloat("Progress Ratio", &fProgress, 0.01f, 0.f, 1.f))
+				m_pSelectedUI->Set_ProgressRatio(fProgress);
+
+			uint32_t iFillDir = m_pSelectedUI->Get_FillDir();
+			const char* dirs[] = { "Right", "Left", "Up", "Down" };
+			int dir = (iFillDir > 3u) ? 0 : (int)iFillDir;
+
+			ImGui::SetNextItemWidth(150.f);
+			if (ImGui::Combo("Fill Dir", &dir, dirs, IM_ARRAYSIZE(dirs)))
+				m_pSelectedUI->Set_FillDir((uint32_t)dir);
+
+			_float fDelay = m_pSelectedUI->Get_Delay();
+			ImGui::SetNextItemWidth(150.f);
+			if (ImGui::DragFloat("Delay", &fDelay, 0.01f, 0.f, 1.f))
+				m_pSelectedUI->Set_Delay(fDelay);
+			break;
+		}
+		default:
+			break;
+		}
 	}
+
+	End_Card();
+}
+
+void CUI_Inspector::SetUp_UIProgress()
+{
+	ImGui::SliderFloat("Progress", &m_pSelectedUI->Get_TestProgress_Ref(), 1.f, 0.f);
+	const char* items[] = { "L2R", "R2L", "B2T", "T2B" };
+	ImGui::Combo("FillDir", &m_pSelectedUI->Get_FillDir_Ref(), items, IM_ARRAYSIZE(items));
 }
 
 _bool CUI_Inspector::Scrub_Float(const _char* label, const _char* Id, OUT _float* pValue, float fValuePerPixel, float fValuePerPixel_fast, float fStep, float fStep_fast, float fSize)
@@ -669,6 +637,41 @@ _bool CUI_Inspector::Scrub_Float(const _char* label, const _char* Id, OUT _float
 	return changed;
 }
 
+
+bool CUI_Inspector::Begin_Card(const char* Label, const char* ID, float fHeight)
+{
+	ImGui::PushID(ID);
+
+	if (Label && Label[0] != '\0')
+		ImGui::SeparatorText(Label);
+
+	m_vLastCardPos = ImGui::GetCursorScreenPos();
+	m_vLastCardSize = ImVec2(ImGui::GetContentRegionAvail().x, fHeight);
+
+	auto* dl = ImGui::GetWindowDrawList();
+	dl->AddRectFilled(m_vLastCardPos,
+		ImVec2(m_vLastCardPos.x + m_vLastCardSize.x, m_vLastCardPos.y + m_vLastCardSize.y),
+		IM_COL32(30, 30, 30, 200), 8.0f);
+
+	dl->AddRect(m_vLastCardPos,
+		ImVec2(m_vLastCardPos.x + m_vLastCardSize.x, m_vLastCardPos.y + m_vLastCardSize.y),
+		IM_COL32(90, 90, 90, 255), 8.0f);
+
+	ImGui::SetCursorScreenPos(ImVec2(m_vLastCardPos.x + 10.0f, m_vLastCardPos.y + 10.0f));
+	return ImGui::BeginChild("CardInner", ImVec2(m_vLastCardSize.x - 20.0f, m_vLastCardSize.y - 20.0f),
+		false, ImGuiWindowFlags_NoScrollbar);
+}
+
+void CUI_Inspector::End_Card()
+{
+	ImGui::EndChild();
+
+	ImGui::SetCursorScreenPos(m_vLastCardPos);
+	ImGui::Dummy(m_vLastCardSize);
+
+	ImGui::PopID();
+}
+
 CUI_Inspector* CUI_Inspector::Create(const _char* pLabel, CLevel* pOwner, ID3D11Device* pDevice, ID3D11DeviceContext* pDeviceContext)
 {
 	CUI_Inspector* pInstance = new CUI_Inspector(pLabel, pOwner, pDevice, pDeviceContext);
@@ -678,7 +681,6 @@ CUI_Inspector* CUI_Inspector::Create(const _char* pLabel, CLevel* pOwner, ID3D11
 		MSG_BOX("CUI_Inspector::Create, Failed");
 		Safe_Release(pInstance);
 	}
-
 	return pInstance;
 }
 

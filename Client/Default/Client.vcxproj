@@ -158,13 +158,12 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClInclude Include="..\Public\Body.h" />
+    <ClInclude Include="..\Public\Builder_AttackOverlap.h" />
     <ClInclude Include="..\public\Builder_Example.h" />
     <ClInclude Include="..\Public\Builder_Map.h" />
     <ClInclude Include="..\Public\Builder_UI.h" />
     <ClInclude Include="..\Public\CameraMan_Targeter.h" />
     <ClInclude Include="..\Public\Canvas.h" />
-    <ClInclude Include="..\public\ImGui_FrameLayout.h" />
-    <ClInclude Include="..\Public\InstanceModel.h" />
     <ClInclude Include="..\public\ImGuiBase.h" />
     <ClInclude Include="..\public\ImGui_ClientDebug.h" />
     <ClInclude Include="..\Public\Client_Defines.h" />
@@ -179,6 +178,9 @@
     <ClInclude Include="..\Public\imconfig.h" />
     <ClInclude Include="..\Public\imfilebrowser.h" />
     <ClInclude Include="..\Public\imgui.h" />
+    <ClInclude Include="..\Public\ImGui_FrameLayout.h" />
+    <ClInclude Include="..\public\ImGui_FrustrumLayout.h" />
+    <ClInclude Include="..\public\ImGui_GlobalInspector.h" />
     <ClInclude Include="..\Public\imgui_impl_dx11.h" />
     <ClInclude Include="..\Public\imgui_impl_win32.h" />
     <ClInclude Include="..\public\ImGui_Inspector.h" />
@@ -192,6 +194,7 @@
     <ClInclude Include="..\Public\imstb_textedit.h" />
     <ClInclude Include="..\Public\imstb_truetype.h" />
     <ClInclude Include="..\Public\MapObject.h" />
+    <ClInclude Include="..\Public\Monster_Dummy.h" />
     <ClInclude Include="..\Public\Physics_LandScape.h" />
     <ClInclude Include="..\Public\Physics_Terrain.h" />
     <ClInclude Include="..\Public\State_CrouchWalk.h" />
@@ -226,10 +229,12 @@
     <ClInclude Include="..\Public\State_RunShort.h" />
     <ClInclude Include="..\Public\State_Slide.h" />
     <ClInclude Include="..\Public\State_Walk.h" />
-    <ClInclude Include="..\Public\StaticModel.h" />
-    <ClInclude Include="..\Public\UIAction_Client.h" />
-    <ClInclude Include="..\Public\UILayer.h" />
-    <ClInclude Include="..\Public\UITargetAction_Client.h" />
+    <ClInclude Include="..\Public\StaticObject.h" />
+    <ClInclude Include="..\Public\UIJust_Image.h" />
+    <ClInclude Include="..\Public\UIProgress_Bar.h" />
+    <ClInclude Include="..\Public\UISkill_BG.h" />
+    <ClInclude Include="..\Public\UIText.h" />
+    <ClInclude Include="..\Public\UITrigger.h" />
     <ClInclude Include="..\Public\UI_Manager.h" />
     <ClInclude Include="..\Public\Weapon.h" />
     <ClInclude Include="Client.h" />
@@ -240,13 +245,12 @@
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="..\Private\Body.cpp" />
+    <ClCompile Include="..\Private\Builder_AttackOverlap.cpp" />
     <ClCompile Include="..\private\Builder_Example.cpp" />
     <ClCompile Include="..\Private\Builder_Map.cpp" />
     <ClCompile Include="..\Private\Builder_UI.cpp" />
     <ClCompile Include="..\Private\CameraMan_Targeter.cpp" />
     <ClCompile Include="..\Private\Canvas.cpp" />
-    <ClCompile Include="..\private\ImGui_FrameLayout.cpp" />
-    <ClCompile Include="..\Private\InstanceModel.cpp" />
     <ClCompile Include="..\Private\ColliderPart.cpp" />
     <ClCompile Include="..\Private\ComboContainer.cpp" />
     <ClCompile Include="..\Private\ComboState.cpp" />
@@ -268,6 +272,9 @@
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">NotUsing</PrecompiledHeader>
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|x64'">NotUsing</PrecompiledHeader>
     </ClCompile>
+    <ClCompile Include="..\Private\ImGui_FrameLayout.cpp" />
+    <ClCompile Include="..\private\ImGui_FrustrumLayout.cpp" />
+    <ClCompile Include="..\private\ImGui_GlobalInspector.cpp" />
     <ClCompile Include="..\Private\imgui_impl_dx11.cpp">
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">NotUsing</PrecompiledHeader>
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|x64'">NotUsing</PrecompiledHeader>
@@ -294,6 +301,7 @@
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|x64'">NotUsing</PrecompiledHeader>
     </ClCompile>
     <ClCompile Include="..\Private\MapObject.cpp" />
+    <ClCompile Include="..\Private\Monster_Dummy.cpp" />
     <ClCompile Include="..\Private\Physics_LandScape.cpp" />
     <ClCompile Include="..\Private\State_CrouchWalk.cpp" />
     <ClCompile Include="..\Private\Level_Loading.cpp" />
@@ -327,10 +335,12 @@
     <ClCompile Include="..\Private\State_RunShort.cpp" />
     <ClCompile Include="..\Private\State_Slide.cpp" />
     <ClCompile Include="..\Private\State_Walk.cpp" />
-    <ClCompile Include="..\Private\StaticModel.cpp" />
-    <ClCompile Include="..\Private\UIAction_Client.cpp" />
-    <ClCompile Include="..\Private\UILayer.cpp" />
-    <ClCompile Include="..\Private\UITargetAction_Client.cpp" />
+    <ClCompile Include="..\Private\StaticObject.cpp" />
+    <ClCompile Include="..\Private\UIJust_Image.cpp" />
+    <ClCompile Include="..\Private\UIProgress_Bar.cpp" />
+    <ClCompile Include="..\Private\UISkill_BG.cpp" />
+    <ClCompile Include="..\Private\UIText.cpp" />
+    <ClCompile Include="..\Private\UITrigger.cpp" />
     <ClCompile Include="..\Private\UI_Manager.cpp" />
     <ClCompile Include="..\Private\Weapon.cpp" />
     <ClCompile Include="..\Public\Physics_Terrain.cpp" />

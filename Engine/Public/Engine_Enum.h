@@ -77,10 +77,12 @@ namespace Engine
 		ACTIONSTATE,
 		CAMERA,
 		SHADER,
+		BOUND,
 		//
 		PX_RIGIDBODY,
 		PX_COLLIDER,
 		PX_CCT,
+		PX_ATTACKOVERLAP,
 		//
 		SCRIPT,
 		
@@ -100,16 +102,6 @@ namespace Engine
 		END
 	};
 	inline constexpr size_t g_ResourceTypeCount = static_cast<size_t>(EResourceType::END);
-	//===================
-	// CollideMesh
-	//===================
-	enum class ESurfaceType : unsigned int
-	{
-		NONE = 0,
-		GROUND,
-		WALL,
-		CEILING,
-	};
 
 	//===================
 	// Model
@@ -158,6 +150,16 @@ namespace Engine
 		GROUND,
 		WALL,
 		END
+	};
+	//===================
+	// MovementMode
+	//===================
+	enum class EFrustrumTier : unsigned int
+	{
+		Near = 0,
+		Mid,
+		Far,
+		None
 	};
 	//===================
 	// MaterialType
@@ -256,32 +258,36 @@ namespace Engine
 		CONTINUOUS_SPECULATIVE,
 		END
 	};
-	enum class PHYSICSFILTERGROUP : PxU32
+
+	typedef struct tagPhysicsFilterGroup
 	{
-		PLAYER = 1 << 0,
-		ATTACK = 1 << 1,
-		SKILL = 1 << 2,
-		ATTACK_PROJECTTILE = 1 << 3,
-		SKILL_PROJECTTILE = 1 << 4,
-		 
-		MONSTER = 1 << 5,
-		MONSTER_ATTACK = 1 << 6,
-		MONSTER_SKILL = 1 << 7,
-		MONSTER_ATTACK_PROJECTTILE = 1 << 8,
-		MONSTER_SKILL_PROJECTTILE = 1 << 9,
+		enum Enum : unsigned int
+		{
+			PLAYER = 1 << 0,
+			ATTACK = 1 << 1,
+			SKILL = 1 << 2,
+			ATTACK_PROJECTTILE = 1 << 3,
+			SKILL_PROJECTTILE = 1 << 4,
 
-		MAP = 1 << 10,
+			MONSTER = 1 << 5,
+			MONSTER_ATTACK = 1 << 6,
+			MONSTER_SKILL = 1 << 7,
+			MONSTER_ATTACK_PROJECTTILE = 1 << 8,
+			MONSTER_SKILL_PROJECTTILE = 1 << 9,
 
-		OBJECT1 = 1 << 11,
-		OBJECT2 = 1 << 12,
+			MAP = 1 << 10,
 
-		TRIGGER_UI = 1 << 13,
-		TRIGGER_QUEST = 1 << 14,
-		TRIGGER_SPAWN = 1 << 15,
-		TRIGGER_DIRECTION = 1 << 16,
+			OBJECT1 = 1 << 11,
+			OBJECT2 = 1 << 12,
 
-		NONE = 1 << 17,
-		END
-	};
+			TRIGGER_UI = 1 << 13,
+			TRIGGER_QUEST = 1 << 14,
+			TRIGGER_SPAWN = 1 << 15,
+			TRIGGER_DIRECTION = 1 << 16,
+
+			NONE = 1 << 17,
+			END
+		};
+	}PHYSICSFILTERGROUP;
 }
 #endif // Engine_Enum_h__

@@ -2,6 +2,7 @@
 #include "ImGui_ClientDebug.h"
 #include "MainPlayer.h"
 #include "ImGui_PlayerInspector.h"
+#include "ImGui_GlobalInspector.h"
 #include "GameInstance.h"
 
 IMPLEMENT_SINGLETON(CImGui_ClientDebug)
@@ -60,6 +61,7 @@ HRESULT CImGui_ClientDebug::Initialize(HWND hWnd, ID3D11Device* pDevice, ID3D11D
 HRESULT CImGui_ClientDebug::Ready_Inspector()
 {
 	m_arrInspectors[EInspectorType::Player] = CImGui_PlayerInspector::Create();
+	m_arrInspectors[EInspectorType::Global] = CImGui_GlobalInspector::Create();
 	return S_OK;
 }
 
@@ -70,6 +72,8 @@ void CImGui_ClientDebug::Render()
 	ImGui::NewFrame();
 
 	m_arrInspectors[EInspectorType::Player]->Render(m_pPlayer);
+	m_arrInspectors[EInspectorType::Global]->Render(nullptr);
+
 
 	ImGuiIO& io = ImGui::GetIO();
 	ImGui::Render();

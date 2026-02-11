@@ -24,13 +24,6 @@ HRESULT CDataDocument_UI::Try_Add(const DTO::TUI_CanvasData& data)
 	return Try_Add(pObjectBase);
 }
 
-HRESULT CDataDocument_UI::Try_Add(const DTO::TUI_LayerData& data)
-{
-	IObjectDataBase* pObjectBase = Create_ObjectData(DTO::EUIType::LAYER);
-	static_cast<CUI_Layer_DTO*>(pObjectBase)->Get_Data() = data;
-	return Try_Add(pObjectBase);
-}
-
 HRESULT CDataDocument_UI::Try_Add(const DTO::TUI_GenericUIData& data)
 {
 	IObjectDataBase* pObjectBase = Create_ObjectData(DTO::EUIType::GENERICUI);
@@ -38,13 +31,17 @@ HRESULT CDataDocument_UI::Try_Add(const DTO::TUI_GenericUIData& data)
 	return Try_Add(pObjectBase);
 }
 
-HRESULT CDataDocument_UI::Try_Add( DTO::TUI_EventBindData& data)
+HRESULT CDataDocument_UI::Try_Add(const DTO::TUI_TextData& data)
 {
-	IObjectDataBase* pObjectBase = Create_ObjectData(DTO::EUIType::EVENT);
-	std::string strKey = data.strOwnerTag + data.strActionKey + UIEventToString(data.eEvent);
-	data.strTag = strKey;
-	static_cast<CUI_EventBindData_DTO*>(pObjectBase)->Get_Data() = data;
+	IObjectDataBase* pObjectBase = Create_ObjectData(DTO::EUIType::UI_TEXT);
+	static_cast<CUI_Text_DTO*>(pObjectBase)->Get_Data() = data;
+	return Try_Add(pObjectBase);
+}
 
+HRESULT CDataDocument_UI::Try_Add(const DTO::TUI_TriggerData& data)
+{
+	IObjectDataBase* pObjectBase = Create_ObjectData(DTO::EUIType::TRIGGER);
+	static_cast<CUI_Trigger_DTO*>(pObjectBase)->Get_Data() = data;
 	return Try_Add(pObjectBase);
 }
 
@@ -54,12 +51,12 @@ IObjectDataBase* CDataDocument_UI::Create_ObjectData(DTO::EUIType eType)
 	{
 	case DTO::EUIType::CANVAS:
 		return CUI_Canvas_DTO::Create();
-	case DTO::EUIType::LAYER:
-		return CUI_Layer_DTO::Create();
 	case DTO::EUIType::GENERICUI:
 		return CUI_GenericUI_DTO::Create();
-	case DTO::EUIType::EVENT:
-		return CUI_EventBindData_DTO::Create();
+	case DTO::EUIType::UI_TEXT:
+		return CUI_Text_DTO::Create();
+	case DTO::EUIType::TRIGGER:
+		return CUI_Trigger_DTO::Create();
 	}
 	return nullptr;
 }

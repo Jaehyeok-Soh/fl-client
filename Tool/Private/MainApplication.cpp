@@ -6,7 +6,6 @@
 #include "ImGui_ToolManager.h"
 #include "Level_Loading.h"
 #include "ImGui_UIManager.h"
-#include "UIData_Repository.h"
 //=================
 // GameObject
 //=================
@@ -97,6 +96,9 @@ HRESULT CMainApplication::Ready_Static_Prototype()
 	if (FAILED(m_pGameInstance->Add_Prototype(ENUM_TO_UINT(ELevelType::STATIC), L"Prototype_Component_VIBuffer_Line_Color", CVIBuffer_Line_Color::Create(m_pDevice, m_pDeviceContext, nullptr))))
 		return E_FAIL;
 
+	if (FAILED(m_pGameInstance->Add_Font(L"Font_Default", L"../../Resources/Fonts/156ex.spritefont")))
+		return E_FAIL;
+
 	// For. Prototype_Component_Texture_Default
 	{
 		CTexture::TEXTURE_COMPONENT_ORIGIN_DESC textureDesc = {};
@@ -152,12 +154,32 @@ HRESULT CMainApplication::Ready_Static_Prototype()
 			return E_FAIL;
 	}
 
+	// For. Prototype_Component_Shader_VtxMesh
+	{
+		CShader::SHADER_ORIGIN_DESC shaderDesc = {};
+		shaderDesc.pShaderFilePath = L"../../Shaders/Shader_VtxMesh_Tool.hlsl";
+		shaderDesc.eLayout = EVtxLayout::VTXMESH;
+		if (FAILED(m_pGameInstance->Add_Prototype(ENUM_TO_UINT(ELevelType::STATIC), L"Prototype_Component_Shader_VtxMesh_Tool",
+			CShader::Create(m_pDevice, m_pDeviceContext, &shaderDesc))))
+			return E_FAIL;
+	}
+
 	// For. Prototype_Component_Shader_VtxInstanceMesh
 	{
 		CShader::SHADER_ORIGIN_DESC shaderDesc = {};
 		shaderDesc.pShaderFilePath = L"../../Shaders/Shader_VtxInstanceMesh.hlsl";
 		shaderDesc.eLayout = EVtxLayout::VTX_INSTANCE_MESH;
 		if (FAILED(m_pGameInstance->Add_Prototype(ENUM_TO_UINT(ELevelType::STATIC), L"Prototype_Component_Shader_VtxInstanceMesh",
+			CShader::Create(m_pDevice, m_pDeviceContext, &shaderDesc))))
+			return E_FAIL;
+	}
+
+	// For. Prototype_Component_Shader_VtxInstanceMesh
+	{
+		CShader::SHADER_ORIGIN_DESC shaderDesc = {};
+		shaderDesc.pShaderFilePath = L"../../Shaders/Shader_VtxInstanceMesh_Tool.hlsl";
+		shaderDesc.eLayout = EVtxLayout::VTX_INSTANCE_MESH;
+		if (FAILED(m_pGameInstance->Add_Prototype(ENUM_TO_UINT(ELevelType::STATIC), L"Prototype_Component_Shader_VtxInstanceMesh_Tool",
 			CShader::Create(m_pDevice, m_pDeviceContext, &shaderDesc))))
 			return E_FAIL;
 	}
@@ -384,7 +406,6 @@ void CMainApplication::Free()
 {
 	Safe_Release(m_pImGuiManager);
 	CPicking_ToolManager::GetInstance()->DestroyInstance();
-	CUIData_Repository::GetInstance()->DestroyInstance();
 	CImGui_UIManager::GetInstance()->DestroyInstance();
 	CMapToolManager::GetInstance()->DestroyInstance();
 	Safe_Release(m_pGameInstance);
