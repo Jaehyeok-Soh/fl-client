@@ -247,6 +247,12 @@
     <Filter Include="99. ETC\03. Tool Shader">
       <UniqueIdentifier>{94f2837f-0795-42b2-b135-340ce4d67014}</UniqueIdentifier>
     </Filter>
+    <Filter Include="06. ImGui\01. Panel\Animation\Panel_AnimModelFile">
+      <UniqueIdentifier>{9485a14e-3e65-4118-9198-15e132e47bf8}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="98. Defines\Animation_Define">
+      <UniqueIdentifier>{6df89fdd-4dd1-43a4-b7c5-8a2f5905fe86}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="framework.h">
@@ -459,9 +465,6 @@
     <ClInclude Include="..\Public\Tool_Structs.h">
       <Filter>98. Defines\Tool_Struct</Filter>
     </ClInclude>
-    <ClInclude Include="..\Public\Panel_Model.h">
-      <Filter>06. ImGui\01. Panel\Animation\Panel_Model</Filter>
-    </ClInclude>
     <ClInclude Include="..\Public\AnimObj.h">
       <Filter>02. GameObjects\ContainerObject\AnimModel</Filter>
     </ClInclude>
@@ -480,6 +483,15 @@
     <ClInclude Include="..\Public\CEffectObject.h" />
     <ClInclude Include="..\Public\Gravity_Force.h" />
     <ClInclude Include="..\Public\Effect.h" />
+    <ClInclude Include="..\Public\Panel_Model.h">
+      <Filter>06. ImGui\01. Panel\Animation\Panel_Model</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\Panel_AnimModelFile.h">
+      <Filter>06. ImGui\01. Panel\Animation\Panel_AnimModelFile</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\Animation_Defines.h">
+      <Filter>98. Defines\Animation_Define</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <Image Include="small.ico">
@@ -684,9 +696,6 @@
     <ClCompile Include="..\Private\Tool_Structs.cpp">
       <Filter>98. Defines\Tool_Struct</Filter>
     </ClCompile>
-    <ClCompile Include="..\Private\Panel_Model.cpp">
-      <Filter>06. ImGui\01. Panel\Animation\Panel_Model</Filter>
-    </ClCompile>
     <ClCompile Include="..\Private\AnimObj.cpp">
       <Filter>02. GameObjects\ContainerObject\AnimModel</Filter>
     </ClCompile>
@@ -705,6 +714,12 @@
     <ClCompile Include="..\Private\CEffectObject.cpp" />
     <ClCompile Include="..\Private\Gravity_Force.cpp" />
     <ClCompile Include="..\Private\Effect.cpp" />
+    <ClCompile Include="..\Private\Panel_Model.cpp">
+      <Filter>06. ImGui\01. Panel\Animation\Panel_Model</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\Panel_AnimModelFile.cpp">
+      <Filter>06. ImGui\01. Panel\Animation\Panel_AnimModelFile</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <FxCompile Include="..\..\Shaders\Shader_VtxInstanceMesh_Tool.hlsl">

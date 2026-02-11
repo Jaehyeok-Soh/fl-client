@@ -3,6 +3,7 @@
 
 #include "Model.h"
 #include "Shader.h"
+#include "PhysicsCCT.h"
 #include "GameInstance.h"
 
 CAnimObj::CAnimObj(EToolObjectType eType, ID3D11Device* pDevice, ID3D11DeviceContext* pDeviceContext)
@@ -52,6 +53,7 @@ void CAnimObj::Update_Priority(const _float fTimeDelta)
 void CAnimObj::Update(const _float fTimeDelta)
 {
 	Super::Update(fTimeDelta);
+	Get_Component<CModel>()->Update_Animation(fTimeDelta, Get_Component<CTransform>(), Get_Component<CPhysicsCCT>());
 }
 
 void CAnimObj::Update_Late(const _float fTimeDelta)
@@ -62,6 +64,8 @@ void CAnimObj::Update_Late(const _float fTimeDelta)
 void CAnimObj::Ready_Before_Render(const _float fTimeDelta)
 {
 	Super::Ready_Before_Render(fTimeDelta);
+
+	m_pGameInstance->Push_RenderObject(RENDER_CATEGORY::NONEBLEND, this);
 }
 
 HRESULT CAnimObj::Render()
@@ -120,6 +124,10 @@ HRESULT CAnimObj::Ready_Components(ANIMOBJ_DESC* pDesc)
 {
 	/* model componenet */
 	if (FAILED(Add_Component<CModel>(ENUM_TO_UINT(ELevelType::ANIMATION), pDesc->wstrModelProtoTag, pDesc)))
+		return E_FAIL;
+
+	/* Prototype_Component_Shader_AnimMesh */
+	if (FAILED(Add_Component<CShader>(ENUM_TO_UINT(ELevelType::STATIC), L"Prototype_Component_Shader_AnimMesh", nullptr)))
 		return E_FAIL;
 
 	return S_OK;
