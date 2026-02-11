@@ -87,7 +87,7 @@ void CUIProgress_Bar::Update_Priority(const _float fTimeDelta)
 	Super::Update_Priority(fTimeDelta);
 
 	if (m_pGameInstance->KeyButton_Down(DIK_1))
-		m_fCurRatio = 0.1f;
+		m_fCurRatio = 0.29f;
 	if (m_pGameInstance->KeyButton_Down(DIK_2))
 		m_fCurRatio = 0.5f;
 	if (m_pGameInstance->KeyButton_Down(DIK_3))

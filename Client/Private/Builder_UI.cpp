@@ -8,6 +8,7 @@
 #include "UITrigger.h"
 
 #include "UISkill_BG.h"
+#include "UIMini_Map.h"
 
 #include"UI_Manager.h"
 #include "GameInstance.h"
@@ -70,6 +71,7 @@ HRESULT CBuilder_UI::Build(const CDataDocumentBase& document)
 				return E_FAIL;
 		}
 	}
+
 	// For. DImage
 	{
 		const vector<Engine::IObjectDataBase*> vecDataList = doc.Get_ListByType(ENUM_TO_UINT(DTO::EUIType::DYNAMIC_IMAGE));
@@ -238,12 +240,21 @@ HRESULT CBuilder_UI::Register_Class(DTO::EUIClassType eClassType, const DTO::TUI
 
 		// 플레이어 스킬류일때 
 		const bool isPlayerSkill = (Type >= DTO::EUIDImageSubClassType::PLAYER_E &&	Type <= DTO::EUIDImageSubClassType::PLAYER_SKILL_END);
+		const bool isMiniMap = (Type >= DTO::EUIDImageSubClassType::MINIMAP_PLAYER_ICON &&	Type <= DTO::EUIDImageSubClassType::MINIMAP_END);
 		if (isPlayerSkill)
 		{
 			CUISkill_BG::SKILL_BG_DESC SkillBGDesc = {};
 			static_cast<CGenericUI::GENERIC_UI_DESC&>(SkillBGDesc) = DefaultDesc;
 			SkillBGDesc.eSubClassType = Type;
 			pResult = m_pGameInstance->Add_GameObject(m_iLevelID, L"Prototype_UI_SkillBG", m_iLevelID, wstrLayerTag, &SkillBGDesc);
+		}
+		
+		else if (isMiniMap)
+		{
+			CUIMini_Map::MINIMAP_DESC SkillBGDesc = {};
+			static_cast<CGenericUI::GENERIC_UI_DESC&>(SkillBGDesc) = DefaultDesc;
+			SkillBGDesc.eSubClassType = Type;
+			pResult = m_pGameInstance->Add_GameObject(m_iLevelID, L"Prototype_UI_MiniMap", m_iLevelID, wstrLayerTag, &SkillBGDesc);
 		}
 	}
 	else

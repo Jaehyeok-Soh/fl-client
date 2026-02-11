@@ -38,6 +38,9 @@ protected:
 protected:
 	DTO::EUIDImageSubClassType m_eDImageSubClass = {};
 
+
+
+
 public:
 	CGameObject* Clone(void* pArg)PURE;
 	virtual void Free()override;

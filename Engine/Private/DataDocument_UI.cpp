@@ -65,14 +65,19 @@ IObjectDataBase* CDataDocument_UI::Create_ObjectData(DTO::EUIType eType)
 	{
 	case DTO::EUIType::CANVAS:
 		return CUI_Canvas_DTO::Create();
+
 	case DTO::EUIType::GENERICUI:
 		return CUI_GenericUI_DTO::Create();
+
 	case DTO::EUIType::UI_TEXT:
 		return CUI_Text_DTO::Create();
+
 	case DTO::EUIType::TRIGGER:
 		return CUI_Trigger_DTO::Create();
+
 	case DTO::EUIType::BUTTON_TRIGGER:
 		return CUI_ButtonTrigger_DTO::Create();
+
 	case DTO::EUIType::DYNAMIC_IMAGE:
 		return CUI_DImage_DTO::Create();
 	}

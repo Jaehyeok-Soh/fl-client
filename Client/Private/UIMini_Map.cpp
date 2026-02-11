@@ -1,0 +1,250 @@
+#include "pch.h"
+#include "UIMini_Map.h"
+#include "Client_Defines.h"
+#include "CameraMan.h"
+
+#include "MainPlayer.h"
+
+//=================
+// Component
+//=================
+#include "Texture.h"
+#include "Shader.h"
+#include "VIBuffer_Rect_Tex.h"
+#include "StatComponent.h"
+#include "GameInstance.h"
+
+CUIMini_Map::CUIMini_Map(ID3D11Device* pDevice, ID3D11DeviceContext* pDeviceContext)
+	:CUIDynamic_Image(pDevice, pDeviceContext)
+{
+}
+
+CUIMini_Map::CUIMini_Map(const CUIMini_Map& rhs)
+	:CUIDynamic_Image(rhs)
+{
+}
+
+HRESULT CUIMini_Map::Initialize_Prototype()
+{
+	if (FAILED(Super::Initialize_Prototype()))
+		return E_FAIL;
+	return S_OK;
+}
+
+HRESULT CUIMini_Map::Initialize(void* pArg)
+{
+	MINIMAP_DESC* pDesc = static_cast<MINIMAP_DESC*>(pArg);
+	if (FAILED(Super::Initialize(pArg)))
+		return E_FAIL;
+	if (FAILED(Ready_Components(pDesc)))
+		return E_FAIL;
+	return S_OK;
+}
+
+HRESULT CUIMini_Map::Attach_Personal_Info()
+{
+	switch (m_eDImageSubClass)
+	{
+	case DTO::EUIDImageSubClassType::MINIMAP_PLAYER_ICON:
+	{
+		CGameObject* pResult=	m_pGameInstance->Get_GameObject(m_iLevelID, g_wszPlayerLayer, 0);
+		if (nullptr == pResult)
+			return E_FAIL;
+		CMainPlayer* pPlayer = dynamic_cast<CMainPlayer*>(pResult);
+		if (nullptr == pPlayer)
+			return E_FAIL;
+
+		CTransform* pPlayerTransform = pPlayer->Get_Component<CTransform>();
+		if (nullptr == pPlayerTransform)
+			return E_FAIL;
+
+		m_pPlayerTransform = pPlayerTransform;
+	}
+		return S_OK;
+	case DTO::EUIDImageSubClassType::MINIMAP_CAMERA_SIGHT:
+	{
+		m_vPivotPos			= Vec2{ m_fX, m_fY + m_fHeight * 0.5f  };
+		m_vOriginPos		= Vec2{ m_fX, m_fY };
+		m_vPivotToOrigin	= m_vOriginPos - m_vPivotPos;
+	}
+		return S_OK;
+	case DTO::EUIDImageSubClassType::END:
+	default:
+		return E_FAIL;
+	}
+
+	return S_OK;
+}
+
+HRESULT CUIMini_Map::Awake(const _uint iCurrentLevelID)
+{
+	if (FAILED(Super::Awake(iCurrentLevelID)))
+		return E_FAIL;
+	Attach_Personal_Info();
+	return S_OK;
+}
+
+void CUIMini_Map::Update_Priority(const _float fTimeDelta)
+{
+	Super::Update_Priority(fTimeDelta);
+}
+
+void CUIMini_Map::Update(const _float fTimeDelta)
+{
+	Super::Update(fTimeDelta);
+
+	if (m_eDImageSubClass == DTO::EUIDImageSubClassType::MINIMAP_CAMERA_SIGHT)
+	{
+		Matrix CamWorldMat = m_pGameInstance->Get_ViewMatrix().Invert();
+		Vec3 vCamLook = CamWorldMat.Forward();
+		Tick_CameraSight(vCamLook);
+		Rotate_Translate_CameraSight();
+	}
+	else if (m_eDImageSubClass == DTO::EUIDImageSubClassType::MINIMAP_PLAYER_ICON)
+	{
+		Tick_CameraSight(m_pPlayerTransform->Get_Info(TRANSFORM_INFO_STATE::LOOK));
+		Rotate_PlayerIcon();
+	}
+	else if (m_eDImageSubClass == DTO::EUIDImageSubClassType::MINIMAP_BGFRAME)
+	{
+		if (KEY_BUTTON_HOLD(DIK_A))
+			TickRotate(-1, fTimeDelta);
+		else if (KEY_BUTTON_HOLD(DIK_D))
+			TickRotate(1, fTimeDelta);
+		else
+			TickRotate(0, fTimeDelta);
+	}
+
+}
+
+void CUIMini_Map::Update_Late(const _float fTimeDelta)
+{
+	Super::Update_Late(fTimeDelta);
+
+
+}
+
+void CUIMini_Map::Ready_Before_Render(const _float fTimeDelta)
+{
+	Acting_By_InteractState();
+	Super::Ready_Before_Render(fTimeDelta);
+}
+
+HRESULT CUIMini_Map::Render()
+{
+	if (!m_isVisible)
+		return S_OK;
+
+	if (FAILED(Super::Render()))
+		return E_FAIL;
+
+	if (FAILED(Bind_ShaderResources()))
+		return E_FAIL;
+
+	Get_Component<CShader>()->Apply();
+	Get_Component<CVIBuffer>()->Bind_Resource();
+	Get_Component<CVIBuffer>()->Render();
+
+	return S_OK;
+}
+
+void CUIMini_Map::Tick_CameraSight(const Vec3& vLook)
+{
+	Vec2 vDir2D = Vec2{ vLook.x, vLook.z };
+	if(vDir2D.Length() > 1e-6f)
+		vDir2D.Normalize();
+	m_fRadian = atan2f(vDir2D.x, vDir2D.y);
+}
+
+void CUIMini_Map::Rotate_Translate_CameraSight()
+{
+	Get_Component<CTransform>()->Rotation(Vec3{ 0.f, 0.f, -1.f }, m_fRadian);
+	const _float c = cosf(m_fRadian);
+	const _float s = sinf(m_fRadian);
+
+	Vec2 v = m_vPivotToOrigin;
+	Vec2 vRot;
+	vRot.x = v.x * c - v.y * s;
+	vRot.y = v.x * s + v.y * c;
+
+	m_fX = m_vPivotPos.x + vRot.x;
+	m_fY = m_vPivotPos.y + vRot.y;
+
+	Move_Position(m_fX, m_fY, m_fZ);
+}
+
+void CUIMini_Map::Rotate_PlayerIcon()
+{
+	Get_Component<CTransform>()->Rotation(Vec3{ 0.f, 0.f, -1.f }, m_fRadian);
+}
+
+_float CUIMini_Map::Clamp(_float v, _float lo, _float hi)
+{
+	return (v < lo) ? lo : (v > hi) ? hi : v;
+}
+
+_float CUIMini_Map::WrapPi(_float a)
+{
+	const _float PI = 3.14159265358979323846f;
+	const _float TWO_PI = 6.2831853071795864769f;
+	while (a > PI) a -= TWO_PI;
+	while (a < -PI) a += TWO_PI;
+	return a;
+}
+
+void CUIMini_Map::TickRotate(_int dir, _float dt)
+{
+	if (dir != 0)
+	{
+		m_fOmega += (_float)dir * m_fAcc * dt;
+		m_fOmega = Clamp(m_fOmega, -m_fMaxOmega, m_fMaxOmega);
+	}
+	else
+	{
+		m_fOmega *= expf(-m_fDrag* dt);
+		if (fabsf(m_fOmega) < 0.0005f) m_fOmega = 0.f;
+	}
+
+	m_fAngle = WrapPi(m_fAngle + m_fOmega * dt);
+	Get_Component<CTransform>()->Rotation(Vec3{ 0.f, 0.f, -1.f }, m_fAngle);
+}
+
+HRESULT CUIMini_Map::Ready_Components(MINIMAP_DESC* pDesc)
+{
+	return S_OK;
+}
+ 
+HRESULT CUIMini_Map::Bind_ShaderResources()
+{
+	CShader* pShader = Get_Component<CShader>();
+	if (FAILED(Get_Component<CTransform>()->Bind_ShaderResource(pShader)))
+		return E_FAIL;
+	return S_OK;
+}
+
+CUIMini_Map* CUIMini_Map::Create(ID3D11Device* pDevice, ID3D11DeviceContext* pDeviceContext)
+{
+	CUIMini_Map* pInstance = new CUIMini_Map(pDevice, pDeviceContext);
+	if (FAILED(pInstance->Initialize_Prototype()))
+	{
+		MSG_BOX("CUIMini_Map::Create, Create Failed");
+		Safe_Release(pInstance);
+	}
+	return pInstance;
+}
+
+CGameObject* CUIMini_Map::Clone(void* pArg)
+{
+	CUIMini_Map* pInstance = new CUIMini_Map(*this);
+	if (FAILED(pInstance->Initialize(pArg)))
+	{
+		MSG_BOX("CUIMini_Map::Clone, Clone Failed");
+		Safe_Release(pInstance);
+	}
+	return pInstance;
+}
+
+void CUIMini_Map::Free()
+{
+	Super::Free();
+}

@@ -59,6 +59,7 @@
 #include "UIJust_Image.h"
 #include "UITrigger.h"
 #include "UISkill_BG.h"
+#include "UIMini_Map.h"
 //=================
 // Resource
 //=================
@@ -201,6 +202,10 @@ HRESULT CLoader::Loading_For_Logo()
 			return E_FAIL;
 		if (FAILED(Loading_Textures(L"../../Resources/Textures/UI/WeaponIcon/")))
 			return E_FAIL;
+		if (FAILED(Loading_Textures(L"../../Resources/Textures/UI/SM_MAP/")))
+			return E_FAIL;
+		if (FAILED(Loading_Textures(L"../../Resources/Textures/UI/Map/")))
+			return E_FAIL;
 	}	
 	
 #pragma endregion
@@ -312,6 +317,7 @@ HRESULT CLoader::Loading_For_Logo()
 	ADD_PROTOTYPE(ELevelType::LOGO, L"Prototype_UI_JUST_IMAGE",		CUIJust_Image::Create(m_pDevice, m_pDeviceContext));
 	ADD_PROTOTYPE(ELevelType::LOGO, L"Prototype_UI_TRIGGER",		CUITrigger::Create(m_pDevice, m_pDeviceContext));
 	ADD_PROTOTYPE(ELevelType::LOGO, L"Prototype_UI_SkillBG",		CUISkill_BG::Create(m_pDevice, m_pDeviceContext));
+	ADD_PROTOTYPE(ELevelType::LOGO, L"Prototype_UI_MiniMap",		CUIMini_Map::Create(m_pDevice, m_pDeviceContext));
 #pragma endregion
 
 	m_isFinished = true;

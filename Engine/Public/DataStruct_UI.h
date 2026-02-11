@@ -135,31 +135,67 @@ NLOHMANN_JSON_SERIALIZE_ENUM(EUISubClassType,
 	PLAYER_DODGE,
 	PLAYER_SKILL_END,
 
+	// È£¹öµÆÀ» ¶§ ÆË¾÷Ã¢ // HOVER_POPUP_BG < New Enum < HOVER_POPUP_END
+	HOVER_POPUP_BG,
+	HOVER_POPUP_ICON,
+	HOVER_POPUP_TEXT,
+	HOVER_POPUP_END,
+
+	// ¹Ì´Ï¸Ê
+	MINIMAP_PLAYER_ICON,
+	MINIMAP_CAMERA_SIGHT,
+	MINIMAP_BGFRAME,
+	MINIMAP_END,
 	END
 };
 
 NLOHMANN_JSON_SERIALIZE_ENUM(EUIDImageSubClassType,
 	{
-		{ EUIDImageSubClassType::NONE_OWNER,   "NONE_OWNER" },
-		{ EUIDImageSubClassType::PLAYER_E,     "PLAYER_E" },
-		{ EUIDImageSubClassType::PLAYER_Q,     "PLAYER_Q" },
-		{ EUIDImageSubClassType::PLAYER_Z,     "PLAYER_Z" },
-		{ EUIDImageSubClassType::PLAYER_GUN,   "PLAYER_GUN" },
-		{ EUIDImageSubClassType::PLAYER_DODGE, "PLAYER_DODGE" },
-		{ EUIDImageSubClassType::PLAYER_SKILL_END, "PLAYER_SKILL_END" },
-		{ EUIDImageSubClassType::END,          "END" }
+		{ EUIDImageSubClassType::NONE_OWNER,			"NONE_OWNER" },
+
+		{ EUIDImageSubClassType::PLAYER_E,				"PLAYER_E" },
+		{ EUIDImageSubClassType::PLAYER_Q,				"PLAYER_Q" },
+		{ EUIDImageSubClassType::PLAYER_Z,				"PLAYER_Z" },
+		{ EUIDImageSubClassType::PLAYER_GUN,			"PLAYER_GUN" },
+		{ EUIDImageSubClassType::PLAYER_DODGE,			"PLAYER_DODGE" },
+		{ EUIDImageSubClassType::PLAYER_SKILL_END,		"PLAYER_SKILL_END" },
+
+		{ EUIDImageSubClassType::HOVER_POPUP_BG,		"HOVER_POPUP_BG" },
+		{ EUIDImageSubClassType::HOVER_POPUP_ICON,		"HOVER_POPUP_ICON" },
+		{ EUIDImageSubClassType::HOVER_POPUP_TEXT,		"HOVER_POPUP_TEXT" },
+		{ EUIDImageSubClassType::HOVER_POPUP_END,		"HOVER_POPUP_END" },
+
+		{ EUIDImageSubClassType::MINIMAP_PLAYER_ICON,	"MINIMAP_PLAYER_ICON" },
+		{ EUIDImageSubClassType::MINIMAP_CAMERA_SIGHT,	"MINIMAP_CAMERA_SIGHT" },
+		{ EUIDImageSubClassType::MINIMAP_BGFRAME,	"MINIMAP_BGFRAME" },
+		{ EUIDImageSubClassType::MINIMAP_END,			"MINIMAP_END" },
+
+		{ EUIDImageSubClassType::END,					"END" }
 	})
 
 	inline EUIDImageSubClassType StringToUIDImageSubType(const std::string& str)
 {
-	if (str == "NONE_OWNER")   return EUIDImageSubClassType::NONE_OWNER;
-	if (str == "PLAYER_E")     return EUIDImageSubClassType::PLAYER_E;
-	if (str == "PLAYER_Q")     return EUIDImageSubClassType::PLAYER_Q;
-	if (str == "PLAYER_Z")     return EUIDImageSubClassType::PLAYER_Z;
-	if (str == "PLAYER_GUN")   return EUIDImageSubClassType::PLAYER_GUN;
-	if (str == "PLAYER_DODGE") return EUIDImageSubClassType::PLAYER_DODGE;
-	if (str == "PLAYER_SKILL_END") return EUIDImageSubClassType::PLAYER_SKILL_END;
+	if (str == "NONE_OWNER")		return EUIDImageSubClassType::NONE_OWNER;
+
+	if (str == "PLAYER_E")			return EUIDImageSubClassType::PLAYER_E;
+	if (str == "PLAYER_Q")			return EUIDImageSubClassType::PLAYER_Q;
+	if (str == "PLAYER_Z")			return EUIDImageSubClassType::PLAYER_Z;
+	if (str == "PLAYER_GUN")		return EUIDImageSubClassType::PLAYER_GUN;
+	if (str == "PLAYER_DODGE")		return EUIDImageSubClassType::PLAYER_DODGE;
+	if (str == "PLAYER_SKILL_END")	return EUIDImageSubClassType::PLAYER_SKILL_END;
+
+	if (str == "HOVER_POPUP_BG")	return EUIDImageSubClassType::HOVER_POPUP_BG;
+	if (str == "HOVER_POPUP_ICON")	return EUIDImageSubClassType::HOVER_POPUP_ICON;
+	if (str == "HOVER_POPUP_TEXT")	return EUIDImageSubClassType::HOVER_POPUP_TEXT;
+	if (str == "HOVER_POPUP_END")	return EUIDImageSubClassType::HOVER_POPUP_END;
+
+	if (str == "MINIMAP_PLAYER_ICON")	return EUIDImageSubClassType::MINIMAP_PLAYER_ICON;
+	if (str == "MINIMAP_CAMERA_SIGHT")	return EUIDImageSubClassType::MINIMAP_CAMERA_SIGHT;
+	if (str == "MINIMAP_BGFRAME")		return EUIDImageSubClassType::MINIMAP_BGFRAME;
+	if (str == "MINIMAP_END")			return EUIDImageSubClassType::MINIMAP_END;
+
 	if (str == "END")          return EUIDImageSubClassType::END;
+
 	return EUIDImageSubClassType::NONE_OWNER;
 }
 
@@ -168,14 +204,26 @@ inline const char* UIDImageSubTypeToString(EUIDImageSubClassType type)
 	switch (type)
 	{
 	case EUIDImageSubClassType::NONE_OWNER:   return "NONE_OWNER";
-	case EUIDImageSubClassType::PLAYER_E:     return "PLAYER_E";
-	case EUIDImageSubClassType::PLAYER_Q:     return "PLAYER_Q";
-	case EUIDImageSubClassType::PLAYER_Z:     return "PLAYER_Z";
-	case EUIDImageSubClassType::PLAYER_GUN:   return "PLAYER_GUN";
-	case EUIDImageSubClassType::PLAYER_DODGE: return "PLAYER_DODGE";
-	case EUIDImageSubClassType::PLAYER_SKILL_END: return "PLAYER_SKILL_END";
-	case EUIDImageSubClassType::END:          return "END";
-	default:								return "NONE_OWNER";
+
+	case EUIDImageSubClassType::PLAYER_E:			return "PLAYER_E";
+	case EUIDImageSubClassType::PLAYER_Q:			return "PLAYER_Q";
+	case EUIDImageSubClassType::PLAYER_Z:			return "PLAYER_Z";
+	case EUIDImageSubClassType::PLAYER_GUN:			return "PLAYER_GUN";
+	case EUIDImageSubClassType::PLAYER_DODGE:		return "PLAYER_DODGE";
+	case EUIDImageSubClassType::PLAYER_SKILL_END:	return "PLAYER_SKILL_END";
+
+	case EUIDImageSubClassType::HOVER_POPUP_BG:		return "HOVER_POPUP_BG";
+	case EUIDImageSubClassType::HOVER_POPUP_ICON:	return "HOVER_POPUP_ICON";
+	case EUIDImageSubClassType::HOVER_POPUP_TEXT:	return "HOVER_POPUP_TEXT";
+	case EUIDImageSubClassType::HOVER_POPUP_END:	return "HOVER_POPUP_END";
+
+	case EUIDImageSubClassType::MINIMAP_PLAYER_ICON:	return "MINIMAP_PLAYER_ICON";
+	case EUIDImageSubClassType::MINIMAP_CAMERA_SIGHT:	return "MINIMAP_CAMERA_SIGHT";
+	case EUIDImageSubClassType::MINIMAP_BGFRAME:		return "MINIMAP_BGFRAME";
+	case EUIDImageSubClassType::MINIMAP_END:			return "MINIMAP_END";
+
+	case EUIDImageSubClassType::END:				return "END";
+	default:										return "NONE_OWNER";
 	}
 }
 
@@ -319,7 +367,7 @@ private:
 	CUI_ButtonTrigger_DTO() = default;
 	virtual ~CUI_ButtonTrigger_DTO() = default;
 public:
-	_uint Get_Type() const override { return ENUM_TO_UINT(DTO::EUIType::TRIGGER); }
+	_uint Get_Type() const override { return ENUM_TO_UINT(DTO::EUIType::BUTTON_TRIGGER); }
 	const _string& Get_Tag() const override { return m_Data.strTag; }
 
 	json ToJson() const override;
