@@ -5,6 +5,7 @@
 NS_BEGIN(Engine)
 class CMaterial;
 struct  CLIENT_MAKEPATH_DESC_BASE;
+class CModel;
 NS_END
 
 NS_BEGIN(Tool)
@@ -68,6 +69,8 @@ private:
 	_bool							Check_OutBound(_int iIndex) const;
 private:
 	HRESULT							Change_Instance_To_Default();
+	_bool							Compute_ModelLocalMinMax(CModel* pModel , OUT Vec3 OutMinMax[2]);
+	_bool							Compute_InstanceGroupMinMax(const Vec3* pComputed_Final_MinMax, OUT Vec3* pMinMax);
 public:
 
 	HRESULT							Add_MapToolComponent(CMapObject::COMPONENT eType);
@@ -165,18 +168,18 @@ private:
 	HRESULT								Render_Instance();
 
 protected:
-	bool							m_isBatced{false};
+	bool								m_isBatced{false};
 
 
-	EMapObject_Type					m_eMapObjectType	{ EMapObject_Type::END };
-	EMapObject_DrawType				m_eMapObjectDrawType{ EMapObject_DrawType::Default };
-	std::wstring					m_wstrModelPath		{ L"" };
+	EMapObject_Type						m_eMapObjectType	{ EMapObject_Type::END };
+	EMapObject_DrawType					m_eMapObjectDrawType{ EMapObject_DrawType::Default };
+	std::wstring						m_wstrModelPath		{ L"" };
 
 	/* 이 오브젝트가 Client 에서 생성될 Path ID */
-	EClientMakePath					m_eClientMakePath	{ EClientMakePath::END };
-	EClientLevelType				m_eClientLevelType	{ EClientLevelType::END };
+	EClientMakePath						m_eClientMakePath	{ EClientMakePath::END };
+	EClientLevelType					m_eClientLevelType	{ EClientLevelType::END };
 	/* 생성될 Path ID의 Desc를 가지고 있는다 */
-	vector<CLIENT_MAKEPATH_DESC_BASE*> m_vecClientMakePathDesc{};
+	vector<CLIENT_MAKEPATH_DESC_BASE*>	m_vecClientMakePathDesc{};
 
 
 	/* UE or Data Load 인지 판별 */
@@ -197,6 +200,13 @@ protected:
 	/* Override Material을 담아줄 변수 */
 	vector<CMaterial*>				m_vecOverrideMaterials;
 	bool							m_isUseOverrideMaterials{ false };
+
+
+
+
+	/* Instance Draw 컬링용 Min Max들고있기 */
+	Vec3							m_vInstanceMinMax[2];
+
 
 public:
 	static CMapObject*		Create(EToolObjectType eType, ID3D11Device* pDevice, ID3D11DeviceContext* pContext);

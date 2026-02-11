@@ -331,61 +331,62 @@ HRESULT CRender_Manager::Render_NoneBlend()
 	}
 #endif
 
-	//for (CGameObject* pElement : m_filteredRenderObjects)
-	//{
-	//	if (FAILED(pElement->Render()))
-	//	{
-	//		m_filteredRenderObjects.clear();
-	//		return E_FAIL;
-	//	}
-	//}
-	//m_filteredRenderObjects.clear();
-
 	for (CGameObject* pElement : m_filteredRenderObjects)
 	{
-		if (pElement == nullptr)
-			continue;
-
-		CBounds *pBounds = pElement->Get_Component<CBounds>();
-		BoundingBox *pAABB = pBounds->Get_WolrdAABB();
-		const EFrustrumTier eTier = m_pGameInstance->Classify_BySplitFrustrum(*pAABB);
-		switch (eTier)
+		if (FAILED(pElement->Render()))
 		{
-		case EFrustrumTier::Near: m_visibleNear.push_back(pElement); break;
-		case EFrustrumTier::Mid:  m_visibleMid.push_back(pElement);  break;
-		case EFrustrumTier::Far:  m_visibleFar.push_back(pElement);  break;
-		default:
-			break;
+			m_filteredRenderObjects.clear();
+			return E_FAIL;
 		}
 	}
 	m_filteredRenderObjects.clear();
 
+	//for (CGameObject* pElement : m_filteredRenderObjects)
+	//{
+	//	if (pElement == nullptr)
+	//		continue;
 
-	for (CGameObject* pElement : m_visibleNear)
-	{
-		if (FAILED(pElement->Render()))
-		{
-			m_visibleNear.clear();
-			m_visibleMid.clear();
-			m_visibleFar.clear();
-			return E_FAIL;
-		}
-	}
+	//	CBounds *pBounds = pElement->Get_Component<CBounds>();
+	//	BoundingBox *pAABB = pBounds->Get_WolrdAABB();
+	//	const EFrustrumTier eTier = m_pGameInstance->Classify_BySplitFrustrum(*pAABB);
+	//	switch (eTier)
+	//	{
+	//	case EFrustrumTier::Near: m_visibleNear.push_back(pElement); break;
+	//	case EFrustrumTier::Mid:  m_visibleMid.push_back(pElement);  break;
+	//	case EFrustrumTier::Far:  m_visibleFar.push_back(pElement);  break;
+	//	default:
+	//		break;
+	//	}
+	//}
+	//m_filteredRenderObjects.clear();
 
-	for (CGameObject* pElement : m_visibleMid)
-	{
-		if (FAILED(pElement->Render()))
-		{
-			m_visibleNear.clear();
-			m_visibleMid.clear();
-			m_visibleFar.clear();
-			return E_FAIL;
-		}
-	}
+
+	//for (CGameObject* pElement : m_visibleNear)
+	//{
+	//	if (FAILED(pElement->Render()))
+	//	{
+	//		m_visibleNear.clear();
+	//		m_visibleMid.clear();
+	//		m_visibleFar.clear();
+	//		return E_FAIL;
+	//	}
+	//}
+
+	//for (CGameObject* pElement : m_visibleMid)
+	//{
+	//	if (FAILED(pElement->Render()))
+	//	{
+	//		m_visibleNear.clear();
+	//		m_visibleMid.clear();
+	//		m_visibleFar.clear();
+	//		return E_FAIL;
+	//	}
+	//}
 
 	m_visibleNear.clear();
 	m_visibleMid.clear();
 	m_visibleFar.clear();
+	
 
 	for (CGameObject* pElement : m_renderObjects[ENUM_TO_UINT(RENDER_CATEGORY::NONEBLEND)])
 	{
