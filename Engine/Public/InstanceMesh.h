@@ -37,7 +37,7 @@ public:
 	void			Unbind_Resource(_uint iSlotNum);
 public:
 	const Vec3*		Get_InstanceWorldMinMax() const { return m_pInstanceWorldMinMax; }
-	HRESULT			ReMake_InstanceBuffer(vector<Matrix>* vecInstanceMatrixPointer);
+	HRESULT			ReMake_InstanceBuffer(vector<Matrix>* vecInstanceMatrixPointer, const Vec3* pModelMinMax);
 	void			Update_Matrix(const Matrix& WorldMatrix, _uint iIndex);
 	void			Update_Matrix(const vector<Matrix>& vMatrix);
 public:

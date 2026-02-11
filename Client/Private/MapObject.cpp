@@ -174,6 +174,7 @@ void	CMapObject::Update_Late(const _float fTimeelta)
 {
 	Super::Update_Late(fTimeelta);
 }
+
 void	CMapObject::Ready_Before_Render(const _float fTimeDelta)
 {
 	Super::Ready_Before_Render(fTimeDelta);
@@ -261,7 +262,6 @@ HRESULT	CMapObject::Render_Instance()
     CInstanceMesh* pInstanceMesh = Get_Component<CInstanceMesh>();  if (pInstanceMesh == nullptr)       return E_FAIL;
     _uint iMeshCount = static_cast<_uint>(pModel->Get_MeshCount());
     _uint iInstanceCount = static_cast<_uint>(pInstanceMesh->Get_InstanceCount());
-
     Filtering_Visible(iInstanceCount);
 
     // 그릴거 없으면 그냥 패스

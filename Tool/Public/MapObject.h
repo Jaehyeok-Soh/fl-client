@@ -69,18 +69,15 @@ private:
 	_bool								Check_OutBound(_int iIndex) const;
 private:
 	HRESULT								Change_Instance_To_Default();
+	HRESULT								Update_Instance_WorldMinMax(const Vec3* pModelMinMax, const vector<Matrix>* vecInstanceMatrixPointer);
 public:
-
 	HRESULT								Add_MapToolComponent(CMapObject::COMPONENT eType);
 public:
-
 	void								Reset_OriginTransform(_int iIndex = -1);
 	void								Override_OriginTransform(_int iIndex = -1);
-
-	/* 기능 관련 */
 public:
-
 	void								Update_InstanceWorldMatrix(_bool isAllUpdate , _int iIndex = -1);
+	void								Update_Bounds(_uint iIndex);
 
 public:
 	virtual bool						Get_SRT(OUT  Vec3& vOutScale, OUT Quat& vQuat, OUT Vec3& vPosition)override;
@@ -126,6 +123,7 @@ public:
 	Vec3								Get_Scale(_int iIndex = -1 )		const;
 	Quat								Get_Quaternion(_int iIndex = -1 )	const;
 	Vec3								Get_Position(_int iIndex = -1 )		const;
+	Matrix								Get_Matrix(_int iIndex =-1)			const;
 
 	/* Type관련 */
 	EMapObject_Type						Get_MapObjectType()			const	{ return m_eMapObjectType;}
@@ -191,7 +189,10 @@ protected:
 
 	/* SRT Data */
 	vector<Tool::SRT_DATA>				m_vecOriginSRTs{};	//
+	vector<Matrix>						m_vecOriginMatrix{};
+
 	vector<Tool::SRT_DATA>				m_vecSRTs{};
+	vector<Matrix>						m_vecMatrix{};
 
 
 	/* 임시 패기처분 */
@@ -203,7 +204,7 @@ protected:
 
 
 	/* Instance Draw 컬링용 Min Max들고있기 */
-	Vec3								m_vInstanceMinMax[2];
+	Vec3								m_vInstanceWorldMinMax[2]{ Vec3(FLT_MAX,FLT_MAX,FLT_MAX) , Vec3(-FLT_MAX,-FLT_MAX,-FLT_MAX)};
 
 
 public:

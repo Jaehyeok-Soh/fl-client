@@ -168,7 +168,7 @@ void CInstanceMesh::Unbind_Resource(_uint iSlotNum)
 	m_pDeviceContext->IASetVertexBuffers(iSlotNum , m_iVertexBufferCount , pInstanceBuffer , iVertexStrides , iOffsets);
 }
 
-HRESULT CInstanceMesh::ReMake_InstanceBuffer(vector<Matrix>* vecInstanceMatrixPointer)
+HRESULT CInstanceMesh::ReMake_InstanceBuffer(vector<Matrix>* vecInstanceMatrixPointer , const Vec3* pModelMinMax)
 {
 	if (vecInstanceMatrixPointer == nullptr) return E_FAIL;
 
@@ -200,10 +200,13 @@ HRESULT CInstanceMesh::ReMake_InstanceBuffer(vector<Matrix>* vecInstanceMatrixPo
 	if (FAILED(m_pDevice->CreateBuffer(&m_tInstanceVertexBufferDesc, &InstanceInitialData, &m_pVB)))
 		return E_FAIL;
 
+
+	Update_Instance_WorldMinMax(pModelMinMax , vecInstanceMatrixPointer);
+
 	return S_OK;
 }
 
-void CInstanceMesh::Update_Matrix(const Matrix& WorldMatrix, _uint iIndex)
+void CInstanceMesh::Update_Matrix( const Matrix& WorldMatrix, _uint iIndex)
 {
 	if (m_tInstanceVertexBufferDesc.Usage != D3D11_USAGE_DYNAMIC)
 		return;
@@ -216,6 +219,7 @@ void CInstanceMesh::Update_Matrix(const Matrix& WorldMatrix, _uint iIndex)
 	::memcpy(&pVtxMatrix[iIndex].vRight.x , &WorldMatrix._11 , sizeof(VTX_INSTANCE) );
 
 	m_pDeviceContext->Unmap(m_pVB, 0);
+
 }
 
 void CInstanceMesh::Update_Matrix(const vector<Matrix>& vecWorldMatrix)
@@ -269,7 +273,7 @@ void CInstanceMesh::Free()
 {
 	Super::Free();
 
-	Safe_Delete_Array(m_pInstanceWorldMinMax);
-
+	if(CComponent::IsClone())
+		Safe_Delete_Array(m_pInstanceWorldMinMax);
 }
 

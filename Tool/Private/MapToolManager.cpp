@@ -152,7 +152,6 @@ HRESULT CMapToolManager::Change_Instance_To_OtherDrawType(CMapObject* pChangeMap
 			tDesc.vecClientMakePathDesc.clear();
 
 			tDesc.vecSRTs.push_back(vecSRTData[i]);
-			tDesc.vecSRTs.back().Update_World();
 
 			CLIENT_MAKEPATH_DESC_BASE* pClientMakePathDesc{ nullptr };
 			if (!vecClientMakePathDesc.empty())
@@ -394,7 +393,7 @@ HRESULT CMapToolManager::Batch_Preview()
 
 		SRT_DATA tSRT{};
 		Get_SRT_BrushData(tSRT.vScale , tSRT.vQuat , tSRT.vPosition);
-		tSRT.Update_World();
+
 		m_pPreviewMapobject = CMapObject::Clone(m_pPreviewMapobject, tSRT);
 
 		m_vLastPlacedPos = tSRT.vPosition;
@@ -402,6 +401,7 @@ HRESULT CMapToolManager::Batch_Preview()
 		if (m_pPreviewMapobject == nullptr) return E_FAIL;
 
 		m_vLastPlacedPos = tSRT.vPosition;
+
 	}
 
 

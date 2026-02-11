@@ -553,7 +553,7 @@ HRESULT CPanel_MapObjectList::Render_SelectInfo()
 					pMapToolMgr->Get_SRT_BrushData(tSRT.vScale, tSRT.vQuat, tSRT.vPosition);
 				else
 					tSRT = m_pSelectMapObject->Get_SRTData(false); // 현재 선택된 놈의SRT를 복제
-				tSRT.Update_World();
+
 				m_pSelectMapObject->Add_InstanceData(tSRT);
 				pMapToolMgr->Set_PreviewMapObject(m_pSelectMapObject);
 			}
@@ -596,7 +596,6 @@ HRESULT CPanel_MapObjectList::Render_SelectInfo()
 					tSRT = m_pSelectMapObject->Get_SRTData(false);
 
 				/* 똑같은 Object 생성해야함... */
-				tSRT.Update_World();
 				pMapToolMgr->Set_PreviewMapObject(CMapObject::Clone(m_pSelectMapObject, tSRT));
 			}
 		}

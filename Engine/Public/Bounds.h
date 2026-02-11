@@ -19,8 +19,10 @@ public:
 	constexpr static EComponentType _ID = EComponentType::BOUND;
 	typedef struct tagBoundComponentDesc
 	{
-		const Vec3* pMinMax{ nullptr };
-		_float fRatio{ 1.f };
+
+		const Vec3*		pMinMax{ nullptr };
+		_float			fRatio{ 1.f };
+
 	}BOUND_COMP_DESC;
 private:
 	CBounds(ID3D11Device* pDevice, ID3D11DeviceContext* pDeviceContext);
@@ -31,14 +33,25 @@ private:
 	virtual HRESULT		Initialize(void* pArg) override;
 
 public:
+	HRESULT				Update_Bounds(const Vec3* pMinMax , float fRatio = 1.f);
+
+	/* 일정 Index의 SubBounds를 Update해주는함수 */
+	HRESULT				Update_SubBound(const Vec3* pModelMinMax , const Matrix& WorldMatrix , _uint iIndex);
+
 	HRESULT				Add_SubBounds(const Vec3* pMinMax, span<Matrix> spanInstanceMatrix, _float fRatio = 1.f);
-	HRESULT				Append_SubBounds(const Matrix& InstanceMatrix , _float fRatio = 1.f);
+	
+	/* 기존에 있던 배열에 추가 해주는 함수 */
+	HRESULT				Push_SubBounds(const Vec3* pTotalMinMax, const Vec3* pModelMinMax, const Matrix& WorldMatrix , float fRatio = 1.f);
+	HRESULT				Delete_SubBounds(const Vec3* pTotalMinMax , _uint iDeleteIndex , float fRatio = 1.f);
+
+
 	void				Update_BoundingDesc(const Matrix& matWorld);
 	_bool				IntersectWith_Frustrum(BoundingFrustum* pFrustrum);
 	void				IntersectWith_Frustrum_SubBounds(BoundingFrustum* pFrustrum,OUT vector<_uint> &vecVisibleIndex);
 	_bool				IntersectWithRay_World(OUT Vec3& vOut, OUT _int& iIndex);
 	_bool				IntersectWithRay_Local(OUT Vec3& vOut, OUT _int& iIndex);
 	BoundingBox*		Get_WolrdAABB();
+
 private:
 	CBounding_Sphere*	Create_Sphere(Vec3* pMinMax);
 	CBounding_AABB*		Create_AABB(Vec3* pMinMax);

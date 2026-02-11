@@ -22,6 +22,8 @@ CMapObject::CMapObject(EToolObjectType eType, ID3D11Device* pDevice, ID3D11Devic
     , m_eMapObjectState{ CMapObject::EState::Default }, m_iSelectedInstanceID{ 0 }, m_vecOriginSRTs{}
     , m_wstrModelPath{L""}
     , m_vecClientMakePathDesc{}
+    , m_vecMatrix{}
+    , m_vecOriginMatrix{}
 {
 
 }
@@ -39,6 +41,8 @@ CMapObject::CMapObject(const CMapObject& rhs)
     , m_vecSRTs{rhs.m_vecSRTs }
     , m_wstrModelPath(rhs.m_wstrModelPath)
     , m_isBatced{ rhs .m_isBatced}
+    , m_vecMatrix{rhs.m_vecMatrix}
+    , m_vecOriginMatrix{rhs.m_vecOriginMatrix}
 {
     /*  Description을 어케해주는게 좋을려나...  */
 
@@ -102,22 +106,24 @@ HRESULT CMapObject::Ready_SRTDatas(CMapObject::MAPOBJECT_DESC* pDesc)
     _uint iCount = ENUM_TO_UINT(pDesc->vecSRTs.size());
 
     m_vecSRTs.resize(iCount);
-    m_vecOriginSRTs.resize(iCount);
+    m_vecMatrix.resize(iCount);
 
+    m_vecOriginSRTs.resize(iCount);
+    m_vecOriginMatrix.resize(iCount);
 
     /* SRT Data 대입 */
     for (_uint i = 0; i < iCount; ++i)
     {
         m_vecSRTs[i] = pDesc->vecSRTs[i];
-        m_vecSRTs[i].Update_World();
+        m_vecMatrix[i] = m_vecSRTs[i].Get_World();
+
         m_vecOriginSRTs[i] = pDesc->vecSRTs[i];
-        m_vecOriginSRTs[i].Update_World();
+        m_vecOriginMatrix[i] = m_vecOriginSRTs[i].Get_World();
     }
 
     if (m_eMapObjectDrawType != EMapObject_DrawType::Instance)
         Get_Component<CTransform>()->Set_WorldMatrix(m_vecSRTs[m_iSelectedInstanceID].Get_World());
-   
-
+  
     return S_OK;
 }
 
@@ -145,25 +151,20 @@ HRESULT CMapObject::Ready_Component()
     CModel::MODEL_COPY_DESC tModelCopyDesc{};
     Add_Component<CModel>(tModelDesc.iPrototypeLevelIndex, L"Prototype_Component_Model_" + Engine_Utils::ToWString(m_strName), &tModelCopyDesc);
 
-    vector<Matrix> vecMatrix{};
     if (m_eMapObjectDrawType == EMapObject_DrawType::Instance)
     {
         /* InstanceMehs  */
         CInstanceMesh::INSTANCEMESH_DESC tInstanceMeshDesc{};
         tInstanceMeshDesc.IB_Usage = D3D11_USAGE_DYNAMIC;
         tInstanceMeshDesc.VB_Usage = D3D11_USAGE_DYNAMIC;
-        tInstanceMeshDesc.pModelMinMax = Get_Component<CInstanceMesh>()->Get_InstanceWorldMinMax();
-
-        vecMatrix.reserve(m_vecSRTs.size());
-        for (auto& SRTs : m_vecSRTs) vecMatrix.push_back(SRTs.Get_World());
-        tInstanceMeshDesc.vecInstanceMatrixPointer = &vecMatrix;
+        tInstanceMeshDesc.pModelMinMax = Get_Component<CModel>()->Get_StaticModelMinMax();
+        tInstanceMeshDesc.vecInstanceMatrixPointer = &m_vecMatrix;
         Add_Component<CInstanceMesh>(ENUM_TO_UINT(ELevelType::STATIC), L"Prototype_Component_VIBuffer_InstanceMesh", &tInstanceMeshDesc);
-
     }
 
     CBounds::BOUND_COMP_DESC tBoundDesc{};
     tBoundDesc.fRatio = 1.f;
-    tBoundDesc.pMinMax = Get_Component<CModel>()->Get_StaticModelMinMax();
+    tBoundDesc.pMinMax =  m_eMapObjectDrawType == EMapObject_DrawType::Instance ?  Get_Component<CInstanceMesh>()->Get_InstanceWorldMinMax() : Get_Component<CModel>()->Get_StaticModelMinMax();
     if (FAILED(Add_Component<CBounds>(0, L"Prototype_Component_Bounds", &tBoundDesc)))
         return E_FAIL;
 
@@ -172,7 +173,7 @@ HRESULT CMapObject::Ready_Component()
 
     if(m_eMapObjectDrawType == EMapObject_DrawType::Instance)
         Get_Component<CBounds>()->Add_SubBounds(
-            Get_Component<CModel>()->Get_StaticModelMinMax(),span<Matrix>( vecMatrix.data() , vecMatrix.size()),1.f);
+            Get_Component<CModel>()->Get_StaticModelMinMax(),span<Matrix>(m_vecMatrix.data() , m_vecMatrix.size()),1.f);
 
     return S_OK;
 }
@@ -322,7 +323,6 @@ HRESULT CMapObject::Add_MapToolComponent(CMapObject::COMPONENT eType)
     return S_OK;
 }
 
-
 void CMapObject::Reset_OriginTransform(_int iIndex)
 {
     if (!Check_OutBound(iIndex))
@@ -332,15 +332,13 @@ void CMapObject::Reset_OriginTransform(_int iIndex)
     if (Index < 0) return;
    
 
-    m_vecSRTs[Index] =  m_vecOriginSRTs[Index];
-    m_vecSRTs[Index].Update_World();
-
+    m_vecSRTs[Index]  =  m_vecOriginSRTs[Index];
+    m_vecMatrix[Index] = m_vecOriginMatrix[Index];
 
     if (m_eMapObjectDrawType == EMapObject_DrawType::Instance)
         Update_InstanceWorldMatrix(false, Index);
     else
         Get_Component<CTransform>()->Set_WorldMatrix(m_vecSRTs[Index].Get_World());
-
 }
 
 void CMapObject::Override_OriginTransform(_int iIndex)
@@ -352,6 +350,7 @@ void CMapObject::Override_OriginTransform(_int iIndex)
     if (Index < 0) return;
 
     m_vecOriginSRTs[Index] = m_vecSRTs[Index];
+    m_vecOriginMatrix[Index] = m_vecMatrix[Index];
 }
 
 void CMapObject::Update_InstanceWorldMatrix(_bool isAllUpdate, _int iIndex)
@@ -379,17 +378,41 @@ void CMapObject::Update_InstanceWorldMatrix(_bool isAllUpdate, _int iIndex)
     {
         if (m_iSelectedInstanceID >= m_vecSRTs.size())
             return;
-        memcpy(&pInstance[Index], &m_vecSRTs[Index].WorldMatrix._11, sizeof(Matrix));
+        memcpy(&pInstance[Index], &m_vecMatrix[Index]._11, sizeof(Matrix));
     }
     else
     {
         for (_uint i = 0; i < static_cast<_uint>(m_vecSRTs.size()); ++i)
-            memcpy(&pInstance[i], &m_vecSRTs[i].WorldMatrix._11, sizeof(Matrix));
+            memcpy(&pInstance[i], &m_vecMatrix[i]._11, sizeof(Matrix));
     }
 
     m_pDeviceContext->Unmap(pInstanaceBuffer , 0);
 
     return;
+}
+
+void CMapObject::Update_Bounds(_uint iIndex)
+{
+    if (!Check_OutBound(iIndex))
+        return;
+
+    /* Instance Type이면 SubBound 업데이트를 시켜주기 */
+    if (m_eMapObjectDrawType == EMapObject_DrawType::Instance)
+    {
+        /* 내가 움직이거나 그 럴떄마다 Update를 해줘야한다 */
+        CInstanceMesh* pInstanceMesh = Get_Component<CInstanceMesh>();  if (pInstanceMesh == nullptr) return;
+        pInstanceMesh->Update_Instance_WorldMinMax(Get_Component<CModel>()->Get_StaticModelMinMax(), &m_vecMatrix);
+        CBounds* pBound = Get_Component<CBounds>(); if (pBound == nullptr) return;
+        /* BoundUpdate */
+        pBound->Update_SubBound( Get_Component<CInstanceMesh>()->Get_InstanceWorldMinMax(), m_vecMatrix[iIndex], iIndex);
+    }
+    else
+    {
+        /*  Instance용 모델이 아니라면?  */
+        CBounds* pBound = Get_Component<CBounds>();
+        if (pBound == nullptr) return;
+        pBound->Update_BoundingDesc(m_vecMatrix[0]);
+    }
 }
 
 bool CMapObject::Get_SRT(OUT Vec3& vOutScale, OUT Quat& vQuat, OUT Vec3& vPosition)
@@ -407,12 +430,14 @@ Matrix CMapObject::Get_WorldMatrix()
 {
     if (m_iSelectedInstanceID >= m_vecSRTs.size())
         return Matrix::Identity;
-    return m_vecSRTs[m_iSelectedInstanceID].Get_World();
+    return m_vecMatrix[m_iSelectedInstanceID];
 }
 
 void CMapObject::Set_WorldMatrix(const Vec3& vScale, const Quat& vQuat, const Vec3& vPosition)
 {
     Set_SRTData(vScale , vQuat , vPosition);
+
+    Update_Bounds(m_iSelectedInstanceID);
 }
 
 void CMapObject::Set_WorldMatrix(const Matrix& WorldMatrix)
@@ -420,13 +445,15 @@ void CMapObject::Set_WorldMatrix(const Matrix& WorldMatrix)
     if (m_iSelectedInstanceID >= m_vecSRTs.size())
         return;
 
-    m_vecSRTs[m_iSelectedInstanceID].Update_World(WorldMatrix);
-
+    m_vecSRTs[m_iSelectedInstanceID].Update_SRT(WorldMatrix);
+    m_vecMatrix[m_iSelectedInstanceID] = WorldMatrix;
     
     if (m_eMapObjectDrawType == EMapObject_DrawType::Instance)
         Update_InstanceWorldMatrix(false);
     else
         Get_Component<CTransform>()->Set_WorldMatrix(m_vecSRTs[m_iSelectedInstanceID].Get_World());
+
+    Update_Bounds(m_iSelectedInstanceID);
 
     return;
 }
@@ -438,13 +465,18 @@ void CMapObject::Set_Scale(const Vec3& vScale ,_int iIndex)
         return;
 
     _uint Index = iIndex == -1 ?  m_iSelectedInstanceID : static_cast<_uint>(iIndex);
-    m_vecSRTs[Index].Update_Scale(vScale);
 
+    m_vecSRTs[Index].Update_Scale(vScale);
+    m_vecMatrix[Index] = m_vecSRTs[iIndex].Get_World();
 
     if (m_eMapObjectDrawType == EMapObject_DrawType::Instance)
         Update_InstanceWorldMatrix(false);
     else
         Get_Component<CTransform>()->Set_WorldMatrix(m_vecSRTs[Index].Get_World());
+
+
+    Update_Bounds(Index);
+
 }
 
 void CMapObject::Set_Position(const Vec3& vPosition , _int iIndex)
@@ -454,11 +486,15 @@ void CMapObject::Set_Position(const Vec3& vPosition , _int iIndex)
 
     _uint Index = iIndex == -1  ? m_iSelectedInstanceID : static_cast<_int>(iIndex);
     m_vecSRTs[Index].Update_Position(vPosition);
+    m_vecMatrix[Index] = m_vecSRTs[Index].Get_World();
 
     if (m_eMapObjectDrawType == EMapObject_DrawType::Instance)
-        Update_InstanceWorldMatrix(false,iIndex);
+        Update_InstanceWorldMatrix(false, Index);
     else
         Get_Component<CTransform>()->Set_WorldMatrix(m_vecSRTs[Index].Get_World());
+
+    Update_Bounds(Index);
+
 }
 
 void CMapObject::Set_Quaternion(const Quat& vQuat ,_int iIndex)
@@ -468,14 +504,15 @@ void CMapObject::Set_Quaternion(const Quat& vQuat ,_int iIndex)
 
     _uint Index = iIndex == -1 ? m_iSelectedInstanceID : static_cast<_int>(iIndex);
     m_vecSRTs[Index].Update_Quat(vQuat);
+    m_vecMatrix[Index] = m_vecSRTs[Index].Get_World();
 
     if (m_eMapObjectDrawType == EMapObject_DrawType::Instance)
         Update_InstanceWorldMatrix(false);
     else
         Get_Component<CTransform>()->Set_WorldMatrix(m_vecSRTs[Index].Get_World());
+
+    Update_Bounds(Index);
 }
-
-
 
 void CMapObject::Set_ClientMakePath(EClientMakePath eClientMakePath)
 {
@@ -533,17 +570,24 @@ void CMapObject::Set_MapObjectDrawType(EMapObject_DrawType eDrawType)
         m_iSelectedInstanceID = 0;
         
         SRT_DATA& tCurSRT = m_vecSRTs.front();
-        vector<Matrix> vecWorldMatrix{};
-        vecWorldMatrix.push_back(tCurSRT.WorldMatrix);
 
         CInstanceMesh::INSTANCEMESH_DESC tDesc{};
-        tDesc.vecInstanceMatrixPointer = &vecWorldMatrix;
+        tDesc.vecInstanceMatrixPointer = &m_vecMatrix;
         tDesc.VB_Usage = D3D11_USAGE_DYNAMIC;
         tDesc.IB_Usage = D3D11_USAGE_DYNAMIC;
+        tDesc.pModelMinMax = Get_Component<CModel>()->Get_StaticModelMinMax();
         Add_Component<CInstanceMesh>(ENUM_TO_UINT(ELevelType::STATIC), L"Prototype_Component_VIBuffer_InstanceMesh", &tDesc);
 
         CGameObject::Remove_Component<CShader>();
         Add_Component<CShader>(ENUM_TO_UINT(ELevelType::STATIC), L"Prototype_Component_Shader_VtxInstanceMesh_Tool", nullptr);
+       
+        CTransform* pTs = Get_Component<CTransform>();
+        pTs->Set_WorldMatrix(Matrix::Identity);
+
+        CBounds* pBounds = Get_Component<CBounds>();
+        pBounds->Update_BoundingDesc(pTs->Get_WorldMatrix());
+        /* 아직 생성을안함 */
+        pBounds->Push_SubBounds(Get_Component<CInstanceMesh>()->Get_InstanceWorldMinMax(),Get_Component<CModel>()->Get_StaticModelMinMax(),m_vecMatrix.front());
     }
 
     return;
@@ -556,20 +600,17 @@ void CMapObject::Add_InstanceData(const SRT_DATA& tData)
 
     /* 데이터를 추가한뒤 버퍼 재할당 */
     m_vecSRTs.push_back(tData);
-    m_vecSRTs.back().Update_World();
+    m_vecMatrix.push_back(tData.Get_World());
+
     m_vecOriginSRTs.push_back(tData);
-    m_vecOriginSRTs.back().Update_World();
+    m_vecOriginMatrix.push_back(tData.Get_World());
 
     /* 버퍼 재할당 */
 
     CInstanceMesh* pInstanceMesh = Get_Component<CInstanceMesh>();
     if (pInstanceMesh == nullptr) return;
-    vector<Matrix> vecMatrix{};
-    vecMatrix.reserve(m_vecSRTs.size());
-    for(auto& SRT : m_vecSRTs)
-        vecMatrix.push_back(SRT.WorldMatrix);
 
-    if(FAILED(pInstanceMesh->ReMake_InstanceBuffer(&vecMatrix)))
+    if(FAILED(pInstanceMesh->ReMake_InstanceBuffer(&m_vecMatrix , Get_Component<CModel>()->Get_StaticModelMinMax())))
     {
         MSG_BOX(" Add SRT Data is failed ");
     }
@@ -580,8 +621,10 @@ void CMapObject::Add_InstanceData(const SRT_DATA& tData)
         CLIENT_MAKEPATH_DESC_BASE* pDescBase = CMapToolManager::GetInstance()->Make_Client_MakePathDesc(m_eClientMakePath ,m_vecClientMakePathDesc[m_iSelectedInstanceID]);
         m_vecClientMakePathDesc.push_back(pDescBase);
     }
-    
-
+    if (FAILED(Get_Component<CBounds>()->Push_SubBounds(pInstanceMesh->Get_InstanceWorldMinMax(), Get_Component<CModel>()->Get_StaticModelMinMax(), m_vecMatrix.back())))
+    {
+        MSG_BOX(" Add_Instance() 안에 CBound::Push_SubBounds 오류 ");
+    }
 }
 
 void CMapObject::Delete_InstanceData(_int iIndex)
@@ -605,29 +648,42 @@ void CMapObject::Delete_InstanceData(_int iIndex)
     vector<Matrix> vecWorldMatrix{};
     vecWorldMatrix.reserve(m_vecSRTs.size());
 
-    auto Originiter = m_vecOriginSRTs.begin();
-    auto Curiter = m_vecSRTs.begin();
+    auto OriginSRTiter = m_vecOriginSRTs.begin();
+    auto OriginMatrixiter = m_vecOriginMatrix.begin();
+
+    auto CurSRTiter = m_vecSRTs.begin();
+    auto CurMatrixiter = m_vecMatrix.begin();
 
     for (_uint i = 0 ;  i < (_uint)m_vecSRTs.size(); ++i)
     { 
         if (iDeleteIndex == i)
         {
-            Curiter = m_vecSRTs.erase(Curiter);
-            Originiter = m_vecOriginSRTs.erase(Originiter);
+
+            CurMatrixiter       = m_vecMatrix.erase(CurMatrixiter);
+            CurSRTiter          = m_vecSRTs.erase(CurSRTiter);
+
+            OriginSRTiter       = m_vecOriginSRTs.erase(OriginSRTiter);
+            OriginMatrixiter    = m_vecOriginMatrix.erase(OriginMatrixiter);
         }
         else
         {
-            m_vecSRTs[i].Update_World();
+            
             vecWorldMatrix.push_back(m_vecSRTs[i].Get_World());
+            
+            CurMatrixiter++;
+            OriginMatrixiter++;
 
-            Originiter++;
-            Curiter++;
+            CurSRTiter++;
+            OriginSRTiter++;
         }
     }
 
     CInstanceMesh* pInstanceMesh = Get_Component<CInstanceMesh>();
     if (pInstanceMesh == nullptr)  return;
-    pInstanceMesh->ReMake_InstanceBuffer(&vecWorldMatrix);
+    pInstanceMesh->ReMake_InstanceBuffer(&vecWorldMatrix,Get_Component<CModel>()->Get_StaticModelMinMax());
+
+    CBounds* pBouns = Get_Component<CBounds>();
+    pBouns->Delete_SubBounds(pInstanceMesh->Get_InstanceWorldMinMax() , iDeleteIndex);
 }
 
 void CMapObject::Set_SRTData(const Vec3& vScale, const Quat vQuat, const Vec3 vPosition , _int iIndex)
@@ -638,7 +694,9 @@ void CMapObject::Set_SRTData(const Vec3& vScale, const Quat vQuat, const Vec3 vP
     _uint iFinalIndex = iIndex == -1.f ? m_iSelectedInstanceID : iIndex;
 
     /* SRT DATA Update */
-    m_vecSRTs[iFinalIndex].Update_World(vScale , vQuat , vPosition);
+    m_vecSRTs[iFinalIndex].Update_SRT(vScale , vQuat , vPosition);
+    /* WorldMatrix Update */
+    m_vecMatrix[iFinalIndex] = m_vecSRTs[iFinalIndex].Get_World();
 
     /* Draw Type 에 따라 분기처리 */
     if (m_eMapObjectDrawType == EMapObject_DrawType::Instance)
@@ -646,7 +704,8 @@ void CMapObject::Set_SRTData(const Vec3& vScale, const Quat vQuat, const Vec3 vP
     else
         Get_Component<CTransform>()->Set_WorldMatrix(m_vecSRTs[iFinalIndex].Get_World());
 
-    /*  */
+
+    Update_Bounds(iFinalIndex);
 
 }
 
@@ -719,6 +778,9 @@ HRESULT CMapObject::Awake(const _uint iCurrentLevelID)
     if (FAILED(Super::Awake(iCurrentLevelID)))
         return E_FAIL;
 
+
+
+
     return S_OK;
 }
 
@@ -746,6 +808,11 @@ void CMapObject::Ready_Before_Render(const _float fTimeDelta)
 
 
     m_pGameInstance->Push_RenderObject( m_eMapObjectState == CMapObject::EState::Select ?  RENDER_CATEGORY::NONELIGHT : RENDER_CATEGORY::NONEBLEND, this);
+
+#ifdef _DEBUG
+    if (m_eMapObjectDrawType == EMapObject_DrawType::Instance)
+        m_pGameInstance->Push_DebugComponent(Get_Component<CBounds>());
+#endif
 }
 
 HRESULT CMapObject::Render()
@@ -909,6 +976,14 @@ Vec3 CMapObject::Get_Position(_int iIndex) const
     return iIndex == -1 ? m_vecSRTs[m_iSelectedInstanceID].vPosition : m_vecSRTs[iIndex].vPosition;
 }
 
+Matrix CMapObject::Get_Matrix(_int iIndex) const
+{
+    if (!Check_OutBound(iIndex))
+        return Matrix();
+
+    return iIndex == -1 ? m_vecMatrix[m_iSelectedInstanceID] : m_vecMatrix[iIndex];
+}
+
 
 
 HRESULT CMapObject::Render_Default()
@@ -1000,7 +1075,7 @@ CMapObject* CMapObject::Clone(CMapObject* pPrototype, const SRT_DATA& tSRT)
         tDesc.eState = CMapObject::EState::Preview;
 
         tDesc.vecSRTs.push_back(tSRT);
-        tDesc.vecSRTs.front().Update_World();
+
         tDesc.wstrLayerTag = g_wszMapObjectLayer;
         tDesc.vecClientMakePathDesc = pPrototype->m_vecClientMakePathDesc;
 
@@ -1037,3 +1112,4 @@ void CMapObject::Free()
 
     Super::Free();
 }
+
