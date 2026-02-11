@@ -60,24 +60,22 @@ protected:
 	virtual ~CMapObject() = default;
 
 private:
-	virtual HRESULT					Initialize_Prototype()							override;
-	virtual HRESULT					Initialize(void* pArg)							override;
-	HRESULT							Ready_SRTDatas(CMapObject::MAPOBJECT_DESC* pDesc);
-	HRESULT							Ready_Component();
-	HRESULT							Ready_ClientMakePath(CMapObject::MAPOBJECT_DESC* pDesc);
-	HRESULT							Ready_OverrideMtl(const USING_MODEL_INFO& tUsingModelInfo);
-	_bool							Check_OutBound(_int iIndex) const;
+	virtual HRESULT						Initialize_Prototype()							override;
+	virtual HRESULT						Initialize(void* pArg)							override;
+	HRESULT								Ready_SRTDatas(CMapObject::MAPOBJECT_DESC* pDesc);
+	HRESULT								Ready_Component();
+	HRESULT								Ready_ClientMakePath(CMapObject::MAPOBJECT_DESC* pDesc);
+	HRESULT								Ready_OverrideMtl(const USING_MODEL_INFO& tUsingModelInfo);
+	_bool								Check_OutBound(_int iIndex) const;
 private:
-	HRESULT							Change_Instance_To_Default();
-	_bool							Compute_ModelLocalMinMax(CModel* pModel , OUT Vec3 OutMinMax[2]);
-	_bool							Compute_InstanceGroupMinMax(const Vec3* pComputed_Final_MinMax, OUT Vec3* pMinMax);
+	HRESULT								Change_Instance_To_Default();
 public:
 
-	HRESULT							Add_MapToolComponent(CMapObject::COMPONENT eType);
+	HRESULT								Add_MapToolComponent(CMapObject::COMPONENT eType);
 public:
 
-	void							Reset_OriginTransform(_int iIndex = -1);
-	void							Override_OriginTransform(_int iIndex = -1);
+	void								Reset_OriginTransform(_int iIndex = -1);
+	void								Override_OriginTransform(_int iIndex = -1);
 
 	/* 기능 관련 */
 public:
@@ -127,7 +125,7 @@ public:
 	
 	Vec3								Get_Scale(_int iIndex = -1 )		const;
 	Quat								Get_Quaternion(_int iIndex = -1 )	const;
-	Vec3								Get_Position(_int iIndex = -1 )	const;
+	Vec3								Get_Position(_int iIndex = -1 )		const;
 
 	/* Type관련 */
 	EMapObject_Type						Get_MapObjectType()			const	{ return m_eMapObjectType;}
@@ -183,29 +181,29 @@ protected:
 
 
 	/* UE or Data Load 인지 판별 */
-	bool							m_isLoaded{ false };
-	bool							m_isUELoaded{ false };
+	bool								m_isLoaded{ false };
+	bool								m_isUELoaded{ false };
 
-	EState							m_eMapObjectState{ EState::Default};
+	EState								m_eMapObjectState{ EState::Default};
 
 	/* Instance 전용 Select ID */
-	_int							m_iSelectedInstanceID{0};
+	_int								m_iSelectedInstanceID{0};
 
 	/* SRT Data */
-	vector<Tool::SRT_DATA>			m_vecOriginSRTs{};	//
-	vector<Tool::SRT_DATA>			m_vecSRTs{};
+	vector<Tool::SRT_DATA>				m_vecOriginSRTs{};	//
+	vector<Tool::SRT_DATA>				m_vecSRTs{};
 
 
 	/* 임시 패기처분 */
 	/* Override Material을 담아줄 변수 */
-	vector<CMaterial*>				m_vecOverrideMaterials;
-	bool							m_isUseOverrideMaterials{ false };
+	vector<CMaterial*>					m_vecOverrideMaterials;
+	bool								m_isUseOverrideMaterials{ false };
 
 
 
 
 	/* Instance Draw 컬링용 Min Max들고있기 */
-	Vec3							m_vInstanceMinMax[2];
+	Vec3								m_vInstanceMinMax[2];
 
 
 public:

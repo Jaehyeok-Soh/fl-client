@@ -28,8 +28,8 @@ private:
 private:
 	HRESULT			Initialize_Prototype();
 	virtual HRESULT Initialize(void* pArg) override;
-private:
-	HRESULT			Ready_Instance_WorldMinMax(const Vec3* pModelMinMax , const vector<Matrix>* vecInstanceMatrixPointer);
+public:
+	HRESULT			Update_Instance_WorldMinMax(const Vec3* pModelMinMax , const vector<Matrix>* vecInstanceMatrixPointer);
 public:
 	HRESULT			Bind_Instance(_uint iSlotNum);
 	virtual HRESULT Bind_Resource() override;

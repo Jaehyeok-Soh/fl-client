@@ -51,18 +51,19 @@ HRESULT CInstanceMesh::Initialize(void* pArg)
 		return E_FAIL;
 
 
-	if (FAILED(Ready_Instance_WorldMinMax(pDesc->pModelMinMax, pDesc->vecInstanceMatrixPointer)))
+	if (FAILED(Update_Instance_WorldMinMax(pDesc->pModelMinMax, pDesc->vecInstanceMatrixPointer)))
 		return E_FAIL;
 
 	return S_OK;
 }
 
-HRESULT CInstanceMesh::Ready_Instance_WorldMinMax(const Vec3* pModelMinMax,const vector<Matrix>* vecInstanceMatrixPointer)
+HRESULT CInstanceMesh::Update_Instance_WorldMinMax(const Vec3* pModelMinMax,const vector<Matrix>* vecInstanceMatrixPointer)
 {
 	if (pModelMinMax == nullptr) return S_OK;
 	if (vecInstanceMatrixPointer == nullptr) return E_FAIL;
 
-	m_pInstanceWorldMinMax = new Vec3[2]{ Vec3(FLT_MAX,FLT_MAX,FLT_MAX) , Vec3(-FLT_MAX,-FLT_MAX,-FLT_MAX)};
+	if(!m_pInstanceWorldMinMax)
+		m_pInstanceWorldMinMax = new Vec3[2]{ Vec3(FLT_MAX,FLT_MAX,FLT_MAX) , Vec3(-FLT_MAX,-FLT_MAX,-FLT_MAX)};
 
 	const Vec3& vLocalMin = pModelMinMax[MIN];
 	const Vec3& vLocalMax = pModelMinMax[MAX];

@@ -95,7 +95,6 @@ HRESULT CMapObject::Initialize(void* pArg)
 
 HRESULT CMapObject::Ready_SRTDatas(CMapObject::MAPOBJECT_DESC* pDesc)
 {
-
     /* 초기값 두개 보존 */
     m_vecSRTs.insert(m_vecSRTs.end() , pDesc->vecSRTs.begin() , pDesc->vecSRTs.end());
     m_vecOriginSRTs.insert(m_vecOriginSRTs.end() , pDesc->vecSRTs.begin() , pDesc->vecSRTs.end());
@@ -133,9 +132,6 @@ HRESULT CMapObject::Ready_Component()
             :   Add_Component<CShader>(ENUM_TO_UINT(ELevelType::STATIC), L"Prototype_Component_Shader_VtxMesh_Tool", nullptr);
      
 
-    /* 먼저 File Name으로 가져오고 */
-
-
     CModel::MODEL_ORIGIN_DESC tModelDesc{};
     tModelDesc.eType = EModelType::STATIC;
     tModelDesc.wstrModelFolderName = m_wstrModelPath;
@@ -149,19 +145,6 @@ HRESULT CMapObject::Ready_Component()
     CModel::MODEL_COPY_DESC tModelCopyDesc{};
     Add_Component<CModel>(tModelDesc.iPrototypeLevelIndex, L"Prototype_Component_Model_" + Engine_Utils::ToWString(m_strName), &tModelCopyDesc);
 
-
-
-    /* 큰 틀의 Bound를 생성해준다 */
-    Vec3 vLocalMeshMinMax[2]{Vec3::Zero , Vec3::Zero};
-
-    /* 여기안에서 모든매쉬를 순회하면서 최종 Min Max 를 뽑아낸다 */
-    if (!CMapObject::Compute_ModelLocalMinMax(Get_Component<CModel>(), vLocalMeshMinMax))
-    {
-        MSG_BOX("Bound용 Local Min Max 계산 실패");
-        return E_FAIL;
-    }
-
-    /* 추가적인 인스턴싱용 컴포넌트 작업 */
     vector<Matrix> vecMatrix{};
     if (m_eMapObjectDrawType == EMapObject_DrawType::Instance)
     {
@@ -169,39 +152,27 @@ HRESULT CMapObject::Ready_Component()
         CInstanceMesh::INSTANCEMESH_DESC tInstanceMeshDesc{};
         tInstanceMeshDesc.IB_Usage = D3D11_USAGE_DYNAMIC;
         tInstanceMeshDesc.VB_Usage = D3D11_USAGE_DYNAMIC;
-
+        tInstanceMeshDesc.pModelMinMax = Get_Component<CInstanceMesh>()->Get_InstanceWorldMinMax();
 
         vecMatrix.reserve(m_vecSRTs.size());
         for (auto& SRTs : m_vecSRTs) vecMatrix.push_back(SRTs.Get_World());
         tInstanceMeshDesc.vecInstanceMatrixPointer = &vecMatrix;
         Add_Component<CInstanceMesh>(ENUM_TO_UINT(ELevelType::STATIC), L"Prototype_Component_VIBuffer_InstanceMesh", &tInstanceMeshDesc);
 
-
-        /* 추가적인 Bound Min Max를 인스턴스 개수만큼 재 계산 */
-        Vec3 vFinalMinMax[2]{Vec3::Zero , Vec3::Zero};
-        if (!(CMapObject::Compute_InstanceGroupMinMax(vLocalMeshMinMax, vFinalMinMax)))
-        {
-            MSG_BOX(" Instance용 Bound Min Max 계산 실패 ");
-            return E_FAIL;
-        }
-        /* vLocalMeshMinMax 값 갱신 */
-        vLocalMeshMinMax[0] = vFinalMinMax[0];
-        vLocalMeshMinMax[1] = vFinalMinMax[1];
     }
 
-    /* vector Matrix 등록자체는 쉽다 */
     CBounds::BOUND_COMP_DESC tBoundDesc{};
     tBoundDesc.fRatio = 1.f;
-    tBoundDesc.pMinMax = vLocalMeshMinMax;
+    tBoundDesc.pMinMax = Get_Component<CModel>()->Get_StaticModelMinMax();
     if (FAILED(Add_Component<CBounds>(0, L"Prototype_Component_Bounds", &tBoundDesc)))
         return E_FAIL;
 
     /* Bounding Box 업데이트 , Instnace모델이면 0 0 0월드좌표로 들어가는게 맞다 */
     Get_Component<CBounds>()->Update_BoundingDesc(Get_Component<CTransform>()->Get_WorldMatrix());
 
-    if (m_eMapObjectDrawType == EMapObject_DrawType::Instance)
-        if (FAILED(Get_Component<CBounds>()->Add_SubBounds(vLocalMeshMinMax, span<Matrix>(vecMatrix.data(), vecMatrix.size()), 1.f)))
-            return E_FAIL;
+    if(m_eMapObjectDrawType == EMapObject_DrawType::Instance)
+        Get_Component<CBounds>()->Add_SubBounds(
+            Get_Component<CModel>()->Get_StaticModelMinMax(),span<Matrix>( vecMatrix.data() , vecMatrix.size()),1.f);
 
     return S_OK;
 }
@@ -230,72 +201,6 @@ HRESULT CMapObject::Ready_ClientMakePath(CMapObject::MAPOBJECT_DESC* pDesc)
 
     return S_OK;
 }
-
-
-_bool   CMapObject::Compute_ModelLocalMinMax(CModel* pModel, OUT Vec3 OutMinMax[2])
-{
-    if (pModel == nullptr) return false;
-
-    /* 매쉬 개수를 가져와서 루프 돌릴예정 */
-    const _uint iMeshCount = pModel->Get_MeshCount();
-    if (iMeshCount == 0)
-        return false;
-
-    CMesh* pMesh_0 = pModel->Get_Mesh(0);
-
-    const Vec3* pMinMax = pMesh_0->Get_MinMax();
-    OutMinMax[0] = pMinMax[0];
-    OutMinMax[1] = pMinMax[1];
-
-    for (_uint i = 0; i < iMeshCount; ++i)
-    {
-        CMesh* pMesh = pModel->Get_Mesh(i);
-        if (pMesh == nullptr)
-            continue;
-
-        const Vec3* pMinMax = pMesh->Get_MinMax();
-        Engine_Utils::Merge_MinMax(pMinMax , OutMinMax[0], OutMinMax[1]);
-    }
-    return true;
-}
-
-_bool   CMapObject::Compute_InstanceGroupMinMax(const Vec3* pComputed_Final_MinMax, OUT Vec3* pMinMax)
-{
-    if (pComputed_Final_MinMax == nullptr || pMinMax == nullptr) return false;
-
-    const Vec3& vLocalMin = pComputed_Final_MinMax[0];
-    const Vec3& vLocalMax = pComputed_Final_MinMax[1];
-
-    BoundingBox localBox = Engine_Utils::MakeAABB_FromMinMax(vLocalMin, vLocalMax);
-    BoundingBox groupBox;
-
-    localBox.Transform(groupBox, m_vecSRTs[0].WorldMatrix);
-
-    Vec3& vOutMin = pMinMax[0];
-    Vec3& vOutMax = pMinMax[1];
-
-    vOutMin = groupBox.Center - groupBox.Extents;
-    vOutMax = groupBox.Center + groupBox.Extents;
-
-    for (size_t i = 1; i < m_vecSRTs.size(); ++i)
-    {
-        BoundingBox wBox;
-        localBox.Transform(wBox, m_vecSRTs[i].Get_World());
-
-        Vec3 vMinMax[2] =
-        {
-            wBox.Center - wBox.Extents,
-            wBox.Center + wBox.Extents
-        };
-
-        Engine_Utils::Merge_MinMax(vMinMax, vOutMin, vOutMax);
-    }
-
-    return true;
-}
-
-
-
 
 HRESULT CMapObject::Ready_OverrideMtl(const USING_MODEL_INFO& tUsingModelInfo)
 {
@@ -690,12 +595,8 @@ void CMapObject::Delete_InstanceData(_int iIndex)
         return;
     }
   
-
-
     if (!Check_OutBound(iIndex))
         return;
-
-
 
     _uint iDeleteIndex = iIndex == -1 ? m_iSelectedInstanceID : static_cast<_uint>(iIndex);
     if (iDeleteIndex < 0) return;
@@ -729,21 +630,24 @@ void CMapObject::Delete_InstanceData(_int iIndex)
     pInstanceMesh->ReMake_InstanceBuffer(&vecWorldMatrix);
 }
 
-
 void CMapObject::Set_SRTData(const Vec3& vScale, const Quat vQuat, const Vec3 vPosition , _int iIndex)
 {
     if (!Check_OutBound(iIndex))
         return;
 
+    _uint iFinalIndex = iIndex == -1.f ? m_iSelectedInstanceID : iIndex;
 
     /* SRT DATA Update */
-    m_vecSRTs[m_iSelectedInstanceID].Update_World(vScale , vQuat , vPosition);
+    m_vecSRTs[iFinalIndex].Update_World(vScale , vQuat , vPosition);
 
     /* Draw Type 에 따라 분기처리 */
     if (m_eMapObjectDrawType == EMapObject_DrawType::Instance)
         Update_InstanceWorldMatrix(false);
     else
-        Get_Component<CTransform>()->Set_WorldMatrix(m_vecSRTs[m_iActiveIndex].Get_World());
+        Get_Component<CTransform>()->Set_WorldMatrix(m_vecSRTs[iFinalIndex].Get_World());
+
+    /*  */
+
 }
 
 

@@ -111,9 +111,6 @@ HRESULT	CMapObject::Ready_Component(MAPOBJECT_DESC* pDesc)
             }
         }
         /* Bounds »ý¼º */
-
-        Get_Component<CModel>()->Get_StaticModelMinMax();
-
         CBounds::BOUND_COMP_DESC desc{};
         desc.fRatio = 1.f;
         desc.pMinMax = Get_Component<CModel>()->Get_StaticModelMinMax();
