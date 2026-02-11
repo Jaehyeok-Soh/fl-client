@@ -57,8 +57,13 @@ int APIENTRY wWinMain(_In_ HINSTANCE hInstance,
     if (FAILED(pGameInstance->Add_Timer(L"Timer_Default")))
         return FALSE;
 
+    if (FAILED(pGameInstance->Add_Timer(L"Timer_Work")))
+        return E_FAIL;
+
     if (FAILED(pGameInstance->Add_Timer(L"Timer_60")))
         return FALSE;
+
+    pGameInstance->Set_MaxTimeDelta(L"Timer_Work", 10.f);
 
     _float fTimeAcc = { 0.0f };
     g_bStart = true;
@@ -79,9 +84,12 @@ int APIENTRY wWinMain(_In_ HINSTANCE hInstance,
         if (fTimeAcc >= 1.f / 60.0f)
         {
             pGameInstance->Compute_TimeDelta(TEXT("Timer_60"));
+            pGameInstance->Compute_TimeDelta(TEXT("Timer_Work"));
 
             pMainApplication->Update(pGameInstance->Get_TimeDelta(TEXT("Timer_60")));
             pMainApplication->Render();
+
+            pGameInstance->Compute_TimeDelta(TEXT("Timer_Work"));
 
             fTimeAcc -= 1.f / 60.0f;
         }

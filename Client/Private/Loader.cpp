@@ -14,6 +14,7 @@
 #include "VIBuffer_Particle_Mesh.h"
 #include "InstanceMesh.h"
 #include "VIBuffer_Cube_Tex.h"
+#include "Bounds.h"
 #include "Shader.h"
 #include "Camera.h"
 #include "Transform.h"
@@ -249,7 +250,8 @@ HRESULT CLoader::Loading_For_Logo()
 	m_pGameInstance->Add_Prototype(ENUM_TO_UINT(ELevelType::STATIC), L"Prototype_Component_Collider_OBB", CCollider::Create(m_pDevice, m_pDeviceContext, EColliderType::OBB));
 	// For. Prototype_Component_Collider_SPHERE
 	m_pGameInstance->Add_Prototype(ENUM_TO_UINT(ELevelType::STATIC), L"Prototype_Component_Collider_Sphere", CCollider::Create(m_pDevice, m_pDeviceContext, EColliderType::SPHERE));
-
+	// For. Prototype_Component_Bounds
+	m_pGameInstance->Add_Prototype(ENUM_TO_UINT(ELevelType::STATIC), L"Prototype_Component_Bounds", CBounds::Create(m_pDevice, m_pDeviceContext));
 
 
 	// For. Prototype_Component_Collider_SPHERE
@@ -427,12 +429,16 @@ HRESULT CLoader::Build_Prototype()
 
 	if (FAILED(Build_Files()))
 		return E_FAIL;
+
+	return S_OK;
 }
 
 HRESULT CLoader::Build_Files()
 {
 	if (FAILED(Ready_AttackOverlap()))
 		return E_FAIL;
+
+	return S_OK;
 }
 
 HRESULT CLoader::Ready_AttackOverlap()
@@ -452,6 +458,8 @@ HRESULT CLoader::Ready_AttackOverlap()
 
 	if (FAILED(m_pBuilderSystem->Build_File(iLevelID, eCategory, FilePath.stem().string())))
 		return E_FAIL;
+
+	return S_OK;
 }
 
 CLoader* CLoader::Create(ID3D11Device* pDevice, ID3D11DeviceContext* pDeviceContext, ELevelType eLoadingLevelID)

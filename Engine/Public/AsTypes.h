@@ -28,8 +28,8 @@ typedef struct tagAsMesh
 
 	_uint iAffectBoneCount = { 0 };
 	vector<_uint> vecAffectBoneIndices;
-
 	vector<Matrix> vecOffsetMatrices;
+	vector<Vec3> vecMinMax;
 }AS_MESH;
 
 typedef struct tagAsMaterialFileTags

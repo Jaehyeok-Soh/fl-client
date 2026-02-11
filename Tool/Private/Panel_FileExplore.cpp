@@ -142,6 +142,8 @@ HRESULT CPanel_FileExplore::Render_MakeModelFilePath(const wstring& wstrPath)
 	path FullPath = wstrPath;
 	wstring wstrExt = FullPath.extension();
 
+	path basePath = std::filesystem::current_path();
+
 	if ( wstrExt  != g_wszMeshExtension) return S_OK;
 
 	CMapObject::MAPOBJECT_DESC tMapObjectDesc{};
@@ -149,7 +151,7 @@ HRESULT CPanel_FileExplore::Render_MakeModelFilePath(const wstring& wstrPath)
 	tMapObjectDesc.eClientMakePath = m_pMapToolManager->Get_MakeMapObjectClientMakePath();
 	tMapObjectDesc.eMapObjectDrawType = m_pMapToolManager->Get_MakeMapObjectDrawType();
 	tMapObjectDesc.iLevelIndex = ENUM_TO_UINT(ELevelType::MAP);
-	tMapObjectDesc.tUsingModelInfo.wstrPath = FullPath;
+	tMapObjectDesc.tUsingModelInfo.wstrPath = std::filesystem::relative(FullPath,basePath);
 	tMapObjectDesc.tUsingModelInfo.wstrName = path(wstrPath).filename().stem();
 	tMapObjectDesc.eState = CMapObject::EState::Preview;
 	tMapObjectDesc.isLoaded = false;

@@ -32,11 +32,13 @@ HRESULT CPhysicsAttackOverlap::Initialize(void* pArg)
 	return S_OK;
 }
 
+#ifdef _DEBUG
 void CPhysicsAttackOverlap::Render()
 {
 	for (auto& event : m_activeEvents)
 		event->Render();
 }
+#endif
 
 void CPhysicsAttackOverlap::Awake()
 {

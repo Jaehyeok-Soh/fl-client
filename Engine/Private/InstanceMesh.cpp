@@ -3,12 +3,12 @@
 #include "GameInstance.h"
 
 CInstanceMesh::CInstanceMesh(ID3D11Device* pDevice, ID3D11DeviceContext* pDeviceContext)
-	: CVIBuffer(pDevice, pDeviceContext)
+	: CVIBuffer(pDevice, pDeviceContext), m_pInstanceWorldMinMax{ nullptr } 
 {
 }
 
 CInstanceMesh::CInstanceMesh(const CInstanceMesh& rhs)
-	: CVIBuffer(rhs)
+	: CVIBuffer(rhs), m_pInstanceWorldMinMax(rhs.m_pInstanceWorldMinMax)
 {
 }
 
@@ -50,6 +50,51 @@ HRESULT CInstanceMesh::Initialize(void* pArg)
 	if (FAILED(m_pDevice->CreateBuffer(&m_tInstanceVertexBufferDesc, &InstanceInitialData, &m_pVB)))
 		return E_FAIL;
 
+
+	if (FAILED(Ready_Instance_WorldMinMax(pDesc->pModelMinMax, pDesc->vecInstanceMatrixPointer)))
+		return E_FAIL;
+
+	return S_OK;
+}
+
+HRESULT CInstanceMesh::Ready_Instance_WorldMinMax(const Vec3* pModelMinMax,const vector<Matrix>* vecInstanceMatrixPointer)
+{
+	if (pModelMinMax == nullptr) return S_OK;
+	if (vecInstanceMatrixPointer == nullptr) return E_FAIL;
+
+	m_pInstanceWorldMinMax = new Vec3[2]{ Vec3(FLT_MAX,FLT_MAX,FLT_MAX) , Vec3(-FLT_MAX,-FLT_MAX,-FLT_MAX)};
+
+	const Vec3& vLocalMin = pModelMinMax[MIN];
+	const Vec3& vLocalMax = pModelMinMax[MAX];
+
+	BoundingBox localBox = Engine_Utils::MakeAABB_FromMinMax(vLocalMin, vLocalMax);
+	BoundingBox groupBox;
+
+	// 인스턴스 모델중 첫놈으로 기준 잡기
+	localBox.Transform(groupBox , (*vecInstanceMatrixPointer)[0]);
+
+	Vec3& vOutMin = m_pInstanceWorldMinMax[MIN];
+	Vec3& vOutMax = m_pInstanceWorldMinMax[MAX];
+
+	vOutMin = groupBox.Center - groupBox.Extents;
+	vOutMax = groupBox.Center + groupBox.Extents;
+
+	for (size_t i = 1; i < vecInstanceMatrixPointer->size(); ++i)
+	{
+		BoundingBox wBox;
+		localBox.Transform(wBox , (*vecInstanceMatrixPointer)[i]);
+
+		Vec3 vMinMax[2] =
+		{
+			wBox.Center - wBox.Extents,
+			wBox.Center + wBox.Extents
+		};
+
+		Engine_Utils::Merge_MinMax(vMinMax, vOutMin, vOutMax);
+	}
+
+	m_pInstanceWorldMinMax[MIN] = vOutMin;
+	m_pInstanceWorldMinMax[MAX] = vOutMax;
 
 	return S_OK;
 }
@@ -167,26 +212,27 @@ void CInstanceMesh::Update_Matrix(const Matrix& WorldMatrix, _uint iIndex)
 
 	VTX_INSTANCE* pVtxMatrix = reinterpret_cast<VTX_INSTANCE*>(pResource.pData);
 
-	memcpy(&pVtxMatrix[iIndex].vRight.x , &WorldMatrix._11 , sizeof(VTX_INSTANCE) );
+	::memcpy(&pVtxMatrix[iIndex].vRight.x , &WorldMatrix._11 , sizeof(VTX_INSTANCE) );
 
 	m_pDeviceContext->Unmap(m_pVB, 0);
 }
 
-void CInstanceMesh::Update_Matrix(const vector<Matrix>& vecWorldMatrix, _uint iIndex)
+void CInstanceMesh::Update_Matrix(const vector<Matrix>& vecWorldMatrix)
 {
 	if (m_tInstanceVertexBufferDesc.Usage != D3D11_USAGE_DYNAMIC)
 		return;
+
 	D3D11_MAPPED_SUBRESOURCE pResource{ nullptr };
+
+	m_iVisibleInstanceCount = (std::min)((_uint)vecWorldMatrix.size(), m_iInstanceCount);
 
 	m_pDeviceContext->Map(m_pVB, 0, D3D11_MAP_WRITE_NO_OVERWRITE, 0, &pResource);
 
 	VTX_INSTANCE* pVtxMatrix = reinterpret_cast<VTX_INSTANCE*>(pResource.pData);
 
-	//memcpy(&pVtxMatrix[iIndex].vRight.x, &WorldMatrix._11, sizeof(VTX_INSTANCE));
+	::memcpy(pVtxMatrix, vecWorldMatrix.data(), sizeof(VTX_INSTANCE) * m_iVisibleInstanceCount);
 
 	m_pDeviceContext->Unmap(m_pVB, 0);
-
-	return;
 }
 
 
@@ -221,5 +267,8 @@ CComponent* CInstanceMesh::Clone(void* pArg)
 void CInstanceMesh::Free()
 {
 	Super::Free();
+
+	Safe_Delete_Array(m_pInstanceWorldMinMax);
+
 }
 

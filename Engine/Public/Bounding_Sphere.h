@@ -10,6 +10,7 @@ public:
 	typedef struct tagBoundingSphereDesc : public CBounding::BOUNDING_DESC
 	{
 		_float			fRadius;
+		Vec3*			pMinMax{ nullptr };
 	}BOUNDING_SPHERE_DESC;
 private:
 	CBounding_Sphere(ID3D11Device* pDevice, ID3D11DeviceContext* pDeviceContext);

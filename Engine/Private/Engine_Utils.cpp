@@ -269,6 +269,36 @@ void Engine_Utils::Set_OnlyFlag(Flags& curFlags, _uint iBitFlag)
     curFlags |= iBitFlag;
 }
 
+void Engine_Utils::Merge_MinMax(const Vec3* pMinMax, Vec3& ioMin, Vec3& ioMax)
+{
+    const Vec3& vMin = pMinMax[0];
+    const Vec3& vMax = pMinMax[1];
+
+    ioMin.x = (std::min)(ioMin.x, vMin.x);
+    ioMin.y = (std::min)(ioMin.y, vMin.y);
+    ioMin.z = (std::min)(ioMin.z, vMin.z);
+
+    ioMax.x = (std::max)(ioMax.x, vMax.x);
+    ioMax.y = (std::max)(ioMax.y, vMax.y);
+    ioMax.z = (std::max)(ioMax.z, vMax.z);
+}
+
+BoundingBox Engine_Utils::MakeAABB_FromMinMax(const Vec3& vMin, const Vec3& vMax)
+{
+    BoundingBox boundingBox;
+    XMFLOAT3 vPoints[2] = { vMin, vMax };
+    BoundingBox::CreateFromPoints(boundingBox, 2, vPoints, sizeof(XMFLOAT3));
+    return boundingBox;
+}
+
+BoundingSphere Engine_Utils::MakeSphere_FromMinMax(const Vec3& vMin, const Vec3& vMax)
+{
+    BoundingSphere boundingSphere;
+    XMFLOAT3 vPoints[2] = { vMin, vMax };
+    BoundingSphere::CreateFromPoints(boundingSphere, 2, vPoints, sizeof(XMFLOAT3));
+    return boundingSphere;
+}
+
 void Engine_Utils::read_vec3_xyz(const json& _j, Vec3& vOut)
 {
     vOut.x = _j.value("X", 0.f);

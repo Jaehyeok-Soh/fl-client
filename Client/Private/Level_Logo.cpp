@@ -35,6 +35,11 @@
 #include "Canvas.h"
 #include "GenericUI.h"
 
+//=================
+// Component
+//=================
+#include "Bounds.h"
+
 #include "GameInstance.h"
 
 CLevel_Logo::CLevel_Logo(ID3D11Device* pDevice, ID3D11DeviceContext* pDeviceContext)
@@ -79,16 +84,19 @@ HRESULT CLevel_Logo::Awake(const _uint iLevelID)
 	if (FAILED(Super::Awake(iLevelID)))
 		return E_FAIL;
 
+	if (FAILED(Ready_Octree()))
+		return E_FAIL;
+
 	if (FAILED(Ready_Camera_Setting(iLevelID)))
 		return E_FAIL;
+
+	m_eCursorMode = ECursorMode::LockedHiddenCenter;
+	m_pGameInstance->Request_CursorMode(m_eCursorMode);
 
 	CLOG_TRACE(L"테스트, Logo Awake() 확인");
 	CLOG_INFO(L"테스트, Logo Awake() 확인");
 	CLOG_WARN(L"테스트, Logo Awake() 확인");
 	CLOG_ERROR(L"테스트, Logo Awake() 확인");
-
-	m_eCursorMode = ECursorMode::LockedHiddenCenter;
-	m_pGameInstance->Request_CursorMode(m_eCursorMode);
 	return S_OK;
 }
 
@@ -289,6 +297,87 @@ HRESULT CLevel_Logo::Ready_Camera_Setting(const _uint iLevelIndex)
 	m_pGameInstance->Change_MainCamera(CameraType::DYNAMIC, g_MainActorCameraName);
 	CGameObject* pPlayer = m_pGameInstance->Get_GameObject_Front(iLevelIndex, g_wszPlayerLayer);
 	m_pGameInstance->Change_Target(pPlayer);
+	m_pGameInstance->Ready_Frustrum();
+	return S_OK;
+}
+
+HRESULT CLevel_Logo::Ready_Octree()
+{
+	// 순회하며 OCTREE BOX 사이즈 검출
+	auto* pList = m_pGameInstance->Get_GameObject_List(ENUM_TO_UINT(ELevelType::LOGO), g_wszStaticObjectLayer);
+	
+	// Registe에 필요한 Object, Bound 버퍼 reserve
+	vector<CGameObject*> vecWillReigstObject;
+	vector<BoundingBox*> vecWillRegistBounds;
+	vecWillReigstObject.reserve(pList->size());
+	vecWillRegistBounds.reserve(pList->size());
+	
+
+	{
+		Vec3 vMin{ FLT_MAX, FLT_MAX, FLT_MAX };
+		Vec3 vMax{ -FLT_MAX, -FLT_MAX, -FLT_MAX };
+		// 사이즈 검출 및 버퍼에 밀어넣기
+		for (auto* pElement : *pList)
+		{
+			CBounds* pBounds = pElement->Get_Component<CBounds>();
+			if (pBounds == nullptr)
+				continue;
+
+			vecWillReigstObject.push_back(pElement);
+			vecWillRegistBounds.push_back(pBounds->Get_WolrdAABB());
+			const BoundingBox& AABB = *pBounds->Get_WolrdAABB();
+
+			Vec3 vElementMinMax[2] =
+			{
+				AABB.Center - AABB.Extents,
+				AABB.Center + AABB.Extents
+			};
+
+			Engine_Utils::Merge_MinMax(vElementMinMax, vMin, vMax);
+		}
+
+		// 안맞으면 FAIL
+		if (vecWillRegistBounds.size() != vecWillReigstObject.size())
+			return E_FAIL;
+
+		// RootBox 생성
+		const _float fMargin = 50.f;
+
+		vMin -= Vec3(fMargin, fMargin, fMargin);
+		vMax += Vec3(fMargin, fMargin, fMargin);
+
+		const Vec3 vFinalCenter = (vMin + vMax) * 0.5f;
+		const Vec3 vFinalExtents = (vMax - vMin) * 0.5f;
+
+#ifdef _DEBUG
+		string strLog{
+			"RootBound Center = X: " + std::to_string(vFinalCenter.x) + "/ Y: " + std::to_string(vFinalCenter.y) + "/ Z: " + std::to_string(vFinalCenter.z)
+		};
+		CLOG_INFO(strLog);
+		strLog = {
+			"RootBound Extents = X: " + std::to_string(vFinalExtents.x) + "/ Y: " + std::to_string(vFinalExtents.y) + "/ Z: " + std::to_string(vFinalExtents.z)
+		};
+		CLOG_INFO(strLog);
+#endif
+
+
+		// RootBounds 생성
+ 		OCTREE_DESC desc{};
+		desc.rootBounds = BoundingBox(vFinalCenter, vFinalExtents);
+		if (FAILED(m_pGameInstance->Ready_Octree(desc)))
+			return E_FAIL;
+	}
+
+	// 이제 버퍼를 순회하며 옥트리에 등록
+	for (size_t i = 0; i < vecWillReigstObject.size(); ++i)
+	{
+		if (FAILED(m_pGameInstance->Register_Octree(
+			vecWillReigstObject[i],
+			RENDER_CATEGORY::NONEBLEND,
+			*vecWillRegistBounds[i])))
+			return E_FAIL;
+	}
+
 	return S_OK;
 }
 

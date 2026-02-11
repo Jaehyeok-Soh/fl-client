@@ -226,8 +226,8 @@
     <Filter Include="03. GameObject\UIObjects\02.UI">
       <UniqueIdentifier>{6d2a781d-ab40-4385-b96c-b3366f4eaba6}</UniqueIdentifier>
     </Filter>
-    <Filter Include="07. System\02. Debug_ImGui\Layout\Frame">
-      <UniqueIdentifier>{d522fe25-0bdb-43db-847a-41084decceb6}</UniqueIdentifier>
+    <Filter Include="03. GameObject\UIObjects\02.UI\PlayerHP">
+      <UniqueIdentifier>{d1da7a10-7b69-4f7d-9c38-81e993488207}</UniqueIdentifier>
     </Filter>
     <Filter Include="03. GameObject\UIObjects\02.UI\Image">
       <UniqueIdentifier>{6d340ec4-9fd3-485b-bb1c-8989cfd57761}</UniqueIdentifier>
@@ -240,6 +240,12 @@
     </Filter>
     <Filter Include="03. GameObject\UIObjects\02.UI\Text">
       <UniqueIdentifier>{4c552970-7965-46f3-85ec-73d256c4eba8}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="07. System\02. Debug_ImGui\Layout\Frustrum">
+      <UniqueIdentifier>{bfce2568-6c1b-4d14-9071-f78dd8aba44c}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="07. System\02. Debug_ImGui\Inspector\Global">
+      <UniqueIdentifier>{ff13b3dc-1ddc-457a-a989-4a75e72737e2}</UniqueIdentifier>
     </Filter>
     <Filter Include="07. System\01. Builder\Builder_AttackOverlap">
       <UniqueIdentifier>{c1589ec0-b521-4810-8e66-71ed1cf97227}</UniqueIdentifier>
@@ -477,7 +483,6 @@
     <ClInclude Include="..\public\ImGui_PlayerInspector.h">
       <Filter>07. System\02. Debug_ImGui\Inspector\Player</Filter>
     </ClInclude>
-    <ClInclude Include="..\Public\State_DashFront.h" />
     <ClInclude Include="..\Public\UIJust_Image.h">
       <Filter>03. GameObject\UIObjects\02.UI\Image\JustImage</Filter>
     </ClInclude>
@@ -490,8 +495,11 @@
     <ClInclude Include="..\Public\UIText.h">
       <Filter>03. GameObject\UIObjects\02.UI\Text</Filter>
     </ClInclude>
-    <ClInclude Include="..\Public\ImGui_FrameLayout.h">
-      <Filter>99. ETC</Filter>
+    <ClInclude Include="..\public\ImGui_FrustrumLayout.h">
+      <Filter>07. System\02. Debug_ImGui\Layout\Frustrum</Filter>
+    </ClInclude>
+    <ClInclude Include="..\public\ImGui_GlobalInspector.h">
+      <Filter>07. System\02. Debug_ImGui\Inspector\Global</Filter>
     </ClInclude>
     <ClInclude Include="..\Public\Builder_AttackOverlap.h">
       <Filter>07. System\01. Builder\Builder_AttackOverlap</Filter>
@@ -508,6 +516,12 @@
     </ClInclude>
     <ClInclude Include="..\Public\UIMini_Map.h">
       <Filter>03. GameObject\UIObjects\02.UI\Image\Dynamic Image\01.Minimap</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\ImGui_FrameLayout.h">
+      <Filter>07. System\02. Debug_ImGui\Layout\Frame</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\State_DashFront.h">
+      <Filter>06. FSM\Player</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -707,7 +721,6 @@
     <ClCompile Include="..\private\ImGui_PlayerInspector.cpp">
       <Filter>07. System\02. Debug_ImGui\Inspector\Player</Filter>
     </ClCompile>
-    <ClCompile Include="..\Private\State_DashFront.cpp" />
     <ClCompile Include="..\Private\UIJust_Image.cpp">
       <Filter>03. GameObject\UIObjects\02.UI\Image\JustImage</Filter>
     </ClCompile>
@@ -720,8 +733,11 @@
     <ClCompile Include="..\Private\UIText.cpp">
       <Filter>03. GameObject\UIObjects\02.UI\Text</Filter>
     </ClCompile>
-    <ClCompile Include="..\Private\ImGui_FrameLayout.cpp">
-      <Filter>99. ETC</Filter>
+    <ClCompile Include="..\private\ImGui_FrustrumLayout.cpp">
+      <Filter>07. System\02. Debug_ImGui\Layout\Frustrum</Filter>
+    </ClCompile>
+    <ClCompile Include="..\private\ImGui_GlobalInspector.cpp">
+      <Filter>07. System\02. Debug_ImGui\Inspector\Global</Filter>
     </ClCompile>
     <ClCompile Include="..\Private\Builder_AttackOverlap.cpp">
       <Filter>07. System\01. Builder\Builder_AttackOverlap</Filter>
@@ -750,6 +766,12 @@
     </ClCompile>
     <ClCompile Include="..\Private\UIMini_Map.cpp">
       <Filter>03. GameObject\UIObjects\02.UI\Image\Dynamic Image\01.Minimap</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\ImGui_FrameLayout.cpp">
+      <Filter>07. System\02. Debug_ImGui\Layout\Frame</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\State_DashFront.cpp">
+      <Filter>06. FSM\Player</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

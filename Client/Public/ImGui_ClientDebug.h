@@ -20,6 +20,7 @@ private:
 	enum EInspectorType : unsigned int
 	{
 		Player = 0,
+		Global,
 		Monster,
 		Light,
 		END
