@@ -20,6 +20,8 @@ public:
     vector<PxShape*> GetShape(PHYSICSCOLLIDER_DESC* pDesc);
     vector<PxShape*> GetMeshShape(PHYSICSCOLLIDER_DESC* pDesc);
 
+    vector<PxShape*> CopyShapes(vector<PxShape*>& shapes);
+
 private:
     vector<PxShape*> MakeShape(PHYSICSCOLLIDER_DESC* pDesc, vector<PxGeometryHolder> geometries);
     vector<PxShape*> MakeHeightFieldShapes(PHYSICSCOLLIDER_DESC* pDesc);

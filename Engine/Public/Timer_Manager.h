@@ -33,6 +33,7 @@ private:
 	HRESULT					Initialize();
 public:
 	_float					Get_TimeDelta(const _tchar* pTimerTag);
+	void					Set_MaxTimeDelta(const _tchar* pTimerTag, _float fMaxTimeDelta);
 public:
 	HRESULT					Add_Timer(const _tchar* pTimerTag);
 	void					Remove_Timer(const _tchar* pTimerTag);

@@ -1,6 +1,5 @@
 #pragma once
 #include "ImGui_Panel.h"
-#include "UIData_Repository.h"
 
 NS_BEGIN(Engine)
 class CGameInstance;
@@ -28,7 +27,6 @@ private:
 	void UIData_IO();
 	void SetUp_Level();
 	void Make_Canvas();
-	void Make_Layer();
 	void Make_UI();
 
 	/// <summary>
@@ -47,6 +45,9 @@ private:
 		float fValuePerPixel = 0.01f,float fScale = 10.f, float fStep = 0.1f, float fStep_fast = 1.0f, float fSize = 100.f);
 	
 	void Input_Canvas_TransformInfo();
+
+	bool Begin_Card(const char* Label, const char* ID, float fHeight);
+	void End_Card();
 private:
 	CImGui_ToolManager* m_pToolManager = { nullptr };
 	CImGui_UIManager* m_pUIManager = { nullptr };
@@ -71,9 +72,14 @@ private:
 
 	int32_t m_iRectTransformIndex = {4};
 
+	uint32_t m_iUIClassIndex = {};
+
 private:
 	int32_t m_iCurSelectLevelID = {};
 	vector<_string> m_vecLayers;
+private:
+	ImVec2 m_vLastCardPos = {};
+	ImVec2 m_vLastCardSize = {};
 
 public:
 	static CUI_Maker* Create(const _char* pLabel, CLevel* pOwner, ID3D11Device* pDevice, ID3D11DeviceContext* pDeviceContext);

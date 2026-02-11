@@ -15,15 +15,13 @@ private:
 
 #ifdef _DEBUG
 public:
-    virtual HRESULT Render(PxRigidActor* pActor, XMVECTOR color = DirectX::Colors::White);
+    HRESULT Render(PxRigidActor* pActor, XMVECTOR color = DirectX::Colors::White);
+    HRESULT Render(const PxGeometry& geom, const PxTransform& transform, XMVECTOR color = DirectX::Colors::White);
 #endif
 
 public:
     PxTransform XMMatrixToPxTransform(Matrix mat);
     Matrix PxTransformToXMMatrix(PxTransform pxTransform);
-
-    _bool HasNegativeScale(const Matrix& mat);
-    _int GetNegativeScaleAxis(const Matrix& mat);
 
     PxQuat GetPureRotation(const Matrix& mat);
     PxVec3 GetPureScale(const Matrix& mat);
@@ -32,6 +30,14 @@ public:
 
 public:
     _bool RayCast();
+
+    _bool Execute_Overlap(PxGeometry& shape, PxTransform& transform, OUT PxOverlapBuffer& hit, PxQueryFilterData& filterData, PxQueryFilterCallback* filterCallback);
+
+    class CPhysics_QueryFilterCallback* GetQueryFilterCallback();
+
+#ifdef _DEBUG
+    void SetMeshDebugState();
+#endif // _DEBUG
 
 private:
     class CGameInstance* m_pGameInstance = { nullptr };
@@ -46,6 +52,8 @@ private:
     ID3D11InputLayout* m_pInputLayout = { nullptr };
     const PxU32 m_iMaxRenderShape = { 20 };
     ID3D11DepthStencilState* m_pDSS = { nullptr };
+
+    _bool m_bIsOnMeshDebug = { false };
 #endif
 
 private:

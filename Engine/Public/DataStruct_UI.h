@@ -7,9 +7,9 @@ NS_BEGIN(DTO)
 enum class EUIType : _uint
 {
 	CANVAS,
-	LAYER,
 	GENERICUI,
-	EVENT,
+	UI_TEXT,
+	TRIGGER,
 	END
 };
 inline constexpr _uint g_UITypeCount{ ENUM_TO_UINT(EUIType::END) };
@@ -17,247 +17,223 @@ inline constexpr _uint g_UITypeCount{ ENUM_TO_UINT(EUIType::END) };
 NLOHMANN_JSON_SERIALIZE_ENUM(EUIType,
 	{
 		{EUIType::CANVAS, "CANVAS"},
-		{EUIType::LAYER, "LAYER"},
 		{EUIType::GENERICUI, "GENERICUI"},
-		{EUIType::EVENT, "EVENT"}
+		{EUIType::UI_TEXT, "UI_TEXT"},
+		{EUIType::TRIGGER, "TRIGGER"},
 	}
 )
 
-enum class EUIEvent : uint32_t
+enum class EUIClassType
 {
-	NONE = 0,
-	HOVER_ENTER,
-	HOVERING,
-	HOVER_EXIT,
-	PRESS_ENTER,
-	PRESSING,
-	PRESS_EXIT,
-
-	INVOKED,
+	PROGRESS_BAR,
+	JUST_IMAGE,
+	UI_TEXT,
+	TRIGGER,
 	END
 };
 
-enum EUIEvent_Flag : uint32_t
+inline std::string UIClassTypeToString(EUIClassType eType)
 {
-	NONE = 0u,
-	HOVER_ENTER = 1u << 1,
-	HOVERING	= 1u << 2,
-	HOVER_EXIT	= 1u << 3,
-	PRESS_ENTER = 1u << 4,
-	PRESSING	= 1u << 5,
-	PRESS_EXIT	= 1u << 6,
-	INVOKED		= 1u << 7,
-	END			= 1u << 8
-};
-
-inline DTO::EUIEvent EventFlagToEvent(DTO::EUIEvent_Flag eFlag)
-{
-	switch (eFlag)
+	switch (eType)
 	{
-	case DTO::EUIEvent_Flag::NONE:			return DTO::EUIEvent::NONE;
-	case DTO::EUIEvent_Flag::HOVER_ENTER:	return DTO::EUIEvent::HOVER_ENTER;
-	case DTO::EUIEvent_Flag::HOVERING:		return DTO::EUIEvent::HOVERING;
-	case DTO::EUIEvent_Flag::HOVER_EXIT:	return DTO::EUIEvent::HOVER_EXIT;
-	case DTO::EUIEvent_Flag::PRESS_ENTER:	return DTO::EUIEvent::PRESS_ENTER;
-	case DTO::EUIEvent_Flag::PRESSING:		return DTO::EUIEvent::PRESSING;
-	case DTO::EUIEvent_Flag::PRESS_EXIT:	return DTO::EUIEvent::PRESS_EXIT;
-	case DTO::EUIEvent_Flag::INVOKED:		return DTO::EUIEvent::INVOKED;
-	default:								return DTO::EUIEvent::NONE;
+	case EUIClassType::PROGRESS_BAR: return "PROGRESS_BAR";
+	case EUIClassType::JUST_IMAGE: return "JUST_IMAGE";
+	case EUIClassType::UI_TEXT: return "UI_TEXT";
+	case EUIClassType::TRIGGER: return "TRIGGER";
+	case EUIClassType::END: return "END";
+	default: return "";
 	}
 }
 
-inline DTO::EUIEvent_Flag EventToEventFlag(DTO::EUIEvent eEvent)
+inline EUIClassType StringToUIClassType(const std::string& str)
 {
-	switch (eEvent)
-	{
-	case DTO::EUIEvent::NONE:			return DTO::EUIEvent_Flag::NONE;
-	case DTO::EUIEvent::HOVER_ENTER:	return DTO::EUIEvent_Flag::HOVER_ENTER;
-	case DTO::EUIEvent::HOVERING:		return DTO::EUIEvent_Flag::HOVERING;
-	case DTO::EUIEvent::HOVER_EXIT:		return DTO::EUIEvent_Flag::HOVER_EXIT;
-	case DTO::EUIEvent::PRESS_ENTER:	return DTO::EUIEvent_Flag::PRESS_ENTER;
-	case DTO::EUIEvent::PRESSING:		return DTO::EUIEvent_Flag::PRESSING;
-	case DTO::EUIEvent::PRESS_EXIT:		return DTO::EUIEvent_Flag::PRESS_EXIT;
-	case DTO::EUIEvent::INVOKED:		return DTO::EUIEvent_Flag::INVOKED;
-	default:							return DTO::EUIEvent_Flag::NONE;
-	}
+	if (str == "PROGRESS_BAR") return EUIClassType::PROGRESS_BAR;
+	else if (str == "JUST_IMAGE") return EUIClassType::JUST_IMAGE;
+	else if (str == "UI_TEXT") return EUIClassType::UI_TEXT;
+	else if (str == "TRIGGER") return EUIClassType::TRIGGER;
+	else return EUIClassType::END;
 }
 
-
-NLOHMANN_JSON_SERIALIZE_ENUM(EUIEvent,
+NLOHMANN_JSON_SERIALIZE_ENUM(EUIClassType,
 	{
-		{EUIEvent::NONE, "NONE"},
-		{EUIEvent::HOVER_ENTER, "HOVER_ENTER"},
-		{EUIEvent::HOVERING, "HOVERING"},
-		{EUIEvent::HOVER_EXIT, "HOVER_EXIT"},
-		{EUIEvent::PRESS_ENTER, "PRESS_ENTER"},
-		{EUIEvent::PRESSING, "PRESSING"},
-		{EUIEvent::PRESS_EXIT, "PRESS_EXIT"},
-		{EUIEvent::INVOKED, "INVOKED"},
+		{EUIClassType::PROGRESS_BAR, "PROGRESS_BAR"},
+		{EUIClassType::JUST_IMAGE, "JUST_IMAGE"},
+		{EUIClassType::UI_TEXT, "UI_TEXT"},
+		{EUIClassType::TRIGGER, "TRIGGER"},
 	})
-	inline std::string UIEventToString(DTO::EUIEvent eType)
+
+enum EComponentTypeFlag
 {
-	switch (eType)
-	{
-	case DTO::EUIEvent::NONE: return "NONE";
-	case DTO::EUIEvent::HOVER_ENTER: return "HOVER_ENTER";
-	case DTO::EUIEvent::HOVERING: return "HOVERING";
-	case DTO::EUIEvent::HOVER_EXIT: return "HOVER_EXIT";
-	case DTO::EUIEvent::PRESS_ENTER: return "PRESS_ENTER";
-	case DTO::EUIEvent::PRESSING: return "PRESSING";
-	case DTO::EUIEvent::PRESS_EXIT: return "PRESS_EXIT";
-	case DTO::EUIEvent::INVOKED: return "INVOKED";
-	default: return "";
-	}
-}
+	BUTTON_COMPONENT = 1 << 0,
+	PROGRESS_COMPONENT = 1 << 1
+};
 
-inline DTO::EUIEvent StringToUIEvent(const std::string& str)
+enum class EUIOwnerType
 {
-	if (str == "NONE") return DTO::EUIEvent::NONE;
-	else if (str == "HOVER_ENTER") return DTO::EUIEvent::HOVER_ENTER;
-	else if (str == "HOVERING") return DTO::EUIEvent::HOVERING;
-	else if (str == "HOVER_EXIT") return DTO::EUIEvent::HOVER_EXIT;
-	else if (str == "PRESS_ENTER") return DTO::EUIEvent::PRESS_ENTER;
-	else if (str == "PRESSING") return DTO::EUIEvent::PRESSING;
-	else if (str == "PRESS_EXIT") return DTO::EUIEvent::PRESS_EXIT;
-	else if (str == "INVOKED") return DTO::EUIEvent::INVOKED;
-	else return DTO::EUIEvent::END;
-}
-
-enum class EUIAction
-{
-	/* (bool / isVisible) */
-	SET_VISIBLE,
-
-	/* (uint / uIndex) */
-	SET_TEXTURE_INDEX,
-
-	/* (Vec3 / vTargetPos),( _float / fTargetAlpha),( _float / fDuration), (bool / isPin)*/
-	START_LERP_MOVEMENT,
-	
-	/* (_string / strCanvasTag)*/
-	TRIGGER_ALL_CANVAS,
-
-	/* (_string / strLayerTag)*/
-	TRIGGER_ALL_LAYER,
-	
-	/* (_string / strUITag)*/
-	TRIGGER_TARGET_UI,
-	
+	NONE_OWNER,
+	PLAYER_HP,
+	PLAYER_ARMOR,
+	PLAYER_ENERGY,
+	PLAYER_LV,
 	END
 };
 
-inline EUIAction StringToUIFunctype(const _string& str)
-{
-	if (str == "SET_VISIBLE")return EUIAction::SET_VISIBLE;
-	else if (str == "SET_TEXTURE_INDEX")return EUIAction::SET_TEXTURE_INDEX;
-	else if (str == "START_LERP_MOVEMENT")return EUIAction::START_LERP_MOVEMENT;
-	else if (str == "TRIGGER_ALL_CANVAS")return EUIAction::TRIGGER_ALL_CANVAS;
-	else if (str == "TRIGGER_ALL_LAYER")return EUIAction::TRIGGER_ALL_LAYER;
-	else if (str == "TRIGGER_TARGET_UI")return EUIAction::TRIGGER_TARGET_UI;
-	else return EUIAction::END;
-}
-
-inline _string UIFunctypeToString(EUIAction eType)
+inline std::string UIOwnertypeToString(EUIOwnerType eType)
 {
 	switch (eType)
 	{
-	case DTO::EUIAction::SET_VISIBLE: return "SET_VISIBLE";
-	case DTO::EUIAction::SET_TEXTURE_INDEX: return "SET_TEXTURE_INDEX";
-	case DTO::EUIAction::START_LERP_MOVEMENT: return "START_LERP_MOVEMENT";
-	case DTO::EUIAction::TRIGGER_ALL_CANVAS: return "TRIGGER_ALL_CANVAS";
-	case DTO::EUIAction::TRIGGER_ALL_LAYER: return "TRIGGER_ALL_LAYER";
-	case DTO::EUIAction::TRIGGER_TARGET_UI: return "TRIGGER_TARGET_UI";
+	case EUIOwnerType::NONE_OWNER:		return "NONE_OWNER";
+	case EUIOwnerType::PLAYER_HP:		return "PLAYER_HP";
+	case EUIOwnerType::PLAYER_ARMOR:	return "PLAYER_ARMOR";
+	case EUIOwnerType::PLAYER_ENERGY:	return "PLAYER_ENERGY";
+	case EUIOwnerType::PLAYER_LV:		return "PLAYER_LV";
+	case EUIOwnerType::END:				return "END";
 	default: return "";
 	}
 }
+
+inline EUIOwnerType StringToUIOwnertype(const std::string& str)
+{
+	if (str == "NONE_OWNER")			return EUIOwnerType::NONE_OWNER;
+	else if (str == "PLAYER_HP")		return EUIOwnerType::PLAYER_HP;
+	else if (str == "PLAYER_ARMOR")		return EUIOwnerType::PLAYER_ARMOR;
+	else if (str == "PLAYER_ENERGY")	return EUIOwnerType::PLAYER_ENERGY;
+	else if (str == "PLAYER_LV")		return EUIOwnerType::PLAYER_LV;
+	else return EUIOwnerType::END;
+}
+
+NLOHMANN_JSON_SERIALIZE_ENUM(EUIOwnerType,
+	{
+		{EUIOwnerType::NONE_OWNER,		"NONE_OWNER"},
+		{EUIOwnerType::PLAYER_HP,		"PLAYER_HP"},
+		{EUIOwnerType::PLAYER_ARMOR,	"PLAYER_ARMOR"},
+		{EUIOwnerType::PLAYER_ENERGY,	"PLAYER_ENERGY"},
+		{EUIOwnerType::PLAYER_LV,		"PLAYER_LV"},
+	})
 
 /////////////////-------------------  Data Struct  -------------------/////////////////
-
-struct TUI_EventBindData
+struct TUI_TextData
 {
-	static constexpr EUIType eType = EUIType::EVENT	;
-	std::string strTag;
-	std::string strOwnerTag;
-	EUIEvent eEvent = EUIEvent::NONE;
-	std::string strActionKey;
-	json Params;
+	static constexpr EUIType eType = EUIType::UI_TEXT;
+	std::string		strTag;
+	std::string		strOwnerName;
+	std::string		strFontTag;
+	std::string	    strText;
+	Vec4			vFontColor;	
+};
+
+struct TUI_TriggerData
+{
+	static constexpr EUIType eType = EUIType::TRIGGER;
+	std::string		strTag;
+	std::string		strOwnerName;
+	
+	vector<std::string> vecHoverEnterTriggerCanvas;
+	vector<std::string> vecHoverEnterTriggerUI;
+	vector<std::string> vecHoverExitTriggerCanvas;
+	vector<std::string> vecHoverExitTriggerUI;
+
+	vector<std::string> vecPressEnterTriggerCanvas;
+	vector<std::string> vecPressEnterTriggerUI;
+	vector<std::string> vecPressExitTriggerCanvas;
+	vector<std::string> vecPressExitTriggerUI;
 };
 
 struct TUI_GenericUIData
 {
 	static constexpr EUIType eType = EUIType::GENERICUI;
-	std::string strTag;
-	std::string strCanvasName;
-	std::string strLayerName;
-
-	uint32_t iRectTransformType;
-
-	_float fWidth;
-	_float fHeight;
-	_float fPosX;
-	_float fPosY;
-	_float fPosZ;
-	_string strTextureTag;
-	uint32_t iTextureIndex;
-};
-
-struct TUI_LayerData
-{
-	static constexpr EUIType eType = EUIType::LAYER;
-	std::string strTag;
-	std::string strCanvasName;
+	EUIClassType	eClassType;
+	std::string		strTag;
+	std::string		strCanvasName;
+	uint32_t		iRectTransformType;
+	_float			fWidth;
+	_float			fHeight;
+	_float			fPosX;
+	_float			fPosY;
+	_float			fPosZ;
+	_string			strTextureTag;
+	_bool			isVisible;
+	uint32_t		iComponentFlag;
+	EUIOwnerType	eOwnerType;
+	_bool			isUseColorTint;
+	Vec4			vColorTint;
+	int32_t			iShaderPass;
+	int32_t			iFillDir;
+	_float			fDelay;
+	int32_t			iFlip;
 };
 
 struct TUI_CanvasData
 {
 	static constexpr EUIType eType = EUIType::CANVAS;
 	std::string strTag;
-
-	uint32_t iLevelIndex;
-	_float fWidth;
-	_float fHeight;
-	_float fPosX;
-	_float fPosY;
-	_float fPosZ;
-
-	uint32_t iEditorSizeX ;
-	uint32_t iEditorSizeY;
+	uint32_t	iLevelIndex;
+	_float		fWidth;
+	_float		fHeight;
+	_float		fPosX;
+	_float		fPosY;
+	_float		fPosZ;
+	uint32_t	iEditorSizeX ;
+	uint32_t	iEditorSizeY;
 };
 
 /////////////////-------------------  to_json, from_json  -------------------/////////////////
-void to_json(json& j, const TUI_EventBindData& data);
-void from_json(const json& j, TUI_EventBindData& data);
+void to_json(json& j, const TUI_TriggerData& data);
+void from_json(const json& j, TUI_TriggerData& data);
+void to_json(json& j, const TUI_TextData& data);
+void from_json(const json& j, TUI_TextData& data);
 void to_json(json& j, const TUI_GenericUIData& data);
 void from_json(const json& j, TUI_GenericUIData& data);
-void to_json(json& j, const TUI_LayerData& data);
-void from_json(const json& j, TUI_LayerData& data);
 void to_json(json& j, const TUI_CanvasData& data);
 void from_json(const json& j, TUI_CanvasData& data);
 NS_END
-
 /////////////////-------------------  Wrapping Class  -------------------/////////////////
 
 NS_BEGIN(Engine)
 
-class ENGINE_DLL CUI_EventBindData_DTO final : public IObjectDataBase
+// 트리거 클래스
+class ENGINE_DLL CUI_Trigger_DTO final : public IObjectDataBase
 {
 	using Super = IObjectDataBase;
 private:
-	CUI_EventBindData_DTO() = default;
-	virtual ~CUI_EventBindData_DTO() = default;
+	CUI_Trigger_DTO() = default;
+	virtual ~CUI_Trigger_DTO() = default;
 public:
-	_uint Get_Type() const override { return ENUM_TO_UINT(DTO::EUIType::EVENT); }
+	_uint Get_Type() const override { return ENUM_TO_UINT(DTO::EUIType::TRIGGER); }
 	const _string& Get_Tag() const override { return m_Data.strTag; }
 
 	json ToJson() const override;
 	HRESULT FromJson(const json& j) override;
 
-	const DTO::TUI_EventBindData& Get_Data() const { return m_Data; }
-	DTO::TUI_EventBindData& Get_Data() { return m_Data; }
+	const DTO::TUI_TriggerData& Get_Data() const { return m_Data; }
+	DTO::TUI_TriggerData& Get_Data() { return m_Data; }
 private:
-	DTO::TUI_EventBindData m_Data;
+	DTO::TUI_TriggerData m_Data;
 public:
-	static CUI_EventBindData_DTO* Create() { return new CUI_EventBindData_DTO(); }
+	static CUI_Trigger_DTO* Create() { return new CUI_Trigger_DTO(); }
+	virtual void Free() override { Super::Free(); }
+};
+
+// 텍스트 클래스
+class ENGINE_DLL CUI_Text_DTO final : public IObjectDataBase
+{
+	using Super = IObjectDataBase;
+private:
+	CUI_Text_DTO() = default;
+	virtual ~CUI_Text_DTO() = default;
+public:
+	_uint Get_Type() const override { return ENUM_TO_UINT(DTO::EUIType::UI_TEXT); }
+	const _string& Get_Tag() const override { return m_Data.strTag; }
+
+	json ToJson() const override;
+	HRESULT FromJson(const json& j) override;
+
+	const DTO::TUI_TextData& Get_Data() const { return m_Data; }
+	DTO::TUI_TextData& Get_Data() { return m_Data; }
+private:
+	DTO::TUI_TextData m_Data;
+public:
+	static CUI_Text_DTO* Create() { return new CUI_Text_DTO(); }
 	virtual void Free() override { Super::Free(); }
 };
 
@@ -280,28 +256,6 @@ private:
 	DTO::TUI_GenericUIData m_Data;
 public:
 	static CUI_GenericUI_DTO* Create() { return new CUI_GenericUI_DTO(); }
-	virtual void Free() override { Super::Free(); }
-};
-
-class ENGINE_DLL CUI_Layer_DTO final : public IObjectDataBase
-{
-	using Super = IObjectDataBase;
-private:
-	CUI_Layer_DTO() = default;
-	virtual ~CUI_Layer_DTO() = default;
-public:
-	_uint Get_Type() const override { return ENUM_TO_UINT(DTO::EUIType::LAYER); }
-	const std::string& Get_Tag() const override { return m_Data.strTag; }
-
-	json ToJson() const override;
-	HRESULT FromJson(const json& j) override;
-
-	const DTO::TUI_LayerData& Get_Data() const { return m_Data; }
-	DTO::TUI_LayerData& Get_Data() { return m_Data; }
-private:
-	DTO::TUI_LayerData m_Data;
-public:
-	static CUI_Layer_DTO* Create() { return new CUI_Layer_DTO(); }
 	virtual void Free() override { Super::Free(); }
 };
 

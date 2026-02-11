@@ -48,6 +48,7 @@ public:
 	EGuizmoState Get_GuizmoState() const { return m_eGuizmoState; }
 	void Set_GuizmoState(EGuizmoState eState) { m_eGuizmoState = eState; }
 
+	_bool		Get_MousePosInViewPort() const;
 	const Vec2& Get_CurViewportSize() const { return m_vViewportSize; }
 	const Vec2& Get_ViewportMousePos() const { return m_vViewportMousePos; }
 	POINT Get_ViewportMousePos_Point() const { return POINT{ (LONG)m_vViewportMousePos.x, (LONG)m_vViewportMousePos.y }; }

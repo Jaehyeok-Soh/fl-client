@@ -60,6 +60,7 @@ void CCamera_Manager::Change_MainCamera(CameraType eType, const wstring& wstrTag
 	CCameraMan* pCameraMan = itr->second;
 	Safe_AddRef(pCameraMan);
 	m_pMainCamera = pCameraMan;
+	Update_ViewMatrix();
 }
 
 HRESULT CCamera_Manager::Change_Target_Next()

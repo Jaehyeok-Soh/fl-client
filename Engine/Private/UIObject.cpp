@@ -32,9 +32,9 @@ HRESULT CUIObject::Initialize(void* pArg)
 
 	m_isVisible = pDesc->isInitVisible;
 	m_eCategory = (pDesc->isAlpha ? RENDER_CATEGORY::BLENDUI : RENDER_CATEGORY::UI);
-
 	m_fX = pDesc->fX;
 	m_fY = pDesc->fY;
+	m_fZ = pDesc->fZ;
 	m_fWidth = 1.f;
 	m_fHeight = 1.f;
 
@@ -83,7 +83,8 @@ void CUIObject::Update_Late(const _float fTimeDelta)
 void CUIObject::Ready_Before_Render(const _float fTimeDelta)
 {
 	Super::Ready_Before_Render(fTimeDelta);
-	m_pGameInstance->Push_RenderObject(RENDER_CATEGORY::UI, this);
+	if(m_isVisible)
+		m_pGameInstance->Push_RenderObject(RENDER_CATEGORY::UI, this);
 }
 
 HRESULT CUIObject::Render()

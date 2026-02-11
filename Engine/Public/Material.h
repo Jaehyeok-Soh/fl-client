@@ -24,6 +24,8 @@ private:
 	HRESULT Initialize(void *pArg);
 public:
 	HRESULT Bind_ShaderResource(class CShader* pShader);
+
+	const std::array<ID3D11ShaderResourceView*, ENUM_TO_SZET(EMaterialTextureType::MAX_COUNT)>& Get_ArraySRV() const { return m_arrSRVs; }
 private:
 	HRESULT Caching_Resource(const wstring &pTag, EMaterialTextureType eType);
 	ID3D11ShaderResourceView* Get_ShaderResourceView(const _tchar* pTag);

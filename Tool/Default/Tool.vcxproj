@@ -154,7 +154,7 @@
     <ClInclude Include="..\Public\CameraMan_Free.h" />
     <ClInclude Include="..\Public\CEffectObject.h" />
     <ClInclude Include="..\Public\Gravity_Force.h" />
-    <ClInclude Include="..\Public\UIAction_Tool.h" />
+    <ClInclude Include="..\Public\UIButton_Component.h" />
     <ClInclude Include="..\Public\UIComponent_Inspector.h" />
     <ClInclude Include="..\Public\DebugLine.h" />
     <ClInclude Include="..\Public\Effect.h" />
@@ -163,7 +163,6 @@
     <ClInclude Include="..\Public\Folder.h" />
     <ClInclude Include="..\Public\Grid.h" />
     <ClInclude Include="..\Public\imfilebrowser.h" />
-    <ClInclude Include="..\Public\InstanceModel.h" />
     <ClInclude Include="..\public\Level_Logo.h" />
     <ClInclude Include="..\Public\MapToolManager.h" />
     <ClInclude Include="..\public\Panel_FileExplore.h" />
@@ -171,7 +170,6 @@
     <ClInclude Include="..\Public\Panel_Model.h">
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</ExcludedFromBuild>
     </ClInclude>
-    <ClInclude Include="..\Public\ToolLayer.h" />
     <ClInclude Include="..\Public\Tool_ContainerObject.h" />
     <ClInclude Include="..\Public\Tool_PartObject.h" />
     <ClInclude Include="..\Public\GodInput.h" />
@@ -212,7 +210,6 @@
     <ClInclude Include="..\Public\Panel_ModelConverter.h" />
     <ClInclude Include="..\Public\CParticle_System_Panel.h" />
     <ClInclude Include="..\Public\Picking_ToolManager.h" />
-    <ClInclude Include="..\Public\StaticModel.h" />
     <ClInclude Include="..\Public\ToolCanvas.h" />
     <ClInclude Include="..\Public\ToolObject.h" />
     <ClInclude Include="..\Public\ToolUI.h" />
@@ -222,8 +219,7 @@
     <ClInclude Include="..\Public\Tool_Structs.h" />
     <ClInclude Include="..\Public\UEMapdataLoader.h" />
     <ClInclude Include="..\Public\UEMapdataParser.h" />
-    <ClInclude Include="..\Public\UIData_Repository.h" />
-    <ClInclude Include="..\Public\UITargetAction_Tool.h" />
+    <ClInclude Include="..\Public\UIProgress_Component.h" />
     <ClInclude Include="..\Public\UI_Hierachy.h" />
     <ClInclude Include="..\Public\UI_Inspector.h" />
     <ClInclude Include="..\Public\UI_Maker.h" />
@@ -243,16 +239,13 @@
     <ClCompile Include="..\Private\CameraMan_Free.cpp" />
     <ClCompile Include="..\Private\CEffectObject.cpp" />
     <ClCompile Include="..\Private\Gravity_Force.cpp" />
-    <ClCompile Include="..\Private\UIAction_Tool.cpp" />
+    <ClCompile Include="..\Private\UIButton_Component.cpp" />
     <ClCompile Include="..\Private\UIComponent_Inspector.cpp" />
     <ClCompile Include="..\Private\DebugLine.cpp" />
     <ClCompile Include="..\Private\Effect.cpp" />
     <ClCompile Include="..\Private\EffectType_Selection_Panel.cpp" />
     <ClCompile Include="..\Private\File.cpp" />
     <ClCompile Include="..\Private\Folder.cpp" />
-    <ClCompile Include="..\Private\InstanceModel.cpp">
-      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">false</ExcludedFromBuild>
-    </ClCompile>
     <ClCompile Include="..\private\Level_Logo.cpp" />
     <ClCompile Include="..\Private\Grid.cpp" />
     <ClCompile Include="..\Private\MapToolManager.cpp" />
@@ -261,7 +254,6 @@
     <ClCompile Include="..\Private\Panel_Model.cpp">
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</ExcludedFromBuild>
     </ClCompile>
-    <ClCompile Include="..\Private\ToolLayer.cpp" />
     <ClCompile Include="..\Private\Tool_ContainerObject.cpp" />
     <ClCompile Include="..\Private\Tool_PartObject.cpp" />
     <ClCompile Include="..\Private\GodInput.cpp" />
@@ -340,14 +332,12 @@
     <ClCompile Include="..\Private\Panel_ModelConverter.cpp" />
     <ClCompile Include="..\Private\CParticle_System_Panel.cpp" />
     <ClCompile Include="..\Private\Picking_ToolManager.cpp" />
-    <ClCompile Include="..\Private\StaticModel.cpp" />
     <ClCompile Include="..\Private\ToolCanvas.cpp" />
     <ClCompile Include="..\Private\ToolObject.cpp" />
     <ClCompile Include="..\Private\ToolUI.cpp" />
     <ClCompile Include="..\Private\Tool_Defines.cpp" />
     <ClCompile Include="..\Private\Tool_Structs.cpp" />
-    <ClCompile Include="..\Private\UIData_Repository.cpp" />
-    <ClCompile Include="..\Private\UITargetAction_Tool.cpp" />
+    <ClCompile Include="..\Private\UIProgress_Component.cpp" />
     <ClCompile Include="..\Private\UI_Hierachy.cpp" />
     <ClCompile Include="..\Private\UI_Inspector.cpp" />
     <ClCompile Include="..\Private\UI_Maker.cpp" />
@@ -367,6 +357,20 @@
   <ItemGroup>
     <Image Include="small.ico" />
     <Image Include="Tool.ico" />
+  </ItemGroup>
+  <ItemGroup>
+    <FxCompile Include="..\..\Shaders\Shader_VtxInstanceMesh_Tool.hlsl">
+      <ShaderModel Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">5.0</ShaderModel>
+      <ShaderModel Condition="'$(Configuration)|$(Platform)'=='Release|x64'">5.0</ShaderModel>
+      <ShaderType Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Effect</ShaderType>
+      <ShaderType Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Effect</ShaderType>
+    </FxCompile>
+    <FxCompile Include="..\..\Shaders\Shader_VtxMesh_Tool.hlsl">
+      <ShaderModel Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">5.0</ShaderModel>
+      <ShaderModel Condition="'$(Configuration)|$(Platform)'=='Release|x64'">5.0</ShaderModel>
+      <ShaderType Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Effect</ShaderType>
+      <ShaderType Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Effect</ShaderType>
+    </FxCompile>
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

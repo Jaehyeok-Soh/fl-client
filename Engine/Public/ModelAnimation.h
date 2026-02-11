@@ -48,6 +48,7 @@ public:
 	_float Get_NormalizedTime() const { return m_fCurrentTrackPosition / m_fDuration; }
 	_float Get_ElpasedTimeSeconds() const { return m_fCurrentTrackPosition / m_fTickPerSecond; }
 	void Set_PlayRate(_float fRate) { m_fTickPerSecond *= fRate; }
+	_float Get_TrackPosition() { return m_fCurrentTrackPosition; }
 	_bool Is_TrackPositionBetween(_float fStartRatio, _float fEndRatio);
 	_bool Is_TrackPositionAt(_float fRatio) const { return m_fCurrentTrackPosition >= m_fDuration * fRatio; }
 	_bool Is_TrackPositionAtHalf() const { return Is_TrackPositionAt(0.5f); }

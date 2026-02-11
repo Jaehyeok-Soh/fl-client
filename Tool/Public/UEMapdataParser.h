@@ -59,23 +59,27 @@ private:
 public:
 	HRESULT Initialize(ID3D11Device* pDevice, ID3D11DeviceContext* pContext);
 public:
+	_bool						Get_IsUseCheckAndBindInstance() const { return m_isUseCheckAndBindInstance; }
 	vector<UE_MAP_DATA>*		Get_Unreal_MapData(const wstring& FindKey);
 	vector<MAPDATA_BASE*>*		Get_Converted_MapData(const wstring& FindKey);
 
+
+	void						Set_IsUseCheckAndBindInstance(_bool isUse) { m_isUseCheckAndBindInstance = isUse; }
 	void						Set_MulScale(float fMulScale) { m_fMulScale = fMulScale; }
 	float						Get_MulScale() const { return m_fMulScale; }
 
-	vector<wstring>			   Get_ConvertedFilePathList();
+	vector<wstring>				Get_ConvertedFilePathList();
 
 public:
-	HRESULT					   Convert_UnrealRawMapData(const wchar_t* wszUERawDataJsonFile);
-	HRESULT					   Batch_UnrealRawMapData(const wchar_t* wwszFilePath);
+	HRESULT						Convert_UnrealRawMapData(const wchar_t* wszUERawDataJsonFile);
+	HRESULT						Batch_UnrealRawMapData(const wchar_t* wwszFilePath);
 
 public:
-	HRESULT					   Save_ConvertedRawMapData(const wchar_t* wszFilePath);
-	HRESULT					   Save_FilteringRawMapData(const wchar_t* wszFilePath);
+	HRESULT						Save_ConvertedRawMapData(const wchar_t* wszFilePath);
+	HRESULT						Save_FilteringRawMapData(const wchar_t* wszFilePath);
 
 public:
+	bool					m_isUseCheckAndBindInstance{false};
 	const wstring			m_WstringConverted{ L"_Converted.json" };
 	const wstring			m_WstringFiltering{ L"_Filtering.json" };
 	Vec3					m_vMulPitchYawRoll{0.f,0.f,0.f};

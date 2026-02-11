@@ -12,6 +12,7 @@
 #include "Collider.h"
 #include "Model.h"
 #include "PhysicsCCT.h"
+#include "PhysicsAttackOverlap.h"
 #include "ComputeShader.h"
 
 #include "GameInstance.h"
@@ -38,6 +39,8 @@ HRESULT CBody::Initialize(void* pArg)
 {
 	if (FAILED(Super::Initialize(pArg)))
 		return E_FAIL;
+
+	Set_Name("Eun_bi");
 
 	BODY_DESC* pDesc = static_cast<BODY_DESC*>(pArg);
 	if (FAILED(Ready_Components(pDesc)))
@@ -69,6 +72,8 @@ HRESULT CBody::Awake(const _uint iCurrentLevelIndex)
 	if (FAILED(Super::Awake(iCurrentLevelIndex)))
 		return E_FAIL;
 
+	Get_Component<CPhysicsAttackOverlap>()->Awake();
+
 	return S_OK;
 }
 
@@ -96,6 +101,8 @@ void CBody::Update(_float fTimeDelta)
 void CBody::Update_Late(_float fTimeDelta)
 {
 	Super::Update_Late(fTimeDelta);
+	
+	Get_Component<CPhysicsAttackOverlap>()->Update(fTimeDelta);
 }
 
 void CBody::Ready_Before_Render(_float fTimeDelta)
@@ -105,23 +112,33 @@ void CBody::Ready_Before_Render(_float fTimeDelta)
 	Super::Update_CombinedWorldMatrix(m_pMatParent);
 #ifdef _DEBUG
 	m_pGameInstance->Push_DebugComponent(Get_Component<CCollider>());
+	m_pGameInstance->Push_DebugComponent(Get_Component<CPhysicsAttackOverlap>());
 #endif 
-
 }
 
-void CBody::OnCollision(_uint iMyColliderLayer, CCollider* pOther)
+void CBody::OnCollision(_uint iMyColliderLayer, CGameObject* pOther)
 {
 	Get_Parent()->OnCollision(iMyColliderLayer, pOther);
 }
 
-void CBody::OnCollision_Enter(_uint iMyColliderLayer, CCollider* pOther)
+void CBody::OnCollision_Enter(_uint iMyColliderLayer, CGameObject* pOther)
 {
 	Get_Parent()->OnCollision_Enter(iMyColliderLayer, pOther);
 }
 
-void CBody::OnCollision_Exit(_uint iMyColliderLayer, CCollider* pOther)
+void CBody::OnCollision_Exit(_uint iMyColliderLayer, CGameObject* pOther)
 {
 	Get_Parent()->OnCollision_Exit(iMyColliderLayer, pOther);
+}
+
+void CBody::OnTrigger_Enter(_uint iMyColliderLayer, CGameObject* pOther)
+{
+	Get_Parent()->OnTrigger_Enter(iMyColliderLayer, pOther);
+}
+
+void CBody::OnTrigger_Exit(_uint iMyColliderLayer, CGameObject* pOther)
+{
+	Get_Parent()->OnTrigger_Exit(iMyColliderLayer, pOther);
 }
 
 _bool CBody::On_Hit(_uint iCollideMyLayer, ATTACK_DESC* pDesc, CGameObject* pOther)
@@ -300,6 +317,17 @@ HRESULT CBody::Ready_Components(BODY_DESC* pDesc)
 		return E_FAIL;
 
 	if (FAILED(Add_Component<CShader>(0/*static*/, L"Prototype_Component_Shader_VtxAnimMesh", pDesc)))
+		return E_FAIL;
+
+	if (FAILED(Ready_AttackOverlap()))
+		return E_FAIL;
+
+	return S_OK;
+}
+
+HRESULT CBody::Ready_AttackOverlap()
+{
+	if (FAILED(Add_Component<CPhysicsAttackOverlap>(0, L"Prototype_Component_AttackOverlap_PlayerMoon", nullptr)))
 		return E_FAIL;
 
 	return S_OK;

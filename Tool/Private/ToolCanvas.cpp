@@ -1,7 +1,6 @@
 #include "pch.h"
 #include "ToolCanvas.h"
 #include "ImGui_UIManager.h"
-#include "ToolLayer.h"
 #include "ToolUI.h"
 #include "Engine_Utils.h"
 /* Components */
@@ -22,7 +21,7 @@ CToolCanvas::CToolCanvas(ID3D11Device* pDevice, ID3D11DeviceContext* pDeviceCont
 }
 
 CToolCanvas::CToolCanvas(const CToolCanvas& rhs)
-	:CUIObject(rhs)
+	: CUIObject(rhs)
 {
 }
 
@@ -36,6 +35,13 @@ HRESULT CToolCanvas::Initialize_Prototype()
 
 HRESULT CToolCanvas::Initialize(void* pArg)
 {
+	m_pUIManager = { nullptr };
+	m_tCanvasData = {};
+	m_pCaptureUI = {nullptr};
+	m_pHoveringUI = { nullptr };
+	m_ArrReleasedUI = {nullptr};
+
+
 	TOOLCANVAS_DESC* pDesc = static_cast<TOOLCANVAS_DESC*>(pArg);
 	m_strTag = pDesc->strTag;
 	m_iClientLevelIndex = pDesc->iClientLevelIndex;
@@ -66,7 +72,6 @@ HRESULT CToolCanvas::Awake(const _uint iCurrentLevelID)
 
 	if (FAILED(m_pDevice->CreateInputLayout(VertexPositionColor::InputElements, VertexPositionColor::InputElementCount, pShaderInput, iShaderInputLenght, &m_pInputLayout)))
 		return E_FAIL;
-
 	return S_OK;
 }
 
@@ -156,7 +161,7 @@ void CToolCanvas::Calc_HitUpdate()
 		{
 			if (nullptr != pUI)
 			{
-				pUI->Get_InteractState_Ref() = DTO::EUIEvent_Flag::NONE;
+				pUI->Get_InteractState_Ref() = EUIEvent_Flag::NONE;
 				pUI = nullptr;
 			}
 		}
@@ -165,15 +170,15 @@ void CToolCanvas::Calc_HitUpdate()
 	/* Trigger 이벤트 소비 */
 	if (nullptr != m_pCaptureUI)
 	{
-		Engine_Utils::RemoveSoft_Flag(m_pCaptureUI->Get_InteractState_Ref(), DTO::EUIEvent_Flag::PRESS_ENTER);
-		Engine_Utils::RemoveSoft_Flag(m_pCaptureUI->Get_InteractState_Ref(), DTO::EUIEvent_Flag::PRESS_EXIT);
-		m_pCaptureUI->Get_InteractState_Ref() =  DTO::EUIEvent_Flag::NONE;
+		Engine_Utils::RemoveSoft_Flag(m_pCaptureUI->Get_InteractState_Ref(), EUIEvent_Flag::PRESS_ENTER);
+		Engine_Utils::RemoveSoft_Flag(m_pCaptureUI->Get_InteractState_Ref(), EUIEvent_Flag::PRESS_EXIT);
+		m_pCaptureUI->Get_InteractState_Ref() =  EUIEvent_Flag::NONE;
 	}
 	if (nullptr != m_pHoveringUI)
 	{
-		Engine_Utils::RemoveSoft_Flag(m_pHoveringUI->Get_InteractState_Ref(), DTO::EUIEvent_Flag::HOVER_ENTER);
-		Engine_Utils::RemoveSoft_Flag(m_pHoveringUI->Get_InteractState_Ref(), DTO::EUIEvent_Flag::HOVER_EXIT);
-		m_pHoveringUI->Get_InteractState_Ref() =  DTO::EUIEvent_Flag::NONE;
+		Engine_Utils::RemoveSoft_Flag(m_pHoveringUI->Get_InteractState_Ref(), EUIEvent_Flag::HOVER_ENTER);
+		Engine_Utils::RemoveSoft_Flag(m_pHoveringUI->Get_InteractState_Ref(), EUIEvent_Flag::HOVER_EXIT);
+		m_pHoveringUI->Get_InteractState_Ref() =  EUIEvent_Flag::NONE;
 	}
 
 	/* 누른 순간 */
@@ -183,7 +188,7 @@ void CToolCanvas::Calc_HitUpdate()
 		m_pCaptureUI = Calc_TopUI();
 		if (nullptr != m_pCaptureUI)
 		{
-			Engine_Utils::Add_Flag(m_pCaptureUI->Get_InteractState_Ref(), DTO::EUIEvent_Flag::PRESS_ENTER);
+			Engine_Utils::Add_Flag(m_pCaptureUI->Get_InteractState_Ref(), EUIEvent_Flag::PRESS_ENTER);
 			m_isPreUIPressing = TRUE;
 		}
 	}
@@ -196,19 +201,19 @@ void CToolCanvas::Calc_HitUpdate()
 			{
 				if (!m_isPreUIPressing)
 				{
-					Engine_Utils::Add_Flag(m_pCaptureUI->Get_InteractState_Ref(), DTO::EUIEvent_Flag::PRESS_ENTER);
+					Engine_Utils::Add_Flag(m_pCaptureUI->Get_InteractState_Ref(), EUIEvent_Flag::PRESS_ENTER);
 					m_isPreUIPressing = TRUE;
 				}
 				else
 				{
-					Engine_Utils::Add_Flag(m_pCaptureUI->Get_InteractState_Ref(), DTO::EUIEvent_Flag::PRESSING);
+					Engine_Utils::Add_Flag(m_pCaptureUI->Get_InteractState_Ref(), EUIEvent_Flag::PRESSING);
 				}
 			}
 			else
 			{
 				if (m_isPreUIPressing)
 				{
-					m_pCaptureUI->Get_InteractState_Ref() = DTO::EUIEvent_Flag::NONE;
+					m_pCaptureUI->Get_InteractState_Ref() = EUIEvent_Flag::NONE;
 					m_isPreUIPressing = FALSE;
 				}
 			}
@@ -222,14 +227,14 @@ void CToolCanvas::Calc_HitUpdate()
 			/* 땠을 때 동일한 UI면 */
 			if (m_pCaptureUI->Calc_HitEvent())
 			{
-				Engine_Utils::Add_Flag(m_pCaptureUI->Get_InteractState_Ref(), DTO::EUIEvent_Flag::PRESS_EXIT);
+				Engine_Utils::Add_Flag(m_pCaptureUI->Get_InteractState_Ref(), EUIEvent_Flag::PRESS_EXIT);
 				const uint32_t CaptureUI = 0u;
 				m_ArrReleasedUI[CaptureUI] = m_pCaptureUI;
 				m_pCaptureUI = nullptr;
 			}
 			else
 			{
-				m_pCaptureUI->Get_InteractState_Ref() = DTO::EUIEvent_Flag::NONE;
+				m_pCaptureUI->Get_InteractState_Ref() = EUIEvent_Flag::NONE;
 				m_pCaptureUI = nullptr;
 			}
 			m_isPreUIPressing = FALSE;
@@ -245,7 +250,7 @@ void CToolCanvas::Calc_HitUpdate()
 			/* 호버링중인 UI가 있다 */
 			if (nullptr != m_pHoveringUI)
 			{
-				Engine_Utils::Add_Flag(m_pHoveringUI->Get_InteractState_Ref(), DTO::EUIEvent_Flag::HOVER_EXIT);
+				Engine_Utils::Add_Flag(m_pHoveringUI->Get_InteractState_Ref(), EUIEvent_Flag::HOVER_EXIT);
 				const uint32_t HoverUI = 1u;
 				m_ArrReleasedUI[HoverUI] = m_pHoveringUI;
 				m_pHoveringUI = nullptr;
@@ -257,21 +262,21 @@ void CToolCanvas::Calc_HitUpdate()
 			if (nullptr == m_pHoveringUI)
 			{
 				m_pHoveringUI = pUI;
-				Engine_Utils::Add_Flag(m_pHoveringUI->Get_InteractState_Ref(), DTO::EUIEvent_Flag::HOVER_ENTER);
+				Engine_Utils::Add_Flag(m_pHoveringUI->Get_InteractState_Ref(), EUIEvent_Flag::HOVER_ENTER);
 			}
 			else
 			{
 				if (m_pHoveringUI != pUI)
 				{
-					Engine_Utils::Add_Flag(m_pHoveringUI->Get_InteractState_Ref(), DTO::EUIEvent_Flag::HOVER_EXIT);
-					Engine_Utils::Add_Flag(pUI->Get_InteractState_Ref(), DTO::EUIEvent_Flag::HOVER_ENTER);
+					Engine_Utils::Add_Flag(m_pHoveringUI->Get_InteractState_Ref(), EUIEvent_Flag::HOVER_EXIT);
+					Engine_Utils::Add_Flag(pUI->Get_InteractState_Ref(), EUIEvent_Flag::HOVER_ENTER);
 					const uint32_t HoverUI = 1u;
 					m_ArrReleasedUI[HoverUI] = m_pHoveringUI;
 					m_pHoveringUI = pUI;
 				}
 				else
 				{
-					Engine_Utils::Add_Flag(m_pHoveringUI->Get_InteractState_Ref(), DTO::EUIEvent_Flag::HOVERING);
+					Engine_Utils::Add_Flag(m_pHoveringUI->Get_InteractState_Ref(), EUIEvent_Flag::HOVERING);
 				}
 			}
 		}
@@ -282,85 +287,50 @@ CToolUI* CToolCanvas::Calc_TopUI()
 {
 	CToolUI* pTopUI = { nullptr };
 
-	for (CToolLayer* pLayer : m_vecToolLayers)
+	for (CToolUI* pUI : m_vecToolUI)
 	{
-		if (!pLayer->Get_isVisible())
-			continue;
-
-		auto* vecUI = pLayer->Safe_Access_UIObject_Vector_Ptr();
-		if (nullptr == vecUI)
-			continue;
-
-		for (CToolUI* pUI : *vecUI)
+		if (pUI->Calc_HitEvent())
 		{
-			/* UI안에 마우스가 있으면 TRUE */
-			if (pUI->Calc_HitEvent())
+			if (nullptr == pTopUI)
+				pTopUI = pUI;
+			else
 			{
-				if (nullptr == pTopUI)
+				if (pTopUI->Get_PosZ() < pUI->Get_PosZ())
 					pTopUI = pUI;
-				else
-				{
-					if (pTopUI->Get_PosZ() < pUI->Get_PosZ())
-						pTopUI = pUI;
-				}
 			}
 		}
 	}
 	return pTopUI;
 }
 
+HRESULT CToolCanvas::Safe_Add_UI(CToolUI* pUI)
+{
+	if (nullptr == pUI)
+		return E_FAIL;
+	m_vecToolUI.push_back(pUI);
+	return S_OK;
+}
+
+vector<CToolUI*>* CToolCanvas::Safe_Access_UI_Vector()
+{
+	if (m_vecToolUI.empty())
+		return nullptr;
+
+	return &m_vecToolUI;
+}
+
 void CToolCanvas::Sync_Data()
 {
 	m_tCanvasData.strTag = m_strTag;
 
-	m_tCanvasData.iLevelIndex = m_iClientLevelIndex;
-	m_tCanvasData.fWidth = m_fWidth;
-	m_tCanvasData.fHeight = m_fHeight;
-	m_tCanvasData.fPosX = m_fX;
-	m_tCanvasData.fPosY = m_fY;
-	m_tCanvasData.fPosZ = m_fZ;
-	m_tCanvasData.iEditorSizeX = g_iWinSizeX;
-	m_tCanvasData.iEditorSizeY = g_iWinSizeY;
-}
-
-HRESULT CToolCanvas::Safe_Add_Layer(CToolLayer* pLayer)
-{
-	if (nullptr == pLayer)
-		return E_FAIL;
-
-	m_vecToolLayers.push_back(pLayer);
-	return S_OK;
-}
-
-vector<CToolLayer*>* CToolCanvas::Safe_Access_LayerObject_Vector_Ptr()
-{
-	if (m_vecToolLayers.empty())
-		return nullptr;
-	return &m_vecToolLayers;
-}
-
-CToolLayer* CToolCanvas::Safe_Access_LayerObject_Ptr(int32_t index)
-{
-	if (m_vecToolLayers.empty())
-		return nullptr;
-
-	int32_t NumLayer = static_cast<int32_t>(m_vecToolLayers.size());
-	if (index >= NumLayer || index < 0)
-		return nullptr;
-
-	return m_vecToolLayers[index];
-}
-
-CToolLayer* CToolCanvas::Safe_Access_CurLayerObject_Ptr()
-{
-	if (m_vecToolLayers.empty())
-		return nullptr;
-
-	int32_t NumLayer = static_cast<int32_t>(m_vecToolLayers.size());
-	if (m_pUIManager->Get_CurCanvasIndex() >= NumLayer || m_pUIManager->Get_CurCanvasIndex() < 0)
-		return nullptr;
-
-	return m_vecToolLayers[m_pUIManager->Get_CurCanvasIndex()];
+	m_tCanvasData.iLevelIndex	= m_iClientLevelIndex;
+	m_tCanvasData.fWidth		= m_fWidth;
+	m_tCanvasData.fHeight		= m_fHeight;
+	m_tCanvasData.fPosX			= m_fX;
+	m_tCanvasData.fPosY			= m_fY;
+	m_tCanvasData.fPosZ			= m_fZ;
+	m_tCanvasData.iEditorSizeX	= g_iWinSizeX;
+	m_tCanvasData.iEditorSizeY	= g_iWinSizeY;
 }
 
 _bool CToolCanvas::Export_Data(DTO::ECategory eCategory, CDataDocumentBase* pDocument)
@@ -376,40 +346,25 @@ _bool CToolCanvas::Export_Data(DTO::ECategory eCategory, CDataDocumentBase* pDoc
 	if (FAILED(pDoc->Try_Add(m_tCanvasData)))
 		return FALSE;
 
-	/* Canvas에 저장된 Layer 저장 */
-	if (m_vecToolLayers.empty())
+	if (m_vecToolUI.empty())
 		return FALSE;
 
-	for (auto* pLayer : m_vecToolLayers)
+	for (auto* pUI : m_vecToolUI)
 	{
-		if (FAILED(pDoc->Try_Add(pLayer->Get_Data())))
+		if (FAILED(pDoc->Try_Add(pUI->Get_Data())))
 			return FALSE;
 
-
-		/* Layer에 저장된 UI 저장 */
-		auto* pUIVec = pLayer->Safe_Access_UIObject_Vector_Ptr();
-		if (nullptr == pUIVec)
-			continue;
-		for (auto* pUI : *pUIVec)
+		if (pUI->Get_UIClassType() == DTO::EUIClassType::UI_TEXT)
 		{
-			if (FAILED(pDoc->Try_Add(pUI->Get_Data())))
+			if (FAILED(pDoc->Try_Add(pUI->Get_TextData())))
 				return FALSE;
-
-			auto* pAllEvent = pUI->Safe_Access_AllEventData();
-			if (nullptr != pAllEvent)
-			{
-				for (size_t e = 0; e < pAllEvent->size(); ++e)
-				{
-					for (auto& bind : (*pAllEvent)[e])
-					{
-						if (FAILED(pDoc->Try_Add(bind)))
-							return FALSE;
-					}
-				}
-			}
+		}
+		else if (pUI->Get_UIClassType() == DTO::EUIClassType::TRIGGER)
+		{
+			if (FAILED(pDoc->Try_Add(pUI->Get_TriggerData())))
+				return FALSE;
 		}
 	}
-
 	return TRUE;
 }
 
@@ -441,13 +396,6 @@ void CToolCanvas::Free()
 	Safe_Delete(m_pBatch);
 	Safe_Delete(m_pEffect);
 	Safe_Release(m_pInputLayout);
-	for (auto* p : m_vecToolLayers)
-	{
-		if (nullptr == p)
-			continue;
-		Safe_Release(p);
-	}
-	m_vecToolLayers.clear();
 	Super::Free();
 }
 

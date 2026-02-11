@@ -169,12 +169,6 @@
     <Filter Include="03. GameObject\UIObjects\01.Canvas">
       <UniqueIdentifier>{bef61798-c2ef-48e4-8db0-faf0d1677c2d}</UniqueIdentifier>
     </Filter>
-    <Filter Include="03. GameObject\UIObjects\02.Layer">
-      <UniqueIdentifier>{54739f16-d1ed-490f-b95b-8ee9350dd97f}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="03. GameObject\UIObjects\03.UI">
-      <UniqueIdentifier>{6d2a781d-ab40-4385-b96c-b3366f4eaba6}</UniqueIdentifier>
-    </Filter>
     <Filter Include="06. FSM\Player\Attack">
       <UniqueIdentifier>{7ebbc28f-6b61-485b-b6e8-1bfe363c2de3}</UniqueIdentifier>
     </Filter>
@@ -189,9 +183,6 @@
     </Filter>
     <Filter Include="07. System\01. Builder\Map">
       <UniqueIdentifier>{8c8cb986-b28e-4058-aca0-3a2b0b85e2e0}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="03. GameObject\UIObjects\04.Action">
-      <UniqueIdentifier>{3ddc639a-e37a-4e32-9249-6cb9fc8982e3}</UniqueIdentifier>
     </Filter>
     <Filter Include="03. GameObject\MapObject\02. InstanceModel">
       <UniqueIdentifier>{2be52ba2-2a45-42f4-aa0d-4f0d8e44cbe8}</UniqueIdentifier>
@@ -232,8 +223,44 @@
     <Filter Include="04. Shaders\ComputeShader_Labs">
       <UniqueIdentifier>{8c14e548-7930-4ec0-b748-e471998a55b9}</UniqueIdentifier>
     </Filter>
+    <Filter Include="03. GameObject\UIObjects\02.UI">
+      <UniqueIdentifier>{6d2a781d-ab40-4385-b96c-b3366f4eaba6}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="03. GameObject\UIObjects\02.UI\PlayerHP">
+      <UniqueIdentifier>{d1da7a10-7b69-4f7d-9c38-81e993488207}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="03. GameObject\UIObjects\02.UI\Image">
+      <UniqueIdentifier>{6d340ec4-9fd3-485b-bb1c-8989cfd57761}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="03. GameObject\UIObjects\02.UI\Image\SkillBG">
+      <UniqueIdentifier>{f1acf951-62e0-4e8b-b106-6fd9b77c5697}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="03. GameObject\UIObjects\02.UI\Image\JustImage">
+      <UniqueIdentifier>{fd843193-a085-4c64-9708-e0849b95da7d}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="03. GameObject\UIObjects\02.UI\Progress Bar">
+      <UniqueIdentifier>{bd7da17c-04aa-4842-8652-0f67ca4cf8ad}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="03. GameObject\UIObjects\02.UI\Text">
+      <UniqueIdentifier>{4c552970-7965-46f3-85ec-73d256c4eba8}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="07. System\02. Debug_ImGui\Layout\Frustrum">
+      <UniqueIdentifier>{bfce2568-6c1b-4d14-9071-f78dd8aba44c}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="07. System\02. Debug_ImGui\Inspector\Global">
+      <UniqueIdentifier>{ff13b3dc-1ddc-457a-a989-4a75e72737e2}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="07. System\01. Builder\Builder_AttackOverlap">
+      <UniqueIdentifier>{c1589ec0-b521-4810-8e66-71ed1cf97227}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="03. GameObject\ContainerObjects\Monster">
+      <UniqueIdentifier>{a9cba2b5-38c2-4050-8518-588960127889}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="03. GameObject\UIObjects\02.UI\Trigger">
+      <UniqueIdentifier>{48b4a088-d124-4a5f-a826-7eac6ea855f7}</UniqueIdentifier>
+    </Filter>
     <Filter Include="07. System\02. Debug_ImGui\Layout\Frame">
-      <UniqueIdentifier>{d522fe25-0bdb-43db-847a-41084decceb6}</UniqueIdentifier>
+      <UniqueIdentifier>{e160a976-e831-4814-9654-db6d733e6487}</UniqueIdentifier>
     </Filter>
     <Filter Include="04. Shaders\ComputeShaders">
       <UniqueIdentifier>{f29a8226-048f-4c41-b7e7-685b07e919a6}</UniqueIdentifier>
@@ -391,10 +418,7 @@
       <Filter>07. System\01. Builder\UI</Filter>
     </ClInclude>
     <ClInclude Include="..\Public\GenericUI.h">
-      <Filter>03. GameObject\UIObjects\03.UI</Filter>
-    </ClInclude>
-    <ClInclude Include="..\Public\UILayer.h">
-      <Filter>03. GameObject\UIObjects\02.Layer</Filter>
+      <Filter>03. GameObject\UIObjects\02.UI</Filter>
     </ClInclude>
     <ClInclude Include="..\Public\Canvas.h">
       <Filter>03. GameObject\UIObjects\01.Canvas</Filter>
@@ -408,17 +432,11 @@
     <ClInclude Include="..\Public\MapObject.h">
       <Filter>03. GameObject\MapObject\00. MapObject</Filter>
     </ClInclude>
-    <ClInclude Include="..\Public\StaticModel.h">
+    <ClInclude Include="..\Public\StaticObject.h">
       <Filter>03. GameObject\MapObject\01. StaticModel</Filter>
     </ClInclude>
     <ClInclude Include="..\Public\Builder_Map.h">
       <Filter>07. System\01. Builder\Map</Filter>
-    </ClInclude>
-    <ClInclude Include="..\Public\UIAction_Client.h">
-      <Filter>03. GameObject\UIObjects\04.Action</Filter>
-    </ClInclude>
-    <ClInclude Include="..\Public\InstanceModel.h">
-      <Filter>03. GameObject\MapObject\02. InstanceModel</Filter>
     </ClInclude>
     <ClInclude Include="..\Public\imconfig.h">
       <Filter>99. ETC\01. ImGui</Filter>
@@ -479,9 +497,38 @@
     </ClInclude>
     <ClInclude Include="..\Public\UITargetAction_Client.h">
       <Filter>03. GameObject\UIObjects\04.Action</Filter>
+    <ClInclude Include="..\Public\UIJust_Image.h">
+      <Filter>03. GameObject\UIObjects\02.UI\Image\JustImage</Filter>
     </ClInclude>
-    <ClInclude Include="..\public\ImGui_FrameLayout.h">
+    <ClInclude Include="..\Public\UISkill_BG.h">
+      <Filter>03. GameObject\UIObjects\02.UI\Image\SkillBG</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\UIProgress_Bar.h">
+      <Filter>03. GameObject\UIObjects\02.UI\Progress Bar</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\UIText.h">
+      <Filter>03. GameObject\UIObjects\02.UI\Text</Filter>
+    </ClInclude>
+    <ClInclude Include="..\public\ImGui_FrustrumLayout.h">
+      <Filter>07. System\02. Debug_ImGui\Layout\Frustrum</Filter>
+    </ClInclude>
+    <ClInclude Include="..\public\ImGui_GlobalInspector.h">
+      <Filter>07. System\02. Debug_ImGui\Inspector\Global</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\Builder_AttackOverlap.h">
+      <Filter>07. System\01. Builder\Builder_AttackOverlap</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\Monster_Dummy.h">
+      <Filter>03. GameObject\ContainerObjects\Monster</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\UITrigger.h">
+      <Filter>03. GameObject\UIObjects\02.UI\Trigger</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\ImGui_FrameLayout.h">
       <Filter>07. System\02. Debug_ImGui\Layout\Frame</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\State_DashFront.h">
+      <Filter>06. FSM\Player</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -567,12 +614,6 @@
     <ClCompile Include="..\Private\StateBase_Player.cpp">
       <Filter>06. FSM\Player</Filter>
     </ClCompile>
-    <ClCompile Include="..\Private\State_Walk.cpp">
-      <Filter>06. FSM\Player\Walk</Filter>
-    </ClCompile>
-    <ClCompile Include="..\Private\State_RunLoop.cpp">
-      <Filter>06. FSM\Player\RunLoop</Filter>
-    </ClCompile>
     <ClCompile Include="..\Private\State_Crouch.cpp">
       <Filter>06. FSM\Player\Crouch</Filter>
     </ClCompile>
@@ -596,12 +637,6 @@
     </ClCompile>
     <ClCompile Include="..\Private\State_JumpBack.cpp">
       <Filter>06. FSM\Player\JumpBack</Filter>
-    </ClCompile>
-    <ClCompile Include="..\Private\State_RunShort.cpp">
-      <Filter>06. FSM\Player\RunShort</Filter>
-    </ClCompile>
-    <ClCompile Include="..\Private\State_Slide.cpp">
-      <Filter>06. FSM\Player\Slide</Filter>
     </ClCompile>
     <ClCompile Include="..\Private\UI_Manager.cpp">
       <Filter>03. GameObject\UIObjects\00.Manager</Filter>
@@ -628,10 +663,7 @@
       <Filter>07. System\01. Builder\UI</Filter>
     </ClCompile>
     <ClCompile Include="..\Private\GenericUI.cpp">
-      <Filter>03. GameObject\UIObjects\03.UI</Filter>
-    </ClCompile>
-    <ClCompile Include="..\Private\UILayer.cpp">
-      <Filter>03. GameObject\UIObjects\02.Layer</Filter>
+      <Filter>03. GameObject\UIObjects\02.UI</Filter>
     </ClCompile>
     <ClCompile Include="..\Private\Canvas.cpp">
       <Filter>03. GameObject\UIObjects\01.Canvas</Filter>
@@ -645,17 +677,11 @@
     <ClCompile Include="..\Private\MapObject.cpp">
       <Filter>03. GameObject\MapObject\00. MapObject</Filter>
     </ClCompile>
-    <ClCompile Include="..\Private\StaticModel.cpp">
+    <ClCompile Include="..\Private\StaticObject.cpp">
       <Filter>03. GameObject\MapObject\01. StaticModel</Filter>
     </ClCompile>
     <ClCompile Include="..\Private\Builder_Map.cpp">
       <Filter>07. System\01. Builder\Map</Filter>
-    </ClCompile>
-    <ClCompile Include="..\Private\UIAction_Client.cpp">
-      <Filter>03. GameObject\UIObjects\04.Action</Filter>
-    </ClCompile>
-    <ClCompile Include="..\Private\InstanceModel.cpp">
-      <Filter>03. GameObject\MapObject\02. InstanceModel</Filter>
     </ClCompile>
     <ClCompile Include="..\Private\imgui_widgets.cpp">
       <Filter>99. ETC\01. ImGui</Filter>
@@ -702,6 +728,44 @@
     <ClCompile Include="..\private\ImGui_PlayerInspector.cpp">
       <Filter>07. System\02. Debug_ImGui\Inspector\Player</Filter>
     </ClCompile>
+    <ClCompile Include="..\Private\UIJust_Image.cpp">
+      <Filter>03. GameObject\UIObjects\02.UI\Image\JustImage</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\UISkill_BG.cpp">
+      <Filter>03. GameObject\UIObjects\02.UI\Image\SkillBG</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\UIProgress_Bar.cpp">
+      <Filter>03. GameObject\UIObjects\02.UI\Progress Bar</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\UIText.cpp">
+      <Filter>03. GameObject\UIObjects\02.UI\Text</Filter>
+    </ClCompile>
+    <ClCompile Include="..\private\ImGui_FrustrumLayout.cpp">
+      <Filter>07. System\02. Debug_ImGui\Layout\Frustrum</Filter>
+    </ClCompile>
+    <ClCompile Include="..\private\ImGui_GlobalInspector.cpp">
+      <Filter>07. System\02. Debug_ImGui\Inspector\Global</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\Builder_AttackOverlap.cpp">
+      <Filter>07. System\01. Builder\Builder_AttackOverlap</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\Monster_Dummy.cpp">
+      <Filter>03. GameObject\ContainerObjects\Monster</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\UITrigger.cpp">
+      <Filter>03. GameObject\UIObjects\02.UI\Trigger</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\State_Walk.cpp">
+      <Filter>06. FSM\Player\Walk</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\State_RunLoop.cpp">
+      <Filter>06. FSM\Player\RunLoop</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\State_RunShort.cpp">
+      <Filter>06. FSM\Player\RunShort</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\State_Slide.cpp">
+      <Filter>06. FSM\Player\Slide</Filter>
     <ClCompile Include="..\Private\State_ComboBase.cpp">
       <Filter>06. FSM\Player\Attack\Combo</Filter>
     </ClCompile>
@@ -711,8 +775,11 @@
     <ClCompile Include="..\Private\UITargetAction_Client.cpp">
       <Filter>03. GameObject\UIObjects\04.Action</Filter>
     </ClCompile>
-    <ClCompile Include="..\private\ImGui_FrameLayout.cpp">
+    <ClCompile Include="..\Private\ImGui_FrameLayout.cpp">
       <Filter>07. System\02. Debug_ImGui\Layout\Frame</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\State_DashFront.cpp">
+      <Filter>06. FSM\Player</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

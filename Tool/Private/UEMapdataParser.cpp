@@ -3,10 +3,10 @@
 #include <fstream>
 #include "Engine_Utils.h"
 #include "Model.h"
-#include "StaticModel.h"
-#include "InstanceModel.h"
 #include "GameInstance.h"
+#include "MapObject.h"
 #include "MapToolManager.h"
+
 
 IMPLEMENT_SINGLETON(CUEMapdataParser)
 
@@ -173,10 +173,10 @@ vector<MAPDATA_BASE*> CUEMapdataParser::Convert_UE_MapData(const vector<UE_MAP_D
 
 void CUEMapdataParser::Change_SRT(OUT SRT_DATA& tSRT_Data)
 {
-	tSRT_Data.vScale_Isolated = tSRT_Data.vScale;
-	std::swap(tSRT_Data.vScale_Isolated.y, tSRT_Data.vScale_Isolated.z);
-	//Matrix ScaleMatrix		= Matrix::CreateScale(tSRT_Data.vScale);
-	Matrix ScaleMatrix		= Matrix::Identity;
+	//Matrix ScaleMatrix		= Matrix::Identity;
+	tSRT_Data.vScale_Isolated = tSRT_Data.vScale; // 
+
+	Matrix ScaleMatrix		= Matrix::CreateScale(tSRT_Data.vScale); // TEST: 소재혁 임시 수정
 	Matrix TransMatrix		= Matrix::CreateTranslation(tSRT_Data.vPosition * m_fMulScale);
 	Matrix RotationMatrix	= Matrix::CreateFromQuaternion(tSRT_Data.vQuat);
 
@@ -325,7 +325,6 @@ void CUEMapdataParser::Change_UsingMaterialTexturePath(OUT OVERRIDE_MATERIALS& t
 			tUsingMtlInfo.vecUsingTextureInfo.push_back(TexInfo);
 		}
 	}
-
 }
 
 vector<UE_MAP_DATA>* CUEMapdataParser::Get_Unreal_MapData(const wstring& FindKey)
@@ -415,45 +414,140 @@ HRESULT CUEMapdataParser::Convert_UnrealRawMapData(const wchar_t* wszUERawDataJs
 
 HRESULT CUEMapdataParser::Batch_UnrealRawMapData(const wchar_t* wszFileName)
 {
-	vector<MAPDATA_BASE*>* pFind = Get_Converted_MapData(wszFileName);
-	if (pFind == nullptr) return E_FAIL;
 
-	UINT iLevelID = ENUM_TO_UINT(ELevelType::MAP);
-
-	CGameObject* pResult{nullptr};
-
-
-
-	for (auto& CONVERTED_MAPDATA : *pFind)
+	if (!m_isUseCheckAndBindInstance)
 	{
-		EMapObject_Type& eMapObjectType = CONVERTED_MAPDATA->eMapObjectType;
+		vector<MAPDATA_BASE*>* pFind = Get_Converted_MapData(wszFileName);
+		if (pFind == nullptr) return E_FAIL;
 
-		if (eMapObjectType == EMapObject_Type::STATICMODEL)
-		{
-			CStaticModel::STATICMODEL_DESC tDesc{};
-			tDesc.wstrLayerTag = g_wszStaticModelLayer;
-			tDesc.iLevelIndex = ENUM_TO_UINT(ELevelType::MAP);
-			tDesc.isLoaded = true;
-			tDesc.tData = *static_cast<STATICMODEL_DATA*>(CONVERTED_MAPDATA);
-			
-			CTransform::TRANSFORM_DESC tTsDesc{};
-			tTsDesc.ScaleMatrix = Matrix::CreateScale(tDesc.tData.tOriginSRT.vScale);
-			tTsDesc.RotationMatrix = Matrix::CreateFromQuaternion(tDesc.tData.tOriginSRT.vQuat);
-			tTsDesc.TranslationMatrix = Matrix::CreateTranslation(tDesc.tData.tOriginSRT.vPosition);
-			tDesc.pTransform_Desc = &tTsDesc;
+		UINT iLevelID = ENUM_TO_UINT(ELevelType::MAP);
 
-			m_pMapToolManager->Make_MapObject(eMapObjectType, &tDesc);
-		}
-		else if(eMapObjectType == EMapObject_Type::INSTANCEMODEL)
+		CGameObject* pResult{ nullptr };
+
+
+		EClientMakePath		eClientMakePath = m_pMapToolManager->Get_MakeMapObjectClientMakePath();
+		EClientLevelType	eClientLevelType = m_pMapToolManager->Get_MakeMapObejctClientLevelType();
+
+
+		for (auto& CONVERTED_MAPDATA : *pFind)
 		{
-			CInstanceModel::INSTANCEMODEL_DESC tDesc{};
-			tDesc.wstrLayerTag = g_wszInstanceModelLayer;
-			tDesc.iLevelIndex = ENUM_TO_UINT(ELevelType::MAP);
-			tDesc.isLoaded = true;
-			tDesc.tData = *static_cast<Tool::INSTANCEMODEL_DATA* > (CONVERTED_MAPDATA);
-			m_pMapToolManager->Make_MapObject(eMapObjectType, &tDesc);
+			EMapObject_Type& eMapObjectType = CONVERTED_MAPDATA->eMapObjectType;
+
+			if (eMapObjectType == EMapObject_Type::STATICMODEL)
+			{
+				Tool::STATICMODEL_DATA* pData = static_cast<Tool::STATICMODEL_DATA*> (CONVERTED_MAPDATA);
+
+				CMapObject::MAPOBJECT_DESC tDesc{};
+
+				tDesc.eClientMakePath = eClientMakePath;
+				tDesc.eMapObjectDrawType = EMapObject_DrawType::Default;
+				tDesc.eClientLevelType = eClientLevelType;
+				tDesc.iLevelIndex = ENUM_TO_UINT(ELevelType::MAP);
+				tDesc.isLoaded = false;
+				tDesc.isUELoaded = true;
+				tDesc.wstrLayerTag = g_wszMapObjectLayer;
+				tDesc.eState = CMapObject::EState::Default;
+				tDesc.tUsingModelInfo = pData->tUsingModelInfo;
+
+				tDesc.vecSRTs.push_back(pData->tOriginSRT);
+
+				CTransform::TRANSFORM_DESC tTsDesc{};
+				tTsDesc.ScaleMatrix = Matrix::CreateScale(tDesc.vecSRTs.back().vScale);
+				tTsDesc.RotationMatrix = Matrix::CreateFromQuaternion(tDesc.vecSRTs.back().vQuat);
+				tTsDesc.TranslationMatrix = Matrix::CreateTranslation(tDesc.vecSRTs.back().vPosition);
+				tDesc.pTransform_Desc = &tTsDesc;
+				m_pMapToolManager->Make_MapObject(&tDesc);
+
+			}
+			else if (eMapObjectType == EMapObject_Type::INSTANCEMODEL)
+			{
+
+				Tool::INSTANCEMODEL_DATA* pData = static_cast<Tool::INSTANCEMODEL_DATA*> (CONVERTED_MAPDATA);
+
+				CMapObject::MAPOBJECT_DESC tDesc{};
+				tDesc.eClientMakePath = eClientMakePath;
+				tDesc.eMapObjectDrawType = EMapObject_DrawType::Instance;
+				tDesc.eClientLevelType = eClientLevelType;
+				tDesc.iLevelIndex = ENUM_TO_UINT(ELevelType::MAP);
+				tDesc.isLoaded = false;
+				tDesc.isUELoaded = true;
+				tDesc.vecSRTs = pData->vecSRT;
+				tDesc.wstrLayerTag = g_wszMapObjectLayer;
+				tDesc.eState = CMapObject::EState::Default;
+				tDesc.tUsingModelInfo = pData->tUsingModelInfo;
+
+				/* Transform 생성할 이유가없음 */
+				m_pMapToolManager->Make_MapObject(&tDesc);
+
+			}
 		}
 	}
+	else
+	{
+		/* Pre Bind Instance */
+		vector<MAPDATA_BASE*>* pFind = Get_Converted_MapData(wszFileName);
+		if (pFind == nullptr) return E_FAIL;
+		UINT				iLevelID			= ENUM_TO_UINT(ELevelType::MAP);
+		EClientMakePath		eClientMakePath		= m_pMapToolManager->Get_MakeMapObjectClientMakePath();
+		EClientLevelType	eClientLevelType	= m_pMapToolManager->Get_MakeMapObejctClientLevelType();
+
+		map< wstring, INSTANCEMODEL_DATA >		mapBindInstance{};
+
+		for (auto& pMapDataBase : *pFind)
+		{
+			wstring strTag = L"";
+			SRT_DATA tSRT;
+			USING_MODEL_INFO tInfo;
+
+			if(pMapDataBase->eMapObjectType == EMapObject_Type::STATICMODEL)
+			{
+				auto pDefault = static_cast<STATICMODEL_DATA*>(pMapDataBase);
+				strTag = pDefault->tUsingModelInfo.wstrPath;
+				tInfo = pDefault->tUsingModelInfo;
+
+				mapBindInstance[strTag].vecSRT.push_back(pDefault->tOriginSRT);
+				mapBindInstance[strTag].tUsingModelInfo = tInfo;
+			}
+			else if (pMapDataBase->eMapObjectType == EMapObject_Type::INSTANCEMODEL)
+			{
+				auto pInstance = static_cast<INSTANCEMODEL_DATA*>(pMapDataBase);
+				strTag = pInstance->tUsingModelInfo.wstrPath;
+				tInfo = pInstance->tUsingModelInfo;
+
+				mapBindInstance[strTag].vecSRT.insert(mapBindInstance[strTag].vecSRT.end() , pInstance->vecSRT.begin() , pInstance->vecSRT.end());
+				mapBindInstance[strTag].tUsingModelInfo = tInfo;
+			}
+		}
+
+
+		for (auto& pInsData : mapBindInstance)
+		{
+			auto& tData = pInsData.second;
+
+			CMapObject::MAPOBJECT_DESC tDesc{};
+			tDesc.eClientMakePath = eClientMakePath;
+			tDesc.eClientLevelType = eClientLevelType;
+			tDesc.iLevelIndex = iLevelID;
+			tDesc.isLoaded = true;
+			tDesc.isUELoaded = true;
+			tDesc.wstrLayerTag = g_wszMapObjectLayer;
+			tDesc.eState = CMapObject::EState::Default;
+			tDesc.vecSRTs = tData.vecSRT;
+			tDesc.wstrLayerTag = g_wszMapObjectLayer;
+			tDesc.tUsingModelInfo = tData.tUsingModelInfo;
+			tDesc.vecClientMakePathDesc.clear();
+
+			tDesc.eMapObjectDrawType = (tDesc.vecSRTs.size() > 1) ? EMapObject_DrawType::Instance : EMapObject_DrawType::Default;
+
+			m_pMapToolManager->Make_MapObject(&tDesc ,false);
+
+		}
+
+	}
+
+
+
+
 
 	return S_OK;
 }
@@ -472,26 +566,26 @@ HRESULT CUEMapdataParser::Save_ConvertedRawMapData(const wchar_t* wszFilePath)
 
 	json SaveJson{};
 
-	for (auto& Converted_MapData : *pFind)
-	{
-		EMapObject_Type eType = Converted_MapData->eMapObjectType;
-		if (eType == EMapObject_Type::STATICMODEL)
-		{
-			auto& StaticModel = SaveJson["Static Model"];
-			json js{};
-			STATICMODEL_DATA pData = *static_cast<STATICMODEL_DATA*>(Converted_MapData);
-			to_json(js,pData);
-			StaticModel.push_back(js);
-		}
-		else if (eType == EMapObject_Type::INSTANCEMODEL)
-		{
-			auto& InstModelJson =  SaveJson["Instance Model"];
-			json js{};
-			INSTANCEMODEL_DATA pData = *static_cast<INSTANCEMODEL_DATA*>(Converted_MapData);
-			to_json(js, pData);
-			InstModelJson.push_back(js);
-		}
-	}
+	//for (auto& Converted_MapData : *pFind)
+	//{
+	//	EMapObject_Type eType = Converted_MapData->eMapObjectType;
+	//	if (eType == EMapObject_Type::STATICMODEL)
+	//	{
+	//		auto& StaticModel = SaveJson["Static Model"];
+	//		json js{};
+	//		STATICMODEL_DATA pData = *static_cast<STATICMODEL_DATA*>(Converted_MapData);
+	//		to_json(js,pData);
+	//		StaticModel.push_back(js);
+	//	}
+	//	else if (eType == EMapObject_Type::INSTANCEMODEL)
+	//	{
+	//		auto& InstModelJson =  SaveJson["Instance Model"];
+	//		json js{};
+	//		INSTANCEMODEL_DATA pData = *static_cast<INSTANCEMODEL_DATA*>(Converted_MapData);
+	//		to_json(js, pData);
+	//		InstModelJson.push_back(js);
+	//	}
+	//}
 
 	std::ofstream ofs{wstrSavePath};
 

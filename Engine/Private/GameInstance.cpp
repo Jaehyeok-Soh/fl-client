@@ -4,6 +4,7 @@
 #include "Font_Manager.h"
 #include "Event_Manager.h"
 #include "ObjectPool_Manager.h"
+#include "Octree_Manager.h"
 #include "GameDataManager.h"
 #include "Collision_Manager.h"
 #include "Constant_Buffer.h"
@@ -118,6 +119,9 @@ HRESULT CGameInstance::Initialize_Engine(const ENGINE_DESC& Engine_Desc, _Inout_
 	if (!(m_pUIAction_Registry = CUIAction_Registry::Create()))
 		return E_FAIL;
 
+	if (!(m_pOctree_Manager = COctree_Manager::Create()))
+		return E_FAIL;
+
 	return S_OK;
 }
 
@@ -184,13 +188,13 @@ void CGameInstance::Clear(_uint iLevelID)
 {
 	m_pDataRepository->Clear(iLevelID);
 	m_pObjectPool_Manager->All_Despawn_StaticLevel();
+	m_pOctree_Manager->Clear();
 	m_pObject_Manager->Clear(iLevelID);
 	m_pObjectPool_Manager->Clear(iLevelID);
 	m_pPrototype_Manager->Clear(iLevelID);
 	m_pInput_Manager->Clear();
 	m_pCamera_Manager->Clear();
 	m_pEventBus_Manager->Clear_All();
-	m_pFrustrum->Clear();
 	m_pSound_Manager->StopAll();
 }
 
@@ -310,7 +314,10 @@ _float CGameInstance::Get_TimeDelta(const _tchar* pTimerTag)
 {
 	return m_pTimer_Manager->Get_TimeDelta(pTimerTag);
 }
-
+void CGameInstance::Set_MaxTimeDelta(const _tchar* pTimerTag, _float fMaxTimeDelta)
+{
+	m_pTimer_Manager->Set_MaxTimeDelta(pTimerTag, fMaxTimeDelta);
+}
 HRESULT CGameInstance::Add_Timer(const _tchar* pTimerTag)
 {
 	return m_pTimer_Manager->Add_Timer(pTimerTag);
@@ -659,7 +666,26 @@ const CDataDocumentBase* CGameInstance::Get_Document(_uint iLevelID, DTO::ECateg
 }
 #pragma endregion
 
+#pragma region OCTREE_MANAGER
+HRESULT CGameInstance::Register_Octree(CGameObject* pGo, RENDER_CATEGORY eCategory, const BoundingBox& AABB, _bool bDynamic)
+{
+	OCTREE_ENTRY* pEntry = m_pOctree_Manager->Register(pGo, eCategory, AABB, bDynamic);
+	if (pEntry == nullptr)
+		return E_FAIL;
 
+	return S_OK;
+}
+
+void CGameInstance::Unregister(CGameObject* pGo)
+{
+	m_pOctree_Manager->Unregister(pGo);
+}
+
+HRESULT CGameInstance::Ready_Octree(const OCTREE_DESC& desc)
+{
+	return m_pOctree_Manager->Initialize(desc);
+}
+#pragma endregion
 void CGameInstance::Push_RenderObject(RENDER_CATEGORY eCategory, CGameObject* pGO)
 {
 	m_pRender_Manager->Push_RenderObject(eCategory, pGO);
@@ -726,6 +752,7 @@ void CGameInstance::Destroy_Engine()
 	Safe_Release(m_pFont_Manager);
 	Safe_Release(m_pRenderTarget_Manager);
 	Safe_Release(m_pCamera_Manager);
+	Safe_Release(m_pOctree_Manager);
 	Safe_Release(m_pObject_Manager);
 	Safe_Release(m_pObjectPool_Manager);
 	Safe_Release(m_pCollision_Manager);
@@ -745,13 +772,37 @@ void CGameInstance::Destroy_Engine()
 }
 
 #pragma region FRUSTRUM
-HRESULT CGameInstance::Frustrum_Init()
+void CGameInstance::Ready_Frustrum()
 {
-	return m_pFrustrum->Initialize();
+	m_pFrustrum->Initialize();
 }
-_bool CGameInstance::Culling_AABB(CCollider* pCollider)
+_float CGameInstance::Get_FrustrumMidStart() const
 {
-	return m_pFrustrum->Culling(pCollider);
+	return m_pFrustrum->Get_MidStart();
+}
+_float CGameInstance::Get_FrustrumFarStart() const
+{
+	return m_pFrustrum->Get_FarStart();
+}
+void CGameInstance::Resize_SplitFrustrum(const _float fMidStart, const _float fFarStart)
+{
+	m_pFrustrum->Resize_SplitFrustrum(fMidStart, fFarStart);
+}
+EFrustrumTier CGameInstance::Classify_BySplitFrustrum(const BoundingBox& AABB)
+{
+	return m_pFrustrum->Classify_BySplitFrustrum(AABB);
+}
+EFrustrumTier CGameInstance::Classify_BySplitFrustrum(const BoundingSphere& Sphere)
+{
+	return m_pFrustrum->Classify_BySplitFrustrum(Sphere);
+}
+BoundingFrustum* CGameInstance::Get_BoundingFrustrum_Local()
+{
+	return m_pFrustrum->Get_BoundingFrustrum_Local();
+}
+BoundingFrustum* CGameInstance::Get_BoundingFrustrum_World()
+{
+	return m_pFrustrum->Get_BoundingFrustrum_World();
 }
 #pragma endregion
 
@@ -825,6 +876,16 @@ Matrix CGameInstance::PxTransformToXMMatrix(PxTransform pxTransform)
 	return m_pPhysics_Module->PxTransformToXMMatrix(pxTransform);
 }
 
+_bool CGameInstance::Execute_Overlap(PxGeometry& shape, PxTransform& transform, OUT PxOverlapBuffer& hit, PxQueryFilterData& filterData, PxQueryFilterCallback* filterCallback)
+{
+	return m_pPhysics_Module->Execute_Overlap(shape, transform, hit, filterData, filterCallback);
+}
+
+CPhysics_QueryFilterCallback* CGameInstance::GetQueryFilterCallback()
+{
+	return m_pPhysics_Module->GetQueryFilterCallback();
+}
+
 void CGameInstance::SerializeStaticMesh(std::filesystem::path path, vector<PxTriangleMesh*> meshes)
 {
 	m_pPhysics_Module->SerializeStaticMesh(path, meshes);
@@ -855,6 +916,11 @@ vector<PxShape*> CGameInstance::GetMeshShape(PHYSICSCOLLIDER_DESC* pDesc)
 	return m_pPhysics_Module->GetMeshShape(pDesc);
 }
 
+vector<PxShape*> CGameInstance::CopyShapes(vector<PxShape*>& shapes)
+{
+	return m_pPhysics_Module->CopyShapes(shapes);
+}
+
 vector<PxRigidActor*> CGameInstance::GetActor(PHYSICSRIGIDBODY_DESC* rigidBodyDesc, PHYSICSCOLLIDER_DESC* colliderDesc, vector<PxShape*>& shapes)
 {
 	return m_pPhysics_Module->GetActor(rigidBodyDesc, colliderDesc, shapes);
@@ -868,16 +934,6 @@ PxController* CGameInstance::GetController(PHYSICSCCT_DESC* pDesc)
 void CGameInstance::RegisterPhysicsMesh(_uint levelIndex, _wstring prototypeTag)
 {
 	m_pPhysics_Module->RegisterPhysicsMesh(levelIndex, prototypeTag);
-}
-
-_bool CGameInstance::HasNegativeScale(const Matrix& mat)
-{
-	return m_pPhysics_Module->HasNegativeScale(mat);
-}
-
-_int CGameInstance::GetNegativeScaleAxis(const Matrix& mat)
-{
-	return m_pPhysics_Module->GetNegativeScaleAxis(mat);
 }
 
 PxQuat CGameInstance::GetPureRotation(const Matrix& mat)
@@ -894,6 +950,10 @@ PxVec3 CGameInstance::GetPureScale(const Matrix& mat)
 void CGameInstance::Physics_Render(PxRigidActor* pActor, XMVECTOR color)
 {
 	m_pPhysics_Module->Render(pActor, color);
+}
+void CGameInstance::Physics_Render(const PxGeometry& geom, const PxTransform& transform, XMVECTOR color)
+{
+	m_pPhysics_Module->Render(geom, transform, color);
 }
 #endif
 #pragma endregion
@@ -917,6 +977,7 @@ void CGameInstance::Free()
 	Safe_Release(m_pRender_Manager);
 	Safe_Release(m_pRenderTarget_Manager);
 	Safe_Release(m_pCamera_Manager);
+	Safe_Release(m_pOctree_Manager);
 	Safe_Release(m_pObject_Manager);
 	Safe_Release(m_pObjectPool_Manager);
 	Safe_Release(m_pCollision_Manager);

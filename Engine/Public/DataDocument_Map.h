@@ -18,10 +18,8 @@ public:
 	virtual DTO::ECategory Get_Category() const override { return DTO::ECategory::MAP; }
 	virtual json ToJson() const override;
 	virtual HRESULT FromJson(const json& j) override;
-	HRESULT Try_Add(const DTO::STATICMODEL_DATA& data);
-	HRESULT Try_Add(const DTO::InstanceModel_Data& data);
+	HRESULT Try_Add(const DTO::TMap_MapObjectData& data);
 private:
-	IObjectDataBase* Create_ObjectData(DTO::EMapObject_Type eType);
 	HRESULT Try_Add(IObjectDataBase* pObject);
 
 public:

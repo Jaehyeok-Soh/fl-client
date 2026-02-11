@@ -79,8 +79,10 @@ private:
 	explicit CModel(const CModel& rhs);
 	virtual ~CModel() = default;
 
-	virtual HRESULT Initialize_Prototype(void* pArg);
-	virtual HRESULT Initialize(void* pArg) override;
+	virtual HRESULT						Initialize_Prototype(void* pArg);
+	virtual HRESULT						Initialize(void* pArg) override;
+private:
+	HRESULT								Ready_StaticModelMinMax();
 public:
 	HRESULT Render(_uint iMeshIndex);
 	HRESULT	Render_Instance(_uint iMeshIndex , _uint iInstanceCount);
@@ -93,6 +95,7 @@ public:
 	HRESULT Bind_Bones(class CShader* pShader, _uint iMeshIndex, CComputeShader* pBoneMeshCS, CComputeShader* pBoneCombineCS, _uint iIndexDistance = 0);
 	HRESULT Bind_Masterbones(class CShader* pShader, _uint iIndexDistance);
 public:
+	const Vec3* Get_StaticModelMinMax() const { return m_pStaticModel_MinMax; };
 	HRESULT Change_ShaderPassByMseh(_uint iMeshIndex, _uint iPass);
 	HRESULT Set_DefaultPassByMesh(_uint iMeshIndex);
 	_int	Get_PassByMesh(_uint iMeshIndex);
@@ -123,20 +126,21 @@ public:
 	wstring Get_AnimationName(_uint iIdex) const;
 	void Set_AnimationPlayRate(_uint iIndex, _float fValue);
 	const _float Get_BlentTime()  { return m_fBlendedTime; }
+	_float								Get_AnimTrackPosition() const;
 
 	HRESULT Ready_ComputeShaders(CComputeShader* pBoneMeshCS, CComputeShader* pBoneComBineCS, CComputeShader* pAnimEvalCS, CComputeShader* pAnimBlendCS, CComputeShader* pGetBoneCS = nullptr);
 	
 	// load func
 private:
-	HRESULT Load_StaticModel(const wstring& wstrModelName);
-	HRESULT Load_NonAnimModel(const wstring &wstrModelName);
-	HRESULT Load_AnimModel(const wstring& wstrModelName, DATA_ANIMCHANNEL* pData = nullptr);
-	HRESULT Load_CustomPartsModel(const wstring& wstrModelName);
-	HRESULT Load_OnlyBone(const wstring& wstrModelName);
-	HRESULT Add_Parts(const wstring &wstrPrototypeTag);
-	CModel* Get_Clone(const wstring &wstrPrototypeTag);
-	void	Play_Animation(_float fTimeDelta, CTransform* pOwnerTransform = nullptr, CPhysicsCCT* pOwnerPhyCCT = nullptr);
-	void	Blend_Animation(_float fTimeDelta, _float fRatio, CTransform* pOwnerTransform = nullptr, CPhysicsCCT* pOwnerPhyCCT = nullptr);
+	HRESULT								Load_StaticModel(const wstring& wstrModelName);
+	HRESULT								Load_NonAnimModel(const wstring &wstrModelName);
+	HRESULT								Load_AnimModel(const wstring& wstrModelName, DATA_ANIMCHANNEL* pData = nullptr);
+	HRESULT								Load_CustomPartsModel(const wstring& wstrModelName);
+	HRESULT								Load_OnlyBone(const wstring& wstrModelName);
+	HRESULT								Add_Parts(const wstring &wstrPrototypeTag);
+	CModel*								Get_Clone(const wstring &wstrPrototypeTag);
+	void								Play_Animation(_float fTimeDelta, CTransform* pOwnerTransform = nullptr, CPhysicsCCT* pOwnerPhyCCT = nullptr);
+	void								Blend_Animation(_float fTimeDelta, _float fRatio, CTransform* pOwnerTransform = nullptr, CPhysicsCCT* pOwnerPhyCCT = nullptr);
 
 	void Play_Animation(CComputeShader* pBoneComBineCS, CComputeShader* pAnimEvalCS, _float fTimeDelta, CTransform* pOwnerTransform = nullptr, CPhysicsCCT* pOwnerPhyCCT = nullptr, CComputeShader* pGetBoneCS = nullptr);
 
@@ -174,18 +178,22 @@ private:
 	void Get_BoneMatrix(CComputeShader* pBoneComBineCS, CComputeShader* pGetBoneCS);
 
 private:
-	EModelType m_eType = { EModelType::END };
-	Matrix m_matPreTransform = {};
+	EModelType							m_eType = { EModelType::END };
+	Matrix								m_matPreTransform = {};
 
-	ID3D11Device* m_pDevice = { nullptr };
-	ID3D11DeviceContext* m_pDeviceContext = { nullptr };
+	ID3D11Device*						m_pDevice = { nullptr };
+	ID3D11DeviceContext*				m_pDeviceContext = { nullptr };
 
-	vector<_uint> m_vecPasses;
-	vector<class CBone*> m_vecBones;
-	vector<class CMesh*> m_vecMeshes;
-	vector<class CMaterial*> m_vecMaterials;
-	vector<class CMaterialInstance*> m_vecMaterialInstances;
-	class CMesh* m_pMasterMesh = { nullptr };
+
+	/* Model Minmax */
+	Vec3*								m_pStaticModel_MinMax{nullptr};
+
+	vector<_uint>						m_vecPasses;
+	vector<class CBone*>				m_vecBones;
+	vector<class CMesh*>				m_vecMeshes;
+	vector<class CMaterial*>			m_vecMaterials;
+	vector<class CMaterialInstance*>	m_vecMaterialInstances;
+	class CMesh*						m_pMasterMesh = { nullptr };
 
 	// Animation
 	AnimationPlayState m_eCurrentAnimationState = { AnimationPlayState::PLAY };
