@@ -105,6 +105,19 @@ HRESULT CBounds::Add_SubBounds(const Vec3* pMinMax, span<Matrix> spanInstanceMat
 	return S_OK;
 }
 
+HRESULT CBounds::Append_SubBounds(const Matrix& InstanceMatrix, _float fRatio)
+{
+	/* 맵툴에서는 굳이 Min Max 계산이 필요할까? */
+
+	MESH_BOUNDS tAppendBoundS{};
+
+	//tAppendBoundS.pAABB = Create_AABB();
+
+	//m_vecSubBounds.push_back(MESH_BOUNDS())
+
+	return S_OK;
+}
+
 void CBounds::Update_BoundingDesc(const Matrix& matWorld)
 {
 	if (m_tBounds.pAABB != nullptr && m_tBounds.pSphere != nullptr)
@@ -159,7 +172,7 @@ _bool CBounds::IntersectWithRay_World(OUT Vec3& vOut, OUT _int &iIndex)
 		if (Element.pAABB->IntersectWithRay_World(m_pGameInstance, vOut) == false)
 			continue;
 
-		iIndex = i;
+		iIndex = static_cast<_int>(i);
 		return true;
 	}
 
@@ -185,7 +198,7 @@ _bool CBounds::IntersectWithRay_Local(OUT Vec3& vOut, OUT _int& iIndex)
 		if (Element.pAABB->IntersectWithRay_World(m_pGameInstance, vOut) == false)
 			continue;
 
-		iIndex = i;
+		iIndex = static_cast<_int>(i);
 		return true;
 	}
 

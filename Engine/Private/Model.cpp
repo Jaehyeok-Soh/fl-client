@@ -38,6 +38,7 @@ CModel::CModel(const CModel& rhs)
 	, m_vecMaterialInstances(rhs.m_vecMaterialInstances)
 	, m_umapAnimationIndexTable(rhs.m_umapAnimationIndexTable)
 	, m_pMasterMesh(rhs.m_pMasterMesh)
+	, m_pStaticModel_MinMax{rhs.m_pStaticModel_MinMax}
 {
 	m_vecPrevAnimationPose.resize(rhs.m_vecPrevAnimationPose.size());
 	m_vecCurrAnimationPose.resize(rhs.m_vecCurrAnimationPose.size());
@@ -58,6 +59,7 @@ CModel::CModel(const CModel& rhs)
 
 	for (auto& pMaterialInstance : m_vecMaterialInstances)
 		Safe_AddRef(pMaterialInstance);
+
 
 	Safe_AddRef(m_pMasterMesh);
 	Safe_AddRef(m_pDevice);
@@ -96,6 +98,7 @@ HRESULT CModel::Initialize_Prototype(void* pArg)
 	case EModelType::STATIC:
 	{
 		hr = Load_StaticModel(pDesc->wstrModelFolderName);
+		hr = Ready_StaticModelMinMax();
 	} break;
 	default:
 		return E_FAIL;
@@ -113,6 +116,7 @@ HRESULT CModel::Initialize_Prototype(void* pArg)
 	m_vecCurrAnimationPose.resize(m_vecBones.size());
 	for (size_t i = 0; i < m_vecBones.size(); ++i)
 		m_vecBones[i]->Setup_BindPoseTransformMatrix(m_vecBones, m_matPreTransform);
+
 
 	return S_OK;
 }
@@ -155,6 +159,29 @@ HRESULT CModel::Initialize(void* pArg)
 	return S_OK;
 }
 
+HRESULT CModel::Ready_StaticModelMinMax()
+{
+	if (m_vecMeshes.empty()) return E_FAIL;
+
+	m_pStaticModel_MinMax = new Vec3[2]{Vec3(FLT_MAX,FLT_MAX,FLT_MAX),Vec3(-FLT_MAX,-FLT_MAX,-FLT_MAX)};
+	if (m_pStaticModel_MinMax == nullptr) return E_FAIL;
+
+	const Vec3* pCurMinMax{ nullptr };
+
+	for (auto& Mesh : m_vecMeshes)
+	{
+		pCurMinMax = Mesh->Get_MinMax();
+		if (pCurMinMax == nullptr)
+		{
+			Safe_Delete_Array(m_pStaticModel_MinMax);
+			return E_FAIL;
+		}
+		Engine_Utils::Merge_MinMax(pCurMinMax , m_pStaticModel_MinMax[MIN] , m_pStaticModel_MinMax[MAX]);
+	}
+
+	return S_OK;
+}
+
 HRESULT CModel::Change_Animation(_uint iAnimationIndex, _bool bBlend, _bool isLoop, _bool bForce)
 {
 
@@ -172,6 +199,7 @@ HRESULT CModel::Change_Animation(_uint iAnimationIndex, _bool bBlend, _bool isLo
 	m_iCurrentAnimIndex = iAnimationIndex;
 	m_vecAnimations[m_iCurrentAnimIndex]->Clear();
 	m_isAnimLoop = isLoop;
+
 	return S_OK;
 }
 
@@ -719,6 +747,11 @@ CComponent* CModel::Clone(void* pArg)
 
 void CModel::Free()
 {
+	/* Prototype 일떄만 지운다 */
+	if (!CComponent::IsClone())
+		Safe_Delete_Array(m_pStaticModel_MinMax);
+
+
 	for (auto& pBone : m_vecBones)
 		Safe_Release(pBone);
 
