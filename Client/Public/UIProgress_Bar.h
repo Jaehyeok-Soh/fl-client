@@ -11,7 +11,7 @@ public:
 	typedef struct tagUIProgressBarDesc : public GENERIC_UI_DESC
 	{
 		CStatComponent* pTargetStat;
-		DTO::EUIOwnerType eOwner;
+		DTO::EUISubClassType eOwner;
 	}PROGRESS_BAR_DESC;
 
 private:
@@ -38,8 +38,12 @@ private:
 	HRESULT Bind_ShaderResources();
 
 private:
+	// Player HP Func
+	void Low_HP(const _float fTimeDelta);
+
+private:
 	CStatComponent* m_pTargetStat = { nullptr };
-	DTO::EUIOwnerType m_eOwnerType = {};
+	DTO::EUISubClassType m_eSubClassType = {};
 
 	// Lerp Movement Values
 	_float	m_fCurRatio = {};
@@ -51,6 +55,15 @@ private:
 	_bool	m_isChangeRatio = { false };
 
 	_float m_fDelayTimeAcc = {};
+
+
+	// Player HP Values
+	_bool m_isStartLowHp = { FALSE };
+	_bool m_isEndLowHp = { FALSE };
+	_float m_fTickTimeAcc = {};
+	Vec4 m_vOriginColor = {};
+	Vec4 m_vLowHpColor = {};
+	_bool m_isHPPaulse = {};
 
 public:
 	static CUIProgress_Bar* Create(ID3D11Device* pDevice, ID3D11DeviceContext* pDeviceContext);

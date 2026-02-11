@@ -47,12 +47,21 @@ public:
 
 	void Clear();
 
+	void Add_RenderGroup();
+	void Request_SortUI();
+
+private:
+	void Sort_UI();
+
 private:
 	CGameInstance* m_pGameInstance = { nullptr };
 	vector<CToolCanvas*> m_vecCanvas;
 
 	map<_string, CToolCanvas*> m_MapCanvasCache;
 	map<_string, CToolUI*> m_MapUICache;
+
+	vector<CToolUI*> m_vecSortUI;
+	_bool m_isSort = { FALSE };
 
 private:
 	int32_t m_iCurCanvasIndex = {};

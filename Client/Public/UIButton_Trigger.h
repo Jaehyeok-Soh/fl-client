@@ -3,30 +3,29 @@
 #include "DataStruct_UI.h"
 
 NS_BEGIN(Client)
-class CStatComponent;
-class CUIText final : public CGenericUI
+class CCanvas;
+class CGenericUI;
+class CUIButton_Trigger final : public CGenericUI
 {
 	using Super = CGenericUI;
 public:
-	typedef struct tagUITextDesc : public GENERIC_UI_DESC
+	typedef struct tagTriggerUIDesc : public GENERIC_UI_DESC
 	{
-		CStatComponent* pTargetStat;
 		DTO::EUISubClassType eOwner;
-		_wstring wstrText;
-		Vec4 vFontColor;
-
-	}UI_TEXT_DESC;
+		DTO::TUI_TriggerData tTriggerData;
+	}UI_TRIGGER_DESC;
 
 private:
-	CUIText(ID3D11Device* pDevice, ID3D11DeviceContext* pDeviceContext);
-	CUIText(const CUIText& rhs);
-	virtual ~CUIText() = default;
+	CUIButton_Trigger(ID3D11Device* pDevice, ID3D11DeviceContext* pDeviceContext);
+	CUIButton_Trigger(const CUIButton_Trigger& rhs);
+	virtual ~CUIButton_Trigger() = default;
 
 public:
 	HRESULT Initialize_Prototype() override;
 	HRESULT Initialize(void* pArg) override;
 
 	HRESULT Attach_Personal_Info();
+	HRESULT Bind_Cache();
 
 public:
 	virtual HRESULT Awake(const _uint iCurrentLevelID) override;
@@ -37,19 +36,18 @@ public:
 	virtual HRESULT Render() override;
 
 private:
-	HRESULT Ready_Components(UI_TEXT_DESC* pDesc);
+	HRESULT Ready_Components(UI_TRIGGER_DESC* pDesc);
 	HRESULT Bind_ShaderResources();
 
-private:
-	CStatComponent* m_pTargetStat = { nullptr };
-	DTO::EUISubClassType m_eSubClassType = {};
+	vector<CCanvas*> m_pTriggerCanvas;
+	vector<CGenericUI*> m_pTriggerUI;
 
-	_wstring m_wstrText = {};
-	Vec2 m_vFontPos = {};
-	Vec4 m_vFontColor = {};
+private:
+	DTO::EUISubClassType m_eSubClassType = {};
+	DTO::TUI_TriggerData m_tTriggerData = {};
 
 public:
-	static CUIText* Create(ID3D11Device* pDevice, ID3D11DeviceContext* pDeviceContext);
+	static CUIButton_Trigger* Create(ID3D11Device* pDevice, ID3D11DeviceContext* pDeviceContext);
 	CGameObject* Clone(void* pArg);
 	virtual void Free()override;
 };

@@ -32,7 +32,7 @@ HRESULT CUIText::Initialize(void* pArg)
 {
 	UI_TEXT_DESC* pDesc = static_cast<UI_TEXT_DESC*>(pArg);
 	m_pTargetStat	= pDesc->pTargetStat;
-	m_eOwnerType	= pDesc->eOwner;
+	m_eSubClassType	= pDesc->eOwner;
 	m_wstrText		= pDesc->wstrText;
 	m_vFontColor	= pDesc->vFontColor;
 
@@ -49,26 +49,26 @@ HRESULT CUIText::Initialize(void* pArg)
 
 HRESULT CUIText::Attach_Personal_Info()
 {
-	switch (m_eOwnerType)
+	switch (m_eSubClassType)
 	{
-	case DTO::EUIOwnerType::NONE_OWNER:
+	case DTO::EUISubClassType::NONE_OWNER:
 		return S_OK;
-	case DTO::EUIOwnerType::PLAYER_HP:
-	{
-		m_pTargetStat;
-		return S_OK;
-	}
-	case DTO::EUIOwnerType::PLAYER_LV:
+	case DTO::EUISubClassType::PLAYER_HP:
 	{
 		m_pTargetStat;
 		return S_OK;
 	}
-	case DTO::EUIOwnerType::PLAYER_ENERGY:
+	case DTO::EUISubClassType::PLAYER_LV:
 	{
 		m_pTargetStat;
 		return S_OK;
 	}
-	case DTO::EUIOwnerType::END:
+	case DTO::EUISubClassType::PLAYER_ENERGY:
+	{
+		m_pTargetStat;
+		return S_OK;
+	}
+	case DTO::EUISubClassType::END:
 	default:
 		return E_FAIL;
 	}
@@ -130,7 +130,6 @@ HRESULT CUIText::Render()
 
 HRESULT CUIText::Ready_Components(UI_TEXT_DESC* pDesc)
 {
-	Super::Ready_Components(pDesc);
 	return S_OK;
 }
 
