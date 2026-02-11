@@ -84,9 +84,10 @@ void CBody::Update(_float fTimeDelta)
 	CComputeShader* pBonCS = static_cast<CComputeShader*>(Get_Script_Component(TEXT("ComputeShader_BoneCombine")));
 	CComputeShader* pAnimECS = static_cast<CComputeShader*>(Get_Script_Component(TEXT("ComputeShader_AnimE")));
 	CComputeShader* pAnimBCS = static_cast<CComputeShader*>(Get_Script_Component(TEXT("ComputeShader_AnimB")));
+	CComputeShader* pGetBoneCS = static_cast<CComputeShader*>(Get_Script_Component(TEXT("ComputeShader_GetBone")));
 
 	Get_Component<CModel>()->Update_Animation(pBonCS, pAnimECS, pAnimBCS,
-		fTimeDelta, Get_Parent()->Get_Component<CTransform>(), Get_Parent()->Get_Component<CPhysicsCCT>());
+		fTimeDelta, Get_Parent()->Get_Component<CTransform>(), Get_Parent()->Get_Component<CPhysicsCCT>(), pGetBoneCS);
 
 	if(CCollider* pCollider = Get_Component<CCollider>())
 		pCollider->Update(m_matCombinedWorld);
@@ -317,8 +318,8 @@ HRESULT CBody::Ready_ComputeShader()
 		CComputeShader::ComShaderCopyDesc ShaderDesc = {};
 		ShaderDesc.Output_SRVBuffer_Name = "BONEFNIMAL_TRANSFORMS_SRV";
 
-		ShaderDesc.InputBufferNum = 2;
-		ShaderDesc.bMakeSB = false;
+		ShaderDesc.InputBufferNum	= 2;
+		ShaderDesc.bMakeSB			= false;
 		//// 입력 버퍼
 		//ShaderDesc.Input_StructBuffer.sBufferName = "IMMU_BONEDATA";
 		//ShaderDesc.Input_StructBuffer.iElementSize = sizeof(CS_IMMU_BONE);
@@ -395,12 +396,34 @@ HRESULT CBody::Ready_ComputeShader()
 			return E_FAIL;
 	}
 
+	// ========   Compute Shader : GetBone  ========
+	{
+		CComputeShader::ComShaderCopyDesc ShaderDesc = {};
+		ShaderDesc.Output_SRVBuffer_Name = "SELECTED_COMBINETRANSFORMS_SRV";
+
+		ShaderDesc.InputBufferNum = 2;
+		ShaderDesc.bMakeSB = true;
+		// 입력 버퍼
+		ShaderDesc.Input_StructBuffer.sBufferName	= "IMMU_BONEINDIECS";
+		ShaderDesc.Input_StructBuffer.iElementSize	= sizeof(CS_MU_BONEIDX);
+		ShaderDesc.Input_StructBuffer.iNumElements	= 1; // 내가 저장하고 싶은 본 개수
+
+		// 출력 버퍼
+		ShaderDesc.OutPut_StructBuffer.sBufferName = "SELECTED_COMBINETRANSFORMS";
+		ShaderDesc.OutPut_StructBuffer.iElementSize = sizeof(CS_OUT_BONE);
+		ShaderDesc.OutPut_StructBuffer.iNumElements = 1;
+
+		if (FAILED(Add_Script_Component(L"ComputeShader_GetBone", L"Prototype_Component_Shader_GetBone", &ShaderDesc)))
+			return E_FAIL;
+	}
+
 	CComputeShader* pBoneMeshCS = static_cast<CComputeShader*>(Get_Script_Component(TEXT("ComputeShader_BoneMesh")));
 	CComputeShader* pBonCombineCS = static_cast<CComputeShader*>(Get_Script_Component(TEXT("ComputeShader_BoneCombine")));
 	CComputeShader* pAnimECS = static_cast<CComputeShader*>(Get_Script_Component(TEXT("ComputeShader_AnimE")));
+	CComputeShader* pAnimBlendCS = static_cast<CComputeShader*>(Get_Script_Component(TEXT("ComputeShader_AnimB")));
+	CComputeShader* pGetBoneCS = static_cast<CComputeShader*>(Get_Script_Component(TEXT("ComputeShader_GetBone")));
 
-
-	if (FAILED(Get_Component<CModel>()->Ready_CSs(pBoneMeshCS, pBonCombineCS, pAnimECS)))
+	if (FAILED(Get_Component<CModel>()->Ready_ComputeShaders(pBoneMeshCS, pBonCombineCS, pAnimECS, pAnimBlendCS, pGetBoneCS)))
 		return E_FAIL;
 
 	return S_OK;
