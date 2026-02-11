@@ -779,5 +779,8 @@
     <FxCompile Include="..\..\Shaders\ComShader_BoneMesh.hlsl">
       <Filter>04. Shaders\ComputeShaders\Animation</Filter>
     </FxCompile>
+    <FxCompile Include="..\..\Shaders\ComShader_GetBoneCombine.hlsl">
+      <Filter>04. Shaders\ComputeShaders\Animation</Filter>
+    </FxCompile>
   </ItemGroup>
 </Project>
