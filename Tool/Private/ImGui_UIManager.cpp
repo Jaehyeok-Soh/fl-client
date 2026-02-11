@@ -204,6 +204,7 @@ void CImGui_UIManager::Request_SortUI()
 
 void CImGui_UIManager::Sort_UI()
 {
+	m_vecSortUI.clear();
 	for (auto* pCanvas : m_vecCanvas)
 	{
 		auto* pUIVec = pCanvas->Safe_Access_UI_Vector();

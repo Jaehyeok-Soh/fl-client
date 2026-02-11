@@ -285,7 +285,7 @@ CGenericUI::GENERIC_UI_DESC CBuilder_UI::Make_DefaultInfo(const DTO::TUI_Generic
 	Desc.iLevelIndex			= m_iLevelID;
 	Desc.iRectTransformType		= data.iRectTransformType;
 	Desc.fWidth					= data.fWidth * m_vAspect.x;
-	Desc.fHeight				= data.fHeight * m_vAspect.y;
+	Desc.fHeight				= data.fHeight * m_vAspect.x;
 	Desc.fX						= data.fPosX * m_vAspect.x;
 	Desc.fY						= data.fPosY * m_vAspect.y;
 	Desc.fZ						= data.fPosZ;

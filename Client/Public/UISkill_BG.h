@@ -39,12 +39,12 @@ private:
 	HRESULT Bind_ShaderResources();
 
 private:
-	_bool m_isUseSkillEventStart = { FALSE };
-	_bool m_isUseSkillEvnetEnd = { FALSE };
+	_bool m_isUseESkillEventStart = { FALSE };
+	_bool m_isUseESkillEvnetEnd = { FALSE };
 
-	_bool m_isUseDodgeEventStart = { FALSE };
-	_bool m_isUseDodgeEventEnd = { FALSE };
-	_float m_fDodgeCoolTimeRatio = {1.f};
+	_bool m_isUseSkillEventStart = { FALSE };
+	_bool m_isUseSkillEventEnd = { FALSE };
+	_float m_fSkillCoolTimeRatio = {1.f};
 
 public:
 	static CUISkill_BG* Create(ID3D11Device* pDevice, ID3D11DeviceContext* pDeviceContext);

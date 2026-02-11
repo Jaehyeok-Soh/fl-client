@@ -59,9 +59,14 @@ private:
 	// BG Frame Values
 	_float m_fAngle		= {};
 	_float m_fOmega		= {};
-	_float m_fMaxOmega	= { 10.f };		// rad/s
-	_float m_fAcc		= { 8.f };		// rad/s^2
-	_float m_fDrag		= { 3.f };		// 1/s
+	_float m_fMaxOmega	= { 5.f };		// rad/s
+	_float m_fAcc		= { 3.f };		// rad/s^2
+	_float m_fDrag		= { 2.f };		// 1/s
+
+	// Warning Frame Values
+	_bool m_beAttackEventTrigger	= { FALSE };
+	_bool m_isPulse					= { TRUE };
+	_bool m_isPulseDown				= { FALSE };
 
 public:
 	static CUIMini_Map* Create(ID3D11Device* pDevice, ID3D11DeviceContext* pDeviceContext);

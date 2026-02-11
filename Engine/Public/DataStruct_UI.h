@@ -145,6 +145,7 @@ NLOHMANN_JSON_SERIALIZE_ENUM(EUISubClassType,
 	MINIMAP_PLAYER_ICON,
 	MINIMAP_CAMERA_SIGHT,
 	MINIMAP_BGFRAME,
+	MINIMAP_WARNING_FRAME,
 	MINIMAP_END,
 	END
 };
@@ -167,7 +168,8 @@ NLOHMANN_JSON_SERIALIZE_ENUM(EUIDImageSubClassType,
 
 		{ EUIDImageSubClassType::MINIMAP_PLAYER_ICON,	"MINIMAP_PLAYER_ICON" },
 		{ EUIDImageSubClassType::MINIMAP_CAMERA_SIGHT,	"MINIMAP_CAMERA_SIGHT" },
-		{ EUIDImageSubClassType::MINIMAP_BGFRAME,	"MINIMAP_BGFRAME" },
+		{ EUIDImageSubClassType::MINIMAP_BGFRAME,		"MINIMAP_BGFRAME" },
+		{ EUIDImageSubClassType::MINIMAP_WARNING_FRAME,	"MINIMAP_WARNING_FRAME" },
 		{ EUIDImageSubClassType::MINIMAP_END,			"MINIMAP_END" },
 
 		{ EUIDImageSubClassType::END,					"END" }
@@ -192,10 +194,10 @@ NLOHMANN_JSON_SERIALIZE_ENUM(EUIDImageSubClassType,
 	if (str == "MINIMAP_PLAYER_ICON")	return EUIDImageSubClassType::MINIMAP_PLAYER_ICON;
 	if (str == "MINIMAP_CAMERA_SIGHT")	return EUIDImageSubClassType::MINIMAP_CAMERA_SIGHT;
 	if (str == "MINIMAP_BGFRAME")		return EUIDImageSubClassType::MINIMAP_BGFRAME;
+	if (str == "MINIMAP_WARNING_FRAME")	return EUIDImageSubClassType::MINIMAP_WARNING_FRAME;
 	if (str == "MINIMAP_END")			return EUIDImageSubClassType::MINIMAP_END;
 
-	if (str == "END")          return EUIDImageSubClassType::END;
-
+	if (str == "END")				return EUIDImageSubClassType::END;
 	return EUIDImageSubClassType::NONE_OWNER;
 }
 
@@ -220,6 +222,7 @@ inline const char* UIDImageSubTypeToString(EUIDImageSubClassType type)
 	case EUIDImageSubClassType::MINIMAP_PLAYER_ICON:	return "MINIMAP_PLAYER_ICON";
 	case EUIDImageSubClassType::MINIMAP_CAMERA_SIGHT:	return "MINIMAP_CAMERA_SIGHT";
 	case EUIDImageSubClassType::MINIMAP_BGFRAME:		return "MINIMAP_BGFRAME";
+	case EUIDImageSubClassType::MINIMAP_WARNING_FRAME:	return "MINIMAP_WARNING_FRAME";
 	case EUIDImageSubClassType::MINIMAP_END:			return "MINIMAP_END";
 
 	case EUIDImageSubClassType::END:				return "END";

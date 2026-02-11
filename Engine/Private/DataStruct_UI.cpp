@@ -74,14 +74,14 @@ void from_json(const json& j, TUI_TriggerData& data)
 	j.at("strOwnerName").get_to(data.strOwnerName);
 
 	data.vecHoverEnterTriggerCanvas = j.value("vecHoverEnterTriggerCanvas", std::vector<std::string>{});
-	data.vecHoverEnterTriggerUI = j.value("vecHoverEnterTriggerUI", std::vector<std::string>{});
-	data.vecHoverExitTriggerCanvas = j.value("vecHoverExitTriggerCanvas", std::vector<std::string>{});
-	data.vecHoverExitTriggerUI = j.value("vecHoverExitTriggerUI", std::vector<std::string>{});
+	data.vecHoverEnterTriggerUI		= j.value("vecHoverEnterTriggerUI", std::vector<std::string>{});
+	data.vecHoverExitTriggerCanvas	= j.value("vecHoverExitTriggerCanvas", std::vector<std::string>{});
+	data.vecHoverExitTriggerUI		= j.value("vecHoverExitTriggerUI", std::vector<std::string>{});
 
 	data.vecPressEnterTriggerCanvas = j.value("vecPressEnterTriggerCanvas", std::vector<std::string>{});
-	data.vecPressEnterTriggerUI = j.value("vecPressEnterTriggerUI", std::vector<std::string>{});
-	data.vecPressExitTriggerCanvas = j.value("vecPressExitTriggerCanvas", std::vector<std::string>{});
-	data.vecPressExitTriggerUI = j.value("vecPressExitTriggerUI", std::vector<std::string>{});
+	data.vecPressEnterTriggerUI		= j.value("vecPressEnterTriggerUI", std::vector<std::string>{});
+	data.vecPressExitTriggerCanvas	= j.value("vecPressExitTriggerCanvas", std::vector<std::string>{});
+	data.vecPressExitTriggerUI		= j.value("vecPressExitTriggerUI", std::vector<std::string>{});
 }
 
 void to_json(json& j, const TUI_TextData& data)

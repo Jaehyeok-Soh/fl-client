@@ -68,6 +68,12 @@ HRESULT CUIMini_Map::Attach_Personal_Info()
 		m_vPivotToOrigin	= m_vOriginPos - m_vPivotPos;
 	}
 		return S_OK;
+	case DTO::EUIDImageSubClassType::MINIMAP_WARNING_FRAME:
+	{
+		// * 외부 변수 바인딩 *
+		m_beAttackEventTrigger;
+	}
+	break;
 	case DTO::EUIDImageSubClassType::END:
 	default:
 		return E_FAIL;
@@ -93,6 +99,11 @@ void CUIMini_Map::Update(const _float fTimeDelta)
 {
 	Super::Update(fTimeDelta);
 
+	if (KEY_BUTTON_DOWN(DIK_1))
+		m_beAttackEventTrigger = TRUE;
+	else if (KEY_BUTTON_DOWN(DIK_2))
+		m_beAttackEventTrigger = FALSE;
+
 	if (m_eDImageSubClass == DTO::EUIDImageSubClassType::MINIMAP_CAMERA_SIGHT)
 	{
 		Matrix CamWorldMat = m_pGameInstance->Get_ViewMatrix().Invert();
@@ -108,13 +119,72 @@ void CUIMini_Map::Update(const _float fTimeDelta)
 	else if (m_eDImageSubClass == DTO::EUIDImageSubClassType::MINIMAP_BGFRAME)
 	{
 		if (KEY_BUTTON_HOLD(DIK_A))
-			TickRotate(-1, fTimeDelta);
+			TickRotate(-1, fTimeDelta * 0.8f);
 		else if (KEY_BUTTON_HOLD(DIK_D))
-			TickRotate(1, fTimeDelta);
+			TickRotate(1, fTimeDelta * 0.8f);
 		else
-			TickRotate(0, fTimeDelta);
+			TickRotate(0, fTimeDelta * 0.5f);
 	}
+	else if (m_eDImageSubClass == DTO::EUIDImageSubClassType::MINIMAP_WARNING_FRAME)
+	{
+		if (m_beAttackEventTrigger)
+		{
+			if (!m_isPulse)
+			{
+				m_vColorTint = Vec4{ 1.f, 0.f, 0.f, 1.f };
+				m_isPulse = TRUE;
+				m_isPulseDown = TRUE;
+			}
+			else
+			{
+				const _float fMinA = 0.3f;
+				const _float fMaxA = 1.0f;
+				const _float fSpeed = 1.0f;
 
+				if (m_isPulseDown)
+				{
+					m_fAlpha_Ratio -= fTimeDelta * fSpeed;
+					if (m_fAlpha_Ratio <= fMinA)
+					{
+						m_fAlpha_Ratio = fMinA;
+						m_isPulseDown = FALSE;
+					}
+				}
+				else
+				{
+					m_fAlpha_Ratio += fTimeDelta * fSpeed;
+					if (m_fAlpha_Ratio >= fMaxA)
+					{
+						m_fAlpha_Ratio = fMaxA;
+						m_isPulseDown = TRUE;
+					}
+				}
+			}
+		}
+		else
+		{
+			if (m_isPulse)
+			{
+				m_isPulse = FALSE;
+				m_isPulseDown = FALSE;
+
+				m_vColorTint.x = 1.f;
+				m_vColorTint.y = 1.f;
+				m_vColorTint.z = 1.f;
+			}
+
+			if (m_fAlpha_Ratio < 1.f)
+			{
+				m_fAlpha_Ratio += fTimeDelta;
+				if (m_fAlpha_Ratio > 1.f)
+					m_fAlpha_Ratio = 1.f;
+			}
+			else if (m_fAlpha_Ratio > 1.f)
+			{
+				m_fAlpha_Ratio = 1.f;
+			}
+		}
+	}
 }
 
 void CUIMini_Map::Update_Late(const _float fTimeDelta)
@@ -201,11 +271,11 @@ void CUIMini_Map::TickRotate(_int dir, _float dt)
 	}
 	else
 	{
-		m_fOmega *= expf(-m_fDrag* dt);
+		m_fOmega *= expf(-m_fDrag * dt);
 		if (fabsf(m_fOmega) < 0.0005f) m_fOmega = 0.f;
 	}
-
 	m_fAngle = WrapPi(m_fAngle + m_fOmega * dt);
+
 	Get_Component<CTransform>()->Rotation(Vec3{ 0.f, 0.f, -1.f }, m_fAngle);
 }
 

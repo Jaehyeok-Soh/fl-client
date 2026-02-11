@@ -86,37 +86,37 @@ void CUISkill_BG::Update_Late(const _float fTimeDelta)
 {
 	Super::Update_Late(fTimeDelta);
 
+	if (m_isUseESkillEventStart)
+	{
+		m_vColorTint.w += fTimeDelta * 10.f;
+		if (m_vColorTint.w >= 1.f)
+		{
+			m_isUseESkillEventStart = FALSE;
+			m_isUseESkillEvnetEnd = TRUE;
+			m_vColorTint.w = 1.f;
+		}
+	}
+	else if(m_isUseESkillEvnetEnd)
+	{
+		m_vColorTint.w -= fTimeDelta;
+		if (m_vColorTint.w <= 0.f)
+		{
+			m_isUseESkillEvnetEnd = FALSE;
+			m_vColorTint.w = 0.f;
+		}
+	}
+
 	if (m_isUseSkillEventStart)
 	{
 		m_vColorTint.w += fTimeDelta * 10.f;
 		if (m_vColorTint.w >= 1.f)
 		{
 			m_isUseSkillEventStart = FALSE;
-			m_isUseSkillEvnetEnd = TRUE;
-			m_vColorTint.w = 1.f;
-		}
-	}
-	else if(m_isUseSkillEvnetEnd)
-	{
-		m_vColorTint.w -= fTimeDelta;
-		if (m_vColorTint.w <= 0.f)
-		{
-			m_isUseSkillEvnetEnd = FALSE;
-			m_vColorTint.w = 0.f;
-		}
-	}
-
-	if (m_isUseDodgeEventStart)
-	{
-		m_vColorTint.w += fTimeDelta * 10.f;
-		if (m_vColorTint.w >= 1.f)
-		{
-			m_isUseDodgeEventStart = FALSE;
-			m_isUseDodgeEventEnd = TRUE;
+			m_isUseSkillEventEnd = TRUE;
 			m_vColorTint.w = 0.8f;
 		}
 	}
-	else if (m_isUseDodgeEventEnd)
+	else if (m_isUseSkillEventEnd)
 	{
 		m_fProgress_Ratio -= fTimeDelta ;
 	}
@@ -149,29 +149,37 @@ HRESULT CUISkill_BG::Render()
 
 void CUISkill_BG::Trigger_User_Use_Skill()
 {
-	if (m_isUseSkillEventStart)
+	if (m_isUseESkillEventStart)
 		return;
 
 	if (KEY_BUTTON_DOWN(DIK_E))
 	{
 		if (m_eDImageSubClass == DTO::EUIDImageSubClassType::PLAYER_E)
-			m_isUseSkillEventStart = TRUE;
+			m_isUseESkillEventStart = TRUE;
 	}
 	else if (KEY_BUTTON_DOWN(DIK_Q))
 	{
 		if (m_eDImageSubClass == DTO::EUIDImageSubClassType::PLAYER_Q)
+		{
 			m_isUseSkillEventStart = TRUE;
+			m_vColorTint.w = 0.f;
+			m_fProgress_Ratio = 1.f;
+		}
 	}
 	else if (KEY_BUTTON_DOWN(DIK_Z))
 	{
 		if (m_eDImageSubClass == DTO::EUIDImageSubClassType::PLAYER_Z)
+		{
 			m_isUseSkillEventStart = TRUE;
+			m_vColorTint.w = 0.f;
+			m_fProgress_Ratio = 1.f;
+		}
 	}
 	else if (KEY_BUTTON_DOWN(DIK_LSHIFT))
 	{
 		if (m_eDImageSubClass == DTO::EUIDImageSubClassType::PLAYER_DODGE)
 		{
-			m_isUseDodgeEventStart = TRUE;
+			m_isUseSkillEventStart = TRUE;
 			m_vColorTint.w = 0.f;
 			m_fProgress_Ratio = 1.f;
 		}
