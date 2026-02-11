@@ -92,23 +92,25 @@ HRESULT CRenderTarget_Manager::End_MRT()
 HRESULT CRenderTarget_Manager::Bind_ShaderResource(ERenderTarget eTarget, CShader* pShader)
 {
     _uint iIndex = ENUM_TO_UINT(eTarget);
+    EFXSRV eSlot{EFXSRV::COUNT};
 
     switch (eTarget)
     {
     case Engine::ERenderTarget::Diffuse:
-        return pShader->Bind_RenderTargetDiffuseTexture(m_arrRenderTargets[iIndex]->Get_SRV());
+        eSlot = EFXSRV::RT_Diffuse; break;
     case Engine::ERenderTarget::Normal:
-        return pShader->Bind_RenderTargetNormalTexture(m_arrRenderTargets[iIndex]->Get_SRV());
+        eSlot = EFXSRV::RT_Normal; break;
     case Engine::ERenderTarget::Shade:
-        return pShader->Bind_RenderTargetShadeTexture(m_arrRenderTargets[iIndex]->Get_SRV());
+        eSlot = EFXSRV::RT_Shade; break;
     case Engine::ERenderTarget::Depth:
-        return pShader->Bind_RenderTargetDepthTexture(m_arrRenderTargets[iIndex]->Get_SRV());
+        eSlot = EFXSRV::RT_Depth; break;
     case Engine::ERenderTarget::Scene:
-        return pShader->Bind_RenderTargetSceneTexture(m_arrRenderTargets[iIndex]->Get_SRV());
-
+        eSlot = EFXSRV::RT_Scene; break;
     default:
         return E_FAIL; 
     }
+
+    return pShader->Bind_SRV(eSlot, m_arrRenderTargets[iIndex]->Get_SRV());
 }
 
 HRESULT CRenderTarget_Manager::Copy_BackBufferResource(ERenderTarget eTarget)

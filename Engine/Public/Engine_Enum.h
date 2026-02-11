@@ -61,7 +61,78 @@ namespace Engine
 		COMPONENT,
 		END
 	};
-
+	//===================
+	// FX Scalar
+	//===================
+	enum class EFXScalar : unsigned int
+	{
+		MaterialMask = 0,
+		GlobalMask,
+		COUNT
+	};
+	constexpr const char* g_ScalarNames[static_cast<unsigned int>(EFXScalar::COUNT)] =
+	{
+		"g_iMaterialMask",
+		"g_iGlobalMask"
+	};
+	//===================
+	// FX CB
+	//===================
+	enum class EFXCB : unsigned int
+	{
+		Global = 0,
+		Inv,
+		Transform,
+		Light,
+		Material,
+		MaterialInst,
+		Keyframe,
+		Bone,
+		Effect,
+		COUNT
+	};
+	constexpr const char* g_CBNames[static_cast<unsigned int>(EFXCB::COUNT)] =
+	{
+		"GlobalBuffer",
+		"InvBuffer",
+		"TransformBuffer",
+		"LightBuffer",
+		"MaterialBuffer",
+		"MaterialInstanceBuffer",
+		"KeyframeBuffer",
+		"BoneBuffer",
+		"ConstantBuffer_Effect",
+	};
+	//===================
+	// FX SRV
+	//===================
+	enum class EFXSRV : unsigned int
+	{
+		RT = 0,
+		RT_Diffuse,
+		RT_Normal,
+		RT_Shade,
+		RT_Depth,
+		RT_Scene,
+		Transform,
+		Materials,
+		Textures,
+		Cube,
+		COUNT
+	};
+	constexpr const char* g_SRVNames[static_cast<unsigned int>(EFXSRV::COUNT)] =
+	{
+		"g_RenderTargetTexture",
+		"g_RenderTargetDiffuseTexture",
+		"g_RenderTargetNormalTexture",
+		"g_RenderTargetShadeTexture",
+		"g_RenderTargetDepthTexture",
+		"g_RenderTargetSceneTexture",
+		"g_TransformMap",
+		"g_MaterialTextures",
+		"g_DefaultTextures",
+		"g_TextureCube"
+	};
 	//===================
 	// Component
 	//===================
@@ -187,8 +258,8 @@ namespace Engine
 		MAX_COUNT = 18
 	};
 	//===================
-// PhysicsShape
-//===================
+	// PhysicsShape
+	//===================
 	enum class EPhysicsShape : unsigned int
 	{
 		SPHERE,

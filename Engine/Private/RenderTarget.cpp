@@ -68,7 +68,7 @@ HRESULT CRenderTarget::Render(CShader* pShader, CVIBuffer_Rect_Tex* pVIBuffer)
 {
 	if (FAILED(pShader->Bind_TransformData(m_matWorld)))
 		return E_FAIL;
-	if (FAILED(pShader->Bind_RenderTargetTexture(m_pSRV)))
+	if (FAILED(pShader->Bind_SRV(EFXSRV::RT, m_pSRV)))
 		return E_FAIL;
 
 	pShader->Apply();
