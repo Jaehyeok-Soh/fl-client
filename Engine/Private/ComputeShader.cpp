@@ -283,7 +283,7 @@ void CComputeShader::Bind_Compute_BoneMuCB(const CS_MU_GROUPNUMS& desc)
 	m_pBone_Mutable_Element_CBuffer->Copy_Data(desc);
 }
 
-void CComputeShader::Bind_Compute_BoneMeshCB(const CS_CB_ME_BONEMESH& desc)
+void CComputeShader::Bind_Compute_BoneMeshCB(const CS_CB_MU_BONEMESH& desc)
 {
 	m_pBoneMesh_Mutable_Element_CBuffer->Copy_Data(desc);
 }
@@ -323,7 +323,7 @@ HRESULT CComputeShader::Create_ConstantBuffer()
 	// BoneMesh Àü¿ë
 	if (m_pBoneMesh_MutableBuffer = Get_ConstantBuffer("MU_MESHBONENUMS"))
 	{
-		m_pBoneMesh_Mutable_Element_CBuffer = CConstant_Buffer<CS_CB_ME_BONEMESH>::Create(m_pDevice, m_pDeviceContext);
+		m_pBoneMesh_Mutable_Element_CBuffer = CConstant_Buffer<CS_CB_MU_BONEMESH>::Create(m_pDevice, m_pDeviceContext);
 		m_pBoneMesh_MutableBuffer->SetConstantBuffer(m_pBoneMesh_Mutable_Element_CBuffer->Get_Buffer());
 	}
 

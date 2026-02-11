@@ -195,7 +195,7 @@ HRESULT CMesh::Bind_Bones(CShader* pShader, CComputeShader* pBoneMeshCS,CCompute
 		pBoneMeshCS->Get_SRV("MU_COMBINEMAT"), pBoneCombineCS->Get_Output_Buffer());
 
 	// 가변 데이터 작성
-	CS_CB_ME_BONEMESH tMuDesc{};
+	CS_CB_MU_BONEMESH tMuDesc{};
 	tMuDesc.iAffectBoneNums = m_iAffectBoneCount;
 	tMuDesc.iTotalBoneNums = iTotalBoneNum;
 	pBoneMeshCS->Bind_Compute_BoneMeshCB(tMuDesc);

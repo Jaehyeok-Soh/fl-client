@@ -232,7 +232,7 @@ namespace Engine
 		unsigned int				iAffectBoneNums = { 0 };
 		unsigned int				iTotalBoneNums = { 0 };
 		SimpleMath::Vector2			Padding0 = {};
-	}CS_CB_ME_BONEMESH;
+	}CS_CB_MU_BONEMESH;
 
 	typedef struct tagBoneMeshIMMU
 	{
