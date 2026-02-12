@@ -196,10 +196,7 @@ void CLevel_Animation::Load_AnimModel(fs::path animModelPath)
 
 	Create_AnimModel(animModelPath);
 
-	m_pGameInstance->Add_GameObject(ENUM_TO_UINT(ELevelType::ANIMATION),
-		L"anim model prototype",
-		ENUM_TO_UINT(ELevelType::ANIMATION),
-		m_wstrLayer, m_pSelectedObject);
+	SetAnimationInfo();
 }
 
 void CLevel_Animation::Create_AnimModel(fs::path animModelPath)
@@ -245,6 +242,31 @@ wstring CLevel_Animation::Create_AnimModelPrototype(fs::path animModelPath)
 	}
 
 	return prototypeTag;
+}
+
+void CLevel_Animation::SetAnimationInfo()
+{
+	CModel* model = m_pSelectedObject->Get_Component<CModel>();
+	model->Get_AnimationCount();
+	model->Get_AnimationIndex();
+	model->Get_AnimationName();
+	model->Get_AnimDurationTime();
+	model->Get_AnimElpasedTimeSeconds();
+	model->Get_AnimTrackPosition();
+	model->Get_Bone();
+	model->Get_BoneCount();
+	model->Get_BoneIndex();
+	model->Get_MeshCount();
+	model->Get_CurrentAnimationName();
+	model->Get_CurrentAnimationIndex();
+
+	model->Set_AnimationPlayRate();
+
+	model->Is_AnimFinished();
+
+	model->Update_Animation(0.03f, nullptr, nullptr);
+
+	model->Change_Animation();
 }
 
 CLevel_Animation* CLevel_Animation::Create(ID3D11Device* pDevice, ID3D11DeviceContext* pDeviceContext)

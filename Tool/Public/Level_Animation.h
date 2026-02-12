@@ -59,6 +59,7 @@ private:
 	void Load_AnimModel(fs::path animModelPath);
 	void Create_AnimModel(fs::path animModelPath);
 	wstring Create_AnimModelPrototype(fs::path animModelPath);
+	void SetAnimationInfo();
 
 private:
 	class CImGui_ToolManager*	m_pImGuiManager		= { nullptr };

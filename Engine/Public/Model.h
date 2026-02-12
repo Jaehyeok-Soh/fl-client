@@ -164,6 +164,14 @@ public:
 	HRESULT								Ready_ComputeShaders(CComputeShader* pBoneMeshCS, CComputeShader* pBoneComBineCS, CComputeShader* pAnimEvalCS, CComputeShader* pAnimBlendCS, CComputeShader* pGetBoneCS = nullptr);
 	
 	// load func
+
+	// for animation tool
+	AnimationPlayState					GetAnimPlayState() { return m_eCurrentAnimationState; }
+	vector<class CBone*>				GetBones() { return m_vecBones; }
+	vector<class CModelAnimation*>		GetAnimations() { return m_vecAnimations; }
+	vector<LOCALSRT>					m_vecPrevAnimationPose;
+	vector<LOCALSRT>					m_vecCurrAnimationPose;
+
 private:
 	HRESULT								Load_StaticModel(const wstring& wstrModelName);
 	HRESULT								Load_NonAnimModel(const wstring &wstrModelName);
