@@ -91,8 +91,8 @@ void CBody::Update(_float fTimeDelta)
 	CComputeShader* pAnimBCS = static_cast<CComputeShader*>(Get_Script_Component(TEXT("ComputeShader_AnimB")));
 	CComputeShader* pGetBoneCS = static_cast<CComputeShader*>(Get_Script_Component(TEXT("ComputeShader_GetBone")));
 
-	Get_Component<CModel>()->Update_Animation(pBonCS, pAnimECS, pAnimBCS,
-		fTimeDelta, Get_Parent()->Get_Component<CTransform>(), Get_Parent()->Get_Component<CPhysicsCCT>(), pGetBoneCS);
+	Get_Component<CModel>()->Update_Animation(pBonCS, pAnimECS, fTimeDelta, 
+		Get_Parent()->Get_Component<CTransform>(), Get_Parent()->Get_Component<CPhysicsCCT>(), pAnimBCS, pGetBoneCS);
 
 	if(CCollider* pCollider = Get_Component<CCollider>())
 		pCollider->Update(m_matCombinedWorld);
@@ -217,6 +217,22 @@ CBone* CBody::Get_Spine1Bone()
 {
 	if (CBone* pSpine = Get_Component<CModel>()->Get_Bone(m_iSpine1_Index))
 		return pSpine;
+
+	return nullptr;
+}
+
+CBone* CBody::Get_WeaponSocket()
+{
+	if (CBone* pHead = Get_Component<CModel>()->Get_Bone(288)) //285 ~ 289
+		return pHead;
+
+	return nullptr;
+}
+
+CBone* CBody::Get_RightHandSocket()
+{
+	if (CBone* pHead = Get_Component<CModel>()->Get_Bone(414))
+		return pHead;
 
 	return nullptr;
 }
