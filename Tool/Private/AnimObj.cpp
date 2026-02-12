@@ -63,8 +63,8 @@ void CAnimObj::Update(const _float fTimeDelta)
 	CComputeShader* pAnimECS = static_cast<CComputeShader*>(Get_Script_Component(TEXT("ComputeShader_AnimE")));
 	CComputeShader* pAnimBCS = static_cast<CComputeShader*>(Get_Script_Component(TEXT("ComputeShader_AnimB")));
 
-	Get_Component<CModel>()->Update_Animation(pBonCS, pAnimECS, pAnimBCS,
-		fTimeDelta, Get_Component<CTransform>(), Get_Component<CPhysicsCCT>());
+	Get_Component<CModel>()->Update_Animation(pBonCS, pAnimECS, 
+		fTimeDelta, Get_Component<CTransform>(), Get_Component<CPhysicsCCT>(), pAnimBCS);
 }
 
 void CAnimObj::Update_Late(const _float fTimeDelta)
