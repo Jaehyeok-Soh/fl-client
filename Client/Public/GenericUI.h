@@ -23,6 +23,7 @@ public:
 		int32_t iFillDir;
 		_float fDelay;
 		_float fAlpha;
+		int32_t iFlip;
 		CCanvas* pCanvasCache = { nullptr };
 	}GENERIC_UI_DESC;
 
@@ -45,9 +46,6 @@ public:
 
 	_bool Calc_HitEvent();
 	void Acting_By_InteractState();
-
-	 //virtual void Trigger_Enter_Target()PURE;
-	 //virtual void Trigger_Exit_Target()PURE;
 
 protected:
 	HRESULT Ready_Components(GENERIC_UI_DESC* pDesc);

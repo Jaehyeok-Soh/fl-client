@@ -48,7 +48,7 @@ HRESULT CGenericUI::Initialize(void* pArg)
 	m_iFillDir				= pDesc->iFillDir;
 	m_fDelay				= pDesc->fDelay;
 	m_fAlpha_Ratio			= pDesc->fAlpha;
-
+	m_iFlip					= pDesc->iFlip;
 	if (FAILED(Super::Initialize(pArg)))
 		return E_FAIL;
 	if (FAILED(Ready_Components(pDesc)))
@@ -168,7 +168,6 @@ HRESULT CGenericUI::Bind_ShaderResources()
 		return E_FAIL;
 	if (FAILED(pShader->Get_Variable("g_iFlip")->SetRawValue(&m_iFlip, 0, sizeof(int32_t))))
 		return E_FAIL;
-
 	const int32_t isColor = m_isUseColorTint ? 1 : 0;
 	if (FAILED(pShader->Get_Variable("g_iColor")->SetRawValue(&isColor, 0, sizeof(int32_t))))
 		return E_FAIL;

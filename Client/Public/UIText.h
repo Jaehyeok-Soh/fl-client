@@ -14,6 +14,8 @@ public:
 		DTO::EUISubClassType eOwner;
 		_wstring wstrText;
 		Vec4 vFontColor;
+		_float fScale;
+		_float fRotate;
 
 	}UI_TEXT_DESC;
 
@@ -44,9 +46,11 @@ private:
 	CStatComponent* m_pTargetStat = { nullptr };
 	DTO::EUISubClassType m_eSubClassType = {};
 
-	_wstring m_wstrText = {};
-	Vec2 m_vFontPos = {};
-	Vec4 m_vFontColor = {};
+	_wstring m_wstrText		= {};
+	Vec2 m_vFontPos			= {};
+	Vec4 m_vFontColor		= {};
+	_float m_fFontScale		= {};
+	_float m_fFontRotate	= {};
 
 public:
 	static CUIText* Create(ID3D11Device* pDevice, ID3D11DeviceContext* pDeviceContext);

@@ -100,6 +100,8 @@ HRESULT CMainApplication::Ready_Static_Prototype()
 
 	if (FAILED(m_pGameInstance->Add_Font(L"Font_Default", L"../../Resources/Fonts/156ex.spritefont")))
 		return E_FAIL;
+	if (FAILED(m_pGameInstance->Add_Font(L"SemiBold", L"../../Resources/Fonts/SemiBold.spritefont")))
+		return E_FAIL;
 
 	/* Bound */
 	if (FAILED(m_pGameInstance->Add_Prototype(ENUM_TO_UINT(ELevelType::STATIC), L"Prototype_Component_Bounds", CBounds::Create(m_pDevice , m_pDeviceContext))))

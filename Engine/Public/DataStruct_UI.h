@@ -12,6 +12,7 @@ enum class EUIType : _uint
 	TRIGGER,
 	BUTTON_TRIGGER,
 	DYNAMIC_IMAGE,
+	WORLD_UI,
 	END
 };
 inline constexpr _uint g_UITypeCount{ ENUM_TO_UINT(EUIType::END) };
@@ -24,6 +25,7 @@ NLOHMANN_JSON_SERIALIZE_ENUM(EUIType,
 		{EUIType::TRIGGER, "TRIGGER"},
 		{EUIType::BUTTON_TRIGGER, "BUTTON_TRIGGER"},
 		{EUIType::DYNAMIC_IMAGE, "DYNAMIC_IMAGE"},
+		{EUIType::WORLD_UI, "WORLD_UI"},
 	}
 )
 
@@ -35,6 +37,7 @@ enum class EUIClassType
 	TRIGGER,
 	BUTTON_TRIGGER,
 	DYNAMIC_IMAGE,
+	WORLD_UI,
 	END
 };
 
@@ -48,6 +51,7 @@ inline std::string UIClassTypeToString(EUIClassType eType)
 	case EUIClassType::TRIGGER: return "TRIGGER";
 	case EUIClassType::BUTTON_TRIGGER: return "BUTTON_TRIGGER";
 	case EUIClassType::DYNAMIC_IMAGE: return "DYNAMIC_IMAGE";
+	case EUIClassType::WORLD_UI: return "WORLD_UI";
 	case EUIClassType::END: return "END";
 	default: return "";
 	}
@@ -61,6 +65,7 @@ inline EUIClassType StringToUIClassType(const std::string& str)
 	else if (str == "TRIGGER") return EUIClassType::TRIGGER;
 	else if (str == "BUTTON_TRIGGER") return EUIClassType::BUTTON_TRIGGER;
 	else if (str == "DYNAMIC_IMAGE") return EUIClassType::DYNAMIC_IMAGE;
+	else if (str == "WORLD_UI") return EUIClassType::WORLD_UI;
 	else return EUIClassType::END;
 }
 
@@ -72,6 +77,7 @@ NLOHMANN_JSON_SERIALIZE_ENUM(EUIClassType,
 		{EUIClassType::TRIGGER, "TRIGGER"},
 		{EUIClassType::BUTTON_TRIGGER, "BUTTON_TRIGGER"},
 		{EUIClassType::DYNAMIC_IMAGE, "DYNAMIC_IMAGE"},
+		{EUIClassType::WORLD_UI, "WORLD_UI"},
 	})
 
 enum EComponentTypeFlag
@@ -118,7 +124,7 @@ NLOHMANN_JSON_SERIALIZE_ENUM(EUISubClassType,
 	{
 		{EUISubClassType::NONE_OWNER,		"NONE_OWNER"},
 		{EUISubClassType::PLAYER_HP,		"PLAYER_HP"},
-		{EUISubClassType::PLAYER_ARMOR,	"PLAYER_ARMOR"},
+		{EUISubClassType::PLAYER_ARMOR,		"PLAYER_ARMOR"},
 		{EUISubClassType::PLAYER_ENERGY,	"PLAYER_ENERGY"},
 		{EUISubClassType::PLAYER_LV,		"PLAYER_LV"},
 	})
@@ -147,6 +153,7 @@ NLOHMANN_JSON_SERIALIZE_ENUM(EUISubClassType,
 	MINIMAP_BGFRAME,
 	MINIMAP_WARNING_FRAME,
 	MINIMAP_END,
+
 	END
 };
 
@@ -230,7 +237,46 @@ inline const char* UIDImageSubTypeToString(EUIDImageSubClassType type)
 	}
 }
 
+
+enum class EUIWorldUISubClassType
+{
+	WORLD_UI_NONE,
+	MONSTER_HP,
+	WORLD_DAMAGE_FONT,
+	END
+};
+
+NLOHMANN_JSON_SERIALIZE_ENUM(EUIWorldUISubClassType,
+	{
+		{ EUIWorldUISubClassType::WORLD_UI_NONE,	"WORLD_UI_NONE" },
+		{ EUIWorldUISubClassType::MONSTER_HP,		"MONSTER_HP" },
+		{ EUIWorldUISubClassType::WORLD_DAMAGE_FONT,"WORLD_DAMAGE_FONT" },
+		{ EUIWorldUISubClassType::END,				"END" }
+	})
+
+	inline EUIWorldUISubClassType StringToUIWorldUISubType(const std::string& str)
+{
+	if (str == "WORLD_UI_NONE")       return EUIWorldUISubClassType::WORLD_UI_NONE;
+	if (str == "MONSTER_HP")          return EUIWorldUISubClassType::MONSTER_HP;
+	if (str == "WORLD_DAMAGE_FONT")   return EUIWorldUISubClassType::WORLD_DAMAGE_FONT;
+	if (str == "END")                 return EUIWorldUISubClassType::END;
+	return EUIWorldUISubClassType::WORLD_UI_NONE;
+}
+
+inline const char* UIWorldUISubTypeToString(EUIWorldUISubClassType type)
+{
+	switch (type)
+	{
+	case EUIWorldUISubClassType::WORLD_UI_NONE:      return "WORLD_UI_NONE";
+	case EUIWorldUISubClassType::MONSTER_HP:         return "MONSTER_HP";
+	case EUIWorldUISubClassType::WORLD_DAMAGE_FONT:  return "WORLD_DAMAGE_FONT";
+	case EUIWorldUISubClassType::END:                return "END";
+	default:                                         return "WORLD_UI_NONE";
+	}
+}
+
 /////////////////-------------------  Data Struct  -------------------/////////////////
+// 텍스트 데이터
 struct TUI_TextData
 {
 	static constexpr EUIType eType = EUIType::UI_TEXT;
@@ -239,8 +285,13 @@ struct TUI_TextData
 	std::string		strFontTag;
 	std::string	    strText;
 	Vec4			vFontColor;	
+	_float			fRotate;
+	Vec2			vPivot;
+	_float			fScale;
 };
 
+/////////////////
+// 트리거 데이터
 struct TUI_TriggerData
 {
 	static constexpr EUIType eType = EUIType::TRIGGER;
@@ -258,26 +309,42 @@ struct TUI_TriggerData
 	vector<std::string> vecPressExitTriggerUI;
 };
 
+/////////////////
+// 버튼 트리거 데이터
 struct TUI_ButtonTriggerData
 {
 	static constexpr EUIType eType = EUIType::BUTTON_TRIGGER;
-	std::string		strTag;
-	std::string		strOwnerName;
-
-	_string strKeyMapping;
+	std::string			strTag;
+	std::string			strOwnerName;
+	_string				strKeyMapping;
 	vector<std::string> vecTriggerCanvas;
 	vector<std::string> vecTriggerUI;
 };
 
+/////////////////
+// 다이나믹 이미지 데이터
 struct TUI_DImageData
 {
 	static constexpr EUIType eType = EUIType::DYNAMIC_IMAGE;
-	EUIClassType	eClassType;
-	std::string		strTag;
-	std::string		strOwnerName;
-	EUIDImageSubClassType eDISubClassType;
+	EUIClassType			eClassType;
+	std::string				strTag;
+	std::string				strOwnerName;
+	EUIDImageSubClassType	eDISubClassType;
 };
 
+/////////////////
+// 월드 UI 데이터
+struct TUI_WorldUIData
+{
+	static constexpr EUIType eType = EUIType::WORLD_UI;
+	EUIClassType			eClassType;
+	std::string				strTag;
+	std::string				strOwnerName;
+	EUIWorldUISubClassType	eWorldUISubClass;
+};
+
+/////////////////
+// UI
 struct TUI_GenericUIData
 {
 	static constexpr EUIType eType = EUIType::GENERICUI;

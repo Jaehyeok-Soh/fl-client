@@ -193,6 +193,9 @@ void CUI_Inspector::Input_RectTransform()
 
 void CUI_Inspector::Input_TextureTag()
 {
+	_string str = Engine_Utils::ToString(L"Cur Texture : " + m_pSelectedUI->Get_TextureTag());
+	ImGui::TextDisabled(str.c_str());
+
 	if (ImGui::Button("Select Texture"))
 	{
 		OPENFILENAMEW ofn{};
@@ -222,6 +225,7 @@ void CUI_Inspector::Input_TextureTag()
 			}
 		}
 	}
+
 }
 
 void CUI_Inspector::SetUp_Class()
@@ -288,9 +292,9 @@ void CUI_Inspector::SetUp_Owner()
 
 void CUI_Inspector::SetUp_TextData()
 {
-	if(Begin_Card("SetUp TextData", "Card_TextData", 100.f))
+	if (Begin_Card("SetUp TextData", "Card_TextData", 250.f))
 	{
-		_string strText = Engine_Utils::ToString( m_pSelectedUI->Get_Text());
+		_string strText = Engine_Utils::ToString(m_pSelectedUI->Get_Text());
 		ImGui::InputText("Text", &strText);
 		m_pSelectedUI->Set_Text(Engine_Utils::ToWString(strText));
 
@@ -298,7 +302,30 @@ void CUI_Inspector::SetUp_TextData()
 		float col[4] = { vColor.x, vColor.y, vColor.z, vColor.w };
 		if (ImGui::ColorEdit4("FontColor", col))
 			vColor = Vec4{ col[0], col[1], col[2], col[3] };
+
+		_string strFontName = m_pSelectedUI->Get_FontName();
+		if (ImGui::InputText("FontName", &strFontName))
+			m_pSelectedUI->Set_FontName(strFontName);
+
+		_float fScale = m_pSelectedUI->Get_FontScale();
+		if (ImGui::InputFloat("FontScale", &fScale))
+			m_pSelectedUI->Set_FontScale(fScale);
+
+		_float fRotateRad = m_pSelectedUI->Get_FontRotate();
+		_float fRotateDeg = DirectX::XMConvertToDegrees(fRotateRad);
+
+		if (ImGui::SliderFloat("FontRotate", &fRotateDeg, -180.f, 180.f, "%.1f deg"))
+		{
+			fRotateRad = DirectX::XMConvertToRadians(fRotateDeg);
+			m_pSelectedUI->Set_FontRotate(fRotateRad);
+		}
+
+		Vec2 vPivot = m_pSelectedUI->Get_FontPivot();
+		float pivot[2] = { vPivot.x, vPivot.y };
+		if (ImGui::InputFloat2("FontPivot", pivot))
+			m_pSelectedUI->Set_FontPivot(Vec2{ pivot[0], pivot[1] });
 	}
+
 	End_Card();
 }
 
@@ -878,7 +905,7 @@ void CUI_Inspector::SetUp_DImageData()
 
 void CUI_Inspector::SetUp_ShaderPass()
 {
-	if(Begin_Card("Set ShaderPass", "Shader_Pass", 100.f))
+	if(Begin_Card("Set ShaderPass", "Shader_Pass", 250.f))
 	{
 		if (nullptr == m_pSelectedUI)
 			return;

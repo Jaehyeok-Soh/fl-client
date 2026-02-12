@@ -14,7 +14,9 @@ private:
 public:
 	HRESULT Initialize();
 	HRESULT Add_Font(const _wstring& strFontTag, const _tchar* pFontFilePath);
-	HRESULT Draw_Text(const _wstring& strFontTag, const _tchar* pText, const Vec2& vPosition, const Vec4 &vColor);
+
+	HRESULT Draw_Text(const _wstring& strFontTag, const _tchar* pText, const Vec2& vPosition, const Vec4 &vColor, const _float fRotate, const _float fScale);
+	HRESULT Draw_Text(const _wstring& strFontTag, const _tchar* pText, const Vec2& vPosition, const Vec4 &vColor, const _float fRotate, const Vec2& vOrigin, const _float fScale);
 
 
 private:

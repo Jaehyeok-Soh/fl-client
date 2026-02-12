@@ -35,6 +35,8 @@ HRESULT CUIText::Initialize(void* pArg)
 	m_eSubClassType	= pDesc->eOwner;
 	m_wstrText		= pDesc->wstrText;
 	m_vFontColor	= pDesc->vFontColor;
+	m_fFontRotate	= pDesc->fRotate;
+	m_fFontScale	= pDesc->fScale;
 
 	if (FAILED(Super::Initialize(pArg)))
 		return E_FAIL;
@@ -123,7 +125,7 @@ HRESULT CUIText::Render()
 	Get_Component<CVIBuffer>()->Bind_Resource();
 	Get_Component<CVIBuffer>()->Render();
 
-	if (FAILED(m_pGameInstance->Draw_Text(L"Title_KR_8", m_wstrText.c_str(), m_vFontPos, m_vFontColor)))
+	if (FAILED(m_pGameInstance->Draw_Text(L"HYJunHei_75W", m_wstrText.c_str(), m_vFontPos, m_vFontColor, m_fFontRotate, m_fFontScale)))
 		return E_FAIL;
 	return S_OK;
 }

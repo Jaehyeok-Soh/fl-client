@@ -209,6 +209,9 @@ HRESULT CBuilder_UI::Register_Class(DTO::EUIClassType eClassType, const DTO::TUI
 			return E_FAIL;
 		TextDesc.wstrText = Engine_Utils::ToWString( iter->second.strText);
 		TextDesc.vFontColor = iter->second.vFontColor;
+		TextDesc.fRotate = iter->second.fRotate;
+		TextDesc.fScale = iter->second.fScale * m_vAspect.x;
+
 		pResult = m_pGameInstance->Add_GameObject(m_iLevelID, wstrProtoTag, m_iLevelID, wstrLayerTag, &TextDesc);
 	}
 	else if (eClassType == DTO::EUIClassType::JUST_IMAGE)
@@ -300,6 +303,7 @@ CGenericUI::GENERIC_UI_DESC CBuilder_UI::Make_DefaultInfo(const DTO::TUI_Generic
 	Desc.fDelay					= data.fDelay;
 	Desc.iFillDir				= data.iFillDir;
 	Desc.fAlpha					= data.fAlphaRatio;
+	Desc.iFlip					= data.iFlip;
 
 	return Desc;
 }

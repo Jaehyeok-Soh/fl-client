@@ -253,10 +253,8 @@ HRESULT CLoader::Loading_For_Logo()
 	// For. Prototype_Component_Bounds
 	m_pGameInstance->Add_Prototype(ENUM_TO_UINT(ELevelType::STATIC), L"Prototype_Component_Bounds", CBounds::Create(m_pDevice, m_pDeviceContext));
 
-
 	// For. Prototype_Component_Collider_SPHERE
 	m_pGameInstance->Add_Prototype(ENUM_TO_UINT(ELevelType::STATIC), L"Prototype_Component_VIBuffer_InstanceMesh", CInstanceMesh::Create(m_pDevice, m_pDeviceContext));
-
 
 	///////////////////////////////////////
 	//////////// Ready Objects ////////////

@@ -53,8 +53,12 @@ HRESULT CToolUI::Initialize(void* pArg)
 
 	{
 		m_tUITextData			= pDesc->tTextData;
-		m_wstrText_TextData = Engine_Utils::ToWString(m_tUITextData.strText);
-		m_vFontColor_TextData = m_tUITextData.vFontColor;
+		m_wstrText_TextData		= Engine_Utils::ToWString(m_tUITextData.strText);
+		m_vFontColor_TextData	= m_tUITextData.vFontColor;
+		m_vPivot_TextData		= m_tUITextData.vPivot;
+		m_fScale_TextData		= m_tUITextData.fScale;
+		m_fRotate_TextData		= m_tUITextData.fRotate;
+		m_strFontName_TextData	= m_tUITextData.strFontTag;
 	}
 	{
 		m_tUIButtonTriggerData			= pDesc->tButtonTriggerData;
@@ -68,8 +72,8 @@ HRESULT CToolUI::Initialize(void* pArg)
 		m_vecPressExitTriggerUI			= m_tUITriggerData.vecPressExitTriggerUI;
 	}
 	{
-		m_tDImageData = pDesc->tDImageData;
-		m_eDImageSubClassType = m_tDImageData.eDISubClassType;
+		m_tDImageData			= pDesc->tDImageData;
+		m_eDImageSubClassType	= m_tDImageData.eDISubClassType;
 	}
 
 	if (FAILED(Super::Initialize(pArg)))
@@ -227,50 +231,10 @@ HRESULT CToolUI::Bind_ShaderResources()
 	if (FAILED(pShader->Get_Variable("g_fProgressRatio")->SetRawValue(&m_fTestProgress, 0, sizeof(_float))))
 		return E_FAIL;
 
-	//if (FAILED(Get_Component<CTexture>()->Bind_ShaderResourceBuffer(pShader)))
-	//	return E_FAIL;
-
-	//if (FAILED(pShader->Get_Variable("g_iFlip")->SetRawValue(&m_iFlip, 0, sizeof(int32_t))))
-	//	return E_FAIL;
-
-	//if (m_iShaderPass == ENUM_TO_UINT(EUIShaderPass::DEFAULT))
-	//{
-	//}
-	//else if (m_iShaderPass == ENUM_TO_UINT(EUIShaderPass::DEFAULT_ALPHA))
-	//{
-	//}
-	//else if (m_iShaderPass == ENUM_TO_UINT(EUIShaderPass::COLOR))
-	//{
-	//	if (FAILED(pShader->Get_Variable("g_vColorTint")->SetRawValue(&m_vColorTint, 0, sizeof(Vec4))))
-	//		return E_FAIL;
-	//}
-	//else if (m_iShaderPass == ENUM_TO_UINT(EUIShaderPass::FADE))
-	//{
-	//	if (FAILED(pShader->Get_Variable("g_fAlphaRatio")->SetRawValue(&m_fTestAlpha, 0, sizeof(_float))))
-	//		return E_FAIL;
-	//}
-	//else if (m_iShaderPass == ENUM_TO_UINT(EUIShaderPass::PROGRESS))
-	//{
-	//	if (FAILED(pShader->Get_Variable("g_isColor")->SetRawValue(&m_isUseColorTint, 0, sizeof(_bool))))
-	//		return E_FAIL;
-
-	//	if (FAILED(pShader->Get_Variable("g_vColorTint")->SetRawValue(&m_vColorTint, 0, sizeof(Vec4))))
-	//		return E_FAIL;
-
-	//	if (FAILED(pShader->Get_Variable("g_fProgressRatio")->SetRawValue(&m_fTestProgress, 0, sizeof(_float))))
-	//		return E_FAIL;
-
-	//	if (FAILED(pShader->Get_Variable("g_iFillDir")->SetRawValue(&m_iFillDir, 0, sizeof(uint32_t))))
-	//		return E_FAIL;
-
-	//	if (FAILED(pShader->Get_Variable("g_fDelay")->SetRawValue(&m_fDelay, 0, sizeof(_float))))
-	//		return E_FAIL;
-	//}
-
 	if(m_eClassType == DTO::EUIClassType::UI_TEXT)
 	{
 		Vec2 fontPos = Vec2{ m_vRenderPos.x, m_vRenderPos.y };
-		if (FAILED(m_pGameInstance->Draw_Text(L"Font_Default", m_wstrText_TextData.c_str(), fontPos, m_vFontColor_TextData)))
+		if (FAILED(m_pGameInstance->Draw_Text(L"SemiBold", m_wstrText_TextData.c_str(), fontPos, m_vFontColor_TextData, m_fRotate_TextData,m_fScale_TextData)))
 			return E_FAIL;
 	}
     return S_OK;
@@ -364,13 +328,14 @@ void CToolUI::Sync_Data()
 	m_tUIData.strTextureTag			= Engine_Utils::ToString(m_wstrTextureTag);
 	m_tUIData.eClassType			= m_eClassType;
 	m_tUIData.iComponentFlag		= m_iComponentFlag;
-	m_tUIData.eSubClassType 			= m_eSubClassType;
+	m_tUIData.eSubClassType 		= m_eSubClassType;
 	m_tUIData.isUseColorTint 		= m_isUseColorTint;
 	m_tUIData.vColorTint 			= m_vColorTint;
 	m_tUIData.iShaderPass			= m_iShaderPass;
 	m_tUIData.fDelay				= m_fDelay;
 	m_tUIData.iFlip					= m_iFlip;
 	m_tUIData.fAlphaRatio			= m_fTestAlpha;
+	m_tUIData.iFillDir				= m_iFillDir;
 
 	if (m_eClassType == DTO::EUIClassType::UI_TEXT)
 	{
@@ -396,6 +361,10 @@ void CToolUI::Sync_TextData()
 	m_tUITextData.strOwnerName	= m_strName;
 	m_tUITextData.strText		= Engine_Utils::ToString(m_wstrText_TextData);
 	m_tUITextData.vFontColor	= m_vFontColor_TextData;
+	m_tUITextData.fRotate		= m_fRotate_TextData;
+	m_tUITextData.vPivot		= m_vPivot_TextData;
+	m_tUITextData.strFontTag	= m_strFontName_TextData;
+	m_tUITextData.fScale		= m_fScale_TextData;
 }
 
 void CToolUI::Sync_TriggerData()
@@ -423,16 +392,15 @@ void CToolUI::Sync_ButtonTriggerData()
 
 void CToolUI::Sync_DImageData()
 {
-	m_tDImageData.strTag = m_strName + "_DImageData";
-	m_tDImageData.strOwnerName = m_strName;
-	m_tDImageData.eDISubClassType = m_eDImageSubClassType;
+	m_tDImageData.strTag			= m_strName + "_DImageData";
+	m_tDImageData.strOwnerName		= m_strName;
+	m_tDImageData.eDISubClassType	= m_eDImageSubClassType;
 }
 
 _bool CToolUI::Add_Tag(vector<_string>& vec, const _string& str)
 {
 	if (str == "")
 		return false;
-
 	if (std::find(vec.begin(), vec.end(), str) != vec.end())
 		return false;
 	vec.push_back(str);

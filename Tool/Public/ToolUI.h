@@ -98,6 +98,10 @@ public:
 	_float Get_Delay()				const	{ return m_fDelay; }
 	const _wstring& Get_Text()		const	{ return m_wstrText_TextData; }
 	Vec4& Get_FontColor()					{ return m_vFontColor_TextData; }
+	_float Get_FontScale() const { return m_fScale_TextData; }
+	const _string& Get_FontName() const { return m_strFontName_TextData; }
+	_float Get_FontRotate() const { return m_fRotate_TextData; }
+	const Vec2& Get_FontPivot() const { return m_vPivot_TextData; }
 
 	const vector<_string>& Get_vecHoverEnterTriggerCanvas() const { return m_vecHoverEnterTriggerCanvas; }
 	const vector<_string>& Get_vecHoverEnterTriggerUI() const { return m_vecHoverEnterTriggerUI; }
@@ -116,6 +120,10 @@ public:
 	void Set_Delay(_float f)				{ m_fDelay = f; }
 	void Set_Text(const _wstring& wstr)		{ m_wstrText_TextData = wstr; }
 	void Set_Flip(int32_t i)				{ m_iFlip = i; }
+	void Set_FontScale(const _float fScale) { m_fScale_TextData = fScale; }
+	void Set_FontName(const _string& strName) { m_strFontName_TextData = strName; }
+	void Set_FontRotate(const _float fRotate) { m_fRotate_TextData = fRotate; }
+	void Set_FontPivot(const Vec2& vPivot) { m_vPivot_TextData = vPivot; }
 
 	_bool Add_Tag(vector<_string>& vec, const _string& str);
 	_bool Remove_Tag(vector<_string>& vec, const _string& str);
@@ -191,6 +199,10 @@ protected:
 	DTO::TUI_TextData m_tUITextData		= {};
 	std::wstring m_wstrText_TextData	= {};
 	Vec4 m_vFontColor_TextData			= {};
+	_float m_fScale_TextData			= {};
+	_string m_strFontName_TextData		= {};
+	_float m_fRotate_TextData			= {};
+	Vec2 m_vPivot_TextData				= {};
 
 	// Client Bind Values Trigger Data
 	DTO::TUI_TriggerData m_tUITriggerData = {};
@@ -212,6 +224,7 @@ protected:
 	// Client Bind Values Dynamic Image Data
 	DTO::TUI_DImageData m_tDImageData = {};
 	DTO::EUIDImageSubClassType m_eDImageSubClassType = {};
+
 
 	// Local Values
 	Vec3 m_vRenderPos		= {};
