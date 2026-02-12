@@ -341,6 +341,7 @@ HRESULT CBody::Bind_ShaderResources()
 HRESULT CBody::Ready_ComputeShader()
 {
 	_uint iBoneNums = Get_Component<CModel>()->Get_BoneCount();
+	_uint iGetBoneNums = Get_Component<CModel>()->Get_StageBoneCount();
 	// ========   Compute Shader : BoneMesh  ========
 	{
 		CComputeShader::ComShaderCopyDesc ShaderDesc = {};
@@ -434,12 +435,12 @@ HRESULT CBody::Ready_ComputeShader()
 		// 입력 버퍼
 		ShaderDesc.Input_StructBuffer.sBufferName	= "IMMU_BONEINDIECS";
 		ShaderDesc.Input_StructBuffer.iElementSize	= sizeof(CS_MU_BONEIDX);
-		ShaderDesc.Input_StructBuffer.iNumElements	= 1; // 내가 저장하고 싶은 본 개수
+		ShaderDesc.Input_StructBuffer.iNumElements	= iGetBoneNums; // 내가 저장하고 싶은 본 개수
 
 		// 출력 버퍼
 		ShaderDesc.OutPut_StructBuffer.sBufferName = "SELECTED_COMBINETRANSFORMS";
 		ShaderDesc.OutPut_StructBuffer.iElementSize = sizeof(CS_OUT_BONE);
-		ShaderDesc.OutPut_StructBuffer.iNumElements = 1;
+		ShaderDesc.OutPut_StructBuffer.iNumElements = iGetBoneNums;
 
 		if (FAILED(Add_Script_Component(L"ComputeShader_GetBone", L"Prototype_Component_Shader_GetBone", &ShaderDesc)))
 			return E_FAIL;

@@ -20,7 +20,10 @@ public:
 	{
 		_uint			iStateCount = { 0 };
 		CModel*			pOwnerModel		= { nullptr };
-		CComputeShader* pOwnerAnimECS		= { nullptr };
+
+		// state가 달린 객체들은 animation change를 state 내부에서 하기 때문에 
+		// 꼭 값 넣어줘야 함
+		CComputeShader* pOwnerAnimECS		= { nullptr }; 
 	}ACTIONSTATE_DESC;
 
 protected:

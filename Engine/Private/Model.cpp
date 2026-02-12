@@ -213,7 +213,7 @@ HRESULT CModel::Ready_StaticModelMinMax()
 	return S_OK;
 }
 
-HRESULT CModel::Change_Animation(_uint iAnimationIndex, _bool bBlend, _bool isLoop, _bool bForce, CComputeShader* pAnimEvalCS)
+HRESULT CModel::Change_Animation(CComputeShader* pAnimEComShader, _uint iAnimationIndex, _bool bBlend, _bool isLoop, _bool bForce)
 {
 	if (m_iCurrentAnimIndex == iAnimationIndex && bForce == false)
 		return S_OK;
@@ -224,7 +224,7 @@ HRESULT CModel::Change_Animation(_uint iAnimationIndex, _bool bBlend, _bool isLo
 		Change_AnimationPlayState(AnimationPlayState::BLEND);
 	}
 	else
-		Change_AnimationPlayState(AnimationPlayState::PLAY, pAnimEvalCS, iAnimationIndex);
+		Change_AnimationPlayState(AnimationPlayState::PLAY, pAnimEComShader, iAnimationIndex);
 
 	m_iCurrentAnimIndex = iAnimationIndex;
 	m_vecAnimations[m_iCurrentAnimIndex]->Clear();

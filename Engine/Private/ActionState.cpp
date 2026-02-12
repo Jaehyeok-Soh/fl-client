@@ -185,7 +185,7 @@ HRESULT CActionState::Request_ChangeAnimation(_uint iAnimationIndex, _bool bBlen
 	if (m_pOwnerModel == nullptr)
 		return E_FAIL;
 
-	return m_pOwnerModel->Change_Animation(iAnimationIndex, bBlend, bLoop, bForce, m_pOwnerAnimECS);
+	return m_pOwnerModel->Change_Animation(m_pOwnerAnimECS, iAnimationIndex, bBlend, bLoop, bForce);
 }
 
 _float CActionState::Get_AnimElpasedTimeSeconds()

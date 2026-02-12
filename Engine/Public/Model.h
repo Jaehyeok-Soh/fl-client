@@ -88,7 +88,7 @@ public:
 
 	// animation funcs
 public:
-	HRESULT								Change_Animation(_uint iAnimationIndex, _bool bBlend, _bool isLoop = true, _bool bForce = false, CComputeShader* pAnimEComShader = nullptr);
+	HRESULT								Change_Animation(CComputeShader* pAnimEComShader,_uint iAnimationIndex, _bool bBlend, _bool isLoop = true, _bool bForce = false);
 	void								Add_Animation(class CModelAnimation* pAnimation) { m_vecAnimations.push_back(pAnimation); }
 	void								Update_Animation(CComputeShader* pBoneComBineCS, CComputeShader* pAnimEComShader, CComputeShader* pAnimBlendCS, _float fTimeDelta, CTransform* pOwnerTransform = nullptr, CPhysicsCCT* pOwnerPhyCCT = nullptr, CComputeShader* pGetBoneCS = nullptr);
 
@@ -112,10 +112,13 @@ public:
 	_int								Get_PassByMesh(_uint iMeshIndex);
 	
 	// counts
-	_uint								Get_AnimationCount() const { return static_cast<_uint>(m_vecAnimations.size()); }
-	_uint								Get_MaterialCount() const { return static_cast<_uint>(m_vecMaterials.size()); }
-	_uint								Get_BoneCount() const { return static_cast<_uint>(m_vecBones.size()); }
-	_uint								Get_MeshCount() const { return static_cast<_uint>(m_vecMeshes.size()); }
+	_uint								Get_AnimationCount()	const { return static_cast<_uint>(m_vecAnimations.size()); }
+	_uint								Get_MaterialCount()		const { return static_cast<_uint>(m_vecMaterials.size()); }
+	_uint								Get_BoneCount()			const { return static_cast<_uint>(m_vecBones.size()); }
+	_uint								Get_MeshCount()			const { return static_cast<_uint>(m_vecMeshes.size()); }
+	_uint								Get_StageBoneCount()	const { return m_iStageBoneCounts; }
+
+	//m_iStageBoneCounts
 
 	_int								Get_BoneIndex(const _char* szName);
 	_int								Get_CurrentAnimationIndex() const;
