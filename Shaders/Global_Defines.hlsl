@@ -49,7 +49,7 @@ float g_fAlphaRatio;
 
 float   g_fProgressRatio;
 int     g_iFillDir;
-bool    g_isColor;
+int     g_iColor;
 float4  g_vColorTint;
 float   g_fDelay;
 int     g_iFlip;

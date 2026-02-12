@@ -36,8 +36,6 @@ HRESULT CUIJust_Image::Initialize(void* pArg)
 	if (FAILED(Ready_Components(pDesc)))
 		return E_FAIL;
 
-	if (FAILED(Get_Component<CTexture>()->Add_DefaultTexture(m_wstrTextureTag, 0)))
-		return E_FAIL;
 	return S_OK;
 }
 
@@ -90,7 +88,6 @@ HRESULT CUIJust_Image::Render()
 
 HRESULT CUIJust_Image::Ready_Components(JUST_IMAGE_DESC* pDesc)
 {
-	Super::Ready_Components(pDesc);
 	return S_OK;
 }
 

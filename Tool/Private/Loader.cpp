@@ -281,6 +281,10 @@ HRESULT CLoader::Loading_For_UI()
 		return E_FAIL;
 	if (FAILED(Loading_Textures(L"../../Resources/Textures/UI/WeaponIcon/")))
 		return E_FAIL;
+	if (FAILED(Loading_Textures(L"../../Resources/Textures/UI/SM_MAP/")))
+		return E_FAIL;
+	if (FAILED(Loading_Textures(L"../../Resources/Textures/UI/Map/")))
+		return E_FAIL;
 
 	//=================
 	// UI Objects

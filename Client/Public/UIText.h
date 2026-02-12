@@ -11,7 +11,7 @@ public:
 	typedef struct tagUITextDesc : public GENERIC_UI_DESC
 	{
 		CStatComponent* pTargetStat;
-		DTO::EUIOwnerType eOwner;
+		DTO::EUISubClassType eOwner;
 		_wstring wstrText;
 		Vec4 vFontColor;
 
@@ -42,7 +42,7 @@ private:
 
 private:
 	CStatComponent* m_pTargetStat = { nullptr };
-	DTO::EUIOwnerType m_eOwnerType = {};
+	DTO::EUISubClassType m_eSubClassType = {};
 
 	_wstring m_wstrText = {};
 	Vec2 m_vFontPos = {};

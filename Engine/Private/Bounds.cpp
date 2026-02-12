@@ -105,6 +105,19 @@ HRESULT CBounds::Add_SubBounds(const Vec3* pMinMax, span<Matrix> spanInstanceMat
 	return S_OK;
 }
 
+HRESULT CBounds::Append_SubBounds(const Matrix& InstanceMatrix, _float fRatio)
+{
+	/* 맵툴에서는 굳이 Min Max 계산이 필요할까? */
+
+	MESH_BOUNDS tAppendBoundS{};
+
+	//tAppendBoundS.pAABB = Create_AABB();
+
+	//m_vecSubBounds.push_back(MESH_BOUNDS())
+
+	return S_OK;
+}
+
 void CBounds::Update_BoundingDesc(const Matrix& matWorld)
 {
 	if (m_tBounds.pAABB != nullptr && m_tBounds.pSphere != nullptr)

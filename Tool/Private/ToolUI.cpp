@@ -44,16 +44,20 @@ HRESULT CToolUI::Initialize(void* pArg)
 	m_iShaderPass			= pDesc->iShaderPass;
 	m_iFillDir				= pDesc->iFillDir;
 	m_fDelay				= pDesc->fDelay;
-	m_eOwnerType			= pDesc->eOwnerType;
+	m_eSubClassType			= pDesc->eSubClassType;
 	m_iFlip					= pDesc->iFlip;
+	m_fTestAlpha			= pDesc->fAlpha;
+
+	// Local Values
+	m_iIndex = pDesc->iIndex;
 
 	{
 		m_tUITextData			= pDesc->tTextData;
 		m_wstrText_TextData = Engine_Utils::ToWString(m_tUITextData.strText);
 		m_vFontColor_TextData = m_tUITextData.vFontColor;
 	}
-
 	{
+		m_tUIButtonTriggerData			= pDesc->tButtonTriggerData;
 		m_vecHoverEnterTriggerCanvas	= m_tUITriggerData.vecHoverEnterTriggerCanvas;
 		m_vecHoverEnterTriggerUI		= m_tUITriggerData.vecHoverEnterTriggerUI;
 		m_vecHoverExitTriggerCanvas		= m_tUITriggerData.vecHoverExitTriggerCanvas;
@@ -62,6 +66,10 @@ HRESULT CToolUI::Initialize(void* pArg)
 		m_vecPressEnterTriggerUI		= m_tUITriggerData.vecPressEnterTriggerUI;
 		m_vecPressExitTriggerCanvas		= m_tUITriggerData.vecPressExitTriggerCanvas;
 		m_vecPressExitTriggerUI			= m_tUITriggerData.vecPressExitTriggerUI;
+	}
+	{
+		m_tDImageData = pDesc->tDImageData;
+		m_eDImageSubClassType = m_tDImageData.eDISubClassType;
 	}
 
 	if (FAILED(Super::Initialize(pArg)))
@@ -202,46 +210,62 @@ HRESULT CToolUI::Bind_ShaderResources()
         return E_FAIL;
 
 	pShader->Set_Pass(m_iShaderPass);
-
-	if (FAILED(Get_Component<CTexture>()->Bind_ShaderResourceBuffer(pShader)))
+ 	if (FAILED(Get_Component<CTexture>()->Bind_ShaderResourceBuffer(pShader)))
 		return E_FAIL;
-
 	if (FAILED(pShader->Get_Variable("g_iFlip")->SetRawValue(&m_iFlip, 0, sizeof(int32_t))))
 		return E_FAIL;
 
-	if (m_iShaderPass == ENUM_TO_UINT(EUIShaderPass::DEFAULT))
-	{
-	}
-	else if (m_iShaderPass == ENUM_TO_UINT(EUIShaderPass::DEFAULT_ALPHA))
-	{
-	}
-	else if (m_iShaderPass == ENUM_TO_UINT(EUIShaderPass::COLOR))
-	{
-		if (FAILED(pShader->Get_Variable("g_vColorTint")->SetRawValue(&m_vColorTint, 0, sizeof(Vec4))))
-			return E_FAIL;
-	}
-	else if (m_iShaderPass == ENUM_TO_UINT(EUIShaderPass::FADE))
-	{
-		if (FAILED(pShader->Get_Variable("g_fAlphaRatio")->SetRawValue(&m_fTestAlpha, 0, sizeof(_float))))
-			return E_FAIL;
-	}
-	else if (m_iShaderPass == ENUM_TO_UINT(EUIShaderPass::PROGRESS))
-	{
-		if (FAILED(pShader->Get_Variable("g_isColor")->SetRawValue(&m_isUseColorTint, 0, sizeof(_bool))))
-			return E_FAIL;
+	const int32_t isColor = m_isUseColorTint ? 1 : 0;
+	if (FAILED(pShader->Get_Variable("g_iColor")->SetRawValue(&isColor, 0, sizeof(int32_t))))
+		return E_FAIL;
+	if (FAILED(pShader->Get_Variable("g_vColorTint")->SetRawValue(&m_vColorTint, 0, sizeof(Vec4))))
+		return E_FAIL;
+	if (FAILED(pShader->Get_Variable("g_fAlphaRatio")->SetRawValue(&m_fTestAlpha, 0, sizeof(_float))))
+		return E_FAIL;
+	if (FAILED(pShader->Get_Variable("g_iFillDir")->SetRawValue(&m_iFillDir, 0, sizeof(int32_t))))
+		return E_FAIL;
+	if (FAILED(pShader->Get_Variable("g_fProgressRatio")->SetRawValue(&m_fTestProgress, 0, sizeof(_float))))
+		return E_FAIL;
 
-		if (FAILED(pShader->Get_Variable("g_vColorTint")->SetRawValue(&m_vColorTint, 0, sizeof(Vec4))))
-			return E_FAIL;
+	//if (FAILED(Get_Component<CTexture>()->Bind_ShaderResourceBuffer(pShader)))
+	//	return E_FAIL;
 
-		if (FAILED(pShader->Get_Variable("g_fProgressRatio")->SetRawValue(&m_fTestProgress, 0, sizeof(_float))))
-			return E_FAIL;
+	//if (FAILED(pShader->Get_Variable("g_iFlip")->SetRawValue(&m_iFlip, 0, sizeof(int32_t))))
+	//	return E_FAIL;
 
-		if (FAILED(pShader->Get_Variable("g_iFillDir")->SetRawValue(&m_iFillDir, 0, sizeof(uint32_t))))
-			return E_FAIL;
+	//if (m_iShaderPass == ENUM_TO_UINT(EUIShaderPass::DEFAULT))
+	//{
+	//}
+	//else if (m_iShaderPass == ENUM_TO_UINT(EUIShaderPass::DEFAULT_ALPHA))
+	//{
+	//}
+	//else if (m_iShaderPass == ENUM_TO_UINT(EUIShaderPass::COLOR))
+	//{
+	//	if (FAILED(pShader->Get_Variable("g_vColorTint")->SetRawValue(&m_vColorTint, 0, sizeof(Vec4))))
+	//		return E_FAIL;
+	//}
+	//else if (m_iShaderPass == ENUM_TO_UINT(EUIShaderPass::FADE))
+	//{
+	//	if (FAILED(pShader->Get_Variable("g_fAlphaRatio")->SetRawValue(&m_fTestAlpha, 0, sizeof(_float))))
+	//		return E_FAIL;
+	//}
+	//else if (m_iShaderPass == ENUM_TO_UINT(EUIShaderPass::PROGRESS))
+	//{
+	//	if (FAILED(pShader->Get_Variable("g_isColor")->SetRawValue(&m_isUseColorTint, 0, sizeof(_bool))))
+	//		return E_FAIL;
 
-		if (FAILED(pShader->Get_Variable("g_fDelay")->SetRawValue(&m_fDelay, 0, sizeof(_float))))
-			return E_FAIL;
-	}
+	//	if (FAILED(pShader->Get_Variable("g_vColorTint")->SetRawValue(&m_vColorTint, 0, sizeof(Vec4))))
+	//		return E_FAIL;
+
+	//	if (FAILED(pShader->Get_Variable("g_fProgressRatio")->SetRawValue(&m_fTestProgress, 0, sizeof(_float))))
+	//		return E_FAIL;
+
+	//	if (FAILED(pShader->Get_Variable("g_iFillDir")->SetRawValue(&m_iFillDir, 0, sizeof(uint32_t))))
+	//		return E_FAIL;
+
+	//	if (FAILED(pShader->Get_Variable("g_fDelay")->SetRawValue(&m_fDelay, 0, sizeof(_float))))
+	//		return E_FAIL;
+	//}
 
 	if(m_eClassType == DTO::EUIClassType::UI_TEXT)
 	{
@@ -297,7 +321,6 @@ void CToolUI::Acting_About_State()
 
 	if (m_iInteractState == EUIEvent_Flag::NONE)
 	{
-
 	}
 	else
 	{
@@ -306,6 +329,7 @@ void CToolUI::Acting_About_State()
 		}
 		else if (Engine_Utils::Has_Flag(m_iInteractState, EUIEvent_Flag::PRESS_EXIT))
 		{
+			CImGui_UIManager::GetInstance()->Safe_Change_UI(m_iIndex);
 		}
 		else if (Engine_Utils::Has_Flag(m_iInteractState, EUIEvent_Flag::HOVER_ENTER))
 		{
@@ -340,12 +364,13 @@ void CToolUI::Sync_Data()
 	m_tUIData.strTextureTag			= Engine_Utils::ToString(m_wstrTextureTag);
 	m_tUIData.eClassType			= m_eClassType;
 	m_tUIData.iComponentFlag		= m_iComponentFlag;
-	m_tUIData.eOwnerType 			= m_eOwnerType;
+	m_tUIData.eSubClassType 			= m_eSubClassType;
 	m_tUIData.isUseColorTint 		= m_isUseColorTint;
 	m_tUIData.vColorTint 			= m_vColorTint;
 	m_tUIData.iShaderPass			= m_iShaderPass;
 	m_tUIData.fDelay				= m_fDelay;
 	m_tUIData.iFlip					= m_iFlip;
+	m_tUIData.fAlphaRatio			= m_fTestAlpha;
 
 	if (m_eClassType == DTO::EUIClassType::UI_TEXT)
 	{
@@ -353,30 +378,54 @@ void CToolUI::Sync_Data()
 	}
 	else if (m_eClassType == DTO::EUIClassType::TRIGGER)
 	{
-		Stnc_TriggerData();
+		Sync_TriggerData();
+	}
+	else if (m_eClassType == DTO::EUIClassType::BUTTON_TRIGGER)
+	{
+		Sync_ButtonTriggerData();
+	}
+	else if (m_eClassType == DTO::EUIClassType::DYNAMIC_IMAGE)
+	{
+		Sync_DImageData();
 	}
 }
 
 void CToolUI::Sync_TextData()
 {
-	m_tUITextData.strTag = m_strName + "_TextData";
-	m_tUITextData.strOwnerName = m_strName;
-	m_tUITextData.strText = Engine_Utils::ToString(m_wstrText_TextData);
-	m_tUITextData.vFontColor = m_vFontColor_TextData;
+	m_tUITextData.strTag		= m_strName + "_TextData";
+	m_tUITextData.strOwnerName	= m_strName;
+	m_tUITextData.strText		= Engine_Utils::ToString(m_wstrText_TextData);
+	m_tUITextData.vFontColor	= m_vFontColor_TextData;
 }
 
-void CToolUI::Stnc_TriggerData()
+void CToolUI::Sync_TriggerData()
 {
-	m_tUITriggerData.strTag = m_strName + "_TriggerData";
-	m_tUITriggerData.strOwnerName = m_strName;
-	m_tUITriggerData.vecHoverEnterTriggerCanvas = m_vecHoverEnterTriggerCanvas;
-	m_tUITriggerData.vecHoverEnterTriggerUI = m_vecHoverEnterTriggerUI;
-	m_tUITriggerData.vecHoverExitTriggerCanvas = m_vecHoverExitTriggerCanvas;
-	m_tUITriggerData.vecHoverExitTriggerUI = m_vecHoverExitTriggerUI;
-	m_tUITriggerData.vecPressEnterTriggerCanvas = m_vecPressEnterTriggerCanvas;
-	m_tUITriggerData.vecPressEnterTriggerUI = m_vecPressEnterTriggerUI;
-	m_tUITriggerData.vecPressExitTriggerCanvas = m_vecPressExitTriggerCanvas;
-	m_tUITriggerData.vecPressExitTriggerUI = m_vecPressExitTriggerUI;
+	m_tUITriggerData.strTag							= m_strName + "_TriggerData";
+	m_tUITriggerData.strOwnerName					= m_strName;
+	m_tUITriggerData.vecHoverEnterTriggerCanvas		= m_vecHoverEnterTriggerCanvas;
+	m_tUITriggerData.vecHoverEnterTriggerUI			= m_vecHoverEnterTriggerUI;
+	m_tUITriggerData.vecHoverExitTriggerCanvas		= m_vecHoverExitTriggerCanvas;
+	m_tUITriggerData.vecHoverExitTriggerUI			= m_vecHoverExitTriggerUI;
+	m_tUITriggerData.vecPressEnterTriggerCanvas		= m_vecPressEnterTriggerCanvas;
+	m_tUITriggerData.vecPressEnterTriggerUI			= m_vecPressEnterTriggerUI;
+	m_tUITriggerData.vecPressExitTriggerCanvas		= m_vecPressExitTriggerCanvas;
+	m_tUITriggerData.vecPressExitTriggerUI			= m_vecPressExitTriggerUI;
+}
+
+void CToolUI::Sync_ButtonTriggerData()
+{
+	m_tUIButtonTriggerData.strTag			= m_strName + "_Button_TriggerData";
+	m_tUIButtonTriggerData.strOwnerName		= m_strName;
+	m_tUIButtonTriggerData.strKeyMapping	= m_strKeyMapping;
+	m_tUIButtonTriggerData.vecTriggerCanvas = m_vecButtonTriggerCanvas;
+	m_tUIButtonTriggerData.vecTriggerUI		= m_vecButtonTriggerUI;
+}
+
+void CToolUI::Sync_DImageData()
+{
+	m_tDImageData.strTag = m_strName + "_DImageData";
+	m_tDImageData.strOwnerName = m_strName;
+	m_tDImageData.eDISubClassType = m_eDImageSubClassType;
 }
 
 _bool CToolUI::Add_Tag(vector<_string>& vec, const _string& str)

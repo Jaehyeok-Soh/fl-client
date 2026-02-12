@@ -83,7 +83,6 @@ HRESULT	CMapObject::Ready_Component(MAPOBJECT_DESC* pDesc)
         : Add_Component<CShader>(ENUM_TO_UINT(ELevelType::STATIC), L"Prototype_Component_Shader_VtxMesh", nullptr);
 
     const wstring wstrModelTag = L"Prototype_Component_Model_";
-    Vec3 vLocalMeshMinMax[2]{Vec3::Zero};
 
     if (m_eMapObjectDrawType != EMapObject_DrawType::Collider)
     {
@@ -112,16 +111,15 @@ HRESULT	CMapObject::Ready_Component(MAPOBJECT_DESC* pDesc)
             }
         }
         /* Bounds 생성 */
-        if (Compute_ModelLocalMinMax(Get_Component<CModel>(), vLocalMeshMinMax))
-        {
-            CBounds::BOUND_COMP_DESC desc{};
-            desc.fRatio = 1.f;
-            desc.pMinMax = vLocalMeshMinMax;
-            if (FAILED(Add_Component<CBounds>(0, L"Prototype_Component_Bounds", &desc)))
-                return E_FAIL;
 
-            Get_Component<CBounds>()->Update_BoundingDesc(Get_Component<CTransform>()->Get_WorldMatrix());
-        }
+        Get_Component<CModel>()->Get_StaticModelMinMax();
+
+        CBounds::BOUND_COMP_DESC desc{};
+        desc.fRatio = 1.f;
+        desc.pMinMax = Get_Component<CModel>()->Get_StaticModelMinMax();
+        if (FAILED(Add_Component<CBounds>(0, L"Prototype_Component_Bounds", &desc)))
+            return E_FAIL;
+        Get_Component<CBounds>()->Update_BoundingDesc(Get_Component<CTransform>()->Get_WorldMatrix());
     }
 
 
@@ -132,25 +130,18 @@ HRESULT	CMapObject::Ready_Component(MAPOBJECT_DESC* pDesc)
         tInstanceMeshDesc.IB_Usage = D3D11_USAGE_DYNAMIC;
         tInstanceMeshDesc.VB_Usage = D3D11_USAGE_DYNAMIC;
         tInstanceMeshDesc.vecInstanceMatrixPointer = &m_vecMatrix;
+        tInstanceMeshDesc.pModelMinMax = Get_Component<CModel>()->Get_StaticModelMinMax();
         Add_Component<CInstanceMesh>(ENUM_TO_UINT(ELevelType::STATIC), L"Prototype_Component_VIBuffer_InstanceMesh", &tInstanceMeshDesc);
 
-        /* Bounds 생성 */
-        if (Compute_ModelLocalMinMax(Get_Component<CModel>(), vLocalMeshMinMax))
-        {
-            Vec3 vFinalMinMax[2]{};
-            Compute_InstanceGroupMinMax(vLocalMeshMinMax, vFinalMinMax);
+        CBounds::BOUND_COMP_DESC desc{};
+        desc.fRatio = 1.f;
+        desc.pMinMax = Get_Component<CInstanceMesh>()->Get_InstanceWorldMinMax();
+        if (FAILED(Add_Component<CBounds>(0, L"Prototype_Component_Bounds", &desc)))
+            return E_FAIL;
 
-            CBounds::BOUND_COMP_DESC desc{};
-            desc.fRatio = 1.f;
-            desc.pMinMax = vFinalMinMax;
-            if (FAILED(Add_Component<CBounds>(0, L"Prototype_Component_Bounds", &desc)))
-                return E_FAIL;
-
-            // WorldMatrx는 Identity이므로
-            Get_Component<CBounds>()->Update_BoundingDesc(Matrix::Identity);
-            if (FAILED(Get_Component<CBounds>()->Add_SubBounds(vLocalMeshMinMax, span<Matrix>(m_vecMatrix.data(), m_vecMatrix.size()), 1.f)))
-                return E_FAIL;
-        }
+        Get_Component<CBounds>()->Update_BoundingDesc(Matrix::Identity);
+        if (FAILED(Get_Component<CBounds>()->Add_SubBounds(Get_Component<CModel>()->Get_StaticModelMinMax(), span<Matrix>(m_vecMatrix.data(), m_vecMatrix.size()), 1.f)))
+            return E_FAIL;
     }
 
     if (FAILED(Ready_PhysicsComponent(pDesc)))
@@ -189,93 +180,14 @@ void	CMapObject::Update_Late(const _float fTimeelta)
 void	CMapObject::Ready_Before_Render(const _float fTimeDelta)
 {
 	Super::Ready_Before_Render(fTimeDelta);
-//#ifdef _DEBUG
-//    if (m_eMapObjectDrawType == EMapObject_DrawType::Instance)
-//        m_pGameInstance->Push_DebugComponent(Get_Component<CBounds>());
-//#endif
+#ifdef _DEBUG
+    if (m_eMapObjectDrawType == EMapObject_DrawType::Instance)
+        m_pGameInstance->Push_DebugComponent(Get_Component<CBounds>());
+#endif
 }
 
 HRESULT CMapObject::Ready_OverrideMtl(const DTO::USING_MODEL_INFO& tUsingModelInfo)
 {
-    //if (tUsingModelInfo.vecOverrideMaterial.empty())
-    //    m_iUseOverrideMaterials = false;
-    //else
-    //{
-    //    for (auto& OverrideMtl : tUsingModelInfo.vecOverrideMaterial)
-    //    {
-    //        if (!OverrideMtl.isNull)
-    //            m_iUseOverrideMaterials = true;
-    //    }
-    //}
-
-    //if (!m_iUseOverrideMaterials) return S_OK;
-
-    //size_t iSizeMtl = Get_Component<CModel>()->Get_MaterialCount();
-    //size_t iSizeeOverrideMtl = tUsingModelInfo.vecOverrideMaterial.size();
-
-    //m_vecOverrideMaterials.resize(max(iSizeMtl, iSizeeOverrideMtl));
-
-
-    //CTextureBase::RESOURCE_BASE_DESC tResourceTextureOriginDecs{};
-
-    //CMaterial::MATERIAL_DESC tDesc{};
-
-    ///* 여기다가 경로를 집어넣어서 진행해주면된다 */
-    //vector<std::string> vecMateiralTexturePath{};
-    //vecMateiralTexturePath.resize(ENUM_TO_UINT(EMaterialTextureType::MAX_COUNT));
-
-    //_uint iIndex{};
-    //for (auto& OverrideMtl : tUsingModelInfo.vecOverrideMaterial)
-    //{
-    //    if (OverrideMtl.isNull)
-    //    {
-    //        iIndex++;
-    //        continue;
-    //    }
-    //    /* Mtl Json 파일이 있는지 확인 */
-    //    if (!std::filesystem::exists(OverrideMtl.wstrMtl_JsonFile_Path))
-    //    {
-    //        //MessageBox(nullptr  , OverrideMtl.wstrMtl_JsonFile_Path.c_str() , MB_OK , 0);
-    //        continue;
-    //    }
-
-    //    bool isFailed{ false };
-    //    for (auto& pairTexturePath : OverrideMtl.vecUsingTextureInfo)
-    //    {
-    //        tResourceTextureOriginDecs.wstrPath = pairTexturePath.second;
-    //        tResourceTextureOriginDecs.wstrName = path(pairTexturePath.second).filename().stem().wstring();
-    //        CTextureBase* pBase = m_pGameInstance->GetOrAddTexture(tResourceTextureOriginDecs.wstrName, &tResourceTextureOriginDecs);
-    //        if (!pBase)
-    //        {
-    //            /* Mtl Json 파일은 있어서 텍스처경로를 읽었지만 텍스처에 그 경로가 없을경우  */
-    //            MessageBox(nullptr, wstring(L" Ovrride Mtl Make Texture Failed(Check File): " + tResourceTextureOriginDecs.wstrPath).c_str(), MB_OK, 0);
-    //            isFailed = true;
-    //            break;
-    //        }
-    //        else
-    //            Safe_Release(pBase);
-
-    //        vecMateiralTexturePath[Get_IndexByMaterialSlotName(pairTexturePath.first)]
-    //            = Engine_Utils::ToString(tResourceTextureOriginDecs.wstrName);
-    //    }
-    //    if (!isFailed)
-    //    {
-    //        CMaterial* pMtl = m_pGameInstance->Get_Resource<CMaterial>(OverrideMtl.wstrMtl_JsonFile_Name);
-
-    //        if (pMtl == nullptr)
-    //        {
-    //            tDesc.wstrName = OverrideMtl.wstrMtl_JsonFile_Name;
-    //            tDesc.wstrPath = OverrideMtl.wstrMtl_JsonFile_Path;
-    //            tDesc.spanTags = vecMateiralTexturePath;
-    //            m_pGameInstance->Add_Resource<CMaterial>(tDesc.wstrName, CMaterial::Create(m_pDevice, m_pDeviceContext, &tDesc));
-    //            pMtl = m_pGameInstance->Get_Resource<CMaterial>(OverrideMtl.wstrMtl_JsonFile_Name);
-    //        }
-    //        m_vecOverrideMaterials[iIndex] = pMtl;
-    //    }
-
-    //    std::fill(vecMateiralTexturePath.begin(), vecMateiralTexturePath.end(), "");
-    //    ++iIndex;
-    //}
 
     return S_OK;
 }
@@ -450,6 +362,7 @@ _bool CMapObject::Compute_ModelLocalMinMax(CModel* pModel, OUT Vec3 outMinMax[2]
         outMinMax[0] = pMinMax[0];
         outMinMax[1] = pMinMax[1];
     }
+
     for (_uint i = 1; i < iMeshCount; ++i)
     {
         CMesh* pMesh = pModel->Get_Mesh(i);
@@ -459,6 +372,7 @@ _bool CMapObject::Compute_ModelLocalMinMax(CModel* pModel, OUT Vec3 outMinMax[2]
         const Vec3* pMinMax = pMesh->Get_MinMax();
         Engine_Utils::Merge_MinMax(pMinMax, outMinMax[0], outMinMax[1]);
     }
+
 
     return true;
 }

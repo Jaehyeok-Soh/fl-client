@@ -8,6 +8,8 @@ NS_BEGIN(Engine)
 
 class CTransform;
 class CPhysicsCCT;
+class CComputeShader;
+class StructuredBuffer;
 
 class CModelAnimation final : public CResourceBase
 {
@@ -22,7 +24,15 @@ public:
 
 		_bool bRootAni		= {false};
 		_bool bMixAni		= {false};
+		_int iRootBondIndex = { -1 };
 	}MODELANIM_DESC;
+
+private:
+	enum class CS_SB_IDX : _uint
+	{
+		IMMU_KEYFRAME
+		, IMMU_CHANNELDATA
+	};
 private:
 	CModelAnimation(ID3D11Device* pDevice, ID3D11DeviceContext* pDeviceContext);
 	explicit CModelAnimation(const CModelAnimation& rhs);
@@ -42,14 +52,38 @@ public:
 	_bool Is_TrackPositionBetween(_float fStartRatio, _float fEndRatio);
 	_bool Is_TrackPositionAt(_float fRatio) const { return m_fCurrentTrackPosition >= m_fDuration * fRatio; }
 	_bool Is_TrackPositionAtHalf() const { return Is_TrackPositionAt(0.5f); }
+
+	_bool	Update_TransformMatrices(CComputeShader* pAnimECS, _float fTimeDelta, _bool isLoop, CTransform* pOwnerTransform, CPhysicsCCT* pOwnerPhyCCT, _uint iTotalBoneNum);
+	void	Update_BlendAnimation(CComputeShader* pAnimECS, _float fTimeDelta, CTransform* pOwnerTransform, CPhysicsCCT* pOwnerPhyCCT, _uint iTotalBoneNum);
+	void	Bind_AnimationEData(CComputeShader* pAnimEShader);
+	HRESULT Ready_BindBuffers(CComputeShader* pAnimESahder);
+
 private:
 	_uint m_iChannelCount = { 0 };
 	vector<class CChannel*> m_vecChannels;
 	vector<_uint> m_vecCurrentKeyFrameIndices;
 
-	_float m_fCurrentTrackPosition = { 0.f }; // 현재 애니메이션 위치
-	_float m_fTickPerSecond = { 0.f }; // 애니메이션 재생 속도
-	_float m_fDuration = { 0.f }; // 현재 애니메이션의 전체 재생 길이
+	_float m_fCurrentTrackPosition = { 0.f };	// 현재 애니메이션 위치
+	_float m_fTickPerSecond = { 0.f };			// 애니메이션 재생 속도
+	_float m_fDuration = { 0.f };				// 현재 애니메이션의 전체 재생 길이
+
+	/* compute shader */
+private:
+	_uint											m_iKeyFrameBufferSize	= {};
+	StructuredBuffer*								m_pKeyFrameBuffer		= {nullptr};
+	ID3DX11EffectShaderResourceVariable*			m_pInputKeySB_SRV		= { nullptr };
+
+	_uint											m_iChannelSize			= {};
+	StructuredBuffer*								m_pChannelDataBuffer	= {nullptr};
+	ID3DX11EffectShaderResourceVariable*			m_pInputChannelSB_SRV	= { nullptr };
+
+private:
+	_int m_iRootBoneIdx = { -1 };
+	_int m_iRootChannelIdx = { -1 };
+
+private:
+	HRESULT Ready_Buffers();
+	
 public:
 	static CModelAnimation* Create(ID3D11Device* pDevice, ID3D11DeviceContext* pDeviceContext, void* pArg);
 	CModelAnimation* Clone();

@@ -364,6 +364,16 @@ _bool CToolCanvas::Export_Data(DTO::ECategory eCategory, CDataDocumentBase* pDoc
 			if (FAILED(pDoc->Try_Add(pUI->Get_TriggerData())))
 				return FALSE;
 		}
+		else if (pUI->Get_UIClassType() == DTO::EUIClassType::BUTTON_TRIGGER)
+		{
+			if (FAILED(pDoc->Try_Add(pUI->Get_ButtonTriggerData())))
+				return FALSE;
+		}
+		else if (pUI->Get_UIClassType() == DTO::EUIClassType::DYNAMIC_IMAGE)
+		{
+			if (FAILED(pDoc->Try_Add(pUI->Get_DImageData())))
+				return FALSE;
+		}
 	}
 	return TRUE;
 }

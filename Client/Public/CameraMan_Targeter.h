@@ -76,12 +76,12 @@ private:
 	_float m_fSens = { 0.2f };
 	
 	// 회전 보간용
-	_float m_fYaw = { 0.f };
-	_float m_fYaw_Target = { 0.f };
-	_float m_fPitch = { 0.f };
-	_float m_fPitch_Target = { 0.f };
+	_float m_fYaw			= { 0.f };
+	_float m_fYaw_Target	= { 0.f };
+	_float m_fPitch			= { 0.f };
+	_float m_fPitch_Target	= { 0.f };
 	
-	_float m_fDistance = { 3.5f };
+	_float m_fDistance = { 3.f };
 public:
 	static CCameraMan_Targeter* Create(ID3D11Device* pDevice, ID3D11DeviceContext* pDeviceContext);
 	virtual CGameObject* Clone(void* pArg) override;

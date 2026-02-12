@@ -11,7 +11,7 @@ class CUITrigger final : public CGenericUI
 public:
 	typedef struct tagTriggerUIDesc : public GENERIC_UI_DESC
 	{
-		DTO::EUIOwnerType eOwner;
+		DTO::EUISubClassType eOwner;
 		DTO::TUI_TriggerData tTriggerData;
 	}UI_TRIGGER_DESC;
 
@@ -45,7 +45,7 @@ private:
 	array<vector<CGenericUI*>, ENUM_TO_UINT(ETriggerEventType::END)> m_pTriggerUI;
 
 private:
-	DTO::EUIOwnerType m_eOwnerType = {};
+	DTO::EUISubClassType m_eSubClassType = {};
 	DTO::TUI_TriggerData m_tTriggerData = {};
 
 public:

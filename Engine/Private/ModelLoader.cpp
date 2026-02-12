@@ -356,6 +356,7 @@ HRESULT CModelLoader::Read_Animation(vector<CModelAnimation*>* vecAnimations, CM
 		{
 			desc.bRootAni	= pData->bRootAni;
 			desc.bMixAni	= pData->bMixAni;
+			desc.iRootBondIndex = pData->iRootBoneIndex;
 		}
 
 		vector<CChannel*> vecChannels;

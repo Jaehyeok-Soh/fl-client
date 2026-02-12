@@ -48,6 +48,8 @@ private:
 	HRESULT Ready_Ray();
 	HRESULT Ready_CCT();
 
+	HRESULT Ready_AttackStates();
+
 private:
 	CRay* m_pFootRay = { nullptr };
 	CRay* m_pMoveRay = { nullptr };
