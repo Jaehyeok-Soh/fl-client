@@ -43,13 +43,16 @@ public:
 
 	void Set_Parent(CGameObject* pGo);
 	CGameObject* Get_Parent() { return m_pParentObject; }
+
 protected:
 	void Clear_AttackDesc();
+
 protected:
 	void Update_CombinedWorldMatrix(const Matrix* pMatParent);
 	void Update_CombinedWorldMatrix(Matrix matParent);
 	void Update_CombinedWorldMatrix_Bilboad(Matrix matParent);
 	void Update_CombinedWorldMatrix_Bilboad(Matrix matParent, Vec2 vUIScale);
+
 protected:
 	_bool m_bAttackWindow = { false };
 	CGameObject* m_pParentObject = { nullptr };
