@@ -1,10 +1,5 @@
 #include "pch.h"
 #include "Panel_AnimModelFile.h"
-#include "Folder.h"
-#include "File.h"
-#include "MapToolManager.h"
-#include "MapObject.h"
-#include "Animation_Defines.h"
 
 CPanel_AnimModelFile::CPanel_AnimModelFile(const _char* pLabel, CLevel* pOwner, ID3D11Device* pDevice, ID3D11DeviceContext* pDeviceContext)
 	: CImGui_Panel(pLabel, pOwner, pDevice, pDeviceContext)
@@ -20,15 +15,9 @@ HRESULT CPanel_AnimModelFile::Initialize()
 
 HRESULT CPanel_AnimModelFile::Render(CToolObject* pGo)
 {
-	ImGui::Begin("File Explore");
-
-	/* Main_Window */
-
 	DirectoryWindow();
 
 	FileWindow();
-
-	ImGui::End();
 
 	return S_OK;
 }
@@ -80,7 +69,7 @@ void CPanel_AnimModelFile::FileWindow()
 	ImGui::End();
 }
 
-CPanel_AnimModelFile::DIR CPanel_AnimModelFile::RefreshModelDir()
+DIR CPanel_AnimModelFile::RefreshModelDir()
 {
 	m_tRootDirectory.directory = m_rootPath;
 
@@ -93,9 +82,9 @@ CPanel_AnimModelFile::DIR CPanel_AnimModelFile::RefreshModelDir()
 	return m_tRootDirectory;
 }
 
-CPanel_AnimModelFile::DIR CPanel_AnimModelFile::SearchDir(fs::directory_entry directory)
+DIR CPanel_AnimModelFile::SearchDir(fs::directory_entry directory)
 {
-	CPanel_AnimModelFile::DIR result;
+	DIR result;
 
 	result.directory = directory.path();
 

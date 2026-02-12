@@ -55,6 +55,8 @@ private:
 	void	Update_Elements(const _float fTimeDelta);
 	void	Render_Elements();
 
+	void	Render_Grid();
+
 private:
 	void Load_AnimModel(fs::path animModelPath);
 	void Create_AnimModel(fs::path animModelPath);
@@ -70,6 +72,14 @@ private:
 private:
 	wstring m_wstrLayer = { L"Animation_Model_Layer" };
 	array<class CImGui_Panel*, Elements::END> m_GuiElements = { nullptr };
+
+#ifdef _DEBUG
+private:
+	PrimitiveBatch<DirectX::VertexPositionColor>* m_pBatch = { nullptr };
+	BasicEffect* m_pEffect = { nullptr };
+	ID3D11InputLayout* m_pInputLayout = { nullptr };
+	ID3D11DepthStencilState* m_pDSS = { nullptr };
+#endif
 
 public:
 	static CLevel_Animation* Create(ID3D11Device* pDevice, ID3D11DeviceContext* pDeviceContext);

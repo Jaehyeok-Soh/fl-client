@@ -492,6 +492,10 @@
     <ClInclude Include="..\Public\Animation_Defines.h">
       <Filter>98. Defines\Animation_Define</Filter>
     </ClInclude>
+    <ClInclude Include="..\Public\Animation_Struct.h" />
+    <ClInclude Include="..\Public\Panel_AnimationController.h">
+      <Filter>06. ImGui\01. Panel\Animation\Panel_Animation</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <Image Include="small.ico">
@@ -719,6 +723,9 @@
     </ClCompile>
     <ClCompile Include="..\Private\Panel_AnimModelFile.cpp">
       <Filter>06. ImGui\01. Panel\Animation\Panel_AnimModelFile</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\Panel_AnimationController.cpp">
+      <Filter>06. ImGui\01. Panel\Animation\Panel_Animation</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

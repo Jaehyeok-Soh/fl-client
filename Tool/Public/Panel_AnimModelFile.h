@@ -1,30 +1,14 @@
 #pragma once
 #include "ImGui_Panel.h"
-
-namespace fs = std::filesystem;
+#include "Animation_Defines.h"
 
 NS_BEGIN(Tool)
 
-class CPanel_AnimModelFile :
-    public CImGui_Panel
+class CPanel_AnimModelFile final : public CImGui_Panel
 {
-public:
-	typedef struct tagDirectory
-	{
-		fs::path directory;
-
-		vector<fs::path> files;
-
-		vector<tagDirectory> directories;
-
-		vector<fs::path> GetFiles() { return files; }
-		vector<tagDirectory> GetDirectories() { return directories; }
-	}DIR;
-
-private:
 	using Super = CImGui_Panel;
 
-protected:
+private:
 	explicit CPanel_AnimModelFile(const _char* pLabel, CLevel* pOwner, ID3D11Device* pDevice, ID3D11DeviceContext* pDeviceContext);
 	virtual ~CPanel_AnimModelFile() = default;
 
@@ -34,8 +18,6 @@ private:
 public:
 	virtual HRESULT Render(CToolObject* pGo)override;
 	virtual void Update(const _float fTimeDelta)override;
-
-public:
 
 	// window
 private:

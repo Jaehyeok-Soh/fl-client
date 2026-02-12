@@ -422,6 +422,16 @@ _float CModel::Get_AnimElpasedTimeSeconds() const
 	return m_vecAnimations[m_iCurrentAnimIndex]->Get_ElpasedTimeSeconds();
 }
 
+_float CModel::Get_AnimTickPerSecond() const
+{
+	return m_vecAnimations[m_iCurrentAnimIndex]->Get_TickPerSecond();
+}
+
+void CModel::Set_AnimTickPerSecond(_float fValue)
+{
+	m_vecAnimations[m_iCurrentAnimIndex]->Set_TickPerSecond(fValue);
+}
+
 _int CModel::Get_CurrentAnimationIndex() const
 {
 	return m_iCurrentAnimIndex;
@@ -550,6 +560,11 @@ HRESULT CModel::Ready_ComputeShaders(CComputeShader* pBoneMeshCS, CComputeShader
 	}
 
 	return S_OK;
+}
+
+void CModel::Set_AnimTrackPosition(_float fValue)
+{
+	m_vecAnimations[m_iCurrentAnimIndex]->Set_TrackPosition(fValue);
 }
 
 HRESULT CModel::Load_StaticModel(const wstring& wstrModelName)

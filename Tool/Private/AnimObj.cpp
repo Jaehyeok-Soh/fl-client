@@ -58,13 +58,6 @@ void CAnimObj::Update_Priority(const _float fTimeDelta)
 void CAnimObj::Update(const _float fTimeDelta)
 {
 	Super::Update(fTimeDelta);
-
-	CComputeShader* pBonCS = static_cast<CComputeShader*>(Get_Script_Component(TEXT("ComputeShader_BoneCombine")));
-	CComputeShader* pAnimECS = static_cast<CComputeShader*>(Get_Script_Component(TEXT("ComputeShader_AnimE")));
-	CComputeShader* pAnimBCS = static_cast<CComputeShader*>(Get_Script_Component(TEXT("ComputeShader_AnimB")));
-
-	Get_Component<CModel>()->Update_Animation(pBonCS, pAnimECS, pAnimBCS,
-		fTimeDelta, Get_Component<CTransform>(), Get_Component<CPhysicsCCT>());
 }
 
 void CAnimObj::Update_Late(const _float fTimeDelta)

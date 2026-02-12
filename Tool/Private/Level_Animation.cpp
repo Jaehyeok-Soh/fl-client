@@ -20,6 +20,9 @@
 
 // Panel
 #include "Panel_AnimModelFile.h"
+#include "Panel_AnimationController.h"
+
+#include "DebugDraw.h"
 
 CLevel_Animation::CLevel_Animation(ID3D11Device* pDevice, ID3D11DeviceContext* pDeviceContext)
 	: Super(pDevice, pDeviceContext)
@@ -35,6 +38,34 @@ HRESULT CLevel_Animation::Initialize()
 
 	Ready_Camera(g_wszCameraLayer);
 	Ready_Lights();
+
+#ifdef _DEBUG
+	m_pBatch = new PrimitiveBatch<VertexPositionColor>(m_pDeviceContext);
+	m_pEffect = new BasicEffect(m_pDevice);
+	m_pEffect->SetVertexColorEnabled(true);
+
+	const void* pShaderInput = {};
+	size_t iShaderInputLength = {};
+
+	m_pEffect->GetVertexShaderBytecode(&pShaderInput, &iShaderInputLength);
+
+	if (FAILED(m_pDevice->CreateInputLayout(VertexPositionColor::InputElements,
+		VertexPositionColor::InputElementCount,
+		pShaderInput,
+		iShaderInputLength,
+		&m_pInputLayout)))
+	{
+		return E_FAIL;
+	}
+
+	D3D11_DEPTH_STENCIL_DESC dssDesc{};
+	ZeroMemory(&dssDesc, sizeof(dssDesc));
+	dssDesc.DepthEnable = TRUE;
+	dssDesc.DepthWriteMask = D3D11_DEPTH_WRITE_MASK_ALL;
+	dssDesc.DepthFunc = D3D11_COMPARISON_LESS;
+
+	m_pDevice->CreateDepthStencilState(&dssDesc, &m_pDSS);
+#endif // _DEBUG
 
 	return S_OK;
 }
@@ -74,6 +105,8 @@ HRESULT CLevel_Animation::Render()
 {
 	if (FAILED(Super::Render()))
 		return E_FAIL;
+	
+	Render_Grid();
 
 	m_pImGuiManager->Render_Begin();
 	m_pImGuiManager->ImGuizmo_Render_Begin();
@@ -86,6 +119,7 @@ HRESULT CLevel_Animation::Render()
 	//////////////////////////
 	m_pImGuiManager->Render_Viewport(nullptr);
 	m_pImGuiManager->Render_End();
+
 	return S_OK;
 }
 
@@ -150,7 +184,7 @@ HRESULT CLevel_Animation::Ready_Panels()
 	m_GuiElements[Elements::FILE] = CPanel_AnimModelFile::Create("Panel_Explore", this, m_pDevice, m_pDeviceContext);
 	//m_GuiElements[Elements::LOAD];
 	//m_GuiElements[Elements::MODEL];
-	//m_GuiElements[Elements::ANIMATION];
+	m_GuiElements[Elements::ANIMATION] = CPanel_AnimationController::Create("Panel_Animation", this, m_pDevice, m_pDeviceContext);
 	//m_GuiElements[Elements::PARTS];
 
 	return S_OK;
@@ -188,6 +222,48 @@ void CLevel_Animation::Render_Elements()
 			pElement->Render(m_pSelectedObject);
 	}
 }
+
+#ifdef _DEBUG
+void CLevel_Animation::Render_Grid()
+{
+	m_pDeviceContext->RSSetState(nullptr);
+
+	float blendFactor[4] = { 0.f, 0.f, 0.f, 0.f };
+	m_pDeviceContext->OMSetBlendState(nullptr, blendFactor, 0xffffffff);
+
+	m_pDeviceContext->OMSetDepthStencilState(m_pDSS, 0);
+
+	m_pEffect->SetWorld(Matrix::Identity);
+	m_pEffect->SetView(m_pGameInstance->Get_ViewMatrix());
+	m_pEffect->SetProjection(m_pGameInstance->Get_ProjMatrix());
+
+	m_pEffect->SetLightingEnabled(false);
+	m_pEffect->SetTextureEnabled(false);
+
+	m_pEffect->SetVertexColorEnabled(true);
+
+	m_pEffect->Apply(m_pDeviceContext);
+
+	m_pDeviceContext->IASetInputLayout(m_pInputLayout);
+	m_pDeviceContext->IASetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY_LINELIST);
+
+	m_pBatch->Begin();
+
+	_float fGridSize = 100.f;
+	size_t numDiv = 100;
+
+	Vec4 xAxis = Vec4(1.f, 0.f, 0.f, 0.f);
+	Vec4 zAxis = Vec4(0.f, 0.f, 1.f, 0.f);
+	Vec4 origin = Vec4(0.f, 0.f, 0.f, 1.f);
+
+	Vec4 gridAxis1 = xAxis * fGridSize;
+	Vec4 gridAxis2 = zAxis * fGridSize;
+
+	DX::DrawGrid(m_pBatch, XMLoadFloat4(&gridAxis1), XMLoadFloat4(&gridAxis2), origin, numDiv, numDiv, DirectX::Colors::DarkGray);
+
+	m_pBatch->End();
+}
+#endif // _DEBUG
 
 void CLevel_Animation::Load_AnimModel(fs::path animModelPath)
 {
@@ -246,27 +322,7 @@ wstring CLevel_Animation::Create_AnimModelPrototype(fs::path animModelPath)
 
 void CLevel_Animation::SetAnimationInfo()
 {
-	CModel* model = m_pSelectedObject->Get_Component<CModel>();
-	model->Get_AnimationCount();
-	model->Get_AnimationIndex();
-	model->Get_AnimationName();
-	model->Get_AnimDurationTime();
-	model->Get_AnimElpasedTimeSeconds();
-	model->Get_AnimTrackPosition();
-	model->Get_Bone();
-	model->Get_BoneCount();
-	model->Get_BoneIndex();
-	model->Get_MeshCount();
-	model->Get_CurrentAnimationName();
-	model->Get_CurrentAnimationIndex();
-
-	model->Set_AnimationPlayRate();
-
-	model->Is_AnimFinished();
-
-	model->Update_Animation(0.03f, nullptr, nullptr);
-
-	model->Change_Animation();
+	static_cast<CPanel_AnimationController*>(m_GuiElements[Elements::ANIMATION])->SetAnimationObject(static_cast<CAnimObj*>(m_pSelectedObject));
 }
 
 CLevel_Animation* CLevel_Animation::Create(ID3D11Device* pDevice, ID3D11DeviceContext* pDeviceContext)

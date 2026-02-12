@@ -156,6 +156,7 @@
     <ClInclude Include="..\Public\CameraMan_Free.h" />
     <ClInclude Include="..\Public\CEffectObject.h" />
     <ClInclude Include="..\Public\Gravity_Force.h" />
+    <ClInclude Include="..\Public\Panel_AnimationController.h" />
     <ClInclude Include="..\Public\Panel_Model.h" />
     <ClInclude Include="..\Public\Panel_AnimModelFile.h" />
     <ClInclude Include="..\Public\UIButton_Component.h" />
@@ -240,6 +241,7 @@
     <ClCompile Include="..\Private\CameraMan_Free.cpp" />
     <ClCompile Include="..\Private\CEffectObject.cpp" />
     <ClCompile Include="..\Private\Gravity_Force.cpp" />
+    <ClCompile Include="..\Private\Panel_AnimationController.cpp" />
     <ClCompile Include="..\Private\Panel_Model.cpp" />
     <ClCompile Include="..\Private\Panel_AnimModelFile.cpp" />
     <ClCompile Include="..\Private\UIButton_Component.cpp" />
