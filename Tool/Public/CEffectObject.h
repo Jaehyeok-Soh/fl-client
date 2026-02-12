@@ -329,7 +329,7 @@ private:
     //  ========== 스크롤 OffSet ========
     Vec2      m_vScrollOffset = { 0.f, 0.f };
     _float    m_fTimeAccumulation = 0.f;
-    _bool  m_bIsStarted = { false }; // 타임 딜레이 지났는지에 대한 bool값
+    _bool     m_bIsStarted = { false }; // 타임 딜레이 지났는지에 대한 bool값
 
     //  ========= 회전 속도 ===========
     Vec3 m_vAccumulatedRotation = { 0.f, 0.f, 0.f };

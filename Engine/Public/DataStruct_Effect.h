@@ -11,7 +11,7 @@ enum class E_EFFECTTYPE { NONE = 0, Particle, Mesh, Trail };
 enum class E_RENDER_TYPE { NONE = 0, BILBOARD, NONE_BILBOARD };
 enum class E_PARTICLETYPE { NONE = 0, PARTICLE, TEXTURE, MESH };
 enum class E_SAMPLERSTATE_FLAG { LinearSampler, LinearClampSampler, LinearBorderSampler, LinearMirrorSampler, PointSampler };
-enum class E_TEXTURETYPE { DIFFUSE = 0, NOISE, MASKING, GRADATION, TRAIL, NORMAL };
+enum class E_TEXTURETYPE { DIFFUSE = 0, NOISE, MASKING, GRADATION, TRAIL, NORMAL, DISSOLVE, GLOW };
 enum class E_EffectSystemType { NONE = 0, Particle, ForceField, Line, Trail };
 enum class E_SHAPETYPE { NONE = 0, DROP, RISE, SPREAD, STRAIGHT, SPIRAL, DNA };
 enum class E_SIMULATION_SPACE { NONE = 0, LOCAL, WORLD };
