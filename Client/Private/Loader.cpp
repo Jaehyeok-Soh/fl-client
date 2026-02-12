@@ -227,12 +227,12 @@ HRESULT CLoader::Loading_For_Logo()
 	// For. Prototype_Component_Model_Master
 	{
 		CModel::MODEL_ORIGIN_DESC desc = {};
-		desc.eType = EModelType::ANIM;
-		desc.iPrototypeLevelIndex = ENUM_TO_UINT(ELevelType::STATIC);
-		desc.pMatPreTransform = &(matPreTransformScale);	// matPreTransformScale // matPreTransformTurn90
-		desc.wstrModelFolderName = L"PlayerMoon";					// PlayerMoon // Pino
-		desc.bStageBone = true;
-		desc.iStageBoneIndices = { 417 };
+		desc.eType					= EModelType::ANIM;
+		desc.iPrototypeLevelIndex	= ENUM_TO_UINT(ELevelType::STATIC);
+		desc.pMatPreTransform		= &(matPreTransformScale);	// matPreTransformScale // matPreTransformTurn90
+		desc.wstrModelFolderName	= L"PlayerMoon";					// PlayerMoon // Pino
+		desc.FStageBone				= CModel::STAGEING_BONE::SB_SPCIPICBONE;
+		desc.vecStageBoneIndices	= { 417 };
 
 		CModel::DATA_ANIMCHANNEL tAniChannelData = {};
 		tAniChannelData.iRootBoneIndex = 2;
