@@ -5,6 +5,8 @@ NS_BEGIN(Engine)
 
 class CTransform;
 class CPhysicsCCT;
+class CComputeShader;
+class StructuredBuffer;
 
 class ENGINE_DLL CModel final : public CComponent
 {
@@ -22,15 +24,18 @@ public:
 		vector<_float>	vecMixRatios;
 	}DATA_ANIMCHANNEL;
 
-
 	typedef struct tagModelOriginDesc
 	{
-		EModelType eType = { EModelType::END };
-		_int iPrototypeLevelIndex = { -1 };
-		Matrix* pMatPreTransform = { nullptr };
-		wstring wstrModelFolderName = { L"" };
+		EModelType			eType					= { EModelType::END };
+		_int				iPrototypeLevelIndex	= { -1 };
+		Matrix*				pMatPreTransform		= { nullptr };
+		wstring				wstrModelFolderName		= { L"" };
 
-		DATA_ANIMCHANNEL* pAniChannelData = { nullptr };
+		DATA_ANIMCHANNEL*	pAniChannelData			= { nullptr };
+
+		_bool				bStageBone				= { false };	// bone 정보 저장받을 거니?
+		vector<_uint>		iStageBoneIndices;						// 저장할 bone의 인덱스들
+
 	}MODEL_ORIGIN_DESC;
 	typedef struct tagModelCopyDesc
 	{
@@ -38,6 +43,13 @@ public:
 		std::span<const _int> spanShaderPassesByMesh;
 	}MODEL_COPY_DESC;
 
+	struct BONE_GROUP
+	{
+		vector<_uint>							BoneIndices;
+		StructuredBuffer*						pIndexBuffer		= { nullptr };
+		ID3DX11EffectShaderResourceVariable*	pInputGroupSB_SRV	= { nullptr };
+	};
+	
 private:
 	enum AnimationPlayState
 	{
@@ -45,6 +57,22 @@ private:
 		BLEND,
 		END
 	};
+
+	enum class CS_SB_IDX : _uint
+	{
+		IMMU_BONE, MU_GROUPIDX, MU_SRTS
+	};
+
+	enum class BLENDCS_SB_IDX : _uint
+	{
+		MU_PRESRT, MU_CURSRT
+	};
+
+	enum class GETBONECS_SB_IDX : _uint
+	{
+		IMMU_BONEINDICES, MU_BONEMATS
+	};
+
 private:
 	CModel(ID3D11Device* pDevice, ID3D11DeviceContext* pDeviceContext);
 	explicit CModel(const CModel& rhs);
@@ -52,52 +80,90 @@ private:
 
 	virtual HRESULT						Initialize_Prototype(void* pArg);
 	virtual HRESULT						Initialize(void* pArg) override;
-private:
-	HRESULT								Ready_StaticModelMinMax();
+
+	// render funcs
 public:
 	HRESULT								Render(_uint iMeshIndex);
 	HRESULT								Render_Instance(_uint iMeshIndex , _uint iInstanceCount);
-	HRESULT								Change_Animation(_uint iAnimationIndex, _bool bBlend, _bool isLoop = true, _bool bForce = false);
+
+	// animation funcs
+public:
+	HRESULT								Change_Animation(CComputeShader* pAnimEComShader,_uint iAnimationIndex, _bool bBlend, _bool isLoop = true, _bool bForce = false);
 	void								Add_Animation(class CModelAnimation* pAnimation) { m_vecAnimations.push_back(pAnimation); }
-	void								Update_Animation(_float fTimeDelta, CTransform* pOwnerTransform = nullptr, CPhysicsCCT* pOwnerPhyCCT = nullptr);
-	HRESULT								Set_PassByMesh(class CShader* pShader, _uint iMeshIndex);
+	void								Update_Animation(CComputeShader* pBoneComBineCS, CComputeShader* pAnimEComShader, CComputeShader* pAnimBlendCS, _float fTimeDelta, CTransform* pOwnerTransform = nullptr, CPhysicsCCT* pOwnerPhyCCT = nullptr, CComputeShader* pGetBoneCS = nullptr);
+
+	// bind funcs
+public:
 	HRESULT								Bind_Material(class CShader* pShader, _uint iMeshIndex);
 	HRESULT								Bind_MaterialInstance(class CShader* pShader, _uint iMeshIndex);
-	HRESULT								Bind_Bones(class CShader* pShader, _uint iMeshIndex, _uint iIndexDistance = 0);
+	HRESULT								Bind_Bones(class CShader* pShader, _uint iMeshIndex, CComputeShader* pBoneMeshCS, CComputeShader* pBoneCombineCS, _uint iIndexDistance = 0);
 	HRESULT								Bind_Masterbones(class CShader* pShader, _uint iIndexDistance);
+
+	// getter funcs
 public:
-	const Vec3*							Get_StaticModelMinMax() const { return m_pStaticModel_MinMax; };
-	HRESULT								Change_ShaderPassByMseh(_uint iMeshIndex, _uint iPass);
-	HRESULT								Set_DefaultPassByMesh(_uint iMeshIndex);
-	_int								Get_PassByMesh(_uint iMeshIndex);
-	HRESULT								Change_MI(_uint iIndex, const wstring& wstrMITag);
-	HRESULT								Set_DefaultMI(_uint iIndex);
-	HRESULT								Change_Material(_uint iIndex, const wstring& wstrMaterialTag);
-	class CMaterialInstance*			Get_MaterialInstance(_uint iIndex);
 	EModelType							Get_Type() const { return m_eType; }
-	_uint								Get_AnimationCount() const { return static_cast<_uint>(m_vecAnimations.size()); }
-	_uint								Get_MaterialCount() const { return static_cast<_uint>(m_vecMaterials.size()); }
-	_uint								Get_BoneCount() const { return static_cast<_uint>(m_vecBones.size()); }
-	_uint								Get_MeshCount() const { return static_cast<_uint>(m_vecMeshes.size()); }
-	class CMesh*						Get_Mesh(_uint iIndex);
+
+	// materials
+	const vector<class CMaterial*>&		Get_Materials() const { return m_vecMaterials; };
+	const Vec3*							Get_StaticModelMinMax() const { return m_pStaticModel_MinMax; };
+	wstring								Get_MaterialName(_uint iIndex) const;
+
+	// meshes
+	_int								Get_PassByMesh(_uint iMeshIndex);
+	
+	// counts
+	_uint								Get_AnimationCount()	const { return static_cast<_uint>(m_vecAnimations.size()); }
+	_uint								Get_MaterialCount()		const { return static_cast<_uint>(m_vecMaterials.size()); }
+	_uint								Get_BoneCount()			const { return static_cast<_uint>(m_vecBones.size()); }
+	_uint								Get_MeshCount()			const { return static_cast<_uint>(m_vecMeshes.size()); }
+	_uint								Get_StageBoneCount()	const { return m_iStageBoneCounts; }
+
+	//m_iStageBoneCounts
+
 	_int								Get_BoneIndex(const _char* szName);
+	_int								Get_CurrentAnimationIndex() const;
+	_int								Get_AnimationIndex(const wstring& wstrName);
+
+	// get class pointer
+	class CMesh*						Get_Mesh(_uint iIndex);
 	class CBone*						Get_Bone(const _char* szName);
 	class CBone*						Get_Bone(_uint iIndex);
-	_float								Get_AnimDurationTime() const;
-	_float								Get_AnimNormalizedTime() const;
-	_float								Get_AnimElpasedTimeSeconds() const;
-	_int								Get_CurrentAnimationIndex() const;
-	wstring								Get_CurrentAnimationName() const;
-	_float								Get_AnimTrackPosition() const;
+	class CMaterialInstance*			Get_MaterialInstance(_uint iIndex);
+
+	// animations
 	_bool								Is_AnimFinished() const { return m_bIsAnimFinished; }
 	_bool								Is_AnimTrackPositionBetween(_float fStartRatio, _float fEndRatio);
 	_bool								Is_AnimTrackPositionAt(_float fRatio);
 	_bool								Is_AnimTrackPositionAtHalf() const;
-	_int								Get_AnimationIndex(const wstring& wstrName);
-	wstring								Get_MaterialName(_uint iIndex) const;
-	const vector<class CMaterial*>&		Get_Materials() const { return m_vecMaterials; };
-	wstring								Get_AnimationName(_uint iIdex)	const;
+
+
+	_float								Get_AnimDurationTime() const;
+	_float								Get_AnimNormalizedTime() const;
+	_float								Get_AnimElpasedTimeSeconds() const;
+
+	wstring								Get_CurrentAnimationName() const;
+	wstring								Get_AnimationName(_uint iIdex) const;
+
+	const _float						Get_BlentTime() const { return m_fBlendedTime; }
+	_float								Get_AnimTrackPosition() const;
+
+	// setter funcs
+public:
+	HRESULT								Set_DefaultMI(_uint iIndex);
+	HRESULT								Set_PassByMesh(class CShader* pShader, _uint iMeshIndex);
+	HRESULT								Set_DefaultPassByMesh(_uint iMeshIndex);
 	void								Set_AnimationPlayRate(_uint iIndex, _float fValue);
+
+	// materials funcs
+public:
+	HRESULT								Change_MI(_uint iIndex, const wstring& wstrMITag);
+	HRESULT								Change_Material(_uint iIndex, const wstring& wstrMaterialTag);
+	HRESULT								Change_ShaderPassByMseh(_uint iMeshIndex, _uint iPass);
+
+public:
+	HRESULT								Ready_ComputeShaders(CComputeShader* pBoneMeshCS, CComputeShader* pBoneComBineCS, CComputeShader* pAnimEvalCS, CComputeShader* pAnimBlendCS, CComputeShader* pGetBoneCS = nullptr);
+	
+	// load func
 private:
 	HRESULT								Load_StaticModel(const wstring& wstrModelName);
 	HRESULT								Load_NonAnimModel(const wstring &wstrModelName);
@@ -106,54 +172,96 @@ private:
 	HRESULT								Load_OnlyBone(const wstring& wstrModelName);
 	HRESULT								Add_Parts(const wstring &wstrPrototypeTag);
 	CModel*								Get_Clone(const wstring &wstrPrototypeTag);
+
+
+	// animation funcs
+private:
 	void								Play_Animation(_float fTimeDelta, CTransform* pOwnerTransform = nullptr, CPhysicsCCT* pOwnerPhyCCT = nullptr);
 	void								Blend_Animation(_float fTimeDelta, _float fRatio, CTransform* pOwnerTransform = nullptr, CPhysicsCCT* pOwnerPhyCCT = nullptr);
 
-private:
-	HRESULT								Build_AnimationIndexTable();
-	void								Begin_AnimationPlayState(AnimationPlayState eState);
-	void								Update_AnimationPlayState(const _float fTimeDelta, CTransform* pOwnerTransform = nullptr, CPhysicsCCT* pOwnerPhyCCT = nullptr);
-	void								End_AnimationPlayState(AnimationPlayState eState);
-	void								Change_AnimationPlayState(AnimationPlayState eState);
+	void								Play_Animation(CComputeShader* pBoneComBineCS, CComputeShader* pAnimEvalCS, _float fTimeDelta, CTransform* pOwnerTransform = nullptr, CPhysicsCCT* pOwnerPhyCCT = nullptr, CComputeShader* pGetBoneCS = nullptr);
+	void								Blend_Animation(CComputeShader* pBoneComBineCS, CComputeShader* pAnimEvalCS, CComputeShader* pAnimBlendCS, _float fTimeDelta, _float fRatio, CTransform* pOwnerTransform = nullptr, CPhysicsCCT* pOwnerPhyCCT = nullptr, CComputeShader* pGetBoneCS = nullptr);
 
-	void								Play_Begin();
-	void								Play_Update(const _float fTimeDelta, CTransform* pOwnerTransform = nullptr, CPhysicsCCT* pOwnerPhyCCT = nullptr);
+	HRESULT								Build_AnimationIndexTable();
+	void								Begin_AnimationPlayState(AnimationPlayState eState, CComputeShader* pAnimEvalCS = nullptr, _uint iAnimationIndex =0);
+	void								Update_AnimationPlayState(CComputeShader* pBoneComBineCS, CComputeShader* pAnimEvalCS, CComputeShader* pAnimBlendCS, const _float fTimeDelta, CTransform* pOwnerTransform = nullptr, CPhysicsCCT* pOwnerPhyCCT = nullptr, CComputeShader* pGetBoneCS = nullptr);
+	void								End_AnimationPlayState(AnimationPlayState eState);
+	void								Change_AnimationPlayState(AnimationPlayState eState, CComputeShader* pAnimEvalCS = nullptr, _uint iAnimationIndex =0);
+
+	void								Play_Begin(CComputeShader* pAnimEvalCS = nullptr, _uint iAnimationIndex =0);
+	void								Play_Update(CComputeShader* pBoneComBineCS, CComputeShader* pAnimEvalCS, const _float fTimeDelta, CTransform* pOwnerTransform = nullptr, CPhysicsCCT* pOwnerPhyCCT = nullptr, CComputeShader* pGetBoneCS = nullptr);
 	void								Play_End();
 
 	void								Blend_Begin();
-	void								Blend_Update(const _float fTimeDelta, CTransform* pOwnerTransform = nullptr, CPhysicsCCT* pOwnerPhyCCT = nullptr);
+	void								Blend_Update(CComputeShader* pBoneComBineCS, CComputeShader* pAnimEvalCS, CComputeShader* pAnimBlendCS, const _float fTimeDelta, CTransform* pOwnerTransform = nullptr, CPhysicsCCT* pOwnerPhyCCT = nullptr, CComputeShader* pGetBoneCS = nullptr);
 	void								Blend_End();
+
+	// ready funcs
 private:
-	EModelType							m_eType = { EModelType::END };
-	Matrix								m_matPreTransform = {};
+	void								Make_BoneGroup();
+	void								Make_GroupBuffers();
+	void								Make_SB();
+	void								Make_Staging(MODEL_ORIGIN_DESC* pDesc);
+	HRESULT								Ready_StaticModelMinMax();
 
-	ID3D11Device*						m_pDevice = { nullptr };
-	ID3D11DeviceContext*				m_pDeviceContext = { nullptr };
+	// cs bind funcs
+private:
+	void								Bind_BoneImmuData(CComputeShader* pBoneComBineCS);
+	void								Bind_BufferSRV(CComputeShader* pBoneComBineCS);
+	void								Ready_SB(CComputeShader* pAnimEvalCS);
+	HRESULT								Bind_StagingBuffer(CComputeShader* pGetBoneCS);
 
+	// cs update funcs
+private:
+	void								Update_BoneCombineTransformMatrix(CComputeShader* pBoneComBineCS);
+	void								Lerp_Animation(CComputeShader* pAnimBlendCS, _float fRatio);
+	void								Get_BoneMatrix(CComputeShader* pBoneComBineCS, CComputeShader* pGetBoneCS);
+
+private:
+	EModelType							m_eType						= { EModelType::END };
+	Matrix								m_matPreTransform			= {};
+
+	ID3D11Device*						m_pDevice					= { nullptr };
+	ID3D11DeviceContext*				m_pDeviceContext			= { nullptr };
 
 	/* Model Minmax */
-	Vec3*								m_pStaticModel_MinMax{nullptr};
+	Vec3*								m_pStaticModel_MinMax		= {nullptr};
 
 	vector<_uint>						m_vecPasses;
 	vector<class CBone*>				m_vecBones;
 	vector<class CMesh*>				m_vecMeshes;
 	vector<class CMaterial*>			m_vecMaterials;
 	vector<class CMaterialInstance*>	m_vecMaterialInstances;
-	class CMesh*						m_pMasterMesh = { nullptr };
+	class CMesh*						m_pMasterMesh				= { nullptr };
 
-	// Animation
-	AnimationPlayState					m_eCurrentAnimationState = { AnimationPlayState::PLAY };
-	_bool								m_isAnimLoop = { false };
-	_bool								m_bIsAnimFinished = { false };
-	_float								m_fBlendedTime = { 0.f };
-	const _float						m_fBlendDuration = { 0.18f };
-	_uint								m_iAnimationCount = { 0 };
-	_uint								m_iCurrentAnimIndex = { 0 };
-	_uint								m_iPrevAnimIndex = { 0 };
+	/* animation */
+	AnimationPlayState					m_eCurrentAnimationState	= { AnimationPlayState::PLAY };
+	_bool								m_isAnimLoop				= { false };
+	_bool								m_bIsAnimFinished			= { false };
+	_float								m_fBlendedTime				= { 0.f };
+	const _float						m_fBlendDuration			= { 0.2f };
+	_uint								m_iAnimationCount			= { 0 };
+	_uint								m_iCurrentAnimIndex			= { 0 };
+	_uint								m_iPrevAnimIndex			= { 0 };
 	unordered_map<wstring, size_t>		m_umapAnimationIndexTable;
 	vector<class CModelAnimation*>		m_vecAnimations;
 	vector<LOCALSRT>					m_vecPrevAnimationPose;
 	vector<LOCALSRT>					m_vecCurrAnimationPose;
+
+private:
+	_int								m_iRootBoneIdx				= { -1 };
+
+	// compute shading 변수
+private:
+	vector<BONE_GROUP>					m_vecBoneGroups;
+	_bool								m_bStageBones				= { false };
+	_uint								m_iStageBoneCounts			= { 0 };
+	vector<_uint>						m_vecStageBoneIndices;
+
+	StructuredBuffer*					m_pPreSB					= { nullptr };
+	StructuredBuffer*					m_pCurSB					= { nullptr };
+	ID3D11Buffer*						m_pBoneOuputStagingBuffer	= { nullptr };
+
 public:
 	static CModel* Create(ID3D11Device* pDevice, ID3D11DeviceContext* pDeviceContext, void* pArg);
 	virtual CComponent* Clone(void* pArg) override;

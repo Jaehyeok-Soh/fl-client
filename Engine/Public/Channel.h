@@ -39,6 +39,12 @@ public:
 	// motion anim
 	void Update_TransformationMatrix(const vector<class CBone*>& vecBones, _float fCurrentTrackPosition, _uint* pCurrentKeyFrameIndex, CTransform* pOwnerTransform, CPhysicsCCT* pOwnerPhyCCT, const _float fTimeDelta);
 	void SetUp_PoseData(std::span<LOCALSRT> spanLocalSrtData, _float fCurrentTrackPosition, _uint* pCurrentKeyFrameIndex, CTransform* pOwnerTransform, CPhysicsCCT* pOwnerPhyCCT, const _float fTimeDelta);
+	void	Move_OnwerTransform(_float fCurrentTrackPosition, _uint* pCurrentKeyFrameIndex, CTransform* pOwnerTransform, CPhysicsCCT* pOwnerPhyCCT, const _float fTimeDelta);
+
+	// getter func
+public:
+	const vector<KEYFRAME>& Get_KeyFrames() const { return m_vecKeyframes; }
+	_int Get_BoneIndex() const { return m_iBoneIndex; }
 
 	// 기본 channel 정보
 private:

@@ -42,6 +42,13 @@ public:
 	vector<CCanvas*>* Get_Level_All_Canvas(uint32_t iLevelIndex);
 	vector<CGenericUI*>* Get_Level_All_GenericUI(uint32_t iLevelIndex);
 
+	void Add_RenderGroup(uint32_t iLevelIndex);
+	void Request_SortUI();
+	void Clear_Cache(uint32_t iLevelIndex);
+
+private:
+	void Sort_UI(vector<CGenericUI*>& Target);
+
 private:
 	CGameInstance* m_pGameInstance = { nullptr };
 
@@ -52,6 +59,9 @@ private:
 	/* 레벨에 같은 타입의 모든 오브젝트들에게 이벤트를 발생시킬 때 */
 	array<vector<CCanvas*>, g_iLevelType_Count> m_vecCanvasCache;
 	array<vector<CGenericUI*>, g_iLevelType_Count> m_vecGenericUICache;
+
+	vector<CGenericUI*> m_vecSortUI;
+	_bool m_isSort = { FALSE };
 
 public:
 	virtual void Free()override;

@@ -27,6 +27,7 @@ public:
 		, SKILL1	= 0x00020
 		, SKILL2	= 0x00040
 		, INTERACT	= 0x00080
+		, GUN		= 0x00100
 	};
 
 	typedef struct tagPlayerControlContextDesc

@@ -38,7 +38,6 @@ public:
 		,SLIDESKY
 
 		,DASHBACK
-		,DASHFRONT
 		,DASHSKY
 
 		,RUNSHORT
@@ -51,6 +50,12 @@ public:
 
 		,FALL
 		,LAND
+
+		,COMBO
+		,GUN
+		,CHARGE
+		,SKILL1
+		,SKILL2
 
 		,END
 	};
