@@ -25,17 +25,18 @@ CMesh::CMesh(const CMesh& rhs)
 	, m_pOffsetMatrices(rhs.m_pOffsetMatrices)
 	, m_pAffectBoneIndices(rhs.m_pAffectBoneIndices)
 	, m_pNormals(rhs.m_pNormals)
+	,m_pBoneMesh_ImmuBuffer(rhs.m_pBoneMesh_ImmuBuffer)
 {
 
 	//Safe_AddRef(m_pInputKeySB_SRV);
 
 	::strcpy_s(m_szName, rhs.m_szName);
 
-	if (m_eModelType == EModelType::ANIM)
-	{
-		m_pBoneMesh_ImmuBuffer = rhs.m_pBoneMesh_ImmuBuffer;
-		Safe_AddRef(m_pBoneMesh_ImmuBuffer);
-	}
+	//if (m_eModelType == EModelType::ANIM)
+	//{
+	//	m_pBoneMesh_ImmuBuffer = rhs.m_pBoneMesh_ImmuBuffer;
+	//	Safe_AddRef(m_pBoneMesh_ImmuBuffer);
+	//}
 }
 
 // ModelLoader가 PreMatrix, Bone 등 처리 다 해서 넘기기
@@ -336,16 +337,18 @@ HRESULT CMesh::Load_NonAnimVertices(std::span<VTXANIMMESH> spanVertex)
 
 HRESULT CMesh::Ready_CS_Buffer()
 {
-	m_pBoneMesh_ImmuBuffer = StructuredBuffer::Create(m_pDevice, m_pDeviceContext, sizeof(CS_IMMU_BONEMESH), m_iAffectBoneCount);
 
-	if (m_pBoneMesh_ImmuBuffer == nullptr)
-		return E_FAIL;
+
+	//if (m_pBoneMesh_ImmuBuffer == nullptr)
+	//	return E_FAIL;
 
 	return S_OK;
 }
 
 HRESULT CMesh::Ready_BindCSBuffer(CComputeShader* pBoneMeshCS)
 {
+	m_pBoneMesh_ImmuBuffer = StructuredBuffer::Create(m_pDevice, m_pDeviceContext, sizeof(CS_IMMU_BONEMESH), m_iAffectBoneCount);
+
 	_uint iAffectSize = m_iAffectBoneCount;
 	CS_IMMU_BONEMESH* pIniailData = new CS_IMMU_BONEMESH[iAffectSize];
 
@@ -407,9 +410,10 @@ void CMesh::Free()
 
 	if (m_eModelType == EModelType::ANIM)
 	{
-		Safe_Release(m_pBoneMesh_ImmuBuffer);
+
 		if (IsClone() == false)
 		{
+			Safe_Release(m_pBoneMesh_ImmuBuffer);
 			Safe_Release(m_pBoneMeshSB_SRV);
 		}
 	}

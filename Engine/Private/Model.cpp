@@ -491,6 +491,9 @@ void CModel::Set_AnimationPlayRate(_uint iIndex, _float fValue)
 
 HRESULT CModel::Ready_ComputeShaders(CComputeShader* pBoneMeshCS, CComputeShader* pBoneComBineCS, CComputeShader* pAnimEvalCS, CComputeShader* pAnimBlendCS, CComputeShader* pGetBoneCS)
 {
+	Make_GroupBuffers();	// group buffer만 우선 생성
+	Make_SB();
+
 	if (pBoneMeshCS)
 	{
 		for (auto& pMesh : m_vecMeshes)
@@ -592,8 +595,6 @@ HRESULT CModel::Load_AnimModel(const wstring& wstrModelName, DATA_ANIMCHANNEL* p
 	}
 
 	Make_BoneGroup();		// bone을 그룹별로 만든다
-	Make_GroupBuffers();	// group buffer만 우선 생성
-	Make_SB();
 
 	Safe_Release(pModelLoader);
 	return S_OK;
