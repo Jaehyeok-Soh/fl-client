@@ -346,7 +346,8 @@ HRESULT CComputeShader::Create_StructBuffer(void* pArg)
 		// 단일 버퍼인 사람을 위한 것.
 
 		// sb를 처음에 만들어서 쓰겠다면
-		if (pDesc->bMakeSB)
+		m_bHas_OwnSRV = pDesc->bMakeSB;
+		if (m_bHas_OwnSRV)
 		{
 			if (m_pInputStructuredBuffer[0].first = Get_SRV(pDesc->Input_StructBuffer.sBufferName))
 			{
@@ -419,10 +420,16 @@ void CComputeShader::Clear_ConstantBuffer()
 
 void CComputeShader::Clear_StructBuffer()
 {
-	for (auto SB : m_pInputStructuredBuffer)
+	// SB는 clone때만 생성 & 0번만 bool값에 따라 생성하므로
+	if (IsClone() && m_bHas_OwnSRV)
 	{
-		Safe_Release(SB.first);
-		Safe_Release(SB.second);
+		Safe_Release(m_pInputStructuredBuffer[0].first);
+		Safe_Release(m_pInputStructuredBuffer[0].second);
+		//for (auto SB : m_pInputStructuredBuffer)
+		//{
+		//	Safe_Release(SB.first);
+		//	Safe_Release(SB.second);
+		//}
 	}
 
 	Safe_Release(m_pOutputStructedBuffer);
