@@ -176,6 +176,16 @@ _wstring CPlayer::Get_AnimationName(_uint iAniIndex)
     return L"";
 }
 
+void CPlayer::Change_Weapon(Part ePart, _uint iState)
+{
+    switch (ePart)
+    {
+    case Part::SWORD:
+        static_cast<CWeapon*>(Get_Part<CWeapon>(ePart))->Set_WeaponState(iState);
+        break;
+    }
+}
+
 HRESULT CPlayer::Ready_BaseStates()
 {
     CPlayerActionState* pActionState = { nullptr };
