@@ -11,6 +11,7 @@ class CGenericUI abstract : public CUIObject
 public:
 	typedef struct tagGenericUIDesc : public UIOBJECT_DESC
 	{
+		_string strName;
 		uint32_t iUIType;
 		uint32_t iRectTransformType;
 		_wstring wstrTextureTag;
@@ -21,6 +22,7 @@ public:
 		int32_t iShaderPass;
 		int32_t iFillDir;
 		_float fDelay;
+		_float fAlpha;
 		CCanvas* pCanvasCache = { nullptr };
 	}GENERIC_UI_DESC;
 

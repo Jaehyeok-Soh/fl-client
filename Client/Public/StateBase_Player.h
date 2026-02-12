@@ -20,7 +20,7 @@ public:
 		,	OWN				= 0x0008 // 자신만의 움직임
 	};
 
-	enum class STATEKEY : _uint {MOVE, SPACE, SHIFT, LCRTL_PRESS, LCRTL_UP, Q, E, LM, RM, LOOPDONE , END}; //END에는 키가 없을떄 바꿀 state를 넣자
+	enum class STATEKEY : _uint {MOVE, SPACE, SHIFT, LCRTL_PRESS, LCRTL_UP, Q, E, LM, RM, CHARGE, LOOPDONE , END}; //END에는 키가 없을떄 바꿀 state를 넣자
 
 	typedef struct tagPlayerStateDesc : public CStateBase::STATE_DESC
 	{
@@ -59,13 +59,15 @@ protected:
 	_bool Check_DashKey(const _float fTimeDelta);
 	_bool Check_CtrlPressKey(const _float fTimeDelta);
 	_bool Check_CtrlUpKey(const _float fTimeDelta);
+	_bool Check_MeleeKey(const _float fTimeDelta);
+	_bool Check_RangeKey(const _float fTimeDelta);
+	_bool Check_SkillKey(const _float fTimeDelta);
 
 protected:
 	virtual void OwnMove(const _float fTimeDelta) {};		// state 내부에서 알아서 움직일때
 	virtual void Set_NextStateDesc(_uint iNextState) {};	// 다음 state에 따라 desc을 작성한다 : 각 state 내부에서
 
 	virtual void CheckAni_WhenStart() {};					// 만약 자체에서 로직을 통해 바꾸고 싶다면
-
 
 private:
 	_uint					m_iEndStateIdx = { 0 };			// CPlayer::State::END 캐싱 해둠 : 만약 END면 state change x

@@ -21,6 +21,8 @@ public:
 	HRESULT Try_Add(const DTO::TUI_GenericUIData& data);
 	HRESULT Try_Add(const DTO::TUI_TextData& data);
 	HRESULT Try_Add(const DTO::TUI_TriggerData& data);
+	HRESULT Try_Add(const DTO::TUI_ButtonTriggerData& data);
+	HRESULT Try_Add(const DTO::TUI_DImageData& data);
 private:
 	IObjectDataBase* Create_ObjectData(DTO::EUIType eType);
 	HRESULT Try_Add(IObjectDataBase* pObject);

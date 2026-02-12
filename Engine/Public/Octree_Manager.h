@@ -56,6 +56,7 @@ private:
 	virtual ~COctree_Manager() = default;
 public:
 	HRESULT Initialize(const OCTREE_DESC& desc);
+	/* 삭제될때 까지 계속 남아있는 친구 */
 	OCTREE_ENTRY* Register(CGameObject* pGo, RENDER_CATEGORY eCategory, const BoundingBox& AABB, _bool bDynamic = false);
 	void Unregister(CGameObject* pGo);
 	void Update_AABB(CGameObject* pGo, const BoundingBox& newAABB);

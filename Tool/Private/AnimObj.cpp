@@ -74,7 +74,7 @@ HRESULT CAnimObj::Render()
 	for (_uint i = 0; i < iMeshCount; ++i)
 	{
 		pModel->Bind_Material(pShader, i);
-		pModel->Bind_Bones(pShader, i);
+		//pModel->Bind_Bones(pShader, i);
 		pShader->Apply();
 		pModel->Render(i);
 	}

@@ -35,10 +35,12 @@ cbuffer TweenBuffer
     TweenFrameDesc TweenFrames;
 };
 
-cbuffer BoneBuffer
+struct BONE_MAT
 {
-    row_major float4x4 BoneTransforms[MAX_BONE_TRANSFORMS];
+    row_major float4x4 matBoneTransform;
 };
+
+StructuredBuffer<BONE_MAT> MU_BONEMATS;
 
 uint g_iBoneIndex;
 Texture2DArray g_TransformMap;
@@ -148,12 +150,52 @@ float4x4 Get_AnimationMatrix(VS_IN_SKELECTON input)
 float4x4 Get_BoneMatrix(VS_IN_SKELECTON input)
 {
     float4x4 matBone =
-    BoneTransforms[input.vBlendIndices.x] * input.vBlendWeight.x +
-    BoneTransforms[input.vBlendIndices.y] * input.vBlendWeight.y +
-    BoneTransforms[input.vBlendIndices.z] * input.vBlendWeight.z +
-    BoneTransforms[input.vBlendIndices.w] * input.vBlendWeight.w;
+    MU_BONEMATS[input.vBlendIndices.x].matBoneTransform * input.vBlendWeight.x +
+    MU_BONEMATS[input.vBlendIndices.y].matBoneTransform * input.vBlendWeight.y +
+    MU_BONEMATS[input.vBlendIndices.z].matBoneTransform * input.vBlendWeight.z +
+    MU_BONEMATS[input.vBlendIndices.w].matBoneTransform * input.vBlendWeight.w;
     
     return matBone;
+}
+
+// scale 青纺, roation 青纺, translation 青纺 积己 窃荐
+float4x4 CreateRotaion_FromQuat(float4 Quat)
+{
+    Quat = normalize(Quat);
+    
+    float x = Quat.x;
+    float y = Quat.y;
+    float z = Quat.z;
+    float w = Quat.w;
+    
+    float4x4 matResult;
+    
+    matResult[0] = float4(1 - 2 * y * y - 2 * z * z, 2 * x * y + 2 * w * z, 2 * x * z - 2 * w * y, 0);
+    matResult[1] = float4(2 * x * y - 2 * w * z, 1 - 2 * x * x - 2 * z * z, 2 * y * z + 2 * w * x, 0);
+    matResult[2] = float4(2 * x * z + 2 * w * y, 2 * y * z - 2 * w * x, 1 - 2 * x * x - 2 * y * y, 0);
+    matResult[3] = float4(0, 0, 0, 1);
+
+    return matResult;
+}
+
+float4x4 CreateScale(float3 Scale)
+{
+    return float4x4(
+    Scale.x, 0, 0, 0,
+    0, Scale.y, 0, 0,
+    0, 0, Scale.z, 0,
+    0, 0, 0, 1
+    );
+}
+
+float4x4 CreateTranslation(float3 Translation)
+{
+    return float4x4(
+    1, 0, 0, 0,
+    0, 1, 0, 0,
+    0, 0, 1, 0,
+    Translation.x, Translation.y, Translation.z, 1
+    );
 }
 
 #endif
