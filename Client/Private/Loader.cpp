@@ -188,8 +188,6 @@ HRESULT CLoader::Loading_For_Logo()
 		//if (FAILED(Make_StaticObject_Prototype(ELevelType::LOGO, L"../../Resources/Models/Map/TestMap")))
 		//	return E_FAIL;
 	}
-	if (FAILED(m_pGameInstance->Load_Sounds(L"../../Resources/Sounds")))
-		return E_FAIL;
 
 		// For. Prototype_Component_Button_Test_Texture
 	{

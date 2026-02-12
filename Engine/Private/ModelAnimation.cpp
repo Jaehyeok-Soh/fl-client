@@ -265,6 +265,17 @@ HRESULT CModelAnimation::Ready_BindBuffers(CComputeShader* pAnimESahder)
 	return S_OK;
 }
 
+void CModelAnimation::Set_Notifies(vector<AnimNotifyKey> vecKeys)
+{
+	std::sort(vecKeys.begin(), vecKeys.end(),
+		[](const AnimNotifyKey& a, const AnimNotifyKey& b)->_bool
+		{
+			return a.fTrackPosition < b.fTrackPosition;
+		});
+	m_vecNotifies = std::move(vecKeys);
+	m_iNextNotifyIndex = 0;
+}
+
 CModelAnimation* CModelAnimation::Create(ID3D11Device* pDevice, ID3D11DeviceContext* pDeviceContext, void* pArg)
 {
 	CModelAnimation* pInstance = new CModelAnimation(pDevice, pDeviceContext);
