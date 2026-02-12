@@ -54,6 +54,16 @@ HRESULT CRender_Manager::Initialize()
 		if (FAILED(m_pGameInstance->Add_RenderTarget(ERenderTarget::Normal, &desc)))
 			return E_FAIL;
 	}
+	// For. Target_SpecularMask
+	{
+		CRenderTarget::RENDERTARGET_DESC desc = {};
+		desc.ePixelFormat = DXGI_FORMAT_R8G8B8A8_UNORM;
+		desc.iWidth = iWidth;
+		desc.iHeight = iHeight;
+		desc.vClearColor = Vec4::Zero;
+		if (FAILED(m_pGameInstance->Add_RenderTarget(ERenderTarget::SpecularMask, &desc)))
+			return E_FAIL;
+	}
 	// For. Target_Depth
 	{
 		CRenderTarget::RENDERTARGET_DESC desc = {};
@@ -74,7 +84,16 @@ HRESULT CRender_Manager::Initialize()
 		if (FAILED(m_pGameInstance->Add_RenderTarget(ERenderTarget::Shade, &desc)))
 			return E_FAIL;
 	}
-
+	// For. Target_Specular
+	{
+		CRenderTarget::RENDERTARGET_DESC desc = {};
+		desc.ePixelFormat = DXGI_FORMAT_R16G16B16A16_FLOAT;
+		desc.iWidth = iWidth;
+		desc.iHeight = iHeight;
+		desc.vClearColor = Vec4::Zero;
+		if (FAILED(m_pGameInstance->Add_RenderTarget(ERenderTarget::Specular, &desc)))
+			return E_FAIL;
+	}
 	// For. Target_Scene
 	{
 		CRenderTarget::RENDERTARGET_DESC desc = {};
@@ -92,6 +111,8 @@ HRESULT CRender_Manager::Initialize()
 			return E_FAIL;
 		if (FAILED(m_pGameInstance->Add_MRT(EMRTLayer::GameObjects, ERenderTarget::Normal)))
 			return E_FAIL;
+		if (FAILED(m_pGameInstance->Add_MRT(EMRTLayer::GameObjects, ERenderTarget::SpecularMask)))
+			return E_FAIL;
 		if (FAILED(m_pGameInstance->Add_MRT(EMRTLayer::GameObjects, ERenderTarget::Depth)))
 			return E_FAIL;
 	}
@@ -99,6 +120,9 @@ HRESULT CRender_Manager::Initialize()
 	// For. MRT_LightAcc
 	{
 		if (FAILED(m_pGameInstance->Add_MRT(EMRTLayer::LightAcc, ERenderTarget::Shade)))
+			return E_FAIL;
+
+		if (FAILED(m_pGameInstance->Add_MRT(EMRTLayer::LightAcc, ERenderTarget::Specular)))
 			return E_FAIL;
 	}
 
@@ -331,57 +355,57 @@ HRESULT CRender_Manager::Render_NoneBlend()
 	}
 #endif
 
-	for (CGameObject* pElement : m_filteredRenderObjects)
-	{
-		if (FAILED(pElement->Render()))
-		{
-			m_filteredRenderObjects.clear();
-			return E_FAIL;
-		}
-	}
-	m_filteredRenderObjects.clear();
-
 	//for (CGameObject* pElement : m_filteredRenderObjects)
 	//{
-	//	if (pElement == nullptr)
-	//		continue;
-
-	//	CBounds *pBounds = pElement->Get_Component<CBounds>();
-	//	BoundingBox *pAABB = pBounds->Get_WolrdAABB();
-	//	const EFrustrumTier eTier = m_pGameInstance->Classify_BySplitFrustrum(*pAABB);
-	//	switch (eTier)
+	//	if (FAILED(pElement->Render()))
 	//	{
-	//	case EFrustrumTier::Near: m_visibleNear.push_back(pElement); break;
-	//	case EFrustrumTier::Mid:  m_visibleMid.push_back(pElement);  break;
-	//	case EFrustrumTier::Far:  m_visibleFar.push_back(pElement);  break;
-	//	default:
-	//		break;
+	//		m_filteredRenderObjects.clear();
+	//		return E_FAIL;
 	//	}
 	//}
 	//m_filteredRenderObjects.clear();
 
+	for (CGameObject* pElement : m_filteredRenderObjects)
+	{
+		if (pElement == nullptr)
+			continue;
 
-	//for (CGameObject* pElement : m_visibleNear)
-	//{
-	//	if (FAILED(pElement->Render()))
-	//	{
-	//		m_visibleNear.clear();
-	//		m_visibleMid.clear();
-	//		m_visibleFar.clear();
-	//		return E_FAIL;
-	//	}
-	//}
+		CBounds *pBounds = pElement->Get_Component<CBounds>();
+		BoundingBox *pAABB = pBounds->Get_WolrdAABB();
+		const EFrustrumTier eTier = m_pGameInstance->Classify_BySplitFrustrum(*pAABB);
+		switch (eTier)
+		{
+		case EFrustrumTier::Near: m_visibleNear.push_back(pElement); break;
+		case EFrustrumTier::Mid:  m_visibleMid.push_back(pElement);  break;
+		case EFrustrumTier::Far:  m_visibleFar.push_back(pElement);  break;
+		default:
+			break;
+		}
+	}
+	m_filteredRenderObjects.clear();
 
-	//for (CGameObject* pElement : m_visibleMid)
-	//{
-	//	if (FAILED(pElement->Render()))
-	//	{
-	//		m_visibleNear.clear();
-	//		m_visibleMid.clear();
-	//		m_visibleFar.clear();
-	//		return E_FAIL;
-	//	}
-	//}
+
+	for (CGameObject* pElement : m_visibleNear)
+	{
+		if (FAILED(pElement->Render()))
+		{
+			m_visibleNear.clear();
+			m_visibleMid.clear();
+			m_visibleFar.clear();
+			return E_FAIL;
+		}
+	}
+
+	for (CGameObject* pElement : m_visibleMid)
+	{
+		if (FAILED(pElement->Render()))
+		{
+			m_visibleNear.clear();
+			m_visibleMid.clear();
+			m_visibleFar.clear();
+			return E_FAIL;
+		}
+	}
 
 	m_visibleNear.clear();
 	m_visibleMid.clear();
@@ -418,6 +442,9 @@ HRESULT CRender_Manager::Render_Lights()
 	if (FAILED(m_pGameInstance->Bind_RT_ShaderResource(ERenderTarget::Normal, m_pShader)))
 		return E_FAIL;
 
+	if (FAILED(m_pGameInstance->Bind_RT_ShaderResource(ERenderTarget::SpecularMask, m_pShader)))
+		return E_FAIL;
+
 	if (FAILED(m_pGameInstance->Bind_RT_ShaderResource(ERenderTarget::Depth, m_pShader)))
 		return E_FAIL;
 
@@ -439,6 +466,9 @@ HRESULT CRender_Manager::Render_Combined()
 		return E_FAIL;
 
 	if (FAILED(m_pGameInstance->Bind_RT_ShaderResource(ERenderTarget::Shade, m_pShader)))
+		return E_FAIL;
+
+	if (FAILED(m_pGameInstance->Bind_RT_ShaderResource(ERenderTarget::Specular, m_pShader)))
 		return E_FAIL;
 
 	if (FAILED(m_pGameInstance->Bind_RT_ShaderResource(ERenderTarget::Depth, m_pShader)))
@@ -530,6 +560,10 @@ HRESULT CRender_Manager::Ready_Debug()
 	if (FAILED(m_pGameInstance->Ready_RT_Debug(ERenderTarget::Normal, 150.f, 450.f, 300.f, 300.f)))
 		return E_FAIL;
 	if (FAILED(m_pGameInstance->Ready_RT_Debug(ERenderTarget::Shade, 450.f, 150.f, 300.f, 300.f)))
+		return E_FAIL;
+	if (FAILED(m_pGameInstance->Ready_RT_Debug(ERenderTarget::SpecularMask, 450.f, 450.f, 300.f, 300.f)))
+		return E_FAIL;
+	if (FAILED(m_pGameInstance->Ready_RT_Debug(ERenderTarget::Depth, 600.f, 150.f, 300.f, 300.f)))
 		return E_FAIL;
 	return S_OK;
 }

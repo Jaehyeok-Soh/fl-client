@@ -8,6 +8,8 @@ enum class ERenderTarget : _uint
 	Diffuse,
 	Normal,
 	Shade,
+	SpecularMask,
+	Specular,
 	Depth,
 	Scene,	// 유니티에서 SceneTexture라고 함. Effect 전용
 	END,

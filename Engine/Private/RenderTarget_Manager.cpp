@@ -102,6 +102,10 @@ HRESULT CRenderTarget_Manager::Bind_ShaderResource(ERenderTarget eTarget, CShade
         eSlot = EFXSRV::RT_Normal; break;
     case Engine::ERenderTarget::Shade:
         eSlot = EFXSRV::RT_Shade; break;
+    case Engine::ERenderTarget::SpecularMask:
+        eSlot = EFXSRV::RT_SpecularMask; break;
+    case Engine::ERenderTarget::Specular:
+        eSlot = EFXSRV::RT_Specular; break;
     case Engine::ERenderTarget::Depth:
         eSlot = EFXSRV::RT_Depth; break;
     case Engine::ERenderTarget::Scene:
