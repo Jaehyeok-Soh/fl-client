@@ -89,7 +89,7 @@ namespace Engine
 
 		unsigned int iOperatorFlags = { 0 };
 		unsigned int iRotationFlags = { 0 };
-		SimpleMath::Vector2 vPadding1 = { 0.f, 0.f };
+		SimpleMath::Vector2 vUVOffset = { 0.f, 0.f };
 
 		// 스프라이트 정보 추가
 		unsigned int SpriteColCount = {};		// 가로 프레임 수

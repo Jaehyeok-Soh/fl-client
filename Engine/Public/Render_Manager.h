@@ -33,6 +33,8 @@ private:
 	HRESULT Render_Lights();
 	HRESULT Render_Combined();
 	HRESULT Render_NonLights();
+	// 이펙트 전용 (디스토션)
+	HRESULT Render_Distotion();
 	HRESULT Render_Blend();
 	HRESULT Render_BlendUI();
 	HRESULT Render_UI();

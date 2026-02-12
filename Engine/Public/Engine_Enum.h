@@ -13,7 +13,7 @@ namespace Engine
 	enum class LIGHT_TYPE : unsigned int { DIRECTIONAL, STATICPOINT, DYNAMICPOINT, END };
 	enum class EPOINT { A, B, C, END };
 	enum class ELINE { AB, BC, CA, END };
-	enum class RENDER_CATEGORY : unsigned int { PRIORITY, BLEND,NONEBLEND, NONELIGHT, BLENDUI, UI, END };
+	enum class RENDER_CATEGORY : unsigned int { PRIORITY, BLEND,NONEBLEND, NONELIGHT, DISTOTION, BLENDUI, UI, END };
 	enum class DEFFERRED { DEBUG, DIRECTIONAL, POINT, COMBINED, END };
 	enum class ECursorMode : unsigned int
 	{

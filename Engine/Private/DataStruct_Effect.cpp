@@ -46,7 +46,7 @@ void from_json(const json& j, TEFFECT_ContainerData& data)
 		j.at("_ChildData").get_to(data._ChildData);
 }
 
-// ==========   Parts   ==========
+// ==========  TEFFECT_PartsData (to_json)  ==========
 void to_json(json& j, const TEFFECT_PartsData& data)
 {
     j = json
@@ -69,7 +69,7 @@ void to_json(json& j, const TEFFECT_PartsData& data)
         {"ShapeType", data._Effect_ShapeType},
         {"EmissionType", data._Effect_EmissionType},
 
-        // --- Resource Tags ---
+        // --- Resource Tags (Glow, Dissolve 포함) ---
         {"Model_Tag", Engine_Utils::ToString(data._Effect_Model_Tag)},
         {"DiffuseTexture_Tag", Engine_Utils::ToString(data._Effect_DiffuseTexture_Tag)},
         {"NoiseTexture_Tag", Engine_Utils::ToString(data._Effect_NoiseTexture_Tag)},
@@ -77,6 +77,9 @@ void to_json(json& j, const TEFFECT_PartsData& data)
         {"GradationTexture_Tag", Engine_Utils::ToString(data._Effect_GradationTexture_Tag)},
         {"TrailTexture_Tag", Engine_Utils::ToString(data._Effect_TrailTexture_Tag)},
         {"NormalTexture_Tag", Engine_Utils::ToString(data._Effect_NormalTexture_Tag)},
+        {"DissolveTexture_Tag", Engine_Utils::ToString(data._Effect_DissolveTexture_Tag)},
+        {"GlowTexture_Tag", Engine_Utils::ToString(data._Effect_GlowTexture_Tag)},
+        {"Shader_Path", Engine_Utils::ToString(data._Effect_Shader_Path)},
         {"Shader_Tag", Engine_Utils::ToString(data._Effect_Shader_Tag)},
         {"Shader_Pass", data._Effect_ShaderPass},
 
@@ -90,6 +93,7 @@ void to_json(json& j, const TEFFECT_PartsData& data)
         {"Range", {{"x", data._Effect_Range.x}, {"y", data._Effect_Range.y}, {"z", data._Effect_Range.z}}},
         {"ParticleSize", {{"x", data._Effect_ParticleSize.x}, {"y", data._Effect_ParticleSize.y}}},
         {"SpiralData", {{"Radius", data._Effect_Spiral_Radius}, {"Speed", data._Effect_Spiral_Speed}}},
+        {"UV_Offset", {{"x", data._Effect_UV_Offset.x}, {"y", data._Effect_UV_Offset.y}}},
 
         // --- Time & Animation ---
         {"TimeFlag", data._Effect_TimeFlag},
@@ -106,27 +110,36 @@ void to_json(json& j, const TEFFECT_PartsData& data)
         {"PlayAnimation", data._Effect_bPlayAnim},
         {"AnimationSpeed", data._Effect_AnimSpeed},
         {"SpriteNumber", data.m_iCurSpriteNumber},
+        {"AppearRatio", data._Effect_ApearRatio},
 
-        // -- 스크롤 속도 배율 (Weight) 저장 ---
-        {"DiffuseTexture_ScrollWeight", {{"x", data._Effect_DiffuseTexture_ScrollWeight.x}, {"y", data._Effect_DiffuseTexture_ScrollWeight.y}}},
-        {"NoiseTexture_ScrollWeight", {{"x", data._Effect_NoiseTexture_ScrollWeight.x}, {"y", data._Effect_NoiseTexture_ScrollWeight.y}}},
-        {"MaskingTexture_ScrollWeight", {{"x", data._Effect_MaskingTexture_ScrollWeight.x}, {"y", data._Effect_MaskingTexture_ScrollWeight.y}}},
-        {"GradationTexture_ScrollWeight", {{"x", data._Effect_GradationTexture_ScrollWeight.x}, {"y", data._Effect_GradationTexture_ScrollWeight.y}}},
+        // --- 스크롤 가중치 & 개별 활성화 ---
+        {"ScrollWeights", {
+            {"Diffuse", {{"x", data._Effect_DiffuseTexture_ScrollWeight.x}, {"y", data._Effect_DiffuseTexture_ScrollWeight.y}}},
+            {"Noise", {{"x", data._Effect_NoiseTexture_ScrollWeight.x}, {"y", data._Effect_NoiseTexture_ScrollWeight.y}}},
+            {"Masking", {{"x", data._Effect_MaskingTexture_ScrollWeight.x}, {"y", data._Effect_MaskingTexture_ScrollWeight.y}}},
+            {"Gradation", {{"x", data._Effect_GradationTexture_ScrollWeight.x}, {"y", data._Effect_GradationTexture_ScrollWeight.y}}},
+            {"Dissolve", {{"x", data._Effect_DissolveTexture_ScrollWeight.x}, {"y", data._Effect_DissolveTexture_ScrollWeight.y}}}
+        }},
+        {"Tool_ScrollFlags", {
+            {"Diffuse", data._Effect_Tool_UseScroll_Diffuse},
+            {"Noise", data._Effect_Tool_UseScroll_Noise},
+            {"Masking", data._Effect_Tool_UseScroll_Masking},
+            {"Gradation", data._Effect_Tool_UseScroll_Gradation},
+            {"Dissolve", data._Effect_Tool_UseScroll_Dissolve},
+            {"Glow", data._Effect_Tool_UseScroll_Glow}
+        }},
 
-        // --- 툴 UI 전용 스크롤 체크박스 상태 저장 ---
-        {"Tool_UseScroll_Diffuse", data._Effect_Tool_UseScroll_Diffuse},
-        {"Tool_UseScroll_Noise", data._Effect_Tool_UseScroll_Noise},
-        {"Tool_UseScroll_Masking", data._Effect_Tool_UseScroll_Masking},
-        {"Tool_UseScroll_Gradation", data._Effect_Tool_UseScroll_Gradation},
-
-        // --- Physics & Gravity (커브 포함) ---
+        // --- Physics & Gravity ---
         {"GravityBase", {{"Val", data._Effect_Gravity_Value}, {"Mod", data._Effect_GravityModifier}}},
         {"GravityDir", {{"x", data._Effect_GravityDir.x}, {"y", data._Effect_GravityDir.y}, {"z", data._Effect_GravityDir.z}}},
         {"UseGlobalGravityCurve", data._bUseGlobalGravityCurve},
         {"UseExternalForceCurve", data._bUseExternalForceCurve},
         {"ExternalForceStrength", data.fExternalForceStrength},
 
-        // --- Rotation Settings (커브 포함) ---
+        // --- UV Scroll Curves  ---
+        {"UseUVScrollCurve", data._bUseUVScrollCurve},
+
+        // --- Rotation Settings ---
         {"StartRotation", {{"x", data._Effect_StartRotation.x}, {"y", data._Effect_StartRotation.y}, {"z", data._Effect_StartRotation.z}}},
         {"TargetRotation", {{"x", data._Effect_TargetRotation.x}, {"y", data._Effect_TargetRotation.y}, {"z", data._Effect_TargetRotation.z}}},
         {"UseStartRotation", data._bUseStartRotation},
@@ -141,36 +154,48 @@ void to_json(json& j, const TEFFECT_PartsData& data)
         {"TexOperatorFlag", data._Effect_TextureOperatorFlag},
 
         // --- Tool Settings ---
-        {"Tool_DiffuseTexture", data._Effect_Tool_DiffuseTexture},
-        {"Tool_NoiseTexture", data._Effect_Tool_NoiseTexture},
-        {"Tool_MaskingTexture", data._Effect_Tool_MaskingTexture},
-        {"Tool_GradationTexture", data._Effect_Tool_GradationTexture},
-        {"Tool_UseBillboard", data._Effect_Tool_UseBillboard},
-        {"Tool_UseScroll", data._Effect_Tool_UseScroll},
-        {"Tool_RightScroll", data._Effect_Tool_RightScroll},
-        {"Tool_DownScroll", data._Effect_Tool_DownScroll},
-        {"Tool_DiffuseSampler_Flag", data._Effect_Tool_DiffuseSamplerState_Flag},
-        {"Tool_NoiseSampler_Flag", data._Effect_Tool_NoiseSamplerState_Flag},
-        {"Tool_MaskingSampler_Flag", data._Effect_Tool_MaskingSamplerState_Flag},
-        {"Tool_GradationSampler_Flag", data._Effect_Tool_GradationSamplerState_Flag}
+        {"Tool_Resource", {
+            {"Diffuse", data._Effect_Tool_DiffuseTexture},
+            {"Noise", data._Effect_Tool_NoiseTexture},
+            {"Masking", data._Effect_Tool_MaskingTexture},
+            {"Gradation", data._Effect_Tool_GradationTexture},
+            {"Dissolve", data._Effect_Tool_DissolveTexture},
+            {"Glow", data._Effect_Tool_GlowTexture}
+        }},
+        {"Tool_Render", {
+            {"Billboard", data._Effect_Tool_UseBillboard},
+            {"Scroll", data._Effect_Tool_UseScroll},
+            {"Right", data._Effect_Tool_RightScroll},
+            {"Down", data._Effect_Tool_DownScroll}
+        }},
+        {"Tool_Samplers", {
+            {"Diffuse", data._Effect_Tool_DiffuseSamplerState_Flag},
+            {"Noise", data._Effect_Tool_NoiseSamplerState_Flag},
+            {"Masking", data._Effect_Tool_MaskingSamplerState_Flag},
+            {"Gradation", data._Effect_Tool_GradationSamplerState_Flag}
+        }}
     };
 
-    // 커브 배열 직렬화
+    // 커브 데이터 직렬화 람다
     auto CurveToJson = [](const auto& vec) {
         json arr = json::array();
         for (const auto& key : vec) arr.push_back({ {"Time", key.fTimeKey}, {"Val", key.fValue} });
         return arr;
         };
+
     j["GlobalGravityCurve"] = CurveToJson(data._vecGlobalGravityCurve);
     j["ExternalForceCurve"] = CurveToJson(data._vecExternalForceCurve);
     j["RotationCurveX"] = CurveToJson(data._vecRotationCurveX);
     j["RotationCurveY"] = CurveToJson(data._vecRotationCurveY);
     j["RotationCurveZ"] = CurveToJson(data._vecRotationCurveZ);
+    j["UVScrollCurveX"] = CurveToJson(data._vecUVScrollCurveX);
+    j["UVScrollCurveY"] = CurveToJson(data._vecUVScrollCurveY);
 }
 
 // ==========  Parts (from_json)  ==========
 void from_json(const json& j, TEFFECT_PartsData& data)
 {
+    // 기본 태그 및 행렬 복구
     j.at("strTag").get_to(data.strTag);
     j.at("PartsName").get_to(data.EffectPartsName);
     j.at("ParentsName").get_to(data.ParentsName);
@@ -183,12 +208,14 @@ void from_json(const json& j, TEFFECT_PartsData& data)
         data.vWorldMatrix._41 = m[12]; data.vWorldMatrix._42 = m[13]; data.vWorldMatrix._43 = m[14]; data.vWorldMatrix._44 = m[15];
     }
 
+    // 타입 설정
     j.at("EffectSystem").get_to(data.eEffectSystemType);
     j.at("ParticleSystem").get_to(data.eEffectParticleType);
     j.at("EffectType").get_to(data.eEffectType);
     j.at("ShapeType").get_to(data._Effect_ShapeType);
     if (j.contains("EmissionType")) j.at("EmissionType").get_to(data._Effect_EmissionType);
 
+    // 리소스 태그 복구
     data._Effect_Model_Tag = Engine_Utils::ToWString(j.at("Model_Tag").get<string>());
     data._Effect_DiffuseTexture_Tag = Engine_Utils::ToWString(j.at("DiffuseTexture_Tag").get<string>());
     data._Effect_NoiseTexture_Tag = Engine_Utils::ToWString(j.at("NoiseTexture_Tag").get<string>());
@@ -196,35 +223,28 @@ void from_json(const json& j, TEFFECT_PartsData& data)
     data._Effect_GradationTexture_Tag = Engine_Utils::ToWString(j.at("GradationTexture_Tag").get<string>());
     data._Effect_TrailTexture_Tag = Engine_Utils::ToWString(j.at("TrailTexture_Tag").get<string>());
     data._Effect_NormalTexture_Tag = Engine_Utils::ToWString(j.at("NormalTexture_Tag").get<string>());
+    if (j.contains("DissolveTexture_Tag")) data._Effect_DissolveTexture_Tag = Engine_Utils::ToWString(j.at("DissolveTexture_Tag").get<string>());
+    if (j.contains("GlowTexture_Tag")) data._Effect_GlowTexture_Tag = Engine_Utils::ToWString(j.at("GlowTexture_Tag").get<string>());
+    if (j.contains("Shader_Path")) data._Effect_Shader_Path = Engine_Utils::ToWString(j.at("Shader_Path").get<string>());
     data._Effect_Shader_Tag = Engine_Utils::ToWString(j.at("Shader_Tag").get<string>());
     j.at("Shader_Pass").get_to(data._Effect_ShaderPass);
 
-    // Math Recovery
-    data._Effect_ScrollSpeed.x = j.at("ScrollSpeed").at("x").get<float>();
-    data._Effect_ScrollSpeed.y = j.at("ScrollSpeed").at("y").get<float>();
-    data._Effect_DistortionScale.x = j.at("DistortionScale").at("x").get<float>();
-    data._Effect_DistortionScale.y = j.at("DistortionScale").at("y").get<float>();
-    data._Effect_StartScale.x = j.at("StartScale").at("x").get<float>();
-    data._Effect_StartScale.y = j.at("StartScale").at("y").get<float>();
-    data._Effect_StartScale.z = j.at("StartScale").at("z").get<float>();
-    data._Effect_EndScale.x = j.at("EndScale").at("x").get<float>();
-    data._Effect_EndScale.y = j.at("EndScale").at("y").get<float>();
-    data._Effect_EndScale.z = j.at("EndScale").at("z").get<float>();
-    data._Effect_Color.x = j.at("Color").at("x").get<float>();
-    data._Effect_Color.y = j.at("Color").at("y").get<float>();
-    data._Effect_Color.z = j.at("Color").at("z").get<float>();
-    data._Effect_Color.w = j.at("Color").at("w").get<float>();
-    data._Effect_Range.x = j.at("Range").at("x").get<float>();
-    data._Effect_Range.y = j.at("Range").at("y").get<float>();
-    data._Effect_Range.z = j.at("Range").at("z").get<float>();
-    data._Effect_ParticleSize.x = j.at("ParticleSize").at("x").get<float>();
-    data._Effect_ParticleSize.y = j.at("ParticleSize").at("y").get<float>();
+    // 수학 데이터 복구
+    data._Effect_ScrollSpeed = { j.at("ScrollSpeed").at("x"), j.at("ScrollSpeed").at("y") };
+    data._Effect_DistortionScale = { j.at("DistortionScale").at("x"), j.at("DistortionScale").at("y") };
+    data._Effect_StartScale = { j.at("StartScale").at("x"), j.at("StartScale").at("y"), j.at("StartScale").at("z") };
+    data._Effect_EndScale = { j.at("EndScale").at("x"), j.at("EndScale").at("y"), j.at("EndScale").at("z") };
+    data._Effect_Color = { j.at("Color").at("x"), j.at("Color").at("y"), j.at("Color").at("z"), j.at("Color").at("w") };
+    j.at("DiscardValue").get_to(data._Effect_DiscardValue);
+    data._Effect_Range = { j.at("Range").at("x"), j.at("Range").at("y"), j.at("Range").at("z") };
+    data._Effect_ParticleSize = { j.at("ParticleSize").at("x"), j.at("ParticleSize").at("y") };
+    if (j.contains("UV_Offset")) data._Effect_UV_Offset = { j.at("UV_Offset").at("x"), j.at("UV_Offset").at("y") };
     if (j.contains("SpiralData")) {
         data._Effect_Spiral_Radius = j.at("SpiralData").at("Radius").get<float>();
         data._Effect_Spiral_Speed = j.at("SpiralData").at("Speed").get<float>();
     }
 
-    // Time & Animation
+    // 시간 및 애니메이션 복구
     j.at("TimeFlag").get_to(data._Effect_TimeFlag);
     j.at("StartDelay").get_to(data._Effect_StartDelay);
     j.at("LifeTime").get_to(data._Effect_LifeTime);
@@ -234,61 +254,55 @@ void from_json(const json& j, TEFFECT_PartsData& data)
     j.at("IsRandomSeed").get_to(data._Effect_IsRandomSeed);
     j.at("PlayBackSpeed").get_to(data._Effect_PlayBackSpeed);
     j.at("StartSpeed").get_to(data._Effect_StartSpeed);
-    j.at("DiscardValue").get_to(data._Effect_DiscardValue);
     j.at("UseSprite").get_to(data._Effect_bUseSprite);
-    data._Effect_TileCount.x = j.at("TileCount").at("x").get<_uint>();
-    data._Effect_TileCount.y = j.at("TileCount").at("y").get<_uint>();
+    data._Effect_TileCount = { j.at("TileCount").at("x"), j.at("TileCount").at("y") };
     j.at("PlayAnimation").get_to(data._Effect_bPlayAnim);
     j.at("AnimationSpeed").get_to(data._Effect_AnimSpeed);
+    if (j.contains("SpriteNumber")) j.at("SpriteNumber").get_to(data.m_iCurSpriteNumber);
+    if (j.contains("AppearRatio")) j.at("AppearRatio").get_to(data._Effect_ApearRatio);
 
-    if (j.contains("DiffuseTexture_ScrollWeight")) {
-        data._Effect_DiffuseTexture_ScrollWeight.x = j.at("DiffuseTexture_ScrollWeight").at("x").get<float>();
-        data._Effect_DiffuseTexture_ScrollWeight.y = j.at("DiffuseTexture_ScrollWeight").at("y").get<float>();
-    }
-    if (j.contains("NoiseTexture_ScrollWeight")) {
-        data._Effect_NoiseTexture_ScrollWeight.x = j.at("NoiseTexture_ScrollWeight").at("x").get<float>();
-        data._Effect_NoiseTexture_ScrollWeight.y = j.at("NoiseTexture_ScrollWeight").at("y").get<float>();
-    }
-    if (j.contains("MaskingTexture_ScrollWeight")) {
-        data._Effect_MaskingTexture_ScrollWeight.x = j.at("MaskingTexture_ScrollWeight").at("x").get<float>();
-        data._Effect_MaskingTexture_ScrollWeight.y = j.at("MaskingTexture_ScrollWeight").at("y").get<float>();
-    }
-    if (j.contains("GradationTexture_ScrollWeight")) {
-        data._Effect_GradationTexture_ScrollWeight.x = j.at("GradationTexture_ScrollWeight").at("x").get<float>();
-        data._Effect_GradationTexture_ScrollWeight.y = j.at("GradationTexture_ScrollWeight").at("y").get<float>();
+    // 스크롤 가중치 복구
+    if (j.contains("ScrollWeights")) {
+        auto& sw = j.at("ScrollWeights");
+        data._Effect_DiffuseTexture_ScrollWeight = { sw["Diffuse"]["x"], sw["Diffuse"]["y"] };
+        data._Effect_NoiseTexture_ScrollWeight = { sw["Noise"]["x"], sw["Noise"]["y"] };
+        data._Effect_MaskingTexture_ScrollWeight = { sw["Masking"]["x"], sw["Masking"]["y"] };
+        data._Effect_GradationTexture_ScrollWeight = { sw["Gradation"]["x"], sw["Gradation"]["y"] };
+        if (sw.contains("Dissolve")) data._Effect_DissolveTexture_ScrollWeight = { sw["Dissolve"]["x"], sw["Dissolve"]["y"] };
     }
 
-    // --- 툴 UI 체크박스 상태 복구 ---
-    if (j.contains("Tool_UseScroll_Diffuse")) j.at("Tool_UseScroll_Diffuse").get_to(data._Effect_Tool_UseScroll_Diffuse);
-    if (j.contains("Tool_UseScroll_Noise")) j.at("Tool_UseScroll_Noise").get_to(data._Effect_Tool_UseScroll_Noise);
-    if (j.contains("Tool_UseScroll_Masking")) j.at("Tool_UseScroll_Masking").get_to(data._Effect_Tool_UseScroll_Masking);
-    if (j.contains("Tool_UseScroll_Gradation")) j.at("Tool_UseScroll_Gradation").get_to(data._Effect_Tool_UseScroll_Gradation);
+    // 툴 전용 스크롤 체크박스 상태 로드
+    if (j.contains("Tool_ScrollFlags")) {
+        auto& tf = j.at("Tool_ScrollFlags");
+        tf.at("Diffuse").get_to(data._Effect_Tool_UseScroll_Diffuse);
+        tf.at("Noise").get_to(data._Effect_Tool_UseScroll_Noise);
+        tf.at("Masking").get_to(data._Effect_Tool_UseScroll_Masking);
+        tf.at("Gradation").get_to(data._Effect_Tool_UseScroll_Gradation);
+        if (tf.contains("Dissolve")) tf.at("Dissolve").get_to(data._Effect_Tool_UseScroll_Dissolve);
+        if (tf.contains("Glow")) tf.at("Glow").get_to(data._Effect_Tool_UseScroll_Glow);
+    }
 
-    // Physics & Rotation Settings
+    // 물리 및 커브 설정 로드
     data._Effect_Gravity_Value = j.at("GravityBase").at("Val").get<float>();
     data._Effect_GravityModifier = j.at("GravityBase").at("Mod").get<float>();
-    data._Effect_GravityDir.x = j.at("GravityDir").at("x").get<float>();
-    data._Effect_GravityDir.y = j.at("GravityDir").at("y").get<float>();
-    data._Effect_GravityDir.z = j.at("GravityDir").at("z").get<float>();
+    data._Effect_GravityDir = { j.at("GravityDir").at("x"), j.at("GravityDir").at("y"), j.at("GravityDir").at("z") };
     j.at("UseGlobalGravityCurve").get_to(data._bUseGlobalGravityCurve);
     j.at("UseExternalForceCurve").get_to(data._bUseExternalForceCurve);
     j.at("ExternalForceStrength").get_to(data.fExternalForceStrength);
+    if (j.contains("UseUVScrollCurve")) j.at("UseUVScrollCurve").get_to(data._bUseUVScrollCurve);
 
-    data._Effect_StartRotation.x = j.at("StartRotation").at("x").get<float>();
-    data._Effect_StartRotation.y = j.at("StartRotation").at("y").get<float>();
-    data._Effect_StartRotation.z = j.at("StartRotation").at("z").get<float>();
-    data._Effect_TargetRotation.x = j.at("TargetRotation").at("x").get<float>();
-    data._Effect_TargetRotation.y = j.at("TargetRotation").at("y").get<float>();
-    data._Effect_TargetRotation.z = j.at("TargetRotation").at("z").get<float>();
+    // 회전 및 모든 커브 데이터 복구
+    data._Effect_StartRotation = { j.at("StartRotation").at("x"), j.at("StartRotation").at("y"), j.at("StartRotation").at("z") };
+    data._Effect_TargetRotation = { j.at("TargetRotation").at("x"), j.at("TargetRotation").at("y"), j.at("TargetRotation").at("z") };
     j.at("UseStartRotation").get_to(data._bUseStartRotation);
     j.at("UseRotationCurve").get_to(data._bUseRotationCurve);
-    j.at("SeparateAxes").get_to(data._bSeparateAxes);
+    if (j.contains("SeparateAxes")) j.at("SeparateAxes").get_to(data._bSeparateAxes);
 
-    // Curves Recovery
     auto JsonToCurve = [&](const string& key, auto& vec) {
         if (j.contains(key)) {
             vec.clear();
-            for (const auto& item : j.at(key)) vec.push_back({ item.at("Time").get<float>(), item.at("Val").get<float>() });
+            for (const auto& item : j.at(key))
+                vec.push_back({ item.at("Time").get<float>(), item.at("Val").get<float>() });
         }
         };
     JsonToCurve("GlobalGravityCurve", data._vecGlobalGravityCurve);
@@ -296,30 +310,47 @@ void from_json(const json& j, TEFFECT_PartsData& data)
     JsonToCurve("RotationCurveX", data._vecRotationCurveX);
     JsonToCurve("RotationCurveY", data._vecRotationCurveY);
     JsonToCurve("RotationCurveZ", data._vecRotationCurveZ);
+    JsonToCurve("UVScrollCurveX", data._vecUVScrollCurveX);
+    JsonToCurve("UVScrollCurveY", data._vecUVScrollCurveY);
 
-    // Flags & Tool Settings
+    // 플래그 및 Tool_Render/Tool_Samplers 복구
     j.at("TextureFlag").get_to(data._Effect_TextureFlag);
     j.at("RenderFlag").get_to(data._Effect_RenderFlag);
     j.at("SamplerStateFlag").get_to(data._Effect_SamplerStateFlag);
     if (j.contains("TexRotationFlag")) j.at("TexRotationFlag").get_to(data._Effect_TextureRotationFlag);
     if (j.contains("TexOperatorFlag")) j.at("TexOperatorFlag").get_to(data._Effect_TextureOperatorFlag);
 
-    j.at("Tool_DiffuseTexture").get_to(data._Effect_Tool_DiffuseTexture);
-    j.at("Tool_NoiseTexture").get_to(data._Effect_Tool_NoiseTexture);
-    j.at("Tool_MaskingTexture").get_to(data._Effect_Tool_MaskingTexture);
-    j.at("Tool_GradationTexture").get_to(data._Effect_Tool_GradationTexture);
-    j.at("Tool_UseBillboard").get_to(data._Effect_Tool_UseBillboard);
-    j.at("Tool_UseScroll").get_to(data._Effect_Tool_UseScroll);
-    j.at("Tool_RightScroll").get_to(data._Effect_Tool_RightScroll);
-    j.at("Tool_DownScroll").get_to(data._Effect_Tool_DownScroll);
-    j.at("Tool_DiffuseSampler_Flag").get_to(data._Effect_Tool_DiffuseSamplerState_Flag);
-    j.at("Tool_NoiseSampler_Flag").get_to(data._Effect_Tool_NoiseSamplerState_Flag);
-    j.at("Tool_MaskingSampler_Flag").get_to(data._Effect_Tool_MaskingSamplerState_Flag);
-    j.at("Tool_GradationSampler_Flag").get_to(data._Effect_Tool_GradationSamplerState_Flag);
+    // T(Billboard, Scroll 등
+    if (j.contains("Tool_Render")) {
+        auto& tr = j.at("Tool_Render");
+        tr.at("Billboard").get_to(data._Effect_Tool_UseBillboard);
+        tr.at("Scroll").get_to(data._Effect_Tool_UseScroll);
+        tr.at("Right").get_to(data._Effect_Tool_RightScroll);
+        tr.at("Down").get_to(data._Effect_Tool_DownScroll);
+    }
+
+    // Tool_Samplers 복구
+    if (j.contains("Tool_Samplers")) {
+        auto& ts = j.at("Tool_Samplers");
+        ts.at("Diffuse").get_to(data._Effect_Tool_DiffuseSamplerState_Flag);
+        ts.at("Noise").get_to(data._Effect_Tool_NoiseSamplerState_Flag);
+        ts.at("Masking").get_to(data._Effect_Tool_MaskingSamplerState_Flag);
+        ts.at("Gradation").get_to(data._Effect_Tool_GradationSamplerState_Flag);
+    }
+
+    // Tool_Resource 복구 (텍스처 체크박스)
+    if (j.contains("Tool_Resource")) {
+        auto& res = j.at("Tool_Resource");
+        res.at("Diffuse").get_to(data._Effect_Tool_DiffuseTexture);
+        res.at("Noise").get_to(data._Effect_Tool_NoiseTexture);
+        res.at("Masking").get_to(data._Effect_Tool_MaskingTexture);
+        res.at("Gradation").get_to(data._Effect_Tool_GradationTexture);
+        if (res.contains("Dissolve")) res.at("Dissolve").get_to(data._Effect_Tool_DissolveTexture);
+        if (res.contains("Glow")) res.at("Glow").get_to(data._Effect_Tool_GlowTexture);
+    }
 }
 
-NS_END
-
+NS_END;
 
 NS_BEGIN(Engine)
 

@@ -110,6 +110,8 @@ private:
     float m_vSelectedColor[4] = { 1.f, 1.f, 1.f, 1.f };
     _int m_iSelectedRotationAxis = { 0 };
 
+    _int m_iSelectedScrollAxis = { 0 };
+
     // ======== 이미지의 회전정보를 담고 있는 배열 ==========
     bool                m_bShowRotationModal = false;
     int                 m_iRotIndices[6] = { 0, 0, 0, 0, 0, 0 };

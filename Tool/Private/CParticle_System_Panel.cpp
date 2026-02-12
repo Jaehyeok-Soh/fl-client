@@ -367,9 +367,7 @@ void CParticle_System_Panel::Draw_ParticleSystem(CToolObject* pGo)
 
 			ImGui::TreePop();
 		}
-
-
-
+	
 			// Gravity Source - 중력이 어디서 오는지 결정한다. 물리 상수 (9.8ms^2)
 			// Gravity Modifier - 중력의 영향을 얼마나 강하게 받을지 정하는 배수. 0이면 무중력, 1이면 설정된 중력만큼 아래로 떨어진다.
 
@@ -589,6 +587,87 @@ void CParticle_System_Panel::Draw_ParticleSystem(CToolObject* pGo)
 		}
 	}
 
+
+   // ===============================//
+  //  UV Scroll Curve (X/Y Separate)//
+ // ===============================//
+
+	if (ImGui::CollapsingHeader("UV Scroll Curve (X/Y Separate)##UV Scroll Curve"))
+	{
+		// 1. 사용 여부 체크박스
+		m_bModified |= ImGui::Checkbox("Use Scroll Curve", &m_tCurrentDesc._bUseUVScrollCurve);
+
+		if (m_tCurrentDesc._bUseUVScrollCurve)
+		{
+			// 2. 축 선택 라디오 버튼
+			ImGui::Text("Select Axis: ##UV Scroll Curve"); ImGui::SameLine();
+			ImGui::RadioButton("X##UV Scroll Curve", &m_iSelectedScrollAxis, 0); ImGui::SameLine();
+			ImGui::RadioButton("Y##UV Scroll Curve", &m_iSelectedScrollAxis, 1);
+
+			if (ImGui::TreeNode("Curve Editor##UV Scroll Curve"))
+			{
+				// 3. 캔버스 설정 (네 코드 규격 그대로)
+				ImVec2 canvas_size = ImVec2(ImGui::GetContentRegionAvail().x, 150.0f);
+				ImGui::InvisibleButton("ScrollCurveCanvas##UV Scroll Curve", canvas_size);
+				ImVec2 canvas_p0 = ImGui::GetItemRectMin();
+				ImVec2 mouse_pos = ImGui::GetMousePos();
+
+				ImDrawList* draw_list = ImGui::GetWindowDrawList();
+				draw_list->AddRectFilled(canvas_p0, ImVec2(canvas_p0.x + canvas_size.x, canvas_p0.y + canvas_size.y), IM_COL32(30, 30, 30, 255));
+
+				// 4. 선택된 축에 따른 벡터 포인터 할당
+				vector<CEffectObject::Rotation_CurveKey>* pCurveVec = nullptr;
+				ImU32 lineColor = IM_COL32(255, 255, 0, 255);
+
+				if (m_iSelectedScrollAxis == 0) { pCurveVec = &m_tCurrentDesc._vecUVScrollCurveX; lineColor = IM_COL32(255, 100, 100, 255); }
+				else { pCurveVec = &m_tCurrentDesc._vecUVScrollCurveY; lineColor = IM_COL32(100, 255, 100, 255); }
+
+				if (pCurveVec)
+				{
+					for (size_t i = 0; i < pCurveVec->size(); ++i)
+					{
+						// 점 좌표 계산
+						ImVec2 point_pos = ImVec2(
+							canvas_p0.x + (*pCurveVec)[i].fTimeKey * canvas_size.x,
+							canvas_p0.y + (1.0f - ((*pCurveVec)[i].fValue)) * canvas_size.y
+						);
+
+						// 삭제 로직 (Ctrl + 좌클릭)
+						float dist = sqrtf(powf(mouse_pos.x - point_pos.x, 2) + powf(mouse_pos.y - point_pos.y, 2));
+						if (dist < 7.0f && ImGui::IsMouseClicked(ImGuiMouseButton_Left) && ImGui::GetIO().KeyCtrl)
+						{
+							pCurveVec->erase(pCurveVec->begin() + i);
+							m_bModified = true;
+							break;
+						}
+
+						// 선 그리기
+						if (i < pCurveVec->size() - 1)
+						{
+							ImVec2 next_point = ImVec2(
+								canvas_p0.x + (*pCurveVec)[i + 1].fTimeKey * canvas_size.x,
+								canvas_p0.y + (1.0f - ((*pCurveVec)[i + 1].fValue)) * canvas_size.y
+							);
+							draw_list->AddLine(point_pos, next_point, lineColor, 2.0f);
+						}
+						draw_list->AddCircleFilled(point_pos, 3.0f, IM_COL32(255, 255, 255, 255));
+					}
+				}
+
+				// 점 추가 로직 (우클릭)
+				if (ImGui::IsItemHovered() && ImGui::IsMouseClicked(ImGuiMouseButton_Right))
+				{
+					CEffectObject::Rotation_CurveKey newKey;
+					newKey.fTimeKey = (mouse_pos.x - canvas_p0.x) / canvas_size.x;
+					newKey.fValue = (1.0f - (mouse_pos.y - canvas_p0.y) / canvas_size.y);
+					pCurveVec->push_back(newKey);
+					std::sort(pCurveVec->begin(), pCurveVec->end(), [](auto& a, auto& b) { return a.fTimeKey < b.fTimeKey; });
+					m_bModified = true;
+				}
+				ImGui::TreePop();
+			}
+		}
+	}
 	// ==================//
    //       Shape       //
   // ==================//
@@ -774,6 +853,13 @@ void CParticle_System_Panel::Draw_ParticleSystem(CToolObject* pGo)
 			// 5. DissolveTexture (1 << 10)
 			DrawTextureScrollUI("Dissolve", m_tCurrentDesc._Effect_Tool_UseScroll_Dissolve, 1 << 10, m_tCurrentDesc._Effect_DissolveTexture_ScrollWeight);
 
+			ImGui::TreePop();
+		}
+
+		ImGui::AlignTextToFramePadding();
+		if (ImGui::TreeNode("UV Offset"))
+		{
+			m_bModified |= ImGui::DragFloat2("##UV Offset", &m_tCurrentDesc._Effect_UV_Offset.x, 0.01f, -1.f, 1.f);
 			ImGui::TreePop();
 		}
 
@@ -1432,7 +1518,7 @@ void CParticle_System_Panel::Draw_Sprite_Texture(CToolObject* pGo)
 				ImGui::AlignTextToFramePadding();
 				ImGui::Text("Frame Index"); ImGui::SameLine();
 				ImGui::SetNextItemWidth(-1.0f);
-				if (ImGui::SliderInt("##CurIndex", &curIdx, 0, maxIndex))
+				if (ImGui::DragInt("##CurIndex", &curIdx, 0, maxIndex))
 				{
 					m_tCurrentDesc.m_iCurSpriteNumber = (uint32_t)curIdx;
 					m_bModified |= true;

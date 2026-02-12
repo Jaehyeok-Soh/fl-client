@@ -230,6 +230,9 @@ HRESULT CRender_Manager::Render()
 	if (FAILED(Render_NonLights()))
 		return E_FAIL;
 
+	if (FAILED(Render_Distotion()))
+		return E_FAIL;
+
 	if (FAILED(Render_Blend()))
 		return E_FAIL;
 
@@ -284,19 +287,33 @@ HRESULT CRender_Manager::Render_Blend()
 			return E_FAIL;
 
 		Safe_Release(pElement);
-	}
+	} 
 	m_renderObjects[ENUM_TO_UINT(RENDER_CATEGORY::BLEND)].clear();
+
+	return S_OK;
+}
+
+HRESULT CRender_Manager::Render_Distotion()
+{
+	if (m_renderObjects[ENUM_TO_UINT(RENDER_CATEGORY::DISTOTION)].size() != 0)
+	{
+		m_pGameInstance->Copy_BackBufferResource(ERenderTarget::Scene);
+	}
+
+	for (CGameObject* pElement : m_renderObjects[ENUM_TO_UINT(RENDER_CATEGORY::DISTOTION)])
+	{
+		if (FAILED(pElement->Render()))
+			return E_FAIL;
+
+		Safe_Release(pElement);
+	}
+	m_renderObjects[ENUM_TO_UINT(RENDER_CATEGORY::DISTOTION)].clear();
 
 	return S_OK;
 }
 
 HRESULT CRender_Manager::Render_NonLights()
 {
-	if (m_renderObjects[ENUM_TO_UINT(RENDER_CATEGORY::NONELIGHT)].size() != 0)
-	{
-		m_pGameInstance->Copy_BackBufferResource(ERenderTarget::Scene);
-	}
-
 	for (CGameObject* pElement : m_renderObjects[ENUM_TO_UINT(RENDER_CATEGORY::NONELIGHT)])
 	{
 		if (FAILED(pElement->Render()))

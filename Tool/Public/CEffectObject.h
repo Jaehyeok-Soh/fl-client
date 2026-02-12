@@ -169,6 +169,9 @@ public:
         float               _Effect_Spiral_Radius = { 1.f };
         float               _Effect_Spiral_Speed = { 1.f };
 
+        // ========  이펙트 UV Offset  ==========
+        Vec2               _Effect_UV_Offset = { 0.f, 0.f };
+
         // ==============  중력 값들   ==============
         // Base Data
         float               _Effect_Gravity_Value = { 9.8f };           // 물리적 기준값
@@ -182,6 +185,11 @@ public:
         bool                     _bUseExternalForceCurve = false;   // 외부 중력(Force Field) 커브 여부
         float                    fExternalForceStrength = 1.0f; // 커브 안 쓸 때 기본값
         vector<Gravity_CurveKey> _vecExternalForceCurve;  // 외부 중력용 시간대별 비율값 
+
+        // =============  스크롤 커브  =============
+        bool                     _bUseUVScrollCurve = false;
+        vector<Rotation_CurveKey> _vecUVScrollCurveX;
+        vector<Rotation_CurveKey> _vecUVScrollCurveY;
 
         // ==============  회전 값들   ==============
        // 3D Start Rotation 값
@@ -225,7 +233,6 @@ public:
         Vec2                _Effect_MaskingTexture_ScrollWeight = { 1.f, 1.f };
         Vec2                _Effect_GradationTexture_ScrollWeight = { 1.f, 1.f };
         Vec2                _Effect_DissolveTexture_ScrollWeight = { 1.f, 1.f };
-
 
         // 툴용 텍스처 스크롤 
 
@@ -292,6 +299,7 @@ private:
     void Update_Gravity_Force(float fLifeRatio); // 중력 계산하기.
     float Sample_RotationCurve(const vector<Rotation_CurveKey>& vecCurve, float fLifeRatio);
     void Update_Rotation_Lerp(float fDT, float fRatio);
+    void Update_UV_Scroll_Curve(float fRatio);
 
 public:
     void TimeFlagRequest(_uint TimeFlag);

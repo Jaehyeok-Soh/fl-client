@@ -67,7 +67,7 @@ struct EffectDesc
     // 텍스처 산술 연산자 flag 
     uint g_OperatorFlags;
     uint g_RotationFlags;
-    float2 g_Padding1;
+    float2 g_UVOffset;
     
     // sprite일 때
     uint g_SpriteCol; // 가로 프레임 수
@@ -290,16 +290,20 @@ float GlowTextureSample(float2 UV)
     return SampleTextureWithFlags(g_DefaultTextures[GLOWTEXTURE], g_Effect.g_StateFlags, 18, UV);
 
 }
-float4 SceneTextureSample(float2 UV)
+float4 SceneTextureSample(float2 UV, uint Flag)
 {
-    return g_RenderTargetSceneTexture.Sample(LinearSampler, UV);
+    if (Flag == 0)
+        return g_RenderTargetSceneTexture.Sample(LinearSampler, UV);
+    else if (Flag == 1)
+        return g_RenderTargetSceneTexture.Sample(LinearClampSampler, UV);
 }
 
 
 
 // =========== VS In  ==============
 
-VS_OUT_INST_MESH_PARTICLE VS_DEFAULT(VS_IN_INST_MESH_PARTICLE In)
+VS_OUT_INST_MESH_PARTICLE
+    VS_DEFAULT(VS_IN_INST_MESH_PARTICLE In)
 {
     VS_OUT_INST_MESH_PARTICLE Out;
 
@@ -332,8 +336,7 @@ float4 PS_DEFAULT(VS_OUT_INST_MESH_PARTICLE In) : SV_Target0
     
     if (HasScroll())
     {
-        noiseUV = In.vUV + g_Effect.
-g_ScrollOffset;
+        noiseUV = In.vUV + g_Effect.g_ScrollOffset;
     }
     
     // =======              노이즈 텍스처 샘플링             ===========
@@ -425,11 +428,7 @@ float4 PS_BULLET(VS_OUT_INST_MESH_PARTICLE In) : SV_Target0
     if (Has(g_Effect.g_TextureFlags, MASKINGTEXTURE))
     {
         float2 MaskUV = In.vUV;
-        if (AppearRatio > 0.9f)
-        {
-            MaskUV = In.vUV + g_Effect.g_ScrollOffset;
-        }
-        MaskSample = MaskTextureSample(MaskUV);
+        MaskSample = MaskTextureSample(noiseUV);
     }
 
     if (Has(g_Effect.g_TextureFlags, GRADATIONTEXTURE))
@@ -467,8 +466,17 @@ float4 PS_BULLET(VS_OUT_INST_MESH_PARTICLE In) : SV_Target0
 
     float finalAlpha = { 1.f }; /* DissolveSample.r*/
     
+    float DissolveNoise = DissolveSample.r;
+    
+    // 디졸브 진행도 (0 ~ 1)
+    float DissolveT = DissolveProgress;
+    float DissolveSoftness = 0.15f;
+    float dissolveMask = smoothstep(DissolveT - DissolveSoftness,
+    DissolveT + DissolveSoftness,
+    DissolveNoise);
+    
     float lifeAlpha = 1.0f - (In.vLifeTime.x / In.vLifeTime.y);
-    finalAlpha *= lifeAlpha;
+    finalAlpha *= lifeAlpha * dissolveMask;
     
     // ==========               알파 클리핑                   =========
     
@@ -481,10 +489,70 @@ float4 PS_BULLET(VS_OUT_INST_MESH_PARTICLE In) : SV_Target0
         // ==========               휘도 클리핑                   =========
         // 7. 휘도 컷팅 (깔끔한 마무리)
         float luminance = dot(finalColor.rgb, float3(0.2126f, 0.7152f, 0.0722f));
-    if (luminance < 0.1f)
+    if (luminance < 0.13f)
         discard;
     
-    return float4(finalColor.rgb, finalAlpha);
+    return float4(finalColor);
+}
+
+
+float4 PS_UnityConvert(VS_OUT_INST_MESH_PARTICLE In) : SV_Target0
+{
+    float4 DissolveSample = { 0.f, 0.f, 0.f, 0.f };
+    float4 GradationSample = { 0.f, 0.f, 0.f, 0.f };
+    float4 DefaultSample = { 0.f, 0.f, 0.f, 0.f };
+    
+    float LifeRatio = saturate(In.vLifeTime.x / In.vLifeTime.y);
+    
+    float2 scrolledUV = In.vUV + g_Effect.g_UVOffset;
+    scrolledUV += g_Effect.g_ScrollOffset;
+    
+    DefaultSample = g_DefaultTextures[DEFAULTTEXTURE].Sample(LinearClampSampler, scrolledUV);
+    
+    if (Has(g_Effect.g_TextureFlags, DISSOLVETEXTURE))
+    {
+        DissolveSample = DissolveTextureSample(In.vUV);
+    }
+    
+    if (Has(g_Effect.g_TextureFlags, GRADATIONTEXTURE))
+    {
+        if (HasSprite())
+        {
+            float2 cellsize = float2(1.0 / g_Effect.g_SpriteCol, 1.0f / g_Effect.g_SpriteRow);
+            float2 SpriteUV = In.vUV * cellsize;
+            uint xIndex = g_Effect.g_CurSpriteIndex % g_Effect.g_SpriteCol;
+            uint yIndex = g_Effect.g_CurSpriteIndex / g_Effect.g_SpriteCol;
+        
+            SpriteUV.x += (float) xIndex * cellsize.x; // 가로로 밀고
+            SpriteUV.y += (float) yIndex * cellsize.y; // 세로로 밀고
+            
+            // 전체 UV를 3등분 (0 ~ 1 범위를 0 ~ 0.333으로 자른다.)
+            SpriteUV.x /= 4.0f;
+            
+            // ㅁ ㅁ ㅁ 형태의 구역으로 나누었다면 3번째 구역부터 1번째 구역으로 스크롤을 하자.
+            // 스크롤이 될 변수는 lifeRatio
+            float scrollOffset = lerp(3.0f / 4.0f, 0.0f, LifeRatio);
+            
+            SpriteUV.x += scrollOffset;
+            
+        // 어차피 1번줄을 참조할거지만.
+            GradationSample = GradationTextureSample(Get90DegreeRotatedUV(SpriteUV, g_Effect.g_TextureFlags, GRADATIONTEXTURE));
+        }
+    }
+    
+    // 유니티 셰이더의 최종 출력 공식: col * _Emissive * col.a
+    float4 finalColor = DefaultSample * g_Effect.g_EffectColor;
+    float EnergyStrength = GradationSample.r;
+    finalColor *= (EnergyStrength * 3);
+   
+    float finalAlpha = { 1.f };
+    float lifeAlpha = 1.0f - (In.vLifeTime.x / In.vLifeTime.y);
+    finalAlpha *= DissolveSample.r * lifeAlpha; /** GlowSample.r * finalNoiseValue*/;
+    
+    if (finalAlpha <= g_Effect.g_DiscardValue)
+        discard;
+   
+    return finalColor;
 }
 
 float4 PS_DISTOTION(VS_OUT_INST_MESH_PARTICLE In) : SV_Target0
@@ -494,7 +562,11 @@ float4 PS_DISTOTION(VS_OUT_INST_MESH_PARTICLE In) : SV_Target0
     float4 DiffuseSample = { 1.f, 1.f, 1.f, 1.f };
     float4 noiseSample = { 0.5f, 1.f, 1.f, 1.f };
     float4 MaskSample = { 1.f, 1.f, 1.f, 1.f };
+    float4 DissolveSample = { 1.f, 1.f, 1.f, 1.f };
     float noiseValue;
+    
+    // 남은 생명주기
+    float LifeRatio = saturate(In.vLifeTime.x / In.vLifeTime.y);
     
     if (Has(g_Effect.g_TextureFlags, NOISETEXTURE))
     {
@@ -514,24 +586,38 @@ float4 PS_DISTOTION(VS_OUT_INST_MESH_PARTICLE In) : SV_Target0
     }
         // 클립 좌표계에서 내 위치 찾아서 UV좌표 꺼내오기.
     float2 ScreenUV = In.vProjPos.xy / In.vProjPos.w;
-    ScreenUV = ScreenUV * 0.5f + 0.5f;
+    ScreenUV.x = ScreenUV.x * 0.5f + 0.5f;
+    ScreenUV.y = ScreenUV.y * -0.5f + 0.5f;
     
     float2 distortionUV = ScreenUV + finalUV;
     float4 refractionColor = float4(1.f, 1.f, 1.f, 1.f);
     
     // 이 UV 좌표로 SceneTexture를 샘플링한다.
+    // 검기가 나오지도 않았는데 디스토션이 떠있으면 안되기에 얘도 화면 스크롤해준다.
+    refractionColor = SceneTextureSample(distortionUV, 1);
+    
+    // 텍스처가 나오지 않은 곳은 디스토션을 지워버림
+    // DefaultTexture가 검기의 모양이라면, 그 알파값을 가져와서 디스토션 영역으로 씀
+    float2 scrolledUV = In.vUV + g_Effect.g_UVOffset + g_Effect.g_ScrollOffset;
+    DiffuseSample = DefaultTextureSample(scrolledUV);
 
-    refractionColor = SceneTextureSample(distortionUV);
+    float finalAlpha = DiffuseSample.a; // 검기 텍스처의 알파 영역만 왜곡 발생
     
-   
+    // ==========               알파 클리핑                   =========
     
-        // ==========               알파 클리핑                   =========
+    if (Has(g_Effect.g_TextureFlags, DISSOLVETEXTURE))
+    {
+        finalAlpha *= DissolveTextureSample(In.vUV);
+    }
     
-    //if (refractionColor.a < g_Effect.g_DiscardValue)
-    //    discard;
+    float lifeAlpha = 1.0f - (In.vLifeTime.x / In.vLifeTime.y);
+    finalAlpha *= lifeAlpha;
+
+    if (finalAlpha < g_Effect.g_DiscardValue)
+        discard;
     
     // ==========   미리 지정한 이펙트 색깔을 곱해서 출력하기   =========
-    return float4(refractionColor.rgb, refractionColor.a);
+    return refractionColor;
 }
 
 float4 PS_SWORDEFFECT(VS_OUT_INST_MESH_PARTICLE In) : SV_Target0
@@ -597,7 +683,6 @@ float4 PS_SWORDEFFECT(VS_OUT_INST_MESH_PARTICLE In) : SV_Target0
 
     return float4(finalRGB, finalAlpha);
 }
-
 
 float4 PS_Test_SWORDEFFECT(VS_OUT_INST_MESH_PARTICLE In) : SV_Target0
 {
@@ -679,11 +764,13 @@ float4 PS_Test_SWORDEFFECT(VS_OUT_INST_MESH_PARTICLE In) : SV_Target0
     return float4(finalRGB, finalAlpha);
 }
 
+
 float4 PS_REAL_TEXTMESHEFFECT(VS_OUT_INST_MESH_PARTICLE In) : SV_Target0
 {
               // =======              노이즈 텍스처 샘플링             ===========
     float2 finalUV = In.vUV;
     float2 DissolveUV = In.vUV;
+    float2 NoiseUV = In.vUV;
 
     float4 DiffuseSample = { 1.f, 1.f, 1.f, 1.f };
     float4 MaskSample = { 1.f, 1.f, 1.f, 1.f };
@@ -728,7 +815,7 @@ float4 PS_REAL_TEXTMESHEFFECT(VS_OUT_INST_MESH_PARTICLE In) : SV_Target0
     if (Has(g_Effect.g_TextureFlags, NOISETEXTURE))
     {
         // 노말 노이즈 값.
-        float2 NoiseUV = In.vUV;
+
         NoiseUV += g_Effect.g_ScrollOffset;
         NormalNoiseSample = NoiseTextureSample(Get90DegreeRotatedUV(NoiseUV, g_Effect.g_TextureFlags, NOISETEXTURE));
         float NormalNoiseValue = NormalNoiseSample.g;
@@ -748,10 +835,14 @@ float4 PS_REAL_TEXTMESHEFFECT(VS_OUT_INST_MESH_PARTICLE In) : SV_Target0
     
     float FinalAlpha;
     
-    if (Has(g_Effect.g_TextureFlags, DISSOLVETEXTURE))
-    {
-
-    }
+    float LifeRatio = In.vLifeTime.x / In.vLifeTime.y;
+    float AppearRatio = In.vLifeTime.x / (In.vLifeTime.y * g_Effect.g_AppearRatio);
+    float DissolveProgress = saturate((LifeRatio - g_Effect.g_AppearRatio) / (1.0f - g_Effect.g_AppearRatio));
+    
+        // 컷팅
+    if ((1.0f - finalUV.x) > AppearRatio)
+        discard;
+    
     
     if (Has(g_Effect.g_TextureFlags, MASKINGTEXTURE))
     {
@@ -759,15 +850,26 @@ float4 PS_REAL_TEXTMESHEFFECT(VS_OUT_INST_MESH_PARTICLE In) : SV_Target0
         MaskSample = MaskTextureSample(Get90DegreeRotatedUV(MaskUV, g_Effect.g_TextureFlags, MASKINGTEXTURE));
     }
     
-    //// 휘도 계산하기
-    //    float luminance = dot(FinalColor, float3(0.2126f, 0.7152f, 0.0722f));
+    if (Has(g_Effect.g_TextureFlags, DISSOLVETEXTURE))
+    {
+        DissolveSample = DissolveTextureSample(Get90DegreeRotatedUV(NoiseUV, g_Effect.g_TextureFlags, DISSOLVETEXTURE));
+
+    }
     
-    //if (luminance < 0.3f)
-    //    discard;
     
+    float finalAlpha = { 1.f };
+    float lifeAlpha = 1.0f - (In.vLifeTime.x / In.vLifeTime.y);
+    finalAlpha *= DissolveSample.r * lifeAlpha; /** GlowSample.r * finalNoiseValue*/;
     
+    if (MaskSample.r < 0.1f)
+        discard;
     
-    return float4(FinalColor.rgb, GlowSample.r * finalNoiseValue);
+    // ==========               알파 클리핑                   =========
+    
+    if (finalAlpha < g_Effect.g_DiscardValue)
+        discard;
+    
+    return float4(FinalColor.rgb, 1.f);
 }
 
 
@@ -777,7 +879,7 @@ technique11 T0
     pass Mesh_Effect
     {
         SetRasterizerState(RS_Default_CullNone);
-        SetDepthStencilState(DS_Default, 0);
+        SetDepthStencilState(DS_ReadOnly, 0);
         SetBlendState(BS_AlphaBlend, float4(0.f, 0.f, 0.f, 0.f), 0xffffffff);
         SetVertexShader(CompileShader(vs_5_0, VS_DEFAULT()));
         GeometryShader = NULL;
@@ -787,7 +889,7 @@ technique11 T0
     pass BULLET_EFFECT
     {
         SetRasterizerState(RS_Default_CullNone);
-        SetDepthStencilState(DS_Default, 0);
+        SetDepthStencilState(DS_ReadOnly, 0);
         SetBlendState(BS_Default, float4(0.f, 0.f, 0.f, 0.f), 0xffffffff);
         SetVertexShader(CompileShader(vs_5_0, VS_DEFAULT()));
         GeometryShader = NULL;
@@ -797,7 +899,7 @@ technique11 T0
     pass TRAIL_EFFECT
     {
         SetRasterizerState(RS_Default_CullNone);
-        SetDepthStencilState(DS_Default, 0);
+        SetDepthStencilState(DS_ReadOnly, 0);
         SetBlendState(BS_Default, float4(0.f, 0.f, 0.f, 0.f), 0xffffffff);
         SetVertexShader(CompileShader(vs_5_0, VS_DEFAULT()));
         GeometryShader = NULL;
@@ -807,7 +909,7 @@ technique11 T0
     pass Distotion_EFFECT
     {
         SetRasterizerState(RS_Default_CullNone);
-        SetDepthStencilState(DS_Default, 0);
+        SetDepthStencilState(DS_ReadOnly, 0);
         SetBlendState(BS_Default, float4(0.f, 0.f, 0.f, 0.f), 0xffffffff);
         SetVertexShader(CompileShader(vs_5_0, VS_DEFAULT()));
         GeometryShader = NULL;
@@ -817,17 +919,17 @@ technique11 T0
     pass BLOOM_SWORDEFFECT
     {
         SetRasterizerState(RS_Default_CullNone);
-        SetDepthStencilState(DS_Default, 0);
+        SetDepthStencilState(DS_ReadOnly, 0);
         SetBlendState(BS_AlphaBlend, float4(0.f, 0.f, 0.f, 0.f), 0xffffffff);
         SetVertexShader(CompileShader(vs_5_0, VS_DEFAULT()));
         GeometryShader = NULL;
-        SetPixelShader(CompileShader(ps_5_0, PS_REAL_TEXTMESHEFFECT()));
+        SetPixelShader(CompileShader(ps_5_0, PS_UnityConvert()));
     }
 
     pass Test_SWORDEFFECT
     {
-        SetRasterizerState(RS_Default_CullNone);
-        SetDepthStencilState(DS_Default, 0);
+        SetRasterizerState(RS_Default);
+        SetDepthStencilState(DS_ReadOnly, 0);
         SetBlendState(BS_AlphaBlend, float4(0.f, 0.f, 0.f, 0.f), 0xffffffff);
         SetVertexShader(CompileShader(vs_5_0, VS_DEFAULT()));
         GeometryShader = NULL;

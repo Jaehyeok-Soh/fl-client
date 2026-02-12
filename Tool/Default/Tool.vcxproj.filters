@@ -247,6 +247,18 @@
     <Filter Include="99. ETC\03. Tool Shader">
       <UniqueIdentifier>{94f2837f-0795-42b2-b135-340ce4d67014}</UniqueIdentifier>
     </Filter>
+    <Filter Include="02. GameObjects\Effect">
+      <UniqueIdentifier>{73d967a7-e9a7-4a5a-99fe-849a10cbca9e}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02. GameObjects\Effect\Container">
+      <UniqueIdentifier>{5cbb3ccc-552b-479f-82e0-5cd9dc822d14}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02. GameObjects\Effect\Part">
+      <UniqueIdentifier>{8320a8aa-cc55-458d-b417-eee159924dcd}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="03. Level\Effect\Effect_Panel\Character_Animation">
+      <UniqueIdentifier>{688cc652-9f97-4696-84b4-b6e136bf48fd}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="framework.h">
@@ -272,9 +284,6 @@
     </ClInclude>
     <ClInclude Include="..\Public\Level_Loading.h">
       <Filter>03. Level\Loading</Filter>
-    </ClInclude>
-    <ClInclude Include="..\Public\Level_Effect.h">
-      <Filter>03. Level\Effect</Filter>
     </ClInclude>
     <ClInclude Include="..\Public\Level_Camera.h">
       <Filter>03. Level\Camera</Filter>
@@ -477,9 +486,21 @@
     <ClInclude Include="..\Public\UIProgress_Component.h">
       <Filter>04. Component\UI\Progress</Filter>
     </ClInclude>
-    <ClInclude Include="..\Public\CEffectObject.h" />
-    <ClInclude Include="..\Public\Gravity_Force.h" />
-    <ClInclude Include="..\Public\Effect.h" />
+    <ClInclude Include="..\Public\Effect.h">
+      <Filter>02. GameObjects\Effect\Container</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\CEffectObject.h">
+      <Filter>02. GameObjects\Effect\Part</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\Gravity_Force.h">
+      <Filter>02. GameObjects\Effect\Part</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\Level_Effect.h">
+      <Filter>02. GameObjects\Effect\Part</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\Effect_Preview_panel.h">
+      <Filter>03. Level\Effect\Effect_Panel\Character_Animation</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <Image Include="small.ico">
@@ -518,9 +539,6 @@
     </ClCompile>
     <ClCompile Include="..\Private\Level_Map.cpp">
       <Filter>03. Level\Map</Filter>
-    </ClCompile>
-    <ClCompile Include="..\Private\Level_Effect.cpp">
-      <Filter>03. Level\Effect</Filter>
     </ClCompile>
     <ClCompile Include="..\Private\GodInput.cpp">
       <Filter>04. Component\GodInput</Filter>
@@ -702,9 +720,21 @@
     <ClCompile Include="..\Private\UIProgress_Component.cpp">
       <Filter>04. Component\UI\Progress</Filter>
     </ClCompile>
-    <ClCompile Include="..\Private\CEffectObject.cpp" />
-    <ClCompile Include="..\Private\Gravity_Force.cpp" />
-    <ClCompile Include="..\Private\Effect.cpp" />
+    <ClCompile Include="..\Private\Effect.cpp">
+      <Filter>02. GameObjects\Effect\Container</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\CEffectObject.cpp">
+      <Filter>02. GameObjects\Effect\Part</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\Gravity_Force.cpp">
+      <Filter>02. GameObjects\Effect\Part</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\Level_Effect.cpp">
+      <Filter>02. GameObjects\Effect\Part</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\Effect_Preview_panel.cpp">
+      <Filter>03. Level\Effect\Effect_Panel\Character_Animation</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <FxCompile Include="..\..\Shaders\Shader_VtxInstanceMesh_Tool.hlsl">
