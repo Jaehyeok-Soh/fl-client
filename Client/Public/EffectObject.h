@@ -3,6 +3,16 @@
 #include "Client_Defines.h"
 #include "DataStruct_Effect.h"
 
+NS_BEGIN(Engine)
+
+class CModel;
+class CTexture;
+class CShader;
+class CComputeShader;
+class CTransform;
+
+NS_END
+
 NS_BEGIN(Client)
 
 class CEffectObject :
@@ -87,6 +97,14 @@ private:
     //  ========== ÇöÀç ÀÌÆåÆ® sprite Number  ===========
 private:
     _bool              m_bIsTool = { false };
+
+private:
+    // Ä³½Ì ¿ëµµ
+   CModel*                   m_pModel = { nullptr };
+   CTexture*                 m_pTexture = { nullptr };
+   CShader*                  m_pShader = { nullptr };
+   CComputeShader*           m_pComputeShader = { nullptr };
+   CTransform*               m_pTransform = { nullptr };
 };
 
 NS_END

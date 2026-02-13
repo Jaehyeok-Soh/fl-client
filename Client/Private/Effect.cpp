@@ -150,14 +150,22 @@ void Effect::Set_Dead(const wstring& wstrLayerTag)
 
 HRESULT Effect::Spawn_FromPool(void* pArg)
 {
-
+	for (auto effectObject : m_vecPartObjects)
+	{
+		if (effectObject != nullptr)
+			effectObject->Spawn_FromPool(pArg);
+	}
 
 	return S_OK;
 }
 
 HRESULT Effect::Despawn_FromPool()
 {
-
+	for (auto effectObject : m_vecPartObjects)
+	{
+		if (effectObject != nullptr)
+			effectObject->Despawn_FromPool();
+	}
 
 	return S_OK;
 }

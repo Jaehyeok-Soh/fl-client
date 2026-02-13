@@ -129,6 +129,13 @@ void CLevel_Logo::Update(const _float fTimeDelta)
 #endif
 		m_pGameInstance->Request_CursorMode(m_eCursorMode);
 	}
+
+
+	// 오브젝트 풀링 테스트
+	if (m_pGameInstance->KeyButton_Down(DIK_0))
+	{
+		m_pGameInstance->Request_AddObject(ENUM_TO_UINT(ELevelType::LOGO), L"POOL_Attack_3", 0, nullptr);
+	}
 }
 
 HRESULT CLevel_Logo::Render()
@@ -156,17 +163,32 @@ HRESULT CLevel_Logo::Build_Files()
 	ELevelType eLevelType = ELevelType::LOGO;
 	_uint iLevelID = ENUM_TO_UINT(eLevelType);
 
-	//if (FAILED(Build_File(ENUM_TO_UINT(ELevelType::LOGO), DTO::ECategory::EFFECT, "Attack_1")))
-	//	return E_FAIL;
+#pragma region EFFECT
+	DTO::ECategory eCategory = DTO::ECategory::EFFECT;
+	if (FAILED(m_pGameInstance->Regist_Document<CDataDocument_Effect>(iLevelID, eCategory)))
+		return E_FAIL;
+	std::filesystem::path strUIFolderPath = L"../../Resources/Data/EffectData/";
+	if (std::filesystem::exists(strUIFolderPath))
+	{
+		for (auto iter : std::filesystem::directory_iterator(strUIFolderPath))
+		{
+			if (FAILED(m_pGameInstance->Load_File_Json(iLevelID, eCategory, iter.path())))
+				return E_FAIL;
+
+			if (FAILED(Build_File(iLevelID, eCategory, iter.path().stem().string())))
+				return E_FAIL;
+		}
+	}
+#pragma endregion
 
 	// For. Example
 	//if (FAILED(Build_File(ENUM_TO_UINT(ELevelType::LOGO), DTO::ECategory::MAP, "asdf")))
 	//	return E_FAIL;
 
-	DTO::ECategory eCategory = DTO::ECategory::UI;
+	eCategory = DTO::ECategory::UI;
 	if (FAILED(m_pGameInstance->Regist_Document<CDataDocument_UI>(iLevelID, eCategory)))
 		return E_FAIL;
-	std::filesystem::path strUIFolderPath = L"../../Resources/Data/UIData/Logo/";
+	strUIFolderPath = L"../../Resources/Data/UIData/Logo/";
 	if (std::filesystem::exists(strUIFolderPath))
 	{
 		for (auto iter : std::filesystem::directory_iterator(strUIFolderPath))

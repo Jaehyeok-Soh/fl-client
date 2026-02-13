@@ -77,6 +77,14 @@ HRESULT CEffectObject::Ready_Component(void* pArg)
     if (FAILED(Ready_Component_Buffer(pArg)))
         return E_FAIL;
 
+    m_pModel = Get_Component<CModel>();
+    m_pTexture = Get_Component<CTexture>();
+    m_pShader = Get_Component<CShader>();
+    m_pComputeShader = static_cast<CComputeShader*>(Get_Script_Component(L"ComputeShader"));
+    m_pTransform = Get_Component<CTransform>();
+
+    Get_Component<CTransform>()->Set_Info(TRANSFORM_INFO_STATE::POS, Vec3{ 20.f,16.f,18.f });
+
     return S_OK;
 }
 
@@ -98,6 +106,7 @@ HRESULT CEffectObject::Ready_Component_Shader()
         ShaderDesc.Input_StructBuffer.sBufferName = "IMMU_EFFECT_PARTICLE";
         ShaderDesc.Input_StructBuffer.iElementSize = sizeof(EFFECT_PARTICLE_IMMU_ELEMENT);
         ShaderDesc.Input_StructBuffer.iNumElements = m_tEffectDesc.Data._Effect_MaxParticle;
+        ShaderDesc.InputBufferNum = 1;
 
         // 출력 버퍼
         ShaderDesc.OutPut_StructBuffer.sBufferName = "INSTANCE_OUTPUT";
@@ -124,12 +133,12 @@ HRESULT CEffectObject::Ready_Component_Texture()
         CTexture* pInstance = Get_Component<CTexture>();
         if (pInstance)
         {
-            Get_Component<CTexture>()->Add_DefaultTexture(s + m_tEffectDesc.Data._Effect_DiffuseTexture_Tag, ENUM_TO_UINT(DTO::E_TEXTURETYPE::DIFFUSE));
-            Get_Component<CTexture>()->Add_DefaultTexture(s + m_tEffectDesc.Data._Effect_NoiseTexture_Tag, ENUM_TO_UINT(DTO::E_TEXTURETYPE::NOISE));
-            Get_Component<CTexture>()->Add_DefaultTexture(s + m_tEffectDesc.Data._Effect_MaskingTexture_Tag, ENUM_TO_UINT(DTO::E_TEXTURETYPE::MASKING));
-            Get_Component<CTexture>()->Add_DefaultTexture(s + m_tEffectDesc.Data._Effect_GradationTexture_Tag, ENUM_TO_UINT(DTO::E_TEXTURETYPE::GRADATION));
-            Get_Component<CTexture>()->Add_DefaultTexture(s + m_tEffectDesc.Data._Effect_DissolveTexture_Tag, ENUM_TO_UINT(DTO::E_TEXTURETYPE::DISSOLVE));
-            Get_Component<CTexture>()->Add_DefaultTexture(s + m_tEffectDesc.Data._Effect_GlowTexture_Tag, ENUM_TO_UINT(DTO::E_TEXTURETYPE::GLOW));
+            pInstance->Add_DefaultTexture(s + m_tEffectDesc.Data._Effect_DiffuseTexture_Tag, ENUM_TO_UINT(DTO::E_TEXTURETYPE::DIFFUSE));
+            pInstance->Add_DefaultTexture(s + m_tEffectDesc.Data._Effect_NoiseTexture_Tag, ENUM_TO_UINT(DTO::E_TEXTURETYPE::NOISE));
+            pInstance->Add_DefaultTexture(s + m_tEffectDesc.Data._Effect_MaskingTexture_Tag, ENUM_TO_UINT(DTO::E_TEXTURETYPE::MASKING));
+            pInstance->Add_DefaultTexture(s + m_tEffectDesc.Data._Effect_GradationTexture_Tag, ENUM_TO_UINT(DTO::E_TEXTURETYPE::GRADATION));
+            pInstance->Add_DefaultTexture(s + m_tEffectDesc.Data._Effect_DissolveTexture_Tag, ENUM_TO_UINT(DTO::E_TEXTURETYPE::DISSOLVE));
+            pInstance->Add_DefaultTexture(s + m_tEffectDesc.Data._Effect_GlowTexture_Tag, ENUM_TO_UINT(DTO::E_TEXTURETYPE::GLOW));
         }
     }
 
@@ -140,12 +149,12 @@ HRESULT CEffectObject::Ready_Component_Texture()
         CTexture* pInstance = Get_Component<CTexture>();
         if (pInstance)
         {
-            Get_Component<CTexture>()->Add_DefaultTexture(s + m_tEffectDesc.Data._Effect_DiffuseTexture_Tag, ENUM_TO_UINT(DTO::E_TEXTURETYPE::DIFFUSE));
-            Get_Component<CTexture>()->Add_DefaultTexture(s + m_tEffectDesc.Data._Effect_NoiseTexture_Tag, ENUM_TO_UINT(DTO::E_TEXTURETYPE::NOISE));
-            Get_Component<CTexture>()->Add_DefaultTexture(s + m_tEffectDesc.Data._Effect_MaskingTexture_Tag, ENUM_TO_UINT(DTO::E_TEXTURETYPE::MASKING));
-            Get_Component<CTexture>()->Add_DefaultTexture(s + m_tEffectDesc.Data._Effect_GradationTexture_Tag, ENUM_TO_UINT(DTO::E_TEXTURETYPE::GRADATION));
-            Get_Component<CTexture>()->Add_DefaultTexture(s + m_tEffectDesc.Data._Effect_DissolveTexture_Tag, ENUM_TO_UINT(DTO::E_TEXTURETYPE::DISSOLVE));
-            Get_Component<CTexture>()->Add_DefaultTexture(s + m_tEffectDesc.Data._Effect_GlowTexture_Tag, ENUM_TO_UINT(DTO::E_TEXTURETYPE::GLOW));
+            pInstance->Add_DefaultTexture(s + m_tEffectDesc.Data._Effect_DiffuseTexture_Tag, ENUM_TO_UINT(DTO::E_TEXTURETYPE::DIFFUSE));
+            pInstance->Add_DefaultTexture(s + m_tEffectDesc.Data._Effect_NoiseTexture_Tag, ENUM_TO_UINT(DTO::E_TEXTURETYPE::NOISE));
+            pInstance->Add_DefaultTexture(s + m_tEffectDesc.Data._Effect_MaskingTexture_Tag, ENUM_TO_UINT(DTO::E_TEXTURETYPE::MASKING));
+            pInstance->Add_DefaultTexture(s + m_tEffectDesc.Data._Effect_GradationTexture_Tag, ENUM_TO_UINT(DTO::E_TEXTURETYPE::GRADATION));
+            pInstance->Add_DefaultTexture(s + m_tEffectDesc.Data._Effect_DissolveTexture_Tag, ENUM_TO_UINT(DTO::E_TEXTURETYPE::DISSOLVE));
+            pInstance->Add_DefaultTexture(s + m_tEffectDesc.Data._Effect_GlowTexture_Tag, ENUM_TO_UINT(DTO::E_TEXTURETYPE::GLOW));
         }
     }
 
@@ -161,7 +170,7 @@ HRESULT CEffectObject::Ready_Component_Model(void* pArg)
 
     if (m_tEffectDesc.Data.eEffectParticleType == (_uint)DTO::E_PARTICLETYPE::MESH)
     {
-        if (FAILED(Add_Component<CModel>(pDesc->iLevelIndex, s + m_tEffectDesc.Data._Effect_Model_Tag, &pModelDesc)))
+        if (FAILED(Add_Component<CModel>(0, s + m_tEffectDesc.Data._Effect_Model_Tag, &pModelDesc)))
             return E_FAIL;
     }
 
@@ -179,7 +188,7 @@ HRESULT CEffectObject::Ready_Component_Buffer(void* pArg)
             CVIBuffer_Particle_Point::PARTICLE_POINT_ORIGIN_DESC pParticleDesc = {};
             pParticleDesc.iInstnaceCount = m_tEffectDesc.Data._Effect_MaxParticle;
             pParticleDesc.isLoop = m_tEffectDesc.Data._Effect_Looping;
-            pParticleDesc.vLifeTime.x = pParticleDesc.vLifeTime.x;
+            pParticleDesc.vLifeTime.x = 0.f;
             pParticleDesc.vLifeTime.y = m_tEffectDesc.Data._Effect_LifeTime;
             pParticleDesc.vRange = m_tEffectDesc.Data._Effect_Range;
             pParticleDesc.m_fStartSpeeds = m_tEffectDesc.Data._Effect_StartSpeed;
@@ -203,7 +212,7 @@ HRESULT CEffectObject::Ready_Component_Buffer(void* pArg)
                 CVIBuffer_Particle_Mesh::PARTICLE_Mesh_ORIGIN_DESC MeshBufferDesc = {};
                 MeshBufferDesc.iInstnaceCount = m_tEffectDesc.Data._Effect_MaxParticle;
                 MeshBufferDesc.isLoop = m_tEffectDesc.Data._Effect_Looping;
-                MeshBufferDesc.vLifeTime.x = MeshBufferDesc.vLifeTime.x;
+                MeshBufferDesc.vLifeTime.x = 0.f;
                 MeshBufferDesc.vLifeTime.y = m_tEffectDesc.Data._Effect_LifeTime;
                 MeshBufferDesc.vRange = m_tEffectDesc.Data._Effect_Range;
                 MeshBufferDesc.m_fStartSpeeds = m_tEffectDesc.Data._Effect_StartSpeed;
@@ -224,7 +233,7 @@ HRESULT CEffectObject::Ready_Component_Buffer(void* pArg)
             CVIBuffer_Particle_Point::PARTICLE_POINT_ORIGIN_DESC pParticleDesc = {};
             pParticleDesc.iInstnaceCount = m_tEffectDesc.Data._Effect_MaxParticle;
             pParticleDesc.isLoop = m_tEffectDesc.Data._Effect_Looping;
-            pParticleDesc.vLifeTime.x = pParticleDesc.vLifeTime.x;
+            pParticleDesc.vLifeTime.x = 0.f;
             pParticleDesc.vLifeTime.y = m_tEffectDesc.Data._Effect_LifeTime;
             pParticleDesc.vRange = m_tEffectDesc.Data._Effect_Range;
             pParticleDesc.m_fStartSpeeds = m_tEffectDesc.Data._Effect_StartSpeed;
@@ -245,14 +254,12 @@ HRESULT CEffectObject::Ready_Component_Buffer(void* pArg)
 
 HRESULT CEffectObject::Bind_ShaderResource()
 {
-    CShader* pShader = Get_Component<CShader>();
-    CModel* pModel = Get_Component<CModel>();
+    if (m_pShader == nullptr) return S_OK;
+    m_pShader->Set_Pass(m_tEffectDesc.Data._Effect_ShaderPass);
+    m_pShader->Bind_TransformData(m_matCombinedWorld);
 
-    if (pShader == nullptr) return S_OK;
-    pShader->Set_Pass(m_tEffectDesc.Data._Effect_ShaderPass);
-    pShader->Bind_TransformData(m_matCombinedWorld);
 
-    if (FAILED(m_pGameInstance->Bind_RT_ShaderResource(ERenderTarget::Scene, pShader)))
+    if (FAILED(m_pGameInstance->Bind_RT_ShaderResource(ERenderTarget::Scene, m_pShader)))
         return E_FAIL;
 
     // 셰이더에 던질 구조체 작성하기.
@@ -286,13 +293,12 @@ HRESULT CEffectObject::Bind_ShaderResource()
         pDesc.MaskingTexture_ScrollWeight = m_tEffectDesc.Data._Effect_MaskingTexture_ScrollWeight;
         pDesc.GradationTexture_ScrollWeight = m_tEffectDesc.Data._Effect_GradationTexture_ScrollWeight;
 
-        pShader->Bind_EffectData(pDesc);
+        m_pShader->Bind_EffectData(pDesc);
 
         // Compute 셰이더가 들고있는 SRV를, Default Shader한테 SRV 꽂아주기.
         {
-            ID3D11ShaderResourceView* pResultSRV = static_cast<CComputeShader*>(Get_Script_Component(L"ComputeShader"))->Get_Output_Buffer()->Get_SRV();
-
-            ID3DX11EffectShaderResourceVariable* pSRVar = Get_Component<CShader>()->Get_SRV("INSTANCE_OUTPUT");
+            ID3D11ShaderResourceView* pResultSRV = m_pComputeShader->Get_Output_Buffer()->Get_SRV();
+            ID3DX11EffectShaderResourceVariable* pSRVar = m_pShader->Get_SRV("INSTANCE_OUTPUT");
             if (pSRVar)
                 pSRVar->SetResource(pResultSRV);
         }
@@ -300,31 +306,30 @@ HRESULT CEffectObject::Bind_ShaderResource()
 
     // 텍스처 바인딩
     {
-        CTexture* pTexture = Get_Component<CTexture>();
-        if (pTexture)
-            pTexture->Bind_ShaderResourceBuffer(Get_Component<CShader>());
+        if (m_pTexture)
+            m_pTexture->Bind_ShaderResourceBuffer(m_pShader);
     }
 
-    if (m_tEffectDesc.Data.eEffectParticleType != (_uint)DTO::E_PARTICLETYPE::MESH || !Get_Component<CModel>())
+    if (m_tEffectDesc.Data.eEffectParticleType != (_uint)DTO::E_PARTICLETYPE::MESH || !m_pModel)
     {
         CVIBuffer_Particle_Point* pInstance = static_cast<CVIBuffer_Particle_Point*>(Get_Component<CVIBuffer_Particle_Point>());
 
         if (pInstance)
         {
             pInstance->Bind_Resource();
-            pShader->Apply();
+            m_pShader->Apply();
             pInstance->Render();
         }
     }
 
-    else if (m_tEffectDesc.Data.eEffectParticleType == (_uint)DTO::E_PARTICLETYPE::MESH && Get_Component<CModel>())
+    else if (m_tEffectDesc.Data.eEffectParticleType == (_uint)DTO::E_PARTICLETYPE::MESH && m_pModel)
     {
         CVIBuffer_Particle_Mesh* pInstance = static_cast<CVIBuffer_Particle_Mesh*>(Get_Component<CVIBuffer_Particle_Mesh>());
 
         if (pInstance)
         {
             pInstance->Bind_Resource();
-            pShader->Apply();
+            m_pShader->Apply();
             pInstance->Render();
         }
     }
@@ -379,8 +384,8 @@ void CEffectObject::Update(const _float fTimeDelta)
             m_vScrollOffset = { 0.f, 0.f }; // 스크롤 값도 완전 초기화
 
             // 루프 시 파티클 버퍼 리셋이 필요하다면 호출
-            auto pVIBuffer = Get_Component<CVIBuffer_Particle_Point>();
-            if (pVIBuffer) pVIBuffer->Reset_Simulation();
+            //auto pVIBuffer = Get_Component<CVIBuffer_Particle_Point>();
+            //if (pVIBuffer) pVIBuffer->Reset_Simulation();
         }
         else
         {
@@ -395,7 +400,7 @@ void CEffectObject::Update(const _float fTimeDelta)
 
     // 선형 보간을 통한 실시간 스케일 계산
     Vec3 vCurrentScale = Vec3::Lerp(m_tEffectDesc.Data._Effect_StartScale, m_tEffectDesc.Data._Effect_EndScale, fRatio);
-    Get_Component<CTransform>()->Set_Scale(vCurrentScale);
+    m_pTransform->Set_Scale(vCurrentScale);
 
     TimeCalculate(TimeT);
     Update_UV_Scroll_Curve(fRatio);
@@ -403,7 +408,6 @@ void CEffectObject::Update(const _float fTimeDelta)
     Super::Update(TimeT);
     // == 스크롤 값 == 
 
-    auto CTShader = static_cast<CComputeShader*>(Get_Script_Component(L"ComputeShader"));
     switch (m_tEffectDesc.Data._Effect_ShapeType)
     {
     case (_uint)DTO::E_SHAPETYPE::NONE:
@@ -412,39 +416,39 @@ void CEffectObject::Update(const _float fTimeDelta)
     case (_uint)DTO::E_SHAPETYPE::SPREAD:
     {
         CVIBuffer_Particle_Point* pInstance = Get_Component<CVIBuffer_Particle_Point>();
-        if (pInstance) pInstance->Update_Simulation(CTShader, Vec3{}, TimeT, m_tEffectDesc.Data._Effect_TimeFlag, E_PARTICLE_MOVESTATE::SPREAD);
+        if (pInstance) pInstance->Update_Simulation(m_pComputeShader, Vec3{}, TimeT, m_tEffectDesc.Data._Effect_TimeFlag, E_PARTICLE_MOVESTATE::SPREAD);
         break;
     }
     case (_uint)DTO::E_SHAPETYPE::DROP:
     {
         CVIBuffer_Particle_Point* pInstance = Get_Component<CVIBuffer_Particle_Point>();
-        if (pInstance) pInstance->Update_Simulation(CTShader, Vec3{}, TimeT, m_tEffectDesc.Data._Effect_TimeFlag, E_PARTICLE_MOVESTATE::DROP);
+        if (pInstance) pInstance->Update_Simulation(m_pComputeShader, Vec3{}, TimeT, m_tEffectDesc.Data._Effect_TimeFlag, E_PARTICLE_MOVESTATE::DROP);
         break;
     }
     case (_uint)DTO::E_SHAPETYPE::RISE:
     {
         CVIBuffer_Particle_Point* pInstance = Get_Component<CVIBuffer_Particle_Point>();
-        if (pInstance) pInstance->Update_Simulation(CTShader, Vec3{}, TimeT, m_tEffectDesc.Data._Effect_TimeFlag, E_PARTICLE_MOVESTATE::RISE);
+        if (pInstance) pInstance->Update_Simulation(m_pComputeShader, Vec3{}, TimeT, m_tEffectDesc.Data._Effect_TimeFlag, E_PARTICLE_MOVESTATE::RISE);
         break;
     }
     case (_uint)DTO::E_SHAPETYPE::SPIRAL:
     {
         CVIBuffer_Particle_Point* pInstance = Get_Component<CVIBuffer_Particle_Point>();
-        if (pInstance) pInstance->Update_Simulation(CTShader, Vec3{}, TimeT, m_tEffectDesc.Data._Effect_TimeFlag, E_PARTICLE_MOVESTATE::SPIRAL);
+        if (pInstance) pInstance->Update_Simulation(m_pComputeShader, Vec3{}, TimeT, m_tEffectDesc.Data._Effect_TimeFlag, E_PARTICLE_MOVESTATE::SPIRAL);
         break;
     }
 
     case (_uint)DTO::E_SHAPETYPE::DNA:
     {
         CVIBuffer_Particle_Point* pInstance = Get_Component<CVIBuffer_Particle_Point>();
-        if (pInstance) pInstance->Update_Simulation(CTShader, Vec3{}, TimeT, m_tEffectDesc.Data._Effect_TimeFlag, E_PARTICLE_MOVESTATE::DNA);
+        if (pInstance) pInstance->Update_Simulation(m_pComputeShader, Vec3{}, TimeT, m_tEffectDesc.Data._Effect_TimeFlag, E_PARTICLE_MOVESTATE::DNA);
         break;
     }
 
     case (_uint)DTO::E_SHAPETYPE::STRAIGHT:
     {
         CVIBuffer_Particle_Point* pInstance = Get_Component<CVIBuffer_Particle_Point>();
-        if (pInstance) pInstance->Update_Simulation(CTShader, Get_Component<CTransform>()->Get_Info(TRANSFORM_INFO_STATE::LOOK), TimeT, m_tEffectDesc.Data._Effect_TimeFlag, E_PARTICLE_MOVESTATE::STRAIGHT);
+        if (pInstance) pInstance->Update_Simulation(m_pComputeShader, Get_Component<CTransform>()->Get_Info(TRANSFORM_INFO_STATE::LOOK), TimeT, m_tEffectDesc.Data._Effect_TimeFlag, E_PARTICLE_MOVESTATE::STRAIGHT);
         break;
     }
     }
@@ -496,8 +500,8 @@ void CEffectObject::Set_Dead(const wstring& wstrLayerTag)
 
 HRESULT CEffectObject::Spawn_FromPool(void* pArg)
 {
-    TimeFlagRequest(PLAY);
-    TimeFlagRequest(PLAY);
+    TimeFlagRequest(RESET);
+
     return S_OK;
 }
 HRESULT CEffectObject::Despawn_FromPool()
@@ -519,10 +523,9 @@ void CEffectObject::TimeFlagRequest(_uint iTimeFlag)
         m_vAccumulatedRotation = { 0.f, 0.f, 0.f };
         m_vScrollOffset = { 0.f, 0.f }; // 스크롤 값도 완전 초기화
 
-        auto CTShader = static_cast<CComputeShader*>(Get_Script_Component(L"ComputeShader"));
         CVIBuffer_Particle_Point* pInstance = Get_Component<CVIBuffer_Particle_Point>();
-        if (pInstance && CTShader)
-            pInstance->Update_Simulation(CTShader, Vec3{}, 0.f, RESET, (E_PARTICLE_MOVESTATE)m_tEffectDesc.Data._Effect_ShapeType);
+        if (pInstance && m_pComputeShader)
+            pInstance->Update_Simulation(m_pComputeShader, Vec3{}, 0.f, RESET, (E_PARTICLE_MOVESTATE)m_tEffectDesc.Data._Effect_ShapeType);
 
         // 리셋 직후 바로 PLAY 상태로 전이시켜서 셰이더가 다음 루프를 돌게 함
         m_tEffectDesc.Data._Effect_TimeFlag = PLAY;
@@ -535,10 +538,9 @@ void CEffectObject::TimeFlagRequest(_uint iTimeFlag)
         m_vScrollOffset = Vec2{ 0.f, 0.f };
         m_vAccumulatedRotation = { 0.f, 0.f, 0.f };
 
-        auto CTShader = static_cast<CComputeShader*>(Get_Script_Component(L"ComputeShader"));
         CVIBuffer_Particle_Point* pInstance = Get_Component<CVIBuffer_Particle_Point>();
-        if (pInstance && CTShader)
-            pInstance->Update_Simulation(CTShader, Vec3{}, 0.f, STOP, (E_PARTICLE_MOVESTATE)m_tEffectDesc.Data._Effect_ShapeType);
+        if (pInstance && m_pComputeShader)
+            pInstance->Update_Simulation(m_pComputeShader, Vec3{}, 0.f, STOP, (E_PARTICLE_MOVESTATE)m_tEffectDesc.Data._Effect_ShapeType);
 
         m_fTimeAccumulation = 0.f;
         // Stop은 PLAY로 바꾸지 않고 그대로 둠
@@ -548,7 +550,7 @@ void CEffectObject::TimeFlagRequest(_uint iTimeFlag)
 void CEffectObject::TimeCalculate(const _float fDT)
 {
     // Start Delay를 제외한 순수 실행 시간 기반 진행률
-    _float fActiveTime = m_fTimeAccumulation - m_tEffectDesc.Data._Effect_StartDelay;
+    float fActiveTime = m_fTimeAccumulation - m_tEffectDesc.Data._Effect_StartDelay;
     if (fActiveTime < 0.f) fActiveTime = 0.f;
 
     // ======= [스크롤 값] ==========
@@ -669,7 +671,7 @@ void CEffectObject::Update_Rotation_Lerp(float fDT, float fRatio)
         vFinalRot.z = m_tEffectDesc.Data._Effect_StartRotation.z + (m_tEffectDesc.Data._Effect_TargetRotation.z * vCurveRatio.z);
 
         // 3. 변환 후 적용
-        Get_Component<CTransform>()->Rotation(
+        m_pTransform->Rotation(
             DirectX::XMConvertToRadians(vFinalRot.x),
             DirectX::XMConvertToRadians(vFinalRot.y),
             DirectX::XMConvertToRadians(vFinalRot.z)

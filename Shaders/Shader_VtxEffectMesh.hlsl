@@ -77,14 +77,18 @@ struct EffectDesc
     
     float2 g_ScrollOffset;
     float2 g_DistortionScale;
+    
     float4 g_EffectColor;
     
     // 각 텍스처별 Scroll Weight (0 ~ 1)
     float2 DiffuseTexture_ScrollWeight;
     float2 NoiseTexture_ScrollWeight;
+    
     float2 MaskingTexture_ScrollWeight;
     float2 GradationTexture_ScrollWeight;
+    
     float2 DissolveTexture_ScrollWeight;
+    float2 Padding1;
 };
 
 // ========== StruturedBuffer Binding value  ===========  (CS Shader에서 계산해서 넘어온 값.)
@@ -547,11 +551,11 @@ float4 PS_UnityConvert(VS_OUT_INST_MESH_PARTICLE In) : SV_Target0
    
     float finalAlpha = { 1.f };
     float lifeAlpha = 1.0f - (In.vLifeTime.x / In.vLifeTime.y);
-    finalAlpha *= DissolveSample.r * lifeAlpha; /** GlowSample.r * finalNoiseValue*/;
+    finalAlpha *= /*DissolveSample.r*/1.f * lifeAlpha; /** GlowSample.r * finalNoiseValue*/;
     
     if (finalAlpha <= g_Effect.g_DiscardValue)
         discard;
-   
+    
     return finalColor;
 }
 
@@ -890,7 +894,7 @@ technique11 T0
     {
         SetRasterizerState(RS_Default_CullNone);
         SetDepthStencilState(DS_ReadOnly, 0);
-        SetBlendState(BS_Default, float4(0.f, 0.f, 0.f, 0.f), 0xffffffff);
+        SetBlendState(BS_AlphaBlend, float4(0.f, 0.f, 0.f, 0.f), 0xffffffff);
         SetVertexShader(CompileShader(vs_5_0, VS_DEFAULT()));
         GeometryShader = NULL;
         SetPixelShader(CompileShader(ps_5_0, PS_BULLET()));
@@ -900,7 +904,7 @@ technique11 T0
     {
         SetRasterizerState(RS_Default_CullNone);
         SetDepthStencilState(DS_ReadOnly, 0);
-        SetBlendState(BS_Default, float4(0.f, 0.f, 0.f, 0.f), 0xffffffff);
+        SetBlendState(BS_AlphaBlend, float4(0.f, 0.f, 0.f, 0.f), 0xffffffff);
         SetVertexShader(CompileShader(vs_5_0, VS_DEFAULT()));
         GeometryShader = NULL;
         SetPixelShader(CompileShader(ps_5_0, PS_DEFAULT()));
@@ -910,7 +914,7 @@ technique11 T0
     {
         SetRasterizerState(RS_Default_CullNone);
         SetDepthStencilState(DS_ReadOnly, 0);
-        SetBlendState(BS_Default, float4(0.f, 0.f, 0.f, 0.f), 0xffffffff);
+        SetBlendState(BS_AlphaBlend, float4(0.f, 0.f, 0.f, 0.f), 0xffffffff);
         SetVertexShader(CompileShader(vs_5_0, VS_DEFAULT()));
         GeometryShader = NULL;
         SetPixelShader(CompileShader(ps_5_0, PS_DISTOTION()));

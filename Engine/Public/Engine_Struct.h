@@ -105,6 +105,9 @@ namespace Engine
 		SimpleMath::Vector2 NoiseTexture_ScrollWeight = { 0.f, 0.f };
 		SimpleMath::Vector2 MaskingTexture_ScrollWeight = { 0.f, 0.f };
 		SimpleMath::Vector2 GradationTexture_ScrollWeight = { 0.f, 0.f };
+
+		SimpleMath::Vector2	DissolveTexture_ScrollWeight = { 0.f, 0.f };
+		SimpleMath::Vector2 Padding1 = { 0.f, 0.f };
 	}SHADER_EFFECT_DESC;
 
 	typedef struct tagShaderBoneDesc
