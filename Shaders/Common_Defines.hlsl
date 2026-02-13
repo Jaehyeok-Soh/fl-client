@@ -6,6 +6,8 @@
 ///////////
 #define DEFAULT 0
 
+#define SSAO_KERNEL_COUNT 16
+
 //////////////////
 // MaterialSlot //
 //////////////////
@@ -107,6 +109,14 @@ sampler PointSampler = sampler_state
     AddressU = Wrap;
     AddressV = Wrap;
     AddressW = Wrap;
+};
+
+sampler PointClampSampler = sampler_state
+{
+    Filter = MIN_MAG_MIP_POINT;
+    AddressU = clamp;
+    AddressV = clamp;
+    AddressW = clamp;
 };
 
 /////////////////////

@@ -38,13 +38,14 @@ struct SSAODesc
     float fBias;
     float fPower;
     float fIntensity;
+    float fFadeStart;
+    float fFadeEnd;
     float2 vInvAOSize;
-    float2 vPadding;
 };
 
 struct SSAOKernalDesc
 {
-    float4 vKernel[16];
+    float4 vKernel[SSAO_KERNEL_COUNT];
     float2 vNoiseScale;
     float2 vPadding;
 };

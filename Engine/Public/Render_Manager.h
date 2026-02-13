@@ -58,9 +58,7 @@ private:
 	class CVIBuffer_Rect_Tex* m_pVIBuffer = { nullptr };
 	class CShader* m_pShader = { nullptr };
 	Matrix m_matWorld_RT = Matrix::Identity;
-	Matrix m_matWorld_RT_Half = Matrix::Identity;
 	D3D11_VIEWPORT m_defaultViewport;
-	D3D11_VIEWPORT m_halfViewport;
 	ID3D11ShaderResourceView* m_pSSAONoiseSRV{ nullptr };
 
 	SHADER_SSAOKERNEL_DESC m_tSSAOkernelDesc{};

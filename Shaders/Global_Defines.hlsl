@@ -16,6 +16,8 @@ cbuffer GlobalBuffer
 
 cbuffer InvBuffer
 {
+    row_major float4x4 CamV;
+    row_major float4x4 CamP;
     row_major float4x4 InvV;
     row_major float4x4 InvP;
 };
