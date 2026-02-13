@@ -39,6 +39,9 @@ void CState_Fall::Update(const _float fTimeDelta)
 	Super::Update(fTimeDelta);
 
 	Count_FallTime(fTimeDelta);
+
+	if (IsOn_CCTFlag(PxControllerCollisionFlag::Enum::eCOLLISION_DOWN))
+		Change_PlayerState(ENUM_TO_UINT(CPlayer::State::LAND));
 }
 
 HRESULT CState_Fall::End()
