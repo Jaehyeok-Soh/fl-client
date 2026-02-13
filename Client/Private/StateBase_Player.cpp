@@ -52,17 +52,6 @@ HRESULT CStateBase_Player::Start(void* pArg, _bool bForce)
 
 void CStateBase_Player::Update(const _float fTimeDelta)
 {
-//#ifdef _DEBUG
-//	//WINDOW_DEBUG
-//	std::wstring msg = L"State: ";
-//	std::wstring ws(m_strName.begin(), m_strName.end());
-//	msg += ws;
-//
-//	msg += L" / AniIdx: ";
-//	msg += std::to_wstring(m_iMainAnimIdx);
-//	SetWindowText(g_hWnd, msg.c_str());
-//#endif
-
 	Super::Update(fTimeDelta);
 
 	// 만약 이전 애니메이션때 변화하기 싫은데 아직 preAni가 끝나지 않았다면 : key 입력 처리를 하지 않음
@@ -74,7 +63,7 @@ void CStateBase_Player::Update(const _float fTimeDelta)
 	if (!(m_tKeyTimer.bCountTime) ||
 		m_tKeyTimer.CountTime(fTimeDelta) == 1.f)
 	{
-		if (!m_bLoop && Is_MainAnimFinished())		// loop가 아닌데 애니메이션이 끝났다면 : pre animation이랑 잘 해야될듯..?
+		if (!m_bLoop && Is_MainAnimFinished())		// loop가 아닌데 애니메이션이 끝났다면
 		{
 			Change_PlayerState(STATEKEY::LOOPDONE);			// 다음 state로 change
 			return;
@@ -121,6 +110,12 @@ void CStateBase_Player::Change_PlayerState(STATEKEY eKey)
 	Request_Change_State(iNextState, &m_tNextStateDesc);	
 
 	/* 플레이어가 이런 state를 이런 애니메이션으로 바꿨다 */
+}
+
+void CStateBase_Player::Change_PlayerState(_uint iState)
+{
+	Set_NextStateDesc(iState);
+	Request_Change_State(iState, &m_tNextStateDesc);
 }
 
 _bool CStateBase_Player::Check_MoveKey(const _float fTimeDelta)
