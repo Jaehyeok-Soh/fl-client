@@ -50,13 +50,13 @@ void CImGui_StateLayout::Render(CGameObject* pGo)
 	ImGui::SameLine();
 	ImGui::Text("%u", iAnimIdx);
 
-	ImGui::Text("State Duration : ");
-	ImGui::SameLine();
-	ImGui::Text("%f", fStateTime);
-
 	ImGui::Text("BlendTime : ");
 	ImGui::SameLine();
 	ImGui::Text("%f", fBlendTime);
+
+	ImGui::Text("Main Ani Idx : "); // state 내부에서 anim idx
+	ImGui::SameLine();
+	ImGui::Text("%u", iMainIdx);
 
 	ImGui::Text("CamBone Pos : ");
 	ImGui::SameLine();
