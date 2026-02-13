@@ -11,6 +11,8 @@ enum class ERenderTarget : _uint
 	SpecularMask,
 	Specular,
 	Depth,
+	SSAO_HalfPing,
+	SSAO_HalfPong,
 	Scene,	// 유니티에서 SceneTexture라고 함. Effect 전용
 	END,
 };
@@ -20,7 +22,9 @@ enum class EMRTLayer : _uint
 	GameObjects,
 	LightAcc,
 	Effect,
-
+	SSAO_Half,
+	SSAO_BlurH,
+	SSAO_BlurV,
 	END,
 };
 
@@ -56,7 +60,6 @@ private:
 	array<list<class CRenderTarget*>, ENUM_TO_SZET(EMRTLayer::END)>		m_arrMRTs;
 
 	ID3D11ShaderResourceView* m_pNullSRVs[128]{ nullptr };
-
 	ID3D11RenderTargetView* m_pBackBuffer = { nullptr };
 	ID3D11DepthStencilView* m_pDSV = { nullptr };
 public:

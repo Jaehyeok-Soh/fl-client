@@ -161,6 +161,24 @@ PS_OUT_LIGHT PS_MAIN_POINT(PS_IN_POS_TEX input)
     return output;
 }
 
+PS_OUT_PING PS_MAIN_SSAOGEN(PS_IN_POS_TEX input)
+{
+    PS_OUT_PING output;
+    return output;
+}
+
+PS_OUT_PONG PS_MAIN_SSAOBLURH(PS_IN_POS_TEX input)
+{
+    PS_OUT_PONG output;
+    return output;
+}
+
+PS_OUT_PING PS_MAIN_SSAOBLURV(PS_IN_POS_TEX input)
+{
+    PS_OUT_PING output;
+    return output;
+}
+
 PS_OUT_BACKBUFFER PS_MAIN_COMBINED(PS_IN_POS_TEX input)
 {
     PS_OUT_BACKBUFFER output;
@@ -185,5 +203,8 @@ technique11 T0
     PASS_RS_DS_BS_VP(Debug, RS_Default, DS_Default, BS_Default, VS_MAIN, PS_MAIN_DEBUG)
     PASS_RS_DS_BS_VP(DirectionalLight, RS_Default, DS_Disabled, BS_Default, VS_MAIN, PS_MAIN_DIRECTIONAL)
     PASS_RS_DS_BS_VP(PointLight, RS_Default, DS_Disabled, BS_Blend, VS_MAIN, PS_MAIN_POINT)
+    PASS_RS_DS_BS_VP(SSAOGen, RS_Default, DS_Disabled, BS_Default, VS_MAIN, PS_MAIN_SSAOGEN)
+    PASS_RS_DS_BS_VP(SSAOBLURH, RS_Default, DS_Disabled, BS_Default, VS_MAIN, PS_MAIN_SSAOBLURH)
+    PASS_RS_DS_BS_VP(SSAOBLURV, RS_Default, DS_Disabled, BS_Default, VS_MAIN, PS_MAIN_SSAOBLURV)
     PASS_RS_DS_BS_VP(Combined, RS_Default, DS_Disabled, BS_Default, VS_MAIN, PS_MAIN_COMBINED)
 };

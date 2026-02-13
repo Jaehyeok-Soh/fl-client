@@ -60,6 +60,7 @@ int     g_iFlip;
 textureCUBE g_TextureCube;
 Texture2D g_DefaultTextures[8];
 Texture2D g_MaterialTextures[MATERIAL_END];
+Texture2D g_SSAONoiseTexture;
 Texture2D g_RenderTargetTexture;
 Texture2D g_RenderTargetDiffuseTexture;
 Texture2D g_RenderTargetNormalTexture;
@@ -67,6 +68,7 @@ Texture2D g_RenderTargetShadeTexture;
 Texture2D g_RenderTargetDepthTexture;
 Texture2D g_RenderTargetSpecularTexture;
 Texture2D g_RenderTargetSpecularMaskTexture;
+Texture2D g_RenderTargetAOTexture;
 Texture2D g_RenderTargetSceneTexture;
 
 #endif

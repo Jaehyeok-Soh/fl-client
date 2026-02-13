@@ -352,6 +352,16 @@ struct PS_OUT_LIGHT
     float4 vSpecular : SV_TARGET1;
 };
 
+struct PS_OUT_PING
+{
+    float fSSAO_PING : SV_TARGET0;
+};
+
+struct PS_OUT_PONG
+{
+    uint fSSAO_PONG : SV_TARGET0;
+};
+
 struct PS_OUT_DEFFERED
 {
     float4 vDiffuse : SV_TARGET0;

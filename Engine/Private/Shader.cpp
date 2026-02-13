@@ -229,6 +229,12 @@ HRESULT CShader::Bind_KeyFrameData(const SHADER_KEYFRAMEDESC& keyframeDesc)
 	return m_pKeyFrame_CBuffer->Copy_Data(keyframeDesc);
 }
 
+HRESULT CShader::Set_ConstantBuffer(EFXCB eSlot, ID3D11Buffer* pBuffer)
+{
+	auto* BindingCache = m_pVariant->Get_EffectAsset()->Get_BindingCache();
+	return BindingCache->CB[ENUM_TO_UINT(eSlot)]->SetConstantBuffer(pBuffer);
+}
+
 HRESULT CShader::Bind_BoneData(const SHADER_BONEDESC& boneDesc)
 {
 	return m_pBone_CBuffer->Copy_Data(boneDesc);

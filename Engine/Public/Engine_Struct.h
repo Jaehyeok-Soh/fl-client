@@ -96,6 +96,23 @@ namespace Engine
 		float fEmissivePower = { 1.f };
 	}SHADER_MI_DESC;
 
+	typedef struct tagShaderSSAOKernelDesc
+	{
+		SimpleMath::Vector4 vKernel[16]{ SimpleMath::Vector4::Zero};
+		SimpleMath::Vector2 vNoiseScale{};
+		SimpleMath::Vector2 vPadding{};
+	}SHADER_SSAOKERNEL_DESC;
+
+	typedef struct tagShaderSSAOParamDesc
+	{
+		float fRadius{ 0.f };
+		float fBias{ 0.f };
+		float fPower{ 0.f };
+		float fIntensity{ 0.f };
+		SimpleMath::Vector2 vInvSize{ 1.f, 1.f };
+		SimpleMath::Vector2 vPadding{};
+	}SHADER_SSAOPARAM_DESC;
+
 	typedef struct tagShaderEffectDesc
 	{
 		unsigned int iTextureFlags = { 0 };

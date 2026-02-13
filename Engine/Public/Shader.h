@@ -59,7 +59,11 @@ public:
 	HRESULT Bind_TransformData(const Matrix& matTransform);
 	HRESULT Bind_BoneData(const SHADER_BONEDESC& boneDesc);
 	HRESULT Bind_KeyFrameData(const SHADER_KEYFRAMEDESC& keyframeDesc);
+
+	// 외부에서 ConstantBuffer를 생성후 바인딩할 때
+	HRESULT Set_ConstantBuffer(EFXCB eSlot, ID3D11Buffer* pBuffer);
 private:
+	// ShaderComponent내에 ConstantBuffer 생성
 	void Create_ConstantBuffer();
 	void Clear_ConstantBuffer();
 private:

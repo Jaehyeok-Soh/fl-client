@@ -7,6 +7,7 @@
 #include "Shader.h"
 #include "Bounds.h"
 #include "RenderTarget.h"
+#include "Constant_Buffer.h"
 #include "Octree_Manager.h"
 #include "EngineConsole.h"
 #include "GameInstance.h"
@@ -27,12 +28,19 @@ CRender_Manager::CRender_Manager(ID3D11Device* pDevice, ID3D11DeviceContext* pDe
 
 HRESULT CRender_Manager::Initialize()
 {
+	//========================
+	// Viewport Save / Set Half
+	//========================
 	_uint iViewportsCount = { 1 };
-	D3D11_VIEWPORT viewportDesc = {};
-	m_pDeviceContext->RSGetViewports(&iViewportsCount, &viewportDesc);
+	m_pDeviceContext->RSGetViewports(&iViewportsCount, &m_defaultViewport);
+	m_halfViewport = m_defaultViewport;
+	m_halfViewport.Width = m_defaultViewport.Width * 0.5f;
+	m_halfViewport.Height = m_defaultViewport.Height * 0.5f;
 
-	const _uint& iWidth = (_uint)viewportDesc.Width;
-	const _uint& iHeight = (_uint)viewportDesc.Height;
+	const _uint& iWidth = (_uint)m_defaultViewport.Width;
+	const _uint& iHeight = (_uint)m_defaultViewport.Height;
+	const _uint& iHalfWidth = (_uint)m_halfViewport.Width;
+	const _uint& iHalfHeight = (_uint)m_halfViewport.Height;
 
 	// For. Target_Diffuse
 	{
@@ -72,6 +80,26 @@ HRESULT CRender_Manager::Initialize()
 		desc.iHeight = iHeight;
 		desc.vClearColor = Vec4::Zero;
 		if (FAILED(m_pGameInstance->Add_RenderTarget(ERenderTarget::Depth, &desc)))
+			return E_FAIL;
+	}
+	// For. Target_AO_HalfPing
+	{
+		CRenderTarget::RENDERTARGET_DESC desc = {};
+		desc.ePixelFormat = DXGI_FORMAT_R16_FLOAT;
+		desc.iWidth = iHalfWidth;
+		desc.iHeight = iHalfHeight;
+		desc.vClearColor = Vec4::One;
+		if (FAILED(m_pGameInstance->Add_RenderTarget(ERenderTarget::SSAO_HalfPing, &desc)))
+			return E_FAIL;
+	}
+	// For. Target_AO_HalfPong
+	{
+		CRenderTarget::RENDERTARGET_DESC desc = {};
+		desc.ePixelFormat = DXGI_FORMAT_R16_FLOAT;
+		desc.iWidth = iHalfWidth;
+		desc.iHeight = iHalfHeight;
+		desc.vClearColor = Vec4::One;
+		if (FAILED(m_pGameInstance->Add_RenderTarget(ERenderTarget::SSAO_HalfPong, &desc)))
 			return E_FAIL;
 	}
 	// For. Target_Shade
@@ -132,12 +160,29 @@ HRESULT CRender_Manager::Initialize()
 			return E_FAIL;
 	}
 
+	// For. MRT_SSAO_Half
+	{
+		if (FAILED(m_pGameInstance->Add_MRT(EMRTLayer::SSAO_Half, ERenderTarget::SSAO_HalfPing)))
+			return E_FAIL;
+	}
+
+	// For. MRT_SSAO_BlurH
+	{
+		if (FAILED(m_pGameInstance->Add_MRT(EMRTLayer::SSAO_BlurH, ERenderTarget::SSAO_HalfPong)))
+			return E_FAIL;
+	}
+
+	// For. MRT_SSAO_BlurV
+	{
+		if (FAILED(m_pGameInstance->Add_MRT(EMRTLayer::SSAO_BlurV, ERenderTarget::SSAO_HalfPing)))
+			return E_FAIL;
+	}
 	// For. MRT_Shadow
 	{
 	}
 
-	m_matWorld_RT = Matrix::CreateScale(viewportDesc.Width, viewportDesc.Height, 1.f);
-
+	m_matWorld_RT = Matrix::CreateScale(m_defaultViewport.Width, m_defaultViewport.Height, 1.f);
+	m_matWorld_RT_Half = Matrix::CreateScale(m_halfViewport.Width, m_halfViewport.Height, 1.f);
 #ifdef _DEBUG
 	if (FAILED(Ready_Debug()))
 		return E_FAIL;
@@ -214,7 +259,7 @@ void CRender_Manager::Push_RenderObject(RENDER_CATEGORY eCategory, CGameObject* 
 //}
 #pragma endregion
 
-HRESULT CRender_Manager::Set_Components()
+HRESULT CRender_Manager::Set_ShaderResources()
 {
 	{
 		if (!(m_pVIBuffer = CVIBuffer_Rect_Tex::Create(m_pDevice, m_pDeviceContext, nullptr)))
@@ -224,6 +269,38 @@ HRESULT CRender_Manager::Set_Components()
 		desc.pShaderFilePath = L"../../Shaders/Shader_Deffered.hlsl";
 		desc.eLayout = EVtxLayout::VTXPOSTEX;
 		if (!(m_pShader = CShader::Create(m_pDevice, m_pDeviceContext, &desc)))
+			return E_FAIL;
+	}
+
+	if (FAILED(Set_ConstantBuffer()))
+		return E_FAIL;
+
+	if (FAILED(Create_SSAO_NoiseSRV()))
+		return E_FAIL;
+
+	if (FAILED(m_pShader->Bind_SRV(EFXSRV::SSAONoise, m_pSSAONoiseSRV)))
+		return E_FAIL;
+
+	// kernelDesc
+	{
+		array<Vec4, SSAO_KERNAL> arrKernal = Build_SSAO_Kernal16();
+		::memcpy(m_tSSAOkernelDesc.vKernel, arrKernal.data(), sizeof(Vec4) * SSAO_KERNAL);
+		m_tSSAOkernelDesc.vNoiseScale.x = m_halfViewport.Width / 4;
+		m_tSSAOkernelDesc.vNoiseScale.y = m_halfViewport.Height / 4;
+
+		if (FAILED(m_pCB_SSAOkernel->Copy_Data(m_tSSAOkernelDesc)))
+			return E_FAIL;
+	}
+	
+	// paramDesc
+	{
+		m_tSSAOparamDesc.vInvSize = { 1.0f / m_halfViewport.Width, 1.0f / m_halfViewport.Height };
+		m_tSSAOparamDesc.fRadius = 1.0f;
+		m_tSSAOparamDesc.fBias = 0.05f;
+		m_tSSAOparamDesc.fIntensity = 1.0f;
+		m_tSSAOparamDesc.fPower = 1.0f;
+
+		if (FAILED(m_pCB_SSAOparam->Copy_Data(m_tSSAOparamDesc)))
 			return E_FAIL;
 	}
 
@@ -242,6 +319,9 @@ HRESULT CRender_Manager::Render()
 		return E_FAIL;
 
 	m_pGameInstance->Setup_UIViewProj_ToCBuffer();
+
+	if (FAILED(Render_SSAO()))
+		return E_FAIL;
 
 	if (FAILED(Render_Lights()))
 		return E_FAIL;
@@ -431,6 +511,77 @@ HRESULT CRender_Manager::Render_NoneBlend()
 	return S_OK;
 }
 
+HRESULT CRender_Manager::Render_SSAO()
+{
+	// 뷰포트 Half사이즈로 세팅
+	m_pDeviceContext->RSSetViewports(1, &m_halfViewport);
+
+	//========================
+	// SSAO Gen -> AO_Half_Ping
+	//========================
+	if (FAILED(m_pGameInstance->Begin_MRT(EMRTLayer::SSAO_Half)))
+		goto FAIL;
+
+	if (FAILED(m_pShader->Bind_TransformData(m_matWorld_RT_Half)))
+		goto FAIL;
+
+	if (FAILED(m_pGameInstance->Bind_RT_ShaderResource(ERenderTarget::Normal, m_pShader)))
+		goto FAIL;
+
+	if (FAILED(m_pGameInstance->Bind_RT_ShaderResource(ERenderTarget::Depth, m_pShader)))
+		goto FAIL;
+
+	m_pShader->Set_Pass(ENUM_TO_UINT(DEFFERRED::SSAO_GEN));
+	m_pShader->Apply();
+	m_pVIBuffer->Bind_Resource();
+	m_pVIBuffer->Render();
+
+	if (FAILED(m_pGameInstance->End_MRT()))
+		goto FAIL;
+
+	//========================
+	// BLUR H -> AO_Half_Pong
+	//========================
+	if (FAILED(m_pGameInstance->Begin_MRT(EMRTLayer::SSAO_BlurH)))
+		goto FAIL;
+
+	if (FAILED(m_pGameInstance->Bind_RT_ShaderResource(ERenderTarget::SSAO_HalfPing, m_pShader)))
+		goto FAIL;
+
+	m_pShader->Set_Pass(ENUM_TO_UINT(DEFFERRED::SSAO_BLURH));
+	m_pShader->Apply();
+	m_pVIBuffer->Bind_Resource();
+	m_pVIBuffer->Render();
+
+	if (FAILED(m_pGameInstance->End_MRT()))
+		goto FAIL;
+
+	//========================
+	// BLUR V -> AO_Half_Ping
+	//========================
+	if (FAILED(m_pGameInstance->Begin_MRT(EMRTLayer::SSAO_BlurV)))
+		goto FAIL;
+
+	if (FAILED(m_pGameInstance->Bind_RT_ShaderResource(ERenderTarget::SSAO_HalfPong, m_pShader)))
+		goto FAIL;
+
+	m_pShader->Set_Pass(ENUM_TO_UINT(DEFFERRED::SSAO_BLURV));
+	m_pShader->Apply();
+	m_pVIBuffer->Bind_Resource();
+	m_pVIBuffer->Render();
+
+	if (FAILED(m_pGameInstance->End_MRT()))
+		goto FAIL;
+
+	// 원래대로 복원
+	m_pDeviceContext->RSSetViewports(1, &m_defaultViewport);
+	return S_OK;
+
+FAIL:
+	m_pDeviceContext->RSSetViewports(1, &m_defaultViewport);
+	return E_FAIL;
+}
+
 HRESULT CRender_Manager::Render_Lights()
 {
 	if (FAILED(m_pGameInstance->Begin_MRT(EMRTLayer::LightAcc)))
@@ -443,6 +594,9 @@ HRESULT CRender_Manager::Render_Lights()
 		return E_FAIL;
 
 	if (FAILED(m_pGameInstance->Bind_RT_ShaderResource(ERenderTarget::SpecularMask, m_pShader)))
+		return E_FAIL;
+
+	if (FAILED(m_pGameInstance->Bind_RT_ShaderResource(ERenderTarget::SSAO_HalfPing, m_pShader)))
 		return E_FAIL;
 
 	if (FAILED(m_pGameInstance->Bind_RT_ShaderResource(ERenderTarget::Depth, m_pShader)))
@@ -509,6 +663,100 @@ HRESULT CRender_Manager::Render_UI()
 	return S_OK;
 }
 
+array<Vec4, SSAO_KERNAL> CRender_Manager::Build_SSAO_Kernal16()
+{
+	array<Vec4, SSAO_KERNAL> arrKernel;
+	for (_uint i = 0; i < SSAO_KERNAL; ++i)
+	{
+		Vec3 vRand
+		{
+			m_pGameInstance->Rand_Float(-1.f, 1.f),
+			m_pGameInstance->Rand_Float(-1.f, 1.f),
+			m_pGameInstance->Rand_Float(0.f, 1.f)
+		};
+		vRand.Normalize();
+
+		_float fScale = m_pGameInstance->Rand_Float(0.f, 1.f);
+		_float fT = (_float)i / 15.f;
+		_float fBias = 0.1f;
+		_float fGain = 1.0f;
+		_float fLerpScale = std::_Linear_for_lerp(fBias, fGain, fT * fT);
+		vRand *= fScale * fLerpScale;
+
+		arrKernel[i] = Vec4(vRand.x, vRand.y, vRand.z, 0.f);
+	}
+
+	return arrKernel;
+}
+
+HRESULT CRender_Manager::Create_SSAO_NoiseSRV()
+{
+	Safe_Release(m_pSSAONoiseSRV);
+
+	// 4x4 RGBA float
+	Vec4 noiseData[16]{Vec4::Zero};
+
+	for (_int i = 0; i < 16; ++i)
+	{
+		Vec3 vRand
+		{
+			m_pGameInstance->Rand_Float(-1.f, 1.f),
+			m_pGameInstance->Rand_Float(-1.f, 1.f),
+			0.f
+		};
+
+		vRand.Normalize();
+		noiseData[i] = Vec4(vRand.x, vRand.y, 0.f, 0.f);
+	}
+
+	D3D11_TEXTURE2D_DESC desc{};
+	desc.Width = 4;
+	desc.Height = 4;
+	desc.MipLevels = 1;
+	desc.ArraySize = 1;
+	desc.Format = DXGI_FORMAT_R32G32B32A32_FLOAT;
+	desc.SampleDesc.Count = 1;
+	desc.Usage = D3D11_USAGE_IMMUTABLE;
+	desc.BindFlags = D3D11_BIND_SHADER_RESOURCE;
+
+	D3D11_SUBRESOURCE_DATA init{};
+	init.pSysMem = noiseData;
+	init.SysMemPitch = sizeof(Vec4) * 4;
+
+	ID3D11Texture2D* pTexture{ nullptr };
+	if (FAILED(m_pDevice->CreateTexture2D(&desc, &init, &pTexture)))
+		return E_FAIL;
+
+	D3D11_SHADER_RESOURCE_VIEW_DESC srvDesc{};
+	srvDesc.Format = desc.Format;
+	srvDesc.ViewDimension = D3D11_SRV_DIMENSION_TEXTURE2D;
+	srvDesc.Texture2D.MipLevels = 1;
+
+	if (FAILED(m_pDevice->CreateShaderResourceView(pTexture, &srvDesc, &m_pSSAONoiseSRV)))
+	{
+		Safe_Release(pTexture);
+		return E_FAIL;
+	}
+
+	return S_OK;
+}
+
+HRESULT CRender_Manager::Set_ConstantBuffer()
+{
+	m_pCB_SSAOkernel = CConstant_Buffer<SHADER_SSAOKERNEL_DESC>::Create(m_pDevice, m_pDeviceContext);
+	m_pCB_SSAOparam = CConstant_Buffer<SHADER_SSAOPARAM_DESC>::Create(m_pDevice, m_pDeviceContext);
+	if (m_pCB_SSAOkernel == nullptr || m_pCB_SSAOparam == nullptr)
+		return E_FAIL;
+
+	if (FAILED(m_pShader->Set_ConstantBuffer(EFXCB::SSAOkernal, m_pCB_SSAOkernel->Get_Buffer())))
+		return E_FAIL;
+
+	if (FAILED(m_pShader->Set_ConstantBuffer(EFXCB::SSAOparam, m_pCB_SSAOparam->Get_Buffer())))
+		return E_FAIL;
+
+	return S_OK;
+}
+
 CRender_Manager* CRender_Manager::Create(ID3D11Device* pDevice, ID3D11DeviceContext* pDeviceContext)
 {
 	CRender_Manager* pInstance = new CRender_Manager(pDevice, pDeviceContext);
@@ -536,6 +784,9 @@ void CRender_Manager::Free()
 		RenderObjects.clear();
 	}
 
+	Safe_Release(m_pSSAONoiseSRV);
+	Safe_Release(m_pCB_SSAOkernel);
+	Safe_Release(m_pCB_SSAOparam);
 	Safe_Release(m_pVIBuffer);
 	Safe_Release(m_pShader);
 	Safe_Release(m_pGameInstance);
