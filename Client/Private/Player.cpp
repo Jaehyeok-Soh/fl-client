@@ -312,10 +312,10 @@ HRESULT CPlayer::Ready_BaseStates()
     // Slide & SlideSky
     {
         CStateBase_Player::PLAYER_STATEBASE_DESC  desc = {};
-        //desc.FAniFlags = CStateBase::STATEANI_FLAG::SA_HasPreAni;
-        desc.FAniFlags = 0;
+        desc.FAniFlags = CStateBase::STATEANI_FLAG::SA_HasPreAni;
+        //desc.FAniFlags = 0;
         desc.vecPreAnims = {
-                        //{-1, Get_AnimationIndex(L"Animation_PlayerMoon_Slide_Start")}
+                        {-1, Get_AnimationIndex(L"Animation_PlayerMoon_Slide_Start")}
         };
         desc.vecMainAnims = { Get_AnimationIndex(L"Animation_PlayerMoon_Slide_End") ,Get_AnimationIndex(L"Animation_PlayerMoon_SlideInAir_Loop")};
         desc.bBlend     = true;
