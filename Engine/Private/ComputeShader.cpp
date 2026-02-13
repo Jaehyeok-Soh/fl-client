@@ -421,6 +421,7 @@ void CComputeShader::Clear_ConstantBuffer()
 void CComputeShader::Clear_StructBuffer()
 {
 	// SB는 clone때만 생성 & 0번만 bool값에 따라 생성하므로
+	// todo : 만약 벡터에 있는 srv들을 초기에 여기 컴포넌트 안에서 생성한다면 구조 변경 필요
 	if (IsClone() && m_bHas_OwnSRV)
 	{
 		Safe_Release(m_pInputStructuredBuffer[0].first);
