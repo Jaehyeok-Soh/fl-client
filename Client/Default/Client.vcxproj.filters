@@ -283,6 +283,9 @@
     <Filter Include="03. GameObject\PartObjects\Weapon\Gun">
       <UniqueIdentifier>{6a93f015-83a7-4ad9-a084-d7e71fa8f3a4}</UniqueIdentifier>
     </Filter>
+    <Filter Include="06. FSM\Player\JumpWall">
+      <UniqueIdentifier>{2c8ee512-8e94-467f-9f3f-35d518b8ff89}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="targetver.h">
@@ -549,6 +552,9 @@
     <ClInclude Include="..\Public\Sword.h">
       <Filter>03. GameObject\PartObjects\Weapon\Sword</Filter>
     </ClInclude>
+    <ClInclude Include="..\Public\State_JumpWall.h">
+      <Filter>06. FSM\Player\JumpWall</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <Image Include="Client.ico">
@@ -806,6 +812,9 @@
     </ClCompile>
     <ClCompile Include="..\Private\Sword.cpp">
       <Filter>03. GameObject\PartObjects\Weapon\Sword</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\State_JumpWall.cpp">
+      <Filter>06. FSM\Player\JumpWall</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

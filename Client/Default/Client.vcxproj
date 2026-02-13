@@ -224,6 +224,7 @@
     <ClInclude Include="..\Public\State_JumpBack.h" />
     <ClInclude Include="..\Public\State_JumpBullet.h" />
     <ClInclude Include="..\Public\State_JumpDouble.h" />
+    <ClInclude Include="..\Public\State_JumpWall.h" />
     <ClInclude Include="..\Public\State_Land.h" />
     <ClInclude Include="..\Public\State_MoonCombo.h">
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">false</ExcludedFromBuild>
@@ -338,6 +339,7 @@
     <ClCompile Include="..\Private\State_JumpBack.cpp" />
     <ClCompile Include="..\Private\State_JumpBullet.cpp" />
     <ClCompile Include="..\Private\State_JumpDouble.cpp" />
+    <ClCompile Include="..\Private\State_JumpWall.cpp" />
     <ClCompile Include="..\Private\State_Land.cpp" />
     <ClCompile Include="..\Private\State_MoonCombo.cpp">
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">false</ExcludedFromBuild>
