@@ -14,6 +14,7 @@ CActionState::CActionState()
 }
 
 CActionState::CActionState(const CActionState& rhs)
+	:m_bApplyGravity(rhs.m_bApplyGravity)
 {
 }
 
@@ -525,7 +526,7 @@ _bool CActionState::Is_Grounded() const
 
 _bool CActionState::Is_ApplyGravity() const
 {
-	return m_pOwnerControlContext->Is_Gravity();
+	return m_bApplyGravity;
 }
 
 _bool CActionState::Is_AttackPressed() const

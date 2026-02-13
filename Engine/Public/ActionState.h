@@ -58,6 +58,7 @@ public:
 	const char*		Get_CurrentStateName() const;
 
 	void			Set_Navigation(CNavigation* pNavigation);
+	void			Set_ApplyGravity(_bool bApply) { m_bApplyGravity = bApply; }
 
 	/* animation funcs*/
 protected:
@@ -122,10 +123,13 @@ protected:
 	_int				m_iCurrentState			= { -1 };
 	_int				m_iPrevState			= { -1 };
 
-	const _float		m_fGravity				= { -30.f };
+	const _float		m_fGravity				= { -9.8f };
 	const _float		m_fMaxVerticalSpeed		= { 30.f };
 	const _float		m_fMaxFallSpeed			= { -30.f };
 	_float				m_fVerticalSpeed		= { 0.f };
+
+	_bool				m_bApplyGravity			= { true };
+
 	vector<CStateBase*> m_vecStates;
 
 	// Physics

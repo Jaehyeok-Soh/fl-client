@@ -165,8 +165,11 @@ protected:
 	/* key funcs */
 protected:
 	_bool Key_Input(_uint iKey);
+	
+	/* getter setter funcs*/
 protected:
 	_bool			IsOn_CCTFlag(PxControllerCollisionFlag::Enum eFlag);
+	void			Set_ApplyGravity(_bool bApply);
 
 private:
 	_bool IsBlend() { return m_bBlend; }
