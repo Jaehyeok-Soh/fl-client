@@ -186,6 +186,14 @@ _bool CStateBase::Is_AnimTrackPositionHalf()
 	return m_pOwnerStateComp->Is_AnimTrackPositionHalf();
 }
 
+_bool CStateBase::IsOn_CCTFlag(PxControllerCollisionFlag::Enum eFlag)
+{
+	if (m_pOwnerStateComp == nullptr)
+		return false;
+
+	return m_pOwnerStateComp->IsOn_CCTFlag(eFlag);
+}
+
 _bool CStateBase::Align_Movement(const _float fTimeDelta)
 {
 	if (m_pOwnerStateComp == nullptr)

@@ -164,6 +164,11 @@ void CActionState::Set_Navigation(CNavigation* pNavigation)
 	m_pOwnerNavigation = pNavigation;
 }
 
+_bool CActionState::IsOn_CCTFlag(PxControllerCollisionFlag::Enum eFlag)
+{
+	return (CCTFlags & eFlag);
+}
+
 HRESULT CActionState::Set_OwnerComponents()
 {
 	CGameObject* pOwner = Get_Owner();
