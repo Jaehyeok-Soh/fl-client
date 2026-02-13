@@ -398,11 +398,14 @@ HRESULT CMainApplication::Ready_Managers()
 
 HRESULT CMainApplication::Ready_Fonts()
 {
-	if (FAILED(m_pGameInstance->Add_Font(L"Font_Default", L"../../Resources/Fonts/156ex.spritefont")))
-		return E_FAIL;
-	if (FAILED(m_pGameInstance->Add_Font(L"HYJunHei_75W", L"../../Resources/Fonts/SemiBold.spritefont")))
-		return E_FAIL;
-
+	// font
+	for (const auto& e : std::filesystem::directory_iterator(L"..\\..\\Resources\\Fonts"))
+	{
+		const std::wstring key = e.path().stem().wstring();   // 파일명(확장자 제외)
+		const std::wstring path = e.path().wstring();          // 실제 경로
+		if (FAILED(m_pGameInstance->Add_Font(key.c_str(), path.c_str())))
+			return E_FAIL;
+	}
 	return S_OK;
 }
 

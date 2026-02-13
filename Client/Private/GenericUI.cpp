@@ -109,6 +109,9 @@ HRESULT CGenericUI::Render()
 
 _bool CGenericUI::Calc_HitEvent()
 {
+	if (!m_isInteract)
+		return FALSE;
+
 	if (::PtInRect(&m_tRenderRect, m_pGameInstance->Get_MousePos()))
 		return TRUE;
 	return FALSE;
@@ -147,6 +150,10 @@ void CGenericUI::Acting_By_InteractState()
 	}
 }
 
+void CGenericUI::OnUIEvent(ETriggerEventType eEvent, CGenericUI* pSender)
+{
+}
+
 HRESULT CGenericUI::Ready_Components(GENERIC_UI_DESC* pDesc)
 {
 	if (FAILED(Add_Component<CTexture>(ENUM_TO_UINT(ELevelType::STATIC), L"Prototype_Component_Texture_Empty", pDesc)))
@@ -179,38 +186,7 @@ HRESULT CGenericUI::Bind_ShaderResources()
 		return E_FAIL;
 	if (FAILED(pShader->Get_Variable("g_fProgressRatio")->SetRawValue(&m_fProgress_Ratio, 0, sizeof(_float))))
 		return E_FAIL;
-	/*if (m_iShaderPass == ENUM_TO_UINT(EUIShaderPass::DEFAULT))
-	{
-		if (FAILED(Get_Component<CTexture>()->Bind_ShaderResourceBuffer(pShader)))
-			return E_FAIL;
-	}
-	else if (m_iShaderPass == ENUM_TO_UINT(EUIShaderPass::DEFAULT_ALPHA))
-	{
-
-	}
-	else if (m_iShaderPass == ENUM_TO_UINT(EUIShaderPass::COLOR))
-	{
-		if (FAILED(Get_Component<CTexture>()->Bind_ShaderResourceBuffer(pShader)))
-			return E_FAIL;
-
-	}
-	else if (m_iShaderPass == ENUM_TO_UINT(EUIShaderPass::FADE))
-	{
-		if (FAILED(Get_Component<CTexture>()->Bind_ShaderResourceBuffer(pShader)))
-			return E_FAIL;
-
-
-	}
-	else if (m_iShaderPass == ENUM_TO_UINT(EUIShaderPass::PROGRESS))
-	{
-
-
-		if (FAILED(pShader->Get_Variable("g_vColorTint")->SetRawValue(&m_vColorTint, 0, sizeof(Vec4))))
-			return E_FAIL;
-
-
-
-	}*/
+	
 	return S_OK;
 }
 

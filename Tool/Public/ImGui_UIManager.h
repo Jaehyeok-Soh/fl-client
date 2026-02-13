@@ -50,6 +50,9 @@ public:
 	void Add_RenderGroup();
 	void Request_SortUI();
 
+	void Add_FontName(const _string& str) { m_vecFontNames.push_back(str); }
+	const vector<_string>& Get_FontNames() { return m_vecFontNames; }
+
 private:
 	void Sort_UI();
 
@@ -62,6 +65,8 @@ private:
 
 	vector<CToolUI*> m_vecSortUI;
 	_bool m_isSort = { FALSE };
+
+	vector<_string>  m_vecFontNames;
 
 private:
 	int32_t m_iCurCanvasIndex = {};

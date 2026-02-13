@@ -50,18 +50,18 @@ HRESULT CToolUI::Initialize(void* pArg)
 
 	// Local Values
 	m_iIndex = pDesc->iIndex;
-
+	if (m_eClassType == DTO::EUIClassType::UI_TEXT)
 	{
 		m_tUITextData			= pDesc->tTextData;
 		m_wstrText_TextData		= Engine_Utils::ToWString(m_tUITextData.strText);
 		m_vFontColor_TextData	= m_tUITextData.vFontColor;
-		m_vPivot_TextData		= m_tUITextData.vPivot;
 		m_fScale_TextData		= m_tUITextData.fScale;
 		m_fRotate_TextData		= m_tUITextData.fRotate;
 		m_strFontName_TextData	= m_tUITextData.strFontTag;
 	}
+	if (m_eClassType == DTO::EUIClassType::TRIGGER)
 	{
-		m_tUIButtonTriggerData			= pDesc->tButtonTriggerData;
+		m_tUITriggerData			= pDesc->tTriggerData;
 		m_vecHoverEnterTriggerCanvas	= m_tUITriggerData.vecHoverEnterTriggerCanvas;
 		m_vecHoverEnterTriggerUI		= m_tUITriggerData.vecHoverEnterTriggerUI;
 		m_vecHoverExitTriggerCanvas		= m_tUITriggerData.vecHoverExitTriggerCanvas;
@@ -71,6 +71,7 @@ HRESULT CToolUI::Initialize(void* pArg)
 		m_vecPressExitTriggerCanvas		= m_tUITriggerData.vecPressExitTriggerCanvas;
 		m_vecPressExitTriggerUI			= m_tUITriggerData.vecPressExitTriggerUI;
 	}
+	if (m_eClassType == DTO::EUIClassType::DYNAMIC_IMAGE)
 	{
 		m_tDImageData			= pDesc->tDImageData;
 		m_eDImageSubClassType	= m_tDImageData.eDISubClassType;
@@ -234,7 +235,7 @@ HRESULT CToolUI::Bind_ShaderResources()
 	if(m_eClassType == DTO::EUIClassType::UI_TEXT)
 	{
 		Vec2 fontPos = Vec2{ m_vRenderPos.x, m_vRenderPos.y };
-		if (FAILED(m_pGameInstance->Draw_Text(L"SemiBold", m_wstrText_TextData.c_str(), fontPos, m_vFontColor_TextData, m_fRotate_TextData,m_fScale_TextData)))
+		if (FAILED(m_pGameInstance->Draw_Text(Engine_Utils::ToWString(m_strFontName_TextData), m_wstrText_TextData.c_str(), fontPos, m_vFontColor_TextData, m_fRotate_TextData,m_fScale_TextData)))
 			return E_FAIL;
 	}
     return S_OK;
@@ -362,7 +363,6 @@ void CToolUI::Sync_TextData()
 	m_tUITextData.strText		= Engine_Utils::ToString(m_wstrText_TextData);
 	m_tUITextData.vFontColor	= m_vFontColor_TextData;
 	m_tUITextData.fRotate		= m_fRotate_TextData;
-	m_tUITextData.vPivot		= m_vPivot_TextData;
 	m_tUITextData.strFontTag	= m_strFontName_TextData;
 	m_tUITextData.fScale		= m_fScale_TextData;
 }

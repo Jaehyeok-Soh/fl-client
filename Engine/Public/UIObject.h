@@ -8,8 +8,6 @@ class ENGINE_DLL CUIObject abstract : public CGameObject
 	using Super = CGameObject;
 
 public:
-
-
 	typedef struct tagUIObjectDesc : public Super::GAMEOBJECT_DESC
 	{
 		_bool isAlpha;
@@ -82,12 +80,15 @@ public:
 	virtual void Initialize_Interactable_Event()	{}
 	virtual void Initialize_NonInteractable_Event()	{}
 
-	virtual _bool Tick_Visible_Event(const _float& fTimeDelta)			{return true;}
-	virtual _bool Tick_InVisible_Event(const _float& fTimeDelta)		{return true;}
-	virtual _bool Tick_Activate_Event(const _float& fTimeDelta)			{return true;}
-	virtual _bool Tick_InActivate_Event(const _float& fTimeDelta)		{return true;}
-	virtual _bool Tick_Interactable_Event(const _float& fTimeDelta)		{return true;}
-	virtual _bool Tick_NonInteractable_Event(const _float& fTimeDelta)	{return true;}
+	/// <summary>
+	/// 끝나면 true를 반환하세요
+	/// </summary>
+	virtual _bool Tick_Visible_Event(const _float fTimeDelta)			{return true;}
+	virtual _bool Tick_InVisible_Event(const _float fTimeDelta)			{return true;}
+	virtual _bool Tick_Activate_Event(const _float fTimeDelta)			{return true;}
+	virtual _bool Tick_InActivate_Event(const _float fTimeDelta)		{return true;}
+	virtual _bool Tick_Interactable_Event(const _float fTimeDelta)		{return true;}
+	virtual _bool Tick_NonInteractable_Event(const _float fTimeDelta)	{return true;}
 
 protected:
 	/* 렌더 상태를 제어 */
@@ -101,8 +102,8 @@ protected:
 	_bool m_isPlaying_ActiveEvent = { false };
 
 	/* 입력 상태를 제어 */
-	_bool m_isPreInteract = { false };
-	_bool m_isInteract = { false };
+	_bool m_isPreInteract = { true };
+	_bool m_isInteract = { true };
 	_bool m_isPlaying_InteractEvent = { false };
 
 protected:

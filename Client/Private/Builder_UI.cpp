@@ -9,6 +9,7 @@
 
 #include "UISkill_BG.h"
 #include "UIMini_Map.h"
+#include "UIHover_Image.h"
 
 #include"UI_Manager.h"
 #include "GameInstance.h"
@@ -101,6 +102,17 @@ HRESULT CBuilder_UI::Build(const CDataDocumentBase& document)
 
 	m_MapTextDataCache.clear();
 	m_MapTriggerDataCache.clear();
+
+	for (auto* pUI : m_vecTriggerUIs)
+	{
+		auto* pTriggerUI = dynamic_cast<CUITrigger*>(pUI);
+		if (nullptr == pTriggerUI)
+			continue;
+
+		if (FAILED(pTriggerUI->Bind_Cache()))
+			return E_FAIL;
+	}
+	m_vecTriggerUIs.clear();
 
 	CUI_Manager::GetInstance()->Request_SortUI();
 	return S_OK;
@@ -207,6 +219,7 @@ HRESULT CBuilder_UI::Register_Class(DTO::EUIClassType eClassType, const DTO::TUI
 		auto iter = m_MapTextDataCache.find(data.strTag);
 		if (iter == m_MapTextDataCache.end())
 			return E_FAIL;
+		TextDesc.wstrFontTag = Engine_Utils::ToWString(iter->second.strFontTag);
 		TextDesc.wstrText = Engine_Utils::ToWString( iter->second.strText);
 		TextDesc.vFontColor = iter->second.vFontColor;
 		TextDesc.fRotate = iter->second.fRotate;
@@ -232,6 +245,14 @@ HRESULT CBuilder_UI::Register_Class(DTO::EUIClassType eClassType, const DTO::TUI
 		m_MapTriggerDataCache.erase(iter);	
 
 		pResult = m_pGameInstance->Add_GameObject(m_iLevelID, wstrProtoTag, m_iLevelID, wstrLayerTag, &TriggerDesc);
+		if (nullptr == pResult)
+			return E_FAIL;
+
+		auto* pTriggerUI = dynamic_cast<CGenericUI*>(pResult);
+		if (nullptr == pTriggerUI)
+			return E_FAIL;
+
+		m_vecTriggerUIs.push_back(pTriggerUI);
 	}
 	else if (eClassType == DTO::EUIClassType::DYNAMIC_IMAGE)
 	{
@@ -241,9 +262,10 @@ HRESULT CBuilder_UI::Register_Class(DTO::EUIClassType eClassType, const DTO::TUI
 
 		const auto Type = iter->second.eDISubClassType;
 
-		// 플레이어 스킬류일때 
-		const bool isPlayerSkill = (Type >= DTO::EUIDImageSubClassType::PLAYER_E &&	Type <= DTO::EUIDImageSubClassType::PLAYER_SKILL_END);
-		const bool isMiniMap = (Type >= DTO::EUIDImageSubClassType::MINIMAP_PLAYER_ICON &&	Type <= DTO::EUIDImageSubClassType::MINIMAP_END);
+		const _bool isPlayerSkill	= (Type >= DTO::EUIDImageSubClassType::PLAYER_SKILL_BEGIN &&	Type <= DTO::EUIDImageSubClassType::PLAYER_SKILL_END);
+		const _bool isMiniMap		= (Type >= DTO::EUIDImageSubClassType::MINIMAP_BEGIN &&	Type <= DTO::EUIDImageSubClassType::MINIMAP_END);
+		const _bool isHoverIcon		= (Type >= DTO::EUIDImageSubClassType::HOVER_POPUP_BEGIN && Type <= DTO::EUIDImageSubClassType::HOVER_POPUP_END);
+
 		if (isPlayerSkill)
 		{
 			CUISkill_BG::SKILL_BG_DESC SkillBGDesc = {};
@@ -251,13 +273,19 @@ HRESULT CBuilder_UI::Register_Class(DTO::EUIClassType eClassType, const DTO::TUI
 			SkillBGDesc.eSubClassType = Type;
 			pResult = m_pGameInstance->Add_GameObject(m_iLevelID, L"Prototype_UI_SkillBG", m_iLevelID, wstrLayerTag, &SkillBGDesc);
 		}
-		
 		else if (isMiniMap)
 		{
 			CUIMini_Map::MINIMAP_DESC SkillBGDesc = {};
 			static_cast<CGenericUI::GENERIC_UI_DESC&>(SkillBGDesc) = DefaultDesc;
 			SkillBGDesc.eSubClassType = Type;
 			pResult = m_pGameInstance->Add_GameObject(m_iLevelID, L"Prototype_UI_MiniMap", m_iLevelID, wstrLayerTag, &SkillBGDesc);
+		}
+		else if (isHoverIcon)
+		{
+			CUIHover_Image::HOVER_IMAGE_DESC HoverImageDesc = {};
+			static_cast<CGenericUI::GENERIC_UI_DESC&>(HoverImageDesc) = DefaultDesc;
+			HoverImageDesc.eSubClassType = Type;
+			pResult = m_pGameInstance->Add_GameObject(m_iLevelID, L"Prototype_UI_HoverImage", m_iLevelID, wstrLayerTag, &HoverImageDesc);
 		}
 	}
 	else

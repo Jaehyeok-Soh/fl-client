@@ -33,6 +33,7 @@ HRESULT CUIText::Initialize(void* pArg)
 	UI_TEXT_DESC* pDesc = static_cast<UI_TEXT_DESC*>(pArg);
 	m_pTargetStat	= pDesc->pTargetStat;
 	m_eSubClassType	= pDesc->eOwner;
+	m_wstrFontTag	= pDesc->wstrFontTag;
 	m_wstrText		= pDesc->wstrText;
 	m_vFontColor	= pDesc->vFontColor;
 	m_fFontRotate	= pDesc->fRotate;
@@ -66,6 +67,11 @@ HRESULT CUIText::Attach_Personal_Info()
 		return S_OK;
 	}
 	case DTO::EUISubClassType::PLAYER_ENERGY:
+	{
+		m_pTargetStat;
+		return S_OK;
+	}
+	case DTO::EUISubClassType::PLAYER_ARMOR:
 	{
 		m_pTargetStat;
 		return S_OK;
@@ -125,7 +131,7 @@ HRESULT CUIText::Render()
 	Get_Component<CVIBuffer>()->Bind_Resource();
 	Get_Component<CVIBuffer>()->Render();
 
-	if (FAILED(m_pGameInstance->Draw_Text(L"HYJunHei_75W", m_wstrText.c_str(), m_vFontPos, m_vFontColor, m_fFontRotate, m_fFontScale)))
+	if (FAILED(m_pGameInstance->Draw_Text(m_wstrFontTag, m_wstrText.c_str(), m_vFontPos, m_vFontColor, m_fFontRotate, m_fFontScale)))
 		return E_FAIL;
 	return S_OK;
 }
@@ -144,6 +150,52 @@ HRESULT CUIText::Bind_ShaderResources()
 	Super::Bind_ShaderResources();
 
 	return S_OK;
+}
+
+void CUIText::OnUIEvent(ETriggerEventType eEvent, CGenericUI* pSender)
+{
+	if (eEvent == ETriggerEventType::HOVER_ENTER)
+	{
+		Set_Visible();
+	}
+	else if (eEvent == ETriggerEventType::HOVER_EXIT)
+	{
+		Set_Invisible();
+	}
+}
+
+void CUIText::Initialize_Visible_Event()
+{
+	m_vFontColor = Vec4{ 0.f ,0.f ,0.f ,0.f };
+	m_fTimeAcc = 0.f;
+}
+
+void CUIText::Initialize_InVisible_Event()
+{
+}
+
+_bool CUIText::Tick_Visible_Event(const _float fTimeDelta)
+{
+	m_fTimeAcc += fTimeDelta;
+
+	if (m_fTimeAcc < m_fDelay)
+		return false;
+
+	m_vFontColor.x += fTimeDelta * 2.f;
+	m_vFontColor.y += fTimeDelta * 2.f;
+	m_vFontColor.z += fTimeDelta * 2.f;
+	m_vFontColor.w += fTimeDelta * 2.f;
+	if (m_vFontColor.w > 1.f)
+	{
+		m_vFontColor.w = 1.f;
+		return true;
+	}
+	return false;
+}
+
+_bool CUIText::Tick_InVisible_Event(const _float fTimeDelta)
+{
+	return _bool();
 }
 
 CUIText* CUIText::Create(ID3D11Device* pDevice, ID3D11DeviceContext* pDeviceContext)

@@ -303,10 +303,28 @@ void CUI_Inspector::SetUp_TextData()
 		if (ImGui::ColorEdit4("FontColor", col))
 			vColor = Vec4{ col[0], col[1], col[2], col[3] };
 
+		const auto& vecFontNames = m_pUIManager->Get_FontNames();
 		_string strFontName = m_pSelectedUI->Get_FontName();
-		if (ImGui::InputText("FontName", &strFontName))
-			m_pSelectedUI->Set_FontName(strFontName);
 
+		const char* preview = strFontName.empty() ? "" : strFontName.c_str();
+
+		if (ImGui::BeginCombo("FontName", preview))
+		{
+			for (size_t i = 0; i < vecFontNames.size(); ++i)
+			{
+				const bool isSelected = (strFontName == vecFontNames[i]);
+
+				if (ImGui::Selectable(vecFontNames[i].c_str(), isSelected))
+				{
+					strFontName = vecFontNames[i];
+					m_pSelectedUI->Set_FontName(strFontName);
+				}
+
+				if (isSelected)
+					ImGui::SetItemDefaultFocus();
+			}
+			ImGui::EndCombo();
+		}
 		_float fScale = m_pSelectedUI->Get_FontScale();
 		if (ImGui::InputFloat("FontScale", &fScale))
 			m_pSelectedUI->Set_FontScale(fScale);
@@ -314,168 +332,15 @@ void CUI_Inspector::SetUp_TextData()
 		_float fRotateRad = m_pSelectedUI->Get_FontRotate();
 		_float fRotateDeg = DirectX::XMConvertToDegrees(fRotateRad);
 
-		if (ImGui::SliderFloat("FontRotate", &fRotateDeg, -180.f, 180.f, "%.1f deg"))
+		if (ImGui::SliderFloat("FontRotate", &fRotateDeg, 0.f, 360.f, "%.1f deg"))
 		{
 			fRotateRad = DirectX::XMConvertToRadians(fRotateDeg);
 			m_pSelectedUI->Set_FontRotate(fRotateRad);
 		}
-
-		Vec2 vPivot = m_pSelectedUI->Get_FontPivot();
-		float pivot[2] = { vPivot.x, vPivot.y };
-		if (ImGui::InputFloat2("FontPivot", pivot))
-			m_pSelectedUI->Set_FontPivot(Vec2{ pivot[0], pivot[1] });
 	}
 
 	End_Card();
 }
-
-//void CUI_Inspector::SetUp_TriggerData()
-//{
-//	if (Begin_Card("Set Trigger Data", "TriggerData", 200.f))
-//	{
-//		if (ImGui::Button("Add Hover Enter Target"))
-//		{
-//			m_isHoverEnter = TRUE;
-//			m_isHoverExit = FALSE;
-//			m_isPressEnter = FALSE;
-//			m_isPressExit = FALSE;
-//		}
-//		if (ImGui::Button("Add Hover Exit Target"))
-//		{
-//			m_isHoverEnter = FALSE;
-//			m_isHoverExit = TRUE;
-//			m_isPressEnter = FALSE;
-//			m_isPressExit = FALSE;
-//		}
-//		if (ImGui::Button("Add Press Enter Target"))
-//		{
-//			m_isHoverEnter = FALSE;
-//			m_isHoverExit = FALSE;
-//			m_isPressEnter = TRUE;
-//			m_isPressExit = FALSE;
-//		}
-//		if (ImGui::Button("Add Press Exit Target"))
-//		{
-//			m_isHoverEnter = FALSE;
-//			m_isHoverExit = FALSE;
-//			m_isPressEnter = FALSE;
-//			m_isPressExit = TRUE;
-//		}
-//
-//		auto* pUIVec = m_pUIManager->Safe_Access_UIVector();
-//		if (nullptr == pUIVec)
-//		{
-//			End_Card();
-//			return;
-//		}
-//		auto* pCanvasVec = m_pUIManager->Safe_Access_CanvasVector();
-//		if (nullptr == pCanvasVec)
-//		{
-//			End_Card();
-//			return;
-//		}
-//		vector<_string> vecUINames;
-//		vecUINames.reserve(pUIVec->size());
-//		for (auto* pUI : *pUIVec)
-//			vecUINames.push_back(pUI->Get_Name());
-//
-//		vector<_string> vecCanvasNames;
-//		vecCanvasNames.reserve(pCanvasVec->size());
-//		for (auto* pCanvas : *pCanvasVec)
-//			vecCanvasNames.push_back(pCanvas->Get_Tag());
-//
-//		if (m_isHoverEnter)
-//		{
-//			const float fH = 80.f;
-//			const float fAvail = ImGui::GetContentRegionAvail().x;
-//			const float fGap = ImGui::GetStyle().ItemSpacing.x;
-//			const float fHalf = (fAvail - fGap) * 0.5f;
-//
-//			ImGui::BeginChild("Trigger UI List", ImVec2(fHalf, fH), true);
-//			for (const auto& name : m_pSelectedUI->Get_vecHoverEnterTriggerUI())
-//			{
-//				const bool isSelected = (m_strTriggerUIName == name);
-//				if (ImGui::Selectable(name.c_str(), isSelected))
-//					m_strTriggerUIName = name;
-//			}
-//			ImGui::EndChild();
-//			ImGui::SameLine();
-//			ImGui::BeginChild("Trigger Canvas List", ImVec2(0.f, fH), true);
-//			for (const auto& name : m_pSelectedUI->Get_vecHoverEnterTriggerCanvas())
-//			{
-//				const bool isSelected = (m_strTriggerCanvasName == name);
-//				if (ImGui::Selectable(name.c_str(), isSelected))
-//					m_strTriggerCanvasName = name;
-//			}
-//			ImGui::EndChild();
-//			if (ImGui::Button("Remove Trigger UI"))
-//			{
-//				m_pSelectedUI->Remove_vecHoverEnterTriggerUI(m_strTriggerUIName);
-//			}
-//			ImGui::SameLine();
-//			if (ImGui::Button("Remove Trigger Canvas"))
-//			{
-//				m_pSelectedUI->Remove_vecHoverEnterTriggerCanvas(m_strTriggerCanvasName);
-//			}
-//			ImGui::InputText("Hover Enter Trigger UI", &m_strTriggerUIName_UserInput);
-//			if (ImGui::Button("Add Hover Enter Trigger UI User Input"))
-//			{
-//				if (!m_pSelectedUI->Add_vecHoverEnterTriggerUI(m_strTriggerUIName_UserInput))
-//				{
-//					MSG_BOX("이미 존재하는 이름");
-//				}
-//			}
-//			if (ImGui::BeginCombo("Pick Trigger UI", m_strTriggerUIName.c_str()))
-//			{
-//				for (const auto& name : vecUINames)
-//				{
-//					const bool isSelected = (m_strTriggerUIName == name);
-//					if (ImGui::Selectable(name.c_str(), isSelected))
-//						m_strTriggerUIName = name;
-//					if (isSelected)
-//						ImGui::SetItemDefaultFocus();
-//				}
-//				ImGui::EndCombo();
-//			}
-//			if (ImGui::Button("Add Hover Enter Trigger UI"))
-//			{
-//				if (!m_pSelectedUI->Add_vecHoverEnterTriggerUI(m_strTriggerUIName))
-//				{
-//					MSG_BOX("이미 존재하는 이름");
-//				}
-//			}
-//			if (ImGui::BeginCombo("Canvas Names", m_strTriggerCanvasName.c_str()))
-//			{
-//				for (const auto& tag : vecCanvasNames)
-//				{
-//					const bool isSelected = (m_strTriggerCanvasName == tag);
-//					if (ImGui::Selectable(tag.c_str(), isSelected))
-//						m_strTriggerCanvasName = tag;
-//					if (isSelected)
-//						ImGui::SetItemDefaultFocus();
-//				}
-//				ImGui::EndCombo();
-//			}
-//			if (ImGui::Button("Add Hover Enter Trigger Canvas"))
-//			{
-//				if (!m_pSelectedUI->Add_vecHoverEnterTriggerCanvas(m_strTriggerCanvasName))
-//				{
-//					MSG_BOX("이미 존재하는 이름");
-//				}
-//			}
-//		}
-//		else if (m_isHoverExit)
-//		{
-//		}
-//		else if (m_isPressEnter)
-//		{
-//		}
-//		else if (m_isPressExit)
-//		{
-//		}
-//	}
-//	End_Card();
-//}
 
 void CUI_Inspector::SetUp_TriggerData()
 {
@@ -944,7 +809,6 @@ void CUI_Inspector::SetUp_ShaderPass()
 		ImGui::SameLine();
 		if (ImGui::Button("Flip X")) {
 			m_pSelectedUI->Set_Flip(ENUM_TO_UINT(EUIFlip::FLIP_X));
-	
 		}
 		ImGui::SameLine();
 		if (ImGui::Button("Flip Y")) {

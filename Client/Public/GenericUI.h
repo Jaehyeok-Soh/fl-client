@@ -27,6 +27,8 @@ public:
 		CCanvas* pCanvasCache = { nullptr };
 	}GENERIC_UI_DESC;
 
+	enum class ETriggerEventType { HOVER_ENTER, HOVER_EXIT, PRESS_ENTER, PRESS_EXIT, END };
+
 protected :
 	CGenericUI(ID3D11Device* pDevice, ID3D11DeviceContext* pDeviceContext);
 	CGenericUI(const CGenericUI& rhs);
@@ -46,6 +48,8 @@ public:
 
 	_bool Calc_HitEvent();
 	void Acting_By_InteractState();
+
+	virtual void OnUIEvent(ETriggerEventType eEvent, CGenericUI* pSender);
 
 protected:
 	HRESULT Ready_Components(GENERIC_UI_DESC* pDesc);
