@@ -194,6 +194,14 @@ _bool CStateBase::IsOn_CCTFlag(PxControllerCollisionFlag::Enum eFlag)
 	return m_pOwnerStateComp->IsOn_CCTFlag(eFlag);
 }
 
+void CStateBase::Set_ApplyGravity(_bool bApply)
+{
+	if (m_pOwnerStateComp == nullptr)
+		return;
+
+	m_pOwnerStateComp->Set_ApplyGravity(bApply);
+}
+
 _bool CStateBase::Align_Movement(const _float fTimeDelta)
 {
 	if (m_pOwnerStateComp == nullptr)

@@ -23,6 +23,7 @@ HRESULT CStateBase_Player::Initialize(void* pArg)
 	PLAYER_STATEBASE_DESC* pDesc	= static_cast<PLAYER_STATEBASE_DESC*>(pArg);
 
 	m_FMoves						= pDesc->FMoves;
+	m_FCollisions					= pDesc->FCollis;
 	m_vecChangeState_ByKey			= std::move(pDesc->vecChangeState_ByKey);
 
 	m_tKeyTimer						= pDesc->tKeyTimer;
@@ -46,6 +47,8 @@ HRESULT CStateBase_Player::Start(void* pArg, _bool bForce)
 		return E_FAIL;
 
 	m_tKeyTimer.fTimeAcc = 0.f;
+
+	m_TFallingCount.x = 0.f;
 
 	return S_OK;
 }
@@ -93,6 +96,8 @@ void CStateBase_Player::Update(const _float fTimeDelta)
 		if (Check_SkillKey(fTimeDelta))
 			return;
 	}
+
+	Check_Collis(fTimeDelta);
 }
 
 HRESULT CStateBase_Player::End()
@@ -157,6 +162,14 @@ _bool CStateBase_Player::Check_JumpKey(const _float fTimeDelta)
 	if (Has_ChangeState(STATEKEY::SPACE) &&
 		Key_Input(ENUM_TO_UINT(CControlContext::CONTROL_KEY::JUMP)))
 	{
+		// 벽이랑 충돌했는지 먼저 검사
+		if (IsOn_CCTFlag(PxControllerCollisionFlag::Enum::eCOLLISION_SIDES))
+		{
+			Change_PlayerState(ENUM_TO_UINT(CPlayer::State::JUMPWALL));
+			return true;
+		}
+
+		// 아니라면 그냥 키전환
 		Change_PlayerState(STATEKEY::SPACE);
 		return true;
 	}
@@ -245,6 +258,29 @@ _bool CStateBase_Player::Check_SkillKey(const _float fTimeDelta)
 	{
 		Change_PlayerState(STATEKEY::Q);
 		return true;
+	}
+
+	return false;
+}
+
+_bool CStateBase_Player::Check_Collis(const _float fTimeDelta)
+{
+	// 플래그 먼저 확인
+	if (Engine_Utils::Has_Flag(m_FCollisions, COLLISIONFLAGS::C_DOWN))
+	{
+		// 충돌 검사 및 시간 누적
+		if (IsOn_CCTFlag(PxControllerCollisionFlag::Enum::eCOLLISION_DOWN) == false)
+			m_TFallingCount.x += fTimeDelta;
+		else
+			m_TFallingCount.x = 0.f;
+
+		// 시간 오바 검사
+		if (m_TFallingCount.x >= m_TFallingCount.y)
+		{
+			m_TFallingCount.x = 0.f;
+			Change_PlayerState(ENUM_TO_UINT(CPlayer::State::FALL));
+			return true;
+		}
 	}
 
 	return false;
