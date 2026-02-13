@@ -234,6 +234,7 @@
     <ClInclude Include="..\Public\State_Slide.h" />
     <ClInclude Include="..\Public\State_Walk.h" />
     <ClInclude Include="..\Public\StaticObject.h" />
+    <ClInclude Include="..\Public\Sword.h" />
     <ClInclude Include="..\Public\UIButton_Trigger.h" />
     <ClInclude Include="..\Public\UIDynamic_Image.h" />
     <ClInclude Include="..\Public\UIJust_Image.h" />
@@ -347,6 +348,7 @@
     <ClCompile Include="..\Private\State_Slide.cpp" />
     <ClCompile Include="..\Private\State_Walk.cpp" />
     <ClCompile Include="..\Private\StaticObject.cpp" />
+    <ClCompile Include="..\Private\Sword.cpp" />
     <ClCompile Include="..\Private\UIButton_Trigger.cpp" />
     <ClCompile Include="..\Private\UIDynamic_Image.cpp" />
     <ClCompile Include="..\Private\UIJust_Image.cpp" />
