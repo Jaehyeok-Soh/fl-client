@@ -29,6 +29,8 @@ HRESULT CState_Jump::Start(void* pArg, _bool bForce)
 	if (FAILED(Super::Start(pArg, bForce)))
 		return E_FAIL;
 
+	Set_ApplyGravity(false);
+
 	return S_OK;
 }
 
@@ -41,6 +43,8 @@ HRESULT CState_Jump::End()
 {
 	if (FAILED(Super::End()))
 		return E_FAIL;
+
+	Set_ApplyGravity(true);
 
 	return S_OK;
 }

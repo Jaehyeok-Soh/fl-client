@@ -42,6 +42,8 @@
 #include "State_Fall.h"
 #include "State_Land.h"
 
+#include "State_JumpWall.h"
+
 #pragma endregion
 
 #include "GameInstance.h"
@@ -221,6 +223,7 @@ HRESULT CPlayer::Ready_BaseStates()
         desc.bLoop          = true;
 
         desc.FMoves = CStateBase_Player::MOVEFLAGS::PRESS_CHANGE;
+        desc.FCollis = CStateBase_Player::COLLISIONFLAGS::C_DOWN;
         vecChangeState_ByKey[ENUM_TO_SZET(CStateBase_Player::STATEKEY::MOVE)]           = ENUM_TO_UINT(State::WALK);
         vecChangeState_ByKey[ENUM_TO_SZET(CStateBase_Player::STATEKEY::SPACE)]          = ENUM_TO_UINT(State::JUMP);
         vecChangeState_ByKey[ENUM_TO_SZET(CStateBase_Player::STATEKEY::SHIFT)]          = ENUM_TO_UINT(State::DASHBACK);
@@ -253,6 +256,7 @@ HRESULT CPlayer::Ready_BaseStates()
         desc.bLoop          = true;
 
         desc.FMoves = CStateBase_Player::MOVEFLAGS::NORMAL;
+        desc.FCollis = CStateBase_Player::COLLISIONFLAGS::C_DOWN;
         vecChangeState_ByKey[ENUM_TO_SZET(CStateBase_Player::STATEKEY::MOVE)]           = ENUM_TO_UINT(State::IDLE);
         vecChangeState_ByKey[ENUM_TO_SZET(CStateBase_Player::STATEKEY::SPACE)]          = ENUM_TO_UINT(State::JUMP);
         vecChangeState_ByKey[ENUM_TO_SZET(CStateBase_Player::STATEKEY::SHIFT)]          = ENUM_TO_UINT(State::RUNSHORT);
@@ -274,6 +278,7 @@ HRESULT CPlayer::Ready_BaseStates()
         desc.bLoop = true;
 
         desc.FMoves = CStateBase_Player::MOVEFLAGS::PRESS_CHANGE;
+        desc.FCollis = CStateBase_Player::COLLISIONFLAGS::C_DOWN;
         vecChangeState_ByKey[ENUM_TO_SZET(CStateBase_Player::STATEKEY::MOVE)]           = ENUM_TO_UINT(State::CROUCHWALK);
         vecChangeState_ByKey[ENUM_TO_SZET(CStateBase_Player::STATEKEY::SPACE)]          = ENUM_TO_UINT(State::JUMPBULLET);
         vecChangeState_ByKey[ENUM_TO_SZET(CStateBase_Player::STATEKEY::SHIFT)]          = ENUM_TO_UINT(State::DASHBACK);
@@ -296,6 +301,7 @@ HRESULT CPlayer::Ready_BaseStates()
         desc.bLoop      = true;
 
         desc.FMoves = CStateBase_Player::MOVEFLAGS::NORMAL;
+        desc.FCollis = CStateBase_Player::COLLISIONFLAGS::C_DOWN;
         vecChangeState_ByKey[ENUM_TO_SZET(CStateBase_Player::STATEKEY::MOVE)]           = ENUM_TO_UINT(State::IDLE);
         vecChangeState_ByKey[ENUM_TO_SZET(CStateBase_Player::STATEKEY::SPACE)]          = ENUM_TO_UINT(State::JUMPBULLET);
         vecChangeState_ByKey[ENUM_TO_SZET(CStateBase_Player::STATEKEY::SHIFT)]          = ENUM_TO_UINT(State::RUNSHORT);
@@ -345,6 +351,7 @@ HRESULT CPlayer::Ready_BaseStates()
         desc.bLoop          = false;
 
         desc.FMoves = CStateBase_Player::MOVEFLAGS::PRESS_CHANGE;
+        desc.FCollis = CStateBase_Player::COLLISIONFLAGS::C_DOWN;
         vecChangeState_ByKey[ENUM_TO_SZET(CStateBase_Player::STATEKEY::MOVE)]           = ENUM_TO_UINT(State::IDLE);
         vecChangeState_ByKey[ENUM_TO_SZET(CStateBase_Player::STATEKEY::SPACE)]          = ENUM_TO_UINT(State::JUMPBACK);
         vecChangeState_ByKey[ENUM_TO_SZET(CStateBase_Player::STATEKEY::SHIFT)]          = ENUM_TO_UINT(State::END);
@@ -395,6 +402,7 @@ HRESULT CPlayer::Ready_BaseStates()
         desc.bLoop = false;
 
         desc.FMoves = CStateBase_Player::MOVEFLAGS::NORMAL;
+        desc.FCollis = CStateBase_Player::COLLISIONFLAGS::C_DOWN;
         vecChangeState_ByKey[ENUM_TO_SZET(CStateBase_Player::STATEKEY::MOVE)]           = ENUM_TO_UINT(State::IDLE);
         vecChangeState_ByKey[ENUM_TO_SZET(CStateBase_Player::STATEKEY::SPACE)]          = ENUM_TO_UINT(State::JUMP);
         vecChangeState_ByKey[ENUM_TO_SZET(CStateBase_Player::STATEKEY::SHIFT)]          = ENUM_TO_UINT(State::RUNLOOP);
@@ -418,6 +426,7 @@ HRESULT CPlayer::Ready_BaseStates()
         desc.bLoop          = true;
 
         desc.FMoves = CStateBase_Player::MOVEFLAGS::NORMAL;
+        desc.FCollis = CStateBase_Player::COLLISIONFLAGS::C_DOWN;
         vecChangeState_ByKey[ENUM_TO_SZET(CStateBase_Player::STATEKEY::MOVE)]           = ENUM_TO_UINT(State::IDLE);
         vecChangeState_ByKey[ENUM_TO_SZET(CStateBase_Player::STATEKEY::SPACE)]          = ENUM_TO_UINT(State::JUMP);
         vecChangeState_ByKey[ENUM_TO_SZET(CStateBase_Player::STATEKEY::SHIFT)]          = ENUM_TO_UINT(State::END);
@@ -491,7 +500,7 @@ HRESULT CPlayer::Ready_BaseStates()
         vecChangeState_ByKey[ENUM_TO_SZET(CStateBase_Player::STATEKEY::SHIFT)]          = ENUM_TO_UINT(State::DASHSKY);
         vecChangeState_ByKey[ENUM_TO_SZET(CStateBase_Player::STATEKEY::LCRTL_PRESS)]    = ENUM_TO_UINT(State::END);
         vecChangeState_ByKey[ENUM_TO_SZET(CStateBase_Player::STATEKEY::LCRTL_UP)]       = ENUM_TO_UINT(State::END);
-        vecChangeState_ByKey[ENUM_TO_SZET(CStateBase_Player::STATEKEY::LOOPDONE)]       = ENUM_TO_UINT(State::LAND); //원래는 fall
+        vecChangeState_ByKey[ENUM_TO_SZET(CStateBase_Player::STATEKEY::LOOPDONE)]       = ENUM_TO_UINT(State::FALL); //원래는 fall
         desc.vecChangeState_ByKey = vecChangeState_ByKey;
 
         desc.tKeyTimer = tKeyTimer;
@@ -569,6 +578,29 @@ HRESULT CPlayer::Ready_BaseStates()
         desc.tKeyTimer = tKeyTimer;
 
         if (FAILED(pActionState->Add_State(ENUM_TO_UINT(State::LAND), CState_Land::Create(pActionState, &desc))))
+            return E_FAIL;
+    }
+
+    // JUMPWALL
+    {
+        CState_RunLoop::PLAYER_STATEBASE_DESC  desc = {};
+        desc.FAniFlags = 0;
+        desc.vecMainAnims = { Get_AnimationIndex(L"Animation_PlayerMoon_WallJump_LU") };
+        desc.bBlend = true;
+        desc.bLoop = false;
+
+        desc.FMoves = CStateBase_Player::MOVEFLAGS::NORMAL;
+        vecChangeState_ByKey[ENUM_TO_SZET(CStateBase_Player::STATEKEY::MOVE)] = ENUM_TO_UINT(State::END);
+        vecChangeState_ByKey[ENUM_TO_SZET(CStateBase_Player::STATEKEY::SPACE)] = ENUM_TO_UINT(State::END);
+        vecChangeState_ByKey[ENUM_TO_SZET(CStateBase_Player::STATEKEY::SHIFT)] = ENUM_TO_UINT(State::DASHSKY);
+        vecChangeState_ByKey[ENUM_TO_SZET(CStateBase_Player::STATEKEY::LCRTL_PRESS)] = ENUM_TO_UINT(State::END);
+        vecChangeState_ByKey[ENUM_TO_SZET(CStateBase_Player::STATEKEY::LCRTL_UP)] = ENUM_TO_UINT(State::END);
+        vecChangeState_ByKey[ENUM_TO_SZET(CStateBase_Player::STATEKEY::LOOPDONE)] = ENUM_TO_UINT(State::FALL); //원래는 fall
+        desc.vecChangeState_ByKey = vecChangeState_ByKey;
+
+        desc.tKeyTimer = tKeyTimer;
+
+        if (FAILED(pActionState->Add_State(ENUM_TO_UINT(State::JUMPWALL), CState_JumpWall::Create(pActionState, &desc))))
             return E_FAIL;
     }
 

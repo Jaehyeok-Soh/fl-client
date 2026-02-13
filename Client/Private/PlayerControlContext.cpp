@@ -43,7 +43,6 @@ HRESULT CPlayerControlContext::Initialize(void* pArg)
 
 HRESULT CPlayerControlContext::Awake(const _uint iLevelIndex)
 {
-	Set_Gravity(true);
 	return S_OK;
 }
 

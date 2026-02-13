@@ -58,6 +58,8 @@ public:
 		,SKILL1
 		,SKILL2
 
+		,JUMPWALL
+
 		,END
 	};
 protected:

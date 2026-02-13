@@ -29,6 +29,8 @@ HRESULT CState_JumpDouble::Start(void* pArg, _bool bForce)
 	if (FAILED(Super::Start(pArg, bForce)))
 		return E_FAIL;
 
+	Set_ApplyGravity(false);
+
 	return S_OK;
 }
 
@@ -41,6 +43,8 @@ HRESULT CState_JumpDouble::End()
 {
 	if (FAILED(Super::End()))
 		return E_FAIL;
+
+	Set_ApplyGravity(true);
 
 	return S_OK;
 }
@@ -56,7 +60,6 @@ void CState_JumpDouble::Set_NextStateDesc(_uint iNextState)
 		m_tNextStateDesc.iMainAnimIdx = 0;
 	}
 }
-
 
 CState_JumpDouble* CState_JumpDouble::Create(CActionState* pOwnerComponent, void* pArg)
 {
