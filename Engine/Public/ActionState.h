@@ -9,6 +9,7 @@ class CModel;
 class CTransform;
 class CNavigation;
 class CCameraMan;
+class CComputeShader;
 
 class ENGINE_DLL CActionState abstract : public CComponent
 {
@@ -17,8 +18,12 @@ public:
 	constexpr static EComponentType _ID = EComponentType::ACTIONSTATE;
 	typedef struct tagActionStateDesc
 	{
-		_uint iStateCount = { 0 };
-		CModel* pOwnerModel = { nullptr };
+		_uint			iStateCount = { 0 };
+		CModel*			pOwnerModel		= { nullptr };
+
+		// state가 달린 객체들은 animation change를 state 내부에서 하기 때문에 
+		// 꼭 값 넣어줘야 함
+		CComputeShader* pOwnerAnimECS		= { nullptr }; 
 	}ACTIONSTATE_DESC;
 
 protected:
@@ -94,6 +99,7 @@ protected:
 	CNavigation* m_pOwnerNavigation = { nullptr };
 	CModel* m_pOwnerModel = { nullptr };
 	CCameraMan* m_pOwnerTargetCamera = { nullptr };
+	CComputeShader* m_pOwnerAnimECS = { nullptr };
 
 	_uint m_iStateCount = { 0 };
 	_int m_iCurrentState = { -1 };

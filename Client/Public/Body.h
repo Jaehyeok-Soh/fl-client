@@ -45,8 +45,8 @@ public:
 	CBone* Get_NeckBone();
 	CBone* Get_Spine1Bone();
 	//CBone* Get_SpineBone();
-	//CBone* Get_SwordSocket();
-	//CBone* Get_RightHandWeaponSocket();
+	CBone* Get_WeaponSocket();
+	CBone* Get_RightHandSocket();
 	//CBone* Get_LeftHandSocket();
 	//CBone* Get_RightHandSocket();
 	//CBone* Get_LeftFootSocket();
@@ -58,6 +58,7 @@ private:
 	HRESULT Ready_Components(BODY_DESC *pDesc);
 	HRESULT Ready_AttackOverlap();
 	HRESULT Bind_ShaderResources();
+	HRESULT Ready_ComputeShader();
 private:
 	_int m_iHead_Index = { 0 };
 	_int m_iNeck_Index = { 0 };

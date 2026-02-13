@@ -3,14 +3,19 @@
 #include "Body.h"
 
 #include "Player.h"
-#include "GameInstance.h"
+
+#include "Bone.h"
+
+// components
 #include "ActionState.h"
 #include "Shader.h"
 #include "Collider.h"
-#include "Bone.h"
 #include "Model.h"
 #include "PhysicsCCT.h"
 #include "PhysicsAttackOverlap.h"
+#include "ComputeShader.h"
+
+#include "GameInstance.h"
 
 CBody::CBody(ID3D11Device* pDevice, ID3D11DeviceContext* pDeviceContext)
 	: Super(pDevice, pDeviceContext)
@@ -39,6 +44,9 @@ HRESULT CBody::Initialize(void* pArg)
 
 	BODY_DESC* pDesc = static_cast<BODY_DESC*>(pArg);
 	if (FAILED(Ready_Components(pDesc)))
+		return E_FAIL;
+
+	if (FAILED(Ready_ComputeShader()))
 		return E_FAIL;
 
 	m_iHead_Index = Get_Component<CModel>()->Get_BoneIndex("head");
@@ -77,7 +85,15 @@ void CBody::Update_Priority(_float fTimeDelta)
 void CBody::Update(_float fTimeDelta)
 {
 	Super::Update(fTimeDelta);
-	Get_Component<CModel>()->Update_Animation(fTimeDelta, Get_Parent()->Get_Component<CTransform>(), Get_Parent()->Get_Component<CPhysicsCCT>());
+
+	CComputeShader* pBonCS = static_cast<CComputeShader*>(Get_Script_Component(TEXT("ComputeShader_BoneCombine")));
+	CComputeShader* pAnimECS = static_cast<CComputeShader*>(Get_Script_Component(TEXT("ComputeShader_AnimE")));
+	CComputeShader* pAnimBCS = static_cast<CComputeShader*>(Get_Script_Component(TEXT("ComputeShader_AnimB")));
+	CComputeShader* pGetBoneCS = static_cast<CComputeShader*>(Get_Script_Component(TEXT("ComputeShader_GetBone")));
+
+	Get_Component<CModel>()->Update_Animation(pBonCS, pAnimECS, fTimeDelta, 
+		Get_Parent()->Get_Component<CTransform>(), Get_Parent()->Get_Component<CPhysicsCCT>(), pAnimBCS, pGetBoneCS);
+
 	if(CCollider* pCollider = Get_Component<CCollider>())
 		pCollider->Update(m_matCombinedWorld);
 }
@@ -138,12 +154,14 @@ HRESULT CBody::Render()
 	CShader* pShader = Get_Component<CShader>();
 	CModel* pModel = Get_Component<CModel>();
 	_uint iMeshCount = pModel->Get_MeshCount();
+	CComputeShader* pBoneMeshCS = static_cast<CComputeShader*>(Get_Script_Component(TEXT("ComputeShader_BoneMesh")));
+	CComputeShader* pBoneCombineCS = static_cast<CComputeShader*>(Get_Script_Component(TEXT("ComputeShader_BoneCombine")));
 
 	pShader->Bind_TransformData(m_matCombinedWorld);
 	for (_uint i = 0; i < iMeshCount; ++i)
 	{
 		pModel->Bind_Material(pShader, i);
-		pModel->Bind_Bones(pShader, i);
+		pModel->Bind_Bones(pShader, i, pBoneMeshCS, pBoneCombineCS);
 		pShader->Apply();
 		pModel->Render(i);
 	}
@@ -199,6 +217,22 @@ CBone* CBody::Get_Spine1Bone()
 {
 	if (CBone* pSpine = Get_Component<CModel>()->Get_Bone(m_iSpine1_Index))
 		return pSpine;
+
+	return nullptr;
+}
+
+CBone* CBody::Get_WeaponSocket()
+{
+	if (CBone* pHead = Get_Component<CModel>()->Get_Bone(288)) //285 ~ 289
+		return pHead;
+
+	return nullptr;
+}
+
+CBone* CBody::Get_RightHandSocket()
+{
+	if (CBone* pHead = Get_Component<CModel>()->Get_Bone(414))
+		return pHead;
 
 	return nullptr;
 }
@@ -317,6 +351,126 @@ HRESULT CBody::Ready_AttackOverlap()
 
 HRESULT CBody::Bind_ShaderResources()
 {
+	return S_OK;
+}
+
+HRESULT CBody::Ready_ComputeShader()
+{
+	_uint iBoneNums = Get_Component<CModel>()->Get_BoneCount();
+	_uint iGetBoneNums = Get_Component<CModel>()->Get_StageBoneCount();
+	// ========   Compute Shader : BoneMesh  ========
+	{
+		CComputeShader::ComShaderCopyDesc ShaderDesc = {};
+		ShaderDesc.Output_SRVBuffer_Name = "BONEFNIMAL_TRANSFORMS_SRV";
+
+		ShaderDesc.InputBufferNum	= 2;
+		ShaderDesc.bMakeSB			= false;
+		//// 입력 버퍼
+		//ShaderDesc.Input_StructBuffer.sBufferName = "IMMU_BONEDATA";
+		//ShaderDesc.Input_StructBuffer.iElementSize = sizeof(CS_IMMU_BONE);
+		//ShaderDesc.Input_StructBuffer.iNumElements = iBoneNums;
+
+		// 출력 버퍼
+		ShaderDesc.OutPut_StructBuffer.sBufferName	= "BONEFNIMAL_TRANSFORMS";
+		ShaderDesc.OutPut_StructBuffer.iElementSize = sizeof(CS_OUT_BONE);
+		ShaderDesc.OutPut_StructBuffer.iNumElements = iBoneNums;
+
+		if (FAILED(Add_Script_Component(L"ComputeShader_BoneMesh", L"Prototype_Component_Shader_BoneMesh", &ShaderDesc)))
+			return E_FAIL;
+	}
+
+	// ========   Compute Shader : BoneCombine  ========
+	{
+		CComputeShader::ComShaderCopyDesc ShaderDesc = {};
+		ShaderDesc.Output_SRVBuffer_Name = "BONECOMBINED_TRANSFORMS_SRV";
+
+		ShaderDesc.InputBufferNum = 3;
+		// 입력 버퍼
+		ShaderDesc.Input_StructBuffer.sBufferName = "IMMU_BONEDATA";
+		ShaderDesc.Input_StructBuffer.iElementSize = sizeof(CS_IMMU_BONE);
+		ShaderDesc.Input_StructBuffer.iNumElements = iBoneNums;
+
+		// 출력 버퍼
+		ShaderDesc.OutPut_StructBuffer.sBufferName = "BONECOMBINED_TRANSFORMS";
+		ShaderDesc.OutPut_StructBuffer.iElementSize = sizeof(CS_OUT_BONE);
+		ShaderDesc.OutPut_StructBuffer.iNumElements = iBoneNums;
+
+		if (FAILED(Add_Script_Component(L"ComputeShader_BoneCombine", L"Prototype_Component_Shader_BondCombine", &ShaderDesc)))
+			return E_FAIL;
+	}
+
+	// ========   Compute Shader : AnimE  ========
+	{
+		CComputeShader::ComShaderCopyDesc ShaderDesc = {};
+		ShaderDesc.Output_SRVBuffer_Name = "CHANNEL_OUTPUT_SRV";
+
+		ShaderDesc.InputBufferNum = 2;
+		ShaderDesc.bMakeSB = false;
+		//// 입력 버퍼
+		//ShaderDesc.Input_StructBuffer.sBufferName = "IMMU_EFFECT_PARTICLE";
+		//ShaderDesc.Input_StructBuffer.iElementSize = sizeof(EFFECT_PARTICLE_IMMU_ELEMENT);
+		//ShaderDesc.Input_StructBuffer.iNumElements = m_tEffectDesc._Effect_MaxParticle;
+
+		// 출력 버퍼
+		ShaderDesc.OutPut_StructBuffer.sBufferName = "CHANNEL_OUTPUT";
+		ShaderDesc.OutPut_StructBuffer.iElementSize = sizeof(CS_SRT);
+		ShaderDesc.OutPut_StructBuffer.iNumElements = iBoneNums;
+
+		if (FAILED(Add_Script_Component(L"ComputeShader_AnimE", L"Prototype_Component_Shader_AnimEv", &ShaderDesc)))
+			return E_FAIL;
+	}
+
+	// ========   Compute Shader : AnimB  ========
+	{
+		CComputeShader::ComShaderCopyDesc ShaderDesc = {};
+		ShaderDesc.Output_SRVBuffer_Name = "BLEND_OUTPUT_SRV";
+
+		ShaderDesc.InputBufferNum = 2;
+		ShaderDesc.bMakeSB = false;
+		//// 입력 버퍼
+		//ShaderDesc.Input_StructBuffer.sBufferName = "IMMU_EFFECT_PARTICLE";
+		//ShaderDesc.Input_StructBuffer.iElementSize = sizeof(EFFECT_PARTICLE_IMMU_ELEMENT);
+		//ShaderDesc.Input_StructBuffer.iNumElements = iBoneNums;
+
+		// 출력 버퍼
+		ShaderDesc.OutPut_StructBuffer.sBufferName = "BLEND_OUTPUT";
+		ShaderDesc.OutPut_StructBuffer.iElementSize = sizeof(CS_SRT);
+		ShaderDesc.OutPut_StructBuffer.iNumElements = iBoneNums;
+
+		if (FAILED(Add_Script_Component(L"ComputeShader_AnimB", L"Prototype_Component_Shader_AnimB", &ShaderDesc)))
+			return E_FAIL;
+	}
+
+	// ========   Compute Shader : GetBone  ========
+	{
+		CComputeShader::ComShaderCopyDesc ShaderDesc = {};
+		ShaderDesc.Output_SRVBuffer_Name = "SELECTED_COMBINETRANSFORMS_SRV";
+
+		ShaderDesc.InputBufferNum = 2;
+		ShaderDesc.bMakeSB = true;
+		// 입력 버퍼
+		ShaderDesc.Input_StructBuffer.sBufferName	= "IMMU_BONEINDIECS";
+		ShaderDesc.Input_StructBuffer.iElementSize	= sizeof(CS_MU_BONEIDX);
+		ShaderDesc.Input_StructBuffer.iNumElements	= iGetBoneNums; // 내가 저장하고 싶은 본 개수
+
+		// 출력 버퍼
+		ShaderDesc.OutPut_StructBuffer.sBufferName = "SELECTED_COMBINETRANSFORMS";
+		ShaderDesc.OutPut_StructBuffer.iElementSize = sizeof(CS_OUT_BONE);
+		ShaderDesc.OutPut_StructBuffer.iNumElements = iGetBoneNums;
+
+		if (FAILED(Add_Script_Component(L"ComputeShader_GetBone", L"Prototype_Component_Shader_GetBone", &ShaderDesc)))
+			return E_FAIL;
+	}
+
+	CComputeShader* pBoneMeshCS = static_cast<CComputeShader*>(Get_Script_Component(TEXT("ComputeShader_BoneMesh")));
+	CComputeShader* pBonCombineCS = static_cast<CComputeShader*>(Get_Script_Component(TEXT("ComputeShader_BoneCombine")));
+	CComputeShader* pAnimECS = static_cast<CComputeShader*>(Get_Script_Component(TEXT("ComputeShader_AnimE")));
+	CComputeShader* pAnimBlendCS = static_cast<CComputeShader*>(Get_Script_Component(TEXT("ComputeShader_AnimB")));
+	CComputeShader* pGetBoneCS = static_cast<CComputeShader*>(Get_Script_Component(TEXT("ComputeShader_GetBone")));
+
+	if (FAILED(Get_Component<CModel>()->Ready_ComputeShaders(pBoneMeshCS, pBonCombineCS, pAnimECS, pAnimBlendCS, pGetBoneCS)))
+		return E_FAIL;
+
 	return S_OK;
 }
 

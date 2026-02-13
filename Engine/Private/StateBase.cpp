@@ -108,8 +108,8 @@ HRESULT CStateBase::Request_ChangeAnimation(_uint iAnimationIndex, _bool bBlend,
 	if (m_pOwnerStateComp == nullptr)
 		return E_FAIL;
 
-	if (bForce)
-		bBlend = false;
+	//if (bForce)
+	//	bBlend = false;
 
 	return m_pOwnerStateComp->Request_ChangeAnimation(iAnimationIndex, bBlend, bLoop, bForce);
 }

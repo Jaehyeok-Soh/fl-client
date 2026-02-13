@@ -43,6 +43,13 @@ public:
 	_uint Get_ID() const { return m_iID; }
 	_int Get_Layer() const { return m_iLayer; }
 private:
+	///////////////
+	//// Event ////
+	///////////////
+	void Bind_ModelAnimNotify();
+	void Unbind_ModelAnimNotify();
+	void On_ModelAnimNotify(const AnimNotifyKey& key);
+private:
 	HRESULT Create_Bounding(CBounding::BOUNDING_DESC *pBoundingDesc);
 #ifdef _DEBUG
 public:
@@ -61,6 +68,11 @@ private:
 	ID3D11Device* m_pDevice = { nullptr };
 	ID3D11DeviceContext* m_pDeviceContext = { nullptr };
 	CBounding* m_pBounding = { nullptr };
+
+	///////////////
+	//// Event ////
+	///////////////
+	DelegateHandle m_hAnimNotifyHandle{};
 public:
 	static CCollider* Create(ID3D11Device* pDevice, ID3D11DeviceContext* pDeviceContext, EColliderType eType);
 	virtual CComponent* Clone(void* pArg) override;

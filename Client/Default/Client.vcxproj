@@ -197,6 +197,7 @@
     <ClInclude Include="..\Public\Monster_Dummy.h" />
     <ClInclude Include="..\Public\Physics_LandScape.h" />
     <ClInclude Include="..\Public\Physics_Terrain.h" />
+    <ClInclude Include="..\Public\State_ComboBase.h" />
     <ClInclude Include="..\Public\State_CrouchWalk.h" />
     <ClInclude Include="..\Public\Level_Loading.h" />
     <ClInclude Include="..\Public\Level_Logo.h" />
@@ -206,7 +207,6 @@
     <ClInclude Include="..\Public\Player.h" />
     <ClInclude Include="..\Public\PlayerActionState.h" />
     <ClInclude Include="..\Public\PlayerControlContext.h" />
-    <ClInclude Include="..\Public\State_DashFront.h" />
     <ClInclude Include="..\Public\StatComponent.h" />
     <ClInclude Include="..\Public\StateBase_Player.h">
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">false</ExcludedFromBuild>
@@ -225,11 +225,16 @@
     <ClInclude Include="..\Public\State_JumpBullet.h" />
     <ClInclude Include="..\Public\State_JumpDouble.h" />
     <ClInclude Include="..\Public\State_Land.h" />
+    <ClInclude Include="..\Public\State_MoonCombo.h">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">false</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">false</ExcludedFromBuild>
+    </ClInclude>
     <ClInclude Include="..\Public\State_RunLoop.h" />
     <ClInclude Include="..\Public\State_RunShort.h" />
     <ClInclude Include="..\Public\State_Slide.h" />
     <ClInclude Include="..\Public\State_Walk.h" />
     <ClInclude Include="..\Public\StaticObject.h" />
+    <ClInclude Include="..\Public\Sword.h" />
     <ClInclude Include="..\Public\UIButton_Trigger.h" />
     <ClInclude Include="..\Public\UIDynamic_Image.h" />
     <ClInclude Include="..\Public\UIHover_Image.h" />
@@ -307,6 +312,7 @@
     <ClCompile Include="..\Private\MapObject.cpp" />
     <ClCompile Include="..\Private\Monster_Dummy.cpp" />
     <ClCompile Include="..\Private\Physics_LandScape.cpp" />
+    <ClCompile Include="..\Private\State_ComboBase.cpp" />
     <ClCompile Include="..\Private\State_CrouchWalk.cpp" />
     <ClCompile Include="..\Private\Level_Loading.cpp" />
     <ClCompile Include="..\Private\Level_Logo.cpp" />
@@ -316,7 +322,6 @@
     <ClCompile Include="..\Private\Player.cpp" />
     <ClCompile Include="..\Private\PlayerActionState.cpp" />
     <ClCompile Include="..\Private\PlayerControlContext.cpp" />
-    <ClCompile Include="..\Private\State_DashFront.cpp" />
     <ClCompile Include="..\Private\StatComponent.cpp" />
     <ClCompile Include="..\Private\StateBase_Player.cpp">
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">false</ExcludedFromBuild>
@@ -335,11 +340,16 @@
     <ClCompile Include="..\Private\State_JumpBullet.cpp" />
     <ClCompile Include="..\Private\State_JumpDouble.cpp" />
     <ClCompile Include="..\Private\State_Land.cpp" />
+    <ClCompile Include="..\Private\State_MoonCombo.cpp">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">false</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">false</ExcludedFromBuild>
+    </ClCompile>
     <ClCompile Include="..\Private\State_RunLoop.cpp" />
     <ClCompile Include="..\Private\State_RunShort.cpp" />
     <ClCompile Include="..\Private\State_Slide.cpp" />
     <ClCompile Include="..\Private\State_Walk.cpp" />
     <ClCompile Include="..\Private\StaticObject.cpp" />
+    <ClCompile Include="..\Private\Sword.cpp" />
     <ClCompile Include="..\Private\UIButton_Trigger.cpp" />
     <ClCompile Include="..\Private\UIDynamic_Image.cpp" />
     <ClCompile Include="..\Private\UIHover_Image.cpp" />
@@ -370,6 +380,11 @@
   <ItemGroup>
     <FxCompile Include="..\..\Shaders\Animation_Defines.hlsl" />
     <FxCompile Include="..\..\Shaders\Common_Defines.hlsl" />
+    <FxCompile Include="..\..\Shaders\ComShader_AnimBlend.hlsl" />
+    <FxCompile Include="..\..\Shaders\ComShader_AnimEvaluate.hlsl" />
+    <FxCompile Include="..\..\Shaders\ComShader_BoneCombine.hlsl" />
+    <FxCompile Include="..\..\Shaders\ComShader_BoneMesh.hlsl" />
+    <FxCompile Include="..\..\Shaders\ComShader_GetBoneCombine.hlsl" />
     <FxCompile Include="..\..\Shaders\Shader_CPT_Effect_Particle.hlsl">
       <ShaderType Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Effect</ShaderType>
       <ShaderType Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Vertex</ShaderType>

@@ -26,6 +26,7 @@ public:
 	enum Part : _uint
 	{
 		BODY = 0,
+		SWORD,
 		END
 	};
 	enum class State : _uint
@@ -38,7 +39,6 @@ public:
 		,SLIDESKY
 
 		,DASHBACK
-		,DASHFRONT
 		,DASHSKY
 
 		,RUNSHORT
@@ -51,6 +51,12 @@ public:
 
 		,FALL
 		,LAND
+
+		,COMBO
+		,GUN
+		,CHARGE
+		,SKILL1
+		,SKILL2
 
 		,END
 	};
@@ -70,6 +76,10 @@ public:
 	virtual HRESULT		Render() override;
 	virtual _int		Get_AnimationIndex(const wstring& wstrName) override;
 	virtual _wstring	Get_AnimationName(_uint iAniIndex);
+
+public:
+	void Change_Weapon(Part ePart, _uint iState); // 어떤 weapon을 어떤 state로
+
 private:
 	HRESULT Ready_BaseStates();
 	HRESULT Ready_PartObjects(PLAYER_DESC* pDesc);
