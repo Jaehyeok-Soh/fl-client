@@ -240,8 +240,8 @@ HRESULT CLevel_Logo::Ready_Lights()
 		LIGHT_DESC desc = {};
 		desc.eType = LIGHT_TYPE::DIRECTIONAL;
 		desc.vDirection = Vec3{ 1.f, -1.f, 1.f };
-		desc.vDiffuse = Vec4(0.7f, 0.7f, 0.7f, 1.f);
-		desc.vAmbient = Vec4(0.3f, 0.3f, 0.3f, 1.f);
+		desc.vDiffuse = Vec4(0.9f, 0.9f, 0.9f, 1.f);
+		desc.vAmbient = Vec4(0.4f, 0.4f, 0.4f, 1.f);
 		desc.vSpecular = Vec4(1.f, 1.f, 1.f, 1.f);
 
 		if (FAILED(m_pGameInstance->Add_Light(desc)))

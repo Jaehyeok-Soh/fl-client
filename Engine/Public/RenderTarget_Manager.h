@@ -13,6 +13,7 @@ enum class ERenderTarget : _uint
 	Depth,
 	SSAO_Ping,
 	SSAO_Pong,
+	SSAO_Full,
 	Scene,	// 유니티에서 SceneTexture라고 함. Effect 전용
 	END,
 };
@@ -25,6 +26,7 @@ enum class EMRTLayer : _uint
 	SSAO_Gen,
 	SSAO_BlurH,
 	SSAO_BlurV,
+	SSAO_Upsample,
 	END,
 };
 

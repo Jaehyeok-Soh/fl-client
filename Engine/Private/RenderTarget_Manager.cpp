@@ -109,8 +109,8 @@ HRESULT CRenderTarget_Manager::Bind_ShaderResource(ERenderTarget eTarget, CShade
     case Engine::ERenderTarget::Depth:
         eSlot = EFXSRV::RT_Depth; break;
     case Engine::ERenderTarget::SSAO_Ping:
-        eSlot = EFXSRV::RT_AO; break;
     case Engine::ERenderTarget::SSAO_Pong:
+    case Engine::ERenderTarget::SSAO_Full:
         eSlot = EFXSRV::RT_AO; break;
     case Engine::ERenderTarget::Scene:
         eSlot = EFXSRV::RT_Scene; break;

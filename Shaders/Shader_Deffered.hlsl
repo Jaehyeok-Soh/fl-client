@@ -1,29 +1,10 @@
 #include "Struct_Defines.hlsl"
 #include "Light_Defines.hlsl"
 
-float2 UV_ToNDC(float2 vUV)
-{
-    // [0, 0] ==> [-1, 1]
-    // [1, 1] ==> [1, -1]
-    return float2(vUV.x * 2.f - 1.f, vUV.y * -2.f + 1.f);
-}
-
-float2 NDC_ToUV(float2 vNDC)
-{
-    // [-1, 1] ==> [0, 0]
-    // [1, -1] ==> [1, 1]
-    return float2(vNDC.x * 0.5f + 0.5f, -vNDC.y * 0.5f + 0.5f);
-}
-
 float3 DecodeWorldNormal(float2 vUV)
 {
     float4 vNormalDesc = g_RenderTargetNormalTexture.Sample(PointClampSampler, vUV);
     return normalize(vNormalDesc.xyz * 2.f - 1.f);
-}
-
-float3 WorldToViewNormal(float3 vNormalWorld)
-{
-    return normalize(mul(vNormalWorld, (float3x3) V));
 }
 
 void DecodeDepth(float2 vUV, out float fNDCZ, out float fViewZ)
@@ -39,6 +20,49 @@ void DecodeSpecularMask(float2 vUV, out float fAO, out float fRough, out float f
     fAO = vSpecularMaskDesc.x;
     fRough = vSpecularMaskDesc.y;
     fMetal = vSpecularMaskDesc.z;
+}
+
+float Blur5Tap(float2 vUV, float2 vDir, float2 vInvHalf)
+{
+    // 5-tap separable gaussian (단순/안정)
+    const float w0 = 0.227027f;
+    const float w1 = 0.1945946f;
+    const float w2 = 0.1216216f;
+    
+    float2 vOff1 = vDir * 1.f * vInvHalf;
+    float2 vOff2 = vDir * 2.f * vInvHalf;
+    
+    float c0 = g_RenderTargetAOTexture.SampleLevel(PointClampSampler, vUV, 0).r;
+    float c1 = g_RenderTargetAOTexture.SampleLevel(PointClampSampler, vUV + vOff1, 0).r;
+    float c2 = g_RenderTargetAOTexture.SampleLevel(PointClampSampler, vUV - vOff1, 0).r;
+    float c3 = g_RenderTargetAOTexture.SampleLevel(PointClampSampler, vUV + vOff2, 0).r;
+    float c4 = g_RenderTargetAOTexture.SampleLevel(PointClampSampler, vUV - vOff2, 0).r;
+
+    return c0 * w0 + (c1 + c2) * w1 + (c3 + c4) * w2;
+}
+
+float GetViewZ(float2 vUV)
+{
+    return g_RenderTargetDepthTexture.Sample(PointClampSampler, vUV).y;
+}
+
+float2 UV_ToNDC(float2 vUV)
+{
+    // [0, 0] ==> [-1, 1]
+    // [1, 1] ==> [1, -1]
+    return float2(vUV.x * 2.f - 1.f, vUV.y * -2.f + 1.f);
+}
+
+float2 NDC_ToUV(float2 vNDC)
+{
+    // [-1, 1] ==> [0, 0]
+    // [1, -1] ==> [1, 1]
+    return float2(vNDC.x * 0.5f + 0.5f, -vNDC.y * 0.5f + 0.5f);
+}
+
+float3 WorldToViewNormal(float3 vNormalWorld)
+{
+    return normalize(mul(vNormalWorld, (float3x3)CamV));
 }
 
 float4 ReconstructProjPosition(float2 vUV, float fNDCZ, float fViewZ)
@@ -103,8 +127,11 @@ PS_OUT_LIGHT PS_MAIN_DIRECTIONAL(PS_IN_POS_TEX input)
     float3 vNormal = DecodeWorldNormal(input.vUV);
     float3 vLightDir = normalize(Light.vDirection * -1.f);
     float3 vShade = max(dot(vLightDir, vNormal), 0.f);
-    float3 vAmbient = Light.vAmbient.rgb * fAO * fSSAO;
-    float3 vDiffuse = Light.vDiffuse.rgb * vShade;
+    float fOcc = saturate(fAO * fSSAO);
+    float3 vAmbient = Light.vAmbient.rgb * fOcc;
+    const float fDirectOccStrength = 0.35f;
+    float fDirectOcc = lerp(1.f, fOcc, fDirectOccStrength);
+    float3 vDiffuse = Light.vDiffuse.rgb * vShade * fDirectOcc;
     output.vShade = float4((vAmbient + vDiffuse), 1.f);
     //===========================
     // Reconstruct World Position
@@ -209,7 +236,11 @@ PS_OUT_LIGHT PS_MAIN_POINT(PS_IN_POS_TEX input)
 
 PS_OUT_AO PS_MAIN_SSAOGEN(PS_IN_POS_TEX input)
 {
-    PS_OUT_AO output;    
+    PS_OUT_AO output;
+    
+    float2 invHalf = SSAOparam.vInvAOSize;
+    float2 invFull = SSAOparam.vInvAOSize * 0.5f;
+    
     //============================
     // Depth Decode (NDC Z, View Z)
     //============================
@@ -287,7 +318,7 @@ PS_OUT_AO PS_MAIN_SSAOGEN(PS_IN_POS_TEX input)
     float fAO = 1.f - (fOcc / (float) SSAO_KERNEL_COUNT);
     
     fAO = pow(saturate(fAO), max(0.0001f, SSAOparam.fPower));
-    fAO = lerp(1.f, fAO, saturate(SSAOparam.fIntensity));
+    fAO = lerp(1.f, fAO, SSAOparam.fIntensity);
     
     float fFade = saturate((SSAOparam.fFadeEnd - fViewZ) / max(EPSILON, (SSAOparam.fFadeEnd - SSAOparam.fFadeStart)));
     fAO = lerp(1.f, fAO, fFade);
@@ -299,15 +330,7 @@ PS_OUT_AO PS_MAIN_SSAOGEN(PS_IN_POS_TEX input)
 PS_OUT_AO PS_MAIN_SSAOBLURH(PS_IN_POS_TEX input)
 {
     PS_OUT_AO output;
-    float2 vOff = float2(SSAOparam.vInvAOSize.x, 0.f);
-    float fAO = 0.f;
-    
-    fAO += 0.40f * g_RenderTargetAOTexture.Sample(LinearSampler, input.vUV).r;
-    fAO += 0.25f * g_RenderTargetAOTexture.Sample(LinearSampler, input.vUV + vOff).r;
-    fAO += 0.25f * g_RenderTargetAOTexture.Sample(LinearSampler, input.vUV - vOff).r;
-    fAO += 0.05f * g_RenderTargetAOTexture.Sample(LinearSampler, input.vUV + vOff * 2.f).r;
-    fAO += 0.05f * g_RenderTargetAOTexture.Sample(LinearSampler, input.vUV - vOff * 2.f).r;
-    
+    float fAO = Blur5Tap(input.vUV, float2(1.f, 0.f), SSAOparam.vInvAOSize);
     output.vAO = float4(fAO, fAO, fAO, 1.f);
     return output;
 }
@@ -315,15 +338,95 @@ PS_OUT_AO PS_MAIN_SSAOBLURH(PS_IN_POS_TEX input)
 PS_OUT_AO PS_MAIN_SSAOBLURV(PS_IN_POS_TEX input)
 {
     PS_OUT_AO output;
-    float2 vOff = float2(0.f, SSAOparam.vInvAOSize.y);
-    float fAO = 0.f;
-    
-    fAO += 0.40f * g_RenderTargetAOTexture.Sample(LinearSampler, input.vUV).r;
-    fAO += 0.25f * g_RenderTargetAOTexture.Sample(LinearSampler, input.vUV + vOff).r;
-    fAO += 0.25f * g_RenderTargetAOTexture.Sample(LinearSampler, input.vUV - vOff).r;
-    fAO += 0.05f * g_RenderTargetAOTexture.Sample(LinearSampler, input.vUV + vOff * 2.f).r;
-    fAO += 0.05f * g_RenderTargetAOTexture.Sample(LinearSampler, input.vUV - vOff * 2.f).r;
-    
+    float fAO = Blur5Tap(input.vUV, float2(0.f, 1.f), SSAOparam.vInvAOSize);
+    output.vAO = float4(fAO, fAO, fAO, 1.f);
+    return output;
+}
+
+PS_OUT_AO PS_MAIN_SSAO_UPSAMPLE(PS_IN_POS_TEX input)
+{
+    PS_OUT_AO output;
+
+    float2 vInvHalf = SSAOparam.vInvAOSize; // 1/halfW, 1/halfH
+    float2 vUVFull = input.vUV;
+
+    //============================
+    // Center Depth (ViewZ)
+    //============================
+    float fCenterViewZ = GetViewZ(vUVFull);
+    if (fCenterViewZ <= EPSILON)
+    {
+        output.vAO = float4(1.f, 1.f, 1.f, 1.f);
+        return output;
+    }
+
+    //============================
+    // Full UV -> Half texel space
+    // halfCoord = uv * halfSize - 0.5
+    // (uv / invHalf == uv * halfSize)
+    //============================
+    float2 vHalfCoord = (vUVFull / vInvHalf) - 0.5f.xx;
+    float2 vBase = floor(vHalfCoord);
+    float2 vFrac = frac(vHalfCoord);
+
+    // half uv 4탭 (00,10,01,11)
+    float2 uv00 = (vBase + 0.5f.xx) * vInvHalf;
+    float2 uv10 = uv00 + float2(vInvHalf.x, 0.f);
+    float2 uv01 = uv00 + float2(0.f, vInvHalf.y);
+    float2 uv11 = uv00 + vInvHalf;
+
+    // AO taps (half-res)
+    float a00 = g_RenderTargetAOTexture.SampleLevel(PointClampSampler, uv00, 0).r;
+    float a10 = g_RenderTargetAOTexture.SampleLevel(PointClampSampler, uv10, 0).r;
+    float a01 = g_RenderTargetAOTexture.SampleLevel(PointClampSampler, uv01, 0).r;
+    float a11 = g_RenderTargetAOTexture.SampleLevel(PointClampSampler, uv11, 0).r;
+
+    // Depth taps (full-res depth에서 "같은 화면 좌표"로 바로 샘플)
+    float z00 = GetViewZ(uv00);
+    float z10 = GetViewZ(uv10);
+    float z01 = GetViewZ(uv01);
+    float z11 = GetViewZ(uv11);
+
+    //============================
+    // Bilateral weight (cheap)
+    // exp() 대신 rcp 기반
+    //============================
+    float depthSigma = max(SSAOparam.fRadius * 0.5f, 0.0001f);
+    float invSigma = rcp(depthSigma);
+
+    float w00_d = rcp(1.f + abs(fCenterViewZ - z00) * invSigma);
+    float w10_d = rcp(1.f + abs(fCenterViewZ - z10) * invSigma);
+    float w01_d = rcp(1.f + abs(fCenterViewZ - z01) * invSigma);
+    float w11_d = rcp(1.f + abs(fCenterViewZ - z11) * invSigma);
+
+    // Background(0 depth) 무시
+    w00_d *= (z00 > EPSILON) ? 1.f : 0.f;
+    w10_d *= (z10 > EPSILON) ? 1.f : 0.f;
+    w01_d *= (z01 > EPSILON) ? 1.f : 0.f;
+    w11_d *= (z11 > EPSILON) ? 1.f : 0.f;
+
+    // Spatial bilinear weight
+    float w00_s = (1.f - vFrac.x) * (1.f - vFrac.y);
+    float w10_s = (vFrac.x) * (1.f - vFrac.y);
+    float w01_s = (1.f - vFrac.x) * (vFrac.y);
+    float w11_s = (vFrac.x) * (vFrac.y);
+
+    float w00 = w00_s * w00_d;
+    float w10 = w10_s * w10_d;
+    float w01 = w01_s * w01_d;
+    float w11 = w11_s * w11_d;
+
+    float wSum = (w00 + w10 + w01 + w11);
+
+    // 전부 무시된 경우(가령 주변이 전부 clear) -> AO=1
+    if (wSum <= EPSILON)
+    {
+        output.vAO = float4(1.f, 1.f, 1.f, 1.f);
+        return output;
+    }
+
+    float fAO = (a00 * w00 + a10 * w10 + a01 * w01 + a11 * w11) / wSum;
+
     output.vAO = float4(fAO, fAO, fAO, 1.f);
     return output;
 }
@@ -355,5 +458,6 @@ technique11 T0
     PASS_RS_DS_BS_VP(SSAOGen, RS_Default, DS_Disabled, BS_Default, VS_MAIN, PS_MAIN_SSAOGEN)
     PASS_RS_DS_BS_VP(SSAOBLURH, RS_Default, DS_Disabled, BS_Default, VS_MAIN, PS_MAIN_SSAOBLURH)
     PASS_RS_DS_BS_VP(SSAOBLURV, RS_Default, DS_Disabled, BS_Default, VS_MAIN, PS_MAIN_SSAOBLURV)
+    PASS_RS_DS_BS_VP(SSAOUpsample, RS_Default, DS_Disabled, BS_Default, VS_MAIN, PS_MAIN_SSAO_UPSAMPLE)
     PASS_RS_DS_BS_VP(Combined, RS_Default, DS_Disabled, BS_Default, VS_MAIN, PS_MAIN_COMBINED)
 };

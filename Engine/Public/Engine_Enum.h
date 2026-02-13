@@ -14,7 +14,7 @@ namespace Engine
 	enum class EPOINT { A, B, C, END };
 	enum class ELINE { AB, BC, CA, END };
 	enum class RENDER_CATEGORY : unsigned int { PRIORITY, BLEND,NONEBLEND, NONELIGHT, BLENDUI, UI, END };
-	enum class DEFFERRED { DEBUG, DIRECTIONAL, POINT, SSAO_GEN, SSAO_BLURH, SSAO_BLURV, COMBINED, END };
+	enum class DEFFERRED { DEBUG, DIRECTIONAL, POINT, SSAO_GEN, SSAO_BLURH, SSAO_BLURV, SSAO_UPSAMPLE, COMBINED, END };
 	enum class ECursorMode : unsigned int
 	{
 		LockedHiddenCenter = 0,

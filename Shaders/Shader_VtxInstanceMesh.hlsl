@@ -41,7 +41,7 @@ PS_OUT_DEFFERED PS_MAIN(PS_IN_INST_MESH input)
     Compute_Normal(vNormal, input.vTangent, input.vBinormal, input.vUV);
     output.vNormal = vNormal * 0.5f + 0.5f;
     
-    float3 vSpecMask = 0.f;
+    float3 vSpecMask = float3(1.f, 1.f, 0.f);
     if (Has(g_iMaterialMask, SPECULAR))
         vSpecMask = g_MaterialTextures[SPECULAR].Sample(LinearSampler, input.vUV).xyz;
     output.vSpecularMask = float4(vSpecMask, 1.f);
