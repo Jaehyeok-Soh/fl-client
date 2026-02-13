@@ -38,7 +38,6 @@ CModel::CModel(const CModel& rhs)
 	, m_vecMaterials(rhs.m_vecMaterials)
 	, m_vecMaterialInstances(rhs.m_vecMaterialInstances)
 	, m_umapAnimationIndexTable(rhs.m_umapAnimationIndexTable)
-	, m_pMasterMesh(rhs.m_pMasterMesh)
 	, m_iRootBoneIdx(rhs.m_iRootBoneIdx)
 	, m_pPreSB(rhs.m_pPreSB)
 	, m_pCurSB(rhs.m_pCurSB)
@@ -87,7 +86,6 @@ CModel::CModel(const CModel& rhs)
 		}
 	}
 
-	Safe_AddRef(m_pMasterMesh);
 	Safe_AddRef(m_pDevice);
 	Safe_AddRef(m_pDeviceContext);
 }
@@ -310,14 +308,6 @@ HRESULT CModel::Bind_Bones(CShader* pShader, _uint iMeshIndex, CComputeShader* p
 		return E_FAIL;
 
 	return m_vecMeshes[iMeshIndex]->Bind_Bones(pShader, pBoneMeshCS, pBoneCombineCS, Get_BoneCount(), iIndexDistance);
-}
-
-HRESULT CModel::Bind_Masterbones(CShader* pShader, _uint iIndexDistance)
-{
-	if (!m_pMasterMesh)
-		return E_FAIL;
-
-	return m_pMasterMesh->Bind_Bones(pShader, m_vecBones, iIndexDistance);
 }
 
 HRESULT CModel::Change_ShaderPassByMseh(_uint iMeshIndex, _uint iPass)
@@ -826,7 +816,14 @@ void CModel::Play_Begin(CComputeShader* pAnimEvalCS, _uint iAnimationIndex)
 
 void CModel::Play_Update(CComputeShader* pBoneComBineCS, CComputeShader* pAnimEvalCS, const _float fTimeDelta, CTransform* pOwnerTransform, CPhysicsCCT* pOwnerPhyCCT, CComputeShader* pGetBoneCS)
 {
+	CModelAnimation* pAnimation = m_vecAnimations[m_iCurrentAnimIndex];
+	_float fPrevPosition = pAnimation->Get_TrackPosition();
+
 	Play_Animation(pBoneComBineCS, pAnimEvalCS, fTimeDelta,  pOwnerTransform ,  pOwnerPhyCCT, pGetBoneCS);
+
+	_float fCurrentPosition = pAnimation->Get_TrackPosition();
+	const _bool bLooped = m_isAnimLoop && (fCurrentPosition < fPrevPosition);
+	Emit_Notifies(pAnimation, fPrevPosition, fCurrentPosition, bLooped);
 }
 
 void CModel::Play_End()
@@ -841,8 +838,14 @@ void CModel::Blend_Begin()
 
 void CModel::Blend_Update(CComputeShader* pBoneComBineCS, CComputeShader* pAnimEvalCS, CComputeShader* pAnimBlendCS, const _float fTimeDelta, CTransform* pOwnerTransform, CPhysicsCCT* pOwnerPhyCCT, CComputeShader* pGetBoneCS)
 {
-	if(m_fBlendDuration <= 0.f)
+	if (m_fBlendDuration <= 0.f)
+	{
 		Change_AnimationPlayState(PLAY, pAnimEvalCS, m_iCurrentAnimIndex);
+		return;
+	}
+
+	CModelAnimation* pAnimation = m_vecAnimations[m_iCurrentAnimIndex];
+	_float fPrevPosition = pAnimation->Get_TrackPosition();
 
 	m_fBlendedTime += fTimeDelta;
 	if (m_fBlendedTime < m_fBlendDuration)
@@ -857,6 +860,10 @@ void CModel::Blend_Update(CComputeShader* pBoneComBineCS, CComputeShader* pAnimE
 	}
 	else
 		Change_AnimationPlayState(PLAY, pAnimEvalCS, m_iCurrentAnimIndex);
+
+	const _float fCurrentPosition = pAnimation->Get_TrackPosition();
+	const _bool bLooped = (m_isAnimLoop && fCurrentPosition < fPrevPosition);
+	Emit_Notifies(pAnimation, fPrevPosition, fCurrentPosition, bLooped);
 }
 
 void CModel::Blend_End()
@@ -1123,6 +1130,44 @@ void CModel::Get_BoneMatrix(CComputeShader* pBoneComBineCS, CComputeShader* pGet
 	}
 }
 
+void CModel::Emit_Notifies(CModelAnimation* pAnimation, _float fPrevPos, _float fCurPos, _bool bIsLooped)
+{
+	// Animation 이벤트들
+	const auto& notifyKeys = pAnimation->Get_Notifies();
+	if (notifyKeys.empty() == true)
+		return;
+
+	// 현재 애니메이션 Duration
+	const _float fDuration = pAnimation->Get_DurationTime();
+
+	// Event Cursor ( 실행 될 이벤트의 Index를 가리킨다 )
+	_uint iIndex = pAnimation->Get_NotifyCursor();
+
+	// 람다 ( From, To 사이에 있는 이벤트 Broadcast )
+	auto Emit_Range = [&](_float fFrom, _float fTo)->void
+		{
+			while (iIndex < notifyKeys.size() &&
+				notifyKeys[iIndex].fTrackPosition <= fTo)
+			{
+				if (notifyKeys[iIndex].fTrackPosition > fFrom)
+					OnNotify.Broadcast(notifyKeys[iIndex]);
+			}
+
+			pAnimation->Set_NotifyCursor(++iIndex);
+		};
+
+	if (bIsLooped == false)
+		Emit_Range(fPrevPos, fCurPos);
+	// Loop가 처리됬을때 세팅
+	else
+	{
+		Emit_Range(fPrevPos, fDuration);
+		pAnimation->Set_NotifyCursor(0);
+		iIndex = 0;
+		Emit_Range(0.f, fCurPos);
+	}
+}
+
 CModel* CModel::Create(ID3D11Device* pDevice, ID3D11DeviceContext* pDeviceContext, void* pArg)
 {
 	CModel* pInstance = new CModel(pDevice, pDeviceContext);
@@ -1187,8 +1232,7 @@ void CModel::Free()
 		}
 	}
 	
-	Safe_Release(m_pMasterMesh);
-
+	OnNotify.Clear();
 	m_vecBones.clear();
 	m_vecMeshes.clear();
 	m_vecMaterials.clear();

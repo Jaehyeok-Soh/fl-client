@@ -1,5 +1,6 @@
 #pragma once
 #include "Component.h"
+#include "MulticastDelegate.h"
 
 NS_BEGIN(Engine)
 
@@ -104,7 +105,6 @@ public:
 	HRESULT								Bind_Material(class CShader* pShader, _uint iMeshIndex);
 	HRESULT								Bind_MaterialInstance(class CShader* pShader, _uint iMeshIndex);
 	HRESULT								Bind_Bones(class CShader* pShader, _uint iMeshIndex, CComputeShader* pBoneMeshCS, CComputeShader* pBoneCombineCS, _uint iIndexDistance = 0);
-	HRESULT								Bind_Masterbones(class CShader* pShader, _uint iIndexDistance);
 
 	// getter funcs
 public:
@@ -224,6 +224,12 @@ private:
 	void								Lerp_Animation(CComputeShader* pAnimBlendCS, _float fRatio);
 	void								Get_BoneMatrix(CComputeShader* pBoneComBineCS, CComputeShader* pGetBoneCS);
 
+	///////////////
+	//// Event ////
+	///////////////
+private:
+	void								Emit_Notifies(CModelAnimation* pAnimation, _float fPrevPos, _float fCurPos, _bool bIsLooped);
+
 private:
 	EModelType							m_eType						= { EModelType::END };
 	Matrix								m_matPreTransform			= {};
@@ -239,7 +245,6 @@ private:
 	vector<class CMesh*>				m_vecMeshes;
 	vector<class CMaterial*>			m_vecMaterials;
 	vector<class CMaterialInstance*>	m_vecMaterialInstances;
-	class CMesh*						m_pMasterMesh				= { nullptr };
 
 	/* animation */
 	AnimationPlayState					m_eCurrentAnimationState	= { AnimationPlayState::PLAY };
@@ -268,6 +273,12 @@ private:
 	StructuredBuffer*					m_pPreSB					= { nullptr };
 	StructuredBuffer*					m_pCurSB					= { nullptr };
 	ID3D11Buffer*						m_pBoneOuputStagingBuffer	= { nullptr };
+
+	///////////////
+	//// Event ////
+	///////////////
+public:
+	CMulticastDelegate<void(const AnimNotifyKey&)> OnNotify;
 
 public:
 	static CModel* Create(ID3D11Device* pDevice, ID3D11DeviceContext* pDeviceContext, void* pArg);
