@@ -56,9 +56,6 @@ HRESULT CModelAnimation::Initialize(void* pArg)
 	else
 		return E_FAIL;
 
-	if (FAILED(Ready_Buffers()))
-		return E_FAIL;
-
 	return S_OK;
 }
 
@@ -193,6 +190,9 @@ HRESULT CModelAnimation::Ready_Buffers()
 
 HRESULT CModelAnimation::Ready_BindBuffers(CComputeShader* pAnimESahder)
 {
+	if (FAILED(Ready_Buffers()))
+		return E_FAIL;
+
 	CS_IMMU_ANIM_KEYFRAME* pIniailKeyData = new CS_IMMU_ANIM_KEYFRAME[m_iKeyFrameBufferSize];
 	CS_IMMU_ANIM_CHANNELDATA* pIniailChannelData = new CS_IMMU_ANIM_CHANNELDATA[m_iChannelSize];
 
@@ -263,6 +263,17 @@ HRESULT CModelAnimation::Ready_BindBuffers(CComputeShader* pAnimESahder)
 		return E_FAIL;
 
 	return S_OK;
+}
+
+void CModelAnimation::Set_Notifies(vector<AnimNotifyKey> vecKeys)
+{
+	std::sort(vecKeys.begin(), vecKeys.end(),
+		[](const AnimNotifyKey& a, const AnimNotifyKey& b)->_bool
+		{
+			return a.fTrackPosition < b.fTrackPosition;
+		});
+	m_vecNotifies = std::move(vecKeys);
+	m_iNextNotifyIndex = 0;
 }
 
 CModelAnimation* CModelAnimation::Create(ID3D11Device* pDevice, ID3D11DeviceContext* pDeviceContext, void* pArg)

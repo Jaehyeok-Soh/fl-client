@@ -4,6 +4,7 @@
 #include "Bounding_OBB.h"
 #include "Bounding_Sphere.h"
 #include "GameObject.h"
+#include "Model.h"
 #include "GameInstance.h"
 
 _uint CCollider::s_iNextID = { 0 };
@@ -125,6 +126,41 @@ _bool CCollider::IntersectWithRay_Local(CRay* pRay, OUT Vec3& vOut)
 	return m_pBounding->IntersectWithRay_Local(pRay, vOut);
 }
 
+void CCollider::Bind_ModelAnimNotify()
+{
+	CModel* pModel = Get_Owner()->Get_Component<CModel>();
+	if (pModel == nullptr)
+		return;
+
+	Unbind_ModelAnimNotify();
+
+	m_hAnimNotifyHandle = pModel->OnNotify.Subscribe(
+		[this](const AnimNotifyKey& key)
+		{
+			this->On_ModelAnimNotify(key);
+		});
+}
+
+void CCollider::Unbind_ModelAnimNotify()
+{
+	CModel* pModel = Get_Owner()->Get_Component<CModel>();
+	if (pModel == nullptr)
+		return;
+
+	pModel->OnNotify.Unsubscribe(m_hAnimNotifyHandle);
+	m_hAnimNotifyHandle = {};
+}
+
+void CCollider::On_ModelAnimNotify(const AnimNotifyKey& key)
+{
+	switch (key.eID)
+	{
+	case EAnimNotifyId::CollisionOn:  Set_Active(true /* key.iParam */); break;
+	case EAnimNotifyId::CollisionOff: Set_Active(false/* key.iParam */); break;
+	default: break;
+	}
+}
+
 HRESULT CCollider::Create_Bounding(CBounding::BOUNDING_DESC* pBoundingDesc)
 {
 	HRESULT hr = { S_OK };
@@ -203,6 +239,8 @@ void CCollider::Free()
 	}
 	Safe_Release(m_pInputLayout);
 #endif
+	if (IsClone() == true)
+		Unbind_ModelAnimNotify();
 	Safe_Release(m_pBounding);
 	Safe_Release(m_pDeviceContext);
 	Safe_Release(m_pDevice);

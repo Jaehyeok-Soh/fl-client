@@ -1,18 +1,23 @@
 #include "pch.h"
 #include "Client_Defines.h"
-#include "Collider.h"
-#include "GameInstance.h"
-#include "Shader.h"
-#include "Model.h"
 #include "Weapon.h"
 
-CWeapon::CWeapon(ID3D11Device* pDevice, ID3D11DeviceContext* pDeviceContext)
+#include "Collider.h"
+#include "Shader.h"
+#include "Model.h"
+#include "ComputeShader.h"
+
+#include "GameInstance.h"
+
+CWeapon::CWeapon(ID3D11Device* pDevice, ID3D11DeviceContext* pDeviceContext, Weapon_Type eWeapon)
 	: Super(pDevice, pDeviceContext)
+	, m_eWaeponType(eWeapon)
 {
 }
 
 CWeapon::CWeapon(const CWeapon& rhs)
 	: Super(rhs)
+	, m_eWaeponType(rhs.m_eWaeponType)
 {
 }
 
@@ -35,9 +40,31 @@ HRESULT CWeapon::Initialize(void* pArg)
 	WEAPON_DESC* pDesc = static_cast<WEAPON_DESC*>(pArg);
 	m_pMatHandSocket = pDesc->pMatHandSocket;
 	m_pMatSocket = pDesc->pMatSocket;
+	m_eModleType = pDesc->eModel;
+	m_bMainWeapon = pDesc->bMianWeapon;
 
 	if (FAILED(Ready_Components(pDesc)))
 		return E_FAIL;
+
+	// model과 desc 정보 다를때를 위한 방어
+	if (Get_Component<CModel>()->Get_Type() == EModelType::NONANIM)
+		m_eModleType = Weapon_ModelType::STATIC;
+
+	switch (m_eModleType)
+	{
+	case Weapon_ModelType::STATIC:
+		break;
+
+	case Weapon_ModelType::ANIM:
+		if (FAILED(Ready_ComputeShaders()))
+			return E_FAIL;
+		break;
+	}
+
+	if (m_bMainWeapon)
+		m_eState = State::HOLD;
+	else
+		m_eState = State::NONE;
 
 	//Get_Component<CTransform>()->Set_Scale(0.1f, 0.1f, 0.1f);
 	//Get_Component<CTransform>()->Rotation(0.f, ::XMConvertToRadians(90.f), 0.f);
@@ -70,8 +97,20 @@ void CWeapon::Update_Priority(_float fTimeDelta)
 void CWeapon::Update(_float fTimeDelta)
 {
 	Super::Update(fTimeDelta);
-	if (CCollider* pCollider = Get_Component<CCollider>())
-		pCollider->Update(Matrix::CreateScale(100.f, 100.f, 100.f) * m_matCombinedWorld);
+
+	// scale이 죽었을때 다시 살리기 위함
+	//if (CCollider* pCollider = Get_Component<CCollider>())
+	//	pCollider->Update(Matrix::CreateScale(100.f, 100.f, 100.f) * m_matCombinedWorld);
+
+	switch (m_eModleType)
+	{
+	case Weapon_ModelType::STATIC:
+		break;
+
+	case Weapon_ModelType::ANIM:
+		Play_Anim(fTimeDelta);
+		break;
+	}
 }
 
 void CWeapon::Update_Late(_float fTimeDelta)
@@ -82,14 +121,20 @@ void CWeapon::Update_Late(_float fTimeDelta)
 void CWeapon::Ready_Before_Render(_float fTimeDelta)
 {
 	Super::Ready_Before_Render(fTimeDelta);
-	m_pGameInstance->Push_RenderObject(RENDER_CATEGORY::NONEBLEND, this);
+
+	// none일때는 그리지 않음
+	if(m_eState != State::NONE)
+		m_pGameInstance->Push_RenderObject(RENDER_CATEGORY::NONEBLEND, this);
+
+	// state에 따른 combineworld 업데이트
 	switch (m_eState)
 	{
-	case Client::CWeapon::HAND:
+	case State::HAND:
 		Super::Update_CombinedWorldMatrix((*m_pMatHandSocket) * (*m_pMatParent));
 		break;
 	default:
 		Super::Update_CombinedWorldMatrix((*m_pMatSocket) * (*m_pMatParent));
+		//Update_HoldingPos();
 		break;
 	}
 
@@ -128,16 +173,16 @@ HRESULT CWeapon::Render()
 	if (FAILED(Super::Render()))
 		return E_FAIL;
 
-	CShader* pShader = Get_Component<CShader>();
-	CModel* pModel = Get_Component<CModel>();
-	_uint iMeshCount = pModel->Get_MeshCount();
-	pShader->Bind_TransformData(m_matCombinedWorld);
-	for (_uint i = 0; i < iMeshCount; ++i)
+	HRESULT hr = {};
+	switch (m_eModleType)
 	{
-		pModel->Bind_Material(pShader, i);
-		pModel->Bind_MaterialInstance(pShader, i);
-		pShader->Apply();
-		pModel->Render(i);
+	case Weapon_ModelType::STATIC:
+		Render_StaticWeap();
+		break;
+
+	case Weapon_ModelType::ANIM:
+		Render_AnimWeap();
+		break;
 	}
 
 	return S_OK;
@@ -175,29 +220,159 @@ HRESULT CWeapon::Bind_ShaderResources()
 	return S_OK;
 }
 
-CWeapon* CWeapon::Create(ID3D11Device* pDevice, ID3D11DeviceContext* pDeviceContext)
+HRESULT CWeapon::Ready_ComputeShaders()
 {
-	CWeapon* pInstance = new CWeapon(pDevice, pDeviceContext);
-
-	if (FAILED(pInstance->Initialize_Prototype()))
+	_uint iBoneNums = Get_Component<CModel>()->Get_BoneCount();
+	_uint iGetBoneNums = Get_Component<CModel>()->Get_StageBoneCount();
+	// ========   Compute Shader : BoneMesh  ========
 	{
-		MSG_BOX("CWeapon::Create, Failed");
-		Safe_Release(pInstance);
+		CComputeShader::ComShaderCopyDesc ShaderDesc = {};
+		ShaderDesc.Output_SRVBuffer_Name = "BONEFNIMAL_TRANSFORMS_SRV";
+
+		ShaderDesc.InputBufferNum = 2;
+		ShaderDesc.bMakeSB = false;
+		//// 입력 버퍼
+		//ShaderDesc.Input_StructBuffer.sBufferName = "IMMU_BONEDATA";
+		//ShaderDesc.Input_StructBuffer.iElementSize = sizeof(CS_IMMU_BONE);
+		//ShaderDesc.Input_StructBuffer.iNumElements = iBoneNums;
+
+		// 출력 버퍼
+		ShaderDesc.OutPut_StructBuffer.sBufferName = "BONEFNIMAL_TRANSFORMS";
+		ShaderDesc.OutPut_StructBuffer.iElementSize = sizeof(CS_OUT_BONE);
+		ShaderDesc.OutPut_StructBuffer.iNumElements = iBoneNums;
+
+		if (FAILED(Add_Script_Component(L"ComputeShader_BoneMesh", L"Prototype_Component_Shader_BoneMesh", &ShaderDesc)))
+			return E_FAIL;
 	}
-	return pInstance;
+
+	// ========   Compute Shader : BoneCombine  ========
+	{
+		CComputeShader::ComShaderCopyDesc ShaderDesc = {};
+		ShaderDesc.Output_SRVBuffer_Name = "BONECOMBINED_TRANSFORMS_SRV";
+
+		ShaderDesc.InputBufferNum = 3;
+		// 입력 버퍼
+		ShaderDesc.Input_StructBuffer.sBufferName = "IMMU_BONEDATA";
+		ShaderDesc.Input_StructBuffer.iElementSize = sizeof(CS_IMMU_BONE);
+		ShaderDesc.Input_StructBuffer.iNumElements = iBoneNums;
+
+		// 출력 버퍼
+		ShaderDesc.OutPut_StructBuffer.sBufferName = "BONECOMBINED_TRANSFORMS";
+		ShaderDesc.OutPut_StructBuffer.iElementSize = sizeof(CS_OUT_BONE);
+		ShaderDesc.OutPut_StructBuffer.iNumElements = iBoneNums;
+
+		if (FAILED(Add_Script_Component(L"ComputeShader_BoneCombine", L"Prototype_Component_Shader_BondCombine", &ShaderDesc)))
+			return E_FAIL;
+	}
+
+	// ========   Compute Shader : AnimE  ========
+	{
+		CComputeShader::ComShaderCopyDesc ShaderDesc = {};
+		ShaderDesc.Output_SRVBuffer_Name = "CHANNEL_OUTPUT_SRV";
+
+		ShaderDesc.InputBufferNum = 2;
+		ShaderDesc.bMakeSB = false;
+		//// 입력 버퍼
+		//ShaderDesc.Input_StructBuffer.sBufferName = "IMMU_EFFECT_PARTICLE";
+		//ShaderDesc.Input_StructBuffer.iElementSize = sizeof(EFFECT_PARTICLE_IMMU_ELEMENT);
+		//ShaderDesc.Input_StructBuffer.iNumElements = m_tEffectDesc._Effect_MaxParticle;
+
+		// 출력 버퍼
+		ShaderDesc.OutPut_StructBuffer.sBufferName = "CHANNEL_OUTPUT";
+		ShaderDesc.OutPut_StructBuffer.iElementSize = sizeof(CS_SRT);
+		ShaderDesc.OutPut_StructBuffer.iNumElements = iBoneNums;
+
+		if (FAILED(Add_Script_Component(L"ComputeShader_AnimE", L"Prototype_Component_Shader_AnimEv", &ShaderDesc)))
+			return E_FAIL;
+	}
+
+	// ========   Compute Shader : AnimB  ========
+	{
+		CComputeShader::ComShaderCopyDesc ShaderDesc = {};
+		ShaderDesc.Output_SRVBuffer_Name = "BLEND_OUTPUT_SRV";
+
+		ShaderDesc.InputBufferNum = 2;
+		ShaderDesc.bMakeSB = false;
+		//// 입력 버퍼
+		//ShaderDesc.Input_StructBuffer.sBufferName = "IMMU_EFFECT_PARTICLE";
+		//ShaderDesc.Input_StructBuffer.iElementSize = sizeof(EFFECT_PARTICLE_IMMU_ELEMENT);
+		//ShaderDesc.Input_StructBuffer.iNumElements = iBoneNums;
+
+		// 출력 버퍼
+		ShaderDesc.OutPut_StructBuffer.sBufferName = "BLEND_OUTPUT";
+		ShaderDesc.OutPut_StructBuffer.iElementSize = sizeof(CS_SRT);
+		ShaderDesc.OutPut_StructBuffer.iNumElements = iBoneNums;
+
+		if (FAILED(Add_Script_Component(L"ComputeShader_AnimB", L"Prototype_Component_Shader_AnimB", &ShaderDesc)))
+			return E_FAIL;
+	}
+
+	CComputeShader* pBoneMeshCS = static_cast<CComputeShader*>(Get_Script_Component(TEXT("ComputeShader_BoneMesh")));
+	CComputeShader* pBonCombineCS = static_cast<CComputeShader*>(Get_Script_Component(TEXT("ComputeShader_BoneCombine")));
+	CComputeShader* pAnimECS = static_cast<CComputeShader*>(Get_Script_Component(TEXT("ComputeShader_AnimE")));
+
+	if (FAILED(Get_Component<CModel>()->Ready_ComputeShaders(pBoneMeshCS, pBonCombineCS, pAnimECS)))
+		return E_FAIL;
+
+	return S_OK;
 }
 
-CGameObject* CWeapon::Clone(void* pArg)
+HRESULT CWeapon::Render_StaticWeap()
 {
-	CWeapon* pInstance = new CWeapon(*this);
-
-	if (FAILED(pInstance->Initialize(pArg)))
+	CShader* pShader = Get_Component<CShader>();
+	CModel* pModel = Get_Component<CModel>();
+	_uint iMeshCount = pModel->Get_MeshCount();
+	pShader->Bind_TransformData(m_matCombinedWorld);
+	for (_uint i = 0; i < iMeshCount; ++i)
 	{
-		MSG_BOX("CWeapon::Clone, Failed");
-		Safe_Release(pInstance);
+		pModel->Bind_Material(pShader, i);
+		pModel->Bind_MaterialInstance(pShader, i);
+		pShader->Apply();
+		pModel->Render(i);
 	}
 
-	return pInstance;
+	return S_OK;
+}
+
+HRESULT CWeapon::Render_AnimWeap()
+{
+	CShader*			pShader			= Get_Component<CShader>();
+	CModel*				pModel			= Get_Component<CModel>();
+	_uint				iMeshCount		= pModel->Get_MeshCount();
+	CComputeShader*		pBoneMeshCS		= static_cast<CComputeShader*>(Get_Script_Component(TEXT("ComputeShader_BoneMesh")));
+	CComputeShader*		pBoneCombineCS	= static_cast<CComputeShader*>(Get_Script_Component(TEXT("ComputeShader_BoneCombine")));
+
+	pShader->Bind_TransformData(m_matCombinedWorld);
+	for (_uint i = 0; i < iMeshCount; ++i)
+	{
+		pModel->Bind_Material(pShader, i);
+		pModel->Bind_Bones(pShader, i, pBoneMeshCS, pBoneCombineCS);
+		pShader->Apply();
+		pModel->Render(i);
+	}
+
+	return S_OK;
+}
+
+void CWeapon::Play_Anim(const _float fTimeDelta)
+{
+	CComputeShader* pBonCS		= static_cast<CComputeShader*>(Get_Script_Component(TEXT("ComputeShader_BoneCombine")));
+	CComputeShader* pAnimECS	= static_cast<CComputeShader*>(Get_Script_Component(TEXT("ComputeShader_AnimE")));
+
+	Get_Component<CModel>()->Update_Animation(pBonCS, pAnimECS, fTimeDelta);
+}
+
+void CWeapon::Update_HoldingPos()
+{
+	// 현재 com transform 기준으로 부터 약간 뒤로, 약간 위로
+
+	Vec3 vLook = m_matCombinedWorld.Up();
+	Vec3 vUp = m_matCombinedWorld.Left();
+	Vec3 vPos = m_matCombinedWorld.Translation();
+
+	Vec3 vMove = (-vLook * 0.4f) + (vUp * 0.3f);
+
+	m_matCombinedWorld.Translation(vPos + vMove);
 }
 
 void CWeapon::Free()

@@ -20,6 +20,22 @@ namespace Engine
 	}TOOL_DESC;
 #pragma endregion
 
+	struct AnimNotifyKey
+	{
+		EAnimNotifyId eID{ EAnimNotifyId::CollisionOn };
+		float fTrackPosition{ 0.f };
+
+		unsigned int  iParam0{ 0 };
+		unsigned int  iParam1{ 0 };
+		unsigned int  iParam2{ 0 };
+		unsigned int  iParam3{ 0 };
+		float		  fParam0{ 0.0f };
+		float		  fParam1{ 0.0f };
+		bool		  bParam0{ false };
+		bool		  bParam1{ false };
+		string		  strParam{ "" };
+	};
+
 #pragma region Shader_ConstantBuffer
 	typedef struct tagShaderGlobalDesc
 	{

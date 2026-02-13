@@ -58,6 +58,18 @@ public:
 	void	Bind_AnimationEData(CComputeShader* pAnimEShader);
 	HRESULT Ready_BindBuffers(CComputeShader* pAnimESahder);
 
+	///////////////
+	//// Event ////
+	///////////////
+	const vector<AnimNotifyKey>& Get_Notifies() const { return m_vecNotifies; }
+	void Set_Notifies(vector<AnimNotifyKey> vecKeys);
+	void Reset_NotifyCursor() { m_iNextNotifyIndex = 0; }
+	_uint Get_NotifyCursor() const { return m_iNextNotifyIndex; }
+	void Set_NotifyCursor(size_t iIndex)
+	{
+		if (m_vecNotifies.size() <= iIndex) return;
+		m_iNextNotifyIndex = (_uint)iIndex;
+	}
 private:
 	_uint m_iChannelCount = { 0 };
 	vector<class CChannel*> m_vecChannels;
@@ -80,6 +92,13 @@ private:
 private:
 	_int m_iRootBoneIdx = { -1 };
 	_int m_iRootChannelIdx = { -1 };
+
+	///////////////
+	//// Event ////
+	///////////////
+private:
+	vector<AnimNotifyKey> m_vecNotifies;
+	_uint m_iNextNotifyIndex = 0;
 
 private:
 	HRESULT Ready_Buffers();

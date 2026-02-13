@@ -145,6 +145,7 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClInclude Include="..\Public\Animation_Defines.h" />
     <ClInclude Include="..\Public\AnimObj.h">
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">false</ExcludedFromBuild>
     </ClInclude>
@@ -155,6 +156,8 @@
     <ClInclude Include="..\Public\CEffectObject.h" />
     <ClInclude Include="..\Public\Effect_Preview_panel.h" />
     <ClInclude Include="..\Public\Gravity_Force.h" />
+    <ClInclude Include="..\Public\Panel_Model.h" />
+    <ClInclude Include="..\Public\Panel_AnimModelFile.h" />
     <ClInclude Include="..\Public\UIButton_Component.h" />
     <ClInclude Include="..\Public\UIComponent_Inspector.h" />
     <ClInclude Include="..\Public\DebugLine.h" />
@@ -168,9 +171,6 @@
     <ClInclude Include="..\Public\MapToolManager.h" />
     <ClInclude Include="..\public\Panel_FileExplore.h" />
     <ClInclude Include="..\Public\Panel_MapTool.h" />
-    <ClInclude Include="..\Public\Panel_Model.h">
-      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</ExcludedFromBuild>
-    </ClInclude>
     <ClInclude Include="..\Public\Tool_ContainerObject.h" />
     <ClInclude Include="..\Public\Tool_PartObject.h" />
     <ClInclude Include="..\Public\GodInput.h" />
@@ -241,6 +241,8 @@
     <ClCompile Include="..\Private\CEffectObject.cpp" />
     <ClCompile Include="..\Private\Effect_Preview_panel.cpp" />
     <ClCompile Include="..\Private\Gravity_Force.cpp" />
+    <ClCompile Include="..\Private\Panel_Model.cpp" />
+    <ClCompile Include="..\Private\Panel_AnimModelFile.cpp" />
     <ClCompile Include="..\Private\UIButton_Component.cpp" />
     <ClCompile Include="..\Private\UIComponent_Inspector.cpp" />
     <ClCompile Include="..\Private\DebugLine.cpp" />
@@ -253,9 +255,6 @@
     <ClCompile Include="..\Private\MapToolManager.cpp" />
     <ClCompile Include="..\Private\Panel_FileExplore.cpp" />
     <ClCompile Include="..\Private\Panel_MapTool.cpp" />
-    <ClCompile Include="..\Private\Panel_Model.cpp">
-      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</ExcludedFromBuild>
-    </ClCompile>
     <ClCompile Include="..\Private\Tool_ContainerObject.cpp" />
     <ClCompile Include="..\Private\Tool_PartObject.cpp" />
     <ClCompile Include="..\Private\GodInput.cpp" />

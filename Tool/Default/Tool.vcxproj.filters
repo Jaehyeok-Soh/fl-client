@@ -247,6 +247,12 @@
     <Filter Include="99. ETC\03. Tool Shader">
       <UniqueIdentifier>{94f2837f-0795-42b2-b135-340ce4d67014}</UniqueIdentifier>
     </Filter>
+    <Filter Include="06. ImGui\01. Panel\Animation\Panel_AnimModelFile">
+      <UniqueIdentifier>{9485a14e-3e65-4118-9198-15e132e47bf8}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="98. Defines\Animation_Define">
+      <UniqueIdentifier>{6df89fdd-4dd1-43a4-b7c5-8a2f5905fe86}</UniqueIdentifier>
+    </Filter>
     <Filter Include="02. GameObjects\Effect">
       <UniqueIdentifier>{73d967a7-e9a7-4a5a-99fe-849a10cbca9e}</UniqueIdentifier>
     </Filter>
@@ -468,9 +474,6 @@
     <ClInclude Include="..\Public\Tool_Structs.h">
       <Filter>98. Defines\Tool_Struct</Filter>
     </ClInclude>
-    <ClInclude Include="..\Public\Panel_Model.h">
-      <Filter>06. ImGui\01. Panel\Animation\Panel_Model</Filter>
-    </ClInclude>
     <ClInclude Include="..\Public\AnimObj.h">
       <Filter>02. GameObjects\ContainerObject\AnimModel</Filter>
     </ClInclude>
@@ -500,6 +503,15 @@
     </ClInclude>
     <ClInclude Include="..\Public\Effect_Preview_panel.h">
       <Filter>03. Level\Effect\Effect_Panel\Character_Animation</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\Panel_Model.h">
+      <Filter>06. ImGui\01. Panel\Animation\Panel_Model</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\Panel_AnimModelFile.h">
+      <Filter>06. ImGui\01. Panel\Animation\Panel_AnimModelFile</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\Animation_Defines.h">
+      <Filter>98. Defines\Animation_Define</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -702,9 +714,6 @@
     <ClCompile Include="..\Private\Tool_Structs.cpp">
       <Filter>98. Defines\Tool_Struct</Filter>
     </ClCompile>
-    <ClCompile Include="..\Private\Panel_Model.cpp">
-      <Filter>06. ImGui\01. Panel\Animation\Panel_Model</Filter>
-    </ClCompile>
     <ClCompile Include="..\Private\AnimObj.cpp">
       <Filter>02. GameObjects\ContainerObject\AnimModel</Filter>
     </ClCompile>
@@ -734,6 +743,13 @@
     </ClCompile>
     <ClCompile Include="..\Private\Effect_Preview_panel.cpp">
       <Filter>03. Level\Effect\Effect_Panel\Character_Animation</Filter>
+    </ClCompile>
+
+    <ClCompile Include="..\Private\Panel_Model.cpp">
+      <Filter>06. ImGui\01. Panel\Animation\Panel_Model</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\Panel_AnimModelFile.cpp">
+      <Filter>06. ImGui\01. Panel\Animation\Panel_AnimModelFile</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

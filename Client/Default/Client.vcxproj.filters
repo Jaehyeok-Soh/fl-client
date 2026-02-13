@@ -277,6 +277,12 @@
     <Filter Include="04. Shaders\ComputeShaders\Effect">
       <UniqueIdentifier>{a5cd0610-f7dc-4f6d-ba0f-ebf5e8e2dd1e}</UniqueIdentifier>
     </Filter>
+    <Filter Include="03. GameObject\PartObjects\Weapon\Sword">
+      <UniqueIdentifier>{9716c9b5-cecc-4233-af3e-15a59a69c7e1}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="03. GameObject\PartObjects\Weapon\Gun">
+      <UniqueIdentifier>{6a93f015-83a7-4ad9-a084-d7e71fa8f3a4}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="targetver.h">
@@ -495,9 +501,6 @@
     <ClInclude Include="..\Public\State_MoonCombo.h">
       <Filter>06. FSM\Player\Attack\Combo\Moon</Filter>
     </ClInclude>
-    <ClInclude Include="..\Public\UITargetAction_Client.h">
-      <Filter>03. GameObject\UIObjects\04.Action</Filter>
-    </ClInclude>
     <ClInclude Include="..\Public\UIJust_Image.h">
       <Filter>03. GameObject\UIObjects\02.UI\Image\JustImage</Filter>
     </ClInclude>
@@ -531,9 +534,6 @@
     <ClInclude Include="..\Public\UIMini_Map.h">
       <Filter>03. GameObject\UIObjects\02.UI\Image\Dynamic Image\01.Minimap</Filter>
     </ClInclude>
-    <ClInclude Include="..\Public\State_DashFront.h">
-      <Filter>06. FSM\Player</Filter>
-    </ClInclude>
     <ClInclude Include="..\Public\UIButton_Trigger.h">
       <Filter>03. GameObject\UIObjects\02.UI\Trigger</Filter>
     </ClInclude>
@@ -545,6 +545,9 @@
     </ClInclude>
     <ClInclude Include="..\public\ImGui_ClientDebug.h">
       <Filter>07. System\02. Debug_ImGui</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\Sword.h">
+      <Filter>03. GameObject\PartObjects\Weapon\Sword</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -783,17 +786,11 @@
     <ClCompile Include="..\Private\State_MoonCombo.cpp">
       <Filter>06. FSM\Player\Attack\Combo\Moon</Filter>
     </ClCompile>
-    <ClCompile Include="..\Private\UITargetAction_Client.cpp">
-      <Filter>03. GameObject\UIObjects\04.Action</Filter>
-    </ClCompile>
     <ClCompile Include="..\Private\UIDynamic_Image.cpp">
       <Filter>03. GameObject\UIObjects\02.UI\Image\Dynamic Image</Filter>
     </ClCompile>
     <ClCompile Include="..\Private\UIMini_Map.cpp">
       <Filter>03. GameObject\UIObjects\02.UI\Image\Dynamic Image\01.Minimap</Filter>
-    </ClCompile>
-    <ClCompile Include="..\Private\State_DashFront.cpp">
-      <Filter>06. FSM\Player</Filter>
     </ClCompile>
     <ClCompile Include="..\Private\UIButton_Trigger.cpp">
       <Filter>03. GameObject\UIObjects\02.UI\Trigger</Filter>
@@ -806,6 +803,9 @@
     </ClCompile>
     <ClCompile Include="..\private\ImGui_ClientDebug.cpp">
       <Filter>07. System\02. Debug_ImGui</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\Sword.cpp">
+      <Filter>03. GameObject\PartObjects\Weapon\Sword</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

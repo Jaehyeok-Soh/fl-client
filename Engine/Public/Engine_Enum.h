@@ -61,14 +61,25 @@ namespace Engine
 		COMPONENT,
 		END
 	};
-
+	//===================
+	// AnimEvent
+	//===================
+	enum class EAnimNotifyId : unsigned int
+	{
+		CollisionOn,
+		CollisionOff,
+		FootStepL,
+		FootStepR,
+		Vfx_Oneshot,
+		Vfx_Attach_On,
+		Vfx_Attach_Off,
+	};
 	//===================
 	// Component
 	//===================
 	enum class EComponentType : unsigned int
 	{
 		TRANSFORM = 0,
-		MODEL,
 		NAVIGATION,
 		TEXTURE,
 		COLLIDER,
@@ -84,6 +95,7 @@ namespace Engine
 		PX_CCT,
 		PX_ATTACKOVERLAP,
 		//
+		MODEL,
 		SCRIPT,
 		
 		END

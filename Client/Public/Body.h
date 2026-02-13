@@ -45,8 +45,8 @@ public:
 	CBone* Get_NeckBone();
 	CBone* Get_Spine1Bone();
 	//CBone* Get_SpineBone();
-	//CBone* Get_SwordSocket();
-	//CBone* Get_RightHandWeaponSocket();
+	CBone* Get_WeaponSocket();
+	CBone* Get_RightHandSocket();
 	//CBone* Get_LeftHandSocket();
 	//CBone* Get_RightHandSocket();
 	//CBone* Get_LeftFootSocket();
