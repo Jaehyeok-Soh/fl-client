@@ -160,7 +160,7 @@ HRESULT CModel::Initialize_Prototype(void* pArg)
 
 		for (size_t i = 0; i < Get_BoneCount(); i++)
 		{
-			pDesc->vecStageBoneIndices[i] = i;
+			pDesc->vecStageBoneIndices[i] = (_uint)i;
 		}
 	}
 
