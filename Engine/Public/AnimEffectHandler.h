@@ -6,7 +6,7 @@ NS_BEGIN(Engine)
 
 class CModel;
 
-class CAnimEffectHandler :
+class ENGINE_DLL CAnimEffectHandler :
     public CComponent
 {
 public:
