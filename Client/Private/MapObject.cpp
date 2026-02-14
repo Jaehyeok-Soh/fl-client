@@ -120,7 +120,6 @@ HRESULT	CMapObject::Ready_Component(MAPOBJECT_DESC* pDesc)
         Get_Component<CBounds>()->Update_BoundingDesc(Get_Component<CTransform>()->Get_WorldMatrix());
     }
 
-
     if (m_eMapObjectDrawType == EMapObject_DrawType::Instance)
     {
         /* InstanceMehs  */

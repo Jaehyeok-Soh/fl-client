@@ -33,15 +33,18 @@ HRESULT CUI_Inspector::Initialize_Prototype()
 	for (uint32_t i = 0; i < ENUM_TO_UINT(DTO::EUIClassType::END); ++i)
 		m_VecClassTag.push_back(DTO::UIClassTypeToString(static_cast<DTO::EUIClassType>(i)));
 
-	m_VecOwnerTag.reserve(ENUM_TO_UINT(DTO::EUIOwnerType::END));
-	for (uint32_t i = 0; i < ENUM_TO_UINT(DTO::EUIOwnerType::END); ++i)
-		m_VecOwnerTag.push_back(DTO::UIOwnertypeToString(static_cast<DTO::EUIOwnerType>(i)));
+	m_VecOwnerTag.reserve(ENUM_TO_UINT(DTO::EUISubClassType::END));
+	for (uint32_t i = 0; i < ENUM_TO_UINT(DTO::EUISubClassType::END); ++i)
+		m_VecOwnerTag.push_back(DTO::UISubClasstypeToString(static_cast<DTO::EUISubClassType>(i)));
 
 
 	m_VecShaderPassTag.reserve(ENUM_TO_UINT(EUIShaderPass::END));
 	for (uint32_t i = 0; i < ENUM_TO_UINT(EUIShaderPass::END); ++i)
 		m_VecShaderPassTag.push_back(UIShaderPassToString(static_cast<EUIShaderPass>(i)));
 
+	m_VecDImageSubClassTag.reserve(ENUM_TO_UINT(DTO::EUIDImageSubClassType::END));
+	for (uint32_t i = 0; i < ENUM_TO_UINT(DTO::EUIDImageSubClassType::END); ++i)
+		m_VecDImageSubClassTag.push_back(DTO::UIDImageSubTypeToString(static_cast<DTO::EUIDImageSubClassType>(i)));
 	return S_OK;
 }
 
@@ -77,6 +80,10 @@ HRESULT CUI_Inspector::Render(CToolObject* pGo)
 		else if (m_pSelectedUI->Get_UIClassType() == DTO::EUIClassType::TRIGGER)
 		{
 			SetUp_TriggerData();
+		}
+		else if (m_pSelectedUI->Get_UIClassType() == DTO::EUIClassType::DYNAMIC_IMAGE)
+		{
+			SetUp_DImageData();
 		}
 	}
 
@@ -171,7 +178,8 @@ void CUI_Inspector::Input_RectTransform()
 
 		ImGui::TableNextColumn();
 		ImGui::SetNextItemWidth(-FLT_MIN);
-		Scrub_Float("UIPosZ", "##UIObjectPosZ", m_pSelectedUI->Get_PosZ_Ptr(), 0.1f, 20.f, 0.1f, 10.0f, 100.f);
+		if (Scrub_Float("UIPosZ", "##UIObjectPosZ", m_pSelectedUI->Get_PosZ_Ptr(), 0.1f, 20.f, 0.1f, 10.0f, 100.f))
+			m_pUIManager->Request_SortUI();
 
 		ImGui::EndTable();
 	}
@@ -185,55 +193,39 @@ void CUI_Inspector::Input_RectTransform()
 
 void CUI_Inspector::Input_TextureTag()
 {
-	_bool& isUseColorTint = m_pSelectedUI->Get_UseColorTint();
-	ImGui::Checkbox("Use ColorTint", &isUseColorTint);
+	_string str = Engine_Utils::ToString(L"Cur Texture : " + m_pSelectedUI->Get_TextureTag());
+	ImGui::TextDisabled(str.c_str());
 
-	if (isUseColorTint)
+	if (ImGui::Button("Select Texture"))
 	{
-		Vec4& tint = m_pSelectedUI->Get_ColorTint_Ref();
+		OPENFILENAMEW ofn{};
+		_tchar szFile[MAX_PATH] = { 0 };
 
-		float fColor[4] = { tint.x, tint.y, tint.z, tint.w };
+		ofn.lStructSize = sizeof(OPENFILENAMEW);
+		ofn.hwndOwner = g_hWnd;
+		ofn.lpstrFile = szFile;
+		ofn.nMaxFile = MAX_PATH; 
+		ofn.lpstrFilter =
+			L"Image Files (*.png;*.dds)\0*.png;*.dds\0"
+			L"Png Files (*.png)\0*.png\0"
+			L"Dds Files (*.dds)\0*.dds\0"
+			L"All Files (*.*)\0*.*\0\0";
+		ofn.nFilterIndex = 1;
+		ofn.Flags = OFN_PATHMUSTEXIST | OFN_FILEMUSTEXIST | OFN_NOCHANGEDIR;
 
-		if (ImGui::SliderFloat4("Color Tint", fColor, 0.f, 1.f))
+		if (::GetOpenFileNameW(&ofn) == TRUE)
 		{
-			tint.x = fColor[0];
-			tint.y = fColor[1];
-			tint.z = fColor[2];
-			tint.w = fColor[3];
-		}
-	}
-	else
-	{
-		if (ImGui::Button("Select Texture"))
-		{
-			OPENFILENAMEW ofn{};
-			_tchar szFile[MAX_PATH] = { 0 };
+			_wstring result = szFile; 
 
-			ofn.lStructSize = sizeof(OPENFILENAMEW);
-			ofn.hwndOwner = g_hWnd;
-			ofn.lpstrFile = szFile;
-			ofn.nMaxFile = MAX_PATH; 
-			ofn.lpstrFilter =
-				L"Image Files (*.png;*.dds)\0*.png;*.dds\0"
-				L"Png Files (*.png)\0*.png\0"
-				L"Dds Files (*.dds)\0*.dds\0"
-				L"All Files (*.*)\0*.*\0\0";
-			ofn.nFilterIndex = 1;
-			ofn.Flags = OFN_PATHMUSTEXIST | OFN_FILEMUSTEXIST | OFN_NOCHANGEDIR;
-
-			if (::GetOpenFileNameW(&ofn) == TRUE)
+			std::filesystem::path f(result);
+			if (f.extension().wstring() == L".png" || f.extension().wstring() == L".dds")
 			{
-				_wstring result = szFile; 
-
-				std::filesystem::path f(result);
-				if (f.extension().wstring() == L".png" || f.extension().wstring() == L".dds")
-				{
-					m_pSelectedUI->Set_TextureTag(L"Texture_" + f.stem().wstring());
-					m_pSelectedUI->Request_Change_Texture();
-				}
+				m_pSelectedUI->Set_TextureTag(L"Texture_" + f.stem().wstring());
+				m_pSelectedUI->Request_Change_Texture();
 			}
 		}
 	}
+
 }
 
 void CUI_Inspector::SetUp_Class()
@@ -272,14 +264,14 @@ void CUI_Inspector::SetUp_Owner()
 	if (nullptr == m_pSelectedUI)
 		return;
 
-	int cur = (int)m_pSelectedUI->Get_UIOwnerType();
+	int cur = (int)m_pSelectedUI->Get_UISubClassType();
 	cur = (cur < 0) ? 0 : (cur >= (int)m_VecOwnerTag.size() ? (int)m_VecOwnerTag.size() - 1 : cur);
 
 	const char* preview = m_VecOwnerTag.empty() ? "" : m_VecOwnerTag[cur].c_str();
 
 	bool changed = false;
 
-	if (ImGui::BeginCombo("UI Owner", preview))
+	if (ImGui::BeginCombo("UI Sub Class", preview))
 	{
 		for (int i = 0; i < (int)m_VecOwnerTag.size(); ++i)
 		{
@@ -287,7 +279,7 @@ void CUI_Inspector::SetUp_Owner()
 			if (ImGui::Selectable(m_VecOwnerTag[i].c_str(), isSelected))
 			{
 				cur = i;
-				m_pSelectedUI->Set_UIOwnerType(static_cast<DTO::EUIOwnerType>(i));
+				m_pSelectedUI->Set_UISubClassType(static_cast<DTO::EUISubClassType>(i));
 				changed = true;
 			}
 
@@ -300,9 +292,9 @@ void CUI_Inspector::SetUp_Owner()
 
 void CUI_Inspector::SetUp_TextData()
 {
-	if(Begin_Card("SetUp TextData", "Card_TextData", 100.f))
+	if (Begin_Card("SetUp TextData", "Card_TextData", 250.f))
 	{
-		_string strText = Engine_Utils::ToString( m_pSelectedUI->Get_Text());
+		_string strText = Engine_Utils::ToString(m_pSelectedUI->Get_Text());
 		ImGui::InputText("Text", &strText);
 		m_pSelectedUI->Set_Text(Engine_Utils::ToWString(strText));
 
@@ -310,13 +302,49 @@ void CUI_Inspector::SetUp_TextData()
 		float col[4] = { vColor.x, vColor.y, vColor.z, vColor.w };
 		if (ImGui::ColorEdit4("FontColor", col))
 			vColor = Vec4{ col[0], col[1], col[2], col[3] };
+
+		const auto& vecFontNames = m_pUIManager->Get_FontNames();
+		_string strFontName = m_pSelectedUI->Get_FontName();
+
+		const char* preview = strFontName.empty() ? "" : strFontName.c_str();
+
+		if (ImGui::BeginCombo("FontName", preview))
+		{
+			for (size_t i = 0; i < vecFontNames.size(); ++i)
+			{
+				const bool isSelected = (strFontName == vecFontNames[i]);
+
+				if (ImGui::Selectable(vecFontNames[i].c_str(), isSelected))
+				{
+					strFontName = vecFontNames[i];
+					m_pSelectedUI->Set_FontName(strFontName);
+				}
+
+				if (isSelected)
+					ImGui::SetItemDefaultFocus();
+			}
+			ImGui::EndCombo();
+		}
+		_float fScale = m_pSelectedUI->Get_FontScale();
+		if (ImGui::InputFloat("FontScale", &fScale))
+			m_pSelectedUI->Set_FontScale(fScale);
+
+		_float fRotateRad = m_pSelectedUI->Get_FontRotate();
+		_float fRotateDeg = DirectX::XMConvertToDegrees(fRotateRad);
+
+		if (ImGui::SliderFloat("FontRotate", &fRotateDeg, 0.f, 360.f, "%.1f deg"))
+		{
+			fRotateRad = DirectX::XMConvertToRadians(fRotateDeg);
+			m_pSelectedUI->Set_FontRotate(fRotateRad);
+		}
 	}
+
 	End_Card();
 }
 
 void CUI_Inspector::SetUp_TriggerData()
 {
-	if (Begin_Card("Set Trigger Data", "TriggerData", 200.f))
+	if (Begin_Card("Set Trigger Data", "TriggerData", 400.f))
 	{
 		if (ImGui::Button("Add Hover Enter Target"))
 		{
@@ -347,12 +375,6 @@ void CUI_Inspector::SetUp_TriggerData()
 			m_isPressExit = TRUE;
 		}
 
-		auto* pUIVec = m_pUIManager->Safe_Access_UIVector();
-		if (nullptr == pUIVec)
-		{
-			End_Card();
-			return;
-		}
 		auto* pCanvasVec = m_pUIManager->Safe_Access_CanvasVector();
 		if (nullptr == pCanvasVec)
 		{
@@ -361,14 +383,30 @@ void CUI_Inspector::SetUp_TriggerData()
 		}
 
 		vector<_string> vecUINames;
-		vecUINames.reserve(pUIVec->size());
-		for (auto* pUI : *pUIVec)
-			vecUINames.push_back(pUI->Get_Name());
-
 		vector<_string> vecCanvasNames;
 		vecCanvasNames.reserve(pCanvasVec->size());
+
 		for (auto* pCanvas : *pCanvasVec)
+		{
+			if (nullptr == pCanvas)
+				continue;
+
 			vecCanvasNames.push_back(pCanvas->Get_Tag());
+
+			/* Canvas 안의 모든 UI 이름 수집 */
+			auto* pUIVec = pCanvas->Safe_Access_UI_Vector(); // Canvas가 UIVector 접근 함수를 제공한다고 가정
+			if (nullptr == pUIVec)
+				continue;
+
+			vecUINames.reserve(vecUINames.size() + pUIVec->size());
+			for (auto* pUI : *pUIVec)
+			{
+				if (nullptr == pUI)
+					continue;
+
+				vecUINames.push_back(pUI->Get_Name());
+			}
+		}
 
 		if (m_isHoverEnter)
 		{
@@ -377,7 +415,7 @@ void CUI_Inspector::SetUp_TriggerData()
 			const float fGap = ImGui::GetStyle().ItemSpacing.x;
 			const float fHalf = (fAvail - fGap) * 0.5f;
 
-			ImGui::BeginChild("Trigger UI List", ImVec2(fHalf, fH), true);
+			ImGui::BeginChild("Trigger UI List##HoverEnter", ImVec2(fHalf, fH), true);
 			for (const auto& name : m_pSelectedUI->Get_vecHoverEnterTriggerUI())
 			{
 				const bool isSelected = (m_strTriggerUIName == name);
@@ -386,7 +424,7 @@ void CUI_Inspector::SetUp_TriggerData()
 			}
 			ImGui::EndChild();
 			ImGui::SameLine();
-			ImGui::BeginChild("Trigger Canvas List", ImVec2(0.f, fH), true);
+			ImGui::BeginChild("Trigger Canvas List##HoverEnter", ImVec2(0.f, fH), true);
 			for (const auto& name : m_pSelectedUI->Get_vecHoverEnterTriggerCanvas())
 			{
 				const bool isSelected = (m_strTriggerCanvasName == name);
@@ -394,24 +432,24 @@ void CUI_Inspector::SetUp_TriggerData()
 					m_strTriggerCanvasName = name;
 			}
 			ImGui::EndChild();
-			if (ImGui::Button("Remove Trigger UI"))
+			if (ImGui::Button("Remove Trigger UI##HoverEnter"))
 			{
 				m_pSelectedUI->Remove_vecHoverEnterTriggerUI(m_strTriggerUIName);
 			}
 			ImGui::SameLine();
-			if (ImGui::Button("Remove Trigger Canvas"))
+			if (ImGui::Button("Remove Trigger Canvas##HoverEnter"))
 			{
 				m_pSelectedUI->Remove_vecHoverEnterTriggerCanvas(m_strTriggerCanvasName);
 			}
 			ImGui::InputText("Hover Enter Trigger UI", &m_strTriggerUIName_UserInput);
-			if (ImGui::Button("Add Hover Enter Trigger UI User Input"))
+			if (ImGui::Button("Add Hover Enter Trigger UI User Input##HoverEnter"))
 			{
 				if (!m_pSelectedUI->Add_vecHoverEnterTriggerUI(m_strTriggerUIName_UserInput))
 				{
 					MSG_BOX("이미 존재하는 이름");
 				}
 			}
-			if (ImGui::BeginCombo("Pick Trigger UI", m_strTriggerUIName.c_str()))
+			if (ImGui::BeginCombo("Pick Trigger UI##HoverEnter", m_strTriggerUIName.c_str()))
 			{
 				for (const auto& name : vecUINames)
 				{
@@ -423,14 +461,14 @@ void CUI_Inspector::SetUp_TriggerData()
 				}
 				ImGui::EndCombo();
 			}
-			if (ImGui::Button("Add Hover Enter Trigger UI"))
+			if (ImGui::Button("Add Hover Enter Trigger UI##HoverEnter"))
 			{
 				if (!m_pSelectedUI->Add_vecHoverEnterTriggerUI(m_strTriggerUIName))
 				{
 					MSG_BOX("이미 존재하는 이름");
 				}
 			}
-			if (ImGui::BeginCombo("Canvas Names", m_strTriggerCanvasName.c_str()))
+			if (ImGui::BeginCombo("Canvas Names##HoverEnter", m_strTriggerCanvasName.c_str()))
 			{
 				for (const auto& tag : vecCanvasNames)
 				{
@@ -442,7 +480,7 @@ void CUI_Inspector::SetUp_TriggerData()
 				}
 				ImGui::EndCombo();
 			}
-			if (ImGui::Button("Add Hover Enter Trigger Canvas"))
+			if (ImGui::Button("Add Hover Enter Trigger Canvas##HoverEnter"))
 			{
 				if (!m_pSelectedUI->Add_vecHoverEnterTriggerCanvas(m_strTriggerCanvasName))
 				{
@@ -452,12 +490,279 @@ void CUI_Inspector::SetUp_TriggerData()
 		}
 		else if (m_isHoverExit)
 		{
+			const float fH = 80.f;
+			const float fAvail = ImGui::GetContentRegionAvail().x;
+			const float fGap = ImGui::GetStyle().ItemSpacing.x;
+			const float fHalf = (fAvail - fGap) * 0.5f;
+
+			ImGui::BeginChild("Trigger UI List##HoverExit", ImVec2(fHalf, fH), true);
+			for (const auto& name : m_pSelectedUI->Get_vecHoverExitTriggerUI())
+			{
+				const bool isSelected = (m_strTriggerUIName == name);
+				if (ImGui::Selectable(name.c_str(), isSelected))
+					m_strTriggerUIName = name;
+			}
+			ImGui::EndChild();
+			ImGui::SameLine();
+			ImGui::BeginChild("Trigger Canvas List##HoverExit", ImVec2(0.f, fH), true);
+			for (const auto& name : m_pSelectedUI->Get_vecHoverExitTriggerCanvas())
+			{
+				const bool isSelected = (m_strTriggerCanvasName == name);
+				if (ImGui::Selectable(name.c_str(), isSelected))
+					m_strTriggerCanvasName = name;
+			}
+			ImGui::EndChild();
+			if (ImGui::Button("Remove Trigger UI##HoverExit"))
+			{
+				m_pSelectedUI->Remove_vecHoverExitTriggerUI(m_strTriggerUIName);
+			}
+			ImGui::SameLine();
+			if (ImGui::Button("Remove Trigger Canvas##HoverExit"))
+			{
+				m_pSelectedUI->Remove_vecHoverExitTriggerCanvas(m_strTriggerCanvasName);
+			}
+			ImGui::InputText("Hover Exit Trigger UI", &m_strTriggerUIName_UserInput);
+			if (ImGui::Button("Add Hover Exit Trigger UI User Input##HoverExit"))
+			{
+				if (!m_pSelectedUI->Add_vecHoverExitTriggerUI(m_strTriggerUIName_UserInput))
+				{
+					MSG_BOX("이미 존재하는 이름");
+				}
+			}
+			if (ImGui::BeginCombo("Pick Trigger UI##HoverExit", m_strTriggerUIName.c_str()))
+			{
+				for (const auto& name : vecUINames)
+				{
+					const bool isSelected = (m_strTriggerUIName == name);
+					if (ImGui::Selectable(name.c_str(), isSelected))
+						m_strTriggerUIName = name;
+					if (isSelected)
+						ImGui::SetItemDefaultFocus();
+				}
+				ImGui::EndCombo();
+			}
+			if (ImGui::Button("Add Hover Exit Trigger UI##HoverExit"))
+			{
+				if (!m_pSelectedUI->Add_vecHoverExitTriggerUI(m_strTriggerUIName))
+				{
+					MSG_BOX("이미 존재하는 이름");
+				}
+			}
+			if (ImGui::BeginCombo("Canvas Names##HoverExit", m_strTriggerCanvasName.c_str()))
+			{
+				for (const auto& tag : vecCanvasNames)
+				{
+					const bool isSelected = (m_strTriggerCanvasName == tag);
+					if (ImGui::Selectable(tag.c_str(), isSelected))
+						m_strTriggerCanvasName = tag;
+					if (isSelected)
+						ImGui::SetItemDefaultFocus();
+				}
+				ImGui::EndCombo();
+			}
+			if (ImGui::Button("Add Hover Exit Trigger Canvas##HoverExit"))
+			{
+				if (!m_pSelectedUI->Add_vecHoverExitTriggerCanvas(m_strTriggerCanvasName))
+				{
+					MSG_BOX("이미 존재하는 이름");
+				}
+			}
 		}
 		else if (m_isPressEnter)
 		{
+			const float fH = 80.f;
+			const float fAvail = ImGui::GetContentRegionAvail().x;
+			const float fGap = ImGui::GetStyle().ItemSpacing.x;
+			const float fHalf = (fAvail - fGap) * 0.5f;
+
+			ImGui::BeginChild("Trigger UI List##PressEnter", ImVec2(fHalf, fH), true);
+			for (const auto& name : m_pSelectedUI->Get_vecPressEnterTriggerUI())
+			{
+				const bool isSelected = (m_strTriggerUIName == name);
+				if (ImGui::Selectable(name.c_str(), isSelected))
+					m_strTriggerUIName = name;
+			}
+			ImGui::EndChild();
+			ImGui::SameLine();
+			ImGui::BeginChild("Trigger Canvas List##PressEnter", ImVec2(0.f, fH), true);
+			for (const auto& name : m_pSelectedUI->Get_vecPressEnterTriggerCanvas())
+			{
+				const bool isSelected = (m_strTriggerCanvasName == name);
+				if (ImGui::Selectable(name.c_str(), isSelected))
+					m_strTriggerCanvasName = name;
+			}
+			ImGui::EndChild();
+			if (ImGui::Button("Remove Trigger UI##PressEnter"))
+			{
+				m_pSelectedUI->Remove_vecPressEnterTriggerUI(m_strTriggerUIName);
+			}
+			ImGui::SameLine();
+			if (ImGui::Button("Remove Trigger Canvas##PressEnter"))
+			{
+				m_pSelectedUI->Remove_vecPressEnterTriggerCanvas(m_strTriggerCanvasName);
+			}
+			ImGui::InputText("Press Enter Trigger UI", &m_strTriggerUIName_UserInput);
+			if (ImGui::Button("Add Press Enter Trigger UI User Input##PressEnter"))
+			{
+				if (!m_pSelectedUI->Add_vecPressEnterTriggerUI(m_strTriggerUIName_UserInput))
+				{
+					MSG_BOX("이미 존재하는 이름");
+				}
+			}
+			if (ImGui::BeginCombo("Pick Trigger UI##PressEnter", m_strTriggerUIName.c_str()))
+			{
+				for (const auto& name : vecUINames)
+				{
+					const bool isSelected = (m_strTriggerUIName == name);
+					if (ImGui::Selectable(name.c_str(), isSelected))
+						m_strTriggerUIName = name;
+					if (isSelected)
+						ImGui::SetItemDefaultFocus();
+				}
+				ImGui::EndCombo();
+			}
+			if (ImGui::Button("Add Press Enter Trigger UI##PressEnter"))
+			{
+				if (!m_pSelectedUI->Add_vecPressEnterTriggerUI(m_strTriggerUIName))
+				{
+					MSG_BOX("이미 존재하는 이름");
+				}
+			}
+			if (ImGui::BeginCombo("Canvas Names##PressEnter", m_strTriggerCanvasName.c_str()))
+			{
+				for (const auto& tag : vecCanvasNames)
+				{
+					const bool isSelected = (m_strTriggerCanvasName == tag);
+					if (ImGui::Selectable(tag.c_str(), isSelected))
+						m_strTriggerCanvasName = tag;
+					if (isSelected)
+						ImGui::SetItemDefaultFocus();
+				}
+				ImGui::EndCombo();
+			}
+			if (ImGui::Button("Add Press Enter Trigger Canvas##PressEnter"))
+			{
+				if (!m_pSelectedUI->Add_vecPressEnterTriggerCanvas(m_strTriggerCanvasName))
+				{
+					MSG_BOX("이미 존재하는 이름");
+				}
+			}
 		}
 		else if (m_isPressExit)
 		{
+			const float fH = 80.f;
+			const float fAvail = ImGui::GetContentRegionAvail().x;
+			const float fGap = ImGui::GetStyle().ItemSpacing.x;
+			const float fHalf = (fAvail - fGap) * 0.5f;
+
+			ImGui::BeginChild("Trigger UI List##PressExit", ImVec2(fHalf, fH), true);
+			for (const auto& name : m_pSelectedUI->Get_vecPressExitTriggerUI())
+			{
+				const bool isSelected = (m_strTriggerUIName == name);
+				if (ImGui::Selectable(name.c_str(), isSelected))
+					m_strTriggerUIName = name;
+			}
+			ImGui::EndChild();
+			ImGui::SameLine();
+			ImGui::BeginChild("Trigger Canvas List##PressExit", ImVec2(0.f, fH), true);
+			for (const auto& name : m_pSelectedUI->Get_vecPressExitTriggerCanvas())
+			{
+				const bool isSelected = (m_strTriggerCanvasName == name);
+				if (ImGui::Selectable(name.c_str(), isSelected))
+					m_strTriggerCanvasName = name;
+			}
+			ImGui::EndChild();
+			if (ImGui::Button("Remove Trigger UI##PressExit"))
+			{
+				m_pSelectedUI->Remove_vecPressExitTriggerUI(m_strTriggerUIName);
+			}
+			ImGui::SameLine();
+			if (ImGui::Button("Remove Trigger Canvas##PressExit"))
+			{
+				m_pSelectedUI->Remove_vecPressExitTriggerCanvas(m_strTriggerCanvasName);
+			}
+			ImGui::InputText("Press Exit Trigger UI", &m_strTriggerUIName_UserInput);
+			if (ImGui::Button("Add Press Exit Trigger UI User Input##PressExit"))
+			{
+				if (!m_pSelectedUI->Add_vecPressExitTriggerUI(m_strTriggerUIName_UserInput))
+				{
+					MSG_BOX("이미 존재하는 이름");
+				}
+			}
+			if (ImGui::BeginCombo("Pick Trigger UI##PressExit", m_strTriggerUIName.c_str()))
+			{
+				for (const auto& name : vecUINames)
+				{
+					const bool isSelected = (m_strTriggerUIName == name);
+					if (ImGui::Selectable(name.c_str(), isSelected))
+						m_strTriggerUIName = name;
+					if (isSelected)
+						ImGui::SetItemDefaultFocus();
+				}
+				ImGui::EndCombo();
+			}
+			if (ImGui::Button("Add Press Exit Trigger UI##PressExit"))
+			{
+				if (!m_pSelectedUI->Add_vecPressExitTriggerUI(m_strTriggerUIName))
+				{
+					MSG_BOX("이미 존재하는 이름");
+				}
+			}
+			if (ImGui::BeginCombo("Canvas Names##PressExit", m_strTriggerCanvasName.c_str()))
+			{
+				for (const auto& tag : vecCanvasNames)
+				{
+					const bool isSelected = (m_strTriggerCanvasName == tag);
+					if (ImGui::Selectable(tag.c_str(), isSelected))
+						m_strTriggerCanvasName = tag;
+					if (isSelected)
+						ImGui::SetItemDefaultFocus();
+				}
+				ImGui::EndCombo();
+			}
+			if (ImGui::Button("Add Press Exit Trigger Canvas##PressExit"))
+			{
+				if (!m_pSelectedUI->Add_vecPressExitTriggerCanvas(m_strTriggerCanvasName))
+				{
+					MSG_BOX("이미 존재하는 이름");
+				}
+			}
+		}
+	}
+	End_Card();
+}
+
+
+void CUI_Inspector::SetUp_DImageData()
+{
+	if (Begin_Card("Dynamic Image", "DImage", 100.f))
+	{
+		if (nullptr == m_pSelectedUI)
+			return;
+
+		_int cur = static_cast<_int>(m_pSelectedUI->Get_UIDImageSubClassType());
+		cur = (cur < 0) ? 0 : (cur >= static_cast<_int>(m_VecDImageSubClassTag.size()) ? static_cast<_int>(m_VecDImageSubClassTag.size() - 1) : cur);
+		
+		const _char* preview = m_VecDImageSubClassTag.empty() ? "" : m_VecDImageSubClassTag[cur].c_str();
+
+		_bool changed = false;
+
+		if (ImGui::BeginCombo("Select Dynamic Image SubClass Type", preview))
+		{
+			for (size_t i = 0; i < m_VecDImageSubClassTag.size(); ++i)
+			{
+				const _bool isSelected = (cur == i);
+				if (ImGui::Selectable(m_VecDImageSubClassTag[i].c_str(), isSelected))
+				{
+					cur = i;
+					m_pSelectedUI->Set_UIDImageSubClassType(static_cast<DTO::EUIDImageSubClassType>(i));
+					changed = true;
+				}
+
+				if (isSelected)
+					ImGui::SetItemDefaultFocus();
+			}
+			ImGui::EndCombo();
 		}
 	}
 	End_Card();
@@ -465,7 +770,7 @@ void CUI_Inspector::SetUp_TriggerData()
 
 void CUI_Inspector::SetUp_ShaderPass()
 {
-	if(Begin_Card("Set ShaderPass", "Shader_Pass", 100.f))
+	if(Begin_Card("Set ShaderPass", "Shader_Pass", 250.f))
 	{
 		if (nullptr == m_pSelectedUI)
 			return;
@@ -504,7 +809,6 @@ void CUI_Inspector::SetUp_ShaderPass()
 		ImGui::SameLine();
 		if (ImGui::Button("Flip X")) {
 			m_pSelectedUI->Set_Flip(ENUM_TO_UINT(EUIFlip::FLIP_X));
-	
 		}
 		ImGui::SameLine();
 		if (ImGui::Button("Flip Y")) {

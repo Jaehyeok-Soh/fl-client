@@ -20,6 +20,22 @@ namespace Engine
 	}TOOL_DESC;
 #pragma endregion
 
+	struct AnimNotifyKey
+	{
+		EAnimNotifyId eID{ EAnimNotifyId::CollisionOn };
+		float fTrackPosition{ 0.f };
+
+		unsigned int  iParam0{ 0 };
+		unsigned int  iParam1{ 0 };
+		unsigned int  iParam2{ 0 };
+		unsigned int  iParam3{ 0 };
+		float		  fParam0{ 0.0f };
+		float		  fParam1{ 0.0f };
+		bool		  bParam0{ false };
+		bool		  bParam1{ false };
+		string		  strParam{ "" };
+	};
+
 #pragma region Shader_ConstantBuffer
 	typedef struct tagShaderGlobalDesc
 	{
@@ -30,6 +46,8 @@ namespace Engine
 
 	typedef struct tagShaderInvDesc
 	{
+		Matrix matCamView = Matrix::Identity;
+		Matrix matCamProj = Matrix::Identity;
 		Matrix matInvView = Matrix::Identity;
 		Matrix matInvProj = Matrix::Identity;
 	}SHADER_INVDESC;
@@ -80,26 +98,52 @@ namespace Engine
 		float fEmissivePower = { 1.f };
 	}SHADER_MI_DESC;
 
+	typedef struct tagShaderSSAOKernelDesc
+	{
+		SimpleMath::Vector4 vKernel[16]{ SimpleMath::Vector4::Zero};
+		SimpleMath::Vector2 vNoiseScale{};
+		SimpleMath::Vector2 vPadding{};
+	}SHADER_SSAOKERNEL_DESC;
+
+	typedef struct tagShaderSSAOParamDesc
+	{
+		float fRadius{ 0.f };
+		float fBias{ 0.f };
+		float fPower{ 0.f };
+		float fIntensity{ 0.f };
+		float fFadeStart{ 0.f };
+		float fFadeEnd{ 0.f };
+		SimpleMath::Vector2 vInvSize{ 1.f, 1.f };
+	}SHADER_SSAOPARAM_DESC;
+
 	typedef struct tagShaderEffectDesc
 	{
 		unsigned int iTextureFlags = { 0 };
 		unsigned int iRenderFlags = { 0 };
-		unsigned int  iSamplerStateFlags = {0};
+		unsigned int  iSamplerStateFlags = { 0 };
 		float iDiscardValue = { 0.f };
 
 		unsigned int iOperatorFlags = { 0 };
 		unsigned int iRotationFlags = { 0 };
-		SimpleMath::Vector2 vPadding1 = { 0.f, 0.f };
+		SimpleMath::Vector2 vUVOffset = { 0.f, 0.f };
 
 		// 스프라이트 정보 추가
 		unsigned int SpriteColCount = {};		// 가로 프레임 수
 		unsigned int SpriteRowCount = {};		// 세로 프레임 수
 		unsigned int CurSpriteIndex = {};		// 현재 스프라이트 인덱스
-		float		 Padding2 = {};
+		float		 LifeRatio = {};
 
 		SimpleMath::Vector2 vScrollOffset = { 0.f, 0.f };
 		SimpleMath::Vector2 vDistortionScale = { 0.f, 0.f };
 		SimpleMath::Vector4 vEffectColor = { 0.f, 0.f, 0.f, 0.f };
+
+		SimpleMath::Vector2 DiffuseTexture_ScrollWeight = { 0.f, 0.f };
+		SimpleMath::Vector2 NoiseTexture_ScrollWeight = { 0.f, 0.f };
+		SimpleMath::Vector2 MaskingTexture_ScrollWeight = { 0.f, 0.f };
+		SimpleMath::Vector2 GradationTexture_ScrollWeight = { 0.f, 0.f };
+
+		SimpleMath::Vector2	DissolveTexture_ScrollWeight = { 0.f, 0.f };
+		SimpleMath::Vector2 Padding1 = { 0.f, 0.f };
 	}SHADER_EFFECT_DESC;
 
 	typedef struct tagShaderBoneDesc
@@ -222,6 +266,135 @@ namespace Engine
 
 	}EFFECT_PARTICLE_MU_ELEMENT;
 #pragma endregion
+
+#pragma region Model_ComShader_Structures
+
+#pragma region BONEFIANL_CS
+
+	typedef struct tagBoneMeshCB
+	{
+		unsigned int				iAffectBoneNums = { 0 };
+		unsigned int				iTotalBoneNums = { 0 };
+		SimpleMath::Vector2			Padding0 = {};
+	}CS_CB_MU_BONEMESH;
+
+	typedef struct tagBoneMeshIMMU
+	{
+		unsigned int				iAffectBoneIndex = { 0 };
+		SimpleMath::Vector3			Padding0 = {};
+
+		SimpleMath::Matrix			matOffsetTransform = {};
+	}CS_IMMU_BONEMESH;
+
+#pragma endregion
+
+#pragma region BONECOM_CS
+
+	// output
+	typedef struct tagSRT
+	{
+		SimpleMath::Vector3         vScale;
+		float						Padding0;
+	
+		SimpleMath::Vector4			vQuat;
+
+		SimpleMath::Vector3			vTranslation;
+		float						Padding1;
+	}CS_SRT;
+	 
+	// 불변 데이터
+	typedef struct tagBone_Immu_Element
+	{
+		int			iParentIndex = { -1 };
+		SimpleMath::Vector3 Padding0 = {};
+
+		SimpleMath::Matrix matPreTransform = {};
+	}CS_IMMU_BONE;
+
+	// 가변 데이터 : cpu
+	typedef struct tagBone_Mu_Element
+	{
+		int			iMyIdx = { -1 };
+
+		SimpleMath::Vector3 Padding0 = {};
+	}CS_MU_BONEIDX;
+
+	// 가변 데이터 : cpu
+	typedef struct tagBone_Mu_Group
+	{
+		unsigned int		iGroupBoneNums = {0};
+
+		SimpleMath::Vector3 Padding0 = {};
+	}CS_MU_GROUPNUMS;
+
+	// output : 만약 바로 vs로 넘긴다면 필요 없지만
+	// 충돌이나 여기 저기에서 사용할 수 있어서 일단 만들어 둠
+	typedef struct tagBone_Output
+	{
+		SimpleMath::Matrix matCombinedTransform = { };
+	}CS_OUT_BONE;
+#pragma endregion
+
+#pragma region ANIM_EVAL_CS
+	// 불변 데이터
+	typedef struct tagAnimE_Immu_KeyFrame
+	{
+		SimpleMath::Vector3  vScale = { 1.f,1.f,1.f };
+		float   fTrackPosition = { 0.f };
+
+		SimpleMath::Vector4  vQuat = {};
+
+		SimpleMath::Vector3  vTranslation = {};
+		float   fPadding0 = { 0.f };
+	}CS_IMMU_ANIM_KEYFRAME;
+
+	// 불변 데이터 : cpu
+	typedef struct tagAnimE_Immu_ChannelData
+	{
+		int     iBoneIndex = { -1 };             // 내 bone transform을 잘 업데이트 하기 위함
+		int     iRootMotionBoneIndex = { -1 };   // root motion일 경우 tralation을 0으로 만들기 위함
+
+		unsigned int    iKeyStart = { 0 };              // 키프레임 시작 위치
+		unsigned int    iKeyCount = { 0 };              // 키프레임 개수
+	}CS_IMMU_ANIM_CHANNELDATA;
+
+	// 가변 데이터 : cpu
+	typedef struct tagBone_Mu_Track
+	{
+		float   fCurTrackPosition = { 0.f };
+		unsigned int iChannelCount = { 0 };
+
+		SimpleMath::Vector2  Padding0 = {};
+	}CS_MU_TRACK;
+#pragma endregion
+
+#pragma region ANIM_Blendd_CS
+	// 가변 데이터
+	typedef struct tagAnimB_Immu_Ratio
+	{
+		int						iRootMotionBoneIndex = { -1 }; // root motion일 경우 tralation을 0으로 만들기 위함
+		float					fRatio = { 0.f };
+
+		unsigned int     iBoneCount = {0};
+		float  Padding0 = { 0.f };
+	}CS_MU_ANIMB;
+
+	// output
+	//typedef struct tagBone_Output
+	//{
+	//	float3              vScale;
+	//	uint                iCurKeyFrameIndex;
+
+	//	float4              vQuat;
+
+	//	float3              vTranslation;
+	//	uint                iAnimIndex
+	//}CS_OUT_ANIME;
+#pragma endregion
+
+#pragma endregion
+
+
 	union COLLIDER_ID
 	{
 		struct

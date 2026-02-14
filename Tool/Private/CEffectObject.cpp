@@ -116,6 +116,8 @@ HRESULT CEffectObject::Ready_Component_Texture()
             Get_Component<CTexture>()->Add_DefaultTexture(s + m_tEffectDesc._Effect_NoiseTexture_Tag, ENUM_TO_UINT(TEXTURETYPE::NOISE));
             Get_Component<CTexture>()->Add_DefaultTexture(s + m_tEffectDesc._Effect_MaskingTexture_Tag, ENUM_TO_UINT(TEXTURETYPE::MASKING));
             Get_Component<CTexture>()->Add_DefaultTexture(s + m_tEffectDesc._Effect_GradationTexture_Tag, ENUM_TO_UINT(TEXTURETYPE::GRADATION));
+            Get_Component<CTexture>()->Add_DefaultTexture(s + m_tEffectDesc._Effect_DissolveTexture_Tag, ENUM_TO_UINT(TEXTURETYPE::DISSOLVE));
+            Get_Component<CTexture>()->Add_DefaultTexture(s + m_tEffectDesc._Effect_GlowTexture_Tag, ENUM_TO_UINT(TEXTURETYPE::GLOW));
         }
     }
 
@@ -130,6 +132,8 @@ HRESULT CEffectObject::Ready_Component_Texture()
             Get_Component<CTexture>()->Add_DefaultTexture(s + m_tEffectDesc._Effect_NoiseTexture_Tag, ENUM_TO_UINT(TEXTURETYPE::NOISE));
             Get_Component<CTexture>()->Add_DefaultTexture(s + m_tEffectDesc._Effect_MaskingTexture_Tag, ENUM_TO_UINT(TEXTURETYPE::MASKING));
             Get_Component<CTexture>()->Add_DefaultTexture(s + m_tEffectDesc._Effect_GradationTexture_Tag, ENUM_TO_UINT(TEXTURETYPE::GRADATION));
+            Get_Component<CTexture>()->Add_DefaultTexture(s + m_tEffectDesc._Effect_DissolveTexture_Tag, ENUM_TO_UINT(TEXTURETYPE::DISSOLVE));
+            Get_Component<CTexture>()->Add_DefaultTexture(s + m_tEffectDesc._Effect_GlowTexture_Tag, ENUM_TO_UINT(TEXTURETYPE::GLOW));
         }
     }
 
@@ -378,6 +382,8 @@ void CEffectObject::Texture_Setting(const wstring& TextureName)
             Get_Component<CTexture>()->Add_DefaultTexture(s + m_tEffectDesc._Effect_NoiseTexture_Tag, ENUM_TO_UINT(TEXTURETYPE::NOISE));
             Get_Component<CTexture>()->Add_DefaultTexture(s + m_tEffectDesc._Effect_MaskingTexture_Tag, ENUM_TO_UINT(TEXTURETYPE::MASKING));
             Get_Component<CTexture>()->Add_DefaultTexture(s + m_tEffectDesc._Effect_GradationTexture_Tag, ENUM_TO_UINT(TEXTURETYPE::GRADATION));
+            Get_Component<CTexture>()->Add_DefaultTexture(s + m_tEffectDesc._Effect_DissolveTexture_Tag, ENUM_TO_UINT(TEXTURETYPE::DISSOLVE));
+            Get_Component<CTexture>()->Add_DefaultTexture(s + m_tEffectDesc._Effect_GlowTexture_Tag, ENUM_TO_UINT(TEXTURETYPE::GLOW));
         }
     }
 
@@ -392,6 +398,8 @@ void CEffectObject::Texture_Setting(const wstring& TextureName)
             Get_Component<CTexture>()->Add_DefaultTexture(s + m_tEffectDesc._Effect_NoiseTexture_Tag, ENUM_TO_UINT(TEXTURETYPE::NOISE));
             Get_Component<CTexture>()->Add_DefaultTexture(s + m_tEffectDesc._Effect_MaskingTexture_Tag, ENUM_TO_UINT(TEXTURETYPE::MASKING));
             Get_Component<CTexture>()->Add_DefaultTexture(s + m_tEffectDesc._Effect_GradationTexture_Tag, ENUM_TO_UINT(TEXTURETYPE::GRADATION));
+            Get_Component<CTexture>()->Add_DefaultTexture(s + m_tEffectDesc._Effect_DissolveTexture_Tag, ENUM_TO_UINT(TEXTURETYPE::DISSOLVE));
+            Get_Component<CTexture>()->Add_DefaultTexture(s + m_tEffectDesc._Effect_GlowTexture_Tag, ENUM_TO_UINT(TEXTURETYPE::GLOW));
         }
     }
 
@@ -453,16 +461,22 @@ HRESULT CEffectObject::Bind_ShaderResource()
         pDesc.iRotationFlags = m_tEffectDesc._Effect_TextureRotationFlag;
         // Texture_OperatorFlag
         pDesc.iOperatorFlags = m_tEffectDesc._Effect_TextureOperatorFlag;
-        pDesc.vPadding1 = SimpleMath::Vector2(0.f, 0.f);
+        pDesc.vUVOffset = m_tEffectDesc._Effect_UV_Offset;
 
         pDesc.SpriteColCount = m_tEffectDesc._Effect_TileCount.x;
         pDesc.SpriteRowCount = m_tEffectDesc._Effect_TileCount.y;
         pDesc.CurSpriteIndex = m_tEffectDesc.m_iCurSpriteNumber;
-        pDesc.Padding2 = { 0.f };
+        pDesc.LifeRatio = m_tEffectDesc._Effect_ApearRatio;
 
         pDesc.vDistortionScale = m_tEffectDesc._Effect_DistortionScale;
         pDesc.vEffectColor = m_tEffectDesc._Effect_Color;
         pDesc.vScrollOffset = m_vScrollOffset;
+
+        pDesc.DiffuseTexture_ScrollWeight = m_tEffectDesc._Effect_DiffuseTexture_ScrollWeight;
+        pDesc.NoiseTexture_ScrollWeight = m_tEffectDesc._Effect_NoiseTexture_ScrollWeight;
+        pDesc.MaskingTexture_ScrollWeight = m_tEffectDesc._Effect_MaskingTexture_ScrollWeight;
+        pDesc.GradationTexture_ScrollWeight = m_tEffectDesc._Effect_GradationTexture_ScrollWeight;
+
         pShader->Bind_EffectData(pDesc);
 
         // Compute 셰이더가 들고있는 SRV를, Default Shader한테 SRV 꽂아주기.
@@ -577,6 +591,7 @@ void CEffectObject::Update(const _float fTimeDelta)
     Get_Component<CTransform>()->Set_Scale(vCurrentScale);
 
     TimeCalculate(TimeT);
+    Update_UV_Scroll_Curve(fRatio);
     Update_Rotation_Lerp(TimeT, fRatio);
     Super::Update(TimeT);
     // == 스크롤 값 == 
@@ -642,7 +657,12 @@ void CEffectObject::Ready_Before_Render(const _float fTimeDelta)
 
     Super::Ready_Before_Render(TimeT);
 
-    m_pGameInstance->Push_RenderObject(RENDER_CATEGORY::NONELIGHT, this);
+    if (m_tEffectDesc._Effect_ShaderPass != 3)
+        m_pGameInstance->Push_RenderObject(RENDER_CATEGORY::NONELIGHT, this);
+
+    else
+        m_pGameInstance->Push_RenderObject(RENDER_CATEGORY::DISTOTION, this);
+
     Super::Update_CombinedWorldMatrix(m_pMatParent);
 }
 
@@ -726,6 +746,7 @@ void CEffectObject::TimeFlagRequest(_uint iTimeFlag)
         m_fTimeAccumulation = 0.f;
         m_vScrollOffset = Vec2{ 0.f, 0.f };
         m_vAccumulatedRotation = { 0.f, 0.f, 0.f };
+        m_vScrollOffset = { 0.f, 0.f }; // 스크롤 값도 완전 초기화
 
         auto CTShader = static_cast<CComputeShader*>(Get_Script_Component(L"ComputeShader"));
         CVIBuffer_Particle_Point* pInstance = Get_Component<CVIBuffer_Particle_Point>();
@@ -885,6 +906,20 @@ void CEffectObject::Update_Rotation_Lerp(float fDT, float fRatio)
             DirectX::XMConvertToRadians(vFinalRot.y),
             DirectX::XMConvertToRadians(vFinalRot.z)
         );
+    }
+}
+
+void CEffectObject::Update_UV_Scroll_Curve(float fRatio)
+{
+    if (m_tEffectDesc._bUseUVScrollCurve)
+    {
+        // Rotataion 커브 재활용이요
+        float fCurveX = Sample_RotationCurve(m_tEffectDesc._vecUVScrollCurveX, fRatio);
+
+        float fCurveY = Sample_RotationCurve(m_tEffectDesc._vecUVScrollCurveY, fRatio);
+        // 결과값을 저장한다.
+        m_vScrollOffset.x = fCurveX;
+        m_vScrollOffset.y = fCurveY;
     }
 }
 

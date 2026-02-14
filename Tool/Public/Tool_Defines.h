@@ -168,6 +168,7 @@ namespace Tool
 		MAPOBJECT,
 		MESHEFFECT,
 		UI,
+		ANIMATION,
 		END
 	};
 
@@ -205,6 +206,7 @@ namespace Tool
 		case Tool::EToolObjectType::MAPOBJECT:	return "MAPOBJECT";
 		case Tool::EToolObjectType::MESHEFFECT: return "MESHEFFECT";
 		case Tool::EToolObjectType::UI:			return "UI";
+		case Tool::EToolObjectType::ANIMATION:	return "ANIMATION";
 		default:								return "NONE";
 		}
 

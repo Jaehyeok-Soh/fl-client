@@ -6,6 +6,8 @@
 ///////////
 #define DEFAULT 0
 
+#define SSAO_KERNEL_COUNT 16
+
 //////////////////
 // MaterialSlot //
 //////////////////
@@ -34,7 +36,10 @@
 ////////////
 uint g_iMaterialMask;
 uint Bit(uint iSlot) { return 1u << iSlot; }
-bool Has(uint iMask, uint iSlot) { return iMask & Bit(iSlot) != 0; }
+bool Has(uint iMask, uint iSlot)
+{
+    return (iMask & Bit(iSlot)) != 0;
+}
 
 #define MAX_BONE_TRANSFORMS 512
 #define MAX_MODEL_KEYFRAMES 512
@@ -104,6 +109,14 @@ sampler PointSampler = sampler_state
     AddressU = Wrap;
     AddressV = Wrap;
     AddressW = Wrap;
+};
+
+sampler PointClampSampler = sampler_state
+{
+    Filter = MIN_MAG_MIP_POINT;
+    AddressU = clamp;
+    AddressV = clamp;
+    AddressW = clamp;
 };
 
 /////////////////////

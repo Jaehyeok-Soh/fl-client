@@ -31,6 +31,8 @@ public:
 	void SetUp_UIProgress();
 	void SetUp_TextData();
 	void SetUp_TriggerData();
+	//버튼 트리거도 
+	void SetUp_DImageData();
 
 private:
 	/// <summary>
@@ -64,6 +66,7 @@ private:
 	std::vector<_string> m_VecClassTag;
 	std::vector<_string> m_VecOwnerTag;
 	std::vector<_string> m_VecShaderPassTag;
+	std::vector<_string> m_VecDImageSubClassTag;
 
 	// Trigger Values
 	_bool m_isHoverEnter	= {FALSE};

@@ -32,27 +32,23 @@ HRESULT CUITrigger::Initialize_Prototype()
 HRESULT CUITrigger::Initialize(void* pArg)
 {
 	UI_TRIGGER_DESC* pDesc = static_cast<UI_TRIGGER_DESC*>(pArg);
-	m_eOwnerType = pDesc->eOwner;
+	m_eSubClassType = pDesc->eOwner;
 	m_tTriggerData = std::move(pDesc->tTriggerData);
 
 	if (FAILED(Super::Initialize(pArg)))
 		return E_FAIL;
-	if (FAILED(Ready_Components(pDesc)))
-		return E_FAIL;
-
 	if (FAILED(Attach_Personal_Info()))
 		return E_FAIL;
-
 	return S_OK;
 }
 
 HRESULT CUITrigger::Attach_Personal_Info()
 {
-	switch (m_eOwnerType)
+	switch (m_eSubClassType)
 	{
-	case DTO::EUIOwnerType::NONE_OWNER:
+	case DTO::EUISubClassType::NONE_OWNER:
 		return S_OK;
-	case DTO::EUIOwnerType::END:
+	case DTO::EUISubClassType::END:
 	default:
 		return E_FAIL;
 	}
@@ -62,21 +58,85 @@ HRESULT CUITrigger::Attach_Personal_Info()
 
 HRESULT CUITrigger::Bind_Cache()
 {
+	// Hover Enter Canvas
 	for (const _string& str : m_tTriggerData.vecHoverEnterTriggerCanvas)
 	{
 		auto* pCanvas = m_pUIManager->Find_Canvas(m_iLevelID, str);
 		if (nullptr == pCanvas)
 			return E_FAIL;
-		
-	}
-	for(const _string& str : m_tTriggerData.vecHoverExitTriggerCanvas)
-	for(const _string& str : m_tTriggerData.vecPressEnterTriggerCanvas)
-	for(const _string& str : m_tTriggerData.vecPressExitTriggerCanvas)
 
-	m_tTriggerData.vecHoverEnterTriggerUI;
-	m_tTriggerData.vecHoverExitTriggerUI;
-	m_tTriggerData.vecPressEnterTriggerUI;
-	m_tTriggerData.vecPressExitTriggerUI;
+		m_pTriggerCanvas[ENUM_TO_UINT(ETriggerEventType::HOVER_ENTER)].push_back(pCanvas);
+	}
+
+	// Hover Exit Canvas
+	for (const _string& str : m_tTriggerData.vecHoverExitTriggerCanvas)
+	{
+		auto* pCanvas = m_pUIManager->Find_Canvas(m_iLevelID, str);
+		if (nullptr == pCanvas)
+			return E_FAIL;
+
+		m_pTriggerCanvas[ENUM_TO_UINT(ETriggerEventType::HOVER_EXIT)].push_back(pCanvas);
+	}
+
+	// Press Enter Canvas
+	for (const _string& str : m_tTriggerData.vecPressEnterTriggerCanvas)
+	{
+		auto* pCanvas = m_pUIManager->Find_Canvas(m_iLevelID, str);
+		if (nullptr == pCanvas)
+			return E_FAIL;
+
+		m_pTriggerCanvas[ENUM_TO_UINT(ETriggerEventType::PRESS_ENTER)].push_back(pCanvas);
+	}
+
+	// Press Exit Canvas
+	for (const _string& str : m_tTriggerData.vecPressExitTriggerCanvas)
+	{
+		auto* pCanvas = m_pUIManager->Find_Canvas(m_iLevelID, str);
+		if (nullptr == pCanvas)
+			return E_FAIL;
+
+		m_pTriggerCanvas[ENUM_TO_UINT(ETriggerEventType::PRESS_EXIT)].push_back(pCanvas);
+	}
+
+	// Hover Enter UI
+	for (const _string& str : m_tTriggerData.vecHoverEnterTriggerUI)
+	{
+		auto* pUI = m_pUIManager->Find_GenericUI(m_iLevelID, str);
+		if (nullptr == pUI)
+			return E_FAIL;
+
+		m_pTriggerUI[ENUM_TO_UINT(ETriggerEventType::HOVER_ENTER)].push_back(pUI);
+	}
+
+	// Hover Exit UI
+	for (const _string& str : m_tTriggerData.vecHoverExitTriggerUI)
+	{
+		auto* pUI = m_pUIManager->Find_GenericUI(m_iLevelID, str);
+		if (nullptr == pUI)
+			return E_FAIL;
+
+		m_pTriggerUI[ENUM_TO_UINT(ETriggerEventType::HOVER_EXIT)].push_back(pUI);
+	}
+
+	// Press Enter UI
+	for (const _string& str : m_tTriggerData.vecPressEnterTriggerUI)
+	{
+		auto* pUI = m_pUIManager->Find_GenericUI(m_iLevelID, str);
+		if (nullptr == pUI)
+			return E_FAIL;
+
+		m_pTriggerUI[ENUM_TO_UINT(ETriggerEventType::PRESS_ENTER)].push_back(pUI);
+	}
+
+	// Press Exit UI
+	for (const _string& str : m_tTriggerData.vecPressExitTriggerUI)
+	{
+		auto* pUI = m_pUIManager->Find_GenericUI(m_iLevelID, str);
+		if (nullptr == pUI)
+			return E_FAIL;
+
+		m_pTriggerUI[ENUM_TO_UINT(ETriggerEventType::PRESS_EXIT)].push_back(pUI);
+	}
 
 	return S_OK;
 }
@@ -86,15 +146,26 @@ HRESULT CUITrigger::Awake(const _uint iCurrentLevelID)
 	if (FAILED(Super::Awake(iCurrentLevelID)))
 		return E_FAIL;
 
-	if (FAILED(Bind_Cache()))
-		return E_FAIL;
-
 	return S_OK;
 }
 
 void CUITrigger::Update_Priority(const _float fTimeDelta)
 {
 	Super::Update_Priority(fTimeDelta);
+	if (Engine_Utils::Has_Flag(m_iInteractState, EUIEvent_Flag::PRESS_ENTER))
+	{
+	}
+	else if (Engine_Utils::Has_Flag(m_iInteractState, EUIEvent_Flag::PRESS_EXIT))
+	{
+	}
+	else if (Engine_Utils::Has_Flag(m_iInteractState, EUIEvent_Flag::HOVER_ENTER))
+	{
+		Fire_ToTargets(ETriggerEventType::HOVER_ENTER);
+	}
+	else if (Engine_Utils::Has_Flag(m_iInteractState, EUIEvent_Flag::HOVER_EXIT))
+	{
+		Fire_ToTargets(ETriggerEventType::HOVER_EXIT);
+	}
 }
 
 void CUITrigger::Update(const _float fTimeDelta)
@@ -109,7 +180,7 @@ void CUITrigger::Update_Late(const _float fTimeDelta)
 
 void CUITrigger::Ready_Before_Render(const _float fTimeDelta)
 {
-	Acting_By_InteractState();
+
 	Super::Ready_Before_Render(fTimeDelta);
 }
 
@@ -131,9 +202,17 @@ HRESULT CUITrigger::Render()
 	return S_OK;
 }
 
+void CUITrigger::Fire_ToTargets(ETriggerEventType eEvent)
+{
+	for (auto* pUI : m_pTriggerUI[ENUM_TO_UINT(eEvent)])
+		if (pUI) pUI->OnUIEvent(eEvent, this);
+
+	//for (auto* pCanvas : m_pTriggerCanvas[ENUM_TO_UINT(eEvent)])
+	//	if (pCanvas) pCanvas->OnUIEvent(eEvent, this);
+}
+
 HRESULT CUITrigger::Ready_Components(UI_TRIGGER_DESC* pDesc)
 {
-	Super::Ready_Components(pDesc);
 	return S_OK;
 }
 

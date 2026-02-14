@@ -26,7 +26,7 @@ private:
 	// Data Create
 	HRESULT Create_TextDTO(const DTO::TUI_TextData& data);
 	HRESULT Create_TriggerDTO(const DTO::TUI_TriggerData& data);
-
+	HRESULT Create_DImageDTO(const DTO::TUI_DImageData& data);
 
 	HRESULT Register_Class(DTO::EUIClassType eClassType, const DTO::TUI_GenericUIData& data, CCanvas* pCanvas);
 	CGenericUI::GENERIC_UI_DESC Make_DefaultInfo(const DTO::TUI_GenericUIData& data, CCanvas* pCanvas);
@@ -38,7 +38,10 @@ private:
 	// Data Cache 
 	unordered_map<_string, DTO::TUI_TextData> m_MapTextDataCache;
 	unordered_map<_string, DTO::TUI_TriggerData> m_MapTriggerDataCache;
+	unordered_map<_string, DTO::TUI_DImageData> m_MapDImageDataCache;
 
+	vector<CGenericUI*> m_vecTriggerUIs;
+		 
 	Vec2 m_vAspect = {};
 	Vec2 m_vViewportSIze = {};
 

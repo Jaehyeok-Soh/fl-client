@@ -112,6 +112,7 @@ public:
 	_bool Can_BeAttacked() const { return Has_Capability(Get_Capabilities(), StateCapability::BEATTACKED); }
 	_float Get_StateElapsedTime() const { return m_fStateElapsed; }
 	virtual _bool Is_FinishedState() { return Is_AnimFinished(); }
+	_uint Get_MainAnimIdx() const { return m_iMainAnimIdx; }
 
 protected:
 	HRESULT Request_ChangeAnimation(_uint iAnimationIndex, _bool bBlend, _bool bLoop, _bool bForce = false);

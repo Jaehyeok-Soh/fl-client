@@ -7,6 +7,10 @@
 #include "UIText.h"
 #include "UITrigger.h"
 
+#include "UISkill_BG.h"
+#include "UIMini_Map.h"
+#include "UIHover_Image.h"
+
 #include"UI_Manager.h"
 #include "GameInstance.h"
 
@@ -69,6 +73,17 @@ HRESULT CBuilder_UI::Build(const CDataDocumentBase& document)
 		}
 	}
 
+	// For. DImage
+	{
+		const vector<Engine::IObjectDataBase*> vecDataList = doc.Get_ListByType(ENUM_TO_UINT(DTO::EUIType::DYNAMIC_IMAGE));
+		for (const auto& pObjectData : vecDataList)
+		{
+			const auto* pDto = static_cast<const Engine::CUI_DImage_DTO*>(pObjectData);
+			if (FAILED(Create_DImageDTO(pDto->Get_Data())))
+				return E_FAIL;
+		}
+	}
+
 	// For. GenericUI
 	{
 		const vector<Engine::IObjectDataBase*> vecDataList = doc.Get_ListByType(ENUM_TO_UINT(DTO::EUIType::GENERICUI));
@@ -87,6 +102,19 @@ HRESULT CBuilder_UI::Build(const CDataDocumentBase& document)
 
 	m_MapTextDataCache.clear();
 	m_MapTriggerDataCache.clear();
+
+	for (auto* pUI : m_vecTriggerUIs)
+	{
+		auto* pTriggerUI = dynamic_cast<CUITrigger*>(pUI);
+		if (nullptr == pTriggerUI)
+			continue;
+
+		if (FAILED(pTriggerUI->Bind_Cache()))
+			return E_FAIL;
+	}
+	m_vecTriggerUIs.clear();
+
+	CUI_Manager::GetInstance()->Request_SortUI();
 	return S_OK;
 }
 
@@ -156,6 +184,15 @@ HRESULT CBuilder_UI::Create_TriggerDTO(const DTO::TUI_TriggerData& data)
 	return S_OK;
 }
 
+HRESULT CBuilder_UI::Create_DImageDTO(const DTO::TUI_DImageData& data)
+{
+	if (data.eType != DTO::EUIType::DYNAMIC_IMAGE)
+		return E_FAIL;
+
+	m_MapDImageDataCache.emplace(data.strOwnerName, data);
+	return S_OK;
+}
+
 HRESULT CBuilder_UI::Register_Class(DTO::EUIClassType eClassType, const DTO::TUI_GenericUIData& data, CCanvas* pCanvas)
 {
 	if (nullptr == pCanvas)
@@ -171,19 +208,23 @@ HRESULT CBuilder_UI::Register_Class(DTO::EUIClassType eClassType, const DTO::TUI
 	{
 		CUIProgress_Bar::PROGRESS_BAR_DESC ProgressDesc = {};
 		static_cast<CGenericUI::GENERIC_UI_DESC&>(ProgressDesc) = DefaultDesc;
-		ProgressDesc.eOwner = data.eOwnerType;
+		ProgressDesc.eOwner = data.eSubClassType;
 		pResult = m_pGameInstance->Add_GameObject(m_iLevelID, wstrProtoTag, m_iLevelID, wstrLayerTag, &ProgressDesc);
 	}
 	else if (eClassType == DTO::EUIClassType::UI_TEXT)
 	{
 		CUIText::UI_TEXT_DESC TextDesc = {};
 		static_cast<CGenericUI::GENERIC_UI_DESC&>(TextDesc) = DefaultDesc;
-		TextDesc.eOwner = data.eOwnerType;
+		TextDesc.eOwner = data.eSubClassType;
 		auto iter = m_MapTextDataCache.find(data.strTag);
 		if (iter == m_MapTextDataCache.end())
 			return E_FAIL;
+		TextDesc.wstrFontTag = Engine_Utils::ToWString(iter->second.strFontTag);
 		TextDesc.wstrText = Engine_Utils::ToWString( iter->second.strText);
 		TextDesc.vFontColor = iter->second.vFontColor;
+		TextDesc.fRotate = iter->second.fRotate;
+		TextDesc.fScale = iter->second.fScale * m_vAspect.x;
+
 		pResult = m_pGameInstance->Add_GameObject(m_iLevelID, wstrProtoTag, m_iLevelID, wstrLayerTag, &TextDesc);
 	}
 	else if (eClassType == DTO::EUIClassType::JUST_IMAGE)
@@ -196,7 +237,7 @@ HRESULT CBuilder_UI::Register_Class(DTO::EUIClassType eClassType, const DTO::TUI
 	{
 		CUITrigger::UI_TRIGGER_DESC TriggerDesc = {};
 		static_cast<CGenericUI::GENERIC_UI_DESC&>(TriggerDesc) = DefaultDesc;
-		TriggerDesc.eOwner = data.eOwnerType;
+		TriggerDesc.eOwner = data.eSubClassType;
 		auto iter = m_MapTriggerDataCache.find(data.strTag);
 		if (iter == m_MapTriggerDataCache.end())
 			return E_FAIL;
@@ -204,6 +245,48 @@ HRESULT CBuilder_UI::Register_Class(DTO::EUIClassType eClassType, const DTO::TUI
 		m_MapTriggerDataCache.erase(iter);	
 
 		pResult = m_pGameInstance->Add_GameObject(m_iLevelID, wstrProtoTag, m_iLevelID, wstrLayerTag, &TriggerDesc);
+		if (nullptr == pResult)
+			return E_FAIL;
+
+		auto* pTriggerUI = dynamic_cast<CGenericUI*>(pResult);
+		if (nullptr == pTriggerUI)
+			return E_FAIL;
+
+		m_vecTriggerUIs.push_back(pTriggerUI);
+	}
+	else if (eClassType == DTO::EUIClassType::DYNAMIC_IMAGE)
+	{
+		auto iter = m_MapDImageDataCache.find(data.strTag);
+		if (iter == m_MapDImageDataCache.end())
+			return E_FAIL;
+
+		const auto Type = iter->second.eDISubClassType;
+
+		const _bool isPlayerSkill	= (Type >= DTO::EUIDImageSubClassType::PLAYER_SKILL_BEGIN &&	Type <= DTO::EUIDImageSubClassType::PLAYER_SKILL_END);
+		const _bool isMiniMap		= (Type >= DTO::EUIDImageSubClassType::MINIMAP_BEGIN &&	Type <= DTO::EUIDImageSubClassType::MINIMAP_END);
+		const _bool isHoverIcon		= (Type >= DTO::EUIDImageSubClassType::HOVER_POPUP_BEGIN && Type <= DTO::EUIDImageSubClassType::HOVER_POPUP_END);
+
+		if (isPlayerSkill)
+		{
+			CUISkill_BG::SKILL_BG_DESC SkillBGDesc = {};
+			static_cast<CGenericUI::GENERIC_UI_DESC&>(SkillBGDesc) = DefaultDesc;
+			SkillBGDesc.eSubClassType = Type;
+			pResult = m_pGameInstance->Add_GameObject(m_iLevelID, L"Prototype_UI_SkillBG", m_iLevelID, wstrLayerTag, &SkillBGDesc);
+		}
+		else if (isMiniMap)
+		{
+			CUIMini_Map::MINIMAP_DESC SkillBGDesc = {};
+			static_cast<CGenericUI::GENERIC_UI_DESC&>(SkillBGDesc) = DefaultDesc;
+			SkillBGDesc.eSubClassType = Type;
+			pResult = m_pGameInstance->Add_GameObject(m_iLevelID, L"Prototype_UI_MiniMap", m_iLevelID, wstrLayerTag, &SkillBGDesc);
+		}
+		else if (isHoverIcon)
+		{
+			CUIHover_Image::HOVER_IMAGE_DESC HoverImageDesc = {};
+			static_cast<CGenericUI::GENERIC_UI_DESC&>(HoverImageDesc) = DefaultDesc;
+			HoverImageDesc.eSubClassType = Type;
+			pResult = m_pGameInstance->Add_GameObject(m_iLevelID, L"Prototype_UI_HoverImage", m_iLevelID, wstrLayerTag, &HoverImageDesc);
+		}
 	}
 	else
 	{
@@ -229,23 +312,27 @@ HRESULT CBuilder_UI::Register_Class(DTO::EUIClassType eClassType, const DTO::TUI
 CGenericUI::GENERIC_UI_DESC CBuilder_UI::Make_DefaultInfo(const DTO::TUI_GenericUIData& data, CCanvas* pCanvas)
 {
 	CGenericUI::GENERIC_UI_DESC Desc = {};
-	Desc.iLevelIndex = m_iLevelID;
-	Desc.iRectTransformType = data.iRectTransformType;
-	Desc.fWidth = data.fWidth * m_vAspect.x;
-	Desc.fHeight = data.fHeight * m_vAspect.y;
-	Desc.fX = data.fPosX * m_vAspect.x;
-	Desc.fY = data.fPosY * m_vAspect.y;
-	Desc.fZ = data.fPosZ;
-	Desc.wstrTextureTag = Engine_Utils::ToWString(data.strTextureTag);
-	Desc.isAlpha = TRUE;
-	Desc.isInitVisible = data.isVisible;
-	Desc.pCanvasCache = pCanvas;
-	Desc.iComponentFlag = data.iComponentFlag;
-	Desc.isUseColorTint = data.isUseColorTint;
-	Desc.vColorTint = data.vColorTint;
-	Desc.iShaderPass = data.iShaderPass;
-	Desc.fDelay = data.fDelay;
-	Desc.iFillDir = data.iFillDir;
+	Desc.strName				= data.strTag;
+	Desc.iLevelIndex			= m_iLevelID;
+	Desc.iRectTransformType		= data.iRectTransformType;
+	Desc.fWidth					= data.fWidth * m_vAspect.x;
+	Desc.fHeight				= data.fHeight * m_vAspect.x;
+	Desc.fX						= data.fPosX * m_vAspect.x;
+	Desc.fY						= data.fPosY * m_vAspect.y;
+	Desc.fZ						= data.fPosZ;
+	Desc.wstrTextureTag			= Engine_Utils::ToWString(data.strTextureTag);
+	Desc.isAlpha				= TRUE;
+	Desc.isInitVisible			= data.isVisible;
+	Desc.pCanvasCache			= pCanvas;
+	Desc.iComponentFlag			= data.iComponentFlag;
+	Desc.isUseColorTint			= data.isUseColorTint;
+	Desc.vColorTint				= data.vColorTint;
+	Desc.iShaderPass			= data.iShaderPass;
+	Desc.fDelay					= data.fDelay;
+	Desc.iFillDir				= data.iFillDir;
+	Desc.fAlpha					= data.fAlphaRatio;
+	Desc.iFlip					= data.iFlip;
+
 	return Desc;
 }
 

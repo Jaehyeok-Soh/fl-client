@@ -244,12 +244,6 @@
     <Filter Include="01. Utility\11. DataRepository\Datas\Animation">
       <UniqueIdentifier>{7684dca7-837f-4e42-8fb8-5ccd73547404}</UniqueIdentifier>
     </Filter>
-    <Filter Include="01. Utility\11. DataRepository\Datas\Example">
-      <UniqueIdentifier>{b44dc512-194b-41b2-8ec2-055c839fb4b7}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="01. Utility\11. DataRepository\Datas\Example\DataDocument_Example">
-      <UniqueIdentifier>{47151a61-c828-43d0-b827-394936375c18}</UniqueIdentifier>
-    </Filter>
     <Filter Include="01. Utility\11. DataRepository\DataStore">
       <UniqueIdentifier>{a828855c-2320-4ac5-8055-1e54f4a51ef2}</UniqueIdentifier>
     </Filter>
@@ -267,9 +261,6 @@
     </Filter>
     <Filter Include="01. Utility\11. DataRepository\Datas\UI\DataDocument_UI">
       <UniqueIdentifier>{e3481bba-63f5-47f4-be29-b3aaa0b87de7}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="01. Utility\11. DataRepository\Datas\Effect\DataDocument_Effect">
-      <UniqueIdentifier>{7da61fa3-9b42-4c35-8768-abfd05e5d094}</UniqueIdentifier>
     </Filter>
     <Filter Include="00. System\12. PhysX">
       <UniqueIdentifier>{b9e816a5-9979-4c4d-93be-57106c925e39}</UniqueIdentifier>
@@ -328,24 +319,6 @@
     <Filter Include="00. System\05. Component\Monobehaviour\ComputeShader">
       <UniqueIdentifier>{4feedbe9-5864-4dd4-800f-c296ed47108e}</UniqueIdentifier>
     </Filter>
-    <Filter Include="00. System\05. Component\UI">
-      <UniqueIdentifier>{63e4016f-9de4-4010-9f15-6cdb60c3a1c5}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="00. System\05. Component\UI\Button">
-      <UniqueIdentifier>{619a4d0f-5877-4b59-b8fe-d608c0002ca9}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="00. System\05. Component\UI\Image">
-      <UniqueIdentifier>{62d4c7dc-e7fd-45c4-a6dd-d4395a31a8fa}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="00. System\05. Component\UI\Animation">
-      <UniqueIdentifier>{f5eda1b2-5f65-4883-b379-0958f78369e9}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="00. System\05. Component\UI\ProgressBar">
-      <UniqueIdentifier>{fb0ac1bf-6120-4c2b-8969-f88bf22cb583}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="00. System\05. Component\UI\Text">
-      <UniqueIdentifier>{3ede7861-9ecf-4960-a353-747f06083501}</UniqueIdentifier>
-    </Filter>
     <Filter Include="01. Utility\17. ShaderAsset">
       <UniqueIdentifier>{779baf32-b44b-4193-8174-c44fb4e66b53}</UniqueIdentifier>
     </Filter>
@@ -387,6 +360,30 @@
     </Filter>
     <Filter Include="01. Utility\18. Octree\Manager">
       <UniqueIdentifier>{387a5e34-f34d-4735-97f9-f936bc8925d4}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="01. Utility\11. DataRepository\Datas\Effect\EffectData">
+      <UniqueIdentifier>{73fd7a11-a1b9-43ff-8081-6c8efaeb0451}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="01. Utility\11. DataRepository\Datas\Effect\EffectData\DataDocument_Effect">
+      <UniqueIdentifier>{7da61fa3-9b42-4c35-8768-abfd05e5d094}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="01. Utility\11. DataRepository\Datas\Effect\EffectEventData">
+      <UniqueIdentifier>{c6e4c3a4-d502-4769-b9a1-e0cf0337668a}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="01. Utility\11. DataRepository\Datas\Effect\EffectData\DataStruct_Effect">
+      <UniqueIdentifier>{f78ea9c2-8768-45fe-807f-b196a5f2f4c3}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="01. Utility\11. DataRepository\Datas\Effect\EffectEventData\DataStruct_EffectEvent">
+      <UniqueIdentifier>{6e132af6-eec6-40e9-9ffb-9f34e46115e7}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="01. Utility\11. DataRepository\Datas\Effect\EffectEventData\DataDocument_EffectEvent">
+      <UniqueIdentifier>{2c6f9726-c873-477c-9dab-800dafd4a313}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="01. Utility\11. DataRepository\Datas\Example">
+      <UniqueIdentifier>{b44dc512-194b-41b2-8ec2-055c839fb4b7}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="01. Utility\11. DataRepository\Datas\Example\DataDocument_Example">
+      <UniqueIdentifier>{47151a61-c828-43d0-b827-394936375c18}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
@@ -663,9 +660,6 @@
     <ClCompile Include="..\Private\DataDefine_Json.cpp">
       <Filter>01. Utility\11. DataRepository</Filter>
     </ClCompile>
-    <ClCompile Include="..\Private\DataStruct_Effect.cpp">
-      <Filter>01. Utility\11. DataRepository\Datas\Effect</Filter>
-    </ClCompile>
     <ClCompile Include="..\private\BuilderSystem.cpp">
       <Filter>01. Utility\14. Builder\System</Filter>
     </ClCompile>
@@ -679,7 +673,7 @@
       <Filter>00. System\05. Component\Model</Filter>
     </ClCompile>
     <ClCompile Include="..\Private\DataDocument_Effect.cpp">
-      <Filter>01. Utility\11. DataRepository\Datas\Effect\DataDocument_Effect</Filter>
+      <Filter>01. Utility\11. DataRepository\Datas\Effect\EffectData\DataDocument_Effect</Filter>
     </ClCompile>
     <ClCompile Include="..\Private\Physics_Module.cpp">
       <Filter>00. System\12. PhysX</Filter>
@@ -783,6 +777,15 @@
     </ClCompile>
     <ClCompile Include="..\private\EngineConsole.cpp">
       <Filter>01. Utility\16. Console</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\DataStruct_Effect.cpp">
+      <Filter>01. Utility\11. DataRepository\Datas\Effect\EffectData\DataStruct_Effect</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\DataStruct_EffectEvent.cpp">
+      <Filter>01. Utility\11. DataRepository\Datas\Effect\EffectEventData\DataStruct_EffectEvent</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\DataDocument_EffectEvent.cpp">
+      <Filter>01. Utility\11. DataRepository\Datas\Effect\EffectEventData\DataDocument_EffectEvent</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -1089,9 +1092,6 @@
     <ClInclude Include="..\Public\VIBuffer_Particle_Mesh.h">
       <Filter>00. System\05. Component\VIBuffer\Particle</Filter>
     </ClInclude>
-    <ClInclude Include="..\Public\DataStruct_Effect.h">
-      <Filter>01. Utility\11. DataRepository\Datas\Effect</Filter>
-    </ClInclude>
     <ClInclude Include="..\Public\DataDefine_Json.h">
       <Filter>01. Utility\11. DataRepository</Filter>
     </ClInclude>
@@ -1105,7 +1105,7 @@
       <Filter>01. Utility\11. DataRepository\Datas\UI\DataDocument_UI</Filter>
     </ClInclude>
     <ClInclude Include="..\Public\DataDocument_Effect.h">
-      <Filter>01. Utility\11. DataRepository\Datas\Effect\DataDocument_Effect</Filter>
+      <Filter>01. Utility\11. DataRepository\Datas\Effect\EffectData\DataDocument_Effect</Filter>
     </ClInclude>
     <ClInclude Include="..\Public\Physics_Module.h">
       <Filter>00. System\12. PhysX</Filter>
@@ -1206,6 +1206,15 @@
     </ClInclude>
     <ClInclude Include="..\public\EngineConsole.h">
       <Filter>01. Utility\16. Console</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\DataStruct_Effect.h">
+      <Filter>01. Utility\11. DataRepository\Datas\Effect\EffectData\DataStruct_Effect</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\DataStruct_EffectEvent.h">
+      <Filter>01. Utility\11. DataRepository\Datas\Effect\EffectEventData\DataStruct_EffectEvent</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\DataDocument_EffectEvent.h">
+      <Filter>01. Utility\11. DataRepository\Datas\Effect\EffectEventData\DataDocument_EffectEvent</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

@@ -20,6 +20,7 @@
 //=================
 #include "Tool_ContainerObject.h"
 #include "Tool_PartObject.h"
+#include "AnimObj.h"
 //=================
 // UI
 //=================
@@ -167,12 +168,16 @@ HRESULT CLoader::Loading_For_Animation()
 	Matrix matPreTransformScale = Matrix::CreateScale(0.01f, 0.01f, 0.01f);
 	// For. Prototype_Component_Model
 	{
-		CModel::MODEL_ORIGIN_DESC desc = {};
-		desc.eType = EModelType::ANIM;
-		desc.iPrototypeLevelIndex = ENUM_TO_UINT(ELevelType::ANIMATION);
-		desc.pMatPreTransform = &matPreTransformScale;
-		desc.wstrModelFolderName = L"PlayerMoon";
-		m_pGameInstance->Add_Prototype(ENUM_TO_UINT(ELevelType::ANIMATION), L"Prototype_Component_Model_PlayerMoon", CModel::Create(m_pDevice, m_pDeviceContext, &desc));
+		//CModel::MODEL_ORIGIN_DESC desc = {};
+		//desc.eType = EModelType::ANIM;
+		//desc.iPrototypeLevelIndex = ENUM_TO_UINT(ELevelType::ANIMATION);
+		//desc.pMatPreTransform = &matPreTransformScale;
+		//desc.wstrModelFolderName = L"PlayerMoon";
+		//m_pGameInstance->Add_Prototype(ENUM_TO_UINT(ELevelType::ANIMATION), L"Prototype_Component_Model_PlayerMoon", CModel::Create(m_pDevice, m_pDeviceContext, &desc));
+	}
+
+	{
+		m_pGameInstance->Add_Prototype(ENUM_TO_UINT(ELevelType::ANIMATION), L"Prototype_GameObject_AnimObject", CAnimObj::Create(EToolObjectType::ANIMATION, m_pDevice, m_pDeviceContext));
 	}
 
 	m_isFinished = true;
@@ -284,6 +289,10 @@ HRESULT CLoader::Loading_For_UI()
 	if (FAILED(Loading_Textures(L"../../Resources/Textures/UI/Key/")))
 		return E_FAIL;
 	if (FAILED(Loading_Textures(L"../../Resources/Textures/UI/WeaponIcon/")))
+		return E_FAIL;
+	if (FAILED(Loading_Textures(L"../../Resources/Textures/UI/SM_MAP/")))
+		return E_FAIL;
+	if (FAILED(Loading_Textures(L"../../Resources/Textures/UI/Map/")))
 		return E_FAIL;
 
 	//=================

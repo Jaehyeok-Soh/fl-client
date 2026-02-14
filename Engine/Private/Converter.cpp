@@ -887,7 +887,7 @@ void CConverter::Read_Default_AffectBoneData(_uint iVertexCount, _uint iAffectBo
 	for (_uint b = 0; b < iAffectBoneCount; ++b)
 	{
 		const aiBone* pAiBone = pAiMesh->mBones[b];
-		_uint iAffectBoneIndex = Get_BoneIndex(pAiBone->mName.C_Str());
+		_int iAffectBoneIndex = Get_BoneIndex(pAiBone->mName.C_Str());
 		if (iAffectBoneIndex == -1)
 		{
 			MSG_BOX("CConverter::Read_Meshes, iAffectBoneIndex is Invalid");

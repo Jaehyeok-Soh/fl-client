@@ -32,6 +32,24 @@ struct MaterialInstanceDesc
     float fEmissivePower;
 };
 
+struct SSAODesc
+{
+    float fRadius;
+    float fBias;
+    float fPower;
+    float fIntensity;
+    float fFadeStart;
+    float fFadeEnd;
+    float2 vInvAOSize;
+};
+
+struct SSAOKernalDesc
+{
+    float4 vKernel[SSAO_KERNEL_COUNT];
+    float2 vNoiseScale;
+    float2 vPadding;
+};
+
 /////////////////
 // ConstBuffer //
 /////////////////
@@ -54,6 +72,14 @@ cbuffer MaterialInstance
 {
     uint TextureMapMask;
     float3 vPadding;
+};
+cbuffer SSAOKernelBuffer
+{
+    SSAOKernalDesc SSAOkernel;
+};
+cbuffer SSAOParamBuffer
+{
+    SSAODesc SSAOparam;
 };
 
 //////////

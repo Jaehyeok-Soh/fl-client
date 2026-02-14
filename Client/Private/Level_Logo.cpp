@@ -13,7 +13,7 @@
 #include "Builder_Example.h"
 #include "BuilderSystem.h"
 #include "Builder_Map.h"
-#include "EffectBuilder.h"
+#include "Builder_Effect.h"
 #include "DataStruct_Effect.h"
 #include "DataDocument_Effect.h"
 #include "DataDocument_Map.h"
@@ -129,6 +129,13 @@ void CLevel_Logo::Update(const _float fTimeDelta)
 #endif
 		m_pGameInstance->Request_CursorMode(m_eCursorMode);
 	}
+
+
+	// 오브젝트 풀링 테스트
+	if (m_pGameInstance->KeyButton_Down(DIK_0))
+	{
+		m_pGameInstance->Request_AddObject(ENUM_TO_UINT(ELevelType::LOGO), L"POOL_Attack_3", 0, nullptr);
+	}
 }
 
 HRESULT CLevel_Logo::Render()
@@ -145,7 +152,7 @@ HRESULT CLevel_Logo::Build_Prototype()
 		return E_FAIL;
 	if (FAILED(Ready_Builder(DTO::ECategory::UI, CBuilder_UI::Create(m_pDevice, m_pDeviceContext, static_cast<_uint>(ELevelType::LOGO)))))
 		return E_FAIL;
-	if (FAILED(Ready_Builder(DTO::ECategory::EFFECT, EffectBuilder::Create(m_pDevice, m_pDeviceContext, ENUM_TO_UINT(ELevelType::LOGO)))))
+	if (FAILED(Ready_Builder(DTO::ECategory::EFFECT, CBuilder_Effect::Create(m_pDevice, m_pDeviceContext, ENUM_TO_UINT(ELevelType::LOGO)))))
 		return E_FAIL;
 
 	return S_OK;
@@ -153,13 +160,46 @@ HRESULT CLevel_Logo::Build_Prototype()
 
 HRESULT CLevel_Logo::Build_Files()
 {
-	//if (FAILED(Build_File(ENUM_TO_UINT(ELevelType::LOGO), DTO::ECategory::EFFECT, "Attack_1")))
-	//	return E_FAIL;
+	ELevelType eLevelType = ELevelType::LOGO;
+	_uint iLevelID = ENUM_TO_UINT(eLevelType);
+
+#pragma region EFFECT
+	DTO::ECategory eCategory = DTO::ECategory::EFFECT;
+	if (FAILED(m_pGameInstance->Regist_Document<CDataDocument_Effect>(iLevelID, eCategory)))
+		return E_FAIL;
+	std::filesystem::path strUIFolderPath = L"../../Resources/Data/EffectData/";
+	if (std::filesystem::exists(strUIFolderPath))
+	{
+		for (auto iter : std::filesystem::directory_iterator(strUIFolderPath))
+		{
+			if (FAILED(m_pGameInstance->Load_File_Json(iLevelID, eCategory, iter.path())))
+				return E_FAIL;
+
+			if (FAILED(Build_File(iLevelID, eCategory, iter.path().stem().string())))
+				return E_FAIL;
+		}
+	}
+#pragma endregion
 
 	// For. Example
 	//if (FAILED(Build_File(ENUM_TO_UINT(ELevelType::LOGO), DTO::ECategory::MAP, "asdf")))
 	//	return E_FAIL;
 
+	eCategory = DTO::ECategory::UI;
+	if (FAILED(m_pGameInstance->Regist_Document<CDataDocument_UI>(iLevelID, eCategory)))
+		return E_FAIL;
+	strUIFolderPath = L"../../Resources/Data/UIData/Logo/";
+	if (std::filesystem::exists(strUIFolderPath))
+	{
+		for (auto iter : std::filesystem::directory_iterator(strUIFolderPath))
+		{
+			if (FAILED(m_pGameInstance->Load_File_Json(iLevelID, eCategory, iter.path())))
+				return E_FAIL;
+
+			if (FAILED(Build_File(iLevelID, eCategory, iter.path().stem().string())))
+				return E_FAIL;
+		}
+	}
 	return S_OK;
 }
 
@@ -186,31 +226,6 @@ HRESULT CLevel_Logo::Ready_Player_Layer(const wstring& wstrLayerTag)
 
 HRESULT CLevel_Logo::Ready_UI_Layer(const wstring& wstrLayerTag)
 {
-	ELevelType eLevelType = ELevelType::LOGO;
-	DTO::ECategory eCategory = DTO::ECategory::UI;
-	_uint iLevelID = ENUM_TO_UINT(eLevelType);
-
-	if (FAILED(m_pGameInstance->Regist_Document<CDataDocument_UI>(iLevelID, eCategory)))
-		return E_FAIL;
-
-	std::filesystem::path strFolderPath = L"../../Resources/Data/UIData/Logo/";
-	vector<path> vecfiles;
-
-	if (std::filesystem::exists(strFolderPath))
-	{
-		for (auto iter : std::filesystem::directory_iterator(strFolderPath))
-		{
-			if (iter.is_regular_file())
-				vecfiles.push_back(iter.path().stem());
-
-			if (FAILED(m_pGameInstance->Load_File_Json(iLevelID, eCategory, iter.path())))
-				return E_FAIL;
-
-			if (FAILED(Build_File(iLevelID, eCategory, iter.path().stem().string())))
-				return E_FAIL;
-		}
-	}
-
 	return S_OK;
 }
 
@@ -247,8 +262,8 @@ HRESULT CLevel_Logo::Ready_Lights()
 		LIGHT_DESC desc = {};
 		desc.eType = LIGHT_TYPE::DIRECTIONAL;
 		desc.vDirection = Vec3{ 1.f, -1.f, 1.f };
-		desc.vDiffuse = Vec4(0.7f, 0.7f, 0.7f, 1.f);
-		desc.vAmbient = Vec4(0.3f, 0.3f, 0.3f, 1.f);
+		desc.vDiffuse = Vec4(0.9f, 0.9f, 0.9f, 1.f);
+		desc.vAmbient = Vec4(0.4f, 0.4f, 0.4f, 1.f);
 		desc.vSpecular = Vec4(1.f, 1.f, 1.f, 1.f);
 
 		if (FAILED(m_pGameInstance->Add_Light(desc)))

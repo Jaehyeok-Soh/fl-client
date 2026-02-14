@@ -44,22 +44,8 @@ HRESULT CVIBuffer_Particle::Initialize(void* pArg)
 	return S_OK;
 }
 
-// 객체를 아예 초기로 전부 초기화 해주는 Reset 버튼
 void CVIBuffer_Particle::Reset_Simulation()
 {
-	//D3D11_MAPPED_SUBRESOURCE		SubResource{};
-
-	//m_pDeviceContext->Map(m_pVBInstance, 0, D3D11_MAP_WRITE_NO_OVERWRITE, 0, &SubResource);
-
-	//VTXPARTICLE* pVertices = static_cast<VTXPARTICLE*>(SubResource.pData);
-
-	//for (size_t i = 0; i < m_iInstanceCount; i++)
-	//{
-	//	pVertices[i].vTranslation = m_pInstanceVertices[i].vTranslation;
-	//	pVertices[i].vLifeTime.x = 0.f;
-	//}
-
-	//m_pDeviceContext->Unmap(m_pVBInstance, 0);
 }
 
 HRESULT CVIBuffer_Particle::Bind_Resource()
@@ -89,7 +75,7 @@ HRESULT CVIBuffer_Particle::Bind_Resource()
 
 void CVIBuffer_Particle::Render()
 {
-	Debug_CheckVertexBuffer();
+	//Debug_CheckVertexBuffer();
 	m_pDeviceContext->DrawIndexedInstanced(m_iIndexCountPerInstance, m_iInstanceCount, 0, 0, 0);
 
 }
@@ -98,6 +84,7 @@ void CVIBuffer_Particle::Update_Simulation(CComputeShader* ComputeShader, Vec3 v
 {
 	if (ComputeShader == nullptr) return;
 
+	// 가변 데이터 desc 작성
 	EFFECT_PARTICLE_MU_ELEMENT tMUDesc;
 	tMUDesc.fTimeDelta = fTImeDelta;
 	tMUDesc.iMoveState = ENUM_TO_UINT(eType);
@@ -107,108 +94,14 @@ void CVIBuffer_Particle::Update_Simulation(CComputeShader* ComputeShader, Vec3 v
 	tMUDesc.vPivot = m_tParticleDesc.vPivot;
 	tMUDesc.iTimeFlag = TimeFlag;
 	
+	// comshader에 컨스턴트 버퍼를 통해 매 프레임 갱신 : 가변 데이터
 	ComputeShader->Bind_Compute_EffectData(tMUDesc);
 
 	// Compute Shader 실행
 	//ComputeShader->Dispatch(1, 1, 1);
 	_uint iGroupX = (m_iInstanceCount + 31) / 32;
-	ComputeShader->Dispatch(32, 1, 1);
+	ComputeShader->Dispatch(iGroupX, 1, 1);
 }
-
-//void CVIBuffer_Particle::Drop(_float fTimeDelta)
-//{
-//	D3D11_MAPPED_SUBRESOURCE		SubResource{};
-//
-//	m_pDeviceContext->Map(m_pVBInstance, 0, D3D11_MAP_WRITE_NO_OVERWRITE, 0, &SubResource);
-//
-//	VTXPARTICLE* pVertices = static_cast<VTXPARTICLE*>(SubResource.pData);
-//
-//	for (size_t i = 0; i < m_iInstanceCount; i++)
-//	{
-//		pVertices[i].vTranslation.y -= m_pSpeeds[i] * fTimeDelta * m_fStartSpeeds;
-//		pVertices[i].vLifeTime.x += fTimeDelta;
-//		if (true == m_bIsLoop && pVertices[i].vLifeTime.x >= pVertices[i].vLifeTime.y)
-//		{
-//			pVertices[i].vLifeTime.x = 0.f;
-//			pVertices[i].vTranslation = m_pInstanceVertices[i].vTranslation;
-//		}
-//	}
-//
-//	m_pDeviceContext->Unmap(m_pVBInstance, 0);
-//}
-//
-//void CVIBuffer_Particle::Spread(_float fTimeDelta)
-//{
-//	D3D11_MAPPED_SUBRESOURCE		SubResource{};
-//
-//	m_pDeviceContext->Map(m_pVBInstance, 0, D3D11_MAP_WRITE_NO_OVERWRITE, 0, &SubResource);
-//
-//	VTXPARTICLE* pVertices = static_cast<VTXPARTICLE*>(SubResource.pData);
-//
-//	for (size_t i = 0; i < m_iInstanceCount; i++)
-//	{
-//		/*pVertices[i].vTranslation.y -= m_pSpeeds[i] * fTimeDelta;*/
-//		Vec3		vLook = pVertices[i].vTranslation - m_vPivot * m_pSpeeds[i];
-//		vLook.Normalize();
-//		pVertices[i].vTranslation = pVertices[i].vTranslation + vLook * fTimeDelta * m_fStartSpeeds;
-//		pVertices[i].vLifeTime.x += fTimeDelta;
-//		if (true == m_bIsLoop && pVertices[i].vLifeTime.x >= pVertices[i].vLifeTime.y)
-//		{
-//			pVertices[i].vLifeTime.x = 0.f;
-//			pVertices[i].vTranslation = m_pInstanceVertices[i].vTranslation;
-//		}
-//	}
-//
-//	m_pDeviceContext->Unmap(m_pVBInstance, 0);
-//}
-//
-//void CVIBuffer_Particle::Straight(Vec3 vLook, _float fDT)
-//{
-//	D3D11_MAPPED_SUBRESOURCE		SubResource{};
-//
-//	m_pDeviceContext->Map(m_pVBInstance, 0, D3D11_MAP_WRITE_NO_OVERWRITE, 0, &SubResource);
-//	VTXPARTICLE* pVertices = static_cast<VTXPARTICLE*>(SubResource.pData);
-//
-//	for (size_t i = 0; i < m_iInstanceCount; i++)
-//	{
-//		vLook.Normalize();
-//		pVertices[i].vTranslation = pVertices[i].vTranslation + vLook * fDT * m_fStartSpeeds;
-//		pVertices[i].vLifeTime.x += fDT;
-//		if (true == m_bIsLoop && pVertices[i].vLifeTime.x >= pVertices[i].vLifeTime.y)
-//		{
-//			pVertices[i].vLifeTime.x = 0.f;
-//			pVertices[i].vTranslation = m_pInstanceVertices[i].vTranslation;
-//		}
-//	}
-//	m_pDeviceContext->Unmap(m_pVBInstance, 0);
-//}
-//
-//void CVIBuffer_Particle::Rise(_float fTimeDelta)
-//{
-//	D3D11_MAPPED_SUBRESOURCE		SubResource{};
-//
-//	m_pDeviceContext->Map(m_pVBInstance, 0, D3D11_MAP_WRITE_NO_OVERWRITE, 0, &SubResource);
-//
-//	VTXPARTICLE* pVertices = static_cast<VTXPARTICLE*>(SubResource.pData);
-//
-//	for (size_t i = 0; i < m_iInstanceCount; i++)
-//	{
-//		// 1. 위로 이동 (Y축 증가)
-//		pVertices[i].vTranslation.y += m_pSpeeds[i] * fTimeDelta * m_fStartSpeeds;
-//
-//		// 2. 수명 업데이트
-//		pVertices[i].vLifeTime.x += fTimeDelta;
-//
-//		// 3. 루프 처리 (수명이 다하면 초기 위치로 리셋)
-//		if (true == m_bIsLoop && pVertices[i].vLifeTime.x >= pVertices[i].vLifeTime.y)
-//		{
-//			pVertices[i].vLifeTime.x = 0.f;
-//			pVertices[i].vTranslation = m_pInstanceVertices[i].vTranslation;
-//		}
-//	}
-//
-//	m_pDeviceContext->Unmap(m_pVBInstance, 0);
-//}
 
 void CVIBuffer_Particle::Debug_CheckVertexBuffer()
 {

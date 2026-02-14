@@ -161,191 +161,123 @@ ID3DX11EffectSamplerVariable* CShader::Get_Sampler(string name)
 	return m_pVariant->Get_EffectAsset()->Get_Sampler(name);
 }
 
-void CShader::Bind_MaterialData(const SHADER_MATERIALDESC& desc)
-{
-	m_pMaterial_CBuffer->Copy_Data(desc);
-}
-
-void CShader::Bind_MaterialInstanceData(const SHADER_MI_DESC& desc)
-{
-	m_pMI_CBuffer->Copy_Data(desc);
-}
-
-void CShader::Bind_EffectData(const SHADER_EFFECT_DESC& desc)
-{
-	m_pEffect_CBuffer->Copy_Data(desc);
-}
-
-void CShader::Bind_GlobalMask(_uint iMask)
+HRESULT CShader::Bind_SRV(EFXSRV eSlot, ID3D11ShaderResourceView* pSRV)
 {
 	auto* BindingCache = m_pVariant->Get_EffectAsset()->Get_BindingCache();
-	BindingCache->pG_TextureMask->SetInt((_int)iMask);
+	return BindingCache->SRV[ENUM_TO_UINT(eSlot)]->SetResource(pSRV);
 }
 
-HRESULT CShader::Bind_DefaultTexture(ID3D11ShaderResourceView* pSRV)
+HRESULT CShader::Bind_SRVArray(EFXSRV eSlot, ID3D11ShaderResourceView** ppSRV, _uint iCount)
 {
 	auto* BindingCache = m_pVariant->Get_EffectAsset()->Get_BindingCache();
-	return BindingCache->pSRV_Textures->SetResource(pSRV);
+	return BindingCache->SRV[ENUM_TO_UINT(eSlot)]->SetResourceArray(ppSRV, 0, iCount);
 }
 
-HRESULT CShader::Bind_CubeTexture(ID3D11ShaderResourceView* pSRV)
+HRESULT CShader::Bind_Scalar(EFXScalar eSlot, _uint iValue)
 {
 	auto* BindingCache = m_pVariant->Get_EffectAsset()->Get_BindingCache();
-	return BindingCache->pSRV_Cube->SetResource(pSRV);
+	return BindingCache->Scalar[ENUM_TO_UINT(eSlot)]->SetInt((_int)iValue);
 }
 
-HRESULT CShader::Bind_DefaultTextures(ID3D11ShaderResourceView** ppSRV, _uint iCount)
+HRESULT CShader::Bind_Scalar(EFXScalar eSlot, _int iValue)
 {
 	auto* BindingCache = m_pVariant->Get_EffectAsset()->Get_BindingCache();
-	return BindingCache->pSRV_Textures->SetResourceArray(ppSRV, 0, iCount);
+	return BindingCache->Scalar[ENUM_TO_UINT(eSlot)]->SetInt(iValue);
+}
+
+HRESULT CShader::Bind_Scalar(EFXScalar eSlot, _float fValue)
+{
+	auto* BindingCache = m_pVariant->Get_EffectAsset()->Get_BindingCache();
+	return BindingCache->Scalar[ENUM_TO_UINT(eSlot)]->SetFloat(fValue);
+}
+
+HRESULT CShader::Bind_Scalar(EFXScalar eSlot, _bool bValue)
+{
+	auto* BindingCache = m_pVariant->Get_EffectAsset()->Get_BindingCache();
+	return BindingCache->Scalar[ENUM_TO_UINT(eSlot)]->SetBool(bValue);
+}
+
+HRESULT CShader::Bind_MaterialData(const SHADER_MATERIALDESC& desc)
+{
+	return m_pMaterial_CBuffer->Copy_Data(desc);
+}
+
+HRESULT CShader::Bind_MaterialInstanceData(const SHADER_MI_DESC& desc)
+{
+	return m_pMI_CBuffer->Copy_Data(desc);
+}
+
+HRESULT CShader::Bind_EffectData(const SHADER_EFFECT_DESC& desc)
+{
+	return m_pEffect_CBuffer->Copy_Data(desc);
 }
 
 HRESULT CShader::Bind_TransformData(const SHADER_TRANSFORMDESC& trnasformDesc)
 {
-	m_pTransform_CBuffer->Copy_Data(trnasformDesc);
-	return S_OK;
+	return m_pTransform_CBuffer->Copy_Data(trnasformDesc);
 }
 
 HRESULT CShader::Bind_TransformData(const Matrix& matTransform)
 {
 	SHADER_TRANSFORMDESC desc = {};
 	desc.matWorld = matTransform;
-	m_pTransform_CBuffer->Copy_Data(desc);
-	return S_OK;
+	return m_pTransform_CBuffer->Copy_Data(desc);
 }
 
-HRESULT CShader::Bind_RenderTargetTexture(ID3D11ShaderResourceView* pTexture)
+HRESULT CShader::Bind_KeyFrameData(const SHADER_KEYFRAMEDESC& keyframeDesc)
 {
-	if (pTexture == nullptr)
-		return E_FAIL;
-
-	auto* BindingCache = m_pVariant->Get_EffectAsset()->Get_BindingCache();
-	BindingCache->pSRV_RT->SetResource(pTexture);
-	return S_OK;
+	return m_pKeyFrame_CBuffer->Copy_Data(keyframeDesc);
 }
 
-HRESULT CShader::Bind_RenderTargetDiffuseTexture(ID3D11ShaderResourceView* pTexture)
-{
-	if (pTexture == nullptr)
-		return E_FAIL;
-
-	auto* BindingCache = m_pVariant->Get_EffectAsset()->Get_BindingCache();
-	BindingCache->pSRV_RT_Diffuse->SetResource(pTexture);
-	return S_OK;
-}
-
-HRESULT CShader::Bind_RenderTargetNormalTexture(ID3D11ShaderResourceView* pTexture)
-{
-	if (pTexture == nullptr)
-		return E_FAIL;
-
-	auto* BindingCache = m_pVariant->Get_EffectAsset()->Get_BindingCache();
-	BindingCache->pSRV_RT_Normal->SetResource(pTexture);
-	return S_OK;
-}
-
-HRESULT CShader::Bind_RenderTargetShadeTexture(ID3D11ShaderResourceView* pTexture)
-{
-	if (pTexture == nullptr)
-		return E_FAIL;
-
-	auto* BindingCache = m_pVariant->Get_EffectAsset()->Get_BindingCache();
-	BindingCache->pSRV_RT_Shade->SetResource(pTexture);
-	return S_OK;
-}
-
-HRESULT CShader::Bind_RenderTargetDepthTexture(ID3D11ShaderResourceView* pTexture)
-{
-	if (pTexture == nullptr)
-		return E_FAIL;
-
-	auto* BindingCache = m_pVariant->Get_EffectAsset()->Get_BindingCache();
-	BindingCache->pSRV_RT_Depth->SetResource(pTexture);
-	return S_OK;
-}
-
-HRESULT CShader::Bind_DiffuseTexture(ID3D11ShaderResourceView* pDiffuse)
-{
-	if (pDiffuse == nullptr)
-		return E_FAIL;
-
-	auto* BindingCache = m_pVariant->Get_EffectAsset()->Get_BindingCache();
-	BindingCache->pSRV_Material->SetResourceArray(&pDiffuse, 0, 1);
-	BindingCache->pG_MaterialMask->SetInt(1 << ENUM_TO_UINT(EMaterialTextureType::DIFFUSE));
-	return S_OK;
-}
-
-HRESULT CShader::Bind_RenderTargetSceneTexture(ID3D11ShaderResourceView* pScene)
-{
-	if (pScene == nullptr)
-		return E_FAIL;
-
-	auto* BindingCache = m_pVariant->Get_EffectAsset()->Get_BindingCache();
-	BindingCache->pSRV_RT_Scene->SetResource(pScene);
-	return S_OK;
-}
-
-void CShader::Bind_MaterialTextures(ID3D11ShaderResourceView** ppSRV, _uint iCount)
+HRESULT CShader::Set_ConstantBuffer(EFXCB eSlot, ID3D11Buffer* pBuffer)
 {
 	auto* BindingCache = m_pVariant->Get_EffectAsset()->Get_BindingCache();
-	BindingCache->pSRV_Material->SetResourceArray(ppSRV, 0, iCount);
-}
-
-void CShader::Bind_MaterialMask(_short iMask)
-{
-	auto* BindingCache = m_pVariant->Get_EffectAsset()->Get_BindingCache();
-	BindingCache->pG_MaterialMask->SetInt(iMask);
-}
-
-void CShader::Bind_TransformTexture(ID3D11ShaderResourceView* pSRV)
-{
-	auto* BindingCache = m_pVariant->Get_EffectAsset()->Get_BindingCache();
-	BindingCache->pSRV_Transform->SetResource(pSRV);
-}
-
-void CShader::Bind_KeyFrameData(const SHADER_KEYFRAMEDESC& keyframeDesc)
-{
-	m_pKeyFrame_CBuffer->Copy_Data(keyframeDesc);
+	return BindingCache->CB[ENUM_TO_UINT(eSlot)]->SetConstantBuffer(pBuffer);
 }
 
 HRESULT CShader::Bind_BoneData(const SHADER_BONEDESC& boneDesc)
 {
-	m_pBone_CBuffer->Copy_Data(boneDesc);
-	return S_OK;
+	return m_pBone_CBuffer->Copy_Data(boneDesc);
 }
+
 void CShader::Create_ConstantBuffer()
 {
 	auto *pCache = m_pVariant->Get_EffectAsset()->Get_BindingCache();
-
-	if (pCache->pCB_Bone)
+	_uint iSlot = ENUM_TO_UINT(EFXCB::Bone);
+	if (pCache->CB[iSlot])
 	{
 		m_pBone_CBuffer = CConstant_Buffer<SHADER_BONEDESC>::Create(m_pDevice, m_pDeviceContext);
-		pCache->pCB_Bone->SetConstantBuffer(m_pBone_CBuffer->Get_Buffer());
+		pCache->CB[iSlot]->SetConstantBuffer(m_pBone_CBuffer->Get_Buffer());
 	}
-	if (pCache->pCB_Transform)
+	iSlot = ENUM_TO_UINT(EFXCB::Transform);
+	if (pCache->CB[iSlot])
 	{
 		m_pTransform_CBuffer = CConstant_Buffer<SHADER_TRANSFORMDESC>::Create(m_pDevice, m_pDeviceContext);
-		pCache->pCB_Transform->SetConstantBuffer(m_pTransform_CBuffer->Get_Buffer());
+		pCache->CB[iSlot]->SetConstantBuffer(m_pTransform_CBuffer->Get_Buffer());
 	}
-	if(pCache->pCB_Material)
+	iSlot = ENUM_TO_UINT(EFXCB::Material);
+	if(pCache->CB[iSlot])
 	{
 		m_pMaterial_CBuffer = CConstant_Buffer<SHADER_MATERIALDESC>::Create(m_pDevice, m_pDeviceContext);
-		pCache->pCB_Material->SetConstantBuffer(m_pMaterial_CBuffer->Get_Buffer());
+		pCache->CB[iSlot]->SetConstantBuffer(m_pMaterial_CBuffer->Get_Buffer());
 	}
-	if (pCache->pCB_MaterialInst)
+	iSlot = ENUM_TO_UINT(EFXCB::MaterialInst);
+	if (pCache->CB[iSlot])
 	{
 		m_pMI_CBuffer = CConstant_Buffer<SHADER_MI_DESC>::Create(m_pDevice, m_pDeviceContext);
-		pCache->pCB_MaterialInst->SetConstantBuffer(m_pMI_CBuffer->Get_Buffer());
+		pCache->CB[iSlot]->SetConstantBuffer(m_pMI_CBuffer->Get_Buffer());
 	}
-	if (pCache->pCB_Keyframe)
+	iSlot = ENUM_TO_UINT(EFXCB::Keyframe);
+	if (pCache->CB[iSlot])
 	{
 		m_pKeyFrame_CBuffer = CConstant_Buffer<SHADER_KEYFRAMEDESC>::Create(m_pDevice, m_pDeviceContext);
-		pCache->pCB_Keyframe->SetConstantBuffer(m_pKeyFrame_CBuffer->Get_Buffer());
+		pCache->CB[iSlot]->SetConstantBuffer(m_pKeyFrame_CBuffer->Get_Buffer());
 	}
-	if (pCache->pCB_Effect)
+	iSlot = ENUM_TO_UINT(EFXCB::Effect);
+	if (pCache->CB[iSlot])
 	{
 		m_pEffect_CBuffer = CConstant_Buffer<SHADER_EFFECT_DESC>::Create(m_pDevice, m_pDeviceContext);
-		pCache->pCB_Effect->SetConstantBuffer(m_pEffect_CBuffer->Get_Buffer());
+		pCache->CB[iSlot]->SetConstantBuffer(m_pEffect_CBuffer->Get_Buffer());
 	}
 }
 

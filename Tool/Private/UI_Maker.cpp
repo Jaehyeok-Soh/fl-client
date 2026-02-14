@@ -293,7 +293,7 @@ void CUI_Maker::Make_UI()
 {
 	ImGui::PushID("UISection");
 	ImGui::SeparatorText("UI");
-	ImGui::BeginChild("UICard", ImVec2(0, 240.f), true, ImGuiWindowFlags_NoScrollbar);
+	ImGui::BeginChild("UICard", ImVec2(0, 400.f), true, ImGuiWindowFlags_NoScrollbar);
 	ImGui::TextDisabled("Create / manage UI in current layer.");
 	ImGui::Spacing();
 
@@ -363,7 +363,6 @@ void CUI_Maker::Make_UI()
 					Desc.isAlpha = TRUE;
 					Desc.isInitVisible = TRUE;
 					Desc.strInitTextureTag = "Prototype_Component_Texture_Empty";
-					Desc.iInitTextureIndex = 1;
 
 					_wstring wstrLayerTag = Engine_Utils::ToWString(pCanvas->Get_Tag()) + L"_Layer";
 					CGameObject* pResult =
@@ -392,6 +391,7 @@ void CUI_Maker::Make_UI()
 								m_isCreateUI = FALSE;
 								MSG_BOX("CUI_Maker::Make_UI, UI Add Failed");
 							}
+							CImGui_UIManager::GetInstance()->Request_SortUI();
 						}
 					}
 					m_strUIName = "";
@@ -406,21 +406,40 @@ void CUI_Maker::Make_UI()
 	ImGui::Spacing();
 
 	ImGui::TextDisabled("Select UI");
-	ImGui::BeginChild("UIList", ImVec2(0, 120.f), true);
+	ImGui::BeginChild("UIList", ImVec2(0.f, ImGui::GetContentRegionAvail().y), true);
+
 	auto* pUIVec = m_pUIManager->Safe_Access_UIVector();
 	const int32_t iNumUI = m_pUIManager->Get_NumUI();
 
 	if (nullptr != pUIVec)
 	{
+		std::vector<int32_t> vecOrder;
+		vecOrder.reserve(iNumUI);
+
 		for (int32_t i = 0; i < iNumUI; ++i)
 		{
-			auto* pUI = (*pUIVec)[i];
+			if (nullptr == (*pUIVec)[i])
+				continue;
+			vecOrder.push_back(i);
+		}
+
+		std::stable_sort(vecOrder.begin(), vecOrder.end(),
+			[pUIVec](int32_t a, int32_t b)
+			{
+				return (*pUIVec)[a]->Get_Name() < (*pUIVec)[b]->Get_Name();
+			});
+
+		for (int32_t idx : vecOrder)
+		{
+			auto* pUI = (*pUIVec)[idx];
 			if (nullptr == pUI)
 				continue;
 
-			bool selected = (m_pUIManager->Get_CurUIIndex() == i);
+			ImGui::PushID(idx);
+			bool selected = (m_pUIManager->Get_CurUIIndex() == idx);
 			if (ImGui::Selectable(pUI->Get_Name().c_str(), selected))
-				m_pUIManager->Safe_Change_UI(i);
+				m_pUIManager->Safe_Change_UI(idx);
+			ImGui::PopID();
 		}
 	}
 	else
@@ -431,6 +450,7 @@ void CUI_Maker::Make_UI()
 	ImGui::EndChild();   // UIList
 	ImGui::EndChild();   // UICard
 	ImGui::PopID();
+
 }
 
 _bool CUI_Maker::Scrub_Float(const _char* label, const _char* Id, OUT _float* pValue, float fValuePerPixel, float fValuePerPixel_fast, float fStep, float fStep_fast, float fSize)

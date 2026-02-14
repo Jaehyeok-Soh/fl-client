@@ -2,6 +2,7 @@
 #include "Animation_Defines.hlsl"
 #include "Light_Defines.hlsl"
 
+
 // Texture Flag
 #define DEFAULTTEXTURE 0 // 기본 텍스처
 #define NOISETEXTURE 1
@@ -9,7 +10,9 @@
 #define GRADATIONTEXTURE 3
 #define TRAILTEXTURE 4
 #define NORMALTEXTURE 5
+#define SCENETEXTURE 6
 
+texture2D g_EffectTexture;
 
 // Render Flag
 #define BILLBOARD 1 << 0
@@ -21,8 +24,13 @@
 
     // Use Sprite
 #define SPRITE 1<< 5    // 스프라이트를 사용하는가?
-        
 
+    // Use Scroll (텍스처별)
+#define SCROLL_DIFFUSE 1 << 6
+#define SCROLL_NOISE 1 << 7
+#define SCROLL_MASKING 1 << 8
+#define SCROLL_GRADATION 1 << 9
+        
 // SamplerState Flag
 #define LINEARSAMPLER 1 << 0
 #define CLAMP 1 << 1
@@ -69,6 +77,12 @@ struct EffectDesc
     float2 g_ScrollOffset;
     float2 g_DistortionScale;
     float4 g_EffectColor;
+    
+    // 각 텍스처별 Scroll Weight (0 ~ 1)
+    float2 DiffuseTexture_ScrollWeight;
+    float2 NoiseTexture_ScrollWeight;
+    float2 MaskingTexture_ScrollWeight;
+    float2 GradationTexture_ScrollWeight;
 };
 
 // ========== StruturedBuffer Binding value  ===========  (CS Shader에서 계산해서 넘어온 값.)
@@ -90,6 +104,11 @@ bool HasBillboard()
 bool HasScroll()
 {
     return (g_Effect.g_RenderFlags & SCROLL) != 0;
+}
+
+bool HasTextureScroll(uint Flag)
+{
+    return (g_Effect.g_RenderFlags & Flag) != 0;
 }
 
 bool HasSprite()
@@ -212,34 +231,6 @@ float2 Get90DegreeRotatedUV(float2 InUV, uint PackedFlags, uint TextureIndex)
 
 // ======== 사진 Rotation 함수들 =======
 
-// ========  Texture Flags  ==========
-
-bool HasDefaultTexture()
-{
-    return (g_Effect.g_TextureFlags & (1 << 0)) != 0;
-}
-
-bool HasNoiseTexture()
-{
-    return (g_Effect.g_TextureFlags & (1 << 1)) != 0;
-}
-
-bool HasMaskTexture()
-{
-    return (g_Effect.g_TextureFlags & (1 << 2)) != 0;
-}
-
-bool HasGradationTexture()
-{
-    return (g_Effect.g_TextureFlags & (1 << 3)) != 0;
-}
-
-bool HasTrailTexture()
-{
-    return (g_Effect.g_TextureFlags & (1 << 4)) != 0;
-
-}
-
 // ========= SamplerState Flags ===========
     // Diffuse
 float4 SampleTextureWithFlags(Texture2D tex, uint flags, uint Shift, float2 uv) // texture라는 이름을 사용하지 못함
@@ -285,6 +276,11 @@ float4 GradationTextureSample(float2 UV)
 float4 TrailTextureSample(float2 UV)
 {
     return SampleTextureWithFlags(g_DefaultTextures[TRAILTEXTURE], g_Effect.g_StateFlags, 12, UV);
+}
+
+float4 SceneTextureSample(float2 UV)
+{
+    return g_RenderTargetSceneTexture.Sample(LinearSampler, UV);
 }
 
 // =========== VS In  ==============
@@ -380,7 +376,7 @@ float4 PS_Texture(GS_OUT_EFFECT_PARTICLE In) : SV_TARGET0
     float2 noiseUV = In.vUV + g_Effect.g_ScrollOffset;
     float4 noiseSample = { 1.f, 1.f, 1.f, 1.f };
     
-    if (HasNoiseTexture())
+    if (Has(g_Effect.g_TextureFlags, NOISETEXTURE))
     {
         noiseSample = NoiseTextureSample(noiseUV);
     }
@@ -399,7 +395,7 @@ float4 PS_Texture(GS_OUT_EFFECT_PARTICLE In) : SV_TARGET0
     // =========== Diffuse Texture 여부 =============
     float4 DiffuseColor = float4(1.f, 1.f, 1.f, 1.f);
     
-    if (HasDefaultTexture())
+    if (Has(g_Effect.g_TextureFlags, NOISETEXTURE))
     {
         DiffuseColor = DefaultTextureSample(Get90DegreeRotatedUV(finalUV, g_Effect.g_RotationFlags, DEFAULTTEXTURE));
     }

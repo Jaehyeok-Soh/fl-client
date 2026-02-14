@@ -349,13 +349,20 @@ struct PS_OUT
 struct PS_OUT_LIGHT
 {
     float4 vShade : SV_TARGET0;
+    float4 vSpecular : SV_TARGET1;
+};
+
+struct PS_OUT_AO
+{
+    float4 vAO : SV_TARGET0;
 };
 
 struct PS_OUT_DEFFERED
 {
     float4 vDiffuse : SV_TARGET0;
     float3 vNormal : SV_TARGET1;
-    float4 vDepth : SV_TARGET2;
+    float4 vSpecularMask : SV_TARGET2;
+    float4 vDepth : SV_TARGET3;
 };
 
 struct PS_OUT_BAKESHADOW

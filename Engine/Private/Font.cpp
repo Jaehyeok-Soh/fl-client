@@ -16,20 +16,16 @@ HRESULT CFont::Initialize(const _tchar* pFontFilePath)
 	return S_OK;
 }
 
-HRESULT CFont::Draw_Text(SpriteBatch* pBatch, const _tchar* pText, const Vec2& vPosition, const Vec4 &vColor)
+HRESULT CFont::Draw_Text(SpriteBatch* pBatch, const _tchar* pText, const Vec2& vPosition, const Vec4& vColor, const _float fRotate, const _float fScale)
 {
 	Vec2 vSize = m_pFont->MeasureString(pText);
-	Vec2 vFinalPos = vPosition;
-	vFinalPos.x -= vSize.x * 0.5f;
-	vFinalPos.y -= vSize.y * 0.5f;
-	m_pFont->DrawString(pBatch, pText, vFinalPos, vColor, 0.f, Vec2{0.f, 0.f}, 1.f);
+	m_pFont->DrawString(pBatch, pText, vPosition, vColor, fRotate, vSize * 0.5f, fScale);
 	return S_OK;
 }
 
 CFont* CFont::Create(ID3D11Device* pDevice, ID3D11DeviceContext* pDeviceContext, const _tchar* pFontFilePath)
 {
 	CFont* pInstance = new CFont(pDevice, pDeviceContext);
-
 	/* 메인앱을 완벽히 사용하기 위한 기타 초기화작업을 수행한다. */
 	if (FAILED(pInstance->Initialize(pFontFilePath)))
 	{
@@ -38,7 +34,6 @@ CFont* CFont::Create(ID3D11Device* pDevice, ID3D11DeviceContext* pDeviceContext,
 	}
 	return pInstance;
 }
-
 
 void CFont::Free()
 {

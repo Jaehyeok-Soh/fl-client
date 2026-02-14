@@ -49,6 +49,7 @@
 #include "Physics_LandScape.h" // physics test
 #include "StaticObject.h"
 #include "Monster_Dummy.h" // test
+#include "Sword.h"
 
 //=================
 // UI
@@ -59,6 +60,10 @@
 #include "UIText.h"
 #include "UIJust_Image.h"
 #include "UITrigger.h"
+#include "UISkill_BG.h"
+#include "UIMini_Map.h"
+#include "UIHover_Image.h"
+
 //=================
 // Resource
 //=================
@@ -150,7 +155,7 @@ HRESULT CLoader::Loading_For_Logo()
 			if (FAILED(m_pGameInstance->Regist_Document<CDataDocument_Effect>(ENUM_TO_UINT(ELevelType::LOGO), DTO::ECategory::EFFECT)))
 				return E_FAIL;
 
-			if (FAILED(m_pGameInstance->Regist_Document<CDataDocument_UI>(ENUM_TO_UINT(ELevelType::LOGO), DTO::ECategory::MAP)))
+			if (FAILED(m_pGameInstance->Regist_Document<CDataDocument_UI>(ENUM_TO_UINT(ELevelType::LOGO), DTO::ECategory::UI)))
 				return E_FAIL;
 
 			if (FAILED(m_pGameInstance->Regist_Document<CDataDocument_AttackOverlap>(ENUM_TO_UINT(ELevelType::LOGO), DTO::ECategory::OVERLAP_SCRIPT)))
@@ -183,14 +188,13 @@ HRESULT CLoader::Loading_For_Logo()
 		//if (FAILED(m_pGameInstance->Load_Sounds(L"../../Resources/Sounds")))
 		//	return E_FAIL;
 
-		//if (FAILED(Make_StaticObject_Prototype(ELevelType::LOGO, L"../../Resources/Models/Map/TestMap")))
-		//	return E_FAIL;
+		if (FAILED(Make_StaticObject_Prototype(ELevelType::STATIC, L"../../Resources/Models/Effect_FBX/blade")))
+			return E_FAIL;
 	}
-	if (FAILED(m_pGameInstance->Load_Sounds(L"../../Resources/Sounds")))
-		return E_FAIL;
 
 		// For. Prototype_Component_Button_Test_Texture
 	{
+		// UI
 		if (FAILED(Loading_Textures(L"../../Resources/Textures/UI/Playable/")))
 			return E_FAIL;
 		if (FAILED(Loading_Textures(L"../../Resources/Textures/UI/Menu/")))
@@ -201,7 +205,68 @@ HRESULT CLoader::Loading_For_Logo()
 			return E_FAIL;
 		if (FAILED(Loading_Textures(L"../../Resources/Textures/UI/WeaponIcon/")))
 			return E_FAIL;
+		if (FAILED(Loading_Textures(L"../../Resources/Textures/UI/SM_MAP/")))
+			return E_FAIL;
+		if (FAILED(Loading_Textures(L"../../Resources/Textures/UI/Map/")))
+			return E_FAIL;
 	}	
+
+	// For. Prototype_Component_Button_Test_Texture
+	{
+		// Effect
+		if (FAILED(Loading_Textures(L"../../Resources/Textures/Effect/Crack/")))
+			return E_FAIL;
+		if (FAILED(Loading_Textures(L"../../Resources/Textures/Effect/Curve/")))
+			return E_FAIL;
+		if (FAILED(Loading_Textures(L"../../Resources/Textures/Effect/Fire/")))
+			return E_FAIL;
+		if (FAILED(Loading_Textures(L"../../Resources/Textures/Effect/Flower/")))
+			return E_FAIL;
+		if (FAILED(Loading_Textures(L"../../Resources/Textures/Effect/Fluid/")))
+			return E_FAIL;
+		if (FAILED(Loading_Textures(L"../../Resources/Textures/Effect/Glow/")))
+			return E_FAIL;
+		if (FAILED(Loading_Textures(L"../../Resources/Textures/Effect/Gradient/")))
+			return E_FAIL;
+		if (FAILED(Loading_Textures(L"../../Resources/Textures/Effect/Ice/")))
+			return E_FAIL;
+		if (FAILED(Loading_Textures(L"../../Resources/Textures/Effect/Knife/")))
+			return E_FAIL;
+		if (FAILED(Loading_Textures(L"../../Resources/Textures/Effect/Lens/")))
+			return E_FAIL;
+		if (FAILED(Loading_Textures(L"../../Resources/Textures/Effect/Lightning/")))
+			return E_FAIL;
+		if (FAILED(Loading_Textures(L"../../Resources/Textures/Effect/Line/")))
+			return E_FAIL;
+		if (FAILED(Loading_Textures(L"../../Resources/Textures/Effect/Mask/")))
+			return E_FAIL;
+		if (FAILED(Loading_Textures(L"../../Resources/Textures/Effect/Normal/")))
+			return E_FAIL;
+		if (FAILED(Loading_Textures(L"../../Resources/Textures/Effect/Object/")))
+			return E_FAIL;
+		if (FAILED(Loading_Textures(L"../../Resources/Textures/Effect/Partten/")))
+			return E_FAIL;
+		if (FAILED(Loading_Textures(L"../../Resources/Textures/Effect/Smoke/")))
+			return E_FAIL;
+		if (FAILED(Loading_Textures(L"../../Resources/Textures/Effect/Spark/")))
+			return E_FAIL;
+		if (FAILED(Loading_Textures(L"../../Resources/Textures/Effect/Splash/")))
+			return E_FAIL;
+		if (FAILED(Loading_Textures(L"../../Resources/Textures/Effect/Spread/")))
+			return E_FAIL;
+		if (FAILED(Loading_Textures(L"../../Resources/Textures/Effect/Trail/")))
+			return E_FAIL;
+		if (FAILED(Loading_Textures(L"../../Resources/Textures/Effect/Turbulence/")))
+			return E_FAIL;
+		if (FAILED(Loading_Textures(L"../../Resources/Textures/Effect/UI/")))
+			return E_FAIL;
+		if (FAILED(Loading_Textures(L"../../Resources/Textures/Effect/VAT/")))
+			return E_FAIL;
+		if (FAILED(Loading_Textures(L"../../Resources/Textures/Effect/water/")))
+			return E_FAIL;
+		if (FAILED(Loading_Textures(L"../../Resources/Textures/Effect/Wave/")))
+			return E_FAIL;
+	}
 	
 #pragma endregion
 
@@ -221,16 +286,30 @@ HRESULT CLoader::Loading_For_Logo()
 	// For. Prototype_Component_Model_Master
 	{
 		CModel::MODEL_ORIGIN_DESC desc = {};
-		desc.eType = EModelType::ANIM;
-		desc.iPrototypeLevelIndex = ENUM_TO_UINT(ELevelType::STATIC);
-		desc.pMatPreTransform = &(matPreTransformScale);	// matPreTransformScale // matPreTransformTurn90
-		desc.wstrModelFolderName = L"PlayerMoon";					// PlayerMoon // Pino
+		desc.eType					= EModelType::ANIM;
+		desc.iPrototypeLevelIndex	= ENUM_TO_UINT(ELevelType::STATIC);
+		desc.pMatPreTransform		= &(matPreTransformScale);	// matPreTransformScale // matPreTransformTurn90
+		desc.wstrModelFolderName	= L"PlayerMoon";					// PlayerMoon // Pino
+		desc.FStageBone				= CModel::STAGEING_BONE::SB_SPCIPICBONE;
+		desc.vecStageBoneIndices	= { 285,286,287,288,289,414,415,416 ,417,418,419 };
 
 		CModel::DATA_ANIMCHANNEL tAniChannelData = {};
 		tAniChannelData.iRootBoneIndex = 2;
 		desc.pAniChannelData = &tAniChannelData;
 
 		m_pGameInstance->Add_Prototype(ENUM_TO_UINT(ELevelType::STATIC), L"Prototype_Component_Model_Master", CModel::Create(m_pDevice, m_pDeviceContext, &desc));
+	}
+
+	// For. Prototype_Component_Model_MoonSword
+	{
+		CModel::MODEL_ORIGIN_DESC desc = {};
+		desc.eType = EModelType::STATIC;
+		desc.iPrototypeLevelIndex = ENUM_TO_UINT(ELevelType::STATIC);
+		desc.pMatPreTransform = &(matPreTransformScale);	// matPreTransformScale
+		desc.wstrModelFolderName = L"Weapon_MoonSword";					// PlayerMoon // Pino
+		desc.FStageBone = CModel::STAGEING_BONE::SB_ZEROBONE;
+
+		m_pGameInstance->Add_Prototype(ENUM_TO_UINT(ELevelType::STATIC), L"Prototype_Component_Model_MoonSword", CModel::Create(m_pDevice, m_pDeviceContext, &desc));
 	}
 	// For. Prototype_Component_Camera
 	m_pGameInstance->Add_Prototype(ENUM_TO_UINT(ELevelType::STATIC), L"Prototype_Component_Camera", CCamera::Create());
@@ -247,10 +326,8 @@ HRESULT CLoader::Loading_For_Logo()
 	// For. Prototype_Component_Bounds
 	m_pGameInstance->Add_Prototype(ENUM_TO_UINT(ELevelType::STATIC), L"Prototype_Component_Bounds", CBounds::Create(m_pDevice, m_pDeviceContext));
 
-
 	// For. Prototype_Component_Collider_SPHERE
 	m_pGameInstance->Add_Prototype(ENUM_TO_UINT(ELevelType::STATIC), L"Prototype_Component_VIBuffer_InstanceMesh", CInstanceMesh::Create(m_pDevice, m_pDeviceContext));
-
 
 	///////////////////////////////////////
 	//////////// Ready Objects ////////////
@@ -275,6 +352,9 @@ HRESULT CLoader::Loading_For_Logo()
 
 		/* Monster Object */
 		ADD_PROTOTYPE(ELevelType::LOGO, L"Prototype_GameObject_Monster_Dummy", CMonster_Dummy::Create(m_pDevice, m_pDeviceContext));
+
+		/* Weapons */
+		ADD_PROTOTYPE(ELevelType::STATIC, L"Prototype_GameObject_Part_Sword", CSword::Create(m_pDevice, m_pDeviceContext));
 	}
 #pragma endregion
 
@@ -307,11 +387,14 @@ HRESULT CLoader::Loading_For_Logo()
 #pragma endregion
 
 #pragma region UI
-	ADD_PROTOTYPE(ELevelType::LOGO, L"Prototype_UI_Canvas",			CCanvas::Create(m_pDevice, m_pDeviceContext));
-	ADD_PROTOTYPE(ELevelType::LOGO, L"Prototype_UI_PROGRESS_BAR",	CUIProgress_Bar::Create(m_pDevice, m_pDeviceContext));
-	ADD_PROTOTYPE(ELevelType::LOGO, L"Prototype_UI_UI_TEXT",		CUIText::Create(m_pDevice, m_pDeviceContext));
-	ADD_PROTOTYPE(ELevelType::LOGO, L"Prototype_UI_JUST_IMAGE",		CUIJust_Image::Create(m_pDevice, m_pDeviceContext));
-	ADD_PROTOTYPE(ELevelType::LOGO, L"Prototype_UI_TRIGGER",		CUITrigger::Create(m_pDevice, m_pDeviceContext));
+	ADD_PROTOTYPE(ELevelType::LOGO, L"Prototype_UI_Canvas", CCanvas::Create(m_pDevice, m_pDeviceContext));
+	ADD_PROTOTYPE(ELevelType::LOGO, L"Prototype_UI_PROGRESS_BAR", CUIProgress_Bar::Create(m_pDevice, m_pDeviceContext));
+	ADD_PROTOTYPE(ELevelType::LOGO, L"Prototype_UI_UI_TEXT", CUIText::Create(m_pDevice, m_pDeviceContext));
+	ADD_PROTOTYPE(ELevelType::LOGO, L"Prototype_UI_JUST_IMAGE", CUIJust_Image::Create(m_pDevice, m_pDeviceContext));
+	ADD_PROTOTYPE(ELevelType::LOGO, L"Prototype_UI_TRIGGER", CUITrigger::Create(m_pDevice, m_pDeviceContext));
+	ADD_PROTOTYPE(ELevelType::LOGO, L"Prototype_UI_SkillBG", CUISkill_BG::Create(m_pDevice, m_pDeviceContext));
+	ADD_PROTOTYPE(ELevelType::LOGO, L"Prototype_UI_MiniMap", CUIMini_Map::Create(m_pDevice, m_pDeviceContext));
+	ADD_PROTOTYPE(ELevelType::LOGO, L"Prototype_UI_HoverImage", CUIHover_Image::Create(m_pDevice, m_pDeviceContext));
 #pragma endregion
 
 	m_isFinished = true;
