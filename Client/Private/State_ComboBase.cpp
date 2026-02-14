@@ -116,7 +116,7 @@ void CState_ComboBase::Check_Combo()
 	}
 
 	// combo change 시간 ~ end 시간 사이
-	else if (m_fStateElapsed > m_ComboTimes[m_iComboCount - 1] + 1.f &&
+	else if (m_fStateElapsed > m_ComboTimes[m_iComboCount - 1] + 0.3f &&
 		Key_Input(ENUM_TO_UINT(CControlContext::CONTROL_KEY::LATT)))
 	{
 		Change_FirstCombo();
