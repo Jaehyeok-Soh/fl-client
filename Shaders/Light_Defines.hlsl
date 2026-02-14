@@ -50,6 +50,13 @@ struct SSAOKernalDesc
     float2 vPadding;
 };
 
+struct HDRDesc
+{
+    float fExposure;
+    float fGamma;
+    float2 vPadding;
+};
+
 /////////////////
 // ConstBuffer //
 /////////////////
@@ -81,7 +88,10 @@ cbuffer SSAOParamBuffer
 {
     SSAODesc SSAOparam;
 };
-
+cbuffer HDRParamBuffer
+{
+    HDRDesc HDRparam;
+};
 //////////
 // Func //
 //////////

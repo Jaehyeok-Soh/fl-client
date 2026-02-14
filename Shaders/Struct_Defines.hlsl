@@ -370,6 +370,11 @@ struct PS_OUT_BAKESHADOW
     float4 vDepth : SV_TARGET0;
 };
 
+struct PS_OUT_HDR
+{
+    float4 vColor : SV_TARGET0;
+};
+
 struct PS_OUT_BACKBUFFER
 {
     float4 vColor : SV_TARGET0;

@@ -13,8 +13,8 @@ namespace Engine
 	enum class LIGHT_TYPE : unsigned int { DIRECTIONAL, STATICPOINT, DYNAMICPOINT, END };
 	enum class EPOINT { A, B, C, END };
 	enum class ELINE { AB, BC, CA, END };
-	enum class RENDER_CATEGORY : unsigned int { PRIORITY, BLEND,NONEBLEND, NONELIGHT, BLENDUI, UI, END };
-	enum class DEFFERRED { DEBUG, DIRECTIONAL, POINT, SSAO_GEN, SSAO_BLURH, SSAO_BLURV, SSAO_UPSAMPLE, COMBINED, END };
+	enum class RENDER_CATEGORY : unsigned int { PRIORITY, BLEND,NONEBLEND, NONELIGHT, ENVIRONMENT, BLENDUI, UI, END };
+	enum class DEFFERRED { DEBUG, DIRECTIONAL, POINT, SSAO_GEN, SSAO_BLURH, SSAO_BLURV, SSAO_UPSAMPLE, COMBINED, BLOOM_EXTRACT, BLOOM_BLURH, BLOOM_BLURV, TONEMAP, END };
 	enum class ECursorMode : unsigned int
 	{
 		LockedHiddenCenter = 0,
@@ -91,6 +91,7 @@ namespace Engine
 		Effect,
 		SSAOkernal,
 		SSAOparam,
+		HDRparam,
 		COUNT
 	};
 	constexpr const char* g_CBNames[static_cast<unsigned int>(EFXCB::COUNT)] =
@@ -105,7 +106,8 @@ namespace Engine
 		"BoneBuffer",
 		"ConstantBuffer_Effect",
 		"SSAOKernelBuffer",
-		"SSAOParamBuffer"
+		"SSAOParamBuffer",
+		"HDRParamBuffer"
 	};
 	//===================
 	// FX SRV
@@ -120,7 +122,8 @@ namespace Engine
 		RT_Specular,
 		RT_Depth,
 		RT_AO,
-		RT_Scene,
+		RT_SceneHDR,
+		RT_SceneHDR_Copy,
 		Transform,
 		Materials,
 		Textures,
@@ -138,7 +141,8 @@ namespace Engine
 		"g_RenderTargetSpecularTexture",
 		"g_RenderTargetDepthTexture",
 		"g_RenderTargetAOTexture",
-		"g_RenderTargetSceneTexture",
+		"g_RenderTargetSceneHDRTexture",
+		"g_RenderTargetSceneHDRCopyTexture",
 		"g_TransformMap",
 		"g_MaterialTextures",
 		"g_DefaultTextures",

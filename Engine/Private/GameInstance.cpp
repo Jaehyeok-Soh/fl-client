@@ -818,9 +818,9 @@ HRESULT CGameInstance::Add_MRT(EMRTLayer eMRTLayer, ERenderTarget eTarget)
 	return m_pRenderTarget_Manager->Add_MRT(eMRTLayer, eTarget);
 }
 
-HRESULT CGameInstance::Begin_MRT(EMRTLayer eMRTLayer)
+HRESULT CGameInstance::Begin_MRT(EMRTLayer eMRTLayer, _bool bClear)
 {
-	return m_pRenderTarget_Manager->Begin_MRT(eMRTLayer);
+	return m_pRenderTarget_Manager->Begin_MRT(eMRTLayer, bClear);
 }
 
 HRESULT CGameInstance::End_MRT()
@@ -833,9 +833,9 @@ HRESULT CGameInstance::Bind_RT_ShaderResource(ERenderTarget eTarget, CShader* pS
 	return m_pRenderTarget_Manager->Bind_ShaderResource(eTarget, pShader);
 }
 
-HRESULT CGameInstance::Copy_BackBufferResource(ERenderTarget eTarget)
+HRESULT CGameInstance::Copy_SceneHDRResource(ERenderTarget eTarget)
 {
-	return m_pRenderTarget_Manager->Copy_BackBufferResource(eTarget);
+	return m_pRenderTarget_Manager->Copy_SceneHDRResource(eTarget);
 }
 
 #ifdef _DEBUG

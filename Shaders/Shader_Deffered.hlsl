@@ -1,6 +1,16 @@
 #include "Struct_Defines.hlsl"
 #include "Light_Defines.hlsl"
 
+float3 ToneMap_ACES(float3 x)
+{
+    const float a = 2.51f;
+    const float b = 0.03f;
+    const float c = 2.43f;
+    const float d = 0.59f;
+    const float e = 0.14f;
+    return saturate((x * (a * x + b)) / (x * (c * x + d) + e));
+}
+
 float3 DecodeWorldNormal(float2 vUV)
 {
     float4 vNormalDesc = g_RenderTargetNormalTexture.Sample(PointClampSampler, vUV);
@@ -250,7 +260,7 @@ PS_OUT_AO PS_MAIN_SSAOGEN(PS_IN_POS_TEX input)
     // Clear일 때 AO = 1 처리
     if(fViewZ <= EPSILON || fViewZ >= SSAOparam.fFadeEnd)
     {
-        output.vAO = float4(1.f, 1.f, 1.f, 1.f);
+        output.vAO = float4(1.f, 1.f, 0.f, 1.f);
         return output;
     }
     
@@ -356,7 +366,7 @@ PS_OUT_AO PS_MAIN_SSAO_UPSAMPLE(PS_IN_POS_TEX input)
     float fCenterViewZ = GetViewZ(vUVFull);
     if (fCenterViewZ <= EPSILON)
     {
-        output.vAO = float4(1.f, 1.f, 1.f, 1.f);
+        output.vAO = float4(1.f, 1.f, 0.f, 1.f);
         return output;
     }
 
@@ -431,9 +441,9 @@ PS_OUT_AO PS_MAIN_SSAO_UPSAMPLE(PS_IN_POS_TEX input)
     return output;
 }
 
-PS_OUT_BACKBUFFER PS_MAIN_COMBINED(PS_IN_POS_TEX input)
+PS_OUT_HDR PS_MAIN_COMBINED(PS_IN_POS_TEX input)
 {
-    PS_OUT_BACKBUFFER output;
+    PS_OUT_HDR output;
     
     float4 vDepth = g_RenderTargetDepthTexture.Sample(LinearSampler, input.vUV);
     
@@ -450,6 +460,24 @@ PS_OUT_BACKBUFFER PS_MAIN_COMBINED(PS_IN_POS_TEX input)
     return output;
 }
 
+PS_OUT_BACKBUFFER PS_MAIN_TONEMAP(PS_IN_POS_TEX input)
+{
+    PS_OUT_BACKBUFFER output;
+    
+    float4 vHDR = g_RenderTargetSceneHDRTexture.Sample(LinearSampler, input.vUV);
+    if (0.f == vHDR.a)
+        discard;
+    vHDR *= HDRparam.fExposure;
+    
+    float3 vLDR = ToneMap_ACES(vHDR.rgb);
+    
+    // 현재 우리는 sRGBA가 아니므로 직접
+    // float invGamma = 1.f / max(0.001f, HDRparam.fGamma);
+    // vLDR = pow(saturate(vLDR), invGamma);
+    output.vColor = float4(vLDR, 1.f);
+    return output;
+}
+
 technique11 T0
 {
     PASS_RS_DS_BS_VP(Debug, RS_Default, DS_Default, BS_Default, VS_MAIN, PS_MAIN_DEBUG)
@@ -459,5 +487,6 @@ technique11 T0
     PASS_RS_DS_BS_VP(SSAOBLURH, RS_Default, DS_Disabled, BS_Default, VS_MAIN, PS_MAIN_SSAOBLURH)
     PASS_RS_DS_BS_VP(SSAOBLURV, RS_Default, DS_Disabled, BS_Default, VS_MAIN, PS_MAIN_SSAOBLURV)
     PASS_RS_DS_BS_VP(SSAOUpsample, RS_Default, DS_Disabled, BS_Default, VS_MAIN, PS_MAIN_SSAO_UPSAMPLE)
-    PASS_RS_DS_BS_VP(Combined, RS_Default, DS_Disabled, BS_Default, VS_MAIN, PS_MAIN_COMBINED)
+    PASS_RS_DS_BS_VP(CombinedHDR, RS_Default, DS_Disabled, BS_Default, VS_MAIN, PS_MAIN_COMBINED)
+    PASS_RS_DS_BS_VP(Tonemap, RS_Default, DS_Disabled, BS_Default, VS_MAIN, PS_MAIN_TONEMAP)
 };

@@ -116,6 +116,13 @@ namespace Engine
 		SimpleMath::Vector2 vInvSize{ 1.f, 1.f };
 	}SHADER_SSAOPARAM_DESC;
 
+	typedef struct tagShaderHDRParamDesc
+	{
+		float fExposure{1.5f};
+		float fGamma{2.2f};
+		SimpleMath::Vector2 vPadding{};
+	}SHADER_HDRPARAM_DESC;
+
 	typedef struct tagShaderEffectDesc
 	{
 		unsigned int iTextureFlags = { 0 };

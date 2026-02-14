@@ -46,7 +46,7 @@ HRESULT CRenderTarget_Manager::Add_MRT(EMRTLayer eMRTLayer, ERenderTarget eTarge
     return S_OK;
 }
 
-HRESULT CRenderTarget_Manager::Begin_MRT(EMRTLayer eMRTLayer)
+HRESULT CRenderTarget_Manager::Begin_MRT(EMRTLayer eMRTLayer, _bool bClear)
 {
     list<CRenderTarget*>* pMRTList = Get_MRT(eMRTLayer);
     if (nullptr == pMRTList)
@@ -68,7 +68,8 @@ HRESULT CRenderTarget_Manager::Begin_MRT(EMRTLayer eMRTLayer)
 
     for (auto& pRenderTarget : *pMRTList)
     {
-        pRenderTarget->Clear();
+        if(bClear == true)
+            pRenderTarget->Clear();
         pRTVs[iRenderTargetCount++] = pRenderTarget->Get_RTV();
     }
 
@@ -112,8 +113,10 @@ HRESULT CRenderTarget_Manager::Bind_ShaderResource(ERenderTarget eTarget, CShade
     case Engine::ERenderTarget::SSAO_Pong:
     case Engine::ERenderTarget::SSAO_Full:
         eSlot = EFXSRV::RT_AO; break;
-    case Engine::ERenderTarget::Scene:
-        eSlot = EFXSRV::RT_Scene; break;
+    case Engine::ERenderTarget::SceneHDR:
+        eSlot = EFXSRV::RT_SceneHDR; break;
+    case Engine::ERenderTarget::SceneHDR_Copy:
+        eSlot = EFXSRV::RT_SceneHDR_Copy; break;
     default:
         return E_FAIL; 
     }
@@ -121,10 +124,10 @@ HRESULT CRenderTarget_Manager::Bind_ShaderResource(ERenderTarget eTarget, CShade
     return pShader->Bind_SRV(eSlot, m_arrRenderTargets[iIndex]->Get_SRV());
 }
 
-HRESULT CRenderTarget_Manager::Copy_BackBufferResource(ERenderTarget eTarget)
+HRESULT CRenderTarget_Manager::Copy_SceneHDRResource(ERenderTarget eTarget)
 {
     ID3D11Resource* pSrcResource = nullptr;
-    m_pBackBuffer->GetResource(&pSrcResource);
+    m_arrRenderTargets[ENUM_TO_UINT(ERenderTarget::SceneHDR)]->Get_RTV()->GetResource(&pSrcResource);
 
     CRenderTarget* pTarget = Get_RenderTarget(eTarget);
 

@@ -71,6 +71,7 @@ Texture2D g_RenderTargetDepthTexture;
 Texture2D g_RenderTargetSpecularTexture;
 Texture2D g_RenderTargetSpecularMaskTexture;
 Texture2D g_RenderTargetAOTexture;
-Texture2D g_RenderTargetSceneTexture;
+Texture2D g_RenderTargetSceneHDRTexture;
+Texture2D g_RenderTargetSceneHDRCopyTexture;
 
 #endif
