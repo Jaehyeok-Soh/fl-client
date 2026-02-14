@@ -5,6 +5,8 @@
 #include "Shader.h"
 #include "GameObject.h"
 
+#include "GameInstance.h"
+
 CTransform::CTransform()
 	: Super()
 {
@@ -492,6 +494,14 @@ Vec3 CTransform::LocalPos_toMyWorld(const Vec3& vLocalPos, _bool bDir)
 
 	else
 		return Vec3::Transform(vLocalPos, m_matWorld);
+}
+
+_bool CTransform::Is_OnGround(_float fMaxDist)
+{
+	Vec3 vPos = m_matWorld.Translation();
+	Vec3 vDir = { 0.f,-1.f,0.f };
+
+	return m_pGameInstance->RayCast(vPos, vDir, fMaxDist);
 }
 
 CTransform* CTransform::Create()

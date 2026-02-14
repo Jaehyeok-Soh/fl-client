@@ -76,6 +76,9 @@ public:
 	void Add_Position(const Vec3& vAddPos);
 	Vec3 LocalPos_toMyWorld(const Vec3& vLocalPos, _bool bDir);
 
+public:
+	_bool Is_OnGround(_float fMaxDist);
+
 private:
 	_bool		m_bControll = { false };
 	_float		m_fMoveScale = { 1.f };
