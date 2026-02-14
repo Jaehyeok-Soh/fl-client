@@ -17,5 +17,6 @@ inline constexpr wchar_t g_wszAnimationExtension[]{ L".clip" };
 const unsigned int		 MIN = 0;
 const unsigned int		 MAX = 1;
 
+static bool				 g_ToolDebugRender = { true };
 
 NS_END

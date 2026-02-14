@@ -7,13 +7,13 @@ NS_BEGIN(Tool)
 
 class CLevel_Animation final : public CLevel
 {
-	using Super = CLevel;
-
+public:
 	struct Event
 	{
 		enum Enum
 		{
 			LOAD,
+			LOAD_OVERLAP_SCRIPT,
 			END
 		};
 	};
@@ -30,6 +30,9 @@ class CLevel_Animation final : public CLevel
 			END
 		};
 	};
+
+private:
+	using Super = CLevel;
 
 private:
 	explicit CLevel_Animation(ID3D11Device* pDevice, ID3D11DeviceContext* pDeviceContext);
@@ -68,7 +71,7 @@ private:
 	class CPicking_ToolManager* m_pPickingManager	= { nullptr };
 	class CAnimTool_Manager*	m_pAnimToolManager = { nullptr };
 	class CToolObject*			m_pSelectedObject	= { nullptr };
-	std::array<DelegateHandle, ENUM_TO_SZET(Event::END)> m_EventHandles;
+	std::array<DelegateHandle, Event::END> m_EventHandles;
 
 
 private:

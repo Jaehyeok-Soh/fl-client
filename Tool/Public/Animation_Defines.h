@@ -12,12 +12,15 @@
 #include "ComputeShader.h"
 #include "PhysicsCCT.h"
 
+#include "PhysicsAttackOverlap.h"
+
 namespace fs = std::filesystem;
 
 extern HWND			g_hWnd;
 extern HINSTANCE	g_hInstance;
 
 struct LoadAnimModel { using Signature = void(path animModelPath); };
+struct LoadAttackOverlap { using Signature = void(CPhysicsAttackOverlap* pAttackOverlap); };
 
 typedef struct tagDirectory
 {

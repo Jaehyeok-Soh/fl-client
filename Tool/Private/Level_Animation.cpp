@@ -37,9 +37,6 @@ HRESULT CLevel_Animation::Initialize()
 	if (FAILED(Super::Initialize()))
 		return E_FAIL;
 
-	m_pAnimToolManager = CAnimTool_Manager::GetInstance();
-	m_pAnimToolManager->Initialize_AnimTool(m_pDevice, m_pDeviceContext);
-
 	Ready_Camera(g_wszCameraLayer);
 	Ready_Lights();
 
@@ -89,6 +86,9 @@ HRESULT CLevel_Animation::Awake(const _uint iLevelID)
 
 	Ready_Camera_Setting(ENUM_TO_UINT(ELevelType::ANIMATION));
 
+	m_pAnimToolManager = CAnimTool_Manager::GetInstance();
+	m_pAnimToolManager->Initialize_AnimTool(m_pDevice, m_pDeviceContext);
+
 	return S_OK;
 }
 
@@ -113,6 +113,8 @@ HRESULT CLevel_Animation::Render()
 		return E_FAIL;
 	
 	Render_Grid();
+
+	m_pAnimToolManager->Render(); // ????여기 맞는지 확인필요 소재혁 26.02.14
 
 	m_pImGuiManager->Render_Begin();
 	m_pImGuiManager->ImGuizmo_Render_Begin();

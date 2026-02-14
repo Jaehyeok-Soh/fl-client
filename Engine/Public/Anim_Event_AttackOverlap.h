@@ -4,7 +4,7 @@
 
 namespace DTO
 {
-	typedef struct tagAttackEvent : public ANIM_EVENT_BASE
+	typedef struct tagAttackEvent : public ANIM_EVENT_BASE1
 	{
 		HITBOX_DESC tHitboxDesc;
 
@@ -20,11 +20,13 @@ namespace DTO
 
 	inline void to_json(json& j, const ATTACKEVENT& d)
 	{
+		nlohmann::to_json(j, static_cast<const ANIM_EVENT_BASE1&>(d));
 		j["tHitboxDesc"] = d.tHitboxDesc;
 	}
 
 	inline void from_json(const json& j, ATTACKEVENT& d)
 	{
+		nlohmann::from_json(j, static_cast<ANIM_EVENT_BASE1&>(d));
 		j.at("tHitboxDesc").get_to(d.tHitboxDesc);
 	}
 }

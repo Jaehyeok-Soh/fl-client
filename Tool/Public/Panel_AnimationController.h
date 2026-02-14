@@ -1,6 +1,7 @@
 #pragma once
 #include "ImGui_Panel.h"
 #include "Animation_Defines.h"
+#include "Anim_Event_Info.h"
 
 NS_BEGIN(Tool)
 
@@ -40,7 +41,9 @@ private:
 
 	ANIMCTRLINFO& m_tAnimControllInfo;
 
-	ANIM_EVENT_INFO& m_tEventInfo;
+	DTO::ANIM_EVENT_INFO1& m_tEventInfo;
+
+	_int iSelectedAttackEvent = { -1 };
 
 public:
 	static			CPanel_AnimationController* Create(const _char* pLabel, CLevel* pOwner, ID3D11Device* pDevice, ID3D11DeviceContext* pDeviceContext);

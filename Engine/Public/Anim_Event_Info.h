@@ -5,7 +5,7 @@
 
 namespace DTO
 {
-	typedef struct tagAnimEventInfo
+	typedef struct tagAnimEventInfo1
 	{
 		/// <summary>
 		/// 애니메이션 주체 이름
@@ -15,19 +15,19 @@ namespace DTO
 		string strOwnerTag = {};
 
 		vector<ATTACKEVENT> vecAttackEvents;
-		vector<ANIM_EVENT_BASE> vecVFXEvents;
+		vector<ANIM_EVENT_BASE1> vecVFXEvents;
 		//vector<ANIM_EVENT_BASE> vecSoundEvents;
 		//vector<ANIM_EVENT_BASE> vecCameraEvents;
-	}ANIM_EVENT_INFO;
+	}ANIM_EVENT_INFO1;
 
-	inline void to_json(json& j, const ANIM_EVENT_INFO& d)
+	inline void to_json(json& j, const ANIM_EVENT_INFO1& d)
 	{
 		j["strOwnerTag"] = d.strOwnerTag;
 		j["vecAttackEvents"] = d.vecAttackEvents;
 		j["vecVFXEvents"] = d.vecVFXEvents;
 	}
 
-	inline void from_json(const json& j, ANIM_EVENT_INFO& d)
+	inline void from_json(const json& j, ANIM_EVENT_INFO1& d)
 	{
 		j.at("strOwnerTag").get_to(d.strOwnerTag);
 		j.at("vecAttackEvents").get_to(d.vecAttackEvents);

@@ -5,29 +5,29 @@
 
 namespace DTO
 {
-	typedef struct tagAnimEventBase
+	typedef struct tagAnimEventBase1
 	{
 		AnimEvent::Enum eEventType = AnimEvent::NONE;
 		string strDescription = {};
 		string strAnimTag = {};
 		unsigned int iAnimIndex = {};
 		float fStartTrackPosition = {};
-	}ANIM_EVENT_BASE;
+	}ANIM_EVENT_BASE1;
 
-	inline void to_json(json& j, const ANIM_EVENT_BASE& d)
+	inline void to_json(json& j, const ANIM_EVENT_BASE1& d)
 	{
-		j["eEventType"] = d.eEventType;
+		//j["eEventType"] = d.eEventType;
 		j["strDescription"] = d.strDescription;
-		j["strAnimTag"] = d.strAnimTag;
+		//j["strAnimTag"] = d.strAnimTag;
 		j["iAnimIndex"] = d.iAnimIndex;
 		j["fStartTrackPosition"] = d.fStartTrackPosition;
 	}
 
-	inline void from_json(const json& j, ANIM_EVENT_BASE& d)
+	inline void from_json(const json& j, ANIM_EVENT_BASE1& d)
 	{
-		j.at("eEventType").get_to(d.eEventType);
+		//j.at("eEventType").get_to(d.eEventType);
 		j.at("strDescription").get_to(d.strDescription);
-		j.at("strAnimTag").get_to(d.strAnimTag);
+		//j.at("strAnimTag").get_to(d.strAnimTag);
 		j.at("iAnimIndex").get_to(d.iAnimIndex);
 		j.at("fStartTrackPosition").get_to(d.fStartTrackPosition);
 	}

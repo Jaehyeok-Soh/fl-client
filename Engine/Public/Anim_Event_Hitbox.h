@@ -12,7 +12,7 @@ using namespace physx;
 
 namespace DTO
 {
-	typedef struct tagHitboxDesc : public ANIM_EVENT_SCRIPT_BASE
+	typedef struct tagHitboxDesc : public ANIM_EVENT_SCRIPT_BASE1
 	{
 
 		PxGeometryHolder geometry;
@@ -44,6 +44,8 @@ namespace DTO
 
 	inline void to_json(json& j, const HITBOX_DESC& d)
 	{
+		nlohmann::to_json(j, static_cast<const ANIM_EVENT_SCRIPT_BASE1&>(d));
+
 		j["eType"] = d.eType;
 		j["vExtents"] = { { "x", d.vExtents.x },{ "y", d.vExtents.y },{ "z", d.vExtents.z } };
 		j["fRadius"] = d.fRadius;
@@ -57,6 +59,8 @@ namespace DTO
 
 	inline void from_json(const json& j, HITBOX_DESC& d)
 	{
+		nlohmann::from_json(j, static_cast<ANIM_EVENT_SCRIPT_BASE1&>(d));
+
 		j.at("eType").get_to(d.eType);
 		
 		const auto& jext = j.at("vExtents");

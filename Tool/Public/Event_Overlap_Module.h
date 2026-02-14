@@ -1,6 +1,7 @@
 #pragma once
 #include "Base.h"
 #include "Animation_Defines.h"
+#include "Anim_Event_Info.h"
 #include "PhysicsAttackOverlap.h"
 
 NS_BEGIN(Engine)
@@ -25,7 +26,9 @@ public:
 
 	void Render();
 
-	void SetAttackOverlap(vector<ATTACKEVENT> events);
+	void SetAttackOverlap(CPhysicsAttackOverlap* pAttackOverlap, CAnimObj* pOwner);
+	void SetOwner(CAnimObj* pOwner);
+	vector<DTO::ATTACKEVENT> GetEvents() { return m_pOverlap->GetEvents(); }
 
 private:
 	ID3D11Device* m_pDevice{};
@@ -36,7 +39,7 @@ private:
 private:
 	ANIMCTRLINFO* m_pAnimControllInfo{};
 
-	ANIM_EVENT_INFO* m_pEventInfo{};
+	DTO::ANIM_EVENT_INFO1* m_pEventInfo{};
 
 	CPhysicsAttackOverlap* m_pOverlap = { nullptr };
 

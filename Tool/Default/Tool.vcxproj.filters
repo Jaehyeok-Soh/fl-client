@@ -271,6 +271,9 @@
     <Filter Include="03. Level\Animation\01. Overlap_Module">
       <UniqueIdentifier>{dc3c6669-80ea-42c8-b5fb-e43728af1b01}</UniqueIdentifier>
     </Filter>
+    <Filter Include="09. Builder\Builder_AttackOverlap">
+      <UniqueIdentifier>{2f456e24-0af4-4629-88ec-4e1912aa624e}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="framework.h">
@@ -529,6 +532,9 @@
     <ClInclude Include="..\Public\Event_Overlap_Module.h">
       <Filter>03. Level\Animation\01. Overlap_Module</Filter>
     </ClInclude>
+    <ClInclude Include="..\Public\Builder_AttackOverlap.h">
+      <Filter>09. Builder\Builder_AttackOverlap</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <Image Include="small.ico">
@@ -774,6 +780,9 @@
     </ClCompile>
     <ClCompile Include="..\Private\Event_Overlap_Module.cpp">
       <Filter>03. Level\Animation\01. Overlap_Module</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\Builder_AttackOverlap.cpp">
+      <Filter>09. Builder\Builder_AttackOverlap</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

@@ -22,21 +22,41 @@ HRESULT CEvent_Overlap_Module::Initialize()
 
 void CEvent_Overlap_Module::Update(const _float fTimeDelta)
 {
+	if (!m_pOverlap)
+		return;
+
+	m_pOverlap->Update(fTimeDelta);
 }
 
 void CEvent_Overlap_Module::Render()
 {
+	if (!m_pOverlap)
+		return;
+
+	m_pOverlap->Render();
 }
 
-void CEvent_Overlap_Module::SetAttackOverlap(vector<ATTACKEVENT> events)
+void CEvent_Overlap_Module::SetAttackOverlap(CPhysicsAttackOverlap* pAttackOverlap, CAnimObj* pOwner)
 {
 	Safe_Release(m_pOverlap);
 
+	m_pOverlap = static_cast<CPhysicsAttackOverlap*>(pAttackOverlap);
+	m_pOverlap->Set_Owner(pOwner);
+	m_pOverlap->Awake();
+}
+
+void CEvent_Overlap_Module::SetOwner(CAnimObj* pOwner)
+{
+	if (m_pOverlap)
+	{
+		m_pOverlap->Set_Owner(pOwner);
+		m_pOverlap->Awake();
+	}
 }
 
 CEvent_Overlap_Module* CEvent_Overlap_Module::Create(ID3D11Device* pDevice, ID3D11DeviceContext* pDeviceContext)
 {
-	CEvent_Overlap_Module* pInstance = new CEvent_Overlap_Module();
+	CEvent_Overlap_Module* pInstance = new CEvent_Overlap_Module(pDevice, pDeviceContext);
 
 	if (FAILED(pInstance->Initialize()))
 	{

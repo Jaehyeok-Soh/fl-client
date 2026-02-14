@@ -32,6 +32,8 @@ public:
 	void Awake();
 	void Update(_float fTimeDelta);
 
+	vector<DTO::ATTACKEVENT> GetEvents() { return m_tDesc.attackEvents; }
+
 private:
 	void GetAnimation();
 	void CheckAnim();

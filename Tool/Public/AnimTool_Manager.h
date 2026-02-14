@@ -2,6 +2,11 @@
 #include "Base.h"
 #include "Animation_Defines.h"
 
+#include "Level_Animation.h"
+
+#include "Anim_Event_Info.h"
+#include "Anim_Event_Base.h"
+
 NS_BEGIN(Engine)
 class  CGameInstance;
 NS_END
@@ -21,15 +26,16 @@ private:
 public:
 	HRESULT Initialize_AnimTool(ID3D11Device* pDevice, ID3D11DeviceContext* pDeviceContext);
 	
-	void Update(const _float fTimeDelta);
+	void Update(const _float& fTimeDelta);
+
+	void Render();
 
 /// <summary>
 /// 외부에 애니메이션 정보 건내주기
 /// </summary>
 public:
 	ANIMCTRLINFO& Get_AnimControllInfo() { return m_tAnimControllInfo; }
-	ANIM_EVENT_INFO& Get_AnimEventInfo() { return m_tEventInfo; }
-	vector<ANIM_EVENT_BASE>& Get_AnimEvents(AnimEvent::Enum eType) { return m_tEventInfo.vecAnimEvents[eType]; }
+	DTO::ANIM_EVENT_INFO1& Get_AnimEventInfo() { return m_tEventInfo; }
 
 /// <summary>
 /// 애니메이션 모델과 애니메이션
@@ -45,13 +51,41 @@ public:
 	_bool ValidCheck();
 
 	// 애니메이션 트랙포지션 업데이트
-	void Update_Animation(const _float fTimeDelta);
+	void Update_Animation(const _float& fTimeDelta);
 
 	// 애니메이션 바꾸기
 	void ChangeAnimation(_uint iIndex);
+
 private:
 	// 매 프레임 가져오는 애니메이션 정보
 	void UpdateAnimationInfo();
+
+/// <summary>
+/// 모듈 관련
+/// </summary>
+private:
+	// 모듈 업데이트
+	void Update_Module(const _float& fTimeDelta);
+	// 모듈 렌더
+	void Render_Module();
+	// 모듈들(컴포넌트)에 Set Owner
+	void SetModuleOwner();
+
+/// <summary>
+/// save load
+/// </summary>
+public:
+	HRESULT Load_AttackOverlap(fs::path path);
+	void Set_AttackOverlap(CPhysicsAttackOverlap* pAttackOverlap);
+private:
+	HRESULT Ready_Builder();
+
+/// <summary>
+/// 이벤트
+/// </summary>
+private:
+	HRESULT Ready_Event();
+	HRESULT Release_Event();
 
 private:
 	ID3D11Device* m_pDevice{};
@@ -59,10 +93,23 @@ private:
 
 	CGameInstance* m_pGameInstance{ nullptr };
 
+	CBuilderSystem* m_pBuilderSystem = { nullptr };
+
+	std::array<DelegateHandle, CLevel_Animation::Event::END> m_EventHandles;
+
+/// <summary>
+/// 애니메이션 툴 매니저 모듈
+/// </summary>
+private:
+	class CEvent_Overlap_Module* m_pOverlapModule = { nullptr };
+
+/// <summary>
+/// 애니메이션 컨트롤 정보
+/// 이벤트 정보
+/// </summary>
 private:
 	ANIMCTRLINFO m_tAnimControllInfo{};
-
-	ANIM_EVENT_INFO m_tEventInfo{};
+	DTO::ANIM_EVENT_INFO1 m_tEventInfo{};
 
 public:
 	virtual void Free() override;

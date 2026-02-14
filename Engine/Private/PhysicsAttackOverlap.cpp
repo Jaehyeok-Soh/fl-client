@@ -42,8 +42,16 @@ void CPhysicsAttackOverlap::Render()
 
 void CPhysicsAttackOverlap::Awake()
 {
+	for (auto& event : m_activeEvents)
+		Safe_Release(event);
+
+	m_activeEvents.clear();
+
 	PoolClear();
 
+	if (m_pOwner == nullptr)
+		return;
+	
 	CActiveAttackOverlap* poolingItem = { nullptr };
 	for (size_t i = 0; i < m_tDesc.iNumPool; i++)
 	{
@@ -51,7 +59,11 @@ void CPhysicsAttackOverlap::Awake()
 		m_eventPool.push(poolingItem);
 	}
 
-	m_pOwnerMatrix = & static_cast<CPartObject*>(Get_Owner())->Get_Parent()->Get_Component<CTransform>()->Get_WorldMatrix();
+	auto partObject = dynamic_cast<CPartObject*>(Get_Owner());
+	if (partObject != nullptr)
+		m_pOwnerMatrix = &partObject->Get_Parent()->Get_Component<CTransform>()->Get_WorldMatrix();
+	else
+		m_pOwnerMatrix = &Get_Owner()->Get_Component<CTransform>()->Get_WorldMatrix();
 
 	m_pFilterCallback = m_pGameInstance->GetQueryFilterCallback();
 	m_pFilterCallback->SetOwner(Get_Owner());

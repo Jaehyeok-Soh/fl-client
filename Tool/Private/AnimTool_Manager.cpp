@@ -4,6 +4,17 @@
 #include "Model.h"
 #include "AnimObj.h"
 
+// BuilderSystem
+#include "BuilderSystem.h"
+
+// Attack overlap
+#include "Builder_AttackOverlap.h"
+#include "DataDocument_AttackOverlap.h"
+#include "DataStruct_AttackOverlap.h"
+
+// Animation tool module
+#include "Event_Overlap_Module.h"
+
 IMPLEMENT_SINGLETON(CAnimTool_Manager)
 
 CAnimTool_Manager::CAnimTool_Manager()
@@ -20,15 +31,28 @@ HRESULT CAnimTool_Manager::Initialize_AnimTool(ID3D11Device* pDevice, ID3D11Devi
 	Safe_AddRef(m_pDeviceContext);
 	Safe_AddRef(m_pGameInstance);
 
+	Ready_Builder();
+
+	m_pOverlapModule = CEvent_Overlap_Module::Create(m_pDevice, m_pDeviceContext);
+
+	Ready_Event();
+
 	return S_OK;
 }
 
-void CAnimTool_Manager::Update(const _float fTimeDelta)
+void CAnimTool_Manager::Update(const _float& fTimeDelta)
 {
 	if (m_tAnimControllInfo.bPlay)
 		Update_Animation(fTimeDelta);
 
+	Update_Module(fTimeDelta);
+
 	UpdateAnimationInfo();
+}
+
+void CAnimTool_Manager::Render()
+{
+	Render_Module();
 }
 
 void CAnimTool_Manager::SetAnimationObject(CAnimObj* pObject)
@@ -44,6 +68,8 @@ void CAnimTool_Manager::SetAnimationObject(CAnimObj* pObject)
 	m_tAnimControllInfo.vecAnimations = m_tAnimControllInfo.pModel->Get_Animations();
 
 	SetAnimControllInfo();
+
+	SetModuleOwner();
 }
 
 void CAnimTool_Manager::SetAnimControllInfo()
@@ -117,7 +143,7 @@ _bool CAnimTool_Manager::ValidCheck()
 	return m_tAnimControllInfo.pCurrentObject != nullptr;
 }
 
-void CAnimTool_Manager::Update_Animation(const _float fTimeDelta)
+void CAnimTool_Manager::Update_Animation(const _float& fTimeDelta)
 {
 	if (!ValidCheck())
 		return;
@@ -161,12 +187,108 @@ void CAnimTool_Manager::UpdateAnimationInfo()
 	m_tAnimControllInfo.fTickPerSecond = m_tAnimControllInfo.pModel->Get_AnimTickPerSecond();
 }
 
+void CAnimTool_Manager::Update_Module(const _float& fTimeDelta)
+{
+	if (!ValidCheck())
+		return;
+
+	// 충돌체
+	m_pOverlapModule->Update(fTimeDelta);
+
+	// 이펙트
+
+	// 사운드
+}
+
+void CAnimTool_Manager::Render_Module()
+{
+	if (!ValidCheck())
+		return;
+
+	// 충돌체
+	m_pOverlapModule->Render();
+
+	// 이펙트
+
+	// 사운드
+}
+
+void CAnimTool_Manager::SetModuleOwner()
+{
+	if (!ValidCheck())
+		return;
+
+	// 충돌체
+	m_pOverlapModule->SetOwner(m_tAnimControllInfo.pCurrentObject);
+
+	// 이펙트
+
+	// 사운드
+}
+
+HRESULT CAnimTool_Manager::Ready_Builder()
+{
+	m_pBuilderSystem = CBuilderSystem::Create();
+	if (m_pBuilderSystem == nullptr)  return E_FAIL;
+
+	if (FAILED(m_pBuilderSystem->Ready_Builder(DTO::ECategory::OVERLAP_SCRIPT, CBuilder_AttackOverlap::Create(m_pDevice, m_pDeviceContext, ENUM_TO_UINT(ELevelType::ANIMATION)))))
+		return E_FAIL;
+
+	return S_OK;
+}
+
+HRESULT CAnimTool_Manager::Ready_Event()
+{
+	m_EventHandles[CLevel_Animation::Event::LOAD_OVERLAP_SCRIPT] =
+		m_pGameInstance->Subscribe<LoadAttackOverlap>(this, &CAnimTool_Manager::Set_AttackOverlap);
+
+	return S_OK;
+}
+
+HRESULT CAnimTool_Manager::Load_AttackOverlap(fs::path path)
+{
+	ELevelType eLevelType = ELevelType::ANIMATION;
+	DTO::ECategory eCategory = DTO::ECategory::OVERLAP_SCRIPT;
+	_uint iLevelID = ENUM_TO_UINT(eLevelType);
+
+	if (FAILED(m_pGameInstance->Regist_Document<CDataDocument_AttackOverlap>(iLevelID, eCategory)))
+		return E_FAIL;
+
+	if (FAILED(m_pGameInstance->Load_File_Json(iLevelID, eCategory, path)))
+		return E_FAIL;
+
+	m_pBuilderSystem->Build_File(ENUM_TO_UINT(ELevelType::ANIMATION), DTO::ECategory::OVERLAP_SCRIPT, path.filename().stem().string());
+
+	return S_OK;
+}
+
+void CAnimTool_Manager::Set_AttackOverlap(CPhysicsAttackOverlap* pAttackOverlap)
+{
+	m_pOverlapModule->SetAttackOverlap(pAttackOverlap, m_tAnimControllInfo.pCurrentObject);
+	
+	if (m_pOverlapModule)
+		m_tEventInfo.vecAttackEvents = m_pOverlapModule->GetEvents();
+}
+
+HRESULT CAnimTool_Manager::Release_Event()
+{
+	m_pGameInstance->Unsubscribe<LoadAttackOverlap>(m_EventHandles[CLevel_Animation::Event::LOAD_OVERLAP_SCRIPT]);
+
+	return S_OK;
+}
+
 void CAnimTool_Manager::Free()
 {
-	Super::Free();
+	Safe_Release(m_pOverlapModule);
+
+	Release_Event();
+
+	Safe_Release(m_pBuilderSystem);
 
 	Safe_Release(m_pDevice);
 	Safe_Release(m_pDeviceContext);
+	
+	Super::Free();
 
 	Safe_Release(m_pGameInstance);
 }

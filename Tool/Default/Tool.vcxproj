@@ -151,6 +151,7 @@
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">false</ExcludedFromBuild>
     </ClInclude>
     <ClInclude Include="..\Public\AnimTool_Manager.h" />
+    <ClInclude Include="..\Public\Builder_AttackOverlap.h" />
     <ClInclude Include="..\Public\Builder_Example.h" />
     <ClInclude Include="..\Public\Builder_Map.h" />
     <ClInclude Include="..\Public\Builder_UI.h" />
@@ -239,6 +240,7 @@
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">false</ExcludedFromBuild>
     </ClCompile>
     <ClCompile Include="..\Private\AnimTool_Manager.cpp" />
+    <ClCompile Include="..\Private\Builder_AttackOverlap.cpp" />
     <ClCompile Include="..\Private\Builder_Example.cpp" />
     <ClCompile Include="..\Private\Builder_Map.cpp" />
     <ClCompile Include="..\Private\Builder_UI.cpp" />

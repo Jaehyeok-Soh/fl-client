@@ -4,6 +4,8 @@
 #include "DataDocument_AttackOverlap.h"
 #include "PhysicsAttackOverlap.h"
 
+#include "Animation_Defines.h"
+
 CBuilder_AttackOverlap::CBuilder_AttackOverlap(ID3D11Device* pDevice, ID3D11DeviceContext* pDeviceContext, _uint iLevelID)
 	:Super(pDevice, pDeviceContext, iLevelID)
 {
@@ -43,7 +45,7 @@ HRESULT CBuilder_AttackOverlap::Create_AttackOverlap_Prototype(const DTO::ATTACK
 {
 	DTO::ATTACKOVERLAP_DESC desc{};
 	desc.iNumPool = data.iNumPool;
-	
+
 	for (auto& event : data.attackEvents)
 	{
 		DTO::HITBOX_DESC hbDesc{};
@@ -69,9 +71,11 @@ HRESULT CBuilder_AttackOverlap::Create_AttackOverlap_Prototype(const DTO::ATTACK
 		desc.attackEvents.emplace_back(event);
 	}
 
-	// For. Prototype_Component_AttackOverlap_{ CharacterName }
-	wstring prototypeTag(L"Prototype_Component_AttackOverlap_" + Engine_Utils::ToWString(data.strTag));
-	m_pGameInstance->Add_Prototype(ENUM_TO_UINT(ELevelType::STATIC), L"Prototype_Component_AttackOverlap_PlayerMoon", CPhysicsAttackOverlap::Create(&desc));
+	//// For. Prototype_Component_AttackOverlap_{ CharacterName }
+	//wstring prototypeTag(L"Prototype_Component_AttackOverlap_" + Engine_Utils::ToWString(data.strTag));
+	//m_pGameInstance->Add_Prototype(ENUM_TO_UINT(ELevelType::ANIMATION), L"Prototype_Component_AttackOverlap_PlayerMoon", CPhysicsAttackOverlap::Create(&desc));
+
+	CGameInstance::GetInstance()->Broadcast<LoadAttackOverlap>(CPhysicsAttackOverlap::Create(&desc));
 
 	return S_OK;
 }

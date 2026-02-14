@@ -1,8 +1,10 @@
 #include "pch.h"
 #include "Panel_AnimModelFile.h"
+#include "AnimTool_Manager.h"
 
 CPanel_AnimModelFile::CPanel_AnimModelFile(const _char* pLabel, CLevel* pOwner, ID3D11Device* pDevice, ID3D11DeviceContext* pDeviceContext)
-	: CImGui_Panel(pLabel, pOwner, pDevice, pDeviceContext)
+	: CImGui_Panel(pLabel, pOwner, pDevice, pDeviceContext),
+	m_pAnimToolManager(CAnimTool_Manager::GetInstance())
 {
 }
 
@@ -18,6 +20,8 @@ HRESULT CPanel_AnimModelFile::Render(CToolObject* pGo)
 	DirectoryWindow();
 
 	FileWindow();
+
+	ButtonsWindow();
 
 	return S_OK;
 }
@@ -67,6 +71,168 @@ void CPanel_AnimModelFile::FileWindow()
 	}
 
 	ImGui::End();
+}
+
+void CPanel_AnimModelFile::ButtonsWindow()
+{
+	ImGui::Begin("File Buttons");
+
+	if (ImGui::Button("Load Events"))
+	{
+		OpenLoadModal();
+	}
+
+	ImGui::SameLine();
+
+	if (ImGui::Button("Save Events"))
+	{
+		//OpenSaveModal();
+	}
+
+	// Load modal
+	RenderLoadModal();
+
+	// Save modal
+	//RenderSaveModal();
+
+	ImGui::End();
+}
+
+void CPanel_AnimModelFile::OpenFileDialog(char* buffer, const char* filter)
+{
+	OPENFILENAMEA ofn;
+	char szFile[260] = { 0 };
+
+	ZeroMemory(&ofn, sizeof(ofn));
+	ofn.lStructSize = sizeof(ofn);
+	ofn.hwndOwner = g_hWnd; // 메인 윈도우 핸들 (전역 변수 혹은 GameInstance에서 가져오기)
+	ofn.lpstrFile = szFile;
+	ofn.nMaxFile = sizeof(szFile);
+	ofn.lpstrFilter = filter; // 예: "JSON Files\0*.json\0All\0*.*\0"
+	ofn.nFilterIndex = 1;
+	ofn.lpstrFileTitle = NULL;
+	ofn.nMaxFileTitle = 0;
+	ofn.lpstrInitialDir = NULL;
+	ofn.Flags = OFN_PATHMUSTEXIST | OFN_FILEMUSTEXIST | OFN_NOCHANGEDIR;
+
+	if (GetOpenFileNameA(&ofn) == TRUE)
+	{
+		// 선택한 경로를 버퍼에 복사
+		strcpy_s(buffer, 256, ofn.lpstrFile);
+	}
+}
+
+void CPanel_AnimModelFile::OpenLoadModal()
+{
+	// 모달을 열기 전에 상태 초기화 (경로 비우기 등)
+	m_tLoadOptions.Reset();
+
+	// 팝업 열기 트리거
+	ImGui::OpenPopup("Load Data Manager");
+}
+
+void CPanel_AnimModelFile::RenderLoadModal()
+{
+	// 모달의 중심을 화면 가운데로 설정 (선택 사항)
+	ImGui::SetNextWindowPos(ImGui::GetMainViewport()->GetCenter(), ImGuiCond_Appearing, ImVec2(0.5f, 0.5f));
+
+	if (ImGui::BeginPopupModal("Load Data Manager", NULL, ImGuiWindowFlags_AlwaysAutoResize))
+	{
+		// ---------------------------------------------------------
+		// 1. 애니메이션 정보 로드 행
+		// ---------------------------------------------------------
+		ImGui::Checkbox("##AnimCheck", &m_tLoadOptions.bLoadAnimInfo);
+		ImGui::SameLine();
+		ImGui::SetNextItemWidth(300.f);
+		ImGui::InputText("Animation Info", m_tLoadOptions.strAnimPath, 256, ImGuiInputTextFlags_ReadOnly);
+		ImGui::SameLine();
+		if (ImGui::Button("...##AnimBtn"))
+		{
+			OpenFileDialog(m_tLoadOptions.strAnimPath, "JSON Files\0*.json\0All\0*.*\0");
+		}
+
+		// ---------------------------------------------------------
+		// 2. 충돌체(Hitbox) 정보 로드 행
+		// ---------------------------------------------------------
+		ImGui::Checkbox("##HitboxCheck", &m_tLoadOptions.bLoadHitbox);
+		ImGui::SameLine();
+		ImGui::SetNextItemWidth(300.f);
+		ImGui::InputText("Hitbox Info", m_tLoadOptions.strHitboxPath, 256, ImGuiInputTextFlags_ReadOnly);
+		ImGui::SameLine();
+		if (ImGui::Button("...##HitboxBtn"))
+		{
+			OpenFileDialog(m_tLoadOptions.strHitboxPath, "JSON Files\0*.json\0All\0*.*\0");
+		}
+
+		// ---------------------------------------------------------
+		// 3. 이펙트(Effect) 정보 로드 행
+		// ---------------------------------------------------------
+		ImGui::Checkbox("##EffectCheck", &m_tLoadOptions.bLoadEffect);
+		ImGui::SameLine();
+		ImGui::SetNextItemWidth(300.f);
+		ImGui::InputText("Effect Info", m_tLoadOptions.strEffectPath, 256, ImGuiInputTextFlags_ReadOnly);
+		ImGui::SameLine();
+		if (ImGui::Button("...##EffectBtn"))
+		{
+			OpenFileDialog(m_tLoadOptions.strEffectPath, "JSON Files\0*.json\0All\0*.*\0");
+		}
+
+		// ---------------------------------------------------------
+		// 4. 사운드(Sound) 정보 로드 행
+		// ---------------------------------------------------------
+		ImGui::Checkbox("##SoundCheck", &m_tLoadOptions.bLoadSound);
+		ImGui::SameLine();
+		ImGui::SetNextItemWidth(300.f);
+		ImGui::InputText("Sound Info", m_tLoadOptions.strSoundPath, 256, ImGuiInputTextFlags_ReadOnly);
+		ImGui::SameLine();
+		if (ImGui::Button("...##SoundBtn"))
+		{
+			OpenFileDialog(m_tLoadOptions.strSoundPath, "JSON Files\0*.json\0All\0*.*\0");
+		}
+
+		ImGui::Separator();
+		ImGui::Spacing();
+
+		// ---------------------------------------------------------
+		// 하단 버튼 (확인 / 취소)
+		// ---------------------------------------------------------
+		float contentWidth = ImGui::GetContentRegionAvail().x;
+		ImGui::SetCursorPosX(contentWidth - 120.f); // 오른쪽 정렬
+
+		// [확인] 버튼
+		if (ImGui::Button("OK", ImVec2(50, 0)))
+		{
+			// 체크된 항목에 대해서만 로드 실행
+			//if (m_tLoadOptions.bLoadAnimInfo && strlen(m_tLoadOptions.strAnimPath) > 0)
+			//	Load_AnimationData(m_tLoadOptions.strAnimPath); // 구현하신 함수 호출
+
+			if (m_tLoadOptions.bLoadHitbox && strlen(m_tLoadOptions.strHitboxPath) > 0)
+				Load_HitboxData(m_tLoadOptions.strHitboxPath);
+
+			//if (m_tLoadOptions.bLoadEffect && strlen(m_tLoadOptions.strEffectPath) > 0)
+			//	Load_EffectData(m_tLoadOptions.strEffectPath);
+
+			//if (m_tLoadOptions.bLoadSound && strlen(m_tLoadOptions.strSoundPath) > 0)
+			//	Load_SoundData(m_tLoadOptions.strSoundPath);
+
+			ImGui::CloseCurrentPopup(); // 모달 닫기
+		}
+
+		ImGui::SameLine();
+
+		// [취소] 버튼
+		if (ImGui::Button("Cancel", ImVec2(50, 0)))
+		{
+			ImGui::CloseCurrentPopup(); // 그냥 닫기
+		}
+
+		ImGui::EndPopup();
+	}
+}
+
+void CPanel_AnimModelFile::Load_HitboxData(fs::path path)
+{
+	m_pAnimToolManager->Load_AttackOverlap(path);
 }
 
 DIR CPanel_AnimModelFile::RefreshModelDir()
