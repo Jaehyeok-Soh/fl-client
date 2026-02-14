@@ -119,6 +119,12 @@ PS_OUT PS_PROGRESS(PS_IN_POS_TEX input)
         mask = step(1.0f - uv.y, g_fProgressRatio); //up -> down
     else if (g_iFillDir == 3)
         mask = step(uv.y, g_fProgressRatio); //down -> up
+    else if (g_iFillDir == 4)
+    {
+        float dist = abs(uv.x - 0.5f);
+        float haf = g_fProgressRatio * 0.5f;
+        mask = step(dist, haf);
+    }
     
     if (mask <= 0.0f)
         discard;
@@ -138,9 +144,9 @@ PS_OUT PS_LOCKON(PS_IN_POS_TEX input)
 
 technique11 T0
 {
-    PASS_RS_DS_BS_VP(Default, RS_Default, DS_Disabled, BS_Default, VS_MAIN, PS_MAIN)
-    PASS_RS_DS_BS_VP(DefaultAlpha, RS_Default, DS_Disabled, BS_AlphaBlend, VS_MAIN, PS_MAIN)
-    PASS_RS_DS_BS_VP(Color, RS_Default, DS_Disabled, BS_AlphaBlend, VS_MAIN, PS_COLOR)
-    PASS_RS_DS_BS_VP(Fade, RS_Default, DS_Disabled, BS_AlphaBlend, VS_MAIN, PS_FADE)
-    PASS_RS_DS_BS_VP(Progress, RS_Default, DS_Disabled, BS_AlphaBlend, VS_MAIN, PS_PROGRESS)
+    PASS_RS_DS_BS_VP(Default,       RS_Default, DS_Disabled, BS_Default, VS_MAIN, PS_MAIN)
+    PASS_RS_DS_BS_VP(DefaultAlpha,  RS_Default, DS_Disabled, BS_AlphaBlend, VS_MAIN, PS_MAIN)
+    PASS_RS_DS_BS_VP(Color,         RS_Default, DS_Disabled, BS_AlphaBlend, VS_MAIN, PS_COLOR)
+    PASS_RS_DS_BS_VP(Fade,          RS_Default, DS_Disabled, BS_AlphaBlend, VS_MAIN, PS_FADE)
+    PASS_RS_DS_BS_VP(Progress,      RS_Default, DS_Disabled, BS_AlphaBlend, VS_MAIN, PS_PROGRESS)
 };

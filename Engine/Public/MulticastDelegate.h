@@ -23,8 +23,8 @@ class CMulticastDelegate<void(Args...)>
 public:
 	CMulticastDelegate()
 	{
-		m_vecSlots.reserve(50);
-		m_vecPending.reserve(20);
+		m_vecSlots.reserve(20);
+		m_vecPending.reserve(10);
 	}
 	DelegateHandle Subscribe(std::function<void(Args...)> func) noexcept;
 	bool Unsubscribe(DelegateHandle _handle) noexcept;

@@ -8,8 +8,6 @@ class ENGINE_DLL CUIObject abstract : public CGameObject
 	using Super = CGameObject;
 
 public:
-
-
 	typedef struct tagUIObjectDesc : public Super::GAMEOBJECT_DESC
 	{
 		_bool isAlpha;
@@ -31,11 +29,11 @@ protected:
 	virtual HRESULT Initialize(void* pArg) PURE;
 
 public:
-	virtual HRESULT Awake(const _uint iCurrentLevelID) override;
-	virtual void Update_Priority(const _float fTimeDelta) override;
-	virtual void Update(const _float fTimeDelta) override;
-	virtual void Update_Late(const _float fTimeDelta) override;
-	virtual void Ready_Before_Render(const _float fTimeDelta) override;
+	virtual HRESULT Awake(const _uint iCurrentLevelID)			override;
+	virtual void Update_Priority(const _float fTimeDelta)		override;
+	virtual void Update(const _float fTimeDelta)				override;
+	virtual void Update_Late(const _float fTimeDelta)			override;
+	virtual void Ready_Before_Render(const _float fTimeDelta)	override;
 	virtual HRESULT Render() override;
 
 public:
@@ -65,14 +63,50 @@ public:
 protected:
 	void SetUp_Rect();
 
-	/* Action */
 public:
-	void Set_Pass(_uint iPass) { m_iShaderPass = iPass; }/* 아직 안함 */
-	virtual void Set_Visible() { m_isVisible = true; }
-	virtual void Set_Invisible() { m_isVisible = false; }
+	void Set_Pass(_uint iPass) { m_iShaderPass = iPass; }
+
+	void Set_Visible()			{ m_isVisible = true;	}
+	void Set_Invisible()		{ m_isVisible = false;	}
+	void Set_Activate()			{ m_isActive = true;	}
+	void Set_InActivate()		{ m_isActive = false;	}
+	void Set_Interactable()		{ m_isInteract = true;	}
+	void Set_NonInteractable()	{ m_isInteract = false; }
+
+	virtual void Initialize_Visible_Event()			{}
+	virtual void Initialize_InVisible_Event()		{}
+	virtual void Initialize_Activate_Event()		{}
+	virtual void Initialize_InActivate_Event()		{}
+	virtual void Initialize_Interactable_Event()	{}
+	virtual void Initialize_NonInteractable_Event()	{}
+
+	/// <summary>
+	/// 끝나면 true를 반환하세요
+	/// </summary>
+	virtual _bool Tick_Visible_Event(const _float fTimeDelta)			{return true;}
+	virtual _bool Tick_InVisible_Event(const _float fTimeDelta)			{return true;}
+	virtual _bool Tick_Activate_Event(const _float fTimeDelta)			{return true;}
+	virtual _bool Tick_InActivate_Event(const _float fTimeDelta)		{return true;}
+	virtual _bool Tick_Interactable_Event(const _float fTimeDelta)		{return true;}
+	virtual _bool Tick_NonInteractable_Event(const _float fTimeDelta)	{return true;}
 
 protected:
+	/* 렌더 상태를 제어 */
+	_bool m_isPreVisible = { false };
 	_bool m_isVisible = { false };
+	_bool m_isPlaying_VisibleEvent = { false };
+
+	/* 업데이트 상태를 제어 */
+	_bool m_isPreActive = { false };
+	_bool m_isActive = { false };
+	_bool m_isPlaying_ActiveEvent = { false };
+
+	/* 입력 상태를 제어 */
+	_bool m_isPreInteract = { true };
+	_bool m_isInteract = { true };
+	_bool m_isPlaying_InteractEvent = { false };
+
+protected:
 	RECT m_tRect = {};
 	RENDER_CATEGORY m_eCategory = { RENDER_CATEGORY::UI };
 	_uint m_iViewportWidth = { 0 };

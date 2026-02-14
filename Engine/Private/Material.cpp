@@ -43,8 +43,14 @@ HRESULT CMaterial::Initialize(void* pArg)
 
 HRESULT CMaterial::Bind_ShaderResource(CShader* pShader)
 {
-	pShader->Bind_MaterialTextures(&m_arrSRVs[0], ENUM_TO_UINT(EMaterialTextureType::MAX_COUNT));
-	pShader->Bind_MaterialMask(m_iTextureMask);
+	int a = 0;
+	if (m_arrSRVs[1] != nullptr)
+	{
+		a += 1;
+	}
+	a = 2;
+	pShader->Bind_SRVArray(EFXSRV::Materials, &m_arrSRVs[0], ENUM_TO_UINT(EMaterialTextureType::MAX_COUNT));
+	pShader->Bind_Scalar(EFXScalar::MaterialMask, m_iTextureMask);
 	return S_OK;
 }
 

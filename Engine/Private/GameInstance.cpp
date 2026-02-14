@@ -95,7 +95,7 @@ HRESULT CGameInstance::Initialize_Engine(const ENGINE_DESC& Engine_Desc, _Inout_
 	if (!(m_pLight_Manager = CLight_Manager::Create(*ppDevice, *ppContext)))
 		return E_FAIL;
 
-	if (FAILED(m_pRender_Manager->Set_Components()))
+	if (FAILED(m_pRender_Manager->Set_ShaderResources()))
 		return E_FAIL;
 
 	if (!(m_pFont_Manager = CFont_Manager::Create(*ppDevice, *ppContext)))
@@ -734,10 +734,11 @@ HRESULT CGameInstance::Add_Font(const _wstring& strFontTag, const _tchar* pFontF
 {
 	return m_pFont_Manager->Add_Font(strFontTag, pFontFilePath);
 }
-HRESULT CGameInstance::Draw_Text(const _wstring& strFontTag, const _tchar* pText, const Vec2& vPosition, Vec4 vColor)
+HRESULT CGameInstance::Draw_Text(const _wstring& strFontTag, const _tchar* pText, const Vec2& vPosition, Vec4 vColor, const _float fRotate, const _float fScale)
 {
-	return m_pFont_Manager->Draw_Text(strFontTag, pText, vPosition, vColor);
+	return m_pFont_Manager->Draw_Text(strFontTag, pText, vPosition, vColor, fRotate, fScale);
 }
+
 #pragma endregion
 
 

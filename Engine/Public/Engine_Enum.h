@@ -14,7 +14,7 @@ namespace Engine
 	enum class EPOINT { A, B, C, END };
 	enum class ELINE { AB, BC, CA, END };
 	enum class RENDER_CATEGORY : unsigned int { PRIORITY, BLEND,NONEBLEND, NONELIGHT, BLENDUI, UI, END };
-	enum class DEFFERRED { DEBUG, DIRECTIONAL, POINT, COMBINED, END };
+	enum class DEFFERRED { DEBUG, DIRECTIONAL, POINT, SSAO_GEN, SSAO_BLURH, SSAO_BLURV, SSAO_UPSAMPLE, COMBINED, END };
 	enum class ECursorMode : unsigned int
 	{
 		LockedHiddenCenter = 0,
@@ -60,6 +60,90 @@ namespace Engine
 		GAMEOBJECT,
 		COMPONENT,
 		END
+	};
+	//===================
+	// FX Scalar
+	//===================
+	enum class EFXScalar : unsigned int
+	{
+		MaterialMask = 0,
+		GlobalMask,
+		COUNT
+	};
+	constexpr const char* g_ScalarNames[static_cast<unsigned int>(EFXScalar::COUNT)] =
+	{
+		"g_iMaterialMask",
+		"g_iGlobalMask"
+	};
+	//===================
+	// FX CB
+	//===================
+	enum class EFXCB : unsigned int
+	{
+		Global = 0,
+		Inv,
+		Transform,
+		Light,
+		Material,
+		MaterialInst,
+		Keyframe,
+		Bone,
+		Effect,
+		SSAOkernal,
+		SSAOparam,
+		COUNT
+	};
+	constexpr const char* g_CBNames[static_cast<unsigned int>(EFXCB::COUNT)] =
+	{
+		"GlobalBuffer",
+		"InvBuffer",
+		"TransformBuffer",
+		"LightBuffer",
+		"MaterialBuffer",
+		"MaterialInstanceBuffer",
+		"KeyframeBuffer",
+		"BoneBuffer",
+		"ConstantBuffer_Effect",
+		"SSAOKernelBuffer",
+		"SSAOParamBuffer"
+	};
+	//===================
+	// FX SRV
+	//===================
+	enum class EFXSRV : unsigned int
+	{
+		RT = 0,
+		RT_Diffuse,
+		RT_Normal,
+		RT_Shade,
+		RT_SpecularMask,
+		RT_Specular,
+		RT_Depth,
+		RT_AO,
+		RT_Scene,
+		Transform,
+		Materials,
+		Textures,
+		Cube,
+		SSAONoise,
+		COUNT
+	};
+	constexpr const char* g_SRVNames[static_cast<unsigned int>(EFXSRV::COUNT)] =
+	{
+		"g_RenderTargetTexture",
+		"g_RenderTargetDiffuseTexture",
+		"g_RenderTargetNormalTexture",
+		"g_RenderTargetShadeTexture",
+		"g_RenderTargetSpecularMaskTexture",
+		"g_RenderTargetSpecularTexture",
+		"g_RenderTargetDepthTexture",
+		"g_RenderTargetAOTexture",
+		"g_RenderTargetSceneTexture",
+		"g_TransformMap",
+		"g_MaterialTextures",
+		"g_DefaultTextures",
+		"g_TextureCube",
+		"g_SSAONoiseTexture"
 	};
 	//===================
 	// AnimEvent
@@ -199,8 +283,8 @@ namespace Engine
 		MAX_COUNT = 18
 	};
 	//===================
-// PhysicsShape
-//===================
+	// PhysicsShape
+	//===================
 	enum class EPhysicsShape : unsigned int
 	{
 		SPHERE,

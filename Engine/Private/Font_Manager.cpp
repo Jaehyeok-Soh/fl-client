@@ -31,21 +31,19 @@ HRESULT CFont_Manager::Add_Font(const _wstring& strFontTag, const _tchar* pFontF
     return S_OK;
 }
 
-HRESULT CFont_Manager::Draw_Text(const _wstring& strFontTag, const _tchar* pText, const Vec2& vPosition, const Vec4& vColor)
+HRESULT CFont_Manager::Draw_Text(const _wstring& strFontTag, const _tchar* pText, const Vec2& vPosition, const Vec4& vColor, const _float fRotate, const _float fScale)
 {
     CFont* pFont = Find_Font(strFontTag);
     if (nullptr == pFont)
         return E_FAIL;
 
     m_pDeviceContext->GSSetShader(nullptr, nullptr, 0);
-
     m_pBatch->Begin();
 
-    if (FAILED(pFont->Draw_Text(m_pBatch, pText, vPosition, vColor)))
+    if (FAILED(pFont->Draw_Text(m_pBatch, pText, vPosition, vColor, fRotate, fScale)))
         return E_FAIL;
 
     m_pBatch->End();
-
     return S_OK;
 }
 

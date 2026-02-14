@@ -444,20 +444,14 @@ HRESULT CMainApplication::Ready_Managers()
 
 HRESULT CMainApplication::Ready_Fonts()
 {
-	if (FAILED(m_pGameInstance->Add_Font(L"Font_Default", L"../../Resources/Fonts/156ex.spritefont")))
-		return E_FAIL;
-
-	if (FAILED(m_pGameInstance->Add_Font(L"Title_KR_6", L"../../Resources/Fonts/Title_KR_6.spritefont")))
-		return E_FAIL;
-	if (FAILED(m_pGameInstance->Add_Font(L"Title_KR_8", L"../../Resources/Fonts/Title_KR_8.spritefont")))
-		return E_FAIL;
-	if (FAILED(m_pGameInstance->Add_Font(L"Title_KR_10", L"../../Resources/Fonts/Title_KR_10.spritefont")))
-		return E_FAIL;
-	if (FAILED(m_pGameInstance->Add_Font(L"Title_KR_12", L"../../Resources/Fonts/Title_KR_12.spritefont")))
-		return E_FAIL;
-	if (FAILED(m_pGameInstance->Add_Font(L"Title_KR_14", L"../../Resources/Fonts/Title_KR_14.spritefont")))
-		return E_FAIL;
-
+	// font
+	for (const auto& e : std::filesystem::directory_iterator(L"..\\..\\Resources\\Fonts"))
+	{
+		const std::wstring key = e.path().stem().wstring();   // 파일명(확장자 제외)
+		const std::wstring path = e.path().wstring();          // 실제 경로
+		if (FAILED(m_pGameInstance->Add_Font(key.c_str(), path.c_str())))
+			return E_FAIL;
+	}
 	return S_OK;
 }
 

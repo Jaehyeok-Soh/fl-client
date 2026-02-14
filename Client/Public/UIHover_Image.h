@@ -1,29 +1,22 @@
 #pragma once
-#include "GenericUI.h"
+#include "UIDynamic_Image.h"
 #include "DataStruct_UI.h"
 
 NS_BEGIN(Client)
+class CCanvas;
 class CStatComponent;
-class CUIText final : public CGenericUI
+class CUIHover_Image final : public  CUIDynamic_Image
 {
-	using Super = CGenericUI;
+	using Super = CUIDynamic_Image;
 public:
-	typedef struct tagUITextDesc : public GENERIC_UI_DESC
+	typedef struct tagUIHoverImageDesc : public DIMAGE_DESC
 	{
-		CStatComponent* pTargetStat;
-		DTO::EUISubClassType eOwner;
-		_wstring wstrFontTag;
-		_wstring wstrText;
-		Vec4 vFontColor;
-		_float fScale;
-		_float fRotate;
-
-	}UI_TEXT_DESC;
+	}HOVER_IMAGE_DESC;
 
 private:
-	CUIText(ID3D11Device* pDevice, ID3D11DeviceContext* pDeviceContext);
-	CUIText(const CUIText& rhs);
-	virtual ~CUIText() = default;
+	CUIHover_Image(ID3D11Device* pDevice, ID3D11DeviceContext* pDeviceContext);
+	CUIHover_Image(const CUIHover_Image& rhs);
+	virtual ~CUIHover_Image() = default;
 
 public:
 	HRESULT Initialize_Prototype() override;
@@ -40,7 +33,7 @@ public:
 	virtual HRESULT Render() override;
 
 private:
-	HRESULT Ready_Components(UI_TEXT_DESC* pDesc);
+	HRESULT Ready_Components(HOVER_IMAGE_DESC* pDesc);
 	HRESULT Bind_ShaderResources();
 
 private:
@@ -55,20 +48,13 @@ private:
 	virtual _bool Tick_InVisible_Event(const _float fTimeDelta)override;
 
 private:
-	CStatComponent* m_pTargetStat = { nullptr };
-	DTO::EUISubClassType m_eSubClassType = {};
-
-	_wstring m_wstrText		= {};
-	_wstring m_wstrFontTag	= {};
-	Vec2 m_vFontPos			= {};
-	Vec4 m_vFontColor		= {};
-	_float m_fFontScale		= {};
-	_float m_fFontRotate	= {};
-
 	_float m_fTimeAcc = {};
+	_float m_fAccRotate = {};
+
+	_float m_fOriginWidth = {};
 
 public:
-	static CUIText* Create(ID3D11Device* pDevice, ID3D11DeviceContext* pDeviceContext);
+	static CUIHover_Image* Create(ID3D11Device* pDevice, ID3D11DeviceContext* pDeviceContext);
 	CGameObject* Clone(void* pArg);
 	virtual void Free()override;
 };
