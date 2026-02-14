@@ -319,12 +319,21 @@ Matrix CPhysics_Utils::GetUnrealMatrix(const Matrix& mat)
 	return matBasis * mat * matBasisInv;
 }
 
-_bool CPhysics_Utils::RayCast()
+_bool CPhysics_Utils::RayCast(Vec3 vWorldPos, Vec3 vDir, _float fMaxDist)
 {
-	PxVec3 o3(0.f, 0.f, 0.f);
-	PxVec3 d3(0.f, 0.f, 0.f);
-	PxReal dist{};
-	if (m_bRayHit = m_pScene->raycast(o3, d3, dist, m_RayCastHitBuffer))
+	// 시작 월드 좌표
+	// 쏠 방향 벡터 : 사이즈 꼭 1 이어야함
+	// 검사 최대 깊이
+
+	// 1. Vec3 -> PxVec3
+	PxVec3 o3 = { vWorldPos.x,vWorldPos.y,vWorldPos.z };
+
+	// 2. 길이가 1이어야 하므로 안정하게 한번더 노말라이즈
+	vDir.Normalize();
+	PxVec3 d3 = { vDir.x,vDir.y,vDir.z };
+
+	// 3. 검사
+	if (m_bRayHit = m_pScene->raycast(o3, d3, fMaxDist, m_RayCastHitBuffer))
 		return m_bRayHit;//m_RayCastHitBuffer.block.actor
 
 	return m_bRayHit;

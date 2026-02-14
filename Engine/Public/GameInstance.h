@@ -320,6 +320,7 @@ public:
 	void RegisterPhysicsMesh(_uint levelIndex, _wstring prototypeTag);
 	PxQuat GetPureRotation(const Matrix& mat);
 	PxVec3 GetPureScale(const Matrix& mat);
+	_bool RayCast(Vec3 vWorldPos, Vec3 vDir, _float fMaxDist);
 #ifdef _DEBUG
 	void Physics_Render(PxRigidActor* pActor, XMVECTOR color = DirectX::Colors::White);
 	void Physics_Render(const PxGeometry& geom, const PxTransform& transform, XMVECTOR color = DirectX::Colors::White);

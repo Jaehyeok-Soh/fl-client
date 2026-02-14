@@ -90,6 +90,9 @@ public:
     
     void Check_Leak();
 
+public:
+    _bool RayCast(Vec3 vWorldPos, Vec3 vDir, _float fMaxDist); // 월드 좌표 기준으로 // 방향으로 max dist까지 범위까지 검사
+
 private:
     ID3D11Device* m_pDevice = { nullptr };
     ID3D11DeviceContext* m_pDeviceContext = { nullptr };
