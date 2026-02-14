@@ -1,7 +1,9 @@
 #include "pch.h"
 #include "State_ComboBase.h"
 
+#include "Player.h"
 #include "PlayerControlContext.h"
+#include "Weapon.h"
 
 CState_ComboBase::CState_ComboBase(CActionState* pOwnerComponent, const string& strName)
 	: Super(pOwnerComponent, strName)
@@ -38,6 +40,8 @@ HRESULT CState_ComboBase::Start(void* pArg, _bool bForce)
 	m_bComboTime	= true;
 	m_iComboCount	= 1;
 
+	static_cast<CPlayer*>(Get_OwnerObject())->Change_Weapon(CPlayer::Part::SWORD, ENUM_TO_UINT(CWeapon::State::HAND));
+
 	return S_OK;
 }
 
@@ -54,6 +58,8 @@ HRESULT CState_ComboBase::End()
 {
 	if(FAILED(Super::End()))
 		return E_FAIL;
+
+	static_cast<CPlayer*>(Get_OwnerObject())->Change_Weapon(CPlayer::Part::SWORD, ENUM_TO_UINT(CWeapon::State::HOLD));
 
 	return S_OK;
 }

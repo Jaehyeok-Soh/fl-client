@@ -23,8 +23,11 @@ public:
 		int32_t iFillDir;
 		_float fDelay;
 		_float fAlpha;
+		int32_t iFlip;
 		CCanvas* pCanvasCache = { nullptr };
 	}GENERIC_UI_DESC;
+
+	enum class ETriggerEventType { HOVER_ENTER, HOVER_EXIT, PRESS_ENTER, PRESS_EXIT, END };
 
 protected :
 	CGenericUI(ID3D11Device* pDevice, ID3D11DeviceContext* pDeviceContext);
@@ -46,8 +49,7 @@ public:
 	_bool Calc_HitEvent();
 	void Acting_By_InteractState();
 
-	 //virtual void Trigger_Enter_Target()PURE;
-	 //virtual void Trigger_Exit_Target()PURE;
+	virtual void OnUIEvent(ETriggerEventType eEvent, CGenericUI* pSender);
 
 protected:
 	HRESULT Ready_Components(GENERIC_UI_DESC* pDesc);

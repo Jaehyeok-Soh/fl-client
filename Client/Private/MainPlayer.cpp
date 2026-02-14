@@ -1,22 +1,26 @@
 #include "pch.h"
 #include "MainPlayer.h"
 
+// components
 #include "Model.h"
-#include "CameraMan.h"
 #include "Collider.h"
 #include "Bounding_Sphere.h"
 #include "PlayerActionState.h"
 #include "ComboContainer.h"
-#include "CameraMan_Targeter.h"
 #include "PlayerControlContext.h"
 #include "StatComponent.h"
 #include "Navigation.h"
-#include "Ray.h"
 #include "Bone.h"
-#include "Body.h"
+
+// objects
+#include "CameraMan_Targeter.h"
 #include "Camera.h"
 #include "ColliderPart.h"
 #include "PhysicsCCT.h"
+#include "Ray.h"
+#include "CameraMan.h"
+#include "Body.h"
+#include "Weapon.h"
 
 #include "StateBase_Player.h"
 
@@ -28,6 +32,7 @@
 
 #include "State_MoonCombo.h"
 #pragma endregion
+
 #include "GameInstance.h"
 
 // Test
@@ -413,16 +418,18 @@ HRESULT CMainPlayer::Ready_Ability()
 
 HRESULT CMainPlayer::Ready_Weapons()
 {
-    //// Weapon
-    //{
-    //    CWeapon::WEAPON_DESC weaponDesc = {};
-    //    weaponDesc.wstrModelPrototypeName = L"Prototype_Component_Model_Sword";
-    //    weaponDesc.pMatParent = &Get_Component<CTransform>()->Get_WorldMatrix();
-    //    weaponDesc.pMatHandSocket = &Get_Part<CBody>(Part::BODY)->Get_RightHandWeaponSocket()->Get_CombinedTransformMatrix();
-    //    weaponDesc.pMatSocket = &Get_Part<CBody>(Part::BODY)->Get_SwordSocket()->Get_CombinedTransformMatrix();
-    //    if (FAILED(Add_Part(Part::WEAPON, ENUM_TO_UINT(ELevelType::STATIC), L"Prototype_GameObject_Part_Weapon", &weaponDesc)))
-    //        return E_FAIL;
-    //}
+    // Weapons
+    {
+        CWeapon::WEAPON_DESC weaponDesc     = {};
+        weaponDesc.wstrModelPrototypeName   = L"Prototype_Component_Model_MoonSword";
+        weaponDesc.pMatParent               = &Get_Component<CTransform>()->Get_WorldMatrix();
+        weaponDesc.pMatHandSocket           = &Get_Part<CBody>(Part::BODY)->Get_RightHandSocket()->Get_CombinedTransformMatrix();
+        weaponDesc.pMatSocket               = &Get_Part<CBody>(Part::BODY)->Get_WeaponSocket()->Get_BindPoseTransformMatrix();
+        weaponDesc.eModel                   = CWeapon::Weapon_ModelType::STATIC;
+        weaponDesc.bMianWeapon              = true;
+        if (FAILED(Add_Part(Part::SWORD, ENUM_TO_UINT(ELevelType::STATIC), L"Prototype_GameObject_Part_Sword", &weaponDesc)))
+            return E_FAIL;
+    }
     //// LeftHand
     //{
     //    CColliderPart::COLLIDERPART_DESC colliderPartDesc = {};

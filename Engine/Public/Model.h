@@ -25,6 +25,13 @@ public:
 		vector<_float>	vecMixRatios;
 	}DATA_ANIMCHANNEL;
 
+	enum STAGEING_BONE : Flags
+	{
+		SB_ZEROBONE			= 0x001
+		, SB_ALLBONE		= 0x002
+		, SB_SPCIPICBONE	= 0x004
+	};
+
 	typedef struct tagModelOriginDesc
 	{
 		EModelType			eType					= { EModelType::END };
@@ -34,8 +41,8 @@ public:
 
 		DATA_ANIMCHANNEL*	pAniChannelData			= { nullptr };
 
-		_bool				bStageBone				= { false };	// bone 정보 저장받을 거니?
-		vector<_uint>		iStageBoneIndices;						// 저장할 bone의 인덱스들
+		Flags				FStageBone				= { STAGEING_BONE::SB_ZEROBONE }; // STAGEING_BONE flag 이용하시면 됩니다
+		vector<_uint>		vecStageBoneIndices;	// 저장할 bone의 인덱스들. 만약 전체를 저장하고 싶다면 flag만 잘 설정하면 됨
 
 	}MODEL_ORIGIN_DESC;
 	typedef struct tagModelCopyDesc
@@ -91,7 +98,7 @@ public:
 public:
 	HRESULT								Change_Animation(CComputeShader* pAnimEComShader,_uint iAnimationIndex, _bool bBlend, _bool isLoop = true, _bool bForce = false);
 	void								Add_Animation(class CModelAnimation* pAnimation) { m_vecAnimations.push_back(pAnimation); }
-	void								Update_Animation(CComputeShader* pBoneComBineCS, CComputeShader* pAnimEComShader, CComputeShader* pAnimBlendCS, _float fTimeDelta, CTransform* pOwnerTransform = nullptr, CPhysicsCCT* pOwnerPhyCCT = nullptr, CComputeShader* pGetBoneCS = nullptr);
+	void								Update_Animation(CComputeShader* pBoneComBineCS, CComputeShader* pAnimEComShader, _float fTimeDelta, CTransform* pOwnerTransform = nullptr, CPhysicsCCT* pOwnerPhyCCT = nullptr, CComputeShader* pAnimBlendCS = nullptr, CComputeShader* pGetBoneCS = nullptr); // transform, phsics는 rootmotion 적용시 넘겨줘야함
 
 	// bind funcs
 public:
@@ -161,7 +168,7 @@ public:
 	HRESULT								Change_ShaderPassByMseh(_uint iMeshIndex, _uint iPass);
 
 public:
-	HRESULT								Ready_ComputeShaders(CComputeShader* pBoneMeshCS, CComputeShader* pBoneComBineCS, CComputeShader* pAnimEvalCS, CComputeShader* pAnimBlendCS, CComputeShader* pGetBoneCS = nullptr);
+	HRESULT								Ready_ComputeShaders(CComputeShader* pBoneMeshCS, CComputeShader* pBoneComBineCS, CComputeShader* pAnimEvalCS, CComputeShader* pAnimBlendCS = nullptr, CComputeShader* pGetBoneCS = nullptr);
 	
 	// load func
 private:

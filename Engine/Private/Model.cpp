@@ -141,11 +141,31 @@ HRESULT CModel::Initialize_Prototype(void* pArg)
 	for (size_t i = 0; i < m_vecBones.size(); ++i)
 		m_vecBones[i]->Setup_BindPoseTransformMatrix(m_vecBones, m_matPreTransform);
 
-	m_bStageBones = pDesc->bStageBone;
-	if (m_bStageBones)
+
+	/* bone 정보 빼돌릴래? */
+	Flags FStageBone = pDesc->FStageBone;
+	m_bStageBones = true;
+
+	// 안 빼돌리고 싶다면 : return
+	if (Engine_Utils::Has_Flag(FStageBone, STAGEING_BONE::SB_ZEROBONE))
 	{
-		Make_Staging(pDesc);
+		m_bStageBones = false;
+		return S_OK;
 	}
+
+	// 빼돌릴건데 모든 뼈를 빼돌리고 싶다면
+	else if (Engine_Utils::Has_Flag(FStageBone, STAGEING_BONE::SB_ALLBONE))
+	{
+		pDesc->vecStageBoneIndices.reserve(Get_BoneCount());
+
+		for (size_t i = 0; i < Get_BoneCount(); i++)
+		{
+			pDesc->vecStageBoneIndices[i] = i;
+		}
+	}
+
+	// staging 정보 생성
+	Make_Staging(pDesc);
 
 	return S_OK;
 }
@@ -231,9 +251,9 @@ HRESULT CModel::Change_Animation(CComputeShader* pAnimEComShader, _uint iAnimati
 	return S_OK;
 }
 
-void CModel::Update_Animation(CComputeShader* pBoneComShader, CComputeShader* pAnimEvalCS, CComputeShader* pAnimBlendCS, _float fTimeDelta, CTransform* pOwnerTransform, CPhysicsCCT* pOwnerPhyCCT, CComputeShader* pGetBoneCS)
+void CModel::Update_Animation(CComputeShader* pBoneComBineCS, CComputeShader* pAnimEComShader, _float fTimeDelta, CTransform* pOwnerTransform, CPhysicsCCT* pOwnerPhyCCT, CComputeShader* pAnimBlendCS, CComputeShader* pGetBoneCS)
 {
-	Update_AnimationPlayState(pBoneComShader, pAnimEvalCS, pAnimBlendCS,  fTimeDelta, pOwnerTransform, pOwnerPhyCCT, pGetBoneCS);
+	Update_AnimationPlayState(pBoneComBineCS, pAnimEComShader, pAnimBlendCS,  fTimeDelta, pOwnerTransform, pOwnerPhyCCT, pGetBoneCS);
 }
 
 HRESULT CModel::Set_PassByMesh(class CShader* pShader, _uint iMeshIndex)
@@ -481,6 +501,9 @@ void CModel::Set_AnimationPlayRate(_uint iIndex, _float fValue)
 
 HRESULT CModel::Ready_ComputeShaders(CComputeShader* pBoneMeshCS, CComputeShader* pBoneComBineCS, CComputeShader* pAnimEvalCS, CComputeShader* pAnimBlendCS, CComputeShader* pGetBoneCS)
 {
+	Make_GroupBuffers();	// group buffer만 우선 생성
+	Make_SB();
+
 	if (pBoneMeshCS)
 	{
 		for (auto& pMesh : m_vecMeshes)
@@ -526,7 +549,9 @@ HRESULT CModel::Ready_ComputeShaders(CComputeShader* pBoneMeshCS, CComputeShader
 		}
 
 		pAnimEvalCS->Get_Output_Buffer()->Copy_Data(pIniailData, sizeof(CS_SRT), Get_BoneCount());
-		pAnimBlendCS->Get_Output_Buffer()->Copy_Data(pIniailData, sizeof(CS_SRT), Get_BoneCount());
+
+		if(pAnimBlendCS)
+			pAnimBlendCS->Get_Output_Buffer()->Copy_Data(pIniailData, sizeof(CS_SRT), Get_BoneCount());
 
 		Safe_Delete_Array(pIniailData);
 	}
@@ -582,8 +607,6 @@ HRESULT CModel::Load_AnimModel(const wstring& wstrModelName, DATA_ANIMCHANNEL* p
 	}
 
 	Make_BoneGroup();		// bone을 그룹별로 만든다
-	Make_GroupBuffers();	// group buffer만 우선 생성
-	Make_SB();
 
 	Safe_Release(pModelLoader);
 	return S_OK;
@@ -742,7 +765,8 @@ void CModel::Update_AnimationPlayState(CComputeShader* pBoneComBineCS, CComputeS
 		Play_Update(pBoneComBineCS, pAnimEvalCS, fTimeDelta, pOwnerTransform, pOwnerPhyCCT, pGetBoneCS);
 		break;
 	case Engine::CModel::BLEND:
-		Blend_Update(pBoneComBineCS, pAnimEvalCS, pAnimBlendCS, fTimeDelta, pOwnerTransform, pOwnerPhyCCT, pGetBoneCS);
+		if(pAnimBlendCS)
+			Blend_Update(pBoneComBineCS, pAnimEvalCS, pAnimBlendCS, fTimeDelta, pOwnerTransform, pOwnerPhyCCT, pGetBoneCS);
 		break;
 	}
 }
@@ -788,10 +812,6 @@ void CModel::Play_Begin(CComputeShader* pAnimEvalCS, _uint iAnimationIndex)
 {
 	if (pAnimEvalCS)
 		m_vecAnimations[iAnimationIndex]->Bind_AnimationEData(pAnimEvalCS);
-
-	// test 용
-	else
-		int a = 0;
 }
 
 void CModel::Play_Update(CComputeShader* pBoneComBineCS, CComputeShader* pAnimEvalCS, const _float fTimeDelta, CTransform* pOwnerTransform, CPhysicsCCT* pOwnerPhyCCT, CComputeShader* pGetBoneCS)
@@ -901,7 +921,7 @@ void CModel::Make_SB()
 
 void CModel::Make_Staging(MODEL_ORIGIN_DESC* pDesc)
 {
-	m_iStageBoneCounts = (_uint)(pDesc->iStageBoneIndices.size());
+	m_iStageBoneCounts = (_uint)(pDesc->vecStageBoneIndices.size());
 
 	// 1. staging buffer 생성
 	D3D11_BUFFER_DESC desc = {};
@@ -914,7 +934,7 @@ void CModel::Make_Staging(MODEL_ORIGIN_DESC* pDesc)
 
 	// 2. bone indices 캐스팅 하고 있자
 	m_vecStageBoneIndices.reserve(m_iStageBoneCounts);
-	m_vecStageBoneIndices = pDesc->iStageBoneIndices;
+	m_vecStageBoneIndices = pDesc->vecStageBoneIndices;
 }
 
 void CModel::Update_BoneCombineTransformMatrix(CComputeShader* pBoneComBineCS)

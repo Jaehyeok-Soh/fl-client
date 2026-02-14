@@ -12,7 +12,7 @@ CPanel_Model::CPanel_Model(const _char* pLabel, CLevel* pOwner, ID3D11Device* pD
 
 HRESULT CPanel_Model::Render(CToolObject* pGo)
 {
-	return E_NOTIMPL;
+	return S_OK;
 }
 
 void CPanel_Model::Update(const _float fTimeDelta)
@@ -21,33 +21,33 @@ void CPanel_Model::Update(const _float fTimeDelta)
 
 HRESULT CPanel_Model::Render_LoadFile()
 {
-	return E_NOTIMPL;
+	return S_OK;
 }
 
 HRESULT CPanel_Model::Render_ModelInfo()
 {
-	return E_NOTIMPL;
+	return S_OK;
 }
 
 HRESULT CPanel_Model::Render_Animations()
 {
-	return E_NOTIMPL;
+	return S_OK;
 }
 
 HRESULT CPanel_Model::Render_Bones()
 {
-	return E_NOTIMPL;
+	return S_OK;
 }
 
 HRESULT CPanel_Model::Render_PreTransform()
 {
-	return E_NOTIMPL;
+	return S_OK;
 }
 
 HRESULT CPanel_Model::Make_Model()
 {
 	// 선택된 모델로 게임 오브젝트를 만든다
-	return E_NOTIMPL;
+	return S_OK;
 }
 
 void CPanel_Model::Free()
