@@ -46,6 +46,8 @@ namespace Engine
 
 	typedef struct tagShaderInvDesc
 	{
+		Matrix matCamView = Matrix::Identity;
+		Matrix matCamProj = Matrix::Identity;
 		Matrix matInvView = Matrix::Identity;
 		Matrix matInvProj = Matrix::Identity;
 	}SHADER_INVDESC;
@@ -96,26 +98,52 @@ namespace Engine
 		float fEmissivePower = { 1.f };
 	}SHADER_MI_DESC;
 
+	typedef struct tagShaderSSAOKernelDesc
+	{
+		SimpleMath::Vector4 vKernel[16]{ SimpleMath::Vector4::Zero};
+		SimpleMath::Vector2 vNoiseScale{};
+		SimpleMath::Vector2 vPadding{};
+	}SHADER_SSAOKERNEL_DESC;
+
+	typedef struct tagShaderSSAOParamDesc
+	{
+		float fRadius{ 0.f };
+		float fBias{ 0.f };
+		float fPower{ 0.f };
+		float fIntensity{ 0.f };
+		float fFadeStart{ 0.f };
+		float fFadeEnd{ 0.f };
+		SimpleMath::Vector2 vInvSize{ 1.f, 1.f };
+	}SHADER_SSAOPARAM_DESC;
+
 	typedef struct tagShaderEffectDesc
 	{
 		unsigned int iTextureFlags = { 0 };
 		unsigned int iRenderFlags = { 0 };
-		unsigned int  iSamplerStateFlags = {0};
+		unsigned int  iSamplerStateFlags = { 0 };
 		float iDiscardValue = { 0.f };
 
 		unsigned int iOperatorFlags = { 0 };
 		unsigned int iRotationFlags = { 0 };
-		SimpleMath::Vector2 vPadding1 = { 0.f, 0.f };
+		SimpleMath::Vector2 vUVOffset = { 0.f, 0.f };
 
 		// 스프라이트 정보 추가
 		unsigned int SpriteColCount = {};		// 가로 프레임 수
 		unsigned int SpriteRowCount = {};		// 세로 프레임 수
 		unsigned int CurSpriteIndex = {};		// 현재 스프라이트 인덱스
-		float		 Padding2 = {};
+		float		 LifeRatio = {};
 
 		SimpleMath::Vector2 vScrollOffset = { 0.f, 0.f };
 		SimpleMath::Vector2 vDistortionScale = { 0.f, 0.f };
 		SimpleMath::Vector4 vEffectColor = { 0.f, 0.f, 0.f, 0.f };
+
+		SimpleMath::Vector2 DiffuseTexture_ScrollWeight = { 0.f, 0.f };
+		SimpleMath::Vector2 NoiseTexture_ScrollWeight = { 0.f, 0.f };
+		SimpleMath::Vector2 MaskingTexture_ScrollWeight = { 0.f, 0.f };
+		SimpleMath::Vector2 GradationTexture_ScrollWeight = { 0.f, 0.f };
+
+		SimpleMath::Vector2	DissolveTexture_ScrollWeight = { 0.f, 0.f };
+		SimpleMath::Vector2 Padding1 = { 0.f, 0.f };
 	}SHADER_EFFECT_DESC;
 
 	typedef struct tagShaderBoneDesc

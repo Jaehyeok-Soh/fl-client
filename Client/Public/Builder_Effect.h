@@ -8,12 +8,12 @@ NS_END
 
 NS_BEGIN(Client)
 
-class EffectBuilder final : public CBuilderBase
+class CBuilder_Effect final : public CBuilderBase
 {
 	using Super = CBuilderBase;
 private:
-	EffectBuilder(ID3D11Device* pDevice, ID3D11DeviceContext* pDeviceContext, _uint iLevelID);
-	virtual ~EffectBuilder() = default;
+	CBuilder_Effect(ID3D11Device* pDevice, ID3D11DeviceContext* pDeviceContext, _uint iLevelID);
+	virtual ~CBuilder_Effect() = default;
 
 	HRESULT Initialize();
 public:
@@ -21,7 +21,7 @@ public:
 private:
 	HRESULT Create_Effect(const DTO::TEFFECT_ContainerData& data);
 public:
-	static EffectBuilder* Create(ID3D11Device* pDevice, ID3D11DeviceContext* pDeviceContext, _uint iLevelID);
+	static CBuilder_Effect* Create(ID3D11Device* pDevice, ID3D11DeviceContext* pDeviceContext, _uint iLevelID);
 	virtual void Free() override;
 };
 

@@ -40,6 +40,8 @@ private:
 	unordered_map<_string, DTO::TUI_TriggerData> m_MapTriggerDataCache;
 	unordered_map<_string, DTO::TUI_DImageData> m_MapDImageDataCache;
 
+	vector<CGenericUI*> m_vecTriggerUIs;
+		 
 	Vec2 m_vAspect = {};
 	Vec2 m_vViewportSIze = {};
 

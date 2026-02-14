@@ -1,22 +1,22 @@
 #include "pch.h"
-#include "EffectBuilder.h"
+#include "Builder_Effect.h"
 #include "DataDocument_Effect.h"
 #include "ContainerObject.h"
 #include "Effect.h"
 #include "EffectObject.h"
 #include "GameInstance.h"
 
-EffectBuilder::EffectBuilder(ID3D11Device* pDevice, ID3D11DeviceContext* pDeviceContext, _uint iLevelID)
+CBuilder_Effect::CBuilder_Effect(ID3D11Device* pDevice, ID3D11DeviceContext* pDeviceContext, _uint iLevelID)
 	: Super(pDevice, pDeviceContext, iLevelID)
 {
 }
 
-HRESULT EffectBuilder::Initialize()
+HRESULT CBuilder_Effect::Initialize()
 {
 	return S_OK;
 }
 
-HRESULT EffectBuilder::Build(const CDataDocumentBase& document)
+HRESULT CBuilder_Effect::Build(const CDataDocumentBase& document)
 {
 	if (document.Get_Category() != DTO::ECategory::EFFECT)
 		return E_FAIL;
@@ -36,7 +36,7 @@ HRESULT EffectBuilder::Build(const CDataDocumentBase& document)
 	return S_OK;
 }
 
-HRESULT EffectBuilder::Create_Effect(const DTO::TEFFECT_ContainerData& data)
+HRESULT CBuilder_Effect::Create_Effect(const DTO::TEFFECT_ContainerData& data)
 {
 	if (data.eType != DTO::EEffectType::EFFECT_CONTAINER)
 		return E_FAIL;
@@ -66,24 +66,24 @@ HRESULT EffectBuilder::Create_Effect(const DTO::TEFFECT_ContainerData& data)
 	wstring PoolTag = L"POOL_" + Engine_Utils::ToWString(pData.EffectContainerName);
 	wstring LayTag = L"Effect_Layer";
 	wstring PrototypeTag = L"Prototype_GameObject_Effect";
-	m_pGameInstance->Regist_Pool(m_iLevelID, PoolTag, LayTag, m_iLevelID, PrototypeTag, &pDesc, 10);
+	m_pGameInstance->Regist_Pool(m_iLevelID, PoolTag, LayTag, m_iLevelID, PrototypeTag, &pDesc, 50);
 	
 	return S_OK;
 }
 
 
-EffectBuilder* EffectBuilder::Create(ID3D11Device* pDevice, ID3D11DeviceContext* pDeviceContext, _uint iLevelID)
+CBuilder_Effect* CBuilder_Effect::Create(ID3D11Device* pDevice, ID3D11DeviceContext* pDeviceContext, _uint iLevelID)
 {
-	EffectBuilder* pInstance = new EffectBuilder(pDevice, pDeviceContext, iLevelID);
+	CBuilder_Effect* pInstance = new CBuilder_Effect(pDevice, pDeviceContext, iLevelID);
 	if (FAILED(pInstance->Initialize()))
 	{
-		MSG_BOX("EffectBuilder::Create, Failed");
+		MSG_BOX("CBuilder_Effect::Create, Failed");
 		Safe_Release(pInstance);
 	}
 	return pInstance;
 }
 
-void EffectBuilder::Free()
+void CBuilder_Effect::Free()
 {
 	Super::Free();
 }

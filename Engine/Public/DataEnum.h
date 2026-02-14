@@ -11,6 +11,7 @@ enum class ECategory : _uint
 {
 	MAP,
 	EFFECT,
+	EFFECTEVENT,
 	UI,
 	ANIMATION,
 	CAMERA,
@@ -34,6 +35,7 @@ NLOHMANN_JSON_SERIALIZE_ENUM(ECategory,
 /////////////////-------------------  ANIMATION  -------------------/////////////////
 enum class EAnimationType : _uint
 {
+
 	END
 };
 inline constexpr _uint g_AnimationTypeCount{ ENUM_TO_UINT(EAnimationType::END) };

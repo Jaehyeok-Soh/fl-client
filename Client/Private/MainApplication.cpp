@@ -452,7 +452,6 @@ HRESULT CMainApplication::Ready_Fonts()
 		if (FAILED(m_pGameInstance->Add_Font(key.c_str(), path.c_str())))
 			return E_FAIL;
 	}
-
 	return S_OK;
 }
 

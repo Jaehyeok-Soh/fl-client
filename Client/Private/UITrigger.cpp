@@ -146,15 +146,26 @@ HRESULT CUITrigger::Awake(const _uint iCurrentLevelID)
 	if (FAILED(Super::Awake(iCurrentLevelID)))
 		return E_FAIL;
 
-	if (FAILED(Bind_Cache()))
-		return E_FAIL;
-
 	return S_OK;
 }
 
 void CUITrigger::Update_Priority(const _float fTimeDelta)
 {
 	Super::Update_Priority(fTimeDelta);
+	if (Engine_Utils::Has_Flag(m_iInteractState, EUIEvent_Flag::PRESS_ENTER))
+	{
+	}
+	else if (Engine_Utils::Has_Flag(m_iInteractState, EUIEvent_Flag::PRESS_EXIT))
+	{
+	}
+	else if (Engine_Utils::Has_Flag(m_iInteractState, EUIEvent_Flag::HOVER_ENTER))
+	{
+		Fire_ToTargets(ETriggerEventType::HOVER_ENTER);
+	}
+	else if (Engine_Utils::Has_Flag(m_iInteractState, EUIEvent_Flag::HOVER_EXIT))
+	{
+		Fire_ToTargets(ETriggerEventType::HOVER_EXIT);
+	}
 }
 
 void CUITrigger::Update(const _float fTimeDelta)
@@ -169,7 +180,7 @@ void CUITrigger::Update_Late(const _float fTimeDelta)
 
 void CUITrigger::Ready_Before_Render(const _float fTimeDelta)
 {
-	Acting_By_InteractState();
+
 	Super::Ready_Before_Render(fTimeDelta);
 }
 
@@ -189,6 +200,15 @@ HRESULT CUITrigger::Render()
 	Get_Component<CVIBuffer>()->Render();
 
 	return S_OK;
+}
+
+void CUITrigger::Fire_ToTargets(ETriggerEventType eEvent)
+{
+	for (auto* pUI : m_pTriggerUI[ENUM_TO_UINT(eEvent)])
+		if (pUI) pUI->OnUIEvent(eEvent, this);
+
+	//for (auto* pCanvas : m_pTriggerCanvas[ENUM_TO_UINT(eEvent)])
+	//	if (pCanvas) pCanvas->OnUIEvent(eEvent, this);
 }
 
 HRESULT CUITrigger::Ready_Components(UI_TRIGGER_DESC* pDesc)
