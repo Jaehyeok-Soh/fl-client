@@ -98,8 +98,15 @@ HRESULT CMainApplication::Ready_Static_Prototype()
 	if (FAILED(m_pGameInstance->Add_Prototype(ENUM_TO_UINT(ELevelType::STATIC), L"Prototype_Component_VIBuffer_Line_Color", CVIBuffer_Line_Color::Create(m_pDevice, m_pDeviceContext, nullptr))))
 		return E_FAIL;
 
-	if (FAILED(m_pGameInstance->Add_Font(L"Font_Default", L"../../Resources/Fonts/156ex.spritefont")))
-		return E_FAIL;
+	// font
+	for (const auto& e : std::filesystem::directory_iterator(L"..\\..\\Resources\\Fonts"))
+	{
+		const std::wstring key = e.path().stem().wstring();   // 파일명(확장자 제외)
+		const std::wstring path = e.path().wstring();          // 실제 경로
+		if (FAILED(m_pGameInstance->Add_Font(key.c_str(), path.c_str())))
+			return E_FAIL;
+		CImGui_UIManager::GetInstance()->Add_FontName(Engine_Utils::ToString(key));
+	}
 
 	/* Bound */
 	if (FAILED(m_pGameInstance->Add_Prototype(ENUM_TO_UINT(ELevelType::STATIC), L"Prototype_Component_Bounds", CBounds::Create(m_pDevice , m_pDeviceContext))))

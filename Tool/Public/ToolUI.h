@@ -98,6 +98,9 @@ public:
 	_float Get_Delay()				const	{ return m_fDelay; }
 	const _wstring& Get_Text()		const	{ return m_wstrText_TextData; }
 	Vec4& Get_FontColor()					{ return m_vFontColor_TextData; }
+	_float Get_FontScale() const { return m_fScale_TextData; }
+	const _string& Get_FontName() const { return m_strFontName_TextData; }
+	_float Get_FontRotate() const { return m_fRotate_TextData; }
 
 	const vector<_string>& Get_vecHoverEnterTriggerCanvas() const { return m_vecHoverEnterTriggerCanvas; }
 	const vector<_string>& Get_vecHoverEnterTriggerUI() const { return m_vecHoverEnterTriggerUI; }
@@ -116,26 +119,29 @@ public:
 	void Set_Delay(_float f)				{ m_fDelay = f; }
 	void Set_Text(const _wstring& wstr)		{ m_wstrText_TextData = wstr; }
 	void Set_Flip(int32_t i)				{ m_iFlip = i; }
+	void Set_FontScale(const _float fScale) { m_fScale_TextData = fScale; }
+	void Set_FontName(const _string& strName) { m_strFontName_TextData = strName; }
+	void Set_FontRotate(const _float fRotate) { m_fRotate_TextData = fRotate; }
 
 	_bool Add_Tag(vector<_string>& vec, const _string& str);
 	_bool Remove_Tag(vector<_string>& vec, const _string& str);
-	_bool Add_vecHoverEnterTriggerCanvas(const std::string& str) { return Add_Tag(m_vecHoverEnterTriggerCanvas, str); }
-	_bool Add_vecHoverEnterTriggerUI(const std::string& str) { return Add_Tag(m_vecHoverEnterTriggerUI, str); }
-	_bool Add_vecHoverExitTriggerCanvas(const std::string& str) { return Add_Tag(m_vecHoverExitTriggerCanvas, str); }
-	_bool Add_vecHoverExitTriggerUI(const std::string& str) { return Add_Tag(m_vecHoverExitTriggerUI, str); }
-	_bool Add_vecPressEnterTriggerCanvas(const std::string& str) { return Add_Tag(m_vecPressEnterTriggerCanvas, str); }
-	_bool Add_vecPressEnterTriggerUI(const std::string& str) { return Add_Tag(m_vecPressEnterTriggerUI, str); }
-	_bool Add_vecPressExitTriggerCanvas(const std::string& str) { return Add_Tag(m_vecPressExitTriggerCanvas, str); }
-	_bool Add_vecPressExitTriggerUI(const std::string& str) { return Add_Tag(m_vecPressExitTriggerUI, str); }
+	_bool Add_vecHoverEnterTriggerCanvas(const std::string& str)	{ return Add_Tag(m_vecHoverEnterTriggerCanvas, str); }
+	_bool Add_vecHoverEnterTriggerUI(const std::string& str)		{ return Add_Tag(m_vecHoverEnterTriggerUI, str); }
+	_bool Add_vecHoverExitTriggerCanvas(const std::string& str)		{ return Add_Tag(m_vecHoverExitTriggerCanvas, str); }
+	_bool Add_vecHoverExitTriggerUI(const std::string& str)			{ return Add_Tag(m_vecHoverExitTriggerUI, str); }
+	_bool Add_vecPressEnterTriggerCanvas(const std::string& str)	{ return Add_Tag(m_vecPressEnterTriggerCanvas, str); }
+	_bool Add_vecPressEnterTriggerUI(const std::string& str)		{ return Add_Tag(m_vecPressEnterTriggerUI, str); }
+	_bool Add_vecPressExitTriggerCanvas(const std::string& str)		{ return Add_Tag(m_vecPressExitTriggerCanvas, str); }
+	_bool Add_vecPressExitTriggerUI(const std::string& str)			{ return Add_Tag(m_vecPressExitTriggerUI, str); }
 
 	_bool Remove_vecHoverEnterTriggerCanvas(const std::string& str) { return Remove_Tag(m_vecHoverEnterTriggerCanvas, str); }
-	_bool Remove_vecHoverEnterTriggerUI(const std::string& str) { return Remove_Tag(m_vecHoverEnterTriggerUI, str); }
-	_bool Remove_vecHoverExitTriggerCanvas(const std::string& str) { return Remove_Tag(m_vecHoverExitTriggerCanvas, str); }
-	_bool Remove_vecHoverExitTriggerUI(const std::string& str) { return Remove_Tag(m_vecHoverExitTriggerUI, str); }
+	_bool Remove_vecHoverEnterTriggerUI(const std::string& str)		{ return Remove_Tag(m_vecHoverEnterTriggerUI, str); }
+	_bool Remove_vecHoverExitTriggerCanvas(const std::string& str)	{ return Remove_Tag(m_vecHoverExitTriggerCanvas, str); }
+	_bool Remove_vecHoverExitTriggerUI(const std::string& str)		{ return Remove_Tag(m_vecHoverExitTriggerUI, str); }
 	_bool Remove_vecPressEnterTriggerCanvas(const std::string& str) { return Remove_Tag(m_vecPressEnterTriggerCanvas, str); }
-	_bool Remove_vecPressEnterTriggerUI(const std::string& str) { return Remove_Tag(m_vecPressEnterTriggerUI, str); }
-	_bool Remove_vecPressExitTriggerCanvas(const std::string& str) { return Remove_Tag(m_vecPressExitTriggerCanvas, str); }
-	_bool Remove_vecPressExitTriggerUI(const std::string& str) { return Remove_Tag(m_vecPressExitTriggerUI, str); }
+	_bool Remove_vecPressEnterTriggerUI(const std::string& str)		{ return Remove_Tag(m_vecPressEnterTriggerUI, str); }
+	_bool Remove_vecPressExitTriggerCanvas(const std::string& str)	{ return Remove_Tag(m_vecPressExitTriggerCanvas, str); }
+	_bool Remove_vecPressExitTriggerUI(const std::string& str)		{ return Remove_Tag(m_vecPressExitTriggerUI, str); }
 	_float& Get_TestProgress_Ref() { return m_fTestProgress; }
 	int32_t& Get_FillDir_Ref() { return m_iFillDir; }
 
@@ -164,9 +170,9 @@ public:
 
 private:
 	// Debug
-	PrimitiveBatch<DirectX::VertexPositionColor>* m_pBatch = { nullptr };
-	BasicEffect* m_pEffect = { nullptr };
-	ID3D11InputLayout* m_pInputLayout = { nullptr };
+	PrimitiveBatch<DirectX::VertexPositionColor>* m_pBatch	= { nullptr };
+	BasicEffect* m_pEffect									= { nullptr };
+	ID3D11InputLayout* m_pInputLayout						= { nullptr };
 
 protected:
 	// Client Bind Values
@@ -191,6 +197,9 @@ protected:
 	DTO::TUI_TextData m_tUITextData		= {};
 	std::wstring m_wstrText_TextData	= {};
 	Vec4 m_vFontColor_TextData			= {};
+	_float m_fScale_TextData			= {};
+	_string m_strFontName_TextData		= {"SemiBold"};
+	_float m_fRotate_TextData			= {};
 
 	// Client Bind Values Trigger Data
 	DTO::TUI_TriggerData m_tUITriggerData = {};
@@ -222,7 +231,7 @@ protected:
 	_float m_fTestProgress	= { 1.f };
 	_bool m_isDisable		= { false };
 	_float m_fTestAlpha		= {};
-	int32_t m_iIndex = {};
+	int32_t m_iIndex		= {};
 
 public:
 	static CToolUI* Create(EToolObjectType eType, ID3D11Device* pDevice, ID3D11DeviceContext* pContext);

@@ -177,58 +177,23 @@ ID3DX11EffectSamplerVariable* CFxEffectAsset::Get_Sampler(string name)
 
 void CFxEffectAsset::Binding_Cache()
 {
-	m_tBindingCache.pCB_Global = m_pEffect->GetConstantBufferByName("GlobalBuffer");
-	m_tBindingCache.pCB_Inv = m_pEffect->GetConstantBufferByName("InvBuffer");
-	m_tBindingCache.pCB_Transform = m_pEffect->GetConstantBufferByName("TransformBuffer");
+	for (_uint i = 0; i < ENUM_TO_UINT(EFXCB::COUNT); ++i)
+		m_tBindingCache.CB[i] = m_pEffect->GetConstantBufferByName(g_CBNames[i]);
+	for (_uint i = 0; i < ENUM_TO_UINT(EFXSRV::COUNT); ++i)
+		m_tBindingCache.SRV[i] = m_pEffect->GetVariableByName(g_SRVNames[i])->AsShaderResource();
+	for (_uint i = 0; i < ENUM_TO_UINT(EFXScalar::COUNT); ++i)
+		m_tBindingCache.Scalar[i] = m_pEffect->GetVariableByName(g_ScalarNames[i])->AsScalar();
 
-	m_tBindingCache.pCB_Light = m_pEffect->GetConstantBufferByName("LightBuffer");
-	m_tBindingCache.pCB_Material = m_pEffect->GetConstantBufferByName("MaterialBuffer");
-	m_tBindingCache.pCB_MaterialInst = m_pEffect->GetConstantBufferByName("MaterialInstanceBuffer");
-
-	m_tBindingCache.pCB_Keyframe = m_pEffect->GetConstantBufferByName("KeyframeBuffer");
-	m_tBindingCache.pCB_Bone = m_pEffect->GetConstantBufferByName("BoneBuffer");	
-	m_tBindingCache.pCB_Effect = m_pEffect->GetConstantBufferByName("ConstantBuffer_Effect");
-
-	m_tBindingCache.pG_MaterialMask = m_pEffect->GetVariableByName("g_iMaterialMask")->AsScalar();
-	m_tBindingCache.pG_TextureMask = m_pEffect->GetVariableByName("g_iGlobalMask")->AsScalar();
-
-	m_tBindingCache.pSRV_RT = m_pEffect->GetVariableByName("g_RenderTargetTexture")->AsShaderResource();
-	m_tBindingCache.pSRV_RT_Diffuse = m_pEffect->GetVariableByName("g_RenderTargetDiffuseTexture")->AsShaderResource();
-	m_tBindingCache.pSRV_RT_Normal = m_pEffect->GetVariableByName("g_RenderTargetNormalTexture")->AsShaderResource();
-	m_tBindingCache.pSRV_RT_Shade = m_pEffect->GetVariableByName("g_RenderTargetShadeTexture")->AsShaderResource();
-	m_tBindingCache.pSRV_RT_Depth = m_pEffect->GetVariableByName("g_RenderTargetDepthTexture")->AsShaderResource();
-	m_tBindingCache.pSRV_RT_Scene = m_pEffect->GetVariableByName("g_RenderTargetSceneTexture")->AsShaderResource();
-		
-	m_tBindingCache.pSRV_Transform = m_pEffect->GetVariableByName("g_TransformMap")->AsShaderResource();
-	m_tBindingCache.pSRV_Material = m_pEffect->GetVariableByName("g_MaterialTextures")->AsShaderResource();
-
-	m_tBindingCache.pSRV_Textures = m_pEffect->GetVariableByName("g_DefaultTextures")->AsShaderResource();
-	m_tBindingCache.pSRV_Cube = m_pEffect->GetVariableByName("g_TextureCube")->AsShaderResource();	
 }
 
 void CFxEffectAsset::Clear_Cache()
 {
-	Safe_Release(m_tBindingCache.pCB_Global);
-	Safe_Release(m_tBindingCache.pCB_Inv);
-	Safe_Release(m_tBindingCache.pCB_Transform);
-	Safe_Release(m_tBindingCache.pCB_Light);
-	Safe_Release(m_tBindingCache.pCB_Material);
-	Safe_Release(m_tBindingCache.pCB_MaterialInst);
-	Safe_Release(m_tBindingCache.pCB_Keyframe);
-	Safe_Release(m_tBindingCache.pCB_Bone);
-	Safe_Release(m_tBindingCache.pCB_Effect);
-	Safe_Release(m_tBindingCache.pG_MaterialMask);
-	Safe_Release(m_tBindingCache.pG_TextureMask);
-	Safe_Release(m_tBindingCache.pSRV_RT);
-	Safe_Release(m_tBindingCache.pSRV_RT_Diffuse);
-	Safe_Release(m_tBindingCache.pSRV_RT_Normal);
-	Safe_Release(m_tBindingCache.pSRV_RT_Shade);
-	Safe_Release(m_tBindingCache.pSRV_RT_Depth);
-	Safe_Release(m_tBindingCache.pSRV_RT_Scene);
-	Safe_Release(m_tBindingCache.pSRV_Transform);
-	Safe_Release(m_tBindingCache.pSRV_Material);
-	Safe_Release(m_tBindingCache.pSRV_Textures);
-	Safe_Release(m_tBindingCache.pSRV_Cube);
+	for (_uint i = 0; i < ENUM_TO_UINT(EFXCB::COUNT); ++i)
+		Safe_Release(m_tBindingCache.CB[i]);
+	for (_uint i = 0; i < ENUM_TO_UINT(EFXSRV::COUNT); ++i)
+		Safe_Release(m_tBindingCache.SRV[i]);
+	for (_uint i = 0; i < ENUM_TO_UINT(EFXScalar::COUNT); ++i)
+		Safe_Release(m_tBindingCache.Scalar[i]);
 }
 
 CFxEffectAsset* CFxEffectAsset::Create(ID3D11Device* pDevice, ID3D11DeviceContext* pDeviceContext)

@@ -45,29 +45,25 @@ public:
 	ID3DX11EffectRasterizerVariable* Get_Rasterizer(string name);
 	ID3DX11EffectSamplerVariable* Get_Sampler(string name);
 
-	HRESULT Bind_RenderTargetTexture(ID3D11ShaderResourceView* pTexture);
-	HRESULT Bind_RenderTargetDiffuseTexture(ID3D11ShaderResourceView* pTexture);
-	HRESULT Bind_RenderTargetNormalTexture(ID3D11ShaderResourceView* pTexture);
-	HRESULT Bind_RenderTargetShadeTexture(ID3D11ShaderResourceView* pTexture);
-	HRESULT Bind_RenderTargetDepthTexture(ID3D11ShaderResourceView* pTexture);
-	HRESULT Bind_RenderTargetSceneTexture(ID3D11ShaderResourceView* pTexture); // 이펙트 전용 후처리 쉐이더 텍스처
-	HRESULT Bind_DiffuseTexture(ID3D11ShaderResourceView* pDiffuse);
-	void Bind_MaterialTextures(ID3D11ShaderResourceView** ppSRV, _uint iCount);
-	void Bind_MaterialMask(_short iMask);
-	void Bind_MaterialData(const SHADER_MATERIALDESC& desc);
-	void Bind_MaterialInstanceData(const SHADER_MI_DESC& desc);
-	void Bind_EffectData(const SHADER_EFFECT_DESC& desc);
-	void Bind_GlobalMask(_uint iMask);
-	HRESULT Bind_DefaultTexture(ID3D11ShaderResourceView* pSRV);
-	HRESULT Bind_CubeTexture(ID3D11ShaderResourceView* pSRV);
-	HRESULT Bind_DefaultTextures(ID3D11ShaderResourceView** ppSRV, _uint iCount = 8);
+	HRESULT Bind_SRV(EFXSRV eSlot, ID3D11ShaderResourceView* pSRV);
+	HRESULT Bind_SRVArray(EFXSRV eSlot, ID3D11ShaderResourceView** ppSRV, _uint iCount);
+	HRESULT Bind_Scalar(EFXScalar eSlot, _uint iValue);
+	HRESULT Bind_Scalar(EFXScalar eSlot, _int iValue);
+	HRESULT Bind_Scalar(EFXScalar eSlot, _float fValue);
+	HRESULT Bind_Scalar(EFXScalar eSlot, _bool bValue);
+
+	HRESULT Bind_MaterialData(const SHADER_MATERIALDESC& desc);
+	HRESULT Bind_MaterialInstanceData(const SHADER_MI_DESC& desc);
+	HRESULT Bind_EffectData(const SHADER_EFFECT_DESC& desc);
 	HRESULT Bind_TransformData(const SHADER_TRANSFORMDESC& trnasformDesc);
 	HRESULT Bind_TransformData(const Matrix& matTransform);
-	void Bind_TransformTexture(ID3D11ShaderResourceView* pSRV);
 	HRESULT Bind_BoneData(const SHADER_BONEDESC& boneDesc);
-	void Bind_KeyFrameData(const SHADER_KEYFRAMEDESC& keyframeDesc);
+	HRESULT Bind_KeyFrameData(const SHADER_KEYFRAMEDESC& keyframeDesc);
 
+	// 외부에서 ConstantBuffer를 생성후 바인딩할 때
+	HRESULT Set_ConstantBuffer(EFXCB eSlot, ID3D11Buffer* pBuffer);
 private:
+	// ShaderComponent내에 ConstantBuffer 생성
 	void Create_ConstantBuffer();
 	void Clear_ConstantBuffer();
 private:

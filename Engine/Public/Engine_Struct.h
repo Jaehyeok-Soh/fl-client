@@ -46,6 +46,8 @@ namespace Engine
 
 	typedef struct tagShaderInvDesc
 	{
+		Matrix matCamView = Matrix::Identity;
+		Matrix matCamProj = Matrix::Identity;
 		Matrix matInvView = Matrix::Identity;
 		Matrix matInvProj = Matrix::Identity;
 	}SHADER_INVDESC;
@@ -95,6 +97,24 @@ namespace Engine
 		SimpleMath::Vector3 vPadding = {};
 		float fEmissivePower = { 1.f };
 	}SHADER_MI_DESC;
+
+	typedef struct tagShaderSSAOKernelDesc
+	{
+		SimpleMath::Vector4 vKernel[16]{ SimpleMath::Vector4::Zero};
+		SimpleMath::Vector2 vNoiseScale{};
+		SimpleMath::Vector2 vPadding{};
+	}SHADER_SSAOKERNEL_DESC;
+
+	typedef struct tagShaderSSAOParamDesc
+	{
+		float fRadius{ 0.f };
+		float fBias{ 0.f };
+		float fPower{ 0.f };
+		float fIntensity{ 0.f };
+		float fFadeStart{ 0.f };
+		float fFadeEnd{ 0.f };
+		SimpleMath::Vector2 vInvSize{ 1.f, 1.f };
+	}SHADER_SSAOPARAM_DESC;
 
 	typedef struct tagShaderEffectDesc
 	{

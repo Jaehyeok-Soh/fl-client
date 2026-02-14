@@ -15,7 +15,6 @@ public:
 		DTO::TUI_TriggerData tTriggerData;
 	}UI_TRIGGER_DESC;
 
-	enum class ETriggerEventType { HOVER_ENTER, HOVER_EXIT, PRESS_ENTER, PRESS_EXIT, END };
 
 private:
 	CUITrigger(ID3D11Device* pDevice, ID3D11DeviceContext* pDeviceContext);
@@ -37,6 +36,7 @@ public:
 	virtual void Ready_Before_Render(const _float fTimeDelta) override;
 	virtual HRESULT Render() override;
 
+	void Fire_ToTargets(ETriggerEventType eEvent);
 private:
 	HRESULT Ready_Components(UI_TRIGGER_DESC* pDesc);
 	HRESULT Bind_ShaderResources();
