@@ -26,7 +26,7 @@ public:
 	HRESULT Initialize(void* pArg) override;
 
 	HRESULT Attach_Personal_Info();
-	HRESULT Bind_Cache();
+	HRESULT Bind_Cache(_uint iLevelID);
 
 public:
 	virtual HRESULT Awake(const _uint iCurrentLevelID) override;

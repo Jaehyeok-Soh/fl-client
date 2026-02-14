@@ -1,11 +1,11 @@
 #pragma once
 #include "ImGui_Panel.h"
 #include "DataStruct_UI.h"
+#include "ToolUI.h"
 
 NS_BEGIN(Tool)
 class CImGui_ToolManager;
 class CImGui_UIManager;
-class CToolUI;
 
 class CUI_Inspector final : public CImGui_Panel
 {
@@ -23,7 +23,7 @@ public:
 	
 	void SetUp_Public_Info();
 	void Input_RectTransform();
-	void Input_TextureTag();
+	void Input_TextureTag(CToolUI::EUITextureSlot eSlot);
 	void SetUp_Class();
 	void SetUp_Owner();
 

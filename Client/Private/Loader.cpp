@@ -63,6 +63,7 @@
 #include "UISkill_BG.h"
 #include "UIMini_Map.h"
 #include "UIHover_Image.h"
+#include "UIMenu_Image.h"
 
 //=================
 // Resource
@@ -208,6 +209,10 @@ HRESULT CLoader::Loading_For_Logo()
 			return E_FAIL;
 		if (FAILED(Loading_Textures(L"../../Resources/Textures/UI/Map/")))
 			return E_FAIL;
+		if (FAILED(Loading_Textures(L"../../Resources/Textures/UI/Common/")))
+			return E_FAIL;
+		if (FAILED(Loading_Textures(L"../../Resources/Textures/UI/Noise/")))
+			return E_FAIL;
 	}	
 	
 #pragma endregion
@@ -337,6 +342,7 @@ HRESULT CLoader::Loading_For_Logo()
 	ADD_PROTOTYPE(ELevelType::LOGO, L"Prototype_UI_SkillBG", CUISkill_BG::Create(m_pDevice, m_pDeviceContext));
 	ADD_PROTOTYPE(ELevelType::LOGO, L"Prototype_UI_MiniMap", CUIMini_Map::Create(m_pDevice, m_pDeviceContext));
 	ADD_PROTOTYPE(ELevelType::LOGO, L"Prototype_UI_HoverImage", CUIHover_Image::Create(m_pDevice, m_pDeviceContext));
+	ADD_PROTOTYPE(ELevelType::LOGO, L"Prototype_UI_MenuImage", CUIMenu_Image::Create(m_pDevice, m_pDeviceContext));
 #pragma endregion
 
 	m_isFinished = true;

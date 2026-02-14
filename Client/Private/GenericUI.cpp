@@ -39,11 +39,14 @@ HRESULT CGenericUI::Initialize(void* pArg)
 	m_iLevelID				= pDesc->iLevelIndex;
 	m_eRectTransformType	= static_cast<ERectTransform>(pDesc->iRectTransformType);
 	m_wstrTextureTag		= pDesc->wstrTextureTag;
+	m_wstrNoiseTextureTag	= pDesc->wstrNoiseTextureTag;
+	m_wstrAlphaMaskTextureTag= pDesc->wstrAlphaMaskTextureTag;
 	m_iTextureIndex			= pDesc->iTextureIndex;
 	m_iComponentFlag		= pDesc->iComponentFlag;
 	m_pParentCanvasCache	= pDesc->pCanvasCache;
 	m_isUseColorTint		= pDesc->isUseColorTint;
 	m_vColorTint			= pDesc->vColorTint;
+	m_vGradiantColorTint	= pDesc->vGradiantColorTint;
 	m_iShaderPass			= pDesc->iShaderPass;
 	m_iFillDir				= pDesc->iFillDir;
 	m_fDelay				= pDesc->fDelay;
@@ -55,8 +58,18 @@ HRESULT CGenericUI::Initialize(void* pArg)
 		return E_FAIL;
 
 	Get_Component<CShader>()->Set_Pass(m_iShaderPass);
-	if (FAILED(Get_Component<CTexture>()->Add_DefaultTexture(m_wstrTextureTag, 0)))
+	if (FAILED(Get_Component<CTexture>()->Add_DefaultTexture(m_wstrTextureTag, DEFAULT)))
 		return E_FAIL;
+	if (m_wstrNoiseTextureTag != L"")
+	{
+		if (FAILED(Get_Component<CTexture>()->Add_DefaultTexture(m_wstrNoiseTextureTag, NOISE)))
+			return E_FAIL;
+	}
+	if (m_wstrAlphaMaskTextureTag != L"")
+	{
+		if (FAILED(Get_Component<CTexture>()->Add_DefaultTexture(m_wstrAlphaMaskTextureTag, ALPHA_MASK)))
+			return E_FAIL;
+	}
 	return S_OK;
 }
 
@@ -173,12 +186,15 @@ HRESULT CGenericUI::Bind_ShaderResources()
 
 	if (FAILED(Get_Component<CTexture>()->Bind_ShaderResourceBuffer(pShader)))
 		return E_FAIL;
+
 	if (FAILED(pShader->Get_Variable("g_iFlip")->SetRawValue(&m_iFlip, 0, sizeof(int32_t))))
 		return E_FAIL;
 	const int32_t isColor = m_isUseColorTint ? 1 : 0;
 	if (FAILED(pShader->Get_Variable("g_iColor")->SetRawValue(&isColor, 0, sizeof(int32_t))))
 		return E_FAIL;
 	if (FAILED(pShader->Get_Variable("g_vColorTint")->SetRawValue(&m_vColorTint, 0, sizeof(Vec4))))
+		return E_FAIL;
+	if (FAILED(pShader->Get_Variable("g_vGradiateColorTint")->SetRawValue(&m_vGradiantColorTint, 0, sizeof(Vec4))))
 		return E_FAIL;
 	if (FAILED(pShader->Get_Variable("g_fAlphaRatio")->SetRawValue(&m_fAlpha_Ratio, 0, sizeof(_float))))
 		return E_FAIL;

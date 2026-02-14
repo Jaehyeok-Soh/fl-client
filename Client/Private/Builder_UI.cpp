@@ -10,6 +10,7 @@
 #include "UISkill_BG.h"
 #include "UIMini_Map.h"
 #include "UIHover_Image.h"
+#include "UIMenu_Image.h"
 
 #include"UI_Manager.h"
 #include "GameInstance.h"
@@ -95,25 +96,15 @@ HRESULT CBuilder_UI::Build(const CDataDocumentBase& document)
 		}
 	}
 
-	if (FAILED(CUI_Manager::GetInstance()->Swap_MapCanvasCache(m_iLevelID, std::move(m_MapCanvasCache))))
+	if (FAILED(CUI_Manager::GetInstance()->Merge_MapCanvasCache(m_iLevelID, std::move(m_MapCanvasCache))))
 		return E_FAIL;
-	if (FAILED(CUI_Manager::GetInstance()->Swap_MapGenericUICache(m_iLevelID, std::move(m_pMapUICache))))
+	if (FAILED(CUI_Manager::GetInstance()->Merge_MapGenericUICache(m_iLevelID, std::move(m_pMapUICache))))
 		return E_FAIL;
 
 	m_MapTextDataCache.clear();
 	m_MapTriggerDataCache.clear();
 
-	for (auto* pUI : m_vecTriggerUIs)
-	{
-		auto* pTriggerUI = dynamic_cast<CUITrigger*>(pUI);
-		if (nullptr == pTriggerUI)
-			continue;
-
-		if (FAILED(pTriggerUI->Bind_Cache()))
-			return E_FAIL;
-	}
-	m_vecTriggerUIs.clear();
-
+	CUI_Manager::GetInstance()->Add_TriggerUI(std::move(m_vecTriggerUIs));
 	CUI_Manager::GetInstance()->Request_SortUI();
 	return S_OK;
 }
@@ -248,7 +239,11 @@ HRESULT CBuilder_UI::Register_Class(DTO::EUIClassType eClassType, const DTO::TUI
 		if (nullptr == pResult)
 			return E_FAIL;
 
-		auto* pTriggerUI = dynamic_cast<CGenericUI*>(pResult);
+		auto* pUI = dynamic_cast<CGenericUI*>(pResult);
+		if (nullptr == pUI)
+			return E_FAIL;
+
+		auto* pTriggerUI = dynamic_cast<CUITrigger*>(pUI);
 		if (nullptr == pTriggerUI)
 			return E_FAIL;
 
@@ -265,6 +260,7 @@ HRESULT CBuilder_UI::Register_Class(DTO::EUIClassType eClassType, const DTO::TUI
 		const _bool isPlayerSkill	= (Type >= DTO::EUIDImageSubClassType::PLAYER_SKILL_BEGIN &&	Type <= DTO::EUIDImageSubClassType::PLAYER_SKILL_END);
 		const _bool isMiniMap		= (Type >= DTO::EUIDImageSubClassType::MINIMAP_BEGIN &&	Type <= DTO::EUIDImageSubClassType::MINIMAP_END);
 		const _bool isHoverIcon		= (Type >= DTO::EUIDImageSubClassType::HOVER_POPUP_BEGIN && Type <= DTO::EUIDImageSubClassType::HOVER_POPUP_END);
+		const _bool isMenu			= (Type >= DTO::EUIDImageSubClassType::MENU_BEGIN && Type <= DTO::EUIDImageSubClassType::MENU_END);
 
 		if (isPlayerSkill)
 		{
@@ -287,6 +283,13 @@ HRESULT CBuilder_UI::Register_Class(DTO::EUIClassType eClassType, const DTO::TUI
 			HoverImageDesc.eSubClassType = Type;
 			pResult = m_pGameInstance->Add_GameObject(m_iLevelID, L"Prototype_UI_HoverImage", m_iLevelID, wstrLayerTag, &HoverImageDesc);
 		}
+		else if (isMenu)
+		{
+			CUIMenu_Image::MENU_IMAGE_DESC MenuImageDesc = {};
+			static_cast<CGenericUI::GENERIC_UI_DESC&>(MenuImageDesc) = DefaultDesc;
+			MenuImageDesc.eSubClassType = Type;
+			pResult = m_pGameInstance->Add_GameObject(m_iLevelID, L"Prototype_UI_MenuImage", m_iLevelID, wstrLayerTag, &MenuImageDesc);
+		}
 	}
 	else
 	{
@@ -302,6 +305,7 @@ HRESULT CBuilder_UI::Register_Class(DTO::EUIClassType eClassType, const DTO::TUI
 
 	pCanvas->Get_UIVector()->push_back(pUI);
 	m_pMapUICache.emplace(data.strTag, pUI);
+
 
 	if (FAILED(CUI_Manager::GetInstance()->Add_VecGenericUICache(m_iLevelID, pUI)))
 		return E_FAIL;
@@ -321,6 +325,8 @@ CGenericUI::GENERIC_UI_DESC CBuilder_UI::Make_DefaultInfo(const DTO::TUI_Generic
 	Desc.fY						= data.fPosY * m_vAspect.y;
 	Desc.fZ						= data.fPosZ;
 	Desc.wstrTextureTag			= Engine_Utils::ToWString(data.strTextureTag);
+	Desc.wstrNoiseTextureTag	= Engine_Utils::ToWString(data.strNoiseTextureTag);
+	Desc.wstrAlphaMaskTextureTag= Engine_Utils::ToWString(data.strAlphaMaskTextureTag);
 	Desc.isAlpha				= TRUE;
 	Desc.isInitVisible			= data.isVisible;
 	Desc.pCanvasCache			= pCanvas;

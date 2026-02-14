@@ -289,6 +289,12 @@
     <Filter Include="03. GameObject\PartObjects\Weapon\Gun">
       <UniqueIdentifier>{6a93f015-83a7-4ad9-a084-d7e71fa8f3a4}</UniqueIdentifier>
     </Filter>
+    <Filter Include="03. GameObject\UIObjects\02.UI\Image\Dynamic Image\03.MenuImage">
+      <UniqueIdentifier>{41ffc1c4-c6ab-4e1e-8a96-b2da6de22285}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="03. GameObject\UIObjects\02.UI\Text\NewFilter1">
+      <UniqueIdentifier>{ba675289-98b0-43ba-990d-7137e8849731}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="targetver.h">
@@ -558,6 +564,9 @@
     <ClInclude Include="..\Public\UIHover_Image.h">
       <Filter>03. GameObject\UIObjects\02.UI\Image\Dynamic Image\02.HoverImage</Filter>
     </ClInclude>
+    <ClInclude Include="..\Public\UIMenu_Image.h">
+      <Filter>03. GameObject\UIObjects\02.UI\Image\Dynamic Image\03.MenuImage</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <Image Include="Client.ico">
@@ -818,6 +827,9 @@
     </ClCompile>
     <ClCompile Include="..\Private\UIHover_Image.cpp">
       <Filter>03. GameObject\UIObjects\02.UI\Image\Dynamic Image\02.HoverImage</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\UIMenu_Image.cpp">
+      <Filter>03. GameObject\UIObjects\02.UI\Image\Dynamic Image\03.MenuImage</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

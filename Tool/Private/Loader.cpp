@@ -290,6 +290,10 @@ HRESULT CLoader::Loading_For_UI()
 		return E_FAIL;
 	if (FAILED(Loading_Textures(L"../../Resources/Textures/UI/Map/")))
 		return E_FAIL;
+	if (FAILED(Loading_Textures(L"../../Resources/Textures/UI/Common/")))
+		return E_FAIL;
+	if (FAILED(Loading_Textures(L"../../Resources/Textures/UI/Noise/")))
+		return E_FAIL;
 
 	//=================
 	// UI Objects

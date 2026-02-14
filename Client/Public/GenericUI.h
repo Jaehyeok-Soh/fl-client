@@ -15,10 +15,13 @@ public:
 		uint32_t iUIType;
 		uint32_t iRectTransformType;
 		_wstring wstrTextureTag;
+		_wstring wstrNoiseTextureTag;
+		_wstring wstrAlphaMaskTextureTag;
 		uint32_t iTextureIndex;
 		uint32_t iComponentFlag;
 		_bool isUseColorTint;
 		Vec4 vColorTint;
+		Vec4 vGradiantColorTint;
 		int32_t iShaderPass;
 		int32_t iFillDir;
 		_float fDelay;
@@ -27,7 +30,7 @@ public:
 		CCanvas* pCanvasCache = { nullptr };
 	}GENERIC_UI_DESC;
 
-	enum class ETriggerEventType { HOVER_ENTER, HOVER_EXIT, PRESS_ENTER, PRESS_EXIT, END };
+	enum EUITextureSlot { DEFAULT, NOISE, ALPHA_MASK };
 
 protected :
 	CGenericUI(ID3D11Device* pDevice, ID3D11DeviceContext* pDeviceContext);
@@ -68,6 +71,8 @@ protected:
 protected:
 	ERectTransform m_eRectTransformType = { ERectTransform::C };
 	_wstring m_wstrTextureTag			= {};
+	_wstring m_wstrNoiseTextureTag		= {};
+	_wstring m_wstrAlphaMaskTextureTag	= {};
 	uint32_t m_iTextureIndex			= {};
 	Vec3 m_vRectPos						= {};
 	Vec3 m_vRenderPos					= {};
@@ -80,6 +85,7 @@ protected:
 	// Shader Bind Values
 	_bool m_isUseColorTint				= {false};
 	Vec4 m_vColorTint					= {};
+	Vec4 m_vGradiantColorTint			= {};
 	_float m_fAlpha_Ratio				= {};
 	_float m_fProgress_Ratio			= {1.f};
 	int32_t m_iFillDir					= {};

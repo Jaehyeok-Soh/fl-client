@@ -9,6 +9,7 @@
 #include "Shader.h"
 #include "VIBuffer_Rect_Tex.h"
 #include "StatComponent.h"
+#include "Canvas.h"
 #include "UI_Manager.h"
 #include "GameInstance.h"
 
@@ -56,12 +57,12 @@ HRESULT CUITrigger::Attach_Personal_Info()
 	return S_OK;
 }
 
-HRESULT CUITrigger::Bind_Cache()
+HRESULT CUITrigger::Bind_Cache(_uint iLevelID)
 {
 	// Hover Enter Canvas
 	for (const _string& str : m_tTriggerData.vecHoverEnterTriggerCanvas)
 	{
-		auto* pCanvas = m_pUIManager->Find_Canvas(m_iLevelID, str);
+		auto* pCanvas = m_pUIManager->Find_Canvas(iLevelID, str);
 		if (nullptr == pCanvas)
 			return E_FAIL;
 
@@ -71,7 +72,7 @@ HRESULT CUITrigger::Bind_Cache()
 	// Hover Exit Canvas
 	for (const _string& str : m_tTriggerData.vecHoverExitTriggerCanvas)
 	{
-		auto* pCanvas = m_pUIManager->Find_Canvas(m_iLevelID, str);
+		auto* pCanvas = m_pUIManager->Find_Canvas(iLevelID, str);
 		if (nullptr == pCanvas)
 			return E_FAIL;
 
@@ -81,7 +82,7 @@ HRESULT CUITrigger::Bind_Cache()
 	// Press Enter Canvas
 	for (const _string& str : m_tTriggerData.vecPressEnterTriggerCanvas)
 	{
-		auto* pCanvas = m_pUIManager->Find_Canvas(m_iLevelID, str);
+		auto* pCanvas = m_pUIManager->Find_Canvas(iLevelID, str);
 		if (nullptr == pCanvas)
 			return E_FAIL;
 
@@ -91,7 +92,7 @@ HRESULT CUITrigger::Bind_Cache()
 	// Press Exit Canvas
 	for (const _string& str : m_tTriggerData.vecPressExitTriggerCanvas)
 	{
-		auto* pCanvas = m_pUIManager->Find_Canvas(m_iLevelID, str);
+		auto* pCanvas = m_pUIManager->Find_Canvas(iLevelID, str);
 		if (nullptr == pCanvas)
 			return E_FAIL;
 
@@ -101,7 +102,7 @@ HRESULT CUITrigger::Bind_Cache()
 	// Hover Enter UI
 	for (const _string& str : m_tTriggerData.vecHoverEnterTriggerUI)
 	{
-		auto* pUI = m_pUIManager->Find_GenericUI(m_iLevelID, str);
+		auto* pUI = m_pUIManager->Find_GenericUI(iLevelID, str);
 		if (nullptr == pUI)
 			return E_FAIL;
 
@@ -111,7 +112,7 @@ HRESULT CUITrigger::Bind_Cache()
 	// Hover Exit UI
 	for (const _string& str : m_tTriggerData.vecHoverExitTriggerUI)
 	{
-		auto* pUI = m_pUIManager->Find_GenericUI(m_iLevelID, str);
+		auto* pUI = m_pUIManager->Find_GenericUI(iLevelID, str);
 		if (nullptr == pUI)
 			return E_FAIL;
 
@@ -121,7 +122,7 @@ HRESULT CUITrigger::Bind_Cache()
 	// Press Enter UI
 	for (const _string& str : m_tTriggerData.vecPressEnterTriggerUI)
 	{
-		auto* pUI = m_pUIManager->Find_GenericUI(m_iLevelID, str);
+		auto* pUI = m_pUIManager->Find_GenericUI(iLevelID, str);
 		if (nullptr == pUI)
 			return E_FAIL;
 
@@ -131,7 +132,7 @@ HRESULT CUITrigger::Bind_Cache()
 	// Press Exit UI
 	for (const _string& str : m_tTriggerData.vecPressExitTriggerUI)
 	{
-		auto* pUI = m_pUIManager->Find_GenericUI(m_iLevelID, str);
+		auto* pUI = m_pUIManager->Find_GenericUI(iLevelID, str);
 		if (nullptr == pUI)
 			return E_FAIL;
 
@@ -154,9 +155,11 @@ void CUITrigger::Update_Priority(const _float fTimeDelta)
 	Super::Update_Priority(fTimeDelta);
 	if (Engine_Utils::Has_Flag(m_iInteractState, EUIEvent_Flag::PRESS_ENTER))
 	{
+		Fire_ToTargets(ETriggerEventType::PRESS_ENTER);
 	}
 	else if (Engine_Utils::Has_Flag(m_iInteractState, EUIEvent_Flag::PRESS_EXIT))
 	{
+		Fire_ToTargets(ETriggerEventType::PRESS_EXIT);
 	}
 	else if (Engine_Utils::Has_Flag(m_iInteractState, EUIEvent_Flag::HOVER_ENTER))
 	{
@@ -207,8 +210,8 @@ void CUITrigger::Fire_ToTargets(ETriggerEventType eEvent)
 	for (auto* pUI : m_pTriggerUI[ENUM_TO_UINT(eEvent)])
 		if (pUI) pUI->OnUIEvent(eEvent, this);
 
-	//for (auto* pCanvas : m_pTriggerCanvas[ENUM_TO_UINT(eEvent)])
-	//	if (pCanvas) pCanvas->OnUIEvent(eEvent, this);
+	for (auto* pCanvas : m_pTriggerCanvas[ENUM_TO_UINT(eEvent)])
+		if (pCanvas) pCanvas->OnCanvasEvent(eEvent, this);
 }
 
 HRESULT CUITrigger::Ready_Components(UI_TRIGGER_DESC* pDesc)

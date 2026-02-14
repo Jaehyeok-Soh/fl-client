@@ -191,12 +191,40 @@ void CUI_Inspector::Input_RectTransform()
 	ImGui::PopID();
 }
 
-void CUI_Inspector::Input_TextureTag()
+void CUI_Inspector::Input_TextureTag(CToolUI::EUITextureSlot eSlot)
 {
-	_string str = Engine_Utils::ToString(L"Cur Texture : " + m_pSelectedUI->Get_TextureTag());
+	_wstring wCurTag;
+	_wstring Label = L"";
+	const _char* pBtnLabel = "";
+
+	switch (eSlot)
+	{
+	case CToolUI::EUITextureSlot::DEFAULT:
+		wCurTag = m_pSelectedUI->Get_TextureTag();
+		Label = L"Cur Texture : ";
+		pBtnLabel = "Select Texture##DEFAULT";
+		break;
+
+	case CToolUI::EUITextureSlot::NOISE:
+		wCurTag = m_pSelectedUI->Get_NoiseTextureTag();
+		Label = L"Cur Noise : ";
+		pBtnLabel = "Select Texture##NOISE";
+		break;
+
+	case CToolUI::EUITextureSlot::ALPHA_MASK:
+		wCurTag = m_pSelectedUI->Get_AlphaMaskTextureTag();
+		Label = L"Cur AlphaMask : ";
+		pBtnLabel = "Select Texture##ALPHA_MASK";
+		break;
+
+	default:
+		break;
+	}
+
+	_string str = Engine_Utils::ToString(Label + wCurTag);
 	ImGui::TextDisabled(str.c_str());
 
-	if (ImGui::Button("Select Texture"))
+	if (ImGui::Button(pBtnLabel))
 	{
 		OPENFILENAMEW ofn{};
 		_tchar szFile[MAX_PATH] = { 0 };
@@ -204,7 +232,7 @@ void CUI_Inspector::Input_TextureTag()
 		ofn.lStructSize = sizeof(OPENFILENAMEW);
 		ofn.hwndOwner = g_hWnd;
 		ofn.lpstrFile = szFile;
-		ofn.nMaxFile = MAX_PATH; 
+		ofn.nMaxFile = MAX_PATH;
 		ofn.lpstrFilter =
 			L"Image Files (*.png;*.dds)\0*.png;*.dds\0"
 			L"Png Files (*.png)\0*.png\0"
@@ -215,18 +243,38 @@ void CUI_Inspector::Input_TextureTag()
 
 		if (::GetOpenFileNameW(&ofn) == TRUE)
 		{
-			_wstring result = szFile; 
+			_wstring result = szFile;
 
 			std::filesystem::path f(result);
 			if (f.extension().wstring() == L".png" || f.extension().wstring() == L".dds")
 			{
-				m_pSelectedUI->Set_TextureTag(L"Texture_" + f.stem().wstring());
-				m_pSelectedUI->Request_Change_Texture();
+				const _wstring wNewTag = L"Texture_" + f.stem().wstring();
+
+				switch (eSlot)
+				{
+				case CToolUI::EUITextureSlot::DEFAULT:
+					m_pSelectedUI->Set_TextureTag(wNewTag);
+					m_pSelectedUI->Request_Change_Texture();
+					break;
+
+				case CToolUI::EUITextureSlot::NOISE:
+					m_pSelectedUI->Set_NoiseTextureTag(wNewTag);
+					m_pSelectedUI->Request_Change_NoiseTexture();
+					break;
+
+				case CToolUI::EUITextureSlot::ALPHA_MASK:
+					m_pSelectedUI->Set_AlphaMaskTextureTag(wNewTag);
+					m_pSelectedUI->Request_Change_AlphaMaskTexture();
+					break;
+
+				default:
+					break;
+				}
 			}
 		}
 	}
-
 }
+
 
 void CUI_Inspector::SetUp_Class()
 {
@@ -800,8 +848,6 @@ void CUI_Inspector::SetUp_ShaderPass()
 			ImGui::EndCombo();
 		}
 
-		Input_TextureTag();
-		
 		if (ImGui::Button("No Flip"))
 		{
 			m_pSelectedUI->Set_Flip(ENUM_TO_UINT(EUIFlip::NONE));
@@ -818,7 +864,7 @@ void CUI_Inspector::SetUp_ShaderPass()
 		if (ImGui::Button("Flip XY")) {
 			m_pSelectedUI->Set_Flip(ENUM_TO_UINT(EUIFlip::FLIP_XY));
 		}
-
+		Input_TextureTag(CToolUI::EUITextureSlot::DEFAULT);
 		switch ((EUIShaderPass)cur)
 		{
 		case EUIShaderPass::DEFAULT:
@@ -840,6 +886,25 @@ void CUI_Inspector::SetUp_ShaderPass()
 			ImGui::SetNextItemWidth(150.f);
 			if (ImGui::DragFloat4("Color Tint", (float*)&vColorTint, 0.01f, 0.f, 1.f))
 				m_pSelectedUI->Set_ColorTint(vColorTint);
+
+			Vec4 vGradiantColorTint = m_pSelectedUI->Get_GradiantColorTint();
+			ImGui::SetNextItemWidth(150.f);
+			if (ImGui::DragFloat4("GradiantColor Tint", (float*)&vGradiantColorTint, 0.01f, 0.f, 1.f))
+				m_pSelectedUI->Set_GradiantColorTint(vGradiantColorTint);
+
+			uint32_t iFillDir = m_pSelectedUI->Get_FillDir();
+			const char* dirs[] = { "Right", "Left", "Up", "Down" };
+			int dir = (iFillDir > 3u) ? 0 : (int)iFillDir;
+
+			ImGui::SetNextItemWidth(150.f);
+			if (ImGui::Combo("Fill Dir", &dir, dirs, IM_ARRAYSIZE(dirs)))
+				m_pSelectedUI->Set_FillDir((uint32_t)dir);
+
+			_float fAlphaRatio = m_pSelectedUI->Get_AlphaRatio();
+			ImGui::SetNextItemWidth(150.f);
+			if (ImGui::DragFloat("Alpha Ratio", &fAlphaRatio, 0.01f, 0.f, 1.f))
+				m_pSelectedUI->Set_AlphaRatio(fAlphaRatio);
+
 			break;
 		}
 		case EUIShaderPass::FADE:
@@ -873,6 +938,32 @@ void CUI_Inspector::SetUp_ShaderPass()
 			ImGui::SetNextItemWidth(150.f);
 			if (ImGui::Combo("Fill Dir", &dir, dirs, IM_ARRAYSIZE(dirs)))
 				m_pSelectedUI->Set_FillDir((uint32_t)dir);
+
+			_float fDelay = m_pSelectedUI->Get_Delay();
+			ImGui::SetNextItemWidth(150.f);
+			if (ImGui::DragFloat("Delay", &fDelay, 0.01f, 0.f, 1.f))
+				m_pSelectedUI->Set_Delay(fDelay);
+			break;
+		}
+
+		case EUIShaderPass::DISOLVE:
+		{
+			Input_TextureTag(CToolUI::EUITextureSlot::NOISE);
+			Input_TextureTag(CToolUI::EUITextureSlot::ALPHA_MASK);
+
+			_float fProgress = m_pSelectedUI->Get_ProgressRatio();
+			ImGui::SetNextItemWidth(150.f);
+			if (ImGui::DragFloat("Progress Ratio", &fProgress, 0.01f, 0.f, 1.f))
+				m_pSelectedUI->Set_ProgressRatio(fProgress);
+
+			_bool isUseColorTint = m_pSelectedUI->Get_isUseColorTint();
+			if (ImGui::Checkbox("Use Color Tint", (bool*)&isUseColorTint))
+				m_pSelectedUI->Set_isUseColorTint(isUseColorTint);
+
+			Vec4 vColorTint = m_pSelectedUI->Get_ColorTint();
+			ImGui::SetNextItemWidth(150.f);
+			if (ImGui::DragFloat4("Color Tint", (float*)&vColorTint, 0.01f, 0.f, 1.f))
+				m_pSelectedUI->Set_ColorTint(vColorTint);
 
 			_float fDelay = m_pSelectedUI->Get_Delay();
 			ImGui::SetNextItemWidth(150.f);

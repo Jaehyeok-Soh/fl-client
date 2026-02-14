@@ -162,11 +162,14 @@ void to_json(json& j, const TUI_GenericUIData& data)
 		{ "eSubClassType", data.eSubClassType },
 		{ "isUseColorTint", data.isUseColorTint },
 		{ "vColorTint", {{ "x", data.vColorTint.x },{ "y", data.vColorTint.y },{ "z", data.vColorTint.z },{ "w", data.vColorTint.w }}},
+		{ "vGradiantColorTint", {{ "x", data.vGradiantColorTint.x },{ "y", data.vGradiantColorTint.y },{ "z", data.vGradiantColorTint.z },{ "w", data.vGradiantColorTint.w }}},
 		{ "iShaderPass", data.iShaderPass },
 		{ "iFillDir", data.iFillDir },
 		{ "fDelay", data.fDelay },
 		{ "iFlip", data.iFlip },
 		{ "fAlphaRatio", data.fAlphaRatio },
+		{ "strNoiseTextureTag", data.strNoiseTextureTag },
+		{ "strAlphaMaskTextureTag", data.strAlphaMaskTextureTag },
 	};
 }
 
@@ -190,11 +193,17 @@ void from_json(const json& j, TUI_GenericUIData& data)
 	data.vColorTint.y		= 1.f;
 	data.vColorTint.z		= 1.f;
 	data.vColorTint.w		= 1.f;
+	data.vGradiantColorTint.x = 1.f;
+	data.vGradiantColorTint.y = 1.f;
+	data.vGradiantColorTint.z = 1.f;
+	data.vGradiantColorTint.w = 1.f;
 	data.iShaderPass		= 0;
 	data.iFillDir			= 0;
 	data.fDelay				= 0.f;
 	data.iFlip				= 0;
 	data.fAlphaRatio		= 1.f;
+	data.strNoiseTextureTag = "";
+	data.strAlphaMaskTextureTag = "";
 
 
 	data.eClassType			= j.value("eClassType", data.eClassType);
@@ -216,11 +225,19 @@ void from_json(const json& j, TUI_GenericUIData& data)
 	data.vColorTint.y		= jt.value("y", data.vColorTint.y);
 	data.vColorTint.z		= jt.value("z", data.vColorTint.z);
 	data.vColorTint.w		= jt.value("w", data.vColorTint.w);
+
+	const json jgt			= j.value("vGradiantColorTint", json::object());
+	data.vGradiantColorTint.x = jgt.value("x", data.vGradiantColorTint.x);
+	data.vGradiantColorTint.y = jgt.value("y", data.vGradiantColorTint.y);
+	data.vGradiantColorTint.z = jgt.value("z", data.vGradiantColorTint.z);
+	data.vGradiantColorTint.w = jgt.value("w", data.vGradiantColorTint.w);
 	data.iShaderPass		= j.value("iShaderPass", data.iShaderPass);
 	data.iFillDir			= j.value("iFillDir", data.iFillDir);
 	data.fDelay				= j.value("fDelay", data.fDelay);
 	data.iFlip				= j.value("iFlip", data.iFlip);
 	data.fAlphaRatio		= j.value("fAlphaRatio", data.fAlphaRatio);
+	data.strNoiseTextureTag = j.value("strNoiseTextureTag", data.strNoiseTextureTag);
+	data.strAlphaMaskTextureTag = j.value("strAlphaMaskTextureTag", data.strAlphaMaskTextureTag);
 }
 
 void to_json(json& j, const TUI_CanvasData& data)

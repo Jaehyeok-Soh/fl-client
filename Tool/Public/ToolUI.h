@@ -21,17 +21,22 @@ public:
 		int32_t iShaderPass;
 		_bool isUseColorTint;
 		Vec4 vColorTint;
+		Vec4 vGradiantColorTint;
 		int32_t iFillDir;
 		_float fDelay;
 		int32_t iFlip;
 		_float fAlpha;
 		DTO::EUISubClassType eSubClassType;
+		_string strNoiseTextureTag;
+		_string strAlphaMaskTextureTag;
 		DTO::TUI_TextData tTextData;
 		DTO::TUI_TriggerData tTriggerData;
 		DTO::TUI_ButtonTriggerData tButtonTriggerData;
 		DTO::TUI_DImageData tDImageData;
 		int32_t iIndex;
 	}TOOLUI_DESC;
+
+	enum EUITextureSlot {DEFAULT = 0, NOISE, ALPHA_MASK};
 
 protected:
 	CToolUI(ID3D11Device* pDevice, ID3D11DeviceContext* pDeviceContext);
@@ -68,6 +73,8 @@ public:
 	const _string& Get_Name()const { return m_strName; }
 	ERectTransform Get_RectTransformType() const { return m_eRectTransformType; }
 	const _wstring& Get_TextureTag() const { return m_wstrTextureTag; }
+	const _wstring& Get_NoiseTextureTag() const { return m_wstrNoiseTextureTag; }
+	const _wstring& Get_AlphaMaskTextureTag() const { return m_wstrAlphaMaskTextureTag; }
 	_float* Get_WIdth_Ptr() { return &m_fWidth; }
 	_float* Get_Height_Ptr() { return &m_fHeight; }
 	_float* Get_PosX_Ptr() { return &m_fX; }
@@ -86,9 +93,12 @@ public:
 	void Set_Name(const _string& str) { m_strName = str; }
 	void Set_RectTransformType(ERectTransform value) { m_eRectTransformType = value; }
 	void Set_TextureTag(const _wstring& value) { m_wstrTextureTag = value; }
+	void Set_NoiseTextureTag(const _wstring& value) { m_wstrNoiseTextureTag = value; }
+	void Set_AlphaMaskTextureTag(const _wstring& value) { m_wstrAlphaMaskTextureTag = value; }
 	void Set_HitTest() { m_isHitTest = TRUE; };
 
 	Vec4 Get_ColorTint()			const	{ return m_vColorTint; }
+	Vec4 Get_GradiantColorTint()	const	{ return m_vGradiantColorTint; }
 	Vec4& Get_ColorTint_Ref()				{ return m_vColorTint; }
 	_float Get_AlphaRatio()			const	{ return m_fTestAlpha; }
 	_float& Get_AlphaRatio_Ref()			{ return m_fTestAlpha; }
@@ -112,6 +122,7 @@ public:
 	const vector<_string>& Get_vecPressExitTriggerUI() const { return m_vecPressExitTriggerUI; }
 	int32_t Get_Flip()				const	{ return m_iFlip; }
 	void Set_ColorTint(Vec4 v)				{ m_vColorTint = v; }
+	void Set_GradiantColorTint(Vec4 v)				{ m_vGradiantColorTint = v; }
 	void Set_AlphaRatio(_float f)			{ m_fTestAlpha = f; }
 	void Set_isUseColorTint(_bool is)		{ m_isUseColorTint = is; }
 	void Set_ProgressRatio(_float f)		{ m_fTestProgress = f; }
@@ -146,6 +157,9 @@ public:
 	int32_t& Get_FillDir_Ref() { return m_iFillDir; }
 
  	HRESULT Request_Change_Texture();
+	HRESULT Request_Change_NoiseTexture();
+	HRESULT Request_Change_AlphaMaskTexture();
+
 	void Request_Chnage_ShaderPass(uint32_t pass);
 
 	_bool Get_isAction() const { return m_isAction; }
@@ -184,9 +198,12 @@ protected:
 	CToolCanvas* m_pCacheCanvas			= { nullptr };
 	ERectTransform m_eRectTransformType = { ERectTransform::C };
 	_wstring m_wstrTextureTag			= {};
+	_wstring m_wstrNoiseTextureTag		= {};
+	_wstring m_wstrAlphaMaskTextureTag	= {};
 	uint32_t m_iComponentFlag			= {};
 	_bool m_isUseColorTint				= {};
 	Vec4 m_vColorTint					= {};
+	Vec4 m_vGradiantColorTint			= {};
 	int32_t m_iShaderPass				= {};
 	DTO::EUISubClassType m_eSubClassType		= {};
 	int32_t m_iFillDir					= {};

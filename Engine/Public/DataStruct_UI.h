@@ -157,6 +157,13 @@ NLOHMANN_JSON_SERIALIZE_ENUM(EUISubClassType,
 	MINIMAP_WARNING_FRAME,
 	MINIMAP_END,
 
+	// ¸Þ´ºÃ¢
+	MENU_BEGIN,
+	MENU_BG,
+	MENU_ICON,
+	MENU_ICON_BG,
+	MENU_END,
+
 	END
 };
 
@@ -185,8 +192,15 @@ NLOHMANN_JSON_SERIALIZE_ENUM(EUIDImageSubClassType,
 		{ EUIDImageSubClassType::MINIMAP_WARNING_FRAME,	"MINIMAP_WARNING_FRAME" },
 		{ EUIDImageSubClassType::MINIMAP_END,			"MINIMAP_END" },
 
+		{ EUIDImageSubClassType::MENU_BEGIN,			"MENU_BEGIN" },
+		{ EUIDImageSubClassType::MENU_BG,				"MENU_BG" },
+		{ EUIDImageSubClassType::MENU_ICON,				"MENU_ICON" },
+		{ EUIDImageSubClassType::MENU_ICON_BG,			"MENU_ICON_BG" },
+		{ EUIDImageSubClassType::MENU_END,				"MENU_END" },
+
 		{ EUIDImageSubClassType::END,					"END" }
 	})
+
 
 	inline EUIDImageSubClassType StringToUIDImageSubType(const std::string& str)
 {
@@ -212,6 +226,12 @@ NLOHMANN_JSON_SERIALIZE_ENUM(EUIDImageSubClassType,
 	if (str == "MINIMAP_BGFRAME")		return EUIDImageSubClassType::MINIMAP_BGFRAME;
 	if (str == "MINIMAP_WARNING_FRAME")	return EUIDImageSubClassType::MINIMAP_WARNING_FRAME;
 	if (str == "MINIMAP_END")			return EUIDImageSubClassType::MINIMAP_END;
+
+	if (str == "MENU_BEGIN")			return EUIDImageSubClassType::MENU_BEGIN;
+	if (str == "MENU_BG")				return EUIDImageSubClassType::MENU_BG;
+	if (str == "MENU_ICON")				return EUIDImageSubClassType::MENU_ICON;
+	if (str == "MENU_ICON_BG")			return EUIDImageSubClassType::MENU_ICON_BG;
+	if (str == "MENU_END")				return EUIDImageSubClassType::MENU_END;
 
 	if (str == "END")					return EUIDImageSubClassType::END;
 	return EUIDImageSubClassType::NONE_OWNER;
@@ -244,10 +264,17 @@ inline const char* UIDImageSubTypeToString(EUIDImageSubClassType type)
 	case EUIDImageSubClassType::MINIMAP_WARNING_FRAME:	return "MINIMAP_WARNING_FRAME";
 	case EUIDImageSubClassType::MINIMAP_END:			return "MINIMAP_END";
 
-	case EUIDImageSubClassType::END:				return "END";
-	default:										return "NONE_OWNER";
+	case EUIDImageSubClassType::MENU_BEGIN:		return "MENU_BEGIN";
+	case EUIDImageSubClassType::MENU_BG:		return "MENU_BG";
+	case EUIDImageSubClassType::MENU_ICON:		return "MENU_ICON";
+	case EUIDImageSubClassType::MENU_ICON_BG:	return "MENU_ICON_BG";
+	case EUIDImageSubClassType::MENU_END:		return "MENU_END";
+
+	case EUIDImageSubClassType::END:			return "END";
+	default:									return "NONE_OWNER";
 	}
 }
+
 
 enum class EUIWorldUISubClassType
 {
@@ -373,11 +400,14 @@ struct TUI_GenericUIData
 	EUISubClassType	eSubClassType;
 	_bool			isUseColorTint;
 	Vec4			vColorTint;
+	Vec4			vGradiantColorTint;
 	int32_t			iShaderPass;
 	int32_t			iFillDir;
 	_float			fDelay;
 	int32_t			iFlip;
 	_float			fAlphaRatio;
+	_string			strNoiseTextureTag;
+	_string			strAlphaMaskTextureTag;
 };
 
 struct TUI_CanvasData

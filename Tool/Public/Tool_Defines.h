@@ -531,6 +531,7 @@ namespace Tool
 		COLOR,
 		FADE,
 		PROGRESS,
+		DISOLVE,
 		END
 	};
 
@@ -543,6 +544,7 @@ namespace Tool
 		case EUIShaderPass::COLOR: return "COLOR";
 		case EUIShaderPass::FADE: return "FADE";
 		case EUIShaderPass::PROGRESS: return "PROGRESS";
+		case EUIShaderPass::DISOLVE: return "DISOLVE";
 		default: return "";
 		}
 	}
@@ -554,6 +556,7 @@ namespace Tool
 		else if (str == "COLOR") return EUIShaderPass::COLOR;
 		else if (str == "FADE") return EUIShaderPass::FADE;
 		else if (str == "PROGRESS") return EUIShaderPass::PROGRESS;
+		else if (str == "DISOLVE") return EUIShaderPass::DISOLVE;
 		else return EUIShaderPass::DEFAULT;
 	}
 
@@ -565,15 +568,9 @@ namespace Tool
 		FLIP_XY,
 		END
 	};
-
-
 #pragma endregion
-
 #pragma region Struct
-
 #pragma endregion
-
-
 }
 
 using namespace Tool; 
