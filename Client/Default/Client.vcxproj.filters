@@ -160,9 +160,6 @@
     <Filter Include="07. System\01. Builder\UI">
       <UniqueIdentifier>{c030ae43-15b7-4d22-8ca7-b55ab7fdc119}</UniqueIdentifier>
     </Filter>
-    <Filter Include="07. System\01. Builder\EffectBuilder">
-      <UniqueIdentifier>{0a51c3b4-11ce-445a-904c-410b2a5ef809}</UniqueIdentifier>
-    </Filter>
     <Filter Include="03. GameObject\UIObjects\00.Manager">
       <UniqueIdentifier>{7559622c-8d80-4e5c-81bd-e123eb0f162c}</UniqueIdentifier>
     </Filter>
@@ -282,6 +279,15 @@
     </Filter>
     <Filter Include="03. GameObject\PartObjects\Weapon\Gun">
       <UniqueIdentifier>{6a93f015-83a7-4ad9-a084-d7e71fa8f3a4}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="07. System\01. Builder\Effect">
+      <UniqueIdentifier>{0a51c3b4-11ce-445a-904c-410b2a5ef809}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="07. System\01. Builder\Effect\Builder_Effect">
+      <UniqueIdentifier>{9c580bfd-a983-4b3f-a72a-f1da0a5c9270}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="07. System\01. Builder\Effect\Builder_EffectEvent">
+      <UniqueIdentifier>{5d286e09-eee0-4b43-bcea-01a835550da6}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
@@ -435,9 +441,6 @@
     <ClInclude Include="..\Public\Canvas.h">
       <Filter>03. GameObject\UIObjects\01.Canvas</Filter>
     </ClInclude>
-    <ClInclude Include="..\Public\EffectBuilder.h">
-      <Filter>07. System\01. Builder\EffectBuilder</Filter>
-    </ClInclude>
     <ClInclude Include="..\Public\Physics_LandScape.h">
       <Filter>03. GameObject\PhysicsTerrain</Filter>
     </ClInclude>
@@ -548,6 +551,12 @@
     </ClInclude>
     <ClInclude Include="..\Public\Sword.h">
       <Filter>03. GameObject\PartObjects\Weapon\Sword</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\Builder_Effect.h">
+      <Filter>07. System\01. Builder\Effect\Builder_Effect</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\Builder_EffectEvent.h">
+      <Filter>07. System\01. Builder\Effect\Builder_EffectEvent</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -687,9 +696,6 @@
     <ClCompile Include="..\Private\Canvas.cpp">
       <Filter>03. GameObject\UIObjects\01.Canvas</Filter>
     </ClCompile>
-    <ClCompile Include="..\Private\EffectBuilder.cpp">
-      <Filter>07. System\01. Builder\EffectBuilder</Filter>
-    </ClCompile>
     <ClCompile Include="..\Private\Physics_LandScape.cpp">
       <Filter>03. GameObject\PhysicsTerrain</Filter>
     </ClCompile>
@@ -806,6 +812,12 @@
     </ClCompile>
     <ClCompile Include="..\Private\Sword.cpp">
       <Filter>03. GameObject\PartObjects\Weapon\Sword</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\Builder_Effect.cpp">
+      <Filter>07. System\01. Builder\Effect\Builder_Effect</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\Builder_EffectEvent.cpp">
+      <Filter>07. System\01. Builder\Effect\Builder_EffectEvent</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

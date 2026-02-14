@@ -13,7 +13,7 @@
 #include "Builder_Example.h"
 #include "BuilderSystem.h"
 #include "Builder_Map.h"
-#include "EffectBuilder.h"
+#include "Builder_Effect.h"
 #include "DataStruct_Effect.h"
 #include "DataDocument_Effect.h"
 #include "DataDocument_Map.h"
@@ -152,7 +152,7 @@ HRESULT CLevel_Logo::Build_Prototype()
 		return E_FAIL;
 	if (FAILED(Ready_Builder(DTO::ECategory::UI, CBuilder_UI::Create(m_pDevice, m_pDeviceContext, static_cast<_uint>(ELevelType::LOGO)))))
 		return E_FAIL;
-	if (FAILED(Ready_Builder(DTO::ECategory::EFFECT, EffectBuilder::Create(m_pDevice, m_pDeviceContext, ENUM_TO_UINT(ELevelType::LOGO)))))
+	if (FAILED(Ready_Builder(DTO::ECategory::EFFECT, CBuilder_Effect::Create(m_pDevice, m_pDeviceContext, ENUM_TO_UINT(ELevelType::LOGO)))))
 		return E_FAIL;
 
 	return S_OK;

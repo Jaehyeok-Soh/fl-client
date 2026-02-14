@@ -73,6 +73,8 @@ namespace Engine
 		Vfx_Oneshot,
 		Vfx_Attach_On,
 		Vfx_Attach_Off,
+
+		END
 	};
 	//===================
 	// Component

@@ -159,6 +159,7 @@
   <ItemGroup>
     <ClInclude Include="..\Public\Body.h" />
     <ClInclude Include="..\Public\Builder_AttackOverlap.h" />
+    <ClInclude Include="..\Public\Builder_EffectEvent.h" />
     <ClInclude Include="..\public\Builder_Example.h" />
     <ClInclude Include="..\Public\Builder_Map.h" />
     <ClInclude Include="..\Public\Builder_UI.h" />
@@ -172,7 +173,7 @@
     <ClInclude Include="..\Public\ComboContainer.h" />
     <ClInclude Include="..\Public\ComboState.h" />
     <ClInclude Include="..\Public\Effect.h" />
-    <ClInclude Include="..\Public\EffectBuilder.h" />
+    <ClInclude Include="..\Public\Builder_Effect.h" />
     <ClInclude Include="..\Public\EffectObject.h" />
     <ClInclude Include="..\Public\GenericUI.h" />
     <ClInclude Include="..\Public\imconfig.h" />
@@ -254,6 +255,7 @@
   <ItemGroup>
     <ClCompile Include="..\Private\Body.cpp" />
     <ClCompile Include="..\Private\Builder_AttackOverlap.cpp" />
+    <ClCompile Include="..\Private\Builder_EffectEvent.cpp" />
     <ClCompile Include="..\private\Builder_Example.cpp" />
     <ClCompile Include="..\Private\Builder_Map.cpp" />
     <ClCompile Include="..\Private\Builder_UI.cpp" />
@@ -263,7 +265,7 @@
     <ClCompile Include="..\Private\ComboContainer.cpp" />
     <ClCompile Include="..\Private\ComboState.cpp" />
     <ClCompile Include="..\Private\Effect.cpp" />
-    <ClCompile Include="..\Private\EffectBuilder.cpp" />
+    <ClCompile Include="..\Private\Builder_Effect.cpp" />
     <ClCompile Include="..\Private\EffectObject.cpp" />
     <ClCompile Include="..\Private\GenericUI.cpp" />
     <ClCompile Include="..\Private\imgui.cpp">
