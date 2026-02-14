@@ -20,6 +20,7 @@ CMapObject::CMapObject(const CMapObject& rhs)
     , m_eMapObjectDrawType{ rhs.m_eMapObjectDrawType }
     , m_isUELoaded{rhs.m_isUELoaded}
     , m_vecMatrix{rhs.m_vecMatrix }
+    , m_iSectionNum{rhs.m_iSectionNum}
 {
 }
 
@@ -43,7 +44,7 @@ HRESULT	CMapObject::Initialize(void* pArg)
     m_isUELoaded    = pDesc->isUELoaded;
     m_eMapObjectDrawType = pDesc->eMapObjectDrawType;
     m_strName       = path(pDesc->wstrModelPath).filename().stem().string();
-
+    m_iSectionNum  = pDesc->iSectionNum;
 
     if (FAILED(Ready_Transform(pDesc)))
         return E_FAIL;

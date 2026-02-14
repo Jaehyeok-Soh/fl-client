@@ -22,7 +22,7 @@ USING(Tool)
 CPanel_MapObjectList::CPanel_MapObjectList(const _char* pLabel, CLevel* pOwner, ID3D11Device* pDevice, ID3D11DeviceContext* pDeviceContext)
 	: CImGui_Panel(pLabel, pOwner, pDevice, pDeviceContext), m_pGameInstance(CGameInstance::GetInstance()), m_pTransformLayout(nullptr), m_pCamera(nullptr)
 	, m_pCameraCom(nullptr), m_wszMapObjectLayerTag{}, m_szFindName{}, m_iSelectInstanceID{} 
-	, m_iSelectOriginMtlTexture{0}
+	, m_iSelectOriginMtlTexture{ 0 }, m_pMapToolManager{ CMapToolManager ::GetInstance()}
 {
 
 	m_pTransformLayout = CImGui_Layout_Transform::Create("Layout_Transform", m_pDevice, m_pDeviceContext);
@@ -32,6 +32,8 @@ CPanel_MapObjectList::CPanel_MapObjectList(const _char* pLabel, CLevel* pOwner, 
 	m_pCamera = static_cast<Engine::CCameraMan*>(m_pGameInstance->Get_MainCamera());
 
 	m_pCameraCom = m_pCamera->Get_Component<CCamera>();
+
+	m_arrayMtl_SRVs.fill(nullptr);
 }
 
 
@@ -130,15 +132,16 @@ HRESULT CPanel_MapObjectList::Render_MapObjectList()
 
 	ImGui::SeparatorText(" Function ");
 
-	if (ImGui::Button("All Clear"))
-	{
-		m_pSelectMapObject = nullptr;
-		static_cast<CLevel_Map*>(m_pOwnerLevel)->Set_SelectToolObjectNull();
-		for (_uint i = 0; i < static_cast<_uint>(EMapObject_Type::END); ++i)
-			m_pGameInstance->Clear_Layer(ENUM_TO_UINT(ELevelType::MAP) , g_wszMapObjectLayer );
-	}
+	//if (ImGui::Button("All Clear"))
+	//{
+	//	m_pSelectMapObject = nullptr;
+	//	CMapToolManager::GetInstance()->Delete_Preview();
+	//	static_cast<CLevel_Map*>(m_pOwnerLevel)->Set_SelectToolObjectNull();
+	//	for (_uint i = 0; i < static_cast<_uint>(EMapObject_Type::END); ++i)
+	//		m_pGameInstance->Clear_Layer(ENUM_TO_UINT(ELevelType::MAP) , g_wszMapObjectLayer );
+	//}
 
-	ImGui::Separator();
+	//ImGui::Separator();
 
 	ImGui::NewLine();
 
@@ -283,40 +286,6 @@ HRESULT CPanel_MapObjectList::Render_SelectMaterial()
 	return S_OK;
 }
 
-HRESULT CPanel_MapObjectList::Render_Description()
-{
-	Update_SelectObject();
-
-	if (m_pSelectMapObject == nullptr)
-	{
-		ImGui::TextWrapped("  None Select Object  ");
-		return S_OK;
-	}
-
-
-	CLIENT_MAKEPATH_DESC_BASE* pDesc = m_pSelectMapObject->Get_ClientMakePathDesc();
-
-	if (pDesc == nullptr)
-	{
-		ImGui::TextWrapped(" This Object Don't Need Description ");
-		return S_OK;
-	}
-
-
-	ImGui::SeparatorText(" Description Info ");
-
-	EClientMakePath ePath = m_pSelectMapObject->Get_ClientMakePath();
-	
-	switch (ePath)
-	{
-	case Tool::EClientMakePath::StaticObject: ImGuiUpdate_StaticObject_Desc(static_cast<STATICOBJECT_DESC*>(pDesc));	return S_OK;
-	default:																											return E_FAIL;
-	}
-
-
-
-	return S_OK;
-}
 
 HRESULT CPanel_MapObjectList::Render_TransformInfo()
 {
@@ -340,7 +309,7 @@ HRESULT CPanel_MapObjectList::Render_TransformInfo()
 
 	if (ImGui::TreeNode(" Origin SRT "))
 	{
-		SRT_DATA tData = m_pSelectMapObject->Get_SRTData(m_iSelectInstanceID, true);
+		SRT_DATA tData = m_pSelectMapObject->Get_SRTData( true, m_iSelectInstanceID);
 
 		ImGui::Text(" Scale	=> X : [ %.2f ]  Y : [ %.2f ]  Z : [ %.2f ]", tData.vScale.x, tData.vScale.y, tData.vScale.z);
 		ImGui::Text(" Degree	=> X : [ %.2f ]  Y : [ %.2f ]  Z : [ %.2f ]  W : [%.2f] ", tData.vQuat.x, tData.vQuat.y, tData.vQuat.z, tData.vQuat.w);
@@ -402,6 +371,12 @@ HRESULT CPanel_MapObjectList::Render_SelectInfo()
 
 		if (ImGui::Button(" Cancel Select "))
 		{
+			//if (m_pMapToolManager->Get_PrevieObject())
+			//{
+			//	MSG_BOX("Preview Object");
+			//}
+
+
 			static_cast<CLevel_Map*>(m_pOwnerLevel)->On_ChangeSelectedObject(nullptr);
 			m_pSelectMapObject = nullptr;
 			ImGui::End();
@@ -441,6 +416,13 @@ HRESULT CPanel_MapObjectList::Render_SelectInfo()
 
 
 		ImGui::Text(" Map Object Name : [ %s ]", m_pSelectMapObject->Get_Name().c_str());
+
+		ImGui::NewLine();
+
+		m_iBuffer = static_cast<_int>(m_pSelectMapObject->Get_SectionNumber());
+		ImGui::Text(" Section Number : [ %d ] " , m_iBuffer);
+		if (ImGui::InputInt("##SectionNumber", &m_iBuffer))
+			m_pSelectMapObject->Set_SectionNumber(static_cast<_uint>(m_iBuffer));
 
 		ImGui::NewLine();
 		ImGui::Separator();
@@ -815,60 +797,43 @@ HRESULT CPanel_MapObjectList::Render_SelectOriginMaterialInfo()
 
 	ImGui::NewLine();
 
-	ImGui::Text(" Material Name => [ %s ] ", m_pSelectMaterial->Get_Name());
+	ImGui::Text(" Material Name => [ %s ] ", Engine_Utils::ToString(m_pSelectMaterial->Get_Name()).c_str());
 
 	ImGui::Separator();
 
-	ImGui::BeginChild("Using Texture Info", m_vTextureInfoTableSize , true);
+	
+	m_arrayMtl_SRVs = m_pSelectMaterial->Get_ArraySRV();
 
-	if (ImGui::BeginTable("TextureInfoTable", 2, ImGuiTableFlags_RowBg | ImGuiTableFlags_BordersInnerV))
+	m_strBuffer = Engine_Utils::MaterialTextureType_ToString(static_cast<EMaterialTextureType>(m_iSelectMtSlot));
+	
+	ImGui::SeparatorText(" Slot Name ");
+	if (ImGui::BeginCombo("##MaterialSLotName", m_strBuffer.c_str()))
 	{
-		//m_arrayOriginMtlUsingTexturesName
-
-		//ImGui::TableSetupColumn("Slot Type", ImGuiTableColumnFlags_WidthFixed ,45.0f);
-		//ImGui::TableSetupColumn("Texture Name", ImGuiTableColumnFlags_WidthStretch);
-
-		//for (_uint i = 0; i < ENUM_TO_UINT(m_arrayOriginMtlUsingTexturesName.size()); ++i)
-		//{
-		//	ImGui::PushID(i);
-		//	string TextureTypeName = Get_MaterialSlotNameAssimp(aiTextureType(i + 1));
-		//	if (TextureTypeName.empty()) { ImGui::PopID(); continue; }
-		//	if (m_arrayOriginMtlUsingTexturesName[i].empty()) { ImGui::PopID(); continue; }
-
-		//	ImGui::TableNextRow();
-		//	ImGui::TableSetColumnIndex(0);
-		//	bool bSelected = (m_iSelectOriginMtlTexture == i);
-
-		//	if (ImGui::Selectable(TextureTypeName.c_str(), bSelected, ImGuiSelectableFlags_SpanAllColumns))
-		//	{
-		//		if(!m_arrayOriginMtlUsingTexturesName[i].empty())
-		//			m_iSelectOriginMtlTexture = i;
-		//	}
-
-		//	ImGui::TableSetColumnIndex(1);
-		//	ImGui::TextUnformatted(m_arrayOriginMtlUsingTexturesName[i].c_str());
-
-		//	ImGui::PopID();
-		//}
-		ImGui::EndTable();
+		
+		for (_uint i = 0; i < ENUM_TO_UINT(EMaterialTextureType::MAX_COUNT); ++i)
+		{
+			if (m_arrayMtl_SRVs[i] == nullptr) continue;
+			_bool isSelected = m_iSelectMtSlot == i;
+			m_strBuffer = Engine_Utils::MaterialTextureType_ToString(static_cast<EMaterialTextureType>(i));
+			if (ImGui::Selectable(m_strBuffer.c_str(), isSelected))
+				m_iSelectMtSlot = i;
+			if (isSelected)
+				ImGui::SetItemDefaultFocus();
+		}
+		ImGui::EndCombo();
 	}
 
-	ImGui::EndChild();
+	ImGui::Separator();
 
 
-	//CTextureBase::RESOURCE_BASE_DESC tDesc{};
-	//if (m_iSelectOriginMtlTexture > m_arrayOriginMtlUsingTexturesName.size())
-	//	m_iSelectOriginMtlTexture = static_cast<_uint>(m_arrayOriginMtlUsingTexturesName.size()) - 1;
+	CTextureBase::RESOURCE_BASE_DESC tDesc{};
+	if (m_iSelectMtSlot > m_arrayMtl_SRVs.size())
+		m_iSelectMtSlot = static_cast<_uint>(m_arrayMtl_SRVs.size()) - 1;
 
-	//tDesc.wstrName = Engine_Utils::ToWString(m_arrayOriginMtlUsingTexturesName[m_iSelectOriginMtlTexture]);
-	//CTextureBase* pTex = m_pGameInstance->GetOrAddTexture(tDesc.wstrName, &tDesc);
-	//if (pTex)
-	//{
-	//	ID3D11ShaderResourceView* pSRV = pTex->Get_SRV();
-	//	ImGui::Image((ImTextureID)pSRV, ImVec2(200, 200));
-	//	Safe_Release(pTex);
-	//}
-
+	if (m_arrayMtl_SRVs[m_iSelectMtSlot])
+	{
+		ImGui::Image((ImTextureID)m_arrayMtl_SRVs[m_iSelectMtSlot], ImVec2(200, 200));
+	}
 
 	ImGui::End();
 
@@ -895,14 +860,90 @@ void CPanel_MapObjectList::Free()
 {
 	Super::Free();
 
-
+	m_pMapToolManager = nullptr;
 	Safe_Release(m_pTransformLayout);
 	Safe_Release(m_pGameInstance);
 }
 
 
 
+void CPanel_MapObjectList::Compute_LandScape_TextureUV(_uint iLandScapeIndex, OUT Vec2& vOut_LT, OUT Vec2& vOut_RB)
+{
+	// 0으로 나누기 방지 (안전장치)
+	if (m_iLandScape_Col < 1) m_iLandScape_Col = 1;
+	if (m_iLandScape_Row < 1) m_iLandScape_Row = 1;
+
+	// 1. 한 칸의 UV 사이즈 계산 (가로/세로 길이)
+	float fUnitU = 1.0f / (float)m_iLandScape_Col;
+	float fUnitV = 1.0f / (float)m_iLandScape_Row;
+
+	// 2. 현재 인덱스가 몇 번째 행(Row), 몇 번째 열(Col)인지 계산
+	// iLandScapeIndex = iCurrentRow * m_iLandScape_Col + iCurrentCol
+	_uint iIndex_Row = iLandScapeIndex / m_iLandScape_Col;
+	_uint iIndex_Col = iLandScapeIndex % m_iLandScape_Col;
+
+	// ---------------------------------------------------------
+	// 3. 좌표 계산 (DirectX 텍스처 좌표계 기준: 좌상단 0,0)
+	// ---------------------------------------------------------
+
+	// U (가로): 왼쪽에서 오른쪽으로 증가
+	float fLeft = (float)iIndex_Col * fUnitU;
+	float fRight = fLeft + fUnitU;
+
+	// V (세로): 위에서 아래로 증가 (일반적인 텍스처 좌표)
+	// 만약 "0번 인덱스가 맨 위쪽"이라면 이 방식을 써야 합니다.
+	//float fTop = (float)iIndex_Row * fUnitV;
+	//float fBottom = fTop + fUnitV;
+
+	 //[참고] 만약 님 말씀대로 "0번 인덱스가 맨 아래(Bottom)"부터 시작해야 한다면?
+	 //  위의 fTop, fBottom 코드를 지우고 아래 주석을 푸세요.
+
+	float fBottom = 1.0f - ((float)iIndex_Row * fUnitV);      // 아래쪽이 V값이 큼
+	float fTop    = 1.0f - ((float)(iIndex_Row + 1) * fUnitV); // 윗쪽이 V값이 작음
+	
+
+	// 4. 결과 출력
+	vOut_LT = Vec2(fLeft, fTop);
+	vOut_RB = Vec2(fRight, fBottom);
+}
+
+
+
 #pragma region Desc
+
+HRESULT CPanel_MapObjectList::Render_Description()
+{
+	Update_SelectObject();
+
+	if (m_pSelectMapObject == nullptr)
+	{
+		ImGui::TextWrapped("  None Select Object  ");
+		return S_OK;
+	}
+
+
+	CLIENT_MAKEPATH_DESC_BASE* pDesc = m_pSelectMapObject->Get_ClientMakePathDesc();
+
+	if (pDesc == nullptr)
+	{
+		ImGui::TextWrapped(" This Object Don't Need Description ");
+		return S_OK;
+	}
+
+
+	ImGui::SeparatorText(" Description Info ");
+
+	EClientMakePath ePath = m_pSelectMapObject->Get_ClientMakePath();
+
+	switch (ePath)
+	{
+	case Tool::EClientMakePath::StaticObject: ImGuiUpdate_StaticObject_Desc	(static_cast<STATICOBJECT_DESC*>(pDesc));	return S_OK;
+	case Tool::EClientMakePath::LandScape:	  ImGuiUpdate_LandScape_Desc	(static_cast<LANDSCAPE_DESC*>(pDesc));		return S_OK;
+	default:																											return E_FAIL;
+	}
+
+	return S_OK;
+}
 
 
 #pragma region StaticObject
@@ -922,6 +963,54 @@ void CPanel_MapObjectList::ImGuiUpdate_StaticObject_Desc(STATICOBJECT_DESC* pDes
 
 
 	return;
+}
+
+void CPanel_MapObjectList::ImGuiUpdate_LandScape_Desc(LANDSCAPE_DESC* pDesc)
+{
+	if (pDesc == nullptr) return;
+
+	ImGui::NewLine();
+
+	ImGui::SeparatorText(" Land Scpae Description ");
+
+	/* 계산용 */
+
+	ImGui::Text(" Setting To Compute UV ");
+
+	ImGui::Text(" Total Count => [ %d ]", m_iLandScape_Row * m_iLandScape_Col );
+	if (ImGui::InputInt(" Row Count ", &m_iLandScape_Row))
+	{
+		if (m_iLandScape_Row < 1)
+			m_iLandScape_Row = 1;
+	}
+	if (ImGui::InputInt(" Col Count ", &m_iLandScape_Col))
+	{
+		if (m_iLandScape_Col < 1)
+			m_iLandScape_Col = 1;
+	}
+
+	if (ImGui::Button("Compute UV"))
+	{
+		Compute_LandScape_TextureUV(pDesc->iIndex , pDesc->vTextureUV_LT , pDesc->vTextureUV_RB);
+	}
+
+	ImGui::NewLine();
+	
+	ImGui::SeparatorText(" Index ");
+
+	ImGui::InputInt("Index" ,&pDesc->iIndex);
+
+	ImGui::SeparatorText(" Texture UV ");
+
+	ImGui::Text(" LT ");
+
+	ImGui::InputFloat2( "LT" , &pDesc->vTextureUV_LT.x , "%.5f");
+
+	ImGui::Text(" RB ");
+
+	ImGui::InputFloat2("RB", &pDesc->vTextureUV_RB.x, "%.5f");
+
+	ImGui::Separator();
 }
 
 #pragma endregion

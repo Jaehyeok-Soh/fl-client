@@ -45,7 +45,7 @@ HRESULT CBuilder_Map::Create_MapObject(const DTO::TMap_MapObjectData& tData)
 	tDesc.isUELoaded = tData.isUELoaded;
 	tDesc.isLoaded = true;
 	
-	
+	tDesc.iSectionNumber					= tData.iSectionNum;
 	tDesc.tUsingModelInfo.wstrName			= path(tData.strModelPath).filename().stem();
 	tDesc.tUsingModelInfo.wstrPath			= Engine_Utils::ToWString(tData.strModelPath);
 	tDesc.vecClientMakePathDesc				= tData.vecClientMakePathDesc;

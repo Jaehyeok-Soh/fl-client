@@ -56,7 +56,6 @@ HRESULT CLevel_Map::Initialize()
 	if (FAILED(Super::Initialize()))
 		return E_FAIL;
 
-
 	if (FAILED(Ready_MapObject_Layer()))
 		return E_FAIL;
 
@@ -113,8 +112,18 @@ void CLevel_Map::Update(const _float fTimeDelta)
 void CLevel_Map::Update_Picking()
 {
 	Super::Update_Picking();
+
+	/* Preivew가  */
 	if (m_pMapToolManager->Get_Preview() == nullptr)
+	{
+		if(m_pGameInstance->Mouse_Pressing(MOUSEKEYSTATE::LB))
+			m_pPickingManager->Picking();
+	}
+	else
+	{
 		m_pPickingManager->Picking();
+	}
+
 }
 
 HRESULT CLevel_Map::Render()
@@ -166,6 +175,10 @@ void CLevel_Map::Set_MapObjectListPanel_ResetSelectValue()
 
 void CLevel_Map::On_ChangeSelectedObject(CGameObject* pGo)
 {
+	/* 현재 preview가 있다면 Select가 바뀔 수 없다 */
+	if ( m_pMapToolManager->Get_Preview() != nullptr )
+		return;
+
 	if (pGo)
 	{
 		if (CToolObject* pToolGo = dynamic_cast<CToolObject*>(pGo))

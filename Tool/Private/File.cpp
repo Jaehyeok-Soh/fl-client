@@ -17,6 +17,11 @@ CFile::~CFile()
 HRESULT CFile::Initialize(const wstring& wstrPath, ID3D11Device* pDevice, ID3D11DeviceContext* pContext)
 {
     m_tInfo = FILE_INFO(wstrPath);
+
+	/* File 경로가 Png , DDS 라면 */
+
+
+
 	return S_OK;
 }
 

@@ -157,16 +157,11 @@ HRESULT CPanel_FileExplore::Render_MakeModelFilePath(const wstring& wstrPath)
 	tMapObjectDesc.isLoaded = false;
 	tMapObjectDesc.isUELoaded = false;
 	tMapObjectDesc.wstrLayerTag = g_wszMapObjectLayer;
+	tMapObjectDesc.iSectionNumber = m_pMapToolManager->Get_MakeObjectSectionNubmer();
 	SRT_DATA tData{};
+	m_pMapToolManager->Get_SRT_BrushData(tData.vScale , tData.vQuat , tData.vPosition);
 	tMapObjectDesc.vecSRTs.push_back(tData);
-
-	m_pMapToolManager->Set_BrushScale(tData.vScale);
-	m_pMapToolManager->Set_BrushRotation(tData.vQuat);
-
 	m_pMapToolManager->Make_MapObject(&tMapObjectDesc, true);
-
-
-
 
 	return S_OK;
 }

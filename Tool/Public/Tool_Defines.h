@@ -36,6 +36,9 @@ extern HINSTANCE	g_hInstance;
 #define	To_DEGREE ( 180.f / XM_PI )
 
 
+
+
+
 namespace Tool
 {
 	extern unsigned int g_iWinSizeX;
@@ -127,6 +130,38 @@ namespace Tool
 	}
 
 #pragma endregion
+
+#pragma region EMapTool Batch Mode Picking Type
+
+	enum class EMapTool_EmplaceType
+	{
+		Free,
+		Picking,
+		END,
+	};
+
+	static string EMapTool_EmplaceType_ToString(EMapTool_EmplaceType eType)
+	{
+		switch (eType)
+		{
+		case Tool::EMapTool_EmplaceType::Free:				return "Free";
+		case Tool::EMapTool_EmplaceType::Picking:			return "Picking";
+		default:											return "Unknown";
+		}
+
+		return "Unknown";
+	}
+
+	static EMapTool_EmplaceType	MapTool_EmplaceType_ToEnum(const string& strType)
+	{
+		if (strType == "Free")		return EMapTool_EmplaceType::Free;
+		if (strType == "Picking")	return EMapTool_EmplaceType::Picking;
+		return EMapTool_EmplaceType::END;
+	}
+
+
+#pragma endregion
+
 
 	enum class EToolObjectType : unsigned int
 	{
@@ -236,6 +271,12 @@ namespace Tool
 	inline constexpr _tchar g_wszPrototypeTagUI[]{ L"Prototype_UI_UI" };
 
 
+	inline constexpr _char  g_szMapObject_State[]{ "g_iMapObject_State" };
+
+	inline constexpr _char  g_szLandScape_TextureUV_LT[]{ "g_LandScape_TextureUV_LT" };
+	inline constexpr _char  g_szLandScape_TextureUV_RB[]{ "g_LandScape_TextureUV_RB" };
+
+
 	inline constexpr _uint  g_Uint_NoneIndex{ 0xFFFFFFFF };
 
 #pragma region Enum
@@ -245,7 +286,7 @@ namespace Tool
 
 	// Don't Touch , Talk Before Touch //
 	/*----------------------- Map Tool ---------------------------*/
-	enum class EMapObject_Type
+	enum class EMapObject_Type // UELOader에서 사용하는거  MapObject에 필요는 X
 	{
 		/* 지형지물 = Terrain = Object */
 		STATICMODEL,
@@ -299,7 +340,7 @@ namespace Tool
 	enum class EClientMakePath
 	{
 		StaticObject,
-		Test,
+		LandScape,
 		END,
 	};
 
@@ -308,7 +349,7 @@ namespace Tool
 		switch (eType)
 		{
 		case Tool::EClientMakePath::StaticObject:	return "StaticObject";
-		case Tool::EClientMakePath::Test:			return "Test";
+		case Tool::EClientMakePath::LandScape:		return "LandScape";
 		default:									return "Unknown";
 		}
 	};
@@ -316,7 +357,7 @@ namespace Tool
 	static EClientMakePath ClientMakePath_ToEnum(string strType)
 	{
 		if (strType == "StaticObject")	return EClientMakePath::StaticObject;
-		if (strType == "Test")			return EClientMakePath::Test;
+		if (strType == "LandScape")		return EClientMakePath::LandScape;
 
 		return EClientMakePath::END;
 	}
@@ -566,6 +607,44 @@ namespace Tool
 
 
 #pragma endregion
+
+
+
+	static void Model_Path_Check(OUT wstring& wstrModelPath)
+	{
+		std::wstring searchPath = wstrModelPath;
+		std::replace(searchPath.begin(), searchPath.end(), L'\\', L'/');
+
+		path p(wstrModelPath);
+
+		std::wstring wstrExt = p.extension().wstring();
+		std::wstring wstrStem = p.stem().wstring();
+
+		bool bModified = false;
+
+		if (searchPath.find(L"/V1/") != std::wstring::npos)
+		{
+			if (wstrStem.find(L"_V1") == std::wstring::npos)
+			{
+				wstrStem += L"_V1";
+				bModified = true;
+			}
+		}
+		else if (searchPath.find(L"/V2/") != std::wstring::npos)
+		{
+			if (wstrStem.find(L"_V2") == std::wstring::npos)
+			{
+				wstrStem += L"_V2";
+				bModified = true;
+			}
+		}
+
+		if (bModified)
+		{
+			p.replace_filename(wstrStem + wstrExt);
+			wstrModelPath = p.wstring();
+		}
+	}
 
 #pragma region Struct
 

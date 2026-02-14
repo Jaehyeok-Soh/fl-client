@@ -306,6 +306,12 @@ void Engine_Utils::read_vec3_xyz(const json& _j, Vec3& vOut)
     vOut.z = _j.value("Z", 0.f);
 }
 
+void Engine_Utils::read_vec2_xy(const json& _j, Vec2& vOut)
+{
+    vOut.x = _j.value("X", 0.f);
+    vOut.y = _j.value("Y", 0.f);
+}
+
 void Engine_Utils::read_vec3_PitchYawRoll(const json& _j, Vec3& vOut)
 {
     vOut.x = _j.value("Pitch", 0.f);
@@ -328,6 +334,12 @@ void Engine_Utils::write_vec3_xyz(json& _j, const Vec3& vOut)
     _j["Z"] = vOut.z;
 }
 
+void Engine_Utils::write_vec2_xy(json& _j, const Vec2& vOut)
+{
+    _j["X"] = vOut.x;
+    _j["Y"] = vOut.y;
+}
+
 void Engine_Utils::write_vec3_PitchYawRoll(json& _j, const Vec3& vOut)
 {
     _j["Pitch"] = vOut.x;
@@ -341,4 +353,54 @@ void Engine_Utils::write_vec4_Quat(json& _j,const  Quat& vOut)
     _j["Y"] = vOut.y;
     _j["Z"] = vOut.z;
     _j["W"] = vOut.w;
+}
+
+string Engine_Utils::MaterialTextureType_ToString(EMaterialTextureType eType)
+{
+    switch (eType)
+    {
+    case EMaterialTextureType::DIFFUSE:           return "DIFFUSE";
+    case EMaterialTextureType::SPECULAR:          return "SPECULAR";
+    case EMaterialTextureType::AMBIENT:           return "AMBIENT";
+    case EMaterialTextureType::EMISSIVE:          return "EMISSIVE";
+    case EMaterialTextureType::HEIGHT:            return "HEIGHT";
+    case EMaterialTextureType::NORMALS:           return "NORMALS";
+    case EMaterialTextureType::SHININESS:         return "SHININESS";
+    case EMaterialTextureType::OPACITY:           return "OPACITY";
+    case EMaterialTextureType::DISPLACEMENT:      return "DISPLACEMENT";
+    case EMaterialTextureType::LIGHTMAP:          return "LIGHTMAP";
+    case EMaterialTextureType::REFLECTION:        return "REFLECTION";
+    case EMaterialTextureType::BASE_COLOR:        return "BASE_COLOR";
+    case EMaterialTextureType::NORMAL_CAMERA:     return "NORMAL_CAMERA";
+    case EMaterialTextureType::EMISSION_COLOR:    return "EMISSION_COLOR";
+    case EMaterialTextureType::METALNESS:         return "METALNESS";
+    case EMaterialTextureType::DIFFUSE_ROUGHNESS: return "DIFFUSE_ROUGHNESS";
+    case EMaterialTextureType::AMBIENT_OCCLUSION: return "AMBIENT_OCCLUSION";
+    case EMaterialTextureType::UNKNOWN:           return "UNKNOWN";
+    default:                                      return "NONE";
+    }
+
+}
+
+EMaterialTextureType Engine_Utils::MaterialTextureType_ToEnum(string strType)
+{
+    if (strType == "DIFFUSE")           return EMaterialTextureType::DIFFUSE;
+    if (strType == "SPECULAR")          return EMaterialTextureType::SPECULAR;
+    if (strType == "AMBIENT")           return EMaterialTextureType::AMBIENT;
+    if (strType == "EMISSIVE")          return EMaterialTextureType::EMISSIVE;
+    if (strType == "HEIGHT")            return EMaterialTextureType::HEIGHT;
+    if (strType == "NORMALS")           return EMaterialTextureType::NORMALS;
+    if (strType == "SHININESS")         return EMaterialTextureType::SHININESS;
+    if (strType == "OPACITY")           return EMaterialTextureType::OPACITY;
+    if (strType == "DISPLACEMENT")      return EMaterialTextureType::DISPLACEMENT;
+    if (strType == "LIGHTMAP")          return EMaterialTextureType::LIGHTMAP;
+    if (strType == "REFLECTION")        return EMaterialTextureType::REFLECTION;
+    if (strType == "BASE_COLOR")        return EMaterialTextureType::BASE_COLOR;
+    if (strType == "NORMAL_CAMERA")     return EMaterialTextureType::NORMAL_CAMERA;
+    if (strType == "EMISSION_COLOR")    return EMaterialTextureType::EMISSION_COLOR;
+    if (strType == "METALNESS")         return EMaterialTextureType::METALNESS;
+    if (strType == "DIFFUSE_ROUGHNESS") return EMaterialTextureType::DIFFUSE_ROUGHNESS;
+    if (strType == "AMBIENT_OCCLUSION") return EMaterialTextureType::AMBIENT_OCCLUSION;
+
+    return EMaterialTextureType::MAX_COUNT;
 }

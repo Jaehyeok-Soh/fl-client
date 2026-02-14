@@ -52,17 +52,44 @@ public:
 
 #pragma endregion
 
+#pragma region LandScape
 
+struct ENGINE_DLL LANDSCAPE_DESC : public CLIENT_MAKEPATH_DESC_BASE
+{
+	using Super = CLIENT_MAKEPATH_DESC_BASE;
+
+	_int		iIndex{0};
+	/* ÁöÇü Texture UV ÁÂÇ¥  */
+	Vec2		vTextureUV_LT{};
+	Vec2		vTextureUV_RB{};
+
+
+	/* Texture */
+	ID3D11ShaderResourceView* m_pTexture{};
+
+public:
+	explicit LANDSCAPE_DESC()
+		: vTextureUV_LT{ Vec2::Zero }, vTextureUV_RB{Vec2::Zero}
+	{
+	}
+	explicit LANDSCAPE_DESC(const LANDSCAPE_DESC& rhs)
+		: CLIENT_MAKEPATH_DESC_BASE(rhs), vTextureUV_RB(rhs.vTextureUV_RB) , vTextureUV_LT(rhs.vTextureUV_LT) , iIndex(rhs.iIndex)
+	{
+		return;
+	}
+	virtual ~LANDSCAPE_DESC() {};
+public:
+	virtual void from_Json(const json& LoadJson);
+	virtual void to_Json(json& SaveJson);
+};
+#pragma endregion
 
 
 
 
 #pragma endregion
-
 NS_END
-
 NS_BEGIN(DTO)
-
 /////////////////-------------------  MAP  -------------------/////////////////
 
 enum class EMapObject_Type : _uint
@@ -90,7 +117,7 @@ enum class EMapObject_DrawType
 enum class EClientMakePath
 {
 	StaticObject,
-	Test,
+	LandScape,
 	END
 };
 
@@ -129,7 +156,7 @@ NLOHMANN_JSON_SERIALIZE_ENUM(EMapObject_DrawType,
 	NLOHMANN_JSON_SERIALIZE_ENUM(EClientMakePath,
 		{
 			{EClientMakePath::StaticObject, "StaticObject"},
-			{EClientMakePath::Test, "Test"},
+			{EClientMakePath::LandScape,	"LandScape"},
 			{EClientMakePath::END,			"Unknown"},
 		}
 		)
@@ -186,6 +213,7 @@ public:
 typedef struct TMap_MapObjectData
 {
 	/* UE Load Check */
+	_uint								iSectionNum{};
 	bool								isUELoaded{ false };
 	string								strTag{};
 	string								strModelPath{ "" };
@@ -242,16 +270,16 @@ private:
 public:
 
 public:
-	_uint Get_Type() const override { return ENUM_TO_UINT(DTO::EMapObject_Type::MAPOBJECT);}
-	const string& Get_Tag() const override { return m_tData.strTag; }
+	_uint							Get_Type() const override { return ENUM_TO_UINT(DTO::EMapObject_Type::MAPOBJECT);}
+	const string&					Get_Tag() const override { return m_tData.strTag; }
 	
-	json	ToJson() const override;
-	HRESULT FromJson(const json& j) override;
+	json							ToJson() const override;
+	HRESULT							FromJson(const json& j) override;
 
 	const DTO::TMap_MapObjectData&	Get_Data() const { return m_tData; }
 	DTO::TMap_MapObjectData&		Get_Data() { return m_tData; }
 private:
-	DTO::TMap_MapObjectData		m_tData{};
+	DTO::TMap_MapObjectData			m_tData{};
 public:
 	static CData_MapObject* Create() { return new CData_MapObject(); }
 	virtual void Free() override;

@@ -113,10 +113,8 @@ HRESULT CBounds::Update_SubBound(const  Vec3* pTotalMinMax , const Matrix& World
 	m_vecSubBounds[iIndex].pAABB->Update(WorldMatrix);
 	m_vecSubBounds[iIndex].pSphere->Update(WorldMatrix);
 
-
-
 	/* 이미 추가된 Bounds */
-	if(FAILED(Update_Bounds(pTotalMinMax)))
+	if(FAILED(Make_Bounds(pTotalMinMax)))
 		return E_FAIL;
 	
 
@@ -145,16 +143,18 @@ HRESULT CBounds::Delete_SubBounds(const Vec3* pTotalMinMax, _uint iDeleteIndex ,
 	if (pTotalMinMax == nullptr) return E_FAIL;
 	if (iDeleteIndex > m_vecSubBounds.size()) return E_FAIL;
 
+	Safe_Release(m_vecSubBounds[iDeleteIndex].pAABB);
+	Safe_Release(m_vecSubBounds[iDeleteIndex].pSphere);
 	m_vecSubBounds.erase(m_vecSubBounds.begin() + iDeleteIndex);
 
-	if (FAILED(Update_Bounds( pTotalMinMax , fRatio)))
+	if (FAILED(Make_Bounds( pTotalMinMax , fRatio)))
 		return E_FAIL;
 
 	return S_OK;
 }
 
 
-HRESULT CBounds::Update_Bounds(const Vec3* pMinMax, float fRatio)
+HRESULT CBounds::Make_Bounds(const Vec3* pMinMax, float fRatio)
 {
 	Vec3 vFinalMinMax[2]{ (pMinMax[0]) * fRatio , (pMinMax[1]) * fRatio };
 

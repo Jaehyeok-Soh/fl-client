@@ -12,6 +12,7 @@
 #include "DataDocument_Map.h"
 #include "DataStruct_Map.h"
 #include "GameInstance.h"
+#include "CameraMan.h"
 
 
 USING(Tool)
@@ -43,6 +44,7 @@ CMapObject::CMapObject(const CMapObject& rhs)
     , m_isBatced{ rhs .m_isBatced}
     , m_vecMatrix{rhs.m_vecMatrix}
     , m_vecOriginMatrix{rhs.m_vecOriginMatrix}
+    , m_pMapToolManager(CMapToolManager::GetInstance())
 {
     /*  Description을 어케해주는게 좋을려나...  */
 
@@ -69,7 +71,7 @@ HRESULT CMapObject::Initialize(void* pArg)
     m_eClientMakePath           = pDesc->eClientMakePath;
     m_eClientLevelType          = pDesc->eClientLevelType;
     m_eMapObjectDrawType        = pDesc->eMapObjectDrawType;
-    
+    m_iSectionNum               = pDesc->iSectionNumber;
 
     if (m_isLoaded == true)
         m_isBatced = true;
@@ -91,6 +93,10 @@ HRESULT CMapObject::Initialize(void* pArg)
         return E_FAIL;
 
     if (FAILED(Ready_ClientMakePath(pDesc)))
+        return E_FAIL;
+
+
+    if (FAILED(Check_DrawType_ByClientPath()))
         return E_FAIL;
 
 
@@ -535,6 +541,10 @@ void CMapObject::Set_ClientMakePath(EClientMakePath eClientMakePath)
         m_vecClientMakePathDesc.push_back(pDesc);
     }
 
+
+    if (FAILED(Check_DrawType_ByClientPath()))
+        return;
+
     return;
 }
 
@@ -589,6 +599,10 @@ void CMapObject::Set_MapObjectDrawType(EMapObject_DrawType eDrawType)
         /* 아직 생성을안함 */
         pBounds->Push_SubBounds(Get_Component<CInstanceMesh>()->Get_InstanceWorldMinMax(),Get_Component<CModel>()->Get_StaticModelMinMax(),m_vecMatrix.front());
     }
+
+
+    if (FAILED(Check_DrawType_ByClientPath()))
+        return;
 
     return;
 }
@@ -648,39 +662,18 @@ void CMapObject::Delete_InstanceData(_int iIndex)
     vector<Matrix> vecWorldMatrix{};
     vecWorldMatrix.reserve(m_vecSRTs.size());
 
-    auto OriginSRTiter = m_vecOriginSRTs.begin();
-    auto OriginMatrixiter = m_vecOriginMatrix.begin();
+    /* Cur Data */
+    m_vecMatrix.erase(m_vecMatrix.begin() + iDeleteIndex);
+    m_vecSRTs.erase(m_vecSRTs.begin() + iDeleteIndex);
 
-    auto CurSRTiter = m_vecSRTs.begin();
-    auto CurMatrixiter = m_vecMatrix.begin();
+    /* Origin Data */
+    m_vecOriginSRTs.erase(m_vecOriginSRTs.begin() + iDeleteIndex);
+    m_vecOriginMatrix.erase(m_vecOriginMatrix.begin() + iDeleteIndex);
 
-    for (_uint i = 0 ;  i < (_uint)m_vecSRTs.size(); ++i)
-    { 
-        if (iDeleteIndex == i)
-        {
-
-            CurMatrixiter       = m_vecMatrix.erase(CurMatrixiter);
-            CurSRTiter          = m_vecSRTs.erase(CurSRTiter);
-
-            OriginSRTiter       = m_vecOriginSRTs.erase(OriginSRTiter);
-            OriginMatrixiter    = m_vecOriginMatrix.erase(OriginMatrixiter);
-        }
-        else
-        {
-            
-            vecWorldMatrix.push_back(m_vecSRTs[i].Get_World());
-            
-            CurMatrixiter++;
-            OriginMatrixiter++;
-
-            CurSRTiter++;
-            OriginSRTiter++;
-        }
-    }
 
     CInstanceMesh* pInstanceMesh = Get_Component<CInstanceMesh>();
     if (pInstanceMesh == nullptr)  return;
-    pInstanceMesh->ReMake_InstanceBuffer(&vecWorldMatrix,Get_Component<CModel>()->Get_StaticModelMinMax());
+    pInstanceMesh->ReMake_InstanceBuffer(&m_vecMatrix,Get_Component<CModel>()->Get_StaticModelMinMax());
 
     CBounds* pBouns = Get_Component<CBounds>();
     pBouns->Delete_SubBounds(pInstanceMesh->Get_InstanceWorldMinMax() , iDeleteIndex);
@@ -778,9 +771,6 @@ HRESULT CMapObject::Awake(const _uint iCurrentLevelID)
     if (FAILED(Super::Awake(iCurrentLevelID)))
         return E_FAIL;
 
-
-
-
     return S_OK;
 }
 
@@ -807,10 +797,11 @@ void CMapObject::Ready_Before_Render(const _float fTimeDelta)
     Super::Ready_Before_Render(fTimeDelta);
 
 
-    m_pGameInstance->Push_RenderObject( m_eMapObjectState == CMapObject::EState::Select ?  RENDER_CATEGORY::NONELIGHT : RENDER_CATEGORY::NONEBLEND, this);
+    // m_eMapObjectState == CMapObject::EState::Select ?  RENDER_CATEGORY::NONELIGHT : 
+    m_pGameInstance->Push_RenderObject(RENDER_CATEGORY::NONELIGHT, this);
 
 #ifdef _DEBUG
-    if (m_eMapObjectDrawType == EMapObject_DrawType::Instance)
+    //if (m_eMapObjectDrawType == EMapObject_DrawType::Instance)
         m_pGameInstance->Push_DebugComponent(Get_Component<CBounds>());
 #endif
 }
@@ -820,16 +811,21 @@ HRESULT CMapObject::Render()
     if (FAILED(Super::Render()))
         return E_FAIL;
 
-
     CShader* pShader{nullptr};
 
 
-    switch (m_eMapObjectDrawType)
+    switch (m_eClientMakePath)
     {
-    case Tool::EMapObject_DrawType::Collider:                                   return S_OK;
-    case Tool::EMapObject_DrawType::Default:    if (FAILED(Render_Default()))   return E_FAIL; break;
-    case Tool::EMapObject_DrawType::Instance:   if (FAILED(Render_Instance()))  return E_FAIL;   break;
-    default:                                                                    return E_FAIL;
+    case Tool::EClientMakePath::StaticObject:
+        Render_StaticObject();
+        break;
+    case Tool::EClientMakePath::LandScape:
+        Render_LandScape();
+        break;
+    case Tool::EClientMakePath::END:
+        break;
+    default:
+        break;
     }
 
     return S_OK;
@@ -846,43 +842,92 @@ void CMapObject::Draw_ImGui()
     return;
 }
 
+HRESULT CMapObject::Set_GPU_MapObjectState(CShader* pShader)
+{
+    if (pShader == nullptr) return E_FAIL;
 
-bool  CMapObject::IntsersectWithPlane(OUT Vec3& vOut)
+    _uint iState = static_cast<_uint>(m_eMapObjectState);
+    ID3DX11EffectVariable* pVariable = pShader->Get_Variable("g_iMapObject_State");
+    // ▼▼▼ 이 코드를 넣어서 브레이크포인트를 걸어보세요 ▼▼▼
+    if (pVariable->IsValid() == false)
+    {
+        MSG_BOX("쉐이더 변수 못찾음! 최적화로 삭제됐거나 파일 잘못됨");
+        return E_FAIL;
+    }
+    if (FAILED(pVariable->AsScalar()->SetInt(iState)))
+    {
+        return E_FAIL;
+    }
+
+    return S_OK;
+}
+
+bool  CMapObject::IntsersectWithPlane(OUT Vec3& vOut ,const Vec3& vLocalCamPos)
 {
     CModel* pModel = Get_Component<CModel>();
     if (pModel == nullptr)  return false;
 
     _uint iMeshCount = pModel->Get_MeshCount();
+
+    _float fMinDist{FLT_MAX};
+    Vec3 vFinalPos{Vec3::Zero};
+    _bool isHit{ false };
+
     for (_uint i = 0; i < iMeshCount; ++i)
     {
-        if (pModel->Get_Mesh(i)->IntsersectWithPlane(vOut))
+        Vec3 vCurHIt{Vec3::Zero};
+        if (pModel->Get_Mesh(i)->IntsersectWithPlane_CloseCam(vOut, vLocalCamPos))
         {
-            return true;
+            _float fCurDist = Vec3::DistanceSquared(vLocalCamPos , vOut);
+            if (fCurDist < fMinDist)
+            {
+                fMinDist = fCurDist;
+                vFinalPos = vOut;
+                isHit = true;
+            }
         }
     }
-    return false;
+
+    if (!isHit)
+        return false;
+
+    vOut = vFinalPos;
+
+    return true;
 }
 
 _bool CMapObject::Picking(OUT Vec3& vOut)
 {
-    SimpleMath::Matrix InvWorldMatrix{};
-
     /* Type 별로 Picking이 달라진다 */
+    if (m_pMapToolManager->Get_Preview() == this)
+        return false;
 
-    _uint iIndex = 0;
-    for (auto& SRT : m_vecSRTs)
+    /* Preview랑 현재 Picking인 맵오브젝트가 똑같다면 거르기 */
+
+    Vec3 vCamWorldPos = m_pGameInstance->Get_MainCamera()->Get_Component<CTransform>()->Get_Info(TRANSFORM_INFO_STATE::POS);
+
+    CBounds* pBounds = Get_Component<CBounds>();
+    if (pBounds == nullptr) return false;
+
+    /*  */
+    if (pBounds->IntersectWithRay_World(vOut, m_iSelectedInstanceID) == false)
+        return false;
+
+    if (m_iSelectedInstanceID >= m_vecMatrix.size())
     {
-        InvWorldMatrix = SRT.Get_World().Invert();
+        m_iSelectedInstanceID = 0;
+        return false;
+    }
 
-        m_pGameInstance->TransformRayToLocalSpace(InvWorldMatrix);
+    Matrix InvertWorldMatrix = m_vecMatrix[m_iSelectedInstanceID].Invert();
 
-        if (IntsersectWithPlane(vOut))
-        {
-            vOut = Vector3::Transform(vOut, SRT.Get_World());
-            m_iSelectedInstanceID = iIndex;
-            return true;
-        }
-        iIndex++;
+    m_pGameInstance->TransformRayToLocalSpace(InvertWorldMatrix);
+    vCamWorldPos = Vec3::Transform(vCamWorldPos,InvertWorldMatrix);
+
+    if (IntsersectWithPlane(vOut, vCamWorldPos))
+    {
+        vOut = Vector3::Transform(vOut, m_vecMatrix[m_iSelectedInstanceID]);
+        return true;
     }
 
     m_iSelectedInstanceID = 0;
@@ -938,6 +983,26 @@ _bool CMapObject::Export_Data(DTO::ECategory eCategory, CDataDocumentBase* pDocu
     return true;
 }
 
+HRESULT CMapObject::Check_DrawType_ByClientPath()
+{
+    switch (m_eClientMakePath)
+    {
+    case Tool::EClientMakePath::StaticObject:           return S_OK;
+    case Tool::EClientMakePath::LandScape:
+    {
+        if (m_eMapObjectDrawType == EMapObject_DrawType::Instance)
+        {
+            MSG_BOX( " Land Scape는 Instance Draw를 지원하지 않습니다 렌더가 진행되지 않으니 Default Draw로 바꿔주세요 " );
+            return S_OK;
+        }
+    }
+        break;
+    default:                                            return S_OK;
+    }
+
+    return S_OK;
+}
+
 
 _int CMapObject::Get_InstanceCount()
 {
@@ -982,59 +1047,6 @@ Matrix CMapObject::Get_Matrix(_int iIndex) const
         return Matrix();
 
     return iIndex == -1 ? m_vecMatrix[m_iSelectedInstanceID] : m_vecMatrix[iIndex];
-}
-
-
-
-HRESULT CMapObject::Render_Default()
-{
-    CShader* pShader        = Get_Component<CShader>();     if (pShader == nullptr)         return E_FAIL;
-    CModel* pModel          = Get_Component<CModel>();      if (pModel == nullptr)          return E_FAIL;
-    CTransform* pTransform  = Get_Component<CTransform>();  if (pTransform == nullptr)      return E_FAIL;
-
-
-    /* WorldMatrix 바인딩 */
-    pShader->Bind_TransformData(pTransform->Get_WorldMatrix());
-    _uint iMeshCount = static_cast<_uint>(pModel->Get_MeshCount());
-    pShader->Set_Pass(ENUM_TO_UINT(m_eMapObjectState));
-  
-
-    for (_uint i = 0; i < iMeshCount; ++i)
-    {
-        pModel->Bind_Material(pShader,i);
-        pModel->Bind_MaterialInstance(pShader,i);
-        pShader->Apply();
-        pModel->Render(i);
-    }
-
-
-    return S_OK;
-}
-
-HRESULT CMapObject::Render_Instance()
-{
-    CShader* pShader = Get_Component<CShader>();                    if (pShader == nullptr)             return E_FAIL;
-    CModel* pModel = Get_Component<CModel>();                       if (pModel == nullptr)              return E_FAIL;
-    CTransform* pTransform = Get_Component<CTransform>();           if (pTransform == nullptr)          return E_FAIL;
-    CInstanceMesh* pInstanceMesh = Get_Component<CInstanceMesh>();  if (pInstanceMesh == nullptr)       return E_FAIL;
-
-    pShader->Get_Scalar("g_iSelectInstanceID")->SetRawValue(&m_iSelectedInstanceID, 0, sizeof(m_iSelectedInstanceID));
-    _uint iMeshCount = static_cast<_uint>(pModel->Get_MeshCount());
-    pShader->Set_Pass(ENUM_TO_UINT(m_eMapObjectState));
-
-    _uint iInstanceCount = Get_InstanceCount();
-
-    pInstanceMesh->Bind_Instance(1);
-    for (_uint i = 0; i < iMeshCount; ++i)
-    {
-        pModel->Bind_Material(pShader, i);
-        pModel->Bind_MaterialInstance(pShader, i);
-        pShader->Apply();
-        pModel->Render_Instance(i, iInstanceCount);
-    }
-    pInstanceMesh->Unbind_Resource(1);
-
-    return S_OK;
 }
 
 
@@ -1104,6 +1116,8 @@ CGameObject* CMapObject::Clone(void* pArg)
 
 void CMapObject::Free()
 { 
+    m_pMapToolManager = nullptr;
+
     for (auto& OverrideMtl : m_vecOverrideMaterials)
         Safe_Release(OverrideMtl);
 
@@ -1113,3 +1127,135 @@ void CMapObject::Free()
     Super::Free();
 }
 
+
+
+#pragma region 기본적인 Render 함수
+
+
+HRESULT CMapObject::Render_Default(_int iPass)
+{
+    CShader*    pShader     = Get_Component<CShader>();     if (pShader == nullptr)         return E_FAIL;
+    CModel*     pModel      = Get_Component<CModel>();      if (pModel == nullptr)          return E_FAIL;
+    CTransform* pTransform  = Get_Component<CTransform>();  if (pTransform == nullptr)      return E_FAIL;
+
+
+
+    pShader->Bind_TransformData(pTransform->Get_WorldMatrix());
+    _uint iMeshCount = static_cast<_uint>(pModel->Get_MeshCount());
+
+    /* Client Make Path를 이용한다 */
+    pShader->Set_Pass(iPass == -1 ? static_cast<_int>(m_eClientMakePath) : iPass);
+    if (FAILED(Set_GPU_MapObjectState(pShader)))
+        return E_FAIL;
+
+
+    for (_uint i = 0; i < iMeshCount; ++i)
+    {
+        pModel->Bind_Material(pShader, i);
+        pModel->Bind_MaterialInstance(pShader, i);
+        pShader->Apply();
+        pModel->Render(i);
+    }
+
+
+    return S_OK;
+}
+
+HRESULT CMapObject::Render_Instance(_int iPass)
+{
+    CShader* pShader = Get_Component<CShader>();                    if (pShader == nullptr)             return E_FAIL;
+    CModel* pModel = Get_Component<CModel>();                       if (pModel == nullptr)              return E_FAIL;
+    CTransform* pTransform = Get_Component<CTransform>();           if (pTransform == nullptr)          return E_FAIL;
+    CInstanceMesh* pInstanceMesh = Get_Component<CInstanceMesh>();  if (pInstanceMesh == nullptr)       return E_FAIL;
+
+    pShader->Get_Scalar("g_iSelectInstanceID")->SetRawValue(&m_iSelectedInstanceID, 0, sizeof(m_iSelectedInstanceID));
+    _uint iMeshCount = static_cast<_uint>(pModel->Get_MeshCount());
+
+    pShader->Set_Pass(iPass == -1 ? static_cast<_int>(m_eClientMakePath) : iPass);
+
+    _uint iInstanceCount = Get_InstanceCount();
+
+    if (FAILED(Set_GPU_MapObjectState(pShader)))
+        return E_FAIL;
+
+
+    pInstanceMesh->Bind_Instance(1);
+    for (_uint i = 0; i < iMeshCount; ++i)
+    {
+        pModel->Bind_Material(pShader, i);
+        pModel->Bind_MaterialInstance(pShader, i);
+        pShader->Apply();
+        pModel->Render_Instance(i, iInstanceCount);
+    }
+    pInstanceMesh->Unbind_Resource(1);
+
+    return S_OK;
+}
+
+
+
+#pragma endregion
+
+
+
+#pragma region Client Path Type 별 Render 함수
+
+
+#pragma region Static Object
+HRESULT CMapObject::Render_StaticObject()
+{
+    if (m_eMapObjectDrawType == EMapObject_DrawType::Instance)
+        return Render_Instance(0);
+    else
+        return Render_Default(0);
+
+    return S_OK;
+}
+#pragma endregion
+
+
+#pragma region LandScape
+
+HRESULT CMapObject::Render_LandScape()
+{
+    /* LandScape 같은 경우는 Instance를 지원하지않는다  */
+    if (m_eMapObjectDrawType == EMapObject_DrawType::Instance)
+        return S_OK;
+
+    CShader*        pShader         = Get_Component<CShader>();                         if (pShader == nullptr)             return E_FAIL;
+    CModel*         pModel          = Get_Component<CModel>();                          if (pModel == nullptr)              return E_FAIL;
+    CTransform*     pTransform      = Get_Component<CTransform>();                      if (pTransform == nullptr)          return E_FAIL;
+    
+
+    /* 지형은 Static으로 분류되야한다 */
+    LANDSCAPE_DESC* pSelectedDesc = static_cast<LANDSCAPE_DESC*>(m_vecClientMakePathDesc[m_iSelectedInstanceID]);
+
+
+    if (pSelectedDesc == nullptr) return S_OK;
+   
+    /* UV 좌표 업데이트 */
+    if(FAILED(pShader->Get_Vector(g_szLandScape_TextureUV_LT)->SetRawValue(&pSelectedDesc->vTextureUV_LT, 0, sizeof(pSelectedDesc->vTextureUV_LT)))) return E_FAIL;
+    if(FAILED(pShader->Get_Vector(g_szLandScape_TextureUV_RB)->SetRawValue(&pSelectedDesc->vTextureUV_RB, 0, sizeof(pSelectedDesc->vTextureUV_RB)))) return E_FAIL;
+    
+    _uint iMeshCount = static_cast<_uint>(pModel->Get_MeshCount());
+
+    Set_GPU_MapObjectState(pShader);
+   
+    pShader->Bind_TransformData(pTransform->Get_WorldMatrix());
+    pShader->Set_Pass(static_cast<_int>(m_eClientMakePath));
+
+    for (_uint i = 0; i < iMeshCount; ++i)
+    {
+        pModel->Bind_Material(pShader, i);
+        pModel->Bind_MaterialInstance(pShader, i);
+        pShader->Apply();
+        pModel->Render(i);
+    }
+
+    return S_OK;
+}
+
+#pragma endregion
+
+
+#pragma endregion

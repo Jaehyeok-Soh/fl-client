@@ -22,7 +22,6 @@ public:
 	HRESULT	Update_MapObjectList();
 private:
 	HRESULT	Render_MapObjectList();
-	HRESULT	Render_CamInfo();
 	HRESULT	Render_SelectInfo();
 	HRESULT Render_MakeModelFilePath(const wstring& wstrPath);
 private:

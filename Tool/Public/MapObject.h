@@ -6,9 +6,11 @@ NS_BEGIN(Engine)
 class CMaterial;
 struct  CLIENT_MAKEPATH_DESC_BASE;
 class CModel;
+class CShader;
 NS_END
 
 NS_BEGIN(Tool)
+class CMapToolManager;
 
 class CMapObject final : public CToolObject
 {
@@ -20,19 +22,23 @@ public:
 	};
 public:
 
-	enum class EState
+	enum class EState : _uint
 	{
 		Default,
 		Select,
 		Preview,
+		Multi_Select,
 		END,
 	};
 
 	typedef struct tagMapObjectDesc : public CToolObject::TOOLOBJECT_DESC
 	{
 		/* UE 에서 추출되었거나 Or 로드한 데이터 인지 아닌지 */
-		bool					isUELoaded	{false};
-		bool					isLoaded	{ false };
+		bool								isUELoaded	{false};
+		bool								isLoaded	{ false };
+
+		/* 다불러와놓고 판단을 해야할거같은데..  */
+		_uint								iSectionNumber{0};
 
 		/* Client에서 생성할 LevelType */
 		EClientLevelType					eClientLevelType{ EClientLevelType::LOGO };
@@ -107,7 +113,7 @@ public:
 	void								Set_Quaternion(const Quat& vQuat , _int iIndex = -1);
 
 	void								Set_IsUseOverrideMaterial(_bool isUse) { m_isUseOverrideMaterials = isUse; }
-
+	void								Set_SectionNumber(_uint iSectionNumber) { m_iSectionNum = iSectionNumber; }
 
 public:
 
@@ -142,6 +148,7 @@ public:
 	const vector<Tool::SRT_DATA>&		Get_SRTDatas()						{ return m_vecSRTs;}
 
 	_int								Get_SelectedInstanceID()	const	 { return m_iSelectedInstanceID; }
+	_uint								Get_SectionNumber()			const		{ return m_iSectionNum; }
 	vector<CLIENT_MAKEPATH_DESC_BASE*>	Get_ClientMakePathDescs()			 { return m_vecClientMakePathDesc; }
 	CLIENT_MAKEPATH_DESC_BASE*			Get_ClientMakePathDesc(_int iIndex = -1);
 public:
@@ -154,18 +161,27 @@ public:
 	virtual HRESULT						Render()										override;
 	virtual void						Draw_ImGui()									override;		
 
+	HRESULT								Set_GPU_MapObjectState(CShader* pShader);
+
 public:
-	_bool								IntsersectWithPlane(OUT Vec3& vOut);
+	_bool								IntsersectWithPlane(OUT Vec3& vOut, const Vec3& vLocalCamPos);
 	_bool								Picking(OUT Vec3& vOut);
 	virtual _bool						Export_Data(DTO::ECategory eCategory, CDataDocumentBase* pDocument)override;
 private:
+	HRESULT								Check_DrawType_ByClientPath();
+public:
+	HRESULT								Render_StaticObject();
+	HRESULT								Render_LandScape();
 
-	HRESULT								Render_Default();
-	HRESULT								Render_Instance();
+public:
+	/* 기본적으로 사용할 애들 */
+	HRESULT								Render_Default(_int iPass = -1);
+	HRESULT								Render_Instance(_int iPass = -1);
 
 protected:
+	_uint								m_iSectionNum{};
 	bool								m_isBatced{false};
-
+	CMapToolManager*					m_pMapToolManager{ nullptr };
 
 	EMapObject_Type						m_eMapObjectType	{ EMapObject_Type::END };
 	EMapObject_DrawType					m_eMapObjectDrawType{ EMapObject_DrawType::Default };

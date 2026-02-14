@@ -318,8 +318,6 @@ HRESULT CLevel_Logo::Ready_Octree()
 	vector<BoundingBox*> vecWillRegistBounds;
 	vecWillReigstObject.reserve(pList->size());
 	vecWillRegistBounds.reserve(pList->size());
-	
-
 	{
 		Vec3 vMin{ FLT_MAX, FLT_MAX, FLT_MAX };
 		Vec3 vMax{ -FLT_MAX, -FLT_MAX, -FLT_MAX };

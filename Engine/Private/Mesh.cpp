@@ -177,6 +177,40 @@ _bool CMesh::IntsersectWithPlane(OUT Vec3& vOut)
 	return false;
 }
 
+_bool CMesh::IntsersectWithPlane_CloseCam(OUT Vec3& vOut, const Vec3& vLocalCamPos)
+{
+	if (m_iIndexCount == 0 || !m_pVertexPositions || !m_pIndices)
+		return false;
+
+	vector<Vec3> vecPickPos{};
+	vecPickPos.reserve(10);
+
+	const _uint iTriangleCount = m_iIndexCount / 3;
+	_uint iIndex = { 0 };
+	for (_uint i = 0; i < iTriangleCount; ++i)
+	{
+		Vec3 vPickPos{Vec3::Zero};
+		if (m_pGameInstance->IntersectrayWithTriangle_Local(m_pVertexPositions[m_pIndices[iIndex++]],
+			m_pVertexPositions[m_pIndices[iIndex++]],
+			m_pVertexPositions[m_pIndices[iIndex++]], vOut))
+		{
+			vecPickPos.push_back(vOut);
+		}
+	}
+
+	if (vecPickPos.empty())
+		return false;
+
+	std::sort(vecPickPos.begin(), vecPickPos.end(), [vLocalCamPos](const Vec3& a, const Vec3& b) { 
+		float fDistA = Vec3::DistanceSquared(vLocalCamPos, a);
+		float fDistB = Vec3::DistanceSquared(vLocalCamPos, b);
+		return fDistA < fDistB; 
+		});
+
+	vOut = vecPickPos.front();
+	return true;
+}
+
 _bool CMesh::IntsersectWithPlane(CRay* const pRay, Matrix matWorld, _float fMaxDistance, OUT MESH_RAY_HITINFO& outHit)
 {
 	if (m_iIndexCount == 0 || !m_pVertexPositions || !m_pIndices)

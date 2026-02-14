@@ -10,6 +10,7 @@ typedef struct tagBounds
 {
 	CBounding_AABB* pAABB{ nullptr };
 	CBounding_Sphere* pSphere{ nullptr };
+
 }MESH_BOUNDS;
 
 class ENGINE_DLL CBounds : public CComponent
@@ -33,7 +34,8 @@ private:
 	virtual HRESULT		Initialize(void* pArg) override;
 
 public:
-	HRESULT				Update_Bounds(const Vec3* pMinMax , float fRatio = 1.f);
+	/* 기본 Boudns를 생성해주는함수 InstanceMesh는 Sub가 개별역할으해주고 m_tBounds 는 단일 콜라이더로 인스턴스 매쉬들의 전체영역을 min Max 잡아서 그 영역을 지정한다 */
+	HRESULT				Make_Bounds(const Vec3* pMinMax , float fRatio = 1.f);
 
 	/* 일정 Index의 SubBounds를 Update해주는함수 */
 	HRESULT				Update_SubBound(const Vec3* pModelMinMax , const Matrix& WorldMatrix , _uint iIndex);

@@ -713,14 +713,20 @@ HRESULT CConverter::Check_Folder()
 	}
 	else if (m_iFileCount == 1)
 	{
-		for (const auto& entry : std::filesystem::directory_iterator(m_AssetParentPath))
-		{
-			if (entry.is_regular_file())
-			{
-				m_wstrAssetName = entry.path().filename().lexically_normal().stem();
-				break;
-			}
-		}
+		if (m_vecAssetPaths.size() != 1)
+			return E_FAIL;
+
+		//for (const auto& entry : std::filesystem::directory_iterator(m_AssetParentPath))
+		//{
+		//	if (entry.is_regular_file())
+		//	{
+		//		m_wstrAssetName = entry.path().filename().lexically_normal().stem();
+		//		break;
+		//	}
+		//}
+
+		m_wstrAssetName = m_vecAssetPaths[0].filename().lexically_normal().stem();
+
 
 		path assetFilePath = m_AssetParentPath / m_wstrAssetName;
 		assetFilePath.replace_extension(g_wszModelExtension);
@@ -790,6 +796,8 @@ size_t CConverter::Get_FileCount(const wstring wstrFolderPath)
 	{
 		if (entry.is_regular_file())
 		{
+			if (path(entry).extension() != g_wszModelExtension)
+				continue;
 			if (lstrcmpW(path(entry).extension().c_str(), g_wszModelExtension) != 0)
 				continue;
 			m_vecAssetPaths.push_back(entry.path());

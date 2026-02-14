@@ -52,6 +52,7 @@ HRESULT CBuilder_Map::Create_StaticObject(const DTO::TMap_MapObjectData& tData)
 	tStaticObjectDesc.isUELoaded		 = tData.isUELoaded;
 	tStaticObjectDesc.eMapObjectDrawType = static_cast<EMapObject_DrawType>(tData.eMapObjectDrawType);
 	tStaticObjectDesc.wstrModelPath		 = Engine_Utils::ToWString(tData.strModelPath);
+	tStaticObjectDesc.iSectionNum		= tData.iSectionNum;
 
 	/* 여기서 Desc가 따로 필요한 객체라면 알잘딱 static_cast로 부여받기 */
 
