@@ -66,8 +66,10 @@ private:
 private:
 	class CImGui_ToolManager*	m_pImGuiManager		= { nullptr };
 	class CPicking_ToolManager* m_pPickingManager	= { nullptr };
+	class CAnimTool_Manager*	m_pAnimToolManager = { nullptr };
 	class CToolObject*			m_pSelectedObject	= { nullptr };
 	std::array<DelegateHandle, ENUM_TO_SZET(Event::END)> m_EventHandles;
+
 
 private:
 	wstring m_wstrLayer = { L"Animation_Model_Layer" };

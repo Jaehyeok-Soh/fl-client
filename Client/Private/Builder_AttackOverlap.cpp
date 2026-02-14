@@ -41,28 +41,31 @@ HRESULT CBuilder_AttackOverlap::Build(const CDataDocumentBase& document)
 
 HRESULT CBuilder_AttackOverlap::Create_AttackOverlap_Prototype(const DTO::ATTACKOVERLAP_DESC& data)
 {
-	CPhysicsAttackOverlap::ATTACKOVERLAP_DESC desc{};
+	DTO::ATTACKOVERLAP_DESC desc{};
 	desc.iNumPool = data.iNumPool;
 	
 	for (auto& event : data.attackEvents)
 	{
-		CPhysicsAttackOverlap::HITBOX_DESC hbDesc{};
-		hbDesc.wstrName = Engine_Utils::ToWString(event.tHitboxDesc.strName);
-		hbDesc.eType = (CPhysicsAttackOverlap::Enum)event.tHitboxDesc.eType;
-		hbDesc.vExtents = event.tHitboxDesc.vExtents;
-		hbDesc.fRadius = event.tHitboxDesc.fRadius;
-		hbDesc.vOffset = event.tHitboxDesc.vOffset;
-		hbDesc.fDuration = event.tHitboxDesc.fDuration;
-		hbDesc.fTickTime = event.tHitboxDesc.fTickTime;
-		hbDesc.fDamage = event.tHitboxDesc.fDamage;
-		hbDesc.iMaxHit = event.tHitboxDesc.iMaxHit;
-		hbDesc.eFilterLayer = event.tHitboxDesc.eFilterLayer;
-		hbDesc.iFilterMask = event.tHitboxDesc.iFilterMask;
+		//DTO::HITBOX_DESC hbDesc{};
+		//hbDesc.strName = event.tHitboxDesc.strName;
+		//hbDesc.eType = (OverlapType::Enum)event.tHitboxDesc.eType;
+		//hbDesc.vExtents = event.tHitboxDesc.vExtents;
+		//hbDesc.fRadius = event.tHitboxDesc.fRadius;
+		//hbDesc.vOffset = event.tHitboxDesc.vOffset;
+		//hbDesc.fDuration = event.tHitboxDesc.fDuration;
+		//hbDesc.fTickTime = event.tHitboxDesc.fTickTime;
+		//hbDesc.fDamage = event.tHitboxDesc.fDamage;
+		//hbDesc.iMaxHit = event.tHitboxDesc.iMaxHit;
+		//hbDesc.eFilterLayer = event.tHitboxDesc.eFilterLayer;
+		//hbDesc.iFilterMask = event.tHitboxDesc.iFilterMask;
 
-		desc.attackEvents.emplace_back(Engine_Utils::ToWString(event.strDescription),
-			event.fAnimIndex,
-			event.fStartTrackPosition,
-			hbDesc);
+		//DTO::ATTACKEVENT ae{};
+		//ae.eEventType = AnimEvent::Enum::OVERLAP;
+		//ae.strDescription = event.strDescription;
+		//ae.strAnimTag = event.strAnimTag;
+		//ae.iAnimIndex = event.iAnimIndex;
+
+		desc.attackEvents.emplace_back(event);
 	}
 
 	// For. Prototype_Component_AttackOverlap_{ CharacterName }

@@ -1,5 +1,6 @@
 #pragma once
 #include "ObjectDataBase.h"
+#include "AttackOverlap_Desc.h"
 
 NS_BEGIN(DTO)
 
@@ -13,61 +14,10 @@ typedef struct tagAttackOverlap_Type
 	};
 }ATTACKOVERLAP_TYPE;
 
-typedef struct tagHitBox
-{
-	enum Enum
-	{
-		BOX,
-		SPHERE,
-	};
-}HITBOX;
-
 /////////////////-------------------  Data Struct  -------------------/////////////////
 
-typedef struct tagHitboxDesc
-{
-	string strName = {};
-
-	HITBOX::Enum eType = HITBOX::Enum::SPHERE;
-	Vec3 vExtents = {};
-	_float fRadius = {};
-	Vec3 vOffset = {};
-
-	_float fDuration = {};
-	_float fTickTime = { -1.f };
-
-	_float fDamage = {};
-
-	_uint iMaxHit = { 32 };
-
-	PHYSICSFILTERGROUP::Enum eFilterLayer = PHYSICSFILTERGROUP::Enum::NONE;
-	_uint iFilterMask = {};
-}HITBOX_DESC;
-
-typedef struct tagAttackEvent
-{
-	string strDescription = {};
-	_uint fAnimIndex = {};
-	_float fStartTrackPosition = {};
-	HITBOX_DESC tHitboxDesc;
-}ATTACKEVENT;
-
-typedef struct tagAttackOverlapDesc
-{
-	string strTag = { "Sample" };
-	_uint iNumPool = {};
-	vector<ATTACKEVENT> attackEvents;
-}ATTACKOVERLAP_DESC;
-
 /////////////////-------------------  to_json, from_json  -------------------/////////////////
-void to_json(json& j, const HITBOX_DESC& data);
-void from_json(const json& j, HITBOX_DESC& data);
 
-void to_json(json& j, const ATTACKEVENT& data);
-void from_json(const json& j, ATTACKEVENT& data);
-
-void to_json(json& j, const ATTACKOVERLAP_DESC& data);
-void from_json(const json& j, ATTACKOVERLAP_DESC& data);
 NS_END
 /////////////////-------------------  Wrapping Class  -------------------/////////////////
 

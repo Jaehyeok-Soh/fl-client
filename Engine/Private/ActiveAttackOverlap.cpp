@@ -70,7 +70,7 @@ void CActiveAttackOverlap::Reset()
 	hitResults.clear();
 }
 
-void CActiveAttackOverlap::Set(CPhysicsAttackOverlap::HITBOX_DESC* pDesc, Matrix ownerMatrix, CGameObject* pOwner)
+void CActiveAttackOverlap::Set(DTO::HITBOX_DESC* pDesc, Matrix ownerMatrix, CGameObject* pOwner)
 {
 	m_pOwner = pOwner;
 

@@ -21,7 +21,7 @@ public:
 	virtual void Update(const _float fTimeDelta) override;
 
 public:
-	void SetAnimationObject(CAnimObj* pObject);
+	void SetAnimationObject();
 
 	BONEINFO GetBoneInfo(_uint index);
 	ANIMINFO GetAnimInfo(_uint index);
@@ -36,32 +36,11 @@ private:
 	void DrawController();
 
 private:
-	// 오브젝트와 정보 다시 가져오기
-	void SetAnimControllInfo();
-	void SetAnimationInfo();
-	void SetBoneInfo();
+	class CAnimTool_Manager* m_pAnimToolManager = { nullptr };
 
-	// 오브젝트가 nullptr이 아닌지 검사
-	_bool ValidCheck();
+	ANIMCTRLINFO& m_tAnimControllInfo;
 
-private:
-	void Update_Animation(const _float fTimeDelta);
-
-	void ChangeAnimation(_uint iIndex);
-	
-	// 매 프레임 가져오는 애니메이션 정보
-	void UpdateAnimationInfo();
-
-private:
-	CAnimObj* m_pCurrentObject = { nullptr };
-	CModel* m_pModel = { nullptr };
-	_uint  m_iCurrentAnimationState = {};
-	vector<class CBone*> m_vecBones;
-	vector<class CModelAnimation*> m_vecAnimations;
-
-	ANIMCTRLINFO m_tAnimControllInfo{};
-
-	ANIM_EVENT_INFO m_tEventInfo{};
+	ANIM_EVENT_INFO& m_tEventInfo;
 
 public:
 	static			CPanel_AnimationController* Create(const _char* pLabel, CLevel* pOwner, ID3D11Device* pDevice, ID3D11DeviceContext* pDeviceContext);

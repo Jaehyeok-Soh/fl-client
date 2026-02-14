@@ -198,9 +198,9 @@ namespace Engine
 		UNKNOWN = 17,
 		MAX_COUNT = 18
 	};
-	//===================
-// PhysicsShape
-//===================
+	// ===================
+	// PhysicsShape
+	// ===================
 	enum class EPhysicsShape : unsigned int
 	{
 		SPHERE,
@@ -301,5 +301,32 @@ namespace Engine
 			END
 		};
 	}PHYSICSFILTERGROUP;
+
+	//===================
+	// Animation Event
+	//===================
+	struct AnimEvent
+	{
+		enum Enum
+		{
+			EFFECT,
+			OVERLAP,
+			SOUND,
+			NONE,
+			END
+		};
+	};
+
+	//===================
+	// Attack overlap type
+	//===================
+	struct OverlapType
+	{
+		enum Enum
+		{
+			BOX,
+			SPHERE
+		};
+	};
 }
 #endif // Engine_Enum_h__

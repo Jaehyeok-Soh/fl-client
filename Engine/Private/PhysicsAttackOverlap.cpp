@@ -22,7 +22,7 @@ CPhysicsAttackOverlap::CPhysicsAttackOverlap(const CPhysicsAttackOverlap& rhs)
 
 HRESULT CPhysicsAttackOverlap::Initialize_Prototype(void* pArg)
 {
-	m_tDesc = *static_cast<ATTACKOVERLAP_DESC*>(pArg);
+	m_tDesc = *static_cast<DTO::ATTACKOVERLAP_DESC*>(pArg);
 	
 	return S_OK;
 }
@@ -105,7 +105,7 @@ void CPhysicsAttackOverlap::CheckAnim()
 
 	for (auto& attackDesc : m_tDesc.attackEvents)
 	{
-		if (attackDesc.fAnimIndex == curAnimIndex)
+		if (attackDesc.iAnimIndex == curAnimIndex)
 		{
 			if (m_fPrevTrackPosition <= attackDesc.fStartTrackPosition
 				&& curAnimTrackPosition >= attackDesc.fStartTrackPosition)
@@ -136,13 +136,13 @@ void CPhysicsAttackOverlap::Ready_OverlapInfo()
 
 		switch (event.tHitboxDesc.eType)
 		{
-		case CPhysicsAttackOverlap::Enum::BOX:
+		case OverlapType::Enum::BOX:
 		{
 			desc.eShape = EPhysicsShape::BOX;
 			desc.vExtents = event.tHitboxDesc.vExtents;
 		}
 			break;
-		case CPhysicsAttackOverlap::Enum::SPHERE:
+		case OverlapType::Enum::SPHERE:
 		{
 			desc.eShape = EPhysicsShape::SPHERE;
 			desc.fRadius = event.tHitboxDesc.fRadius;

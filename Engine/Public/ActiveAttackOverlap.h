@@ -28,7 +28,7 @@ public:
 	void Update(_float fTimeDelta);
 
 	void Reset();
-	void Set(CPhysicsAttackOverlap::HITBOX_DESC* pDesc, Matrix ownerMatrix, CGameObject* pOwner);
+	void Set(DTO::HITBOX_DESC* pDesc, Matrix ownerMatrix, CGameObject* pOwner);
 
 	Enum GetState() { return m_eState; }
 
@@ -51,7 +51,7 @@ private:
 	PxTransform m_pxTransform = {};
 	_float m_fSumTime = {};
 	_float m_fSumTickTime = {};
-	CPhysicsAttackOverlap::HITBOX_DESC* m_tHitboxDesc = { nullptr };
+	DTO::HITBOX_DESC* m_tHitboxDesc = { nullptr };
 	
 	Enum m_eState = { Enum::WAIT };
 

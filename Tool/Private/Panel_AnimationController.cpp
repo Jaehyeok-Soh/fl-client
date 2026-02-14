@@ -1,10 +1,12 @@
 #include "pch.h"
 #include "Panel_AnimationController.h"
+#include "AnimTool_Manager.h"
 
 CPanel_AnimationController::CPanel_AnimationController(const _char* pLabel, CLevel* pOwner, ID3D11Device* pDevice, ID3D11DeviceContext* pDeviceContext)
-	: CImGui_Panel(pLabel, pOwner, pDevice, pDeviceContext),
-	m_pCurrentObject(nullptr),
-	m_pModel(nullptr)
+    : CImGui_Panel(pLabel, pOwner, pDevice, pDeviceContext),
+    m_pAnimToolManager(CAnimTool_Manager::GetInstance()),
+    m_tAnimControllInfo(m_pAnimToolManager->Get_AnimControllInfo()),
+    m_tEventInfo(m_pAnimToolManager->Get_AnimEventInfo())
 {
 }
 
@@ -28,17 +30,13 @@ HRESULT CPanel_AnimationController::Render(CToolObject* pGo)
 
 void CPanel_AnimationController::Update(const _float fTimeDelta)
 {
-	if (m_tAnimControllInfo.bPlay)
-		Update_Animation(fTimeDelta);
-
-    UpdateAnimationInfo();
 }
 
 void CPanel_AnimationController::AnimationListWindow()
 {
 	ImGui::Begin("Animation list");
 
-	if (!ValidCheck())
+	if (!m_pAnimToolManager->ValidCheck())
 	{
 		ImGui::End();
 		return;
@@ -58,7 +56,7 @@ void CPanel_AnimationController::AnimationListWindow()
             {
                 m_tAnimControllInfo.iCurrentAnimIndex = i;
 
-                ChangeAnimation(i);
+                m_pAnimToolManager->ChangeAnimation(i);
             }
 
             if (is_selected)
@@ -72,19 +70,31 @@ void CPanel_AnimationController::BoneListWindow()
 {
 	ImGui::Begin("Bone list");
 
-	if (!ValidCheck())
+	if (!m_pAnimToolManager->ValidCheck())
 	{
 		ImGui::End();
 		return;
 	}
 
-	ImGuiListClipper clipper;
-	clipper.Begin(m_tAnimControllInfo.vecBoneInfo.size());
-	while (clipper.Step())
-	{
-		for (int i = clipper.DisplayStart; i < clipper.DisplayEnd; i++)
-			ImGui::Text("%d: %s", i, m_tAnimControllInfo.vecBoneInfo[i].strBoneName.c_str());
-	}
+    ImGuiListClipper clipper;
+    clipper.Begin(m_tAnimControllInfo.vecBoneInfo.size());
+    while (clipper.Step())
+    {
+        for (int i = clipper.DisplayStart; i < clipper.DisplayEnd; i++)
+        {
+            bool is_selected = (m_tAnimControllInfo.iCurrentBoneIndex == i);
+
+            std::string label = std::to_string(i) + ": " + m_tAnimControllInfo.vecBoneInfo[i].strBoneName;
+
+            if (ImGui::Selectable(label.c_str(), is_selected))
+            {
+                m_tAnimControllInfo.iCurrentBoneIndex = i;
+            }
+
+            if (is_selected)
+                ImGui::SetItemDefaultFocus();
+        }
+    }
 
 	ImGui::End();
 }
@@ -93,7 +103,7 @@ void CPanel_AnimationController::AnimationControllPanelWindow()
 {
 	ImGui::Begin("Animation controller");
 
-	if (!ValidCheck())
+	if (!m_pAnimToolManager->ValidCheck())
 	{
 		ImGui::End();
 		return;
@@ -110,28 +120,28 @@ void CPanel_AnimationController::AnimationControllPanelWindow()
         {
             if (m_tAnimControllInfo.fTickPerSecond <= 72.f && m_tAnimControllInfo.fTickPerSecond >= 0.01f)
             {
-                if (ValidCheck())
-                    m_pModel->Set_AnimationPlayRate(m_tAnimControllInfo.iCurrentAnimIndex, m_tAnimControllInfo.fPlayRate);
+                if (m_pAnimToolManager->ValidCheck())
+                    m_tAnimControllInfo.pModel->Set_AnimationPlayRate(m_tAnimControllInfo.iCurrentAnimIndex, m_tAnimControllInfo.fPlayRate);
             }
         }
 
 		_float currentPosition = (int)m_tAnimControllInfo.fTrackPosition;
         if (ImGui::SliderFloat("Trackposition Seek", &currentPosition, 0, m_tAnimControllInfo.fDuration))
         {
-			m_tAnimControllInfo.fTrackPosition = currentPosition;
+            m_tAnimControllInfo.fTrackPosition = currentPosition;
 
-            if (ValidCheck())
+            if (m_pAnimToolManager->ValidCheck())
             {
-                m_pModel->Set_AnimTrackPosition(m_tAnimControllInfo.fTrackPosition);
+                m_tAnimControllInfo.pModel->Set_AnimTrackPosition(m_tAnimControllInfo.fTrackPosition);
                 if (!m_tAnimControllInfo.bPlay)
-                    Update_Animation(0.03f);
+                    m_pAnimToolManager->Update_Animation(0.03f);
             }
         }
 
         if (ImGui::DragFloat("Transform Scale", &m_tAnimControllInfo.fTranformScale, 0.01f, 0.01f, 5.0f))
         {
-            if (ValidCheck())
-                m_pCurrentObject->Get_Component<CTransform>()->Set_Scale(m_tAnimControllInfo.fTranformScale, m_tAnimControllInfo.fTranformScale, m_tAnimControllInfo.fTranformScale);
+            if (m_pAnimToolManager->ValidCheck())
+                m_tAnimControllInfo.pCurrentObject->Get_Component<CTransform>()->Set_Scale(m_tAnimControllInfo.fTranformScale, m_tAnimControllInfo.fTranformScale, m_tAnimControllInfo.fTranformScale);
         }
 	}
 
@@ -150,36 +160,65 @@ void CPanel_AnimationController::ButtonsWindow()
 
     if (m_tAnimControllInfo.bPlay)
     {
-        if (ImGui::Button("Stop"))
-            m_tAnimControllInfo.bPlay = !m_tAnimControllInfo.bPlay;
+        if (ImGui::Button("|| Pause", ImVec2(60, 0)))
+            m_tAnimControllInfo.bPlay = false;
     }
     else
     {
-        if (ImGui::Button("Play"))
-            m_tAnimControllInfo.bPlay = !m_tAnimControllInfo.bPlay;
+        if (ImGui::Button(">> Play", ImVec2(60, 0)))
+            m_tAnimControllInfo.bPlay = true;
+    }
+
+    ImGui::SameLine();
+
+    if (ImGui::Button("# Stop", ImVec2(60, 0)))
+    {
+        m_tAnimControllInfo.bPlay = false;
+        m_tAnimControllInfo.fTrackPosition = 0.0f;
+
+        if (m_pAnimToolManager->ValidCheck())
+            m_tAnimControllInfo.pModel->Set_AnimTrackPosition(m_tAnimControllInfo.fTrackPosition);
     }
 
     ImGui::SameLine();
 
     if (m_tAnimControllInfo.bLoop)
     {
-        if (ImGui::Button("Loop off"))
+        ImGui::PushStyleColor(ImGuiCol_Button, ImVec4(0.2f, 0.7f, 0.2f, 1.0f));
+        if (ImGui::Button("Loop: ON", ImVec2(70, 0)))
         {
-            m_tAnimControllInfo.bLoop = !m_tAnimControllInfo.bLoop;
-
-            if (ValidCheck())
-                m_pModel->Set_LoopState(m_tAnimControllInfo.bLoop);
+            m_tAnimControllInfo.bLoop = false;
+            if (m_tAnimControllInfo.pModel) m_tAnimControllInfo.pModel->Set_LoopState(false);
         }
+        ImGui::PopStyleColor();
     }
     else
     {
-        if (ImGui::Button("Loop on"))
+        ImGui::PushStyleColor(ImGuiCol_Button, ImVec4(0.7f, 0.2f, 0.2f, 1.0f));
+        if (ImGui::Button("Loop: OFF", ImVec2(70, 0)))
         {
-            m_tAnimControllInfo.bLoop = !m_tAnimControllInfo.bLoop;
-
-            if (ValidCheck())
-                m_pModel->Set_LoopState(m_tAnimControllInfo.bLoop);
+            m_tAnimControllInfo.bLoop = true;
+            if (m_tAnimControllInfo.pModel) m_tAnimControllInfo.pModel->Set_LoopState(true);
         }
+        ImGui::PopStyleColor();
+    }
+
+    ImGui::Separator();
+
+    if (ImGui::Button("Load Events"))
+    {
+        //string strPath = OpenFileDialog();
+        //if (!strPath.empty())
+        //    Load_AnimationData(strPath);
+    }
+
+    ImGui::SameLine();
+
+    if (ImGui::Button("Save Events"))
+    {
+        //string strPath = SaveFileDialog();
+        //if (!strPath.empty())
+        //    Save_AnimationData(strPath);
     }
 
     ImGui::End();
@@ -240,11 +279,11 @@ void CPanel_AnimationController::DrawController()
 
         m_tAnimControllInfo.fTrackPosition = (_uint)new_frame;
 
-        if (ValidCheck())
+        if (m_pAnimToolManager->ValidCheck())
         {
-            m_pModel->Set_AnimTrackPosition(m_tAnimControllInfo.fTrackPosition);
+            m_tAnimControllInfo.pModel->Set_AnimTrackPosition(m_tAnimControllInfo.fTrackPosition);
             if (!m_tAnimControllInfo.bPlay)
-                Update_Animation(0.03f);
+                m_pAnimToolManager->Update_Animation(0.03f);
         }
     }
 
@@ -369,24 +408,15 @@ void CPanel_AnimationController::DrawController()
     ImGui::EndChild(); // End TimelineScroll
 }
 
-void CPanel_AnimationController::SetAnimationObject(CAnimObj* pObject)
+void CPanel_AnimationController::SetAnimationObject()
 {
-	if (!pObject)
-		return;
-
-	m_pCurrentObject = pObject;
-
-	m_pModel = m_pCurrentObject->Get_Component<CModel>();
-	m_iCurrentAnimationState = m_pModel->Get_AnimPlayState();
-	m_vecBones = m_pModel->Get_Bones();
-	m_vecAnimations = m_pModel->Get_Animations();
-
-	SetAnimControllInfo();
+    m_tAnimControllInfo = m_pAnimToolManager->Get_AnimControllInfo();
+    m_tEventInfo = m_pAnimToolManager->Get_AnimEventInfo();
 }
 
 BONEINFO CPanel_AnimationController::GetBoneInfo(_uint index)
 {
-	if (!ValidCheck())
+	if (!m_pAnimToolManager->ValidCheck())
 		return BONEINFO();
 
 	return m_tAnimControllInfo.vecBoneInfo[index];
@@ -394,117 +424,10 @@ BONEINFO CPanel_AnimationController::GetBoneInfo(_uint index)
 
 ANIMINFO CPanel_AnimationController::GetAnimInfo(_uint index)
 {
-	if (!ValidCheck())
+	if (!m_pAnimToolManager->ValidCheck())
 		return ANIMINFO();
 
 	return m_tAnimControllInfo.vecAnimInfo[index];
-}
-
-void CPanel_AnimationController::Update_Animation(const _float fTimeDelta)
-{
-	if (!ValidCheck())
-		return;
-
-	CComputeShader* pBonCS = static_cast<CComputeShader*>(m_pCurrentObject->Get_Script_Component(TEXT("ComputeShader_BoneCombine")));
-	CComputeShader* pAnimECS = static_cast<CComputeShader*>(m_pCurrentObject->Get_Script_Component(TEXT("ComputeShader_AnimE")));
-	CComputeShader* pAnimBCS = static_cast<CComputeShader*>(m_pCurrentObject->Get_Script_Component(TEXT("ComputeShader_AnimB")));
-
-	m_pModel->Update_Animation(pBonCS, pAnimECS, pAnimBCS,
-		fTimeDelta, nullptr, nullptr);
-}
-
-void CPanel_AnimationController::SetAnimControllInfo()
-{
-	if (!ValidCheck())
-		return;
-
-	m_tAnimControllInfo.iTotalAnimCount = m_pModel->Get_AnimationCount();
-	m_tAnimControllInfo.iCurrentAnimIndex = m_pModel->Get_CurrentAnimationIndex();
-	m_tAnimControllInfo.fDuration = m_pModel->Get_AnimDurationTime();
-	m_tAnimControllInfo.fTrackPosition = 0.f;
-	m_tAnimControllInfo.fTickPerSecond = m_pModel->Get_AnimTickPerSecond();
-	m_pModel->Set_AnimationPlayRate(m_tAnimControllInfo.iCurrentAnimIndex, 1.f);
-	m_tAnimControllInfo.fPlayRate = 1.f;
-    m_pModel->Set_LoopState(m_tAnimControllInfo.bLoop);
-
-    m_vecBones.clear();
-	m_vecBones = m_pModel->Get_Bones();
-
-    m_vecAnimations.clear();
-	m_vecAnimations = m_pModel->Get_Animations();
-
-	SetAnimationInfo();
-	SetBoneInfo();
-}
-
-void CPanel_AnimationController::SetAnimationInfo()
-{
-	if (!ValidCheck())
-		return;
-
-    m_tAnimControllInfo.vecAnimInfo.clear();
-
-	for (auto& anim : m_vecAnimations)
-	{
-		
-		ANIMINFO info{};
-		info.wstrAnimName = wstring(anim->Get_Name());
-		info.strAnimName = Engine_Utils::ToString(info.wstrAnimName);
-		info.iIndex = m_pModel->Get_AnimationIndex(info.wstrAnimName);
-		info.pModelAnimation = anim;
-		info.fDuration = anim->Get_DurationTime();
-
-		m_tAnimControllInfo.vecAnimInfo.push_back(info);
-	}
-}
-
-void CPanel_AnimationController::SetBoneInfo()
-{
-	if (!ValidCheck())
-		return;
-
-    m_tAnimControllInfo.vecBoneInfo.clear();
-
-	for (auto& bone : m_vecBones)
-	{
-		BONEINFO info{};
-		info.iIndex = bone->Get_Index();
-		info.iParentIndex = bone->Get_ParentIndex();
-		info.strBoneName = bone->Get_Name();
-		info.wstrBoneName = Engine_Utils::ToWString(info.strBoneName);
-		info.pBone = bone;
-		info.matTransform = bone->Get_Transform();
-
-		m_tAnimControllInfo.vecBoneInfo.push_back(info);
-	}
-}
-
-_bool CPanel_AnimationController::ValidCheck()
-{
-	return m_pCurrentObject != nullptr;
-}
-
-void CPanel_AnimationController::ChangeAnimation(_uint iIndex)
-{
-    if (!ValidCheck())
-        return;
-
-    CComputeShader* pAnimECS = static_cast<CComputeShader*>(m_pCurrentObject->Get_Script_Component(TEXT("ComputeShader_AnimE")));
-
-    m_pModel->Change_Animation(pAnimECS, m_tAnimControllInfo.iCurrentAnimIndex, true, m_tAnimControllInfo.bLoop, false);
-
-    m_tAnimControllInfo.fDuration = m_pModel->Get_AnimDurationTime();
-    m_tAnimControllInfo.fTickPerSecond = m_pModel->Get_AnimTickPerSecond();
-    m_tAnimControllInfo.fPlayRate = 1.f;
-}
-
-void CPanel_AnimationController::UpdateAnimationInfo()
-{
-    if (!ValidCheck())
-        return;
-
-    m_tAnimControllInfo.fTrackPosition = m_pModel->Get_AnimTrackPosition();
-    m_tAnimControllInfo.fTickPerSecond = m_pModel->Get_AnimTickPerSecond();
 }
 
 CPanel_AnimationController* CPanel_AnimationController::Create(const _char* pLabel, CLevel* pOwner, ID3D11Device* pDevice, ID3D11DeviceContext* pDeviceContext)

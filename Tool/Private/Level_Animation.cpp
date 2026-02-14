@@ -14,6 +14,7 @@
 #include "Picking_ToolManager.h"
 #include "ImGui_ToolManager.h"
 #include "GameInstance.h"
+#include "AnimTool_Manager.h"
 
 // Component
 #include "Model.h"
@@ -35,6 +36,9 @@ HRESULT CLevel_Animation::Initialize()
 {
 	if (FAILED(Super::Initialize()))
 		return E_FAIL;
+
+	m_pAnimToolManager = CAnimTool_Manager::GetInstance();
+	m_pAnimToolManager->Initialize_AnimTool(m_pDevice, m_pDeviceContext);
 
 	Ready_Camera(g_wszCameraLayer);
 	Ready_Lights();
@@ -93,6 +97,8 @@ void CLevel_Animation::Update(const _float fTimeDelta)
 	Super::Update(fTimeDelta);
 
 	Update_Elements(fTimeDelta);
+
+	m_pAnimToolManager->Update(fTimeDelta);
 }
 
 void CLevel_Animation::Update_Picking()
@@ -322,7 +328,8 @@ wstring CLevel_Animation::Create_AnimModelPrototype(fs::path animModelPath)
 
 void CLevel_Animation::SetAnimationInfo()
 {
-	static_cast<CPanel_AnimationController*>(m_GuiElements[Elements::ANIMATION])->SetAnimationObject(static_cast<CAnimObj*>(m_pSelectedObject));
+	m_pAnimToolManager->SetAnimationObject(static_cast<CAnimObj*>(m_pSelectedObject));
+	static_cast<CPanel_AnimationController*>(m_GuiElements[Elements::ANIMATION])->SetAnimationObject();
 }
 
 CLevel_Animation* CLevel_Animation::Create(ID3D11Device* pDevice, ID3D11DeviceContext* pDeviceContext)
@@ -342,11 +349,22 @@ void CLevel_Animation::Free()
 {
 	Release_Event();
 
+#ifdef _DEBUG
+	Safe_Delete(m_pBatch);
+	Safe_Delete(m_pEffect);
+
+	Safe_Release(m_pInputLayout);
+	Safe_Release(m_pDSS);
+#endif
+
 	for (CImGui_Base* pElement : m_GuiElements)
 	{
 		Safe_Release(pElement);
 	}
 	m_GuiElements.fill(nullptr);
+
+	m_pAnimToolManager->DestroyInstance();
+	Safe_Release(m_pAnimToolManager);
 
 	Safe_Release(m_pImGuiManager);
 	Safe_Release(m_pPickingManager);

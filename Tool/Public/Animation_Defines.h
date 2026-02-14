@@ -10,6 +10,7 @@
 #include "Bone.h"
 #include "ModelAnimation.h"
 #include "ComputeShader.h"
+#include "PhysicsCCT.h"
 
 namespace fs = std::filesystem;
 
@@ -29,50 +30,6 @@ typedef struct tagDirectory
 	vector<fs::path> GetFiles() { return files; }
 	vector<tagDirectory> GetDirectories() { return directories; }
 }DIR;
-
-struct AnimEvent
-{
-	enum Enum
-	{
-		EFFECT,
-		OVERLAP,
-		SOUND,
-		NONE,
-		END
-	};
-};
-
-typedef struct tagAnimEventScriptBase
-{
-	_float fDuration = {};
-	_float Get_Duration() { return fDuration; }
-
-	_bool bIsSelected = { false };
-
-}ANIM_EVENT_SCRIPT_BASE;
-
-typedef struct tagAnimEventBase
-{
-	AnimEvent::Enum eEventType = AnimEvent::NONE;
-	string strAnimTag = {};
-	_uint iAnimIndex = {};
-	_float fTrackPosition = {};
-
-	vector<ANIM_EVENT_SCRIPT_BASE> vecScript;
-}ANIM_EVENT_BASE;
-
-typedef struct tagAnimEventInfo
-{
-	/// <summary>
-	/// 애니메이션 주체 이름
-	/// 모델 폴더 이름이 적합
-	/// </summary>
-	string strOwnerTag = {};
-
-	vector<ANIM_EVENT_BASE> vecAnimEvents[AnimEvent::END];
-}ANIM_EVENT_INFO;
-
-
 
 ///////
 /////// panel animation controller
@@ -103,6 +60,7 @@ typedef struct tagAnimControllerInfo
 {
 	_uint iTotalAnimCount = {};
 	_uint iCurrentAnimIndex = {};
+	_uint iCurrentBoneIndex = {};
 
 	_uint fDuration = {};
 	_uint fTrackPosition = {};
@@ -114,9 +72,18 @@ typedef struct tagAnimControllerInfo
 	_bool bPlay = { true };
 	_bool bLoop = { true };
 
-	//
-	_float fTranformScale = { 1.f };
-
 	vector<ANIMINFO> vecAnimInfo;
 	vector<BONEINFO> vecBoneInfo;
+
+	/// <summary>
+	/// 엔진 데이터
+	/// </summary>
+	CAnimObj* pCurrentObject = { nullptr };
+	CModel* pModel = { nullptr };
+	_uint  iCurrentAnimationState = {};
+	vector<class CBone*> vecBones;
+	vector<class CModelAnimation*> vecAnimations;
+
+	// 스케일
+	_float fTranformScale = { 1.f };
 }ANIMCTRLINFO;
