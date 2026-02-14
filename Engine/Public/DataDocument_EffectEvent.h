@@ -25,7 +25,7 @@ public:
 
 private:
     // 데이터 구조체 생성 (DataStruct_EffectEvent 활용)
-    virtual IObjectDataBase* Create_ObjectData(EAnimNotifyId eType);
+    virtual IObjectDataBase* Create_ObjectData(DTO::ECategory eType);
 
     // Repository에 실제 등록하는 내부 함수
     HRESULT Try_Add(IObjectDataBase* pObject);

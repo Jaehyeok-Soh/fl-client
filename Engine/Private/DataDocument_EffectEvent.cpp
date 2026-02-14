@@ -58,7 +58,7 @@ HRESULT CDataDocument_EffectEvent::FromJson(const json& j)
         if (object.contains("Type") == false)
             return E_FAIL;
 
-        const EAnimNotifyId eType = object.at("Type").get<EAnimNotifyId>();
+        const DTO::ECategory eType = object.at("Type").get<DTO::ECategory>();
 
         IObjectDataBase* pObjectDataBase = Create_ObjectData(eType);
         if (pObjectDataBase == nullptr)
@@ -82,7 +82,7 @@ HRESULT CDataDocument_EffectEvent::FromJson(const json& j)
 
 HRESULT CDataDocument_EffectEvent::Try_Add(const DTO::ANIM_EVENT_INFO_DESC& data)
 {
-    IObjectDataBase* pObjectBase = Create_ObjectData(EAnimNotifyId::Vfx_Oneshot);
+    IObjectDataBase* pObjectBase = Create_ObjectData(DTO::ECategory::EFFECTEVENT);
     if (nullptr == pObjectBase)
         return E_FAIL;
 
@@ -91,16 +91,13 @@ HRESULT CDataDocument_EffectEvent::Try_Add(const DTO::ANIM_EVENT_INFO_DESC& data
     return Try_Add(pObjectBase);
 }
 
-IObjectDataBase* CDataDocument_EffectEvent::Create_ObjectData(EAnimNotifyId eType)
+IObjectDataBase* CDataDocument_EffectEvent::Create_ObjectData(DTO::ECategory eType)
 {
     switch (eType)
     {
-    case EAnimNotifyId::Vfx_Attach_On:
-        return CEFFECT_CONTAINER::Create();
-    case EAnimNotifyId::Vfx_Attach_Off:
-        return;
-    case EAnimNotifyId::Vfx_Oneshot:
-        return 
+
+    case DTO::ECategory::EFFECTEVENT:
+        return CDataStruct_EffectEvent::Create();
     default:
         return nullptr;
     }

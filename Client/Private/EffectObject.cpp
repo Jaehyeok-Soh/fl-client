@@ -258,9 +258,15 @@ HRESULT CEffectObject::Bind_ShaderResource()
     m_pShader->Set_Pass(m_tEffectDesc.Data._Effect_ShaderPass);
     m_pShader->Bind_TransformData(m_matCombinedWorld);
 
+    if (m_tEffectDesc.Data._Effect_ShaderPass == 3)
+    {
+        if (FAILED(m_pGameInstance->Bind_RT_ShaderResource(ERenderTarget::Scene, m_pShader)))
+            return E_FAIL;
 
-    if (FAILED(m_pGameInstance->Bind_RT_ShaderResource(ERenderTarget::Scene, m_pShader)))
-        return E_FAIL;
+        if (FAILED(m_pGameInstance->Bind_RT_ShaderResource(ERenderTarget::Depth, m_pShader)))
+            return E_FAIL;
+    }
+
 
     // 셰이더에 던질 구조체 작성하기.
     {

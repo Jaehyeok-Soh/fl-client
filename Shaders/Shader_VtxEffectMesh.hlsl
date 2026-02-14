@@ -154,6 +154,13 @@ float2 ScrollUV_Calculator(uint Flag, float2 InUV)
     return finalUV;
 }
 
+void DecodeDepth(float2 vUV, out float fNDCZ, out float fViewZ)
+{
+    float4 vDepthDesc = g_RenderTargetDepthTexture.Sample(PointClampSampler, vUV);
+    fNDCZ = vDepthDesc.x;
+    fViewZ = vDepthDesc.y;
+}
+
 float Float_Operation(float Src1, float Src2, uint Operator)        // 부동 소수점 연산
 {
     float dest;
@@ -561,66 +568,142 @@ float4 PS_UnityConvert(VS_OUT_INST_MESH_PARTICLE In) : SV_Target0
 
 float4 PS_DISTOTION(VS_OUT_INST_MESH_PARTICLE In) : SV_Target0
 {
-     // =======              노이즈 텍스처 샘플링             ===========
-    float2 finalUV = In.vUV;
-    float4 DiffuseSample = { 1.f, 1.f, 1.f, 1.f };
-    float4 noiseSample = { 0.5f, 1.f, 1.f, 1.f };
-    float4 MaskSample = { 1.f, 1.f, 1.f, 1.f };
-    float4 DissolveSample = { 1.f, 1.f, 1.f, 1.f };
-    float noiseValue;
+    // // =======              노이즈 텍스처 샘플링             ===========
+    //float2 finalUV = In.vUV;
+    //float4 DiffuseSample = { 1.f, 1.f, 1.f, 1.f };
+    //float4 noiseSample = { 0.5f, 1.f, 1.f, 1.f };
+    //float4 MaskSample = { 1.f, 1.f, 1.f, 1.f };
+    //float4 DissolveSample = { 1.f, 1.f, 1.f, 1.f };
+    //float noiseValue;
     
-    // 남은 생명주기
-    float LifeRatio = saturate(In.vLifeTime.x / In.vLifeTime.y);
+    //// 남은 생명주기
+    //float LifeRatio = saturate(In.vLifeTime.x / In.vLifeTime.y);
     
+    //if (Has(g_Effect.g_TextureFlags, NOISETEXTURE))
+    //{
+    //    float2 noiseUV = Get90DegreeRotatedUV(In.vUV, g_Effect.g_RotationFlags, NOISETEXTURE);
+    //    noiseUV += g_Effect.g_ScrollOffset;
+    //    noiseSample = NoiseTextureSample(noiseUV);
+        
+    //    // 지금 바인딩 되어있는 Gradation 텍스처가 있는지 확인한다.
+    //    if (Has(g_Effect.g_TextureFlags, MASKINGTEXTURE))
+    //    {
+    //        MaskSample = MaskTextureSample(Get90DegreeRotatedUV(In.vUV, g_Effect.g_RotationFlags, MASKINGTEXTURE));
+    //        noiseValue = Float_Operation(noiseSample.r, MaskSample.r, MUL);
+    //    }
+        
+    //    finalUV.x = Float_Operation(noiseValue, g_Effect.g_DistortionScale.x, MUL);
+    //    finalUV.y = Float_Operation(noiseValue, g_Effect.g_DistortionScale.y, MUL);
+    //}
+    //    // 클립 좌표계에서 내 위치 찾아서 UV좌표 꺼내오기.
+    //float2 ScreenUV = In.vProjPos.xy / In.vProjPos.w;
+    //ScreenUV.x = ScreenUV.x * 0.5f + 0.5f;
+    //ScreenUV.y = ScreenUV.y * -0.5f + 0.5f;
+    
+    //float2 distortionUV = ScreenUV + finalUV; // finalUV는 노이즈 계산 값
+    
+    //float fBackNDCZ, fBackViewZ;
+    //DecodeDepth(distortionUV, fBackNDCZ, fBackViewZ); // 왜곡된 좌표의 깊이를 확인
+
+    //float4 vMyViewPos = mul(In.vWorldPos, V);
+    //float fMyViewZ = vMyViewPos.z;
+
+    //// 내 깊이 계산 (View Space Z)
+    //float4 viewPos = mul(In.vWorldPos, V);
+    //float currentViewZ = viewPos.z;
+    //{
+    //    distortionUV = ScreenUV;
+    //}
+
+    //// 이 UV 좌표로 SceneTexture를 샘플링한다.
+    //// 검기가 나오지도 않았는데 디스토션이 떠있으면 안되기에 얘도 화면 스크롤해준다.
+    //float4 refractionColor = g_RenderTargetSceneTexture.Sample(LinearSampler, distortionUV);
+    
+    //// 텍스처가 나오지 않은 곳은 디스토션을 지워버림
+    //// DefaultTexture가 검기의 모양이라면, 그 알파값을 가져와서 디스토션 영역으로 씀
+    //float2 scrolledUV = In.vUV + g_Effect.g_UVOffset + g_Effect.g_ScrollOffset;
+    //DiffuseSample = DefaultTextureSample(scrolledUV);
+
+    //float finalAlpha = DiffuseSample.a; // 검기 텍스처의 알파 영역만 왜곡 발생
+    
+    //// ==========               알파 클리핑                   =========
+    
+    //if (Has(g_Effect.g_TextureFlags, DISSOLVETEXTURE))
+    //{
+    //    finalAlpha *= DissolveTextureSample(In.vUV);
+    //}
+    
+    //float lifeAlpha = 1.0f - (In.vLifeTime.x / In.vLifeTime.y);
+    //finalAlpha *= lifeAlpha;
+
+    //if (finalAlpha < g_Effect.g_DiscardValue)
+    //    discard;
+    
+    //// ==========   미리 지정한 이펙트 색깔을 곱해서 출력하기   =========
+    //return refractionColor;
+    
+    // 1. 화면 좌표계(ScreenUV) 계산 - 현재 픽셀의 정확한 화면 위치
+    float2 ScreenUV = In.vProjPos.xy / In.vProjPos.w;
+    ScreenUV.x = ScreenUV.x * 0.5f + 0.5f;
+    ScreenUV.y = ScreenUV.y * -0.5f + 0.5f;
+
+    // 2. 깊이 판정 (가장 중요)
+    float fBackNDCZ, fBackViewZ;
+    // 왜곡 전의 '원본 위치(ScreenUV)'의 깊이를 먼저 읽습니다.
+    DecodeDepth(ScreenUV, fBackNDCZ, fBackViewZ);
+
+    // 현재 디스토션 메쉬의 View 공간 깊이
+    float4 vMyViewPos = mul(In.vWorldPos, V);
+    float fMyViewZ = vMyViewPos.z;
+
+    // 만약 배경(캐릭터 등)이 나보다 앞에 있다면? (Z값이 작다면)
+    // 이 픽셀은 캐릭터에 의해 가려진 곳이므로 디스토션을 그릴 필요가 없습니다.
+    if (fBackViewZ > 0.0f && fBackViewZ < fMyViewZ - 0.1f)
+    {
+        discard; // 정우님이 말씀하신 대로 아예 그리지 않습니다.
+    }
+
+    // 3. 왜곡 UV 계산 (배경이 나보다 뒤에 있음이 확인된 픽셀들만 여기까지 옵니다)
+    float2 finalUV = float2(0.f, 0.f);
     if (Has(g_Effect.g_TextureFlags, NOISETEXTURE))
     {
         float2 noiseUV = Get90DegreeRotatedUV(In.vUV, g_Effect.g_RotationFlags, NOISETEXTURE);
         noiseUV += g_Effect.g_ScrollOffset;
-        noiseSample = NoiseTextureSample(noiseUV);
-        
-        // 지금 바인딩 되어있는 Gradation 텍스처가 있는지 확인한다.
+        float4 noiseSample = NoiseTextureSample(noiseUV);
+        float noiseValue = noiseSample.r;
+
         if (Has(g_Effect.g_TextureFlags, MASKINGTEXTURE))
         {
-            MaskSample = MaskTextureSample(Get90DegreeRotatedUV(In.vUV, g_Effect.g_RotationFlags, MASKINGTEXTURE));
-            noiseValue = Float_Operation(noiseSample.r, MaskSample.r, MUL);
+            float4 MaskSample = MaskTextureSample(Get90DegreeRotatedUV(In.vUV, g_Effect.g_RotationFlags, MASKINGTEXTURE));
+            noiseValue *= MaskSample.r;
         }
         
-        finalUV.x = Float_Operation(noiseValue, g_Effect.g_DistortionScale.x, MUL);
-        finalUV.y = Float_Operation(noiseValue, g_Effect.g_DistortionScale.y, MUL);
+        finalUV.x = (noiseValue - 0.5f) * g_Effect.g_DistortionScale.x;
+        finalUV.y = (noiseValue - 0.5f) * g_Effect.g_DistortionScale.y;
     }
-        // 클립 좌표계에서 내 위치 찾아서 UV좌표 꺼내오기.
-    float2 ScreenUV = In.vProjPos.xy / In.vProjPos.w;
-    ScreenUV.x = ScreenUV.x * 0.5f + 0.5f;
-    ScreenUV.y = ScreenUV.y * -0.5f + 0.5f;
-    
-    float2 distortionUV = ScreenUV + finalUV;
-    float4 refractionColor = float4(1.f, 1.f, 1.f, 1.f);
-    
-    // 이 UV 좌표로 SceneTexture를 샘플링한다.
-    // 검기가 나오지도 않았는데 디스토션이 떠있으면 안되기에 얘도 화면 스크롤해준다.
-    refractionColor = SceneTextureSample(distortionUV, 1);
-    
-    // 텍스처가 나오지 않은 곳은 디스토션을 지워버림
-    // DefaultTexture가 검기의 모양이라면, 그 알파값을 가져와서 디스토션 영역으로 씀
-    float2 scrolledUV = In.vUV + g_Effect.g_UVOffset + g_Effect.g_ScrollOffset;
-    DiffuseSample = DefaultTextureSample(scrolledUV);
 
-    float finalAlpha = DiffuseSample.a; // 검기 텍스처의 알파 영역만 왜곡 발생
-    
-    // ==========               알파 클리핑                   =========
-    
-    if (Has(g_Effect.g_TextureFlags, DISSOLVETEXTURE))
+    float2 distortionUV = ScreenUV + finalUV;
+
+    // 4. 왜곡된 좌표의 깊이 재검사 (선택 사항)
+    // 왜곡해서 가져오려는 픽셀이 캐릭터 앞쪽 픽셀일 경우를 대비해 한번 더 체크할 수 있습니다.
+    float fDistortedBackNDCZ, fDistortedBackViewZ;
+    DecodeDepth(distortionUV, fDistortedBackNDCZ, fDistortedBackViewZ);
+    if (fDistortedBackViewZ > 0.0f && fDistortedBackViewZ < fMyViewZ)
     {
-        finalAlpha *= DissolveTextureSample(In.vUV);
+        distortionUV = ScreenUV; // 왜곡된 곳이 앞 사물이면 왜곡만 취소
     }
-    
-    float lifeAlpha = 1.0f - (In.vLifeTime.x / In.vLifeTime.y);
-    finalAlpha *= lifeAlpha;
+
+    // 5. 최종 출력
+    float4 refractionColor = g_RenderTargetSceneTexture.Sample(LinearSampler, distortionUV);
+
+    // 알파 및 수명 처리 (기존 로직)
+    float2 scrolledUV = In.vUV + g_Effect.g_UVOffset + g_Effect.g_ScrollOffset;
+    float finalAlpha = DefaultTextureSample(scrolledUV).a;
+    finalAlpha *= (1.0f - (In.vLifeTime.x / In.vLifeTime.y));
 
     if (finalAlpha < g_Effect.g_DiscardValue)
         discard;
-    
-    // ==========   미리 지정한 이펙트 색깔을 곱해서 출력하기   =========
+
     return refractionColor;
 }
 
