@@ -4,6 +4,7 @@
 // has?
 #include "Player.h"
 #include "PlayerControlContext.h"
+#include "Transform.h"
 
 // manager
 #include "GameInstance.h"
@@ -269,10 +270,10 @@ _bool CStateBase_Player::Check_Collis(const _float fTimeDelta)
 	if (Engine_Utils::Has_Flag(m_FCollisions, COLLISIONFLAGS::C_DOWN))
 	{
 		// 충돌 검사 및 시간 누적
-		if (IsOn_CCTFlag(PxControllerCollisionFlag::Enum::eCOLLISION_DOWN) == false)
-			m_TFallingCount.x += fTimeDelta;
-		else
+		if (Check_OnGround())
 			m_TFallingCount.x = 0.f;
+		else
+			m_TFallingCount.x += fTimeDelta;
 
 		// 시간 오바 검사
 		if (m_TFallingCount.x >= m_TFallingCount.y)
@@ -290,6 +291,11 @@ _bool CStateBase_Player::Has_ChangeState(STATEKEY eKey)
 {
 	// state end 이면 state change를 안 한다
 	return m_iEndStateIdx != m_vecChangeState_ByKey[ENUM_TO_UINT(eKey)];
+}
+
+_bool CStateBase_Player::Check_OnGround()
+{
+	return Get_OwnerObject()->Get_Component<CTransform>()->Is_OnGround(10.f);
 }
 
 void CStateBase_Player::Free()

@@ -85,6 +85,7 @@ private:
 
 private:
 	_bool Has_ChangeState(STATEKEY eKey);
+	_bool Check_OnGround();
 
 public:
 	virtual void Free() override;
