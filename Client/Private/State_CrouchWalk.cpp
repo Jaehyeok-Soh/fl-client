@@ -1,6 +1,8 @@
 #include "pch.h"
 #include "State_CrouchWalk.h"
 
+#include "Player.h"
+
 CState_CrouchWalk::CState_CrouchWalk(CActionState* pOwnerComponent)
 	: Super(pOwnerComponent, "CrouchWalk")
 {
@@ -45,6 +47,19 @@ HRESULT CState_CrouchWalk::End()
 	Set_ApplyYLerp(false);
 
 	return S_OK;
+}
+
+void CState_CrouchWalk::Set_NextStateDesc(_uint iNextState)
+{
+	switch (iNextState)
+	{
+	case ENUM_TO_UINT(CPlayer::State::COMBO):
+		m_tNextStateDesc.iMainAnimIdx = 1;
+		break;
+
+	default:
+		m_tNextStateDesc.iMainAnimIdx = 0;
+	}
 }
 
 CState_CrouchWalk* CState_CrouchWalk::Create(CActionState* pOwnerComponent, void* pArg)

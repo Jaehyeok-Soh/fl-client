@@ -70,6 +70,19 @@ void CState_Slide::Change_PlayerState(STATEKEY eKey)
     Super::Change_PlayerState(eKey);
 }
 
+void CState_Slide::Set_NextStateDesc(_uint iNextState)
+{
+    switch (iNextState)
+    {
+    case ENUM_TO_UINT(CPlayer::State::COMBO):
+        m_tNextStateDesc.iMainAnimIdx = 1;
+        break;
+
+    default:
+        m_tNextStateDesc.iMainAnimIdx = 0;
+    }
+}
+
 CState_Slide* CState_Slide::Create(CActionState* pOwnerComponent, void* pArg)
 {
     CState_Slide* pInstance = new CState_Slide(pOwnerComponent);
