@@ -814,7 +814,7 @@ void CModel::Play_Animation(CComputeShader* pBoneComBineCS, CComputeShader* pAni
 
 	// get bone
 	if (m_bStageBones)
-		Get_BoneMatrix(pBoneComBineCS, pGetBoneCS);
+		DisPatch_BondMatrix(pBoneComBineCS, pGetBoneCS);
 }
 
 void CModel::Play_Begin(CComputeShader* pAnimEvalCS, _uint iAnimationIndex)
@@ -1004,7 +1004,7 @@ void CModel::Blend_Animation(CComputeShader* pBoneComBineCS, CComputeShader* pAn
 	Update_BoneCombineTransformMatrix(pBoneComBineCS);
 
 	if (m_bStageBones)
-		Get_BoneMatrix(pBoneComBineCS, pGetBoneCS);
+		DisPatch_BondMatrix(pBoneComBineCS, pGetBoneCS);
 }
 
 void CModel::Lerp_Animation(CComputeShader* pAnimBlendCS, _float fRatio)
@@ -1020,6 +1020,48 @@ void CModel::Lerp_Animation(CComputeShader* pAnimBlendCS, _float fRatio)
 	// dispatch
 	_uint iGroupX = (Get_BoneCount() + 31) / 32;
 	pAnimBlendCS->Dispatch(iGroupX, 1, 1);
+}
+
+void CModel::Get_BoneMatrix(CComputeShader* pGetBoneCS)
+{
+	// 2. Gpu -> Cpu
+	{
+		// copy data
+		m_pDeviceContext->CopyResource(m_pBoneOuputStagingBuffer, pGetBoneCS->Get_Output_Buffer()->Get_Buffer());
+
+		vector<Matrix> vecBones;
+		vecBones.resize(m_iStageBoneCounts);
+
+		// 4. Map / Unmap을 통해 CPU로 데이터 가져오기
+		D3D11_MAPPED_SUBRESOURCE mappedResource;
+		if (SUCCEEDED(m_pDeviceContext->Map(m_pBoneOuputStagingBuffer, 0, D3D11_MAP_READ, 0, &mappedResource)))
+		{
+			// 1. 데이터를 행렬 포인터로 해석
+			Matrix* pGpuMatrices = reinterpret_cast<Matrix*>(mappedResource.pData);
+
+			// 2. 중간 복사 없이 바로 bone에 정보 저장
+			for (size_t i = 0; i < m_iStageBoneCounts; i++)
+			{
+				// pGpuMatrices[i]로 바로 접근 가능
+				m_vecBones[m_vecStageBoneIndices[i]]->Set_CombinedTranformMatrix(pGpuMatrices[i]);
+			}
+
+			m_pDeviceContext->Unmap(m_pBoneOuputStagingBuffer, 0);
+		}
+	}
+}
+
+void CModel::DisPatch_BondMatrix(CComputeShader* pBoneComBineCS, CComputeShader* pGetBoneCS)
+{
+	{
+		// combine 정보 넘겨주기
+		pGetBoneCS->Bind_InputStructuredBuffer(ENUM_TO_UINT(CModel::GETBONECS_SB_IDX::MU_BONEMATS),
+			pGetBoneCS->Get_SRV("MU_COMBINEDBONES"), pBoneComBineCS->Get_Output_Buffer());
+
+		// dispatch
+		_uint iGroupX = (m_iStageBoneCounts + 31) / 32;
+		pGetBoneCS->Dispatch(iGroupX, 1, 1);
+	}
 }
 
 void CModel::Bind_BoneImmuData(CComputeShader* pBoneComBineCS)
@@ -1099,45 +1141,45 @@ HRESULT CModel::Bind_StagingBuffer(CComputeShader* pGetBoneCS)
 	return S_OK;
 }
 
-void CModel::Get_BoneMatrix(CComputeShader* pBoneComBineCS, CComputeShader* pGetBoneCS)
-{
-	// 1. GetBone CS dispatch
-	{
-		// combine 정보 넘겨주기
-		pGetBoneCS->Bind_InputStructuredBuffer(ENUM_TO_UINT(CModel::GETBONECS_SB_IDX::MU_BONEMATS),
-			pGetBoneCS->Get_SRV("MU_COMBINEDBONES"), pBoneComBineCS->Get_Output_Buffer());
-
-		// dispatch
-		_uint iGroupX = (m_iStageBoneCounts + 31) / 32;
-		pGetBoneCS->Dispatch(iGroupX, 1, 1);
-	}
-
-	// 2. Gpu -> Cpu
-	{
-		// copy data
-		m_pDeviceContext->CopyResource(m_pBoneOuputStagingBuffer, pGetBoneCS->Get_Output_Buffer()->Get_Buffer());
-
-		vector<Matrix> vecBones;
-		vecBones.resize(m_iStageBoneCounts);
-
-		// 4. Map / Unmap을 통해 CPU로 데이터 가져오기
-		D3D11_MAPPED_SUBRESOURCE mappedResource;
-		if (SUCCEEDED(m_pDeviceContext->Map(m_pBoneOuputStagingBuffer, 0, D3D11_MAP_READ, 0, &mappedResource)))
-		{
-			// 1. 데이터를 행렬 포인터로 해석
-			Matrix* pGpuMatrices = reinterpret_cast<Matrix*>(mappedResource.pData);
-
-			// 2. 중간 복사 없이 바로 bone에 정보 저장
-			for (size_t i = 0; i < m_iStageBoneCounts; i++)
-			{
-				// pGpuMatrices[i]로 바로 접근 가능
-				m_vecBones[m_vecStageBoneIndices[i]]->Set_CombinedTranformMatrix(pGpuMatrices[i]);
-			}
-
-			m_pDeviceContext->Unmap(m_pBoneOuputStagingBuffer, 0);
-		}
-	}
-}
+//void CModel::Get_BoneMatrix(CComputeShader* pBoneComBineCS, CComputeShader* pGetBoneCS)
+//{
+//	// 1. GetBone CS dispatch
+//	{
+//		// combine 정보 넘겨주기
+//		pGetBoneCS->Bind_InputStructuredBuffer(ENUM_TO_UINT(CModel::GETBONECS_SB_IDX::MU_BONEMATS),
+//			pGetBoneCS->Get_SRV("MU_COMBINEDBONES"), pBoneComBineCS->Get_Output_Buffer());
+//
+//		// dispatch
+//		_uint iGroupX = (m_iStageBoneCounts + 31) / 32;
+//		pGetBoneCS->Dispatch(iGroupX, 1, 1);
+//	}
+//
+//	// 2. Gpu -> Cpu
+//	{
+//		// copy data
+//		m_pDeviceContext->CopyResource(m_pBoneOuputStagingBuffer, pGetBoneCS->Get_Output_Buffer()->Get_Buffer());
+//
+//		vector<Matrix> vecBones;
+//		vecBones.resize(m_iStageBoneCounts);
+//
+//		// 4. Map / Unmap을 통해 CPU로 데이터 가져오기
+//		D3D11_MAPPED_SUBRESOURCE mappedResource;
+//		if (SUCCEEDED(m_pDeviceContext->Map(m_pBoneOuputStagingBuffer, 0, D3D11_MAP_READ, 0, &mappedResource)))
+//		{
+//			// 1. 데이터를 행렬 포인터로 해석
+//			Matrix* pGpuMatrices = reinterpret_cast<Matrix*>(mappedResource.pData);
+//
+//			// 2. 중간 복사 없이 바로 bone에 정보 저장
+//			for (size_t i = 0; i < m_iStageBoneCounts; i++)
+//			{
+//				// pGpuMatrices[i]로 바로 접근 가능
+//				m_vecBones[m_vecStageBoneIndices[i]]->Set_CombinedTranformMatrix(pGpuMatrices[i]);
+//			}
+//
+//			m_pDeviceContext->Unmap(m_pBoneOuputStagingBuffer, 0);
+//		}
+//	}
+//}
 
 void CModel::Emit_Notifies(CModelAnimation* pAnimation, _float fPrevPos, _float fCurPos, _bool bIsLooped)
 {

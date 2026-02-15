@@ -169,7 +169,8 @@ public:
 
 public:
 	HRESULT								Ready_ComputeShaders(CComputeShader* pBoneMeshCS, CComputeShader* pBoneComBineCS, CComputeShader* pAnimEvalCS, CComputeShader* pAnimBlendCS = nullptr, CComputeShader* pGetBoneCS = nullptr);
-	
+	void								Get_BoneMatrix(CComputeShader* pGetBoneCS);
+
 	// load func
 private:
 	HRESULT								Load_StaticModel(const wstring& wstrModelName);
@@ -222,7 +223,7 @@ private:
 private:
 	void								Update_BoneCombineTransformMatrix(CComputeShader* pBoneComBineCS);
 	void								Lerp_Animation(CComputeShader* pAnimBlendCS, _float fRatio);
-	void								Get_BoneMatrix(CComputeShader* pBoneComBineCS, CComputeShader* pGetBoneCS);
+	void								DisPatch_BondMatrix(CComputeShader* pBoneComBineCS, CComputeShader* pGetBoneCS);
 
 	///////////////
 	//// Event ////
