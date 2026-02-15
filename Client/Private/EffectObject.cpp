@@ -226,7 +226,7 @@ HRESULT CEffectObject::Bind_ShaderResource()
     pShader->Set_Pass(m_tEffectDesc._Effect_ShaderPass);
     pShader->Bind_TransformData(m_matCombinedWorld);
 
-    if (FAILED(m_pGameInstance->Bind_RT_ShaderResource(ERenderTarget::Scene, pShader)))
+    if (FAILED(m_pGameInstance->Bind_RT_ShaderResource(ERenderTarget::SceneHDR_Copy, pShader)))
         return E_FAIL;
 
     // 셰이더에 던질 구조체 작성하기.

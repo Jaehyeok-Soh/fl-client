@@ -37,7 +37,7 @@ HRESULT CRenderTarget_Manager::Add_MRT(EMRTLayer eMRTLayer, ERenderTarget eTarge
         list<CRenderTarget*>    MRTList;
 
         MRTList.push_back(pRenderTarget);
-        m_arrMRTs[ENUM_TO_UINT(eTarget)] = std::move(MRTList);
+        m_arrMRTs[ENUM_TO_UINT(eMRTLayer)] = std::move(MRTList);
     }
     else
         pMRTList->push_back(pRenderTarget);
@@ -109,6 +109,8 @@ HRESULT CRenderTarget_Manager::Bind_ShaderResource(ERenderTarget eTarget, CShade
         eSlot = EFXSRV::RT_Specular; break;
     case Engine::ERenderTarget::Depth:
         eSlot = EFXSRV::RT_Depth; break;
+    case Engine::ERenderTarget::ObjectInfo:
+        eSlot = EFXSRV::RT_ObjectInfo; break;
     case Engine::ERenderTarget::SSAO_Ping:
     case Engine::ERenderTarget::SSAO_Pong:
     case Engine::ERenderTarget::SSAO_Full:
@@ -117,6 +119,9 @@ HRESULT CRenderTarget_Manager::Bind_ShaderResource(ERenderTarget eTarget, CShade
         eSlot = EFXSRV::RT_SceneHDR; break;
     case Engine::ERenderTarget::SceneHDR_Copy:
         eSlot = EFXSRV::RT_SceneHDR_Copy; break;
+    case Engine::ERenderTarget::Bloom_Ping:
+    case Engine::ERenderTarget::Bloom_Pong:
+        eSlot = EFXSRV::RT_Bloom; break;
     default:
         return E_FAIL; 
     }

@@ -14,7 +14,7 @@ namespace Engine
 	enum class EPOINT { A, B, C, END };
 	enum class ELINE { AB, BC, CA, END };
 	enum class RENDER_CATEGORY : unsigned int { PRIORITY, BLEND,NONEBLEND, NONELIGHT, ENVIRONMENT, BLENDUI, UI, END };
-	enum class DEFFERRED { DEBUG, DIRECTIONAL, POINT, SSAO_GEN, SSAO_BLURH, SSAO_BLURV, SSAO_UPSAMPLE, COMBINED, BLOOM_EXTRACT, BLOOM_BLURH, BLOOM_BLURV, TONEMAP, END };
+	enum class DEFFERRED { DEBUG, DIRECTIONAL, POINT, OUTLINE, SSAO_GEN, SSAO_BLURH, SSAO_BLURV, SSAO_UPSAMPLE, COMBINED, BLOOM_EXTRACT, BLOOM_BLURH, BLOOM_BLURV, TONEMAP, END };
 	enum class ECursorMode : unsigned int
 	{
 		LockedHiddenCenter = 0,
@@ -86,12 +86,15 @@ namespace Engine
 		Light,
 		Material,
 		MaterialInst,
+		ObjectInfo,
 		Keyframe,
 		Bone,
 		Effect,
 		SSAOkernal,
 		SSAOparam,
 		HDRparam,
+		Bloomparam,
+		Outlineparam,
 		COUNT
 	};
 	constexpr const char* g_CBNames[static_cast<unsigned int>(EFXCB::COUNT)] =
@@ -102,12 +105,15 @@ namespace Engine
 		"LightBuffer",
 		"MaterialBuffer",
 		"MaterialInstanceBuffer",
+		"ObjectInfoBuffer",
 		"KeyframeBuffer",
 		"BoneBuffer",
 		"ConstantBuffer_Effect",
 		"SSAOKernelBuffer",
 		"SSAOParamBuffer",
-		"HDRParamBuffer"
+		"HDRParamBuffer",
+		"BLOOMParamBuffer",
+		"OUTLINEParamBuffer"
 	};
 	//===================
 	// FX SRV
@@ -121,9 +127,11 @@ namespace Engine
 		RT_SpecularMask,
 		RT_Specular,
 		RT_Depth,
+		RT_ObjectInfo,
 		RT_AO,
 		RT_SceneHDR,
 		RT_SceneHDR_Copy,
+		RT_Bloom,
 		Transform,
 		Materials,
 		Textures,
@@ -140,9 +148,11 @@ namespace Engine
 		"g_RenderTargetSpecularMaskTexture",
 		"g_RenderTargetSpecularTexture",
 		"g_RenderTargetDepthTexture",
+		"g_RenderTargetObjInfoTexture",
 		"g_RenderTargetAOTexture",
 		"g_RenderTargetSceneHDRTexture",
 		"g_RenderTargetSceneHDRCopyTexture",
+		"g_RenderTargetBloomTexture",
 		"g_TransformMap",
 		"g_MaterialTextures",
 		"g_DefaultTextures",

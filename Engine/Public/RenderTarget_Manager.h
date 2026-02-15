@@ -11,6 +11,7 @@ enum class ERenderTarget : _uint
 	SpecularMask,
 	Specular,
 	Depth,
+	ObjectInfo,
 	SSAO_Ping,
 	SSAO_Pong,
 	SSAO_Full,

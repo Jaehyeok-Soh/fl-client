@@ -68,10 +68,12 @@ Texture2D g_RenderTargetDiffuseTexture;
 Texture2D g_RenderTargetNormalTexture;
 Texture2D g_RenderTargetShadeTexture;
 Texture2D g_RenderTargetDepthTexture;
+Texture2D<uint> g_RenderTargetObjInfoTexture;
 Texture2D g_RenderTargetSpecularTexture;
 Texture2D g_RenderTargetSpecularMaskTexture;
 Texture2D g_RenderTargetAOTexture;
 Texture2D g_RenderTargetSceneHDRTexture;
 Texture2D g_RenderTargetSceneHDRCopyTexture;
+Texture2D g_RenderTargetBloomTexture;
 
 #endif

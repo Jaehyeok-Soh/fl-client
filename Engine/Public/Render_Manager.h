@@ -38,6 +38,7 @@ private:
 	HRESULT Render_Lights();
 	HRESULT Render_CombinedHDR();
 	HRESULT Render_Environment();
+	HRESULT Render_Outline();
 	HRESULT Render_NonLights();
 	HRESULT Render_Blend();
 	HRESULT Render_Bloom();
@@ -68,9 +69,13 @@ private:
 	SHADER_SSAOKERNEL_DESC m_tSSAOkernelDesc{};
 	SHADER_SSAOPARAM_DESC m_tSSAOparamDesc{};
 	SHADER_HDRPARAM_DESC m_tHDRparamDesc{};
+	SHADER_BLOOMPARAM_DESC m_tBloomparamDesc{};
+	SHADER_OUTLINE_DESC m_tOutlineparamDesc{};
 	CConstant_Buffer<SHADER_SSAOKERNEL_DESC>* m_pCB_SSAOkernel{ nullptr };
 	CConstant_Buffer<SHADER_SSAOPARAM_DESC>* m_pCB_SSAOparam{ nullptr };
 	CConstant_Buffer<SHADER_HDRPARAM_DESC>* m_pCB_HDRparam{ nullptr };
+	CConstant_Buffer<SHADER_BLOOMPARAM_DESC>* m_pCB_Bloomparam{ nullptr };
+	CConstant_Buffer<SHADER_OUTLINE_DESC>* m_pCB_Outlineparam{ nullptr };
 public:
 	static CRender_Manager* Create(ID3D11Device* pDevice, ID3D11DeviceContext* pDeviceContext);
 	virtual void Free() override;

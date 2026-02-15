@@ -27,6 +27,7 @@ CShader::CShader(const CShader& rhs)
 	, m_pMI_CBuffer(rhs.m_pMI_CBuffer)
 	, m_pKeyFrame_CBuffer(rhs.m_pKeyFrame_CBuffer)
 	, m_pEffect_CBuffer(rhs.m_pEffect_CBuffer)
+	, m_pObjectInfo_CBuffer(rhs.m_pObjectInfo_CBuffer)
 {
 	Safe_AddRef(m_pDevice);
 	Safe_AddRef(m_pDeviceContext);
@@ -37,6 +38,7 @@ CShader::CShader(const CShader& rhs)
 	Safe_AddRef(m_pKeyFrame_CBuffer);
 	Safe_AddRef(m_pMI_CBuffer);
 	Safe_AddRef(m_pEffect_CBuffer);
+	Safe_AddRef(m_pObjectInfo_CBuffer);
 }
 
 HRESULT CShader::Initialize_Prototype(void* pArg)
@@ -229,6 +231,11 @@ HRESULT CShader::Bind_KeyFrameData(const SHADER_KEYFRAMEDESC& keyframeDesc)
 	return m_pKeyFrame_CBuffer->Copy_Data(keyframeDesc);
 }
 
+HRESULT CShader::Bind_ObjectInfoData(const SHADER_OBJECTINFO_DESC& objectInfoDesc)
+{
+	return m_pObjectInfo_CBuffer->Copy_Data(objectInfoDesc);
+}
+
 HRESULT CShader::Set_ConstantBuffer(EFXCB eSlot, ID3D11Buffer* pBuffer)
 {
 	auto* BindingCache = m_pVariant->Get_EffectAsset()->Get_BindingCache();
@@ -279,6 +286,12 @@ void CShader::Create_ConstantBuffer()
 		m_pEffect_CBuffer = CConstant_Buffer<SHADER_EFFECT_DESC>::Create(m_pDevice, m_pDeviceContext);
 		pCache->CB[iSlot]->SetConstantBuffer(m_pEffect_CBuffer->Get_Buffer());
 	}
+	iSlot = ENUM_TO_UINT(EFXCB::ObjectInfo);
+	if (pCache->CB[iSlot])
+	{
+		m_pObjectInfo_CBuffer = CConstant_Buffer<SHADER_OBJECTINFO_DESC>::Create(m_pDevice, m_pDeviceContext);
+		pCache->CB[iSlot]->SetConstantBuffer(m_pObjectInfo_CBuffer->Get_Buffer());
+	}
 }
 
 CShader* CShader::Create(ID3D11Device* pDevice, ID3D11DeviceContext* pDeviceContext, void* pArg)
@@ -311,6 +324,7 @@ void CShader::Clear_ConstantBuffer()
 	Safe_Release(m_pMaterial_CBuffer);
 	Safe_Release(m_pTransform_CBuffer);
 	Safe_Release(m_pBone_CBuffer);
+	Safe_Release(m_pObjectInfo_CBuffer);
 }
 
 void CShader::Free()
