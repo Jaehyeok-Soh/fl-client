@@ -274,15 +274,6 @@ _bool CStateBase_Player::Check_Collis(const _float fTimeDelta)
 			m_TFallingCount.x = 0.f;
 		else
 			Change_PlayerState(ENUM_TO_UINT(CPlayer::State::FALL));
- 	//		m_TFallingCount.x += fTimeDelta;
-
-		//// 시간 오바 검사
-		//if (m_TFallingCount.x >= m_TFallingCount.y)
-		//{
-		//	m_TFallingCount.x = 0.f;
-		//	//Change_PlayerState(ENUM_TO_UINT(CPlayer::State::FALL));
-		//	return true;
-		//}
 	}
 
 	return false;
@@ -296,11 +287,6 @@ _bool CStateBase_Player::Has_ChangeState(STATEKEY eKey)
 
 _bool CStateBase_Player::Check_OnGround(_float fMaxDist)
 {
-	//return IsOn_CCTFlag(PxControllerCollisionFlag::eCOLLISION_DOWN) || 
-	//	static_cast<CPlayer*>(Get_OwnerObject())->Check_OnGround();
-
-	//return Get_OwnerObject()->Get_Component<CTransform>()->Is_OnGround(0.65f);
-
 	return static_cast<CPlayer*>(Get_OwnerObject())->Check_OnGround(fMaxDist);
 }
 
