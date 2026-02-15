@@ -18,6 +18,7 @@ CWeapon::CWeapon(ID3D11Device* pDevice, ID3D11DeviceContext* pDeviceContext, Wea
 CWeapon::CWeapon(const CWeapon& rhs)
 	: Super(rhs)
 	, m_eWaeponType(rhs.m_eWaeponType)
+	, m_matRotation(rhs.m_matRotation)
 {
 }
 
@@ -25,6 +26,8 @@ HRESULT CWeapon::Initialize_Prototype()
 {
 	if (FAILED(Super::Initialize_Prototype()))
 		return E_FAIL;
+
+	m_matRotation = Matrix::CreateRotationX(XMConvertToRadians(-90.f));
 
 	return S_OK;
 }
@@ -130,7 +133,7 @@ void CWeapon::Ready_Before_Render(_float fTimeDelta)
 	switch (m_eState)
 	{
 	case State::HAND:
-		Super::Update_CombinedWorldMatrix((*m_pMatHandSocket) * (*m_pMatParent));
+		Super::Update_CombinedWorldMatrix(m_matRotation * (*m_pMatHandSocket) * (*m_pMatParent));
 		break;
 	default:
 		Super::Update_CombinedWorldMatrix((*m_pMatSocket) * (*m_pMatParent));
