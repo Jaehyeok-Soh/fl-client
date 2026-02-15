@@ -197,6 +197,7 @@
     <ClInclude Include="..\Public\Monster_Dummy.h" />
     <ClInclude Include="..\Public\Physics_LandScape.h" />
     <ClInclude Include="..\Public\Physics_Terrain.h" />
+    <ClInclude Include="..\Public\StatCom_Player.h" />
     <ClInclude Include="..\Public\State_ComboBase.h" />
     <ClInclude Include="..\Public\State_CrouchWalk.h" />
     <ClInclude Include="..\Public\Level_Loading.h" />
@@ -313,6 +314,7 @@
     <ClCompile Include="..\Private\MapObject.cpp" />
     <ClCompile Include="..\Private\Monster_Dummy.cpp" />
     <ClCompile Include="..\Private\Physics_LandScape.cpp" />
+    <ClCompile Include="..\Private\StatCom_Player.cpp" />
     <ClCompile Include="..\Private\State_ComboBase.cpp" />
     <ClCompile Include="..\Private\State_CrouchWalk.cpp" />
     <ClCompile Include="..\Private\Level_Loading.cpp" />

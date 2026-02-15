@@ -292,6 +292,9 @@
     <Filter Include="06. FSM\Player\JumpWall">
       <UniqueIdentifier>{2c8ee512-8e94-467f-9f3f-35d518b8ff89}</UniqueIdentifier>
     </Filter>
+    <Filter Include="05. Component\Stat\StatCom_Player">
+      <UniqueIdentifier>{65804a62-163c-4d9e-96ad-c89ac5470b42}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="targetver.h">
@@ -564,6 +567,9 @@
     <ClInclude Include="..\Public\State_JumpWall.h">
       <Filter>06. FSM\Player\JumpWall</Filter>
     </ClInclude>
+    <ClInclude Include="..\Public\StatCom_Player.h">
+      <Filter>05. Component\Stat\StatCom_Player</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <Image Include="Client.ico">
@@ -827,6 +833,9 @@
     </ClCompile>
     <ClCompile Include="..\Private\UIHover_Image.cpp">
       <Filter>03. GameObject\UIObjects\02.UI\Image\Dynamic Image\02.HoverImage</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\StatCom_Player.cpp">
+      <Filter>05. Component\Stat\StatCom_Player</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
