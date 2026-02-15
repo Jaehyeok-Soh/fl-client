@@ -94,15 +94,22 @@ namespace Engine
 		SimpleMath::Vector4 vAmbient = { 0.5f, 0.5f, 0.5f, 1.f };
 		SimpleMath::Vector4 vSpecular = { 1.f, 1.f,1.f, 1.f };
 		SimpleMath::Vector4 vEmissive = { 1.f, 1.f,1.f, 1.f };
-		SimpleMath::Vector3 vPadding = {};
+		SimpleMath::Vector3 vPadding = { SimpleMath::Vector3::Zero };
 		float fEmissivePower = { 1.f };
 	}SHADER_MI_DESC;
+
+	typedef struct tagShaderObjectInfoDesc
+	{
+		unsigned int iObjectID{ 0 };
+		unsigned int Flags8{ 0 };
+		SimpleMath::Vector2 vPadding{ SimpleMath::Vector2::Zero};
+	}SHADER_OBJECTINFO_DESC;
 
 	typedef struct tagShaderSSAOKernelDesc
 	{
 		SimpleMath::Vector4 vKernel[16]{ SimpleMath::Vector4::Zero};
-		SimpleMath::Vector2 vNoiseScale{};
-		SimpleMath::Vector2 vPadding{};
+		SimpleMath::Vector2 vNoiseScale{ SimpleMath::Vector2::Zero};
+		SimpleMath::Vector2 vPadding{ SimpleMath::Vector2::Zero };
 	}SHADER_SSAOKERNEL_DESC;
 
 	typedef struct tagShaderSSAOParamDesc
@@ -116,6 +123,37 @@ namespace Engine
 		SimpleMath::Vector2 vInvSize{ 1.f, 1.f };
 	}SHADER_SSAOPARAM_DESC;
 
+	typedef struct tagShaderHDRParamDesc
+	{
+		float fExposure{1.5f};
+		float fGamma{2.2f};
+		SimpleMath::Vector2 vPadding{ SimpleMath::Vector2::Zero };
+	}SHADER_HDRPARAM_DESC;
+
+	typedef struct tagShaderBloomParamDesc
+	{
+		SimpleMath::Vector2 vInvSize{ 1.f, 1.f };
+		float fThreshold{ 0.f };
+		float fKnee{ 0.f };
+		float fIntensity{ 0.f };
+		SimpleMath::Vector3 vPadding{ SimpleMath::Vector3::Zero };
+	}SHADER_BLOOMPARAM_DESC;
+
+	typedef struct tagShaderOutlineParamDesc
+	{
+		SimpleMath::Vector4 vColor{ SimpleMath::Vector4::Zero };
+		SimpleMath::Vector2 vInvSize{ SimpleMath::Vector2::Zero };
+		float fThicknessPx{0.f};
+		float fOpacity{0.f};
+		float fNormalThreshold{0.f};
+		float fDepthThreshold{0.f};
+		float fNormalStrength{0.f};
+		float fDepthStrength{0.f};
+		float fFadeStart{0.f};
+		float fFadeEnd{0.f};
+		SimpleMath::Vector2 vPadding{ SimpleMath::Vector2::Zero };
+	}SHADER_OUTLINE_DESC;
+
 	typedef struct tagShaderEffectDesc
 	{
 		unsigned int iTextureFlags = { 0 };
@@ -128,10 +166,10 @@ namespace Engine
 		SimpleMath::Vector2 vUVOffset = { 0.f, 0.f };
 
 		// 스프라이트 정보 추가
-		unsigned int SpriteColCount = {};		// 가로 프레임 수
-		unsigned int SpriteRowCount = {};		// 세로 프레임 수
-		unsigned int CurSpriteIndex = {};		// 현재 스프라이트 인덱스
-		float		 LifeRatio = {};
+		unsigned int SpriteColCount = {0};		// 가로 프레임 수
+		unsigned int SpriteRowCount = {0};		// 세로 프레임 수
+		unsigned int CurSpriteIndex = {0};		// 현재 스프라이트 인덱스
+		float		 fLifeRatio = {0.0f};
 
 		SimpleMath::Vector2 vScrollOffset = { 0.f, 0.f };
 		SimpleMath::Vector2 vDistortionScale = { 0.f, 0.f };

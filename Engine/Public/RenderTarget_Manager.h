@@ -11,10 +11,14 @@ enum class ERenderTarget : _uint
 	SpecularMask,
 	Specular,
 	Depth,
+	ObjectInfo,
 	SSAO_Ping,
 	SSAO_Pong,
 	SSAO_Full,
-	Scene,	// 유니티에서 SceneTexture라고 함. Effect 전용
+	SceneHDR,
+	SceneHDR_Copy,	// 유니티에서 SceneTexture라고 함. Effect 전용
+	Bloom_Ping,
+	Bloom_Pong,
 	END,
 };
 
@@ -27,6 +31,11 @@ enum class EMRTLayer : _uint
 	SSAO_BlurH,
 	SSAO_BlurV,
 	SSAO_Upsample,
+	CombineHDR,
+	SceneHDR_Acc,
+	Bloom_Extract,
+	Bloom_BlurH,
+	Bloom_BlurV,
 	END,
 };
 
@@ -40,10 +49,10 @@ private:
 public:
 	HRESULT Add_RenderTarget(ERenderTarget eTarget, const CRenderTarget::RENDERTARGET_DESC* pDesc);
 	HRESULT Add_MRT(EMRTLayer eMRTLayer, ERenderTarget eTarget);
-	HRESULT Begin_MRT(EMRTLayer eMRTLayer);
+	HRESULT Begin_MRT(EMRTLayer eMRTLayer, _bool bClear);
 	HRESULT End_MRT();
 	HRESULT Bind_ShaderResource(ERenderTarget eTarget, class CShader* pShader);
-	HRESULT Copy_BackBufferResource(ERenderTarget eTarget);
+	HRESULT Copy_SceneHDRResource(ERenderTarget eTarget);
 
 public:
 	class CRenderTarget* Get_RenderTarget(ERenderTarget eTarget) { return m_arrRenderTargets[ENUM_TO_UINT(eTarget)]; }

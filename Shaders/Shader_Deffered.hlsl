@@ -1,6 +1,70 @@
 #include "Struct_Defines.hlsl"
 #include "Light_Defines.hlsl"
 
+float Luma(float3 vC)
+{
+    return dot(vC, float3(0.216, 0.7152, 0.0722));
+}
+
+// Soft Threshold
+float3 BloomPrefilter(float3 vColor, float fThreshold, float fKnee)
+{
+    float fBrightness = max(max(vColor.r, vColor.g), vColor.b);
+    float fSoft = fBrightness - fThreshold + fKnee;
+    fSoft = clamp(fSoft, 0.0, 2.0 * fKnee);
+    fSoft = (fSoft * fSoft) / max(4.0 * fKnee, EPSILON);
+    
+    float fHard = max(fBrightness - fThreshold, 0.0);
+    float fContribution = max(fHard, fSoft);
+    return vColor * (fContribution / max(fBrightness, EPSILON));
+}
+
+float3 Downsample2x2_SceneHDR(float2 vUV, float2 vHalfInvSize)
+{
+    float2 vO = vHalfInvSize;
+    float3 c0 = g_RenderTargetSceneHDRTexture.Sample(LinearSampler, vUV + float2(-vO.x, -vO.y)).rgb;
+    float3 c1 = g_RenderTargetSceneHDRTexture.Sample(LinearSampler, vUV + float2(vO.x, -vO.y)).rgb;
+    float3 c2 = g_RenderTargetSceneHDRTexture.Sample(LinearSampler, vUV + float2(-vO.x, vO.y)).rgb;
+    float3 c3 = g_RenderTargetSceneHDRTexture.Sample(LinearSampler, vUV + float2(vO.x, vO.y)).rgb;
+    return (c0 + c1 + c2 + c3) * 0.25;
+}
+
+float3 Blur9(Texture2D vTexture, float2 vUV, float2 vDir, float2 vInvSize)
+{
+    float2 stepUV = vDir * vInvSize;
+
+    float w0 = 0.227027;
+    float w1 = 0.1945946;
+    float w2 = 0.1216216;
+    float w3 = 0.054054;
+    float w4 = 0.016216;
+
+    float3 c = vTexture.Sample(LinearSampler, vUV).rgb * w0;
+
+    c += vTexture.Sample(LinearSampler, vUV + stepUV * 1).rgb * w1;
+    c += vTexture.Sample(LinearSampler, vUV - stepUV * 1).rgb * w1;
+
+    c += vTexture.Sample(LinearSampler, vUV + stepUV * 2).rgb * w2;
+    c += vTexture.Sample(LinearSampler, vUV - stepUV * 2).rgb * w2;
+
+    c += vTexture.Sample(LinearSampler, vUV + stepUV * 3).rgb * w3;
+    c += vTexture.Sample(LinearSampler, vUV - stepUV * 3).rgb * w3;
+
+    c += vTexture.Sample(LinearSampler, vUV + stepUV * 4).rgb * w4;
+    c += vTexture.Sample(LinearSampler, vUV - stepUV * 4).rgb * w4;
+    return c;
+}
+
+float3 ToneMap_ACES(float3 x)
+{
+    const float a = 2.51f;
+    const float b = 0.03f;
+    const float c = 2.43f;
+    const float d = 0.59f;
+    const float e = 0.14f;
+    return saturate((x * (a * x + b)) / (x * (c * x + d) + e));
+}
+
 float3 DecodeWorldNormal(float2 vUV)
 {
     float4 vNormalDesc = g_RenderTargetNormalTexture.Sample(PointClampSampler, vUV);
@@ -20,6 +84,54 @@ void DecodeSpecularMask(float2 vUV, out float fAO, out float fRough, out float f
     fAO = vSpecularMaskDesc.x;
     fRough = vSpecularMaskDesc.y;
     fMetal = vSpecularMaskDesc.z;
+}
+
+float SilhouetteEdge(float2 vUV)
+{
+    float2 vInvSize = OutlineParam.vInvSize;
+    
+    uint iPacked = LoadObjectInfo(vUV, vInvSize);
+    uint iFlags8 = UnpackFlags8(iPacked);
+    
+    if (HasOutline(iFlags8) == false)
+        return 0.0f;
+
+    int iStep = max(1, (int) round(OutlineParam.fThicknessPx));
+    float2 vO = vInvSize * iStep;
+
+    uint lf = UnpackFlags8(LoadObjectInfo(vUV + float2(-vO.x, 0), vInvSize));
+    uint rf = UnpackFlags8(LoadObjectInfo(vUV + float2(vO.x, 0), vInvSize));
+    uint uf = UnpackFlags8(LoadObjectInfo(vUV + float2(0, -vO.y), vInvSize));
+    uint df = UnpackFlags8(LoadObjectInfo(vUV + float2(0, vO.y), vInvSize));
+
+    bool bSil = (HasOutline(lf) == false || HasOutline(rf) == false || HasOutline(uf) == false || HasOutline(df) == false);
+    return bSil ? 1.0f : 0.0f;
+}
+
+float ComputeFade(float fViewZ)
+{
+    if (OutlineParam.fFadeEnd <= OutlineParam.fFadeStart + EPSILON)
+        return 1.0;
+    
+    float fZ = abs(fViewZ);
+    return saturate((OutlineParam.fFadeEnd - fZ) / max(OutlineParam.fFadeEnd - OutlineParam.fFadeStart, EPSILON));
+}
+
+float EdgeFromDepth(float fCenterViewZ, float fNeighViewZ)
+{
+    // 상대값으로 안정화(거리 커질수록 dz가 커지는 현상 완화)
+    float fDenom = max(abs(fCenterViewZ), 1.f);
+    float fRel = abs(fNeighViewZ - fCenterViewZ) / fDenom;
+
+    // threshold 넘어간 정도를 strength로 키움
+    return saturate((fRel - OutlineParam.fDepthThreshold) * OutlineParam.fDepthStrength);
+}
+
+float EdgeFromNormal(float3 vCenterNormal, float3 vNeighNormal)
+{
+     // 0이면 동일, 클수록 에지
+    float fD = 1.0f - saturate(dot(vCenterNormal, vNeighNormal));
+    return saturate((fD - OutlineParam.fNormalThreshold) * OutlineParam.fNormalStrength);
 }
 
 float Blur5Tap(float2 vUV, float2 vDir, float2 vInvHalf)
@@ -234,6 +346,36 @@ PS_OUT_LIGHT PS_MAIN_POINT(PS_IN_POS_TEX input)
     return output;
 }
 
+PS_OUT_HDR PS_MAIN_OUTLINE(PS_IN_POS_TEX input)
+{
+    PS_OUT_HDR output;
+    float2 vUV = input.vUV;
+
+    float fEdge = SilhouetteEdge(vUV);
+    if (fEdge <= 0.0f)
+    {
+        output.vColor = float4(0, 0, 0, 0);
+        return output;
+    }
+
+    // 필요한 경우에만 Depth 1회 (fade용)
+    float fNdcZ = 0.0f;
+    float fViewZ = 0.0f;
+    DecodeDepth(fEdge, fNdcZ, fViewZ);
+
+    if (fNdcZ >= 0.9999f)
+    {
+        output.vColor = float4(0, 0, 0, 0);
+        return output;
+    }
+
+    fEdge *= OutlineParam.fOpacity;
+    fEdge *= ComputeFade(fViewZ);
+
+    output.vColor = float4(OutlineParam.vColor.rgb, OutlineParam.vColor.a * fEdge);
+    return output;
+}
+
 PS_OUT_AO PS_MAIN_SSAOGEN(PS_IN_POS_TEX input)
 {
     PS_OUT_AO output;
@@ -250,7 +392,7 @@ PS_OUT_AO PS_MAIN_SSAOGEN(PS_IN_POS_TEX input)
     // Clear일 때 AO = 1 처리
     if(fViewZ <= EPSILON || fViewZ >= SSAOparam.fFadeEnd)
     {
-        output.vAO = float4(1.f, 1.f, 1.f, 1.f);
+        output.vAO = float4(1.f, 1.f, 0.f, 1.f);
         return output;
     }
     
@@ -356,7 +498,7 @@ PS_OUT_AO PS_MAIN_SSAO_UPSAMPLE(PS_IN_POS_TEX input)
     float fCenterViewZ = GetViewZ(vUVFull);
     if (fCenterViewZ <= EPSILON)
     {
-        output.vAO = float4(1.f, 1.f, 1.f, 1.f);
+        output.vAO = float4(1.f, 1.f, 0.f, 1.f);
         return output;
     }
 
@@ -431,9 +573,9 @@ PS_OUT_AO PS_MAIN_SSAO_UPSAMPLE(PS_IN_POS_TEX input)
     return output;
 }
 
-PS_OUT_BACKBUFFER PS_MAIN_COMBINED(PS_IN_POS_TEX input)
+PS_OUT_HDR PS_MAIN_COMBINED(PS_IN_POS_TEX input)
 {
-    PS_OUT_BACKBUFFER output;
+    PS_OUT_HDR output;
     
     float4 vDepth = g_RenderTargetDepthTexture.Sample(LinearSampler, input.vUV);
     
@@ -450,14 +592,69 @@ PS_OUT_BACKBUFFER PS_MAIN_COMBINED(PS_IN_POS_TEX input)
     return output;
 }
 
+PS_OUT_BLOOM PS_MAIN_BLOOM_EXTRACT(PS_IN_POS_TEX input)
+{
+    PS_OUT_BLOOM output;
+    float3 vHDR = Downsample2x2_SceneHDR(input.vUV, BloomParam.vInvBloomSize);
+    float3 vBright = BloomPrefilter(vHDR, BloomParam.fThreshold, BloomParam.fKnee);
+    output.vColor = float4(vBright, 1.0f);
+    return output;
+
+}
+
+PS_OUT_BLOOM PS_MAIN_BLOOM_PING(PS_IN_POS_TEX input)
+{
+    PS_OUT_BLOOM output;
+    float3 vBlur = Blur9(g_RenderTargetBloomTexture, input.vUV, float2(1, 0), BloomParam.vInvBloomSize);
+    output.vColor = float4(vBlur, 1.0f);
+    return output;
+
+}
+
+PS_OUT_BLOOM PS_MAIN_BLOOM_PONG(PS_IN_POS_TEX input)
+{
+    PS_OUT_BLOOM output;
+    float3 vBlur = Blur9(g_RenderTargetBloomTexture, input.vUV, float2(0, 1), BloomParam.vInvBloomSize);
+    output.vColor = float4(vBlur, 1.0f);
+    return output;
+}
+
+PS_OUT_BACKBUFFER PS_MAIN_TONEMAP(PS_IN_POS_TEX input)
+{
+    PS_OUT_BACKBUFFER output;
+    float3 vBloom = g_RenderTargetBloomTexture.Sample(LinearSampler, input.vUV).rgb;
+    float4 vScene = g_RenderTargetSceneHDRTexture.Sample(LinearSampler, input.vUV);
+    if (0.f == vScene.a)
+        discard;
+    // Bloom 합성
+    float3 vHDR = vScene.rgb + vBloom * BloomParam.fIntensity;
+    
+    // Exposure
+    vHDR *= HDRparam.fExposure;
+    
+    // Tonemap
+    float3 vLDR = ToneMap_ACES(vHDR.rgb);
+    
+    // 현재 우리는 sRGBA이므로 Gamma 보정이 필요없음
+    // float invGamma = 1.f / max(0.001f, HDRparam.fGamma);
+    // vLDR = pow(saturate(vLDR), invGamma);
+    output.vColor = float4(saturate(vLDR), 1.f);
+    return output;
+}
+
 technique11 T0
 {
     PASS_RS_DS_BS_VP(Debug, RS_Default, DS_Default, BS_Default, VS_MAIN, PS_MAIN_DEBUG)
     PASS_RS_DS_BS_VP(DirectionalLight, RS_Default, DS_Disabled, BS_Default, VS_MAIN, PS_MAIN_DIRECTIONAL)
     PASS_RS_DS_BS_VP(PointLight, RS_Default, DS_Disabled, BS_Blend, VS_MAIN, PS_MAIN_POINT)
+    PASS_RS_DS_BS_VP(Outline, RS_Default, DS_Disabled, BS_AlphaBlend, VS_MAIN, PS_MAIN_OUTLINE)
     PASS_RS_DS_BS_VP(SSAOGen, RS_Default, DS_Disabled, BS_Default, VS_MAIN, PS_MAIN_SSAOGEN)
     PASS_RS_DS_BS_VP(SSAOBLURH, RS_Default, DS_Disabled, BS_Default, VS_MAIN, PS_MAIN_SSAOBLURH)
     PASS_RS_DS_BS_VP(SSAOBLURV, RS_Default, DS_Disabled, BS_Default, VS_MAIN, PS_MAIN_SSAOBLURV)
     PASS_RS_DS_BS_VP(SSAOUpsample, RS_Default, DS_Disabled, BS_Default, VS_MAIN, PS_MAIN_SSAO_UPSAMPLE)
-    PASS_RS_DS_BS_VP(Combined, RS_Default, DS_Disabled, BS_Default, VS_MAIN, PS_MAIN_COMBINED)
+    PASS_RS_DS_BS_VP(CombinedHDR, RS_Default, DS_Disabled, BS_Default, VS_MAIN, PS_MAIN_COMBINED)
+    PASS_RS_DS_BS_VP(BloomExtract, RS_Default, DS_Disabled, BS_Default, VS_MAIN, PS_MAIN_BLOOM_EXTRACT)
+    PASS_RS_DS_BS_VP(BloomPing, RS_Default, DS_Disabled, BS_Default, VS_MAIN, PS_MAIN_BLOOM_PING)
+    PASS_RS_DS_BS_VP(BloomPong, RS_Default, DS_Disabled, BS_Default, VS_MAIN, PS_MAIN_BLOOM_PONG)
+    PASS_RS_DS_BS_VP(Tonemap, RS_Default, DS_Disabled, BS_Default, VS_MAIN, PS_MAIN_TONEMAP)
 };

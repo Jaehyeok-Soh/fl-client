@@ -82,6 +82,7 @@ public:
 	CObjectPool* Get_OwnerPool() { return m_pOwnerPool; }
 	void Set_OwnerPool(CObjectPool* pOwnerPool) { m_pOwnerPool = pOwnerPool; }
 	virtual _bool Export_Data(DTO::ECategory eCategory, CDataDocumentBase* pDocument) { return false; }
+	void Set_Flag(_uint iFlag, _bool bActive);
 public:
 	void Set_Name(const string& strName);
 	void Set_Name(const wstring& wstrName);
@@ -103,8 +104,9 @@ protected:
 	ID3D11Device* m_pDevice = { nullptr };
 	ID3D11DeviceContext* m_pDeviceContext = { nullptr };
 	class CGameInstance *m_pGameInstance = { nullptr };
-	uint64 m_iObjectID = { 0 };
+	_uint m_iObjectID = { 0 };
 	string m_strName = { "" };
+	SHADER_OBJECTINFO_DESC m_tObjectInfoDesc{};
 private:
 	_bool m_bClone = { false };
 	array<CComponent*, g_ComponentTypeCount> m_Components;

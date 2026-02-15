@@ -280,7 +280,7 @@ float4 TrailTextureSample(float2 UV)
 
 float4 SceneTextureSample(float2 UV)
 {
-    return g_RenderTargetSceneTexture.Sample(LinearSampler, UV);
+    return g_RenderTargetSceneHDRCopyTexture.Sample(LinearSampler, UV);
 }
 
 // =========== VS In  ==============
