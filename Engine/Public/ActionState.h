@@ -59,6 +59,7 @@ public:
 
 	void			Set_Navigation(CNavigation* pNavigation);
 	void			Set_ApplyGravity(_bool bApply) { m_bApplyGravity = bApply; }
+	void			Set_ApplyYLerp(_bool bApply) { m_bApplyYLerp = bApply; }
 
 	/* animation funcs*/
 protected:
@@ -129,6 +130,7 @@ protected:
 	_float				m_fVerticalSpeed		= { 0.f };
 
 	_bool				m_bApplyGravity			= { true };
+	_bool				m_bApplyYLerp			= { false };
 
 	vector<CStateBase*> m_vecStates;
 

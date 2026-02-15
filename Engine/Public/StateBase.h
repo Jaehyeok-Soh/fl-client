@@ -170,6 +170,7 @@ protected:
 protected:
 	_bool			IsOn_CCTFlag(PxControllerCollisionFlag::Enum eFlag);
 	void			Set_ApplyGravity(_bool bApply);
+	void			Set_ApplyYLerp(_bool bApply);
 
 private:
 	_bool IsBlend() { return m_bBlend; }

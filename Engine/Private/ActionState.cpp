@@ -15,6 +15,7 @@ CActionState::CActionState()
 
 CActionState::CActionState(const CActionState& rhs)
 	:m_bApplyGravity(rhs.m_bApplyGravity)
+	, m_bApplyYLerp(rhs.m_bApplyYLerp)
 {
 }
 
@@ -268,9 +269,9 @@ _bool CActionState::Align_Movement(const _float fTimeDelta)
 		Vec3 finalPos = cct->GetFootPosition();
 		Vec3 currentPos = m_pOwnerTransform->Get_Info(TRANSFORM_INFO_STATE::POS);
 
-		_float yLerp = std::lerp(currentPos.y, finalPos.y, fTimeDelta * 15.f);
-		finalPos.y = yLerp;
-		Vec3 lerpPos = Vec3::Lerp(currentPos, finalPos, fTimeDelta * 0.001f);
+		_float yLerp	= std::lerp(currentPos.y, finalPos.y, fTimeDelta * 15.f);
+		finalPos.y		= yLerp;
+		//Vec3 lerpPos = Vec3::Lerp(currentPos, finalPos, fTimeDelta * 0.001f);
 
 		m_pOwnerTransform->Set_Info(TRANSFORM_INFO_STATE::POS, finalPos);
 	}
@@ -295,22 +296,22 @@ void CActionState::Follow_CameraLook(const _float fTimeDelta)
 
 void CActionState::Apply_Gravity(const _float fTimeDelta)
 {
-	if (Is_ApplyGravity() == false)
-		return;
+	//if (Is_ApplyGravity() == false)
+	//	return;
 
-	m_fVerticalSpeed += m_fGravity * fTimeDelta;
-	if (m_fVerticalSpeed < m_fMaxFallSpeed)
-		m_fVerticalSpeed = m_fMaxFallSpeed;
+	//m_fVerticalSpeed += m_fGravity * fTimeDelta;
+	//if (m_fVerticalSpeed < m_fMaxFallSpeed)
+	//	m_fVerticalSpeed = m_fMaxFallSpeed;
 
-	_float fDelta = m_fVerticalSpeed * fTimeDelta;
+	//_float fDelta = m_fVerticalSpeed * fTimeDelta;
 
-	Vec3 vPos = m_pOwnerTransform->Get_Info(TRANSFORM_INFO_STATE::POS);
-	Vec3 vUp = m_pOwnerTransform->Get_Info(TRANSFORM_INFO_STATE::UP);
-	vUp.Normalize();
-	vPos += vUp * fDelta;
-	/*_float fCurrentY = ::XMVectorGetY(vPos);
-	vPos = ::XMVectorSetY(vPos, fCurrentY + fDelta);*/
-	m_pOwnerTransform->Set_Info(TRANSFORM_INFO_STATE::POS, vPos);
+	//Vec3 vPos = m_pOwnerTransform->Get_Info(TRANSFORM_INFO_STATE::POS);
+	//Vec3 vUp = m_pOwnerTransform->Get_Info(TRANSFORM_INFO_STATE::UP);
+	//vUp.Normalize();
+	//vPos += vUp * fDelta;
+	///*_float fCurrentY = ::XMVectorGetY(vPos);
+	//vPos = ::XMVectorSetY(vPos, fCurrentY + fDelta);*/
+	//m_pOwnerTransform->Set_Info(TRANSFORM_INFO_STATE::POS, vPos);
 }
 
 void CActionState::Apply_Gravity_CCT(const _float fTimeDelta)
@@ -335,10 +336,14 @@ void CActionState::Apply_Gravity_CCT(const _float fTimeDelta)
 		CCTFlags = cct->Move(vUp, 0.01f, fTimeDelta);
 
 		Vec3 finalPos = cct->GetFootPosition();
-		Vec3 currentPos = m_pOwnerTransform->Get_Info(TRANSFORM_INFO_STATE::POS);
 
-		//_float yLerp = std::lerp(currentPos.y, finalPos.y, fTimeDelta);
-		//finalPos.y = yLerp;
+		if (m_bApplyYLerp)
+		{
+			Vec3 currentPos = m_pOwnerTransform->Get_Info(TRANSFORM_INFO_STATE::POS);
+
+			_float yLerp = std::lerp(currentPos.y, finalPos.y, fTimeDelta);
+			finalPos.y = yLerp;
+		}
 
 		m_pOwnerTransform->Set_Info(TRANSFORM_INFO_STATE::POS, finalPos);
 
