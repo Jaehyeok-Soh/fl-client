@@ -1029,6 +1029,7 @@ void CModel::Lerp_Animation(CComputeShader* pAnimBlendCS, _float fRatio)
 
 void CModel::Get_BoneMatrix(CComputeShader* pGetBoneCS)
 {
+
 	// 2. Gpu -> Cpu
 	{
 		uint32_t writeIndex = m_iFrameIndex % 2;
@@ -1036,6 +1037,12 @@ void CModel::Get_BoneMatrix(CComputeShader* pGetBoneCS)
 
 		// copy data
 		m_pDeviceContext->CopyResource(m_pBoneOuputStagingBuffer[writeIndex], pGetBoneCS->Get_Output_Buffer()->Get_Buffer());
+
+		if (m_iFrameIndex == 0)
+		{
+			m_iFrameIndex++;
+			return;
+		}
 
 		vector<Matrix> vecBones;
 		vecBones.resize(m_iStageBoneCounts);
@@ -1056,9 +1063,9 @@ void CModel::Get_BoneMatrix(CComputeShader* pGetBoneCS)
 
 			m_pDeviceContext->Unmap(m_pBoneOuputStagingBuffer[readIndex], 0);
 		}
-	}
 
-	m_iFrameIndex++;
+		m_iFrameIndex++;
+	}
 }
 
 void CModel::DisPatch_BondMatrix(CComputeShader* pBoneComBineCS, CComputeShader* pGetBoneCS)
