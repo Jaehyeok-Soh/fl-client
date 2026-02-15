@@ -284,6 +284,20 @@ public:
 #ifdef _DEBUG
 	HRESULT Ready_RT_Debug(ERenderTarget eTarget, _float fX, _float fY, _float fSizeX, _float fSizeY);
 	HRESULT Debug_RT_Render(EMRTLayer eMRTLayer, class CShader* pShader, class CVIBuffer_Rect_Tex* pVIBuffer);
+	
+	SHADER_SSAOPARAM_DESC& Get_SSAOParamDesc();
+	const SHADER_SSAOPARAM_DESC& Get_SSAOParamDesc() const;
+	HRESULT Commit_SSAOParam();
+	SHADER_HDRPARAM_DESC& Get_HDRParamDesc();
+	const SHADER_HDRPARAM_DESC& Get_HDRParamDesc() const;
+	HRESULT Commit_HDRParam();
+	SHADER_BLOOMPARAM_DESC& Get_BloomParamDesc();
+	const SHADER_BLOOMPARAM_DESC& Get_BloomParamDesc() const;
+	HRESULT Commit_BloomParam();
+	SHADER_OUTLINE_DESC& Get_OutlineParamDesc();
+	const SHADER_OUTLINE_DESC& Get_OutlineParamDesc() const;
+	HRESULT Commit_OutlineParam();
+	HRESULT Commit_AllPostParams();
 #endif
 #pragma endregion
 

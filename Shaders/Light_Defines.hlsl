@@ -205,6 +205,10 @@ uint UnpackFlags8(uint iPacked)
 {
     return (iPacked >> 24) & 0xFF;
 }
+uint UnpackID24(uint iPacked)
+{
+    return iPacked & 0x00FFFFFF;
+}
 
 bool HasOutline(uint iFlags8)
 {

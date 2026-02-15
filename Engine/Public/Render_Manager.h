@@ -84,6 +84,28 @@ public:
 #ifdef  _DEBUG
 public:
 	HRESULT Push_DebugComponent(class CComponent* pComponent);
+	
+	// SSAO
+	SHADER_SSAOPARAM_DESC& Get_SSAOParamDesc() { return m_tSSAOparamDesc; }
+	const SHADER_SSAOPARAM_DESC& Get_SSAOParamDesc() const { return m_tSSAOparamDesc; }
+	HRESULT Commit_SSAOParam();
+
+	// HDR
+	SHADER_HDRPARAM_DESC& Get_HDRParamDesc() { return m_tHDRparamDesc; }
+	const SHADER_HDRPARAM_DESC& Get_HDRParamDesc() const { return m_tHDRparamDesc; }
+	HRESULT Commit_HDRParam();
+
+	// Bloom
+	SHADER_BLOOMPARAM_DESC& Get_BloomParamDesc() { return m_tBloomparamDesc; }
+	const SHADER_BLOOMPARAM_DESC& Get_BloomParamDesc() const { return m_tBloomparamDesc; }
+	HRESULT Commit_BloomParam();
+	
+	// Outline
+	SHADER_OUTLINE_DESC& Get_OutlineParamDesc() { return m_tOutlineparamDesc; }
+	const SHADER_OUTLINE_DESC& Get_OutlineParamDesc() const { return m_tOutlineparamDesc; }
+	HRESULT Commit_OutlineParam();
+
+	HRESULT Commit_AllPostParams();
 private:
 	_bool							m_bDebug = { false };
 	list<class CComponent*>			m_debugComponents;

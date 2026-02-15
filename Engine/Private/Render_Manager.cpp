@@ -1233,6 +1233,38 @@ HRESULT CRender_Manager::Push_DebugComponent(CComponent* pComponent)
 	return S_OK;
 }
 
+HRESULT CRender_Manager::Commit_SSAOParam()
+{
+	m_tSSAOparamDesc.vInvSize = { 1.f / m_halfViewport.Width, 1.f / m_halfViewport.Height };
+	return m_pCB_SSAOparam ? m_pCB_SSAOparam->Copy_Data(m_tSSAOparamDesc) : E_FAIL;
+}
+
+HRESULT CRender_Manager::Commit_HDRParam()
+{
+	return m_pCB_HDRparam ? m_pCB_HDRparam->Copy_Data(m_tHDRparamDesc) : E_FAIL;
+}
+
+HRESULT CRender_Manager::Commit_BloomParam()
+{
+	m_tBloomparamDesc.vInvSize = { 1.f / m_halfViewport.Width, 1.f / m_halfViewport.Height };
+	return m_pCB_Bloomparam ? m_pCB_Bloomparam->Copy_Data(m_tBloomparamDesc) : E_FAIL;
+}
+
+HRESULT CRender_Manager::Commit_OutlineParam()
+{
+	m_tOutlineparamDesc.vInvSize = { 1.f / m_defaultViewport.Width, 1.f / m_defaultViewport.Height };
+	return m_pCB_Outlineparam ? m_pCB_Outlineparam->Copy_Data(m_tOutlineparamDesc) : E_FAIL;
+}
+
+HRESULT CRender_Manager::Commit_AllPostParams()
+{
+	if (FAILED(Commit_SSAOParam()))    return E_FAIL;
+	if (FAILED(Commit_HDRParam()))     return E_FAIL;
+	if (FAILED(Commit_BloomParam()))   return E_FAIL;
+	if (FAILED(Commit_OutlineParam())) return E_FAIL;
+	return S_OK;
+}
+
 HRESULT CRender_Manager::Ready_Debug()
 {
 	if (FAILED(m_pGameInstance->Ready_RT_Debug(ERenderTarget::Diffuse, 150.f, 150.f, 300.f, 300.f)))

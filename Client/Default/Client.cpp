@@ -64,7 +64,7 @@ int APIENTRY wWinMain(_In_ HINSTANCE hInstance,
     CTimer* pTimer_60 = pGameInstance->Find_Timer(L"Timer_60");
     CTimer* pTimer_Default = pGameInstance->Find_Timer(L"Timer_Default");
 
-
+    pTimer_Default->Set_MaxTimeDelta(10.f);
     _float fTimeAcc = { 0.0f };
     g_bStart = true;
     while (msg.message != WM_QUIT)

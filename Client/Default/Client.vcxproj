@@ -188,6 +188,7 @@
     <ClInclude Include="..\Public\imgui_internal.h" />
     <ClInclude Include="..\public\ImGui_Layout.h" />
     <ClInclude Include="..\public\ImGui_PlayerInspector.h" />
+    <ClInclude Include="..\public\ImGui_ShaderLayout.h" />
     <ClInclude Include="..\public\ImGui_StateLayout.h" />
     <ClInclude Include="..\Public\imgui_stdlib.h" />
     <ClInclude Include="..\public\ImGui_TransformLayout.h" />
@@ -297,6 +298,7 @@
     <ClCompile Include="..\private\ImGui_Inspector.cpp" />
     <ClCompile Include="..\private\ImGui_Layout.cpp" />
     <ClCompile Include="..\private\ImGui_PlayerInspector.cpp" />
+    <ClCompile Include="..\private\ImGui_ShaderLayout.cpp" />
     <ClCompile Include="..\private\ImGui_StateLayout.cpp" />
     <ClCompile Include="..\Private\imgui_stdlib.cpp">
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">NotUsing</PrecompiledHeader>

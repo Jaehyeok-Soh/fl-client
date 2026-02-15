@@ -96,15 +96,27 @@ float SilhouetteEdge(float2 vUV)
     if (HasOutline(iFlags8) == false)
         return 0.0f;
 
+    uint iID_Center = UnpackID24(iPacked);
+    
     int iStep = max(1, (int) round(OutlineParam.fThicknessPx));
     float2 vO = vInvSize * iStep;
 
-    uint lf = UnpackFlags8(LoadObjectInfo(vUV + float2(-vO.x, 0), vInvSize));
-    uint rf = UnpackFlags8(LoadObjectInfo(vUV + float2(vO.x, 0), vInvSize));
-    uint uf = UnpackFlags8(LoadObjectInfo(vUV + float2(0, -vO.y), vInvSize));
-    uint df = UnpackFlags8(LoadObjectInfo(vUV + float2(0, vO.y), vInvSize));
+    uint pL = LoadObjectInfo(vUV + float2(-vO.x, 0), vInvSize);
+    uint pR = LoadObjectInfo(vUV + float2(vO.x, 0), vInvSize);
+    uint pU = LoadObjectInfo(vUV + float2(0, -vO.y), vInvSize);
+    uint pD = LoadObjectInfo(vUV + float2(0, vO.y), vInvSize);
+    
+    uint fL = UnpackFlags8(pL); uint idL = UnpackID24(pL);
+    uint fR = UnpackFlags8(pR); uint idR = UnpackID24(pR);
+    uint fU = UnpackFlags8(pU); uint idU = UnpackID24(pU);
+    uint fD = UnpackFlags8(pD); uint idD = UnpackID24(pD);
 
-    bool bSil = (HasOutline(lf) == false || HasOutline(rf) == false || HasOutline(uf) == false || HasOutline(df) == false);
+    bool bEdgeL = ((HasOutline(fL) == false) || (HasOutline(fL) && (idL != iID_Center)));
+    bool bEdgeR = ((HasOutline(fR) == false) || (HasOutline(fR) && (idR != iID_Center)));
+    bool bEdgeU = ((HasOutline(fU) == false) || (HasOutline(fU) && (idU != iID_Center)));
+    bool bEdgeD = ((HasOutline(fD) == false) || (HasOutline(fD) && (idD != iID_Center)));
+    
+    bool bSil = (bEdgeL || bEdgeR || bEdgeU || bEdgeD);
     return bSil ? 1.0f : 0.0f;
 }
 

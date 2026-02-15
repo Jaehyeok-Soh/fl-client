@@ -701,6 +701,58 @@ inline void CGameInstance::Push_DebugComponent(CComponent* pComp)
 {
 	m_pRender_Manager->Push_DebugComponent(pComp);
 }
+SHADER_SSAOPARAM_DESC& CGameInstance::Get_SSAOParamDesc()
+{
+	return m_pRender_Manager->Get_SSAOParamDesc();
+}
+const SHADER_SSAOPARAM_DESC& CGameInstance::Get_SSAOParamDesc() const
+{
+	return m_pRender_Manager->Get_SSAOParamDesc();
+}
+HRESULT CGameInstance::Commit_SSAOParam()
+{
+	return m_pRender_Manager->Commit_SSAOParam();
+}
+SHADER_HDRPARAM_DESC& CGameInstance::Get_HDRParamDesc()
+{
+	return m_pRender_Manager->Get_HDRParamDesc();
+}
+const SHADER_HDRPARAM_DESC& CGameInstance::Get_HDRParamDesc() const
+{
+	return m_pRender_Manager->Get_HDRParamDesc();
+}
+HRESULT CGameInstance::Commit_HDRParam()
+{
+	return m_pRender_Manager->Commit_HDRParam();
+}
+SHADER_BLOOMPARAM_DESC& CGameInstance::Get_BloomParamDesc()
+{
+	return m_pRender_Manager->Get_BloomParamDesc();
+}
+const SHADER_BLOOMPARAM_DESC& CGameInstance::Get_BloomParamDesc() const
+{
+	return m_pRender_Manager->Get_BloomParamDesc();
+}
+HRESULT CGameInstance::Commit_BloomParam()
+{
+	return m_pRender_Manager->Commit_BloomParam();
+}
+SHADER_OUTLINE_DESC& CGameInstance::Get_OutlineParamDesc()
+{
+	return m_pRender_Manager->Get_OutlineParamDesc();
+}
+const SHADER_OUTLINE_DESC& CGameInstance::Get_OutlineParamDesc() const
+{
+	return m_pRender_Manager->Get_OutlineParamDesc();
+}
+HRESULT CGameInstance::Commit_OutlineParam()
+{
+	return m_pRender_Manager->Commit_OutlineParam();
+}
+HRESULT CGameInstance::Commit_AllPostParams()
+{
+	return m_pRender_Manager->Commit_AllPostParams();
+}
 #endif
 #pragma endregion
 
