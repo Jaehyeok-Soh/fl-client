@@ -177,10 +177,12 @@ public:
 
 	DTO::EUIClassType Get_UIClassType() const { return m_eClassType; }
 	DTO::EUISubClassType Get_UISubClassType() const { return m_eSubClassType; }
+	DTO::EUITextSubClassType Get_UITextSubClassType() const { return m_eTextSubClassType; }
 	DTO::EUIDImageSubClassType Get_UIDImageSubClassType()const { return m_eDImageSubClassType; }
 	DTO::EUITriggerSubClassType Get_UITriggerSubClassType()const { return m_eTriggerSubClass; }
 	void Set_UIClassType(DTO::EUIClassType eType) { m_eClassType = eType; }
 	void Set_UISubClassType(DTO::EUISubClassType eType) { m_eSubClassType = eType; }
+	void Set_UITextSubClassType(DTO::EUITextSubClassType eType) { m_eTextSubClassType = eType; }
 	void Set_UIDImageSubClassType(DTO::EUIDImageSubClassType eType) { m_eDImageSubClassType = eType; }
 	void Set_UITriggerSubClassType(DTO::EUITriggerSubClassType eType) { m_eTriggerSubClass = eType; }
 
@@ -215,12 +217,13 @@ protected:
 	int32_t m_iFlip						= { ENUM_TO_UINT(EUIFlip::NONE) };
 
 	// Client Bind Values Text Data
-	DTO::TUI_TextData m_tUITextData		= {};
-	std::wstring m_wstrText_TextData	= {};
-	Vec4 m_vFontColor_TextData			= {};
-	_float m_fScale_TextData			= {};
-	_string m_strFontName_TextData		= {"SemiBold"};
-	_float m_fRotate_TextData			= {};
+	DTO::TUI_TextData m_tUITextData					= {};
+	std::wstring m_wstrText_TextData				= {};
+	DTO::EUITextSubClassType m_eTextSubClassType	= {};
+	Vec4 m_vFontColor_TextData						= {};
+	_float m_fScale_TextData						= {};
+	_string m_strFontName_TextData					= {"SemiBold"};
+	_float m_fRotate_TextData						= {};
 
 	// Client Bind Values Trigger Data
 	DTO::TUI_TriggerData m_tUITriggerData = {};

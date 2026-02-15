@@ -242,8 +242,10 @@
     <ClInclude Include="..\Public\UIJust_Image.h" />
     <ClInclude Include="..\Public\UIMenu_Exit_Trigger.h" />
     <ClInclude Include="..\Public\UIMenu_Image.h" />
+    <ClInclude Include="..\Public\UIMenu_Text.h" />
     <ClInclude Include="..\Public\UIMenu_Trigger.h" />
     <ClInclude Include="..\Public\UIMini_Map.h" />
+    <ClInclude Include="..\Public\UIPlayerStat_Text.h" />
     <ClInclude Include="..\Public\UIProgress_Bar.h" />
     <ClInclude Include="..\Public\UISkill_BG.h" />
     <ClInclude Include="..\Public\UIText.h" />
@@ -361,8 +363,10 @@
     <ClCompile Include="..\Private\UIJust_Image.cpp" />
     <ClCompile Include="..\Private\UIMenu_Exit_Trigger.cpp" />
     <ClCompile Include="..\Private\UIMenu_Image.cpp" />
+    <ClCompile Include="..\Private\UIMenu_Text.cpp" />
     <ClCompile Include="..\Private\UIMenu_Trigger.cpp" />
     <ClCompile Include="..\Private\UIMini_Map.cpp" />
+    <ClCompile Include="..\Private\UIPlayerStat_Text.cpp" />
     <ClCompile Include="..\Private\UIProgress_Bar.cpp" />
     <ClCompile Include="..\Private\UISkill_BG.cpp" />
     <ClCompile Include="..\Private\UIText.cpp" />

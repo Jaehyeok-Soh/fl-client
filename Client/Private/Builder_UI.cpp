@@ -4,15 +4,22 @@
 #include "GenericUI.h"
 #include "UIProgress_Bar.h"
 #include "UIJust_Image.h"
-#include "UIText.h"
+
+
+// 텍스트 클래스
+#include "UIMenu_Text.h"
+#include "UIPlayerStat_Text.h"
+
+// 다이나믹 이미지 클래스
+#include "UIMenu_Image.h"
+#include "UIHover_Image.h"
+#include "UIMini_Map.h"
+#include "UISkill_BG.h"
+
+// 트리거 클래스
+#include "UICommon_Trigger.h"
 #include "UIMenu_Trigger.h"
 #include "UIMenu_Exit_Trigger.h"
-#include "UICommon_Trigger.h"
-
-#include "UISkill_BG.h"
-#include "UIMini_Map.h"
-#include "UIHover_Image.h"
-#include "UIMenu_Image.h"
 
 #include"UI_Manager.h"
 #include "GameInstance.h"
@@ -207,18 +214,39 @@ HRESULT CBuilder_UI::Register_Class(DTO::EUIClassType eClassType, const DTO::TUI
 	else if (eClassType == DTO::EUIClassType::UI_TEXT)
 	{
 		CUIText::UI_TEXT_DESC TextDesc = {};
-		static_cast<CGenericUI::GENERIC_UI_DESC&>(TextDesc) = DefaultDesc;
-		TextDesc.eOwner = data.eSubClassType;
 		auto iter = m_MapTextDataCache.find(data.strTag);
 		if (iter == m_MapTextDataCache.end())
 			return E_FAIL;
-		TextDesc.wstrFontTag = Engine_Utils::ToWString(iter->second.strFontTag);
-		TextDesc.wstrText = Engine_Utils::ToWString( iter->second.strText);
-		TextDesc.vFontColor = iter->second.vFontColor;
-		TextDesc.fRotate = iter->second.fRotate;
-		TextDesc.fScale = iter->second.fScale * m_vAspect.x;
 
-		pResult = m_pGameInstance->Add_GameObject(m_iLevelID, wstrProtoTag, m_iLevelID, wstrLayerTag, &TextDesc);
+		const auto Type				= iter->second.eTextSubClassType;
+		const _bool isPlayerStat	= (Type >= DTO::EUITextSubClassType::PLAYER_STAT_TEXT_BEGIN && Type <= DTO::EUITextSubClassType::PLAYER_STAT_TEXT_END);
+		const _bool isMenu			= (Type >= DTO::EUITextSubClassType::MENU_TEXT_BEGIN && Type <= DTO::EUITextSubClassType::MENU_TEXT_END);
+
+		static_cast<CGenericUI::GENERIC_UI_DESC&>(TextDesc) = DefaultDesc;
+		TextDesc.eTextSubClass	= Type;
+		TextDesc.wstrFontTag	= Engine_Utils::ToWString(iter->second.strFontTag);
+		TextDesc.wstrText		= Engine_Utils::ToWString(iter->second.strText);
+		TextDesc.vFontColor		= iter->second.vFontColor;
+		TextDesc.fRotate		= iter->second.fRotate;
+		TextDesc.fScale			= iter->second.fScale * m_vAspect.x;
+
+		if (isPlayerStat)
+		{
+			CUIPlayerStat_Text::PLAYER_STAT_DESC PlayerStatTextDesc= {};
+			static_cast<CUIText::UI_TEXT_DESC&>(PlayerStatTextDesc) = TextDesc;
+			pResult = m_pGameInstance->Add_GameObject(m_iLevelID, L"Prototype_UI_PlayerStatText", m_iLevelID, wstrLayerTag, &PlayerStatTextDesc);
+		}
+		else if (isMenu)
+		{
+			CUIMenu_Text::MENU_TEXT_DESC MenuTextDesc = {};
+			static_cast<CUIText::UI_TEXT_DESC&>(MenuTextDesc) = TextDesc;
+			pResult = m_pGameInstance->Add_GameObject(m_iLevelID, L"Prototype_UI_MenuText", m_iLevelID, wstrLayerTag, &MenuTextDesc);
+		}
+		else
+		{
+			data.strTag;
+			int a = 0;
+		}
 	}
 	else if (eClassType == DTO::EUIClassType::JUST_IMAGE)
 	{

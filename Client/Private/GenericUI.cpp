@@ -70,6 +70,8 @@ HRESULT CGenericUI::Initialize(void* pArg)
 		if (FAILED(Get_Component<CTexture>()->Add_DefaultTexture(m_wstrAlphaMaskTextureTag, ALPHA_MASK)))
 			return E_FAIL;
 	}
+	m_vMoveOffsetBase = m_vMoveOffset;
+
 	return S_OK;
 }
 
@@ -204,6 +206,75 @@ HRESULT CGenericUI::Bind_ShaderResources()
 		return E_FAIL;
 	
 	return S_OK;
+}
+
+void CGenericUI::Ready_Lerp_Movement(const Vec2& vStartOffset, const Vec2& vTargetOffset, const _float fDuration, const _float fEaseValue, const _float fDelay)
+{
+	m_fTimeAcc		= 0.f;
+	m_fDelayTimeAcc = 0.f;
+	m_vStartOffset	= vStartOffset;
+	m_vTargetOffset	= vTargetOffset;
+	m_fDuration		= fDuration;
+	m_fEaseValue	= fEaseValue;
+	m_fLerpDelay	= fDelay;
+}
+
+_bool CGenericUI::Tick_Lerp_Movement(const _float fTimeDelta)
+{
+	m_fDelayTimeAcc += fTimeDelta;
+	if (m_fDelayTimeAcc < m_fLerpDelay)
+		return false;
+
+	m_fTimeAcc += fTimeDelta;
+
+	_float t = m_fTimeAcc / m_fDuration;
+	if (t >= 1.f)
+	{
+		m_vMoveOffset = m_vMoveOffsetBase + m_vTargetOffset;
+		return true;
+	}
+
+	_float eased = t;
+	if (m_fEaseValue > 0.f)
+		eased = powf(t, m_fEaseValue);
+
+	m_vMoveOffset = m_vMoveOffsetBase + (m_vStartOffset + (m_vTargetOffset - m_vStartOffset) * eased);
+	return false;
+}
+
+void CGenericUI::Ready_Fade(const _float fDuration, const _float fStartAlpha, const _float fTargetAlpha, const _float fDelay)
+{
+	m_fAlpha_Ratio = fStartAlpha;
+	m_fFadeTimeAcc		= 0.f;
+	m_fFadeDelayTimeAcc = 0.f;
+	m_fFadeDelay		= fDelay;
+	m_fFadeDuration		= fDuration;
+	m_fStartAlphaRatio	= fStartAlpha;
+	m_fTargetAlphaRatio = fTargetAlpha;
+}
+
+_bool CGenericUI::Tick_Fade(const _float fTimeDelta)
+{
+	m_fFadeDelayTimeAcc += fTimeDelta;
+	if (m_fFadeDelayTimeAcc < m_fFadeDelay)
+		return false;
+
+	m_fFadeTimeAcc += fTimeDelta;
+
+	_float t = m_fFadeTimeAcc / m_fFadeDuration;
+	if (t >= 1.f)
+	{
+		m_fAlpha_Ratio = m_fTargetAlphaRatio;
+		return true;
+	}
+
+	_float eased = t;
+	if (m_fEaseValue > 0.f)
+		eased = powf(t, m_fEaseValue);
+
+	_float f = m_fStartAlphaRatio + (m_fTargetAlphaRatio - m_fStartAlphaRatio) * t;
+	m_fAlpha_Ratio = f;
+	return false;
 }
 
 void CGenericUI::Free()

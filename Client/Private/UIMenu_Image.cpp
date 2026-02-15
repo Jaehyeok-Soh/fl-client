@@ -173,10 +173,10 @@ void CUIMenu_Image::Initialize_Visible_Event()
 	case DTO::EUIDImageSubClassType::MENU_ICON:
 	case DTO::EUIDImageSubClassType::MENU_ICON_BG:
 	{
-		m_vOriginPos = Vec2{ m_vRenderPos.x-5.f, m_vRenderPos.y };
-		m_vTargetPos = Vec2{ m_vRenderPos.x, m_vRenderPos.y};
-		m_fTimeAcc = 0.f;
-		m_fAlpha_Ratio = 0.f;
+		const _float fDuration = 1.f;
+
+		Ready_Fade(fDuration, 0.f, 1.f, m_fDelay);
+		Ready_Lerp_Movement(Vec2{ -5.f, 0.f }, Vec2{ 0.f, 0.f }, fDuration, 1.0f, m_fDelay);
 	}
 		break;
 	case DTO::EUIDImageSubClassType::END:
@@ -199,11 +199,9 @@ void CUIMenu_Image::Initialize_InVisible_Event()
 	case DTO::EUIDImageSubClassType::MENU_ICON:
 	case DTO::EUIDImageSubClassType::MENU_ICON_BG:
 	{
-		m_vTargetPos = Vec2{ m_vRenderPos.x, m_vRenderPos.y };
-		m_vOriginPos = Vec2{ m_vRenderPos.x - 5.f, m_vRenderPos.y };
-		m_fTimeAcc = 0.f;
-		m_fAlpha_Ratio = 1.f;
-		m_fDelayTimeAcc = 0.f;
+		const _float fDuration = 0.5f;
+		Ready_Fade(fDuration, 1.f, 0.f, 0.f);
+		Ready_Lerp_Movement(Vec2{ 0.f, 0.f }, Vec2{ -5.f, 0.f }, fDuration, 1.0f, 0.f);
 	}
 	break;
 
@@ -218,7 +216,7 @@ _bool CUIMenu_Image::Tick_Visible_Event(const _float fTimeDelta)
 	if (m_eDImageSubClass == DTO::EUIDImageSubClassType::MENU_BG)
 	{
 		m_fTimeAcc += fTimeDelta;
-		_float t = m_fTimeAcc / 0.5f;
+		_float t = m_fTimeAcc / 1.f;
 
 		if (t >= 1.f)
 		{
@@ -229,35 +227,21 @@ _bool CUIMenu_Image::Tick_Visible_Event(const _float fTimeDelta)
 	}
 	else
 	{
-		m_fDelayTimeAcc += fTimeDelta;
-		if (m_fDelayTimeAcc < m_fDelay)
-			return false;
+		_bool isFade = Tick_Fade(fTimeDelta);
+		_bool isMove = Tick_Lerp_Movement(fTimeDelta);
 
-		m_fTimeAcc += fTimeDelta;
-		_float t = m_fTimeAcc / 0.5f;
-
-		if (t >= 1.f)
-		{
-			m_fAlpha_Ratio = 1.f;
-			m_fProgress_Ratio = 1.f;
-			m_fX = m_vTargetPos.x;
-			m_fY = m_vTargetPos.y;
+		if (isFade && isMove)
 			return true;
-		}
-		m_fAlpha_Ratio = t;
-		const Vec2 vPos = m_vOriginPos + (m_vTargetPos - m_vOriginPos) * t;
-		Move_Position(vPos.x, vPos.y, m_fZ);
 	}
 	return false;
 }
 
 _bool CUIMenu_Image::Tick_InVisible_Event(const _float fTimeDelta)
 {
-	m_fTimeAcc += fTimeDelta;
-	_float t = m_fTimeAcc / 0.5f;
-
 	if (m_eDImageSubClass == DTO::EUIDImageSubClassType::MENU_BG)
 	{
+		m_fTimeAcc += fTimeDelta;
+		_float t = m_fTimeAcc / 1.f;
 		if (t >= 1.f)
 		{
 			m_fProgress_Ratio = 1.f;
@@ -267,17 +251,11 @@ _bool CUIMenu_Image::Tick_InVisible_Event(const _float fTimeDelta)
 	}
 	else
 	{
-		if (t >= 1.f)
-		{
-			m_fAlpha_Ratio = 0.f;
-			m_fProgress_Ratio = 1.f;
-			m_fX = m_vOriginPos.x;
-			m_fY = m_vOriginPos.y;
+		_bool isFade = Tick_Fade(fTimeDelta);
+		_bool isMove = Tick_Lerp_Movement(fTimeDelta);
+
+		if (isFade && isMove)
 			return true;
-		}
-		m_fAlpha_Ratio = 1.f - t;
-		const Vec2 vPos = m_vTargetPos + (m_vOriginPos - m_vTargetPos) * t;
-		Move_Position(vPos.x, vPos.y, m_fZ);
 	}
 	return false;
 }

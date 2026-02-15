@@ -57,15 +57,24 @@
 #include "Canvas.h"
 #include "GenericUI.h"
 #include "UIProgress_Bar.h"
-#include "UIText.h"
+
+// 텍스트 
+#include "UIMenu_Text.h"
+#include "UIPlayerStat_Text.h"
+
+// 그냥 이미지
 #include "UIJust_Image.h"
-#include "UIMenu_Trigger.h"
-#include "UICommon_Trigger.h"
-#include "UIMenu_Exit_Trigger.h"
+
+// 다이나믹 이미지 
 #include "UISkill_BG.h"
 #include "UIMini_Map.h"
 #include "UIHover_Image.h"
 #include "UIMenu_Image.h"
+
+// 트리거 
+#include "UIMenu_Trigger.h"
+#include "UICommon_Trigger.h"
+#include "UIMenu_Exit_Trigger.h"
 
 //=================
 // Resource
@@ -338,7 +347,8 @@ HRESULT CLoader::Loading_For_Logo()
 #pragma region UI
 	ADD_PROTOTYPE(ELevelType::LOGO, L"Prototype_UI_Canvas",			CCanvas::Create(m_pDevice, m_pDeviceContext));
 	ADD_PROTOTYPE(ELevelType::LOGO, L"Prototype_UI_PROGRESS_BAR",	CUIProgress_Bar::Create(m_pDevice, m_pDeviceContext));
-	ADD_PROTOTYPE(ELevelType::LOGO, L"Prototype_UI_UI_TEXT",		CUIText::Create(m_pDevice, m_pDeviceContext));
+	ADD_PROTOTYPE(ELevelType::LOGO, L"Prototype_UI_MenuText",		CUIMenu_Text::Create(m_pDevice, m_pDeviceContext));
+	ADD_PROTOTYPE(ELevelType::LOGO, L"Prototype_UI_PlayerStatText",	CUIPlayerStat_Text::Create(m_pDevice, m_pDeviceContext));
 	ADD_PROTOTYPE(ELevelType::LOGO, L"Prototype_UI_JUST_IMAGE",		CUIJust_Image::Create(m_pDevice, m_pDeviceContext));
 	ADD_PROTOTYPE(ELevelType::LOGO, L"Prototype_UI_UIMenuTrigger",	CUIMenu_Trigger::Create(m_pDevice, m_pDeviceContext));
 	ADD_PROTOTYPE(ELevelType::LOGO, L"Prototype_UI_UICommonTrigger",	CUICommon_Trigger::Create(m_pDevice, m_pDeviceContext));

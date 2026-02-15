@@ -292,9 +292,6 @@
     <Filter Include="03. GameObject\UIObjects\02.UI\Image\Dynamic Image\03.MenuImage">
       <UniqueIdentifier>{41ffc1c4-c6ab-4e1e-8a96-b2da6de22285}</UniqueIdentifier>
     </Filter>
-    <Filter Include="03. GameObject\UIObjects\02.UI\Text\NewFilter1">
-      <UniqueIdentifier>{ba675289-98b0-43ba-990d-7137e8849731}</UniqueIdentifier>
-    </Filter>
     <Filter Include="03. GameObject\UIObjects\02.UI\Trigger\00.Basic">
       <UniqueIdentifier>{ddd0e1e9-b54e-4f7e-b25d-40433ae876b3}</UniqueIdentifier>
     </Filter>
@@ -303,6 +300,15 @@
     </Filter>
     <Filter Include="03. GameObject\UIObjects\02.UI\Trigger\02.Menu Exit">
       <UniqueIdentifier>{63c9a3d7-bedc-44a7-89d4-febe6b9de520}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="03. GameObject\UIObjects\02.UI\Text\Menu Text">
+      <UniqueIdentifier>{c8f806c3-d027-4861-9696-bc78504a554a}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="03. GameObject\UIObjects\02.UI\Text\Stat Text">
+      <UniqueIdentifier>{ba675289-98b0-43ba-990d-7137e8849731}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="03. GameObject\UIObjects\02.UI\Text\Skill Text">
+      <UniqueIdentifier>{fbb77af6-fc93-4e19-8ee6-30df86ccaec9}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
@@ -585,6 +591,12 @@
     <ClInclude Include="..\Public\UIMenu_Exit_Trigger.h">
       <Filter>03. GameObject\UIObjects\02.UI\Trigger\02.Menu Exit</Filter>
     </ClInclude>
+    <ClInclude Include="..\Public\UIMenu_Text.h">
+      <Filter>03. GameObject\UIObjects\02.UI\Text\Menu Text</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\UIPlayerStat_Text.h">
+      <Filter>03. GameObject\UIObjects\02.UI\Text\Stat Text</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <Image Include="Client.ico">
@@ -857,6 +869,12 @@
     </ClCompile>
     <ClCompile Include="..\Private\UIDynamic_Image.cpp">
       <Filter>03. GameObject\UIObjects\02.UI\Image\Dynamic Image</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\UIMenu_Text.cpp">
+      <Filter>03. GameObject\UIObjects\02.UI\Text\Menu Text</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\UIPlayerStat_Text.cpp">
+      <Filter>03. GameObject\UIObjects\02.UI\Text\Stat Text</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

@@ -63,6 +63,12 @@ public:
 	void Set_TextureIndex(_uint index) { m_iTextureIndex = index; }
 	const _string& Get_Tag() { return m_strName; }
 
+	void Ready_Lerp_Movement(const Vec2& vStartOffset, const Vec2& vTargetOffset, const _float fDuration, const _float fEaseValue, const _float fDelay);
+	_bool Tick_Lerp_Movement(const _float fTimeDelta);
+	
+	void Ready_Fade(const _float fDuration, const _float fStartAlpha, const _float fTargetAlpha, const _float fDelay);
+	_bool Tick_Fade(const _float fTimeDelta);
+
 protected:
 	CUI_Manager* m_pUIManager = { nullptr };	
 	uint32_t m_iLevelID = {};
@@ -77,7 +83,7 @@ protected:
 	Vec3 m_vRenderPos					= {};
 	RECT m_tRenderRect					= {};
 	CCanvas* m_pParentCanvasCache		= { nullptr };
-	Vec3 m_vMoveOffset					= {};
+	Vec2 m_vMoveOffset					= {};
 	uint32_t m_iComponentFlag			= {};
 	uint32_t m_iOwnerType				= {};
 
@@ -90,6 +96,24 @@ protected:
 	int32_t m_iFillDir					= {};
 	_float m_fDelay						= {};
 	int32_t m_iFlip						= { ENUM_TO_UINT(EUIFlip::NONE) };
+
+	// Lerp Movement Valuse
+	Vec2 m_vMoveOffsetBase	= {};
+	Vec2 m_vStartOffset		= {};
+	Vec2 m_vTargetOffset	= {};
+	_float m_fDuration		= {};
+	_float m_fEaseValue		= {};
+	_float m_fTimeAcc		= {};
+	_float m_fDelayTimeAcc	= {};
+	_float m_fLerpDelay		= {};
+
+	// Fade 
+	_float m_fFadeDelay = {};
+	_float m_fFadeDelayTimeAcc = {};
+	_float m_fFadeDuration = {};
+	_float m_fFadeTimeAcc = {};
+	_float m_fStartAlphaRatio = {};
+	_float m_fTargetAlphaRatio = {};
 
 public:
 	virtual void Free()override;

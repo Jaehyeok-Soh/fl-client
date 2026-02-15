@@ -57,10 +57,11 @@ HRESULT CToolUI::Initialize(void* pArg)
 	{
 		m_tUITextData			= pDesc->tTextData;
 		m_wstrText_TextData		= Engine_Utils::ToWString(m_tUITextData.strText);
+		m_eTextSubClassType		= m_tUITextData.eTextSubClassType;
 		m_vFontColor_TextData	= m_tUITextData.vFontColor;
 		m_fScale_TextData		= m_tUITextData.fScale;
 		m_fRotate_TextData		= m_tUITextData.fRotate;
-		m_strFontName_TextData	= m_tUITextData.strFontTag;
+		m_strFontName_TextData = m_tUITextData.strFontTag;
 	}
 	if (m_eClassType == DTO::EUIClassType::TRIGGER)
 	{
@@ -379,6 +380,7 @@ void CToolUI::Sync_TextData()
 {
 	m_tUITextData.strTag		= m_strName + "_TextData";
 	m_tUITextData.strOwnerName	= m_strName;
+	m_tUITextData.eTextSubClassType = m_eTextSubClassType;
 	m_tUITextData.strText		= Engine_Utils::ToString(m_wstrText_TextData);
 	m_tUITextData.vFontColor	= m_vFontColor_TextData;
 	m_tUITextData.fRotate		= m_fRotate_TextData;

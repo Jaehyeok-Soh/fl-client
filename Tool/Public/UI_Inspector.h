@@ -66,6 +66,7 @@ private:
 	std::vector<_string> m_VecClassTag;
 	std::vector<_string> m_VecOwnerTag;
 	std::vector<_string> m_VecShaderPassTag;
+	std::vector<_string> m_VecTextSubClassTag;
 	std::vector<_string> m_VecDImageSubClassTag;
 	std::vector<_string> m_VecTriggerSubClassTag;
 

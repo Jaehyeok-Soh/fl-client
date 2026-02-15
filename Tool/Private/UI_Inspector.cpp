@@ -42,6 +42,10 @@ HRESULT CUI_Inspector::Initialize_Prototype()
 	for (uint32_t i = 0; i < ENUM_TO_UINT(EUIShaderPass::END); ++i)
 		m_VecShaderPassTag.push_back(UIShaderPassToString(static_cast<EUIShaderPass>(i)));
 
+	m_VecTextSubClassTag.reserve(ENUM_TO_UINT(DTO::EUITextSubClassType::END));
+	for (uint32_t i = 0; i < ENUM_TO_UINT(DTO::EUITextSubClassType::END); ++i)
+		m_VecTextSubClassTag.push_back(DTO::UITextSubClassTypeToString(static_cast<DTO::EUITextSubClassType>(i)));
+
 	m_VecDImageSubClassTag.reserve(ENUM_TO_UINT(DTO::EUIDImageSubClassType::END));
 	for (uint32_t i = 0; i < ENUM_TO_UINT(DTO::EUIDImageSubClassType::END); ++i)
 		m_VecDImageSubClassTag.push_back(DTO::UIDImageSubTypeToString(static_cast<DTO::EUIDImageSubClassType>(i)));
@@ -352,6 +356,29 @@ void CUI_Inspector::SetUp_TextData()
 {
 	if (Begin_Card("SetUp TextData", "Card_TextData", 250.f))
 	{
+		_int cur = static_cast<_int>(m_pSelectedUI->Get_UITextSubClassType());
+		cur = (cur < 0) ? 0 : (cur >= static_cast<_int>(m_VecTextSubClassTag.size()) ? static_cast<_int>(m_VecTextSubClassTag.size() - 1) : cur);
+		const _char* subClassPreview = m_VecTextSubClassTag.empty() ? "" : m_VecTextSubClassTag[cur].c_str();
+		_bool changed = false;
+
+		if (ImGui::BeginCombo("Select Text SubClass Type", subClassPreview))
+		{
+			for (size_t i = 0; i < m_VecTextSubClassTag.size(); ++i)
+			{
+				const _bool isSelected = (cur == i);
+				if (ImGui::Selectable(m_VecTextSubClassTag[i].c_str(), isSelected))
+				{
+					cur = i;
+					m_pSelectedUI->Set_UITextSubClassType(static_cast<DTO::EUITextSubClassType>(i));
+					changed = true;
+				}
+
+				if (isSelected)
+					ImGui::SetItemDefaultFocus();
+			}
+			ImGui::EndCombo();
+		}
+
 		_string strText = Engine_Utils::ToString(m_pSelectedUI->Get_Text());
 		ImGui::InputText("Text", &strText);
 		m_pSelectedUI->Set_Text(Engine_Utils::ToWString(strText));
