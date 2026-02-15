@@ -292,6 +292,58 @@ HRESULT CUIMini_Map::Bind_ShaderResources()
 	return S_OK;
 }
 
+void CUIMini_Map::OnUIEvent(ETriggerEventType eEvent, CGenericUI* pSender)
+{
+	switch (eEvent)
+	{
+	case Client::ETriggerEventType::HOVER_ENTER:
+		break;
+	case Client::ETriggerEventType::HOVER_EXIT:
+		break;
+	case Client::ETriggerEventType::PRESS_ENTER:
+		if (m_isVisible)
+			Set_Invisible();
+		else
+			Set_Visible();
+		break;
+	case Client::ETriggerEventType::PRESS_EXIT:
+		break;
+	case Client::ETriggerEventType::END:
+	default:
+		break;
+	}
+}
+
+void CUIMini_Map::Initialize_Visible_Event()
+{
+	m_fAlpha_Ratio = 0.f;
+	m_fTimeAcc = 0.f;
+}
+
+void CUIMini_Map::Initialize_InVisible_Event()
+{
+
+}
+
+_bool CUIMini_Map::Tick_Visible_Event(const _float fTimeDelta)
+{
+	m_fTimeAcc += fTimeDelta;
+	_float t = m_fTimeAcc / 2.f;
+	if (t >= 1.f)
+	{
+		m_fAlpha_Ratio = 1.f;
+		return true;
+	}
+
+	m_fAlpha_Ratio = t;
+	return false;
+}
+
+_bool CUIMini_Map::Tick_InVisible_Event(const _float fTimeDelta)
+{
+	return true;
+}
+
 CUIMini_Map* CUIMini_Map::Create(ID3D11Device* pDevice, ID3D11DeviceContext* pDeviceContext)
 {
 	CUIMini_Map* pInstance = new CUIMini_Map(pDevice, pDeviceContext);

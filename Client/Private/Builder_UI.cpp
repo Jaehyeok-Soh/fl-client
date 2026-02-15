@@ -5,7 +5,9 @@
 #include "UIProgress_Bar.h"
 #include "UIJust_Image.h"
 #include "UIText.h"
-#include "UITrigger.h"
+#include "UIMenu_Trigger.h"
+#include "UIMenu_Exit_Trigger.h"
+#include "UICommon_Trigger.h"
 
 #include "UISkill_BG.h"
 #include "UIMini_Map.h"
@@ -226,16 +228,40 @@ HRESULT CBuilder_UI::Register_Class(DTO::EUIClassType eClassType, const DTO::TUI
 	}
 	else if (eClassType == DTO::EUIClassType::TRIGGER)
 	{
-		CUITrigger::UI_TRIGGER_DESC TriggerDesc = {};
-		static_cast<CGenericUI::GENERIC_UI_DESC&>(TriggerDesc) = DefaultDesc;
-		TriggerDesc.eOwner = data.eSubClassType;
 		auto iter = m_MapTriggerDataCache.find(data.strTag);
 		if (iter == m_MapTriggerDataCache.end())
 			return E_FAIL;
-		TriggerDesc.tTriggerData = std::move(iter->second);
-		m_MapTriggerDataCache.erase(iter);	
+		const auto Type = iter->second.eTriggerSubClassType;
+		const _bool isMenu = (Type == DTO::EUITriggerSubClassType::MENU_TAB_TRIGGER);
+		const _bool isMenuExit = (Type == DTO::EUITriggerSubClassType::MENU_TAB_EXIT_TRIGGER);
 
-		pResult = m_pGameInstance->Add_GameObject(m_iLevelID, wstrProtoTag, m_iLevelID, wstrLayerTag, &TriggerDesc);
+		if (isMenu)
+		{
+			CUIMenu_Trigger::UI_MENU_TRIGGER_DESC MenuTriggerDesc= {};
+			static_cast<CGenericUI::GENERIC_UI_DESC&>(MenuTriggerDesc) = DefaultDesc;
+			MenuTriggerDesc.eTriggerSubClass = Type;
+			MenuTriggerDesc.tTriggerData = std::move(iter->second);
+			pResult = m_pGameInstance->Add_GameObject(m_iLevelID, L"Prototype_UI_UIMenuTrigger", m_iLevelID, wstrLayerTag, &MenuTriggerDesc);
+		
+		}
+		else if (isMenuExit)
+		{
+			CUIMenu_Exit_Trigger::UI_MENU_EXIT_TRIGGER_DESC MenuExitTriggerDesc = {};
+			static_cast<CGenericUI::GENERIC_UI_DESC&>(MenuExitTriggerDesc) = DefaultDesc;
+			MenuExitTriggerDesc.eTriggerSubClass = Type;
+			MenuExitTriggerDesc.tTriggerData = std::move(iter->second);
+			pResult = m_pGameInstance->Add_GameObject(m_iLevelID, L"Prototype_UI_UIMenuExitTrigger", m_iLevelID, wstrLayerTag, &MenuExitTriggerDesc);
+
+		}
+		else
+		{
+			CUICommon_Trigger::UI_COMMON_TRIGGER_DESC CommonTriggerDesc = {};
+			static_cast<CGenericUI::GENERIC_UI_DESC&>(CommonTriggerDesc) = DefaultDesc;
+			CommonTriggerDesc.eTriggerSubClass = Type;
+			CommonTriggerDesc.tTriggerData = std::move(iter->second);
+			pResult = m_pGameInstance->Add_GameObject(m_iLevelID, L"Prototype_UI_UICommonTrigger", m_iLevelID, wstrLayerTag, &CommonTriggerDesc);
+		}
+
 		if (nullptr == pResult)
 			return E_FAIL;
 
@@ -315,6 +341,12 @@ HRESULT CBuilder_UI::Register_Class(DTO::EUIClassType eClassType, const DTO::TUI
 
 CGenericUI::GENERIC_UI_DESC CBuilder_UI::Make_DefaultInfo(const DTO::TUI_GenericUIData& data, CCanvas* pCanvas)
 {
+
+	if (data.strTag == "Menu_Tab_Icon_Shop_BG")
+		int a = 0;
+	if (data.strTag == "Menu_Tab_Icon_Event_BG")
+		int a = 0;
+
 	CGenericUI::GENERIC_UI_DESC Desc = {};
 	Desc.strName				= data.strTag;
 	Desc.iLevelIndex			= m_iLevelID;
@@ -329,10 +361,14 @@ CGenericUI::GENERIC_UI_DESC CBuilder_UI::Make_DefaultInfo(const DTO::TUI_Generic
 	Desc.wstrAlphaMaskTextureTag= Engine_Utils::ToWString(data.strAlphaMaskTextureTag);
 	Desc.isAlpha				= TRUE;
 	Desc.isInitVisible			= data.isVisible;
+	Desc.isInitInteract			= data.isInteract;
+	Desc.isInitActivate			= data.isActivate;
+	Desc.isUseColorTint			= data.isUseColorTint;
 	Desc.pCanvasCache			= pCanvas;
 	Desc.iComponentFlag			= data.iComponentFlag;
 	Desc.isUseColorTint			= data.isUseColorTint;
 	Desc.vColorTint				= data.vColorTint;
+	Desc.vGradiantColorTint		= data.vGradiantColorTint;
 	Desc.iShaderPass			= data.iShaderPass;
 	Desc.fDelay					= data.fDelay;
 	Desc.iFillDir				= data.iFillDir;

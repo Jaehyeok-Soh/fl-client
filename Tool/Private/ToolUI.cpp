@@ -335,6 +335,8 @@ void CToolUI::Sync_Data()
 	m_tUIData.fPosY					= m_fY;
 	m_tUIData.fPosZ					= m_fZ;
 	m_tUIData.isVisible				= m_isVisible;
+	m_tUIData.isInteract			= m_isInteract;
+	m_tUIData.isActivate			= m_isActive;
 
 	// Tool UI Values
 	m_tUIData.strTag				= m_strName;
@@ -388,6 +390,7 @@ void CToolUI::Sync_TriggerData()
 {
 	m_tUITriggerData.strTag							= m_strName + "_TriggerData";
 	m_tUITriggerData.strOwnerName					= m_strName;
+	m_tUITriggerData.eTriggerSubClassType			= m_eTriggerSubClass;
 	m_tUITriggerData.vecHoverEnterTriggerCanvas		= m_vecHoverEnterTriggerCanvas;
 	m_tUITriggerData.vecHoverEnterTriggerUI			= m_vecHoverEnterTriggerUI;
 	m_tUITriggerData.vecHoverExitTriggerCanvas		= m_vecHoverExitTriggerCanvas;

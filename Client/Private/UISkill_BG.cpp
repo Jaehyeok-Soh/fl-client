@@ -186,6 +186,16 @@ void CUISkill_BG::Trigger_User_Use_Skill()
 	}
 }
 
+void CUISkill_BG::Initialize_Visible_Event()
+{
+
+}
+
+_bool CUISkill_BG::Tick_Visible_Event(const _float fTimeDelta)
+{
+	return _bool();
+}
+
 HRESULT CUISkill_BG::Ready_Components(SKILL_BG_DESC* pDesc)
 {
 	return S_OK;

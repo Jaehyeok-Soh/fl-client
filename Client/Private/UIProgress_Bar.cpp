@@ -195,6 +195,44 @@ HRESULT CUIProgress_Bar::Render()
 	return S_OK;
 }
 
+void CUIProgress_Bar::OnUIEvent(ETriggerEventType eEvent, CGenericUI* pSender)
+{
+	if (eEvent == ETriggerEventType::PRESS_ENTER)
+	{
+		if (m_isVisible)
+			Set_Invisible();
+		else
+			Set_Visible();
+	}
+}
+
+void CUIProgress_Bar::Initialize_Visible_Event()
+{
+	m_fTimeAcc = 0.f;
+	m_fAlpha_Ratio = 0.f;
+}
+
+void CUIProgress_Bar::Initialize_InVisible_Event()
+{
+	m_fTimeAcc = 0.f;
+}
+
+_bool CUIProgress_Bar::Tick_Visible_Event(const _float fTimeDelta)
+{
+	m_fAlpha_Ratio += fTimeDelta * 2.f;
+	if (m_fAlpha_Ratio >= 1.f)
+	{
+		m_fAlpha_Ratio = 1.f;
+		return true;
+	}
+	return false;
+}
+
+_bool CUIProgress_Bar::Tick_InVisible_Event(const _float fTimeDelta)
+{
+	return true;
+}
+
 HRESULT CUIProgress_Bar::Ready_Components(PROGRESS_BAR_DESC* pDesc)
 {
 	return S_OK;

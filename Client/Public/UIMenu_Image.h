@@ -49,6 +49,7 @@ private:
 
 private:
 	_float m_fTimeAcc = {};
+	_float m_fDelayTimeAcc = {};
 
 	Vec2 m_vOriginPos = {};
 	Vec2 m_vTargetPos = {};

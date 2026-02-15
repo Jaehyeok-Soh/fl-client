@@ -45,6 +45,12 @@ HRESULT CUI_Inspector::Initialize_Prototype()
 	m_VecDImageSubClassTag.reserve(ENUM_TO_UINT(DTO::EUIDImageSubClassType::END));
 	for (uint32_t i = 0; i < ENUM_TO_UINT(DTO::EUIDImageSubClassType::END); ++i)
 		m_VecDImageSubClassTag.push_back(DTO::UIDImageSubTypeToString(static_cast<DTO::EUIDImageSubClassType>(i)));
+	
+	m_VecTriggerSubClassTag.reserve(ENUM_TO_UINT(DTO::EUITriggerSubClassType::END));
+	for (uint32_t i = 0; i < ENUM_TO_UINT(DTO::EUITriggerSubClassType::END); ++i)
+		m_VecTriggerSubClassTag.push_back(DTO::UITriggerSubClassTypeToString(static_cast<DTO::EUITriggerSubClassType>(i)));
+
+	
 	return S_OK;
 }
 
@@ -186,6 +192,10 @@ void CUI_Inspector::Input_RectTransform()
 
 	ImGui::InputFloat("Alpha", &m_pSelectedUI->Get_AlphaRatio_Ref());
 	ImGui::Checkbox("Visible", &m_pSelectedUI->Get_InitVisible());
+	ImGui::SameLine();
+	ImGui::Checkbox("Interact", &m_pSelectedUI->Get_InitInteractable());
+	ImGui::SameLine();
+	ImGui::Checkbox("Activate", &m_pSelectedUI->Get_InitActivate());
 
 	ImGui::EndChild();
 	ImGui::PopID();
@@ -394,6 +404,33 @@ void CUI_Inspector::SetUp_TriggerData()
 {
 	if (Begin_Card("Set Trigger Data", "TriggerData", 400.f))
 	{
+		_int cur = static_cast<_int>(m_pSelectedUI->Get_UITriggerSubClassType());
+		cur = (cur < 0) ? 0 : (cur >= static_cast<_int>(m_VecTriggerSubClassTag.size()) ? static_cast<_int>(m_VecTriggerSubClassTag.size() - 1) : cur);
+
+		const _char* preview = m_VecTriggerSubClassTag.empty() ? "" : m_VecTriggerSubClassTag[cur].c_str();
+
+		_bool changed = false;
+
+		if (ImGui::BeginCombo("Select Trigger SubClass Type", preview))
+		{
+			for (size_t i = 0; i < m_VecTriggerSubClassTag.size(); ++i)
+			{
+				const _bool isSelected = (cur == i);
+				if (ImGui::Selectable(m_VecTriggerSubClassTag[i].c_str(), isSelected))
+				{
+					cur = i;
+					m_pSelectedUI->Set_UITriggerSubClassType(static_cast<DTO::EUITriggerSubClassType>(i));
+					changed = true;
+				}
+
+				if (isSelected)
+					ImGui::SetItemDefaultFocus();
+			}
+			ImGui::EndCombo();
+		}
+
+
+
 		if (ImGui::Button("Add Hover Enter Target"))
 		{
 			m_isHoverEnter = TRUE;

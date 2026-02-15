@@ -295,6 +295,15 @@
     <Filter Include="03. GameObject\UIObjects\02.UI\Text\NewFilter1">
       <UniqueIdentifier>{ba675289-98b0-43ba-990d-7137e8849731}</UniqueIdentifier>
     </Filter>
+    <Filter Include="03. GameObject\UIObjects\02.UI\Trigger\00.Basic">
+      <UniqueIdentifier>{ddd0e1e9-b54e-4f7e-b25d-40433ae876b3}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="03. GameObject\UIObjects\02.UI\Trigger\01.MenuTab">
+      <UniqueIdentifier>{13d70f3a-1964-4c43-a1e8-30b582165d71}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="03. GameObject\UIObjects\02.UI\Trigger\02.Menu Exit">
+      <UniqueIdentifier>{63c9a3d7-bedc-44a7-89d4-febe6b9de520}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="targetver.h">
@@ -567,6 +576,15 @@
     <ClInclude Include="..\Public\UIMenu_Image.h">
       <Filter>03. GameObject\UIObjects\02.UI\Image\Dynamic Image\03.MenuImage</Filter>
     </ClInclude>
+    <ClInclude Include="..\Public\UIMenu_Trigger.h">
+      <Filter>03. GameObject\UIObjects\02.UI\Trigger\01.MenuTab</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\UICommon_Trigger.h">
+      <Filter>03. GameObject\UIObjects\02.UI\Trigger\00.Basic</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\UIMenu_Exit_Trigger.h">
+      <Filter>03. GameObject\UIObjects\02.UI\Trigger\02.Menu Exit</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <Image Include="Client.ico">
@@ -804,9 +822,6 @@
     <ClCompile Include="..\Private\State_MoonCombo.cpp">
       <Filter>06. FSM\Player\Attack\Combo\Moon</Filter>
     </ClCompile>
-    <ClCompile Include="..\Private\UIDynamic_Image.cpp">
-      <Filter>03. GameObject\UIObjects\02.UI\Image\Dynamic Image</Filter>
-    </ClCompile>
     <ClCompile Include="..\Private\UIMini_Map.cpp">
       <Filter>03. GameObject\UIObjects\02.UI\Image\Dynamic Image\01.Minimap</Filter>
     </ClCompile>
@@ -830,6 +845,18 @@
     </ClCompile>
     <ClCompile Include="..\Private\UIMenu_Image.cpp">
       <Filter>03. GameObject\UIObjects\02.UI\Image\Dynamic Image\03.MenuImage</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\UIMenu_Trigger.cpp">
+      <Filter>03. GameObject\UIObjects\02.UI\Trigger\01.MenuTab</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\UICommon_Trigger.cpp">
+      <Filter>03. GameObject\UIObjects\02.UI\Trigger\00.Basic</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\UIMenu_Exit_Trigger.cpp">
+      <Filter>03. GameObject\UIObjects\02.UI\Trigger\02.Menu Exit</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\UIDynamic_Image.cpp">
+      <Filter>03. GameObject\UIObjects\02.UI\Image\Dynamic Image</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

@@ -129,6 +129,8 @@ NLOHMANN_JSON_SERIALIZE_ENUM(EUISubClassType,
 		{EUISubClassType::PLAYER_LV,		"PLAYER_LV"},
 	})
 
+#pragma region 다이나믹 이미지 서브 클래스
+
 	enum class EUIDImageSubClassType
 {
 	NONE_OWNER,
@@ -200,7 +202,6 @@ NLOHMANN_JSON_SERIALIZE_ENUM(EUIDImageSubClassType,
 
 		{ EUIDImageSubClassType::END,					"END" }
 	})
-
 
 	inline EUIDImageSubClassType StringToUIDImageSubType(const std::string& str)
 {
@@ -275,6 +276,46 @@ inline const char* UIDImageSubTypeToString(EUIDImageSubClassType type)
 	}
 }
 
+#pragma endregion
+
+#pragma region 트리거 서브 클래스
+
+enum class EUITriggerSubClassType
+{
+	NONE_OWNER,
+
+	MENU_TAB_TRIGGER,
+	MENU_TAB_EXIT_TRIGGER,
+
+	END
+};
+NLOHMANN_JSON_SERIALIZE_ENUM(EUITriggerSubClassType,
+	{
+		{ EUITriggerSubClassType::NONE_OWNER,        "NONE_OWNER" },
+		{ EUITriggerSubClassType::MENU_TAB_TRIGGER,  "MENU_TAB_TRIGGER" },
+		{ EUITriggerSubClassType::MENU_TAB_EXIT_TRIGGER,  "MENU_TAB_EXIT_TRIGGER" },
+	})
+	inline EUITriggerSubClassType StringToUITriggerSubClassType(const std::string& str)
+{
+	if (str == "NONE_OWNER")        return EUITriggerSubClassType::NONE_OWNER;
+	if (str == "MENU_TAB_TRIGGER")  return EUITriggerSubClassType::MENU_TAB_TRIGGER;
+	if (str == "MENU_TAB_EXIT_TRIGGER")  return EUITriggerSubClassType::MENU_TAB_EXIT_TRIGGER;
+	return EUITriggerSubClassType::END;
+}
+inline std::string UITriggerSubClassTypeToString(EUITriggerSubClassType e)
+{
+	switch (e)
+	{
+	case EUITriggerSubClassType::NONE_OWNER:       return "NONE_OWNER";
+	case EUITriggerSubClassType::MENU_TAB_TRIGGER: return "MENU_TAB_TRIGGER";
+	case EUITriggerSubClassType::MENU_TAB_EXIT_TRIGGER: return "MENU_TAB_EXIT_TRIGGER";
+	default:                                      return "END";
+	}
+}
+
+#pragma endregion
+
+#pragma region 월드 유아이 서브 클래스
 
 enum class EUIWorldUISubClassType
 {
@@ -313,6 +354,8 @@ inline const char* UIWorldUISubTypeToString(EUIWorldUISubClassType type)
 	}
 }
 
+#pragma endregion
+
 /////////////////-------------------  Data Struct  -------------------/////////////////
 // 텍스트 데이터
 struct TUI_TextData
@@ -334,6 +377,7 @@ struct TUI_TriggerData
 	static constexpr EUIType eType = EUIType::TRIGGER;
 	std::string		strTag;
 	std::string		strOwnerName;
+	EUITriggerSubClassType		eTriggerSubClassType;
 	
 	vector<std::string> vecHoverEnterTriggerCanvas;
 	vector<std::string> vecHoverEnterTriggerUI;
@@ -396,6 +440,8 @@ struct TUI_GenericUIData
 	_float			fPosZ;
 	_string			strTextureTag;
 	_bool			isVisible;
+	_bool			isInteract;
+	_bool			isActivate;
 	uint32_t		iComponentFlag;
 	EUISubClassType	eSubClassType;
 	_bool			isUseColorTint;

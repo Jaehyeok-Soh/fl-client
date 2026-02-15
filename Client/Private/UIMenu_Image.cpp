@@ -187,15 +187,39 @@ void CUIMenu_Image::Initialize_Visible_Event()
 
 void CUIMenu_Image::Initialize_InVisible_Event()
 {
+	switch (m_eDImageSubClass)
+	{
+	case DTO::EUIDImageSubClassType::MENU_BG:
+	{
+		m_fTimeAcc = 0.f;
+		m_fProgress_Ratio = 0.f;
+	}
+	break;
+
+	case DTO::EUIDImageSubClassType::MENU_ICON:
+	case DTO::EUIDImageSubClassType::MENU_ICON_BG:
+	{
+		m_vTargetPos = Vec2{ m_vRenderPos.x, m_vRenderPos.y };
+		m_vOriginPos = Vec2{ m_vRenderPos.x - 5.f, m_vRenderPos.y };
+		m_fTimeAcc = 0.f;
+		m_fAlpha_Ratio = 1.f;
+		m_fDelayTimeAcc = 0.f;
+	}
+	break;
+
+	case DTO::EUIDImageSubClassType::END:
+	default:
+		break;
+	}
 }
 
 _bool CUIMenu_Image::Tick_Visible_Event(const _float fTimeDelta)
 {
-	m_fTimeAcc += fTimeDelta;
-	_float t = m_fTimeAcc / 0.5f;
-
 	if (m_eDImageSubClass == DTO::EUIDImageSubClassType::MENU_BG)
 	{
+		m_fTimeAcc += fTimeDelta;
+		_float t = m_fTimeAcc / 0.5f;
+
 		if (t >= 1.f)
 		{
 			m_fProgress_Ratio = 0.f;			
@@ -205,6 +229,13 @@ _bool CUIMenu_Image::Tick_Visible_Event(const _float fTimeDelta)
 	}
 	else
 	{
+		m_fDelayTimeAcc += fTimeDelta;
+		if (m_fDelayTimeAcc < m_fDelay)
+			return false;
+
+		m_fTimeAcc += fTimeDelta;
+		_float t = m_fTimeAcc / 0.5f;
+
 		if (t >= 1.f)
 		{
 			m_fAlpha_Ratio = 1.f;
@@ -222,9 +253,34 @@ _bool CUIMenu_Image::Tick_Visible_Event(const _float fTimeDelta)
 
 _bool CUIMenu_Image::Tick_InVisible_Event(const _float fTimeDelta)
 {
+	m_fTimeAcc += fTimeDelta;
+	_float t = m_fTimeAcc / 0.5f;
+
+	if (m_eDImageSubClass == DTO::EUIDImageSubClassType::MENU_BG)
+	{
+		if (t >= 1.f)
+		{
+			m_fProgress_Ratio = 1.f;
+			return true;
+		}
+		m_fProgress_Ratio = t;
+	}
+	else
+	{
+		if (t >= 1.f)
+		{
+			m_fAlpha_Ratio = 0.f;
+			m_fProgress_Ratio = 1.f;
+			m_fX = m_vOriginPos.x;
+			m_fY = m_vOriginPos.y;
+			return true;
+		}
+		m_fAlpha_Ratio = 1.f - t;
+		const Vec2 vPos = m_vTargetPos + (m_vOriginPos - m_vTargetPos) * t;
+		Move_Position(vPos.x, vPos.y, m_fZ);
+	}
 	return false;
 }
-
 CUIMenu_Image* CUIMenu_Image::Create(ID3D11Device* pDevice, ID3D11DeviceContext* pDeviceContext)
 {
 	CUIMenu_Image* pInstance = new CUIMenu_Image(pDevice, pDeviceContext);

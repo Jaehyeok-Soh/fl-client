@@ -51,7 +51,6 @@ public:
 
 	_bool Calc_HitEvent();
 	void Acting_By_InteractState();
-
 	virtual void OnUIEvent(ETriggerEventType eEvent, CGenericUI* pSender);
 
 protected:

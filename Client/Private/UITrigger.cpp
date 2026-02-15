@@ -33,27 +33,11 @@ HRESULT CUITrigger::Initialize_Prototype()
 HRESULT CUITrigger::Initialize(void* pArg)
 {
 	UI_TRIGGER_DESC* pDesc = static_cast<UI_TRIGGER_DESC*>(pArg);
-	m_eSubClassType = pDesc->eOwner;
+	m_eSubClassType = pDesc->eTriggerSubClass;
 	m_tTriggerData = std::move(pDesc->tTriggerData);
 
 	if (FAILED(Super::Initialize(pArg)))
 		return E_FAIL;
-	if (FAILED(Attach_Personal_Info()))
-		return E_FAIL;
-	return S_OK;
-}
-
-HRESULT CUITrigger::Attach_Personal_Info()
-{
-	switch (m_eSubClassType)
-	{
-	case DTO::EUISubClassType::NONE_OWNER:
-		return S_OK;
-	case DTO::EUISubClassType::END:
-	default:
-		return E_FAIL;
-	}
-
 	return S_OK;
 }
 
@@ -153,22 +137,6 @@ HRESULT CUITrigger::Awake(const _uint iCurrentLevelID)
 void CUITrigger::Update_Priority(const _float fTimeDelta)
 {
 	Super::Update_Priority(fTimeDelta);
-	if (Engine_Utils::Has_Flag(m_iInteractState, EUIEvent_Flag::PRESS_ENTER))
-	{
-		Fire_ToTargets(ETriggerEventType::PRESS_ENTER);
-	}
-	else if (Engine_Utils::Has_Flag(m_iInteractState, EUIEvent_Flag::PRESS_EXIT))
-	{
-		Fire_ToTargets(ETriggerEventType::PRESS_EXIT);
-	}
-	else if (Engine_Utils::Has_Flag(m_iInteractState, EUIEvent_Flag::HOVER_ENTER))
-	{
-		Fire_ToTargets(ETriggerEventType::HOVER_ENTER);
-	}
-	else if (Engine_Utils::Has_Flag(m_iInteractState, EUIEvent_Flag::HOVER_EXIT))
-	{
-		Fire_ToTargets(ETriggerEventType::HOVER_EXIT);
-	}
 }
 
 void CUITrigger::Update(const _float fTimeDelta)
@@ -183,7 +151,6 @@ void CUITrigger::Update_Late(const _float fTimeDelta)
 
 void CUITrigger::Ready_Before_Render(const _float fTimeDelta)
 {
-
 	Super::Ready_Before_Render(fTimeDelta);
 }
 
@@ -198,20 +165,32 @@ HRESULT CUITrigger::Render()
 	if (FAILED(Bind_ShaderResources()))
 		return E_FAIL;
 
-	Get_Component<CShader>()->Apply();
-	Get_Component<CVIBuffer>()->Bind_Resource();
-	Get_Component<CVIBuffer>()->Render();
-
 	return S_OK;
 }
 
-void CUITrigger::Fire_ToTargets(ETriggerEventType eEvent)
-{
-	for (auto* pUI : m_pTriggerUI[ENUM_TO_UINT(eEvent)])
-		if (pUI) pUI->OnUIEvent(eEvent, this);
 
-	for (auto* pCanvas : m_pTriggerCanvas[ENUM_TO_UINT(eEvent)])
-		if (pCanvas) pCanvas->OnCanvasEvent(eEvent, this);
+void CUITrigger::OnUIEvent(ETriggerEventType eEvent, CGenericUI* pSender)
+{
+	switch (eEvent)
+	{
+	case Client::ETriggerEventType::HOVER_ENTER:
+		break;
+	case Client::ETriggerEventType::HOVER_EXIT:
+		break;
+	case Client::ETriggerEventType::PRESS_ENTER:
+		if (m_isVisible)Set_Invisible();
+		else Set_Visible();
+
+		if (m_isInteract)Set_NonInteractable();
+		else Set_Interactable();
+
+		break;
+	case Client::ETriggerEventType::PRESS_EXIT:
+		break;
+	case Client::ETriggerEventType::END:
+	default:
+		break;
+	}
 }
 
 HRESULT CUITrigger::Ready_Components(UI_TRIGGER_DESC* pDesc)
@@ -221,35 +200,7 @@ HRESULT CUITrigger::Ready_Components(UI_TRIGGER_DESC* pDesc)
 
 HRESULT CUITrigger::Bind_ShaderResources()
 {
-	CShader* pShader = Get_Component<CShader>();
-	if (FAILED(Get_Component<CTransform>()->Bind_ShaderResource(pShader)))
-		return E_FAIL;
-
-	Super::Bind_ShaderResources();
-
 	return S_OK;
-}
-
-CUITrigger* CUITrigger::Create(ID3D11Device* pDevice, ID3D11DeviceContext* pDeviceContext)
-{
-	CUITrigger* pInstance = new CUITrigger(pDevice, pDeviceContext);
-	if (FAILED(pInstance->Initialize_Prototype()))
-	{
-		MSG_BOX("CUITrigger::Create, Create Failed");
-		Safe_Release(pInstance);
-	}
-	return pInstance;
-}
-
-CGameObject* CUITrigger::Clone(void* pArg)
-{
-	CUITrigger* pInstance = new CUITrigger(*this);
-	if (FAILED(pInstance->Initialize(pArg)))
-	{
-		MSG_BOX("CUITrigger::Clone, Clone Failed");
-		Safe_Release(pInstance);
-	}
-	return pInstance;
 }
 
 void CUITrigger::Free()

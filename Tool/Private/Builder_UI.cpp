@@ -156,6 +156,8 @@ HRESULT CBuilder_UI::Create_GenericUIDTO(const DTO::TUI_GenericUIData& data)
 	Desc.strAlphaMaskTextureTag	= data.strAlphaMaskTextureTag;
 	Desc.strCanvasName		= data.strCanvasName;
 	Desc.isInitVisible		= data.isVisible;
+	Desc.isInitInteract		= data.isInteract;
+	Desc.isInitActivate		= data.isActivate;
 	Desc.isUseColorTint		= data.isUseColorTint;
 	Desc.vColorTint			= data.vColorTint;
 	Desc.iShaderPass		= data.iShaderPass;

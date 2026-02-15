@@ -44,7 +44,16 @@ private:
 	HRESULT Ready_Components(MINIMAP_DESC* pDesc);
 	HRESULT Bind_ShaderResources();
 
+public:
+	virtual void OnUIEvent(ETriggerEventType eEvent, CGenericUI* pSender)override;
+	virtual void Initialize_Visible_Event() override;
+	virtual void Initialize_InVisible_Event()override;
+	virtual _bool Tick_Visible_Event(const _float fTimeDelta)override;
+	virtual _bool Tick_InVisible_Event(const _float fTimeDelta) override;
+
 private:
+	_float m_fTimeAcc = {};
+
 	// Player Icon Values
 	CTransform* m_pPlayerTransform = { nullptr };
 

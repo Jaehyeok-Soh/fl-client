@@ -89,6 +89,8 @@ public:
 	const Vec3& Get_RenderPos() const { return m_vRenderPos; }
 	const RECT& Get_RenderRect() const { return m_tRenderRect; }
 	_bool& Get_InitVisible() { return m_isVisible; }
+	_bool& Get_InitInteractable() { return m_isInteract; }
+	_bool& Get_InitActivate() { return m_isActive; }
 
 	void Set_Name(const _string& str) { m_strName = str; }
 	void Set_RectTransformType(ERectTransform value) { m_eRectTransformType = value; }
@@ -176,9 +178,11 @@ public:
 	DTO::EUIClassType Get_UIClassType() const { return m_eClassType; }
 	DTO::EUISubClassType Get_UISubClassType() const { return m_eSubClassType; }
 	DTO::EUIDImageSubClassType Get_UIDImageSubClassType()const { return m_eDImageSubClassType; }
+	DTO::EUITriggerSubClassType Get_UITriggerSubClassType()const { return m_eTriggerSubClass; }
 	void Set_UIClassType(DTO::EUIClassType eType) { m_eClassType = eType; }
 	void Set_UISubClassType(DTO::EUISubClassType eType) { m_eSubClassType = eType; }
 	void Set_UIDImageSubClassType(DTO::EUIDImageSubClassType eType) { m_eDImageSubClassType = eType; }
+	void Set_UITriggerSubClassType(DTO::EUITriggerSubClassType eType) { m_eTriggerSubClass = eType; }
 
 #pragma endregion
 
@@ -220,6 +224,7 @@ protected:
 
 	// Client Bind Values Trigger Data
 	DTO::TUI_TriggerData m_tUITriggerData = {};
+	DTO::EUITriggerSubClassType m_eTriggerSubClass = {};
 	vector<std::string> m_vecHoverEnterTriggerCanvas;
 	vector<std::string> m_vecHoverEnterTriggerUI;
 	vector<std::string> m_vecHoverExitTriggerCanvas;

@@ -65,6 +65,7 @@ void to_json(json& j, const TUI_TriggerData& data)
 		{"Type", TUI_TriggerData::eType},
 		{"strTag", data.strTag},
 		{"strOwnerName", data.strOwnerName},
+		{"eTriggerSubClassType", data.eTriggerSubClassType},
 		{"vecHoverEnterTriggerCanvas",  data.vecHoverEnterTriggerCanvas},
 		{"vecHoverEnterTriggerUI",      data.vecHoverEnterTriggerUI},
 		{"vecHoverExitTriggerCanvas",	data.vecHoverExitTriggerCanvas},
@@ -80,6 +81,7 @@ void from_json(const json& j, TUI_TriggerData& data)
 {
 	data.strTag = "";
 	data.strOwnerName = "";
+	data.eTriggerSubClassType = EUITriggerSubClassType::NONE_OWNER;
 	data.vecHoverEnterTriggerCanvas.clear();
 	data.vecHoverEnterTriggerUI.clear();
 	data.vecHoverExitTriggerCanvas.clear();
@@ -91,6 +93,7 @@ void from_json(const json& j, TUI_TriggerData& data)
 
 	data.strTag						= j.value("strTag", data.strTag);
 	data.strOwnerName				= j.value("strOwnerName", data.strOwnerName);
+	data.eTriggerSubClassType		= j.value("eTriggerSubClassType", data.eTriggerSubClassType);
 	data.vecHoverEnterTriggerCanvas = j.value("vecHoverEnterTriggerCanvas", data.vecHoverEnterTriggerCanvas);
 	data.vecHoverEnterTriggerUI		= j.value("vecHoverEnterTriggerUI", data.vecHoverEnterTriggerUI);
 	data.vecHoverExitTriggerCanvas	= j.value("vecHoverExitTriggerCanvas", data.vecHoverExitTriggerCanvas);
@@ -158,6 +161,8 @@ void to_json(json& j, const TUI_GenericUIData& data)
 		{ "fPosZ", data.fPosZ },
 		{ "strTextureTag", data.strTextureTag },
 		{ "isVisible", data.isVisible },
+		{ "isInteract", data.isInteract },
+		{ "isActivate", data.isActivate },
 		{ "iComponentFlag", data.iComponentFlag },
 		{ "eSubClassType", data.eSubClassType },
 		{ "isUseColorTint", data.isUseColorTint },
@@ -186,6 +191,8 @@ void from_json(const json& j, TUI_GenericUIData& data)
 	data.fPosZ				= 0.f;
 	data.strTextureTag		= "";
 	data.isVisible			= true;
+	data.isInteract			= true;
+	data.isActivate			= true;
 	data.iComponentFlag		= 0;
 	data.eSubClassType		= decltype(data.eSubClassType){};
 	data.isUseColorTint		= false;
@@ -217,6 +224,8 @@ void from_json(const json& j, TUI_GenericUIData& data)
 	data.fPosZ				= j.value("fPosZ", data.fPosZ);
 	data.strTextureTag		= j.value("strTextureTag", data.strTextureTag);
 	data.isVisible			= j.value("isVisible", data.isVisible);
+	data.isInteract			= j.value("isInteract", data.isInteract);
+	data.isActivate			= j.value("isActivate", data.isActivate);
 	data.iComponentFlag		= j.value("iComponentFlag", data.iComponentFlag);
 	data.eSubClassType		= j.value("eSubClassType", data.eSubClassType);
 	data.isUseColorTint		= j.value("isUseColorTint", data.isUseColorTint);
