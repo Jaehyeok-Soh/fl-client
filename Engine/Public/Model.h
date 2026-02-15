@@ -212,6 +212,8 @@ private:
 	void								Make_Staging(MODEL_ORIGIN_DESC* pDesc);
 	HRESULT								Ready_StaticModelMinMax();
 
+	void								Set_CpuBone(_uint iBoneIdx);
+
 	// cs bind funcs
 private:
 	void								Bind_BoneImmuData(CComputeShader* pBoneComBineCS);
@@ -275,6 +277,9 @@ private:
 	StructuredBuffer*					m_pCurSB					= { nullptr };
 	ID3D11Buffer*						m_pBoneOuputStagingBuffer[2] = {nullptr};
 	_uint								m_iFrameIndex = { 0 };
+
+	_uint m_iCpuBoneCount = { 0 };
+	vector<_bool> m_vecCpuUpdateBones;
 
 	///////////////
 	//// Event ////

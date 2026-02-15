@@ -66,7 +66,7 @@ HRESULT CModelAnimation::Initialize(void* pArg)
 	return S_OK;
 }
 
-_bool CModelAnimation::Update_TransformationMatrices(const vector<class CBone*>& vecBones, _float fTimeDelta, _bool isLoop, CTransform* pOwnerTransform,  CPhysicsCCT* pOwnerPhyCCT)
+_bool CModelAnimation::Update_TransformationMatrices(const vector<class CBone*>& vecBones, _float fTimeDelta, _bool isLoop, CTransform* pOwnerTransform,  CPhysicsCCT* pOwnerPhyCCT, CComputeShader* pAnimECS)
 {
 	m_fCurrentTrackPosition += m_fTickPerSecond * fTimeDelta;
 
@@ -78,6 +78,16 @@ _bool CModelAnimation::Update_TransformationMatrices(const vector<class CBone*>&
 		m_fCurrentTrackPosition = 0.f;
 	}
 
+	// 가변 데이터 작성
+	CS_MU_TRACK tMuDesc{};
+	tMuDesc.fCurTrackPosition = m_fCurrentTrackPosition;
+	tMuDesc.iChannelCount = m_iChannelCount;
+	pAnimECS->Bind_Compute_Track(tMuDesc);
+
+	// dispatch
+	_uint iGroupX = (_uint(vecBones.size()) + 31) / 32;
+	pAnimECS->Dispatch(iGroupX, 1, 1);
+
 	_uint iIndex = { 0 };
 	for (auto& pChannel : m_vecChannels)
 	{
@@ -86,13 +96,26 @@ _bool CModelAnimation::Update_TransformationMatrices(const vector<class CBone*>&
 	return false;
 }
 
-void CModelAnimation::SetUp_PoseDatasForBlending(std::span<LOCALSRT> spanLocalSrtData, _float fTimeDelta, CTransform* pOwnerTransform, CPhysicsCCT* pOwnerPhyCCT)
+void CModelAnimation::SetUp_PoseDatasForBlending(std::span<LOCALSRT> spanLocalSrtData, _float fTimeDelta, CTransform* pOwnerTransform, CPhysicsCCT* pOwnerPhyCCT,_uint iTotalBoneNum, CComputeShader* pAnimECS)
 {
+	//내 애니메이션 정보 전달
+	Bind_AnimationEData(pAnimECS);
+
 	m_fCurrentTrackPosition += m_fTickPerSecond * fTimeDelta;
 	if (m_fCurrentTrackPosition >= m_fDuration)
 	{
 		m_fCurrentTrackPosition = m_fDuration;
 	}
+
+	// 가변 데이터 작성
+	CS_MU_TRACK tMuDesc{};
+	tMuDesc.fCurTrackPosition = m_fCurrentTrackPosition;
+	tMuDesc.iChannelCount = m_iChannelCount;
+	pAnimECS->Bind_Compute_Track(tMuDesc);
+
+	// dispatch
+	_uint iGroupX = (iTotalBoneNum + 31) / 32;
+	pAnimECS->Dispatch(iGroupX, 1, 1);
 	
 	_uint iIndex = { 0 };
 	for (auto& pChannel : m_vecChannels)
@@ -273,6 +296,14 @@ HRESULT CModelAnimation::Ready_BindBuffers(CComputeShader* pAnimESahder)
 		return E_FAIL;
 
 	return S_OK;
+}
+
+void CModelAnimation::Check_UpdateCpu(const vector<class CBone*>& vecBones)
+{
+	for (auto& pChannel : m_vecChannels)
+	{
+		pChannel->Check_UpdateCpu(vecBones);
+	}
 }
 
 void CModelAnimation::Set_Notifies(vector<AnimNotifyKey> vecKeys)

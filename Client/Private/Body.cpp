@@ -111,8 +111,8 @@ void CBody::Ready_Before_Render(_float fTimeDelta)
 	m_pGameInstance->Push_RenderObject(RENDER_CATEGORY::NONEBLEND, this);
 	Super::Update_CombinedWorldMatrix(m_pMatParent);
 
-	CComputeShader* pGetBoneCS = static_cast<CComputeShader*>(Get_Script_Component(TEXT("ComputeShader_GetBone")));
-	Get_Component<CModel>()->Get_BoneMatrix(pGetBoneCS);
+	//CComputeShader* pGetBoneCS = static_cast<CComputeShader*>(Get_Script_Component(TEXT("ComputeShader_GetBone")));
+	//Get_Component<CModel>()->Get_BoneMatrix(pGetBoneCS);
 
 #ifdef _DEBUG
 	m_pGameInstance->Push_DebugComponent(Get_Component<CCollider>());
