@@ -73,12 +73,6 @@
     <Filter Include="06. FSM\Player\Idle">
       <UniqueIdentifier>{51b09a75-0a10-4351-89ee-c56fb121e232}</UniqueIdentifier>
     </Filter>
-    <Filter Include="06. FSM\Player\Combo">
-      <UniqueIdentifier>{27a2b2a0-9e48-43b5-9d9d-e715fac9790b}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="06. FSM\Player\Combo\Attack">
-      <UniqueIdentifier>{e24f768e-0b04-4188-a9a5-c1b98e15de50}</UniqueIdentifier>
-    </Filter>
     <Filter Include="05. Component\Stat">
       <UniqueIdentifier>{2ced342f-5042-4404-83a0-64377d92387f}</UniqueIdentifier>
     </Filter>
@@ -298,6 +292,9 @@
     <Filter Include="06. FSM\Player\Attack\JumpAtt">
       <UniqueIdentifier>{448e7000-60b0-4cf4-88e5-7cd7d5e945e8}</UniqueIdentifier>
     </Filter>
+    <Filter Include="06. FSM\Player\Attack\Charge">
+      <UniqueIdentifier>{8d34a4fe-fb74-4b4a-8394-d30c20aad791}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="targetver.h">
@@ -348,21 +345,6 @@
     <ClInclude Include="..\Public\State_Idle.h">
       <Filter>06. FSM\Player\Idle</Filter>
     </ClInclude>
-    <ClInclude Include="..\Public\ComboState.h">
-      <Filter>06. FSM\Player\Combo</Filter>
-    </ClInclude>
-    <ClInclude Include="..\Public\State_Combo_Second.h">
-      <Filter>06. FSM\Player\Combo\Attack</Filter>
-    </ClInclude>
-    <ClInclude Include="..\Public\State_Combo_First.h">
-      <Filter>06. FSM\Player\Combo\Attack</Filter>
-    </ClInclude>
-    <ClInclude Include="..\Public\State_Combo_Fourth.h">
-      <Filter>06. FSM\Player\Combo\Attack</Filter>
-    </ClInclude>
-    <ClInclude Include="..\Public\State_Combo_Third.h">
-      <Filter>06. FSM\Player\Combo\Attack</Filter>
-    </ClInclude>
     <ClInclude Include="..\Public\MainPlayer.h">
       <Filter>03. GameObject\ContainerObjects\Player</Filter>
     </ClInclude>
@@ -371,9 +353,6 @@
     </ClInclude>
     <ClInclude Include="..\Public\StatComponent.h">
       <Filter>05. Component\Stat</Filter>
-    </ClInclude>
-    <ClInclude Include="..\Public\ComboContainer.h">
-      <Filter>06. FSM\Player\Combo</Filter>
     </ClInclude>
     <ClInclude Include="..\Public\CameraMan_Targeter.h">
       <Filter>03. GameObject\Camera</Filter>
@@ -579,6 +558,9 @@
     <ClInclude Include="..\Public\State_JumpAttEnd.h">
       <Filter>06. FSM\Player\Attack\JumpAtt</Filter>
     </ClInclude>
+    <ClInclude Include="..\Public\State_Charge.h">
+      <Filter>06. FSM\Player\Attack\Charge</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <Image Include="Client.ico">
@@ -627,21 +609,6 @@
     <ClCompile Include="..\Private\State_Idle.cpp">
       <Filter>06. FSM\Player\Idle</Filter>
     </ClCompile>
-    <ClCompile Include="..\Private\ComboState.cpp">
-      <Filter>06. FSM\Player\Combo</Filter>
-    </ClCompile>
-    <ClCompile Include="..\Private\State_Combo_Third.cpp">
-      <Filter>06. FSM\Player\Combo\Attack</Filter>
-    </ClCompile>
-    <ClCompile Include="..\Private\State_Combo_First.cpp">
-      <Filter>06. FSM\Player\Combo\Attack</Filter>
-    </ClCompile>
-    <ClCompile Include="..\Private\State_Combo_Second.cpp">
-      <Filter>06. FSM\Player\Combo\Attack</Filter>
-    </ClCompile>
-    <ClCompile Include="..\Private\State_Combo_Fourth.cpp">
-      <Filter>06. FSM\Player\Combo\Attack</Filter>
-    </ClCompile>
     <ClCompile Include="..\Private\MainPlayer.cpp">
       <Filter>03. GameObject\ContainerObjects\Player</Filter>
     </ClCompile>
@@ -650,9 +617,6 @@
     </ClCompile>
     <ClCompile Include="..\Private\StatComponent.cpp">
       <Filter>05. Component\Stat</Filter>
-    </ClCompile>
-    <ClCompile Include="..\Private\ComboContainer.cpp">
-      <Filter>06. FSM\Player\Combo</Filter>
     </ClCompile>
     <ClCompile Include="..\Private\CameraMan_Targeter.cpp">
       <Filter>03. GameObject\Camera</Filter>
@@ -851,6 +815,9 @@
     </ClCompile>
     <ClCompile Include="..\Private\State_JumpAttEnd.cpp">
       <Filter>06. FSM\Player\Attack\JumpAtt</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\State_Charge.cpp">
+      <Filter>06. FSM\Player\Attack\Charge</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
