@@ -294,14 +294,14 @@ _bool CStateBase_Player::Has_ChangeState(STATEKEY eKey)
 	return m_iEndStateIdx != m_vecChangeState_ByKey[ENUM_TO_UINT(eKey)];
 }
 
-_bool CStateBase_Player::Check_OnGround()
+_bool CStateBase_Player::Check_OnGround(_float fMaxDist)
 {
 	//return IsOn_CCTFlag(PxControllerCollisionFlag::eCOLLISION_DOWN) || 
 	//	static_cast<CPlayer*>(Get_OwnerObject())->Check_OnGround();
 
 	//return Get_OwnerObject()->Get_Component<CTransform>()->Is_OnGround(0.65f);
 
-	return static_cast<CPlayer*>(Get_OwnerObject())->Check_OnGround();
+	return static_cast<CPlayer*>(Get_OwnerObject())->Check_OnGround(fMaxDist);
 }
 
 void CStateBase_Player::Free()

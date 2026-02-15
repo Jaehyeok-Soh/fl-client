@@ -83,7 +83,7 @@ public:
 	// state funcs
 public:
 	void Change_Weapon(Part ePart, _uint iState); // 어떤 weapon을 어떤 state로
-	_bool Check_OnGround();
+	_bool Check_OnGround(_float fMaxDist = 0.72f);
 
 private:
 	HRESULT Ready_BaseStates();

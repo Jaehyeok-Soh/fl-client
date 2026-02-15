@@ -73,7 +73,7 @@ protected:
 	_bool Check_Collis(const _float fTimeDelta);
 
 protected:
-	_bool Check_OnGround(); // 땅에 있는지 검사
+	_bool Check_OnGround(_float fMaxDist = 0.72f); // 땅에 있는지 검사
 
 protected:
 	virtual void OwnMove(const _float fTimeDelta) {};		// state 내부에서 알아서 움직일때
