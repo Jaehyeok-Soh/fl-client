@@ -394,7 +394,6 @@ namespace Engine
 
 #pragma endregion
 
-
 	union COLLIDER_ID
 	{
 		struct
@@ -629,7 +628,15 @@ namespace Engine
 	}PHYSICSFILTERSHADER_DESC;
 #pragma endregion
 
-}
+#pragma region EFFECT
+	typedef struct tagEffectSpawnDesc {
+		SimpleMath::Matrix matWorld;             // 계산된 최종 행렬
+		float fDuration;            // 유지 시간
+		int iSimulationType;        // LOCAL(1) or WORLD(0)
+		const SimpleMath::Matrix* pTargetBoneMatrix; // 실시간 추적용 본 행렬 주소
+	} EFFECT_SPAWN_DESC;
 
+}
+#pragma endregion
 
 #endif // Engine_Struct_h__

@@ -165,12 +165,6 @@ HRESULT CRender_Manager::Initialize()
 			return E_FAIL;
 	}
 
-	// For. MRT_Effect
-	{
-		if (FAILED(m_pGameInstance->Add_MRT(EMRTLayer::Effect, ERenderTarget::Scene)))
-			return E_FAIL;
-	}
-
 	// For. MRT_SSAO_Gen
 	{
 		if (FAILED(m_pGameInstance->Add_MRT(EMRTLayer::SSAO_Gen, ERenderTarget::SSAO_Ping)))

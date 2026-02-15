@@ -66,7 +66,7 @@ HRESULT CBuilder_Effect::Create_Effect(const DTO::TEFFECT_ContainerData& data)
 	wstring PoolTag = L"POOL_" + Engine_Utils::ToWString(pData.EffectContainerName);
 	wstring LayTag = L"Effect_Layer";
 	wstring PrototypeTag = L"Prototype_GameObject_Effect";
-	m_pGameInstance->Regist_Pool(m_iLevelID, PoolTag, LayTag, m_iLevelID, PrototypeTag, &pDesc, 50);
+	m_pGameInstance->Regist_Pool(m_iLevelID, PoolTag, LayTag, m_iLevelID, PrototypeTag, &pDesc, 5);
 	
 	return S_OK;
 }

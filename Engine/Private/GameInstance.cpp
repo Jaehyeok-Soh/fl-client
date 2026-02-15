@@ -26,6 +26,7 @@
 #include "Render_Manager.h"
 #include "Physics_Module.h"
 #include "UIAction_Registry.h"
+#include "Effect_Manager.h"
 
 IMPLEMENT_SINGLETON(CGameInstance)
 
@@ -120,6 +121,9 @@ HRESULT CGameInstance::Initialize_Engine(const ENGINE_DESC& Engine_Desc, _Inout_
 		return E_FAIL;
 
 	if (!(m_pOctree_Manager = COctree_Manager::Create()))
+		return E_FAIL;
+
+	if (!(m_pEffect_Manager = CEffect_Manager::Create()))
 		return E_FAIL;
 
 	return S_OK;
@@ -741,6 +745,14 @@ HRESULT CGameInstance::Draw_Text(const _wstring& strFontTag, const _tchar* pText
 
 #pragma endregion
 
+#pragma region EFFECT_MANAGER
+void CGameInstance::Spawn_Effect(const std::string& strTag, const Matrix& matWorld, _float fDuration, _bool bIsLocal, void* pTargetBone)
+{
+	m_pEffect_Manager->Spawn_Effect(strTag, matWorld, fDuration, bIsLocal, pTargetBone);
+}
+
+#pragma endregion
+
 
 void CGameInstance::Destroy_Engine()
 {
@@ -751,6 +763,7 @@ void CGameInstance::Destroy_Engine()
 	Safe_Release(m_pRender_Manager);
 	Safe_Release(m_pSound_Manager);
 	Safe_Release(m_pFont_Manager);
+	Safe_Release(m_pEffect_Manager);
 	Safe_Release(m_pRenderTarget_Manager);
 	Safe_Release(m_pCamera_Manager);
 	Safe_Release(m_pOctree_Manager);
@@ -974,6 +987,7 @@ void CGameInstance::Free()
 	Safe_Release(m_pTimer_Manager);
 	Safe_Release(m_pSound_Manager);
 	Safe_Release(m_pFont_Manager);
+	Safe_Release(m_pEffect_Manager);
 	Safe_Release(m_pDataRepository);
 	Safe_Release(m_pRender_Manager);
 	Safe_Release(m_pRenderTarget_Manager);

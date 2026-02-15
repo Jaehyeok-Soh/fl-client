@@ -83,8 +83,6 @@ HRESULT CEffectObject::Ready_Component(void* pArg)
     m_pComputeShader = static_cast<CComputeShader*>(Get_Script_Component(L"ComputeShader"));
     m_pTransform = Get_Component<CTransform>();
 
-    Get_Component<CTransform>()->Set_Info(TRANSFORM_INFO_STATE::POS, Vec3{ 20.f,16.f,18.f });
-
     return S_OK;
 }
 
@@ -385,6 +383,7 @@ void CEffectObject::Update(const _float fTimeDelta)
     {
         if (m_tEffectDesc.Data._Effect_Looping)
         {
+            m_bIsEffectFinish = false;
             m_fTimeAccumulation = 0.f; // 완전 리셋
             fActiveTime = 0.f;
             m_vScrollOffset = { 0.f, 0.f }; // 스크롤 값도 완전 초기화
@@ -395,6 +394,7 @@ void CEffectObject::Update(const _float fTimeDelta)
         }
         else
         {
+            m_bIsEffectFinish = true;
             return;
         }
     }
@@ -523,6 +523,7 @@ void CEffectObject::TimeFlagRequest(_uint iTimeFlag)
 
     if (iTimeFlag == RESET)
     {
+        m_bIsEffectFinish = false;
         m_bIsStarted = false;
         m_fTimeAccumulation = 0.f;
         m_vScrollOffset = Vec2{ 0.f, 0.f };
@@ -539,6 +540,7 @@ void CEffectObject::TimeFlagRequest(_uint iTimeFlag)
 
     else if (iTimeFlag == STOP)
     {
+        m_bIsEffectFinish = false;
         m_bIsStarted = false;
         m_fTimeAccumulation = 0.f;
         m_vScrollOffset = Vec2{ 0.f, 0.f };

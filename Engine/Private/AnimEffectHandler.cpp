@@ -19,6 +19,7 @@ CAnimEffectHandler::CAnimEffectHandler()
 
 CAnimEffectHandler::CAnimEffectHandler(const CAnimEffectHandler& rhs)
 	:Super(rhs)
+	,m_tDesc(rhs.m_tDesc)
 {
 
 }
@@ -47,7 +48,7 @@ void CAnimEffectHandler::Awake()
 	{
 		auto pTransform = Get_Owner()->Get_Component<CTransform>();
 		if (pTransform)
-			m_pOwnerMatrix = &pTransform->Get_WorldMatrix();
+			m_pOwnerMatrix = &static_cast<CPartObject*>(Get_Owner())->Get_Parent()->Get_Component<CTransform>()->Get_WorldMatrix();
 	}
 }
 
@@ -100,7 +101,37 @@ void CAnimEffectHandler::CheckAnim()
 
 void CAnimEffectHandler::Request_SpawnEffect(const DTO::EFFECT_EVENT_SCRIPT& Script)
 {
-	// GameIntance를 통해 이펙트를 생성 요청을 하는 곳.
+	Matrix matTargetWorld = XMMatrixIdentity();
+	Matrix* pTargetBoneMatrix = nullptr;
+
+	if (Script.strSocketName.empty() == false)
+	{
+		pTargetBoneMatrix = nullptr;/*m_pOwnerModel->Get_Bone(Script.strSocketName);*/
+
+		if (pTargetBoneMatrix)
+		{
+			matTargetWorld = (*pTargetBoneMatrix) * (*m_pOwnerMatrix);
+		}
+		else
+		{
+			matTargetWorld = *m_pOwnerMatrix;
+		}
+	}
+	else
+	{
+		matTargetWorld = *m_pOwnerMatrix;
+	}
+
+	Matrix matOffset = XMMatrixTranslation(Script.vOffset.x, Script.vOffset.y, Script.vOffset.z);
+	matTargetWorld = matOffset * matTargetWorld;
+
+	m_pGameInstance->Spawn_Effect(
+		Script.strEffectTag,        // 이펙트 프리셋 태그
+		matTargetWorld,             // 초기 계산된 월드 행렬
+		Script.fDuration,           // 유지 시간
+		(_bool)Script.iSimulationType, // LOCAL(1) 이면 추적, WORLD(0) 이면 고정
+		Script.bFollowBone ? pTargetBoneMatrix : nullptr // 실시간 본 추적 여부
+	);
 }
 
 CAnimEffectHandler* CAnimEffectHandler::Create(void* pArg)

@@ -784,9 +784,6 @@ void CEffectObject::TimeCalculate(const _float fDT)
     _float fActiveTime = m_fTimeAccumulation - m_tEffectDesc._Effect_StartDelay;
     if (fActiveTime < 0.f) fActiveTime = 0.f;
 
-    // ======= [스크롤 값] ==========
-    m_vScrollOffset += fDT * m_tEffectDesc._Effect_ScrollSpeed;
-
     // ======= [스프라이트 애니메이션] =======
     if ((m_tEffectDesc._Effect_RenderFlag & (1 << 5)) && m_tEffectDesc._Effect_bPlayAnim)
     {
@@ -915,11 +912,13 @@ void CEffectObject::Update_UV_Scroll_Curve(float fRatio)
     {
         // Rotataion 커브 재활용이요
         float fCurveX = Sample_RotationCurve(m_tEffectDesc._vecUVScrollCurveX, fRatio);
-
         float fCurveY = Sample_RotationCurve(m_tEffectDesc._vecUVScrollCurveY, fRatio);
         // 결과값을 저장한다.
-        m_vScrollOffset.x = fCurveX;
-        m_vScrollOffset.y = fCurveY;
+        Vec2 vStartOffset = m_tEffectDesc._Effect_UV_Offset;
+        Vec2 vWeight = Vec2(1.0f + fabs(vStartOffset.x), 1.f + fabsf(vStartOffset.y));
+
+        m_vScrollOffset.x = (vWeight.x * fCurveX);
+        m_vScrollOffset.y = (vWeight.y * fCurveY);
     }
 }
 

@@ -32,6 +32,9 @@
 #include "Builder_AttackOverlap.h"
 #include "DataStruct_AttackOverlap.h"
 #include "DataDocument_AttackOverlap.h"
+#include "Builder_EffectEvent.h"
+#include "DataStruct_EffectEvent.h"
+#include "DataDocument_EffectEvent.h"
 
 //=================
 // Object
@@ -153,6 +156,9 @@ HRESULT CLoader::Loading_For_Logo()
 				return E_FAIL;
 
 			if (FAILED(m_pGameInstance->Regist_Document<CDataDocument_Effect>(ENUM_TO_UINT(ELevelType::LOGO), DTO::ECategory::EFFECT)))
+				return E_FAIL;
+
+			if (FAILED(m_pGameInstance->Regist_Document<CDataDocument_EffectEvent>(ENUM_TO_UINT(ELevelType::LOGO), DTO::ECategory::EFFECTEVENT)))
 				return E_FAIL;
 
 			if (FAILED(m_pGameInstance->Regist_Document<CDataDocument_UI>(ENUM_TO_UINT(ELevelType::LOGO), DTO::ECategory::UI)))
@@ -502,6 +508,9 @@ HRESULT CLoader::Build_Prototype()
 	if (FAILED(m_pBuilderSystem->Ready_Builder(DTO::ECategory::OVERLAP_SCRIPT, CBuilder_AttackOverlap::Create(m_pDevice, m_pDeviceContext, ENUM_TO_UINT(ELevelType::LOGO)))))
 		return E_FAIL;
 
+	if (FAILED(m_pBuilderSystem->Ready_Builder(DTO::ECategory::EFFECTEVENT, CBuilder_EffectEvent::Create(m_pDevice, m_pDeviceContext, ENUM_TO_UINT(ELevelType::LOGO)))))
+		return E_FAIL;
+
 	if (FAILED(Build_Files()))
 		return E_FAIL;
 
@@ -511,6 +520,9 @@ HRESULT CLoader::Build_Prototype()
 HRESULT CLoader::Build_Files()
 {
 	if (FAILED(Ready_AttackOverlap()))
+		return E_FAIL;
+
+	if (FAILED(Ready_EffectEvent()))
 		return E_FAIL;
 
 	return S_OK;
@@ -523,6 +535,27 @@ HRESULT CLoader::Ready_AttackOverlap()
 	_uint iLevelID = ENUM_TO_UINT(eLevelType);
 
 	std::filesystem::path FilePath = L"../../Resources/Data/AttackOverlapData/PlayerMoon_155_Animations_Fixed.json";
+	vector<path> vecfiles;
+
+	if (!std::filesystem::exists(FilePath))
+		return E_FAIL;
+
+	if (FAILED(m_pGameInstance->Load_File_Json(iLevelID, eCategory, FilePath)))
+		return E_FAIL;
+
+	if (FAILED(m_pBuilderSystem->Build_File(iLevelID, eCategory, FilePath.stem().string())))
+		return E_FAIL;
+
+	return S_OK;
+}
+
+HRESULT CLoader::Ready_EffectEvent()
+{
+	ELevelType eLevelType = ELevelType::LOGO;
+	DTO::ECategory eCategory = DTO::ECategory::EFFECTEVENT;
+	_uint iLevelID = ENUM_TO_UINT(eLevelType);
+
+	std::filesystem::path FilePath = L"../../Resources/Data/EffectAnimationData/PlayerMoon.json";
 	vector<path> vecfiles;
 
 	if (!std::filesystem::exists(FilePath))

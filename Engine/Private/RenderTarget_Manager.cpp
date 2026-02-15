@@ -37,7 +37,7 @@ HRESULT CRenderTarget_Manager::Add_MRT(EMRTLayer eMRTLayer, ERenderTarget eTarge
         list<CRenderTarget*>    MRTList;
 
         MRTList.push_back(pRenderTarget);
-        m_arrMRTs[ENUM_TO_UINT(eTarget)] = std::move(MRTList);
+        m_arrMRTs[ENUM_TO_UINT(eMRTLayer)] = std::move(MRTList);
     }
     else
         pMRTList->push_back(pRenderTarget);

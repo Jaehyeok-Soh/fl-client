@@ -20,13 +20,23 @@ void to_json(json& j, const EFFECT_EVENT_SCRIPT& data) {
 }
 
 void from_json(const json& j, EFFECT_EVENT_SCRIPT& data) {
-    j.at("fDuration").get_to(data.fDuration);
-    j.at("strEffectTag").get_to(data.strEffectTag);
-    j.at("eSimulationType").get_to(data.iSimulationType);
-    j.at("strSocketName").get_to(data.strSocketName);
-    j.at("bFollowBone").get_to(data.bFollowBone);
-    const auto& jo = j.at("vOffset");
-    jo.at("x").get_to(data.vOffset.x); jo.at("y").get_to(data.vOffset.y); jo.at("z").get_to(data.vOffset.z);
+    // JSON의 키값("iSimulationType")과 구조체 변수명 매칭 확인
+    if (j.contains("fDuration")) j.at("fDuration").get_to(data.fDuration);
+    if (j.contains("strEffectTag")) j.at("strEffectTag").get_to(data.strEffectTag);
+
+    // JSON 파일에는 "iSimulationType"으로 되어 있으므로 이를 읽어와야 함
+    if (j.contains("iSimulationType")) j.at("iSimulationType").get_to(data.iSimulationType);
+    else if (j.contains("eSimulationType")) j.at("eSimulationType").get_to(data.iSimulationType);
+
+    if (j.contains("strSocketName")) j.at("strSocketName").get_to(data.strSocketName);
+    if (j.contains("bFollowBone")) j.at("bFollowBone").get_to(data.bFollowBone);
+
+    if (j.contains("vOffset")) {
+        const auto& jo = j.at("vOffset");
+        if (jo.contains("x")) jo.at("x").get_to(data.vOffset.x);
+        if (jo.contains("y")) jo.at("y").get_to(data.vOffset.y);
+        if (jo.contains("z")) jo.at("z").get_to(data.vOffset.z);
+    }
 }
 
 void to_json(json& j, const ANIM_EVENT_BASE& data) {
@@ -35,10 +45,10 @@ void to_json(json& j, const ANIM_EVENT_BASE& data) {
 }
 
 void from_json(const json& j, ANIM_EVENT_BASE& data) {
-    j.at("strAnimTag").get_to(data.strAnimTag);
-    j.at("iAnimIndex").get_to(data.iAnimIndex);
-    j.at("fTrackPosition").get_to(data.fTrackPosition);
-    j.at("vecScript").get_to(data.vecScript);
+    if (j.contains("strAnimTag")) j.at("strAnimTag").get_to(data.strAnimTag);
+    if (j.contains("iAnimIndex")) j.at("iAnimIndex").get_to(data.iAnimIndex);
+    if (j.contains("fTrackPosition")) j.at("fTrackPosition").get_to(data.fTrackPosition);
+    if (j.contains("vecScript")) j.at("vecScript").get_to(data.vecScript);
 }
 
 void to_json(json& j, const ANIM_EVENT_INFO_DESC& data) {
@@ -52,18 +62,19 @@ void to_json(json& j, const ANIM_EVENT_INFO_DESC& data) {
 }
 
 void from_json(const json& j, ANIM_EVENT_INFO_DESC& data) {
-    j.at("strOwnerTag").get_to(data.strOwnerTag);
-    const auto& jEvents = j.at("vecAnimEvents");
+    if (j.contains("strOwnerTag")) j.at("strOwnerTag").get_to(data.strOwnerTag);
 
-    // JSON 키 값을 확인하여 존재하는 카테고리만 배열에 할당
-    if (jEvents.contains("Vfx_Oneshot"))
-        jEvents.at("Vfx_Oneshot").get_to(data.vecAnimEvents[ENUM_TO_UINT(EAnimNotifyId::Vfx_Oneshot)]);
-    if (jEvents.contains("Vfx_Attach_On"))
-        jEvents.at("Vfx_Attach_On").get_to(data.vecAnimEvents[ENUM_TO_UINT(EAnimNotifyId::Vfx_Attach_On)]);
-    if (jEvents.contains("Vfx_Attach_Off"))
-        jEvents.at("Vfx_Attach_Off").get_to(data.vecAnimEvents[ENUM_TO_UINT(EAnimNotifyId::Vfx_Attach_Off)]);
+    if (j.contains("vecAnimEvents")) {
+        const auto& jEvents = j.at("vecAnimEvents");
+        // JSON 키 이름과 배열 인덱스 매핑
+        if (jEvents.contains("Vfx_Oneshot"))
+            jEvents.at("Vfx_Oneshot").get_to(data.vecAnimEvents[ENUM_TO_UINT(EAnimNotifyId::Vfx_Oneshot)]);
+        if (jEvents.contains("Vfx_Attach_On"))
+            jEvents.at("Vfx_Attach_On").get_to(data.vecAnimEvents[ENUM_TO_UINT(EAnimNotifyId::Vfx_Attach_On)]);
+        if (jEvents.contains("Vfx_Attach_Off"))
+            jEvents.at("Vfx_Attach_Off").get_to(data.vecAnimEvents[ENUM_TO_UINT(EAnimNotifyId::Vfx_Attach_Off)]);
+    }
 }
-
 NS_END
 
 NS_BEGIN(Engine)

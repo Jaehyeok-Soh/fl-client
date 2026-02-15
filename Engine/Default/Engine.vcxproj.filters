@@ -388,6 +388,9 @@
     <Filter Include="00. System\05. Component\AnimEffectHandler">
       <UniqueIdentifier>{22e1bd33-7443-4456-8524-78faf8bd6c58}</UniqueIdentifier>
     </Filter>
+    <Filter Include="00. System\14. Effect">
+      <UniqueIdentifier>{c23244ad-e8e9-4cf2-a239-d294e4326c9d}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="..\Private\Timer.cpp">
@@ -792,6 +795,9 @@
     </ClCompile>
     <ClCompile Include="..\private\AnimEffectHandler.cpp">
       <Filter>00. System\05. Component\AnimEffectHandler</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\Effect_Manager.cpp">
+      <Filter>00. System\14. Effect</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -1224,6 +1230,9 @@
     </ClInclude>
     <ClInclude Include="..\Public\AnimEffectHandler.h">
       <Filter>00. System\05. Component\AnimEffectHandler</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\Effect_Manager.h">
+      <Filter>00. System\14. Effect</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

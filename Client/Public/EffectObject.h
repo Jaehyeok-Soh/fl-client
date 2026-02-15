@@ -57,6 +57,9 @@ public:
     virtual HRESULT Spawn_FromPool(void* pArg);
     virtual HRESULT Despawn_FromPool();
 
+public:
+    _bool IsEffectfinish() {return m_bIsEffectFinish;}
+
 private:
     //  ==========  Shader Binding Setting  =============
     HRESULT Bind_ShaderResource();
@@ -105,6 +108,8 @@ private:
    CShader*                  m_pShader = { nullptr };
    CComputeShader*           m_pComputeShader = { nullptr };
    CTransform*               m_pTransform = { nullptr };
+
+   _bool                     m_bIsEffectFinish = { false };
 };
 
 NS_END
