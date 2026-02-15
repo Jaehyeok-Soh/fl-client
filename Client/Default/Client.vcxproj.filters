@@ -295,6 +295,9 @@
     <Filter Include="05. Component\Stat\StatCom_Player">
       <UniqueIdentifier>{65804a62-163c-4d9e-96ad-c89ac5470b42}</UniqueIdentifier>
     </Filter>
+    <Filter Include="06. FSM\Player\Attack\JumpAtt">
+      <UniqueIdentifier>{448e7000-60b0-4cf4-88e5-7cd7d5e945e8}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="targetver.h">
@@ -570,6 +573,12 @@
     <ClInclude Include="..\Public\StatCom_Player.h">
       <Filter>05. Component\Stat\StatCom_Player</Filter>
     </ClInclude>
+    <ClInclude Include="..\Public\State_JumpAttStart.h">
+      <Filter>06. FSM\Player\Attack\JumpAtt</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\State_JumpAttEnd.h">
+      <Filter>06. FSM\Player\Attack\JumpAtt</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <Image Include="Client.ico">
@@ -836,6 +845,12 @@
     </ClCompile>
     <ClCompile Include="..\Private\StatCom_Player.cpp">
       <Filter>05. Component\Stat\StatCom_Player</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\State_JumpAttStart.cpp">
+      <Filter>06. FSM\Player\Attack\JumpAtt</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\State_JumpAttEnd.cpp">
+      <Filter>06. FSM\Player\Attack\JumpAtt</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

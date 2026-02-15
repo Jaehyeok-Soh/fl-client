@@ -25,12 +25,11 @@
 #include "StateBase_Player.h"
 
 #pragma region State
-#include "State_Combo_First.h"
-#include "State_Combo_Second.h"
-#include "State_Combo_Third.h"
-#include "State_Combo_Fourth.h"
-
 #include "State_MoonCombo.h"
+
+#include "State_JumpAttStart.h"
+#include "State_JumpAttEnd.h"
+
 #pragma endregion
 
 #include "GameInstance.h"
@@ -638,18 +637,70 @@ HRESULT CMainPlayer::Ready_AttackStates()
     if (!(pActionState = Get_Component<CPlayerActionState>()))
         return E_FAIL;
 
-    CState_MoonCombo::MOONCOMBO_DESC tDesc = {};
-    tDesc.vCombo_CheckTimes = Vec4{ 0.9f,0.9f,1.5f,2.f };
-    tDesc.iSlideAnimIdx     = Get_AnimationIndex(L"Animation_PlayerMoon_Sword_SlideAttack");
-    tDesc.iFirstAnimIdx     = Get_AnimationIndex(L"Animation_PlayerMoon_Sword_RunAttack_01");
-    tDesc.iSecondAnimIdx    = Get_AnimationIndex(L"Animation_PlayerMoon_Sword_RunAttack_02");
-    tDesc.iThirdAnimIdx     = Get_AnimationIndex(L"Animation_PlayerMoon_Sword_RunAttack_03");
-    tDesc.iFourthAnimIdx    = Get_AnimationIndex(L"Animation_PlayerMoon_Sword_RunAttack_04");
-    tDesc.iEndStateIndex = ENUM_TO_UINT(State::END);
+    vector<_uint> vecChangeState_ByKey{};
+    vecChangeState_ByKey.resize(ENUM_TO_SZET(CStateBase_Player::STATEKEY::END), ENUM_TO_UINT(State::END));
+
+    TIME_COUNTER tKeyTimer = {};
+    tKeyTimer.bCountTime = false;
+    tKeyTimer.bTimeReset = false;
+
+    // combo state
+    {
+        CState_MoonCombo::MOONCOMBO_DESC tDesc = {};
+        tDesc.vCombo_CheckTimes = Vec4{ 0.9f,0.9f,1.5f,2.f };
+        tDesc.iSlideAnimIdx = Get_AnimationIndex(L"Animation_PlayerMoon_Sword_SlideAttack");
+        tDesc.iFirstAnimIdx = Get_AnimationIndex(L"Animation_PlayerMoon_Sword_RunAttack_01");
+        tDesc.iSecondAnimIdx = Get_AnimationIndex(L"Animation_PlayerMoon_Sword_RunAttack_02");
+        tDesc.iThirdAnimIdx = Get_AnimationIndex(L"Animation_PlayerMoon_Sword_RunAttack_03");
+        tDesc.iFourthAnimIdx = Get_AnimationIndex(L"Animation_PlayerMoon_Sword_RunAttack_04");
+        tDesc.iEndStateIndex = ENUM_TO_UINT(State::END);
+
+        if (FAILED(pActionState->Add_State(ENUM_TO_UINT(State::COMBO), CState_MoonCombo::Create(pActionState, &tDesc))))
+            return E_FAIL;
+    }
 
 
-    if (FAILED(pActionState->Add_State(ENUM_TO_UINT(State::COMBO), CState_MoonCombo::Create(pActionState, &tDesc))))
-        return E_FAIL;
+    // JumpAttStart
+    {
+        CStateBase_Player::PLAYER_STATEBASE_DESC  desc = {};
+        desc.FAniFlags = CStateBase::STATEANI_FLAG::SA_HasPreAni;
+        desc.vecPreAnims = {
+                                {-1, Get_AnimationIndex(L"Animation_PlayerMoon_Sword_FallAttack_Start")}
+        };
+        desc.vecMainAnims = { Get_AnimationIndex(L"Animation_PlayerMoon_Sword_FallAttack_Loop") }; //Animation_PlayerMoon_Idle //Animation_Pino_Combo_Slash1
+        desc.bBlend = false;
+        desc.bLoop = true;
+
+        desc.FMoves = CStateBase_Player::MOVEFLAGS::OWN;
+        desc.FCollis = 0;
+
+        desc.vecChangeState_ByKey = vecChangeState_ByKey;
+
+        desc.tKeyTimer = tKeyTimer;
+
+        if (FAILED(pActionState->Add_State(ENUM_TO_UINT(State::JUMPATTSTART), CState_JumpAttStart::Create(pActionState, &desc))))
+            return E_FAIL;
+    }
+
+    // JumpAttEnd
+    {
+        CStateBase_Player::PLAYER_STATEBASE_DESC  desc = {};
+        desc.FAniFlags = 0;
+        desc.vecMainAnims = { Get_AnimationIndex(L"Animation_PlayerMoon_Sword_FallAttack_End") }; //Animation_PlayerMoon_Idle //Animation_Pino_Combo_Slash1
+        desc.bBlend = true;
+        desc.bLoop = false;
+
+        desc.FMoves = 0;
+        desc.FCollis = 0;
+
+        vecChangeState_ByKey[ENUM_TO_SZET(CStateBase_Player::STATEKEY::LOOPDONE)] = ENUM_TO_UINT(State::IDLE);
+        desc.vecChangeState_ByKey = vecChangeState_ByKey;
+
+        desc.tKeyTimer = tKeyTimer;
+
+        if (FAILED(pActionState->Add_State(ENUM_TO_UINT(State::JUMPATTEND), CState_JumpAttEnd::Create(pActionState, &desc))))
+            return E_FAIL;
+    }
 
     return S_OK;
 }
