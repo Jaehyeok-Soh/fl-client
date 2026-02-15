@@ -27,6 +27,7 @@ public:
 			MODEL,
 			ANIMATION,
 			PARTS,
+			DESCRIPTION,
 			END
 		};
 	};
@@ -64,7 +65,7 @@ private:
 	void Load_AnimModel(fs::path animModelPath);
 	void Create_AnimModel(fs::path animModelPath);
 	wstring Create_AnimModelPrototype(fs::path animModelPath);
-	void SetAnimationInfo();
+	void SetAnimationInfo(fs::path animModelPath);
 
 private:
 	class CImGui_ToolManager*	m_pImGuiManager		= { nullptr };

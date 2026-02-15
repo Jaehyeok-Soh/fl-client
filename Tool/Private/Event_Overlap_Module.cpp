@@ -50,8 +50,24 @@ void CEvent_Overlap_Module::SetOwner(CAnimObj* pOwner)
 	if (m_pOverlap)
 	{
 		m_pOverlap->Set_Owner(pOwner);
-		m_pOverlap->Awake();
+		Awake();
 	}
+}
+
+void CEvent_Overlap_Module::Modify_AttackOverlap(_uint eventIdx, DTO::ATTACKEVENT event)
+{
+	m_pOverlap->Modify_AttackOverlap(eventIdx, event);
+}
+
+void CEvent_Overlap_Module::Modify_AttackOverlap(vector<DTO::ATTACKEVENT> events)
+{
+	m_pOverlap->Modify_AttackOverlap(events);
+}
+
+void CEvent_Overlap_Module::Awake()
+{
+	if (m_pOverlap)
+		m_pOverlap->Awake();
 }
 
 CEvent_Overlap_Module* CEvent_Overlap_Module::Create(ID3D11Device* pDevice, ID3D11DeviceContext* pDeviceContext)

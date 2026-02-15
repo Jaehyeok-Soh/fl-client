@@ -22,6 +22,30 @@ extern HINSTANCE	g_hInstance;
 struct LoadAnimModel { using Signature = void(path animModelPath); };
 struct LoadAttackOverlap { using Signature = void(CPhysicsAttackOverlap* pAttackOverlap); };
 
+static const char* eventTypeItems[EAnimEvent::END] = { "OVERLAP", "EFFECT", "SOUND", "NONE" };
+static const char* overlapTypeItems[EOverlapType::END] = { "Box", "Sphere", "Capsule"};
+static const char* filterGroupItems[EPhysicsFilterType::END] =
+{
+	"PLAYER",
+	"ATTACK",
+	"SKILL",
+	"ATTACK_PROJECTTILE",
+	"SKILL_PROJECTTILE",
+	"MONSTER",
+	"MONSTER_ATTACK",
+	"MONSTER_SKILL",
+	"MONSTER_ATTACK_PROJECTTILE",
+	"MONSTER_SKILL_PROJECTTILE",
+	"MAP",
+	"OBJECT1",
+	"OBJECT2",
+	"TRIGGER_UI",
+	"TRIGGER_QUEST",
+	"TRIGGER_SPAWN",
+	"TRIGGER_DIRECTION",
+	"NONE"
+};
+
 typedef struct tagDirectory
 {
 	fs::path directory;
@@ -65,6 +89,9 @@ typedef struct tagAnimControllerInfo
 	_uint iCurrentAnimIndex = {};
 	_uint iCurrentBoneIndex = {};
 
+	_int iCurrentAttackEventIndex = { -1 };
+	_int iCurrentEffectEventIndex = { -1 };
+
 	_uint fDuration = {};
 	_uint fTrackPosition = {};
 
@@ -81,6 +108,7 @@ typedef struct tagAnimControllerInfo
 	/// <summary>
 	/// 엔진 데이터
 	/// </summary>
+	fs::path modelPath = {};
 	CAnimObj* pCurrentObject = { nullptr };
 	CModel* pModel = { nullptr };
 	_uint  iCurrentAnimationState = {};

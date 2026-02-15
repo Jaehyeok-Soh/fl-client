@@ -31,6 +31,21 @@ public:
 	void Render();
 
 /// <summary>
+/// 애니메이션 툴 공용 GUI
+/// </summary>
+public:
+	/// <summary>
+	/// 확인, 취소 모달
+	/// 같은 imbui::begin, imgui::end 안에서
+	/// ImGui::OpenPopup("{strModalId}"); 이 호출되야함
+	/// </summary>
+	/// <param name="strModalId">모달 id</param>
+	/// <param name="message">메세지 id</param>
+	/// <returns>-1 : 대기, 0 : 취소, 1 : 확인</returns>
+	_int Render_ConfirmModal(string strModalId, string message);
+	void Open_ConfirmModal(string strModalId);
+
+/// <summary>
 /// 외부에 애니메이션 정보 건내주기
 /// </summary>
 public:
@@ -42,7 +57,7 @@ public:
 /// </summary>
 public:
 	// 오브젝트와 정보 다시 가져오기
-	void SetAnimationObject(CAnimObj* pObject);
+	void SetAnimationObject(CAnimObj* pObject, fs::path animModelPath);
 	void SetAnimControllInfo();
 	void SetAnimationInfo();
 	void SetBoneInfo();
@@ -55,6 +70,15 @@ public:
 
 	// 애니메이션 바꾸기
 	void ChangeAnimation(_uint iIndex);
+
+/// <summary>
+/// 모듈(컴포넌트) 컨트롤
+/// </summary>
+public:
+	// 히트박스 리셋
+	void Awake_AttackOverlap();
+	void Modify_AttackOverlap(_uint eventIdx, DTO::ATTACKEVENT event); // 히트박스 수정
+	void Modify_AttackOverlap(vector<DTO::ATTACKEVENT> events); // 전체 히트박스 수정
 
 private:
 	// 매 프레임 가져오는 애니메이션 정보
@@ -77,6 +101,7 @@ private:
 public:
 	HRESULT Load_AttackOverlap(fs::path path);
 	void Set_AttackOverlap(CPhysicsAttackOverlap* pAttackOverlap);
+	HRESULT Save_AttackOverlap(fs::path path, string strAnimTag, _int iPool);
 private:
 	HRESULT Ready_Builder();
 

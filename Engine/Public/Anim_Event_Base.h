@@ -7,7 +7,7 @@ namespace DTO
 {
 	typedef struct tagAnimEventBase1
 	{
-		AnimEvent::Enum eEventType = AnimEvent::NONE;
+		EAnimEvent::Enum eEventType = EAnimEvent::NONE;
 		string strDescription = {};
 		string strAnimTag = {};
 		unsigned int iAnimIndex = {};

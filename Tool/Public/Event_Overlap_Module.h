@@ -28,7 +28,12 @@ public:
 
 	void SetAttackOverlap(CPhysicsAttackOverlap* pAttackOverlap, CAnimObj* pOwner);
 	void SetOwner(CAnimObj* pOwner);
-	vector<DTO::ATTACKEVENT> GetEvents() { return m_pOverlap->GetEvents(); }
+	vector<DTO::ATTACKEVENT>& GetEvents() { return m_pOverlap->GetEvents(); }
+
+	void Modify_AttackOverlap(_uint eventIdx, DTO::ATTACKEVENT event);
+	void Modify_AttackOverlap(vector<DTO::ATTACKEVENT> events);
+
+	void Awake();
 
 private:
 	ID3D11Device* m_pDevice{};

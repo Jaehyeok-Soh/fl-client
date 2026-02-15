@@ -36,14 +36,19 @@ private:
 
 	void DrawController();
 
+	// 이벤트 추가 모달
+private:
+	void Render_AddEventModal();
+
 private:
 	class CAnimTool_Manager* m_pAnimToolManager = { nullptr };
 
-	ANIMCTRLINFO& m_tAnimControllInfo;
+	ANIMCTRLINFO* m_tAnimControllInfo;
 
-	DTO::ANIM_EVENT_INFO1& m_tEventInfo;
+	DTO::ANIM_EVENT_INFO1* m_tEventInfo;
 
-	_int iSelectedAttackEvent = { -1 };
+	// imgui
+	EAnimEvent::Enum m_eEventTypeCombo = EAnimEvent::NONE;
 
 public:
 	static			CPanel_AnimationController* Create(const _char* pLabel, CLevel* pOwner, ID3D11Device* pDevice, ID3D11DeviceContext* pDeviceContext);

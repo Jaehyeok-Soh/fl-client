@@ -42,11 +42,6 @@ void CPhysicsAttackOverlap::Render()
 
 void CPhysicsAttackOverlap::Awake()
 {
-	for (auto& event : m_activeEvents)
-		Safe_Release(event);
-
-	m_activeEvents.clear();
-
 	PoolClear();
 
 	if (m_pOwner == nullptr)
@@ -96,6 +91,60 @@ void CPhysicsAttackOverlap::Update(_float fTimeDelta)
 			iter++;
 		}
 	}
+}
+
+void CPhysicsAttackOverlap::Modify_AttackOverlap(_uint eventIdx, DTO::ATTACKEVENT event)
+{
+	PHYSICSCOLLIDER_DESC desc;
+
+	switch (event.tHitboxDesc.eType)
+	{
+	case EOverlapType::Enum::BOX:
+	{
+		desc.eShape = EPhysicsShape::BOX;
+		desc.vExtents = event.tHitboxDesc.vExtents;
+	}
+	break;
+	case EOverlapType::Enum::SPHERE:
+	{
+		desc.eShape = EPhysicsShape::SPHERE;
+		desc.fRadius = event.tHitboxDesc.fRadius;
+	}
+	break;
+	case EOverlapType::Enum::CAPSULE:
+	{
+		desc.eShape = EPhysicsShape::CAPSULE;
+		desc.fRadius = event.tHitboxDesc.fRadius;
+		desc.fHeight = event.tHitboxDesc.fHeight;
+	}
+	break;
+	default:
+		return;
+	}
+
+	vector<PxShape*> shapes = m_pGameInstance->GetShape(&desc);
+	if (shapes.size() > 0)
+		event.tHitboxDesc.geometry = shapes.front()->getGeometry();
+	else
+		return;
+
+	for (auto& shape : shapes)
+		PX_RELEASE(shape);
+
+	event.tHitboxDesc.filterData.data.word0 = event.tHitboxDesc.eFilterLayer;
+	event.tHitboxDesc.filterData.data.word1 = event.tHitboxDesc.iFilterMask;
+	event.tHitboxDesc.filterData.flags = PxQueryFlag::ePREFILTER | PxQueryFlag::eDYNAMIC | PxQueryFlag::eNO_BLOCK;
+	event.tHitboxDesc.matOffset = Matrix::CreateTranslation(event.tHitboxDesc.vOffset);
+
+	event.tHitboxDesc.filterCallback = m_pFilterCallback;
+
+	m_tDesc.attackEvents[eventIdx] = event;
+}
+
+void CPhysicsAttackOverlap::Modify_AttackOverlap(vector<DTO::ATTACKEVENT> events)
+{
+	m_tDesc.attackEvents = events;
+	Ready_OverlapInfo();
 }
 
 void CPhysicsAttackOverlap::GetAnimation()
@@ -148,18 +197,25 @@ void CPhysicsAttackOverlap::Ready_OverlapInfo()
 
 		switch (event.tHitboxDesc.eType)
 		{
-		case OverlapType::Enum::BOX:
+		case EOverlapType::Enum::BOX:
 		{
 			desc.eShape = EPhysicsShape::BOX;
 			desc.vExtents = event.tHitboxDesc.vExtents;
 		}
 			break;
-		case OverlapType::Enum::SPHERE:
+		case EOverlapType::Enum::SPHERE:
 		{
 			desc.eShape = EPhysicsShape::SPHERE;
 			desc.fRadius = event.tHitboxDesc.fRadius;
 		}
-			break;
+		break;
+		case EOverlapType::Enum::CAPSULE:
+		{
+			desc.eShape = EPhysicsShape::CAPSULE;
+			desc.fRadius = event.tHitboxDesc.fRadius;
+			desc.fHeight = event.tHitboxDesc.fHeight;
+		}
+		break;
 		default:
 			continue;
 		}
@@ -184,6 +240,11 @@ void CPhysicsAttackOverlap::Ready_OverlapInfo()
 
 void CPhysicsAttackOverlap::PoolClear()
 {
+	for (auto& event : m_activeEvents)
+		Safe_Release(event);
+
+	m_activeEvents.clear();
+
 	while (!m_eventPool.empty())
 	{
 		Safe_Release(m_eventPool.front());
@@ -217,11 +278,6 @@ CComponent* CPhysicsAttackOverlap::Clone(void* pArg)
 
 void CPhysicsAttackOverlap::Free()
 {
-	for (auto& event : m_activeEvents)
-		Safe_Release(event);
-
-	m_activeEvents.clear();
-
 	PoolClear();
 
 	Safe_Release(m_pOwnerModel);

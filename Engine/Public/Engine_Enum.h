@@ -388,15 +388,46 @@ namespace Engine
 		};
 	}PHYSICSFILTERGROUP;
 
+	struct EPhysicsFilterType
+	{
+		enum Enum : unsigned int
+		{
+			PLAYER,
+			ATTACK,
+			SKILL,
+			ATTACK_PROJECTTILE,
+			SKILL_PROJECTTILE,
+
+			MONSTER,
+			MONSTER_ATTACK,
+			MONSTER_SKILL,
+			MONSTER_ATTACK_PROJECTTILE,
+			MONSTER_SKILL_PROJECTTILE,
+
+			MAP,
+
+			OBJECT1,
+			OBJECT2,
+
+			TRIGGER_UI,
+			TRIGGER_QUEST,
+			TRIGGER_SPAWN,
+			TRIGGER_DIRECTION,
+
+			NONE,
+			END
+		};
+	};
+
 	//===================
 	// Animation Event
 	//===================
-	struct AnimEvent
+	struct EAnimEvent
 	{
 		enum Enum
 		{
-			EFFECT,
 			OVERLAP,
+			EFFECT,
 			SOUND,
 			NONE,
 			END
@@ -406,12 +437,14 @@ namespace Engine
 	//===================
 	// Attack overlap type
 	//===================
-	struct OverlapType
+	struct EOverlapType
 	{
 		enum Enum
 		{
 			BOX,
-			SPHERE
+			SPHERE,
+			CAPSULE,
+			END
 		};
 	};
 }

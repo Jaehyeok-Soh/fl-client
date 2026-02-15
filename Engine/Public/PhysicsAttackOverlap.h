@@ -32,7 +32,10 @@ public:
 	void Awake();
 	void Update(_float fTimeDelta);
 
-	vector<DTO::ATTACKEVENT> GetEvents() { return m_tDesc.attackEvents; }
+	vector<DTO::ATTACKEVENT>& GetEvents() { return m_tDesc.attackEvents; }
+	
+	void Modify_AttackOverlap(_uint eventIdx, DTO::ATTACKEVENT event);
+	void Modify_AttackOverlap(vector<DTO::ATTACKEVENT> events);
 
 private:
 	void GetAnimation();

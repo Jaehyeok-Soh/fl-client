@@ -38,6 +38,7 @@ public:
 
 	const DTO::ATTACKOVERLAP_DESC& Get_Data() const { return m_Data; }
 	DTO::ATTACKOVERLAP_DESC& Get_Data() { return m_Data; }
+
 private:
 	DTO::ATTACKOVERLAP_DESC m_Data;
 public:

@@ -21,6 +21,9 @@ json CDataDocument_AttackOverlap::ToJson() const
 	j["Category"] = DTO::ECategory::OVERLAP_SCRIPT;
 
 	json jsonArray = json::array();
+
+
+
 	for (const auto& [iType, umapTags] : m_Datas)
 		for (const auto& [strTag, object] : umapTags)
 			jsonArray.push_back(object->ToJson());

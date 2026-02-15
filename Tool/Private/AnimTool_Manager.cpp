@@ -55,10 +55,56 @@ void CAnimTool_Manager::Render()
 	Render_Module();
 }
 
-void CAnimTool_Manager::SetAnimationObject(CAnimObj* pObject)
+_int CAnimTool_Manager::Render_ConfirmModal(string strModalId, string message)
+{
+	_int result = { -1 };
+
+	ImGui::SetNextWindowPos(ImGui::GetMainViewport()->GetCenter(), ImGuiCond_Appearing, ImVec2(0.5f, 0.5f));
+
+	if (ImGui::BeginPopupModal(strModalId.c_str(), NULL, ImGuiWindowFlags_AlwaysAutoResize))
+	{
+		ImGui::TextColored(ImVec4(1.f, 0.f, 0.f, 1.f), message.c_str());
+
+		ImGui::NewLine();
+		ImGui::Separator();
+
+		_float buttonsWidth = 50.f;
+
+		if (ImGui::Button("OK", ImVec2(50, 0)))
+		{
+			result = 1;
+			ImGui::CloseCurrentPopup();
+		}
+
+		ImGui::SameLine();
+
+		_float windowWidth = ImGui::GetWindowContentRegionMax().x;
+		
+		ImGui::SetCursorPosX(windowWidth - buttonsWidth);
+
+		if (ImGui::Button("Cancel", ImVec2(buttonsWidth, 0)))
+		{
+			result = -1;
+			ImGui::CloseCurrentPopup(); // ±×³É ´Ý±â
+		}
+
+		ImGui::EndPopup();
+	}
+
+	return result;
+}
+
+void CAnimTool_Manager::Open_ConfirmModal(string strModalId)
+{
+	ImGui::OpenPopup(strModalId.c_str());
+}
+
+void CAnimTool_Manager::SetAnimationObject(CAnimObj* pObject, fs::path animModelPath)
 {
 	if (!pObject)
 		return;
+
+	m_tAnimControllInfo.modelPath = animModelPath;
 
 	m_tAnimControllInfo.pCurrentObject = pObject;
 
@@ -270,11 +316,58 @@ void CAnimTool_Manager::Set_AttackOverlap(CPhysicsAttackOverlap* pAttackOverlap)
 		m_tEventInfo.vecAttackEvents = m_pOverlapModule->GetEvents();
 }
 
+HRESULT CAnimTool_Manager::Save_AttackOverlap(fs::path path, string strAnimTag, _int iPool)
+{
+	ELevelType eLevelType = ELevelType::ANIMATION;
+	DTO::ECategory eCategory = DTO::ECategory::OVERLAP_SCRIPT;
+	_uint iLevelID = ENUM_TO_UINT(eLevelType);
+
+	if (eCategory != DTO::ECategory::OVERLAP_SCRIPT)
+		return E_FAIL;
+
+	if (FAILED(m_pGameInstance->Regist_Document<CDataDocument_AttackOverlap>(iLevelID, eCategory)))
+		return E_FAIL;
+
+	CDataDocumentBase* pDocument = m_pGameInstance->Ensure_Document(iLevelID, eCategory, path);
+	if (pDocument == nullptr)
+		return E_FAIL;
+
+	CDataDocument_AttackOverlap* pAttackOverlapDoc = static_cast<CDataDocument_AttackOverlap*>(pDocument);
+
+	if (pAttackOverlapDoc == nullptr)
+		return E_FAIL;
+
+	DTO::ATTACKOVERLAP_DESC tData{};
+	tData.strTag = m_tAnimControllInfo.modelPath.stem().string();
+	tData.iNumPool = iPool;
+	tData.attackEvents = m_tEventInfo.vecAttackEvents;
+
+	if (FAILED(pAttackOverlapDoc->Try_Add(tData)))
+		return E_FAIL;
+
+	m_pGameInstance->Save_File_Json(iLevelID, DTO::ECategory::OVERLAP_SCRIPT, path);
+}
+
 HRESULT CAnimTool_Manager::Release_Event()
 {
 	m_pGameInstance->Unsubscribe<LoadAttackOverlap>(m_EventHandles[CLevel_Animation::Event::LOAD_OVERLAP_SCRIPT]);
 
 	return S_OK;
+}
+
+void CAnimTool_Manager::Awake_AttackOverlap()
+{
+	m_pOverlapModule->Awake();
+}
+
+void CAnimTool_Manager::Modify_AttackOverlap(_uint eventIdx, DTO::ATTACKEVENT event)
+{
+	m_pOverlapModule->Modify_AttackOverlap(eventIdx, event);
+}
+
+void CAnimTool_Manager::Modify_AttackOverlap(vector<DTO::ATTACKEVENT> events)
+{
+	m_pOverlapModule->Modify_AttackOverlap(events);
 }
 
 void CAnimTool_Manager::Free()

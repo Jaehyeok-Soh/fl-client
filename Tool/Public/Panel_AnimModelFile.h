@@ -8,20 +8,24 @@ class CPanel_AnimModelFile final : public CImGui_Panel
 {
 	struct LOAD_OPTIONS
 	{
-		bool bLoadAnimInfo = true;
-		char strAnimPath[256] = "";
+		_char strAnimTag[256] = "";
+		_int iPoolingCount = {};
 
-		bool bLoadHitbox = true;
-		char strHitboxPath[256] = "";
+		_bool bLoadAnimInfo = true;
+		_char strAnimPath[256] = "";
 
-		bool bLoadEffect = true;
-		char strEffectPath[256] = "";
+		_bool bLoadHitbox = true;
+		_char strHitboxPath[256] = "";
 
-		bool bLoadSound = true;
-		char strSoundPath[256] = "";
+		_bool bLoadEffect = true;
+		_char strEffectPath[256] = "";
+
+		_bool bLoadSound = true;
+		_char strSoundPath[256] = "";
 
 		// 모달을 열 때 초기화하는 함수
 		void Reset() {
+			memset(strAnimTag, 0, 256);
 			memset(strAnimPath, 0, 256);
 			memset(strHitboxPath, 0, 256);
 			memset(strEffectPath, 0, 256);
@@ -56,12 +60,16 @@ private:
 private:
 	LOAD_OPTIONS m_tLoadOptions; // 모달 상태 변수
 	void OpenFileDialog(char* buffer, const char* filter);
+	void SaveFileDialog(char* buffer, const char* filter);
 	void OpenLoadModal();
-	void RenderLoadModal(); // 매 프레임 호출 필요
+	void OpenSaveModal();
+	void RenderLoadModal();
+	void RenderSaveModal();
 
 	// Load data
 private:
 	void Load_HitboxData(fs::path path);
+	void Save_HitboxData(fs::path path);
 
 private:
 	DIR GetRootDir() { return m_tRootDirectory; }

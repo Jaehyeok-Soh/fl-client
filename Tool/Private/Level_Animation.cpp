@@ -22,6 +22,7 @@
 // Panel
 #include "Panel_AnimModelFile.h"
 #include "Panel_AnimationController.h"
+#include "Panel_AnimDescription.h"
 
 #include "DebugDraw.h"
 
@@ -194,6 +195,7 @@ HRESULT CLevel_Animation::Ready_Panels()
 	//m_GuiElements[Elements::MODEL];
 	m_GuiElements[Elements::ANIMATION] = CPanel_AnimationController::Create("Panel_Animation", this, m_pDevice, m_pDeviceContext);
 	//m_GuiElements[Elements::PARTS];
+	m_GuiElements[Elements::DESCRIPTION] = CPanel_AnimDescription::Create("Panel_AnimDescription", this, m_pDevice, m_pDeviceContext);
 
 	return S_OK;
 }
@@ -280,7 +282,7 @@ void CLevel_Animation::Load_AnimModel(fs::path animModelPath)
 
 	Create_AnimModel(animModelPath);
 
-	SetAnimationInfo();
+	SetAnimationInfo(animModelPath);
 }
 
 void CLevel_Animation::Create_AnimModel(fs::path animModelPath)
@@ -328,10 +330,11 @@ wstring CLevel_Animation::Create_AnimModelPrototype(fs::path animModelPath)
 	return prototypeTag;
 }
 
-void CLevel_Animation::SetAnimationInfo()
+void CLevel_Animation::SetAnimationInfo(fs::path animModelPath)
 {
-	m_pAnimToolManager->SetAnimationObject(static_cast<CAnimObj*>(m_pSelectedObject));
+	m_pAnimToolManager->SetAnimationObject(static_cast<CAnimObj*>(m_pSelectedObject), animModelPath);
 	static_cast<CPanel_AnimationController*>(m_GuiElements[Elements::ANIMATION])->SetAnimationObject();
+	static_cast<CPanel_AnimDescription*>(m_GuiElements[Elements::DESCRIPTION])->SetAnimationObject();
 }
 
 CLevel_Animation* CLevel_Animation::Create(ID3D11Device* pDevice, ID3D11DeviceContext* pDeviceContext)

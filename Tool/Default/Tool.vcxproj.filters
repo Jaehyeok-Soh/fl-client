@@ -274,6 +274,9 @@
     <Filter Include="09. Builder\Builder_AttackOverlap">
       <UniqueIdentifier>{2f456e24-0af4-4629-88ec-4e1912aa624e}</UniqueIdentifier>
     </Filter>
+    <Filter Include="06. ImGui\01. Panel\Animation\Panel_AnimDescription">
+      <UniqueIdentifier>{ed901c12-32d8-4863-9122-41a77bd083ee}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="framework.h">
@@ -535,6 +538,9 @@
     <ClInclude Include="..\Public\Builder_AttackOverlap.h">
       <Filter>09. Builder\Builder_AttackOverlap</Filter>
     </ClInclude>
+    <ClInclude Include="..\Public\Panel_AnimDescription.h">
+      <Filter>06. ImGui\01. Panel\Animation\Panel_AnimDescription</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <Image Include="small.ico">
@@ -783,6 +789,9 @@
     </ClCompile>
     <ClCompile Include="..\Private\Builder_AttackOverlap.cpp">
       <Filter>09. Builder\Builder_AttackOverlap</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\Panel_AnimDescription.cpp">
+      <Filter>06. ImGui\01. Panel\Animation\Panel_AnimDescription</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

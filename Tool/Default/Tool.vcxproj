@@ -161,6 +161,7 @@
     <ClInclude Include="..\Public\Event_Overlap_Module.h" />
     <ClInclude Include="..\Public\Gravity_Force.h" />
     <ClInclude Include="..\Public\Panel_AnimationController.h" />
+    <ClInclude Include="..\Public\Panel_AnimDescription.h" />
     <ClInclude Include="..\Public\Panel_Model.h" />
     <ClInclude Include="..\Public\Panel_AnimModelFile.h" />
     <ClInclude Include="..\Public\UIButton_Component.h" />
@@ -250,6 +251,7 @@
     <ClCompile Include="..\Private\Event_Overlap_Module.cpp" />
     <ClCompile Include="..\Private\Gravity_Force.cpp" />
     <ClCompile Include="..\Private\Panel_AnimationController.cpp" />
+    <ClCompile Include="..\Private\Panel_AnimDescription.cpp" />
     <ClCompile Include="..\Private\Panel_Model.cpp" />
     <ClCompile Include="..\Private\Panel_AnimModelFile.cpp" />
     <ClCompile Include="..\Private\UIButton_Component.cpp" />

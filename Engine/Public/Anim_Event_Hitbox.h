@@ -20,9 +20,10 @@ namespace DTO
 		Matrix matOffset;
 		CPhysics_QueryFilterCallback* filterCallback = { nullptr };
 
-		OverlapType::Enum eType = OverlapType::Enum::SPHERE;
+		EOverlapType::Enum eType = EOverlapType::Enum::SPHERE;
 		Vec3 vExtents = {};
 		_float fRadius = {};
+		_float fHeight = {};
 		Vec3 vOffset = {};
 
 		_float fTickTime = { -1.f };
@@ -49,6 +50,7 @@ namespace DTO
 		j["eType"] = d.eType;
 		j["vExtents"] = { { "x", d.vExtents.x },{ "y", d.vExtents.y },{ "z", d.vExtents.z } };
 		j["fRadius"] = d.fRadius;
+		j["fHeight"] = d.fHeight;
 		j["vOffset"] = { { "x", d.vOffset.x },{ "y", d.vOffset.y },{ "z", d.vOffset.z } };
 		j["fTickTime"] = d.fTickTime;
 		j["fDamage"] = d.fDamage;
@@ -69,6 +71,10 @@ namespace DTO
 		jext.at("z").get_to(d.vExtents.z);
 		
 		j.at("fRadius").get_to(d.fRadius);
+		if (j.contains("fHeight"))
+			j.at("fHeight").get_to(d.fHeight);
+		else
+			d.fHeight = 0.f;
 
 		const auto& joff = j.at("vOffset");
 		joff.at("x").get_to(d.vOffset.x);
