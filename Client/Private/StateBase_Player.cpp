@@ -304,6 +304,11 @@ _bool CStateBase_Player::Check_OnGround(_float fMaxDist)
 	return static_cast<CPlayer*>(Get_OwnerObject())->Check_OnGround(fMaxDist);
 }
 
+void CStateBase_Player::Change_Weapon(_uint iPart, _uint iState)
+{
+	static_cast<CPlayer*>(Get_OwnerObject())->Change_Weapon(iPart, iState);
+}
+
 void CStateBase_Player::Free()
 {
 	Super::Free();

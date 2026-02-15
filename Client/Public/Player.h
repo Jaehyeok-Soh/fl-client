@@ -57,7 +57,10 @@ public:
 		,CHARGE
 		,SKILL1
 		,SKILL2
-		,FALLATT1
+
+		,JUMPATTSTART
+		,JUMPATTEND
+		,JUMPGUN
 
 		,JUMPWALL
 
@@ -82,7 +85,7 @@ public:
 
 	// state funcs
 public:
-	void Change_Weapon(Part ePart, _uint iState); // 어떤 weapon을 어떤 state로
+	void Change_Weapon(_uint iPart, _uint iState); // 어떤 weapon을 어떤 state로
 	_bool Check_OnGround(_float fMaxDist = 0.72f);
 
 private:

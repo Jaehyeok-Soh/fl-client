@@ -72,8 +72,10 @@ protected:
 	_bool Check_SkillKey(const _float fTimeDelta);
 	_bool Check_Collis(const _float fTimeDelta);
 
+	// player 객체 연결 함수들
 protected:
-	_bool Check_OnGround(_float fMaxDist = 0.72f); // 땅에 있는지 검사
+	_bool	Check_OnGround(_float fMaxDist = 0.72f); // 땅에 있는지 검사
+	void	Change_Weapon(_uint iPart, _uint iState);
 
 protected:
 	virtual void OwnMove(const _float fTimeDelta) {};		// state 내부에서 알아서 움직일때
