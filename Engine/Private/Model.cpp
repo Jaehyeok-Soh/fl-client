@@ -143,29 +143,38 @@ HRESULT CModel::Initialize_Prototype(void* pArg)
 
 
 	/* bone 정보 빼돌릴래? */
-	Flags FStageBone = pDesc->FStageBone;
-	m_bStageBones = true;
-
-	// 안 빼돌리고 싶다면 : return
-	if (Engine_Utils::Has_Flag(FStageBone, STAGEING_BONE::SB_ZEROBONE))
 	{
-		m_bStageBones = false;
-		return S_OK;
-	}
+		Flags FStageBone = pDesc->FStageBone;
+		m_bStageBones = true;
 
-	// 빼돌릴건데 모든 뼈를 빼돌리고 싶다면
-	else if (Engine_Utils::Has_Flag(FStageBone, STAGEING_BONE::SB_ALLBONE))
-	{
-		pDesc->vecStageBoneIndices.reserve(Get_BoneCount());
-
-		for (size_t i = 0; i < Get_BoneCount(); i++)
+		// 안 빼돌리고 싶다면 : return
+		if (Engine_Utils::Has_Flag(FStageBone, STAGEING_BONE::SB_ZEROBONE))
 		{
-			pDesc->vecStageBoneIndices[i] = (_uint)i;
+			m_bStageBones = false;
+			return S_OK;
 		}
+
+		// 빼돌릴건데 모든 뼈를 빼돌리고 싶다면
+		else if (Engine_Utils::Has_Flag(FStageBone, STAGEING_BONE::SB_ALLBONE))
+		{
+			pDesc->vecStageBoneIndices.reserve(Get_BoneCount());
+
+			for (size_t i = 0; i < Get_BoneCount(); i++)
+			{
+				pDesc->vecStageBoneIndices[i] = (_uint)i;
+			}
+		}
+
+		// staging 정보 생성
+		Make_Staging(pDesc);
 	}
 
-	// staging 정보 생성
-	Make_Staging(pDesc);
+
+	for (size_t i = 0; i < m_vecAnimations.size(); i++)
+	{
+		if (Get_AnimationName(i) == TEXT("Animation_PlayerMoon_Land_Inplace"))
+			m_vecAnimations[i]->Set_ApplyRootMotion(false);
+	}
 
 	return S_OK;
 }
