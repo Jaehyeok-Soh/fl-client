@@ -29,11 +29,20 @@ HRESULT CState_JumpBack::Start(void* pArg, _bool bForce)
 	if (FAILED(Super::Start(pArg, bForce)))
 		return E_FAIL;
 
+	Set_ApplyGravity(false);
+
 	return S_OK;
 }
 
 void CState_JumpBack::Update(const _float fTimeDelta)
 {
+	// 바닥 충돌 검사 후 change
+	if (IsOn_CCTFlag(PxControllerCollisionFlag::Enum::eCOLLISION_DOWN))
+	{
+		Change_PlayerState(ENUM_TO_UINT(CPlayer::State::LAND));
+		return;
+	}
+
 	Super::Update(fTimeDelta);
 }
 
@@ -41,6 +50,8 @@ HRESULT CState_JumpBack::End()
 {
 	if (FAILED(Super::End()))
 		return E_FAIL;
+
+	Set_ApplyGravity(true);
 
 	return S_OK;
 }
