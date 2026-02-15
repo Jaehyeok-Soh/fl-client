@@ -319,7 +319,7 @@ Matrix CPhysics_Utils::GetUnrealMatrix(const Matrix& mat)
 	return matBasis * mat * matBasisInv;
 }
 
-_bool CPhysics_Utils::RayCast(Vec3 vWorldPos, Vec3 vDir, _float fMaxDist)
+_bool CPhysics_Utils::RayCast(Vec3 vWorldPos, Vec3 vDir, _float fMaxDist, CPhysics_QueryFilterCallback* pFilterCall)
 {
 	// 시작 월드 좌표
 	// 쏠 방향 벡터 : 사이즈 꼭 1 이어야함
@@ -332,9 +332,32 @@ _bool CPhysics_Utils::RayCast(Vec3 vWorldPos, Vec3 vDir, _float fMaxDist)
 	vDir.Normalize();
 	PxVec3 d3 = { vDir.x,vDir.y,vDir.z };
 
+	// 2. 필터 데이터 설정 (ePRE_FILTER 필수!)
+	PxQueryFilterData filterData;
+	filterData.flags |= PxQueryFlag::ePREFILTER; // 콜백 사용하겠다
+	filterData.flags |= PxQueryFlag::eSTATIC;    // 정적 물체(지형 등) 검사하겠다
+	filterData.flags |= PxQueryFlag::eDYNAMIC;   // 동적 물체(캐릭터 등) 검사하겠다
+
 	// 3. 검사
-	if (m_bRayHit = m_pScene->raycast(o3, d3, fMaxDist, m_RayCastHitBuffer))
-		return m_bRayHit;//m_RayCastHitBuffer.block.actor
+	if (pFilterCall)
+	{
+		if (m_bRayHit = m_pScene->raycast(o3, d3, fMaxDist, m_RayCastHitBuffer, PxHitFlag::eDEFAULT, filterData, pFilterCall))
+		{
+			PxF32 hitDist = m_RayCastHitBuffer.block.distance;
+
+			return m_bRayHit;//m_RayCastHitBuffer.block.actor
+		}
+	}
+
+	else
+	{
+		if (m_bRayHit = m_pScene->raycast(o3, d3, fMaxDist, m_RayCastHitBuffer))
+		{
+			PxF32 hitDist = m_RayCastHitBuffer.block.distance;
+
+			return m_bRayHit;//m_RayCastHitBuffer.block.actor
+		}
+	}
 
 	return m_bRayHit;
 }

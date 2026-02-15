@@ -947,9 +947,9 @@ PxVec3 CGameInstance::GetPureScale(const Matrix& mat)
 	return m_pPhysics_Module->GetPureScale(mat);
 }
 
-_bool CGameInstance::RayCast(Vec3 vWorldPos, Vec3 vDir, _float fMaxDist)
+_bool CGameInstance::RayCast(Vec3 vWorldPos, Vec3 vDir, _float fMaxDist, CPhysics_QueryFilterCallback* pFilterCall)
 {
-	return m_pPhysics_Module->RayCast(vWorldPos, vDir, fMaxDist);
+	return m_pPhysics_Module->RayCast(vWorldPos, vDir, fMaxDist, pFilterCall);
 }
 
 #ifdef _DEBUG

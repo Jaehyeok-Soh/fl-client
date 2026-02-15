@@ -361,9 +361,9 @@ void CPhysics_Module::Check_Leak()
 	OutputDebugStringW(L"----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- \r ");
 }
 
-_bool CPhysics_Module::RayCast(Vec3 vWorldPos, Vec3 vDir, _float fMaxDist)
+_bool CPhysics_Module::RayCast(Vec3 vWorldPos, Vec3 vDir, _float fMaxDist, CPhysics_QueryFilterCallback* pFilterCall)
 {
-	return m_pUtils->RayCast(vWorldPos, vDir, fMaxDist);
+	return m_pUtils->RayCast(vWorldPos, vDir, fMaxDist, pFilterCall);
 }
 
 void CPhysics_Module::ClearPhysics()
