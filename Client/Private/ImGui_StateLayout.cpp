@@ -7,6 +7,7 @@
 #include "Body.h"
 #include "Model.h"
 #include "Bone.h"
+#include "StateBase_Player.h"
 
 #include "GameInstance.h"
 
@@ -36,7 +37,7 @@ void CImGui_StateLayout::Render(CGameObject* pGo)
 	Vector3 vCamBonePos = pModel->Get_Bone(417)->Get_CombinedTransformMatrix().Translation();
 
 	ImGui::BeginGroup();
-	ImGui::SeparatorText(m_strLabel.c_str());
+	ImGui::SeparatorText(m_strLabel.c_str());;
 
 	ImGui::Text("State : ");
 	ImGui::SameLine();
@@ -54,17 +55,9 @@ void CImGui_StateLayout::Render(CGameObject* pGo)
 	ImGui::SameLine();
 	ImGui::Text("%f", fBlendTime);
 
-	ImGui::Text("Main Ani Idx : "); // state 내부에서 anim idx
+	ImGui::Text("State Time : ");
 	ImGui::SameLine();
-	ImGui::Text("%u", iMainIdx);
-
-	ImGui::Text("CamBone Pos : ");
-	ImGui::SameLine();
-	ImGui::Text("%f", vCamBonePos.x);
-	ImGui::SameLine();
-	ImGui::Text("%f", vCamBonePos.y);
-	ImGui::SameLine();
-	ImGui::Text("%f", vCamBonePos.z);
+	ImGui::Text("%f", fStateTime);
 
 	ImGui::EndGroup();
 }
