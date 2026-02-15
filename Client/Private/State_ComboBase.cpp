@@ -41,7 +41,9 @@ HRESULT CState_ComboBase::Start(void* pArg, _bool bForce)
 	m_iComboCount	= 1;
 	m_tKeyTimer.fMaxTime = m_ComboTimes[0];
 
-	static_cast<CPlayer*>(Get_OwnerObject())->Change_Weapon(CPlayer::Part::SWORD, ENUM_TO_UINT(CWeapon::State::HAND));
+	//static_cast<CPlayer*>(Get_OwnerObject())->Change_Weapon(CPlayer::Part::SWORD, ENUM_TO_UINT(CWeapon::State::HAND));
+
+	Change_Weapon(CPlayer::Part::SWORD, ENUM_TO_UINT(CWeapon::State::HAND));
 
 	return S_OK;
 }
@@ -60,7 +62,9 @@ HRESULT CState_ComboBase::End()
 	if(FAILED(Super::End()))
 		return E_FAIL;
 
-	static_cast<CPlayer*>(Get_OwnerObject())->Change_Weapon(CPlayer::Part::SWORD, ENUM_TO_UINT(CWeapon::State::HOLD));
+	//static_cast<CPlayer*>(Get_OwnerObject())->Change_Weapon(CPlayer::Part::SWORD, ENUM_TO_UINT(CWeapon::State::HOLD));
+
+	Change_Weapon(CPlayer::Part::SWORD, ENUM_TO_UINT(CWeapon::State::HOLD));
 
 	return S_OK;
 }
@@ -72,8 +76,6 @@ void CState_ComboBase::Change_NextCombo()
 		Change_FirstCombo();
 		return;
 	}
-
-
 
 	// combo 관련 변수 설정
 	m_iMainAnimIdx = m_iComboCount++;
@@ -117,7 +119,7 @@ void CState_ComboBase::Check_Combo()
 	// 너무 시간이 지나면 combo end
 	if (m_fStateElapsed > m_ComboTimes[m_iComboCount - 1] +1.52f)
 	{
-		static_cast<CPlayer*>(Get_OwnerObject())->Change_Weapon(CPlayer::Part::SWORD, ENUM_TO_UINT(CWeapon::State::HOLD));
+		Change_Weapon(CPlayer::Part::SWORD, ENUM_TO_UINT(CWeapon::State::HOLD));
 		return;
 	}
 
