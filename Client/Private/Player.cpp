@@ -1,6 +1,9 @@
 #include "pch.h"
 #include "Player.h"
 
+// has obj
+#include "Physics_QueryFilterCallback.h"
+
 // component
 #include "Navigation.h"
 #include "StatComponent.h"
@@ -56,14 +59,19 @@ CPlayer::CPlayer(ID3D11Device* pDevice, ID3D11DeviceContext* pDeviceContext)
 
 CPlayer::CPlayer(const CPlayer& rhs)
     : Super(rhs)
+    , m_pPhysic_QueryFilter(rhs.m_pPhysic_QueryFilter)
 {
     m_vecPartObjects.resize(Part::END, nullptr);
+    Safe_AddRef(m_pPhysic_QueryFilter);
 }
 
 HRESULT CPlayer::Initialize_Prototype()
 {
     if (FAILED(Super::Initialize_Prototype()))
         return E_FAIL;
+
+    m_pPhysic_QueryFilter = CPhysics_QueryFilterCallback::Create();
+    m_pPhysic_QueryFilter->SetOwner(this);
 
     return S_OK;
 }
@@ -72,6 +80,8 @@ HRESULT CPlayer::Initialize(void* pArg)
 {
     if (FAILED(Super::Initialize(pArg)))
         return E_FAIL;
+
+    m_pPhysic_QueryFilter->SetOwner(this);
 
     PLAYER_DESC* pDesc = static_cast<PLAYER_DESC*>(pArg);
 
@@ -188,6 +198,11 @@ void CPlayer::Change_Weapon(Part ePart, _uint iState)
     }
 }
 
+_bool CPlayer::Check_OnGround()
+{
+    return Get_Component<CTransform>()->Is_OnGround(0.65f, m_pPhysic_QueryFilter);
+}
+
 HRESULT CPlayer::Ready_BaseStates()
 {
     CPlayerActionState* pActionState = { nullptr };
@@ -261,6 +276,11 @@ HRESULT CPlayer::Ready_BaseStates()
         vecChangeState_ByKey[ENUM_TO_SZET(CStateBase_Player::STATEKEY::SPACE)]          = ENUM_TO_UINT(State::JUMP);
         vecChangeState_ByKey[ENUM_TO_SZET(CStateBase_Player::STATEKEY::SHIFT)]          = ENUM_TO_UINT(State::RUNSHORT);
         vecChangeState_ByKey[ENUM_TO_SZET(CStateBase_Player::STATEKEY::LCRTL_PRESS)]    = ENUM_TO_UINT(State::SLIDE);
+        //vecChangeState_ByKey[ENUM_TO_SZET(CStateBase_Player::STATEKEY::Q)]              = ENUM_TO_UINT(CPlayer::State::SKILL1);
+        //vecChangeState_ByKey[ENUM_TO_SZET(CStateBase_Player::STATEKEY::E)]              = ENUM_TO_UINT(CPlayer::State::SKILL2);
+        vecChangeState_ByKey[ENUM_TO_SZET(CStateBase_Player::STATEKEY::LM)]             = ENUM_TO_UINT(CPlayer::State::COMBO);
+        //vecChangeState_ByKey[ENUM_TO_SZET(CStateBase_Player::STATEKEY::RM)]             = ENUM_TO_UINT(CPlayer::State::GUN);
+        vecChangeState_ByKey[ENUM_TO_SZET(CStateBase_Player::STATEKEY::CHARGE)]         = ENUM_TO_UINT(CPlayer::State::CHARGE);
         desc.vecChangeState_ByKey = vecChangeState_ByKey;
 
         desc.tKeyTimer = tKeyTimer;
@@ -647,4 +667,6 @@ HRESULT CPlayer::Ready_Components(PLAYER_DESC* pDesc)
 void CPlayer::Free()
 {
     Super::Free();
+
+    Safe_Release(m_pPhysic_QueryFilter);
 }

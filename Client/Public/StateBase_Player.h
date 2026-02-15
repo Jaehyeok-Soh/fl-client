@@ -73,6 +73,9 @@ protected:
 	_bool Check_Collis(const _float fTimeDelta);
 
 protected:
+	_bool Check_OnGround(); // 땅에 있는지 검사
+
+protected:
 	virtual void OwnMove(const _float fTimeDelta) {};		// state 내부에서 알아서 움직일때
 	virtual void Set_NextStateDesc(_uint iNextState) {};	// 다음 state에 따라 desc을 작성한다 : 각 state 내부에서
 
@@ -85,7 +88,7 @@ private:
 
 private:
 	_bool Has_ChangeState(STATEKEY eKey);
-	_bool Check_OnGround();
+
 
 public:
 	virtual void Free() override;

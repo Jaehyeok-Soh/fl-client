@@ -57,6 +57,7 @@ public:
 		,CHARGE
 		,SKILL1
 		,SKILL2
+		,FALLATT1
 
 		,JUMPWALL
 
@@ -79,8 +80,10 @@ public:
 	virtual _int		Get_AnimationIndex(const wstring& wstrName) override;
 	virtual _wstring	Get_AnimationName(_uint iAniIndex);
 
+	// state funcs
 public:
 	void Change_Weapon(Part ePart, _uint iState); // 어떤 weapon을 어떤 state로
+	_bool Check_OnGround();
 
 private:
 	HRESULT Ready_BaseStates();
@@ -88,6 +91,7 @@ private:
 	HRESULT Ready_Components(PLAYER_DESC* pDesc);
 protected:
 	CStatComponent* m_pStatComp = { nullptr };
+	CPhysics_QueryFilterCallback* m_pPhysic_QueryFilter = { nullptr };
 public:
 	virtual CGameObject* Clone(void* pArg) PURE;
 	virtual void Free() override;
