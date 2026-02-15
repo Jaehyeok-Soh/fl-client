@@ -31,6 +31,8 @@ HRESULT CState_Fall::Start(void* pArg, _bool bForce)
 
 	m_fFallTimeAcc = 0.f;
 
+	Set_ApplyYLerp(false);
+
 	return S_OK;
 }
 
@@ -51,6 +53,8 @@ HRESULT CState_Fall::End()
 		return E_FAIL;
 
 	m_fFallTimeAcc = 0.f;
+
+	Set_ApplyYLerp(true);
 
 	return S_OK;
 }

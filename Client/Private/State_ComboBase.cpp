@@ -115,8 +115,9 @@ void CState_ComboBase::Count_ComboTime(const _float fTimeDelta)
 void CState_ComboBase::Check_Combo()
 {
 	// 너무 시간이 지나면 combo end
-	if (m_fStateElapsed > m_ComboTimes[m_iComboCount - 1] +1.5f)
+	if (m_fStateElapsed > m_ComboTimes[m_iComboCount - 1] +1.52f)
 	{
+		static_cast<CPlayer*>(Get_OwnerObject())->Change_Weapon(CPlayer::Part::SWORD, ENUM_TO_UINT(CWeapon::State::HOLD));
 		return;
 	}
 
