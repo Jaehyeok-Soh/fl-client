@@ -58,6 +58,9 @@ public:
 	void	Bind_AnimationEData(CComputeShader* pAnimEShader);
 	HRESULT Ready_BindBuffers(CComputeShader* pAnimESahder);
 
+	// test
+	void Set_ApplyRootMotion(_bool Apply) { m_bApplyRootMotion = Apply; }
+
 	///////////////
 	//// Event ////
 	///////////////
@@ -92,6 +95,8 @@ private:
 private:
 	_int m_iRootBoneIdx = { -1 };
 	_int m_iRootChannelIdx = { -1 };
+
+	_bool m_bApplyRootMotion = { true };
 
 	///////////////
 	//// Event ////

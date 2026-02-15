@@ -26,6 +26,7 @@ CModelAnimation::CModelAnimation(const CModelAnimation& rhs)
 	, m_iChannelSize(rhs.m_iChannelSize)
 	, m_iRootBoneIdx(rhs.m_iRootBoneIdx)
 	, m_iRootChannelIdx(rhs.m_iRootChannelIdx)
+	, m_bApplyRootMotion(rhs.m_bApplyRootMotion)
 {
 	Safe_AddRef(m_pKeyFrameBuffer);
 	//Safe_AddRef(m_pInputKeySB_SRV);
@@ -55,6 +56,12 @@ HRESULT CModelAnimation::Initialize(void* pArg)
 	}
 	else
 		return E_FAIL;
+
+	if (m_iRootBoneIdx < 0)
+		m_bApplyRootMotion = false;
+
+	//if((_wstring)Get_Name() == )
+	//	m_bApplyRootMotion = false;
 
 	return S_OK;
 }
@@ -129,7 +136,7 @@ _bool CModelAnimation::Update_TransformMatrices(CComputeShader* pAnimECS,_float 
 	pAnimECS->Dispatch(iGroupX, 1, 1);
 
 	//m_iRootChannelIdx
-	if(m_iRootChannelIdx> 0)
+	if(m_bApplyRootMotion)
 		m_vecChannels[(size_t)m_iRootChannelIdx]->Move_OnwerTransform(m_fCurrentTrackPosition, &m_vecCurrentKeyFrameIndices[(size_t)m_iRootChannelIdx], pOwnerTransform, pOwnerPhyCCT, fTimeDelta);
 
 	return false;
@@ -157,8 +164,11 @@ void CModelAnimation::Update_BlendAnimation(CComputeShader* pAnimECS, _float fTi
 	pAnimECS->Dispatch(iGroupX, 1, 1);
 
 	//m_iRootChannelIdx
-	if (m_iRootChannelIdx > 0)
+	if (m_bApplyRootMotion)
 		m_vecChannels[(size_t)m_iRootChannelIdx]->Move_OnwerTransform(m_fCurrentTrackPosition, &m_vecCurrentKeyFrameIndices[(size_t)m_iRootChannelIdx], pOwnerTransform, pOwnerPhyCCT, fTimeDelta);
+
+	//else
+	//	int test = 0;
 }
 
 void CModelAnimation::Bind_AnimationEData(CComputeShader* pAnimEShader)
