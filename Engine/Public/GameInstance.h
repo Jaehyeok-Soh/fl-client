@@ -103,6 +103,7 @@ public:
 	void					Remove_Timer(const _tchar* pTimerTag);
 	void					Compute_TimeDelta(const _tchar* pTimerTag);
 	void					Clear_Timers();
+	class CTimer*			Find_Timer(const _tchar* pTimerTag);
 #pragma endregion
 
 #pragma region PROTOTYPE_MANAGER

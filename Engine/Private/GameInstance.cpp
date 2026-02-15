@@ -11,6 +11,7 @@
 #include "Light_Manager.h"
 #include "Sound_Manager.h"
 #include "Level.h"
+#include "Timer.h"
 #include "Picking.h"
 #include "RenderTarget_Manager.h"
 #include "Timer_Manager.h"
@@ -336,6 +337,11 @@ void CGameInstance::Compute_TimeDelta(const _tchar* pTimerTag)
 void CGameInstance::Clear_Timers()
 {
 	m_pTimer_Manager->Clear_Timers();
+}
+
+CTimer* CGameInstance::Find_Timer(const _tchar* pTimerTag)
+{
+	return m_pTimer_Manager->Find_Timer(pTimerTag);
 }
 #pragma endregion
 
