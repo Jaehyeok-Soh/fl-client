@@ -39,6 +39,7 @@ HRESULT CState_ComboBase::Start(void* pArg, _bool bForce)
 
 	m_bComboTime	= true;
 	m_iComboCount	= 1;
+	m_tKeyTimer.fMaxTime = m_ComboTimes[0];
 
 	static_cast<CPlayer*>(Get_OwnerObject())->Change_Weapon(CPlayer::Part::SWORD, ENUM_TO_UINT(CWeapon::State::HAND));
 
@@ -72,27 +73,31 @@ void CState_ComboBase::Change_NextCombo()
 		return;
 	}
 
-	// 시간들 초기화
-	m_tKeyTimer.fTimeAcc	= 0.f;
-	m_fStateElapsed			= 0.f;
+
 
 	// combo 관련 변수 설정
 	m_iMainAnimIdx = m_iComboCount++;
 	m_bNextCombo = false;
+
+	// 시간들 초기화
+	m_tKeyTimer.fTimeAcc = 0.f;
+	m_tKeyTimer.fMaxTime = m_ComboTimes[m_iComboCount -1];
+	m_fStateElapsed = 0.f;
 
 	Request_ChangeAnimation(m_vecMainAnims[m_iComboCount], true, false, true);
 }
 
 void CState_ComboBase::Change_FirstCombo()
 {
-	// 시간들 초기화
-	m_tKeyTimer.fTimeAcc = 0.f;
-	m_fStateElapsed = 0.f;
-
 	// combo 관련 변수 설정
 	m_iComboCount = 1;
 	m_iMainAnimIdx = 0;
 	m_bNextCombo = false;
+
+	// 시간들 초기화
+	m_tKeyTimer.fTimeAcc = 0.f;
+	m_tKeyTimer.fMaxTime = m_ComboTimes[0];
+	m_fStateElapsed = 0.f;
 
 	Request_ChangeAnimation(m_vecMainAnims[0], true, false, true);
 }
