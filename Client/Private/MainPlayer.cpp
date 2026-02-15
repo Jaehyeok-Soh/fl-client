@@ -30,6 +30,8 @@
 #include "State_JumpAttStart.h"
 #include "State_JumpAttEnd.h"
 
+#include "State_Charge.h"
+
 #pragma endregion
 
 #include "GameInstance.h"
@@ -699,6 +701,36 @@ HRESULT CMainPlayer::Ready_AttackStates()
         desc.tKeyTimer = tKeyTimer;
 
         if (FAILED(pActionState->Add_State(ENUM_TO_UINT(State::JUMPATTEND), CState_JumpAttEnd::Create(pActionState, &desc))))
+            return E_FAIL;
+    }
+
+    // Charge
+    {
+        CStateBase_Player::PLAYER_STATEBASE_DESC  desc = {};
+        desc.FAniFlags = CStateBase::STATEANI_FLAG::SA_HasPreAni | CStateBase::STATEANI_FLAG::SA_PreNonEvent;
+        desc.vecPreAnims = { {-1, Get_AnimationIndex(L"Animation_PlayerMoon_Sword_HeavyAttack_Start")}};
+        desc.vecMainAnims = { Get_AnimationIndex(L"Animation_PlayerMoon_Sword_HeavyAttack_End") }; //Animation_PlayerMoon_Idle //Animation_Pino_Combo_Slash1
+        desc.bBlend = true;
+        desc.bLoop = false;
+
+        desc.FMoves = CStateBase_Player::MOVEFLAGS::PRESS_CHANGE;
+        desc.FCollis = 0;
+
+        vecChangeState_ByKey[ENUM_TO_SZET(CStateBase_Player::STATEKEY::MOVE)]           = ENUM_TO_UINT(State::WALK);
+        vecChangeState_ByKey[ENUM_TO_SZET(CStateBase_Player::STATEKEY::SPACE)]          = ENUM_TO_UINT(State::JUMP);
+        vecChangeState_ByKey[ENUM_TO_SZET(CStateBase_Player::STATEKEY::SHIFT)]          = ENUM_TO_UINT(State::DASHBACK);
+        vecChangeState_ByKey[ENUM_TO_SZET(CStateBase_Player::STATEKEY::LCRTL_PRESS)]    = ENUM_TO_UINT(State::CROUCH);
+        //vecChangeState_ByKey[ENUM_TO_SZET(CStateBase_Player::STATEKEY::Q)]            = ENUM_TO_UINT(CPlayer::State::SKILL1);
+        //vecChangeState_ByKey[ENUM_TO_SZET(CStateBase_Player::STATEKEY::E)]            = ENUM_TO_UINT(CPlayer::State::SKILL2);
+        vecChangeState_ByKey[ENUM_TO_SZET(CStateBase_Player::STATEKEY::LM)]             = ENUM_TO_UINT(CPlayer::State::COMBO);
+        //vecChangeState_ByKey[ENUM_TO_SZET(CStateBase_Player::STATEKEY::RM)]           = ENUM_TO_UINT(CPlayer::State::GUN);
+        vecChangeState_ByKey[ENUM_TO_SZET(CStateBase_Player::STATEKEY::CHARGE)]         = ENUM_TO_UINT(CPlayer::State::CHARGE);
+        vecChangeState_ByKey[ENUM_TO_SZET(CStateBase_Player::STATEKEY::LOOPDONE)]       = ENUM_TO_UINT(State::IDLE);
+        desc.vecChangeState_ByKey = vecChangeState_ByKey;
+
+        desc.tKeyTimer = tKeyTimer;
+
+        if (FAILED(pActionState->Add_State(ENUM_TO_UINT(State::CHARGE), CState_Charge::Create(pActionState, &desc))))
             return E_FAIL;
     }
 
