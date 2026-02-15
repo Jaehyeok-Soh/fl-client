@@ -273,7 +273,8 @@ private:
 
 	StructuredBuffer*					m_pPreSB					= { nullptr };
 	StructuredBuffer*					m_pCurSB					= { nullptr };
-	ID3D11Buffer*						m_pBoneOuputStagingBuffer	= { nullptr };
+	ID3D11Buffer*						m_pBoneOuputStagingBuffer[2] = {nullptr};
+	_uint								m_iFrameIndex = { 0 };
 
 	///////////////
 	//// Event ////

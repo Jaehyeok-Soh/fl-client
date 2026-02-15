@@ -42,12 +42,15 @@ CModel::CModel(const CModel& rhs)
 	, m_pPreSB(rhs.m_pPreSB)
 	, m_pCurSB(rhs.m_pCurSB)
 	, m_bStageBones(rhs.m_bStageBones)
-	, m_pBoneOuputStagingBuffer(rhs.m_pBoneOuputStagingBuffer)
 	, m_iStageBoneCounts(rhs.m_iStageBoneCounts)
 	, m_pStaticModel_MinMax{rhs.m_pStaticModel_MinMax}
+	, m_iFrameIndex(rhs.m_iFrameIndex)
 {
 	m_vecPrevAnimationPose.resize(rhs.m_vecPrevAnimationPose.size());
 	m_vecCurrAnimationPose.resize(rhs.m_vecCurrAnimationPose.size());
+
+	m_pBoneOuputStagingBuffer[0] = rhs.m_pBoneOuputStagingBuffer[0];
+	m_pBoneOuputStagingBuffer[1] = rhs.m_pBoneOuputStagingBuffer[1];
 
 	m_vecStageBoneIndices = rhs.m_vecStageBoneIndices;
 
@@ -82,7 +85,8 @@ CModel::CModel(const CModel& rhs)
 
 		if (m_bStageBones)
 		{
-			Safe_AddRef(m_pBoneOuputStagingBuffer);
+			Safe_AddRef(m_pBoneOuputStagingBuffer[0]);
+			Safe_AddRef(m_pBoneOuputStagingBuffer[1]);
 		}
 	}
 
@@ -939,7 +943,8 @@ void CModel::Make_Staging(MODEL_ORIGIN_DESC* pDesc)
 	desc.BindFlags = 0;
 	desc.CPUAccessFlags = D3D11_CPU_ACCESS_READ;
 
-	m_pDevice->CreateBuffer(&desc, nullptr, &m_pBoneOuputStagingBuffer);
+	m_pDevice->CreateBuffer(&desc, nullptr, &m_pBoneOuputStagingBuffer[0]);
+	m_pDevice->CreateBuffer(&desc, nullptr, &m_pBoneOuputStagingBuffer[1]);
 
 	// 2. bone indices 캐스팅 하고 있자
 	m_vecStageBoneIndices.reserve(m_iStageBoneCounts);
@@ -1026,15 +1031,18 @@ void CModel::Get_BoneMatrix(CComputeShader* pGetBoneCS)
 {
 	// 2. Gpu -> Cpu
 	{
+		uint32_t writeIndex = m_iFrameIndex % 2;
+		uint32_t readIndex = (m_iFrameIndex + 1) % 2;
+
 		// copy data
-		m_pDeviceContext->CopyResource(m_pBoneOuputStagingBuffer, pGetBoneCS->Get_Output_Buffer()->Get_Buffer());
+		m_pDeviceContext->CopyResource(m_pBoneOuputStagingBuffer[writeIndex], pGetBoneCS->Get_Output_Buffer()->Get_Buffer());
 
 		vector<Matrix> vecBones;
 		vecBones.resize(m_iStageBoneCounts);
 
 		// 4. Map / Unmap을 통해 CPU로 데이터 가져오기
 		D3D11_MAPPED_SUBRESOURCE mappedResource;
-		if (SUCCEEDED(m_pDeviceContext->Map(m_pBoneOuputStagingBuffer, 0, D3D11_MAP_READ, 0, &mappedResource)))
+		if (SUCCEEDED(m_pDeviceContext->Map(m_pBoneOuputStagingBuffer[readIndex], 0, D3D11_MAP_READ, 0, &mappedResource)))
 		{
 			// 1. 데이터를 행렬 포인터로 해석
 			Matrix* pGpuMatrices = reinterpret_cast<Matrix*>(mappedResource.pData);
@@ -1046,9 +1054,11 @@ void CModel::Get_BoneMatrix(CComputeShader* pGetBoneCS)
 				m_vecBones[m_vecStageBoneIndices[i]]->Set_CombinedTranformMatrix(pGpuMatrices[i]);
 			}
 
-			m_pDeviceContext->Unmap(m_pBoneOuputStagingBuffer, 0);
+			m_pDeviceContext->Unmap(m_pBoneOuputStagingBuffer[readIndex], 0);
 		}
 	}
+
+	m_iFrameIndex++;
 }
 
 void CModel::DisPatch_BondMatrix(CComputeShader* pBoneComBineCS, CComputeShader* pGetBoneCS)
@@ -1279,7 +1289,8 @@ void CModel::Free()
 
 		if (m_bStageBones)
 		{
-			Safe_Release(m_pBoneOuputStagingBuffer);
+			Safe_Release(m_pBoneOuputStagingBuffer[0]);
+			Safe_Release(m_pBoneOuputStagingBuffer[1]);
 		}
 	}
 	
