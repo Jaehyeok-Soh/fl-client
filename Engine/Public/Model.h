@@ -279,7 +279,6 @@ private:
 	_uint								m_iFrameIndex = { 0 };
 
 	_uint m_iCpuBoneCount = { 0 };
-	vector<_bool> m_vecCpuUpdateBones;
 
 	///////////////
 	//// Event ////

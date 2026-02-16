@@ -88,6 +88,8 @@ _bool CModelAnimation::Update_TransformationMatrices(const vector<class CBone*>&
 	_uint iGroupX = (_uint(vecBones.size()) + 31) / 32;
 	pAnimECS->Dispatch(iGroupX, 1, 1);
 
+
+	// 원래 하던대로 channel update
 	_uint iIndex = { 0 };
 	for (auto& pChannel : m_vecChannels)
 	{

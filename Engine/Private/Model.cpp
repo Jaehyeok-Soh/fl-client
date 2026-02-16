@@ -50,8 +50,8 @@ CModel::CModel(const CModel& rhs)
 	m_vecPrevAnimationPose.resize(rhs.m_vecPrevAnimationPose.size());
 	m_vecCurrAnimationPose.resize(rhs.m_vecCurrAnimationPose.size());
 
-	m_pBoneOuputStagingBuffer[0] = rhs.m_pBoneOuputStagingBuffer[0];
-	m_pBoneOuputStagingBuffer[1] = rhs.m_pBoneOuputStagingBuffer[1];
+	//m_pBoneOuputStagingBuffer[0] = rhs.m_pBoneOuputStagingBuffer[0];
+	//m_pBoneOuputStagingBuffer[1] = rhs.m_pBoneOuputStagingBuffer[1];
 
 	m_vecStageBoneIndices = rhs.m_vecStageBoneIndices;
 
@@ -84,11 +84,11 @@ CModel::CModel(const CModel& rhs)
 			Safe_AddRef(pBoneGroup.pIndexBuffer);
 		}
 
-		if (m_bStageBones)
-		{
-			Safe_AddRef(m_pBoneOuputStagingBuffer[0]);
-			Safe_AddRef(m_pBoneOuputStagingBuffer[1]);
-		}
+		//if (m_bStageBones)
+		//{
+		//	Safe_AddRef(m_pBoneOuputStagingBuffer[0]);
+		//	Safe_AddRef(m_pBoneOuputStagingBuffer[1]);
+		//}
 	}
 
 	Safe_AddRef(m_pDevice);
@@ -156,7 +156,6 @@ HRESULT CModel::Initialize_Prototype(void* pArg)
 		if (Engine_Utils::Has_Flag(FStageBone, STAGEING_BONE::SB_ZEROBONE))
 		{
 			m_bStageBones = false;
-			return S_OK;
 		}
 
 		// 빼돌릴건데 모든 뼈를 빼돌리고 싶다면
@@ -171,17 +170,23 @@ HRESULT CModel::Initialize_Prototype(void* pArg)
 		}
 
 		// staging 정보 생성
-		Make_Staging(pDesc);
+		//Make_Staging(pDesc);
 
-		m_vecCpuUpdateBones.resize(m_vecBones.size(), false);
-		for (auto& pBondIdx : pDesc->vecStageBoneIndices)
+		// 
+		if (m_bStageBones)
 		{
-			Set_CpuBone(pBondIdx);
-		}
+			// 재귀로 지정뼈 ~ 부모뼈 update on
+			for (auto& pBondIdx : pDesc->vecStageBoneIndices)
+			{
+				Set_CpuBone(pBondIdx);
+			}
 
-		for (auto& pAnim : m_vecAnimations)
-		{
-			pAnim->Check_UpdateCpu(m_vecBones);
+			// animation에 있는 channel 돌면서 channel update on
+			for (auto& pAnim : m_vecAnimations)
+			{
+				pAnim->Check_UpdateCpu(m_vecBones);
+			}
+
 		}
 
 	}
@@ -189,7 +194,7 @@ HRESULT CModel::Initialize_Prototype(void* pArg)
 
 	for (size_t i = 0; i < m_vecAnimations.size(); i++)
 	{
-		if (Get_AnimationName(i) == TEXT("Animation_PlayerMoon_Land_Inplace"))
+		if (Get_AnimationName((_uint)i) == TEXT("Animation_PlayerMoon_Land_Inplace"))
 			m_vecAnimations[i]->Set_ApplyRootMotion(false);
 	}
 
@@ -264,11 +269,11 @@ void CModel::Set_CpuBone(_uint iBoneIdx)
 		return;
 
 	m_vecBones[iBoneIdx]->Set_UpdateCpu(true);
-	m_vecCpuUpdateBones[iBoneIdx] = true;
 
 	// 부모가 -1 전까지 확인
-	if (m_vecBones[iBoneIdx]->Get_ParentIndex() > 0)
-		Set_CpuBone(m_vecBones[iBoneIdx]->Get_ParentIndex());
+	_int iParentIdx = (m_vecBones[iBoneIdx]->Get_ParentIndex());
+	if (iParentIdx > 0)
+		Set_CpuBone(iParentIdx);
 
 	m_iCpuBoneCount++;
 }
@@ -1003,6 +1008,7 @@ void CModel::Update_BoneCombineTransformMatrix(CComputeShader* pBoneComBineCS)
 		pBoneComBineCS->Dispatch(iGroupX,1,1);
 	}
 
+	// cpu update
 	for (size_t i = 0; i < m_vecBones.size(); ++i)
 	{
 		m_vecBones[i]->Update_CombinedTransformMatrix(m_vecBones, m_matPreTransform);
@@ -1075,6 +1081,7 @@ void CModel::Lerp_Animation(CComputeShader* pAnimBlendCS, _float fRatio)
 	pAnimBlendCS->Dispatch(iGroupX, 1, 1);
 
 
+	// cpu update
 	_uint i = {};
 	for (auto& pBone : m_vecBones)
 	{
@@ -1369,8 +1376,8 @@ void CModel::Free()
 
 		if (m_bStageBones)
 		{
-			Safe_Release(m_pBoneOuputStagingBuffer[0]);
-			Safe_Release(m_pBoneOuputStagingBuffer[1]);
+			//Safe_Release(m_pBoneOuputStagingBuffer[0]);
+			//Safe_Release(m_pBoneOuputStagingBuffer[1]);
 		}
 	}
 	
