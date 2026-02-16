@@ -37,10 +37,13 @@ HRESULT CToolUI::Initialize(void* pArg)
 	m_strCanvasName			= pDesc->strCanvasName;
 	m_iCanvasIndex			= pDesc->iCanvasIndex;
 	m_wstrTextureTag		= Engine_Utils::ToWString(pDesc->strInitTextureTag);
+	m_wstrNoiseTextureTag		= Engine_Utils::ToWString(pDesc->strNoiseTextureTag);
+	m_wstrAlphaMaskTextureTag	= Engine_Utils::ToWString(pDesc->strAlphaMaskTextureTag);
 	m_eRectTransformType	= static_cast<ERectTransform>(pDesc->iRectTransformType);
 	m_pCacheCanvas			= pDesc->pCacheCanvas;
 	m_isUseColorTint		= pDesc->isUseColorTint;
 	m_vColorTint			= pDesc->vColorTint;
+	m_vGradiantColorTint	= pDesc->vGradiantColorTint;
 	m_iShaderPass			= pDesc->iShaderPass;
 	m_iFillDir				= pDesc->iFillDir;
 	m_fDelay				= pDesc->fDelay;
@@ -54,10 +57,11 @@ HRESULT CToolUI::Initialize(void* pArg)
 	{
 		m_tUITextData			= pDesc->tTextData;
 		m_wstrText_TextData		= Engine_Utils::ToWString(m_tUITextData.strText);
+		m_eTextSubClassType		= m_tUITextData.eTextSubClassType;
 		m_vFontColor_TextData	= m_tUITextData.vFontColor;
 		m_fScale_TextData		= m_tUITextData.fScale;
 		m_fRotate_TextData		= m_tUITextData.fRotate;
-		m_strFontName_TextData	= m_tUITextData.strFontTag;
+		m_strFontName_TextData = m_tUITextData.strFontTag;
 	}
 	if (m_eClassType == DTO::EUIClassType::TRIGGER)
 	{
@@ -81,8 +85,19 @@ HRESULT CToolUI::Initialize(void* pArg)
 		return E_FAIL;
     if (FAILED(Ready_Components(pDesc)))
         return E_FAIL;
-	if (FAILED(Get_Component<CTexture>()->Add_DefaultTexture(m_wstrTextureTag, 0)))
+	if (FAILED(Get_Component<CTexture>()->Add_DefaultTexture(m_wstrTextureTag, DEFAULT)))
 		return E_FAIL;
+		
+	if (m_wstrNoiseTextureTag != L"")
+	{
+		if (FAILED(Get_Component<CTexture>()->Add_DefaultTexture(m_wstrNoiseTextureTag, NOISE)))
+			return E_FAIL;
+	}
+	if (m_wstrAlphaMaskTextureTag != L"")
+	{
+		if (FAILED(Get_Component<CTexture>()->Add_DefaultTexture(m_wstrAlphaMaskTextureTag, ALPHA_MASK)))
+			return E_FAIL;
+	}
 
     return S_OK;
 }
@@ -211,12 +226,10 @@ HRESULT CToolUI::Bind_ShaderResources()
     if (FAILED(Get_Component<CTransform>()->Bind_ShaderResource(pShader)))
         return E_FAIL;
 
-    if (FAILED(Get_Component<CTexture>()->Bind_ShaderResourceBuffer(pShader)))
-        return E_FAIL;
-
 	pShader->Set_Pass(m_iShaderPass);
  	if (FAILED(Get_Component<CTexture>()->Bind_ShaderResourceBuffer(pShader)))
 		return E_FAIL;
+
 	if (FAILED(pShader->Get_Variable("g_iFlip")->SetRawValue(&m_iFlip, 0, sizeof(int32_t))))
 		return E_FAIL;
 
@@ -224,6 +237,8 @@ HRESULT CToolUI::Bind_ShaderResources()
 	if (FAILED(pShader->Get_Variable("g_iColor")->SetRawValue(&isColor, 0, sizeof(int32_t))))
 		return E_FAIL;
 	if (FAILED(pShader->Get_Variable("g_vColorTint")->SetRawValue(&m_vColorTint, 0, sizeof(Vec4))))
+		return E_FAIL;
+	if (FAILED(pShader->Get_Variable("g_vGradiateColorTint")->SetRawValue(&m_vGradiantColorTint, 0, sizeof(Vec4))))
 		return E_FAIL;
 	if (FAILED(pShader->Get_Variable("g_fAlphaRatio")->SetRawValue(&m_fTestAlpha, 0, sizeof(_float))))
 		return E_FAIL;
@@ -321,17 +336,22 @@ void CToolUI::Sync_Data()
 	m_tUIData.fPosY					= m_fY;
 	m_tUIData.fPosZ					= m_fZ;
 	m_tUIData.isVisible				= m_isVisible;
+	m_tUIData.isInteract			= m_isInteract;
+	m_tUIData.isActivate			= m_isActive;
 
 	// Tool UI Values
 	m_tUIData.strTag				= m_strName;
 	m_tUIData.strCanvasName			= m_strCanvasName;
 	m_tUIData.iRectTransformType	= static_cast<uint32_t>( m_eRectTransformType);
 	m_tUIData.strTextureTag			= Engine_Utils::ToString(m_wstrTextureTag);
+	m_tUIData.strNoiseTextureTag	= Engine_Utils::ToString(m_wstrNoiseTextureTag);
+	m_tUIData.strAlphaMaskTextureTag= Engine_Utils::ToString(m_wstrAlphaMaskTextureTag);
 	m_tUIData.eClassType			= m_eClassType;
 	m_tUIData.iComponentFlag		= m_iComponentFlag;
 	m_tUIData.eSubClassType 		= m_eSubClassType;
 	m_tUIData.isUseColorTint 		= m_isUseColorTint;
 	m_tUIData.vColorTint 			= m_vColorTint;
+	m_tUIData.vGradiantColorTint	= m_vGradiantColorTint;
 	m_tUIData.iShaderPass			= m_iShaderPass;
 	m_tUIData.fDelay				= m_fDelay;
 	m_tUIData.iFlip					= m_iFlip;
@@ -360,6 +380,7 @@ void CToolUI::Sync_TextData()
 {
 	m_tUITextData.strTag		= m_strName + "_TextData";
 	m_tUITextData.strOwnerName	= m_strName;
+	m_tUITextData.eTextSubClassType = m_eTextSubClassType;
 	m_tUITextData.strText		= Engine_Utils::ToString(m_wstrText_TextData);
 	m_tUITextData.vFontColor	= m_vFontColor_TextData;
 	m_tUITextData.fRotate		= m_fRotate_TextData;
@@ -371,6 +392,7 @@ void CToolUI::Sync_TriggerData()
 {
 	m_tUITriggerData.strTag							= m_strName + "_TriggerData";
 	m_tUITriggerData.strOwnerName					= m_strName;
+	m_tUITriggerData.eTriggerSubClassType			= m_eTriggerSubClass;
 	m_tUITriggerData.vecHoverEnterTriggerCanvas		= m_vecHoverEnterTriggerCanvas;
 	m_tUITriggerData.vecHoverEnterTriggerUI			= m_vecHoverEnterTriggerUI;
 	m_tUITriggerData.vecHoverExitTriggerCanvas		= m_vecHoverExitTriggerCanvas;
@@ -421,10 +443,22 @@ _bool CToolUI::Remove_Tag(vector<_string>& vec, const _string& str)
 
 HRESULT CToolUI::Request_Change_Texture()
 {
-	if (FAILED(Get_Component<CTexture>()->Add_DefaultTexture(m_wstrTextureTag, 0)))
+	if (FAILED(Get_Component<CTexture>()->Add_DefaultTexture(m_wstrTextureTag, DEFAULT)))
 		return E_FAIL;
 
 	return S_OK;
+}
+
+HRESULT CToolUI::Request_Change_NoiseTexture()
+{
+	if (FAILED(Get_Component<CTexture>()->Add_DefaultTexture(m_wstrNoiseTextureTag, NOISE)))
+		return E_FAIL;
+}
+
+HRESULT CToolUI::Request_Change_AlphaMaskTexture()
+{
+	if (FAILED(Get_Component<CTexture>()->Add_DefaultTexture(m_wstrAlphaMaskTextureTag, ALPHA_MASK)))
+		return E_FAIL;
 }
 
 void CToolUI::Request_Chnage_ShaderPass(uint32_t pass)

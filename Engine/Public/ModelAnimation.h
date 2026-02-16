@@ -49,9 +49,12 @@ public:
 	_float Get_ElpasedTimeSeconds() const { return m_fCurrentTrackPosition / m_fTickPerSecond; }
 	void Set_PlayRate(_float fRate) { m_fTickPerSecond *= fRate; }
 	_float Get_TrackPosition() { return m_fCurrentTrackPosition; }
+	void Set_TrackPosition(_float fValue) { m_fCurrentTrackPosition = fValue; }
 	_bool Is_TrackPositionBetween(_float fStartRatio, _float fEndRatio);
 	_bool Is_TrackPositionAt(_float fRatio) const { return m_fCurrentTrackPosition >= m_fDuration * fRatio; }
 	_bool Is_TrackPositionAtHalf() const { return Is_TrackPositionAt(0.5f); }
+	_float Get_TickPerSecond() { return m_fTickPerSecond; }
+	void Set_TickPerSecond(_float fValue) { m_fTickPerSecond = fValue; }
 
 	_bool	Update_TransformMatrices(CComputeShader* pAnimECS, _float fTimeDelta, _bool isLoop, CTransform* pOwnerTransform, CPhysicsCCT* pOwnerPhyCCT, _uint iTotalBoneNum);
 	void	Update_BlendAnimation(CComputeShader* pAnimECS, _float fTimeDelta, CTransform* pOwnerTransform, CPhysicsCCT* pOwnerPhyCCT, _uint iTotalBoneNum);
@@ -70,6 +73,7 @@ public:
 		if (m_vecNotifies.size() <= iIndex) return;
 		m_iNextNotifyIndex = (_uint)iIndex;
 	}
+	void Clear_Notifies() { m_vecNotifies.clear(); }
 private:
 	_uint m_iChannelCount = { 0 };
 	vector<class CChannel*> m_vecChannels;

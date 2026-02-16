@@ -183,7 +183,6 @@ BlendState BS_Blend
     BlendOpAlpha = ADD;
 };
 
-
 /////////////////////
 // Depth / Stencil //
 /////////////////////

@@ -447,7 +447,7 @@ HRESULT CEffectObject::Bind_ShaderResource()
     pShader->Set_Pass(m_tEffectDesc.Data._Effect_ShaderPass);
     pShader->Bind_TransformData(m_CombineWorldMatrix);
 
-    if (FAILED(m_pGameInstance->Bind_RT_ShaderResource(ERenderTarget::Scene, pShader)))
+    if (FAILED(m_pGameInstance->Bind_RT_ShaderResource(ERenderTarget::SceneHDR_Copy, pShader)))
         return E_FAIL;
 
     // 셰이더에 던질 구조체 작성하기.
@@ -470,7 +470,7 @@ HRESULT CEffectObject::Bind_ShaderResource()
         pDesc.SpriteColCount = m_tEffectDesc.Data._Effect_TileCount.x;
         pDesc.SpriteRowCount = m_tEffectDesc.Data._Effect_TileCount.y;
         pDesc.CurSpriteIndex = m_tEffectDesc.Data.m_iCurSpriteNumber;
-        pDesc.LifeRatio = m_tEffectDesc.Data._Effect_ApearRatio;
+        pDesc.fLifeRatio = m_tEffectDesc.Data._Effect_ApearRatio;
 
         pDesc.vDistortionScale = m_tEffectDesc.Data._Effect_DistortionScale;
         pDesc.vEffectColor = m_tEffectDesc.Data._Effect_Color;

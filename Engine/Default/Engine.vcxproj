@@ -319,7 +319,13 @@
     <ClInclude Include="..\Public\ActionState.h" />
     <ClInclude Include="..\Public\ActiveAttackOverlap.h" />
     <ClInclude Include="..\Public\AnimEffectHandler.h" />
+    <ClInclude Include="..\Public\Anim_Event_AttackOverlap.h" />
+    <ClInclude Include="..\Public\Anim_Event_Base.h" />
+    <ClInclude Include="..\Public\Anim_Event_Hitbox.h" />
+    <ClInclude Include="..\Public\Anim_Event_Info.h" />
+    <ClInclude Include="..\Public\Anim_Event_Script_Base.h" />
     <ClInclude Include="..\Public\AsTypes.h" />
+    <ClInclude Include="..\Public\AttackOverlap_Desc.h" />
     <ClInclude Include="..\Public\Base.h" />
     <ClInclude Include="..\Public\Bone.h" />
     <ClInclude Include="..\Public\Bounding.h" />

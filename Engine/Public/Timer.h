@@ -3,7 +3,7 @@
 
 NS_BEGIN(Engine)
 
-class CTimer final : public CBase
+class ENGINE_DLL CTimer final : public CBase
 {
 	using Super = CBase;
 public:
@@ -19,7 +19,7 @@ public:
 	_float Get_TimeDelta() const { return m_fTimeDelta; }
 	void Set_MaxTimeDelta(_float fMax) { m_fMax_TimeDelta = fMax; }
 public:
-	void Update_Timer();
+	_float Update_Timer();
 
 private:
 	LARGE_INTEGER		m_FrameTime = {};

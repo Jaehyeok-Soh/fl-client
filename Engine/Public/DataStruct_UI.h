@@ -129,6 +129,161 @@ NLOHMANN_JSON_SERIALIZE_ENUM(EUISubClassType,
 		{EUISubClassType::PLAYER_LV,		"PLAYER_LV"},
 	})
 
+#pragma region 텍스트 서브 클래스
+	enum class EUITextSubClassType
+{
+	NONE_OWNER,
+	// 플레이어 스탯 
+	PLAYER_STAT_TEXT_BEGIN,
+
+	PLAYER_STAT_TEXT_LV,
+	PLAYER_STAT_TEXT_HP,
+	PLAYER_STAT_TEXT_ARMOR,
+	PLAYER_STAT_TEXT_ENERGY,
+
+	PLAYER_STAT_TEXT_ESKILL_TYPE,
+	PLAYER_STAT_TEXT_ESKILL_COOLTIME,
+	PLAYER_STAT_TEXT_ESKILL_COST,
+
+	PLAYER_STAT_TEXT_QSKILL_TYPE,
+	PLAYER_STAT_TEXT_QSKILL_COOLTIME,
+	PLAYER_STAT_TEXT_QSKILL_COST,
+
+	PLAYER_STAT_TEXT_ZSKILL_TYPE,
+	PLAYER_STAT_TEXT_ZSKILL_COOLTIME,
+	PLAYER_STAT_TEXT_ZSKILL_COST,
+
+	PLAYER_STAT_TEXT_DODGESKILL_COOLTIME,
+	PLAYER_STAT_TEXT_DODGESKILL_COUNT,
+	PLAYER_STAT_TEXT_MAX_BULLET_COUNT,
+	PLAYER_STAT_TEXT_CUR_BULLET_COUNT,
+
+	PLAYER_STAT_TEXT_END,
+
+	// 메뉴창 
+	MENU_TEXT_BEGIN,
+	MENU_ESC_TEXT,
+	MENU_ICON_TEXT,
+	MENU_TEXT_END,
+	END
+};
+
+NLOHMANN_JSON_SERIALIZE_ENUM(EUITextSubClassType,
+	{
+		{ EUITextSubClassType::NONE_OWNER,							"NONE_OWNER" },
+		{ EUITextSubClassType::PLAYER_STAT_TEXT_BEGIN,				"PLAYER_STAT_TEXT_BEGIN" },
+
+		{ EUITextSubClassType::PLAYER_STAT_TEXT_LV,					"PLAYER_STAT_TEXT_LV" },
+		{ EUITextSubClassType::PLAYER_STAT_TEXT_HP,					"PLAYER_STAT_TEXT_HP" },
+		{ EUITextSubClassType::PLAYER_STAT_TEXT_ARMOR,				"PLAYER_STAT_TEXT_ARMOR" },
+		{ EUITextSubClassType::PLAYER_STAT_TEXT_ENERGY,				"PLAYER_STAT_TEXT_ENERGY" },
+
+		{ EUITextSubClassType::PLAYER_STAT_TEXT_ESKILL_TYPE,		"PLAYER_STAT_TEXT_ESKILL_TYPE" },
+		{ EUITextSubClassType::PLAYER_STAT_TEXT_ESKILL_COOLTIME,	"PLAYER_STAT_TEXT_ESKILL_COOLTIME" },
+		{ EUITextSubClassType::PLAYER_STAT_TEXT_ESKILL_COST,		"PLAYER_STAT_TEXT_ESKILL_COST" },
+
+		{ EUITextSubClassType::PLAYER_STAT_TEXT_QSKILL_TYPE,		"PLAYER_STAT_TEXT_QSKILL_TYPE" },
+		{ EUITextSubClassType::PLAYER_STAT_TEXT_QSKILL_COOLTIME,	"PLAYER_STAT_TEXT_QSKILL_COOLTIME" },
+		{ EUITextSubClassType::PLAYER_STAT_TEXT_QSKILL_COST,		"PLAYER_STAT_TEXT_QSKILL_COST" },
+
+		{ EUITextSubClassType::PLAYER_STAT_TEXT_ZSKILL_TYPE,		"PLAYER_STAT_TEXT_ZSKILL_TYPE" },
+		{ EUITextSubClassType::PLAYER_STAT_TEXT_ZSKILL_COOLTIME,	"PLAYER_STAT_TEXT_ZSKILL_COOLTIME" },
+		{ EUITextSubClassType::PLAYER_STAT_TEXT_ZSKILL_COST,		"PLAYER_STAT_TEXT_ZSKILL_COST" },
+
+		{ EUITextSubClassType::PLAYER_STAT_TEXT_DODGESKILL_COOLTIME,"PLAYER_STAT_TEXT_DODGESKILL_COOLTIME" },
+		{ EUITextSubClassType::PLAYER_STAT_TEXT_DODGESKILL_COUNT,	"PLAYER_STAT_TEXT_DODGESKILL_COUNT" },
+		{ EUITextSubClassType::PLAYER_STAT_TEXT_MAX_BULLET_COUNT,	"PLAYER_STAT_TEXT_MAX_BULLET_COUNT" },
+		{ EUITextSubClassType::PLAYER_STAT_TEXT_CUR_BULLET_COUNT,	"PLAYER_STAT_TEXT_CUR_BULLET_COUNT" },
+
+		{ EUITextSubClassType::PLAYER_STAT_TEXT_END,				"PLAYER_STAT_TEXT_END" },
+
+		{ EUITextSubClassType::MENU_TEXT_BEGIN,						"MENU_TEXT_BEGIN" },
+		{ EUITextSubClassType::MENU_ESC_TEXT,						"MENU_ESC_TEXT" },
+		{ EUITextSubClassType::MENU_ICON_TEXT,						"MENU_ICON_TEXT" },
+		{ EUITextSubClassType::MENU_TEXT_END,						"MENU_TEXT_END" },
+		{ EUITextSubClassType::END,									"END" },
+	})
+
+	inline EUITextSubClassType StringToUITextSubClassType(const std::string& str)
+{
+	if (str == "NONE_OWNER")									return EUITextSubClassType::NONE_OWNER;
+	else if (str == "PLAYER_STAT_TEXT_BEGIN")					return EUITextSubClassType::PLAYER_STAT_TEXT_BEGIN;
+
+	else if (str == "PLAYER_STAT_TEXT_LV")						return EUITextSubClassType::PLAYER_STAT_TEXT_LV;
+	else if (str == "PLAYER_STAT_TEXT_HP")						return EUITextSubClassType::PLAYER_STAT_TEXT_HP;
+	else if (str == "PLAYER_STAT_TEXT_ARMOR")					return EUITextSubClassType::PLAYER_STAT_TEXT_ARMOR;
+	else if (str == "PLAYER_STAT_TEXT_ENERGY")					return EUITextSubClassType::PLAYER_STAT_TEXT_ENERGY;
+
+	else if (str == "PLAYER_STAT_TEXT_ESKILL_TYPE")				return EUITextSubClassType::PLAYER_STAT_TEXT_ESKILL_TYPE;
+	else if (str == "PLAYER_STAT_TEXT_ESKILL_COOLTIME")			return EUITextSubClassType::PLAYER_STAT_TEXT_ESKILL_COOLTIME;
+	else if (str == "PLAYER_STAT_TEXT_ESKILL_COST")				return EUITextSubClassType::PLAYER_STAT_TEXT_ESKILL_COST;
+
+	else if (str == "PLAYER_STAT_TEXT_QSKILL_TYPE")				return EUITextSubClassType::PLAYER_STAT_TEXT_QSKILL_TYPE;
+	else if (str == "PLAYER_STAT_TEXT_QSKILL_COOLTIME")			return EUITextSubClassType::PLAYER_STAT_TEXT_QSKILL_COOLTIME;
+	else if (str == "PLAYER_STAT_TEXT_QSKILL_COST")				return EUITextSubClassType::PLAYER_STAT_TEXT_QSKILL_COST;
+
+	else if (str == "PLAYER_STAT_TEXT_ZSKILL_TYPE")				return EUITextSubClassType::PLAYER_STAT_TEXT_ZSKILL_TYPE;
+	else if (str == "PLAYER_STAT_TEXT_ZSKILL_COOLTIME")			return EUITextSubClassType::PLAYER_STAT_TEXT_ZSKILL_COOLTIME;
+	else if (str == "PLAYER_STAT_TEXT_ZSKILL_COST")				return EUITextSubClassType::PLAYER_STAT_TEXT_ZSKILL_COST;
+
+	else if (str == "PLAYER_STAT_TEXT_DODGESKILL_COOLTIME")		return EUITextSubClassType::PLAYER_STAT_TEXT_DODGESKILL_COOLTIME;
+	else if (str == "PLAYER_STAT_TEXT_DODGESKILL_COUNT")			return EUITextSubClassType::PLAYER_STAT_TEXT_DODGESKILL_COUNT;
+	else if (str == "PLAYER_STAT_TEXT_MAX_BULLET_COUNT")			return EUITextSubClassType::PLAYER_STAT_TEXT_MAX_BULLET_COUNT;
+	else if (str == "PLAYER_STAT_TEXT_CUR_BULLET_COUNT")			return EUITextSubClassType::PLAYER_STAT_TEXT_CUR_BULLET_COUNT;
+
+	else if (str == "PLAYER_STAT_TEXT_END")						return EUITextSubClassType::PLAYER_STAT_TEXT_END;
+	else if (str == "MENU_TEXT_BEGIN")							return EUITextSubClassType::MENU_TEXT_BEGIN;
+	else if (str == "MENU_ESC_TEXT")							return EUITextSubClassType::MENU_ESC_TEXT;
+	else if (str == "MENU_ICON_TEXT")							return EUITextSubClassType::MENU_ICON_TEXT;
+	else if (str == "MENU_TEXT_END")							return EUITextSubClassType::MENU_TEXT_END;
+	else if (str == "END")										return EUITextSubClassType::END;
+
+	return EUITextSubClassType::END;
+}
+
+inline std::string UITextSubClassTypeToString(EUITextSubClassType e)
+{
+	switch (e)
+	{
+	case EUITextSubClassType::NONE_OWNER:							return "NONE_OWNER";
+	case EUITextSubClassType::PLAYER_STAT_TEXT_BEGIN:				return "PLAYER_STAT_TEXT_BEGIN";
+
+	case EUITextSubClassType::PLAYER_STAT_TEXT_LV:					return "PLAYER_STAT_TEXT_LV";
+	case EUITextSubClassType::PLAYER_STAT_TEXT_HP:					return "PLAYER_STAT_TEXT_HP";
+	case EUITextSubClassType::PLAYER_STAT_TEXT_ARMOR:				return "PLAYER_STAT_TEXT_ARMOR";
+	case EUITextSubClassType::PLAYER_STAT_TEXT_ENERGY:				return "PLAYER_STAT_TEXT_ENERGY";
+
+	case EUITextSubClassType::PLAYER_STAT_TEXT_ESKILL_TYPE:			return "PLAYER_STAT_TEXT_ESKILL_TYPE";
+	case EUITextSubClassType::PLAYER_STAT_TEXT_ESKILL_COOLTIME:		return "PLAYER_STAT_TEXT_ESKILL_COOLTIME";
+	case EUITextSubClassType::PLAYER_STAT_TEXT_ESKILL_COST:			return "PLAYER_STAT_TEXT_ESKILL_COST";
+
+	case EUITextSubClassType::PLAYER_STAT_TEXT_QSKILL_TYPE:			return "PLAYER_STAT_TEXT_QSKILL_TYPE";
+	case EUITextSubClassType::PLAYER_STAT_TEXT_QSKILL_COOLTIME:		return "PLAYER_STAT_TEXT_QSKILL_COOLTIME";
+	case EUITextSubClassType::PLAYER_STAT_TEXT_QSKILL_COST:			return "PLAYER_STAT_TEXT_QSKILL_COST";
+
+	case EUITextSubClassType::PLAYER_STAT_TEXT_ZSKILL_TYPE:			return "PLAYER_STAT_TEXT_ZSKILL_TYPE";
+	case EUITextSubClassType::PLAYER_STAT_TEXT_ZSKILL_COOLTIME:		return "PLAYER_STAT_TEXT_ZSKILL_COOLTIME";
+	case EUITextSubClassType::PLAYER_STAT_TEXT_ZSKILL_COST:			return "PLAYER_STAT_TEXT_ZSKILL_COST";
+
+	case EUITextSubClassType::PLAYER_STAT_TEXT_DODGESKILL_COOLTIME:	return "PLAYER_STAT_TEXT_DODGESKILL_COOLTIME";
+	case EUITextSubClassType::PLAYER_STAT_TEXT_DODGESKILL_COUNT:	return "PLAYER_STAT_TEXT_DODGESKILL_COUNT";
+	case EUITextSubClassType::PLAYER_STAT_TEXT_MAX_BULLET_COUNT:	return "PLAYER_STAT_TEXT_MAX_BULLET_COUNT";
+	case EUITextSubClassType::PLAYER_STAT_TEXT_CUR_BULLET_COUNT:	return "PLAYER_STAT_TEXT_CUR_BULLET_COUNT";
+
+	case EUITextSubClassType::PLAYER_STAT_TEXT_END:					return "PLAYER_STAT_TEXT_END";
+	case EUITextSubClassType::MENU_TEXT_BEGIN:						return "MENU_TEXT_BEGIN";
+	case EUITextSubClassType::MENU_ESC_TEXT:						return "MENU_ESC_TEXT";
+	case EUITextSubClassType::MENU_ICON_TEXT:						return "MENU_ICON_TEXT";
+	case EUITextSubClassType::MENU_TEXT_END:						return "MENU_TEXT_END";
+	default:														return "END";
+	}
+}
+
+#pragma endregion
+
+
+#pragma region 다이나믹 이미지 서브 클래스
+
 	enum class EUIDImageSubClassType
 {
 	NONE_OWNER,
@@ -156,6 +311,13 @@ NLOHMANN_JSON_SERIALIZE_ENUM(EUISubClassType,
 	MINIMAP_BGFRAME,
 	MINIMAP_WARNING_FRAME,
 	MINIMAP_END,
+
+	// 메뉴창
+	MENU_BEGIN,
+	MENU_BG,
+	MENU_ICON,
+	MENU_ICON_BG,
+	MENU_END,
 
 	END
 };
@@ -185,6 +347,12 @@ NLOHMANN_JSON_SERIALIZE_ENUM(EUIDImageSubClassType,
 		{ EUIDImageSubClassType::MINIMAP_WARNING_FRAME,	"MINIMAP_WARNING_FRAME" },
 		{ EUIDImageSubClassType::MINIMAP_END,			"MINIMAP_END" },
 
+		{ EUIDImageSubClassType::MENU_BEGIN,			"MENU_BEGIN" },
+		{ EUIDImageSubClassType::MENU_BG,				"MENU_BG" },
+		{ EUIDImageSubClassType::MENU_ICON,				"MENU_ICON" },
+		{ EUIDImageSubClassType::MENU_ICON_BG,			"MENU_ICON_BG" },
+		{ EUIDImageSubClassType::MENU_END,				"MENU_END" },
+
 		{ EUIDImageSubClassType::END,					"END" }
 	})
 
@@ -212,6 +380,12 @@ NLOHMANN_JSON_SERIALIZE_ENUM(EUIDImageSubClassType,
 	if (str == "MINIMAP_BGFRAME")		return EUIDImageSubClassType::MINIMAP_BGFRAME;
 	if (str == "MINIMAP_WARNING_FRAME")	return EUIDImageSubClassType::MINIMAP_WARNING_FRAME;
 	if (str == "MINIMAP_END")			return EUIDImageSubClassType::MINIMAP_END;
+
+	if (str == "MENU_BEGIN")			return EUIDImageSubClassType::MENU_BEGIN;
+	if (str == "MENU_BG")				return EUIDImageSubClassType::MENU_BG;
+	if (str == "MENU_ICON")				return EUIDImageSubClassType::MENU_ICON;
+	if (str == "MENU_ICON_BG")			return EUIDImageSubClassType::MENU_ICON_BG;
+	if (str == "MENU_END")				return EUIDImageSubClassType::MENU_END;
 
 	if (str == "END")					return EUIDImageSubClassType::END;
 	return EUIDImageSubClassType::NONE_OWNER;
@@ -244,10 +418,57 @@ inline const char* UIDImageSubTypeToString(EUIDImageSubClassType type)
 	case EUIDImageSubClassType::MINIMAP_WARNING_FRAME:	return "MINIMAP_WARNING_FRAME";
 	case EUIDImageSubClassType::MINIMAP_END:			return "MINIMAP_END";
 
-	case EUIDImageSubClassType::END:				return "END";
-	default:										return "NONE_OWNER";
+	case EUIDImageSubClassType::MENU_BEGIN:		return "MENU_BEGIN";
+	case EUIDImageSubClassType::MENU_BG:		return "MENU_BG";
+	case EUIDImageSubClassType::MENU_ICON:		return "MENU_ICON";
+	case EUIDImageSubClassType::MENU_ICON_BG:	return "MENU_ICON_BG";
+	case EUIDImageSubClassType::MENU_END:		return "MENU_END";
+
+	case EUIDImageSubClassType::END:			return "END";
+	default:									return "NONE_OWNER";
 	}
 }
+
+#pragma endregion
+
+#pragma region 트리거 서브 클래스
+
+enum class EUITriggerSubClassType
+{
+	NONE_OWNER,
+
+	MENU_TAB_TRIGGER,
+	MENU_TAB_EXIT_TRIGGER,
+
+	END
+};
+NLOHMANN_JSON_SERIALIZE_ENUM(EUITriggerSubClassType,
+	{
+		{ EUITriggerSubClassType::NONE_OWNER,        "NONE_OWNER" },
+		{ EUITriggerSubClassType::MENU_TAB_TRIGGER,  "MENU_TAB_TRIGGER" },
+		{ EUITriggerSubClassType::MENU_TAB_EXIT_TRIGGER,  "MENU_TAB_EXIT_TRIGGER" },
+	})
+	inline EUITriggerSubClassType StringToUITriggerSubClassType(const std::string& str)
+{
+	if (str == "NONE_OWNER")        return EUITriggerSubClassType::NONE_OWNER;
+	if (str == "MENU_TAB_TRIGGER")  return EUITriggerSubClassType::MENU_TAB_TRIGGER;
+	if (str == "MENU_TAB_EXIT_TRIGGER")  return EUITriggerSubClassType::MENU_TAB_EXIT_TRIGGER;
+	return EUITriggerSubClassType::END;
+}
+inline std::string UITriggerSubClassTypeToString(EUITriggerSubClassType e)
+{
+	switch (e)
+	{
+	case EUITriggerSubClassType::NONE_OWNER:       return "NONE_OWNER";
+	case EUITriggerSubClassType::MENU_TAB_TRIGGER: return "MENU_TAB_TRIGGER";
+	case EUITriggerSubClassType::MENU_TAB_EXIT_TRIGGER: return "MENU_TAB_EXIT_TRIGGER";
+	default:                                      return "END";
+	}
+}
+
+#pragma endregion
+
+#pragma region 월드 유아이 서브 클래스
 
 enum class EUIWorldUISubClassType
 {
@@ -286,6 +507,8 @@ inline const char* UIWorldUISubTypeToString(EUIWorldUISubClassType type)
 	}
 }
 
+#pragma endregion
+
 /////////////////-------------------  Data Struct  -------------------/////////////////
 // 텍스트 데이터
 struct TUI_TextData
@@ -293,6 +516,7 @@ struct TUI_TextData
 	static constexpr EUIType eType = EUIType::UI_TEXT;
 	std::string		strTag;
 	std::string		strOwnerName;
+	EUITextSubClassType		eTextSubClassType;
 	std::string		strFontTag;
 	std::string	    strText;
 	Vec4			vFontColor;	
@@ -307,6 +531,7 @@ struct TUI_TriggerData
 	static constexpr EUIType eType = EUIType::TRIGGER;
 	std::string		strTag;
 	std::string		strOwnerName;
+	EUITriggerSubClassType		eTriggerSubClassType;
 	
 	vector<std::string> vecHoverEnterTriggerCanvas;
 	vector<std::string> vecHoverEnterTriggerUI;
@@ -369,15 +594,20 @@ struct TUI_GenericUIData
 	_float			fPosZ;
 	_string			strTextureTag;
 	_bool			isVisible;
+	_bool			isInteract;
+	_bool			isActivate;
 	uint32_t		iComponentFlag;
 	EUISubClassType	eSubClassType;
 	_bool			isUseColorTint;
 	Vec4			vColorTint;
+	Vec4			vGradiantColorTint;
 	int32_t			iShaderPass;
 	int32_t			iFillDir;
 	_float			fDelay;
 	int32_t			iFlip;
 	_float			fAlphaRatio;
+	_string			strNoiseTextureTag;
+	_string			strAlphaMaskTextureTag;
 };
 
 struct TUI_CanvasData

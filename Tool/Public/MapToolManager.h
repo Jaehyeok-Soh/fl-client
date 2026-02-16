@@ -122,16 +122,16 @@ private:
 	CMapToolManager();
 	virtual ~CMapToolManager() = default;
 public:
-	HRESULT					Initialize(ID3D11Device* pDevice , ID3D11DeviceContext* pContext);
-	CMapObject*				Make_MapObject(void* pArg , _bool isPreview = false);
-	HRESULT					Batch_Preview();
+	HRESULT						Initialize(ID3D11Device* pDevice , ID3D11DeviceContext* pContext);
+	CMapObject*					Make_MapObject(void* pArg , _bool isPreview = false);
+	HRESULT						Batch_Preview();
 private:
-	HRESULT					Register_MapObjectCloneFactory();
+	HRESULT						Register_MapObjectCloneFactory();
 public:
-	void					Update(float DT);
-	void					Input_Update(float DT);
-	void					Mouse_Update(float DT);
-	void					Preview_Update(float DT);
+	void						Update(float DT);
+	void						Input_Update(float DT);
+	void						Mouse_Update(float DT);
+	void						Preview_Update(float DT);
 public:
 	CLIENT_MAKEPATH_DESC_BASE* Make_Client_MakePathDesc( EClientMakePath eClientMakePath  , CLIENT_MAKEPATH_DESC_BASE* pPrototype = nullptr);
 	_bool						IsExist_ClientMakePathDesc(EClientMakePath eClientMakePath);
@@ -144,6 +144,8 @@ public:
 	HRESULT						Check_And_Bind_FromUE();
 	void						Get_SRT_BrushData(Vec3& vOutScale , Quat& vOutQuat , Vec3& vOutPosition);
 public:
+	void						Set_MakeMapObjectSectionNumber(_int iSectionNum)						{ m_iMakeSectionNumber = iSectionNum; }
+	void						Set_MapToolEmplaceType(EMapTool_EmplaceType eType)						{ m_eMapToolEmplaceType = eType; }
 	void						Set_PreviewMapObject(CMapObject* pMapObject)							{ m_pPreviewMapobject = pMapObject; }
 	void						Set_BrushScale(const Vec3& vScale)										{ m_tBrushModeOption.vBrushScale = vScale; }
 	void						Set_BrushRotation(const Vec3 vDegree)									{ m_tBrushModeOption.vBrushRotation = vDegree; }
@@ -162,12 +164,15 @@ public:
 	const Vec3&					Get_BrushScale()					const { return m_tBrushModeOption.vBrushRotation; }
 	const Vec3&					Get_BrushRotation()					const { return m_tBrushModeOption.vBrushRotation; }
 
+	_int						Get_MakeObjectSectionNubmer()		const { return m_iMakeSectionNumber; }
+
 	BRUSH_MODE_OPTION*			Get_BrushModeOption()				{ return &m_tBrushModeOption; }
 	CMapObject*					Get_Preview()						const { return m_pPreviewMapobject; }
 	const float&				Get_MouseRange()					const { return m_fMouseRange; }
 	const float&				Get_MouseWheelSpeed()				const { return m_fMouseRange; }
-	const  Vec3&				Get_MousePickingPos()						const;
+	const  Vec3&				Get_MousePickingPos()				const;
 
+	EMapTool_EmplaceType		Get_MapToolEmplaceType()			const { return m_eMapToolEmplaceType; }
 	EMapToolObjectBatchMode		Get_MapToolObjectBatchMode()		const { return m_eMapTooObjectBatchMode; }
 	EClientLevelType			Get_MakeMapObejctClientLevelType()	const { return m_eMakeMapObjectClientLevelType; }
 	EClientMakePath				Get_MakeMapObjectClientMakePath()	const { return m_eMakeMapObjectClientMakePath; }
@@ -184,7 +189,10 @@ private:
 
 	/* Batch Mode */
 	EMapToolObjectBatchMode	m_eMapTooObjectBatchMode{ EMapToolObjectBatchMode::Single};
-
+	EMapTool_EmplaceType	m_eMapToolEmplaceType{EMapTool_EmplaceType::Free};
+	
+	/*  */
+	_int					m_iMakeSectionNumber{0};
 	/* 내가 생성시킬 때 기본 Defautl 값으로 들어갈 타입들 모임 */
 	EMapObject_Type			m_eMakeMapObjectType{EMapObject_Type::STATICMODEL};
 	EMapObject_DrawType		m_eMakeMapObjectDrawType{ EMapObject_DrawType::Default};

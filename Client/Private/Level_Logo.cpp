@@ -226,6 +226,10 @@ HRESULT CLevel_Logo::Ready_Player_Layer(const wstring& wstrLayerTag)
 
 HRESULT CLevel_Logo::Ready_UI_Layer(const wstring& wstrLayerTag)
 {
+	if (FAILED(CUI_Manager::GetInstance()->Bind_Trigger(ENUM_TO_UINT(ELevelType::LOGO))))
+		return E_FAIL;
+
+	CUI_Manager::GetInstance()->Clear_TriggerUI();
 	return S_OK;
 }
 
@@ -262,9 +266,9 @@ HRESULT CLevel_Logo::Ready_Lights()
 		LIGHT_DESC desc = {};
 		desc.eType = LIGHT_TYPE::DIRECTIONAL;
 		desc.vDirection = Vec3{ 1.f, -1.f, 1.f };
-		desc.vDiffuse = Vec4(0.9f, 0.9f, 0.9f, 1.f);
-		desc.vAmbient = Vec4(0.4f, 0.4f, 0.4f, 1.f);
-		desc.vSpecular = Vec4(1.f, 1.f, 1.f, 1.f);
+		desc.vDiffuse = Vec4(0.7f, 0.7f, 0.7f, 1.f);
+		desc.vAmbient = Vec4(0.3f, 0.3f, 0.3f, 1.f);
+		desc.vSpecular = desc.vDiffuse;
 
 		if (FAILED(m_pGameInstance->Add_Light(desc)))
 			return E_FAIL;
@@ -333,8 +337,6 @@ HRESULT CLevel_Logo::Ready_Octree()
 	vector<BoundingBox*> vecWillRegistBounds;
 	vecWillReigstObject.reserve(pList->size());
 	vecWillRegistBounds.reserve(pList->size());
-	
-
 	{
 		Vec3 vMin{ FLT_MAX, FLT_MAX, FLT_MAX };
 		Vec3 vMax{ -FLT_MAX, -FLT_MAX, -FLT_MAX };

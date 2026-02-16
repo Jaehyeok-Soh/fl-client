@@ -4,14 +4,13 @@
 
 NS_BEGIN(Client)
 class CStatComponent;
-class CUIText final : public CGenericUI
+class CUIText abstract : public CGenericUI
 {
 	using Super = CGenericUI;
 public:
 	typedef struct tagUITextDesc : public GENERIC_UI_DESC
 	{
-		CStatComponent* pTargetStat;
-		DTO::EUISubClassType eOwner;
+		DTO::EUITextSubClassType eTextSubClass;
 		_wstring wstrFontTag;
 		_wstring wstrText;
 		Vec4 vFontColor;
@@ -20,7 +19,7 @@ public:
 
 	}UI_TEXT_DESC;
 
-private:
+protected:
 	CUIText(ID3D11Device* pDevice, ID3D11DeviceContext* pDeviceContext);
 	CUIText(const CUIText& rhs);
 	virtual ~CUIText() = default;
@@ -39,37 +38,22 @@ public:
 	virtual void Ready_Before_Render(const _float fTimeDelta) override;
 	virtual HRESULT Render() override;
 
-private:
+protected:
 	HRESULT Ready_Components(UI_TEXT_DESC* pDesc);
 	HRESULT Bind_ShaderResources();
 
-private:
-	virtual void OnUIEvent(ETriggerEventType eEvent, CGenericUI* pSender)override;
-
-private:
-	virtual void Initialize_Visible_Event()override;
-	virtual void Initialize_InVisible_Event()override;
-
-private:
-	virtual _bool Tick_Visible_Event(const _float fTimeDelta)override;
-	virtual _bool Tick_InVisible_Event(const _float fTimeDelta)override;
-
-private:
-	CStatComponent* m_pTargetStat = { nullptr };
-	DTO::EUISubClassType m_eSubClassType = {};
-
+protected:
+	DTO::EUITextSubClassType m_eTextSubClassType = {};
 	_wstring m_wstrText		= {};
 	_wstring m_wstrFontTag	= {};
 	Vec2 m_vFontPos			= {};
 	Vec4 m_vFontColor		= {};
+	Vec4 m_vOriginFontColor = {};
 	_float m_fFontScale		= {};
 	_float m_fFontRotate	= {};
 
 	_float m_fTimeAcc = {};
-
 public:
-	static CUIText* Create(ID3D11Device* pDevice, ID3D11DeviceContext* pDeviceContext);
-	CGameObject* Clone(void* pArg);
 	virtual void Free()override;
 };
 

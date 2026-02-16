@@ -1762,7 +1762,6 @@ void CParticle_System_Panel::Draw_Parts(CToolObject* pGo)
 				m_iSelcetedParticleTypeIdx = (int)m_tCurrentDesc.Data.eEffectParticleType;
 				m_iSelectedShaderPassIdx = m_tCurrentDesc.Data._Effect_ShaderPass;
 			}
-
 		}
 
 		if (!iTems.empty())

@@ -313,9 +313,9 @@ float GlowTextureSample(float2 UV)
 float4 SceneTextureSample(float2 UV, uint Flag)
 {
     if (Flag == 0)
-        return g_RenderTargetSceneTexture.Sample(LinearSampler, UV);
+        return g_RenderTargetSceneHDRCopyTexture.Sample(LinearSampler, UV);
     else if (Flag == 1)
-        return g_RenderTargetSceneTexture.Sample(LinearClampSampler, UV);
+        return g_RenderTargetSceneHDRCopyTexture.Sample(LinearClampSampler, UV);
 }
 
 

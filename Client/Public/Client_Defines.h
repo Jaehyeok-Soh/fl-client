@@ -256,10 +256,6 @@ namespace Client
 		END,
 	};
 
-	
-
-
-
 #pragma	endregion
 
 #pragma region UI
@@ -368,6 +364,8 @@ namespace Client
 		else return EUIEvent::END;
 	}
 
+	enum class ETriggerEventType { HOVER_ENTER, HOVER_EXIT, PRESS_ENTER, PRESS_EXIT, END };
+
 	enum class EUIShaderPass
 	{
 		DEFAULT = 0,
@@ -375,6 +373,7 @@ namespace Client
 		COLOR,
 		FADE,
 		PROGRESS,
+		DISOLVE,
 		END
 	};
 	inline std::string UIShaderPassToString(EUIShaderPass eType)
@@ -386,6 +385,7 @@ namespace Client
 		case EUIShaderPass::COLOR: return "COLOR";
 		case EUIShaderPass::FADE: return "FADE";
 		case EUIShaderPass::PROGRESS: return "PROGRESS";
+		case EUIShaderPass::DISOLVE: return "DISOLVE";
 		default: return "";
 		}
 	}
@@ -396,6 +396,7 @@ namespace Client
 		else if (str == "COLOR") return EUIShaderPass::COLOR;
 		else if (str == "FADE") return EUIShaderPass::FADE;
 		else if (str == "PROGRESS") return EUIShaderPass::PROGRESS;
+		else if (str == "DISOLVE") return EUIShaderPass::DISOLVE;
 		else return EUIShaderPass::DEFAULT;
 	}
 

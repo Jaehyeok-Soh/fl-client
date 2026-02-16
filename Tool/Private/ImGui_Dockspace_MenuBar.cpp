@@ -26,6 +26,7 @@
 #include "DataDocument_Map.h"
 #include "MapToolManager.h"
 #include "Builder_Map.h"
+#include "MapObject.h"
 // BuilderSystem
 #include "BuilderSystem.h"
 
@@ -197,7 +198,6 @@ void CImGui_Dockspace_MenuBar::Save_MapData(const wstring& wstrFilePath)
 	Request_ExportData(eLevelType, DTO::ECategory::MAP, g_wszMapObjectLayer , pDocument);
 
 	m_pGameInstance->Save_File_Json(iLevelID, DTO::ECategory::MAP, wstrFilePath);
-
 }
 
 void CImGui_Dockspace_MenuBar::Save_AnimationData(const wstring& wstrFilePath)
@@ -226,6 +226,7 @@ void CImGui_Dockspace_MenuBar::Save_EffectData(const wstring& wstrFilePath)
 
 void CImGui_Dockspace_MenuBar::Save_CameraData(const wstring& wstrFilePath)
 {
+
 }
 
 void CImGui_Dockspace_MenuBar::Save_UIData(const wstring& wstrFilePath)
@@ -422,15 +423,40 @@ void CImGui_Dockspace_MenuBar::Load_UIData(const wstring& wstrFilePath)
 
 void CImGui_Dockspace_MenuBar::Request_ExportData(ELevelType eLevelID, DTO::ECategory eCategory, const wstring& wstrLayerTag, CDataDocumentBase* pDocument)
 {
-	if (list<CGameObject*>* pGameObjectList = m_pGameInstance->Get_GameObject_List(ENUM_TO_UINT(eLevelID), wstrLayerTag))
+	bool isSelectObjectSave = {false};
+
+	if (isSelectObjectSave == false)
 	{
-		if (pGameObjectList->size() > 0)
+		if (list<CGameObject*>* pGameObjectList = m_pGameInstance->Get_GameObject_List(ENUM_TO_UINT(eLevelID), wstrLayerTag))
 		{
-			for (auto itr = pGameObjectList->begin();
-				itr != pGameObjectList->end();
-				++itr)
+			if (pGameObjectList->size() > 0)
 			{
-				(*itr)->Export_Data(eCategory, pDocument);
+				for (auto itr = pGameObjectList->begin();
+					itr != pGameObjectList->end();
+					++itr)
+				{
+					(*itr)->Export_Data(eCategory, pDocument);
+				}
+			}
+		}
+	}
+
+	else
+	{
+		if (list<CGameObject*>* pGameObjectList = m_pGameInstance->Get_GameObject_List(ENUM_TO_UINT(eLevelID), wstrLayerTag))
+		{
+			if (pGameObjectList->size() > 0)
+			{
+				for (auto itr = pGameObjectList->begin();
+					itr != pGameObjectList->end();
+					++itr)
+				{
+					CGameObject* pGameObj = *itr;
+					if (!pGameObj) continue;
+					if (pGameObj->IsDead() == true) continue;
+					if (static_cast<CMapObject*>(pGameObj)->Get_MapObjectState() != CMapObject::EState::Select)
+					(*itr)->Export_Data(eCategory, pDocument);
+				}
 			}
 		}
 	}

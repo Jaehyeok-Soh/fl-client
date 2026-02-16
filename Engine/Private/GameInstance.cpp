@@ -11,6 +11,7 @@
 #include "Light_Manager.h"
 #include "Sound_Manager.h"
 #include "Level.h"
+#include "Timer.h"
 #include "Picking.h"
 #include "RenderTarget_Manager.h"
 #include "Timer_Manager.h"
@@ -340,6 +341,11 @@ void CGameInstance::Compute_TimeDelta(const _tchar* pTimerTag)
 void CGameInstance::Clear_Timers()
 {
 	m_pTimer_Manager->Clear_Timers();
+}
+
+CTimer* CGameInstance::Find_Timer(const _tchar* pTimerTag)
+{
+	return m_pTimer_Manager->Find_Timer(pTimerTag);
 }
 #pragma endregion
 
@@ -699,6 +705,58 @@ inline void CGameInstance::Push_DebugComponent(CComponent* pComp)
 {
 	m_pRender_Manager->Push_DebugComponent(pComp);
 }
+SHADER_SSAOPARAM_DESC& CGameInstance::Get_SSAOParamDesc()
+{
+	return m_pRender_Manager->Get_SSAOParamDesc();
+}
+const SHADER_SSAOPARAM_DESC& CGameInstance::Get_SSAOParamDesc() const
+{
+	return m_pRender_Manager->Get_SSAOParamDesc();
+}
+HRESULT CGameInstance::Commit_SSAOParam()
+{
+	return m_pRender_Manager->Commit_SSAOParam();
+}
+SHADER_HDRPARAM_DESC& CGameInstance::Get_HDRParamDesc()
+{
+	return m_pRender_Manager->Get_HDRParamDesc();
+}
+const SHADER_HDRPARAM_DESC& CGameInstance::Get_HDRParamDesc() const
+{
+	return m_pRender_Manager->Get_HDRParamDesc();
+}
+HRESULT CGameInstance::Commit_HDRParam()
+{
+	return m_pRender_Manager->Commit_HDRParam();
+}
+SHADER_BLOOMPARAM_DESC& CGameInstance::Get_BloomParamDesc()
+{
+	return m_pRender_Manager->Get_BloomParamDesc();
+}
+const SHADER_BLOOMPARAM_DESC& CGameInstance::Get_BloomParamDesc() const
+{
+	return m_pRender_Manager->Get_BloomParamDesc();
+}
+HRESULT CGameInstance::Commit_BloomParam()
+{
+	return m_pRender_Manager->Commit_BloomParam();
+}
+SHADER_OUTLINE_DESC& CGameInstance::Get_OutlineParamDesc()
+{
+	return m_pRender_Manager->Get_OutlineParamDesc();
+}
+const SHADER_OUTLINE_DESC& CGameInstance::Get_OutlineParamDesc() const
+{
+	return m_pRender_Manager->Get_OutlineParamDesc();
+}
+HRESULT CGameInstance::Commit_OutlineParam()
+{
+	return m_pRender_Manager->Commit_OutlineParam();
+}
+HRESULT CGameInstance::Commit_AllPostParams()
+{
+	return m_pRender_Manager->Commit_AllPostParams();
+}
 #endif
 #pragma endregion
 
@@ -831,9 +889,9 @@ HRESULT CGameInstance::Add_MRT(EMRTLayer eMRTLayer, ERenderTarget eTarget)
 	return m_pRenderTarget_Manager->Add_MRT(eMRTLayer, eTarget);
 }
 
-HRESULT CGameInstance::Begin_MRT(EMRTLayer eMRTLayer)
+HRESULT CGameInstance::Begin_MRT(EMRTLayer eMRTLayer, _bool bClear)
 {
-	return m_pRenderTarget_Manager->Begin_MRT(eMRTLayer);
+	return m_pRenderTarget_Manager->Begin_MRT(eMRTLayer, bClear);
 }
 
 HRESULT CGameInstance::End_MRT()
@@ -846,9 +904,9 @@ HRESULT CGameInstance::Bind_RT_ShaderResource(ERenderTarget eTarget, CShader* pS
 	return m_pRenderTarget_Manager->Bind_ShaderResource(eTarget, pShader);
 }
 
-HRESULT CGameInstance::Copy_BackBufferResource(ERenderTarget eTarget)
+HRESULT CGameInstance::Copy_SceneHDRResource(ERenderTarget eTarget)
 {
-	return m_pRenderTarget_Manager->Copy_BackBufferResource(eTarget);
+	return m_pRenderTarget_Manager->Copy_SceneHDRResource(eTarget);
 }
 
 #ifdef _DEBUG

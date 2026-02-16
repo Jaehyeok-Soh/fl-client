@@ -136,15 +136,19 @@ HRESULT CLoader::Loading_For_Map()
 
 
 
-	///* Map Data Model */
-	//CUEMapDataLoader* pMapDataLoader = CUEMapDataLoader::Create(m_pDevice,m_pDeviceContext);
-	//if (pMapDataLoader == nullptr) return E_FAIL;
-	//if (FAILED(pMapDataLoader->Make_Prototype(L"../../Resources/Models/Map/DevScene/Model/")))
-	//{
-	//	Safe_Release(pMapDataLoader);
-	//	return E_FAIL;
-	//}
-	//Safe_Release(pMapDataLoader);
+	/* Model Prototype */
+	CUEMapDataLoader* pMapDataLoader = CUEMapDataLoader::Create(m_pDevice,m_pDeviceContext);
+	if (pMapDataLoader == nullptr) return E_FAIL;
+	if (FAILED(pMapDataLoader->Make_Prototype(ENUM_TO_UINT(ELevelType::MAP), L"../../Resources/Models/Map/")))
+	{
+		Safe_Release(pMapDataLoader);
+		return E_FAIL;
+	}
+	Safe_Release(pMapDataLoader);
+
+
+	/* Texture Prototype */
+	//if(FAILED())
 
 
 	//=================
@@ -276,21 +280,21 @@ HRESULT CLoader::Loading_For_UI()
 	//=================
 	// Resource Component
 	//=================
-	if (FAILED(Loading_Textures(L"../../Resources/Textures/UI/Playable/")))
-		return E_FAIL;
-	if (FAILED(Loading_Textures(L"../../Resources/Textures/UI/Menu/")))
-		return E_FAIL;
-	if (FAILED(Loading_Textures(L"../../Resources/Textures/UI/Battle/")))
-		return E_FAIL;
-	if (FAILED(Loading_Textures(L"../../Resources/Textures/UI/Key/")))
-		return E_FAIL;
-	if (FAILED(Loading_Textures(L"../../Resources/Textures/UI/WeaponIcon/")))
-		return E_FAIL;
-	if (FAILED(Loading_Textures(L"../../Resources/Textures/UI/SM_MAP/")))
-		return E_FAIL;
-	if (FAILED(Loading_Textures(L"../../Resources/Textures/UI/Map/")))
-		return E_FAIL;
 
+	std::error_code ec;
+	for (const auto& entry : std::filesystem::directory_iterator(L"../../Resources/Textures/UI/",std::filesystem::directory_options::skip_permission_denied, ec))
+	{
+		if (ec)
+			return E_FAIL;
+
+		if (entry.is_directory() == false)
+			continue;
+
+		const std::wstring wstrSubFolder = entry.path().wstring();
+
+		if (FAILED(Loading_Textures(wstrSubFolder)))
+			return E_FAIL;
+	}
 	//=================
 	// UI Objects
 	//=================
@@ -305,7 +309,6 @@ HRESULT CLoader::Loading_For_UI()
 		if (FAILED(m_pGameInstance->Add_Prototype(ENUM_TO_UINT(ELevelType::UI), g_wszPrototypeTagUI, CToolUI::Create(EToolObjectType::UI, m_pDevice, m_pDeviceContext))))
 			return E_FAIL;
 	}
-
 	m_isFinished = true;
 	return S_OK;
 }
@@ -329,7 +332,7 @@ HRESULT CLoader::Loading_Textures(const wstring& wstrFolder)
 			++iFileCount;
 		}
 	}
-	/* 바탕화면 경로(C:\Users\...\Desktop) 쪽은 특히 desktop.ini가 흔합니다. 절대 바탕화면에 프로젝트를 두지마 */
+	/* 바탕화면 경로(C:\Users\...\Desktop) 쪽은 특히 desktop.ini가 흔합니다. */
 	for (const auto& entry : std::filesystem::directory_iterator(wstrFolder))
 	{
 		wstring wstrFileName = { L"" };
@@ -373,6 +376,44 @@ HRESULT CLoader::Loading_Textures_Effect(const wstring& wstrFolder)
 
 			wstring wstrFileName = path.stem().wstring();
 
+			wstring wstrFolderName = path.parent_path().filename().wstring();
+			wstring wstrResourceTag = L"Texture_" + wstrFileName;
+
+			CTextureBase::RESOURCE_BASE_DESC desc = {};
+			desc.wstrName = wstrFileName;
+			desc.wstrPath = path.wstring();
+
+			if (FAILED(m_pGameInstance->Add_Resource(wstrResourceTag,
+				CTextureBase::Create(m_pDevice, m_pDeviceContext, &desc))))
+			{
+				continue;
+			}
+		}
+	}
+
+	return S_OK;
+}
+
+HRESULT CLoader::Loading_Textures_Map(const wstring& wstrFolder)
+{
+	namespace fs = std::filesystem;
+
+	if (fs::exists(wstrFolder) == false)
+		return E_FAIL;
+
+	for (const auto& entry : fs::recursive_directory_iterator(wstrFolder))
+	{
+		if (entry.is_regular_file())
+		{
+			auto path = entry.path();
+
+			wstring wstrExtension = path.extension().wstring();
+			for (auto& c : wstrExtension) c = towlower(c);
+
+			if (wstrExtension == L".hdr")
+				continue;
+
+			wstring wstrFileName = path.stem().wstring();
 			wstring wstrFolderName = path.parent_path().filename().wstring();
 			wstring wstrResourceTag = L"Texture_" + wstrFileName;
 

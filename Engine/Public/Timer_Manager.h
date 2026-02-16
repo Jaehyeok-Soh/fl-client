@@ -39,7 +39,6 @@ public:
 	void					Remove_Timer(const _tchar* pTimerTag);
 	void					Compute_TimeDelta(const _tchar* pTimerTag);
 	void					Clear_Timers();
-private:
 	CTimer*					Find_Timer(const _tchar* pTimerTag);
 private:
 	map<const _wstring, CTimer*> m_mapTimers;
