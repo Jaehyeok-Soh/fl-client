@@ -259,7 +259,7 @@ HRESULT CVIBuffer_Particle_Point::Set_ResizeBuffer_SpecificRandom()
 
 	for (size_t i = 0; i < m_iInstanceCount; i++)
 	{
-		_float      fScale = m_pGameInstance->Rand_Float(m_tParticleDesc.vSize.x, m_tParticleDesc.vSize.y) * 0.5f;
+		_float      fScale = m_tParticleDesc.vSize.x * 0.5f;
 
 		if (iFlags & E_RANDOM_FLAG::RAND_SIZE)
 		{
@@ -340,7 +340,13 @@ HRESULT CVIBuffer_Particle_Point::Set_ResizeBuffer_SpecificRandom()
 			}
 			}
 		}
+		pInitialData[i].vTranslation = Vec4(vPos.x, vPos.y, vPos.z, 1.f);
 
+		pInitialData[i].vParticle_OriginMatrix =
+			Matrix(pInitialData[i].vRight,
+				pInitialData[i].vUp,
+				pInitialData[i].vLook,
+				pInitialData[i].vTranslation);
 	}
 	CComputeShader* pShader = m_tParticleDesc.pComputeShader;
 	if (pShader == nullptr)

@@ -192,7 +192,7 @@ HRESULT CEffectObject::Ready_Component_Buffer(void* pArg)
             pParticleDesc.m_fStartSpeeds = m_tEffectDesc.Data._Effect_StartSpeed;
             pParticleDesc.vSize = m_tEffectDesc.Data._Effect_ParticleSize;
             pParticleDesc.vSpeed = Vec2{ 1.f, 2.f };
-            pParticleDesc.isRandomSeed = m_tEffectDesc.Data._Effect_IsRandomSeed;
+            pParticleDesc.iRandomFlags = m_tEffectDesc.Data.iRandomFlags;
             pParticleDesc.pOwner = this;
             pParticleDesc.pComputeShader = static_cast<CComputeShader*>(Get_Script_Component(L"ComputeShader"));
             pParticleDesc.EmissionFlagType = m_tEffectDesc.Data._Effect_EmissionType;
@@ -216,7 +216,7 @@ HRESULT CEffectObject::Ready_Component_Buffer(void* pArg)
                 MeshBufferDesc.m_fStartSpeeds = m_tEffectDesc.Data._Effect_StartSpeed;
                 MeshBufferDesc.vSize = m_tEffectDesc.Data._Effect_ParticleSize;
                 MeshBufferDesc.vSpeed = Vec2{ 1.f, 2.f };
-                MeshBufferDesc.isRandomSeed = m_tEffectDesc.Data._Effect_IsRandomSeed;
+                MeshBufferDesc.iRandomFlags = m_tEffectDesc.Data.iRandomFlags;
                 MeshBufferDesc.pComputeShader = static_cast<CComputeShader*>(Get_Script_Component(L"ComputeShader"));
                 MeshBufferDesc.pModel = pInstance;
                 MeshBufferDesc.pOwner = this;
@@ -237,7 +237,7 @@ HRESULT CEffectObject::Ready_Component_Buffer(void* pArg)
             pParticleDesc.m_fStartSpeeds = m_tEffectDesc.Data._Effect_StartSpeed;
             pParticleDesc.vSize = m_tEffectDesc.Data._Effect_ParticleSize;
             pParticleDesc.vSpeed = Vec2{ 1.f, 2.f };
-            pParticleDesc.isRandomSeed = m_tEffectDesc.Data._Effect_IsRandomSeed;
+            pParticleDesc.iRandomFlags = m_tEffectDesc.Data.iRandomFlags;
             pParticleDesc.pOwner = this;
             pParticleDesc.pComputeShader = static_cast<CComputeShader*>(Get_Script_Component(L"ComputeShader"));
 

@@ -348,163 +348,55 @@ void CImGui_Dockspace_MenuBar::Load_EffectData(const wstring& wstrFilePath)
 
 		// =============== CREATE   PARTS ===================
 	_uint index = 0;
-for (DTO::TEFFECT_PartsData& Part : pData._ChildData)
-{
-    // 1. Transform 데이터 복원
-    Vec3 vScale, vPos;
-    Quat vQuat;
-    Part.vWorldMatrix.Decompose(vScale, vQuat, vPos);
+	for (DTO::TEFFECT_PartsData& Part : pData._ChildData)
+	{
+		// Transform 데이터 복원
+		Vec3 vScale, vPos;
+		Quat vQuat;
+		Part.vWorldMatrix.Decompose(vScale, vQuat, vPos);
 
-    CEffectObject::Effect_Desc pEffectDesc = {};
-    CTransform::TRANSFORM_DESC transformDesc = {};
-    transformDesc.ScaleMatrix = Matrix::CreateScale(vScale);
-    transformDesc.RotationMatrix = Matrix::CreateFromQuaternion(vQuat);
-    transformDesc.TranslationMatrix = Matrix::CreateTranslation(vPos);
-    transformDesc.fRotatePerSec = 1.f;
-    transformDesc.fMovePerSec = 1.f;
+		CEffectObject::Effect_Desc pEffectDesc = {};
+		CTransform::TRANSFORM_DESC transformDesc = {};
+		transformDesc.ScaleMatrix = Matrix::CreateScale(vScale);
+		transformDesc.RotationMatrix = Matrix::CreateFromQuaternion(vQuat);
+		transformDesc.TranslationMatrix = Matrix::CreateTranslation(vPos);
+		transformDesc.fRotatePerSec = 1.f;
+		transformDesc.fMovePerSec = 1.f;
 
-    pEffectDesc.pMatParent = &(pEffectContainer->Get_Component<CTransform>()->Get_WorldMatrix());
-    pEffectDesc.pTransform_Desc = &transformDesc;
-    pEffectDesc.wstrLayerTag = L"Effect_Parts";
-    pEffectDesc.iLevelIndex = iLevelID;
+		pEffectDesc.pMatParent = &(pEffectContainer->Get_Component<CTransform>()->Get_WorldMatrix());
+		pEffectDesc.pTransform_Desc = &transformDesc;
+		pEffectDesc.wstrLayerTag = L"Effect_Parts";
+		pEffectDesc.iLevelIndex = iLevelID;
 
-    // 2. 타입 및 시스템 설정 복원
-    pEffectDesc.eEffectSystemType = (E_EffectSystemType)Part.eEffectSystemType;
-    pEffectDesc.eEffectParticleType = (E_PARTICLETYPE)Part.eEffectParticleType;
-    pEffectDesc.eEffectType = (E_EFFECTTYPE)Part.eEffectType;
-    pEffectDesc._Effect_ShapeType = (E_SHAPETYPE)Part._Effect_ShapeType;
-    pEffectDesc._Effect_EmissionType = (E_EMISSION_TYPE)Part._Effect_EmissionType;
+		// DTO 데이터를 툴 전용 Data 구조체로 일괄 복사
+		pEffectDesc.Data = Part;
 
-    // 3. 리소스 태그 복원 (Glow, Dissolve 누락 없이 추가)
-    pEffectDesc._Effect_Model_Tag = Part._Effect_Model_Tag;
-    pEffectDesc._Effect_DiffuseTexture_Tag = Part._Effect_DiffuseTexture_Tag;
-    pEffectDesc._Effect_NoiseTexture_Tag = Part._Effect_NoiseTexture_Tag;
-    pEffectDesc._Effect_MaskingTexture_Tag = Part._Effect_MaskingTexture_Tag;
-    pEffectDesc._Effect_GradationTexture_Tag = Part._Effect_GradationTexture_Tag;
-    pEffectDesc._Effect_TrailTexture_Tag = Part._Effect_TrailTexture_Tag;
-    pEffectDesc._Effect_NormalTexture_Tag = Part._Effect_NormalTexture_Tag;
-    pEffectDesc._Effect_DissolveTexture_Tag = Part._Effect_DissolveTexture_Tag; // 추가
-    pEffectDesc._Effect_GlowTexture_Tag = Part._Effect_GlowTexture_Tag;         // 추가
+		// 타입 캐스팅 보정 (필요한 경우만 명시적 캐스팅)
+		// 수명 및 리셋을 위한 초기화 플래그 세팅
+		pEffectDesc.Data._Effect_TimeFlag = 2; // RESET 상태로 로딩
 
-    // 4. 셰이더 설정
-    pEffectDesc._Effect_Shader_Path = Part._Effect_Shader_Path;
-    pEffectDesc._Effect_Shader_Tag = Part._Effect_Shader_Tag;
-    pEffectDesc._Effect_ShaderPass = Part._Effect_ShaderPass;
+		// 파츠 생성 및 이름 복구
+		// DTO의 eEffectParticleType에 따라 적절한 프로토타입으로 생성합니다.
+		wstring strPrototype = L"Prototype_GameObject_Effect_Part_Particle";
 
-    // 5. 수치 및 수학 데이터 복원
-    pEffectDesc._Effect_ScrollSpeed = Part._Effect_ScrollSpeed;
-    pEffectDesc._Effect_DistortionScale = Part._Effect_DistortionScale;
-    pEffectDesc._Effect_StartScale = Part._Effect_StartScale;
-    pEffectDesc._Effect_EndScale = Part._Effect_EndScale;
-    pEffectDesc._Effect_Color = Part._Effect_Color;
-    pEffectDesc._Effect_DiscardValue = Part._Effect_DiscardValue;
-    pEffectDesc._Effect_Range = Part._Effect_Range;
-    pEffectDesc._Effect_ParticleSize = Part._Effect_ParticleSize;
-    pEffectDesc._Effect_Spiral_Radius = Part._Effect_Spiral_Radius;
-    pEffectDesc._Effect_Spiral_Speed = Part._Effect_Spiral_Speed;
-    pEffectDesc._Effect_UV_Offset = Part._Effect_UV_Offset; // 추가
+		// (ForceField 타입이 따로 있다면 여기서 분기 처리)
+		if (Part.eEffectSystemType == ENUM_TO_UINT(DTO::E_EffectSystemType::ForceField))
+			strPrototype = L"Prototype_GameObject_Effect_Part_ForceField";
 
-    // 6. 스프라이트 및 애니메이션
-    pEffectDesc._Effect_bUseSprite = Part._Effect_bUseSprite;
-    pEffectDesc._Effect_TileCount = { Part._Effect_TileCount.x, Part._Effect_TileCount.y };
-    pEffectDesc._Effect_bPlayAnim = Part._Effect_bPlayAnim;
-    pEffectDesc._Effect_AnimSpeed = Part._Effect_AnimSpeed;
-    pEffectDesc.m_iCurSpriteNumber = Part.m_iCurSpriteNumber;
-    pEffectDesc._Effect_ApearRatio = Part._Effect_ApearRatio; // 추가
+		static_cast<Effect*>(pEffectContainer)->Add_Part(index,
+			ENUM_TO_UINT(ELevelType::EFFECT),
+			strPrototype,
+			&pEffectDesc
+		);
 
-    // 7. 파티클 상세 설정
-    pEffectDesc._Effect_Duration = Part._Effect_Duration;
-    pEffectDesc._Effect_Looping = Part._Effect_Looping;
-    pEffectDesc._Effect_IsRandomSeed = Part._Effect_IsRandomSeed;
-    pEffectDesc._Effect_StartDelay = Part._Effect_StartDelay;
-    pEffectDesc._Effect_LifeTime = Part._Effect_LifeTime;
-    pEffectDesc._Effect_PlayBackSpeed = Part._Effect_PlayBackSpeed;
-    pEffectDesc._Effect_StartSpeed = Part._Effect_StartSpeed;
-    pEffectDesc._Effect_MaxParticle = Part._Effect_MaxParticle;
-    pEffectDesc._Effect_RateOverTime = Part._Effect_RateOverTime;
-    pEffectDesc._Effect_RateOverDistance = Part._Effect_RateOverDistance;
+		// 이름 재설정 (DTO에 저장된 PartsName 적용)
+		_uint iLastIdx = (_uint)static_cast<Effect*>(pEffectContainer)->Get_PartList().size() - 1;
+		auto pNewPart = static_cast<Effect*>(pEffectContainer)->Get_Part<CEffectObject>(iLastIdx);
+		if (pNewPart)
+			pNewPart->Set_Name(Part.EffectPartsName);
 
-    // 8. 중력 및 물리 커브 복원
-    pEffectDesc._Effect_Gravity_Value = Part._Effect_Gravity_Value;
-    pEffectDesc._Effect_GravityModifier = Part._Effect_GravityModifier;
-    pEffectDesc._Effect_GravityDir = Part._Effect_GravityDir;
-    pEffectDesc._bUseGlobalGravityCurve = Part._bUseGlobalGravityCurve;
-    pEffectDesc._bUseExternalForceCurve = Part._bUseExternalForceCurve;
-    pEffectDesc.fExternalForceStrength = Part.fExternalForceStrength;
-
-    // 중력 커브 데이터 복사
-    auto ConvertCurve = [&](const auto& src, auto& dest) {
-        dest.clear();
-        for (const auto& key : src) dest.push_back({ key.fTimeKey, key.fValue });
-    };
-    ConvertCurve(Part._vecGlobalGravityCurve, pEffectDesc._vecGlobalGravityCurve);
-    ConvertCurve(Part._vecExternalForceCurve, pEffectDesc._vecExternalForceCurve);
-
-    // 9. 회전 및 UV 스크롤 커브 복원 (정우 핵심 로직!)
-    pEffectDesc._Effect_StartRotation = Part._Effect_StartRotation;
-    pEffectDesc._Effect_TargetRotation = Part._Effect_TargetRotation;
-    pEffectDesc._bUseStartRotation = Part._bUseStartRotation;
-    pEffectDesc._bUseRotationCurve = Part._bUseRotationCurve;
-    pEffectDesc._bSeparateAxes = Part._bSeparateAxes;
-    pEffectDesc._bUseUVScrollCurve = Part._bUseUVScrollCurve; // 추가
-
-    // 모든 커브 벡터 변환 복사
-    ConvertCurve(Part._vecRotationCurveX, pEffectDesc._vecRotationCurveX);
-    ConvertCurve(Part._vecRotationCurveY, pEffectDesc._vecRotationCurveY);
-    ConvertCurve(Part._vecRotationCurveZ, pEffectDesc._vecRotationCurveZ);
-    ConvertCurve(Part._vecUVScrollCurveX, pEffectDesc._vecUVScrollCurveX); // 추가
-    ConvertCurve(Part._vecUVScrollCurveY, pEffectDesc._vecUVScrollCurveY); // 추가
-
-    // 10. 스크롤 가중치 및 툴 UI 플래그 복원
-    pEffectDesc._Effect_DiffuseTexture_ScrollWeight = Part._Effect_DiffuseTexture_ScrollWeight;
-    pEffectDesc._Effect_NoiseTexture_ScrollWeight = Part._Effect_NoiseTexture_ScrollWeight;
-    pEffectDesc._Effect_MaskingTexture_ScrollWeight = Part._Effect_MaskingTexture_ScrollWeight;
-    pEffectDesc._Effect_GradationTexture_ScrollWeight = Part._Effect_GradationTexture_ScrollWeight;
-    pEffectDesc._Effect_DissolveTexture_ScrollWeight = Part._Effect_DissolveTexture_ScrollWeight;
-
-    pEffectDesc._Effect_Tool_UseScroll_Diffuse = Part._Effect_Tool_UseScroll_Diffuse;
-    pEffectDesc._Effect_Tool_UseScroll_Noise = Part._Effect_Tool_UseScroll_Noise;
-    pEffectDesc._Effect_Tool_UseScroll_Masking = Part._Effect_Tool_UseScroll_Masking;
-    pEffectDesc._Effect_Tool_UseScroll_Gradation = Part._Effect_Tool_UseScroll_Gradation;
-    pEffectDesc._Effect_Tool_UseScroll_Dissolve = Part._Effect_Tool_UseScroll_Dissolve;
-    pEffectDesc._Effect_Tool_UseScroll_Glow = Part._Effect_Tool_UseScroll_Glow;
-
-    // 11. 비트 플래그 및 툴 전용 설정
-    pEffectDesc._Effect_TextureFlag = Part._Effect_TextureFlag;
-    pEffectDesc._Effect_RenderFlag = Part._Effect_RenderFlag;
-    pEffectDesc._Effect_SamplerStateFlag = Part._Effect_SamplerStateFlag;
-    pEffectDesc._Effect_TextureRotationFlag = Part._Effect_TextureRotationFlag;
-    pEffectDesc._Effect_TextureOperatorFlag = Part._Effect_TextureOperatorFlag;
-
-    pEffectDesc._Effect_Tool_DiffuseTexture = Part._Effect_Tool_DiffuseTexture;
-    pEffectDesc._Effect_Tool_NoiseTexture = Part._Effect_Tool_NoiseTexture;
-    pEffectDesc._Effect_Tool_MaskingTexture = Part._Effect_Tool_MaskingTexture;
-    pEffectDesc._Effect_Tool_GradationTexture = Part._Effect_Tool_GradationTexture;
-    pEffectDesc._Effect_Tool_DissolveTexture = Part._Effect_Tool_DissolveTexture;
-    pEffectDesc._Effect_Tool_GlowTexture = Part._Effect_Tool_GlowTexture;
-
-    pEffectDesc._Effect_Tool_UseBillboard = Part._Effect_Tool_UseBillboard;
-    pEffectDesc._Effect_Tool_UseScroll = Part._Effect_Tool_UseScroll;
-    pEffectDesc._Effect_Tool_RightScroll = Part._Effect_Tool_RightScroll;
-    pEffectDesc._Effect_Tool_DownScroll = Part._Effect_Tool_DownScroll;
-
-    pEffectDesc._Effect_Tool_DiffuseSamplerState_Flag = Part._Effect_Tool_DiffuseSamplerState_Flag;
-    pEffectDesc._Effect_Tool_NoiseSamplerState_Flag = Part._Effect_Tool_NoiseSamplerState_Flag;
-    pEffectDesc._Effect_Tool_MaskingSamplerState_Flag = Part._Effect_Tool_MaskingSamplerState_Flag;
-    pEffectDesc._Effect_Tool_GradationSamplerState_Flag = Part._Effect_Tool_GradationSamplerState_Flag;
-
-    // 12. 파츠 추가 및 이름 복구
-    static_cast<Effect*>(pEffectContainer)->Add_Part(index,
-        ENUM_TO_UINT(ELevelType::EFFECT),
-        L"Prototype_GameObject_Effect_Part_Particle",
-        &pEffectDesc
-    );
-
-    _uint iLastIdx = (_uint)static_cast<Effect*>(pEffectContainer)->Get_PartList().size() - 1;
-    static_cast<Effect*>(pEffectContainer)->Get_Part<CEffectObject>(iLastIdx)->Set_Name(Part.EffectPartsName);
-
-    index++;
-}
+		index++;
+	}
 	}
 
 }

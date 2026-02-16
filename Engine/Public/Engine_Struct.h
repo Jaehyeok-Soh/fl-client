@@ -249,7 +249,11 @@ namespace Engine
 		unsigned int		iMoveState = { 0 };
 		int					bIsLoop = { 0 };
 		unsigned int		iTimeFlag = {};
-		float				fGravity = { 9.8f };
+		float				fPadding4 = { 9.8f };
+
+		// 중력값
+		SimpleMath::Vector3 vFinalGravity = { 0.f, 0.f, 0.f };
+		float				fExternalStrength = { 0.f };
 
 		// 위치 및 방향
 		SimpleMath::Vector3	vPivot = {};	// Spread시 기준점

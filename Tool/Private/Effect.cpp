@@ -84,158 +84,39 @@ _bool Effect::Picking(OUT Vec3& vOut)
 
 _bool Effect::Export_Data(DTO::ECategory eCategory, CDataDocumentBase* pDocument)
 {
-    if (eCategory != DTO::ECategory::EFFECT)
-        return false;
+	if (eCategory != DTO::ECategory::EFFECT)
+		return false;
 
-    CDataDocument_Effect* pEffectDoc = static_cast<CDataDocument_Effect*>(pDocument);
+	CDataDocument_Effect* pEffectDoc = static_cast<CDataDocument_Effect*>(pDocument);
 
-    // 1. 부모(Container) 데이터 생성 및 기본 정보 기입
-    DTO::TEFFECT_ContainerData tContainerData;
-    tContainerData.strTag = Get_Name();
-    tContainerData.EffectContainerName = tContainerData.strTag;
-    tContainerData.vWorldMatrix = Get_Component<CTransform>()->Get_WorldMatrix();
-    tContainerData._Effect_SimulationType = ENUM_TO_UINT(m_eSimulationSpace);
+	// 부모(Container) 데이터 생성 및 기본 정보 기입
+	DTO::TEFFECT_ContainerData tContainerData;
+	tContainerData.strTag = Get_Name();
+	tContainerData.EffectContainerName = tContainerData.strTag;
+	tContainerData.vWorldMatrix = Get_Component<CTransform>()->Get_WorldMatrix();
+	tContainerData._Effect_SimulationType = ENUM_TO_UINT(m_eSimulationSpace);
 
-    // 2. 자식(Parts) 데이터 수집
-    for (auto& pPart : m_vecPartObjects)
-    {
-        CEffectObject* pEffectPart = dynamic_cast<CEffectObject*>(pPart);
-        if (nullptr == pEffectPart) continue;
+	// 자식(Parts) 데이터 수집
+	for (auto& pPart : m_vecPartObjects)
+	{
+		CEffectObject* pEffectPart = dynamic_cast<CEffectObject*>(pPart);
+		if (nullptr == pEffectPart) continue;
 
-        const CEffectObject::Effect_Desc& tPartDesc = pEffectPart->Get_EffectDesc();
-        DTO::TEFFECT_PartsData tPartData;
+		DTO::TEFFECT_PartsData tPartData = pEffectPart->Get_EffectDesc();
 
-        // =========== Document 기본 정보 ===========
-        tPartData.strTag = pEffectPart->Get_Name();
-        tPartData.EffectPartsName = tPartData.strTag;
-        tPartData.ParentsName = tContainerData.EffectContainerName;
-        tPartData.vWorldMatrix = pEffectPart->Get_Component<CTransform>()->Get_WorldMatrix();
+		// =========== 정보 보정 (실시간 갱신이 필요한 값들) ===========
+		tPartData.EffectPartsName = pEffectPart->Get_Name();
+		tPartData.ParentsName = tContainerData.EffectContainerName;
 
-        // =========== Effect 타입 및 모양 ===========
-        tPartData.eEffectSystemType = ENUM_TO_UINT(tPartDesc.eEffectSystemType);
-        tPartData.eEffectParticleType = ENUM_TO_UINT(tPartDesc.eEffectParticleType);
-        tPartData.eEffectType = ENUM_TO_UINT(tPartDesc.eEffectType);
-        tPartData._Effect_ShapeType = ENUM_TO_UINT(tPartDesc._Effect_ShapeType);
-        tPartData._Effect_EmissionType = ENUM_TO_UINT(tPartDesc._Effect_EmissionType);
+		// 실시간 툴 조작으로 변한 Transform 행렬 업데이트
+		tPartData.vWorldMatrix = pEffectPart->Get_Component<CTransform>()->Get_WorldMatrix();
 
-        // =========== Resource & Shader ===========
-        tPartData._Effect_Model_Tag = tPartDesc._Effect_Model_Tag;
-        tPartData._Effect_DiffuseTexture_Tag = tPartDesc._Effect_DiffuseTexture_Tag;
-        tPartData._Effect_NoiseTexture_Tag = tPartDesc._Effect_NoiseTexture_Tag;
-        tPartData._Effect_MaskingTexture_Tag = tPartDesc._Effect_MaskingTexture_Tag;
-        tPartData._Effect_GradationTexture_Tag = tPartDesc._Effect_GradationTexture_Tag;
-        tPartData._Effect_TrailTexture_Tag = tPartDesc._Effect_TrailTexture_Tag;
-        tPartData._Effect_NormalTexture_Tag = tPartDesc._Effect_NormalTexture_Tag;
-        tPartData._Effect_DissolveTexture_Tag = tPartDesc._Effect_DissolveTexture_Tag; // 추가
-        tPartData._Effect_GlowTexture_Tag = tPartDesc._Effect_GlowTexture_Tag;         // 추가
-        tPartData._Effect_Shader_Path = tPartDesc._Effect_Shader_Path;
-        tPartData._Effect_Shader_Tag = tPartDesc._Effect_Shader_Tag;
-        tPartData._Effect_ShaderPass = tPartDesc._Effect_ShaderPass;
+		// 수집된 파츠 데이터를 컨테이너 리스트에 추가
+		tContainerData._ChildData.push_back(tPartData);
+	}
 
-        // =========== 물리 및 수치 데이터 ===========
-        tPartData._Effect_ScrollSpeed = tPartDesc._Effect_ScrollSpeed;
-        tPartData._Effect_DistortionScale = tPartDesc._Effect_DistortionScale;
-        tPartData._Effect_StartScale = tPartDesc._Effect_StartScale;
-        tPartData._Effect_EndScale = tPartDesc._Effect_EndScale;
-        tPartData._Effect_Color = tPartDesc._Effect_Color;
-        tPartData._Effect_DiscardValue = tPartDesc._Effect_DiscardValue;
-        tPartData._Effect_Range = tPartDesc._Effect_Range;
-        tPartData._Effect_ParticleSize = tPartDesc._Effect_ParticleSize;
-        tPartData._Effect_Spiral_Radius = tPartDesc._Effect_Spiral_Radius;
-        tPartData._Effect_Spiral_Speed = tPartDesc._Effect_Spiral_Speed;
-        tPartData._Effect_UV_Offset = tPartDesc._Effect_UV_Offset; // 추가
-
-        // =========== 애니메이션 & 파티클 시스템 ===========
-        tPartData._Effect_bUseSprite = tPartDesc._Effect_bUseSprite;
-        tPartData._Effect_TileCount = { tPartDesc._Effect_TileCount.x, tPartDesc._Effect_TileCount.y };
-        tPartData._Effect_bPlayAnim = tPartDesc._Effect_bPlayAnim;
-        tPartData._Effect_AnimSpeed = tPartDesc._Effect_AnimSpeed;
-        tPartData.m_iCurSpriteNumber = tPartDesc.m_iCurSpriteNumber;
-        tPartData._Effect_ApearRatio = tPartDesc._Effect_ApearRatio; // 추가
-
-        tPartData._Effect_Duration = tPartDesc._Effect_Duration;
-        tPartData._Effect_Looping = tPartDesc._Effect_Looping;
-        tPartData._Effect_IsRandomSeed = tPartDesc._Effect_IsRandomSeed;
-        tPartData._Effect_StartDelay = tPartDesc._Effect_StartDelay;
-        tPartData._Effect_LifeTime = tPartDesc._Effect_LifeTime;
-        tPartData._Effect_PlayBackSpeed = tPartDesc._Effect_PlayBackSpeed;
-        tPartData._Effect_StartSpeed = tPartDesc._Effect_StartSpeed;
-        tPartData._Effect_MaxParticle = tPartDesc._Effect_MaxParticle;
-        tPartData._Effect_RateOverTime = tPartDesc._Effect_RateOverTime;
-        tPartData._Effect_RateOverDistance = tPartDesc._Effect_RateOverDistance;
-
-        // =========== 중력 및 물리 커브 복사 ===========
-        tPartData._Effect_Gravity_Value = tPartDesc._Effect_Gravity_Value;
-        tPartData._Effect_GravityModifier = tPartDesc._Effect_GravityModifier;
-        tPartData._Effect_GravityDir = tPartDesc._Effect_GravityDir;
-        tPartData._bUseGlobalGravityCurve = tPartDesc._bUseGlobalGravityCurve;
-        tPartData._bUseExternalForceCurve = tPartDesc._bUseExternalForceCurve;
-        tPartData.fExternalForceStrength = tPartDesc.fExternalForceStrength;
-
-        auto CopyCurve = [](const auto& src, auto& dest) {
-            dest.clear();
-            for (const auto& key : src) dest.push_back({ key.fTimeKey, key.fValue });
-            };
-        CopyCurve(tPartDesc._vecGlobalGravityCurve, tPartData._vecGlobalGravityCurve);
-        CopyCurve(tPartDesc._vecExternalForceCurve, tPartData._vecExternalForceCurve);
-
-        // =========== 회전 및 UV 스크롤 커브 ===========
-        tPartData._Effect_StartRotation = tPartDesc._Effect_StartRotation;
-        tPartData._Effect_TargetRotation = tPartDesc._Effect_TargetRotation;
-        tPartData._bUseStartRotation = tPartDesc._bUseStartRotation;
-        tPartData._bUseRotationCurve = tPartDesc._bUseRotationCurve;
-        tPartData._bSeparateAxes = tPartDesc._bSeparateAxes;
-        tPartData._bUseUVScrollCurve = tPartDesc._bUseUVScrollCurve; // 추가
-
-        CopyCurve(tPartDesc._vecRotationCurveX, tPartData._vecRotationCurveX);
-        CopyCurve(tPartDesc._vecRotationCurveY, tPartData._vecRotationCurveY);
-        CopyCurve(tPartDesc._vecRotationCurveZ, tPartData._vecRotationCurveZ);
-        CopyCurve(tPartDesc._vecUVScrollCurveX, tPartData._vecUVScrollCurveX); // 추가
-        CopyCurve(tPartDesc._vecUVScrollCurveY, tPartData._vecUVScrollCurveY); // 추가
-
-        // =========== 개별 텍스처 스크롤 및 툴 플래그 복구 ===========
-        tPartData._Effect_DiffuseTexture_ScrollWeight = tPartDesc._Effect_DiffuseTexture_ScrollWeight;
-        tPartData._Effect_NoiseTexture_ScrollWeight = tPartDesc._Effect_NoiseTexture_ScrollWeight;
-        tPartData._Effect_MaskingTexture_ScrollWeight = tPartDesc._Effect_MaskingTexture_ScrollWeight;
-        tPartData._Effect_GradationTexture_ScrollWeight = tPartDesc._Effect_GradationTexture_ScrollWeight;
-        tPartData._Effect_DissolveTexture_ScrollWeight = tPartDesc._Effect_DissolveTexture_ScrollWeight; // 추가
-
-        tPartData._Effect_Tool_UseScroll_Diffuse = tPartDesc._Effect_Tool_UseScroll_Diffuse;
-        tPartData._Effect_Tool_UseScroll_Noise = tPartDesc._Effect_Tool_UseScroll_Noise;
-        tPartData._Effect_Tool_UseScroll_Masking = tPartDesc._Effect_Tool_UseScroll_Masking;
-        tPartData._Effect_Tool_UseScroll_Gradation = tPartDesc._Effect_Tool_UseScroll_Gradation;
-        tPartData._Effect_Tool_UseScroll_Dissolve = tPartDesc._Effect_Tool_UseScroll_Dissolve; // 추가
-        tPartData._Effect_Tool_UseScroll_Glow = tPartDesc._Effect_Tool_UseScroll_Glow;         // 추가
-
-        // =========== 플래그 및 툴 전용 데이터 수집 ===========
-        tPartData._Effect_TextureFlag = tPartDesc._Effect_TextureFlag;
-        tPartData._Effect_RenderFlag = tPartDesc._Effect_RenderFlag;
-        tPartData._Effect_SamplerStateFlag = tPartDesc._Effect_SamplerStateFlag;
-        tPartData._Effect_TextureRotationFlag = tPartDesc._Effect_TextureRotationFlag;
-        tPartData._Effect_TextureOperatorFlag = tPartDesc._Effect_TextureOperatorFlag;
-
-        tPartData._Effect_Tool_DiffuseTexture = tPartDesc._Effect_Tool_DiffuseTexture;
-        tPartData._Effect_Tool_NoiseTexture = tPartDesc._Effect_Tool_NoiseTexture;
-        tPartData._Effect_Tool_MaskingTexture = tPartDesc._Effect_Tool_MaskingTexture;
-        tPartData._Effect_Tool_GradationTexture = tPartDesc._Effect_Tool_GradationTexture;
-        tPartData._Effect_Tool_DissolveTexture = tPartDesc._Effect_Tool_DissolveTexture; // 추가
-        tPartData._Effect_Tool_GlowTexture = tPartDesc._Effect_Tool_GlowTexture;         // 추가
-
-        tPartData._Effect_Tool_UseBillboard = tPartDesc._Effect_Tool_UseBillboard;
-        tPartData._Effect_Tool_UseScroll = tPartDesc._Effect_Tool_UseScroll;
-        tPartData._Effect_Tool_RightScroll = tPartDesc._Effect_Tool_RightScroll;
-        tPartData._Effect_Tool_DownScroll = tPartDesc._Effect_Tool_DownScroll;
-
-        tPartData._Effect_Tool_DiffuseSamplerState_Flag = tPartDesc._Effect_Tool_DiffuseSamplerState_Flag;
-        tPartData._Effect_Tool_NoiseSamplerState_Flag = tPartDesc._Effect_Tool_NoiseSamplerState_Flag;
-        tPartData._Effect_Tool_MaskingSamplerState_Flag = tPartDesc._Effect_Tool_MaskingSamplerState_Flag;
-        tPartData._Effect_Tool_GradationSamplerState_Flag = tPartDesc._Effect_Tool_GradationSamplerState_Flag;
-
-        tContainerData._ChildData.push_back(tPartData);
-    }
-
-    // 3. 부모 Document에 최종 컨테이너 추가
-    return SUCCEEDED(pEffectDoc->Try_Add(tContainerData));
+	// 부모 Document에 최종 컨테이너 추가 및 직렬화 준비
+	return SUCCEEDED(pEffectDoc->Try_Add(tContainerData));
 }
 
 void Effect::Draw_ImGui()

@@ -47,7 +47,7 @@ public:
 	CGameObject* Get_Parent() { return m_pParentObject; }
 
 protected:
-	CGameObject*	 m_pParentObject = { nullptr };
+	CGameObject*  m_pParentObject = { nullptr };
 	Matrix        m_CombineWorldMatrix = {};
 	const Matrix* m_pMatParent = { nullptr };
 

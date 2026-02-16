@@ -81,7 +81,7 @@ void CParticle_System_Panel::Update(const _float fDT)
 	if (m_bTimeSetting)
 	{
 	// === 시간 계산 ===ww
-		Time_Calculator(fDT * m_tCurrentDesc._Effect_PlayBackSpeed);
+		Time_Calculator(fDT * m_tCurrentDesc.Data._Effect_PlayBackSpeed);
 	}
 }
 
@@ -204,7 +204,7 @@ void CParticle_System_Panel::Draw_Timer(CToolObject* pGo)
 	ImGui::AlignTextToFramePadding();
 	ImGui::Text("Playback Speed");
 	ImGui::Spacing();
-	m_bModified |= ImGui::DragFloat("##PlaybackSpeed", &m_tCurrentDesc._Effect_PlayBackSpeed, 0.1f, 0.f, 100.f);
+	m_bModified |= ImGui::DragFloat("##PlaybackSpeed", &m_tCurrentDesc.Data._Effect_PlayBackSpeed, 0.1f, 0.f, 100.f);
 	ImGui::Spacing();
 
 	// ==================   Playback Time   =======================
@@ -240,11 +240,11 @@ void CParticle_System_Panel::Draw_ParticleSystem(CToolObject* pGo)
 		ImGui::Text("Duration");
 		ImGui::SameLine();
 		ImGui::Text("Duration"); ImGui::SameLine();
-		if (ImGui::InputFloat("##Duration1", &m_tCurrentDesc._Effect_Duration, 0.1f))
+		if (ImGui::InputFloat("##Duration1", &m_tCurrentDesc.Data._Effect_Duration, 0.1f))
 		{
 			// 0.01보다 작아지지 않게 방어
-			if (m_tCurrentDesc._Effect_Duration < 0.01f)
-				m_tCurrentDesc._Effect_Duration = 0.01f;
+			if (m_tCurrentDesc.Data._Effect_Duration < 0.01f)
+				m_tCurrentDesc.Data._Effect_Duration = 0.01f;
 			m_bModified = true;
 		}
 		ImGui::Spacing();
@@ -253,7 +253,7 @@ void CParticle_System_Panel::Draw_ParticleSystem(CToolObject* pGo)
 		ImGui::AlignTextToFramePadding();
 		ImGui::Text("Looping");
 		ImGui::SameLine();
-		m_bModified |= ImGui::Checkbox("##Looping1", &m_tCurrentDesc._Effect_Looping);
+		m_bModified |= ImGui::Checkbox("##Looping1", &m_tCurrentDesc.Data._Effect_Looping);
 		ImGui::Spacing();
 
 		// ==================   Prewarm - 체크하면 게임 시작시 이미 시스템이 헌 서아쿨아 돌아간 것처럼 미리 입자가 퍼져있다.  =========================
@@ -269,17 +269,17 @@ void CParticle_System_Panel::Draw_ParticleSystem(CToolObject* pGo)
 		if(ImGui::TreeNode("Particle Time Setting##ParticleSystem"))
 		{
 			ImGui::Text("StartDelay"); ImGui::SameLine();
-			m_bModified |= ImGui::InputFloat("##StartDelay1", &m_tCurrentDesc._Effect_StartDelay, 0.f);
+			m_bModified |= ImGui::InputFloat("##StartDelay1", &m_tCurrentDesc.Data._Effect_StartDelay, 0.f);
 			ImGui::Text("StartLifeTime"); ImGui::SameLine();
-			if (ImGui::InputFloat("##StartLifeTime1", &m_tCurrentDesc._Effect_LifeTime, 0.1f))
+			if (ImGui::InputFloat("##StartLifeTime1", &m_tCurrentDesc.Data._Effect_LifeTime, 0.1f))
 			{
 				// 0.01보다 작아지지 않게 방어
-				if (m_tCurrentDesc._Effect_LifeTime < 0.01f)
-					m_tCurrentDesc._Effect_LifeTime = 0.01f;
+				if (m_tCurrentDesc.Data._Effect_LifeTime < 0.01f)
+					m_tCurrentDesc.Data._Effect_LifeTime = 0.01f;
 				m_bModified = true;
 			}
 			ImGui::Text("StartSpeed"); ImGui::SameLine();
-			m_bModified |= ImGui::InputFloat("##StartSpeed1", &m_tCurrentDesc._Effect_StartSpeed, 0.f);
+			m_bModified |= ImGui::InputFloat("##StartSpeed1", &m_tCurrentDesc.Data._Effect_StartSpeed, 0.f);
 
 			ImGui::TreePop();
 		}
@@ -290,22 +290,56 @@ void CParticle_System_Panel::Draw_ParticleSystem(CToolObject* pGo)
 			ImGui::Text("Appear Time Ratio");
 			ImGui::SameLine();
 			// 0.2f로 설정하면 전체 0.5초 중 0.1초 동안 나타나게 됨
-			if (ImGui::SliderFloat("##AppearRatio", &m_tCurrentDesc._Effect_ApearRatio, 0.0f, 1.0f, "%.2f"))
+			if (ImGui::SliderFloat("##AppearRatio", &m_tCurrentDesc.Data._Effect_ApearRatio, 0.0f, 1.0f, "%.2f"))
 			{
 				m_bModified = true;
 			}
 
 			// 이해를 돕기 위한 텍스트 출력
-			float actualTime = m_tCurrentDesc._Effect_LifeTime * m_tCurrentDesc._Effect_ApearRatio;
+			float actualTime = m_tCurrentDesc.Data._Effect_LifeTime * m_tCurrentDesc.Data._Effect_ApearRatio;
 			ImGui::TextColored(ImVec4(0.5f, 1.0f, 0.5f, 1.0f), "Actual Appear Time: %.3f sec", actualTime);
 
 			ImGui::TreePop();
 		}
 
 		ImGui::AlignTextToFramePadding();
-		if(ImGui::TreeNode("Auto Random Seed"))
+		if (ImGui::TreeNode("Random Seed Settings##ParticleSystem"))
 		{
-			m_bModified |= ImGui::Checkbox("Auto Random Seed##ParticleSystem", &m_tCurrentDesc._Effect_IsRandomSeed);
+			ImGui::Separator();
+			ImGui::TextColored(ImVec4(1.0f, 1.0f, 0.0f, 1.0f), "Property Random Flags");
+
+			// 2. 비트 플래그 개별 제어 (정우님이 만든 E_RANDOM_FLAG 연동)
+			// 현재 플래그 상태 확인
+			bool bRandPos = (m_tCurrentDesc.Data.iRandomFlags & DTO::RAND_POS) != 0;
+			bool bRandLife = (m_tCurrentDesc.Data.iRandomFlags & DTO::RAND_LIFE) != 0;
+			bool bRandSize = (m_tCurrentDesc.Data.iRandomFlags & DTO::RAND_SIZE) != 0;
+
+			// 위치 랜덤 체크박스
+			if (ImGui::Checkbox("Random Position", &bRandPos))
+			{
+				if (bRandPos) m_tCurrentDesc.Data.iRandomFlags |= DTO::RAND_POS;
+				else m_tCurrentDesc.Data.iRandomFlags &= ~DTO::RAND_POS;
+				m_bModified = true;
+			}
+
+			// 수명 랜덤 체크박스
+			if (ImGui::Checkbox("Random LifeTime", &bRandLife))
+			{
+				if (bRandLife) m_tCurrentDesc.Data.iRandomFlags |= DTO::RAND_LIFE;
+				else m_tCurrentDesc.Data.iRandomFlags &= ~DTO::RAND_LIFE;
+				m_bModified = true;
+			}
+
+			// 크기 랜덤 체크박스
+			if (ImGui::Checkbox("Random Size", &bRandSize))
+			{
+				if (bRandSize) m_tCurrentDesc.Data.iRandomFlags |= DTO::RAND_SIZE;
+				else m_tCurrentDesc.Data.iRandomFlags &= ~DTO::RAND_SIZE;
+				m_bModified = true;
+			}
+
+			ImGui::Spacing();
+			ImGui::TextColored(ImVec4(0.5f, 0.5f, 0.5f, 1.0f), "Current Flag Value: %d", m_tCurrentDesc.Data.iRandomFlags);
 
 			ImGui::TreePop();
 		}
@@ -315,10 +349,10 @@ void CParticle_System_Panel::Draw_ParticleSystem(CToolObject* pGo)
 		if (ImGui::TreeNode("Size Setting"))
 		{
 			ImGui::SeparatorText("Start Size##Size Setting");
-			m_bModified |= ImGui::DragFloat3("##Start Size Setting", &m_tCurrentDesc._Effect_StartScale.x, 0.1f, 0.1f, 100.f);
+			m_bModified |= ImGui::DragFloat3("##Start Size Setting", &m_tCurrentDesc.Data._Effect_StartScale.x, 0.1f, 0.1f, 100.f);
 
 			ImGui::SeparatorText("End Size##Size Setting");
-			m_bModified |= ImGui::DragFloat3("##End Size Setting", &m_tCurrentDesc._Effect_EndScale.x, 0.1f, 0.1f, 100.f);
+			m_bModified |= ImGui::DragFloat3("##End Size Setting", &m_tCurrentDesc.Data._Effect_EndScale.x, 0.1f, 0.1f, 100.f);
 
 			ImGui::TreePop();
 		}
@@ -327,14 +361,14 @@ void CParticle_System_Panel::Draw_ParticleSystem(CToolObject* pGo)
 		ImGui::AlignTextToFramePadding();
 		if (ImGui::TreeNode("3D Start Rotataion"))
 		{
-			m_bModified |= ImGui::Checkbox("##StartRotation_3D", &m_tCurrentDesc._bUseStartRotation); ImGui::Spacing();
+			m_bModified |= ImGui::Checkbox("##StartRotation_3D", &m_tCurrentDesc.Data._bUseStartRotation); ImGui::Spacing();
 
-			if (m_tCurrentDesc._bUseStartRotation)
+			if (m_tCurrentDesc.Data._bUseStartRotation)
 			{
 				static Vec3 StartRotation = { 0.f, 0.f, 0.f };
 
 				ImGui::SeparatorText("Rotation 3D Convert To Radian - X Y Z - ");
-				m_bModified |= ImGui::DragFloat3("##StartRotationX_3D", &m_tCurrentDesc._Effect_StartRotation.x, 0.1f, 0.f, 360.f); ImGui::Spacing();
+				m_bModified |= ImGui::DragFloat3("##StartRotationX_3D", &m_tCurrentDesc.Data._Effect_StartRotation.x, 0.1f, 0.f, 360.f); ImGui::Spacing();
 
 				CEffectObject* pInstance = static_cast<Effect*>(pGo)->Get_Part<CEffectObject>(m_iSelectPartsIndex);
 				CTransform* pTransform = pInstance->Get_Component<CTransform>();
@@ -416,7 +450,7 @@ void CParticle_System_Panel::Draw_ParticleSystem(CToolObject* pGo)
 		ImGui::AlignTextToFramePadding();
 		if (ImGui::TreeNode("Max Particles##Particle System"))
 		{
-			m_bModified |= ImGui::InputInt("##MaxParticles", &m_tCurrentDesc._Effect_MaxParticle, 0);
+			m_bModified |= ImGui::InputInt("##MaxParticles", &m_tCurrentDesc.Data._Effect_MaxParticle, 0);
 			ImGui::TreePop();
 		}
 
@@ -432,10 +466,10 @@ void CParticle_System_Panel::Draw_ParticleSystem(CToolObject* pGo)
 			ImGui::Text("Gravity Modifier");
 			ImGui::SameLine(140);
 			ImGui::SetNextItemWidth(-1.0f);
-			if (ImGui::DragFloat("##GravityModifier", &m_tCurrentDesc._Effect_GravityModifier, 0.05f, -10.f, 10.f, "%.2f x g"))
+			if (ImGui::DragFloat("##GravityModifier", &m_tCurrentDesc.Data._Effect_GravityModifier, 0.05f, -10.f, 10.f, "%.2f x g"))
 			{
 				// 실제 중력값에 배수를 곱해서 갱신한다.
-				m_tCurrentDesc._Effect_Gravity_Value = m_tCurrentDesc._Effect_GravityModifier * 9.81f;
+				m_tCurrentDesc.Data._Effect_Gravity_Value = m_tCurrentDesc.Data._Effect_GravityModifier * 9.81f;
 				m_bModified |= true;
 			}
 
@@ -443,13 +477,13 @@ void CParticle_System_Panel::Draw_ParticleSystem(CToolObject* pGo)
 			ImGui::Text("Gravity Direction");
 			ImGui::SameLine(140);
 			ImGui::SetNextItemWidth(-1.0f);
-			if (ImGui::DragFloat3("##GravityDir", &m_tCurrentDesc._Effect_GravityDir.x, 0.1f, -1.f, 1.f))
+			if (ImGui::DragFloat3("##GravityDir", &m_tCurrentDesc.Data._Effect_GravityDir.x, 0.1f, -1.f, 1.f))
 			{
 				m_bModified = true;
 			}
 
 			ImGui::Spacing();
-			ImGui::TextColored(ImVec4(0.7f, 0.7f, 0.7f, 1.f), "Final Gravity: %.2f m/s^2", m_tCurrentDesc._Effect_Gravity_Value);
+			ImGui::TextColored(ImVec4(0.7f, 0.7f, 0.7f, 1.f), "Final Gravity: %.2f m/s^2", m_tCurrentDesc.Data._Effect_Gravity_Value);
 			ImGui::Separator();
 		}
 
@@ -478,14 +512,14 @@ void CParticle_System_Panel::Draw_ParticleSystem(CToolObject* pGo)
 		ImGui::AlignTextToFramePadding();
 		if (ImGui::TreeNode("Rate Over Time"))
 		{
-			m_bModified |= ImGui::InputFloat("##RateOverTime", &m_tCurrentDesc._Effect_RateOverTime, 0.f);
+			m_bModified |= ImGui::InputFloat("##RateOverTime", &m_tCurrentDesc.Data._Effect_RateOverTime, 0.f);
 			ImGui::TreePop();
 		}
 		// Rate Over Distance - 본체가 이동한 거리에 비례해서 입자를 뿜습니다. 
 		ImGui::AlignTextToFramePadding();
 		if (ImGui::TreeNode("Rate Over Distance"))
 		{
-			m_bModified |= ImGui::InputFloat("##RateOverDistance", &m_tCurrentDesc._Effect_RateOverTime, 0.f);
+			m_bModified |= ImGui::InputFloat("##RateOverDistance", &m_tCurrentDesc.Data._Effect_RateOverTime, 0.f);
 			ImGui::TreePop();
 		}
 		// Bursts - 특정 시간에 파티클을 한꺼번에 '확' 터뜨리는 기능입니다.
@@ -504,19 +538,19 @@ void CParticle_System_Panel::Draw_ParticleSystem(CToolObject* pGo)
 		// 체크 박스 활성화
 		if (ImGui::TreeNode("Rotation Settings"))
 		{
-			m_bModified |= ImGui::Checkbox("Use Rotation Curve", &m_tCurrentDesc._bUseRotationCurve);
-			if (m_tCurrentDesc._bUseRotationCurve)
+			m_bModified |= ImGui::Checkbox("Use Rotation Curve", &m_tCurrentDesc.Data._bUseRotationCurve);
+			if (m_tCurrentDesc.Data._bUseRotationCurve)
 			{
 				// 최종 목표 회전량 설정하기
 				ImGui::SeparatorText("Target Rotation (Total over Duration)");
-				m_bModified |= ImGui::DragFloat3("##TargetRot", &m_tCurrentDesc._Effect_TargetRotation.x, 1.f);
+				m_bModified |= ImGui::DragFloat3("##TargetRot", &m_tCurrentDesc.Data._Effect_TargetRotation.x, 1.f);
 
 				ImGui::TextColored(ImVec4(0.5f, 0.5f, 1.f, 1.f), "Info : 360deg = 1 Full Loop");
 			}
 			ImGui::TreePop();
 		}
 
-		if (m_tCurrentDesc._bUseRotationCurve)
+		if (m_tCurrentDesc.Data._bUseRotationCurve)
 		{
 			ImGui::Text("Select Axis: "); ImGui::SameLine();
 			ImGui::RadioButton("X", &m_iSelectedRotationAxis, 0); ImGui::SameLine();
@@ -533,12 +567,12 @@ void CParticle_System_Panel::Draw_ParticleSystem(CToolObject* pGo)
 				ImDrawList* draw_list = ImGui::GetWindowDrawList();
 				draw_list->AddRectFilled(canvas_p0, ImVec2(canvas_p0.x + canvas_size.x, canvas_p0.y + canvas_size.y), IM_COL32(30, 30, 30, 255));
 
-				vector<CEffectObject::Rotation_CurveKey>* pCurveVec = nullptr;
+				vector<DTO::Rotation_CurveKey>* pCurveVec = nullptr;
 				ImU32 lineColor = IM_COL32(255, 255, 0, 255);
 
-				if (m_iSelectedRotationAxis == 0) { pCurveVec = &m_tCurrentDesc._vecRotationCurveX; lineColor = IM_COL32(255, 100, 100, 255); }
-				else if (m_iSelectedRotationAxis == 1) { pCurveVec = &m_tCurrentDesc._vecRotationCurveY; lineColor = IM_COL32(100, 255, 100, 255); }
-				else { pCurveVec = &m_tCurrentDesc._vecRotationCurveZ; lineColor = IM_COL32(100, 100, 255, 255); }
+				if (m_iSelectedRotationAxis == 0) { pCurveVec = &m_tCurrentDesc.Data._vecRotationCurveX; lineColor = IM_COL32(255, 100, 100, 255); }
+				else if (m_iSelectedRotationAxis == 1) { pCurveVec = &m_tCurrentDesc.Data._vecRotationCurveY; lineColor = IM_COL32(100, 255, 100, 255); }
+				else { pCurveVec = &m_tCurrentDesc.Data._vecRotationCurveZ; lineColor = IM_COL32(100, 100, 255, 255); }
 
 				if (pCurveVec)
 				{
@@ -575,7 +609,7 @@ void CParticle_System_Panel::Draw_ParticleSystem(CToolObject* pGo)
 				// 우클릭 추가 로직
 				if (ImGui::IsItemHovered() && ImGui::IsMouseClicked(ImGuiMouseButton_Right))
 				{
-					CEffectObject::Rotation_CurveKey newKey;
+					DTO::Rotation_CurveKey newKey;
 					newKey.fTimeKey = (mouse_pos.x - canvas_p0.x) / canvas_size.x;
 					newKey.fValue = (1.0f - (mouse_pos.y - canvas_p0.y) / canvas_size.y);
 					pCurveVec->push_back(newKey);
@@ -595,9 +629,9 @@ void CParticle_System_Panel::Draw_ParticleSystem(CToolObject* pGo)
 	if (ImGui::CollapsingHeader("UV Scroll Curve (X/Y Separate)##UV Scroll Curve"))
 	{
 		// 1. 사용 여부 체크박스
-		m_bModified |= ImGui::Checkbox("Use Scroll Curve", &m_tCurrentDesc._bUseUVScrollCurve);
+		m_bModified |= ImGui::Checkbox("Use Scroll Curve", &m_tCurrentDesc.Data._bUseUVScrollCurve);
 
-		if (m_tCurrentDesc._bUseUVScrollCurve)
+		if (m_tCurrentDesc.Data._bUseUVScrollCurve)
 		{
 			// 2. 축 선택 라디오 버튼
 			ImGui::Text("Select Axis: ##UV Scroll Curve"); ImGui::SameLine();
@@ -616,11 +650,11 @@ void CParticle_System_Panel::Draw_ParticleSystem(CToolObject* pGo)
 				draw_list->AddRectFilled(canvas_p0, ImVec2(canvas_p0.x + canvas_size.x, canvas_p0.y + canvas_size.y), IM_COL32(30, 30, 30, 255));
 
 				// 4. 선택된 축에 따른 벡터 포인터 할당
-				vector<CEffectObject::Rotation_CurveKey>* pCurveVec = nullptr;
+				vector<DTO::Rotation_CurveKey>* pCurveVec = nullptr;
 				ImU32 lineColor = IM_COL32(255, 255, 0, 255);
 
-				if (m_iSelectedScrollAxis == 0) { pCurveVec = &m_tCurrentDesc._vecUVScrollCurveX; lineColor = IM_COL32(255, 100, 100, 255); }
-				else { pCurveVec = &m_tCurrentDesc._vecUVScrollCurveY; lineColor = IM_COL32(100, 255, 100, 255); }
+				if (m_iSelectedScrollAxis == 0) { pCurveVec = &m_tCurrentDesc.Data._vecUVScrollCurveX; lineColor = IM_COL32(255, 100, 100, 255); }
+				else { pCurveVec = &m_tCurrentDesc.Data._vecUVScrollCurveY; lineColor = IM_COL32(100, 255, 100, 255); }
 
 				if (pCurveVec)
 				{
@@ -657,7 +691,7 @@ void CParticle_System_Panel::Draw_ParticleSystem(CToolObject* pGo)
 				// 점 추가 로직 (우클릭)
 				if (ImGui::IsItemHovered() && ImGui::IsMouseClicked(ImGuiMouseButton_Right))
 				{
-					CEffectObject::Rotation_CurveKey newKey;
+					DTO::Rotation_CurveKey newKey;
 					newKey.fTimeKey = (mouse_pos.x - canvas_p0.x) / canvas_size.x;
 					newKey.fValue = (1.0f - (mouse_pos.y - canvas_p0.y) / canvas_size.y);
 					pCurveVec->push_back(newKey);
@@ -694,7 +728,7 @@ void CParticle_System_Panel::Draw_ParticleSystem(CToolObject* pGo)
 			if (ImGui::ListBox("", &m_iSelectedEmissionIdx, iTems.data(), static_cast<int>(m_pEmissionList.size()), 6))
 			{
 				m_bModified |= true;
-				m_tCurrentDesc._Effect_EmissionType = (E_EMISSION_TYPE)m_iSelectedEmissionIdx;
+				m_tCurrentDesc.Data._Effect_EmissionType = m_iSelectedEmissionIdx;
 			}
 
 			if ((iTems.size() - 1) < m_iSelectedEmissionIdx)
@@ -704,7 +738,7 @@ void CParticle_System_Panel::Draw_ParticleSystem(CToolObject* pGo)
 			}
 
 			const char* EmissionNames[] = { "BOX", "CIRCLE", "SPHERE", "CONE" };
-			int currentIndex = (int)m_tCurrentDesc._Effect_EmissionType;
+			int currentIndex = (int)m_tCurrentDesc.Data._Effect_EmissionType;
 
 			ImGui::Spacing();
 			ImGui::Text("Selected EmissionType: "); ImGui::SameLine();
@@ -739,13 +773,13 @@ void CParticle_System_Panel::Draw_ParticleSystem(CToolObject* pGo)
 
 
 				switch (m_iSelectedShapeIdx) {
-				case 0: m_tCurrentDesc._Effect_ShapeType = E_SHAPETYPE::NONE; break;
-				case 1: m_tCurrentDesc._Effect_ShapeType = E_SHAPETYPE::DROP; break;
-				case 2: m_tCurrentDesc._Effect_ShapeType = E_SHAPETYPE::RISE; break;
-				case 3: m_tCurrentDesc._Effect_ShapeType = E_SHAPETYPE::SPREAD; break;
-				case 4: m_tCurrentDesc._Effect_ShapeType = E_SHAPETYPE::STRAIGHT; break;
-				case 5: m_tCurrentDesc._Effect_ShapeType = E_SHAPETYPE::SPIRAL; break;
-				case 6: m_tCurrentDesc._Effect_ShapeType = E_SHAPETYPE::DNA; break;
+				case 0: m_tCurrentDesc.Data._Effect_ShapeType = ENUM_TO_UINT(DTO::E_SHAPETYPE::NONE); break;
+				case 1: m_tCurrentDesc.Data._Effect_ShapeType = ENUM_TO_UINT(DTO::E_SHAPETYPE::DROP); break;
+				case 2: m_tCurrentDesc.Data._Effect_ShapeType = ENUM_TO_UINT(DTO::E_SHAPETYPE::RISE); break;
+				case 3: m_tCurrentDesc.Data._Effect_ShapeType = ENUM_TO_UINT(DTO::E_SHAPETYPE::SPREAD); break;
+				case 4: m_tCurrentDesc.Data._Effect_ShapeType = ENUM_TO_UINT(DTO::E_SHAPETYPE::STRAIGHT); break;
+				case 5: m_tCurrentDesc.Data._Effect_ShapeType = ENUM_TO_UINT(DTO::E_SHAPETYPE::SPIRAL); break;
+				case 6: m_tCurrentDesc.Data._Effect_ShapeType = ENUM_TO_UINT(DTO::E_SHAPETYPE::DNA); break;
 				}
 			}
 
@@ -756,7 +790,7 @@ void CParticle_System_Panel::Draw_ParticleSystem(CToolObject* pGo)
 			}
 
 			const char* shapeNames[] = { "NONE", "DROP", "RISE", "SPREAD", "STRAIGHT", "SPIRAL", "DNA" };
-			int currentIndex = (int)m_tCurrentDesc._Effect_ShapeType;
+			int currentIndex = (int)m_tCurrentDesc.Data._Effect_ShapeType;
 
 			ImGui::Spacing();
 			ImGui::Text("Selected Shape: "); ImGui::SameLine();
@@ -770,7 +804,7 @@ void CParticle_System_Panel::Draw_ParticleSystem(CToolObject* pGo)
 		ImGui::AlignTextToFramePadding();
 		if (ImGui::TreeNode("Distortion Scale##Shape"))
 		{
-			m_bModified |= ImGui::DragFloat2("##Distortion Scale", &m_tCurrentDesc._Effect_DistortionScale.x, 0.1f, 0.1f, 100.f);
+			m_bModified |= ImGui::DragFloat2("##Distortion Scale", &m_tCurrentDesc.Data._Effect_DistortionScale.x, 0.1f, 0.1f, 100.f);
 			ImGui::TreePop();
 		}
 
@@ -778,39 +812,39 @@ void CParticle_System_Panel::Draw_ParticleSystem(CToolObject* pGo)
 		ImGui::AlignTextToFramePadding();
 		if (ImGui::TreeNode("Scroll Speed##Shape"))
 		{
-			m_bModified |= ImGui::DragFloat2("##Scroll Speed", &m_tCurrentDesc._Effect_ScrollSpeed.x, 0.1f, -100.f, 100.f);
+			m_bModified |= ImGui::DragFloat2("##Scroll Speed", &m_tCurrentDesc.Data._Effect_ScrollSpeed.x, 0.1f, -100.f, 100.f);
 			// ============  Scroll 사용할거야?   =============
 				// SCROLL 사용 여부
-			if (ImGui::Checkbox("Use##Scroll", &m_tCurrentDesc._Effect_Tool_UseScroll))
+			if (ImGui::Checkbox("Use##Scroll", &m_tCurrentDesc.Data._Effect_Tool_UseScroll))
 			{
-				if (m_tCurrentDesc._Effect_Tool_UseScroll)
-					Engine_Utils::Add_Flag(m_tCurrentDesc._Effect_RenderFlag, 1 << 1); // SCROLL
+				if (m_tCurrentDesc.Data._Effect_Tool_UseScroll)
+					Engine_Utils::Add_Flag(m_tCurrentDesc.Data._Effect_RenderFlag, 1 << 1); // SCROLL
 				else
-					Engine_Utils::RemoveHard_Flag(m_tCurrentDesc._Effect_RenderFlag, 1 << 1);
+					Engine_Utils::RemoveHard_Flag(m_tCurrentDesc.Data._Effect_RenderFlag, 1 << 1);
 
 				m_bModified |= true;
 			}
 
 			// RIGHT
-			if (m_tCurrentDesc._Effect_Tool_UseScroll)
+			if (m_tCurrentDesc.Data._Effect_Tool_UseScroll)
 			{
 				ImGui::SameLine();
-				if (ImGui::Checkbox("RIGHT", &m_tCurrentDesc._Effect_Tool_RightScroll))
+				if (ImGui::Checkbox("RIGHT", &m_tCurrentDesc.Data._Effect_Tool_RightScroll))
 				{
-					if (m_tCurrentDesc._Effect_Tool_RightScroll)
-						Engine_Utils::Add_Flag(m_tCurrentDesc._Effect_RenderFlag, 1 << 2); // RIGHT
+					if (m_tCurrentDesc.Data._Effect_Tool_RightScroll)
+						Engine_Utils::Add_Flag(m_tCurrentDesc.Data._Effect_RenderFlag, 1 << 2); // RIGHT
 					else
-						Engine_Utils::RemoveHard_Flag(m_tCurrentDesc._Effect_RenderFlag, 1 << 2);
+						Engine_Utils::RemoveHard_Flag(m_tCurrentDesc.Data._Effect_RenderFlag, 1 << 2);
 					m_bModified |= true;
 				}
 
 				ImGui::SameLine();
-				if (ImGui::Checkbox("DOWN", &m_tCurrentDesc._Effect_Tool_DownScroll))
+				if (ImGui::Checkbox("DOWN", &m_tCurrentDesc.Data._Effect_Tool_DownScroll))
 				{
-					if (m_tCurrentDesc._Effect_Tool_DownScroll)
-						Engine_Utils::Add_Flag(m_tCurrentDesc._Effect_RenderFlag, 1 << 3); // DOWN 
+					if (m_tCurrentDesc.Data._Effect_Tool_DownScroll)
+						Engine_Utils::Add_Flag(m_tCurrentDesc.Data._Effect_RenderFlag, 1 << 3); // DOWN 
 					else
-						Engine_Utils::RemoveHard_Flag(m_tCurrentDesc._Effect_RenderFlag, 1 << 3);
+						Engine_Utils::RemoveHard_Flag(m_tCurrentDesc.Data._Effect_RenderFlag, 1 << 3);
 					m_bModified |= true;
 				}
 			}
@@ -823,15 +857,15 @@ void CParticle_System_Panel::Draw_ParticleSystem(CToolObject* pGo)
 		if (ImGui::TreeNode("Scroll Settings##Shape"))
 		{
 			// 공용 베이스 스크롤 속도
-			m_bModified |= ImGui::DragFloat2("Base Speed", &m_tCurrentDesc._Effect_ScrollSpeed.x, 0.1f);
+			m_bModified |= ImGui::DragFloat2("Base Speed", &m_tCurrentDesc.Data._Effect_ScrollSpeed.x, 0.1f);
 
 			ImGui::SeparatorText("Individual Texture Scroll Weight");
 
 			// 각 텍스처별 상세 설정 헬퍼 람다
 			auto DrawTextureScrollUI = [&](const char* label, bool& toolFlag, uint32_t bit, Vec2& weight) {
 				if (ImGui::Checkbox(label, &toolFlag)) {
-					if (toolFlag) m_tCurrentDesc._Effect_RenderFlag |= bit;
-					else m_tCurrentDesc._Effect_RenderFlag &= ~bit;
+					if (toolFlag) m_tCurrentDesc.Data._Effect_RenderFlag |= bit;
+					else m_tCurrentDesc.Data._Effect_RenderFlag &= ~bit;
 					m_bModified = true;
 				}
 				if (toolFlag) {
@@ -843,15 +877,15 @@ void CParticle_System_Panel::Draw_ParticleSystem(CToolObject* pGo)
 				};
 
 			// 1. Diffuse (1 << 6)
-			DrawTextureScrollUI("Diffuse", m_tCurrentDesc._Effect_Tool_UseScroll_Diffuse, 1 << 6, m_tCurrentDesc._Effect_DiffuseTexture_ScrollWeight);
+			DrawTextureScrollUI("Diffuse", m_tCurrentDesc.Data._Effect_Tool_UseScroll_Diffuse, 1 << 6, m_tCurrentDesc.Data._Effect_DiffuseTexture_ScrollWeight);
 			// 2. Noise (1 << 7)
-			DrawTextureScrollUI("Noise", m_tCurrentDesc._Effect_Tool_UseScroll_Noise, 1 << 7, m_tCurrentDesc._Effect_NoiseTexture_ScrollWeight);
+			DrawTextureScrollUI("Noise", m_tCurrentDesc.Data._Effect_Tool_UseScroll_Noise, 1 << 7, m_tCurrentDesc.Data._Effect_NoiseTexture_ScrollWeight);
 			// 3. Masking (1 << 8)
-			DrawTextureScrollUI("Masking", m_tCurrentDesc._Effect_Tool_UseScroll_Masking, 1 << 8, m_tCurrentDesc._Effect_MaskingTexture_ScrollWeight);
+			DrawTextureScrollUI("Masking", m_tCurrentDesc.Data._Effect_Tool_UseScroll_Masking, 1 << 8, m_tCurrentDesc.Data._Effect_MaskingTexture_ScrollWeight);
 			// 4. Gradation (1 << 9)
-			DrawTextureScrollUI("Gradation", m_tCurrentDesc._Effect_Tool_UseScroll_Gradation, 1 << 9, m_tCurrentDesc._Effect_GradationTexture_ScrollWeight);
+			DrawTextureScrollUI("Gradation", m_tCurrentDesc.Data._Effect_Tool_UseScroll_Gradation, 1 << 9, m_tCurrentDesc.Data._Effect_GradationTexture_ScrollWeight);
 			// 5. DissolveTexture (1 << 10)
-			DrawTextureScrollUI("Dissolve", m_tCurrentDesc._Effect_Tool_UseScroll_Dissolve, 1 << 10, m_tCurrentDesc._Effect_DissolveTexture_ScrollWeight);
+			DrawTextureScrollUI("Dissolve", m_tCurrentDesc.Data._Effect_Tool_UseScroll_Dissolve, 1 << 10, m_tCurrentDesc.Data._Effect_DissolveTexture_ScrollWeight);
 
 			ImGui::TreePop();
 		}
@@ -859,7 +893,7 @@ void CParticle_System_Panel::Draw_ParticleSystem(CToolObject* pGo)
 		ImGui::AlignTextToFramePadding();
 		if (ImGui::TreeNode("UV Offset"))
 		{
-			m_bModified |= ImGui::DragFloat2("##UV Offset", &m_tCurrentDesc._Effect_UV_Offset.x, 0.01f, -1.f, 1.f);
+			m_bModified |= ImGui::DragFloat2("##UV Offset", &m_tCurrentDesc.Data._Effect_UV_Offset.x, 0.01f, -1.f, 1.f);
 			ImGui::TreePop();
 		}
 
@@ -867,7 +901,7 @@ void CParticle_System_Panel::Draw_ParticleSystem(CToolObject* pGo)
 		ImGui::AlignTextToFramePadding();
 		if (ImGui::TreeNode("Discard Value##Shape"))
 		{
-			m_bModified |= ImGui::DragFloat("##Discard Value", &m_tCurrentDesc._Effect_DiscardValue, 0.01f, 0.f, 1.f);
+			m_bModified |= ImGui::DragFloat("##Discard Value", &m_tCurrentDesc.Data._Effect_DiscardValue, 0.01f, 0.f, 1.f);
 			ImGui::TreePop();
 		}
 
@@ -875,7 +909,7 @@ void CParticle_System_Panel::Draw_ParticleSystem(CToolObject* pGo)
 		ImGui::AlignTextToFramePadding();
 		if (ImGui::TreeNode("Range"))
 		{
-			m_bModified |= ImGui::DragFloat3("##Range", &m_tCurrentDesc._Effect_Range.x, 0.1f, 0.1f, 100.f);
+			m_bModified |= ImGui::DragFloat3("##Range", &m_tCurrentDesc.Data._Effect_Range.x, 0.1f, 0.1f, 100.f);
 			ImGui::TreePop();
 		}
 
@@ -883,7 +917,7 @@ void CParticle_System_Panel::Draw_ParticleSystem(CToolObject* pGo)
 		ImGui::AlignTextToFramePadding();
 		if (ImGui::TreeNode("Particle Size ##Shape"))
 		{
-			m_bModified |= ImGui::DragFloat2("Particle Size", &m_tCurrentDesc._Effect_ParticleSize.x, 0.01f, 0.0f, 100.f, "%.2f");
+			m_bModified |= ImGui::DragFloat2("Particle Size", &m_tCurrentDesc.Data._Effect_ParticleSize.x, 0.01f, 0.0f, 100.f, "%.2f");
 
 
 			ImGui::TreePop();
@@ -893,12 +927,12 @@ void CParticle_System_Panel::Draw_ParticleSystem(CToolObject* pGo)
 		ImGui::Text("Diffuse Texture"); ImGui::SameLine(130);
 		if (ImGui::Button("Select##Diffuse")) ImGui::OpenPopup("TextureSelector##Diffuse");
 		ImGui::SameLine();
-		if (ImGui::Checkbox("Use##Diffuse", &m_tCurrentDesc._Effect_Tool_DiffuseTexture)) {
-			if (m_tCurrentDesc._Effect_Tool_DiffuseTexture) m_tCurrentDesc._Effect_TextureFlag |= (1 << 0);
-			else m_tCurrentDesc._Effect_TextureFlag &= ~(1 << 0);
+		if (ImGui::Checkbox("Use##Diffuse", &m_tCurrentDesc.Data._Effect_Tool_DiffuseTexture)) {
+			if (m_tCurrentDesc.Data._Effect_Tool_DiffuseTexture) m_tCurrentDesc.Data._Effect_TextureFlag |= (1 << 0);
+			else m_tCurrentDesc.Data._Effect_TextureFlag &= ~(1 << 0);
 			m_bModified = true;
 		}
-		Draw_TextureSelectorPopup("TextureSelector##Diffuse", m_tCurrentDesc._Effect_DiffuseTexture_Tag);
+		Draw_TextureSelectorPopup("TextureSelector##Diffuse", m_tCurrentDesc.Data._Effect_DiffuseTexture_Tag);
 
 		ImGui::Spacing();
 
@@ -906,12 +940,12 @@ void CParticle_System_Panel::Draw_ParticleSystem(CToolObject* pGo)
 		ImGui::Text("Noise Texture"); ImGui::SameLine(130);
 		if (ImGui::Button("Select##Noise")) ImGui::OpenPopup("TextureSelector##Noise");
 		ImGui::SameLine();
-		if (ImGui::Checkbox("Use##Noise", &m_tCurrentDesc._Effect_Tool_NoiseTexture)) {
-			if (m_tCurrentDesc._Effect_Tool_NoiseTexture) m_tCurrentDesc._Effect_TextureFlag |= (1 << 1);
-			else m_tCurrentDesc._Effect_TextureFlag &= ~(1 << 1);
+		if (ImGui::Checkbox("Use##Noise", &m_tCurrentDesc.Data._Effect_Tool_NoiseTexture)) {
+			if (m_tCurrentDesc.Data._Effect_Tool_NoiseTexture) m_tCurrentDesc.Data._Effect_TextureFlag |= (1 << 1);
+			else m_tCurrentDesc.Data._Effect_TextureFlag &= ~(1 << 1);
 			m_bModified = true;
 		}
-		Draw_TextureSelectorPopup("TextureSelector##Noise", m_tCurrentDesc._Effect_NoiseTexture_Tag);
+		Draw_TextureSelectorPopup("TextureSelector##Noise", m_tCurrentDesc.Data._Effect_NoiseTexture_Tag);
 
 		ImGui::Spacing();
 
@@ -919,12 +953,12 @@ void CParticle_System_Panel::Draw_ParticleSystem(CToolObject* pGo)
 		ImGui::Text("Masking Texture"); ImGui::SameLine(130);
 		if (ImGui::Button("Select##Masking")) ImGui::OpenPopup("TextureSelector##Masking");
 		ImGui::SameLine();
-		if (ImGui::Checkbox("Use##Masking", &m_tCurrentDesc._Effect_Tool_MaskingTexture)) {
-			if (m_tCurrentDesc._Effect_Tool_MaskingTexture) m_tCurrentDesc._Effect_TextureFlag |= (1 << 2);
-			else m_tCurrentDesc._Effect_TextureFlag &= ~(1 << 2);
+		if (ImGui::Checkbox("Use##Masking", &m_tCurrentDesc.Data._Effect_Tool_MaskingTexture)) {
+			if (m_tCurrentDesc.Data._Effect_Tool_MaskingTexture) m_tCurrentDesc.Data._Effect_TextureFlag |= (1 << 2);
+			else m_tCurrentDesc.Data._Effect_TextureFlag &= ~(1 << 2);
 			m_bModified = true;
 		}
-		Draw_TextureSelectorPopup("TextureSelector##Masking", m_tCurrentDesc._Effect_MaskingTexture_Tag);
+		Draw_TextureSelectorPopup("TextureSelector##Masking", m_tCurrentDesc.Data._Effect_MaskingTexture_Tag);
 
 		ImGui::Spacing();
 
@@ -932,12 +966,12 @@ void CParticle_System_Panel::Draw_ParticleSystem(CToolObject* pGo)
 		ImGui::Text("Gradation Tex"); ImGui::SameLine(130);
 		if (ImGui::Button("Select##Gradation")) ImGui::OpenPopup("TextureSelector##Gradation");
 		ImGui::SameLine();
-		if (ImGui::Checkbox("Use##Gradation", &m_tCurrentDesc._Effect_Tool_GradationTexture)) {
-			if (m_tCurrentDesc._Effect_Tool_GradationTexture) m_tCurrentDesc._Effect_TextureFlag |= (1 << 3);
-			else m_tCurrentDesc._Effect_TextureFlag &= ~(1 << 3);
+		if (ImGui::Checkbox("Use##Gradation", &m_tCurrentDesc.Data._Effect_Tool_GradationTexture)) {
+			if (m_tCurrentDesc.Data._Effect_Tool_GradationTexture) m_tCurrentDesc.Data._Effect_TextureFlag |= (1 << 3);
+			else m_tCurrentDesc.Data._Effect_TextureFlag &= ~(1 << 3);
 			m_bModified = true;
 		}
-		Draw_TextureSelectorPopup("TextureSelector##Gradation", m_tCurrentDesc._Effect_GradationTexture_Tag);
+		Draw_TextureSelectorPopup("TextureSelector##Gradation", m_tCurrentDesc.Data._Effect_GradationTexture_Tag);
 
 		ImGui::Spacing();
 
@@ -945,24 +979,24 @@ void CParticle_System_Panel::Draw_ParticleSystem(CToolObject* pGo)
 		ImGui::Text("Dissolve Texture"); ImGui::SameLine(130);
 		if (ImGui::Button("Select##Dissolve")) ImGui::OpenPopup("TextureSelector##Dissolve");
 		ImGui::SameLine();
-		if (ImGui::Checkbox("Use##Dissolve", &m_tCurrentDesc._Effect_Tool_DissolveTexture)) {
-			if (m_tCurrentDesc._Effect_Tool_DissolveTexture) m_tCurrentDesc._Effect_TextureFlag |= (1 << 7); // DISSOLVETEXTURE 7
-			else m_tCurrentDesc._Effect_TextureFlag &= ~(1 << 7);
+		if (ImGui::Checkbox("Use##Dissolve", &m_tCurrentDesc.Data._Effect_Tool_DissolveTexture)) {
+			if (m_tCurrentDesc.Data._Effect_Tool_DissolveTexture) m_tCurrentDesc.Data._Effect_TextureFlag |= (1 << 7); // DISSOLVETEXTURE 7
+			else m_tCurrentDesc.Data._Effect_TextureFlag &= ~(1 << 7);
 			m_bModified = true;
 		}
-		Draw_TextureSelectorPopup("TextureSelector##Dissolve", m_tCurrentDesc._Effect_DissolveTexture_Tag);
+		Draw_TextureSelectorPopup("TextureSelector##Dissolve", m_tCurrentDesc.Data._Effect_DissolveTexture_Tag);
 
 
 		// 5. Glow Texture 
 		ImGui::Text("Glow Texture"); ImGui::SameLine(130);
 		if (ImGui::Button("Select##Glow")) ImGui::OpenPopup("TextureSelector##Glow");
 		ImGui::SameLine();
-		if (ImGui::Checkbox("Use##Glow", &m_tCurrentDesc._Effect_Tool_GlowTexture)) {
-			if (m_tCurrentDesc._Effect_Tool_GlowTexture) m_tCurrentDesc._Effect_TextureFlag |= (1 << 6); // DISSOLVETEXTURE 7
-			else m_tCurrentDesc._Effect_TextureFlag &= ~(1 << 6);
+		if (ImGui::Checkbox("Use##Glow", &m_tCurrentDesc.Data._Effect_Tool_GlowTexture)) {
+			if (m_tCurrentDesc.Data._Effect_Tool_GlowTexture) m_tCurrentDesc.Data._Effect_TextureFlag |= (1 << 6); // DISSOLVETEXTURE 7
+			else m_tCurrentDesc.Data._Effect_TextureFlag &= ~(1 << 6);
 			m_bModified = true;
 		}
-		Draw_TextureSelectorPopup("TextureSelector##Glow", m_tCurrentDesc._Effect_GlowTexture_Tag);
+		Draw_TextureSelectorPopup("TextureSelector##Glow", m_tCurrentDesc.Data._Effect_GlowTexture_Tag);
 
 		// ===========  Texture Rotation  ================
 	// 
@@ -1017,13 +1051,13 @@ void CParticle_System_Panel::Draw_ParticleSystem(CToolObject* pGo)
 		{
 			// =============  [USE BILLBOARD]  ==============
 			ImGui::Text("Bilboard"); ImGui::SameLine(0, 200.f);
-			if (ImGui::Checkbox("Use##BillBoardRenderer", &m_tCurrentDesc._Effect_Tool_UseBillboard))
+			if (ImGui::Checkbox("Use##BillBoardRenderer", &m_tCurrentDesc.Data._Effect_Tool_UseBillboard))
 			{
-				if (m_tCurrentDesc._Effect_Tool_UseBillboard)
-					Engine_Utils::Add_Flag(m_tCurrentDesc._Effect_RenderFlag, 1);
+				if (m_tCurrentDesc.Data._Effect_Tool_UseBillboard)
+					Engine_Utils::Add_Flag(m_tCurrentDesc.Data._Effect_RenderFlag, 1);
 
 				else
-					Engine_Utils::RemoveHard_Flag(m_tCurrentDesc._Effect_RenderFlag, 1);
+					Engine_Utils::RemoveHard_Flag(m_tCurrentDesc.Data._Effect_RenderFlag, 1);
 
 				m_bModified |= true;
 			}
@@ -1049,7 +1083,7 @@ void CParticle_System_Panel::Draw_ParticleSystem(CToolObject* pGo)
 					for (auto& str : m_PParticleTypeList)
 						iTems1.push_back(str.c_str());
 
-					if (ImGui::ListBox("##ParticleType Select", &m_tCurrentDesc._Effect_Tool_DiffuseSamplerState_Flag, [](void* data, int idx, const char** out_text)
+					if (ImGui::ListBox("##ParticleType Select", &m_tCurrentDesc.Data._Effect_Tool_DiffuseSamplerState_Flag, [](void* data, int idx, const char** out_text)
 						{
 							auto& vector = *static_cast<std::vector<std::string>*>(data);
 							*out_text = vector[idx].c_str();
@@ -1057,7 +1091,7 @@ void CParticle_System_Panel::Draw_ParticleSystem(CToolObject* pGo)
 						},
 						(void*)&m_PParticleTypeList, (int)m_PParticleTypeList.size(), 2))
 					{
-						PackSamplerFlag(m_tCurrentDesc._Effect_SamplerStateFlag, m_tCurrentDesc._Effect_Tool_DiffuseSamplerState_Flag, 0);
+						PackSamplerFlag(m_tCurrentDesc.Data._Effect_SamplerStateFlag, m_tCurrentDesc.Data._Effect_Tool_DiffuseSamplerState_Flag, 0);
 						m_bModified |= true;
 					}
 
@@ -1083,7 +1117,7 @@ void CParticle_System_Panel::Draw_ParticleSystem(CToolObject* pGo)
 					for (auto& str : m_PParticleTypeList)
 						iTems1.push_back(str.c_str());
 
-					if (ImGui::ListBox("##ParticleType Select", &m_tCurrentDesc._Effect_Tool_NoiseSamplerState_Flag, [](void* data, int idx, const char** out_text)
+					if (ImGui::ListBox("##ParticleType Select", &m_tCurrentDesc.Data._Effect_Tool_NoiseSamplerState_Flag, [](void* data, int idx, const char** out_text)
 						{
 							auto& vector = *static_cast<std::vector<std::string>*>(data);
 							*out_text = vector[idx].c_str();
@@ -1091,7 +1125,7 @@ void CParticle_System_Panel::Draw_ParticleSystem(CToolObject* pGo)
 						},
 						(void*)&m_PParticleTypeList, (int)m_PParticleTypeList.size(), 2))
 					{
-						PackSamplerFlag(m_tCurrentDesc._Effect_SamplerStateFlag, m_tCurrentDesc._Effect_Tool_NoiseSamplerState_Flag, 3);
+						PackSamplerFlag(m_tCurrentDesc.Data._Effect_SamplerStateFlag, m_tCurrentDesc.Data._Effect_Tool_NoiseSamplerState_Flag, 3);
 						m_bModified |= true;
 					}
 
@@ -1116,7 +1150,7 @@ void CParticle_System_Panel::Draw_ParticleSystem(CToolObject* pGo)
 					for (auto& str : m_PParticleTypeList)
 						iTems1.push_back(str.c_str());
 
-					if (ImGui::ListBox("##ParticleType Select", &m_tCurrentDesc._Effect_Tool_MaskingSamplerState_Flag, [](void* data, int idx, const char** out_text)
+					if (ImGui::ListBox("##ParticleType Select", &m_tCurrentDesc.Data._Effect_Tool_MaskingSamplerState_Flag, [](void* data, int idx, const char** out_text)
 						{
 							auto& vector = *static_cast<std::vector<std::string>*>(data);
 							*out_text = vector[idx].c_str();
@@ -1124,7 +1158,7 @@ void CParticle_System_Panel::Draw_ParticleSystem(CToolObject* pGo)
 						},
 						(void*)&m_PParticleTypeList, (int)m_PParticleTypeList.size(), 2))
 					{
-						PackSamplerFlag(m_tCurrentDesc._Effect_SamplerStateFlag, m_tCurrentDesc._Effect_Tool_MaskingSamplerState_Flag, 6);
+						PackSamplerFlag(m_tCurrentDesc.Data._Effect_SamplerStateFlag, m_tCurrentDesc.Data._Effect_Tool_MaskingSamplerState_Flag, 6);
 						m_bModified |= true;
 					}
 
@@ -1149,7 +1183,7 @@ void CParticle_System_Panel::Draw_ParticleSystem(CToolObject* pGo)
 					for (auto& str : m_PParticleTypeList)
 						iTems1.push_back(str.c_str());
 
-					if (ImGui::ListBox("##ParticleType Select", &m_tCurrentDesc._Effect_Tool_GradationSamplerState_Flag, [](void* data, int idx, const char** out_text)
+					if (ImGui::ListBox("##ParticleType Select", &m_tCurrentDesc.Data._Effect_Tool_GradationSamplerState_Flag, [](void* data, int idx, const char** out_text)
 						{
 							auto& vector = *static_cast<std::vector<std::string>*>(data);
 							*out_text = vector[idx].c_str();
@@ -1157,7 +1191,7 @@ void CParticle_System_Panel::Draw_ParticleSystem(CToolObject* pGo)
 						},
 						(void*)&m_PParticleTypeList, (int)m_PParticleTypeList.size(), 2))
 					{
-						PackSamplerFlag(m_tCurrentDesc._Effect_SamplerStateFlag, m_tCurrentDesc._Effect_Tool_GradationSamplerState_Flag, 9);
+						PackSamplerFlag(m_tCurrentDesc.Data._Effect_SamplerStateFlag, m_tCurrentDesc.Data._Effect_Tool_GradationSamplerState_Flag, 9);
 						m_bModified |= true;
 					}
 
@@ -1201,17 +1235,17 @@ void CParticle_System_Panel::Draw_ParticleSystem(CToolObject* pGo)
 
 			switch (m_iSelcetedParticleTypeIdx)
 			{
-			case (_uint)E_PARTICLETYPE::PARTICLE:
-				m_tCurrentDesc.eEffectParticleType = E_PARTICLETYPE::PARTICLE; break;
-			case (_uint)E_PARTICLETYPE::TEXTURE:
-				m_tCurrentDesc.eEffectParticleType = E_PARTICLETYPE::TEXTURE; break;
-			case (_uint)E_PARTICLETYPE::MESH:
-				m_tCurrentDesc.eEffectParticleType = E_PARTICLETYPE::MESH;
+			case (_uint)DTO::E_PARTICLETYPE::PARTICLE:
+				m_tCurrentDesc.Data.eEffectParticleType = (_uint)DTO::E_PARTICLETYPE::PARTICLE; break;
+			case (_uint)DTO::E_PARTICLETYPE::TEXTURE:
+				m_tCurrentDesc.Data.eEffectParticleType = (_uint)DTO::E_PARTICLETYPE::TEXTURE; break;
+			case (_uint)DTO::E_PARTICLETYPE::MESH:
+				m_tCurrentDesc.Data.eEffectParticleType = (_uint)DTO::E_PARTICLETYPE::MESH;
 				Make_MeshSelectButton();
 				break;
 
 			default:
-				m_tCurrentDesc.eEffectParticleType = E_PARTICLETYPE::NONE;
+				m_tCurrentDesc.Data.eEffectParticleType = (_uint)DTO::E_PARTICLETYPE::NONE;
 				break;
 			}
 
@@ -1221,7 +1255,7 @@ void CParticle_System_Panel::Draw_ParticleSystem(CToolObject* pGo)
 			ImGui::Spacing();
 
 			ImGui::Text("Current Model: "); ImGui::SameLine();
-			ImGui::TextColored(ImVec4(0.5f, 0.5f, 0.7f, 1.0f), "%ls", m_tCurrentDesc._Effect_Model_Tag.c_str());
+			ImGui::TextColored(ImVec4(0.5f, 0.5f, 0.7f, 1.0f), "%ls", m_tCurrentDesc.Data._Effect_Model_Tag.c_str());
 
 			ImGui::TreePop();
 			ImGui::Spacing();
@@ -1242,8 +1276,8 @@ void CParticle_System_Panel::Draw_ParticleSystem(CToolObject* pGo)
 			{
 				if (m_iSelectedShaderIdx < m_ShaderFileNames.size())
 				{
-					m_tCurrentDesc._Effect_Shader_Path = Engine_Utils::ToWString(m_ShaderFileNames[m_iSelectedShaderIdx].first);
-					m_tCurrentDesc._Effect_Shader_Tag = Engine_Utils::ToWString(m_ShaderFileNames[m_iSelectedShaderIdx].second);
+					m_tCurrentDesc.Data._Effect_Shader_Path = Engine_Utils::ToWString(m_ShaderFileNames[m_iSelectedShaderIdx].first);
+					m_tCurrentDesc.Data._Effect_Shader_Tag = Engine_Utils::ToWString(m_ShaderFileNames[m_iSelectedShaderIdx].second);
 				}
 
 				m_bModified |= true;
@@ -1252,9 +1286,9 @@ void CParticle_System_Panel::Draw_ParticleSystem(CToolObject* pGo)
 			// =============   어떤 Shader 선택중이니   ==============
 			ImGui::Text("Current Shader: "); ImGui::SameLine();
 
-			if (!m_tCurrentDesc._Effect_Shader_Tag.empty())
+			if (!m_tCurrentDesc.Data._Effect_Shader_Tag.empty())
 			{
-				ImGui::TextColored(ImVec4(0.7f, 0.7f, 1.0f, 1.0f), "%ls", m_tCurrentDesc._Effect_Shader_Tag.c_str());
+				ImGui::TextColored(ImVec4(0.7f, 0.7f, 1.0f, 1.0f), "%ls", m_tCurrentDesc.Data._Effect_Shader_Tag.c_str());
 			}
 			else
 			{
@@ -1267,18 +1301,18 @@ void CParticle_System_Panel::Draw_ParticleSystem(CToolObject* pGo)
 				vector<string> m_PParticleTypeList;
 				m_PParticleTypeList.clear();
 
-				switch (m_tCurrentDesc.eEffectParticleType)
+				switch (m_tCurrentDesc.Data.eEffectParticleType)
 				{
-				case E_PARTICLETYPE::NONE:
+				case (_uint)DTO::E_PARTICLETYPE::NONE:
 					break;
-				case E_PARTICLETYPE::PARTICLE:
+				case (_uint)DTO::E_PARTICLETYPE::PARTICLE:
 					m_PParticleTypeList.push_back("DEFAULT_PARTICLE");
 					break;
-				case E_PARTICLETYPE::TEXTURE:
+				case (_uint)DTO::E_PARTICLETYPE::TEXTURE:
 					m_PParticleTypeList.push_back("DEFAULT_TEXTURE");
 					m_PParticleTypeList.push_back("BLEND_TEXTURE");
 					break;
-				case E_PARTICLETYPE::MESH:
+				case (_uint)DTO::E_PARTICLETYPE::MESH:
 					m_PParticleTypeList.push_back("DEFAULT_MESH");
 					m_PParticleTypeList.push_back("BULLET");
 					m_PParticleTypeList.push_back("TRAIL");
@@ -1305,12 +1339,12 @@ void CParticle_System_Panel::Draw_ParticleSystem(CToolObject* pGo)
 					(void*)&m_PParticleTypeList, (int)m_PParticleTypeList.size(), 2))
 				{
 					m_bModified |= true;
-					m_tCurrentDesc._Effect_ShaderPass = (m_iSelectedShaderPassIdx);
+					m_tCurrentDesc.Data._Effect_ShaderPass = (m_iSelectedShaderPassIdx);
 				}
 
 				// =============   어떤 Shader Pass 선택중이니   ==============
 				ImGui::Text("Current Type: ##ShaderPassList"); ImGui::SameLine();
-				int iTextIdx = (int)m_tCurrentDesc.eEffectParticleType;
+				int iTextIdx = (int)m_tCurrentDesc.Data.eEffectParticleType;
 
 				if (iTextIdx > 0)
 				{
@@ -1356,7 +1390,7 @@ void CParticle_System_Panel::Make_MeshSelectButton()
 				std::filesystem::path filePath(result);
 
 				string MeshName = filePath.stem().string();
-				m_tCurrentDesc._Effect_Model_Tag = Engine_Utils::ToWString(MeshName);
+				m_tCurrentDesc.Data._Effect_Model_Tag = Engine_Utils::ToWString(MeshName);
 
 				m_bModified |= true;
 			}
@@ -1423,15 +1457,15 @@ void CParticle_System_Panel::Draw_Sprite_Texture(CToolObject* pGo)
 	if (ImGui::TreeNodeEx("SPRITE ANIMATION SETTING", ImGuiTreeNodeFlags_DefaultOpen))
 	{
 		// 2. SPRITE 비트 플래그 체크 (1 << 5)
-		bool bUseSprite = (m_tCurrentDesc._Effect_RenderFlag & (1 << 5)) != 0;
+		bool bUseSprite = (m_tCurrentDesc.Data._Effect_RenderFlag & (1 << 5)) != 0;
 
 		ImGui::Text("Enable Sprite"); ImGui::SameLine(130);
 		if (ImGui::Checkbox("##UseSpriteFlag", &bUseSprite))
 		{
 			if (bUseSprite)
-				m_tCurrentDesc._Effect_RenderFlag |= (1 << 5); // SPRITE 비트 켜기
+				m_tCurrentDesc.Data._Effect_RenderFlag |= (1 << 5); // SPRITE 비트 켜기
 			else
-				m_tCurrentDesc._Effect_RenderFlag &= ~(1 << 5); // SPRITE 비트 끄기
+				m_tCurrentDesc.Data._Effect_RenderFlag &= ~(1 << 5); // SPRITE 비트 끄기
 
 			m_bModified = true;
 		}
@@ -1451,9 +1485,9 @@ void CParticle_System_Panel::Draw_Sprite_Texture(CToolObject* pGo)
 
 				ImGui::TableNextColumn();
 				ImGui::SetNextItemWidth(-1.0f);
-				int col = (int)m_tCurrentDesc._Effect_TileCount.x;
+				int col = (int)m_tCurrentDesc.Data._Effect_TileCount.x;
 				if (ImGui::DragInt("##ColX", &col, 0.1f, 1, 64)) {
-					m_tCurrentDesc._Effect_TileCount.x = (uint32_t)col;
+					m_tCurrentDesc.Data._Effect_TileCount.x = (uint32_t)col;
 					m_bModified = true;
 				}
 
@@ -1463,9 +1497,9 @@ void CParticle_System_Panel::Draw_Sprite_Texture(CToolObject* pGo)
 
 				ImGui::TableNextColumn();
 				ImGui::SetNextItemWidth(-1.0f);
-				int row = (int)m_tCurrentDesc._Effect_TileCount.y;
+				int row = (int)m_tCurrentDesc.Data._Effect_TileCount.y;
 				if (ImGui::DragInt("##RowY", &row, 0.1f, 1, 64)) {
-					m_tCurrentDesc._Effect_TileCount.y = (uint32_t)row;
+					m_tCurrentDesc.Data._Effect_TileCount.y = (uint32_t)row;
 					m_bModified = true;
 				}
 
@@ -1476,9 +1510,9 @@ void CParticle_System_Panel::Draw_Sprite_Texture(CToolObject* pGo)
 
 			ImGui::TextColored(ImVec4(0.5f, 0.6f, 1.0f, 1.0f),
 				"  * Grid: %d x %d (Total %d)",
-				m_tCurrentDesc._Effect_TileCount.x,
-				m_tCurrentDesc._Effect_TileCount.y,
-				m_tCurrentDesc._Effect_TileCount.x * m_tCurrentDesc._Effect_TileCount.y);
+				m_tCurrentDesc.Data._Effect_TileCount.x,
+				m_tCurrentDesc.Data._Effect_TileCount.y,
+				m_tCurrentDesc.Data._Effect_TileCount.x * m_tCurrentDesc.Data._Effect_TileCount.y);
 
 
 			// ================  재생 제어 설정 구역  ==============
@@ -1490,18 +1524,18 @@ void CParticle_System_Panel::Draw_Sprite_Texture(CToolObject* pGo)
 			ImGui::TextColored(ImVec4(1.0f, 1.0f, 0.f, 1.f), "PlayBack Settings");
 
 			// =============  애니메이션 고정 여부 체크박스 ============
-			if (ImGui::Checkbox("Play Animation", &m_tCurrentDesc._Effect_bPlayAnim))
+			if (ImGui::Checkbox("Play Animation", &m_tCurrentDesc.Data._Effect_bPlayAnim))
 			{
 				m_bModified |= true;
 			}
 
-			if (m_tCurrentDesc._Effect_bPlayAnim)
+			if (m_tCurrentDesc.Data._Effect_bPlayAnim)
 			{
 				// 애니메이션이 켜졌을 때,
 				ImGui::AlignTextToFramePadding();
 				ImGui::Text("Anim Speed"); ImGui::SameLine(100);
 				ImGui::SetNextItemWidth(-1.0f);
-				if (ImGui::DragFloat("##AnimSpeed", &m_tCurrentDesc._Effect_AnimSpeed, 0.1f, 0.0f, 100.0f, "%.2f FPS"))
+				if (ImGui::DragFloat("##AnimSpeed", &m_tCurrentDesc.Data._Effect_AnimSpeed, 0.1f, 0.0f, 100.0f, "%.2f FPS"))
 				{
 					m_bModified |= true;
 				}
@@ -1510,17 +1544,17 @@ void CParticle_System_Panel::Draw_Sprite_Texture(CToolObject* pGo)
 			else
 			{
 				// 애니메이션이 켜진게 아닐 때.
-				int maxIndex = (int)(m_tCurrentDesc._Effect_TileCount.x * m_tCurrentDesc._Effect_TileCount.y);
+				int maxIndex = (int)(m_tCurrentDesc.Data._Effect_TileCount.x * m_tCurrentDesc.Data._Effect_TileCount.y);
 				if (maxIndex < 0) maxIndex = 0;
 
-				int curIdx = (int)m_tCurrentDesc.m_iCurSpriteNumber;
+				int curIdx = (int)m_tCurrentDesc.Data.m_iCurSpriteNumber;
 
 				ImGui::AlignTextToFramePadding();
 				ImGui::Text("Frame Index"); ImGui::SameLine();
 				ImGui::SetNextItemWidth(-1.0f);
 				if (ImGui::DragInt("##CurIndex", &curIdx, 0, maxIndex))
 				{
-					m_tCurrentDesc.m_iCurSpriteNumber = (uint32_t)curIdx;
+					m_tCurrentDesc.Data.m_iCurSpriteNumber = (uint32_t)curIdx;
 					m_bModified |= true;
 				}
 			}
@@ -1537,7 +1571,7 @@ void CParticle_System_Panel::UpdateRotationFlags()
 	{
 		packed |= (static_cast<uint32_t>(m_iRotIndices[i]) << (i * 4));
 	}
-	m_tCurrentDesc._Effect_TextureRotationFlag = packed;
+	m_tCurrentDesc.Data._Effect_TextureRotationFlag = packed;
 }
 
 void CParticle_System_Panel::Draw_Preview_Texture(CToolObject* pGo)
@@ -1600,7 +1634,7 @@ void CParticle_System_Panel::Draw_EffectColor(CToolObject* pGo)
 
 	ImGui::Text("Particle Color Settings");
 
-	m_bModified |= ImGui::ColorPicker4("##MyEffectPicker", (float*)&m_tCurrentDesc._Effect_Color,
+	m_bModified |= ImGui::ColorPicker4("##MyEffectPicker", (float*)&m_tCurrentDesc.Data._Effect_Color,
 		ImGuiColorEditFlags_PickerHueWheel |
 		ImGuiColorEditFlags_AlphaBar |       // 투명도 조절 바 표시
 		ImGuiColorEditFlags_DisplayRGB);
@@ -1660,13 +1694,13 @@ void CParticle_System_Panel::Draw_Parts(CToolObject* pGo)
 			{
 				pSelectdPart =  pInstance->Get_Part<CEffectObject>(m_iSelectPartsIndex);
 				// 구조체 복사하기
-				m_tCurrentDesc = pSelectdPart->Get_EffectDesc();
+				m_tCurrentDesc.Data = pSelectdPart->Get_EffectDesc();
 
 				// 툴에서 사용하는 인덱스 변수들을 구조체 값에 맞춰서 복사하기.
-				m_iSelectedEmissionIdx = (int)m_tCurrentDesc._Effect_EmissionType;
-				m_iSelectedShaderIdx = (int)m_tCurrentDesc._Effect_ShapeType;
-				m_iSelcetedParticleTypeIdx = (int)m_tCurrentDesc.eEffectParticleType;
-				m_iSelectedShaderPassIdx = m_tCurrentDesc._Effect_ShaderPass;
+				m_iSelectedEmissionIdx = (int)m_tCurrentDesc.Data._Effect_EmissionType;
+				m_iSelectedShaderIdx = (int)m_tCurrentDesc.Data._Effect_ShapeType;
+				m_iSelcetedParticleTypeIdx = (int)m_tCurrentDesc.Data.eEffectParticleType;
+				m_iSelectedShaderPassIdx = m_tCurrentDesc.Data._Effect_ShaderPass;
 			}
 
 		}
@@ -1734,22 +1768,22 @@ void CParticle_System_Panel::Draw_Parts(CToolObject* pGo)
 					}
 
 					else
-						pEffectDesc.eEffectType = E_EFFECTTYPE::NONE;
+						pEffectDesc.Data.eEffectType = (_uint)DTO::E_EFFECTTYPE::NONE;
 
-					pEffectDesc._Effect_Color = Vec4{ 0.f, 0.f, 0.f, 1.f };
-					pEffectDesc._Effect_StartScale = { 1.f, 1.f, 1.f };
-					pEffectDesc._Effect_EndScale = { 1.f, 1.f, 1.f };
+					pEffectDesc.Data._Effect_Color = Vec4{ 0.f, 0.f, 0.f, 1.f };
+					pEffectDesc.Data._Effect_StartScale = { 1.f, 1.f, 1.f };
+					pEffectDesc.Data._Effect_EndScale = { 1.f, 1.f, 1.f };
 
 					// ========     셰이더 선택   =========
-					pEffectDesc._Effect_Shader_Tag = L"Shader_VtxEffectParticle";
-					pEffectDesc._Effect_ShaderPass = 0;
+					pEffectDesc.Data._Effect_Shader_Tag = L"Shader_VtxEffectParticle";
+					pEffectDesc.Data._Effect_ShaderPass = 0;
 
 					// ========     이펙트 타입   =========
-					pEffectDesc.eEffectSystemType = E_EffectSystemType::Particle;
-					pEffectDesc.eEffectType = E_EFFECTTYPE::Particle;
-					pEffectDesc.eEffectSystemType = E_EffectSystemType::Particle;
-					pEffectDesc._Effect_EmissionType = E_EMISSION_TYPE::BOX;
-					pEffectDesc._Effect_ShapeType = E_SHAPETYPE::SPREAD;
+					pEffectDesc.Data.eEffectSystemType = (_uint)DTO::E_EffectSystemType::Particle;
+					pEffectDesc.Data.eEffectType = (_uint)DTO::E_EFFECTTYPE::Particle;
+					pEffectDesc.Data.eEffectSystemType = (_uint)DTO::E_EffectSystemType::Particle;
+					pEffectDesc.Data._Effect_EmissionType = (_uint)DTO::E_EMISSION_TYPE::BOX;
+					pEffectDesc.Data._Effect_ShapeType = (_uint)DTO::E_SHAPETYPE::SPREAD;
 
 
 					// 파츠 추가
