@@ -309,7 +309,6 @@ HRESULT CLoader::Loading_For_UI()
 		if (FAILED(m_pGameInstance->Add_Prototype(ENUM_TO_UINT(ELevelType::UI), g_wszPrototypeTagUI, CToolUI::Create(EToolObjectType::UI, m_pDevice, m_pDeviceContext))))
 			return E_FAIL;
 	}
-
 	m_isFinished = true;
 	return S_OK;
 }
