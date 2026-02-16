@@ -46,25 +46,25 @@ HRESULT CBuilder_AttackOverlap::Create_AttackOverlap_Prototype(const DTO::ATTACK
 	
 	for (auto& event : data.attackEvents)
 	{
-		DTO::HITBOX_DESC hbDesc{};
-		hbDesc.strName = event.tHitboxDesc.strName;
-		hbDesc.eType = (OverlapType::Enum)event.tHitboxDesc.eType;
-		hbDesc.vExtents = event.tHitboxDesc.vExtents;
-		hbDesc.fRadius = event.tHitboxDesc.fRadius;
-		hbDesc.vOffset = event.tHitboxDesc.vOffset;
-		hbDesc.fDuration = event.tHitboxDesc.fDuration;
-		hbDesc.fTickTime = event.tHitboxDesc.fTickTime;
-		hbDesc.fDamage = event.tHitboxDesc.fDamage;
-		hbDesc.iMaxHit = event.tHitboxDesc.iMaxHit;
-		hbDesc.eFilterLayer = event.tHitboxDesc.eFilterLayer;
-		hbDesc.iFilterMask = event.tHitboxDesc.iFilterMask;
+		//DTO::HITBOX_DESC hbDesc{};
+		//hbDesc.strName = event.tHitboxDesc.strName;
+		//hbDesc.eType = (EOverlapType::Enum)event.tHitboxDesc.eType;
+		//hbDesc.vExtents = event.tHitboxDesc.vExtents;
+		//hbDesc.fRadius = event.tHitboxDesc.fRadius;
+		//hbDesc.vOffset = event.tHitboxDesc.vOffset;
+		//hbDesc.fDuration = event.tHitboxDesc.fDuration;
+		//hbDesc.fTickTime = event.tHitboxDesc.fTickTime;
+		//hbDesc.fDamage = event.tHitboxDesc.fDamage;
+		//hbDesc.iMaxHit = event.tHitboxDesc.iMaxHit;
+		//hbDesc.eFilterLayer = event.tHitboxDesc.eFilterLayer;
+		//hbDesc.iFilterMask = event.tHitboxDesc.iFilterMask;
 
-		DTO::ATTACKEVENT ae{};
-		ae.eEventType = AnimEvent::Enum::OVERLAP;
-		ae.strDescription = event.strDescription;
-		ae.strAnimTag = event.strAnimTag;
-		ae.iAnimIndex = event.iAnimIndex;
-		ae.tHitboxDesc = hbDesc;
+		//DTO::ATTACKEVENT ae{};
+		//ae.eEventType = EAnimEvent::Enum::OVERLAP;
+		//ae.strDescription = event.strDescription;
+		//ae.strAnimTag = event.strAnimTag;
+		//ae.iAnimIndex = event.iAnimIndex;
+		//ae.tHitboxDesc = hbDesc;
 
 		desc.attackEvents.emplace_back(event);
 	}
