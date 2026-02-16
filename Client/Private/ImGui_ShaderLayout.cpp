@@ -9,6 +9,7 @@ CImGui_ShaderLayout::CImGui_ShaderLayout()
 
 void CImGui_ShaderLayout::Render(CGameObject* pGo)
 {
+#ifdef _DEBUG
     if (m_pGameInstance == nullptr)
     {
         ImGui::TextDisabled("Render_Manager not found.");
@@ -195,6 +196,7 @@ void CImGui_ShaderLayout::Render(CGameObject* pGo)
     }
 
     ImGui::EndGroup();
+#endif
 }
 
 CImGui_ShaderLayout* CImGui_ShaderLayout::Create()
