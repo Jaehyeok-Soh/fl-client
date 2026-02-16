@@ -68,6 +68,7 @@ private:
 	_bool m_isEndLowHp = { FALSE };
 	_float m_fTickTimeAcc = {};
 	Vec4 m_vOriginColor = {};
+	Vec4 m_vOriginGradiantColor = {};
 	Vec4 m_vLowHpColor = {};
 	_bool m_isHPPaulse = {};
 

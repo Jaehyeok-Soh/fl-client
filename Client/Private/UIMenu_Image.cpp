@@ -84,23 +84,6 @@ void CUIMenu_Image::Update_Priority(const _float fTimeDelta)
 
 void CUIMenu_Image::Update(const _float fTimeDelta)
 {
-	if (MOUSE_LBUTTON_HOLD)
-	{
-		m_fProgress_Ratio += fTimeDelta;
-		if (m_fProgress_Ratio > 1.f)
-		{
-			m_fProgress_Ratio = 1.f;
-		}
-	}
-	else if (MOUSE_RBUTTON_HOLD)
-	{
-		m_fProgress_Ratio -= fTimeDelta;
-		if (m_fProgress_Ratio < 0.f)
-		{
-			m_fProgress_Ratio = 0.f;
-		}
-	}
-
 	Super::Update(fTimeDelta);
 }
 
@@ -147,6 +130,9 @@ HRESULT CUIMenu_Image::Bind_ShaderResources()
 
 void CUIMenu_Image::OnUIEvent(ETriggerEventType eEvent, CGenericUI* pSender)
 {
+	if (!m_isInteract)
+		return;
+
 	if (eEvent == ETriggerEventType::PRESS_ENTER)
 	{
 		if(!m_isVisible)
@@ -168,15 +154,15 @@ void CUIMenu_Image::Initialize_Visible_Event()
 	{
 		m_fTimeAcc = 0.f;
 		m_fProgress_Ratio = 1.f;
+		m_isInteract = false;
 	}
 		break;
 	case DTO::EUIDImageSubClassType::MENU_ICON:
 	case DTO::EUIDImageSubClassType::MENU_ICON_BG:
 	{
 		const _float fDuration = 1.f;
-
+		m_isInteract = false;
 		Ready_Fade(fDuration, 0.f, 1.f, m_fDelay);
-		Ready_Lerp_Movement(Vec2{ -5.f, 0.f }, Vec2{ 0.f, 0.f }, fDuration, 1.0f, m_fDelay);
 	}
 		break;
 	case DTO::EUIDImageSubClassType::END:
@@ -193,6 +179,7 @@ void CUIMenu_Image::Initialize_InVisible_Event()
 	{
 		m_fTimeAcc = 0.f;
 		m_fProgress_Ratio = 0.f;
+		m_isInteract = false;
 	}
 	break;
 
@@ -200,8 +187,8 @@ void CUIMenu_Image::Initialize_InVisible_Event()
 	case DTO::EUIDImageSubClassType::MENU_ICON_BG:
 	{
 		const _float fDuration = 0.5f;
+		m_isInteract = false;
 		Ready_Fade(fDuration, 1.f, 0.f, 0.f);
-		Ready_Lerp_Movement(Vec2{ 0.f, 0.f }, Vec2{ -5.f, 0.f }, fDuration, 1.0f, 0.f);
 	}
 	break;
 
@@ -220,18 +207,20 @@ _bool CUIMenu_Image::Tick_Visible_Event(const _float fTimeDelta)
 
 		if (t >= 1.f)
 		{
-			m_fProgress_Ratio = 0.f;			
+			m_fProgress_Ratio = 0.f;	
+			m_isInteract = true;
 			return true;
 		}
 		m_fProgress_Ratio = 1.f - t;
 	}
 	else
 	{
-		_bool isFade = Tick_Fade(fTimeDelta);
-		_bool isMove = Tick_Lerp_Movement(fTimeDelta);
-
-		if (isFade && isMove)
+		const _bool isFade = Tick_Fade(fTimeDelta);
+		if (isFade)
+		{
+			m_isInteract = true;
 			return true;
+		}
 	}
 	return false;
 }
@@ -245,17 +234,19 @@ _bool CUIMenu_Image::Tick_InVisible_Event(const _float fTimeDelta)
 		if (t >= 1.f)
 		{
 			m_fProgress_Ratio = 1.f;
+			m_isInteract = true;
 			return true;
 		}
 		m_fProgress_Ratio = t;
 	}
 	else
 	{
-		_bool isFade = Tick_Fade(fTimeDelta);
-		_bool isMove = Tick_Lerp_Movement(fTimeDelta);
-
-		if (isFade && isMove)
+		const _bool isFade = Tick_Fade(fTimeDelta);
+		if (isFade)
+		{
+			m_isInteract = true;
 			return true;
+		}
 	}
 	return false;
 }

@@ -101,8 +101,6 @@ void CUIMini_Map::Update(const _float fTimeDelta)
 
 	if (KEY_BUTTON_DOWN(DIK_1))
 		m_beAttackEventTrigger = TRUE;
-	else if (KEY_BUTTON_DOWN(DIK_2))
-		m_beAttackEventTrigger = FALSE;
 
 	if (m_eDImageSubClass == DTO::EUIDImageSubClassType::MINIMAP_CAMERA_SIGHT)
 	{
@@ -129,59 +127,41 @@ void CUIMini_Map::Update(const _float fTimeDelta)
 	{
 		if (m_beAttackEventTrigger)
 		{
-			if (!m_isPulse)
+			if (m_isAttacked)
 			{
-				m_vColorTint = Vec4{ 1.f, 0.f, 0.f, 1.f };
-				m_isPulse = TRUE;
-				m_isPulseDown = TRUE;
+				m_vColorTint = Vec4{ 1.f, 1.f, 1.f, 1.f };
+				m_vGradiantColorTint = Vec4{ 1.f, 1.f, 1.f, 1.f };
+				m_isAttacked = false;
 			}
 			else
 			{
-				const _float fMinA = 0.3f;
-				const _float fMaxA = 1.0f;
-				const _float fSpeed = 1.0f;
+				m_vColorTint = Vec4{ 1.f, 0.f, 0.f, 1.f };
+				m_vGradiantColorTint = Vec4{ 1.f, 0.f, 0.f, 1.f };
+				m_isAttacked = true;
+			}
+			m_beAttackEventTrigger = false;
+		}
 
-				if (m_isPulseDown)
-				{
-					m_fAlpha_Ratio -= fTimeDelta * fSpeed;
-					if (m_fAlpha_Ratio <= fMinA)
-					{
-						m_fAlpha_Ratio = fMinA;
-						m_isPulseDown = FALSE;
-					}
-				}
-				else
-				{
-					m_fAlpha_Ratio += fTimeDelta * fSpeed;
-					if (m_fAlpha_Ratio >= fMaxA)
-					{
-						m_fAlpha_Ratio = fMaxA;
-						m_isPulseDown = TRUE;
-					}
-				}
+		const _float fMinA = 0.3f;
+		const _float fMaxA = 1.0f;
+		const _float fSpeed = 1.0f;
+
+		if (m_isPulseDown)
+		{
+			m_fAlpha_Ratio -= fTimeDelta * fSpeed;
+			if (m_fAlpha_Ratio <= fMinA)
+			{
+				m_fAlpha_Ratio = fMinA;
+				m_isPulseDown = FALSE;
 			}
 		}
 		else
 		{
-			if (m_isPulse)
+			m_fAlpha_Ratio += fTimeDelta * fSpeed;
+			if (m_fAlpha_Ratio >= fMaxA)
 			{
-				m_isPulse = FALSE;
-				m_isPulseDown = FALSE;
-
-				m_vColorTint.x = 1.f;
-				m_vColorTint.y = 1.f;
-				m_vColorTint.z = 1.f;
-			}
-
-			if (m_fAlpha_Ratio < 1.f)
-			{
-				m_fAlpha_Ratio += fTimeDelta;
-				if (m_fAlpha_Ratio > 1.f)
-					m_fAlpha_Ratio = 1.f;
-			}
-			else if (m_fAlpha_Ratio > 1.f)
-			{
-				m_fAlpha_Ratio = 1.f;
+				m_fAlpha_Ratio = fMaxA;
+				m_isPulseDown = TRUE;
 			}
 		}
 	}

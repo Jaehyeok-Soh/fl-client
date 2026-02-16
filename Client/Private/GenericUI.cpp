@@ -244,12 +244,23 @@ _bool CGenericUI::Tick_Lerp_Movement(const _float fTimeDelta)
 
 void CGenericUI::Ready_Fade(const _float fDuration, const _float fStartAlpha, const _float fTargetAlpha, const _float fDelay)
 {
-	m_fAlpha_Ratio = fStartAlpha;
+	m_fAlpha_Ratio		= fStartAlpha;
 	m_fFadeTimeAcc		= 0.f;
 	m_fFadeDelayTimeAcc = 0.f;
 	m_fFadeDelay		= fDelay;
 	m_fFadeDuration		= fDuration;
 	m_fStartAlphaRatio	= fStartAlpha;
+	m_fTargetAlphaRatio = fTargetAlpha;
+}
+
+void CGenericUI::Ready_ExplosionFade(const _float fDuration, const _float fStartAlpha, const _float fExplosionAlpha, const _float fTargetAlpha, const _float fDelay)
+{
+	m_fAlpha_Ratio = fStartAlpha;
+	m_fFadeTimeAcc = 0.f;
+	m_fFadeDelayTimeAcc = 0.f;
+	m_fFadeDelay = fDelay;
+	m_fFadeDuration = fDuration;
+	m_fStartAlphaRatio = fExplosionAlpha;
 	m_fTargetAlphaRatio = fTargetAlpha;
 }
 

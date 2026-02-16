@@ -311,10 +311,10 @@ HRESULT CBuilder_UI::Register_Class(DTO::EUIClassType eClassType, const DTO::TUI
 
 		const auto Type = iter->second.eDISubClassType;
 
-		const _bool isPlayerSkill	= (Type >= DTO::EUIDImageSubClassType::PLAYER_SKILL_BEGIN &&	Type <= DTO::EUIDImageSubClassType::PLAYER_SKILL_END);
-		const _bool isMiniMap		= (Type >= DTO::EUIDImageSubClassType::MINIMAP_BEGIN &&	Type <= DTO::EUIDImageSubClassType::MINIMAP_END);
-		const _bool isHoverIcon		= (Type >= DTO::EUIDImageSubClassType::HOVER_POPUP_BEGIN && Type <= DTO::EUIDImageSubClassType::HOVER_POPUP_END);
-		const _bool isMenu			= (Type >= DTO::EUIDImageSubClassType::MENU_BEGIN && Type <= DTO::EUIDImageSubClassType::MENU_END);
+		const _bool isPlayerSkill	= (Type >= DTO::EUIDImageSubClassType::PLAYER_SKILL_BEGIN	&&	Type <= DTO::EUIDImageSubClassType::PLAYER_SKILL_END);
+		const _bool isMiniMap		= (Type >= DTO::EUIDImageSubClassType::MINIMAP_BEGIN		&&	Type <= DTO::EUIDImageSubClassType::MINIMAP_END);
+		const _bool isHoverIcon		= (Type >= DTO::EUIDImageSubClassType::HOVER_POPUP_BEGIN	&& Type <= DTO::EUIDImageSubClassType::HOVER_POPUP_END);
+		const _bool isMenu			= (Type >= DTO::EUIDImageSubClassType::MENU_BEGIN			&& Type <= DTO::EUIDImageSubClassType::MENU_END);
 
 		if (isPlayerSkill)
 		{
@@ -369,12 +369,6 @@ HRESULT CBuilder_UI::Register_Class(DTO::EUIClassType eClassType, const DTO::TUI
 
 CGenericUI::GENERIC_UI_DESC CBuilder_UI::Make_DefaultInfo(const DTO::TUI_GenericUIData& data, CCanvas* pCanvas)
 {
-
-	if (data.strTag == "Menu_Tab_Icon_Shop_BG")
-		int a = 0;
-	if (data.strTag == "Menu_Tab_Icon_Event_BG")
-		int a = 0;
-
 	CGenericUI::GENERIC_UI_DESC Desc = {};
 	Desc.strName				= data.strTag;
 	Desc.iLevelIndex			= m_iLevelID;

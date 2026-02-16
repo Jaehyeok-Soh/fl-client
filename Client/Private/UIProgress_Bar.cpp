@@ -54,6 +54,7 @@ HRESULT CUIProgress_Bar::Attach_Personal_Info()
 	{
 		m_pTargetStat;
 		m_vOriginColor = m_vColorTint;
+		m_vOriginGradiantColor = m_vGradiantColorTint;
 		return S_OK;
 	}
 	case DTO::EUISubClassType::PLAYER_ARMOR:
@@ -102,8 +103,6 @@ void CUIProgress_Bar::Update_Priority(const _float fTimeDelta)
 			{
 				m_isStartLowHp = TRUE;
 				m_isEndLowHp = FALSE;
-
-				m_vOriginColor = m_vColorTint;
 				m_fTickTimeAcc = 1.f;
 			}
 		}
@@ -114,6 +113,7 @@ void CUIProgress_Bar::Update_Priority(const _float fTimeDelta)
 				m_isStartLowHp = FALSE;
 				m_isEndLowHp = TRUE;
 				m_vColorTint = m_vOriginColor;
+				m_vGradiantColorTint = m_vOriginGradiantColor;
 			}
 		}
 
@@ -133,7 +133,6 @@ void CUIProgress_Bar::Update(const _float fTimeDelta)
 	// m_fCurRatio = m_pTargetStat->Get_HealthRatio();
 
 	_float fEpsilon = 0.0001f;
-
 	if (fabs( m_fCurRatio - m_fPreRatio) > fEpsilon)
 	{
 		m_isChangeRatio = TRUE;
@@ -252,7 +251,8 @@ HRESULT CUIProgress_Bar::Bind_ShaderResources()
 void CUIProgress_Bar::Low_HP(const _float fTimeDelta)
 {
 	m_vColorTint = Vec4{ 1.f, 0.f, 0.f, 1.f };
-	
+	m_vGradiantColorTint = Vec4{ 1.f, 0.f, 0.f, 1.f };
+
 	if (m_fTickTimeAcc >= 1.f)
 		m_isHPPaulse = FALSE;
 	else if (m_fTickTimeAcc < 0.3f)

@@ -49,6 +49,7 @@ float g_fAlphaRatio;
 
 float   g_fProgressRatio;
 int     g_iFillDir;
+
 int     g_iColor;
 float4  g_vColorTint;
 float4  g_vGradiateColorTint;

@@ -67,6 +67,7 @@ public:
 	_bool Tick_Lerp_Movement(const _float fTimeDelta);
 	
 	void Ready_Fade(const _float fDuration, const _float fStartAlpha, const _float fTargetAlpha, const _float fDelay);
+	void Ready_ExplosionFade(const _float fDuration, const _float fStartAlpha,const _float fExplosionAlpha, const _float fTargetAlpha, const _float fDelay);
 	_bool Tick_Fade(const _float fTimeDelta);
 
 protected:
@@ -114,6 +115,7 @@ protected:
 	_float m_fFadeTimeAcc = {};
 	_float m_fStartAlphaRatio = {};
 	_float m_fTargetAlphaRatio = {};
+	_float m_fExplosionAlphaRatio = {};
 
 public:
 	virtual void Free()override;

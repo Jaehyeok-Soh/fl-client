@@ -47,6 +47,7 @@ private:
 
 	_bool m_isUseSkillEventStart = { FALSE };
 	_bool m_isUseSkillEventEnd = { FALSE };
+
 	_float m_fSkillCoolTimeRatio = {1.f};
 
 public:

@@ -110,7 +110,7 @@ void CUI_Inspector::Input_RectTransform()
 {
 	ImGui::PushID("RectTransform");
 	ImGui::SeparatorText("Rect Transform");
-	ImGui::BeginChild("RectTransformCard", ImVec2(0, 168.f), true, ImGuiWindowFlags_NoScrollbar);
+	ImGui::BeginChild("RectTransformCard", ImVec2(0, 200.f), true, ImGuiWindowFlags_NoScrollbar);
 	ImGui::TextDisabled("Anchor / pivot preset (3x3).");
 	ImGui::Spacing();
 
@@ -200,6 +200,35 @@ void CUI_Inspector::Input_RectTransform()
 	ImGui::Checkbox("Interact", &m_pSelectedUI->Get_InitInteractable());
 	ImGui::SameLine();
 	ImGui::Checkbox("Activate", &m_pSelectedUI->Get_InitActivate());
+
+	if (ImGui::Button("All Visible"))
+	{
+		auto* pCanvas = m_pUIManager->Safe_Access_Canvas(m_pUIManager->Get_CurCanvasIndex());
+		if (nullptr != pCanvas)
+		{
+			for (auto* pUI : *(pCanvas->Safe_Access_UI_Vector()))
+			{
+				if (nullptr == pUI)
+					continue;
+
+				pUI->Set_Visible();
+			}
+		}
+	}
+	if (ImGui::Button("All InVisible"))
+	{
+		auto* pCanvas = m_pUIManager->Safe_Access_Canvas(m_pUIManager->Get_CurCanvasIndex());
+		if (nullptr != pCanvas)
+		{
+			for (auto* pUI : *(pCanvas->Safe_Access_UI_Vector()))
+			{
+				if (nullptr == pUI)
+					continue;
+
+				pUI->Set_Invisible();
+			}
+		}
+	}
 
 	ImGui::EndChild();
 	ImGui::PopID();
@@ -933,15 +962,16 @@ void CUI_Inspector::SetUp_ShaderPass()
 		{
 		case EUIShaderPass::DEFAULT:
 		{
-			ImGui::TextDisabled("No Params");
-			break;
-		}
-		case EUIShaderPass::DEFAULT_ALPHA:
-		{
 			_float fAlphaRatio = m_pSelectedUI->Get_AlphaRatio();
 			ImGui::SetNextItemWidth(150.f);
 			if (ImGui::DragFloat("Alpha Ratio", &fAlphaRatio, 0.01f, 0.f, 1.f))
 				m_pSelectedUI->Set_AlphaRatio(fAlphaRatio);
+
+			_float fDelay = m_pSelectedUI->Get_Delay();
+			ImGui::SetNextItemWidth(150.f);
+			if (ImGui::DragFloat("Delay", &fDelay, 0.01f, 0.f, 1.f))
+				m_pSelectedUI->Set_Delay(fDelay);
+
 			break;
 		}
 		case EUIShaderPass::COLOR:
@@ -969,14 +999,10 @@ void CUI_Inspector::SetUp_ShaderPass()
 			if (ImGui::DragFloat("Alpha Ratio", &fAlphaRatio, 0.01f, 0.f, 1.f))
 				m_pSelectedUI->Set_AlphaRatio(fAlphaRatio);
 
-			break;
-		}
-		case EUIShaderPass::FADE:
-		{
-			_float fAlphaRatio = m_pSelectedUI->Get_AlphaRatio();
+			_float fDelay = m_pSelectedUI->Get_Delay();
 			ImGui::SetNextItemWidth(150.f);
-			if (ImGui::DragFloat("Alpha Ratio", &fAlphaRatio, 0.01f, 0.f, 1.f))
-				m_pSelectedUI->Set_AlphaRatio(fAlphaRatio);
+			if (ImGui::DragFloat("Delay", &fDelay, 0.01f, 0.f, 1.f))
+				m_pSelectedUI->Set_Delay(fDelay);
 			break;
 		}
 		case EUIShaderPass::PROGRESS:
@@ -989,6 +1015,11 @@ void CUI_Inspector::SetUp_ShaderPass()
 			ImGui::SetNextItemWidth(150.f);
 			if (ImGui::DragFloat4("Color Tint", (float*)&vColorTint, 0.01f, 0.f, 1.f))
 				m_pSelectedUI->Set_ColorTint(vColorTint);
+
+			Vec4 vGradiantColorTint = m_pSelectedUI->Get_GradiantColorTint();
+			ImGui::SetNextItemWidth(150.f);
+			if (ImGui::DragFloat4("GradiantColor Tint", (float*)&vGradiantColorTint, 0.01f, 0.f, 1.f))
+				m_pSelectedUI->Set_GradiantColorTint(vGradiantColorTint);
 
 			_float fProgress = m_pSelectedUI->Get_ProgressRatio();
 			ImGui::SetNextItemWidth(150.f);
@@ -1003,10 +1034,16 @@ void CUI_Inspector::SetUp_ShaderPass()
 			if (ImGui::Combo("Fill Dir", &dir, dirs, IM_ARRAYSIZE(dirs)))
 				m_pSelectedUI->Set_FillDir((uint32_t)dir);
 
+			_float fAlphaRatio = m_pSelectedUI->Get_AlphaRatio();
+			ImGui::SetNextItemWidth(150.f);
+			if (ImGui::DragFloat("Alpha Ratio", &fAlphaRatio, 0.01f, 0.f, 1.f))
+				m_pSelectedUI->Set_AlphaRatio(fAlphaRatio);
+
 			_float fDelay = m_pSelectedUI->Get_Delay();
 			ImGui::SetNextItemWidth(150.f);
 			if (ImGui::DragFloat("Delay", &fDelay, 0.01f, 0.f, 1.f))
 				m_pSelectedUI->Set_Delay(fDelay);
+
 			break;
 		}
 

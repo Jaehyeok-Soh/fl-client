@@ -13,167 +13,123 @@ VS_OUT_POS_TEX VS_MAIN(VS_IN_POS_TEX input)
     return output;
 }
 
+float2 ApplyFlip(float2 Uv)
+{
+    if      (1 == g_iFlip)      {        Uv.x = 1.0f - Uv.x;    } // Flip X
+    else if (2 == g_iFlip)      {        Uv.y = 1.0f - Uv.y;    } // Flip Y
+    else if (3 == g_iFlip)      {        Uv.x = 1.0f - Uv.x;        Uv.y = 1.0f - Uv.y;    } // Flip XY
+    return Uv;
+}
+
 PS_OUT PS_MAIN(PS_IN_POS_TEX input)
 {
     PS_OUT output;
-    float2 uv = input.vUV;
-    // Flip X
-    if (g_iFlip == 1)
-        uv.x = 1.0f - uv.x;
-    // Flip Y
-    else if (g_iFlip == 2)   
-        uv.y = 1.0f - uv.y;
-    // Flip XY
-    else if (g_iFlip == 3)   
-    {
-        uv.x = 1.0f - uv.x;
-        uv.y = 1.0f - uv.y;
-    }
+    float2 Uv = input.vUV;
+
+    Uv = ApplyFlip(Uv);
     
-    output.vColor = g_DefaultTextures[DEFAULT].Sample(PointSampler, uv);
-    if(output.vColor.a < 0.3f)
+    vector vBaseColor = g_DefaultTextures[DEFAULT].Sample(PointSampler, Uv);
+    
+    vBaseColor.a *= g_fAlphaRatio;
+    if (vBaseColor.a < 0.001f)
         discard;
+    output.vColor = vBaseColor;
     return output;
 }
 
 PS_OUT PS_COLOR(PS_IN_POS_TEX input)
 {
     PS_OUT output;
-    float2 uv = input.vUV;
-    // Flip X
-    if (g_iFlip == 1)
-        uv.x = 1.0f - uv.x;
-    // Flip Y
-    else if (g_iFlip == 2)   
-        uv.y = 1.0f - uv.y;
-    // Flip XY
-    else if (g_iFlip == 3)
-    {
-        uv.x = 1.0f - uv.x;
-        uv.y = 1.0f - uv.y;
-    }
+    float2 Uv = input.vUV;
+ 
+    Uv = ApplyFlip(Uv);
     
-    vector vColor = g_DefaultTextures[DEFAULT].Sample(PointSampler, uv);
-    
-    if (vColor.a < 0.3f)
-        discard;
+    vector vBaseColor = g_DefaultTextures[DEFAULT].Sample(PointSampler, Uv);
     
     float t = 0.f;
-    if (g_iFillDir == 0)                // Color Tint 가 왼쪽 / Gradiate Color Tint 가 오른쪽
-        t = saturate(input.vUV.x);
-    else if (g_iFillDir == 1)
-        t = saturate(1.f - input.vUV.x);
-    else if (g_iFillDir == 2)
-        t = saturate(input.vUV.y);
-    else if (g_iFillDir == 3)
-        t = saturate(1.f - input.vUV.y);
+    if      (0 == g_iFillDir) t = saturate(Uv.x);       // Color -> Gradiant Color
+    else if (1 == g_iFillDir) t = saturate(1.f - Uv.x); // Gradiant Color -> Color
+    else if (2 == g_iFillDir) t = saturate(Uv.y);       
+    else if (3 == g_iFillDir) t = saturate(1.f - Uv.y);
     
-    vColor.rgb = lerp(g_vColorTint, g_vGradiateColorTint, t).rgb;
-    vColor.a *= g_fAlphaRatio;
-    output.vColor = vColor;
-    return output;
-}
-
-PS_OUT PS_FADE(PS_IN_POS_TEX input)
-{
-    PS_OUT output;
-    float2 uv = input.vUV;
-    // Flip X
-    if (g_iFlip == 1)
-        uv.x = 1.0f - uv.x;
-    // Flip Y
-    else if (g_iFlip == 2)   
-        uv.y = 1.0f - uv.y;
-    // Flip XY
-    else if (g_iFlip == 3)
-    {
-        uv.x = 1.0f - uv.x;
-        uv.y = 1.0f - uv.y;
-    }
+    vBaseColor.rgb = lerp(g_vColorTint, g_vGradiateColorTint, t).rgb;
     
-    vector vColor = g_DefaultTextures[0].Sample(PointSampler, uv);
-    if(g_iColor == 1)
-        vColor.rgb = g_vColorTint;
-    
-    vColor.a *= g_fAlphaRatio;
-    output.vColor = vColor;
+    vBaseColor.a *= g_fAlphaRatio;
+    if (vBaseColor.a < 0.001f)
+        discard;
+    output.vColor = vBaseColor;
     return output;
 }
 
 PS_OUT PS_PROGRESS(PS_IN_POS_TEX input)
 {
     PS_OUT output;
-    float2 uv = input.vUV;
-    float mask = 1.0f;
+    float2 Uv = input.vUV;
+    float Mask = 1.0f;
+ 
+    Uv = ApplyFlip(Uv);
     
-       // Flip X
-    if (g_iFlip == 1)
-        uv.x = 1.0f - uv.x;
-    // Flip Y
-    else if (g_iFlip == 2)   
-        uv.y = 1.0f - uv.y;
-    // Flip XY
-    else if (g_iFlip == 3)
+    vector vBaseColor = g_DefaultTextures[DEFAULT].Sample(PointSampler, Uv);
+    
+    if (1 == g_iColor)
     {
-        uv.x = 1.0f - uv.x;
-        uv.y = 1.0f - uv.y;
-    }
+        float t = 0.f;
+        if      (0 == g_iFillDir)            t = saturate(Uv.x);     
+        else if (1 == g_iFillDir)            t = saturate(1.f - Uv.x);
+        else if (2 == g_iFillDir)            t = saturate(Uv.y);
+        else if (3 == g_iFillDir)            t = saturate(1.f - Uv.y);
     
-    vector vColor = g_DefaultTextures[0].Sample(PointSampler, uv);
-    if(vColor.a < 0.3f)
+        vBaseColor.rgb = lerp(g_vColorTint, g_vGradiateColorTint, t).rgb;
+    }
+        
+    if      (0 == g_iFillDir)        Mask = step(Uv.x, g_fProgressRatio);           // Left  ->  Right
+    else if (1 == g_iFillDir)        Mask = step(1.0f - Uv.x, g_fProgressRatio);    // Right ->  Left
+    else if (2 == g_iFillDir)        Mask = step(1.0f - Uv.y, g_fProgressRatio);    // Up    ->  Down
+    else if (3 == g_iFillDir)        Mask = step(Uv.y, g_fProgressRatio);           // Down  ->  Up
+    if (Mask <= 0.0f)
         discard;
     
-    if (g_iColor == 1)
-        vColor = g_vColorTint;
-    
-    output.vColor = vColor;
-    
-    if (g_iFillDir == 0) 
-        mask = step(uv.x, g_fProgressRatio);        //right -> left
-    else if (g_iFillDir == 1)
-        mask = step(1.0f - uv.x, g_fProgressRatio); //left -> right
-    else if (g_iFillDir == 2)
-        mask = step(1.0f - uv.y, g_fProgressRatio); //up -> down
-    else if (g_iFillDir == 3)
-        mask = step(uv.y, g_fProgressRatio); //down -> up
-    else if (g_iFillDir == 4)
-    {
-        float dist = abs(uv.x - 0.5f);
-        float haf = g_fProgressRatio * 0.5f;
-        mask = step(dist, haf);
-    }
-    
-    if (mask <= 0.0f)
+    vBaseColor.a *= g_fAlphaRatio;
+    if (vBaseColor.a < 0.2f)
         discard;
     
+    output.vColor = vBaseColor;
     return output;
 }
-
 
 PS_OUT PS_DISOLVE(PS_IN_POS_TEX input)
 {
     PS_OUT output;
-
-    float4 base = g_DefaultTextures[DEFAULT].Sample(LinearSampler, input.vUV);
-    float noise = g_DefaultTextures[UI_NOISE].Sample(LinearSampler, input.vUV).r;
-    float Alpha = g_DefaultTextures[UI_ALPHA_MASK].Sample(LinearSampler, input.vUV).a;
-
-    if (g_iColor == 1)
-        base.rgb = g_vColorTint.rgb;
+    float2 Uv = input.vUV;
     
-    float a = smoothstep(g_fProgressRatio, g_fProgressRatio + 0.1f, noise);
-    output.vColor = base;
-    output.vColor.a *= a;
+    Uv = ApplyFlip(Uv);
+    
+    float4 vBaseColor = g_DefaultTextures[DEFAULT].Sample(LinearSampler, Uv);
+    float Noise = g_DefaultTextures[UI_NOISE].Sample(LinearSampler, Uv).r;
+    float Alpha = g_DefaultTextures[UI_ALPHA_MASK].Sample(LinearSampler, Uv).a;
+
+    if (1 == g_iColor)
+    {
+        float t = 0.f;
+        if      (0 == g_iFillDir)            t = saturate(Uv.x);
+        else if (1 == g_iFillDir)            t = saturate(1.f - Uv.x);
+        else if (2 == g_iFillDir)            t = saturate(Uv.y);
+        else if (3 == g_iFillDir)            t = saturate(1.f - Uv.y);
+    
+        vBaseColor.rgb = lerp(g_vColorTint, g_vGradiateColorTint, t).rgb;
+    }
+    
+    float Edge = smoothstep(g_fProgressRatio, g_fProgressRatio + 0.1f, Noise);
+    output.vColor = vBaseColor;
+    output.vColor.a *= Edge;
     output.vColor.a *= Alpha;
     return output;
 }
 
 technique11 T0
 {
-    PASS_RS_DS_BS_VP(Default,       RS_Default, DS_Disabled, BS_Default, VS_MAIN, PS_MAIN)
-    PASS_RS_DS_BS_VP(DefaultAlpha,  RS_Default, DS_Disabled, BS_AlphaBlend, VS_MAIN, PS_MAIN)
+    PASS_RS_DS_BS_VP(Default,       RS_Default, DS_Disabled, BS_AlphaBlend, VS_MAIN, PS_MAIN)
     PASS_RS_DS_BS_VP(Color,         RS_Default, DS_Disabled, BS_AlphaBlend, VS_MAIN, PS_COLOR)
-    PASS_RS_DS_BS_VP(Fade,          RS_Default, DS_Disabled, BS_AlphaBlend, VS_MAIN, PS_FADE)
     PASS_RS_DS_BS_VP(Progress,      RS_Default, DS_Disabled, BS_AlphaBlend, VS_MAIN, PS_PROGRESS)
     PASS_RS_DS_BS_VP(Disolve,       RS_Default, DS_Disabled, BS_AlphaBlend, VS_MAIN, PS_DISOLVE)
 };

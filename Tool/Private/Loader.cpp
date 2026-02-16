@@ -276,25 +276,21 @@ HRESULT CLoader::Loading_For_UI()
 	//=================
 	// Resource Component
 	//=================
-	if (FAILED(Loading_Textures(L"../../Resources/Textures/UI/Playable/")))
-		return E_FAIL;
-	if (FAILED(Loading_Textures(L"../../Resources/Textures/UI/Menu/")))
-		return E_FAIL;
-	if (FAILED(Loading_Textures(L"../../Resources/Textures/UI/Battle/")))
-		return E_FAIL;
-	if (FAILED(Loading_Textures(L"../../Resources/Textures/UI/Key/")))
-		return E_FAIL;
-	if (FAILED(Loading_Textures(L"../../Resources/Textures/UI/WeaponIcon/")))
-		return E_FAIL;
-	if (FAILED(Loading_Textures(L"../../Resources/Textures/UI/SM_MAP/")))
-		return E_FAIL;
-	if (FAILED(Loading_Textures(L"../../Resources/Textures/UI/Map/")))
-		return E_FAIL;
-	if (FAILED(Loading_Textures(L"../../Resources/Textures/UI/Common/")))
-		return E_FAIL;
-	if (FAILED(Loading_Textures(L"../../Resources/Textures/UI/Noise/")))
-		return E_FAIL;
 
+	std::error_code ec;
+	for (const auto& entry : std::filesystem::directory_iterator(L"../../Resources/Textures/UI/",std::filesystem::directory_options::skip_permission_denied, ec))
+	{
+		if (ec)
+			return E_FAIL;
+
+		if (entry.is_directory() == false)
+			continue;
+
+		const std::wstring wstrSubFolder = entry.path().wstring();
+
+		if (FAILED(Loading_Textures(wstrSubFolder)))
+			return E_FAIL;
+	}
 	//=================
 	// UI Objects
 	//=================
@@ -333,7 +329,7 @@ HRESULT CLoader::Loading_Textures(const wstring& wstrFolder)
 			++iFileCount;
 		}
 	}
-	/* 바탕화면 경로(C:\Users\...\Desktop) 쪽은 특히 desktop.ini가 흔합니다. 절대 바탕화면에 프로젝트를 두지마 */
+	/* 바탕화면 경로(C:\Users\...\Desktop) 쪽은 특히 desktop.ini가 흔합니다. */
 	for (const auto& entry : std::filesystem::directory_iterator(wstrFolder))
 	{
 		wstring wstrFileName = { L"" };

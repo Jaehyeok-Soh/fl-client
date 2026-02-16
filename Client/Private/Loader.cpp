@@ -204,27 +204,21 @@ HRESULT CLoader::Loading_For_Logo()
 		//	return E_FAIL;
 	}
 
-		// For. Prototype_Component_Button_Test_Texture
+	// For. UI Texture
+	std::error_code ec;
+	for (const auto& entry : std::filesystem::directory_iterator(L"../../Resources/Textures/UI/", std::filesystem::directory_options::skip_permission_denied, ec))
 	{
-		if (FAILED(Loading_Textures(L"../../Resources/Textures/UI/Playable/")))
+		if (ec)
 			return E_FAIL;
-		if (FAILED(Loading_Textures(L"../../Resources/Textures/UI/Menu/")))
+
+		if (entry.is_directory() == false)
+			continue;
+
+		const std::wstring wstrSubFolder = entry.path().wstring();
+
+		if (FAILED(Loading_Textures(wstrSubFolder)))
 			return E_FAIL;
-		if (FAILED(Loading_Textures(L"../../Resources/Textures/UI/Battle/")))
-			return E_FAIL;
-		if (FAILED(Loading_Textures(L"../../Resources/Textures/UI/Key/")))
-			return E_FAIL;
-		if (FAILED(Loading_Textures(L"../../Resources/Textures/UI/WeaponIcon/")))
-			return E_FAIL;
-		if (FAILED(Loading_Textures(L"../../Resources/Textures/UI/SM_MAP/")))
-			return E_FAIL;
-		if (FAILED(Loading_Textures(L"../../Resources/Textures/UI/Map/")))
-			return E_FAIL;
-		if (FAILED(Loading_Textures(L"../../Resources/Textures/UI/Common/")))
-			return E_FAIL;
-		if (FAILED(Loading_Textures(L"../../Resources/Textures/UI/Noise/")))
-			return E_FAIL;
-	}	
+	}
 	
 #pragma endregion
 

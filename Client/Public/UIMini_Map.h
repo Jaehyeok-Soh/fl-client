@@ -73,9 +73,10 @@ private:
 	_float m_fDrag		= { 1.f };		// 1/s
 
 	// Warning Frame Values
-	_bool m_beAttackEventTrigger	= { FALSE };
-	_bool m_isPulse					= { TRUE };
-	_bool m_isPulseDown				= { FALSE };
+	_bool m_beAttackEventTrigger	= { false };
+	_bool m_isAttacked				= { false };
+	_bool m_isPulse					= { true };
+	_bool m_isPulseDown				= { false };
 
 public:
 	static CUIMini_Map* Create(ID3D11Device* pDevice, ID3D11DeviceContext* pDeviceContext);

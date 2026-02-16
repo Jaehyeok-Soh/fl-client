@@ -109,6 +109,9 @@ HRESULT CUIMenu_Text::Bind_ShaderResources()
 
 void CUIMenu_Text::OnUIEvent(ETriggerEventType eEvent, CGenericUI* pSender)
 {
+	if (!m_isInteract)
+		return;
+
 	if (eEvent == ETriggerEventType::PRESS_ENTER)
 	{
 		if (m_isVisible)
@@ -116,30 +119,43 @@ void CUIMenu_Text::OnUIEvent(ETriggerEventType eEvent, CGenericUI* pSender)
 		else
 			Set_Visible();
 	}
+	else if (eEvent == ETriggerEventType::HOVER_ENTER)
+	{
+		Set_Visible();
+	}
+	else if (eEvent == ETriggerEventType::HOVER_EXIT)
+	{
+		Set_Invisible();
+	}
 }
 
 void CUIMenu_Text::Initialize_Visible_Event()
 {
 	m_vFontColor = Vec4{ 0.f ,0.f ,0.f ,0.f };
+
+	if(m_eTextSubClassType == DTO::EUITextSubClassType::MENU_ESC_TEXT)
+		m_isInteract = true;
+	else 
+		m_isInteract = false;
+
+
 	m_fTimeAcc = 0.f;
 	m_fDelayTimeAcc = 0.f;
-
-	Ready_Lerp_Movement(Vec2{ -5.f, 0.f }, Vec2{ 0.f, 0.f }, 0.5f, 1.f, m_fDelay);
 }
 
 void CUIMenu_Text::Initialize_InVisible_Event()
 {
 	m_vFontColor = m_vOriginFontColor;
+	m_isInteract = false;
 	m_fTimeAcc = 0.f;
 	m_fDelayTimeAcc = 0.f;
 }
 
 _bool CUIMenu_Text::Tick_Visible_Event(const _float fTimeDelta)
 {
-	_bool isMove = Tick_Lerp_Movement(fTimeDelta);
+	m_fDelayTimeAcc += fTimeDelta;
 	if (m_fDelayTimeAcc < m_fDelay)
 		return false;
-	
 
 	m_fTimeAcc += fTimeDelta;
 
@@ -148,9 +164,8 @@ _bool CUIMenu_Text::Tick_Visible_Event(const _float fTimeDelta)
 	{
 		t = 1.f;
 		m_vFontColor = m_vOriginFontColor;
-
-		if(isMove)
-			return true;
+		m_isInteract = true;
+		return true;
 	}
 
 	const Vec4 vStart = Vec4{ 0.f, 0.f, 0.f, 0.f };
@@ -162,6 +177,7 @@ _bool CUIMenu_Text::Tick_Visible_Event(const _float fTimeDelta)
 
 _bool CUIMenu_Text::Tick_InVisible_Event(const _float fTimeDelta)
 {
+	m_isInteract = true;
 	return true;
 }
 
