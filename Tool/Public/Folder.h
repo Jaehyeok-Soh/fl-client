@@ -21,8 +21,8 @@ private:
 public:
 	bool	IsRootFloder()	CONST { return m_pParentFloder == nullptr ? true : false; }
 	const   map<wstring, CFolder*>& GetFloders()	const { return m_mapTreeFloder; }
-	const   vector<CFile*>& GetFiles()				const { return m_vecFile; }
-	const   FLODER_INFO& GetFloderInfo()			const { return m_tInfo; }
+	const   vector<CFile*>&			GetFiles()				const { return m_vecFile; }
+	const   FLODER_INFO&			GetFloderInfo()			const { return m_tInfo; }
 public:
 	void							ImGui_Update();
 	vector<wstring>					Find_File(const wstring& wstrFileName);

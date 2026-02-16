@@ -12,9 +12,6 @@ CBuilder_Map::CBuilder_Map(ID3D11Device* pDevice, ID3D11DeviceContext* pDeviceCo
 
 HRESULT	CBuilder_Map::Initialize()
 {
-
-
-
 	return S_OK;
 }
 
@@ -39,6 +36,7 @@ HRESULT CBuilder_Map::Build(const CDataDocumentBase& document)
 
 HRESULT CBuilder_Map::Create_MapObject(const DTO::TMap_MapObjectData& tData)
 {
+
 	CMapObject::MAPOBJECT_DESC tDesc{};
 	tDesc.eClientLevelType					= static_cast<EClientLevelType>(tData.eClientLevelType);
 	tDesc.eClientMakePath					= static_cast<EClientMakePath>(tData.eClientMakePath);
@@ -47,7 +45,7 @@ HRESULT CBuilder_Map::Create_MapObject(const DTO::TMap_MapObjectData& tData)
 	tDesc.isUELoaded = tData.isUELoaded;
 	tDesc.isLoaded = true;
 	
-	
+	tDesc.iSectionNumber					= tData.iSectionNum;
 	tDesc.tUsingModelInfo.wstrName			= path(tData.strModelPath).filename().stem();
 	tDesc.tUsingModelInfo.wstrPath			= Engine_Utils::ToWString(tData.strModelPath);
 	tDesc.vecClientMakePathDesc				= tData.vecClientMakePathDesc;
@@ -56,16 +54,13 @@ HRESULT CBuilder_Map::Create_MapObject(const DTO::TMap_MapObjectData& tData)
 	for (auto& DTO_SRTDATA : tData.vecSRTs)
 	{
 		SRT_DATA tSRT{};
-		tSRT.Update_World(DTO_SRTDATA.vScale , DTO_SRTDATA.vQuat , DTO_SRTDATA.vPosition);
+		tSRT.Update_SRT(DTO_SRTDATA.vScale , DTO_SRTDATA.vQuat , DTO_SRTDATA.vPosition);
 		tSRT.vScale_Isolated = DTO_SRTDATA.vScale_Isolated;
 		tDesc.vecSRTs.push_back(tSRT);
 	}
 
 	/* 복사생성해서 넣어준다 */
-
-
 	m_pMapToolManager->Make_MapObject( &tDesc , false );
-
 
 	return S_OK;
 }

@@ -28,8 +28,8 @@ private:
 private:
 	HRESULT			Initialize_Prototype();
 	virtual HRESULT Initialize(void* pArg) override;
-private:
-	HRESULT			Ready_Instance_WorldMinMax(const Vec3* pModelMinMax , const vector<Matrix>* vecInstanceMatrixPointer);
+public:
+	HRESULT			Update_Instance_WorldMinMax(const Vec3* pModelMinMax , const vector<Matrix>* vecInstanceMatrixPointer);
 public:
 	HRESULT			Bind_Instance(_uint iSlotNum);
 	virtual HRESULT Bind_Resource() override;
@@ -37,7 +37,7 @@ public:
 	void			Unbind_Resource(_uint iSlotNum);
 public:
 	const Vec3*		Get_InstanceWorldMinMax() const { return m_pInstanceWorldMinMax; }
-	HRESULT			ReMake_InstanceBuffer(vector<Matrix>* vecInstanceMatrixPointer);
+	HRESULT			ReMake_InstanceBuffer(vector<Matrix>* vecInstanceMatrixPointer, const Vec3* pModelMinMax);
 	void			Update_Matrix(const Matrix& WorldMatrix, _uint iIndex);
 	void			Update_Matrix(const vector<Matrix>& vMatrix);
 public:

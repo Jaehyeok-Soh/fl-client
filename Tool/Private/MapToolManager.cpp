@@ -62,9 +62,6 @@ void CMapToolManager::Input_Update(float DT)
 	if (m_fMouseRange < 1.f)
 		m_fMouseRange = 1.f;
 
-
-
-
 	bool isMouseOn{ false };
 	isMouseOn = m_eMapTooObjectBatchMode == EMapToolObjectBatchMode::Brush ? m_pGameInstance->Mouse_Pressing(MOUSEKEYSTATE::LB) : m_pGameInstance->Mouse_Up(MOUSEKEYSTATE::LB);
 	
@@ -86,14 +83,20 @@ void CMapToolManager::Input_Update(float DT)
 
 void CMapToolManager::Mouse_Update(float DT)
 {
-	m_pImGui_ToolManager->RayUpdate();
+	if (m_eMapToolEmplaceType == EMapTool_EmplaceType::Free)
+	{
+		m_pImGui_ToolManager->RayUpdate();
 
-	Vec3 vRayPos = m_pGameInstance->Picking_Get_RayPos();
-	Vec3 vRayDir = m_pGameInstance->Picking_Get_RayDir();
-	vRayDir.Normalize();
-
-	m_vRayWorldPos = vRayPos + vRayDir * m_fMouseRange;
-
+		Vec3 vRayPos = m_pGameInstance->Picking_Get_RayPos();
+		Vec3 vRayDir = m_pGameInstance->Picking_Get_RayDir();
+		vRayDir.Normalize();
+		m_vRayWorldPos = vRayPos + vRayDir * m_fMouseRange;
+	}
+	/* Picking이면 피킹된 위치 파악 */
+	else if(m_eMapToolEmplaceType == EMapTool_EmplaceType::Picking)
+	{
+		m_vRayWorldPos =  CPicking_ToolManager::GetInstance()->Get_PickingPos();
+	}
 }
 
 void CMapToolManager::Preview_Update(float DT)
@@ -152,7 +155,6 @@ HRESULT CMapToolManager::Change_Instance_To_OtherDrawType(CMapObject* pChangeMap
 			tDesc.vecClientMakePathDesc.clear();
 
 			tDesc.vecSRTs.push_back(vecSRTData[i]);
-			tDesc.vecSRTs.back().Update_World();
 
 			CLIENT_MAKEPATH_DESC_BASE* pClientMakePathDesc{ nullptr };
 			if (!vecClientMakePathDesc.empty())
@@ -394,7 +396,7 @@ HRESULT CMapToolManager::Batch_Preview()
 
 		SRT_DATA tSRT{};
 		Get_SRT_BrushData(tSRT.vScale , tSRT.vQuat , tSRT.vPosition);
-		tSRT.Update_World();
+
 		m_pPreviewMapobject = CMapObject::Clone(m_pPreviewMapobject, tSRT);
 
 		m_vLastPlacedPos = tSRT.vPosition;
@@ -402,6 +404,7 @@ HRESULT CMapToolManager::Batch_Preview()
 		if (m_pPreviewMapobject == nullptr) return E_FAIL;
 
 		m_vLastPlacedPos = tSRT.vPosition;
+
 	}
 
 

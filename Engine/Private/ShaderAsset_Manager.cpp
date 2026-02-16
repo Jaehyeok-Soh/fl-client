@@ -43,9 +43,9 @@ CFxEffectAsset* CShaderAsset_Manager::GetOrCreate_FxEffectAsset(const path& file
 		return nullptr;
 	}
 
-	pAsset->Get_BindingCache()->pCB_Global->SetConstantBuffer(CGameInstance::GetInstance()->Get_Global_ConstantBuffer());
-	pAsset->Get_BindingCache()->pCB_Inv->SetConstantBuffer(CGameInstance::GetInstance()->Get_Inv_ConstantBuffer());
-	pAsset->Get_BindingCache()->pCB_Light->SetConstantBuffer(CGameInstance::GetInstance()->Get_Light_ConstantBuffer());
+	pAsset->Get_BindingCache()->CB[ENUM_TO_UINT(EFXCB::Global)]->SetConstantBuffer(CGameInstance::GetInstance()->Get_Global_ConstantBuffer());
+	pAsset->Get_BindingCache()->CB[ENUM_TO_UINT(EFXCB::Inv)]->SetConstantBuffer(CGameInstance::GetInstance()->Get_Inv_ConstantBuffer());
+	pAsset->Get_BindingCache()->CB[ENUM_TO_UINT(EFXCB::Light)]->SetConstantBuffer(CGameInstance::GetInstance()->Get_Light_ConstantBuffer());
 
 	m_umapEffects.emplace(key, pAsset);
 	return pAsset;
@@ -70,10 +70,9 @@ CFxShaderVariant* CShaderAsset_Manager::GetOrCreate_Variant(const path& filePath
 		return nullptr;
 	}
 
-	pOwner->Get_BindingCache()->pCB_Global->SetConstantBuffer(CGameInstance::GetInstance()->Get_Global_ConstantBuffer());
-	pOwner->Get_BindingCache()->pCB_Inv->SetConstantBuffer(CGameInstance::GetInstance()->Get_Inv_ConstantBuffer());
-	pOwner->Get_BindingCache()->pCB_Light->SetConstantBuffer(CGameInstance::GetInstance()->Get_Light_ConstantBuffer());
-
+	pOwner->Get_BindingCache()->CB[ENUM_TO_UINT(EFXCB::Global)]->SetConstantBuffer(CGameInstance::GetInstance()->Get_Global_ConstantBuffer());
+	pOwner->Get_BindingCache()->CB[ENUM_TO_UINT(EFXCB::Inv)]->SetConstantBuffer(CGameInstance::GetInstance()->Get_Inv_ConstantBuffer());
+	pOwner->Get_BindingCache()->CB[ENUM_TO_UINT(EFXCB::Light)]->SetConstantBuffer(CGameInstance::GetInstance()->Get_Light_ConstantBuffer());
 	m_umapVariants.emplace(key, pVariant);
 	return pVariant;
 }

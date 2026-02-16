@@ -68,6 +68,7 @@ public:
 	HRESULT			Bind_Bones(class CShader* pShader, CComputeShader* pBoneMeshCS, CComputeShader* pBoneCombineCS,_uint iTotalBoneNum,  _uint iIndexDistance = 0);
 	_bool			IsSame(const _char* szName) { return ::strcmp(m_szName, szName) != 0; }
 	_bool			IntsersectWithPlane(OUT Vec3& vOut);
+	_bool			IntsersectWithPlane_CloseCam(OUT Vec3& vOut , const Vec3& vLocalCamPos);
 	_bool			IntsersectWithPlane(CRay* const pRay, Matrix matWorld, _float fMaxDistance, OUT MESH_RAY_HITINFO& outHit);
 	const			Vec3* Get_MinMax() const { return m_pMinMax; }
 private:

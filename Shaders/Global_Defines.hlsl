@@ -16,6 +16,8 @@ cbuffer GlobalBuffer
 
 cbuffer InvBuffer
 {
+    row_major float4x4 CamV;
+    row_major float4x4 CamP;
     row_major float4x4 InvV;
     row_major float4x4 InvP;
 };
@@ -62,11 +64,18 @@ int     g_iFlip;
 textureCUBE g_TextureCube;
 Texture2D g_DefaultTextures[8];
 Texture2D g_MaterialTextures[MATERIAL_END];
+Texture2D g_SSAONoiseTexture;
 Texture2D g_RenderTargetTexture;
 Texture2D g_RenderTargetDiffuseTexture;
 Texture2D g_RenderTargetNormalTexture;
 Texture2D g_RenderTargetShadeTexture;
 Texture2D g_RenderTargetDepthTexture;
-Texture2D g_RenderTargetSceneTexture;
+Texture2D<uint> g_RenderTargetObjInfoTexture;
+Texture2D g_RenderTargetSpecularTexture;
+Texture2D g_RenderTargetSpecularMaskTexture;
+Texture2D g_RenderTargetAOTexture;
+Texture2D g_RenderTargetSceneHDRTexture;
+Texture2D g_RenderTargetSceneHDRCopyTexture;
+Texture2D g_RenderTargetBloomTexture;
 
 #endif

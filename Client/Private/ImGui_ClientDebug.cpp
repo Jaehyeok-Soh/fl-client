@@ -3,6 +3,7 @@
 #include "MainPlayer.h"
 #include "ImGui_PlayerInspector.h"
 #include "ImGui_GlobalInspector.h"
+#include "ImGui_ShaderLayout.h"
 #include "GameInstance.h"
 
 IMPLEMENT_SINGLETON(CImGui_ClientDebug)
@@ -73,7 +74,6 @@ void CImGui_ClientDebug::Render()
 
 	m_arrInspectors[EInspectorType::Player]->Render(m_pPlayer);
 	m_arrInspectors[EInspectorType::Global]->Render(nullptr);
-
 
 	ImGuiIO& io = ImGui::GetIO();
 	ImGui::Render();

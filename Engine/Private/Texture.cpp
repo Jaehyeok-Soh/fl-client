@@ -142,17 +142,17 @@ HRESULT CTexture::Bind_ShaderResource(CShader* pShader, _uint iIndex)
 	if (m_vecTextures.size() <= iIndex)
 		return E_FAIL;
 
-	return pShader->Bind_DefaultTexture(m_vecTextures[iIndex]->Get_SRV());
+	return pShader->Bind_SRV(EFXSRV::Textures, m_vecTextures[iIndex]->Get_SRV());
 }
 
 HRESULT CTexture::Bind_ShaderResourceBuffer(CShader* pShader)
 {
-	return pShader->Bind_DefaultTextures(&m_arrSRV[0], TEXTURE_MAGICNUMBER);
+	return pShader->Bind_SRVArray(EFXSRV::Textures, &m_arrSRV[0], TEXTURE_MAGICNUMBER);
 }
 
 HRESULT CTexture::Bind_ShaderResource_Cube(CShader* pShader)
 {
-	return pShader->Bind_CubeTexture(m_vecTextures[0]->Get_SRV());
+	return pShader->Bind_SRV(EFXSRV::Cube, m_vecTextures[0]->Get_SRV());
 }
 
 CTexture* CTexture::Create(void *pArg)

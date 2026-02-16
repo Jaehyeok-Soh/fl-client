@@ -160,9 +160,6 @@
     <Filter Include="07. System\01. Builder\UI">
       <UniqueIdentifier>{c030ae43-15b7-4d22-8ca7-b55ab7fdc119}</UniqueIdentifier>
     </Filter>
-    <Filter Include="07. System\01. Builder\EffectBuilder">
-      <UniqueIdentifier>{0a51c3b4-11ce-445a-904c-410b2a5ef809}</UniqueIdentifier>
-    </Filter>
     <Filter Include="03. GameObject\UIObjects\00.Manager">
       <UniqueIdentifier>{7559622c-8d80-4e5c-81bd-e123eb0f162c}</UniqueIdentifier>
     </Filter>
@@ -309,6 +306,18 @@
     </Filter>
     <Filter Include="03. GameObject\UIObjects\02.UI\Text\Skill Text">
       <UniqueIdentifier>{fbb77af6-fc93-4e19-8ee6-30df86ccaec9}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="07. System\01. Builder\Effect">
+      <UniqueIdentifier>{0a51c3b4-11ce-445a-904c-410b2a5ef809}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="07. System\01. Builder\Effect\Builder_Effect">
+      <UniqueIdentifier>{9c580bfd-a983-4b3f-a72a-f1da0a5c9270}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="07. System\01. Builder\Effect\Builder_EffectEvent">
+      <UniqueIdentifier>{5d286e09-eee0-4b43-bcea-01a835550da6}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="07. System\02. Debug_ImGui\Layout\Shader">
+      <UniqueIdentifier>{241e78ea-3b24-473b-a83b-6c32e682ad95}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
@@ -462,9 +471,6 @@
     <ClInclude Include="..\Public\Canvas.h">
       <Filter>03. GameObject\UIObjects\01.Canvas</Filter>
     </ClInclude>
-    <ClInclude Include="..\Public\EffectBuilder.h">
-      <Filter>07. System\01. Builder\EffectBuilder</Filter>
-    </ClInclude>
     <ClInclude Include="..\Public\Physics_LandScape.h">
       <Filter>03. GameObject\PhysicsTerrain</Filter>
     </ClInclude>
@@ -596,6 +602,15 @@
     </ClInclude>
     <ClInclude Include="..\Public\UIPlayerStat_Text.h">
       <Filter>03. GameObject\UIObjects\02.UI\Text\Stat Text</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\Builder_Effect.h">
+      <Filter>07. System\01. Builder\Effect\Builder_Effect</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\Builder_EffectEvent.h">
+      <Filter>07. System\01. Builder\Effect\Builder_EffectEvent</Filter>
+    </ClInclude>
+    <ClInclude Include="..\public\ImGui_ShaderLayout.h">
+      <Filter>07. System\02. Debug_ImGui\Layout\Shader</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -735,9 +750,6 @@
     <ClCompile Include="..\Private\Canvas.cpp">
       <Filter>03. GameObject\UIObjects\01.Canvas</Filter>
     </ClCompile>
-    <ClCompile Include="..\Private\EffectBuilder.cpp">
-      <Filter>07. System\01. Builder\EffectBuilder</Filter>
-    </ClCompile>
     <ClCompile Include="..\Private\Physics_LandScape.cpp">
       <Filter>03. GameObject\PhysicsTerrain</Filter>
     </ClCompile>
@@ -852,6 +864,12 @@
     <ClCompile Include="..\Private\Sword.cpp">
       <Filter>03. GameObject\PartObjects\Weapon\Sword</Filter>
     </ClCompile>
+    <ClCompile Include="..\Private\Builder_Effect.cpp">
+      <Filter>07. System\01. Builder\Effect\Builder_Effect</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\Builder_EffectEvent.cpp">
+      <Filter>07. System\01. Builder\Effect\Builder_EffectEvent</Filter>
+    </ClCompile>
     <ClCompile Include="..\Private\UIHover_Image.cpp">
       <Filter>03. GameObject\UIObjects\02.UI\Image\Dynamic Image\02.HoverImage</Filter>
     </ClCompile>
@@ -875,6 +893,9 @@
     </ClCompile>
     <ClCompile Include="..\Private\UIPlayerStat_Text.cpp">
       <Filter>03. GameObject\UIObjects\02.UI\Text\Stat Text</Filter>
+    </ClCompile>
+    <ClCompile Include="..\private\ImGui_ShaderLayout.cpp">
+      <Filter>07. System\02. Debug_ImGui\Layout\Shader</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

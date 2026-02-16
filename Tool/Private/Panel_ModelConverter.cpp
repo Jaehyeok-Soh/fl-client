@@ -245,10 +245,6 @@ HRESULT CPanel_ModelConverter::Render_ConvertWindow()
 	ImGui::End();
 
 	return S_OK;
-
-
-
-	return S_OK;
 }
 
 HRESULT CPanel_ModelConverter::Render_FunctionWindow()

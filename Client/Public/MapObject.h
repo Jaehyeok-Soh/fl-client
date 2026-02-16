@@ -27,6 +27,7 @@ public:
 	typedef struct tagMapObjectDesc : public CGameObject::GAMEOBJECT_DESC
 	{
 		_bool						isUELoaded{false};
+		_uint						iSectionNum{0};
 		EMapObject_DrawType			eMapObjectDrawType{EMapObject_DrawType::END};
 		wstring						wstrModelPath{};
 		vector<DTO::SRT_DATA>		vecSRT{};
@@ -62,6 +63,7 @@ private:
 	void					Filtering_Visible(OUT _uint &iInstanceCount);
 	HRESULT					Update_InstanceBuffer(CInstanceMesh* pMesh);
 protected:
+	_uint					m_iSectionNum{0};
 	_bool					m_isUELoaded{false};
 	EMapObject_DrawType		m_eMapObjectDrawType{EMapObject_DrawType::Default};
 	EMapObject_Type			m_eMapObjectType{ EMapObject_Type::END };

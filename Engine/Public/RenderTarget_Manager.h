@@ -8,8 +8,17 @@ enum class ERenderTarget : _uint
 	Diffuse,
 	Normal,
 	Shade,
+	SpecularMask,
+	Specular,
 	Depth,
-	Scene,	// 유니티에서 SceneTexture라고 함. Effect 전용
+	ObjectInfo,
+	SSAO_Ping,
+	SSAO_Pong,
+	SSAO_Full,
+	SceneHDR,
+	SceneHDR_Copy,	// 유니티에서 SceneTexture라고 함. Effect 전용
+	Bloom_Ping,
+	Bloom_Pong,
 	END,
 };
 
@@ -18,7 +27,15 @@ enum class EMRTLayer : _uint
 	GameObjects,
 	LightAcc,
 	Effect,
-
+	SSAO_Gen,
+	SSAO_BlurH,
+	SSAO_BlurV,
+	SSAO_Upsample,
+	CombineHDR,
+	SceneHDR_Acc,
+	Bloom_Extract,
+	Bloom_BlurH,
+	Bloom_BlurV,
 	END,
 };
 
@@ -32,10 +49,10 @@ private:
 public:
 	HRESULT Add_RenderTarget(ERenderTarget eTarget, const CRenderTarget::RENDERTARGET_DESC* pDesc);
 	HRESULT Add_MRT(EMRTLayer eMRTLayer, ERenderTarget eTarget);
-	HRESULT Begin_MRT(EMRTLayer eMRTLayer);
+	HRESULT Begin_MRT(EMRTLayer eMRTLayer, _bool bClear);
 	HRESULT End_MRT();
 	HRESULT Bind_ShaderResource(ERenderTarget eTarget, class CShader* pShader);
-	HRESULT Copy_BackBufferResource(ERenderTarget eTarget);
+	HRESULT Copy_SceneHDRResource(ERenderTarget eTarget);
 
 public:
 	class CRenderTarget* Get_RenderTarget(ERenderTarget eTarget) { return m_arrRenderTargets[ENUM_TO_UINT(eTarget)]; }
@@ -54,7 +71,6 @@ private:
 	array<list<class CRenderTarget*>, ENUM_TO_SZET(EMRTLayer::END)>		m_arrMRTs;
 
 	ID3D11ShaderResourceView* m_pNullSRVs[128]{ nullptr };
-
 	ID3D11RenderTargetView* m_pBackBuffer = { nullptr };
 	ID3D11DepthStencilView* m_pDSV = { nullptr };
 public:

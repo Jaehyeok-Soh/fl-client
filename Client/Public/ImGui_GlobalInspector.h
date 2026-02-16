@@ -10,6 +10,7 @@ private:
 	enum ELayoutType : unsigned int
 	{
 		Frustrum = 0,
+		Shader,
 		COUNT
 	};
 private:

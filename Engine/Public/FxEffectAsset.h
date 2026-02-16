@@ -5,37 +5,9 @@ NS_BEGIN(Engine)
 
 typedef struct tagFxBindingCache
 {
-	// Global ConstantBuffer Handle
-	ID3DX11EffectConstantBuffer* pCB_Global{ nullptr };
-	ID3DX11EffectConstantBuffer* pCB_Inv{ nullptr };
-	ID3DX11EffectConstantBuffer* pCB_Light{ nullptr };
-	
-	ID3DX11EffectConstantBuffer* pCB_Transform{ nullptr };
-	ID3DX11EffectConstantBuffer* pCB_Material{ nullptr };
-	ID3DX11EffectConstantBuffer* pCB_MaterialInst{ nullptr };
-
-	ID3DX11EffectConstantBuffer* pCB_Keyframe{ nullptr };
-	ID3DX11EffectConstantBuffer* pCB_Bone{ nullptr };
-	ID3DX11EffectConstantBuffer* pCB_Effect{ nullptr };
-
-	// Scalars
-	ID3DX11EffectScalarVariable* pG_MaterialMask{ nullptr };
-	ID3DX11EffectScalarVariable* pG_TextureMask{ nullptr };
-
-	// SRVs
-	ID3DX11EffectShaderResourceVariable* pSRV_RT{ nullptr };
-	ID3DX11EffectShaderResourceVariable* pSRV_RT_Diffuse{ nullptr };
-	ID3DX11EffectShaderResourceVariable* pSRV_RT_Normal{ nullptr };
-	ID3DX11EffectShaderResourceVariable* pSRV_RT_Shade{ nullptr };
-	ID3DX11EffectShaderResourceVariable* pSRV_RT_Depth{ nullptr };
-	// Effect Shader 전용 텍스처
-	ID3DX11EffectShaderResourceVariable* pSRV_RT_Scene{ nullptr };	// 유니티에서 SceneTexture라고 하더라.
-
-	ID3DX11EffectShaderResourceVariable* pSRV_Transform{ nullptr };
-	ID3DX11EffectShaderResourceVariable* pSRV_Material{ nullptr };
-	
-	ID3DX11EffectShaderResourceVariable* pSRV_Textures{ nullptr };
-	ID3DX11EffectShaderResourceVariable* pSRV_Cube{ nullptr };
+	ID3DX11EffectConstantBuffer* CB[ENUM_TO_UINT(EFXCB::COUNT)]{nullptr};
+	ID3DX11EffectShaderResourceVariable* SRV[ENUM_TO_UINT(EFXSRV::COUNT)]{ nullptr };
+	ID3DX11EffectScalarVariable* Scalar[ENUM_TO_UINT(EFXScalar::COUNT)]{ nullptr };
 }FXBINDING_CACHE;
 
 class CFxEffectAsset final : public CBase
