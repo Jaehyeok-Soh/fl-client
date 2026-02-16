@@ -21,6 +21,11 @@ float2 ApplyFlip(float2 Uv)
     return Uv;
 }
 
+float3 SRGBToLinear(float3 c)
+{
+    return pow(saturate(c), 2.2f); // 간이식 (정확 sRGB는 piecewise지만 보통 이걸로 충분)
+}
+
 PS_OUT PS_MAIN(PS_IN_POS_TEX input)
 {
     PS_OUT output;
@@ -37,6 +42,7 @@ PS_OUT PS_MAIN(PS_IN_POS_TEX input)
     return output;
 }
 
+
 PS_OUT PS_COLOR(PS_IN_POS_TEX input)
 {
     PS_OUT output;
@@ -52,8 +58,9 @@ PS_OUT PS_COLOR(PS_IN_POS_TEX input)
     else if (2 == g_iFillDir) t = saturate(Uv.y);       
     else if (3 == g_iFillDir) t = saturate(1.f - Uv.y);
     
-    vBaseColor.rgb = lerp(g_vColorTint, g_vGradiateColorTint, t).rgb;
-    
+    float3 c0 = SRGBToLinear(g_vColorTint.rgb);
+    float3 c1 = SRGBToLinear(g_vGradiateColorTint.rgb);
+    vBaseColor.rgb = lerp(c0, c1, t);
     vBaseColor.a *= g_fAlphaRatio;
     if (vBaseColor.a < 0.001f)
         discard;
@@ -79,7 +86,9 @@ PS_OUT PS_PROGRESS(PS_IN_POS_TEX input)
         else if (2 == g_iFillDir)            t = saturate(Uv.y);
         else if (3 == g_iFillDir)            t = saturate(1.f - Uv.y);
     
-        vBaseColor.rgb = lerp(g_vColorTint, g_vGradiateColorTint, t).rgb;
+        float3 c0 = SRGBToLinear(g_vColorTint.rgb);
+        float3 c1 = SRGBToLinear(g_vGradiateColorTint.rgb);
+        vBaseColor.rgb = lerp(c0, c1, t);
     }
         
     if      (0 == g_iFillDir)        Mask = step(Uv.x, g_fProgressRatio);           // Left  ->  Right
@@ -115,8 +124,10 @@ PS_OUT PS_DISOLVE(PS_IN_POS_TEX input)
         else if (1 == g_iFillDir)            t = saturate(1.f - Uv.x);
         else if (2 == g_iFillDir)            t = saturate(Uv.y);
         else if (3 == g_iFillDir)            t = saturate(1.f - Uv.y);
-    
-        vBaseColor.rgb = lerp(g_vColorTint, g_vGradiateColorTint, t).rgb;
+        
+        float3 c0 = SRGBToLinear(g_vColorTint.rgb);
+        float3 c1 = SRGBToLinear(g_vGradiateColorTint.rgb);
+        vBaseColor.rgb = lerp(c0, c1, t);
     }
     
     float Edge = smoothstep(g_fProgressRatio, g_fProgressRatio + 0.1f, Noise);
