@@ -23,6 +23,7 @@ texture2D g_EffectTexture;
 #define DOWN 1 << 3     // DOWN -> UP
 
     // Use Sprite
+#define DIRBILLBOARD 1 << 4 
 #define SPRITE 1<< 5    // 스프라이트를 사용하는가?
 
     // Use Scroll (텍스처별)
@@ -107,6 +108,11 @@ cbuffer ConstantBuffer_Effect
 bool HasBillboard()
 {
     return (g_Effect.g_RenderFlags & BILLBOARD) != 0;
+}
+
+bool HasDirBillboard()
+{
+    return (g_Effect.g_RenderFlags & DIRBILLBOARD) != 0;
 }
 
 bool HasScroll()
@@ -318,57 +324,141 @@ VS_OUT_POS_GS_PARTICLE VS_Particle(VS_IN_POS_GS_PARTICLE In)
 {
     VS_OUT_POS_GS_PARTICLE Out;
     
-    vector vPosition = mul(vector(In.vPosition, 1.f), INSTANCE_OUTPUT[In.vInstID].matTransform);
+    matrix matInst = INSTANCE_OUTPUT[In.vInstID].matTransform;
     
+    vector vPosition = mul(vector(In.vPosition, 1.f), matInst);
+    vPosition = mul(vPosition, W);
+    
+    float2 pSize = float2(length(matInst._11_12_13), length(matInst._21_22_23));
 
-    Out.vPosition = mul(vPosition, W);
-    Out.vPSize = float2(length(INSTANCE_OUTPUT[In.vInstID].matTransform._11_12_13), length(INSTANCE_OUTPUT[In.vInstID].matTransform._21_22_23));
+    // 사이즈 계산
+    Out.vPosition = vPosition;
+    Out.vPSize = float3(length(W._11_12_13) * pSize.x, length(W._21_22_23) * pSize.y, length(W._31_32_33));
     Out.vLifeTime = INSTANCE_OUTPUT[In.vInstID].vLifeTime;
+    Out.vInstID = In.vInstID;
     
     return Out;
 }
 
-[maxvertexcount(6)]
+//[maxvertexcount(6)]
+//void GS_Particle(point VS_OUT_POS_GS_PARTICLE In[1], inout TriangleStream<GS_OUT_POS_PARTICLE> OutStream)
+//{
+//    GS_OUT_POS_PARTICLE Out[4];
+    
+//    // =========        빌보드 계산          ==============
+//    float3 vRight = float3(1.f, 0.f, 0.f);
+//    float3 vUp = float3(0.f, 1.f, 0.f);
+//    matrix matVP = mul(V, P);
+    
+//    if (HasDirBillboard())
+//    {
+//        matrix matInst = INSTANCE_OUTPUT[In[0].vInstID].matTransform;
+       
+//        vUp = normalize(matInst[2].xyz) * In[0].vPSize.z; // Z스케일이 길이
+//        vRight = normalize(matInst[0].xyz) * In[0].vPSize.x; // X스케일이 폭
+//    }
+
+//    else if (HasBillboard())
+//    {
+//        float3 vLook = normalize(CameraPosition() - In[0].vPosition.xyz);
+//        vRight = normalize(cross(float3(0.f, 1.f, 0.f), vLook)) * In[0].vPSize.x;
+//        vUp = normalize(cross(vLook, vRight)) * In[0].vPSize.y;
+//    }
+//    else
+//    {
+//        vRight = float3(1.f, 0.f, 0.f) * In[0].vPSize.x;
+//        vUp = float3(0.f, 1.f, 0.f) * In[0].vPSize.y;
+//    }
+
+//    // ========         정점 4개 생성        =============
+//    float3 vPos[4];
+//    vPos[0] = In[0].vPosition.xyz + vRight + vUp;
+//    vPos[1] = In[0].vPosition.xyz - vRight + vUp;
+//    vPos[2] = In[0].vPosition.xyz - vRight - vUp;
+//    vPos[3] = In[0].vPosition.xyz + vRight - vUp;
+
+//    float2 vUV[4] = { float2(0, 0), float2(1, 0), float2(1, 1), float2(0, 1) };
+
+//    for (int i = 0; i < 4; ++i)
+//    {
+//        Out[i].vPosition = mul(float4(vPos[i], 1.f), matVP);
+//        Out[i].vUV = vUV[i];
+//        Out[i].vLifeTime = In[0].vLifeTime;
+//    }
+
+//    // 삼각형 스트립 출력 (0-1-2, 0-2-3)
+//    OutStream.Append(Out[0]);
+//    OutStream.Append(Out[1]);
+//    OutStream.Append(Out[2]);       
+//    OutStream.RestartStrip();
+//    OutStream.Append(Out[0]);
+//    OutStream.Append(Out[2]);
+//    OutStream.Append(Out[3]);
+//    OutStream.RestartStrip();
+//}
+
+[maxvertexcount(4)]
 void GS_Particle(point VS_OUT_POS_GS_PARTICLE In[1], inout TriangleStream<GS_OUT_POS_PARTICLE> OutStream)
 {
     GS_OUT_POS_PARTICLE Out[4];
-    
-    // =========        빌보드 계산          ==============
-    float3 vRight = float3(1.f, 0.f, 0.f) * In[0].vPSize.x;
-    float3 vUp = float3(0.f, 1.f, 0.f) * In[0].vPSize.y;
     matrix matVP = mul(V, P);
-    
-    if (HasBillboard())
+
+    float3 vPos[4];
+    float2 vUV[4] = { float2(0, 0), float2(1, 0), float2(0, 1), float2(1, 1) };
+
+    if (HasDirBillboard())
     {
+        matrix matInst = INSTANCE_OUTPUT[In[0].vInstID].matTransform;
+
+        float fHalfX = In[0].vPSize.x * 0.5f;
+        float fHalfZ = In[0].vPSize.z * 0.5f; // Z스케일을 길이로 사용
+
+        float3 vLocalPos[4];
+        vLocalPos[0] = float3(-fHalfX, 0.f, fHalfZ); // 좌상
+        vLocalPos[1] = float3(fHalfX, 0.f, fHalfZ); // 우상
+        vLocalPos[2] = float3(-fHalfX, 0.f, -fHalfZ); // 좌하
+        vLocalPos[3] = float3(fHalfX, 0.f, -fHalfZ); // 우하
+
+        for (int i = 0; i < 4; ++i)
+        {
+            float4 vWorldPos = mul(float4(vLocalPos[i], 1.f), matInst);
+            vWorldPos = mul(vWorldPos, W);
+            vPos[i] = vWorldPos.xyz;
+        }
+    }
+    else if (HasBillboard())
+    {
+        // 일반 빌보드 로직 (기존 방식 유지)
         float3 vLook = normalize(CameraPosition() - In[0].vPosition.xyz);
-        vRight = normalize(cross(float3(0.f, 1.f, 0.f), vLook)) * In[0].vPSize.x;
-        vUp = normalize(cross(vLook, vRight)) * In[0].vPSize.y;
+        float3 vRight = normalize(cross(float3(0.f, 1.f, 0.f), vLook)) * In[0].vPSize.x;
+        float3 vUp = normalize(cross(vLook, vRight)) * In[0].vPSize.y;
+
+        vPos[0] = In[0].vPosition.xyz - vRight + vUp; // 좌상
+        vPos[1] = In[0].vPosition.xyz + vRight + vUp; // 우상
+        vPos[2] = In[0].vPosition.xyz - vRight - vUp; // 좌하
+        vPos[3] = In[0].vPosition.xyz + vRight - vUp; // 우하
+    }
+    else
+    {
+        // 빌보드 없을 때 기본 평면
+        float3 vRight = float3(1.f, 0.f, 0.f) * In[0].vPSize.x;
+        float3 vUp = float3(0.f, 1.f, 0.f) * In[0].vPSize.y;
+
+        vPos[0] = In[0].vPosition.xyz - vRight + vUp;
+        vPos[1] = In[0].vPosition.xyz + vRight + vUp;
+        vPos[2] = In[0].vPosition.xyz - vRight - vUp;
+        vPos[3] = In[0].vPosition.xyz + vRight - vUp;
     }
 
-    // ========         정점 4개 생성        =============
-    float3 vPos[4];
-    vPos[0] = In[0].vPosition.xyz + vRight + vUp;
-    vPos[1] = In[0].vPosition.xyz - vRight + vUp;
-    vPos[2] = In[0].vPosition.xyz - vRight - vUp;
-    vPos[3] = In[0].vPosition.xyz + vRight - vUp;
-
-    float2 vUV[4] = { float2(0, 0), float2(1, 0), float2(1, 1), float2(0, 1) };
-
+    // 4. 최종 변환 및 출력
+    [unroll]
     for (int i = 0; i < 4; ++i)
     {
         Out[i].vPosition = mul(float4(vPos[i], 1.f), matVP);
         Out[i].vUV = vUV[i];
         Out[i].vLifeTime = In[0].vLifeTime;
+        OutStream.Append(Out[i]);
     }
-
-    // 삼각형 스트립 출력 (0-1-2, 0-2-3)
-    OutStream.Append(Out[0]);
-    OutStream.Append(Out[1]);
-    OutStream.Append(Out[2]);       
-    OutStream.RestartStrip();
-    OutStream.Append(Out[0]);
-    OutStream.Append(Out[2]);
-    OutStream.Append(Out[3]);
     OutStream.RestartStrip();
 }
 

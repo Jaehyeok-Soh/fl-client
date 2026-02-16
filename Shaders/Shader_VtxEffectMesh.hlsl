@@ -22,6 +22,8 @@ texture2D g_EffectTexture;
 #define RIGHT 1 << 2 // LEFT -> RIGHT 이펙트 방향
 #define DOWN 1 << 3     // DOWN -> UP
 
+// 진행 방향으로 y를 돌려버리는 플래그
+#define DIR_BILLBOARD 1 << 4
     // Use Sprite
 #define SPRITE 1<< 5    // 스프라이트를 사용하는가?
 

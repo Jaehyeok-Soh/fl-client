@@ -1116,6 +1116,11 @@ void CParticle_System_Panel::Draw_ParticleSystem(CToolObject* pGo)
 
 				m_bModified |= true;
 			}
+
+			if (ImGui::Checkbox("Directional Billboard", &m_tCurrentDesc.Data._Effect_Tool_UseDirBillboard)) {
+				if (m_tCurrentDesc.Data._Effect_Tool_UseDirBillboard) m_tCurrentDesc.Data._Effect_RenderFlag |= (1 << 4);
+				else m_tCurrentDesc.Data._Effect_RenderFlag &= ~(1 << 4);
+			}
 			// =============  [CHOOSE SAMPLERSTATE]	  ============
 
 			if (ImGui::TreeNode("SamplerState Setting##Renderer"))

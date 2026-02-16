@@ -24,6 +24,7 @@ texture2D g_EffectTexture;
 #define DOWN 1 << 3     // DOWN -> UP
 
     // Use Sprite
+#define DIRBILLBOARD 1 << 4 
 #define SPRITE 1<< 5    // 스프라이트를 사용하는가?
 
     // Use Scroll (텍스처별)
@@ -108,6 +109,11 @@ cbuffer ConstantBuffer_Effect
 bool HasBillboard()
 {
     return (g_Effect.g_RenderFlags & BILLBOARD) != 0;
+}
+
+bool HasDirBillboard()
+{
+    return (g_Effect.g_RenderFlags & DIRBILLBOARD) != 0;
 }
 
 bool HasScroll()
@@ -321,29 +327,18 @@ VS_OUT_POS_GS_PARTICLE VS_Texture(VS_IN_POS_GS_PARTICLE In)
 {
     VS_OUT_POS_GS_PARTICLE Out;
     
-    //vector vPosition = mul(vector(In.vPosition, 1.f), INSTANCE_OUTPUT[In.vInstID].matTransform);
-    
-
-    //Out.vPosition = mul(vPosition, W);
-    //Out.vPSize = float2(length(INSTANCE_OUTPUT[In.vInstID].matTransform._11_12_13), length(INSTANCE_OUTPUT[In.vInstID].matTransform._21_22_23));
-    //Out.vLifeTime = INSTANCE_OUTPUT[In.vInstID].vLifeTime;
-    
-    //return Out;
-    
     matrix matInst = INSTANCE_OUTPUT[In.vInstID].matTransform;
-    
-    // 인스턴스 스케일 제거
-    matInst._11_12_13 = normalize(matInst._11_12_13);
-    matInst._21_22_23 = normalize(matInst._21_22_23);
-    matInst._31_32_33 = normalize(matInst._31_32_33);
     
     vector vPosition = mul(vector(In.vPosition, 1.f), matInst);
     vPosition = mul(vPosition, W);
+    
+    float2 pSize = float2(length(matInst._11_12_13), length(matInst._21_22_23));
 
     // 사이즈 계산
     Out.vPosition = vPosition;
-    Out.vPSize = float2(length(W._11_12_13), length(W._21_22_23));
+    Out.vPSize = float3(length(W._11_12_13) * pSize.x, length(W._21_22_23) * pSize.y, length(W._31_32_33));
     Out.vLifeTime = INSTANCE_OUTPUT[In.vInstID].vLifeTime;
+    Out.vInstID = In.vInstID;
     
     return Out;
 }
@@ -354,15 +349,30 @@ void GS_Texture(point VS_OUT_POS_GS_PARTICLE In[1], inout TriangleStream<GS_OUT_
     GS_OUT_EFFECT_PARTICLE Out[4];
     
     // =========        빌보드 계산          ==============
-    float3 vRight = float3(1.f, 0.f, 0.f) * In[0].vPSize.x;
-    float3 vUp = float3(0.f, 1.f, 0.f) * In[0].vPSize.y;
+    float3 vRight = float3(1.f, 0.f, 0.f);
+    float3 vUp = float3(0.f, 1.f, 0.f);
     matrix matVP = mul(V, P);
     
-    if (HasBillboard())
+    if (HasDirBillboard())
+    {
+        matrix matInst = INSTANCE_OUTPUT[In[0].vInstID].matTransform;
+        float3 vLook = normalize(matInst[2].xyz); // row_major 기준 Z축
+        
+        float3 vCamDir = normalize(CameraPosition() - In[0].vPosition.xyz);
+        vRight = normalize(cross(vCamDir, vLook)) * In[0].vPSize.x;
+        
+        vUp = vLook * In[0].vPSize.z;
+    }
+    else if (HasBillboard())
     {
         float3 vLook = normalize(CameraPosition() - In[0].vPosition.xyz);
         vRight = normalize(cross(float3(0.f, 1.f, 0.f), vLook)) * In[0].vPSize.x;
         vUp = normalize(cross(vLook, vRight)) * In[0].vPSize.y;
+    }
+    else
+    {
+        vRight = float3(1.f, 0.f, 0.f) * In[0].vPSize.x;
+        vUp = float3(0.f, 1.f, 0.f) * In[0].vPSize.y;
     }
     
     float3 vFinalPos[4];

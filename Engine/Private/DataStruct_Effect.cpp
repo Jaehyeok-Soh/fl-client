@@ -164,6 +164,7 @@ void to_json(json& j, const TEFFECT_PartsData& data)
         }},
         {"Tool_Render", {
             {"Billboard", data._Effect_Tool_UseBillboard},
+            {"DirBillboard", data._Effect_Tool_UseDirBillboard},
             {"Scroll", data._Effect_Tool_UseScroll},
             {"Right", data._Effect_Tool_RightScroll},
             {"Down", data._Effect_Tool_DownScroll}
@@ -337,6 +338,7 @@ void from_json(const json& j, TEFFECT_PartsData& data)
     if (j.contains("Tool_Render")) {
         auto& tr = j.at("Tool_Render");
         tr.at("Billboard").get_to(data._Effect_Tool_UseBillboard);
+        tr.at("DirBillboard").get_to(data._Effect_Tool_UseDirBillboard);
         tr.at("Scroll").get_to(data._Effect_Tool_UseScroll);
         tr.at("Right").get_to(data._Effect_Tool_RightScroll);
         tr.at("Down").get_to(data._Effect_Tool_DownScroll);

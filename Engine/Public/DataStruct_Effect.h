@@ -195,6 +195,7 @@ struct TEFFECT_PartsData
 
     // 빌보드는 있니, 스크롤은 먹이니
     _bool               _Effect_Tool_UseBillboard = { false };
+    _bool               _Effect_Tool_UseDirBillboard = { false };
     _bool               _Effect_Tool_UseScroll = { false };
     _bool               _Effect_Tool_RightScroll = { false };
     _bool               _Effect_Tool_DownScroll = { false };
