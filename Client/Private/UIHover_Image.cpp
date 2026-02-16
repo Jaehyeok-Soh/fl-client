@@ -53,7 +53,7 @@ HRESULT CUIHover_Image::Attach_Personal_Info()
 	return S_OK;
 	case DTO::EUIDImageSubClassType::HOVER_POPUP_BG:
 	{
-
+		m_fOriginWidth = m_fWidth;
 	}
 	return S_OK;
 	case DTO::EUIDImageSubClassType::HOVER_POPUP_TEXT:
@@ -144,7 +144,6 @@ void CUIHover_Image::Initialize_Visible_Event()
 {
 	if (m_eDImageSubClass == DTO::EUIDImageSubClassType::HOVER_POPUP_BG)
 	{
-		m_fOriginWidth = m_fWidth;
 		m_fWidth = 0.1f;
 	}
 	else
@@ -189,7 +188,7 @@ _bool CUIHover_Image::Tick_Visible_Event(const _float fTimeDelta)
 
 _bool CUIHover_Image::Tick_InVisible_Event(const _float fTimeDelta)
 {
-	return false;
+	return true;
 }
 
 CUIHover_Image* CUIHover_Image::Create(ID3D11Device* pDevice, ID3D11DeviceContext* pDeviceContext)

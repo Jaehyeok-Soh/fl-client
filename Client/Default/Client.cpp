@@ -1,5 +1,6 @@
 #include "pch.h"
 #include "Client.h"
+#include "Timer.h"
 #include "framework.h"
 
 #include "MainApplication.h"
@@ -57,14 +58,13 @@ int APIENTRY wWinMain(_In_ HINSTANCE hInstance,
     if (FAILED(pGameInstance->Add_Timer(L"Timer_Default")))
         return FALSE;
 
-    if (FAILED(pGameInstance->Add_Timer(L"Timer_Work")))
-        return E_FAIL;
-
     if (FAILED(pGameInstance->Add_Timer(L"Timer_60")))
         return FALSE;
 
-    pGameInstance->Set_MaxTimeDelta(L"Timer_Work", 10.f);
+    CTimer* pTimer_60 = pGameInstance->Find_Timer(L"Timer_60");
+    CTimer* pTimer_Default = pGameInstance->Find_Timer(L"Timer_Default");
 
+    pTimer_Default->Set_MaxTimeDelta(10.f);
     _float fTimeAcc = { 0.0f };
     g_bStart = true;
     while (msg.message != WM_QUIT)
@@ -78,14 +78,10 @@ int APIENTRY wWinMain(_In_ HINSTANCE hInstance,
             }
         }
 
-        pGameInstance->Compute_TimeDelta(TEXT("Timer_Default"));
-        fTimeAcc += pGameInstance->Get_TimeDelta(TEXT("Timer_Default"));
-        pGameInstance->Compute_TimeDelta(TEXT("Timer_Work"));
+        fTimeAcc += pTimer_Default->Update_Timer();
         if (fTimeAcc >= 1.f / 60.0f)
         {
-            pGameInstance->Compute_TimeDelta(TEXT("Timer_60"));
-
-            pMainApplication->Update(pGameInstance->Get_TimeDelta(TEXT("Timer_60")));
+            pMainApplication->Update(pTimer_60->Update_Timer());
             pMainApplication->Render();
 
             fTimeAcc -= 1.f / 60.0f;

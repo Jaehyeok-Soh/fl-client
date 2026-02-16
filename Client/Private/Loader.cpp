@@ -57,12 +57,24 @@
 #include "Canvas.h"
 #include "GenericUI.h"
 #include "UIProgress_Bar.h"
-#include "UIText.h"
+
+// 텍스트 
+#include "UIMenu_Text.h"
+#include "UIPlayerStat_Text.h"
+
+// 그냥 이미지
 #include "UIJust_Image.h"
-#include "UITrigger.h"
+
+// 다이나믹 이미지 
 #include "UISkill_BG.h"
 #include "UIMini_Map.h"
 #include "UIHover_Image.h"
+#include "UIMenu_Image.h"
+
+// 트리거 
+#include "UIMenu_Trigger.h"
+#include "UICommon_Trigger.h"
+#include "UIMenu_Exit_Trigger.h"
 
 //=================
 // Resource
@@ -192,80 +204,77 @@ HRESULT CLoader::Loading_For_Logo()
 			return E_FAIL;
 	}
 
-		// For. Prototype_Component_Button_Test_Texture
+	// For. UI Texture
+	std::error_code ec;
+	for (const auto& entry : std::filesystem::directory_iterator(L"../../Resources/Textures/UI/", std::filesystem::directory_options::skip_permission_denied, ec))
 	{
-		// UI
-		if (FAILED(Loading_Textures(L"../../Resources/Textures/UI/Playable/")))
+		if (ec)
 			return E_FAIL;
-		if (FAILED(Loading_Textures(L"../../Resources/Textures/UI/Menu/")))
-			return E_FAIL;
-		if (FAILED(Loading_Textures(L"../../Resources/Textures/UI/Battle/")))
-			return E_FAIL;
-		if (FAILED(Loading_Textures(L"../../Resources/Textures/UI/Key/")))
-			return E_FAIL;
-		if (FAILED(Loading_Textures(L"../../Resources/Textures/UI/WeaponIcon/")))
-			return E_FAIL;
-		if (FAILED(Loading_Textures(L"../../Resources/Textures/UI/SM_MAP/")))
-			return E_FAIL;
-		if (FAILED(Loading_Textures(L"../../Resources/Textures/UI/Map/")))
+
+		if (entry.is_directory() == false)
+			continue;
+
+		const std::wstring wstrSubFolder = entry.path().wstring();
+
+		if (FAILED(Loading_Textures(wstrSubFolder)))
 			return E_FAIL;
 	}	
 
 	// For. Prototype_Component_Button_Test_Texture
 	{
 		// Effect
-		if (FAILED(Loading_Textures(L"../../Resources/Textures/Effect/Crack/")))
-			return E_FAIL;
-		if (FAILED(Loading_Textures(L"../../Resources/Textures/Effect/Curve/")))
-			return E_FAIL;
-		if (FAILED(Loading_Textures(L"../../Resources/Textures/Effect/Fire/")))
-			return E_FAIL;
-		if (FAILED(Loading_Textures(L"../../Resources/Textures/Effect/Flower/")))
-			return E_FAIL;
-		if (FAILED(Loading_Textures(L"../../Resources/Textures/Effect/Fluid/")))
-			return E_FAIL;
-		if (FAILED(Loading_Textures(L"../../Resources/Textures/Effect/Glow/")))
-			return E_FAIL;
-		if (FAILED(Loading_Textures(L"../../Resources/Textures/Effect/Gradient/")))
-			return E_FAIL;
-		if (FAILED(Loading_Textures(L"../../Resources/Textures/Effect/Ice/")))
-			return E_FAIL;
-		if (FAILED(Loading_Textures(L"../../Resources/Textures/Effect/Knife/")))
-			return E_FAIL;
-		if (FAILED(Loading_Textures(L"../../Resources/Textures/Effect/Lens/")))
-			return E_FAIL;
-		if (FAILED(Loading_Textures(L"../../Resources/Textures/Effect/Lightning/")))
-			return E_FAIL;
-		if (FAILED(Loading_Textures(L"../../Resources/Textures/Effect/Line/")))
-			return E_FAIL;
-		if (FAILED(Loading_Textures(L"../../Resources/Textures/Effect/Mask/")))
-			return E_FAIL;
-		if (FAILED(Loading_Textures(L"../../Resources/Textures/Effect/Normal/")))
-			return E_FAIL;
-		if (FAILED(Loading_Textures(L"../../Resources/Textures/Effect/Object/")))
-			return E_FAIL;
-		if (FAILED(Loading_Textures(L"../../Resources/Textures/Effect/Partten/")))
-			return E_FAIL;
-		if (FAILED(Loading_Textures(L"../../Resources/Textures/Effect/Smoke/")))
-			return E_FAIL;
-		if (FAILED(Loading_Textures(L"../../Resources/Textures/Effect/Spark/")))
-			return E_FAIL;
-		if (FAILED(Loading_Textures(L"../../Resources/Textures/Effect/Splash/")))
-			return E_FAIL;
-		if (FAILED(Loading_Textures(L"../../Resources/Textures/Effect/Spread/")))
-			return E_FAIL;
-		if (FAILED(Loading_Textures(L"../../Resources/Textures/Effect/Trail/")))
-			return E_FAIL;
-		if (FAILED(Loading_Textures(L"../../Resources/Textures/Effect/Turbulence/")))
-			return E_FAIL;
-		if (FAILED(Loading_Textures(L"../../Resources/Textures/Effect/UI/")))
-			return E_FAIL;
-		if (FAILED(Loading_Textures(L"../../Resources/Textures/Effect/VAT/")))
-			return E_FAIL;
-		if (FAILED(Loading_Textures(L"../../Resources/Textures/Effect/water/")))
-			return E_FAIL;
-		if (FAILED(Loading_Textures(L"../../Resources/Textures/Effect/Wave/")))
-			return E_FAIL;
+		//if (FAILED(Loading_Textures(L"../../Resources/Textures/Effect/Crack/")))
+		//	return E_FAIL;
+		//if (FAILED(Loading_Textures(L"../../Resources/Textures/Effect/Curve/")))
+		//	return E_FAIL;
+		//if (FAILED(Loading_Textures(L"../../Resources/Textures/Effect/Fire/")))
+		//	return E_FAIL;
+		//if (FAILED(Loading_Textures(L"../../Resources/Textures/Effect/Flower/")))
+		//	return E_FAIL;
+		//if (FAILED(Loading_Textures(L"../../Resources/Textures/Effect/Fluid/")))
+		//	return E_FAIL;
+		//if (FAILED(Loading_Textures(L"../../Resources/Textures/Effect/Glow/")))
+		//	return E_FAIL;
+		//if (FAILED(Loading_Textures(L"../../Resources/Textures/Effect/Gradient/")))
+		//	return E_FAIL;
+		//if (FAILED(Loading_Textures(L"../../Resources/Textures/Effect/Ice/")))
+		//	return E_FAIL;
+		//if (FAILED(Loading_Textures(L"../../Resources/Textures/Effect/Knife/")))
+		//	return E_FAIL;
+		//if (FAILED(Loading_Textures(L"../../Resources/Textures/Effect/Lens/")))
+		//	return E_FAIL;
+		//if (FAILED(Loading_Textures(L"../../Resources/Textures/Effect/Lightning/")))
+		//	return E_FAIL;
+		//if (FAILED(Loading_Textures(L"../../Resources/Textures/Effect/Line/")))
+		//	return E_FAIL;
+		//if (FAILED(Loading_Textures(L"../../Resources/Textures/Effect/Mask/")))
+		//	return E_FAIL;
+		//if (FAILED(Loading_Textures(L"../../Resources/Textures/Effect/Normal/")))
+		//	return E_FAIL;
+		//if (FAILED(Loading_Textures(L"../../Resources/Textures/Effect/Object/")))
+		//	return E_FAIL;
+		//if (FAILED(Loading_Textures(L"../../Resources/Textures/Effect/Partten/")))
+		//	return E_FAIL;
+		//if (FAILED(Loading_Textures(L"../../Resources/Textures/Effect/Smoke/")))
+		//	return E_FAIL;
+		//if (FAILED(Loading_Textures(L"../../Resources/Textures/Effect/Spark/")))
+		//	return E_FAIL;
+		//if (FAILED(Loading_Textures(L"../../Resources/Textures/Effect/Splash/")))
+		//	return E_FAIL;
+		//if (FAILED(Loading_Textures(L"../../Resources/Textures/Effect/Spread/")))
+		//	return E_FAIL;
+		//if (FAILED(Loading_Textures(L"../../Resources/Textures/Effect/Trail/")))
+		//	return E_FAIL;
+		//if (FAILED(Loading_Textures(L"../../Resources/Textures/Effect/Turbulence/")))
+		//	return E_FAIL;
+		//if (FAILED(Loading_Textures(L"../../Resources/Textures/Effect/UI/")))
+		//	return E_FAIL;
+		//if (FAILED(Loading_Textures(L"../../Resources/Textures/Effect/VAT/")))
+		//	return E_FAIL;
+		//if (FAILED(Loading_Textures(L"../../Resources/Textures/Effect/water/")))
+		//	return E_FAIL;
+		//if (FAILED(Loading_Textures(L"../../Resources/Textures/Effect/Wave/")))
+		//	return E_FAIL;
 	}
 	
 #pragma endregion
@@ -387,14 +396,18 @@ HRESULT CLoader::Loading_For_Logo()
 #pragma endregion
 
 #pragma region UI
-	ADD_PROTOTYPE(ELevelType::LOGO, L"Prototype_UI_Canvas", CCanvas::Create(m_pDevice, m_pDeviceContext));
-	ADD_PROTOTYPE(ELevelType::LOGO, L"Prototype_UI_PROGRESS_BAR", CUIProgress_Bar::Create(m_pDevice, m_pDeviceContext));
-	ADD_PROTOTYPE(ELevelType::LOGO, L"Prototype_UI_UI_TEXT", CUIText::Create(m_pDevice, m_pDeviceContext));
-	ADD_PROTOTYPE(ELevelType::LOGO, L"Prototype_UI_JUST_IMAGE", CUIJust_Image::Create(m_pDevice, m_pDeviceContext));
-	ADD_PROTOTYPE(ELevelType::LOGO, L"Prototype_UI_TRIGGER", CUITrigger::Create(m_pDevice, m_pDeviceContext));
-	ADD_PROTOTYPE(ELevelType::LOGO, L"Prototype_UI_SkillBG", CUISkill_BG::Create(m_pDevice, m_pDeviceContext));
-	ADD_PROTOTYPE(ELevelType::LOGO, L"Prototype_UI_MiniMap", CUIMini_Map::Create(m_pDevice, m_pDeviceContext));
-	ADD_PROTOTYPE(ELevelType::LOGO, L"Prototype_UI_HoverImage", CUIHover_Image::Create(m_pDevice, m_pDeviceContext));
+	ADD_PROTOTYPE(ELevelType::LOGO, L"Prototype_UI_Canvas",			CCanvas::Create(m_pDevice, m_pDeviceContext));
+	ADD_PROTOTYPE(ELevelType::LOGO, L"Prototype_UI_PROGRESS_BAR",	CUIProgress_Bar::Create(m_pDevice, m_pDeviceContext));
+	ADD_PROTOTYPE(ELevelType::LOGO, L"Prototype_UI_MenuText",		CUIMenu_Text::Create(m_pDevice, m_pDeviceContext));
+	ADD_PROTOTYPE(ELevelType::LOGO, L"Prototype_UI_PlayerStatText",	CUIPlayerStat_Text::Create(m_pDevice, m_pDeviceContext));
+	ADD_PROTOTYPE(ELevelType::LOGO, L"Prototype_UI_JUST_IMAGE",		CUIJust_Image::Create(m_pDevice, m_pDeviceContext));
+	ADD_PROTOTYPE(ELevelType::LOGO, L"Prototype_UI_UIMenuTrigger",	CUIMenu_Trigger::Create(m_pDevice, m_pDeviceContext));
+	ADD_PROTOTYPE(ELevelType::LOGO, L"Prototype_UI_UICommonTrigger",	CUICommon_Trigger::Create(m_pDevice, m_pDeviceContext));
+	ADD_PROTOTYPE(ELevelType::LOGO, L"Prototype_UI_UIMenuExitTrigger", CUIMenu_Exit_Trigger::Create(m_pDevice, m_pDeviceContext));
+	ADD_PROTOTYPE(ELevelType::LOGO, L"Prototype_UI_SkillBG",		CUISkill_BG::Create(m_pDevice, m_pDeviceContext));
+	ADD_PROTOTYPE(ELevelType::LOGO, L"Prototype_UI_MiniMap",		CUIMini_Map::Create(m_pDevice, m_pDeviceContext));
+	ADD_PROTOTYPE(ELevelType::LOGO, L"Prototype_UI_HoverImage",		CUIHover_Image::Create(m_pDevice, m_pDeviceContext));
+	ADD_PROTOTYPE(ELevelType::LOGO, L"Prototype_UI_MenuImage",		CUIMenu_Image::Create(m_pDevice, m_pDeviceContext));
 #pragma endregion
 
 	m_isFinished = true;

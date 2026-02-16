@@ -192,6 +192,9 @@ void CUEMapdataParser::Change_SRT(OUT SRT_DATA& tSRT_Data)
 
 void CUEMapdataParser::Change_ObjectPath(OUT _wstring& wstrModelName, OUT _wstring& wstrModelPath,EObject_Path_Type eType)
 {
+	if (wstrModelPath.empty())
+		return;
+
 	wstring wstrName = wstrModelName;
 	wstring wstrPath = wstrModelPath;
 	 
@@ -214,29 +217,31 @@ void CUEMapdataParser::Change_ObjectPath(OUT _wstring& wstrModelName, OUT _wstri
 			wstrPath.replace(0, Pos_Target + wstrTarget.length(), wstrChange);
 	}
 
-	vector<wstring> vecTargetWStr = { L"EN000_" , L"EN001_" , L"EN002_" , L"EN003_" };
-	size_t Pos_EN{ std::string::npos };
+	//vector<wstring> vecTargetWStr = { L"EN000_" , L"EN001_" , L"EN002_" , L"EN003_" };
+	//size_t Pos_EN{ std::string::npos };
 
-	for (auto& Target : vecTargetWStr)
-	{
-		Pos_EN = wstrPath.find(Target);
-		if (Pos_EN != std::string::npos)
-		{
-			wstrPath.erase(Pos_EN, Target.length());
-			break;
-		}
-	}
+	//for (auto& Target : vecTargetWStr)
+	//{
+	//	Pos_EN = wstrPath.find(Target);
+	//	if (Pos_EN != std::string::npos)
+	//	{
+	//		wstrPath.erase(Pos_EN, Target.length());
+	//		break;
+	//	}
+	//}
 
 	wstrModelName = path(wstrPath).filename().stem().wstring();
 	if (eType == EObject_Path_Type::Mtl)
 	{
 		wstrModelPath = wstring(g_wszAssetRelativePath) + L"Map/" + path(wstrPath).parent_path().wstring()+ L"/" + wstrModelName + L".json";
-		//if (!std::filesystem::exists(wstrModelPath))
+		//if (!std::filesystem::exists(wstrModelPath))	
 		//	MSG_BOX(" 변환된 Mtl Path 값이 존재하지 않습니다 [ 확인 바람 ] ");
 	}
 	else if (eType == EObject_Path_Type::Model)
 	{
-		wstrModelPath = L"Map/" + path(wstrPath).parent_path().wstring() + L"/Model/" + wstrModelName + L".fbx";
+		wstrModelPath = L"Map/" + path(wstrPath).parent_path().wstring() + L"/Model/" + wstrModelName + L".mesh";
+		Model_Path_Check(wstrModelPath);
+		wstrModelName = path(wstrModelPath).filename().stem().wstring();
 	}
 	else if (eType == EObject_Path_Type::Tex)
 	{
@@ -396,9 +401,16 @@ HRESULT CUEMapdataParser::Convert_UnrealRawMapData(const wchar_t* wszUERawDataJs
 		if (UE_Map_Data_Json.value("Outer", "").find("LOD") != wstring::npos)
 			continue;
 
-
 		UE_MAP_DATA tData{};
 		tData = UE_Map_Data_Json;
+
+		if (tData.tProperties.tStaticMesh.strObjectPath.empty())
+			continue;
+
+		if (tData.tProperties.tStaticMesh.strObjectPath.find("Engine") != std::string::npos)
+			continue;
+
+
 		if(!tData.m_isFiltering)
 			vecData.push_back(tData);
 	}
@@ -421,8 +433,6 @@ HRESULT CUEMapdataParser::Batch_UnrealRawMapData(const wchar_t* wszFileName)
 		if (pFind == nullptr) return E_FAIL;
 
 		UINT iLevelID = ENUM_TO_UINT(ELevelType::MAP);
-
-		CGameObject* pResult{ nullptr };
 
 
 		EClientMakePath		eClientMakePath = m_pMapToolManager->Get_MakeMapObjectClientMakePath();
@@ -448,7 +458,7 @@ HRESULT CUEMapdataParser::Batch_UnrealRawMapData(const wchar_t* wszFileName)
 				tDesc.wstrLayerTag = g_wszMapObjectLayer;
 				tDesc.eState = CMapObject::EState::Default;
 				tDesc.tUsingModelInfo = pData->tUsingModelInfo;
-
+				tDesc.iSectionNumber = m_pMapToolManager->Get_MakeObjectSectionNubmer();
 				tDesc.vecSRTs.push_back(pData->tOriginSRT);
 
 				CTransform::TRANSFORM_DESC tTsDesc{};
@@ -456,7 +466,13 @@ HRESULT CUEMapdataParser::Batch_UnrealRawMapData(const wchar_t* wszFileName)
 				tTsDesc.RotationMatrix = Matrix::CreateFromQuaternion(tDesc.vecSRTs.back().vQuat);
 				tTsDesc.TranslationMatrix = Matrix::CreateTranslation(tDesc.vecSRTs.back().vPosition);
 				tDesc.pTransform_Desc = &tTsDesc;
-				m_pMapToolManager->Make_MapObject(&tDesc);
+				
+				CMapObject* pResult{ nullptr };
+				pResult = m_pMapToolManager->Make_MapObject(&tDesc);
+				if (!pResult)
+				{
+					int a = 0;
+				}
 
 			}
 			else if (eMapObjectType == EMapObject_Type::INSTANCEMODEL)
@@ -475,9 +491,16 @@ HRESULT CUEMapdataParser::Batch_UnrealRawMapData(const wchar_t* wszFileName)
 				tDesc.wstrLayerTag = g_wszMapObjectLayer;
 				tDesc.eState = CMapObject::EState::Default;
 				tDesc.tUsingModelInfo = pData->tUsingModelInfo;
+				tDesc.iSectionNumber = m_pMapToolManager->Get_MakeObjectSectionNubmer();
+
 
 				/* Transform 생성할 이유가없음 */
-				m_pMapToolManager->Make_MapObject(&tDesc);
+				CMapObject* pResult{ nullptr };
+				pResult = m_pMapToolManager->Make_MapObject(&tDesc);
+				if (!pResult)
+				{
+					int a = 0;
+				}
 
 			}
 		}
@@ -536,10 +559,18 @@ HRESULT CUEMapdataParser::Batch_UnrealRawMapData(const wchar_t* wszFileName)
 			tDesc.wstrLayerTag = g_wszMapObjectLayer;
 			tDesc.tUsingModelInfo = tData.tUsingModelInfo;
 			tDesc.vecClientMakePathDesc.clear();
+			tDesc.iSectionNumber = m_pMapToolManager->Get_MakeObjectSectionNubmer();
+
 
 			tDesc.eMapObjectDrawType = (tDesc.vecSRTs.size() > 1) ? EMapObject_DrawType::Instance : EMapObject_DrawType::Default;
 
-			m_pMapToolManager->Make_MapObject(&tDesc ,false);
+
+			CMapObject* pResult{ nullptr };
+			pResult = m_pMapToolManager->Make_MapObject(&tDesc ,false);
+			if (!pResult)
+			{
+				int a = 0;
+			}
 
 		}
 
@@ -566,26 +597,26 @@ HRESULT CUEMapdataParser::Save_ConvertedRawMapData(const wchar_t* wszFilePath)
 
 	json SaveJson{};
 
-	//for (auto& Converted_MapData : *pFind)
-	//{
-	//	EMapObject_Type eType = Converted_MapData->eMapObjectType;
-	//	if (eType == EMapObject_Type::STATICMODEL)
-	//	{
-	//		auto& StaticModel = SaveJson["Static Model"];
-	//		json js{};
-	//		STATICMODEL_DATA pData = *static_cast<STATICMODEL_DATA*>(Converted_MapData);
-	//		to_json(js,pData);
-	//		StaticModel.push_back(js);
-	//	}
-	//	else if (eType == EMapObject_Type::INSTANCEMODEL)
-	//	{
-	//		auto& InstModelJson =  SaveJson["Instance Model"];
-	//		json js{};
-	//		INSTANCEMODEL_DATA pData = *static_cast<INSTANCEMODEL_DATA*>(Converted_MapData);
-	//		to_json(js, pData);
-	//		InstModelJson.push_back(js);
-	//	}
-	//}
+	for (auto& Converted_MapData : *pFind)
+	{
+		EMapObject_Type eType = Converted_MapData->eMapObjectType;
+		if (eType == EMapObject_Type::STATICMODEL)
+		{
+			auto& StaticModel = SaveJson["Static Model"];
+			json js{};
+			STATICMODEL_DATA pData = *static_cast<STATICMODEL_DATA*>(Converted_MapData);
+			to_json(js,pData);
+			StaticModel.push_back(js);
+		}
+		else if (eType == EMapObject_Type::INSTANCEMODEL)
+		{
+			auto& InstModelJson =  SaveJson["Instance Model"];
+			json js{};
+			INSTANCEMODEL_DATA pData = *static_cast<INSTANCEMODEL_DATA*>(Converted_MapData);
+			to_json(js, pData);
+			InstModelJson.push_back(js);
+		}
+	}
 
 	std::ofstream ofs{wstrSavePath};
 

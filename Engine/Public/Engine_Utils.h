@@ -51,10 +51,12 @@ public:
 #pragma region Read Write Json
 
 	static void read_vec3_xyz(const json& _j, Vec3& vOut);
+	static void read_vec2_xy(const json& _j, Vec2& vOut);
 	static void read_vec3_PitchYawRoll(const json& _j, Vec3& vOut);
 	static void read_vec4_Quat(const json& _j, Quat& vOut);
 
 	static void write_vec3_xyz(json& _j, const Vec3& vOut);
+	static void write_vec2_xy(json& _j, const Vec2& vOut);
 	static void write_vec3_PitchYawRoll(json& _j, const Vec3& vOut);
 	static void write_vec4_Quat( json& _j, const Quat& vOut);
 
@@ -85,7 +87,9 @@ public:
 
 #pragma endregion
 
-
+	
+	static string				MaterialTextureType_ToString(EMaterialTextureType eType);
+	static EMaterialTextureType MaterialTextureType_ToEnum(string strType);
 
 
 	static string MI_ToString(EMaterialInstanceType eType)

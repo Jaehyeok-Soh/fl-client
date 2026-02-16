@@ -31,6 +31,9 @@ HRESULT CUIObject::Initialize(void* pArg)
 	UIOBJECT_DESC* pDesc = static_cast<UIOBJECT_DESC*>(pArg);
 
 	m_isVisible = pDesc->isInitVisible;
+	m_isInteract = pDesc->isInitInteract;
+	m_isActive	= pDesc->isInitActivate;
+
 	m_eCategory = (pDesc->isAlpha ? RENDER_CATEGORY::BLENDUI : RENDER_CATEGORY::UI);
 	m_fX = pDesc->fX;
 	m_fY = pDesc->fY;
@@ -52,6 +55,7 @@ HRESULT CUIObject::Initialize(void* pArg)
 		return E_FAIL;
 
 	m_isPreVisible	= m_isVisible;
+	m_isVisibleTrigger = m_isVisible;
 	m_isPreActive	= m_isActive;
 	m_isPreInteract = m_isInteract;
 
@@ -96,11 +100,13 @@ void CUIObject::Update(const _float fTimeDelta)
 		else
 			Initialize_NonInteractable_Event();
 	}
-	if (m_isPreVisible != m_isVisible)
+
+	if (m_isPreVisible != m_isVisibleTrigger)
 	{
 		m_isPlaying_VisibleEvent = true;
+		m_isVisible = true;
 
-		if (m_isVisible)
+		if (m_isVisibleTrigger)
 			Initialize_Visible_Event();
 		else
 			Initialize_InVisible_Event();
@@ -108,7 +114,7 @@ void CUIObject::Update(const _float fTimeDelta)
 
 	m_isPreActive	= m_isActive;
 	m_isPreInteract = m_isInteract;
-	m_isPreVisible	= m_isVisible;
+	m_isPreVisible	= m_isVisibleTrigger;
 }
 
 void CUIObject::Update_Late(const _float fTimeDelta)
@@ -128,8 +134,14 @@ void CUIObject::Update_Late(const _float fTimeDelta)
 	}
 	if (m_isPlaying_VisibleEvent)
 	{
-		if (m_isVisible)	m_isPlaying_VisibleEvent = !Tick_Visible_Event(fTimeDelta);
+		if (m_isVisibleTrigger)	m_isPlaying_VisibleEvent = !Tick_Visible_Event(fTimeDelta);
 		else				m_isPlaying_VisibleEvent = !Tick_InVisible_Event(fTimeDelta);
+
+		if (!m_isVisibleTrigger && !m_isPlaying_VisibleEvent)
+		{
+			m_isVisible = false;
+			m_isVisibleTrigger = false;
+		}
 	}
 }
 

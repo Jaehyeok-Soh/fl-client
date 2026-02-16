@@ -154,7 +154,8 @@ void to_json(json& SaveJson, const USING_MODEL_INFO& tData)
 inline void to_json(json& SaveJson, const DTO::TMap_MapObjectData& tData)
 {
 	SaveJson = json
-	{
+	{ 
+		{ "Section Number" , tData.iSectionNum},
 		{ "strTag", tData.strTag },
 		{ "UE Loaded"  , tData.isUELoaded},
 		{ "Draw Type" , tData.eMapObjectDrawType},
@@ -190,6 +191,9 @@ inline void to_json(json& SaveJson, const DTO::TMap_MapObjectData& tData)
 inline void from_json(const json& LoadJson, DTO::TMap_MapObjectData& tData)
 {
 	LoadJson.at("strTag").get_to(tData.strTag);
+
+	if (LoadJson.contains("Section Number"))
+		tData.iSectionNum = LoadJson["Section Number"].get<_uint>();
 
 	if (LoadJson.contains("UE Loaded"))
 		tData.isUELoaded =  LoadJson["UE Loaded"].get<_bool>();
@@ -241,8 +245,8 @@ inline CLIENT_MAKEPATH_DESC_BASE* Create_ClientMakePathDesc(DTO::EClientMakePath
 {
 	switch (ePath)
 	{
-	case DTO::EClientMakePath::StaticObject: return pSource == nullptr ? new STATICOBJECT_DESC : new STATICOBJECT_DESC(*static_cast<STATICOBJECT_DESC*>(pSource));
-	case DTO::EClientMakePath::Test:		 return nullptr;
+	case DTO::EClientMakePath::StaticObject: return pSource == nullptr ? new STATICOBJECT_DESC	: new STATICOBJECT_DESC(*static_cast<STATICOBJECT_DESC*>(pSource));
+	case DTO::EClientMakePath::LandScape:	 return pSource == nullptr ? new LANDSCAPE_DESC		: new LANDSCAPE_DESC(*static_cast<LANDSCAPE_DESC*>(pSource));
 	default:								 return nullptr;
 	}
 
@@ -276,6 +280,38 @@ void STATICOBJECT_DESC::to_Json(json& SaveJson)
 
 	return;
 }
+
+void LANDSCAPE_DESC::from_Json(const json& LoadJson)
+{
+
+	if (LoadJson.contains("Index"))
+		this->iIndex = LoadJson["Index"].get<_int>();
+
+	if (LoadJson.contains("Texture UV"))
+	{
+		const auto& TextureUV_Json = LoadJson["Texture UV"];
+		if (TextureUV_Json.contains("LT"))
+			Engine_Utils::read_vec2_xy( TextureUV_Json["LT"] ,this->vTextureUV_LT);
+		if (TextureUV_Json.contains("RB"))
+			Engine_Utils::read_vec2_xy(TextureUV_Json["RB"], this->vTextureUV_RB);
+
+	}
+
+	return;
+}
+
+void LANDSCAPE_DESC::to_Json(json& SaveJson)
+{
+	SaveJson["Index"] = this->iIndex;
+
+	auto& TetxtureUV_Json = SaveJson["Texture UV"];
+
+	Engine_Utils::write_vec2_xy(TetxtureUV_Json["LT"],this->vTextureUV_LT);
+	Engine_Utils::write_vec2_xy(TetxtureUV_Json["RB"],this->vTextureUV_RB);
+
+	return;
+}
+
 
 #pragma endregion
 

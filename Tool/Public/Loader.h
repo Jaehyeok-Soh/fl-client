@@ -41,9 +41,10 @@ private:
 	HRESULT Loading_For_UI();
 	HRESULT Loading_For_AssetConverter();
 private:
-	HRESULT Loading_Textures_Effect(const wstring& wstrFile);
+	HRESULT Loading_Textures_Effect(const wstring& wstrFolder);
+	HRESULT Loading_Textures_Map(const wstring& wstrFolder);
 	HRESULT Loading_Textures(const wstring& wstrFolder);
-	HRESULT Loading_Texture(const wstring& wstrFile);
+	HRESULT Loading_Texture(const wstring& wstrFolder);
 private:
 	ID3D11Device* m_pDevice = { nullptr };
 	ID3D11DeviceContext* m_pDeviceContext = { nullptr };

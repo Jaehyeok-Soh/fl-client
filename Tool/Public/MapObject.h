@@ -6,9 +6,11 @@ NS_BEGIN(Engine)
 class CMaterial;
 struct  CLIENT_MAKEPATH_DESC_BASE;
 class CModel;
+class CShader;
 NS_END
 
 NS_BEGIN(Tool)
+class CMapToolManager;
 
 class CMapObject final : public CToolObject
 {
@@ -20,19 +22,23 @@ public:
 	};
 public:
 
-	enum class EState
+	enum class EState : _uint
 	{
 		Default,
 		Select,
 		Preview,
+		Multi_Select,
 		END,
 	};
 
 	typedef struct tagMapObjectDesc : public CToolObject::TOOLOBJECT_DESC
 	{
 		/* UE 에서 추출되었거나 Or 로드한 데이터 인지 아닌지 */
-		bool					isUELoaded	{false};
-		bool					isLoaded	{ false };
+		bool								isUELoaded	{false};
+		bool								isLoaded	{ false };
+
+		/* 다불러와놓고 판단을 해야할거같은데..  */
+		_uint								iSectionNumber{0};
 
 		/* Client에서 생성할 LevelType */
 		EClientLevelType					eClientLevelType{ EClientLevelType::LOGO };
@@ -60,29 +66,24 @@ protected:
 	virtual ~CMapObject() = default;
 
 private:
-	virtual HRESULT					Initialize_Prototype()							override;
-	virtual HRESULT					Initialize(void* pArg)							override;
-	HRESULT							Ready_SRTDatas(CMapObject::MAPOBJECT_DESC* pDesc);
-	HRESULT							Ready_Component();
-	HRESULT							Ready_ClientMakePath(CMapObject::MAPOBJECT_DESC* pDesc);
-	HRESULT							Ready_OverrideMtl(const USING_MODEL_INFO& tUsingModelInfo);
-	_bool							Check_OutBound(_int iIndex) const;
+	virtual HRESULT						Initialize_Prototype()							override;
+	virtual HRESULT						Initialize(void* pArg)							override;
+	HRESULT								Ready_SRTDatas(CMapObject::MAPOBJECT_DESC* pDesc);
+	HRESULT								Ready_Component();
+	HRESULT								Ready_ClientMakePath(CMapObject::MAPOBJECT_DESC* pDesc);
+	HRESULT								Ready_OverrideMtl(const USING_MODEL_INFO& tUsingModelInfo);
+	_bool								Check_OutBound(_int iIndex) const;
 private:
-	HRESULT							Change_Instance_To_Default();
-	_bool							Compute_ModelLocalMinMax(CModel* pModel , OUT Vec3 OutMinMax[2]);
-	_bool							Compute_InstanceGroupMinMax(const Vec3* pComputed_Final_MinMax, OUT Vec3* pMinMax);
+	HRESULT								Change_Instance_To_Default();
+	HRESULT								Update_Instance_WorldMinMax(const Vec3* pModelMinMax, const vector<Matrix>* vecInstanceMatrixPointer);
 public:
-
-	HRESULT							Add_MapToolComponent(CMapObject::COMPONENT eType);
+	HRESULT								Add_MapToolComponent(CMapObject::COMPONENT eType);
 public:
-
-	void							Reset_OriginTransform(_int iIndex = -1);
-	void							Override_OriginTransform(_int iIndex = -1);
-
-	/* 기능 관련 */
+	void								Reset_OriginTransform(_int iIndex = -1);
+	void								Override_OriginTransform(_int iIndex = -1);
 public:
-
 	void								Update_InstanceWorldMatrix(_bool isAllUpdate , _int iIndex = -1);
+	void								Update_Bounds(_uint iIndex);
 
 public:
 	virtual bool						Get_SRT(OUT  Vec3& vOutScale, OUT Quat& vQuat, OUT Vec3& vPosition)override;
@@ -112,7 +113,7 @@ public:
 	void								Set_Quaternion(const Quat& vQuat , _int iIndex = -1);
 
 	void								Set_IsUseOverrideMaterial(_bool isUse) { m_isUseOverrideMaterials = isUse; }
-
+	void								Set_SectionNumber(_uint iSectionNumber) { m_iSectionNum = iSectionNumber; }
 
 public:
 
@@ -127,7 +128,8 @@ public:
 	
 	Vec3								Get_Scale(_int iIndex = -1 )		const;
 	Quat								Get_Quaternion(_int iIndex = -1 )	const;
-	Vec3								Get_Position(_int iIndex = -1 )	const;
+	Vec3								Get_Position(_int iIndex = -1 )		const;
+	Matrix								Get_Matrix(_int iIndex =-1)			const;
 
 	/* Type관련 */
 	EMapObject_Type						Get_MapObjectType()			const	{ return m_eMapObjectType;}
@@ -146,6 +148,7 @@ public:
 	const vector<Tool::SRT_DATA>&		Get_SRTDatas()						{ return m_vecSRTs;}
 
 	_int								Get_SelectedInstanceID()	const	 { return m_iSelectedInstanceID; }
+	_uint								Get_SectionNumber()			const		{ return m_iSectionNum; }
 	vector<CLIENT_MAKEPATH_DESC_BASE*>	Get_ClientMakePathDescs()			 { return m_vecClientMakePathDesc; }
 	CLIENT_MAKEPATH_DESC_BASE*			Get_ClientMakePathDesc(_int iIndex = -1);
 public:
@@ -158,18 +161,27 @@ public:
 	virtual HRESULT						Render()										override;
 	virtual void						Draw_ImGui()									override;		
 
+	HRESULT								Set_GPU_MapObjectState(CShader* pShader);
+
 public:
-	_bool								IntsersectWithPlane(OUT Vec3& vOut);
+	_bool								IntsersectWithPlane(OUT Vec3& vOut, const Vec3& vLocalCamPos);
 	_bool								Picking(OUT Vec3& vOut);
 	virtual _bool						Export_Data(DTO::ECategory eCategory, CDataDocumentBase* pDocument)override;
 private:
+	HRESULT								Check_DrawType_ByClientPath();
+public:
+	HRESULT								Render_StaticObject();
+	HRESULT								Render_LandScape();
 
-	HRESULT								Render_Default();
-	HRESULT								Render_Instance();
+public:
+	/* 기본적으로 사용할 애들 */
+	HRESULT								Render_Default(_int iPass = -1);
+	HRESULT								Render_Instance(_int iPass = -1);
 
 protected:
+	_uint								m_iSectionNum{};
 	bool								m_isBatced{false};
-
+	CMapToolManager*					m_pMapToolManager{ nullptr };
 
 	EMapObject_Type						m_eMapObjectType	{ EMapObject_Type::END };
 	EMapObject_DrawType					m_eMapObjectDrawType{ EMapObject_DrawType::Default };
@@ -183,29 +195,32 @@ protected:
 
 
 	/* UE or Data Load 인지 판별 */
-	bool							m_isLoaded{ false };
-	bool							m_isUELoaded{ false };
+	bool								m_isLoaded{ false };
+	bool								m_isUELoaded{ false };
 
-	EState							m_eMapObjectState{ EState::Default};
+	EState								m_eMapObjectState{ EState::Default};
 
 	/* Instance 전용 Select ID */
-	_int							m_iSelectedInstanceID{0};
+	_int								m_iSelectedInstanceID{0};
 
 	/* SRT Data */
-	vector<Tool::SRT_DATA>			m_vecOriginSRTs{};	//
-	vector<Tool::SRT_DATA>			m_vecSRTs{};
+	vector<Tool::SRT_DATA>				m_vecOriginSRTs{};	//
+	vector<Matrix>						m_vecOriginMatrix{};
+
+	vector<Tool::SRT_DATA>				m_vecSRTs{};
+	vector<Matrix>						m_vecMatrix{};
 
 
 	/* 임시 패기처분 */
 	/* Override Material을 담아줄 변수 */
-	vector<CMaterial*>				m_vecOverrideMaterials;
-	bool							m_isUseOverrideMaterials{ false };
+	vector<CMaterial*>					m_vecOverrideMaterials;
+	bool								m_isUseOverrideMaterials{ false };
 
 
 
 
 	/* Instance Draw 컬링용 Min Max들고있기 */
-	Vec3							m_vInstanceMinMax[2];
+	Vec3								m_vInstanceWorldMinMax[2]{ Vec3(FLT_MAX,FLT_MAX,FLT_MAX) , Vec3(-FLT_MAX,-FLT_MAX,-FLT_MAX)};
 
 
 public:

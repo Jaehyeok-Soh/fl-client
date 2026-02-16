@@ -98,6 +98,28 @@ HRESULT CPanel_MapTool::Render_CheckAndBind()
 
 HRESULT CPanel_MapTool::Render_MakeMapObjectSetting()
 {
+	ImGui::SeparatorText(" Map Object Batch Mode ");
+
+#pragma region Empalce Type
+
+	m_iBuffer = static_cast<_int>(m_pMapToolManager->m_eMapToolEmplaceType);
+	m_strBuffer = EMapTool_EmplaceType_ToString(static_cast<EMapTool_EmplaceType>(m_iBuffer));
+	if (ImGui::BeginCombo("##MapObjectEmplaceMode", m_strBuffer.c_str()))
+	{
+		for (_int i = 0; i < static_cast<_uint>(EMapTool_EmplaceType::END); ++i)
+		{
+			bool isSelected = i == m_iBuffer;
+			if (ImGui::Selectable(EMapTool_EmplaceType_ToString(static_cast<EMapTool_EmplaceType>(i)).c_str(), &isSelected))
+				m_pMapToolManager->m_eMapToolEmplaceType = static_cast<EMapTool_EmplaceType>(i);
+			if (isSelected)
+				ImGui::SetItemDefaultFocus();
+		}
+		ImGui::EndCombo();
+	}
+
+#pragma endregion
+
+	ImGui::Separator();
 
 	ImGui::SeparatorText(" Map Object Batch Mode ");
 
@@ -136,6 +158,19 @@ HRESULT CPanel_MapTool::Render_MakeMapObjectSetting()
 	ImGui::SeparatorText("Make Map Object Setting");
 
 	ImGui::NewLine();
+
+
+#pragma region Make Section Number
+	ImGui::SeparatorText(" Section Number ");
+
+	if (ImGui::InputInt("##MakeObjectSection Number", &m_pMapToolManager->m_iMakeSectionNumber))
+	{
+		if (m_pMapToolManager->m_iMakeSectionNumber < 0)
+			m_pMapToolManager->m_iMakeSectionNumber = 0;
+	}
+
+	ImGui::Separator();
+#pragma endregion
 
 	ImGui::SeparatorText(" Level Type ");
 

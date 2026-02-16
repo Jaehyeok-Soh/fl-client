@@ -69,6 +69,7 @@ HRESULT CBounds::Initialize(void* pArg)
 	Vec3 vFinalMinMax[2]{ (pDesc->pMinMax[0]) * pDesc->fRatio ,
 						(pDesc->pMinMax[1]) * pDesc->fRatio };
 
+
 	if (!(m_tBounds.pAABB = Create_AABB(vFinalMinMax)))
 		return E_FAIL;
 
@@ -85,10 +86,8 @@ HRESULT CBounds::Add_SubBounds(const Vec3* pMinMax, span<Matrix> spanInstanceMat
 {
 	m_vecSubBounds.resize(spanInstanceMatrix.size());
 
-	Vec3 vAABBMinMax[2]{ (pMinMax[0]) * fRatio ,
-						(pMinMax[1]) * fRatio };
-	Vec3 vSphereMinMax[2]{ vAABBMinMax[0] *= 1.3f,
-						vAABBMinMax[1] *= 1.3f };
+	Vec3 vAABBMinMax[2]{ (pMinMax[0]) * fRatio , (pMinMax[1]) * fRatio };
+	Vec3 vSphereMinMax[2]{ vAABBMinMax[0] *= 1.3f , vAABBMinMax[1] *= 1.3f };
 
 	for (size_t i = 0; i < spanInstanceMatrix.size(); ++i)
 	{
@@ -105,15 +104,70 @@ HRESULT CBounds::Add_SubBounds(const Vec3* pMinMax, span<Matrix> spanInstanceMat
 	return S_OK;
 }
 
-HRESULT CBounds::Append_SubBounds(const Matrix& InstanceMatrix, _float fRatio)
+HRESULT CBounds::Update_SubBound(const  Vec3* pTotalMinMax , const Matrix& WorldMatrix, _uint iIndex)
 {
-	/* 맵툴에서는 굳이 Min Max 계산이 필요할까? */
 
-	MESH_BOUNDS tAppendBoundS{};
+	if (pTotalMinMax == nullptr) return E_FAIL;
+	if (m_vecSubBounds.size() < iIndex) return E_FAIL;
 
-	//tAppendBoundS.pAABB = Create_AABB();
+	m_vecSubBounds[iIndex].pAABB->Update(WorldMatrix);
+	m_vecSubBounds[iIndex].pSphere->Update(WorldMatrix);
 
-	//m_vecSubBounds.push_back(MESH_BOUNDS())
+	/* 이미 추가된 Bounds */
+	if(FAILED(Make_Bounds(pTotalMinMax)))
+		return E_FAIL;
+	
+
+	return S_OK;
+}
+
+/* Update까지 바로된다 */
+HRESULT CBounds::Push_SubBounds(const  Vec3* pTotalMinMax , const   Vec3* pModelMinMax  , const Matrix& WorldMatrix , float fRatio)
+{
+	if (pTotalMinMax == nullptr) return E_FAIL;
+	if (pModelMinMax == nullptr) return E_FAIL;
+
+	Vec3 vAABBMinMax[2]{ (pModelMinMax[0]) * fRatio , (pModelMinMax[1]) * fRatio };
+	Vec3 vSphereMinMax[2]{ vAABBMinMax[0] *= 1.3f , vAABBMinMax[1] *= 1.3f };
+
+	MESH_BOUNDS tMeshBounds{ Create_AABB(vAABBMinMax) , Create_Sphere(vSphereMinMax)};
+	m_vecSubBounds.push_back(tMeshBounds);
+	if (FAILED(CBounds::Update_SubBound(pTotalMinMax, WorldMatrix, static_cast<_uint>(m_vecSubBounds.size() - 1))))
+		return E_FAIL;
+
+	return S_OK;
+}
+
+HRESULT CBounds::Delete_SubBounds(const Vec3* pTotalMinMax, _uint iDeleteIndex , float fRatio)
+{
+	if (pTotalMinMax == nullptr) return E_FAIL;
+	if (iDeleteIndex > m_vecSubBounds.size()) return E_FAIL;
+
+	Safe_Release(m_vecSubBounds[iDeleteIndex].pAABB);
+	Safe_Release(m_vecSubBounds[iDeleteIndex].pSphere);
+	m_vecSubBounds.erase(m_vecSubBounds.begin() + iDeleteIndex);
+
+	if (FAILED(Make_Bounds( pTotalMinMax , fRatio)))
+		return E_FAIL;
+
+	return S_OK;
+}
+
+
+HRESULT CBounds::Make_Bounds(const Vec3* pMinMax, float fRatio)
+{
+	Vec3 vFinalMinMax[2]{ (pMinMax[0]) * fRatio , (pMinMax[1]) * fRatio };
+
+	Safe_Release(m_tBounds.pAABB);
+	if (!(m_tBounds.pAABB = Create_AABB(vFinalMinMax)))
+		return E_FAIL;
+
+	vFinalMinMax[0] *= 1.3f;
+	vFinalMinMax[1] *= 1.3f;
+
+	Safe_Release(m_tBounds.pSphere);
+	if (!(m_tBounds.pSphere = Create_Sphere(vFinalMinMax)))
+		return E_FAIL;
 
 	return S_OK;
 }
@@ -301,7 +355,7 @@ void CBounds::Render()
 	for (size_t i = 0; i < m_vecSubBounds.size(); ++i)
 	{
 		m_vecSubBounds[i].pAABB->Render(m_pBatch, false);
-		//m_vecSubBounds[i].pSphere->Render(m_pBatch, false);
+		m_vecSubBounds[i].pSphere->Render(m_pBatch, false);
 	}
 	m_pBatch->End();
 }

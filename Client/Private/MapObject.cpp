@@ -20,6 +20,7 @@ CMapObject::CMapObject(const CMapObject& rhs)
     , m_eMapObjectDrawType{ rhs.m_eMapObjectDrawType }
     , m_isUELoaded{rhs.m_isUELoaded}
     , m_vecMatrix{rhs.m_vecMatrix }
+    , m_iSectionNum{rhs.m_iSectionNum}
 {
 }
 
@@ -43,14 +44,13 @@ HRESULT	CMapObject::Initialize(void* pArg)
     m_isUELoaded    = pDesc->isUELoaded;
     m_eMapObjectDrawType = pDesc->eMapObjectDrawType;
     m_strName       = path(pDesc->wstrModelPath).filename().stem().string();
-
+    m_iSectionNum  = pDesc->iSectionNum;
 
     if (FAILED(Ready_Transform(pDesc)))
         return E_FAIL;
 
     if (FAILED(Ready_Component(pDesc)))
         return E_FAIL;
-
 
 	return S_OK;
 }
@@ -111,9 +111,6 @@ HRESULT	CMapObject::Ready_Component(MAPOBJECT_DESC* pDesc)
             }
         }
         /* Bounds 생성 */
-
-        Get_Component<CModel>()->Get_StaticModelMinMax();
-
         CBounds::BOUND_COMP_DESC desc{};
         desc.fRatio = 1.f;
         desc.pMinMax = Get_Component<CModel>()->Get_StaticModelMinMax();
@@ -176,6 +173,7 @@ void	CMapObject::Update_Late(const _float fTimeelta)
 {
 	Super::Update_Late(fTimeelta);
 }
+
 void	CMapObject::Ready_Before_Render(const _float fTimeDelta)
 {
 	Super::Ready_Before_Render(fTimeDelta);
@@ -263,7 +261,6 @@ HRESULT	CMapObject::Render_Instance()
     CInstanceMesh* pInstanceMesh = Get_Component<CInstanceMesh>();  if (pInstanceMesh == nullptr)       return E_FAIL;
     _uint iMeshCount = static_cast<_uint>(pModel->Get_MeshCount());
     _uint iInstanceCount = static_cast<_uint>(pInstanceMesh->Get_InstanceCount());
-
     Filtering_Visible(iInstanceCount);
 
     // 그릴거 없으면 그냥 패스
@@ -272,7 +269,7 @@ HRESULT	CMapObject::Render_Instance()
 
     if (FAILED(Update_InstanceBuffer(pInstanceMesh)))
         return E_FAIL;
-
+    pShader->Bind_ObjectInfoData(m_tObjectInfoDesc);
     pInstanceMesh->Bind_Instance(1);
     for (_uint i = 0; i < iMeshCount; ++i)
     {
@@ -294,6 +291,7 @@ HRESULT	CMapObject::Render_Default()
 
 
     /* WorldMatrix 바인딩 */
+    pShader->Bind_ObjectInfoData(m_tObjectInfoDesc);
     pShader->Bind_TransformData(pTransform->Get_WorldMatrix());
     _uint iMeshCount = static_cast<_uint>(pModel->Get_MeshCount());
 
