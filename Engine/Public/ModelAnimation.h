@@ -73,6 +73,7 @@ public:
 		if (m_vecNotifies.size() <= iIndex) return;
 		m_iNextNotifyIndex = (_uint)iIndex;
 	}
+	void Clear_Notifies() { m_vecNotifies.clear(); }
 private:
 	_uint m_iChannelCount = { 0 };
 	vector<class CChannel*> m_vecChannels;

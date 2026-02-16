@@ -84,12 +84,12 @@ CEvent_Overlap_Module* CEvent_Overlap_Module::Create(ID3D11Device* pDevice, ID3D
 
 void CEvent_Overlap_Module::Free()
 {
-	Super::Free();
-
 	Safe_Release(m_pOverlap);
 
 	Safe_Release(m_pDevice);
 	Safe_Release(m_pDeviceContext);
+
+	Super::Free();
 
 	Safe_Release(m_pGameInstance);
 }

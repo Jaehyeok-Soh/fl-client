@@ -277,17 +277,19 @@ void CLevel_Animation::Render_Grid()
 
 void CLevel_Animation::Load_AnimModel(fs::path animModelPath)
 {
-	if (m_pSelectedObject)
-		m_pGameInstance->Immediately_DeleteGameObject(ENUM_TO_UINT(ELevelType::ANIMATION), m_wstrLayer, m_pSelectedObject);
-
+	m_pGameInstance->Clear_Layer(ENUM_TO_UINT(ELevelType::ANIMATION), m_wstrLayer);
+	//Safe_Release(m_pSelectedObject);
+	//if (m_pSelectedObject)
+	//	m_pGameInstance->Request_DeleteGameObject(ENUM_TO_UINT(ELevelType::ANIMATION), m_wstrLayer, m_pSelectedObject);
+	//if (m_pSelectedObject)
+	//	m_pGameInstance->Immediately_DeleteGameObject(ENUM_TO_UINT(ELevelType::ANIMATION), m_wstrLayer, m_pSelectedObject);
 	Create_AnimModel(animModelPath);
-
 	SetAnimationInfo(animModelPath);
 }
 
 void CLevel_Animation::Create_AnimModel(fs::path animModelPath)
 {
-	m_pSelectedObject;
+	//m_pSelectedObject;
 	wstring prototypeTag = Create_AnimModelPrototype(animModelPath);
 
 	CAnimObj::ANIMOBJ_DESC animObjDesc{};
@@ -324,7 +326,9 @@ wstring CLevel_Animation::Create_AnimModelPrototype(fs::path animModelPath)
 		desc.pAniChannelData = &tAniChannelData;
 
 		prototypeTag += desc.wstrModelFolderName;
-		m_pGameInstance->Add_Prototype(ENUM_TO_UINT(ELevelType::ANIMATION), prototypeTag, CModel::Create(m_pDevice, m_pDeviceContext, &desc));
+		CModel* pInstance = CModel::Create(m_pDevice, m_pDeviceContext, &desc);
+		if(FAILED(m_pGameInstance->Add_Prototype(ENUM_TO_UINT(ELevelType::ANIMATION), prototypeTag, pInstance)))
+			Safe_Release(pInstance);
 	}
 
 	return prototypeTag;
@@ -369,7 +373,6 @@ void CLevel_Animation::Free()
 	m_GuiElements.fill(nullptr);
 
 	m_pAnimToolManager->DestroyInstance();
-	Safe_Release(m_pAnimToolManager);
 
 	Safe_Release(m_pImGuiManager);
 	Safe_Release(m_pPickingManager);

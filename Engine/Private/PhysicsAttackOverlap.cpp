@@ -42,6 +42,8 @@ void CPhysicsAttackOverlap::Render()
 
 void CPhysicsAttackOverlap::Awake()
 {
+	Safe_Release(m_pFilterCallback);
+
 	PoolClear();
 
 	if (m_pOwner == nullptr)
@@ -93,7 +95,12 @@ void CPhysicsAttackOverlap::Update(_float fTimeDelta)
 
 void CPhysicsAttackOverlap::Ready_Event()
 {
-	//m_EventHandle = m_pOwnerModel->OnNotify.Subscribe(&CPhysicsAttackOverlap::CallbackEvent);
+	auto& animations = m_pOwnerModel->Get_Animations();
+	for (auto& anim : animations)
+		anim->Clear_Notifies();
+
+	Release_Event();
+
 	m_EventHandle = m_pOwnerModel->OnNotify.Subscribe(
 		[this](const AnimNotifyKey& key)
 		{
@@ -103,7 +110,8 @@ void CPhysicsAttackOverlap::Ready_Event()
 
 void CPhysicsAttackOverlap::Release_Event()
 {
-	m_pOwnerModel->OnNotify.Unsubscribe(m_EventHandle);
+	if (m_pOwner)
+		m_pOwnerModel->OnNotify.Unsubscribe(m_EventHandle);
 }
 
 void CPhysicsAttackOverlap::CallbackEvent(const AnimNotifyKey& key)
@@ -123,6 +131,9 @@ void CPhysicsAttackOverlap::CallbackEvent(const AnimNotifyKey& key)
 	//	bool		  bParam1{ false };
 	//	string		  strParam{ "" };
 	//};
+
+	if (m_tDesc.attackEvents.size() == 0)
+		return;
 
 	DTO::ATTACKEVENT& event = m_tDesc.attackEvents[key.iParam0];
 	if (event.iAnimIndex != key.iParam1)
@@ -199,6 +210,8 @@ void CPhysicsAttackOverlap::Modify_AttackOverlap(vector<DTO::ATTACKEVENT> events
 
 void CPhysicsAttackOverlap::GetAnimation()
 {
+	Safe_Release(m_pOwnerModel);
+
 	m_pOwnerModel = Get_Owner()->Get_Component<CModel>();
 	Safe_AddRef(m_pOwnerModel);
 }
@@ -246,14 +259,20 @@ void CPhysicsAttackOverlap::Ready_OverlapInfo()
 		}
 		break;
 		default:
+		{
+			eventIdx++;
 			continue;
+		}
 		}
 		
 		vector<PxShape*> shapes = m_pGameInstance->GetShape(&desc);
 		if (shapes.size() > 0)
 			event.tHitboxDesc.geometry = shapes.front()->getGeometry();
 		else
+		{
+			eventIdx++;
 			continue;
+		}
 		
 		for (auto& shape : shapes)
 			PX_RELEASE(shape);
@@ -277,7 +296,7 @@ void CPhysicsAttackOverlap::Ready_OverlapInfo()
 		{
 			wAnimTag = m_pOwnerModel->Get_AnimationName(event.iAnimIndex);
 			animIter = std::find_if(animations.begin(), animations.end(), wFindTag);
-			//animIdx = m_pOwnerModel->Get_AnimationIndex(wAnimTag);
+			event.iAnimIndex = m_pOwnerModel->Get_AnimationIndex(wAnimTag);
 		}
 
 		AnimNotifyKey key{};
@@ -300,10 +319,6 @@ void CPhysicsAttackOverlap::Ready_OverlapInfo()
 				newkeys.push_back(key);
 				(*animIter)->Set_Notifies(newkeys);
 			}
-		}
-		else
-		{
-
 		}
 
 		eventIdx++;
@@ -350,6 +365,8 @@ CComponent* CPhysicsAttackOverlap::Clone(void* pArg)
 
 void CPhysicsAttackOverlap::Free()
 {
+	Release_Event();
+
 	PoolClear();
 
 	Safe_Release(m_pOwnerModel);
