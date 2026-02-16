@@ -9,7 +9,8 @@
 #define GRADATIONTEXTURE 3
 #define TRAILTEXTURE 4
 #define NORMALTEXTURE 5
-#define SCENETEXTURE 6
+#define GLOWTEXTURE 6
+#define DISSOLVETEXTURE 7
 
 texture2D g_EffectTexture;
 
@@ -29,6 +30,7 @@ texture2D g_EffectTexture;
 #define SCROLL_NOISE 1 << 7
 #define SCROLL_MASKING 1 << 8
 #define SCROLL_GRADATION 1 << 9
+#define SCROLL_DISSOLVE 1 << 10
         
 // SamplerState Flag
 #define LINEARSAMPLER 1 << 0
@@ -51,6 +53,7 @@ texture2D g_EffectTexture;
 #define MUL 1 << 2      // Multiply     곱하기
 #define DIV 1 << 3      // Devide       나누기
 
+
 struct EffectDesc
 {
     // Texture 바인딩 Flag들
@@ -65,24 +68,30 @@ struct EffectDesc
     // 텍스처 산술 연산자 flag 
     uint g_OperatorFlags;
     uint g_RotationFlags;
-    float2 g_Padding1;
+    float2 g_UVOffset;
     
     // sprite일 때
     uint g_SpriteCol; // 가로 프레임 수
     uint g_SpriteRow; // 세로 프레임 수
     uint g_CurSpriteIndex; // 현재 재생 중인 인덱스
-    float g_SpritePadding;
+    float g_AppearRatio;
     
     float2 g_ScrollOffset;
     float2 g_DistortionScale;
+    
     float4 g_EffectColor;
     
     // 각 텍스처별 Scroll Weight (0 ~ 1)
     float2 DiffuseTexture_ScrollWeight;
     float2 NoiseTexture_ScrollWeight;
+    
     float2 MaskingTexture_ScrollWeight;
     float2 GradationTexture_ScrollWeight;
+    
+    float2 DissolveTexture_ScrollWeight;
+    float2 Padding1;
 };
+
 
 // ========== StruturedBuffer Binding value  ===========  (CS Shader에서 계산해서 넘어온 값.)
 StructuredBuffer<VTXPARTICLE> INSTANCE_OUTPUT;
@@ -145,6 +154,13 @@ float2 ScrollUV_Calculator(uint Flag, float2 InUV)
     }
 
     return finalUV;
+}
+
+void DecodeDepth(float2 vUV, out float fNDCZ, out float fViewZ)
+{
+    float4 vDepthDesc = g_RenderTargetDepthTexture.Sample(PointClampSampler, vUV);
+    fNDCZ = vDepthDesc.x;
+    fViewZ = vDepthDesc.y;
 }
 
 float Float_Operation(float Src1, float Src2, uint Operator)        // 부동 소수점 연산
@@ -277,9 +293,22 @@ float4 TrailTextureSample(float2 UV)
     return SampleTextureWithFlags(g_DefaultTextures[TRAILTEXTURE], g_Effect.g_StateFlags, 12, UV);
 }
 
-float4 SceneTextureSample(float2 UV)
+float4 DissolveTextureSample(float2 UV)
 {
-    return g_RenderTargetSceneTexture.Sample(LinearSampler, UV);
+    return SampleTextureWithFlags(g_DefaultTextures[DISSOLVETEXTURE], g_Effect.g_StateFlags, 15, UV);
+}
+
+float GlowTextureSample(float2 UV)
+{
+    return SampleTextureWithFlags(g_DefaultTextures[GLOWTEXTURE], g_Effect.g_StateFlags, 18, UV);
+
+}
+float4 SceneTextureSample(float2 UV, uint Flag)
+{
+    if (Flag == 0)
+        return g_RenderTargetSceneTexture.Sample(LinearSampler, UV);
+    else if (Flag == 1)
+        return g_RenderTargetSceneTexture.Sample(LinearClampSampler, UV);
 }
 
 

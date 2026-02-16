@@ -98,7 +98,6 @@ void CVIBuffer_Particle::Update_Simulation(CComputeShader* ComputeShader, Vec3 v
 	ComputeShader->Bind_Compute_EffectData(tMUDesc);
 
 	// Compute Shader ½ÇÇà
-	//ComputeShader->Dispatch(1, 1, 1);
 	_uint iGroupX = (m_iInstanceCount + 31) / 32;
 	ComputeShader->Dispatch(iGroupX, 1, 1);
 }

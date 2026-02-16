@@ -99,6 +99,14 @@ public:
         float fValue; // 각 축별 회전값 (Degree 또는 Radian)
     }Rotation_CurveKey;
 
+    enum E_RANDOM_FLAG
+    {
+        RAND_NONE = 0,
+        RAND_POS = 1 << 0, // 위치 랜덤
+        RAND_LIFE = 1 << 1,	// 수명 랜덤
+        RAND_SIZE = 1 << 2	// 크기 랜덤
+    };
+
     typedef struct tagEffectObjectDesc : public Super::PARTOBJ_DESC
     {
         // ========     이펙트 타입   =========
@@ -158,7 +166,7 @@ public:
         Vec2                _Effect_ParticleSize = { 0.05f, 0.15f };
         _float              _Effect_Duration = { 5.f };
         _bool               _Effect_Looping = { true };
-        _bool               _Effect_IsRandomSeed = { true };
+        E_RANDOM_FLAG       iRandomFlags = {E_RANDOM_FLAG::RAND_NONE};
 
         _float              _Effect_PlayBackSpeed = { 1.f };
         _float              _Effect_StartSpeed = { 1.f };   // Particle에 영향을 주는 스피드 [개별 배속]

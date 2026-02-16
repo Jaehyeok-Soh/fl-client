@@ -53,6 +53,7 @@ texture2D g_EffectTexture;
 #define MUL 1 << 2      // Multiply     곱하기
 #define DIV 1 << 3      // Devide       나누기
 
+
 struct EffectDesc
 {
     // Texture 바인딩 Flag들
@@ -90,6 +91,7 @@ struct EffectDesc
     float2 DissolveTexture_ScrollWeight;
     float2 Padding1;
 };
+
 
 // ========== StruturedBuffer Binding value  ===========  (CS Shader에서 계산해서 넘어온 값.)
 StructuredBuffer<VTXPARTICLE> INSTANCE_OUTPUT;
@@ -469,17 +471,18 @@ float4 PS_UnityConvert(VS_OUT_INST_MESH_PARTICLE In) : SV_Target0
     float4 GradationSample = { 0.f, 0.f, 0.f, 0.f };
     float4 DefaultSample = { 0.f, 0.f, 0.f, 0.f };
     
-    float LifeRatio = saturate(In.vLifeTime.x / In.vLifeTime.y);
+    //  기본 진행도 계산
+    float LifeRatio = saturate(In.vLifeTime.x / In.vLifeTime.y); // 전체 수명 비율 (0~1)
+
+    // AppearRatio가 0.3이라면, 0~0.3까지는 DissolveProgress가 0이고, 그 이후 1까지 증가함
+    float AppearRatio = g_Effect.g_AppearRatio;
+    float DissolveProgress = saturate((LifeRatio - AppearRatio) / max(0.001f, (1.0f - AppearRatio)));
+    
     
     float2 scrolledUV = In.vUV + g_Effect.g_UVOffset;
     scrolledUV += g_Effect.g_ScrollOffset;
     
     DefaultSample = g_DefaultTextures[DEFAULTTEXTURE].Sample(LinearClampSampler, scrolledUV);
-    
-    if (Has(g_Effect.g_TextureFlags, DISSOLVETEXTURE))
-    {
-        DissolveSample = DissolveTextureSample(In.vUV);
-    }
     
     if (Has(g_Effect.g_TextureFlags, GRADATIONTEXTURE))
     {
@@ -507,19 +510,29 @@ float4 PS_UnityConvert(VS_OUT_INST_MESH_PARTICLE In) : SV_Target0
         }
     }
     
+    // 5. 디졸브 로직 (이미지의 Step 방식 적용)
+    float dissolveMask = 1.0f;
+    if (Has(g_Effect.g_TextureFlags, DISSOLVETEXTURE))
+    {
+        float dissolveNoise = DissolveTextureSample(In.vUV).r;
+        
+        // DissolveProgress(Edge)보다 노이즈가 클 때만 1을 뱉음
+        // 수명 후반부로 갈수록 DissolveProgress가 커지므로 점점 사라짐
+        dissolveMask = step(DissolveProgress, dissolveNoise);
+    }
+    
     // 유니티 셰이더의 최종 출력 공식: col * _Emissive * col.a
     float4 finalColor = DefaultSample * g_Effect.g_EffectColor;
     float EnergyStrength = GradationSample.r;
     finalColor *= (EnergyStrength * 3);
    
-    float finalAlpha = { 1.f };
-    float lifeAlpha = 1.0f - (In.vLifeTime.x / In.vLifeTime.y);
-    finalAlpha *= /*DissolveSample.r*/1.f * lifeAlpha; /** GlowSample.r * finalNoiseValue*/;
-    
+    float lifeAlpha = 1.0f - LifeRatio;
+    float finalAlpha = DefaultSample.a * dissolveMask * lifeAlpha;
+
     if (finalAlpha <= g_Effect.g_DiscardValue)
         discard;
     
-    finalColor.a *= finalAlpha;
+    //finalColor.a *= finalAlpha;
     
     return finalColor;
 }
@@ -599,75 +612,6 @@ float4 PS_DISTOTION(VS_OUT_INST_MESH_PARTICLE In) : SV_Target0
     // 굴절된 배경색에 이펙트 고유 색상을 살짝 얹어줌
     return float4(refractionColor.rgb + (g_Effect.g_EffectColor.rgb * 0.2f), finalAlpha);
 }
-
-//float4 PS_DISTOTION(VS_OUT_INST_MESH_PARTICLE In) : SV_Target0
-//{
-//    // 1. 화면 좌표계(ScreenUV) 계산
-//    float2 ScreenUV = In.vProjPos.xy / In.vProjPos.w;
-//    ScreenUV.x = ScreenUV.x * 0.5f + 0.5f;
-//    ScreenUV.y = ScreenUV.y * -0.5f + 0.5f;
-
-//    // 2. 초기 깊이 판정 (원본 위치 기준)
-//    float fBackNDCZ, fBackViewZ;
-//    DecodeDepth(ScreenUV, fBackNDCZ, fBackViewZ);
-
-//    float4 vMyViewPos = mul(In.vWorldPos, V);
-//    float fMyViewZ = vMyViewPos.z;
-
-//    // 캐릭터 등 장애물에 가려진 경우 제거
-//    //if (fBackViewZ > 0.0f && fBackViewZ < fMyViewZ - 0.1f)
-//    //{
-//    //    discard;
-//    //}
-
-//    // 3. 왜곡량 계산
-//    float2 finalUV = float2(0.f, 0.f);
-//    if (Has(g_Effect.g_TextureFlags, NOISETEXTURE))
-//    {
-//        float2 noiseUV = Get90DegreeRotatedUV(In.vUV, g_Effect.g_RotationFlags, NOISETEXTURE);
-//        noiseUV += g_Effect.g_ScrollOffset;
-//        float noiseValue = NoiseTextureSample(noiseUV).r;
-
-//        if (Has(g_Effect.g_TextureFlags, MASKINGTEXTURE))
-//        {
-//            noiseValue *= MaskTextureSample(Get90DegreeRotatedUV(In.vUV, g_Effect.g_RotationFlags, MASKINGTEXTURE)).r;
-//        }
-        
-//        finalUV.x = (noiseValue - 0.5f) * g_Effect.g_DistortionScale.x;
-//        finalUV.y = (noiseValue - 0.5f) * g_Effect.g_DistortionScale.y;
-//    }
-
-//    float2 distortionUV = ScreenUV + finalUV;
-
-//    // [핵심 해결책 1] 왜곡된 UV가 화면 밖으로 나가는지 체크
-//    // 화면 밖의 데이터를 가져오려 하면 왜곡을 강제로 취소시킵니다.
-//    if (distortionUV.x < 0.0f || distortionUV.x > 1.0f || distortionUV.y < 0.0f || distortionUV.y > 1.0f)
-//    {
-//        distortionUV = ScreenUV;
-//    }
-
-//    // 4. 왜곡 위치의 깊이 재검사 (앞 사물 왜곡 방지)
-//    float fDistZ, fDistViewZ;
-//    DecodeDepth(distortionUV, fDistZ, fDistViewZ);
-//    if (fDistViewZ > 0.0f && fDistViewZ < fMyViewZ)
-//    {
-//        distortionUV = ScreenUV;
-//    }
-
-//    // [핵심 해결책 2] Wrap이 아닌 Clamp 샘플러 사용
-//    // g_RenderTargetSceneTexture 샘플링 시 LinearClampSampler를 사용하여 타일링 방지
-//    float4 refractionColor = g_RenderTargetSceneTexture.Sample(LinearClampSampler, distortionUV);
-
-//    // 알파 및 수명 처리
-//    float2 scrolledUV = In.vUV + g_Effect.g_UVOffset + g_Effect.g_ScrollOffset;
-//    float finalAlpha = DefaultTextureSample(scrolledUV).a;
-//    finalAlpha *= (1.0f - (In.vLifeTime.x / In.vLifeTime.y));
-
-//    if (finalAlpha < g_Effect.g_DiscardValue)
-//        discard;
-
-//    return refractionColor;
-//}
 
 float4 PS_SWORDEFFECT(VS_OUT_INST_MESH_PARTICLE In) : SV_Target0
 {
@@ -768,7 +712,7 @@ technique11 T0
 
     pass Distotion_EFFECT
     {
-        SetRasterizerState(RS_Default);
+        SetRasterizerState(RS_Default_CullNone);
         SetDepthStencilState(DS_ReadOnly, 0);
         SetBlendState(BS_AlphaBlend, float4(0.f, 0.f, 0.f, 0.f), 0xffffffff);
         SetVertexShader(CompileShader(vs_5_0, VS_DEFAULT()));
@@ -778,7 +722,7 @@ technique11 T0
 
     pass BLOOM_SWORDEFFECT
     {
-        SetRasterizerState(RS_Default);
+        SetRasterizerState(RS_Default_CullNone);
         SetDepthStencilState(DS_ReadOnly, 0);
         SetBlendState(BS_AlphaBlend, float4(0.f, 0.f, 0.f, 0.f), 0xffffffff);
         SetVertexShader(CompileShader(vs_5_0, VS_DEFAULT()));

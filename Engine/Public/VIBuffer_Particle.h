@@ -24,9 +24,18 @@ class ENGINE_DLL CVIBuffer_Particle abstract : public CVIBuffer
 {
 	using Super = CVIBuffer;
 public:
+	enum E_RANDOM_FLAG
+	{
+		RAND_NONE = 0,
+		RAND_POS = 1 << 0, // À§Ä¡ ·£´ý
+		RAND_LIFE = 1 << 1,	// ¼ö¸í ·£´ý
+		RAND_SIZE = 1 << 2	// Å©±â ·£´ý
+	};
+
 	typedef struct tagVIBuffer_ParticleOriginDesc : public Super::tagVIBufferOriginDesc
 	{
 		_uint iInstnaceCount = { 0 };
+		Vec3 vScale = { 0.f, 0.f, 0.f};
 		Vec2 vSize = { 0.f, 0.f };
 		Vec3 vCenter = { 0.f, 0.f, 0.f };
 		Vec3 vPivot = { 0.f, 0.f, 0.f };
@@ -35,7 +44,7 @@ public:
 		float m_fStartSpeeds = { 1.f };
 		Vec2 vLifeTime = { 0.f, 0.f };
 		_bool isLoop = { false };
-		_bool isRandomSeed = { false };
+		_uint iRandomFlags = { E_RANDOM_FLAG::RAND_NONE};
 		CModel*	pModel = { nullptr };
 		CGameObject* pOwner = { nullptr };
 		CComputeShader* pComputeShader = { nullptr };

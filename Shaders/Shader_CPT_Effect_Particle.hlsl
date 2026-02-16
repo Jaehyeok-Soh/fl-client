@@ -125,10 +125,7 @@ void CS_Main(int3 dtid : SV_DispatchThreadID)
     //   방향 * 시간 * 속도를 곱해 위치 업데이트
         currentData.matTransform._41_42_43 += vDir * g_InputB.fTimeDelta * g_InputB.fStartSpeed;
     }
-    
-    {
-        
-    }
+   
 
 //  루프(리셋) 처리
     if (g_InputB.bIsLoop && currentData.vLifeTime.x >= currentData.vLifeTime.y)

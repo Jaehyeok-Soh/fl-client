@@ -250,9 +250,6 @@
     <Filter Include="02. GameObjects\Effect\Container">
       <UniqueIdentifier>{5cbb3ccc-552b-479f-82e0-5cd9dc822d14}</UniqueIdentifier>
     </Filter>
-    <Filter Include="02. GameObjects\Effect\Part">
-      <UniqueIdentifier>{8320a8aa-cc55-458d-b417-eee159924dcd}</UniqueIdentifier>
-    </Filter>
     <Filter Include="06. ImGui\01. Panel\Effect">
       <UniqueIdentifier>{dcfafedc-a3a5-47ae-a71f-86669a2e7b2c}</UniqueIdentifier>
     </Filter>
@@ -264,6 +261,9 @@
     </Filter>
     <Filter Include="06. ImGui\01. Panel\Effect\Character_Animation">
       <UniqueIdentifier>{688cc652-9f97-4696-84b4-b6e136bf48fd}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02. GameObjects\Effect\Part">
+      <UniqueIdentifier>{8320a8aa-cc55-458d-b417-eee159924dcd}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
