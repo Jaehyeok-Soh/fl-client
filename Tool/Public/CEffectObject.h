@@ -108,7 +108,8 @@ private:
     _bool     m_bIsStarted = { false }; // 타임 딜레이 지났는지에 대한 bool값
 
     //  ========= 회전 속도 ===========
-    Vec3 m_vAccumulatedRotation = { 0.f, 0.f, 0.f };
+    Vec3      m_vAccumulatedRotation = { 0.f, 0.f, 0.f };
+    Vec3      m_vFinalGravity = { 0.f, 0.f, 0.f }; 
 
     //  ========== 현재 이펙트 sprite Number  ===========
 private:

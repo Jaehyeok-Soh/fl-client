@@ -454,38 +454,7 @@ void CParticle_System_Panel::Draw_ParticleSystem(CToolObject* pGo)
 			ImGui::TreePop();
 		}
 
-		// ===========  파티클 중력 계산  ==============
-
-		if (ImGui::CollapsingHeader("Physics / Gravity"))
-		{
-			ImGui::Spacing();
-
-			// 중력 배수
-			// 0이면 무중력, 1이면 표준 중력, -1이면 반중력(위로 솟구침)
-			ImGui::AlignTextToFramePadding();
-			ImGui::Text("Gravity Modifier");
-			ImGui::SameLine(140);
-			ImGui::SetNextItemWidth(-1.0f);
-			if (ImGui::DragFloat("##GravityModifier", &m_tCurrentDesc.Data._Effect_GravityModifier, 0.05f, -10.f, 10.f, "%.2f x g"))
-			{
-				// 실제 중력값에 배수를 곱해서 갱신한다.
-				m_tCurrentDesc.Data._Effect_Gravity_Value = m_tCurrentDesc.Data._Effect_GravityModifier * 9.81f;
-				m_bModified |= true;
-			}
-
-			ImGui::AlignTextToFramePadding();
-			ImGui::Text("Gravity Direction");
-			ImGui::SameLine(140);
-			ImGui::SetNextItemWidth(-1.0f);
-			if (ImGui::DragFloat3("##GravityDir", &m_tCurrentDesc.Data._Effect_GravityDir.x, 0.1f, -1.f, 1.f))
-			{
-				m_bModified = true;
-			}
-
-			ImGui::Spacing();
-			ImGui::TextColored(ImVec4(0.7f, 0.7f, 0.7f, 1.f), "Final Gravity: %.2f m/s^2", m_tCurrentDesc.Data._Effect_Gravity_Value);
-			ImGui::Separator();
-		}
+		
 
 
 		// Simulation Speed - 전체 이펙트의 재생 속도 배수입니다. 2라면 2배속으로 빠르게 움직입니다.
@@ -500,6 +469,100 @@ void CParticle_System_Panel::Draw_ParticleSystem(CToolObject* pGo)
 		// Stop Action - 이펙트가 완전히 끝났을 때 해당 오브젝트를 어떻게 처리할지 정한다.
 		// Culling Mode - 카메라 화면 밖에 있을 때 연산을 중단할지 여부를 결정해서 성능을 최적화합니다.
 		// Ring Buffer Mode - 최대 입자 개수가 찼을 때, 가장 오래된 입자를 지우고 새 입자를 만들지 결정한다.
+	}
+
+	// ===============================//
+   //		Physics / Gravity	     //
+  // ===============================//
+  
+	// ===========  파티클 중력 계산  ==============
+
+	if (ImGui::CollapsingHeader("Physics / Gravity"))
+	{
+		ImGui::Spacing();
+
+		// 중력 기본 설정
+		ImGui::AlignTextToFramePadding();
+		ImGui::Text("Gravity Modifier");
+		ImGui::SameLine(140);
+		ImGui::SetNextItemWidth(-1.0f);
+		if (ImGui::DragFloat("##GravityModifier", &m_tCurrentDesc.Data._Effect_GravityModifier, 0.05f, -10.f, 10.f, "%.2f x g"))
+		{
+			m_tCurrentDesc.Data._Effect_Gravity_Value = m_tCurrentDesc.Data._Effect_GravityModifier * 9.81f;
+			m_bModified = true;
+		}
+
+		ImGui::AlignTextToFramePadding();
+		ImGui::Text("Gravity Direction");
+		ImGui::SameLine(140);
+		ImGui::SetNextItemWidth(-1.0f);
+		m_bModified |= ImGui::DragFloat3("##GravityDir", &m_tCurrentDesc.Data._Effect_GravityDir.x, 0.1f, -1.f, 1.f);
+
+		ImGui::Separator();
+
+		// 중력 커브 설정 로직
+		if (ImGui::TreeNode("Gravity Strength Curve"))
+		{
+			m_bModified |= ImGui::Checkbox("Use Gravity Curve", &m_tCurrentDesc.Data._bUseGlobalGravityCurve);
+
+			if (m_tCurrentDesc.Data._bUseGlobalGravityCurve)
+			{
+				ImVec2 canvas_size = ImVec2(ImGui::GetContentRegionAvail().x, 150.0f);
+				ImGui::InvisibleButton("GravityCurveCanvas", canvas_size);
+				ImVec2 canvas_p0 = ImGui::GetItemRectMin();
+				ImVec2 mouse_pos = ImGui::GetMousePos();
+
+				ImDrawList* draw_list = ImGui::GetWindowDrawList();
+				draw_list->AddRectFilled(canvas_p0, ImVec2(canvas_p0.x + canvas_size.x, canvas_p0.y + canvas_size.y), IM_COL32(30, 30, 30, 255));
+
+				auto& pCurveVec = m_tCurrentDesc.Data._vecGlobalGravityCurve; // DTO 벡터 연결
+				ImU32 lineColor = IM_COL32(100, 200, 255, 255); // 중력은 시원한 하늘색으로
+
+				for (size_t i = 0; i < pCurveVec.size(); ++i)
+				{
+					ImVec2 point_pos = ImVec2(
+						canvas_p0.x + pCurveVec[i].fTimeKey * canvas_size.x,
+						canvas_p0.y + (1.0f - pCurveVec[i].fValue) * canvas_size.y
+					);
+
+					// 삭제 (Ctrl + 좌클릭)
+					float dist = sqrtf(powf(mouse_pos.x - point_pos.x, 2) + powf(mouse_pos.y - point_pos.y, 2));
+					if (dist < 7.0f && ImGui::IsMouseClicked(ImGuiMouseButton_Left) && ImGui::GetIO().KeyCtrl)
+					{
+						pCurveVec.erase(pCurveVec.begin() + i);
+						m_bModified = true;
+						break;
+					}
+
+					// 선 그리기
+					if (i < pCurveVec.size() - 1)
+					{
+						ImVec2 next_point = ImVec2(
+							canvas_p0.x + pCurveVec[i + 1].fTimeKey * canvas_size.x,
+							canvas_p0.y + (1.0f - pCurveVec[i + 1].fValue) * canvas_size.y
+						);
+						draw_list->AddLine(point_pos, next_point, lineColor, 2.0f);
+					}
+					draw_list->AddCircleFilled(point_pos, 3.0f, IM_COL32(255, 255, 255, 255));
+				}
+
+				// 점 추가 (우클릭)
+				if (ImGui::IsItemHovered() && ImGui::IsMouseClicked(ImGuiMouseButton_Right))
+				{
+					DTO::Gravity_CurveKey newKey;
+					newKey.fTimeKey = (mouse_pos.x - canvas_p0.x) / canvas_size.x;
+					newKey.fValue = (1.0f - (mouse_pos.y - canvas_p0.y) / canvas_size.y);
+					pCurveVec.push_back(newKey);
+					std::sort(pCurveVec.begin(), pCurveVec.end(), [](auto& a, auto& b) { return a.fTimeKey < b.fTimeKey; });
+					m_bModified = true;
+				}
+			}
+			ImGui::TreePop();
+		}
+
+		ImGui::Spacing();
+		ImGui::TextColored(ImVec4(0.7f, 0.7f, 0.7f, 1.f), "Final Base Gravity: %.2f m/s^2", m_tCurrentDesc.Data._Effect_Gravity_Value);
+		ImGui::Separator();
 	}
 
 	// ==================//
@@ -750,16 +813,7 @@ void CParticle_System_Panel::Draw_ParticleSystem(CToolObject* pGo)
 
 		if (ImGui::TreeNode("Shape_EffectList##Effect_List"))
 		{
-			vector<string> m_pShapeList;
-			m_pShapeList.clear();
-
-			m_pShapeList.push_back("NONE");
-			m_pShapeList.push_back("DROP");
-			m_pShapeList.push_back("RISE");
-			m_pShapeList.push_back("SPREAD");
-			m_pShapeList.push_back("STRAIGHT");
-			m_pShapeList.push_back("SPIRAL");
-			m_pShapeList.push_back("DNA");
+			vector<string> m_pShapeList = {"NONE", "DROP", "RISE", "SPREAD", "STRAIGHT", "SPIRAL", "DNA","GATHER", "FOUNTAIN"};
 
 			std::vector<const char*> iTems;
 			iTems.reserve(static_cast<int>(m_pShapeList.size()));
@@ -771,15 +825,16 @@ void CParticle_System_Panel::Draw_ParticleSystem(CToolObject* pGo)
 			{
 				m_bModified |= true;
 
-
 				switch (m_iSelectedShapeIdx) {
-				case 0: m_tCurrentDesc.Data._Effect_ShapeType = ENUM_TO_UINT(DTO::E_SHAPETYPE::NONE); break;
-				case 1: m_tCurrentDesc.Data._Effect_ShapeType = ENUM_TO_UINT(DTO::E_SHAPETYPE::DROP); break;
-				case 2: m_tCurrentDesc.Data._Effect_ShapeType = ENUM_TO_UINT(DTO::E_SHAPETYPE::RISE); break;
-				case 3: m_tCurrentDesc.Data._Effect_ShapeType = ENUM_TO_UINT(DTO::E_SHAPETYPE::SPREAD); break;
-				case 4: m_tCurrentDesc.Data._Effect_ShapeType = ENUM_TO_UINT(DTO::E_SHAPETYPE::STRAIGHT); break;
-				case 5: m_tCurrentDesc.Data._Effect_ShapeType = ENUM_TO_UINT(DTO::E_SHAPETYPE::SPIRAL); break;
-				case 6: m_tCurrentDesc.Data._Effect_ShapeType = ENUM_TO_UINT(DTO::E_SHAPETYPE::DNA); break;
+				case ENUM_TO_UINT(DTO::E_SHAPETYPE::NONE): m_tCurrentDesc.Data._Effect_ShapeType = ENUM_TO_UINT(DTO::E_SHAPETYPE::NONE); break;
+				case ENUM_TO_UINT(DTO::E_SHAPETYPE::DROP): m_tCurrentDesc.Data._Effect_ShapeType = ENUM_TO_UINT(DTO::E_SHAPETYPE::DROP); break;
+				case ENUM_TO_UINT(DTO::E_SHAPETYPE::RISE): m_tCurrentDesc.Data._Effect_ShapeType = ENUM_TO_UINT(DTO::E_SHAPETYPE::RISE); break;
+				case ENUM_TO_UINT(DTO::E_SHAPETYPE::SPREAD): m_tCurrentDesc.Data._Effect_ShapeType = ENUM_TO_UINT(DTO::E_SHAPETYPE::SPREAD); break;
+				case ENUM_TO_UINT(DTO::E_SHAPETYPE::STRAIGHT): m_tCurrentDesc.Data._Effect_ShapeType = ENUM_TO_UINT(DTO::E_SHAPETYPE::STRAIGHT); break;
+				case ENUM_TO_UINT(DTO::E_SHAPETYPE::SPIRAL): m_tCurrentDesc.Data._Effect_ShapeType = ENUM_TO_UINT(DTO::E_SHAPETYPE::SPIRAL); break;
+				case ENUM_TO_UINT(DTO::E_SHAPETYPE::DNA): m_tCurrentDesc.Data._Effect_ShapeType = ENUM_TO_UINT(DTO::E_SHAPETYPE::DNA); break;
+				case ENUM_TO_UINT(DTO::E_SHAPETYPE::GATHER): m_tCurrentDesc.Data._Effect_ShapeType = ENUM_TO_UINT(DTO::E_SHAPETYPE::GATHER); break;
+				case ENUM_TO_UINT(DTO::E_SHAPETYPE::FOUNTAIN): m_tCurrentDesc.Data._Effect_ShapeType = ENUM_TO_UINT(DTO::E_SHAPETYPE::FOUNTAIN); break;
 				}
 			}
 
@@ -789,7 +844,7 @@ void CParticle_System_Panel::Draw_ParticleSystem(CToolObject* pGo)
 				return;
 			}
 
-			const char* shapeNames[] = { "NONE", "DROP", "RISE", "SPREAD", "STRAIGHT", "SPIRAL", "DNA" };
+			const char* shapeNames[] = { "NONE", "DROP", "RISE", "SPREAD", "STRAIGHT", "SPIRAL", "DNA", "GATHER", "FOUNTAIN" };
 			int currentIndex = (int)m_tCurrentDesc.Data._Effect_ShapeType;
 
 			ImGui::Spacing();

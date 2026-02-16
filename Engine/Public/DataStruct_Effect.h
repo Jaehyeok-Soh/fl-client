@@ -22,7 +22,17 @@ enum class E_TEXTURETYPE {
     DISSOLVE = 7,
 };
 enum class E_EffectSystemType { NONE = 0, Particle, ForceField, Line, Trail };
-enum class E_SHAPETYPE { NONE = 0, DROP, RISE, SPREAD, STRAIGHT, SPIRAL, DNA };
+enum class E_SHAPETYPE {
+    NONE = 0,
+    DROP,
+    RISE,
+    SPREAD,
+    STRAIGHT,
+    SPIRAL,
+    DNA,
+    GATHER,   // 중앙으로 모이기
+    FOUNTAIN  // 분수 효과
+};
 enum class E_SIMULATION_SPACE { NONE = 0, LOCAL, WORLD };
 enum class E_EMISSION_TYPE { BOX = 0, CIRCLE, SPHERE, CONE };
 enum class EEffectType : _uint{ EFFECT_CONTAINER, EFFECT_PARTS, END};

@@ -96,6 +96,7 @@ private:
 
     //  ========= 회전 속도 ===========
     Vec3       m_vAccumulatedRotation = { 0.f, 0.f, 0.f };
+    Vec3      m_vFinalGravity = { 0.f, 0.f, 0.f };
 
     //  ========== 현재 이펙트 sprite Number  ===========
 private:

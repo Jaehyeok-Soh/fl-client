@@ -226,14 +226,14 @@ HRESULT CVIBuffer_Particle_Mesh::Set_ResizeBuffer_SpecificRandom()
 		// 1. 크기(Size) 결정
 		// 매쉬의 경우 vSize.y를 기본 배율로 사용하고 계시네요.
 		_float fScale = m_tParticleDesc.vSize.y;
-		if (iFlags & E_RANDOM_FLAG::RAND_SIZE)
+		if (iFlags & DTO::E_RANDOM_FLAG::RAND_SIZE)
 		{
 			fScale = m_pGameInstance->Rand_Float(m_tParticleDesc.vSize.x, m_tParticleDesc.vSize.y);
 		}
 
 		// 2. 수명(LifeTime) 결정
 		_float fMaxLifeTime = m_tParticleDesc.vLifeTime.y;
-		if (iFlags & E_RANDOM_FLAG::RAND_LIFE)
+		if (iFlags & DTO::E_RANDOM_FLAG::RAND_LIFE)
 		{
 			fMaxLifeTime = m_pGameInstance->Rand_Float(m_tParticleDesc.vLifeTime.x, m_tParticleDesc.vLifeTime.y);
 		}
@@ -250,7 +250,7 @@ HRESULT CVIBuffer_Particle_Mesh::Set_ResizeBuffer_SpecificRandom()
 		// 3. 위치(Position) 결정
 		SimpleMath::Vector3 vPos = m_tParticleDesc.vCenter;
 
-		if (iFlags & E_RANDOM_FLAG::RAND_POS)
+		if (iFlags & DTO::E_RANDOM_FLAG::RAND_POS)
 		{
 			// 기존 매쉬 에미션 타입별 랜덤 로직 수행
 			switch (m_tParticleDesc.EmissionFlagType)

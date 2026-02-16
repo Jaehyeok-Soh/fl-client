@@ -112,9 +112,24 @@ void CS_Main(int3 dtid : SV_DispatchThreadID)
     
     if (g_InputB.iMoveState == GATHER)
     {
-        // Spread와 반대로 Pivot에서 입자 위치를 빼는 게 아니라, 입자 위치에서 Pivot을 향하게 함
-        float3 vDir = normalize(g_InputB.vPivot - input.vTranslation.xyz);
-        currentData.matTransform._41_42_43 += vDir * g_InputB.fTimeDelta * g_InputB.fStartSpeed;
+        // 목표 지점(중앙) 및 현재 위치 파악
+        float3 vTargetPos = g_InputB.vPivot;
+        float3 vCurPos = currentData.matTransform._41_42_43;
+
+        // 남은 시간 계산 (수명 - 경과시간)
+        float fRemainingTime = max(currentData.vLifeTime.y - currentData.vLifeTime.x, 0.01f);
+
+        // 목적지까지 남은 거리 벡터
+        float3 vToTarget = vTargetPos - vCurPos;
+
+        // 남은 시간 동안 중앙에 도착하기 위한 속도 계산 (v = s / t)
+        float3 vRequiredVelocity = vToTarget / fRemainingTime;
+
+        // 위치 업데이트
+        currentData.matTransform._41_42_43 += vRequiredVelocity * g_InputB.fTimeDelta;
+        
+        // 팁: 중앙에 거의 다 왔을 때(수명 90% 이상) 작아지게 하고 싶다면 
+        // Vertex Shader에서 LifeRatio를 이용해 스케일을 줄여주면 더 예쁩니다.
     }
 
     // FOUNTAIN: 분수처럼 솟구쳤다가 중력에 의해 낙하 (포물선)

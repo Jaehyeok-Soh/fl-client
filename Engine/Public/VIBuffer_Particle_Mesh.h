@@ -26,8 +26,6 @@ public:
 	virtual void Set_ParticleDesc(const PARTICLE_ORIGIN_DESC& desc) override;
 
 private:
-	//virtual HRESULT Set_ResizeBuffer_UseRandomSeed();
-	//virtual HRESULT Set_ResizeBuffer_NoneUseRandomSeed();
 	virtual HRESULT Set_ResizeBuffer_SpecificRandom();
 
 	virtual HRESULT Set_Instance_Buffer();
