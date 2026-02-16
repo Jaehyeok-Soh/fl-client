@@ -32,6 +32,14 @@ public:
 	void Awake();
 	void Update(_float fTimeDelta);
 
+	void Ready_Event();
+	void Release_Event();
+	void CallbackEvent(const AnimNotifyKey& key);
+
+/// <summary>
+/// Animation tool
+/// </summary>
+public:
 	vector<DTO::ATTACKEVENT>& GetEvents() { return m_tDesc.attackEvents; }
 	
 	void Modify_AttackOverlap(_uint eventIdx, DTO::ATTACKEVENT event);
@@ -39,7 +47,6 @@ public:
 
 private:
 	void GetAnimation();
-	void CheckAnim();
 
 	void Ready_OverlapInfo();
 
@@ -56,8 +63,8 @@ private:
 	vector<CActiveAttackOverlap*> m_activeEvents;
 	std::queue<CActiveAttackOverlap*> m_eventPool;
 
-	_uint m_iPrevAnimIndex = {};
-	_float m_fPrevTrackPosition = {};
+	// event
+	DelegateHandle m_EventHandle;
 
 public:
 	static CPhysicsAttackOverlap* Create(void* pArg);

@@ -22,7 +22,7 @@ namespace Engine
 
 	struct AnimNotifyKey
 	{
-		EAnimNotifyId eID{ EAnimNotifyId::CollisionOn };
+		EAnimNotifyId eID{ EAnimNotifyId::Hitbox };
 		float fTrackPosition{ 0.f };
 
 		unsigned int  iParam0{ 0 };

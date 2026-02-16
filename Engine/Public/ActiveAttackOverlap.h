@@ -50,7 +50,7 @@ private:
 	PxTransform m_pxTransform = {};
 	_float m_fSumTime = {};
 	_float m_fSumTickTime = {};
-	DTO::HITBOX_DESC* m_tHitboxDesc = { nullptr };
+	DTO::HITBOX_DESC* m_tHitboxDesc;
 	
 	Enum m_eState = { Enum::WAIT };
 

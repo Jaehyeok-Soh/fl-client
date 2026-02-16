@@ -337,6 +337,9 @@ HRESULT CAnimTool_Manager::Save_AttackOverlap(fs::path path, string strAnimTag, 
 	if (pAttackOverlapDoc == nullptr)
 		return E_FAIL;
 
+	for (auto& event : m_tEventInfo.vecAttackEvents)
+		event.strAnimTag = Engine_Utils::ToString(m_tAnimControllInfo.pModel->Get_AnimationName(event.iAnimIndex));
+
 	DTO::ATTACKOVERLAP_DESC tData{};
 	tData.strTag = m_tAnimControllInfo.modelPath.stem().string();
 	tData.iNumPool = iPool;

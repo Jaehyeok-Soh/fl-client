@@ -70,8 +70,6 @@ void CPhysicsAttackOverlap::Awake()
 
 void CPhysicsAttackOverlap::Update(_float fTimeDelta)
 {
-	CheckAnim();
-
 	vector<_uint> finishedIndex;
 	_uint curIndex = {};
 
@@ -91,6 +89,58 @@ void CPhysicsAttackOverlap::Update(_float fTimeDelta)
 			iter++;
 		}
 	}
+}
+
+void CPhysicsAttackOverlap::Ready_Event()
+{
+	//m_EventHandle = m_pOwnerModel->OnNotify.Subscribe(&CPhysicsAttackOverlap::CallbackEvent);
+	m_EventHandle = m_pOwnerModel->OnNotify.Subscribe(
+		[this](const AnimNotifyKey& key)
+		{
+			this->CallbackEvent(key);
+		});
+}
+
+void CPhysicsAttackOverlap::Release_Event()
+{
+	m_pOwnerModel->OnNotify.Unsubscribe(m_EventHandle);
+}
+
+void CPhysicsAttackOverlap::CallbackEvent(const AnimNotifyKey& key)
+{
+	//struct AnimNotifyKey
+	//{
+	//	EAnimNotifyId eID{ EAnimNotifyId::Hitbox };
+	//	float fTrackPosition{ 0.f };
+
+	//	unsigned int  iParam0{ 0 }; // 이벤트 인덱스
+	//	unsigned int  iParam1{ 0 }; // 애니메이션 인덱스
+	//	unsigned int  iParam2{ 0 };
+	//	unsigned int  iParam3{ 0 };
+	//	float		  fParam0{ 0.0f };
+	//	float		  fParam1{ 0.0f };
+	//	bool		  bParam0{ false };
+	//	bool		  bParam1{ false };
+	//	string		  strParam{ "" };
+	//};
+
+	DTO::ATTACKEVENT& event = m_tDesc.attackEvents[key.iParam0];
+	if (event.iAnimIndex != key.iParam1)
+		return;
+
+	if (m_eventPool.empty())
+		return;
+
+	if (event.tHitboxDesc.geometry.getType() == -1)
+		return;
+
+	auto& a = event.tHitboxDesc.geometry.any();
+
+	auto eventInstance = m_eventPool.front();
+	m_eventPool.pop();
+
+	eventInstance->Set(&event.tHitboxDesc, *m_pOwnerMatrix, m_pOwner);
+	m_activeEvents.push_back(eventInstance);
 }
 
 void CPhysicsAttackOverlap::Modify_AttackOverlap(_uint eventIdx, DTO::ATTACKEVENT event)
@@ -153,44 +203,23 @@ void CPhysicsAttackOverlap::GetAnimation()
 	Safe_AddRef(m_pOwnerModel);
 }
 
-void CPhysicsAttackOverlap::CheckAnim()
-{
-	_int curAnimIndex = m_pOwnerModel->Get_CurrentAnimationIndex();
-	_float curAnimTrackPosition = m_pOwnerModel->Get_AnimTrackPosition();
-
-	if (m_iPrevAnimIndex != curAnimIndex)
-	{
-		m_iPrevAnimIndex = curAnimIndex;
-		m_fPrevTrackPosition = 0.f;
-	}
-
-	for (auto& attackDesc : m_tDesc.attackEvents)
-	{
-		if (attackDesc.iAnimIndex == curAnimIndex)
-		{
-			if (m_fPrevTrackPosition <= attackDesc.fStartTrackPosition
-				&& curAnimTrackPosition >= attackDesc.fStartTrackPosition)
-			{
-				if (m_eventPool.empty())
-					continue;
-
-				if (attackDesc.tHitboxDesc.geometry.getType() == -1)
-					continue;
-
-				auto& event = m_eventPool.front();
-				m_eventPool.pop();
-				
-				event->Set(&attackDesc.tHitboxDesc, *m_pOwnerMatrix, m_pOwner);
-				m_activeEvents.push_back(event);
-			}
-		}
-	}
-
-	m_fPrevTrackPosition = curAnimTrackPosition;
-}
-
 void CPhysicsAttackOverlap::Ready_OverlapInfo()
 {
+	Ready_Event();
+
+	string animTag;
+	wstring wAnimTag;
+
+	auto& animations = m_pOwnerModel->Get_Animations();
+	auto findTag = [&animTag](CModelAnimation* anim) {
+		return anim->Get_Name() == Engine_Utils::ToWString(animTag);
+		};
+
+	auto wFindTag = [&wAnimTag](CModelAnimation* anim) {
+		return anim->Get_Name() == wAnimTag;
+		};
+
+	_uint eventIdx = { 0 };
 	for (auto& event : m_tDesc.attackEvents)
 	{
 		PHYSICSCOLLIDER_DESC desc;
@@ -235,6 +264,49 @@ void CPhysicsAttackOverlap::Ready_OverlapInfo()
 		event.tHitboxDesc.matOffset = Matrix::CreateTranslation(event.tHitboxDesc.vOffset);
 
 		event.tHitboxDesc.filterCallback = m_pFilterCallback;
+
+		animTag = event.strAnimTag;
+		auto animIter = std::find_if(animations.begin(), animations.end(), findTag);
+		
+		_int animIdx = m_pOwnerModel->Get_AnimationIndex(Engine_Utils::ToWString(animTag));
+
+		// 재할당
+		if (animIdx != -1)
+			event.iAnimIndex = animIdx;
+		else
+		{
+			wAnimTag = m_pOwnerModel->Get_AnimationName(event.iAnimIndex);
+			animIter = std::find_if(animations.begin(), animations.end(), wFindTag);
+			//animIdx = m_pOwnerModel->Get_AnimationIndex(wAnimTag);
+		}
+
+		AnimNotifyKey key{};
+		key.fTrackPosition = event.fStartTrackPosition;
+		key.iParam0 = eventIdx;
+		key.iParam1 = event.iAnimIndex;
+
+		if (animIter != animations.end())
+		{
+			auto notiKeys = (*animIter)->Get_Notifies();
+
+			if (notiKeys.size() != 0)
+			{
+				notiKeys.push_back(key);
+				(*animIter)->Set_Notifies(notiKeys);
+			}
+			else
+			{
+				vector<AnimNotifyKey> newkeys;
+				newkeys.push_back(key);
+				(*animIter)->Set_Notifies(newkeys);
+			}
+		}
+		else
+		{
+
+		}
+
+		eventIdx++;
 	}
 }
 
