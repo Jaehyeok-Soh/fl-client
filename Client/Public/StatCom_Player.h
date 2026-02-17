@@ -133,7 +133,7 @@ public:
 	}
 
 public:
-	void Set_AttackState(_uint iState, _bool bOn); // Attack_State 을 통해 넣을것
+	_bool Set_AttackState(_uint iState, _bool bOn); // Attack_State 을 통해 넣을것
 	void Add_ComboCount();
 	void Sub_DashCount();
 	void Set_Timer(TIMER_TYPE eTimerType, _bool bTimerOn) {
