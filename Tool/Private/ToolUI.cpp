@@ -222,11 +222,10 @@ HRESULT CToolUI::Ready_Components(TOOLUI_DESC* pDesc)
 HRESULT CToolUI::Bind_ShaderResources()
 {
     CShader* pShader = Get_Component<CShader>();
+	pShader->Set_Pass(m_iShaderPass);
 
     if (FAILED(Get_Component<CTransform>()->Bind_ShaderResource(pShader)))
         return E_FAIL;
-
-	pShader->Set_Pass(m_iShaderPass);
  	if (FAILED(Get_Component<CTexture>()->Bind_ShaderResourceBuffer(pShader)))
 		return E_FAIL;
 
@@ -246,7 +245,8 @@ HRESULT CToolUI::Bind_ShaderResources()
 		return E_FAIL;
 	if (FAILED(pShader->Get_Variable("g_fProgressRatio")->SetRawValue(&m_fTestProgress, 0, sizeof(_float))))
 		return E_FAIL;
-
+	if (FAILED(pShader->Get_Variable("g_fBrightness")->SetRawValue(&m_fBrightness, 0, sizeof(_float))))
+		return E_FAIL;
 	if(m_eClassType == DTO::EUIClassType::UI_TEXT)
 	{
 		Vec2 fontPos = Vec2{ m_vRenderPos.x, m_vRenderPos.y };

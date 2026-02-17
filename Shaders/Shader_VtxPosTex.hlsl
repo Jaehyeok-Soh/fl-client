@@ -23,7 +23,7 @@ float2 ApplyFlip(float2 Uv)
 
 float3 SRGBToLinear(float3 c)
 {
-    return pow(saturate(c), 2.2f); // 간이식 (정확 sRGB는 piecewise지만 보통 이걸로 충분)
+    return pow(saturate(c), 2.2f);
 }
 
 PS_OUT PS_MAIN(PS_IN_POS_TEX input)
@@ -38,6 +38,8 @@ PS_OUT PS_MAIN(PS_IN_POS_TEX input)
     vBaseColor.a *= g_fAlphaRatio;
     if (vBaseColor.a < 0.001f)
         discard;
+    
+    vBaseColor.rgb *= g_fBrightness;
     output.vColor = vBaseColor;
     return output;
 }
@@ -61,6 +63,8 @@ PS_OUT PS_COLOR(PS_IN_POS_TEX input)
     float3 c0 = SRGBToLinear(g_vColorTint.rgb);
     float3 c1 = SRGBToLinear(g_vGradiateColorTint.rgb);
     vBaseColor.rgb = lerp(c0, c1, t);
+    vBaseColor.rgb *= g_fBrightness;
+    
     vBaseColor.a *= g_fAlphaRatio;
     if (vBaseColor.a < 0.001f)
         discard;
@@ -98,10 +102,12 @@ PS_OUT PS_PROGRESS(PS_IN_POS_TEX input)
     if (Mask <= 0.0f)
         discard;
     
-    vBaseColor.a *= g_fAlphaRatio;
-    if (vBaseColor.a < 0.2f)
-        discard;
+    vBaseColor.rgb *= g_fBrightness;
     
+    vBaseColor.a *= g_fAlphaRatio;
+    if (vBaseColor.a < 0.1f)
+        discard;
+
     output.vColor = vBaseColor;
     return output;
 }
@@ -129,8 +135,9 @@ PS_OUT PS_DISOLVE(PS_IN_POS_TEX input)
         float3 c1 = SRGBToLinear(g_vGradiateColorTint.rgb);
         vBaseColor.rgb = lerp(c0, c1, t);
     }
-    
     float Edge = smoothstep(g_fProgressRatio, g_fProgressRatio + 0.1f, Noise);
+    vBaseColor.rgb *= g_fBrightness;
+    
     output.vColor = vBaseColor;
     output.vColor.a *= Edge;
     output.vColor.a *= Alpha;

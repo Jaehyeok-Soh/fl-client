@@ -54,10 +54,11 @@ HRESULT CUIObject::Initialize(void* pArg)
 	if (FAILED(Add_Component<CShader>(0, L"Prototype_Component_Shader_VtxPosTex", pArg)))
 		return E_FAIL;
 
-	m_isPreVisible	= m_isVisible;
-	m_isVisibleTrigger = m_isVisible;
-	m_isPreActive	= m_isActive;
-	m_isPreInteract = m_isInteract;
+	m_isPreVisible		= m_isVisible;
+	m_isVisibleTrigger	= m_isVisible;
+	m_isPreActive		= m_isActive;
+	m_isPreInteract		= m_isInteract;
+	m_isInteractTrigger	= m_isInteract;
 
 	return S_OK;
 }
@@ -91,11 +92,13 @@ void CUIObject::Update(const _float fTimeDelta)
 		else
 			Initialize_InActivate_Event();
 	}
-	if (m_isPreInteract != m_isInteract)
+
+	if (m_isPreInteract != m_isInteractTrigger)
 	{
 		m_isPlaying_InteractEvent = true;
+		m_isInteract = true;
 
-		if (m_isInteract)
+		if (m_isInteractTrigger)
 			Initialize_Interactable_Event();
 		else
 			Initialize_NonInteractable_Event();
@@ -112,9 +115,9 @@ void CUIObject::Update(const _float fTimeDelta)
 			Initialize_InVisible_Event();
 	}
 
-	m_isPreActive	= m_isActive;
-	m_isPreInteract = m_isInteract;
-	m_isPreVisible	= m_isVisibleTrigger;
+	m_isPreActive = m_isActive;
+	m_isPreInteract = m_isInteractTrigger;
+	m_isPreVisible = m_isVisibleTrigger;
 }
 
 void CUIObject::Update_Late(const _float fTimeDelta)
@@ -125,17 +128,24 @@ void CUIObject::Update_Late(const _float fTimeDelta)
 	{
 		if (m_isActive)		m_isPlaying_ActiveEvent = !Tick_Activate_Event(fTimeDelta);
 		else				m_isPlaying_ActiveEvent = !Tick_InActivate_Event(fTimeDelta);
-
 	}
+
 	if (m_isPlaying_InteractEvent)
 	{
-		if (m_isInteract)	m_isPlaying_InteractEvent = !Tick_Interactable_Event(fTimeDelta);
-		else				m_isPlaying_InteractEvent = !Tick_NonInteractable_Event(fTimeDelta);
+		if (m_isInteractTrigger)	m_isPlaying_InteractEvent = !Tick_Interactable_Event(fTimeDelta);
+		else						m_isPlaying_InteractEvent = !Tick_NonInteractable_Event(fTimeDelta);
+
+		if (!m_isInteractTrigger && !m_isPlaying_InteractEvent)
+		{
+			m_isInteract = false;
+			m_isInteractTrigger = false;
+		}
 	}
+
 	if (m_isPlaying_VisibleEvent)
 	{
 		if (m_isVisibleTrigger)	m_isPlaying_VisibleEvent = !Tick_Visible_Event(fTimeDelta);
-		else				m_isPlaying_VisibleEvent = !Tick_InVisible_Event(fTimeDelta);
+		else					m_isPlaying_VisibleEvent = !Tick_InVisible_Event(fTimeDelta);
 
 		if (!m_isVisibleTrigger && !m_isPlaying_VisibleEvent)
 		{

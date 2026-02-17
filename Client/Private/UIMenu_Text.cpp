@@ -109,7 +109,7 @@ HRESULT CUIMenu_Text::Bind_ShaderResources()
 
 void CUIMenu_Text::OnUIEvent(ETriggerEventType eEvent, CGenericUI* pSender)
 {
-	if (!m_isInteract)
+	if (!m_isActive)
 		return;
 
 	if (eEvent == ETriggerEventType::PRESS_ENTER)
@@ -133,11 +133,16 @@ void CUIMenu_Text::Initialize_Visible_Event()
 {
 	m_vFontColor = Vec4{ 0.f ,0.f ,0.f ,0.f };
 
-	if(m_eTextSubClassType == DTO::EUITextSubClassType::MENU_ESC_TEXT)
-		m_isInteract = true;
-	else 
-		m_isInteract = false;
-
+	if (m_eTextSubClassType == DTO::EUITextSubClassType::MENU_ESC_TEXT)
+	{
+		m_isActive = true;
+		m_isFin_Event = false;
+	}
+	else
+	{
+		m_isActive = false;
+		m_isFin_Event = false;
+	}
 
 	m_fTimeAcc = 0.f;
 	m_fDelayTimeAcc = 0.f;
@@ -146,7 +151,8 @@ void CUIMenu_Text::Initialize_Visible_Event()
 void CUIMenu_Text::Initialize_InVisible_Event()
 {
 	m_vFontColor = m_vOriginFontColor;
-	m_isInteract = false;
+	m_isActive = false;
+	m_isFin_Event = false;
 	m_fTimeAcc = 0.f;
 	m_fDelayTimeAcc = 0.f;
 }
@@ -164,7 +170,8 @@ _bool CUIMenu_Text::Tick_Visible_Event(const _float fTimeDelta)
 	{
 		t = 1.f;
 		m_vFontColor = m_vOriginFontColor;
-		m_isInteract = true;
+		m_isActive = true;
+		m_isFin_Event = true;
 		return true;
 	}
 
@@ -177,7 +184,8 @@ _bool CUIMenu_Text::Tick_Visible_Event(const _float fTimeDelta)
 
 _bool CUIMenu_Text::Tick_InVisible_Event(const _float fTimeDelta)
 {
-	m_isInteract = true;
+	m_isActive = true;
+	m_isFin_Event = true;
 	return true;
 }
 

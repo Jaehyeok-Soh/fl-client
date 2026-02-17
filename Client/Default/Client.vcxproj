@@ -244,6 +244,7 @@
     <ClInclude Include="..\Public\UIJust_Image.h" />
     <ClInclude Include="..\Public\UIMenu_Exit_Trigger.h" />
     <ClInclude Include="..\Public\UIMenu_Image.h" />
+    <ClInclude Include="..\Public\UIMenu_OutLine.h" />
     <ClInclude Include="..\Public\UIMenu_Text.h" />
     <ClInclude Include="..\Public\UIMenu_Trigger.h" />
     <ClInclude Include="..\Public\UIMini_Map.h" />
@@ -367,6 +368,7 @@
     <ClCompile Include="..\Private\UIJust_Image.cpp" />
     <ClCompile Include="..\Private\UIMenu_Exit_Trigger.cpp" />
     <ClCompile Include="..\Private\UIMenu_Image.cpp" />
+    <ClCompile Include="..\Private\UIMenu_OutLine.cpp" />
     <ClCompile Include="..\Private\UIMenu_Text.cpp" />
     <ClCompile Include="..\Private\UIMenu_Trigger.cpp" />
     <ClCompile Include="..\Private\UIMini_Map.cpp" />

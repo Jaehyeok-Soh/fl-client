@@ -317,6 +317,7 @@ inline std::string UITextSubClassTypeToString(EUITextSubClassType e)
 	MENU_BG,
 	MENU_ICON,
 	MENU_ICON_BG,
+	MENU_ICON_OUTLINE,
 	MENU_END,
 
 	END
@@ -351,6 +352,7 @@ NLOHMANN_JSON_SERIALIZE_ENUM(EUIDImageSubClassType,
 		{ EUIDImageSubClassType::MENU_BG,				"MENU_BG" },
 		{ EUIDImageSubClassType::MENU_ICON,				"MENU_ICON" },
 		{ EUIDImageSubClassType::MENU_ICON_BG,			"MENU_ICON_BG" },
+		{ EUIDImageSubClassType::MENU_ICON_OUTLINE,		"MENU_ICON_OUTLINE" },
 		{ EUIDImageSubClassType::MENU_END,				"MENU_END" },
 
 		{ EUIDImageSubClassType::END,					"END" }
@@ -385,6 +387,7 @@ NLOHMANN_JSON_SERIALIZE_ENUM(EUIDImageSubClassType,
 	if (str == "MENU_BG")				return EUIDImageSubClassType::MENU_BG;
 	if (str == "MENU_ICON")				return EUIDImageSubClassType::MENU_ICON;
 	if (str == "MENU_ICON_BG")			return EUIDImageSubClassType::MENU_ICON_BG;
+	if (str == "MENU_ICON_OUTLINE")		return EUIDImageSubClassType::MENU_ICON_OUTLINE;
 	if (str == "MENU_END")				return EUIDImageSubClassType::MENU_END;
 
 	if (str == "END")					return EUIDImageSubClassType::END;
@@ -422,6 +425,7 @@ inline const char* UIDImageSubTypeToString(EUIDImageSubClassType type)
 	case EUIDImageSubClassType::MENU_BG:		return "MENU_BG";
 	case EUIDImageSubClassType::MENU_ICON:		return "MENU_ICON";
 	case EUIDImageSubClassType::MENU_ICON_BG:	return "MENU_ICON_BG";
+	case EUIDImageSubClassType::MENU_ICON_OUTLINE:return "MENU_ICON_OUTLINE";
 	case EUIDImageSubClassType::MENU_END:		return "MENU_END";
 
 	case EUIDImageSubClassType::END:			return "END";

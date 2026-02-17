@@ -170,13 +170,10 @@ void CUIMini_Map::Update(const _float fTimeDelta)
 void CUIMini_Map::Update_Late(const _float fTimeDelta)
 {
 	Super::Update_Late(fTimeDelta);
-
-
 }
 
 void CUIMini_Map::Ready_Before_Render(const _float fTimeDelta)
 {
-	Acting_By_InteractState();
 	Super::Ready_Before_Render(fTimeDelta);
 }
 
@@ -274,6 +271,9 @@ HRESULT CUIMini_Map::Bind_ShaderResources()
 
 void CUIMini_Map::OnUIEvent(ETriggerEventType eEvent, CGenericUI* pSender)
 {
+	if (!m_isActive)
+		return;
+
 	switch (eEvent)
 	{
 	case Client::ETriggerEventType::HOVER_ENTER:
@@ -296,13 +296,14 @@ void CUIMini_Map::OnUIEvent(ETriggerEventType eEvent, CGenericUI* pSender)
 
 void CUIMini_Map::Initialize_Visible_Event()
 {
+	m_isFin_Event = false;
+	m_isActive = false;
 	m_fAlpha_Ratio = 0.f;
 	m_fTimeAcc = 0.f;
 }
 
 void CUIMini_Map::Initialize_InVisible_Event()
 {
-
 }
 
 _bool CUIMini_Map::Tick_Visible_Event(const _float fTimeDelta)
@@ -312,6 +313,8 @@ _bool CUIMini_Map::Tick_Visible_Event(const _float fTimeDelta)
 	if (t >= 1.f)
 	{
 		m_fAlpha_Ratio = 1.f;
+		m_isFin_Event = true;
+		m_isActive = true;
 		return true;
 	}
 

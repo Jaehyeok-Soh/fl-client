@@ -110,6 +110,9 @@ HRESULT CUIPlayerStat_Text::Bind_ShaderResources()
 
 void CUIPlayerStat_Text::OnUIEvent(ETriggerEventType eEvent, CGenericUI* pSender)
 {
+	if (!m_isActive)
+		return;
+
 	if (eEvent == ETriggerEventType::PRESS_ENTER)
 	{
 		if (m_isVisible)
@@ -121,6 +124,8 @@ void CUIPlayerStat_Text::OnUIEvent(ETriggerEventType eEvent, CGenericUI* pSender
 
 void CUIPlayerStat_Text::Initialize_Visible_Event()
 {
+	m_isActive = false;
+	m_isFin_Event = false;
 	m_vFontColor = Vec4{ 0.f ,0.f ,0.f ,0.f };
 	m_fTimeAcc = 0.f;
 }
@@ -143,6 +148,8 @@ _bool CUIPlayerStat_Text::Tick_Visible_Event(const _float fTimeDelta)
 	if (m_vFontColor.w > 1.f)
 	{
 		m_vFontColor.w = 1.f;
+		m_isActive = true;
+		m_isFin_Event = true;
 		return true;
 	}
 	return false;

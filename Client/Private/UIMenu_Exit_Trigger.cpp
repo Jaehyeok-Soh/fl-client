@@ -66,6 +66,7 @@ void CUIMenu_Exit_Trigger::Update_Priority(const _float fTimeDelta)
 	Super::Update_Priority(fTimeDelta);
 	if (Engine_Utils::Has_Flag(m_iInteractState, EUIEvent_Flag::PRESS_ENTER))
 	{
+		m_eCurTriggerType = ETriggerEventType::PRESS_ENTER;
 		Fire_ToTargets(ETriggerEventType::PRESS_ENTER);
 	}
 }
@@ -82,7 +83,7 @@ void CUIMenu_Exit_Trigger::Update_Late(const _float fTimeDelta)
 
 void CUIMenu_Exit_Trigger::Ready_Before_Render(const _float fTimeDelta)
 {
-
+	Check_FinEvent(m_eCurTriggerType);
 	Super::Ready_Before_Render(fTimeDelta);
 }
 
@@ -106,6 +107,9 @@ HRESULT CUIMenu_Exit_Trigger::Render()
 
 void CUIMenu_Exit_Trigger::Fire_ToTargets(ETriggerEventType eEvent)
 {
+	if (!m_isActive)
+		return;
+
 	for (auto* pUI : m_pTriggerUI[ENUM_TO_UINT(eEvent)])
 		if (pUI) pUI->OnUIEvent(eEvent, this);
 
@@ -122,16 +126,8 @@ void CUIMenu_Exit_Trigger::OnUIEvent(ETriggerEventType eEvent, CGenericUI* pSend
 	case Client::ETriggerEventType::HOVER_EXIT:
 		break;
 	case Client::ETriggerEventType::PRESS_ENTER:
-		if (m_isVisible)
-			Set_Invisible();
-		else
-			Set_Visible();
-
-		if (m_isInteract)
-			Set_NonInteractable();
-		else
-			Set_Interactable();
-
+		if (m_isInteract)	Set_NonInteractable();
+		else				Set_Interactable();
 		break;
 	case Client::ETriggerEventType::PRESS_EXIT:
 		break;
@@ -139,6 +135,28 @@ void CUIMenu_Exit_Trigger::OnUIEvent(ETriggerEventType eEvent, CGenericUI* pSend
 	default:
 		break;
 	}
+}
+
+void CUIMenu_Exit_Trigger::Initialize_Interactable_Event()
+{
+	m_fDelayTimeAcc = 0.f;
+}
+
+void CUIMenu_Exit_Trigger::Initialize_NonInteractable_Event()
+{
+}
+
+_bool CUIMenu_Exit_Trigger::Tick_Interactable_Event(const _float fTimeDelta)
+{
+	m_fDelayTimeAcc += fTimeDelta;
+	if (m_fDelayTimeAcc > m_fDelay)
+		return true;
+	return false;
+}
+
+_bool CUIMenu_Exit_Trigger::Tick_NonInteractable_Event(const _float fTimeDelta)
+{
+	return true;
 }
 
 HRESULT CUIMenu_Exit_Trigger::Ready_Components(UI_MENU_EXIT_TRIGGER_DESC* pDesc)
