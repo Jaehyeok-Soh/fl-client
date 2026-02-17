@@ -358,7 +358,7 @@ HRESULT CMainPlayer::Ready_Ability()
 
     {
         CStatComponent::STATCOMP_DESC desc = {};
-        desc.iHealth = 100;
+        desc.iMaxHp = 100;
         if (FAILED(Add_Script_Component(L"StatComponent", L"Prototype_Component_Stat", &desc)))
             return E_FAIL;
 

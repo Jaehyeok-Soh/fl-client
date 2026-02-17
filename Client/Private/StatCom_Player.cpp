@@ -187,7 +187,7 @@ void CStatCom_Player::Sub_Hp(_int iHealth)
 		// 디펜스가 음수가 되었다면 이제서야 health를 뺌
 		if (m_vDefense.x < 0)
 		{
-			m_iHealth += m_vDefense.x;
+			m_iHealth += (_uint)m_vDefense.x;
 
 			m_vDefense.x = 0;
 		}

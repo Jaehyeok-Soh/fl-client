@@ -90,8 +90,6 @@ public:
 			return m_tQSkill;
 		case STAT_TYPE::SKILLE:
 			return m_tESkill;
-		default:
-			return;
 		}
 	};
 
@@ -104,9 +102,7 @@ public:
 		case STAT_TYPE::DEFENSE:
 			return m_vMentality;
 		case STAT_TYPE::MENTAL:
-			return Vec2(m_iHealth, m_iMaxHealth);
-		default:
-			return;
+			return Vec2((_float)m_iHealth, (_float)m_iMaxHealth);
 		}
 	}
 
