@@ -179,9 +179,11 @@
     <ClCompile Include="..\Private\Camera.cpp" />
     <ClCompile Include="..\Private\CameraMan.cpp" />
     <ClCompile Include="..\Private\Camera_Manager.cpp" />
+    <ClCompile Include="..\Private\DataDocument_EffectEvent.cpp" />
     <ClCompile Include="..\Private\ComputeShader.cpp" />
     <ClCompile Include="..\Private\DataDocument_AttackOverlap.cpp" />
     <ClCompile Include="..\Private\DataStruct_AttackOverlap.cpp" />
+    <ClCompile Include="..\Private\DataStruct_EffectEvent.cpp" />
     <ClCompile Include="..\private\FxEffectAsset.cpp" />
     <ClCompile Include="..\private\FxShaderVariant.cpp" />
     <ClCompile Include="..\Private\InstanceMesh.cpp" />
@@ -326,8 +328,10 @@
     <ClInclude Include="..\Public\Camera.h" />
     <ClInclude Include="..\Public\CameraMan.h" />
     <ClInclude Include="..\Public\Camera_Manager.h" />
+    <ClInclude Include="..\Public\DataDocument_EffectEvent.h" />
     <ClInclude Include="..\Public\DataDocument_AttackOverlap.h" />
     <ClInclude Include="..\Public\DataStruct_AttackOverlap.h" />
+    <ClInclude Include="..\Public\DataStruct_EffectEvent.h" />
     <ClInclude Include="..\public\FxEffectAsset.h" />
     <ClInclude Include="..\public\FxShaderVariant.h" />
     <ClInclude Include="..\Public\InstanceMesh.h" />

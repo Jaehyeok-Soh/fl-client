@@ -50,6 +50,43 @@ struct SSAOKernalDesc
     float2 vPadding;
 };
 
+struct HDRDesc
+{
+    float fExposure;
+    float fGamma;
+    float2 vPadding;
+};
+
+struct BLOOMDesc
+{
+    float2 vInvBloomSize;
+    float fThreshold;
+    float fKnee;
+    float fIntensity;
+    float3 vPadding;
+};
+
+struct OUTLINEDesc
+{
+    float4 vColor;
+    float2 vInvSize;
+    float fThicknessPx;
+    float fOpacity;
+    float fNormalThreshold;
+    float fDepthThreshold;
+    float fNormalStrength;
+    float fDepthStrength;
+    float fFadeStart;
+    float fFadeEnd;
+    float2 vPadding;
+};
+
+struct ObjectInfoDesc
+{
+    uint iObjectID;
+    uint iFlags;
+    float2 vPadding;
+};
 /////////////////
 // ConstBuffer //
 /////////////////
@@ -81,7 +118,22 @@ cbuffer SSAOParamBuffer
 {
     SSAODesc SSAOparam;
 };
-
+cbuffer HDRParamBuffer
+{
+    HDRDesc HDRparam;
+};
+cbuffer BLOOMParamBuffer
+{
+    BLOOMDesc BloomParam;
+};
+cbuffer OUTLINEParamBuffer
+{
+    OUTLINEDesc OutlineParam;
+};
+cbuffer ObjectInfoBuffer
+{
+    ObjectInfoDesc objectInfo;
+};
 //////////
 // Func //
 //////////
@@ -147,5 +199,31 @@ float4 Compute_Emissive(float2 _vUV)
 float4 Compute_StandardLight(float3 _vWorldSpace_Normal, float2 _vUV, float3 _vWorldPosition)
 {
     return Compute_Diffuse_Ambient(_vWorldSpace_Normal, _vUV) + Compute_Specular(_vUV, _vWorldSpace_Normal, _vWorldPosition) /* + Compute_Emissive(_vUV)*/;
+}
+
+uint UnpackFlags8(uint iPacked)
+{
+    return (iPacked >> 24) & 0xFF;
+}
+uint UnpackID24(uint iPacked)
+{
+    return iPacked & 0x00FFFFFF;
+}
+
+bool HasOutline(uint iFlags8)
+{
+    return (iFlags8 & 1u) != 0;
+}
+
+uint PackObjectInfo(uint iID, uint iFlags)
+{
+    uint iID_24 = iID & 0x00FFFFFF;
+    uint iFlags_8 = iFlags & 0x000000FF;
+    return (iFlags_8 << 24) | iID_24;
+}
+uint LoadObjectInfo(float2 vUV, float2 vInvSize)
+{
+    int2 iPix = int2(vUV / vInvSize);
+    return g_RenderTargetObjInfoTexture.Load(int3(iPix, 0));
 }
 #endif

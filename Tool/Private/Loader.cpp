@@ -136,15 +136,19 @@ HRESULT CLoader::Loading_For_Map()
 
 
 
-	///* Map Data Model */
-	//CUEMapDataLoader* pMapDataLoader = CUEMapDataLoader::Create(m_pDevice,m_pDeviceContext);
-	//if (pMapDataLoader == nullptr) return E_FAIL;
-	//if (FAILED(pMapDataLoader->Make_Prototype(L"../../Resources/Models/Map/DevScene/Model/")))
-	//{
-	//	Safe_Release(pMapDataLoader);
-	//	return E_FAIL;
-	//}
-	//Safe_Release(pMapDataLoader);
+	/* Model Prototype */
+	CUEMapDataLoader* pMapDataLoader = CUEMapDataLoader::Create(m_pDevice,m_pDeviceContext);
+	if (pMapDataLoader == nullptr) return E_FAIL;
+	if (FAILED(pMapDataLoader->Make_Prototype(ENUM_TO_UINT(ELevelType::MAP), L"../../Resources/Models/Map/")))
+	{
+		Safe_Release(pMapDataLoader);
+		return E_FAIL;
+	}
+	Safe_Release(pMapDataLoader);
+
+
+	/* Texture Prototype */
+	//if(FAILED())
 
 
 	//=================
@@ -373,6 +377,44 @@ HRESULT CLoader::Loading_Textures_Effect(const wstring& wstrFolder)
 
 			wstring wstrFileName = path.stem().wstring();
 
+			wstring wstrFolderName = path.parent_path().filename().wstring();
+			wstring wstrResourceTag = L"Texture_" + wstrFileName;
+
+			CTextureBase::RESOURCE_BASE_DESC desc = {};
+			desc.wstrName = wstrFileName;
+			desc.wstrPath = path.wstring();
+
+			if (FAILED(m_pGameInstance->Add_Resource(wstrResourceTag,
+				CTextureBase::Create(m_pDevice, m_pDeviceContext, &desc))))
+			{
+				continue;
+			}
+		}
+	}
+
+	return S_OK;
+}
+
+HRESULT CLoader::Loading_Textures_Map(const wstring& wstrFolder)
+{
+	namespace fs = std::filesystem;
+
+	if (fs::exists(wstrFolder) == false)
+		return E_FAIL;
+
+	for (const auto& entry : fs::recursive_directory_iterator(wstrFolder))
+	{
+		if (entry.is_regular_file())
+		{
+			auto path = entry.path();
+
+			wstring wstrExtension = path.extension().wstring();
+			for (auto& c : wstrExtension) c = towlower(c);
+
+			if (wstrExtension == L".hdr")
+				continue;
+
+			wstring wstrFileName = path.stem().wstring();
 			wstring wstrFolderName = path.parent_path().filename().wstring();
 			wstring wstrResourceTag = L"Texture_" + wstrFileName;
 

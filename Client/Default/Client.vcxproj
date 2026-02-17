@@ -159,6 +159,7 @@
   <ItemGroup>
     <ClInclude Include="..\Public\Body.h" />
     <ClInclude Include="..\Public\Builder_AttackOverlap.h" />
+    <ClInclude Include="..\Public\Builder_EffectEvent.h" />
     <ClInclude Include="..\public\Builder_Example.h" />
     <ClInclude Include="..\Public\Builder_Map.h" />
     <ClInclude Include="..\Public\Builder_UI.h" />
@@ -170,7 +171,7 @@
     <ClInclude Include="..\Public\Client_EventDefine.h" />
     <ClInclude Include="..\Public\ColliderPart.h" />
     <ClInclude Include="..\Public\Effect.h" />
-    <ClInclude Include="..\Public\EffectBuilder.h" />
+    <ClInclude Include="..\Public\Builder_Effect.h" />
     <ClInclude Include="..\Public\EffectObject.h" />
     <ClInclude Include="..\Public\GenericUI.h" />
     <ClInclude Include="..\Public\imconfig.h" />
@@ -185,6 +186,7 @@
     <ClInclude Include="..\Public\imgui_internal.h" />
     <ClInclude Include="..\public\ImGui_Layout.h" />
     <ClInclude Include="..\public\ImGui_PlayerInspector.h" />
+    <ClInclude Include="..\public\ImGui_ShaderLayout.h" />
     <ClInclude Include="..\public\ImGui_StateLayout.h" />
     <ClInclude Include="..\Public\imgui_stdlib.h" />
     <ClInclude Include="..\public\ImGui_TransformLayout.h" />
@@ -254,6 +256,7 @@
   <ItemGroup>
     <ClCompile Include="..\Private\Body.cpp" />
     <ClCompile Include="..\Private\Builder_AttackOverlap.cpp" />
+    <ClCompile Include="..\Private\Builder_EffectEvent.cpp" />
     <ClCompile Include="..\private\Builder_Example.cpp" />
     <ClCompile Include="..\Private\Builder_Map.cpp" />
     <ClCompile Include="..\Private\Builder_UI.cpp" />
@@ -261,7 +264,7 @@
     <ClCompile Include="..\Private\Canvas.cpp" />
     <ClCompile Include="..\Private\ColliderPart.cpp" />
     <ClCompile Include="..\Private\Effect.cpp" />
-    <ClCompile Include="..\Private\EffectBuilder.cpp" />
+    <ClCompile Include="..\Private\Builder_Effect.cpp" />
     <ClCompile Include="..\Private\EffectObject.cpp" />
     <ClCompile Include="..\Private\GenericUI.cpp" />
     <ClCompile Include="..\Private\imgui.cpp">
@@ -292,6 +295,7 @@
     <ClCompile Include="..\private\ImGui_Inspector.cpp" />
     <ClCompile Include="..\private\ImGui_Layout.cpp" />
     <ClCompile Include="..\private\ImGui_PlayerInspector.cpp" />
+    <ClCompile Include="..\private\ImGui_ShaderLayout.cpp" />
     <ClCompile Include="..\private\ImGui_StateLayout.cpp" />
     <ClCompile Include="..\Private\imgui_stdlib.cpp">
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">NotUsing</PrecompiledHeader>

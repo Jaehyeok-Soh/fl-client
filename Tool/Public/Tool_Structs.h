@@ -10,43 +10,32 @@ namespace Tool
         Vec3 vScale{1.f,1.f ,1.f};
         Quat vQuat{0.f,0.f,0.f,1.f};
         Vec3 vPosition{0.f,0.f,0.f};
-
-        Matrix WorldMatrix{Matrix::Identity};
-
         Vec3 vScale_Isolated{}; //TEST: 소재혁 임시 추가
     public:
-        Matrix Get_World()
+        Matrix Get_World() const
         {
-            return WorldMatrix;
+            return  Matrix::CreateScale(vScale) * Matrix::CreateFromQuaternion(vQuat) * Matrix::CreateTranslation(vPosition);
         }
-        void Update_World()
-        {
-            WorldMatrix = Matrix::CreateScale(vScale) * Matrix::CreateFromQuaternion(vQuat) * Matrix::CreateTranslation(vPosition);
-        }
-        void Update_World(const Matrix& WorldMatrix)
-        {
-            this->WorldMatrix = WorldMatrix;
-            this->WorldMatrix.Decompose(this->vScale , this->vQuat, this->vPosition);
-        }
-        void Update_World(const Vec3& vScale , const Quat&  vQuat , const Vec3& vPosition)
+        void Update_SRT(const Vec3& vScale , const Quat&  vQuat , const Vec3& vPosition)
         {
             this->vScale = vScale;     this->vQuat = vQuat; this->vPosition = vPosition;
-            Update_World();
+        }
+        void Update_SRT(const Matrix& WorldMatrix)
+        {
+            Matrix Mat = WorldMatrix;
+            Mat.Decompose(this->vScale, this->vQuat, this->vPosition);
         }
         void Update_Scale(const Vec3& vScale)
         {
             this->vScale = vScale;
-            Update_World();
         }
         void Update_Position(const Vec3& vPosition)
         {
             this->vPosition = vPosition;
-            Update_World();
         }
         void Update_Quat(const Quat& vQuat)
         {
             this->vQuat = vQuat;
-            Update_World();
         }
     }SRT_DATA;
 

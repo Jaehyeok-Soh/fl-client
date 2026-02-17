@@ -19,8 +19,8 @@ _bool CPicking_ToolManager::Picking()
 		return false;
 	if (ImGuizmo::IsUsing())
 		return false;
-	if (!MOUSE_LBUTTON_DOWN)
-		return false;
+	//if (!MOUSE_LBUTTON_DOWN)
+	//	return false;
 
 
 	if (CImGui_ToolManager::GetInstance()->IsOutofViewport())

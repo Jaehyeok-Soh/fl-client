@@ -1,6 +1,7 @@
 #include "pch.h"
 #include "ImGui_GlobalInspector.h"
 #include "ImGui_FrustrumLayout.h"
+#include "ImGui_ShaderLayout.h"
 #include "GameObject.h"
 #include "GameInstance.h"
 
@@ -14,6 +15,9 @@ HRESULT CImGui_GlobalInspector::Initialize()
 	if (FAILED(Add_Layout(ELayoutType::Frustrum, CImGui_FrustrumLayout::Create())))
 		return E_FAIL;
 
+	if (FAILED(Add_Layout(ELayoutType::Shader, CImGui_ShaderLayout::Create())))
+		return E_FAIL;
+
 	return S_OK;
 }
 
@@ -22,6 +26,7 @@ void CImGui_GlobalInspector::Render(CGameObject* pGo)
 	if (ImGui::Begin(m_strLabel.c_str()))
 	{
 		Render_Layout(ELayoutType::Frustrum, nullptr);
+		Render_Layout(ELayoutType::Shader, nullptr);
 	}
 
 	ImGui::End();

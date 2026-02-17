@@ -128,6 +128,7 @@ void CMainPlayer::Update_Priority(const _float fTimeDelta)
 void CMainPlayer::Update(const _float fTimeDelta)
 {
     Super::Update(fTimeDelta);
+
 }
 
 void CMainPlayer::Update_Late(const _float fTimeDelta)

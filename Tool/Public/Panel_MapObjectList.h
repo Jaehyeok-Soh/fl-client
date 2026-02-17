@@ -7,13 +7,14 @@ class CCameraMan;
 class CCamera;
 class CModel;
 struct STATICOBJECT_DESC;
+struct LANDSCAPE_DESC;
 NS_END
 
 
 NS_BEGIN(Tool)
 
 struct tagOverrideMaterials;
-
+class CMapToolManager;
 class CImGui_Layout_Transform;
 class CMapObject;
 
@@ -53,8 +54,13 @@ private:
 private:
 	
 	void						ImGuiUpdate_StaticObject_Desc(STATICOBJECT_DESC* pDesc);
+	void						ImGuiUpdate_LandScape_Desc(LANDSCAPE_DESC* pDesc);
 
 private:
+	void						Compute_LandScape_TextureUV(_uint iLandScapeIndex , OUT Vec2& vOut_LT , OUT Vec2& vOut_RB );
+
+private:
+	CMapToolManager*			m_pMapToolManager{nullptr};
 
 	CGameInstance*				m_pGameInstance{nullptr};
 
@@ -89,9 +95,20 @@ private:
 	string						m_strOriginMtlName{};
 	string						m_strOriginMtlPath{};
 
+
+	std::array<ID3D11ShaderResourceView*, ENUM_TO_SZET(EMaterialTextureType::MAX_COUNT)>	m_arrayMtl_SRVs{};
+	_uint						m_iSelectMtSlot{};
+
 	ImVec2						m_vTextureInfoTableSize{ ImVec2(0,50) };
 
 	uintptr_t					m_uptrPreSelectObject{0};
+
+
+	/* Land Scape 전용 Index값 계산하기 위한 멤버변수들 */
+	/* 전체 Land Scape 크기 */
+	/* 가로 세로 개수 */
+	_int	m_iLandScape_Col{1}; // 세로
+	_int	m_iLandScape_Row{1}; // 가로
 
 public:
 	static  CPanel_MapObjectList* Create(const _char* pLabel, CLevel* pOwner, ID3D11Device* pDevice, ID3D11DeviceContext* pDeviceContext);
