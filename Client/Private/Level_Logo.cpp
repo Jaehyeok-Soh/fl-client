@@ -226,6 +226,10 @@ HRESULT CLevel_Logo::Ready_Player_Layer(const wstring& wstrLayerTag)
 
 HRESULT CLevel_Logo::Ready_UI_Layer(const wstring& wstrLayerTag)
 {
+	if (FAILED(CUI_Manager::GetInstance()->Bind_Trigger(ENUM_TO_UINT(ELevelType::LOGO))))
+		return E_FAIL;
+
+	CUI_Manager::GetInstance()->Clear_TriggerUI();
 	return S_OK;
 }
 

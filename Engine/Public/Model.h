@@ -148,6 +148,9 @@ public:
 	_float								Get_AnimNormalizedTime() const;
 	_float								Get_AnimElpasedTimeSeconds() const;
 
+	_float								Get_AnimTickPerSecond() const;
+	void								Set_AnimTickPerSecond(_float fValue);
+
 	wstring								Get_CurrentAnimationName() const;
 	wstring								Get_AnimationName(_uint iIdex) const;
 
@@ -172,6 +175,15 @@ public:
 	void								Get_BoneMatrix(CComputeShader* pGetBoneCS);
 
 	// load func
+
+	// for animation tool
+	AnimationPlayState					Get_AnimPlayState() { return m_eCurrentAnimationState; }
+	vector<class CBone*>&				Get_Bones() { return m_vecBones; }
+	vector<class CModelAnimation*>&		Get_Animations() { return m_vecAnimations; }
+	_bool								Is_Loop() { return m_isAnimLoop; }
+	void								Set_LoopState(_bool bValue) { m_isAnimLoop = bValue; }
+	void								Set_AnimTrackPosition(_float fValue);
+
 private:
 	HRESULT								Load_StaticModel(const wstring& wstrModelName);
 	HRESULT								Load_NonAnimModel(const wstring &wstrModelName);

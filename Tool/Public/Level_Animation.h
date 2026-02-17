@@ -7,13 +7,13 @@ NS_BEGIN(Tool)
 
 class CLevel_Animation final : public CLevel
 {
-	using Super = CLevel;
-
+public:
 	struct Event
 	{
 		enum Enum
 		{
 			LOAD,
+			LOAD_OVERLAP_SCRIPT,
 			END
 		};
 	};
@@ -27,9 +27,13 @@ class CLevel_Animation final : public CLevel
 			MODEL,
 			ANIMATION,
 			PARTS,
+			DESCRIPTION,
 			END
 		};
 	};
+
+private:
+	using Super = CLevel;
 
 private:
 	explicit CLevel_Animation(ID3D11Device* pDevice, ID3D11DeviceContext* pDeviceContext);
@@ -55,20 +59,33 @@ private:
 	void	Update_Elements(const _float fTimeDelta);
 	void	Render_Elements();
 
+	void	Render_Grid();
+
 private:
 	void Load_AnimModel(fs::path animModelPath);
 	void Create_AnimModel(fs::path animModelPath);
 	wstring Create_AnimModelPrototype(fs::path animModelPath);
+	void SetAnimationInfo(fs::path animModelPath);
 
 private:
 	class CImGui_ToolManager*	m_pImGuiManager		= { nullptr };
 	class CPicking_ToolManager* m_pPickingManager	= { nullptr };
+	class CAnimTool_Manager*	m_pAnimToolManager = { nullptr };
 	class CToolObject*			m_pSelectedObject	= { nullptr };
-	std::array<DelegateHandle, ENUM_TO_SZET(Event::END)> m_EventHandles;
+	std::array<DelegateHandle, Event::END> m_EventHandles;
+
 
 private:
 	wstring m_wstrLayer = { L"Animation_Model_Layer" };
 	array<class CImGui_Panel*, Elements::END> m_GuiElements = { nullptr };
+
+#ifdef _DEBUG
+private:
+	PrimitiveBatch<DirectX::VertexPositionColor>* m_pBatch = { nullptr };
+	BasicEffect* m_pEffect = { nullptr };
+	ID3D11InputLayout* m_pInputLayout = { nullptr };
+	ID3D11DepthStencilState* m_pDSS = { nullptr };
+#endif
 
 public:
 	static CLevel_Animation* Create(ID3D11Device* pDevice, ID3D11DeviceContext* pDeviceContext);

@@ -65,6 +65,7 @@ void to_json(json& j, const TUI_TriggerData& data)
 		{"Type", TUI_TriggerData::eType},
 		{"strTag", data.strTag},
 		{"strOwnerName", data.strOwnerName},
+		{"eTriggerSubClassType", data.eTriggerSubClassType},
 		{"vecHoverEnterTriggerCanvas",  data.vecHoverEnterTriggerCanvas},
 		{"vecHoverEnterTriggerUI",      data.vecHoverEnterTriggerUI},
 		{"vecHoverExitTriggerCanvas",	data.vecHoverExitTriggerCanvas},
@@ -80,6 +81,7 @@ void from_json(const json& j, TUI_TriggerData& data)
 {
 	data.strTag = "";
 	data.strOwnerName = "";
+	data.eTriggerSubClassType = EUITriggerSubClassType::NONE_OWNER;
 	data.vecHoverEnterTriggerCanvas.clear();
 	data.vecHoverEnterTriggerUI.clear();
 	data.vecHoverExitTriggerCanvas.clear();
@@ -91,6 +93,7 @@ void from_json(const json& j, TUI_TriggerData& data)
 
 	data.strTag						= j.value("strTag", data.strTag);
 	data.strOwnerName				= j.value("strOwnerName", data.strOwnerName);
+	data.eTriggerSubClassType		= j.value("eTriggerSubClassType", data.eTriggerSubClassType);
 	data.vecHoverEnterTriggerCanvas = j.value("vecHoverEnterTriggerCanvas", data.vecHoverEnterTriggerCanvas);
 	data.vecHoverEnterTriggerUI		= j.value("vecHoverEnterTriggerUI", data.vecHoverEnterTriggerUI);
 	data.vecHoverExitTriggerCanvas	= j.value("vecHoverExitTriggerCanvas", data.vecHoverExitTriggerCanvas);
@@ -108,6 +111,7 @@ void to_json(json& j, const TUI_TextData& data)
 		{"Type", TUI_TextData::eType },
 		{"strTag", data.strTag},
 		{"strOwnerName", data.strOwnerName},
+		{"eTextSubClassType", data.eTextSubClassType},
 		{"strFontTag", data.strFontTag},
 		{"strText", data.strText},
 		{"vFontColor", {{ "x", data.vFontColor.x },{ "y", data.vFontColor.y },{ "z", data.vFontColor.z },{ "w", data.vFontColor.w }}},
@@ -120,6 +124,7 @@ void from_json(const json& j, TUI_TextData& data)
 {
 	data.strTag			= "";
 	data.strOwnerName	= "";
+	data.eTextSubClassType = EUITextSubClassType::NONE_OWNER;
 	data.strText		= "No Text";
 	data.strFontTag		= "SemiBold";
 	data.vFontColor.x	= 1.f;
@@ -131,6 +136,7 @@ void from_json(const json& j, TUI_TextData& data)
 
 	data.strTag			= j.value("strTag", data.strTag);
 	data.strOwnerName	= j.value("strOwnerName", data.strOwnerName);
+	data.eTextSubClassType = j.value("eTextSubClassType", data.eTextSubClassType);
 	data.strText		= j.value("strText", data.strText);
 	data.strFontTag		= j.value("strFontTag", data.strFontTag);
 	const json jc		= j.value("vFontColor", json::object());
@@ -158,15 +164,20 @@ void to_json(json& j, const TUI_GenericUIData& data)
 		{ "fPosZ", data.fPosZ },
 		{ "strTextureTag", data.strTextureTag },
 		{ "isVisible", data.isVisible },
+		{ "isInteract", data.isInteract },
+		{ "isActivate", data.isActivate },
 		{ "iComponentFlag", data.iComponentFlag },
 		{ "eSubClassType", data.eSubClassType },
 		{ "isUseColorTint", data.isUseColorTint },
 		{ "vColorTint", {{ "x", data.vColorTint.x },{ "y", data.vColorTint.y },{ "z", data.vColorTint.z },{ "w", data.vColorTint.w }}},
+		{ "vGradiantColorTint", {{ "x", data.vGradiantColorTint.x },{ "y", data.vGradiantColorTint.y },{ "z", data.vGradiantColorTint.z },{ "w", data.vGradiantColorTint.w }}},
 		{ "iShaderPass", data.iShaderPass },
 		{ "iFillDir", data.iFillDir },
 		{ "fDelay", data.fDelay },
 		{ "iFlip", data.iFlip },
 		{ "fAlphaRatio", data.fAlphaRatio },
+		{ "strNoiseTextureTag", data.strNoiseTextureTag },
+		{ "strAlphaMaskTextureTag", data.strAlphaMaskTextureTag },
 	};
 }
 
@@ -183,6 +194,8 @@ void from_json(const json& j, TUI_GenericUIData& data)
 	data.fPosZ				= 0.f;
 	data.strTextureTag		= "";
 	data.isVisible			= true;
+	data.isInteract			= true;
+	data.isActivate			= true;
 	data.iComponentFlag		= 0;
 	data.eSubClassType		= decltype(data.eSubClassType){};
 	data.isUseColorTint		= false;
@@ -190,11 +203,17 @@ void from_json(const json& j, TUI_GenericUIData& data)
 	data.vColorTint.y		= 1.f;
 	data.vColorTint.z		= 1.f;
 	data.vColorTint.w		= 1.f;
+	data.vGradiantColorTint.x = 1.f;
+	data.vGradiantColorTint.y = 1.f;
+	data.vGradiantColorTint.z = 1.f;
+	data.vGradiantColorTint.w = 1.f;
 	data.iShaderPass		= 0;
 	data.iFillDir			= 0;
 	data.fDelay				= 0.f;
 	data.iFlip				= 0;
 	data.fAlphaRatio		= 1.f;
+	data.strNoiseTextureTag = "";
+	data.strAlphaMaskTextureTag = "";
 
 
 	data.eClassType			= j.value("eClassType", data.eClassType);
@@ -208,6 +227,8 @@ void from_json(const json& j, TUI_GenericUIData& data)
 	data.fPosZ				= j.value("fPosZ", data.fPosZ);
 	data.strTextureTag		= j.value("strTextureTag", data.strTextureTag);
 	data.isVisible			= j.value("isVisible", data.isVisible);
+	data.isInteract			= j.value("isInteract", data.isInteract);
+	data.isActivate			= j.value("isActivate", data.isActivate);
 	data.iComponentFlag		= j.value("iComponentFlag", data.iComponentFlag);
 	data.eSubClassType		= j.value("eSubClassType", data.eSubClassType);
 	data.isUseColorTint		= j.value("isUseColorTint", data.isUseColorTint);
@@ -216,11 +237,19 @@ void from_json(const json& j, TUI_GenericUIData& data)
 	data.vColorTint.y		= jt.value("y", data.vColorTint.y);
 	data.vColorTint.z		= jt.value("z", data.vColorTint.z);
 	data.vColorTint.w		= jt.value("w", data.vColorTint.w);
+
+	const json jgt			= j.value("vGradiantColorTint", json::object());
+	data.vGradiantColorTint.x = jgt.value("x", data.vGradiantColorTint.x);
+	data.vGradiantColorTint.y = jgt.value("y", data.vGradiantColorTint.y);
+	data.vGradiantColorTint.z = jgt.value("z", data.vGradiantColorTint.z);
+	data.vGradiantColorTint.w = jgt.value("w", data.vGradiantColorTint.w);
 	data.iShaderPass		= j.value("iShaderPass", data.iShaderPass);
 	data.iFillDir			= j.value("iFillDir", data.iFillDir);
 	data.fDelay				= j.value("fDelay", data.fDelay);
 	data.iFlip				= j.value("iFlip", data.iFlip);
 	data.fAlphaRatio		= j.value("fAlphaRatio", data.fAlphaRatio);
+	data.strNoiseTextureTag = j.value("strNoiseTextureTag", data.strNoiseTextureTag);
+	data.strAlphaMaskTextureTag = j.value("strAlphaMaskTextureTag", data.strAlphaMaskTextureTag);
 }
 
 void to_json(json& j, const TUI_CanvasData& data)

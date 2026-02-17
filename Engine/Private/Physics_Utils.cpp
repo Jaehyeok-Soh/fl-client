@@ -182,65 +182,65 @@ HRESULT CPhysics_Utils::Render(const PxGeometry& geom, const PxTransform& transf
 
 	m_pBatch->Begin();
 
-		Matrix pxMatrix = PxTransformToXMMatrix(transform);
-		XMMATRIX matWorld = XMLoadFloat4x4(&pxMatrix);
+	Matrix pxMatrix = PxTransformToXMMatrix(transform);
+	XMMATRIX matWorld = XMLoadFloat4x4(&pxMatrix);
 
-		switch (geom.getType())
-		{
-		case physx::PxGeometryType::eSPHERE:
-		{
-			PxSphereGeometry sphere = static_cast<const PxSphereGeometry&>(geom);
-			BoundingSphere boundingSphere{};
-			boundingSphere.Radius = sphere.radius;
-			boundingSphere.Center = Vec3(transform.p.x, transform.p.y, transform.p.z);
-			DX::Draw(m_pBatch, boundingSphere);
-		}
+	switch (geom.getType())
+	{
+	case physx::PxGeometryType::eSPHERE:
+	{
+		PxSphereGeometry sphere = static_cast<const PxSphereGeometry&>(geom);
+		BoundingSphere boundingSphere{};
+		boundingSphere.Radius = sphere.radius;
+		boundingSphere.Center = Vec3(transform.p.x, transform.p.y, transform.p.z);
+		DX::Draw(m_pBatch, boundingSphere);
+	}
+	break;
+	case physx::PxGeometryType::ePLANE:
 		break;
-		case physx::PxGeometryType::ePLANE:
+	case physx::PxGeometryType::eCAPSULE:
+	{
+		PxCapsuleGeometry capsule = static_cast<const PxCapsuleGeometry&>(geom);
+		BoundingSphere boundingSphereHead{};
+		boundingSphereHead.Radius = capsule.radius + 0.1f;
+		boundingSphereHead.Center = Vec3(transform.p.x, transform.p.y - 0.1f, transform.p.z);
+		DX::DrawCapsule(m_pBatch, boundingSphereHead, capsule.halfHeight + 0.1f);
+	}
+	break;
+	case physx::PxGeometryType::eBOX:
+	{
+		PxBoxGeometry box = static_cast<const PxBoxGeometry&>(geom);
+		BoundingOrientedBox boundingObb{};
+		boundingObb.Extents = Vec3(box.halfExtents.x, box.halfExtents.y, box.halfExtents.z);
+		boundingObb.Center = Vec3(transform.p.x, transform.p.y, transform.p.z);
+		boundingObb.Orientation = Vec4(transform.q.x, transform.q.y, transform.q.z, transform.q.w);
+		DX::Draw(m_pBatch, boundingObb);
+	}
+	break;
+	case physx::PxGeometryType::eCONVEXCORE:
 		break;
-		case physx::PxGeometryType::eCAPSULE:
-		{
-			PxCapsuleGeometry capsule = static_cast<const PxCapsuleGeometry&>(geom);
-			BoundingSphere boundingSphereHead{};
-			boundingSphereHead.Radius = capsule.radius + 0.1f;
-			boundingSphereHead.Center = Vec3(transform.p.x, transform.p.y - 0.1f, transform.p.z);
-			DX::DrawCapsule(m_pBatch, boundingSphereHead, capsule.halfHeight + 0.1f);
-		}
+	case physx::PxGeometryType::eCONVEXMESH:
 		break;
-		case physx::PxGeometryType::eBOX:
-		{
-			PxBoxGeometry box = static_cast<const PxBoxGeometry&>(geom);
-			BoundingOrientedBox boundingObb{};
-			boundingObb.Extents = Vec3(box.halfExtents.x, box.halfExtents.y, box.halfExtents.z);
-			boundingObb.Center = Vec3(transform.p.x, transform.p.y, transform.p.z);
-			boundingObb.Orientation = Vec4(transform.q.x, transform.q.y, transform.q.z, transform.q.w);
-			DX::Draw(m_pBatch, boundingObb);
-		}
+	case physx::PxGeometryType::ePARTICLESYSTEM:
 		break;
-		case physx::PxGeometryType::eCONVEXCORE:
-			break;
-		case physx::PxGeometryType::eCONVEXMESH:
-			break;
-		case physx::PxGeometryType::ePARTICLESYSTEM:
-			break;
-		case physx::PxGeometryType::eTETRAHEDRONMESH:
-			break;
-		case physx::PxGeometryType::eTRIANGLEMESH:
-			//{
-			//	DX::DrawMesh(m_pBatch, geom, globalPose, matWorld);
-			//}
-			break;
-		case physx::PxGeometryType::eHEIGHTFIELD:
-			break;
-		case physx::PxGeometryType::eCUSTOM:
-			break;
-		case physx::PxGeometryType::eGEOMETRY_COUNT:
-			break;
-		case physx::PxGeometryType::eINVALID:
-			break;
-		default:
-			break;
-		}
+	case physx::PxGeometryType::eTETRAHEDRONMESH:
+		break;
+	case physx::PxGeometryType::eTRIANGLEMESH:
+		//{
+		//	DX::DrawMesh(m_pBatch, geom, globalPose, matWorld);
+		//}
+		break;
+	case physx::PxGeometryType::eHEIGHTFIELD:
+		break;
+	case physx::PxGeometryType::eCUSTOM:
+		break;
+	case physx::PxGeometryType::eGEOMETRY_COUNT:
+		break;
+	case physx::PxGeometryType::eINVALID:
+		break;
+	default:
+		break;
+	}
 
 	m_pBatch->End();
 

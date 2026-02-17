@@ -20,6 +20,11 @@ HRESULT CBone::Initialize(BONE_DESC* pDesc)
     return S_OK;
 }
 
+string CBone::Get_Name() const
+{
+    return string(m_szName);
+}
+
 void CBone::Update_CombinedTransformMatrix(const vector<CBone*>& Bones, const Matrix& PreTransformMatrix)
 {
     if (m_bUpdateCpu)

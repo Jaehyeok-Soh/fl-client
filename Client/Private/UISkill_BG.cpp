@@ -88,32 +88,32 @@ void CUISkill_BG::Update_Late(const _float fTimeDelta)
 
 	if (m_isUseESkillEventStart)
 	{
-		m_vColorTint.w += fTimeDelta * 10.f;
-		if (m_vColorTint.w >= 1.f)
+		m_fAlpha_Ratio += fTimeDelta * 5.f;
+		if (m_fAlpha_Ratio >= 1.f)
 		{
 			m_isUseESkillEventStart = FALSE;
 			m_isUseESkillEvnetEnd = TRUE;
-			m_vColorTint.w = 1.f;
+			m_fAlpha_Ratio = 1.f;
 		}
 	}
 	else if(m_isUseESkillEvnetEnd)
 	{
-		m_vColorTint.w -= fTimeDelta;
-		if (m_vColorTint.w <= 0.f)
+		m_fAlpha_Ratio -= fTimeDelta * 5.f;
+		if (m_fAlpha_Ratio <= 0.f)
 		{
 			m_isUseESkillEvnetEnd = FALSE;
-			m_vColorTint.w = 0.f;
+			m_fAlpha_Ratio = 0.f;
 		}
 	}
 
 	if (m_isUseSkillEventStart)
 	{
-		m_vColorTint.w += fTimeDelta * 10.f;
-		if (m_vColorTint.w >= 1.f)
+		m_fAlpha_Ratio += fTimeDelta * 10.f;
+		if (m_fAlpha_Ratio >= 1.f)
 		{
 			m_isUseSkillEventStart = FALSE;
 			m_isUseSkillEventEnd = TRUE;
-			m_vColorTint.w = 0.8f;
+			m_fAlpha_Ratio = 0.8f;
 		}
 	}
 	else if (m_isUseSkillEventEnd)
@@ -162,7 +162,7 @@ void CUISkill_BG::Trigger_User_Use_Skill()
 		if (m_eDImageSubClass == DTO::EUIDImageSubClassType::PLAYER_Q)
 		{
 			m_isUseSkillEventStart = TRUE;
-			m_vColorTint.w = 0.f;
+			m_fAlpha_Ratio = 0.f;
 			m_fProgress_Ratio = 1.f;
 		}
 	}
@@ -171,7 +171,7 @@ void CUISkill_BG::Trigger_User_Use_Skill()
 		if (m_eDImageSubClass == DTO::EUIDImageSubClassType::PLAYER_Z)
 		{
 			m_isUseSkillEventStart = TRUE;
-			m_vColorTint.w = 0.f;
+			m_fAlpha_Ratio = 0.f;
 			m_fProgress_Ratio = 1.f;
 		}
 	}
@@ -180,10 +180,20 @@ void CUISkill_BG::Trigger_User_Use_Skill()
 		if (m_eDImageSubClass == DTO::EUIDImageSubClassType::PLAYER_DODGE)
 		{
 			m_isUseSkillEventStart = TRUE;
-			m_vColorTint.w = 0.f;
+			m_fAlpha_Ratio = 0.f;
 			m_fProgress_Ratio = 1.f;
 		}
 	}
+}
+
+void CUISkill_BG::Initialize_Visible_Event()
+{
+
+}
+
+_bool CUISkill_BG::Tick_Visible_Event(const _float fTimeDelta)
+{
+	return _bool();
 }
 
 HRESULT CUISkill_BG::Ready_Components(SKILL_BG_DESC* pDesc)
