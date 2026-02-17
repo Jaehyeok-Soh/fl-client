@@ -64,7 +64,7 @@ HRESULT CMainPlayer::Initialize(void* pArg)
     if (FAILED(Super::Initialize(pArg)))
         return E_FAIL;
 
-    Set_Name("Eun_bi");
+    Set_Name("Eun_bi_Main");
 
     if (FAILED(Ready_Ability()))
         return E_FAIL;

@@ -40,7 +40,7 @@ HRESULT CBody::Initialize(void* pArg)
 	if (FAILED(Super::Initialize(pArg)))
 		return E_FAIL;
 
-	Set_Name("Eun_bi");
+	Set_Name("Eun_bi_Parts");
 
 	BODY_DESC* pDesc = static_cast<BODY_DESC*>(pArg);
 	if (FAILED(Ready_Components(pDesc)))

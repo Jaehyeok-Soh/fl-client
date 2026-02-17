@@ -319,6 +319,18 @@
     <Filter Include="07. System\02. Debug_ImGui\Layout\Shader">
       <UniqueIdentifier>{241e78ea-3b24-473b-a83b-6c32e682ad95}</UniqueIdentifier>
     </Filter>
+    <Filter Include="03. GameObject\PartObjects\Monster">
+      <UniqueIdentifier>{dd6c64a1-8604-4ada-acfe-59285f1d7176}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="03. GameObject\PartObjects\Monster\Body">
+      <UniqueIdentifier>{3dceac2b-7154-4065-afb9-c7fa4ca5b1e2}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="03. GameObject\ContainerObjects\Monster\Dummy">
+      <UniqueIdentifier>{2242d811-9797-453a-9ec1-3e7adc70328a}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="03. GameObject\PartObjects\Monster\Body\Dummy">
+      <UniqueIdentifier>{16b3b9d8-c2fc-4110-a516-df3025df7408}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="targetver.h">
@@ -555,9 +567,6 @@
     <ClInclude Include="..\Public\Builder_AttackOverlap.h">
       <Filter>07. System\01. Builder\Builder_AttackOverlap</Filter>
     </ClInclude>
-    <ClInclude Include="..\Public\Monster_Dummy.h">
-      <Filter>03. GameObject\ContainerObjects\Monster</Filter>
-    </ClInclude>
     <ClInclude Include="..\Public\UITrigger.h">
       <Filter>03. GameObject\UIObjects\02.UI\Trigger</Filter>
     </ClInclude>
@@ -611,6 +620,18 @@
     </ClInclude>
     <ClInclude Include="..\public\ImGui_ShaderLayout.h">
       <Filter>07. System\02. Debug_ImGui\Layout\Shader</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\Monster_Base.h">
+      <Filter>03. GameObject\ContainerObjects\Monster</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\Monster_Dummy.h">
+      <Filter>03. GameObject\ContainerObjects\Monster\Dummy</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\Monster_Body_Base.h">
+      <Filter>03. GameObject\PartObjects\Monster\Body</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\Monster_Dummy_Body.h">
+      <Filter>03. GameObject\PartObjects\Monster\Body\Dummy</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -822,9 +843,6 @@
     <ClCompile Include="..\Private\Builder_AttackOverlap.cpp">
       <Filter>07. System\01. Builder\Builder_AttackOverlap</Filter>
     </ClCompile>
-    <ClCompile Include="..\Private\Monster_Dummy.cpp">
-      <Filter>03. GameObject\ContainerObjects\Monster</Filter>
-    </ClCompile>
     <ClCompile Include="..\Private\UITrigger.cpp">
       <Filter>03. GameObject\UIObjects\02.UI\Trigger</Filter>
     </ClCompile>
@@ -896,6 +914,18 @@
     </ClCompile>
     <ClCompile Include="..\private\ImGui_ShaderLayout.cpp">
       <Filter>07. System\02. Debug_ImGui\Layout\Shader</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\Monster_Base.cpp">
+      <Filter>03. GameObject\ContainerObjects\Monster</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\Monster_Dummy.cpp">
+      <Filter>03. GameObject\ContainerObjects\Monster\Dummy</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\Monster_Body_Base.cpp">
+      <Filter>03. GameObject\PartObjects\Monster\Body</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\Monster_Dummy_Body.cpp">
+      <Filter>03. GameObject\PartObjects\Monster\Body\Dummy</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
