@@ -42,9 +42,10 @@ HRESULT CStatComponent::Initialize(void* pArg)
 	m_iMaxHealth			= pDesc->iMaxHp;
 	m_iHealth				= pDesc->iMaxHp;
 
-	m_iMaxHealth			= pDesc->iAttack;
-	m_iHealth				= pDesc->iSheild;
-	m_iHealth				= pDesc->fShildRate;
+	m_iAttack = pDesc->iAttack;
+	m_iSheild = pDesc->iSheild;
+	if (m_iSheild > 0)
+		m_bSheildOn = true;
 
 	return S_OK;
 }

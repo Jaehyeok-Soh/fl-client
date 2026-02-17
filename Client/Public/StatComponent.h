@@ -12,8 +12,6 @@ public:
 		_uint	iMaxHp		= { 0 };
 		_uint	iAttack		= { 0 };
 		_uint	iSheild		= { 0 };
-		_float	fShildRate	= { 0.f };
-
 	}STATCOMP_DESC;
 protected:
 	CStatComponent();
