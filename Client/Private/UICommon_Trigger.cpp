@@ -1,7 +1,7 @@
 #include "pch.h"
 #include "UICommon_Trigger.h"
 #include "Client_Defines.h"
-
+#include <iostream>
 //=================
 // Component
 //=================
@@ -98,8 +98,15 @@ void CUICommon_Trigger::Update_Late(const _float fTimeDelta)
 
 void CUICommon_Trigger::Ready_Before_Render(const _float fTimeDelta)
 {
-	Check_FinEvent(m_eCurTriggerType);
 	Super::Ready_Before_Render(fTimeDelta);
+
+	if (m_strName == "Menu_Exit_Trigger")
+	{
+		if (m_isInteract)
+			std::cout << "true" << std:: endl;
+		else 
+			std::cout << "false" << std::endl;
+	}
 }
 
 HRESULT CUICommon_Trigger::Render()
@@ -140,10 +147,12 @@ void CUICommon_Trigger::OnUIEvent(ETriggerEventType eEvent, CGenericUI* pSender)
 	case Client::ETriggerEventType::PRESS_ENTER:
 		if (m_isInteract)
 		{
+			m_eCurTriggerType = ETriggerEventType::PRESS_ENTER;
 			Set_NonInteractable();
 		}
 		else
 		{
+			m_eCurTriggerType = ETriggerEventType::PRESS_ENTER;
 			Set_Interactable();
 		}
 
@@ -167,10 +176,14 @@ void CUICommon_Trigger::Initialize_NonInteractable_Event()
 
 _bool CUICommon_Trigger::Tick_Interactable_Event(const _float fTimeDelta)
 {
+	_bool isFin = Check_FinEvent(m_eCurTriggerType);
 	m_fDelayTimeAcc += fTimeDelta;
-	if (m_fDelayTimeAcc >= m_fDelay)
+	_bool isDelay = (m_fDelayTimeAcc >= m_fDelay);
+
+	if (isFin && isDelay)
 	{
 		m_isVisible = true;
+		m_eCurTriggerType = ETriggerEventType::END;
 		return true;
 	}
 	return false;

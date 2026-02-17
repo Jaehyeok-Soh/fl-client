@@ -173,17 +173,16 @@ void CUITrigger::OnUIEvent(ETriggerEventType eEvent, CGenericUI* pSender)
 {
 }
 
-void CUITrigger::Check_FinEvent(ETriggerEventType eEvent)
+_bool  CUITrigger::Check_FinEvent(ETriggerEventType eEvent)
 {
 	if (eEvent == ETriggerEventType::END || eEvent == ETriggerEventType::HOVER_ENTER || eEvent == ETriggerEventType::HOVER_EXIT)
-		return;
+		return true;
 
 	for (const auto* pTrigger : m_pTriggerUI[ENUM_TO_UINT(eEvent)])
 	{
 		if (!pTrigger->Get_FinEvent())
 		{
-			m_isInteract = false;
-			return;
+			return false;
 		}
 	}
 
@@ -191,12 +190,10 @@ void CUITrigger::Check_FinEvent(ETriggerEventType eEvent)
 	{
 		if (!pCanvas->Check_FinEvent())
 		{
-			m_isInteract = false;
-			return;
+			return false;
 		}
 	}
-	m_eCurTriggerType = ETriggerEventType::END;
-	m_isInteract = true;
+	return true;
 }
 
 HRESULT CUITrigger::Ready_Components(UI_TRIGGER_DESC* pDesc)

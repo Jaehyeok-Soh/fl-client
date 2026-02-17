@@ -96,8 +96,6 @@ void CUIObject::Update(const _float fTimeDelta)
 	if (m_isPreInteract != m_isInteractTrigger)
 	{
 		m_isPlaying_InteractEvent = true;
-		m_isInteract = true;
-
 		if (m_isInteractTrigger)
 			Initialize_Interactable_Event();
 		else
@@ -135,10 +133,9 @@ void CUIObject::Update_Late(const _float fTimeDelta)
 		if (m_isInteractTrigger)	m_isPlaying_InteractEvent = !Tick_Interactable_Event(fTimeDelta);
 		else						m_isPlaying_InteractEvent = !Tick_NonInteractable_Event(fTimeDelta);
 
-		if (!m_isInteractTrigger && !m_isPlaying_InteractEvent)
+		if (!m_isPlaying_InteractEvent)
 		{
-			m_isInteract = false;
-			m_isInteractTrigger = false;
+			m_isInteract = m_isInteractTrigger;
 		}
 	}
 

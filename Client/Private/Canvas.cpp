@@ -290,14 +290,6 @@ CGenericUI* CCanvas::Calc_TopUI()
 
 		}
 	}
-	if (nullptr != pTopUI)
-	{
-		_string a = pTopUI->Get_Name();
-		std::cout << a << std::endl;
-	}
-	else 
-		std::cout << "nullptr" << std::endl;
-
 	return pTopUI;
 }
 

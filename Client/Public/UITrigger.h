@@ -37,7 +37,7 @@ public:
 
 
 	virtual void OnUIEvent(ETriggerEventType eEvent, CGenericUI* pSender)override;
-	virtual void Check_FinEvent(ETriggerEventType eEvent);
+	virtual _bool Check_FinEvent(ETriggerEventType eEvent);
 
 protected:
 	HRESULT Ready_Components(UI_TRIGGER_DESC* pDesc);
