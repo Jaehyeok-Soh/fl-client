@@ -74,14 +74,11 @@ CModel::CModel(const CModel& rhs)
 	
 	if (m_eType == EModelType::ANIM)
 	{
-		Safe_AddRef(m_pPreSB);
-		Safe_AddRef(m_pCurSB);
-
 		m_vecBoneGroups.reserve(rhs.m_vecBoneGroups.size());
 		for (auto& pBoneGroup : rhs.m_vecBoneGroups)
 		{
 			m_vecBoneGroups.push_back(pBoneGroup);
-			Safe_AddRef(pBoneGroup.pIndexBuffer);
+
 		}
 
 		//if (m_bStageBones)
@@ -1380,14 +1377,18 @@ void CModel::Free()
 	{
 		for (auto& pBoneGroup : m_vecBoneGroups)
 		{
-			Safe_Release(pBoneGroup.pIndexBuffer);
-
-			if (!IsClone())
+			if (IsClone())
+			{
 				Safe_Release(pBoneGroup.pInputGroupSB_SRV);
+				Safe_Release(pBoneGroup.pIndexBuffer);
+			}
 		}
 
-		Safe_Release(m_pPreSB);
-		Safe_Release(m_pCurSB);
+		if (IsClone())
+		{
+			Safe_Release(m_pPreSB);
+			Safe_Release(m_pCurSB);
+		}
 
 		if (m_bStageBones)
 		{
