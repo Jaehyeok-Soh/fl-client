@@ -41,8 +41,6 @@ HRESULT CState_ComboBase::Start(void* pArg, _bool bForce)
 	m_iComboCount	= 1;
 	m_tKeyTimer.fMaxTime = m_ComboTimes[0];
 
-	//static_cast<CPlayer*>(Get_OwnerObject())->Change_Weapon(CPlayer::Part::SWORD, ENUM_TO_UINT(CWeapon::State::HAND));
-
 	Change_Weapon(CPlayer::Part::SWORD, ENUM_TO_UINT(CWeapon::State::HAND));
 
 	return S_OK;
@@ -55,6 +53,8 @@ void CState_ComboBase::Update(const _float fTimeDelta)
 	Count_ComboTime(fTimeDelta);
 
 	Check_Combo();
+
+	Check_Monster();
 }
 
 HRESULT CState_ComboBase::End()
@@ -62,7 +62,7 @@ HRESULT CState_ComboBase::End()
 	if(FAILED(Super::End()))
 		return E_FAIL;
 
-	//static_cast<CPlayer*>(Get_OwnerObject())->Change_Weapon(CPlayer::Part::SWORD, ENUM_TO_UINT(CWeapon::State::HOLD));
+	End_Combo();
 
 	Change_Weapon(CPlayer::Part::SWORD, ENUM_TO_UINT(CWeapon::State::HOLD));
 

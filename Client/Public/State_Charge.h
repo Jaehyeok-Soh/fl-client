@@ -3,10 +3,10 @@
 
 NS_BEGIN(Client)
 
-class CState_Charge final : public CStateBase_Player
+class CState_Charge : public CStateBase_Player
 {
 	using Super = CStateBase_Player;
-private:
+protected:
 	CState_Charge(CActionState* pOwnerComponent);
 	virtual ~CState_Charge() = default;
 
@@ -17,7 +17,10 @@ public:
 	virtual void	Update(const _float fTimeDelta) override;
 	virtual HRESULT End() override;
 
-private:
+protected:
+	_float m_fHoldWeaponTime = { 0.f };
+
+protected:
 	void Go_Front(const _float fTimeDelta);
 
 public:
