@@ -41,10 +41,12 @@ void CState_Charge::Update(const _float fTimeDelta)
 {
 	Super::Update(fTimeDelta);
 
-	if (m_FAniFlags & STATEANI_FLAG::SA_PreAniDone &&
-		m_fStateElapsed < 1.15f)
+	if(m_fHoldWeaponTime <= m_fStateElapsed)
+		Change_Weapon(CPlayer::Part::SWORD, ENUM_TO_UINT(CWeapon::State::HOLD));
+
+	else
 	{
-		Go_Front(fTimeDelta);
+		Check_Monster();
 	}
 }
 
@@ -52,6 +54,8 @@ HRESULT CState_Charge::End()
 {
 	if (FAILED(Super::End()))
 		return E_FAIL;
+
+	End_Combo();
 
 	Change_Weapon(CPlayer::Part::SWORD, ENUM_TO_UINT(CWeapon::State::HOLD));
 

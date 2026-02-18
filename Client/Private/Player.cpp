@@ -16,6 +16,8 @@
 #include "ColliderPart.h"
 #include "Collider.h"
 #include "ComputeShader.h"
+#include "StatCom_Player.h"
+#include "SkillComponent.h"
 
 // parts objs
 #include "Weapon.h"
@@ -203,6 +205,75 @@ _bool CPlayer::Check_OnGround(_float fMaxDist)
     return Get_Component<CTransform>()->Is_OnGround(fMaxDist, m_pPhysic_QueryFilter);
 }
 
+_bool CPlayer::Check_ColliWithMonster()
+{
+    // monster와 충돌 여부 반환
+    return _bool();
+}
+
+void CPlayer::Count_Combo()
+{
+    static_cast<CStatCom_Player*>(m_pStatComp)->Add_ComboCount();
+}
+
+void CPlayer::Count_Dash()
+{
+    static_cast<CStatCom_Player*>(m_pStatComp)->Sub_DashCount();
+}
+
+void CPlayer::End_Combo()
+{
+    static_cast<CStatCom_Player*>(m_pStatComp)->Set_Timer(CStatCom_Player::TIMER_TYPE::COMBO, false);
+}
+
+_bool CPlayer::Start_Skill(State iState)
+{
+    _bool bChange = { false };
+    switch (iState)
+    {
+    case State::COMBO:
+    case State::CHARGE:
+    case State::JUMPATTEND:
+        bChange = static_cast<CStatCom_Player*>(m_pStatComp)->Set_AttackState(CStatCom_Player::Attack_State::Melee, true);
+        break;
+
+    case State::JUMPGUN:
+    case State::GUN:
+        bChange = static_cast<CStatCom_Player*>(m_pStatComp)->Set_AttackState(CStatCom_Player::Attack_State::Gun, true);
+        break;
+
+    case State::SKILL1:
+        bChange = static_cast<CStatCom_Player*>(m_pStatComp)->Set_AttackState(CStatCom_Player::Attack_State::E, true);
+        if (bChange)
+            m_pSkillEComp->Start_Skill(m_pStatComp);
+        break;
+
+    case State::SKILL2:
+        bChange = static_cast<CStatCom_Player*>(m_pStatComp)->Set_AttackState(CStatCom_Player::Attack_State::Q, true);
+        if (bChange)
+            m_pSkillQComp->Start_Skill(m_pStatComp);
+        break;
+    }
+
+    return bChange;
+}
+
+void CPlayer::End_Skill(State iState)
+{
+    switch (iState)
+    {
+    case State::SKILL1:
+        static_cast<CStatCom_Player*>(m_pStatComp)->Set_AttackState(CStatCom_Player::Attack_State::E, false);
+        m_pSkillEComp->End_Skill(m_pStatComp);
+        break;
+
+    case State::SKILL2:
+        static_cast<CStatCom_Player*>(m_pStatComp)->Set_AttackState(CStatCom_Player::Attack_State::Q, false);
+        m_pSkillQComp->End_Skill(m_pStatComp);
+        break;
+    }
+}
+
 HRESULT CPlayer::Ready_BaseStates()
 {
     CPlayerActionState* pActionState = { nullptr };
@@ -235,7 +306,7 @@ HRESULT CPlayer::Ready_BaseStates()
         };
         desc.vecMainAnims   = { Get_AnimationIndex(L"Animation_PlayerMoon_Idle") }; //Animation_PlayerMoon_Idle //Animation_Pino_Combo_Slash1
         desc.bBlend         = false;
-        desc.bLoop          = true;
+        desc.bLoop          = false;
 
         desc.FMoves = CStateBase_Player::MOVEFLAGS::PRESS_CHANGE;
         desc.FCollis = CStateBase_Player::COLLISIONFLAGS::C_DOWN;

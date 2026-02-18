@@ -84,6 +84,16 @@ void CStatCom_Player::Update(const _float fTimeDelta)
 	Count_Mental(fTimeDelta);
 }
 
+_bool CStatCom_Player::IsCan_SkillE()
+{
+	return (m_vMentality.x >= m_tESkill.iNeedMental) && (m_tESkill.TCoolTime.x == m_tESkill.TCoolTime.y);
+}
+
+_bool CStatCom_Player::IsCan_SkillQ()
+{
+	return (m_vMentality.x >= m_tQSkill.iNeedMental) && (m_tQSkill.TCoolTime.x == m_tQSkill.TCoolTime.y);
+}
+
 _bool CStatCom_Player::Set_AttackState(_uint iState, _bool bOn)
 {
 	// flag를 키거나 꺼줌
@@ -94,15 +104,18 @@ _bool CStatCom_Player::Set_AttackState(_uint iState, _bool bOn)
 		{
 		case Attack_State::E:
 		{
-			if (m_vMentality.x < m_tESkill.iNeedMental)
+			if (!IsCan_SkillE())
 				return false;
 
 			m_tESkill.TCoolTime.x = 0.f; break;
+
+			// skill start player에게 요청
+			//static_cast<CPlayer*>(Get_Owner())->Start_Skill(CPlayer::State::SKILL1);
 		}
 
 		case Attack_State::Q:
 		{
-			if (m_vMentality.x < m_tQSkill.iNeedMental)
+			if (!IsCan_SkillQ())
 				return false;
 
 			m_tQSkill.TCoolTime.x = 0.f; break;
@@ -114,7 +127,25 @@ _bool CStatCom_Player::Set_AttackState(_uint iState, _bool bOn)
 	}
 
 	else
+	{
+		// skill energy 체크 및 cool time 셋팅
+		switch (iState)
+		{
+		case Attack_State::E:
+		{
+			m_tESkill.TCoolTime.x = m_tESkill.TCoolTime.y; break;
+		}
+
+		case Attack_State::Q:
+		{
+			m_tQSkill.TCoolTime.x = m_tESkill.TCoolTime.y; break;
+		}
+
+		}
+
 		Engine_Utils::RemoveHard_Flag(m_FAttState, iState);
+	}
+
 
 	// attack, sheild 다시 셋팅
 	m_iAttack = 0;

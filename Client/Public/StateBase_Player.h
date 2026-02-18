@@ -70,12 +70,19 @@ protected:
 	_bool Check_MeleeKey(const _float fTimeDelta);
 	_bool Check_RangeKey(const _float fTimeDelta);
 	_bool Check_SkillKey(const _float fTimeDelta);
+
+protected:
 	_bool Check_Collis(const _float fTimeDelta);
 
 	// player 객체 연결 함수들
 protected:
 	_bool	Check_OnGround(_float fMaxDist = 0.72f); // 땅에 있는지 검사
+
+	void	Check_Monster();
+	void	End_Combo();
+
 	void	Change_Weapon(_uint iPart, _uint iState);
+
 
 protected:
 	virtual void OwnMove(const _float fTimeDelta) {};		// state 내부에서 알아서 움직일때
@@ -86,11 +93,13 @@ protected:
 private:
 	_uint					m_iEndStateIdx = { 0 };			// CPlayer::State::END 캐싱 해둠 : 만약 END면 state change x
 
-	TimeCount				m_TFallingCount = { 0.f,0.5f };
+	TimeCount				m_TFallingCount = { 0.f,0.3f };
 
 private:
 	_bool Has_ChangeState(STATEKEY eKey);
 
+	_bool	Check_ColliWithMonster();
+	void	Count_Combo();
 
 public:
 	virtual void Free() override;

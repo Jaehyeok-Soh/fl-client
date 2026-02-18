@@ -247,15 +247,20 @@ _bool CStateBase_Player::Check_RangeKey(const _float fTimeDelta)
 
 _bool CStateBase_Player::Check_SkillKey(const _float fTimeDelta)
 {
+	// key를 가지고 있고 &&
+	// key를 눌렀고 &&
+	// 스킬을 실행할 수 있다면
 	if (Has_ChangeState(STATEKEY::E) &&
-		Key_Input(ENUM_TO_UINT(CControlContext::CONTROL_KEY::SKILL1)))
+		Key_Input(ENUM_TO_UINT(CControlContext::CONTROL_KEY::SKILL1)) &&
+		static_cast<CPlayer*>(Get_OwnerObject())->Start_Skill(CPlayer::State::SKILL1))
 	{
 		Change_PlayerState(STATEKEY::E);
 		return true;
 	}
 
 	else if(Has_ChangeState(STATEKEY::Q) &&
-		Key_Input(ENUM_TO_UINT(CControlContext::CONTROL_KEY::SKILL2)))
+		Key_Input(ENUM_TO_UINT(CControlContext::CONTROL_KEY::SKILL2)) &&
+		static_cast<CPlayer*>(Get_OwnerObject())->Start_Skill(CPlayer::State::SKILL2))
 	{
 		Change_PlayerState(STATEKEY::Q);
 		return true;
@@ -273,10 +278,40 @@ _bool CStateBase_Player::Check_Collis(const _float fTimeDelta)
 		if (Check_OnGround())
 			m_TFallingCount.x = 0.f;
 		else
+			m_TFallingCount.x += fTimeDelta;
+
+		if(m_TFallingCount.x > m_TFallingCount.y)
 			Change_PlayerState(ENUM_TO_UINT(CPlayer::State::FALL));
 	}
 
 	return false;
+}
+
+_bool CStateBase_Player::Check_OnGround(_float fMaxDist)
+{
+	return static_cast<CPlayer*>(Get_OwnerObject())->Check_OnGround(fMaxDist);
+}
+
+void CStateBase_Player::Check_Monster()
+{
+	// 몬스터랑 출동 했다면
+	if (Check_ColliWithMonster())
+	{
+		// 몬스터를 향하게 turn
+
+		// combo 카운트 업
+		Count_Combo();
+	}
+}
+
+void CStateBase_Player::End_Combo()
+{
+	static_cast<CPlayer*>(Get_OwnerObject())->End_Combo();
+}
+
+void CStateBase_Player::Change_Weapon(_uint iPart, _uint iState)
+{
+	static_cast<CPlayer*>(Get_OwnerObject())->Change_Weapon(iPart, iState);
 }
 
 _bool CStateBase_Player::Has_ChangeState(STATEKEY eKey)
@@ -285,14 +320,14 @@ _bool CStateBase_Player::Has_ChangeState(STATEKEY eKey)
 	return m_iEndStateIdx != m_vecChangeState_ByKey[ENUM_TO_UINT(eKey)];
 }
 
-_bool CStateBase_Player::Check_OnGround(_float fMaxDist)
+_bool CStateBase_Player::Check_ColliWithMonster()
 {
-	return static_cast<CPlayer*>(Get_OwnerObject())->Check_OnGround(fMaxDist);
+	return static_cast<CPlayer*>(Get_OwnerObject())->Check_ColliWithMonster();
 }
 
-void CStateBase_Player::Change_Weapon(_uint iPart, _uint iState)
+void CStateBase_Player::Count_Combo()
 {
-	static_cast<CPlayer*>(Get_OwnerObject())->Change_Weapon(iPart, iState);
+	static_cast<CPlayer*>(Get_OwnerObject())->Count_Combo();
 }
 
 void CStateBase_Player::Free()

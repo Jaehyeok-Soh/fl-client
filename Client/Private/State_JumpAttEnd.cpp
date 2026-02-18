@@ -41,12 +41,19 @@ void CState_JumpAttEnd::Update(const _float fTimeDelta)
 	{
 		Change_Weapon(CPlayer::Part::SWORD, ENUM_TO_UINT(CWeapon::State::HOLD));
 	}
+
+	else
+	{
+		Check_Monster();
+	}
 }
 
 HRESULT CState_JumpAttEnd::End()
 {
 	if (FAILED(Super::End()))
 		return E_FAIL;
+
+	End_Combo();
 
 	Change_Weapon(CPlayer::Part::SWORD, ENUM_TO_UINT(CWeapon::State::HOLD));
 
