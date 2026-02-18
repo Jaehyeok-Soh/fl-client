@@ -6,9 +6,8 @@
 #include "Collider.h"
 #include "Bounding_Sphere.h"
 #include "PlayerActionState.h"
-#include "ComboContainer.h"
 #include "PlayerControlContext.h"
-#include "StatComponent.h"
+#include "StatCom_Player.h"
 #include "Navigation.h"
 #include "Bone.h"
 
@@ -31,6 +30,7 @@
 #include "State_JumpAttEnd.h"
 
 #include "State_Charge.h"
+#include "State_MoonCharge.h"
 
 #pragma endregion
 
@@ -122,7 +122,7 @@ void CMainPlayer::Update_Priority(const _float fTimeDelta)
 {
     Super::Update_Priority(fTimeDelta);
 
-    Get_Component<CPlayerControlContext>()->Count_Time(fTimeDelta);
+    //Get_Component<CPlayerControlContext>()->Count_Time(fTimeDelta);
 }
 
 void CMainPlayer::Update(const _float fTimeDelta)
@@ -135,9 +135,9 @@ void CMainPlayer::Update_Late(const _float fTimeDelta)
 {
     Super::Update_Late(fTimeDelta);
     
-    CPlayerControlContext* pControlContext = Get_Component<CPlayerControlContext>();
-    if (pControlContext == nullptr)
-        return;
+    //CPlayerControlContext* pControlContext = Get_Component<CPlayerControlContext>();
+    //if (pControlContext == nullptr)
+    //    return;
 
     //if (pControlContext->Is_WallMode())
     //{
@@ -357,9 +357,39 @@ HRESULT CMainPlayer::Ready_Ability()
         return E_FAIL;
 
     {
-        CStatComponent::STATCOMP_DESC desc = {};
-        desc.iMaxHp = 100;
-        if (FAILED(Add_Script_Component(L"StatComponent", L"Prototype_Component_Stat", &desc)))
+        CStatCom_Player::PLAYER_STATCOMP_DESC desc = {};
+        desc.iMaxHp = 320;
+        desc.fComboCoolTime = 2.f;
+        desc.fDashCoolTime =1.f;
+        desc.fMaxDefense = 400.f;
+        desc.fMaxMental =105.f;
+
+        CStatCom_Player::SKILL_DESC tSkillDesc = {};
+        CStatCom_Player::ATTACK_DESC tAttackDesc = {};
+
+        tSkillDesc.eSkillType = CStatCom_Player::SKILL_TYPE::DAMAGE;
+        tSkillDesc.iNeedMental = 15;
+        tSkillDesc.TCoolTime = { 0.f,0.f };
+        tAttackDesc.iAttack = 10;
+        tAttackDesc.iSheild = 0;
+        tSkillDesc.tAttDesc = tAttackDesc;
+
+        desc.tESkill = tSkillDesc;
+
+        tSkillDesc.eSkillType = CStatCom_Player::SKILL_TYPE::BUFF;
+        tSkillDesc.iNeedMental = 35;
+        tSkillDesc.TCoolTime = { 0.f,3.5f };
+        tAttackDesc.iAttack = 5;
+        tAttackDesc.iSheild = 10;
+        tSkillDesc.tAttDesc = tAttackDesc;
+
+        desc.tQSkill = tSkillDesc;
+
+        tAttackDesc = { 20,0 };
+        desc.tMelee = tAttackDesc;
+        desc.tGun   = tAttackDesc;
+
+        if (FAILED(Add_Script_Component(L"StatComponent", L"Prototype_Component_Stat_Player", &desc)))
             return E_FAIL;
 
         m_pStatComp = static_cast<CStatComponent*>(Get_Script_Component(L"StatComponent"));
@@ -743,7 +773,7 @@ HRESULT CMainPlayer::Ready_AttackStates()
 
         desc.tKeyTimer = tKeyTimer;
 
-        if (FAILED(pActionState->Add_State(ENUM_TO_UINT(State::CHARGE), CState_Charge::Create(pActionState, &desc))))
+        if (FAILED(pActionState->Add_State(ENUM_TO_UINT(State::CHARGE), CState_MoonCharge::Create(pActionState, &desc))))
             return E_FAIL;
     }
 

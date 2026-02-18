@@ -14,6 +14,8 @@
 */
 
 NS_BEGIN(Client)
+class CSkillComponent;
+
 class CStatCom_Player final : public CStatComponent
 {
 	using Super = CStatComponent;
@@ -125,8 +127,14 @@ public:
 			return (_uint)m_iDashCount;
 		case TIMER_TYPE::COMBO:
 			return (_uint)m_iComboCount;
+
+		default:
+			return 0;
 		}
 	}
+
+	_bool IsCan_SkillE();
+	_bool IsCan_SkillQ();
 
 public:
 	_bool Set_AttackState(_uint iState, _bool bOn); // Attack_State 을 통해 넣을것
@@ -158,7 +166,7 @@ private:
 	// 공격 관련 
 private:
 	Flags			m_FAttState		= { 0 };
-	_uint			m_iSkillAttack	= { 0 }; // 만약 skill 공격력이 따로 있어야 한다면
+	_uint			m_iSkillAttack	= { 0 }; // 만약 skill 공격력이 따로 있어야 한다면.. todo : 이거는 뺄지도
 
 	SKILL_DESC		m_tESkill;
 	SKILL_DESC		m_tQSkill;

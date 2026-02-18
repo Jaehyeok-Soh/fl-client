@@ -197,6 +197,7 @@
     <ClInclude Include="..\Public\Monster_Dummy.h" />
     <ClInclude Include="..\Public\Physics_LandScape.h" />
     <ClInclude Include="..\Public\Physics_Terrain.h" />
+    <ClInclude Include="..\Public\SkillComponent.h" />
     <ClInclude Include="..\Public\StatCom_Player.h" />
     <ClInclude Include="..\Public\State_Charge.h" />
     <ClInclude Include="..\Public\State_ComboBase.h" />
@@ -226,12 +227,20 @@
     <ClInclude Include="..\Public\State_JumpDouble.h" />
     <ClInclude Include="..\Public\State_JumpWall.h" />
     <ClInclude Include="..\Public\State_Land.h" />
+    <ClInclude Include="..\Public\State_MoonCharge.h" />
     <ClInclude Include="..\Public\State_MoonCombo.h">
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">false</ExcludedFromBuild>
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">false</ExcludedFromBuild>
     </ClInclude>
+    <ClInclude Include="..\Public\State_MoonESkill.h">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">false</ExcludedFromBuild>
+    </ClInclude>
+    <ClInclude Include="..\Public\State_MoonQSkill.h">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">false</ExcludedFromBuild>
+    </ClInclude>
     <ClInclude Include="..\Public\State_RunLoop.h" />
     <ClInclude Include="..\Public\State_RunShort.h" />
+    <ClInclude Include="..\Public\State_SkillBase.h" />
     <ClInclude Include="..\Public\State_Slide.h" />
     <ClInclude Include="..\Public\State_Walk.h" />
     <ClInclude Include="..\Public\StaticObject.h" />
@@ -319,6 +328,7 @@
     <ClCompile Include="..\Private\MapObject.cpp" />
     <ClCompile Include="..\Private\Monster_Dummy.cpp" />
     <ClCompile Include="..\Private\Physics_LandScape.cpp" />
+    <ClCompile Include="..\Private\SkillComponent.cpp" />
     <ClCompile Include="..\Private\StatCom_Player.cpp" />
     <ClCompile Include="..\Private\State_Charge.cpp" />
     <ClCompile Include="..\Private\State_ComboBase.cpp" />
@@ -348,12 +358,20 @@
     <ClCompile Include="..\Private\State_JumpDouble.cpp" />
     <ClCompile Include="..\Private\State_JumpWall.cpp" />
     <ClCompile Include="..\Private\State_Land.cpp" />
+    <ClCompile Include="..\Private\State_MoonCharge.cpp" />
     <ClCompile Include="..\Private\State_MoonCombo.cpp">
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">false</ExcludedFromBuild>
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">false</ExcludedFromBuild>
     </ClCompile>
+    <ClCompile Include="..\Private\State_MoonESkill.cpp">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">false</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="..\Private\State_MoonQSkill.cpp">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">false</ExcludedFromBuild>
+    </ClCompile>
     <ClCompile Include="..\Private\State_RunLoop.cpp" />
     <ClCompile Include="..\Private\State_RunShort.cpp" />
+    <ClCompile Include="..\Private\State_SkillBase.cpp" />
     <ClCompile Include="..\Private\State_Slide.cpp" />
     <ClCompile Include="..\Private\State_Walk.cpp" />
     <ClCompile Include="..\Private\StaticObject.cpp" />
