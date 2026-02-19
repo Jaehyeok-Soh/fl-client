@@ -43,6 +43,7 @@ private:
 private:
 	HRESULT Loading_Textures_Effect(const wstring& wstrFolder);
 	HRESULT Loading_Textures_Map(const wstring& wstrFolder);
+	HRESULT Loading_Textures_UI(const wstring& wstrFolder);
 	HRESULT Loading_Textures(const wstring& wstrFolder);
 	HRESULT Loading_Texture(const wstring& wstrFolder);
 private:

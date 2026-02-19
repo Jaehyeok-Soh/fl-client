@@ -207,7 +207,7 @@ HRESULT CLoader::Loading_For_Logo()
 
 	// For. UI Texture
 	std::error_code ec;
-	for (const auto& entry : std::filesystem::directory_iterator(L"../../Resources/Textures/UI/", std::filesystem::directory_options::skip_permission_denied, ec))
+	for (const auto& entry : std::filesystem::directory_iterator(L"../../Resources/Textures/UI_Client/", std::filesystem::directory_options::skip_permission_denied, ec))
 	{
 		if (ec)
 			return E_FAIL;
