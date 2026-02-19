@@ -7,6 +7,7 @@
 #include "MonoBehaviour.h"
 #include "PlayerActionState.h"
 #include "StatComponent.h"
+#include "StatCom_Player.h"
 #include "Collider.h"
 #include "VIBuffer_Terrain.h"
 #include "VIBuffer_Particle_Rect.h"
@@ -339,6 +340,9 @@ HRESULT CLoader::Loading_For_Logo()
 	// For. Prototype_Component_Collider_SPHERE
 	m_pGameInstance->Add_Prototype(ENUM_TO_UINT(ELevelType::STATIC), L"Prototype_Component_VIBuffer_InstanceMesh", CInstanceMesh::Create(m_pDevice, m_pDeviceContext));
 
+	// For. Prototype_Component_Stat_Player
+	m_pGameInstance->Add_Prototype(ENUM_TO_UINT(ELevelType::STATIC), L"Prototype_Component_Stat_Player", CStatCom_Player::Create());
+
 	///////////////////////////////////////
 	//////////// Ready Objects ////////////
 	///////////////////////////////////////
@@ -537,7 +541,7 @@ HRESULT CLoader::Ready_AttackOverlap()
 	DTO::ECategory eCategory = DTO::ECategory::OVERLAP_SCRIPT;
 	_uint iLevelID = ENUM_TO_UINT(eLevelType);
 
-	std::filesystem::path FilePath = L"../../Resources/Data/AttackOverlapData/PlayerMoon_155_Animations_Fixed.json";
+	std::filesystem::path FilePath = L"../../Resources/Data/AttackOverlapData/PlayerMoon_156_Animations_Save_Test_animTag.json";
 	vector<path> vecfiles;
 
 	if (!std::filesystem::exists(FilePath))

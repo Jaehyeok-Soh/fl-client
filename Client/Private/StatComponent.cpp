@@ -38,15 +38,51 @@ HRESULT CStatComponent::Initialize(void* pArg)
 	if (FAILED(Super::Initialize(pArg)))
 		return E_FAIL;
 
-	STATCOMP_DESC* pDesc = static_cast<STATCOMP_DESC*>(pArg);
-	m_iMaxHealth = pDesc->iHealth;
-	m_iHealth = pDesc->iHealth;
+	STATCOMP_DESC* pDesc	= static_cast<STATCOMP_DESC*>(pArg);
+	m_iMaxHealth			= pDesc->iMaxHp;
+	m_iHealth				= pDesc->iMaxHp;
+
+	m_iAttack = pDesc->iAttack;
+	m_iSheild = pDesc->iSheild;
+	if (m_iSheild > 0)
+		m_bSheildOn = true;
 
 	return S_OK;
 }
 
 void CStatComponent::Update(const _float fTimeDelta)
 {
+}
+
+void CStatComponent::Add_Health(_int iHealth)
+{
+	if (iHealth > 0)
+		Add_Hp(iHealth);
+
+	else
+		Sub_Hp(iHealth);
+}
+
+void CStatComponent::Add_Hp(_int iHealth)
+{
+	m_iHealth += iHealth;
+
+	// max hp 넘었는지 검사
+	if (m_iHealth > m_iMaxHealth)
+		m_iHealth = m_iMaxHealth;
+}
+
+void CStatComponent::Sub_Hp(_int iHealth)
+{
+	m_iHealth += iHealth;
+
+	// sheild 발동중이라면 : sheild 값 더해줌
+	if (m_bSheildOn)
+		m_iHealth += m_iSheild;
+
+	// 만약 음수가 되었다면 0으로 맞추기
+	if (m_iHealth < 0)
+		m_iHealth = 0;
 }
 
 CStatComponent* CStatComponent::Create()

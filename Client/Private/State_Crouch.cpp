@@ -1,6 +1,8 @@
 #include "pch.h"
 #include "State_Crouch.h"
 
+#include "Player.h"
+
 CState_Crouch::CState_Crouch(CActionState* pOwnerComponent)
 	: Super(pOwnerComponent, "Crouch")
 {
@@ -41,6 +43,19 @@ HRESULT CState_Crouch::End()
 		return E_FAIL;
 
 	return S_OK;
+}
+
+void CState_Crouch::Set_NextStateDesc(_uint iNextState)
+{
+	switch (iNextState)
+	{
+	case ENUM_TO_UINT(CPlayer::State::COMBO):
+		m_tNextStateDesc.iMainAnimIdx = 1;
+		break;
+
+	default:
+		m_tNextStateDesc.iMainAnimIdx = 0;
+	}
 }
 
 CState_Crouch* CState_Crouch::Create(CActionState* pOwnerComponent, void* pArg)

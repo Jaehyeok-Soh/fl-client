@@ -26,6 +26,7 @@ CModelAnimation::CModelAnimation(const CModelAnimation& rhs)
 	, m_iChannelSize(rhs.m_iChannelSize)
 	, m_iRootBoneIdx(rhs.m_iRootBoneIdx)
 	, m_iRootChannelIdx(rhs.m_iRootChannelIdx)
+	, m_bApplyRootMotion(rhs.m_bApplyRootMotion)
 {
 	Safe_AddRef(m_pKeyFrameBuffer);
 	//Safe_AddRef(m_pInputKeySB_SRV);
@@ -56,10 +57,16 @@ HRESULT CModelAnimation::Initialize(void* pArg)
 	else
 		return E_FAIL;
 
+	if (m_iRootBoneIdx < 0)
+		m_bApplyRootMotion = false;
+
+	//if((_wstring)Get_Name() == )
+	//	m_bApplyRootMotion = false;
+
 	return S_OK;
 }
 
-_bool CModelAnimation::Update_TransformationMatrices(const vector<class CBone*>& vecBones, _float fTimeDelta, _bool isLoop, CTransform* pOwnerTransform,  CPhysicsCCT* pOwnerPhyCCT)
+_bool CModelAnimation::Update_TransformationMatrices(const vector<class CBone*>& vecBones, _float fTimeDelta, _bool isLoop, CTransform* pOwnerTransform,  CPhysicsCCT* pOwnerPhyCCT, CComputeShader* pAnimECS)
 {
 	m_fCurrentTrackPosition += m_fTickPerSecond * fTimeDelta;
 
@@ -71,6 +78,18 @@ _bool CModelAnimation::Update_TransformationMatrices(const vector<class CBone*>&
 		m_fCurrentTrackPosition = 0.f;
 	}
 
+	// 가변 데이터 작성
+	CS_MU_TRACK tMuDesc{};
+	tMuDesc.fCurTrackPosition = m_fCurrentTrackPosition;
+	tMuDesc.iChannelCount = m_iChannelCount;
+	pAnimECS->Bind_Compute_Track(tMuDesc);
+
+	// dispatch
+	_uint iGroupX = (_uint(vecBones.size()) + 31) / 32;
+	pAnimECS->Dispatch(iGroupX, 1, 1);
+
+
+	// 원래 하던대로 channel update
 	_uint iIndex = { 0 };
 	for (auto& pChannel : m_vecChannels)
 	{
@@ -79,13 +98,26 @@ _bool CModelAnimation::Update_TransformationMatrices(const vector<class CBone*>&
 	return false;
 }
 
-void CModelAnimation::SetUp_PoseDatasForBlending(std::span<LOCALSRT> spanLocalSrtData, _float fTimeDelta, CTransform* pOwnerTransform, CPhysicsCCT* pOwnerPhyCCT)
+void CModelAnimation::SetUp_PoseDatasForBlending(std::span<LOCALSRT> spanLocalSrtData, _float fTimeDelta, CTransform* pOwnerTransform, CPhysicsCCT* pOwnerPhyCCT,_uint iTotalBoneNum, CComputeShader* pAnimECS)
 {
+	//내 애니메이션 정보 전달
+	Bind_AnimationEData(pAnimECS);
+
 	m_fCurrentTrackPosition += m_fTickPerSecond * fTimeDelta;
 	if (m_fCurrentTrackPosition >= m_fDuration)
 	{
 		m_fCurrentTrackPosition = m_fDuration;
 	}
+
+	// 가변 데이터 작성
+	CS_MU_TRACK tMuDesc{};
+	tMuDesc.fCurTrackPosition = m_fCurrentTrackPosition;
+	tMuDesc.iChannelCount = m_iChannelCount;
+	pAnimECS->Bind_Compute_Track(tMuDesc);
+
+	// dispatch
+	_uint iGroupX = (iTotalBoneNum + 31) / 32;
+	pAnimECS->Dispatch(iGroupX, 1, 1);
 	
 	_uint iIndex = { 0 };
 	for (auto& pChannel : m_vecChannels)
@@ -129,7 +161,7 @@ _bool CModelAnimation::Update_TransformMatrices(CComputeShader* pAnimECS,_float 
 	pAnimECS->Dispatch(iGroupX, 1, 1);
 
 	//m_iRootChannelIdx
-	if(m_iRootChannelIdx> 0)
+	if(m_bApplyRootMotion)
 		m_vecChannels[(size_t)m_iRootChannelIdx]->Move_OnwerTransform(m_fCurrentTrackPosition, &m_vecCurrentKeyFrameIndices[(size_t)m_iRootChannelIdx], pOwnerTransform, pOwnerPhyCCT, fTimeDelta);
 
 	return false;
@@ -157,8 +189,11 @@ void CModelAnimation::Update_BlendAnimation(CComputeShader* pAnimECS, _float fTi
 	pAnimECS->Dispatch(iGroupX, 1, 1);
 
 	//m_iRootChannelIdx
-	if (m_iRootChannelIdx > 0)
+	if (m_bApplyRootMotion)
 		m_vecChannels[(size_t)m_iRootChannelIdx]->Move_OnwerTransform(m_fCurrentTrackPosition, &m_vecCurrentKeyFrameIndices[(size_t)m_iRootChannelIdx], pOwnerTransform, pOwnerPhyCCT, fTimeDelta);
+
+	//else
+	//	int test = 0;
 }
 
 void CModelAnimation::Bind_AnimationEData(CComputeShader* pAnimEShader)
@@ -263,6 +298,14 @@ HRESULT CModelAnimation::Ready_BindBuffers(CComputeShader* pAnimESahder)
 		return E_FAIL;
 
 	return S_OK;
+}
+
+void CModelAnimation::Check_UpdateCpu(const vector<class CBone*>& vecBones)
+{
+	for (auto& pChannel : m_vecChannels)
+	{
+		pChannel->Check_UpdateCpu(vecBones);
+	}
 }
 
 void CModelAnimation::Set_Notifies(vector<AnimNotifyKey> vecKeys)

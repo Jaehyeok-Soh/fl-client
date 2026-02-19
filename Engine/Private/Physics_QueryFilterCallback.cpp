@@ -9,6 +9,8 @@
 
 PxQueryHitType::Enum CPhysics_QueryFilterCallback::preFilter(const PxFilterData& filterData, const PxShape* shape, const PxRigidActor* actor, PxHitFlags& queryFlags)
 {
+	//return PxQueryHitType::eBLOCK;
+
 	if (actor->userData == m_pOwner)
 		return PxQueryHitType::eNONE;
 
@@ -16,7 +18,7 @@ PxQueryHitType::Enum CPhysics_QueryFilterCallback::preFilter(const PxFilterData&
 	if (pTarget && pTarget->IsDead())
 		return PxQueryHitType::eNONE;
 
-	return PxQueryHitType::eTOUCH;
+	return PxQueryHitType::eBLOCK;
 }
 
 CPhysics_QueryFilterCallback::CPhysics_QueryFilterCallback()

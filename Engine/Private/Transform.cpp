@@ -4,6 +4,9 @@
 #include "Navigation.h"
 #include "Shader.h"
 #include "GameObject.h"
+#include "Physics_QueryFilterCallback.h"
+
+#include "GameInstance.h"
 
 CTransform::CTransform()
 	: Super()
@@ -492,6 +495,17 @@ Vec3 CTransform::LocalPos_toMyWorld(const Vec3& vLocalPos, _bool bDir)
 
 	else
 		return Vec3::Transform(vLocalPos, m_matWorld);
+}
+
+_bool CTransform::Is_OnGround(_float fMaxDist, CPhysics_QueryFilterCallback* pFilterCall)
+{
+	Vec3 vPos = m_matWorld.Translation();
+	vPos.y += 0.3f; // »ìÂ¦ ¤·¿Ã·Á¼­ ray ½î±â
+	//Vec3 vDir = m_matWorld.Down();
+	//vDir.Normalize();
+	Vec3 vDir = { 0.f,-1.f,0.f }; // -y ¹æÇâ.
+
+	return m_pGameInstance->RayCast(vPos, vDir, fMaxDist +0.3f, pFilterCall);
 }
 
 CTransform* CTransform::Create()

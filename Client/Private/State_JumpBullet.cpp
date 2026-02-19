@@ -29,6 +29,8 @@ HRESULT CState_JumpBullet::Start(void* pArg, _bool bForce)
 	if (FAILED(Super::Start(pArg, bForce)))
 		return E_FAIL;
 
+	Set_ApplyGravity(false);
+
 	CStateBase::SetupLook_CameraLook();
 
 	return S_OK;
@@ -43,6 +45,8 @@ HRESULT CState_JumpBullet::End()
 {
 	if (FAILED(Super::End()))
 		return E_FAIL;
+
+	Set_ApplyGravity(true);
 
 	return S_OK;
 }

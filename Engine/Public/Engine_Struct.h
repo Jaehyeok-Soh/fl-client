@@ -22,7 +22,7 @@ namespace Engine
 
 	struct AnimNotifyKey
 	{
-		EAnimNotifyId eID{ EAnimNotifyId::CollisionOn };
+		EAnimNotifyId eID{ EAnimNotifyId::Hitbox };
 		float fTrackPosition{ 0.f };
 
 		unsigned int  iParam0{ 0 };
@@ -512,6 +512,8 @@ namespace Engine
 			return fTimeAcc / fMaxTime;
 		}
 
+		float Get_Rate() { return fTimeAcc / fMaxTime; }
+
 	}TIME_COUNTER;
 #pragma endregion
 
@@ -580,33 +582,6 @@ namespace Engine
 		vector<PHYSICS_SRT> vecSRT{};
 	}PHYSICSRIGIDBODY_DESC;
 
-	typedef struct tagOctreeDesc
-	{
-		BoundingBox rootBounds;
-		int iMaxDepth{ 5 };
-		float fLooseFactor{ 1.3f };
-		float fMinNodeSizeXZ{ 2.0f }; // Extents와 비교할거라 중심에서의 거리
-		size_t iMaxItemsPerLeaf{ 128 };
-	}OCTREE_DESC;
-
-	typedef struct tagPass
-	{
-		ID3DX11EffectPass* pPass = { nullptr };
-		wstring wstrName = L"";
-		D3DX11_PASS_DESC tDesc = {};
-		D3DX11_PASS_SHADER_DESC tVertexShaderDesc = {};
-		D3DX11_EFFECT_SHADER_DESC tEffectVsDesc = {};
-		vector<D3D11_SIGNATURE_PARAMETER_DESC> vecSignatureDescs;
-	} PASS;
-
-	typedef struct tagTechnique
-	{
-		ID3DX11EffectTechnique* pTechnique = { nullptr };
-		wstring wstrName = L"";
-		D3DX11_TECHNIQUE_DESC tDesc = {};
-		vector<tagPass> vecPasses;
-	} TECHNIQUE;
-
 	typedef struct tagPhysicsCollider
 	{
 		///////////////////////////
@@ -667,6 +642,32 @@ namespace Engine
 	}PHYSICSFILTERSHADER_DESC;
 #pragma endregion
 
+	typedef struct tagOctreeDesc
+	{
+		BoundingBox rootBounds;
+		int iMaxDepth{ 5 };
+		float fLooseFactor{ 1.3f };
+		float fMinNodeSizeXZ{ 2.0f }; // Extents와 비교할거라 중심에서의 거리
+		size_t iMaxItemsPerLeaf{ 128 };
+	}OCTREE_DESC;
+
+	typedef struct tagPass
+	{
+		ID3DX11EffectPass* pPass = { nullptr };
+		wstring wstrName = L"";
+		D3DX11_PASS_DESC tDesc = {};
+		D3DX11_PASS_SHADER_DESC tVertexShaderDesc = {};
+		D3DX11_EFFECT_SHADER_DESC tEffectVsDesc = {};
+		vector<D3D11_SIGNATURE_PARAMETER_DESC> vecSignatureDescs;
+	} PASS;
+
+	typedef struct tagTechnique
+	{
+		ID3DX11EffectTechnique* pTechnique = { nullptr };
+		wstring wstrName = L"";
+		D3DX11_TECHNIQUE_DESC tDesc = {};
+		vector<tagPass> vecPasses;
+	} TECHNIQUE;
 }
 
 
