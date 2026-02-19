@@ -260,7 +260,7 @@ HRESULT CEffectObject::Bind_ShaderResource()
 
     if (m_tEffectDesc.Data._Effect_ShaderPass == 3)
     {
-        if (FAILED(m_pGameInstance->Bind_RT_ShaderResource(ERenderTarget::Scene, m_pShader)))
+        if (FAILED(m_pGameInstance->Bind_RT_ShaderResource(ERenderTarget::SceneHDR_Copy, m_pShader)))
             return E_FAIL;
 
         if (FAILED(m_pGameInstance->Bind_RT_ShaderResource(ERenderTarget::Depth, m_pShader)))
@@ -288,7 +288,7 @@ HRESULT CEffectObject::Bind_ShaderResource()
         pDesc.SpriteColCount = m_tEffectDesc.Data._Effect_TileCount.x;
         pDesc.SpriteRowCount = m_tEffectDesc.Data._Effect_TileCount.y;
         pDesc.CurSpriteIndex = m_tEffectDesc.Data.m_iCurSpriteNumber;
-        pDesc.LifeRatio = m_tEffectDesc.Data._Effect_ApearRatio;
+        pDesc.fLifeRatio = m_tEffectDesc.Data._Effect_ApearRatio;
 
         pDesc.vDistortionScale = m_tEffectDesc.Data._Effect_DistortionScale;
         pDesc.vEffectColor = m_tEffectDesc.Data._Effect_Color;

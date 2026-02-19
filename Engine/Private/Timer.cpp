@@ -19,7 +19,7 @@ HRESULT CTimer::Initialize()
 	return S_OK;
 }
 
-void CTimer::Update_Timer()
+_float CTimer::Update_Timer()
 {
 	::QueryPerformanceCounter(&m_FrameTime);
 
@@ -30,6 +30,7 @@ void CTimer::Update_Timer()
 
 	m_fTimeDelta = (std::min)((m_FrameTime.QuadPart - m_LastTime.QuadPart) / (_float)m_CpuTick.QuadPart, m_fMax_TimeDelta);
 	m_LastTime = m_FrameTime;
+	return m_fTimeDelta;
 }
 
 void CTimer::Free()

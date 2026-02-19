@@ -64,6 +64,8 @@ HRESULT CBody::Initialize(void* pArg)
 	//m_iLeftShoulderSocket_Index = Get_Component<CModel>()->Get_BoneIndex("LeftShoulder");
 	//m_iRightShoulderSocket_Index = Get_Component<CModel>()->Get_BoneIndex("RightShoulder");
 	//m_iRightHandWeaponSocket_Index = Get_Component<CModel>()->Get_BoneIndex("MeleeWeaponRHand");
+	
+	Set_Flag(OF_Outline, true);
 	return S_OK;
 }
 
@@ -89,10 +91,10 @@ void CBody::Update(_float fTimeDelta)
 	CComputeShader* pBonCS = static_cast<CComputeShader*>(Get_Script_Component(TEXT("ComputeShader_BoneCombine")));
 	CComputeShader* pAnimECS = static_cast<CComputeShader*>(Get_Script_Component(TEXT("ComputeShader_AnimE")));
 	CComputeShader* pAnimBCS = static_cast<CComputeShader*>(Get_Script_Component(TEXT("ComputeShader_AnimB")));
-	CComputeShader* pGetBoneCS = static_cast<CComputeShader*>(Get_Script_Component(TEXT("ComputeShader_GetBone")));
+	//CComputeShader* pGetBoneCS = static_cast<CComputeShader*>(Get_Script_Component(TEXT("ComputeShader_GetBone")));
 
 	Get_Component<CModel>()->Update_Animation(pBonCS, pAnimECS, fTimeDelta, 
-		Get_Parent()->Get_Component<CTransform>(), Get_Parent()->Get_Component<CPhysicsCCT>(), pAnimBCS, pGetBoneCS);
+		Get_Parent()->Get_Component<CTransform>(), Get_Parent()->Get_Component<CPhysicsCCT>(), pAnimBCS);
 
 	if(CCollider* pCollider = Get_Component<CCollider>())
 		pCollider->Update(m_matCombinedWorld);
@@ -110,6 +112,10 @@ void CBody::Ready_Before_Render(_float fTimeDelta)
 	Super::Ready_Before_Render(fTimeDelta);
 	m_pGameInstance->Push_RenderObject(RENDER_CATEGORY::NONEBLEND, this);
 	Super::Update_CombinedWorldMatrix(m_pMatParent);
+
+	//CComputeShader* pGetBoneCS = static_cast<CComputeShader*>(Get_Script_Component(TEXT("ComputeShader_GetBone")));
+	//Get_Component<CModel>()->Get_BoneMatrix(pGetBoneCS);
+
 #ifdef _DEBUG
 	m_pGameInstance->Push_DebugComponent(Get_Component<CCollider>());
 	m_pGameInstance->Push_DebugComponent(Get_Component<CPhysicsAttackOverlap>());
@@ -157,6 +163,7 @@ HRESULT CBody::Render()
 	CComputeShader* pBoneMeshCS = static_cast<CComputeShader*>(Get_Script_Component(TEXT("ComputeShader_BoneMesh")));
 	CComputeShader* pBoneCombineCS = static_cast<CComputeShader*>(Get_Script_Component(TEXT("ComputeShader_BoneCombine")));
 
+	pShader->Bind_ObjectInfoData(m_tObjectInfoDesc);
 	pShader->Bind_TransformData(m_matCombinedWorld);
 	for (_uint i = 0; i < iMeshCount; ++i)
 	{
@@ -443,32 +450,32 @@ HRESULT CBody::Ready_ComputeShader()
 
 	// ========   Compute Shader : GetBone  ========
 	{
-		CComputeShader::ComShaderCopyDesc ShaderDesc = {};
-		ShaderDesc.Output_SRVBuffer_Name = "SELECTED_COMBINETRANSFORMS_SRV";
+		//CComputeShader::ComShaderCopyDesc ShaderDesc = {};
+		//ShaderDesc.Output_SRVBuffer_Name = "SELECTED_COMBINETRANSFORMS_SRV";
 
-		ShaderDesc.InputBufferNum = 2;
-		ShaderDesc.bMakeSB = true;
-		// 입력 버퍼
-		ShaderDesc.Input_StructBuffer.sBufferName	= "IMMU_BONEINDIECS";
-		ShaderDesc.Input_StructBuffer.iElementSize	= sizeof(CS_MU_BONEIDX);
-		ShaderDesc.Input_StructBuffer.iNumElements	= iGetBoneNums; // 내가 저장하고 싶은 본 개수
+		//ShaderDesc.InputBufferNum = 2;
+		//ShaderDesc.bMakeSB = true;
+		//// 입력 버퍼
+		//ShaderDesc.Input_StructBuffer.sBufferName	= "IMMU_BONEINDIECS";
+		//ShaderDesc.Input_StructBuffer.iElementSize	= sizeof(CS_MU_BONEIDX);
+		//ShaderDesc.Input_StructBuffer.iNumElements	= iGetBoneNums; // 내가 저장하고 싶은 본 개수
 
-		// 출력 버퍼
-		ShaderDesc.OutPut_StructBuffer.sBufferName = "SELECTED_COMBINETRANSFORMS";
-		ShaderDesc.OutPut_StructBuffer.iElementSize = sizeof(CS_OUT_BONE);
-		ShaderDesc.OutPut_StructBuffer.iNumElements = iGetBoneNums;
+		//// 출력 버퍼
+		//ShaderDesc.OutPut_StructBuffer.sBufferName = "SELECTED_COMBINETRANSFORMS";
+		//ShaderDesc.OutPut_StructBuffer.iElementSize = sizeof(CS_OUT_BONE);
+		//ShaderDesc.OutPut_StructBuffer.iNumElements = iGetBoneNums;
 
-		if (FAILED(Add_Script_Component(L"ComputeShader_GetBone", L"Prototype_Component_Shader_GetBone", &ShaderDesc)))
-			return E_FAIL;
+		//if (FAILED(Add_Script_Component(L"ComputeShader_GetBone", L"Prototype_Component_Shader_GetBone", &ShaderDesc)))
+		//	return E_FAIL;
 	}
 
 	CComputeShader* pBoneMeshCS = static_cast<CComputeShader*>(Get_Script_Component(TEXT("ComputeShader_BoneMesh")));
 	CComputeShader* pBonCombineCS = static_cast<CComputeShader*>(Get_Script_Component(TEXT("ComputeShader_BoneCombine")));
 	CComputeShader* pAnimECS = static_cast<CComputeShader*>(Get_Script_Component(TEXT("ComputeShader_AnimE")));
 	CComputeShader* pAnimBlendCS = static_cast<CComputeShader*>(Get_Script_Component(TEXT("ComputeShader_AnimB")));
-	CComputeShader* pGetBoneCS = static_cast<CComputeShader*>(Get_Script_Component(TEXT("ComputeShader_GetBone")));
+	//CComputeShader* pGetBoneCS = static_cast<CComputeShader*>(Get_Script_Component(TEXT("ComputeShader_GetBone")));
 
-	if (FAILED(Get_Component<CModel>()->Ready_ComputeShaders(pBoneMeshCS, pBonCombineCS, pAnimECS, pAnimBlendCS, pGetBoneCS)))
+	if (FAILED(Get_Component<CModel>()->Ready_ComputeShaders(pBoneMeshCS, pBonCombineCS, pAnimECS, pAnimBlendCS)))
 		return E_FAIL;
 
 	return S_OK;

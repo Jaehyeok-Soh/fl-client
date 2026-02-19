@@ -363,11 +363,22 @@ struct PS_OUT_DEFFERED
     float3 vNormal : SV_TARGET1;
     float4 vSpecularMask : SV_TARGET2;
     float4 vDepth : SV_TARGET3;
+    uint4 vObjectInfo : SV_Target4;
 };
 
 struct PS_OUT_BAKESHADOW
 {
     float4 vDepth : SV_TARGET0;
+};
+
+struct PS_OUT_HDR
+{
+    float4 vColor : SV_TARGET0;
+};
+
+struct PS_OUT_BLOOM
+{
+    float4 vColor : SV_TARGET0;
 };
 
 struct PS_OUT_BACKBUFFER

@@ -20,11 +20,17 @@ public:
 		,	OWN				= 0x0008 // 자신만의 움직임
 	};
 
+	enum COLLISIONFLAGS : Flags
+	{
+		C_DOWN = 0x0001 
+	};
+
 	enum class STATEKEY : _uint {MOVE, SPACE, SHIFT, LCRTL_PRESS, LCRTL_UP, Q, E, LM, RM, CHARGE, LOOPDONE , END}; //END에는 키가 없을떄 바꿀 state를 넣자
 
 	typedef struct tagPlayerStateDesc : public CStateBase::STATE_DESC
 	{
-		Flags					FMoves		= { 0 };
+		Flags					FMoves		= { 0 }; // MOVEFLAGS 이용
+		Flags					FCollis		= { 0 }; // COLLISIONFLAGS 이용
 		vector<_uint>			vecChangeState_ByKey;			// 키 입력에 따라 어떻게 바꿀지 담는 벡터
 
 		TIME_COUNTER			tKeyTimer = {};
@@ -43,9 +49,11 @@ public:
 
 public:
 	virtual void Change_PlayerState(STATEKEY eKey);	// change 랩핑 함수 : 필요시 오버라이드
+	virtual void Change_PlayerState(_uint iState);	// change 함수2 : 키 없이 state 기준으로
 	
 protected:
 	Flags					m_FMoves		= { 0 };
+	Flags					m_FCollisions	= { 0 };
 	vector<_uint>			m_vecChangeState_ByKey;
 
 	TIME_COUNTER			m_tKeyTimer		= {};
@@ -64,6 +72,19 @@ protected:
 	_bool Check_SkillKey(const _float fTimeDelta);
 
 protected:
+	_bool Check_Collis(const _float fTimeDelta);
+
+	// player 객체 연결 함수들
+protected:
+	_bool	Check_OnGround(_float fMaxDist = 0.72f); // 땅에 있는지 검사
+
+	void	Check_Monster();
+	void	End_Combo();
+
+	void	Change_Weapon(_uint iPart, _uint iState);
+
+
+protected:
 	virtual void OwnMove(const _float fTimeDelta) {};		// state 내부에서 알아서 움직일때
 	virtual void Set_NextStateDesc(_uint iNextState) {};	// 다음 state에 따라 desc을 작성한다 : 각 state 내부에서
 
@@ -72,8 +93,13 @@ protected:
 private:
 	_uint					m_iEndStateIdx = { 0 };			// CPlayer::State::END 캐싱 해둠 : 만약 END면 state change x
 
+	TimeCount				m_TFallingCount = { 0.f,0.3f };
+
 private:
 	_bool Has_ChangeState(STATEKEY eKey);
+
+	_bool	Check_ColliWithMonster();
+	void	Count_Combo();
 
 public:
 	virtual void Free() override;

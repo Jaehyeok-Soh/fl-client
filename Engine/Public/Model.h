@@ -148,6 +148,9 @@ public:
 	_float								Get_AnimNormalizedTime() const;
 	_float								Get_AnimElpasedTimeSeconds() const;
 
+	_float								Get_AnimTickPerSecond() const;
+	void								Set_AnimTickPerSecond(_float fValue);
+
 	wstring								Get_CurrentAnimationName() const;
 	wstring								Get_AnimationName(_uint iIdex) const;
 
@@ -169,8 +172,18 @@ public:
 
 public:
 	HRESULT								Ready_ComputeShaders(CComputeShader* pBoneMeshCS, CComputeShader* pBoneComBineCS, CComputeShader* pAnimEvalCS, CComputeShader* pAnimBlendCS = nullptr, CComputeShader* pGetBoneCS = nullptr);
-	
+	void								Get_BoneMatrix(CComputeShader* pGetBoneCS);
+
 	// load func
+
+	// for animation tool
+	AnimationPlayState					Get_AnimPlayState() { return m_eCurrentAnimationState; }
+	vector<class CBone*>&				Get_Bones() { return m_vecBones; }
+	vector<class CModelAnimation*>&		Get_Animations() { return m_vecAnimations; }
+	_bool								Is_Loop() { return m_isAnimLoop; }
+	void								Set_LoopState(_bool bValue) { m_isAnimLoop = bValue; }
+	void								Set_AnimTrackPosition(_float fValue);
+
 private:
 	HRESULT								Load_StaticModel(const wstring& wstrModelName);
 	HRESULT								Load_NonAnimModel(const wstring &wstrModelName);
@@ -211,6 +224,8 @@ private:
 	void								Make_Staging(MODEL_ORIGIN_DESC* pDesc);
 	HRESULT								Ready_StaticModelMinMax();
 
+	void								Set_CpuBone(_uint iBoneIdx);
+
 	// cs bind funcs
 private:
 	void								Bind_BoneImmuData(CComputeShader* pBoneComBineCS);
@@ -222,7 +237,7 @@ private:
 private:
 	void								Update_BoneCombineTransformMatrix(CComputeShader* pBoneComBineCS);
 	void								Lerp_Animation(CComputeShader* pAnimBlendCS, _float fRatio);
-	void								Get_BoneMatrix(CComputeShader* pBoneComBineCS, CComputeShader* pGetBoneCS);
+	void								DisPatch_BondMatrix(CComputeShader* pBoneComBineCS, CComputeShader* pGetBoneCS);
 
 	///////////////
 	//// Event ////
@@ -272,7 +287,10 @@ private:
 
 	StructuredBuffer*					m_pPreSB					= { nullptr };
 	StructuredBuffer*					m_pCurSB					= { nullptr };
-	ID3D11Buffer*						m_pBoneOuputStagingBuffer	= { nullptr };
+	ID3D11Buffer*						m_pBoneOuputStagingBuffer[2] = {nullptr};
+	_uint								m_iFrameIndex = { 0 };
+
+	_uint m_iCpuBoneCount = { 0 };
 
 	///////////////
 	//// Event ////

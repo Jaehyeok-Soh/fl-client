@@ -17,6 +17,8 @@ public:
 	ID3D11Buffer** Get_Buffer_AddressOf() { return &m_pBuffer; }
 	HRESULT Copy_Data(const T& data);
 private:
+	_bool m_bHasLast = { false };
+	T m_Last{};
 	ID3D11Device* m_pDevice = { nullptr };
 	ID3D11DeviceContext* m_pDeviceContext = { nullptr };
 	ID3D11Buffer* m_pBuffer = { nullptr };
@@ -55,6 +57,11 @@ inline HRESULT CConstant_Buffer<T>::Initialize()
 template<typename T>
 inline HRESULT CConstant_Buffer<T>::Copy_Data(const T& data)
 {
+	if (m_bHasLast == true && 0 == ::memcmp(&m_Last, &data, sizeof(T)))
+		return S_OK;
+
+	m_Last = data;
+	m_bHasLast = true;
 	D3D11_MAPPED_SUBRESOURCE SubResource;
 	::ZeroMemory(&SubResource, sizeof(D3D11_MAPPED_SUBRESOURCE));
 	m_pDeviceContext->Map(m_pBuffer, 0, D3D11_MAP_WRITE_DISCARD, 0, &SubResource);

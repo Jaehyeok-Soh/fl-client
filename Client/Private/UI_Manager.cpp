@@ -1,4 +1,3 @@
-#include "ImGui_UIManager.h"
 #include "pch.h"
 #include "UI_Manager.h"
 #include "FileUtils.h"
@@ -6,6 +5,7 @@
 #include "Canvas.h"
 #include "GenericUI.h"
 #include "GameInstance.h"
+#include "UITrigger.h"
 
 NS_BEGIN(Client)
 
@@ -14,6 +14,39 @@ CUI_Manager::CUI_Manager()
 	:m_pGameInstance(CGameInstance::GetInstance())
 {
 	Safe_AddRef(m_pGameInstance);
+}
+
+HRESULT CUI_Manager::Merge_MapCanvasCache(uint32_t iLevelIndex, unordered_map<_string, CCanvas*>&& Cache)
+{
+	if (iLevelIndex >= g_iLevelType_Count)
+		return E_FAIL;
+
+	auto& dst = m_mapCanvasCache[iLevelIndex];
+
+	for (auto& kv : Cache)
+	{
+		if (dst.find(kv.first) == dst.end())
+			dst.emplace(std::move(kv.first), kv.second);
+	}
+	Cache.clear();
+	return S_OK;
+}
+
+HRESULT CUI_Manager::Merge_MapGenericUICache(uint32_t iLevelIndex, unordered_map<_string, CGenericUI*>&& Cache)
+{
+	if (iLevelIndex >= g_iLevelType_Count)
+		return E_FAIL;
+
+	auto& dst = m_mapUICache[iLevelIndex];
+
+	for (auto& kv : Cache)
+	{
+		if (dst.find(kv.first) == dst.end())
+			dst.emplace(std::move(kv.first), kv.second);
+	}
+
+	Cache.clear();
+	return S_OK;
 }
 
 CCanvas* CUI_Manager::Find_Canvas(uint32_t iLevelIndex, const _string& strCanvasTag)
@@ -81,6 +114,31 @@ void CUI_Manager::Request_SortUI()
 void CUI_Manager::Clear_Cache(uint32_t iLevelIndex)
 {
 
+}
+
+void CUI_Manager::Add_TriggerUI(std::vector<CUITrigger*>&& vecUIs)
+{
+	m_vecTriggerUIs.insert(
+		m_vecTriggerUIs.end(),
+		std::make_move_iterator(vecUIs.begin()),
+		std::make_move_iterator(vecUIs.end())
+	);
+	vecUIs.clear(); // 소스 비움(선택)
+}
+
+HRESULT CUI_Manager::Bind_Trigger(_uint iLevelID)
+{
+	for (auto* pUI : m_vecTriggerUIs)
+	{
+		if (FAILED(pUI->Bind_Cache(iLevelID)))
+			return E_FAIL;
+	}
+	return S_OK;
+}
+
+void CUI_Manager::Clear_TriggerUI()
+{
+	m_vecTriggerUIs.clear();
 }
 
 void CUI_Manager::Sort_UI(vector<CGenericUI*>& Target)

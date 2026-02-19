@@ -14,6 +14,7 @@ NS_END
 NS_BEGIN(Client)
 class CCanvas;
 class CGenericUI;
+class CUITrigger;
 class CUI_Manager final : public CBase
 {
 	DECLARE_SINGLETON(CUI_Manager)
@@ -23,13 +24,15 @@ private:
 	virtual ~CUI_Manager() = default;
 
 public:
-	/* Builder에 MapCache를 넘길거임 */
-	HRESULT Swap_MapCanvasCache(uint32_t iLevelIndex, unordered_map<_string, CCanvas*>&& Cache) { if (iLevelIndex >= g_iLevelType_Count)return E_FAIL; m_mapCanvasCache[iLevelIndex].swap(Cache);return S_OK; }
-	HRESULT Swap_MapGenericUICache(uint32_t iLevelIndex, unordered_map<_string, CGenericUI*>&& Cache) { if (iLevelIndex >= g_iLevelType_Count)return E_FAIL; m_mapUICache[iLevelIndex].swap(Cache); return S_OK; }
-
 	/* Builder에서 만들면서 넣어줄거임 */
 	HRESULT Add_VecCanvasCache(uint32_t iLevelIndex, CCanvas* pCache) { if (iLevelIndex >= g_iLevelType_Count)return E_FAIL; m_vecCanvasCache[iLevelIndex].push_back(pCache); return S_OK; }
 	HRESULT Add_VecGenericUICache(uint32_t iLevelIndex, CGenericUI* pCache) { if (iLevelIndex >= g_iLevelType_Count)return E_FAIL; m_vecGenericUICache[iLevelIndex].push_back(pCache); return S_OK; }
+
+	/* Builder에 MapCache를 넘길거임 (누적 Merge) */
+	HRESULT Merge_MapCanvasCache(uint32_t iLevelIndex, unordered_map<_string, CCanvas*>&& Cache);
+	HRESULT Merge_MapGenericUICache(uint32_t iLevelIndex, unordered_map<_string, CGenericUI*>&& Cache);
+
+
 
 	/* 특정 UI 오브젝트를 찾아야 할 때 */
 	CCanvas* Find_Canvas(uint32_t iLevelIndex, const _string& strCanvasTag);
@@ -45,6 +48,10 @@ public:
 	void Add_RenderGroup(uint32_t iLevelIndex);
 	void Request_SortUI();
 	void Clear_Cache(uint32_t iLevelIndex);
+	
+	void Add_TriggerUI(vector<CUITrigger*>&& vecUIs);
+	HRESULT Bind_Trigger(_uint iLevelID);
+	void Clear_TriggerUI();
 
 private:
 	void Sort_UI(vector<CGenericUI*>& Target);
@@ -62,6 +69,8 @@ private:
 
 	vector<CGenericUI*> m_vecSortUI;
 	_bool m_isSort = { FALSE };
+
+	vector <CUITrigger*> m_vecTriggerUIs;
 
 public:
 	virtual void Free()override;

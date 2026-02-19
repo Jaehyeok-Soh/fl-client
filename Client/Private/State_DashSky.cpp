@@ -32,6 +32,8 @@ HRESULT CState_DashSky::Start(void* pArg, _bool bForce)
 
 	CheckAni_WhenStart();
 
+	Set_ApplyGravity(false);
+
 	return S_OK;
 }
 
@@ -44,6 +46,8 @@ HRESULT CState_DashSky::End()
 {
 	if (FAILED(Super::End()))
 		return E_FAIL;
+
+	Set_ApplyGravity(true);
 
 	return S_OK;
 }

@@ -14,6 +14,7 @@ public:
 		_string strName;
 	}CANVAS_DESC;
 
+
 private:
 	CCanvas(ID3D11Device* pDevice, ID3D11DeviceContext* pDeviceContext);
 	CCanvas(const CCanvas& rhs);
@@ -44,6 +45,8 @@ public:
 
 	const _string& Get_Name() { return m_strName; }
 	vector<CGenericUI*>* Get_UIVector() { return &m_vecUI; }
+
+	virtual void OnCanvasEvent(ETriggerEventType eEvent, CGenericUI* pSender);
 
 private:
 	HRESULT Ready_Components(CANVAS_DESC* pDesc);

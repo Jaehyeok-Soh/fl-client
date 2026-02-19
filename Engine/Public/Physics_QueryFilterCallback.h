@@ -5,7 +5,7 @@ NS_BEGIN(Engine)
 
 class CGameObject;
 
-class CPhysics_QueryFilterCallback final : public CBase, public PxQueryFilterCallback
+class ENGINE_DLL CPhysics_QueryFilterCallback final : public CBase, public PxQueryFilterCallback
 {
     using Super = CBase;
 private:

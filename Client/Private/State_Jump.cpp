@@ -29,11 +29,22 @@ HRESULT CState_Jump::Start(void* pArg, _bool bForce)
 	if (FAILED(Super::Start(pArg, bForce)))
 		return E_FAIL;
 
+	Set_ApplyGravity(false);
+
 	return S_OK;
 }
 
 void CState_Jump::Update(const _float fTimeDelta)
 {
+	// 바닥 충돌 검사 후 change
+	if (m_fStateElapsed > 0.65f &&
+		Check_OnGround(0.1f))
+	{
+ 		//Get_OwnerObject()->Get_Component<CTransform>()->Is_OnGround(0.1f);
+		Change_PlayerState(ENUM_TO_UINT(CPlayer::State::LAND));
+		return;
+	}
+
 	Super::Update(fTimeDelta);
 }
 
@@ -41,6 +52,8 @@ HRESULT CState_Jump::End()
 {
 	if (FAILED(Super::End()))
 		return E_FAIL;
+
+	Set_ApplyGravity(true);
 
 	return S_OK;
 }

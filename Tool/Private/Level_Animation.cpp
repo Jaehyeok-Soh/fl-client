@@ -14,12 +14,17 @@
 #include "Picking_ToolManager.h"
 #include "ImGui_ToolManager.h"
 #include "GameInstance.h"
+#include "AnimTool_Manager.h"
 
 // Component
 #include "Model.h"
 
 // Panel
 #include "Panel_AnimModelFile.h"
+#include "Panel_AnimationController.h"
+#include "Panel_AnimDescription.h"
+
+#include "DebugDraw.h"
 
 CLevel_Animation::CLevel_Animation(ID3D11Device* pDevice, ID3D11DeviceContext* pDeviceContext)
 	: Super(pDevice, pDeviceContext)
@@ -35,6 +40,34 @@ HRESULT CLevel_Animation::Initialize()
 
 	Ready_Camera(g_wszCameraLayer);
 	Ready_Lights();
+
+#ifdef _DEBUG
+	m_pBatch = new PrimitiveBatch<VertexPositionColor>(m_pDeviceContext);
+	m_pEffect = new BasicEffect(m_pDevice);
+	m_pEffect->SetVertexColorEnabled(true);
+
+	const void* pShaderInput = {};
+	size_t iShaderInputLength = {};
+
+	m_pEffect->GetVertexShaderBytecode(&pShaderInput, &iShaderInputLength);
+
+	if (FAILED(m_pDevice->CreateInputLayout(VertexPositionColor::InputElements,
+		VertexPositionColor::InputElementCount,
+		pShaderInput,
+		iShaderInputLength,
+		&m_pInputLayout)))
+	{
+		return E_FAIL;
+	}
+
+	D3D11_DEPTH_STENCIL_DESC dssDesc{};
+	ZeroMemory(&dssDesc, sizeof(dssDesc));
+	dssDesc.DepthEnable = TRUE;
+	dssDesc.DepthWriteMask = D3D11_DEPTH_WRITE_MASK_ALL;
+	dssDesc.DepthFunc = D3D11_COMPARISON_LESS;
+
+	m_pDevice->CreateDepthStencilState(&dssDesc, &m_pDSS);
+#endif // _DEBUG
 
 	return S_OK;
 }
@@ -54,6 +87,9 @@ HRESULT CLevel_Animation::Awake(const _uint iLevelID)
 
 	Ready_Camera_Setting(ENUM_TO_UINT(ELevelType::ANIMATION));
 
+	m_pAnimToolManager = CAnimTool_Manager::GetInstance();
+	m_pAnimToolManager->Initialize_AnimTool(m_pDevice, m_pDeviceContext);
+
 	return S_OK;
 }
 
@@ -62,6 +98,8 @@ void CLevel_Animation::Update(const _float fTimeDelta)
 	Super::Update(fTimeDelta);
 
 	Update_Elements(fTimeDelta);
+
+	m_pAnimToolManager->Update(fTimeDelta);
 }
 
 void CLevel_Animation::Update_Picking()
@@ -74,6 +112,10 @@ HRESULT CLevel_Animation::Render()
 {
 	if (FAILED(Super::Render()))
 		return E_FAIL;
+	
+	Render_Grid();
+
+	m_pAnimToolManager->Render(); // ????여기 맞는지 확인필요 소재혁 26.02.14
 
 	m_pImGuiManager->Render_Begin();
 	m_pImGuiManager->ImGuizmo_Render_Begin();
@@ -86,6 +128,7 @@ HRESULT CLevel_Animation::Render()
 	//////////////////////////
 	m_pImGuiManager->Render_Viewport(nullptr);
 	m_pImGuiManager->Render_End();
+
 	return S_OK;
 }
 
@@ -150,8 +193,9 @@ HRESULT CLevel_Animation::Ready_Panels()
 	m_GuiElements[Elements::FILE] = CPanel_AnimModelFile::Create("Panel_Explore", this, m_pDevice, m_pDeviceContext);
 	//m_GuiElements[Elements::LOAD];
 	//m_GuiElements[Elements::MODEL];
-	//m_GuiElements[Elements::ANIMATION];
+	m_GuiElements[Elements::ANIMATION] = CPanel_AnimationController::Create("Panel_Animation", this, m_pDevice, m_pDeviceContext);
 	//m_GuiElements[Elements::PARTS];
+	m_GuiElements[Elements::DESCRIPTION] = CPanel_AnimDescription::Create("Panel_AnimDescription", this, m_pDevice, m_pDeviceContext);
 
 	return S_OK;
 }
@@ -189,22 +233,63 @@ void CLevel_Animation::Render_Elements()
 	}
 }
 
+#ifdef _DEBUG
+void CLevel_Animation::Render_Grid()
+{
+	m_pDeviceContext->RSSetState(nullptr);
+
+	float blendFactor[4] = { 0.f, 0.f, 0.f, 0.f };
+	m_pDeviceContext->OMSetBlendState(nullptr, blendFactor, 0xffffffff);
+
+	m_pDeviceContext->OMSetDepthStencilState(m_pDSS, 0);
+
+	m_pEffect->SetWorld(Matrix::Identity);
+	m_pEffect->SetView(m_pGameInstance->Get_ViewMatrix());
+	m_pEffect->SetProjection(m_pGameInstance->Get_ProjMatrix());
+
+	m_pEffect->SetLightingEnabled(false);
+	m_pEffect->SetTextureEnabled(false);
+
+	m_pEffect->SetVertexColorEnabled(true);
+
+	m_pEffect->Apply(m_pDeviceContext);
+
+	m_pDeviceContext->IASetInputLayout(m_pInputLayout);
+	m_pDeviceContext->IASetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY_LINELIST);
+
+	m_pBatch->Begin();
+
+	_float fGridSize = 100.f;
+	size_t numDiv = 100;
+
+	Vec4 xAxis = Vec4(1.f, 0.f, 0.f, 0.f);
+	Vec4 zAxis = Vec4(0.f, 0.f, 1.f, 0.f);
+	Vec4 origin = Vec4(0.f, 0.f, 0.f, 1.f);
+
+	Vec4 gridAxis1 = xAxis * fGridSize;
+	Vec4 gridAxis2 = zAxis * fGridSize;
+
+	DX::DrawGrid(m_pBatch, XMLoadFloat4(&gridAxis1), XMLoadFloat4(&gridAxis2), origin, numDiv, numDiv, DirectX::Colors::DarkGray);
+
+	m_pBatch->End();
+}
+#endif // _DEBUG
+
 void CLevel_Animation::Load_AnimModel(fs::path animModelPath)
 {
-	if (m_pSelectedObject)
-		m_pGameInstance->Immediately_DeleteGameObject(ENUM_TO_UINT(ELevelType::ANIMATION), m_wstrLayer, m_pSelectedObject);
-
+	m_pGameInstance->Clear_Layer(ENUM_TO_UINT(ELevelType::ANIMATION), m_wstrLayer);
+	//Safe_Release(m_pSelectedObject);
+	//if (m_pSelectedObject)
+	//	m_pGameInstance->Request_DeleteGameObject(ENUM_TO_UINT(ELevelType::ANIMATION), m_wstrLayer, m_pSelectedObject);
+	//if (m_pSelectedObject)
+	//	m_pGameInstance->Immediately_DeleteGameObject(ENUM_TO_UINT(ELevelType::ANIMATION), m_wstrLayer, m_pSelectedObject);
 	Create_AnimModel(animModelPath);
-
-	m_pGameInstance->Add_GameObject(ENUM_TO_UINT(ELevelType::ANIMATION),
-		L"anim model prototype",
-		ENUM_TO_UINT(ELevelType::ANIMATION),
-		m_wstrLayer, m_pSelectedObject);
+	SetAnimationInfo(animModelPath);
 }
 
 void CLevel_Animation::Create_AnimModel(fs::path animModelPath)
 {
-	m_pSelectedObject;
+	//m_pSelectedObject;
 	wstring prototypeTag = Create_AnimModelPrototype(animModelPath);
 
 	CAnimObj::ANIMOBJ_DESC animObjDesc{};
@@ -241,10 +326,19 @@ wstring CLevel_Animation::Create_AnimModelPrototype(fs::path animModelPath)
 		desc.pAniChannelData = &tAniChannelData;
 
 		prototypeTag += desc.wstrModelFolderName;
-		m_pGameInstance->Add_Prototype(ENUM_TO_UINT(ELevelType::ANIMATION), prototypeTag, CModel::Create(m_pDevice, m_pDeviceContext, &desc));
+		CModel* pInstance = CModel::Create(m_pDevice, m_pDeviceContext, &desc);
+		if(FAILED(m_pGameInstance->Add_Prototype(ENUM_TO_UINT(ELevelType::ANIMATION), prototypeTag, pInstance)))
+			Safe_Release(pInstance);
 	}
 
 	return prototypeTag;
+}
+
+void CLevel_Animation::SetAnimationInfo(fs::path animModelPath)
+{
+	m_pAnimToolManager->SetAnimationObject(static_cast<CAnimObj*>(m_pSelectedObject), animModelPath);
+	static_cast<CPanel_AnimationController*>(m_GuiElements[Elements::ANIMATION])->SetAnimationObject();
+	static_cast<CPanel_AnimDescription*>(m_GuiElements[Elements::DESCRIPTION])->SetAnimationObject();
 }
 
 CLevel_Animation* CLevel_Animation::Create(ID3D11Device* pDevice, ID3D11DeviceContext* pDeviceContext)
@@ -264,11 +358,21 @@ void CLevel_Animation::Free()
 {
 	Release_Event();
 
+#ifdef _DEBUG
+	Safe_Delete(m_pBatch);
+	Safe_Delete(m_pEffect);
+
+	Safe_Release(m_pInputLayout);
+	Safe_Release(m_pDSS);
+#endif
+
 	for (CImGui_Base* pElement : m_GuiElements)
 	{
 		Safe_Release(pElement);
 	}
 	m_GuiElements.fill(nullptr);
+
+	m_pAnimToolManager->DestroyInstance();
 
 	Safe_Release(m_pImGuiManager);
 	Safe_Release(m_pPickingManager);

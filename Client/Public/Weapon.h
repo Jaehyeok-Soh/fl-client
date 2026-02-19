@@ -79,6 +79,8 @@ protected:
 
 	_bool				m_bMainWeapon		= { false };
 
+	Matrix				m_matRotation = {  };
+
 private:
 	HRESULT Ready_Components(WEAPON_DESC* pDesc);
 	HRESULT Bind_ShaderResources();

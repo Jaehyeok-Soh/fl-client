@@ -13,9 +13,11 @@ inline constexpr wchar_t g_wszMaterialExtension[]{ L".json" };
 inline constexpr wchar_t g_wszMeshExtension[]{ L".mesh" };
 inline constexpr wchar_t g_wszAnimationExtension[]{ L".clip" };
 
+inline constexpr _uint OF_Outline = 1u << 0;
 
 const unsigned int		 MIN = 0;
 const unsigned int		 MAX = 1;
 
+static bool				 g_ToolDebugRender = { true };
 
 NS_END

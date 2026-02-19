@@ -31,6 +31,13 @@ public:
 	_int Get_Index() const { return m_iIndex; }
 	_int Get_ParentIndex() const { return m_iParentIndex; }
 
+	_bool Get_IsUpdateCpu() const { return m_bUpdateCpu; }
+	void Set_UpdateCpu(_bool bUpdate) { m_bUpdateCpu = bUpdate; }
+
+	string Get_Name() const;
+
+	Matrix Get_Transform() const { return m_matTransform; }
+
 public:
 	void Update_CombinedTransformMatrix(const vector<CBone*>& Bones, const Matrix& PreTransformMatrix);
 	void Setup_BindPoseTransformMatrix(const vector<CBone*>& Bones, const Matrix& PreTransformMatrix);
@@ -48,7 +55,8 @@ private:
 
 private:
 	_bool m_bMotionBone = { false };
-
+	_bool m_bUpdateCpu = { false };
+	
 public:
 	static CBone* Create(BONE_DESC* pDesc);
 	CBone* Clone();

@@ -1,6 +1,10 @@
 #pragma once
 #include "ImGui_Layout.h"
 
+NS_BEGIN(Engine)
+class CTimer;
+NS_END
+
 NS_BEGIN(Client)
 
 class CImGui_FrameLayout final : public CImGui_Layout
@@ -31,6 +35,9 @@ private:
 	_float m_fDispAvgFPSNoLimit = 0.f;
 	_float m_fDispMinFPSNoLimit = 0.f;
 	_float m_fDispMaxFPSNoLimit = 0.f;
+private:
+	CTimer* m_pTimer_60{nullptr};
+	CTimer* m_pTimer_Default{nullptr};
 public:
 	static CImGui_FrameLayout* Create();
 	virtual void Free() override;
