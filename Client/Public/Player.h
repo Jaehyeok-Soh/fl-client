@@ -28,6 +28,7 @@ public:
 	{
 		BODY = 0,
 		SWORD,
+		SKILL,
 		END
 	};
 	enum class State : _uint

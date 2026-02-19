@@ -133,12 +133,13 @@ void CWeapon::Ready_Before_Render(_float fTimeDelta)
 	// state에 따른 combineworld 업데이트
 	switch (m_eState)
 	{
-	case State::HAND:
-		Super::Update_CombinedWorldMatrix(m_matRotation * (*m_pMatHandSocket) * (*m_pMatParent));
-		break;
-	default:
+	case State::HOLD:
 		Super::Update_CombinedWorldMatrix((*m_pMatSocket) * (*m_pMatParent));
 		//Update_HoldingPos();
+		break;
+
+	case State::HAND:
+		Super::Update_CombinedWorldMatrix(m_matRotation * (*m_pMatHandSocket) * (*m_pMatParent));
 		break;
 	}
 

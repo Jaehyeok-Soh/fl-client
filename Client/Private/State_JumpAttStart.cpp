@@ -72,7 +72,7 @@ void CState_JumpAttStart::OwnMove(const _float fTimeDelta)
 	vUp.Normalize();
 
 	Vec3 vDir = vLook * 1.f + vUp * (-1.f);
-	Vec3 disp = vDir * moveps * fTimeDelta * 3.f;
+	Vec3 disp = vDir * moveps * fTimeDelta * 4.5f;
 
 	pCCT->Move(disp, 0.01f, fTimeDelta);
 

@@ -215,7 +215,7 @@ void CStatCom_Player::Sub_DashCount()
 		m_iDashCount = 0;
 
 		// control에게 dash 키 못 받도록함
-		Set_PlayerKey(CPlayerControlContext::DASH, false);
+		//Set_PlayerKey(CPlayerControlContext::DASH, false);
 	}
 }
 

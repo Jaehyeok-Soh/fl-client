@@ -32,6 +32,8 @@
 #include "State_Charge.h"
 #include "State_MoonCharge.h"
 
+#include "State_MoonSkill.h"
+
 #pragma endregion
 
 #include "GameInstance.h"
@@ -462,6 +464,19 @@ HRESULT CMainPlayer::Ready_Weapons()
         if (FAILED(Add_Part(Part::SWORD, ENUM_TO_UINT(ELevelType::STATIC), L"Prototype_GameObject_Part_Sword", &weaponDesc)))
             return E_FAIL;
     }
+
+    // Weapons
+    {
+        CWeapon::WEAPON_DESC weaponDesc = {};
+        weaponDesc.wstrModelPrototypeName = L"Prototype_Component_Model_MoonSkillWeap";
+        weaponDesc.pMatParent = &Get_Component<CTransform>()->Get_WorldMatrix();
+        weaponDesc.pMatHandSocket = &Get_Part<CBody>(Part::BODY)->Get_RightHandSocket()->Get_CombinedTransformMatrix();
+        weaponDesc.pMatSocket = &Get_Part<CBody>(Part::BODY)->Get_WeaponSocket()->Get_BindPoseTransformMatrix();
+        weaponDesc.eModel = CWeapon::Weapon_ModelType::STATIC;
+        weaponDesc.bMianWeapon = true;
+        if (FAILED(Add_Part(Part::SKILL, ENUM_TO_UINT(ELevelType::STATIC), L"Prototype_GameObject_Part_Sword", &weaponDesc)))
+            return E_FAIL;
+    }
     //// LeftHand
     //{
     //    CColliderPart::COLLIDERPART_DESC colliderPartDesc = {};
@@ -777,6 +792,30 @@ HRESULT CMainPlayer::Ready_AttackStates()
         desc.tKeyTimer = tKeyTimer;
 
         if (FAILED(pActionState->Add_State(ENUM_TO_UINT(State::CHARGE), CState_MoonCharge::Create(pActionState, &desc))))
+            return E_FAIL;
+    }
+
+    // skill1
+    {
+        CState_SkillBase::Skill_DESC tDesc = {};
+        tDesc.bKeyInput = true;
+        tDesc.fKeyCoolTime = 1.3f;
+        tDesc.iAnimIdx = Get_AnimationIndex(L"Animation_PlayerMoon_Light_Skill01");
+        tDesc.iPlayerState = ENUM_TO_UINT(State::SKILL1);
+
+        if (FAILED(pActionState->Add_State(ENUM_TO_UINT(State::SKILL1), CState_MoonSkill::Create(pActionState, "SkillE", &tDesc))))
+            return E_FAIL;
+    }
+
+    // skill2
+    {
+        CState_SkillBase::Skill_DESC tDesc = {};
+        tDesc.bKeyInput = true;
+        tDesc.fKeyCoolTime  = 4.5f;
+        tDesc.iAnimIdx = Get_AnimationIndex(L"Animation_PlayerMoon_Light_Skill02_Red");
+        tDesc.iPlayerState = ENUM_TO_UINT(State::SKILL2);
+
+        if (FAILED(pActionState->Add_State(ENUM_TO_UINT(State::SKILL2), CState_MoonSkill::Create(pActionState,"SkillQ", & tDesc))))
             return E_FAIL;
     }
 
