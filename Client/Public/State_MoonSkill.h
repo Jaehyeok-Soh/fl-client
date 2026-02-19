@@ -20,6 +20,7 @@ public:
 
 private:
 	void SkillE_Update(const _float fTimeDelta);
+	void SkillQ_Update(const _float fTimeDelta);
 	
 public:
 	static CState_MoonSkill* Create(CActionState* pOwnerComponent, const string& strName, void* pArg = nullptr);
