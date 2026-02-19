@@ -21,8 +21,6 @@ class CStatCom_Player final : public CStatComponent
 	using Super = CStatComponent;
 
 public:
-	enum class SKILL_TYPE { DAMAGE, BUFF, SUMMON, CURE, DEFENSE }; // skill의 타입
-
 	enum class STAT_TYPE { HP, DEFENSE, MENTAL, SKILLQ, SKILLE, MELEE, GUN }; // 값 가져오기 편하도록 enum 값 생성
 
 	enum class TIMER_TYPE { DASH, COMBO }; // timer 타입
@@ -35,30 +33,12 @@ public:
 		, Q = 0x0008
 	};
 
-	typedef struct tagAttackDesc
-	{
-		_uint		iAttack = { 0 };			// 공격력
-		_uint		iSheild = { 0 };			// 방어력
-	}ATTACK_DESC;
-
-	typedef struct tagSkillDesc
-	{
-		SKILL_TYPE	eSkillType	= { SKILL_TYPE::DAMAGE };
-		TimeCount	TCoolTime	= { 0.f,0.f };	// 다음 공격까지 cooltime
-
-		_uint		iNeedMental = { 0 };		// 공격하기 위한 정신력 정도
-
-		_uint iSikllAtt = { 0 };
-
-		ATTACK_DESC tAttDesc = {};
-	}SKILL_DESC;
-
 	typedef struct tagPlayerStatDesc :public CStatComponent::STATCOMP_DESC
 	{
 		SKILL_DESC tQSkill;
 		SKILL_DESC tESkill;
-		ATTACK_DESC tMelee;
-		ATTACK_DESC tGun;
+		ATTACK_ELEMNETS tMelee;
+		ATTACK_ELEMNETS tGun;
 
 		_float fMaxMental = { 0.f };
 		_float fMaxDefense = { 0.f };
@@ -170,8 +150,8 @@ private:
 
 	SKILL_DESC		m_tESkill;
 	SKILL_DESC		m_tQSkill;
-	ATTACK_DESC		m_tAttackMelee; // 근거리 무기
-	ATTACK_DESC		m_tAttackGun;	// 원거리 무기
+	ATTACK_ELEMNETS		m_tAttackMelee; // 근거리 무기
+	ATTACK_ELEMNETS		m_tAttackGun;	// 원거리 무기
 
 	// timers
 private:

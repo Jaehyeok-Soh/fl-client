@@ -107,7 +107,8 @@ _bool CStatCom_Player::Set_AttackState(_uint iState, _bool bOn)
 			if (!IsCan_SkillE())
 				return false;
 
-			m_tESkill.TCoolTime.x = 0.f; break;
+			m_tESkill.TCoolTime.x = 0.f;
+			break;
 
 			// skill start player에게 요청
 			//static_cast<CPlayer*>(Get_Owner())->Start_Skill(CPlayer::State::SKILL1);
