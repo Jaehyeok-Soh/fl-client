@@ -426,7 +426,7 @@ namespace Client
 
 		_uint		iNeedMental = { 0 };		// 공격하기 위한 정신력 정도
 
-		_uint iSikllAtt = { 0 };
+		_uint		iSkillAtt = { 0 };
 
 		ATTACK_DESC tAttDesc = {};
 	}SKILL_DESC;
