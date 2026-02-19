@@ -243,7 +243,7 @@ public:
 
 #pragma region FONT_MANAGER
 	HRESULT Add_Font(const _wstring& strFontTag, const _tchar* pFontFilePath);
-	HRESULT Draw_Text(const _wstring& strFontTag, const _tchar* pText, const Vec2& vPosition, Vec4 vColor = Vec4(1.f, 1.f, 1.f, 1.f), const _float fRotate = 0.f, const _float fScale = 1.f);
+	HRESULT Draw_Text(const _wstring& strFontTag, const _tchar* pText, const Vec2& vPosition, Vec4 vColor = Vec4(1.f, 1.f, 1.f, 1.f), EFontPivotType ePivot = EFontPivotType::CENTER, const _float fRotate = 0.f, const _float fScale = 1.f);
 #pragma endregion
 
 #pragma region EVENTBUS_MANAGER

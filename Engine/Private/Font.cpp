@@ -16,9 +16,10 @@ HRESULT CFont::Initialize(const _tchar* pFontFilePath)
 	return S_OK;
 }
 
-HRESULT CFont::Draw_Text(SpriteBatch* pBatch, const _tchar* pText, const Vec2& vPosition, const Vec4& vColor, const _float fRotate, const _float fScale)
+HRESULT CFont::Draw_Text(SpriteBatch* pBatch, const _tchar* pText, const Vec2& vPosition, const Vec4& vColor, EFontPivotType ePivot, const _float fRotate, const _float fScale)
 {
 	Vec2 vSize = m_pFont->MeasureString(pText);
+
 	m_pFont->DrawString(pBatch, pText, vPosition, vColor, fRotate, vSize * 0.5f, fScale);
 	return S_OK;
 }

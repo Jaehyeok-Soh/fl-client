@@ -47,7 +47,7 @@ public:
 	vector<CGenericUI*>* Get_UIVector() { return &m_vecUI; }
 
 	virtual void OnCanvasEvent(ETriggerEventType eEvent, CGenericUI* pSender);
-
+	_bool Check_FinEvent();
 private:
 	HRESULT Ready_Components(CANVAS_DESC* pDesc);
 	HRESULT Bind_ShaderResources();

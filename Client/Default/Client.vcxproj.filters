@@ -307,6 +307,9 @@
     <Filter Include="07. System\02. Debug_ImGui\Layout\Shader">
       <UniqueIdentifier>{241e78ea-3b24-473b-a83b-6c32e682ad95}</UniqueIdentifier>
     </Filter>
+    <Filter Include="03. GameObject\UIObjects\02.UI\Image\Dynamic Image\03.MenuImage\00.OutLine">
+      <UniqueIdentifier>{4abf4708-1f00-4a67-ba1b-f638539f3a5c}</UniqueIdentifier>
+    </Filter>
     <Filter Include="06. FSM\Player\JumpWall">
       <UniqueIdentifier>{2c8ee512-8e94-467f-9f3f-35d518b8ff89}</UniqueIdentifier>
     </Filter>
@@ -636,6 +639,9 @@
     <ClInclude Include="..\public\ImGui_ShaderLayout.h">
       <Filter>07. System\02. Debug_ImGui\Layout\Shader</Filter>
     </ClInclude>
+    <ClInclude Include="..\Public\UIMenu_OutLine.h">
+      <Filter>03. GameObject\UIObjects\02.UI\Image\Dynamic Image\03.MenuImage\00.OutLine</Filter>
+    </ClInclude>
     <ClInclude Include="..\Public\State_MoonCharge.h">
       <Filter>06. FSM\Player\Attack\Melee\Charge\Moon</Filter>
     </ClInclude>
@@ -935,6 +941,9 @@
     </ClCompile>
     <ClCompile Include="..\private\ImGui_ShaderLayout.cpp">
       <Filter>07. System\02. Debug_ImGui\Layout\Shader</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\UIMenu_OutLine.cpp">
+      <Filter>03. GameObject\UIObjects\02.UI\Image\Dynamic Image\03.MenuImage\00.OutLine</Filter>
     </ClCompile>
     <ClCompile Include="..\Private\State_MoonCharge.cpp">
       <Filter>06. FSM\Player\Attack\Melee\Charge\Moon</Filter>
