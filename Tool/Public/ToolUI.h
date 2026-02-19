@@ -222,6 +222,7 @@ protected:
 	DTO::EUITextSubClassType m_eTextSubClassType	= {};
 	Vec4 m_vFontColor_TextData						= {};
 	_float m_fScale_TextData						= {};
+	EFontPivotType m_ePivot_TextData				= { EFontPivotType::CENTER };
 	_string m_strFontName_TextData					= {"SemiBold"};
 	_float m_fRotate_TextData						= {};
 
@@ -257,7 +258,7 @@ protected:
 	_bool m_isDisable		= { false };
 	_float m_fTestAlpha		= {};
 	int32_t m_iIndex		= {};
-
+	_float m_fBrightness = { 1.f };
 public:
 	static CToolUI* Create(EToolObjectType eType, ID3D11Device* pDevice, ID3D11DeviceContext* pContext);
 	CGameObject* Clone(void* pArg) override;

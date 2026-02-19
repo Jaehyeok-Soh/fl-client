@@ -14,6 +14,7 @@ public:
 		_wstring wstrFontTag;
 		_wstring wstrText;
 		Vec4 vFontColor;
+		EFontPivotType ePivot;
 		_float fScale;
 		_float fRotate;
 
@@ -50,6 +51,7 @@ protected:
 	Vec4 m_vFontColor		= {};
 	Vec4 m_vOriginFontColor = {};
 	_float m_fFontScale		= {};
+	EFontPivotType m_ePivot = { EFontPivotType::CENTER };
 	_float m_fFontRotate	= {};
 
 	_float m_fTimeAcc = {};

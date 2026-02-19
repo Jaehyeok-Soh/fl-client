@@ -94,7 +94,6 @@ void CUIProgress_Bar::Update_Priority(const _float fTimeDelta)
 	if (m_pGameInstance->KeyButton_Down(DIK_3))
 		m_fCurRatio = 0.9f;
 
-
 	if (m_eSubClassType == DTO::EUISubClassType::PLAYER_HP)
 	{
 		if (m_fProgress_Ratio < 0.3f)
@@ -196,6 +195,9 @@ HRESULT CUIProgress_Bar::Render()
 
 void CUIProgress_Bar::OnUIEvent(ETriggerEventType eEvent, CGenericUI* pSender)
 {
+	if (!m_isActive)
+		return;
+
 	if (eEvent == ETriggerEventType::PRESS_ENTER)
 	{
 		if (m_isVisible)
@@ -207,12 +209,15 @@ void CUIProgress_Bar::OnUIEvent(ETriggerEventType eEvent, CGenericUI* pSender)
 
 void CUIProgress_Bar::Initialize_Visible_Event()
 {
+	m_isActive = false;
+	m_isFin_Event = false;
 	m_fTimeAcc = 0.f;
 	m_fAlpha_Ratio = 0.f;
 }
 
 void CUIProgress_Bar::Initialize_InVisible_Event()
 {
+	m_isFin_Event = false;
 	m_fTimeAcc = 0.f;
 }
 
@@ -222,6 +227,8 @@ _bool CUIProgress_Bar::Tick_Visible_Event(const _float fTimeDelta)
 	if (m_fAlpha_Ratio >= 1.f)
 	{
 		m_fAlpha_Ratio = 1.f;
+		m_isFin_Event = true;
+		m_isActive = true;
 		return true;
 	}
 	return false;
@@ -229,6 +236,7 @@ _bool CUIProgress_Bar::Tick_Visible_Event(const _float fTimeDelta)
 
 _bool CUIProgress_Bar::Tick_InVisible_Event(const _float fTimeDelta)
 {
+	m_isFin_Event = true;
 	return true;
 }
 
