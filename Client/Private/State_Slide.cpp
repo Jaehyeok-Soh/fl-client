@@ -70,12 +70,16 @@ void CState_Slide::Change_PlayerState(STATEKEY eKey)
 {
     if (ENUM_TO_UINT(ANI::SKY) == m_iMainAnimIdx)
     {
+        //_uint {MOVE, SPACE, SHIFT, LCRTL_PRESS, LCRTL_UP, Q, E, LM, RM, CHARGE, LOOPDONE , END}
         switch(eKey)
         {
         case STATEKEY::LCRTL_UP:
         case STATEKEY::LOOPDONE:
             Request_Change_State(ENUM_TO_UINT(CPlayer::State::LAND)); // 원래 FALL
             return;
+
+        case STATEKEY::LM:
+           return; // 원래 FALL
         }
     }
 

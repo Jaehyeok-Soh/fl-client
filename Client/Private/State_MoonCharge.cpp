@@ -36,11 +36,11 @@ void CState_MoonCharge::Update(const _float fTimeDelta)
 {
 	Super::Update(fTimeDelta);
 
-	if (m_FAniFlags & STATEANI_FLAG::SA_PreAniDone &&
-		m_fStateElapsed < 1.15f)
-	{
-		Go_Front(fTimeDelta);
-	}
+	//if (m_FAniFlags & STATEANI_FLAG::SA_PreAniDone &&
+	//	m_fStateElapsed < 1.15f)
+	//{
+	//	//Go_Front(fTimeDelta);
+	//}
 }
 
 HRESULT CState_MoonCharge::End()

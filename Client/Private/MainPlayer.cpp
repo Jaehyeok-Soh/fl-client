@@ -771,6 +771,9 @@ HRESULT CMainPlayer::Ready_AttackStates()
         vecChangeState_ByKey[ENUM_TO_SZET(CStateBase_Player::STATEKEY::LOOPDONE)]       = ENUM_TO_UINT(State::IDLE);
         desc.vecChangeState_ByKey = vecChangeState_ByKey;
 
+
+        tKeyTimer.bCountTime = true;
+        tKeyTimer.fMaxTime = 1.7f;
         desc.tKeyTimer = tKeyTimer;
 
         if (FAILED(pActionState->Add_State(ENUM_TO_UINT(State::CHARGE), CState_MoonCharge::Create(pActionState, &desc))))
