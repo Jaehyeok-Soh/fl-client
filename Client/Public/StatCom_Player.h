@@ -37,8 +37,8 @@ public:
 	{
 		SKILL_DESC tQSkill;
 		SKILL_DESC tESkill;
-		ATTACK_DESC tMelee;
-		ATTACK_DESC tGun;
+		ATTACK_ELEMNETS tMelee;
+		ATTACK_ELEMNETS tGun;
 
 		_float fMaxMental = { 0.f };
 		_float fMaxDefense = { 0.f };
@@ -150,8 +150,8 @@ private:
 
 	SKILL_DESC		m_tESkill;
 	SKILL_DESC		m_tQSkill;
-	ATTACK_DESC		m_tAttackMelee; // 근거리 무기
-	ATTACK_DESC		m_tAttackGun;	// 원거리 무기
+	ATTACK_ELEMNETS		m_tAttackMelee; // 근거리 무기
+	ATTACK_ELEMNETS		m_tAttackGun;	// 원거리 무기
 
 	// timers
 private:

@@ -413,11 +413,11 @@ namespace Client
 #pragma region SKILL
 	enum class SKILL_TYPE { DAMAGE, BUFF, SUMMON, CURE, DEFENSE }; // skill의 타입
 
-	typedef struct tagAttackDesc
+	typedef struct tagAttackDesc2
 	{
 		_uint		iAttack = { 0 };			// 공격력
 		_uint		iSheild = { 0 };			// 방어력
-	}ATTACK_DESC;
+	}ATTACK_ELEMNETS;
 
 	typedef struct tagSkillDesc
 	{
@@ -428,7 +428,7 @@ namespace Client
 
 		_uint		iSkillAtt = { 0 };
 
-		ATTACK_DESC tAttDesc = {};
+		ATTACK_ELEMNETS tAttDesc = {};
 	}SKILL_DESC;
 #pragma endregion
 

@@ -364,10 +364,10 @@ HRESULT CMainPlayer::Ready_Ability()
         desc.fMaxDefense = 400.f;
         desc.fMaxMental =105.f;
 
-        CStatCom_Player::SKILL_DESC tSkillDesc = {};
-        CStatCom_Player::ATTACK_DESC tAttackDesc = {};
+        SKILL_DESC tSkillDesc = {};
+        ATTACK_ELEMNETS tAttackDesc = {};
 
-        tSkillDesc.eSkillType = CStatCom_Player::SKILL_TYPE::DAMAGE;
+        tSkillDesc.eSkillType = SKILL_TYPE::DAMAGE;
         tSkillDesc.iNeedMental = 15;
         tSkillDesc.TCoolTime = { 0.f,0.f };
         tAttackDesc.iAttack = 10;
@@ -376,7 +376,7 @@ HRESULT CMainPlayer::Ready_Ability()
 
         desc.tESkill = tSkillDesc;
 
-        tSkillDesc.eSkillType = CStatCom_Player::SKILL_TYPE::BUFF;
+        tSkillDesc.eSkillType = SKILL_TYPE::BUFF;
         tSkillDesc.iNeedMental = 35;
         tSkillDesc.TCoolTime = { 0.f,3.5f };
         tAttackDesc.iAttack = 5;
