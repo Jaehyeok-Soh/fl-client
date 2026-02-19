@@ -410,7 +410,27 @@ namespace Client
 	};
 #pragma endregion
 
+#pragma region SKILL
+	enum class SKILL_TYPE { DAMAGE, BUFF, SUMMON, CURE, DEFENSE }; // skill의 타입
 
+	typedef struct tagAttackDesc
+	{
+		_uint		iAttack = { 0 };			// 공격력
+		_uint		iSheild = { 0 };			// 방어력
+	}ATTACK_DESC;
+
+	typedef struct tagSkillDesc
+	{
+		SKILL_TYPE	eSkillType = { SKILL_TYPE::DAMAGE };
+		TimeCount	TCoolTime = { 0.f,0.f };	// 다음 공격까지 cooltime
+
+		_uint		iNeedMental = { 0 };		// 공격하기 위한 정신력 정도
+
+		_uint iSikllAtt = { 0 };
+
+		ATTACK_DESC tAttDesc = {};
+	}SKILL_DESC;
+#pragma endregion
 
 
 	inline constexpr wchar_t g_wszTriggerBoxLayer[]{ L"TriggerBox_Layer" };
