@@ -115,6 +115,7 @@ void to_json(json& j, const TUI_TextData& data)
 		{"strFontTag", data.strFontTag},
 		{"strText", data.strText},
 		{"vFontColor", {{ "x", data.vFontColor.x },{ "y", data.vFontColor.y },{ "z", data.vFontColor.z },{ "w", data.vFontColor.w }}},
+		{"ePivot", data.ePivot},
 		{"fRotate", data.fRotate},
 		{"fScale", data.fScale},
 	};
@@ -131,6 +132,7 @@ void from_json(const json& j, TUI_TextData& data)
 	data.vFontColor.y	= 1.f;
 	data.vFontColor.z	= 1.f;
 	data.vFontColor.w	= 1.f;
+	data.ePivot			= EFontPivotType::CENTER;
 	data.fRotate		= 0.f;
 	data.fScale			= 1.f;
 
@@ -144,6 +146,7 @@ void from_json(const json& j, TUI_TextData& data)
 	data.vFontColor.y	= jc.value("y", data.vFontColor.y);
 	data.vFontColor.z	= jc.value("z", data.vFontColor.z);
 	data.vFontColor.w	= jc.value("w", data.vFontColor.w);
+	data.ePivot			= j.value("fRotate", data.ePivot);
 	data.fRotate		= j.value("fRotate", data.fRotate);
 	data.fScale			= j.value("fScale", data.fScale);
 }

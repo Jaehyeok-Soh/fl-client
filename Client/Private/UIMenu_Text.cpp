@@ -89,7 +89,7 @@ HRESULT CUIMenu_Text::Render()
 	Get_Component<CVIBuffer>()->Bind_Resource();
 	Get_Component<CVIBuffer>()->Render();
 
-	if (FAILED(m_pGameInstance->Draw_Text(m_wstrFontTag, m_wstrText.c_str(), m_vFontPos, m_vFontColor, m_fFontRotate, m_fFontScale)))
+	if (FAILED(m_pGameInstance->Draw_Text(m_wstrFontTag, m_wstrText.c_str(), m_vFontPos, m_vFontColor, m_ePivot, m_fFontRotate, m_fFontScale)))
 		return E_FAIL;
 	return S_OK;
 }

@@ -279,6 +279,39 @@ inline std::string UITextSubClassTypeToString(EUITextSubClassType e)
 	}
 }
 
+NLOHMANN_JSON_SERIALIZE_ENUM(EFontPivotType, {
+	{ EFontPivotType::CENTER, "CENTER" },
+	{ EFontPivotType::LEFT,   "LEFT"   },
+	{ EFontPivotType::RIGHT,  "RIGHT"  },
+	{ EFontPivotType::UP,     "UP"     },
+	{ EFontPivotType::DOWN,   "DOWN"   },
+	{ EFontPivotType::END,    "END"    },
+	})
+
+	inline EFontPivotType StringToFontPivotType(const std::string& str)
+{
+	if (str == "CENTER") return EFontPivotType::CENTER;
+	if (str == "LEFT")   return EFontPivotType::LEFT;
+	if (str == "RIGHT")  return EFontPivotType::RIGHT;
+	if (str == "UP")     return EFontPivotType::UP;
+	if (str == "DOWN")   return EFontPivotType::DOWN;
+	if (str == "END")    return EFontPivotType::END;
+	return EFontPivotType::END;
+}
+
+inline const char* FontPivotTypeToString(const EFontPivotType eType)
+{
+	switch (eType)
+	{
+	case EFontPivotType::CENTER: return "CENTER";
+	case EFontPivotType::LEFT:   return "LEFT";
+	case EFontPivotType::RIGHT:  return "RIGHT";
+	case EFontPivotType::UP:     return "UP";
+	case EFontPivotType::DOWN:   return "DOWN";
+	case EFontPivotType::END:    return "END";
+	default:                     return "END";
+	}
+}
 #pragma endregion
 
 
@@ -524,6 +557,7 @@ struct TUI_TextData
 	std::string		strFontTag;
 	std::string	    strText;
 	Vec4			vFontColor;	
+	EFontPivotType ePivot;
 	_float			fRotate;
 	_float			fScale;
 };

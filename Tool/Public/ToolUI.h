@@ -222,6 +222,7 @@ protected:
 	DTO::EUITextSubClassType m_eTextSubClassType	= {};
 	Vec4 m_vFontColor_TextData						= {};
 	_float m_fScale_TextData						= {};
+	EFontPivotType m_ePivot_TextData				= { EFontPivotType::CENTER };
 	_string m_strFontName_TextData					= {"SemiBold"};
 	_float m_fRotate_TextData						= {};
 

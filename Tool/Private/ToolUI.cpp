@@ -60,8 +60,9 @@ HRESULT CToolUI::Initialize(void* pArg)
 		m_eTextSubClassType		= m_tUITextData.eTextSubClassType;
 		m_vFontColor_TextData	= m_tUITextData.vFontColor;
 		m_fScale_TextData		= m_tUITextData.fScale;
+		m_ePivot_TextData		= m_tUITextData.ePivot;
 		m_fRotate_TextData		= m_tUITextData.fRotate;
-		m_strFontName_TextData = m_tUITextData.strFontTag;
+		m_strFontName_TextData	= m_tUITextData.strFontTag;
 	}
 	if (m_eClassType == DTO::EUIClassType::TRIGGER)
 	{
@@ -250,7 +251,8 @@ HRESULT CToolUI::Bind_ShaderResources()
 	if(m_eClassType == DTO::EUIClassType::UI_TEXT)
 	{
 		Vec2 fontPos = Vec2{ m_vRenderPos.x, m_vRenderPos.y };
-		if (FAILED(m_pGameInstance->Draw_Text(Engine_Utils::ToWString(m_strFontName_TextData), m_wstrText_TextData.c_str(), fontPos, m_vFontColor_TextData, m_fRotate_TextData,m_fScale_TextData)))
+		if (FAILED(m_pGameInstance->Draw_Text(
+			Engine_Utils::ToWString(m_strFontName_TextData), m_wstrText_TextData.c_str(), fontPos, m_vFontColor_TextData, m_ePivot_TextData, m_fRotate_TextData,m_fScale_TextData)))
 			return E_FAIL;
 	}
     return S_OK;

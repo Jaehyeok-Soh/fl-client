@@ -205,6 +205,8 @@ HRESULT CBuilder_UI::Register_Class(DTO::EUIClassType eClassType, const DTO::TUI
 
 	CGameObject* pResult = nullptr;
 
+	////////////////////////////////////////
+	// PROGRESS_BAR //
 	if (eClassType == DTO::EUIClassType::PROGRESS_BAR)
 	{
 		CUIProgress_Bar::PROGRESS_BAR_DESC ProgressDesc = {};
@@ -212,6 +214,9 @@ HRESULT CBuilder_UI::Register_Class(DTO::EUIClassType eClassType, const DTO::TUI
 		ProgressDesc.eOwner = data.eSubClassType;
 		pResult = m_pGameInstance->Add_GameObject(m_iLevelID, wstrProtoTag, m_iLevelID, wstrLayerTag, &ProgressDesc);
 	}
+
+	////////////////////////////////////////
+	// UI_TEXT //
 	else if (eClassType == DTO::EUIClassType::UI_TEXT)
 	{
 		CUIText::UI_TEXT_DESC TextDesc = {};
@@ -249,12 +254,18 @@ HRESULT CBuilder_UI::Register_Class(DTO::EUIClassType eClassType, const DTO::TUI
 			int a = 0;
 		}
 	}
+
+	////////////////////////////////////////
+	// JUST_IMAGE //
 	else if (eClassType == DTO::EUIClassType::JUST_IMAGE)
 	{
 		CUIJust_Image::JUST_IMAGE_DESC JustImageDesc = {};
 		static_cast<CGenericUI::GENERIC_UI_DESC&>(JustImageDesc) = DefaultDesc;
 		pResult = m_pGameInstance->Add_GameObject(m_iLevelID, wstrProtoTag, m_iLevelID, wstrLayerTag, &JustImageDesc);
 	}
+
+	////////////////////////////////////////
+	// TRIGGER //
 	else if (eClassType == DTO::EUIClassType::TRIGGER)
 	{
 		auto iter = m_MapTriggerDataCache.find(data.strTag);
@@ -305,6 +316,9 @@ HRESULT CBuilder_UI::Register_Class(DTO::EUIClassType eClassType, const DTO::TUI
 
 		m_vecTriggerUIs.push_back(pTriggerUI);
 	}
+
+	////////////////////////////////////////
+	// DYNAMIC_IMAGE //
 	else if (eClassType == DTO::EUIClassType::DYNAMIC_IMAGE)
 	{
 		auto iter = m_MapDImageDataCache.find(data.strTag);
