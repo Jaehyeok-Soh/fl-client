@@ -3,9 +3,20 @@
 
 #include "GameInstance.h"
 
+#include "Monster_Body_Base.h"
+
+#include "MonsterActionState.h"
+#include "MonsterControlContext.h"
+#include "StateBase_Monster.h"
 #include "StatComponent.h"
 #include "Model.h"
 #include "PhysicsCCT.h"
+
+#pragma region STATE
+#include "StateMonster_Idle.h"
+#include "StateMonster_Walk.h"
+#include "StateMonster_Attack.h"
+#pragma endregion
 
 CMonster_Dummy::CMonster_Dummy(ID3D11Device* pDevice, ID3D11DeviceContext* pDeviceContext)
 	: Super(pDevice, pDeviceContext)
@@ -30,6 +41,9 @@ HRESULT CMonster_Dummy::Initialize(void* pArg)
 	if (FAILED(Super::Initialize(pArg)))
 		return E_FAIL;
 
+	//if (FAILED(Ready_Ability()))
+	//	return E_FAIL;
+
 	Set_Name("Monster_Dummy");
 
 	if (FAILED(Ready_PartObjects()))
@@ -40,9 +54,6 @@ HRESULT CMonster_Dummy::Initialize(void* pArg)
 
 	if (FAILED(Ready_BaseStates()))
 		return E_FAIL;
-
-	//if (FAILED(Ready_Ability()))
-	//	return E_FAIL;
 
 	return S_OK;
 }
@@ -110,6 +121,103 @@ void CMonster_Dummy::OnTrigger_Exit(_uint iMyColliderLayer, CGameObject* pOther)
 
 HRESULT CMonster_Dummy::Ready_BaseStates()
 {
+	CMonsterActionState* pActionState = { nullptr };
+	CModel* pModel = Get_Part<CMonster_Body_Base>(Part::BODY)->Get_Component<CModel>();
+	if (!pModel)
+		return E_FAIL;
+
+	if (!(pActionState = Get_Component<CMonsterActionState>()))
+		return E_FAIL;
+
+	TIME_COUNTER tStateLifeTime = {};
+	TIME_COUNTER tStateCoolDownTime = {};
+
+	// Idle
+	{
+		CStateBase_Monster::MONSTER_STATEBASE_DESC  desc = {};
+		desc.FAniFlags = CStateBase::STATEANI_FLAG::SA_HasPreAni;
+		desc.vecPreAnims = {
+								{State::WALK, Get_AnimationIndex(L"Animation_Monster_Dog_Attack_01")}
+								,{State::IDLE, Get_AnimationIndex(L"Animation_Monster_Dog_Idle")}
+		};
+		desc.vecMainAnims = { Get_AnimationIndex(L"Animation_PlayerMoon_Idle") };
+		desc.bBlend = false;
+		desc.bLoop = true;
+
+		tStateLifeTime.bCountTime = false;
+		tStateLifeTime.bTimeReset = false;
+		tStateLifeTime.fMaxTime = 0.05f;
+		tStateLifeTime.fMinTime = 0.05f;
+
+		tStateCoolDownTime.bCountTime = false;
+		tStateCoolDownTime.bTimeReset = false;
+		tStateCoolDownTime.fMaxTime = 0.05f;
+		tStateCoolDownTime.fMinTime = 0.05f;
+
+		desc.tStateLifeTime = tStateLifeTime;
+		desc.tStateCoolDownTime = tStateCoolDownTime;
+
+		if (FAILED(pActionState->Add_State(State::IDLE, CStateMonster_Idle::Create(pActionState, &desc))))
+			return E_FAIL;
+	}
+
+	// Walk
+	{
+		CStateBase_Monster::MONSTER_STATEBASE_DESC  desc = {};
+		desc.FAniFlags = CStateBase::STATEANI_FLAG::SA_HasPreAni;
+		desc.vecPreAnims = {
+								{State::RUN, Get_AnimationIndex(L"Animation_Monster_Dog_Run_Loop")}
+		};
+		desc.vecMainAnims = { Get_AnimationIndex(L"Animation_Monster_Dog_Idle") };
+		desc.bBlend = false;
+		desc.bLoop = true;
+
+		tStateLifeTime.bCountTime = false;
+		tStateLifeTime.bTimeReset = false;
+		tStateLifeTime.fMaxTime = 0.05f;
+		tStateLifeTime.fMinTime = 0.05f;
+
+		tStateCoolDownTime.bCountTime = false;
+		tStateCoolDownTime.bTimeReset = false;
+		tStateCoolDownTime.fMaxTime = 0.05f;
+		tStateCoolDownTime.fMinTime = 0.05f;
+
+		desc.tStateLifeTime = tStateLifeTime;
+		desc.tStateCoolDownTime = tStateCoolDownTime;
+
+		if (FAILED(pActionState->Add_State(State::WALK, CStateMonster_Walk::Create(pActionState, &desc))))
+			return E_FAIL;
+	}
+
+	// Attack
+	{
+		CStateBase_Monster::MONSTER_STATEBASE_DESC  desc = {};
+		desc.FAniFlags = CStateBase::STATEANI_FLAG::SA_HasPreAni;
+		desc.vecPreAnims = {
+								{State::WALK, Get_AnimationIndex(L"Animation_Monster_Dog_Run_Loop")}
+								,{State::IDLE, Get_AnimationIndex(L"Animation_Monster_Dog_Idle")}
+		};
+		desc.vecMainAnims = { Get_AnimationIndex(L"Animation_Monster_Dog_Attack_01") };
+		desc.bBlend = false;
+		desc.bLoop = true;
+
+		tStateLifeTime.bCountTime = false;
+		tStateLifeTime.bTimeReset = false;
+		tStateLifeTime.fMaxTime = 0.05f;
+		tStateLifeTime.fMinTime = 0.05f;
+
+		tStateCoolDownTime.bCountTime = false;
+		tStateCoolDownTime.bTimeReset = false;
+		tStateCoolDownTime.fMaxTime = 0.05f;
+		tStateCoolDownTime.fMinTime = 0.05f;
+
+		desc.tStateLifeTime = tStateLifeTime;
+		desc.tStateCoolDownTime = tStateCoolDownTime;
+
+		if (FAILED(pActionState->Add_State(State::IDLE, CStateMonster_Walk::Create(pActionState, &desc))))
+			return E_FAIL;
+	}
+
 	return S_OK;
 }
 
@@ -120,6 +228,9 @@ HRESULT CMonster_Dummy::Ready_PartObjects()
 
 HRESULT CMonster_Dummy::Ready_Components()
 {
+	if (FAILED(Add_Component<CMonsterControlContext>(0 /*static*/, L"Prototype_Component_ControlContext_Monster", nullptr)))
+		return E_FAIL;
+
 	return S_OK;
 }
 

@@ -331,6 +331,30 @@
     <Filter Include="03. GameObject\PartObjects\Monster\Body\Dummy">
       <UniqueIdentifier>{16b3b9d8-c2fc-4110-a516-df3025df7408}</UniqueIdentifier>
     </Filter>
+    <Filter Include="05. Component\Monster">
+      <UniqueIdentifier>{1b9474e2-c7c8-4285-8e6e-c5f87373948c}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="05. Component\Monster\MonsterControlContext">
+      <UniqueIdentifier>{05548b68-e817-4b3c-8896-10005d15ecdf}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="05. Component\Monster\MonsterActionState">
+      <UniqueIdentifier>{2d811f99-b873-4992-9cb3-473031bf8bb6}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="06. FSM\Monster">
+      <UniqueIdentifier>{43386637-460e-4032-abe2-96b2def28a07}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="06. FSM\Monster\Idle">
+      <UniqueIdentifier>{ce066a2f-058b-47d6-8a35-ef80f82d8f9e}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="06. FSM\Monster\Attack">
+      <UniqueIdentifier>{00534b48-b825-4bd7-b916-eb3ad0fc2133}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="06. FSM\Monster\Walk">
+      <UniqueIdentifier>{429f91fd-bc08-45ee-b4d6-5a81adf3eeaf}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="06. FSM\Monster\Combo">
+      <UniqueIdentifier>{8654d254-98b1-4c39-8eaf-1b9c97e2655f}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="targetver.h">
@@ -633,6 +657,36 @@
     <ClInclude Include="..\Public\Monster_Dummy_Body.h">
       <Filter>03. GameObject\PartObjects\Monster\Body\Dummy</Filter>
     </ClInclude>
+    <ClInclude Include="..\Public\MonsterActionState.h">
+      <Filter>05. Component\Monster\MonsterActionState</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\MonsterControlContext.h">
+      <Filter>05. Component\Monster\MonsterControlContext</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\StateBase_Monster.h">
+      <Filter>06. FSM\Monster</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\StateMonster_Idle.h">
+      <Filter>06. FSM\Monster\Idle</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\StateMonster_Walk.h">
+      <Filter>06. FSM\Monster\Walk</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\StateMonster_Attack.h">
+      <Filter>06. FSM\Monster\Attack</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\StateMonster_ComboBase.h">
+      <Filter>06. FSM\Monster\Combo</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\StateMonster_Combo.h">
+      <Filter>06. FSM\Monster\Combo</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\State_Monster.h">
+      <Filter>06. FSM\Monster</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\State_BossMonster.h">
+      <Filter>06. FSM\Monster</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <Image Include="Client.ico">
@@ -926,6 +980,36 @@
     </ClCompile>
     <ClCompile Include="..\Private\Monster_Dummy_Body.cpp">
       <Filter>03. GameObject\PartObjects\Monster\Body\Dummy</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\MonsterActionState.cpp">
+      <Filter>05. Component\Monster\MonsterActionState</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\MonsterControlContext.cpp">
+      <Filter>05. Component\Monster\MonsterControlContext</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\StateBase_Monster.cpp">
+      <Filter>06. FSM\Monster</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\StateMonster_Idle.cpp">
+      <Filter>06. FSM\Monster\Idle</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\StateMonster_Walk.cpp">
+      <Filter>06. FSM\Monster\Walk</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\StateMonster_Attack.cpp">
+      <Filter>06. FSM\Monster\Attack</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\StateMonster_ComboBase.cpp">
+      <Filter>06. FSM\Monster\Combo</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\StateMonster_Combo.cpp">
+      <Filter>06. FSM\Monster\Combo</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\State_Monster.cpp">
+      <Filter>06. FSM\Monster</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\State_BossMonster.cpp">
+      <Filter>06. FSM\Monster</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

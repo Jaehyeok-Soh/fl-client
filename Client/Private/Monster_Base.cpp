@@ -4,9 +4,13 @@
 #include "GameInstance.h"
 
 #include "Monster_Body_Base.h"
+#include "Ray.h"
 
+#include "MonsterControlContext.h"
+#include "MonsterActionState.h"
 #include "StatComponent.h"
 #include "Model.h"
+#include "ComputeShader.h"
 #include "PhysicsCCT.h"
 
 CMonster_Base::CMonster_Base(ID3D11Device* pDevice, ID3D11DeviceContext* pDeviceContext)
@@ -46,12 +50,25 @@ HRESULT CMonster_Base::Initialize(void* pArg)
 	//if (FAILED(Ready_Ability()))
 	//	return E_FAIL;
 
+	if (FAILED(Ready_Ray()))
+		return E_FAIL;
+
 	return S_OK;
 }
 
 HRESULT CMonster_Base::Awake(const _uint iCurrentLevelID)
 {
 	if (FAILED(Super::Awake(iCurrentLevelID)))
+		return E_FAIL;
+
+	CGameInstance::GetInstance()->Add_Actor_Object(this);
+	if (CMonsterActionState* pMonsterState = Get_Component<CMonsterActionState>())
+		if (FAILED(pMonsterState->Awake(iCurrentLevelID)))
+			return E_FAIL;
+
+	if (FAILED(Get_Component<CMonsterActionState>()->Change_State(ENUM_TO_UINT(State::IDLE))))
+		return E_FAIL;
+	if (FAILED(Get_Component<CControlContext>()->Awake(iCurrentLevelID)))
 		return E_FAIL;
 
 	Get_Component<CTransform>()->Set_Info(TRANSFORM_INFO_STATE::POS, Vec3{ 21.f, 17.5f, -1.f });
@@ -68,6 +85,11 @@ void CMonster_Base::Update_Priority(const _float fTimeDelta)
 
 void CMonster_Base::Update(const _float fTimeDelta)
 {
+	if (CMonsterActionState* pMonsterState = Get_Component<CMonsterActionState>())
+	{
+		pMonsterState->Update(fTimeDelta);
+	}
+
 	Super::Update(fTimeDelta);
 }
 
@@ -143,6 +165,21 @@ void CMonster_Base::OnTrigger_Exit(_uint iMyColliderLayer, CGameObject* pOther)
 
 HRESULT CMonster_Base::Ready_BaseStates()
 {
+	CMonsterActionState* pActionState = { nullptr };
+	CModel* pModel = Get_Part<CMonster_Body_Base>(ENUM_TO_UINT(Part::BODY))->Get_Component<CModel>();
+	if (!pModel)
+		return E_FAIL;
+
+	if (!(pActionState = Get_Component<CMonsterActionState>()))
+		return E_FAIL;
+
+	vector<_uint> vecChangeState_ByKey{};
+	vecChangeState_ByKey.resize(State::END, State::END);
+
+	TIME_COUNTER tKeyTimer = {};
+	tKeyTimer.bCountTime = false;
+	tKeyTimer.bTimeReset = false;
+
 	return S_OK;
 }
 
@@ -165,7 +202,27 @@ HRESULT CMonster_Base::Ready_PartObjects(void* pArg)
 
 HRESULT CMonster_Base::Ready_Components(void* pArgs)
 {
+	{
+		CMonsterActionState::ACTIONSTATE_DESC desc = {};
+		desc.iStateCount = ENUM_TO_UINT(State::END);
+		desc.pOwnerModel = Get_Part<CMonster_Body_Base>(ENUM_TO_UINT(Part::BODY))->Get_Component<CModel>();
+		desc.pOwnerAnimECS = static_cast<CComputeShader*>(Get_Part<CMonster_Body_Base>(ENUM_TO_UINT(Part::BODY))->Get_Script_Component(TEXT("ComputeShader_AnimE")));
+		if (FAILED(Add_Component<CMonsterActionState>(0, L"Prototype_Component_ActionState_Monster", &desc)))
+			return E_FAIL;
+	}
+
 	if (FAILED(Ready_CCT(pArgs)))
+		return E_FAIL;
+
+	return S_OK;
+}
+
+HRESULT CMonster_Base::Ready_Ray()
+{
+	if (!(m_pFootRay = CRay::Create(Vec3{ 0.f, 0.1f, 0.f }, Vec3{ 0.f, -1.f, 0.f })))
+		return E_FAIL;
+
+	if (!(m_pMoveRay = CRay::Create(Vec3{ 0.f, 0.05f, 0.f }, Vec3{ 0.f, 0.f, 0.f })))
 		return E_FAIL;
 
 	return S_OK;

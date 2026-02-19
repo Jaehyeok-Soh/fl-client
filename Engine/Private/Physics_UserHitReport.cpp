@@ -73,8 +73,8 @@ HRESULT CPhysics_UserHitReport::Initialize()
 {
 	Ready_EventCallChain();
 
-	m_arrEventString[HITEVENT::Enum::ON_SHAPE_HIT] = L"[On player to shape hit]\n";
-	m_arrEventString[HITEVENT::Enum::ON_CCT_HIT] = L"[On player to character hit]\n";
+	m_arrEventString[HITEVENT::Enum::ON_SHAPE_HIT] = L"[On NPC to shape hit]\n";
+	m_arrEventString[HITEVENT::Enum::ON_CCT_HIT] = L"[On NPC to character hit]\n";
 
 	return S_OK;
 }

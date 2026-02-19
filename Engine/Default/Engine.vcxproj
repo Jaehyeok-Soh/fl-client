@@ -338,6 +338,7 @@
     <ClInclude Include="..\Public\DataDocument_AttackOverlap.h" />
     <ClInclude Include="..\Public\DataStruct_AttackOverlap.h" />
     <ClInclude Include="..\Public\DataStruct_EffectEvent.h" />
+    <ClInclude Include="..\Public\DTO_MonsterState.h" />
     <ClInclude Include="..\public\FxEffectAsset.h" />
     <ClInclude Include="..\public\FxShaderVariant.h" />
     <ClInclude Include="..\Public\InstanceMesh.h" />

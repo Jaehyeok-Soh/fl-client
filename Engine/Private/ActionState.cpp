@@ -169,8 +169,6 @@ HRESULT CActionState::Set_OwnerComponents()
 	CGameObject* pOwner = Get_Owner();
 
 	m_pOwnerControlContext = pOwner->Get_Component<CControlContext>();
-	if (m_pOwnerControlContext == nullptr)
-		return E_FAIL;
 
 	m_pOwnerTransform = pOwner->Get_Component<CTransform>();
 	if (m_pOwnerTransform == nullptr)

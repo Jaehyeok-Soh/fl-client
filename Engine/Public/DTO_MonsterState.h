@@ -1,0 +1,143 @@
+#pragma once
+#include <string>
+#include <set>
+#include <map>
+#include <vector>
+
+#include "Engine_Struct.h"
+
+namespace DTO
+{
+	typedef struct tagTimeCounter
+	{
+		float fTimeAcc = { 0.f };
+		float fMaxTime = { 0.f };
+		float fMinTime = { 0.f };
+
+		bool bCountTime = { true };
+		bool bTimeReset = { true };
+	}TIME_COUNTER;
+
+	inline void to_json(json& j, const TIME_COUNTER& d)
+	{
+		j["fTimeAcc"] = d.fTimeAcc;
+		j["fMaxTime"] = d.fMaxTime;
+		j["fMinTime"] = d.fMinTime;
+		j["bCountTime"] = d.bCountTime;
+		j["bTimeReset"] = d.bTimeReset;
+	}
+
+	inline void from_json(const json& j, TIME_COUNTER& d)
+	{
+		j.at("fTimeAcc").get_to(d.fTimeAcc);
+		j.at("fMaxTime").get_to(d.fMaxTime);
+		j.at("fMinTime").get_to(d.fMinTime);
+		j.at("bCountTime").get_to(d.bCountTime);
+		j.at("bTimeReset").get_to(d.bTimeReset);
+	}
+
+	typedef struct tagMonsterPreAnimationDesc
+	{
+		int iPrevStateIdx = { -1 };
+		int iAnimationIdex = { -1 };
+
+	}MONSTERCHECK_ANIMATION;
+
+	inline void to_json(json& j, const MONSTERCHECK_ANIMATION& d)
+	{
+		j["iPrevStateIdx"] = d.iPrevStateIdx;
+		j["iAnimationIdex"] = d.iAnimationIdex;
+	}
+
+	inline void from_json(const json& j, MONSTERCHECK_ANIMATION& d)
+	{
+		j.at("iPrevStateIdx").get_to(d.iPrevStateIdx);
+		j.at("iAnimationIdex").get_to(d.iAnimationIdex);
+	}
+
+	typedef struct tagMonsterStateBaseDesc
+	{
+		unsigned int FAniFlags = { 0 };
+		vector<MONSTERCHECK_ANIMATION> vecPreAnims;
+		vector<int> vecMainAnims;
+
+		bool bBlend = { false };
+		bool bLoop = { false };
+	}MONSTERSTATE_DESC;
+
+	inline void to_json(json& j, const MONSTERSTATE_DESC& d)
+	{
+		j["FAniFlags"] = d.FAniFlags;
+		j["vecPreAnims"] = d.vecPreAnims;
+		j["vecMainAnims"] = d.vecMainAnims;
+		j["bBlend"] = d.bBlend;
+		j["bLoop"] = d.bLoop;
+	}
+
+	inline void from_json(const json& j, MONSTERSTATE_DESC& d)
+	{
+		j.at("FAniFlags").get_to(d.FAniFlags);
+		j.at("vecPreAnims").get_to(d.vecPreAnims);
+		j.at("vecMainAnims").get_to(d.vecMainAnims);
+		j.at("bBlend").get_to(d.bBlend);
+		j.at("bLoop").get_to(d.bLoop);
+	}
+
+	typedef struct tagMonsterStateDesc : public MONSTERSTATE_DESC
+	{
+		bool bIsBoss = { false };
+		bool bIsCombo = { false };
+
+		string strName = {};
+
+		TIME_COUNTER tStateLifeTime = {};
+		TIME_COUNTER tStateCoolDownTime = {};
+
+		// state names
+		std::set<string>		setStates;
+
+		// state name, anim name
+		map<string, string>		mapPreAnimNames;
+		vector<string>			vecMainAnimNames;
+
+		// to state name, condition(function)
+		map<string, string>		mapTransferCondition;
+	}MONSTER_STATEBASE_DESC;
+
+	inline void to_json(json& j, const MONSTER_STATEBASE_DESC& d)
+	{
+		j["bIsBoss"] = d.bIsBoss;
+		j["bIsCombo"] = d.bIsCombo;
+
+		j["strName"] = d.strName;
+
+		j["tStateLifeTime"] = d.tStateLifeTime;
+		j["tStateCoolDownTime"] = d.tStateCoolDownTime;
+
+		j["setStates"] = d.setStates;
+
+		j["mapPreAnimNames"] = d.mapPreAnimNames;
+		j["vecMainAnimNames"] = d.vecMainAnimNames;
+
+		j["vecMainAnimNames"] = d.mapTransferCondition;
+	}
+
+	inline void from_json(const json& j, MONSTER_STATEBASE_DESC& d)
+	{
+		j.at("bIsBoss").get_to(d.bIsBoss);
+		j.at("bIsCombo").get_to(d.bIsCombo);
+
+		j.at("strName").get_to(d.strName);
+
+		j.at("tStateLifeTime").get_to(d.tStateLifeTime);
+		j.at("tStateCoolDownTime").get_to(d.tStateCoolDownTime);
+
+		j.at("setStates").get_to(d.setStates);
+
+		j.at("mapPreAnimNames").get_to(d.mapPreAnimNames);
+		j.at("vecMainAnimNames").get_to(d.vecMainAnimNames);
+
+		j.at("vecMainAnimNames").get_to(d.mapTransferCondition);
+	}
+}
+

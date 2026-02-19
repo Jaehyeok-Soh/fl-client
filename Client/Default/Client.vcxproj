@@ -196,12 +196,21 @@
     <ClInclude Include="..\Public\imstb_textedit.h" />
     <ClInclude Include="..\Public\imstb_truetype.h" />
     <ClInclude Include="..\Public\MapObject.h" />
+    <ClInclude Include="..\Public\MonsterActionState.h" />
+    <ClInclude Include="..\Public\MonsterControlContext.h" />
     <ClInclude Include="..\Public\Monster_Base.h" />
     <ClInclude Include="..\Public\Monster_Body_Base.h" />
     <ClInclude Include="..\Public\Monster_Dummy.h" />
     <ClInclude Include="..\Public\Monster_Dummy_Body.h" />
     <ClInclude Include="..\Public\Physics_LandScape.h" />
     <ClInclude Include="..\Public\Physics_Terrain.h" />
+    <ClInclude Include="..\Public\StateBase_Monster.h" />
+    <ClInclude Include="..\Public\StateMonster_Attack.h" />
+    <ClInclude Include="..\Public\StateMonster_Combo.h" />
+    <ClInclude Include="..\Public\StateMonster_ComboBase.h" />
+    <ClInclude Include="..\Public\StateMonster_Idle.h" />
+    <ClInclude Include="..\Public\StateMonster_Walk.h" />
+    <ClInclude Include="..\Public\State_BossMonster.h" />
     <ClInclude Include="..\Public\State_ComboBase.h" />
     <ClInclude Include="..\Public\State_CrouchWalk.h" />
     <ClInclude Include="..\Public\Level_Loading.h" />
@@ -230,6 +239,7 @@
     <ClInclude Include="..\Public\State_JumpBullet.h" />
     <ClInclude Include="..\Public\State_JumpDouble.h" />
     <ClInclude Include="..\Public\State_Land.h" />
+    <ClInclude Include="..\Public\State_Monster.h" />
     <ClInclude Include="..\Public\State_MoonCombo.h">
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">false</ExcludedFromBuild>
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">false</ExcludedFromBuild>
@@ -323,11 +333,20 @@
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|x64'">NotUsing</PrecompiledHeader>
     </ClCompile>
     <ClCompile Include="..\Private\MapObject.cpp" />
+    <ClCompile Include="..\Private\MonsterActionState.cpp" />
+    <ClCompile Include="..\Private\MonsterControlContext.cpp" />
     <ClCompile Include="..\Private\Monster_Base.cpp" />
     <ClCompile Include="..\Private\Monster_Body_Base.cpp" />
     <ClCompile Include="..\Private\Monster_Dummy.cpp" />
     <ClCompile Include="..\Private\Monster_Dummy_Body.cpp" />
     <ClCompile Include="..\Private\Physics_LandScape.cpp" />
+    <ClCompile Include="..\Private\StateBase_Monster.cpp" />
+    <ClCompile Include="..\Private\StateMonster_Attack.cpp" />
+    <ClCompile Include="..\Private\StateMonster_Combo.cpp" />
+    <ClCompile Include="..\Private\StateMonster_ComboBase.cpp" />
+    <ClCompile Include="..\Private\StateMonster_Idle.cpp" />
+    <ClCompile Include="..\Private\StateMonster_Walk.cpp" />
+    <ClCompile Include="..\Private\State_BossMonster.cpp" />
     <ClCompile Include="..\Private\State_ComboBase.cpp" />
     <ClCompile Include="..\Private\State_CrouchWalk.cpp" />
     <ClCompile Include="..\Private\Level_Loading.cpp" />
@@ -356,6 +375,7 @@
     <ClCompile Include="..\Private\State_JumpBullet.cpp" />
     <ClCompile Include="..\Private\State_JumpDouble.cpp" />
     <ClCompile Include="..\Private\State_Land.cpp" />
+    <ClCompile Include="..\Private\State_Monster.cpp" />
     <ClCompile Include="..\Private\State_MoonCombo.cpp">
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">false</ExcludedFromBuild>
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">false</ExcludedFromBuild>

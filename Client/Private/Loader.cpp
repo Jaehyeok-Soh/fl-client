@@ -4,8 +4,10 @@
 // Component
 //=================
 #include "PlayerControlContext.h"
+#include "MonsterControlContext.h"
 #include "MonoBehaviour.h"
 #include "PlayerActionState.h"
+#include "MonsterActionState.h"
 #include "StatComponent.h"
 #include "Collider.h"
 #include "VIBuffer_Terrain.h"
@@ -352,6 +354,11 @@ HRESULT CLoader::Loading_For_Logo()
 
 	// For. Prototype_Component_Collider_SPHERE
 	m_pGameInstance->Add_Prototype(ENUM_TO_UINT(ELevelType::STATIC), L"Prototype_Component_VIBuffer_InstanceMesh", CInstanceMesh::Create(m_pDevice, m_pDeviceContext));
+
+	// For. Prototype_Component_ControlContext_Monster
+	m_pGameInstance->Add_Prototype(ENUM_TO_UINT(ELevelType::STATIC), L"Prototype_Component_ControlContext_Monster", CMonsterControlContext::Create());
+	// For. Prototype_Component_ActionState_Monster
+	m_pGameInstance->Add_Prototype(ENUM_TO_UINT(ELevelType::STATIC), L"Prototype_Component_ActionState_Monster", CMonsterActionState::Create());
 
 	///////////////////////////////////////
 	//////////// Ready Objects ////////////

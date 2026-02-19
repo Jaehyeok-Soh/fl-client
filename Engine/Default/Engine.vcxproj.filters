@@ -394,6 +394,9 @@
     <Filter Include="99. Defines\Anim_Event_Defines\VFX">
       <UniqueIdentifier>{518140e5-2def-408b-8bc4-eddea573b43c}</UniqueIdentifier>
     </Filter>
+    <Filter Include="01. Utility\11. DataRepository\Datas\MonsterState">
+      <UniqueIdentifier>{3b62d917-8222-4e40-a889-eaa00ed6c2c2}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="..\Private\Timer.cpp">
@@ -1242,6 +1245,9 @@
     </ClInclude>
     <ClInclude Include="..\Public\AttackOverlap_Desc.h">
       <Filter>99. Defines\Anim_Event_Defines\AttackOverlap</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\DTO_MonsterState.h">
+      <Filter>01. Utility\11. DataRepository\Datas\MonsterState</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

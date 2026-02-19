@@ -1,6 +1,10 @@
 #pragma once
 #include "ContainerObject.h"
 
+NS_BEGIN(Engine)
+class CRay;
+NS_END
+
 NS_BEGIN(Client)
 
 class CMonster_Base abstract : public CContainerObject
@@ -19,35 +23,59 @@ public:
 		PHYSICSCCT_DESC tCCTDesc{};
 	}MONSTER_DESC;
 
-	enum Part : _uint
+	struct Part
 	{
-		BODY = 0,
-		SWORD,
-		GUN,
-		END
+		enum Enum : _uint
+		{
+			BODY = 0,
+			SWORD,
+			GUN,
+			END
+		};
 	};
-	enum class State : _uint
+
+	struct State
 	{
-		IDLE,
-		WALK,
+		enum Enum : _uint
+		{
+			IDLE,
 
-		RUNSHORT,
-		RUNLOOP,
+			WALK,
+			RUN,
+			JUMP,
 
-		JUMP,
-		JUMPBULLET,
-		JUMPBACK,
+			FALL,
+			LAND,
 
-		FALL,
-		LAND,
+			ATTACK,
+			HIT,
+			DOWN,
+			AIR_BORNE,
+			KNOCK_BACK,
 
-		COMBO,
-		GUN,
-		CHARGE,
-		SKILL1,
-		SKILL2,
+			ENCOUNT,
+			MISS_TARGET,
+			CHASING,
 
-		END
+			COMBO,
+			GUN,
+			CHARGE,
+			SKILL1,
+			SKILL2,
+
+			LOOPDONE,
+
+			END
+		};
+	};
+	struct SubState
+	{
+		enum Enum
+		{
+			PHASE_1,
+			PHASE_2,
+			END
+		};
 	};
 
 protected:
@@ -79,9 +107,15 @@ protected:
 	HRESULT Ready_BaseStates();
 	HRESULT Ready_PartObjects(void* pArg);
 	HRESULT Ready_Components(void* pArgs);
+	HRESULT Ready_Ray();
 
 protected:
 	HRESULT Ready_CCT(void* pArgs);
+
+protected:
+private:
+	CRay* m_pFootRay = { nullptr };
+	CRay* m_pMoveRay = { nullptr };
 
 public:
 	virtual CGameObject* Clone(void* pArg) PURE;

@@ -162,12 +162,11 @@ protected:
 	void Turn_byCam(const _float fTimeDelta);
 
 	_bool Key_Input(_uint iKey);
-private:
 	
-private:
+protected:
 	_bool IsBlend() { return m_bBlend; }
 	_bool IsLoop() { return m_bLoop; }
-private:
+protected:
 	class CGameInstance* m_pGameInstance	= { nullptr };
 	CActionState*		m_pOwnerStateComp	= { nullptr };
 protected:
