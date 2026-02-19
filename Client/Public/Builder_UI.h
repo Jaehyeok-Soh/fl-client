@@ -9,6 +9,7 @@ NS_END
 
 NS_BEGIN(Client)
 class CCanvas;
+class CUITrigger;
 class CBuilder_UI final : public CBuilderBase
 {
 	using Super = CBuilderBase;
@@ -40,7 +41,7 @@ private:
 	unordered_map<_string, DTO::TUI_TriggerData> m_MapTriggerDataCache;
 	unordered_map<_string, DTO::TUI_DImageData> m_MapDImageDataCache;
 
-	vector<CGenericUI*> m_vecTriggerUIs;
+	vector<CUITrigger*> m_vecTriggerUIs;
 		 
 	Vec2 m_vAspect = {};
 	Vec2 m_vViewportSIze = {};

@@ -295,7 +295,7 @@ CToolUI* CToolCanvas::Calc_TopUI()
 				pTopUI = pUI;
 			else
 			{
-				if (pTopUI->Get_PosZ() < pUI->Get_PosZ())
+				if (pTopUI->Get_PosZ() > pUI->Get_PosZ())
 					pTopUI = pUI;
 			}
 		}

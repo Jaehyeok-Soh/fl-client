@@ -14,7 +14,7 @@ CActiveAttackOverlap::CActiveAttackOverlap()
 
 HRESULT CActiveAttackOverlap::Initialize()
 {
-	m_strEventString = L"[On collision enter : Attac Overlap]\n";
+	m_strEventString = L"[On collision enter : Attack Overlap]\n";
 
 	return S_OK;
 }
@@ -70,13 +70,13 @@ void CActiveAttackOverlap::Reset()
 	hitResults.clear();
 }
 
-void CActiveAttackOverlap::Set(CPhysicsAttackOverlap::HITBOX_DESC* pDesc, Matrix ownerMatrix, CGameObject* pOwner)
+void CActiveAttackOverlap::Set(DTO::HITBOX_DESC* pDesc, Matrix ownerMatrix, CGameObject* pOwner)
 {
 	m_pOwner = pOwner;
 
 	m_tHitboxDesc = pDesc;
 
-	m_matTransform = m_tHitboxDesc->matOffset * ownerMatrix;
+	m_matTransform = ownerMatrix * m_tHitboxDesc->matOffset;
 	m_pxTransform = m_pGameInstance->XMMatrixToPxTransform(m_matTransform);
 
 	hitResults.resize(m_tHitboxDesc->iMaxHit);

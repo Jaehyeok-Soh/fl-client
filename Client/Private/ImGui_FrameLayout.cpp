@@ -1,4 +1,5 @@
 #include "pch.h"
+#include "Timer.h"
 #include "ImGui_FrameLayout.h"
 #include "GameInstance.h"
 
@@ -8,12 +9,17 @@ CImGui_FrameLayout::CImGui_FrameLayout()
 }
 
 void CImGui_FrameLayout::Render(CGameObject* pGo)
-{
+{   
+    if(m_pTimer_60 == nullptr)
+        m_pTimer_60 = m_pGameInstance->Find_Timer(L"Timer_60");
+    if (m_pTimer_Default == nullptr)
+        m_pTimer_Default = m_pGameInstance->Find_Timer(L"Timer_Default");
+
     ImGui::BeginGroup();
     ImGui::SeparatorText(m_strLabel.c_str());
 
-    _float fTimeDelta = m_pGameInstance->Get_TimeDelta(L"Timer_60");
-    _float fNoLimitTimeDelta = m_pGameInstance->Get_TimeDelta(L"Timer_Work");
+    _float fTimeDelta = m_pTimer_60->Get_TimeDelta();
+    _float fNoLimitTimeDelta = m_pTimer_Default->Get_TimeDelta();
     if (fTimeDelta < 1e-6f)
         fTimeDelta = 1e-6f;
     if (fNoLimitTimeDelta < 1e-6f)

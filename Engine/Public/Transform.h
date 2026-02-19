@@ -4,6 +4,7 @@
 NS_BEGIN(Engine)
 
 class CNavigation;
+class CPhysics_QueryFilterCallback;
 
 class ENGINE_DLL CTransform final : public CComponent
 {
@@ -75,6 +76,9 @@ public:
 	void MoveMyWorld_ToArgWorld(Matrix& vNewWorld, _bool isChangeArg = false);
 	void Add_Position(const Vec3& vAddPos);
 	Vec3 LocalPos_toMyWorld(const Vec3& vLocalPos, _bool bDir);
+
+public:
+	_bool Is_OnGround(_float fMaxDist, CPhysics_QueryFilterCallback* pFilterCall = nullptr);
 
 private:
 	_bool		m_bControll = { false };

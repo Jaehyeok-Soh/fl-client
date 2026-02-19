@@ -196,6 +196,8 @@ void CPhysics_Module::StepPhysics(_float fTimeDelta)
 		m_bEnabledDebugDraw = !m_bEnabledDebugDraw;
 	if (KEY_BUTTON_DOWN(DIK_F2))
 		m_pUtils->SetMeshDebugState();
+	if (KEY_BUTTON_DOWN(DIK_F3))
+		g_ToolDebugRender = !g_ToolDebugRender;
 #endif // _DEBUG
 }
 
@@ -237,14 +239,14 @@ CPhysics_QueryFilterCallback* CPhysics_Module::GetQueryFilterCallback()
 #ifdef _DEBUG
 HRESULT CPhysics_Module::Render(PxRigidActor* pActor, XMVECTOR color)
 {
-	if (!m_bEnabledDebugDraw)
+	if (!g_ToolDebugRender && !m_bEnabledDebugDraw)
 		return S_OK;
 
 	return m_pUtils->Render(pActor, color);
 }
 HRESULT CPhysics_Module::Render(const PxGeometry& geom, const PxTransform& transform, XMVECTOR color)
 {
-	if (!m_bEnabledDebugDraw)
+	if (!g_ToolDebugRender && !m_bEnabledDebugDraw)
 		return S_OK;
 
 	return m_pUtils->Render(geom, transform, color);
@@ -359,6 +361,11 @@ void CPhysics_Module::Check_Leak()
 	OutputDebugStringW(L"----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- \r ");
 	OutputDebugStringW(L"                                                                          PhysX Leak Checker END \r ");
 	OutputDebugStringW(L"----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- \r ");
+}
+
+_bool CPhysics_Module::RayCast(Vec3 vWorldPos, Vec3 vDir, _float fMaxDist, CPhysics_QueryFilterCallback* pFilterCall)
+{
+	return m_pUtils->RayCast(vWorldPos, vDir, fMaxDist, pFilterCall);
 }
 
 void CPhysics_Module::ClearPhysics()

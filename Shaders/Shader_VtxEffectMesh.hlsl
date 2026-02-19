@@ -304,9 +304,9 @@ float GlowTextureSample(float2 UV)
 float4 SceneTextureSample(float2 UV, uint Flag)
 {
     if (Flag == 0)
-        return g_RenderTargetSceneTexture.Sample(LinearSampler, UV);
+        return g_RenderTargetSceneHDRCopyTexture.Sample(LinearSampler, UV);
     else if (Flag == 1)
-        return g_RenderTargetSceneTexture.Sample(LinearClampSampler, UV);
+        return g_RenderTargetSceneHDRCopyTexture.Sample(LinearClampSampler, UV);
 }
 
 
@@ -694,7 +694,7 @@ float4 PS_DISTOTION(VS_OUT_INST_MESH_PARTICLE In) : SV_Target0
     }
 
     // 5. 최종 출력
-    float4 refractionColor = g_RenderTargetSceneTexture.Sample(LinearSampler, distortionUV);
+    float4 refractionColor = g_RenderTargetSceneHDRCopyTexture.Sample(LinearSampler, distortionUV);
 
     // 알파 및 수명 처리 (기존 로직)
     float2 scrolledUV = In.vUV + g_Effect.g_UVOffset + g_Effect.g_ScrollOffset;

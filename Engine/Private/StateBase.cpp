@@ -186,6 +186,30 @@ _bool CStateBase::Is_AnimTrackPositionHalf()
 	return m_pOwnerStateComp->Is_AnimTrackPositionHalf();
 }
 
+_bool CStateBase::IsOn_CCTFlag(PxControllerCollisionFlag::Enum eFlag)
+{
+	if (m_pOwnerStateComp == nullptr)
+		return false;
+
+	return m_pOwnerStateComp->IsOn_CCTFlag(eFlag);
+}
+
+void CStateBase::Set_ApplyGravity(_bool bApply)
+{
+	if (m_pOwnerStateComp == nullptr)
+		return;
+
+	m_pOwnerStateComp->Set_ApplyGravity(bApply);
+}
+
+void CStateBase::Set_ApplyYLerp(_bool bApply)
+{
+	if (m_pOwnerStateComp == nullptr)
+		return;
+
+	m_pOwnerStateComp->Set_ApplyYLerp(bApply);
+}
+
 _bool CStateBase::Align_Movement(const _float fTimeDelta)
 {
 	if (m_pOwnerStateComp == nullptr)

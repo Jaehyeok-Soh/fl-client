@@ -45,7 +45,7 @@ PS_OUT_DEFFERED PS_MAIN(PS_IN_INST_MESH input)
     if (Has(g_iMaterialMask, SPECULAR))
         vSpecMask = g_MaterialTextures[SPECULAR].Sample(LinearSampler, input.vUV).xyz;
     output.vSpecularMask = float4(vSpecMask, 1.f);
-    
+    output.vObjectInfo = PackObjectInfo(objectInfo.iObjectID, objectInfo.iFlags);
     output.vDepth = float4(input.vProjPos.z / input.vProjPos.w, input.vProjPos.w, 0.f, 0.f);
     
     

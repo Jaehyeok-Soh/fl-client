@@ -12,6 +12,8 @@ public:
 	{
 		_bool isAlpha;
 		_bool isInitVisible;
+		_bool isInitInteract;
+		_bool isInitActivate;
 		_float fX;
 		_float fY;
 		_float fZ;
@@ -66,8 +68,8 @@ protected:
 public:
 	void Set_Pass(_uint iPass) { m_iShaderPass = iPass; }
 
-	void Set_Visible()			{ m_isVisible = true;	}
-	void Set_Invisible()		{ m_isVisible = false;	}
+	void Set_Visible()			{ m_isVisibleTrigger = true; }
+	void Set_Invisible()		{ m_isVisibleTrigger = false;	}
 	void Set_Activate()			{ m_isActive = true;	}
 	void Set_InActivate()		{ m_isActive = false;	}
 	void Set_Interactable()		{ m_isInteract = true;	}
@@ -94,6 +96,7 @@ protected:
 	/* 렌더 상태를 제어 */
 	_bool m_isPreVisible = { false };
 	_bool m_isVisible = { false };
+	_bool m_isVisibleTrigger = { false };
 	_bool m_isPlaying_VisibleEvent = { false };
 
 	/* 업데이트 상태를 제어 */

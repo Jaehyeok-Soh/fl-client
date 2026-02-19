@@ -103,6 +103,7 @@ public:
 	void					Remove_Timer(const _tchar* pTimerTag);
 	void					Compute_TimeDelta(const _tchar* pTimerTag);
 	void					Clear_Timers();
+	class CTimer*			Find_Timer(const _tchar* pTimerTag);
 #pragma endregion
 
 #pragma region PROTOTYPE_MANAGER
@@ -276,13 +277,27 @@ public:
 #pragma region RENDERTARGET_MANAGER
 	HRESULT Add_RenderTarget(ERenderTarget eTarget, const CRenderTarget::RENDERTARGET_DESC* pDesc);
 	HRESULT Add_MRT(EMRTLayer eMRTLayer, ERenderTarget eTarget);
-	HRESULT Begin_MRT(EMRTLayer eMRTLayer);
+	HRESULT Begin_MRT(EMRTLayer eMRTLayer, _bool bClear = true);
 	HRESULT End_MRT();
 	HRESULT Bind_RT_ShaderResource(ERenderTarget eTarget, class CShader* pShader);
-	HRESULT Copy_BackBufferResource(ERenderTarget eTarget);
+	HRESULT Copy_SceneHDRResource(ERenderTarget eTarget);
 #ifdef _DEBUG
 	HRESULT Ready_RT_Debug(ERenderTarget eTarget, _float fX, _float fY, _float fSizeX, _float fSizeY);
 	HRESULT Debug_RT_Render(EMRTLayer eMRTLayer, class CShader* pShader, class CVIBuffer_Rect_Tex* pVIBuffer);
+	
+	SHADER_SSAOPARAM_DESC& Get_SSAOParamDesc();
+	const SHADER_SSAOPARAM_DESC& Get_SSAOParamDesc() const;
+	HRESULT Commit_SSAOParam();
+	SHADER_HDRPARAM_DESC& Get_HDRParamDesc();
+	const SHADER_HDRPARAM_DESC& Get_HDRParamDesc() const;
+	HRESULT Commit_HDRParam();
+	SHADER_BLOOMPARAM_DESC& Get_BloomParamDesc();
+	const SHADER_BLOOMPARAM_DESC& Get_BloomParamDesc() const;
+	HRESULT Commit_BloomParam();
+	SHADER_OUTLINE_DESC& Get_OutlineParamDesc();
+	const SHADER_OUTLINE_DESC& Get_OutlineParamDesc() const;
+	HRESULT Commit_OutlineParam();
+	HRESULT Commit_AllPostParams();
 #endif
 #pragma endregion
 
@@ -320,6 +335,7 @@ public:
 	void RegisterPhysicsMesh(_uint levelIndex, _wstring prototypeTag);
 	PxQuat GetPureRotation(const Matrix& mat);
 	PxVec3 GetPureScale(const Matrix& mat);
+	_bool RayCast(Vec3 vWorldPos, Vec3 vDir, _float fMaxDist, CPhysics_QueryFilterCallback* pFilterCall);
 #ifdef _DEBUG
 	void Physics_Render(PxRigidActor* pActor, XMVECTOR color = DirectX::Colors::White);
 	void Physics_Render(const PxGeometry& geom, const PxTransform& transform, XMVECTOR color = DirectX::Colors::White);

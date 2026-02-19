@@ -17,6 +17,9 @@ public:
 	virtual void Update(const _float fTimeDelta) override;
 	virtual HRESULT End() override;
 
+private:
+	virtual void Set_NextStateDesc(_uint iNextState)override;
+
 public:
 	static CState_CrouchWalk* Create(CActionState* pOwnerComponent, void* pArg = nullptr);
 	virtual void Free() override;

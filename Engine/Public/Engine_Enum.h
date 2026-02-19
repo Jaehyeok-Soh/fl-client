@@ -13,8 +13,8 @@ namespace Engine
 	enum class LIGHT_TYPE : unsigned int { DIRECTIONAL, STATICPOINT, DYNAMICPOINT, END };
 	enum class EPOINT { A, B, C, END };
 	enum class ELINE { AB, BC, CA, END };
-	enum class RENDER_CATEGORY : unsigned int { PRIORITY, BLEND,NONEBLEND, NONELIGHT, DISTOTION, BLENDUI, UI, END };
-	enum class DEFFERRED { DEBUG, DIRECTIONAL, POINT, SSAO_GEN, SSAO_BLURH, SSAO_BLURV, SSAO_UPSAMPLE, COMBINED, END };
+	enum class RENDER_CATEGORY : unsigned int { PRIORITY, BLEND,NONEBLEND, NONELIGHT, ENVIRONMENT, DISTOTION, BLENDUI, UI, END };
+	enum class DEFFERRED { DEBUG, DIRECTIONAL, POINT, OUTLINE, SSAO_GEN, SSAO_BLURH, SSAO_BLURV, SSAO_UPSAMPLE, COMBINED, BLOOM_EXTRACT, BLOOM_BLURH, BLOOM_BLURV, TONEMAP, END };
 	enum class ECursorMode : unsigned int
 	{
 		LockedHiddenCenter = 0,
@@ -86,11 +86,15 @@ namespace Engine
 		Light,
 		Material,
 		MaterialInst,
+		ObjectInfo,
 		Keyframe,
 		Bone,
 		Effect,
 		SSAOkernal,
 		SSAOparam,
+		HDRparam,
+		Bloomparam,
+		Outlineparam,
 		COUNT
 	};
 	constexpr const char* g_CBNames[static_cast<unsigned int>(EFXCB::COUNT)] =
@@ -101,11 +105,15 @@ namespace Engine
 		"LightBuffer",
 		"MaterialBuffer",
 		"MaterialInstanceBuffer",
+		"ObjectInfoBuffer",
 		"KeyframeBuffer",
 		"BoneBuffer",
 		"ConstantBuffer_Effect",
 		"SSAOKernelBuffer",
-		"SSAOParamBuffer"
+		"SSAOParamBuffer",
+		"HDRParamBuffer",
+		"BLOOMParamBuffer",
+		"OUTLINEParamBuffer"
 	};
 	//===================
 	// FX SRV
@@ -119,8 +127,11 @@ namespace Engine
 		RT_SpecularMask,
 		RT_Specular,
 		RT_Depth,
+		RT_ObjectInfo,
 		RT_AO,
-		RT_Scene,
+		RT_SceneHDR,
+		RT_SceneHDR_Copy,
+		RT_Bloom,
 		Transform,
 		Materials,
 		Textures,
@@ -137,8 +148,11 @@ namespace Engine
 		"g_RenderTargetSpecularMaskTexture",
 		"g_RenderTargetSpecularTexture",
 		"g_RenderTargetDepthTexture",
+		"g_RenderTargetObjInfoTexture",
 		"g_RenderTargetAOTexture",
-		"g_RenderTargetSceneTexture",
+		"g_RenderTargetSceneHDRTexture",
+		"g_RenderTargetSceneHDRCopyTexture",
+		"g_RenderTargetBloomTexture",
 		"g_TransformMap",
 		"g_MaterialTextures",
 		"g_DefaultTextures",
@@ -157,6 +171,7 @@ namespace Engine
 		Vfx_Oneshot,
 		Vfx_Attach_On,
 		Vfx_Attach_Off,
+		Hitbox,
 
 		END
 	};
@@ -284,9 +299,9 @@ namespace Engine
 		UNKNOWN = 17,
 		MAX_COUNT = 18
 	};
-	//===================
+	// ===================
 	// PhysicsShape
-	//===================
+	// ===================
 	enum class EPhysicsShape : unsigned int
 	{
 		SPHERE,
@@ -387,5 +402,65 @@ namespace Engine
 			END
 		};
 	}PHYSICSFILTERGROUP;
+
+	struct EPhysicsFilterType
+	{
+		enum Enum : unsigned int
+		{
+			PLAYER,
+			ATTACK,
+			SKILL,
+			ATTACK_PROJECTTILE,
+			SKILL_PROJECTTILE,
+
+			MONSTER,
+			MONSTER_ATTACK,
+			MONSTER_SKILL,
+			MONSTER_ATTACK_PROJECTTILE,
+			MONSTER_SKILL_PROJECTTILE,
+
+			MAP,
+
+			OBJECT1,
+			OBJECT2,
+
+			TRIGGER_UI,
+			TRIGGER_QUEST,
+			TRIGGER_SPAWN,
+			TRIGGER_DIRECTION,
+
+			NONE,
+			END
+		};
+	};
+
+	//===================
+	// Animation Event
+	//===================
+	struct EAnimEvent
+	{
+		enum Enum
+		{
+			OVERLAP,
+			EFFECT,
+			SOUND,
+			NONE,
+			END
+		};
+	};
+
+	//===================
+	// Attack overlap type
+	//===================
+	struct EOverlapType
+	{
+		enum Enum
+		{
+			BOX,
+			SPHERE,
+			CAPSULE,
+			END
+		};
+	};
 }
 #endif // Engine_Enum_h__
