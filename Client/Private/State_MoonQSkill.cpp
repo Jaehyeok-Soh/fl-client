@@ -1,6 +1,8 @@
 #include "pch.h"
 #include "State_MoonQSkill.h"
 
+#include "Player.h"
+
 CState_MoonQSkill::CState_MoonQSkill(CActionState* pOwnerComponent)
 	:Super(pOwnerComponent,"Skill_Q")
 {
@@ -10,6 +12,8 @@ HRESULT CState_MoonQSkill::Initialize(void* pArg)
 {
 	if (FAILED(Super::Initialize(pArg)))
 		return E_FAIL;
+
+	m_iPlayerState = ENUM_TO_UINT(CPlayer::State::SKILL2);
 
 	return S_OK;
 }

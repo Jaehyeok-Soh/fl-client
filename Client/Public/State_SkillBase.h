@@ -18,6 +18,9 @@ public:
 	virtual void	Update(const _float fTimeDelta) override;
 	virtual HRESULT End() override;
 
+protected:
+	_uint m_iPlayerState = {};
+
 public:
 	virtual void Free() override;
 };

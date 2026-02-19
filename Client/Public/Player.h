@@ -96,11 +96,10 @@ public:
 	_bool Check_ColliWithMonster();
 	void Count_Combo();
 	void Count_Dash();
-	void End_Combo();
 
 public:
-	_bool Start_Skill(State iState);
-	void End_Skill(State iState);
+	_bool Start_Attack(State iState);
+	void End_Attack(State iState);
 
 private:
 	HRESULT Ready_BaseStates();

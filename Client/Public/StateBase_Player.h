@@ -79,9 +79,11 @@ protected:
 	_bool	Check_OnGround(_float fMaxDist = 0.72f); // 땅에 있는지 검사
 
 	void	Check_Monster();
-	void	End_Combo();
 
 	void	Change_Weapon(_uint iPart, _uint iState);
+
+	_bool	Start_Att(_uint iPlayerState);
+	void	End_Att(_uint iPlayerState);
 
 
 protected:

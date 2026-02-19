@@ -27,6 +27,8 @@ HRESULT CState_SkillBase::Start(void* pArg, _bool bForce)
 	if (FAILED(Super::Start(pArg, bForce)))
 		return E_FAIL;
 
+	Start_Att(m_iPlayerState);
+
 	return S_OK;
 }
 

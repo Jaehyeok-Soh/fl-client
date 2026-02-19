@@ -221,12 +221,7 @@ void CPlayer::Count_Dash()
     static_cast<CStatCom_Player*>(m_pStatComp)->Sub_DashCount();
 }
 
-void CPlayer::End_Combo()
-{
-    static_cast<CStatCom_Player*>(m_pStatComp)->Set_Timer(CStatCom_Player::TIMER_TYPE::COMBO, false);
-}
-
-_bool CPlayer::Start_Skill(State iState)
+_bool CPlayer::Start_Attack(State iState)
 {
     _bool bChange = { false };
     switch (iState)
@@ -258,10 +253,21 @@ _bool CPlayer::Start_Skill(State iState)
     return bChange;
 }
 
-void CPlayer::End_Skill(State iState)
+void CPlayer::End_Attack(State iState)
 {
     switch (iState)
     {
+    case State::COMBO:
+    case State::CHARGE:
+    case State::JUMPATTEND:
+        static_cast<CStatCom_Player*>(m_pStatComp)->Set_AttackState(CStatCom_Player::Attack_State::Melee, false);
+        break;
+
+    case State::JUMPGUN:
+    case State::GUN:
+        static_cast<CStatCom_Player*>(m_pStatComp)->Set_AttackState(CStatCom_Player::Attack_State::Gun, false);
+        break;
+
     case State::SKILL1:
         static_cast<CStatCom_Player*>(m_pStatComp)->Set_AttackState(CStatCom_Player::Attack_State::E, false);
         m_pSkillEComp->End_Skill(m_pStatComp);

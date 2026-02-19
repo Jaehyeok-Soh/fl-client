@@ -102,6 +102,16 @@ _bool CStatCom_Player::Set_AttackState(_uint iState, _bool bOn)
 		// skill energy 체크 및 cool time 셋팅
 		switch (iState)
 		{
+		case Attack_State::Melee:
+		{
+			Engine_Utils::RemoveHard_Flag(m_FAttState, Attack_State::Gun);
+			break;
+		}
+		case Attack_State::Gun:
+		{
+			Engine_Utils::RemoveHard_Flag(m_FAttState, Attack_State::Melee);
+			break;
+		}
 		case Attack_State::E:
 		{
 			if (!IsCan_SkillE())
@@ -109,9 +119,6 @@ _bool CStatCom_Player::Set_AttackState(_uint iState, _bool bOn)
 
 			m_tESkill.TCoolTime.x = 0.f;
 			break;
-
-			// skill start player에게 요청
-			//static_cast<CPlayer*>(Get_Owner())->Start_Skill(CPlayer::State::SKILL1);
 		}
 
 		case Attack_State::Q:
@@ -119,7 +126,8 @@ _bool CStatCom_Player::Set_AttackState(_uint iState, _bool bOn)
 			if (!IsCan_SkillQ())
 				return false;
 
-			m_tQSkill.TCoolTime.x = 0.f; break;
+			m_tQSkill.TCoolTime.x = 0.f; 
+			break;
 		}
 
 		}
@@ -132,6 +140,13 @@ _bool CStatCom_Player::Set_AttackState(_uint iState, _bool bOn)
 		// skill energy 체크 및 cool time 셋팅
 		switch (iState)
 		{
+		case Attack_State::Melee:
+		{
+			m_tComboTimeCounter.fTimeAcc = 0.f;
+			m_tComboTimeCounter.bCountTime = true; 
+			break;
+		}
+
 		case Attack_State::E:
 		{
 			m_tESkill.TCoolTime.x = m_tESkill.TCoolTime.y; break;
