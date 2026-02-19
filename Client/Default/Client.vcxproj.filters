@@ -343,6 +343,9 @@
     <Filter Include="06. FSM\Player\Attack\Gun">
       <UniqueIdentifier>{00f67508-9a6b-4c59-9832-98f058c8b1a5}</UniqueIdentifier>
     </Filter>
+    <Filter Include="05. Component\Skill\Moon">
+      <UniqueIdentifier>{967b52e8-d189-41cf-b480-c8f0f6d3fe01}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="targetver.h">
@@ -645,6 +648,9 @@
     <ClInclude Include="..\Public\SkillComponent.h">
       <Filter>05. Component\Skill</Filter>
     </ClInclude>
+    <ClInclude Include="..\Public\SkillComp_MoonE.h">
+      <Filter>05. Component\Skill\Moon</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <Image Include="Client.ico">
@@ -938,6 +944,9 @@
     </ClCompile>
     <ClCompile Include="..\Private\SkillComponent.cpp">
       <Filter>05. Component\Skill</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\SkillComp_MoonE.cpp">
+      <Filter>05. Component\Skill\Moon</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

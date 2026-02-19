@@ -1,35 +1,21 @@
 #pragma once
-#include "MonoBehaviour.h"
-
-/* 
-플레이어의 하나의 스킬을 담당한다
-
-하나의 컴포넌트로 뺀 이유 : 스킬 내부에서 처리할 것들이 많아져서
-컴포넌트로 따로 빼서 관리 한다
-
-*/
-
-NS_BEGIN(Engine)
-class CGameObject;
-NS_END
+#include "SkillComponent.h"
 
 NS_BEGIN(Client)
-class CStatComponent;
-
-class CSkillComponent : public CMonoBehaviour
+class CSkillComp_MoonE final : public CSkillComponent
 {
-	using Super = CMonoBehaviour;
+	using Super = CSkillComponent;
 
 public:
 	typedef struct tagSkillComponentDesc
 	{
-		
+
 	}SKILLCOMP_DESC;
 
-protected:
-	CSkillComponent();
-	explicit CSkillComponent(const CSkillComponent& rhs);
-	virtual ~CSkillComponent() = default;
+private:
+	CSkillComp_MoonE();
+	explicit CSkillComp_MoonE(const CSkillComp_MoonE& rhs);
+	virtual ~CSkillComp_MoonE() = default;
 
 	virtual HRESULT Initialize_Prototype() override;
 
@@ -43,12 +29,10 @@ public:
 	virtual void End_Skill(CStatComponent* pStatCom = nullptr);
 	virtual void On_Collision_Monster(const _float fTimeDelta, CGameObject* pObj = nullptr);
 
-protected:
-	_bool m_bOnSkill = { false };
-
 public:
-	static CSkillComponent* Create();
+	static CSkillComp_MoonE* Create();
 	virtual CComponent* Clone(void* pArg) override;
 	virtual void Free() override;
 };
+
 NS_END
