@@ -2,14 +2,14 @@
 #include "SkillComponent.h"
 
 NS_BEGIN(Client)
-class CSkillComp_MoonE final : public CSkillComponent
+class CSkillComp_MoonQ final : public CSkillComponent
 {
 	using Super = CSkillComponent;
 
 private:
-	CSkillComp_MoonE();
-	explicit CSkillComp_MoonE(const CSkillComp_MoonE& rhs);
-	virtual ~CSkillComp_MoonE() = default;
+	CSkillComp_MoonQ();
+	explicit CSkillComp_MoonQ(const CSkillComp_MoonQ& rhs);
+	virtual ~CSkillComp_MoonQ() = default;
 
 	virtual HRESULT Initialize_Prototype() override;
 
@@ -23,8 +23,11 @@ public:
 	virtual void End_Skill(CStatComponent* pStatCom = nullptr);
 	virtual void On_Collision_Monster(const _float fTimeDelta, CGameObject* pObj = nullptr);
 
+private:
+	_float m_fAddAttackRate = { 0.15f };
+
 public:
-	static CSkillComp_MoonE* Create();
+	static CSkillComp_MoonQ* Create();
 	virtual CComponent* Clone(void* pArg) override;
 	virtual void Free() override;
 };

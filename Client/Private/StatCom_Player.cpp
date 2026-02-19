@@ -219,6 +219,38 @@ void CStatCom_Player::Sub_DashCount()
 	}
 }
 
+void CStatCom_Player::Add_State(STAT_TYPE eState, _float fValue)
+{
+	switch (eState)
+	{
+	case STAT_TYPE::HP:
+		Add_Health(fValue);
+		break;
+
+	case STAT_TYPE::DEFENSE:
+		m_vDefense.x += fValue;
+		{
+			if (m_vDefense.x > m_vDefense.y)
+				m_vDefense.x = m_vDefense.y;
+
+			else if (m_vDefense.x < 0)
+				m_vDefense.x = 0.f;
+		}
+		break;
+
+	case STAT_TYPE::MENTAL:
+		m_vMentality.x += fValue;
+		{
+			if (m_vMentality.x > m_vMentality.y)
+				m_vMentality.x = m_vMentality.y;
+
+			else if (m_vMentality.x < 0)
+				m_vMentality.x = 0.f;
+		}
+		break;
+	}
+}
+
 void CStatCom_Player::Sub_Hp(_int iHealth)
 {
 	// ½¯µå ¿ÂÀÌ¸é ½¯µå °ªÀ» ´õÇØÁÜ
@@ -271,7 +303,7 @@ void CStatCom_Player::Count_Combo(const _float fTimeDelta)
 void CStatCom_Player::Count_Skill(const _float fTimeDelta)
 {
 	// E Skill
-	if (Engine_Utils::Has_Flag(m_FAttState, Attack_State::E))
+	//if (Engine_Utils::Has_Flag(m_FAttState, Attack_State::E))
 	{
 		// cool timer
 		if (m_tESkill.TCoolTime.x < m_tESkill.TCoolTime.y)
@@ -287,7 +319,7 @@ void CStatCom_Player::Count_Skill(const _float fTimeDelta)
 	}
 
 	// Q skill
-	if (Engine_Utils::Has_Flag(m_FAttState, Attack_State::Q))
+	//if (Engine_Utils::Has_Flag(m_FAttState, Attack_State::Q))
 	{
 		// cool timer
 		if (m_tQSkill.TCoolTime.x < m_tQSkill.TCoolTime.y)

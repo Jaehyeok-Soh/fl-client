@@ -99,8 +99,8 @@ public:
 	void Count_Dash();
 
 public:
-	_bool Start_Attack(State iState);
-	void End_Attack(State iState);
+	_bool	Start_Attack(State iState);
+	void	End_Attack(State iState);
 
 private:
 	HRESULT Ready_BaseStates();

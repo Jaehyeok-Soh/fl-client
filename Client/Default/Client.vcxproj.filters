@@ -651,6 +651,9 @@
     <ClInclude Include="..\Public\SkillComp_MoonE.h">
       <Filter>05. Component\Skill\Moon</Filter>
     </ClInclude>
+    <ClInclude Include="..\Public\SkillComp_MoonQ.h">
+      <Filter>05. Component\Skill\Moon</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <Image Include="Client.ico">
@@ -946,6 +949,9 @@
       <Filter>05. Component\Skill</Filter>
     </ClCompile>
     <ClCompile Include="..\Private\SkillComp_MoonE.cpp">
+      <Filter>05. Component\Skill\Moon</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\SkillComp_MoonQ.cpp">
       <Filter>05. Component\Skill\Moon</Filter>
     </ClCompile>
   </ItemGroup>

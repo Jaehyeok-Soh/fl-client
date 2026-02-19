@@ -80,11 +80,13 @@ public:
 		switch (eState)
 		{
 		case STAT_TYPE::HP:
-			return m_vDefense;
-		case STAT_TYPE::DEFENSE:
-			return m_vMentality;
-		case STAT_TYPE::MENTAL:
 			return Vec2((_float)m_iHealth, (_float)m_iMaxHealth);
+
+		case STAT_TYPE::DEFENSE:
+			return m_vDefense;
+
+		case STAT_TYPE::MENTAL:
+			return m_vMentality;
 		}
 	}
 
@@ -132,6 +134,9 @@ public:
 			break;
 		}
 	}
+
+	void Set_Attack_AddRate(_float fRate) { m_iAttack = _uint(m_iAttack *(1.f + fRate)); }
+	void Add_State(STAT_TYPE eState, _float fValue);
 
 	// stats
 private:

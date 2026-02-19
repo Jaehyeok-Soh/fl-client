@@ -20,6 +20,8 @@
 #include "Camera.h"
 #include "Transform.h"
 #include "PhysicsCollider.h"
+#include "SkillComp_MoonE.h"
+#include "SkillComp_MoonQ.h"
 //=================
 // Builder
 //=================
@@ -350,8 +352,13 @@ HRESULT CLoader::Loading_For_Logo()
 	// For. Prototype_Component_Collider_SPHERE
 	m_pGameInstance->Add_Prototype(ENUM_TO_UINT(ELevelType::STATIC), L"Prototype_Component_VIBuffer_InstanceMesh", CInstanceMesh::Create(m_pDevice, m_pDeviceContext));
 
+	/* player components */
 	// For. Prototype_Component_Stat_Player
 	m_pGameInstance->Add_Prototype(ENUM_TO_UINT(ELevelType::STATIC), L"Prototype_Component_Stat_Player", CStatCom_Player::Create());
+	// For. Prototype_Component_Stat_Player
+	m_pGameInstance->Add_Prototype(ENUM_TO_UINT(ELevelType::STATIC), L"Prototype_Component_Skill_MoonE", CSkillComp_MoonE::Create());
+	// For. Prototype_Component_Stat_Player
+	m_pGameInstance->Add_Prototype(ENUM_TO_UINT(ELevelType::STATIC), L"Prototype_Component_Skill_MoonQ", CSkillComp_MoonQ::Create());
 
 	///////////////////////////////////////
 	//////////// Ready Objects ////////////
