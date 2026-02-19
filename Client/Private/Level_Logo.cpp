@@ -134,7 +134,7 @@ void CLevel_Logo::Update(const _float fTimeDelta)
 	// 오브젝트 풀링 테스트
 	if (m_pGameInstance->KeyButton_Down(DIK_0))
 	{
-		m_pGameInstance->Request_AddObject(ENUM_TO_UINT(ELevelType::LOGO), L"POOL_Attack_3", 0, nullptr);
+		m_pGameInstance->Request_AddObject(ENUM_TO_UINT(ELevelType::LOGO), L"POOL_Attack_1", 0, nullptr);
 	}
 }
 

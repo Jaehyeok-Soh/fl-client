@@ -214,58 +214,58 @@ HRESULT CLoader::Loading_For_Logo()
 	// For. Prototype_Component_Button_Test_Texture
 	{
 		// Effect
-		//if (FAILED(Loading_Textures(L"../../Resources/Textures/Effect/Crack/")))
-		//	return E_FAIL;
-		//if (FAILED(Loading_Textures(L"../../Resources/Textures/Effect/Curve/")))
-		//	return E_FAIL;
-		//if (FAILED(Loading_Textures(L"../../Resources/Textures/Effect/Fire/")))
-		//	return E_FAIL;
-		//if (FAILED(Loading_Textures(L"../../Resources/Textures/Effect/Flower/")))
-		//	return E_FAIL;
-		//if (FAILED(Loading_Textures(L"../../Resources/Textures/Effect/Fluid/")))
-		//	return E_FAIL;
-		//if (FAILED(Loading_Textures(L"../../Resources/Textures/Effect/Glow/")))
-		//	return E_FAIL;
-		//if (FAILED(Loading_Textures(L"../../Resources/Textures/Effect/Gradient/")))
-		//	return E_FAIL;
-		//if (FAILED(Loading_Textures(L"../../Resources/Textures/Effect/Ice/")))
-		//	return E_FAIL;
-		//if (FAILED(Loading_Textures(L"../../Resources/Textures/Effect/Knife/")))
-		//	return E_FAIL;
-		//if (FAILED(Loading_Textures(L"../../Resources/Textures/Effect/Lens/")))
-		//	return E_FAIL;
-		//if (FAILED(Loading_Textures(L"../../Resources/Textures/Effect/Lightning/")))
-		//	return E_FAIL;
-		//if (FAILED(Loading_Textures(L"../../Resources/Textures/Effect/Line/")))
-		//	return E_FAIL;
-		//if (FAILED(Loading_Textures(L"../../Resources/Textures/Effect/Mask/")))
-		//	return E_FAIL;
-		//if (FAILED(Loading_Textures(L"../../Resources/Textures/Effect/Normal/")))
-		//	return E_FAIL;
-		//if (FAILED(Loading_Textures(L"../../Resources/Textures/Effect/Object/")))
-		//	return E_FAIL;
-		//if (FAILED(Loading_Textures(L"../../Resources/Textures/Effect/Partten/")))
-		//	return E_FAIL;
-		//if (FAILED(Loading_Textures(L"../../Resources/Textures/Effect/Smoke/")))
-		//	return E_FAIL;
-		//if (FAILED(Loading_Textures(L"../../Resources/Textures/Effect/Spark/")))
-		//	return E_FAIL;
-		//if (FAILED(Loading_Textures(L"../../Resources/Textures/Effect/Splash/")))
-		//	return E_FAIL;
-		//if (FAILED(Loading_Textures(L"../../Resources/Textures/Effect/Spread/")))
-		//	return E_FAIL;
-		//if (FAILED(Loading_Textures(L"../../Resources/Textures/Effect/Trail/")))
-		//	return E_FAIL;
-		//if (FAILED(Loading_Textures(L"../../Resources/Textures/Effect/Turbulence/")))
-		//	return E_FAIL;
-		//if (FAILED(Loading_Textures(L"../../Resources/Textures/Effect/UI/")))
-		//	return E_FAIL;
-		//if (FAILED(Loading_Textures(L"../../Resources/Textures/Effect/VAT/")))
-		//	return E_FAIL;
-		//if (FAILED(Loading_Textures(L"../../Resources/Textures/Effect/water/")))
-		//	return E_FAIL;
-		//if (FAILED(Loading_Textures(L"../../Resources/Textures/Effect/Wave/")))
-		//	return E_FAIL;
+		if (FAILED(Loading_Textures(L"../../Resources/Textures/Effect/Crack/")))
+			return E_FAIL;
+		if (FAILED(Loading_Textures(L"../../Resources/Textures/Effect/Curve/")))
+			return E_FAIL;
+		if (FAILED(Loading_Textures(L"../../Resources/Textures/Effect/Fire/")))
+			return E_FAIL;
+		if (FAILED(Loading_Textures(L"../../Resources/Textures/Effect/Flower/")))
+			return E_FAIL;
+		if (FAILED(Loading_Textures(L"../../Resources/Textures/Effect/Fluid/")))
+			return E_FAIL;
+		if (FAILED(Loading_Textures(L"../../Resources/Textures/Effect/Glow/")))
+			return E_FAIL;
+		if (FAILED(Loading_Textures(L"../../Resources/Textures/Effect/Gradient/")))
+			return E_FAIL;
+		if (FAILED(Loading_Textures(L"../../Resources/Textures/Effect/Ice/")))
+			return E_FAIL;
+		if (FAILED(Loading_Textures(L"../../Resources/Textures/Effect/Knife/")))
+			return E_FAIL;
+		if (FAILED(Loading_Textures(L"../../Resources/Textures/Effect/Lens/")))
+			return E_FAIL;
+		if (FAILED(Loading_Textures(L"../../Resources/Textures/Effect/Lightning/")))
+			return E_FAIL;
+		if (FAILED(Loading_Textures(L"../../Resources/Textures/Effect/Line/")))
+			return E_FAIL;
+		if (FAILED(Loading_Textures(L"../../Resources/Textures/Effect/Mask/")))
+			return E_FAIL;
+		if (FAILED(Loading_Textures(L"../../Resources/Textures/Effect/Normal/")))
+			return E_FAIL;
+		if (FAILED(Loading_Textures(L"../../Resources/Textures/Effect/Object/")))
+			return E_FAIL;
+		if (FAILED(Loading_Textures(L"../../Resources/Textures/Effect/Partten/")))
+			return E_FAIL;
+		if (FAILED(Loading_Textures(L"../../Resources/Textures/Effect/Smoke/")))
+			return E_FAIL;
+		if (FAILED(Loading_Textures(L"../../Resources/Textures/Effect/Spark/")))
+			return E_FAIL;
+		if (FAILED(Loading_Textures(L"../../Resources/Textures/Effect/Splash/")))
+			return E_FAIL;
+		if (FAILED(Loading_Textures(L"../../Resources/Textures/Effect/Spread/")))
+			return E_FAIL;
+		if (FAILED(Loading_Textures(L"../../Resources/Textures/Effect/Trail/")))
+			return E_FAIL;
+		if (FAILED(Loading_Textures(L"../../Resources/Textures/Effect/Turbulence/")))
+			return E_FAIL;
+		if (FAILED(Loading_Textures(L"../../Resources/Textures/Effect/UI/")))
+			return E_FAIL;
+		if (FAILED(Loading_Textures(L"../../Resources/Textures/Effect/VAT/")))
+			return E_FAIL;
+		if (FAILED(Loading_Textures(L"../../Resources/Textures/Effect/water/")))
+			return E_FAIL;
+		if (FAILED(Loading_Textures(L"../../Resources/Textures/Effect/Wave/")))
+			return E_FAIL;
 	}
 	
 #pragma endregion

@@ -55,6 +55,34 @@ float3 Blur9(Texture2D vTexture, float2 vUV, float2 vDir, float2 vInvSize)
     return c;
 }
 
+float3x3 aces_input_matrix =
+{
+    float3(0.59719f, 0.35458f, 0.04823f),
+    float3(0.07600f, 0.90834f, 0.01566f),
+    float3(0.02840f, 0.13383f, 0.83777f)
+};
+
+float3x3 aces_output_matrix =
+{
+    float3(1.60475f, -0.53108f, -0.07367f),
+    float3(-0.10208f, 1.10813f, -0.00605f),
+    float3(-0.00327f, -0.07276f, 1.07602f)
+};
+
+float3 rtt_and_odt_fit(float3 v)
+{
+    float3 a = v * (v + 0.0245786f) - 0.000090537f;
+    float3 b = v * (0.983729f * v + 0.4329510f) + 0.238081f;
+    return a / b;
+}
+
+float3 aces_fitted(float3 v)
+{
+    v = mul(aces_input_matrix, v);
+    v = rtt_and_odt_fit(v);
+    return mul(aces_output_matrix, v);
+}
+
 float3 ToneMap_ACES(float3 x)
 {
     const float a = 2.51f;
@@ -593,9 +621,6 @@ PS_OUT_HDR PS_MAIN_COMBINED(PS_IN_POS_TEX input)
     
     float4 vDiffuse = g_RenderTargetDiffuseTexture.Sample(LinearSampler, input.vUV);
     
-    if (0.f == vDiffuse.a)
-        discard;
-    
     float4 vSpecular = g_RenderTargetSpecularTexture.Sample(LinearSampler, input.vUV);
     
     float4 vShade = g_RenderTargetShadeTexture.Sample(LinearSampler, input.vUV);
@@ -607,7 +632,7 @@ PS_OUT_HDR PS_MAIN_COMBINED(PS_IN_POS_TEX input)
 PS_OUT_BLOOM PS_MAIN_BLOOM_EXTRACT(PS_IN_POS_TEX input)
 {
     PS_OUT_BLOOM output;
-    float3 vHDR = Downsample2x2_SceneHDR(input.vUV, BloomParam.vInvBloomSize);
+    float3 vHDR = Downsample2x2_SceneHDR(input.vUV, BloomParam.vInvBloomSize * 0.5f);
     float3 vBright = BloomPrefilter(vHDR, BloomParam.fThreshold, BloomParam.fKnee);
     output.vColor = float4(vBright, 1.0f);
     return output;
@@ -636,8 +661,6 @@ PS_OUT_BACKBUFFER PS_MAIN_TONEMAP(PS_IN_POS_TEX input)
     PS_OUT_BACKBUFFER output;
     float3 vBloom = g_RenderTargetBloomTexture.Sample(LinearSampler, input.vUV).rgb;
     float4 vScene = g_RenderTargetSceneHDRTexture.Sample(LinearSampler, input.vUV);
-    if (0.f == vScene.a)
-        discard;
     // Bloom 합성
     float3 vHDR = vScene.rgb + vBloom * BloomParam.fIntensity;
     
@@ -647,10 +670,9 @@ PS_OUT_BACKBUFFER PS_MAIN_TONEMAP(PS_IN_POS_TEX input)
     // Tonemap
     float3 vLDR = ToneMap_ACES(vHDR.rgb);
     
-    // 현재 우리는 sRGBA이므로 Gamma 보정이 필요없음
-    // float invGamma = 1.f / max(0.001f, HDRparam.fGamma);
-    // vLDR = pow(saturate(vLDR), invGamma);
-    output.vColor = float4(saturate(vLDR), 1.f);
+    float invGamma = 1.f / max(0.001f, HDRparam.fGamma);
+    vLDR = pow(saturate(vLDR), invGamma);
+    output.vColor = float4(vLDR, 1.f);
     return output;
 }
 

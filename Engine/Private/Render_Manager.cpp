@@ -404,9 +404,9 @@ HRESULT CRender_Manager::Set_ShaderResources()
 
 	// BloomparamDesc
 	{
-		m_tBloomparamDesc.fThreshold = 0.5f;
-		m_tBloomparamDesc.fKnee = 0.1f;
-		m_tBloomparamDesc.fIntensity = 5.0f;
+		m_tBloomparamDesc.fThreshold = 1.2f;
+		m_tBloomparamDesc.fKnee = 0.4f;
+		m_tBloomparamDesc.fIntensity = 1.4f;
 		m_tBloomparamDesc.vInvSize = { 1.0f / m_halfViewport.Width, 1.0f / m_halfViewport.Height };
 		
 		if (FAILED(m_pCB_Bloomparam->Copy_Data(m_tBloomparamDesc)))
@@ -458,7 +458,7 @@ HRESULT CRender_Manager::Render()
 
 	// SceneHDR¿¡ ´©Àû
 	{
-		if (FAILED(m_pGameInstance->Begin_MRT(EMRTLayer::SceneHDR_Acc, false)))
+		if (FAILED(m_pGameInstance->Begin_MRT(EMRTLayer::SceneHDR_Acc, false, true)))
 			return E_FAIL;
 
 		if (FAILED(Render_Environment()))
@@ -655,7 +655,7 @@ HRESULT CRender_Manager::Render_Bloom()
 	m_pDeviceContext->RSSetViewports(1, &m_halfViewport);
 
 	// Extract
-	if (FAILED(m_pGameInstance->Begin_MRT(EMRTLayer::Bloom_Extract)))
+	if (FAILED(m_pGameInstance->Begin_MRT(EMRTLayer::Bloom_Extract, true, false)))
 		goto FAIL;
 
 	if (FAILED(m_pShader->Bind_TransformData(m_matWorld_RT)))
@@ -673,11 +673,11 @@ HRESULT CRender_Manager::Render_Bloom()
 		goto FAIL;
 
 	// Ping
-	if(FAILED(m_pGameInstance->Begin_MRT(EMRTLayer::Bloom_BlurH)))
+	if(FAILED(m_pGameInstance->Begin_MRT(EMRTLayer::Bloom_BlurH, true, false)))
 		goto FAIL;
 
 	if (FAILED(m_pGameInstance->Bind_RT_ShaderResource(ERenderTarget::Bloom_Ping, m_pShader)))
-		return E_FAIL;
+		goto FAIL;
 
 	m_pShader->Set_Pass(ENUM_TO_UINT(DEFFERRED::BLOOM_BLURH));
 	m_pShader->Apply();
@@ -688,11 +688,11 @@ HRESULT CRender_Manager::Render_Bloom()
 		goto FAIL;
 	
 	// Pong
-	if (FAILED(m_pGameInstance->Begin_MRT(EMRTLayer::Bloom_BlurV)))
+	if (FAILED(m_pGameInstance->Begin_MRT(EMRTLayer::Bloom_BlurV, true, false)))
 		goto FAIL;
 
 	if (FAILED(m_pGameInstance->Bind_RT_ShaderResource(ERenderTarget::Bloom_Pong, m_pShader)))
-		return E_FAIL;
+		goto FAIL;
 
 	m_pShader->Set_Pass(ENUM_TO_UINT(DEFFERRED::BLOOM_BLURV));
 	m_pShader->Apply();
@@ -866,7 +866,7 @@ HRESULT CRender_Manager::Render_SSAO()
 	//========================
 	// SSAO Gen -> AO_Ping
 	//========================
-	if (FAILED(m_pGameInstance->Begin_MRT(EMRTLayer::SSAO_Gen)))
+	if (FAILED(m_pGameInstance->Begin_MRT(EMRTLayer::SSAO_Gen, true, false)))
 		goto FAIL;
 
 	if (FAILED(m_pShader->Bind_TransformData(m_matWorld_RT)))
@@ -892,7 +892,7 @@ HRESULT CRender_Manager::Render_SSAO()
 	//========================
 	// BLUR H -> AO_Pong
 	//========================
-	if (FAILED(m_pGameInstance->Begin_MRT(EMRTLayer::SSAO_BlurH)))
+	if (FAILED(m_pGameInstance->Begin_MRT(EMRTLayer::SSAO_BlurH, true, false)))
 		goto FAIL;
 
 	if (FAILED(m_pGameInstance->Bind_RT_ShaderResource(ERenderTarget::SSAO_Ping, m_pShader)))
@@ -909,7 +909,7 @@ HRESULT CRender_Manager::Render_SSAO()
 	//========================
 	// BLUR V -> AO_Ping
 	//========================
-	if (FAILED(m_pGameInstance->Begin_MRT(EMRTLayer::SSAO_BlurV)))
+	if (FAILED(m_pGameInstance->Begin_MRT(EMRTLayer::SSAO_BlurV, true, false)))
 		goto FAIL;
 
 	if (FAILED(m_pGameInstance->Bind_RT_ShaderResource(ERenderTarget::SSAO_Pong, m_pShader)))
@@ -928,14 +928,14 @@ HRESULT CRender_Manager::Render_SSAO()
 	// Upsample -> AO_Full
 	//========================
 	m_pDeviceContext->RSSetViewports(1, &m_defaultViewport);
-	if (FAILED(m_pGameInstance->Begin_MRT(EMRTLayer::SSAO_Upsample)))
-		return E_FAIL;
+	if (FAILED(m_pGameInstance->Begin_MRT(EMRTLayer::SSAO_Upsample, true, false)))
+		goto FAIL;
 
 	if (FAILED(m_pGameInstance->Bind_RT_ShaderResource(ERenderTarget::SSAO_Ping, m_pShader)))
-		return E_FAIL;		
+		goto FAIL;
 
 	if (FAILED(m_pGameInstance->Bind_RT_ShaderResource(ERenderTarget::Depth, m_pShader)))
-		return E_FAIL;
+		goto FAIL;
 
 	m_pShader->Set_Pass(ENUM_TO_UINT(DEFFERRED::SSAO_UPSAMPLE));
 	m_pShader->Apply();
@@ -943,10 +943,9 @@ HRESULT CRender_Manager::Render_SSAO()
 	m_pVIBuffer->Render();
 
 	if (FAILED(m_pGameInstance->End_MRT()))
-		return E_FAIL;
+		goto FAIL;
 
 	return S_OK;
-
 FAIL:
 	m_pDeviceContext->RSSetViewports(1, &m_defaultViewport);
 	return E_FAIL;
@@ -1277,6 +1276,8 @@ HRESULT CRender_Manager::Ready_Debug()
 		return E_FAIL;
 	if (FAILED(m_pGameInstance->Ready_RT_Debug(ERenderTarget::Bloom_Pong, 750.f, 150.f, 300.f, 300.f)))
 		return E_FAIL;
+	if (FAILED(m_pGameInstance->Ready_RT_Debug(ERenderTarget::Specular, 750.f, 450.f, 300.f, 300.f)))
+		return E_FAIL;
 	return S_OK;
 }
 
@@ -1286,7 +1287,7 @@ HRESULT CRender_Manager::Render_Debug()
 	{
 		if (pDebugCom)
 		{
-			pDebugCom->Render();
+			//pDebugCom->Render();
 			Safe_Release(pDebugCom);
 		}
 	}

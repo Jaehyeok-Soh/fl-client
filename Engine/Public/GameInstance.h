@@ -234,6 +234,7 @@ public:
 	HRESULT Add_Light(const LIGHT_DESC& LightDesc);
 	HRESULT Push_DynamicLight(class CLight* pLight);
 	HRESULT Render_Lights(class CShader* pShader, class CVIBuffer_Rect_Tex* pVIBuffer);
+	class CLight* Get_Light(LIGHT_TYPE eType, _uint iIndex = 0);
 	void Clear_Lights();
 #pragma endregion
 
@@ -277,7 +278,7 @@ public:
 #pragma region RENDERTARGET_MANAGER
 	HRESULT Add_RenderTarget(ERenderTarget eTarget, const CRenderTarget::RENDERTARGET_DESC* pDesc);
 	HRESULT Add_MRT(EMRTLayer eMRTLayer, ERenderTarget eTarget);
-	HRESULT Begin_MRT(EMRTLayer eMRTLayer, _bool bClear = true);
+	HRESULT Begin_MRT(EMRTLayer eMRTLayer, _bool bClear = true, _bool bUseDSV = true);
 	HRESULT End_MRT();
 	HRESULT Bind_RT_ShaderResource(ERenderTarget eTarget, class CShader* pShader);
 	HRESULT Copy_SceneHDRResource(ERenderTarget eTarget);

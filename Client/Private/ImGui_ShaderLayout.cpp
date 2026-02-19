@@ -1,5 +1,6 @@
 #include "pch.h"
 #include "ImGui_ShaderLayout.h"
+#include "Light.h"
 #include "GameInstance.h"
 
 CImGui_ShaderLayout::CImGui_ShaderLayout()
@@ -16,8 +17,17 @@ void CImGui_ShaderLayout::Render(CGameObject* pGo)
         return;
     }
 
-    if (!m_bDefaultCached)
+    if (m_pDirLight == nullptr)
     {
+        m_pDirLight = m_pGameInstance->Get_Light(LIGHT_TYPE::DIRECTIONAL);
+        ImGui::TextDisabled("MainDir not found.");
+        return;
+    }
+
+    if (m_bDefaultCached == false)
+    {
+        m_defLight = m_pDirLight->Get_LightDesc();
+        m_changedLightDesc = m_defLight;
         m_defSSAO = m_pGameInstance->Get_SSAOParamDesc();
         m_defHDR = m_pGameInstance->Get_HDRParamDesc();
         m_defBloom = m_pGameInstance->Get_BloomParamDesc();
@@ -28,14 +38,15 @@ void CImGui_ShaderLayout::Render(CGameObject* pGo)
     ImGui::BeginGroup();
     ImGui::SeparatorText("PostProcess / Shader Params");
 
-    ImGui::Checkbox("Auto Apply", &m_bAutoApply);
+    ImGui::Checkbox("Auto Apply##ShaderLayout", &m_bAutoApply);
     ImGui::SameLine();
-    if (ImGui::SmallButton("Apply All"))
+    if (ImGui::SmallButton("Apply All##ShaderLayout"))
         m_pGameInstance->Commit_AllPostParams();
 
     ImGui::SameLine();
-    if (ImGui::SmallButton("Reset All"))
+    if (ImGui::SmallButton("Reset All##ShaderLayout"))
     {
+        m_pDirLight->Setup_LightDesc(m_defLight);
         m_pGameInstance->Get_SSAOParamDesc() = m_defSSAO;
         m_pGameInstance->Get_HDRParamDesc() = m_defHDR;
         m_pGameInstance->Get_BloomParamDesc() = m_defBloom;
@@ -44,6 +55,64 @@ void CImGui_ShaderLayout::Render(CGameObject* pGo)
     }
 
     ImGui::Separator();
+    // -----------------------
+    // DirLight
+    // -----------------------
+    if (ImGui::CollapsingHeader("LightDir", ImGuiTreeNodeFlags_DefaultOpen))
+    {
+        ImGui::PushID("LightDir");
+        _bool bChanged = false;
+
+        bChanged |= ImGui::DragFloat4("Diffuse", &m_changedLightDesc.vDiffuse.x, 0.01f, 0.0f, 5.0f, "%.2f");
+        bChanged |= ImGui::DragFloat4("Ambient", &m_changedLightDesc.vAmbient.x, 0.01f, 0.0f, 5.0f, "%.2f");
+        bChanged |= ImGui::DragFloat3("Direction", &m_changedLightDesc.vDirection.x, 0.01f, -1.0f, 1.0f, "%.3f");
+
+        m_changedLightDesc.vSpecular = m_changedLightDesc.vDiffuse;
+
+        ImGui::SameLine();
+        if (ImGui::SmallButton("Normalize##Dir"))
+        {
+            Vector3& vDir = m_changedLightDesc.vDirection;
+            if (vDir.LengthSquared() > g_XMEpsilon[0])
+            {
+                vDir.Normalize();
+                bChanged = true;
+            }
+        }
+
+        auto ApplyDirLight = [&]()
+            {
+                Vector3& vDir = m_changedLightDesc.vDirection;
+                if (vDir.LengthSquared() <= g_XMEpsilon[0])
+                    vDir = { 0.f, -1.f, 0.f };
+                else
+                    vDir.Normalize();
+
+                m_changedLightDesc.vSpecular = m_changedLightDesc.vDiffuse;
+                m_pDirLight->Setup_LightDesc(m_changedLightDesc);
+            };
+
+        if (m_bAutoApply == false)
+        {
+            if (ImGui::SmallButton("Apply##DirLight"))
+                ApplyDirLight();
+        }
+        else if (bChanged)
+        {
+            ApplyDirLight();
+        }
+
+        ImGui::SameLine();
+        if (ImGui::SmallButton("Reset##DirLight"))
+        {
+            m_changedLightDesc = m_defLight;
+            m_changedLightDesc.vSpecular = m_changedLightDesc.vDiffuse;
+            ApplyDirLight();
+        }
+
+        ImGui::PopID();
+    }
+
 
     // -----------------------
     // SSAO
@@ -158,7 +227,7 @@ void CImGui_ShaderLayout::Render(CGameObject* pGo)
         _bool bChanged = false;
 
         // ColorEdit는 float[4]가 편하니 임시 배열로 연결
-        float col[4] = { o.vColor.x, o.vColor.y, o.vColor.z, o.vColor.w };
+        _float col[4] = { o.vColor.x, o.vColor.y, o.vColor.z, o.vColor.w };
         if (ImGui::ColorEdit4("Color", col))
         {
             o.vColor = { col[0], col[1], col[2], col[3] };
