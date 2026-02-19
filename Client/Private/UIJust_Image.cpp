@@ -100,12 +100,14 @@ void CUIJust_Image::OnUIEvent(ETriggerEventType eEvent, CGenericUI* pSender)
 
 void CUIJust_Image::Initialize_Visible_Event()
 {
+	m_isFin_Event = false;
 	m_fTimeAcc = 0.f;
 	m_fAlpha_Ratio = 0.f;
 }
 
 void CUIJust_Image::Initialize_InVisible_Event()
 {
+	m_isFin_Event = false;
 	m_fTimeAcc = 0.f;
 }
 
@@ -115,6 +117,7 @@ _bool CUIJust_Image::Tick_Visible_Event(const _float fTimeDelta)
 	if (m_fAlpha_Ratio >= m_fOriginAlpha)
 	{
 		m_fAlpha_Ratio = m_fOriginAlpha;
+		m_isFin_Event = true;
 		return true;
 	}
 	return false;
@@ -122,6 +125,7 @@ _bool CUIJust_Image::Tick_Visible_Event(const _float fTimeDelta)
 
 _bool CUIJust_Image::Tick_InVisible_Event(const _float fTimeDelta)
 {
+	m_isFin_Event = true;
 	return true;
 }
 
