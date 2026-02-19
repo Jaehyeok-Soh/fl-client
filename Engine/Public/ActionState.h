@@ -61,6 +61,8 @@ public:
 	void			Set_ApplyGravity(_bool bApply) { m_bApplyGravity = bApply; }
 	void			Set_ApplyYLerp(_bool bApply) { m_bApplyYLerp = bApply; }
 
+	void			Set_GravityOffset(_float fOffset) { if (fOffset > m_fGravity)return; m_fGravityOffset = fOffset; }
+
 	/* animation funcs*/
 protected:
 	HRESULT			Request_ChangeAnimation(_uint iAnimationIndex, _bool bBlend, _bool bLoop, _bool bForce = false);
@@ -131,6 +133,8 @@ protected:
 
 	_bool				m_bApplyGravity			= { true };
 	_bool				m_bApplyYLerp			= { false };
+
+	_float				m_fGravityOffset		= { 0.f };
 
 	vector<CStateBase*> m_vecStates;
 

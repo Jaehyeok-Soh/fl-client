@@ -109,6 +109,8 @@ HRESULT CPlayer::Awake(const _uint iCurrentLevelID)
         if (FAILED(pPlayerState->Awake(iCurrentLevelID)))
             return E_FAIL;
 
+    Change_Weapon(Part::SWORD, ENUM_TO_UINT(CWeapon::State::HOLD));
+
     return S_OK;
 }
 
@@ -323,7 +325,7 @@ HRESULT CPlayer::Ready_BaseStates()
         };
         desc.vecMainAnims   = { Get_AnimationIndex(L"Animation_PlayerMoon_Idle") }; //Animation_PlayerMoon_Idle //Animation_Pino_Combo_Slash1
         desc.bBlend         = false;
-        desc.bLoop          = false;
+        desc.bLoop          = true;
 
         desc.FMoves = CStateBase_Player::MOVEFLAGS::PRESS_CHANGE;
         desc.FCollis = CStateBase_Player::COLLISIONFLAGS::C_DOWN;

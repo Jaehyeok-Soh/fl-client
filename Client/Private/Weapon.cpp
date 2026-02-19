@@ -139,7 +139,7 @@ void CWeapon::Ready_Before_Render(_float fTimeDelta)
 		break;
 
 	case State::HAND:
-		Super::Update_CombinedWorldMatrix(m_matRotation * (*m_pMatHandSocket) * (*m_pMatParent));
+		Super::Update_CombinedWorldMatrix(m_matRotation *(*m_pMatHandSocket) * (*m_pMatParent));
 		break;
 	}
 

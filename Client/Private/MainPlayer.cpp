@@ -375,7 +375,7 @@ HRESULT CMainPlayer::Ready_Ability()
         CStatCom_Player::PLAYER_STATCOMP_DESC desc = {};
         desc.iMaxHp = 320;
         desc.fComboCoolTime = 2.f;
-        desc.fDashCoolTime =1.f;
+        desc.fDashCoolTime =2.f;
         desc.fMaxDefense = 400.f;
         desc.fMaxMental =105.f;
 
