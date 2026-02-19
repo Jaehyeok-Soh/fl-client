@@ -70,7 +70,7 @@ void CPanel_AnimModelFile::FileWindow()
 	ImGui::Begin("Files");
 
 	ImGuiListClipper clipper;
-	clipper.Begin(m_files.size());
+	clipper.Begin(static_cast<_uint>(m_files.size()));
 	while (clipper.Step())
 	{
 		for (int i = clipper.DisplayStart; i < clipper.DisplayEnd; i++)

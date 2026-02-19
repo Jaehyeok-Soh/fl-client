@@ -35,8 +35,13 @@ extern HINSTANCE	g_hInstance;
 #define	TO_RAD  (XM_PI / 180.f)
 #define	To_DEGREE ( 180.f / XM_PI )
 
+#define CHANNEL_R 0
+#define CHANNEL_G 1
+#define CHANNEL_B 2
+#define CHANNEL_A 3
+#define MAX_RGBA  4
 
-
+#define MAX_RGBA_TEXTURE_COUNT 2 
 
 
 namespace Tool
@@ -257,29 +262,59 @@ namespace Tool
 			return EClientLevelType::END;
 	}
 
-	inline constexpr _tchar g_wszMapObjectLayer[]{ L"MapObject_Layer" };
-	inline constexpr _tchar g_wszStaticLightLayer[]{ L"StaticLight_Layer" };
-	inline constexpr _tchar g_wszMeshEffectPresetPath[]{ L"../../Resources/Data/EffectData/EffectMeshPreset.json" };
-	inline constexpr _tchar g_wszMeshPreviewLayer[]{ L"MeshPreview_Layer" };
-	inline constexpr _tchar g_wszPolygonLayer[]{ L"Polygon_Layer" };
-	inline constexpr _tchar g_wszTriggerBoxLayer[]{ L"TriggerBox_Layer" };
-	inline constexpr _tchar g_wszColMeshLayer[]{ L"ColMesh_Layer" };
-	inline constexpr _tchar g_wszStaticModelLayer[]{ L"StaticModel_Layer" };
-	inline constexpr _tchar g_wszInstanceModelLayer[]{ L"InstanceModel_Layer" };
-	inline constexpr _tchar g_wszCameraLayer[]{ L"Camera_Layer" };
+	inline constexpr _tchar g_wszMapObjectLayer				[]{ L"MapObject_Layer" };
+	inline constexpr _tchar g_wszMapModelPath				[]{ L"../../Resources/Models/Map/"};
+	inline constexpr _tchar g_wszStaticLightLayer			[]{ L"StaticLight_Layer" };
+	inline constexpr _tchar g_wszMeshEffectPresetPath		[]{ L"../../Resources/Data/EffectData/EffectMeshPreset.json" };
+	inline constexpr _tchar g_wszMeshPreviewLayer			[]{ L"MeshPreview_Layer" };
+	inline constexpr _tchar g_wszPolygonLayer				[]{ L"Polygon_Layer" };
+	inline constexpr _tchar g_wszTriggerBoxLayer			[]{ L"TriggerBox_Layer" };
+	inline constexpr _tchar g_wszColMeshLayer				[]{ L"ColMesh_Layer" };
+	inline constexpr _tchar g_wszStaticModelLayer			[]{ L"StaticModel_Layer" };
+	inline constexpr _tchar g_wszInstanceModelLayer			[]{ L"InstanceModel_Layer" };
+	inline constexpr _tchar g_wszCameraLayer				[]{ L"Camera_Layer" };
 
-	inline constexpr _tchar g_wszPrototypeTagCanvas[]{ L"Prototype_UI_Canvas" };
-	inline constexpr _tchar g_wszPrototypeTagLayer[]{ L"Prototype_UI_Layer" };
-	inline constexpr _tchar g_wszPrototypeTagUI[]{ L"Prototype_UI_UI" };
+	inline constexpr _tchar g_wszPrototypeTagCanvas			[]{ L"Prototype_UI_Canvas" };
+	inline constexpr _tchar g_wszPrototypeTagLayer			[]{ L"Prototype_UI_Layer" };
+	inline constexpr _tchar g_wszPrototypeTagUI				[]{ L"Prototype_UI_UI" };
+
+	inline constexpr _char  g_szMapObject_State				[]{ "g_iMapObject_State" };
+
+	inline constexpr _char  g_szLandScape_TextureUV_LT		[]{ "g_LandScape_TextureUV_LT" };
+	inline constexpr _char  g_szLandScape_TextureUV_RB		[]{ "g_LandScape_TextureUV_RB" };
+
+	inline constexpr _tchar g_wszMapTexture_Path			[]{L"../../Resources/Textures/Map/LandScape"};
+
+	inline constexpr _char	g_szTexLandScape_Mix_RGB		[]{"g_TexLandScape_Mix_RGB" };
+	inline constexpr _char	g_szTexLandScape_Mix_RGBA		[]{"g_TexLandScape_Mix_RGBA" };
+
+	inline constexpr _char  g_szBase_Texture				[]{"g_Base_Texture"};
+	inline constexpr _char  g_szMix_RGBA_Texture			[]{"g_Mix_RGBA_Texture"};
 
 
-	inline constexpr _char  g_szMapObject_State[]{ "g_iMapObject_State" };
-
-	inline constexpr _char  g_szLandScape_TextureUV_LT[]{ "g_LandScape_TextureUV_LT" };
-	inline constexpr _char  g_szLandScape_TextureUV_RB[]{ "g_LandScape_TextureUV_RB" };
+	inline constexpr _char	g_szMix_DH_Tile_Texture			[]{ "g_Mix_DH_Tile_Texture" };
+	inline constexpr _char	g_szMix_NBR_Tile_Texture		[]{ "g_Mix_NBR_Tile_Texture"};
 
 
-	inline constexpr _uint  g_Uint_NoneIndex{ 0xFFFFFFFF };
+	inline constexpr _char	g_szMix_RGBA_Red_Connected_Index	[]{ "g_iMix_RGBA_Red_Connected_Index"};
+	inline constexpr _char	g_szMix_RGBA_Blue_Connected_Index	[]{ "g_iMix_RGBA_Blue_Connected_Index"};
+	inline constexpr _char	g_szMix_RGBA_Green_Connected_Index	[]{ "g_iMix_RGBA_Green_Connected_Index"};
+	inline constexpr _char	g_szMix_RGBA_Alpha_Connected_Index	[]{ "g_iMix_RGBA_Alpha_Connected_Index"};
+
+	inline constexpr _char	g_szMix_RGB_Red_Connected_Index		[]{ "g_iMix_RGB_Red_Connected_Index" };
+	inline constexpr _char	g_szMix_RGB_Blue_Connected_Index	[]{ "g_iMix_RGB_Blue_Connected_Index" };
+	inline constexpr _char	g_szMix_RGB_Green_Connected_Index	[]{ "g_iMix_RGB_Green_Connected_Index" };
+	inline constexpr _char	g_szMix_RGB_Alpha_Connected_Index	[]{ "g_iMix_RGB_Alpha_Connected_Index" };
+
+
+	inline constexpr _char	g_szMIX_RGBA_DATA					[]{ "g_MIX_RGBA_DATA" };
+	inline constexpr _char	g_szUse_Mix_RGBA_Map_Count			[]{"g_iUse_Mix_RGBA_Map_Count"};
+
+
+
+
+
+	inline constexpr _uint  Uint_NoneIndex{ 0xFFFFFFFF };
 
 #pragma region Enum
 

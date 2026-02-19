@@ -17,7 +17,8 @@ void DecodeDepth(float2 vUV, out float fNDCZ, out float fViewZ)
 void DecodeSpecularMask(float2 vUV, out float fAO, out float fRough, out float fMetal)
 {
     float4 vSpecularMaskDesc = g_RenderTargetSpecularMaskTexture.Sample(LinearSampler, vUV);
-    fAO = vSpecularMaskDesc.x;
+    fAO = vSpecularMaskDesc.x <= EPSILON  ? 1.f : vSpecularMaskDesc.x;
+    
     fRough = vSpecularMaskDesc.y;
     fMetal = vSpecularMaskDesc.z;
 }

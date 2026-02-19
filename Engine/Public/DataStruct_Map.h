@@ -215,6 +215,7 @@ typedef struct TMap_MapObjectData
 	/* UE Load Check */
 	_uint								iSectionNum{};
 	bool								isUELoaded{ false };
+	string								strUERawDataPath{""};
 	string								strTag{};
 	string								strModelPath{ "" };
 

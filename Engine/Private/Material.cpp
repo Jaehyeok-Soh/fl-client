@@ -5,14 +5,14 @@
 #include "GameInstance.h"
 
 CMaterial::CMaterial(ID3D11Device* pDevice, ID3D11DeviceContext* pDeviceContext)
-	: Super(EResourceType::MATERIAL, pDevice, pDeviceContext)
+	: Super(EResourceType::MATERIAL, pDevice, pDeviceContext), m_arrTextureName{}
 {
 	m_arrSRVs.fill(nullptr);
 }
 
 CMaterial::CMaterial(const CMaterial& rhs)
 	: Super(rhs)
-	, m_iTextureMask(rhs.m_iTextureMask)
+	, m_iTextureMask(rhs.m_iTextureMask), m_arrTextureName{rhs.m_arrTextureName }
 {
 	for (size_t i = 0; i < ENUM_TO_SZET(EMaterialTextureType::MAX_COUNT); ++i)
 	{
@@ -20,6 +20,7 @@ CMaterial::CMaterial(const CMaterial& rhs)
 		if (m_arrSRVs[i])
 			Safe_AddRef(m_arrSRVs[i]);
 	}
+	m_arrTextureName.fill(L"");
 }
 
 HRESULT CMaterial::Initialize(void* pArg)
@@ -31,10 +32,19 @@ HRESULT CMaterial::Initialize(void* pArg)
 		return E_FAIL;
 
 	MATERIAL_DESC* pDesc = static_cast<MATERIAL_DESC*>(pArg);
+
 	for (size_t i = 0; i < pDesc->spanTags.size(); ++i)
 	{
+		// 1. span에서 i번째 문자열을 꺼내서 wstring으로 변환 (한 번만 수행)
+		std::wstring wstrName = Engine_Utils::ToWString(pDesc->spanTags[i]);
+
+		// 2. 멤버 변수 배열에 저장
+		m_arrTextureName[i] = wstrName;
+
+		wstring wstrMtlTextureName = pDesc->wstrName + L"_" + wstrName;
+
 		if(pDesc->spanTags[i].empty() == false)
-			if (FAILED(Caching_Resource(Engine_Utils::ToWString(pDesc->spanTags[i]), static_cast<EMaterialTextureType>(i))))
+			if (FAILED(Caching_Resource(wstrMtlTextureName, static_cast<EMaterialTextureType>(i))))
 				return E_FAIL;
 	}
 

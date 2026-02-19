@@ -30,6 +30,18 @@ HRESULT CTextureBase::Load_TextureBase()
 		hr = CreateDDSTextureFromFile(m_pDevice, Get_Path(), nullptr, &m_pSRV);
 		if (SUCCEEDED(GetMetadataFromDDSFile(Get_Path(), DDS_FLAGS_NONE, metadata)))
 			m_vSize = { (_float)metadata.width, (_float)metadata.height };
+
+		if (m_pSRV)
+		{
+			D3D11_SHADER_RESOURCE_VIEW_DESC desc;
+			m_pSRV->GetDesc(&desc);
+
+			// 이게 D3D11_SRV_DIMENSION_TEXTURE2DARRAY (값 5) 라면 성공!
+			if (desc.ViewDimension == D3D11_SRV_DIMENSION_TEXTURE2DARRAY)
+			{
+				// desc.Texture2DArray.ArraySize 가 7인지 확인해보세요.
+			}
+		}
 	}
 	else if (::lstrcmp(texturePath.filename().extension().c_str(), L".tga") == 0)
 		return E_FAIL;

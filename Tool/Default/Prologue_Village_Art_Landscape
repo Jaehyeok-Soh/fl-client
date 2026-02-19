@@ -1,0 +1,467 @@
+[
+    {
+        "Name": "StaticMeshComponent",
+        "Outer": "SM_Village_LandProxy0",
+        "Properties": {
+            "AttachParent": {
+                "ObjectName": "",
+                "ObjectPath": ""
+            },
+            "InstancingRandomSeed": 0,
+            "RelativeLocation": {
+                "X": -3537.074462890625,
+                "Y": 28746.0703125,
+                "Z": -3741.94775390625
+            },
+            "RelativeRotation": {
+                "Pitch": 0.0,
+                "Roll": 0.0,
+                "Yaw": -44.79457092285156
+            },
+            "RelativeScale3D": {
+                "X": 1.0,
+                "Y": 1.0,
+                "Z": 1.0
+            },
+            "StaticMesh": {
+                "ObjectName": "StaticMesh'SM_Village_LandProxy0'",
+                "ObjectPath": "EM/Content/Asset/Scene/EN001_Ailixian/Jingjiedao/JJD_Village/Land/Mesh/SM_Village_LandProxy0.2"
+            }
+        },
+        "Type": "StaticMeshComponent"
+    },
+    {
+        "Name": "StaticMeshComponent",
+        "Outer": "SM_Village_LandProxy1",
+        "Properties": {
+            "AttachParent": {
+                "ObjectName": "",
+                "ObjectPath": ""
+            },
+            "InstancingRandomSeed": 0,
+            "RelativeLocation": {
+                "X": 5404.35546875,
+                "Y": 19868.5234375,
+                "Z": -3741.94775390625
+            },
+            "RelativeRotation": {
+                "Pitch": 0.0,
+                "Roll": 0.0,
+                "Yaw": -44.79457092285156
+            },
+            "RelativeScale3D": {
+                "X": 1.0,
+                "Y": 1.0,
+                "Z": 1.0
+            },
+            "StaticMesh": {
+                "ObjectName": "StaticMesh'SM_Village_LandProxy1'",
+                "ObjectPath": "EM/Content/Asset/Scene/EN001_Ailixian/Jingjiedao/JJD_Village/Land/Mesh/SM_Village_LandProxy1.2"
+            }
+        },
+        "Type": "StaticMeshComponent"
+    },
+    {
+        "Name": "StaticMeshComponent",
+        "Outer": "SM_Village_LandProxy10",
+        "Properties": {
+            "AttachParent": {
+                "ObjectName": "",
+                "ObjectPath": ""
+            },
+            "InstancingRandomSeed": 0,
+            "RelativeLocation": {
+                "X": -3409.3076171875,
+                "Y": -6891.8798828125,
+                "Z": -3741.94775390625
+            },
+            "RelativeRotation": {
+                "Pitch": 0.0,
+                "Roll": 0.0,
+                "Yaw": -44.79457092285156
+            },
+            "RelativeScale3D": {
+                "X": 1.0,
+                "Y": 1.0,
+                "Z": 1.0
+            },
+            "StaticMesh": {
+                "ObjectName": "StaticMesh'SM_Village_LandProxy10'",
+                "ObjectPath": "EM/Content/Asset/Scene/EN001_Ailixian/Jingjiedao/JJD_Village/Land/Mesh/SM_Village_LandProxy10.2"
+            }
+        },
+        "Type": "StaticMeshComponent"
+    },
+    {
+        "Name": "StaticMeshComponent",
+        "Outer": "SM_Village_LandProxy11",
+        "Properties": {
+            "AttachParent": {
+                "ObjectName": "",
+                "ObjectPath": ""
+            },
+            "InstancingRandomSeed": 0,
+            "RelativeLocation": {
+                "X": 5532.1240234375,
+                "Y": -15769.4248046875,
+                "Z": -3741.94775390625
+            },
+            "RelativeRotation": {
+                "Pitch": 0.0,
+                "Roll": 0.0,
+                "Yaw": -44.79457092285156
+            },
+            "RelativeScale3D": {
+                "X": 1.0,
+                "Y": 1.0,
+                "Z": 1.0
+            },
+            "StaticMesh": {
+                "ObjectName": "StaticMesh'SM_Village_LandProxy11'",
+                "ObjectPath": "EM/Content/Asset/Scene/EN001_Ailixian/Jingjiedao/JJD_Village/Land/Mesh/SM_Village_LandProxy11.2"
+            }
+        },
+        "Type": "StaticMeshComponent"
+    },
+    {
+        "Name": "StaticMeshComponent",
+        "Outer": "SM_Village_LandProxy12",
+        "Properties": {
+            "AttachParent": {
+                "ObjectName": "",
+                "ObjectPath": ""
+            },
+            "InstancingRandomSeed": 0,
+            "RelativeLocation": {
+                "X": -30169.712890625,
+                "Y": 1921.7825927734375,
+                "Z": -3741.94775390625
+            },
+            "RelativeRotation": {
+                "Pitch": 0.0,
+                "Roll": 0.0,
+                "Yaw": -44.79457092285156
+            },
+            "RelativeScale3D": {
+                "X": 1.0,
+                "Y": 1.0,
+                "Z": 1.0
+            },
+            "StaticMesh": {
+                "ObjectName": "StaticMesh'SM_Village_LandProxy12'",
+                "ObjectPath": "EM/Content/Asset/Scene/EN001_Ailixian/Jingjiedao/JJD_Village/Land/Mesh/SM_Village_LandProxy12.2"
+            }
+        },
+        "Type": "StaticMeshComponent"
+    },
+    {
+        "Name": "StaticMeshComponent",
+        "Outer": "SM_Village_LandProxy13",
+        "Properties": {
+            "AttachParent": {
+                "ObjectName": "",
+                "ObjectPath": ""
+            },
+            "InstancingRandomSeed": 0,
+            "RelativeLocation": {
+                "X": -21228.283203125,
+                "Y": -6955.7646484375,
+                "Z": -3741.94775390625
+            },
+            "RelativeRotation": {
+                "Pitch": 0.0,
+                "Roll": 0.0,
+                "Yaw": -44.79457092285156
+            },
+            "RelativeScale3D": {
+                "X": 1.0,
+                "Y": 1.0,
+                "Z": 1.0
+            },
+            "StaticMesh": {
+                "ObjectName": "StaticMesh'SM_Village_LandProxy13'",
+                "ObjectPath": "EM/Content/Asset/Scene/EN001_Ailixian/Jingjiedao/JJD_Village/Land/Mesh/SM_Village_LandProxy13.2"
+            }
+        },
+        "Type": "StaticMeshComponent"
+    },
+    {
+        "Name": "StaticMeshComponent",
+        "Outer": "SM_Village_LandProxy14",
+        "Properties": {
+            "AttachParent": {
+                "ObjectName": "",
+                "ObjectPath": ""
+            },
+            "InstancingRandomSeed": 0,
+            "RelativeLocation": {
+                "X": -12286.8544921875,
+                "Y": -15833.3095703125,
+                "Z": -3741.94775390625
+            },
+            "RelativeRotation": {
+                "Pitch": 0.0,
+                "Roll": 0.0,
+                "Yaw": -44.79457092285156
+            },
+            "RelativeScale3D": {
+                "X": 1.0,
+                "Y": 1.0,
+                "Z": 1.0
+            },
+            "StaticMesh": {
+                "ObjectName": "StaticMesh'SM_Village_LandProxy14'",
+                "ObjectPath": "EM/Content/Asset/Scene/EN001_Ailixian/Jingjiedao/JJD_Village/Land/Mesh/SM_Village_LandProxy14.2"
+            }
+        },
+        "Type": "StaticMeshComponent"
+    },
+    {
+        "Name": "StaticMeshComponent",
+        "Outer": "SM_Village_LandProxy15",
+        "Properties": {
+            "AttachParent": {
+                "ObjectName": "",
+                "ObjectPath": ""
+            },
+            "InstancingRandomSeed": 0,
+            "RelativeLocation": {
+                "X": -3345.423828125,
+                "Y": -24710.853515625,
+                "Z": -3741.94775390625
+            },
+            "RelativeRotation": {
+                "Pitch": 0.0,
+                "Roll": 0.0,
+                "Yaw": -44.79457092285156
+            },
+            "RelativeScale3D": {
+                "X": 1.0,
+                "Y": 1.0,
+                "Z": 1.0
+            },
+            "StaticMesh": {
+                "ObjectName": "StaticMesh'SM_Village_LandProxy15'",
+                "ObjectPath": "EM/Content/Asset/Scene/EN001_Ailixian/Jingjiedao/JJD_Village/Land/Mesh/SM_Village_LandProxy15.2"
+            }
+        },
+        "Type": "StaticMeshComponent"
+    },
+    {
+        "Name": "StaticMeshComponent",
+        "Outer": "SM_Village_LandProxy2",
+        "Properties": {
+            "AttachParent": {
+                "ObjectName": "",
+                "ObjectPath": ""
+            },
+            "InstancingRandomSeed": 0,
+            "RelativeLocation": {
+                "X": 14345.78515625,
+                "Y": 10990.9794921875,
+                "Z": -3741.94775390625
+            },
+            "RelativeRotation": {
+                "Pitch": 0.0,
+                "Roll": 0.0,
+                "Yaw": -44.79457092285156
+            },
+            "RelativeScale3D": {
+                "X": 1.0,
+                "Y": 1.0,
+                "Z": 1.0
+            },
+            "StaticMesh": {
+                "ObjectName": "StaticMesh'SM_Village_LandProxy2'",
+                "ObjectPath": "EM/Content/Asset/Scene/EN001_Ailixian/Jingjiedao/JJD_Village/Land/Mesh/SM_Village_LandProxy2.2"
+            }
+        },
+        "Type": "StaticMeshComponent"
+    },
+    {
+        "Name": "StaticMeshComponent",
+        "Outer": "SM_Village_LandProxy3",
+        "Properties": {
+            "AttachParent": {
+                "ObjectName": "",
+                "ObjectPath": ""
+            },
+            "InstancingRandomSeed": 0,
+            "RelativeLocation": {
+                "X": 23287.21484375,
+                "Y": 2113.4345703125,
+                "Z": -3741.94775390625
+            },
+            "RelativeRotation": {
+                "Pitch": 0.0,
+                "Roll": 0.0,
+                "Yaw": -44.79457092285156
+            },
+            "RelativeScale3D": {
+                "X": 1.0,
+                "Y": 1.0,
+                "Z": 1.0
+            },
+            "StaticMesh": {
+                "ObjectName": "StaticMesh'SM_Village_LandProxy3'",
+                "ObjectPath": "EM/Content/Asset/Scene/EN001_Ailixian/Jingjiedao/JJD_Village/Land/Mesh/SM_Village_LandProxy3.2"
+            }
+        },
+        "Type": "StaticMeshComponent"
+    },
+    {
+        "Name": "StaticMeshComponent",
+        "Outer": "SM_Village_LandProxy4",
+        "Properties": {
+            "AttachParent": {
+                "ObjectName": "",
+                "ObjectPath": ""
+            },
+            "InstancingRandomSeed": 0,
+            "RelativeLocation": {
+                "X": -12414.62109375,
+                "Y": 19804.640625,
+                "Z": -3741.94775390625
+            },
+            "RelativeRotation": {
+                "Pitch": 0.0,
+                "Roll": 0.0,
+                "Yaw": -44.79457092285156
+            },
+            "RelativeScale3D": {
+                "X": 1.0,
+                "Y": 1.0,
+                "Z": 1.0
+            },
+            "StaticMesh": {
+                "ObjectName": "StaticMesh'SM_Village_LandProxy4'",
+                "ObjectPath": "EM/Content/Asset/Scene/EN001_Ailixian/Jingjiedao/JJD_Village/Land/Mesh/SM_Village_LandProxy4.2"
+            }
+        },
+        "Type": "StaticMeshComponent"
+    },
+    {
+        "Name": "StaticMeshComponent",
+        "Outer": "SM_Village_LandProxy6",
+        "Properties": {
+            "AttachParent": {
+                "ObjectName": "",
+                "ObjectPath": ""
+            },
+            "InstancingRandomSeed": 0,
+            "RelativeLocation": {
+                "X": 5468.23828125,
+                "Y": 2049.5498046875,
+                "Z": -3741.94775390625
+            },
+            "RelativeRotation": {
+                "Pitch": 0.0,
+                "Roll": 0.0,
+                "Yaw": -44.79457092285156
+            },
+            "RelativeScale3D": {
+                "X": 1.0,
+                "Y": 1.0,
+                "Z": 1.0
+            },
+            "StaticMesh": {
+                "ObjectName": "StaticMesh'SM_Village_LandProxy6'",
+                "ObjectPath": "EM/Content/Asset/Scene/EN001_Ailixian/Jingjiedao/JJD_Village/Land/Mesh/SM_Village_LandProxy6.2"
+            }
+        },
+        "Type": "StaticMeshComponent"
+    },
+    {
+        "Name": "StaticMeshComponent",
+        "Outer": "SM_Village_LandProxy7",
+        "Properties": {
+            "AttachParent": {
+                "ObjectName": "",
+                "ObjectPath": ""
+            },
+            "InstancingRandomSeed": 0,
+            "RelativeLocation": {
+                "X": 14409.6689453125,
+                "Y": -6827.9951171875,
+                "Z": -3741.94775390625
+            },
+            "RelativeRotation": {
+                "Pitch": 0.0,
+                "Roll": 0.0,
+                "Yaw": -44.79457092285156
+            },
+            "RelativeScale3D": {
+                "X": 1.0,
+                "Y": 1.0,
+                "Z": 1.0
+            },
+            "StaticMesh": {
+                "ObjectName": "StaticMesh'SM_Village_LandProxy7'",
+                "ObjectPath": "EM/Content/Asset/Scene/EN001_Ailixian/Jingjiedao/JJD_Village/Land/Mesh/SM_Village_LandProxy7.2"
+            }
+        },
+        "Type": "StaticMeshComponent"
+    },
+    {
+        "Name": "StaticMeshComponent",
+        "Outer": "SM_Village_LandProxy8",
+        "Properties": {
+            "AttachParent": {
+                "ObjectName": "",
+                "ObjectPath": ""
+            },
+            "InstancingRandomSeed": 0,
+            "RelativeLocation": {
+                "X": -21292.166015625,
+                "Y": 10863.2119140625,
+                "Z": -3741.94775390625
+            },
+            "RelativeRotation": {
+                "Pitch": 0.0,
+                "Roll": 0.0,
+                "Yaw": -44.79457092285156
+            },
+            "RelativeScale3D": {
+                "X": 1.0,
+                "Y": 1.0,
+                "Z": 1.0
+            },
+            "StaticMesh": {
+                "ObjectName": "StaticMesh'SM_Village_LandProxy8'",
+                "ObjectPath": "EM/Content/Asset/Scene/EN001_Ailixian/Jingjiedao/JJD_Village/Land/Mesh/SM_Village_LandProxy8.2"
+            }
+        },
+        "Type": "StaticMeshComponent"
+    },
+    {
+        "Name": "StaticMeshComponent",
+        "Outer": "SM_Village_LandProxy9",
+        "Properties": {
+            "AttachParent": {
+                "ObjectName": "",
+                "ObjectPath": ""
+            },
+            "InstancingRandomSeed": 0,
+            "RelativeLocation": {
+                "X": -12350.7373046875,
+                "Y": 1985.665283203125,
+                "Z": -3741.94775390625
+            },
+            "RelativeRotation": {
+                "Pitch": 0.0,
+                "Roll": 0.0,
+                "Yaw": -44.79457092285156
+            },
+            "RelativeScale3D": {
+                "X": 1.0,
+                "Y": 1.0,
+                "Z": 1.0
+            },
+            "StaticMesh": {
+                "ObjectName": "StaticMesh'SM_Village_LandProxy9'",
+                "ObjectPath": "EM/Content/Asset/Scene/EN001_Ailixian/Jingjiedao/JJD_Village/Land/Mesh/SM_Village_LandProxy9.2"
+            }
+        },
+        "Type": "StaticMeshComponent"
+    }
+]

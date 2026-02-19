@@ -68,9 +68,13 @@ HRESULT CLevel_Map::Initialize()
 	if (FAILED(Ready_DebugLine()))
 		return E_FAIL;
 
+
 	m_pUEMapDataParser->Initialize(m_pDevice,m_pDeviceContext);
 
 	m_pMapToolManager->Set_LevelMap(this);
+
+	if (FAILED(m_pMapToolManager->Register_MapTexture()))
+		return E_FAIL;
 
 	return S_OK;
 }
@@ -236,7 +240,7 @@ HRESULT CLevel_Map::Ready_Camera_Layer(const wstring& wstrLayerTag)
 		CTransform::TRANSFORM_DESC TransformDesc = {};
 		TransformDesc.RotationMatrix = Matrix::CreateRotationX(XMConvertToRadians(45.f));
 		TransformDesc.TranslationMatrix = Matrix::CreateTranslation(Vec3(0.f,5.f,-5.f));
-		TransformDesc.fMovePerSec = { 15.f };
+		TransformDesc.fMovePerSec = { 50.f };
 		TransformDesc.fRotatePerSec = {2.f};
 		CCamera::CAMERA_DESC CameraDesc = {};
 
@@ -264,14 +268,16 @@ HRESULT CLevel_Map::Ready_Lights()
 	{
 		LIGHT_DESC desc = {};
 		desc.eType = LIGHT_TYPE::DIRECTIONAL;
-		desc.vDirection = Vec3(1.f, -1.f, 1.f);
-		desc.vDiffuse = Vec4(0.7f, 0.7f, 0.7f, 1.f);
-		desc.vAmbient = Vec4(0.3f, 0.3f, 0.35f, 1.f);
+		desc.vDirection = Vec3{ 1.f, -1.f, 1.f };
+		desc.vDiffuse = Vec4(0.9f, 0.9f, 0.9f, 1.f);
+		desc.vAmbient = Vec4(0.4f, 0.4f, 0.4f, 1.f);
 		desc.vSpecular = Vec4(1.f, 1.f, 1.f, 1.f);
 
 		if (FAILED(m_pGameInstance->Add_Light(desc)))
 			return E_FAIL;
 	}
+
+	return S_OK;
 
 	return S_OK;
 }
@@ -333,6 +339,9 @@ void CLevel_Map::Free()
 	}
 	m_arrayImGuiPanel.fill(nullptr);
 
+
+	m_pMapToolManager->UnRegister_MapTexture();
+
 	Safe_Release(m_pImGuiManager);
 	Safe_Release(m_pPickingManager);
 
@@ -340,7 +349,6 @@ void CLevel_Map::Free()
 	Safe_Release(m_pMapToolManager);
 
 	m_pUEMapDataParser->DestroyInstance();
-
 
 
 	Super::Free();

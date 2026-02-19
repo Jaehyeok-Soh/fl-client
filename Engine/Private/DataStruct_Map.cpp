@@ -154,10 +154,11 @@ void to_json(json& SaveJson, const USING_MODEL_INFO& tData)
 inline void to_json(json& SaveJson, const DTO::TMap_MapObjectData& tData)
 {
 	SaveJson = json
-	{ 
+	{
 		{ "Section Number" , tData.iSectionNum},
 		{ "strTag", tData.strTag },
 		{ "UE Loaded"  , tData.isUELoaded},
+		{ "UE Raw Data Path" , tData.strUERawDataPath},
 		{ "Draw Type" , tData.eMapObjectDrawType},
 		{ "Client Make Path" , tData.eClientMakePath},
 		{ "Client Level Type", tData.eClientLevelType},
@@ -198,6 +199,8 @@ inline void from_json(const json& LoadJson, DTO::TMap_MapObjectData& tData)
 	if (LoadJson.contains("UE Loaded"))
 		tData.isUELoaded =  LoadJson["UE Loaded"].get<_bool>();
 
+	if (LoadJson.contains("UE Raw Data Path"))
+		tData.strUERawDataPath = LoadJson["UE Raw Data Path"].get<string>();
 
 	/* Type 3°³  */
 	if (LoadJson.contains("Draw Type"))
@@ -208,7 +211,6 @@ inline void from_json(const json& LoadJson, DTO::TMap_MapObjectData& tData)
 
 	if (LoadJson.contains("Client Level Type"))
 		LoadJson["Client Level Type"].get_to(tData.eClientLevelType);
-
 
 	if (LoadJson.contains("Model Path"))
 		tData.strModelPath = LoadJson["Model Path"].get<string>();

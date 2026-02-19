@@ -23,8 +23,9 @@ private:
 
 	HRESULT Initialize(void *pArg);
 public:
+	const std::array< wstring, ENUM_TO_SZET(EMaterialTextureType::MAX_COUNT)>& Get_TextureNameArray() const { return m_arrTextureName; }
+public:
 	HRESULT Bind_ShaderResource(class CShader* pShader);
-
 	const std::array<ID3D11ShaderResourceView*, ENUM_TO_SZET(EMaterialTextureType::MAX_COUNT)>& Get_ArraySRV() const { return m_arrSRVs; }
 private:
 	HRESULT Caching_Resource(const wstring &pTag, EMaterialTextureType eType);
@@ -32,6 +33,7 @@ private:
 private:
 	_uint m_iTextureMask = { 0 };
 	std::array<ID3D11ShaderResourceView*, ENUM_TO_SZET(EMaterialTextureType::MAX_COUNT)> m_arrSRVs;
+	std::array< wstring, ENUM_TO_SZET(EMaterialTextureType::MAX_COUNT)  >				 m_arrTextureName{};
 	//vector<ID3D11ShaderResourceView*>			m_SRVs[AI_TEXTURE_TYPE_MAX];
 public:
 	static CMaterial* Create(ID3D11Device* pDevice, ID3D11DeviceContext* pDeviceContext, void* pArg);
