@@ -68,6 +68,11 @@ void CState_MoonSkill::SkillE_Update(const _float fTimeDelta)
 	{
 		m_FCollisions = COLLISIONFLAGS::C_DOWN;
 	}
+
+	if (m_fStateElapsed >= 2.5f)
+	{
+		Change_PlayerState(ENUM_TO_UINT(CPlayer::State::IDLE));
+	}
 }
 
 void CState_MoonSkill::SkillQ_Update(const _float fTimeDelta)
