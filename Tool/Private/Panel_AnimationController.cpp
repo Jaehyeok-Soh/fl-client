@@ -570,7 +570,7 @@ void CPanel_AnimationController::DrawController()
             {
                 // 단순 클릭 시 선택 처리
                 if (typeIndex == EAnimEvent::OVERLAP) m_tAnimControllInfo->iCurrentAttackEventIndex = eventIndex;
-                // else if (typeIndex == EAnimEvent::EFFECT) iSelectedEffectEvent = eventIndex;
+                 else if (typeIndex == EAnimEvent::EFFECT) m_tAnimControllInfo->iCurrentEffectEventIndex = eventIndex;
             }
 
             // 버튼이 활성화된 상태에서 드래그 중인지 확인
@@ -590,6 +590,7 @@ void CPanel_AnimationController::DrawController()
 
                 // 드래그 중일 때도 선택된 것으로 간주
                 if (typeIndex == EAnimEvent::OVERLAP) m_tAnimControllInfo->iCurrentAttackEventIndex = eventIndex;
+                else if (typeIndex == EAnimEvent::EFFECT) m_tAnimControllInfo->iCurrentAttackEventIndex = eventIndex;
             }
 
             // [박스 렌더링] (입력 처리 후에 그려도 됨, DrawList 순서 주의)

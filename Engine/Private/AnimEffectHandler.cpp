@@ -96,7 +96,6 @@ void CAnimEffectHandler::Request_SpawnEffect(const DTO::EFFECTEVENT& Script)
     vUp.Normalize();
     vLook.Normalize();
 
-    // 정규화된 벡터를 다시 행렬에 꽂아줍니다.
     matOwnerNoScale.m[0][0] = vRight.x; matOwnerNoScale.m[0][1] = vRight.y; matOwnerNoScale.m[0][2] = vRight.z;
     matOwnerNoScale.m[1][0] = vUp.x;    matOwnerNoScale.m[1][1] = vUp.y;    matOwnerNoScale.m[1][2] = vUp.z;
     matOwnerNoScale.m[2][0] = vLook.x;  matOwnerNoScale.m[2][1] = vLook.y;  matOwnerNoScale.m[2][2] = vLook.z;
@@ -104,7 +103,6 @@ void CAnimEffectHandler::Request_SpawnEffect(const DTO::EFFECTEVENT& Script)
 
     if (Script.strSocketName.empty() == false)
     {
-        // pTargetBoneMatrix 로직 (주석 해제 시 동일하게 적용)
         if (pTargetBoneMatrix)
             matTargetWorld = (*pTargetBoneMatrix) * matOwnerNoScale; // 스케일 빠진 행렬 사용
         else
@@ -117,7 +115,8 @@ void CAnimEffectHandler::Request_SpawnEffect(const DTO::EFFECTEVENT& Script)
 
     // 오프셋 적용
     Matrix matOffset = XMMatrixTranslation(Script.vOffset.x, Script.vOffset.y, Script.vOffset.z);
-    matTargetWorld = matOffset * matTargetWorld;
+    Matrix matRotation = XMMatrixRotationRollPitchYaw(XMConvertToRadians(Script.vRotation.x), XMConvertToRadians(Script.vRotation.y), XMConvertToRadians(Script.vRotation.z));
+    matTargetWorld = matOffset * matRotation * matTargetWorld;
 
     // 이펙트 생성 요청
     m_pGameInstance->Spawn_Effect(

@@ -19,6 +19,7 @@ void to_json(json& j, const EFFECTEVENT& data) {
     j["iSimulationType"] = data.iSimulationType;
     j["strSocketName"] = data.strSocketName;
     j["vOffset"] = { {"x", data.vOffset.x}, {"y", data.vOffset.y}, {"z", data.vOffset.z} };
+    j["vRotation"] = { {"x", data.vRotation.x}, {"y", data.vRotation.y}, {"z", data.vRotation.z} };
     j["bFollowBone"] = data.bFollowBone;
     j["fDuration"] = data.fDuration;
 }
@@ -39,6 +40,14 @@ void from_json(const json& j, EFFECTEVENT& data) {
         if (jo.contains("x")) jo.at("x").get_to(data.vOffset.x);
         if (jo.contains("y")) jo.at("y").get_to(data.vOffset.y);
         if (jo.contains("z")) jo.at("z").get_to(data.vOffset.z);
+    }
+
+    if (j.contains("vRotation"))
+    {
+        const auto& jo = j.at("vRotation");
+        if (jo.contains("x")) jo.at("x").get_to(data.vRotation.x);
+        if (jo.contains("y")) jo.at("y").get_to(data.vRotation.y);
+        if (jo.contains("z")) jo.at("z").get_to(data.vRotation.z);
     }
 }
 
