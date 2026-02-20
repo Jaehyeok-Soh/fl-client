@@ -36,6 +36,16 @@ HRESULT CStateBase_Monster::Initialize(void* pArg)
 
 	m_strName = m_pDesc->strName;
 
+	m_tStateLifeTime.bCountTime = m_pDesc->tStateLifeTime.bCountTime;
+	m_tStateLifeTime.bTimeReset = m_pDesc->tStateLifeTime.bTimeReset;
+	m_tStateLifeTime.fMaxTime = m_pDesc->tStateLifeTime.fMaxTime;
+	m_tStateLifeTime.fMinTime = m_pDesc->tStateLifeTime.fMinTime;
+
+	m_tStateCoolDownTime.bCountTime = m_pDesc->tStateCoolDownTime.bCountTime;
+	m_tStateCoolDownTime.bTimeReset = m_pDesc->tStateCoolDownTime.bTimeReset;
+	m_tStateCoolDownTime.fMaxTime = m_pDesc->tStateCoolDownTime.fMaxTime;
+	m_tStateCoolDownTime.fMinTime = m_pDesc->tStateCoolDownTime.fMinTime;
+
 	if (FAILED(Bind_State()))
 		return E_FAIL;
 
