@@ -337,6 +337,14 @@ struct PS_IN_POS_PARTICLE
     float2 vLifeTime : TEXCOORD1;
 };
 
+struct PS_IN_SPRITEFONT
+{
+    float4 vPos : SV_POSITION;
+    float4 vColor : COLOR;
+    float2 vTexCoord : TEXCOORD0;
+    float2 vTexCoord1 : TEXCOORD1;
+};
+
 /////////////////
 // PiexlOutput //
 /////////////////
@@ -386,6 +394,11 @@ struct PS_OUT_BACKBUFFER
     float4 vColor : SV_TARGET0;
 };
 
+struct PS_OUT_SPRITEFONT
+{
+    float4 vColor : SV_TARGET0;
+};
+    
 ////////////////////
 // Compute Shader//
 //////////////////

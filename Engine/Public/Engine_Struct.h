@@ -668,6 +668,22 @@ namespace Engine
 		D3DX11_TECHNIQUE_DESC tDesc = {};
 		vector<tagPass> vecPasses;
 	} TECHNIQUE;
+
+#pragma region Font
+	typedef struct tagFontDesc
+	{
+		EFontShaderType eFontShaderType;
+		std::wstring strFontTag;
+		std::wstring strText;
+		DirectX::SimpleMath::Vector2 vPosition;
+		DirectX::SimpleMath::Vector4 vColor;
+		EFontPivotType ePivot;
+		float fRotate;
+		float fScale;
+	}FONT_DESC;
+
+#pragma endregion
+
 }
 
 

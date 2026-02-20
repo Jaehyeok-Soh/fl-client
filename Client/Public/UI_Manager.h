@@ -55,7 +55,6 @@ public:
 
 private:
 	void Sort_UI(vector<CGenericUI*>& Target);
-
 private:
 	CGameInstance* m_pGameInstance = { nullptr };
 
@@ -71,6 +70,7 @@ private:
 	_bool m_isSort = { FALSE };
 
 	vector <CUITrigger*> m_vecTriggerUIs;
+	
 
 public:
 	virtual void Free()override;

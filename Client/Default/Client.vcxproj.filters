@@ -1022,5 +1022,8 @@
     <FxCompile Include="..\..\Shaders\ComShader_GetBoneCombine.hlsl">
       <Filter>04. Shaders\ComputeShaders\Animation</Filter>
     </FxCompile>
+    <FxCompile Include="..\..\Shaders\Shader_SpriteFont.hlsl">
+      <Filter>04. Shaders</Filter>
+    </FxCompile>
   </ItemGroup>
 </Project>

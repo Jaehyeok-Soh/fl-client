@@ -475,6 +475,12 @@ namespace Engine
 		DOWN,
 		END
 	};
-
+	//===================
+	// Font Shader Type
+	//===================
+	enum class EFontShaderType
+	{
+		NORMAL, OUTLINE_NOISE, END
+	};
 }
 #endif // Engine_Enum_h__

@@ -112,6 +112,7 @@ void to_json(json& j, const TUI_TextData& data)
 		{"strTag", data.strTag},
 		{"strOwnerName", data.strOwnerName},
 		{"eTextSubClassType", data.eTextSubClassType},
+		{"eShaderType", data.eShaderType},
 		{"strFontTag", data.strFontTag},
 		{"strText", data.strText},
 		{"vFontColor", {{ "x", data.vFontColor.x },{ "y", data.vFontColor.y },{ "z", data.vFontColor.z },{ "w", data.vFontColor.w }}},
@@ -126,6 +127,7 @@ void from_json(const json& j, TUI_TextData& data)
 	data.strTag			= "";
 	data.strOwnerName	= "";
 	data.eTextSubClassType = EUITextSubClassType::NONE_OWNER;
+	data.eShaderType	= EFontShaderType::NORMAL;
 	data.strText		= "No Text";
 	data.strFontTag		= "SemiBold";
 	data.vFontColor.x	= 1.f;
@@ -139,6 +141,7 @@ void from_json(const json& j, TUI_TextData& data)
 	data.strTag			= j.value("strTag", data.strTag);
 	data.strOwnerName	= j.value("strOwnerName", data.strOwnerName);
 	data.eTextSubClassType = j.value("eTextSubClassType", data.eTextSubClassType);
+	data.eShaderType	= j.value("eShaderType", data.eShaderType);
 	data.strText		= j.value("strText", data.strText);
 	data.strFontTag		= j.value("strFontTag", data.strFontTag);
 	const json jc		= j.value("vFontColor", json::object());

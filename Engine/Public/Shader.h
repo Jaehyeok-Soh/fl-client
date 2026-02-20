@@ -61,6 +61,7 @@ public:
 	HRESULT Bind_KeyFrameData(const SHADER_KEYFRAMEDESC& keyframeDesc);
 	HRESULT Bind_ObjectInfoData(const SHADER_OBJECTINFO_DESC& objectInfoDesc);
 
+
 	// 외부에서 ConstantBuffer를 생성후 바인딩할 때
 	HRESULT Set_ConstantBuffer(EFXCB eSlot, ID3D11Buffer* pBuffer);
 private:
@@ -82,6 +83,7 @@ private:
 	CConstant_Buffer<SHADER_KEYFRAMEDESC>* m_pKeyFrame_CBuffer{ nullptr };
 	CConstant_Buffer<SHADER_EFFECT_DESC>* m_pEffect_CBuffer{ nullptr };
 	CConstant_Buffer<SHADER_OBJECTINFO_DESC>* m_pObjectInfo_CBuffer{ nullptr };
+
 public:
 	static CShader* Create(ID3D11Device* pDevice, ID3D11DeviceContext* pContext, void* pArg);
 	virtual CComponent* Clone(void* pArg) override;

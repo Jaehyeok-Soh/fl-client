@@ -233,6 +233,7 @@ HRESULT CBuilder_UI::Register_Class(DTO::EUIClassType eClassType, const DTO::TUI
 		TextDesc.wstrFontTag	= Engine_Utils::ToWString(iter->second.strFontTag);
 		TextDesc.wstrText		= Engine_Utils::ToWString(iter->second.strText);
 		TextDesc.vFontColor		= iter->second.vFontColor;
+		TextDesc.ePivot			= iter->second.ePivot;
 		TextDesc.fRotate		= iter->second.fRotate;
 		TextDesc.fScale			= iter->second.fScale * m_vAspect.x;
 

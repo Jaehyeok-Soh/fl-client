@@ -792,11 +792,14 @@ HRESULT CGameInstance::Add_Font(const _wstring& strFontTag, const _tchar* pFontF
 {
 	return m_pFont_Manager->Add_Font(strFontTag, pFontFilePath);
 }
-HRESULT CGameInstance::Draw_Text(const _wstring& strFontTag, const _tchar* pText, const Vec2& vPosition, Vec4 vColor, EFontPivotType ePivot, const _float fRotate, const _float fScale)
+HRESULT CGameInstance::Request_DrawFont(FONT_DESC Desc)
 {
-	return m_pFont_Manager->Draw_Text(strFontTag, pText, vPosition, vColor, ePivot, fRotate, fScale);
+	return m_pFont_Manager->Request_DrawFont(Desc);
 }
-
+HRESULT CGameInstance::Render_Fonts()
+{
+	return m_pFont_Manager->Render_Fonts();
+}
 #pragma endregion
 
 

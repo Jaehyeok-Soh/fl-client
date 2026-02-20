@@ -54,7 +54,13 @@ HRESULT CUI_Inspector::Initialize_Prototype()
 	for (uint32_t i = 0; i < ENUM_TO_UINT(DTO::EUITriggerSubClassType::END); ++i)
 		m_VecTriggerSubClassTag.push_back(DTO::UITriggerSubClassTypeToString(static_cast<DTO::EUITriggerSubClassType>(i)));
 
-	
+	m_VecFontPivotTypes.reserve(ENUM_TO_UINT(EFontPivotType::END));
+	for (uint32_t i = 0; i < ENUM_TO_UINT(EFontPivotType::END); ++i)
+		m_VecFontPivotTypes.push_back(DTO::FontPivotTypeToString(static_cast<EFontPivotType>(i)));
+
+	m_VecFonstShaderTypes.reserve(ENUM_TO_UINT(EFontShaderType::END));
+	for (uint32_t i = 0; i < ENUM_TO_UINT(EFontShaderType::END); ++i)
+		m_VecFonstShaderTypes.push_back(DTO::FontShaderTypeToString(static_cast<EFontShaderType>(i)));
 	return S_OK;
 }
 
@@ -407,6 +413,28 @@ void CUI_Inspector::SetUp_TextData()
 			}
 			ImGui::EndCombo();
 		}
+		_int curFontShader = static_cast<_int>(m_pSelectedUI->Get_FontShaderType());
+		curFontShader = (curFontShader < 0) ? 0 : (curFontShader >= static_cast<_int>(m_VecFonstShaderTypes.size()) ? static_cast<_int>(m_VecFonstShaderTypes.size() - 1) : curFontShader);
+		const _char* fontShaderPreview = m_VecFonstShaderTypes.empty() ? "" : m_VecFonstShaderTypes[curFontShader].c_str();
+
+		if (ImGui::BeginCombo("FontShaderType", fontShaderPreview))
+		{
+			for (size_t i = 0; i < m_VecFonstShaderTypes.size(); ++i)
+			{
+				const _bool isSelected = (curFontShader == static_cast<_int>(i));
+
+				if (ImGui::Selectable(m_VecFonstShaderTypes[i].c_str(), isSelected))
+				{
+					curFontShader = static_cast<_int>(i);
+					m_pSelectedUI->Set_FontShaderType(static_cast<EFontShaderType>(i));
+					changed = true;
+				}
+
+				if (isSelected)
+					ImGui::SetItemDefaultFocus();
+			}
+			ImGui::EndCombo();
+		}
 
 		_string strText = Engine_Utils::ToString(m_pSelectedUI->Get_Text());
 		ImGui::InputText("Text", &strText);
@@ -439,6 +467,29 @@ void CUI_Inspector::SetUp_TextData()
 			}
 			ImGui::EndCombo();
 		}
+
+		EFontPivotType ePivot = m_pSelectedUI->Get_FontPivotType();
+		const char* prePivotType = DTO::FontPivotTypeToString(ePivot);
+
+		if (ImGui::BeginCombo("FontPivotType", prePivotType))
+		{
+			for (uint32_t i = 0; i < ENUM_TO_UINT(EFontPivotType::END); ++i)
+			{
+				const bool isSelected = (ENUM_TO_UINT(ePivot) == i);
+
+				if (ImGui::Selectable(m_VecFontPivotTypes[i].c_str(), isSelected))
+				{
+					ePivot = static_cast<EFontPivotType>(i);
+					m_pSelectedUI->Set_FontPivotType(ePivot);
+				}
+
+				if (isSelected)
+					ImGui::SetItemDefaultFocus();
+			}
+			ImGui::EndCombo();
+		}
+
+
 		_float fScale = m_pSelectedUI->Get_FontScale();
 		if (ImGui::InputFloat("FontScale", &fScale))
 			m_pSelectedUI->Set_FontScale(fScale);

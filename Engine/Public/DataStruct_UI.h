@@ -312,8 +312,34 @@ inline const char* FontPivotTypeToString(const EFontPivotType eType)
 	default:                     return "END";
 	}
 }
-#pragma endregion
 
+
+NLOHMANN_JSON_SERIALIZE_ENUM(EFontShaderType,
+	{
+		{ EFontShaderType::NORMAL,        "NORMAL" },
+		{ EFontShaderType::OUTLINE_NOISE, "OUTLINE_NOISE" },
+		{ EFontShaderType::END,           "END" }
+	})
+
+	inline EFontShaderType StringToFontShaderType(const std::string_view str)
+{
+	if (str == "NORMAL")			return EFontShaderType::NORMAL;
+	if (str == "OUTLINE_NOISE")		return EFontShaderType::OUTLINE_NOISE;
+	if (str == "END")				return EFontShaderType::END;
+	return EFontShaderType::END;
+}
+
+inline const char* FontShaderTypeToString(const EFontShaderType eType)
+{
+	switch (eType)
+	{
+	case EFontShaderType::NORMAL:			return "NORMAL";
+	case EFontShaderType::OUTLINE_NOISE:	return "OUTLINE_NOISE";
+	case EFontShaderType::END:				return "END";
+	default:								return "END";
+	}
+}
+#pragma endregion
 
 #pragma region 다이나믹 이미지 서브 클래스
 
@@ -548,16 +574,19 @@ inline const char* UIWorldUISubTypeToString(EUIWorldUISubClassType type)
 
 /////////////////-------------------  Data Struct  -------------------/////////////////
 // 텍스트 데이터
+
+
 struct TUI_TextData
 {
 	static constexpr EUIType eType = EUIType::UI_TEXT;
 	std::string		strTag;
 	std::string		strOwnerName;
 	EUITextSubClassType		eTextSubClassType;
+	EFontShaderType eShaderType;
 	std::string		strFontTag;
 	std::string	    strText;
 	Vec4			vFontColor;	
-	EFontPivotType ePivot;
+	EFontPivotType	ePivot;
 	_float			fRotate;
 	_float			fScale;
 };

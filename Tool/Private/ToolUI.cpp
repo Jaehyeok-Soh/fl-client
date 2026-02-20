@@ -58,6 +58,7 @@ HRESULT CToolUI::Initialize(void* pArg)
 		m_tUITextData			= pDesc->tTextData;
 		m_wstrText_TextData		= Engine_Utils::ToWString(m_tUITextData.strText);
 		m_eTextSubClassType		= m_tUITextData.eTextSubClassType;
+		m_eFontShaderType		= m_tUITextData.eShaderType;
 		m_vFontColor_TextData	= m_tUITextData.vFontColor;
 		m_fScale_TextData		= m_tUITextData.fScale;
 		m_ePivot_TextData		= m_tUITextData.ePivot;
@@ -99,7 +100,6 @@ HRESULT CToolUI::Initialize(void* pArg)
 		if (FAILED(Get_Component<CTexture>()->Add_DefaultTexture(m_wstrAlphaMaskTextureTag, ALPHA_MASK)))
 			return E_FAIL;
 	}
-
     return S_OK;
 }
 
@@ -248,11 +248,19 @@ HRESULT CToolUI::Bind_ShaderResources()
 		return E_FAIL;
 	if (FAILED(pShader->Get_Variable("g_fBrightness")->SetRawValue(&m_fBrightness, 0, sizeof(_float))))
 		return E_FAIL;
+
 	if(m_eClassType == DTO::EUIClassType::UI_TEXT)
 	{
-		Vec2 fontPos = Vec2{ m_vRenderPos.x, m_vRenderPos.y };
-		if (FAILED(m_pGameInstance->Draw_Text(
-			Engine_Utils::ToWString(m_strFontName_TextData), m_wstrText_TextData.c_str(), fontPos, m_vFontColor_TextData, m_ePivot_TextData, m_fRotate_TextData,m_fScale_TextData)))
+		m_tFontDesc.eFontShaderType = m_eFontShaderType;
+		m_tFontDesc.strFontTag		= Engine_Utils::ToWString(m_strFontName_TextData);
+		m_tFontDesc.strText			= m_wstrText_TextData;
+		Vec2 fontPos				= Vec2{ m_vRenderPos.x, m_vRenderPos.y };
+		m_tFontDesc.vPosition		= fontPos;
+		m_tFontDesc.vColor			= m_vFontColor_TextData;
+		m_tFontDesc.ePivot			= m_ePivot_TextData;
+		m_tFontDesc.fRotate			= m_fRotate_TextData;
+		m_tFontDesc.fScale			= m_fScale_TextData;
+		if (FAILED(m_pGameInstance->Request_DrawFont(m_tFontDesc)))
 			return E_FAIL;
 	}
     return S_OK;
@@ -383,9 +391,11 @@ void CToolUI::Sync_TextData()
 	m_tUITextData.strTag		= m_strName + "_TextData";
 	m_tUITextData.strOwnerName	= m_strName;
 	m_tUITextData.eTextSubClassType = m_eTextSubClassType;
+	m_tUITextData.eShaderType	= m_eFontShaderType;
 	m_tUITextData.strText		= Engine_Utils::ToString(m_wstrText_TextData);
 	m_tUITextData.vFontColor	= m_vFontColor_TextData;
 	m_tUITextData.fRotate		= m_fRotate_TextData;
+	m_tUITextData.ePivot		= m_ePivot_TextData;
 	m_tUITextData.strFontTag	= m_strFontName_TextData;
 	m_tUITextData.fScale		= m_fScale_TextData;
 }
