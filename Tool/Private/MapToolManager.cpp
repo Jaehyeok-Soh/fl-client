@@ -23,12 +23,14 @@ CMapToolManager::CMapToolManager()
 
 HRESULT CMapToolManager::Initialize(ID3D11Device* pDevice, ID3D11DeviceContext* pContext)
 {
-	m_pDevice  = pDevice;
-	m_pContext = pContext;
+	if (!m_pDevice || !pContext)
+	{
+		m_pDevice = pDevice;
+		m_pContext = pContext;
 
-	Safe_AddRef(m_pDevice);
-	Safe_AddRef(m_pContext);
-
+		Safe_AddRef(m_pDevice);
+		Safe_AddRef(m_pContext);
+	}
 
 	m_fMouseWheelSpeed = 0.001f;
 	m_fMouseRange = 1.f;

@@ -52,7 +52,6 @@ private:
 	HRESULT Ready_EffectObjectSetting();
 	HRESULT Ready_DebugLine();
 	HRESULT Ready_DevMap();
-	HRESULT Ready_Component();
 
 	void Render_Elements();
 	void Ready_Event();

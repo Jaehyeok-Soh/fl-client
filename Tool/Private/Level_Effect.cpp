@@ -58,9 +58,6 @@ HRESULT CLevel_Effect::Initialize()
 	if (FAILED(Super::Initialize()))
 		return E_FAIL;
 
-	if (FAILED(Ready_Component()))
-		return E_FAIL;
-
 	if (FAILED(Ready_Lights()))
 		return E_FAIL;
 
@@ -79,13 +76,6 @@ HRESULT CLevel_Effect::Initialize()
 	return S_OK;
 }
 
-HRESULT CLevel_Effect::Ready_Component()
-{
-	// For. Prototype_Component_Bounds
-	m_pGameInstance->Add_Prototype(ENUM_TO_UINT(ELevelType::STATIC), L"Prototype_Component_Bounds", CBounds::Create(m_pDevice, m_pDeviceContext));
-
-	return S_OK;
-}
 
 HRESULT CLevel_Effect::Awake(const _uint iLevelID)
 {
