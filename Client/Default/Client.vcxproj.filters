@@ -73,12 +73,6 @@
     <Filter Include="06. FSM\Player\Idle">
       <UniqueIdentifier>{51b09a75-0a10-4351-89ee-c56fb121e232}</UniqueIdentifier>
     </Filter>
-    <Filter Include="06. FSM\Player\Combo">
-      <UniqueIdentifier>{27a2b2a0-9e48-43b5-9d9d-e715fac9790b}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="06. FSM\Player\Combo\Attack">
-      <UniqueIdentifier>{e24f768e-0b04-4188-a9a5-c1b98e15de50}</UniqueIdentifier>
-    </Filter>
     <Filter Include="05. Component\Stat">
       <UniqueIdentifier>{2ced342f-5042-4404-83a0-64377d92387f}</UniqueIdentifier>
     </Filter>
@@ -187,12 +181,6 @@
     <Filter Include="04. Shaders\ComputeShader_Labs">
       <UniqueIdentifier>{8c14e548-7930-4ec0-b748-e471998a55b9}</UniqueIdentifier>
     </Filter>
-    <Filter Include="06. FSM\Player\Attack\Combo">
-      <UniqueIdentifier>{c441f698-d661-4b43-9a38-86ca6478bcfe}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="06. FSM\Player\Attack\Combo\Moon">
-      <UniqueIdentifier>{03a248e9-eb08-4143-a1f8-99a1bbf2dbc8}</UniqueIdentifier>
-    </Filter>
     <Filter Include="99. ETC\01. ImGui">
       <UniqueIdentifier>{aa2685d2-18f6-417c-ba8e-cf78608c7618}</UniqueIdentifier>
     </Filter>
@@ -286,6 +274,27 @@
     <Filter Include="03. GameObject\PartObjects\Weapon\Gun">
       <UniqueIdentifier>{6a93f015-83a7-4ad9-a084-d7e71fa8f3a4}</UniqueIdentifier>
     </Filter>
+    <Filter Include="03. GameObject\UIObjects\02.UI\Image\Dynamic Image\03.MenuImage">
+      <UniqueIdentifier>{41ffc1c4-c6ab-4e1e-8a96-b2da6de22285}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="03. GameObject\UIObjects\02.UI\Trigger\00.Basic">
+      <UniqueIdentifier>{ddd0e1e9-b54e-4f7e-b25d-40433ae876b3}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="03. GameObject\UIObjects\02.UI\Trigger\01.MenuTab">
+      <UniqueIdentifier>{13d70f3a-1964-4c43-a1e8-30b582165d71}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="03. GameObject\UIObjects\02.UI\Trigger\02.Menu Exit">
+      <UniqueIdentifier>{63c9a3d7-bedc-44a7-89d4-febe6b9de520}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="03. GameObject\UIObjects\02.UI\Text\Menu Text">
+      <UniqueIdentifier>{c8f806c3-d027-4861-9696-bc78504a554a}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="03. GameObject\UIObjects\02.UI\Text\Stat Text">
+      <UniqueIdentifier>{ba675289-98b0-43ba-990d-7137e8849731}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="03. GameObject\UIObjects\02.UI\Text\Skill Text">
+      <UniqueIdentifier>{fbb77af6-fc93-4e19-8ee6-30df86ccaec9}</UniqueIdentifier>
+    </Filter>
     <Filter Include="07. System\01. Builder\Effect">
       <UniqueIdentifier>{0a51c3b4-11ce-445a-904c-410b2a5ef809}</UniqueIdentifier>
     </Filter>
@@ -297,6 +306,48 @@
     </Filter>
     <Filter Include="07. System\02. Debug_ImGui\Layout\Shader">
       <UniqueIdentifier>{241e78ea-3b24-473b-a83b-6c32e682ad95}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="03. GameObject\UIObjects\02.UI\Image\Dynamic Image\03.MenuImage\00.OutLine">
+      <UniqueIdentifier>{4abf4708-1f00-4a67-ba1b-f638539f3a5c}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="06. FSM\Player\JumpWall">
+      <UniqueIdentifier>{2c8ee512-8e94-467f-9f3f-35d518b8ff89}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="05. Component\Stat\StatCom_Player">
+      <UniqueIdentifier>{65804a62-163c-4d9e-96ad-c89ac5470b42}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="06. FSM\Player\Attack\Skill">
+      <UniqueIdentifier>{dd83cb06-e5bd-4fe7-b1be-9158657fc3cd}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="06. FSM\Player\Attack\Skill\Moon">
+      <UniqueIdentifier>{819a5a47-1ce5-46ea-a5d0-0a4366274373}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="05. Component\Skill">
+      <UniqueIdentifier>{ff5cd5bd-4f3c-4bba-bad3-c7d7d49ea3e6}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="06. FSM\Player\Attack\Melee">
+      <UniqueIdentifier>{5fdc8b96-aa89-4637-89ee-222e7dac7a3a}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="06. FSM\Player\Attack\Melee\Charge">
+      <UniqueIdentifier>{8d34a4fe-fb74-4b4a-8394-d30c20aad791}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="06. FSM\Player\Attack\Melee\Charge\Moon">
+      <UniqueIdentifier>{0bbe0d25-2846-4ad0-a29a-034d6e7f149a}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="06. FSM\Player\Attack\Melee\Combo">
+      <UniqueIdentifier>{c441f698-d661-4b43-9a38-86ca6478bcfe}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="06. FSM\Player\Attack\Melee\Combo\Moon">
+      <UniqueIdentifier>{03a248e9-eb08-4143-a1f8-99a1bbf2dbc8}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="06. FSM\Player\Attack\Melee\JumpAtt">
+      <UniqueIdentifier>{448e7000-60b0-4cf4-88e5-7cd7d5e945e8}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="06. FSM\Player\Attack\Gun">
+      <UniqueIdentifier>{00f67508-9a6b-4c59-9832-98f058c8b1a5}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="05. Component\Skill\Moon">
+      <UniqueIdentifier>{967b52e8-d189-41cf-b480-c8f0f6d3fe01}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
@@ -348,21 +399,6 @@
     <ClInclude Include="..\Public\State_Idle.h">
       <Filter>06. FSM\Player\Idle</Filter>
     </ClInclude>
-    <ClInclude Include="..\Public\ComboState.h">
-      <Filter>06. FSM\Player\Combo</Filter>
-    </ClInclude>
-    <ClInclude Include="..\Public\State_Combo_Second.h">
-      <Filter>06. FSM\Player\Combo\Attack</Filter>
-    </ClInclude>
-    <ClInclude Include="..\Public\State_Combo_First.h">
-      <Filter>06. FSM\Player\Combo\Attack</Filter>
-    </ClInclude>
-    <ClInclude Include="..\Public\State_Combo_Fourth.h">
-      <Filter>06. FSM\Player\Combo\Attack</Filter>
-    </ClInclude>
-    <ClInclude Include="..\Public\State_Combo_Third.h">
-      <Filter>06. FSM\Player\Combo\Attack</Filter>
-    </ClInclude>
     <ClInclude Include="..\Public\MainPlayer.h">
       <Filter>03. GameObject\ContainerObjects\Player</Filter>
     </ClInclude>
@@ -371,9 +407,6 @@
     </ClInclude>
     <ClInclude Include="..\Public\StatComponent.h">
       <Filter>05. Component\Stat</Filter>
-    </ClInclude>
-    <ClInclude Include="..\Public\ComboContainer.h">
-      <Filter>06. FSM\Player\Combo</Filter>
     </ClInclude>
     <ClInclude Include="..\Public\CameraMan_Targeter.h">
       <Filter>03. GameObject\Camera</Filter>
@@ -508,10 +541,10 @@
       <Filter>07. System\02. Debug_ImGui\Inspector\Player</Filter>
     </ClInclude>
     <ClInclude Include="..\Public\State_ComboBase.h">
-      <Filter>06. FSM\Player\Attack\Combo</Filter>
+      <Filter>06. FSM\Player\Attack\Melee\Combo</Filter>
     </ClInclude>
     <ClInclude Include="..\Public\State_MoonCombo.h">
-      <Filter>06. FSM\Player\Attack\Combo\Moon</Filter>
+      <Filter>06. FSM\Player\Attack\Melee\Combo\Moon</Filter>
     </ClInclude>
     <ClInclude Include="..\Public\UIJust_Image.h">
       <Filter>03. GameObject\UIObjects\02.UI\Image\JustImage</Filter>
@@ -564,6 +597,39 @@
     <ClInclude Include="..\Public\UIHover_Image.h">
       <Filter>03. GameObject\UIObjects\02.UI\Image\Dynamic Image\02.HoverImage</Filter>
     </ClInclude>
+    <ClInclude Include="..\Public\State_JumpWall.h">
+      <Filter>06. FSM\Player\JumpWall</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\StatCom_Player.h">
+      <Filter>05. Component\Stat\StatCom_Player</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\State_JumpAttStart.h">
+      <Filter>06. FSM\Player\Attack\Melee\JumpAtt</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\State_JumpAttEnd.h">
+      <Filter>06. FSM\Player\Attack\Melee\JumpAtt</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\State_Charge.h">
+      <Filter>06. FSM\Player\Attack\Melee\Charge</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\UIMenu_Image.h">
+      <Filter>03. GameObject\UIObjects\02.UI\Image\Dynamic Image\03.MenuImage</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\UIMenu_Trigger.h">
+      <Filter>03. GameObject\UIObjects\02.UI\Trigger\01.MenuTab</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\UICommon_Trigger.h">
+      <Filter>03. GameObject\UIObjects\02.UI\Trigger\00.Basic</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\UIMenu_Exit_Trigger.h">
+      <Filter>03. GameObject\UIObjects\02.UI\Trigger\02.Menu Exit</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\UIMenu_Text.h">
+      <Filter>03. GameObject\UIObjects\02.UI\Text\Menu Text</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\UIPlayerStat_Text.h">
+      <Filter>03. GameObject\UIObjects\02.UI\Text\Stat Text</Filter>
+    </ClInclude>
     <ClInclude Include="..\Public\Builder_Effect.h">
       <Filter>07. System\01. Builder\Effect\Builder_Effect</Filter>
     </ClInclude>
@@ -572,6 +638,27 @@
     </ClInclude>
     <ClInclude Include="..\public\ImGui_ShaderLayout.h">
       <Filter>07. System\02. Debug_ImGui\Layout\Shader</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\UIMenu_OutLine.h">
+      <Filter>03. GameObject\UIObjects\02.UI\Image\Dynamic Image\03.MenuImage\00.OutLine</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\State_MoonCharge.h">
+      <Filter>06. FSM\Player\Attack\Melee\Charge\Moon</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\State_SkillBase.h">
+      <Filter>06. FSM\Player\Attack\Skill</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\State_MoonSkill.h">
+      <Filter>06. FSM\Player\Attack\Skill\Moon</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\SkillComponent.h">
+      <Filter>05. Component\Skill</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\SkillComp_MoonE.h">
+      <Filter>05. Component\Skill\Moon</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\SkillComp_MoonQ.h">
+      <Filter>05. Component\Skill\Moon</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -621,21 +708,6 @@
     <ClCompile Include="..\Private\State_Idle.cpp">
       <Filter>06. FSM\Player\Idle</Filter>
     </ClCompile>
-    <ClCompile Include="..\Private\ComboState.cpp">
-      <Filter>06. FSM\Player\Combo</Filter>
-    </ClCompile>
-    <ClCompile Include="..\Private\State_Combo_Third.cpp">
-      <Filter>06. FSM\Player\Combo\Attack</Filter>
-    </ClCompile>
-    <ClCompile Include="..\Private\State_Combo_First.cpp">
-      <Filter>06. FSM\Player\Combo\Attack</Filter>
-    </ClCompile>
-    <ClCompile Include="..\Private\State_Combo_Second.cpp">
-      <Filter>06. FSM\Player\Combo\Attack</Filter>
-    </ClCompile>
-    <ClCompile Include="..\Private\State_Combo_Fourth.cpp">
-      <Filter>06. FSM\Player\Combo\Attack</Filter>
-    </ClCompile>
     <ClCompile Include="..\Private\MainPlayer.cpp">
       <Filter>03. GameObject\ContainerObjects\Player</Filter>
     </ClCompile>
@@ -644,9 +716,6 @@
     </ClCompile>
     <ClCompile Include="..\Private\StatComponent.cpp">
       <Filter>05. Component\Stat</Filter>
-    </ClCompile>
-    <ClCompile Include="..\Private\ComboContainer.cpp">
-      <Filter>06. FSM\Player\Combo</Filter>
     </ClCompile>
     <ClCompile Include="..\Private\CameraMan_Targeter.cpp">
       <Filter>03. GameObject\Camera</Filter>
@@ -802,13 +871,10 @@
       <Filter>06. FSM\Player\Slide</Filter>
     </ClCompile>
     <ClCompile Include="..\Private\State_ComboBase.cpp">
-      <Filter>06. FSM\Player\Attack\Combo</Filter>
+      <Filter>06. FSM\Player\Attack\Melee\Combo</Filter>
     </ClCompile>
     <ClCompile Include="..\Private\State_MoonCombo.cpp">
-      <Filter>06. FSM\Player\Attack\Combo\Moon</Filter>
-    </ClCompile>
-    <ClCompile Include="..\Private\UIDynamic_Image.cpp">
-      <Filter>03. GameObject\UIObjects\02.UI\Image\Dynamic Image</Filter>
+      <Filter>06. FSM\Player\Attack\Melee\Combo\Moon</Filter>
     </ClCompile>
     <ClCompile Include="..\Private\UIMini_Map.cpp">
       <Filter>03. GameObject\UIObjects\02.UI\Image\Dynamic Image\01.Minimap</Filter>
@@ -834,11 +900,68 @@
     <ClCompile Include="..\Private\Builder_EffectEvent.cpp">
       <Filter>07. System\01. Builder\Effect\Builder_EffectEvent</Filter>
     </ClCompile>
+    <ClCompile Include="..\Private\State_JumpWall.cpp">
+      <Filter>06. FSM\Player\JumpWall</Filter>
+    </ClCompile>
     <ClCompile Include="..\Private\UIHover_Image.cpp">
       <Filter>03. GameObject\UIObjects\02.UI\Image\Dynamic Image\02.HoverImage</Filter>
     </ClCompile>
+    <ClCompile Include="..\Private\StatCom_Player.cpp">
+      <Filter>05. Component\Stat\StatCom_Player</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\State_JumpAttStart.cpp">
+      <Filter>06. FSM\Player\Attack\Melee\JumpAtt</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\State_JumpAttEnd.cpp">
+      <Filter>06. FSM\Player\Attack\Melee\JumpAtt</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\State_Charge.cpp">
+      <Filter>06. FSM\Player\Attack\Melee\Charge</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\UIMenu_Image.cpp">
+      <Filter>03. GameObject\UIObjects\02.UI\Image\Dynamic Image\03.MenuImage</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\UIMenu_Trigger.cpp">
+      <Filter>03. GameObject\UIObjects\02.UI\Trigger\01.MenuTab</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\UICommon_Trigger.cpp">
+      <Filter>03. GameObject\UIObjects\02.UI\Trigger\00.Basic</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\UIMenu_Exit_Trigger.cpp">
+      <Filter>03. GameObject\UIObjects\02.UI\Trigger\02.Menu Exit</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\UIDynamic_Image.cpp">
+      <Filter>03. GameObject\UIObjects\02.UI\Image\Dynamic Image</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\UIMenu_Text.cpp">
+      <Filter>03. GameObject\UIObjects\02.UI\Text\Menu Text</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\UIPlayerStat_Text.cpp">
+      <Filter>03. GameObject\UIObjects\02.UI\Text\Stat Text</Filter>
+    </ClCompile>
     <ClCompile Include="..\private\ImGui_ShaderLayout.cpp">
       <Filter>07. System\02. Debug_ImGui\Layout\Shader</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\UIMenu_OutLine.cpp">
+      <Filter>03. GameObject\UIObjects\02.UI\Image\Dynamic Image\03.MenuImage\00.OutLine</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\State_MoonCharge.cpp">
+      <Filter>06. FSM\Player\Attack\Melee\Charge\Moon</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\State_SkillBase.cpp">
+      <Filter>06. FSM\Player\Attack\Skill</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\State_MoonSkill.cpp">
+      <Filter>06. FSM\Player\Attack\Skill\Moon</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\SkillComponent.cpp">
+      <Filter>05. Component\Skill</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\SkillComp_MoonE.cpp">
+      <Filter>05. Component\Skill\Moon</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\SkillComp_MoonQ.cpp">
+      <Filter>05. Component\Skill\Moon</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

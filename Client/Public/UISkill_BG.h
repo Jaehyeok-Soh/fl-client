@@ -34,6 +34,9 @@ public:
 
 	void Trigger_User_Use_Skill();
 
+	virtual void Initialize_Visible_Event()override;
+	virtual _bool Tick_Visible_Event(const _float fTimeDelta)override;
+
 private:
 	HRESULT Ready_Components(SKILL_BG_DESC* pDesc);
 	HRESULT Bind_ShaderResources();
@@ -44,6 +47,7 @@ private:
 
 	_bool m_isUseSkillEventStart = { FALSE };
 	_bool m_isUseSkillEventEnd = { FALSE };
+
 	_float m_fSkillCoolTimeRatio = {1.f};
 
 public:

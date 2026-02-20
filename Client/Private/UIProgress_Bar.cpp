@@ -54,6 +54,7 @@ HRESULT CUIProgress_Bar::Attach_Personal_Info()
 	{
 		m_pTargetStat;
 		m_vOriginColor = m_vColorTint;
+		m_vOriginGradiantColor = m_vGradiantColorTint;
 		return S_OK;
 	}
 	case DTO::EUISubClassType::PLAYER_ARMOR:
@@ -93,7 +94,6 @@ void CUIProgress_Bar::Update_Priority(const _float fTimeDelta)
 	if (m_pGameInstance->KeyButton_Down(DIK_3))
 		m_fCurRatio = 0.9f;
 
-
 	if (m_eSubClassType == DTO::EUISubClassType::PLAYER_HP)
 	{
 		if (m_fProgress_Ratio < 0.3f)
@@ -102,8 +102,6 @@ void CUIProgress_Bar::Update_Priority(const _float fTimeDelta)
 			{
 				m_isStartLowHp = TRUE;
 				m_isEndLowHp = FALSE;
-
-				m_vOriginColor = m_vColorTint;
 				m_fTickTimeAcc = 1.f;
 			}
 		}
@@ -114,6 +112,7 @@ void CUIProgress_Bar::Update_Priority(const _float fTimeDelta)
 				m_isStartLowHp = FALSE;
 				m_isEndLowHp = TRUE;
 				m_vColorTint = m_vOriginColor;
+				m_vGradiantColorTint = m_vOriginGradiantColor;
 			}
 		}
 
@@ -133,7 +132,6 @@ void CUIProgress_Bar::Update(const _float fTimeDelta)
 	// m_fCurRatio = m_pTargetStat->Get_HealthRatio();
 
 	_float fEpsilon = 0.0001f;
-
 	if (fabs( m_fCurRatio - m_fPreRatio) > fEpsilon)
 	{
 		m_isChangeRatio = TRUE;
@@ -195,6 +193,53 @@ HRESULT CUIProgress_Bar::Render()
 	return S_OK;
 }
 
+void CUIProgress_Bar::OnUIEvent(ETriggerEventType eEvent, CGenericUI* pSender)
+{
+	if (!m_isActive)
+		return;
+
+	if (eEvent == ETriggerEventType::PRESS_ENTER)
+	{
+		if (m_isVisible)
+			Set_Invisible();
+		else
+			Set_Visible();
+	}
+}
+
+void CUIProgress_Bar::Initialize_Visible_Event()
+{
+	m_isActive = false;
+	m_isFin_Event = false;
+	m_fTimeAcc = 0.f;
+	m_fAlpha_Ratio = 0.f;
+}
+
+void CUIProgress_Bar::Initialize_InVisible_Event()
+{
+	m_isFin_Event = false;
+	m_fTimeAcc = 0.f;
+}
+
+_bool CUIProgress_Bar::Tick_Visible_Event(const _float fTimeDelta)
+{
+	m_fAlpha_Ratio += fTimeDelta * 2.f;
+	if (m_fAlpha_Ratio >= 1.f)
+	{
+		m_fAlpha_Ratio = 1.f;
+		m_isFin_Event = true;
+		m_isActive = true;
+		return true;
+	}
+	return false;
+}
+
+_bool CUIProgress_Bar::Tick_InVisible_Event(const _float fTimeDelta)
+{
+	m_isFin_Event = true;
+	return true;
+}
+
 HRESULT CUIProgress_Bar::Ready_Components(PROGRESS_BAR_DESC* pDesc)
 {
 	return S_OK;
@@ -214,7 +259,8 @@ HRESULT CUIProgress_Bar::Bind_ShaderResources()
 void CUIProgress_Bar::Low_HP(const _float fTimeDelta)
 {
 	m_vColorTint = Vec4{ 1.f, 0.f, 0.f, 1.f };
-	
+	m_vGradiantColorTint = Vec4{ 1.f, 0.f, 0.f, 1.f };
+
 	if (m_fTickTimeAcc >= 1.f)
 		m_isHPPaulse = FALSE;
 	else if (m_fTickTimeAcc < 0.3f)

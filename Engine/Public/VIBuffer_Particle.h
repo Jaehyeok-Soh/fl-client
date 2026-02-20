@@ -1,18 +1,8 @@
 #pragma once
 #include "VIBuffer.h"
+#include "DataStruct_Effect.h"
 
 NS_BEGIN(Engine)
-
-enum class E_PARTICLE_MOVESTATE
-{
-	NONE = 0,
-	DROP,
-	RISE,
-	SPREAD,
-	STRAIGHT,
-	SPIRAL,
-	DNA
-};
 
 class CModel;
 class CComputeShader;
@@ -27,6 +17,7 @@ public:
 	typedef struct tagVIBuffer_ParticleOriginDesc : public Super::tagVIBufferOriginDesc
 	{
 		_uint iInstnaceCount = { 0 };
+		Vec3 vScale = { 0.f, 0.f, 0.f};
 		Vec2 vSize = { 0.f, 0.f };
 		Vec3 vCenter = { 0.f, 0.f, 0.f };
 		Vec3 vPivot = { 0.f, 0.f, 0.f };
@@ -35,7 +26,7 @@ public:
 		float m_fStartSpeeds = { 1.f };
 		Vec2 vLifeTime = { 0.f, 0.f };
 		_bool isLoop = { false };
-		_bool isRandomSeed = { false };
+		_uint iRandomFlags = { DTO::E_RANDOM_FLAG::RAND_NONE};
 		CModel*	pModel = { nullptr };
 		CGameObject* pOwner = { nullptr };
 		CComputeShader* pComputeShader = { nullptr };
@@ -53,7 +44,7 @@ public:
 	virtual void Render() override;
 	
 public:
-	virtual void Update_Simulation(CComputeShader* ComputeShader, Vec3 vLook, _float fTImeDelta, _uint TimeFlag, E_PARTICLE_MOVESTATE eType);
+	virtual void Update_Simulation(CComputeShader* ComputeShader, Vec3 vLook, Vec3 finalGravity, _float fTImeDelta, _uint TimeFlag, DTO::E_SHAPETYPE eType);
 	virtual void Reset_Simulation();
 
 public:

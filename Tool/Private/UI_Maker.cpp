@@ -405,7 +405,55 @@ void CUI_Maker::Make_UI()
 	ImGui::Separator();
 	ImGui::Spacing();
 
+	//ImGui::TextDisabled("Select UI");
+	//ImGui::BeginChild("UIList", ImVec2(0.f, ImGui::GetContentRegionAvail().y), true);
+
+	//auto* pUIVec = m_pUIManager->Safe_Access_UIVector();
+	//const int32_t iNumUI = m_pUIManager->Get_NumUI();
+
+	//if (nullptr != pUIVec)
+	//{
+	//	std::vector<int32_t> vecOrder;
+	//	vecOrder.reserve(iNumUI);
+
+	//	for (int32_t i = 0; i < iNumUI; ++i)
+	//	{
+	//		if (nullptr == (*pUIVec)[i])
+	//			continue;
+	//		vecOrder.push_back(i);
+	//	}
+
+	//	std::stable_sort(vecOrder.begin(), vecOrder.end(),
+	//		[pUIVec](int32_t a, int32_t b)
+	//		{
+	//			return (*pUIVec)[a]->Get_Name() < (*pUIVec)[b]->Get_Name();
+	//		});
+
+	//	for (int32_t idx : vecOrder)
+	//	{
+	//		auto* pUI = (*pUIVec)[idx];
+	//		if (nullptr == pUI)
+	//			continue;
+
+	//		ImGui::PushID(idx);
+	//		bool selected = (m_pUIManager->Get_CurUIIndex() == idx);
+	//		if (ImGui::Selectable(pUI->Get_Name().c_str(), selected))
+	//			m_pUIManager->Safe_Change_UI(idx);
+	//		ImGui::PopID();
+	//	}
+	//}
+	//else
+	//{
+	//	ImGui::TextDisabled("No UI.");
+	//}
+
+
 	ImGui::TextDisabled("Select UI");
+
+	static char sUISearch[128] = "";
+	ImGui::SetNextItemWidth(-1.f);
+	ImGui::InputTextWithHint("##UIListSearch", "Search...", sUISearch, IM_ARRAYSIZE(sUISearch));
+
 	ImGui::BeginChild("UIList", ImVec2(0.f, ImGui::GetContentRegionAvail().y), true);
 
 	auto* pUIVec = m_pUIManager->Safe_Access_UIVector();
@@ -420,6 +468,15 @@ void CUI_Maker::Make_UI()
 		{
 			if (nullptr == (*pUIVec)[i])
 				continue;
+
+			const _string name = (*pUIVec)[i]->Get_Name();
+
+			if (sUISearch[0] != '\0')
+			{
+				if (name.find(sUISearch) == _string::npos)
+					continue;
+			}
+
 			vecOrder.push_back(i);
 		}
 
@@ -435,9 +492,11 @@ void CUI_Maker::Make_UI()
 			if (nullptr == pUI)
 				continue;
 
+			const _string name = pUI->Get_Name();
+
 			ImGui::PushID(idx);
 			bool selected = (m_pUIManager->Get_CurUIIndex() == idx);
-			if (ImGui::Selectable(pUI->Get_Name().c_str(), selected))
+			if (ImGui::Selectable(name.c_str(), selected))
 				m_pUIManager->Safe_Change_UI(idx);
 			ImGui::PopID();
 		}
@@ -446,7 +505,6 @@ void CUI_Maker::Make_UI()
 	{
 		ImGui::TextDisabled("No UI.");
 	}
-
 	ImGui::EndChild();   // UIList
 	ImGui::EndChild();   // UICard
 	ImGui::PopID();

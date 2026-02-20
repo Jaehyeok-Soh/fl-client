@@ -12,6 +12,8 @@ public:
 	{
 		_bool isAlpha;
 		_bool isInitVisible;
+		_bool isInitInteract;
+		_bool isInitActivate;
 		_float fX;
 		_float fY;
 		_float fZ;
@@ -66,13 +68,16 @@ protected:
 public:
 	void Set_Pass(_uint iPass) { m_iShaderPass = iPass; }
 
-	void Set_Visible()			{ m_isVisible = true;	}
-	void Set_Invisible()		{ m_isVisible = false;	}
+	void Set_Visible()			{ m_isVisibleTrigger = true; }
+	void Set_Invisible()		{ m_isVisibleTrigger = false;	}
 	void Set_Activate()			{ m_isActive = true;	}
 	void Set_InActivate()		{ m_isActive = false;	}
-	void Set_Interactable()		{ m_isInteract = true;	}
-	void Set_NonInteractable()	{ m_isInteract = false; }
+	void Set_Interactable()		{ m_isInteractTrigger = true;	}
+	void Set_NonInteractable()	{ m_isInteractTrigger = false; }
 
+	/// <summary>
+	/// Update 에서 실행
+	/// </summary>
 	virtual void Initialize_Visible_Event()			{}
 	virtual void Initialize_InVisible_Event()		{}
 	virtual void Initialize_Activate_Event()		{}
@@ -80,9 +85,12 @@ public:
 	virtual void Initialize_Interactable_Event()	{}
 	virtual void Initialize_NonInteractable_Event()	{}
 
+
 	/// <summary>
-	/// 끝나면 true를 반환하세요
+	/// Update Late 에서 실행 / 이벤트가 끝나면 True 반환할 것
 	/// </summary>
+	/// <param name="fTimeDelta"></param>
+	/// <returns></returns>
 	virtual _bool Tick_Visible_Event(const _float fTimeDelta)			{return true;}
 	virtual _bool Tick_InVisible_Event(const _float fTimeDelta)			{return true;}
 	virtual _bool Tick_Activate_Event(const _float fTimeDelta)			{return true;}
@@ -94,6 +102,7 @@ protected:
 	/* 렌더 상태를 제어 */
 	_bool m_isPreVisible = { false };
 	_bool m_isVisible = { false };
+	_bool m_isVisibleTrigger = { false };
 	_bool m_isPlaying_VisibleEvent = { false };
 
 	/* 업데이트 상태를 제어 */
@@ -104,6 +113,7 @@ protected:
 	/* 입력 상태를 제어 */
 	_bool m_isPreInteract = { true };
 	_bool m_isInteract = { true };
+	_bool m_isInteractTrigger = { true };
 	_bool m_isPlaying_InteractEvent = { false };
 
 protected:

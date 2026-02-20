@@ -35,6 +35,7 @@ HRESULT CUIJust_Image::Initialize(void* pArg)
 		return E_FAIL;
 	if (FAILED(Ready_Components(pDesc)))
 		return E_FAIL;
+	m_fOriginAlpha = m_fAlpha_Ratio;
 
 	return S_OK;
 }
@@ -84,6 +85,48 @@ HRESULT CUIJust_Image::Render()
 	Get_Component<CVIBuffer>()->Render();
 
 	return S_OK;
+}
+
+void CUIJust_Image::OnUIEvent(ETriggerEventType eEvent, CGenericUI* pSender)
+{
+	if (eEvent == ETriggerEventType::PRESS_ENTER)
+	{
+		if(m_isVisible)
+			Set_Invisible();
+		else 
+			Set_Visible();
+	}
+}
+
+void CUIJust_Image::Initialize_Visible_Event()
+{
+	m_isFin_Event = false;
+	m_fTimeAcc = 0.f;
+	m_fAlpha_Ratio = 0.f;
+}
+
+void CUIJust_Image::Initialize_InVisible_Event()
+{
+	m_isFin_Event = false;
+	m_fTimeAcc = 0.f;
+}
+
+_bool CUIJust_Image::Tick_Visible_Event(const _float fTimeDelta)
+{
+	m_fAlpha_Ratio += fTimeDelta * 2.f;
+	if (m_fAlpha_Ratio >= m_fOriginAlpha)
+	{
+		m_fAlpha_Ratio = m_fOriginAlpha;
+		m_isFin_Event = true;
+		return true;
+	}
+	return false;
+}
+
+_bool CUIJust_Image::Tick_InVisible_Event(const _float fTimeDelta)
+{
+	m_isFin_Event = true;
+	return true;
 }
 
 HRESULT CUIJust_Image::Ready_Components(JUST_IMAGE_DESC* pDesc)

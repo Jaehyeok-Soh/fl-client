@@ -173,6 +173,7 @@ namespace Engine
 		Vfx_Oneshot,
 		Vfx_Attach_On,
 		Vfx_Attach_Off,
+		Hitbox,
 
 		END
 	};
@@ -196,6 +197,8 @@ namespace Engine
 		PX_COLLIDER,
 		PX_CCT,
 		PX_ATTACKOVERLAP,
+		// ¿Ã∆Â∆Æ
+		EF_ANIMHANDLER,
 		//
 		MODEL,
 		SCRIPT,
@@ -300,9 +303,9 @@ namespace Engine
 		UNKNOWN = 17,
 		MAX_COUNT = 18
 	};
-	//===================
+	// ===================
 	// PhysicsShape
-	//===================
+	// ===================
 	enum class EPhysicsShape : unsigned int
 	{
 		SPHERE,
@@ -403,5 +406,79 @@ namespace Engine
 			END
 		};
 	}PHYSICSFILTERGROUP;
+
+	struct EPhysicsFilterType
+	{
+		enum Enum : unsigned int
+		{
+			PLAYER,
+			ATTACK,
+			SKILL,
+			ATTACK_PROJECTTILE,
+			SKILL_PROJECTTILE,
+
+			MONSTER,
+			MONSTER_ATTACK,
+			MONSTER_SKILL,
+			MONSTER_ATTACK_PROJECTTILE,
+			MONSTER_SKILL_PROJECTTILE,
+
+			MAP,
+
+			OBJECT1,
+			OBJECT2,
+
+			TRIGGER_UI,
+			TRIGGER_QUEST,
+			TRIGGER_SPAWN,
+			TRIGGER_DIRECTION,
+
+			NONE,
+			END
+		};
+	};
+
+	//===================
+	// Animation Event
+	//===================
+	struct EAnimEvent
+	{
+		enum Enum
+		{
+			OVERLAP,
+			EFFECT,
+			SOUND,
+			NONE,
+			END
+		};
+	};
+
+	//===================
+	// Attack overlap type
+	//===================
+	struct EOverlapType
+	{
+		enum Enum
+		{
+			BOX,
+			SPHERE,
+			CAPSULE,
+			END
+		};
+	};
+
+	//===================
+	// Font Pivot Type
+	//===================
+	enum class EFontPivotType
+	{
+		CENTER,
+		LEFT,
+		RIGHT,
+		UP,
+		DOWN,
+		END
+	};
+
 }
 #endif // Engine_Enum_h__

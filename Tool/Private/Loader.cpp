@@ -21,6 +21,10 @@
 #include "Tool_ContainerObject.h"
 #include "Tool_PartObject.h"
 #include "AnimObj.h"
+#include "Effect.h"
+#include "CEffectObject.h"
+#include "Gravity_Force.h"
+#include "Tool_Weapon.h"
 //=================
 // UI
 //=================
@@ -180,6 +184,37 @@ HRESULT CLoader::Loading_For_Animation()
 		m_pGameInstance->Add_Prototype(ENUM_TO_UINT(ELevelType::ANIMATION), L"Prototype_GameObject_AnimObject", CAnimObj::Create(EToolObjectType::ANIMATION, m_pDevice, m_pDeviceContext));
 	}
 
+	// For. Prototype_Component_Collider_OBB
+	CVIBuffer_Particle_Point::PARTICLE_POINT_ORIGIN_DESC	ExploDesc{};
+	ExploDesc.iInstnaceCount = 30;
+	ExploDesc.vCenter = Vec3(0.f, 0.f, 0.f);
+	ExploDesc.vSize = Vec2(0.05f, 0.15f);
+	ExploDesc.vRange = Vec3(0.5f, 0.5f, 0.5f);
+	ExploDesc.vSpeed = Vec2(2.f, 5.f);
+	ExploDesc.vLifeTime = Vec2(1.f, 5.5f);
+	ExploDesc.isLoop = false;
+	ExploDesc.vPivot = Vec3(0.f, 0.f, 0.5f);
+
+	m_pGameInstance->Add_Prototype(ENUM_TO_UINT(ELevelType::ANIMATION), L"Prototype_Component_VIBuffer_Particle_Point", CVIBuffer_Particle_Point::Create(m_pDevice, m_pDeviceContext, &ExploDesc));
+	m_pGameInstance->Add_Prototype(ENUM_TO_UINT(ELevelType::ANIMATION), L"Prototype_Component_VIBuffer_Particle_Mesh", CVIBuffer_Particle_Mesh::Create(m_pDevice, m_pDeviceContext, &ExploDesc));
+
+	m_pGameInstance->Add_Prototype(ENUM_TO_UINT(ELevelType::ANIMATION), L"Prototype_GameObject_Effect", Effect::Create(EToolObjectType::MESHEFFECT, m_pDevice, m_pDeviceContext));
+	m_pGameInstance->Add_Prototype(ENUM_TO_UINT(ELevelType::ANIMATION), L"Prototype_GameObject_Effect_Part_Particle", CEffectObject::Create(EToolObjectType::MESHEFFECT, m_pDevice, m_pDeviceContext));
+	m_pGameInstance->Add_Prototype(ENUM_TO_UINT(ELevelType::ANIMATION), L"Prototype_GameObject_Effect_Part_ForceField", CGravity_Force::Create(EToolObjectType::MESHEFFECT, m_pDevice, m_pDeviceContext));
+	m_pGameInstance->Add_Prototype(ENUM_TO_UINT(ELevelType::ANIMATION), L"Prototype_GameObject_Tool_Weapon", CTool_Weapon::Create(EToolObjectType::ANIMATION, m_pDevice, m_pDeviceContext));
+	/* Effect Data Model */
+	wstring basicBoxPath = L"../../Resources/Models/Map/Level/BasicShapes/Model/";
+
+	CUEMapDataLoader* pMapDataLoader = CUEMapDataLoader::Create(m_pDevice, m_pDeviceContext);
+	if (pMapDataLoader == nullptr) return E_FAIL;
+	if (FAILED(pMapDataLoader->Make_Prototype(ENUM_TO_UINT(ELevelType::ANIMATION), L"../../Resources/Models/Effect_FBX/blade/Model/")))
+		return E_FAIL;
+	if (FAILED(pMapDataLoader->Make_Prototype(ENUM_TO_UINT(ELevelType::ANIMATION), basicBoxPath)))
+		return E_FAIL;
+	Safe_Release(pMapDataLoader);
+
+	Loading_Textures_Effect(L"../../Resources/Textures/Effect");
+
 	m_isFinished = true;
 	return S_OK;
 }
@@ -280,20 +315,33 @@ HRESULT CLoader::Loading_For_UI()
 	//=================
 	// Resource Component
 	//=================
-	if (FAILED(Loading_Textures(L"../../Resources/Textures/UI/Playable/")))
-		return E_FAIL;
-	if (FAILED(Loading_Textures(L"../../Resources/Textures/UI/Menu/")))
-		return E_FAIL;
-	if (FAILED(Loading_Textures(L"../../Resources/Textures/UI/Battle/")))
-		return E_FAIL;
-	if (FAILED(Loading_Textures(L"../../Resources/Textures/UI/Key/")))
-		return E_FAIL;
-	if (FAILED(Loading_Textures(L"../../Resources/Textures/UI/WeaponIcon/")))
-		return E_FAIL;
-	if (FAILED(Loading_Textures(L"../../Resources/Textures/UI/SM_MAP/")))
-		return E_FAIL;
-	if (FAILED(Loading_Textures(L"../../Resources/Textures/UI/Map/")))
-		return E_FAIL;
+
+	std::filesystem::path root = L"../../Resources/Textures/UI_Tool/";
+
+	std::error_code ec;
+	for (auto it = std::filesystem::recursive_directory_iterator(
+		root,
+		std::filesystem::directory_options::skip_permission_denied,
+		ec);
+		it != std::filesystem::recursive_directory_iterator();
+		it.increment(ec))
+	{
+		if (ec)
+			return E_FAIL;
+
+		std::error_code ecDir;
+		if (!it->is_directory(ecDir))
+		{
+			if (ecDir)
+				return E_FAIL;
+			continue;
+		}
+
+		const std::wstring wstrSubFolder = it->path().wstring();
+
+		if (FAILED(Loading_Textures_UI(wstrSubFolder)))
+			return E_FAIL;
+	}
 
 	//=================
 	// UI Objects
@@ -309,7 +357,6 @@ HRESULT CLoader::Loading_For_UI()
 		if (FAILED(m_pGameInstance->Add_Prototype(ENUM_TO_UINT(ELevelType::UI), g_wszPrototypeTagUI, CToolUI::Create(EToolObjectType::UI, m_pDevice, m_pDeviceContext))))
 			return E_FAIL;
 	}
-
 	m_isFinished = true;
 	return S_OK;
 }
@@ -333,7 +380,7 @@ HRESULT CLoader::Loading_Textures(const wstring& wstrFolder)
 			++iFileCount;
 		}
 	}
-	/* 바탕화면 경로(C:\Users\...\Desktop) 쪽은 특히 desktop.ini가 흔합니다. 절대 바탕화면에 프로젝트를 두지마 */
+	/* 바탕화면 경로(C:\Users\...\Desktop) 쪽은 특히 desktop.ini가 흔합니다. */
 	for (const auto& entry : std::filesystem::directory_iterator(wstrFolder))
 	{
 		wstring wstrFileName = { L"" };
@@ -432,6 +479,52 @@ HRESULT CLoader::Loading_Textures_Map(const wstring& wstrFolder)
 
 	return S_OK;
 }
+
+HRESULT CLoader::Loading_Textures_UI(const wstring& wstrFolder)
+{
+	if (std::filesystem::exists(wstrFolder) == false)
+		return E_FAIL;
+
+	size_t iFileCount = { 0 };
+	for (const auto& entry : std::filesystem::directory_iterator(wstrFolder))
+	{
+		if (entry.is_regular_file())
+		{
+			_wstring ext = entry.path().extension().wstring();
+			for (auto& ch : ext) ch = (wchar_t)towlower(ch);
+
+			if (ext == L".png" || ext == L".dds")
+				++iFileCount;
+		}
+	}
+
+	for (const auto& entry : std::filesystem::directory_iterator(wstrFolder))
+	{
+		wstring wstrFileName = { L"" };
+		_wstring ext = { L"" };
+
+		if (entry.is_regular_file())
+		{
+			ext = entry.path().extension().wstring();
+			for (auto& ch : ext) ch = (wchar_t)towlower(ch);
+
+			if (ext != L".png" && ext != L".dds")
+				continue;
+
+			wstrFileName = entry.path().filename().lexically_normal().stem();
+			CTextureBase::RESOURCE_BASE_DESC desc = {};
+			desc.wstrName = wstrFileName;
+			desc.wstrPath = entry.path();
+
+			if (FAILED(m_pGameInstance->Add_Resource(L"Texture_" + wstrFileName,
+				CTextureBase::Create(m_pDevice, m_pDeviceContext, &desc))))
+				return E_FAIL;
+		}
+	}
+
+	return S_OK;
+}
+
 
 HRESULT CLoader::Loading_Texture(const wstring& wstrFile)
 {

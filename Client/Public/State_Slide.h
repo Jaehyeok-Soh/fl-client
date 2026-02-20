@@ -19,9 +19,11 @@ public:
 	virtual void Update(const _float fTimeDelta) override;
 	virtual HRESULT End() override;
 
-protected:
+private:
 	virtual void OwnMove(const _float fTimeDelta) override;
 	virtual void Change_PlayerState(STATEKEY eKey) override;
+
+	virtual void Set_NextStateDesc(_uint iNextState)override;
 
 public:
 	static CState_Slide* Create(CActionState* pOwnerComponent, void* pArg = nullptr);

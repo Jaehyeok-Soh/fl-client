@@ -45,114 +45,128 @@ void CChannel::SetUp_PoseData(std::span<LOCALSRT> spanLocalSrtData, _float fCurr
 
 void CChannel::Update_TransformationMatrix(const vector<class CBone*>& vecBones, _float fCurrentTrackPosition, _uint* pCurrentKeyFrameIndex, CTransform* pOwnerTransform, CPhysicsCCT* pOwnerPhyCCT, const _float fTimeDelta)
 {
-	if (fCurrentTrackPosition <= 0.f)
-		*pCurrentKeyFrameIndex = 0;
-
-	Matrix matTransformation = {};
-	KEYFRAME lastKeyFrame = m_vecKeyframes.back();
-	Vec3 vScale, vTranslation;
-	Quat vQuaternion;
-	if (fCurrentTrackPosition >= lastKeyFrame.fTrackPosition)
+	if (m_bUpdateCpu)
 	{
-		vScale = lastKeyFrame.vScale;
-		vQuaternion = lastKeyFrame.vQuaterion;
-		vTranslation = lastKeyFrame.vTranslation;
-	}
-	else
-	{
-		Vec3		vLeftScale{}, vRightScale{};
-		Quat		vLeftQuaternion{}, vRightQuaternion{};
-		Vec3		vLeftTranslation{}, vRightTranslation{};
+		if (fCurrentTrackPosition <= 0.f)
+			*pCurrentKeyFrameIndex = 0;
 
-		if (fCurrentTrackPosition >= m_vecKeyframes[(*pCurrentKeyFrameIndex) + 1].fTrackPosition)
-			++(*pCurrentKeyFrameIndex);
-
-		vLeftScale = m_vecKeyframes[(*pCurrentKeyFrameIndex)].vScale;
-		vRightScale = m_vecKeyframes[(*pCurrentKeyFrameIndex) + 1].vScale;
-
-		vLeftQuaternion = m_vecKeyframes[(*pCurrentKeyFrameIndex)].vQuaterion;
-		vRightQuaternion = m_vecKeyframes[(*pCurrentKeyFrameIndex) + 1].vQuaterion;
-
-		vLeftTranslation = m_vecKeyframes[(*pCurrentKeyFrameIndex)].vTranslation;
-		vRightTranslation = m_vecKeyframes[(*pCurrentKeyFrameIndex) + 1].vTranslation;
-
-		_float		fRatio = (fCurrentTrackPosition - m_vecKeyframes[(*pCurrentKeyFrameIndex)].fTrackPosition) /
-			(m_vecKeyframes[(*pCurrentKeyFrameIndex) + 1].fTrackPosition - m_vecKeyframes[(*pCurrentKeyFrameIndex)].fTrackPosition);
-
-		if (m_bRootBone)
+		Matrix matTransformation = {};
+		KEYFRAME lastKeyFrame = m_vecKeyframes.back();
+		Vec3 vScale, vTranslation;
+		Quat vQuaternion;
+		if (fCurrentTrackPosition >= lastKeyFrame.fTrackPosition)
 		{
-			Update_MotionBone(vLeftTranslation, vRightTranslation, pOwnerTransform, pOwnerPhyCCT, fTimeDelta);
-			vLeftTranslation	= { 0.f,0.f,0.f };
-			vRightTranslation	= { 0.f,0.f,0.f };
+			vScale = lastKeyFrame.vScale;
+			vQuaternion = lastKeyFrame.vQuaterion;
+			vTranslation = lastKeyFrame.vTranslation;
+		}
+		else
+		{
+			Vec3		vLeftScale{}, vRightScale{};
+			Quat		vLeftQuaternion{}, vRightQuaternion{};
+			Vec3		vLeftTranslation{}, vRightTranslation{};
+
+			if (fCurrentTrackPosition >= m_vecKeyframes[(*pCurrentKeyFrameIndex) + 1].fTrackPosition)
+				++(*pCurrentKeyFrameIndex);
+
+			vLeftScale = m_vecKeyframes[(*pCurrentKeyFrameIndex)].vScale;
+			vRightScale = m_vecKeyframes[(*pCurrentKeyFrameIndex) + 1].vScale;
+
+			vLeftQuaternion = m_vecKeyframes[(*pCurrentKeyFrameIndex)].vQuaterion;
+			vRightQuaternion = m_vecKeyframes[(*pCurrentKeyFrameIndex) + 1].vQuaterion;
+
+			vLeftTranslation = m_vecKeyframes[(*pCurrentKeyFrameIndex)].vTranslation;
+			vRightTranslation = m_vecKeyframes[(*pCurrentKeyFrameIndex) + 1].vTranslation;
+
+			_float		fRatio = (fCurrentTrackPosition - m_vecKeyframes[(*pCurrentKeyFrameIndex)].fTrackPosition) /
+				(m_vecKeyframes[(*pCurrentKeyFrameIndex) + 1].fTrackPosition - m_vecKeyframes[(*pCurrentKeyFrameIndex)].fTrackPosition);
+
+			if (m_bRootBone)
+			{
+				Update_MotionBone(vLeftTranslation, vRightTranslation, pOwnerTransform, pOwnerPhyCCT, fTimeDelta);
+				vLeftTranslation = { 0.f,0.f,0.f };
+				vRightTranslation = { 0.f,0.f,0.f };
+			}
+
+			vScale = Vec3::Lerp(vLeftScale, vRightScale, fRatio);
+			vQuaternion = Quat::Slerp(vLeftQuaternion, vRightQuaternion, fRatio);
+			vTranslation = Vec3::Lerp(vLeftTranslation, vRightTranslation, fRatio);
 		}
 
-		vScale = Vec3::Lerp(vLeftScale, vRightScale, fRatio);
-		vQuaternion = Quat::Slerp(vLeftQuaternion, vRightQuaternion, fRatio);
-		vTranslation = Vec3::Lerp(vLeftTranslation, vRightTranslation, fRatio);
+		matTransformation = Matrix::CreateScale(vScale) * Matrix::CreateFromQuaternion(vQuaternion) * Matrix::CreateTranslation(vTranslation);
+		vecBones[m_iBoneIndex]->Set_TransformationMatrix(matTransformation);
 	}
 
-	matTransformation = Matrix::CreateScale(vScale) * Matrix::CreateFromQuaternion(vQuaternion) * Matrix::CreateTranslation(vTranslation);
-	vecBones[m_iBoneIndex]->Set_TransformationMatrix(matTransformation);
+	else if (m_bRootBone)
+		Move_OnwerTransform(fCurrentTrackPosition, pCurrentKeyFrameIndex, pOwnerTransform, pOwnerPhyCCT, fTimeDelta);
+
 }
 
 void CChannel::SetUp_PoseData(std::span<LOCALSRT> spanLocalSrtData, _float fCurrentTrackPosition, _uint* pCurrentKeyFrameIndex, CTransform* pOwnerTransform, CPhysicsCCT* pOwnerPhyCCT, const _float fTimeDelta)
 {
-	if (fCurrentTrackPosition <= 0.f)
-		*pCurrentKeyFrameIndex = 0;
-
-	Matrix matTransformation = {};
-	KEYFRAME lastKeyFrame = m_vecKeyframes.back();
-	Vec3 vScale, vTranslation;
-	Quat vQuaternion;
-
-	if (fCurrentTrackPosition >= lastKeyFrame.fTrackPosition)
+	if (m_bUpdateCpu)
 	{
-		vScale = lastKeyFrame.vScale;
-		vQuaternion = lastKeyFrame.vQuaterion;
-		vTranslation = lastKeyFrame.vTranslation;
-	}
-	else
-	{
-		Vec3		vLeftScale{}, vRightScale{};
-		Quat		vLeftQuaternion{}, vRightQuaternion{};
-		Vec3		vLeftTranslation{}, vRightTranslation{};
+		if (fCurrentTrackPosition <= 0.f)
+			*pCurrentKeyFrameIndex = 0;
 
-		if (fCurrentTrackPosition >= m_vecKeyframes[(*pCurrentKeyFrameIndex) + 1].fTrackPosition)
-			++(*pCurrentKeyFrameIndex);
+		Matrix matTransformation = {};
+		KEYFRAME lastKeyFrame = m_vecKeyframes.back();
+		Vec3 vScale, vTranslation;
+		Quat vQuaternion;
 
-		vLeftScale			= m_vecKeyframes[(*pCurrentKeyFrameIndex)].vScale;
-		vRightScale			= m_vecKeyframes[(*pCurrentKeyFrameIndex) + 1].vScale;
-
-		vLeftQuaternion		= m_vecKeyframes[(*pCurrentKeyFrameIndex)].vQuaterion;
-		vRightQuaternion	= m_vecKeyframes[(*pCurrentKeyFrameIndex) + 1].vQuaterion;
-
-		vLeftTranslation	= m_vecKeyframes[(*pCurrentKeyFrameIndex)].vTranslation;
-		vRightTranslation	= m_vecKeyframes[(*pCurrentKeyFrameIndex) + 1].vTranslation;
-
-
-		_float		fRatio = (fCurrentTrackPosition - m_vecKeyframes[(*pCurrentKeyFrameIndex)].fTrackPosition) /
-			(m_vecKeyframes[(*pCurrentKeyFrameIndex) + 1].fTrackPosition - m_vecKeyframes[(*pCurrentKeyFrameIndex)].fTrackPosition);
-
-		if (m_bRootBone)
+		if (fCurrentTrackPosition >= lastKeyFrame.fTrackPosition)
 		{
-			Update_MotionBone(vLeftTranslation, vRightTranslation, pOwnerTransform, pOwnerPhyCCT, fTimeDelta);
-			vLeftTranslation	= { 0.f,0.f,0.f };
-			vRightTranslation	= { 0.f,0.f,0.f };
+			vScale = lastKeyFrame.vScale;
+			vQuaternion = lastKeyFrame.vQuaterion;
+			vTranslation = lastKeyFrame.vTranslation;
+		}
+		else
+		{
+			Vec3		vLeftScale{}, vRightScale{};
+			Quat		vLeftQuaternion{}, vRightQuaternion{};
+			Vec3		vLeftTranslation{}, vRightTranslation{};
+
+			if (fCurrentTrackPosition >= m_vecKeyframes[(*pCurrentKeyFrameIndex) + 1].fTrackPosition)
+				++(*pCurrentKeyFrameIndex);
+
+			vLeftScale = m_vecKeyframes[(*pCurrentKeyFrameIndex)].vScale;
+			vRightScale = m_vecKeyframes[(*pCurrentKeyFrameIndex) + 1].vScale;
+
+			vLeftQuaternion = m_vecKeyframes[(*pCurrentKeyFrameIndex)].vQuaterion;
+			vRightQuaternion = m_vecKeyframes[(*pCurrentKeyFrameIndex) + 1].vQuaterion;
+
+			vLeftTranslation = m_vecKeyframes[(*pCurrentKeyFrameIndex)].vTranslation;
+			vRightTranslation = m_vecKeyframes[(*pCurrentKeyFrameIndex) + 1].vTranslation;
+
+
+			_float		fRatio = (fCurrentTrackPosition - m_vecKeyframes[(*pCurrentKeyFrameIndex)].fTrackPosition) /
+				(m_vecKeyframes[(*pCurrentKeyFrameIndex) + 1].fTrackPosition - m_vecKeyframes[(*pCurrentKeyFrameIndex)].fTrackPosition);
+
+			if (m_bRootBone)
+			{
+				Update_MotionBone(vLeftTranslation, vRightTranslation, pOwnerTransform, pOwnerPhyCCT, fTimeDelta);
+				vLeftTranslation = { 0.f,0.f,0.f };
+				vRightTranslation = { 0.f,0.f,0.f };
+			}
+
+			vScale = Vec3::Lerp(vLeftScale, vRightScale, fRatio);
+			vQuaternion = Quat::Slerp(vLeftQuaternion, vRightQuaternion, fRatio);
+			vTranslation = Vec3::Lerp(vLeftTranslation, vRightTranslation, fRatio);
 		}
 
-		vScale			= Vec3::Lerp(vLeftScale, vRightScale, fRatio);
-		vQuaternion		= Quat::Slerp(vLeftQuaternion, vRightQuaternion, fRatio);
-		vTranslation	= Vec3::Lerp(vLeftTranslation, vRightTranslation, fRatio);
+		spanLocalSrtData[m_iBoneIndex].vScale = vScale;
+		spanLocalSrtData[m_iBoneIndex].vQuaterion = vQuaternion;
+		spanLocalSrtData[m_iBoneIndex].vTranslation = vTranslation;
 	}
 
-	spanLocalSrtData[m_iBoneIndex].vScale		= vScale;
-	spanLocalSrtData[m_iBoneIndex].vQuaterion	= vQuaternion;
-	spanLocalSrtData[m_iBoneIndex].vTranslation = vTranslation;
+	else if (m_bRootBone)
+		Move_OnwerTransform(fCurrentTrackPosition, pCurrentKeyFrameIndex, pOwnerTransform, pOwnerPhyCCT, fTimeDelta);
+
 }
 
 void CChannel::Move_OnwerTransform(_float fCurrentTrackPosition, _uint* pCurrentKeyFrameIndex, CTransform* pOwnerTransform, CPhysicsCCT* pOwnerPhyCCT, const _float fTimeDelta)
 {
-	//if (m_bRootBone)
+	if (m_bRootBone)
 	{
 		if (fCurrentTrackPosition <= 0.f)
 			*pCurrentKeyFrameIndex = 0;
@@ -171,6 +185,11 @@ void CChannel::Move_OnwerTransform(_float fCurrentTrackPosition, _uint* pCurrent
 
 		Update_MotionBone(vLeftTranslation, vRightTranslation, pOwnerTransform, pOwnerPhyCCT, fTimeDelta);
 	}
+}
+
+void CChannel::Check_UpdateCpu(const vector<class CBone*>& vecBones)
+{
+	m_bUpdateCpu = vecBones[m_iBoneIndex]->Get_IsUpdateCpu();
 }
 
 void CChannel::Update_MotionBone(Vec3 vLeftTrans, Vec3 vRightTrans,  CTransform* pOwnerTransform, CPhysicsCCT* pOwnerPhyCCT, const _float fTimeDelta)

@@ -182,65 +182,65 @@ HRESULT CPhysics_Utils::Render(const PxGeometry& geom, const PxTransform& transf
 
 	m_pBatch->Begin();
 
-		Matrix pxMatrix = PxTransformToXMMatrix(transform);
-		XMMATRIX matWorld = XMLoadFloat4x4(&pxMatrix);
+	Matrix pxMatrix = PxTransformToXMMatrix(transform);
+	XMMATRIX matWorld = XMLoadFloat4x4(&pxMatrix);
 
-		switch (geom.getType())
-		{
-		case physx::PxGeometryType::eSPHERE:
-		{
-			PxSphereGeometry sphere = static_cast<const PxSphereGeometry&>(geom);
-			BoundingSphere boundingSphere{};
-			boundingSphere.Radius = sphere.radius;
-			boundingSphere.Center = Vec3(transform.p.x, transform.p.y, transform.p.z);
-			DX::Draw(m_pBatch, boundingSphere);
-		}
+	switch (geom.getType())
+	{
+	case physx::PxGeometryType::eSPHERE:
+	{
+		PxSphereGeometry sphere = static_cast<const PxSphereGeometry&>(geom);
+		BoundingSphere boundingSphere{};
+		boundingSphere.Radius = sphere.radius;
+		boundingSphere.Center = Vec3(transform.p.x, transform.p.y, transform.p.z);
+		DX::Draw(m_pBatch, boundingSphere);
+	}
+	break;
+	case physx::PxGeometryType::ePLANE:
 		break;
-		case physx::PxGeometryType::ePLANE:
+	case physx::PxGeometryType::eCAPSULE:
+	{
+		PxCapsuleGeometry capsule = static_cast<const PxCapsuleGeometry&>(geom);
+		BoundingSphere boundingSphereHead{};
+		boundingSphereHead.Radius = capsule.radius + 0.1f;
+		boundingSphereHead.Center = Vec3(transform.p.x, transform.p.y - 0.1f, transform.p.z);
+		DX::DrawCapsule(m_pBatch, boundingSphereHead, capsule.halfHeight + 0.1f);
+	}
+	break;
+	case physx::PxGeometryType::eBOX:
+	{
+		PxBoxGeometry box = static_cast<const PxBoxGeometry&>(geom);
+		BoundingOrientedBox boundingObb{};
+		boundingObb.Extents = Vec3(box.halfExtents.x, box.halfExtents.y, box.halfExtents.z);
+		boundingObb.Center = Vec3(transform.p.x, transform.p.y, transform.p.z);
+		boundingObb.Orientation = Vec4(transform.q.x, transform.q.y, transform.q.z, transform.q.w);
+		DX::Draw(m_pBatch, boundingObb);
+	}
+	break;
+	case physx::PxGeometryType::eCONVEXCORE:
 		break;
-		case physx::PxGeometryType::eCAPSULE:
-		{
-			PxCapsuleGeometry capsule = static_cast<const PxCapsuleGeometry&>(geom);
-			BoundingSphere boundingSphereHead{};
-			boundingSphereHead.Radius = capsule.radius + 0.1f;
-			boundingSphereHead.Center = Vec3(transform.p.x, transform.p.y - 0.1f, transform.p.z);
-			DX::DrawCapsule(m_pBatch, boundingSphereHead, capsule.halfHeight + 0.1f);
-		}
+	case physx::PxGeometryType::eCONVEXMESH:
 		break;
-		case physx::PxGeometryType::eBOX:
-		{
-			PxBoxGeometry box = static_cast<const PxBoxGeometry&>(geom);
-			BoundingOrientedBox boundingObb{};
-			boundingObb.Extents = Vec3(box.halfExtents.x, box.halfExtents.y, box.halfExtents.z);
-			boundingObb.Center = Vec3(transform.p.x, transform.p.y, transform.p.z);
-			boundingObb.Orientation = Vec4(transform.q.x, transform.q.y, transform.q.z, transform.q.w);
-			DX::Draw(m_pBatch, boundingObb);
-		}
+	case physx::PxGeometryType::ePARTICLESYSTEM:
 		break;
-		case physx::PxGeometryType::eCONVEXCORE:
-			break;
-		case physx::PxGeometryType::eCONVEXMESH:
-			break;
-		case physx::PxGeometryType::ePARTICLESYSTEM:
-			break;
-		case physx::PxGeometryType::eTETRAHEDRONMESH:
-			break;
-		case physx::PxGeometryType::eTRIANGLEMESH:
-			//{
-			//	DX::DrawMesh(m_pBatch, geom, globalPose, matWorld);
-			//}
-			break;
-		case physx::PxGeometryType::eHEIGHTFIELD:
-			break;
-		case physx::PxGeometryType::eCUSTOM:
-			break;
-		case physx::PxGeometryType::eGEOMETRY_COUNT:
-			break;
-		case physx::PxGeometryType::eINVALID:
-			break;
-		default:
-			break;
-		}
+	case physx::PxGeometryType::eTETRAHEDRONMESH:
+		break;
+	case physx::PxGeometryType::eTRIANGLEMESH:
+		//{
+		//	DX::DrawMesh(m_pBatch, geom, globalPose, matWorld);
+		//}
+		break;
+	case physx::PxGeometryType::eHEIGHTFIELD:
+		break;
+	case physx::PxGeometryType::eCUSTOM:
+		break;
+	case physx::PxGeometryType::eGEOMETRY_COUNT:
+		break;
+	case physx::PxGeometryType::eINVALID:
+		break;
+	default:
+		break;
+	}
 
 	m_pBatch->End();
 
@@ -319,13 +319,45 @@ Matrix CPhysics_Utils::GetUnrealMatrix(const Matrix& mat)
 	return matBasis * mat * matBasisInv;
 }
 
-_bool CPhysics_Utils::RayCast()
+_bool CPhysics_Utils::RayCast(Vec3 vWorldPos, Vec3 vDir, _float fMaxDist, CPhysics_QueryFilterCallback* pFilterCall)
 {
-	PxVec3 o3(0.f, 0.f, 0.f);
-	PxVec3 d3(0.f, 0.f, 0.f);
-	PxReal dist{};
-	if (m_bRayHit = m_pScene->raycast(o3, d3, dist, m_RayCastHitBuffer))
-		return m_bRayHit;//m_RayCastHitBuffer.block.actor
+	// 시작 월드 좌표
+	// 쏠 방향 벡터 : 사이즈 꼭 1 이어야함
+	// 검사 최대 깊이
+
+	// 1. Vec3 -> PxVec3
+	PxVec3 o3 = { vWorldPos.x,vWorldPos.y,vWorldPos.z };
+
+	// 2. 길이가 1이어야 하므로 안정하게 한번더 노말라이즈
+	vDir.Normalize();
+	PxVec3 d3 = { vDir.x,vDir.y,vDir.z };
+
+	// 2. 필터 데이터 설정 (ePRE_FILTER 필수!)
+	PxQueryFilterData filterData;
+	filterData.flags |= PxQueryFlag::ePREFILTER; // 콜백 사용하겠다
+	filterData.flags |= PxQueryFlag::eSTATIC;    // 정적 물체(지형 등) 검사하겠다
+	filterData.flags |= PxQueryFlag::eDYNAMIC;   // 동적 물체(캐릭터 등) 검사하겠다
+
+	// 3. 검사
+	if (pFilterCall)
+	{
+		if (m_bRayHit = m_pScene->raycast(o3, d3, fMaxDist, m_RayCastHitBuffer, PxHitFlag::eDEFAULT, filterData, pFilterCall))
+		{
+			PxF32 hitDist = m_RayCastHitBuffer.block.distance;
+
+			return m_bRayHit;//m_RayCastHitBuffer.block.actor
+		}
+	}
+
+	else
+	{
+		if (m_bRayHit = m_pScene->raycast(o3, d3, fMaxDist, m_RayCastHitBuffer))
+		{
+			PxF32 hitDist = m_RayCastHitBuffer.block.distance;
+
+			return m_bRayHit;//m_RayCastHitBuffer.block.actor
+		}
+	}
 
 	return m_bRayHit;
 }

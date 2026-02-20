@@ -26,8 +26,7 @@ public:
 
 public:
 	virtual HRESULT Set_VertexBuffer(const PARTICLE_ORIGIN_DESC& Desc);
-	virtual HRESULT Set_ResizeBuffer_UseRandomSeed();
-	virtual HRESULT Set_ResizeBuffer_NoneUseRandomSeed();
+	virtual HRESULT Set_ResizeBuffer_SpecificRandom();
 	virtual HRESULT Set_InstanceBuffer();
 
 public:

@@ -244,7 +244,7 @@ public:
 
 #pragma region FONT_MANAGER
 	HRESULT Add_Font(const _wstring& strFontTag, const _tchar* pFontFilePath);
-	HRESULT Draw_Text(const _wstring& strFontTag, const _tchar* pText, const Vec2& vPosition, Vec4 vColor = Vec4(1.f, 1.f, 1.f, 1.f), const _float fRotate = 0.f, const _float fScale = 1.f);
+	HRESULT Draw_Text(const _wstring& strFontTag, const _tchar* pText, const Vec2& vPosition, Vec4 vColor = Vec4(1.f, 1.f, 1.f, 1.f), EFontPivotType ePivot = EFontPivotType::CENTER, const _float fRotate = 0.f, const _float fScale = 1.f);
 #pragma endregion
 
 #pragma region EVENTBUS_MANAGER
@@ -336,6 +336,7 @@ public:
 	void RegisterPhysicsMesh(_uint levelIndex, _wstring prototypeTag);
 	PxQuat GetPureRotation(const Matrix& mat);
 	PxVec3 GetPureScale(const Matrix& mat);
+	_bool RayCast(Vec3 vWorldPos, Vec3 vDir, _float fMaxDist, CPhysics_QueryFilterCallback* pFilterCall);
 #ifdef _DEBUG
 	void Physics_Render(PxRigidActor* pActor, XMVECTOR color = DirectX::Colors::White);
 	void Physics_Render(const PxGeometry& geom, const PxTransform& transform, XMVECTOR color = DirectX::Colors::White);
@@ -346,6 +347,10 @@ public:
 	class CUIAction_Registry* Get_UIAction_Registry()const;
 #pragma endregion
 
+#pragma region EFFECT_MANAGER
+	void Spawn_Effect(const std::string& strTag, const Matrix& matWorld, _float fDuration, _bool bIsLocal, void* pTargetBone = nullptr);
+
+#pragma endregion
 // Todo - 쓰레기통 정리
 #pragma region GAMEDATA
 
@@ -376,6 +381,7 @@ private:
 	class CShaderAsset_Manager* m_pShaderAsset_Manager = { nullptr };
 	class CPhysics_Module* m_pPhysics_Module = { nullptr };
 	class CUIAction_Registry* m_pUIAction_Registry = { nullptr };
+	class CEffect_Manager* m_pEffect_Manager = { nullptr };
 private:
 	std::mt19937_64 m_rng;
 public:

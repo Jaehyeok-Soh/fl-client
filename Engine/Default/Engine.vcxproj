@@ -164,6 +164,7 @@
   <ItemGroup>
     <ClCompile Include="..\Private\ActionState.cpp" />
     <ClCompile Include="..\Private\ActiveAttackOverlap.cpp" />
+    <ClCompile Include="..\private\AnimEffectHandler.cpp" />
     <ClCompile Include="..\Private\AsTypes.cpp" />
     <ClCompile Include="..\Private\Base.cpp">
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Use</PrecompiledHeader>
@@ -184,6 +185,7 @@
     <ClCompile Include="..\Private\DataDocument_AttackOverlap.cpp" />
     <ClCompile Include="..\Private\DataStruct_AttackOverlap.cpp" />
     <ClCompile Include="..\Private\DataStruct_EffectEvent.cpp" />
+    <ClCompile Include="..\Private\Effect_Manager.cpp" />
     <ClCompile Include="..\private\FxEffectAsset.cpp" />
     <ClCompile Include="..\private\FxShaderVariant.cpp" />
     <ClCompile Include="..\Private\InstanceMesh.cpp" />
@@ -316,7 +318,14 @@
   <ItemGroup>
     <ClInclude Include="..\Public\ActionState.h" />
     <ClInclude Include="..\Public\ActiveAttackOverlap.h" />
+    <ClInclude Include="..\Public\AnimEffectHandler.h" />
+    <ClInclude Include="..\Public\Anim_Event_AttackOverlap.h" />
+    <ClInclude Include="..\Public\Anim_Event_Base.h" />
+    <ClInclude Include="..\Public\Anim_Event_Hitbox.h" />
+    <ClInclude Include="..\Public\Anim_Event_Info.h" />
+    <ClInclude Include="..\Public\Anim_Event_Script_Base.h" />
     <ClInclude Include="..\Public\AsTypes.h" />
+    <ClInclude Include="..\Public\AttackOverlap_Desc.h" />
     <ClInclude Include="..\Public\Base.h" />
     <ClInclude Include="..\Public\Bone.h" />
     <ClInclude Include="..\Public\Bounding.h" />
@@ -332,6 +341,7 @@
     <ClInclude Include="..\Public\DataDocument_AttackOverlap.h" />
     <ClInclude Include="..\Public\DataStruct_AttackOverlap.h" />
     <ClInclude Include="..\Public\DataStruct_EffectEvent.h" />
+    <ClInclude Include="..\Public\Effect_Manager.h" />
     <ClInclude Include="..\public\FxEffectAsset.h" />
     <ClInclude Include="..\public\FxShaderVariant.h" />
     <ClInclude Include="..\Public\InstanceMesh.h" />

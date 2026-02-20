@@ -170,8 +170,6 @@
     <ClInclude Include="..\Public\Client_Defines.h" />
     <ClInclude Include="..\Public\Client_EventDefine.h" />
     <ClInclude Include="..\Public\ColliderPart.h" />
-    <ClInclude Include="..\Public\ComboContainer.h" />
-    <ClInclude Include="..\Public\ComboState.h" />
     <ClInclude Include="..\Public\Effect.h" />
     <ClInclude Include="..\Public\Builder_Effect.h" />
     <ClInclude Include="..\Public\EffectObject.h" />
@@ -199,6 +197,11 @@
     <ClInclude Include="..\Public\Monster_Dummy.h" />
     <ClInclude Include="..\Public\Physics_LandScape.h" />
     <ClInclude Include="..\Public\Physics_Terrain.h" />
+    <ClInclude Include="..\Public\SkillComponent.h" />
+    <ClInclude Include="..\Public\SkillComp_MoonE.h" />
+    <ClInclude Include="..\Public\SkillComp_MoonQ.h" />
+    <ClInclude Include="..\Public\StatCom_Player.h" />
+    <ClInclude Include="..\Public\State_Charge.h" />
     <ClInclude Include="..\Public\State_ComboBase.h" />
     <ClInclude Include="..\Public\State_CrouchWalk.h" />
     <ClInclude Include="..\Public\Level_Loading.h" />
@@ -213,35 +216,46 @@
     <ClInclude Include="..\Public\StateBase_Player.h">
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">false</ExcludedFromBuild>
     </ClInclude>
-    <ClInclude Include="..\Public\State_Combo_First.h" />
-    <ClInclude Include="..\Public\State_Combo_Fourth.h" />
-    <ClInclude Include="..\Public\State_Combo_Second.h" />
-    <ClInclude Include="..\Public\State_Combo_Third.h" />
     <ClInclude Include="..\Public\State_Crouch.h" />
     <ClInclude Include="..\Public\State_DashBack.h" />
     <ClInclude Include="..\Public\State_DashSky.h" />
     <ClInclude Include="..\Public\State_Fall.h" />
     <ClInclude Include="..\Public\State_Idle.h" />
     <ClInclude Include="..\Public\State_Jump.h" />
+    <ClInclude Include="..\Public\State_JumpAttEnd.h" />
+    <ClInclude Include="..\Public\State_JumpAttStart.h" />
     <ClInclude Include="..\Public\State_JumpBack.h" />
     <ClInclude Include="..\Public\State_JumpBullet.h" />
     <ClInclude Include="..\Public\State_JumpDouble.h" />
+    <ClInclude Include="..\Public\State_JumpWall.h" />
     <ClInclude Include="..\Public\State_Land.h" />
+    <ClInclude Include="..\Public\State_MoonCharge.h" />
     <ClInclude Include="..\Public\State_MoonCombo.h">
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">false</ExcludedFromBuild>
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">false</ExcludedFromBuild>
     </ClInclude>
+    <ClInclude Include="..\Public\State_MoonSkill.h">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">false</ExcludedFromBuild>
+    </ClInclude>
     <ClInclude Include="..\Public\State_RunLoop.h" />
     <ClInclude Include="..\Public\State_RunShort.h" />
+    <ClInclude Include="..\Public\State_SkillBase.h" />
     <ClInclude Include="..\Public\State_Slide.h" />
     <ClInclude Include="..\Public\State_Walk.h" />
     <ClInclude Include="..\Public\StaticObject.h" />
     <ClInclude Include="..\Public\Sword.h" />
     <ClInclude Include="..\Public\UIButton_Trigger.h" />
+    <ClInclude Include="..\Public\UICommon_Trigger.h" />
     <ClInclude Include="..\Public\UIDynamic_Image.h" />
     <ClInclude Include="..\Public\UIHover_Image.h" />
     <ClInclude Include="..\Public\UIJust_Image.h" />
+    <ClInclude Include="..\Public\UIMenu_Exit_Trigger.h" />
+    <ClInclude Include="..\Public\UIMenu_Image.h" />
+    <ClInclude Include="..\Public\UIMenu_OutLine.h" />
+    <ClInclude Include="..\Public\UIMenu_Text.h" />
+    <ClInclude Include="..\Public\UIMenu_Trigger.h" />
     <ClInclude Include="..\Public\UIMini_Map.h" />
+    <ClInclude Include="..\Public\UIPlayerStat_Text.h" />
     <ClInclude Include="..\Public\UIProgress_Bar.h" />
     <ClInclude Include="..\Public\UISkill_BG.h" />
     <ClInclude Include="..\Public\UIText.h" />
@@ -264,8 +278,6 @@
     <ClCompile Include="..\Private\CameraMan_Targeter.cpp" />
     <ClCompile Include="..\Private\Canvas.cpp" />
     <ClCompile Include="..\Private\ColliderPart.cpp" />
-    <ClCompile Include="..\Private\ComboContainer.cpp" />
-    <ClCompile Include="..\Private\ComboState.cpp" />
     <ClCompile Include="..\Private\Effect.cpp" />
     <ClCompile Include="..\Private\Builder_Effect.cpp" />
     <ClCompile Include="..\Private\EffectObject.cpp" />
@@ -316,6 +328,11 @@
     <ClCompile Include="..\Private\MapObject.cpp" />
     <ClCompile Include="..\Private\Monster_Dummy.cpp" />
     <ClCompile Include="..\Private\Physics_LandScape.cpp" />
+    <ClCompile Include="..\Private\SkillComponent.cpp" />
+    <ClCompile Include="..\Private\SkillComp_MoonE.cpp" />
+    <ClCompile Include="..\Private\SkillComp_MoonQ.cpp" />
+    <ClCompile Include="..\Private\StatCom_Player.cpp" />
+    <ClCompile Include="..\Private\State_Charge.cpp" />
     <ClCompile Include="..\Private\State_ComboBase.cpp" />
     <ClCompile Include="..\Private\State_CrouchWalk.cpp" />
     <ClCompile Include="..\Private\Level_Loading.cpp" />
@@ -330,35 +347,46 @@
     <ClCompile Include="..\Private\StateBase_Player.cpp">
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">false</ExcludedFromBuild>
     </ClCompile>
-    <ClCompile Include="..\Private\State_Combo_First.cpp" />
-    <ClCompile Include="..\Private\State_Combo_Fourth.cpp" />
-    <ClCompile Include="..\Private\State_Combo_Second.cpp" />
-    <ClCompile Include="..\Private\State_Combo_Third.cpp" />
     <ClCompile Include="..\Private\State_Crouch.cpp" />
     <ClCompile Include="..\Private\State_DashBack.cpp" />
     <ClCompile Include="..\Private\State_DashSky.cpp" />
     <ClCompile Include="..\Private\State_Fall.cpp" />
     <ClCompile Include="..\Private\State_Idle.cpp" />
     <ClCompile Include="..\Private\State_Jump.cpp" />
+    <ClCompile Include="..\Private\State_JumpAttEnd.cpp" />
+    <ClCompile Include="..\Private\State_JumpAttStart.cpp" />
     <ClCompile Include="..\Private\State_JumpBack.cpp" />
     <ClCompile Include="..\Private\State_JumpBullet.cpp" />
     <ClCompile Include="..\Private\State_JumpDouble.cpp" />
+    <ClCompile Include="..\Private\State_JumpWall.cpp" />
     <ClCompile Include="..\Private\State_Land.cpp" />
+    <ClCompile Include="..\Private\State_MoonCharge.cpp" />
     <ClCompile Include="..\Private\State_MoonCombo.cpp">
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">false</ExcludedFromBuild>
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">false</ExcludedFromBuild>
     </ClCompile>
+    <ClCompile Include="..\Private\State_MoonSkill.cpp">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">false</ExcludedFromBuild>
+    </ClCompile>
     <ClCompile Include="..\Private\State_RunLoop.cpp" />
     <ClCompile Include="..\Private\State_RunShort.cpp" />
+    <ClCompile Include="..\Private\State_SkillBase.cpp" />
     <ClCompile Include="..\Private\State_Slide.cpp" />
     <ClCompile Include="..\Private\State_Walk.cpp" />
     <ClCompile Include="..\Private\StaticObject.cpp" />
     <ClCompile Include="..\Private\Sword.cpp" />
     <ClCompile Include="..\Private\UIButton_Trigger.cpp" />
+    <ClCompile Include="..\Private\UICommon_Trigger.cpp" />
     <ClCompile Include="..\Private\UIDynamic_Image.cpp" />
     <ClCompile Include="..\Private\UIHover_Image.cpp" />
     <ClCompile Include="..\Private\UIJust_Image.cpp" />
+    <ClCompile Include="..\Private\UIMenu_Exit_Trigger.cpp" />
+    <ClCompile Include="..\Private\UIMenu_Image.cpp" />
+    <ClCompile Include="..\Private\UIMenu_OutLine.cpp" />
+    <ClCompile Include="..\Private\UIMenu_Text.cpp" />
+    <ClCompile Include="..\Private\UIMenu_Trigger.cpp" />
     <ClCompile Include="..\Private\UIMini_Map.cpp" />
+    <ClCompile Include="..\Private\UIPlayerStat_Text.cpp" />
     <ClCompile Include="..\Private\UIProgress_Bar.cpp" />
     <ClCompile Include="..\Private\UISkill_BG.cpp" />
     <ClCompile Include="..\Private\UIText.cpp" />

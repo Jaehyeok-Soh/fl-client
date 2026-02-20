@@ -102,7 +102,7 @@ void to_json(json& j, const TEFFECT_PartsData& data)
         {"Duration", data._Effect_Duration},
         {"Looping", data._Effect_Looping},
         {"MaxParticle", data._Effect_MaxParticle},
-        {"IsRandomSeed", data._Effect_IsRandomSeed},
+       {"RandomFlags", static_cast<int>(data.iRandomFlags)},
         {"PlayBackSpeed", data._Effect_PlayBackSpeed},
         {"StartSpeed", data._Effect_StartSpeed},
         {"UseSprite", data._Effect_bUseSprite},
@@ -164,6 +164,7 @@ void to_json(json& j, const TEFFECT_PartsData& data)
         }},
         {"Tool_Render", {
             {"Billboard", data._Effect_Tool_UseBillboard},
+            {"DirBillboard", data._Effect_Tool_UseDirBillboard},
             {"Scroll", data._Effect_Tool_UseScroll},
             {"Right", data._Effect_Tool_RightScroll},
             {"Down", data._Effect_Tool_DownScroll}
@@ -251,7 +252,20 @@ void from_json(const json& j, TEFFECT_PartsData& data)
     j.at("Duration").get_to(data._Effect_Duration);
     j.at("Looping").get_to(data._Effect_Looping);
     j.at("MaxParticle").get_to(data._Effect_MaxParticle);
-    j.at("IsRandomSeed").get_to(data._Effect_IsRandomSeed);
+
+    if (j.contains("RandomFlags"))
+    {
+        // 정수형으로 읽어온 뒤 Enum 타입으로 강제 형변환
+        data.iRandomFlags = static_cast<E_RANDOM_FLAG>(j.at("RandomFlags").get<int>());
+    }
+    // 하위 호환성 유지: 기존 데이터에 IsRandomSeed(bool)가 남아있을 경우
+    else if (j.contains("IsRandomSeed"))
+    {
+        bool bOldSeed = j.at("IsRandomSeed").get<bool>();
+        // 기존에 True였다면 모든 랜덤 속성을 다 켜주는 식으로 보정
+        data.iRandomFlags = bOldSeed ? (RAND_POS | RAND_LIFE | RAND_SIZE) : RAND_NONE;
+    }
+
     j.at("PlayBackSpeed").get_to(data._Effect_PlayBackSpeed);
     j.at("StartSpeed").get_to(data._Effect_StartSpeed);
     j.at("UseSprite").get_to(data._Effect_bUseSprite);
@@ -324,6 +338,7 @@ void from_json(const json& j, TEFFECT_PartsData& data)
     if (j.contains("Tool_Render")) {
         auto& tr = j.at("Tool_Render");
         tr.at("Billboard").get_to(data._Effect_Tool_UseBillboard);
+        tr.at("DirBillboard").get_to(data._Effect_Tool_UseDirBillboard);
         tr.at("Scroll").get_to(data._Effect_Tool_UseScroll);
         tr.at("Right").get_to(data._Effect_Tool_RightScroll);
         tr.at("Down").get_to(data._Effect_Tool_DownScroll);

@@ -9,6 +9,7 @@
 #include "Shader.h"
 #include "VIBuffer_Rect_Tex.h"
 #include "StatComponent.h"
+#include "Canvas.h"
 #include "UI_Manager.h"
 #include "GameInstance.h"
 
@@ -32,36 +33,20 @@ HRESULT CUITrigger::Initialize_Prototype()
 HRESULT CUITrigger::Initialize(void* pArg)
 {
 	UI_TRIGGER_DESC* pDesc = static_cast<UI_TRIGGER_DESC*>(pArg);
-	m_eSubClassType = pDesc->eOwner;
+	m_eSubClassType = pDesc->eTriggerSubClass;
 	m_tTriggerData = std::move(pDesc->tTriggerData);
 
 	if (FAILED(Super::Initialize(pArg)))
 		return E_FAIL;
-	if (FAILED(Attach_Personal_Info()))
-		return E_FAIL;
 	return S_OK;
 }
 
-HRESULT CUITrigger::Attach_Personal_Info()
-{
-	switch (m_eSubClassType)
-	{
-	case DTO::EUISubClassType::NONE_OWNER:
-		return S_OK;
-	case DTO::EUISubClassType::END:
-	default:
-		return E_FAIL;
-	}
-
-	return S_OK;
-}
-
-HRESULT CUITrigger::Bind_Cache()
+HRESULT CUITrigger::Bind_Cache(_uint iLevelID)
 {
 	// Hover Enter Canvas
 	for (const _string& str : m_tTriggerData.vecHoverEnterTriggerCanvas)
 	{
-		auto* pCanvas = m_pUIManager->Find_Canvas(m_iLevelID, str);
+		auto* pCanvas = m_pUIManager->Find_Canvas(iLevelID, str);
 		if (nullptr == pCanvas)
 			return E_FAIL;
 
@@ -71,7 +56,7 @@ HRESULT CUITrigger::Bind_Cache()
 	// Hover Exit Canvas
 	for (const _string& str : m_tTriggerData.vecHoverExitTriggerCanvas)
 	{
-		auto* pCanvas = m_pUIManager->Find_Canvas(m_iLevelID, str);
+		auto* pCanvas = m_pUIManager->Find_Canvas(iLevelID, str);
 		if (nullptr == pCanvas)
 			return E_FAIL;
 
@@ -81,7 +66,7 @@ HRESULT CUITrigger::Bind_Cache()
 	// Press Enter Canvas
 	for (const _string& str : m_tTriggerData.vecPressEnterTriggerCanvas)
 	{
-		auto* pCanvas = m_pUIManager->Find_Canvas(m_iLevelID, str);
+		auto* pCanvas = m_pUIManager->Find_Canvas(iLevelID, str);
 		if (nullptr == pCanvas)
 			return E_FAIL;
 
@@ -91,7 +76,7 @@ HRESULT CUITrigger::Bind_Cache()
 	// Press Exit Canvas
 	for (const _string& str : m_tTriggerData.vecPressExitTriggerCanvas)
 	{
-		auto* pCanvas = m_pUIManager->Find_Canvas(m_iLevelID, str);
+		auto* pCanvas = m_pUIManager->Find_Canvas(iLevelID, str);
 		if (nullptr == pCanvas)
 			return E_FAIL;
 
@@ -101,7 +86,7 @@ HRESULT CUITrigger::Bind_Cache()
 	// Hover Enter UI
 	for (const _string& str : m_tTriggerData.vecHoverEnterTriggerUI)
 	{
-		auto* pUI = m_pUIManager->Find_GenericUI(m_iLevelID, str);
+		auto* pUI = m_pUIManager->Find_GenericUI(iLevelID, str);
 		if (nullptr == pUI)
 			return E_FAIL;
 
@@ -111,7 +96,7 @@ HRESULT CUITrigger::Bind_Cache()
 	// Hover Exit UI
 	for (const _string& str : m_tTriggerData.vecHoverExitTriggerUI)
 	{
-		auto* pUI = m_pUIManager->Find_GenericUI(m_iLevelID, str);
+		auto* pUI = m_pUIManager->Find_GenericUI(iLevelID, str);
 		if (nullptr == pUI)
 			return E_FAIL;
 
@@ -121,7 +106,7 @@ HRESULT CUITrigger::Bind_Cache()
 	// Press Enter UI
 	for (const _string& str : m_tTriggerData.vecPressEnterTriggerUI)
 	{
-		auto* pUI = m_pUIManager->Find_GenericUI(m_iLevelID, str);
+		auto* pUI = m_pUIManager->Find_GenericUI(iLevelID, str);
 		if (nullptr == pUI)
 			return E_FAIL;
 
@@ -131,7 +116,7 @@ HRESULT CUITrigger::Bind_Cache()
 	// Press Exit UI
 	for (const _string& str : m_tTriggerData.vecPressExitTriggerUI)
 	{
-		auto* pUI = m_pUIManager->Find_GenericUI(m_iLevelID, str);
+		auto* pUI = m_pUIManager->Find_GenericUI(iLevelID, str);
 		if (nullptr == pUI)
 			return E_FAIL;
 
@@ -152,20 +137,6 @@ HRESULT CUITrigger::Awake(const _uint iCurrentLevelID)
 void CUITrigger::Update_Priority(const _float fTimeDelta)
 {
 	Super::Update_Priority(fTimeDelta);
-	if (Engine_Utils::Has_Flag(m_iInteractState, EUIEvent_Flag::PRESS_ENTER))
-	{
-	}
-	else if (Engine_Utils::Has_Flag(m_iInteractState, EUIEvent_Flag::PRESS_EXIT))
-	{
-	}
-	else if (Engine_Utils::Has_Flag(m_iInteractState, EUIEvent_Flag::HOVER_ENTER))
-	{
-		Fire_ToTargets(ETriggerEventType::HOVER_ENTER);
-	}
-	else if (Engine_Utils::Has_Flag(m_iInteractState, EUIEvent_Flag::HOVER_EXIT))
-	{
-		Fire_ToTargets(ETriggerEventType::HOVER_EXIT);
-	}
 }
 
 void CUITrigger::Update(const _float fTimeDelta)
@@ -180,7 +151,6 @@ void CUITrigger::Update_Late(const _float fTimeDelta)
 
 void CUITrigger::Ready_Before_Render(const _float fTimeDelta)
 {
-
 	Super::Ready_Before_Render(fTimeDelta);
 }
 
@@ -195,20 +165,35 @@ HRESULT CUITrigger::Render()
 	if (FAILED(Bind_ShaderResources()))
 		return E_FAIL;
 
-	Get_Component<CShader>()->Apply();
-	Get_Component<CVIBuffer>()->Bind_Resource();
-	Get_Component<CVIBuffer>()->Render();
-
 	return S_OK;
 }
 
-void CUITrigger::Fire_ToTargets(ETriggerEventType eEvent)
-{
-	for (auto* pUI : m_pTriggerUI[ENUM_TO_UINT(eEvent)])
-		if (pUI) pUI->OnUIEvent(eEvent, this);
 
-	//for (auto* pCanvas : m_pTriggerCanvas[ENUM_TO_UINT(eEvent)])
-	//	if (pCanvas) pCanvas->OnUIEvent(eEvent, this);
+void CUITrigger::OnUIEvent(ETriggerEventType eEvent, CGenericUI* pSender)
+{
+}
+
+_bool  CUITrigger::Check_FinEvent(ETriggerEventType eEvent)
+{
+	if (eEvent == ETriggerEventType::END || eEvent == ETriggerEventType::HOVER_ENTER || eEvent == ETriggerEventType::HOVER_EXIT)
+		return true;
+
+	for (const auto* pTrigger : m_pTriggerUI[ENUM_TO_UINT(eEvent)])
+	{
+		if (!pTrigger->Get_FinEvent())
+		{
+			return false;
+		}
+	}
+
+	for (auto* pCanvas : m_pTriggerCanvas[ENUM_TO_UINT(eEvent)])
+	{
+		if (!pCanvas->Check_FinEvent())
+		{
+			return false;
+		}
+	}
+	return true;
 }
 
 HRESULT CUITrigger::Ready_Components(UI_TRIGGER_DESC* pDesc)
@@ -218,35 +203,7 @@ HRESULT CUITrigger::Ready_Components(UI_TRIGGER_DESC* pDesc)
 
 HRESULT CUITrigger::Bind_ShaderResources()
 {
-	CShader* pShader = Get_Component<CShader>();
-	if (FAILED(Get_Component<CTransform>()->Bind_ShaderResource(pShader)))
-		return E_FAIL;
-
-	Super::Bind_ShaderResources();
-
 	return S_OK;
-}
-
-CUITrigger* CUITrigger::Create(ID3D11Device* pDevice, ID3D11DeviceContext* pDeviceContext)
-{
-	CUITrigger* pInstance = new CUITrigger(pDevice, pDeviceContext);
-	if (FAILED(pInstance->Initialize_Prototype()))
-	{
-		MSG_BOX("CUITrigger::Create, Create Failed");
-		Safe_Release(pInstance);
-	}
-	return pInstance;
-}
-
-CGameObject* CUITrigger::Clone(void* pArg)
-{
-	CUITrigger* pInstance = new CUITrigger(*this);
-	if (FAILED(pInstance->Initialize(pArg)))
-	{
-		MSG_BOX("CUITrigger::Clone, Clone Failed");
-		Safe_Release(pInstance);
-	}
-	return pInstance;
 }
 
 void CUITrigger::Free()

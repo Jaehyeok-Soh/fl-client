@@ -1,13 +1,10 @@
 #include "pch.h"
 #include "Panel_AnimModelFile.h"
-#include "Folder.h"
-#include "File.h"
-#include "MapToolManager.h"
-#include "MapObject.h"
-#include "Animation_Defines.h"
+#include "AnimTool_Manager.h"
 
 CPanel_AnimModelFile::CPanel_AnimModelFile(const _char* pLabel, CLevel* pOwner, ID3D11Device* pDevice, ID3D11DeviceContext* pDeviceContext)
-	: CImGui_Panel(pLabel, pOwner, pDevice, pDeviceContext)
+	: CImGui_Panel(pLabel, pOwner, pDevice, pDeviceContext),
+	m_pAnimToolManager(CAnimTool_Manager::GetInstance())
 {
 }
 
@@ -20,15 +17,11 @@ HRESULT CPanel_AnimModelFile::Initialize()
 
 HRESULT CPanel_AnimModelFile::Render(CToolObject* pGo)
 {
-	ImGui::Begin("File Explore");
-
-	/* Main_Window */
-
 	DirectoryWindow();
 
 	FileWindow();
 
-	ImGui::End();
+	ButtonsWindow();
 
 	return S_OK;
 }
@@ -70,7 +63,7 @@ void CPanel_AnimModelFile::FileWindow()
 	ImGui::Begin("Files");
 
 	ImGuiListClipper clipper;
-	clipper.Begin(m_files.size());
+	clipper.Begin((int)m_files.size());
 	while (clipper.Step())
 	{
 		for (int i = clipper.DisplayStart; i < clipper.DisplayEnd; i++)
@@ -80,7 +73,321 @@ void CPanel_AnimModelFile::FileWindow()
 	ImGui::End();
 }
 
-CPanel_AnimModelFile::DIR CPanel_AnimModelFile::RefreshModelDir()
+void CPanel_AnimModelFile::ButtonsWindow()
+{
+	ImGui::Begin("File Buttons");
+
+	if (ImGui::Button("Load Events"))
+	{
+		OpenLoadModal();
+	}
+
+	ImGui::SameLine();
+
+	if (ImGui::Button("Save Events"))
+	{
+		OpenSaveModal();
+	}
+
+	// Load modal
+	RenderLoadModal();
+
+	// Save modal
+	RenderSaveModal();
+
+	ImGui::End();
+}
+
+void CPanel_AnimModelFile::OpenFileDialog(char* buffer, const char* filter)
+{
+	OPENFILENAMEA ofn;
+	char szFile[260] = { 0 };
+
+	ZeroMemory(&ofn, sizeof(ofn));
+	ofn.lStructSize = sizeof(ofn);
+	ofn.hwndOwner = g_hWnd;
+	ofn.lpstrFile = szFile;
+	ofn.nMaxFile = sizeof(szFile);
+	ofn.lpstrFilter = filter;
+	ofn.nFilterIndex = 1;
+	ofn.lpstrFileTitle = NULL;
+	ofn.nMaxFileTitle = 0;
+	ofn.lpstrInitialDir = NULL;
+	ofn.Flags = OFN_PATHMUSTEXIST | OFN_FILEMUSTEXIST | OFN_NOCHANGEDIR;
+
+	if (GetOpenFileNameA(&ofn) == TRUE)
+	{
+		// 선택한 경로를 버퍼에 복사
+		strcpy_s(buffer, 256, ofn.lpstrFile);
+	}
+}
+
+void CPanel_AnimModelFile::SaveFileDialog(char* buffer, const char* filter)
+{
+	OPENFILENAMEA ofn;
+	char szFile[260] = { 0 };
+
+	ZeroMemory(&ofn, sizeof(ofn));
+	ofn.lStructSize = sizeof(ofn);
+	ofn.hwndOwner = g_hWnd;
+	ofn.lpstrFile = szFile;
+	ofn.nMaxFile = sizeof(szFile);
+	ofn.lpstrFilter = filter;
+	ofn.nFilterIndex = 1;
+	ofn.lpstrFileTitle = NULL;
+	ofn.nMaxFileTitle = 0;
+	ofn.lpstrInitialDir = NULL;
+	ofn.Flags = OFN_PATHMUSTEXIST | OFN_FILEMUSTEXIST | OFN_NOCHANGEDIR;
+
+	if (GetSaveFileNameA(&ofn) == TRUE)
+	{
+		// 선택한 경로를 버퍼에 복사
+		strcpy_s(buffer, 256, ofn.lpstrFile);
+	}
+}
+
+void CPanel_AnimModelFile::OpenLoadModal()
+{
+	// 모달을 열기 전에 상태 초기화 (경로 비우기 등)
+	m_tLoadOptions.Reset();
+
+	// 팝업 열기 트리거
+	ImGui::OpenPopup("Load Data Manager");
+}
+
+void CPanel_AnimModelFile::OpenSaveModal()
+{
+	// 모달을 열기 전에 상태 초기화 (경로 비우기 등)
+	m_tLoadOptions.Reset();
+
+	// 팝업 열기 트리거
+	ImGui::OpenPopup("Save Data Manager");
+}
+
+void CPanel_AnimModelFile::RenderLoadModal()
+{
+	// 모달의 중심을 화면 가운데로 설정 (선택 사항)
+	ImGui::SetNextWindowPos(ImGui::GetMainViewport()->GetCenter(), ImGuiCond_Appearing, ImVec2(0.5f, 0.5f));
+
+	if (ImGui::BeginPopupModal("Load Data Manager", NULL, ImGuiWindowFlags_AlwaysAutoResize))
+	{
+		// ---------------------------------------------------------
+		// 1. 애니메이션 정보 로드 행
+		// ---------------------------------------------------------
+		ImGui::Checkbox("##AnimCheck", &m_tLoadOptions.bLoadAnimInfo);
+		ImGui::SameLine();
+		ImGui::SetNextItemWidth(300.f);
+		ImGui::InputText("Animation Info", m_tLoadOptions.strAnimPath, 256, ImGuiInputTextFlags_ReadOnly);
+		ImGui::SameLine();
+		if (ImGui::Button("...##AnimBtn"))
+		{
+			OpenFileDialog(m_tLoadOptions.strAnimPath, "JSON Files\0*.json\0All\0*.*\0");
+		}
+
+		// ---------------------------------------------------------
+		// 2. 충돌체(Hitbox) 정보 로드 행
+		// ---------------------------------------------------------
+		ImGui::Checkbox("##HitboxCheck", &m_tLoadOptions.bLoadHitbox);
+		ImGui::SameLine();
+		ImGui::SetNextItemWidth(300.f);
+		ImGui::InputText("Hitbox Info", m_tLoadOptions.strHitboxPath, 256, ImGuiInputTextFlags_ReadOnly);
+		ImGui::SameLine();
+		if (ImGui::Button("...##HitboxBtn"))
+		{
+			OpenFileDialog(m_tLoadOptions.strHitboxPath, "JSON Files\0*.json\0All\0*.*\0");
+		}
+
+		// ---------------------------------------------------------
+		// 3. 이펙트(Effect) 정보 로드 행
+		// ---------------------------------------------------------
+		ImGui::Checkbox("##EffectCheck", &m_tLoadOptions.bLoadEffect);
+		ImGui::SameLine();
+		ImGui::SetNextItemWidth(300.f);
+		ImGui::InputText("Effect Info", m_tLoadOptions.strEffectPath, 256, ImGuiInputTextFlags_ReadOnly);
+		ImGui::SameLine();
+		if (ImGui::Button("...##EffectBtn"))
+		{
+			OpenFileDialog(m_tLoadOptions.strEffectPath, "JSON Files\0*.json\0All\0*.*\0");
+		}
+
+		// ---------------------------------------------------------
+		// 4. 사운드(Sound) 정보 로드 행
+		// ---------------------------------------------------------
+		ImGui::Checkbox("##SoundCheck", &m_tLoadOptions.bLoadSound);
+		ImGui::SameLine();
+		ImGui::SetNextItemWidth(300.f);
+		ImGui::InputText("Sound Info", m_tLoadOptions.strSoundPath, 256, ImGuiInputTextFlags_ReadOnly);
+		ImGui::SameLine();
+		if (ImGui::Button("...##SoundBtn"))
+		{
+			OpenFileDialog(m_tLoadOptions.strSoundPath, "JSON Files\0*.json\0All\0*.*\0");
+		}
+
+		ImGui::Separator();
+		ImGui::Spacing();
+
+		// ---------------------------------------------------------
+		// 하단 버튼 (확인 / 취소)
+		// ---------------------------------------------------------
+		float contentWidth = ImGui::GetContentRegionAvail().x;
+		ImGui::SetCursorPosX(contentWidth - 120.f); // 오른쪽 정렬
+
+		// [확인] 버튼
+		if (ImGui::Button("OK", ImVec2(50, 0)))
+		{
+			// 체크된 항목에 대해서만 로드 실행
+			//if (m_tLoadOptions.bLoadAnimInfo && strlen(m_tLoadOptions.strAnimPath) > 0)
+			//	Load_AnimationData(m_tLoadOptions.strAnimPath); // 구현하신 함수 호출
+
+			if (m_tLoadOptions.bLoadHitbox && strlen(m_tLoadOptions.strHitboxPath) > 0)
+				Load_HitboxData(m_tLoadOptions.strHitboxPath);
+
+			if (m_tLoadOptions.bLoadEffect && strlen(m_tLoadOptions.strEffectPath) > 0)
+				Load_EffectData(m_tLoadOptions.strEffectPath);
+
+			//if (m_tLoadOptions.bLoadSound && strlen(m_tLoadOptions.strSoundPath) > 0)
+			//	Load_SoundData(m_tLoadOptions.strSoundPath);
+
+			ImGui::CloseCurrentPopup(); // 모달 닫기
+		}
+
+		ImGui::SameLine();
+
+		// [취소] 버튼
+		if (ImGui::Button("Cancel", ImVec2(50, 0)))
+		{
+			ImGui::CloseCurrentPopup(); // 그냥 닫기
+		}
+
+		ImGui::EndPopup();
+	}
+}
+
+void CPanel_AnimModelFile::RenderSaveModal()
+{
+	// 모달의 중심을 화면 가운데로 설정 (선택 사항)
+	ImGui::SetNextWindowPos(ImGui::GetMainViewport()->GetCenter(), ImGuiCond_Appearing, ImVec2(0.5f, 0.5f));
+
+	if (ImGui::BeginPopupModal("Save Data Manager", NULL, ImGuiWindowFlags_AlwaysAutoResize))
+	{
+		//ImGui::InputText("Tag", m_tLoadOptions.strAnimTag, ImGuiInputTextFlags_None);
+		//ImGui::NewLine();
+		ImGui::InputInt("Pooling count", &m_tLoadOptions.iPoolingCount);
+		ImGui::Separator();
+
+		// ---------------------------------------------------------
+		// 1. 애니메이션 정보
+		// ---------------------------------------------------------
+		ImGui::Checkbox("##AnimCheck", &m_tLoadOptions.bLoadAnimInfo);
+		ImGui::SameLine();
+		ImGui::SetNextItemWidth(300.f);
+		ImGui::InputText("Animation Info", m_tLoadOptions.strAnimPath, 256, ImGuiInputTextFlags_ReadOnly);
+		ImGui::SameLine();
+		if (ImGui::Button("...##AnimBtn"))
+		{
+			SaveFileDialog(m_tLoadOptions.strAnimPath, "JSON Files\0*.json\0All\0*.*\0");
+		}
+
+		// ---------------------------------------------------------
+		// 2. 충돌체(Hitbox) 정보
+		// ---------------------------------------------------------
+		ImGui::Checkbox("##HitboxCheck", &m_tLoadOptions.bLoadHitbox);
+		ImGui::SameLine();
+		ImGui::SetNextItemWidth(300.f);
+		ImGui::InputText("Hitbox Info", m_tLoadOptions.strHitboxPath, 256, ImGuiInputTextFlags_ReadOnly);
+		ImGui::SameLine();
+		if (ImGui::Button("...##HitboxBtn"))
+		{
+			SaveFileDialog(m_tLoadOptions.strHitboxPath, "JSON Files\0*.json\0All\0*.*\0");
+		}
+
+		// ---------------------------------------------------------
+		// 3. 이펙트(Effect) 정보
+		// ---------------------------------------------------------
+		ImGui::Checkbox("##EffectCheck", &m_tLoadOptions.bLoadEffect);
+		ImGui::SameLine();
+		ImGui::SetNextItemWidth(300.f);
+		ImGui::InputText("Effect Info", m_tLoadOptions.strEffectPath, 256, ImGuiInputTextFlags_ReadOnly);
+		ImGui::SameLine();
+		if (ImGui::Button("...##EffectBtn"))
+		{
+			SaveFileDialog(m_tLoadOptions.strEffectPath, "JSON Files\0*.json\0All\0*.*\0");
+		}
+
+		// ---------------------------------------------------------
+		// 4. 사운드(Sound) 정보
+		// ---------------------------------------------------------
+		ImGui::Checkbox("##SoundCheck", &m_tLoadOptions.bLoadSound);
+		ImGui::SameLine();
+		ImGui::SetNextItemWidth(300.f);
+		ImGui::InputText("Sound Info", m_tLoadOptions.strSoundPath, 256, ImGuiInputTextFlags_ReadOnly);
+		ImGui::SameLine();
+		if (ImGui::Button("...##SoundBtn"))
+		{
+			SaveFileDialog(m_tLoadOptions.strSoundPath, "JSON Files\0*.json\0All\0*.*\0");
+		}
+
+		ImGui::Separator();
+		ImGui::Spacing();
+
+		// ---------------------------------------------------------
+		// 하단 버튼 (확인 / 취소)
+		// ---------------------------------------------------------
+		float contentWidth = ImGui::GetContentRegionAvail().x;
+		ImGui::SetCursorPosX(contentWidth - 120.f); // 오른쪽 정렬
+
+		// [확인] 버튼
+		if (ImGui::Button("OK", ImVec2(50, 0)))
+		{
+			// 체크된 항목에 대해서만 로드 실행
+			//if (m_tLoadOptions.bLoadAnimInfo && strlen(m_tLoadOptions.strAnimPath) > 0)
+			//	Load_AnimationData(m_tLoadOptions.strAnimPath); // 구현하신 함수 호출
+
+			if (m_tLoadOptions.bLoadHitbox && strlen(m_tLoadOptions.strHitboxPath) > 0)
+				Save_HitboxData(m_tLoadOptions.strHitboxPath);
+
+			if (m_tLoadOptions.bLoadEffect && strlen(m_tLoadOptions.strEffectPath) > 0)
+				Save_EffectData(m_tLoadOptions.strEffectPath);
+
+			//if (m_tLoadOptions.bLoadSound && strlen(m_tLoadOptions.strSoundPath) > 0)
+			//	Load_SoundData(m_tLoadOptions.strSoundPath);
+
+			ImGui::CloseCurrentPopup(); // 모달 닫기
+		}
+
+		ImGui::SameLine();
+
+		// [취소] 버튼
+		if (ImGui::Button("Cancel", ImVec2(50, 0)))
+		{
+			ImGui::CloseCurrentPopup(); // 그냥 닫기
+		}
+
+		ImGui::EndPopup();
+	}
+}
+
+void CPanel_AnimModelFile::Load_HitboxData(fs::path path)
+{
+	m_pAnimToolManager->Load_AttackOverlap(path);
+}
+
+void CPanel_AnimModelFile::Save_HitboxData(fs::path path)
+{
+	m_pAnimToolManager->Save_AttackOverlap(path, m_tLoadOptions.strAnimTag, m_tLoadOptions.iPoolingCount);
+}
+
+void CPanel_AnimModelFile::Load_EffectData(fs::path path)
+{
+	m_pAnimToolManager->Load_EffectEvent(path);
+}
+
+void CPanel_AnimModelFile::Save_EffectData(fs::path path)
+{
+	m_pAnimToolManager->Save_EffectEvent(path, m_tLoadOptions.strAnimTag, m_tLoadOptions.iPoolingCount);
+}
+
+DIR CPanel_AnimModelFile::RefreshModelDir()
 {
 	m_tRootDirectory.directory = m_rootPath;
 
@@ -93,9 +400,9 @@ CPanel_AnimModelFile::DIR CPanel_AnimModelFile::RefreshModelDir()
 	return m_tRootDirectory;
 }
 
-CPanel_AnimModelFile::DIR CPanel_AnimModelFile::SearchDir(fs::directory_entry directory)
+DIR CPanel_AnimModelFile::SearchDir(fs::directory_entry directory)
 {
-	CPanel_AnimModelFile::DIR result;
+	DIR result;
 
 	result.directory = directory.path();
 
@@ -144,24 +451,63 @@ void CPanel_AnimModelFile::SetDirectoryTree(DIR dir, fs::path parent)
 
 	ImGui::PopID();
 }
-
 void CPanel_AnimModelFile::CheckAnimModel(DIR dir, fs::path parent)
 {
-	_bool hasAnimations = { false };
-	_bool hasMesh = { false };
-	_bool hasSkel = { false };
-	_bool hasMtrl = { false };
-
-	hasAnimations = CheckResource(dir, "Animation", ".clip");
-	hasMesh = CheckResource(dir, "Model", ".mesh");
-	hasSkel = CheckResource(dir, "Model", ".skel");
-	hasMtrl = dir.directory.stem() == "Material";
-	hasMtrl = CheckResource(dir, "Material", ".json") && CheckResource(dir, "Material", ".png");
+	_bool hasAnimations = CheckResource(dir, "Animation", ".clip");
+	_bool hasMesh = CheckResource(dir, "Model", ".mesh");
+	_bool hasSkel = CheckResource(dir, "Model", ".skel");
+	_bool hasMtrl = CheckResource(dir, "Material", ".json");
 
 	if (hasAnimations && hasMesh && hasSkel && hasMtrl)
 	{
 		if (ImGui::SmallButton("Load anim model"))
 			CGameInstance::GetInstance()->Broadcast<LoadAnimModel>(dir.directory);
+		vector<fs::path> allProjectMeshes;
+
+		std::function<void(const DIR&)> findAllMeshes = [&](const DIR& current) {
+			for (const auto& file : current.files) {
+				if (file.extension() == ".mesh")
+					allProjectMeshes.push_back(file);
+			}
+			for (const auto& subDir : current.directories) {
+				findAllMeshes(subDir);
+			}
+			};
+
+		findAllMeshes(m_tRootDirectory);
+
+		if (!allProjectMeshes.empty())
+		{
+			static map<string, int> selectedIdxMap;
+			string nodeKey = dir.directory.string();
+
+			ImGui::SetNextItemWidth(200.f);
+			string comboID = "##GlobalPartCombo_" + nodeKey;
+
+			if (selectedIdxMap[nodeKey] >= allProjectMeshes.size()) selectedIdxMap[nodeKey] = 0;
+			string previewName = allProjectMeshes[selectedIdxMap[nodeKey]].filename().string();
+
+			if (ImGui::BeginCombo(comboID.c_str(), previewName.c_str()))
+			{
+				for (int i = 0; i < (int)allProjectMeshes.size(); ++i)
+				{
+					bool isSelected = (selectedIdxMap[nodeKey] == i);
+					string displayName = allProjectMeshes[i].parent_path().filename().string() + "/" + allProjectMeshes[i].filename().string();
+
+					if (ImGui::Selectable(displayName.c_str(), isSelected))
+						selectedIdxMap[nodeKey] = i;
+				}
+				ImGui::EndCombo();
+			}
+
+			ImGui::SameLine();
+
+			if (ImGui::SmallButton("Load Part Weapon"))
+			{
+				fs::path targetPath = allProjectMeshes[selectedIdxMap[nodeKey]];
+				CGameInstance::GetInstance()->Broadcast<LoadAnimModelPart>(targetPath);
+			}
+		}
 	}
 }
 

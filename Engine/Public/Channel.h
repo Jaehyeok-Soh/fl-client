@@ -46,6 +46,9 @@ public:
 	const vector<KEYFRAME>& Get_KeyFrames() const { return m_vecKeyframes; }
 	_int Get_BoneIndex() const { return m_iBoneIndex; }
 
+public:
+	void Check_UpdateCpu(const vector<class CBone*>& vecBones);
+
 	// 기본 channel 정보
 private:
 	_char				m_szName[MAX_NAME];
@@ -57,6 +60,9 @@ private:
 	_bool				m_bRootBone		= { false };
 	Matrix				m_matTrans = {};
 	Vec3				m_vPreRootLocal = Vec3::Zero;
+
+private:
+	_bool				m_bUpdateCpu = { false };
 
 private:
 	void Update_MotionBone(Vec3 vLeftTrans, Vec3 vRightTrans , CTransform* pOwnerTransform, CPhysicsCCT* pOwnerPhyCCT, const _float fTimeDelta);

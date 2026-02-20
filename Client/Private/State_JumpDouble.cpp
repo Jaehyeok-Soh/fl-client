@@ -29,11 +29,22 @@ HRESULT CState_JumpDouble::Start(void* pArg, _bool bForce)
 	if (FAILED(Super::Start(pArg, bForce)))
 		return E_FAIL;
 
+	//Set_GravityOffset(-15.f);
+	//Set_ApplyGravity(false);
+
 	return S_OK;
 }
 
 void CState_JumpDouble::Update(const _float fTimeDelta)
 {
+	// 바닥 충돌 검사 후 change
+	if (m_fStateElapsed > 0.6f &&
+		Check_OnGround(0.1f))
+	{
+		Change_PlayerState(ENUM_TO_UINT(CPlayer::State::LAND));
+		return;
+	}
+
 	Super::Update(fTimeDelta);
 }
 
@@ -41,6 +52,8 @@ HRESULT CState_JumpDouble::End()
 {
 	if (FAILED(Super::End()))
 		return E_FAIL;
+
+	Set_GravityOffset(0.f);
 
 	return S_OK;
 }
@@ -56,7 +69,6 @@ void CState_JumpDouble::Set_NextStateDesc(_uint iNextState)
 		m_tNextStateDesc.iMainAnimIdx = 0;
 	}
 }
-
 
 CState_JumpDouble* CState_JumpDouble::Create(CActionState* pOwnerComponent, void* pArg)
 {

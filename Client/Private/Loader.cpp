@@ -7,6 +7,7 @@
 #include "MonoBehaviour.h"
 #include "PlayerActionState.h"
 #include "StatComponent.h"
+#include "StatCom_Player.h"
 #include "Collider.h"
 #include "VIBuffer_Terrain.h"
 #include "VIBuffer_Particle_Rect.h"
@@ -19,6 +20,8 @@
 #include "Camera.h"
 #include "Transform.h"
 #include "PhysicsCollider.h"
+#include "SkillComp_MoonE.h"
+#include "SkillComp_MoonQ.h"
 //=================
 // Builder
 //=================
@@ -32,6 +35,9 @@
 #include "Builder_AttackOverlap.h"
 #include "DataStruct_AttackOverlap.h"
 #include "DataDocument_AttackOverlap.h"
+#include "Builder_EffectEvent.h"
+#include "DataStruct_EffectEvent.h"
+#include "DataDocument_EffectEvent.h"
 
 //=================
 // Object
@@ -57,12 +63,25 @@
 #include "Canvas.h"
 #include "GenericUI.h"
 #include "UIProgress_Bar.h"
-#include "UIText.h"
+
+// 텍스트 
+#include "UIMenu_Text.h"
+#include "UIPlayerStat_Text.h"
+
+// 그냥 이미지
 #include "UIJust_Image.h"
-#include "UITrigger.h"
+
+// 다이나믹 이미지 
 #include "UISkill_BG.h"
 #include "UIMini_Map.h"
 #include "UIHover_Image.h"
+#include "UIMenu_Image.h"
+#include "UIMenu_OutLine.h"
+
+// 트리거 
+#include "UIMenu_Trigger.h"
+#include "UICommon_Trigger.h"
+#include "UIMenu_Exit_Trigger.h"
 
 //=================
 // Resource
@@ -155,6 +174,9 @@ HRESULT CLoader::Loading_For_Logo()
 			if (FAILED(m_pGameInstance->Regist_Document<CDataDocument_Effect>(ENUM_TO_UINT(ELevelType::LOGO), DTO::ECategory::EFFECT)))
 				return E_FAIL;
 
+			if (FAILED(m_pGameInstance->Regist_Document<CDataDocument_EffectEvent>(ENUM_TO_UINT(ELevelType::LOGO), DTO::ECategory::EFFECTEVENT)))
+				return E_FAIL;
+
 			if (FAILED(m_pGameInstance->Regist_Document<CDataDocument_UI>(ENUM_TO_UINT(ELevelType::LOGO), DTO::ECategory::UI)))
 				return E_FAIL;
 
@@ -192,28 +214,25 @@ HRESULT CLoader::Loading_For_Logo()
 			return E_FAIL;
 	}
 
-		// For. Prototype_Component_Button_Test_Texture
+	// For. UI Texture
+	std::error_code ec;
+	for (const auto& entry : std::filesystem::directory_iterator(L"../../Resources/Textures/UI_Client/", std::filesystem::directory_options::skip_permission_denied, ec))
 	{
-		// UI
-		if (FAILED(Loading_Textures(L"../../Resources/Textures/UI/Playable/")))
+		if (ec)
 			return E_FAIL;
-		if (FAILED(Loading_Textures(L"../../Resources/Textures/UI/Menu/")))
-			return E_FAIL;
-		if (FAILED(Loading_Textures(L"../../Resources/Textures/UI/Battle/")))
-			return E_FAIL;
-		if (FAILED(Loading_Textures(L"../../Resources/Textures/UI/Key/")))
-			return E_FAIL;
-		if (FAILED(Loading_Textures(L"../../Resources/Textures/UI/WeaponIcon/")))
-			return E_FAIL;
-		if (FAILED(Loading_Textures(L"../../Resources/Textures/UI/SM_MAP/")))
-			return E_FAIL;
-		if (FAILED(Loading_Textures(L"../../Resources/Textures/UI/Map/")))
+
+		if (entry.is_directory() == false)
+			continue;
+
+		const std::wstring wstrSubFolder = entry.path().wstring();
+
+		if (FAILED(Loading_Textures(wstrSubFolder)))
 			return E_FAIL;
 	}	
 
 	// For. Prototype_Component_Button_Test_Texture
 	{
-		// Effect
+		 /*Effect*/
 		if (FAILED(Loading_Textures(L"../../Resources/Textures/Effect/Crack/")))
 			return E_FAIL;
 		if (FAILED(Loading_Textures(L"../../Resources/Textures/Effect/Curve/")))
@@ -311,6 +330,17 @@ HRESULT CLoader::Loading_For_Logo()
 
 		m_pGameInstance->Add_Prototype(ENUM_TO_UINT(ELevelType::STATIC), L"Prototype_Component_Model_MoonSword", CModel::Create(m_pDevice, m_pDeviceContext, &desc));
 	}
+	// For. Prototype_Component_Model_MoonSkillWeap
+	{
+		CModel::MODEL_ORIGIN_DESC desc = {};
+		desc.eType = EModelType::STATIC;
+		desc.iPrototypeLevelIndex = ENUM_TO_UINT(ELevelType::STATIC);
+		desc.pMatPreTransform = &(matPreTransformScale);	// matPreTransformScale
+		desc.wstrModelFolderName = L"Weapon_MoonSkill";					// PlayerMoon // Pino
+		desc.FStageBone = CModel::STAGEING_BONE::SB_ZEROBONE;
+
+		m_pGameInstance->Add_Prototype(ENUM_TO_UINT(ELevelType::STATIC), L"Prototype_Component_Model_MoonSkillWeap", CModel::Create(m_pDevice, m_pDeviceContext, &desc));
+	}
 	// For. Prototype_Component_Camera
 	m_pGameInstance->Add_Prototype(ENUM_TO_UINT(ELevelType::STATIC), L"Prototype_Component_Camera", CCamera::Create());
 	// For. Prototype_Component_ActionState_Player
@@ -328,6 +358,14 @@ HRESULT CLoader::Loading_For_Logo()
 
 	// For. Prototype_Component_Collider_SPHERE
 	m_pGameInstance->Add_Prototype(ENUM_TO_UINT(ELevelType::STATIC), L"Prototype_Component_VIBuffer_InstanceMesh", CInstanceMesh::Create(m_pDevice, m_pDeviceContext));
+
+	/* player components */
+	// For. Prototype_Component_Stat_Player
+	m_pGameInstance->Add_Prototype(ENUM_TO_UINT(ELevelType::STATIC), L"Prototype_Component_Stat_Player", CStatCom_Player::Create());
+	// For. Prototype_Component_Stat_Player
+	m_pGameInstance->Add_Prototype(ENUM_TO_UINT(ELevelType::STATIC), L"Prototype_Component_Skill_MoonE", CSkillComp_MoonE::Create());
+	// For. Prototype_Component_Stat_Player
+	m_pGameInstance->Add_Prototype(ENUM_TO_UINT(ELevelType::STATIC), L"Prototype_Component_Skill_MoonQ", CSkillComp_MoonQ::Create());
 
 	///////////////////////////////////////
 	//////////// Ready Objects ////////////
@@ -387,14 +425,19 @@ HRESULT CLoader::Loading_For_Logo()
 #pragma endregion
 
 #pragma region UI
-	ADD_PROTOTYPE(ELevelType::LOGO, L"Prototype_UI_Canvas", CCanvas::Create(m_pDevice, m_pDeviceContext));
-	ADD_PROTOTYPE(ELevelType::LOGO, L"Prototype_UI_PROGRESS_BAR", CUIProgress_Bar::Create(m_pDevice, m_pDeviceContext));
-	ADD_PROTOTYPE(ELevelType::LOGO, L"Prototype_UI_UI_TEXT", CUIText::Create(m_pDevice, m_pDeviceContext));
-	ADD_PROTOTYPE(ELevelType::LOGO, L"Prototype_UI_JUST_IMAGE", CUIJust_Image::Create(m_pDevice, m_pDeviceContext));
-	ADD_PROTOTYPE(ELevelType::LOGO, L"Prototype_UI_TRIGGER", CUITrigger::Create(m_pDevice, m_pDeviceContext));
-	ADD_PROTOTYPE(ELevelType::LOGO, L"Prototype_UI_SkillBG", CUISkill_BG::Create(m_pDevice, m_pDeviceContext));
-	ADD_PROTOTYPE(ELevelType::LOGO, L"Prototype_UI_MiniMap", CUIMini_Map::Create(m_pDevice, m_pDeviceContext));
-	ADD_PROTOTYPE(ELevelType::LOGO, L"Prototype_UI_HoverImage", CUIHover_Image::Create(m_pDevice, m_pDeviceContext));
+	ADD_PROTOTYPE(ELevelType::LOGO, L"Prototype_UI_Canvas",			CCanvas::Create(m_pDevice, m_pDeviceContext));
+	ADD_PROTOTYPE(ELevelType::LOGO, L"Prototype_UI_PROGRESS_BAR",	CUIProgress_Bar::Create(m_pDevice, m_pDeviceContext));
+	ADD_PROTOTYPE(ELevelType::LOGO, L"Prototype_UI_MenuText",		CUIMenu_Text::Create(m_pDevice, m_pDeviceContext));
+	ADD_PROTOTYPE(ELevelType::LOGO, L"Prototype_UI_PlayerStatText",	CUIPlayerStat_Text::Create(m_pDevice, m_pDeviceContext));
+	ADD_PROTOTYPE(ELevelType::LOGO, L"Prototype_UI_JUST_IMAGE",		CUIJust_Image::Create(m_pDevice, m_pDeviceContext));
+	ADD_PROTOTYPE(ELevelType::LOGO, L"Prototype_UI_UIMenuTrigger",	CUIMenu_Trigger::Create(m_pDevice, m_pDeviceContext));
+	ADD_PROTOTYPE(ELevelType::LOGO, L"Prototype_UI_UICommonTrigger",	CUICommon_Trigger::Create(m_pDevice, m_pDeviceContext));
+	ADD_PROTOTYPE(ELevelType::LOGO, L"Prototype_UI_UIMenuExitTrigger", CUIMenu_Exit_Trigger::Create(m_pDevice, m_pDeviceContext));
+	ADD_PROTOTYPE(ELevelType::LOGO, L"Prototype_UI_SkillBG",		CUISkill_BG::Create(m_pDevice, m_pDeviceContext));
+	ADD_PROTOTYPE(ELevelType::LOGO, L"Prototype_UI_MiniMap",		CUIMini_Map::Create(m_pDevice, m_pDeviceContext));
+	ADD_PROTOTYPE(ELevelType::LOGO, L"Prototype_UI_HoverImage",		CUIHover_Image::Create(m_pDevice, m_pDeviceContext));
+	ADD_PROTOTYPE(ELevelType::LOGO, L"Prototype_UI_MenuImage",		CUIMenu_Image::Create(m_pDevice, m_pDeviceContext));
+	ADD_PROTOTYPE(ELevelType::LOGO, L"Prototype_UI_MenuOutline",	CUIMenu_OutLine::Create(m_pDevice, m_pDeviceContext));
 #pragma endregion
 
 	m_isFinished = true;
@@ -502,6 +545,9 @@ HRESULT CLoader::Build_Prototype()
 	if (FAILED(m_pBuilderSystem->Ready_Builder(DTO::ECategory::OVERLAP_SCRIPT, CBuilder_AttackOverlap::Create(m_pDevice, m_pDeviceContext, ENUM_TO_UINT(ELevelType::LOGO)))))
 		return E_FAIL;
 
+	if (FAILED(m_pBuilderSystem->Ready_Builder(DTO::ECategory::EFFECTEVENT, CBuilder_EffectEvent::Create(m_pDevice, m_pDeviceContext, ENUM_TO_UINT(ELevelType::LOGO)))))
+		return E_FAIL;
+
 	if (FAILED(Build_Files()))
 		return E_FAIL;
 
@@ -513,6 +559,9 @@ HRESULT CLoader::Build_Files()
 	if (FAILED(Ready_AttackOverlap()))
 		return E_FAIL;
 
+	if (FAILED(Ready_EffectEvent()))
+		return E_FAIL;
+
 	return S_OK;
 }
 
@@ -522,7 +571,28 @@ HRESULT CLoader::Ready_AttackOverlap()
 	DTO::ECategory eCategory = DTO::ECategory::OVERLAP_SCRIPT;
 	_uint iLevelID = ENUM_TO_UINT(eLevelType);
 
-	std::filesystem::path FilePath = L"../../Resources/Data/AttackOverlapData/PlayerMoon_155_Animations_Fixed.json";
+	std::filesystem::path FilePath = L"../../Resources/Data/AttackOverlapData/PlayerMoon_156_Animations_Save_Test_animTag.json";
+	vector<path> vecfiles;
+
+	if (!std::filesystem::exists(FilePath))
+		return E_FAIL;
+
+	if (FAILED(m_pGameInstance->Load_File_Json(iLevelID, eCategory, FilePath)))
+		return E_FAIL;
+
+	if (FAILED(m_pBuilderSystem->Build_File(iLevelID, eCategory, FilePath.stem().string())))
+		return E_FAIL;
+
+	return S_OK;
+}
+
+HRESULT CLoader::Ready_EffectEvent()
+{
+	ELevelType eLevelType = ELevelType::LOGO;
+	DTO::ECategory eCategory = DTO::ECategory::EFFECTEVENT;
+	_uint iLevelID = ENUM_TO_UINT(eLevelType);
+
+	std::filesystem::path FilePath = L"../../Resources/Data/EffectAnimationData/PlayerMoon.json";
 	vector<path> vecfiles;
 
 	if (!std::filesystem::exists(FilePath))
