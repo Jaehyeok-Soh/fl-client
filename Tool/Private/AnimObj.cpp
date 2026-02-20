@@ -39,6 +39,9 @@ HRESULT CAnimObj::Initialize(void* pArg)
 	if (FAILED(Ready_ComputeShaders()))
 		return E_FAIL;
 
+	if (FAILED(Ready_CCT()))
+		return E_FAIL;
+
 	return S_OK;
 }
 
@@ -135,6 +138,30 @@ HRESULT CAnimObj::Ready_Components(ANIMOBJ_DESC* pDesc)
 
 	/* Prototype_Component_Shader_AnimMesh */
 	if (FAILED(Add_Component<CShader>(ENUM_TO_UINT(ELevelType::STATIC), L"Prototype_Component_Shader_AnimMesh", nullptr)))
+		return E_FAIL;
+
+	return S_OK;
+}
+
+HRESULT CAnimObj::Ready_CCT()
+{
+	PHYSICSCCT_DESC desc;
+	desc.pOwner = this;
+	desc.bIsPlayer = true;
+	desc.eType = EPhysicsCCTType::CAPSULE;
+	desc.pOwnerMatrix = &Get_Component<CTransform>()->Get_WorldMatrix();
+	desc.fRadius = 0.5f;
+	desc.fHeight = 1.f;
+	desc.vExtens = { 0.f, 0.f, 0.f };
+
+	PHYSICSMATERIAL_DESC mtrlDesc{};
+	mtrlDesc.eMaterial = EPhysicsMaterial::PLAYER;
+	desc.tMaterial = mtrlDesc;
+
+	desc.eFilterLayer = PHYSICSFILTERGROUP::Enum::PLAYER;
+	desc.iFilterMask = PHYSICSFILTERGROUP::Enum::NONE;
+
+	if (FAILED(Add_Component<CPhysicsCCT>(0, L"Prototype_Component_Physics_CCT", &desc)))
 		return E_FAIL;
 
 	return S_OK;

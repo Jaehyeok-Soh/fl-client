@@ -224,6 +224,11 @@ void CAnimTool_Manager::ChangeAnimation(_uint iIndex)
 	m_tAnimControllInfo.fPlayRate = 1.f;
 }
 
+void CAnimTool_Manager::Set_RootBone(_int iBoneIdx)
+{
+	m_tAnimControllInfo.pModel->Set_RootBone(iBoneIdx);
+}
+
 void CAnimTool_Manager::UpdateAnimationInfo()
 {
 	if (!ValidCheck())

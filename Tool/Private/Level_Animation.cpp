@@ -23,6 +23,7 @@
 #include "Panel_AnimModelFile.h"
 #include "Panel_AnimationController.h"
 #include "Panel_AnimDescription.h"
+#include "Panel_ModelInfo.h"
 
 #include "DebugDraw.h"
 
@@ -197,6 +198,8 @@ HRESULT CLevel_Animation::Ready_Panels()
 	//m_GuiElements[Elements::PARTS];
 	m_GuiElements[Elements::DESCRIPTION] = CPanel_AnimDescription::Create("Panel_AnimDescription", this, m_pDevice, m_pDeviceContext);
 
+	m_GuiElements[Elements::MODELINFO] = CPanel_ModelInfo::Create("Panel_ModelInfo", this, m_pDevice, m_pDeviceContext);
+
 	return S_OK;
 }
 
@@ -321,9 +324,11 @@ wstring CLevel_Animation::Create_AnimModelPrototype(fs::path animModelPath)
 		desc.pMatPreTransform = &(matPreTransformScale);	// matPreTransformScale // matPreTransformTurn90
 		desc.wstrModelFolderName = animModelPath.stem().wstring();
 
-		CModel::DATA_ANIMCHANNEL tAniChannelData = {};
-		tAniChannelData.iRootBoneIndex = 2;
-		desc.pAniChannelData = &tAniChannelData;
+		desc.FStageBone = CModel::STAGEING_BONE::SB_ALLBONE;
+
+		//CModel::DATA_ANIMCHANNEL tAniChannelData = {};
+		//tAniChannelData.iRootBoneIndex = 2;
+		//desc.pAniChannelData = &tAniChannelData;
 
 		prototypeTag += desc.wstrModelFolderName;
 		CModel* pInstance = CModel::Create(m_pDevice, m_pDeviceContext, &desc);
