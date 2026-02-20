@@ -168,6 +168,7 @@
     <ClInclude Include="..\Public\Panel_AnimDescription.h" />
     <ClInclude Include="..\Public\Panel_Model.h" />
     <ClInclude Include="..\Public\Panel_AnimModelFile.h" />
+    <ClInclude Include="..\Public\Panel_ModelInfo.h" />
     <ClInclude Include="..\Public\UIButton_Component.h" />
     <ClInclude Include="..\Public\UIComponent_Inspector.h" />
     <ClInclude Include="..\Public\DebugLine.h" />
@@ -262,6 +263,7 @@
     <ClCompile Include="..\Private\Panel_AnimDescription.cpp" />
     <ClCompile Include="..\Private\Panel_Model.cpp" />
     <ClCompile Include="..\Private\Panel_AnimModelFile.cpp" />
+    <ClCompile Include="..\Private\Panel_ModelInfo.cpp" />
     <ClCompile Include="..\Private\UIButton_Component.cpp" />
     <ClCompile Include="..\Private\UIComponent_Inspector.cpp" />
     <ClCompile Include="..\Private\DebugLine.cpp" />

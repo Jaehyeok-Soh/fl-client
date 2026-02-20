@@ -394,10 +394,12 @@ namespace Engine
 	typedef struct tagAnimE_Immu_ChannelData
 	{
 		int     iBoneIndex = { -1 };             // 내 bone transform을 잘 업데이트 하기 위함
-		int     iRootMotionBoneIndex = { -1 };   // root motion일 경우 tralation을 0으로 만들기 위함
+
 
 		unsigned int    iKeyStart = { 0 };              // 키프레임 시작 위치
 		unsigned int    iKeyCount = { 0 };              // 키프레임 개수
+
+		float  Padding0 = { 0.f };
 	}CS_IMMU_ANIM_CHANNELDATA;
 
 	// 가변 데이터 : cpu
@@ -406,7 +408,9 @@ namespace Engine
 		float   fCurTrackPosition = { 0.f };
 		unsigned int iChannelCount = { 0 };
 
-		SimpleMath::Vector2  Padding0 = {};
+		int     iRootMotionBoneIndex = { -1 };   // root motion일 경우 tralation을 0으로 만들기 위함
+
+		float  Padding0 = {0.f};
 	}CS_MU_TRACK;
 #pragma endregion
 

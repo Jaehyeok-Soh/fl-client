@@ -45,6 +45,7 @@ public:
 private:
 	HRESULT			Ready_Components(ANIMOBJ_DESC* pDesc);
 	HRESULT			Ready_ComputeShaders();
+	HRESULT			Ready_CCT();
 
 public:
 	static  CAnimObj* Create(EToolObjectType eType, ID3D11Device* pDevice, ID3D11DeviceContext* pDeviceContext);

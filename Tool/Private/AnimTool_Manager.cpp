@@ -220,8 +220,11 @@ void CAnimTool_Manager::Update_Animation(const _float& fTimeDelta)
 		pAnimBCS,
 		nullptr);
 
-	if (m_tAnimControllInfo.pModel->Is_AnimFinished())
+	if (m_tAnimControllInfo.pModel->Is_AnimFinished() || m_tAnimControllInfo.pModel->Is_LoopAnimDone())
+	{
+		m_tAnimControllInfo.pCurrentObject->Get_Component<CPhysicsCCT>()->SetFootPosition(Vec3(0.f, 0.f, 0.f));
 		m_tAnimControllInfo.pCurrentObject->Get_Component<CTransform>()->Set_Info(TRANSFORM_INFO_STATE::POS, Vec3(0.f, 0.f, 0.f));
+	}
 }
 
 void CAnimTool_Manager::ChangeAnimation(_uint iIndex)
@@ -236,6 +239,22 @@ void CAnimTool_Manager::ChangeAnimation(_uint iIndex)
 	m_tAnimControllInfo.fDuration = (_uint)m_tAnimControllInfo.pModel->Get_AnimDurationTime();
 	m_tAnimControllInfo.fTickPerSecond = m_tAnimControllInfo.pModel->Get_AnimTickPerSecond();
 	m_tAnimControllInfo.fPlayRate = 1.f;
+
+	// 위치 0,0,0으로 맞춤
+	{
+		m_tAnimControllInfo.pCurrentObject->Get_Component<CPhysicsCCT>()->SetFootPosition(Vec3(0.f, 0.f, 0.f));
+		m_tAnimControllInfo.pCurrentObject->Get_Component<CTransform>()->Set_Info(TRANSFORM_INFO_STATE::POS, Vec3(0.f, 0.f, 0.f));
+	}
+}
+
+void CAnimTool_Manager::Set_RootBone(_int iBoneIdx)
+{
+	m_tAnimControllInfo.pModel->Set_RootBone(iBoneIdx);
+}
+
+void CAnimTool_Manager::Set_RootOffset(_uint iAnimIdx, _float fOffset)
+{
+	m_tAnimControllInfo.pModel->Set_Animtion_MotionOffset(iAnimIdx, fOffset);
 }
 
 void CAnimTool_Manager::UpdateAnimationInfo()

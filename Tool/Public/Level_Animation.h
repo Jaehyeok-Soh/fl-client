@@ -30,6 +30,7 @@ public:
 			ANIMATION,
 			PARTS,
 			DESCRIPTION,
+			MODELINFO,
 			END
 		};
 	};
