@@ -106,6 +106,10 @@ public:
 	HRESULT								Bind_MaterialInstance(class CShader* pShader, _uint iMeshIndex);
 	HRESULT								Bind_Bones(class CShader* pShader, _uint iMeshIndex, CComputeShader* pBoneMeshCS, CComputeShader* pBoneCombineCS, _uint iIndexDistance = 0);
 
+	// tool funcs
+public:
+	void Set_RootBone(_int iRootIdx);
+
 	// getter funcs
 public:
 	EModelType							Get_Type() const { return m_eType; }

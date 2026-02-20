@@ -82,6 +82,7 @@ _bool CModelAnimation::Update_TransformationMatrices(const vector<class CBone*>&
 	CS_MU_TRACK tMuDesc{};
 	tMuDesc.fCurTrackPosition = m_fCurrentTrackPosition;
 	tMuDesc.iChannelCount = m_iChannelCount;
+	tMuDesc.iRootMotionBoneIndex = m_iRootBoneIdx;
 	pAnimECS->Bind_Compute_Track(tMuDesc);
 
 	// dispatch
@@ -113,6 +114,7 @@ void CModelAnimation::SetUp_PoseDatasForBlending(std::span<LOCALSRT> spanLocalSr
 	CS_MU_TRACK tMuDesc{};
 	tMuDesc.fCurTrackPosition = m_fCurrentTrackPosition;
 	tMuDesc.iChannelCount = m_iChannelCount;
+	tMuDesc.iRootMotionBoneIndex = m_iRootBoneIdx;
 	pAnimECS->Bind_Compute_Track(tMuDesc);
 
 	// dispatch
@@ -154,6 +156,7 @@ _bool CModelAnimation::Update_TransformMatrices(CComputeShader* pAnimECS,_float 
 	CS_MU_TRACK tMuDesc{};
 	tMuDesc.fCurTrackPosition = m_fCurrentTrackPosition;
 	tMuDesc.iChannelCount = m_iChannelCount;
+	tMuDesc.iRootMotionBoneIndex = m_iRootBoneIdx;
 	pAnimECS->Bind_Compute_Track(tMuDesc);
 	
 	// dispatch
@@ -182,6 +185,7 @@ void CModelAnimation::Update_BlendAnimation(CComputeShader* pAnimECS, _float fTi
 	CS_MU_TRACK tMuDesc{};
 	tMuDesc.fCurTrackPosition = m_fCurrentTrackPosition;
 	tMuDesc.iChannelCount = m_iChannelCount;
+	tMuDesc.iRootMotionBoneIndex = m_iRootBoneIdx;
 	pAnimECS->Bind_Compute_Track(tMuDesc);
 
 	// dispatch
@@ -265,7 +269,7 @@ HRESULT CModelAnimation::Ready_BindBuffers(CComputeShader* pAnimESahder)
 
 		pIniailChannelData[i].iKeyStart = iKeyAcc;
 		pIniailChannelData[i].iKeyCount = _uint(KeyFrames.size());
-		pIniailChannelData[i].iRootMotionBoneIndex = m_iRootBoneIdx;
+		pIniailChannelData[i].Padding0 = 0.f;
 
 		iKeyAcc += _uint(KeyFrames.size());
 
@@ -305,6 +309,20 @@ void CModelAnimation::Check_UpdateCpu(const vector<class CBone*>& vecBones)
 	for (auto& pChannel : m_vecChannels)
 	{
 		pChannel->Check_UpdateCpu(vecBones);
+	}
+}
+
+void CModelAnimation::Set_MotionBone(_int iBondIdx)
+{
+	m_iRootBoneIdx = iBondIdx;
+
+	for (size_t i = 0 ; i< m_vecChannels.size() ; i++)
+	{
+		if (m_vecChannels[i]->Set_MotionBone(iBondIdx))
+		{
+			m_iRootChannelIdx = i;
+			return;
+		}
 	}
 }
 

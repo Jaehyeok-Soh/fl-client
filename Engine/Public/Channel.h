@@ -48,6 +48,7 @@ public:
 
 public:
 	void Check_UpdateCpu(const vector<class CBone*>& vecBones);
+	_bool Set_MotionBone(_int iBoneIdx);
 
 	// 기본 channel 정보
 private:

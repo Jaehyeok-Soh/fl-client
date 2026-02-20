@@ -162,7 +162,7 @@ HRESULT CModel::Initialize_Prototype(void* pArg)
 
 			for (size_t i = 0; i < Get_BoneCount(); i++)
 			{
-				pDesc->vecStageBoneIndices[i] = (_uint)i;
+				pDesc->vecStageBoneIndices.push_back((_uint)i);
 			}
 		}
 
@@ -352,6 +352,21 @@ HRESULT CModel::Bind_Bones(CShader* pShader, _uint iMeshIndex, CComputeShader* p
 		return E_FAIL;
 
 	return m_vecMeshes[iMeshIndex]->Bind_Bones(pShader, pBoneMeshCS, pBoneCombineCS, Get_BoneCount(), iIndexDistance);
+}
+
+void CModel::Set_RootBone(_int iRootIdx)
+{
+	// model 정보 엄데이트
+	m_iRootBoneIdx = iRootIdx;
+
+	// bone 정보 업데이트
+	m_vecBones[iRootIdx]->Set_MotionBone(iRootIdx);
+
+	// animation, channel 정보 업데이트
+	for (auto& pAnim : m_vecAnimations)
+	{
+		pAnim->Set_MotionBone(iRootIdx);
+	}
 }
 
 HRESULT CModel::Change_ShaderPassByMseh(_uint iMeshIndex, _uint iPass)

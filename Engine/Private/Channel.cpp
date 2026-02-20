@@ -192,6 +192,13 @@ void CChannel::Check_UpdateCpu(const vector<class CBone*>& vecBones)
 	m_bUpdateCpu = vecBones[m_iBoneIndex]->Get_IsUpdateCpu();
 }
 
+_bool CChannel::Set_MotionBone(_int iBoneIdx)
+{
+	m_bRootBone = (m_iBoneIndex == iBoneIdx);
+
+	return m_bRootBone;
+}
+
 void CChannel::Update_MotionBone(Vec3 vLeftTrans, Vec3 vRightTrans,  CTransform* pOwnerTransform, CPhysicsCCT* pOwnerPhyCCT, const _float fTimeDelta)
 {
 	if (pOwnerTransform == nullptr ||
@@ -211,6 +218,10 @@ void CChannel::Update_MotionBone(Vec3 vLeftTrans, Vec3 vRightTrans,  CTransform*
 	Vec3 vOwnerRight	= pOwnerTransform->Get_Info(TRANSFORM_INFO_STATE::RIGHT);
 	Vec3 vOwnerUp		= pOwnerTransform->Get_Info(TRANSFORM_INFO_STATE::UP);
 	Vec3 vOwnerLook		= pOwnerTransform->Get_Info(TRANSFORM_INFO_STATE::LOOK);
+
+	vOwnerRight.Normalize();
+	vOwnerUp.Normalize();
+	vOwnerLook.Normalize();
 
 	Vec3 moveDistance = vOwnerRight * fLocalRight + vOwnerUp * fLocalUp + vOwnerLook * fLocalLook;
 

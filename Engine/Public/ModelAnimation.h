@@ -66,6 +66,9 @@ public:
 
 	void Check_UpdateCpu(const vector<class CBone*>& vecBones);
 
+public:
+	void Set_MotionBone(_int iBondIdx);
+
 	///////////////
 	//// Event ////
 	///////////////
