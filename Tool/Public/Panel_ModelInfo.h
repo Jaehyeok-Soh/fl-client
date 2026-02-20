@@ -27,13 +27,24 @@ private:
 
 private:
 	_int m_iRootBondIdx = { -1 };
+	_float m_fRootMotionOffset = { 1.f };
+
+	_uint m_iCurAnimIdx = {};
+	_wstring m_wstrCurAnimName = {};
+
+	_bool m_bFirst = { true };
 
 	// render
 private:
 	void Render_RootMotionInfo();
 
+	void Render_AnimationInfo();
+	void Anim_Info();
+	void RootOffset_Info();
+
 private:
 	void Set_RootBone();
+	void Set_RootOffset();
 
 public:
 	static			CPanel_ModelInfo* Create(const _char* pLabel, CLevel* pOwner, ID3D11Device* pDevice, ID3D11DeviceContext* pDeviceContext);

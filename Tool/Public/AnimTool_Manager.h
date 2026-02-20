@@ -73,6 +73,7 @@ public:
 
 	// root motion bone 정보 모델에게 넘겨주기
 	void Set_RootBone(_int iBoneIdx);
+	void Set_RootOffset(_uint iAnimIdx, _float fOffset);
 
 /// <summary>
 /// 모듈(컴포넌트) 컨트롤

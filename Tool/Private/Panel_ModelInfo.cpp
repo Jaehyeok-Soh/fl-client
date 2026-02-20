@@ -19,16 +19,28 @@ HRESULT CPanel_ModelInfo::Render(CToolObject* pGo)
 {
 	Render_RootMotionInfo();
 
+	Render_AnimationInfo();
+
 	return S_OK;
 }
 
 void CPanel_ModelInfo::Update(const _float fTimeDelta)
 {
+	ANIMCTRLINFO tInfo = m_pAnimToolManager->Get_AnimControllInfo();
+
+	m_iCurAnimIdx = tInfo.iCurrentAnimIndex;
+	if (tInfo.pModel)
+	{
+		m_wstrCurAnimName = tInfo.pModel->Get_AnimationName(m_iCurAnimIdx);
+
+		//m_iRootBondIdx = tInfo.pModel->Get_RootBone();
+		//m_fRootMotionOffset = tInfo.pModel->Get_Animatioin_MotionOffset(m_iCurAnimIdx);
+	}
 }
 
 void CPanel_ModelInfo::Render_RootMotionInfo()
 {
-	ImGui::Begin("RootBone Info");
+	ImGui::Begin("Model Info");
 
 	ImGui::InputInt("RootBone Index", &m_iRootBondIdx, 1);
 
@@ -38,7 +50,7 @@ void CPanel_ModelInfo::Render_RootMotionInfo()
 
 	ImGui::SameLine();
 
-	if (ImGui::Button("Apply"))
+	if (ImGui::Button("Apply##RootBone"))
 	{
 		Set_RootBone();
 	}
@@ -46,9 +58,58 @@ void CPanel_ModelInfo::Render_RootMotionInfo()
 	ImGui::End();
 }
 
+void CPanel_ModelInfo::Render_AnimationInfo()
+{
+	ImGui::Begin("Animation Info");
+
+	Anim_Info();
+	ImGui::Separator();
+	ImGui::Separator();
+
+	RootOffset_Info();
+
+	ImGui::End();
+}
+
+void CPanel_ModelInfo::Anim_Info()
+{
+	// ===== UI 출력 =====
+	ImGui::Separator();
+	ImGui::Text("Current Animation Info");
+	ImGui::Separator();
+
+	ImGui::Text("Current Anim Index : %u", m_iCurAnimIdx);
+
+	// wstring -> string 변환 필요
+	std::string animName(m_wstrCurAnimName.begin(), m_wstrCurAnimName.end());
+	ImGui::Text("Current Anim Name  : %s", animName.c_str());
+
+	ImGui::Separator();
+}
+
+void CPanel_ModelInfo::RootOffset_Info()
+{
+	ImGui::InputFloat("RootMotion Offset", &m_fRootMotionOffset, 0.1f, 1.0f, "%.3f");
+
+	// 최소값 -1 제한
+	if (m_fRootMotionOffset < -1.f)
+		m_fRootMotionOffset = -1.f;
+
+	if (ImGui::Button("Apply##RootOffset"))
+	{
+		Set_RootOffset();
+	}
+}
+
+
 void CPanel_ModelInfo::Set_RootBone()
 {
 	m_pAnimToolManager->Set_RootBone(m_iRootBondIdx);
+}
+
+void CPanel_ModelInfo::Set_RootOffset()
+{
+	m_pAnimToolManager->Set_RootOffset(m_iCurAnimIdx, m_fRootMotionOffset);
 }
 
 CPanel_ModelInfo* CPanel_ModelInfo::Create(const _char* pLabel, CLevel* pOwner, ID3D11Device* pDevice, ID3D11DeviceContext* pDeviceContext)

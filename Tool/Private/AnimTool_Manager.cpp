@@ -238,6 +238,11 @@ void CAnimTool_Manager::Set_RootBone(_int iBoneIdx)
 	m_tAnimControllInfo.pModel->Set_RootBone(iBoneIdx);
 }
 
+void CAnimTool_Manager::Set_RootOffset(_uint iAnimIdx, _float fOffset)
+{
+	m_tAnimControllInfo.pModel->Set_Animtion_MotionOffset(iAnimIdx, fOffset);
+}
+
 void CAnimTool_Manager::UpdateAnimationInfo()
 {
 	if (!ValidCheck())
