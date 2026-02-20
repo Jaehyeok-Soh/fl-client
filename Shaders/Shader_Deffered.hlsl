@@ -1,6 +1,55 @@
 #include "Struct_Defines.hlsl"
 #include "Light_Defines.hlsl"
 
+// 16^3 LUT (256 x 16)
+float3 ApplyLUT_16(float3 vC)
+{
+    const float fSize = 16.0f;
+    const float fInvSize = 1.0f / fSize;
+    
+    vC = saturate(vC);
+    
+    // Blue slice selection
+    float fB = vC.b * (fSize - 1.0f);
+    float fSlice0 = floor(fB);
+    float fSlice1 = min(fSlice0 + 1.0f, fSize - 1.0f);
+    float fT = frac(fB);
+    
+    float2 vRG = (vC.rg * (fSize - 1.0f) + 0.5f) * fInvSize;
+
+    float2 vUV0 = float2((fSlice0 + vRG.x) * fInvSize, vRG.y);
+    float2 vUV1 = float2((fSlice1 + vRG.x) * fInvSize, vRG.y);
+    
+    float3 vColor0 = g_LUT_Stand.SampleLevel(LinearClampSampler, vUV0, 0).rgb;
+    float3 vColor1 = g_LUT_Stand.SampleLevel(LinearClampSampler, vUV1, 0).rgb;
+    
+    return lerp(vColor0, vColor1, fT);
+}
+
+float3 Fresnel_Schlick(float cosTheta, float3 F0)
+{
+    return F0 + (1.0f - F0) * pow(1.0f - cosTheta, 5.0f);
+}
+
+float D_GGX(float fNDotH, float fAlpha)
+{
+    float fA2 = fAlpha * fAlpha;
+    float fDenom = (fNDotH * fNDotH) * (fA2 - 1.0f) + 1.0f;
+    return fA2 / max(PI * fDenom * fDenom, EPSILON);
+}
+
+float G_SchlickGGX(float fNdotX, float fK)
+{
+    return fNdotX / max(fNdotX * (1.0f - fK) + fK, EPSILON);
+}
+
+float G_Smith(float fNdotV, float fNdotL, float fAlpha)
+{
+    float fK = fAlpha + 1.0f;
+    fK = (fK * fK) / 8.0f;
+    return G_SchlickGGX(fNdotV, fK) * G_SchlickGGX(fNdotL, fK);
+}
+
 float Luma(float3 vC)
 {
     return dot(vC, float3(0.216, 0.7152, 0.0722));
@@ -251,138 +300,147 @@ PS_OUT_BACKBUFFER PS_MAIN_DEBUG(PS_IN_POS_TEX input)
 PS_OUT_LIGHT PS_MAIN_DIRECTIONAL(PS_IN_POS_TEX input)
 {
     PS_OUT_LIGHT output;
-    output.vShade = float4(0.f, 0.f, 0.f, 1.f);
-    output.vSpecular = float4(0.f, 0.f, 0.f, 1.f);
-    //============================
-    // Depth Decode (NDC Z, View Z)
-    //============================
-    float fNDCZ = 0.f;
-    float fViewZ = 0.f;
+    output.vShade = float4(0, 0, 0, 1);
+    output.vSpecular = float4(0, 0, 0, 1);
+
+    float fNDCZ, fViewZ;
     DecodeDepth(input.vUV, fNDCZ, fViewZ);
-    
-    //=================================
-    // Packed Mask (AO / Rough / Metal)
-    //=================================
-    float fAO = 0.f;
-    float fRough = 0.f;
-    float fMetal = 0.f;
+
+    float fAO, fRough, fMetal;
     DecodeSpecularMask(input.vUV, fAO, fRough, fMetal);
-    
-    //=================================
-    // SSAO
-    //=================================
+
     float fSSAO = g_RenderTargetAOTexture.Sample(LinearSampler, input.vUV).r;
-    
-    //===============
-    // Normal Decode
-    //===============
-    float3 vNormal = DecodeWorldNormal(input.vUV);
-    float3 vLightDir = normalize(Light.vDirection * -1.f);
-    float3 vShade = max(dot(vLightDir, vNormal), 0.f);
     float fOcc = saturate(fAO * fSSAO);
-    float3 vAmbient = Light.vAmbient.rgb * fOcc;
-    const float fDirectOccStrength = 0.35f;
-    float fDirectOcc = lerp(1.f, fOcc, fDirectOccStrength);
-    float3 vDiffuse = Light.vDiffuse.rgb * vShade * fDirectOcc;
-    output.vShade = float4((vAmbient + vDiffuse), 1.f);
-    //===========================
-    // Reconstruct World Position
-    //===========================
-    float4 vProjPos = ReconstructProjPosition(input.vUV, fNDCZ, fViewZ);    
-    
-    /* 로컬위치 * 월드 * 뷰 * 투영 * 투영-1 */
-    float4 vViewPos = mul(vProjPos, InvP);
-    vViewPos.xyz /= max(EPSILON, vViewPos.w);
-    vViewPos.w = 1.f;
-    /* 로컬위치 * 월드 * 뷰 * 뷰-1 */
-    float4 vWorldPos = mul(vViewPos, InvV);
-    
-    float3 vViewDir = normalize(CameraPosition() - vWorldPos.xyz);
-    float3 vHalf = normalize(vLightDir + vViewDir);
-    
-    float fShininess = lerp(256.f, 8.f, saturate(fRough));
-    float fSpec = pow(saturate(dot(vNormal, vHalf)), fShininess);
-    
-    float3 vF0 = lerp(float3(0.04f, 0.04f, 0.04f), float3(1.f, 1.f, 1.f), saturate(fMetal));
-    float3 vSpecRGB = Light.vSpecular.rgb * fSpec * vF0;
-    
-    output.vSpecular = float4(vSpecRGB, 1.f);
-    return output;
-}
 
-PS_OUT_LIGHT PS_MAIN_POINT(PS_IN_POS_TEX input)
-{
-    PS_OUT_LIGHT output;
-    output.vShade = float4(0.f, 0.f, 0.f, 1.f);
-    output.vSpecular = float4(0.f, 0.f, 0.f, 1.f);
+    // baseColor 추가 (PBR 핵심 입력)
+    float3 baseColor = g_RenderTargetDiffuseTexture.Sample(LinearSampler, input.vUV).rgb;
 
-    //============================
-    // Depth Decode (NDC Z, View Z)
-    //============================
-    float fNDCZ = 0.f;
-    float fViewZ = 0.f;
-    DecodeDepth(input.vUV, fNDCZ, fViewZ);
-    
-    
-    //=================================
-    // Packed Mask (AO / Rough / Metal)
-    //=================================
-    float fAO = 0.f;
-    float fRough = 0.f;
-    float fMetal = 0.f;
-    DecodeSpecularMask(input.vUV, fAO, fRough, fMetal);
+    float3 N = DecodeWorldNormal(input.vUV);
+    float3 L = normalize(Light.vDirection * -1.f);
 
-    //===============
-    // Normal Decode
-    //===============
-    float3 vNormal = DecodeWorldNormal(input.vUV);
-
-    //===========================
-    // Reconstruct World Position
-    //===========================
+    // WorldPos 재구성(기존 유지)
     float4 vProjPos = ReconstructProjPosition(input.vUV, fNDCZ, fViewZ);
     float4 vViewPos = mul(vProjPos, InvP);
     vViewPos.xyz /= max(EPSILON, vViewPos.w);
     vViewPos.w = 1.f;
     float4 vWorldPos = mul(vViewPos, InvV);
 
-    //========================
-    // Point Light Vector / Att
-    //========================
-    float3 vToLight = (Light.vPosition.xyz - vWorldPos.xyz); // Surface -> Light
-    float fDistance = length(vToLight);
+    float3 V = normalize(CameraPosition() - vWorldPos.xyz);
+    float3 H = normalize(V + L);
 
-    // 0 나눗셈 방지
-    float3 vLightDir = vToLight / max(fDistance, 1e-6f);
+    float NdotL = saturate(dot(N, L));
+    float NdotV = saturate(dot(N, V));
+    float NdotH = saturate(dot(N, H));
+    float VdotH = saturate(dot(V, H));
 
-    // 가장 단순한 선형 감쇠(지금 단계에 OK)
-    float fAtt = saturate((Light.fRange - fDistance) / max(Light.fRange, 1e-6f));
+    // Roughness -> alpha
+    float rough = saturate(fRough);
+    float alpha = max(0.045f, rough * rough);
 
-    //=====================
-    // Shade (Diffuse only)
-    //=====================
-    float fNdotL = saturate(dot(vLightDir, vNormal));
+    // F0: metal이면 baseColor가 spec 색
+    float metal = saturate(fMetal);
+    float3 F0 = lerp(float3(0.04f, 0.04f, 0.04f), baseColor, metal);
 
-    // Point 라이트에서 Ambient를 누적시키면 쉽게 과해지므로,
-    // 일단은 "Diffuse만" 추천 (Ambient는 전역/Directional에서 처리)
-    float3 vDiffuse = Light.vDiffuse.rgb * fNdotL;
+    float3 F = Fresnel_Schlick(VdotH, F0);
+    float D = D_GGX(NdotH, alpha);
+    float G = G_Smith(NdotV, NdotL, alpha);
 
-    output.vShade = float4(vDiffuse * fAtt, 1.f);
+    float3 specBRDF = (D * G) * F / max(4.0f * NdotV * NdotL, 1e-6f);
 
-    //=====================
-    // Specular (Half vector)
-    //=====================
-    float3 vViewDir = normalize(CameraPosition() - vWorldPos.xyz);
-    float3 vHalf = normalize(vLightDir + vViewDir);
+    // Diffuse 계수(kD): baseColor는 Combined에서 곱해질 것이므로 "계수만" 내보냄
+    float3 kS = F;
+    float3 kD = (1.0f - kS) * (1.0f - metal);
 
-    float fShininess = lerp(256.f, 8.f, saturate(fRough));
-    float fSpec = pow(saturate(dot(vNormal, vHalf)), fShininess);
+    // 기존 느낌 유지용(밝기 덜 죽게): 1/PI를 강제하지 않고 시작
+    // 좀 더 물리적으로 가려면: diffFactor = kD * (1.0f / PI);
+    float3 diffFactor = kD / PI;
 
-    float3 vF0 = lerp(float3(0.04f, 0.04f, 0.04f), float3(1.f, 1.f, 1.f), saturate(fMetal));
-    float3 vSpecRGB = Light.vSpecular.rgb * fSpec * vF0;
+    // 기존 AO/DirectOcc 스타일 유지
+    float3 ambient = Light.vAmbient.rgb * fOcc;
+    const float fDirectOccStrength = 0.35f;
+    float fDirectOcc = lerp(1.f, fOcc, fDirectOccStrength);
 
-    output.vSpecular = float4(vSpecRGB * fAtt, 1.f);
+    float3 radiance = Light.vDiffuse.rgb;
 
+    float3 shade = ambient + (radiance * (NdotL * fDirectOcc)) * diffFactor;
+
+    // Specular도 약하게 AO 적용(완전히 죽지 않게)
+    float specOcc = lerp(1.f, fOcc, 0.2f);
+    float3 specContrib = (specBRDF * radiance) * (NdotL * specOcc);
+
+    output.vShade = float4(shade, 1.f);
+    output.vSpecular = float4(specContrib, 1.f);
+    return output;
+}
+
+PS_OUT_LIGHT PS_MAIN_POINT(PS_IN_POS_TEX input)
+{
+    PS_OUT_LIGHT output;
+    output.vShade = float4(0, 0, 0, 1);
+    output.vSpecular = float4(0, 0, 0, 1);
+
+    float fNDCZ, fViewZ;
+    DecodeDepth(input.vUV, fNDCZ, fViewZ);
+
+    float fAO, fRough, fMetal;
+    DecodeSpecularMask(input.vUV, fAO, fRough, fMetal);
+
+    float fSSAO = g_RenderTargetAOTexture.Sample(LinearSampler, input.vUV).r;
+    float fOcc = saturate(fAO * fSSAO);
+
+    float3 baseColor = g_RenderTargetDiffuseTexture.Sample(LinearSampler, input.vUV).rgb;
+
+    float3 N = DecodeWorldNormal(input.vUV);
+
+    // WorldPos 재구성
+    float4 vProjPos = ReconstructProjPosition(input.vUV, fNDCZ, fViewZ);
+    float4 vViewPos = mul(vProjPos, InvP);
+    vViewPos.xyz /= max(EPSILON, vViewPos.w);
+    vViewPos.w = 1.f;
+    float4 vWorldPos = mul(vViewPos, InvV);
+
+    float3 V = normalize(CameraPosition() - vWorldPos.xyz);
+
+    // Point light 벡터/감쇠(기존 유지)
+    float3 toL = (Light.vPosition.xyz - vWorldPos.xyz);
+    float dist = length(toL);
+    float3 L = toL / max(dist, 1e-6f);
+    float fAtt = saturate((Light.fRange - dist) / max(Light.fRange, 1e-6f));
+
+    float3 H = normalize(V + L);
+
+    float NdotL = saturate(dot(N, L));
+    float NdotV = saturate(dot(N, V));
+    float NdotH = saturate(dot(N, H));
+    float VdotH = saturate(dot(V, H));
+
+    float rough = saturate(fRough);
+    float alpha = max(0.045f, rough * rough);
+
+    float metal = saturate(fMetal);
+    float3 F0 = lerp(float3(0.04f, 0.04f, 0.04f), baseColor, metal);
+
+    float3 F = Fresnel_Schlick(VdotH, F0);
+    float D = D_GGX(NdotH, alpha);
+    float G = G_Smith(NdotV, NdotL, alpha);
+
+    float3 specBRDF = (D * G) * F / max(4.0f * NdotV * NdotL, 1e-6f);
+
+    float3 kS = F;
+    float3 kD = (1.0f - kS) * (1.0f - metal);
+    float3 diffFactor = kD; // 필요하면 * (1/PI)
+
+    // Point는 ambient를 누적하면 과해질 수 있으니, 기존 방침대로 diffuse만(원하면 옵션)
+    float3 radiance = Light.vDiffuse.rgb * fAtt;
+
+    float fDirectOcc = lerp(1.f, fOcc, 0.35f);
+    float3 shade = (radiance * (NdotL * fDirectOcc)) * diffFactor;
+
+    float specOcc = lerp(1.f, fOcc, 0.2f);
+    float3 specContrib = (specBRDF * radiance) * (NdotL * specOcc);
+
+    output.vShade = float4(shade, 1.f);
+    output.vSpecular = float4(specContrib, 1.f);
     return output;
 }
 
@@ -670,7 +728,14 @@ PS_OUT_BACKBUFFER PS_MAIN_TONEMAP(PS_IN_POS_TEX input)
     // Tonemap
     float3 vLDR = ToneMap_ACES(vHDR.rgb);
     
-    float invGamma = 1.f / max(0.001f, HDRparam.fGamma);
+    vLDR = ApplyLUT_16(vLDR);
+    
+    vLDR = max(vLDR, 0.0.xxx);
+    vLDR /= 0.18f;
+    vLDR = pow(vLDR, HDRparam.fGamma);
+    vLDR *= 0.18f;
+    
+    float3 invGamma = 1.f / max(0.001f, 2.2f);
     vLDR = pow(saturate(vLDR), invGamma);
     output.vColor = float4(vLDR, 1.f);
     return output;

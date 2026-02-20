@@ -75,5 +75,6 @@ Texture2D g_RenderTargetAOTexture;
 Texture2D g_RenderTargetSceneHDRTexture;
 Texture2D g_RenderTargetSceneHDRCopyTexture;
 Texture2D g_RenderTargetBloomTexture;
+Texture2D g_LUT_Stand;
 
 #endif
