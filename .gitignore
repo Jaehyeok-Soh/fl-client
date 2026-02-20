@@ -35,6 +35,22 @@
 /Engine/Default/**/[Dd]ebug/**
 /Engine/Default/**/[Rr]elease/**
 
+# sync tool artifacts (solution root only)
+/.last_sync.v2.json
+/.last_sync.v2.json.tmp
+/sync_logs/
+/conflicts/
+
+/backup/*
+!/backup/.gitkeep
+
+# python cache
+__pycache__/
+*.pyc
+
+/.tmp.drivedownload/
+/.sync_trash/
+
 # Keep engine headers & libs in Reference (tracked)
 # /Reference/Header/**   <— DO NOT ignore
 # /Reference/Library/**  <— DO NOT ignore

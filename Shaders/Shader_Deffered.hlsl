@@ -71,10 +71,10 @@ float3 BloomPrefilter(float3 vColor, float fThreshold, float fKnee)
 float3 Downsample2x2_SceneHDR(float2 vUV, float2 vHalfInvSize)
 {
     float2 vO = vHalfInvSize;
-    float3 c0 = g_RenderTargetSceneHDRTexture.Sample(LinearSampler, vUV + float2(-vO.x, -vO.y)).rgb;
-    float3 c1 = g_RenderTargetSceneHDRTexture.Sample(LinearSampler, vUV + float2(vO.x, -vO.y)).rgb;
-    float3 c2 = g_RenderTargetSceneHDRTexture.Sample(LinearSampler, vUV + float2(-vO.x, vO.y)).rgb;
-    float3 c3 = g_RenderTargetSceneHDRTexture.Sample(LinearSampler, vUV + float2(vO.x, vO.y)).rgb;
+    float3 c0 = g_RenderTargetSceneHDRTexture.Sample(LinearClampSampler, vUV + float2(-vO.x, -vO.y)).rgb;
+    float3 c1 = g_RenderTargetSceneHDRTexture.Sample(LinearClampSampler, vUV + float2(vO.x, -vO.y)).rgb;
+    float3 c2 = g_RenderTargetSceneHDRTexture.Sample(LinearClampSampler, vUV + float2(-vO.x, vO.y)).rgb;
+    float3 c3 = g_RenderTargetSceneHDRTexture.Sample(LinearClampSampler, vUV + float2(vO.x, vO.y)).rgb;
     return (c0 + c1 + c2 + c3) * 0.25;
 }
 
@@ -88,19 +88,19 @@ float3 Blur9(Texture2D vTexture, float2 vUV, float2 vDir, float2 vInvSize)
     float w3 = 0.054054;
     float w4 = 0.016216;
 
-    float3 c = vTexture.Sample(LinearSampler, vUV).rgb * w0;
+    float3 c = vTexture.Sample(LinearClampSampler, vUV).rgb * w0;
 
-    c += vTexture.Sample(LinearSampler, vUV + stepUV * 1).rgb * w1;
-    c += vTexture.Sample(LinearSampler, vUV - stepUV * 1).rgb * w1;
+    c += vTexture.Sample(LinearClampSampler, vUV + stepUV * 1).rgb * w1;
+    c += vTexture.Sample(LinearClampSampler, vUV - stepUV * 1).rgb * w1;
 
-    c += vTexture.Sample(LinearSampler, vUV + stepUV * 2).rgb * w2;
-    c += vTexture.Sample(LinearSampler, vUV - stepUV * 2).rgb * w2;
+    c += vTexture.Sample(LinearClampSampler, vUV + stepUV * 2).rgb * w2;
+    c += vTexture.Sample(LinearClampSampler, vUV - stepUV * 2).rgb * w2;
 
-    c += vTexture.Sample(LinearSampler, vUV + stepUV * 3).rgb * w3;
-    c += vTexture.Sample(LinearSampler, vUV - stepUV * 3).rgb * w3;
+    c += vTexture.Sample(LinearClampSampler, vUV + stepUV * 3).rgb * w3;
+    c += vTexture.Sample(LinearClampSampler, vUV - stepUV * 3).rgb * w3;
 
-    c += vTexture.Sample(LinearSampler, vUV + stepUV * 4).rgb * w4;
-    c += vTexture.Sample(LinearSampler, vUV - stepUV * 4).rgb * w4;
+    c += vTexture.Sample(LinearClampSampler, vUV + stepUV * 4).rgb * w4;
+    c += vTexture.Sample(LinearClampSampler, vUV - stepUV * 4).rgb * w4;
     return c;
 }
 
@@ -689,8 +689,8 @@ PS_OUT_BLOOM PS_MAIN_BLOOM_PONG(PS_IN_POS_TEX input)
 PS_OUT_BACKBUFFER PS_MAIN_TONEMAP(PS_IN_POS_TEX input)
 {
     PS_OUT_BACKBUFFER output;
-    float3 vBloom = g_RenderTargetBloomTexture.Sample(LinearSampler, input.vUV).rgb;
-    float4 vScene = g_RenderTargetSceneHDRTexture.Sample(LinearSampler, input.vUV);
+    float3 vBloom = g_RenderTargetBloomTexture.Sample(LinearClampSampler, input.vUV).rgb;
+    float4 vScene = g_RenderTargetSceneHDRTexture.Sample(LinearClampSampler, input.vUV);
     // Bloom ÇÕ¼º
     float3 vHDR = vScene.rgb + vBloom * BloomParam.fIntensity;
     

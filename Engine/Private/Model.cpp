@@ -627,7 +627,7 @@ HRESULT CModel::Load_StaticModel(const wstring& wstrModelName)
 {
 	CModelLoader* pModelLoader = CModelLoader::Create(m_pDevice, m_pDeviceContext, wstrModelName.c_str());
 
-	if (FAILED(pModelLoader->Read_Model(m_eType, nullptr, &m_vecMeshes)))
+if (FAILED(pModelLoader->Read_Model(m_eType, nullptr, &m_vecMeshes)))
 		return E_FAIL;
 	if (FAILED(pModelLoader->Read_Material(&m_vecMaterials)))
 		return E_FAIL;
