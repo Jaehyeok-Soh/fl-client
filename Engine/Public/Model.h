@@ -147,6 +147,8 @@ public:
 	_bool								Is_AnimTrackPositionAt(_float fRatio);
 	_bool								Is_AnimTrackPositionAtHalf() const;
 
+	_bool								Is_LoopAnimDone() const { return m_bLoopAnimDone; }
+
 
 	_float								Get_AnimDurationTime() const;
 	_float								Get_AnimNormalizedTime() const;
@@ -295,6 +297,7 @@ private:
 	_uint								m_iFrameIndex = { 0 };
 
 	_uint m_iCpuBoneCount = { 0 };
+	_bool m_bLoopAnimDone = { false };
 
 	///////////////
 	//// Event ////

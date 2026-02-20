@@ -66,17 +66,24 @@ HRESULT CModelAnimation::Initialize(void* pArg)
 	return S_OK;
 }
 
-_bool CModelAnimation::Update_TransformationMatrices(const vector<class CBone*>& vecBones, _float fTimeDelta, _bool isLoop, CTransform* pOwnerTransform,  CPhysicsCCT* pOwnerPhyCCT, CComputeShader* pAnimECS)
+_bool CModelAnimation::Update_TransformationMatrices(const vector<class CBone*>& vecBones, _bool& bLoopDone, _float fTimeDelta, _bool isLoop, CTransform* pOwnerTransform,  CPhysicsCCT* pOwnerPhyCCT, CComputeShader* pAnimECS)
 {
 	m_fCurrentTrackPosition += m_fTickPerSecond * fTimeDelta;
 
 	if (m_fCurrentTrackPosition >= m_fDuration)
 	{
+		// todo_eunbi : 만약 필요하다면 bloopdone = false 해야됨
 		if (!isLoop)
 			return true;
 
+		else
+			bLoopDone = true;
+
 		m_fCurrentTrackPosition = 0.f;
 	}
+
+	else
+		bLoopDone = false;
 
 	// 가변 데이터 작성
 	CS_MU_TRACK tMuDesc{};
@@ -321,7 +328,6 @@ void CModelAnimation::Set_MotionBone(_int iBondIdx)
 		if (m_vecChannels[i]->Set_MotionBone(iBondIdx))
 		{
 			m_iRootChannelIdx = i;
-			return;
 		}
 	}
 }

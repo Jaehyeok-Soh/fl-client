@@ -46,6 +46,7 @@ CModel::CModel(const CModel& rhs)
 	, m_pStaticModel_MinMax{rhs.m_pStaticModel_MinMax}
 	, m_iFrameIndex(rhs.m_iFrameIndex)
 	, m_iCpuBoneCount(rhs.m_iCpuBoneCount)
+	, m_bLoopAnimDone(rhs.m_bLoopAnimDone)
 {
 	m_vecPrevAnimationPose.resize(rhs.m_vecPrevAnimationPose.size());
 	m_vecCurrAnimationPose.resize(rhs.m_vecCurrAnimationPose.size());
@@ -360,7 +361,10 @@ void CModel::Set_RootBone(_int iRootIdx)
 	m_iRootBoneIdx = iRootIdx;
 
 	// bone 정보 업데이트
-	m_vecBones[iRootIdx]->Set_MotionBone(iRootIdx);
+	for (auto& pBone : m_vecBones)
+	{
+		pBone->Set_MotionBone(iRootIdx);
+	}
 
 	// animation, channel 정보 업데이트
 	for (auto& pAnim : m_vecAnimations)
@@ -868,7 +872,7 @@ void CModel::Change_AnimationPlayState(AnimationPlayState eState, CComputeShader
 void CModel::Play_Animation(CComputeShader* pBoneComBineCS, CComputeShader* pAnimEvalCS, _float fTimeDelta, CTransform* pOwnerTransform , CPhysicsCCT* pOwnerPhyCCT, CComputeShader* pGetBoneCS)
 {
 	// animation update
-	m_bIsAnimFinished = m_vecAnimations[m_iCurrentAnimIndex]->Update_TransformationMatrices(m_vecBones, fTimeDelta, m_isAnimLoop, pOwnerTransform, pOwnerPhyCCT, pAnimEvalCS);
+	m_bIsAnimFinished = m_vecAnimations[m_iCurrentAnimIndex]->Update_TransformationMatrices(m_vecBones, m_bLoopAnimDone, fTimeDelta, m_isAnimLoop, pOwnerTransform, pOwnerPhyCCT, pAnimEvalCS);
 
 	// animation 결과 blendCS에 bind
 	pBoneComBineCS->Bind_InputStructuredBuffer(ENUM_TO_UINT(CS_SB_IDX::MU_SRTS),
