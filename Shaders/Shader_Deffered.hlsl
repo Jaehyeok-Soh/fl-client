@@ -104,34 +104,6 @@ float3 Blur9(Texture2D vTexture, float2 vUV, float2 vDir, float2 vInvSize)
     return c;
 }
 
-float3x3 aces_input_matrix =
-{
-    float3(0.59719f, 0.35458f, 0.04823f),
-    float3(0.07600f, 0.90834f, 0.01566f),
-    float3(0.02840f, 0.13383f, 0.83777f)
-};
-
-float3x3 aces_output_matrix =
-{
-    float3(1.60475f, -0.53108f, -0.07367f),
-    float3(-0.10208f, 1.10813f, -0.00605f),
-    float3(-0.00327f, -0.07276f, 1.07602f)
-};
-
-float3 rtt_and_odt_fit(float3 v)
-{
-    float3 a = v * (v + 0.0245786f) - 0.000090537f;
-    float3 b = v * (0.983729f * v + 0.4329510f) + 0.238081f;
-    return a / b;
-}
-
-float3 aces_fitted(float3 v)
-{
-    v = mul(aces_input_matrix, v);
-    v = rtt_and_odt_fit(v);
-    return mul(aces_output_matrix, v);
-}
-
 float3 ToneMap_ACES(float3 x)
 {
     const float a = 2.51f;
@@ -428,10 +400,10 @@ PS_OUT_LIGHT PS_MAIN_POINT(PS_IN_POS_TEX input)
 
     float3 kS = F;
     float3 kD = (1.0f - kS) * (1.0f - metal);
-    float3 diffFactor = kD; // 필요하면 * (1/PI)
+    float3 diffFactor = kD;
 
     // Point는 ambient를 누적하면 과해질 수 있으니, 기존 방침대로 diffuse만(원하면 옵션)
-    float3 radiance = Light.vDiffuse.rgb * fAtt;
+    float3 radiance = Light.vAmbient.rgb * fAtt;
 
     float fDirectOcc = lerp(1.f, fOcc, 0.35f);
     float3 shade = (radiance * (NdotL * fDirectOcc)) * diffFactor;
@@ -730,6 +702,7 @@ PS_OUT_BACKBUFFER PS_MAIN_TONEMAP(PS_IN_POS_TEX input)
     
     vLDR = ApplyLUT_16(vLDR);
     
+    // 대비
     vLDR = max(vLDR, 0.0.xxx);
     vLDR /= 0.18f;
     vLDR = pow(vLDR, HDRparam.fGamma);
@@ -745,7 +718,7 @@ technique11 T0
 {
     PASS_RS_DS_BS_VP(Debug, RS_Default, DS_Default, BS_Default, VS_MAIN, PS_MAIN_DEBUG)
     PASS_RS_DS_BS_VP(DirectionalLight, RS_Default, DS_Disabled, BS_Default, VS_MAIN, PS_MAIN_DIRECTIONAL)
-    PASS_RS_DS_BS_VP(PointLight, RS_Default, DS_Disabled, BS_Blend, VS_MAIN, PS_MAIN_POINT)
+    PASS_RS_DS_BS_VP(PointLight, RS_Default, DS_Disabled, BS_PointLightBlend, VS_MAIN, PS_MAIN_POINT)
     PASS_RS_DS_BS_VP(Outline, RS_Default, DS_Disabled, BS_AlphaBlend, VS_MAIN, PS_MAIN_OUTLINE)
     PASS_RS_DS_BS_VP(SSAOGen, RS_Default, DS_Disabled, BS_Default, VS_MAIN, PS_MAIN_SSAOGEN)
     PASS_RS_DS_BS_VP(SSAOBLURH, RS_Default, DS_Disabled, BS_Default, VS_MAIN, PS_MAIN_SSAOBLURH)
