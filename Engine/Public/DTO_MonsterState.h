@@ -8,7 +8,7 @@
 
 namespace DTO
 {
-	typedef struct tagTimeCounter
+	typedef struct tagMonsterTimeCounter
 	{
 		float fTimeAcc = { 0.f };
 		float fMaxTime = { 0.f };
@@ -16,9 +16,9 @@ namespace DTO
 
 		bool bCountTime = { true };
 		bool bTimeReset = { true };
-	}TIME_COUNTER;
+	}MONSTERTIME_COUNTER;
 
-	inline void to_json(json& j, const TIME_COUNTER& d)
+	inline void to_json(json& j, const MONSTERTIME_COUNTER& d)
 	{
 		j["fTimeAcc"] = d.fTimeAcc;
 		j["fMaxTime"] = d.fMaxTime;
@@ -27,7 +27,7 @@ namespace DTO
 		j["bTimeReset"] = d.bTimeReset;
 	}
 
-	inline void from_json(const json& j, TIME_COUNTER& d)
+	inline void from_json(const json& j, MONSTERTIME_COUNTER& d)
 	{
 		j.at("fTimeAcc").get_to(d.fTimeAcc);
 		j.at("fMaxTime").get_to(d.fMaxTime);
@@ -88,8 +88,8 @@ namespace DTO
 
 		string strName = {};
 
-		TIME_COUNTER tStateLifeTime = {};
-		TIME_COUNTER tStateCoolDownTime = {};
+		MONSTERTIME_COUNTER tStateLifeTime = {};
+		MONSTERTIME_COUNTER tStateCoolDownTime = {};
 
 		// state names
 		std::set<string>		setStates;

@@ -26,6 +26,10 @@ public:
 	std::function<void(class CStateBase_Monster*, const _float& fTimeDelta)> GetFeature(string name);
 
 private:
+	static class CMonsterActionState* GetActionState(class CStateBase_Monster* state);
+	static class CMonsterControlContext* GetControlContext(class CStateBase_Monster* state);
+
+private:
 	map<string, std::function<_bool(class CStateBase_Monster*)>> m_mapCondition;
 	map<string, std::function<void(class CStateBase_Monster*, const _float& fTimeDelta)>> m_mapFeature;
 

@@ -22,7 +22,7 @@ public:
 		, OWN = 0x0008 // 자신만의 움직임
 	};
 
-private:
+protected:
 	using Super = CStateBase;
 
 protected:
@@ -62,10 +62,10 @@ protected:
 
 	virtual void CheckAni_WhenStart() {};					// 만약 자체에서 로직을 통해 바꾸고 싶다면
 
-private:
+protected:
 	_uint m_iEndStateIdx = { 0 };			// CPlayer::State::END 캐싱 해둠 : 만약 END면 state change x
 
-private:
+protected:
 	_bool Has_ChangeState(_int eKey);
 
 	HRESULT Bind_State();
@@ -83,10 +83,12 @@ private:
 	vector<std::function<_bool()>> m_vecCondition;
 
 	unordered_map<string, _int> m_umapFeature;
-	vector<std::function<void()>> m_vecFeature;
+	vector<std::function<void(const _float& fTimeDelta)>> m_vecFeature;
 
 public:
 	virtual void Free() override;
+
+	friend CMonsterState_Factory;
 };
 
 NS_END

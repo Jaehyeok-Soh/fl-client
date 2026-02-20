@@ -91,6 +91,7 @@ protected:
 	void Turn_byCam(const _float fTimeDelta);
 
 	_bool Key_Input(CControlContext::CONTROL_KEY eKey);
+
 private:
 	HRESULT Set_OwnerComponents();
 protected:

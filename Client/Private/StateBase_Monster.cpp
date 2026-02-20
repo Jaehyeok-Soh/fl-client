@@ -84,9 +84,9 @@ void CStateBase_Monster::Update(const _float fTimeDelta)
 		!Engine_Utils::Has_Flag(m_FAniFlags, STATEANI_FLAG::SA_PreAniDone))
 		return;
 
+	// 상태 전이 조건 검사 및 상태 전이
 	if (!m_bLoop && Is_MainAnimFinished())
 	{
-
 		_bool allClear = { false };
 		for (auto& trans : m_pDesc->vecStateTransition)
 		{
@@ -102,29 +102,20 @@ void CStateBase_Monster::Update(const _float fTimeDelta)
 				for (auto& to : trans.mapRandomStatePoolIdx)
 				{
 					if (randomValue < to.second)
+					{
 						Change_MonsterState(to.first); // 다음 state로 change
+						return;
+					}
 
 					curWeight += to.second;
 				}
 			}
 		}
-
 	}
 
+	// 기능 실행
 	for (auto& featIdx : m_pDesc->vecFeatureIdx)
 		m_vecFeature[featIdx](fTimeDelta);
-
-	//// keyCount를 하지 않거나, coolTime이 다 되었다면 : key 입력을 처리하자
-	//if (!(m_tStateLifeTime.bCountTime)
-	//	|| m_tStateLifeTime.CountMinTime(fTimeDelta) == 1.f
-	//	|| m_tStateLifeTime.CountTime(fTimeDelta) == 1.f)
-	//{
-	//	if (!m_bLoop && Is_MainAnimFinished())		// loop가 아닌데 애니메이션이 끝났다면 : pre animation이랑 잘 해야될듯..?
-	//	{
-	//		Change_MonsterState(CMonster_Base::State::Enum::LOOPDONE);			// 다음 state로 change
-	//		return;
-	//	}
-	//}
 }
 
 HRESULT CStateBase_Monster::End()
@@ -285,7 +276,7 @@ HRESULT CStateBase_Monster::Bind_Feature()
 			continue;
 
 		m_umapFeature.emplace(feat, idx);
-		m_vecFeature.push_back(std::bind(func, this));
+		m_vecFeature.push_back(std::bind(func, this, std::placeholders::_1));
 	}
 
 	m_pDesc->vecFeatureIdx.reserve(m_pDesc->vecFeature.size());

@@ -10,7 +10,21 @@ class CSkillComponent;
 
 class CMonsterControlContext final : public CControlContext
 {
+public:
+	typedef struct tagMonsterControlContextDesc
+	{
+		_float fMeleeRange = {};
+		_float fAttackRange = {};
+		_float fCloseRange = {};
+		_float fDetectionRange = {};
+		_float fSpeed = {};
+		_int iSkillCount = { -1 };
+		vector<_int> vecSkillRange;
+	}MONSTER_CONTROLCONTEXT_DESC;
+
+private:
 	using Super = CControlContext;
+
 private:
 	CMonsterControlContext();
 	explicit CMonsterControlContext(const CMonsterControlContext& rhs);
@@ -18,15 +32,9 @@ private:
 
 	virtual HRESULT Initialize_Prototype() override;
 	virtual HRESULT Initialize(void* pArg) override;
-public:
-	virtual HRESULT Awake(const _uint iLevelIndex) override;
 
 public:
-	_bool Is_FootRayEnabled();
-	void Set_Grounded(_bool bGrounded, const COLMESH_HITINFO* pHit);
-	void Clear_Grounded();
-	ROPE_INFO& Get_RopeInfo() { return m_CurrentRopeInfo; }
-	void Set_RopeInfo(const ROPE_INFO& ropeInfo) { m_CurrentRopeInfo = ropeInfo; }
+	virtual HRESULT Awake(const _uint iLevelIndex) override;
 
 public:
 	virtual _bool Is_LeftAttackPressed() override { return false; }
@@ -49,14 +57,92 @@ public:
 	virtual _bool Is_Skill2Pressed() override { return false; }
 	virtual _bool Is_InteractionPressed() override { return false; }
 
+public:
 	virtual Vec3  Get_MoveDir() override;
-private:
-	void OnChangeLockonTarget(CGameObject* pGo);
+
+/// <summary>
+/// Condition
+/// </summary>
+public:
+	// 타겟
+	_bool IsTargetFound();
+	_bool IsTargetLost();
+
+	_bool IsTargetAlive();
+	_bool IsTargetVisible();
+	_bool IsTargetFOV();
+	_bool IsTargetBehind();
+	_bool IsTargetSide();
+	_bool IsTargetClose();
+	_bool IsTargetAhead();
+
+	// 절벽
+	_bool IsCliffAhead();
+
+	// 페이즈
+	_bool IsPhaseTwo();
+
+	// 공격 범위
+	_bool IsTargetInMeleeRange();
+	_bool IsTargetInAttackRange();
+	_bool IsTargetOutOfMeleeRange();
+	_bool IsTargetOutOfAttackRange();
+
+	// 공간
+	_bool IsFalling();
+	_bool IsGrounded();
+	_bool IsDown();
+
+	// 데미지
+	_bool IsDamageRecently();
+
+	// 공격 여부
+	_bool IsComboPossible();
+	_bool CanAttackMelee();
+	_bool CanAttackRanged();
+	_bool IsSkillReady();
+
+	// 이동 도착
+	_bool IsArrived();
+	_bool IsPathBlocked();
+
+	// 최소 유지시간, 쿨타임 // State에서 직접 계산
+	//_bool IsMinTimeSatisfy();
+	//_bool IsMaxTimeSatisfy();
+
+/// <summary>
+/// Feature
+/// </summary>
+public:
+	void UpdateWalk(const _float& fTimeDelta);
+	void UpdateChase(const _float& fTimeDelta);
+	void UpdateRun(const _float& fTimeDelta);
+	void UpdateFly(const _float& fTimeDelta);
+	void UpdateFall(const _float& fTimeDelta);
+	void UpdateJump(const _float& fTimeDelta);
+	void UpdateDash(const _float& fTimeDelta);
+	void UpdateCircleMove(const _float& fTimeDelta);
+	void UpdateSideWalk(const _float& fTimeDelta);
+	void UpdateTurn90(const _float& fTimeDelta);
+	void UpdateTrun180(const _float& fTimeDelta);
+
 
 private:
-	DelegateHandle		m_hChangeLockon;
-	COLMESH_HITINFO		m_CurrentGroundInfo = {};
-	ROPE_INFO			m_CurrentRopeInfo = {};
+	//EMovementMode m_eCurrentMovement = { EMovementMode::GROUND };
+	//CGameObject* m_pTarget = { nullptr };
+	//_bool m_bContectedWithTarget = { false };
+	//_bool m_bGrounded = { false };
+	//_bool m_bGravity = { false };
+	//_uint m_iJumpCount = { 0 };
+
+	Vec3 m_vMoveDir = {};
+
+	_bool m_bIsFall = { false };
+	_bool m_bIsDown = { false };
+	_bool m_bIsAirborne = { false };
+	_bool m_bIsFly = { false };
+
+	MONSTER_CONTROLCONTEXT_DESC m_tDesc = {};
 
 public:
 	static CMonsterControlContext* Create();
