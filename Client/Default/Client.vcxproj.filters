@@ -355,6 +355,9 @@
     <Filter Include="06. FSM\Monster\Combo">
       <UniqueIdentifier>{8654d254-98b1-4c39-8eaf-1b9c97e2655f}</UniqueIdentifier>
     </Filter>
+    <Filter Include="06. FSM\Monster\StateFactory">
+      <UniqueIdentifier>{3f89f6d7-e841-4bcf-b727-a356e0c92bb4}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="targetver.h">
@@ -687,6 +690,12 @@
     <ClInclude Include="..\Public\State_BossMonster.h">
       <Filter>06. FSM\Monster</Filter>
     </ClInclude>
+    <ClInclude Include="..\Public\MonsterState_Factory.h">
+      <Filter>06. FSM\Monster\StateFactory</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\MonsterStateFactoryRegisterer.h">
+      <Filter>06. FSM\Monster\StateFactory</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <Image Include="Client.ico">
@@ -1010,6 +1019,12 @@
     </ClCompile>
     <ClCompile Include="..\Private\State_BossMonster.cpp">
       <Filter>06. FSM\Monster</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\MonsterState_Factory.cpp">
+      <Filter>06. FSM\Monster\StateFactory</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\MonsterStateFactoryRegisterer.cpp">
+      <Filter>06. FSM\Monster\StateFactory</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

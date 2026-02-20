@@ -1,6 +1,8 @@
 #include "pch.h"
 #include "StateBase_Monster.h"
 
+#include "MonsterState_Factory.h"
+
 // has?
 #include "Monster_Base.h"
 #include "MonsterControlContext.h"
@@ -19,22 +21,29 @@ CStateBase_Monster::CStateBase_Monster(CActionState* pOwnerComponent, const stri
 
 HRESULT CStateBase_Monster::Initialize(void* pArg)
 {
-	if (FAILED(Super::Initialize(pArg)))
+	m_pDesc = static_cast<DTO::MONSTER_STATEBASE_DESC*>(pArg);
+
+	if (m_pDesc == nullptr)
 		return E_FAIL;
 
-	m_pDesc = static_cast<DTO::MONSTER_STATEBASE_DESC*>(pArg);
-	
+	CStateBase::STATE_DESC baseDesc{};
+	baseDesc.bBlend = m_pDesc->bBlend;
+	baseDesc.bLoop = m_pDesc->bLoop;
+	baseDesc.FAniFlags = m_pDesc->FAniFlags;
+
+	if (FAILED(Super::Initialize(&baseDesc)))
+		return E_FAIL;
+
 	m_strName = m_pDesc->strName;
 
-	if (FAILED(Bind_State(m_pDesc->setStates)))
+	if (FAILED(Bind_State()))
 		return E_FAIL;
 
-	if (FAILED(Bind_Condition(m_pDesc->mapTransferCondition)))
+	if (FAILED(Bind_Transition()))
 		return E_FAIL;
-	
+
 	if (FAILED(Bind_Feature()))
 		return E_FAIL;
-	
 
 	return S_OK;
 }
@@ -44,10 +53,13 @@ HRESULT CStateBase_Monster::Awake(const _uint iLevelIndex)
 	if (FAILED(Super::Awake(iLevelIndex)))
 		return E_FAIL;
 
-	if (FAILED(Bind_PreAnims(m_pDesc->mapPreAnimNames)))
+	if (m_pDesc == nullptr)
 		return E_FAIL;
 
-	if (FAILED(Bind_MainAnims(m_pDesc->vecMainAnimNames)))
+	if (FAILED(Bind_PreAnims()))
+		return E_FAIL;
+
+	if (FAILED(Bind_MainAnims()))
 		return E_FAIL;
 
 	m_iEndStateIdx = CMonster_Base::State::END;
@@ -72,17 +84,47 @@ void CStateBase_Monster::Update(const _float fTimeDelta)
 		!Engine_Utils::Has_Flag(m_FAniFlags, STATEANI_FLAG::SA_PreAniDone))
 		return;
 
-	// keyCount를 하지 않거나, coolTime이 다 되었다면 : key 입력을 처리하자
-	if (!(m_tStateLifeTime.bCountTime)
-		|| m_tStateLifeTime.CountMinTime(fTimeDelta) == 1.f
-		|| m_tStateLifeTime.CountTime(fTimeDelta) == 1.f)
+	if (!m_bLoop && Is_MainAnimFinished())
 	{
-		if (!m_bLoop && Is_MainAnimFinished())		// loop가 아닌데 애니메이션이 끝났다면 : pre animation이랑 잘 해야될듯..?
+
+		_bool allClear = { false };
+		for (auto& trans : m_pDesc->vecStateTransition)
 		{
-			Change_MonsterState(CMonster_Base::State::Enum::LOOPDONE);			// 다음 state로 change
-			return;
+			for (auto& condIdx : trans.vecConditionIdx)
+				allClear = m_vecCondition[condIdx]();
+
+			// 모든 조건 통과
+			_int randomValue = (rand() % (_int)trans.fTotalWeight);
+			if (allClear)
+			{
+				randomValue;
+				_float curWeight = {};
+				for (auto& to : trans.mapRandomStatePoolIdx)
+				{
+					if (randomValue < to.second)
+						Change_MonsterState(to.first); // 다음 state로 change
+
+					curWeight += to.second;
+				}
+			}
 		}
+
 	}
+
+	for (auto& featIdx : m_pDesc->vecFeatureIdx)
+		m_vecFeature[featIdx](fTimeDelta);
+
+	//// keyCount를 하지 않거나, coolTime이 다 되었다면 : key 입력을 처리하자
+	//if (!(m_tStateLifeTime.bCountTime)
+	//	|| m_tStateLifeTime.CountMinTime(fTimeDelta) == 1.f
+	//	|| m_tStateLifeTime.CountTime(fTimeDelta) == 1.f)
+	//{
+	//	if (!m_bLoop && Is_MainAnimFinished())		// loop가 아닌데 애니메이션이 끝났다면 : pre animation이랑 잘 해야될듯..?
+	//	{
+	//		Change_MonsterState(CMonster_Base::State::Enum::LOOPDONE);			// 다음 state로 change
+	//		return;
+	//	}
+	//}
 }
 
 HRESULT CStateBase_Monster::End()
@@ -93,7 +135,7 @@ HRESULT CStateBase_Monster::End()
 	return S_OK;
 }
 
-void CStateBase_Monster::Change_MonsterState(CMonster_Base::State::Enum eKey)
+void CStateBase_Monster::Change_MonsterState(_int eKey)
 {
 	_uint iNextState = eKey;
 	Set_NextStateDesc(iNextState);		// next state에 대한 desc 작성
@@ -102,35 +144,48 @@ void CStateBase_Monster::Change_MonsterState(CMonster_Base::State::Enum eKey)
 	/* 플레이어가 이런 state를 이런 애니메이션으로 바꿨다 */
 }
 
-_bool CStateBase_Monster::Has_ChangeState(CMonster_Base::State::Enum eKey)
+_bool CStateBase_Monster::Has_ChangeState(_int eKey)
 {
 	// state end 이면 state change를 안 한다
 	return m_iEndStateIdx != eKey;
 }
 
-HRESULT CStateBase_Monster::Bind_State(std::set<string> states)
+HRESULT CStateBase_Monster::Bind_State()
 {
 	m_umapState.clear();
 
-	m_umapState.reserve(states.size());
-	for (auto iter = states.begin(); iter != states.end(); iter++)
+	m_umapState.reserve(m_pDesc->setStates.size());
+	for (auto iter = m_pDesc->setStates.begin(); iter != m_pDesc->setStates.end(); iter++)
 	{
-		m_umapState.emplace(*iter, std::distance(states.begin(), iter));
+		m_umapState.emplace(*iter, std::distance(m_pDesc->setStates.begin(), iter));
 		iter++;
 	}
+
+	{
+		vector<std::pair<string, _int>> vecSort(m_umapState.begin(), m_umapState.end());
+
+		std::sort(vecSort.begin(), vecSort.end(), [](const std::pair<string, _int>& a, const std::pair<string, _int>& b) {
+			return a.second > b.second;
+			});
+
+		m_umapState.clear();
+
+		for (auto& sorted : vecSort)
+			m_umapState.insert(sorted);
+	}
+	
 
 	return S_OK;
 }
 
-HRESULT CStateBase_Monster::Bind_PreAnims(map<string, string> stateAnimMap)
+HRESULT CStateBase_Monster::Bind_PreAnims()
 {
 	if (m_umapState.size() == 0)
 		return E_FAIL;
 
 	CGameObject* owner = m_pOwnerStateComp->Get_Owner();
-	
 
-	for (auto& keyValue : stateAnimMap)
+	for (auto& keyValue : m_pDesc->mapPreAnimNames)
 	{
 		auto state = m_umapState.find(keyValue.first);
 		m_vecPreAnims.emplace_back((*state).second, owner->Get_AnimationIndex(Engine_Utils::ToWString(keyValue.second)));
@@ -139,27 +194,109 @@ HRESULT CStateBase_Monster::Bind_PreAnims(map<string, string> stateAnimMap)
 	return S_OK;
 }
 
-HRESULT CStateBase_Monster::Bind_MainAnims(vector<string> mainAnimNames)
+HRESULT CStateBase_Monster::Bind_MainAnims()
 {
 	if (m_umapState.size() == 0)
 		return E_FAIL;
 
 	CGameObject* owner = m_pOwnerStateComp->Get_Owner();
 
-	for (auto& animName : mainAnimNames)
+	for (auto& animName : m_pDesc->vecMainAnimNames)
 		m_vecMainAnims.push_back(owner->Get_AnimationIndex(Engine_Utils::ToWString(animName)));
 
 	return S_OK;
 }
 
-HRESULT CStateBase_Monster::Bind_Condition(map<string, string> transferConditionMap)
+HRESULT CStateBase_Monster::Bind_Transition()
 {
+	for (auto& trans : m_pDesc->vecStateTransition)
+	{
+		if (FAILED(Bind_Condition(trans.vecCondition)))
+			return E_FAIL;
+
+		// 조건 id 매핑
+		trans.vecConditionIdx.reserve(trans.vecCondition.size());
+		for (auto& cond : trans.vecCondition)
+		{
+			auto iter = m_umapCondition.find(cond);
+			if (iter == m_umapCondition.end())
+				continue;
+
+			trans.vecConditionIdx.push_back((*iter).second);
+		}
+
+		std::sort(trans.vecConditionIdx.begin(), trans.vecConditionIdx.end());
+
+		// 전이 상태 id 매핑
+		for (auto& value : trans.mapRandomStatePool)
+		{
+			trans.fTotalWeight += value.second;
+
+			_int stateIdx = (*m_umapState.find(value.first)).second;
+			trans.mapRandomStatePoolIdx.emplace(stateIdx, value.second);
+		}
+
+		std::sort(trans.mapRandomStatePoolIdx.begin(), trans.mapRandomStatePoolIdx.end());
+	}
+
+	return S_OK;
+}
+
+HRESULT CStateBase_Monster::Bind_Condition(vector<string> conds)
+{
+	auto factory = CMonsterState_Factory::GetInstance();
+
+	m_vecCondition.reserve(conds.size());
+
+	for (auto& cond : conds)
+	{
+		auto func = factory->GetCondition(cond);
+		if (func == nullptr)
+			return E_FAIL;
+
+		size_t idx = m_vecCondition.size();
+
+		auto iter = m_umapCondition.find(cond);
+		if (iter != m_umapCondition.end())
+			continue;
+
+		m_umapCondition.emplace(cond, idx);
+		m_vecCondition.push_back(std::bind(func, this));
+	}
+
 	return S_OK;
 }
 
 HRESULT CStateBase_Monster::Bind_Feature()
 {
+	auto factory = CMonsterState_Factory::GetInstance();
 
+	m_vecFeature.reserve(m_pDesc->vecFeature.size());
+	for (auto& feat : m_pDesc->vecFeature)
+	{
+		auto func = factory->GetFeature(feat);
+		if (func == nullptr)
+			return E_FAIL;
+
+		size_t idx = m_vecFeature.size();
+
+		auto iter = m_umapFeature.find(feat);
+		if (iter != m_umapFeature.end())
+			continue;
+
+		m_umapFeature.emplace(feat, idx);
+		m_vecFeature.push_back(std::bind(func, this));
+	}
+
+	m_pDesc->vecFeatureIdx.reserve(m_pDesc->vecFeature.size());
+	for (auto& feat : m_pDesc->vecFeature)
+	{
+		auto iter = m_umapFeature.find(feat);
+		if (iter == m_umapFeature.end())
+			continue;
+
+		m_pDesc->vecFeatureIdx.push_back((*iter).second);
+	}
 
 	return S_OK;
 }

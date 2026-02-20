@@ -65,6 +65,8 @@ HRESULT CMainApplication::Initialize()
 	if (FAILED(Start_Level(ELevelType::LOGO)))
 		return E_FAIL;	
 
+	CMonsterState_Factory::GetInstance()->Initialize();
+
 	return S_OK;
 }
 
@@ -457,6 +459,8 @@ HRESULT CMainApplication::Ready_Fonts()
 
 void CMainApplication::Free()
 {	
+	CMonsterState_Factory::DestroyInstance();
+
 	Safe_Release(m_pDeviceContext);
 	Safe_Release(m_pDevice);
 	CUI_Manager::GetInstance()->DestroyInstance();

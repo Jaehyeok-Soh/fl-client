@@ -413,6 +413,7 @@ namespace Client
 
 
 
+
 	inline constexpr wchar_t g_wszTriggerBoxLayer[]{ L"TriggerBox_Layer" };
 	inline constexpr wchar_t g_wszColMeshLayer[]{ L"ColMesh_Layer" };
 	inline constexpr wchar_t g_wszStaticObjectLayer[]{ L"StaticObject_Layer" };

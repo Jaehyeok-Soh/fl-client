@@ -1,7 +1,6 @@
 #pragma once
 #include <set>
 #include "StateBase.h"
-#include "Monster_Base.h"
 
 #include "DTO_MonsterState.h"
 
@@ -9,9 +8,12 @@ NS_BEGIN(Client)
 
 class CStateBase_Monster abstract : public CStateBase
 {
-	using Super = CStateBase;
-
 public:
+	typedef struct tagMonsterState_Node
+	{
+
+	}MONSTERSTATE_NODE;
+
 	enum MOVEFLAGS : Flags
 	{
 		NORMAL = 0x0001 // 8방향 움직임
@@ -19,6 +21,9 @@ public:
 		, UP_CHANGE = 0x0004 // state change : up
 		, OWN = 0x0008 // 자신만의 움직임
 	};
+
+private:
+	using Super = CStateBase;
 
 protected:
 	CStateBase_Monster(CActionState* pOwnerComponent, const string& strName);
@@ -32,7 +37,7 @@ public:
 	virtual HRESULT End() override;
 
 public:
-	virtual void Change_MonsterState(CMonster_Base::State::Enum eKey);	// change 랩핑 함수 : 필요시 오버라이드
+	virtual void Change_MonsterState(_int eKey);	// change 랩핑 함수 : 필요시 오버라이드
 
 protected:
 	STATE_START_DESC		m_tNextStateDesc = {};
@@ -61,12 +66,13 @@ private:
 	_uint m_iEndStateIdx = { 0 };			// CPlayer::State::END 캐싱 해둠 : 만약 END면 state change x
 
 private:
-	_bool Has_ChangeState(CMonster_Base::State::Enum eKey);
+	_bool Has_ChangeState(_int eKey);
 
-	HRESULT Bind_State(std::set<string> states);
-	HRESULT Bind_PreAnims(map<string, string> stateAnimMap);
-	HRESULT Bind_MainAnims(vector<string> mainAnimNames);
-	HRESULT Bind_Condition(map<string, string> transferConditionMap);
+	HRESULT Bind_State();
+	HRESULT Bind_PreAnims();
+	HRESULT Bind_MainAnims();
+	HRESULT Bind_Transition();
+	HRESULT Bind_Condition(vector<string> conds);
 	HRESULT Bind_Feature();
 
 	DTO::MONSTER_STATEBASE_DESC* m_pDesc = { nullptr };
@@ -77,7 +83,7 @@ private:
 	vector<std::function<_bool()>> m_vecCondition;
 
 	unordered_map<string, _int> m_umapFeature;
-	vector<std::function<_bool()>> m_vecFeature;
+	vector<std::function<void()>> m_vecFeature;
 
 public:
 	virtual void Free() override;

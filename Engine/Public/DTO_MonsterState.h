@@ -36,30 +36,9 @@ namespace DTO
 		j.at("bTimeReset").get_to(d.bTimeReset);
 	}
 
-	typedef struct tagMonsterPreAnimationDesc
-	{
-		int iPrevStateIdx = { -1 };
-		int iAnimationIdex = { -1 };
-
-	}MONSTERCHECK_ANIMATION;
-
-	inline void to_json(json& j, const MONSTERCHECK_ANIMATION& d)
-	{
-		j["iPrevStateIdx"] = d.iPrevStateIdx;
-		j["iAnimationIdex"] = d.iAnimationIdex;
-	}
-
-	inline void from_json(const json& j, MONSTERCHECK_ANIMATION& d)
-	{
-		j.at("iPrevStateIdx").get_to(d.iPrevStateIdx);
-		j.at("iAnimationIdex").get_to(d.iAnimationIdex);
-	}
-
 	typedef struct tagMonsterStateBaseDesc
 	{
 		unsigned int FAniFlags = { 0 };
-		vector<MONSTERCHECK_ANIMATION> vecPreAnims;
-		vector<int> vecMainAnims;
 
 		bool bBlend = { false };
 		bool bLoop = { false };
@@ -68,8 +47,6 @@ namespace DTO
 	inline void to_json(json& j, const MONSTERSTATE_DESC& d)
 	{
 		j["FAniFlags"] = d.FAniFlags;
-		j["vecPreAnims"] = d.vecPreAnims;
-		j["vecMainAnims"] = d.vecMainAnims;
 		j["bBlend"] = d.bBlend;
 		j["bLoop"] = d.bLoop;
 	}
@@ -77,10 +54,31 @@ namespace DTO
 	inline void from_json(const json& j, MONSTERSTATE_DESC& d)
 	{
 		j.at("FAniFlags").get_to(d.FAniFlags);
-		j.at("vecPreAnims").get_to(d.vecPreAnims);
-		j.at("vecMainAnims").get_to(d.vecMainAnims);
 		j.at("bBlend").get_to(d.bBlend);
 		j.at("bLoop").get_to(d.bLoop);
+	}
+
+	typedef struct tagStateTransition
+	{
+		vector<string> vecCondition;
+		// state name, weight
+		map<string, float> mapRandomStatePool;
+
+		vector<int> vecConditionIdx;
+		map<int, float> mapRandomStatePoolIdx;
+		float fTotalWeight;
+	}STATE_TRANSITION;
+
+	inline void to_json(json& j, const STATE_TRANSITION& d)
+	{
+		j["vecCondition"] = d.vecCondition;
+		j["mapRandomStatePool"] = d.mapRandomStatePool;
+	}
+
+	inline void from_json(const json& j, STATE_TRANSITION& d)
+	{
+		j.at("vecCondition").get_to(d.vecCondition);
+		j.at("mapRandomStatePool").get_to(d.mapRandomStatePool);
 	}
 
 	typedef struct tagMonsterStateDesc : public MONSTERSTATE_DESC
@@ -100,8 +98,11 @@ namespace DTO
 		map<string, string>		mapPreAnimNames;
 		vector<string>			vecMainAnimNames;
 
-		// to state name, condition(function)
-		map<string, string>		mapTransferCondition;
+		// condition(function), to state name
+		vector<STATE_TRANSITION> vecStateTransition;
+
+		vector<string> vecFeature;
+		vector<int> vecFeatureIdx;
 	}MONSTER_STATEBASE_DESC;
 
 	inline void to_json(json& j, const MONSTER_STATEBASE_DESC& d)
@@ -119,7 +120,7 @@ namespace DTO
 		j["mapPreAnimNames"] = d.mapPreAnimNames;
 		j["vecMainAnimNames"] = d.vecMainAnimNames;
 
-		j["vecMainAnimNames"] = d.mapTransferCondition;
+		j["vecStateTransition"] = d.vecStateTransition;
 	}
 
 	inline void from_json(const json& j, MONSTER_STATEBASE_DESC& d)
@@ -137,7 +138,7 @@ namespace DTO
 		j.at("mapPreAnimNames").get_to(d.mapPreAnimNames);
 		j.at("vecMainAnimNames").get_to(d.vecMainAnimNames);
 
-		j.at("vecMainAnimNames").get_to(d.mapTransferCondition);
+		j.at("vecStateTransition").get_to(d.vecStateTransition);
 	}
 }
 

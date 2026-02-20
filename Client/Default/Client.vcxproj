@@ -198,6 +198,8 @@
     <ClInclude Include="..\Public\MapObject.h" />
     <ClInclude Include="..\Public\MonsterActionState.h" />
     <ClInclude Include="..\Public\MonsterControlContext.h" />
+    <ClInclude Include="..\Public\MonsterStateFactoryRegisterer.h" />
+    <ClInclude Include="..\Public\MonsterState_Factory.h" />
     <ClInclude Include="..\Public\Monster_Base.h" />
     <ClInclude Include="..\Public\Monster_Body_Base.h" />
     <ClInclude Include="..\Public\Monster_Dummy.h" />
@@ -335,6 +337,8 @@
     <ClCompile Include="..\Private\MapObject.cpp" />
     <ClCompile Include="..\Private\MonsterActionState.cpp" />
     <ClCompile Include="..\Private\MonsterControlContext.cpp" />
+    <ClCompile Include="..\Private\MonsterStateFactoryRegisterer.cpp" />
+    <ClCompile Include="..\Private\MonsterState_Factory.cpp" />
     <ClCompile Include="..\Private\Monster_Base.cpp" />
     <ClCompile Include="..\Private\Monster_Body_Base.cpp" />
     <ClCompile Include="..\Private\Monster_Dummy.cpp" />
