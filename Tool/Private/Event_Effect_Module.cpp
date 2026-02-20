@@ -30,7 +30,6 @@ void CEvent_Effect_Module::SetEFfectEvent(CAnimEffectHandler* pEffectHandler, CA
 {
     Safe_Release(m_pEffectEvent);
     m_pEffectEvent = pEffectHandler;
-    Safe_AddRef(m_pEffectEvent);
 
     if (m_pEffectEvent)
     {

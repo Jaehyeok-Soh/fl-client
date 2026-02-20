@@ -118,7 +118,7 @@ void CAnimEffectHandler::Request_SpawnEffect(const DTO::EFFECTEVENT& Script)
     Matrix matRotation = XMMatrixRotationRollPitchYaw(XMConvertToRadians(Script.vRotation.x), XMConvertToRadians(Script.vRotation.y), XMConvertToRadians(Script.vRotation.z));
     matTargetWorld = matOffset * matRotation * matTargetWorld;
 
-    // 이펙트 생성 요청
+    // 이펙트 생성 요청asssssa
     m_pGameInstance->Spawn_Effect(
         Script.strEffectTag,
         matTargetWorld,
