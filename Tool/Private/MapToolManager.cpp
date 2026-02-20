@@ -416,10 +416,22 @@ HRESULT CMapToolManager::Batch_Preview()
 
 HRESULT CMapToolManager::Register_MapObjectCloneFactory()
 {
+	// 거 이펙트에서 좀 꽁쳐가겠습니다.
+	// 어차피 무조건 else 걸릴겁니다. 
+	// Load 단계에서는 어차피 Loader라서 0이거든
+	if (m_pGameInstance->Get_CurrentLevelIndex() == ENUM_TO_UINT(ELevelType::EFFECT))
+	{
+		m_funcMapObjectCloneFactory =
+			[=](void* pArg)->CGameObject* { return m_pGameInstance->Add_GameObject(ENUM_TO_UINT(ELevelType::EFFECT), L"Prototype_GameObject_MapObject",
+				ENUM_TO_UINT(ELevelType::EFFECT), g_wszMapObjectLayer, pArg); };
+	}
 
-	m_funcMapObjectCloneFactory =
-		[=](void* pArg)->CGameObject* { return m_pGameInstance->Add_GameObject(ENUM_TO_UINT(ELevelType::MAP), L"Prototype_GameObject_MapObject",
-			ENUM_TO_UINT(ELevelType::MAP), g_wszMapObjectLayer, pArg); };
+	else
+	{
+		m_funcMapObjectCloneFactory =
+			[=](void* pArg)->CGameObject* { return m_pGameInstance->Add_GameObject(ENUM_TO_UINT(ELevelType::MAP), L"Prototype_GameObject_MapObject",
+				ENUM_TO_UINT(ELevelType::MAP), g_wszMapObjectLayer, pArg); };
+	}
 
 	return S_OK;
 }

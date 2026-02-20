@@ -289,6 +289,9 @@
     <Filter Include="02. GameObjects\PartObject\AnimPart">
       <UniqueIdentifier>{5f37dc5c-8136-45a1-a390-81efe16de549}</UniqueIdentifier>
     </Filter>
+    <Filter Include="03. Level\Effect\EffectMap_Manager">
+      <UniqueIdentifier>{f6e885fe-6ab5-4919-9664-08fb2ffebacc}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="framework.h">

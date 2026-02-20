@@ -1,11 +1,13 @@
 #include "pch.h"
 #include "Level_Effect.h"
+#include "EngineConsole.h"
 ///////////////
 // Component //
 ///////////////
 #include "VIBuffer_Terrain.h"
 #include "Shader.h"
 #include "Material.h"
+#include "Bounds.h"
 
 ////////////////
 // GameObject //
@@ -33,6 +35,13 @@
 #include "Level_Loading.h"
 #include "Engine_Utils.h"
 #include "Tool_Defines.h"
+#include "MapToolManager.h"
+
+/////////////
+//   Data  //
+/////////////
+#include "DataDocument_Map.h"
+#include "Builder_Map.h"
 
 CLevel_Effect::CLevel_Effect(ID3D11Device* pDevice, ID3D11DeviceContext* pDeviceContext)
 	: Super(pDevice, pDeviceContext)
@@ -47,6 +56,9 @@ CLevel_Effect::CLevel_Effect(ID3D11Device* pDevice, ID3D11DeviceContext* pDevice
 HRESULT CLevel_Effect::Initialize()
 {
 	if (FAILED(Super::Initialize()))
+		return E_FAIL;
+
+	if (FAILED(Ready_Component()))
 		return E_FAIL;
 
 	if (FAILED(Ready_Lights()))
@@ -67,6 +79,14 @@ HRESULT CLevel_Effect::Initialize()
 	return S_OK;
 }
 
+HRESULT CLevel_Effect::Ready_Component()
+{
+	// For. Prototype_Component_Bounds
+	m_pGameInstance->Add_Prototype(ENUM_TO_UINT(ELevelType::STATIC), L"Prototype_Component_Bounds", CBounds::Create(m_pDevice, m_pDeviceContext));
+
+	return S_OK;
+}
+
 HRESULT CLevel_Effect::Awake(const _uint iLevelID)
 {
 	if (FAILED(Super::Awake(iLevelID)))
@@ -75,6 +95,15 @@ HRESULT CLevel_Effect::Awake(const _uint iLevelID)
 	MSG_BOX("Effect");
 
 	if (FAILED(Ready_CameraSetting(iLevelID)))
+		return E_FAIL;
+
+	if (FAILED(CMapToolManager::GetInstance()->Initialize(m_pDevice, m_pDeviceContext)))
+		return E_FAIL;
+
+	if (FAILED(Build_Prototype()))
+		return E_FAIL;
+
+	if (FAILED(Ready_DevMap()))
 		return E_FAIL;
 
 	if (FAILED(Ready_Gui()))
@@ -214,7 +243,36 @@ HRESULT CLevel_Effect::Ready_CameraSetting(const _uint iLevelID)
 	return S_OK;
 }
 
+HRESULT CLevel_Effect::Build_Prototype()
+{
+	if (FAILED(Ready_Builder(DTO::ECategory::MAP, CBuilder_Map::Create(m_pDevice, m_pDeviceContext, static_cast<_uint>(ELevelType::EFFECT)))))
+		return E_FAIL;
+}
 
+
+HRESULT CLevel_Effect::Ready_DevMap()
+{
+	ELevelType eLevelType = ELevelType::EFFECT;
+	DTO::ECategory eCategory = DTO::ECategory::MAP;
+	_uint iLevelID = ENUM_TO_UINT(eLevelType);
+
+	if (FAILED(m_pGameInstance->Regist_Document<CDataDocument_Map>(iLevelID, eCategory)))
+		return E_FAIL;
+
+	std::filesystem::path FilePath = L"../../Resources/Data/MapData/LevelData/DevLevel/DevMap.json";
+	vector<path> vecfiles;
+
+	if (!std::filesystem::exists(FilePath))
+		return E_FAIL;
+
+	if (FAILED(m_pGameInstance->Load_File_Json(iLevelID, eCategory, FilePath)))
+		return E_FAIL;
+
+	if (FAILED(Build_File(iLevelID, eCategory, FilePath.stem().string())))
+		return E_FAIL;
+
+	return S_OK;
+}
 
 void CLevel_Effect::Render_Elements()
 {
@@ -258,5 +316,6 @@ void CLevel_Effect::Free()
 	m_GuiElements.fill(nullptr);
 	Safe_Release(m_pImGuiManager);
 	Safe_Release(m_pPickingManager);
+
 	Super::Free();
 }

@@ -798,7 +798,7 @@ void CMapObject::Ready_Before_Render(const _float fTimeDelta)
 
 
     // m_eMapObjectState == CMapObject::EState::Select ?  RENDER_CATEGORY::NONELIGHT : 
-    m_pGameInstance->Push_RenderObject(RENDER_CATEGORY::NONELIGHT, this);
+    m_pGameInstance->Push_RenderObject(RENDER_CATEGORY::NONEBLEND, this);
 
 #ifdef _DEBUG
     //if (m_eMapObjectDrawType == EMapObject_DrawType::Instance)
