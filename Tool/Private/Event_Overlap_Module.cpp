@@ -3,6 +3,7 @@
 #include "GameInstance.h"
 #include "Model.h"
 #include "AnimObj.h"
+#include "Event_Effect_Module.h"
 
 CEvent_Overlap_Module::CEvent_Overlap_Module(ID3D11Device* pDevice, ID3D11DeviceContext* pDeviceContext)
 	: Super(),

@@ -21,6 +21,10 @@
 #include "Tool_ContainerObject.h"
 #include "Tool_PartObject.h"
 #include "AnimObj.h"
+#include "Effect.h"
+#include "CEffectObject.h"
+#include "Gravity_Force.h"
+#include "Tool_Weapon.h"
 //=================
 // UI
 //=================
@@ -179,6 +183,37 @@ HRESULT CLoader::Loading_For_Animation()
 	{
 		m_pGameInstance->Add_Prototype(ENUM_TO_UINT(ELevelType::ANIMATION), L"Prototype_GameObject_AnimObject", CAnimObj::Create(EToolObjectType::ANIMATION, m_pDevice, m_pDeviceContext));
 	}
+
+	// For. Prototype_Component_Collider_OBB
+	CVIBuffer_Particle_Point::PARTICLE_POINT_ORIGIN_DESC	ExploDesc{};
+	ExploDesc.iInstnaceCount = 30;
+	ExploDesc.vCenter = Vec3(0.f, 0.f, 0.f);
+	ExploDesc.vSize = Vec2(0.05f, 0.15f);
+	ExploDesc.vRange = Vec3(0.5f, 0.5f, 0.5f);
+	ExploDesc.vSpeed = Vec2(2.f, 5.f);
+	ExploDesc.vLifeTime = Vec2(1.f, 5.5f);
+	ExploDesc.isLoop = false;
+	ExploDesc.vPivot = Vec3(0.f, 0.f, 0.5f);
+
+	m_pGameInstance->Add_Prototype(ENUM_TO_UINT(ELevelType::ANIMATION), L"Prototype_Component_VIBuffer_Particle_Point", CVIBuffer_Particle_Point::Create(m_pDevice, m_pDeviceContext, &ExploDesc));
+	m_pGameInstance->Add_Prototype(ENUM_TO_UINT(ELevelType::ANIMATION), L"Prototype_Component_VIBuffer_Particle_Mesh", CVIBuffer_Particle_Mesh::Create(m_pDevice, m_pDeviceContext, &ExploDesc));
+
+	m_pGameInstance->Add_Prototype(ENUM_TO_UINT(ELevelType::ANIMATION), L"Prototype_GameObject_Effect", Effect::Create(EToolObjectType::MESHEFFECT, m_pDevice, m_pDeviceContext));
+	m_pGameInstance->Add_Prototype(ENUM_TO_UINT(ELevelType::ANIMATION), L"Prototype_GameObject_Effect_Part_Particle", CEffectObject::Create(EToolObjectType::MESHEFFECT, m_pDevice, m_pDeviceContext));
+	m_pGameInstance->Add_Prototype(ENUM_TO_UINT(ELevelType::ANIMATION), L"Prototype_GameObject_Effect_Part_ForceField", CGravity_Force::Create(EToolObjectType::MESHEFFECT, m_pDevice, m_pDeviceContext));
+	m_pGameInstance->Add_Prototype(ENUM_TO_UINT(ELevelType::ANIMATION), L"Prototype_GameObject_Tool_Weapon", CTool_Weapon::Create(EToolObjectType::ANIMATION, m_pDevice, m_pDeviceContext));
+	/* Effect Data Model */
+	wstring basicBoxPath = L"../../Resources/Models/Map/Level/BasicShapes/Model/";
+
+	CUEMapDataLoader* pMapDataLoader = CUEMapDataLoader::Create(m_pDevice, m_pDeviceContext);
+	if (pMapDataLoader == nullptr) return E_FAIL;
+	if (FAILED(pMapDataLoader->Make_Prototype(ENUM_TO_UINT(ELevelType::ANIMATION), L"../../Resources/Models/Effect_FBX/blade/Model/")))
+		return E_FAIL;
+	if (FAILED(pMapDataLoader->Make_Prototype(ENUM_TO_UINT(ELevelType::ANIMATION), basicBoxPath)))
+		return E_FAIL;
+	Safe_Release(pMapDataLoader);
+
+	Loading_Textures_Effect(L"../../Resources/Textures/Effect");
 
 	m_isFinished = true;
 	return S_OK;

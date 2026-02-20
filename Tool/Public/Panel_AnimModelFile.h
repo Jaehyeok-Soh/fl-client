@@ -71,6 +71,9 @@ private:
 	void Load_HitboxData(fs::path path);
 	void Save_HitboxData(fs::path path);
 
+	void Load_EffectData(fs::path path);
+	void Save_EffectData(fs::path path);
+
 private:
 	DIR GetRootDir() { return m_tRootDirectory; }
 	DIR RefreshModelDir();

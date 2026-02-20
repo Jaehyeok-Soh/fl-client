@@ -19,8 +19,6 @@ class CEffectObject :
 {
 public:
     using Super = Tool_PartObject;
-    using _uint2 = struct { _uint x; _uint y; };
-
 public:
     typedef struct tagEffectObjectDesc : public Super::PARTOBJ_DESC
     {
@@ -63,6 +61,13 @@ public:
 
     void Particle_Setting();
 
+public:
+    // 외부 호출 함수
+    virtual HRESULT Spawn_FromPool(void* pArg);
+    virtual HRESULT Despawn_FromPool();
+
+public:
+    _bool IsEffectfinish() { return m_bIsEffectFinish; }
 
 private:
     //  ==========  Shader Binding Setting  =============
@@ -121,7 +126,10 @@ private:
     CComputeShader* m_pComputeShader = { nullptr };
     CTransform* m_pTransform = { nullptr };
 
-    _bool              m_bIsTool = { false };
+    _bool       m_bIsTool = { false };
+
+private:
+    _bool       m_bIsEffectFinish = { false };
 };
 
 NS_END

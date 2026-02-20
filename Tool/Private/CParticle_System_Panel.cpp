@@ -412,8 +412,8 @@ void CParticle_System_Panel::Draw_ParticleSystem(CToolObject* pGo)
 
 		ImGui::AlignTextToFramePadding(); if (ImGui::TreeNode("Simulation Space"))
 		{
-			bool isLocal = (static_cast<Effect*>(pGo)->Get_SimulationSpace() == E_SIMULATION_SPACE::LOCAL);
-			bool isWorld = (static_cast<Effect*>(pGo)->Get_SimulationSpace() == E_SIMULATION_SPACE::WORLD);
+			bool isLocal = (static_cast<Effect*>(pGo)->Get_SimulationSpace() == DTO::E_SIMULATION_SPACE::LOCAL);
+			bool isWorld = (static_cast<Effect*>(pGo)->Get_SimulationSpace() == DTO::E_SIMULATION_SPACE::WORLD);
 
 			ImGui::Text("Local"); ImGui::SameLine(0, 45.f);
 			ImGui::Text("World");
@@ -422,7 +422,7 @@ void CParticle_System_Panel::Draw_ParticleSystem(CToolObject* pGo)
 			if (ImGui::Checkbox("##LocalMode", &isLocal))
 			{
 				// 클릭 시 무조건 LOCAL로 변경
-				static_cast<Effect*>(pGo)->Set_SimulationSpace(E_SIMULATION_SPACE::LOCAL);
+				static_cast<Effect*>(pGo)->Set_SimulationSpace(DTO::E_SIMULATION_SPACE::LOCAL);
 				m_bModified = true;
 			}
 
@@ -432,13 +432,13 @@ void CParticle_System_Panel::Draw_ParticleSystem(CToolObject* pGo)
 			if (ImGui::Checkbox("##WorldMode", &isWorld))
 			{
 				// 클릭 시 무조건 WORLD로 변경
-				static_cast<Effect*>(pGo)->Set_SimulationSpace(E_SIMULATION_SPACE::WORLD);
+				static_cast<Effect*>(pGo)->Set_SimulationSpace(DTO::E_SIMULATION_SPACE::WORLD);
 				m_bModified = true;
 			}
 
 			// ====== 이쁘게 디자인하기 =======
 			ImGui::Spacing();
-			const char* modeText = (static_cast<Effect*>(pGo)->Get_SimulationSpace() == E_SIMULATION_SPACE::LOCAL) ? "LOCAL" : "WORLD";
+			const char* modeText = (static_cast<Effect*>(pGo)->Get_SimulationSpace() == DTO::E_SIMULATION_SPACE::LOCAL) ? "LOCAL" : "WORLD";
 			ImGui::Text("Active Mode: "); ImGui::SameLine();
 			ImGui::TextColored(ImVec4(0.0f, 1.0f, 1.0f, 1.0f), "%s", modeText);
 

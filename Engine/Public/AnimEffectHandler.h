@@ -6,57 +6,56 @@ NS_BEGIN(Engine)
 
 class CModel;
 
-class ENGINE_DLL CAnimEffectHandler :
-    public CComponent
+class ENGINE_DLL CAnimEffectHandler final : public CComponent
 {
 public:
-	typedef struct tagAnimEffectHandlerDesc
-	{
-		string strOwnerTag; // PlayerMoon 같은 주체 이름을 넣는다
-
-		// Builder 쪽에서 가공해서 넘겨줄 애니메이션 인덱스 기반의 이벤트 맵.
-		// Key: 애니메이션 인덱스, Value : 해당 애니메이션 이벤트 리스트.
-		unordered_map<_uint, vector<DTO::ANIM_EVENT_BASE>> mapEvents;
-	}ANIM_EFFECT_HANDLER_DESC;
+    typedef struct tagAnimEffectHandlerDesc
+    {
+        string strOwnerTag;
+        unordered_map<_uint, vector<DTO::EFFECTEVENT>> mapEvents;
+    } ANIM_EFFECT_HANDLER_DESC;
 
 private:
-	using Super = CComponent;
+    using Super = CComponent;
 
 public:
-	constexpr static EComponentType _ID = EComponentType::EF_ANIMHANDLER;
+    constexpr static EComponentType _ID = EComponentType::EF_ANIMHANDLER;
 
 private:
-	CAnimEffectHandler();
-	CAnimEffectHandler(const CAnimEffectHandler& rhs);
-	virtual ~CAnimEffectHandler() = default;
+    CAnimEffectHandler();
+    CAnimEffectHandler(const CAnimEffectHandler& rhs);
+    virtual ~CAnimEffectHandler() = default;
 
-	virtual HRESULT Initialize_Prototype(void* pArg);
-	virtual HRESULT Initialize(void* pArg) override;
+    virtual HRESULT Initialize_Prototype(void* pArg);
+    virtual HRESULT Initialize(void* pArg) override;
 
 public:
-	void Awake();
-	void Update(_float fDT);
-
-private:
-	void GetAnimation();
-	void CheckAnim();
-	void Request_SpawnEffect(const DTO::EFFECT_EVENT_SCRIPT& script);
-
-private:
-	_uint m_iPrevAnimIndex = { 999999 };
-	_float m_fPrevTrackPosition = { 0.f };
-
-	// 빌더로부터 전달받은 이벤트 데이터 사전
-	ANIM_EFFECT_HANDLER_DESC m_tDesc;
-
-	// 빠른 접근을 위한 캐싱
-	const Matrix* m_pOwnerMatrix = { nullptr };
-	CModel* m_pOwnerModel = { nullptr };
+    void Awake();
+    void Update(_float fDT);
 
 public:
-	static CAnimEffectHandler* Create(void* pArg);
-	virtual CComponent* Clone(void* pArg) override;
-	virtual void Free() override;
+    // 툴 모듈에서 실시간으로 데이터를 교체하기 위한 Getter
+    ANIM_EFFECT_HANDLER_DESC& Get_Desc() { return m_tDesc; }
+    unordered_map<_uint, vector<DTO::EFFECTEVENT>>& GetEvents() { return m_tDesc.mapEvents; }
+
+private:
+    void GetAnimation();
+    void CheckAnim();
+    void Request_SpawnEffect(const DTO::EFFECTEVENT& script);
+
+private:
+    _uint m_iPrevAnimIndex = { 999999 };
+    _float m_fPrevTrackPosition = { 0.f };
+
+    ANIM_EFFECT_HANDLER_DESC m_tDesc;
+
+    const Matrix* m_pOwnerMatrix = { nullptr };
+    CModel* m_pOwnerModel = { nullptr };
+
+public:
+    static CAnimEffectHandler* Create(void* pArg);
+    virtual CComponent* Clone(void* pArg) override;
+    virtual void Free() override;
 };
 
 NS_END

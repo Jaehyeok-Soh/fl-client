@@ -35,22 +35,15 @@ HRESULT CBuilder_EffectEvent::Build(const CDataDocumentBase& document)
 	return S_OK;
 }
 
-HRESULT CBuilder_EffectEvent::Create_Effect(const DTO::ANIM_EVENT_INFO_DESC& data)
+HRESULT CBuilder_EffectEvent::Create_Effect(const DTO::EFFECT_EVENT_INFO_DESC& data)
 {
 	CAnimEffectHandler::ANIM_EFFECT_HANDLER_DESC tHandlerDesc = {};
 	tHandlerDesc.strOwnerTag = data.strOwnerTag;
-
-	for (_uint i = 0; i < ENUM_TO_UINT(EAnimNotifyId::END); ++i)
+	for (const auto& effectEvent : data.vecEffectEvents)
 	{
-		for (auto& eventBase : data.vecAnimEvents[i])
-		{
-			// 해당 애니메이션 인덱스의 리스트에 이벤트 추가
-			// key: iAnimIndex, value: vector<ANIM_EVENT_BASE>
-			tHandlerDesc.mapEvents[eventBase.iAnimIndex].push_back(eventBase);
-		}
+		tHandlerDesc.mapEvents[effectEvent.iAnimIndex].push_back(effectEvent);
 	}
 
-	// 프로토타입 태그 생성 (Prototype_Component_AnimEffectHandler_PlayerMoon)
 	wstring wstrOwnerTag = Engine_Utils::ToWString(data.strOwnerTag);
 	wstring prototypeTag = L"Prototype_Component_AnimEffectHandler_" + wstrOwnerTag;
 

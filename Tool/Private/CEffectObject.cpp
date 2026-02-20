@@ -9,6 +9,7 @@
 #include "VIBuffer_Particle_Mesh.h"
 #include "StructuredBuffer.h"
 #include "GameInstance.h"
+#include "Tool_Weapon.h"
 
 #define PLAY 0
 #define PAUSE 1
@@ -571,6 +572,7 @@ void CEffectObject::Update(const _float fTimeDelta)
     {
         if (m_tEffectDesc.Data._Effect_Looping)
         {
+            m_bIsEffectFinish = false;
             m_fTimeAccumulation = 0.f; // 완전 리셋
             fActiveTime = 0.f;
             m_vScrollOffset = { 0.f, 0.f }; // 스크롤 값도 완전 초기화
@@ -581,6 +583,7 @@ void CEffectObject::Update(const _float fTimeDelta)
         }
         else
         {
+            m_bIsEffectFinish = true;
             return;
         }
     }
@@ -735,12 +738,26 @@ void CEffectObject::Set_Dead(const wstring& wstrLayerTag)
 }
 
 
+HRESULT CEffectObject::Spawn_FromPool(void* pArg)
+{
+    TimeFlagRequest(RESET);
+
+    return S_OK;
+}
+HRESULT CEffectObject::Despawn_FromPool()
+{
+    TimeFlagRequest(RESET);
+
+    return S_OK;
+}
+
 void CEffectObject::TimeFlagRequest(_uint iTimeFlag)
 {
     m_tEffectDesc.Data._Effect_TimeFlag = iTimeFlag;
 
     if (iTimeFlag == RESET)
     {
+        m_bIsEffectFinish = false;
         m_bIsStarted = false;
         m_fTimeAccumulation = 0.f;
         m_vScrollOffset = Vec2{ 0.f, 0.f };
@@ -758,6 +775,7 @@ void CEffectObject::TimeFlagRequest(_uint iTimeFlag)
     }
     else if (iTimeFlag == STOP)
     {
+        m_bIsEffectFinish = false;
         m_bIsStarted = false;
         m_fTimeAccumulation = 0.f;
         m_vScrollOffset = Vec2{ 0.f, 0.f };
