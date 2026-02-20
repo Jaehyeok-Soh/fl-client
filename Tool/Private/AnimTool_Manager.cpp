@@ -12,8 +12,20 @@
 #include "DataDocument_AttackOverlap.h"
 #include "DataStruct_AttackOverlap.h"
 
+// EFfect Event
+#include "Builder_EffectEvent.h"
+#include "DataDocument_EffectEvent.h"
+#include "DataStruct_EffectEvent.h"
+#include "AnimEffectHandler.h"
+
+// Effect
+#include "Builder_Effect.h"
+#include "DataDocument_Effect.h"
+#include "DataStruct_Effect.h"
+
 // Animation tool module
 #include "Event_Overlap_Module.h"
+#include "Event_Effect_Module.h"
 
 IMPLEMENT_SINGLETON(CAnimTool_Manager)
 
@@ -32,8 +44,10 @@ HRESULT CAnimTool_Manager::Initialize_AnimTool(ID3D11Device* pDevice, ID3D11Devi
 	Safe_AddRef(m_pGameInstance);
 
 	Ready_Builder();
+	Ready_BuildFiles();
 
 	m_pOverlapModule = CEvent_Overlap_Module::Create(m_pDevice, m_pDeviceContext);
+	m_pEffectModule = CEvent_Effect_Module::Create(m_pDevice, m_pDeviceContext);
 
 	Ready_Event();
 
@@ -125,8 +139,8 @@ void CAnimTool_Manager::SetAnimControllInfo()
 
 	m_tAnimControllInfo.iTotalAnimCount = m_tAnimControllInfo.pModel->Get_AnimationCount();
 	m_tAnimControllInfo.iCurrentAnimIndex = m_tAnimControllInfo.pModel->Get_CurrentAnimationIndex();
-	m_tAnimControllInfo.fDuration = m_tAnimControllInfo.pModel->Get_AnimDurationTime();
-	m_tAnimControllInfo.fTrackPosition = 0.f;
+	m_tAnimControllInfo.fDuration = (_uint)m_tAnimControllInfo.pModel->Get_AnimDurationTime();
+	m_tAnimControllInfo.fTrackPosition = 0;
 	m_tAnimControllInfo.fTickPerSecond = m_tAnimControllInfo.pModel->Get_AnimTickPerSecond();
 	m_tAnimControllInfo.pModel->Set_AnimationPlayRate(m_tAnimControllInfo.iCurrentAnimIndex, 1.f);
 	m_tAnimControllInfo.fPlayRate = 1.f;
@@ -222,7 +236,7 @@ void CAnimTool_Manager::ChangeAnimation(_uint iIndex)
 
 	m_tAnimControllInfo.pModel->Change_Animation(pAnimECS, m_tAnimControllInfo.iCurrentAnimIndex, true, m_tAnimControllInfo.bLoop, false);
 
-	m_tAnimControllInfo.fDuration = m_tAnimControllInfo.pModel->Get_AnimDurationTime();
+	m_tAnimControllInfo.fDuration = (_uint)m_tAnimControllInfo.pModel->Get_AnimDurationTime();
 	m_tAnimControllInfo.fTickPerSecond = m_tAnimControllInfo.pModel->Get_AnimTickPerSecond();
 	m_tAnimControllInfo.fPlayRate = 1.f;
 
@@ -248,7 +262,7 @@ void CAnimTool_Manager::UpdateAnimationInfo()
 	if (!ValidCheck())
 		return;
 
-	m_tAnimControllInfo.fTrackPosition = m_tAnimControllInfo.pModel->Get_AnimTrackPosition();
+	m_tAnimControllInfo.fTrackPosition = (_uint)m_tAnimControllInfo.pModel->Get_AnimTrackPosition();
 	m_tAnimControllInfo.fTickPerSecond = m_tAnimControllInfo.pModel->Get_AnimTickPerSecond();
 }
 
@@ -261,6 +275,8 @@ void CAnimTool_Manager::Update_Module(const _float& fTimeDelta)
 	m_pOverlapModule->Update(fTimeDelta);
 
 	// 이펙트
+	if (m_pEffectModule)
+		m_pEffectModule->Update(fTimeDelta);
 
 	// 사운드
 }
@@ -274,6 +290,8 @@ void CAnimTool_Manager::Render_Module()
 	m_pOverlapModule->Render();
 
 	// 이펙트
+	if (m_pEffectModule)
+		m_pEffectModule->Render();
 
 	// 사운드
 }
@@ -287,6 +305,7 @@ void CAnimTool_Manager::SetModuleOwner()
 	m_pOverlapModule->SetOwner(m_tAnimControllInfo.pCurrentObject);
 
 	// 이펙트
+	 m_pEffectModule->SetOwner(m_tAnimControllInfo.pCurrentObject);
 
 	// 사운드
 }
@@ -299,13 +318,54 @@ HRESULT CAnimTool_Manager::Ready_Builder()
 	if (FAILED(m_pBuilderSystem->Ready_Builder(DTO::ECategory::OVERLAP_SCRIPT, CBuilder_AttackOverlap::Create(m_pDevice, m_pDeviceContext, ENUM_TO_UINT(ELevelType::ANIMATION)))))
 		return E_FAIL;
 
+	if (FAILED(m_pBuilderSystem->Ready_Builder(DTO::ECategory::EFFECTEVENT, CBuilder_EffectEvent::Create(m_pDevice, m_pDeviceContext, ENUM_TO_UINT(ELevelType::ANIMATION)))))
+		return E_FAIL;
+
+	if (FAILED(m_pBuilderSystem->Ready_Builder(DTO::ECategory::EFFECT, CBuilder_Effect::Create(m_pDevice, m_pDeviceContext, ENUM_TO_UINT(ELevelType::ANIMATION)))))
+		return E_FAIL;
+
 	return S_OK;
+}
+
+HRESULT CAnimTool_Manager::Ready_BuildFiles()
+{
+#pragma region EFFECT
+	DTO::ECategory eCategory = DTO::ECategory::EFFECT;
+	if (FAILED(m_pGameInstance->Regist_Document<CDataDocument_Effect>(ENUM_TO_UINT(ELevelType::ANIMATION), eCategory)))
+		return E_FAIL;
+	std::filesystem::path strUIFolderPath = L"../../Resources/Data/EffectData/";
+	if (std::filesystem::exists(strUIFolderPath))
+	{
+		for (auto iter : std::filesystem::directory_iterator(strUIFolderPath))
+		{
+			string strFileName = iter.path().stem().string(); // 파일명 추출
+
+			if (FAILED(m_pGameInstance->Load_File_Json(ENUM_TO_UINT(ELevelType::ANIMATION), eCategory, iter.path())))
+				return E_FAIL;
+
+			if (FAILED(Build_File(ENUM_TO_UINT(ELevelType::ANIMATION), eCategory, strFileName)))
+				return E_FAIL;
+
+			m_vecEffectTags.push_back(strFileName);
+		}
+	}
+#pragma endregion
+
+	return S_OK;
+}
+
+HRESULT CAnimTool_Manager::Build_File(_uint iLevelID, DTO::ECategory eCateGory, string strFileKey)
+{
+	return m_pBuilderSystem->Build_File(iLevelID, eCateGory, strFileKey);
 }
 
 HRESULT CAnimTool_Manager::Ready_Event()
 {
 	m_EventHandles[CLevel_Animation::Event::LOAD_OVERLAP_SCRIPT] =
 		m_pGameInstance->Subscribe<LoadAttackOverlap>(this, &CAnimTool_Manager::Set_AttackOverlap);
+
+	m_EventHandles[CLevel_Animation::Event::LOAD_EFFECT_SCRIPT] =
+		m_pGameInstance->Subscribe<LoadEffectEvent>(this, &CAnimTool_Manager::Set_EffectEvent);
 
 	return S_OK;
 }
@@ -327,12 +387,50 @@ HRESULT CAnimTool_Manager::Load_AttackOverlap(fs::path path)
 	return S_OK;
 }
 
+HRESULT CAnimTool_Manager::Load_EffectEvent(fs::path path)
+{
+	ELevelType eLevelType = ELevelType::ANIMATION;
+	DTO::ECategory eCategory = DTO::ECategory::EFFECTEVENT;
+	_uint iLevelID = ENUM_TO_UINT(eLevelType);
+
+	if (FAILED(m_pGameInstance->Regist_Document<CDataDocument_EffectEvent>(iLevelID, eCategory)))
+		return E_FAIL;
+
+	if (FAILED(m_pGameInstance->Load_File_Json(iLevelID, eCategory, path)))
+		return E_FAIL;
+
+	m_pBuilderSystem->Build_File(ENUM_TO_UINT(ELevelType::ANIMATION), DTO::ECategory::EFFECTEVENT, path.filename().stem().string());
+
+	return S_OK;
+}
+
 void CAnimTool_Manager::Set_AttackOverlap(CPhysicsAttackOverlap* pAttackOverlap)
 {
 	m_pOverlapModule->SetAttackOverlap(pAttackOverlap, m_tAnimControllInfo.pCurrentObject);
 	
 	if (m_pOverlapModule)
 		m_tEventInfo.vecAttackEvents = m_pOverlapModule->GetEvents();
+}
+
+void CAnimTool_Manager::Set_EffectEvent(CAnimEffectHandler* pEffectEvent)
+{
+	if (m_pEffectModule)
+	{
+		m_pEffectModule->SetEFfectEvent(pEffectEvent, m_tAnimControllInfo.pCurrentObject);
+
+		unordered_map<_uint, vector<DTO::EFFECTEVENT>> EventList = {};
+		EventList = m_pEffectModule->GetEvents();
+
+		for (auto& Event : EventList)
+		{
+			for (auto& E : Event.second)
+			{
+				m_tEventInfo.vecVFXEvents.push_back(E);
+			}
+		}
+		//m_tEventInfo.vecVFXEvents = m_pEffectModule->GetEvents();
+		int count = (int)m_tEventInfo.vecVFXEvents.size();
+	}
 }
 
 HRESULT CAnimTool_Manager::Save_AttackOverlap(fs::path path, string strAnimTag, _int iPool)
@@ -368,11 +466,44 @@ HRESULT CAnimTool_Manager::Save_AttackOverlap(fs::path path, string strAnimTag, 
 		return E_FAIL;
 
 	m_pGameInstance->Save_File_Json(iLevelID, DTO::ECategory::OVERLAP_SCRIPT, path);
+	return S_OK;
+}
+
+HRESULT CAnimTool_Manager::Save_EffectEvent(fs::path path, string strAnimTag, _int iPool)
+{
+	ELevelType eLevelType = ELevelType::ANIMATION;
+	DTO::ECategory eCategory = DTO::ECategory::EFFECTEVENT;
+	_uint iLevelID = ENUM_TO_UINT(eLevelType);
+
+	if (FAILED(m_pGameInstance->Regist_Document<CDataDocument_EffectEvent>(iLevelID, eCategory)))
+		return E_FAIL;
+
+	CDataDocumentBase* pDocument = m_pGameInstance->Ensure_Document(iLevelID, eCategory, path);
+	CDataDocument_EffectEvent* pEffectEventDoc = static_cast<CDataDocument_EffectEvent*>(pDocument);
+
+	if (pEffectEventDoc == nullptr) return E_FAIL;
+
+	DTO::EFFECT_EVENT_INFO_DESC tData{};
+	tData.strOwnerTag = m_tAnimControllInfo.modelPath.stem().string();
+	tData.iNumPool = iPool;
+
+	for (auto& event : m_tEventInfo.vecVFXEvents)
+	{
+		event.strAnimTag = Engine_Utils::ToString(m_tAnimControllInfo.pModel->Get_AnimationName(event.iAnimIndex));
+	}
+	tData.vecEffectEvents = m_tEventInfo.vecVFXEvents;
+
+	if (FAILED(pEffectEventDoc->Try_Add(tData)))
+		return E_FAIL;
+
+	m_pGameInstance->Save_File_Json(iLevelID, eCategory, path);
+	return S_OK;
 }
 
 HRESULT CAnimTool_Manager::Release_Event()
 {
 	m_pGameInstance->Unsubscribe<LoadAttackOverlap>(m_EventHandles[CLevel_Animation::Event::LOAD_OVERLAP_SCRIPT]);
+	m_pGameInstance->Unsubscribe<LoadEffectEvent>(m_EventHandles[CLevel_Animation::Event::LOAD_EFFECT_SCRIPT]);
 
 	return S_OK;
 }
@@ -380,6 +511,7 @@ HRESULT CAnimTool_Manager::Release_Event()
 void CAnimTool_Manager::Awake_AttackOverlap()
 {
 	m_pOverlapModule->Awake();
+	m_pEffectModule->Awake();
 }
 
 void CAnimTool_Manager::Modify_AttackOverlap(_uint eventIdx, DTO::ATTACKEVENT event)
@@ -392,9 +524,34 @@ void CAnimTool_Manager::Modify_AttackOverlap(vector<DTO::ATTACKEVENT> events)
 	m_pOverlapModule->Modify_AttackOverlap(events);
 }
 
+void CAnimTool_Manager::Modify_EffectEvent(vector<DTO::EFFECTEVENT> events)
+{
+	m_tEventInfo.vecVFXEvents = events;
+
+	if (m_pEffectModule)
+	{
+		// Add Event를 눌러서 생성했는데 컴포넌트가 없는 상태라면
+		if (m_pEffectModule->GetHandler() == nullptr)
+		{
+			CAnimEffectHandler::ANIM_EFFECT_HANDLER_DESC tDesc{};
+			tDesc.strOwnerTag = m_tAnimControllInfo.modelPath.stem().string();
+
+			CAnimEffectHandler* pNewHandler = CAnimEffectHandler::Create(&tDesc);
+			if (pNewHandler)
+			{
+				m_pEffectModule->SetEFfectEvent(pNewHandler, m_tAnimControllInfo.pCurrentObject);
+				Safe_Release(pNewHandler);
+			}
+		}
+	}
+	m_pEffectModule->Modify_EFfectEvent(events);
+}
+
+
 void CAnimTool_Manager::Free()
 {
 	Safe_Release(m_pOverlapModule);
+	Safe_Release(m_pEffectModule);
 
 	Release_Event();
 

@@ -287,7 +287,11 @@ namespace Engine
 		unsigned int		iMoveState = { 0 };
 		int					bIsLoop = { 0 };
 		unsigned int		iTimeFlag = {};
-		float				fGravity = { 9.8f };
+		float				fPadding4 = { 9.8f };
+
+		// 중력값
+		SimpleMath::Vector3 vFinalGravity = { 0.f, 0.f, 0.f };
+		float				fExternalStrength = { 0.f };
 
 		// 위치 및 방향
 		SimpleMath::Vector3	vPivot = {};	// Spread시 기준점
@@ -435,7 +439,6 @@ namespace Engine
 #pragma endregion
 
 #pragma endregion
-
 
 	union COLLIDER_ID
 	{
@@ -672,7 +675,15 @@ namespace Engine
 		D3DX11_TECHNIQUE_DESC tDesc = {};
 		vector<tagPass> vecPasses;
 	} TECHNIQUE;
-}
+#pragma region EFFECT
+	typedef struct tagEffectSpawnDesc {
+		SimpleMath::Matrix matWorld;             // 계산된 최종 행렬
+		float fDuration;            // 유지 시간
+		int iSimulationType;        // LOCAL(1) or WORLD(0)
+		const SimpleMath::Matrix* pTargetBoneMatrix; // 실시간 추적용 본 행렬 주소
+	} EFFECT_SPAWN_DESC;
 
+}
+#pragma endregion
 
 #endif // Engine_Struct_h__

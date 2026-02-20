@@ -24,6 +24,7 @@ NLOHMANN_JSON_SERIALIZE_ENUM(ECategory,
 	{
 		{ECategory::MAP, "MAP"},
 		{ECategory::EFFECT, "EFFECT"},
+		{ECategory::EFFECTEVENT, "EFFECTEVENT"},
 		{ECategory::UI, "UI"},
 		{ECategory::ANIMATION, "ANIMATION"},
 		{ECategory::CAMERA, "CAMERA"},

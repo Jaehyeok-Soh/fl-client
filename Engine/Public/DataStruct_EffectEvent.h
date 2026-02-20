@@ -1,48 +1,34 @@
 #pragma once
 #include "ObjectDataBase.h"
+#include "Anim_Event_Script_Base.h"
+#include "Anim_Event_Base.h"
 
 NS_BEGIN(DTO)
 
-// [상속] 툴 담당자 공통 스크립트 베이스
-typedef struct tagAnimEventScriptBase {
-    _float fDuration = {};
-    _float Get_Duration() { return fDuration; }
-} ANIM_EVENT_SCRIPT_BASE;
+// 이펙트 이벤트 스크립트
+typedef struct tagEffectEvent : public ANIM_EVENT_BASE1 {
+    string      strEffectTag = {};
+    _int        iSimulationType = { 1 };
+    string      strSocketName = {};
+    Vec3        vOffset = {};
+    Vec3        vRotation = {};
+    _bool       bFollowBone = { true };
+    _float      fDuration = {};
+}EFFECTEVENT;
 
-// [확장] 정우님 전용 이펙트 이벤트 스크립트
-typedef struct tagEffectEventScript : public ANIM_EVENT_SCRIPT_BASE {
-    string              strEffectTag = {};      // "Attack_1" 등 컨테이너 이름
-    _int                iSimulationType = { 1 }; // LOCAL(1), WORLD(0)
-    string              strSocketName = {};     // 부착될 본/소켓 이름
-    Vec3                vOffset = {};           // 오프셋
-    _bool               bFollowBone = { true };  // 실시간 본 추적 여부
-} EFFECT_EVENT_SCRIPT;
-
-// 애니메이션 1개 프레임에 걸리는 이벤트 정보
-typedef struct tagAnimEventBase {
-    EAnimNotifyId               eNotifyId = EAnimNotifyId::Vfx_Oneshot; // 엔진 Enum 사용
-    string                      strAnimTag = {};
-    _uint                       iAnimIndex = {};
-    _float                      fTrackPosition = {};
-    vector<EFFECT_EVENT_SCRIPT> vecScript;
-} ANIM_EVENT_BASE;
 
 // 특정 캐릭터(Owner)의 전체 애니메이션 이벤트 묶음
-typedef struct tagAnimEventInfoDesc {
-    string                      strOwnerTag = { "Sample" };
-    // [핵심] EAnimNotifyId::END 크기의 배열로 카테고리별 관리
-    vector<ANIM_EVENT_BASE>     vecAnimEvents[ENUM_TO_UINT(EAnimNotifyId::END)];
-} ANIM_EVENT_INFO_DESC;
+typedef struct tagEffectEventInfoDesc {
+    string              strOwnerTag = { "Sample" };
+    _int                iNumPool = { 32 };
+    vector<EFFECTEVENT> vecEffectEvents; // 동기처럼 벡터로 관리
+} EFFECT_EVENT_INFO_DESC;
 
 // JSON 직렬화 함수 선언
-void to_json(json& j, const EFFECT_EVENT_SCRIPT& data);
-void from_json(const json& j, EFFECT_EVENT_SCRIPT& data);
-
-void to_json(json& j, const ANIM_EVENT_BASE& data);
-void from_json(const json& j, ANIM_EVENT_BASE& data);
-
-void to_json(json& j, const ANIM_EVENT_INFO_DESC& data);
-void from_json(const json& j, ANIM_EVENT_INFO_DESC& data);
+void to_json(json& j, const EFFECTEVENT& data);
+void from_json(const json& j, EFFECTEVENT& data);
+void to_json(json& j, const EFFECT_EVENT_INFO_DESC& data);
+void from_json(const json& j, EFFECT_EVENT_INFO_DESC& data);
 
 NS_END
 
@@ -61,10 +47,11 @@ public:
     virtual json ToJson() const override;
     virtual HRESULT FromJson(const json& j) override;
 
-    const DTO::ANIM_EVENT_INFO_DESC& Get_Data() const { return m_Data; }
-    DTO::ANIM_EVENT_INFO_DESC& Get_Data() { return m_Data; }
+    const DTO::EFFECT_EVENT_INFO_DESC& Get_Data() const { return m_Data; }
+    DTO::EFFECT_EVENT_INFO_DESC& Get_Data() { return m_Data; }
 private:
-    DTO::ANIM_EVENT_INFO_DESC m_Data;
+    DTO::EFFECT_EVENT_INFO_DESC m_Data;
+
 public:
     static CDataStruct_EffectEvent* Create() { return new CDataStruct_EffectEvent(); }
     virtual void Free() override { Super::Free(); }

@@ -14,15 +14,12 @@ public:
     HRESULT Initialize();
 
 public:
-    // 정우님이 지정하신 EFFECTEVENT 카테고리
     virtual DTO::ECategory Get_Category() const override { return DTO::ECategory::EFFECTEVENT; }
 
     virtual json ToJson() const override;
     virtual HRESULT FromJson(const json& j) override;
 
-    // 특정 캐릭터의 전체 이펙트 이벤트 데이터를 추가
-    HRESULT Try_Add(const DTO::ANIM_EVENT_INFO_DESC& data);
-
+    HRESULT Try_Add(const DTO::EFFECT_EVENT_INFO_DESC& data);
 private:
     // 데이터 구조체 생성 (DataStruct_EffectEvent 활용)
     virtual IObjectDataBase* Create_ObjectData(DTO::ECategory eType);

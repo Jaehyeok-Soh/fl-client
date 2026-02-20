@@ -195,6 +195,8 @@ namespace Engine
 		PX_COLLIDER,
 		PX_CCT,
 		PX_ATTACKOVERLAP,
+		// ¿Ã∆Â∆Æ
+		EF_ANIMHANDLER,
 		//
 		MODEL,
 		SCRIPT,

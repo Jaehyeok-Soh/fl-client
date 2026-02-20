@@ -13,7 +13,9 @@ public:
 		enum Enum
 		{
 			LOAD,
+			LOAD_PART,
 			LOAD_OVERLAP_SCRIPT,
+			LOAD_EFFECT_SCRIPT,
 			END
 		};
 	};
@@ -64,6 +66,7 @@ private:
 
 private:
 	void Load_AnimModel(fs::path animModelPath);
+	void Load_PartObject(fs::path animPartModelPath);
 	void Create_AnimModel(fs::path animModelPath);
 	wstring Create_AnimModelPrototype(fs::path animModelPath);
 	void SetAnimationInfo(fs::path animModelPath);

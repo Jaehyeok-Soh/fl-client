@@ -33,7 +33,7 @@ public:
 private:
 	void Description_TabWindow();
 	void Desc_AttackOverlapWindow();
-	//void Desc_EffectWindow();
+	void Desc_EffectWindow();
 	//void Desc_BoneWindow();
 	//void Desc_AnimWindow();
 

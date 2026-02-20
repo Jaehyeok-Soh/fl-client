@@ -3,7 +3,7 @@
 #include "DataDocument_Effect.h"
 #include "ContainerObject.h"
 #include "Effect.h"
-#include "EffectObject.h"
+#include "CEffectObject.h"
 #include "GameInstance.h"
 
 CBuilder_Effect::CBuilder_Effect(ID3D11Device* pDevice, ID3D11DeviceContext* pDeviceContext, _uint iLevelID)
@@ -28,7 +28,7 @@ HRESULT CBuilder_Effect::Build(const CDataDocumentBase& document)
 		for (const auto& pObjectData : vecList)
 		{
 			const auto* pEffectData = static_cast<const Engine::CEFFECT_CONTAINER*>(pObjectData);
- 			if (FAILED(Create_Effect(pEffectData->Get_Data())))
+			if (FAILED(Create_Effect(pEffectData->Get_Data())))
 				return E_FAIL;
 		}
 	}
@@ -56,7 +56,6 @@ HRESULT CBuilder_Effect::Create_Effect(const DTO::TEFFECT_ContainerData& data)
 	pTransDesc.RotationMatrix = Matrix::CreateFromQuaternion(vQuat);
 	pTransDesc.TranslationMatrix = Matrix::CreateTranslation(Vec3(vPos));
 
-
 	Effect::EFFECT_CONTAINERDESC pDesc = {};
 	pDesc._Effect_SimulationType = (DTO::E_SIMULATION_SPACE)pData._Effect_SimulationType;
 	pDesc.iLevelIndex = m_iLevelID;
@@ -67,9 +66,10 @@ HRESULT CBuilder_Effect::Create_Effect(const DTO::TEFFECT_ContainerData& data)
 	wstring LayTag = L"Effect_Layer";
 	wstring PrototypeTag = L"Prototype_GameObject_Effect";
 	m_pGameInstance->Regist_Pool(m_iLevelID, PoolTag, LayTag, m_iLevelID, PrototypeTag, &pDesc, 5);
-	
+
 	return S_OK;
 }
+
 
 CBuilder_Effect* CBuilder_Effect::Create(ID3D11Device* pDevice, ID3D11DeviceContext* pDeviceContext, _uint iLevelID)
 {

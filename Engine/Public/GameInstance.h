@@ -346,6 +346,10 @@ public:
 	class CUIAction_Registry* Get_UIAction_Registry()const;
 #pragma endregion
 
+#pragma region EFFECT_MANAGER
+	void Spawn_Effect(const std::string& strTag, const Matrix& matWorld, _float fDuration, _bool bIsLocal, void* pTargetBone = nullptr);
+
+#pragma endregion
 // Todo - 쓰레기통 정리
 #pragma region GAMEDATA
 
@@ -376,6 +380,7 @@ private:
 	class CShaderAsset_Manager* m_pShaderAsset_Manager = { nullptr };
 	class CPhysics_Module* m_pPhysics_Module = { nullptr };
 	class CUIAction_Registry* m_pUIAction_Registry = { nullptr };
+	class CEffect_Manager* m_pEffect_Manager = { nullptr };
 private:
 	std::mt19937_64 m_rng;
 public:
