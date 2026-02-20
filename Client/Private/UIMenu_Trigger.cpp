@@ -66,18 +66,22 @@ void CUIMenu_Trigger::Update_Priority(const _float fTimeDelta)
 	Super::Update_Priority(fTimeDelta);
 	if (Engine_Utils::Has_Flag(m_iInteractState, EUIEvent_Flag::PRESS_ENTER))
 	{
+		m_eCurTriggerType = ETriggerEventType::PRESS_ENTER;
 		Fire_ToTargets(ETriggerEventType::PRESS_ENTER);
 	}
 	else if (Engine_Utils::Has_Flag(m_iInteractState, EUIEvent_Flag::PRESS_EXIT))
 	{
+		m_eCurTriggerType = ETriggerEventType::PRESS_EXIT;
 		Fire_ToTargets(ETriggerEventType::PRESS_EXIT);
 	}
 	else if (Engine_Utils::Has_Flag(m_iInteractState, EUIEvent_Flag::HOVER_ENTER))
 	{
+		m_eCurTriggerType = ETriggerEventType::HOVER_ENTER;
 		Fire_ToTargets(ETriggerEventType::HOVER_ENTER);
 	}
 	else if (Engine_Utils::Has_Flag(m_iInteractState, EUIEvent_Flag::HOVER_EXIT))
 	{
+		m_eCurTriggerType = ETriggerEventType::HOVER_EXIT;
 		Fire_ToTargets(ETriggerEventType::HOVER_EXIT);
 	}
 }
@@ -94,6 +98,7 @@ void CUIMenu_Trigger::Update_Late(const _float fTimeDelta)
 
 void CUIMenu_Trigger::Ready_Before_Render(const _float fTimeDelta)
 {
+	Check_FinEvent(m_eCurTriggerType);
 
 	Super::Ready_Before_Render(fTimeDelta);
 }
@@ -118,6 +123,9 @@ HRESULT CUIMenu_Trigger::Render()
 
 void CUIMenu_Trigger::Fire_ToTargets(ETriggerEventType eEvent)
 {
+	if (!m_isActive)
+		return;
+
 	for (auto* pUI : m_pTriggerUI[ENUM_TO_UINT(eEvent)])
 		if (pUI) pUI->OnUIEvent(eEvent, this);
 
@@ -134,16 +142,8 @@ void CUIMenu_Trigger::OnUIEvent(ETriggerEventType eEvent, CGenericUI* pSender)
 	case Client::ETriggerEventType::HOVER_EXIT:
 		break;
 	case Client::ETriggerEventType::PRESS_ENTER:
-		if (m_isVisible)
-			Set_Invisible();
-		else
-			Set_Visible();
-
-		if (m_isInteract)
-			Set_NonInteractable();
-		else
-			Set_Interactable();
-
+		if (m_isInteract)Set_NonInteractable();
+		else			 Set_Interactable();
 		break;
 	case Client::ETriggerEventType::PRESS_EXIT:
 		break;
@@ -151,6 +151,28 @@ void CUIMenu_Trigger::OnUIEvent(ETriggerEventType eEvent, CGenericUI* pSender)
 	default:
 		break;
 	}
+}
+
+void CUIMenu_Trigger::Initialize_Interactable_Event()
+{
+	m_fDelayTimeAcc = 0.f;
+}
+
+void CUIMenu_Trigger::Initialize_NonInteractable_Event()
+{
+}
+
+_bool CUIMenu_Trigger::Tick_Interactable_Event(const _float fTimeDelta)
+{
+	m_fDelayTimeAcc += fTimeDelta;
+	if (m_fDelayTimeAcc >= m_fDelay)
+		return true;
+	return false;
+}
+
+_bool CUIMenu_Trigger::Tick_NonInteractable_Event(const _float fTimeDelta)
+{
+	return _bool();
 }
 
 HRESULT CUIMenu_Trigger::Ready_Components(UI_TRIGGER_DESC* pDesc)

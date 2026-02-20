@@ -17,6 +17,9 @@ public:
 	virtual void	Update(const _float fTimeDelta) override;
 	virtual HRESULT End() override;
 
+private:
+	virtual void Set_NextStateDesc(_uint iNextState)override;	// 다음 state에 따라 desc을 작성한다 : 각 state 내부에서
+
 public:
 	static CState_Crouch* Create(CActionState* pOwnerComponent, void* pArg = nullptr);
 	virtual void Free() override;

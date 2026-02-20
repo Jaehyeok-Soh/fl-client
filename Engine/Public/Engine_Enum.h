@@ -464,5 +464,19 @@ namespace Engine
 			END
 		};
 	};
+
+	//===================
+	// Font Pivot Type
+	//===================
+	enum class EFontPivotType
+	{
+		CENTER,
+		LEFT,
+		RIGHT,
+		UP,
+		DOWN,
+		END
+	};
+
 }
 #endif // Engine_Enum_h__

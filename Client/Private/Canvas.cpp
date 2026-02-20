@@ -1,7 +1,7 @@
 #include "pch.h"
 #include "Canvas.h"
 #include "Client_Defines.h"
-
+#include <iostream>
 //=================
 // Component
 //=================
@@ -118,6 +118,16 @@ void CCanvas::OnCanvasEvent(ETriggerEventType eEvent, CGenericUI* pSender)
 			continue;
 		pUI->OnUIEvent(eEvent, pSender);
 	}
+}
+
+_bool CCanvas::Check_FinEvent()
+{
+	for (auto* pUI : m_vecUI)
+	{
+		if (!pUI->Get_FinEvent())
+			return false;
+	}
+	return true;
 }
 
 HRESULT CCanvas::Ready_Components(CANVAS_DESC* pDesc)
@@ -269,12 +279,15 @@ CGenericUI* CCanvas::Calc_TopUI()
 		if (pUI->Calc_HitEvent())
 		{
 			if (nullptr == pTopUI)
+			{
 				pTopUI = pUI;
+			}
 			else
 			{
-				if (pTopUI->Get_PosZ() < pUI->Get_PosZ())
+				if (pTopUI->Get_PosZ() > pUI->Get_PosZ())
 					pTopUI = pUI;
 			}
+
 		}
 	}
 	return pTopUI;

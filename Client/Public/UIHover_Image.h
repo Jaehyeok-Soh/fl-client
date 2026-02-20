@@ -38,12 +38,8 @@ private:
 
 private:
 	virtual void OnUIEvent(ETriggerEventType eEvent, CGenericUI* pSender)override;
-
-private:
 	virtual void Initialize_Visible_Event()override;
 	virtual void Initialize_InVisible_Event()override;
-
-private:
 	virtual _bool Tick_Visible_Event(const _float fTimeDelta)override;
 	virtual _bool Tick_InVisible_Event(const _float fTimeDelta)override;
 

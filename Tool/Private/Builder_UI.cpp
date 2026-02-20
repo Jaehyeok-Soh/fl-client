@@ -160,6 +160,7 @@ HRESULT CBuilder_UI::Create_GenericUIDTO(const DTO::TUI_GenericUIData& data)
 	Desc.isInitActivate		= data.isActivate;
 	Desc.isUseColorTint		= data.isUseColorTint;
 	Desc.vColorTint			= data.vColorTint;
+	Desc.vGradiantColorTint	= data.vGradiantColorTint;
 	Desc.iShaderPass		= data.iShaderPass;
 	Desc.iFillDir			= data.iFillDir;
 	Desc.iFlip				= data.iFlip;

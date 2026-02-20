@@ -17,7 +17,7 @@ CPlayerControlContext::CPlayerControlContext()
 CPlayerControlContext::CPlayerControlContext(const CPlayerControlContext& rhs)
 	: Super(rhs)
 	, m_FKeys{ rhs.m_FKeys }
-	, m_tDashTimeCounter{ rhs.m_tDashTimeCounter }
+	, m_FPreKeys{ rhs.m_FPreKeys }
 {
 }
 
@@ -36,28 +36,17 @@ HRESULT CPlayerControlContext::Initialize(void* pArg)
 
 	PLAYER_CONTROLCONTEXT_DESC* pDesc = static_cast<PLAYER_CONTROLCONTEXT_DESC*>(pArg);
 	m_FKeys						= pDesc->FKeys;
-	m_tDashTimeCounter.fMaxTime	= pDesc->fDashCountTime;
 
 	return S_OK;
 }
 
 HRESULT CPlayerControlContext::Awake(const _uint iLevelIndex)
 {
-	Set_Gravity(true);
 	return S_OK;
 }
 
 void CPlayerControlContext::Count_Time(const _float fTimeDelta)
 {
-	// dsah가 2보다 작을 때
-	if (m_iDashRestCount < 2)
-	{
-		// cool time을 재고 dashRestcount up
-		if (1.f == m_tDashTimeCounter.CountTime(fTimeDelta))
-		{
-			++m_iDashRestCount;
-		}
-	}
 }
 
 _bool CPlayerControlContext::Is_FootRayEnabled()
@@ -107,6 +96,23 @@ void CPlayerControlContext::Set_CheckKey(KEYFLAGS FKey, _bool bOn)
 
 	else
 		Engine_Utils::RemoveHard_Flag(m_FKeys, FKey);
+}
+
+void CPlayerControlContext::Set_AllKeyFlag(_bool bOn)
+{
+	if (bOn)
+		m_FKeys = MOVE | JUMP | DASH | SPECIAL | COMBO | SKILL1 | SKILL2 | INTERACT | GUN;
+
+	else
+	{
+		m_FPreKeys = m_FKeys;
+		m_FKeys = 0;
+	}
+}
+
+void CPlayerControlContext::Set_PreKeyFlag()
+{
+	m_FKeys = m_FPreKeys;
 }
 
 _bool CPlayerControlContext::Is_LeftAttackPressed()
@@ -177,11 +183,11 @@ _bool CPlayerControlContext::Is_InteractionPressed()
 
 _bool CPlayerControlContext::Is_DashPressed()
 {
-	if (m_iDashRestCount != 0 &&
-		Engine_Utils::Has_Flag(m_FKeys, KEYFLAGS::DASH) &&
+	if (Engine_Utils::Has_Flag(m_FKeys, KEYFLAGS::DASH) &&
 		m_pGameInstance->KeyButton_Down(DIK_LSHIFT))
 	{
-		//--m_iDashRestCount;
+		static_cast<CPlayer*>(Get_Owner())->Count_Dash();
+
 		return true;
 	}
 

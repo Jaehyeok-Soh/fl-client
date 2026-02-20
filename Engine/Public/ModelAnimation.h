@@ -40,8 +40,8 @@ private:
 
 	virtual HRESULT Initialize(void* pArg) override;
 public:
-	_bool Update_TransformationMatrices(const vector<class CBone*>& vecBones, _float fTimeDelta, _bool isLoop, CTransform* pOwnerTransform, CPhysicsCCT* pOwnerPhyCCT);
-	void SetUp_PoseDatasForBlending(std::span<LOCALSRT> spanLocalSrtData, _float fTimeDelta, CTransform* pOwnerTransform, CPhysicsCCT* pOwnerPhyCCT);
+	_bool Update_TransformationMatrices(const vector<class CBone*>& vecBones, _float fTimeDelta, _bool isLoop, CTransform* pOwnerTransform, CPhysicsCCT* pOwnerPhyCCT, CComputeShader* pAnimECS);
+	void SetUp_PoseDatasForBlending(std::span<LOCALSRT> spanLocalSrtData, _float fTimeDelta, CTransform* pOwnerTransform, CPhysicsCCT* pOwnerPhyCCT, _uint iTotalBoneNum, CComputeShader* pAnimECS);
 	void Clear();
 
 	_float Get_DurationTime() const { return m_fDuration; }
@@ -60,6 +60,11 @@ public:
 	void	Update_BlendAnimation(CComputeShader* pAnimECS, _float fTimeDelta, CTransform* pOwnerTransform, CPhysicsCCT* pOwnerPhyCCT, _uint iTotalBoneNum);
 	void	Bind_AnimationEData(CComputeShader* pAnimEShader);
 	HRESULT Ready_BindBuffers(CComputeShader* pAnimESahder);
+
+	// test
+	void Set_ApplyRootMotion(_bool Apply) { m_bApplyRootMotion = Apply; }
+
+	void Check_UpdateCpu(const vector<class CBone*>& vecBones);
 
 	///////////////
 	//// Event ////
@@ -96,6 +101,8 @@ private:
 private:
 	_int m_iRootBoneIdx = { -1 };
 	_int m_iRootChannelIdx = { -1 };
+
+	_bool m_bApplyRootMotion = { true };
 
 	///////////////
 	//// Event ////

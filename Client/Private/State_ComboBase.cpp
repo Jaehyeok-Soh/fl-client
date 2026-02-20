@@ -39,8 +39,11 @@ HRESULT CState_ComboBase::Start(void* pArg, _bool bForce)
 
 	m_bComboTime	= true;
 	m_iComboCount	= 1;
+	m_tKeyTimer.fMaxTime = m_ComboTimes[0];
 
-	static_cast<CPlayer*>(Get_OwnerObject())->Change_Weapon(CPlayer::Part::SWORD, ENUM_TO_UINT(CWeapon::State::HAND));
+	Change_Weapon(CPlayer::Part::SWORD, ENUM_TO_UINT(CWeapon::State::HAND));
+
+	Start_Att(ENUM_TO_UINT(CPlayer::State::COMBO));
 
 	return S_OK;
 }
@@ -52,6 +55,8 @@ void CState_ComboBase::Update(const _float fTimeDelta)
 	Count_ComboTime(fTimeDelta);
 
 	Check_Combo();
+
+	Check_Monster();
 }
 
 HRESULT CState_ComboBase::End()
@@ -59,7 +64,9 @@ HRESULT CState_ComboBase::End()
 	if(FAILED(Super::End()))
 		return E_FAIL;
 
-	static_cast<CPlayer*>(Get_OwnerObject())->Change_Weapon(CPlayer::Part::SWORD, ENUM_TO_UINT(CWeapon::State::HOLD));
+	End_Att(ENUM_TO_UINT(CPlayer::State::COMBO));
+
+	Change_Weapon(CPlayer::Part::SWORD, ENUM_TO_UINT(CWeapon::State::HOLD));
 
 	return S_OK;
 }
@@ -72,27 +79,29 @@ void CState_ComboBase::Change_NextCombo()
 		return;
 	}
 
-	// 시간들 초기화
-	m_tKeyTimer.fTimeAcc	= 0.f;
-	m_fStateElapsed			= 0.f;
-
 	// combo 관련 변수 설정
 	m_iMainAnimIdx = m_iComboCount++;
 	m_bNextCombo = false;
+
+	// 시간들 초기화
+	m_tKeyTimer.fTimeAcc = 0.f;
+	m_tKeyTimer.fMaxTime = m_ComboTimes[m_iComboCount -1];
+	m_fStateElapsed = 0.f;
 
 	Request_ChangeAnimation(m_vecMainAnims[m_iComboCount], true, false, true);
 }
 
 void CState_ComboBase::Change_FirstCombo()
 {
-	// 시간들 초기화
-	m_tKeyTimer.fTimeAcc = 0.f;
-	m_fStateElapsed = 0.f;
-
 	// combo 관련 변수 설정
 	m_iComboCount = 1;
 	m_iMainAnimIdx = 0;
 	m_bNextCombo = false;
+
+	// 시간들 초기화
+	m_tKeyTimer.fTimeAcc = 0.f;
+	m_tKeyTimer.fMaxTime = m_ComboTimes[0];
+	m_fStateElapsed = 0.f;
 
 	Request_ChangeAnimation(m_vecMainAnims[0], true, false, true);
 }
@@ -110,13 +119,14 @@ void CState_ComboBase::Count_ComboTime(const _float fTimeDelta)
 void CState_ComboBase::Check_Combo()
 {
 	// 너무 시간이 지나면 combo end
-	if (m_fStateElapsed > m_ComboTimes[m_iComboCount - 1] +1.5f)
+	if (m_fStateElapsed > m_ComboTimes[m_iComboCount - 1] +1.52f)
 	{
+		Change_Weapon(CPlayer::Part::SWORD, ENUM_TO_UINT(CWeapon::State::HOLD));
 		return;
 	}
 
 	// combo change 시간 ~ end 시간 사이
-	else if (m_fStateElapsed > m_ComboTimes[m_iComboCount - 1] + 1.f &&
+	else if (m_fStateElapsed > m_ComboTimes[m_iComboCount - 1] + 0.3f &&
 		Key_Input(ENUM_TO_UINT(CControlContext::CONTROL_KEY::LATT)))
 	{
 		Change_FirstCombo();

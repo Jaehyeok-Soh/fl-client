@@ -37,6 +37,7 @@ public:
 
 
 	virtual void OnUIEvent(ETriggerEventType eEvent, CGenericUI* pSender)override;
+	virtual _bool Check_FinEvent(ETriggerEventType eEvent);
 
 protected:
 	HRESULT Ready_Components(UI_TRIGGER_DESC* pDesc);
@@ -48,6 +49,8 @@ protected:
 protected:
 	DTO::EUITriggerSubClassType m_eSubClassType = {};
 	DTO::TUI_TriggerData m_tTriggerData = {};
+
+	ETriggerEventType m_eCurTriggerType = { ETriggerEventType::END };
 
 public:
 	virtual void Free()override;

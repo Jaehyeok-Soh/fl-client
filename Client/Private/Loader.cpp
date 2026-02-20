@@ -7,6 +7,7 @@
 #include "MonoBehaviour.h"
 #include "PlayerActionState.h"
 #include "StatComponent.h"
+#include "StatCom_Player.h"
 #include "Collider.h"
 #include "VIBuffer_Terrain.h"
 #include "VIBuffer_Particle_Rect.h"
@@ -19,6 +20,8 @@
 #include "Camera.h"
 #include "Transform.h"
 #include "PhysicsCollider.h"
+#include "SkillComp_MoonE.h"
+#include "SkillComp_MoonQ.h"
 //=================
 // Builder
 //=================
@@ -73,6 +76,7 @@
 #include "UIMini_Map.h"
 #include "UIHover_Image.h"
 #include "UIMenu_Image.h"
+#include "UIMenu_OutLine.h"
 
 // Æ®¸®°Å 
 #include "UIMenu_Trigger.h"
@@ -212,7 +216,7 @@ HRESULT CLoader::Loading_For_Logo()
 
 	// For. UI Texture
 	std::error_code ec;
-	for (const auto& entry : std::filesystem::directory_iterator(L"../../Resources/Textures/UI/", std::filesystem::directory_options::skip_permission_denied, ec))
+	for (const auto& entry : std::filesystem::directory_iterator(L"../../Resources/Textures/UI_Client/", std::filesystem::directory_options::skip_permission_denied, ec))
 	{
 		if (ec)
 			return E_FAIL;
@@ -326,6 +330,17 @@ HRESULT CLoader::Loading_For_Logo()
 
 		m_pGameInstance->Add_Prototype(ENUM_TO_UINT(ELevelType::STATIC), L"Prototype_Component_Model_MoonSword", CModel::Create(m_pDevice, m_pDeviceContext, &desc));
 	}
+	// For. Prototype_Component_Model_MoonSkillWeap
+	{
+		CModel::MODEL_ORIGIN_DESC desc = {};
+		desc.eType = EModelType::STATIC;
+		desc.iPrototypeLevelIndex = ENUM_TO_UINT(ELevelType::STATIC);
+		desc.pMatPreTransform = &(matPreTransformScale);	// matPreTransformScale
+		desc.wstrModelFolderName = L"Weapon_MoonSkill";					// PlayerMoon // Pino
+		desc.FStageBone = CModel::STAGEING_BONE::SB_ZEROBONE;
+
+		m_pGameInstance->Add_Prototype(ENUM_TO_UINT(ELevelType::STATIC), L"Prototype_Component_Model_MoonSkillWeap", CModel::Create(m_pDevice, m_pDeviceContext, &desc));
+	}
 	// For. Prototype_Component_Camera
 	m_pGameInstance->Add_Prototype(ENUM_TO_UINT(ELevelType::STATIC), L"Prototype_Component_Camera", CCamera::Create());
 	// For. Prototype_Component_ActionState_Player
@@ -343,6 +358,14 @@ HRESULT CLoader::Loading_For_Logo()
 
 	// For. Prototype_Component_Collider_SPHERE
 	m_pGameInstance->Add_Prototype(ENUM_TO_UINT(ELevelType::STATIC), L"Prototype_Component_VIBuffer_InstanceMesh", CInstanceMesh::Create(m_pDevice, m_pDeviceContext));
+
+	/* player components */
+	// For. Prototype_Component_Stat_Player
+	m_pGameInstance->Add_Prototype(ENUM_TO_UINT(ELevelType::STATIC), L"Prototype_Component_Stat_Player", CStatCom_Player::Create());
+	// For. Prototype_Component_Stat_Player
+	m_pGameInstance->Add_Prototype(ENUM_TO_UINT(ELevelType::STATIC), L"Prototype_Component_Skill_MoonE", CSkillComp_MoonE::Create());
+	// For. Prototype_Component_Stat_Player
+	m_pGameInstance->Add_Prototype(ENUM_TO_UINT(ELevelType::STATIC), L"Prototype_Component_Skill_MoonQ", CSkillComp_MoonQ::Create());
 
 	///////////////////////////////////////
 	//////////// Ready Objects ////////////
@@ -414,6 +437,7 @@ HRESULT CLoader::Loading_For_Logo()
 	ADD_PROTOTYPE(ELevelType::LOGO, L"Prototype_UI_MiniMap",		CUIMini_Map::Create(m_pDevice, m_pDeviceContext));
 	ADD_PROTOTYPE(ELevelType::LOGO, L"Prototype_UI_HoverImage",		CUIHover_Image::Create(m_pDevice, m_pDeviceContext));
 	ADD_PROTOTYPE(ELevelType::LOGO, L"Prototype_UI_MenuImage",		CUIMenu_Image::Create(m_pDevice, m_pDeviceContext));
+	ADD_PROTOTYPE(ELevelType::LOGO, L"Prototype_UI_MenuOutline",	CUIMenu_OutLine::Create(m_pDevice, m_pDeviceContext));
 #pragma endregion
 
 	m_isFinished = true;

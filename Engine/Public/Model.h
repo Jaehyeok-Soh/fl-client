@@ -172,7 +172,8 @@ public:
 
 public:
 	HRESULT								Ready_ComputeShaders(CComputeShader* pBoneMeshCS, CComputeShader* pBoneComBineCS, CComputeShader* pAnimEvalCS, CComputeShader* pAnimBlendCS = nullptr, CComputeShader* pGetBoneCS = nullptr);
-	
+	void								Get_BoneMatrix(CComputeShader* pGetBoneCS);
+
 	// load func
 
 	// for animation tool
@@ -223,6 +224,8 @@ private:
 	void								Make_Staging(MODEL_ORIGIN_DESC* pDesc);
 	HRESULT								Ready_StaticModelMinMax();
 
+	void								Set_CpuBone(_uint iBoneIdx);
+
 	// cs bind funcs
 private:
 	void								Bind_BoneImmuData(CComputeShader* pBoneComBineCS);
@@ -234,7 +237,7 @@ private:
 private:
 	void								Update_BoneCombineTransformMatrix(CComputeShader* pBoneComBineCS);
 	void								Lerp_Animation(CComputeShader* pAnimBlendCS, _float fRatio);
-	void								Get_BoneMatrix(CComputeShader* pBoneComBineCS, CComputeShader* pGetBoneCS);
+	void								DisPatch_BondMatrix(CComputeShader* pBoneComBineCS, CComputeShader* pGetBoneCS);
 
 	///////////////
 	//// Event ////
@@ -284,7 +287,10 @@ private:
 
 	StructuredBuffer*					m_pPreSB					= { nullptr };
 	StructuredBuffer*					m_pCurSB					= { nullptr };
-	ID3D11Buffer*						m_pBoneOuputStagingBuffer	= { nullptr };
+	ID3D11Buffer*						m_pBoneOuputStagingBuffer[2] = {nullptr};
+	_uint								m_iFrameIndex = { 0 };
+
+	_uint m_iCpuBoneCount = { 0 };
 
 	///////////////
 	//// Event ////

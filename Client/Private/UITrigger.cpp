@@ -171,26 +171,29 @@ HRESULT CUITrigger::Render()
 
 void CUITrigger::OnUIEvent(ETriggerEventType eEvent, CGenericUI* pSender)
 {
-	switch (eEvent)
+}
+
+_bool  CUITrigger::Check_FinEvent(ETriggerEventType eEvent)
+{
+	if (eEvent == ETriggerEventType::END || eEvent == ETriggerEventType::HOVER_ENTER || eEvent == ETriggerEventType::HOVER_EXIT)
+		return true;
+
+	for (const auto* pTrigger : m_pTriggerUI[ENUM_TO_UINT(eEvent)])
 	{
-	case Client::ETriggerEventType::HOVER_ENTER:
-		break;
-	case Client::ETriggerEventType::HOVER_EXIT:
-		break;
-	case Client::ETriggerEventType::PRESS_ENTER:
-		if (m_isVisible)Set_Invisible();
-		else Set_Visible();
-
-		if (m_isInteract)Set_NonInteractable();
-		else Set_Interactable();
-
-		break;
-	case Client::ETriggerEventType::PRESS_EXIT:
-		break;
-	case Client::ETriggerEventType::END:
-	default:
-		break;
+		if (!pTrigger->Get_FinEvent())
+		{
+			return false;
+		}
 	}
+
+	for (auto* pCanvas : m_pTriggerCanvas[ENUM_TO_UINT(eEvent)])
+	{
+		if (!pCanvas->Check_FinEvent())
+		{
+			return false;
+		}
+	}
+	return true;
 }
 
 HRESULT CUITrigger::Ready_Components(UI_TRIGGER_DESC* pDesc)

@@ -130,7 +130,7 @@ HRESULT CUIMenu_Image::Bind_ShaderResources()
 
 void CUIMenu_Image::OnUIEvent(ETriggerEventType eEvent, CGenericUI* pSender)
 {
-	if (!m_isInteract)
+	if (!m_isActive)
 		return;
 
 	if (eEvent == ETriggerEventType::PRESS_ENTER)
@@ -148,20 +148,21 @@ void CUIMenu_Image::OnUIEvent(ETriggerEventType eEvent, CGenericUI* pSender)
 
 void CUIMenu_Image::Initialize_Visible_Event()
 {
+	m_isFin_Event = false;
+	m_isActive = false;
+
 	switch (m_eDImageSubClass)
 	{
 	case DTO::EUIDImageSubClassType::MENU_BG:
 	{
 		m_fTimeAcc = 0.f;
 		m_fProgress_Ratio = 1.f;
-		m_isInteract = false;
 	}
 		break;
 	case DTO::EUIDImageSubClassType::MENU_ICON:
 	case DTO::EUIDImageSubClassType::MENU_ICON_BG:
 	{
 		const _float fDuration = 1.f;
-		m_isInteract = false;
 		Ready_Fade(fDuration, 0.f, 1.f, m_fDelay);
 	}
 		break;
@@ -173,13 +174,14 @@ void CUIMenu_Image::Initialize_Visible_Event()
 
 void CUIMenu_Image::Initialize_InVisible_Event()
 {
+	m_isFin_Event = false;
+	m_isActive = false;
 	switch (m_eDImageSubClass)
 	{
 	case DTO::EUIDImageSubClassType::MENU_BG:
 	{
 		m_fTimeAcc = 0.f;
 		m_fProgress_Ratio = 0.f;
-		m_isInteract = false;
 	}
 	break;
 
@@ -187,7 +189,6 @@ void CUIMenu_Image::Initialize_InVisible_Event()
 	case DTO::EUIDImageSubClassType::MENU_ICON_BG:
 	{
 		const _float fDuration = 0.5f;
-		m_isInteract = false;
 		Ready_Fade(fDuration, 1.f, 0.f, 0.f);
 	}
 	break;
@@ -208,7 +209,8 @@ _bool CUIMenu_Image::Tick_Visible_Event(const _float fTimeDelta)
 		if (t >= 1.f)
 		{
 			m_fProgress_Ratio = 0.f;	
-			m_isInteract = true;
+			m_isFin_Event = true;
+			m_isActive = true;
 			return true;
 		}
 		m_fProgress_Ratio = 1.f - t;
@@ -218,7 +220,8 @@ _bool CUIMenu_Image::Tick_Visible_Event(const _float fTimeDelta)
 		const _bool isFade = Tick_Fade(fTimeDelta);
 		if (isFade)
 		{
-			m_isInteract = true;
+			m_isFin_Event = true;
+			m_isActive = true;
 			return true;
 		}
 	}
@@ -234,7 +237,8 @@ _bool CUIMenu_Image::Tick_InVisible_Event(const _float fTimeDelta)
 		if (t >= 1.f)
 		{
 			m_fProgress_Ratio = 1.f;
-			m_isInteract = true;
+			m_isFin_Event = true;
+			m_isActive = true;
 			return true;
 		}
 		m_fProgress_Ratio = t;
@@ -244,7 +248,8 @@ _bool CUIMenu_Image::Tick_InVisible_Event(const _float fTimeDelta)
 		const _bool isFade = Tick_Fade(fTimeDelta);
 		if (isFade)
 		{
-			m_isInteract = true;
+			m_isFin_Event = true;
+			m_isActive = true;
 			return true;
 		}
 	}

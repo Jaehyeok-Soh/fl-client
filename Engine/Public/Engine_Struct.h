@@ -515,6 +515,8 @@ namespace Engine
 			return fTimeAcc / fMaxTime;
 		}
 
+		float Get_Rate() { return fTimeAcc / fMaxTime; }
+
 	}TIME_COUNTER;
 #pragma endregion
 
