@@ -97,9 +97,9 @@ HRESULT CMonsterState_Factory::Ready_Feature()
 		// 가장 가까운 놈 찾기
 		});
 
-	REGISTER_FEATURE("feat_walk", FEATURE{ return MONSTERCC(state)->UpdateWalk(fTimeDelta); });
+	REGISTER_FEATURE("feat_walk", FEATURE{ return MONSTERCC(state)->UpdateWalk(fTimeDelta); state->Align_Movement(fTimeDelta); });
 
-	REGISTER_FEATURE("feat_chase", FEATURE{ return MONSTERCC(state)->UpdateChase(fTimeDelta); });
+	REGISTER_FEATURE("feat_chase", FEATURE{ return MONSTERCC(state)->UpdateChase(fTimeDelta); state->Align_Movement(fTimeDelta); });
 
 	REGISTER_FEATURE("feat_walk_back", [](class CStateBase_Monster* state, const _float& fTimeDelta) {
 
