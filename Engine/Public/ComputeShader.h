@@ -143,7 +143,8 @@ private:
 	CFxEffectAsset* m_pOwner{ nullptr }; // .hlsl 파일 객체화
 	_uint m_iPass = { 0 };
 	_bool m_bHas_OwnSRV = {true};
-
+	inline static constexpr ID3D11ShaderResourceView* s_pNullCS_SRV[16]{ nullptr };
+	inline static constexpr ID3D11UnorderedAccessView* s_pNullCS_UAV[16]{ nullptr };
 private:
 	ID3D11ComputeShader*	m_pComputeShader	= { nullptr };
 	ID3D11Device*			m_pDevice			= { nullptr };

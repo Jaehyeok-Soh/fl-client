@@ -10,6 +10,7 @@
 #include "StatCom_Player.h"
 #include "Navigation.h"
 #include "Bone.h"
+#include "SkillComponent.h"
 
 // objects
 #include "CameraMan_Targeter.h"
@@ -31,6 +32,8 @@
 
 #include "State_Charge.h"
 #include "State_MoonCharge.h"
+
+#include "State_MoonSkill.h"
 
 #pragma endregion
 
@@ -356,35 +359,30 @@ HRESULT CMainPlayer::Ready_Ability()
     if (!(pActionState = Get_Component<CPlayerActionState>()))
         return E_FAIL;
 
+    // skill components
+    {
+        if (FAILED(Add_Script_Component(L"SkillComponent_E", L"Prototype_Component_Skill_MoonE", nullptr)))
+            return E_FAIL;
+
+        if (FAILED(Add_Script_Component(L"SkillComponent_Q", L"Prototype_Component_Skill_MoonQ", nullptr)))
+            return E_FAIL;
+
+        m_pSkillEComp = static_cast<CSkillComponent*>(Get_Script_Component(L"SkillComponent_E"));
+        m_pSkillQComp = static_cast<CSkillComponent*>(Get_Script_Component(L"SkillComponent_Q"));
+    }
+
     {
         CStatCom_Player::PLAYER_STATCOMP_DESC desc = {};
         desc.iMaxHp = 320;
         desc.fComboCoolTime = 2.f;
-        desc.fDashCoolTime =1.f;
+        desc.fDashCoolTime =2.f;
         desc.fMaxDefense = 400.f;
         desc.fMaxMental =105.f;
 
-        SKILL_DESC tSkillDesc = {};
+        desc.tESkill = m_pSkillEComp->Get_SkillDesc();
+        desc.tQSkill = m_pSkillQComp->Get_SkillDesc();
+
         ATTACK_ELEMNETS tAttackDesc = {};
-
-        tSkillDesc.eSkillType = SKILL_TYPE::DAMAGE;
-        tSkillDesc.iNeedMental = 15;
-        tSkillDesc.TCoolTime = { 0.f,0.f };
-        tAttackDesc.iAttack = 10;
-        tAttackDesc.iSheild = 0;
-        tSkillDesc.tAttDesc = tAttackDesc;
-
-        desc.tESkill = tSkillDesc;
-
-        tSkillDesc.eSkillType = SKILL_TYPE::BUFF;
-        tSkillDesc.iNeedMental = 35;
-        tSkillDesc.TCoolTime = { 0.f,3.5f };
-        tAttackDesc.iAttack = 5;
-        tAttackDesc.iSheild = 10;
-        tSkillDesc.tAttDesc = tAttackDesc;
-
-        desc.tQSkill = tSkillDesc;
-
         tAttackDesc = { 20,0 };
         desc.tMelee = tAttackDesc;
         desc.tGun   = tAttackDesc;
@@ -460,6 +458,19 @@ HRESULT CMainPlayer::Ready_Weapons()
         weaponDesc.eModel                   = CWeapon::Weapon_ModelType::STATIC;
         weaponDesc.bMianWeapon              = true;
         if (FAILED(Add_Part(Part::SWORD, ENUM_TO_UINT(ELevelType::STATIC), L"Prototype_GameObject_Part_Sword", &weaponDesc)))
+            return E_FAIL;
+    }
+
+    // Weapons
+    {
+        CWeapon::WEAPON_DESC weaponDesc = {};
+        weaponDesc.wstrModelPrototypeName = L"Prototype_Component_Model_MoonSkillWeap";
+        weaponDesc.pMatParent = &Get_Component<CTransform>()->Get_WorldMatrix();
+        weaponDesc.pMatHandSocket = &Get_Part<CBody>(Part::BODY)->Get_RightHandSocket()->Get_CombinedTransformMatrix();
+        weaponDesc.pMatSocket = &Get_Part<CBody>(Part::BODY)->Get_WeaponSocket()->Get_BindPoseTransformMatrix();
+        weaponDesc.eModel = CWeapon::Weapon_ModelType::STATIC;
+        weaponDesc.bMianWeapon = false;
+        if (FAILED(Add_Part(Part::SKILL, ENUM_TO_UINT(ELevelType::STATIC), L"Prototype_GameObject_Part_Sword", &weaponDesc)))
             return E_FAIL;
     }
     //// LeftHand
@@ -730,8 +741,8 @@ HRESULT CMainPlayer::Ready_AttackStates()
         vecChangeState_ByKey[ENUM_TO_SZET(CStateBase_Player::STATEKEY::SPACE)] = ENUM_TO_UINT(State::JUMP);
         vecChangeState_ByKey[ENUM_TO_SZET(CStateBase_Player::STATEKEY::SHIFT)] = ENUM_TO_UINT(State::DASHBACK);
         vecChangeState_ByKey[ENUM_TO_SZET(CStateBase_Player::STATEKEY::LCRTL_PRESS)] = ENUM_TO_UINT(State::CROUCH);
-        //vecChangeState_ByKey[ENUM_TO_SZET(CStateBase_Player::STATEKEY::Q)]            = ENUM_TO_UINT(CPlayer::State::SKILL1);
-        //vecChangeState_ByKey[ENUM_TO_SZET(CStateBase_Player::STATEKEY::E)]            = ENUM_TO_UINT(CPlayer::State::SKILL2);
+        vecChangeState_ByKey[ENUM_TO_SZET(CStateBase_Player::STATEKEY::E)] = ENUM_TO_UINT(State::SKILL1);
+        vecChangeState_ByKey[ENUM_TO_SZET(CStateBase_Player::STATEKEY::Q)] = ENUM_TO_UINT(State::SKILL2);
         vecChangeState_ByKey[ENUM_TO_SZET(CStateBase_Player::STATEKEY::LM)] = ENUM_TO_UINT(CPlayer::State::COMBO);
         //vecChangeState_ByKey[ENUM_TO_SZET(CStateBase_Player::STATEKEY::RM)]           = ENUM_TO_UINT(CPlayer::State::GUN);
         vecChangeState_ByKey[ENUM_TO_SZET(CStateBase_Player::STATEKEY::CHARGE)] = ENUM_TO_UINT(CPlayer::State::CHARGE);
@@ -763,17 +774,44 @@ HRESULT CMainPlayer::Ready_AttackStates()
         vecChangeState_ByKey[ENUM_TO_SZET(CStateBase_Player::STATEKEY::SPACE)]          = ENUM_TO_UINT(State::JUMP);
         vecChangeState_ByKey[ENUM_TO_SZET(CStateBase_Player::STATEKEY::SHIFT)]          = ENUM_TO_UINT(State::DASHBACK);
         vecChangeState_ByKey[ENUM_TO_SZET(CStateBase_Player::STATEKEY::LCRTL_PRESS)]    = ENUM_TO_UINT(State::CROUCH);
-        //vecChangeState_ByKey[ENUM_TO_SZET(CStateBase_Player::STATEKEY::Q)]            = ENUM_TO_UINT(CPlayer::State::SKILL1);
-        //vecChangeState_ByKey[ENUM_TO_SZET(CStateBase_Player::STATEKEY::E)]            = ENUM_TO_UINT(CPlayer::State::SKILL2);
+        vecChangeState_ByKey[ENUM_TO_SZET(CStateBase_Player::STATEKEY::E)]              = ENUM_TO_UINT(State::SKILL1);
+        vecChangeState_ByKey[ENUM_TO_SZET(CStateBase_Player::STATEKEY::Q)]              = ENUM_TO_UINT(State::SKILL2);
         vecChangeState_ByKey[ENUM_TO_SZET(CStateBase_Player::STATEKEY::LM)]             = ENUM_TO_UINT(CPlayer::State::COMBO);
         //vecChangeState_ByKey[ENUM_TO_SZET(CStateBase_Player::STATEKEY::RM)]           = ENUM_TO_UINT(CPlayer::State::GUN);
         vecChangeState_ByKey[ENUM_TO_SZET(CStateBase_Player::STATEKEY::CHARGE)]         = ENUM_TO_UINT(CPlayer::State::CHARGE);
         vecChangeState_ByKey[ENUM_TO_SZET(CStateBase_Player::STATEKEY::LOOPDONE)]       = ENUM_TO_UINT(State::IDLE);
         desc.vecChangeState_ByKey = vecChangeState_ByKey;
 
+
+        tKeyTimer.bCountTime = true;
+        tKeyTimer.fMaxTime = 1.7f;
         desc.tKeyTimer = tKeyTimer;
 
         if (FAILED(pActionState->Add_State(ENUM_TO_UINT(State::CHARGE), CState_MoonCharge::Create(pActionState, &desc))))
+            return E_FAIL;
+    }
+
+    // skill1
+    {
+        CState_SkillBase::Skill_DESC tDesc = {};
+        tDesc.bKeyInput = true;
+        tDesc.fKeyCoolTime = 1.3f;
+        tDesc.iAnimIdx = Get_AnimationIndex(L"Animation_PlayerMoon_Light_Skill01");
+        tDesc.iPlayerState = ENUM_TO_UINT(State::SKILL1);
+
+        if (FAILED(pActionState->Add_State(ENUM_TO_UINT(State::SKILL1), CState_MoonSkill::Create(pActionState, "SkillE", &tDesc))))
+            return E_FAIL;
+    }
+
+    // skill2
+    {
+        CState_SkillBase::Skill_DESC tDesc = {};
+        tDesc.bKeyInput = true;
+        tDesc.fKeyCoolTime  = 4.5f;
+        tDesc.iAnimIdx = Get_AnimationIndex(L"Animation_PlayerMoon_Light_Skill02_Red");
+        tDesc.iPlayerState = ENUM_TO_UINT(State::SKILL2);
+
+        if (FAILED(pActionState->Add_State(ENUM_TO_UINT(State::SKILL2), CState_MoonSkill::Create(pActionState,"SkillQ", & tDesc))))
             return E_FAIL;
     }
 

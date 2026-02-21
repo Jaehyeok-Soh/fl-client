@@ -190,15 +190,15 @@ struct VS_OUT_POS_TEX_PARTICLE
 {
     float4 vPosition : SV_POSITION;
     float2 vUV : TEXCOORD0;
-    
     float2 vLifeTime : TEXCOORD1;
 };
 
 struct VS_OUT_POS_GS_PARTICLE
 {
     float4 vPosition : POSITION;
-    float2 vPSize : PSIZE;
+    float3 vPSize : PSIZE;
     float2 vLifeTime : TEXCOORD0;
+    uint vInstID : TEXCOORD1;
 };
 
 struct VS_OUT_INST_MESH_PARTICLE

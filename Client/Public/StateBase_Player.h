@@ -25,7 +25,7 @@ public:
 		C_DOWN = 0x0001 
 	};
 
-	enum class STATEKEY : _uint {MOVE, SPACE, SHIFT, LCRTL_PRESS, LCRTL_UP, Q, E, LM, RM, CHARGE, LOOPDONE , END}; //END에는 키가 없을떄 바꿀 state를 넣자
+	enum class STATEKEY : _uint {MOVE, SPACE, SHIFT, LCRTL_PRESS, LCRTL_UP, E,Q, LM, RM, CHARGE, LOOPDONE , END}; //END에는 키가 없을떄 바꿀 state를 넣자
 
 	typedef struct tagPlayerStateDesc : public CStateBase::STATE_DESC
 	{
@@ -60,6 +60,8 @@ protected:
 
 	STATE_START_DESC		m_tNextStateDesc = {};
 
+	TimeCount				m_TFallingCount = { 0.f,0.3f };
+
 	// state가 변환 했다면 true
 protected:
 	_bool Check_MoveKey(const _float fTimeDelta);
@@ -79,9 +81,11 @@ protected:
 	_bool	Check_OnGround(_float fMaxDist = 0.72f); // 땅에 있는지 검사
 
 	void	Check_Monster();
-	void	End_Combo();
 
 	void	Change_Weapon(_uint iPart, _uint iState);
+
+	_bool	Start_Att(_uint iPlayerState);
+	void	End_Att(_uint iPlayerState);
 
 
 protected:
@@ -93,7 +97,7 @@ protected:
 private:
 	_uint					m_iEndStateIdx = { 0 };			// CPlayer::State::END 캐싱 해둠 : 만약 END면 state change x
 
-	TimeCount				m_TFallingCount = { 0.f,0.3f };
+
 
 private:
 	_bool Has_ChangeState(STATEKEY eKey);

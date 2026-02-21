@@ -63,7 +63,7 @@ void CPanel_AnimModelFile::FileWindow()
 	ImGui::Begin("Files");
 
 	ImGuiListClipper clipper;
-	clipper.Begin(m_files.size());
+	clipper.Begin((int)m_files.size());
 	while (clipper.Step())
 	{
 		for (int i = clipper.DisplayStart; i < clipper.DisplayEnd; i++)
@@ -242,8 +242,8 @@ void CPanel_AnimModelFile::RenderLoadModal()
 			if (m_tLoadOptions.bLoadHitbox && strlen(m_tLoadOptions.strHitboxPath) > 0)
 				Load_HitboxData(m_tLoadOptions.strHitboxPath);
 
-			//if (m_tLoadOptions.bLoadEffect && strlen(m_tLoadOptions.strEffectPath) > 0)
-			//	Load_EffectData(m_tLoadOptions.strEffectPath);
+			if (m_tLoadOptions.bLoadEffect && strlen(m_tLoadOptions.strEffectPath) > 0)
+				Load_EffectData(m_tLoadOptions.strEffectPath);
 
 			//if (m_tLoadOptions.bLoadSound && strlen(m_tLoadOptions.strSoundPath) > 0)
 			//	Load_SoundData(m_tLoadOptions.strSoundPath);
@@ -346,8 +346,8 @@ void CPanel_AnimModelFile::RenderSaveModal()
 			if (m_tLoadOptions.bLoadHitbox && strlen(m_tLoadOptions.strHitboxPath) > 0)
 				Save_HitboxData(m_tLoadOptions.strHitboxPath);
 
-			//if (m_tLoadOptions.bLoadEffect && strlen(m_tLoadOptions.strEffectPath) > 0)
-			//	Load_EffectData(m_tLoadOptions.strEffectPath);
+			if (m_tLoadOptions.bLoadEffect && strlen(m_tLoadOptions.strEffectPath) > 0)
+				Save_EffectData(m_tLoadOptions.strEffectPath);
 
 			//if (m_tLoadOptions.bLoadSound && strlen(m_tLoadOptions.strSoundPath) > 0)
 			//	Load_SoundData(m_tLoadOptions.strSoundPath);
@@ -375,6 +375,16 @@ void CPanel_AnimModelFile::Load_HitboxData(fs::path path)
 void CPanel_AnimModelFile::Save_HitboxData(fs::path path)
 {
 	m_pAnimToolManager->Save_AttackOverlap(path, m_tLoadOptions.strAnimTag, m_tLoadOptions.iPoolingCount);
+}
+
+void CPanel_AnimModelFile::Load_EffectData(fs::path path)
+{
+	m_pAnimToolManager->Load_EffectEvent(path);
+}
+
+void CPanel_AnimModelFile::Save_EffectData(fs::path path)
+{
+	m_pAnimToolManager->Save_EffectEvent(path, m_tLoadOptions.strAnimTag, m_tLoadOptions.iPoolingCount);
 }
 
 DIR CPanel_AnimModelFile::RefreshModelDir()
@@ -441,24 +451,70 @@ void CPanel_AnimModelFile::SetDirectoryTree(DIR dir, fs::path parent)
 
 	ImGui::PopID();
 }
-
 void CPanel_AnimModelFile::CheckAnimModel(DIR dir, fs::path parent)
 {
-	_bool hasAnimations = { false };
-	_bool hasMesh = { false };
-	_bool hasSkel = { false };
-	_bool hasMtrl = { false };
-
-	hasAnimations = CheckResource(dir, "Animation", ".clip");
-	hasMesh = CheckResource(dir, "Model", ".mesh");
-	hasSkel = CheckResource(dir, "Model", ".skel");
-	hasMtrl = dir.directory.stem() == "Material";
-	hasMtrl = CheckResource(dir, "Material", ".json") && CheckResource(dir, "Material", ".png");
+	_bool hasAnimations = CheckResource(dir, "Animation", ".clip");
+	_bool hasMesh = CheckResource(dir, "Model", ".mesh");
+	_bool hasSkel = CheckResource(dir, "Model", ".skel");
+	_bool hasMtrl = CheckResource(dir, "Material", ".json");
 
 	if (hasAnimations && hasMesh && hasSkel && hasMtrl)
 	{
 		if (ImGui::SmallButton("Load anim model"))
 			CGameInstance::GetInstance()->Broadcast<LoadAnimModel>(dir.directory);
+		vector<fs::path> allProjectMeshes;
+
+		std::function<void(const DIR&)> findAllMeshes = [&](const DIR& current) {
+			for (const auto& file : current.files) {
+				if (file.extension() == ".mesh")
+					allProjectMeshes.push_back(file);
+			}
+			for (const auto& subDir : current.directories) {
+				findAllMeshes(subDir);
+			}
+			};
+
+		findAllMeshes(m_tRootDirectory);
+
+		if (!allProjectMeshes.empty())
+		{
+			static map<string, int> selectedIdxMap;
+			string nodeKey = dir.directory.string();
+
+			ImGui::SetNextItemWidth(200.f);
+			string comboID = "##GlobalPartCombo_" + nodeKey;
+
+			if (selectedIdxMap[nodeKey] >= allProjectMeshes.size()) selectedIdxMap[nodeKey] = 0;
+			string previewName = allProjectMeshes[selectedIdxMap[nodeKey]].filename().string();
+
+			if (ImGui::BeginCombo(comboID.c_str(), previewName.c_str()))
+			{
+				for (int i = 0; i < (int)allProjectMeshes.size(); ++i)
+				{
+					bool isSelected = (selectedIdxMap[nodeKey] == i);
+					string displayName = allProjectMeshes[i].parent_path().filename().string() + "/" + allProjectMeshes[i].filename().string();
+
+					if (ImGui::Selectable(displayName.c_str(), isSelected))
+						selectedIdxMap[nodeKey] = i;
+				}
+				ImGui::EndCombo();
+			}
+
+
+			{
+				ImGui::SetNextItemWidth(80.f); // 원하는 픽셀 길이
+				ImGui::InputInt("Socket Bone Index", &m_iSocketBoneIdx);
+				ImGui::SameLine();
+				ImGui::Checkbox("Combine Matrix", &m_bCombine);
+			}
+
+
+			if (ImGui::SmallButton("Load Part Weapon"))
+			{
+				fs::path targetPath = allProjectMeshes[selectedIdxMap[nodeKey]];
+				CGameInstance::GetInstance()->Broadcast<LoadAnimModelPart>(targetPath, m_iSocketBoneIdx, m_bCombine);
+			}
+		}
 	}
 }
 

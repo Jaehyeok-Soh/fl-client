@@ -43,7 +43,7 @@ void CPanel_AnimationController::AnimationListWindow()
 	}
 
 	ImGuiListClipper clipper;
-	clipper.Begin(m_tAnimControllInfo->vecAnimInfo.size());
+	clipper.Begin((_int)m_tAnimControllInfo->vecAnimInfo.size());
     while (clipper.Step())
     {
         for (int i = clipper.DisplayStart; i < clipper.DisplayEnd; i++)
@@ -77,7 +77,7 @@ void CPanel_AnimationController::BoneListWindow()
 	}
 
     ImGuiListClipper clipper;
-    clipper.Begin(m_tAnimControllInfo->vecBoneInfo.size());
+    clipper.Begin((_int)m_tAnimControllInfo->vecBoneInfo.size());
     while (clipper.Step())
     {
         for (int i = clipper.DisplayStart; i < clipper.DisplayEnd; i++)
@@ -116,23 +116,38 @@ void CPanel_AnimationController::AnimationControllPanelWindow()
 		ImGui::Separator();
 		ImGui::Text("Duration: %d ", m_tAnimControllInfo->fDuration);
 		ImGui::Text("Speed: %.2f TPS", m_tAnimControllInfo->fTickPerSecond);
-        if (ImGui::DragFloat("Play Rate", &m_tAnimControllInfo->fPlayRate, 0.1f, 0.1f, 5.0f))
+        //if (ImGui::DragFloat("Play Rate", &m_tAnimControllInfo->fPlayRate, 0.1f, 0.1f, 5.0f))
+        //{
+        //    if (m_tAnimControllInfo->fTickPerSecond <= 72.f && m_tAnimControllInfo->fTickPerSecond >= 0.01f)
+        //    {
+        //        if (m_pAnimToolManager->ValidCheck())
+        //            m_tAnimControllInfo->pModel->Set_AnimationSpeed(m_tAnimControllInfo->fPlayRate);
+        //    }
+        //}
+
+        if (ImGui::InputFloat("Play Rate", &m_tAnimControllInfo->fPlayRate, 0.01f, 1.0f, "%.2f"))
         {
-            if (m_tAnimControllInfo->fTickPerSecond <= 72.f && m_tAnimControllInfo->fTickPerSecond >= 0.01f)
+            // 범위 클램프
+            m_tAnimControllInfo->fPlayRate =
+                std::clamp(m_tAnimControllInfo->fPlayRate, 0.1f, 5.0f);
+
+            if (m_tAnimControllInfo->fTickPerSecond <= 72.f &&
+                m_tAnimControllInfo->fTickPerSecond >= 0.01f)
             {
                 if (m_pAnimToolManager->ValidCheck())
-                    m_tAnimControllInfo->pModel->Set_AnimationPlayRate(m_tAnimControllInfo->iCurrentAnimIndex, m_tAnimControllInfo->fPlayRate);
+                    m_tAnimControllInfo->pModel->Set_AnimationSpeed(
+                        m_tAnimControllInfo->fPlayRate);
             }
         }
 
-		_float currentPosition = (int)m_tAnimControllInfo->fTrackPosition;
-        if (ImGui::SliderFloat("Trackposition Seek", &currentPosition, 0, m_tAnimControllInfo->fDuration))
+		_float currentPosition = (_float)m_tAnimControllInfo->fTrackPosition;
+        if (ImGui::SliderFloat("Trackposition Seek", &currentPosition, 0, (_float)m_tAnimControllInfo->fDuration))
         {
-            m_tAnimControllInfo->fTrackPosition = currentPosition;
+            m_tAnimControllInfo->fTrackPosition = (_uint)currentPosition;
 
             if (m_pAnimToolManager->ValidCheck())
             {
-                m_tAnimControllInfo->pModel->Set_AnimTrackPosition(m_tAnimControllInfo->fTrackPosition);
+                m_tAnimControllInfo->pModel->Set_AnimTrackPosition((_float)m_tAnimControllInfo->fTrackPosition);
                 if (!m_tAnimControllInfo->bPlay)
                     m_pAnimToolManager->Update_Animation(0.03f);
             }
@@ -182,10 +197,10 @@ void CPanel_AnimationController::ButtonsWindow()
     if (ImGui::Button("# Stop", ImVec2(60, 0)))
     {
         m_tAnimControllInfo->bPlay = false;
-        m_tAnimControllInfo->fTrackPosition = 0.0f;
+        m_tAnimControllInfo->fTrackPosition = 0;
 
         if (m_pAnimToolManager->ValidCheck())
-            m_tAnimControllInfo->pModel->Set_AnimTrackPosition(m_tAnimControllInfo->fTrackPosition);
+            m_tAnimControllInfo->pModel->Set_AnimTrackPosition((_float)m_tAnimControllInfo->fTrackPosition);
     }
 
     ImGui::SameLine();
@@ -480,11 +495,11 @@ void CPanel_AnimationController::DrawController()
         if (new_tick < 0.0f) new_tick = 0.0f;
         if (new_tick > total_duration_ticks) new_tick = total_duration_ticks;
 
-        m_tAnimControllInfo->fTrackPosition = new_tick;
+        m_tAnimControllInfo->fTrackPosition = (_uint)new_tick;
 
         if (m_pAnimToolManager->ValidCheck())
         {
-            m_tAnimControllInfo->pModel->Set_AnimTrackPosition(m_tAnimControllInfo->fTrackPosition);
+            m_tAnimControllInfo->pModel->Set_AnimTrackPosition((_float)m_tAnimControllInfo->fTrackPosition);
             if (!m_tAnimControllInfo->bPlay)
                 m_pAnimToolManager->Update_Animation(0.016f);
         }
@@ -530,12 +545,15 @@ void CPanel_AnimationController::DrawController()
 
             bool isSelected = false;
             if (typeIndex == EAnimEvent::OVERLAP) isSelected = (m_tAnimControllInfo->iCurrentAttackEventIndex == eventIndex);
-            // else if (typeIndex == EAnimEvent::EFFECT) isSelected = (iSelectedEffectEvent == eventIndex);
+            else if (typeIndex == EAnimEvent::EFFECT) isSelected = (m_tAnimControllInfo->iCurrentEffectEventIndex == eventIndex);
 
             if (ImGui::Selectable(label, isSelected, 0, ImVec2(LABEL_WIDTH, TRACK_HEIGHT)))
             {
-                if (typeIndex == EAnimEvent::OVERLAP) m_tAnimControllInfo->iCurrentAttackEventIndex = eventIndex;
-                // else if (typeIndex == EAnimEvent::EFFECT) iSelectedEffectEvent = eventIndex;
+                if (typeIndex == EAnimEvent::OVERLAP)
+                    m_tAnimControllInfo->iCurrentAttackEventIndex = eventIndex;
+
+                else if (typeIndex == EAnimEvent::EFFECT) 
+                    m_tAnimControllInfo->iCurrentEffectEventIndex = eventIndex;
             }
 
             draw_list->AddRect(ImVec2(canvas_pos.x, current_y), ImVec2(canvas_pos.x + LABEL_WIDTH, current_y + TRACK_HEIGHT), IM_COL32(100, 100, 100, 255));
@@ -567,7 +585,7 @@ void CPanel_AnimationController::DrawController()
             {
                 // 단순 클릭 시 선택 처리
                 if (typeIndex == EAnimEvent::OVERLAP) m_tAnimControllInfo->iCurrentAttackEventIndex = eventIndex;
-                // else if (typeIndex == EAnimEvent::EFFECT) iSelectedEffectEvent = eventIndex;
+                 else if (typeIndex == EAnimEvent::EFFECT) m_tAnimControllInfo->iCurrentEffectEventIndex = eventIndex;
             }
 
             // 버튼이 활성화된 상태에서 드래그 중인지 확인
@@ -587,6 +605,7 @@ void CPanel_AnimationController::DrawController()
 
                 // 드래그 중일 때도 선택된 것으로 간주
                 if (typeIndex == EAnimEvent::OVERLAP) m_tAnimControllInfo->iCurrentAttackEventIndex = eventIndex;
+                else if (typeIndex == EAnimEvent::EFFECT) m_tAnimControllInfo->iCurrentAttackEventIndex = eventIndex;
             }
 
             // [박스 렌더링] (입력 처리 후에 그려도 됨, DrawList 순서 주의)
@@ -630,7 +649,7 @@ void CPanel_AnimationController::DrawController()
     }
 
     // [Effect Events]
-    /*
+   
     localIdx = 0;
     for (int i = 0; i < m_tEventInfo->vecVFXEvents.size(); ++i)
     {
@@ -643,13 +662,13 @@ void CPanel_AnimationController::DrawController()
         DrawSingleEventTrack(
             labelBuf,
             evt,
-            i,      // 실제 벡터 인덱스
-            EAnimEvent::EFFECT,      // 타입 인덱스 (1: Effect)
-            IM_COL32(100, 100, 200, 200),
-            evt.fDuration
+            i,                      // 실제 벡터 인덱스
+            EAnimEvent::EFFECT,     // 타입 인덱스 (VFX 구분)
+            IM_COL32(100, 150, 250, 200), // 이펙트는 파란색 계열
+            evt.fDuration           // DTO::EFFECTEVENT에 정의된 유지 시간
         );
     }
-    */
+    
 
     // ---------------------------------------------------------
     // D. 인디케이터 (현재 재생 위치)
@@ -686,15 +705,32 @@ void CPanel_AnimationController::Render_AddEventModal()
             {
             case Engine::EAnimEvent::OVERLAP:
             {
-                m_tAnimControllInfo->iCurrentAttackEventIndex = m_tEventInfo->vecAttackEvents.size();
+                m_tAnimControllInfo->iCurrentAttackEventIndex = (_int)m_tEventInfo->vecAttackEvents.size();
                 DTO::ATTACKEVENT newEvent{};
                 newEvent.iAnimIndex = m_tAnimControllInfo->iCurrentAnimIndex;
                 m_tEventInfo->vecAttackEvents.push_back(newEvent);
                 m_pAnimToolManager->Modify_AttackOverlap(m_tEventInfo->vecAttackEvents);
+                break;
             }
-                break;
             case Engine::EAnimEvent::EFFECT:
+            {
+                m_tAnimControllInfo->iCurrentEffectEventIndex = (_int)m_tEventInfo->vecVFXEvents.size();
+
+                // 새로운 EffectEvent 객체 생성 및 기본값 새팅
+                DTO::EFFECTEVENT newEvent{};
+                newEvent.eEventType = Engine::EAnimEvent::EFFECT;
+                newEvent.iAnimIndex = m_tAnimControllInfo->iCurrentAnimIndex;
+                newEvent.fStartTrackPosition = (_float)m_tAnimControllInfo->fTrackPosition; // 현재 타임라인 위치에 생성
+                newEvent.fDuration = 1.0f; // 기본 지속 시간 1초
+                newEvent.strEffectTag = "None"; // 초기 태그
+
+                // 벡터에 추가
+                m_tEventInfo->vecVFXEvents.push_back(newEvent);
+
+                // 매니저를 통해 모듈 및 컴포넌트 데이터 갱신 (실시간 프리뷰용)
+                m_pAnimToolManager->Modify_EffectEvent(m_tEventInfo->vecVFXEvents);
                 break;
+            }
             case Engine::EAnimEvent::SOUND:
                 break;
             default:

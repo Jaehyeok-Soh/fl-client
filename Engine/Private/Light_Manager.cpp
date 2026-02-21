@@ -67,6 +67,24 @@ ID3D11Buffer* CLight_Manager::Get_Light_ConstantBuffer() const
 	return m_pLight_CBuffer->Get_Buffer();
 }
 
+CLight* CLight_Manager::Get_Light(LIGHT_TYPE eType, _uint iIndex)
+{
+	auto& lightList = m_Lights[ENUM_TO_UINT(eType)];
+	if (iIndex >= lightList.size())
+		return nullptr;
+	
+	auto itr = lightList.begin();
+	for (_uint iCount = 0;
+		itr != lightList.end();
+		++itr, ++iCount)
+	{
+		if (iIndex == iCount)
+			break;
+	}
+
+	return itr == lightList.end() ? nullptr : (*itr);
+}
+
 void CLight_Manager::Clear()
 {
 	for (auto& list : m_Lights)

@@ -22,7 +22,17 @@ enum class E_TEXTURETYPE {
     DISSOLVE = 7,
 };
 enum class E_EffectSystemType { NONE = 0, Particle, ForceField, Line, Trail };
-enum class E_SHAPETYPE { NONE = 0, DROP, RISE, SPREAD, STRAIGHT, SPIRAL, DNA };
+enum class E_SHAPETYPE {
+    NONE = 0,
+    DROP,
+    RISE,
+    SPREAD,
+    STRAIGHT,
+    SPIRAL,
+    DNA,
+    GATHER,   // 중앙으로 모이기
+    FOUNTAIN  // 분수 효과
+};
 enum class E_SIMULATION_SPACE { NONE = 0, LOCAL, WORLD };
 enum class E_EMISSION_TYPE { BOX = 0, CIRCLE, SPHERE, CONE };
 enum class EEffectType : _uint{ EFFECT_CONTAINER, EFFECT_PARTS, END};
@@ -39,6 +49,20 @@ struct Rotation_CurveKey
     float fTimeKey = { 0.f };
     float fValue = { 0.f };
 };
+
+enum E_RANDOM_FLAG {
+    RAND_NONE = 0,
+    RAND_POS = 1 << 0,
+    RAND_LIFE = 1 << 1,
+    RAND_SIZE = 1 << 2
+};
+
+// 비트 연산자 오버로딩
+inline E_RANDOM_FLAG operator|(E_RANDOM_FLAG a, E_RANDOM_FLAG b) { return static_cast<E_RANDOM_FLAG>(static_cast<int>(a) | static_cast<int>(b)); }
+inline E_RANDOM_FLAG operator&(E_RANDOM_FLAG a, E_RANDOM_FLAG b) { return static_cast<E_RANDOM_FLAG>(static_cast<int>(a) & static_cast<int>(b)); }
+inline E_RANDOM_FLAG operator~(E_RANDOM_FLAG a) { return static_cast<E_RANDOM_FLAG>(~static_cast<int>(a)); }
+inline E_RANDOM_FLAG& operator|=(E_RANDOM_FLAG& a, E_RANDOM_FLAG b) { return a = a | b; }
+inline E_RANDOM_FLAG& operator&=(E_RANDOM_FLAG& a, E_RANDOM_FLAG b) { return a = a & b; }
 
 struct TEFFECT_PartsData
 {
@@ -107,7 +131,7 @@ struct TEFFECT_PartsData
     Vec2                _Effect_ParticleSize = { 0.05f, 0.15f };
     _float              _Effect_Duration = { 5.f };
     _bool               _Effect_Looping = { true };
-    _bool               _Effect_IsRandomSeed = { true };
+    E_RANDOM_FLAG       iRandomFlags = RAND_NONE;
 
     _float              _Effect_PlayBackSpeed = { 1.f };
     _float              _Effect_StartSpeed = { 1.f };   // Particle에 영향을 주는 스피드 [개별 배속]
@@ -171,6 +195,7 @@ struct TEFFECT_PartsData
 
     // 빌보드는 있니, 스크롤은 먹이니
     _bool               _Effect_Tool_UseBillboard = { false };
+    _bool               _Effect_Tool_UseDirBillboard = { false };
     _bool               _Effect_Tool_UseScroll = { false };
     _bool               _Effect_Tool_RightScroll = { false };
     _bool               _Effect_Tool_DownScroll = { false };

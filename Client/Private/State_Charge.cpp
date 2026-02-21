@@ -34,6 +34,8 @@ HRESULT CState_Charge::Start(void* pArg, _bool bForce)
 
 	Change_Weapon(CPlayer::Part::SWORD, ENUM_TO_UINT(CWeapon::State::HAND));
 
+	Start_Att(ENUM_TO_UINT(CPlayer::State::CHARGE));
+
 	return S_OK;
 }
 
@@ -55,7 +57,7 @@ HRESULT CState_Charge::End()
 	if (FAILED(Super::End()))
 		return E_FAIL;
 
-	End_Combo();
+	End_Att(ENUM_TO_UINT(CPlayer::State::CHARGE));
 
 	Change_Weapon(CPlayer::Part::SWORD, ENUM_TO_UINT(CWeapon::State::HOLD));
 

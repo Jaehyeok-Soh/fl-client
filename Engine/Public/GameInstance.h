@@ -234,6 +234,7 @@ public:
 	HRESULT Add_Light(const LIGHT_DESC& LightDesc);
 	HRESULT Push_DynamicLight(class CLight* pLight);
 	HRESULT Render_Lights(class CShader* pShader, class CVIBuffer_Rect_Tex* pVIBuffer);
+	class CLight* Get_Light(LIGHT_TYPE eType, _uint iIndex = 0);
 	void Clear_Lights();
 #pragma endregion
 
@@ -278,7 +279,7 @@ public:
 #pragma region RENDERTARGET_MANAGER
 	HRESULT Add_RenderTarget(ERenderTarget eTarget, const CRenderTarget::RENDERTARGET_DESC* pDesc);
 	HRESULT Add_MRT(EMRTLayer eMRTLayer, ERenderTarget eTarget);
-	HRESULT Begin_MRT(EMRTLayer eMRTLayer, _bool bClear = true);
+	HRESULT Begin_MRT(EMRTLayer eMRTLayer, _bool bClear = true, _bool bUseDSV = true);
 	HRESULT End_MRT();
 	HRESULT Bind_RT_ShaderResource(ERenderTarget eTarget, class CShader* pShader);
 	HRESULT Copy_SceneHDRResource(ERenderTarget eTarget);
@@ -343,6 +344,10 @@ public:
 #endif // _DEBUG
 #pragma endregion
 
+#pragma region EFFECT_MANAGER
+	void Spawn_Effect(const std::string& strTag, const Matrix& matWorld, _float fDuration, _bool bIsLocal, void* pTargetBone = nullptr);
+
+#pragma endregion
 // Todo - 쓰레기통 정리
 #pragma region GAMEDATA
 
@@ -372,6 +377,7 @@ private:
 	class CFrustrum* m_pFrustrum = { nullptr };
 	class CShaderAsset_Manager* m_pShaderAsset_Manager = { nullptr };
 	class CPhysics_Module* m_pPhysics_Module = { nullptr };
+	class CEffect_Manager* m_pEffect_Manager = { nullptr };
 private:
 	std::mt19937_64 m_rng;
 public:

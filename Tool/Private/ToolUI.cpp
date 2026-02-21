@@ -465,12 +465,16 @@ HRESULT CToolUI::Request_Change_NoiseTexture()
 {
 	if (FAILED(Get_Component<CTexture>()->Add_DefaultTexture(m_wstrNoiseTextureTag, NOISE)))
 		return E_FAIL;
+
+	return S_OK;
 }
 
 HRESULT CToolUI::Request_Change_AlphaMaskTexture()
 {
 	if (FAILED(Get_Component<CTexture>()->Add_DefaultTexture(m_wstrAlphaMaskTextureTag, ALPHA_MASK)))
 		return E_FAIL;
+
+	return S_OK;
 }
 
 void CToolUI::Request_Chnage_ShaderPass(uint32_t pass)

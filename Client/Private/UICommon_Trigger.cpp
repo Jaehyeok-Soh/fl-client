@@ -99,14 +99,6 @@ void CUICommon_Trigger::Update_Late(const _float fTimeDelta)
 void CUICommon_Trigger::Ready_Before_Render(const _float fTimeDelta)
 {
 	Super::Ready_Before_Render(fTimeDelta);
-
-	if (m_strName == "Menu_Exit_Trigger")
-	{
-		if (m_isInteract)
-			std::cout << "true" << std:: endl;
-		else 
-			std::cout << "false" << std::endl;
-	}
 }
 
 HRESULT CUICommon_Trigger::Render()
