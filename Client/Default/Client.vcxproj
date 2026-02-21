@@ -162,6 +162,7 @@
     <ClInclude Include="..\Public\Builder_EffectEvent.h" />
     <ClInclude Include="..\public\Builder_Example.h" />
     <ClInclude Include="..\Public\Builder_Map.h" />
+    <ClInclude Include="..\Public\Builder_MonsterState.h" />
     <ClInclude Include="..\Public\Builder_UI.h" />
     <ClInclude Include="..\Public\CameraMan_Targeter.h" />
     <ClInclude Include="..\Public\Canvas.h" />
@@ -207,11 +208,8 @@
     <ClInclude Include="..\Public\Physics_LandScape.h" />
     <ClInclude Include="..\Public\Physics_Terrain.h" />
     <ClInclude Include="..\Public\StateBase_Monster.h" />
-    <ClInclude Include="..\Public\StateMonster_Attack.h" />
     <ClInclude Include="..\Public\StateMonster_Combo.h" />
     <ClInclude Include="..\Public\StateMonster_ComboBase.h" />
-    <ClInclude Include="..\Public\StateMonster_Idle.h" />
-    <ClInclude Include="..\Public\StateMonster_Walk.h" />
     <ClInclude Include="..\Public\State_BossMonster.h" />
     <ClInclude Include="..\Public\State_ComboBase.h" />
     <ClInclude Include="..\Public\State_CrouchWalk.h" />
@@ -281,6 +279,7 @@
     <ClCompile Include="..\Private\Builder_EffectEvent.cpp" />
     <ClCompile Include="..\private\Builder_Example.cpp" />
     <ClCompile Include="..\Private\Builder_Map.cpp" />
+    <ClCompile Include="..\Private\Builder_MonsterState.cpp" />
     <ClCompile Include="..\Private\Builder_UI.cpp" />
     <ClCompile Include="..\Private\CameraMan_Targeter.cpp" />
     <ClCompile Include="..\Private\Canvas.cpp" />
@@ -345,11 +344,8 @@
     <ClCompile Include="..\Private\Monster_Dummy_Body.cpp" />
     <ClCompile Include="..\Private\Physics_LandScape.cpp" />
     <ClCompile Include="..\Private\StateBase_Monster.cpp" />
-    <ClCompile Include="..\Private\StateMonster_Attack.cpp" />
     <ClCompile Include="..\Private\StateMonster_Combo.cpp" />
     <ClCompile Include="..\Private\StateMonster_ComboBase.cpp" />
-    <ClCompile Include="..\Private\StateMonster_Idle.cpp" />
-    <ClCompile Include="..\Private\StateMonster_Walk.cpp" />
     <ClCompile Include="..\Private\State_BossMonster.cpp" />
     <ClCompile Include="..\Private\State_ComboBase.cpp" />
     <ClCompile Include="..\Private\State_CrouchWalk.cpp" />

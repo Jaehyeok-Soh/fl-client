@@ -343,20 +343,14 @@
     <Filter Include="06. FSM\Monster">
       <UniqueIdentifier>{43386637-460e-4032-abe2-96b2def28a07}</UniqueIdentifier>
     </Filter>
-    <Filter Include="06. FSM\Monster\Idle">
-      <UniqueIdentifier>{ce066a2f-058b-47d6-8a35-ef80f82d8f9e}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="06. FSM\Monster\Attack">
-      <UniqueIdentifier>{00534b48-b825-4bd7-b916-eb3ad0fc2133}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="06. FSM\Monster\Walk">
-      <UniqueIdentifier>{429f91fd-bc08-45ee-b4d6-5a81adf3eeaf}</UniqueIdentifier>
-    </Filter>
     <Filter Include="06. FSM\Monster\Combo">
       <UniqueIdentifier>{8654d254-98b1-4c39-8eaf-1b9c97e2655f}</UniqueIdentifier>
     </Filter>
     <Filter Include="06. FSM\Monster\StateFactory">
       <UniqueIdentifier>{3f89f6d7-e841-4bcf-b727-a356e0c92bb4}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="07. System\01. Builder\Builder_MonsterState">
+      <UniqueIdentifier>{bace6dbf-cd06-4461-95e6-0bd33903caaf}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
@@ -669,15 +663,6 @@
     <ClInclude Include="..\Public\StateBase_Monster.h">
       <Filter>06. FSM\Monster</Filter>
     </ClInclude>
-    <ClInclude Include="..\Public\StateMonster_Idle.h">
-      <Filter>06. FSM\Monster\Idle</Filter>
-    </ClInclude>
-    <ClInclude Include="..\Public\StateMonster_Walk.h">
-      <Filter>06. FSM\Monster\Walk</Filter>
-    </ClInclude>
-    <ClInclude Include="..\Public\StateMonster_Attack.h">
-      <Filter>06. FSM\Monster\Attack</Filter>
-    </ClInclude>
     <ClInclude Include="..\Public\StateMonster_ComboBase.h">
       <Filter>06. FSM\Monster\Combo</Filter>
     </ClInclude>
@@ -695,6 +680,9 @@
     </ClInclude>
     <ClInclude Include="..\Public\MonsterStateFactoryRegisterer.h">
       <Filter>06. FSM\Monster\StateFactory</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\Builder_MonsterState.h">
+      <Filter>07. System\01. Builder\Builder_MonsterState</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -999,15 +987,6 @@
     <ClCompile Include="..\Private\StateBase_Monster.cpp">
       <Filter>06. FSM\Monster</Filter>
     </ClCompile>
-    <ClCompile Include="..\Private\StateMonster_Idle.cpp">
-      <Filter>06. FSM\Monster\Idle</Filter>
-    </ClCompile>
-    <ClCompile Include="..\Private\StateMonster_Walk.cpp">
-      <Filter>06. FSM\Monster\Walk</Filter>
-    </ClCompile>
-    <ClCompile Include="..\Private\StateMonster_Attack.cpp">
-      <Filter>06. FSM\Monster\Attack</Filter>
-    </ClCompile>
     <ClCompile Include="..\Private\StateMonster_ComboBase.cpp">
       <Filter>06. FSM\Monster\Combo</Filter>
     </ClCompile>
@@ -1025,6 +1004,9 @@
     </ClCompile>
     <ClCompile Include="..\Private\MonsterStateFactoryRegisterer.cpp">
       <Filter>06. FSM\Monster\StateFactory</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\Builder_MonsterState.cpp">
+      <Filter>07. System\01. Builder\Builder_MonsterState</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

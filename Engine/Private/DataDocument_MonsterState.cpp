@@ -1,24 +1,24 @@
 #include "Engine_pch.h"
-#include "DataDocument_AttackOverlap.h"
+#include "DataDocument_MonsterState.h"
 #pragma push_macro("new")
 #undef new
 #include "json.hpp"
 using json = nlohmann::json;
 #pragma pop_macro("new")
 
-CDataDocument_AttackOverlap::CDataDocument_AttackOverlap()
+CDataDocument_MonsterState::CDataDocument_MonsterState()
 {
 }
 
-HRESULT CDataDocument_AttackOverlap::Initialize()
+HRESULT CDataDocument_MonsterState::Initialize()
 {
 	return S_OK;
 }
 
-json CDataDocument_AttackOverlap::ToJson() const
+json CDataDocument_MonsterState::ToJson() const
 {
 	json j;
-	j["Category"] = DTO::ECategory::OVERLAP_SCRIPT;
+	j["Category"] = DTO::ECategory::MONSTER_STATE;
 
 	json jsonArray = json::array();
 
@@ -30,14 +30,14 @@ json CDataDocument_AttackOverlap::ToJson() const
 	return j;
 }
 
-HRESULT CDataDocument_AttackOverlap::FromJson(const json& j)
+HRESULT CDataDocument_MonsterState::FromJson(const json& j)
 {
 	Clear();
 
 	if (j.contains("Category"))
 	{
 		const DTO::ECategory eCategory = j.at("Category").get<DTO::ECategory>();
-		if (eCategory != DTO::ECategory::OVERLAP_SCRIPT)
+		if (eCategory != DTO::ECategory::MONSTER_STATE)
 			return E_FAIL;
 	}
 	else
@@ -68,19 +68,19 @@ HRESULT CDataDocument_AttackOverlap::FromJson(const json& j)
 	return S_OK;
 }
 
-HRESULT CDataDocument_AttackOverlap::Try_Add(const DTO::ATTACKOVERLAP_DESC& data)
+HRESULT CDataDocument_MonsterState::Try_Add(const DTO::MONSTER_STATEBASE_DESC& data)
 {
 	IObjectDataBase* pObjectBase = Create_ObjectData();
-	static_cast<CDataStruct_AttackOverlap*>(pObjectBase)->Get_Data() = data;
+	static_cast<CDataStruct_MonsterState*>(pObjectBase)->Get_Data() = data;
 	return Try_Add(pObjectBase);
 }
 
-IObjectDataBase* CDataDocument_AttackOverlap::Create_ObjectData()
+IObjectDataBase* CDataDocument_MonsterState::Create_ObjectData()
 {
-	return CDataStruct_AttackOverlap::Create();
+	return CDataStruct_MonsterState::Create();
 }
 
-HRESULT CDataDocument_AttackOverlap::Try_Add(IObjectDataBase* pObject)
+HRESULT CDataDocument_MonsterState::Try_Add(IObjectDataBase* pObject)
 {
 	if (pObject == nullptr)
 		return E_FAIL;
@@ -105,18 +105,18 @@ HRESULT CDataDocument_AttackOverlap::Try_Add(IObjectDataBase* pObject)
 	return S_OK;
 }
 
-CDataDocument_AttackOverlap* CDataDocument_AttackOverlap::Create()
+CDataDocument_MonsterState* CDataDocument_MonsterState::Create()
 {
-	CDataDocument_AttackOverlap* pInstance = new CDataDocument_AttackOverlap();
+	CDataDocument_MonsterState* pInstance = new CDataDocument_MonsterState();
 	if (FAILED(pInstance->Initialize()))
 	{
-		MSG_BOX("CDataDocument_AttackOverlap::Create, Failed");
+		MSG_BOX("CDataDocument_MonsterState::Create, Failed");
 		Safe_Release(pInstance);
 	}
 	return pInstance;
 }
 
-void CDataDocument_AttackOverlap::Free()
+void CDataDocument_MonsterState::Free()
 {
 	Super::Free();
 }

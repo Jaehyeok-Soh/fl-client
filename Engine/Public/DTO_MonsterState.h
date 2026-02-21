@@ -83,6 +83,8 @@ namespace DTO
 
 	typedef struct tagMonsterStateDesc : public MONSTERSTATE_DESC
 	{
+		string strTag = { "Sample" };
+
 		bool bIsBoss = { false };
 		bool bIsCombo = { false };
 
@@ -107,6 +109,8 @@ namespace DTO
 
 	inline void to_json(json& j, const MONSTER_STATEBASE_DESC& d)
 	{
+		j["strTag"] = d.strTag;
+
 		j["bIsBoss"] = d.bIsBoss;
 		j["bIsCombo"] = d.bIsCombo;
 
@@ -125,6 +129,8 @@ namespace DTO
 
 	inline void from_json(const json& j, MONSTER_STATEBASE_DESC& d)
 	{
+		j.at("strTag").get_to(d.strTag);
+
 		j.at("bIsBoss").get_to(d.bIsBoss);
 		j.at("bIsCombo").get_to(d.bIsCombo);
 

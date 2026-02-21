@@ -154,6 +154,7 @@
     <ClInclude Include="..\Public\Builder_AttackOverlap.h" />
     <ClInclude Include="..\Public\Builder_Example.h" />
     <ClInclude Include="..\Public\Builder_Map.h" />
+    <ClInclude Include="..\Public\Builder_MonsterState.h" />
     <ClInclude Include="..\Public\Builder_UI.h" />
     <ClInclude Include="..\Public\CameraMan_Free.h" />
     <ClInclude Include="..\Public\CEffectObject.h" />
@@ -244,6 +245,7 @@
     <ClCompile Include="..\Private\Builder_AttackOverlap.cpp" />
     <ClCompile Include="..\Private\Builder_Example.cpp" />
     <ClCompile Include="..\Private\Builder_Map.cpp" />
+    <ClCompile Include="..\Private\Builder_MonsterState.cpp" />
     <ClCompile Include="..\Private\Builder_UI.cpp" />
     <ClCompile Include="..\Private\CameraMan_Free.cpp" />
     <ClCompile Include="..\Private\CEffectObject.cpp" />

@@ -16,6 +16,7 @@ enum class ECategory : _uint
 	ANIMATION,
 	CAMERA,
 	OVERLAP_SCRIPT,
+	MONSTER_STATE,
 	END
 };
 inline constexpr _uint g_CategoryCount{ ENUM_TO_UINT(ECategory::END) };
