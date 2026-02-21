@@ -1,6 +1,10 @@
 #pragma once
 #include "ImGui_Layout.h"
 
+NS_BEGIN(Engine)
+class CLight;
+NS_END
+
 NS_BEGIN(Client)
 
 class CImGui_ShaderLayout final : public CImGui_Layout
@@ -15,6 +19,9 @@ public:
 private:
 	_bool m_bAutoApply{ true };
 	_bool m_bDefaultCached{ false };
+	CLight* m_pDirLight{ nullptr };
+	SHADER_LIGHTDESC m_changedLightDesc{};
+	SHADER_LIGHTDESC m_defLight{};
 	SHADER_SSAOPARAM_DESC  m_defSSAO{};
 	SHADER_HDRPARAM_DESC   m_defHDR{};
 	SHADER_BLOOMPARAM_DESC m_defBloom{};

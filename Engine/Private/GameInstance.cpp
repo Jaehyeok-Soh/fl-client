@@ -781,6 +781,10 @@ void CGameInstance::Clear_Lights()
 {
 	return m_pLight_Manager->Clear();
 }
+CLight* CGameInstance::Get_Light(LIGHT_TYPE eType, _uint iIndex)
+{
+	return m_pLight_Manager->Get_Light(eType, iIndex);
+}
 #pragma endregion
 
 #pragma region EVENT_MANAGER
@@ -889,9 +893,9 @@ HRESULT CGameInstance::Add_MRT(EMRTLayer eMRTLayer, ERenderTarget eTarget)
 	return m_pRenderTarget_Manager->Add_MRT(eMRTLayer, eTarget);
 }
 
-HRESULT CGameInstance::Begin_MRT(EMRTLayer eMRTLayer, _bool bClear)
+HRESULT CGameInstance::Begin_MRT(EMRTLayer eMRTLayer, _bool bClear, _bool bUseDSV)
 {
-	return m_pRenderTarget_Manager->Begin_MRT(eMRTLayer, bClear);
+	return m_pRenderTarget_Manager->Begin_MRT(eMRTLayer, bClear, bUseDSV);
 }
 
 HRESULT CGameInstance::End_MRT()

@@ -19,6 +19,7 @@ public:
 	HRESULT Push_DynamicLight(class CLight* pLight);
 	HRESULT Render(class CShader* pShader, class CVIBuffer_Rect_Tex* pVIBuffer);
 	ID3D11Buffer* Get_Light_ConstantBuffer() const;
+	CLight* Get_Light(LIGHT_TYPE eType, _uint iIndex = 0);
 	void Clear();
 private:
 	void Setup_Pass(class CShader* pShader, LIGHT_TYPE eType);

@@ -292,6 +292,9 @@
     <Filter Include="06. ImGui\01. Panel\Animation\Panel_ModelInfo">
       <UniqueIdentifier>{29f62679-dbdb-4d76-ad02-f317e0acb029}</UniqueIdentifier>
     </Filter>
+    <Filter Include="06. ImGui\01. Panel\Animation\Panel_Parts">
+      <UniqueIdentifier>{066939c9-786f-43ed-8c48-88882c1e8089}</UniqueIdentifier>
+    </Filter>
     <Filter Include="09. Builder\Builder_MonsterState">
       <UniqueIdentifier>{6cd3e072-0e67-41b9-a8e3-d3d8fba2778f}</UniqueIdentifier>
     </Filter>
@@ -574,6 +577,9 @@
     <ClInclude Include="..\Public\Panel_ModelInfo.h">
       <Filter>06. ImGui\01. Panel\Animation\Panel_ModelInfo</Filter>
     </ClInclude>
+    <ClInclude Include="..\Public\Panel_Parts.h">
+      <Filter>06. ImGui\01. Panel\Animation\Panel_Parts</Filter>
+    </ClInclude>
     <ClInclude Include="..\Public\Builder_MonsterState.h">
       <Filter>09. Builder\Builder_MonsterState</Filter>
     </ClInclude>
@@ -843,6 +849,9 @@
     </ClCompile>
     <ClCompile Include="..\Private\Panel_ModelInfo.cpp">
       <Filter>06. ImGui\01. Panel\Animation\Panel_ModelInfo</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\Panel_Parts.cpp">
+      <Filter>06. ImGui\01. Panel\Animation\Panel_Parts</Filter>
     </ClCompile>
     <ClCompile Include="..\Private\Builder_MonsterState.cpp">
       <Filter>09. Builder\Builder_MonsterState</Filter>

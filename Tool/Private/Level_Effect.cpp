@@ -190,7 +190,7 @@ HRESULT CLevel_Effect::Ready_DebugLine()
 	CTransform::TRANSFORM_DESC tTsDesc{};
 	tDesc.pTransform_Desc = &tTsDesc;
 
-	m_pGameInstance->Add_GameObject(ENUM_TO_UINT(ELevelType::STATIC), L"Prototype_GameObject_DebugLine", ENUM_TO_UINT(ELevelType::MAP), L"Layer_DebugLine",
+	m_pGameInstance->Add_GameObject(ENUM_TO_UINT(ELevelType::STATIC), L"Prototype_GameObject_DebugLine", ENUM_TO_UINT(ELevelType::EFFECT), L"Layer_DebugLine",
 		&tDesc);
 
 	return S_OK;
