@@ -116,12 +116,27 @@ void CPanel_AnimationController::AnimationControllPanelWindow()
 		ImGui::Separator();
 		ImGui::Text("Duration: %d ", m_tAnimControllInfo->fDuration);
 		ImGui::Text("Speed: %.2f TPS", m_tAnimControllInfo->fTickPerSecond);
-        if (ImGui::DragFloat("Play Rate", &m_tAnimControllInfo->fPlayRate, 0.1f, 0.1f, 5.0f))
+        //if (ImGui::DragFloat("Play Rate", &m_tAnimControllInfo->fPlayRate, 0.1f, 0.1f, 5.0f))
+        //{
+        //    if (m_tAnimControllInfo->fTickPerSecond <= 72.f && m_tAnimControllInfo->fTickPerSecond >= 0.01f)
+        //    {
+        //        if (m_pAnimToolManager->ValidCheck())
+        //            m_tAnimControllInfo->pModel->Set_AnimationSpeed(m_tAnimControllInfo->fPlayRate);
+        //    }
+        //}
+
+        if (ImGui::InputFloat("Play Rate", &m_tAnimControllInfo->fPlayRate, 0.01f, 1.0f, "%.2f"))
         {
-            if (m_tAnimControllInfo->fTickPerSecond <= 72.f && m_tAnimControllInfo->fTickPerSecond >= 0.01f)
+            // 범위 클램프
+            m_tAnimControllInfo->fPlayRate =
+                std::clamp(m_tAnimControllInfo->fPlayRate, 0.1f, 5.0f);
+
+            if (m_tAnimControllInfo->fTickPerSecond <= 72.f &&
+                m_tAnimControllInfo->fTickPerSecond >= 0.01f)
             {
                 if (m_pAnimToolManager->ValidCheck())
-                    m_tAnimControllInfo->pModel->Set_AnimationPlayRate(m_tAnimControllInfo->iCurrentAnimIndex, m_tAnimControllInfo->fPlayRate);
+                    m_tAnimControllInfo->pModel->Set_AnimationSpeed(
+                        m_tAnimControllInfo->fPlayRate);
             }
         }
 

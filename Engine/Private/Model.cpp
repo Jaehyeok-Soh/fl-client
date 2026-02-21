@@ -47,6 +47,7 @@ CModel::CModel(const CModel& rhs)
 	, m_iFrameIndex(rhs.m_iFrameIndex)
 	, m_iCpuBoneCount(rhs.m_iCpuBoneCount)
 	, m_bLoopAnimDone(rhs.m_bLoopAnimDone)
+	, m_fAnimationSpeed(rhs.m_fAnimationSpeed)
 {
 	m_vecPrevAnimationPose.resize(rhs.m_vecPrevAnimationPose.size());
 	m_vecCurrAnimationPose.resize(rhs.m_vecCurrAnimationPose.size());
@@ -298,7 +299,7 @@ HRESULT CModel::Change_Animation(CComputeShader* pAnimEComShader, _uint iAnimati
 
 void CModel::Update_Animation(CComputeShader* pBoneComBineCS, CComputeShader* pAnimEComShader, _float fTimeDelta, CTransform* pOwnerTransform, CPhysicsCCT* pOwnerPhyCCT, CComputeShader* pAnimBlendCS, CComputeShader* pGetBoneCS)
 {
-	Update_AnimationPlayState(pBoneComBineCS, pAnimEComShader, pAnimBlendCS,  fTimeDelta, pOwnerTransform, pOwnerPhyCCT, pGetBoneCS);
+	Update_AnimationPlayState(pBoneComBineCS, pAnimEComShader, pAnimBlendCS,  fTimeDelta* m_fAnimationSpeed, pOwnerTransform, pOwnerPhyCCT, pGetBoneCS);
 }
 
 HRESULT CModel::Set_PassByMesh(class CShader* pShader, _uint iMeshIndex)

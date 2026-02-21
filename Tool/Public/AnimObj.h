@@ -42,6 +42,8 @@ public:
 	const CModel*	Get_ModelComPtr(); // 모델 컴포넌트를 가져와야 하므로 계속 접근하게 한다.
 	HRESULT			Change_ModelCom(_wstring wstrModelTag);
 
+	_uint Get_PartsNums();
+
 private:
 	HRESULT			Ready_Components(ANIMOBJ_DESC* pDesc);
 	HRESULT			Ready_ComputeShaders();

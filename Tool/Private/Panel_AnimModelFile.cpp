@@ -500,12 +500,19 @@ void CPanel_AnimModelFile::CheckAnimModel(DIR dir, fs::path parent)
 				ImGui::EndCombo();
 			}
 
-			ImGui::SameLine();
+
+			{
+				ImGui::SetNextItemWidth(80.f); // 원하는 픽셀 길이
+				ImGui::InputInt("Socket Bone Index", &m_iSocketBoneIdx);
+				ImGui::SameLine();
+				ImGui::Checkbox("Combine Matrix", &m_bCombine);
+			}
+
 
 			if (ImGui::SmallButton("Load Part Weapon"))
 			{
 				fs::path targetPath = allProjectMeshes[selectedIdxMap[nodeKey]];
-				CGameInstance::GetInstance()->Broadcast<LoadAnimModelPart>(targetPath);
+				CGameInstance::GetInstance()->Broadcast<LoadAnimModelPart>(targetPath, m_iSocketBoneIdx, m_bCombine);
 			}
 		}
 	}

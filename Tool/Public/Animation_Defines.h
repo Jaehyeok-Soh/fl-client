@@ -21,7 +21,7 @@ extern HWND			g_hWnd;
 extern HINSTANCE	g_hInstance;
 
 struct LoadAnimModel { using Signature = void(path animModelPath); };
-struct LoadAnimModelPart { using Signature = void(path PartModelPath); };
+struct LoadAnimModelPart { using Signature = void(path PartModelPath,  int iSocketBondIdx, bool bCombine); };
 struct LoadAttackOverlap { using Signature = void(CPhysicsAttackOverlap* pAttackOverlap); };
 struct LoadEffectEvent { using Signature = void(CAnimEffectHandler* pEffectEvent);};
 

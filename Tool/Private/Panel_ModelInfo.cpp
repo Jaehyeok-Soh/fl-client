@@ -42,6 +42,7 @@ void CPanel_ModelInfo::Render_RootMotionInfo()
 {
 	ImGui::Begin("Model Info");
 
+	ImGui::SetNextItemWidth(120.f); // 원하는 픽셀 길이
 	ImGui::InputInt("RootBone Index", &m_iRootBondIdx, 1);
 
 	/* 값 보정 */
@@ -63,8 +64,6 @@ void CPanel_ModelInfo::Render_AnimationInfo()
 	ImGui::Begin("Animation Info");
 
 	Anim_Info();
-	ImGui::Separator();
-	ImGui::Separator();
 
 	RootOffset_Info();
 
@@ -89,11 +88,14 @@ void CPanel_ModelInfo::Anim_Info()
 
 void CPanel_ModelInfo::RootOffset_Info()
 {
-	ImGui::InputFloat("RootMotion Offset", &m_fRootMotionOffset, 0.1f, 1.0f, "%.3f");
+	ImGui::SetNextItemWidth(120.f);  // 원하는 픽셀 길이
+	ImGui::InputFloat("RootMotion Offset", &m_fRootMotionOffset, 0.01f, 1.0f, "%.3f");
 
 	// 최소값 -1 제한
 	if (m_fRootMotionOffset < -1.f)
 		m_fRootMotionOffset = -1.f;
+
+	ImGui::SameLine();
 
 	if (ImGui::Button("Apply##RootOffset"))
 	{
