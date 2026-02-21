@@ -44,6 +44,11 @@ void CState_JumpDouble::Update(const _float fTimeDelta)
 		return;
 	}
 
+	if (Get_AnimElpasedTimeSeconds() > 0.6f)
+	{
+		Set_ApplyGravity(true);
+	}
+
 	Super::Update(fTimeDelta);
 }
 

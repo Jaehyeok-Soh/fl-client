@@ -45,6 +45,11 @@ void CState_Jump::Update(const _float fTimeDelta)
 		return;
 	}
 
+	if (Get_AnimElpasedTimeSeconds() > 0.5f)
+	{
+		Set_ApplyGravity(true);
+	}
+
 	Super::Update(fTimeDelta);
 }
 
