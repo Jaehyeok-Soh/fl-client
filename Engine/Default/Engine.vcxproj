@@ -291,6 +291,7 @@
     <ClCompile Include="..\private\ThreadWorker.cpp" />
     <ClCompile Include="..\Private\Timer.cpp" />
     <ClCompile Include="..\Private\Timer_Manager.cpp" />
+    <ClCompile Include="..\private\TimeScale_Manager.cpp" />
     <ClCompile Include="..\Private\Transform.cpp" />
     <ClCompile Include="..\Private\UIAction_Registry.cpp" />
     <ClCompile Include="..\Private\UIObject.cpp" />
@@ -447,6 +448,7 @@
     <ClInclude Include="..\public\ThreadWorker.h" />
     <ClInclude Include="..\Public\Timer.h" />
     <ClInclude Include="..\Public\Timer_Manager.h" />
+    <ClInclude Include="..\public\TimeScale_Manager.h" />
     <ClInclude Include="..\Public\Transform.h" />
     <ClInclude Include="..\Public\UIAction_Registry.h" />
     <ClInclude Include="..\Public\UIObject.h" />

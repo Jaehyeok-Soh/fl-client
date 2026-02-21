@@ -40,46 +40,50 @@ HRESULT CObject_Manager::Awake(const _uint iCurrentLevelID)
 	return S_OK;
 }
 
-void CObject_Manager::Update_Priority(const _float fTimeDelta)
+void CObject_Manager::Update_Priority(const _float fUnscaledTimeDelta, const _float fScaledTimeDelta)
 {
 	for (map<const wstring, CLayer*>& Element : m_pLayers)
 	{
 		for (auto& Pair : Element)
 		{
-			Pair.second->Update_Priority(fTimeDelta);
+			_bool bScaled = Pair.second->Is_ScaledDomain();
+			Pair.second->Update_Priority(bScaled == true ? fScaledTimeDelta : fUnscaledTimeDelta);
 		}
 	}
 }
 
-void CObject_Manager::Update(const _float fTimeDelta)
+void CObject_Manager::Update(const _float fUnscaledTimeDelta, const _float fScaledTimeDelta)
 {
 	for (map<const wstring, CLayer*>& Element : m_pLayers)
 	{
 		for (auto& Pair : Element)
 		{
-			Pair.second->Update(fTimeDelta);
+			_bool bScaled = Pair.second->Is_ScaledDomain();
+			Pair.second->Update(bScaled == true ? fScaledTimeDelta : fUnscaledTimeDelta);
 		}
 	}
 }
 
-void CObject_Manager::Update_Late(const _float fTimeDelta)
+void CObject_Manager::Update_Late(const _float fUnscaledTimeDelta, const _float fScaledTimeDelta)
 {
 	for (map<const wstring, CLayer*>& Element : m_pLayers)
 	{
 		for (auto& Pair : Element)
 		{
-			Pair.second->Update_Late(fTimeDelta);
+			_bool bScaled = Pair.second->Is_ScaledDomain();
+			Pair.second->Update_Late(bScaled == true ? fScaledTimeDelta : fUnscaledTimeDelta);
 		}
 	}
 }
 
-void CObject_Manager::Ready_Before_Render(const _float fTimeDelta)
+void CObject_Manager::Ready_Before_Render(const _float fUnscaledTimeDelta, const _float fScaledTimeDelta)
 {
 	for (map<const wstring, CLayer*>& Element : m_pLayers)
 	{
 		for (auto& Pair : Element)
 		{
-			Pair.second->Ready_Before_Render(fTimeDelta);
+			_bool bScaled = Pair.second->Is_ScaledDomain();
+			Pair.second->Ready_Before_Render(bScaled == true ? fScaledTimeDelta : fUnscaledTimeDelta);
 		}
 	}
 }

@@ -106,6 +106,14 @@ public:
 	class CTimer*			Find_Timer(const _tchar* pTimerTag);
 #pragma endregion
 
+#pragma region TIMESCALE_MANAGER
+	void					Request_HitStop(_float fUnscaledDurationTime = HITSTOP_TIME);
+	void					Request_SloMo(_float fScale, _float fUnscaledDurationTime);
+	void					Active_SloMo(_float fScale);
+	void					Deactivate_SloMo();
+	void					Set_GlobalScale(_float fScale);
+#pragma endregion
+
 #pragma region PROTOTYPE_MANAGER
 	CBase*					Find_Prototype(_uint iLevelIndex, const wstring& wstrPrototypeTag);
 	HRESULT					Add_Prototype(_uint iLevelIndex, const wstring& wstrPrototypeTag, CBase* pPrototype);
@@ -359,6 +367,7 @@ private:
 	class CObjectPool_Manager* m_pObjectPool_Manager = { nullptr };
 	class CDataRepository* m_pDataRepository = { nullptr };
 	class CTimer_Manager* m_pTimer_Manager = { nullptr };
+	class CTimeScale_Manager* m_pTimeScale_Manager = { nullptr };
 	class CSound_Manager* m_pSound_Manager = { nullptr };
 	class COctree_Manager* m_pOctree_Manager = { nullptr };
 	class CFont_Manager* m_pFont_Manager = { nullptr };

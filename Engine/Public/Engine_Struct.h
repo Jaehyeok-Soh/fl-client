@@ -36,6 +36,77 @@ namespace Engine
 		string		  strParam{ "" };
 	};
 
+	typedef struct tagTimeline
+	{
+		float fDuration{ 0.f };
+		float fElapsed{ 0.f };
+
+		void Start(float _fDuration)
+		{
+			fDuration = (_fDuration < 0.f) ? 0.f : _fDuration;
+			fElapsed = 0.f;
+		}
+		bool Tick(float fDeltaTime)
+		{
+			if (fDuration <= 0.f)
+				return true;
+			fElapsed += fDeltaTime;
+			if (fElapsed >= fDuration)
+			{
+				fElapsed = fDuration;
+				return true;
+			}
+
+			return false;
+		}
+		float Get_Alpha() const
+		{
+			if (fDuration <= 0.f)
+				return 1.f;
+			float fAlpha = fElapsed / fDuration;
+			return (fAlpha < 0.f) ? 0.f : (fAlpha > 1.f ? 1.f : fAlpha);
+		}
+		float Get_Remain() const
+		{
+			float fRemain = fDuration - fElapsed;
+			return (fRemain < 0.f) ? 0.f : fRemain;
+		}
+		bool Is_Active() const
+		{
+			return (fDuration > 0.f) && (fElapsed < fDuration);
+		}
+		void Clear()
+		{
+			fDuration = 0.f;
+			fElapsed = 0.f;
+		}
+	}TIME_LINE;
+
+	template<typename T>
+	struct TimedValue
+	{
+		TIME_LINE time{};
+		T from{};
+		T to{};
+		bool bActive{ false };
+
+		void Start(const T& _from, const T& _to, float _fDuration)
+		{
+			from = _from;
+			to = _to;
+			time.Start(_fDuration);
+			bActive = true;
+		}
+
+		void Tick(float _fUnscaledDeltaTime)
+		{
+			if (bActive == false)
+				return;
+			if (time.Tick(_fUnscaledDeltaTime) == true)
+				bActive = false;
+		}
+		float Alpha() const { return time.Get_Alpha(); }
+	};
 #pragma region Shader_ConstantBuffer
 	typedef struct tagShaderGlobalDesc
 	{
