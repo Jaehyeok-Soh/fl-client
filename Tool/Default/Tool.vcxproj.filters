@@ -250,9 +250,6 @@
     <Filter Include="02. GameObjects\Effect\Container">
       <UniqueIdentifier>{5cbb3ccc-552b-479f-82e0-5cd9dc822d14}</UniqueIdentifier>
     </Filter>
-    <Filter Include="02. GameObjects\Effect\Part">
-      <UniqueIdentifier>{8320a8aa-cc55-458d-b417-eee159924dcd}</UniqueIdentifier>
-    </Filter>
     <Filter Include="06. ImGui\01. Panel\Effect">
       <UniqueIdentifier>{dcfafedc-a3a5-47ae-a71f-86669a2e7b2c}</UniqueIdentifier>
     </Filter>
@@ -265,6 +262,9 @@
     <Filter Include="06. ImGui\01. Panel\Effect\Character_Animation">
       <UniqueIdentifier>{688cc652-9f97-4696-84b4-b6e136bf48fd}</UniqueIdentifier>
     </Filter>
+    <Filter Include="02. GameObjects\Effect\Part">
+      <UniqueIdentifier>{8320a8aa-cc55-458d-b417-eee159924dcd}</UniqueIdentifier>
+    </Filter>
     <Filter Include="03. Level\Animation\00. Manager">
       <UniqueIdentifier>{17af7dfe-41ef-40f8-9223-cfd74f97975e}</UniqueIdentifier>
     </Filter>
@@ -276,6 +276,24 @@
     </Filter>
     <Filter Include="06. ImGui\01. Panel\Animation\Panel_AnimDescription">
       <UniqueIdentifier>{ed901c12-32d8-4863-9122-41a77bd083ee}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="09. Builder\Effect">
+      <UniqueIdentifier>{e321da66-0a7f-4c1d-a024-a4b8f27adb18}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="03. Level\Animation\02. Effect_Module">
+      <UniqueIdentifier>{68e3c6d3-ca60-488d-8620-d71602074697}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="09. Builder\Effect\EffectEvent">
+      <UniqueIdentifier>{7c79591a-34b0-4edb-8457-c30c22c35010}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02. GameObjects\PartObject\AnimPart">
+      <UniqueIdentifier>{5f37dc5c-8136-45a1-a390-81efe16de549}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="06. ImGui\01. Panel\Animation\Panel_ModelInfo">
+      <UniqueIdentifier>{29f62679-dbdb-4d76-ad02-f317e0acb029}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="06. ImGui\01. Panel\Animation\Panel_Parts">
+      <UniqueIdentifier>{066939c9-786f-43ed-8c48-88882c1e8089}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
@@ -541,6 +559,24 @@
     <ClInclude Include="..\Public\Panel_AnimDescription.h">
       <Filter>06. ImGui\01. Panel\Animation\Panel_AnimDescription</Filter>
     </ClInclude>
+    <ClInclude Include="..\Public\Builder_Effect.h">
+      <Filter>09. Builder\Effect</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\Event_Effect_Module.h">
+      <Filter>03. Level\Animation\02. Effect_Module</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\Builder_EffectEvent.h">
+      <Filter>09. Builder\Effect\EffectEvent</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\Tool_Weapon.h">
+      <Filter>02. GameObjects\PartObject\AnimPart</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\Panel_ModelInfo.h">
+      <Filter>06. ImGui\01. Panel\Animation\Panel_ModelInfo</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\Panel_Parts.h">
+      <Filter>06. ImGui\01. Panel\Animation\Panel_Parts</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <Image Include="small.ico">
@@ -792,6 +828,24 @@
     </ClCompile>
     <ClCompile Include="..\Private\Panel_AnimDescription.cpp">
       <Filter>06. ImGui\01. Panel\Animation\Panel_AnimDescription</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\Builder_Effect.cpp">
+      <Filter>09. Builder\Effect</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\Event_Effect_Module.cpp">
+      <Filter>03. Level\Animation\02. Effect_Module</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\Builder_EffectEvent.cpp">
+      <Filter>09. Builder\Effect\EffectEvent</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\Tool_Weapon.cpp">
+      <Filter>02. GameObjects\PartObject\AnimPart</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\Panel_ModelInfo.cpp">
+      <Filter>06. ImGui\01. Panel\Animation\Panel_ModelInfo</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\Panel_Parts.cpp">
+      <Filter>06. ImGui\01. Panel\Animation\Panel_Parts</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

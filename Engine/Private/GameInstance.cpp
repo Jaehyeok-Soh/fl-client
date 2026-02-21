@@ -17,6 +17,7 @@
 #include "Timer_Manager.h"
 #include "Prototype_Manager.h"
 #include "Object_Manager.h"
+#include "TimeScale_Manager.h"
 #include "CameraMan.h"
 #include "Camera_Manager.h"
 #include "Level_Manager.h"
@@ -27,6 +28,7 @@
 #include "Render_Manager.h"
 #include "Physics_Module.h"
 #include "UIAction_Registry.h"
+#include "Effect_Manager.h"
 
 IMPLEMENT_SINGLETON(CGameInstance)
 
@@ -46,6 +48,9 @@ void CGameInstance::Reseed()
 HRESULT CGameInstance::Initialize_Engine(const ENGINE_DESC& Engine_Desc, _Inout_ ID3D11Device** ppDevice, _Inout_ ID3D11DeviceContext** ppContext)
 {
 	if (!(m_pTimer_Manager = CTimer_Manager::Create()))
+		return E_FAIL;
+
+	if (!(m_pTimeScale_Manager = CTimeScale_Manager::Create()))
 		return E_FAIL;
 
 	if (!(m_pGraphic_Device = CGraphic_Device::Create(Engine_Desc, ppDevice, ppContext)))
@@ -123,21 +128,27 @@ HRESULT CGameInstance::Initialize_Engine(const ENGINE_DESC& Engine_Desc, _Inout_
 	if (!(m_pOctree_Manager = COctree_Manager::Create()))
 		return E_FAIL;
 
+	if (!(m_pEffect_Manager = CEffect_Manager::Create()))
+		return E_FAIL;
+
 	return S_OK;
 }
 
 void CGameInstance::Update_Engine(_float fTimeDelta)
 {
+	_float fUnscaledTimeDelta = fTimeDelta;
+	_float fScaledTimeDelta = m_pTimeScale_Manager->Begin_Frame(fUnscaledTimeDelta);
+
 	m_pSound_Manager->Update();
 	m_pInput_Manager->Update();
-	m_pLevel_Manager->Update(fTimeDelta);
-	m_pObject_Manager->Update_Priority(fTimeDelta);
-	m_pObject_Manager->Update(fTimeDelta);
-	m_pCollision_Manager->Update(fTimeDelta);
-	m_pObject_Manager->Update_Late(fTimeDelta);
+	m_pLevel_Manager->Update(fUnscaledTimeDelta);
+	m_pObject_Manager->Update_Priority(fUnscaledTimeDelta, fScaledTimeDelta);
+	m_pObject_Manager->Update(fUnscaledTimeDelta, fScaledTimeDelta);
+	m_pObject_Manager->Update_Late(fUnscaledTimeDelta, fScaledTimeDelta);
 
 	// 피직스 시뮬레이트
-	m_pPhysics_Module->StepPhysics(fTimeDelta);
+	if(fScaledTimeDelta > g_XMEpsilon.f[0])
+		m_pPhysics_Module->StepPhysics(fScaledTimeDelta);
 
 	// 메인카메라 업데이트
 	m_pCamera_Manager->Update_ViewMatrix();
@@ -146,7 +157,7 @@ void CGameInstance::Update_Engine(_float fTimeDelta)
 	m_pLevel_Manager->Update_Picking();
 
 	// 업데이트 후 마지막
-	m_pObject_Manager->Ready_Before_Render(fTimeDelta);
+	m_pObject_Manager->Ready_Before_Render(fUnscaledTimeDelta, fScaledTimeDelta);
 }
 
 HRESULT CGameInstance::Draw_Begin(const Vec4* pClearColor)
@@ -189,6 +200,7 @@ void CGameInstance::Clear(_uint iLevelID)
 {
 	m_pDataRepository->Clear(iLevelID);
 	m_pObjectPool_Manager->All_Despawn_StaticLevel();
+	m_pTimeScale_Manager->Clear();
 	m_pOctree_Manager->Clear();
 	m_pObject_Manager->Clear(iLevelID);
 	m_pObjectPool_Manager->Clear(iLevelID);
@@ -342,6 +354,29 @@ void CGameInstance::Clear_Timers()
 CTimer* CGameInstance::Find_Timer(const _tchar* pTimerTag)
 {
 	return m_pTimer_Manager->Find_Timer(pTimerTag);
+}
+#pragma endregion
+
+#pragma region TIMESCALE_MANAGER
+void CGameInstance::Request_HitStop(_float fUnscaledDurationTime)
+{
+	m_pTimeScale_Manager->Request_HitStop(fUnscaledDurationTime);
+}
+void CGameInstance::Request_SloMo(_float fScale, _float fUnscaledDurationTime)
+{
+	m_pTimeScale_Manager->Request_SloMo(fScale, fUnscaledDurationTime);
+}
+void CGameInstance::Active_SloMo(_float fScale)
+{
+	m_pTimeScale_Manager->Active_SloMo(fScale);
+}
+void CGameInstance::Deactivate_SloMo()
+{
+	m_pTimeScale_Manager->Deactivate_SloMo();
+}
+void CGameInstance::Set_GlobalScale(_float fScale)
+{
+	m_pTimeScale_Manager->Set_GlobalScale(fScale);
 }
 #pragma endregion
 
@@ -777,6 +812,10 @@ void CGameInstance::Clear_Lights()
 {
 	return m_pLight_Manager->Clear();
 }
+CLight* CGameInstance::Get_Light(LIGHT_TYPE eType, _uint iIndex)
+{
+	return m_pLight_Manager->Get_Light(eType, iIndex);
+}
 #pragma endregion
 
 #pragma region EVENT_MANAGER
@@ -799,16 +838,26 @@ HRESULT CGameInstance::Draw_Text(const _wstring& strFontTag, const _tchar* pText
 
 #pragma endregion
 
+#pragma region EFFECT_MANAGER
+void CGameInstance::Spawn_Effect(const std::string& strTag, const Matrix& matWorld, _float fDuration, _bool bIsLocal, void* pTargetBone)
+{
+	m_pEffect_Manager->Spawn_Effect(strTag, matWorld, fDuration, bIsLocal, pTargetBone);
+}
+
+#pragma endregion
+
 
 void CGameInstance::Destroy_Engine()
 {
 	Safe_Release(m_pFrustrum);
 	Safe_Release(m_pInput_Manager);
 	Safe_Release(m_pTimer_Manager);
+	Safe_Release(m_pTimeScale_Manager);
 	Safe_Release(m_pDataRepository);
 	Safe_Release(m_pRender_Manager);
 	Safe_Release(m_pSound_Manager);
 	Safe_Release(m_pFont_Manager);
+	Safe_Release(m_pEffect_Manager);
 	Safe_Release(m_pRenderTarget_Manager);
 	Safe_Release(m_pCamera_Manager);
 	Safe_Release(m_pOctree_Manager);
@@ -876,9 +925,9 @@ HRESULT CGameInstance::Add_MRT(EMRTLayer eMRTLayer, ERenderTarget eTarget)
 	return m_pRenderTarget_Manager->Add_MRT(eMRTLayer, eTarget);
 }
 
-HRESULT CGameInstance::Begin_MRT(EMRTLayer eMRTLayer, _bool bClear)
+HRESULT CGameInstance::Begin_MRT(EMRTLayer eMRTLayer, _bool bClear, _bool bUseDSV)
 {
-	return m_pRenderTarget_Manager->Begin_MRT(eMRTLayer, bClear);
+	return m_pRenderTarget_Manager->Begin_MRT(eMRTLayer, bClear, bUseDSV);
 }
 
 HRESULT CGameInstance::End_MRT()
@@ -1035,8 +1084,10 @@ void CGameInstance::Free()
 	Safe_Release(m_pLight_Manager);
 	Safe_Release(m_pInput_Manager);
 	Safe_Release(m_pTimer_Manager);
+	Safe_Release(m_pTimeScale_Manager);
 	Safe_Release(m_pSound_Manager);
 	Safe_Release(m_pFont_Manager);
+	Safe_Release(m_pEffect_Manager);
 	Safe_Release(m_pDataRepository);
 	Safe_Release(m_pRender_Manager);
 	Safe_Release(m_pRenderTarget_Manager);

@@ -10,7 +10,8 @@
 #define GRADATIONTEXTURE 3
 #define TRAILTEXTURE 4
 #define NORMALTEXTURE 5
-#define SCENETEXTURE 6
+#define GLOWTEXTURE 6
+#define DISSOLVETEXTURE 7
 
 texture2D g_EffectTexture;
 
@@ -23,6 +24,7 @@ texture2D g_EffectTexture;
 #define DOWN 1 << 3     // DOWN -> UP
 
     // Use Sprite
+#define DIRBILLBOARD 1 << 4 
 #define SPRITE 1<< 5    // 스프라이트를 사용하는가?
 
     // Use Scroll (텍스처별)
@@ -30,6 +32,7 @@ texture2D g_EffectTexture;
 #define SCROLL_NOISE 1 << 7
 #define SCROLL_MASKING 1 << 8
 #define SCROLL_GRADATION 1 << 9
+#define SCROLL_DISSOLVE 1 << 10
         
 // SamplerState Flag
 #define LINEARSAMPLER 1 << 0
@@ -52,6 +55,7 @@ texture2D g_EffectTexture;
 #define MUL 1 << 2      // Multiply     곱하기
 #define DIV 1 << 3      // Devide       나누기
 
+
 struct EffectDesc
 {
     // Texture 바인딩 Flag들
@@ -66,24 +70,30 @@ struct EffectDesc
     // 텍스처 산술 연산자 flag 
     uint g_OperatorFlags;
     uint g_RotationFlags;
-    float2 g_Padding1;
+    float2 g_UVOffset;
     
     // sprite일 때
     uint g_SpriteCol; // 가로 프레임 수
     uint g_SpriteRow; // 세로 프레임 수
     uint g_CurSpriteIndex; // 현재 재생 중인 인덱스
-    float g_SpritePadding;
+    float g_AppearRatio;
     
     float2 g_ScrollOffset;
     float2 g_DistortionScale;
+    
     float4 g_EffectColor;
     
     // 각 텍스처별 Scroll Weight (0 ~ 1)
     float2 DiffuseTexture_ScrollWeight;
     float2 NoiseTexture_ScrollWeight;
+    
     float2 MaskingTexture_ScrollWeight;
     float2 GradationTexture_ScrollWeight;
+    
+    float2 DissolveTexture_ScrollWeight;
+    float2 Padding1;
 };
+
 
 // ========== StruturedBuffer Binding value  ===========  (CS Shader에서 계산해서 넘어온 값.)
 StructuredBuffer<VTXPARTICLE> INSTANCE_OUTPUT;
@@ -99,6 +109,11 @@ cbuffer ConstantBuffer_Effect
 bool HasBillboard()
 {
     return (g_Effect.g_RenderFlags & BILLBOARD) != 0;
+}
+
+bool HasDirBillboard()
+{
+    return (g_Effect.g_RenderFlags & DIRBILLBOARD) != 0;
 }
 
 bool HasScroll()
@@ -146,6 +161,13 @@ float2 ScrollUV_Calculator(uint Flag, float2 InUV)
     }
 
     return finalUV;
+}
+
+void DecodeDepth(float2 vUV, out float fNDCZ, out float fViewZ)
+{
+    float4 vDepthDesc = g_RenderTargetDepthTexture.Sample(PointClampSampler, vUV);
+    fNDCZ = vDepthDesc.x;
+    fViewZ = vDepthDesc.y;
 }
 
 float Float_Operation(float Src1, float Src2, uint Operator)        // 부동 소수점 연산
@@ -278,10 +300,26 @@ float4 TrailTextureSample(float2 UV)
     return SampleTextureWithFlags(g_DefaultTextures[TRAILTEXTURE], g_Effect.g_StateFlags, 12, UV);
 }
 
-float4 SceneTextureSample(float2 UV)
+float4 DissolveTextureSample(float2 UV)
 {
-    return g_RenderTargetSceneHDRCopyTexture.Sample(LinearSampler, UV);
+    return SampleTextureWithFlags(g_DefaultTextures[DISSOLVETEXTURE], g_Effect.g_StateFlags, 15, UV);
 }
+
+float GlowTextureSample(float2 UV)
+{
+    return SampleTextureWithFlags(g_DefaultTextures[GLOWTEXTURE], g_Effect.g_StateFlags, 18, UV);
+
+}
+float4 SceneTextureSample(float2 UV, uint Flag)
+{
+    if (Flag == 0)
+        return g_RenderTargetSceneHDRCopyTexture.Sample(LinearSampler, UV);
+    else if (Flag == 1)
+        return g_RenderTargetSceneHDRCopyTexture.Sample(LinearClampSampler, UV);
+}
+
+
+
 
 // =========== VS In  ==============
 
@@ -289,12 +327,18 @@ VS_OUT_POS_GS_PARTICLE VS_Texture(VS_IN_POS_GS_PARTICLE In)
 {
     VS_OUT_POS_GS_PARTICLE Out;
     
-    vector vPosition = mul(vector(In.vPosition, 1.f), INSTANCE_OUTPUT[In.vInstID].matTransform);
+    matrix matInst = INSTANCE_OUTPUT[In.vInstID].matTransform;
     
+    vector vPosition = mul(vector(In.vPosition, 1.f), matInst);
+    vPosition = mul(vPosition, W);
+    
+    float2 pSize = float2(length(matInst._11_12_13), length(matInst._21_22_23));
 
-    Out.vPosition = mul(vPosition, W);
-    Out.vPSize = float2(length(INSTANCE_OUTPUT[In.vInstID].matTransform._11_12_13), length(INSTANCE_OUTPUT[In.vInstID].matTransform._21_22_23));
+    // 사이즈 계산
+    Out.vPosition = vPosition;
+    Out.vPSize = float3(length(W._11_12_13) * pSize.x, length(W._21_22_23) * pSize.y, length(W._31_32_33));
     Out.vLifeTime = INSTANCE_OUTPUT[In.vInstID].vLifeTime;
+    Out.vInstID = In.vInstID;
     
     return Out;
 }
@@ -305,15 +349,30 @@ void GS_Texture(point VS_OUT_POS_GS_PARTICLE In[1], inout TriangleStream<GS_OUT_
     GS_OUT_EFFECT_PARTICLE Out[4];
     
     // =========        빌보드 계산          ==============
-    float3 vRight = float3(1.f, 0.f, 0.f) * In[0].vPSize.x;
-    float3 vUp = float3(0.f, 1.f, 0.f) * In[0].vPSize.y;
+    float3 vRight = float3(1.f, 0.f, 0.f);
+    float3 vUp = float3(0.f, 1.f, 0.f);
     matrix matVP = mul(V, P);
     
-    if (HasBillboard())
+    if (HasDirBillboard())
+    {
+        matrix matInst = INSTANCE_OUTPUT[In[0].vInstID].matTransform;
+        float3 vLook = normalize(matInst[2].xyz); // row_major 기준 Z축
+        
+        float3 vCamDir = normalize(CameraPosition() - In[0].vPosition.xyz);
+        vRight = normalize(cross(vCamDir, vLook)) * In[0].vPSize.x;
+        
+        vUp = vLook * In[0].vPSize.z;
+    }
+    else if (HasBillboard())
     {
         float3 vLook = normalize(CameraPosition() - In[0].vPosition.xyz);
         vRight = normalize(cross(float3(0.f, 1.f, 0.f), vLook)) * In[0].vPSize.x;
         vUp = normalize(cross(vLook, vRight)) * In[0].vPSize.y;
+    }
+    else
+    {
+        vRight = float3(1.f, 0.f, 0.f) * In[0].vPSize.x;
+        vUp = float3(0.f, 1.f, 0.f) * In[0].vPSize.y;
     }
     
     float3 vFinalPos[4];
@@ -395,7 +454,7 @@ float4 PS_Texture(GS_OUT_EFFECT_PARTICLE In) : SV_TARGET0
     // =========== Diffuse Texture 여부 =============
     float4 DiffuseColor = float4(1.f, 1.f, 1.f, 1.f);
     
-    if (Has(g_Effect.g_TextureFlags, NOISETEXTURE))
+    if (Has(g_Effect.g_TextureFlags, DEFAULTTEXTURE))
     {
         DiffuseColor = DefaultTextureSample(Get90DegreeRotatedUV(finalUV, g_Effect.g_RotationFlags, DEFAULTTEXTURE));
     }

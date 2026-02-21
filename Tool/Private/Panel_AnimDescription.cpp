@@ -71,7 +71,16 @@ void CPanel_AnimDescription::Description_TabWindow()
 
 		if (ImGui::BeginTabItem("Effect"))
 		{
-			ImGui::EndTabItem();
+            if (m_tAnimControllInfo->iCurrentEffectEventIndex != -1 &&
+                m_tAnimControllInfo->iCurrentEffectEventIndex < m_tEventInfo->vecVFXEvents.size())
+            {
+                Desc_EffectWindow(); 
+            }
+            else
+            {
+                ImGui::Text("Select an effect event from the timeline.");
+            }
+            ImGui::EndTabItem();
 		}
 
 		if (ImGui::BeginTabItem("Bone"))
@@ -271,6 +280,78 @@ void CPanel_AnimDescription::Desc_AttackOverlapWindow()
         ImGui::CheckboxFlags("TRIGGER_SPAWN", &desc.iFilterMask, PHYSICSFILTERGROUP::TRIGGER_SPAWN);
         ImGui::CheckboxFlags("TRIGGER_DIRECTION", &desc.iFilterMask, PHYSICSFILTERGROUP::TRIGGER_DIRECTION);
         ImGui::CheckboxFlags("NONE", &desc.iFilterMask, PHYSICSFILTERGROUP::NONE);
+    }
+
+    ImGui::PopID();
+}
+void CPanel_AnimDescription::Desc_EffectWindow()
+{
+    // 현재 선택된 이펙트 데이터 가져오기
+    auto& pEvent = m_tEventInfo->vecVFXEvents[m_tAnimControllInfo->iCurrentEffectEventIndex];
+
+    if (ImGui::Button("Delete this Effect"))
+    {
+        m_tEventInfo->vecVFXEvents.erase(m_tEventInfo->vecVFXEvents.begin() + m_tAnimControllInfo->iCurrentEffectEventIndex);
+        m_tAnimControllInfo->iCurrentEffectEventIndex = -1;
+        m_pAnimToolManager->Modify_EffectEvent(m_tEventInfo->vecVFXEvents);
+        return;
+    }
+
+    ImGui::PushID(&pEvent);
+
+    if (ImGui::CollapsingHeader("Effect Basic Settings", ImGuiTreeNodeFlags_DefaultOpen))
+    {
+        if (ImGui::DragFloat("Start Position", &pEvent.fStartTrackPosition, 0.1f, 0.f, (_float)m_tAnimControllInfo->fDuration))
+            m_pAnimToolManager->Modify_EffectEvent(m_tEventInfo->vecVFXEvents);
+
+        auto& effectTags = m_pAnimToolManager->Get_LoadedEffectTags();
+
+        if (ImGui::BeginCombo("Effect Tag", pEvent.strEffectTag.c_str()))
+        {
+            for (const auto& tag : effectTags)
+            {
+                bool is_selected = (pEvent.strEffectTag == tag);
+                if (ImGui::Selectable(tag.c_str(), is_selected))
+                {
+                    pEvent.strEffectTag = tag;
+                    m_pAnimToolManager->Modify_EffectEvent(m_tEventInfo->vecVFXEvents);
+                }
+
+                if (is_selected)
+                    ImGui::SetItemDefaultFocus();
+            }
+            ImGui::EndCombo();
+        }
+
+        if (ImGui::DragFloat("Duration", &pEvent.fDuration, 0.05f, 0.f, 100.f))
+            m_pAnimToolManager->Modify_EffectEvent(m_tEventInfo->vecVFXEvents);
+    }
+
+    if (ImGui::CollapsingHeader("Transform & Attachment", ImGuiTreeNodeFlags_DefaultOpen))
+    {
+        int currentSim = pEvent.iSimulationType;
+        const char* simItems[] = { "WORLD (0)", "LOCAL (1)" };
+        if (ImGui::Combo("Sim Type", &currentSim, simItems, IM_ARRAYSIZE(simItems)))
+        {
+            pEvent.iSimulationType = currentSim;
+            m_pAnimToolManager->Modify_EffectEvent(m_tEventInfo->vecVFXEvents);
+        }
+
+        static char socketBuf[256];
+        strcpy_s(socketBuf, pEvent.strSocketName.c_str());
+        if (ImGui::InputText("Socket Name", socketBuf, 256))
+        {
+            pEvent.strSocketName = socketBuf;
+            m_pAnimToolManager->Modify_EffectEvent(m_tEventInfo->vecVFXEvents);
+        }
+
+        ImGui::Checkbox("Follow Bone", &pEvent.bFollowBone);
+
+        if (ImGui::DragFloat3("Offset Position", (float*)&pEvent.vOffset, 0.01f))
+            m_pAnimToolManager->Modify_EffectEvent(m_tEventInfo->vecVFXEvents);
+
+        if (ImGui::DragFloat3("Offset Rotation", (float*)&pEvent.vRotation, 0.01f))
+            m_pAnimToolManager->Modify_EffectEvent(m_tEventInfo->vecVFXEvents);
     }
 
     ImGui::PopID();

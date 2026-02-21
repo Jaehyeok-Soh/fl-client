@@ -80,7 +80,7 @@ void CVIBuffer_Particle::Render()
 
 }
 
-void CVIBuffer_Particle::Update_Simulation(CComputeShader* ComputeShader, Vec3 vLook, _float fTImeDelta, _uint TimeFlag, E_PARTICLE_MOVESTATE eType)
+void CVIBuffer_Particle::Update_Simulation(CComputeShader* ComputeShader, Vec3 vLook, Vec3 finalGravity, _float fTImeDelta, _uint TimeFlag, DTO::E_SHAPETYPE eType)
 {
 	if (ComputeShader == nullptr) return;
 
@@ -93,12 +93,13 @@ void CVIBuffer_Particle::Update_Simulation(CComputeShader* ComputeShader, Vec3 v
 	tMUDesc.vLook = vLook;
 	tMUDesc.vPivot = m_tParticleDesc.vPivot;
 	tMUDesc.iTimeFlag = TimeFlag;
+	tMUDesc.vFinalGravity = finalGravity;
+	tMUDesc.fExternalStrength = {};
 	
 	// comshader에 컨스턴트 버퍼를 통해 매 프레임 갱신 : 가변 데이터
 	ComputeShader->Bind_Compute_EffectData(tMUDesc);
 
 	// Compute Shader 실행
-	//ComputeShader->Dispatch(1, 1, 1);
 	_uint iGroupX = (m_iInstanceCount + 31) / 32;
 	ComputeShader->Dispatch(iGroupX, 1, 1);
 }

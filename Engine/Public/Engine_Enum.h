@@ -132,6 +132,7 @@ namespace Engine
 		RT_SceneHDR,
 		RT_SceneHDR_Copy,
 		RT_Bloom,
+		LUT_Stand,
 		Transform,
 		Materials,
 		Textures,
@@ -153,6 +154,7 @@ namespace Engine
 		"g_RenderTargetSceneHDRTexture",
 		"g_RenderTargetSceneHDRCopyTexture",
 		"g_RenderTargetBloomTexture",
+		"g_LUT_Stand",
 		"g_TransformMap",
 		"g_MaterialTextures",
 		"g_DefaultTextures",
@@ -195,6 +197,8 @@ namespace Engine
 		PX_COLLIDER,
 		PX_CCT,
 		PX_ATTACKOVERLAP,
+		// ¿Ã∆Â∆Æ
+		EF_ANIMHANDLER,
 		//
 		MODEL,
 		SCRIPT,

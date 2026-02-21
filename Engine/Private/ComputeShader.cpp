@@ -91,8 +91,10 @@ void CComputeShader::Dispatch(_uint iX, _uint iY, _uint iZ)
 	// 마치 삐삐랄까 무전기?
 	// SRV 썼으면 닫아주고 UAV 세팅하고 .. 반복
 
-	ID3D11ShaderResourceView* nullSRVs[4] = { nullptr }; 
-	m_pDeviceContext->VSSetShaderResources(0, 4, nullSRVs);
+	m_pDeviceContext->VSSetShaderResources(0, 4, s_pNullCS_SRV);
+	m_pDeviceContext->PSSetShaderResources(0, 4, s_pNullCS_SRV);
+	m_pDeviceContext->CSSetShaderResources(0, 16, s_pNullCS_SRV);
+	m_pDeviceContext->CSSetUnorderedAccessViews(0, 8, s_pNullCS_UAV, nullptr);
 
 	if (m_pOutputStructedBuffer_UAV)
 		m_pOutputStructedBuffer_UAV->SetUnorderedAccessView(m_pOutputStructedBuffer->Get_UAV());
@@ -108,9 +110,7 @@ void CComputeShader::Dispatch(_uint iX, _uint iY, _uint iZ)
 	m_pDeviceContext->CSSetShader(m_pComputeShader, nullptr, 0);
 	m_pDeviceContext->Dispatch(iX, iY, iZ);
 
-	// 즉시 리소스 해제 (Resource Hazard 방지)
-	ID3D11UnorderedAccessView* nullUAV[] = { nullptr };
-	m_pDeviceContext->CSSetUnorderedAccessViews(0, 1, nullUAV, nullptr);
+	m_pDeviceContext->CSSetUnorderedAccessViews(0, 8, s_pNullCS_UAV, nullptr);
 	m_pDeviceContext->CSSetShader(nullptr, nullptr, 0);
 }
 

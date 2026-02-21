@@ -29,6 +29,7 @@ HRESULT CState_JumpDouble::Start(void* pArg, _bool bForce)
 	if (FAILED(Super::Start(pArg, bForce)))
 		return E_FAIL;
 
+	//Set_GravityOffset(-15.f);
 	Set_ApplyGravity(false);
 
 	return S_OK;
@@ -52,6 +53,7 @@ HRESULT CState_JumpDouble::End()
 	if (FAILED(Super::End()))
 		return E_FAIL;
 
+	Set_GravityOffset(0.f);
 	Set_ApplyGravity(true);
 
 	return S_OK;

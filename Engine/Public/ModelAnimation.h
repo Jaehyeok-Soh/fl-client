@@ -40,7 +40,7 @@ private:
 
 	virtual HRESULT Initialize(void* pArg) override;
 public:
-	_bool Update_TransformationMatrices(const vector<class CBone*>& vecBones, _float fTimeDelta, _bool isLoop, CTransform* pOwnerTransform, CPhysicsCCT* pOwnerPhyCCT, CComputeShader* pAnimECS);
+	_bool Update_TransformationMatrices(const vector<class CBone*>& vecBones,_bool& bLoopDone, _float fTimeDelta, _bool isLoop, CTransform* pOwnerTransform, CPhysicsCCT* pOwnerPhyCCT, CComputeShader* pAnimECS);
 	void SetUp_PoseDatasForBlending(std::span<LOCALSRT> spanLocalSrtData, _float fTimeDelta, CTransform* pOwnerTransform, CPhysicsCCT* pOwnerPhyCCT, _uint iTotalBoneNum, CComputeShader* pAnimECS);
 	void Clear();
 
@@ -66,6 +66,12 @@ public:
 
 	void Check_UpdateCpu(const vector<class CBone*>& vecBones);
 
+	void Reset_PrePosition();
+
+public:
+	void Set_MotionBone(_int iBondIdx);
+	void Set_MotionOffset(_float fOffset) { m_fRootMotionOffset = fOffset; if (m_fRootMotionOffset < 0.f) m_fRootMotionOffset = 1.f; }
+	_float Get_MotionOffset() const { return m_fRootMotionOffset; }
 	///////////////
 	//// Event ////
 	///////////////
@@ -103,6 +109,7 @@ private:
 	_int m_iRootChannelIdx = { -1 };
 
 	_bool m_bApplyRootMotion = { true };
+	_float m_fRootMotionOffset = { 1.f };
 
 	///////////////
 	//// Event ////

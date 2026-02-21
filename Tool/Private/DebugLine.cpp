@@ -88,7 +88,7 @@ void CDebugLine::Ready_Before_Render(const _float fTimeDelta)
 {
 	Super::Ready_Before_Render(fTimeDelta);
 
-	m_pGameInstance->Push_RenderObject(RENDER_CATEGORY::PRIORITY, this);
+	m_pGameInstance->Push_RenderObject(RENDER_CATEGORY::ENVIRONMENT, this);
 }
 
 

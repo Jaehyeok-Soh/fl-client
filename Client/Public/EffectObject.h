@@ -57,6 +57,9 @@ public:
     virtual HRESULT Spawn_FromPool(void* pArg);
     virtual HRESULT Despawn_FromPool();
 
+public:
+    _bool IsEffectfinish() {return m_bIsEffectFinish;}
+
 private:
     //  ==========  Shader Binding Setting  =============
     HRESULT Bind_ShaderResource();
@@ -93,6 +96,7 @@ private:
 
     //  ========= 회전 속도 ===========
     Vec3       m_vAccumulatedRotation = { 0.f, 0.f, 0.f };
+    Vec3      m_vFinalGravity = { 0.f, 0.f, 0.f };
 
     //  ========== 현재 이펙트 sprite Number  ===========
 private:
@@ -105,6 +109,8 @@ private:
    CShader*                  m_pShader = { nullptr };
    CComputeShader*           m_pComputeShader = { nullptr };
    CTransform*               m_pTransform = { nullptr };
+
+   _bool                     m_bIsEffectFinish = { false };
 };
 
 NS_END

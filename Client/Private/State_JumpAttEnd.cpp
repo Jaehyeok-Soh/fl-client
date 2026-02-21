@@ -30,6 +30,8 @@ HRESULT CState_JumpAttEnd::Start(void* pArg, _bool bForce)
 	if (FAILED(Super::Start(pArg, bForce)))
 		return E_FAIL;
 
+	Start_Att(ENUM_TO_UINT(CPlayer::State::JUMPATTEND));
+
 	return S_OK;
 }
 
@@ -53,7 +55,7 @@ HRESULT CState_JumpAttEnd::End()
 	if (FAILED(Super::End()))
 		return E_FAIL;
 
-	End_Combo();
+	End_Att(ENUM_TO_UINT(CPlayer::State::JUMPATTEND));
 
 	Change_Weapon(CPlayer::Part::SWORD, ENUM_TO_UINT(CWeapon::State::HOLD));
 

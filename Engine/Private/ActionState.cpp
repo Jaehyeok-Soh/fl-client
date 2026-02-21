@@ -16,6 +16,7 @@ CActionState::CActionState()
 CActionState::CActionState(const CActionState& rhs)
 	:m_bApplyGravity(rhs.m_bApplyGravity)
 	, m_bApplyYLerp(rhs.m_bApplyYLerp)
+	, m_fGravityOffset(rhs.m_fGravityOffset)
 {
 }
 
@@ -319,7 +320,7 @@ void CActionState::Apply_Gravity_CCT(const _float fTimeDelta)
 	if (Is_ApplyGravity() == false)
 		return;
 
-	m_fVerticalSpeed += m_fGravity * fTimeDelta;
+	m_fVerticalSpeed += (m_fGravity + m_fGravityOffset) * fTimeDelta;
 	if (m_fVerticalSpeed < m_fMaxFallSpeed)
 		m_fVerticalSpeed = m_fMaxFallSpeed;
 

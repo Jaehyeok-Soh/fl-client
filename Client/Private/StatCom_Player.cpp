@@ -102,6 +102,16 @@ _bool CStatCom_Player::Set_AttackState(_uint iState, _bool bOn)
 		// skill energy 체크 및 cool time 셋팅
 		switch (iState)
 		{
+		case Attack_State::Melee:
+		{
+			Engine_Utils::RemoveHard_Flag(m_FAttState, Attack_State::Gun);
+			break;
+		}
+		case Attack_State::Gun:
+		{
+			Engine_Utils::RemoveHard_Flag(m_FAttState, Attack_State::Melee);
+			break;
+		}
 		case Attack_State::E:
 		{
 			if (!IsCan_SkillE())
@@ -109,9 +119,6 @@ _bool CStatCom_Player::Set_AttackState(_uint iState, _bool bOn)
 
 			m_tESkill.TCoolTime.x = 0.f;
 			break;
-
-			// skill start player에게 요청
-			//static_cast<CPlayer*>(Get_Owner())->Start_Skill(CPlayer::State::SKILL1);
 		}
 
 		case Attack_State::Q:
@@ -119,7 +126,8 @@ _bool CStatCom_Player::Set_AttackState(_uint iState, _bool bOn)
 			if (!IsCan_SkillQ())
 				return false;
 
-			m_tQSkill.TCoolTime.x = 0.f; break;
+			m_tQSkill.TCoolTime.x = 0.f; 
+			break;
 		}
 
 		}
@@ -132,6 +140,13 @@ _bool CStatCom_Player::Set_AttackState(_uint iState, _bool bOn)
 		// skill energy 체크 및 cool time 셋팅
 		switch (iState)
 		{
+		case Attack_State::Melee:
+		{
+			m_tComboTimeCounter.fTimeAcc = 0.f;
+			m_tComboTimeCounter.bCountTime = true; 
+			break;
+		}
+
 		case Attack_State::E:
 		{
 			m_tESkill.TCoolTime.x = m_tESkill.TCoolTime.y; break;
@@ -204,6 +219,38 @@ void CStatCom_Player::Sub_DashCount()
 	}
 }
 
+void CStatCom_Player::Add_State(STAT_TYPE eState, _float fValue)
+{
+	switch (eState)
+	{
+	case STAT_TYPE::HP:
+		Add_Health(fValue);
+		break;
+
+	case STAT_TYPE::DEFENSE:
+		m_vDefense.x += fValue;
+		{
+			if (m_vDefense.x > m_vDefense.y)
+				m_vDefense.x = m_vDefense.y;
+
+			else if (m_vDefense.x < 0)
+				m_vDefense.x = 0.f;
+		}
+		break;
+
+	case STAT_TYPE::MENTAL:
+		m_vMentality.x += fValue;
+		{
+			if (m_vMentality.x > m_vMentality.y)
+				m_vMentality.x = m_vMentality.y;
+
+			else if (m_vMentality.x < 0)
+				m_vMentality.x = 0.f;
+		}
+		break;
+	}
+}
+
 void CStatCom_Player::Sub_Hp(_int iHealth)
 {
 	// 쉴드 온이면 쉴드 값을 더해줌
@@ -256,7 +303,7 @@ void CStatCom_Player::Count_Combo(const _float fTimeDelta)
 void CStatCom_Player::Count_Skill(const _float fTimeDelta)
 {
 	// E Skill
-	if (Engine_Utils::Has_Flag(m_FAttState, Attack_State::E))
+	//if (Engine_Utils::Has_Flag(m_FAttState, Attack_State::E))
 	{
 		// cool timer
 		if (m_tESkill.TCoolTime.x < m_tESkill.TCoolTime.y)
@@ -272,7 +319,7 @@ void CStatCom_Player::Count_Skill(const _float fTimeDelta)
 	}
 
 	// Q skill
-	if (Engine_Utils::Has_Flag(m_FAttState, Attack_State::Q))
+	//if (Engine_Utils::Has_Flag(m_FAttState, Attack_State::Q))
 	{
 		// cool timer
 		if (m_tQSkill.TCoolTime.x < m_tQSkill.TCoolTime.y)
