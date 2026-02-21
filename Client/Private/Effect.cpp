@@ -4,19 +4,22 @@
 #include "DataDocument_Effect.h"
 #include "EffectObject.h"
 #include "Engine_Utils.h"
+#include "GameInstance.h"
 
 #define MAX_EFFECTPART 10
 
 Effect::Effect(ID3D11Device* pDevice, ID3D11DeviceContext* pDeviceContext)
 	:CContainerObject(pDevice, pDeviceContext)
+	,m_pGameInstance(CGameInstance::GetInstance())
 {
-	m_vecPartObjects.resize(MAX_EFFECTPART, nullptr);
+	Safe_AddRef(m_pGameInstance);
 }
 
 Effect::Effect(const Effect& rhs)
 	:CContainerObject(rhs)
+	,m_pGameInstance(rhs.m_pGameInstance)
 {
-	m_vecPartObjects.resize(MAX_EFFECTPART, nullptr);
+	Safe_AddRef(m_pGameInstance);
 }
 
 HRESULT Effect::Initialize_Prototype()
@@ -45,6 +48,8 @@ HRESULT Effect::Ready_PartsData(void* pArg)
 
 	m_eSimulationSpace = pDesc->_Effect_SimulationType;
 	auto& ChildDataList = pDesc->_childData; 
+
+	m_vecPartObjects.resize(ChildDataList.size(), nullptr);
 
 	_uint index = 0;
 	for (DTO::TEFFECT_PartsData& Part : ChildDataList)
@@ -111,6 +116,7 @@ void Effect::Update(const _float fTimeDelta)
 	{
 		Update_CombinedWorldMatrix(m_pParentsWorldMatrix);
 	}
+	IsEffectFinish();
 }
 
 void Effect::Update_Late(const _float fTimeDelta)
@@ -141,15 +147,50 @@ _bool Effect::Export_Data(DTO::ECategory eCategory, CDataDocumentBase* pDocument
 void Effect::Update_CombinedWorldMatrix(const Matrix* pMatParent)
 {
 	m_matCombinedWorld = Get_Component<CTransform>()->Get_WorldMatrix() * (*pMatParent);
+	Get_Component<CTransform>()->Set_WorldMatrix(m_matCombinedWorld);
 }
 
 
 void Effect::Set_Dead(const wstring& wstrLayerTag)
 {
+	m_pGameInstance->Request_DeleteGameObject(0, wstrLayerTag, this);
+}
+
+void Effect::IsEffectFinish()
+{
+	_uint FinishCount = 0;
+
+	for (auto Effect : m_vecPartObjects)
+	{
+		if(Effect)
+			FinishCount += static_cast<CEffectObject*>(Effect)->IsEffectfinish();
+	}
+
+	if (FinishCount == m_vecPartObjects.size())
+	{
+ 		Set_Dead(L"Effect_Layer");
+	}
 }
 
 HRESULT Effect::Spawn_FromPool(void* pArg)
 {
+	if (nullptr == pArg) return E_FAIL;
+
+	// Engine에서 던진 범용 Desc로 캐스팅
+	EFFECT_SPAWN_DESC* pEngineDesc = static_cast<EFFECT_SPAWN_DESC*>(pArg);
+
+	// Engine 데이터를 기반으로 Client의 데이터 갱신
+	//m_pParentsWorldMatrix = pEngineDesc->matWorld;
+	m_eSimulationSpace = (DTO::E_SIMULATION_SPACE)pEngineDesc->iSimulationType;
+	m_pParentsWorldMatrix = (Matrix*)pEngineDesc->pTargetBoneMatrix;
+
+	if (m_eSimulationSpace == DTO::E_SIMULATION_SPACE::WORLD)
+		m_matCombinedWorld = (pEngineDesc->matWorld);
+
+	else
+		Get_Component<CTransform>()->Set_WorldMatrix(pEngineDesc->matWorld);
+
+	// 타이머 및 자식들 초기화
 	for (auto effectObject : m_vecPartObjects)
 	{
 		if (effectObject != nullptr)
@@ -205,4 +246,6 @@ CGameObject* Effect::Clone(void* pArg)
 void Effect::Free()
 {
 	Super::Free();
+
+	Safe_Release(m_pGameInstance);
 }

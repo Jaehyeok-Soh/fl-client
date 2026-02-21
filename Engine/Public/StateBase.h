@@ -51,15 +51,15 @@ public:
 	enum STATEANI_FLAG : Flags
 	{
 		SA_HasPreAni		= 0x0001	// pre ani가 있니
-		, SA_PreNonEvent	= 0x0002	// pre ani때 상태 변환 유무
+		, SA_PreNonEvent	= 0x0002	// pre ani때 상태 변환 유무 flag.
 		, SA_PreAniDone		= 0x0004	// 이전 ani가 끝났니
 	};
 
 	// 먼저 실행할 animation 정보
 	typedef struct tagPreAnimationDesc
 	{
-		_int iPrevStateIdx	= {-1}; // 이전 state가 이거이면
-		_int iAnimationIdex = {-1}; // 이 animation을 재생
+		_int iPrevStateIdx	= {-1};		// 이전 state가 이거이면
+		_int iAnimationIdex = {-1};		// 이 animation을 재생
 
 		// 만약 prevIdx가 -1이면 무조건 실행
 	}CHECK_ANIMATION;
@@ -67,13 +67,12 @@ public:
 	// Initial desc
 	typedef struct tagStateBaseDesc
 	{
-		Flags			FAniFlags		= { 0 };
-		vector<CHECK_ANIMATION>	vecPreAnims;
-		vector<_int>			vecMainAnims;
+		Flags					FAniFlags		= { 0 };	//STATEANI_FLAG 이용할것.
+		vector<CHECK_ANIMATION>	vecPreAnims;				// 프리 애니메이션들 저장
+		vector<_int>			vecMainAnims;				// 메인 애니메이션들 저장
 
 		_bool bBlend = { false };
 		_bool bLoop = { false };
-		//_int					iAnimIndex		= -1;
 	}STATE_DESC;
 
 	// change state 할때 들어오는 desc
@@ -81,7 +80,7 @@ public:
 	{
 		_float	fForceAbs		= { 0.f };
 		_float	fDragK			= { 0.f };
-		_uint	iMainAnimIdx	= { 0 };
+		_uint	iMainAnimIdx	= { 0 };					// main animation 중 어떤거 쓸건데?
 	}STATE_START_DESC;
 
 protected:
@@ -114,6 +113,7 @@ public:
 	virtual _bool Is_FinishedState() { return Is_AnimFinished(); }
 	_uint Get_MainAnimIdx() const { return m_iMainAnimIdx; }
 
+	/* animation funcs */
 protected:
 	HRESULT Request_ChangeAnimation(_uint iAnimationIndex, _bool bBlend, _bool bLoop, _bool bForce = false);
 	HRESULT Request_Change_State(_uint iIndex, void *pArg = nullptr);
@@ -126,6 +126,7 @@ protected:
 	_bool Is_AnimTrackPositionBetween(_float fStartRatio, _float EndRatio);
 	_bool Is_AnimTrackPositionHalf();
 
+	/* move funcs */
 protected:
 	_bool Align_Movement(const _float fTimeDelta);
 	_bool Align_Move(_uint iRunState, _bool bForce = false, void* pArg = nullptr);
@@ -161,9 +162,18 @@ protected:
 
 	void Turn_byCam(const _float fTimeDelta);
 
+	/* key funcs */
+protected:
 	_bool Key_Input(_uint iKey);
 	
+	/* getter setter funcs*/
 protected:
+	_bool			IsOn_CCTFlag(PxControllerCollisionFlag::Enum eFlag);
+	void			Set_ApplyGravity(_bool bApply);
+	void			Set_ApplyYLerp(_bool bApply);
+	void			Set_GravityOffset(_float fOffset);
+
+private:
 	_bool IsBlend() { return m_bBlend; }
 	_bool IsLoop() { return m_bLoop; }
 protected:

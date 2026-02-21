@@ -70,8 +70,9 @@ HRESULT CGenericUI::Initialize(void* pArg)
 		if (FAILED(Get_Component<CTexture>()->Add_DefaultTexture(m_wstrAlphaMaskTextureTag, ALPHA_MASK)))
 			return E_FAIL;
 	}
-	m_vMoveOffsetBase = m_vMoveOffset;
 
+	m_vMoveOffsetBase = m_vMoveOffset;
+	m_fBrightness = 1.f;
 	return S_OK;
 }
 
@@ -134,35 +135,6 @@ _bool CGenericUI::Calc_HitEvent()
 
 void CGenericUI::Acting_By_InteractState()
 {
-	if (Engine_Utils::Has_Flag(m_iInteractState, EUIEvent_Flag::INVOKED))
-	{
-	}
-
-	if (m_iInteractState == EUIEvent_Flag::NONE)
-	{
-	}
-	else
-	{
-		if (Engine_Utils::Has_Flag(m_iInteractState, EUIEvent_Flag::PRESS_ENTER))
-		{
-		}
-		else if (Engine_Utils::Has_Flag(m_iInteractState, EUIEvent_Flag::PRESS_EXIT))
-		{
-		}
-		else if (Engine_Utils::Has_Flag(m_iInteractState, EUIEvent_Flag::HOVER_ENTER))
-		{
-		}
-		else if (Engine_Utils::Has_Flag(m_iInteractState, EUIEvent_Flag::HOVER_EXIT))
-		{
-		}
-
-		if (Engine_Utils::Has_Flag(m_iInteractState, EUIEvent_Flag::PRESSING))
-		{
-		}
-		else if (Engine_Utils::Has_Flag(m_iInteractState, EUIEvent_Flag::HOVERING))
-		{
-		}
-	}
 }
 
 void CGenericUI::OnUIEvent(ETriggerEventType eEvent, CGenericUI* pSender)
@@ -203,6 +175,8 @@ HRESULT CGenericUI::Bind_ShaderResources()
 	if (FAILED(pShader->Get_Variable("g_iFillDir")->SetRawValue(&m_iFillDir, 0, sizeof(int32_t))))
 		return E_FAIL;
 	if (FAILED(pShader->Get_Variable("g_fProgressRatio")->SetRawValue(&m_fProgress_Ratio, 0, sizeof(_float))))
+		return E_FAIL;
+	if (FAILED(pShader->Get_Variable("g_fBrightness")->SetRawValue(&m_fBrightness, 0, sizeof(_float))))
 		return E_FAIL;
 	
 	return S_OK;

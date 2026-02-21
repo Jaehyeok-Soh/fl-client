@@ -71,6 +71,10 @@ public:
 	// 애니메이션 바꾸기
 	void ChangeAnimation(_uint iIndex);
 
+	// root motion bone 정보 모델에게 넘겨주기
+	void Set_RootBone(_int iBoneIdx);
+	void Set_RootOffset(_uint iAnimIdx, _float fOffset);
+
 /// <summary>
 /// 모듈(컴포넌트) 컨트롤
 /// </summary>
@@ -79,6 +83,9 @@ public:
 	void Awake_AttackOverlap();
 	void Modify_AttackOverlap(_uint eventIdx, DTO::ATTACKEVENT event); // 히트박스 수정
 	void Modify_AttackOverlap(vector<DTO::ATTACKEVENT> events); // 전체 히트박스 수정
+
+	//void Modify_EffectEvent(_uint eventIdx, DTO::ANIM_EVENT_INFO_DESC event);
+	void Modify_EffectEvent(vector<DTO::EFFECTEVENT> events);
 
 private:
 	// 매 프레임 가져오는 애니메이션 정보
@@ -100,10 +107,15 @@ private:
 /// </summary>
 public:
 	HRESULT Load_AttackOverlap(fs::path path);
+	HRESULT Load_EffectEvent(fs::path path);
 	void Set_AttackOverlap(CPhysicsAttackOverlap* pAttackOverlap);
+	void Set_EffectEvent(CAnimEffectHandler* pEffectEvent);
 	HRESULT Save_AttackOverlap(fs::path path, string strAnimTag, _int iPool);
+	HRESULT Save_EffectEvent(fs::path path, string strAnimTag, _int iPool);
 private:
 	HRESULT Ready_Builder();
+	HRESULT Ready_BuildFiles();
+	HRESULT Build_File(_uint iLevelID, DTO::ECategory eCategory, string strFileKey);
 
 /// <summary>
 /// 이벤트
@@ -127,7 +139,12 @@ private:
 /// </summary>
 private:
 	class CEvent_Overlap_Module* m_pOverlapModule = { nullptr };
+	class CEvent_Effect_Module* m_pEffectModule = { nullptr };
 
+private:
+	std::vector<string> m_vecEffectTags;	// 이펙트 전용 Tag 리스트들.
+public:
+	const vector<string>& Get_LoadedEffectTags() { return m_vecEffectTags; }
 /// <summary>
 /// 애니메이션 컨트롤 정보
 /// 이벤트 정보

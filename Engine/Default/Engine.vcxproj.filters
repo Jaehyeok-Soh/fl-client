@@ -385,6 +385,12 @@
     <Filter Include="01. Utility\11. DataRepository\Datas\Example\DataDocument_Example">
       <UniqueIdentifier>{47151a61-c828-43d0-b827-394936375c18}</UniqueIdentifier>
     </Filter>
+    <Filter Include="00. System\05. Component\AnimEffectHandler">
+      <UniqueIdentifier>{22e1bd33-7443-4456-8524-78faf8bd6c58}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="00. System\14. Effect">
+      <UniqueIdentifier>{c23244ad-e8e9-4cf2-a239-d294e4326c9d}</UniqueIdentifier>
+    </Filter>
     <Filter Include="99. Defines\Anim_Event_Defines">
       <UniqueIdentifier>{8be12a9c-a542-4d68-baf2-2c1e05623b97}</UniqueIdentifier>
     </Filter>
@@ -807,6 +813,12 @@
     </ClCompile>
     <ClCompile Include="..\Private\DataDocument_EffectEvent.cpp">
       <Filter>01. Utility\11. DataRepository\Datas\Effect\EffectEventData\DataDocument_EffectEvent</Filter>
+    </ClCompile>
+    <ClCompile Include="..\private\AnimEffectHandler.cpp">
+      <Filter>00. System\05. Component\AnimEffectHandler</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\Effect_Manager.cpp">
+      <Filter>00. System\14. Effect</Filter>
     </ClCompile>
     <ClCompile Include="..\Private\DataStruct_MonsterState.cpp">
       <Filter>01. Utility\11. DataRepository\Datas\MonsterState\DataStruct_MonsterState</Filter>
@@ -1242,6 +1254,12 @@
     </ClInclude>
     <ClInclude Include="..\Public\DataDocument_EffectEvent.h">
       <Filter>01. Utility\11. DataRepository\Datas\Effect\EffectEventData\DataDocument_EffectEvent</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\AnimEffectHandler.h">
+      <Filter>00. System\05. Component\AnimEffectHandler</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\Effect_Manager.h">
+      <Filter>00. System\14. Effect</Filter>
     </ClInclude>
     <ClInclude Include="..\Public\Anim_Event_Script_Base.h">
       <Filter>99. Defines\Anim_Event_Defines</Filter>

@@ -35,8 +35,11 @@ public:
 
 
 	void Fire_ToTargets(ETriggerEventType eEvent);
-	virtual void OnUIEvent(ETriggerEventType eEvent, CGenericUI* pSender)override;
-
+	virtual void OnUIEvent(ETriggerEventType eEvent, CGenericUI* pSender)override;	
+	virtual void Initialize_Interactable_Event()override;
+	virtual void Initialize_NonInteractable_Event()override;
+	virtual _bool Tick_Interactable_Event(const _float fTimeDelta)override;
+	virtual _bool Tick_NonInteractable_Event(const _float fTimeDelta)override;
 private:
 	HRESULT Ready_Components(UI_TRIGGER_DESC* pDesc);
 	HRESULT Bind_ShaderResources();

@@ -60,8 +60,9 @@ HRESULT CToolUI::Initialize(void* pArg)
 		m_eTextSubClassType		= m_tUITextData.eTextSubClassType;
 		m_vFontColor_TextData	= m_tUITextData.vFontColor;
 		m_fScale_TextData		= m_tUITextData.fScale;
+		m_ePivot_TextData		= m_tUITextData.ePivot;
 		m_fRotate_TextData		= m_tUITextData.fRotate;
-		m_strFontName_TextData = m_tUITextData.strFontTag;
+		m_strFontName_TextData	= m_tUITextData.strFontTag;
 	}
 	if (m_eClassType == DTO::EUIClassType::TRIGGER)
 	{
@@ -222,11 +223,10 @@ HRESULT CToolUI::Ready_Components(TOOLUI_DESC* pDesc)
 HRESULT CToolUI::Bind_ShaderResources()
 {
     CShader* pShader = Get_Component<CShader>();
+	pShader->Set_Pass(m_iShaderPass);
 
     if (FAILED(Get_Component<CTransform>()->Bind_ShaderResource(pShader)))
         return E_FAIL;
-
-	pShader->Set_Pass(m_iShaderPass);
  	if (FAILED(Get_Component<CTexture>()->Bind_ShaderResourceBuffer(pShader)))
 		return E_FAIL;
 
@@ -246,11 +246,13 @@ HRESULT CToolUI::Bind_ShaderResources()
 		return E_FAIL;
 	if (FAILED(pShader->Get_Variable("g_fProgressRatio")->SetRawValue(&m_fTestProgress, 0, sizeof(_float))))
 		return E_FAIL;
-
+	if (FAILED(pShader->Get_Variable("g_fBrightness")->SetRawValue(&m_fBrightness, 0, sizeof(_float))))
+		return E_FAIL;
 	if(m_eClassType == DTO::EUIClassType::UI_TEXT)
 	{
 		Vec2 fontPos = Vec2{ m_vRenderPos.x, m_vRenderPos.y };
-		if (FAILED(m_pGameInstance->Draw_Text(Engine_Utils::ToWString(m_strFontName_TextData), m_wstrText_TextData.c_str(), fontPos, m_vFontColor_TextData, m_fRotate_TextData,m_fScale_TextData)))
+		if (FAILED(m_pGameInstance->Draw_Text(
+			Engine_Utils::ToWString(m_strFontName_TextData), m_wstrText_TextData.c_str(), fontPos, m_vFontColor_TextData, m_ePivot_TextData, m_fRotate_TextData,m_fScale_TextData)))
 			return E_FAIL;
 	}
     return S_OK;
@@ -453,12 +455,16 @@ HRESULT CToolUI::Request_Change_NoiseTexture()
 {
 	if (FAILED(Get_Component<CTexture>()->Add_DefaultTexture(m_wstrNoiseTextureTag, NOISE)))
 		return E_FAIL;
+
+	return S_OK;
 }
 
 HRESULT CToolUI::Request_Change_AlphaMaskTexture()
 {
 	if (FAILED(Get_Component<CTexture>()->Add_DefaultTexture(m_wstrAlphaMaskTextureTag, ALPHA_MASK)))
 		return E_FAIL;
+
+	return S_OK;
 }
 
 void CToolUI::Request_Chnage_ShaderPass(uint32_t pass)

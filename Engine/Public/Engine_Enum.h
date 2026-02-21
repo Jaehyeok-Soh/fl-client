@@ -195,6 +195,8 @@ namespace Engine
 		PX_COLLIDER,
 		PX_CCT,
 		PX_ATTACKOVERLAP,
+		// ¿Ã∆Â∆Æ
+		EF_ANIMHANDLER,
 		//
 		MODEL,
 		SCRIPT,
@@ -462,5 +464,19 @@ namespace Engine
 			END
 		};
 	};
+
+	//===================
+	// Font Pivot Type
+	//===================
+	enum class EFontPivotType
+	{
+		CENTER,
+		LEFT,
+		RIGHT,
+		UP,
+		DOWN,
+		END
+	};
+
 }
 #endif // Engine_Enum_h__

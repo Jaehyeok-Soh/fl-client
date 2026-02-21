@@ -31,11 +31,17 @@ HRESULT CState_Fall::Start(void* pArg, _bool bForce)
 
 	m_fFallTimeAcc = 0.f;
 
+	Set_ApplyYLerp(false);
+
 	return S_OK;
 }
 
 void CState_Fall::Update(const _float fTimeDelta)
 {
+	// 바닥 충돌 검사 후 change
+	if (IsOn_CCTFlag(PxControllerCollisionFlag::Enum::eCOLLISION_DOWN))
+		Change_PlayerState(ENUM_TO_UINT(CPlayer::State::LAND));
+
 	Super::Update(fTimeDelta);
 
 	Count_FallTime(fTimeDelta);
@@ -47,6 +53,8 @@ HRESULT CState_Fall::End()
 		return E_FAIL;
 
 	m_fFallTimeAcc = 0.f;
+
+	Set_ApplyYLerp(true);
 
 	return S_OK;
 }
@@ -66,8 +74,12 @@ void CState_Fall::Set_NextStateDesc(_uint iNextState)
 	switch (iNextState)
 	{
 	case ENUM_TO_UINT(CPlayer::State::LAND):
-		if(3.f <= m_fFallTimeAcc) // 3초 이상 떨어졌다면
-			m_tNextStateDesc.iMainAnimIdx = 1; break; // LAND_Heavy
+		if (2.f <= m_fFallTimeAcc) // 3초 이상 떨어졌다면
+		{
+			m_tNextStateDesc.iMainAnimIdx = 1; 
+			break; // LAND_Heavy
+		}
+
 	default:
 		m_tNextStateDesc.iMainAnimIdx = 0;
 	}

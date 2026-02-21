@@ -15,6 +15,7 @@
 #include "UIHover_Image.h"
 #include "UIMini_Map.h"
 #include "UISkill_BG.h"
+#include "UIMenu_OutLine.h"
 
 // 트리거 클래스
 #include "UICommon_Trigger.h"
@@ -204,6 +205,8 @@ HRESULT CBuilder_UI::Register_Class(DTO::EUIClassType eClassType, const DTO::TUI
 
 	CGameObject* pResult = nullptr;
 
+	////////////////////////////////////////
+	// PROGRESS_BAR //
 	if (eClassType == DTO::EUIClassType::PROGRESS_BAR)
 	{
 		CUIProgress_Bar::PROGRESS_BAR_DESC ProgressDesc = {};
@@ -211,6 +214,9 @@ HRESULT CBuilder_UI::Register_Class(DTO::EUIClassType eClassType, const DTO::TUI
 		ProgressDesc.eOwner = data.eSubClassType;
 		pResult = m_pGameInstance->Add_GameObject(m_iLevelID, wstrProtoTag, m_iLevelID, wstrLayerTag, &ProgressDesc);
 	}
+
+	////////////////////////////////////////
+	// UI_TEXT //
 	else if (eClassType == DTO::EUIClassType::UI_TEXT)
 	{
 		CUIText::UI_TEXT_DESC TextDesc = {};
@@ -248,12 +254,18 @@ HRESULT CBuilder_UI::Register_Class(DTO::EUIClassType eClassType, const DTO::TUI
 			int a = 0;
 		}
 	}
+
+	////////////////////////////////////////
+	// JUST_IMAGE //
 	else if (eClassType == DTO::EUIClassType::JUST_IMAGE)
 	{
 		CUIJust_Image::JUST_IMAGE_DESC JustImageDesc = {};
 		static_cast<CGenericUI::GENERIC_UI_DESC&>(JustImageDesc) = DefaultDesc;
 		pResult = m_pGameInstance->Add_GameObject(m_iLevelID, wstrProtoTag, m_iLevelID, wstrLayerTag, &JustImageDesc);
 	}
+
+	////////////////////////////////////////
+	// TRIGGER //
 	else if (eClassType == DTO::EUIClassType::TRIGGER)
 	{
 		auto iter = m_MapTriggerDataCache.find(data.strTag);
@@ -290,6 +302,7 @@ HRESULT CBuilder_UI::Register_Class(DTO::EUIClassType eClassType, const DTO::TUI
 			pResult = m_pGameInstance->Add_GameObject(m_iLevelID, L"Prototype_UI_UICommonTrigger", m_iLevelID, wstrLayerTag, &CommonTriggerDesc);
 		}
 
+		data.strTag;
 		if (nullptr == pResult)
 			return E_FAIL;
 
@@ -303,6 +316,9 @@ HRESULT CBuilder_UI::Register_Class(DTO::EUIClassType eClassType, const DTO::TUI
 
 		m_vecTriggerUIs.push_back(pTriggerUI);
 	}
+
+	////////////////////////////////////////
+	// DYNAMIC_IMAGE //
 	else if (eClassType == DTO::EUIClassType::DYNAMIC_IMAGE)
 	{
 		auto iter = m_MapDImageDataCache.find(data.strTag);
@@ -314,7 +330,8 @@ HRESULT CBuilder_UI::Register_Class(DTO::EUIClassType eClassType, const DTO::TUI
 		const _bool isPlayerSkill	= (Type >= DTO::EUIDImageSubClassType::PLAYER_SKILL_BEGIN	&&	Type <= DTO::EUIDImageSubClassType::PLAYER_SKILL_END);
 		const _bool isMiniMap		= (Type >= DTO::EUIDImageSubClassType::MINIMAP_BEGIN		&&	Type <= DTO::EUIDImageSubClassType::MINIMAP_END);
 		const _bool isHoverIcon		= (Type >= DTO::EUIDImageSubClassType::HOVER_POPUP_BEGIN	&& Type <= DTO::EUIDImageSubClassType::HOVER_POPUP_END);
-		const _bool isMenu			= (Type >= DTO::EUIDImageSubClassType::MENU_BEGIN			&& Type <= DTO::EUIDImageSubClassType::MENU_END);
+		const _bool isMenu			= (Type >= DTO::EUIDImageSubClassType::MENU_BEGIN			&& Type <= DTO::EUIDImageSubClassType::MENU_ICON_BG);
+		const _bool isOutLine		= (Type >= DTO::EUIDImageSubClassType::MENU_ICON_OUTLINE	&& Type <= DTO::EUIDImageSubClassType::MENU_END);
 
 		if (isPlayerSkill)
 		{
@@ -343,6 +360,13 @@ HRESULT CBuilder_UI::Register_Class(DTO::EUIClassType eClassType, const DTO::TUI
 			static_cast<CGenericUI::GENERIC_UI_DESC&>(MenuImageDesc) = DefaultDesc;
 			MenuImageDesc.eSubClassType = Type;
 			pResult = m_pGameInstance->Add_GameObject(m_iLevelID, L"Prototype_UI_MenuImage", m_iLevelID, wstrLayerTag, &MenuImageDesc);
+		}
+		else if (isOutLine)
+		{
+			CUIMenu_OutLine::MENU_OUTLINE_DESC MenuOutlineDesc = {};
+			static_cast<CGenericUI::GENERIC_UI_DESC&>(MenuOutlineDesc) = DefaultDesc;
+			MenuOutlineDesc.eSubClassType = Type;
+			pResult = m_pGameInstance->Add_GameObject(m_iLevelID, L"Prototype_UI_MenuOutline", m_iLevelID, wstrLayerTag, &MenuOutlineDesc);
 		}
 	}
 	else

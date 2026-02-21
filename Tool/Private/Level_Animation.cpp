@@ -6,6 +6,8 @@
 // ready obj
 #include "CameraMan_Free.h"
 #include "AnimObj.h"
+#include "Tool_ContainerObject.h"
+#include "Tool_Weapon.h"
 
 // ImGui
 #include "ImGui_Base.h"
@@ -18,11 +20,13 @@
 
 // Component
 #include "Model.h"
+#include "Bone.h"
 
 // Panel
 #include "Panel_AnimModelFile.h"
 #include "Panel_AnimationController.h"
 #include "Panel_AnimDescription.h"
+#include "Panel_ModelInfo.h"
 
 #include "DebugDraw.h"
 
@@ -197,6 +201,8 @@ HRESULT CLevel_Animation::Ready_Panels()
 	//m_GuiElements[Elements::PARTS];
 	m_GuiElements[Elements::DESCRIPTION] = CPanel_AnimDescription::Create("Panel_AnimDescription", this, m_pDevice, m_pDeviceContext);
 
+	m_GuiElements[Elements::MODELINFO] = CPanel_ModelInfo::Create("Panel_ModelInfo", this, m_pDevice, m_pDeviceContext);
+
 	return S_OK;
 }
 
@@ -205,12 +211,16 @@ HRESULT CLevel_Animation::Ready_Event()
 	m_EventHandles[Event::LOAD] =
 		m_pGameInstance->Subscribe<LoadAnimModel>(this, &CLevel_Animation::Load_AnimModel);
 
+	m_EventHandles[Event::LOAD_PART] =
+		m_pGameInstance->Subscribe<LoadAnimModelPart>(this, &CLevel_Animation::Load_PartObject);
+
 	return S_OK;
 }
 
 HRESULT CLevel_Animation::Release_Event()
 {
 	m_pGameInstance->Unsubscribe<LoadAnimModel>(m_EventHandles[Event::LOAD]);
+	m_pGameInstance->Unsubscribe<LoadAnimModelPart>(m_EventHandles[Event::LOAD_PART]);
 
 	return S_OK;
 }
@@ -287,6 +297,40 @@ void CLevel_Animation::Load_AnimModel(fs::path animModelPath)
 	SetAnimationInfo(animModelPath);
 }
 
+void CLevel_Animation::Load_PartObject(fs::path animPartModelPath)
+{
+	if (!m_pSelectedObject)
+	{
+		MSG_BOX("먼저 베이스 모델을 로드하세요");
+		return;
+	}
+
+	CAnimObj* pAnimObj = static_cast<CAnimObj*>(m_pSelectedObject);
+	CModel* pParentModel = const_cast<CModel*>(pAnimObj->Get_ModelComPtr());
+
+	// 모델 프로토타입 추가.
+	wstring modelProtoTag = L"Prototype_Component_Model_" + animPartModelPath.stem().wstring();
+	CModel::MODEL_ORIGIN_DESC desc = {};
+	desc.eType = EModelType::NONANIM; // 무기는 보통 고정 모델, 필요시 분기
+	desc.iPrototypeLevelIndex = ENUM_TO_UINT(ELevelType::ANIMATION);
+	desc.wstrModelFolderName = animPartModelPath.stem().wstring();
+
+	CModel* pModelProto = CModel::Create(m_pDevice, m_pDeviceContext, &desc);
+	m_pGameInstance->Add_Prototype(ENUM_TO_UINT(ELevelType::ANIMATION), modelProtoTag, pModelProto);
+
+	// 컨테이너 파츠 추가
+	CTool_Weapon::WEAPON_DESC weaponDesc;
+	weaponDesc.pMatParent = &pAnimObj->Get_Component<CTransform>()->Get_WorldMatrix(); // Tool_PartObject가 기대하는 부모
+	weaponDesc.wstrModelPrototypeName = modelProtoTag;
+	weaponDesc.pMatHandSocket = &pParentModel->Get_Bone(414)->Get_CombinedTransformMatrix();
+	weaponDesc.pMatSocket = &pParentModel->Get_Bone(288)->Get_BindPoseTransformMatrix();
+	weaponDesc.eModel = CTool_Weapon::Weapon_ModelType::STATIC;
+	weaponDesc.bMianWeapon = true; 
+
+	_uint iPartID = (_uint)pAnimObj->Get_PartList().size();
+	pAnimObj->Add_Part(iPartID, ENUM_TO_UINT(ELevelType::ANIMATION), L"Prototype_GameObject_Tool_Weapon", &weaponDesc);
+}
+
 void CLevel_Animation::Create_AnimModel(fs::path animModelPath)
 {
 	//m_pSelectedObject;
@@ -321,9 +365,11 @@ wstring CLevel_Animation::Create_AnimModelPrototype(fs::path animModelPath)
 		desc.pMatPreTransform = &(matPreTransformScale);	// matPreTransformScale // matPreTransformTurn90
 		desc.wstrModelFolderName = animModelPath.stem().wstring();
 
-		CModel::DATA_ANIMCHANNEL tAniChannelData = {};
-		tAniChannelData.iRootBoneIndex = 2;
-		desc.pAniChannelData = &tAniChannelData;
+		desc.FStageBone = CModel::STAGEING_BONE::SB_ALLBONE;
+
+		//CModel::DATA_ANIMCHANNEL tAniChannelData = {};
+		//tAniChannelData.iRootBoneIndex = 2;
+		//desc.pAniChannelData = &tAniChannelData;
 
 		prototypeTag += desc.wstrModelFolderName;
 		CModel* pInstance = CModel::Create(m_pDevice, m_pDeviceContext, &desc);

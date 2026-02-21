@@ -4,6 +4,7 @@
 // has?
 #include "Player.h"
 #include "PlayerControlContext.h"
+#include "Transform.h"
 
 // manager
 #include "GameInstance.h"
@@ -23,6 +24,7 @@ HRESULT CStateBase_Player::Initialize(void* pArg)
 	PLAYER_STATEBASE_DESC* pDesc	= static_cast<PLAYER_STATEBASE_DESC*>(pArg);
 
 	m_FMoves						= pDesc->FMoves;
+	m_FCollisions					= pDesc->FCollis;
 	m_vecChangeState_ByKey			= std::move(pDesc->vecChangeState_ByKey);
 
 	m_tKeyTimer						= pDesc->tKeyTimer;
@@ -47,22 +49,13 @@ HRESULT CStateBase_Player::Start(void* pArg, _bool bForce)
 
 	m_tKeyTimer.fTimeAcc = 0.f;
 
+	m_TFallingCount.x = 0.f;
+
 	return S_OK;
 }
 
 void CStateBase_Player::Update(const _float fTimeDelta)
 {
-//#ifdef _DEBUG
-//	//WINDOW_DEBUG
-//	std::wstring msg = L"State: ";
-//	std::wstring ws(m_strName.begin(), m_strName.end());
-//	msg += ws;
-//
-//	msg += L" / AniIdx: ";
-//	msg += std::to_wstring(m_iMainAnimIdx);
-//	SetWindowText(g_hWnd, msg.c_str());
-//#endif
-
 	Super::Update(fTimeDelta);
 
 	// 만약 이전 애니메이션때 변화하기 싫은데 아직 preAni가 끝나지 않았다면 : key 입력 처리를 하지 않음
@@ -74,7 +67,7 @@ void CStateBase_Player::Update(const _float fTimeDelta)
 	if (!(m_tKeyTimer.bCountTime) ||
 		m_tKeyTimer.CountTime(fTimeDelta) == 1.f)
 	{
-		if (!m_bLoop && Is_MainAnimFinished())		// loop가 아닌데 애니메이션이 끝났다면 : pre animation이랑 잘 해야될듯..?
+		if (!m_bLoop && Is_MainAnimFinished())		// loop가 아닌데 애니메이션이 끝났다면
 		{
 			Change_PlayerState(STATEKEY::LOOPDONE);			// 다음 state로 change
 			return;
@@ -104,6 +97,8 @@ void CStateBase_Player::Update(const _float fTimeDelta)
 		if (Check_SkillKey(fTimeDelta))
 			return;
 	}
+
+	Check_Collis(fTimeDelta);
 }
 
 HRESULT CStateBase_Player::End()
@@ -121,6 +116,12 @@ void CStateBase_Player::Change_PlayerState(STATEKEY eKey)
 	Request_Change_State(iNextState, &m_tNextStateDesc);	
 
 	/* 플레이어가 이런 state를 이런 애니메이션으로 바꿨다 */
+}
+
+void CStateBase_Player::Change_PlayerState(_uint iState)
+{
+	Set_NextStateDesc(iState);
+	Request_Change_State(iState, &m_tNextStateDesc);
 }
 
 _bool CStateBase_Player::Check_MoveKey(const _float fTimeDelta)
@@ -162,6 +163,14 @@ _bool CStateBase_Player::Check_JumpKey(const _float fTimeDelta)
 	if (Has_ChangeState(STATEKEY::SPACE) &&
 		Key_Input(ENUM_TO_UINT(CControlContext::CONTROL_KEY::JUMP)))
 	{
+		// 벽이랑 충돌했는지 먼저 검사
+		if (IsOn_CCTFlag(PxControllerCollisionFlag::Enum::eCOLLISION_SIDES))
+		{
+			Change_PlayerState(ENUM_TO_UINT(CPlayer::State::JUMPWALL));
+			return true;
+		}
+
+		// 아니라면 그냥 키전환
 		Change_PlayerState(STATEKEY::SPACE);
 		return true;
 	}
@@ -238,15 +247,20 @@ _bool CStateBase_Player::Check_RangeKey(const _float fTimeDelta)
 
 _bool CStateBase_Player::Check_SkillKey(const _float fTimeDelta)
 {
+	// key를 가지고 있고 &&
+	// key를 눌렀고 &&
+	// 스킬을 실행할 수 있다면
 	if (Has_ChangeState(STATEKEY::E) &&
-		Key_Input(ENUM_TO_UINT(CControlContext::CONTROL_KEY::SKILL1)))
+		Key_Input(ENUM_TO_UINT(CControlContext::CONTROL_KEY::SKILL1)) &&
+		static_cast<CPlayer*>(Get_OwnerObject())->Start_Attack(CPlayer::State::SKILL1))
 	{
 		Change_PlayerState(STATEKEY::E);
 		return true;
 	}
 
 	else if(Has_ChangeState(STATEKEY::Q) &&
-		Key_Input(ENUM_TO_UINT(CControlContext::CONTROL_KEY::SKILL2)))
+		Key_Input(ENUM_TO_UINT(CControlContext::CONTROL_KEY::SKILL2)) &&
+		static_cast<CPlayer*>(Get_OwnerObject())->Start_Attack(CPlayer::State::SKILL2))
 	{
 		Change_PlayerState(STATEKEY::Q);
 		return true;
@@ -255,10 +269,70 @@ _bool CStateBase_Player::Check_SkillKey(const _float fTimeDelta)
 	return false;
 }
 
+_bool CStateBase_Player::Check_Collis(const _float fTimeDelta)
+{
+	// 플래그 먼저 확인
+	if (Engine_Utils::Has_Flag(m_FCollisions, COLLISIONFLAGS::C_DOWN))
+	{
+		// 충돌 검사 및 시간 누적
+		if (Check_OnGround())
+			m_TFallingCount.x = 0.f;
+		else
+			m_TFallingCount.x += fTimeDelta;
+
+		if(m_TFallingCount.x > m_TFallingCount.y)
+			Change_PlayerState(ENUM_TO_UINT(CPlayer::State::FALL));
+	}
+
+	return false;
+}
+
+_bool CStateBase_Player::Check_OnGround(_float fMaxDist)
+{
+	return static_cast<CPlayer*>(Get_OwnerObject())->Check_OnGround(fMaxDist);
+}
+
+void CStateBase_Player::Check_Monster()
+{
+	// 몬스터랑 출동 했다면
+	if (Check_ColliWithMonster())
+	{
+		// 몬스터를 향하게 turn
+
+		// combo 카운트 업
+		Count_Combo();
+	}
+}
+
+void CStateBase_Player::Change_Weapon(_uint iPart, _uint iState)
+{
+	static_cast<CPlayer*>(Get_OwnerObject())->Change_Weapon(iPart, iState);
+}
+
+_bool CStateBase_Player::Start_Att(_uint iPlayerState)
+{
+	return static_cast<CPlayer*>(Get_OwnerObject())->Start_Attack(static_cast<CPlayer::State>(iPlayerState));
+}
+
+void CStateBase_Player::End_Att(_uint iPlayerState)
+{
+	static_cast<CPlayer*>(Get_OwnerObject())->End_Attack(static_cast<CPlayer::State>(iPlayerState));
+}
+
 _bool CStateBase_Player::Has_ChangeState(STATEKEY eKey)
 {
 	// state end 이면 state change를 안 한다
 	return m_iEndStateIdx != m_vecChangeState_ByKey[ENUM_TO_UINT(eKey)];
+}
+
+_bool CStateBase_Player::Check_ColliWithMonster()
+{
+	return static_cast<CPlayer*>(Get_OwnerObject())->Check_ColliWithMonster();
+}
+
+void CStateBase_Player::Count_Combo()
+{
+	static_cast<CPlayer*>(Get_OwnerObject())->Count_Combo();
 }
 
 void CStateBase_Player::Free()

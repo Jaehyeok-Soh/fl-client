@@ -9,6 +9,7 @@ NS_END
 
 NS_BEGIN(Client)
 class CStatComponent;
+class CSkillComponent;
 class CCameraMan_Targeter;
 class CBody;
 
@@ -27,6 +28,7 @@ public:
 	{
 		BODY = 0,
 		SWORD,
+		SKILL,
 		END
 	};
 	enum class State : _uint
@@ -53,10 +55,17 @@ public:
 		,LAND
 
 		,COMBO
-		,GUN
 		,CHARGE
+		, JUMPATTSTART
+		, JUMPATTEND
+
+		,GUN
+		, JUMPGUN
+
 		,SKILL1
 		,SKILL2
+
+		,JUMPWALL
 
 		,END
 	};
@@ -74,18 +83,36 @@ public:
 	virtual void		Update_Late(const _float fTimeDelta) override;
 	virtual void		Ready_Before_Render(const _float fTimeDelta) override;
 	virtual HRESULT		Render() override;
+
+public:
 	virtual _int		Get_AnimationIndex(const wstring& wstrName) override;
 	virtual _wstring	Get_AnimationName(_uint iAniIndex);
 
+	CStatComponent* Get_Stat() const { return m_pStatComp; }
+
+	// state funcs
 public:
-	void Change_Weapon(Part ePart, _uint iState); // 어떤 weapon을 어떤 state로
+	void Change_Weapon(_uint iPart, _uint iState); // 어떤 weapon을 어떤 state로
+	_bool Check_OnGround(_float fMaxDist = 0.72f);
+	_bool Check_ColliWithMonster();
+	void Count_Combo();
+	void Count_Dash();
+
+public:
+	_bool	Start_Attack(State iState);
+	void	End_Attack(State iState);
 
 private:
 	HRESULT Ready_BaseStates();
 	HRESULT Ready_PartObjects(PLAYER_DESC* pDesc);
 	HRESULT Ready_Components(PLAYER_DESC* pDesc);
 protected:
-	CStatComponent* m_pStatComp = { nullptr };
+	CStatComponent* m_pStatComp = { nullptr }; // 이거 왜 캐싱해둠?
+	CPhysics_QueryFilterCallback* m_pPhysic_QueryFilter = { nullptr };
+
+	CSkillComponent* m_pSkillEComp = { nullptr };
+	CSkillComponent* m_pSkillQComp = { nullptr };
+
 public:
 	virtual CGameObject* Clone(void* pArg) PURE;
 	virtual void Free() override;

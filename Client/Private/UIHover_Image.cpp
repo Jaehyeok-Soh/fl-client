@@ -130,6 +130,9 @@ HRESULT CUIHover_Image::Bind_ShaderResources()
 
 void CUIHover_Image::OnUIEvent(ETriggerEventType eEvent, CGenericUI* pSender)
 {
+	if (!m_isActive)
+		return;
+
 	if (eEvent == ETriggerEventType::HOVER_ENTER)
 	{
 		Set_Visible();
@@ -142,6 +145,7 @@ void CUIHover_Image::OnUIEvent(ETriggerEventType eEvent, CGenericUI* pSender)
 
 void CUIHover_Image::Initialize_Visible_Event()
 {
+	m_isFin_Event = false;
 	if (m_eDImageSubClass == DTO::EUIDImageSubClassType::HOVER_POPUP_BG)
 	{
 		m_fWidth = 0.1f;
@@ -155,6 +159,7 @@ void CUIHover_Image::Initialize_Visible_Event()
 
 void CUIHover_Image::Initialize_InVisible_Event()
 {
+	m_isFin_Event = false;
 }
 
 _bool CUIHover_Image::Tick_Visible_Event(const _float fTimeDelta)
@@ -167,6 +172,7 @@ _bool CUIHover_Image::Tick_Visible_Event(const _float fTimeDelta)
 		if (m_fWidth >= m_fOriginWidth)
 		{
 			m_fWidth = m_fOriginWidth;
+			m_isFin_Event = true;
 			return true;
 		}
 	}
@@ -180,6 +186,7 @@ _bool CUIHover_Image::Tick_Visible_Event(const _float fTimeDelta)
 		if (m_fAlpha_Ratio >= 1.f)
 		{
 			m_fAlpha_Ratio = 1.f;
+			m_isFin_Event = true;
 			return true;
 		}
 	}
@@ -188,6 +195,7 @@ _bool CUIHover_Image::Tick_Visible_Event(const _float fTimeDelta)
 
 _bool CUIHover_Image::Tick_InVisible_Event(const _float fTimeDelta)
 {
+	m_isFin_Event = true;
 	return true;
 }
 

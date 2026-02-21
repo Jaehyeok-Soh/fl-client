@@ -46,10 +46,9 @@ protected:
 public:
 	virtual HRESULT Awake(const _uint iLevelIndex) PURE;
 public:
-	_bool Is_Gravity() const { return m_bGravity; }
 	_bool Is_Grounded() const { return m_bGrounded; }
 	_uint Get_JumpCount() const { return m_iJumpCount; }
-	void Set_Gravity(_bool bGravity) { m_bGravity = bGravity; }
+
 	void Set_Grounded(_bool bGrounded) { m_bGrounded = bGrounded; }
 	void Set_JumpCount(_uint iCount) { m_iJumpCount = iCount; }
 	void Set_MovementMode(EMovementMode eMode) { m_eCurrentMovement = eMode; }
@@ -86,12 +85,11 @@ public:
 
 	CGameObject* Get_Target() { return m_pTarget; }
 protected:
-	EMovementMode m_eCurrentMovement = { EMovementMode::GROUND };
-	CGameObject* m_pTarget = { nullptr };
-	_bool m_bContectedWithTarget = { false };
-	_bool m_bGrounded = { false };
-	_bool m_bGravity = { false };
-	_uint m_iJumpCount = { 0 };
+	EMovementMode	m_eCurrentMovement		= { EMovementMode::GROUND };
+	CGameObject*	m_pTarget				= { nullptr };
+	_bool			m_bContectedWithTarget	= { false };
+	_bool			m_bGrounded				= { false };
+	_uint			m_iJumpCount			= { 0 };
 public:
 	virtual CComponent* Clone(void* pArg) PURE;
 	virtual void Free() override;

@@ -23,10 +23,12 @@ struct IMMU_KEYFRAME
 struct IMMU_ELEMENT
 {
     int     iBoneIndex;             // 내 bone transform을 잘 업데이트 하기 위함
-    int     iRootMotionBoneIndex;   // root motion일 경우 tralation을 0으로 만들기 위함
+
     
     uint    iKeyStart;              // 키프레임 시작 위치
     uint    iKeyCount;              // 키프레임 개수
+    
+    float Padding0;
 };
 
 // 가변 데이터 : cpu
@@ -35,7 +37,9 @@ struct MU_ELEMENT
     float   fCurTrackPosition;
     uint    iChannelCount;
     
-    float2  Padding0;
+    int iRootMotionBoneIndex; // root motion일 경우 tralation을 0으로 만들기 위함
+    
+    float  Padding0;
 };
 
 // out put
@@ -99,7 +103,7 @@ void CS_Main(uint3 id : SV_DispatchThreadID)
         return;
     
     uint iBoneIdx           = IMMU_CHANNELDATAS[iChannelIdx].iBoneIndex;
-    bool bRootMotionBone    = (IMMU_CHANNELDATAS[iChannelIdx].iRootMotionBoneIndex == iBoneIdx);
+    bool bRootMotionBone = (g_InputData.iRootMotionBoneIndex == iBoneIdx);
     
     uint iFirstFrameIdx     = IMMU_CHANNELDATAS[iChannelIdx].iKeyStart;
     uint iLastFrameIdx      = iFirstFrameIdx + IMMU_CHANNELDATAS[iChannelIdx].iKeyCount - 1;

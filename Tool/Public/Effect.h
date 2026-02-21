@@ -1,5 +1,6 @@
 #pragma once
 #include "Tool_ContainerObject.h"
+#include "DataStruct_Effect.h"
 
 NS_BEGIN(Engine)
 
@@ -9,13 +10,6 @@ NS_END
 
 NS_BEGIN(Tool)
 
-enum class E_SIMULATION_SPACE
-{
-	NONE = 0,
-	LOCAL,
-	WORLD,
-};
-
 class Effect : public Tool_ContainerObject
 {
 	using Super = Tool_ContainerObject;
@@ -23,13 +17,17 @@ class Effect : public Tool_ContainerObject
 public:
 	typedef struct tagToolObjectDesc : public Super::TOOLOBJECT_DESC
 	{
-		E_SIMULATION_SPACE _Effect_SimulationType = E_SIMULATION_SPACE::NONE;
+		DTO::E_SIMULATION_SPACE _Effect_SimulationType = DTO::E_SIMULATION_SPACE::NONE;
+		vector<DTO::TEFFECT_PartsData>	_childData = {};
 	}EFFECT_CONTAINERDESC;
 
 protected:
 	Effect(EToolObjectType eType, ID3D11Device* pDevice, ID3D11DeviceContext* pDeviceContext);
 	explicit Effect(const Tool_ContainerObject& rhs);
 	virtual ~Effect() = default;
+
+protected:
+	HRESULT Ready_PartsData(void* pArg);
 
 public:
 	virtual HRESULT Initialize_Prototype() override;
@@ -48,13 +46,18 @@ public:
 
 public:
 	virtual void Set_ParentsWorldMatrix(Matrix* worldMatrix) { m_pParentsWorldMatrix = worldMatrix; }
-	virtual void Set_SimulationSpace(E_SIMULATION_SPACE Space) { m_eSimulationSpace = Space; }
+	virtual void Set_SimulationSpace(DTO::E_SIMULATION_SPACE Space) { m_eDesc._Effect_SimulationType = Space; }
 
-	virtual const E_SIMULATION_SPACE& Get_SimulationSpace() { return m_eSimulationSpace; }
+	virtual const DTO::E_SIMULATION_SPACE& Get_SimulationSpace() { return m_eDesc._Effect_SimulationType; }
 	virtual Matrix* Get_ParentsWorldMatrix() { return m_pParentsWorldMatrix; }
 
 protected:
 	void Update_CombinedWorldMatrix(const Matrix* pMatParent);
+	void IsEffectFinish();
+
+protected:
+	virtual HRESULT Spawn_FromPool(void* pArg) override;
+	virtual HRESULT Despawn_FromPool() override;
 
 public:
 	static Effect* Create(EToolObjectType eType, ID3D11Device* pDevice, ID3D11DeviceContext* pDeviceContext);
@@ -62,7 +65,7 @@ public:
 	virtual void Free() override;
 
 protected:
-	E_SIMULATION_SPACE				m_eSimulationSpace = {};
+	EFFECT_CONTAINERDESC			m_eDesc = {};
 	Matrix*							m_pParentsWorldMatrix = { nullptr };
 	Matrix							m_matCombinedWorld = {};
 };

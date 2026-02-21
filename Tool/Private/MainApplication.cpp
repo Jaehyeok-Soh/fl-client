@@ -26,6 +26,7 @@
 #include "MaterialInstance.h"
 #include "InstanceMesh.h"
 #include "Bounds.h"
+#include "PhysicsCCT.h"
 #include "GameInstance.h"
 
 
@@ -97,6 +98,12 @@ HRESULT CMainApplication::Ready_Static_Prototype()
 	// For. Prototype_Component_VIBuffer_Line_Color
 	if (FAILED(m_pGameInstance->Add_Prototype(ENUM_TO_UINT(ELevelType::STATIC), L"Prototype_Component_VIBuffer_Line_Color", CVIBuffer_Line_Color::Create(m_pDevice, m_pDeviceContext, nullptr))))
 		return E_FAIL;
+	// For. Prototype_Component_Physics_CCT
+	{
+		if (FAILED(m_pGameInstance->Add_Prototype(ENUM_TO_UINT(ELevelType::STATIC), L"Prototype_Component_Physics_CCT",
+			CPhysicsCCT::Create(m_pDevice, m_pDeviceContext))))
+			return E_FAIL;
+	}
 
 	// font
 	for (const auto& e : std::filesystem::directory_iterator(L"..\\..\\Resources\\Fonts"))

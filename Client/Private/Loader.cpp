@@ -9,6 +9,7 @@
 #include "PlayerActionState.h"
 #include "MonsterActionState.h"
 #include "StatComponent.h"
+#include "StatCom_Player.h"
 #include "Collider.h"
 #include "VIBuffer_Terrain.h"
 #include "VIBuffer_Particle_Rect.h"
@@ -21,6 +22,8 @@
 #include "Camera.h"
 #include "Transform.h"
 #include "PhysicsCollider.h"
+#include "SkillComp_MoonE.h"
+#include "SkillComp_MoonQ.h"
 //=================
 // Builder
 //=================
@@ -34,6 +37,9 @@
 #include "Builder_AttackOverlap.h"
 #include "DataStruct_AttackOverlap.h"
 #include "DataDocument_AttackOverlap.h"
+#include "Builder_EffectEvent.h"
+#include "DataStruct_EffectEvent.h"
+#include "DataDocument_EffectEvent.h"
 
 //=================
 // Object
@@ -71,6 +77,7 @@
 #include "UIMini_Map.h"
 #include "UIHover_Image.h"
 #include "UIMenu_Image.h"
+#include "UIMenu_OutLine.h"
 
 // Æ®¸®°Å 
 #include "UIMenu_Trigger.h"
@@ -168,6 +175,9 @@ HRESULT CLoader::Loading_For_Logo()
 			if (FAILED(m_pGameInstance->Regist_Document<CDataDocument_Effect>(ENUM_TO_UINT(ELevelType::LOGO), DTO::ECategory::EFFECT)))
 				return E_FAIL;
 
+			if (FAILED(m_pGameInstance->Regist_Document<CDataDocument_EffectEvent>(ENUM_TO_UINT(ELevelType::LOGO), DTO::ECategory::EFFECTEVENT)))
+				return E_FAIL;
+
 			if (FAILED(m_pGameInstance->Regist_Document<CDataDocument_UI>(ENUM_TO_UINT(ELevelType::LOGO), DTO::ECategory::UI)))
 				return E_FAIL;
 
@@ -207,7 +217,7 @@ HRESULT CLoader::Loading_For_Logo()
 
 	// For. UI Texture
 	std::error_code ec;
-	for (const auto& entry : std::filesystem::directory_iterator(L"../../Resources/Textures/UI/", std::filesystem::directory_options::skip_permission_denied, ec))
+	for (const auto& entry : std::filesystem::directory_iterator(L"../../Resources/Textures/UI_Client/", std::filesystem::directory_options::skip_permission_denied, ec))
 	{
 		if (ec)
 			return E_FAIL;
@@ -223,59 +233,59 @@ HRESULT CLoader::Loading_For_Logo()
 
 	// For. Prototype_Component_Button_Test_Texture
 	{
-		// Effect
-		//if (FAILED(Loading_Textures(L"../../Resources/Textures/Effect/Crack/")))
-		//	return E_FAIL;
-		//if (FAILED(Loading_Textures(L"../../Resources/Textures/Effect/Curve/")))
-		//	return E_FAIL;
-		//if (FAILED(Loading_Textures(L"../../Resources/Textures/Effect/Fire/")))
-		//	return E_FAIL;
-		//if (FAILED(Loading_Textures(L"../../Resources/Textures/Effect/Flower/")))
-		//	return E_FAIL;
-		//if (FAILED(Loading_Textures(L"../../Resources/Textures/Effect/Fluid/")))
-		//	return E_FAIL;
-		//if (FAILED(Loading_Textures(L"../../Resources/Textures/Effect/Glow/")))
-		//	return E_FAIL;
-		//if (FAILED(Loading_Textures(L"../../Resources/Textures/Effect/Gradient/")))
-		//	return E_FAIL;
-		//if (FAILED(Loading_Textures(L"../../Resources/Textures/Effect/Ice/")))
-		//	return E_FAIL;
-		//if (FAILED(Loading_Textures(L"../../Resources/Textures/Effect/Knife/")))
-		//	return E_FAIL;
-		//if (FAILED(Loading_Textures(L"../../Resources/Textures/Effect/Lens/")))
-		//	return E_FAIL;
-		//if (FAILED(Loading_Textures(L"../../Resources/Textures/Effect/Lightning/")))
-		//	return E_FAIL;
-		//if (FAILED(Loading_Textures(L"../../Resources/Textures/Effect/Line/")))
-		//	return E_FAIL;
-		//if (FAILED(Loading_Textures(L"../../Resources/Textures/Effect/Mask/")))
-		//	return E_FAIL;
-		//if (FAILED(Loading_Textures(L"../../Resources/Textures/Effect/Normal/")))
-		//	return E_FAIL;
-		//if (FAILED(Loading_Textures(L"../../Resources/Textures/Effect/Object/")))
-		//	return E_FAIL;
-		//if (FAILED(Loading_Textures(L"../../Resources/Textures/Effect/Partten/")))
-		//	return E_FAIL;
-		//if (FAILED(Loading_Textures(L"../../Resources/Textures/Effect/Smoke/")))
-		//	return E_FAIL;
-		//if (FAILED(Loading_Textures(L"../../Resources/Textures/Effect/Spark/")))
-		//	return E_FAIL;
-		//if (FAILED(Loading_Textures(L"../../Resources/Textures/Effect/Splash/")))
-		//	return E_FAIL;
-		//if (FAILED(Loading_Textures(L"../../Resources/Textures/Effect/Spread/")))
-		//	return E_FAIL;
-		//if (FAILED(Loading_Textures(L"../../Resources/Textures/Effect/Trail/")))
-		//	return E_FAIL;
-		//if (FAILED(Loading_Textures(L"../../Resources/Textures/Effect/Turbulence/")))
-		//	return E_FAIL;
-		//if (FAILED(Loading_Textures(L"../../Resources/Textures/Effect/UI/")))
-		//	return E_FAIL;
-		//if (FAILED(Loading_Textures(L"../../Resources/Textures/Effect/VAT/")))
-		//	return E_FAIL;
-		//if (FAILED(Loading_Textures(L"../../Resources/Textures/Effect/water/")))
-		//	return E_FAIL;
-		//if (FAILED(Loading_Textures(L"../../Resources/Textures/Effect/Wave/")))
-		//	return E_FAIL;
+		 /*Effect*/
+		if (FAILED(Loading_Textures(L"../../Resources/Textures/Effect/Crack/")))
+			return E_FAIL;
+		if (FAILED(Loading_Textures(L"../../Resources/Textures/Effect/Curve/")))
+			return E_FAIL;
+		if (FAILED(Loading_Textures(L"../../Resources/Textures/Effect/Fire/")))
+			return E_FAIL;
+		if (FAILED(Loading_Textures(L"../../Resources/Textures/Effect/Flower/")))
+			return E_FAIL;
+		if (FAILED(Loading_Textures(L"../../Resources/Textures/Effect/Fluid/")))
+			return E_FAIL;
+		if (FAILED(Loading_Textures(L"../../Resources/Textures/Effect/Glow/")))
+			return E_FAIL;
+		if (FAILED(Loading_Textures(L"../../Resources/Textures/Effect/Gradient/")))
+			return E_FAIL;
+		if (FAILED(Loading_Textures(L"../../Resources/Textures/Effect/Ice/")))
+			return E_FAIL;
+		if (FAILED(Loading_Textures(L"../../Resources/Textures/Effect/Knife/")))
+			return E_FAIL;
+		if (FAILED(Loading_Textures(L"../../Resources/Textures/Effect/Lens/")))
+			return E_FAIL;
+		if (FAILED(Loading_Textures(L"../../Resources/Textures/Effect/Lightning/")))
+			return E_FAIL;
+		if (FAILED(Loading_Textures(L"../../Resources/Textures/Effect/Line/")))
+			return E_FAIL;
+		if (FAILED(Loading_Textures(L"../../Resources/Textures/Effect/Mask/")))
+			return E_FAIL;
+		if (FAILED(Loading_Textures(L"../../Resources/Textures/Effect/Normal/")))
+			return E_FAIL;
+		if (FAILED(Loading_Textures(L"../../Resources/Textures/Effect/Object/")))
+			return E_FAIL;
+		if (FAILED(Loading_Textures(L"../../Resources/Textures/Effect/Partten/")))
+			return E_FAIL;
+		if (FAILED(Loading_Textures(L"../../Resources/Textures/Effect/Smoke/")))
+			return E_FAIL;
+		if (FAILED(Loading_Textures(L"../../Resources/Textures/Effect/Spark/")))
+			return E_FAIL;
+		if (FAILED(Loading_Textures(L"../../Resources/Textures/Effect/Splash/")))
+			return E_FAIL;
+		if (FAILED(Loading_Textures(L"../../Resources/Textures/Effect/Spread/")))
+			return E_FAIL;
+		if (FAILED(Loading_Textures(L"../../Resources/Textures/Effect/Trail/")))
+			return E_FAIL;
+		if (FAILED(Loading_Textures(L"../../Resources/Textures/Effect/Turbulence/")))
+			return E_FAIL;
+		if (FAILED(Loading_Textures(L"../../Resources/Textures/Effect/UI/")))
+			return E_FAIL;
+		if (FAILED(Loading_Textures(L"../../Resources/Textures/Effect/VAT/")))
+			return E_FAIL;
+		if (FAILED(Loading_Textures(L"../../Resources/Textures/Effect/water/")))
+			return E_FAIL;
+		if (FAILED(Loading_Textures(L"../../Resources/Textures/Effect/Wave/")))
+			return E_FAIL;
 	}
 	
 #pragma endregion
@@ -321,6 +331,17 @@ HRESULT CLoader::Loading_For_Logo()
 
 		m_pGameInstance->Add_Prototype(ENUM_TO_UINT(ELevelType::STATIC), L"Prototype_Component_Model_MoonSword", CModel::Create(m_pDevice, m_pDeviceContext, &desc));
 	}
+	// For. Prototype_Component_Model_MoonSkillWeap
+	{
+		CModel::MODEL_ORIGIN_DESC desc = {};
+		desc.eType = EModelType::STATIC;
+		desc.iPrototypeLevelIndex = ENUM_TO_UINT(ELevelType::STATIC);
+		desc.pMatPreTransform = &(matPreTransformScale);	// matPreTransformScale
+		desc.wstrModelFolderName = L"Weapon_MoonSkill";					// PlayerMoon // Pino
+		desc.FStageBone = CModel::STAGEING_BONE::SB_ZEROBONE;
+
+		m_pGameInstance->Add_Prototype(ENUM_TO_UINT(ELevelType::STATIC), L"Prototype_Component_Model_MoonSkillWeap", CModel::Create(m_pDevice, m_pDeviceContext, &desc));
+	}
 	// For.Prototype_Component_Model_Monster_Dog
 	{
 		CModel::MODEL_ORIGIN_DESC desc = {};
@@ -354,6 +375,14 @@ HRESULT CLoader::Loading_For_Logo()
 
 	// For. Prototype_Component_Collider_SPHERE
 	m_pGameInstance->Add_Prototype(ENUM_TO_UINT(ELevelType::STATIC), L"Prototype_Component_VIBuffer_InstanceMesh", CInstanceMesh::Create(m_pDevice, m_pDeviceContext));
+
+	/* player components */
+	// For. Prototype_Component_Stat_Player
+	m_pGameInstance->Add_Prototype(ENUM_TO_UINT(ELevelType::STATIC), L"Prototype_Component_Stat_Player", CStatCom_Player::Create());
+	// For. Prototype_Component_Stat_Player
+	m_pGameInstance->Add_Prototype(ENUM_TO_UINT(ELevelType::STATIC), L"Prototype_Component_Skill_MoonE", CSkillComp_MoonE::Create());
+	// For. Prototype_Component_Stat_Player
+	m_pGameInstance->Add_Prototype(ENUM_TO_UINT(ELevelType::STATIC), L"Prototype_Component_Skill_MoonQ", CSkillComp_MoonQ::Create());
 
 	// For. Prototype_Component_ControlContext_Monster
 	m_pGameInstance->Add_Prototype(ENUM_TO_UINT(ELevelType::STATIC), L"Prototype_Component_ControlContext_Monster", CMonsterControlContext::Create());
@@ -425,6 +454,7 @@ HRESULT CLoader::Loading_For_Logo()
 	ADD_PROTOTYPE(ELevelType::LOGO, L"Prototype_UI_MiniMap",		CUIMini_Map::Create(m_pDevice, m_pDeviceContext));
 	ADD_PROTOTYPE(ELevelType::LOGO, L"Prototype_UI_HoverImage",		CUIHover_Image::Create(m_pDevice, m_pDeviceContext));
 	ADD_PROTOTYPE(ELevelType::LOGO, L"Prototype_UI_MenuImage",		CUIMenu_Image::Create(m_pDevice, m_pDeviceContext));
+	ADD_PROTOTYPE(ELevelType::LOGO, L"Prototype_UI_MenuOutline",	CUIMenu_OutLine::Create(m_pDevice, m_pDeviceContext));
 #pragma endregion
 
 	m_isFinished = true;
@@ -532,6 +562,9 @@ HRESULT CLoader::Build_Prototype()
 	if (FAILED(m_pBuilderSystem->Ready_Builder(DTO::ECategory::OVERLAP_SCRIPT, CBuilder_AttackOverlap::Create(m_pDevice, m_pDeviceContext, ENUM_TO_UINT(ELevelType::LOGO)))))
 		return E_FAIL;
 
+	if (FAILED(m_pBuilderSystem->Ready_Builder(DTO::ECategory::EFFECTEVENT, CBuilder_EffectEvent::Create(m_pDevice, m_pDeviceContext, ENUM_TO_UINT(ELevelType::LOGO)))))
+		return E_FAIL;
+
 	if (FAILED(Build_Files()))
 		return E_FAIL;
 
@@ -546,6 +579,9 @@ HRESULT CLoader::Build_Files()
 	if (FAILED(Ready_AttackOverlap_Monster_Dog()))
 		return E_FAIL;
 
+	if (FAILED(Ready_EffectEvent()))
+		return E_FAIL;
+
 	return S_OK;
 }
 
@@ -556,6 +592,27 @@ HRESULT CLoader::Ready_AttackOverlap_PlayerMoon()
 	_uint iLevelID = ENUM_TO_UINT(eLevelType);
 
 	std::filesystem::path FilePath = L"../../Resources/Data/AttackOverlapData/PlayerMoon_156_Animations_Save_Test_animTag.json";
+	vector<path> vecfiles;
+
+	if (!std::filesystem::exists(FilePath))
+		return E_FAIL;
+
+	if (FAILED(m_pGameInstance->Load_File_Json(iLevelID, eCategory, FilePath)))
+		return E_FAIL;
+
+	if (FAILED(m_pBuilderSystem->Build_File(iLevelID, eCategory, FilePath.stem().string())))
+		return E_FAIL;
+
+	return S_OK;
+}
+
+HRESULT CLoader::Ready_EffectEvent()
+{
+	ELevelType eLevelType = ELevelType::LOGO;
+	DTO::ECategory eCategory = DTO::ECategory::EFFECTEVENT;
+	_uint iLevelID = ENUM_TO_UINT(eLevelType);
+
+	std::filesystem::path FilePath = L"../../Resources/Data/EffectAnimationData/PlayerMoon.json";
 	vector<path> vecfiles;
 
 	if (!std::filesystem::exists(FilePath))

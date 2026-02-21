@@ -82,6 +82,7 @@ private:
 	CConstant_Buffer<SHADER_KEYFRAMEDESC>* m_pKeyFrame_CBuffer{ nullptr };
 	CConstant_Buffer<SHADER_EFFECT_DESC>* m_pEffect_CBuffer{ nullptr };
 	CConstant_Buffer<SHADER_OBJECTINFO_DESC>* m_pObjectInfo_CBuffer{ nullptr };
+
 public:
 	static CShader* Create(ID3D11Device* pDevice, ID3D11DeviceContext* pContext, void* pArg);
 	virtual CComponent* Clone(void* pArg) override;

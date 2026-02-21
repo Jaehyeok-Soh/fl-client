@@ -33,7 +33,6 @@ public:
 	typedef struct tagPlayerControlContextDesc
 	{
 		Flags	FKeys				= {};
-		_float	fDashCountTime		= { 1.f };
 	}PLAYER_CONTROLCONTEXT_DESC;
 private:
 	CPlayerControlContext();
@@ -54,8 +53,10 @@ public:
 	void Clear_Grounded();
 	ROPE_INFO& Get_RopeInfo() { return m_CurrentRopeInfo; }
 	void Set_RopeInfo(const ROPE_INFO& ropeInfo) { m_CurrentRopeInfo = ropeInfo; }
+
 	void Set_CheckKey(KEYFLAGS FKey, _bool bOn); // 외부에서 onoff를 해야할 시
-	const TIME_COUNTER& Get_DashRestTimer() { return m_tDashTimeCounter; }
+	void Set_AllKeyFlag(_bool bOn); // 외부에서 onoff를 해야할 시
+	void Set_PreKeyFlag();
 
 public:
 	virtual _bool Is_LeftAttackPressed() override;
@@ -90,8 +91,7 @@ private:
 
 private:
 	Flags				m_FKeys				= { 0 };
-	_uint				m_iDashRestCount	= { 2 };
-	TIME_COUNTER		m_tDashTimeCounter	= { };
+	Flags				m_FPreKeys			= { 0 };
 
 public:
 	static CPlayerControlContext* Create();

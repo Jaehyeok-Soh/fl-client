@@ -62,6 +62,7 @@ public:
 	ERectTransform Get_RectTransformType() const { return m_eRectTransformType; }
 	void Set_TextureIndex(_uint index) { m_iTextureIndex = index; }
 	const _string& Get_Tag() { return m_strName; }
+	_bool Get_FinEvent()const { return m_isFin_Event; }
 
 	void Ready_Lerp_Movement(const Vec2& vStartOffset, const Vec2& vTargetOffset, const _float fDuration, const _float fEaseValue, const _float fDelay);
 	_bool Tick_Lerp_Movement(const _float fTimeDelta);
@@ -87,6 +88,7 @@ protected:
 	Vec2 m_vMoveOffset					= {};
 	uint32_t m_iComponentFlag			= {};
 	uint32_t m_iOwnerType				= {};
+	_bool m_isFin_Event					= { true };
 
 	// Shader Bind Values
 	_bool m_isUseColorTint				= {false};
@@ -97,6 +99,8 @@ protected:
 	int32_t m_iFillDir					= {};
 	_float m_fDelay						= {};
 	int32_t m_iFlip						= { ENUM_TO_UINT(EUIFlip::NONE) };
+
+	_float m_fBrightness				= {};
 
 	// Lerp Movement Valuse
 	Vec2 m_vMoveOffsetBase	= {};

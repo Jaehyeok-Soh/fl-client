@@ -207,12 +207,6 @@ HRESULT CRender_Manager::Initialize()
 			return E_FAIL;
 	}
 
-	// For. MRT_Effect
-	{
-		if (FAILED(m_pGameInstance->Add_MRT(EMRTLayer::Effect, ERenderTarget::SceneHDR_Copy)))
-			return E_FAIL;
-	}
-
 	// For. MRT_SSAO_Gen
 	{
 		if (FAILED(m_pGameInstance->Add_MRT(EMRTLayer::SSAO_Gen, ERenderTarget::SSAO_Ping)))
@@ -1297,20 +1291,20 @@ HRESULT CRender_Manager::Render_Debug()
 	if (FAILED(m_pVIBuffer->Bind_Resource()))
 		return E_FAIL;
 
-	if (FAILED(m_pGameInstance->Debug_RT_Render(EMRTLayer::GameObjects, m_pShader, m_pVIBuffer)))
-		return E_FAIL;
+	//if (FAILED(m_pGameInstance->Debug_RT_Render(EMRTLayer::GameObjects, m_pShader, m_pVIBuffer)))
+	//	return E_FAIL;
 
-	if (FAILED(m_pGameInstance->Debug_RT_Render(EMRTLayer::LightAcc, m_pShader, m_pVIBuffer)))
-		return E_FAIL;
+	//if (FAILED(m_pGameInstance->Debug_RT_Render(EMRTLayer::LightAcc, m_pShader, m_pVIBuffer)))
+	//	return E_FAIL;
 
-	if (FAILED(m_pGameInstance->Debug_RT_Render(EMRTLayer::SSAO_Gen, m_pShader, m_pVIBuffer)))
-		return E_FAIL;
+	//if (FAILED(m_pGameInstance->Debug_RT_Render(EMRTLayer::SSAO_Gen, m_pShader, m_pVIBuffer)))
+	//	return E_FAIL;
 
-	if (FAILED(m_pGameInstance->Debug_RT_Render(EMRTLayer::SSAO_Upsample, m_pShader, m_pVIBuffer)))
-		return E_FAIL;
+	//if (FAILED(m_pGameInstance->Debug_RT_Render(EMRTLayer::SSAO_Upsample, m_pShader, m_pVIBuffer)))
+	//	return E_FAIL;
 
-	if (FAILED(m_pGameInstance->Debug_RT_Render(EMRTLayer::Bloom_BlurH, m_pShader, m_pVIBuffer)))
-		return E_FAIL;
+	//if (FAILED(m_pGameInstance->Debug_RT_Render(EMRTLayer::Bloom_BlurH, m_pShader, m_pVIBuffer)))
+	//	return E_FAIL;
 
 	return S_OK;
 }
