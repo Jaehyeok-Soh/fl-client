@@ -400,6 +400,9 @@
     <Filter Include="99. Defines\Anim_Event_Defines\VFX">
       <UniqueIdentifier>{518140e5-2def-408b-8bc4-eddea573b43c}</UniqueIdentifier>
     </Filter>
+    <Filter Include="00. System\05. Component\Stat">
+      <UniqueIdentifier>{8cd3b9ae-e121-4864-875b-ff81bd506e47}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="..\Private\Timer.cpp">
@@ -807,6 +810,9 @@
     </ClCompile>
     <ClCompile Include="..\Private\Effect_Manager.cpp">
       <Filter>00. System\14. Effect</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\MyStat.cpp">
+      <Filter>00. System\05. Component\Stat</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -1260,6 +1266,9 @@
     </ClInclude>
     <ClInclude Include="..\Public\AttackOverlap_Desc.h">
       <Filter>99. Defines\Anim_Event_Defines\AttackOverlap</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\MyStat.h">
+      <Filter>00. System\05. Component\Stat</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
