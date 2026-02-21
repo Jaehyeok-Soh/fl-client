@@ -83,8 +83,6 @@ HRESULT CEffectObject::Ready_Component(void* pArg)
     m_pComputeShader = static_cast<CComputeShader*>(Get_Script_Component(L"ComputeShader"));
     m_pTransform = Get_Component<CTransform>();
 
-    Get_Component<CTransform>()->Set_Info(TRANSFORM_INFO_STATE::POS, Vec3{ 20.f,16.f,18.f });
-
     return S_OK;
 }
 
@@ -194,7 +192,7 @@ HRESULT CEffectObject::Ready_Component_Buffer(void* pArg)
             pParticleDesc.m_fStartSpeeds = m_tEffectDesc.Data._Effect_StartSpeed;
             pParticleDesc.vSize = m_tEffectDesc.Data._Effect_ParticleSize;
             pParticleDesc.vSpeed = Vec2{ 1.f, 2.f };
-            pParticleDesc.isRandomSeed = m_tEffectDesc.Data._Effect_IsRandomSeed;
+            pParticleDesc.iRandomFlags = m_tEffectDesc.Data.iRandomFlags;
             pParticleDesc.pOwner = this;
             pParticleDesc.pComputeShader = static_cast<CComputeShader*>(Get_Script_Component(L"ComputeShader"));
             pParticleDesc.EmissionFlagType = m_tEffectDesc.Data._Effect_EmissionType;
@@ -218,7 +216,7 @@ HRESULT CEffectObject::Ready_Component_Buffer(void* pArg)
                 MeshBufferDesc.m_fStartSpeeds = m_tEffectDesc.Data._Effect_StartSpeed;
                 MeshBufferDesc.vSize = m_tEffectDesc.Data._Effect_ParticleSize;
                 MeshBufferDesc.vSpeed = Vec2{ 1.f, 2.f };
-                MeshBufferDesc.isRandomSeed = m_tEffectDesc.Data._Effect_IsRandomSeed;
+                MeshBufferDesc.iRandomFlags = m_tEffectDesc.Data.iRandomFlags;
                 MeshBufferDesc.pComputeShader = static_cast<CComputeShader*>(Get_Script_Component(L"ComputeShader"));
                 MeshBufferDesc.pModel = pInstance;
                 MeshBufferDesc.pOwner = this;
@@ -239,7 +237,7 @@ HRESULT CEffectObject::Ready_Component_Buffer(void* pArg)
             pParticleDesc.m_fStartSpeeds = m_tEffectDesc.Data._Effect_StartSpeed;
             pParticleDesc.vSize = m_tEffectDesc.Data._Effect_ParticleSize;
             pParticleDesc.vSpeed = Vec2{ 1.f, 2.f };
-            pParticleDesc.isRandomSeed = m_tEffectDesc.Data._Effect_IsRandomSeed;
+            pParticleDesc.iRandomFlags = m_tEffectDesc.Data.iRandomFlags;
             pParticleDesc.pOwner = this;
             pParticleDesc.pComputeShader = static_cast<CComputeShader*>(Get_Script_Component(L"ComputeShader"));
 
@@ -385,6 +383,7 @@ void CEffectObject::Update(const _float fTimeDelta)
     {
         if (m_tEffectDesc.Data._Effect_Looping)
         {
+            m_bIsEffectFinish = false;
             m_fTimeAccumulation = 0.f; // 완전 리셋
             fActiveTime = 0.f;
             m_vScrollOffset = { 0.f, 0.f }; // 스크롤 값도 완전 초기화
@@ -395,6 +394,7 @@ void CEffectObject::Update(const _float fTimeDelta)
         }
         else
         {
+            m_bIsEffectFinish = true;
             return;
         }
     }
@@ -422,39 +422,55 @@ void CEffectObject::Update(const _float fTimeDelta)
     case (_uint)DTO::E_SHAPETYPE::SPREAD:
     {
         CVIBuffer_Particle_Point* pInstance = Get_Component<CVIBuffer_Particle_Point>();
-        if (pInstance) pInstance->Update_Simulation(m_pComputeShader, Vec3{}, TimeT, m_tEffectDesc.Data._Effect_TimeFlag, E_PARTICLE_MOVESTATE::SPREAD);
+        if (pInstance) pInstance->Update_Simulation(m_pComputeShader, Vec3{}, m_vFinalGravity, TimeT, m_tEffectDesc.Data._Effect_TimeFlag, DTO::E_SHAPETYPE::SPREAD);
         break;
     }
     case (_uint)DTO::E_SHAPETYPE::DROP:
     {
         CVIBuffer_Particle_Point* pInstance = Get_Component<CVIBuffer_Particle_Point>();
-        if (pInstance) pInstance->Update_Simulation(m_pComputeShader, Vec3{}, TimeT, m_tEffectDesc.Data._Effect_TimeFlag, E_PARTICLE_MOVESTATE::DROP);
+        if (pInstance) pInstance->Update_Simulation(m_pComputeShader, Vec3{}, m_vFinalGravity, TimeT, m_tEffectDesc.Data._Effect_TimeFlag, DTO::E_SHAPETYPE::DROP);
         break;
     }
     case (_uint)DTO::E_SHAPETYPE::RISE:
     {
         CVIBuffer_Particle_Point* pInstance = Get_Component<CVIBuffer_Particle_Point>();
-        if (pInstance) pInstance->Update_Simulation(m_pComputeShader, Vec3{}, TimeT, m_tEffectDesc.Data._Effect_TimeFlag, E_PARTICLE_MOVESTATE::RISE);
+        if (pInstance) pInstance->Update_Simulation(m_pComputeShader, Vec3{}, m_vFinalGravity, TimeT, m_tEffectDesc.Data._Effect_TimeFlag, DTO::E_SHAPETYPE::RISE);
         break;
     }
     case (_uint)DTO::E_SHAPETYPE::SPIRAL:
     {
         CVIBuffer_Particle_Point* pInstance = Get_Component<CVIBuffer_Particle_Point>();
-        if (pInstance) pInstance->Update_Simulation(m_pComputeShader, Vec3{}, TimeT, m_tEffectDesc.Data._Effect_TimeFlag, E_PARTICLE_MOVESTATE::SPIRAL);
+        if (pInstance) pInstance->Update_Simulation(m_pComputeShader, Vec3{}, m_vFinalGravity, TimeT, m_tEffectDesc.Data._Effect_TimeFlag, DTO::E_SHAPETYPE::SPIRAL);
         break;
     }
 
     case (_uint)DTO::E_SHAPETYPE::DNA:
     {
         CVIBuffer_Particle_Point* pInstance = Get_Component<CVIBuffer_Particle_Point>();
-        if (pInstance) pInstance->Update_Simulation(m_pComputeShader, Vec3{}, TimeT, m_tEffectDesc.Data._Effect_TimeFlag, E_PARTICLE_MOVESTATE::DNA);
+        if (pInstance) pInstance->Update_Simulation(m_pComputeShader, Vec3{}, m_vFinalGravity, TimeT, m_tEffectDesc.Data._Effect_TimeFlag, DTO::E_SHAPETYPE::DNA);
         break;
     }
 
     case (_uint)DTO::E_SHAPETYPE::STRAIGHT:
     {
         CVIBuffer_Particle_Point* pInstance = Get_Component<CVIBuffer_Particle_Point>();
-        if (pInstance) pInstance->Update_Simulation(m_pComputeShader, Get_Component<CTransform>()->Get_Info(TRANSFORM_INFO_STATE::LOOK), TimeT, m_tEffectDesc.Data._Effect_TimeFlag, E_PARTICLE_MOVESTATE::STRAIGHT);
+        if (pInstance) pInstance->Update_Simulation(m_pComputeShader, Get_Component<CTransform>()->Get_Info(TRANSFORM_INFO_STATE::LOOK), m_vFinalGravity, TimeT, m_tEffectDesc.Data._Effect_TimeFlag, DTO::E_SHAPETYPE::STRAIGHT);
+        break;
+    }
+
+    case ENUM_TO_UINT(DTO::E_SHAPETYPE::GATHER):
+    {
+        CVIBuffer_Particle_Point* pInstance = Get_Component<CVIBuffer_Particle_Point>();
+        if (pInstance) pInstance->Update_Simulation(m_pComputeShader, Vec3{}, m_vFinalGravity, TimeT,
+            m_tEffectDesc.Data._Effect_TimeFlag, DTO::E_SHAPETYPE::GATHER);
+        break;
+    }
+
+    case ENUM_TO_UINT(DTO::E_SHAPETYPE::FOUNTAIN):
+    {
+        CVIBuffer_Particle_Point* pInstance = Get_Component<CVIBuffer_Particle_Point>();
+        if (pInstance) pInstance->Update_Simulation(m_pComputeShader, Vec3{}, m_vFinalGravity, TimeT,
+            m_tEffectDesc.Data._Effect_TimeFlag, DTO::E_SHAPETYPE::FOUNTAIN);
         break;
     }
     }
@@ -523,6 +539,7 @@ void CEffectObject::TimeFlagRequest(_uint iTimeFlag)
 
     if (iTimeFlag == RESET)
     {
+        m_bIsEffectFinish = false;
         m_bIsStarted = false;
         m_fTimeAccumulation = 0.f;
         m_vScrollOffset = Vec2{ 0.f, 0.f };
@@ -531,7 +548,7 @@ void CEffectObject::TimeFlagRequest(_uint iTimeFlag)
 
         CVIBuffer_Particle_Point* pInstance = Get_Component<CVIBuffer_Particle_Point>();
         if (pInstance && m_pComputeShader)
-            pInstance->Update_Simulation(m_pComputeShader, Vec3{}, 0.f, RESET, (E_PARTICLE_MOVESTATE)m_tEffectDesc.Data._Effect_ShapeType);
+            pInstance->Update_Simulation(m_pComputeShader, Vec3{}, m_vFinalGravity, 0.f, RESET, (DTO::E_SHAPETYPE)m_tEffectDesc.Data._Effect_ShapeType);
 
         // 리셋 직후 바로 PLAY 상태로 전이시켜서 셰이더가 다음 루프를 돌게 함
         m_tEffectDesc.Data._Effect_TimeFlag = PLAY;
@@ -539,6 +556,7 @@ void CEffectObject::TimeFlagRequest(_uint iTimeFlag)
 
     else if (iTimeFlag == STOP)
     {
+        m_bIsEffectFinish = false;
         m_bIsStarted = false;
         m_fTimeAccumulation = 0.f;
         m_vScrollOffset = Vec2{ 0.f, 0.f };
@@ -546,7 +564,7 @@ void CEffectObject::TimeFlagRequest(_uint iTimeFlag)
 
         CVIBuffer_Particle_Point* pInstance = Get_Component<CVIBuffer_Particle_Point>();
         if (pInstance && m_pComputeShader)
-            pInstance->Update_Simulation(m_pComputeShader, Vec3{}, 0.f, STOP, (E_PARTICLE_MOVESTATE)m_tEffectDesc.Data._Effect_ShapeType);
+            pInstance->Update_Simulation(m_pComputeShader, Vec3{}, m_vFinalGravity, 0.f, STOP, (DTO::E_SHAPETYPE)m_tEffectDesc.Data._Effect_ShapeType);
 
         m_fTimeAccumulation = 0.f;
         // Stop은 PLAY로 바꾸지 않고 그대로 둠
@@ -618,8 +636,7 @@ void CEffectObject::Update_Gravity_Force(float fLifeRatio)
         fGlobalCurveMod = Sample_GravityCurve(m_tEffectDesc.Data._vecGlobalGravityCurve, fLifeRatio);
 
     // 최종 자연 중력 벡터 = 방향 * 기본 세기 * 전체 배수 * 커브 배수
-    Vec3 vFianlGlobalGravity = m_tEffectDesc.Data._Effect_GravityDir * m_tEffectDesc.Data._Effect_Gravity_Value * m_tEffectDesc.Data._Effect_GravityModifier * fGlobalCurveMod;
-
+    m_vFinalGravity = m_tEffectDesc.Data._Effect_GravityDir * m_tEffectDesc.Data._Effect_Gravity_Value * m_tEffectDesc.Data._Effect_GravityModifier * fGlobalCurveMod;
     // << 외부 중력 계산 >>
     float fExternalCurveMod = 1.0f;
     if (m_tEffectDesc.Data._bUseExternalForceCurve)

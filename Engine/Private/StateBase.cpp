@@ -210,6 +210,14 @@ void CStateBase::Set_ApplyYLerp(_bool bApply)
 	m_pOwnerStateComp->Set_ApplyYLerp(bApply);
 }
 
+void CStateBase::Set_GravityOffset(_float fOffset)
+{
+	if (m_pOwnerStateComp == nullptr)
+		return;
+
+	m_pOwnerStateComp->Set_GravityOffset(fOffset);
+}
+
 _bool CStateBase::Align_Movement(const _float fTimeDelta)
 {
 	if (m_pOwnerStateComp == nullptr)

@@ -134,7 +134,27 @@ void CLevel_Logo::Update(const _float fTimeDelta)
 	// 오브젝트 풀링 테스트
 	if (m_pGameInstance->KeyButton_Down(DIK_0))
 	{
-		m_pGameInstance->Request_AddObject(ENUM_TO_UINT(ELevelType::LOGO), L"POOL_Attack_3", 0, nullptr);
+		m_pGameInstance->Request_AddObject(ENUM_TO_UINT(ELevelType::LOGO), L"POOL_Attack_1", 0, nullptr);
+	}
+
+	// GlobalTimeScale 테스트
+	{
+		if (m_pGameInstance->KeyButton_Down(DIK_9))
+		{
+			m_pGameInstance->Request_HitStop();
+		}
+		if (m_pGameInstance->KeyButton_Down(DIK_8))
+		{
+			m_pGameInstance->Request_SloMo(0.2f, 2.f);
+		}
+		if (m_pGameInstance->KeyButton_Down(DIK_6))
+		{
+			m_pGameInstance->Active_SloMo(0.5f);
+		}
+		if (m_pGameInstance->KeyButton_Down(DIK_7))
+		{
+			m_pGameInstance->Deactivate_SloMo();
+		}
 	}
 }
 
@@ -269,6 +289,30 @@ HRESULT CLevel_Logo::Ready_Lights()
 		desc.vDiffuse = Vec4(0.7f, 0.7f, 0.7f, 1.f);
 		desc.vAmbient = Vec4(0.3f, 0.3f, 0.3f, 1.f);
 		desc.vSpecular = desc.vDiffuse;
+
+		if (FAILED(m_pGameInstance->Add_Light(desc)))
+			return E_FAIL;
+	}
+	{
+		LIGHT_DESC desc = {};
+		desc.eType = LIGHT_TYPE::STATICPOINT;
+		desc.vDiffuse = Vec4(0.5f, 0.3f, 0.7f, 1.f);
+		desc.vAmbient = Vec4(0.2f, 0.1f, 0.3f, 1.f);
+		desc.vSpecular = desc.vDiffuse;
+		desc.vPosition = Vec4(21.f, 18.f, 0.f, 1.f);
+		desc.fRange = 10.f;
+
+		if (FAILED(m_pGameInstance->Add_Light(desc)))
+			return E_FAIL;
+	}
+	{
+		LIGHT_DESC desc = {};
+		desc.eType = LIGHT_TYPE::STATICPOINT;
+		desc.vDiffuse = Vec4(0.3f, 0.6f, 0.4f, 1.f);
+		desc.vAmbient = Vec4(0.1f, 0.3f, 0.2f, 1.f);
+		desc.vSpecular = desc.vDiffuse;
+		desc.vPosition = Vec4(21.f, 14.5f, 25.f, 1.f);
+		desc.fRange = 10.f;
 
 		if (FAILED(m_pGameInstance->Add_Light(desc)))
 			return E_FAIL;

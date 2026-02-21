@@ -252,7 +252,7 @@ _bool CStateBase_Player::Check_SkillKey(const _float fTimeDelta)
 	// 스킬을 실행할 수 있다면
 	if (Has_ChangeState(STATEKEY::E) &&
 		Key_Input(ENUM_TO_UINT(CControlContext::CONTROL_KEY::SKILL1)) &&
-		static_cast<CPlayer*>(Get_OwnerObject())->Start_Skill(CPlayer::State::SKILL1))
+		static_cast<CPlayer*>(Get_OwnerObject())->Start_Attack(CPlayer::State::SKILL1))
 	{
 		Change_PlayerState(STATEKEY::E);
 		return true;
@@ -260,7 +260,7 @@ _bool CStateBase_Player::Check_SkillKey(const _float fTimeDelta)
 
 	else if(Has_ChangeState(STATEKEY::Q) &&
 		Key_Input(ENUM_TO_UINT(CControlContext::CONTROL_KEY::SKILL2)) &&
-		static_cast<CPlayer*>(Get_OwnerObject())->Start_Skill(CPlayer::State::SKILL2))
+		static_cast<CPlayer*>(Get_OwnerObject())->Start_Attack(CPlayer::State::SKILL2))
 	{
 		Change_PlayerState(STATEKEY::Q);
 		return true;
@@ -304,14 +304,19 @@ void CStateBase_Player::Check_Monster()
 	}
 }
 
-void CStateBase_Player::End_Combo()
-{
-	static_cast<CPlayer*>(Get_OwnerObject())->End_Combo();
-}
-
 void CStateBase_Player::Change_Weapon(_uint iPart, _uint iState)
 {
 	static_cast<CPlayer*>(Get_OwnerObject())->Change_Weapon(iPart, iState);
+}
+
+_bool CStateBase_Player::Start_Att(_uint iPlayerState)
+{
+	return static_cast<CPlayer*>(Get_OwnerObject())->Start_Attack(static_cast<CPlayer::State>(iPlayerState));
+}
+
+void CStateBase_Player::End_Att(_uint iPlayerState)
+{
+	static_cast<CPlayer*>(Get_OwnerObject())->End_Attack(static_cast<CPlayer::State>(iPlayerState));
 }
 
 _bool CStateBase_Player::Has_ChangeState(STATEKEY eKey)

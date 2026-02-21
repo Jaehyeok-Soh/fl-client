@@ -155,55 +155,55 @@ void CEffectType_Selection_Panel::CreateParticleEffect()
 		pEffectDesc.iLevelIndex = ENUM_TO_UINT(ELevelType::EFFECT);
 
 		// ========     ºŒ¿Ã¥ı º±≈√   =========
-		pEffectDesc._Effect_Shader_Tag = L"Shader_VtxEffectParticle";
-		pEffectDesc._Effect_ShaderPass = 0;
+		pEffectDesc.Data._Effect_Shader_Tag = L"Shader_VtxEffectParticle";
+		pEffectDesc.Data._Effect_ShaderPass = 0;
 
 		// ========     ¿Ã∆Â∆Æ ≈∏¿‘   =========
-		pEffectDesc.eEffectSystemType = E_EffectSystemType::Particle;
-		pEffectDesc.eEffectType = E_EFFECTTYPE::Particle;
-		pEffectDesc.eEffectSystemType = E_EffectSystemType::Particle;
-		pEffectDesc._Effect_EmissionType = E_EMISSION_TYPE::BOX;
-		pEffectDesc._Effect_ShapeType = E_SHAPETYPE::SPREAD;
+		pEffectDesc.Data.eEffectSystemType = (_uint)DTO::E_EffectSystemType::Particle;
+		pEffectDesc.Data.eEffectType = (_uint)DTO::E_EFFECTTYPE::Particle;
+		pEffectDesc.Data.eEffectSystemType = (_uint)DTO::E_EffectSystemType::Particle;
+		pEffectDesc.Data._Effect_EmissionType = (_uint)DTO::E_EMISSION_TYPE::BOX;
+		pEffectDesc.Data._Effect_ShapeType = (_uint)DTO::E_SHAPETYPE::SPREAD;
 
 		// =========   ¿Ã∆Â∆Æ Color Value   ===============
-		pEffectDesc._Effect_Color = Vec4{ 0.f, 0.f, 0.f, 1.f };
+		pEffectDesc.Data._Effect_Color = Vec4{ 0.f, 0.f, 0.f, 1.f };
 
 		// =========   ¿Ã∆Â∆Æ SRT   ============
-		pEffectDesc._Effect_StartScale = { 1.f, 1.f, 1.f };
-		pEffectDesc._Effect_EndScale = { 1.f, 1.f, 1.f };
+		pEffectDesc.Data._Effect_StartScale = { 1.f, 1.f, 1.f };
+		pEffectDesc.Data._Effect_EndScale = { 1.f, 1.f, 1.f };
 		
-		pEffectDesc._Effect_StartRotation = { 0.f, 0.f, 0.f };
-		pEffectDesc._Effect_TargetRotation = { 0.f, 0.f, 0.f };
+		pEffectDesc.Data._Effect_StartRotation = { 0.f, 0.f, 0.f };
+		pEffectDesc.Data._Effect_TargetRotation = { 0.f, 0.f, 0.f };
 
 		// =========   πˆ∆€ ªÁ¿Ã¡Ó   ======================
-		pEffectDesc._Effect_MaxParticle = { 30 };
-		pEffectDesc._Effect_Looping = { true };
-		pEffectDesc._Effect_LifeTime = { 5.f };
-		pEffectDesc._Effect_Range = { 1.f, 1.f, 1.f };
-		pEffectDesc._Effect_StartSpeed = { 1.f };
-		pEffectDesc._Effect_ParticleSize = { 0.05f, 0.15f };
-		pEffectDesc._Effect_IsRandomSeed = { true };
-		pEffectDesc._Effect_StartDelay = 0.f;
-		pEffectDesc._Effect_PlayBackSpeed = 1.f;
+		pEffectDesc.Data._Effect_MaxParticle = { 30 };
+		pEffectDesc.Data._Effect_Looping = { true };
+		pEffectDesc.Data._Effect_LifeTime = { 5.f };
+		pEffectDesc.Data._Effect_Range = { 1.f, 1.f, 1.f };
+		pEffectDesc.Data._Effect_StartSpeed = { 1.f };
+		pEffectDesc.Data._Effect_ParticleSize = { 0.05f, 0.15f };
+		pEffectDesc.Data.iRandomFlags = {};
+		pEffectDesc.Data._Effect_StartDelay = 0.f;
+		pEffectDesc.Data._Effect_PlayBackSpeed = 1.f;
 
 		// ========  ¿Ã∆Â∆Æ Material º≥¡§   ===========
-		pEffectDesc._Effect_Model_Tag = {};
-		pEffectDesc._Effect_DiffuseTexture_Tag = {};
-		pEffectDesc._Effect_NoiseTexture_Tag = {};
-		pEffectDesc._Effect_DiffuseTexture_Tag = {};
+		pEffectDesc.Data._Effect_Model_Tag = {};
+		pEffectDesc.Data._Effect_DiffuseTexture_Tag = {};
+		pEffectDesc.Data._Effect_NoiseTexture_Tag = {};
+		pEffectDesc.Data._Effect_DiffuseTexture_Tag = {};
 
-		pEffectDesc._Effect_TileCount = CEffectObject::_uint2{0, 0};
+		pEffectDesc.Data._Effect_TileCount = DTO::_uint2{0, 0};
 
 		// =======   ¿Ã∆Â∆Æ Ω∫≈©∑— Value   ===========
-		pEffectDesc._Effect_ScrollSpeed = { 0.f, 0.f };
-		pEffectDesc._Effect_DiscardValue = { 0.05f };
+		pEffectDesc.Data._Effect_ScrollSpeed = { 0.f, 0.f };
+		pEffectDesc.Data._Effect_DiscardValue = { 0.05f };
 
 		// ========   ¿Ã∆Â∆Æ ø÷∞Ó Scale Value   ==========
-		pEffectDesc._Effect_DistortionScale = { 0.f, 0.f };
+		pEffectDesc.Data._Effect_DistortionScale = { 0.f, 0.f };
 
 		// ==========   ¿Ã∆Â∆Æ Sacle Value   ==============
-		pEffectDesc._Effect_StartScale = { 1.f, 1.f, 1.f };
-		pEffectDesc._Effect_EndScale = { 1.f, 1.f, 1.f };
+		pEffectDesc.Data._Effect_StartScale = { 1.f, 1.f, 1.f };
+		pEffectDesc.Data._Effect_EndScale = { 1.f, 1.f, 1.f };
 
 		static_cast<Effect*>(pEffectContainer)->Add_Part(0, ENUM_TO_UINT(ELevelType::EFFECT), L"Prototype_GameObject_Effect_Part_Particle", &pEffectDesc);
 		CEffectObject* pEFfectOBject = static_cast<Effect*>(pEffectContainer)->Get_Part<CEffectObject>(0);

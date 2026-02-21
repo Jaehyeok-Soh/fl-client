@@ -1,4 +1,5 @@
 #include "Engine_pch.h"
+#include "Engine_Utils.h"
 #include "TextureBase.h"
 
 CTextureBase::CTextureBase(ID3D11Device* pDevice, ID3D11DeviceContext* pDeviceContext)
@@ -25,9 +26,16 @@ HRESULT CTextureBase::Load_TextureBase()
 	DirectX::TexMetadata metadata = {};
 
 	HRESULT hr = {};
+	const _bool bSRGB = IsSRGB_ByName(texturePath);
 	if (::lstrcmp(texturePath.filename().extension().c_str(), L".dds") == 0)
 	{
-		hr = CreateDDSTextureFromFile(m_pDevice, Get_Path(), nullptr, &m_pSRV);
+		const DirectX::DDS_LOADER_FLAGS ddsFlags =
+			bSRGB ? DirectX::DDS_LOADER_FORCE_SRGB : DirectX::DDS_LOADER_IGNORE_SRGB;
+
+		hr = CreateDDSTextureFromFileEx(m_pDevice, Get_Path(),
+			0, D3D11_USAGE_DEFAULT, D3D11_BIND_SHADER_RESOURCE, 0, 0,
+			ddsFlags, nullptr, &m_pSRV);
+
 		if (SUCCEEDED(GetMetadataFromDDSFile(Get_Path(), DDS_FLAGS_NONE, metadata)))
 			m_vSize = { (_float)metadata.width, (_float)metadata.height };
 
@@ -47,13 +55,22 @@ HRESULT CTextureBase::Load_TextureBase()
 		return E_FAIL;
 	else
 	{
-		hr = CreateWICTextureFromFile(m_pDevice, Get_Path(), nullptr, &m_pSRV);
+		const DirectX::WIC_LOADER_FLAGS wicFlags =
+			bSRGB ? DirectX::WIC_LOADER_FORCE_SRGB : DirectX::WIC_LOADER_IGNORE_SRGB;
+
+		hr = CreateWICTextureFromFileEx(m_pDevice, Get_Path(),
+			0, D3D11_USAGE_DEFAULT, D3D11_BIND_SHADER_RESOURCE, 0, 0,
+			wicFlags, nullptr, &m_pSRV);
+
 		if (SUCCEEDED(GetMetadataFromWICFile(Get_Path(), WIC_FLAGS_NONE, metadata)))
 			m_vSize = { (_float)metadata.width, (_float)metadata.height };
 	}
 
 	if (FAILED(hr))
 		return E_FAIL;
+
+	D3D11_SHADER_RESOURCE_VIEW_DESC desc{};
+	m_pSRV->GetDesc(&desc);
 	
 	return S_OK;
 }
@@ -79,6 +96,20 @@ HRESULT CTextureBase::Load_LegacyXTex()
 	m_vSize.y = (_float)md.height;
 
 	return S_OK;
+}
+
+_bool CTextureBase::IsSRGB_ByName(const std::filesystem::path texturePath)
+{
+	std::wstring stem = Engine_Utils::To_Upper(texturePath.stem().wstring());
+
+	// 긴 토큰 우선 ( _D 가 _DH 에 포함되는 문제 방지 )
+	if (Engine_Utils::Has_Token(stem, L"_DH"))   return true;
+	if (Engine_Utils::Has_Token(stem, L"_BC"))   return true;
+	if (Engine_Utils::Has_Token(stem, L"_TINT")) return true;
+	if (Engine_Utils::Has_Token(stem, L"_D"))    return true;
+
+	return false;
+	return _bool();
 }
 
 CTextureBase* CTextureBase::Create(ID3D11Device* pDevice, ID3D11DeviceContext* pDeviceContext, void* pArg)

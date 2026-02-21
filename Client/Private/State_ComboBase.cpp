@@ -43,6 +43,8 @@ HRESULT CState_ComboBase::Start(void* pArg, _bool bForce)
 
 	Change_Weapon(CPlayer::Part::SWORD, ENUM_TO_UINT(CWeapon::State::HAND));
 
+	Start_Att(ENUM_TO_UINT(CPlayer::State::COMBO));
+
 	return S_OK;
 }
 
@@ -62,7 +64,7 @@ HRESULT CState_ComboBase::End()
 	if(FAILED(Super::End()))
 		return E_FAIL;
 
-	End_Combo();
+	End_Att(ENUM_TO_UINT(CPlayer::State::COMBO));
 
 	Change_Weapon(CPlayer::Part::SWORD, ENUM_TO_UINT(CWeapon::State::HOLD));
 

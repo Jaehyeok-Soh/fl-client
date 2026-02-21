@@ -30,6 +30,7 @@ HRESULT CState_Jump::Start(void* pArg, _bool bForce)
 		return E_FAIL;
 
 	Set_ApplyGravity(false);
+	//Set_GravityOffset(5.f);
 
 	return S_OK;
 }
@@ -53,6 +54,7 @@ HRESULT CState_Jump::End()
 	if (FAILED(Super::End()))
 		return E_FAIL;
 
+	//Set_GravityOffset(0.f);
 	Set_ApplyGravity(true);
 
 	return S_OK;

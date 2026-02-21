@@ -17,6 +17,8 @@ public:
 	static void Add_Text(OUT wstring& str_out, const wstring& strfind , const wstring& stradd , _bool isback = false, _int32 i0ffset = 0);
 
 	static wstring To_Lower(wstring s);
+	static wstring To_Upper(wstring s);
+	static _bool Has_Token(const wstring& stemUpper, const wstring& tokenUpper);
 	static wstring Normalize_PathKey(const path& filePath);
 	static void Hash_HasCombine(size_t& seed, size_t value);
 

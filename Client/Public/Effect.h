@@ -3,6 +3,11 @@
 #include "ContainerObject.h"
 #include "DataStruct_Effect.h"
 
+NS_BEGIN(Engine)
+
+class CGameInstance;
+NS_END
+
 NS_BEGIN(Client)
 
 class Effect : public CContainerObject
@@ -53,6 +58,7 @@ public:
 
 protected:
 	void Update_CombinedWorldMatrix(const Matrix* pMatParent);
+	void IsEffectFinish();
 
 public:
 	static Effect* Create(ID3D11Device* pDevice, ID3D11DeviceContext* pDeviceContext);
@@ -66,6 +72,7 @@ protected:
 
 protected:
 	string								m_szName = {};
+	CGameInstance*						m_pGameInstance = { nullptr };
 };
 
 NS_END

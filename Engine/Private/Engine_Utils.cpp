@@ -93,8 +93,31 @@ void Engine_Utils::Add_Text(OUT wstring& wstr_out, const wstring& wstrfind, cons
 wstring Engine_Utils::To_Lower(wstring s)
 {
     for (auto& wch : s)
-        wch = static_cast<wchar_t>(::towlower(wch));
+        wch = static_cast<_tchar>(::towlower(wch));
     return s;
+}
+
+wstring Engine_Utils::To_Upper(wstring s)
+{
+    for (auto& wch : s)
+        wch = static_cast<_tchar>(::toupper(wch));
+    return s;
+}
+
+_bool Engine_Utils::Has_Token(const wstring& stemUpper, const wstring& tokenUpper)
+{
+    size_t iPos = stemUpper.find(tokenUpper);
+    while (iPos != std::wstring::npos)
+    {
+        size_t iEnd = iPos + tokenUpper.size();
+
+        if (iEnd >= stemUpper.size() || stemUpper[iEnd] == L'_')
+            return true;
+
+        iPos = stemUpper.find(tokenUpper, iPos + 1);
+    }
+
+    return false;
 }
 
 wstring Engine_Utils::Normalize_PathKey(const path& filePath)

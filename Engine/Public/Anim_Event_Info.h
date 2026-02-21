@@ -2,6 +2,7 @@
 #include <vector>
 
 #include "Anim_Event_AttackOverlap.h"
+#include "DataStruct_EffectEvent.h"
 
 namespace DTO
 {
@@ -15,7 +16,7 @@ namespace DTO
 		string strOwnerTag = {};
 
 		vector<ATTACKEVENT> vecAttackEvents;
-		vector<ANIM_EVENT_BASE1> vecVFXEvents;
+		vector<EFFECTEVENT> vecVFXEvents;
 		//vector<ANIM_EVENT_BASE> vecSoundEvents;
 		//vector<ANIM_EVENT_BASE> vecCameraEvents;
 	}ANIM_EVENT_INFO1;
