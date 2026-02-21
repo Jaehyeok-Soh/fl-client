@@ -108,10 +108,10 @@ public:
 
 	// tool funcs
 public:
-	void Set_RootBone(_int iRootIdx);
-	void Set_Animtion_MotionOffset(_uint iAnimIdx, _float fOffset);
-	_int Get_RootBone() const { return m_iRootBoneIdx; }
-	_float Get_Animatioin_MotionOffset(_uint iAnimIdx);
+	void	Set_RootBone(_int iRootIdx);
+	void	Set_Animtion_MotionOffset(_uint iAnimIdx, _float fOffset);
+	_int	Get_RootBone() const { return m_iRootBoneIdx; }
+	_float	Get_Animatioin_MotionOffset(_uint iAnimIdx);
 
 	// getter funcs
 public:
@@ -172,6 +172,7 @@ public:
 	HRESULT								Set_PassByMesh(class CShader* pShader, _uint iMeshIndex);
 	HRESULT								Set_DefaultPassByMesh(_uint iMeshIndex);
 	void								Set_AnimationPlayRate(_uint iIndex, _float fValue);
+	void								Set_AnimationSpeed(_float fSpeed) { m_fAnimationSpeed = fSpeed; if (m_fAnimationSpeed <= 0) m_fAnimationSpeed = 1.f; }
 
 	// materials funcs
 public:
@@ -301,6 +302,7 @@ private:
 
 	_uint m_iCpuBoneCount = { 0 };
 	_bool m_bLoopAnimDone = { false };
+	_float m_fAnimationSpeed = { 1.f };
 
 	///////////////
 	//// Event ////
