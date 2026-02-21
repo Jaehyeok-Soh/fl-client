@@ -12,7 +12,7 @@ public:
 		_float	fMaxHp		= { 0 };
 		_float	fAttack		= { 0 };
 		_float	fSheild		= { 0 };
-	}STATCOMP_DESC;
+	}STAT_DESC;
 protected:
 	CMyStat();
 	explicit CMyStat(const CMyStat& rhs);

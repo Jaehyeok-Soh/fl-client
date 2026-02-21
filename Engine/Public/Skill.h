@@ -25,11 +25,11 @@ public:
 		/* CMyStat에 값의 변동을 줄 att, sheild */
 		_float		fStatAttack = { 0.f };
 		_float		fStatSheild = { 0.f };
-	}SKILL_DESC;
+	}SKILL_INFO;
 
 	typedef struct tagSkillComponentDesc
 	{
-		SKILL_DESC	tSkillDesc = {};
+		SKILL_INFO	tSkillDesc = {};
 
 		_bool		bCountTime = { false }; // time을 카운트 할거니?
 		_float		fSkillTime = { 0.f };   // 그래서 skill 지속 time
@@ -56,7 +56,7 @@ public:
 
 	// getter setter fucs
 public:
-	const SKILL_DESC& Get_SkillDesc() const { return m_tSkillDesc; }
+	const SKILL_INFO& Get_SkillDesc() const { return m_tSkillDesc; }
 
 	_bool Is_OnSkill() const { return m_bOnSkill; }
 	_bool Is_EndSkill() const { return m_bEndSkill; }
@@ -68,7 +68,7 @@ protected:
 	_bool		m_bEndSkill = { false };
 	_bool		m_bOnSkill = { false };
 
-	SKILL_DESC	m_tSkillDesc = {};
+	SKILL_INFO	m_tSkillDesc = {};
 
 	_bool		m_bCountTime = { false };
 	TimeCount	m_TSkillTimer = { 0.f,0.f };

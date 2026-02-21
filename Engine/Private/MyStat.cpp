@@ -31,7 +31,7 @@ HRESULT CMyStat::Initialize(void* pArg)
 	if (FAILED(Super::Initialize(pArg)))
 		return E_FAIL;
 
-	STATCOMP_DESC* pDesc	= static_cast<STATCOMP_DESC*>(pArg);
+	STAT_DESC* pDesc	= static_cast<STAT_DESC*>(pArg);
 	m_fMaxHealth			= pDesc->fMaxHp;
 	m_fHealth				= pDesc->fMaxHp;
 
