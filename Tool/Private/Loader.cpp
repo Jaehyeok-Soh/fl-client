@@ -30,6 +30,7 @@
 // Map
 //=================
 #include "MapObject.h"
+#include "SceneData.h"
 //=================
 // Resource
 //=================

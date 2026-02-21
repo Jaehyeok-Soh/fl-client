@@ -28,6 +28,7 @@ public:
 	virtual HRESULT			Render(CToolObject* pGo)override;
 	virtual void			Update(const _float fTimeDelta)override;
 	HRESULT					Update_MapObjectList();
+	HRESULT					Update_TextureSplatingInfoDataName();
 private:
 
 	/* 전체적인 맵지형에 사용될 Texture 선택 ImGUi */
@@ -39,7 +40,9 @@ private:
 	HRESULT					Render_RaySetting();
 	HRESULT					Render_CameraSetting();
 	HRESULT					Render_PreViewInfo();
-
+	
+	/* Save Scene Data Setting */
+	HRESULT					Render_SaveSceneDataSetting();
 
 	/* MapTool Setting Render */
 	HRESULT					Render_CheckAndBind();
@@ -68,12 +71,22 @@ private:
 
 
 	_bool					m_isTexArraySelect{false};
+	_bool					m_isTex_DH_ArraySelect{false};
+	_bool					m_isTex_NBR_ArraySelect{false};
+
 	wstring					m_selectedCategoryName = L"";
 	ID3D11ShaderResourceView* m_pDefaultSRV{nullptr};
 
 	_int*					m_pSelectMixTileTextureIndex{nullptr};
 
 
+
+
+	vector<string>			m_vecTextureSplatingInfoDataName{};
+	_int					m_iSelectTextureSplatingInfoData{};
+
+	char					m_szTextureSplatingInfoData_SaveName[MAX_PATH];
+	
 
 public:
 	static  CPanel_MapTool* Create(const _char* pLabel, CLevel* pOwner, ID3D11Device* pDevice, ID3D11DeviceContext* pDeviceContext);

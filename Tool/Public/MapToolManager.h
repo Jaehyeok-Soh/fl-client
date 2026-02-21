@@ -1,13 +1,14 @@
 #pragma once
 #include "Base.h"
-
-
-
+#include "DataStruct_Map.h"
+#include "GameData_Struct.h"
 
 NS_BEGIN(Engine)
 
 class  CGameInstance;
 struct CLIENT_MAKEPATH_DESC_BASE;
+class CDataDocumentBase;
+
 
 class CTexture;
 class CShader;
@@ -21,105 +22,12 @@ NS_BEGIN(Tool)
 class CMapObject;
 class CImGui_ToolManager;
 class CLevel_Map;
+class CSceneData;
 
 using MapObjectCloneFactory = std::function<CGameObject*(void* pArg)>;
 using PairKey = std::pair<wstring, vector<wstring>>;
 
 
- 
-struct MIX_RGBA_DATA
-{
-	// Mix할떄 UV좌표에 곱해주어 정밀한 표현을 담당해준다
-	_float		fRGBA_Mix_Forces[MAX_RGBA]{ 1.f, 1.f, 1.f, 1.f };
-	// Mix될 RGBA 맵에서 각 R , G , B , A 가 연결된 Splating Texture들의 Index
-	_int		iRGBA_Connected_Tile_Index[MAX_RGBA]{ 0 , 0 , 0 , 0 };
-	// Mix될 RGBA 맵에서 각 R , G , B , A 가 Splating을 사용할건지 안할건지에 대한 Flag값 false => BaseTexture가 그대로 들어감 true => Splating
-	_int		iUseFlags[MAX_RGBA]{ true , true , true , true };
-};
-
-/* Shader에 넘길때 사용할 constant Buffer 데이터들 */
-struct CB_MIX_RGBA_INFO
-{
-	MIX_RGBA_DATA g_MIX_RGBA_DATA[MAX_RGBA_TEXTURE_COUNT];
-
-	int    g_iUse_Mix_RGBA_Count = { 0 };
-	int    g_Use_Mix_RGBA_Map_Count_Dummy[3];
-};
-
-
-/* Tool에서 사용할 데이터들  */
-struct MIX_RGBA_INFO
-{
-	vector<CTextureBase*>							vecMixRGBATexture{}; //RGB
-	vector<MIX_RGBA_DATA>							vecMix_RGBA_Data{};
-	_int											iUse_Mix_RGBA_Count{};
-public:
-	MIX_RGBA_INFO()
-		: iUse_Mix_RGBA_Count{ 0 }, vecMix_RGBA_Data{}
-	{
-		vecMixRGBATexture.reserve(MAX_RGBA_TEXTURE_COUNT);
-	}
-public:
-	void Add_Texture_And_Data()
-	{
-		if (iUse_Mix_RGBA_Count >= MAX_RGBA_TEXTURE_COUNT)
-			return;
-
-		iUse_Mix_RGBA_Count++;
-		vecMixRGBATexture.push_back(nullptr);
-		vecMix_RGBA_Data.push_back(MIX_RGBA_DATA());
-
-	}
-	void Delete_Texture_And_Data(_int iIndex)
-	{
-		if (iIndex >= iUse_Mix_RGBA_Count)return;
-		if (iIndex < 0)					  return;
-
-		iUse_Mix_RGBA_Count--;
-
-		/* vector 메모리 정리 */
-		Safe_Release(vecMixRGBATexture[iIndex]);
-		vecMixRGBATexture.erase(vecMixRGBATexture.begin() + iIndex);
-		vecMix_RGBA_Data.erase(vecMix_RGBA_Data.begin() + iIndex);
-	}
-	void Free()
-	{
-		for (auto& TexBase : vecMixRGBATexture)
-			Safe_Release(TexBase);
-	}
-
-};
-
-typedef struct tagTexture_Splatting_Info
-{
-	/* Land Scape 에서 쓰는 것 뿐만아니라 지형의 전체적인 Color를 담당해준다 추후 바위 Normal위에 들어갈 색깔을 담당하기도한다 */
-	/* Land Scape 에서 쓰는 것 뿐만아니라 지형의 전체적인 Color를 담당해준다 추후 바위 Normal위에 들어갈 색깔을 담당하기도한다 */
-	CTextureBase*													pBase_Texture{nullptr};
-
-	/* RGBA Texture와 함꼐 Mix될 Tile Texture / Texture 2D Array로 해서 들어가게 된다 한장씩만 Binding */
-	CTextureBase*													pMix_DH_Tile_Texture{nullptr};
-	CTextureBase*													pMix_NBR_Tile_Texture{nullptr};
-
-	/* Mix_DH_Tile_Texture 가 Texture 2D Array로 들어가 있기 때문에 이를 따로따로 모아두고 ImGui에서 Rendering 해주기위함 SRV 모아놓기 */
-	vector<ID3D11ShaderResourceView*>								vecDHTextureArraySlices{};
-
-	/* 현재 RGBA Texture 및 info 를 사용하는 개수  */
-	MIX_RGBA_INFO													tMix_RGBA_Info{};
-
-public:
-	void Free()
-	{
-		for (auto& SRV : vecDHTextureArraySlices)
-			Safe_Release(SRV);
-
-		Safe_Release(pBase_Texture);
-		Safe_Release(pMix_DH_Tile_Texture);
-		Safe_Release(pMix_NBR_Tile_Texture);
-
-
-		tMix_RGBA_Info.Free();
-	}
-}TEXTURE_SPLATTING_INFO;
 
 
 typedef struct tagBrushModeOption
@@ -211,21 +119,6 @@ public:
 	}
 }BRUSH_MODE_OPTION;
 
-enum MapTexture_MixFlag : _uint
-{
-	//NONE ,
-	//RGB  ,
-	//RGBA ,
-	//BASE ,
-};
-
-enum class Mix_Tile_Texture_TYPE
-{
-	RGBA,
-	RGB,
-	END,
-};
-
 
 
 class CMapToolManager : public CBase
@@ -242,6 +135,10 @@ public:
 	HRESULT						Batch_Preview();
 	HRESULT						Register_MapObjectCloneFactory();
 public:
+	HRESULT						Ready_SceneData();
+	HRESULT						Apply_SceneData(const DTO::TSceneData* tData);
+	HRESULT						Release_SceneData();
+public:
 	HRESULT						Bind_SplatingTextureInfo();
 	HRESULT						Bind_MapTexture();
 
@@ -251,9 +148,20 @@ public:
 public:
 	HRESULT						Make_DefaultTexture();
 	HRESULT						Slice_DH_Texture();
+	HRESULT						Slice_NBR_Texture();
 public:
 	HRESULT						Register_MapTexture();
+
+	HRESULT						Release_SplatingTextureData();
+
+	HRESULT						Delete_TextureSplatingInfoData(const wstring& wstrDeleteName);
+	HRESULT						Load_TextureSplatingInfoData();
+	HRESULT						Load_TextureSplatingInfoData(const wstring& wstrLoadName);
+	HRESULT						Save_TextureSplatingInfoData();
+	HRESULT						Save_TextureSplatingInfoData(const wstring& wstrSaveName);
 	HRESULT						UnRegister_MapTexture();
+
+
 public:
 	void						Update(float DT);
 	void						Input_Update(float DT);
@@ -306,8 +214,14 @@ public:
 	EClientMakePath				Get_MakeMapObjectClientMakePath()	const { return m_eMakeMapObjectClientMakePath; }
 	EMapObject_DrawType			Get_MakeMapObjectDrawType()			const { return m_eMakeMapObjectDrawType; }
 
+public:
+	HRESULT						Export_SaveSceneData(DTO::ECategory eCategory, CDataDocumentBase* pDocument);
+
 private:
 
+	/* Texture Splating을 사용하는 것들을 위해 데이터를 미리 받아오고 활용할 수 있게 한다... */
+	map<wstring, TEXTURE_SPLATTING_INFO >				m_mapTextureSplatingInfoDatas{};
+private:
 	ID3D11Device*				m_pDevice{};
 	ID3D11DeviceContext*		m_pContext{};
 	
@@ -367,6 +281,12 @@ private:
 	ID3D11ShaderResourceView*											m_pDefaultBlackSRV;
 
 
+
+	const _tchar*														TextureSplatingInfoDataPath = L"../../Resources/Data/MapData/TextureSplatingInfoData.json";
+
+
+
+	CSceneData*															m_pSceneData{nullptr};
 
 private:
 	virtual void Free() override;

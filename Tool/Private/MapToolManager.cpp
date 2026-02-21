@@ -1,15 +1,16 @@
 #include "pch.h"
 #include "MapToolManager.h"
 #include "MapObject.h"
+#include <fstream>
 #include "ImGui_ToolManager.h"
 #include "Picking_ToolManager.h"
 #include "DebugLine.h"
 #include "Model.h"
-#include "DataStruct_Map.h"
 #include "Level_Map.h"
 #include "GameInstance.h"
 #include "Texture.h"
 #include "Shader.h"
+#include "SceneData.h"
 
 IMPLEMENT_SINGLETON(CMapToolManager)
 
@@ -23,6 +24,8 @@ CMapToolManager::CMapToolManager()
 	, m_umapMapTextures					{}
 	, m_pDefaultBlackSRV				{nullptr}
 	, m_pDefaultWhiteSRV				{nullptr}
+	, m_mapTextureSplatingInfoDatas		{}
+	, m_pSceneData						{nullptr}
 {
 	Safe_AddRef(m_pGameInstance);
 	m_arrayMapObjectCloneFactory.fill(nullptr);
@@ -47,7 +50,6 @@ HRESULT CMapToolManager::Initialize(ID3D11Device* pDevice, ID3D11DeviceContext* 
 
 	if (FAILED(Register_MapObjectCloneFactory()))
 		return E_FAIL;
-
 
 	if (FAILED(Make_DefaultTexture()))
 		return E_FAIL;
@@ -177,7 +179,7 @@ HRESULT CMapToolManager::Register_MapTexture()
 		tTexDesc.wstrName = path(FullPath).filename().stem();
 
 		/* ÅØ½ºÃ³µéÀ» ¾þ¾î¿Â´Ù... */
-		CTextureBase* pTexBase = m_pGameInstance->GetOrAddTexture(L"Texture_" + tTexDesc.wstrName, &tTexDesc );
+		CTextureBase* pTexBase = m_pGameInstance->GetOrAddTexture(L"Texture_" + tTexDesc.wstrName, &tTexDesc);
 		if (pTexBase == nullptr)
 			return E_FAIL;
 
@@ -186,6 +188,142 @@ HRESULT CMapToolManager::Register_MapTexture()
 		wstring wstrFloderName = FullPath.filename();
 		m_umapMapTextures[wstrFloderName].push_back(pTexBase);
 	}
+
+	return S_OK;
+}
+
+HRESULT CMapToolManager::Release_SplatingTextureData()
+{
+	for (auto& Pair : m_mapTextureSplatingInfoDatas)
+		Pair.second.Free();
+	m_mapTextureSplatingInfoDatas.clear();
+
+	return S_OK;
+}
+
+HRESULT CMapToolManager::Delete_TextureSplatingInfoData(const wstring& wstrDeleteName)
+{
+	if (m_mapTextureSplatingInfoDatas.find(wstrDeleteName) == m_mapTextureSplatingInfoDatas.end())
+		return E_FAIL;
+
+
+	/* Delete ÇÏ±â Delete ÇÏ±âÀü ¾ÈÀüÇÏ°Ô Free() È£­ŒÇØÁÖ±â */
+	m_mapTextureSplatingInfoDatas.erase(wstrDeleteName);
+
+
+	return S_OK;
+}
+
+HRESULT CMapToolManager::Load_TextureSplatingInfoData()
+{
+	/* Texture SplatingÀ» ÀúÀå½ÃÅ² DataµéÀ» LoadÇØÁØ´Ù */
+
+	std::ifstream ifs(TextureSplatingInfoDataPath);
+	
+	if (ifs.is_open() == false) return E_FAIL;
+
+	if (ifs.peek() == std::ifstream::traits_type::eof())
+	{
+		return S_OK; // ÅÖ ºñ¾îÀÖÀ¸´Ï ·ÎµåÇÒ °Íµµ ¾ø´Ù! ¾ÈÀüÇÏ°Ô ¸®ÅÏ.
+	}
+
+	nlohmann::json LoadJson{};
+	ifs >> LoadJson;
+
+
+
+	if (LoadJson.empty())
+		return S_OK;
+
+	/* ÀúÀåÇÒ Key °ªÀ»ÅëÇØ ÀúÀå½ÃÄÑÁØ´Ù */
+
+	m_mapTextureSplatingInfoDatas.clear();
+
+
+	for (const auto& item : LoadJson.items())
+	{
+		TEXTURE_SPLATTING_INFO tInfo{};
+
+		wstring wstrKey = Engine_Utils::ToWString(item.key());
+		tInfo.Load_Json(item.value());
+		m_mapTextureSplatingInfoDatas.emplace(wstrKey , tInfo);
+	}
+
+	return S_OK;
+}
+
+HRESULT CMapToolManager::Load_TextureSplatingInfoData(const wstring& wstrLoadName)
+{
+	if (m_mapTextureSplatingInfoDatas.empty()) return S_OK;
+
+
+	if (m_mapTextureSplatingInfoDatas.find(wstrLoadName) == m_mapTextureSplatingInfoDatas.end())
+		return E_FAIL;
+
+
+
+	/* ÇöÀç Àû¿ëµÇ°íÀÖ´Â Info¸¦ »èÁ¦ */
+	m_tTextureSplattingInfo.Free();
+
+	/* ´ëÀÔ º¹»ç»ý¼º */
+	m_tTextureSplattingInfo = m_mapTextureSplatingInfoDatas.at(wstrLoadName);
+
+	/* Data¿¡¼­ LoadÇØ¿Â µ¥ÀÌÅÍ¿¡¼­ DH , NBRÀ» Slice·Î Àß¶óÁØ´Ù */
+	Slice_DH_Texture();
+	Slice_NBR_Texture();
+
+	/* Load ÀüºÎ ÇØÁÖ°í Binding ÇÔ¼ö ºÎ¸£±â */
+
+	if (FAILED(Bind_MapTexture()))
+		return E_FAIL;
+	if (FAILED(Bind_Mix_RGBA_Info()))
+		return E_FAIL;
+
+	return S_OK;
+}
+
+HRESULT CMapToolManager::Save_TextureSplatingInfoData()
+{
+	/* Json ÆÄÀÏ Save */
+	std::ofstream ofs(TextureSplatingInfoDataPath);
+
+	if (ofs.is_open() == false) return E_FAIL;
+
+	nlohmann::json SaveJson{};
+
+
+	for (auto& Pair : m_mapTextureSplatingInfoDatas)
+	{
+		string strKey = Engine_Utils::ToString(Pair.first);
+		Pair.second.Save_Json(SaveJson[strKey]);
+	}
+
+	ofs << SaveJson.dump(4);
+	
+	ofs.close();
+
+	return S_OK;
+}
+
+HRESULT CMapToolManager::Save_TextureSplatingInfoData(const wstring& wstrSaveName)
+{
+	_bool isExist = m_mapTextureSplatingInfoDatas.find(wstrSaveName) != m_mapTextureSplatingInfoDatas.end();
+
+
+	if (isExist)
+	{
+		int iResult = MessageBox(NULL, L"ÀÌ¹Ì ÀúÀåµÈ ÆÄÀÏÀÌ Á¸ÀçÇÕ´Ï´Ù µ¤¾î¾²½Ã°Ú½À´Ï±î?", L"°æ°í: ±âÁ¸ ÀúÀåÆÄÀÏ »ç¶óÁü", MB_OKCANCEL | MB_ICONWARNING | MB_SETFOREGROUND);
+		if (iResult)
+		{
+			m_mapTextureSplatingInfoDatas[wstrSaveName].Free();
+		}
+		else
+			return S_OK;
+	}
+
+
+	/* ÇöÀç ÀúÀåµÈ Texture Splating Info ¸¦ ÀúÀå½ÃÄÑÁØ´Ù */
+	m_mapTextureSplatingInfoDatas[wstrSaveName] = m_tTextureSplattingInfo;
 
 	return S_OK;
 }
@@ -208,6 +346,35 @@ HRESULT CMapToolManager::Register_MapObjectCloneFactory()
 	m_funcMapObjectCloneFactory =
 		[=](void* pArg)->CGameObject* { return m_pGameInstance->Add_GameObject(ENUM_TO_UINT(ELevelType::MAP), L"Prototype_GameObject_MapObject",
 			ENUM_TO_UINT(ELevelType::MAP), g_wszMapObjectLayer, pArg); };
+
+	return S_OK;
+}
+
+HRESULT CMapToolManager::Ready_SceneData()
+{
+	m_pSceneData = CSceneData::Create(EToolObjectType::MAPOBJECT, m_pDevice, m_pContext);
+	if (m_pSceneData == nullptr) return E_FAIL;
+
+	return S_OK;
+}
+
+HRESULT CMapToolManager::Apply_SceneData(const DTO::TSceneData* tData)
+{
+	if (tData == nullptr) return E_FAIL;
+
+	/* ´Ù¸¥ ÀÌ¸§ÀÌ ÀúÀåµÇ¾îÀÖ´Ù¸é E_FAIL ¹ÝÈ¯µÈ´Ù */
+	if (FAILED(CMapToolManager::Load_TextureSplatingInfoData(Engine_Utils::ToWString(tData->strTextureSplatingInfoName))))
+		return E_FAIL;
+
+	/* None => [Don't Use Texture Splating Info] */
+	m_pSceneData->m_strTextureSplatingInfoName = tData->strTextureSplatingInfoName;
+
+	return S_OK;
+}
+
+HRESULT CMapToolManager::Release_SceneData()
+{
+	Safe_Release(m_pSceneData);
 
 	return S_OK;
 }
@@ -487,7 +654,6 @@ HRESULT CMapToolManager::Check_And_Bind_FromUE()
 }
 
 
-
 HRESULT CMapToolManager::Make_DefaultTexture()
 {
 	// °øÅë ÅØ½ºÃ³ ¼³Á¤ (1x1 ÇÈ¼¿, 32ºñÆ® RGBA)
@@ -546,7 +712,8 @@ HRESULT CMapToolManager::Slice_DH_Texture()
 	if (m_tTextureSplattingInfo.pMix_DH_Tile_Texture == nullptr) return S_OK;
 
 	for (auto& pSRV : m_tTextureSplattingInfo.vecDHTextureArraySlices)
-		pSRV->Release();
+		Safe_Release(pSRV);
+
 	m_tTextureSplattingInfo.vecDHTextureArraySlices.clear();
 
 	ID3D11ShaderResourceView* pOriginalSRV = m_tTextureSplattingInfo.pMix_DH_Tile_Texture->Get_SRV();
@@ -555,9 +722,9 @@ HRESULT CMapToolManager::Slice_DH_Texture()
 
 	ID3D11Texture2D* pTex2D = (ID3D11Texture2D*)pRes;
 	D3D11_TEXTURE2D_DESC tTexDesc;
-	pTex2D->GetDesc(&tTexDesc); 
+	pTex2D->GetDesc(&tTexDesc);
 
-	m_tTextureSplattingInfo.vecDHTextureArraySlices.reserve(tTexDesc.ArraySize);
+	m_tTextureSplattingInfo.vecDHTextureArraySlices.resize(tTexDesc.ArraySize);
 	for (UINT i = 0; i < tTexDesc.ArraySize; ++i)
 	{
 		D3D11_SHADER_RESOURCE_VIEW_DESC tViewDesc;
@@ -566,21 +733,69 @@ HRESULT CMapToolManager::Slice_DH_Texture()
 		tViewDesc.Format = tTexDesc.Format;
 		tViewDesc.ViewDimension = D3D11_SRV_DIMENSION_TEXTURE2DARRAY;
 		tViewDesc.Texture2DArray.MostDetailedMip = 0;
-		tViewDesc.Texture2DArray.MipLevels = 1;       
-		tViewDesc.Texture2DArray.FirstArraySlice = i;  
-		tViewDesc.Texture2DArray.ArraySize = 1;    
+		tViewDesc.Texture2DArray.MipLevels = 1;
+		tViewDesc.Texture2DArray.FirstArraySlice = i;
+		tViewDesc.Texture2DArray.ArraySize = 1;
 
 		ID3D11ShaderResourceView* pSliceSRV = nullptr;
 		if (FAILED(m_pDevice->CreateShaderResourceView(pTex2D, &tViewDesc, &pSliceSRV)))
 		{
-			pRes->Release();
+			Safe_Release(pRes);
 			return E_FAIL;
 		}
 
-		m_tTextureSplattingInfo.vecDHTextureArraySlices.push_back(pSliceSRV);
+		m_tTextureSplattingInfo.vecDHTextureArraySlices[i] = pSliceSRV;
 	}
+	Safe_Release(pRes);
 
-	pRes->Release();
+
+	return S_OK;
+}
+
+HRESULT CMapToolManager::Slice_NBR_Texture()
+{
+
+	if (m_tTextureSplattingInfo.pMix_NBR_Tile_Texture == nullptr) return S_OK;
+
+	for (auto& pSRV : m_tTextureSplattingInfo.vecNBRTextureArraySlices)
+		Safe_Release(pSRV);
+
+	m_tTextureSplattingInfo.vecNBRTextureArraySlices.clear();
+
+
+	ID3D11ShaderResourceView* pOriginalSRV = m_tTextureSplattingInfo.pMix_NBR_Tile_Texture->Get_SRV();
+	ID3D11Resource* pRes = nullptr;
+	pOriginalSRV->GetResource(&pRes);
+
+	ID3D11Texture2D* pTex2D = (ID3D11Texture2D*)pRes;
+	D3D11_TEXTURE2D_DESC tTexDesc;
+	pTex2D->GetDesc(&tTexDesc);
+
+	m_tTextureSplattingInfo.vecNBRTextureArraySlices.resize(tTexDesc.ArraySize);
+	for (UINT i = 0; i < tTexDesc.ArraySize; ++i)
+	{
+		D3D11_SHADER_RESOURCE_VIEW_DESC tViewDesc;
+		ZeroMemory(&tViewDesc, sizeof(tViewDesc));
+
+		tViewDesc.Format = tTexDesc.Format;
+		tViewDesc.ViewDimension = D3D11_SRV_DIMENSION_TEXTURE2DARRAY;
+		tViewDesc.Texture2DArray.MostDetailedMip = 0;
+		tViewDesc.Texture2DArray.MipLevels = 1;
+		tViewDesc.Texture2DArray.FirstArraySlice = i;
+		tViewDesc.Texture2DArray.ArraySize = 1;
+
+		ID3D11ShaderResourceView* pSliceSRV = nullptr;
+		if (FAILED(m_pDevice->CreateShaderResourceView(pTex2D, &tViewDesc, &pSliceSRV)))
+		{
+			Safe_Release(pRes);
+			return E_FAIL;
+		}
+
+		m_tTextureSplattingInfo.vecNBRTextureArraySlices[i] = pSliceSRV;
+	}
+	Safe_Release(pRes);
+
+
 	return S_OK;
 }
 
@@ -625,6 +840,15 @@ void CMapToolManager::Set_BrushRotation(const Quat& vQuat)
 const Vec3& CMapToolManager::Get_MousePickingPos() const
 {
 	return m_vRayWorldPos;
+}
+
+HRESULT CMapToolManager::Export_SaveSceneData(DTO::ECategory eCategory, CDataDocumentBase* pDocument)
+{
+	if (m_pSceneData == nullptr) return E_FAIL;
+
+	m_pSceneData->Export_Data(eCategory , pDocument);
+
+	return S_OK;
 }
 
 CMapObject* CMapToolManager::Make_MapObject(void* pArg, _bool isPreview)
@@ -713,6 +937,7 @@ void CMapToolManager::Free()
 
 
 	/* ¾È¿¡ µé¾îÀÖ´Â Texture Á¤¸® */
+	m_tTextureSplattingInfo.Free();
 	UnRegister_MapTexture();
 
 
@@ -721,4 +946,8 @@ void CMapToolManager::Free()
 
 	for (auto& Factory : m_arrayMapObjectCloneFactory)
 		Factory = nullptr;
+
 }
+
+
+

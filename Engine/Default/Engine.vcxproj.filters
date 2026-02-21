@@ -394,6 +394,9 @@
     <Filter Include="99. Defines\Anim_Event_Defines\VFX">
       <UniqueIdentifier>{518140e5-2def-408b-8bc4-eddea573b43c}</UniqueIdentifier>
     </Filter>
+    <Filter Include="01. Utility\08. GameData\00. Struct">
+      <UniqueIdentifier>{bb8f41bb-a3ed-4948-8171-6eb23fc3d412}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="..\Private\Timer.cpp">
@@ -795,6 +798,9 @@
     </ClCompile>
     <ClCompile Include="..\Private\DataDocument_EffectEvent.cpp">
       <Filter>01. Utility\11. DataRepository\Datas\Effect\EffectEventData\DataDocument_EffectEvent</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\GameData_Struct.cpp">
+      <Filter>01. Utility\08. GameData\00. Struct</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -1242,6 +1248,9 @@
     </ClInclude>
     <ClInclude Include="..\Public\AttackOverlap_Desc.h">
       <Filter>99. Defines\Anim_Event_Defines\AttackOverlap</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\GameData_Struct.h">
+      <Filter>01. Utility\08. GameData\00. Struct</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

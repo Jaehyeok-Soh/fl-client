@@ -125,8 +125,8 @@ void CAnimTool_Manager::SetAnimControllInfo()
 
 	m_tAnimControllInfo.iTotalAnimCount = m_tAnimControllInfo.pModel->Get_AnimationCount();
 	m_tAnimControllInfo.iCurrentAnimIndex = m_tAnimControllInfo.pModel->Get_CurrentAnimationIndex();
-	m_tAnimControllInfo.fDuration = m_tAnimControllInfo.pModel->Get_AnimDurationTime();
-	m_tAnimControllInfo.fTrackPosition = 0.f;
+	m_tAnimControllInfo.fDuration = static_cast<_uint>(m_tAnimControllInfo.pModel->Get_AnimDurationTime());
+	m_tAnimControllInfo.fTrackPosition = 0;
 	m_tAnimControllInfo.fTickPerSecond = m_tAnimControllInfo.pModel->Get_AnimTickPerSecond();
 	m_tAnimControllInfo.pModel->Set_AnimationPlayRate(m_tAnimControllInfo.iCurrentAnimIndex, 1.f);
 	m_tAnimControllInfo.fPlayRate = 1.f;
@@ -219,7 +219,7 @@ void CAnimTool_Manager::ChangeAnimation(_uint iIndex)
 
 	m_tAnimControllInfo.pModel->Change_Animation(pAnimECS, m_tAnimControllInfo.iCurrentAnimIndex, true, m_tAnimControllInfo.bLoop, false);
 
-	m_tAnimControllInfo.fDuration = m_tAnimControllInfo.pModel->Get_AnimDurationTime();
+	m_tAnimControllInfo.fDuration = static_cast<_uint>(m_tAnimControllInfo.pModel->Get_AnimDurationTime());
 	m_tAnimControllInfo.fTickPerSecond = m_tAnimControllInfo.pModel->Get_AnimTickPerSecond();
 	m_tAnimControllInfo.fPlayRate = 1.f;
 }
@@ -229,7 +229,7 @@ void CAnimTool_Manager::UpdateAnimationInfo()
 	if (!ValidCheck())
 		return;
 
-	m_tAnimControllInfo.fTrackPosition = m_tAnimControllInfo.pModel->Get_AnimTrackPosition();
+	m_tAnimControllInfo.fTrackPosition = static_cast<_uint>(m_tAnimControllInfo.pModel->Get_AnimTrackPosition());
 	m_tAnimControllInfo.fTickPerSecond = m_tAnimControllInfo.pModel->Get_AnimTickPerSecond();
 }
 
@@ -349,6 +349,8 @@ HRESULT CAnimTool_Manager::Save_AttackOverlap(fs::path path, string strAnimTag, 
 		return E_FAIL;
 
 	m_pGameInstance->Save_File_Json(iLevelID, DTO::ECategory::OVERLAP_SCRIPT, path);
+
+	return S_OK;
 }
 
 HRESULT CAnimTool_Manager::Release_Event()

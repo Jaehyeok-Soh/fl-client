@@ -169,14 +169,8 @@
     <Filter Include="03. GameObject\MapObject\00. MapObject">
       <UniqueIdentifier>{02ac1ef5-8c12-472a-910e-35678c60e01f}</UniqueIdentifier>
     </Filter>
-    <Filter Include="03. GameObject\MapObject\01. StaticModel">
-      <UniqueIdentifier>{f8de0721-b0eb-4bf1-9048-74bfbfacf39f}</UniqueIdentifier>
-    </Filter>
     <Filter Include="07. System\01. Builder\Map">
       <UniqueIdentifier>{8c8cb986-b28e-4058-aca0-3a2b0b85e2e0}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="03. GameObject\MapObject\02. InstanceModel">
-      <UniqueIdentifier>{2be52ba2-2a45-42f4-aa0d-4f0d8e44cbe8}</UniqueIdentifier>
     </Filter>
     <Filter Include="04. Shaders\ComputeShader_Labs">
       <UniqueIdentifier>{8c14e548-7930-4ec0-b748-e471998a55b9}</UniqueIdentifier>
@@ -346,6 +340,12 @@
     <Filter Include="06. FSM\Player\Attack\Gun">
       <UniqueIdentifier>{00f67508-9a6b-4c59-9832-98f058c8b1a5}</UniqueIdentifier>
     </Filter>
+    <Filter Include="03. GameObject\MapObject\01. StaticObject">
+      <UniqueIdentifier>{f8de0721-b0eb-4bf1-9048-74bfbfacf39f}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="03. GameObject\MapObject\02. LandScape">
+      <UniqueIdentifier>{85c9ccf5-464c-4ec3-aa14-67d01e5a95ce}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="targetver.h">
@@ -487,7 +487,7 @@
       <Filter>03. GameObject\MapObject\00. MapObject</Filter>
     </ClInclude>
     <ClInclude Include="..\Public\StaticObject.h">
-      <Filter>03. GameObject\MapObject\01. StaticModel</Filter>
+      <Filter>03. GameObject\MapObject\01. StaticObject</Filter>
     </ClInclude>
     <ClInclude Include="..\Public\Builder_Map.h">
       <Filter>07. System\01. Builder\Map</Filter>
@@ -654,6 +654,9 @@
     <ClInclude Include="..\Public\SkillComponent.h">
       <Filter>05. Component\Skill</Filter>
     </ClInclude>
+    <ClInclude Include="..\Public\LandScape.h">
+      <Filter>03. GameObject\MapObject\02. LandScape</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <Image Include="Client.ico">
@@ -781,7 +784,7 @@
       <Filter>03. GameObject\MapObject\00. MapObject</Filter>
     </ClCompile>
     <ClCompile Include="..\Private\StaticObject.cpp">
-      <Filter>03. GameObject\MapObject\01. StaticModel</Filter>
+      <Filter>03. GameObject\MapObject\01. StaticObject</Filter>
     </ClCompile>
     <ClCompile Include="..\Private\Builder_Map.cpp">
       <Filter>07. System\01. Builder\Map</Filter>
@@ -953,6 +956,9 @@
     </ClCompile>
     <ClCompile Include="..\Private\SkillComponent.cpp">
       <Filter>05. Component\Skill</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\LandScape.cpp">
+      <Filter>03. GameObject\MapObject\02. LandScape</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

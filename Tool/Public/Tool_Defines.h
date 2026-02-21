@@ -35,14 +35,6 @@ extern HINSTANCE	g_hInstance;
 #define	TO_RAD  (XM_PI / 180.f)
 #define	To_DEGREE ( 180.f / XM_PI )
 
-#define CHANNEL_R 0
-#define CHANNEL_G 1
-#define CHANNEL_B 2
-#define CHANNEL_A 3
-#define MAX_RGBA  4
-
-#define MAX_RGBA_TEXTURE_COUNT 2 
-
 
 namespace Tool
 {
@@ -283,8 +275,8 @@ namespace Tool
 	inline constexpr _char  g_szLandScape_TextureUV_LT		[]{ "g_LandScape_TextureUV_LT" };
 	inline constexpr _char  g_szLandScape_TextureUV_RB		[]{ "g_LandScape_TextureUV_RB" };
 
-	inline constexpr _tchar g_wszMapTexture_Path			[]{L"../../Resources/Textures/Map/LandScape"};
 
+	inline constexpr _tchar g_wszMapTexture_Path			[]{L"../../Resources/Textures/Map/LandScape"};
 	inline constexpr _char	g_szTexLandScape_Mix_RGB		[]{"g_TexLandScape_Mix_RGB" };
 	inline constexpr _char	g_szTexLandScape_Mix_RGBA		[]{"g_TexLandScape_Mix_RGBA" };
 
@@ -296,22 +288,8 @@ namespace Tool
 	inline constexpr _char	g_szMix_NBR_Tile_Texture		[]{ "g_Mix_NBR_Tile_Texture"};
 
 
-	inline constexpr _char	g_szMix_RGBA_Red_Connected_Index	[]{ "g_iMix_RGBA_Red_Connected_Index"};
-	inline constexpr _char	g_szMix_RGBA_Blue_Connected_Index	[]{ "g_iMix_RGBA_Blue_Connected_Index"};
-	inline constexpr _char	g_szMix_RGBA_Green_Connected_Index	[]{ "g_iMix_RGBA_Green_Connected_Index"};
-	inline constexpr _char	g_szMix_RGBA_Alpha_Connected_Index	[]{ "g_iMix_RGBA_Alpha_Connected_Index"};
-
-	inline constexpr _char	g_szMix_RGB_Red_Connected_Index		[]{ "g_iMix_RGB_Red_Connected_Index" };
-	inline constexpr _char	g_szMix_RGB_Blue_Connected_Index	[]{ "g_iMix_RGB_Blue_Connected_Index" };
-	inline constexpr _char	g_szMix_RGB_Green_Connected_Index	[]{ "g_iMix_RGB_Green_Connected_Index" };
-	inline constexpr _char	g_szMix_RGB_Alpha_Connected_Index	[]{ "g_iMix_RGB_Alpha_Connected_Index" };
-
-
-	inline constexpr _char	g_szMIX_RGBA_DATA					[]{ "g_MIX_RGBA_DATA" };
-	inline constexpr _char	g_szUse_Mix_RGBA_Map_Count			[]{"g_iUse_Mix_RGBA_Map_Count"};
-
-
-
+	inline constexpr _char	g_szCB_MIX_RGBA_INFO			[]{"CB_MIX_RGBA_INFO" };
+	inline constexpr _char	g_szUse_Mix_RGBA_Map_Count		[]{"g_iUse_Mix_RGBA_Count"};
 
 
 	inline constexpr _uint  Uint_NoneIndex{ 0xFFFFFFFF };

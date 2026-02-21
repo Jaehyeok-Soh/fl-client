@@ -346,8 +346,17 @@ public:
 	class CUIAction_Registry* Get_UIAction_Registry()const;
 #pragma endregion
 
-// Todo - 쓰레기통 정리
 #pragma region GAMEDATA
+
+#pragma region Texture Splating Info Data
+
+	HRESULT		GameDataManager_Load_TextureSplatingInfoData();
+
+	/* 이름으로 Binding 하는 함수 */
+	HRESULT		GameDataManager_Bind_SplatingTextureInfo(CShader* pBindShader, const wstring& wstrTextureSplatingInfoDataName);
+
+
+#pragma endregion
 
 #pragma endregion
 private:

@@ -12,7 +12,7 @@ using json = nlohmann::json;
 NS_BEGIN(Engine)
 
 
-
+#pragma region Data MapObject
 json CData_MapObject::ToJson() const
 {
 	return json(m_tData);
@@ -32,7 +32,28 @@ void CData_MapObject::Free()
 
 	Super::Free();
 }
+#pragma endregion
 
+#pragma region 
+
+json CData_SceneData::ToJson() const
+{
+	return json(m_tData);
+}
+
+HRESULT CData_SceneData::FromJson(const json& j)
+{
+	m_tData = j.get<DTO::TSceneData>();
+	return S_OK;
+}
+
+void CData_SceneData::Free()
+{
+	Super::Free();
+
+	return;
+}
+#pragma endregion
 
 NS_END
 
@@ -231,6 +252,32 @@ inline void from_json(const json& LoadJson, DTO::TMap_MapObjectData& tData)
 		} 
 	}
 }
+#pragma endregion
+
+
+#pragma region Scene Data
+
+
+inline void to_json(json& SaveJson, const TSceneData& tData)
+{
+	SaveJson = json
+	{
+		{ "strTag", tData.strTag },
+		{ "Texture Splating Info", tData.strTextureSplatingInfoName },
+	};
+
+	return;
+}
+inline void from_json(const json& LoadJson, TSceneData& tData)
+{
+	if (LoadJson.contains("strTag"))
+		tData.strTag = LoadJson["strTag"].get<string>();
+	
+	if (LoadJson.contains("Texture Splating Info"))
+		tData.strTextureSplatingInfoName = LoadJson["Texture Splating Info"].get<string>();
+	return;
+}
+
 #pragma endregion
 
 NS_END

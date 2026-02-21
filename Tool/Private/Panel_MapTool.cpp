@@ -3,10 +3,12 @@
 #include "GameInstance.h"
 #include "MapObject.h"
 #include "Camera.h"
+#include "SceneData.h"
 #include "CameraMan.h"
 
 CPanel_MapTool::CPanel_MapTool(const _char* pLabel, CLevel* pOwner, ID3D11Device* pDevice, ID3D11DeviceContext* pDeviceContext)
-	: CImGui_Panel(pLabel, pOwner, pDevice, pDeviceContext), m_szBuffer{}, m_isTexArraySelect{false}
+	: CImGui_Panel(pLabel, pOwner, pDevice, pDeviceContext), m_szBuffer{}, m_isTexArraySelect{ false }, m_szTextureSplatingInfoData_SaveName{}, m_iSelectTextureSplatingInfoData{}
+	, m_vecTextureSplatingInfoDataName{}
 {
 }
 
@@ -29,8 +31,29 @@ HRESULT CPanel_MapTool::Initialize()
 	if(FAILED(Make_DefaultTexture()))
 		return E_FAIL;
 
+	if (FAILED(Update_TextureSplatingInfoDataName()))
+		return E_FAIL;
+
 	return S_OK;
 }
+
+
+
+HRESULT CPanel_MapTool::Update_TextureSplatingInfoDataName()
+{
+	m_vecTextureSplatingInfoDataName.clear();
+	m_vecTextureSplatingInfoDataName.reserve(m_pMapToolManager->m_mapTextureSplatingInfoDatas.size());
+
+	for (auto& Pair : m_pMapToolManager->m_mapTextureSplatingInfoDatas)
+	{
+		m_vecTextureSplatingInfoDataName.push_back(Engine_Utils::ToString(Pair.first));
+	}
+
+	return S_OK;
+}
+
+
+
 
 HRESULT CPanel_MapTool::Make_DefaultTexture()
 {
@@ -98,6 +121,15 @@ HRESULT CPanel_MapTool::Render(CToolObject* pGo)
 		}
 	}
 
+	if (ImGui::CollapsingHeader(" Save Scene Data Setting "))
+	{
+		if (FAILED((Render_SaveSceneDataSetting())))
+		{
+			ImGui::TreePop();
+			return E_FAIL;
+		}
+	}
+
 
 	if (ImGui::CollapsingHeader(" Map Tool Setting "))
 	{
@@ -121,13 +153,87 @@ HRESULT CPanel_MapTool::Render(CToolObject* pGo)
 	return S_OK;
 }
 
-
 HRESULT CPanel_MapTool::Render_SplatingTextureSetting()
 {
 	if (m_pMapToolManager == nullptr) return E_FAIL;
 
 
+#pragma region Texture Splating Info Data Save
+
+
+	/* 미리 저장된 데이터 모음 */
+
+	if (m_vecTextureSplatingInfoDataName.empty())
+		ImGui::Text(" Pre Save Texture Splating Info Data is Empty ");
+	else
+	{
+		ImGui::SeparatorText(" Texture Splating Info Data List ");
+
+		string CurSelectTextureSplatingInfoDataName = m_vecTextureSplatingInfoDataName[m_iSelectTextureSplatingInfoData];
+		if (ImGui::BeginCombo("##TextureSplatingInfoDatas", CurSelectTextureSplatingInfoDataName.c_str()))
+		{
+			for (size_t i = 0; i < m_vecTextureSplatingInfoDataName.size(); ++i)
+			{
+				_bool isSelected = i == m_iSelectTextureSplatingInfoData;
+				if (ImGui::Selectable(m_vecTextureSplatingInfoDataName[i].c_str(), isSelected))
+					m_iSelectTextureSplatingInfoData = static_cast<_int>(i);
+				if (isSelected)
+					ImGui::SetItemDefaultFocus();
+			}
+			ImGui::EndCombo();
+		}
+
+		ImGui::Separator();
+
+		if (ImGui::Button(" [ Load ] Texture Splating Info Data "))
+		{
+			m_pMapToolManager->Load_TextureSplatingInfoData(Engine_Utils::ToWString(CurSelectTextureSplatingInfoDataName));
+		}
+
+		ImGui::Separator();
+
+		if (ImGui::Button(" [ Delete ] Texture Splating Info Data "))
+		{
+			/* 저장된 데이터들 삭제시켜준다 */
+			m_pMapToolManager->Delete_TextureSplatingInfoData(Engine_Utils::ToWString(CurSelectTextureSplatingInfoDataName));
+			Update_TextureSplatingInfoDataName();
+		}
+
+		ImGui::Separator();
+
+	}
+
+
+	/*----------------------- */
+
+	ImGui::SeparatorText(" Save Texture Splating Info Data ");
+
+	ImGui::InputText(" Save Name ", m_szTextureSplatingInfoData_SaveName, MAX_PATH);
+	if (ImGui::Button(" Save Texture Splating Info Data "))
+	{
+		m_pMapToolManager->Save_TextureSplatingInfoData(Engine_Utils::ToWString(m_szTextureSplatingInfoData_SaveName));
+		Update_TextureSplatingInfoDataName();
+	}
+
+	ImGui::Separator();
+
+#pragma endregion
+
+
 #pragma region [Base] Texture Binding
+
+	ImGui::SeparatorText(" Reset Texture Splating Info ");
+
+	if (ImGui::Button(" Reset Texture Splating Info "))
+	{
+		m_pMapToolManager->m_tTextureSplattingInfo.Free();
+		m_pMapToolManager->Bind_MapTexture();
+		m_pMapToolManager->Bind_Mix_RGBA_Info();
+		return S_OK;
+	}
+
+
+	ImGui::Separator();
 
 	if (ImGui::TreeNode("Bind [ Base ] Texture##Base Texture"))
 	{
@@ -176,6 +282,7 @@ HRESULT CPanel_MapTool::Render_SplatingTextureSetting()
 			(ImTextureID)m_pMapToolManager->m_tTextureSplattingInfo.vecDHTextureArraySlices[0], ImVec2(32, 32)))
 		{
 			m_ppTargetSlot = &m_pMapToolManager->m_tTextureSplattingInfo.pMix_DH_Tile_Texture;
+			m_isTex_DH_ArraySelect = true;
 			m_isTexArraySelect = true;
 			ImGui::OpenPopup("Texture_Select_Modal");
 		}
@@ -187,10 +294,11 @@ HRESULT CPanel_MapTool::Render_SplatingTextureSetting()
 		ImGui::Text(" Mix [ NRB ] Texture => [ %s ] ", m_strBuffer.c_str());
 		ImGui::SameLine();
 		if (ImGui::ImageButton(" Bind Texture##Mix_NBR ", m_pMapToolManager->m_tTextureSplattingInfo.pMix_NBR_Tile_Texture == nullptr ? (ImTextureID)m_pDefaultSRV :
-			(ImTextureID)m_pMapToolManager->m_tTextureSplattingInfo.vecDHTextureArraySlices[0], ImVec2(32, 32)))
+			(ImTextureID)m_pMapToolManager->m_tTextureSplattingInfo.vecNBRTextureArraySlices[0], ImVec2(32, 32)))
 		{
 			m_ppTargetSlot = &m_pMapToolManager->m_tTextureSplattingInfo.pMix_NBR_Tile_Texture;
 			m_isTexArraySelect = true;
+			m_isTex_NBR_ArraySelect = true;
 			ImGui::OpenPopup("Texture_Select_Modal");
 		}
 
@@ -213,8 +321,8 @@ HRESULT CPanel_MapTool::Render_SplatingTextureSetting()
 		}
 		
 		_int iDeleteIndex{ -1 };
-		bool isbOpenTileSelectPopup = false;
-		bool isRGBATextureBinding{ false };
+		_bool isbOpenTileSelectPopup	{false};
+		_bool isRGBATextureBinding		{false};
 		for (_int i = 0; i < m_pMapToolManager->m_tTextureSplattingInfo.tMix_RGBA_Info.iUse_Mix_RGBA_Count; ++i)
 		{
 			ImGui::PushID(i);
@@ -259,7 +367,7 @@ HRESULT CPanel_MapTool::Render_SplatingTextureSetting()
 
 					/* Red Channel */
 					ImGui::PushID("Red");
-					Render_Single_Channel_Setting("RED", ImVec4(1.f, 0.3f, 0.3f, 1.f), CurrentData.iRGBA_Connected_Tile_Index[CHANNEL_R],CurrentData.fRGBA_Mix_Forces[CHANNEL_R],CurrentData.iUseFlags[CHANNEL_R],&isbOpenTileSelectPopup); // 멤버변수 등
+					Render_Single_Channel_Setting("RED", ImVec4(0.f, 0.3f, 0.f, 1.f), CurrentData.iRGBA_Connected_Tile_Index[CHANNEL_R],CurrentData.fRGBA_Mix_Forces[CHANNEL_R],CurrentData.iUseFlags[CHANNEL_R],&isbOpenTileSelectPopup); // 멤버변수 등
 					ImGui::PopID();
 
 
@@ -267,21 +375,21 @@ HRESULT CPanel_MapTool::Render_SplatingTextureSetting()
 
 					/* Green Channel */
 					ImGui::PushID("Green");
-					Render_Single_Channel_Setting("Green", ImVec4(0.3f, 1.0f, 0.3f, 1.f), CurrentData.iRGBA_Connected_Tile_Index[CHANNEL_G], CurrentData.fRGBA_Mix_Forces[CHANNEL_G], CurrentData.iUseFlags[CHANNEL_G], &isbOpenTileSelectPopup); // 멤버변수 등
+					Render_Single_Channel_Setting("Green", ImVec4(0.f, 1.0f, 0.f, 1.f), CurrentData.iRGBA_Connected_Tile_Index[CHANNEL_G], CurrentData.fRGBA_Mix_Forces[CHANNEL_G], CurrentData.iUseFlags[CHANNEL_G], &isbOpenTileSelectPopup); // 멤버변수 등
 					ImGui::PopID();
 
 					ImGui::SameLine();
 
 					/* Blue Channel */
 					ImGui::PushID("Blue");
-					Render_Single_Channel_Setting("Blue", ImVec4(0.3f, 1.0f, 0.3f, 1.f), CurrentData.iRGBA_Connected_Tile_Index[CHANNEL_B], CurrentData.fRGBA_Mix_Forces[CHANNEL_B], CurrentData.iUseFlags[CHANNEL_B], &isbOpenTileSelectPopup); // 멤버변수 등
+					Render_Single_Channel_Setting("Blue", ImVec4(0.f, 0.f, 1.0f, 1.f), CurrentData.iRGBA_Connected_Tile_Index[CHANNEL_B], CurrentData.fRGBA_Mix_Forces[CHANNEL_B], CurrentData.iUseFlags[CHANNEL_B], &isbOpenTileSelectPopup); // 멤버변수 등
 					ImGui::PopID();
 
 					ImGui::SameLine();
 
 					/* Alpha Channel */
 					ImGui::PushID("Alpha");
-					Render_Single_Channel_Setting("Alpha", ImVec4(0.3f, 1.0f, 0.3f, 1.f), CurrentData.iRGBA_Connected_Tile_Index[CHANNEL_A], CurrentData.fRGBA_Mix_Forces[CHANNEL_A], CurrentData.iUseFlags[CHANNEL_A], &isbOpenTileSelectPopup); // 멤버변수 등
+					Render_Single_Channel_Setting("Alpha", ImVec4(1.f, 1.f, 1.f, 1.f), CurrentData.iRGBA_Connected_Tile_Index[CHANNEL_A], CurrentData.fRGBA_Mix_Forces[CHANNEL_A], CurrentData.iUseFlags[CHANNEL_A], &isbOpenTileSelectPopup); // 멤버변수 등
 					ImGui::PopID();
 
 					if (isbOpenTileSelectPopup)
@@ -375,10 +483,12 @@ HRESULT CPanel_MapTool::Render_Single_Channel_Setting(const char* szLabel, const
 
 void CPanel_MapTool::Select_MapTexture()
 {
-	_bool isChangeTexture	{false};
-	_bool isChangeTextureArray{false};
-	_bool isCompatible		{false};
-	_bool isTextureArray	{false};
+	_bool isChangeTexture				{false};
+	_bool isChangeTextureArray			{false};
+	_bool isChange_DH_TextureArray		{false};
+	_bool isChange_NBR_TextureArray		{false};
+	_bool isCompatible					{false};
+	_bool isTextureArray				{false};
 
 	ImGui::SetNextWindowPos(ImGui::GetMainViewport()->GetCenter(), ImGuiCond_Appearing, ImVec2(0.5f, 0.5f));
 	ImGui::SetNextWindowSize(ImVec2(800, 500));
@@ -428,6 +538,7 @@ void CPanel_MapTool::Select_MapTexture()
 				if (ImGui::Selectable(currentCategoryStr.c_str(), isSelected))
 				{
 					m_selectedCategoryName = currentCategoryW;
+
 				}
 			}
 		}
@@ -483,6 +594,8 @@ void CPanel_MapTool::Select_MapTexture()
 								m_ppTargetSlot = nullptr;      
 								isChangeTexture = true;  
 								isChangeTextureArray = isTextureArray;
+								isChange_DH_TextureArray = m_isTex_DH_ArraySelect;
+								isChange_NBR_TextureArray = m_isTex_NBR_ArraySelect;
 							}
 							ImGui::CloseCurrentPopup();
 						}
@@ -532,6 +645,9 @@ void CPanel_MapTool::Select_MapTexture()
 		if (ImGui::Button("Cancel", ImVec2(120, 0)))
 		{
 			m_ppTargetSlot = nullptr;
+			m_isTex_DH_ArraySelect = false;
+			m_isTex_NBR_ArraySelect = false;
+			m_isTexArraySelect = false;
 			ImGui::CloseCurrentPopup();
 		}
 
@@ -543,10 +659,19 @@ void CPanel_MapTool::Select_MapTexture()
 		m_pMapToolManager->Bind_MapTexture();
 		m_pMapToolManager->Bind_Mix_RGBA_Texture();
 		if (isChangeTextureArray)
-			m_pMapToolManager->Slice_DH_Texture();
+		{
+			if (m_isTex_DH_ArraySelect)
+				m_pMapToolManager->Slice_DH_Texture();
+			if (m_isTex_NBR_ArraySelect)
+				m_pMapToolManager->Slice_NBR_Texture();
+
+			m_isTex_DH_ArraySelect = false;
+			m_isTex_NBR_ArraySelect = false;
+			m_isTexArraySelect = false;
+
+		}
 	}
 }
-
 
 void CPanel_MapTool::Select_MiXTextureIndex()
 {
@@ -923,6 +1048,51 @@ HRESULT CPanel_MapTool::Render_PreViewInfo()
 
 	ImGui::End();
 
+	return S_OK;
+}
+
+HRESULT CPanel_MapTool::Render_SaveSceneDataSetting()
+{
+	ImGui::SeparatorText(" Save Scene Data Setting ");
+
+	if (m_pMapToolManager->m_pSceneData == nullptr) return E_FAIL;
+
+	ImGui::NewLine();
+
+	ImGui::SeparatorText("Use Texture Splating Info Name [ None => Don't Use ]");
+	ImGui::NewLine();
+
+	
+	ImGui::SeparatorText(" Texture Splating Info Data List ");
+
+	string CurSelectTextureSplatingInfoDataName = m_vecTextureSplatingInfoDataName[m_iSelectTextureSplatingInfoData];
+	if (ImGui::BeginCombo("##TextureSplatingInfoDatas_2", CurSelectTextureSplatingInfoDataName.c_str()))
+	{
+		for (size_t i = 0; i < m_vecTextureSplatingInfoDataName.size(); ++i)
+		{
+			_bool isSelected = i == m_iSelectTextureSplatingInfoData;
+			if (ImGui::Selectable(m_vecTextureSplatingInfoDataName[i].c_str(), isSelected))
+			{
+				m_iSelectTextureSplatingInfoData = static_cast<_int>(i);
+				m_pMapToolManager->m_pSceneData->m_strTextureSplatingInfoName = m_vecTextureSplatingInfoDataName[i];
+			}
+			if (isSelected)
+				ImGui::SetItemDefaultFocus();
+		}
+		ImGui::EndCombo();
+	}
+
+	ImGui::Text(" Save Texture Splating Info Name => [ %s ] ", m_pMapToolManager->m_pSceneData->m_strTextureSplatingInfoName.c_str());
+	ImGui::NewLine();
+	if (ImGui::Button(" Don't Use Texture Splating Info "))
+		m_pMapToolManager->m_pSceneData->m_strTextureSplatingInfoName = "None";
+
+	ImGui::Separator();
+
+
+	m_pMapToolManager->m_pSceneData->Draw_ImGui();
+
+	ImGui::Separator();
 	return S_OK;
 }
 

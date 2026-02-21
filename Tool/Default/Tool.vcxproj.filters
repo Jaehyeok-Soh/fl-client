@@ -211,12 +211,6 @@
     <Filter Include="09. Builder\Map">
       <UniqueIdentifier>{316c30da-42c6-486a-bbfd-7736152fabec}</UniqueIdentifier>
     </Filter>
-    <Filter Include="02. GameObjects\Map\00. MapObject\01. StaticModel">
-      <UniqueIdentifier>{2cfbf0d2-bd5d-4728-87d5-d2bb19dfb549}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="02. GameObjects\Map\00. MapObject\02. InstanceModel">
-      <UniqueIdentifier>{32494c10-0bf8-420f-a857-a2d263860bfa}</UniqueIdentifier>
-    </Filter>
     <Filter Include="02. GameObjects\UI\02.UI">
       <UniqueIdentifier>{6a558198-77c1-41fb-9345-05c1fc4f9daf}</UniqueIdentifier>
     </Filter>
@@ -228,9 +222,6 @@
     </Filter>
     <Filter Include="04. Component\UI\Progress">
       <UniqueIdentifier>{27815419-4fa4-4be0-9d62-f21f634f2338}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="02. GameObjects\Map\00. MapObject\03. BatchObject">
-      <UniqueIdentifier>{4cbea894-fe8a-484a-b84b-a0522058102a}</UniqueIdentifier>
     </Filter>
     <Filter Include="02. GameObjects\UI\00.Action">
       <UniqueIdentifier>{566d6d02-9c34-4ed7-beae-db2b024e4049}</UniqueIdentifier>
@@ -276,6 +267,9 @@
     </Filter>
     <Filter Include="06. ImGui\01. Panel\Animation\Panel_AnimDescription">
       <UniqueIdentifier>{ed901c12-32d8-4863-9122-41a77bd083ee}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02. GameObjects\Map\01. SceneData">
+      <UniqueIdentifier>{796e0779-af03-4219-87f2-4ff1d7e85f49}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
@@ -541,6 +535,9 @@
     <ClInclude Include="..\Public\Panel_AnimDescription.h">
       <Filter>06. ImGui\01. Panel\Animation\Panel_AnimDescription</Filter>
     </ClInclude>
+    <ClInclude Include="..\Public\SceneData.h">
+      <Filter>02. GameObjects\Map\01. SceneData</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <Image Include="small.ico">
@@ -792,6 +789,9 @@
     </ClCompile>
     <ClCompile Include="..\Private\Panel_AnimDescription.cpp">
       <Filter>06. ImGui\01. Panel\Animation\Panel_AnimDescription</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\SceneData.cpp">
+      <Filter>02. GameObjects\Map\01. SceneData</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

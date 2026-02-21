@@ -54,7 +54,7 @@ HRESULT CGameInstance::Initialize_Engine(const ENGINE_DESC& Engine_Desc, _Inout_
 	if (!(m_pCollision_Manager = CCollision_Manager::Create(Engine_Desc.iCollideLayerCount)))
 		return E_FAIL;
 
-	if(!(m_pGameData_Manager = CGameDataManager::Create()))
+	if(!(m_pGameData_Manager = CGameDataManager::Create(*ppDevice , *ppContext)))
 		return E_FAIL;
 
 	if (!(m_pDataRepository = CDataRepository::Create(Engine_Desc.iLevelCount)))
@@ -1027,6 +1027,24 @@ CUIAction_Registry* CGameInstance::Get_UIAction_Registry() const
 { 
 	return m_pUIAction_Registry;
 }
+HRESULT CGameInstance::GameDataManager_Load_TextureSplatingInfoData()
+{
+	return m_pGameData_Manager->Load_TextureSplatingInfoData();
+}
+HRESULT CGameInstance::GameDataManager_Bind_SplatingTextureInfo(CShader* pBindShader, const wstring& wstrTextureSplatingInfoDataName)
+{
+	return m_pGameData_Manager->Bind_SplatingTextureInfo(pBindShader , wstrTextureSplatingInfoDataName);
+}
+#pragma endregion
+
+#pragma region GameData Manager
+
+#pragma region Texture Splating Info
+
+
+
+#pragma endregion
+
 #pragma endregion
 
 void CGameInstance::Free()

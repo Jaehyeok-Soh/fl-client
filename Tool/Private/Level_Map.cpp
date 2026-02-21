@@ -72,9 +72,16 @@ HRESULT CLevel_Map::Initialize()
 	m_pUEMapDataParser->Initialize(m_pDevice,m_pDeviceContext);
 
 	m_pMapToolManager->Set_LevelMap(this);
+	
+	m_pMapToolManager->Ready_SceneData();
+
 
 	if (FAILED(m_pMapToolManager->Register_MapTexture()))
 		return E_FAIL;
+
+	if (FAILED(m_pMapToolManager->Load_TextureSplatingInfoData()))
+		return E_FAIL;
+
 
 	return S_OK;
 }
@@ -341,6 +348,9 @@ void CLevel_Map::Free()
 
 
 	m_pMapToolManager->UnRegister_MapTexture();
+	m_pMapToolManager->Save_TextureSplatingInfoData();
+	m_pMapToolManager->Release_SplatingTextureData();
+	m_pMapToolManager->Release_SceneData();
 
 	Safe_Release(m_pImGuiManager);
 	Safe_Release(m_pPickingManager);

@@ -19,15 +19,12 @@
 #define B 2
 #define A 3
 
-bool HasCopickMask() { return (g_iGlobalMask & 1) != 0; }
-bool HasSecNormal() { return (g_iGlobalMask & 2) != 0; }
 
 //  전체적인 지형이들어갈 Base Texture
 Texture2D       g_Base_Texture;
 //  RGBA 맵에 맵핑될 DH , NBR Texture 2DTextureArray로 되어있다
 Texture2DArray g_Mix_DH_Tile_Texture;
 Texture2DArray g_Mix_NBR_Tile_Texture;
-
 
 //  RGBA 맵 
 Texture2D g_Mix_RGBA_Texture[MAX_RGBA_TEXTURE_COUNT];
@@ -51,24 +48,6 @@ cbuffer CB_MIX_RGBA_INFO
     int3    g_Use_Mix_RGBA_Map_Count_Dummy;
 };
 
-cbuffer cbMix_ConnectedIndex
-{
-    
-    uint    g_iMix_RGBA_Red_Connected_Index       = { 0 };
-    uint    g_iMix_RGBA_Green_Connected_Index     = { 0 };
-    uint    g_iMix_RGBA_Blue_Connected_Index      = { 0 };
-    uint    g_iMix_RGBA_Alpha_Connected_Index     = { 0 };
-    
-    uint    g_iMix_RGB_Red_Connected_Index        = { 0 };
-    uint    g_iMix_RGB_Green_Connected_Index      = { 0 };
-    uint    g_iMix_RGB_Blue_Connected_Index       = { 0 };
-    
-    float4  g_fRGBA_Tile_Force  = { 1.f, 1.f, 1.f, 1.f };
-    float3  g_fRGB_Tile_Force   = 1.f;
-    
-    float   Mix_ConnectedIndex_Dummy = { 0.f };
-    
-};
 
 
 cbuffer cbMapObjectState
