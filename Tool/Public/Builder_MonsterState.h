@@ -1,5 +1,6 @@
 #pragma once
 #include "BuilderBase.h"
+#include "DTO_MonsterState.h"
 
 NS_BEGIN(Engine)
 class CDataDocumentBase;

@@ -573,13 +573,21 @@ HRESULT CLoader::Build_Prototype()
 
 HRESULT CLoader::Build_Files()
 {
+	if (FAILED(Ready_AttackOverlap()))
+		return E_FAIL;
+
+	if (FAILED(Ready_EffectEvent()))
+		return E_FAIL;
+
+	return S_OK;
+}
+
+HRESULT CLoader::Ready_AttackOverlap()
+{
 	if (FAILED(Ready_AttackOverlap_PlayerMoon()))
 		return E_FAIL;
 
 	if (FAILED(Ready_AttackOverlap_Monster_Dog()))
-		return E_FAIL;
-
-	if (FAILED(Ready_EffectEvent()))
 		return E_FAIL;
 
 	return S_OK;

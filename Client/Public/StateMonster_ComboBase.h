@@ -5,7 +5,7 @@ class CStateMonster_ComboBase abstract : public CStateBase_Monster
 	using Super = CStateBase_Monster;
 
 public:
-	typedef struct tagComboStateDesc : public CStateBase_Monster::MONSTER_STATEBASE_DESC
+	typedef struct tagComboStateDesc : public DTO::MONSTER_STATEBASE_DESC
 	{
 		_uint iNumCombo = {};
 		vector<_float> vecCombo_CheckTimes;
@@ -24,7 +24,7 @@ public:
 	virtual HRESULT End() override;
 
 protected:
-	PLAYER_COMBOBASE_DESC	m_tDesc = {};
+	MONSTER_COMBOBASE_DESC	m_tDesc = {};
 	vector<_float>			m_ComboTimes;
 	_bool		m_bComboTime = { false };
 	_bool		m_bNextCombo = { false };

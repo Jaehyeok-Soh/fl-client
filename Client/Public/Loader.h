@@ -44,6 +44,9 @@ private:
 	HRESULT Ready_AttackOverlap();
 	HRESULT Ready_EffectEvent();
 
+	HRESULT Ready_AttackOverlap_PlayerMoon();
+	HRESULT Ready_AttackOverlap_Monster_Dog();
+
 private:
 	ID3D11Device* m_pDevice = { nullptr };
 	ID3D11DeviceContext* m_pDeviceContext = { nullptr };

@@ -42,7 +42,6 @@ HRESULT CMonsterControlContext::Initialize(void* pArg)
 
 HRESULT CMonsterControlContext::Awake(const _uint iLevelIndex)
 {
-	Set_Gravity(true);
 	return S_OK;
 }
 
@@ -127,7 +126,7 @@ _bool CMonsterControlContext::IsTargetSide()
 
 	_float dot = vOwnerLook.Dot(vToTarget);
 
-	return dot >= 0.7f || dot <= -0.7f
+	return dot >= 0.7f || dot <= -0.7f;
 }
 
 _bool CMonsterControlContext::IsTargetClose()

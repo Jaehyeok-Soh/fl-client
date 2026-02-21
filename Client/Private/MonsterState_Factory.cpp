@@ -46,14 +46,6 @@ HRESULT CMonsterState_Factory::Ready_Condition()
 
 	REGISTER_CONDITION("condition_target_out_of_range_attack", CONDITION{ return MONSTERCC(state)->IsTargetOutOfAttackRange(); });
 
-	REGISTER_CONDITION("condition_skill_enable", [](class CStateBase_Monster* state)->_bool {
-
-		});
-
-	REGISTER_CONDITION("condition_target_out_of_skill_range", [](class CStateBase_Monster* state)->_bool {
-
-		});
-
 	REGISTER_CONDITION("condition_target_ahead", CONDITION{ return MONSTERCC(state)->IsTargetAhead(); });
 
 	REGISTER_CONDITION("condition_target_behind", CONDITION{ return MONSTERCC(state)->IsTargetBehind(); });
@@ -62,30 +54,6 @@ HRESULT CMonsterState_Factory::Ready_Condition()
 
 	REGISTER_CONDITION("condition_target_close", CONDITION{ return MONSTERCC(state)->IsTargetClose(); });
 
-	REGISTER_CONDITION("condition_damage_recently", [](class CStateBase_Monster* state)->_bool {
-
-		});
-
-	REGISTER_CONDITION("condition_airborne", [](class CStateBase_Monster* state)->_bool {
-
-		});
-
-	REGISTER_CONDITION("condition_down", [](class CStateBase_Monster* state)->_bool {
-
-		});
-
-	REGISTER_CONDITION("condition_minTime_satisfy", [](class CStateBase_Monster* state)->_bool {
-
-		});
-
-	REGISTER_CONDITION("condition_maxTime_satisfy", [](class CStateBase_Monster* state)->_bool {
-
-		});
-
-	REGISTER_CONDITION("condition_falling", [](class CStateBase_Monster* state)->_bool {
-
-		});
-
 	REGISTER_CONDITION("condition_target_lost", CONDITION{ return MONSTERCC(state)->IsTargetLost(); });
 
 	return S_OK;
@@ -93,53 +61,9 @@ HRESULT CMonsterState_Factory::Ready_Condition()
 
 HRESULT CMonsterState_Factory::Ready_Feature()
 {
-	REGISTER_FEATURE("feat_find_target", [](class CStateBase_Monster* state, const _float& fTimeDelta) {
-		// 가장 가까운 놈 찾기
-		});
-
 	REGISTER_FEATURE("feat_walk", FEATURE{ return MONSTERCC(state)->UpdateWalk(fTimeDelta); state->Align_Movement(fTimeDelta); });
 
 	REGISTER_FEATURE("feat_chase", FEATURE{ return MONSTERCC(state)->UpdateChase(fTimeDelta); state->Align_Movement(fTimeDelta); });
-
-	REGISTER_FEATURE("feat_walk_back", [](class CStateBase_Monster* state, const _float& fTimeDelta) {
-
-		});
-
-	REGISTER_FEATURE("feat_run", [](class CStateBase_Monster* state, const _float& fTimeDelta) {
-
-		});
-
-	REGISTER_FEATURE("feat_sidewalk_right", [](class CStateBase_Monster* state, const _float& fTimeDelta) {
-
-		});
-
-	REGISTER_FEATURE("feat_sidewalk_right", [](class CStateBase_Monster* state, const _float& fTimeDelta) {
-
-		});
-
-	REGISTER_FEATURE("feat_sidewalk_left", [](class CStateBase_Monster* state, const _float& fTimeDelta) {
-
-		});
-
-	REGISTER_FEATURE("feat_circleWalk_right", [](class CStateBase_Monster* state, const _float& fTimeDelta) {
-
-		});
-
-	REGISTER_FEATURE("feat_circleWalk_left", [](class CStateBase_Monster* state, const _float& fTimeDelta) {
-
-		});
-
-	REGISTER_FEATURE("feat_jump", [](class CStateBase_Monster* state, const _float& fTimeDelta) {
-
-		});
-
-	REGISTER_FEATURE("feat_fly", [](class CStateBase_Monster* state, const _float& fTimeDelta) {
-
-		});
-
-	REGISTER_FEATURE("feat_skill", [](class CStateBase_Monster* state, const _float& fTimeDelta) {
-
-		});
 
 	return S_OK;
 }
@@ -196,11 +120,11 @@ CMonsterControlContext* CMonsterState_Factory::GetControlContext(CStateBase_Mons
 
 void CMonsterState_Factory::Free()
 {
-	for (auto& cond : m_mapCondition)
-		Safe_Delete(cond.second);
+	//for (auto& cond : m_mapCondition)
+	//	Safe_Delete(cond.second);
 	m_mapCondition.clear();
 
-	for (auto& feat : m_mapFeature)
-		Safe_Delete(feat.second);
+	//for (auto& feat : m_mapFeature)
+	//	Safe_Delete(feat.second);
 	m_mapFeature.clear();
 }

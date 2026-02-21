@@ -226,7 +226,7 @@ HRESULT CStateBase_Monster::Bind_Transition()
 			trans.vecConditionIdx.push_back((*iter).second);
 		}
 
-		std::sort(trans.vecConditionIdx.begin(), trans.vecConditionIdx.end());
+		//std::sort(trans.vecConditionIdx.begin(), trans.vecConditionIdx.end());
 
 		// 전이 상태 id 매핑
 		for (auto& value : trans.mapRandomStatePool)
@@ -237,7 +237,7 @@ HRESULT CStateBase_Monster::Bind_Transition()
 			trans.mapRandomStatePoolIdx.emplace(stateIdx, value.second);
 		}
 
-		std::sort(trans.mapRandomStatePoolIdx.begin(), trans.mapRandomStatePoolIdx.end());
+		//std::sort(trans.mapRandomStatePoolIdx.begin(), trans.mapRandomStatePoolIdx.end());
 	}
 
 	return S_OK;

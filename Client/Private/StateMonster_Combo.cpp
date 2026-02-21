@@ -20,8 +20,8 @@ HRESULT CStateMonster_Combo::Initialize(void* pArg)
 	{
 		CGameObject* owner = m_pOwnerStateComp->Get_Owner();
 
-		for (auto& animName : tMyDesc->vecComboAnimName)
-			tMyDesc->vecMainAnims.push_back(owner->Get_AnimationIndex(Engine_Utils::ToWString(animName)));
+		//for (auto& animName : tMyDesc->vecComboAnimName)
+		//	tMyDesc->vecMainAnims.push_back(owner->Get_AnimationIndex(Engine_Utils::ToWString(animName)));
 	}
 	
 	if (FAILED(Super::Initialize(&tMyDesc)))
