@@ -32,7 +32,8 @@ HRESULT CState_Walk::Start(void* pArg, _bool bForce)
 	if (FAILED(Super::Start(pArg, bForce)))
 		return E_FAIL;
 
-	Set_ApplyYLerp(true);
+	//Set_GravityOffset(8.f);
+	//Set_ApplyYLerp(true);
 
 	return S_OK;
 }
@@ -86,7 +87,9 @@ HRESULT CState_Walk::End()
 	if (FAILED(Super::End()))
 		return E_FAIL;
 
+	//Set_ApplyGravity(true);
 	Set_ApplyYLerp(false);
+	Set_GravityOffset(0.f);
 
 	return S_OK;
 }

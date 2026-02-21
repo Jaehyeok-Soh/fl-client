@@ -54,7 +54,7 @@ HRESULT CState_Fall::End()
 
 	m_fFallTimeAcc = 0.f;
 
-	Set_ApplyYLerp(true);
+	//Set_ApplyYLerp(true);
 
 	return S_OK;
 }
