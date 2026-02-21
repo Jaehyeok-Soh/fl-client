@@ -403,6 +403,9 @@
     <Filter Include="00. System\05. Component\Stat">
       <UniqueIdentifier>{8cd3b9ae-e121-4864-875b-ff81bd506e47}</UniqueIdentifier>
     </Filter>
+    <Filter Include="00. System\05. Component\Skill">
+      <UniqueIdentifier>{d682b013-a237-479c-b114-c77885becaf2}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="..\Private\Timer.cpp">
@@ -813,6 +816,9 @@
     </ClCompile>
     <ClCompile Include="..\Private\MyStat.cpp">
       <Filter>00. System\05. Component\Stat</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\Skill.cpp">
+      <Filter>00. System\05. Component\Skill</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -1269,6 +1275,9 @@
     </ClInclude>
     <ClInclude Include="..\Public\MyStat.h">
       <Filter>00. System\05. Component\Stat</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\Skill.h">
+      <Filter>00. System\05. Component\Skill</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
