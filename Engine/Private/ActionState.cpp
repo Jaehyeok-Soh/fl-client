@@ -261,6 +261,9 @@ _bool CActionState::Align_Movement(const _float fTimeDelta)
 		_float moveps = m_pOwnerTransform->Get_MovePerSec();
 		Vec3 disp = turnedLook * moveps * fTimeDelta;
 
+		// todo eunbi : y는 여기서 적용하지 않음
+		disp.y = 0.f;
+
 		_float fDelta = m_fVerticalSpeed * fTimeDelta;
 		CCTFlags = cct->Move(disp, 0.01f, fTimeDelta);
 
@@ -320,18 +323,32 @@ void CActionState::Apply_Gravity_CCT(const _float fTimeDelta)
 	if (Is_ApplyGravity() == false)
 		return;
 
-	m_fVerticalSpeed += (m_fGravity + m_fGravityOffset) * fTimeDelta;
-	if (m_fVerticalSpeed < m_fMaxFallSpeed)
-		m_fVerticalSpeed = m_fMaxFallSpeed;
+	//// 바닥일때는 중력을 적용하지 않는다
+	//if (CCTFlags & PxControllerCollisionFlag::eCOLLISION_DOWN)
+	//{
+	//	m_fVerticalSpeed = 0.f;
+	//}
+
+
+	//else
+	{
+		m_fVerticalSpeed += (m_fGravity + m_fGravityOffset) * fTimeDelta;
+
+		//m_fVerticalSpeed += (m_fGravity + m_fGravityOffset) * fTimeDelta;
+		if (m_fVerticalSpeed < m_fMaxFallSpeed)
+			m_fVerticalSpeed = m_fMaxFallSpeed;
+	}
 
 	_float fDelta = m_fVerticalSpeed * fTimeDelta;
 
 	CPhysicsCCT* cct = { nullptr };
 	if (cct = m_pOwner->Get_Component<CPhysicsCCT>())
 	{
-		Vec3 vPos = cct->GetFootPosition();
-		Vec3 vUp = m_pOwnerTransform->Get_Info(TRANSFORM_INFO_STATE::UP);
-		vUp.Normalize();
+		//Vec3 vPos = cct->GetFootPosition();
+		//Vec3 vUp = m_pOwnerTransform->Get_Info(TRANSFORM_INFO_STATE::UP);
+		//vUp.Normalize();
+
+		Vec3 vUp(0.f, 1.f, 0.f);  // UP 방향
 		vUp = vUp * fDelta;
 		
 		CCTFlags = cct->Move(vUp, 0.01f, fTimeDelta);
@@ -349,7 +366,11 @@ void CActionState::Apply_Gravity_CCT(const _float fTimeDelta)
 		m_pOwnerTransform->Set_Info(TRANSFORM_INFO_STATE::POS, finalPos);
 
 		if (CCTFlags & PxControllerCollisionFlag::eCOLLISION_DOWN)
-			m_fVerticalSpeed = 0.f;
+		{
+			if(m_pOwnerTransform->Is_OnGround(0.85f))
+				m_fVerticalSpeed = 0.f;
+		}
+
 	}
 
 	return;
