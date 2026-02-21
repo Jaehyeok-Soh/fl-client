@@ -571,6 +571,9 @@
     <ClInclude Include="..\Public\Panel_Parts.h">
       <Filter>06. ImGui\01. Panel\Animation\Panel_Parts</Filter>
     </ClInclude>
+    <ClInclude Include="..\Public\SceneData.h">
+      <Filter>02. GameObjects\Map\01. SceneData</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <Image Include="small.ico">
@@ -840,6 +843,9 @@
     </ClCompile>
     <ClCompile Include="..\Private\Panel_Parts.cpp">
       <Filter>06. ImGui\01. Panel\Animation\Panel_Parts</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\SceneData.cpp">
+      <Filter>02. GameObjects\Map\01. SceneData</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

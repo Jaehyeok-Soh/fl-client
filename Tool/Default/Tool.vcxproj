@@ -256,6 +256,7 @@
     <ClCompile Include="..\Private\Builder_UI.cpp" />
     <ClCompile Include="..\Private\CameraMan_Free.cpp" />
     <ClCompile Include="..\Private\Panel_Parts.cpp" />
+    <ClCompile Include="..\Private\SceneData.cpp" />
     <ClCompile Include="..\Private\Tool_Weapon.cpp" />
     <ClCompile Include="..\Private\CEffectObject.cpp" />
     <ClCompile Include="..\Private\Effect_Preview_panel.cpp" />
