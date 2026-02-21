@@ -164,7 +164,7 @@ namespace Engine
 	//===================
 	enum class EAnimNotifyId : unsigned int
 	{
-		CollisionOn,
+		CollisionOn = 0,
 		CollisionOff,
 		FootStepL,
 		FootStepR,

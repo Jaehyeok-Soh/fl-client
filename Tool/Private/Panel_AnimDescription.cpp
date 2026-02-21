@@ -327,6 +327,36 @@ void CPanel_AnimDescription::Desc_EffectWindow()
             m_pAnimToolManager->Modify_EffectEvent(m_tEventInfo->vecVFXEvents);
     }
 
+    if (ImGui::CollapsingHeader("AnimNotifyId"))
+    {
+
+        vector<string> m_pShapeList = { "CollisionOn", "CollisionOff", "FootStepL"," FootStepR", "ONESHOT", "ATTACH_ON" };
+
+        std::vector<const char*> iTems;
+        iTems.reserve(static_cast<int>(m_pShapeList.size()));
+
+        for (auto& str : m_pShapeList)
+            iTems.push_back(str.c_str());
+
+        int currentIdx = pEvent.iNotifyId;
+
+        if (ImGui::ListBox("", &currentIdx, iTems.data(), static_cast<int>(m_pShapeList.size()), 6))
+        {
+            pEvent.iNotifyId = currentIdx;
+            m_pAnimToolManager->Modify_EffectEvent(m_tEventInfo->vecVFXEvents);
+        }
+
+        if ((iTems.size() - 1) < currentIdx)
+        {
+            ImGui::TreePop();
+            return;
+        }
+        ImGui::Spacing();
+        ImGui::Text("Selected Shape: "); ImGui::SameLine();
+        ImGui::TextColored(ImVec4(1.0f, 1.0f, 0.0f, 1.0f), "%s", m_pShapeList[currentIdx].c_str());
+        ImGui::Separator();
+    }
+
     if (ImGui::CollapsingHeader("Transform & Attachment", ImGuiTreeNodeFlags_DefaultOpen))
     {
         int currentSim = pEvent.iSimulationType;

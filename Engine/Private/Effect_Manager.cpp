@@ -1,6 +1,8 @@
 #include "Engine_pch.h"
 
 #include "Effect_Manager.h"
+#include "GameObject.h"
+#include "EffectHandler.h"
 #include "GameInstance.h"
 
 CEffect_Manager::CEffect_Manager()
@@ -14,7 +16,30 @@ HRESULT CEffect_Manager::Initialize()
 	return S_OK;
 }
 
-void CEffect_Manager::Spawn_Effect(const std::string& strTag, const Matrix& matWorld, _float fDuration, _bool bIsLocal, void* pTargetBone)
+void CEffect_Manager::Spawn_PoolEffect(CEffectHandler* handler, const std::string& UniqueEffectName, const std::string& strTag, const Matrix& matWorld, _float fDuration, _bool bIsLocal, void* pTargetBone)
+{
+    EFFECT_SPAWN_DESC tEngineDesc = {};
+    tEngineDesc.matWorld = matWorld;
+    tEngineDesc.fDuration = fDuration;
+    tEngineDesc.iSimulationType = bIsLocal ? 1 : 0;
+    tEngineDesc.pTargetBoneMatrix = (const Matrix*)pTargetBone;
+
+    wstring wstrPrototypeTag = L"POOL_" + Engine_Utils::ToWString(strTag);
+
+    m_pGameInstance->Request_AddObject(
+        m_pGameInstance->Get_CurrentLevelIndex(),
+        wstrPrototypeTag,
+        0,
+        &tEngineDesc,
+        [handler, UniqueEffectName](CGameObject* pGo)
+        {
+            pGo->Set_Name(UniqueEffectName);
+            handler->PoolObject_CallBack(pGo);
+        }
+    );
+}
+
+void CEffect_Manager::Spawn_PoolEffect(const std::string& strTag, const Matrix& matWorld, _float fDuration, _bool bIsLocal, void* pTargetBone)
 {
     EFFECT_SPAWN_DESC tEngineDesc = {};
     tEngineDesc.matWorld = matWorld;
@@ -31,7 +56,6 @@ void CEffect_Manager::Spawn_Effect(const std::string& strTag, const Matrix& matW
         &tEngineDesc
     );
 }
-
 CEffect_Manager* CEffect_Manager::Create()
 {
     CEffect_Manager* pInstance = new CEffect_Manager();

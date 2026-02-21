@@ -15,6 +15,7 @@ void to_json(json& j, const EFFECTEVENT& data) {
     to_json(j, static_cast<const ANIM_EVENT_BASE1&>(data));
 
     // 이펙트 전용 데이터 추가
+    j["iNotifyId"] = data.iNotifyId;
     j["strEffectTag"] = data.strEffectTag;
     j["iSimulationType"] = data.iSimulationType;
     j["strSocketName"] = data.strSocketName;
@@ -29,6 +30,7 @@ void from_json(const json& j, EFFECTEVENT& data) {
     from_json(j, static_cast<ANIM_EVENT_BASE1&>(data));
 
     // 이펙트 전용 데이터 로드 (안전하게 contains 체크)
+    if (j.contains("iNotifyId"))       j.at("iNotifyId").get_to(data.iNotifyId);
     if (j.contains("strEffectTag"))    j.at("strEffectTag").get_to(data.strEffectTag);
     if (j.contains("iSimulationType")) j.at("iSimulationType").get_to(data.iSimulationType);
     if (j.contains("strSocketName"))   j.at("strSocketName").get_to(data.strSocketName);
@@ -47,7 +49,7 @@ void from_json(const json& j, EFFECTEVENT& data) {
         const auto& jo = j.at("vRotation");
         if (jo.contains("x")) jo.at("x").get_to(data.vRotation.x);
         if (jo.contains("y")) jo.at("y").get_to(data.vRotation.y);
-        if (jo.contains("z")) jo.at("z").get_to(data.vRotation.z);
+        if (jo.contains("z")) jo.at("z").get_to(data.vRotation.z); 
     }
 }
 

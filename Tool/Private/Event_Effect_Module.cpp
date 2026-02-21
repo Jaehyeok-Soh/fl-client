@@ -26,7 +26,7 @@ void CEvent_Effect_Module::Render()
 {
 }
 
-void CEvent_Effect_Module::SetEFfectEvent(CAnimEffectHandler* pEffectHandler, CAnimObj* pOwner)
+void CEvent_Effect_Module::SetEFfectEvent(CEffectHandler* pEffectHandler, CAnimObj* pOwner)
 {
     Safe_Release(m_pEffectEvent);
     m_pEffectEvent = pEffectHandler;

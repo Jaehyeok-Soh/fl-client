@@ -5,8 +5,11 @@
 
 NS_BEGIN(DTO)
 
+
 // 이펙트 이벤트 스크립트
 typedef struct tagEffectEvent : public ANIM_EVENT_BASE1 {
+    _uint       iNotifyId = { 0 };
+
     string      strEffectTag = {};
     _int        iSimulationType = { 1 };
     string      strSocketName = {};
@@ -15,7 +18,6 @@ typedef struct tagEffectEvent : public ANIM_EVENT_BASE1 {
     _bool       bFollowBone = { true };
     _float      fDuration = {};
 }EFFECTEVENT;
-
 
 // 특정 캐릭터(Owner)의 전체 애니메이션 이벤트 묶음
 typedef struct tagEffectEventInfoDesc {

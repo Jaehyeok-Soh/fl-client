@@ -164,7 +164,7 @@
   <ItemGroup>
     <ClCompile Include="..\Private\ActionState.cpp" />
     <ClCompile Include="..\Private\ActiveAttackOverlap.cpp" />
-    <ClCompile Include="..\private\AnimEffectHandler.cpp" />
+    <ClCompile Include="..\private\EffectHandler.cpp" />
     <ClCompile Include="..\Private\AsTypes.cpp" />
     <ClCompile Include="..\Private\Base.cpp">
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Use</PrecompiledHeader>
@@ -318,7 +318,7 @@
   <ItemGroup>
     <ClInclude Include="..\Public\ActionState.h" />
     <ClInclude Include="..\Public\ActiveAttackOverlap.h" />
-    <ClInclude Include="..\Public\AnimEffectHandler.h" />
+    <ClInclude Include="..\Public\EffectHandler.h" />
     <ClInclude Include="..\Public\Anim_Event_AttackOverlap.h" />
     <ClInclude Include="..\Public\Anim_Event_Base.h" />
     <ClInclude Include="..\Public\Anim_Event_Hitbox.h" />

@@ -28,6 +28,7 @@
 #include "Physics_Module.h"
 #include "UIAction_Registry.h"
 #include "Effect_Manager.h"
+#include "EffectHandler.h"
 
 IMPLEMENT_SINGLETON(CGameInstance)
 
@@ -424,6 +425,7 @@ void CGameInstance::Request_DeleteGameObject(_uint iCloneLevelIndex, const wstri
 	desc.pGo = pGo;
 	m_pEvent_Manager->Push_DespawnEvent(desc);
 }
+
 CGameObject* CGameInstance::Get_GameObject(_uint iLevelIndex, const wstring& wstrLayerTag, _uint iObjectIndex)
 {
 	return m_pObject_Manager->Get_GameObject(iLevelIndex, wstrLayerTag, iObjectIndex);
@@ -804,9 +806,14 @@ HRESULT CGameInstance::Draw_Text(const _wstring& strFontTag, const _tchar* pText
 #pragma endregion
 
 #pragma region EFFECT_MANAGER
-void CGameInstance::Spawn_Effect(const std::string& strTag, const Matrix& matWorld, _float fDuration, _bool bIsLocal, void* pTargetBone)
+void CGameInstance::Spawn_PoolEffect(CEffectHandler* handler, const std::string& UniqueEffectName, const std::string& strTag, const Matrix& matWorld, _float fDuration, _bool bIsLocal, void* pTargetBone)
 {
-	m_pEffect_Manager->Spawn_Effect(strTag, matWorld, fDuration, bIsLocal, pTargetBone);
+	m_pEffect_Manager->Spawn_PoolEffect(handler, UniqueEffectName, strTag, matWorld, fDuration, bIsLocal, pTargetBone);
+}
+
+void CGameInstance::Spawn_PoolEffect(const std::string& strTag, const Matrix& matWorld, _float fDuration, _bool bIsLocal, void* pTargetBone)
+{
+	m_pEffect_Manager->Spawn_PoolEffect(strTag, matWorld, fDuration, bIsLocal, pTargetBone);
 }
 
 #pragma endregion

@@ -393,7 +393,7 @@ void CAnimTool_Manager::Set_AttackOverlap(CPhysicsAttackOverlap* pAttackOverlap)
 		m_tEventInfo.vecAttackEvents = m_pOverlapModule->GetEvents();
 }
 
-void CAnimTool_Manager::Set_EffectEvent(CAnimEffectHandler* pEffectEvent)
+void CAnimTool_Manager::Set_EffectEvent(CEffectHandler* pEffectEvent)
 {
 	if (m_pEffectModule)
 	{
@@ -514,10 +514,10 @@ void CAnimTool_Manager::Modify_EffectEvent(vector<DTO::EFFECTEVENT> events)
 		// Add Event를 눌러서 생성했는데 컴포넌트가 없는 상태라면
 		if (m_pEffectModule->GetHandler() == nullptr)
 		{
-			CAnimEffectHandler::ANIM_EFFECT_HANDLER_DESC tDesc{};
+			CEffectHandler::ANIM_EFFECT_HANDLER_DESC tDesc{};
 			tDesc.strOwnerTag = m_tAnimControllInfo.modelPath.stem().string();
 
-			CAnimEffectHandler* pNewHandler = CAnimEffectHandler::Create(&tDesc);
+			CEffectHandler* pNewHandler = CEffectHandler::Create(&tDesc);
 			if (pNewHandler)
 			{
 				m_pEffectModule->SetEFfectEvent(pNewHandler, m_tAnimControllInfo.pCurrentObject);

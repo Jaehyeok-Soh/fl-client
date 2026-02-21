@@ -802,7 +802,7 @@
     <ClCompile Include="..\Private\DataDocument_EffectEvent.cpp">
       <Filter>01. Utility\11. DataRepository\Datas\Effect\EffectEventData\DataDocument_EffectEvent</Filter>
     </ClCompile>
-    <ClCompile Include="..\private\AnimEffectHandler.cpp">
+    <ClCompile Include="..\private\EffectHandler.cpp">
       <Filter>00. System\05. Component\AnimEffectHandler</Filter>
     </ClCompile>
     <ClCompile Include="..\Private\Effect_Manager.cpp">
@@ -1237,7 +1237,7 @@
     <ClInclude Include="..\Public\DataDocument_EffectEvent.h">
       <Filter>01. Utility\11. DataRepository\Datas\Effect\EffectEventData\DataDocument_EffectEvent</Filter>
     </ClInclude>
-    <ClInclude Include="..\Public\AnimEffectHandler.h">
+    <ClInclude Include="..\Public\EffectHandler.h">
       <Filter>00. System\05. Component\AnimEffectHandler</Filter>
     </ClInclude>
     <ClInclude Include="..\Public\Effect_Manager.h">

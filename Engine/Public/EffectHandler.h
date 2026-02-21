@@ -6,12 +6,23 @@ NS_BEGIN(Engine)
 
 class CModel;
 
-class ENGINE_DLL CAnimEffectHandler final : public CComponent
+class ENGINE_DLL CEffectHandler final : public CComponent
 {
 public:
+
+    enum class E_EFFECTTYPE
+    {
+        NONE,
+        MODEL_ANIM,   
+        SKILL_OBJ,    
+        WORLD_STATIC, 
+        TYPE_END
+    };
+
     typedef struct tagAnimEffectHandlerDesc
     {
         string strOwnerTag;
+        E_EFFECTTYPE eType = { E_EFFECTTYPE::NONE };
         unordered_map<_uint, vector<DTO::EFFECTEVENT>> mapEvents;
     } ANIM_EFFECT_HANDLER_DESC;
 
@@ -22,9 +33,9 @@ public:
     constexpr static EComponentType _ID = EComponentType::EF_ANIMHANDLER;
 
 private:
-    CAnimEffectHandler();
-    CAnimEffectHandler(const CAnimEffectHandler& rhs);
-    virtual ~CAnimEffectHandler() = default;
+    CEffectHandler();
+    CEffectHandler(const CEffectHandler& rhs);
+    virtual ~CEffectHandler() = default;
 
     virtual HRESULT Initialize_Prototype(void* pArg);
     virtual HRESULT Initialize(void* pArg) override;
@@ -34,14 +45,20 @@ public:
     void Update(_float fDT);
 
 public:
+    void Ready_Event();
+    void Release_Event();
+    void CallBackEvent(const AnimNotifyKey& key);
+
+public:
     // 툴 모듈에서 실시간으로 데이터를 교체하기 위한 Getter
     ANIM_EFFECT_HANDLER_DESC& Get_Desc() { return m_tDesc; }
-    unordered_map<_uint, vector<DTO::EFFECTEVENT>>& GetEvents() { return m_tDesc.mapEvents; }
+    unordered_map<_uint, vector<DTO::EFFECTEVENT>>& GetEvents();
 
+    void PoolObject_CallBack(CGameObject* pGo);
 private:
     void GetAnimation();
-    void CheckAnim();
     void Request_SpawnEffect(const DTO::EFFECTEVENT& script);
+    void Request_SpawnEffect(const DTO::EFFECTEVENT& script, const std::string& UniqueEffectTag);
 
 private:
     _uint m_iPrevAnimIndex = { 999999 };
@@ -52,8 +69,12 @@ private:
     const Matrix* m_pOwnerMatrix = { nullptr };
     CModel* m_pOwnerModel = { nullptr };
 
+private:
+    DelegateHandle      m_EventHandle = {};
+    std::unordered_map<string, CGameObject*> m_ActiveEffects;
+
 public:
-    static CAnimEffectHandler* Create(void* pArg);
+    static CEffectHandler* Create(void* pArg);
     virtual CComponent* Clone(void* pArg) override;
     virtual void Free() override;
 };

@@ -13,7 +13,7 @@
 #include "PhysicsCCT.h"
 
 #include "PhysicsAttackOverlap.h"
-#include "AnimEffectHandler.h"
+#include "EffectHandler.h"
 
 namespace fs = std::filesystem;
 
@@ -23,7 +23,7 @@ extern HINSTANCE	g_hInstance;
 struct LoadAnimModel { using Signature = void(path animModelPath); };
 struct LoadAnimModelPart { using Signature = void(path PartModelPath); };
 struct LoadAttackOverlap { using Signature = void(CPhysicsAttackOverlap* pAttackOverlap); };
-struct LoadEffectEvent { using Signature = void(CAnimEffectHandler* pEffectEvent);};
+struct LoadEffectEvent { using Signature = void(CEffectHandler* pEffectEvent);};
 
 static const char* eventTypeItems[EAnimEvent::END] = { "OVERLAP", "EFFECT", "SOUND", "NONE" };
 static const char* overlapTypeItems[EOverlapType::END] = { "Box", "Sphere", "Capsule"};
