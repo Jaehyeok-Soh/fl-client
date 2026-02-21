@@ -2,13 +2,16 @@
 #include "Builder_UI.h"
 #include "Canvas.h"
 #include "GenericUI.h"
-#include "UIProgress_Bar.h"
 #include "UIJust_Image.h"
 
+// 프로그레스 클래스
+#include "UIPlayerStat_Progress.h"
+#include "UILoading_Progress.h"
 
 // 텍스트 클래스
 #include "UIMenu_Text.h"
 #include "UIPlayerStat_Text.h"
+#include "UILoading_Text.h"
 
 // 다이나믹 이미지 클래스
 #include "UIMenu_Image.h"
@@ -16,6 +19,7 @@
 #include "UIMini_Map.h"
 #include "UISkill_BG.h"
 #include "UIMenu_OutLine.h"
+#include "UILoading_Image.h"
 
 // 트리거 클래스
 #include "UICommon_Trigger.h"
@@ -136,7 +140,7 @@ HRESULT CBuilder_UI::Create_CanvasDTO(const DTO::TUI_CanvasData& data)
 	Desc.fHeight = m_vViewportSIze.y;
 
 	const _wstring wstrLayerTag = Engine_Utils::ToWString(data.strTag) + L"_Layer";
-	CGameObject* pResult = m_pGameInstance->Add_GameObject(m_iLevelID, L"Prototype_UI_Canvas", m_iLevelID, wstrLayerTag, &Desc);
+	CGameObject* pResult = m_pGameInstance->Add_GameObject(ENUM_TO_UINT(ELevelType::STATIC), L"Prototype_UI_Canvas", ENUM_TO_UINT(ELevelType::STATIC), wstrLayerTag, &Desc);
 	if (pResult == nullptr)
 		return E_FAIL;
 
@@ -209,10 +213,29 @@ HRESULT CBuilder_UI::Register_Class(DTO::EUIClassType eClassType, const DTO::TUI
 	// PROGRESS_BAR //
 	if (eClassType == DTO::EUIClassType::PROGRESS_BAR)
 	{
-		CUIProgress_Bar::PROGRESS_BAR_DESC ProgressDesc = {};
-		static_cast<CGenericUI::GENERIC_UI_DESC&>(ProgressDesc) = DefaultDesc;
-		ProgressDesc.eOwner = data.eSubClassType;
-		pResult = m_pGameInstance->Add_GameObject(m_iLevelID, wstrProtoTag, m_iLevelID, wstrLayerTag, &ProgressDesc);
+		const auto Type = data.eSubClassType;
+
+		const _bool isPlayerStat = Type >= DTO::EUISubClassType::PLAYER_STAT_BEGIN && Type <= DTO::EUISubClassType::PLAYER_STAT_END;
+		const _bool isLoading = Type >= DTO::EUISubClassType::LOADING_PROGRESS;
+
+		if (isPlayerStat)
+		{
+			CUIPlayerStat_Progress::PLAYER_STAT_PROGRESS_DESC  PlayerStatProgressDesc = {};
+			static_cast<CGenericUI::GENERIC_UI_DESC&>(PlayerStatProgressDesc) = DefaultDesc;
+			PlayerStatProgressDesc.eOwner = data.eSubClassType;
+			pResult = m_pGameInstance->Add_GameObject(m_iLevelID, L"Prototype_UI_PlayerStatProgress", m_iLevelID, wstrLayerTag, &PlayerStatProgressDesc);
+		}
+		else if (isLoading)
+		{
+			CUILoading_Progress::LOADING_PROGRESS_DESC  LoadingProgressDesc = {};
+			static_cast<CGenericUI::GENERIC_UI_DESC&>(LoadingProgressDesc) = DefaultDesc;
+			LoadingProgressDesc.eOwner = data.eSubClassType;
+			pResult = m_pGameInstance->Add_GameObject(m_iLevelID, L"Prototype_UI_LoadingProgress", m_iLevelID, wstrLayerTag, &LoadingProgressDesc);
+		}
+		else
+		{
+
+		}
 	}
 
 	////////////////////////////////////////
@@ -227,9 +250,11 @@ HRESULT CBuilder_UI::Register_Class(DTO::EUIClassType eClassType, const DTO::TUI
 		const auto Type				= iter->second.eTextSubClassType;
 		const _bool isPlayerStat	= (Type >= DTO::EUITextSubClassType::PLAYER_STAT_TEXT_BEGIN && Type <= DTO::EUITextSubClassType::PLAYER_STAT_TEXT_END);
 		const _bool isMenu			= (Type >= DTO::EUITextSubClassType::MENU_TEXT_BEGIN && Type <= DTO::EUITextSubClassType::MENU_TEXT_END);
+		const _bool isLoading		= (Type >= DTO::EUITextSubClassType::LOADING_TEXT_BEGIN && Type <= DTO::EUITextSubClassType::LOADING_TEXT_END);
 
 		static_cast<CGenericUI::GENERIC_UI_DESC&>(TextDesc) = DefaultDesc;
 		TextDesc.eTextSubClass	= Type;
+		TextDesc.eShaderType	= iter->second.eShaderType;
 		TextDesc.wstrFontTag	= Engine_Utils::ToWString(iter->second.strFontTag);
 		TextDesc.wstrText		= Engine_Utils::ToWString(iter->second.strText);
 		TextDesc.vFontColor		= iter->second.vFontColor;
@@ -248,6 +273,12 @@ HRESULT CBuilder_UI::Register_Class(DTO::EUIClassType eClassType, const DTO::TUI
 			CUIMenu_Text::MENU_TEXT_DESC MenuTextDesc = {};
 			static_cast<CUIText::UI_TEXT_DESC&>(MenuTextDesc) = TextDesc;
 			pResult = m_pGameInstance->Add_GameObject(m_iLevelID, L"Prototype_UI_MenuText", m_iLevelID, wstrLayerTag, &MenuTextDesc);
+		}
+		else if (isLoading)
+		{
+			CUILoading_Text::LOADING_TEXT_DESC LoadingTextDesc = {};
+			static_cast<CUIText::UI_TEXT_DESC&>(LoadingTextDesc) = TextDesc;
+			pResult = m_pGameInstance->Add_GameObject(m_iLevelID, L"Prototype_UI_LoadingText", m_iLevelID, wstrLayerTag, &LoadingTextDesc);
 		}
 		else
 		{
@@ -328,11 +359,12 @@ HRESULT CBuilder_UI::Register_Class(DTO::EUIClassType eClassType, const DTO::TUI
 
 		const auto Type = iter->second.eDISubClassType;
 
-		const _bool isPlayerSkill	= (Type >= DTO::EUIDImageSubClassType::PLAYER_SKILL_BEGIN	&&	Type <= DTO::EUIDImageSubClassType::PLAYER_SKILL_END);
-		const _bool isMiniMap		= (Type >= DTO::EUIDImageSubClassType::MINIMAP_BEGIN		&&	Type <= DTO::EUIDImageSubClassType::MINIMAP_END);
+		const _bool isPlayerSkill	= (Type >= DTO::EUIDImageSubClassType::PLAYER_SKILL_BEGIN	&& Type <= DTO::EUIDImageSubClassType::PLAYER_SKILL_END);
+		const _bool isMiniMap		= (Type >= DTO::EUIDImageSubClassType::MINIMAP_BEGIN		&& Type <= DTO::EUIDImageSubClassType::MINIMAP_END);
 		const _bool isHoverIcon		= (Type >= DTO::EUIDImageSubClassType::HOVER_POPUP_BEGIN	&& Type <= DTO::EUIDImageSubClassType::HOVER_POPUP_END);
 		const _bool isMenu			= (Type >= DTO::EUIDImageSubClassType::MENU_BEGIN			&& Type <= DTO::EUIDImageSubClassType::MENU_ICON_BG);
 		const _bool isOutLine		= (Type >= DTO::EUIDImageSubClassType::MENU_ICON_OUTLINE	&& Type <= DTO::EUIDImageSubClassType::MENU_END);
+		const _bool isLoading		= (Type >= DTO::EUIDImageSubClassType::LOADING_BEGIN		&& Type <= DTO::EUIDImageSubClassType::LOADING_END);
 
 		if (isPlayerSkill)
 		{
@@ -368,6 +400,13 @@ HRESULT CBuilder_UI::Register_Class(DTO::EUIClassType eClassType, const DTO::TUI
 			static_cast<CGenericUI::GENERIC_UI_DESC&>(MenuOutlineDesc) = DefaultDesc;
 			MenuOutlineDesc.eSubClassType = Type;
 			pResult = m_pGameInstance->Add_GameObject(m_iLevelID, L"Prototype_UI_MenuOutline", m_iLevelID, wstrLayerTag, &MenuOutlineDesc);
+		}
+		else if (isLoading)
+		{
+			CUILoading_Image::LOADING_IMAGE_DESC LoadingImageDesc = {};
+			static_cast<CGenericUI::GENERIC_UI_DESC&>(LoadingImageDesc) = DefaultDesc;
+			LoadingImageDesc.eSubClassType = Type;
+			pResult = m_pGameInstance->Add_GameObject(m_iLevelID, L"Prototype_UI_LoadingImage", m_iLevelID, wstrLayerTag, &LoadingImageDesc);
 		}
 	}
 	else

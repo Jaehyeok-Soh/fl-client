@@ -1,5 +1,5 @@
 #include "pch.h"
-#include "UIPlayerStat_Text.h"
+#include "UILoading_Text.h"
 #include "Client_Defines.h"
 
 //=================
@@ -11,26 +11,26 @@
 #include "StatComponent.h"
 #include "GameInstance.h"
 
-CUIPlayerStat_Text::CUIPlayerStat_Text(ID3D11Device* pDevice, ID3D11DeviceContext* pDeviceContext)
+CUILoading_Text::CUILoading_Text(ID3D11Device* pDevice, ID3D11DeviceContext* pDeviceContext)
 	:CUIText(pDevice, pDeviceContext)
 {
 }
 
-CUIPlayerStat_Text::CUIPlayerStat_Text(const CUIPlayerStat_Text& rhs)
+CUILoading_Text::CUILoading_Text(const CUILoading_Text& rhs)
 	:CUIText(rhs)
 {
 }
 
-HRESULT CUIPlayerStat_Text::Initialize_Prototype()
+HRESULT CUILoading_Text::Initialize_Prototype()
 {
 	if (FAILED(Super::Initialize_Prototype()))
 		return E_FAIL;
 	return S_OK;
 }
 
-HRESULT CUIPlayerStat_Text::Initialize(void* pArg)
+HRESULT CUILoading_Text::Initialize(void* pArg)
 {
-	PLAYER_STAT_DESC* pDesc = static_cast<PLAYER_STAT_DESC*>(pArg);
+	LOADING_TEXT_DESC* pDesc = static_cast<LOADING_TEXT_DESC*>(pArg);
 
 	if (FAILED(Super::Initialize(pArg)))
 		return E_FAIL;
@@ -41,12 +41,12 @@ HRESULT CUIPlayerStat_Text::Initialize(void* pArg)
 	return S_OK;
 }
 
-HRESULT CUIPlayerStat_Text::Attach_Personal_Info()
+HRESULT CUILoading_Text::Attach_Personal_Info()
 {
 	return S_OK;
 }
 
-HRESULT CUIPlayerStat_Text::Awake(const _uint iCurrentLevelID)
+HRESULT CUILoading_Text::Awake(const _uint iCurrentLevelID)
 {
 	if (FAILED(Super::Awake(iCurrentLevelID)))
 		return E_FAIL;
@@ -54,28 +54,28 @@ HRESULT CUIPlayerStat_Text::Awake(const _uint iCurrentLevelID)
 	return S_OK;
 }
 
-void CUIPlayerStat_Text::Update_Priority(const _float fTimeDelta)
+void CUILoading_Text::Update_Priority(const _float fTimeDelta)
 {
 	Super::Update_Priority(fTimeDelta);
 }
 
-void CUIPlayerStat_Text::Update(const _float fTimeDelta)
+void CUILoading_Text::Update(const _float fTimeDelta)
 {
 	Super::Update(fTimeDelta);
 }
 
-void CUIPlayerStat_Text::Update_Late(const _float fTimeDelta)
+void CUILoading_Text::Update_Late(const _float fTimeDelta)
 {
 	Super::Update_Late(fTimeDelta);
 }
 
-void CUIPlayerStat_Text::Ready_Before_Render(const _float fTimeDelta)
+void CUILoading_Text::Ready_Before_Render(const _float fTimeDelta)
 {
 	Acting_By_InteractState();
 	Super::Ready_Before_Render(fTimeDelta);
 }
 
-HRESULT CUIPlayerStat_Text::Render()
+HRESULT CUILoading_Text::Render()
 {
 	if (!m_isVisible)
 		return S_OK;
@@ -92,12 +92,12 @@ HRESULT CUIPlayerStat_Text::Render()
 	return S_OK;
 }
 
-HRESULT CUIPlayerStat_Text::Ready_Components(PLAYER_STAT_DESC* pDesc)
+HRESULT CUILoading_Text::Ready_Components(LOADING_TEXT_DESC* pDesc)
 {
 	return S_OK;
 }
 
-HRESULT CUIPlayerStat_Text::Bind_ShaderResources()
+HRESULT CUILoading_Text::Bind_ShaderResources()
 {
 	CShader* pShader = Get_Component<CShader>();
 	if (FAILED(Get_Component<CTransform>()->Bind_ShaderResource(pShader)))
@@ -105,21 +105,18 @@ HRESULT CUIPlayerStat_Text::Bind_ShaderResources()
 	return S_OK;
 }
 
-void CUIPlayerStat_Text::OnUIEvent(ETriggerEventType eEvent, CGenericUI* pSender)
+void CUILoading_Text::OnUIEvent(ETriggerEventType eEvent, CGenericUI* pSender)
 {
 	if (!m_isActive)
 		return;
 
-	if (eEvent == ETriggerEventType::PRESS_ENTER)
-	{
-		if (m_isVisible)
-			Set_Invisible();
-		else
-			Set_Visible();
-	}
+	if (m_isVisible)
+		Set_Invisible();
+	else
+		Set_Visible();
 }
 
-void CUIPlayerStat_Text::Initialize_Visible_Event()
+void CUILoading_Text::Initialize_Visible_Event()
 {
 	m_isActive = false;
 	m_isFin_Event = false;
@@ -127,20 +124,17 @@ void CUIPlayerStat_Text::Initialize_Visible_Event()
 	m_fTimeAcc = 0.f;
 }
 
-void CUIPlayerStat_Text::Initialize_InVisible_Event()
+void CUILoading_Text::Initialize_InVisible_Event()
 {
 }
 
-_bool CUIPlayerStat_Text::Tick_Visible_Event(const _float fTimeDelta)
+_bool CUILoading_Text::Tick_Visible_Event(const _float fTimeDelta)
 {
 	m_fTimeAcc += fTimeDelta;
 
 	if (m_fTimeAcc < m_fDelay)
 		return false;
 
-	m_vFontColor.x += fTimeDelta * 2.f;
-	m_vFontColor.y += fTimeDelta * 2.f;
-	m_vFontColor.z += fTimeDelta * 2.f;
 	m_vFontColor.w += fTimeDelta * 2.f;
 	if (m_vFontColor.w > 1.f)
 	{
@@ -152,34 +146,34 @@ _bool CUIPlayerStat_Text::Tick_Visible_Event(const _float fTimeDelta)
 	return false;
 }
 
-_bool CUIPlayerStat_Text::Tick_InVisible_Event(const _float fTimeDelta)
+_bool CUILoading_Text::Tick_InVisible_Event(const _float fTimeDelta)
 {
 	return true;
 }
 
-CUIPlayerStat_Text* CUIPlayerStat_Text::Create(ID3D11Device* pDevice, ID3D11DeviceContext* pDeviceContext)
+CUILoading_Text* CUILoading_Text::Create(ID3D11Device* pDevice, ID3D11DeviceContext* pDeviceContext)
 {
-	CUIPlayerStat_Text* pInstance = new CUIPlayerStat_Text(pDevice, pDeviceContext);
+	CUILoading_Text* pInstance = new CUILoading_Text(pDevice, pDeviceContext);
 	if (FAILED(pInstance->Initialize_Prototype()))
 	{
-		MSG_BOX("CUIPlayerStat_Text::Create, Create Failed");
+		MSG_BOX("CUILoading_Text::Create, Create Failed");
 		Safe_Release(pInstance);
 	}
 	return pInstance;
 }
 
-CGameObject* CUIPlayerStat_Text::Clone(void* pArg)
+CGameObject* CUILoading_Text::Clone(void* pArg)
 {
-	CUIPlayerStat_Text* pInstance = new CUIPlayerStat_Text(*this);
+	CUILoading_Text* pInstance = new CUILoading_Text(*this);
 	if (FAILED(pInstance->Initialize(pArg)))
 	{
-		MSG_BOX("CUIPlayerStat_Text::Clone, Clone Failed");
+		MSG_BOX("CUILoading_Text::Clone, Clone Failed");
 		Safe_Release(pInstance);
 	}
 	return pInstance;
 }
 
-void CUIPlayerStat_Text::Free()
+void CUILoading_Text::Free()
 {
 	Super::Free();
 }

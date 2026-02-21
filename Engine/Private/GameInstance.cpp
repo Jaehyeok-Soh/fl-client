@@ -26,7 +26,6 @@
 #include "Graphic_Device.h"
 #include "Render_Manager.h"
 #include "Physics_Module.h"
-#include "UIAction_Registry.h"
 
 IMPLEMENT_SINGLETON(CGameInstance)
 
@@ -115,9 +114,6 @@ HRESULT CGameInstance::Initialize_Engine(const ENGINE_DESC& Engine_Desc, _Inout_
 		return E_FAIL;
 
 	if (!(m_pPhysics_Module = CPhysics_Module::Create(*ppDevice, *ppContext)))
-		return E_FAIL;
-
-	if (!(m_pUIAction_Registry = CUIAction_Registry::Create()))
 		return E_FAIL;
 
 	if (!(m_pOctree_Manager = COctree_Manager::Create()))
@@ -1025,13 +1021,6 @@ void CGameInstance::Physics_Render(const PxGeometry& geom, const PxTransform& tr
 #endif
 #pragma endregion
 
-#pragma region UIACTION_REGISTRY
-CUIAction_Registry* CGameInstance::Get_UIAction_Registry() const
-{ 
-	return m_pUIAction_Registry;
-}
-#pragma endregion
-
 void CGameInstance::Free()
 {
 	Safe_Release(m_pFrustrum);
@@ -1056,7 +1045,6 @@ void CGameInstance::Free()
 	Safe_Release(m_pEventBus_Manager);
 	Safe_Release(m_pShaderAsset_Manager);
 	Safe_Release(m_pResource_Manager);
-	Safe_Release(m_pUIAction_Registry);
 	Safe_Release(m_pPhysics_Module);
 	Safe_Release(m_pGraphic_Device);
 	Super::Free();

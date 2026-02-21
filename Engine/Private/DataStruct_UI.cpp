@@ -149,7 +149,7 @@ void from_json(const json& j, TUI_TextData& data)
 	data.vFontColor.y	= jc.value("y", data.vFontColor.y);
 	data.vFontColor.z	= jc.value("z", data.vFontColor.z);
 	data.vFontColor.w	= jc.value("w", data.vFontColor.w);
-	data.ePivot			= j.value("fRotate", data.ePivot);
+	data.ePivot			= j.value("ePivot", data.ePivot);
 	data.fRotate		= j.value("fRotate", data.fRotate);
 	data.fScale			= j.value("fScale", data.fScale);
 }

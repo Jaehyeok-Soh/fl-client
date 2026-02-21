@@ -55,24 +55,23 @@
 //=================
 // UI
 //=================
-#include "Canvas.h"
 #include "GenericUI.h"
-#include "UIProgress_Bar.h"
-
+//프로그레스바
+#include "UIPlayerStat_Progress.h"
+#include "UILoading_Progress.h"
 // 텍스트 
 #include "UIMenu_Text.h"
 #include "UIPlayerStat_Text.h"
-
+#include "UILoading_Text.h"
 // 그냥 이미지
 #include "UIJust_Image.h"
-
 // 다이나믹 이미지 
 #include "UISkill_BG.h"
 #include "UIMini_Map.h"
 #include "UIHover_Image.h"
 #include "UIMenu_Image.h"
 #include "UIMenu_OutLine.h"
-
+#include "UILoading_Image.h"
 // 트리거 
 #include "UIMenu_Trigger.h"
 #include "UICommon_Trigger.h"
@@ -132,6 +131,9 @@ HRESULT CLoader::Loading()
 
 	switch (m_eLoadingLevelID)
 	{
+	case Client::ELevelType::LOADING:
+		hr = Loading_For_LoadLevel();
+		break;
 	case Client::ELevelType::LOGO:
 		hr = Loading_For_Logo();
 		break;
@@ -145,6 +147,28 @@ HRESULT CLoader::Loading()
 	if (FAILED(hr))
 		return E_FAIL;
 
+	return S_OK;
+}
+
+HRESULT CLoader::Loading_For_LoadLevel()
+{
+#pragma region ToolData
+	{
+		// Regist Document
+		{
+			if (FAILED(m_pGameInstance->Regist_Document<CDataDocument_UI>(ENUM_TO_UINT(ELevelType::LOADING), DTO::ECategory::UI)))
+				return E_FAIL;
+		}
+	}
+#pragma endregion
+
+#pragma region UI
+	ADD_PROTOTYPE(ELevelType::LOADING, L"Prototype_UI_LoadingImage", CUILoading_Image::Create(m_pDevice, m_pDeviceContext));
+	ADD_PROTOTYPE(ELevelType::LOADING, L"Prototype_UI_LoadingProgress", CUILoading_Progress::Create(m_pDevice, m_pDeviceContext));
+	ADD_PROTOTYPE(ELevelType::LOADING, L"Prototype_UI_LoadingText", CUILoading_Text::Create(m_pDevice, m_pDeviceContext));
+#pragma endregion
+
+	m_isFinished = true;
 	return S_OK;
 }
 
@@ -208,7 +232,7 @@ HRESULT CLoader::Loading_For_Logo()
 
 	// For. UI Texture
 	std::error_code ec;
-	for (const auto& entry : std::filesystem::directory_iterator(L"../../Resources/Textures/UI_Client/", std::filesystem::directory_options::skip_permission_denied, ec))
+	for (const auto& entry : std::filesystem::directory_iterator(L"../../Resources/Textures/UI/UI_Client/", std::filesystem::directory_options::skip_permission_denied, ec))
 	{
 		if (ec)
 			return E_FAIL;
@@ -401,8 +425,7 @@ HRESULT CLoader::Loading_For_Logo()
 #pragma endregion
 
 #pragma region UI
-	ADD_PROTOTYPE(ELevelType::LOGO, L"Prototype_UI_Canvas",			CCanvas::Create(m_pDevice, m_pDeviceContext));
-	ADD_PROTOTYPE(ELevelType::LOGO, L"Prototype_UI_PROGRESS_BAR",	CUIProgress_Bar::Create(m_pDevice, m_pDeviceContext));
+	ADD_PROTOTYPE(ELevelType::LOGO, L"Prototype_UI_PlayerStatProgress",	CUIPlayerStat_Progress::Create(m_pDevice, m_pDeviceContext));
 	ADD_PROTOTYPE(ELevelType::LOGO, L"Prototype_UI_MenuText",		CUIMenu_Text::Create(m_pDevice, m_pDeviceContext));
 	ADD_PROTOTYPE(ELevelType::LOGO, L"Prototype_UI_PlayerStatText",	CUIPlayerStat_Text::Create(m_pDevice, m_pDeviceContext));
 	ADD_PROTOTYPE(ELevelType::LOGO, L"Prototype_UI_JUST_IMAGE",		CUIJust_Image::Create(m_pDevice, m_pDeviceContext));
@@ -419,6 +442,7 @@ HRESULT CLoader::Loading_For_Logo()
 	m_isFinished = true;
 	return S_OK;
 }
+
 
 HRESULT CLoader::Loading_Files(_uint iLevelID, DTO::ECategory eCategory, const wstring& wstrFolderPath)
 {

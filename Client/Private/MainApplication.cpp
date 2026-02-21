@@ -18,6 +18,7 @@
 #include "PhysicsRigidBody.h"
 #include "PhysicsCollider.h"
 #include "PhysicsCCT.h"
+#include "Canvas.h"
 #include "UI_Manager.h"
 
 USING(Client)
@@ -431,6 +432,13 @@ HRESULT CMainApplication::Ready_Static_Prototype()
 	{
 		if (FAILED(m_pGameInstance->Add_Prototype(ENUM_TO_UINT(ELevelType::STATIC), L"Prototype_Component_Physics_Collider",
 			CPhysicsCollider::Create(m_pDevice, m_pDeviceContext, nullptr))))
+			return E_FAIL;
+	}
+
+	// For. Prototype_UI_Canvas
+	{
+		if (FAILED(m_pGameInstance->Add_Prototype(ENUM_TO_UINT(ELevelType::STATIC), L"Prototype_UI_Canvas",
+			CCanvas::Create(m_pDevice, m_pDeviceContext))))
 			return E_FAIL;
 	}
 

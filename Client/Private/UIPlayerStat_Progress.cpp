@@ -1,0 +1,304 @@
+#include "pch.h"
+#include "UIPlayerStat_Progress.h"
+#include "Client_Defines.h"
+
+//=================
+// Component
+//=================
+#include "Texture.h"
+#include "Shader.h"
+#include "VIBuffer_Rect_Tex.h"
+#include "StatComponent.h"
+#include "GameInstance.h"
+
+CUIPlayerStat_Progress::CUIPlayerStat_Progress(ID3D11Device* pDevice, ID3D11DeviceContext* pDeviceContext)
+	:CUIProgress_Bar(pDevice, pDeviceContext)
+{
+}
+
+CUIPlayerStat_Progress::CUIPlayerStat_Progress(const CUIPlayerStat_Progress& rhs)
+	:CUIProgress_Bar(rhs)
+{
+}
+
+HRESULT CUIPlayerStat_Progress::Initialize_Prototype()
+{
+	if (FAILED(Super::Initialize_Prototype()))
+		return E_FAIL;
+	return S_OK;
+}
+
+HRESULT CUIPlayerStat_Progress::Initialize(void* pArg)
+{
+	PLAYER_STAT_PROGRESS_DESC* pDesc = static_cast<PLAYER_STAT_PROGRESS_DESC*>(pArg);
+	m_pTargetStat = pDesc->pTargetStat;
+
+	if (FAILED(Super::Initialize(pArg)))
+		return E_FAIL;
+	if (FAILED(Ready_Components(pDesc)))
+		return E_FAIL;
+
+	if (FAILED(Attach_Personal_Info()))
+		return E_FAIL;
+
+	return S_OK;
+}
+
+HRESULT CUIPlayerStat_Progress::Attach_Personal_Info()
+{
+	switch (m_eSubClassType)
+	{
+	case DTO::EUISubClassType::NONE_OWNER:
+		return S_OK;
+	case DTO::EUISubClassType::PLAYER_HP:
+	{
+		m_pTargetStat;
+		m_vOriginColor = m_vColorTint;
+		m_vOriginGradiantColor = m_vGradiantColorTint;
+		return S_OK;
+	}
+	case DTO::EUISubClassType::PLAYER_ARMOR:
+	{
+		m_pTargetStat;
+		return S_OK;
+	}
+	case DTO::EUISubClassType::PLAYER_ENERGY:
+	{
+		m_pTargetStat;
+		return S_OK;
+	}
+	case DTO::EUISubClassType::END:
+	default:
+		return E_FAIL;
+	}
+
+	return S_OK;
+}
+
+HRESULT CUIPlayerStat_Progress::Awake(const _uint iCurrentLevelID)
+{
+	if (FAILED(Super::Awake(iCurrentLevelID)))
+		return E_FAIL;
+
+	return S_OK;
+}
+
+void CUIPlayerStat_Progress::Update_Priority(const _float fTimeDelta)
+{
+	Super::Update_Priority(fTimeDelta);
+
+	if (m_pGameInstance->KeyButton_Down(DIK_1))
+		m_fCurRatio = 0.29f;
+	if (m_pGameInstance->KeyButton_Down(DIK_2))
+		m_fCurRatio = 0.5f;
+	if (m_pGameInstance->KeyButton_Down(DIK_3))
+		m_fCurRatio = 0.9f;
+
+	if (m_eSubClassType == DTO::EUISubClassType::PLAYER_HP)
+	{
+		if (m_fProgress_Ratio < 0.3f)
+		{
+			if (!m_isStartLowHp)
+			{
+				m_isStartLowHp = TRUE;
+				m_isEndLowHp = FALSE;
+				m_fTickTimeAcc = 1.f;
+			}
+		}
+		else
+		{
+			if (!m_isEndLowHp)
+			{
+				m_isStartLowHp = FALSE;
+				m_isEndLowHp = TRUE;
+				m_vColorTint = m_vOriginColor;
+				m_vGradiantColorTint = m_vOriginGradiantColor;
+			}
+		}
+
+		if (m_isStartLowHp)
+		{
+			Low_HP(fTimeDelta);
+		}
+	}
+}
+
+void CUIPlayerStat_Progress::Update(const _float fTimeDelta)
+{
+	Super::Update(fTimeDelta);
+
+	// if (!m_pTargetStat)
+	// 	return;
+	// m_fCurRatio = m_pTargetStat->Get_HealthRatio();
+
+	_float fEpsilon = 0.0001f;
+	if (fabs(m_fCurRatio - m_fPreRatio) > fEpsilon)
+	{
+		m_isChangeRatio = TRUE;
+		m_fStartRatio = m_fProgress_Ratio;
+		m_fTargetRatio = m_fCurRatio;
+		m_fTimeAcc = 0.f;
+		m_fDelayTimeAcc = 0.f;
+	}
+	m_fPreRatio = m_fCurRatio;
+
+}
+
+void CUIPlayerStat_Progress::Update_Late(const _float fTimeDelta)
+{
+	Super::Update_Late(fTimeDelta);
+
+	if (m_isChangeRatio)
+	{
+		m_fDelayTimeAcc += fTimeDelta;
+		if (m_fDelayTimeAcc <= m_fDelay)
+			return;
+
+		m_fTimeAcc += fTimeDelta;
+		_float t = m_fTimeAcc / m_fDuration;
+
+		if (t >= 1.f)
+		{
+			m_fProgress_Ratio = m_fTargetRatio;
+			m_isChangeRatio = FALSE;
+		}
+		else
+		{
+			m_fProgress_Ratio = m_fStartRatio + (m_fTargetRatio - m_fStartRatio) * t;
+		}
+	}
+}
+
+void CUIPlayerStat_Progress::Ready_Before_Render(const _float fTimeDelta)
+{
+	Super::Ready_Before_Render(fTimeDelta);
+	Acting_By_InteractState();
+}
+
+HRESULT CUIPlayerStat_Progress::Render()
+{
+	if (!m_isVisible)
+		return S_OK;
+
+	if (FAILED(Super::Render()))
+		return E_FAIL;
+
+	if (FAILED(Bind_ShaderResources()))
+		return E_FAIL;
+
+	Get_Component<CShader>()->Apply();
+	Get_Component<CVIBuffer>()->Bind_Resource();
+	Get_Component<CVIBuffer>()->Render();
+
+	return S_OK;
+}
+
+void CUIPlayerStat_Progress::OnUIEvent(ETriggerEventType eEvent, CGenericUI* pSender)
+{
+	if (!m_isActive)
+		return;
+
+	if (eEvent == ETriggerEventType::PRESS_ENTER)
+	{
+		if (m_isVisible)
+			Set_Invisible();
+		else
+			Set_Visible();
+	}
+}
+
+void CUIPlayerStat_Progress::Initialize_Visible_Event()
+{
+	m_isActive = false;
+	m_isFin_Event = false;
+	m_fTimeAcc = 0.f;
+	m_fAlpha_Ratio = 0.f;
+}
+
+void CUIPlayerStat_Progress::Initialize_InVisible_Event()
+{
+	m_isFin_Event = false;
+	m_fTimeAcc = 0.f;
+}
+
+_bool CUIPlayerStat_Progress::Tick_Visible_Event(const _float fTimeDelta)
+{
+	m_fAlpha_Ratio += fTimeDelta * 2.f;
+	if (m_fAlpha_Ratio >= 1.f)
+	{
+		m_fAlpha_Ratio = 1.f;
+		m_isFin_Event = true;
+		m_isActive = true;
+		return true;
+	}
+	return false;
+}
+
+_bool CUIPlayerStat_Progress::Tick_InVisible_Event(const _float fTimeDelta)
+{
+	m_isFin_Event = true;
+	return true;
+}
+
+HRESULT CUIPlayerStat_Progress::Ready_Components(PLAYER_STAT_PROGRESS_DESC* pDesc)
+{
+	return S_OK;
+}
+
+HRESULT CUIPlayerStat_Progress::Bind_ShaderResources()
+{
+	Super::Bind_ShaderResources();
+	CShader* pShader = Get_Component<CShader>();
+	if (FAILED(Get_Component<CTransform>()->Bind_ShaderResource(pShader)))
+		return E_FAIL;
+	return S_OK;
+}
+
+void CUIPlayerStat_Progress::Low_HP(const _float fTimeDelta)
+{
+	m_vColorTint = Vec4{ 1.f, 0.f, 0.f, 1.f };
+	m_vGradiantColorTint = Vec4{ 1.f, 0.f, 0.f, 1.f };
+
+	if (m_fTickTimeAcc >= 1.f)
+		m_isHPPulse = FALSE;
+	else if (m_fTickTimeAcc < 0.3f)
+		m_isHPPulse = TRUE;
+
+	if (m_isHPPulse)
+	{
+		m_fTickTimeAcc += fTimeDelta;
+	}
+	else
+	{
+		m_fTickTimeAcc -= fTimeDelta;
+	}
+
+	m_vColorTint.x *= m_fTickTimeAcc;
+}
+
+CUIPlayerStat_Progress* CUIPlayerStat_Progress::Create(ID3D11Device* pDevice, ID3D11DeviceContext* pDeviceContext)
+{
+	CUIPlayerStat_Progress* pInstance = new CUIPlayerStat_Progress(pDevice, pDeviceContext);
+	if (FAILED(pInstance->Initialize_Prototype()))
+	{
+		MSG_BOX("CUIPlayerStat_Progress::Create, Create Failed");
+		Safe_Release(pInstance);
+	}
+	return pInstance;
+}
+
+CGameObject* CUIPlayerStat_Progress::Clone(void* pArg)
+{
+	CUIPlayerStat_Progress* pInstance = new CUIPlayerStat_Progress(*this);
+	if (FAILED(pInstance->Initialize(pArg)))
+	{
+		MSG_BOX("CUIPlayerStat_Progress::Clone, Clone Failed");
+		Safe_Release(pInstance);
+	}
+	return pInstance;
+}
+
+void CUIPlayerStat_Progress::Free()
+{
+	Super::Free();
+}

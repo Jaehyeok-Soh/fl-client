@@ -289,9 +289,6 @@
     <Filter Include="00. System\05. Component\PhysicsCCT">
       <UniqueIdentifier>{20045528-a719-46f9-8133-abf66bb4da37}</UniqueIdentifier>
     </Filter>
-    <Filter Include="00. System\04. GameObject\UIObject\Registry">
-      <UniqueIdentifier>{01d57898-da08-45d1-a15c-f74cab4f144e}</UniqueIdentifier>
-    </Filter>
     <Filter Include="01. Utility\11. DataRepository\Datas\Map\DataStruct_Map">
       <UniqueIdentifier>{1e9392f0-97f4-4afb-8c29-c6afefc0eb48}</UniqueIdentifier>
     </Filter>
@@ -727,9 +724,6 @@
     <ClCompile Include="..\Private\ComputeShader.cpp">
       <Filter>00. System\05. Component\Monobehaviour\ComputeShader</Filter>
     </ClCompile>
-    <ClCompile Include="..\Private\UIAction_Registry.cpp">
-      <Filter>00. System\04. GameObject\UIObject\Registry</Filter>
-    </ClCompile>
     <ClCompile Include="..\Private\UIObject.cpp">
       <Filter>00. System\04. GameObject\UIObject</Filter>
     </ClCompile>
@@ -1155,9 +1149,6 @@
     </ClInclude>
     <ClInclude Include="..\Public\ComputeShader.h">
       <Filter>00. System\05. Component\Monobehaviour\ComputeShader</Filter>
-    </ClInclude>
-    <ClInclude Include="..\Public\UIAction_Registry.h">
-      <Filter>00. System\04. GameObject\UIObject\Registry</Filter>
     </ClInclude>
     <ClInclude Include="..\Public\UIObject.h">
       <Filter>00. System\04. GameObject\UIObject</Filter>

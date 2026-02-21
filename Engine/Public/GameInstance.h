@@ -343,10 +343,6 @@ public:
 #endif // _DEBUG
 #pragma endregion
 
-#pragma region UIACTION_REGISTRY	
-	class CUIAction_Registry* Get_UIAction_Registry()const;
-#pragma endregion
-
 // Todo - 쓰레기통 정리
 #pragma region GAMEDATA
 
@@ -376,7 +372,6 @@ private:
 	class CFrustrum* m_pFrustrum = { nullptr };
 	class CShaderAsset_Manager* m_pShaderAsset_Manager = { nullptr };
 	class CPhysics_Module* m_pPhysics_Module = { nullptr };
-	class CUIAction_Registry* m_pUIAction_Registry = { nullptr };
 private:
 	std::mt19937_64 m_rng;
 public:

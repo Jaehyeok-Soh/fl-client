@@ -31,6 +31,7 @@ public:
 private:
 	HRESULT Loading();
 	HRESULT Loading_For_Logo();
+	HRESULT Loading_For_LoadLevel();
 private:
 	HRESULT Loading_Files(_uint iLevelID, DTO::ECategory eCategory, const wstring& wstrFolderPath);
 	HRESULT Loading_File(_uint iLevelID, DTO::ECategory eCategory,const wstring& wstrFilePath);

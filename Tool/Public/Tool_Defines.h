@@ -571,6 +571,7 @@ namespace Tool
 		COLOR,
 		PROGRESS,
 		DISOLVE,
+		NOISE,
 		END
 	};
 
@@ -582,6 +583,7 @@ namespace Tool
 		case EUIShaderPass::COLOR: return "COLOR";
 		case EUIShaderPass::PROGRESS: return "PROGRESS";
 		case EUIShaderPass::DISOLVE: return "DISOLVE";
+		case EUIShaderPass::NOISE: return "NOISE";
 		default: return "";
 		}
 	}
@@ -592,6 +594,7 @@ namespace Tool
 		else if (str == "COLOR") return EUIShaderPass::COLOR;
 		else if (str == "PROGRESS") return EUIShaderPass::PROGRESS;
 		else if (str == "DISOLVE") return EUIShaderPass::DISOLVE;
+		else if (str == "NOISE") return EUIShaderPass::NOISE;
 		else return EUIShaderPass::DEFAULT;
 	}
 

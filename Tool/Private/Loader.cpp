@@ -281,32 +281,31 @@ HRESULT CLoader::Loading_For_UI()
 	// Resource Component
 	//=================
 
-	//std::filesystem::path root = L"../../Resources/Textures/UI_Tool/";
+	std::filesystem::path root = L"../../Resources/Textures/UI/UI_Tool/";
+	std::error_code ec;
+	for (auto it = std::filesystem::recursive_directory_iterator(
+		root,
+		std::filesystem::directory_options::skip_permission_denied,
+		ec);
+		it != std::filesystem::recursive_directory_iterator();
+		it.increment(ec))
+	{
+		if (ec)
+			return E_FAIL;
 
-	//std::error_code ec;
-	//for (auto it = std::filesystem::recursive_directory_iterator(
-	//	root,
-	//	std::filesystem::directory_options::skip_permission_denied,
-	//	ec);
-	//	it != std::filesystem::recursive_directory_iterator();
-	//	it.increment(ec))
-	//{
-	//	if (ec)
-	//		return E_FAIL;
+		std::error_code ecDir;
+		if (!it->is_directory(ecDir))
+		{
+			if (ecDir)
+				return E_FAIL;
+			continue;
+		}
 
-	//	std::error_code ecDir;
-	//	if (!it->is_directory(ecDir))
-	//	{
-	//		if (ecDir)
-	//			return E_FAIL;
-	//		continue;
-	//	}
+		const std::wstring wstrSubFolder = it->path().wstring();
 
-	//	const std::wstring wstrSubFolder = it->path().wstring();
-
-	//	if (FAILED(Loading_Textures_UI(wstrSubFolder)))
-	//		return E_FAIL;
-	//}
+		if (FAILED(Loading_Textures_UI(wstrSubFolder)))
+			return E_FAIL;
+	}
 
 	//=================
 	// UI Objects

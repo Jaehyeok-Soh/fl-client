@@ -211,9 +211,6 @@
     <Filter Include="03. GameObject\UIObjects\02.UI">
       <UniqueIdentifier>{6d2a781d-ab40-4385-b96c-b3366f4eaba6}</UniqueIdentifier>
     </Filter>
-    <Filter Include="03. GameObject\UIObjects\02.UI\PlayerHP">
-      <UniqueIdentifier>{d1da7a10-7b69-4f7d-9c38-81e993488207}</UniqueIdentifier>
-    </Filter>
     <Filter Include="03. GameObject\UIObjects\02.UI\Image">
       <UniqueIdentifier>{6d340ec4-9fd3-485b-bb1c-8989cfd57761}</UniqueIdentifier>
     </Filter>
@@ -292,9 +289,6 @@
     <Filter Include="03. GameObject\UIObjects\02.UI\Text\Stat Text">
       <UniqueIdentifier>{ba675289-98b0-43ba-990d-7137e8849731}</UniqueIdentifier>
     </Filter>
-    <Filter Include="03. GameObject\UIObjects\02.UI\Text\Skill Text">
-      <UniqueIdentifier>{fbb77af6-fc93-4e19-8ee6-30df86ccaec9}</UniqueIdentifier>
-    </Filter>
     <Filter Include="07. System\01. Builder\Effect">
       <UniqueIdentifier>{0a51c3b4-11ce-445a-904c-410b2a5ef809}</UniqueIdentifier>
     </Filter>
@@ -345,6 +339,18 @@
     </Filter>
     <Filter Include="06. FSM\Player\Attack\Gun">
       <UniqueIdentifier>{00f67508-9a6b-4c59-9832-98f058c8b1a5}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="03. GameObject\UIObjects\02.UI\Text\Loading Text">
+      <UniqueIdentifier>{0ebf2b41-2b05-4ee9-a49a-641d42db1c72}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="03. GameObject\UIObjects\02.UI\Progress Bar\Loading">
+      <UniqueIdentifier>{5d46b6c3-a13f-4703-a848-708f9a73243a}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="03. GameObject\UIObjects\02.UI\Progress Bar\Stat">
+      <UniqueIdentifier>{2ad35cd2-80d4-4363-8d53-affc1c049ae8}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="03. GameObject\UIObjects\02.UI\Image\Dynamic Image\04.LoadingImage">
+      <UniqueIdentifier>{7f017932-b1db-4253-9356-3b8cd034857d}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
@@ -654,6 +660,18 @@
     <ClInclude Include="..\Public\SkillComponent.h">
       <Filter>05. Component\Skill</Filter>
     </ClInclude>
+    <ClInclude Include="..\Public\UILoading_Text.h">
+      <Filter>03. GameObject\UIObjects\02.UI\Text\Loading Text</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\UIPlayerStat_Progress.h">
+      <Filter>03. GameObject\UIObjects\02.UI\Progress Bar\Stat</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\UILoading_Progress.h">
+      <Filter>03. GameObject\UIObjects\02.UI\Progress Bar\Loading</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\UILoading_Image.h">
+      <Filter>03. GameObject\UIObjects\02.UI\Image\Dynamic Image\04.LoadingImage</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <Image Include="Client.ico">
@@ -953,6 +971,18 @@
     </ClCompile>
     <ClCompile Include="..\Private\SkillComponent.cpp">
       <Filter>05. Component\Skill</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\UILoading_Text.cpp">
+      <Filter>03. GameObject\UIObjects\02.UI\Text\Loading Text</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\UIPlayerStat_Progress.cpp">
+      <Filter>03. GameObject\UIObjects\02.UI\Progress Bar\Stat</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\UILoading_Progress.cpp">
+      <Filter>03. GameObject\UIObjects\02.UI\Progress Bar\Loading</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\UILoading_Image.cpp">
+      <Filter>03. GameObject\UIObjects\02.UI\Image\Dynamic Image\04.LoadingImage</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

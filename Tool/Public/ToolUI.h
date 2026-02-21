@@ -215,7 +215,7 @@ protected:
 	Vec4 m_vColorTint					= {};
 	Vec4 m_vGradiantColorTint			= {};
 	int32_t m_iShaderPass				= {};
-	DTO::EUISubClassType m_eSubClassType		= {};
+	DTO::EUISubClassType m_eSubClassType= {};
 	int32_t m_iFillDir					= {};
 	_float m_fDelay						= {};
 	int32_t m_iFlip						= { ENUM_TO_UINT(EUIFlip::NONE) };

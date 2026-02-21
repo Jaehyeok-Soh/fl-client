@@ -12,7 +12,7 @@ CFont::CFont(ID3D11Device* pDevice, ID3D11DeviceContext* pDeviceContext)
 HRESULT CFont::Initialize(const _tchar* pFontFilePath)
 {
 	m_pFont = new SpriteFont(m_pDevice, pFontFilePath);
-
+	m_pFont->SetDefaultCharacter(L'?');
 	return S_OK;
 }
 

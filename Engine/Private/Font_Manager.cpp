@@ -7,7 +7,7 @@
 #include "GameInstance.h"
 
 #define NOISE_TEXTURE_FILE_NAME wstring{L"Default_Noise"}
-#define NOISE_TEXTURE_FILE_PATH wstring{L"../../Resources/Textures/Default_Noise.png"}
+#define NOISE_TEXTURE_FILE_PATH wstring{L"../../Resources/Textures/UI/Font/Default_Noise.png"}
 
 CFont_Manager::CFont_Manager(ID3D11Device* pDevice, ID3D11DeviceContext* pDeviceContext)
     : m_pDevice{ pDevice }
@@ -190,7 +190,9 @@ HRESULT CFont_Manager::Setting_Resource()
 		if (FAILED(CGameInstance::GetInstance()->Add_Resource(L"Texture_" + NOISE_TEXTURE_FILE_NAME, CTextureBase::Create(m_pDevice, m_pDeviceContext, &desc))))
 			return E_FAIL;
 
-		m_pNoiseSRV = CGameInstance::GetInstance()->Get_Resource<CTextureBase>(L"Texture_" + NOISE_TEXTURE_FILE_NAME)->Get_SRV();
+		auto* pTextureBase = CGameInstance::GetInstance()->Get_Resource<CTextureBase>(L"Texture_" + NOISE_TEXTURE_FILE_NAME);
+		m_pNoiseSRV = pTextureBase->Get_SRV();
+		Safe_Release(pTextureBase);
 		if (nullptr == m_pNoiseSRV)
 			return E_FAIL;
 	}
@@ -232,12 +234,36 @@ HRESULT CFont_Manager::Render_Fonts()
 		Draw_Text(Desc);
 	End_Draw();
 
-	if (FAILED(Begin_Draw_OutlineNoise()))
+	if (FAILED(Begin_Draw_OutlineNoise(true, false, false)))
+			return E_FAIL;
+	for (const auto& Desc : m_vecFontData[ENUM_TO_UINT(EFontShaderType::OUTLINE)])
+		Draw_Text(Desc);
+	End_Draw();
+
+	if (FAILED(Begin_Draw_OutlineNoise(false, false, true)))
+		return E_FAIL;
+	for (const auto& Desc : m_vecFontData[ENUM_TO_UINT(EFontShaderType::NOISE)])
+		Draw_Text(Desc);
+	End_Draw();
+
+	if (FAILED(Begin_Draw_OutlineNoise(false, true, true)))
+		return E_FAIL;
+	for (const auto& Desc : m_vecFontData[ENUM_TO_UINT(EFontShaderType::NOISE_KOR)])
+		Draw_Text(Desc);
+	End_Draw();
+
+	if (FAILED(Begin_Draw_OutlineNoise(true, false, true)))
 		return E_FAIL;
 	for (const auto& Desc : m_vecFontData[ENUM_TO_UINT(EFontShaderType::OUTLINE_NOISE)])
 		Draw_Text(Desc);
 	End_Draw();
 
+	if (FAILED(Begin_Draw_OutlineNoise(true, true, true)))
+		return E_FAIL;
+	for (const auto& Desc : m_vecFontData[ENUM_TO_UINT(EFontShaderType::OUTLINE_NOISE_KOR)])
+		Draw_Text(Desc);
+
+	End_Draw();
 	Clear_FontQueue();
 	return S_OK;
 }
@@ -256,22 +282,28 @@ HRESULT CFont_Manager::Begin_Draw_Normal()
 	return S_OK;
 }
 
-HRESULT CFont_Manager::Begin_Draw_OutlineNoise()
+HRESULT CFont_Manager::Begin_Draw_OutlineNoise(const _bool isOutline, const _bool isKorean, const _bool isNoise)
 {
-	CB_FONT_OUTLINE_NOISE cb{};
+	CB_FONT_OUTLINE_NOISE cb = {};
 	cb.vOutlineColor	= Vec4(0.f, 0.f, 0.f, 1.f);
-	cb.fOutlineSizePx	= 1.f;
 	cb.fOutlineStrength = 2.0f;
-	cb.vNoiseUVScale	= Vec2(100.f, 100.f);
+	m_vScrollUV.x		+= 0.0016f;
+	if (m_vScrollUV.x > 1.f)
+		m_vScrollUV.x = 0.f;
 
-	m_vScrollUV.x += 0.013f;
-	m_vScrollUV.y += 0.007f;
-	cb.vNoiseUVScroll = m_vScrollUV;
-
+	cb.vNoiseUVScroll	= m_vScrollUV;
 	cb.fNoiseStrength	= 1.0f;
-	cb.fFillMix			= 1.0f;				// 1이면 노이즈 fill만, 0이면 원래 글자색만
-	m_pOutlineNoiseCB->Copy_Data(cb);
 
+	if(isOutline)	{ cb.fOutlineSizePx = 1.f; }
+	else			{ cb.fOutlineSizePx = 0.f; }
+
+	if(isKorean)	{ cb.vNoiseUVScale = Vec2(500.f, 500.f); }
+	else			{ cb.vNoiseUVScale = Vec2(10.f, 10.f); }
+
+	if (isNoise)	{ cb.fFillMix = 1.0f; }
+	else			{ cb.fFillMix = 0.0f; }
+
+	m_pOutlineNoiseCB->Copy_Data(cb);
 	m_pBatch->Begin(SpriteSortMode_Deferred, m_pBlend_Premultiplied, m_pSampler_LinearClamp, nullptr, nullptr,
 		[this]()
 		{
@@ -349,6 +381,18 @@ void CFont_Manager::Free()
         Safe_Release(Pair.second);
     m_Fonts.clear();
 
+	{
+		ID3D11ShaderResourceView* nullSRV = nullptr;
+		m_pDeviceContext->PSSetShaderResources(1, 1, &nullSRV);
+		ID3D11SamplerState* nullSamp = nullptr;
+		m_pDeviceContext->PSSetSamplers(1, 1, &nullSamp);
+		ID3D11Buffer* nullCB = nullptr;
+		m_pDeviceContext->PSSetConstantBuffers(1, 1, &nullCB);
+		m_pDeviceContext->PSSetShader(nullptr, nullptr, 0);
+	}
+
+	CGameInstance::GetInstance()->Remove_Resource<CTextureBase>(L"Texture_" + NOISE_TEXTURE_FILE_NAME);
+
     Safe_Delete(m_pBatch);
 
 	Safe_Release(m_pBlend_Premultiplied);
@@ -359,7 +403,6 @@ void CFont_Manager::Free()
 
 	Safe_Release(m_pPS_Outline);
 	Safe_Release(m_pOutlineNoiseCB);
-	Safe_Release(m_pNoiseSRV);
 
     Safe_Release(m_pDevice);
     Safe_Release(m_pDeviceContext);

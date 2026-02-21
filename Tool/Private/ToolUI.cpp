@@ -67,7 +67,7 @@ HRESULT CToolUI::Initialize(void* pArg)
 	}
 	if (m_eClassType == DTO::EUIClassType::TRIGGER)
 	{
-		m_tUITriggerData			= pDesc->tTriggerData;
+		m_tUITriggerData				= pDesc->tTriggerData;
 		m_vecHoverEnterTriggerCanvas	= m_tUITriggerData.vecHoverEnterTriggerCanvas;
 		m_vecHoverEnterTriggerUI		= m_tUITriggerData.vecHoverEnterTriggerUI;
 		m_vecHoverExitTriggerCanvas		= m_tUITriggerData.vecHoverExitTriggerCanvas;

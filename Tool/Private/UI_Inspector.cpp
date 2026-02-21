@@ -38,7 +38,8 @@ HRESULT CUI_Inspector::Initialize_Prototype()
 		m_VecOwnerTag.push_back(DTO::UISubClasstypeToString(static_cast<DTO::EUISubClassType>(i)));
 
 
-	m_VecShaderPassTag.reserve(ENUM_TO_UINT(EUIShaderPass::END));
+	m_VecShaderPassTag.reserve(ENUM_TO_UINT(
+		::END));
 	for (uint32_t i = 0; i < ENUM_TO_UINT(EUIShaderPass::END); ++i)
 		m_VecShaderPassTag.push_back(UIShaderPassToString(static_cast<EUIShaderPass>(i)));
 
@@ -1117,12 +1118,34 @@ void CUI_Inspector::SetUp_ShaderPass()
 			if (ImGui::DragFloat4("Color Tint", (float*)&vColorTint, 0.01f, 0.f, 1.f))
 				m_pSelectedUI->Set_ColorTint(vColorTint);
 
+			Vec4 vGradiantColorTint = m_pSelectedUI->Get_GradiantColorTint();
+			ImGui::SetNextItemWidth(150.f);
+			if (ImGui::DragFloat4("GradiantColor Tint", (float*)&vGradiantColorTint, 0.01f, 0.f, 1.f))
+				m_pSelectedUI->Set_GradiantColorTint(vGradiantColorTint);
+
 			_float fDelay = m_pSelectedUI->Get_Delay();
 			ImGui::SetNextItemWidth(150.f);
 			if (ImGui::DragFloat("Delay", &fDelay, 0.01f, 0.f, 1.f))
 				m_pSelectedUI->Set_Delay(fDelay);
 			break;
 		}
+
+		case EUIShaderPass::NOISE:
+		{
+			Input_TextureTag(CToolUI::EUITextureSlot::NOISE);
+
+			Vec4 vColorTint = m_pSelectedUI->Get_ColorTint();
+			ImGui::SetNextItemWidth(150.f);
+			if (ImGui::DragFloat4("Color Tint", (float*)&vColorTint, 0.01f, 0.f, 1.f))
+				m_pSelectedUI->Set_ColorTint(vColorTint);
+
+			Vec4 vGradiantColorTint = m_pSelectedUI->Get_GradiantColorTint();
+			ImGui::SetNextItemWidth(150.f);
+			if (ImGui::DragFloat4("GradiantColor Tint", (float*)&vGradiantColorTint, 0.01f, 0.f, 1.f))
+				m_pSelectedUI->Set_GradiantColorTint(vGradiantColorTint);
+			break;
+		}
+
 		default:
 			break;
 		}

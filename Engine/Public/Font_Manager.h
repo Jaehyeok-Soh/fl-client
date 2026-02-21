@@ -35,7 +35,15 @@ public:
 	void Clear_FontQueue();
 
 	HRESULT Begin_Draw_Normal();
-	HRESULT Begin_Draw_OutlineNoise();
+
+	/// <summary>
+	/// Batch Begin And Pixel Shader Bind
+	/// </summary>
+	/// <param name="isOutline"> / 아웃라인인가? </param>
+	/// <param name="isKorean"> / 한국어인가? </param>
+	/// <param name="isNoise"> / 노이즈인가? </param>
+	/// <returns></returns>
+	HRESULT Begin_Draw_OutlineNoise(const _bool isOutline, const _bool isKorean, const _bool isNoise);
 
 	void End_Draw();
 
