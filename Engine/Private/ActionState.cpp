@@ -65,10 +65,10 @@ HRESULT CActionState::Awake(_uint iLvelIndex)
 
 void CActionState::Update(const _float fTimeDelta)
 {
+	Apply_Gravity_CCT(fTimeDelta);
+
 	if(m_vecStates[m_iCurrentState])
 		m_vecStates[m_iCurrentState]->Update(fTimeDelta);
-
-	Apply_Gravity_CCT(fTimeDelta);
 }
 
 HRESULT CActionState::Add_State(_uint iIndex, CStateBase* pState)
@@ -359,7 +359,7 @@ void CActionState::Apply_Gravity_CCT(const _float fTimeDelta)
 		{
 			Vec3 currentPos = m_pOwnerTransform->Get_Info(TRANSFORM_INFO_STATE::POS);
 
-			_float yLerp = std::lerp(currentPos.y, finalPos.y, fTimeDelta);
+			_float yLerp = std::lerp(currentPos.y, finalPos.y, fTimeDelta * 15.f);
 			finalPos.y = yLerp;
 		}
 

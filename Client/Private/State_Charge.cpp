@@ -5,6 +5,7 @@
 #include "Weapon.h"
 
 #include "PhysicsCCT.h"
+#include "ActionState.h"
 
 CState_Charge::CState_Charge(CActionState* pOwnerComponent)
 	: Super(pOwnerComponent, "Charge")
@@ -76,8 +77,12 @@ void CState_Charge::Go_Front(const _float fTimeDelta)
 	Vec3 disp = vLook * moveps * fTimeDelta * 2.f;
 
 	pCCT->Move(disp, 0.01f, fTimeDelta);
-
+	
 	Vec3 finalPos = pCCT->GetFootPosition();
+	//Vec3 currentPos = m_pOwnerStateComp->Get_Owner()->Get_Component<CTransform>()->Get_Info(TRANSFORM_INFO_STATE::POS);
+
+	//_float yLerp = std::lerp(currentPos.y, finalPos.y, fTimeDelta);
+	//finalPos.y = yLerp;
 
 	pPlayerTrans->Set_Info(TRANSFORM_INFO_STATE::POS, finalPos);
 }
