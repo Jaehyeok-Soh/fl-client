@@ -98,7 +98,7 @@ HRESULT CMainApplication::Render()
 	m_pGameInstance->Draw();
 
 #ifdef _DEBUG
-	m_pDebugGui->Render();
+	//m_pDebugGui->Render();
 #endif
 
 	m_pGameInstance->Draw_End();
@@ -227,11 +227,21 @@ HRESULT CMainApplication::Ready_Static_Prototype()
 			return E_FAIL;
 	}
 
-	// For. Prototype_Component_Shader_GetBone
+	//// For. Prototype_Component_Shader_GetBone
+	//{
+	//	CComputeShader::ComShaderOriginDesc shaderDesc = {};
+	//	shaderDesc.pShaderFilePath = L"../../Shaders/ComShader_GetBoneCombine.hlsl";
+	//	if (FAILED(m_pGameInstance->Add_Prototype(ENUM_TO_UINT(ELevelType::STATIC), L"Prototype_Component_Shader_GetBone",
+	//		CComputeShader::Create(m_pDevice, m_pDeviceContext, &shaderDesc))))
+	//		return E_FAIL;
+	//}
+
+	// For. Prototype_Component_Shader_AnimMix
 	{
+		//ComShader_AnimMix
 		CComputeShader::ComShaderOriginDesc shaderDesc = {};
-		shaderDesc.pShaderFilePath = L"../../Shaders/ComShader_GetBoneCombine.hlsl";
-		if (FAILED(m_pGameInstance->Add_Prototype(ENUM_TO_UINT(ELevelType::STATIC), L"Prototype_Component_Shader_GetBone",
+		shaderDesc.pShaderFilePath = L"../../Shaders/ComShader_AnimMix.hlsl";
+		if (FAILED(m_pGameInstance->Add_Prototype(ENUM_TO_UINT(ELevelType::STATIC), L"Prototype_Component_Shader_AnimMix",
 			CComputeShader::Create(m_pDevice, m_pDeviceContext, &shaderDesc))))
 			return E_FAIL;
 	}

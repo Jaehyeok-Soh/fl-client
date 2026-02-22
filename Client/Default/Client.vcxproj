@@ -420,6 +420,7 @@
     <FxCompile Include="..\..\Shaders\Common_Defines.hlsl" />
     <FxCompile Include="..\..\Shaders\ComShader_AnimBlend.hlsl" />
     <FxCompile Include="..\..\Shaders\ComShader_AnimEvaluate.hlsl" />
+    <FxCompile Include="..\..\Shaders\ComShader_AnimMix.hlsl" />
     <FxCompile Include="..\..\Shaders\ComShader_BoneCombine.hlsl" />
     <FxCompile Include="..\..\Shaders\ComShader_BoneMesh.hlsl" />
     <FxCompile Include="..\..\Shaders\ComShader_GetBoneCombine.hlsl" />

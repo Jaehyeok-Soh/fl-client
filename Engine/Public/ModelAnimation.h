@@ -32,6 +32,8 @@ private:
 	{
 		IMMU_KEYFRAME
 		, IMMU_CHANNELDATA
+		, IMMU_MIXDATA
+		, MU_SRT
 	};
 private:
 	CModelAnimation(ID3D11Device* pDevice, ID3D11DeviceContext* pDeviceContext);
@@ -42,6 +44,7 @@ private:
 public:
 	_bool Update_TransformationMatrices(const vector<class CBone*>& vecBones,_bool& bLoopDone, _float fTimeDelta, _bool isLoop, CTransform* pOwnerTransform, CPhysicsCCT* pOwnerPhyCCT, CComputeShader* pAnimECS);
 	void SetUp_PoseDatasForBlending(std::span<LOCALSRT> spanLocalSrtData, _float fTimeDelta, CTransform* pOwnerTransform, CPhysicsCCT* pOwnerPhyCCT, _uint iTotalBoneNum, CComputeShader* pAnimECS);
+	void	Update_MixAnimation(const vector<class CBone*>& vecBones, CComputeShader* pAnimMixCS, CComputeShader* pPreAnimCS, const _float fTimeDelta, _uint iTotalBoneNum);
 	void Clear();
 
 	_float Get_DurationTime() const { return m_fDuration; }
@@ -58,8 +61,13 @@ public:
 
 	_bool	Update_TransformMatrices(CComputeShader* pAnimECS, _float fTimeDelta, _bool isLoop, CTransform* pOwnerTransform, CPhysicsCCT* pOwnerPhyCCT, _uint iTotalBoneNum);
 	void	Update_BlendAnimation(CComputeShader* pAnimECS, _float fTimeDelta, CTransform* pOwnerTransform, CPhysicsCCT* pOwnerPhyCCT, _uint iTotalBoneNum);
+	
 	void	Bind_AnimationEData(CComputeShader* pAnimEShader);
+	void	Bind_AnimationMixData(CComputeShader* pAnimMixCS, CComputeShader* pPreAnimCS);
 	HRESULT Ready_BindBuffers(CComputeShader* pAnimESahder);
+
+
+
 
 	// test
 	void Set_ApplyRootMotion(_bool Apply) { m_bApplyRootMotion = Apply; }
@@ -72,6 +80,8 @@ public:
 	void Set_MotionBone(_int iBondIdx);
 	void Set_MotionOffset(_float fOffset) { m_fRootMotionOffset = fOffset; if (m_fRootMotionOffset < 0.f) m_fRootMotionOffset = 1.f; }
 	_float Get_MotionOffset() const { return m_fRootMotionOffset; }
+	void Set_MixRatio(vector<_float>& vecMixRatio, CComputeShader* pAnimMixCS);
+
 	///////////////
 	//// Event ////
 	///////////////
@@ -103,6 +113,10 @@ private:
 	_uint											m_iChannelSize			= {};
 	StructuredBuffer*								m_pChannelDataBuffer	= {nullptr};
 	ID3DX11EffectShaderResourceVariable*			m_pInputChannelSB_SRV	= { nullptr };
+
+	vector<_float>									m_vecMixRatios;
+	StructuredBuffer*								m_pMixDataBuffer = { nullptr };
+	ID3DX11EffectShaderResourceVariable*			m_pMixSB_SRV = { nullptr };
 
 private:
 	_int m_iRootBoneIdx = { -1 };

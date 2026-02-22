@@ -46,6 +46,7 @@ public:
 
 public:
 	_bool Get_IsMotionBone() const { return m_bMotionBone; }
+	_bool Get_IsChildBone(const vector<CBone*>& Bones, _uint iIndex);
 
 private:
 	_int	m_iIndex				= { -1 };

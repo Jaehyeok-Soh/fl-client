@@ -672,6 +672,7 @@
     <ClInclude Include="..\Public\UILoading_Image.h">
       <Filter>03. GameObject\UIObjects\02.UI\Image\Dynamic Image\04.LoadingImage</Filter>
     </ClInclude>
+    <ClInclude Include="..\Public\LandScape.h" />
   </ItemGroup>
   <ItemGroup>
     <Image Include="Client.ico">
@@ -981,6 +982,7 @@
     <ClCompile Include="..\Private\UILoading_Image.cpp">
       <Filter>03. GameObject\UIObjects\02.UI\Image\Dynamic Image\04.LoadingImage</Filter>
     </ClCompile>
+    <ClCompile Include="..\Private\LandScape.cpp" />
   </ItemGroup>
   <ItemGroup>
     <FxCompile Include="..\..\Shaders\Shader_VtxAnimMesh.hlsl">
@@ -993,9 +995,6 @@
       <Filter>04. Shaders</Filter>
     </FxCompile>
     <FxCompile Include="..\..\Shaders\Shader_VtxMesh.hlsl">
-      <Filter>04. Shaders</Filter>
-    </FxCompile>
-    <FxCompile Include="..\..\Shaders\Shader_VtxMesh_SkillEffect.hlsl">
       <Filter>04. Shaders</Filter>
     </FxCompile>
     <FxCompile Include="..\..\Shaders\Shader_VtxNorTex.hlsl">
@@ -1051,6 +1050,12 @@
     </FxCompile>
     <FxCompile Include="..\..\Shaders\Shader_SpriteFont.hlsl">
       <Filter>04. Shaders</Filter>
+    </FxCompile>
+    <FxCompile Include="..\..\Shaders\ComShader_AnimMix.hlsl">
+      <Filter>04. Shaders\ComputeShaders\Animation</Filter>
+    </FxCompile>
+    <FxCompile Include="..\..\Shaders\Shader_VtxMesh_SkillEffect.hlsl">
+      <Filter>07. System\02. Debug_ImGui</Filter>
     </FxCompile>
   </ItemGroup>
 </Project>

@@ -50,6 +50,20 @@ void CBone::Setup_BindPoseTransformMatrix(const vector<CBone*>& Bones, const Mat
         m_matBindPoseTransform = m_matTransform * Bones[m_iParentIndex]->Get_BindPoseTransformMatrix();
 }
 
+_bool CBone::Get_IsChildBone(const vector<CBone*>& Bones, _uint iIndex)
+{
+    if (m_iParentIndex == iIndex)
+        return true;
+
+    else
+    {
+        if (m_iParentIndex < 0)
+            return false;
+
+        Bones[m_iParentIndex]->Get_IsChildBone(Bones, iIndex);
+    }
+}
+
 CBone* CBone::Create(BONE_DESC* pDesc)
 {
     CBone* pInstance = new CBone();
