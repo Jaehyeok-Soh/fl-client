@@ -8,7 +8,7 @@
 #include "Texture.h"
 #include "Shader.h"
 #include "VIBuffer_Rect_Tex.h"
-#include "StatComponent.h"
+#include "MyStat.h"
 #include "GameInstance.h"
 
 CUIDynamic_Image::CUIDynamic_Image(ID3D11Device* pDevice, ID3D11DeviceContext* pDeviceContext)

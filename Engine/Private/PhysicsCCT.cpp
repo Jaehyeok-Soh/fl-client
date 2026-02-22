@@ -38,6 +38,9 @@ HRESULT CPhysicsCCT::Initialize(void* pArg)
 	SetCollisionFilter();
 
 	m_fContactOffset = m_pController->getContactOffset();
+
+	// todo eunbi : step offset 추가. 계단 덜덜 거림 해결을 위함 -> 못함
+	m_pController->setStepOffset(0.8f);
 	
 	auto cctActor = m_pController->getActor();
 	PxShape* cctShape = { nullptr };

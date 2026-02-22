@@ -31,17 +31,17 @@ float4 Get_Modified_Diffuse(float4 vOriginDiffuse, int iCurInstanceID)
 {
     float4 vOutDiffuse = vOriginDiffuse;
 
-    //if (g_iMapObject_State == Selected)
-    //{
-    //    if (g_iSelectInstanceID == iCurInstanceID)
-    //    {
-    //        vOutDiffuse = float4(vOriginDiffuse.rgb * float3(1.0f, 0.0f, 0.1f), 1.0f);
-    //    }
-    //    else
-    //    {
-    //        vOutDiffuse = float4(vOriginDiffuse.rgb * float3(0.1f, 1.0f, 0.1f), 1.0f);
-    //    }
-    //}
+    if (g_iMapObject_State == Selected)
+    {
+        if (g_iSelectInstanceID == iCurInstanceID)
+        {
+            vOutDiffuse = float4(vOriginDiffuse.rgb * float3(1.0f, 0.0f, 0.1f), 1.0f);
+        }
+        else
+        {
+            vOutDiffuse = float4(vOriginDiffuse.rgb * float3(0.1f, 1.0f, 0.1f), 1.0f);
+        }
+    }
     
     return vOutDiffuse;
 }

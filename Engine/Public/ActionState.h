@@ -111,7 +111,7 @@ protected:
 protected:
 	_bool			Key_Input(CControlContext::CONTROL_KEY eKey);
 
-private:
+protected:
 	HRESULT			Set_OwnerComponents();
 
 protected:

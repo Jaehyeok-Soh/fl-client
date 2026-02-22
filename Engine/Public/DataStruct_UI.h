@@ -89,10 +89,15 @@ enum EComponentTypeFlag
 enum class EUISubClassType
 {
 	NONE_OWNER,
+
+	PLAYER_STAT_BEGIN,
 	PLAYER_HP,
 	PLAYER_ARMOR,
 	PLAYER_ENERGY,
 	PLAYER_LV,
+	PLAYER_STAT_END,
+
+	LOADING_PROGRESS,
 	END
 };
 
@@ -101,10 +106,15 @@ inline std::string UISubClasstypeToString(EUISubClassType eType)
 	switch (eType)
 	{
 	case EUISubClassType::NONE_OWNER:		return "NONE_OWNER";
-	case EUISubClassType::PLAYER_HP:		return "PLAYER_HP";
-	case EUISubClassType::PLAYER_ARMOR:		return "PLAYER_ARMOR";
-	case EUISubClassType::PLAYER_ENERGY:	return "PLAYER_ENERGY";
-	case EUISubClassType::PLAYER_LV:		return "PLAYER_LV";
+
+	case EUISubClassType::PLAYER_STAT_BEGIN:	return "PLAYER_STAT_BEGIN";
+	case EUISubClassType::PLAYER_HP:			return "PLAYER_HP";
+	case EUISubClassType::PLAYER_ARMOR:			return "PLAYER_ARMOR";
+	case EUISubClassType::PLAYER_ENERGY:		return "PLAYER_ENERGY";
+	case EUISubClassType::PLAYER_LV:			return "PLAYER_LV";
+	case EUISubClassType::PLAYER_STAT_END:		return "PLAYER_STAT_END";
+
+	case EUISubClassType::LOADING_PROGRESS:	return "LOADING_PROGRESS";
 	case EUISubClassType::END:				return "END";
 	default: return "";
 	}
@@ -113,20 +123,30 @@ inline std::string UISubClasstypeToString(EUISubClassType eType)
 inline EUISubClassType StringToUISubClassType(const std::string& str)
 {
 	if (str == "NONE_OWNER")			return EUISubClassType::NONE_OWNER;
+
+	else if (str == "PLAYER_STAT_BEGIN")		return EUISubClassType::PLAYER_STAT_BEGIN;
 	else if (str == "PLAYER_HP")		return EUISubClassType::PLAYER_HP;
 	else if (str == "PLAYER_ARMOR")		return EUISubClassType::PLAYER_ARMOR;
-	else if (str == "PLAYER_ENERGY")	return EUISubClassType::PLAYER_ENERGY;
-	else if (str == "PLAYER_LV")		return EUISubClassType::PLAYER_LV;
+	else if (str == "PLAYER_ENERGY")		return EUISubClassType::PLAYER_ENERGY;
+	else if (str == "PLAYER_LV")	return EUISubClassType::PLAYER_LV;
+	else if (str == "PLAYER_STAT_END")		return EUISubClassType::PLAYER_STAT_END;
+
+	else if (str == "LOADING_PROGRESS")	return EUISubClassType::LOADING_PROGRESS;
 	else return EUISubClassType::END;
 }
 
 NLOHMANN_JSON_SERIALIZE_ENUM(EUISubClassType,
 	{
-		{EUISubClassType::NONE_OWNER,		"NONE_OWNER"},
-		{EUISubClassType::PLAYER_HP,		"PLAYER_HP"},
-		{EUISubClassType::PLAYER_ARMOR,		"PLAYER_ARMOR"},
-		{EUISubClassType::PLAYER_ENERGY,	"PLAYER_ENERGY"},
-		{EUISubClassType::PLAYER_LV,		"PLAYER_LV"},
+		{EUISubClassType::NONE_OWNER,			"NONE_OWNER"},
+
+		{EUISubClassType::PLAYER_STAT_BEGIN,	"PLAYER_STAT_BEGIN"},
+		{EUISubClassType::PLAYER_HP,			"PLAYER_HP"},
+		{EUISubClassType::PLAYER_ARMOR,			"PLAYER_ARMOR"},
+		{EUISubClassType::PLAYER_ENERGY,		"PLAYER_ENERGY"},
+		{EUISubClassType::PLAYER_LV,			"PLAYER_LV"},
+		{EUISubClassType::PLAYER_STAT_END,		"PLAYER_STAT_END"},
+
+		{EUISubClassType::LOADING_PROGRESS,		"LOADING_PROGRESS"}
 	})
 
 #pragma region 텍스트 서브 클래스
@@ -165,6 +185,14 @@ NLOHMANN_JSON_SERIALIZE_ENUM(EUISubClassType,
 	MENU_ESC_TEXT,
 	MENU_ICON_TEXT,
 	MENU_TEXT_END,
+
+	// 로딩창
+	LOADING_TEXT_BEGIN,
+	LOADING_TEXT_TITLE,
+	LOADING_TEXT_CONTENTS,
+	LOADING_TEXT_PERCENT,
+	LOADING_TEXT_END,
+
 	END
 };
 
@@ -201,6 +229,13 @@ NLOHMANN_JSON_SERIALIZE_ENUM(EUITextSubClassType,
 		{ EUITextSubClassType::MENU_ESC_TEXT,						"MENU_ESC_TEXT" },
 		{ EUITextSubClassType::MENU_ICON_TEXT,						"MENU_ICON_TEXT" },
 		{ EUITextSubClassType::MENU_TEXT_END,						"MENU_TEXT_END" },
+
+		{ EUITextSubClassType::LOADING_TEXT_BEGIN,						"LOADING_TEXT_BEGIN" },
+		{ EUITextSubClassType::LOADING_TEXT_TITLE,						"LOADING_TEXT_TITLE" },
+		{ EUITextSubClassType::LOADING_TEXT_CONTENTS,						"LOADING_TEXT_CONTENTS" },
+		{ EUITextSubClassType::LOADING_TEXT_PERCENT,						"LOADING_TEXT_PERCENT" },
+		{ EUITextSubClassType::LOADING_TEXT_END,						"LOADING_TEXT_END" },
+
 		{ EUITextSubClassType::END,									"END" },
 	})
 
@@ -236,6 +271,13 @@ NLOHMANN_JSON_SERIALIZE_ENUM(EUITextSubClassType,
 	else if (str == "MENU_ESC_TEXT")							return EUITextSubClassType::MENU_ESC_TEXT;
 	else if (str == "MENU_ICON_TEXT")							return EUITextSubClassType::MENU_ICON_TEXT;
 	else if (str == "MENU_TEXT_END")							return EUITextSubClassType::MENU_TEXT_END;
+
+	else if (str == "LOADING_TEXT_BEGIN")							return EUITextSubClassType::LOADING_TEXT_BEGIN;
+	else if (str == "LOADING_TEXT_TITLE")							return EUITextSubClassType::LOADING_TEXT_TITLE;
+	else if (str == "LOADING_TEXT_CONTENTS")							return EUITextSubClassType::LOADING_TEXT_CONTENTS;
+	else if (str == "LOADING_TEXT_PERCENT")							return EUITextSubClassType::LOADING_TEXT_PERCENT;
+	else if (str == "LOADING_TEXT_END")							return EUITextSubClassType::LOADING_TEXT_END;
+	
 	else if (str == "END")										return EUITextSubClassType::END;
 
 	return EUITextSubClassType::END;
@@ -269,12 +311,19 @@ inline std::string UITextSubClassTypeToString(EUITextSubClassType e)
 	case EUITextSubClassType::PLAYER_STAT_TEXT_DODGESKILL_COUNT:	return "PLAYER_STAT_TEXT_DODGESKILL_COUNT";
 	case EUITextSubClassType::PLAYER_STAT_TEXT_MAX_BULLET_COUNT:	return "PLAYER_STAT_TEXT_MAX_BULLET_COUNT";
 	case EUITextSubClassType::PLAYER_STAT_TEXT_CUR_BULLET_COUNT:	return "PLAYER_STAT_TEXT_CUR_BULLET_COUNT";
-
 	case EUITextSubClassType::PLAYER_STAT_TEXT_END:					return "PLAYER_STAT_TEXT_END";
+
 	case EUITextSubClassType::MENU_TEXT_BEGIN:						return "MENU_TEXT_BEGIN";
 	case EUITextSubClassType::MENU_ESC_TEXT:						return "MENU_ESC_TEXT";
 	case EUITextSubClassType::MENU_ICON_TEXT:						return "MENU_ICON_TEXT";
 	case EUITextSubClassType::MENU_TEXT_END:						return "MENU_TEXT_END";
+	
+	case EUITextSubClassType::LOADING_TEXT_BEGIN:						return "LOADING_TEXT_BEGIN";
+	case EUITextSubClassType::LOADING_TEXT_TITLE:						return "LOADING_TEXT_TITLE";
+	case EUITextSubClassType::LOADING_TEXT_CONTENTS:						return "LOADING_TEXT_CONTENTS";
+	case EUITextSubClassType::LOADING_TEXT_PERCENT:						return "LOADING_TEXT_PERCENT";
+	case EUITextSubClassType::LOADING_TEXT_END:						return "LOADING_TEXT_END";
+	
 	default:														return "END";
 	}
 }
@@ -312,8 +361,45 @@ inline const char* FontPivotTypeToString(const EFontPivotType eType)
 	default:                     return "END";
 	}
 }
-#pragma endregion
 
+NLOHMANN_JSON_SERIALIZE_ENUM(EFontShaderType,
+	{
+		{ EFontShaderType::NORMAL,				"NORMAL" },
+		{ EFontShaderType::OUTLINE,				"OUTLINE" },
+		{ EFontShaderType::NOISE,				"NOISE" },
+		{ EFontShaderType::NOISE_KOR,			"NOISE_KOR" },
+		{ EFontShaderType::OUTLINE_NOISE,		"OUTLINE_NOISE" },
+		{ EFontShaderType::OUTLINE_NOISE_KOR,	"OUTLINE_NOISE_KOR" },
+		{ EFontShaderType::END,					"END" }
+	})
+
+	inline EFontShaderType StringToFontShaderType(const std::string_view str)
+{
+	if (str == "NORMAL")				return EFontShaderType::NORMAL;
+	if (str == "OUTLINE")				return EFontShaderType::OUTLINE;
+	if (str == "NOISE")					return EFontShaderType::NOISE;
+	if (str == "NOISE_KOR")				return EFontShaderType::NOISE_KOR;
+	if (str == "OUTLINE_NOISE")			return EFontShaderType::OUTLINE_NOISE;
+	if (str == "OUTLINE_NOISE_KOR")		return EFontShaderType::OUTLINE_NOISE_KOR;
+	if (str == "END")					return EFontShaderType::END;
+	return EFontShaderType::END;
+}
+
+inline const char* FontShaderTypeToString(const EFontShaderType eType)
+{
+	switch (eType)
+	{
+	case EFontShaderType::NORMAL:				return "NORMAL";
+	case EFontShaderType::OUTLINE:				return "OUTLINE";
+	case EFontShaderType::NOISE:				return "NOISE";
+	case EFontShaderType::NOISE_KOR:			return "NOISE_KOR";
+	case EFontShaderType::OUTLINE_NOISE:		return "OUTLINE_NOISE";
+	case EFontShaderType::OUTLINE_NOISE_KOR:	return "OUTLINE_NOISE_KOR";
+	case EFontShaderType::END:					return "END";
+	default:									return "END";
+	}
+}
+#pragma endregion
 
 #pragma region 다이나믹 이미지 서브 클래스
 
@@ -353,6 +439,13 @@ inline const char* FontPivotTypeToString(const EFontPivotType eType)
 	MENU_ICON_OUTLINE,
 	MENU_END,
 
+	//로딩화면
+	LOADING_BEGIN,
+	LOADING_BG,
+	LOADING_BG_TOP,
+	LOADING_BG_BOTTOM,
+	LOADING_END,
+
 	END
 };
 
@@ -388,6 +481,12 @@ NLOHMANN_JSON_SERIALIZE_ENUM(EUIDImageSubClassType,
 		{ EUIDImageSubClassType::MENU_ICON_OUTLINE,		"MENU_ICON_OUTLINE" },
 		{ EUIDImageSubClassType::MENU_END,				"MENU_END" },
 
+		{ EUIDImageSubClassType::LOADING_BEGIN,				"LOADING_BEGIN" },
+		{ EUIDImageSubClassType::LOADING_BG,				"LOADING_BG" },
+		{ EUIDImageSubClassType::LOADING_BG_TOP,			"LOADING_BG_TOP" },
+		{ EUIDImageSubClassType::LOADING_BG_BOTTOM,			"LOADING_BG_BOTTOM" },
+		{ EUIDImageSubClassType::LOADING_END,				"LOADING_END" },
+
 		{ EUIDImageSubClassType::END,					"END" }
 	})
 
@@ -422,6 +521,12 @@ NLOHMANN_JSON_SERIALIZE_ENUM(EUIDImageSubClassType,
 	if (str == "MENU_ICON_BG")			return EUIDImageSubClassType::MENU_ICON_BG;
 	if (str == "MENU_ICON_OUTLINE")		return EUIDImageSubClassType::MENU_ICON_OUTLINE;
 	if (str == "MENU_END")				return EUIDImageSubClassType::MENU_END;
+
+	if (str == "LOADING_BEGIN")				return EUIDImageSubClassType::LOADING_BEGIN;
+	if (str == "LOADING_BG")				return EUIDImageSubClassType::LOADING_BG;
+	if (str == "LOADING_BG_TOP")			return EUIDImageSubClassType::LOADING_BG_TOP;
+	if (str == "LOADING_BG_BOTTOM")			return EUIDImageSubClassType::LOADING_BG_BOTTOM;
+	if (str == "LOADING_END")				return EUIDImageSubClassType::LOADING_END;
 
 	if (str == "END")					return EUIDImageSubClassType::END;
 	return EUIDImageSubClassType::NONE_OWNER;
@@ -460,12 +565,17 @@ inline const char* UIDImageSubTypeToString(EUIDImageSubClassType type)
 	case EUIDImageSubClassType::MENU_ICON_BG:	return "MENU_ICON_BG";
 	case EUIDImageSubClassType::MENU_ICON_OUTLINE:return "MENU_ICON_OUTLINE";
 	case EUIDImageSubClassType::MENU_END:		return "MENU_END";
+	
+	case EUIDImageSubClassType::LOADING_BEGIN:		return "LOADING_BEGIN";
+	case EUIDImageSubClassType::LOADING_BG:			return "LOADING_BG";
+	case EUIDImageSubClassType::LOADING_BG_TOP:		return "LOADING_BG_TOP";
+	case EUIDImageSubClassType::LOADING_BG_BOTTOM:	return "LOADING_BG_BOTTOM";
+	case EUIDImageSubClassType::LOADING_END:		return "LOADING_END";
 
 	case EUIDImageSubClassType::END:			return "END";
 	default:									return "NONE_OWNER";
 	}
 }
-
 #pragma endregion
 
 #pragma region 트리거 서브 클래스
@@ -546,6 +656,7 @@ inline const char* UIWorldUISubTypeToString(EUIWorldUISubClassType type)
 
 #pragma endregion
 
+#pragma region 유아이 데이터
 /////////////////-------------------  Data Struct  -------------------/////////////////
 // 텍스트 데이터
 struct TUI_TextData
@@ -554,10 +665,11 @@ struct TUI_TextData
 	std::string		strTag;
 	std::string		strOwnerName;
 	EUITextSubClassType		eTextSubClassType;
+	EFontShaderType eShaderType;
 	std::string		strFontTag;
 	std::string	    strText;
 	Vec4			vFontColor;	
-	EFontPivotType ePivot;
+	EFontPivotType	ePivot;
 	_float			fRotate;
 	_float			fScale;
 };
@@ -662,6 +774,8 @@ struct TUI_CanvasData
 	uint32_t	iEditorSizeY;
 };
 
+#pragma endregion
+
 /////////////////-------------------  to_json, from_json  -------------------/////////////////
 void to_json(json& j, const TUI_DImageData& data);
 void from_json(const json& j, TUI_DImageData& data);
@@ -681,8 +795,9 @@ void from_json(const json& j, TUI_GenericUIData& data);
 void to_json(json& j, const TUI_CanvasData& data);
 void from_json(const json& j, TUI_CanvasData& data);
 NS_END
-/////////////////-------------------  Wrapping Class  -------------------/////////////////
 
+#pragma region Wrapping Class
+/////////////////-------------------  Wrapping Class  -------------------/////////////////
 NS_BEGIN(Engine)
 // 다이나믹 이미지 클래스 
 class ENGINE_DLL CUI_DImage_DTO final : public IObjectDataBase
@@ -819,6 +934,5 @@ public:
 	static CUI_Canvas_DTO* Create() { return new CUI_Canvas_DTO(); }
 	virtual void Free() override { Super::Free(); }
 };
-
-
 NS_END
+#pragma endregion

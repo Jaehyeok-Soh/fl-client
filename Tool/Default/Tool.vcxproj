@@ -172,6 +172,7 @@
     <ClInclude Include="..\Public\Panel_Model.h" />
     <ClInclude Include="..\Public\Panel_AnimModelFile.h" />
     <ClInclude Include="..\Public\Panel_ModelInfo.h" />
+    <ClInclude Include="..\Public\SceneData.h" />
     <ClInclude Include="..\Public\UIButton_Component.h" />
     <ClInclude Include="..\Public\UIComponent_Inspector.h" />
     <ClInclude Include="..\Public\DebugLine.h" />
@@ -258,6 +259,7 @@
     <ClCompile Include="..\Private\Builder_UI.cpp" />
     <ClCompile Include="..\Private\CameraMan_Free.cpp" />
     <ClCompile Include="..\Private\Panel_Parts.cpp" />
+    <ClCompile Include="..\Private\SceneData.cpp" />
     <ClCompile Include="..\Private\Panel_State.cpp" />
     <ClCompile Include="..\Private\Tool_Weapon.cpp" />
     <ClCompile Include="..\Private\CEffectObject.cpp" />

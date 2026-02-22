@@ -192,6 +192,8 @@ namespace Engine
 		CAMERA,
 		SHADER,
 		BOUND,
+		STAT,
+		ACTIONSKILL,
 		//
 		PX_RIGIDBODY,
 		PX_COLLIDER,
@@ -479,6 +481,18 @@ namespace Engine
 		DOWN,
 		END
 	};
+	//===================
+	// Font Shader Type
+	//===================
+	enum class EFontShaderType
+	{
+		NORMAL,OUTLINE, NOISE, NOISE_KOR, OUTLINE_NOISE, OUTLINE_NOISE_KOR, END
+	};
+
+	//===================
+	// Skill Type
+	//===================
+	enum class SKILL_TYPE { DAMAGE, BUFF, SUMMON, CURE, DEFENSE, END }; // skill¿« ≈∏¿‘
 
 }
 #endif // Engine_Enum_h__

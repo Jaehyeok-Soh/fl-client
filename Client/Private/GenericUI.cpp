@@ -52,6 +52,7 @@ HRESULT CGenericUI::Initialize(void* pArg)
 	m_fDelay				= pDesc->fDelay;
 	m_fAlpha_Ratio			= pDesc->fAlpha;
 	m_iFlip					= pDesc->iFlip;
+
 	if (FAILED(Super::Initialize(pArg)))
 		return E_FAIL;
 	if (FAILED(Ready_Components(pDesc)))
@@ -127,6 +128,7 @@ _bool CGenericUI::Calc_HitEvent()
 {
 	if (!m_isInteract)
 		return FALSE;
+	_string strName = m_strName;
 
 	if (::PtInRect(&m_tRenderRect, m_pGameInstance->Get_MousePos()))
 		return TRUE;

@@ -11,7 +11,7 @@
 #include "Texture.h"
 #include "Shader.h"
 #include "VIBuffer_Rect_Tex.h"
-#include "StatComponent.h"
+#include "MyStat.h"
 #include "GameInstance.h"
 
 CUIMini_Map::CUIMini_Map(ID3D11Device* pDevice, ID3D11DeviceContext* pDeviceContext)

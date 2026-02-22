@@ -11,6 +11,7 @@ public:
 	typedef struct tagUITextDesc : public GENERIC_UI_DESC
 	{
 		DTO::EUITextSubClassType eTextSubClass;
+		EFontShaderType eShaderType;
 		_wstring wstrFontTag;
 		_wstring wstrText;
 		Vec4 vFontColor;
@@ -43,10 +44,16 @@ protected:
 	HRESULT Ready_Components(UI_TEXT_DESC* pDesc);
 	HRESULT Bind_ShaderResources();
 
+	void Sync_FontDesc();
+
+	_wstring Float_To_Wstring(const _float f, _uint iDecimal);
+
 protected:
+	FONT_DESC m_tFontDesc	= {};
 	DTO::EUITextSubClassType m_eTextSubClassType = {};
 	_wstring m_wstrText		= {};
 	_wstring m_wstrFontTag	= {};
+	EFontShaderType m_eShaderType = { EFontShaderType::NORMAL };
 	Vec2 m_vFontPos			= {};
 	Vec4 m_vFontColor		= {};
 	Vec4 m_vOriginFontColor = {};

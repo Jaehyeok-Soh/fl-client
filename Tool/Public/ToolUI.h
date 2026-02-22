@@ -113,6 +113,8 @@ public:
 	_float Get_FontScale() const { return m_fScale_TextData; }
 	const _string& Get_FontName() const { return m_strFontName_TextData; }
 	_float Get_FontRotate() const { return m_fRotate_TextData; }
+	EFontPivotType Get_FontPivotType() const { return m_ePivot_TextData; }
+	EFontShaderType Get_FontShaderType() const { return m_eFontShaderType; }
 
 	const vector<_string>& Get_vecHoverEnterTriggerCanvas() const { return m_vecHoverEnterTriggerCanvas; }
 	const vector<_string>& Get_vecHoverEnterTriggerUI() const { return m_vecHoverEnterTriggerUI; }
@@ -135,6 +137,8 @@ public:
 	void Set_FontScale(const _float fScale) { m_fScale_TextData = fScale; }
 	void Set_FontName(const _string& strName) { m_strFontName_TextData = strName; }
 	void Set_FontRotate(const _float fRotate) { m_fRotate_TextData = fRotate; }
+	void Set_FontPivotType(EFontPivotType ePivot) { m_ePivot_TextData = ePivot; }
+	void Set_FontShaderType(EFontShaderType e) { m_eFontShaderType = e; }
 
 	_bool Add_Tag(vector<_string>& vec, const _string& str);
 	_bool Remove_Tag(vector<_string>& vec, const _string& str);
@@ -211,7 +215,7 @@ protected:
 	Vec4 m_vColorTint					= {};
 	Vec4 m_vGradiantColorTint			= {};
 	int32_t m_iShaderPass				= {};
-	DTO::EUISubClassType m_eSubClassType		= {};
+	DTO::EUISubClassType m_eSubClassType= {};
 	int32_t m_iFillDir					= {};
 	_float m_fDelay						= {};
 	int32_t m_iFlip						= { ENUM_TO_UINT(EUIFlip::NONE) };
@@ -220,6 +224,7 @@ protected:
 	DTO::TUI_TextData m_tUITextData					= {};
 	std::wstring m_wstrText_TextData				= {};
 	DTO::EUITextSubClassType m_eTextSubClassType	= {};
+	EFontShaderType m_eFontShaderType				= { EFontShaderType::NORMAL };
 	Vec4 m_vFontColor_TextData						= {};
 	_float m_fScale_TextData						= {};
 	EFontPivotType m_ePivot_TextData				= { EFontPivotType::CENTER };
@@ -258,7 +263,10 @@ protected:
 	_bool m_isDisable		= { false };
 	_float m_fTestAlpha		= {};
 	int32_t m_iIndex		= {};
-	_float m_fBrightness = { 1.f };
+	_float m_fBrightness	= { 1.f };
+	FONT_DESC m_tFontDesc	= {};
+
+
 public:
 	static CToolUI* Create(EToolObjectType eType, ID3D11Device* pDevice, ID3D11DeviceContext* pContext);
 	CGameObject* Clone(void* pArg) override;

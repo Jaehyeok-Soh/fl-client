@@ -253,7 +253,7 @@ HRESULT	CMapObject::Render()
 
 }
 
-HRESULT	CMapObject::Render_Instance()
+HRESULT	CMapObject::Render_Instance(_uint iPassIndex)
 {
     CShader* pShader = Get_Component<CShader>();                    if (pShader == nullptr)             return E_FAIL;
     CModel* pModel = Get_Component<CModel>();                       if (pModel == nullptr)              return E_FAIL;
@@ -269,6 +269,7 @@ HRESULT	CMapObject::Render_Instance()
 
     if (FAILED(Update_InstanceBuffer(pInstanceMesh)))
         return E_FAIL;
+    pShader->Set_Pass(iPassIndex);
     pShader->Bind_ObjectInfoData(m_tObjectInfoDesc);
     pInstanceMesh->Bind_Instance(1);
     for (_uint i = 0; i < iMeshCount; ++i)
@@ -283,7 +284,7 @@ HRESULT	CMapObject::Render_Instance()
     return S_OK;
 }
 
-HRESULT	CMapObject::Render_Default()
+HRESULT	CMapObject::Render_Default(_uint iPassIndex)
 {
     CShader* pShader        = Get_Component<CShader>();      if (pShader == nullptr)         return E_FAIL;
     CModel* pModel          = Get_Component<CModel>();       if (pModel == nullptr)          return E_FAIL;
@@ -291,6 +292,7 @@ HRESULT	CMapObject::Render_Default()
 
 
     /* WorldMatrix ¹ÙÀÎµù */
+    pShader->Set_Pass(iPassIndex);
     pShader->Bind_ObjectInfoData(m_tObjectInfoDesc);
     pShader->Bind_TransformData(pTransform->Get_WorldMatrix());
     _uint iMeshCount = static_cast<_uint>(pModel->Get_MeshCount());

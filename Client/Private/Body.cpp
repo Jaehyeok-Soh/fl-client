@@ -233,7 +233,7 @@ CBone* CBody::Get_Spine1Bone()
 
 CBone* CBody::Get_WeaponSocket()
 {
-	if (CBone* pHead = Get_Component<CModel>()->Get_Bone(288)) //285 ~ 289
+	if (CBone* pHead = Get_Component<CModel>()->Get_Bone(289)) //285 ~ 289
 		return pHead;
 
 	return nullptr;

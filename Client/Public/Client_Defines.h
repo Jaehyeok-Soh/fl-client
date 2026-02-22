@@ -14,6 +14,15 @@ namespace Client
 	static const unsigned int g_iWinSizeX = 1280;
 	static const unsigned int g_iWinSizeY = 720;
 
+	enum class ELevelType : unsigned int
+	{
+		STATIC = 0,
+		LOADING,
+		LOGO,
+		END
+	};
+	inline constexpr size_t g_iLevelType_Count = static_cast<size_t>(ELevelType::END);
+
 	enum class ECollideLayer : unsigned int
 	{
 		PLAYER_BODY,
@@ -157,15 +166,6 @@ namespace Client
 		None
 	};
 
-	enum class ELevelType : unsigned int
-	{
-		STATIC = 0,
-		LOADING,
-		LOGO,
-		END
-	};
-	inline constexpr size_t g_iLevelType_Count = static_cast<size_t>(ELevelType::END);
-
 
 	enum class EMapObject_Type
 	{
@@ -255,6 +255,15 @@ namespace Client
 		Instance,
 		END,
 	};
+
+	enum class Shader_VtxMesh_Pass
+	{
+		StaticObject,
+		LandScape,
+		SHADOW_BAKE,
+		DEBUG,
+	};
+
 
 #pragma	endregion
 
@@ -365,41 +374,6 @@ namespace Client
 	}
 
 	enum class ETriggerEventType { HOVER_ENTER, HOVER_EXIT, PRESS_ENTER, PRESS_EXIT, END };
-
-	enum class EUIShaderPass
-	{
-		DEFAULT = 0,
-		DEFAULT_ALPHA,
-		COLOR,
-		FADE,
-		PROGRESS,
-		DISOLVE,
-		END
-	};
-	inline std::string UIShaderPassToString(EUIShaderPass eType)
-	{
-		switch (eType)
-		{
-		case EUIShaderPass::DEFAULT: return "DEFAULT";
-		case EUIShaderPass::DEFAULT_ALPHA: return "DEFAULT_ALPHA";
-		case EUIShaderPass::COLOR: return "COLOR";
-		case EUIShaderPass::FADE: return "FADE";
-		case EUIShaderPass::PROGRESS: return "PROGRESS";
-		case EUIShaderPass::DISOLVE: return "DISOLVE";
-		default: return "";
-		}
-	}
-	inline EUIShaderPass StringToUIShaderPass(const std::string& str)
-	{
-		if (str == "DEFAULT") return EUIShaderPass::DEFAULT;
-		else if (str == "DEFAULT_ALPHA") return EUIShaderPass::DEFAULT_ALPHA;
-		else if (str == "COLOR") return EUIShaderPass::COLOR;
-		else if (str == "FADE") return EUIShaderPass::FADE;
-		else if (str == "PROGRESS") return EUIShaderPass::PROGRESS;
-		else if (str == "DISOLVE") return EUIShaderPass::DISOLVE;
-		else return EUIShaderPass::DEFAULT;
-	}
-
 	enum class EUIFlip
 	{
 		NONE = 0,
@@ -411,25 +385,19 @@ namespace Client
 #pragma endregion
 
 #pragma region SKILL
-	enum class SKILL_TYPE { DAMAGE, BUFF, SUMMON, CURE, DEFENSE }; // skill의 타입
-
-	typedef struct tagAttackDesc2
+	inline _wstring SKILL_TYPE_ToWstring(const SKILL_TYPE eType)
 	{
-		_uint		iAttack = { 0 };			// 공격력
-		_uint		iSheild = { 0 };			// 방어력
-	}ATTACK_ELEMNETS;
+		switch (eType)
+		{
+		case SKILL_TYPE::DAMAGE:		return L"데미지";
+		case SKILL_TYPE::BUFF:			return L"버프";
+		case SKILL_TYPE::SUMMON:		return L"소환";
+		case SKILL_TYPE::CURE:			return L"치유";
+		case SKILL_TYPE::DEFENSE:		return L"디펜스";
+		default:						return L"UNKNOWN";
+		}
+	}
 
-	typedef struct tagSkillDesc
-	{
-		SKILL_TYPE	eSkillType = { SKILL_TYPE::DAMAGE };
-		TimeCount	TCoolTime = { 0.f,0.f };	// 다음 공격까지 cooltime
-
-		_uint		iNeedMental = { 0 };		// 공격하기 위한 정신력 정도
-
-		_uint		iSkillAtt = { 0 };
-
-		ATTACK_ELEMNETS tAttDesc = {};
-	}SKILL_DESC;
 #pragma endregion
 
 

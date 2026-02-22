@@ -173,7 +173,7 @@ protected:
 	void			Set_ApplyYLerp(_bool bApply);
 	void			Set_GravityOffset(_float fOffset);
 
-private:
+protected:
 	_bool IsBlend() { return m_bBlend; }
 	_bool IsLoop() { return m_bLoop; }
 protected:

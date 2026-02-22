@@ -5,10 +5,11 @@
 //=================
 // Component
 //=================
+#include "StatCom_Player.h"
 #include "Texture.h"
 #include "Shader.h"
 #include "VIBuffer_Rect_Tex.h"
-#include "StatComponent.h"
+#include "MyStat.h"
 #include "GameInstance.h"
 
 CUIPlayerStat_Text::CUIPlayerStat_Text(ID3D11Device* pDevice, ID3D11DeviceContext* pDeviceContext)
@@ -36,13 +37,6 @@ HRESULT CUIPlayerStat_Text::Initialize(void* pArg)
 		return E_FAIL;
 	if (FAILED(Ready_Components(pDesc)))
 		return E_FAIL;
-	if (FAILED(Attach_Personal_Info()))
-		return E_FAIL;
-	return S_OK;
-}
-
-HRESULT CUIPlayerStat_Text::Attach_Personal_Info()
-{
 	return S_OK;
 }
 
@@ -50,6 +44,28 @@ HRESULT CUIPlayerStat_Text::Awake(const _uint iCurrentLevelID)
 {
 	if (FAILED(Super::Awake(iCurrentLevelID)))
 		return E_FAIL;
+
+	if (FAILED(Attach_Personal_Info()))
+		return E_FAIL;
+
+	return S_OK;
+}
+
+HRESULT CUIPlayerStat_Text::Attach_Personal_Info()
+{
+	CGameObject* pResult = m_pGameInstance->Get_GameObject_Front(ENUM_TO_UINT(ELevelType::LOGO), g_wszPlayerLayer);
+	if (nullptr == pResult)
+		return E_FAIL;
+
+
+	//auto* p = static_cast<CStatComponent*>(pResult->Get_Script_Component(L"StatComponent"));
+	//if (nullptr == p)
+	//	return E_FAIL;
+
+	m_pPlayerStatCom = static_cast<CStatCom_Player*>(pResult->Get_Component<CMyStat>());
+	if (nullptr == m_pPlayerStatCom)
+		return E_FAIL;
+		
 
 	return S_OK;
 }
@@ -71,7 +87,9 @@ void CUIPlayerStat_Text::Update_Late(const _float fTimeDelta)
 
 void CUIPlayerStat_Text::Ready_Before_Render(const _float fTimeDelta)
 {
-	Acting_By_InteractState();
+	if (FAILED(Convert_Stat_To_Text()))
+		return;
+
 	Super::Ready_Before_Render(fTimeDelta);
 }
 
@@ -89,9 +107,6 @@ HRESULT CUIPlayerStat_Text::Render()
 	Get_Component<CShader>()->Apply();
 	Get_Component<CVIBuffer>()->Bind_Resource();
 	Get_Component<CVIBuffer>()->Render();
-
-	if (FAILED(m_pGameInstance->Draw_Text(m_wstrFontTag, m_wstrText.c_str(), m_vFontPos, m_vFontColor, m_ePivot, m_fFontRotate, m_fFontScale)))
-		return E_FAIL;
 	return S_OK;
 }
 
@@ -107,6 +122,77 @@ HRESULT CUIPlayerStat_Text::Bind_ShaderResources()
 		return E_FAIL;
 	return S_OK;
 }
+
+HRESULT CUIPlayerStat_Text::Convert_Stat_To_Text()
+{
+	switch (m_eTextSubClassType)
+	{
+	case DTO::EUITextSubClassType::NONE_OWNER:
+		break;
+	case DTO::EUITextSubClassType::PLAYER_STAT_TEXT_LV:
+		break;
+	case DTO::EUITextSubClassType::PLAYER_STAT_TEXT_HP:
+		m_wstrText = Float_To_Wstring(m_pPlayerStatCom->Get_Stat_Vec2(CStatCom_Player::STAT_TYPE::HP).x, 0);
+		break;
+	case DTO::EUITextSubClassType::PLAYER_STAT_TEXT_ARMOR:
+		m_wstrText = Float_To_Wstring(m_pPlayerStatCom->Get_Stat_Vec2(CStatCom_Player::STAT_TYPE::DEFENSE).x, 0);
+		break;
+	case DTO::EUITextSubClassType::PLAYER_STAT_TEXT_ENERGY:
+		m_wstrText = Float_To_Wstring(m_pPlayerStatCom->Get_Stat_Vec2(CStatCom_Player::STAT_TYPE::MENTAL).x, 0);
+		break;
+	case DTO::EUITextSubClassType::PLAYER_STAT_TEXT_ESKILL_TYPE:
+		m_wstrText = SKILL_TYPE_ToWstring(m_pPlayerStatCom->Get_Skill(CStatCom_Player::Attack_State::E).eSkillType);
+		break;
+	case DTO::EUITextSubClassType::PLAYER_STAT_TEXT_ESKILL_COOLTIME:
+	{
+		_float fMaxCool = m_pPlayerStatCom->Get_Skill(CStatCom_Player::Attack_State::E).tCoolTimer.fMaxTime;
+		_float fCurCool = m_pPlayerStatCom->Get_Skill(CStatCom_Player::Attack_State::E).tCoolTimer.fTimeAcc;
+		m_wstrText = Float_To_Wstring(fMaxCool - fCurCool, 1);
+		break;
+	}
+	case DTO::EUITextSubClassType::PLAYER_STAT_TEXT_ESKILL_COST:
+		m_wstrText = std::to_wstring(m_pPlayerStatCom->Get_Skill(CStatCom_Player::Attack_State::E).fNeedMental);
+		break;
+	case DTO::EUITextSubClassType::PLAYER_STAT_TEXT_QSKILL_TYPE:
+		m_wstrText = SKILL_TYPE_ToWstring(m_pPlayerStatCom->Get_Skill(CStatCom_Player::Attack_State::Q).eSkillType);
+		break;
+	case DTO::EUITextSubClassType::PLAYER_STAT_TEXT_QSKILL_COOLTIME:
+	{
+		_float fMaxCool = m_pPlayerStatCom->Get_Skill(CStatCom_Player::Attack_State::Q).tCoolTimer.fMaxTime;
+		_float fCurCool = m_pPlayerStatCom->Get_Skill(CStatCom_Player::Attack_State::Q).tCoolTimer.fTimeAcc;
+		m_wstrText = Float_To_Wstring(fMaxCool - fCurCool, 1);
+		break;
+	}
+	case DTO::EUITextSubClassType::PLAYER_STAT_TEXT_QSKILL_COST:
+		m_wstrText = std::to_wstring(m_pPlayerStatCom->Get_Skill(CStatCom_Player::Attack_State::Q).fNeedMental);
+		break;
+	case DTO::EUITextSubClassType::PLAYER_STAT_TEXT_ZSKILL_TYPE:
+		break;
+	case DTO::EUITextSubClassType::PLAYER_STAT_TEXT_ZSKILL_COOLTIME:
+		break;
+	case DTO::EUITextSubClassType::PLAYER_STAT_TEXT_ZSKILL_COST:
+		break;
+	case DTO::EUITextSubClassType::PLAYER_STAT_TEXT_DODGESKILL_COOLTIME:
+	{
+		_float fMaxCool = m_pPlayerStatCom->Get_Timer(CStatCom_Player::TIMER_TYPE::DASH).fMaxTime;
+		_float fCurCool = m_pPlayerStatCom->Get_Timer(CStatCom_Player::TIMER_TYPE::DASH).fTimeAcc;
+		m_wstrText = Float_To_Wstring(fMaxCool - fCurCool, 1);
+		break;
+	}
+	case DTO::EUITextSubClassType::PLAYER_STAT_TEXT_DODGESKILL_COUNT:
+		m_wstrText = std::to_wstring(m_pPlayerStatCom->Get_Count(CStatCom_Player::TIMER_TYPE::DASH));
+		break;
+	case DTO::EUITextSubClassType::PLAYER_STAT_TEXT_MAX_BULLET_COUNT:
+		break;
+	case DTO::EUITextSubClassType::PLAYER_STAT_TEXT_CUR_BULLET_COUNT:
+		break;
+	case DTO::EUITextSubClassType::END:
+	default:
+		return E_FAIL;
+	}
+	return S_OK;
+}
+
 
 void CUIPlayerStat_Text::OnUIEvent(ETriggerEventType eEvent, CGenericUI* pSender)
 {

@@ -61,6 +61,7 @@ public:
 	HRESULT Bind_KeyFrameData(const SHADER_KEYFRAMEDESC& keyframeDesc);
 	HRESULT Bind_ObjectInfoData(const SHADER_OBJECTINFO_DESC& objectInfoDesc);
 
+
 	// 외부에서 ConstantBuffer를 생성후 바인딩할 때
 	HRESULT Set_ConstantBuffer(EFXCB eSlot, ID3D11Buffer* pBuffer);
 private:

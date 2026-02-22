@@ -8,7 +8,7 @@
 #include "Texture.h"
 #include "Shader.h"
 #include "VIBuffer_Rect_Tex.h"
-#include "StatComponent.h"
+#include "MyStat.h"
 #include "GameInstance.h"
 
 CUIMenu_Text::CUIMenu_Text(ID3D11Device* pDevice, ID3D11DeviceContext* pDeviceContext)
@@ -79,6 +79,7 @@ HRESULT CUIMenu_Text::Render()
 	if (!m_isVisible)
 		return S_OK;
 
+
 	if (FAILED(Super::Render()))
 		return E_FAIL;
 
@@ -89,8 +90,6 @@ HRESULT CUIMenu_Text::Render()
 	Get_Component<CVIBuffer>()->Bind_Resource();
 	Get_Component<CVIBuffer>()->Render();
 
-	if (FAILED(m_pGameInstance->Draw_Text(m_wstrFontTag, m_wstrText.c_str(), m_vFontPos, m_vFontColor, m_ePivot, m_fFontRotate, m_fFontScale)))
-		return E_FAIL;
 	return S_OK;
 }
 

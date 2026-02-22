@@ -28,7 +28,9 @@ HRESULT CState_RunLoop::Awake(const _uint iLevelIndex)
 HRESULT CState_RunLoop::Start(void* pArg, _bool bForce)
 {
 	if (FAILED(Super::Start(pArg, bForce)))
-		return E_FAIL;		
+		return E_FAIL;	
+
+	Set_ApplyYLerp(true);
 
 	return S_OK;
 }
@@ -58,6 +60,8 @@ HRESULT CState_RunLoop::End()
 {
 	if (FAILED(Super::End()))
 		return E_FAIL;
+
+	Set_ApplyYLerp(false);
 
 	m_fDuration = 0.f;
 	return S_OK;

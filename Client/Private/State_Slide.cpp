@@ -62,6 +62,10 @@ void CState_Slide::OwnMove(const _float fTimeDelta)
     pCCT->Move(disp, 0.01f, fTimeDelta);
 
     Vec3 finalPos = pCCT->GetFootPosition();
+    //Vec3 currentPos = m_pOwnerStateComp->Get_Owner()->Get_Component<CTransform>()->Get_Info(TRANSFORM_INFO_STATE::POS);
+
+    //_float yLerp = std::lerp(currentPos.y, finalPos.y, fTimeDelta);
+    //finalPos.y = yLerp;
 
     pPlayerTrans->Set_Info(TRANSFORM_INFO_STATE::POS, finalPos);
 }

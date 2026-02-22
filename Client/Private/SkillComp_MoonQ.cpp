@@ -9,39 +9,31 @@ CSkillComp_MoonQ::CSkillComp_MoonQ()
 {
 }
 
-CSkillComp_MoonQ::CSkillComp_MoonQ(const CSkillComp_MoonQ& rhs)
-	: Super(rhs)
-	, m_fAddAttackRate(rhs.m_fAddAttackRate)
-{
-}
-
-HRESULT CSkillComp_MoonQ::Initialize_Prototype()
-{
-	if (FAILED(Super::Initialize_Prototype()))
-		return E_FAIL;
-
-	return S_OK;
-}
-
 HRESULT CSkillComp_MoonQ::Initialize(void* pArg)
 {
-	SKILLCOMP_DESC tMyDesc = {};
+	SKILL_DESC tMyDesc = {};
 
 	tMyDesc.bCountTime = true;
 	tMyDesc.fSkillTime = 12.f;
-	tMyDesc.iPlayerState = ENUM_TO_UINT(CPlayer::State::SKILL2);
+	tMyDesc.FSkillFlags = Sheild_Add | SkillAtt_Add | Mental_Sub  | Sheild_Sub | SkillAtt_Sub;
 
-	SKILL_DESC tSkill = {};
-	ATTACK_ELEMNETS tAttackDesc = {};
-	tAttackDesc.iAttack = 0;
-	tAttackDesc.iSheild = 10;
+	SKILL_INFO tSkill = {};
+	{
+		tSkill.fSkillAttack = 10.f;
 
-	tSkill.tAttDesc = tAttackDesc;
-	tSkill.eSkillType = SKILL_TYPE::BUFF;
-	tSkill.iNeedMental = 35;
-	tSkill.TCoolTime = { 0.f,3.5f };
+		tSkill.fStatAttack = 0.f;
+		tSkill.fStatSheild = 10.f;
+		tSkill.eSkillType = SKILL_TYPE::BUFF;
+		tSkill.fNeedMental = 35.f;
 
-	tMyDesc.tSkillDesc = tSkill;
+		TIME_COUNTER tCoolTimer = {};
+		{
+			tCoolTimer.bTimeReset = false;
+			tCoolTimer.fMaxTime = 3.5f;
+		}
+		tSkill.tCoolTimer = tCoolTimer;
+	}
+	tMyDesc.tSkillInfo = tSkill;
 
 	if (FAILED(Super::Initialize(&tMyDesc)))
 		return E_FAIL;
@@ -54,15 +46,31 @@ void CSkillComp_MoonQ::Update(const _float fTimeDelta)
 	Super::Update(fTimeDelta);
 }
 
-void CSkillComp_MoonQ::Start_Skill(CStatComponent* pStatCom)
+_bool CSkillComp_MoonQ::Start_Skill(CMyStat* pStatCom)
 {
-	Super::Start_Skill(pStatCom);
+	if (Super::Start_Skill(pStatCom))
+	{
+		static_cast<CStatCom_Player*>(pStatCom)->Set_AttackState(CStatCom_Player::Attack_State::Q, true);
+		static_cast<CStatCom_Player*>(pStatCom)->Set_Attack_AddRate(m_fAddAttackRate);
+		// 충돌체 발사
 
-	static_cast<CStatCom_Player*>(pStatCom)->Set_Attack_AddRate(m_fAddAttackRate);
+		return true;
+	}
 
-	static_cast<CStatCom_Player*>(pStatCom)->Add_State(CStatCom_Player::STAT_TYPE::MENTAL, -1.f * m_tSkillDesc.iNeedMental);
+	return false;
+}
 
-	// 충돌체 발사
+void CSkillComp_MoonQ::End_Skill(CMyStat* pStatCom)
+{
+	Super::End_Skill(pStatCom);
+	static_cast<CStatCom_Player*>(pStatCom)->Set_AttackState(CStatCom_Player::Attack_State::Q, false);
+
+	// 충돌체 회수
+}
+
+_bool CSkillComp_MoonQ::On_Collision(const _float fTimeDelta, CGameObject* pObj)
+{
+	return false;
 }
 
 void CSkillComp_MoonQ::Update_Skill(const _float fTimeDelta)
@@ -70,34 +78,12 @@ void CSkillComp_MoonQ::Update_Skill(const _float fTimeDelta)
 
 }
 
-void CSkillComp_MoonQ::End_Skill(CStatComponent* pStatCom)
-{
-	Super::End_Skill(pStatCom);
-
-	// 충돌체 회수
-}
-
-void CSkillComp_MoonQ::On_Collision_Monster(const _float fTimeDelta, CGameObject* pObj)
-{
-}
-
-CSkillComp_MoonQ* CSkillComp_MoonQ::Create()
-{
-	CSkillComp_MoonQ* pInstance = new CSkillComp_MoonQ();
-	if (FAILED(pInstance->Initialize_Prototype()))
-	{
-		MSG_BOX("CSkillComp_MoonQ::Create, Failed");
-		Safe_Release(pInstance);
-	}
-	return pInstance;
-}
-
-CComponent* CSkillComp_MoonQ::Clone(void* pArg)
+CSkillComp_MoonQ* CSkillComp_MoonQ::Create(void* pArg)
 {
 	CSkillComp_MoonQ* pInstance = new CSkillComp_MoonQ();
 	if (FAILED(pInstance->Initialize(pArg)))
 	{
-		MSG_BOX("CSkillComp_MoonQ::Clone, Failed");
+		MSG_BOX("CSkillComp_MoonQ::Create, Failed");
 		Safe_Release(pInstance);
 	}
 	return pInstance;

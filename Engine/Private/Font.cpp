@@ -12,17 +12,31 @@ CFont::CFont(ID3D11Device* pDevice, ID3D11DeviceContext* pDeviceContext)
 HRESULT CFont::Initialize(const _tchar* pFontFilePath)
 {
 	m_pFont = new SpriteFont(m_pDevice, pFontFilePath);
-
+	m_pFont->SetDefaultCharacter(L'?');
 	return S_OK;
 }
 
 HRESULT CFont::Draw_Text(SpriteBatch* pBatch, const _tchar* pText, const Vec2& vPosition, const Vec4& vColor, EFontPivotType ePivot, const _float fRotate, const _float fScale)
 {
 	Vec2 vSize = m_pFont->MeasureString(pText);
+	Vec2 vPivot = {};
 
-	m_pFont->DrawString(pBatch, pText, vPosition, vColor, fRotate, vSize * 0.5f, fScale);
+	switch (ePivot)
+	{
+	case Engine::EFontPivotType::CENTER:vPivot = vSize * 0.5f;					break;
+	case Engine::EFontPivotType::LEFT:	vPivot = { 0.f, vSize.y * 0.5f };		break;
+	case Engine::EFontPivotType::RIGHT:	vPivot = { vSize.x, vSize.y * 0.5f };	break;
+	case Engine::EFontPivotType::UP:	vPivot = { vSize.x * 0.5f, 0.f };		break;
+	case Engine::EFontPivotType::DOWN:	vPivot = { vSize.x * 0.5f, vSize.y };	break;
+	case Engine::EFontPivotType::END:
+	default:
+		return E_FAIL;
+	}
+
+	m_pFont->DrawString(pBatch, pText, vPosition, vColor, fRotate, vPivot, fScale);
 	return S_OK;
 }
+
 
 CFont* CFont::Create(ID3D11Device* pDevice, ID3D11DeviceContext* pDeviceContext, const _tchar* pFontFilePath)
 {

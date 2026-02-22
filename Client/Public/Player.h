@@ -31,6 +31,13 @@ public:
 		SKILL,
 		END
 	};
+
+	enum Skill : _uint
+	{
+		MoonE = 0,
+		MoonQ
+	};
+
 	enum class State : _uint
 	{
 		IDLE
@@ -88,8 +95,6 @@ public:
 	virtual _int		Get_AnimationIndex(const wstring& wstrName) override;
 	virtual _wstring	Get_AnimationName(_uint iAniIndex);
 
-	CStatComponent* Get_Stat() const { return m_pStatComp; }
-
 	// state funcs
 public:
 	void Change_Weapon(_uint iPart, _uint iState); // 어떤 weapon을 어떤 state로
@@ -106,12 +111,9 @@ private:
 	HRESULT Ready_BaseStates();
 	HRESULT Ready_PartObjects(PLAYER_DESC* pDesc);
 	HRESULT Ready_Components(PLAYER_DESC* pDesc);
-protected:
-	CStatComponent* m_pStatComp = { nullptr }; // 이거 왜 캐싱해둠?
-	CPhysics_QueryFilterCallback* m_pPhysic_QueryFilter = { nullptr };
 
-	CSkillComponent* m_pSkillEComp = { nullptr };
-	CSkillComponent* m_pSkillQComp = { nullptr };
+protected:
+	CPhysics_QueryFilterCallback* m_pPhysic_QueryFilter = { nullptr };
 
 public:
 	virtual CGameObject* Clone(void* pArg) PURE;

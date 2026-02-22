@@ -31,7 +31,10 @@ HRESULT CState_Fall::Start(void* pArg, _bool bForce)
 
 	m_fFallTimeAcc = 0.f;
 
-	Set_ApplyYLerp(false);
+	//Set_ApplyYLerp(false);
+
+	Set_ApplyGravity(true);
+	//Set_GravityOffset(-2.f);
 
 	return S_OK;
 }
@@ -54,7 +57,7 @@ HRESULT CState_Fall::End()
 
 	m_fFallTimeAcc = 0.f;
 
-	Set_ApplyYLerp(true);
+	//Set_ApplyYLerp(true);
 
 	return S_OK;
 }

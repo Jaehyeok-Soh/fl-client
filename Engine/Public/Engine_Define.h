@@ -5,6 +5,7 @@
 #define MAX_MODEL_KEYFRAMES 512
 #define MAX_MODEL_INSTANCE 512
 #define MAX_NAME 128
+#define HITSTOP_TIME 0.1f
 
 // PhysX
 #define PVD_HOST "127.0.0.1"
