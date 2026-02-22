@@ -9,14 +9,14 @@
 #define MAX_EFFECTPART 10
 
 Effect::Effect(ID3D11Device* pDevice, ID3D11DeviceContext* pDeviceContext)
-	:CContainerObject(pDevice, pDeviceContext)
+	:Super(pDevice, pDeviceContext)
 	,m_pGameInstance(CGameInstance::GetInstance())
 {
 	Safe_AddRef(m_pGameInstance);
 }
 
 Effect::Effect(const Effect& rhs)
-	:CContainerObject(rhs)
+	:Super(rhs)
 	,m_pGameInstance(rhs.m_pGameInstance)
 {
 	Safe_AddRef(m_pGameInstance);

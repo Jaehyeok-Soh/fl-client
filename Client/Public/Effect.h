@@ -1,6 +1,6 @@
 #pragma once
 #include "Client_Defines.h"
-#include "ContainerObject.h"
+#include "EffectBase.h"
 #include "DataStruct_Effect.h"
 
 NS_BEGIN(Engine)
@@ -10,9 +10,9 @@ NS_END
 
 NS_BEGIN(Client)
 
-class Effect : public CContainerObject
+class Effect : public CEffectBase
 {
-	using Super = CContainerObject;
+	using Super = CEffectBase;
 
 public:
 	typedef struct tagEffectContainerDesc : public Super::GAMEOBJECT_DESC

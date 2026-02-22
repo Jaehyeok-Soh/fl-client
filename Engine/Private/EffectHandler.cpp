@@ -5,43 +5,51 @@
 #include "GameObject.h"
 #include "PartObject.h"
 #include "ContainerObject.h"
+#include "MulticastDelegate.h"
 #include "GameInstance.h"
 
-CEffectHandler::CEffectHandler() : Super() {}
+CEffectHandler::CEffectHandler() 
+    : Super() 
+{
+}
 
 CEffectHandler::CEffectHandler(const CEffectHandler& rhs)
-    : Super(rhs), m_tDesc(rhs.m_tDesc) {
+    : Super(rhs), 
+    m_tDesc(rhs.m_tDesc) 
+{
 }
 
 HRESULT CEffectHandler::Initialize_Prototype(void* pArg)
 {
     if (pArg)
         m_tDesc = *(static_cast<ANIM_EFFECT_HANDLER_DESC*>(pArg));
+
+    Ready_State();
+
     return S_OK;
 }
 
-HRESULT CEffectHandler::Initialize(void* pArg) { return S_OK; }
+HRESULT CEffectHandler::Initialize(void* pArg) 
+{ 
+    return S_OK;
+}
+
+void CEffectHandler::Ready_State()
+{
+    if (m_tDesc.eType == E_HANDLER_TYPE::MODEL_ANIM) return;
+
+    auto iter = m_tDesc.mEffectState.find(E_OBJ_LIFECYCLE_STATE::ON_SPAWN);
+    if (iter == m_tDesc.mEffectState.end())
+        return;
+
+    m_ePrevState = m_eCurrentState = E_OBJ_LIFECYCLE_STATE::ON_SPAWN;
+}
 
 void CEffectHandler::Awake()
 {
-    GetAnimation();
-
-    if (Get_Owner())
-    {
-        // 툴에서 부모의 Matrix를 참조할 때 안전하게 가져오기
-        auto pTransform = Get_Owner()->Get_Component<CTransform>();
-        if (pTransform)
-        {
-            // PartObject 기반이면 부모 Container의 WorldMatrix를 참조함
-            auto pPart = static_cast<CPartObject*>(Get_Owner());
-            if (pPart->Get_Parent())
-                m_pOwnerMatrix = &pPart->Get_Parent()->Get_Component<CTransform>()->Get_WorldMatrix();
-            else
-                m_pOwnerMatrix = &pTransform->Get_WorldMatrix();
-        }
-    }
-
-    Ready_Event();
+    if (m_tDesc.eType == E_HANDLER_TYPE::MODEL_ANIM)
+        Ready_AnimState();
+    
 }
 
 void CEffectHandler::Update(_float fDT)
@@ -110,11 +118,36 @@ void CEffectHandler::Ready_Event()
     }
 }
 
+HRESULT CEffectHandler::Ready_AnimState()
+{
+    GetAnimation();
+
+    if (Get_Owner())
+    {
+        // 툴에서 부모의 Matrix를 참조할 때 안전하게 가져오기
+        auto pTransform = Get_Owner()->Get_Component<CTransform>();
+        if (pTransform)
+        {
+            // PartObject 기반이면 부모 Container의 WorldMatrix를 참조함
+            auto pPart = static_cast<CPartObject*>(Get_Owner());
+            if (pPart->Get_Parent())
+                m_pOwnerMatrix = &pPart->Get_Parent()->Get_Component<CTransform>()->Get_WorldMatrix();
+            else
+                m_pOwnerMatrix = &pTransform->Get_WorldMatrix();
+        }
+    }
+
+    Ready_Event();
+
+    return S_OK;
+}
+
 void CEffectHandler::Release_Event()
 {
-    if (m_pOwner)
+    if (m_tDesc.eType == E_HANDLER_TYPE::MODEL_ANIM)
     {
-        m_pOwnerModel->OnNotify.Unsubscribe(m_EventHandle);
+        if (m_pOwner)
+            m_pOwnerModel->OnNotify.Unsubscribe(m_EventHandle);
     }
 }
 
@@ -144,16 +177,16 @@ void CEffectHandler::CallBackEvent(const AnimNotifyKey& key)
 
     case EAnimNotifyId::Vfx_Attach_Off:
     {
-        auto itActive = m_ActiveEffects.find(strUniqueKey);
+        auto itActive = m_ActiveEffects[ENUM_TO_UINT(m_tDesc.eType)].find(strUniqueKey);
 
-        if (itActive != m_ActiveEffects.end())
+        if (itActive != m_ActiveEffects[ENUM_TO_UINT(m_tDesc.eType)].end())
         {
             m_pGameInstance->Request_DeleteGameObject(
                 m_pGameInstance->Get_CurrentLevelIndex(),
                 L"Layer_Effect",
                 itActive->second
             );
-            m_ActiveEffects.erase(itActive);
+            m_ActiveEffects[ENUM_TO_UINT(m_tDesc.eType)].erase(itActive);
         }
     }
     break;
@@ -162,13 +195,11 @@ void CEffectHandler::CallBackEvent(const AnimNotifyKey& key)
 
 void CEffectHandler::PoolObject_CallBack(CGameObject* pGo)
 {
-    m_ActiveEffects.emplace(pGo->Get_Name(), pGo);
+    m_ActiveEffects[ENUM_TO_UINT(m_tDesc.eType)].emplace(pGo->Get_Name(), pGo);
 }
 
 unordered_map<_uint, vector<DTO::EFFECTEVENT>>& CEffectHandler::GetEvents()
 {
-    Ready_Event();
-
     return m_tDesc.mapEvents;
 }
 
@@ -266,6 +297,23 @@ void CEffectHandler::Request_SpawnEffect(const DTO::EFFECTEVENT& script, const s
     );
 }
 
+void CEffectHandler::Trigger_Lifecycle_Effect(E_OBJ_LIFECYCLE_STATE eState)
+{
+    if (m_tDesc.eType == E_HANDLER_TYPE::MODEL_ANIM) 
+        return;
+
+    if (m_ePrevState == eState) return;
+    // TODO: BroadCast 날리기.
+    CGameObject* pGo = nullptr;
+    pGo = m_ActiveEffects[ENUM_TO_UINT(m_tDesc.eType)][(m_tDesc.mEffectState[eState].EffectPrefabTag)];
+
+    if (pGo == nullptr)
+    {
+        MSG_BOX("추가 되지 않은 State거나 저장되지 않은 Object입니다");
+        return;
+    }
+}
+
 CEffectHandler* CEffectHandler::Create(void* pArg)
 {
     CEffectHandler* pInstance = new CEffectHandler();
@@ -292,11 +340,15 @@ void CEffectHandler::Free()
 {
     Release_Event();
 
-    for (auto& pair : m_ActiveEffects) {
-        if (pair.second)
-            m_pGameInstance->Request_DeleteGameObject(m_pGameInstance->Get_CurrentLevelIndex(), L"Layer_Effect", pair.second);
+    for (_uint i = 0; i < ENUM_TO_UINT(E_HANDLER_TYPE::TYPE_END); ++i)
+    {
+        for (auto& pair : m_ActiveEffects[i])
+        {
+            if (pair.second)
+                m_pGameInstance->Request_DeleteGameObject(m_pGameInstance->Get_CurrentLevelIndex(), L"Layer_Effect", pair.second);
+        }
+        m_ActiveEffects[i].clear();
     }
-    m_ActiveEffects.clear();
 
     Safe_Release(m_pOwnerModel);
     Super::Free();

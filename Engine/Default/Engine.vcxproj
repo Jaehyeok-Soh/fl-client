@@ -164,6 +164,7 @@
   <ItemGroup>
     <ClCompile Include="..\Private\ActionState.cpp" />
     <ClCompile Include="..\Private\ActiveAttackOverlap.cpp" />
+    <ClCompile Include="..\Private\EffectBase.cpp" />
     <ClCompile Include="..\private\EffectHandler.cpp" />
     <ClCompile Include="..\Private\AsTypes.cpp" />
     <ClCompile Include="..\Private\Base.cpp">
@@ -318,6 +319,7 @@
   <ItemGroup>
     <ClInclude Include="..\Public\ActionState.h" />
     <ClInclude Include="..\Public\ActiveAttackOverlap.h" />
+    <ClInclude Include="..\public\EffectBase.h" />
     <ClInclude Include="..\Public\EffectHandler.h" />
     <ClInclude Include="..\Public\Anim_Event_AttackOverlap.h" />
     <ClInclude Include="..\Public\Anim_Event_Base.h" />

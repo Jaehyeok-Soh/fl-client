@@ -13,7 +13,7 @@
 #include "Model.h"
 #include "PhysicsCCT.h"
 #include "PhysicsAttackOverlap.h"
-#include "AnimEffectHandler.h"
+#include "EffectHandler.h"
 #include "ComputeShader.h"
 
 #include "GameInstance.h"
@@ -76,7 +76,7 @@ HRESULT CBody::Awake(const _uint iCurrentLevelIndex)
 		return E_FAIL;
 
 	Get_Component<CPhysicsAttackOverlap>()->Awake();
-	Get_Component<CAnimEffectHandler>()->Awake();
+	Get_Component<CEffectHandler>()->Awake();
 
 	return S_OK;
 }
@@ -107,7 +107,7 @@ void CBody::Update_Late(_float fTimeDelta)
 	Super::Update_Late(fTimeDelta);
 	
 	Get_Component<CPhysicsAttackOverlap>()->Update(fTimeDelta);
-	Get_Component<CAnimEffectHandler>()->Update(fTimeDelta);
+	Get_Component<CEffectHandler>()->Update(fTimeDelta);
 }
 
 void CBody::Ready_Before_Render(_float fTimeDelta)
@@ -364,7 +364,7 @@ HRESULT CBody::Ready_AttackOverlap()
 
 HRESULT CBody::Ready_EffectEvent()
 {
-	if (FAILED(Add_Component<CAnimEffectHandler>(0, L"Prototype_Component_AnimEffectHandler_PlayerMoon", nullptr)))
+	if (FAILED(Add_Component<CEffectHandler>(0, L"Prototype_Component_EffectHandler_PlayerMoon", nullptr)))
 		return E_FAIL;
 
 	return S_OK;

@@ -1312,6 +1312,7 @@ void CModel::Emit_Notifies(CModelAnimation* pAnimation, _float fPrevPos, _float 
 				if (notifyKeys[iIndex].fTrackPosition > fFrom)
 					OnNotify.Broadcast(notifyKeys[iIndex]);
 
+
 				pAnimation->Set_NotifyCursor(++iIndex);
 			}
 		};
