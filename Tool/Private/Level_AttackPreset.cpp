@@ -2,6 +2,7 @@
 #include "Level_AttackPreset.h"
 #include "Panel_PresetList.h"
 #include "Panel_PresetMain.h"
+#include "AttackPreset_DataManager.h"
 #include "ImGui_ToolManager.h"
 #include "GameInstance.h"
 
@@ -69,6 +70,7 @@ HRESULT CLevel_AttackPreset::Render()
 
 void CLevel_AttackPreset::Clear()
 {
+	CAttackPreset_DataManager::GetInstance()->Clear();
 	Safe_Release(m_pImGuiManager);
 
 	for (auto& Panel : m_arrayImGuiPanel)

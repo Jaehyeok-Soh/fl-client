@@ -22,6 +22,7 @@
 #include "ComputeShader.h"
 #include "Camera.h"
 #include "Transform.h"
+#include "AttackPreset_DataManager.h"
 #include "MapToolManager.h"
 #include "MaterialInstance.h"
 #include "InstanceMesh.h"
@@ -63,6 +64,9 @@ HRESULT CMainApplication::Initialize()
 	if (!(pPickingManager = CPicking_ToolManager::GetInstance()))
 		return E_FAIL;
 
+	CAttackPreset_DataManager* pAPDM = CAttackPreset_DataManager::GetInstance();
+	if (pAPDM == nullptr)
+		return E_FAIL;
 
 	/* 愱砒 概聪历 固府 积己 */
 	m_pMapToolManager = CMapToolManager::GetInstance();
@@ -474,6 +478,7 @@ HRESULT CMainApplication::Render()
 void CMainApplication::Free()
 {
 	Safe_Release(m_pImGuiManager);
+	CAttackPreset_DataManager::DestroyInstance();
 	CPicking_ToolManager::GetInstance()->DestroyInstance();
 	CImGui_UIManager::GetInstance()->DestroyInstance();
 	CMapToolManager::GetInstance()->DestroyInstance();

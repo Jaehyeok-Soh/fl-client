@@ -109,7 +109,7 @@ NLOHMANN_JSON_SERIALIZE_ENUM(EHitPolicyType,
 
 struct TAttackPreset_CombatData
 {
-	EHitType eType{ EHitType::END };
+	EHitType eHitType{ EHitType::END };
 	EDamageType eDamageType{ EDamageType::END };
 
 	_float fBaseDamage{ 0.f };
@@ -121,7 +121,7 @@ struct TAttackPreset_CombatData
 
 struct TAttackPreset_HitPolicyData
 {
-	EHitPolicyType eType{ EHitPolicyType::END };
+	EHitPolicyType ePolicyType{ EHitPolicyType::END };
 
 	_float fIntervalSec{ 0.f };
 };
@@ -154,14 +154,14 @@ inline void to_json(json& j, const TAttackPreset_HitPolicyData& data)
 {
 	j = json
 	{
-		{"PolicyType", data.eType},
+		{"PolicyType", data.ePolicyType},
 		{"fIntervalSec", data.fIntervalSec},
 	};
 }
 inline void from_json(const json& j, TAttackPreset_HitPolicyData& data)
 {
 	if (j.contains("PolicyType"))
-		data.eType = j["PolicyType"].get<EHitPolicyType>();
+		data.ePolicyType = j["PolicyType"].get<EHitPolicyType>();
 	if (j.contains("fIntervalSec"))
 		data.fIntervalSec = j["fIntervalSec"].get<_float>();
 }
@@ -170,7 +170,7 @@ inline void to_json(json& j, const TAttackPreset_CombatData& data)
 {
 	j = json
 	{
-		{"HitType", data.eType},
+		{"HitType", data.eHitType},
 		{"DamageType", data.eDamageType},
 		{"fBaseDamage", data.fBaseDamage},
 		{"fHitStunSec", data.fHitStunSec},
@@ -182,7 +182,7 @@ inline void to_json(json& j, const TAttackPreset_CombatData& data)
 inline void from_json(const json& j, TAttackPreset_CombatData& data)
 {
 	if (j.contains("HitType"))
-		data.eType = j["HitType"].get<EHitType>();
+		data.eHitType = j["HitType"].get<EHitType>();
 	if (j.contains("DamageType"))
 		data.eDamageType = j["DamageType"].get<EDamageType>();
 	if (j.contains("fBaseDamage"))
