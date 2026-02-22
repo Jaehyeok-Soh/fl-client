@@ -60,6 +60,7 @@ HRESULT CEffectObject::EffectDesc_Initialize(void* pArg)
         return E_FAIL;
 
     m_tEffectDesc = *pEffectDesc;
+    m_tOriginEffectDesc = *pEffectDesc;
     return S_OK;
 }
 
@@ -522,6 +523,7 @@ void CEffectObject::Set_Dead(const wstring& wstrLayerTag)
 
 HRESULT CEffectObject::Spawn_FromPool(void* pArg)
 {
+    m_tEffectDesc = m_tOriginEffectDesc;
     TimeFlagRequest(RESET);
 
     return S_OK;

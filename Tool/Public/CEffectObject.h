@@ -107,6 +107,7 @@ private:
     Effect_Desc        m_tEffectDesc = {};
     Effect_Desc        m_tPrevEffectDesc = {};
 
+    Effect_Desc        m_tOriginEffectDesc = {};
     //  ========== ½ºÅ©·Ñ OffSet ========
     Vec2      m_vScrollOffset = { 0.f, 0.f };
     _float    m_fTimeAccumulation = 0.f;

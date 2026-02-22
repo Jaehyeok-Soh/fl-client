@@ -8,12 +8,12 @@
 #define MAX_EFFECTPART 10
 
 Effect::Effect(EToolObjectType eType, ID3D11Device* pDevice, ID3D11DeviceContext* pDeviceContext)
-	:Tool_ContainerObject(eType, pDevice, pDeviceContext)
+	:Super(eType, pDevice, pDeviceContext)
 {
 }
 
-Effect::Effect(const Tool_ContainerObject& rhs)
-	:Tool_ContainerObject(rhs)
+Effect::Effect(const Effect& rhs)
+	:Super(rhs)
 {
 }
 

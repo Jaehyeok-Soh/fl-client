@@ -292,6 +292,9 @@
     <Filter Include="02. GameObjects\Map\01. SceneData">
       <UniqueIdentifier>{796e0779-af03-4219-87f2-4ff1d7e85f49}</UniqueIdentifier>
     </Filter>
+    <Filter Include="02. GameObjects\Effect\Container\EffectBase">
+      <UniqueIdentifier>{4688e8c2-b7fa-4bfb-85c4-39ca80b9260d}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="framework.h">
@@ -577,6 +580,9 @@
     <ClInclude Include="..\Public\SceneData.h">
       <Filter>02. GameObjects\Map\01. SceneData</Filter>
     </ClInclude>
+    <ClInclude Include="..\Public\Tool_EffectBase.h">
+      <Filter>02. GameObjects\Effect\Container\EffectBase</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <Image Include="small.ico">
@@ -849,6 +855,9 @@
     </ClCompile>
     <ClCompile Include="..\Private\SceneData.cpp">
       <Filter>02. GameObjects\Map\01. SceneData</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\Tool_EffectBase.cpp">
+      <Filter>02. GameObjects\Effect\Container\EffectBase</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

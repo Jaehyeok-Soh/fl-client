@@ -36,7 +36,11 @@ HRESULT CEffectObject::Initialize(void* pArg)
 {
     Effect_Desc* pDesc = static_cast<Effect_Desc*>(pArg);
     if (pDesc != nullptr)
+    {
         m_tEffectDesc = *pDesc;
+        m_tOriginEffectDesc = *pDesc;
+    }
+
 
     if (FAILED(__super::Initialize(pArg)))
     {
@@ -740,6 +744,7 @@ void CEffectObject::Set_Dead(const wstring& wstrLayerTag)
 
 HRESULT CEffectObject::Spawn_FromPool(void* pArg)
 {
+    m_tEffectDesc = m_tOriginEffectDesc;
     TimeFlagRequest(RESET);
 
     return S_OK;

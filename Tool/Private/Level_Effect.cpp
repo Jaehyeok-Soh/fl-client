@@ -237,6 +237,8 @@ HRESULT CLevel_Effect::Build_Prototype()
 {
 	if (FAILED(Ready_Builder(DTO::ECategory::MAP, CBuilder_Map::Create(m_pDevice, m_pDeviceContext, static_cast<_uint>(ELevelType::EFFECT)))))
 		return E_FAIL;
+
+	return S_OK;
 }
 
 

@@ -1,5 +1,5 @@
 #pragma once
-#include "Tool_ContainerObject.h"
+#include "Tool_EffectBase.h"
 #include "DataStruct_Effect.h"
 
 NS_BEGIN(Engine)
@@ -10,9 +10,9 @@ NS_END
 
 NS_BEGIN(Tool)
 
-class Effect : public Tool_ContainerObject
+class Effect : public CTool_EffectBase
 {
-	using Super = Tool_ContainerObject;
+	using Super = CTool_EffectBase;
 
 public:
 	typedef struct tagToolObjectDesc : public Super::TOOLOBJECT_DESC
@@ -23,7 +23,7 @@ public:
 
 protected:
 	Effect(EToolObjectType eType, ID3D11Device* pDevice, ID3D11DeviceContext* pDeviceContext);
-	explicit Effect(const Tool_ContainerObject& rhs);
+	explicit Effect(const Effect& rhs);
 	virtual ~Effect() = default;
 
 protected:
