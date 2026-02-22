@@ -30,6 +30,8 @@ public:
 			ANIMATION,
 			PARTS,
 			DESCRIPTION,
+			MODELINFO,
+			PARTSINFO,
 			END
 		};
 	};
@@ -65,7 +67,7 @@ private:
 
 private:
 	void Load_AnimModel(fs::path animModelPath);
-	void Load_PartObject(fs::path animPartModelPath);
+	void Load_PartObject(fs::path animPartModelPath, _int iSocketBondIdx, _bool bCombine);
 	void Create_AnimModel(fs::path animModelPath);
 	wstring Create_AnimModelPrototype(fs::path animModelPath);
 	void SetAnimationInfo(fs::path animModelPath);

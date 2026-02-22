@@ -32,8 +32,6 @@ public:
 	HRESULT Merge_MapCanvasCache(uint32_t iLevelIndex, unordered_map<_string, CCanvas*>&& Cache);
 	HRESULT Merge_MapGenericUICache(uint32_t iLevelIndex, unordered_map<_string, CGenericUI*>&& Cache);
 
-
-
 	/* 특정 UI 오브젝트를 찾아야 할 때 */
 	CCanvas* Find_Canvas(uint32_t iLevelIndex, const _string& strCanvasTag);
 	CGenericUI* Find_GenericUI(uint32_t iLevelIndex, const _string& strUITag);
@@ -52,9 +50,15 @@ public:
 	void Add_TriggerUI(vector<CUITrigger*>&& vecUIs);
 	HRESULT Bind_Trigger(_uint iLevelID);
 	void Clear_TriggerUI();
-
 private:
 	void Sort_UI(vector<CGenericUI*>& Target);
+
+public:
+	// UI 전달 변수 Getter Setter
+	const _float* Get_LoadingRatio() const { return m_pLoadingRatio; }
+
+
+	void Set_LoadingRatio(const _float* p) { m_pLoadingRatio = p; }
 
 private:
 	CGameInstance* m_pGameInstance = { nullptr };
@@ -71,6 +75,10 @@ private:
 	_bool m_isSort = { FALSE };
 
 	vector <CUITrigger*> m_vecTriggerUIs;
+
+private:
+	// UI 전달 변수 
+	const _float* m_pLoadingRatio = { nullptr };
 
 public:
 	virtual void Free()override;

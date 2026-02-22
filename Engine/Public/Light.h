@@ -14,7 +14,7 @@ private:
 public:
 	LIGHT_TYPE Get_Type() const { return m_eType; }
 	const SHADER_LIGHTDESC &Get_LightDesc() const { return m_tLightDesc; }
-
+	void Setup_LightDesc(const SHADER_LIGHTDESC& lightDesc) { m_tLightDesc = lightDesc; }
 	void Setup_Position(const Vec4& vPosition) { m_tLightDesc.vPosition = vPosition; }
 	void Setup_Range(const _float fRange) { m_tLightDesc.fRange = fRange; }
 	void Setup_Diffuse(const Vec4& vDiffuse) { m_tLightDesc.vDiffuse = vDiffuse; }

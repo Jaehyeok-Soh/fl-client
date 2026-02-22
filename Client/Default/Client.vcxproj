@@ -193,6 +193,7 @@
     <ClInclude Include="..\Public\imstb_rectpack.h" />
     <ClInclude Include="..\Public\imstb_textedit.h" />
     <ClInclude Include="..\Public\imstb_truetype.h" />
+    <ClInclude Include="..\Public\LandScape.h" />
     <ClInclude Include="..\Public\MapObject.h" />
     <ClInclude Include="..\Public\Monster_Dummy.h" />
     <ClInclude Include="..\Public\Physics_LandScape.h" />
@@ -249,12 +250,16 @@
     <ClInclude Include="..\Public\UIDynamic_Image.h" />
     <ClInclude Include="..\Public\UIHover_Image.h" />
     <ClInclude Include="..\Public\UIJust_Image.h" />
+    <ClInclude Include="..\Public\UILoading_Image.h" />
+    <ClInclude Include="..\Public\UILoading_Progress.h" />
+    <ClInclude Include="..\Public\UILoading_Text.h" />
     <ClInclude Include="..\Public\UIMenu_Exit_Trigger.h" />
     <ClInclude Include="..\Public\UIMenu_Image.h" />
     <ClInclude Include="..\Public\UIMenu_OutLine.h" />
     <ClInclude Include="..\Public\UIMenu_Text.h" />
     <ClInclude Include="..\Public\UIMenu_Trigger.h" />
     <ClInclude Include="..\Public\UIMini_Map.h" />
+    <ClInclude Include="..\Public\UIPlayerStat_Progress.h" />
     <ClInclude Include="..\Public\UIPlayerStat_Text.h" />
     <ClInclude Include="..\Public\UIProgress_Bar.h" />
     <ClInclude Include="..\Public\UISkill_BG.h" />
@@ -325,6 +330,7 @@
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">NotUsing</PrecompiledHeader>
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|x64'">NotUsing</PrecompiledHeader>
     </ClCompile>
+    <ClCompile Include="..\Private\LandScape.cpp" />
     <ClCompile Include="..\Private\MapObject.cpp" />
     <ClCompile Include="..\Private\Monster_Dummy.cpp" />
     <ClCompile Include="..\Private\Physics_LandScape.cpp" />
@@ -380,12 +386,16 @@
     <ClCompile Include="..\Private\UIDynamic_Image.cpp" />
     <ClCompile Include="..\Private\UIHover_Image.cpp" />
     <ClCompile Include="..\Private\UIJust_Image.cpp" />
+    <ClCompile Include="..\Private\UILoading_Image.cpp" />
+    <ClCompile Include="..\Private\UILoading_Progress.cpp" />
+    <ClCompile Include="..\Private\UILoading_Text.cpp" />
     <ClCompile Include="..\Private\UIMenu_Exit_Trigger.cpp" />
     <ClCompile Include="..\Private\UIMenu_Image.cpp" />
     <ClCompile Include="..\Private\UIMenu_OutLine.cpp" />
     <ClCompile Include="..\Private\UIMenu_Text.cpp" />
     <ClCompile Include="..\Private\UIMenu_Trigger.cpp" />
     <ClCompile Include="..\Private\UIMini_Map.cpp" />
+    <ClCompile Include="..\Private\UIPlayerStat_Progress.cpp" />
     <ClCompile Include="..\Private\UIPlayerStat_Text.cpp" />
     <ClCompile Include="..\Private\UIProgress_Bar.cpp" />
     <ClCompile Include="..\Private\UISkill_BG.cpp" />
@@ -425,6 +435,7 @@
     </FxCompile>
     <FxCompile Include="..\..\Shaders\Global_Defines.hlsl" />
     <FxCompile Include="..\..\Shaders\Light_Defines.hlsl" />
+    <FxCompile Include="..\..\Shaders\Shader_SpriteFont.hlsl" />
     <FxCompile Include="..\..\Shaders\Shader_VtxAnimMesh.hlsl" />
     <FxCompile Include="..\..\Shaders\Shader_VtxCol.hlsl" />
     <FxCompile Include="..\..\Shaders\Shader_VtxCube.hlsl" />

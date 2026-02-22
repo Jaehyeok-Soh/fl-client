@@ -1,13 +1,13 @@
 #include "Engine_pch.h"
 #include "Render_Manager.h"
 #include "Constant_Buffer.h"
+#include "TextureBase.h"
 #include "GameObject.h"
 #include "Camera.h"
 #include "VIBuffer_Rect_Tex.h"
 #include "Shader.h"
 #include "Bounds.h"
 #include "RenderTarget.h"
-#include "Constant_Buffer.h"
 #include "Octree_Manager.h"
 #include "EngineConsole.h"
 #include "GameInstance.h"
@@ -356,6 +356,15 @@ HRESULT CRender_Manager::Set_ShaderResources()
 			return E_FAIL;
 	}
 
+	{
+		CTextureBase::RESOURCE_BASE_DESC desc{};
+		desc.wstrName = L"T_LUT_Stand";
+		desc.wstrPath = L"../../Resources/Textures/T_LUT_Stand.png";
+		m_pLUTTexture = m_pGameInstance->GetOrAddTexture(desc.wstrName, &desc);
+		if (m_pLUTTexture == nullptr)
+			return E_FAIL;
+	}
+
 	if (FAILED(Set_ConstantBuffer()))
 		return E_FAIL;
 
@@ -389,8 +398,9 @@ HRESULT CRender_Manager::Set_ShaderResources()
 
 	// HDRparamDesc
 	{
-		m_tHDRparamDesc.fExposure = 1.f;
-		m_tHDRparamDesc.fGamma = 2.2f;
+		m_tHDRparamDesc.fExposure = 0.9f;
+		// ContrastGamma
+		m_tHDRparamDesc.fGamma = 1.5f;
 
 		if(FAILED(m_pCB_HDRparam->Copy_Data(m_tHDRparamDesc)))
 			return E_FAIL;
@@ -398,9 +408,9 @@ HRESULT CRender_Manager::Set_ShaderResources()
 
 	// BloomparamDesc
 	{
-		m_tBloomparamDesc.fThreshold = 0.5f;
-		m_tBloomparamDesc.fKnee = 0.1f;
-		m_tBloomparamDesc.fIntensity = 5.0f;
+		m_tBloomparamDesc.fThreshold = 1.2f;
+		m_tBloomparamDesc.fKnee = 0.4f;
+		m_tBloomparamDesc.fIntensity = 1.4f;
 		m_tBloomparamDesc.vInvSize = { 1.0f / m_halfViewport.Width, 1.0f / m_halfViewport.Height };
 		
 		if (FAILED(m_pCB_Bloomparam->Copy_Data(m_tBloomparamDesc)))
@@ -409,10 +419,10 @@ HRESULT CRender_Manager::Set_ShaderResources()
 
 	// OutlineDesc
 	{
-		m_tOutlineparamDesc.vColor = { 2.f, 0.2f, 2.f, 0.8f };
+		m_tOutlineparamDesc.vColor = { 0.f, 0.f, 0.f, 1.f };
 		m_tOutlineparamDesc.vInvSize = { 1.0f / m_defaultViewport.Width, 1.0f / m_defaultViewport.Height };
-		m_tOutlineparamDesc.fThicknessPx = 1.5f;
-		m_tOutlineparamDesc.fOpacity = 0.6f;
+		m_tOutlineparamDesc.fThicknessPx = 0.6f;
+		m_tOutlineparamDesc.fOpacity = 0.7f;
 		m_tOutlineparamDesc.fNormalThreshold = 1.f;
 		m_tOutlineparamDesc.fDepthThreshold = 0.015f;
 		m_tOutlineparamDesc.fNormalStrength = 1.5f;
@@ -452,7 +462,7 @@ HRESULT CRender_Manager::Render()
 
 	// SceneHDR¿¡ ´©Àû
 	{
-		if (FAILED(m_pGameInstance->Begin_MRT(EMRTLayer::SceneHDR_Acc, false)))
+		if (FAILED(m_pGameInstance->Begin_MRT(EMRTLayer::SceneHDR_Acc, false, true)))
 			return E_FAIL;
 
 		if (FAILED(Render_Environment()))
@@ -490,6 +500,9 @@ HRESULT CRender_Manager::Render()
 		return E_FAIL;
 
 	if (FAILED(Render_BlendUI()))
+		return E_FAIL;
+
+	if (FAILED(m_pGameInstance->Render_Fonts()))
 		return E_FAIL;
 
 #ifdef _DEBUG
@@ -649,7 +662,7 @@ HRESULT CRender_Manager::Render_Bloom()
 	m_pDeviceContext->RSSetViewports(1, &m_halfViewport);
 
 	// Extract
-	if (FAILED(m_pGameInstance->Begin_MRT(EMRTLayer::Bloom_Extract)))
+	if (FAILED(m_pGameInstance->Begin_MRT(EMRTLayer::Bloom_Extract, true, false)))
 		goto FAIL;
 
 	if (FAILED(m_pShader->Bind_TransformData(m_matWorld_RT)))
@@ -667,11 +680,11 @@ HRESULT CRender_Manager::Render_Bloom()
 		goto FAIL;
 
 	// Ping
-	if(FAILED(m_pGameInstance->Begin_MRT(EMRTLayer::Bloom_BlurH)))
+	if(FAILED(m_pGameInstance->Begin_MRT(EMRTLayer::Bloom_BlurH, true, false)))
 		goto FAIL;
 
 	if (FAILED(m_pGameInstance->Bind_RT_ShaderResource(ERenderTarget::Bloom_Ping, m_pShader)))
-		return E_FAIL;
+		goto FAIL;
 
 	m_pShader->Set_Pass(ENUM_TO_UINT(DEFFERRED::BLOOM_BLURH));
 	m_pShader->Apply();
@@ -682,11 +695,11 @@ HRESULT CRender_Manager::Render_Bloom()
 		goto FAIL;
 	
 	// Pong
-	if (FAILED(m_pGameInstance->Begin_MRT(EMRTLayer::Bloom_BlurV)))
+	if (FAILED(m_pGameInstance->Begin_MRT(EMRTLayer::Bloom_BlurV, true, false)))
 		goto FAIL;
 
 	if (FAILED(m_pGameInstance->Bind_RT_ShaderResource(ERenderTarget::Bloom_Pong, m_pShader)))
-		return E_FAIL;
+		goto FAIL;
 
 	m_pShader->Set_Pass(ENUM_TO_UINT(DEFFERRED::BLOOM_BLURV));
 	m_pShader->Apply();
@@ -709,6 +722,9 @@ HRESULT CRender_Manager::Render_ToneMap()
 		return E_FAIL;
 
 	if (FAILED(m_pGameInstance->Bind_RT_ShaderResource(ERenderTarget::SceneHDR, m_pShader)))
+		return E_FAIL;
+
+	if (FAILED(m_pShader->Bind_SRV(EFXSRV::LUT_Stand, m_pLUTTexture->Get_SRV())))
 		return E_FAIL;
 
 	if (FAILED(m_pGameInstance->Bind_RT_ShaderResource(ERenderTarget::Bloom_Ping, m_pShader)))
@@ -860,7 +876,7 @@ HRESULT CRender_Manager::Render_SSAO()
 	//========================
 	// SSAO Gen -> AO_Ping
 	//========================
-	if (FAILED(m_pGameInstance->Begin_MRT(EMRTLayer::SSAO_Gen)))
+	if (FAILED(m_pGameInstance->Begin_MRT(EMRTLayer::SSAO_Gen, true, false)))
 		goto FAIL;
 
 	if (FAILED(m_pShader->Bind_TransformData(m_matWorld_RT)))
@@ -886,7 +902,7 @@ HRESULT CRender_Manager::Render_SSAO()
 	//========================
 	// BLUR H -> AO_Pong
 	//========================
-	if (FAILED(m_pGameInstance->Begin_MRT(EMRTLayer::SSAO_BlurH)))
+	if (FAILED(m_pGameInstance->Begin_MRT(EMRTLayer::SSAO_BlurH, true, false)))
 		goto FAIL;
 
 	if (FAILED(m_pGameInstance->Bind_RT_ShaderResource(ERenderTarget::SSAO_Ping, m_pShader)))
@@ -903,7 +919,7 @@ HRESULT CRender_Manager::Render_SSAO()
 	//========================
 	// BLUR V -> AO_Ping
 	//========================
-	if (FAILED(m_pGameInstance->Begin_MRT(EMRTLayer::SSAO_BlurV)))
+	if (FAILED(m_pGameInstance->Begin_MRT(EMRTLayer::SSAO_BlurV, true, false)))
 		goto FAIL;
 
 	if (FAILED(m_pGameInstance->Bind_RT_ShaderResource(ERenderTarget::SSAO_Pong, m_pShader)))
@@ -922,14 +938,14 @@ HRESULT CRender_Manager::Render_SSAO()
 	// Upsample -> AO_Full
 	//========================
 	m_pDeviceContext->RSSetViewports(1, &m_defaultViewport);
-	if (FAILED(m_pGameInstance->Begin_MRT(EMRTLayer::SSAO_Upsample)))
-		return E_FAIL;
+	if (FAILED(m_pGameInstance->Begin_MRT(EMRTLayer::SSAO_Upsample, true, false)))
+		goto FAIL;
 
 	if (FAILED(m_pGameInstance->Bind_RT_ShaderResource(ERenderTarget::SSAO_Ping, m_pShader)))
-		return E_FAIL;		
+		goto FAIL;
 
 	if (FAILED(m_pGameInstance->Bind_RT_ShaderResource(ERenderTarget::Depth, m_pShader)))
-		return E_FAIL;
+		goto FAIL;
 
 	m_pShader->Set_Pass(ENUM_TO_UINT(DEFFERRED::SSAO_UPSAMPLE));
 	m_pShader->Apply();
@@ -937,10 +953,9 @@ HRESULT CRender_Manager::Render_SSAO()
 	m_pVIBuffer->Render();
 
 	if (FAILED(m_pGameInstance->End_MRT()))
-		return E_FAIL;
+		goto FAIL;
 
 	return S_OK;
-
 FAIL:
 	m_pDeviceContext->RSSetViewports(1, &m_defaultViewport);
 	return E_FAIL;
@@ -958,6 +973,9 @@ HRESULT CRender_Manager::Render_Lights()
 		return E_FAIL;
 
 	if (FAILED(m_pGameInstance->Bind_RT_ShaderResource(ERenderTarget::SpecularMask, m_pShader)))
+		return E_FAIL;
+
+	if (FAILED(m_pGameInstance->Bind_RT_ShaderResource(ERenderTarget::Diffuse, m_pShader)))
 		return E_FAIL;
 
 	if (FAILED(m_pGameInstance->Bind_RT_ShaderResource(ERenderTarget::SSAO_Full, m_pShader)))
@@ -1204,6 +1222,7 @@ void CRender_Manager::Free()
 		RenderObjects.clear();
 	}
 
+	Safe_Release(m_pLUTTexture);
 	Safe_Release(m_pSSAONoiseSRV);
 	Safe_Release(m_pCB_Outlineparam);
 	Safe_Release(m_pCB_Bloomparam);
@@ -1271,6 +1290,8 @@ HRESULT CRender_Manager::Ready_Debug()
 		return E_FAIL;
 	if (FAILED(m_pGameInstance->Ready_RT_Debug(ERenderTarget::Bloom_Pong, 750.f, 150.f, 300.f, 300.f)))
 		return E_FAIL;
+	if (FAILED(m_pGameInstance->Ready_RT_Debug(ERenderTarget::Specular, 750.f, 450.f, 300.f, 300.f)))
+		return E_FAIL;
 	return S_OK;
 }
 
@@ -1280,7 +1301,7 @@ HRESULT CRender_Manager::Render_Debug()
 	{
 		if (pDebugCom)
 		{
-			pDebugCom->Render();
+			//pDebugCom->Render();
 			Safe_Release(pDebugCom);
 		}
 	}
@@ -1291,20 +1312,20 @@ HRESULT CRender_Manager::Render_Debug()
 	if (FAILED(m_pVIBuffer->Bind_Resource()))
 		return E_FAIL;
 
-	if (FAILED(m_pGameInstance->Debug_RT_Render(EMRTLayer::GameObjects, m_pShader, m_pVIBuffer)))
-		return E_FAIL;
+	//if (FAILED(m_pGameInstance->Debug_RT_Render(EMRTLayer::GameObjects, m_pShader, m_pVIBuffer)))
+	//	return E_FAIL;
 
-	if (FAILED(m_pGameInstance->Debug_RT_Render(EMRTLayer::LightAcc, m_pShader, m_pVIBuffer)))
-		return E_FAIL;
+	//if (FAILED(m_pGameInstance->Debug_RT_Render(EMRTLayer::LightAcc, m_pShader, m_pVIBuffer)))
+	//	return E_FAIL;
 
-	if (FAILED(m_pGameInstance->Debug_RT_Render(EMRTLayer::SSAO_Gen, m_pShader, m_pVIBuffer)))
-		return E_FAIL;
+	//if (FAILED(m_pGameInstance->Debug_RT_Render(EMRTLayer::SSAO_Gen, m_pShader, m_pVIBuffer)))
+	//	return E_FAIL;
 
-	if (FAILED(m_pGameInstance->Debug_RT_Render(EMRTLayer::SSAO_Upsample, m_pShader, m_pVIBuffer)))
-		return E_FAIL;
+	//if (FAILED(m_pGameInstance->Debug_RT_Render(EMRTLayer::SSAO_Upsample, m_pShader, m_pVIBuffer)))
+	//	return E_FAIL;
 
-	if (FAILED(m_pGameInstance->Debug_RT_Render(EMRTLayer::Bloom_BlurH, m_pShader, m_pVIBuffer)))
-		return E_FAIL;
+	//if (FAILED(m_pGameInstance->Debug_RT_Render(EMRTLayer::Bloom_BlurH, m_pShader, m_pVIBuffer)))
+	//	return E_FAIL;
 
 	return S_OK;
 }

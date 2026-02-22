@@ -36,6 +36,77 @@ namespace Engine
 		string		  strParam{ "" };
 	};
 
+	typedef struct tagTimeline
+	{
+		float fDuration{ 0.f };
+		float fElapsed{ 0.f };
+
+		void Start(float _fDuration)
+		{
+			fDuration = (_fDuration < 0.f) ? 0.f : _fDuration;
+			fElapsed = 0.f;
+		}
+		bool Tick(float fDeltaTime)
+		{
+			if (fDuration <= 0.f)
+				return true;
+			fElapsed += fDeltaTime;
+			if (fElapsed >= fDuration)
+			{
+				fElapsed = fDuration;
+				return true;
+			}
+
+			return false;
+		}
+		float Get_Alpha() const
+		{
+			if (fDuration <= 0.f)
+				return 1.f;
+			float fAlpha = fElapsed / fDuration;
+			return (fAlpha < 0.f) ? 0.f : (fAlpha > 1.f ? 1.f : fAlpha);
+		}
+		float Get_Remain() const
+		{
+			float fRemain = fDuration - fElapsed;
+			return (fRemain < 0.f) ? 0.f : fRemain;
+		}
+		bool Is_Active() const
+		{
+			return (fDuration > 0.f) && (fElapsed < fDuration);
+		}
+		void Clear()
+		{
+			fDuration = 0.f;
+			fElapsed = 0.f;
+		}
+	}TIME_LINE;
+
+	template<typename T>
+	struct TimedValue
+	{
+		TIME_LINE time{};
+		T from{};
+		T to{};
+		bool bActive{ false };
+
+		void Start(const T& _from, const T& _to, float _fDuration)
+		{
+			from = _from;
+			to = _to;
+			time.Start(_fDuration);
+			bActive = true;
+		}
+
+		void Tick(float _fUnscaledDeltaTime)
+		{
+			if (bActive == false)
+				return;
+			if (time.Tick(_fUnscaledDeltaTime) == true)
+				bActive = false;
+		}
+		float Alpha() const { return time.Get_Alpha(); }
+	};
 #pragma region Shader_ConstantBuffer
 	typedef struct tagShaderGlobalDesc
 	{
@@ -394,10 +465,12 @@ namespace Engine
 	typedef struct tagAnimE_Immu_ChannelData
 	{
 		int     iBoneIndex = { -1 };             // 내 bone transform을 잘 업데이트 하기 위함
-		int     iRootMotionBoneIndex = { -1 };   // root motion일 경우 tralation을 0으로 만들기 위함
+
 
 		unsigned int    iKeyStart = { 0 };              // 키프레임 시작 위치
 		unsigned int    iKeyCount = { 0 };              // 키프레임 개수
+
+		float  Padding0 = { 0.f };
 	}CS_IMMU_ANIM_CHANNELDATA;
 
 	// 가변 데이터 : cpu
@@ -406,7 +479,9 @@ namespace Engine
 		float   fCurTrackPosition = { 0.f };
 		unsigned int iChannelCount = { 0 };
 
-		SimpleMath::Vector2  Padding0 = {};
+		int     iRootMotionBoneIndex = { -1 };   // root motion일 경우 tralation을 0으로 만들기 위함
+
+		float  Padding0 = {0.f};
 	}CS_MU_TRACK;
 #pragma endregion
 
@@ -671,6 +746,22 @@ namespace Engine
 		D3DX11_TECHNIQUE_DESC tDesc = {};
 		vector<tagPass> vecPasses;
 	} TECHNIQUE;
+
+#pragma region Font
+	typedef struct tagFontDesc
+	{
+		EFontShaderType eFontShaderType;
+		std::wstring strFontTag;
+		std::wstring strText;
+		DirectX::SimpleMath::Vector2 vPosition;
+		DirectX::SimpleMath::Vector4 vColor;
+		EFontPivotType ePivot;
+		float fRotate;
+		float fScale;
+	}FONT_DESC;
+
+#pragma endregion
+
 #pragma region EFFECT
 	typedef struct tagEffectSpawnDesc {
 		SimpleMath::Matrix matWorld;             // 계산된 최종 행렬

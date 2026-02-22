@@ -20,6 +20,7 @@ public:
 private:
 	HRESULT Load_TextureBase();
 	HRESULT Load_LegacyXTex();
+	_bool IsSRGB_ByName(const std::filesystem::path texturePath);
 private:
 	ID3D11ShaderResourceView* m_pSRV = { nullptr };
 	Vec2 m_vSize = { 0.0f, 0.0f };

@@ -289,9 +289,6 @@
     <Filter Include="00. System\05. Component\PhysicsCCT">
       <UniqueIdentifier>{20045528-a719-46f9-8133-abf66bb4da37}</UniqueIdentifier>
     </Filter>
-    <Filter Include="00. System\04. GameObject\UIObject\Registry">
-      <UniqueIdentifier>{01d57898-da08-45d1-a15c-f74cab4f144e}</UniqueIdentifier>
-    </Filter>
     <Filter Include="01. Utility\11. DataRepository\Datas\Map\DataStruct_Map">
       <UniqueIdentifier>{1e9392f0-97f4-4afb-8c29-c6afefc0eb48}</UniqueIdentifier>
     </Filter>
@@ -402,6 +399,9 @@
     </Filter>
     <Filter Include="00. System\14. Effect\EffectBase">
       <UniqueIdentifier>{e059ea9b-341c-4c3a-9937-f5c33ad7e760}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="01. Utility\08. GameData\00. Struct">
+      <UniqueIdentifier>{bb8f41bb-a3ed-4948-8171-6eb23fc3d412}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
@@ -736,9 +736,6 @@
     <ClCompile Include="..\Private\ComputeShader.cpp">
       <Filter>00. System\05. Component\Monobehaviour\ComputeShader</Filter>
     </ClCompile>
-    <ClCompile Include="..\Private\UIAction_Registry.cpp">
-      <Filter>00. System\04. GameObject\UIObject\Registry</Filter>
-    </ClCompile>
     <ClCompile Include="..\Private\UIObject.cpp">
       <Filter>00. System\04. GameObject\UIObject</Filter>
     </ClCompile>
@@ -813,6 +810,12 @@
     </ClCompile>
     <ClCompile Include="..\Private\EffectBase.cpp">
       <Filter>00. System\14. Effect\EffectBase</Filter>
+    </ClCompile>
+    <ClCompile Include="..\private\TimeScale_Manager.cpp">
+      <Filter>00. System\01. Timer\Manager</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\GameData_Struct.cpp">
+      <Filter>01. Utility\08. GameData\00. Struct</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -1174,9 +1177,6 @@
     <ClInclude Include="..\Public\ComputeShader.h">
       <Filter>00. System\05. Component\Monobehaviour\ComputeShader</Filter>
     </ClInclude>
-    <ClInclude Include="..\Public\UIAction_Registry.h">
-      <Filter>00. System\04. GameObject\UIObject\Registry</Filter>
-    </ClInclude>
     <ClInclude Include="..\Public\UIObject.h">
       <Filter>00. System\04. GameObject\UIObject</Filter>
     </ClInclude>
@@ -1269,6 +1269,9 @@
     </ClInclude>
     <ClInclude Include="..\public\EffectBase.h">
       <Filter>00. System\14. Effect\EffectBase</Filter>
+    </ClInclude>
+    <ClInclude Include="..\public\TimeScale_Manager.h">
+      <Filter>00. System\01. Timer\Manager</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

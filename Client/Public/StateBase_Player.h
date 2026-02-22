@@ -60,6 +60,8 @@ protected:
 
 	STATE_START_DESC		m_tNextStateDesc = {};
 
+	TimeCount				m_TFallingCount = { 0.f,0.3f };
+
 	// state가 변환 했다면 true
 protected:
 	_bool Check_MoveKey(const _float fTimeDelta);
@@ -95,7 +97,7 @@ protected:
 private:
 	_uint					m_iEndStateIdx = { 0 };			// CPlayer::State::END 캐싱 해둠 : 만약 END면 state change x
 
-	TimeCount				m_TFallingCount = { 0.f,0.3f };
+
 
 private:
 	_bool Has_ChangeState(STATEKEY eKey);

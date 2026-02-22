@@ -16,10 +16,10 @@ private:
 	HRESULT Initialize(_uint iLevelCount, CObjectPool_Manager* pPoolManager);
 public:
 	HRESULT Awake(const _uint iCurrentLevelID);
-	void Update_Priority(const _float fTimeDelta);
-	void Update(const _float fTimeDelta);
-	void Update_Late(const _float fTimeDelta);
-	void Ready_Before_Render(const _float fTimeDelta);
+	void Update_Priority(const _float fUnscaledTimeDelta, const _float fScaledTimeDelta);
+	void Update(const _float fUnscaledTimeDelta, const _float fScaledTimeDelta);
+	void Update_Late(const _float fUnscaledTimeDelta, const _float fScaledTimeDelta);
+	void Ready_Before_Render(const _float fUnscaledTimeDelta, const _float fScaledTimeDelta);
 	
 	void Delete_GameObject(_uint iCloneLevelIndex, const wstring& wstrLayerTag, CGameObject* pGo);
 

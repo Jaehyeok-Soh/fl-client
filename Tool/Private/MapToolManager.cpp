@@ -1,21 +1,31 @@
 #include "pch.h"
 #include "MapToolManager.h"
 #include "MapObject.h"
+#include <fstream>
 #include "ImGui_ToolManager.h"
 #include "Picking_ToolManager.h"
 #include "DebugLine.h"
 #include "Model.h"
-#include "DataStruct_Map.h"
 #include "Level_Map.h"
 #include "GameInstance.h"
+#include "Texture.h"
+#include "Shader.h"
+#include "SceneData.h"
 
 IMPLEMENT_SINGLETON(CMapToolManager)
 
 CMapToolManager::CMapToolManager()
-	: m_pGameInstance(CGameInstance::GetInstance())
-	, m_pImGui_ToolManager(CImGui_ToolManager::GetInstance())
-	, m_arrayMapObjectCloneFactory{}
-	, m_pPreviewMapobject(nullptr)
+	: m_pGameInstance					{ CGameInstance::GetInstance() }
+	, m_pImGui_ToolManager				{ CImGui_ToolManager::GetInstance() }
+	, m_pPreviewMapobject				{ nullptr }
+	, m_pMesh_Shader					{nullptr}
+	, m_tTextureSplattingInfo			{}
+	, m_arrayMapObjectCloneFactory		{}
+	, m_umapMapTextures					{}
+	, m_pDefaultBlackSRV				{nullptr}
+	, m_pDefaultWhiteSRV				{nullptr}
+	, m_mapTextureSplatingInfoDatas		{}
+	, m_pSceneData						{nullptr}
 {
 	Safe_AddRef(m_pGameInstance);
 	m_arrayMapObjectCloneFactory.fill(nullptr);
@@ -35,11 +45,369 @@ HRESULT CMapToolManager::Initialize(ID3D11Device* pDevice, ID3D11DeviceContext* 
 	m_fMouseWheelSpeed = 0.001f;
 	m_fMouseRange = 1.f;
 
+
+	m_pMesh_Shader = 
+		static_cast<CShader*>(m_pGameInstance->Clone_Prototype(EPrototypeType::COMPONENT, ENUM_TO_UINT(ELevelType::STATIC), L"Prototype_Component_Shader_VtxMesh_Tool"));
+
+
 	if (FAILED(Register_MapObjectCloneFactory()))
+		return E_FAIL;
+
+	if (FAILED(Make_DefaultTexture()))
+		return E_FAIL;
+
+
+	if (FAILED(Bind_MapTexture()))
+		return E_FAIL;
+
+
+	return S_OK;
+}
+
+
+HRESULT CMapToolManager::Bind_MapTexture()
+{
+	/* SRV ¹ÙÀÎµù */
+	if (m_pMesh_Shader == nullptr) return E_FAIL;
+
+	/* Base , RGB , RGBA ÅØ½ºÃ³¸¦ ¹ÙÀÎµùÇØÁØ´Ù */
+	ID3DX11EffectShaderResourceVariable* pEffectSRV{ nullptr };
+
+	/* Base Texture */
+	pEffectSRV = m_pMesh_Shader->Get_Variable(g_szBase_Texture)->AsShaderResource();
+	if (!pEffectSRV->IsValid())
+	{
+		MSG_BOX(" g_Base_Texture is Can't Find ");
+		return E_FAIL;
+	}
+	pEffectSRV->SetResource(m_tTextureSplattingInfo.pBase_Texture == nullptr ? m_pDefaultBlackSRV : m_tTextureSplattingInfo.pBase_Texture->Get_SRV());
+
+	/* DH Tile Texture  */
+	pEffectSRV = m_pMesh_Shader->Get_Variable(g_szMix_DH_Tile_Texture)->AsShaderResource();
+	if (!pEffectSRV->IsValid())
+	{
+		MSG_BOX(" g_Mix_DH_Tile_Texture is Can't Find ");
+		return E_FAIL;
+	}
+	pEffectSRV->SetResource(m_tTextureSplattingInfo.pMix_DH_Tile_Texture == nullptr ? m_pDefaultBlackSRV : m_tTextureSplattingInfo.pMix_DH_Tile_Texture->Get_SRV());
+
+
+	/* NBR Tile Texture */
+	pEffectSRV = m_pMesh_Shader->Get_Variable(g_szMix_NBR_Tile_Texture)->AsShaderResource();
+	if (!pEffectSRV->IsValid())
+	{
+		MSG_BOX(" g_Mix_NBR_Tile_Texture is Can't Find ");
+		return E_FAIL;
+	}
+	pEffectSRV->SetResource(m_tTextureSplattingInfo.pMix_NBR_Tile_Texture == nullptr ? m_pDefaultBlackSRV : m_tTextureSplattingInfo.pMix_NBR_Tile_Texture->Get_SRV());
+
+	return S_OK;
+}
+
+HRESULT CMapToolManager::Bind_Mix_RGBA_Info()
+{
+	if (FAILED(Bind_Mix_RGBA_Texture()))
+		return E_FAIL;
+
+	if (FAILED(Bind_Mix_RGBA_Data_And_Count()))
 		return E_FAIL;
 
 	return S_OK;
 }
+
+HRESULT CMapToolManager::Bind_Mix_RGBA_Texture()
+{
+	/* Texture ¸ÕÀú Binding */
+	ID3DX11EffectShaderResourceVariable* pEffectSRV{ nullptr };
+
+	/* Effect SRVs */
+	pEffectSRV = m_pMesh_Shader->Get_Variable(g_szMix_RGBA_Texture)->AsShaderResource();
+	if (!pEffectSRV->IsValid())
+	{
+		MSG_BOX(" g_Mix_RGBA_Texture is Can't Find ");
+		return E_FAIL;
+	}
+
+	/* SRV¸¦ ¸ð¾Æ±â */
+	array<ID3D11ShaderResourceView*, MAX_RGBA_TEXTURE_COUNT> arraySRVs{};
+	arraySRVs.fill(nullptr);
+
+	for (_int i = 0; i < m_tTextureSplattingInfo.tMix_RGBA_Info.iUse_Mix_RGBA_Count ; ++i)
+		arraySRVs[i] = m_tTextureSplattingInfo.tMix_RGBA_Info.vecMixRGBATexture[i] == nullptr ? m_pDefaultBlackSRV
+		: m_tTextureSplattingInfo.tMix_RGBA_Info.vecMixRGBATexture[i]->Get_SRV();
+
+	/* ¸ðÀº SRV ´øÁ®ÁÖ±â */
+	if (FAILED(pEffectSRV->SetResourceArray(arraySRVs.data(), 0, MAX_RGBA_TEXTURE_COUNT)))
+		return E_FAIL;
+
+	return S_OK;
+}
+
+HRESULT CMapToolManager::Bind_Mix_RGBA_Data_And_Count()
+{
+	CB_MIX_RGBA_INFO	tCB{};
+
+	memcpy(tCB.g_MIX_RGBA_DATA , m_tTextureSplattingInfo.tMix_RGBA_Info.vecMix_RGBA_Data.data() , sizeof(MIX_RGBA_DATA) * m_tTextureSplattingInfo.tMix_RGBA_Info.iUse_Mix_RGBA_Count );
+	tCB.g_iUse_Mix_RGBA_Count = m_tTextureSplattingInfo.tMix_RGBA_Info.iUse_Mix_RGBA_Count;
+
+	ID3DX11EffectConstantBuffer* pCB = m_pMesh_Shader->Get_ConstantBuffer("CB_MIX_RGBA_INFO");
+	if (!pCB->IsValid())
+	{
+		MSG_BOX("CB_MIX_RGBA_INFO ¹ÙÀÎµù ½ÇÆÐ ¹®ÀÚ¿­ °Ë»ö È®ÀÎ");
+		return E_FAIL;
+	}
+
+	if(FAILED(pCB->SetRawValue( &tCB , 0 , sizeof(CB_MIX_RGBA_INFO))))
+		return E_FAIL;
+
+	return S_OK;
+}
+
+HRESULT CMapToolManager::Register_MapTexture()
+{
+	CTextureBase::RESOURCE_BASE_DESC tTexDesc{};
+
+	for (auto& Path : std::filesystem::recursive_directory_iterator(g_wszMapTexture_Path))
+	{
+		if (!std::filesystem::is_regular_file(Path))
+			continue;
+
+		wstring wstrExt = path(Path).extension();
+
+		if (wstrExt != L".png" && wstrExt != L".dds")
+			continue;
+		path FullPath = path(Path);
+		tTexDesc.wstrPath = path(FullPath);
+		tTexDesc.wstrName = path(FullPath).filename().stem();
+
+		/* ÅØ½ºÃ³µéÀ» ¾þ¾î¿Â´Ù... */
+		CTextureBase* pTexBase = m_pGameInstance->GetOrAddTexture(L"Texture_" + tTexDesc.wstrName, &tTexDesc);
+		if (pTexBase == nullptr)
+			return E_FAIL;
+
+		/* ±¸¿ªÀÌ¸§À¸·Î ³ª´²ÁÖ±â */
+		FullPath._Remove_filename_and_separator();
+		wstring wstrFloderName = FullPath.filename();
+		m_umapMapTextures[wstrFloderName].push_back(pTexBase);
+	}
+
+	return S_OK;
+}
+
+HRESULT CMapToolManager::Release_SplatingTextureData()
+{
+	for (auto& Pair : m_mapTextureSplatingInfoDatas)
+		Pair.second.Free();
+	m_mapTextureSplatingInfoDatas.clear();
+
+	return S_OK;
+}
+
+HRESULT CMapToolManager::Delete_TextureSplatingInfoData(const wstring& wstrDeleteName)
+{
+	if (m_mapTextureSplatingInfoDatas.find(wstrDeleteName) == m_mapTextureSplatingInfoDatas.end())
+		return E_FAIL;
+
+
+	/* Delete ÇÏ±â Delete ÇÏ±âÀü ¾ÈÀüÇÏ°Ô Free() È£­ŒÇØÁÖ±â */
+	m_mapTextureSplatingInfoDatas.erase(wstrDeleteName);
+
+
+	return S_OK;
+}
+
+HRESULT CMapToolManager::Load_TextureSplatingInfoData()
+{
+	/* Texture SplatingÀ» ÀúÀå½ÃÅ² DataµéÀ» LoadÇØÁØ´Ù */
+
+	std::ifstream ifs(TextureSplatingInfoDataPath);
+	
+	if (ifs.is_open() == false) return E_FAIL;
+
+	if (ifs.peek() == std::ifstream::traits_type::eof())
+	{
+		return S_OK; // ÅÖ ºñ¾îÀÖÀ¸´Ï ·ÎµåÇÒ °Íµµ ¾ø´Ù! ¾ÈÀüÇÏ°Ô ¸®ÅÏ.
+	}
+
+	nlohmann::json LoadJson{};
+	ifs >> LoadJson;
+
+
+
+	if (LoadJson.empty())
+		return S_OK;
+
+	/* ÀúÀåÇÒ Key °ªÀ»ÅëÇØ ÀúÀå½ÃÄÑÁØ´Ù */
+
+	m_mapTextureSplatingInfoDatas.clear();
+
+
+	for (const auto& item : LoadJson.items())
+	{
+		TEXTURE_SPLATTING_INFO tInfo{};
+
+		wstring wstrKey = Engine_Utils::ToWString(item.key());
+		tInfo.Load_Json(item.value());
+		m_mapTextureSplatingInfoDatas.emplace(wstrKey , tInfo);
+	}
+
+	return S_OK;
+}
+
+HRESULT CMapToolManager::Load_TextureSplatingInfoData(const wstring& wstrLoadName)
+{
+	if (m_mapTextureSplatingInfoDatas.empty()) return S_OK;
+
+
+	if (m_mapTextureSplatingInfoDatas.find(wstrLoadName) == m_mapTextureSplatingInfoDatas.end())
+		return E_FAIL;
+
+
+
+	/* ÇöÀç Àû¿ëµÇ°íÀÖ´Â Info¸¦ »èÁ¦ */
+	m_tTextureSplattingInfo.Free();
+
+	/* ´ëÀÔ º¹»ç»ý¼º */
+	m_tTextureSplattingInfo = m_mapTextureSplatingInfoDatas.at(wstrLoadName);
+
+	/* Data¿¡¼­ LoadÇØ¿Â µ¥ÀÌÅÍ¿¡¼­ DH , NBRÀ» Slice·Î Àß¶óÁØ´Ù */
+	Slice_DH_Texture();
+	Slice_NBR_Texture();
+
+	/* Load ÀüºÎ ÇØÁÖ°í Binding ÇÔ¼ö ºÎ¸£±â */
+
+	if (FAILED(Bind_MapTexture()))
+		return E_FAIL;
+	if (FAILED(Bind_Mix_RGBA_Info()))
+		return E_FAIL;
+
+	return S_OK;
+}
+
+HRESULT CMapToolManager::Save_TextureSplatingInfoData()
+{
+	/* Json ÆÄÀÏ Save */
+	std::ofstream ofs(TextureSplatingInfoDataPath);
+
+	if (ofs.is_open() == false) return E_FAIL;
+
+	nlohmann::json SaveJson{};
+
+
+	for (auto& Pair : m_mapTextureSplatingInfoDatas)
+	{
+		string strKey = Engine_Utils::ToString(Pair.first);
+		Pair.second.Save_Json(SaveJson[strKey]);
+	}
+
+	ofs << SaveJson.dump(4);
+	
+	ofs.close();
+
+	return S_OK;
+}
+
+HRESULT CMapToolManager::Save_TextureSplatingInfoData(const wstring& wstrSaveName)
+{
+	_bool isExist = m_mapTextureSplatingInfoDatas.find(wstrSaveName) != m_mapTextureSplatingInfoDatas.end();
+
+
+	if (isExist)
+	{
+		int iResult = MessageBox(NULL, L"ÀÌ¹Ì ÀúÀåµÈ ÆÄÀÏÀÌ Á¸ÀçÇÕ´Ï´Ù µ¤¾î¾²½Ã°Ú½À´Ï±î?", L"°æ°í: ±âÁ¸ ÀúÀåÆÄÀÏ »ç¶óÁü", MB_OKCANCEL | MB_ICONWARNING | MB_SETFOREGROUND);
+		if (iResult)
+		{
+			m_mapTextureSplatingInfoDatas[wstrSaveName].Free();
+		}
+		else
+			return S_OK;
+	}
+
+
+	/* ÇöÀç ÀúÀåµÈ Texture Splating Info ¸¦ ÀúÀå½ÃÄÑÁØ´Ù */
+	m_mapTextureSplatingInfoDatas[wstrSaveName] = m_tTextureSplattingInfo;
+
+	return S_OK;
+}
+
+HRESULT CMapToolManager::UnRegister_MapTexture()
+{
+	m_tTextureSplattingInfo.Free();
+
+	for (auto& Pair : m_umapMapTextures)
+	{
+		for (auto& Tex : Pair.second)
+			Safe_Release(Tex);
+	}
+
+	return S_OK;
+}
+
+HRESULT CMapToolManager::Register_MapObjectCloneFactory()
+{
+	// °Å ÀÌÆåÆ®¿¡¼­ Á» ²ÇÃÄ°¡°Ú½À´Ï´Ù.
+		// ¾îÂ÷ÇÇ ¹«Á¶°Ç else °É¸±°Ì´Ï´Ù. 
+		// Load ´Ü°è¿¡¼­´Â ¾îÂ÷ÇÇ Loader¶ó¼­ 0ÀÌ°Åµç
+	if (m_pGameInstance->Get_CurrentLevelIndex() == ENUM_TO_UINT(ELevelType::EFFECT))
+	{
+		m_funcMapObjectCloneFactory =
+			[=](void* pArg)->CGameObject* { return m_pGameInstance->Add_GameObject(ENUM_TO_UINT(ELevelType::EFFECT), L"Prototype_GameObject_MapObject",
+				ENUM_TO_UINT(ELevelType::EFFECT), g_wszMapObjectLayer, pArg); };
+	}
+
+	else
+	{
+		m_funcMapObjectCloneFactory =
+			[=](void* pArg)->CGameObject* { return m_pGameInstance->Add_GameObject(ENUM_TO_UINT(ELevelType::MAP), L"Prototype_GameObject_MapObject",
+				ENUM_TO_UINT(ELevelType::MAP), g_wszMapObjectLayer, pArg); };
+	}
+
+	return S_OK;
+}
+
+HRESULT CMapToolManager::Ready_SceneData()
+{
+	m_pSceneData = CSceneData::Create(EToolObjectType::MAPOBJECT, m_pDevice, m_pContext);
+	if (m_pSceneData == nullptr) return E_FAIL;
+
+	return S_OK;
+}
+
+HRESULT CMapToolManager::Apply_SceneData(const DTO::TSceneData* tData)
+{
+	if (tData == nullptr) return E_FAIL;
+
+	/* ´Ù¸¥ ÀÌ¸§ÀÌ ÀúÀåµÇ¾îÀÖ´Ù¸é E_FAIL ¹ÝÈ¯µÈ´Ù */
+	if (FAILED(CMapToolManager::Load_TextureSplatingInfoData(Engine_Utils::ToWString(tData->strTextureSplatingInfoName))))
+		return E_FAIL;
+
+	/* None => [Don't Use Texture Splating Info] */
+	m_pSceneData->m_strTextureSplatingInfoName = tData->strTextureSplatingInfoName;
+
+	return S_OK;
+}
+
+HRESULT CMapToolManager::Release_SceneData()
+{
+	Safe_Release(m_pSceneData);
+
+	return S_OK;
+}
+
+HRESULT CMapToolManager::Bind_SplatingTextureInfo()
+{
+	/* Binding Texture */
+	if (FAILED(Bind_MapTexture()))
+		return E_FAIL;
+
+	/* ÇöÀç »ç¿ëÇÏ´Â RGBA Map °³¼ö Binding */
+	if (FAILED(Bind_Mix_RGBA_Info()))
+		return E_FAIL;
+
+	return S_OK;
+}
+
+
 
 void	CMapToolManager::Update(float DT)
 {
@@ -300,6 +668,152 @@ HRESULT CMapToolManager::Check_And_Bind_FromUE()
 	return S_OK;
 }
 
+
+HRESULT CMapToolManager::Make_DefaultTexture()
+{
+	// °øÅë ÅØ½ºÃ³ ¼³Á¤ (1x1 ÇÈ¼¿, 32ºñÆ® RGBA)
+	D3D11_TEXTURE2D_DESC tDesc = {};
+	tDesc.Width = 1;
+	tDesc.Height = 1;
+	tDesc.MipLevels = 1;
+	tDesc.ArraySize = 1;
+	tDesc.Format = DXGI_FORMAT_R8G8B8A8_UNORM;
+	tDesc.SampleDesc.Count = 1;
+	tDesc.Usage = D3D11_USAGE_DEFAULT;
+	tDesc.BindFlags = D3D11_BIND_SHADER_RESOURCE;
+	tDesc.CPUAccessFlags = 0;
+
+	{
+		uint32_t pixelBlack = 0xFF000000; // ARGB = 0, 0, 0, 0
+		D3D11_SUBRESOURCE_DATA tData = {};
+		tData.pSysMem = &pixelBlack;
+		tData.SysMemPitch = sizeof(uint32_t);
+
+		ID3D11Texture2D* pTexBlack = nullptr;
+		if (FAILED(m_pDevice->CreateTexture2D(&tDesc, &tData, &pTexBlack)))
+			return E_FAIL;
+
+		if (FAILED(m_pDevice->CreateShaderResourceView(pTexBlack, nullptr, &m_pDefaultBlackSRV)))
+		{
+			pTexBlack->Release();
+			return E_FAIL;
+		}
+		Safe_Release(pTexBlack);
+	}
+	{
+		uint32_t pixelWhite = 0xFFFFFFFF; // ARGB = 255, 255, 255, 255
+		D3D11_SUBRESOURCE_DATA tData = {};
+		tData.pSysMem = &pixelWhite;
+		tData.SysMemPitch = sizeof(uint32_t);
+
+		ID3D11Texture2D* pTexWhite = nullptr;
+		if (FAILED(m_pDevice->CreateTexture2D(&tDesc, &tData, &pTexWhite)))
+			return E_FAIL;
+
+		if (FAILED(m_pDevice->CreateShaderResourceView(pTexWhite, nullptr, &m_pDefaultWhiteSRV)))
+		{
+			pTexWhite->Release();
+			return E_FAIL;
+		}
+		Safe_Release(pTexWhite);
+	}
+
+	return S_OK;
+}
+
+/* 2d Texture Array¸¦ SRV·Î ¹ÝÈ¯ÇØ¼­ ³»¹ñ¾îÁÖ´Â ÇÔ¼ö  */
+HRESULT CMapToolManager::Slice_DH_Texture()
+{
+	if (m_tTextureSplattingInfo.pMix_DH_Tile_Texture == nullptr) return S_OK;
+
+	for (auto& pSRV : m_tTextureSplattingInfo.vecDHTextureArraySlices)
+		Safe_Release(pSRV);
+
+	m_tTextureSplattingInfo.vecDHTextureArraySlices.clear();
+
+	ID3D11ShaderResourceView* pOriginalSRV = m_tTextureSplattingInfo.pMix_DH_Tile_Texture->Get_SRV();
+	ID3D11Resource* pRes = nullptr;
+	pOriginalSRV->GetResource(&pRes);
+
+	ID3D11Texture2D* pTex2D = (ID3D11Texture2D*)pRes;
+	D3D11_TEXTURE2D_DESC tTexDesc;
+	pTex2D->GetDesc(&tTexDesc);
+
+	m_tTextureSplattingInfo.vecDHTextureArraySlices.resize(tTexDesc.ArraySize);
+	for (UINT i = 0; i < tTexDesc.ArraySize; ++i)
+	{
+		D3D11_SHADER_RESOURCE_VIEW_DESC tViewDesc;
+		ZeroMemory(&tViewDesc, sizeof(tViewDesc));
+
+		tViewDesc.Format = tTexDesc.Format;
+		tViewDesc.ViewDimension = D3D11_SRV_DIMENSION_TEXTURE2DARRAY;
+		tViewDesc.Texture2DArray.MostDetailedMip = 0;
+		tViewDesc.Texture2DArray.MipLevels = 1;
+		tViewDesc.Texture2DArray.FirstArraySlice = i;
+		tViewDesc.Texture2DArray.ArraySize = 1;
+
+		ID3D11ShaderResourceView* pSliceSRV = nullptr;
+		if (FAILED(m_pDevice->CreateShaderResourceView(pTex2D, &tViewDesc, &pSliceSRV)))
+		{
+			Safe_Release(pRes);
+			return E_FAIL;
+		}
+
+		m_tTextureSplattingInfo.vecDHTextureArraySlices[i] = pSliceSRV;
+	}
+	Safe_Release(pRes);
+
+
+	return S_OK;
+}
+
+HRESULT CMapToolManager::Slice_NBR_Texture()
+{
+
+	if (m_tTextureSplattingInfo.pMix_NBR_Tile_Texture == nullptr) return S_OK;
+
+	for (auto& pSRV : m_tTextureSplattingInfo.vecNBRTextureArraySlices)
+		Safe_Release(pSRV);
+
+	m_tTextureSplattingInfo.vecNBRTextureArraySlices.clear();
+
+
+	ID3D11ShaderResourceView* pOriginalSRV = m_tTextureSplattingInfo.pMix_NBR_Tile_Texture->Get_SRV();
+	ID3D11Resource* pRes = nullptr;
+	pOriginalSRV->GetResource(&pRes);
+
+	ID3D11Texture2D* pTex2D = (ID3D11Texture2D*)pRes;
+	D3D11_TEXTURE2D_DESC tTexDesc;
+	pTex2D->GetDesc(&tTexDesc);
+
+	m_tTextureSplattingInfo.vecNBRTextureArraySlices.resize(tTexDesc.ArraySize);
+	for (UINT i = 0; i < tTexDesc.ArraySize; ++i)
+	{
+		D3D11_SHADER_RESOURCE_VIEW_DESC tViewDesc;
+		ZeroMemory(&tViewDesc, sizeof(tViewDesc));
+
+		tViewDesc.Format = tTexDesc.Format;
+		tViewDesc.ViewDimension = D3D11_SRV_DIMENSION_TEXTURE2DARRAY;
+		tViewDesc.Texture2DArray.MostDetailedMip = 0;
+		tViewDesc.Texture2DArray.MipLevels = 1;
+		tViewDesc.Texture2DArray.FirstArraySlice = i;
+		tViewDesc.Texture2DArray.ArraySize = 1;
+
+		ID3D11ShaderResourceView* pSliceSRV = nullptr;
+		if (FAILED(m_pDevice->CreateShaderResourceView(pTex2D, &tViewDesc, &pSliceSRV)))
+		{
+			Safe_Release(pRes);
+			return E_FAIL;
+		}
+
+		m_tTextureSplattingInfo.vecNBRTextureArraySlices[i] = pSliceSRV;
+	}
+	Safe_Release(pRes);
+
+
+	return S_OK;
+}
+
 void CMapToolManager::Get_SRT_BrushData(Vec3& vOutScale, Quat& vOutQuat, Vec3& vOutPosition)
 {
 	vOutPosition = m_vRayWorldPos;
@@ -341,6 +855,15 @@ void CMapToolManager::Set_BrushRotation(const Quat& vQuat)
 const Vec3& CMapToolManager::Get_MousePickingPos() const
 {
 	return m_vRayWorldPos;
+}
+
+HRESULT CMapToolManager::Export_SaveSceneData(DTO::ECategory eCategory, CDataDocumentBase* pDocument)
+{
+	if (m_pSceneData == nullptr) return E_FAIL;
+
+	m_pSceneData->Export_Data(eCategory , pDocument);
+
+	return S_OK;
 }
 
 CMapObject* CMapToolManager::Make_MapObject(void* pArg, _bool isPreview)
@@ -409,43 +932,37 @@ HRESULT CMapToolManager::Batch_Preview()
 
 	}
 
-
-
-
 	return S_OK;
 }
 
-
-HRESULT CMapToolManager::Register_MapObjectCloneFactory()
-{
-	// °Å ÀÌÆåÆ®¿¡¼­ Á» ²ÇÃÄ°¡°Ú½À´Ï´Ù.
-	// ¾îÂ÷ÇÇ ¹«Á¶°Ç else °É¸±°Ì´Ï´Ù. 
-	// Load ´Ü°è¿¡¼­´Â ¾îÂ÷ÇÇ Loader¶ó¼­ 0ÀÌ°Åµç
-	if (m_pGameInstance->Get_CurrentLevelIndex() == ENUM_TO_UINT(ELevelType::EFFECT))
-	{
-		m_funcMapObjectCloneFactory =
-			[=](void* pArg)->CGameObject* { return m_pGameInstance->Add_GameObject(ENUM_TO_UINT(ELevelType::EFFECT), L"Prototype_GameObject_MapObject",
-				ENUM_TO_UINT(ELevelType::EFFECT), g_wszMapObjectLayer, pArg); };
-	}
-
-	else
-	{
-		m_funcMapObjectCloneFactory =
-			[=](void* pArg)->CGameObject* { return m_pGameInstance->Add_GameObject(ENUM_TO_UINT(ELevelType::MAP), L"Prototype_GameObject_MapObject",
-				ENUM_TO_UINT(ELevelType::MAP), g_wszMapObjectLayer, pArg); };
-	}
-
-	return S_OK;
-}
 
 void CMapToolManager::Free()
 {
+	Super::Free();
+
 	Safe_Release(m_pDevice);
 	Safe_Release(m_pContext);
 	Safe_Release(m_pGameInstance);
 
+
+	Safe_Release(m_pDefaultWhiteSRV);
+	Safe_Release(m_pDefaultBlackSRV);
+
+	Safe_Release(m_pMesh_Shader);
+
+
+	/* ¾È¿¡ µé¾îÀÖ´Â Texture Á¤¸® */
+	m_tTextureSplattingInfo.Free();
+	UnRegister_MapTexture();
+
+
 	m_pLevelMap = nullptr;
+
 
 	for (auto& Factory : m_arrayMapObjectCloneFactory)
 		Factory = nullptr;
+
 }
+
+
+

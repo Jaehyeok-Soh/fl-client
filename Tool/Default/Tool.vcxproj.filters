@@ -211,12 +211,6 @@
     <Filter Include="09. Builder\Map">
       <UniqueIdentifier>{316c30da-42c6-486a-bbfd-7736152fabec}</UniqueIdentifier>
     </Filter>
-    <Filter Include="02. GameObjects\Map\00. MapObject\01. StaticModel">
-      <UniqueIdentifier>{2cfbf0d2-bd5d-4728-87d5-d2bb19dfb549}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="02. GameObjects\Map\00. MapObject\02. InstanceModel">
-      <UniqueIdentifier>{32494c10-0bf8-420f-a857-a2d263860bfa}</UniqueIdentifier>
-    </Filter>
     <Filter Include="02. GameObjects\UI\02.UI">
       <UniqueIdentifier>{6a558198-77c1-41fb-9345-05c1fc4f9daf}</UniqueIdentifier>
     </Filter>
@@ -228,9 +222,6 @@
     </Filter>
     <Filter Include="04. Component\UI\Progress">
       <UniqueIdentifier>{27815419-4fa4-4be0-9d62-f21f634f2338}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="02. GameObjects\Map\00. MapObject\03. BatchObject">
-      <UniqueIdentifier>{4cbea894-fe8a-484a-b84b-a0522058102a}</UniqueIdentifier>
     </Filter>
     <Filter Include="02. GameObjects\UI\00.Action">
       <UniqueIdentifier>{566d6d02-9c34-4ed7-beae-db2b024e4049}</UniqueIdentifier>
@@ -291,6 +282,15 @@
     </Filter>
     <Filter Include="03. Level\Effect\EffectMap_Manager">
       <UniqueIdentifier>{f6e885fe-6ab5-4919-9664-08fb2ffebacc}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="06. ImGui\01. Panel\Animation\Panel_ModelInfo">
+      <UniqueIdentifier>{29f62679-dbdb-4d76-ad02-f317e0acb029}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="06. ImGui\01. Panel\Animation\Panel_Parts">
+      <UniqueIdentifier>{066939c9-786f-43ed-8c48-88882c1e8089}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02. GameObjects\Map\01. SceneData">
+      <UniqueIdentifier>{796e0779-af03-4219-87f2-4ff1d7e85f49}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
@@ -568,6 +568,15 @@
     <ClInclude Include="..\Public\Tool_Weapon.h">
       <Filter>02. GameObjects\PartObject\AnimPart</Filter>
     </ClInclude>
+    <ClInclude Include="..\Public\Panel_ModelInfo.h">
+      <Filter>06. ImGui\01. Panel\Animation\Panel_ModelInfo</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\Panel_Parts.h">
+      <Filter>06. ImGui\01. Panel\Animation\Panel_Parts</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\SceneData.h">
+      <Filter>02. GameObjects\Map\01. SceneData</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <Image Include="small.ico">
@@ -831,6 +840,15 @@
     </ClCompile>
     <ClCompile Include="..\Private\Tool_Weapon.cpp">
       <Filter>02. GameObjects\PartObject\AnimPart</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\Panel_ModelInfo.cpp">
+      <Filter>06. ImGui\01. Panel\Animation\Panel_ModelInfo</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\Panel_Parts.cpp">
+      <Filter>06. ImGui\01. Panel\Animation\Panel_Parts</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\SceneData.cpp">
+      <Filter>02. GameObjects\Map\01. SceneData</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

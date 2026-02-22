@@ -65,6 +65,7 @@ public:
 	// to UI 담당자 : 만약 const 때문에 귀찮다면 빼도 괜찮음.. from 플레이어 담당자
 	// to UI 담당자 : getter func 필요에 따라 바꿔도 좋고, 추가해도 상관없을듯. from 플레이어 담당자
 	// to UI 담당자 : cool time은 항상 0에서 1로 채우는 형식으로 갈거임.
+	// 0에서 1? 0에서 Max?
 	const SKILL_DESC& Get_Skill(STAT_TYPE eState) const {
 		switch (eState)
 		{

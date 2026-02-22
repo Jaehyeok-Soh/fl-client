@@ -34,6 +34,8 @@ public:
 	_bool Get_IsUpdateCpu() const { return m_bUpdateCpu; }
 	void Set_UpdateCpu(_bool bUpdate) { m_bUpdateCpu = bUpdate; }
 
+	void Set_MotionBone(_int iIdx) { m_bMotionBone = (m_iIndex == iIdx); };
+
 	string Get_Name() const;
 
 	Matrix Get_Transform() const { return m_matTransform; }

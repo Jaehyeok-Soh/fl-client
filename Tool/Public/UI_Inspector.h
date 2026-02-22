@@ -69,6 +69,9 @@ private:
 	std::vector<_string> m_VecTextSubClassTag;
 	std::vector<_string> m_VecDImageSubClassTag;
 	std::vector<_string> m_VecTriggerSubClassTag;
+	std::vector<_string> m_VecFontPivotTypes;
+	std::vector<_string> m_VecFonstShaderTypes;
+
 
 	// Trigger Values
 	_bool m_isHoverEnter	= {FALSE};

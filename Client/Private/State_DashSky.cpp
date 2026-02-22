@@ -27,10 +27,13 @@ HRESULT CState_DashSky::Awake(const _uint iLevelIndex)
 
 HRESULT CState_DashSky::Start(void* pArg, _bool bForce)
 {
-	if (FAILED(Super::Start(pArg, bForce)))
-		return E_FAIL;
-
 	CheckAni_WhenStart();
+
+	STATE_START_DESC* pDesc = static_cast<STATE_START_DESC*>(pArg);
+	pDesc->iMainAnimIdx = m_iMainAnimIdx;
+
+	if (FAILED(Super::Start(pDesc, bForce)))
+		return E_FAIL;
 
 	Set_ApplyGravity(false);
 
@@ -72,8 +75,6 @@ void CState_DashSky::CheckAni_WhenStart()
 	}
 	else
 		m_iMainAnimIdx = ENUM_TO_UINT(ANI::BACK);
-
-	Request_ChangeAnimation((size_t)m_vecMainAnims[m_iMainAnimIdx], m_bBlend, m_bLoop, true);
 }
 
 CState_DashSky* CState_DashSky::Create(CActionState* pOwnerComponent, void* pArg)

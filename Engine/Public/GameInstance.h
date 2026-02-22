@@ -107,6 +107,14 @@ public:
 	class CTimer*			Find_Timer(const _tchar* pTimerTag);
 #pragma endregion
 
+#pragma region TIMESCALE_MANAGER
+	void					Request_HitStop(_float fUnscaledDurationTime = HITSTOP_TIME);
+	void					Request_SloMo(_float fScale, _float fUnscaledDurationTime);
+	void					Active_SloMo(_float fScale);
+	void					Deactivate_SloMo();
+	void					Set_GlobalScale(_float fScale);
+#pragma endregion
+
 #pragma region PROTOTYPE_MANAGER
 	CBase*					Find_Prototype(_uint iLevelIndex, const wstring& wstrPrototypeTag);
 	HRESULT					Add_Prototype(_uint iLevelIndex, const wstring& wstrPrototypeTag, CBase* pPrototype);
@@ -235,6 +243,7 @@ public:
 	HRESULT Add_Light(const LIGHT_DESC& LightDesc);
 	HRESULT Push_DynamicLight(class CLight* pLight);
 	HRESULT Render_Lights(class CShader* pShader, class CVIBuffer_Rect_Tex* pVIBuffer);
+	class CLight* Get_Light(LIGHT_TYPE eType, _uint iIndex = 0);
 	void Clear_Lights();
 #pragma endregion
 
@@ -244,7 +253,8 @@ public:
 
 #pragma region FONT_MANAGER
 	HRESULT Add_Font(const _wstring& strFontTag, const _tchar* pFontFilePath);
-	HRESULT Draw_Text(const _wstring& strFontTag, const _tchar* pText, const Vec2& vPosition, Vec4 vColor = Vec4(1.f, 1.f, 1.f, 1.f), EFontPivotType ePivot = EFontPivotType::CENTER, const _float fRotate = 0.f, const _float fScale = 1.f);
+	HRESULT Request_DrawFont(FONT_DESC Desc);
+	HRESULT Render_Fonts();
 #pragma endregion
 
 #pragma region EVENTBUS_MANAGER
@@ -278,7 +288,7 @@ public:
 #pragma region RENDERTARGET_MANAGER
 	HRESULT Add_RenderTarget(ERenderTarget eTarget, const CRenderTarget::RENDERTARGET_DESC* pDesc);
 	HRESULT Add_MRT(EMRTLayer eMRTLayer, ERenderTarget eTarget);
-	HRESULT Begin_MRT(EMRTLayer eMRTLayer, _bool bClear = true);
+	HRESULT Begin_MRT(EMRTLayer eMRTLayer, _bool bClear = true, _bool bUseDSV = true);
 	HRESULT End_MRT();
 	HRESULT Bind_RT_ShaderResource(ERenderTarget eTarget, class CShader* pShader);
 	HRESULT Copy_SceneHDRResource(ERenderTarget eTarget);
@@ -343,10 +353,6 @@ public:
 #endif // _DEBUG
 #pragma endregion
 
-#pragma region UIACTION_REGISTRY	
-	class CUIAction_Registry* Get_UIAction_Registry()const;
-#pragma endregion
-
 #pragma region EFFECT_MANAGER
 	void Spawn_PoolEffect(CEffectHandler* handler, const std::string& UniqueEffectName, const std::string& strTag, const Matrix& matWorld, _float fDuration, _bool bIsLocal, void* pTargetBone = nullptr);
 	void Spawn_PoolEffect(const std::string& strTag, const Matrix& matWorld, _float fDuration, _bool bIsLocal, void* pTargetBone = nullptr);
@@ -354,11 +360,22 @@ public:
 // Todo - 쓰레기통 정리
 #pragma region GAMEDATA
 
+#pragma region Texture Splating Info Data
+
+	HRESULT		GameDataManager_Load_TextureSplatingInfoData();
+
+	/* 이름으로 Binding 하는 함수 */
+	HRESULT		GameDataManager_Bind_SplatingTextureInfo(CShader* pBindShader, const wstring& wstrTextureSplatingInfoDataName);
+
+
+#pragma endregion
+
 #pragma endregion
 private:
 	class CObjectPool_Manager* m_pObjectPool_Manager = { nullptr };
 	class CDataRepository* m_pDataRepository = { nullptr };
 	class CTimer_Manager* m_pTimer_Manager = { nullptr };
+	class CTimeScale_Manager* m_pTimeScale_Manager = { nullptr };
 	class CSound_Manager* m_pSound_Manager = { nullptr };
 	class COctree_Manager* m_pOctree_Manager = { nullptr };
 	class CFont_Manager* m_pFont_Manager = { nullptr };
@@ -380,7 +397,6 @@ private:
 	class CFrustrum* m_pFrustrum = { nullptr };
 	class CShaderAsset_Manager* m_pShaderAsset_Manager = { nullptr };
 	class CPhysics_Module* m_pPhysics_Module = { nullptr };
-	class CUIAction_Registry* m_pUIAction_Registry = { nullptr };
 	class CEffect_Manager* m_pEffect_Manager = { nullptr };
 private:
 	std::mt19937_64 m_rng;

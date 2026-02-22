@@ -95,6 +95,10 @@ private:
 
 	class CAnimTool_Manager* m_pAnimToolManager = { nullptr };
 
+private:
+	_int m_iSocketBoneIdx	= { -1 };
+	_bool m_bCombine		= { true };
+
 public:
 	static			CPanel_AnimModelFile* Create(const _char* pLabel, CLevel* pOwner, ID3D11Device* pDevice, ID3D11DeviceContext* pDeviceContext);
 	virtual void	Free() override;

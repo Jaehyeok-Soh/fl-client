@@ -20,10 +20,10 @@ void CImGui_FrameLayout::Render(CGameObject* pGo)
 
     _float fTimeDelta = m_pTimer_60->Get_TimeDelta();
     _float fNoLimitTimeDelta = m_pTimer_Default->Get_TimeDelta();
-    if (fTimeDelta < 1e-6f)
-        fTimeDelta = 1e-6f;
-    if (fNoLimitTimeDelta < 1e-6f)
-        fNoLimitTimeDelta = 1e-6f;
+    if (fTimeDelta < g_XMEpsilon.f[0])
+        fTimeDelta = g_XMEpsilon.f[0];
+    if (fNoLimitTimeDelta < g_XMEpsilon.f[0])
+        fNoLimitTimeDelta = g_XMEpsilon.f[0];
 
     // ЦђБе
     constexpr _float fAlpha = 0.05f;

@@ -132,6 +132,7 @@ namespace Engine
 		RT_SceneHDR,
 		RT_SceneHDR_Copy,
 		RT_Bloom,
+		LUT_Stand,
 		Transform,
 		Materials,
 		Textures,
@@ -153,6 +154,7 @@ namespace Engine
 		"g_RenderTargetSceneHDRTexture",
 		"g_RenderTargetSceneHDRCopyTexture",
 		"g_RenderTargetBloomTexture",
+		"g_LUT_Stand",
 		"g_TransformMap",
 		"g_MaterialTextures",
 		"g_DefaultTextures",
@@ -477,6 +479,12 @@ namespace Engine
 		DOWN,
 		END
 	};
-
+	//===================
+	// Font Shader Type
+	//===================
+	enum class EFontShaderType
+	{
+		NORMAL,OUTLINE, NOISE, NOISE_KOR, OUTLINE_NOISE, OUTLINE_NOISE_KOR, END
+	};
 }
 #endif // Engine_Enum_h__

@@ -92,45 +92,85 @@ HRESULT CPanel_MapDataController::Render_ConvertedList()
 
 	ImGui::SameLine();
 
-	if (ImGui::Button(" [ Batch By Folder ] "))
+	if (ImGui::Button(" [ Batch By File ] "))
 	{
 		IFileOpenDialog* pFileOpenDialog{ nullptr };
-		CoCreateInstance(CLSID_FileOpenDialog, NULL, CLSCTX_ALL, IID_IFileOpenDialog, reinterpret_cast<void**>(&pFileOpenDialog));
-		if (pFileOpenDialog)
+		if (SUCCEEDED(CoCreateInstance(CLSID_FileOpenDialog, NULL, CLSCTX_ALL, IID_IFileOpenDialog, reinterpret_cast<void**>(&pFileOpenDialog))))
 		{
-			pFileOpenDialog->SetOptions(FOS_PICKFOLDERS);
+			// 폴더 선택 옵션 제거 (파일 선택 모드)
+			// 필요한 경우 FOS_FILEMUSTEXIST 옵션 추가
+			DWORD dwOptions;
+			if (SUCCEEDED(pFileOpenDialog->GetOptions(&dwOptions)))
+			{
+				pFileOpenDialog->SetOptions(dwOptions | FOS_FILEMUSTEXIST);
+			}
+
+			// .json 파일만 보이도록 필터 설정
+			COMDLG_FILTERSPEC rgSpec[] = { { L"JSON Files", L"*.json" }, { L"All Files", L"*.*" } };
+			pFileOpenDialog->SetFileTypes(ARRAYSIZE(rgSpec), rgSpec);
+
 			if (pFileOpenDialog->Show(nullptr) == S_OK)
 			{
 				IShellItem* pItem;
-				LPWSTR pFilePath{ nullptr };
 				if (pFileOpenDialog->GetResult(&pItem) == S_OK)
 				{
-					pItem->GetDisplayName(SIGDN_FILESYSPATH, &pFilePath);
-
-					for (auto& Path : std::filesystem::directory_iterator(pFilePath))
+					LPWSTR pFilePath{ nullptr };
+					if (pItem->GetDisplayName(SIGDN_FILESYSPATH, &pFilePath) == S_OK)
 					{
-						path FilePath = Path.path();
-						if (!std::filesystem::is_regular_file(FilePath))
-							continue;
-						if (FilePath.extension() != L".json")
-							continue;
-						if (FilePath.filename().string().find("_Converted") != std::string::npos)
-							continue;
-						if (FilePath.filename().string().find("_Filtering") != std::string::npos)
-							continue;
-						m_pUEMapdataParser->Batch_UnrealRawMapData(FilePath.c_str());
-					}
+						// 반복문 없이 선택한 파일 하나만 즉시 처리
+						m_pUEMapdataParser->Batch_UnrealRawMapData(pFilePath);
 
+						CoTaskMemFree(pFilePath); // 메모리 해제
+					}
 					Safe_Release(pItem);
-				}	
+				}
+			}
+			Safe_Release(pFileOpenDialog);
+		}
+	}
+
+	ImGui::SameLine(); 
+
+	if (ImGui::Button(" [ Batch By Folder ] "))
+	{
+		IFileOpenDialog* pFileOpenDialog{ nullptr };
+		if (SUCCEEDED(CoCreateInstance(CLSID_FileOpenDialog, NULL, CLSCTX_ALL, IID_IFileOpenDialog, reinterpret_cast<void**>(&pFileOpenDialog))))
+		{
+			// 폴더 선택 옵션
+			pFileOpenDialog->SetOptions(FOS_PICKFOLDERS);
+
+			if (pFileOpenDialog->Show(nullptr) == S_OK)
+			{
+				IShellItem* pItem;
+				if (pFileOpenDialog->GetResult(&pItem) == S_OK)
+				{
+					LPWSTR pFilePath{ nullptr };
+					if (pItem->GetDisplayName(SIGDN_FILESYSPATH, &pFilePath) == S_OK)
+					{
+						// 폴더 하위 폴더 까지 모두 추출 Ex) Village 누르면 하위 모든 경로 애들 모두 배치됨
+						// 각자 배치를 원하면 폴더배치 말고 File 배치 사용, 01_01 같이 나눠진 폴더 누르면 01_01 폴더안에있는 애들만 배치됨
+
+						for (auto& Path : std::filesystem::recursive_directory_iterator(pFilePath))
+						{
+							std::filesystem::path FilePath = Path.path();
+							if (!std::filesystem::is_regular_file(FilePath)) continue;
+							if (FilePath.extension() != L".json") continue;
+							if (FilePath.filename().string().find("_Converted") != std::string::npos) continue;
+							if (FilePath.filename().string().find("_Filtering") != std::string::npos) continue;
+
+							// 파서 호출
+							m_pUEMapdataParser->Batch_UnrealRawMapData(FilePath.c_str());
+						}
+						CoTaskMemFree(pFilePath); // 메모리 해제
+					}
+					Safe_Release(pItem);
+				}
 			}
 			Safe_Release(pFileOpenDialog);
 		}
 	}
 
 	ImGui::Separator();
-
-
 
 	ImGui::SeparatorText("[ Save Filtering ] Map Data");
 
@@ -146,6 +186,7 @@ HRESULT CPanel_MapDataController::Render_ConvertedList()
 
 	if (ImGui::Button(" [ Save Converted ] Map Data"))
 	{
+
 		m_pUEMapdataParser->Save_ConvertedRawMapData(Engine_Utils::ToWString(strSelectPath).c_str());
 	}
 
@@ -160,7 +201,6 @@ HRESULT CPanel_MapDataController::Render_Converted_UnrealRawMapData_Button()
 
 	if (ImGui::CollapsingHeader(" [ Function ] : Converted Raw Data"))
 	{
-
 		ImGui::SeparatorText("[ Load All ] Raw Map Data");
 
 		if (ImGui::Button(" [ Load All ] Raw Map Data "))
@@ -183,12 +223,16 @@ HRESULT CPanel_MapDataController::Render_Converted_UnrealRawMapData_Button()
 				if (wstrFileName.find(m_pUEMapdataParser->m_WstringFiltering) != wstring::npos)
 					continue;
 
-				m_pUEMapdataParser->Convert_UnrealRawMapData(std::filesystem::absolute(FullPath).c_str());
+				if (FAILED(m_pUEMapdataParser->Convert_UnrealRawMapData(std::filesystem::absolute(FullPath).c_str())))
+				{
+					MSG_BOX(" Unreal Raw Data Load Failed ");
+				}
 			}
+
+			MSG_BOX(" All Raw UE Map Data Load Succese ");
 		}
 
 		ImGui::Separator();
-
 
 		ImGui::SeparatorText("[ Load Select Unreal ] Raw Map Data");
 

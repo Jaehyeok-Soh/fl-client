@@ -27,6 +27,8 @@ private:
 	HRESULT Ready_Managers();
 	HRESULT Ready_Fonts();
 
+	HRESULT Loading_Textures(const wstring& wstrFolder);
+
 private:
 	ID3D11Device*			m_pDevice			= { nullptr };
 	ID3D11DeviceContext*	m_pDeviceContext	= { nullptr };

@@ -3,7 +3,7 @@
 #include "DataStruct_UI.h"
 
 NS_BEGIN(Client)
-class CStatComponent;
+class CStatCom_Player;
 class CUIPlayerStat_Text final : public CUIText
 {
 	using Super = CUIText;
@@ -34,17 +34,17 @@ private:
 	HRESULT Ready_Components(PLAYER_STAT_DESC* pDesc);
 	HRESULT Bind_ShaderResources();
 
+	HRESULT Convert_Stat_To_Text();
 private:
 	virtual void OnUIEvent(ETriggerEventType eEvent, CGenericUI* pSender)override;
-
-private:
 	virtual void Initialize_Visible_Event()override;
 	virtual void Initialize_InVisible_Event()override;
-
-private:
 	virtual _bool Tick_Visible_Event(const _float fTimeDelta)override;
 	virtual _bool Tick_InVisible_Event(const _float fTimeDelta)override;
 
+private:
+	_float m_fStat = {};
+	CStatCom_Player* m_pPlayerStatCom = { nullptr };
 
 public:
 	static CUIPlayerStat_Text* Create(ID3D11Device* pDevice, ID3D11DeviceContext* pDeviceContext);

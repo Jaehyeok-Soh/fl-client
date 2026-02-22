@@ -7,6 +7,7 @@ NS_BEGIN(Engine)
 class CGameInstance;
 class CGameObject;
 class CShader;
+class CTextureBase;
 
 template<typename T>
 class CConstant_Buffer;
@@ -78,6 +79,8 @@ private:
 	CConstant_Buffer<SHADER_HDRPARAM_DESC>* m_pCB_HDRparam{ nullptr };
 	CConstant_Buffer<SHADER_BLOOMPARAM_DESC>* m_pCB_Bloomparam{ nullptr };
 	CConstant_Buffer<SHADER_OUTLINE_DESC>* m_pCB_Outlineparam{ nullptr };
+
+	CTextureBase* m_pLUTTexture{ nullptr };
 public:
 	static CRender_Manager* Create(ID3D11Device* pDevice, ID3D11DeviceContext* pDeviceContext);
 	virtual void Free() override;
