@@ -14,6 +14,15 @@ namespace Client
 	static const unsigned int g_iWinSizeX = 1280;
 	static const unsigned int g_iWinSizeY = 720;
 
+	enum class ELevelType : unsigned int
+	{
+		STATIC = 0,
+		LOADING,
+		LOGO,
+		END
+	};
+	inline constexpr size_t g_iLevelType_Count = static_cast<size_t>(ELevelType::END);
+
 	enum class ECollideLayer : unsigned int
 	{
 		PLAYER_BODY,
@@ -156,15 +165,6 @@ namespace Client
 		InvPitch,
 		None
 	};
-
-	enum class ELevelType : unsigned int
-	{
-		STATIC = 0,
-		LOADING,
-		LOGO,
-		END
-	};
-	inline constexpr size_t g_iLevelType_Count = static_cast<size_t>(ELevelType::END);
 
 
 	enum class EMapObject_Type
@@ -377,6 +377,18 @@ namespace Client
 
 #pragma region SKILL
 	enum class SKILL_TYPE { DAMAGE, BUFF, SUMMON, CURE, DEFENSE }; // skill의 타입
+	inline _wstring SKILL_TYPE_ToWstring(const SKILL_TYPE eType)
+	{
+		switch (eType)
+		{
+		case SKILL_TYPE::DAMAGE:		return L"데미지";
+		case SKILL_TYPE::BUFF:			return L"버프";
+		case SKILL_TYPE::SUMMON:		return L"소환";
+		case SKILL_TYPE::CURE:			return L"치유";
+		case SKILL_TYPE::DEFENSE:		return L"디펜스";
+		default:						return L"UNKNOWN";
+		}
+	}
 
 	typedef struct tagAttackDesc2
 	{

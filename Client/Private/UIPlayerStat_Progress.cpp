@@ -5,6 +5,7 @@
 //=================
 // Component
 //=================
+#include "StatCom_Player.h"
 #include "Texture.h"
 #include "Shader.h"
 #include "VIBuffer_Rect_Tex.h"
@@ -31,14 +32,9 @@ HRESULT CUIPlayerStat_Progress::Initialize_Prototype()
 HRESULT CUIPlayerStat_Progress::Initialize(void* pArg)
 {
 	PLAYER_STAT_PROGRESS_DESC* pDesc = static_cast<PLAYER_STAT_PROGRESS_DESC*>(pArg);
-	m_pTargetStat = pDesc->pTargetStat;
-
 	if (FAILED(Super::Initialize(pArg)))
 		return E_FAIL;
 	if (FAILED(Ready_Components(pDesc)))
-		return E_FAIL;
-
-	if (FAILED(Attach_Personal_Info()))
 		return E_FAIL;
 
 	return S_OK;
@@ -46,38 +42,49 @@ HRESULT CUIPlayerStat_Progress::Initialize(void* pArg)
 
 HRESULT CUIPlayerStat_Progress::Attach_Personal_Info()
 {
+	CGameObject* pResult = m_pGameInstance->Get_GameObject_Front(ENUM_TO_UINT(ELevelType::LOGO), g_wszPlayerLayer);
+	if (nullptr == pResult)
+		return E_FAIL;
+
+	auto* p = static_cast<CStatComponent*>(pResult->Get_Script_Component(L"StatComponent"));
+	if (nullptr == p)
+		return E_FAIL;
+
+	m_pPlayerStatCom = static_cast<CStatCom_Player*>(p);
+	if (nullptr == m_pPlayerStatCom)
+		return E_FAIL;
+
 	switch (m_eSubClassType)
 	{
 	case DTO::EUISubClassType::NONE_OWNER:
 		return S_OK;
 	case DTO::EUISubClassType::PLAYER_HP:
 	{
-		m_pTargetStat;
 		m_vOriginColor = m_vColorTint;
 		m_vOriginGradiantColor = m_vGradiantColorTint;
 		return S_OK;
 	}
 	case DTO::EUISubClassType::PLAYER_ARMOR:
 	{
-		m_pTargetStat;
 		return S_OK;
 	}
 	case DTO::EUISubClassType::PLAYER_ENERGY:
 	{
-		m_pTargetStat;
 		return S_OK;
 	}
 	case DTO::EUISubClassType::END:
 	default:
 		return E_FAIL;
 	}
-
 	return S_OK;
 }
 
 HRESULT CUIPlayerStat_Progress::Awake(const _uint iCurrentLevelID)
 {
 	if (FAILED(Super::Awake(iCurrentLevelID)))
+		return E_FAIL;
+
+	if (FAILED(Attach_Personal_Info()))
 		return E_FAIL;
 
 	return S_OK;
@@ -251,6 +258,30 @@ HRESULT CUIPlayerStat_Progress::Bind_ShaderResources()
 	CShader* pShader = Get_Component<CShader>();
 	if (FAILED(Get_Component<CTransform>()->Bind_ShaderResource(pShader)))
 		return E_FAIL;
+	return S_OK;
+}
+
+HRESULT CUIPlayerStat_Progress::Convert_Stat_To_Ratio()
+{
+	switch (m_eSubClassType)
+	{
+	case DTO::EUISubClassType::NONE_OWNER:
+		break;
+	case DTO::EUISubClassType::PLAYER_HP:
+		m_fCurRatio = m_pPlayerStatCom->Get_HealthRatio();
+		break;
+	case DTO::EUISubClassType::PLAYER_ARMOR:
+	{
+		break;
+	}
+	case DTO::EUISubClassType::PLAYER_ENERGY:
+	{
+		break;
+	}
+	case DTO::EUISubClassType::END:
+	default:
+		return E_FAIL;
+	}
 	return S_OK;
 }
 

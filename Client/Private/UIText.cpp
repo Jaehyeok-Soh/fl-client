@@ -40,6 +40,7 @@ HRESULT CUIText::Initialize(void* pArg)
 	m_vFontColor	= pDesc->vFontColor;
 	m_fFontRotate	= pDesc->fRotate;
 	m_fFontScale	= pDesc->fScale;
+	m_ePivot		= pDesc->ePivot;
 
 	if (FAILED(Super::Initialize(pArg)))
 		return E_FAIL;
@@ -130,6 +131,18 @@ void CUIText::Sync_FontDesc()
 	m_tFontDesc.ePivot = m_ePivot;
 	m_tFontDesc.fRotate = m_fFontRotate;
 	m_tFontDesc.fScale = m_fFontScale;
+}
+
+_wstring CUIText::Float_To_Wstring(const _float f, _uint iDecimal)
+{
+	_tchar sz[64];
+	switch (iDecimal)
+	{
+	case 0:	swprintf_s(sz, 64, L"%.0f", f);	break;
+	case 1:	swprintf_s(sz, 64, L"%.1f", f);	break;
+	default: swprintf_s(sz, 64, L"%.2f", f); break;
+	}
+	return sz;
 }
 
 void CUIText::Free()

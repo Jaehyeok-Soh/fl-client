@@ -168,9 +168,7 @@ HRESULT CLoader::Loading_For_LoadLevel()
 #pragma endregion
 
 #pragma region UI
-	ADD_PROTOTYPE(ELevelType::LOADING, L"Prototype_UI_LoadingImage", CUILoading_Image::Create(m_pDevice, m_pDeviceContext));
-	ADD_PROTOTYPE(ELevelType::LOADING, L"Prototype_UI_LoadingProgress", CUILoading_Progress::Create(m_pDevice, m_pDeviceContext));
-	ADD_PROTOTYPE(ELevelType::LOADING, L"Prototype_UI_LoadingText", CUILoading_Text::Create(m_pDevice, m_pDeviceContext));
+
 #pragma endregion
 
 	m_isFinished = true;
@@ -179,6 +177,8 @@ HRESULT CLoader::Loading_For_LoadLevel()
 
 HRESULT CLoader::Loading_For_Logo()
 {
+	m_fLoadingRatio = 0.f;
+
 #pragma region PretransformMatrix
 	Matrix matPreTransformScale = Matrix::CreateScale(0.01f, 0.01f, 0.01f);
 	Matrix matPreTransformIdentity = Matrix::Identity;
@@ -237,26 +237,10 @@ HRESULT CLoader::Loading_For_Logo()
 		if (FAILED(Make_StaticObject_Prototype(ELevelType::STATIC, L"../../Resources/Models/Effect_FBX/blade")))
 			return E_FAIL;
 	}
-
-	// For. UI Texture
-	std::error_code ec;
-	for (const auto& entry : std::filesystem::directory_iterator(L"../../Resources/Textures/UI/UI_Client/", std::filesystem::directory_options::skip_permission_denied, ec))
-	{
-		if (ec)
-			return E_FAIL;
-
-		if (entry.is_directory() == false)
-			continue;
-
-		const std::wstring wstrSubFolder = entry.path().wstring();
-
-		if (FAILED(Loading_Textures(wstrSubFolder)))
-			return E_FAIL;
-	}	
-
+	m_fLoadingRatio = 0.13f;
 	// For. Prototype_Component_Button_Test_Texture
 	{
-		 /*Effect*/
+		/*Effect*/
 		if (FAILED(Loading_Textures(L"../../Resources/Textures/Effect/Crack/")))
 			return E_FAIL;
 		if (FAILED(Loading_Textures(L"../../Resources/Textures/Effect/Curve/")))
@@ -275,6 +259,7 @@ HRESULT CLoader::Loading_For_Logo()
 			return E_FAIL;
 		if (FAILED(Loading_Textures(L"../../Resources/Textures/Effect/Knife/")))
 			return E_FAIL;
+		m_fLoadingRatio = 0.33f;
 		if (FAILED(Loading_Textures(L"../../Resources/Textures/Effect/Lens/")))
 			return E_FAIL;
 		if (FAILED(Loading_Textures(L"../../Resources/Textures/Effect/Lightning/")))
@@ -293,6 +278,7 @@ HRESULT CLoader::Loading_For_Logo()
 			return E_FAIL;
 		if (FAILED(Loading_Textures(L"../../Resources/Textures/Effect/Spark/")))
 			return E_FAIL;
+		m_fLoadingRatio = 0.65f;
 		if (FAILED(Loading_Textures(L"../../Resources/Textures/Effect/Splash/")))
 			return E_FAIL;
 		if (FAILED(Loading_Textures(L"../../Resources/Textures/Effect/Spread/")))
@@ -310,7 +296,6 @@ HRESULT CLoader::Loading_For_Logo()
 		if (FAILED(Loading_Textures(L"../../Resources/Textures/Effect/Wave/")))
 			return E_FAIL;
 	}
-	
 #pragma endregion
 
 	//////////////////////////////////////////
@@ -328,6 +313,7 @@ HRESULT CLoader::Loading_For_Logo()
 	m_pGameInstance->Add_Prototype(ENUM_TO_UINT(ELevelType::STATIC), L"Prototype_Component_Stat", CStatComponent::Create());
 	// For. Prototype_Component_Model_Master
 	{
+		m_fLoadingRatio = 0.99f;
 		CModel::MODEL_ORIGIN_DESC desc = {};
 		desc.eType					= EModelType::ANIM;
 		desc.iPrototypeLevelIndex	= ENUM_TO_UINT(ELevelType::STATIC);
@@ -354,6 +340,7 @@ HRESULT CLoader::Loading_For_Logo()
 
 		m_pGameInstance->Add_Prototype(ENUM_TO_UINT(ELevelType::STATIC), L"Prototype_Component_Model_MoonSword", CModel::Create(m_pDevice, m_pDeviceContext, &desc));
 	}
+
 	// For. Prototype_Component_Model_MoonSkillWeap
 	{
 		CModel::MODEL_ORIGIN_DESC desc = {};
@@ -365,6 +352,7 @@ HRESULT CLoader::Loading_For_Logo()
 
 		m_pGameInstance->Add_Prototype(ENUM_TO_UINT(ELevelType::STATIC), L"Prototype_Component_Model_MoonSkillWeap", CModel::Create(m_pDevice, m_pDeviceContext, &desc));
 	}
+
 	// For. Prototype_Component_Camera
 	m_pGameInstance->Add_Prototype(ENUM_TO_UINT(ELevelType::STATIC), L"Prototype_Component_Camera", CCamera::Create());
 	// For. Prototype_Component_ActionState_Player
@@ -419,7 +407,6 @@ HRESULT CLoader::Loading_For_Logo()
 		ADD_PROTOTYPE(ELevelType::STATIC, L"Prototype_GameObject_Part_Sword", CSword::Create(m_pDevice, m_pDeviceContext));
 	}
 #pragma endregion
-
 #pragma region BUFFER
 	{
 		CVIBuffer_Particle_Point::PARTICLE_POINT_ORIGIN_DESC	ExploDesc{};
@@ -434,9 +421,6 @@ HRESULT CLoader::Loading_For_Logo()
 
 		ADD_PROTOTYPE(ELevelType::STATIC, L"Prototype_Component_VIBuffer_Particle_Point", CVIBuffer_Particle_Point::Create(m_pDevice, m_pDeviceContext, &ExploDesc));
 		ADD_PROTOTYPE(ELevelType::STATIC, L"Prototype_Component_VIBuffer_Particle_Mesh", CVIBuffer_Particle_Mesh::Create(m_pDevice, m_pDeviceContext, &ExploDesc));
-
-
-
 	}
 #pragma endregion
 

@@ -46,6 +46,8 @@ protected:
 
 	void Sync_FontDesc();
 
+	_wstring Float_To_Wstring(const _float f, _uint iDecimal);
+
 protected:
 	FONT_DESC m_tFontDesc	= {};
 	DTO::EUITextSubClassType m_eTextSubClassType = {};

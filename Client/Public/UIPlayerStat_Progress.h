@@ -3,14 +3,13 @@
 #include "DataStruct_UI.h"
 
 NS_BEGIN(Client)
-class CStatComponent;
+class CStatCom_Player;
 class CUIPlayerStat_Progress final : public CUIProgress_Bar
 {
 	using Super = CUIProgress_Bar;
 public:
 	typedef struct tagUIPlayerStatProgressDesc : public PROGRESS_BAR_DESC
 	{
-		CStatComponent* pTargetStat;
 	}PLAYER_STAT_PROGRESS_DESC;
 
 private:
@@ -42,12 +41,14 @@ private:
 	HRESULT Ready_Components(PLAYER_STAT_PROGRESS_DESC* pDesc);
 	HRESULT Bind_ShaderResources();
 
+	HRESULT Convert_Stat_To_Ratio();
+
 private:
 	// Player HP Func
 	void Low_HP(const _float fTimeDelta);
 
 private:
-	CStatComponent* m_pTargetStat = { nullptr };
+	CStatCom_Player* m_pPlayerStatCom = { nullptr };
 
 	// Lerp Movement Values
 	_float	m_fCurRatio		= {};

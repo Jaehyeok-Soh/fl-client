@@ -31,6 +31,7 @@ HRESULT CUILoading_Text::Initialize_Prototype()
 HRESULT CUILoading_Text::Initialize(void* pArg)
 {
 	LOADING_TEXT_DESC* pDesc = static_cast<LOADING_TEXT_DESC*>(pArg);
+	m_pLoadingRatio = pDesc->pLoadingRatio;
 
 	if (FAILED(Super::Initialize(pArg)))
 		return E_FAIL;
@@ -61,17 +62,38 @@ void CUILoading_Text::Update_Priority(const _float fTimeDelta)
 
 void CUILoading_Text::Update(const _float fTimeDelta)
 {
+	// Ratio 값 갱신 
+	if (m_eTextSubClassType == DTO::EUITextSubClassType::LOADING_TEXT_PERCENT && nullptr != m_pLoadingRatio)
+	{
+		_float fNewTarget = (*m_pLoadingRatio) * 100.f;
+
+		if (fNewTarget < 0.f)	fNewTarget = 0.f;
+		if (fNewTarget > 100.f) fNewTarget = 100.f;
+
+		const _float fEps = 0.0001f;
+		if (fabsf(fNewTarget - m_fTargetPercent) > fEps)
+		{
+			m_fStartPercent = m_fLerpPercent;
+			m_fTargetPercent = fNewTarget;
+			m_fPercentTimeAcc = 0.f;
+		}
+	}
+
 	Super::Update(fTimeDelta);
 }
 
 void CUILoading_Text::Update_Late(const _float fTimeDelta)
 {
+	// Percent 계산
+	if (m_eTextSubClassType == DTO::EUITextSubClassType::LOADING_TEXT_PERCENT)
+	{
+		Lerp_Percent(fTimeDelta);
+	}
 	Super::Update_Late(fTimeDelta);
 }
 
 void CUILoading_Text::Ready_Before_Render(const _float fTimeDelta)
 {
-	Acting_By_InteractState();
 	Super::Ready_Before_Render(fTimeDelta);
 }
 
@@ -102,6 +124,52 @@ HRESULT CUILoading_Text::Bind_ShaderResources()
 	CShader* pShader = Get_Component<CShader>();
 	if (FAILED(Get_Component<CTransform>()->Bind_ShaderResource(pShader)))
 		return E_FAIL;
+	return S_OK;
+}
+
+void CUILoading_Text::Lerp_Percent(const _float fTimeDelta)
+{
+	if (m_fDuration <= 0.f)
+	{
+		m_fPercentTimeAcc = 0.f;
+		m_fLerpPercent = m_fTargetPercent;
+		m_fStartPercent = m_fTargetPercent;
+		m_wstrText = Float_To_Wstring(m_fLerpPercent, 0);
+		return;
+	}
+
+	m_fPercentTimeAcc += fTimeDelta;
+
+	_float t = m_fPercentTimeAcc / m_fDuration;
+	if (t >= 1.f)
+	{
+		t = 1.f;
+		m_fPercentTimeAcc = 0.f;
+		m_fLerpPercent = m_fTargetPercent;
+		m_fStartPercent = m_fTargetPercent;
+		m_wstrText = Float_To_Wstring(m_fLerpPercent, 0);
+		return;
+	}
+
+	m_fLerpPercent = m_fStartPercent + (m_fTargetPercent - m_fStartPercent) * t;
+	m_wstrText = Float_To_Wstring(m_fLerpPercent, 0);
+}
+
+HRESULT CUILoading_Text::Convert_Value_To_Text()
+{
+	switch (m_eTextSubClassType)
+	{
+	case DTO::EUITextSubClassType::LOADING_TEXT_TITLE:
+		break;
+	case DTO::EUITextSubClassType::LOADING_TEXT_CONTENTS:
+		break;
+	case DTO::EUITextSubClassType::LOADING_TEXT_PERCENT:
+		break;
+	case DTO::EUITextSubClassType::END:
+		break;
+	default:
+		break;
+	}
 	return S_OK;
 }
 

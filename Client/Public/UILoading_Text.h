@@ -9,7 +9,7 @@ class CUILoading_Text final : public CUIText
 public:
 	typedef struct tagLoadingTextDesc : public UI_TEXT_DESC
 	{
-		_float* pProgressPercent;
+		const _float* pLoadingRatio;
 	}LOADING_TEXT_DESC;
 
 private:
@@ -34,12 +34,30 @@ private:
 	HRESULT Ready_Components(LOADING_TEXT_DESC* pDesc);
 	HRESULT Bind_ShaderResources();
 
+	void Lerp_Percent(const _float fTimeDelta);
+
+	HRESULT Convert_Value_To_Text();
+
 private:
 	virtual void OnUIEvent(ETriggerEventType eEvent, CGenericUI* pSender)override;
 	virtual void Initialize_Visible_Event()override;
 	virtual void Initialize_InVisible_Event()override;
 	virtual _bool Tick_Visible_Event(const _float fTimeDelta)override;
 	virtual _bool Tick_InVisible_Event(const _float fTimeDelta)override;
+
+private:
+	const _float* m_pLoadingRatio = { nullptr };
+
+	_float m_fPercentTimeAcc = {};
+	_float m_fCurPercent = {};
+	_float m_fPrePercent = {};
+
+	_float m_fLerpPercent = {};
+
+	_float m_fStartPercent = {};
+	_float m_fTargetPercent = {};
+
+	_float m_fDuration = { 1.f };
 
 public:
 	static CUILoading_Text* Create(ID3D11Device* pDevice, ID3D11DeviceContext* pDeviceContext);

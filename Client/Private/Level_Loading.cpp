@@ -10,8 +10,15 @@
 #include "Builder_Example.h"
 #include "BuilderSystem.h"
 #include "Builder_UI.h"
-#include "GameInstance.h"
 
+#include "CameraMan_Targeter.h"
+
+#include "UI_Manager.h"
+#include "UILoading_Text.h"
+#include "UILoading_Progress.h"
+#include "UILoading_Image.h"
+
+#include "GameInstance.h"
 CLevel_Loading::CLevel_Loading(ID3D11Device* pDevice, ID3D11DeviceContext* pDeviceContext)
 	: Super(pDevice, pDeviceContext)
 {
@@ -25,21 +32,28 @@ HRESULT CLevel_Loading::Initialize(ELevelType eNextLevelID)
 	if (!(m_pLoader = CLoader::Create(m_pDevice, m_pDeviceContext, eNextLevelID)))
 		return E_FAIL;
 
+	if (FAILED(Ready_Camera_Layer(g_wszDynamicCameraLayer)))
+		return E_FAIL;
+
+	if (FAILED(Ready_UI_Layer(g_wszUILayer)))
+		return E_FAIL;
+
+	if (FAILED(Build_Prototype()))
+		return E_FAIL;
+
+	if (FAILED(Build_Files()))
+		return E_FAIL;
+
 	m_eNextLevelID = eNextLevelID;
 	return S_OK;
 }
 
 HRESULT CLevel_Loading::Awake(const _uint iLevelID)
 {
+
+
 	if (FAILED(Super::Awake(iLevelID)))
 		return E_FAIL;
-
-	//if (FAILED(Build_Prototype()))
-	//	return E_FAIL;
-
-	//if (FAILED(Build_Files()))
-	//	return E_FAIL;
-
 	return S_OK;
 }
 
@@ -63,7 +77,7 @@ void CLevel_Loading::Update(const _float fTimeDelta)
 
 		if (!pNewLevel)
 			return;
-
+		CUI_Manager::GetInstance()->Clear_Cache(m_pGameInstance->Get_CurrentLevelIndex());
 		m_pGameInstance->Immediately_ChangeLevel(ENUM_TO_UINT(m_eNextLevelID), pNewLevel);
 	}
 }
@@ -74,6 +88,22 @@ HRESULT CLevel_Loading::Render()
 		return E_FAIL;
 
 	m_pLoader->Output();
+	return S_OK;
+}
+
+HRESULT CLevel_Loading::Ready_UI_Layer(const wstring& wstrLayerTag)
+{
+	if (FAILED(m_pGameInstance->Add_Prototype(ENUM_TO_UINT(ELevelType::LOADING), L"Prototype_UI_LoadingImage", CUILoading_Image::Create(m_pDevice, m_pDeviceContext))))
+		return E_FAIL;
+	if (FAILED(m_pGameInstance->Add_Prototype(ENUM_TO_UINT(ELevelType::LOADING), L"Prototype_UI_LoadingProgress", CUILoading_Progress::Create(m_pDevice, m_pDeviceContext))))
+		return E_FAIL;
+	if (FAILED(m_pGameInstance->Add_Prototype(ENUM_TO_UINT(ELevelType::LOADING), L"Prototype_UI_LoadingText", CUILoading_Text::Create(m_pDevice, m_pDeviceContext))))
+		return E_FAIL;
+	return S_OK;
+}
+
+HRESULT CLevel_Loading::Ready_Camera_Layer(const wstring& wstrLayerTag)
+{
 	return S_OK;
 }
 
@@ -89,10 +119,12 @@ HRESULT CLevel_Loading::Build_Files()
 {
 	ELevelType eLevelType = ELevelType::LOADING;
 	_uint iLevelID = ENUM_TO_UINT(eLevelType);
-
 	DTO::ECategory eCategory = DTO::ECategory::UI;
 	if (FAILED(m_pGameInstance->Regist_Document<CDataDocument_UI>(iLevelID, eCategory)))
 		return E_FAIL;
+
+	CUI_Manager::GetInstance()->Set_LoadingRatio(m_pLoader->Get_LoadingRatio());
+
 	std::filesystem::path  strUIFolderPath = L"../../Resources/Data/UIData/Loading/";
 	if (std::filesystem::exists(strUIFolderPath))
 	{
