@@ -310,6 +310,9 @@
     <Filter Include="09. Builder\AttackPreset">
       <UniqueIdentifier>{4738cfac-9f86-4af3-b8a6-84e6e355de2d}</UniqueIdentifier>
     </Filter>
+    <Filter Include="03. Level\AttackPreset\Manager">
+      <UniqueIdentifier>{1346bdc0-b327-4d83-bfe1-52b8df01dc43}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="framework.h">
@@ -604,6 +607,9 @@
     <ClInclude Include="..\public\Builder_AttackPreset.h">
       <Filter>09. Builder\AttackPreset</Filter>
     </ClInclude>
+    <ClInclude Include="..\public\AttackPreset_DataManager.h">
+      <Filter>03. Level\AttackPreset\Manager</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <Image Include="small.ico">
@@ -885,6 +891,9 @@
     </ClCompile>
     <ClCompile Include="..\private\Builder_AttackPreset.cpp">
       <Filter>09. Builder\AttackPreset</Filter>
+    </ClCompile>
+    <ClCompile Include="..\private\AttackPreset_DataManager.cpp">
+      <Filter>03. Level\AttackPreset\Manager</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

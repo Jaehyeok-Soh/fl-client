@@ -151,6 +151,7 @@
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">false</ExcludedFromBuild>
     </ClInclude>
     <ClInclude Include="..\Public\AnimTool_Manager.h" />
+    <ClInclude Include="..\public\AttackPreset_DataManager.h" />
     <ClInclude Include="..\Public\Builder_AttackOverlap.h" />
     <ClInclude Include="..\public\Builder_AttackPreset.h" />
     <ClInclude Include="..\Public\Builder_Effect.h" />
@@ -251,6 +252,7 @@
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">false</ExcludedFromBuild>
     </ClCompile>
     <ClCompile Include="..\Private\AnimTool_Manager.cpp" />
+    <ClCompile Include="..\private\AttackPreset_DataManager.cpp" />
     <ClCompile Include="..\Private\Builder_AttackOverlap.cpp" />
     <ClCompile Include="..\private\Builder_AttackPreset.cpp" />
     <ClCompile Include="..\Private\Builder_Effect.cpp" />
