@@ -159,6 +159,7 @@
   <ItemGroup>
     <ClInclude Include="..\Public\Body.h" />
     <ClInclude Include="..\Public\Builder_AttackOverlap.h" />
+    <ClInclude Include="..\public\Builder_AttackPreset.h" />
     <ClInclude Include="..\Public\Builder_EffectEvent.h" />
     <ClInclude Include="..\public\Builder_Example.h" />
     <ClInclude Include="..\Public\Builder_Map.h" />
@@ -271,6 +272,7 @@
   <ItemGroup>
     <ClCompile Include="..\Private\Body.cpp" />
     <ClCompile Include="..\Private\Builder_AttackOverlap.cpp" />
+    <ClCompile Include="..\private\Builder_AttackPreset.cpp" />
     <ClCompile Include="..\Private\Builder_EffectEvent.cpp" />
     <ClCompile Include="..\private\Builder_Example.cpp" />
     <ClCompile Include="..\Private\Builder_Map.cpp" />

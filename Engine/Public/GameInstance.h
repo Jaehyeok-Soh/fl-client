@@ -360,8 +360,11 @@ public:
 
 #pragma endregion
 // Todo - 쓰레기통 정리
-#pragma region GAMEDATA
-
+#pragma region GAMEDATA_MANAGER
+	const DTO::TAttackPreset_Data* Find_AttackPrseet(_uint iPresetKey) const;
+	const DTO::TAttackPreset_Data* Find_AttackPresetByTag(const string& strTag) const;
+	HRESULT Upsert_AttackPresetData(const DTO::TAttackPreset_Data& inData);
+	const unordered_map<_uint, DTO::TAttackPreset_Data>& Get_AttackPresetsData_ForDebug() const;
 #pragma endregion
 private:
 	class CObjectPool_Manager* m_pObjectPool_Manager = { nullptr };

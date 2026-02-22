@@ -1078,6 +1078,24 @@ CUIAction_Registry* CGameInstance::Get_UIAction_Registry() const
 }
 #pragma endregion
 
+#pragma region GAMEDATA_MANAGER
+const DTO::TAttackPreset_Data* CGameInstance::Find_AttackPrseet(_uint iPresetKey) const
+{
+	return m_pGameData_Manager->Find_AttackPrseet(iPresetKey);
+}
+const DTO::TAttackPreset_Data* CGameInstance::Find_AttackPresetByTag(const string& strTag) const
+{
+	return m_pGameData_Manager->Find_AttackPresetByTag(strTag);
+}
+HRESULT CGameInstance::Upsert_AttackPresetData(const DTO::TAttackPreset_Data& inData)
+{
+	return m_pGameData_Manager->Upsert_AttackPresetData(inData);
+}
+const unordered_map<_uint, DTO::TAttackPreset_Data>& CGameInstance::Get_AttackPresetsData_ForDebug() const
+{
+	return m_pGameData_Manager->Get_AttackPresetsData_ForDebug();
+}
+#pragma endregion
 void CGameInstance::Free()
 {
 	Safe_Release(m_pFrustrum);

@@ -70,6 +70,62 @@ ID3D11ShaderResourceView* CGameDataManager::Make_ShaderResourceViewColor(_uint A
 	return pSRV;
 }
 
+const DTO::TAttackPreset_Data* CGameDataManager::Find_AttackPrseet(_uint iPresetKey) const
+{
+	auto itr = m_umapAttackPresetDatas.find(iPresetKey);
+	return (itr == m_umapAttackPresetDatas.end()) ? nullptr : &itr->second;
+}
+
+const DTO::TAttackPreset_Data* CGameDataManager::Find_AttackPresetByTag(const string& strTag) const
+{
+	auto itr = m_umapAttackPresetTagToKey.find(strTag);
+	if (itr == m_umapAttackPresetTagToKey.end())
+		return nullptr;
+
+	return Find_AttackPrseet(itr->second);
+}
+
+void CGameDataManager::Clear_AttackPreset()
+{
+	m_bAttackPresetLoaded = false;
+	m_umapAttackPresetDatas.clear();
+	m_umapAttackPresetTagToKey.clear();
+}
+
+HRESULT CGameDataManager::Upsert_AttackPresetData(const DTO::TAttackPreset_Data& inData)
+{
+	DTO::TAttackPreset_Data data = inData;
+	data.Make_Key();
+
+	if (data.strTag.empty())
+		return E_FAIL;
+
+	auto itTag = m_umapAttackPresetTagToKey.find(data.strTag);
+	if (itTag != m_umapAttackPresetTagToKey.end())
+	{
+		if (itTag->second != data.iPresetKey)
+			return E_FAIL;
+	}
+
+	auto it = m_umapAttackPresetDatas.find(data.iPresetKey);
+	if (it != m_umapAttackPresetDatas.end())
+	{
+		if (it->second.strTag != data.strTag)
+		{
+			m_umapAttackPresetTagToKey.erase(it->second.strTag);
+			m_umapAttackPresetTagToKey[data.strTag] = data.iPresetKey;
+		}
+		it->second = data;
+	}
+	else
+	{
+		m_umapAttackPresetDatas.emplace(data.iPresetKey, data);
+		m_umapAttackPresetTagToKey.emplace(data.strTag, data.iPresetKey);
+	}
+
+	return S_OK;
+}
+
 CGameDataManager* CGameDataManager::Create()
 {
     CGameDataManager* pInstance = new CGameDataManager;
@@ -83,6 +139,7 @@ CGameDataManager* CGameDataManager::Create()
 
 void CGameDataManager::Free()
 {
+	Clear_AttackPreset();
+	Safe_Release(m_pGameInstance);
     Super::Free();
-    Safe_Release(m_pGameInstance);
 }

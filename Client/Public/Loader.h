@@ -42,8 +42,8 @@ private:
 	HRESULT Build_Prototype();
 	HRESULT Build_Files();
 	HRESULT Ready_AttackOverlap();
+	HRESULT Ready_AttackPresets();
 	HRESULT Ready_EffectEvent();
-
 private:
 	ID3D11Device* m_pDevice = { nullptr };
 	ID3D11DeviceContext* m_pDeviceContext = { nullptr };

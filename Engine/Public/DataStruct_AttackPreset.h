@@ -192,9 +192,9 @@ inline void from_json(const json& j, TAttackPreset_CombatData& data)
 	if (j.contains("fHitStopSec"))
 		data.fHitStopSec = j["fHitStopSec"].get<_float>();
 	if (j.contains("fImpulse"))
-		data.fHitStunSec = j["fImpulse"].get<_float>();
+		data.fImpulse = j["fImpulse"].get<_float>();
 	if (j.contains("fPushPower"))
-		data.fHitStopSec = j["fPushPower"].get<_float>();
+		data.fPushPower = j["fPushPower"].get<_float>();
 }
 
 inline void to_json(json& j, const TAttackPreset_Data& data)
