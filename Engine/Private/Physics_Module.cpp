@@ -34,7 +34,7 @@ HRESULT CPhysics_Module::Initialize()
 #ifdef _DEBUG
 	//m_pPvd = PxCreatePvd(*m_pFoundation);
 	//PxPvdTransport* transport = PxDefaultPvdFileTransportCreate("D:\\PVD_Record\\phyXDebug.pxd2");
-	////PxPvdTransport* transport = PxDefaultPvdFileTransportCreate(PVD_HOST, 5425, 10);
+	////PxPvdTransport* transport = PxDefaultPvdSocketTransportCreate(PVD_HOST, 5425, 10);
 	////m_pPvd->connect(*transport, PxPvdInstrumentationFlag::eALL);
 	//m_pPvd->connect(*transport, PxPvdInstrumentationFlag::eALL);
 #endif // _DEBUG

@@ -677,7 +677,7 @@ HRESULT CMainPlayer::Ready_CCT()
 {
     PHYSICSCCT_DESC desc;
     desc.pOwner = this;
-    desc.bIsPlayer = true;
+    desc.bIsPlayer = false;
     desc.eType = EPhysicsCCTType::CAPSULE;
     desc.pOwnerMatrix = &Get_Component<CTransform>()->Get_WorldMatrix();
     desc.fRadius = 0.5f;
@@ -690,7 +690,8 @@ HRESULT CMainPlayer::Ready_CCT()
 
     desc.eFilterLayer = PHYSICSFILTERGROUP::Enum::PLAYER;
     desc.iFilterMask =
-        PHYSICSFILTERGROUP::Enum::MONSTER
+        PHYSICSFILTERGROUP::Enum::PLAYER
+        | PHYSICSFILTERGROUP::Enum::MONSTER
         | PHYSICSFILTERGROUP::Enum::MONSTER_ATTACK
         | PHYSICSFILTERGROUP::Enum::MONSTER_ATTACK_PROJECTTILE
         | PHYSICSFILTERGROUP::Enum::MONSTER_SKILL

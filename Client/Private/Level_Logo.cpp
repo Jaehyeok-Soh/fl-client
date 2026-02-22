@@ -378,7 +378,16 @@ HRESULT CLevel_Logo::Ready_Monster()
 			desc.tMaterial = mtrlDesc;
 
 			desc.eFilterLayer = PHYSICSFILTERGROUP::Enum::MONSTER;
-			desc.iFilterMask = 0xFFFFFFFF;
+			desc.iFilterMask =
+				PHYSICSFILTERGROUP::Enum::MONSTER
+				| PHYSICSFILTERGROUP::Enum::PLAYER
+				| PHYSICSFILTERGROUP::Enum::ATTACK
+				| PHYSICSFILTERGROUP::Enum::ATTACK_PROJECTTILE
+				| PHYSICSFILTERGROUP::Enum::SKILL
+				| PHYSICSFILTERGROUP::Enum::SKILL_PROJECTTILE
+				| PHYSICSFILTERGROUP::Enum::MAP
+				| PHYSICSFILTERGROUP::Enum::OBJECT1
+				| PHYSICSFILTERGROUP::Enum::OBJECT2;
 
 			monsterDesc.tCCTDesc = desc;
 		}

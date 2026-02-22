@@ -5,6 +5,8 @@
 
 #include "GameObject.h"
 
+#include "EngineConsole.h"
+
 CActiveAttackOverlap::CActiveAttackOverlap()
 	: Super(),
 	m_pGameInstance{ CGameInstance::GetInstance() }
@@ -24,7 +26,7 @@ void CActiveAttackOverlap::Update(_float fTimeDelta)
 	if (m_tHitboxDesc == nullptr)
 		return;
 
-	m_fSumTime += fTimeDelta;
+		m_fSumTime += fTimeDelta;
 	if (m_fSumTime >= m_tHitboxDesc->fDuration)
 		m_eState = Enum::FIN;
 
@@ -37,10 +39,6 @@ void CActiveAttackOverlap::Update(_float fTimeDelta)
 		m_tHitboxDesc->filterData,
 		(PxQueryFilterCallback*)m_tHitboxDesc->filterCallback))
 	{
-		if (hitBuffer.hasBlock)
-		{
-			auto a = 1;
-		}
 		for (PxU32 i = 0; i < hitBuffer.nbTouches; i++)
 		{
 			CGameObject* hitObject = static_cast<CGameObject*>(hitBuffer.touches[i].actor->userData);
@@ -76,7 +74,7 @@ void CActiveAttackOverlap::Set(DTO::HITBOX_DESC* pDesc, Matrix ownerMatrix, CGam
 
 	m_tHitboxDesc = pDesc;
 
-	m_matTransform = ownerMatrix * m_tHitboxDesc->matOffset;
+	m_matTransform = m_tHitboxDesc->matOffset * ownerMatrix;
 	m_pxTransform = m_pGameInstance->XMMatrixToPxTransform(m_matTransform);
 
 	hitResults.resize(m_tHitboxDesc->iMaxHit);

@@ -1301,7 +1301,7 @@ HRESULT CRender_Manager::Render_Debug()
 	{
 		if (pDebugCom)
 		{
-			//pDebugCom->Render();
+			pDebugCom->Render();
 			Safe_Release(pDebugCom);
 		}
 	}
