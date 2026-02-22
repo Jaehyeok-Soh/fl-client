@@ -171,6 +171,81 @@ vector<MAPDATA_BASE*> CUEMapdataParser::Convert_UE_MapData(const vector<UE_MAP_D
 	return vecConvertedData;
 }
 
+
+HRESULT CUEMapdataParser::Convert_UnrealRawMapData(const wchar_t* wszUERawDataJsonFile)
+{
+	if (wszUERawDataJsonFile == nullptr)  return E_FAIL;
+
+	wstring MapDataPath = wszUERawDataJsonFile;
+	wstring MapDataName = path(wszUERawDataJsonFile).filename().stem();
+
+	vector<wstring> wstrFilter = { m_WstringConverted , m_WstringFiltering };
+	for (auto& Filter : wstrFilter)
+	{
+		if (MapDataPath.find(Filter) != wstring::npos)
+		{
+			MSG_BOX("[Unreal Raw Data Json] 파일이 아닙니다");
+			return S_OK;
+		}
+	}
+
+	vector<UE_MAP_DATA>* vecUEData = Get_Unreal_MapData(wszUERawDataJsonFile);
+
+	if (vecUEData != nullptr)
+	{
+		MSG_BOX(" 이미 Load된 Unreal Raw Data 입니다 ");
+		return S_OK;
+	}
+
+
+	std::ifstream ifs(wszUERawDataJsonFile, std::ios::in | std::ios::binary);
+	if (!ifs.is_open())
+	{
+		MSG_BOX("CUEMapdataParser::Read_Mapdata, File open failed");
+		return E_FAIL;
+	}
+
+	json UE_Map_Datas_Json{};
+	ifs >> UE_Map_Datas_Json;
+
+	vector<UE_MAP_DATA> vecData{};
+	for (const json& UE_Map_Data_Json : UE_Map_Datas_Json)
+	{
+		if (Filter(UE_Map_Data_Json.value("Name", ""), UE_Map_Data_Json.value("Type", "")))
+			continue;
+		if (UE_Map_Data_Json.value("Outer", "").find("LOD") != wstring::npos)
+			continue;
+
+		if (UE_Map_Data_Json["Outer"].get<string>().find("SM_Village_LandProxy5") != std::string::npos)
+			int a = 0;
+
+		UE_MAP_DATA tData{};
+		tData = UE_Map_Data_Json;
+
+		if (tData.tProperties.tStaticMesh.strObjectPath.empty())
+			continue;
+
+		if (tData.tProperties.tStaticMesh.strObjectPath.find("Engine") != std::string::npos)
+			continue;
+
+
+		if (!tData.m_isFiltering)
+			vecData.push_back(tData);
+	}
+
+	m_umapUnreal_Map_Data.emplace(MapDataName, vecData);
+	/* 바로 변환 시키기 */
+	m_umapConvertedMapData.emplace(MapDataName, Convert_UE_MapData(vecData));
+
+	m_umapUnreal_Map_Data_FullPath.emplace(MapDataName , MapDataPath);
+
+	m_umapUnreal_Map_Data_IsLoadedCheck.emplace(MapDataName, false);
+
+	return S_OK;
+}
+
+
+
 void CUEMapdataParser::Change_SRT(OUT SRT_DATA& tSRT_Data)
 {
 	//Matrix ScaleMatrix		= Matrix::Identity;
@@ -239,7 +314,7 @@ void CUEMapdataParser::Change_ObjectPath(OUT _wstring& wstrModelName, OUT _wstri
 	}
 	else if (eType == EObject_Path_Type::Model)
 	{
-		wstrModelPath = L"Map/" + path(wstrPath).parent_path().wstring() + L"/Model/" + wstrModelName + L".mesh";
+		wstrModelPath = g_wszMapModelPath + path(wstrPath).parent_path().wstring() + L"/Model/" + wstrModelName + L".mesh";
 		Model_Path_Check(wstrModelPath);
 		wstrModelName = path(wstrModelPath).filename().stem().wstring();
 	}
@@ -357,79 +432,21 @@ vector<wstring> CUEMapdataParser::Get_ConvertedFilePathList()
 	return wstrFileNameList;
 }
 
-HRESULT CUEMapdataParser::Convert_UnrealRawMapData(const wchar_t* wszUERawDataJsonFile)
-{
-	if (wszUERawDataJsonFile == nullptr)  return E_FAIL;
-
-	wstring MapDataPath = wszUERawDataJsonFile;
-	
-	vector<wstring> wstrFilter = { m_WstringConverted , m_WstringFiltering };
-	for (auto& Filter : wstrFilter)
-	{
-		if (MapDataPath.find(Filter) != wstring::npos)
-		{
-			MSG_BOX("[Unreal Raw Data Json] 파일이 아닙니다");
-			return S_OK;
-		}
-	}
-
-	vector<UE_MAP_DATA>* vecUEData = Get_Unreal_MapData(wszUERawDataJsonFile);
-
-	if (vecUEData != nullptr)
-	{
-		m_umapConvertedMapData.at(wszUERawDataJsonFile) = Convert_UE_MapData(*vecUEData);
-		MSG_BOX(" Unreal Raw Data Load Complete ");
-		return S_OK;
-	}
-
-
-	std::ifstream ifs(wszUERawDataJsonFile, std::ios::in | std::ios::binary);
-	if (!ifs.is_open())
-	{
-		MSG_BOX("CUEMapdataParser::Read_Mapdata, File open failed");
-		return E_FAIL;
-	}
-	
-	json UE_Map_Datas_Json{};
-	ifs >> UE_Map_Datas_Json;
-
-	vector<UE_MAP_DATA> vecData{};
-	for (const json& UE_Map_Data_Json : UE_Map_Datas_Json)
-	{
-		if (Filter(UE_Map_Data_Json.value("Name", ""), UE_Map_Data_Json.value("Type", ""))) 
-			continue;
-		if (UE_Map_Data_Json.value("Outer", "").find("LOD") != wstring::npos)
-			continue;
-
-		UE_MAP_DATA tData{};
-		tData = UE_Map_Data_Json;
-
-		if (tData.tProperties.tStaticMesh.strObjectPath.empty())
-			continue;
-
-		if (tData.tProperties.tStaticMesh.strObjectPath.find("Engine") != std::string::npos)
-			continue;
-
-
-		if(!tData.m_isFiltering)
-			vecData.push_back(tData);
-	}
-
-	m_umapUnreal_Map_Data.emplace(MapDataPath, vecData);
-	/* 바로 변환 시키기 */
-	m_umapConvertedMapData.emplace(MapDataPath, Convert_UE_MapData(vecData));
-
-	MSG_BOX(" Unreal Raw Data Load Complete ");
-
-	return S_OK;
-}
-
 HRESULT CUEMapdataParser::Batch_UnrealRawMapData(const wchar_t* wszFileName)
 {
 
+	m_wstrCurrentBatch_UERawDataPath = path(wszFileName).filename().stem();
+	if (m_umapUnreal_Map_Data_IsLoadedCheck.at(m_wstrCurrentBatch_UERawDataPath))
+	{
+		int iResult = MessageBox(nullptr, L"이미 배치가 완료된 맵 RawData입니다.\n다시 생성하시겠습니까?", L"중복 로드 확인",MB_OKCANCEL | MB_ICONQUESTION);
+		if (iResult == IDCANCEL) { return S_OK; }
+	}
+
+	m_umapUnreal_Map_Data_IsLoadedCheck.at(m_wstrCurrentBatch_UERawDataPath) = true;
+
 	if (!m_isUseCheckAndBindInstance)
 	{
-		vector<MAPDATA_BASE*>* pFind = Get_Converted_MapData(wszFileName);
+		vector<MAPDATA_BASE*>* pFind = Get_Converted_MapData(m_wstrCurrentBatch_UERawDataPath.c_str());
 		if (pFind == nullptr) return E_FAIL;
 
 		UINT iLevelID = ENUM_TO_UINT(ELevelType::MAP);
@@ -460,6 +477,7 @@ HRESULT CUEMapdataParser::Batch_UnrealRawMapData(const wchar_t* wszFileName)
 				tDesc.tUsingModelInfo = pData->tUsingModelInfo;
 				tDesc.iSectionNumber = m_pMapToolManager->Get_MakeObjectSectionNubmer();
 				tDesc.vecSRTs.push_back(pData->tOriginSRT);
+				tDesc.wstrUERawDataPath = m_wstrCurrentBatch_UERawDataPath;
 
 				CTransform::TRANSFORM_DESC tTsDesc{};
 				tTsDesc.ScaleMatrix = Matrix::CreateScale(tDesc.vecSRTs.back().vScale);
@@ -492,7 +510,7 @@ HRESULT CUEMapdataParser::Batch_UnrealRawMapData(const wchar_t* wszFileName)
 				tDesc.eState = CMapObject::EState::Default;
 				tDesc.tUsingModelInfo = pData->tUsingModelInfo;
 				tDesc.iSectionNumber = m_pMapToolManager->Get_MakeObjectSectionNubmer();
-
+				tDesc.wstrUERawDataPath = m_wstrCurrentBatch_UERawDataPath;
 
 				/* Transform 생성할 이유가없음 */
 				CMapObject* pResult{ nullptr };
@@ -513,6 +531,7 @@ HRESULT CUEMapdataParser::Batch_UnrealRawMapData(const wchar_t* wszFileName)
 		UINT				iLevelID			= ENUM_TO_UINT(ELevelType::MAP);
 		EClientMakePath		eClientMakePath		= m_pMapToolManager->Get_MakeMapObjectClientMakePath();
 		EClientLevelType	eClientLevelType	= m_pMapToolManager->Get_MakeMapObejctClientLevelType();
+
 
 		map< wstring, INSTANCEMODEL_DATA >		mapBindInstance{};
 
@@ -561,6 +580,7 @@ HRESULT CUEMapdataParser::Batch_UnrealRawMapData(const wchar_t* wszFileName)
 			tDesc.vecClientMakePathDesc.clear();
 			tDesc.iSectionNumber = m_pMapToolManager->Get_MakeObjectSectionNubmer();
 
+			tDesc.wstrUERawDataPath = m_wstrCurrentBatch_UERawDataPath;
 
 			tDesc.eMapObjectDrawType = (tDesc.vecSRTs.size() > 1) ? EMapObject_DrawType::Instance : EMapObject_DrawType::Default;
 
@@ -583,17 +603,14 @@ HRESULT CUEMapdataParser::Batch_UnrealRawMapData(const wchar_t* wszFileName)
 	return S_OK;
 }
 
-HRESULT CUEMapdataParser::Save_ConvertedRawMapData(const wchar_t* wszFilePath)
+HRESULT CUEMapdataParser::Save_ConvertedRawMapData(const wchar_t* wszFileName)
 {
-	vector<MAPDATA_BASE*>* pFind = Get_Converted_MapData(wszFilePath);
+	vector<MAPDATA_BASE*>* pFind = Get_Converted_MapData(wszFileName);
 
 	if (pFind == nullptr) return E_FAIL;
 
-	path FilePath{ wszFilePath };
-	wstring wstrFileName = path(FilePath).filename().stem();
-	wstrFileName += L"_Converted.json";
-	wstring wstrSavePath = FilePath.remove_filename();
-	wstrSavePath += wstrFileName;
+	wstring wstrFilePath = m_umapUnreal_Map_Data_FullPath[wszFileName];
+	wstrFilePath += L"_Converted.json";
 
 	json SaveJson{};
 
@@ -618,7 +635,7 @@ HRESULT CUEMapdataParser::Save_ConvertedRawMapData(const wchar_t* wszFilePath)
 		}
 	}
 
-	std::ofstream ofs{wstrSavePath};
+	std::ofstream ofs{ wstrFilePath };
 
 	ofs << SaveJson.dump(4);
 
@@ -627,26 +644,22 @@ HRESULT CUEMapdataParser::Save_ConvertedRawMapData(const wchar_t* wszFilePath)
 	return S_OK;
 }
 
-HRESULT CUEMapdataParser::Save_FilteringRawMapData(const wchar_t* wszFilePath)
+HRESULT CUEMapdataParser::Save_FilteringRawMapData(const wchar_t* wszFileName)
 {
-	vector<UE_MAP_DATA>* pFind = Get_Unreal_MapData(wszFilePath);
+	vector<UE_MAP_DATA>* pFind = Get_Unreal_MapData(wszFileName);
 
 
 	if (pFind == nullptr) return E_FAIL;
 
-	path FilePath{ wszFilePath };
-
-	wstring wstrFileName = path(FilePath).filename().stem();
-	wstrFileName += L"_Filtering.json";
-	wstring wstrSavePath = FilePath.remove_filename();
-	wstrSavePath += wstrFileName;
+	wstring wstrFilePath = m_umapUnreal_Map_Data_FullPath[wszFileName];
+	wstrFilePath += L"_Converted.json";
 
 	json SaveJson = json::array();
 
 	for (auto& Converted_MapData : *pFind)
 		SaveJson.push_back(Converted_MapData);
 
-	std::ofstream ofs{ wstrSavePath };
+	std::ofstream ofs{ wszFileName };
 
 	ofs << SaveJson.dump(4);
 
@@ -664,6 +677,11 @@ void CUEMapdataParser::Free()
 	{
 		for (auto& Data : Pair.second)
 			Safe_Delete(Data);
+	}
+
+	for (auto& Pair : m_umapUnreal_Map_Data_IsLoadedCheck)
+	{
+
 	}
 
 
@@ -837,6 +855,8 @@ void from_json(const json& LoadJson , UE_MAP_DATA& tData)
 	tData.strType  = LoadJson.value("Type","");
 	tData.strName  = LoadJson.value("Name","");
 	tData.strOuter = LoadJson.value("Outer","");
+	
+
 
 	if (LoadJson.contains("Properties"))
 		tData.tProperties = LoadJson["Properties"];

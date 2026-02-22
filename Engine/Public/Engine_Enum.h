@@ -481,6 +481,13 @@ namespace Engine
 		DOWN,
 		END
 	};
+	//===================
+	// Font Shader Type
+	//===================
+	enum class EFontShaderType
+	{
+		NORMAL,OUTLINE, NOISE, NOISE_KOR, OUTLINE_NOISE, OUTLINE_NOISE_KOR, END
+	};
 
 	//===================
 	// Skill Type

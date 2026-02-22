@@ -502,6 +502,9 @@ HRESULT CRender_Manager::Render()
 	if (FAILED(Render_BlendUI()))
 		return E_FAIL;
 
+	if (FAILED(m_pGameInstance->Render_Fonts()))
+		return E_FAIL;
+
 #ifdef _DEBUG
 	if (m_pGameInstance->KeyButton_Down(DIK_F9))
 		m_bDebug = !m_bDebug;

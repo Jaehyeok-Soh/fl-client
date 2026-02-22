@@ -100,6 +100,9 @@ HRESULT CModelLoader::Read_Material(vector<CMaterial*>* vecMaterials)
 		CMaterial::MATERIAL_DESC MaterialDesc = {};
 		CMaterial* pMaterial = nullptr;
 		MaterialDesc.wstrName = Engine_Utils::ToWString(asMaterial.strName);
+
+		MaterialDesc.wstrPath = finalPath;
+
 		if (pMaterial = m_pGameInstance->Get_Resource<CMaterial>(MaterialDesc.wstrName))
 		{
 			vecMaterials->push_back(pMaterial);
@@ -113,9 +116,8 @@ HRESULT CModelLoader::Read_Material(vector<CMaterial*>* vecMaterials)
 				if (MaterialDesc.spanTags[i].empty() == false)
 				{
 					wstring wstrTag = Engine_Utils::ToWString(MaterialDesc.spanTags[i]);
-
 					CTextureBase::RESOURCE_BASE_DESC srcDesc = {};
-					srcDesc.wstrName = wstrTag;
+					srcDesc.wstrName = MaterialDesc.wstrName + L"_" + wstrTag;
 					srcDesc.wstrPath = parentPath / wstrTag;
 					CTextureBase* pReturn = m_pGameInstance->GetOrAddTexture(srcDesc.wstrName, &srcDesc);
 					Safe_Release(pReturn);

@@ -55,8 +55,8 @@ public:
 	virtual void			Update_Late(const _float fTimeelta)				override;
 	virtual void			Ready_Before_Render(const _float fTimeDelta)	override;
 	virtual HRESULT			Render()										override;
-	HRESULT					Render_Instance();
-	HRESULT					Render_Default();
+	HRESULT					Render_Instance(_uint iPassIndex = 0);
+	HRESULT					Render_Default(_uint iPassIndex = 0);
 private:
 	void					Compute_InstanceGroupMinMax(const Vec3* pComputedFinalMinMax, OUT Vec3 *pMinMax);
 	_bool					Compute_ModelLocalMinMax(CModel* pModel, OUT Vec3 outMinMax[2]);

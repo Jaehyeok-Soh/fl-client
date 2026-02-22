@@ -196,6 +196,12 @@ HRESULT CPanel_MapObjectList::Render_MapObjectList()
 
 	ImGui::Separator();
 
+	ImGui::Text( " Object Count [ %d ]" , m_iObjectCount );
+
+	ImGui::Separator();
+
+
+	m_iObjectCount = 0;
 
 	if (!m_pLayer)
 	{
@@ -203,52 +209,58 @@ HRESULT CPanel_MapObjectList::Render_MapObjectList()
 	}
 	else
 	{
-		UINT32 iIndex = 0;
-		for (auto& GameObject : *m_pLayer)
+		if (ImGui::CollapsingHeader(" Map Object List "))
 		{
-			if (!GameObject)
+			UINT32 iIndex = 0;
+			for (auto& GameObject : *m_pLayer)
 			{
-				iIndex++;
-				continue;
-			}
-
-			CMapObject* pMapObject = static_cast<CMapObject*>(GameObject);
-			if (m_eShowMapObjectFilter != EClientMakePath::END && m_eShowMapObjectFilter != pMapObject->Get_ClientMakePath())
-			{
-				iIndex++;
-				continue;
-			}
-
-			string strName = pMapObject->Get_Name();
-
-			if (strlen(m_szFindName) > 0)
-				if (strName.find(m_szFindName) == string::npos)
+				if (!GameObject)
 				{
 					iIndex++;
 					continue;
 				}
 
-			ImGui::PushID(iIndex);
+				CMapObject* pMapObject = static_cast<CMapObject*>(GameObject);
+				if (pMapObject->Get_MapObjectDrawType() == EMapObject_DrawType::Instance) m_iObjectCount += pMapObject->Get_InstanceCount();
+				else m_iObjectCount++;
 
-			ImGui::Selectable(strName.c_str() , pMapObject == m_pSelectMapObject);
+				if (m_eShowMapObjectFilter != EClientMakePath::END && m_eShowMapObjectFilter != pMapObject->Get_ClientMakePath())
+				{
+					iIndex++;
+					continue;
+				}
 
-			_int iCount = pMapObject->Get_InstanceCount();
-			m_strBuffer = iCount == 1 ?  "" : std::to_string(iCount);
+				string strName = pMapObject->Get_Name();
 
-			if (ImGui::IsItemClicked(ImGuiMouseButton_Left))
-			{
-				Reset_SelectValue();
-				static_cast<CLevel_Map*>(m_pOwnerLevel)->On_ChangeSelectedObject(pMapObject);
+				if (strlen(m_szFindName) > 0)
+					if (strName.find(m_szFindName) == string::npos)
+					{
+						iIndex++;
+						continue;
+					}
+
+				ImGui::PushID(iIndex);
+
+				ImGui::Selectable(strName.c_str(), pMapObject == m_pSelectMapObject);
+
+				_int iCount = pMapObject->Get_InstanceCount();
+				m_strBuffer = iCount == 1 ? "" : std::to_string(iCount);
+
+				if (ImGui::IsItemClicked(ImGuiMouseButton_Left))
+				{
+					Reset_SelectValue();
+					static_cast<CLevel_Map*>(m_pOwnerLevel)->On_ChangeSelectedObject(pMapObject);
+				}
+
+				else if (ImGui::IsItemClicked(ImGuiMouseButton_Right))
+					m_pCamera->Get_Component<CTransform>()->Set_Info(TRANSFORM_INFO_STATE::POS, pMapObject->Get_Component<CTransform>()->Get_Info(TRANSFORM_INFO_STATE::POS));
+
+				ImGui::SameLine(ImGui::GetContentRegionAvail().x - ImGui::CalcTextSize(m_strBuffer.c_str()).x);
+				ImGui::Text(m_strBuffer.c_str());
+
+				iIndex++;
+				ImGui::PopID();
 			}
-
-			else if (ImGui::IsItemClicked(ImGuiMouseButton_Right))
-				m_pCamera->Get_Component<CTransform>()->Set_Info(TRANSFORM_INFO_STATE::POS, pMapObject->Get_Component<CTransform>()->Get_Info(TRANSFORM_INFO_STATE::POS));
-
-			ImGui::SameLine(ImGui::GetContentRegionAvail().x - ImGui::CalcTextSize(m_strBuffer.c_str()).x);
-			ImGui::Text(m_strBuffer.c_str());
-
-			iIndex++;
-			ImGui::PopID();
 		}
 	}
 
@@ -414,8 +426,18 @@ HRESULT CPanel_MapObjectList::Render_SelectInfo()
 
 		ImGui::SeparatorText(" Basic Map Object Info ");
 
+		if (ImGui::TreeNode("UE Data Info"))
+		{
+			bool isUELoaded = m_pSelectMapObject->Get_IsUELoaded();
+			ImGui::Text("Is UE Data Load Object => [ %s ] ", isUELoaded == true ? string("true").c_str() : string("false").c_str());
+			ImGui::Text(" Raw Data Path => [ %s ]", Engine_Utils::ToString(m_pSelectMapObject->Get_UERawDataPath()).c_str());
+			ImGui::TreePop();
+		}
 
+		bool isLoaded = m_pSelectMapObject->Get_IsLoaded();
+		ImGui::Text("Is Loaded Object => [ %s ]", isLoaded == true ? string("true").c_str() : string("false").c_str());
 		ImGui::Text(" Map Object Name : [ %s ]", m_pSelectMapObject->Get_Name().c_str());
+
 
 		ImGui::NewLine();
 
@@ -803,13 +825,14 @@ HRESULT CPanel_MapObjectList::Render_SelectOriginMaterialInfo()
 
 	
 	m_arrayMtl_SRVs = m_pSelectMaterial->Get_ArraySRV();
+	m_arrayMtl_Textures = m_pSelectMaterial->Get_TextureNameArray();
+
 
 	m_strBuffer = Engine_Utils::MaterialTextureType_ToString(static_cast<EMaterialTextureType>(m_iSelectMtSlot));
-	
+
 	ImGui::SeparatorText(" Slot Name ");
 	if (ImGui::BeginCombo("##MaterialSLotName", m_strBuffer.c_str()))
 	{
-		
 		for (_uint i = 0; i < ENUM_TO_UINT(EMaterialTextureType::MAX_COUNT); ++i)
 		{
 			if (m_arrayMtl_SRVs[i] == nullptr) continue;
@@ -834,6 +857,10 @@ HRESULT CPanel_MapObjectList::Render_SelectOriginMaterialInfo()
 	{
 		ImGui::Image((ImTextureID)m_arrayMtl_SRVs[m_iSelectMtSlot], ImVec2(200, 200));
 	}
+
+	m_strBuffer = Engine_Utils::ToString(m_arrayMtl_Textures[m_iSelectMtSlot]);
+	ImGui::Text(" Texture Name => [ %s ] " , m_strBuffer.c_str());
+
 
 	ImGui::End();
 

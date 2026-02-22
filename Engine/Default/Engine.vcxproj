@@ -189,6 +189,7 @@
     <ClCompile Include="..\Private\Effect_Manager.cpp" />
     <ClCompile Include="..\private\FxEffectAsset.cpp" />
     <ClCompile Include="..\private\FxShaderVariant.cpp" />
+    <ClCompile Include="..\Private\GameData_Struct.cpp" />
     <ClCompile Include="..\Private\InstanceMesh.cpp" />
     <ClCompile Include="..\Private\DataDocument_Effect.cpp" />
     <ClCompile Include="..\Private\Cell.cpp" />
@@ -294,8 +295,8 @@
     <ClCompile Include="..\private\ThreadWorker.cpp" />
     <ClCompile Include="..\Private\Timer.cpp" />
     <ClCompile Include="..\Private\Timer_Manager.cpp" />
+    <ClCompile Include="..\private\TimeScale_Manager.cpp" />
     <ClCompile Include="..\Private\Transform.cpp" />
-    <ClCompile Include="..\Private\UIAction_Registry.cpp" />
     <ClCompile Include="..\Private\UIObject.cpp" />
     <ClCompile Include="..\Private\VIBuffer.cpp" />
     <ClCompile Include="..\Private\VIBuffer_Cube_Color.cpp" />
@@ -348,6 +349,7 @@
     <ClInclude Include="..\Public\Effect_Manager.h" />
     <ClInclude Include="..\public\FxEffectAsset.h" />
     <ClInclude Include="..\public\FxShaderVariant.h" />
+    <ClInclude Include="..\Public\GameData_Struct.h" />
     <ClInclude Include="..\Public\InstanceMesh.h" />
     <ClInclude Include="..\Public\ComputeShader.h" />
     <ClInclude Include="..\Public\DataDocument_Effect.h" />
@@ -453,8 +455,8 @@
     <ClInclude Include="..\public\ThreadWorker.h" />
     <ClInclude Include="..\Public\Timer.h" />
     <ClInclude Include="..\Public\Timer_Manager.h" />
+    <ClInclude Include="..\public\TimeScale_Manager.h" />
     <ClInclude Include="..\Public\Transform.h" />
-    <ClInclude Include="..\Public\UIAction_Registry.h" />
     <ClInclude Include="..\Public\UIObject.h" />
     <ClInclude Include="..\Public\VertexData.h" />
     <ClInclude Include="..\Public\VIBuffer.h" />
