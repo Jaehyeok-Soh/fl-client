@@ -95,6 +95,7 @@ NS_BEGIN(DTO)
 enum class EMapObject_Type : _uint
 {
 	MAPOBJECT,
+	SCENEDATA,
 	END
 };
 
@@ -180,6 +181,7 @@ public:
 	}
 }SRT_DATA;
 #pragma endregion
+
 #pragma region Using Material 
 
 typedef struct tagOverrideMaterials
@@ -207,7 +209,6 @@ public:
 
 }USING_MODEL_INFO;
 #pragma endregion
-
 #pragma region MapObject
 
 typedef struct TMap_MapObjectData
@@ -215,6 +216,7 @@ typedef struct TMap_MapObjectData
 	/* UE Load Check */
 	_uint								iSectionNum{};
 	bool								isUELoaded{ false };
+	string								strUERawDataPath{""};
 	string								strTag{};
 	string								strModelPath{ "" };
 
@@ -228,6 +230,20 @@ typedef struct TMap_MapObjectData
 	vector<CLIENT_MAKEPATH_DESC_BASE*>	vecClientMakePathDesc{};
 }MAPOBJECTDATA;
 #pragma endregion
+
+
+
+#pragma endregion
+
+
+#pragma region Scene Data
+
+typedef struct TSceneData
+{
+	string								strTag{};
+	string								strTextureSplatingInfoName{"None"};
+
+}SCENEDATA;
 
 #pragma endregion
 
@@ -256,9 +272,19 @@ inline void to_json(json& SaveJson, const TMap_MapObjectData& tData);
 inline void from_json(const json& LoadJson, TMap_MapObjectData& tData);
 #pragma endregion
 
+
+#pragma region Scene Data
+
+inline void to_json(json& SaveJson, const TSceneData& tData);
+inline void from_json(const json& LoadJson, TSceneData& tData);
+
+#pragma endregion
+
 NS_END
 /////////////////-------------------  Wrapping Class  -------------------/////////////////
 NS_BEGIN(Engine)
+
+#pragma region Mapobject
 
 class CData_MapObject final : public IObjectDataBase
 {
@@ -284,7 +310,38 @@ public:
 	static CData_MapObject* Create() { return new CData_MapObject(); }
 	virtual void Free() override;
 };
+#pragma endregion
 
+#pragma region Scene Data
+
+class CData_SceneData final : public IObjectDataBase
+{
+	// IObjectDataBase을(를) 통해 상속됨
+	using Super = IObjectDataBase;
+private:
+	CData_SceneData() = default;
+	virtual ~CData_SceneData() = default;
+public:
+
+public:
+	_uint							Get_Type() const override { return ENUM_TO_UINT(DTO::EMapObject_Type::SCENEDATA); }
+	const string&					Get_Tag() const override { return m_tData.strTag; }
+
+	json							ToJson() const override;
+	HRESULT							FromJson(const json& j) override;
+
+	const DTO::TSceneData&			Get_Data() const { return m_tData; }
+	DTO::TSceneData&				Get_Data() { return m_tData; }
+private:
+	DTO::TSceneData			m_tData{};
+public:
+	static CData_SceneData* Create()
+	{
+		return new CData_SceneData();
+	}
+	virtual void Free() override;
+};
+#pragma endregion
 
 NS_END
 

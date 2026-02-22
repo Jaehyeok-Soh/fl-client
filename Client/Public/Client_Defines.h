@@ -256,6 +256,15 @@ namespace Client
 		END,
 	};
 
+	enum class Shader_VtxMesh_Pass
+	{
+		StaticObject,
+		LandScape,
+		SHADOW_BAKE,
+		DEBUG,
+	};
+
+
 #pragma	endregion
 
 #pragma region UI

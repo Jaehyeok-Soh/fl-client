@@ -136,6 +136,26 @@ void CLevel_Logo::Update(const _float fTimeDelta)
 	{
 		m_pGameInstance->Request_AddObject(ENUM_TO_UINT(ELevelType::LOGO), L"POOL_Attack_1", 0, nullptr);
 	}
+
+	// GlobalTimeScale Å×½ºÆ®
+	{
+		if (m_pGameInstance->KeyButton_Down(DIK_9))
+		{
+			m_pGameInstance->Request_HitStop();
+		}
+		if (m_pGameInstance->KeyButton_Down(DIK_8))
+		{
+			m_pGameInstance->Request_SloMo(0.2f, 2.f);
+		}
+		if (m_pGameInstance->KeyButton_Down(DIK_6))
+		{
+			m_pGameInstance->Active_SloMo(0.5f);
+		}
+		if (m_pGameInstance->KeyButton_Down(DIK_7))
+		{
+			m_pGameInstance->Deactivate_SloMo();
+		}
+	}
 }
 
 HRESULT CLevel_Logo::Render()
@@ -310,7 +330,7 @@ HRESULT CLevel_Logo::Ready_DevMap()
 	if (FAILED(m_pGameInstance->Regist_Document<CDataDocument_Map>(iLevelID, eCategory)))
 		return E_FAIL;
 
-	std::filesystem::path FilePath = L"../../Resources/Data/MapData/LevelData/DevLevel/DevMap.json";
+	std::filesystem::path FilePath = L"../../Resources/Data/MapData/LevelData/Test/Test.json";
 	vector<path> vecfiles;
 
 	if (!std::filesystem::exists(FilePath))

@@ -35,8 +35,8 @@ public:
 	_uint Get_TextureCount() const { return m_iTextureCount; }
 	const Vec2& Get_TextureSize(_uint iIndex = 0) const { return m_vecTextures[iIndex]->Get_Size(); }
 private:
-	_uint m_iTextureCount = { 0 };
-	vector<CTextureBase*>						m_vecTextures;
+	_uint					  m_iTextureCount = { 0 };
+	vector<CTextureBase*>	  m_vecTextures;
 	ID3D11ShaderResourceView* m_arrSRV[TEXTURE_MAGICNUMBER]{nullptr};
 public:
 	static CTexture* Create(void* pArg);

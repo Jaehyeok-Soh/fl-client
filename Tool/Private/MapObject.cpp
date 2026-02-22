@@ -25,6 +25,7 @@ CMapObject::CMapObject(EToolObjectType eType, ID3D11Device* pDevice, ID3D11Devic
     , m_vecClientMakePathDesc{}
     , m_vecMatrix{}
     , m_vecOriginMatrix{}
+    , m_wstrUERawDataPath{L""}
 {
 
 }
@@ -45,6 +46,7 @@ CMapObject::CMapObject(const CMapObject& rhs)
     , m_vecMatrix{rhs.m_vecMatrix}
     , m_vecOriginMatrix{rhs.m_vecOriginMatrix}
     , m_pMapToolManager(CMapToolManager::GetInstance())
+    , m_wstrUERawDataPath{rhs.m_wstrUERawDataPath }
 {
     /*  Description을 어케해주는게 좋을려나...  */
 
@@ -72,6 +74,8 @@ HRESULT CMapObject::Initialize(void* pArg)
     m_eClientLevelType          = pDesc->eClientLevelType;
     m_eMapObjectDrawType        = pDesc->eMapObjectDrawType;
     m_iSectionNum               = pDesc->iSectionNumber;
+    m_wstrUERawDataPath         = pDesc->wstrUERawDataPath;
+
 
     if (m_isLoaded == true)
         m_isBatced = true;
@@ -796,9 +800,8 @@ void CMapObject::Ready_Before_Render(const _float fTimeDelta)
 {
     Super::Ready_Before_Render(fTimeDelta);
 
-
     // m_eMapObjectState == CMapObject::EState::Select ?  RENDER_CATEGORY::NONELIGHT : 
-    m_pGameInstance->Push_RenderObject(RENDER_CATEGORY::NONELIGHT, this);
+    m_pGameInstance->Push_RenderObject(RENDER_CATEGORY::NONEBLEND, this);
 
 #ifdef _DEBUG
     //if (m_eMapObjectDrawType == EMapObject_DrawType::Instance)
@@ -953,7 +956,7 @@ _bool CMapObject::Export_Data(DTO::ECategory eCategory, CDataDocumentBase* pDocu
     tData.eMapObjectDrawType = ENUM_TO_UINT(m_eMapObjectDrawType);
     tData.eClientLevelType = ENUM_TO_UINT(m_eClientLevelType);
     tData.eClientMakePath = ENUM_TO_UINT(m_eClientMakePath);
-    
+    tData.strUERawDataPath = Engine_Utils::ToString(m_wstrUERawDataPath);
 
     tData.strModelPath = Engine_Utils::ToString(m_wstrModelPath);
 

@@ -12,7 +12,7 @@ using json = nlohmann::json;
 NS_BEGIN(Engine)
 
 
-
+#pragma region Data MapObject
 json CData_MapObject::ToJson() const
 {
 	return json(m_tData);
@@ -32,7 +32,28 @@ void CData_MapObject::Free()
 
 	Super::Free();
 }
+#pragma endregion
 
+#pragma region 
+
+json CData_SceneData::ToJson() const
+{
+	return json(m_tData);
+}
+
+HRESULT CData_SceneData::FromJson(const json& j)
+{
+	m_tData = j.get<DTO::TSceneData>();
+	return S_OK;
+}
+
+void CData_SceneData::Free()
+{
+	Super::Free();
+
+	return;
+}
+#pragma endregion
 
 NS_END
 
@@ -154,10 +175,11 @@ void to_json(json& SaveJson, const USING_MODEL_INFO& tData)
 inline void to_json(json& SaveJson, const DTO::TMap_MapObjectData& tData)
 {
 	SaveJson = json
-	{ 
+	{
 		{ "Section Number" , tData.iSectionNum},
 		{ "strTag", tData.strTag },
 		{ "UE Loaded"  , tData.isUELoaded},
+		{ "UE Raw Data Path" , tData.strUERawDataPath},
 		{ "Draw Type" , tData.eMapObjectDrawType},
 		{ "Client Make Path" , tData.eClientMakePath},
 		{ "Client Level Type", tData.eClientLevelType},
@@ -198,6 +220,8 @@ inline void from_json(const json& LoadJson, DTO::TMap_MapObjectData& tData)
 	if (LoadJson.contains("UE Loaded"))
 		tData.isUELoaded =  LoadJson["UE Loaded"].get<_bool>();
 
+	if (LoadJson.contains("UE Raw Data Path"))
+		tData.strUERawDataPath = LoadJson["UE Raw Data Path"].get<string>();
 
 	/* Type 3°³  */
 	if (LoadJson.contains("Draw Type"))
@@ -208,7 +232,6 @@ inline void from_json(const json& LoadJson, DTO::TMap_MapObjectData& tData)
 
 	if (LoadJson.contains("Client Level Type"))
 		LoadJson["Client Level Type"].get_to(tData.eClientLevelType);
-
 
 	if (LoadJson.contains("Model Path"))
 		tData.strModelPath = LoadJson["Model Path"].get<string>();
@@ -229,6 +252,32 @@ inline void from_json(const json& LoadJson, DTO::TMap_MapObjectData& tData)
 		} 
 	}
 }
+#pragma endregion
+
+
+#pragma region Scene Data
+
+
+inline void to_json(json& SaveJson, const TSceneData& tData)
+{
+	SaveJson = json
+	{
+		{ "strTag", tData.strTag },
+		{ "Texture Splating Info", tData.strTextureSplatingInfoName },
+	};
+
+	return;
+}
+inline void from_json(const json& LoadJson, TSceneData& tData)
+{
+	if (LoadJson.contains("strTag"))
+		tData.strTag = LoadJson["strTag"].get<string>();
+	
+	if (LoadJson.contains("Texture Splating Info"))
+		tData.strTextureSplatingInfoName = LoadJson["Texture Splating Info"].get<string>();
+	return;
+}
+
 #pragma endregion
 
 NS_END

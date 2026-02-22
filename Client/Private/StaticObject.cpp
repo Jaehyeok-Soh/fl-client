@@ -6,6 +6,7 @@
 #include "PhysicsCollider.h"
 #include "PhysicsRigidBody.h"
 #include "GameInstance.h"
+#include "LandScape.h"
 
 CStaticObject::CStaticObject(ID3D11Device* pDevice, ID3D11DeviceContext* pDeviceContext)
 	: CMapObject(pDevice, pDeviceContext)

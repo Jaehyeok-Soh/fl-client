@@ -947,7 +947,7 @@ void CUI_Inspector::SetUp_DImageData()
 				const _bool isSelected = (cur == i);
 				if (ImGui::Selectable(m_VecDImageSubClassTag[i].c_str(), isSelected))
 				{
-					cur = i;
+					cur = (_int)i;
 					m_pSelectedUI->Set_UIDImageSubClassType(static_cast<DTO::EUIDImageSubClassType>(i));
 					changed = true;
 				}

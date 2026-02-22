@@ -53,7 +53,11 @@
 #include "Effect.h"
 #include "EffectObject.h"
 #include "Physics_LandScape.h" // physics test
+
+/* ------- Map --------- */
 #include "StaticObject.h"
+#include "LandScape.h"
+/* --------------------- */
 #include "Monster_Dummy.h" // test
 #include "Sword.h"
 
@@ -298,6 +302,21 @@ HRESULT CLoader::Loading_For_Logo()
 	}
 #pragma endregion
 
+#pragma region Texture Splating Data
+
+	///////////////////////////////////////////////////////
+	////////// Ready Texture Splating Data Load ///////////
+	///////////////////////////////////////////////////////
+
+	/* Texture Loading */
+	if (FAILED(Loading_Textures(L"../../Resources/Textures/Map/LandScape/Village/")))
+		return E_FAIL;
+
+	if (FAILED(m_pGameInstance->GameDataManager_Load_TextureSplatingInfoData()))
+		return E_FAIL;
+
+#pragma endregion
+
 	//////////////////////////////////////////
 	//////////// Ready Components ////////////
 	//////////////////////////////////////////
@@ -399,6 +418,7 @@ HRESULT CLoader::Loading_For_Logo()
 
 		/* Map Object */
 		ADD_PROTOTYPE(ELevelType::STATIC, L"Prototype_GameObject_StaticObject", CStaticObject::Create(m_pDevice, m_pDeviceContext));
+		ADD_PROTOTYPE(ELevelType::STATIC, L"Prototype_GameObject_LandScape", CLandScape::Create(m_pDevice, m_pDeviceContext));
 
 		/* Monster Object */
 		ADD_PROTOTYPE(ELevelType::LOGO, L"Prototype_GameObject_Monster_Dummy", CMonster_Dummy::Create(m_pDevice, m_pDeviceContext));
