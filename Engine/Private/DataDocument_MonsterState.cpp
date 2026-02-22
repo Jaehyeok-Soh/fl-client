@@ -68,7 +68,7 @@ HRESULT CDataDocument_MonsterState::FromJson(const json& j)
 	return S_OK;
 }
 
-HRESULT CDataDocument_MonsterState::Try_Add(const DTO::MONSTER_STATEBASE_DESC& data)
+HRESULT CDataDocument_MonsterState::Try_Add(const DTO::MONSTERSTATE_DESC& data)
 {
 	IObjectDataBase* pObjectBase = Create_ObjectData();
 	static_cast<CDataStruct_MonsterState*>(pObjectBase)->Get_Data() = data;

@@ -26,7 +26,7 @@ HRESULT CBuilder_MonsterState::Build(const CDataDocumentBase& document)
 	// For. DataOverlap
 	{
 		/* 문서에 저장된 IObjectDataBase -> 데이터를 가진 클래스의 부모 */
-		const vector<Engine::IObjectDataBase*> vecDtoList = doc.Get_ListByType(DTO::ATTACKOVERLAP_TYPE::NORMAL);
+		const vector<Engine::IObjectDataBase*> vecDtoList = doc.Get_ListByType(DTO::MONSTERSTATE_TYPE::NORMAL);
 		for (const auto& pDtoBase : vecDtoList)
 		{
 			/* 데이터를 보유한 클래스 다운캐스팅 */
@@ -41,7 +41,7 @@ HRESULT CBuilder_MonsterState::Build(const CDataDocumentBase& document)
 	return S_OK;
 }
 
-HRESULT CBuilder_MonsterState::Create_MonsterState_Prototype(const DTO::MONSTER_STATEBASE_DESC& data)
+HRESULT CBuilder_MonsterState::Create_MonsterState_Prototype(const DTO::MONSTERSTATE_DESC& data)
 {
 	return S_OK;
 }

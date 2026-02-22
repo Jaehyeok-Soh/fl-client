@@ -8,6 +8,7 @@
 #include "MonsterControlContext.h"
 
 #include "ActionState.h"
+#include "MonsterActionState.h"
 
 // manager
 #include "GameInstance.h"
@@ -95,33 +96,37 @@ void CStateBase_Monster::Update(const _float fTimeDelta)
 		return;
 
 	// 상태 전이 조건 검사 및 상태 전이
-	if (!m_bLoop && Is_MainAnimFinished())
-	{
-		_bool allClear = { false };
+	//if (!m_bLoop && Is_MainAnimFinished())
+	//{}
 		for (auto& trans : m_pDesc->vecStateTransition)
 		{
+			_bool allClear = { true };
 			for (auto& condIdx : trans.vecConditionIdx)
-				allClear = m_vecCondition[condIdx]();
+			{
+				if (m_vecCondition[condIdx]() == false)
+				{
+					allClear = false;
+					break;
+				}
+			}
 
 			// 모든 조건 통과
-			_int randomValue = (rand() % (_int)trans.fTotalWeight);
 			if (allClear)
 			{
-				randomValue;
+				_float randomValue = (rand() % (_int)trans.fTotalWeight);
+
 				_float curWeight = {};
 				for (auto& to : trans.mapRandomStatePoolIdx)
 				{
-					if (randomValue < to.second)
+					curWeight += to.second;
+					if (randomValue < curWeight)
 					{
 						Change_MonsterState(to.first); // 다음 state로 change
 						return;
 					}
-
-					curWeight += to.second;
 				}
 			}
 		}
-	}
 
 	// 기능 실행
 	for (auto& featIdx : m_pDesc->vecFeatureIdx)
@@ -153,28 +158,7 @@ _bool CStateBase_Monster::Has_ChangeState(_int eKey)
 
 HRESULT CStateBase_Monster::Bind_State()
 {
-	m_umapState.clear();
-
-	m_umapState.reserve(m_pDesc->setStates.size());
-	for (auto iter = m_pDesc->setStates.begin(); iter != m_pDesc->setStates.end(); iter++)
-	{
-		m_umapState.emplace(*iter, std::distance(m_pDesc->setStates.begin(), iter));
-		iter++;
-	}
-
-	{
-		vector<std::pair<string, _int>> vecSort(m_umapState.begin(), m_umapState.end());
-
-		std::sort(vecSort.begin(), vecSort.end(), [](const std::pair<string, _int>& a, const std::pair<string, _int>& b) {
-			return a.second > b.second;
-			});
-
-		m_umapState.clear();
-
-		for (auto& sorted : vecSort)
-			m_umapState.insert(sorted);
-	}
-	
+	m_umapState = static_cast<CMonsterActionState*>(m_pOwnerStateComp)->GetUmapState();
 
 	return S_OK;
 }

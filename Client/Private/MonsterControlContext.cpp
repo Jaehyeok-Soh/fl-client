@@ -42,6 +42,10 @@ HRESULT CMonsterControlContext::Initialize(void* pArg)
 
 HRESULT CMonsterControlContext::Awake(const _uint iLevelIndex)
 {
+	if (!(m_pTarget = m_pGameInstance->Get_GameObject_Front(iLevelIndex, L"Player_Layer")))
+		return E_FAIL;
+
+	Safe_AddRef(m_pTarget);
 	return S_OK;
 }
 
@@ -52,6 +56,9 @@ Vec3 CMonsterControlContext::Get_MoveDir()
 
 _bool CMonsterControlContext::IsTargetFound()
 {
+	if (m_pTarget == nullptr)
+		return false;
+
 	CTransform* pOwnerTransform = Get_Owner()->Get_Component<CTransform>();
 	CTransform* pTargetTransform = m_pTarget->Get_Component<CTransform>();
 
@@ -66,6 +73,9 @@ _bool CMonsterControlContext::IsTargetFound()
 
 _bool CMonsterControlContext::IsTargetLost()
 {
+	if (m_pTarget == nullptr)
+		return true;
+
 	CTransform* pOwnerTransform = Get_Owner()->Get_Component<CTransform>();
 	CTransform* pTargetTransform = m_pTarget->Get_Component<CTransform>();
 
@@ -80,6 +90,9 @@ _bool CMonsterControlContext::IsTargetLost()
 
 _bool CMonsterControlContext::IsTargetAlive()
 {
+	if (m_pTarget == nullptr)
+		return false;
+
 	return m_pTarget->IsDead() == false;
 }
 
@@ -95,6 +108,9 @@ _bool CMonsterControlContext::IsTargetFOV()
 
 _bool CMonsterControlContext::IsTargetBehind()
 {
+	if (m_pTarget == nullptr)
+		return false;
+
 	CTransform* pOwnerTransform = Get_Owner()->Get_Component<CTransform>();
 	CTransform* pTargetTransform = m_pTarget->Get_Component<CTransform>();
 
@@ -112,6 +128,9 @@ _bool CMonsterControlContext::IsTargetBehind()
 
 _bool CMonsterControlContext::IsTargetSide()
 {
+	if (m_pTarget == nullptr)
+		return false;
+
 	CTransform* pOwnerTransform = Get_Owner()->Get_Component<CTransform>();
 	CTransform* pTargetTransform = m_pTarget->Get_Component<CTransform>();
 
@@ -131,6 +150,9 @@ _bool CMonsterControlContext::IsTargetSide()
 
 _bool CMonsterControlContext::IsTargetClose()
 {
+	if (m_pTarget == nullptr)
+		return false;
+
 	CTransform* pOwnerTransform = Get_Owner()->Get_Component<CTransform>();
 	CTransform* pTargetTransform = m_pTarget->Get_Component<CTransform>();
 
@@ -145,6 +167,9 @@ _bool CMonsterControlContext::IsTargetClose()
 
 _bool CMonsterControlContext::IsTargetAhead()
 {
+	if (m_pTarget == nullptr)
+		return false;
+
 	CTransform* pOwnerTransform = Get_Owner()->Get_Component<CTransform>();
 	CTransform* pTargetTransform = m_pTarget->Get_Component<CTransform>();
 
@@ -174,6 +199,9 @@ _bool CMonsterControlContext::IsPhaseTwo()
 
 _bool CMonsterControlContext::IsTargetInMeleeRange()
 {
+	if (m_pTarget == nullptr)
+		return false;
+
 	CTransform* pOwnerTransform = Get_Owner()->Get_Component<CTransform>();
 	CTransform* pTargetTransform = m_pTarget->Get_Component<CTransform>();
 
@@ -188,6 +216,9 @@ _bool CMonsterControlContext::IsTargetInMeleeRange()
 
 _bool CMonsterControlContext::IsTargetInAttackRange()
 {
+	if (m_pTarget == nullptr)
+		return false;
+
 	CTransform* pOwnerTransform = Get_Owner()->Get_Component<CTransform>();
 	CTransform* pTargetTransform = m_pTarget->Get_Component<CTransform>();
 
@@ -345,5 +376,7 @@ CComponent* CMonsterControlContext::Clone(void* pArg)
 
 void CMonsterControlContext::Free()
 {
+	Safe_Release(m_pTarget);
+
 	Super::Free();
 }

@@ -136,7 +136,27 @@ HRESULT CMonster_Dummy::Ready_PartObjects()
 
 HRESULT CMonster_Dummy::Ready_Components()
 {
-	if (FAILED(Add_Component<CMonsterControlContext>(0 /*static*/, L"Prototype_Component_ControlContext_Monster", nullptr)))
+	//typedef struct tagMonsterControlContextDesc
+	//{
+	//	_float fMeleeRange = {};
+	//	_float fAttackRange = {};
+	//	_float fCloseRange = {};
+	//	_float fDetectionRange = {};
+	//	_float fSpeed = {};
+	//	_int iSkillCount = { -1 };
+	//	vector<_int> vecSkillRange;
+	//}MONSTER_CONTROLCONTEXT_DESC;
+
+	CMonsterControlContext::MONSTER_CONTROLCONTEXT_DESC desc{};
+	desc.fMeleeRange = 2.f;
+	desc.fAttackRange = 4.f;
+	desc.fCloseRange = 0.2f;
+	desc.fDetectionRange = 5.f;
+	desc.fSpeed = 1.f;
+	//desc.iSkillCount;
+	//desc.vecSkillRange;
+
+	if (FAILED(Add_Component<CMonsterControlContext>(0 /*static*/, L"Prototype_Component_ControlContext_Monster", &desc)))
 		return E_FAIL;
 
 	return S_OK;

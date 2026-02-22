@@ -36,28 +36,6 @@ namespace DTO
 		j.at("bTimeReset").get_to(d.bTimeReset);
 	}
 
-	typedef struct tagMonsterStateBaseDesc
-	{
-		unsigned int FAniFlags = { 0 };
-
-		bool bBlend = { false };
-		bool bLoop = { false };
-	}MONSTERSTATE_DESC;
-
-	inline void to_json(json& j, const MONSTERSTATE_DESC& d)
-	{
-		j["FAniFlags"] = d.FAniFlags;
-		j["bBlend"] = d.bBlend;
-		j["bLoop"] = d.bLoop;
-	}
-
-	inline void from_json(const json& j, MONSTERSTATE_DESC& d)
-	{
-		j.at("FAniFlags").get_to(d.FAniFlags);
-		j.at("bBlend").get_to(d.bBlend);
-		j.at("bLoop").get_to(d.bLoop);
-	}
-
 	typedef struct tagStateTransition
 	{
 		vector<string> vecCondition;
@@ -81,14 +59,18 @@ namespace DTO
 		j.at("mapRandomStatePool").get_to(d.mapRandomStatePool);
 	}
 
-	typedef struct tagMonsterStateDesc : public MONSTERSTATE_DESC
+	typedef struct tagMonsterStateBaseDesc
 	{
-		string strTag = { "Sample" };
+		string strName = { "Sample" };
+
+		int iStateIdx = {};
 
 		bool bIsBoss = { false };
 		bool bIsCombo = { false };
 
-		string strName = {};
+		unsigned int FAniFlags = { 0 };
+		bool bBlend = { false };
+		bool bLoop = { false };
 
 		MONSTERTIME_COUNTER tStateLifeTime = {};
 		MONSTERTIME_COUNTER tStateCoolDownTime = {};
@@ -109,12 +91,14 @@ namespace DTO
 
 	inline void to_json(json& j, const MONSTER_STATEBASE_DESC& d)
 	{
-		j["strTag"] = d.strTag;
+		j["strName"] = d.strName;
 
 		j["bIsBoss"] = d.bIsBoss;
 		j["bIsCombo"] = d.bIsCombo;
 
-		j["strName"] = d.strName;
+		j["FAniFlags"] = d.FAniFlags;
+		j["bBlend"] = d.bBlend;
+		j["bLoop"] = d.bLoop;
 
 		j["tStateLifeTime"] = d.tStateLifeTime;
 		j["tStateCoolDownTime"] = d.tStateCoolDownTime;
@@ -125,16 +109,20 @@ namespace DTO
 		j["vecMainAnimNames"] = d.vecMainAnimNames;
 
 		j["vecStateTransition"] = d.vecStateTransition;
+
+		j["vecFeature"] = d.vecFeature;
 	}
 
 	inline void from_json(const json& j, MONSTER_STATEBASE_DESC& d)
 	{
-		j.at("strTag").get_to(d.strTag);
+		j.at("strName").get_to(d.strName);
 
 		j.at("bIsBoss").get_to(d.bIsBoss);
 		j.at("bIsCombo").get_to(d.bIsCombo);
 
-		j.at("strName").get_to(d.strName);
+		j.at("FAniFlags").get_to(d.FAniFlags);
+		j.at("bBlend").get_to(d.bBlend);
+		j.at("bLoop").get_to(d.bLoop);
 
 		j.at("tStateLifeTime").get_to(d.tStateLifeTime);
 		j.at("tStateCoolDownTime").get_to(d.tStateCoolDownTime);
@@ -145,6 +133,35 @@ namespace DTO
 		j.at("vecMainAnimNames").get_to(d.vecMainAnimNames);
 
 		j.at("vecStateTransition").get_to(d.vecStateTransition);
+
+		if (j.contains("vecFeature"))
+			j.at("vecFeature").get_to(d.vecFeature);
+		else
+			d.vecFeature = vector<string>();
+	}
+
+	typedef struct tagMonsterStateDesc
+	{
+		string strTag = { "Sample" };
+
+		// state names
+		std::set<string>		setStates;
+
+		vector<MONSTER_STATEBASE_DESC> vecMonsterStateDesc;
+	}MONSTERSTATE_DESC;
+
+	inline void to_json(json& j, const MONSTERSTATE_DESC& d)
+	{
+		j["strTag"] = d.strTag;
+		j["setStates"] = d.setStates;
+		j["vecMonsterStateDesc"] = d.vecMonsterStateDesc;
+	}
+
+	inline void from_json(const json& j, MONSTERSTATE_DESC& d)
+	{
+		j.at("strTag").get_to(d.strTag);
+		j.at("setStates").get_to(d.setStates);
+		j.at("vecMonsterStateDesc").get_to(d.vecMonsterStateDesc);
 	}
 }
 

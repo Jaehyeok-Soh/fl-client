@@ -30,6 +30,7 @@ NLOHMANN_JSON_SERIALIZE_ENUM(ECategory,
 		{ECategory::ANIMATION, "ANIMATION"},
 		{ECategory::CAMERA, "CAMERA"},
 		{ECategory::OVERLAP_SCRIPT, "OVERLAP_SCRIPT"},
+		{ECategory::MONSTER_STATE, "MONSTER_STATE"},
 		{ECategory::END, "END"}
 	}
 )

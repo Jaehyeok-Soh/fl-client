@@ -341,6 +341,7 @@ HRESULT CLevel_Logo::Ready_Monster()
 		monsterDesc.wstrAttackOverlapPrototypeTag = L"Prototype_Component_AttackOverlap_Monster_Dog";
 		transformDesc.TranslationMatrix = Matrix::CreateTranslation(Vec3(18.f, 12.f, 19.f));
 		monsterDesc.pTransform_Desc = &transformDesc;
+		monsterDesc.wstrMonsterStateTag = L"Monster_Dog";
 
 		{
 			PHYSICSCCT_DESC desc;

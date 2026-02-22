@@ -50,9 +50,6 @@ HRESULT CMonster_Base::Initialize(void* pArg)
 	//if (FAILED(Ready_Ability()))
 	//	return E_FAIL;
 
-	if (FAILED(Ready_Ray()))
-		return E_FAIL;
-
 	return S_OK;
 }
 
@@ -68,6 +65,7 @@ HRESULT CMonster_Base::Awake(const _uint iCurrentLevelID)
 
 	if (FAILED(Get_Component<CMonsterActionState>()->Change_State(ENUM_TO_UINT(State::IDLE))))
 		return E_FAIL;
+
 	if (FAILED(Get_Component<CControlContext>()->Awake(iCurrentLevelID)))
 		return E_FAIL;
 
@@ -202,27 +200,20 @@ HRESULT CMonster_Base::Ready_PartObjects(void* pArg)
 
 HRESULT CMonster_Base::Ready_Components(void* pArgs)
 {
+	MONSTER_DESC* pDesc = static_cast<MONSTER_DESC*>(pArgs);
+
 	{
-		CMonsterActionState::ACTIONSTATE_DESC desc = {};
+		CMonsterActionState::MONSTERACTIONSTATE_DESC desc = {};
 		desc.iStateCount = ENUM_TO_UINT(State::END);
 		desc.pOwnerModel = Get_Part<CMonster_Body_Base>(ENUM_TO_UINT(Part::BODY))->Get_Component<CModel>();
 		desc.pOwnerAnimECS = static_cast<CComputeShader*>(Get_Part<CMonster_Body_Base>(ENUM_TO_UINT(Part::BODY))->Get_Script_Component(TEXT("ComputeShader_AnimE")));
+		desc.wstrMonsterStateTag = pDesc->wstrMonsterStateTag;
+		desc.iLevelIndex = pDesc->iLevelIndex;
 		if (FAILED(Add_Component<CMonsterActionState>(0, L"Prototype_Component_ActionState_Monster", &desc)))
 			return E_FAIL;
 	}
 
 	if (FAILED(Ready_CCT(pArgs)))
-		return E_FAIL;
-
-	return S_OK;
-}
-
-HRESULT CMonster_Base::Ready_Ray()
-{
-	if (!(m_pFootRay = CRay::Create(Vec3{ 0.f, 0.1f, 0.f }, Vec3{ 0.f, -1.f, 0.f })))
-		return E_FAIL;
-
-	if (!(m_pMoveRay = CRay::Create(Vec3{ 0.f, 0.05f, 0.f }, Vec3{ 0.f, 0.f, 0.f })))
 		return E_FAIL;
 
 	return S_OK;

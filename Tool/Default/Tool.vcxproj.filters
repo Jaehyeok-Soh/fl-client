@@ -298,6 +298,9 @@
     <Filter Include="09. Builder\Builder_MonsterState">
       <UniqueIdentifier>{6cd3e072-0e67-41b9-a8e3-d3d8fba2778f}</UniqueIdentifier>
     </Filter>
+    <Filter Include="06. ImGui\01. Panel\Animation\Panel_State">
+      <UniqueIdentifier>{f8ea57a4-1227-451f-bfeb-abde0f94e887}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="framework.h">
@@ -583,6 +586,9 @@
     <ClInclude Include="..\Public\Builder_MonsterState.h">
       <Filter>09. Builder\Builder_MonsterState</Filter>
     </ClInclude>
+    <ClInclude Include="..\Public\Panel_State.h">
+      <Filter>06. ImGui\01. Panel\Animation\Panel_State</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <Image Include="small.ico">
@@ -855,6 +861,9 @@
     </ClCompile>
     <ClCompile Include="..\Private\Builder_MonsterState.cpp">
       <Filter>09. Builder\Builder_MonsterState</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\Panel_State.cpp">
+      <Filter>06. ImGui\01. Panel\Animation\Panel_State</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

@@ -55,15 +55,17 @@ HRESULT CMonsterState_Factory::Ready_Condition()
 	REGISTER_CONDITION("condition_target_close", CONDITION{ return MONSTERCC(state)->IsTargetClose(); });
 
 	REGISTER_CONDITION("condition_target_lost", CONDITION{ return MONSTERCC(state)->IsTargetLost(); });
+	
+	REGISTER_CONDITION("condition_animation_finish", CONDITION{ return state->Is_MainAnimFinished(); });
 
 	return S_OK;
 }
 
 HRESULT CMonsterState_Factory::Ready_Feature()
 {
-	REGISTER_FEATURE("feat_walk", FEATURE{ return MONSTERCC(state)->UpdateWalk(fTimeDelta); state->Align_Movement(fTimeDelta); });
+	REGISTER_FEATURE("feat_walk", FEATURE{ MONSTERCC(state)->UpdateWalk(fTimeDelta); state->Align_Movement(fTimeDelta); });
 
-	REGISTER_FEATURE("feat_chase", FEATURE{ return MONSTERCC(state)->UpdateChase(fTimeDelta); state->Align_Movement(fTimeDelta); });
+	REGISTER_FEATURE("feat_chase", FEATURE{ MONSTERCC(state)->UpdateChase(fTimeDelta); state->Align_Movement(fTimeDelta); });
 
 	return S_OK;
 }

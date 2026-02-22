@@ -13,12 +13,13 @@ class CMonster_Base abstract : public CContainerObject
 public:
 	typedef struct tagMonsterDesc : public Super::GAMEOBJECT_DESC
 	{
-		wstring wstrBodyModelTag = { L"" };
-		wstring wstrPartBodyPrototypeTag = { L"" };
-		wstring wstrNavigationPrototypeTag = { L"" };
-		wstring wstrAttackOverlapPrototypeTag = { L"" };
+		wstring wstrBodyModelTag = {};
+		wstring wstrPartBodyPrototypeTag = {};
+		wstring wstrNavigationPrototypeTag = {};
+		wstring wstrAttackOverlapPrototypeTag = {};
 		_int iNavigationCellIndex = { -1 };
 		Vec3 vSpawnPosition = {};
+		wstring wstrMonsterStateTag = {};
 
 		PHYSICSCCT_DESC tCCTDesc{};
 	}MONSTER_DESC;
@@ -107,15 +108,9 @@ protected:
 	HRESULT Ready_BaseStates();
 	HRESULT Ready_PartObjects(void* pArg);
 	HRESULT Ready_Components(void* pArgs);
-	HRESULT Ready_Ray();
 
 protected:
 	HRESULT Ready_CCT(void* pArgs);
-
-protected:
-private:
-	CRay* m_pFootRay = { nullptr };
-	CRay* m_pMoveRay = { nullptr };
 
 public:
 	virtual CGameObject* Clone(void* pArg) PURE;

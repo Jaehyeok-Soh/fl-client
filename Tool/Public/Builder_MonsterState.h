@@ -19,7 +19,7 @@ public:
 	HRESULT Initialize();
 	virtual HRESULT Build(const CDataDocumentBase& document) override;
 private:
-	HRESULT Create_MonsterState_Prototype(const DTO::MONSTER_STATEBASE_DESC& data);
+	HRESULT Create_MonsterState_Prototype(const DTO::MONSTERSTATE_DESC& data);
 
 public:
 	static CBuilder_MonsterState* Create(ID3D11Device* pDevice, ID3D11DeviceContext* pDeviceContext, _uint iLevelID);

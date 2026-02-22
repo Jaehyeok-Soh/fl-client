@@ -19,7 +19,7 @@ json CDataStruct_MonsterState::ToJson() const
 
 HRESULT CDataStruct_MonsterState::FromJson(const json& j)
 {
-	m_Data = j.get<DTO::MONSTER_STATEBASE_DESC>();
+	m_Data = j.get<DTO::MONSTERSTATE_DESC>();
 	return S_OK;
 }
 
