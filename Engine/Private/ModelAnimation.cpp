@@ -120,9 +120,9 @@ void CModelAnimation::SetUp_PoseDatasForBlending(std::span<LOCALSRT> spanLocalSr
 
 	// 가변 데이터 작성
 	CS_MU_TRACK tMuDesc{};
-	tMuDesc.fCurTrackPosition = m_fCurrentTrackPosition;
-	tMuDesc.iChannelCount = m_iChannelCount;
-	tMuDesc.iRootMotionBoneIndex = m_iRootBoneIdx;
+	tMuDesc.fCurTrackPosition		= m_fCurrentTrackPosition;
+	tMuDesc.iChannelCount			= m_iChannelCount;
+	tMuDesc.iRootMotionBoneIndex	= m_iRootBoneIdx;
 	pAnimECS->Bind_Compute_Track(tMuDesc);
 
 	// dispatch

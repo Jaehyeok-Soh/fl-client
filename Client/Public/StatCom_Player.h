@@ -37,7 +37,7 @@ public:
 		CSkillBase* pESkill = { nullptr };
 
 		_float fMeleeAttack = { 0.f };
-		_float fGunAttack = { 0.f };
+		_float fGunAttack	= { 0.f };
 		
 		_float fDashCoolTime = { 0.f };
 		_float fComboCoolTime = { 0.f };
