@@ -35,6 +35,11 @@ HRESULT CStatCom_Player::Initialize(void* pArg)
 {
 	PLAYER_STATCOMP_DESC* pDesc = static_cast<PLAYER_STATCOMP_DESC*>(pArg);
 
+	m_fMeleeAtt = pDesc->fMeleeAttack;
+	m_fGunAtt = pDesc->fGunAttack;
+	m_tComboTimeCounter.fMaxTime = pDesc->fComboCoolTime;
+	m_tDashTimeCounter.fMaxTime = pDesc->fDashCoolTime;
+
 	m_tDashTimeCounter.bCountTime	= true;
 	m_tDashTimeCounter.bTimeReset	= true;
 	m_tComboTimeCounter.bCountTime	= false;
@@ -45,8 +50,7 @@ HRESULT CStatCom_Player::Initialize(void* pArg)
 	Safe_AddRef(m_pESkillBase);
 	Safe_AddRef(m_pQSkillBase);
 
-	m_fMeleeAtt		= pDesc->fMeleeAttack;
-	m_fGunAtt		= pDesc->fGunAttack;
+
 
 	// 초기는 우선 근접 무기로 설정해둠
 	m_FAttState = Attack_State::Melee;
