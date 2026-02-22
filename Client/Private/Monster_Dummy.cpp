@@ -8,7 +8,6 @@
 #include "MonsterActionState.h"
 #include "MonsterControlContext.h"
 #include "StateBase_Monster.h"
-#include "StatComponent.h"
 #include "Model.h"
 #include "PhysicsCCT.h"
 

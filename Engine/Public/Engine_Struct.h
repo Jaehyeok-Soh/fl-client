@@ -611,7 +611,6 @@ namespace Engine
 			return fTimeAcc / fMinTime;
 		}
 
-		float Get_Rate() { return fTimeAcc / fMaxTime; }
 		float Get_Rate() 
 		{ 
 			if (fMaxTime <= 0.f) 
