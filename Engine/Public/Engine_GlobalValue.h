@@ -13,6 +13,8 @@ inline constexpr wchar_t g_wszMaterialExtension[]{ L".json" };
 inline constexpr wchar_t g_wszMeshExtension[]{ L".mesh" };
 inline constexpr wchar_t g_wszAnimationExtension[]{ L".clip" };
 
+inline constexpr wchar_t g_wszAttackPresetDataPath[]{ L"../../Resources/Data/AttackPresetDatas/" };
+
 inline constexpr _uint OF_Outline = 1u << 0;
 
 const unsigned int		 MIN = 0;

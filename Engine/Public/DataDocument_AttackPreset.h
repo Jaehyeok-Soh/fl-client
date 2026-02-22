@@ -4,7 +4,7 @@
 
 NS_BEGIN(Engine)
 
-class CDataDocument_AttackPreset final : public CDataDocumentBase
+class ENGINE_DLL CDataDocument_AttackPreset final : public CDataDocumentBase
 {
 	using Super = CDataDocumentBase;
 private:

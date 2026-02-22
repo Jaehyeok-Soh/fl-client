@@ -214,8 +214,8 @@ inline void from_json(const json& j, TAttackPreset_Data& data)
 	j.at("strTag").get_to(data.strTag);
 	if (j.contains("eCategory"))
 		data.eCategory = j["eCategory"].get<EAttackPresetCategory>();
-	if (j.contains("eID"))
-		data.iID = j["eID"].get<_ushort>();
+	if (j.contains("iID"))
+		data.iID = j["iID"].get<_ushort>();
 	if (j.contains("tCombat"))
 		data.tCombat = j["tCombat"].get<TAttackPreset_CombatData>();
 	if (j.contains("tPolicy"))
