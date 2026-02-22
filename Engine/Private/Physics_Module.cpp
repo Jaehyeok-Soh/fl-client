@@ -323,6 +323,14 @@ PxFilterFlags CPhysics_Module::FilterShader(
 			| PxPairFlag::eNOTIFY_TOUCH_FOUND
 			| PxPairFlag::eNOTIFY_TOUCH_LOST
 			| PxPairFlag::eNOTIFY_TOUCH_PERSISTS;
+
+		// 02/21
+		// HitPoint 추출을 위한 Flag 설정
+		// Enter에서만 추출하기 위해 사용
+		// CPhysics_FilterEventCallback::onContact에서 Flag 체크후 GAMEOBJECTINFO에 넣는중
+		if (PHYSICSFILTERGROUP::IsAttackPair(filterData0.word0, filterData1.word0))
+			pairFlags |= PxPairFlag::eNOTIFY_CONTACT_POINTS;
+
 		return PxFilterFlag::eDEFAULT;
 	}
 

@@ -52,7 +52,14 @@ void CActiveAttackOverlap::Update(_float fTimeDelta)
 			Debug_Log(hitObject);
 #endif // _DEBUG
 
-			hitObject->OnCollision_Enter(m_tHitboxDesc->eFilterLayer, m_pOwner);
+			COL_HIT_INFO hitInfo{};
+			Build_HitInfo_FromOverlap(m_tHitboxDesc->geometry.any(), m_pxTransform, hitBuffer.touches[i], hitInfo);
+
+			const PxFilterData &victimFilterData = hitBuffer.touches[i].shape->getSimulationFilterData();
+			_uint iAttackerLayer = m_tHitboxDesc->eFilterLayer;
+			_uint iVictimLayer = victimFilterData.word0;
+
+			m_pOwner->OnCollision_Enter(iAttackerLayer, iVictimLayer, hitObject, hitInfo);
 			m_hitObjects.insert(hitObject);
 		}
 	}
@@ -104,6 +111,49 @@ _bool CActiveAttackOverlap::CheckAlreadyHit(CGameObject* hitObject)
 		return true;
 
 	return false;
+}
+
+_bool CActiveAttackOverlap::Build_HitInfo_FromOverlap(const PxGeometry& hitboxGeometry, const PxTransform& hitBoxPose, const PxOverlapHit& overlap, OUT COL_HIT_INFO& outInfo)
+{
+	outInfo = {};
+
+	if (overlap.actor == nullptr || overlap.shape == nullptr)
+		return false;
+
+	// 상대 Geometry정보와 Pose정보
+	PxGeometryHolder otherHolder{ overlap.shape->getGeometry() };
+	const PxGeometry& otherGeomtry = otherHolder.any();
+	const PxTransform otherPose = PxShapeExt::getGlobalPose(*overlap.shape, *overlap.actor);
+
+	PxVec3 vDir{ 0.f };
+	PxF32 fDpeth{ 0.f };
+	const _bool bOK = PxGeometryQuery::computePenetration(vDir, fDpeth, hitboxGeometry, hitBoxPose, otherGeomtry, otherPose);
+
+	// 실패시 근사값 도출
+	if (bOK == false)
+	{
+		PxVec3 vFallback = otherPose.p - hitBoxPose.p;
+		const _float fLengthsq = vFallback.magnitudeSquared();
+		if (fLengthsq < g_XMEpsilon.f[0])
+			vFallback = PxVec3(0.f, 1.f, 0.f);
+		else
+			vFallback /= PxSqr(fLengthsq);
+
+		outInfo.bHasHitPoint = true;
+		outInfo.fDepth = 0.f;
+		::memcpy(&outInfo.vRawNormal.x, &vFallback.x, sizeof(Vec3));
+		::memcpy(&outInfo.vPosition.x, &otherPose.p.x, sizeof(Vec3));
+		return true;
+	}
+
+	vDir *= -1.f;
+	PxVec3 vHitNormal = vDir.getNormalized();
+	PxVec3 vHitPoint = hitBoxPose.p + vDir * (fDpeth * 0.5f);
+	outInfo.bHasHitPoint = true;
+	outInfo.fDepth = fDpeth;
+	::memcpy(&outInfo.vRawNormal.x, &vHitNormal.x, sizeof(Vec3));
+	::memcpy(&outInfo.vPosition.x, &vHitPoint.x, sizeof(Vec3));
+	return true;
 }
 
 #ifdef _DEBUG

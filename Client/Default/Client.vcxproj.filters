@@ -184,27 +184,6 @@
     <Filter Include="99. ETC\01. ImGui">
       <UniqueIdentifier>{aa2685d2-18f6-417c-ba8e-cf78608c7618}</UniqueIdentifier>
     </Filter>
-    <Filter Include="07. System\02. Debug_ImGui">
-      <UniqueIdentifier>{d4543967-6d08-419a-ad9e-aa4e953bd61f}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="07. System\02. Debug_ImGui\Inspector">
-      <UniqueIdentifier>{82f89ad1-c551-4868-8388-3d21f36c43d8}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="07. System\02. Debug_ImGui\ImGuiBase">
-      <UniqueIdentifier>{9fbb367b-4faa-448c-a302-857cca40b4ea}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="07. System\02. Debug_ImGui\Inspector\Player">
-      <UniqueIdentifier>{e56eb5ab-6ccc-4be7-935b-8756a82b5757}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="07. System\02. Debug_ImGui\Layout">
-      <UniqueIdentifier>{1dbf159f-2786-4b5f-a54a-a7fa44eac4d0}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="07. System\02. Debug_ImGui\Layout\Transform">
-      <UniqueIdentifier>{75112bf1-2fde-4f84-a058-ff26cbe40c27}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="07. System\02. Debug_ImGui\Layout\ActionState">
-      <UniqueIdentifier>{08101873-1d09-4a2d-9022-d599b7d73c9d}</UniqueIdentifier>
-    </Filter>
     <Filter Include="04. Shaders\ComputeShader_Labs">
       <UniqueIdentifier>{8c14e548-7930-4ec0-b748-e471998a55b9}</UniqueIdentifier>
     </Filter>
@@ -226,12 +205,6 @@
     <Filter Include="03. GameObject\UIObjects\02.UI\Text">
       <UniqueIdentifier>{4c552970-7965-46f3-85ec-73d256c4eba8}</UniqueIdentifier>
     </Filter>
-    <Filter Include="07. System\02. Debug_ImGui\Layout\Frustrum">
-      <UniqueIdentifier>{bfce2568-6c1b-4d14-9071-f78dd8aba44c}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="07. System\02. Debug_ImGui\Inspector\Global">
-      <UniqueIdentifier>{ff13b3dc-1ddc-457a-a989-4a75e72737e2}</UniqueIdentifier>
-    </Filter>
     <Filter Include="07. System\01. Builder\Builder_AttackOverlap">
       <UniqueIdentifier>{c1589ec0-b521-4810-8e66-71ed1cf97227}</UniqueIdentifier>
     </Filter>
@@ -246,9 +219,6 @@
     </Filter>
     <Filter Include="03. GameObject\UIObjects\02.UI\Image\Dynamic Image\00.SkillBG">
       <UniqueIdentifier>{f1acf951-62e0-4e8b-b106-6fd9b77c5697}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="07. System\02. Debug_ImGui\Layout\Frame">
-      <UniqueIdentifier>{26872d9e-983a-47c0-940f-aa4b37bb39e5}</UniqueIdentifier>
     </Filter>
     <Filter Include="03. GameObject\UIObjects\02.UI\Image\Dynamic Image\02.HoverImage">
       <UniqueIdentifier>{871de243-5883-42bb-b109-9645901ce4d2}</UniqueIdentifier>
@@ -304,9 +274,6 @@
     <Filter Include="07. System\01. Builder\Effect\Builder_EffectEvent">
       <UniqueIdentifier>{5d286e09-eee0-4b43-bcea-01a835550da6}</UniqueIdentifier>
     </Filter>
-    <Filter Include="07. System\02. Debug_ImGui\Layout\Shader">
-      <UniqueIdentifier>{241e78ea-3b24-473b-a83b-6c32e682ad95}</UniqueIdentifier>
-    </Filter>
     <Filter Include="03. GameObject\UIObjects\02.UI\Image\Dynamic Image\03.MenuImage\00.OutLine">
       <UniqueIdentifier>{4abf4708-1f00-4a67-ba1b-f638539f3a5c}</UniqueIdentifier>
     </Filter>
@@ -348,6 +315,39 @@
     </Filter>
     <Filter Include="05. Component\Skill\Moon">
       <UniqueIdentifier>{967b52e8-d189-41cf-b480-c8f0f6d3fe01}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="07. System\99. Debug_ImGui">
+      <UniqueIdentifier>{d4543967-6d08-419a-ad9e-aa4e953bd61f}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="07. System\99. Debug_ImGui\Inspector">
+      <UniqueIdentifier>{82f89ad1-c551-4868-8388-3d21f36c43d8}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="07. System\99. Debug_ImGui\Inspector\Player">
+      <UniqueIdentifier>{e56eb5ab-6ccc-4be7-935b-8756a82b5757}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="07. System\99. Debug_ImGui\Inspector\Global">
+      <UniqueIdentifier>{ff13b3dc-1ddc-457a-a989-4a75e72737e2}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="07. System\99. Debug_ImGui\ImGuiBase">
+      <UniqueIdentifier>{9fbb367b-4faa-448c-a302-857cca40b4ea}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="07. System\99. Debug_ImGui\Layout">
+      <UniqueIdentifier>{1dbf159f-2786-4b5f-a54a-a7fa44eac4d0}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="07. System\99. Debug_ImGui\Layout\Transform">
+      <UniqueIdentifier>{75112bf1-2fde-4f84-a058-ff26cbe40c27}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="07. System\99. Debug_ImGui\Layout\ActionState">
+      <UniqueIdentifier>{08101873-1d09-4a2d-9022-d599b7d73c9d}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="07. System\99. Debug_ImGui\Layout\Frustrum">
+      <UniqueIdentifier>{bfce2568-6c1b-4d14-9071-f78dd8aba44c}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="07. System\99. Debug_ImGui\Layout\Frame">
+      <UniqueIdentifier>{26872d9e-983a-47c0-940f-aa4b37bb39e5}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="07. System\99. Debug_ImGui\Layout\Shader">
+      <UniqueIdentifier>{241e78ea-3b24-473b-a83b-6c32e682ad95}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
@@ -526,19 +526,19 @@
       <Filter>99. ETC\01. ImGui</Filter>
     </ClInclude>
     <ClInclude Include="..\public\ImGui_Inspector.h">
-      <Filter>07. System\02. Debug_ImGui\Inspector</Filter>
+      <Filter>07. System\99. Debug_ImGui\Inspector</Filter>
     </ClInclude>
     <ClInclude Include="..\public\ImGuiBase.h">
-      <Filter>07. System\02. Debug_ImGui\ImGuiBase</Filter>
+      <Filter>07. System\99. Debug_ImGui\ImGuiBase</Filter>
     </ClInclude>
     <ClInclude Include="..\public\ImGui_TransformLayout.h">
-      <Filter>07. System\02. Debug_ImGui\Layout\Transform</Filter>
+      <Filter>07. System\99. Debug_ImGui\Layout\Transform</Filter>
     </ClInclude>
     <ClInclude Include="..\public\ImGui_StateLayout.h">
-      <Filter>07. System\02. Debug_ImGui\Layout\ActionState</Filter>
+      <Filter>07. System\99. Debug_ImGui\Layout\ActionState</Filter>
     </ClInclude>
     <ClInclude Include="..\public\ImGui_PlayerInspector.h">
-      <Filter>07. System\02. Debug_ImGui\Inspector\Player</Filter>
+      <Filter>07. System\99. Debug_ImGui\Inspector\Player</Filter>
     </ClInclude>
     <ClInclude Include="..\Public\State_ComboBase.h">
       <Filter>06. FSM\Player\Attack\Melee\Combo</Filter>
@@ -559,10 +559,10 @@
       <Filter>03. GameObject\UIObjects\02.UI\Text</Filter>
     </ClInclude>
     <ClInclude Include="..\public\ImGui_FrustrumLayout.h">
-      <Filter>07. System\02. Debug_ImGui\Layout\Frustrum</Filter>
+      <Filter>07. System\99. Debug_ImGui\Layout\Frustrum</Filter>
     </ClInclude>
     <ClInclude Include="..\public\ImGui_GlobalInspector.h">
-      <Filter>07. System\02. Debug_ImGui\Inspector\Global</Filter>
+      <Filter>07. System\99. Debug_ImGui\Inspector\Global</Filter>
     </ClInclude>
     <ClInclude Include="..\Public\Builder_AttackOverlap.h">
       <Filter>07. System\01. Builder\Builder_AttackOverlap</Filter>
@@ -583,13 +583,13 @@
       <Filter>03. GameObject\UIObjects\02.UI\Trigger</Filter>
     </ClInclude>
     <ClInclude Include="..\public\ImGui_Layout.h">
-      <Filter>07. System\02. Debug_ImGui\Layout</Filter>
+      <Filter>07. System\99. Debug_ImGui\Layout</Filter>
     </ClInclude>
     <ClInclude Include="..\Public\ImGui_FrameLayout.h">
-      <Filter>07. System\02. Debug_ImGui\Layout\Frame</Filter>
+      <Filter>07. System\99. Debug_ImGui\Layout\Frame</Filter>
     </ClInclude>
     <ClInclude Include="..\public\ImGui_ClientDebug.h">
-      <Filter>07. System\02. Debug_ImGui</Filter>
+      <Filter>07. System\99. Debug_ImGui</Filter>
     </ClInclude>
     <ClInclude Include="..\Public\Sword.h">
       <Filter>03. GameObject\PartObjects\Weapon\Sword</Filter>
@@ -637,7 +637,7 @@
       <Filter>07. System\01. Builder\Effect\Builder_EffectEvent</Filter>
     </ClInclude>
     <ClInclude Include="..\public\ImGui_ShaderLayout.h">
-      <Filter>07. System\02. Debug_ImGui\Layout\Shader</Filter>
+      <Filter>07. System\99. Debug_ImGui\Layout\Shader</Filter>
     </ClInclude>
     <ClInclude Include="..\Public\UIMenu_OutLine.h">
       <Filter>03. GameObject\UIObjects\02.UI\Image\Dynamic Image\03.MenuImage\00.OutLine</Filter>
@@ -817,19 +817,19 @@
       <Filter>99. ETC\01. ImGui</Filter>
     </ClCompile>
     <ClCompile Include="..\private\ImGui_Inspector.cpp">
-      <Filter>07. System\02. Debug_ImGui\Inspector</Filter>
+      <Filter>07. System\99. Debug_ImGui\Inspector</Filter>
     </ClCompile>
     <ClCompile Include="..\private\ImGuiBase.cpp">
-      <Filter>07. System\02. Debug_ImGui\ImGuiBase</Filter>
+      <Filter>07. System\99. Debug_ImGui\ImGuiBase</Filter>
     </ClCompile>
     <ClCompile Include="..\private\ImGui_TransformLayout.cpp">
-      <Filter>07. System\02. Debug_ImGui\Layout\Transform</Filter>
+      <Filter>07. System\99. Debug_ImGui\Layout\Transform</Filter>
     </ClCompile>
     <ClCompile Include="..\private\ImGui_StateLayout.cpp">
-      <Filter>07. System\02. Debug_ImGui\Layout\ActionState</Filter>
+      <Filter>07. System\99. Debug_ImGui\Layout\ActionState</Filter>
     </ClCompile>
     <ClCompile Include="..\private\ImGui_PlayerInspector.cpp">
-      <Filter>07. System\02. Debug_ImGui\Inspector\Player</Filter>
+      <Filter>07. System\99. Debug_ImGui\Inspector\Player</Filter>
     </ClCompile>
     <ClCompile Include="..\Private\UIJust_Image.cpp">
       <Filter>03. GameObject\UIObjects\02.UI\Image\JustImage</Filter>
@@ -844,10 +844,10 @@
       <Filter>03. GameObject\UIObjects\02.UI\Text</Filter>
     </ClCompile>
     <ClCompile Include="..\private\ImGui_FrustrumLayout.cpp">
-      <Filter>07. System\02. Debug_ImGui\Layout\Frustrum</Filter>
+      <Filter>07. System\99. Debug_ImGui\Layout\Frustrum</Filter>
     </ClCompile>
     <ClCompile Include="..\private\ImGui_GlobalInspector.cpp">
-      <Filter>07. System\02. Debug_ImGui\Inspector\Global</Filter>
+      <Filter>07. System\99. Debug_ImGui\Inspector\Global</Filter>
     </ClCompile>
     <ClCompile Include="..\Private\Builder_AttackOverlap.cpp">
       <Filter>07. System\01. Builder\Builder_AttackOverlap</Filter>
@@ -883,13 +883,13 @@
       <Filter>03. GameObject\UIObjects\02.UI\Trigger</Filter>
     </ClCompile>
     <ClCompile Include="..\private\ImGui_Layout.cpp">
-      <Filter>07. System\02. Debug_ImGui\Layout</Filter>
+      <Filter>07. System\99. Debug_ImGui\Layout</Filter>
     </ClCompile>
     <ClCompile Include="..\Private\ImGui_FrameLayout.cpp">
-      <Filter>07. System\02. Debug_ImGui\Layout\Frame</Filter>
+      <Filter>07. System\99. Debug_ImGui\Layout\Frame</Filter>
     </ClCompile>
     <ClCompile Include="..\private\ImGui_ClientDebug.cpp">
-      <Filter>07. System\02. Debug_ImGui</Filter>
+      <Filter>07. System\99. Debug_ImGui</Filter>
     </ClCompile>
     <ClCompile Include="..\Private\Sword.cpp">
       <Filter>03. GameObject\PartObjects\Weapon\Sword</Filter>
@@ -940,7 +940,7 @@
       <Filter>03. GameObject\UIObjects\02.UI\Text\Stat Text</Filter>
     </ClCompile>
     <ClCompile Include="..\private\ImGui_ShaderLayout.cpp">
-      <Filter>07. System\02. Debug_ImGui\Layout\Shader</Filter>
+      <Filter>07. System\99. Debug_ImGui\Layout\Shader</Filter>
     </ClCompile>
     <ClCompile Include="..\Private\UIMenu_OutLine.cpp">
       <Filter>03. GameObject\UIObjects\02.UI\Image\Dynamic Image\03.MenuImage\00.OutLine</Filter>

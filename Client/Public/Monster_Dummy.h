@@ -28,11 +28,11 @@ public:
 	virtual _wstring	Get_AnimationName(_uint iAniIndex);
 
 public:
-	virtual void OnCollision(_uint iMyColliderLayer, CGameObject* pOther) override;
-	virtual void OnCollision_Enter(_uint iMyColliderLayer, CGameObject* pOther) override;
-	virtual void OnCollision_Exit(_uint iMyColliderLayer, CGameObject* pOther) override;
-	virtual void OnTrigger_Enter(_uint iMyColliderLayer, CGameObject* pOther) override;
-	virtual void OnTrigger_Exit(_uint iMyColliderLayer, CGameObject* pOther) override;
+	virtual void OnCollision(_uint iMyColliderLayer, _uint iOtherLayer, CGameObject* pOther) override;
+	virtual void OnCollision_Enter(_uint iMyColliderLayer, _uint iOtherLayer, CGameObject* pOther, const COL_HIT_INFO& tHitInfo) override;
+	virtual void OnCollision_Exit(_uint iMyColliderLayer, _uint iOtherLayer, CGameObject* pOther) override;
+	virtual void OnTrigger_Enter(_uint iMyColliderLayer, _uint iOtherLayer, CGameObject* pOther) override;
+	virtual void OnTrigger_Exit(_uint iMyColliderLayer, _uint iOtherLayer, CGameObject* pOther) override;
 
 private:
 	HRESULT Ready_BaseStates();

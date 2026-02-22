@@ -36,6 +36,24 @@ namespace Engine
 		string		  strParam{ "" };
 	};
 
+	typedef struct tagCollisionHitInformation
+	{
+		bool bHasHitPoint{ false };
+		SimpleMath::Vector3 vPosition{ SimpleMath::Vector3::Zero };
+		SimpleMath::Vector3 vRawNormal{ SimpleMath::Vector3::Zero };
+		float fDepth{ 0.f };
+	}COL_HIT_INFO;
+
+	typedef struct tagCollidedDesc
+	{
+		unsigned int iCollisionType{ COLLISIONEVENT::Enum::END };
+		unsigned int iRequesterLayer{ PHYSICSFILTERGROUP::Enum::END };
+		unsigned int iOtherLayer{ PHYSICSFILTERGROUP::Enum::END };
+		class CGameObject* pRequester{ nullptr };
+		class CGameObject* pOther{ nullptr };
+		COL_HIT_INFO tHitInfo{};
+	}COLLIDED_DESC;
+
 	typedef struct tagTimeline
 	{
 		float fDuration{ 0.f };

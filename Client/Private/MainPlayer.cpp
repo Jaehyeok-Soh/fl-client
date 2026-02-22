@@ -168,28 +168,55 @@ HRESULT CMainPlayer::Render()
     return S_OK;
 }
 
-void CMainPlayer::OnCollision(_uint iMyColliderLayer, CGameObject* pOther)
+void CMainPlayer::OnCollision(_uint iMyColliderLayer, _uint iOtherLayer, CGameObject* pOther)
 {
+    COLLIDED_DESC desc{};
+    desc.iCollisionType = COLLISIONEVENT::ON_COLLISION_STAY;
+    desc.iRequesterLayer = iMyColliderLayer;
+    desc.iOtherLayer = iOtherLayer;
+    desc.pRequester = this;
+    desc.pOther = pOther;
 }
 
-void CMainPlayer::OnCollision_Enter(_uint iMyColliderLayer, CGameObject* pOther)
+void CMainPlayer::OnCollision_Enter(_uint iMyColliderLayer, _uint iOtherLayer, CGameObject* pOther, const COL_HIT_INFO& tHitInfo)
 {
-    ECollideLayer eMyLayer = static_cast<ECollideLayer>(iMyColliderLayer);
-    // _bool bAttackHit = Try_AttackHit(eMyLayer, pOther);
+    COLLIDED_DESC desc{};
+    desc.iCollisionType = COLLISIONEVENT::ON_COLLISION_ENTER;
+    desc.iRequesterLayer = iMyColliderLayer;
+    desc.iOtherLayer = iOtherLayer;
+    desc.pRequester = this;
+    desc.pOther = pOther;
+    desc.tHitInfo = tHitInfo;
 }
 
-void CMainPlayer::OnCollision_Exit(_uint iMyColliderLayer, CGameObject* pOther)
+void CMainPlayer::OnCollision_Exit(_uint iMyColliderLayer, _uint iOtherLayer, CGameObject* pOther)
 {
-    // 만약 바닥과 충돌이 끝났다면
-    //static_cast<CStateBase_Player*>(Get_Component<CPlayerActionState>()->Get_CurrentState())->Change_State(CStateBase_Player::STATEKEY::LOOPDONE);
+    COLLIDED_DESC desc{};
+    desc.iCollisionType = COLLISIONEVENT::ON_COLLISION_EXIT;
+    desc.iRequesterLayer = iMyColliderLayer;
+    desc.iOtherLayer = iOtherLayer;
+    desc.pRequester = this;
+    desc.pOther = pOther;
 }
 
-void CMainPlayer::OnTrigger_Enter(_uint iMyColliderLayer, CGameObject* pOther)
+void CMainPlayer::OnTrigger_Enter(_uint iMyColliderLayer, _uint iOtherLayer, CGameObject* pOther)
 {
+    COLLIDED_DESC desc{};
+    desc.iCollisionType = COLLISIONEVENT::ON_TRIGGER_ENTER;
+    desc.iRequesterLayer = iMyColliderLayer;
+    desc.iOtherLayer = iOtherLayer;
+    desc.pRequester = this;
+    desc.pOther = pOther;
 }
 
-void CMainPlayer::OnTrigger_Exit(_uint iMyColliderLayer, CGameObject* pOther)
+void CMainPlayer::OnTrigger_Exit(_uint iMyColliderLayer, _uint iOtherLayer, CGameObject* pOther)
 {
+    COLLIDED_DESC desc{};
+    desc.iCollisionType = COLLISIONEVENT::ON_TRIGGER_EXIT;
+    desc.iRequesterLayer = iMyColliderLayer;
+    desc.iOtherLayer = iOtherLayer;
+    desc.pRequester = this;
+    desc.pOther = pOther;
 }
 
 #pragma region Legacy

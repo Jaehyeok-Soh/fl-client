@@ -400,6 +400,9 @@
     <Filter Include="99. Defines\Anim_Event_Defines\VFX">
       <UniqueIdentifier>{518140e5-2def-408b-8bc4-eddea573b43c}</UniqueIdentifier>
     </Filter>
+    <Filter Include="00. System\15. Judgement">
+      <UniqueIdentifier>{3f980915-24ba-4ab0-b30b-a79f025183ae}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="..\Private\Timer.cpp">
@@ -810,6 +813,9 @@
     </ClCompile>
     <ClCompile Include="..\private\TimeScale_Manager.cpp">
       <Filter>00. System\01. Timer\Manager</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\JudgementSystem.cpp">
+      <Filter>00. System\15. Judgement</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -1266,6 +1272,9 @@
     </ClInclude>
     <ClInclude Include="..\public\TimeScale_Manager.h">
       <Filter>00. System\01. Timer\Manager</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\JudgementSystem.h">
+      <Filter>00. System\15. Judgement</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

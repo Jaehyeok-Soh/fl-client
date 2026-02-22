@@ -36,7 +36,6 @@ HRESULT CMainApplication::Initialize()
 	EngineDesc.iWinCX = g_iWinSizeX;
 	EngineDesc.iWinCY = g_iWinSizeY;
 	EngineDesc.iLevelCount = g_iLevelType_Count;
-	EngineDesc.iCollideLayerCount = g_iCollideLayer_Count;
 	EngineDesc.hWnd = g_hWnd;
 	EngineDesc.hInst = g_hInstance;
 
