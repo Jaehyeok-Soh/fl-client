@@ -312,8 +312,8 @@ HRESULT CLoader::Loading_For_Logo()
 	if (FAILED(Loading_Textures(L"../../Resources/Textures/Map/LandScape/Village/")))
 		return E_FAIL;
 
-	if (FAILED(m_pGameInstance->GameDataManager_Load_TextureSplatingInfoData()))
-		return E_FAIL;
+	//if (FAILED(m_pGameInstance->GameDataManager_Load_TextureSplatingInfoData()))
+	//	return E_FAIL;
 
 #pragma endregion
 
