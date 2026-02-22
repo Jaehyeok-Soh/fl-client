@@ -94,6 +94,7 @@ namespace Tool
 		EFFECT,
 		CAMERA,
 		UI,
+		ATTACK_PRESET,
 		ASSET_CONVERT,
 		END
 	};

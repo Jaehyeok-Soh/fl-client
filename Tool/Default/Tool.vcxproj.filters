@@ -295,6 +295,21 @@
     <Filter Include="06. ImGui\01. Panel\Animation\Panel_Parts">
       <UniqueIdentifier>{066939c9-786f-43ed-8c48-88882c1e8089}</UniqueIdentifier>
     </Filter>
+    <Filter Include="03. Level\AttackPreset">
+      <UniqueIdentifier>{bf464770-40f1-4342-b2e3-be2af144f024}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="06. ImGui\01. Panel\AttackPreset">
+      <UniqueIdentifier>{996bac93-c5d4-4b51-83e9-4d6fd00b0dbc}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="06. ImGui\01. Panel\AttackPreset\Panel_PresetList">
+      <UniqueIdentifier>{473e4376-90c1-4d45-abf4-4368f2acefa7}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="06. ImGui\01. Panel\AttackPreset\Panel_PresetMain">
+      <UniqueIdentifier>{8905ec16-9d02-4d16-aec8-15d5da3f843e}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="09. Builder\AttackPreset">
+      <UniqueIdentifier>{4738cfac-9f86-4af3-b8a6-84e6e355de2d}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="framework.h">
@@ -577,6 +592,16 @@
     <ClInclude Include="..\Public\Panel_Parts.h">
       <Filter>06. ImGui\01. Panel\Animation\Panel_Parts</Filter>
     </ClInclude>
+    <ClInclude Include="..\public\Level_AttackPreset.h">
+      <Filter>03. Level\AttackPreset</Filter>
+    </ClInclude>
+    <ClInclude Include="..\public\Panel_PresetList.h">
+      <Filter>06. ImGui\01. Panel\AttackPreset\Panel_PresetList</Filter>
+    </ClInclude>
+    <ClInclude Include="..\public\Panel_PresetMain.h">
+      <Filter>06. ImGui\01. Panel\AttackPreset\Panel_PresetMain</Filter>
+    </ClInclude>
+    <ClInclude Include="..\public\Builder_AttackPreset.h" />
   </ItemGroup>
   <ItemGroup>
     <Image Include="small.ico">
@@ -847,6 +872,16 @@
     <ClCompile Include="..\Private\Panel_Parts.cpp">
       <Filter>06. ImGui\01. Panel\Animation\Panel_Parts</Filter>
     </ClCompile>
+    <ClCompile Include="..\private\Level_AttackPreset.cpp">
+      <Filter>03. Level\AttackPreset</Filter>
+    </ClCompile>
+    <ClCompile Include="..\private\Panel_PresetList.cpp">
+      <Filter>06. ImGui\01. Panel\AttackPreset\Panel_PresetList</Filter>
+    </ClCompile>
+    <ClCompile Include="..\private\Panel_PresetMain.cpp">
+      <Filter>06. ImGui\01. Panel\AttackPreset\Panel_PresetMain</Filter>
+    </ClCompile>
+    <ClCompile Include="..\private\Builder_AttackPreset.cpp" />
   </ItemGroup>
   <ItemGroup>
     <FxCompile Include="..\..\Shaders\Shader_VtxInstanceMesh_Tool.hlsl">
