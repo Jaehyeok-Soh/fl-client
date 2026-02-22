@@ -403,6 +403,15 @@
     <Filter Include="00. System\15. Judgement">
       <UniqueIdentifier>{3f980915-24ba-4ab0-b30b-a79f025183ae}</UniqueIdentifier>
     </Filter>
+    <Filter Include="01. Utility\11. DataRepository\Datas\AttackPreset">
+      <UniqueIdentifier>{d6e35d79-2fbf-47e2-bb9e-d5ab67cb00f9}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="01. Utility\11. DataRepository\Datas\AttackPreset\DataDocument_AttackPreset">
+      <UniqueIdentifier>{85cf6d40-deb2-428d-9610-70b0ec0f33da}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="01. Utility\11. DataRepository\Datas\AttackPreset\DataStruct_AttackPreset">
+      <UniqueIdentifier>{d6fec504-8bdd-43dd-992f-d55bbb4fd9b4}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="..\Private\Timer.cpp">
@@ -816,6 +825,12 @@
     </ClCompile>
     <ClCompile Include="..\Private\JudgementSystem.cpp">
       <Filter>00. System\15. Judgement</Filter>
+    </ClCompile>
+    <ClCompile Include="..\private\DataStruct_AttackPreset.cpp">
+      <Filter>01. Utility\11. DataRepository\Datas\AttackPreset\DataStruct_AttackPreset</Filter>
+    </ClCompile>
+    <ClCompile Include="..\private\DataDocument_AttackPreset.cpp">
+      <Filter>01. Utility\11. DataRepository\Datas\AttackPreset\DataDocument_AttackPreset</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -1275,6 +1290,12 @@
     </ClInclude>
     <ClInclude Include="..\Public\JudgementSystem.h">
       <Filter>00. System\15. Judgement</Filter>
+    </ClInclude>
+    <ClInclude Include="..\public\DataStruct_AttackPreset.h">
+      <Filter>01. Utility\11. DataRepository\Datas\AttackPreset\DataStruct_AttackPreset</Filter>
+    </ClInclude>
+    <ClInclude Include="..\public\DataDocument_AttackPreset.h">
+      <Filter>01. Utility\11. DataRepository\Datas\AttackPreset\DataDocument_AttackPreset</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
