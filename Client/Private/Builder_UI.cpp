@@ -129,15 +129,15 @@ HRESULT CBuilder_UI::Create_CanvasDTO(const DTO::TUI_CanvasData& data)
 		return E_FAIL;
 
 	CCanvas::CANVAS_DESC Desc = {};
-	Desc.iLevelIndex = data.iLevelIndex;
-	Desc.strName = data.strTag;
-	m_vAspect.x = (_float)g_iWinSizeX / (_float)data.iEditorSizeX;
-	m_vAspect.y = (_float)g_iWinSizeY / (_float)data.iEditorSizeY;
-	Desc.fX = data.fPosX * m_vAspect.x;
-	Desc.fY = data.fPosY * m_vAspect.y;
-	Desc.fZ = data.fPosZ;
-	Desc.fWidth = m_vViewportSIze.x;
-	Desc.fHeight = m_vViewportSIze.y;
+	Desc.iLevelIndex	= data.iLevelIndex;
+	Desc.strName		= data.strTag;
+	m_vAspect.x			= (_float)g_iWinSizeX / (_float)data.iEditorSizeX;
+	m_vAspect.y			= (_float)g_iWinSizeY / (_float)data.iEditorSizeY;
+	Desc.fX				= data.fPosX * m_vAspect.x;
+	Desc.fY				= data.fPosY * m_vAspect.y;
+	Desc.fZ				= data.fPosZ;
+	Desc.fWidth			= m_vViewportSIze.x;
+	Desc.fHeight		= m_vViewportSIze.y;
 
 	CGameObject* pResult = m_pGameInstance->Add_GameObject(ENUM_TO_UINT(ELevelType::STATIC), L"Prototype_UI_Canvas", m_iLevelID, g_wszUILayer, &Desc);
 	if (pResult == nullptr)
@@ -148,7 +148,6 @@ HRESULT CBuilder_UI::Create_CanvasDTO(const DTO::TUI_CanvasData& data)
 		return E_FAIL;
 
 	m_MapCanvasCache.emplace(data.strTag, pCanvas);
-
 	if (FAILED(CUI_Manager::GetInstance()->Add_VecCanvasCache(m_iLevelID, pCanvas)))
 		return E_FAIL;
 
@@ -227,6 +226,7 @@ HRESULT CBuilder_UI::Register_Class(DTO::EUIClassType eClassType, const DTO::TUI
 			CUILoading_Progress::LOADING_PROGRESS_DESC  LoadingProgressDesc = {};
 			static_cast<CGenericUI::GENERIC_UI_DESC&>(LoadingProgressDesc) = DefaultDesc;
 			LoadingProgressDesc.eOwner = data.eSubClassType;
+			LoadingProgressDesc.pLoadingRatio = CUI_Manager::GetInstance()->Get_LoadingRatio();
 			pResult = m_pGameInstance->Add_GameObject(m_iLevelID, L"Prototype_UI_LoadingProgress", m_iLevelID, g_wszUILayer, &LoadingProgressDesc);
 		}
 		else

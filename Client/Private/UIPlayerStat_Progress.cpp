@@ -54,29 +54,8 @@ HRESULT CUIPlayerStat_Progress::Attach_Personal_Info()
 	if (nullptr == m_pPlayerStatCom)
 		return E_FAIL;
 
-	switch (m_eSubClassType)
-	{
-	case DTO::EUISubClassType::NONE_OWNER:
-		return S_OK;
-	case DTO::EUISubClassType::PLAYER_HP:
-	{
-		m_vOriginColor = m_vColorTint;
-		m_vOriginGradiantColor = m_vGradiantColorTint;
-		return S_OK;
-	}
-	case DTO::EUISubClassType::PLAYER_ARMOR:
-	{
-		return S_OK;
-	}
-	case DTO::EUISubClassType::PLAYER_ENERGY:
-	{
-		return S_OK;
-	}
-	case DTO::EUISubClassType::END:
-	default:
-		return E_FAIL;
-	}
-	return S_OK;
+	m_vOriginColor = m_vColorTint;
+	m_vOriginGradiantColor = m_vGradiantColorTint;
 }
 
 HRESULT CUIPlayerStat_Progress::Awake(const _uint iCurrentLevelID)
@@ -93,14 +72,6 @@ HRESULT CUIPlayerStat_Progress::Awake(const _uint iCurrentLevelID)
 void CUIPlayerStat_Progress::Update_Priority(const _float fTimeDelta)
 {
 	Super::Update_Priority(fTimeDelta);
-
-	if (m_pGameInstance->KeyButton_Down(DIK_1))
-		m_fCurRatio = 0.29f;
-	if (m_pGameInstance->KeyButton_Down(DIK_2))
-		m_fCurRatio = 0.5f;
-	if (m_pGameInstance->KeyButton_Down(DIK_3))
-		m_fCurRatio = 0.9f;
-
 	if (m_eSubClassType == DTO::EUISubClassType::PLAYER_HP)
 	{
 		if (m_fProgress_Ratio < 0.3f)
@@ -122,7 +93,6 @@ void CUIPlayerStat_Progress::Update_Priority(const _float fTimeDelta)
 				m_vGradiantColorTint = m_vOriginGradiantColor;
 			}
 		}
-
 		if (m_isStartLowHp)
 		{
 			Low_HP(fTimeDelta);
@@ -134,52 +104,18 @@ void CUIPlayerStat_Progress::Update(const _float fTimeDelta)
 {
 	Super::Update(fTimeDelta);
 
-	// if (!m_pTargetStat)
-	// 	return;
-	// m_fCurRatio = m_pTargetStat->Get_HealthRatio();
-
-	_float fEpsilon = 0.0001f;
-	if (fabs(m_fCurRatio - m_fPreRatio) > fEpsilon)
-	{
-		m_isChangeRatio = TRUE;
-		m_fStartRatio = m_fProgress_Ratio;
-		m_fTargetRatio = m_fCurRatio;
-		m_fTimeAcc = 0.f;
-		m_fDelayTimeAcc = 0.f;
-	}
-	m_fPreRatio = m_fCurRatio;
-
+	// CurRatio °»½Å
+	Convert_Stat_To_Ratio();
 }
 
 void CUIPlayerStat_Progress::Update_Late(const _float fTimeDelta)
 {
 	Super::Update_Late(fTimeDelta);
-
-	if (m_isChangeRatio)
-	{
-		m_fDelayTimeAcc += fTimeDelta;
-		if (m_fDelayTimeAcc <= m_fDelay)
-			return;
-
-		m_fTimeAcc += fTimeDelta;
-		_float t = m_fTimeAcc / m_fDuration;
-
-		if (t >= 1.f)
-		{
-			m_fProgress_Ratio = m_fTargetRatio;
-			m_isChangeRatio = FALSE;
-		}
-		else
-		{
-			m_fProgress_Ratio = m_fStartRatio + (m_fTargetRatio - m_fStartRatio) * t;
-		}
-	}
 }
 
 void CUIPlayerStat_Progress::Ready_Before_Render(const _float fTimeDelta)
 {
 	Super::Ready_Before_Render(fTimeDelta);
-	Acting_By_InteractState();
 }
 
 HRESULT CUIPlayerStat_Progress::Render()
