@@ -482,5 +482,10 @@ namespace Engine
 		END
 	};
 
+	//===================
+	// Skill Type
+	//===================
+	enum class SKILL_TYPE { DAMAGE, BUFF, SUMMON, CURE, DEFENSE, END }; // skill¿« ≈∏¿‘
+
 }
 #endif // Engine_Enum_h__

@@ -9,8 +9,6 @@ class ENGINE_DLL CSkillBase : public CBase
 	using Super = CBase;
 
 public:
-	enum class SKILL_TYPE { DAMAGE, BUFF, SUMMON, CURE, DEFENSE, END }; // skill의 타입
-
 	enum SkillFlags : Flags
 	{
 		// start 할때 stat 값에 어케 해줄래
