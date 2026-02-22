@@ -97,8 +97,6 @@ protected:
 private:
 	_uint					m_iEndStateIdx = { 0 };			// CPlayer::State::END Ä³½Ì ÇØµÒ : ¸¸¾à END¸é state change x
 
-
-
 private:
 	_bool Has_ChangeState(STATEKEY eKey);
 

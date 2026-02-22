@@ -6,7 +6,6 @@
 #include "PlayerControlContext.h"
 #include "MonoBehaviour.h"
 #include "PlayerActionState.h"
-#include "StatComponent.h"
 #include "StatCom_Player.h"
 #include "Collider.h"
 #include "VIBuffer_Terrain.h"
@@ -300,8 +299,7 @@ HRESULT CLoader::Loading_For_Logo()
 	//=================
 	// Component
 	//=================
-	// For. Prototype_Component_Stat
-	m_pGameInstance->Add_Prototype(ENUM_TO_UINT(ELevelType::STATIC), L"Prototype_Component_Stat", CStatComponent::Create());
+
 	// For. Prototype_Component_Model_Master
 	{
 		CModel::MODEL_ORIGIN_DESC desc = {};
@@ -362,10 +360,7 @@ HRESULT CLoader::Loading_For_Logo()
 	/* player components */
 	// For. Prototype_Component_Stat_Player
 	m_pGameInstance->Add_Prototype(ENUM_TO_UINT(ELevelType::STATIC), L"Prototype_Component_Stat_Player", CStatCom_Player::Create());
-	// For. Prototype_Component_Stat_Player
-	m_pGameInstance->Add_Prototype(ENUM_TO_UINT(ELevelType::STATIC), L"Prototype_Component_Skill_MoonE", CSkillComp_MoonE::Create());
-	// For. Prototype_Component_Stat_Player
-	m_pGameInstance->Add_Prototype(ENUM_TO_UINT(ELevelType::STATIC), L"Prototype_Component_Skill_MoonQ", CSkillComp_MoonQ::Create());
+
 
 	///////////////////////////////////////
 	//////////// Ready Objects ////////////

@@ -405,9 +405,6 @@
     <ClInclude Include="..\Public\Player.h">
       <Filter>03. GameObject\ContainerObjects\Player</Filter>
     </ClInclude>
-    <ClInclude Include="..\Public\StatComponent.h">
-      <Filter>05. Component\Stat</Filter>
-    </ClInclude>
     <ClInclude Include="..\Public\CameraMan_Targeter.h">
       <Filter>03. GameObject\Camera</Filter>
     </ClInclude>
@@ -651,9 +648,6 @@
     <ClInclude Include="..\Public\State_MoonSkill.h">
       <Filter>06. FSM\Player\Attack\Skill\Moon</Filter>
     </ClInclude>
-    <ClInclude Include="..\Public\SkillComponent.h">
-      <Filter>05. Component\Skill</Filter>
-    </ClInclude>
     <ClInclude Include="..\Public\SkillComp_MoonE.h">
       <Filter>05. Component\Skill\Moon</Filter>
     </ClInclude>
@@ -713,9 +707,6 @@
     </ClCompile>
     <ClCompile Include="..\Private\Player.cpp">
       <Filter>03. GameObject\ContainerObjects\Player</Filter>
-    </ClCompile>
-    <ClCompile Include="..\Private\StatComponent.cpp">
-      <Filter>05. Component\Stat</Filter>
     </ClCompile>
     <ClCompile Include="..\Private\CameraMan_Targeter.cpp">
       <Filter>03. GameObject\Camera</Filter>
@@ -953,9 +944,6 @@
     </ClCompile>
     <ClCompile Include="..\Private\State_MoonSkill.cpp">
       <Filter>06. FSM\Player\Attack\Skill\Moon</Filter>
-    </ClCompile>
-    <ClCompile Include="..\Private\SkillComponent.cpp">
-      <Filter>05. Component\Skill</Filter>
     </ClCompile>
     <ClCompile Include="..\Private\SkillComp_MoonE.cpp">
       <Filter>05. Component\Skill\Moon</Filter>

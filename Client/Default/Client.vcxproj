@@ -197,7 +197,6 @@
     <ClInclude Include="..\Public\Monster_Dummy.h" />
     <ClInclude Include="..\Public\Physics_LandScape.h" />
     <ClInclude Include="..\Public\Physics_Terrain.h" />
-    <ClInclude Include="..\Public\SkillComponent.h" />
     <ClInclude Include="..\Public\SkillComp_MoonE.h" />
     <ClInclude Include="..\Public\SkillComp_MoonQ.h" />
     <ClInclude Include="..\Public\StatCom_Player.h" />
@@ -212,7 +211,6 @@
     <ClInclude Include="..\Public\Player.h" />
     <ClInclude Include="..\Public\PlayerActionState.h" />
     <ClInclude Include="..\Public\PlayerControlContext.h" />
-    <ClInclude Include="..\Public\StatComponent.h" />
     <ClInclude Include="..\Public\StateBase_Player.h">
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">false</ExcludedFromBuild>
     </ClInclude>
@@ -328,7 +326,6 @@
     <ClCompile Include="..\Private\MapObject.cpp" />
     <ClCompile Include="..\Private\Monster_Dummy.cpp" />
     <ClCompile Include="..\Private\Physics_LandScape.cpp" />
-    <ClCompile Include="..\Private\SkillComponent.cpp" />
     <ClCompile Include="..\Private\SkillComp_MoonE.cpp" />
     <ClCompile Include="..\Private\SkillComp_MoonQ.cpp" />
     <ClCompile Include="..\Private\StatCom_Player.cpp" />
@@ -343,7 +340,6 @@
     <ClCompile Include="..\Private\Player.cpp" />
     <ClCompile Include="..\Private\PlayerActionState.cpp" />
     <ClCompile Include="..\Private\PlayerControlContext.cpp" />
-    <ClCompile Include="..\Private\StatComponent.cpp" />
     <ClCompile Include="..\Private\StateBase_Player.cpp">
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">false</ExcludedFromBuild>
     </ClCompile>

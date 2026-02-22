@@ -519,7 +519,13 @@ namespace Engine
 			return fTimeAcc / fMaxTime;
 		}
 
-		float Get_Rate() { return fTimeAcc / fMaxTime; }
+		float Get_Rate() 
+		{ 
+			if (fMaxTime <= 0.f) 
+				return 1.f;  
+
+			return fTimeAcc / fMaxTime;
+		}
 
 	}TIME_COUNTER;
 #pragma endregion

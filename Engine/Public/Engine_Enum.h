@@ -192,6 +192,8 @@ namespace Engine
 		CAMERA,
 		SHADER,
 		BOUND,
+		STAT,
+		ACTIONSKILL,
 		//
 		PX_RIGIDBODY,
 		PX_COLLIDER,

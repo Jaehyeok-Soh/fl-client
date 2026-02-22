@@ -3,7 +3,7 @@
 
 #include "GameInstance.h"
 
-#include "StatComponent.h"
+
 #include "Model.h"
 #include "PhysicsCCT.h"
 

@@ -18,6 +18,10 @@
 #include "PhysicsRigidBody.h"
 #include "PhysicsCollider.h"
 #include "PhysicsCCT.h"
+#include "MyStat.h"
+#include "SkillBase.h"
+#include "ActionSkill.h"
+
 #include "UI_Manager.h"
 
 USING(Client)
@@ -431,6 +435,22 @@ HRESULT CMainApplication::Ready_Static_Prototype()
 	{
 		if (FAILED(m_pGameInstance->Add_Prototype(ENUM_TO_UINT(ELevelType::STATIC), L"Prototype_Component_Physics_Collider",
 			CPhysicsCollider::Create(m_pDevice, m_pDeviceContext, nullptr))))
+			return E_FAIL;
+	}
+
+	//=================
+	// Skill & Stat
+	//=================
+	// For. Prototype_Component_Stat
+	{
+		if (FAILED(m_pGameInstance->Add_Prototype(ENUM_TO_UINT(ELevelType::STATIC), L"Prototype_Component_Stat",
+			CMyStat::Create())))
+			return E_FAIL;
+	}
+	// For. Prototype_Component_ActionSkill
+	{
+		if (FAILED(m_pGameInstance->Add_Prototype(ENUM_TO_UINT(ELevelType::STATIC), L"Prototype_Component_ActionSkill",
+			CActionSkill::Create())))
 			return E_FAIL;
 	}
 

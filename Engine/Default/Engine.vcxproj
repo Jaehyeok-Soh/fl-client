@@ -162,6 +162,7 @@
     </FxCompile>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="..\Private\ActionSkill.cpp" />
     <ClCompile Include="..\Private\ActionState.cpp" />
     <ClCompile Include="..\Private\ActiveAttackOverlap.cpp" />
     <ClCompile Include="..\private\AnimEffectHandler.cpp" />
@@ -283,7 +284,7 @@
     <ClCompile Include="..\Private\Resource_Manager.cpp" />
     <ClCompile Include="..\Private\Shader.cpp" />
     <ClCompile Include="..\private\ShaderAsset_Manager.cpp" />
-    <ClCompile Include="..\Private\Skill.cpp" />
+    <ClCompile Include="..\Private\SkillBase.cpp" />
     <ClCompile Include="..\Private\Sound_Manager.cpp" />
     <ClCompile Include="..\Private\MyStat.cpp" />
     <ClCompile Include="..\Private\StateBase.cpp" />
@@ -318,6 +319,7 @@
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="..\Public\ActionSkill.h" />
     <ClInclude Include="..\Public\ActionState.h" />
     <ClInclude Include="..\Public\ActiveAttackOverlap.h" />
     <ClInclude Include="..\Public\AnimEffectHandler.h" />
@@ -440,7 +442,7 @@
     <ClInclude Include="..\Public\Resource_Manager.h" />
     <ClInclude Include="..\Public\Shader.h" />
     <ClInclude Include="..\public\ShaderAsset_Manager.h" />
-    <ClInclude Include="..\Public\Skill.h" />
+    <ClInclude Include="..\Public\SkillBase.h" />
     <ClInclude Include="..\Public\Sound_Manager.h" />
     <ClInclude Include="..\Public\MyStat.h" />
     <ClInclude Include="..\Public\StateBase.h" />
