@@ -34,7 +34,7 @@ HRESULT CPhysics_Module::Initialize()
 #ifdef _DEBUG
 	//m_pPvd = PxCreatePvd(*m_pFoundation);
 	//PxPvdTransport* transport = PxDefaultPvdFileTransportCreate("D:\\PVD_Record\\phyXDebug.pxd2");
-	////PxPvdTransport* transport = PxDefaultPvdFileTransportCreate(PVD_HOST, 5425, 10);
+	////PxPvdTransport* transport = PxDefaultPvdSocketTransportCreate(PVD_HOST, 5425, 10);
 	////m_pPvd->connect(*transport, PxPvdInstrumentationFlag::eALL);
 	//m_pPvd->connect(*transport, PxPvdInstrumentationFlag::eALL);
 #endif // _DEBUG
@@ -323,6 +323,14 @@ PxFilterFlags CPhysics_Module::FilterShader(
 			| PxPairFlag::eNOTIFY_TOUCH_FOUND
 			| PxPairFlag::eNOTIFY_TOUCH_LOST
 			| PxPairFlag::eNOTIFY_TOUCH_PERSISTS;
+
+		// 02/21
+		// HitPoint 추출을 위한 Flag 설정
+		// Enter에서만 추출하기 위해 사용
+		// CPhysics_FilterEventCallback::onContact에서 Flag 체크후 GAMEOBJECTINFO에 넣는중
+		if (PHYSICSFILTERGROUP::IsAttackPair(filterData0.word0, filterData1.word0))
+			pairFlags |= PxPairFlag::eNOTIFY_CONTACT_POINTS;
+
 		return PxFilterFlag::eDEFAULT;
 	}
 

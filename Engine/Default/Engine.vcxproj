@@ -162,6 +162,7 @@
     </FxCompile>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="..\Private\ActionSkill.cpp" />
     <ClCompile Include="..\Private\ActionState.cpp" />
     <ClCompile Include="..\Private\ActiveAttackOverlap.cpp" />
     <ClCompile Include="..\private\AnimEffectHandler.cpp" />
@@ -180,12 +181,16 @@
     <ClCompile Include="..\Private\Camera.cpp" />
     <ClCompile Include="..\Private\CameraMan.cpp" />
     <ClCompile Include="..\Private\Camera_Manager.cpp" />
+    <ClCompile Include="..\private\DataDocument_AttackPreset.cpp" />
     <ClCompile Include="..\Private\DataDocument_EffectEvent.cpp" />
     <ClCompile Include="..\Private\ComputeShader.cpp" />
     <ClCompile Include="..\Private\DataDocument_AttackOverlap.cpp" />
+    <ClCompile Include="..\Private\DataDocument_MonsterState.cpp" />
     <ClCompile Include="..\Private\DataStruct_AttackOverlap.cpp" />
+    <ClCompile Include="..\private\DataStruct_AttackPreset.cpp" />
     <ClCompile Include="..\Private\DataStruct_EffectEvent.cpp" />
     <ClCompile Include="..\Private\Effect_Manager.cpp" />
+    <ClCompile Include="..\Private\DataStruct_MonsterState.cpp" />
     <ClCompile Include="..\private\FxEffectAsset.cpp" />
     <ClCompile Include="..\private\FxShaderVariant.cpp" />
     <ClCompile Include="..\Private\GameData_Struct.cpp" />
@@ -237,6 +242,7 @@
     <ClCompile Include="..\Private\Input_Manager.cpp" />
     <ClCompile Include="..\private\Bounds.cpp" />
     <ClCompile Include="..\private\json_forward.cpp" />
+    <ClCompile Include="..\Private\JudgementSystem.cpp" />
     <ClCompile Include="..\Private\Layer.cpp" />
     <ClCompile Include="..\Private\Level.cpp" />
     <ClCompile Include="..\Private\Level_Manager.cpp" />
@@ -284,7 +290,9 @@
     <ClCompile Include="..\Private\Resource_Manager.cpp" />
     <ClCompile Include="..\Private\Shader.cpp" />
     <ClCompile Include="..\private\ShaderAsset_Manager.cpp" />
+    <ClCompile Include="..\Private\SkillBase.cpp" />
     <ClCompile Include="..\Private\Sound_Manager.cpp" />
+    <ClCompile Include="..\Private\MyStat.cpp" />
     <ClCompile Include="..\Private\StateBase.cpp" />
     <ClCompile Include="..\Private\StructuredBuffer.cpp" />
     <ClCompile Include="..\Private\Texture.cpp" />
@@ -317,6 +325,7 @@
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="..\Public\ActionSkill.h" />
     <ClInclude Include="..\Public\ActionState.h" />
     <ClInclude Include="..\Public\ActiveAttackOverlap.h" />
     <ClInclude Include="..\Public\AnimEffectHandler.h" />
@@ -338,11 +347,16 @@
     <ClInclude Include="..\Public\Camera.h" />
     <ClInclude Include="..\Public\CameraMan.h" />
     <ClInclude Include="..\Public\Camera_Manager.h" />
+    <ClInclude Include="..\public\DataDocument_AttackPreset.h" />
     <ClInclude Include="..\Public\DataDocument_EffectEvent.h" />
     <ClInclude Include="..\Public\DataDocument_AttackOverlap.h" />
+    <ClInclude Include="..\Public\DataDocument_MonsterState.h" />
     <ClInclude Include="..\Public\DataStruct_AttackOverlap.h" />
+    <ClInclude Include="..\public\DataStruct_AttackPreset.h" />
     <ClInclude Include="..\Public\DataStruct_EffectEvent.h" />
     <ClInclude Include="..\Public\Effect_Manager.h" />
+    <ClInclude Include="..\Public\DataStruct_MonsterState.h" />
+    <ClInclude Include="..\Public\DTO_MonsterState.h" />
     <ClInclude Include="..\public\FxEffectAsset.h" />
     <ClInclude Include="..\public\FxShaderVariant.h" />
     <ClInclude Include="..\Public\GameData_Struct.h" />
@@ -396,6 +410,7 @@
     <ClInclude Include="..\Public\Input_Manager.h" />
     <ClInclude Include="..\public\Bounds.h" />
     <ClInclude Include="..\public\json_forward.h" />
+    <ClInclude Include="..\Public\JudgementSystem.h" />
     <ClInclude Include="..\Public\Layer.h" />
     <ClInclude Include="..\Public\Level.h" />
     <ClInclude Include="..\Public\Level_Manager.h" />
@@ -440,7 +455,9 @@
     <ClInclude Include="..\Public\Resource_Manager.h" />
     <ClInclude Include="..\Public\Shader.h" />
     <ClInclude Include="..\public\ShaderAsset_Manager.h" />
+    <ClInclude Include="..\Public\SkillBase.h" />
     <ClInclude Include="..\Public\Sound_Manager.h" />
+    <ClInclude Include="..\Public\MyStat.h" />
     <ClInclude Include="..\Public\StateBase.h" />
     <ClInclude Include="..\Public\StructuredBuffer.h" />
     <ClInclude Include="..\Public\Texture.h" />

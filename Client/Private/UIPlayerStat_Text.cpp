@@ -9,7 +9,7 @@
 #include "Texture.h"
 #include "Shader.h"
 #include "VIBuffer_Rect_Tex.h"
-#include "StatComponent.h"
+#include "MyStat.h"
 #include "GameInstance.h"
 
 CUIPlayerStat_Text::CUIPlayerStat_Text(ID3D11Device* pDevice, ID3D11DeviceContext* pDeviceContext)
@@ -57,11 +57,12 @@ HRESULT CUIPlayerStat_Text::Attach_Personal_Info()
 	if (nullptr == pResult)
 		return E_FAIL;
 
-	auto* p = static_cast<CStatComponent*>(pResult->Get_Script_Component(L"StatComponent"));
-	if (nullptr == p)
-		return E_FAIL;
 
-	m_pPlayerStatCom = static_cast<CStatCom_Player*>(p);
+	//auto* p = static_cast<CStatComponent*>(pResult->Get_Script_Component(L"StatComponent"));
+	//if (nullptr == p)
+	//	return E_FAIL;
+
+	m_pPlayerStatCom = static_cast<CStatCom_Player*>(pResult->Get_Component<CMyStat>());
 	if (nullptr == m_pPlayerStatCom)
 		return E_FAIL;
 		
@@ -131,39 +132,39 @@ HRESULT CUIPlayerStat_Text::Convert_Stat_To_Text()
 	case DTO::EUITextSubClassType::PLAYER_STAT_TEXT_LV:
 		break;
 	case DTO::EUITextSubClassType::PLAYER_STAT_TEXT_HP:
-		m_wstrText = Float_To_Wstring(m_pPlayerStatCom->Get_Stat(CStatCom_Player::STAT_TYPE::HP).x, 0);
+		m_wstrText = Float_To_Wstring(m_pPlayerStatCom->Get_Stat_Vec2(CStatCom_Player::STAT_TYPE::HP).x, 0);
 		break;
 	case DTO::EUITextSubClassType::PLAYER_STAT_TEXT_ARMOR:
-		m_wstrText = Float_To_Wstring(m_pPlayerStatCom->Get_Stat(CStatCom_Player::STAT_TYPE::DEFENSE).x, 0);
+		m_wstrText = Float_To_Wstring(m_pPlayerStatCom->Get_Stat_Vec2(CStatCom_Player::STAT_TYPE::DEFENSE).x, 0);
 		break;
 	case DTO::EUITextSubClassType::PLAYER_STAT_TEXT_ENERGY:
-		m_wstrText = Float_To_Wstring(m_pPlayerStatCom->Get_Stat(CStatCom_Player::STAT_TYPE::MENTAL).x, 0);
+		m_wstrText = Float_To_Wstring(m_pPlayerStatCom->Get_Stat_Vec2(CStatCom_Player::STAT_TYPE::MENTAL).x, 0);
 		break;
 	case DTO::EUITextSubClassType::PLAYER_STAT_TEXT_ESKILL_TYPE:
-		m_wstrText = SKILL_TYPE_ToWstring(m_pPlayerStatCom->Get_Skill(CStatCom_Player::STAT_TYPE::SKILLE).eSkillType);
+		m_wstrText = SKILL_TYPE_ToWstring(m_pPlayerStatCom->Get_Skill(CStatCom_Player::Attack_State::E).eSkillType);
 		break;
 	case DTO::EUITextSubClassType::PLAYER_STAT_TEXT_ESKILL_COOLTIME:
 	{
-		_float fMaxCool = m_pPlayerStatCom->Get_Skill(CStatCom_Player::STAT_TYPE::SKILLE).TCoolTime.y;
-		_float fCurCool = m_pPlayerStatCom->Get_Skill(CStatCom_Player::STAT_TYPE::SKILLE).TCoolTime.x;
+		_float fMaxCool = m_pPlayerStatCom->Get_Skill(CStatCom_Player::Attack_State::E).tCoolTimer.fMaxTime;
+		_float fCurCool = m_pPlayerStatCom->Get_Skill(CStatCom_Player::Attack_State::E).tCoolTimer.fTimeAcc;
 		m_wstrText = Float_To_Wstring(fMaxCool - fCurCool, 1);
 		break;
 	}
 	case DTO::EUITextSubClassType::PLAYER_STAT_TEXT_ESKILL_COST:
-		m_wstrText = std::to_wstring(m_pPlayerStatCom->Get_Skill(CStatCom_Player::STAT_TYPE::SKILLE).iNeedMental);
+		m_wstrText = std::to_wstring(m_pPlayerStatCom->Get_Skill(CStatCom_Player::Attack_State::E).fNeedMental);
 		break;
 	case DTO::EUITextSubClassType::PLAYER_STAT_TEXT_QSKILL_TYPE:
-		m_wstrText = SKILL_TYPE_ToWstring(m_pPlayerStatCom->Get_Skill(CStatCom_Player::STAT_TYPE::SKILLQ).eSkillType);
+		m_wstrText = SKILL_TYPE_ToWstring(m_pPlayerStatCom->Get_Skill(CStatCom_Player::Attack_State::Q).eSkillType);
 		break;
 	case DTO::EUITextSubClassType::PLAYER_STAT_TEXT_QSKILL_COOLTIME:
 	{
-		_float fMaxCool = m_pPlayerStatCom->Get_Skill(CStatCom_Player::STAT_TYPE::SKILLQ).TCoolTime.y;
-		_float fCurCool = m_pPlayerStatCom->Get_Skill(CStatCom_Player::STAT_TYPE::SKILLQ).TCoolTime.x;
+		_float fMaxCool = m_pPlayerStatCom->Get_Skill(CStatCom_Player::Attack_State::Q).tCoolTimer.fMaxTime;
+		_float fCurCool = m_pPlayerStatCom->Get_Skill(CStatCom_Player::Attack_State::Q).tCoolTimer.fTimeAcc;
 		m_wstrText = Float_To_Wstring(fMaxCool - fCurCool, 1);
 		break;
 	}
 	case DTO::EUITextSubClassType::PLAYER_STAT_TEXT_QSKILL_COST:
-		m_wstrText = std::to_wstring(m_pPlayerStatCom->Get_Skill(CStatCom_Player::STAT_TYPE::SKILLQ).iNeedMental);
+		m_wstrText = std::to_wstring(m_pPlayerStatCom->Get_Skill(CStatCom_Player::Attack_State::Q).fNeedMental);
 		break;
 	case DTO::EUITextSubClassType::PLAYER_STAT_TEXT_ZSKILL_TYPE:
 		break;

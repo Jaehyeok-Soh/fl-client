@@ -71,7 +71,7 @@ HRESULT CBuilder_AttackOverlap::Create_AttackOverlap_Prototype(const DTO::ATTACK
 
 	// For. Prototype_Component_AttackOverlap_{ CharacterName }
 	wstring prototypeTag(L"Prototype_Component_AttackOverlap_" + Engine_Utils::ToWString(data.strTag));
-	m_pGameInstance->Add_Prototype(ENUM_TO_UINT(ELevelType::STATIC), L"Prototype_Component_AttackOverlap_PlayerMoon", CPhysicsAttackOverlap::Create(&desc));
+	m_pGameInstance->Add_Prototype(ENUM_TO_UINT(ELevelType::STATIC), prototypeTag, CPhysicsAttackOverlap::Create(&desc));
 
 	return S_OK;
 }

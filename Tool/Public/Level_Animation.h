@@ -32,6 +32,8 @@ public:
 			DESCRIPTION,
 			MODELINFO,
 			PARTSINFO,
+			STATEEDITOR,
+			MIXER,
 			END
 		};
 	};

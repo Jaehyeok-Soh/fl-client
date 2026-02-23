@@ -50,6 +50,7 @@ HRESULT CStateBase_Player::Start(void* pArg, _bool bForce)
 	m_tKeyTimer.fTimeAcc = 0.f;
 
 	m_TFallingCount.x = 0.f;
+	m_TChargeCount.x = 0.f;
 
 	return S_OK;
 }
@@ -152,7 +153,12 @@ _bool CStateBase_Player::Check_MoveKey(const _float fTimeDelta)
 
 	if (Engine_Utils::Has_Flag(m_FMoves, MOVEFLAGS::UP_CHANGE))
 	{
-		
+		// move key input이 없을 때
+		if (!Key_Input(ENUM_TO_UINT(CControlContext::CONTROL_KEY::MOVE)))
+		{
+			Change_PlayerState(STATEKEY::MOVE);
+			return true;
+		}
 	}
 
 	return false;
@@ -219,8 +225,14 @@ _bool CStateBase_Player::Check_MeleeKey(const _float fTimeDelta)
 	if (Has_ChangeState(STATEKEY::CHARGE) &&
 		Key_Input(ENUM_TO_UINT(CControlContext::CONTROL_KEY::CHARGATT)))
 	{
-		Change_PlayerState(STATEKEY::CHARGE);
-		return true;
+		m_TChargeCount.x += fTimeDelta;
+
+		if (m_TChargeCount.x >= m_TChargeCount.y)
+		{
+			m_TChargeCount.x = 0.f;
+			Change_PlayerState(STATEKEY::CHARGE);
+			return true;
+		}
 	}
 
 	else if (Has_ChangeState(STATEKEY::LM) &&

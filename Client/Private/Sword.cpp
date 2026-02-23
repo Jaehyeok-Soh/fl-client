@@ -58,29 +58,29 @@ void CSword::Ready_Before_Render(_float fTimeDelta)
 	Super::Ready_Before_Render(fTimeDelta);
 }
 
-void CSword::OnCollision(_uint iMyColliderLayer, CGameObject* pOther)
+void CSword::OnCollision(_uint iMyColliderLayer, _uint iOtherLayer, CGameObject* pOther)
 {
-	Super::OnCollision(iMyColliderLayer, pOther);
+	Super::OnCollision(iMyColliderLayer, iOtherLayer, pOther);
 }
 
-void CSword::OnCollision_Enter(_uint iMyColliderLayer, CGameObject* pOther)
+void CSword::OnCollision_Enter(_uint iMyColliderLayer, _uint iOtherLayer, CGameObject* pOther, const COL_HIT_INFO& tHitInfo)
 {
-	Super::OnCollision_Enter(iMyColliderLayer, pOther);
+	Super::OnCollision_Enter(iMyColliderLayer, iOtherLayer, pOther, tHitInfo);
 }
 
-void CSword::OnCollision_Exit(_uint iMyColliderLayer, CGameObject* pOther)
+void CSword::OnCollision_Exit(_uint iMyColliderLayer, _uint iOtherLayer, CGameObject* pOther)
 {
-	Super::OnCollision_Exit(iMyColliderLayer, pOther);
+	Super::OnCollision_Exit(iMyColliderLayer, iOtherLayer, pOther);
 }
 
-void CSword::OnTrigger_Enter(_uint iMyColliderLayer, CGameObject* pOther)
+void CSword::OnTrigger_Enter(_uint iMyColliderLayer, _uint iOtherLayer, CGameObject* pOther)
 {
-	Super::OnTrigger_Enter(iMyColliderLayer, pOther);
+	Super::OnTrigger_Enter(iMyColliderLayer, iOtherLayer, pOther);
 }
 
-void CSword::OnTrigger_Exit(_uint iMyColliderLayer, CGameObject* pOther)
+void CSword::OnTrigger_Exit(_uint iMyColliderLayer, _uint iOtherLayer, CGameObject* pOther)
 {
-	Super::OnTrigger_Exit(iMyColliderLayer, pOther);
+	Super::OnTrigger_Exit(iMyColliderLayer, iOtherLayer, pOther);
 }
 
 HRESULT CSword::Render()

@@ -217,7 +217,12 @@ HRESULT CMapObject::Ready_PhysicsCollider(MAPOBJECT_DESC* pDesc)
             Safe_Release(pCollider);
     }
 
-    if (FAILED(Add_Component<CPhysicsCollider>(pDesc->iLevelIndex, L"Prototype_Component_Physics_Collider_" + wstrModelName, nullptr)))
+    PHYSICSCOLLIDER_DESC cloneDesc{};
+    cloneDesc.eFilterLayer = PHYSICSFILTERGROUP::MAP;
+    cloneDesc.iFilterMask = 0xFFFFFFFF;
+    cloneDesc.bSetOnlyFilter = true;
+
+    if (FAILED(Add_Component<CPhysicsCollider>(pDesc->iLevelIndex, L"Prototype_Component_Physics_Collider_" + wstrModelName, &cloneDesc)))
         return E_FAIL;
 
     return S_OK;

@@ -22,8 +22,6 @@ json CDataDocument_AttackOverlap::ToJson() const
 
 	json jsonArray = json::array();
 
-
-
 	for (const auto& [iType, umapTags] : m_Datas)
 		for (const auto& [strTag, object] : umapTags)
 			jsonArray.push_back(object->ToJson());

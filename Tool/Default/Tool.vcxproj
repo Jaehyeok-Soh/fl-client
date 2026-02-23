@@ -151,14 +151,22 @@
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">false</ExcludedFromBuild>
     </ClInclude>
     <ClInclude Include="..\Public\AnimTool_Manager.h" />
+    <ClInclude Include="..\public\AttackPreset_DataManager.h" />
     <ClInclude Include="..\Public\Builder_AttackOverlap.h" />
+    <ClInclude Include="..\public\Builder_AttackPreset.h" />
     <ClInclude Include="..\Public\Builder_Effect.h" />
     <ClInclude Include="..\Public\Builder_EffectEvent.h" />
     <ClInclude Include="..\Public\Builder_Example.h" />
     <ClInclude Include="..\Public\Builder_Map.h" />
+    <ClInclude Include="..\Public\Builder_MonsterState.h" />
     <ClInclude Include="..\Public\Builder_UI.h" />
     <ClInclude Include="..\Public\CameraMan_Free.h" />
+    <ClInclude Include="..\Public\Panel_AnimationMix.h" />
+    <ClInclude Include="..\public\Level_AttackPreset.h" />
     <ClInclude Include="..\Public\Panel_Parts.h" />
+    <ClInclude Include="..\Public\Panel_State.h" />
+    <ClInclude Include="..\public\Panel_PresetList.h" />
+    <ClInclude Include="..\public\Panel_PresetMain.h" />
     <ClInclude Include="..\Public\Tool_Weapon.h" />
     <ClInclude Include="..\Public\CEffectObject.h" />
     <ClInclude Include="..\Public\Effect_Preview_panel.h" />
@@ -248,15 +256,23 @@
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">false</ExcludedFromBuild>
     </ClCompile>
     <ClCompile Include="..\Private\AnimTool_Manager.cpp" />
+    <ClCompile Include="..\private\AttackPreset_DataManager.cpp" />
     <ClCompile Include="..\Private\Builder_AttackOverlap.cpp" />
+    <ClCompile Include="..\private\Builder_AttackPreset.cpp" />
     <ClCompile Include="..\Private\Builder_Effect.cpp" />
     <ClCompile Include="..\Private\Builder_EffectEvent.cpp" />
     <ClCompile Include="..\Private\Builder_Example.cpp" />
     <ClCompile Include="..\Private\Builder_Map.cpp" />
+    <ClCompile Include="..\Private\Builder_MonsterState.cpp" />
     <ClCompile Include="..\Private\Builder_UI.cpp" />
     <ClCompile Include="..\Private\CameraMan_Free.cpp" />
+    <ClCompile Include="..\private\Level_AttackPreset.cpp" />
+    <ClCompile Include="..\Private\Panel_AnimationMix.cpp" />
     <ClCompile Include="..\Private\Panel_Parts.cpp" />
     <ClCompile Include="..\Private\SceneData.cpp" />
+    <ClCompile Include="..\Private\Panel_State.cpp" />
+    <ClCompile Include="..\private\Panel_PresetList.cpp" />
+    <ClCompile Include="..\private\Panel_PresetMain.cpp" />
     <ClCompile Include="..\Private\Tool_Weapon.cpp" />
     <ClCompile Include="..\Private\CEffectObject.cpp" />
     <ClCompile Include="..\Private\Effect_Preview_panel.cpp" />

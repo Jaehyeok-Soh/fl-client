@@ -19,6 +19,11 @@ class CPhysics_FilterEventCallback final : public CBase , public PxSimulationEve
         CGameObject* rightObject = { nullptr };
         PHYSICSCOLLIDER_DESC* rightColliderDesc = { nullptr };
 
+        _bool bHasHitPoint = { false };
+        SimpleMath::Vector3 vHitPoint = { SimpleMath::Vector3::Zero };
+        SimpleMath::Vector3 vRawNormal = { SimpleMath::Vector3::Zero };
+        _float fDepth = { 0.f };
+
         tagGameObjectInfo(CGameObject* left, PHYSICSCOLLIDER_DESC* leftDesc, CGameObject* right, PHYSICSCOLLIDER_DESC* rightDesc)
         {
             leftName = left->Get_WName();
@@ -32,20 +37,6 @@ class CPhysics_FilterEventCallback final : public CBase , public PxSimulationEve
             rightColliderDesc = rightDesc;
         }
     }GAMEOBJECTINFO;
-
-    typedef struct tagCollisionEvent
-    {
-        enum Enum
-        {
-            ON_COLLISION_ENTER,
-            ON_COLLISION_STAY,
-            ON_COLLISION_EXIT,
-            ON_TRIGGER_ENTER,
-            ON_TRIGGER_EXIT,
-            END
-        };
-    }COLLISIONEVENT;
-
     using Super = CBase;
 private:
     CPhysics_FilterEventCallback();

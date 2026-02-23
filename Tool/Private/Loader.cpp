@@ -101,6 +101,9 @@ HRESULT CLoader::Loading()
 	case Tool::ELevelType::UI:
 		hr = Loading_For_UI();
 		break;
+	case Tool::ELevelType::ATTACK_PRESET:
+		hr = Loading_For_AttackPreset();
+		break;
 	case Tool::ELevelType::ASSET_CONVERT:
 		hr = Loading_For_AssetConverter();
 		break;
@@ -353,6 +356,12 @@ HRESULT CLoader::Loading_For_UI()
 		if (FAILED(m_pGameInstance->Add_Prototype(ENUM_TO_UINT(ELevelType::UI), g_wszPrototypeTagUI, CToolUI::Create(EToolObjectType::UI, m_pDevice, m_pDeviceContext))))
 			return E_FAIL;
 	}
+	m_isFinished = true;
+	return S_OK;
+}
+
+HRESULT CLoader::Loading_For_AttackPreset()
+{
 	m_isFinished = true;
 	return S_OK;
 }

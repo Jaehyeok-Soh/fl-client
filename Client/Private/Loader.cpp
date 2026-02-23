@@ -4,9 +4,10 @@
 // Component
 //=================
 #include "PlayerControlContext.h"
+#include "MonsterControlContext.h"
 #include "MonoBehaviour.h"
 #include "PlayerActionState.h"
-#include "StatComponent.h"
+#include "MonsterActionState.h"
 #include "StatCom_Player.h"
 #include "Collider.h"
 #include "VIBuffer_Terrain.h"
@@ -38,6 +39,8 @@
 #include "Builder_EffectEvent.h"
 #include "DataStruct_EffectEvent.h"
 #include "DataDocument_EffectEvent.h"
+#include "Builder_AttackPreset.h"
+#include "DataDocument_AttackPreset.h"
 
 //=================
 // Object
@@ -49,7 +52,6 @@
 #include "Weapon.h"
 #include "ColliderPart.h"
 #include "Loader.h"
-#include "Physics_Terrain.h" // physics test
 #include "Effect.h"
 #include "EffectObject.h"
 #include "Physics_LandScape.h" // physics test
@@ -60,6 +62,8 @@
 /* --------------------- */
 #include "Monster_Dummy.h" // test
 #include "Sword.h"
+#include "Monster_Dummy.h" // test
+#include "Monster_Dummy_Body.h" // test
 
 //=================
 // UI
@@ -213,6 +217,9 @@ HRESULT CLoader::Loading_For_Logo()
 
 			if (FAILED(m_pGameInstance->Regist_Document<CDataDocument_AttackOverlap>(ENUM_TO_UINT(ELevelType::LOGO), DTO::ECategory::OVERLAP_SCRIPT)))
 				return E_FAIL;
+
+			if (FAILED(m_pGameInstance->Regist_Document<CDataDocument_AttackPreset>(ENUM_TO_UINT(ELevelType::LOGO), DTO::ECategory::ATTACK_PRESET)))
+				return E_FAIL;
 		}
 
 		// Build prototype
@@ -336,8 +343,7 @@ HRESULT CLoader::Loading_For_Logo()
 	//=================
 	// Component
 	//=================
-	// For. Prototype_Component_Stat
-	m_pGameInstance->Add_Prototype(ENUM_TO_UINT(ELevelType::STATIC), L"Prototype_Component_Stat", CStatComponent::Create());
+
 	// For. Prototype_Component_Model_Master
 	{
 		m_fLoadingRatio = 0.99f;
@@ -379,7 +385,22 @@ HRESULT CLoader::Loading_For_Logo()
 
 		m_pGameInstance->Add_Prototype(ENUM_TO_UINT(ELevelType::STATIC), L"Prototype_Component_Model_MoonSkillWeap", CModel::Create(m_pDevice, m_pDeviceContext, &desc));
 	}
+	// For.Prototype_Component_Model_Monster_Dog
+	{
+		CModel::MODEL_ORIGIN_DESC desc = {};
+		desc.eType = EModelType::ANIM;
+		desc.iPrototypeLevelIndex = ENUM_TO_UINT(ELevelType::STATIC);
+		desc.pMatPreTransform = &(matPreTransformIdentity);
+		desc.wstrModelFolderName = L"Monster_Dog";
+		desc.FStageBone = CModel::STAGEING_BONE::SB_ZEROBONE;
+		desc.vecStageBoneIndices = { };
 
+		CModel::DATA_ANIMCHANNEL tAniChannelData = {};
+		tAniChannelData.iRootBoneIndex = 2;
+		desc.pAniChannelData = &tAniChannelData;
+
+		m_pGameInstance->Add_Prototype(ENUM_TO_UINT(ELevelType::STATIC), L"Prototype_Component_Model_Monster_Dog", CModel::Create(m_pDevice, m_pDeviceContext, &desc));
+	}
 	// For. Prototype_Component_Camera
 	m_pGameInstance->Add_Prototype(ENUM_TO_UINT(ELevelType::STATIC), L"Prototype_Component_Camera", CCamera::Create());
 	// For. Prototype_Component_ActionState_Player
@@ -401,10 +422,12 @@ HRESULT CLoader::Loading_For_Logo()
 	/* player components */
 	// For. Prototype_Component_Stat_Player
 	m_pGameInstance->Add_Prototype(ENUM_TO_UINT(ELevelType::STATIC), L"Prototype_Component_Stat_Player", CStatCom_Player::Create());
-	// For. Prototype_Component_Stat_Player
-	m_pGameInstance->Add_Prototype(ENUM_TO_UINT(ELevelType::STATIC), L"Prototype_Component_Skill_MoonE", CSkillComp_MoonE::Create());
-	// For. Prototype_Component_Stat_Player
-	m_pGameInstance->Add_Prototype(ENUM_TO_UINT(ELevelType::STATIC), L"Prototype_Component_Skill_MoonQ", CSkillComp_MoonQ::Create());
+
+
+	// For. Prototype_Component_ControlContext_Monster
+	m_pGameInstance->Add_Prototype(ENUM_TO_UINT(ELevelType::STATIC), L"Prototype_Component_ControlContext_Monster", CMonsterControlContext::Create());
+	// For. Prototype_Component_ActionState_Monster
+	m_pGameInstance->Add_Prototype(ENUM_TO_UINT(ELevelType::STATIC), L"Prototype_Component_ActionState_Monster", CMonsterActionState::Create(m_pDevice, m_pDeviceContext));
 
 	///////////////////////////////////////
 	//////////// Ready Objects ////////////
@@ -428,11 +451,14 @@ HRESULT CLoader::Loading_For_Logo()
 		ADD_PROTOTYPE(ELevelType::STATIC, L"Prototype_GameObject_StaticObject", CStaticObject::Create(m_pDevice, m_pDeviceContext));
 		ADD_PROTOTYPE(ELevelType::STATIC, L"Prototype_GameObject_LandScape", CLandScape::Create(m_pDevice, m_pDeviceContext));
 
+		/* Weapons */
+		ADD_PROTOTYPE(ELevelType::STATIC, L"Prototype_GameObject_Part_Sword", CSword::Create(m_pDevice, m_pDeviceContext));
+
 		/* Monster Object */
 		ADD_PROTOTYPE(ELevelType::LOGO, L"Prototype_GameObject_Monster_Dummy", CMonster_Dummy::Create(m_pDevice, m_pDeviceContext));
 
-		/* Weapons */
-		ADD_PROTOTYPE(ELevelType::STATIC, L"Prototype_GameObject_Part_Sword", CSword::Create(m_pDevice, m_pDeviceContext));
+		/* Monster Part Object */
+		ADD_PROTOTYPE(ELevelType::LOGO, L"Prototype_GameObject_Monster_Dummy_Body", CMonster_Dummy_Body::Create(m_pDevice, m_pDeviceContext));
 	}
 #pragma endregion
 #pragma region BUFFER
@@ -452,12 +478,7 @@ HRESULT CLoader::Loading_For_Logo()
 	}
 #pragma endregion
 
-
 #pragma region PHYSICS
-	// For. Prototype_GameObject_Physics_Terrain
-	m_pGameInstance->Add_Prototype(ENUM_TO_UINT(ELevelType::STATIC), L"Prototype_GameObject_Physics_Terrain", CPhysics_Terrain::Create(m_pDevice, m_pDeviceContext));
-
-	/* Map Parsing Test */
 #pragma endregion
 
 #pragma region UI
@@ -587,6 +608,9 @@ HRESULT CLoader::Build_Prototype()
 	if (FAILED(m_pBuilderSystem->Ready_Builder(DTO::ECategory::EFFECTEVENT, CBuilder_EffectEvent::Create(m_pDevice, m_pDeviceContext, ENUM_TO_UINT(ELevelType::LOGO)))))
 		return E_FAIL;
 
+	if (FAILED(m_pBuilderSystem->Ready_Builder(DTO::ECategory::ATTACK_PRESET, CBuilder_AttackPreset::Create(m_pDevice, m_pDeviceContext, ENUM_TO_UINT(ELevelType::LOGO)))))
+		return E_FAIL;
+
 	if (FAILED(Build_Files()))
 		return E_FAIL;
 
@@ -598,6 +622,9 @@ HRESULT CLoader::Build_Files()
 	if (FAILED(Ready_AttackOverlap()))
 		return E_FAIL;
 
+	if (FAILED(Ready_AttackPresets()))
+		return E_FAIL;
+
 	if (FAILED(Ready_EffectEvent()))
 		return E_FAIL;
 
@@ -605,6 +632,17 @@ HRESULT CLoader::Build_Files()
 }
 
 HRESULT CLoader::Ready_AttackOverlap()
+{
+	if (FAILED(Ready_AttackOverlap_PlayerMoon()))
+		return E_FAIL;
+
+	if (FAILED(Ready_AttackOverlap_Monster_Dog()))
+		return E_FAIL;
+
+	return S_OK;
+}
+
+HRESULT CLoader::Ready_AttackOverlap_PlayerMoon()
 {
 	ELevelType eLevelType = ELevelType::LOGO;
 	DTO::ECategory eCategory = DTO::ECategory::OVERLAP_SCRIPT;
@@ -625,6 +663,57 @@ HRESULT CLoader::Ready_AttackOverlap()
 	return S_OK;
 }
 
+HRESULT CLoader::Ready_AttackPresets()
+{
+	ELevelType eLevelType = ELevelType::LOGO;
+	DTO::ECategory eCategory = DTO::ECategory::ATTACK_PRESET;
+	_uint iLevelID = ENUM_TO_UINT(eLevelType);
+
+	std::filesystem::path rootFolder{ g_wszAttackPresetDataPath };
+
+	if (std::filesystem::exists(rootFolder) == false)
+	{
+		MSG_BOX("CLoader::Ready_AttackPresets, RootFolder exist failed");
+		return E_FAIL;
+	}
+
+	for (const auto& dirEntry : std::filesystem::directory_iterator(rootFolder))
+	{
+		if (dirEntry.is_directory() == false)
+			continue;
+
+		const std::filesystem::path categoryFolder = dirEntry.path();
+		for (const auto& fileEntry : std::filesystem::directory_iterator(categoryFolder))
+		{
+			if (fileEntry.is_regular_file() == false)
+				continue;
+
+			const std::filesystem::path filePath = fileEntry.path();
+			if (filePath.extension() != ".json")
+				continue;
+
+			string strFileKey = filePath.filename().stem().string();
+			if (FAILED(Loading_File(iLevelID, eCategory, filePath)))
+			{
+				MSG_BOX("CLoader::Ready_AttackPresets, Load_File_Json failed");
+				return E_FAIL;
+			}
+
+			if (FAILED(m_pBuilderSystem->Build_File(iLevelID, eCategory, filePath.stem().string())))
+				return E_FAIL;
+		}
+	}
+
+	const auto& debugForDatas = m_pGameInstance->Get_AttackPresetsData_ForDebug();
+	for (const auto& [key, value] : debugForDatas)
+	{
+		_uint iKey = key;
+		const DTO::TAttackPreset_Data &data = value;
+		iKey += 2;
+	}
+	return S_OK;
+}
+
 HRESULT CLoader::Ready_EffectEvent()
 {
 	ELevelType eLevelType = ELevelType::LOGO;
@@ -632,6 +721,27 @@ HRESULT CLoader::Ready_EffectEvent()
 	_uint iLevelID = ENUM_TO_UINT(eLevelType);
 
 	std::filesystem::path FilePath = L"../../Resources/Data/EffectAnimationData/PlayerMoon.json";
+	vector<path> vecfiles;
+
+	if (!std::filesystem::exists(FilePath))
+		return E_FAIL;
+
+	if (FAILED(m_pGameInstance->Load_File_Json(iLevelID, eCategory, FilePath)))
+		return E_FAIL;
+
+	if (FAILED(m_pBuilderSystem->Build_File(iLevelID, eCategory, FilePath.stem().string())))
+		return E_FAIL;
+
+	return S_OK;
+}
+
+HRESULT CLoader::Ready_AttackOverlap_Monster_Dog()
+{
+	ELevelType eLevelType = ELevelType::LOGO;
+	DTO::ECategory eCategory = DTO::ECategory::OVERLAP_SCRIPT;
+	_uint iLevelID = ENUM_TO_UINT(eLevelType);
+
+	std::filesystem::path FilePath = L"../../Resources/Data/AttackOverlapData/Monster_Dog_Attack.json";
 	vector<path> vecfiles;
 
 	if (!std::filesystem::exists(FilePath))

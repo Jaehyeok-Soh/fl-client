@@ -46,8 +46,9 @@ private:
 
 	// imgui
 	_bool m_bModalOpen = { false };
-private:
 
+private:
+	int selected_FilterLayer = {};
 
 public:
 	static			CPanel_AnimDescription* Create(const _char* pLabel, CLevel* pOwner, ID3D11Device* pDevice, ID3D11DeviceContext* pDeviceContext);

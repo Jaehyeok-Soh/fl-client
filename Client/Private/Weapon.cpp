@@ -134,7 +134,7 @@ void CWeapon::Ready_Before_Render(_float fTimeDelta)
 	switch (m_eState)
 	{
 	case State::HOLD:
-		Super::Update_CombinedWorldMatrix((*m_pMatSocket) * (*m_pMatParent));
+		Super::Update_CombinedWorldMatrix(m_matRotation * (*m_pMatSocket) * (*m_pMatParent));
 		//Update_HoldingPos();
 		break;
 
@@ -148,29 +148,29 @@ void CWeapon::Ready_Before_Render(_float fTimeDelta)
 #endif
 }
 
-void CWeapon::OnCollision(_uint iMyColliderLayer, CGameObject* pOther)
+void CWeapon::OnCollision(_uint iMyColliderLayer, _uint iOtherLayer, CGameObject* pOther)
 {
-	Get_Parent()->OnCollision(iMyColliderLayer, pOther);
+	Get_Parent()->OnCollision(iMyColliderLayer, iOtherLayer, pOther);
 }
 
-void CWeapon::OnCollision_Enter(_uint iMyColliderLayer, CGameObject* pOther)
+void CWeapon::OnCollision_Enter(_uint iMyColliderLayer, _uint iOtherLayer, CGameObject* pOther, const COL_HIT_INFO& tHitInfo)
 {
-	Get_Parent()->OnCollision_Enter(iMyColliderLayer, pOther);
+	Get_Parent()->OnCollision_Enter(iMyColliderLayer, iOtherLayer, pOther, tHitInfo);
 }
 
-void CWeapon::OnCollision_Exit(_uint iMyColliderLayer, CGameObject* pOther)
+void CWeapon::OnCollision_Exit(_uint iMyColliderLayer, _uint iOtherLayer, CGameObject* pOther)
 {
-	Get_Parent()->OnCollision_Exit(iMyColliderLayer, pOther);
+	Get_Parent()->OnCollision_Exit(iMyColliderLayer, iOtherLayer, pOther);
 }
 
-void CWeapon::OnTrigger_Enter(_uint iMyColliderLayer, CGameObject* pOther)
+void CWeapon::OnTrigger_Enter(_uint iMyColliderLayer, _uint iOtherLayer, CGameObject* pOther)
 {
-	Get_Parent()->OnTrigger_Enter(iMyColliderLayer, pOther);
+	Get_Parent()->OnTrigger_Enter(iMyColliderLayer, iOtherLayer, pOther);
 }
 
-void CWeapon::OnTrigger_Exit(_uint iMyColliderLayer, CGameObject* pOther)
+void CWeapon::OnTrigger_Exit(_uint iMyColliderLayer, _uint iOtherLayer, CGameObject* pOther)
 {
-	Get_Parent()->OnTrigger_Exit(iMyColliderLayer, pOther);
+	Get_Parent()->OnTrigger_Exit(iMyColliderLayer, iOtherLayer, pOther);
 }
 
 HRESULT CWeapon::Render()

@@ -159,9 +159,11 @@
   <ItemGroup>
     <ClInclude Include="..\Public\Body.h" />
     <ClInclude Include="..\Public\Builder_AttackOverlap.h" />
+    <ClInclude Include="..\public\Builder_AttackPreset.h" />
     <ClInclude Include="..\Public\Builder_EffectEvent.h" />
     <ClInclude Include="..\public\Builder_Example.h" />
     <ClInclude Include="..\Public\Builder_Map.h" />
+    <ClInclude Include="..\Public\Builder_MonsterState.h" />
     <ClInclude Include="..\Public\Builder_UI.h" />
     <ClInclude Include="..\Public\Builder_UIPrefabs.h" />
     <ClInclude Include="..\Public\CameraMan_Targeter.h" />
@@ -196,14 +198,24 @@
     <ClInclude Include="..\Public\imstb_truetype.h" />
     <ClInclude Include="..\Public\LandScape.h" />
     <ClInclude Include="..\Public\MapObject.h" />
+    <ClInclude Include="..\Public\MonsterActionState.h" />
+    <ClInclude Include="..\Public\MonsterControlContext.h" />
+    <ClInclude Include="..\Public\MonsterStateFactoryRegisterer.h" />
+    <ClInclude Include="..\Public\MonsterState_Factory.h" />
+    <ClInclude Include="..\Public\Monster_Base.h" />
+    <ClInclude Include="..\Public\Monster_Body_Base.h" />
     <ClInclude Include="..\Public\Monster_Dummy.h" />
+    <ClInclude Include="..\Public\Monster_Dummy_Body.h" />
     <ClInclude Include="..\Public\Physics_LandScape.h" />
     <ClInclude Include="..\Public\Physics_Terrain.h" />
-    <ClInclude Include="..\Public\SkillComponent.h" />
     <ClInclude Include="..\Public\SkillComp_MoonE.h" />
     <ClInclude Include="..\Public\SkillComp_MoonQ.h" />
     <ClInclude Include="..\Public\StatCom_Player.h" />
     <ClInclude Include="..\Public\State_Charge.h" />
+    <ClInclude Include="..\Public\StateBase_Monster.h" />
+    <ClInclude Include="..\Public\StateMonster_Combo.h" />
+    <ClInclude Include="..\Public\StateMonster_ComboBase.h" />
+    <ClInclude Include="..\Public\State_BossMonster.h" />
     <ClInclude Include="..\Public\State_ComboBase.h" />
     <ClInclude Include="..\Public\State_CrouchWalk.h" />
     <ClInclude Include="..\Public\Level_Loading.h" />
@@ -214,7 +226,6 @@
     <ClInclude Include="..\Public\Player.h" />
     <ClInclude Include="..\Public\PlayerActionState.h" />
     <ClInclude Include="..\Public\PlayerControlContext.h" />
-    <ClInclude Include="..\Public\StatComponent.h" />
     <ClInclude Include="..\Public\StateBase_Player.h">
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">false</ExcludedFromBuild>
     </ClInclude>
@@ -232,6 +243,7 @@
     <ClInclude Include="..\Public\State_JumpWall.h" />
     <ClInclude Include="..\Public\State_Land.h" />
     <ClInclude Include="..\Public\State_MoonCharge.h" />
+    <ClInclude Include="..\Public\State_Monster.h" />
     <ClInclude Include="..\Public\State_MoonCombo.h">
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">false</ExcludedFromBuild>
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">false</ExcludedFromBuild>
@@ -283,9 +295,11 @@
   <ItemGroup>
     <ClCompile Include="..\Private\Body.cpp" />
     <ClCompile Include="..\Private\Builder_AttackOverlap.cpp" />
+    <ClCompile Include="..\private\Builder_AttackPreset.cpp" />
     <ClCompile Include="..\Private\Builder_EffectEvent.cpp" />
     <ClCompile Include="..\private\Builder_Example.cpp" />
     <ClCompile Include="..\Private\Builder_Map.cpp" />
+    <ClCompile Include="..\Private\Builder_MonsterState.cpp" />
     <ClCompile Include="..\Private\Builder_UI.cpp" />
     <ClCompile Include="..\Private\Builder_UIPrefabs.cpp" />
     <ClCompile Include="..\Private\CameraMan_Targeter.cpp" />
@@ -340,13 +354,23 @@
     </ClCompile>
     <ClCompile Include="..\Private\LandScape.cpp" />
     <ClCompile Include="..\Private\MapObject.cpp" />
+    <ClCompile Include="..\Private\MonsterActionState.cpp" />
+    <ClCompile Include="..\Private\MonsterControlContext.cpp" />
+    <ClCompile Include="..\Private\MonsterStateFactoryRegisterer.cpp" />
+    <ClCompile Include="..\Private\MonsterState_Factory.cpp" />
+    <ClCompile Include="..\Private\Monster_Base.cpp" />
+    <ClCompile Include="..\Private\Monster_Body_Base.cpp" />
     <ClCompile Include="..\Private\Monster_Dummy.cpp" />
+    <ClCompile Include="..\Private\Monster_Dummy_Body.cpp" />
     <ClCompile Include="..\Private\Physics_LandScape.cpp" />
-    <ClCompile Include="..\Private\SkillComponent.cpp" />
     <ClCompile Include="..\Private\SkillComp_MoonE.cpp" />
     <ClCompile Include="..\Private\SkillComp_MoonQ.cpp" />
     <ClCompile Include="..\Private\StatCom_Player.cpp" />
     <ClCompile Include="..\Private\State_Charge.cpp" />
+    <ClCompile Include="..\Private\StateBase_Monster.cpp" />
+    <ClCompile Include="..\Private\StateMonster_Combo.cpp" />
+    <ClCompile Include="..\Private\StateMonster_ComboBase.cpp" />
+    <ClCompile Include="..\Private\State_BossMonster.cpp" />
     <ClCompile Include="..\Private\State_ComboBase.cpp" />
     <ClCompile Include="..\Private\State_CrouchWalk.cpp" />
     <ClCompile Include="..\Private\Level_Loading.cpp" />
@@ -357,7 +381,6 @@
     <ClCompile Include="..\Private\Player.cpp" />
     <ClCompile Include="..\Private\PlayerActionState.cpp" />
     <ClCompile Include="..\Private\PlayerControlContext.cpp" />
-    <ClCompile Include="..\Private\StatComponent.cpp" />
     <ClCompile Include="..\Private\StateBase_Player.cpp">
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">false</ExcludedFromBuild>
     </ClCompile>
@@ -375,6 +398,7 @@
     <ClCompile Include="..\Private\State_JumpWall.cpp" />
     <ClCompile Include="..\Private\State_Land.cpp" />
     <ClCompile Include="..\Private\State_MoonCharge.cpp" />
+    <ClCompile Include="..\Private\State_Monster.cpp" />
     <ClCompile Include="..\Private\State_MoonCombo.cpp">
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">false</ExcludedFromBuild>
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">false</ExcludedFromBuild>
@@ -438,6 +462,7 @@
     <FxCompile Include="..\..\Shaders\Common_Defines.hlsl" />
     <FxCompile Include="..\..\Shaders\ComShader_AnimBlend.hlsl" />
     <FxCompile Include="..\..\Shaders\ComShader_AnimEvaluate.hlsl" />
+    <FxCompile Include="..\..\Shaders\ComShader_AnimMix.hlsl" />
     <FxCompile Include="..\..\Shaders\ComShader_BoneCombine.hlsl" />
     <FxCompile Include="..\..\Shaders\ComShader_BoneMesh.hlsl" />
     <FxCompile Include="..\..\Shaders\ComShader_GetBoneCombine.hlsl" />

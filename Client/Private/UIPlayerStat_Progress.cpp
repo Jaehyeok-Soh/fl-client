@@ -9,7 +9,7 @@
 #include "Texture.h"
 #include "Shader.h"
 #include "VIBuffer_Rect_Tex.h"
-#include "StatComponent.h"
+#include "MyStat.h"
 #include "GameInstance.h"
 
 CUIPlayerStat_Progress::CUIPlayerStat_Progress(ID3D11Device* pDevice, ID3D11DeviceContext* pDeviceContext)
@@ -46,11 +46,11 @@ HRESULT CUIPlayerStat_Progress::Attach_Personal_Info()
 	if (nullptr == pResult)
 		return E_FAIL;
 
-	auto* p = static_cast<CStatComponent*>(pResult->Get_Script_Component(L"StatComponent"));
-	if (nullptr == p)
-		return E_FAIL;
-
-	m_pPlayerStatCom = static_cast<CStatCom_Player*>(p);
+	//auto* p = static_cast<CStatComponent*>(pResult->Get_Script_Component(L"StatComponent"));
+	//if (nullptr == p)
+	//	return E_FAIL;
+	
+	m_pPlayerStatCom = static_cast<CStatCom_Player*>(pResult->Get_Component<CMyStat>());
 	if (nullptr == m_pPlayerStatCom)
 		return E_FAIL;
 

@@ -48,6 +48,7 @@ CModel::CModel(const CModel& rhs)
 	, m_iCpuBoneCount(rhs.m_iCpuBoneCount)
 	, m_bLoopAnimDone(rhs.m_bLoopAnimDone)
 	, m_fAnimationSpeed(rhs.m_fAnimationSpeed)
+	, m_bMixAnim(rhs.m_bMixAnim)
 {
 	m_vecPrevAnimationPose.resize(rhs.m_vecPrevAnimationPose.size());
 	m_vecCurrAnimationPose.resize(rhs.m_vecCurrAnimationPose.size());
@@ -297,9 +298,9 @@ HRESULT CModel::Change_Animation(CComputeShader* pAnimEComShader, _uint iAnimati
 	return S_OK;
 }
 
-void CModel::Update_Animation(CComputeShader* pBoneComBineCS, CComputeShader* pAnimEComShader, _float fTimeDelta, CTransform* pOwnerTransform, CPhysicsCCT* pOwnerPhyCCT, CComputeShader* pAnimBlendCS, CComputeShader* pGetBoneCS)
+void CModel::Update_Animation(CComputeShader* pBoneComBineCS, CComputeShader* pAnimEComShader, _float fTimeDelta, CTransform* pOwnerTransform, CPhysicsCCT* pOwnerPhyCCT, CComputeShader* pAnimBlendCS, CComputeShader* pAnimMixCS)
 {
-	Update_AnimationPlayState(pBoneComBineCS, pAnimEComShader, pAnimBlendCS,  fTimeDelta* m_fAnimationSpeed, pOwnerTransform, pOwnerPhyCCT, pGetBoneCS);
+	Update_AnimationPlayState(pBoneComBineCS, pAnimEComShader, pAnimBlendCS,  fTimeDelta* m_fAnimationSpeed, pOwnerTransform, pOwnerPhyCCT, pAnimMixCS);
 }
 
 HRESULT CModel::Set_PassByMesh(class CShader* pShader, _uint iMeshIndex)
@@ -388,6 +389,47 @@ _float CModel::Get_Animatioin_MotionOffset(_uint iAnimIdx)
 		return -1.f;
 
 	return m_vecAnimations[(size_t)iAnimIdx]->Get_MotionOffset();
+}
+
+void CModel::Make_MixRatio(_uint iAnimIdx, vector<DATA_ANIMIX>& vecAniMixData, CComputeShader* pAnimMixCS)
+{
+	if (iAnimIdx >= Get_AnimationCount())
+		return;
+
+	// 넘겨줄 vector를 만들어줌
+	vector<_float> vecRatios;
+	vecRatios.resize(m_vecBones.size(), 0.f);
+
+	for (auto& pMixData : vecAniMixData)
+	{
+		for (size_t i = 0 ; i< m_vecBones.size(); i++)
+		{
+			// 만약 내가 저 인덱스의 child라면
+			if(m_vecBones[i]->Get_IsChildBone(m_vecBones, pMixData.iParentIdx))
+				vecRatios[i] = pMixData.fRatio;
+		}
+
+		if (pMixData.bInClude)
+		{
+			vecRatios[size_t(pMixData.iParentIdx)] = pMixData.fRatio;
+		}
+	}
+
+	m_vecAnimations[(size_t)iAnimIdx]->Set_MixRatio(vecRatios, pAnimMixCS);
+}
+
+void CModel::Set_MixAnim_ResetSize(_uint iSize)
+{
+	m_vecMixAnimIndices.resize(size_t(iSize), -1);
+}
+
+void CModel::Set_MixAnim_AnimIndex(_uint iVectorIdx, _int iAnimIdx)
+{
+	size_t idx = size_t(iVectorIdx);
+	if (idx < m_vecMixAnimIndices.size())
+	{
+		m_vecMixAnimIndices[idx] = iAnimIdx;
+	}
 }
 
 HRESULT CModel::Change_ShaderPassByMseh(_uint iMeshIndex, _uint iPass)
@@ -589,7 +631,7 @@ void CModel::Set_AnimationPlayRate(_uint iIndex, _float fValue)
 		m_vecAnimations[iIndex]->Set_PlayRate(fValue);
 }
 
-HRESULT CModel::Ready_ComputeShaders(CComputeShader* pBoneMeshCS, CComputeShader* pBoneComBineCS, CComputeShader* pAnimEvalCS, CComputeShader* pAnimBlendCS, CComputeShader* pGetBoneCS)
+HRESULT CModel::Ready_ComputeShaders(CComputeShader* pBoneMeshCS, CComputeShader* pBoneComBineCS, CComputeShader* pAnimEvalCS, CComputeShader* pAnimBlendCS, CComputeShader* pAnimMixCS)
 {
 	Make_GroupBuffers();	// group buffer만 우선 생성
 	Make_SB();
@@ -643,13 +685,16 @@ HRESULT CModel::Ready_ComputeShaders(CComputeShader* pBoneMeshCS, CComputeShader
 		if(pAnimBlendCS)
 			pAnimBlendCS->Get_Output_Buffer()->Copy_Data(pIniailData, sizeof(CS_SRT), Get_BoneCount());
 
+		if(pAnimMixCS)
+			pAnimMixCS->Get_Output_Buffer()->Copy_Data(pIniailData, sizeof(CS_SRT), Get_BoneCount());
+
 		Safe_Delete_Array(pIniailData);
 	}
 
-	if (pGetBoneCS && m_bStageBones)
-	{
-		Bind_StagingBuffer(pGetBoneCS);
-	}
+	//if (pAnimMixCS && m_bStageBones)
+	//{
+	//	Bind_StagingBuffer(pAnimMixCS);
+	//}
 
 	return S_OK;
 }
@@ -852,16 +897,16 @@ void CModel::Begin_AnimationPlayState(AnimationPlayState eState, CComputeShader*
 	}
 }
 
-void CModel::Update_AnimationPlayState(CComputeShader* pBoneComBineCS, CComputeShader* pAnimEvalCS, CComputeShader* pAnimBlendCS, const _float fTimeDelta, CTransform* pOwnerTransform, CPhysicsCCT* pOwnerPhyCCT, CComputeShader* pGetBoneCS)
+void CModel::Update_AnimationPlayState(CComputeShader* pBoneComBineCS, CComputeShader* pAnimEvalCS, CComputeShader* pAnimBlendCS, const _float fTimeDelta, CTransform* pOwnerTransform, CPhysicsCCT* pOwnerPhyCCT, CComputeShader* pAnimMixCS)
 {
 	switch (m_eCurrentAnimationState)
 	{
 	case Engine::CModel::PLAY:
-		Play_Update(pBoneComBineCS, pAnimEvalCS, fTimeDelta, pOwnerTransform, pOwnerPhyCCT, pGetBoneCS);
+		Play_Update(pBoneComBineCS, pAnimEvalCS, fTimeDelta, pOwnerTransform, pOwnerPhyCCT, pAnimMixCS);
 		break;
 	case Engine::CModel::BLEND:
 		if(pAnimBlendCS)
-			Blend_Update(pBoneComBineCS, pAnimEvalCS, pAnimBlendCS, fTimeDelta, pOwnerTransform, pOwnerPhyCCT, pGetBoneCS);
+			Blend_Update(pBoneComBineCS, pAnimEvalCS, pAnimBlendCS, fTimeDelta, pOwnerTransform, pOwnerPhyCCT, pAnimMixCS);
 		break;
 	}
 }
@@ -886,21 +931,38 @@ void CModel::Change_AnimationPlayState(AnimationPlayState eState, CComputeShader
 	m_eCurrentAnimationState = eState;
 }
 
-void CModel::Play_Animation(CComputeShader* pBoneComBineCS, CComputeShader* pAnimEvalCS, _float fTimeDelta, CTransform* pOwnerTransform , CPhysicsCCT* pOwnerPhyCCT, CComputeShader* pGetBoneCS)
+void CModel::Play_Animation(CComputeShader* pBoneComBineCS, CComputeShader* pAnimEvalCS, _float fTimeDelta, CTransform* pOwnerTransform , CPhysicsCCT* pOwnerPhyCCT, CComputeShader* pAnimMixCS)
 {
 	// animation update
+
 	m_bIsAnimFinished = m_vecAnimations[m_iCurrentAnimIndex]->Update_TransformationMatrices(m_vecBones, m_bLoopAnimDone, fTimeDelta, m_isAnimLoop, pOwnerTransform, pOwnerPhyCCT, pAnimEvalCS);
 
-	// animation 결과 blendCS에 bind
-	pBoneComBineCS->Bind_InputStructuredBuffer(ENUM_TO_UINT(CS_SB_IDX::MU_SRTS),
-		pBoneComBineCS->Get_SRV("MU_SRTS"), pAnimEvalCS->Get_Output_Buffer());
+	if (m_bMixAnim && !m_vecMixAnimIndices.empty())
+	{
+		//// animation 결과 blendCS에 bind
+		//pAnimMixCS->Bind_InputStructuredBuffer(3,
+		//	pAnimMixCS->Get_SRV("MU_PRETRANSFORMS"), pAnimEvalCS->Get_Output_Buffer());
+
+		Mix_Animation(pAnimMixCS, pAnimEvalCS, pBoneComBineCS, fTimeDelta);
+
+		// animation 결과 blendCS에 bind
+		pBoneComBineCS->Bind_InputStructuredBuffer(ENUM_TO_UINT(CS_SB_IDX::MU_SRTS),
+			pBoneComBineCS->Get_SRV("MU_SRTS"), pAnimMixCS->Get_Output_Buffer());
+	}
+
+	else
+	{
+		// animation 결과 blendCS에 bind
+		pBoneComBineCS->Bind_InputStructuredBuffer(ENUM_TO_UINT(CS_SB_IDX::MU_SRTS),
+			pBoneComBineCS->Get_SRV("MU_SRTS"), pAnimEvalCS->Get_Output_Buffer());
+	}
 
 	// bone updatezd
 	Update_BoneCombineTransformMatrix(pBoneComBineCS);
 
 	//// get bone
 	//if (m_bStageBones)
-	//	DisPatch_BondMatrix(pBoneComBineCS, pGetBoneCS);
+	//	DisPatch_BondMatrix(pBoneComBineCS, pAnimMixCS);
 }
 
 void CModel::Play_Begin(CComputeShader* pAnimEvalCS, _uint iAnimationIndex, _bool bChannelReset)
@@ -915,12 +977,12 @@ void CModel::Play_Begin(CComputeShader* pAnimEvalCS, _uint iAnimationIndex, _boo
 		int a = 0;
 }
 
-void CModel::Play_Update(CComputeShader* pBoneComBineCS, CComputeShader* pAnimEvalCS, const _float fTimeDelta, CTransform* pOwnerTransform, CPhysicsCCT* pOwnerPhyCCT, CComputeShader* pGetBoneCS)
+void CModel::Play_Update(CComputeShader* pBoneComBineCS, CComputeShader* pAnimEvalCS, const _float fTimeDelta, CTransform* pOwnerTransform, CPhysicsCCT* pOwnerPhyCCT, CComputeShader* pAnimMixCS)
 {
 	CModelAnimation* pAnimation = m_vecAnimations[m_iCurrentAnimIndex];
 	_float fPrevPosition = pAnimation->Get_TrackPosition();
 
-	Play_Animation(pBoneComBineCS, pAnimEvalCS, fTimeDelta,  pOwnerTransform ,  pOwnerPhyCCT, pGetBoneCS);
+	Play_Animation(pBoneComBineCS, pAnimEvalCS, fTimeDelta,  pOwnerTransform ,  pOwnerPhyCCT, pAnimMixCS);
 
 	_float fCurrentPosition = pAnimation->Get_TrackPosition();
 	const _bool bLooped = m_isAnimLoop && (fCurrentPosition < fPrevPosition);
@@ -941,7 +1003,7 @@ void CModel::Blend_Begin(_uint CurAnimationIndex)
 	m_vecAnimations[CurAnimationIndex]->Reset_PrePosition();
 }
 
-void CModel::Blend_Update(CComputeShader* pBoneComBineCS, CComputeShader* pAnimEvalCS, CComputeShader* pAnimBlendCS, const _float fTimeDelta, CTransform* pOwnerTransform, CPhysicsCCT* pOwnerPhyCCT, CComputeShader* pGetBoneCS)
+void CModel::Blend_Update(CComputeShader* pBoneComBineCS, CComputeShader* pAnimEvalCS, CComputeShader* pAnimBlendCS, const _float fTimeDelta, CTransform* pOwnerTransform, CPhysicsCCT* pOwnerPhyCCT, CComputeShader* pAnimMixCS)
 {
 	if (m_fBlendDuration <= 0.f)
 	{
@@ -959,9 +1021,9 @@ void CModel::Blend_Update(CComputeShader* pBoneComBineCS, CComputeShader* pAnimE
 		_float fRatio = fNormalizedTime * fNormalizedTime * (3.0f - 2.0f * fNormalizedTime);
 
 		if (pOwnerTransform)
-			Blend_Animation(pBoneComBineCS, pAnimEvalCS, pAnimBlendCS, fTimeDelta, fRatio, pOwnerTransform, pOwnerPhyCCT, pGetBoneCS);
+			Blend_Animation(pBoneComBineCS, pAnimEvalCS, pAnimBlendCS, fTimeDelta, fRatio, pOwnerTransform, pOwnerPhyCCT, pAnimMixCS);
 		else
-			Blend_Animation(pBoneComBineCS, pAnimEvalCS, pAnimBlendCS, fTimeDelta, fRatio, m_pOwner->Get_Component<CTransform>(), m_pOwner->Get_Component<CPhysicsCCT>(), pGetBoneCS);
+			Blend_Animation(pBoneComBineCS, pAnimEvalCS, pAnimBlendCS, fTimeDelta, fRatio, m_pOwner->Get_Component<CTransform>(), m_pOwner->Get_Component<CPhysicsCCT>(), pAnimMixCS);
 	}
 	else
 		Change_AnimationPlayState(PLAY, pAnimEvalCS, m_iCurrentAnimIndex, false);
@@ -1075,7 +1137,7 @@ void CModel::Update_BoneCombineTransformMatrix(CComputeShader* pBoneComBineCS)
 	}
 }
 
-void CModel::Blend_Animation(CComputeShader* pBoneComBineCS, CComputeShader* pAnimEvalCS, CComputeShader* pAnimBlendCS, _float fTimeDelta, _float fRatio, CTransform* pOwnerTransform, CPhysicsCCT* pOwnerPhyCCT, CComputeShader* pGetBoneCS)
+void CModel::Blend_Animation(CComputeShader* pBoneComBineCS, CComputeShader* pAnimEvalCS, CComputeShader* pAnimBlendCS, _float fTimeDelta, _float fRatio, CTransform* pOwnerTransform, CPhysicsCCT* pOwnerPhyCCT, CComputeShader* pAnimMixCS)
 {
 	if (pOwnerTransform)
 	{
@@ -1116,14 +1178,26 @@ void CModel::Blend_Animation(CComputeShader* pBoneComBineCS, CComputeShader* pAn
 	// animation 2개를 lerp
 	Lerp_Animation(pAnimBlendCS, fRatio);
 
-	// animation 결과 bone cs에 bind
-	pBoneComBineCS->Bind_InputStructuredBuffer(ENUM_TO_UINT(CModel::CS_SB_IDX::MU_SRTS),
-		pBoneComBineCS->Get_SRV("MU_SRTS"), pAnimBlendCS->Get_Output_Buffer());
+	if (m_bMixAnim && !m_vecMixAnimIndices.empty())
+	{
+		Mix_Animation(pAnimMixCS, pAnimBlendCS, pBoneComBineCS, fTimeDelta);
+
+		// animation 결과 blendCS에 bind
+		pBoneComBineCS->Bind_InputStructuredBuffer(ENUM_TO_UINT(CS_SB_IDX::MU_SRTS),
+			pBoneComBineCS->Get_SRV("MU_SRTS"), pAnimMixCS->Get_Output_Buffer());
+	}
+
+	else
+	{
+		// animation 결과 bone cs에 bind
+		pBoneComBineCS->Bind_InputStructuredBuffer(ENUM_TO_UINT(CModel::CS_SB_IDX::MU_SRTS),
+			pBoneComBineCS->Get_SRV("MU_SRTS"), pAnimBlendCS->Get_Output_Buffer());
+	}
 
 	Update_BoneCombineTransformMatrix(pBoneComBineCS);
 
 	//if (m_bStageBones)
-	//	DisPatch_BondMatrix(pBoneComBineCS, pGetBoneCS);
+	//	DisPatch_BondMatrix(pBoneComBineCS, pAnimMixCS);
 }
 
 void CModel::Lerp_Animation(CComputeShader* pAnimBlendCS, _float fRatio)
@@ -1170,7 +1244,7 @@ void CModel::Lerp_Animation(CComputeShader* pAnimBlendCS, _float fRatio)
 	}
 }
 
-void CModel::Get_BoneMatrix(CComputeShader* pGetBoneCS)
+void CModel::Get_BoneMatrix(CComputeShader* pAnimMixCS)
 {
 
 	// 2. Gpu -> Cpu
@@ -1179,7 +1253,7 @@ void CModel::Get_BoneMatrix(CComputeShader* pGetBoneCS)
 		uint32_t readIndex = (m_iFrameIndex + 1) % 2;
 
 		// copy data
-		m_pDeviceContext->CopyResource(m_pBoneOuputStagingBuffer[writeIndex], pGetBoneCS->Get_Output_Buffer()->Get_Buffer());
+		m_pDeviceContext->CopyResource(m_pBoneOuputStagingBuffer[writeIndex], pAnimMixCS->Get_Output_Buffer()->Get_Buffer());
 
 		if (m_iFrameIndex == 0)
 		{
@@ -1208,16 +1282,31 @@ void CModel::Get_BoneMatrix(CComputeShader* pGetBoneCS)
 	}
 }
 
-void CModel::DisPatch_BondMatrix(CComputeShader* pBoneComBineCS, CComputeShader* pGetBoneCS)
+void CModel::DisPatch_BondMatrix(CComputeShader* pBoneComBineCS, CComputeShader* pAnimMixCS)
 {
 	{
 		// combine 정보 넘겨주기
-		pGetBoneCS->Bind_InputStructuredBuffer(ENUM_TO_UINT(CModel::GETBONECS_SB_IDX::MU_BONEMATS),
-			pGetBoneCS->Get_SRV("MU_COMBINEDBONES"), pBoneComBineCS->Get_Output_Buffer());
+		pAnimMixCS->Bind_InputStructuredBuffer(ENUM_TO_UINT(CModel::GETBONECS_SB_IDX::MU_BONEMATS),
+			pAnimMixCS->Get_SRV("MU_COMBINEDBONES"), pBoneComBineCS->Get_Output_Buffer());
 
 		// dispatch
 		_uint iGroupX = (m_iStageBoneCounts + 31) / 32;
-		pGetBoneCS->Dispatch(iGroupX, 1, 1);
+		pAnimMixCS->Dispatch(iGroupX, 1, 1);
+	}
+}
+
+void CModel::Mix_Animation(CComputeShader* pAnimMixCS, CComputeShader* pPreAnimCS, CComputeShader* pBoneComBineCS, const _float fTimeDelta)
+{
+	// todo_eunbi : 만약 이전 mix animation 값을 넘겨줘야한다면 i 값에 따라 분기 나누기
+	for (size_t i = 0; i < m_vecMixAnimIndices.size(); i++)
+	{
+		if (m_vecMixAnimIndices[i] >= 0)
+		{
+			//if(i == 0)
+				m_vecAnimations[m_vecMixAnimIndices[i]]->Update_MixAnimation(m_vecBones, pAnimMixCS, pPreAnimCS,fTimeDelta, Get_BoneCount());
+			//else
+			//	m_vecAnimations[m_vecMixAnimIndices[i]]->Update_MixAnimation(m_vecBones, pAnimMixCS, pAnimMixCS, fTimeDelta, Get_BoneCount());
+		}
 	}
 }
 
@@ -1279,7 +1368,7 @@ void CModel::Ready_SB(CComputeShader* pAnimEvalCS)
 	pAnimEvalCS->Get_SRV("BLEND_OUTPUT_SRV")->SetResource(m_pCurSB->Get_SRV());
 }
 
-HRESULT CModel::Bind_StagingBuffer(CComputeShader* pGetBoneCS)
+HRESULT CModel::Bind_StagingBuffer(CComputeShader* pAnimMixCS)
 {
 	CS_MU_BONEIDX* pInitailData = new CS_MU_BONEIDX[m_iStageBoneCounts];
 
@@ -1292,29 +1381,29 @@ HRESULT CModel::Bind_StagingBuffer(CComputeShader* pGetBoneCS)
 	}
 
 	// 3. 바로 바인딩
-	pGetBoneCS->Bind_InputStructuredBuffer_Data(ENUM_TO_UINT(GETBONECS_SB_IDX::IMMU_BONEINDICES), pInitailData, sizeof(CS_MU_BONEIDX), m_iStageBoneCounts);
+	pAnimMixCS->Bind_InputStructuredBuffer_Data(ENUM_TO_UINT(GETBONECS_SB_IDX::IMMU_BONEINDICES), pInitailData, sizeof(CS_MU_BONEIDX), m_iStageBoneCounts);
 	Safe_Delete_Array(pInitailData);
 
 	return S_OK;
 }
 
-//void CModel::Get_BoneMatrix(CComputeShader* pBoneComBineCS, CComputeShader* pGetBoneCS)
+//void CModel::Get_BoneMatrix(CComputeShader* pBoneComBineCS, CComputeShader* pAnimMixCS)
 //{
 //	// 1. GetBone CS dispatch
 //	{
 //		// combine 정보 넘겨주기
-//		pGetBoneCS->Bind_InputStructuredBuffer(ENUM_TO_UINT(CModel::GETBONECS_SB_IDX::MU_BONEMATS),
-//			pGetBoneCS->Get_SRV("MU_COMBINEDBONES"), pBoneComBineCS->Get_Output_Buffer());
+//		pAnimMixCS->Bind_InputStructuredBuffer(ENUM_TO_UINT(CModel::GETBONECS_SB_IDX::MU_BONEMATS),
+//			pAnimMixCS->Get_SRV("MU_COMBINEDBONES"), pBoneComBineCS->Get_Output_Buffer());
 //
 //		// dispatch
 //		_uint iGroupX = (m_iStageBoneCounts + 31) / 32;
-//		pGetBoneCS->Dispatch(iGroupX, 1, 1);
+//		pAnimMixCS->Dispatch(iGroupX, 1, 1);
 //	}
 //
 //	// 2. Gpu -> Cpu
 //	{
 //		// copy data
-//		m_pDeviceContext->CopyResource(m_pBoneOuputStagingBuffer, pGetBoneCS->Get_Output_Buffer()->Get_Buffer());
+//		m_pDeviceContext->CopyResource(m_pBoneOuputStagingBuffer, pAnimMixCS->Get_Output_Buffer()->Get_Buffer());
 //
 //		vector<Matrix> vecBones;
 //		vecBones.resize(m_iStageBoneCounts);
