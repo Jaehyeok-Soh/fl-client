@@ -354,8 +354,8 @@ public:
 #pragma endregion
 
 #pragma region EFFECT_MANAGER
-	void Spawn_PoolEffect(CEffectHandler* handler, const std::string& UniqueEffectName, const std::string& strTag, const Matrix& matWorld, _float fDuration, _bool bIsLocal, void* pTargetBone = nullptr);
-	void Spawn_PoolEffect(const std::string& strTag, const Matrix& matWorld, _float fDuration, _bool bIsLocal, void* pTargetBone = nullptr);
+	void Spawn_PoolEffect(CEffectHandler* handler, const std::string& UniqueEffectName, const std::string& strTag, const Matrix& matWorld, _float fDuration, _uint bIsLocal, _uint iFlag, const Matrix* = nullptr, const Matrix* = nullptr);
+	void Spawn_PoolEffect(const std::string& strTag, const Matrix& matWorld, _float fDuration, _uint bIsLocal, _uint iFlag, const Matrix* = nullptr, const Matrix* = nullptr);
 #pragma endregion
 // Todo - 쓰레기통 정리
 #pragma region GAMEDATA

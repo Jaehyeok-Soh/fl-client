@@ -1,5 +1,5 @@
 #pragma once
-#include "PartObject.h"
+#include "EffectPartBase.h"
 #include "Client_Defines.h"
 #include "DataStruct_Effect.h"
 
@@ -16,10 +16,10 @@ NS_END
 NS_BEGIN(Client)
 
 class CEffectObject :
-    public CPartObject
+    public CEffectPartBase
 {
 public:
-    using Super = CPartObject;
+    using Super = CEffectPartBase;
 
     typedef struct tagEffectObjectDesc : public Super::PARTOBJ_DESC
     {
@@ -56,6 +56,7 @@ public:
         // 외부 호출 함수
     virtual HRESULT Spawn_FromPool(void* pArg);
     virtual HRESULT Despawn_FromPool();
+    virtual void LoopState_Change(E_LoopState eState) override;
 
 public:
     _bool IsEffectfinish() {return m_bIsEffectFinish;}

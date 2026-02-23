@@ -360,18 +360,17 @@ void CPanel_AnimDescription::Desc_EffectWindow()
     if (ImGui::CollapsingHeader("Transform & Attachment", ImGuiTreeNodeFlags_DefaultOpen))
     {
         int currentSim = pEvent.iSimulationType;
-        const char* simItems[] = { "WORLD (0)", "LOCAL (1)" };
+        const char* simItems[] = { "LOCAL (0)", "WORLD (1)",  };
         if (ImGui::Combo("Sim Type", &currentSim, simItems, IM_ARRAYSIZE(simItems)))
         {
             pEvent.iSimulationType = currentSim;
             m_pAnimToolManager->Modify_EffectEvent(m_tEventInfo->vecVFXEvents);
         }
 
-        static char socketBuf[256];
-        strcpy_s(socketBuf, pEvent.strSocketName.c_str());
-        if (ImGui::InputText("Socket Name", socketBuf, 256))
+        int CurrentBoneIndex = pEvent.iBoneIndex;
+        if (ImGui::InputInt("Socket Name", &CurrentBoneIndex, 256))
         {
-            pEvent.strSocketName = socketBuf;
+            pEvent.iBoneIndex = CurrentBoneIndex;
             m_pAnimToolManager->Modify_EffectEvent(m_tEventInfo->vecVFXEvents);
         }
 
@@ -382,6 +381,47 @@ void CPanel_AnimDescription::Desc_EffectWindow()
 
         if (ImGui::DragFloat3("Offset Rotation", (float*)&pEvent.vRotation, 0.01f))
             m_pAnimToolManager->Modify_EffectEvent(m_tEventInfo->vecVFXEvents);
+
+        if (ImGui::TreeNode("Use Bone Flag ##AnimationEffect"))
+        {
+            ImGui::Separator();
+            ImGui::TextColored(ImVec4(1.0f, 1.0f, 0.0f, 1.0f), "Property Random Flags");
+
+            // 2. 비트 플래그 개별 제어 (정우님이 만든 E_RANDOM_FLAG 연동)
+            // 현재 플래그 상태 확인
+            bool bBonePos = (pEvent.iBoneFlag & DTO::BONE_POS) != 0;
+            bool bBoneScale = (pEvent.iBoneFlag & DTO::BONE_SCALE) != 0;
+            bool bBoneRotataion = (pEvent.iBoneFlag & DTO::BONE_ROTATAION) != 0;
+
+            // 위치 랜덤 체크박스
+            if (ImGui::Checkbox("Use Bone Position", &bBonePos))
+            {
+                if (bBonePos) pEvent.iBoneFlag |= DTO::BONE_POS;
+                else pEvent.iBoneFlag &= ~DTO::BONE_POS;
+                m_pAnimToolManager->Modify_EffectEvent(m_tEventInfo->vecVFXEvents);
+            }
+
+            // 수명 랜덤 체크박스
+            if (ImGui::Checkbox("Use Bone Scale", &bBoneScale))
+            {
+                if (bBoneScale) pEvent.iBoneFlag |= DTO::BONE_SCALE;
+                else pEvent.iBoneFlag &= ~DTO::BONE_SCALE;
+                m_pAnimToolManager->Modify_EffectEvent(m_tEventInfo->vecVFXEvents);
+            }
+
+            // 크기 랜덤 체크박스
+            if (ImGui::Checkbox("Use Bone Rotation", &bBoneRotataion))
+            {
+                if (bBoneRotataion) pEvent.iBoneFlag |= DTO::BONE_ROTATAION;
+                else pEvent.iBoneFlag &= ~DTO::BONE_ROTATAION;
+                m_pAnimToolManager->Modify_EffectEvent(m_tEventInfo->vecVFXEvents);
+            }
+
+            ImGui::Spacing();
+            ImGui::TextColored(ImVec4(0.5f, 0.5f, 0.5f, 1.0f), "Current Flag Value: %d", pEvent.iBoneFlag);
+
+            ImGui::TreePop();
+        }
     }
 
     ImGui::PopID();

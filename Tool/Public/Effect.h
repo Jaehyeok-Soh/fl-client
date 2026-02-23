@@ -17,7 +17,7 @@ class Effect : public CTool_EffectBase
 public:
 	typedef struct tagToolObjectDesc : public Super::TOOLOBJECT_DESC
 	{
-		DTO::E_SIMULATION_SPACE _Effect_SimulationType = DTO::E_SIMULATION_SPACE::NONE;
+		DTO::E_SIMULATION_SPACE _Effect_SimulationType = DTO::E_SIMULATION_SPACE::WORLD;
 		vector<DTO::TEFFECT_PartsData>	_childData = {};
 	}EFFECT_CONTAINERDESC;
 
@@ -45,11 +45,9 @@ public:
 	virtual void Set_Dead(const wstring& wstrLayerTag) override;
 
 public:
-	virtual void Set_ParentsWorldMatrix(Matrix* worldMatrix) { m_pParentsWorldMatrix = worldMatrix; }
 	virtual void Set_SimulationSpace(DTO::E_SIMULATION_SPACE Space) { m_eDesc._Effect_SimulationType = Space; }
 
 	virtual const DTO::E_SIMULATION_SPACE& Get_SimulationSpace() { return m_eDesc._Effect_SimulationType; }
-	virtual Matrix* Get_ParentsWorldMatrix() { return m_pParentsWorldMatrix; }
 
 protected:
 	void Update_CombinedWorldMatrix(const Matrix* pMatParent);
@@ -66,7 +64,10 @@ public:
 
 protected:
 	EFFECT_CONTAINERDESC			m_eDesc = {};
-	Matrix*							m_pParentsWorldMatrix = { nullptr };
+	Matrix							m_pOffsetMartix = {};
+	const Matrix*					m_pBoneMatrix = { nullptr };
+	const Matrix*					m_pBoneOwnerMatrix = { nullptr };
+	_uint							m_iBoneFlag = {};
 	Matrix							m_matCombinedWorld = {};
 };
 

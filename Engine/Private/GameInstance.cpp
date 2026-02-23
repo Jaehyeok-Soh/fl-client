@@ -840,14 +840,14 @@ HRESULT CGameInstance::Render_Fonts()
 #pragma endregion
 
 #pragma region EFFECT_MANAGER
-void CGameInstance::Spawn_PoolEffect(CEffectHandler* handler, const std::string& UniqueEffectName, const std::string& strTag, const Matrix& matWorld, _float fDuration, _bool bIsLocal, void* pTargetBone)
+void CGameInstance::Spawn_PoolEffect(CEffectHandler* handler, const std::string& UniqueEffectName, const std::string& strTag, const Matrix& matWorld, _float fDuration, _uint bIsLocal, _uint iFlag, const Matrix* pTargetBone, const Matrix* pTargetTransMatrix)
 {
-	m_pEffect_Manager->Spawn_PoolEffect(handler, UniqueEffectName, strTag, matWorld, fDuration, bIsLocal, pTargetBone);
+	m_pEffect_Manager->Spawn_PoolEffect(handler, UniqueEffectName, strTag, matWorld, fDuration, bIsLocal, iFlag, pTargetBone, pTargetTransMatrix);
 }
 
-void CGameInstance::Spawn_PoolEffect(const std::string& strTag, const Matrix& matWorld, _float fDuration, _bool bIsLocal, void* pTargetBone)
+void CGameInstance::Spawn_PoolEffect(const std::string& strTag, const Matrix& matWorld, _float fDuration, _uint bIsLocal, _uint iFlag, const Matrix* pTargetBone, const Matrix* pTargetTransMatrix)
 {
-	m_pEffect_Manager->Spawn_PoolEffect(strTag, matWorld, fDuration, bIsLocal, pTargetBone);
+	m_pEffect_Manager->Spawn_PoolEffect(strTag, matWorld, fDuration, bIsLocal, iFlag, pTargetBone, pTargetTransMatrix);
 }
 
 #pragma endregion

@@ -186,6 +186,7 @@
     <ClCompile Include="..\Private\DataDocument_AttackOverlap.cpp" />
     <ClCompile Include="..\Private\DataStruct_AttackOverlap.cpp" />
     <ClCompile Include="..\Private\DataStruct_EffectEvent.cpp" />
+    <ClCompile Include="..\Private\EffectPartBase.cpp" />
     <ClCompile Include="..\Private\Effect_Manager.cpp" />
     <ClCompile Include="..\private\FxEffectAsset.cpp" />
     <ClCompile Include="..\private\FxShaderVariant.cpp" />
@@ -344,6 +345,7 @@
     <ClInclude Include="..\Public\DataDocument_AttackOverlap.h" />
     <ClInclude Include="..\Public\DataStruct_AttackOverlap.h" />
     <ClInclude Include="..\Public\DataStruct_EffectEvent.h" />
+    <ClInclude Include="..\Public\EffectPartBase.h" />
     <ClInclude Include="..\Public\Effect_Manager.h" />
     <ClInclude Include="..\public\FxEffectAsset.h" />
     <ClInclude Include="..\public\FxShaderVariant.h" />

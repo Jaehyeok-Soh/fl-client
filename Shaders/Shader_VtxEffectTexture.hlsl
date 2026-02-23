@@ -434,6 +434,8 @@ float4 PS_Texture(GS_OUT_EFFECT_PARTICLE In) : SV_TARGET0
 {
     float2 noiseUV = In.vUV + g_Effect.g_ScrollOffset;
     float4 noiseSample = { 1.f, 1.f, 1.f, 1.f };
+    float4 DiffuseSample = { 1.f, 1.f, 1.f, 1.f };
+    float4 MaskSample = { 1.f, 1.f, 1.f, 1.f };
     
     if (Has(g_Effect.g_TextureFlags, NOISETEXTURE))
     {
@@ -452,14 +454,20 @@ float4 PS_Texture(GS_OUT_EFFECT_PARTICLE In) : SV_TARGET0
     finalUV.y += (noiseValue - 0.5f) * g_Effect.g_DistortionScale.y;
 
     // =========== Diffuse Texture 여부 =============
-    float4 DiffuseColor = float4(1.f, 1.f, 1.f, 1.f);
     
     if (Has(g_Effect.g_TextureFlags, DEFAULTTEXTURE))
-    {
-        DiffuseColor = DefaultTextureSample(Get90DegreeRotatedUV(finalUV, g_Effect.g_RotationFlags, DEFAULTTEXTURE));
-    }
+        DiffuseSample = DefaultTextureSample(Get90DegreeRotatedUV(finalUV, g_Effect.g_RotationFlags, DEFAULTTEXTURE));
     
-    float finalAlpha = DiffuseColor.a * noiseValue;
+    else 
+        DiffuseSample = float4(1.f, 1.f, 1.f, 1.f);
+    
+    if (Has(g_Effect.g_TextureFlags, MASKINGTEXTURE))
+        MaskSample = MaskTextureSample(Get90DegreeRotatedUV(finalUV, g_Effect.g_RotationFlags, MASKINGTEXTURE));
+    
+    else
+        MaskSample = float4(1.f, 1.f, 1.f, 1.f);
+    
+    float finalAlpha = DiffuseSample.a * noiseValue * MaskSample.r;
     
     // ===========  라이프타임에 따른 투명도 적용  =============
     float LifeRatio = saturate(1.0f - (In.vLifeTime.x / In.vLifeTime.y));
@@ -469,7 +477,7 @@ float4 PS_Texture(GS_OUT_EFFECT_PARTICLE In) : SV_TARGET0
         discard;
     
     // =========== 사진 검은색 부분 자르기 ==========
-    float3 finalColor = float3(DiffuseColor.rgb * g_Effect.g_EffectColor.rgb * 1.0f);
+    float3 finalColor = float3(DiffuseSample.rgb * g_Effect.g_EffectColor.rgb * 1.0f);
     // 휘도 계산 공식
     float brightness = dot(finalColor.rgb, float3(0.2126f, 0.7152f, 0.0722f));
     if (brightness < 0.05f)

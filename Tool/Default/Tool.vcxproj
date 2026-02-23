@@ -160,6 +160,7 @@
     <ClInclude Include="..\Public\CameraMan_Free.h" />
     <ClInclude Include="..\Public\Tool_EffectBase.h" />
     <ClInclude Include="..\Public\Panel_Parts.h" />
+    <ClInclude Include="..\Public\Tool_EffectPartBase.h" />
     <ClInclude Include="..\Public\Tool_Weapon.h" />
     <ClInclude Include="..\Public\CEffectObject.h" />
     <ClInclude Include="..\Public\Effect_Preview_panel.h" />
@@ -259,6 +260,7 @@
     <ClCompile Include="..\Private\Tool_EffectBase.cpp" />
     <ClCompile Include="..\Private\Panel_Parts.cpp" />
     <ClCompile Include="..\Private\SceneData.cpp" />
+    <ClCompile Include="..\Private\Tool_EffectPartBase.cpp" />
     <ClCompile Include="..\Private\Tool_Weapon.cpp" />
     <ClCompile Include="..\Private\CEffectObject.cpp" />
     <ClCompile Include="..\Private\Effect_Preview_panel.cpp" />

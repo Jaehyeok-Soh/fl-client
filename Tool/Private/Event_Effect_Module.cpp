@@ -59,14 +59,18 @@ void CEvent_Effect_Module::Modify_EFfectEvent(vector<DTO::EFFECTEVENT> events)
     if (nullptr == m_pEffectEvent) return;
 
     // 핸들러의 m_tDesc(ANIM_EFFECT_HANDLER_DESC)에 직접 접근하여 map을 재구성
-    auto& mapEvents = m_pEffectEvent->Get_Desc().mapEvents;
+    auto& EffectDesc = m_pEffectEvent->Get_Desc();
+    auto& mapEvents = EffectDesc.mapEvents;
 
     mapEvents.clear();
+
     for (auto& evt : events)
     {
         // 툴에서 편집된 애니메이션 인덱스 기준으로 다시 분류
         mapEvents[evt.iAnimIndex].push_back(evt);
     }
+
+    m_pEffectEvent->Set_Desc(EffectDesc);
 }
 
 void CEvent_Effect_Module::Awake()

@@ -33,7 +33,7 @@ enum class E_SHAPETYPE {
     GATHER,   // 중앙으로 모이기
     FOUNTAIN  // 분수 효과
 };
-enum class E_SIMULATION_SPACE { NONE = 0, LOCAL, WORLD };
+enum class E_SIMULATION_SPACE { LOCAL, WORLD };
 enum class E_EMISSION_TYPE { BOX = 0, CIRCLE, SPHERE, CONE };
 enum class EEffectType : _uint{ EFFECT_CONTAINER, EFFECT_PARTS, END};
 inline constexpr _uint g_EffectTypeCount{ ENUM_TO_UINT(EEffectType::END) };
@@ -231,7 +231,7 @@ struct TEFFECT_ContainerData
     std::string EffectContainerName = {};
 
     Matrix      vWorldMatrix = {};
-    _uint _Effect_SimulationType = ENUM_TO_UINT(E_SIMULATION_SPACE::NONE);
+    _uint _Effect_SimulationType = ENUM_TO_UINT(E_SIMULATION_SPACE::WORLD);
     vector<TEFFECT_PartsData>   _ChildData = {};
 };
 

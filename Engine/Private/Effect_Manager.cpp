@@ -16,13 +16,15 @@ HRESULT CEffect_Manager::Initialize()
 	return S_OK;
 }
 
-void CEffect_Manager::Spawn_PoolEffect(CEffectHandler* handler, const std::string& UniqueEffectName, const std::string& strTag, const Matrix& matWorld, _float fDuration, _bool bIsLocal, void* pTargetBone)
+void CEffect_Manager::Spawn_PoolEffect(CEffectHandler* handler, const std::string& UniqueEffectName, const std::string& strTag, const Matrix& matWorld, _float fDuration, _uint bIsLocal, _uint iFlag, const Matrix* pTargetBone, const Matrix* pTransMatrix)
 {
     EFFECT_SPAWN_DESC tEngineDesc = {};
     tEngineDesc.matWorld = matWorld;
     tEngineDesc.fDuration = fDuration;
-    tEngineDesc.iSimulationType = bIsLocal ? 1 : 0;
-    tEngineDesc.pTargetBoneMatrix = (const Matrix*)pTargetBone;
+    tEngineDesc.iSimulationType = bIsLocal;
+    tEngineDesc.pTargetBoneMatrix = &pTargetBone;
+    tEngineDesc.pTransformMatrix = &pTransMatrix;
+    tEngineDesc.iFlag = iFlag;
 
     wstring wstrPrototypeTag = L"POOL_" + Engine_Utils::ToWString(strTag);
 
@@ -39,13 +41,15 @@ void CEffect_Manager::Spawn_PoolEffect(CEffectHandler* handler, const std::strin
     );
 }
 
-void CEffect_Manager::Spawn_PoolEffect(const std::string& strTag, const Matrix& matWorld, _float fDuration, _bool bIsLocal, void* pTargetBone)
+void CEffect_Manager::Spawn_PoolEffect(const std::string& strTag, const Matrix& matWorld, _float fDuration, _uint bIsLocal, _uint iFlag, const Matrix* pTargetBone, const Matrix* pTransMatrix)
 {
     EFFECT_SPAWN_DESC tEngineDesc = {};
     tEngineDesc.matWorld = matWorld;
     tEngineDesc.fDuration = fDuration;
-    tEngineDesc.iSimulationType = bIsLocal ? 1 : 0;
-    tEngineDesc.pTargetBoneMatrix = (const Matrix*)pTargetBone;
+    tEngineDesc.iSimulationType = bIsLocal;
+    tEngineDesc.pTargetBoneMatrix = &pTargetBone;
+    tEngineDesc.pTransformMatrix = &pTransMatrix;
+    tEngineDesc.iFlag = iFlag;
 
     wstring wstrPrototypeTag = L"POOL_" + Engine_Utils::ToWString(strTag);
 
@@ -56,6 +60,7 @@ void CEffect_Manager::Spawn_PoolEffect(const std::string& strTag, const Matrix& 
         &tEngineDesc
     );
 }
+
 CEffect_Manager* CEffect_Manager::Create()
 {
     CEffect_Manager* pInstance = new CEffect_Manager();

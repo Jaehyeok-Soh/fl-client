@@ -17,12 +17,12 @@
 #define STOP 3
 
 CEffectObject::CEffectObject(ID3D11Device* pDevice, ID3D11DeviceContext* pDeviceContext)
-    :CPartObject(pDevice, pDeviceContext)
+    :Super(pDevice, pDeviceContext)
 {
 }
 
 CEffectObject::CEffectObject(const CEffectObject& rhs)
-    :CPartObject(rhs)
+    :Super(rhs)
 {
 }
 
@@ -533,6 +533,23 @@ HRESULT CEffectObject::Despawn_FromPool()
     TimeFlagRequest(RESET);
 
     return S_OK;
+}
+
+void CEffectObject::LoopState_Change(E_LoopState eState)
+{
+    // TODO : 
+
+    switch (eState)
+    {
+    case E_LoopState::LOOP_START:
+    {
+        break;
+    }
+    case E_LoopState::LOOP_END:
+    {
+        break;
+    }
+    }
 }
 
 void CEffectObject::TimeFlagRequest(_uint iTimeFlag)

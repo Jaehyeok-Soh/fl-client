@@ -3,6 +3,7 @@
 #include "DataStruct_Effect.h"
 #include "DataDocument_Effect.h"
 #include "CEffectObject.h"
+#include "DataStruct_EffectEvent.h"
 #include "Engine_Utils.h"
 
 #define MAX_EFFECTPART 10
@@ -72,7 +73,7 @@ HRESULT Effect::Ready_PartsData(void* pArg)
 		transformDesc.fMovePerSec = 1.f;
 
 		// 부모 행렬 및 기본 정보 설정
-		tObjDesc.pMatParent = &(Get_Component<CTransform>()->Get_WorldMatrix());
+		tObjDesc.pMatParent = &m_matCombinedWorld;
 		tObjDesc.pTransform_Desc = &transformDesc;
 		tObjDesc.iLevelIndex = pDesc->iLevelIndex;
 
@@ -109,9 +110,45 @@ void Effect::Update(const _float fTimeDelta)
 {
 	Super::Update(fTimeDelta);
 
-	if (m_eDesc._Effect_SimulationType == DTO::E_SIMULATION_SPACE::LOCAL && m_pParentsWorldMatrix != nullptr)
+	if (m_eDesc._Effect_SimulationType == DTO::E_SIMULATION_SPACE::LOCAL && m_pBoneMatrix != nullptr)
 	{
-		Update_CombinedWorldMatrix(m_pParentsWorldMatrix);
+
+		Matrix matBone = *m_pBoneMatrix;
+		Matrix matCustom = XMMatrixIdentity();
+
+		Vector3 vBoneScale;
+		Quat vBoneQuat;
+		Vector3 vBonePos;
+
+		matBone.Decompose(vBoneScale, vBoneQuat, vBonePos);
+
+		if (Engine_Utils::Has_Flag(m_iBoneFlag, DTO::BONE_SCALE))
+			matCustom *= Matrix::CreateScale(vBoneScale);
+
+		if (Engine_Utils::Has_Flag(m_iBoneFlag, DTO::BONE_ROTATAION))
+			matCustom *= Matrix::CreateFromQuaternion(vBoneQuat);
+
+		if (Engine_Utils::Has_Flag(m_iBoneFlag, DTO::BONE_POS))
+		{
+			matCustom.Translation(Vec3(vBonePos.x * 0.01f, vBonePos.y * 0.01f, vBonePos.z * 0.01f));
+		}
+
+		Matrix matBoneOwner = *m_pBoneOwnerMatrix;
+		Matrix matCustom2 = XMMatrixIdentity();
+
+		Vector3 vBoneScale2;
+		Quat vBoneQuat2;
+		Vector3 vBonePos2;
+
+		matBoneOwner.Decompose(vBoneScale2, vBoneQuat2, vBonePos2);
+		matCustom2 *= Matrix::CreateFromQuaternion(vBoneQuat2);
+		matCustom2.Translation(Vec3(vBonePos2.x, vBonePos2.y, vBonePos2.z));
+		
+		m_matCombinedWorld = m_pOffsetMartix * (matCustom) *(matCustom2);
+	}
+	else
+	{
+		m_matCombinedWorld = Get_Component<CTransform>()->Get_WorldMatrix();
 	}
 
 	if(m_pGameInstance->Get_CurrentLevelIndex() != (ENUM_TO_UINT(ELevelType::EFFECT)))
@@ -180,9 +217,10 @@ void Effect::Draw_ImGui()
 	Super::Draw_ImGui();
 }
 
-void Effect::Update_CombinedWorldMatrix(const Matrix* pMatParent)
+void Effect::Update_CombinedWorldMatrix(const Matrix* pBoneMatrix)
 {
-	m_matCombinedWorld = Get_Component<CTransform>()->Get_WorldMatrix() * (*pMatParent);
+	if(pBoneMatrix != nullptr)
+		m_matCombinedWorld = m_pOffsetMartix * (*pBoneMatrix);
 }
 
 
@@ -211,19 +249,23 @@ HRESULT Effect::Spawn_FromPool(void* pArg)
 {
 	if (nullptr == pArg) return E_FAIL;
 
+	Matrix matTargetWorld = XMMatrixIdentity();
+	Get_Component<CTransform>()->Set_WorldMatrix(matTargetWorld);
+
 	// Engine에서 던진 범용 Desc로 캐스팅
 	EFFECT_SPAWN_DESC* pEngineDesc = static_cast<EFFECT_SPAWN_DESC*>(pArg);
 
 	// Engine 데이터를 기반으로 Client의 데이터 갱신
-	//m_pParentsWorldMatrix = pEngineDesc->matWorld;
 	m_eDesc._Effect_SimulationType = (DTO::E_SIMULATION_SPACE)pEngineDesc->iSimulationType;
-	m_pParentsWorldMatrix = (Matrix*)pEngineDesc->pTargetBoneMatrix;
+	m_pBoneMatrix = *pEngineDesc->pTargetBoneMatrix;
+	m_pBoneOwnerMatrix = *pEngineDesc->pTransformMatrix;
+	m_iBoneFlag = pEngineDesc->iFlag;
 
 	if (m_eDesc._Effect_SimulationType == DTO::E_SIMULATION_SPACE::WORLD)
-		m_matCombinedWorld = (pEngineDesc->matWorld);
-
-	else
 		Get_Component<CTransform>()->Set_WorldMatrix(pEngineDesc->matWorld);
+
+	else if ((m_eDesc._Effect_SimulationType == DTO::E_SIMULATION_SPACE::LOCAL))
+		m_pOffsetMartix = pEngineDesc->matWorld;
 
 	// 타이머 및 자식들 초기화
 	for (auto effectObject : m_vecPartObjects)

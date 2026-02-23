@@ -1,5 +1,6 @@
 #include "Engine_pch.h"
 #include "EffectBase.h"
+#include "EffectPartBase.h"
 #include "GameInstance.h"
 
 CEffectBase::CEffectBase(ID3D11Device* pDevice, ID3D11DeviceContext* pDeviceContext)
@@ -64,6 +65,29 @@ HRESULT CEffectBase::Render()
 void CEffectBase::Set_Dead(const wstring& wstrLayerTag)
 {
 	Super::Set_Dead(wstrLayerTag);
+}
+
+void CEffectBase::LoopStateChange(E_LoopState EState)
+{
+	switch (EState)
+	{
+	case E_LoopState::LOOP_START:
+	{
+		for (auto PartObject : m_vecPartObjects)
+		{
+			static_cast<CEffectPartBase*>(PartObject)->LoopState_Change(CEffectPartBase::E_LoopState::LOOP_START);
+		}
+	}
+	break;
+	case E_LoopState::LOOP_END:
+	{
+		for (auto PartObject : m_vecPartObjects)
+		{
+			static_cast<CEffectPartBase*>(PartObject)->LoopState_Change(CEffectPartBase::E_LoopState::LOOP_END);
+		}
+	}
+	break;
+	}
 }
 
 void CEffectBase::Free()

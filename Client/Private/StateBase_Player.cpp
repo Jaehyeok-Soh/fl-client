@@ -216,14 +216,13 @@ _bool CStateBase_Player::Check_CtrlUpKey(const _float fTimeDelta)
 
 _bool CStateBase_Player::Check_MeleeKey(const _float fTimeDelta)
 {
-	if (Has_ChangeState(STATEKEY::CHARGE) &&
-		Key_Input(ENUM_TO_UINT(CControlContext::CONTROL_KEY::CHARGATT)))
-	{
-		Change_PlayerState(STATEKEY::CHARGE);
-		return true;
-	}
+	//if (Has_ChangeState(STATEKEY::CHARGE) &&
+	//	Key_Input(ENUM_TO_UINT(CControlContext::CONTROL_KEY::CHARGATT)))
+	//{
+	//	Change_PlayerState(STATEKEY::CHARGE);
+	//}
 
-	else if (Has_ChangeState(STATEKEY::LM) &&
+	/*else */if (Has_ChangeState(STATEKEY::LM) &&
 		Key_Input(ENUM_TO_UINT(CControlContext::CONTROL_KEY::LATT)))
 	{
 		Change_PlayerState(STATEKEY::LM);

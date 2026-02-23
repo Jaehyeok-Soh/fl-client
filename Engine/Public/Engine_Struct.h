@@ -767,7 +767,9 @@ namespace Engine
 		SimpleMath::Matrix matWorld;             // 계산된 최종 행렬
 		float fDuration;            // 유지 시간
 		int iSimulationType;        // LOCAL(1) or WORLD(0)
-		const SimpleMath::Matrix* pTargetBoneMatrix; // 실시간 추적용 본 행렬 주소
+		const SimpleMath::Matrix** pTargetBoneMatrix; // 실시간 추적용 본 행렬 주소
+		const SimpleMath::Matrix** pTransformMatrix; // 실시간 추적용 본 행렬 주소
+		int iFlag;
 	} EFFECT_SPAWN_DESC;
 
 }

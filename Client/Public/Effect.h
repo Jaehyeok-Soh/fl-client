@@ -17,7 +17,7 @@ class Effect : public CEffectBase
 public:
 	typedef struct tagEffectContainerDesc : public Super::GAMEOBJECT_DESC
 	{
-		DTO::E_SIMULATION_SPACE _Effect_SimulationType = DTO::E_SIMULATION_SPACE::NONE;
+		DTO::E_SIMULATION_SPACE _Effect_SimulationType = DTO::E_SIMULATION_SPACE::LOCAL;
 
 		vector<DTO::TEFFECT_PartsData>	_childData = {};
 	}EFFECT_CONTAINERDESC;
@@ -50,11 +50,8 @@ protected:
 	virtual HRESULT Despawn_FromPool() override;
 
 public:
-	virtual void Set_ParentsWorldMatrix(Matrix* worldMatrix) { m_pParentsWorldMatrix = worldMatrix; }
-	virtual void Set_SimulationSpace(DTO::E_SIMULATION_SPACE Space) { m_eSimulationSpace = Space; }
-
-	virtual const DTO::E_SIMULATION_SPACE& Get_SimulationSpace() { return m_eSimulationSpace; }
-	virtual Matrix* Get_ParentsWorldMatrix() { return m_pParentsWorldMatrix; }
+	virtual void Set_SimulationSpace(DTO::E_SIMULATION_SPACE Space) { m_eDesc._Effect_SimulationType = Space; }
+	virtual const DTO::E_SIMULATION_SPACE& Get_SimulationSpace() { return m_eDesc._Effect_SimulationType; }
 
 protected:
 	void Update_CombinedWorldMatrix(const Matrix* pMatParent);
@@ -66,13 +63,11 @@ public:
 	virtual void Free() override;
 
 protected:
-	DTO::E_SIMULATION_SPACE				m_eSimulationSpace = {};
-	Matrix*								m_pParentsWorldMatrix = { nullptr };
-	Matrix								m_matCombinedWorld = {};
-
-protected:
-	string								m_szName = {};
-	CGameInstance*						m_pGameInstance = { nullptr };
+	EFFECT_CONTAINERDESC			m_eDesc = {};
+	Matrix							m_pOffsetMartix = {};
+	const Matrix* m_pBoneMatrix = { nullptr };
+	_uint							m_iBoneFlag = {};
+	Matrix							m_matCombinedWorld = {};
 };
 
 NS_END

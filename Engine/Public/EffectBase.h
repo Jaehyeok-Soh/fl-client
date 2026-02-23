@@ -3,10 +3,19 @@
 
 NS_BEGIN(Engine)
 
+
+
 class ENGINE_DLL CEffectBase abstract:
     public CContainerObject
 {
 	using Super = CContainerObject;
+
+public:
+	enum class E_LoopState
+	{
+		LOOP_START,
+		LOOP_END,
+	};
 
 protected:
 	CEffectBase(ID3D11Device* pDevice, ID3D11DeviceContext* pDeviceContext);
@@ -25,6 +34,9 @@ public:
 	virtual void Ready_Before_Render(const _float fTimeDelta) override;
 	virtual HRESULT Render() override;
 	virtual void Set_Dead(const wstring& wstrLayerTag) override;
+
+public:
+	virtual void LoopStateChange(E_LoopState EState);
 
 public:
 	virtual void Free() override;
