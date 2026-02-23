@@ -1326,15 +1326,14 @@ void CModel::DisPatch_BondMatrix(CComputeShader* pBoneComBineCS, CComputeShader*
 
 void CModel::Mix_Animation(CComputeShader* pAnimMixCS, CComputeShader* pPreAnimCS, CComputeShader* pBoneComBineCS, const _float fTimeDelta)
 {
+	_bool bFirst = true;
 	// todo_eunbi : 만약 이전 mix animation 값을 넘겨줘야한다면 i 값에 따라 분기 나누기
 	for (size_t i = 0; i < m_vecMixAnimIndices.size(); i++)
 	{
 		if (m_vecMixAnimIndices[i] >= 0)
 		{
-			//if(i == 0)
-				m_vecAnimations[m_vecMixAnimIndices[i]]->Update_MixAnimation(m_vecBones, pAnimMixCS, pPreAnimCS,fTimeDelta, Get_BoneCount());
-			//else
-			//	m_vecAnimations[m_vecMixAnimIndices[i]]->Update_MixAnimation(m_vecBones, pAnimMixCS, pAnimMixCS, fTimeDelta, Get_BoneCount());
+			m_vecAnimations[m_vecMixAnimIndices[i]]->Update_MixAnimation(m_vecBones, pAnimMixCS, pPreAnimCS,fTimeDelta, Get_BoneCount(), bFirst);
+			bFirst = false;
 		}
 	}
 }

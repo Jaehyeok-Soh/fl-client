@@ -146,7 +146,7 @@ void CModelAnimation::SetUp_PoseDatasForBlending(std::span<LOCALSRT> spanLocalSr
 	}
 }
 
-void CModelAnimation::Update_MixAnimation(const vector<class CBone*>& vecBones, CComputeShader* pAnimMixCS, CComputeShader* pPreAnimCS, const _float fTimeDelta, _uint iTotalBoneNum)
+void CModelAnimation::Update_MixAnimation(const vector<class CBone*>& vecBones, CComputeShader* pAnimMixCS, CComputeShader* pPreAnimCS, const _float fTimeDelta, _uint iTotalBoneNum, _bool bFirst)
 {
 	Bind_AnimationMixData(pAnimMixCS, pPreAnimCS);
 
@@ -162,6 +162,7 @@ void CModelAnimation::Update_MixAnimation(const vector<class CBone*>& vecBones, 
 	tMuDesc.fCurTrackPosition = m_fCurrentTrackPosition;
 	tMuDesc.iChannelCount = m_iChannelCount;
 	tMuDesc.iRootMotionBoneIndex = m_iRootBoneIdx;
+	tMuDesc.Padding0 = (_float)bFirst;
 	pAnimMixCS->Bind_Compute_Track(tMuDesc);
 
 	// dispatch

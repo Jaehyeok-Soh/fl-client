@@ -39,15 +39,15 @@ struct MU_ELEMENT
     
     int     iRootMotionBoneIndex; // root motion일 경우 tralation을 0으로 만들기 위함
     
-    float   Padding0;
+    float     iFirst;
 };
 
 // 불변 데이터 : cpu.. but 매번 바인딩
 struct IMMU_MIX
 {
-    float fMixRatio;
+    float   fMixRatio;
 
-    float3 Padding0;
+    float3  Padding0;
 };
 
 // out put
@@ -122,26 +122,31 @@ void CS_Main(uint3 id : SV_DispatchThreadID)
     float fCurrentTrackPosition = g_InputData.fCurTrackPosition;
     
     float fMixRatio = IMMU_MIXDATA[iBoneIdx].fMixRatio;
+    
+    bool bFirst = (g_InputData.iFirst == 1.f);
 
-    // 만약 섞지 않을거라면
+        // 만약 섞지 않을거라면
     if (fMixRatio <= 0.f)
     {
-        CHANNEL_OUTPUT[iBoneIdx].vScale         = MU_PRETRANSFORMS[iBoneIdx].vScale;
-        CHANNEL_OUTPUT[iBoneIdx].vQuat          = MU_PRETRANSFORMS[iBoneIdx].vQuat;
-        CHANNEL_OUTPUT[iBoneIdx].vTranslation   = MU_PRETRANSFORMS[iBoneIdx].vTranslation;
+        if(bFirst)
+        {
+            CHANNEL_OUTPUT[iBoneIdx].vScale = MU_PRETRANSFORMS[iBoneIdx].vScale;
+            CHANNEL_OUTPUT[iBoneIdx].vQuat = MU_PRETRANSFORMS[iBoneIdx].vQuat;
+            CHANNEL_OUTPUT[iBoneIdx].vTranslation = MU_PRETRANSFORMS[iBoneIdx].vTranslation;
+        }
         
         return;
     }
     
     // key 맵핑이 아니라 trackpositoin을 통해 left, right index 구한다
-    uint iLeftIndex = iLastFrameIdx -1;
+    uint iLeftIndex = iLastFrameIdx - 1;
     uint iRightIndex = iLastFrameIdx;
     
     // frame 정렬
     if (fCurrentTrackPosition <= 0.f)
     {
         iLeftIndex = iFirstFrameIdx;
-        iRightIndex = iFirstFrameIdx+1;
+        iRightIndex = iFirstFrameIdx + 1;
     }
     
     // 함수 지역 변수 셋팅    
@@ -153,11 +158,10 @@ void CS_Main(uint3 id : SV_DispatchThreadID)
     // 1. 내 애니메이션으로 SRT 생성
     if (fCurrentTrackPosition >= lastKeyFrame.fTrackPosition)
     {
-        vScale          = lastKeyFrame.vScale;
-        vQuat           = lastKeyFrame.vQuat;
-        vTranslation    = lastKeyFrame.vTranslation;
+        vScale = lastKeyFrame.vScale;
+        vQuat = lastKeyFrame.vQuat;
+        vTranslation = lastKeyFrame.vTranslation;
     }
-    
     else
     {
         float3 vLeftScale, vRightScale;
@@ -188,8 +192,8 @@ void CS_Main(uint3 id : SV_DispatchThreadID)
 			(IMMU_KEYFRAMS[iRightIndex].fTrackPosition - IMMU_KEYFRAMS[iLeftIndex].fTrackPosition);
         
        // SRT 보간
-        vScale  = lerp(vLeftScale, vRightScale, fRatio);
-        vQuat   = normalize(lerp(vLeftQuat, vRightQuat, fRatio)); // todo : 원래는 dot을 해서 음수일때 처리 해야하는데 일단 슛
+        vScale = lerp(vLeftScale, vRightScale, fRatio);
+        vQuat = normalize(lerp(vLeftQuat, vRightQuat, fRatio)); // todo : 원래는 dot을 해서 음수일때 처리 해야하는데 일단 슛
         if (bRootMotionBone)
             vTranslation = float3(0.f, 0.f, 0.f);
         else
@@ -218,9 +222,10 @@ void CS_Main(uint3 id : SV_DispatchThreadID)
     
     
     // 결과 값 바인드
-    CHANNEL_OUTPUT[iBoneIdx].vScale         = vFinalScale;
-    CHANNEL_OUTPUT[iBoneIdx].vQuat          = vFinalQuat;
-    CHANNEL_OUTPUT[iBoneIdx].vTranslation   = vFinalTranslation;
+    CHANNEL_OUTPUT[iBoneIdx].vScale = vFinalScale;
+    CHANNEL_OUTPUT[iBoneIdx].vQuat = vFinalQuat;
+    CHANNEL_OUTPUT[iBoneIdx].vTranslation = vFinalTranslation;
+
 }
 
 technique11 T0
