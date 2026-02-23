@@ -211,6 +211,8 @@ void CAnimTool_Manager::Update_Animation(const _float& fTimeDelta)
 	CComputeShader* pBonCS = static_cast<CComputeShader*>(m_tAnimControllInfo.pCurrentObject->Get_Script_Component(TEXT("ComputeShader_BoneCombine")));
 	CComputeShader* pAnimECS = static_cast<CComputeShader*>(m_tAnimControllInfo.pCurrentObject->Get_Script_Component(TEXT("ComputeShader_AnimE")));
 	CComputeShader* pAnimBCS = static_cast<CComputeShader*>(m_tAnimControllInfo.pCurrentObject->Get_Script_Component(TEXT("ComputeShader_AnimB")));
+	CComputeShader* pAnimMixCS = static_cast<CComputeShader*>(m_tAnimControllInfo.pCurrentObject->Get_Script_Component(TEXT("ComputeShader_AnimMix")));
+
 
 	m_tAnimControllInfo.pModel->Update_Animation(pBonCS,
 		pAnimECS,
@@ -218,7 +220,7 @@ void CAnimTool_Manager::Update_Animation(const _float& fTimeDelta)
 		m_tAnimControllInfo.pCurrentObject->Get_Component<CTransform>(),
 		m_tAnimControllInfo.pCurrentObject->Get_Component<CPhysicsCCT>(),
 		pAnimBCS,
-		nullptr);
+		pAnimMixCS);
 
 	if (m_tAnimControllInfo.pModel->Is_AnimFinished() || m_tAnimControllInfo.pModel->Is_LoopAnimDone())
 	{

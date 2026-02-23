@@ -128,6 +128,11 @@ public:
 	void	Set_MixAnim_AnimIndex(_uint iVectorIdx, _int iAnimIdx);
 	void	Set_MixAnim(_bool bMix) { m_bMixAnim = bMix; }
 
+	// tool
+	_bool	Get_MixBool() const { return m_bMixAnim; }
+	const vector<_int>& Get_MixIdx() const { return m_vecMixAnimIndices; }
+	_uint Get_MixSize() const { return (_uint)m_vecMixAnimIndices.size(); }
+
 	// getter funcs
 public:
 	EModelType							Get_Type() const { return m_eType; }

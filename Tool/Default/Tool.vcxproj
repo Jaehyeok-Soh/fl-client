@@ -158,6 +158,7 @@
     <ClInclude Include="..\Public\Builder_Map.h" />
     <ClInclude Include="..\Public\Builder_UI.h" />
     <ClInclude Include="..\Public\CameraMan_Free.h" />
+    <ClInclude Include="..\Public\Panel_AnimationMix.h" />
     <ClInclude Include="..\Public\Panel_Parts.h" />
     <ClInclude Include="..\Public\Tool_Weapon.h" />
     <ClInclude Include="..\Public\CEffectObject.h" />
@@ -255,6 +256,7 @@
     <ClCompile Include="..\Private\Builder_Map.cpp" />
     <ClCompile Include="..\Private\Builder_UI.cpp" />
     <ClCompile Include="..\Private\CameraMan_Free.cpp" />
+    <ClCompile Include="..\Private\Panel_AnimationMix.cpp" />
     <ClCompile Include="..\Private\Panel_Parts.cpp" />
     <ClCompile Include="..\Private\SceneData.cpp" />
     <ClCompile Include="..\Private\Tool_Weapon.cpp" />

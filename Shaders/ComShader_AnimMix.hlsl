@@ -206,8 +206,8 @@ void CS_Main(uint3 id : SV_DispatchThreadID)
     float4 q0 = MU_PRETRANSFORMS[iBoneIdx].vQuat;
     float4 q1 = vQuat;
     
-    //if (dot(q0, q1) < 0.0f)
-    //    q1 = -q1;
+    if (dot(q0, q1) < 0.0f)
+        q1 = -q1;
     
     vFinalQuat = normalize(lerp(q0, q1, fMixRatio));
     

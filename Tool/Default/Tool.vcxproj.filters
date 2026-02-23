@@ -289,6 +289,9 @@
     <Filter Include="02. GameObjects\Map\01. SceneData">
       <UniqueIdentifier>{796e0779-af03-4219-87f2-4ff1d7e85f49}</UniqueIdentifier>
     </Filter>
+    <Filter Include="06. ImGui\01. Panel\Animation\Panel_AnimationMix">
+      <UniqueIdentifier>{beab9b2a-5282-4997-9256-1ad828bcd254}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="framework.h">
@@ -574,6 +577,9 @@
     <ClInclude Include="..\Public\SceneData.h">
       <Filter>02. GameObjects\Map\01. SceneData</Filter>
     </ClInclude>
+    <ClInclude Include="..\Public\Panel_AnimationMix.h">
+      <Filter>06. ImGui\01. Panel\Animation\Panel_AnimationMix</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <Image Include="small.ico">
@@ -846,6 +852,9 @@
     </ClCompile>
     <ClCompile Include="..\Private\SceneData.cpp">
       <Filter>02. GameObjects\Map\01. SceneData</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\Panel_AnimationMix.cpp">
+      <Filter>06. ImGui\01. Panel\Animation\Panel_AnimationMix</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

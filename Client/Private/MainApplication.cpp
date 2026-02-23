@@ -98,7 +98,7 @@ HRESULT CMainApplication::Render()
 	m_pGameInstance->Draw();
 
 #ifdef _DEBUG
-	//m_pDebugGui->Render();
+	m_pDebugGui->Render();
 #endif
 
 	m_pGameInstance->Draw_End();

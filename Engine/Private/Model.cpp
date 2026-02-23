@@ -937,7 +937,7 @@ void CModel::Play_Animation(CComputeShader* pBoneComBineCS, CComputeShader* pAni
 
 	m_bIsAnimFinished = m_vecAnimations[m_iCurrentAnimIndex]->Update_TransformationMatrices(m_vecBones, m_bLoopAnimDone, fTimeDelta, m_isAnimLoop, pOwnerTransform, pOwnerPhyCCT, pAnimEvalCS);
 
-	if (m_bMixAnim)
+	if (m_bMixAnim && !m_vecMixAnimIndices.empty())
 	{
 		//// animation 결과 blendCS에 bind
 		//pAnimMixCS->Bind_InputStructuredBuffer(3,
@@ -1178,7 +1178,7 @@ void CModel::Blend_Animation(CComputeShader* pBoneComBineCS, CComputeShader* pAn
 	// animation 2개를 lerp
 	Lerp_Animation(pAnimBlendCS, fRatio);
 
-	if (m_bMixAnim)
+	if (m_bMixAnim && !m_vecMixAnimIndices.empty())
 	{
 		Mix_Animation(pAnimMixCS, pAnimBlendCS, pBoneComBineCS, fTimeDelta);
 
@@ -1302,7 +1302,10 @@ void CModel::Mix_Animation(CComputeShader* pAnimMixCS, CComputeShader* pPreAnimC
 	{
 		if (m_vecMixAnimIndices[i] >= 0)
 		{
-			m_vecAnimations[m_vecMixAnimIndices[i]]->Update_MixAnimation(m_vecBones, pAnimMixCS, pPreAnimCS,fTimeDelta,Get_BoneCount());
+			//if(i == 0)
+				m_vecAnimations[m_vecMixAnimIndices[i]]->Update_MixAnimation(m_vecBones, pAnimMixCS, pPreAnimCS,fTimeDelta, Get_BoneCount());
+			//else
+			//	m_vecAnimations[m_vecMixAnimIndices[i]]->Update_MixAnimation(m_vecBones, pAnimMixCS, pAnimMixCS, fTimeDelta, Get_BoneCount());
 		}
 	}
 }

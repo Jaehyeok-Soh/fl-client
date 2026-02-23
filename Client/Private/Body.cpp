@@ -80,8 +80,8 @@ HRESULT CBody::Awake(const _uint iCurrentLevelIndex)
 
 	//Face_Smile
 
-	_uint iFaceAnimIdx = Get_Component<CModel>()->Get_AnimationIndex(L"Animation_PlayerMoon_Face_Smile");
-	vector<CModel::DATA_ANIMIX> vecMix = { {85,false,0.5f},  {114,false,1.f},  {165,false,1.f} };
+	_uint iFaceAnimIdx = Get_Component<CModel>()->Get_AnimationIndex(L"Animation_PlayerMoon_Face_LipSync");
+	vector<CModel::DATA_ANIMIX> vecMix = { {113,false,1.f} };
 
 	CComputeShader* pAnimMixCS = static_cast<CComputeShader*>(Get_Script_Component(TEXT("ComputeShader_AnimMix")));
 

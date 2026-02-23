@@ -162,8 +162,11 @@ void CModelAnimation::Update_MixAnimation(const vector<class CBone*>& vecBones, 
 	for (auto& pChannel : m_vecChannels)
 	{
 		_uint iBondIdx = pChannel->Get_BoneIndex();
-		if(m_vecMixRatios[(size_t)iBondIdx] != 0.f)
+		if (m_vecMixRatios[(size_t)iBondIdx] != 0.f)
 			pChannel->Update_TransformationMatrix(vecBones, m_fCurrentTrackPosition, &m_vecCurrentKeyFrameIndices[iIndex++], nullptr, nullptr, fTimeDelta, m_fRootMotionOffset);
+
+		else
+			iIndex++;
 	}
 }
 
@@ -411,7 +414,7 @@ void CModelAnimation::Set_MixRatio(vector<_float>& vecMixRatio, CComputeShader* 
 	CS_IMMU_ANIMMIX* pInitialData = new CS_IMMU_ANIMMIX[iSize];
 	for (size_t  i = 0 ; i< iSize ; i++)
 	{
-		pInitialData[i].fMixRatio = m_vecMixRatios[i];
+		pInitialData[i].fMixRatio = m_vecMixRatios[i]; //m_vecMixRatios[i];
 		pInitialData[i].Padding0 = Vec3::Zero;
 	}
 
