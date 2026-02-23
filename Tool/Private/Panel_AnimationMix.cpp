@@ -22,8 +22,10 @@ HRESULT CPanel_AnimationMix::Render(CToolObject* pGo)
     if (pModel)
     {
         Current_Info();
+        ImGui::Separator();
 
         Set_AnimationMixInfo();
+        ImGui::Separator();
 
         Set_AnimMationMix();
     }
@@ -51,51 +53,51 @@ void CPanel_AnimationMix::Current_Info()
     pModel->Set_MixAnim(m_bMix);
 
     //if (!m_vecMixIdx.empty())
-    {
-        if (ImGui::TreeNode("Mix Index Vector"))
-        {
-            // 1. 현재 사이즈 출력
-            ImGui::Text("Size : %d", (int)m_vecMixIdx.size());
+    //{
+    //    if (ImGui::TreeNode("Mix Index Vector"))
+    //    {
+    //        // 1. 현재 사이즈 출력
+    //        ImGui::Text("Size : %d", (int)m_vecMixIdx.size());
 
-            ImGui::Separator();
+    //        ImGui::Separator();
 
-            // 2. 각 원소 출력 + 수정
-            for (int i = 0; i < (int)m_vecMixIdx.size(); ++i)
-            {
-                ImGui::PushID(i); // ID 충돌 방지
+    //        // 2. 각 원소 출력 + 수정
+    //        for (int i = 0; i < (int)m_vecMixIdx.size(); ++i)
+    //        {
+    //            ImGui::PushID(i); // ID 충돌 방지
 
-                ImGui::SetNextItemWidth(80.f); // 길이 줄이고 싶으면 조절
-                ImGui::InputInt("##MixIdx", &m_vecMixIdx[i]);
+    //            ImGui::SetNextItemWidth(80.f); // 길이 줄이고 싶으면 조절
+    //            ImGui::InputInt("##MixIdx", &m_vecMixIdx[i]);
 
-                ImGui::SameLine();
-                ImGui::Text("[%d]", i);
+    //            ImGui::SameLine();
+    //            ImGui::Text("[%d]", i);
 
-                //ImGui::SameLine();
-                //if (ImGui::Button("Delete"))
-                //{
-                //    m_vecMixIdx.erase(m_vecMixIdx.begin() + i);
-                //    ImGui::PopID();
-                //    break; // erase 후에는 루프 탈출
-                //}
+    //            //ImGui::SameLine();
+    //            //if (ImGui::Button("Delete"))
+    //            //{
+    //            //    m_vecMixIdx.erase(m_vecMixIdx.begin() + i);
+    //            //    ImGui::PopID();
+    //            //    break; // erase 후에는 루프 탈출
+    //            //}
 
-                ImGui::PopID();
-            }
+    //            ImGui::PopID();
+    //        }
 
-            //ImGui::Separator();
+    //        //ImGui::Separator();
 
-            //// 3. 원소 추가
-            //static int newValue = 0;
-            //ImGui::SetNextItemWidth(80.f);
-            //ImGui::InputInt("New Value", &newValue);
+    //        //// 3. 원소 추가
+    //        //static int newValue = 0;
+    //        //ImGui::SetNextItemWidth(80.f);
+    //        //ImGui::InputInt("New Value", &newValue);
 
-            //if (ImGui::Button("Add"))
-            //{
-            //    m_vecMixIdx.push_back(newValue);
-            //}
+    //        //if (ImGui::Button("Add"))
+    //        //{
+    //        //    m_vecMixIdx.push_back(newValue);
+    //        //}
 
-            //ImGui::TreePop();
-        }
-    }
+    //        //ImGui::TreePop();
+    //    }
+    //}
 }
 
 void CPanel_AnimationMix::Set_AnimationMixInfo()
