@@ -8,7 +8,6 @@
 #include "Texture.h"
 #include "Shader.h"
 #include "VIBuffer_Rect_Tex.h"
-#include "StatComponent.h"
 #include "GameInstance.h"
 
 CUI_World::CUI_World(ID3D11Device* pDevice, ID3D11DeviceContext* pDeviceContext)

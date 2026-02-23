@@ -9,7 +9,6 @@
 #include "Texture.h"
 #include "Shader.h"
 #include "VIBuffer_Rect_Tex.h"
-#include "StatComponent.h"
 #include "GameInstance.h"
 
 CUIMonsterStat_Text::CUIMonsterStat_Text(ID3D11Device* pDevice, ID3D11DeviceContext* pDeviceContext)
@@ -56,13 +55,6 @@ HRESULT CUIMonsterStat_Text::Attach_Personal_Info(const _uint iCurrentLevelID)
 	if (nullptr == pResult)
 		return E_FAIL;
 
-	auto* p = static_cast<CStatComponent*>(pResult->Get_Script_Component(L"StatComponent"));
-	if (nullptr == p)
-		return E_FAIL;
-
-	m_pPlayerStatCom = static_cast<CStatCom_Player*>(p);
-	if (nullptr == m_pPlayerStatCom)
-		return E_FAIL;
 
 	return S_OK;
 }
