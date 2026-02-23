@@ -102,6 +102,7 @@ public:
 	_bool Check_ColliWithMonster();
 	void Count_Combo();
 	void Count_Dash();
+	void Set_RootMotion_Apply(_bool bApply);
 
 public:
 	_bool	Start_Attack(State iState);

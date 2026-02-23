@@ -331,6 +331,11 @@ void CStateBase_Player::End_Att(_uint iPlayerState)
 	static_cast<CPlayer*>(Get_OwnerObject())->End_Attack(static_cast<CPlayer::State>(iPlayerState));
 }
 
+void CStateBase_Player::Set_RootMotion_Apply(_bool bApply)
+{
+	static_cast<CPlayer*>(Get_OwnerObject())->Set_RootMotion_Apply(bApply);
+}
+
 _bool CStateBase_Player::Has_ChangeState(STATEKEY eKey)
 {
 	// state end 이면 state change를 안 한다

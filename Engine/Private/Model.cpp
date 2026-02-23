@@ -597,6 +597,11 @@ _bool CModel::Is_AnimTrackPositionAtHalf() const
 	return m_vecAnimations[m_iCurrentAnimIndex]->Is_TrackPositionAtHalf();
 }
 
+_bool CModel::Is_RootMotion_Apply() const
+{
+	return m_vecAnimations[m_iCurrentAnimIndex]->Get_ApplyRoot();
+}
+
 _int CModel::Get_AnimationIndex(const wstring& wstrName)
 {
 	if (wstrName.empty())
@@ -629,6 +634,11 @@ void CModel::Set_AnimationPlayRate(_uint iIndex, _float fValue)
 {
 	if (m_vecAnimations[iIndex])
 		m_vecAnimations[iIndex]->Set_PlayRate(fValue);
+}
+
+void CModel::Set_CurAnimation_RootApply(_bool bRootApply)
+{
+	m_vecAnimations[m_iCurrentAnimIndex]->Set_ApplyRootMotion(bRootApply);
 }
 
 HRESULT CModel::Ready_ComputeShaders(CComputeShader* pBoneMeshCS, CComputeShader* pBoneComBineCS, CComputeShader* pAnimEvalCS, CComputeShader* pAnimBlendCS, CComputeShader* pAnimMixCS)

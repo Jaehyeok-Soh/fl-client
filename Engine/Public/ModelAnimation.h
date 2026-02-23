@@ -70,7 +70,7 @@ public:
 
 
 	// test
-	void Set_ApplyRootMotion(_bool Apply) { m_bApplyRootMotion = Apply; }
+
 
 	void Check_UpdateCpu(const vector<class CBone*>& vecBones);
 
@@ -81,6 +81,10 @@ public:
 	void Set_MotionOffset(_float fOffset) { m_fRootMotionOffset = fOffset; if (m_fRootMotionOffset < 0.f) m_fRootMotionOffset = 1.f; }
 	_float Get_MotionOffset() const { return m_fRootMotionOffset; }
 	void Set_MixRatio(vector<_float>& vecMixRatio, CComputeShader* pAnimMixCS);
+	void Set_ApplyRootMotion(_bool Apply) { 
+		m_bApplyRootMotion = Apply; 
+	};
+	_bool Get_ApplyRoot() const { return m_bApplyRootMotion; }
 
 	///////////////
 	//// Event ////

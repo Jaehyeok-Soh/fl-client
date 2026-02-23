@@ -171,6 +171,7 @@ public:
 	_bool								Is_AnimTrackPositionAtHalf() const;
 
 	_bool								Is_LoopAnimDone() const { return m_bLoopAnimDone; }
+	_bool								Is_RootMotion_Apply() const;
 
 
 	_float								Get_AnimDurationTime() const;
@@ -193,6 +194,7 @@ public:
 	HRESULT								Set_DefaultPassByMesh(_uint iMeshIndex);
 	void								Set_AnimationPlayRate(_uint iIndex, _float fValue);
 	void								Set_AnimationSpeed(_float fSpeed) { m_fAnimationSpeed = fSpeed; if (m_fAnimationSpeed <= 0) m_fAnimationSpeed = 1.f; }
+	void								Set_CurAnimation_RootApply(_bool bRootApply);
 
 	// materials funcs
 public:

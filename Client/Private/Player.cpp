@@ -233,6 +233,11 @@ void CPlayer::Count_Dash()
     static_cast<CStatCom_Player*>(Get_Component<CMyStat>())->Sub_DashCount();
 }
 
+void CPlayer::Set_RootMotion_Apply(_bool bApply)
+{
+    Get_Part<CBody>(Part::BODY)->Get_Component<CModel>()->Set_CurAnimation_RootApply(bApply);
+}
+
 _bool CPlayer::Start_Attack(State iState)
 {
     _bool bChange = { false };
