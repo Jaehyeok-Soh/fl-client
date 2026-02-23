@@ -67,6 +67,8 @@ void CPanel_ModelInfo::Render_AnimationInfo()
 
 	RootOffset_Info();
 
+	AnimationSpeed();
+
 	ImGui::End();
 }
 
@@ -100,6 +102,26 @@ void CPanel_ModelInfo::RootOffset_Info()
 	if (ImGui::Button("Apply##RootOffset"))
 	{
 		Set_RootOffset();
+	}
+}
+
+void CPanel_ModelInfo::AnimationSpeed()
+{
+	ImGui::Separator();
+
+	ImGui::SetNextItemWidth(120.f);  // 원하는 픽셀 길이
+	ImGui::InputFloat("Animation Speed", &m_iAnimationSpeed, 0.01f, 1.0f, "%.3f");
+
+	// 최소값 -1 제한
+	if (m_iAnimationSpeed < 0.01f)
+		m_iAnimationSpeed = 0.01f;
+
+	ImGui::SameLine();
+
+	if (ImGui::Button("Apply##AnimationSpeed"))
+	{
+		if (m_pAnimToolManager->Get_AnimControllInfo().pModel)
+			m_pAnimToolManager->Get_AnimControllInfo().pModel->Set_Animation_Speed(m_iCurAnimIdx, m_iAnimationSpeed);
 	}
 }
 

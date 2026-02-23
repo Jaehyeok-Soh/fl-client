@@ -391,6 +391,25 @@ _float CModel::Get_Animatioin_MotionOffset(_uint iAnimIdx)
 	return m_vecAnimations[(size_t)iAnimIdx]->Get_MotionOffset();
 }
 
+void CModel::Set_Animation_Speed(_uint iAnimIdx, _float fSpeed)
+{
+	if (iAnimIdx >= Get_AnimationCount())
+		return;
+
+	m_vecAnimations[(size_t)iAnimIdx]->Set_AnimationSpeed(fSpeed);
+}
+
+void CModel::Set_MixAnim(_bool bMix)
+{
+	m_bMixAnim = bMix;
+
+	for (auto pMixIdx : m_vecMixAnimIndices)
+	{
+		m_vecAnimations[m_bMixAnim]->Reset_PrePosition();
+		m_vecAnimations[m_bMixAnim]->Set_TrackPosition(0.f);
+	}
+}
+
 void CModel::Make_MixRatio(_uint iAnimIdx, vector<DATA_ANIMIX>& vecAniMixData, CComputeShader* pAnimMixCS)
 {
 	if (iAnimIdx >= Get_AnimationCount())

@@ -340,7 +340,7 @@ HRESULT CPlayer::Ready_BaseStates()
         desc.vecChangeState_ByKey = vecChangeState_ByKey;
 
         tKeyTimer.bCountTime    = true;
-        tKeyTimer.fMaxTime      = 0.05f;
+        tKeyTimer.fMaxTime      = 0.15f;
         desc.tKeyTimer = tKeyTimer;
 
         if (FAILED(pActionState->Add_State(ENUM_TO_UINT(State::IDLE), CState_Idle::Create(pActionState, &desc))))

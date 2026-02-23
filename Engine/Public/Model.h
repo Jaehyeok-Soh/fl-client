@@ -119,14 +119,14 @@ public:
 	void	Set_Animtion_MotionOffset(_uint iAnimIdx, _float fOffset);
 	_int	Get_RootBone() const { return m_iRootBoneIdx; }
 	_float	Get_Animatioin_MotionOffset(_uint iAnimIdx);
-
+	void	Set_Animation_Speed(_uint iAnimIdx, _float fSpeed);
 
 	// mix anim funcs
 public:
 	void	Make_MixRatio(_uint iAnimIdx, vector<DATA_ANIMIX>& vecAniMixData, CComputeShader* pAnimMixCS);
 	void	Set_MixAnim_ResetSize(_uint iSize);
 	void	Set_MixAnim_AnimIndex(_uint iVectorIdx, _int iAnimIdx);
-	void	Set_MixAnim(_bool bMix) { m_bMixAnim = bMix; }
+	void	Set_MixAnim(_bool bMix);
 
 	// tool
 	_bool	Get_MixBool() const { return m_bMixAnim; }
