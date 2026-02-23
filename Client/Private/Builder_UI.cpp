@@ -141,6 +141,7 @@ HRESULT CBuilder_UI::Create_CanvasDTO(const DTO::TUI_CanvasData& data)
 	Desc.fZ				= data.fPosZ;
 	Desc.fWidth			= m_vViewportSIze.x;
 	Desc.fHeight		= m_vViewportSIze.y;
+	m_ePrefabtype = static_cast<Client::EUIPrefabType>(data.iPrefabType);
 
 	CGameObject* pResult = m_pGameInstance->Add_GameObject(ENUM_TO_UINT(ELevelType::STATIC), L"Prototype_UI_Canvas", m_iLevelID, g_wszUILayer, &Desc);
 	if (pResult == nullptr)
@@ -205,7 +206,7 @@ HRESULT CBuilder_UI::Register_Class(DTO::EUIClassType eClassType, const DTO::TUI
 		return E_FAIL;
 
 	CGenericUI::GENERIC_UI_DESC DefaultDesc = Make_DefaultInfo(data, pCanvas);
-	const _wstring wstrProtoTag = L"Prototype_UI_" + Engine_Utils::ToWString(DTO::UIClassTypeToString(eClassType));
+	_wstring wstrProtoTag = L"Prototype_UI_" + Engine_Utils::ToWString(DTO::UIClassTypeToString(eClassType));
 	CGameObject* pResult = nullptr;
 
 	////////////////////////////////////////
@@ -223,6 +224,7 @@ HRESULT CBuilder_UI::Register_Class(DTO::EUIClassType eClassType, const DTO::TUI
 			static_cast<CGenericUI::GENERIC_UI_DESC&>(PlayerStatProgressDesc) = DefaultDesc;
 			PlayerStatProgressDesc.eOwner = data.eSubClassType;
 			pResult = m_pGameInstance->Add_GameObject(m_iLevelID, L"Prototype_UI_PlayerStatProgress", m_iLevelID, g_wszUILayer, &PlayerStatProgressDesc);
+			wstrProtoTag = L"Prototype_UI_PlayerStatProgress";
 		}
 		else if (isLoading)
 		{
@@ -231,6 +233,7 @@ HRESULT CBuilder_UI::Register_Class(DTO::EUIClassType eClassType, const DTO::TUI
 			LoadingProgressDesc.eOwner = data.eSubClassType;
 			LoadingProgressDesc.pLoadingRatio = CUI_Manager::GetInstance()->Get_LoadingRatio();
 			pResult = m_pGameInstance->Add_GameObject(m_iLevelID, L"Prototype_UI_LoadingProgress", m_iLevelID, g_wszUILayer, &LoadingProgressDesc);
+			wstrProtoTag = L"Prototype_UI_LoadingProgress";
 		}
 		else if(isMonsterStat)
 		{
@@ -239,6 +242,7 @@ HRESULT CBuilder_UI::Register_Class(DTO::EUIClassType eClassType, const DTO::TUI
 			MonsterStatProgressDesc.eOwner = data.eSubClassType;
 			MonsterStatProgressDesc.iComponentFlag = DTO::EComponentTypeFlag::WORLDUI_COMPONENT;
 			pResult = m_pGameInstance->Add_GameObject(m_iLevelID, L"Prototype_UI_MonsterStatProgress", m_iLevelID, g_wszUILayer, &MonsterStatProgressDesc);
+			wstrProtoTag = L"Prototype_UI_MonsterStatProgress";
 		}
 		else
 		{
@@ -277,6 +281,7 @@ HRESULT CBuilder_UI::Register_Class(DTO::EUIClassType eClassType, const DTO::TUI
 			CUIPlayerStat_Text::PLAYER_STAT_DESC PlayerStatTextDesc= {};
 			static_cast<CUIText::UI_TEXT_DESC&>(PlayerStatTextDesc) = TextDesc;
 			pResult = m_pGameInstance->Add_GameObject(m_iLevelID, L"Prototype_UI_PlayerStatText", m_iLevelID, g_wszUILayer, &PlayerStatTextDesc);
+			wstrProtoTag = L"Prototype_UI_PlayerStatText";
 
 		}
 		else if (isMenu)
@@ -284,6 +289,7 @@ HRESULT CBuilder_UI::Register_Class(DTO::EUIClassType eClassType, const DTO::TUI
 			CUIMenu_Text::MENU_TEXT_DESC MenuTextDesc = {};
 			static_cast<CUIText::UI_TEXT_DESC&>(MenuTextDesc) = TextDesc;
 			pResult = m_pGameInstance->Add_GameObject(m_iLevelID, L"Prototype_UI_MenuText", m_iLevelID, g_wszUILayer, &MenuTextDesc);
+			wstrProtoTag = L"Prototype_UI_MenuText";
 		}
 		else if (isLoading)
 		{
@@ -291,6 +297,7 @@ HRESULT CBuilder_UI::Register_Class(DTO::EUIClassType eClassType, const DTO::TUI
 			static_cast<CUIText::UI_TEXT_DESC&>(LoadingTextDesc) = TextDesc;
 			LoadingTextDesc.pLoadingRatio = CUI_Manager::GetInstance()->Get_LoadingRatio();
 			pResult = m_pGameInstance->Add_GameObject(m_iLevelID, L"Prototype_UI_LoadingText", m_iLevelID, g_wszUILayer, &LoadingTextDesc);
+			wstrProtoTag = L"Prototype_UI_LoadingText";
 		}
 		else if (isMonsterNameplate)
 		{
@@ -298,6 +305,7 @@ HRESULT CBuilder_UI::Register_Class(DTO::EUIClassType eClassType, const DTO::TUI
 			static_cast<CUIText::UI_TEXT_DESC&>(MonsterStatDesc) = TextDesc;
 			MonsterStatDesc.iComponentFlag = DTO::EComponentTypeFlag::WORLDUI_COMPONENT;
 			pResult = m_pGameInstance->Add_GameObject(m_iLevelID, L"Prototype_UI_MonsterStatText", m_iLevelID, g_wszUILayer, &MonsterStatDesc);
+			wstrProtoTag = L"Prototype_UI_MonsterStatText";
 
 		}
 		else
@@ -334,7 +342,8 @@ HRESULT CBuilder_UI::Register_Class(DTO::EUIClassType eClassType, const DTO::TUI
 			MenuTriggerDesc.eTriggerSubClass = Type;
 			MenuTriggerDesc.tTriggerData = std::move(iter->second);
 			pResult = m_pGameInstance->Add_GameObject(m_iLevelID, L"Prototype_UI_UIMenuTrigger", m_iLevelID, g_wszUILayer, &MenuTriggerDesc);
-		
+			wstrProtoTag = L"Prototype_UI_UIMenuTrigger";
+
 		}
 		else if (isMenuExit)
 		{
@@ -344,6 +353,7 @@ HRESULT CBuilder_UI::Register_Class(DTO::EUIClassType eClassType, const DTO::TUI
 			MenuExitTriggerDesc.tTriggerData = std::move(iter->second);
 			pResult = m_pGameInstance->Add_GameObject(m_iLevelID, L"Prototype_UI_UIMenuExitTrigger", m_iLevelID, g_wszUILayer, &MenuExitTriggerDesc);
 
+			wstrProtoTag = L"Prototype_UI_UIMenuExitTrigger";
 		}
 		else
 		{
@@ -352,6 +362,7 @@ HRESULT CBuilder_UI::Register_Class(DTO::EUIClassType eClassType, const DTO::TUI
 			CommonTriggerDesc.eTriggerSubClass = Type;
 			CommonTriggerDesc.tTriggerData = std::move(iter->second);
 			pResult = m_pGameInstance->Add_GameObject(m_iLevelID, L"Prototype_UI_UICommonTrigger", m_iLevelID, g_wszUILayer, &CommonTriggerDesc);
+			wstrProtoTag = L"Prototype_UI_UICommonTrigger";
 		}
 
 		data.strTag;
@@ -393,6 +404,7 @@ HRESULT CBuilder_UI::Register_Class(DTO::EUIClassType eClassType, const DTO::TUI
 			static_cast<CGenericUI::GENERIC_UI_DESC&>(SkillBGDesc) = DefaultDesc;
 			SkillBGDesc.eSubClassType = Type;
 			pResult = m_pGameInstance->Add_GameObject(m_iLevelID, L"Prototype_UI_SkillBG", m_iLevelID, g_wszUILayer, &SkillBGDesc);
+			wstrProtoTag = L"Prototype_UI_SkillBG";
 		}
 		else if (isMiniMap)
 		{
@@ -400,6 +412,7 @@ HRESULT CBuilder_UI::Register_Class(DTO::EUIClassType eClassType, const DTO::TUI
 			static_cast<CGenericUI::GENERIC_UI_DESC&>(SkillBGDesc) = DefaultDesc;
 			SkillBGDesc.eSubClassType = Type;
 			pResult = m_pGameInstance->Add_GameObject(m_iLevelID, L"Prototype_UI_MiniMap", m_iLevelID, g_wszUILayer, &SkillBGDesc);
+			wstrProtoTag = L"Prototype_UI_MiniMap";
 		}
 		else if (isHoverIcon)
 		{
@@ -407,6 +420,7 @@ HRESULT CBuilder_UI::Register_Class(DTO::EUIClassType eClassType, const DTO::TUI
 			static_cast<CGenericUI::GENERIC_UI_DESC&>(HoverImageDesc) = DefaultDesc;
 			HoverImageDesc.eSubClassType = Type;
 			pResult = m_pGameInstance->Add_GameObject(m_iLevelID, L"Prototype_UI_HoverImage", m_iLevelID, g_wszUILayer, &HoverImageDesc);
+			wstrProtoTag = L"Prototype_UI_HoverImage";
 		}
 		else if (isMenu)
 		{
@@ -414,6 +428,7 @@ HRESULT CBuilder_UI::Register_Class(DTO::EUIClassType eClassType, const DTO::TUI
 			static_cast<CGenericUI::GENERIC_UI_DESC&>(MenuImageDesc) = DefaultDesc;
 			MenuImageDesc.eSubClassType = Type;
 			pResult = m_pGameInstance->Add_GameObject(m_iLevelID, L"Prototype_UI_MenuImage", m_iLevelID, g_wszUILayer, &MenuImageDesc);
+			wstrProtoTag = L"Prototype_UI_MenuImage";
 		}
 		else if (isOutLine)
 		{
@@ -421,6 +436,7 @@ HRESULT CBuilder_UI::Register_Class(DTO::EUIClassType eClassType, const DTO::TUI
 			static_cast<CGenericUI::GENERIC_UI_DESC&>(MenuOutlineDesc) = DefaultDesc;
 			MenuOutlineDesc.eSubClassType = Type;
 			pResult = m_pGameInstance->Add_GameObject(m_iLevelID, L"Prototype_UI_MenuOutline", m_iLevelID, g_wszUILayer, &MenuOutlineDesc);
+			wstrProtoTag = L"Prototype_UI_MenuOutline";
 		}
 		else if (isLoading)
 		{
@@ -428,13 +444,20 @@ HRESULT CBuilder_UI::Register_Class(DTO::EUIClassType eClassType, const DTO::TUI
 			static_cast<CGenericUI::GENERIC_UI_DESC&>(LoadingImageDesc) = DefaultDesc;
 			LoadingImageDesc.eSubClassType = Type;
 			pResult = m_pGameInstance->Add_GameObject(m_iLevelID, L"Prototype_UI_LoadingImage", m_iLevelID, g_wszUILayer, &LoadingImageDesc);
+			wstrProtoTag = L"Prototype_UI_LoadingImage";
 		}
 		else if (isMonsterNameplate)
 		{
 			CUINameplate_BG::NAMEPLATE_BG_DESC NameplateDesc = {};
 			static_cast<CGenericUI::GENERIC_UI_DESC&>(NameplateDesc) = DefaultDesc;
 			NameplateDesc.iComponentFlag = DTO::EComponentTypeFlag::WORLDUI_COMPONENT;
-			pResult = m_pGameInstance->Add_GameObject(m_iLevelID, L"Prototype_UI_Nameplate_BG", m_iLevelID, g_wszUILayer, &NameplateDesc);
+			// pResult = m_pGameInstance->Add_GameObject(m_iLevelID, L"Prototype_UI_Nameplate_BG", m_iLevelID, g_wszUILayer, &NameplateDesc);
+			wstrProtoTag = L"Prototype_UI_Nameplate_BG";
+			if (FAILED(CUI_Manager::GetInstance()->Regist_Prefab(m_iLevelID, m_ePrefabtype, wstrProtoTag, &NameplateDesc)))
+			{
+				data.strTag;
+				return E_FAIL;
+			}
 		}
 	}
 
@@ -445,24 +468,46 @@ HRESULT CBuilder_UI::Register_Class(DTO::EUIClassType eClassType, const DTO::TUI
 	}
 	else
 	{
-		pResult = m_pGameInstance->Add_GameObject(m_iLevelID, wstrProtoTag, m_iLevelID, g_wszUILayer, &DefaultDesc);
 	}
 
-	if (pResult == nullptr)
+
+
+	if (Client::EUIPrefabType::NOT_PREFAB == m_ePrefabtype)
 	{
-		data.strTag;
-		return E_FAIL;
+		if (pResult == nullptr)
+		{
+			data.strTag;
+			return E_FAIL;
+		}
+
+		auto* pUI = dynamic_cast<CGenericUI*>(pResult);
+		if (nullptr == pUI)
+			return E_FAIL;
+
+		pCanvas->Get_UIVector()->push_back(pUI);
+		m_pMapUICache.emplace(data.strTag, pUI);
+
+		if (FAILED(CUI_Manager::GetInstance()->Add_VecGenericUICache(m_iLevelID, pUI)))
+			return E_FAIL;
 	}
+	else
+	{
+		if (pResult == nullptr)
+		{
+			data.strTag;
+			return S_OK;
+		}
 
-	auto* pUI = dynamic_cast<CGenericUI*>(pResult);
-	if (nullptr == pUI)
-		return E_FAIL;
+		auto* pUI = dynamic_cast<CGenericUI*>(pResult);
+		if (nullptr == pUI)
+			return E_FAIL;
 
-	pCanvas->Get_UIVector()->push_back(pUI);
-	m_pMapUICache.emplace(data.strTag, pUI);
+		pCanvas->Get_UIVector()->push_back(pUI);
+		m_pMapUICache.emplace(data.strTag, pUI);
 
-	if (FAILED(CUI_Manager::GetInstance()->Add_VecGenericUICache(m_iLevelID, pUI)))
-		return E_FAIL;
+		if (FAILED(CUI_Manager::GetInstance()->Add_VecGenericUICache(m_iLevelID, pUI)))
+			return E_FAIL;
+	}
 
 	return S_OK;
 }

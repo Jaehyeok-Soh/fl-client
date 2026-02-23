@@ -65,7 +65,7 @@ void CUINameplate_BG::Update(const _float fTimeDelta)
 
 void CUINameplate_BG::Update_Late(const _float fTimeDelta)
 {
-	Super::Update_Late(fTimeDelta);
+ 	Super::Update_Late(fTimeDelta);
 }
 
 void CUINameplate_BG::Ready_Before_Render(const _float fTimeDelta)
@@ -75,6 +75,9 @@ void CUINameplate_BG::Ready_Before_Render(const _float fTimeDelta)
 
 HRESULT CUINameplate_BG::Render()
 {
+	if (m_strName == "MonsterHP_BG")
+		int a = 0;
+
 	if (!m_isVisible)
 		return S_OK;
 

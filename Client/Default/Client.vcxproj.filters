@@ -394,6 +394,9 @@
     <Filter Include="07. System\99. Debug_ImGui\Layout\Transform">
       <UniqueIdentifier>{C518D0B1-BF6A-4AC3-93EB-A5DC2C9C95A6}</UniqueIdentifier>
     </Filter>
+    <Filter Include="03. GameObject\UIObjects\02.UI\Prefabs">
+      <UniqueIdentifier>{7159d328-f3de-4c5a-9cd0-76f40ccc27d0}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="targetver.h">
@@ -753,7 +756,7 @@
     <ClInclude Include="..\public\Builder_AttackPreset.h">
       <Filter>07. System\01. Builder\AttackPreset</Filter>
     </ClInclude>
-    <ClInclude Include="..\Public\LandScape.h"/>
+    <ClInclude Include="..\Public\LandScape.h" />
     <ClInclude Include="..\Public\UI_World.h">
       <Filter>03. GameObject\UIObjects\02.UI\World</Filter>
     </ClInclude>
@@ -774,6 +777,9 @@
     </ClInclude>
     <ClInclude Include="..\Public\UINameplate_BG.h">
       <Filter>03. GameObject\UIObjects\02.UI\Image\Dynamic Image\05.MonsterNameplate</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\UIPrefab_MonsterNameplate.h">
+      <Filter>03. GameObject\UIObjects\02.UI\Prefabs</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -1126,7 +1132,7 @@
     <ClCompile Include="..\private\Builder_AttackPreset.cpp">
       <Filter>07. System\01. Builder\AttackPreset</Filter>
     </ClCompile>
-    <ClCompile Include="..\Private\LandScape.cpp"/>
+    <ClCompile Include="..\Private\LandScape.cpp" />
     <ClCompile Include="..\Private\UI_World.cpp">
       <Filter>03. GameObject\UIObjects\02.UI\World</Filter>
     </ClCompile>
@@ -1147,6 +1153,9 @@
     </ClCompile>
     <ClCompile Include="..\Private\UINameplate_BG.cpp">
       <Filter>03. GameObject\UIObjects\02.UI\Image\Dynamic Image\05.MonsterNameplate</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\UIPrefab_MonsterNameplate.cpp">
+      <Filter>03. GameObject\UIObjects\02.UI\Prefabs</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

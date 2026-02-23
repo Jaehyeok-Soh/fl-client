@@ -134,11 +134,18 @@ void CLevel_Logo::Update(const _float fTimeDelta)
 		m_pGameInstance->Request_CursorMode(m_eCursorMode);
 	}
 
-
 	// 오브젝트 풀링 테스트
 	if (m_pGameInstance->KeyButton_Down(DIK_0))
 	{
-		m_pGameInstance->Request_AddObject(ENUM_TO_UINT(ELevelType::LOGO), L"POOL_Attack_1", 0, nullptr);
+		//m_pGameInstance->Request_AddObject(ENUM_TO_UINT(ELevelType::LOGO), L"POOL_Attack_1", 0, nullptr);
+		 CUI_Manager::GetInstance()->Request_Add_Prefab(ENUM_TO_UINT(ELevelType::LOGO),EUIPrefabType::MONSTER_NAMEPLATE);
+		 m_pGameInstance->Flush_All();
+		 CUI_Manager::GetInstance()->Request_SortUI();
+
+	}
+	if (m_pGameInstance->KeyButton_Down(DIK_1))
+	{
+		m_pGameInstance->Request_DeleteGameObject(ENUM_TO_UINT(ELevelType::LOGO), g_wszUILayer);
 	}
 
 	// GlobalTimeScale 테스트
@@ -146,7 +153,7 @@ void CLevel_Logo::Update(const _float fTimeDelta)
 		if (m_pGameInstance->KeyButton_Down(DIK_9))
 		{
 			m_pGameInstance->Request_HitStop();
-		}
+		} 
 		if (m_pGameInstance->KeyButton_Down(DIK_8))
 		{
 			m_pGameInstance->Request_SloMo(0.2f, 2.f);
@@ -158,8 +165,6 @@ void CLevel_Logo::Update(const _float fTimeDelta)
 		if (m_pGameInstance->KeyButton_Down(DIK_7))
 		{
 			m_pGameInstance->Deactivate_SloMo();
-
-			
 		}
 	}
 }

@@ -206,6 +206,9 @@ HRESULT CEvent_Manager::Spawn_GameObject(SpawnEventDesc& spawnDesc)
 		return E_FAIL;
 	}
 
+	if (spawnDesc.callback)
+		spawnDesc.callback(pResult);
+
 	return S_OK;
 }
 

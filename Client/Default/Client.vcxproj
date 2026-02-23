@@ -277,6 +277,7 @@
     <ClInclude Include="..\Public\UINameplate_BG.h" />
     <ClInclude Include="..\Public\UIPlayerStat_Progress.h" />
     <ClInclude Include="..\Public\UIPlayerStat_Text.h" />
+    <ClInclude Include="..\Public\UIPrefab_MonsterNameplate.h" />
     <ClInclude Include="..\Public\UIProgress_Bar.h" />
     <ClInclude Include="..\Public\UISkill_BG.h" />
     <ClInclude Include="..\Public\UIText.h" />
@@ -432,6 +433,7 @@
     <ClCompile Include="..\Private\UINameplate_BG.cpp" />
     <ClCompile Include="..\Private\UIPlayerStat_Progress.cpp" />
     <ClCompile Include="..\Private\UIPlayerStat_Text.cpp" />
+    <ClCompile Include="..\Private\UIPrefab_MonsterNameplate.cpp" />
     <ClCompile Include="..\Private\UIProgress_Bar.cpp" />
     <ClCompile Include="..\Private\UISkill_BG.cpp" />
     <ClCompile Include="..\Private\UIText.cpp" />

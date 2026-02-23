@@ -16,6 +16,22 @@ CUI_Manager::CUI_Manager()
 	Safe_AddRef(m_pGameInstance);
 }
 
+HRESULT CUI_Manager::Add_VecCanvasCache(uint32_t iLevelIndex, CCanvas* pCache)
+{
+	if (iLevelIndex >= g_iLevelType_Count)
+		return E_FAIL; 
+	m_vecCanvasCache[iLevelIndex].push_back(pCache); 
+	return S_OK;
+}
+
+HRESULT CUI_Manager::Add_VecGenericUICache(uint32_t iLevelIndex, CGenericUI* pCache)
+{
+	if (iLevelIndex >= g_iLevelType_Count)
+		return E_FAIL; 
+	m_vecGenericUICache[iLevelIndex].push_back(pCache); 
+	return S_OK;
+}
+
 HRESULT CUI_Manager::Merge_MapCanvasCache(uint32_t iLevelIndex, unordered_map<_string, CCanvas*>&& Cache)
 {
 	if (iLevelIndex >= g_iLevelType_Count)
@@ -144,15 +160,20 @@ void CUI_Manager::Clear_TriggerUI()
 	m_vecTriggerUIs.clear();
 }
 
-void CUI_Manager::Regist_Prefab(EUIPrefabType ePrefab)
+HRESULT CUI_Manager::Regist_Prefab(_uint iLevelIndex, EUIPrefabType ePrefab, const _wstring& wstrPrototype, void* pArg)
 {
+	if (FAILED(m_pGameInstance->Regist_Pool(iLevelIndex, UIPrefabtypeToWstring(ePrefab), g_wszUILayer, ENUM_TO_UINT(ELevelType::LOGO), wstrPrototype, pArg, 10)))
+		return E_FAIL;
 }
 
-void CUI_Manager::Request_Add_Prefab(EUIPrefabType ePrefab)
+void CUI_Manager::Request_Add_Prefab(_uint iLevelIndex, EUIPrefabType ePrefab)
 {
 	switch (ePrefab)
 	{
 	case Client::EUIPrefabType::MONSTER_NAMEPLATE:
+		m_pGameInstance->Request_AddObject(iLevelIndex, UIPrefabtypeToWstring(EUIPrefabType::MONSTER_NAMEPLATE), ENUM_TO_UINT(ELevelType::LOGO), nullptr,
+			[this, iLevelIndex](CGameObject* pObj) {this->Add_VecGenericUICache(iLevelIndex, static_cast<CGenericUI*>(pObj)); });
+
 		break;
 	case Client::EUIPrefabType::END:
 		break;
