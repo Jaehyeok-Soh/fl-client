@@ -98,23 +98,23 @@ HRESULT CContainerObject::Render()
 	return S_OK;
 }
 
-void CContainerObject::OnCollision(_uint iMyColliderLayer, CGameObject* pOther)
+void CContainerObject::OnCollision(_uint iMyColliderLayer, _uint iOtherLayer, CGameObject* pOther)
 {
 }
 
-void CContainerObject::OnCollision_Enter(_uint iMyColliderLayer, CGameObject* pOther)
+void CContainerObject::OnCollision_Enter(_uint iMyColliderLayer, _uint iOtherColliderLayer, CGameObject* pOther, const COL_HIT_INFO& tHitInfo)
 {
 }
 
-void CContainerObject::OnCollision_Exit(_uint iMyColliderLayer, CGameObject* pOther)
+void CContainerObject::OnCollision_Exit(_uint iMyColliderLayer, _uint iOtherColliderLayer, CGameObject* pOther)
 {
 }
 
-void CContainerObject::OnTrigger_Enter(_uint iMyColliderLayer, CGameObject* pOther)
+void CContainerObject::OnTrigger_Enter(_uint iMyColliderLayer, _uint iOtherColliderLayer, CGameObject* pOther)
 {
 }
 
-void CContainerObject::OnTrigger_Exit(_uint iMyColliderLayer, CGameObject* pOther)
+void CContainerObject::OnTrigger_Exit(_uint iMyColliderLayer, _uint iOtherColliderLayer, CGameObject* pOther)
 {
 }
 

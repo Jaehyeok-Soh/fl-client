@@ -35,7 +35,10 @@ HRESULT CFileUtils::Open(wstring wstrFilePath, FileMode eMode)
     }
 
     if (m_handle == INVALID_HANDLE_VALUE)
+    {
+        DWORD err = GetLastError();
         return E_FAIL;
+    }
 
     return S_OK;
 }

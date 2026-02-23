@@ -22,15 +22,21 @@ class CPhysics_NPCHitReport :
 
         tagGameObjectInfo(CGameObject* left, PHYSICSCOLLIDER_DESC* leftDesc, CGameObject* right, PHYSICSCOLLIDER_DESC* rightDesc)
         {
-            leftName = left->Get_WName();
-            leftID = left->Get_ID();
-            leftObject = left;
-            leftColliderDesc = leftDesc;
+            if (left)
+            {
+                leftName = left->Get_WName();
+                leftID = left->Get_ID();
+                leftObject = left;
+                leftColliderDesc = leftDesc;
+            }
 
-            rightName = right->Get_WName();
-            rightID = right->Get_ID();
-            rightObject = right;
-            rightColliderDesc = rightDesc;
+            if (right)
+            {
+                rightName = right->Get_WName();
+                rightID = right->Get_ID();
+                rightObject = right;
+                rightColliderDesc = rightDesc;
+            }
         }
     }GAMEOBJECTINFO;
 

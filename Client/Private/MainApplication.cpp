@@ -42,7 +42,6 @@ HRESULT CMainApplication::Initialize()
 	EngineDesc.iWinCX = g_iWinSizeX;
 	EngineDesc.iWinCY = g_iWinSizeY;
 	EngineDesc.iLevelCount = g_iLevelType_Count;
-	EngineDesc.iCollideLayerCount = g_iCollideLayer_Count;
 	EngineDesc.hWnd = g_hWnd;
 	EngineDesc.hInst = g_hInstance;
 
@@ -70,6 +69,8 @@ HRESULT CMainApplication::Initialize()
 
 	if (FAILED(Start_Level(ELevelType::LOGO)))
 		return E_FAIL;	
+
+	CMonsterState_Factory::GetInstance()->Initialize();
 
 	return S_OK;
 }
@@ -535,6 +536,8 @@ HRESULT CMainApplication::Loading_Textures(const wstring& wstrFolder)
 
 void CMainApplication::Free()
 {	
+	CMonsterState_Factory::DestroyInstance();
+
 	Safe_Release(m_pDeviceContext);
 	Safe_Release(m_pDevice);
 	CUI_Manager::GetInstance()->DestroyInstance();

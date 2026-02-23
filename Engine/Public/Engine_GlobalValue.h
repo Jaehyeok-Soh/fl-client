@@ -13,6 +13,7 @@ inline constexpr wchar_t g_wszMaterialExtension[]{ L".json" };
 inline constexpr wchar_t g_wszMeshExtension[]{ L".mesh" };
 inline constexpr wchar_t g_wszAnimationExtension[]{ L".clip" };
 
+inline constexpr wchar_t g_wszAttackPresetDataPath[]{ L"../../Resources/Data/AttackPresetDatas/" };
 
 #pragma region Texture Splating
 
@@ -34,6 +35,7 @@ inline constexpr _char	g_szUse_Mix_RGBA_Map_Count[]{ "g_iUse_Mix_RGBA_Count" };
 
 
 #pragma endregion
+
 
 inline constexpr _uint OF_Outline = 1u << 0;
 

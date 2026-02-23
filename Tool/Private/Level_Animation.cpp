@@ -28,6 +28,7 @@
 #include "Panel_AnimDescription.h"
 #include "Panel_ModelInfo.h"
 #include "Panel_Parts.h"
+#include "Panel_State.h"
 #include "Panel_AnimationMix.h"
 
 #include "DebugDraw.h"
@@ -206,6 +207,8 @@ HRESULT CLevel_Animation::Ready_Panels()
 	m_GuiElements[Elements::MODELINFO] = CPanel_ModelInfo::Create("Panel_ModelInfo", this, m_pDevice, m_pDeviceContext);
 
 	m_GuiElements[Elements::PARTSINFO] = CPanel_Parts::Create("Panel_PartsInfo", this, m_pDevice, m_pDeviceContext);
+
+	m_GuiElements[Elements::STATEEDITOR] = CPanel_State::Create("Panel_State", this, m_pDevice, m_pDeviceContext);
 
 	m_GuiElements[Elements::MIXER] = CPanel_AnimationMix::Create("Panel_AnimMixer", this, m_pDevice, m_pDeviceContext);
 
