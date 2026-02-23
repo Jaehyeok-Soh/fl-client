@@ -98,8 +98,8 @@ HRESULT CLandScape::Render()
 	CModel*		pModel		= Get_Component<CModel>();       if (pModel == nullptr)              return E_FAIL;
 	CTransform* pTransform	= Get_Component<CTransform>();   if (pTransform == nullptr)          return E_FAIL;
 
-	if (FAILED(m_pGameInstance->GameDataManager_Bind_SplatingTextureInfo(pShader, L"Village")))
-		return E_FAIL;
+	//if (FAILED(m_pGameInstance->GameDataManager_Bind_SplatingTextureInfo(pShader, L"Village")))
+	//	return E_FAIL;
 
 	/* UV 좌표 업데이트 */
 	if (FAILED(pShader->Get_Vector("g_LandScape_TextureUV_LT")->SetRawValue(&m_vTextureUV_LT, 0, sizeof(m_vTextureUV_LT)))) return E_FAIL;

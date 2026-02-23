@@ -58,13 +58,13 @@ namespace Engine
 	void TEXTURE_SPLATTING_INFO::Load_Json(const json& LoadJson)
 	{
 		string TextureName = LoadJson.value("Base Texture", "None");
-		this->pBase_Texture = TextureName == "None" ? nullptr : CGameInstance::GetInstance()->GetOrAddTexture(Engine_Utils::ToWString("Texture_" + TextureName), nullptr);
+		this->pBase_Texture = TextureName == "None" ? nullptr : CGameInstance::GetInstance()->GetOrAddTexture(Engine_Utils::ToWString(TextureName), nullptr);
 
 		TextureName = LoadJson.value("Mix DH Tile Texture", "None");
-		this->pMix_DH_Tile_Texture = TextureName == "None" ? nullptr : CGameInstance::GetInstance()->GetOrAddTexture(Engine_Utils::ToWString("Texture_" + TextureName), nullptr);
+		this->pMix_DH_Tile_Texture = TextureName == "None" ? nullptr : CGameInstance::GetInstance()->GetOrAddTexture(Engine_Utils::ToWString(TextureName), nullptr);
 
 		TextureName = LoadJson.value("Mix NBR Tile Texture", "None");
-		this->pMix_NBR_Tile_Texture = TextureName == "None" ? nullptr : CGameInstance::GetInstance()->GetOrAddTexture(Engine_Utils::ToWString("Texture_" + TextureName), nullptr);
+		this->pMix_NBR_Tile_Texture = TextureName == "None" ? nullptr : CGameInstance::GetInstance()->GetOrAddTexture(Engine_Utils::ToWString(TextureName), nullptr);
 
 
 		if (LoadJson.contains("Mix RGBA Info"))

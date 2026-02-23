@@ -436,6 +436,14 @@ HRESULT CUEMapdataParser::Batch_UnrealRawMapData(const wchar_t* wszFileName)
 {
 
 	m_wstrCurrentBatch_UERawDataPath = path(wszFileName).filename().stem();
+
+
+	if (m_umapConvertedMapData.find(m_wstrCurrentBatch_UERawDataPath) == m_umapConvertedMapData.end())
+	{
+		MSG_BOX(" 찾으신 파일이 존재하지 않습니다 파일 경로를 다시 확인해주세요 ");
+		return E_FAIL;
+	}
+
 	if (m_umapUnreal_Map_Data_IsLoadedCheck.at(m_wstrCurrentBatch_UERawDataPath))
 	{
 		int iResult = MessageBox(nullptr, L"이미 배치가 완료된 맵 RawData입니다.\n다시 생성하시겠습니까?", L"중복 로드 확인",MB_OKCANCEL | MB_ICONQUESTION);
@@ -526,7 +534,7 @@ HRESULT CUEMapdataParser::Batch_UnrealRawMapData(const wchar_t* wszFileName)
 	else
 	{
 		/* Pre Bind Instance */
-		vector<MAPDATA_BASE*>* pFind = Get_Converted_MapData(wszFileName);
+		vector<MAPDATA_BASE*>* pFind = Get_Converted_MapData(m_wstrCurrentBatch_UERawDataPath.c_str());
 		if (pFind == nullptr) return E_FAIL;
 		UINT				iLevelID			= ENUM_TO_UINT(ELevelType::MAP);
 		EClientMakePath		eClientMakePath		= m_pMapToolManager->Get_MakeMapObjectClientMakePath();

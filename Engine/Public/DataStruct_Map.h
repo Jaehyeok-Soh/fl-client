@@ -85,8 +85,6 @@ public:
 #pragma endregion
 
 
-
-
 #pragma endregion
 NS_END
 NS_BEGIN(DTO)
