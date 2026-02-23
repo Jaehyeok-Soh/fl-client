@@ -346,8 +346,9 @@ float4 PS_DEFAULT(VS_OUT_INST_MESH_PARTICLE In) : SV_Target0
     // =======              노이즈 계산                     ===========
     
     float2 noiseUV = In.vUV;
-    
+    float4 noiseSample = { 1.f, 1.f, 1.f, 1.f };
     float4 GradationSample = { 1.f, 1.f, 1.f, 1.f };
+    float4 DiffuseSample = { 1.f, 1.f, 1.f, 1.f };
     
     if (HasScroll())
     {
@@ -355,13 +356,17 @@ float4 PS_DEFAULT(VS_OUT_INST_MESH_PARTICLE In) : SV_Target0
     }
     
     // =======              노이즈 텍스처 샘플링             ===========
-    float4 noiseSample = { 0.5f, 1.f, 1.f, 1.f };
+
     float2 finalUV = In.vUV;
     
     if (Has(g_Effect.g_TextureFlags, NOISETEXTURE))
     {
         noiseSample = NoiseTextureSample(noiseUV);
     }
+    
+    else
+        noiseSample = float4(1.f, 1.f, 1.f, 1.f);
+    
     float noiseValue = noiseSample.r;
     
     //=======               디스토션 (왜곡) 로직            ===========
@@ -382,12 +387,12 @@ float4 PS_DEFAULT(VS_OUT_INST_MESH_PARTICLE In) : SV_Target0
     
     // =======      디스토션 처리된 UV로 Diffuse Texture 샘플링 =======
 
-    float4 DiffuseSample = { 1.f, 1.f, 1.f, 1.f };
-    
     if (Has(g_Effect.g_TextureFlags, DEFAULTTEXTURE))
     {
         DiffuseSample = DefaultTextureSample(finalUV);
     }
+    else
+        DiffuseSample = float4(1.f, 1.f, 1.f, 1.f);
     
     if (Has(g_Effect.g_TextureFlags, GRADATIONTEXTURE))
     {
@@ -403,6 +408,9 @@ float4 PS_DEFAULT(VS_OUT_INST_MESH_PARTICLE In) : SV_Target0
             GradationSample = GradationTextureSample(SpriteUV);
         }
     }
+    else
+        GradationSample = float4(1.f, 1.f, 1.f, 1.f);
+    
     // ==========               알파 마스킹                   =========
     float finalAlpha = DiffuseSample.a * noiseValue * GradationSample.r;
     

@@ -206,6 +206,17 @@ HRESULT CLoader::Loading_For_Animation()
 	if (pMapDataLoader == nullptr) return E_FAIL;
 	if (FAILED(pMapDataLoader->Make_Prototype(ENUM_TO_UINT(ELevelType::ANIMATION), L"../../Resources/Models/Effect_FBX/blade/Model/")))
 		return E_FAIL;
+	if (FAILED(pMapDataLoader->Make_Prototype(ENUM_TO_UINT(ELevelType::ANIMATION), L"../../Resources/Models/Effect_FBX/Circle/Model/")))
+		return E_FAIL;
+	if (FAILED(pMapDataLoader->Make_Prototype(ENUM_TO_UINT(ELevelType::ANIMATION), L"../../Resources/Models/Effect_FBX/Object_Chain/Model/")))
+		return E_FAIL;
+	if (FAILED(pMapDataLoader->Make_Prototype(ENUM_TO_UINT(ELevelType::ANIMATION), L"../../Resources/Models/Effect_FBX/Object_Female_Character/Model/")))
+		return E_FAIL;
+	//if (FAILED(pMapDataLoader->Make_Prototype(ENUM_TO_UINT(ELevelType::EFFECT), L"../../Resources/Models/Effect_FBX/Rock/Model/")))
+	//	return E_FAIL;
+	if (FAILED(pMapDataLoader->Make_Prototype(ENUM_TO_UINT(ELevelType::ANIMATION), L"../../Resources/Models/Effect_FBX/Tornado/Model/")))
+		return E_FAIL;
+
 	if (FAILED(pMapDataLoader->Make_Prototype(ENUM_TO_UINT(ELevelType::ANIMATION), basicBoxPath)))
 		return E_FAIL;
 	Safe_Release(pMapDataLoader);
@@ -291,6 +302,17 @@ HRESULT CLoader::Loading_For_Effect()
 	if (pMapDataLoader == nullptr) return E_FAIL;
 	if (FAILED(pMapDataLoader->Make_Prototype(ENUM_TO_UINT(ELevelType::EFFECT), L"../../Resources/Models/Effect_FBX/blade/Model/")))
 		return E_FAIL;
+	if (FAILED(pMapDataLoader->Make_Prototype(ENUM_TO_UINT(ELevelType::EFFECT), L"../../Resources/Models/Effect_FBX/Circle/Model/")))
+		return E_FAIL;
+	if (FAILED(pMapDataLoader->Make_Prototype(ENUM_TO_UINT(ELevelType::EFFECT), L"../../Resources/Models/Effect_FBX/Object_Chain/Model/")))
+		return E_FAIL;
+	if (FAILED(pMapDataLoader->Make_Prototype(ENUM_TO_UINT(ELevelType::EFFECT), L"../../Resources/Models/Effect_FBX/Object_Female_Character/Model/")))
+		return E_FAIL;
+	//if (FAILED(pMapDataLoader->Make_Prototype(ENUM_TO_UINT(ELevelType::EFFECT), L"../../Resources/Models/Effect_FBX/Rock/Model/")))
+	//	return E_FAIL;
+	if (FAILED(pMapDataLoader->Make_Prototype(ENUM_TO_UINT(ELevelType::EFFECT), L"../../Resources/Models/Effect_FBX/Tornado/Model/")))
+		return E_FAIL;
+
 	if (FAILED(pMapDataLoader->Make_Prototype(ENUM_TO_UINT(ELevelType::EFFECT), basicBoxPath)))
 		return E_FAIL;
 	Safe_Release(pMapDataLoader);
