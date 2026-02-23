@@ -149,8 +149,8 @@ HRESULT CMonster_Dummy::Ready_Components()
 	CMonsterControlContext::MONSTER_CONTROLCONTEXT_DESC desc{};
 	desc.fMeleeRange = 2.f;
 	desc.fAttackRange = 4.f;
-	desc.fCloseRange = 0.2f;
-	desc.fDetectionRange = 5.f;
+	desc.fCloseRange = 1.f;
+	desc.fDetectionRange = 10.f;
 	desc.fSpeed = 1.f;
 	//desc.iSkillCount;
 	//desc.vecSkillRange;

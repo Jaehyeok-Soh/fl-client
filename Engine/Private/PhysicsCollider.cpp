@@ -165,7 +165,6 @@ void CPhysicsCollider::SetCollisionFilter()
 	PxFilterData filterData(m_tDesc.eFilterLayer, m_tDesc.iFilterMask, 0, 0);
 	for (auto& shape : m_pColliderShapes)
 	{
-
 		shape->setSimulationFilterData(filterData);
 		shape->setQueryFilterData(filterData);
 	}

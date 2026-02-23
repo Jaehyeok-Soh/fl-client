@@ -28,6 +28,7 @@ public:
 		_float fAlpha;
 		int32_t iFlip;
 		CCanvas* pCanvasCache = { nullptr };
+		CGameObject* pTarget = { nullptr };
 	}GENERIC_UI_DESC;
 
 	enum EUITextureSlot { DEFAULT, NOISE, ALPHA_MASK };
@@ -74,6 +75,7 @@ public:
 protected:
 	CUI_Manager* m_pUIManager = { nullptr };	
 	uint32_t m_iLevelID = {};
+	class CWorldUI_Component* m_pWorldUIComp = { nullptr };
 
 protected:
 	ERectTransform m_eRectTransformType = { ERectTransform::C };

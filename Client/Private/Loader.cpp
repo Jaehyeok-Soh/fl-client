@@ -72,10 +72,12 @@
 //프로그레스바
 #include "UIPlayerStat_Progress.h"
 #include "UILoading_Progress.h"
+#include "UIMonsterStat_Progress.h"
 // 텍스트 
 #include "UIMenu_Text.h"
 #include "UIPlayerStat_Text.h"
 #include "UILoading_Text.h"
+#include "UIMonsterStat_Text.h"
 // 그냥 이미지
 #include "UIJust_Image.h"
 // 다이나믹 이미지 
@@ -85,6 +87,7 @@
 #include "UIMenu_Image.h"
 #include "UIMenu_OutLine.h"
 #include "UILoading_Image.h"
+#include "UINameplate_BG.h"
 // 트리거 
 #include "UIMenu_Trigger.h"
 #include "UICommon_Trigger.h"
@@ -307,6 +310,11 @@ HRESULT CLoader::Loading_For_Logo()
 		if (FAILED(Loading_Textures(L"../../Resources/Textures/Effect/Wave/")))
 			return E_FAIL;
 	}
+
+	// For. UI Texture
+	if (FAILED(Loading_Textures(L"../../Resources/Textures/UI/UI_Client/")))
+		return E_FAIL;
+
 #pragma endregion
 
 #pragma region Texture Splating Data
@@ -388,7 +396,7 @@ HRESULT CLoader::Loading_For_Logo()
 		desc.vecStageBoneIndices = { };
 
 		CModel::DATA_ANIMCHANNEL tAniChannelData = {};
-		tAniChannelData.iRootBoneIndex = 2;
+		tAniChannelData.iRootBoneIndex = 3;
 		desc.pAniChannelData = &tAniChannelData;
 
 		m_pGameInstance->Add_Prototype(ENUM_TO_UINT(ELevelType::STATIC), L"Prototype_Component_Model_Monster_Dog", CModel::Create(m_pDevice, m_pDeviceContext, &desc));
@@ -475,17 +483,20 @@ HRESULT CLoader::Loading_For_Logo()
 
 #pragma region UI
 	ADD_PROTOTYPE(ELevelType::LOGO, L"Prototype_UI_PlayerStatProgress",	CUIPlayerStat_Progress::Create(m_pDevice, m_pDeviceContext));
-	ADD_PROTOTYPE(ELevelType::LOGO, L"Prototype_UI_MenuText",		CUIMenu_Text::Create(m_pDevice, m_pDeviceContext));
-	ADD_PROTOTYPE(ELevelType::LOGO, L"Prototype_UI_PlayerStatText",	CUIPlayerStat_Text::Create(m_pDevice, m_pDeviceContext));
-	ADD_PROTOTYPE(ELevelType::LOGO, L"Prototype_UI_JUST_IMAGE",		CUIJust_Image::Create(m_pDevice, m_pDeviceContext));
-	ADD_PROTOTYPE(ELevelType::LOGO, L"Prototype_UI_UIMenuTrigger",	CUIMenu_Trigger::Create(m_pDevice, m_pDeviceContext));
+	ADD_PROTOTYPE(ELevelType::LOGO, L"Prototype_UI_MenuText",			CUIMenu_Text::Create(m_pDevice, m_pDeviceContext));
+	ADD_PROTOTYPE(ELevelType::LOGO, L"Prototype_UI_PlayerStatText",		CUIPlayerStat_Text::Create(m_pDevice, m_pDeviceContext));
+	ADD_PROTOTYPE(ELevelType::LOGO, L"Prototype_UI_JUST_IMAGE",			CUIJust_Image::Create(m_pDevice, m_pDeviceContext));
+	ADD_PROTOTYPE(ELevelType::LOGO, L"Prototype_UI_UIMenuTrigger",		CUIMenu_Trigger::Create(m_pDevice, m_pDeviceContext));
 	ADD_PROTOTYPE(ELevelType::LOGO, L"Prototype_UI_UICommonTrigger",	CUICommon_Trigger::Create(m_pDevice, m_pDeviceContext));
-	ADD_PROTOTYPE(ELevelType::LOGO, L"Prototype_UI_UIMenuExitTrigger", CUIMenu_Exit_Trigger::Create(m_pDevice, m_pDeviceContext));
-	ADD_PROTOTYPE(ELevelType::LOGO, L"Prototype_UI_SkillBG",		CUISkill_BG::Create(m_pDevice, m_pDeviceContext));
-	ADD_PROTOTYPE(ELevelType::LOGO, L"Prototype_UI_MiniMap",		CUIMini_Map::Create(m_pDevice, m_pDeviceContext));
-	ADD_PROTOTYPE(ELevelType::LOGO, L"Prototype_UI_HoverImage",		CUIHover_Image::Create(m_pDevice, m_pDeviceContext));
-	ADD_PROTOTYPE(ELevelType::LOGO, L"Prototype_UI_MenuImage",		CUIMenu_Image::Create(m_pDevice, m_pDeviceContext));
-	ADD_PROTOTYPE(ELevelType::LOGO, L"Prototype_UI_MenuOutline",	CUIMenu_OutLine::Create(m_pDevice, m_pDeviceContext));
+	ADD_PROTOTYPE(ELevelType::LOGO, L"Prototype_UI_UIMenuExitTrigger",	CUIMenu_Exit_Trigger::Create(m_pDevice, m_pDeviceContext));
+	ADD_PROTOTYPE(ELevelType::LOGO, L"Prototype_UI_SkillBG",			CUISkill_BG::Create(m_pDevice, m_pDeviceContext));
+	ADD_PROTOTYPE(ELevelType::LOGO, L"Prototype_UI_MiniMap",			CUIMini_Map::Create(m_pDevice, m_pDeviceContext));
+	ADD_PROTOTYPE(ELevelType::LOGO, L"Prototype_UI_HoverImage",			CUIHover_Image::Create(m_pDevice, m_pDeviceContext));
+	ADD_PROTOTYPE(ELevelType::LOGO, L"Prototype_UI_MenuImage",			CUIMenu_Image::Create(m_pDevice, m_pDeviceContext));
+	ADD_PROTOTYPE(ELevelType::LOGO, L"Prototype_UI_MenuOutline",		CUIMenu_OutLine::Create(m_pDevice, m_pDeviceContext));
+	ADD_PROTOTYPE(ELevelType::LOGO, L"Prototype_UI_MonsterStatText",	CUIMonsterStat_Text::Create(m_pDevice, m_pDeviceContext));
+	ADD_PROTOTYPE(ELevelType::LOGO, L"Prototype_UI_MonsterStatProgress",CUIMonsterStat_Progress::Create(m_pDevice, m_pDeviceContext));
+	ADD_PROTOTYPE(ELevelType::LOGO, L"Prototype_UI_Nameplate_BG",		CUINameplate_BG::Create(m_pDevice, m_pDeviceContext));
 #pragma endregion
 
 	m_isFinished = true;

@@ -145,12 +145,12 @@ void CUILoading_Image::Initialize_Visible_Event()
 	}
 	case DTO::EUIDImageSubClassType::LOADING_BG_TOP:
 	{
-		Ready_Lerp_Movement(Vec2{ 0.f, -50.f }, Vec2{ 0.f, 0.f }, 1.f, 2.f, m_fDelay);
+		Ready_Lerp_Movement(Vec2{ 0.f, -50.f }, Vec2{ 0.f, 0.f }, 0.5f, 2.f, m_fDelay);
 		break;
 	}
 	case DTO::EUIDImageSubClassType::LOADING_BG_BOTTOM:
 	{
-		Ready_Lerp_Movement(Vec2{ 0.f, 50.f }, Vec2{ 0.f, 0.f }, 1.f, 2.f, m_fDelay);
+		Ready_Lerp_Movement(Vec2{ 0.f, 50.f }, Vec2{ 0.f, 0.f }, 0.5f, 2.f, m_fDelay);
 		break;
 	}
 	case DTO::EUIDImageSubClassType::END:

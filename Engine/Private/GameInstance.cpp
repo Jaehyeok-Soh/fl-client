@@ -474,6 +474,17 @@ void CGameInstance::Clear_Layer(_uint iLevelIndex, const wstring& wstrLayerTag)
 #pragma endregion
 
 #pragma region OBJECTPOOL_MANAGER
+/// <summary>
+/// 오브젝트 Pool에 등록하기 위한 함수 
+/// </summary>
+/// <param name="iTargetLevelIndex">	/ 생성할 Level Index </param>
+/// <param name="wstrPoolTag">			/ 등록할 Pool Tag </param>
+/// <param name="wstrLayerTag">			/ Clone해서 생성할 때 넣을 LayerTag Layer Tag </param>
+/// <param name="iSeedLevelID">			/ 프로토타입으로 등록된 Level ID </param>
+/// <param name="wstrSeedPrototypeTag"> / 프로토타입 태그 </param>
+/// <param name="pArg">					/ Desc </param>
+/// <param name="iPoolCapacityCount">	/ Pool에 넣을 </param>
+/// <returns></returns>
 HRESULT CGameInstance::Regist_Pool(_uint iTargetLevelIndex, const wstring& wstrPoolTag, const wstring& wstrLayerTag, _uint iSeedLevelID, const wstring& wstrSeedPrototypeTag, void* pArg, _uint iPoolCapacityCount)
 {
 	return m_pObjectPool_Manager->Regist_Pool(iTargetLevelIndex, wstrPoolTag, wstrLayerTag, iSeedLevelID, wstrSeedPrototypeTag, pArg, iPoolCapacityCount);

@@ -1,5 +1,5 @@
 #include "pch.h"
-#include "Builder_UI.h"
+#include "Builder_UIPrefabs.h"
 #include "Canvas.h"
 #include "GenericUI.h"
 #include "UIJust_Image.h"
@@ -7,12 +7,10 @@
 // 프로그레스 클래스
 #include "UIPlayerStat_Progress.h"
 #include "UILoading_Progress.h"
-#include "UIMonsterStat_Progress.h"
 // 텍스트 클래스
 #include "UIMenu_Text.h"
 #include "UIPlayerStat_Text.h"
 #include "UILoading_Text.h"
-#include "UIMonsterStat_Text.h"
 // 다이나믹 이미지 클래스
 #include "UIMenu_Image.h"
 #include "UIHover_Image.h"
@@ -20,29 +18,26 @@
 #include "UISkill_BG.h"
 #include "UIMenu_OutLine.h"
 #include "UILoading_Image.h"
-#include "UINameplate_BG.h"
 // 트리거 클래스
 #include "UICommon_Trigger.h"
 #include "UIMenu_Trigger.h"
 #include "UIMenu_Exit_Trigger.h"
 
-
 #include "WorldUI_Component.h"
-
 #include"UI_Manager.h"
 #include "GameInstance.h"
 
-CBuilder_UI::CBuilder_UI(ID3D11Device* pDevice, ID3D11DeviceContext* pDeviceContext, _uint iLevelID)
+CBuilder_UIPrefabs::CBuilder_UIPrefabs(ID3D11Device* pDevice, ID3D11DeviceContext* pDeviceContext, _uint iLevelID)
 	:Super(pDevice, pDeviceContext, iLevelID)
 {
 }
 
-HRESULT CBuilder_UI::Initialize()
+HRESULT CBuilder_UIPrefabs::Initialize()
 {
 	return S_OK;
 }
 
-HRESULT CBuilder_UI::Build(const CDataDocumentBase& document)
+HRESULT CBuilder_UIPrefabs::Build(const CDataDocumentBase& document)
 {
 	if (document.Get_Category() != DTO::ECategory::UI)
 		return E_FAIL;
@@ -126,21 +121,21 @@ HRESULT CBuilder_UI::Build(const CDataDocumentBase& document)
 	return S_OK;
 }
 
-HRESULT CBuilder_UI::Create_CanvasDTO(const DTO::TUI_CanvasData& data)
+HRESULT CBuilder_UIPrefabs::Create_CanvasDTO(const DTO::TUI_CanvasData& data)
 {
 	if (data.eType != DTO::EUIType::CANVAS)
 		return E_FAIL;
 
 	CCanvas::CANVAS_DESC Desc = {};
-	Desc.iLevelIndex	= data.iLevelIndex;
-	Desc.strName		= data.strTag;
-	m_vAspect.x			= (_float)g_iWinSizeX / (_float)data.iEditorSizeX;
-	m_vAspect.y			= (_float)g_iWinSizeY / (_float)data.iEditorSizeY;
-	Desc.fX				= data.fPosX * m_vAspect.x;
-	Desc.fY				= data.fPosY * m_vAspect.y;
-	Desc.fZ				= data.fPosZ;
-	Desc.fWidth			= m_vViewportSIze.x;
-	Desc.fHeight		= m_vViewportSIze.y;
+	Desc.iLevelIndex = data.iLevelIndex;
+	Desc.strName = data.strTag;
+	m_vAspect.x = (_float)g_iWinSizeX / (_float)data.iEditorSizeX;
+	m_vAspect.y = (_float)g_iWinSizeY / (_float)data.iEditorSizeY;
+	Desc.fX = data.fPosX * m_vAspect.x;
+	Desc.fY = data.fPosY * m_vAspect.y;
+	Desc.fZ = data.fPosZ;
+	Desc.fWidth = m_vViewportSIze.x;
+	Desc.fHeight = m_vViewportSIze.y;
 
 	CGameObject* pResult = m_pGameInstance->Add_GameObject(ENUM_TO_UINT(ELevelType::STATIC), L"Prototype_UI_Canvas", m_iLevelID, g_wszUILayer, &Desc);
 	if (pResult == nullptr)
@@ -157,7 +152,7 @@ HRESULT CBuilder_UI::Create_CanvasDTO(const DTO::TUI_CanvasData& data)
 	return S_OK;
 }
 
-HRESULT CBuilder_UI::Create_GenericUIDTO(const DTO::TUI_GenericUIData& data)
+HRESULT CBuilder_UIPrefabs::Create_GenericUIDTO(const DTO::TUI_GenericUIData& data)
 {
 	if (data.eType != DTO::EUIType::GENERICUI)
 		return E_FAIL;
@@ -172,7 +167,7 @@ HRESULT CBuilder_UI::Create_GenericUIDTO(const DTO::TUI_GenericUIData& data)
 	return S_OK;
 }
 
-HRESULT CBuilder_UI::Create_TextDTO(const DTO::TUI_TextData& data)
+HRESULT CBuilder_UIPrefabs::Create_TextDTO(const DTO::TUI_TextData& data)
 {
 	if (data.eType != DTO::EUIType::UI_TEXT)
 		return E_FAIL;
@@ -181,7 +176,7 @@ HRESULT CBuilder_UI::Create_TextDTO(const DTO::TUI_TextData& data)
 	return S_OK;
 }
 
-HRESULT CBuilder_UI::Create_TriggerDTO(const DTO::TUI_TriggerData& data)
+HRESULT CBuilder_UIPrefabs::Create_TriggerDTO(const DTO::TUI_TriggerData& data)
 {
 	if (data.eType != DTO::EUIType::TRIGGER)
 		return E_FAIL;
@@ -190,7 +185,7 @@ HRESULT CBuilder_UI::Create_TriggerDTO(const DTO::TUI_TriggerData& data)
 	return S_OK;
 }
 
-HRESULT CBuilder_UI::Create_DImageDTO(const DTO::TUI_DImageData& data)
+HRESULT CBuilder_UIPrefabs::Create_DImageDTO(const DTO::TUI_DImageData& data)
 {
 	if (data.eType != DTO::EUIType::DYNAMIC_IMAGE)
 		return E_FAIL;
@@ -199,7 +194,7 @@ HRESULT CBuilder_UI::Create_DImageDTO(const DTO::TUI_DImageData& data)
 	return S_OK;
 }
 
-HRESULT CBuilder_UI::Register_Class(DTO::EUIClassType eClassType, const DTO::TUI_GenericUIData& data, CCanvas* pCanvas)
+HRESULT CBuilder_UIPrefabs::Register_Class(DTO::EUIClassType eClassType, const DTO::TUI_GenericUIData& data, CCanvas* pCanvas)
 {
 	if (nullptr == pCanvas)
 		return E_FAIL;
@@ -213,9 +208,9 @@ HRESULT CBuilder_UI::Register_Class(DTO::EUIClassType eClassType, const DTO::TUI
 	if (eClassType == DTO::EUIClassType::PROGRESS_BAR)
 	{
 		const auto Type = data.eSubClassType;
-		const _bool isPlayerStat	= Type >= DTO::EUISubClassType::PLAYER_STAT_BEGIN && Type <= DTO::EUISubClassType::PLAYER_STAT_END;
-		const _bool isLoading		= Type == DTO::EUISubClassType::LOADING_PROGRESS;
-		const _bool isMonsterStat	= Type >= DTO::EUISubClassType::MONSTER_STAT_BEGIN && Type <= DTO::EUISubClassType::MONSTER_STAT_END;
+
+		const _bool isPlayerStat = Type >= DTO::EUISubClassType::PLAYER_STAT_BEGIN && Type <= DTO::EUISubClassType::PLAYER_STAT_END;
+		const _bool isLoading = Type >= DTO::EUISubClassType::LOADING_PROGRESS;
 
 		if (isPlayerStat)
 		{
@@ -232,18 +227,9 @@ HRESULT CBuilder_UI::Register_Class(DTO::EUIClassType eClassType, const DTO::TUI
 			LoadingProgressDesc.pLoadingRatio = CUI_Manager::GetInstance()->Get_LoadingRatio();
 			pResult = m_pGameInstance->Add_GameObject(m_iLevelID, L"Prototype_UI_LoadingProgress", m_iLevelID, g_wszUILayer, &LoadingProgressDesc);
 		}
-		else if(isMonsterStat)
-		{
-			CUIMonsterStat_Progress::MONSTER_STAT_PROGRESS_DESC  MonsterStatProgressDesc= {};
-			static_cast<CGenericUI::GENERIC_UI_DESC&>(MonsterStatProgressDesc) = DefaultDesc;
-			MonsterStatProgressDesc.eOwner = data.eSubClassType;
-			MonsterStatProgressDesc.iComponentFlag = DTO::EComponentTypeFlag::WORLDUI_COMPONENT;
-			pResult = m_pGameInstance->Add_GameObject(m_iLevelID, L"Prototype_UI_MonsterStatProgress", m_iLevelID, g_wszUILayer, &MonsterStatProgressDesc);
-		}
 		else
 		{
-			data.eSubClassType;
-			return E_FAIL;	
+
 		}
 	}
 
@@ -256,26 +242,26 @@ HRESULT CBuilder_UI::Register_Class(DTO::EUIClassType eClassType, const DTO::TUI
 		if (iter == m_MapTextDataCache.end())
 			return E_FAIL;
 
-		const auto Type					= iter->second.eTextSubClassType;
-		const _bool isPlayerStat		= (Type >= DTO::EUITextSubClassType::PLAYER_STAT_TEXT_BEGIN && Type <= DTO::EUITextSubClassType::PLAYER_STAT_TEXT_END);
-		const _bool isMenu				= (Type >= DTO::EUITextSubClassType::MENU_TEXT_BEGIN	&& Type <= DTO::EUITextSubClassType::MENU_TEXT_END);
-		const _bool isLoading			= (Type >= DTO::EUITextSubClassType::LOADING_TEXT_BEGIN && Type <= DTO::EUITextSubClassType::LOADING_TEXT_END);
-		const _bool isMonsterNameplate	= (Type >= DTO::EUITextSubClassType::MONSTER_STAT_TEXT_BEGIN && Type <= DTO::EUITextSubClassType::MONSTER_STAT_TEXT_END);
+		const auto Type = iter->second.eTextSubClassType;
+		const _bool isPlayerStat = (Type >= DTO::EUITextSubClassType::PLAYER_STAT_TEXT_BEGIN && Type <= DTO::EUITextSubClassType::PLAYER_STAT_TEXT_END);
+		const _bool isMenu = (Type >= DTO::EUITextSubClassType::MENU_TEXT_BEGIN && Type <= DTO::EUITextSubClassType::MENU_TEXT_END);
+		const _bool isLoading = (Type >= DTO::EUITextSubClassType::LOADING_TEXT_BEGIN && Type <= DTO::EUITextSubClassType::LOADING_TEXT_END);
 
 		static_cast<CGenericUI::GENERIC_UI_DESC&>(TextDesc) = DefaultDesc;
-		TextDesc.eTextSubClass	= Type;
-		TextDesc.eShaderType	= iter->second.eShaderType;
-		TextDesc.wstrFontTag	= Engine_Utils::ToWString(iter->second.strFontTag);
-		TextDesc.wstrText		= Engine_Utils::ToWString(iter->second.strText);
-		TextDesc.vFontColor		= iter->second.vFontColor;
-		TextDesc.ePivot			= iter->second.ePivot;
-		TextDesc.fRotate		= iter->second.fRotate;
-		TextDesc.fScale			= iter->second.fScale * m_vAspect.x;
+		TextDesc.eTextSubClass = Type;
+		TextDesc.eShaderType = iter->second.eShaderType;
+		TextDesc.wstrFontTag = Engine_Utils::ToWString(iter->second.strFontTag);
+		TextDesc.wstrText = Engine_Utils::ToWString(iter->second.strText);
+		TextDesc.vFontColor = iter->second.vFontColor;
+		TextDesc.ePivot = iter->second.ePivot;
+		TextDesc.fRotate = iter->second.fRotate;
+		TextDesc.fScale = iter->second.fScale * m_vAspect.x;
 
 		if (isPlayerStat)
 		{
-			CUIPlayerStat_Text::PLAYER_STAT_DESC PlayerStatTextDesc= {};
+			CUIPlayerStat_Text::PLAYER_STAT_DESC PlayerStatTextDesc = {};
 			static_cast<CUIText::UI_TEXT_DESC&>(PlayerStatTextDesc) = TextDesc;
+			PlayerStatTextDesc.iComponentFlag = DTO::EComponentTypeFlag::WORLDUI_COMPONENT;
 			pResult = m_pGameInstance->Add_GameObject(m_iLevelID, L"Prototype_UI_PlayerStatText", m_iLevelID, g_wszUILayer, &PlayerStatTextDesc);
 
 		}
@@ -291,14 +277,6 @@ HRESULT CBuilder_UI::Register_Class(DTO::EUIClassType eClassType, const DTO::TUI
 			static_cast<CUIText::UI_TEXT_DESC&>(LoadingTextDesc) = TextDesc;
 			LoadingTextDesc.pLoadingRatio = CUI_Manager::GetInstance()->Get_LoadingRatio();
 			pResult = m_pGameInstance->Add_GameObject(m_iLevelID, L"Prototype_UI_LoadingText", m_iLevelID, g_wszUILayer, &LoadingTextDesc);
-		}
-		else if (isMonsterNameplate)
-		{
-			CUIMonsterStat_Text::MONSTER_STAT_DESC MonsterStatDesc = {};
-			static_cast<CUIText::UI_TEXT_DESC&>(MonsterStatDesc) = TextDesc;
-			MonsterStatDesc.iComponentFlag = DTO::EComponentTypeFlag::WORLDUI_COMPONENT;
-			pResult = m_pGameInstance->Add_GameObject(m_iLevelID, L"Prototype_UI_MonsterStatText", m_iLevelID, g_wszUILayer, &MonsterStatDesc);
-
 		}
 		else
 		{
@@ -329,12 +307,12 @@ HRESULT CBuilder_UI::Register_Class(DTO::EUIClassType eClassType, const DTO::TUI
 
 		if (isMenu)
 		{
-			CUIMenu_Trigger::UI_MENU_TRIGGER_DESC MenuTriggerDesc= {};
+			CUIMenu_Trigger::UI_MENU_TRIGGER_DESC MenuTriggerDesc = {};
 			static_cast<CGenericUI::GENERIC_UI_DESC&>(MenuTriggerDesc) = DefaultDesc;
 			MenuTriggerDesc.eTriggerSubClass = Type;
 			MenuTriggerDesc.tTriggerData = std::move(iter->second);
 			pResult = m_pGameInstance->Add_GameObject(m_iLevelID, L"Prototype_UI_UIMenuTrigger", m_iLevelID, g_wszUILayer, &MenuTriggerDesc);
-		
+
 		}
 		else if (isMenuExit)
 		{
@@ -379,13 +357,12 @@ HRESULT CBuilder_UI::Register_Class(DTO::EUIClassType eClassType, const DTO::TUI
 
 		const auto Type = iter->second.eDISubClassType;
 
-		const _bool isPlayerSkill	= (Type >= DTO::EUIDImageSubClassType::PLAYER_SKILL_BEGIN	&& Type <= DTO::EUIDImageSubClassType::PLAYER_SKILL_END);
-		const _bool isMiniMap		= (Type >= DTO::EUIDImageSubClassType::MINIMAP_BEGIN		&& Type <= DTO::EUIDImageSubClassType::MINIMAP_END);
-		const _bool isHoverIcon		= (Type >= DTO::EUIDImageSubClassType::HOVER_POPUP_BEGIN	&& Type <= DTO::EUIDImageSubClassType::HOVER_POPUP_END);
-		const _bool isMenu			= (Type >= DTO::EUIDImageSubClassType::MENU_BEGIN			&& Type <= DTO::EUIDImageSubClassType::MENU_ICON_BG);
-		const _bool isOutLine		= (Type >= DTO::EUIDImageSubClassType::MENU_ICON_OUTLINE	&& Type <= DTO::EUIDImageSubClassType::MENU_END);
-		const _bool isLoading		= (Type >= DTO::EUIDImageSubClassType::LOADING_BEGIN		&& Type <= DTO::EUIDImageSubClassType::LOADING_END);
-		const _bool isMonsterNameplate	= (Type == DTO::EUIDImageSubClassType::MONSTER_NAMEPLATE_BG);
+		const _bool isPlayerSkill = (Type >= DTO::EUIDImageSubClassType::PLAYER_SKILL_BEGIN && Type <= DTO::EUIDImageSubClassType::PLAYER_SKILL_END);
+		const _bool isMiniMap = (Type >= DTO::EUIDImageSubClassType::MINIMAP_BEGIN && Type <= DTO::EUIDImageSubClassType::MINIMAP_END);
+		const _bool isHoverIcon = (Type >= DTO::EUIDImageSubClassType::HOVER_POPUP_BEGIN && Type <= DTO::EUIDImageSubClassType::HOVER_POPUP_END);
+		const _bool isMenu = (Type >= DTO::EUIDImageSubClassType::MENU_BEGIN && Type <= DTO::EUIDImageSubClassType::MENU_ICON_BG);
+		const _bool isOutLine = (Type >= DTO::EUIDImageSubClassType::MENU_ICON_OUTLINE && Type <= DTO::EUIDImageSubClassType::MENU_END);
+		const _bool isLoading = (Type >= DTO::EUIDImageSubClassType::LOADING_BEGIN && Type <= DTO::EUIDImageSubClassType::LOADING_END);
 
 		if (isPlayerSkill)
 		{
@@ -429,19 +406,13 @@ HRESULT CBuilder_UI::Register_Class(DTO::EUIClassType eClassType, const DTO::TUI
 			LoadingImageDesc.eSubClassType = Type;
 			pResult = m_pGameInstance->Add_GameObject(m_iLevelID, L"Prototype_UI_LoadingImage", m_iLevelID, g_wszUILayer, &LoadingImageDesc);
 		}
-		else if (isMonsterNameplate)
-		{
-			CUINameplate_BG::NAMEPLATE_BG_DESC NameplateDesc = {};
-			static_cast<CGenericUI::GENERIC_UI_DESC&>(NameplateDesc) = DefaultDesc;
-			NameplateDesc.iComponentFlag = DTO::EComponentTypeFlag::WORLDUI_COMPONENT;
-			pResult = m_pGameInstance->Add_GameObject(m_iLevelID, L"Prototype_UI_Nameplate_BG", m_iLevelID, g_wszUILayer, &NameplateDesc);
-		}
 	}
 
 	////////////////////////////////////////
 	// WORLD_UI //
 	else if (eClassType == DTO::EUIClassType::WORLD_UI)
 	{
+
 	}
 	else
 	{
@@ -449,10 +420,7 @@ HRESULT CBuilder_UI::Register_Class(DTO::EUIClassType eClassType, const DTO::TUI
 	}
 
 	if (pResult == nullptr)
-	{
-		data.strTag;
 		return E_FAIL;
-	}
 
 	auto* pUI = dynamic_cast<CGenericUI*>(pResult);
 	if (nullptr == pUI)
@@ -467,51 +435,51 @@ HRESULT CBuilder_UI::Register_Class(DTO::EUIClassType eClassType, const DTO::TUI
 	return S_OK;
 }
 
-CGenericUI::GENERIC_UI_DESC CBuilder_UI::Make_DefaultInfo(const DTO::TUI_GenericUIData& data, CCanvas* pCanvas)
+CGenericUI::GENERIC_UI_DESC CBuilder_UIPrefabs::Make_DefaultInfo(const DTO::TUI_GenericUIData& data, CCanvas* pCanvas)
 {
 	CGenericUI::GENERIC_UI_DESC Desc = {};
-	Desc.strName				= data.strTag;
-	Desc.iLevelIndex			= m_iLevelID;
-	Desc.iRectTransformType		= data.iRectTransformType;
-	Desc.fWidth					= data.fWidth * m_vAspect.x;
-	Desc.fHeight				= data.fHeight * m_vAspect.x;
-	Desc.fX						= data.fPosX * m_vAspect.x;
-	Desc.fY						= data.fPosY * m_vAspect.y;
-	Desc.fZ						= data.fPosZ;
-	Desc.wstrTextureTag			= Engine_Utils::ToWString(data.strTextureTag);
-	Desc.wstrNoiseTextureTag	= Engine_Utils::ToWString(data.strNoiseTextureTag);
-	Desc.wstrAlphaMaskTextureTag= Engine_Utils::ToWString(data.strAlphaMaskTextureTag);
-	Desc.isAlpha				= TRUE;
-	Desc.isInitVisible			= data.isVisible;
-	Desc.isInitInteract			= data.isInteract;
-	Desc.isInitActivate			= data.isActivate;
-	Desc.isUseColorTint			= data.isUseColorTint;
-	Desc.pCanvasCache			= pCanvas;
-	Desc.iComponentFlag			= data.iComponentFlag;
-	Desc.isUseColorTint			= data.isUseColorTint;
-	Desc.vColorTint				= data.vColorTint;
-	Desc.vGradiantColorTint		= data.vGradiantColorTint;
-	Desc.iShaderPass			= data.iShaderPass;
-	Desc.fDelay					= data.fDelay;
-	Desc.iFillDir				= data.iFillDir;
-	Desc.fAlpha					= data.fAlphaRatio;
-	Desc.iFlip					= data.iFlip;
+	Desc.strName = data.strTag;
+	Desc.iLevelIndex = m_iLevelID;
+	Desc.iRectTransformType = data.iRectTransformType;
+	Desc.fWidth = data.fWidth * m_vAspect.x;
+	Desc.fHeight = data.fHeight * m_vAspect.x;
+	Desc.fX = data.fPosX * m_vAspect.x;
+	Desc.fY = data.fPosY * m_vAspect.y;
+	Desc.fZ = data.fPosZ;
+	Desc.wstrTextureTag = Engine_Utils::ToWString(data.strTextureTag);
+	Desc.wstrNoiseTextureTag = Engine_Utils::ToWString(data.strNoiseTextureTag);
+	Desc.wstrAlphaMaskTextureTag = Engine_Utils::ToWString(data.strAlphaMaskTextureTag);
+	Desc.isAlpha = TRUE;
+	Desc.isInitVisible = data.isVisible;
+	Desc.isInitInteract = data.isInteract;
+	Desc.isInitActivate = data.isActivate;
+	Desc.isUseColorTint = data.isUseColorTint;
+	Desc.pCanvasCache = pCanvas;
+	Desc.iComponentFlag = data.iComponentFlag;
+	Desc.isUseColorTint = data.isUseColorTint;
+	Desc.vColorTint = data.vColorTint;
+	Desc.vGradiantColorTint = data.vGradiantColorTint;
+	Desc.iShaderPass = data.iShaderPass;
+	Desc.fDelay = data.fDelay;
+	Desc.iFillDir = data.iFillDir;
+	Desc.fAlpha = data.fAlphaRatio;
+	Desc.iFlip = data.iFlip;
 
 	return Desc;
 }
 
-CBuilder_UI* CBuilder_UI::Create(ID3D11Device* pDevice, ID3D11DeviceContext* pDeviceContext, _uint iLevelID)
+CBuilder_UIPrefabs* CBuilder_UIPrefabs::Create(ID3D11Device* pDevice, ID3D11DeviceContext* pDeviceContext, _uint iLevelID)
 {
-	CBuilder_UI* pInstance = new CBuilder_UI(pDevice, pDeviceContext, iLevelID);
+	CBuilder_UIPrefabs* pInstance = new CBuilder_UIPrefabs(pDevice, pDeviceContext, iLevelID);
 	if (FAILED(pInstance->Initialize()))
 	{
-		MSG_BOX("CBuilder_UI::Create, Failed");
+		MSG_BOX("CBuilder_UIPrefabs::Create, Failed");
 		Safe_Release(pInstance);
 	}
 	return pInstance;
 }
 
-void CBuilder_UI::Free()
+void CBuilder_UIPrefabs::Free()
 {
 	Super::Free();
 }

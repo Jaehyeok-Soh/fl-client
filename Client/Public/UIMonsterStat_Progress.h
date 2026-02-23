@@ -4,18 +4,18 @@
 
 NS_BEGIN(Client)
 class CStatCom_Player;
-class CUIPlayerStat_Progress final : public CUIProgress_Bar
+class CUIMonsterStat_Progress final : public CUIProgress_Bar
 {
 	using Super = CUIProgress_Bar;
 public:
-	typedef struct tagUIPlayerStatProgressDesc : public PROGRESS_BAR_DESC
+	typedef struct tagUIMonsterStatProgress : public PROGRESS_BAR_DESC
 	{
-	}PLAYER_STAT_PROGRESS_DESC;
+	}MONSTER_STAT_PROGRESS_DESC;
 
 private:
-	CUIPlayerStat_Progress(ID3D11Device* pDevice, ID3D11DeviceContext* pDeviceContext);
-	CUIPlayerStat_Progress(const CUIPlayerStat_Progress& rhs);
-	virtual ~CUIPlayerStat_Progress() = default;
+	CUIMonsterStat_Progress(ID3D11Device* pDevice, ID3D11DeviceContext* pDeviceContext);
+	CUIMonsterStat_Progress(const CUIMonsterStat_Progress& rhs);
+	virtual ~CUIMonsterStat_Progress() = default;
 
 public:
 	HRESULT Initialize_Prototype() override;
@@ -38,30 +38,25 @@ public:
 	_bool Tick_InVisible_Event(const _float fTimeDelta)override;
 
 private:
-	HRESULT Ready_Components(PLAYER_STAT_PROGRESS_DESC* pDesc);
+	HRESULT Ready_Components(MONSTER_STAT_PROGRESS_DESC* pDesc);
 	HRESULT Bind_ShaderResources();
 
 	HRESULT Convert_Stat_To_Ratio();
 
 private:
-	// Player HP Func
-	void Low_HP(const _float fTimeDelta);
-
-private:
 	CStatCom_Player* m_pPlayerStatCom = { nullptr };
 
-
 	// Player HP Values
-	_bool m_isStartLowHp	= { FALSE };
-	_bool m_isEndLowHp		= { FALSE };
-	_float m_fTickTimeAcc	= {};
-	Vec4 m_vOriginColor		= {};
+	_bool m_isStartLowHp = { FALSE };
+	_bool m_isEndLowHp = { FALSE };
+	_float m_fTickTimeAcc = {};
+	Vec4 m_vOriginColor = {};
 	Vec4 m_vOriginGradiantColor = {};
-	Vec4 m_vLowHpColor		= {};
-	_bool m_isHPPulse		= {};
+	Vec4 m_vLowHpColor = {};
+	_bool m_isHPPulse = {};
 
 public:
-	static CUIPlayerStat_Progress* Create(ID3D11Device* pDevice, ID3D11DeviceContext* pDeviceContext);
+	static CUIMonsterStat_Progress* Create(ID3D11Device* pDevice, ID3D11DeviceContext* pDeviceContext);
 	CGameObject* Clone(void* pArg);
 	virtual void Free()override;
 };

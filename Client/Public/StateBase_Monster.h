@@ -71,9 +71,11 @@ protected:
 	HRESULT Bind_State();
 	HRESULT Bind_PreAnims();
 	HRESULT Bind_MainAnims();
-	HRESULT Bind_Transition();
+	HRESULT Bind_Transition(vector<DTO::STATE_TRANSITION>& transition);
 	HRESULT Bind_Condition(vector<string> conds);
 	HRESULT Bind_Feature();
+
+	void Check_Transition(vector<DTO::STATE_TRANSITION>& transition);
 
 	DTO::MONSTER_STATEBASE_DESC* m_pDesc = { nullptr };
 

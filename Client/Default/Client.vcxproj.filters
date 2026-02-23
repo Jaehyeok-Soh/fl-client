@@ -1,5 +1,5 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
-<Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+<Project xmlns="http://schemas.microsoft.com/developer/msbuild/2003" ToolsVersion="4.0">
   <ItemGroup>
     <Filter Include="99. ETC">
       <UniqueIdentifier>{abc407db-dd3f-4180-a2f9-ea688f8ce102}</UniqueIdentifier>
@@ -78,12 +78,6 @@
     </Filter>
     <Filter Include="03. GameObject\Camera">
       <UniqueIdentifier>{4ef88d48-f7cf-4d3e-bc7a-24d09855396e}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="02. Level\Loading">
-      <UniqueIdentifier>{02313480-7853-487f-b3ec-5e32ba7be068}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="02. Level\Loading\Loader">
-      <UniqueIdentifier>{a017ef8a-3027-4490-9479-8f057105a565}</UniqueIdentifier>
     </Filter>
     <Filter Include="99. ETC\pch">
       <UniqueIdentifier>{1afcebe2-6c14-4448-ab52-4236696f383f}</UniqueIdentifier>
@@ -177,9 +171,6 @@
     </Filter>
     <Filter Include="99. ETC\01. ImGui">
       <UniqueIdentifier>{aa2685d2-18f6-417c-ba8e-cf78608c7618}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="04. Shaders\ComputeShader_Labs">
-      <UniqueIdentifier>{8c14e548-7930-4ec0-b748-e471998a55b9}</UniqueIdentifier>
     </Filter>
     <Filter Include="03. GameObject\UIObjects\02.UI">
       <UniqueIdentifier>{6d2a781d-ab40-4385-b96c-b3366f4eaba6}</UniqueIdentifier>
@@ -319,74 +310,89 @@
     <Filter Include="03. GameObject\UIObjects\02.UI\Image\Dynamic Image\04.LoadingImage">
       <UniqueIdentifier>{7f017932-b1db-4253-9356-3b8cd034857d}</UniqueIdentifier>
     </Filter>
-    <Filter Include="03. GameObject\PartObjects\Monster">
-      <UniqueIdentifier>{dd6c64a1-8604-4ada-acfe-59285f1d7176}</UniqueIdentifier>
+    <Filter Include="03. GameObject\UIObjects\02.UI\World">
+      <UniqueIdentifier>{8a889375-58df-405c-aa49-2221cd20c171}</UniqueIdentifier>
     </Filter>
-    <Filter Include="03. GameObject\PartObjects\Monster\Body">
-      <UniqueIdentifier>{3dceac2b-7154-4065-afb9-c7fa4ca5b1e2}</UniqueIdentifier>
+    <Filter Include="05. Component\WorldUI">
+      <UniqueIdentifier>{8e22024d-4e3d-4939-938e-33aa2af517cb}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="03. GameObject\UIObjects\02.UI\Text\Monster Stat Text">
+      <UniqueIdentifier>{5d3f0be5-ffc3-44fc-9119-9d81aa03b857}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="03. GameObject\UIObjects\02.UI\Progress Bar\Monster Stat">
+      <UniqueIdentifier>{4b1e0e58-01df-4e73-867d-55b38392bafa}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="03. GameObject\UIObjects\02.UI\Image\Dynamic Image\05.MonsterNameplate">
+      <UniqueIdentifier>{f79a616a-c763-4d11-814c-b386d1f581f2}</UniqueIdentifier>
     </Filter>
     <Filter Include="03. GameObject\ContainerObjects\Monster\Dummy">
-      <UniqueIdentifier>{2242d811-9797-453a-9ec1-3e7adc70328a}</UniqueIdentifier>
+      <UniqueIdentifier>{06590E81-322B-4D40-8764-D34116611722}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="03. GameObject\PartObjects\Monster">
+      <UniqueIdentifier>{8D23A3C7-24D5-4AE9-AC31-25364BA015E2}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="03. GameObject\PartObjects\Monster\Body">
+      <UniqueIdentifier>{85D632B0-1470-4D93-A4A8-0ADBA3B79E95}</UniqueIdentifier>
     </Filter>
     <Filter Include="03. GameObject\PartObjects\Monster\Body\Dummy">
-      <UniqueIdentifier>{16b3b9d8-c2fc-4110-a516-df3025df7408}</UniqueIdentifier>
+      <UniqueIdentifier>{8A4455BB-DC96-4AA7-AEFA-F35C885875C9}</UniqueIdentifier>
     </Filter>
     <Filter Include="05. Component\Monster">
-      <UniqueIdentifier>{1b9474e2-c7c8-4285-8e6e-c5f87373948c}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="05. Component\Monster\MonsterControlContext">
-      <UniqueIdentifier>{05548b68-e817-4b3c-8896-10005d15ecdf}</UniqueIdentifier>
+      <UniqueIdentifier>{B1DED375-A417-4FAC-A147-06883C162BC9}</UniqueIdentifier>
     </Filter>
     <Filter Include="05. Component\Monster\MonsterActionState">
-      <UniqueIdentifier>{2d811f99-b873-4992-9cb3-473031bf8bb6}</UniqueIdentifier>
+      <UniqueIdentifier>{5507D004-C913-4260-8BCA-C852B54A4717}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="05. Component\Monster\MonsterControlContext">
+      <UniqueIdentifier>{9F6A9D98-F1E9-4E08-A76F-50B9DCAADF19}</UniqueIdentifier>
     </Filter>
     <Filter Include="06. FSM\Monster">
-      <UniqueIdentifier>{43386637-460e-4032-abe2-96b2def28a07}</UniqueIdentifier>
+      <UniqueIdentifier>{90F74ABE-86F5-47F7-A2B7-4D5E5CDCFEC5}</UniqueIdentifier>
     </Filter>
     <Filter Include="06. FSM\Monster\Combo">
-      <UniqueIdentifier>{8654d254-98b1-4c39-8eaf-1b9c97e2655f}</UniqueIdentifier>
+      <UniqueIdentifier>{C5663122-89C3-42ED-95F2-D4939DA4C5B9}</UniqueIdentifier>
     </Filter>
     <Filter Include="06. FSM\Monster\StateFactory">
-      <UniqueIdentifier>{3f89f6d7-e841-4bcf-b727-a356e0c92bb4}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="07. System\01. Builder\Builder_MonsterState">
-      <UniqueIdentifier>{bace6dbf-cd06-4461-95e6-0bd33903caaf}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="07. System\99. Debug_ImGui">
-      <UniqueIdentifier>{d4543967-6d08-419a-ad9e-aa4e953bd61f}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="07. System\99. Debug_ImGui\Inspector">
-      <UniqueIdentifier>{82f89ad1-c551-4868-8388-3d21f36c43d8}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="07. System\99. Debug_ImGui\Inspector\Player">
-      <UniqueIdentifier>{e56eb5ab-6ccc-4be7-935b-8756a82b5757}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="07. System\99. Debug_ImGui\Inspector\Global">
-      <UniqueIdentifier>{ff13b3dc-1ddc-457a-a989-4a75e72737e2}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="07. System\99. Debug_ImGui\ImGuiBase">
-      <UniqueIdentifier>{9fbb367b-4faa-448c-a302-857cca40b4ea}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="07. System\99. Debug_ImGui\Layout">
-      <UniqueIdentifier>{1dbf159f-2786-4b5f-a54a-a7fa44eac4d0}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="07. System\99. Debug_ImGui\Layout\Transform">
-      <UniqueIdentifier>{75112bf1-2fde-4f84-a058-ff26cbe40c27}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="07. System\99. Debug_ImGui\Layout\ActionState">
-      <UniqueIdentifier>{08101873-1d09-4a2d-9022-d599b7d73c9d}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="07. System\99. Debug_ImGui\Layout\Frustrum">
-      <UniqueIdentifier>{bfce2568-6c1b-4d14-9071-f78dd8aba44c}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="07. System\99. Debug_ImGui\Layout\Frame">
-      <UniqueIdentifier>{26872d9e-983a-47c0-940f-aa4b37bb39e5}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="07. System\99. Debug_ImGui\Layout\Shader">
-      <UniqueIdentifier>{241e78ea-3b24-473b-a83b-6c32e682ad95}</UniqueIdentifier>
+      <UniqueIdentifier>{7ECCB5C8-565F-431E-94DD-7FBC9DEF8E25}</UniqueIdentifier>
     </Filter>
     <Filter Include="07. System\01. Builder\AttackPreset">
-      <UniqueIdentifier>{b6b30d80-0867-4045-8a1a-09d32b5d8eb4}</UniqueIdentifier>
+      <UniqueIdentifier>{389DEED2-E574-4CC8-AB6D-C7FEF5EE7412}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="07. System\01. Builder\Builder_MonsterState">
+      <UniqueIdentifier>{2E5911B3-A73D-453E-AD63-3639785CC0C4}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="07. System\99. Debug_ImGui">
+      <UniqueIdentifier>{6D3D836E-2724-45DA-B853-C14436E81592}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="07. System\99. Debug_ImGui\ImGuiBase">
+      <UniqueIdentifier>{71CABC14-B36D-481A-A1AD-88FE0C2A916C}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="07. System\99. Debug_ImGui\Inspector">
+      <UniqueIdentifier>{2A6EE529-AE71-491B-9591-59007A3BEF12}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="07. System\99. Debug_ImGui\Inspector\Global">
+      <UniqueIdentifier>{1419F979-0E37-4A2E-BE0B-45C90A76576A}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="07. System\99. Debug_ImGui\Inspector\Player">
+      <UniqueIdentifier>{0BC54C27-8736-41A1-A4FB-1796F1580479}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="07. System\99. Debug_ImGui\Layout">
+      <UniqueIdentifier>{2C6946D4-9B56-404E-A829-1864680D15BD}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="07. System\99. Debug_ImGui\Layout\ActionState">
+      <UniqueIdentifier>{5AAC399C-3C8C-46DE-B27C-0F28AB927251}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="07. System\99. Debug_ImGui\Layout\Frame">
+      <UniqueIdentifier>{3BCDF055-092D-472C-9804-227742B972F9}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="07. System\99. Debug_ImGui\Layout\Frustrum">
+      <UniqueIdentifier>{ADB201E4-1931-4051-ADE0-65599F03371E}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="07. System\99. Debug_ImGui\Layout\Shader">
+      <UniqueIdentifier>{A289F8FD-C689-49F8-89F5-A83D1C6195D7}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="07. System\99. Debug_ImGui\Layout\Transform">
+      <UniqueIdentifier>{C518D0B1-BF6A-4AC3-93EB-A5DC2C9C95A6}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
@@ -747,7 +753,28 @@
     <ClInclude Include="..\public\Builder_AttackPreset.h">
       <Filter>07. System\01. Builder\AttackPreset</Filter>
     </ClInclude>
-    <ClInclude Include="..\Public\LandScape.h" />
+    <ClInclude Include="..\Public\LandScape.h"/>
+    <ClInclude Include="..\Public\UI_World.h">
+      <Filter>03. GameObject\UIObjects\02.UI\World</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\WorldUI.h">
+      <Filter>03. GameObject\UIObjects\02.UI\World</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\WorldUI_Component.h">
+      <Filter>05. Component\WorldUI</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\Builder_UIPrefabs.h">
+      <Filter>07. System\01. Builder\UI</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\UIMonsterStat_Text.h">
+      <Filter>03. GameObject\UIObjects\02.UI\Text\Monster Stat Text</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\UIMonsterStat_Progress.h">
+      <Filter>03. GameObject\UIObjects\02.UI\Progress Bar\Monster Stat</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\UINameplate_BG.h">
+      <Filter>03. GameObject\UIObjects\02.UI\Image\Dynamic Image\05.MonsterNameplate</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <Image Include="Client.ico">
@@ -1099,7 +1126,28 @@
     <ClCompile Include="..\private\Builder_AttackPreset.cpp">
       <Filter>07. System\01. Builder\AttackPreset</Filter>
     </ClCompile>
-    <ClCompile Include="..\Private\LandScape.cpp" />
+    <ClCompile Include="..\Private\LandScape.cpp"/>
+    <ClCompile Include="..\Private\UI_World.cpp">
+      <Filter>03. GameObject\UIObjects\02.UI\World</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\WorldUI.cpp">
+      <Filter>03. GameObject\UIObjects\02.UI\World</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\WorldUI_Component.cpp">
+      <Filter>05. Component\WorldUI</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\Builder_UIPrefabs.cpp">
+      <Filter>07. System\01. Builder\UI</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\UIMonsterStat_Text.cpp">
+      <Filter>03. GameObject\UIObjects\02.UI\Text\Monster Stat Text</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\UIMonsterStat_Progress.cpp">
+      <Filter>03. GameObject\UIObjects\02.UI\Progress Bar\Monster Stat</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\UINameplate_BG.cpp">
+      <Filter>03. GameObject\UIObjects\02.UI\Image\Dynamic Image\05.MonsterNameplate</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <FxCompile Include="..\..\Shaders\Shader_VtxAnimMesh.hlsl">
@@ -1172,7 +1220,7 @@
       <Filter>04. Shaders\ComputeShaders\Animation</Filter>
     </FxCompile>
     <FxCompile Include="..\..\Shaders\Shader_VtxMesh_SkillEffect.hlsl">
-      <Filter>07. System\02. Debug_ImGui</Filter>
+      <Filter>04. Shaders</Filter>
     </FxCompile>
   </ItemGroup>
 </Project>

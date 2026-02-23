@@ -165,6 +165,7 @@
     <ClInclude Include="..\Public\Builder_Map.h" />
     <ClInclude Include="..\Public\Builder_MonsterState.h" />
     <ClInclude Include="..\Public\Builder_UI.h" />
+    <ClInclude Include="..\Public\Builder_UIPrefabs.h" />
     <ClInclude Include="..\Public\CameraMan_Targeter.h" />
     <ClInclude Include="..\Public\Canvas.h" />
     <ClInclude Include="..\public\ImGuiBase.h" />
@@ -271,6 +272,9 @@
     <ClInclude Include="..\Public\UIMenu_Text.h" />
     <ClInclude Include="..\Public\UIMenu_Trigger.h" />
     <ClInclude Include="..\Public\UIMini_Map.h" />
+    <ClInclude Include="..\Public\UIMonsterStat_Progress.h" />
+    <ClInclude Include="..\Public\UIMonsterStat_Text.h" />
+    <ClInclude Include="..\Public\UINameplate_BG.h" />
     <ClInclude Include="..\Public\UIPlayerStat_Progress.h" />
     <ClInclude Include="..\Public\UIPlayerStat_Text.h" />
     <ClInclude Include="..\Public\UIProgress_Bar.h" />
@@ -278,7 +282,10 @@
     <ClInclude Include="..\Public\UIText.h" />
     <ClInclude Include="..\Public\UITrigger.h" />
     <ClInclude Include="..\Public\UI_Manager.h" />
+    <ClInclude Include="..\Public\UI_World.h" />
     <ClInclude Include="..\Public\Weapon.h" />
+    <ClInclude Include="..\Public\WorldUI.h" />
+    <ClInclude Include="..\Public\WorldUI_Component.h" />
     <ClInclude Include="Client.h" />
     <ClInclude Include="framework.h" />
     <ClInclude Include="pch.h" />
@@ -294,6 +301,7 @@
     <ClCompile Include="..\Private\Builder_Map.cpp" />
     <ClCompile Include="..\Private\Builder_MonsterState.cpp" />
     <ClCompile Include="..\Private\Builder_UI.cpp" />
+    <ClCompile Include="..\Private\Builder_UIPrefabs.cpp" />
     <ClCompile Include="..\Private\CameraMan_Targeter.cpp" />
     <ClCompile Include="..\Private\Canvas.cpp" />
     <ClCompile Include="..\Private\ColliderPart.cpp" />
@@ -419,6 +427,9 @@
     <ClCompile Include="..\Private\UIMenu_Text.cpp" />
     <ClCompile Include="..\Private\UIMenu_Trigger.cpp" />
     <ClCompile Include="..\Private\UIMini_Map.cpp" />
+    <ClCompile Include="..\Private\UIMonsterStat_Progress.cpp" />
+    <ClCompile Include="..\Private\UIMonsterStat_Text.cpp" />
+    <ClCompile Include="..\Private\UINameplate_BG.cpp" />
     <ClCompile Include="..\Private\UIPlayerStat_Progress.cpp" />
     <ClCompile Include="..\Private\UIPlayerStat_Text.cpp" />
     <ClCompile Include="..\Private\UIProgress_Bar.cpp" />
@@ -426,7 +437,10 @@
     <ClCompile Include="..\Private\UIText.cpp" />
     <ClCompile Include="..\Private\UITrigger.cpp" />
     <ClCompile Include="..\Private\UI_Manager.cpp" />
+    <ClCompile Include="..\Private\UI_World.cpp" />
     <ClCompile Include="..\Private\Weapon.cpp" />
+    <ClCompile Include="..\Private\WorldUI.cpp" />
+    <ClCompile Include="..\Private\WorldUI_Component.cpp" />
     <ClCompile Include="..\Public\Physics_Terrain.cpp" />
     <ClCompile Include="Client.cpp" />
     <ClCompile Include="pch.cpp">

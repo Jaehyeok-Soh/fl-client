@@ -151,7 +151,7 @@ HRESULT CUIPlayerStat_Text::Convert_Stat_To_Text()
 		break;
 	}
 	case DTO::EUITextSubClassType::PLAYER_STAT_TEXT_ESKILL_COST:
-		m_wstrText = std::to_wstring(m_pPlayerStatCom->Get_Skill(CStatCom_Player::Attack_State::E).fNeedMental);
+		m_wstrText = Float_To_Wstring(m_pPlayerStatCom->Get_Skill(CStatCom_Player::Attack_State::E).fNeedMental, 0);
 		break;
 	case DTO::EUITextSubClassType::PLAYER_STAT_TEXT_QSKILL_TYPE:
 		m_wstrText = SKILL_TYPE_ToWstring(m_pPlayerStatCom->Get_Skill(CStatCom_Player::Attack_State::Q).eSkillType);
@@ -164,7 +164,7 @@ HRESULT CUIPlayerStat_Text::Convert_Stat_To_Text()
 		break;
 	}
 	case DTO::EUITextSubClassType::PLAYER_STAT_TEXT_QSKILL_COST:
-		m_wstrText = std::to_wstring(m_pPlayerStatCom->Get_Skill(CStatCom_Player::Attack_State::Q).fNeedMental);
+		m_wstrText = Float_To_Wstring(m_pPlayerStatCom->Get_Skill(CStatCom_Player::Attack_State::Q).fNeedMental, 0);
 		break;
 	case DTO::EUITextSubClassType::PLAYER_STAT_TEXT_ZSKILL_TYPE:
 		break;

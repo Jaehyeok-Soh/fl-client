@@ -50,7 +50,10 @@ HRESULT CStateBase_Monster::Initialize(void* pArg)
 	if (FAILED(Bind_State()))
 		return E_FAIL;
 
-	if (FAILED(Bind_Transition()))
+	if (FAILED(Bind_Transition(m_pDesc->vecStateTransition)))
+		return E_FAIL;
+
+	if (FAILED(Bind_Transition(m_pDesc->vecGlobalStateTransition)))
 		return E_FAIL;
 
 	if (FAILED(Bind_Feature()))
@@ -95,38 +98,11 @@ void CStateBase_Monster::Update(const _float fTimeDelta)
 		!Engine_Utils::Has_Flag(m_FAniFlags, STATEANI_FLAG::SA_PreAniDone))
 		return;
 
-	// 상태 전이 조건 검사 및 상태 전이
-	//if (!m_bLoop && Is_MainAnimFinished())
-	//{}
-		for (auto& trans : m_pDesc->vecStateTransition)
-		{
-			_bool allClear = { true };
-			for (auto& condIdx : trans.vecConditionIdx)
-			{
-				if (m_vecCondition[condIdx]() == false)
-				{
-					allClear = false;
-					break;
-				}
-			}
+	// 글로벌 전이부터 검사 ( Die, Damage 등)
+	Check_Transition(m_pDesc->vecGlobalStateTransition);
 
-			// 모든 조건 통과
-			if (allClear)
-			{
-				_float randomValue = (rand() % (_int)trans.fTotalWeight);
-
-				_float curWeight = {};
-				for (auto& to : trans.mapRandomStatePoolIdx)
-				{
-					curWeight += to.second;
-					if (randomValue < curWeight)
-					{
-						Change_MonsterState(to.first); // 다음 state로 change
-						return;
-					}
-				}
-			}
-		}
+	// 로컬 상태 전이
+	Check_Transition(m_pDesc->vecStateTransition);
 
 	// 기능 실행
 	for (auto& featIdx : m_pDesc->vecFeatureIdx)
@@ -192,9 +168,9 @@ HRESULT CStateBase_Monster::Bind_MainAnims()
 	return S_OK;
 }
 
-HRESULT CStateBase_Monster::Bind_Transition()
+HRESULT CStateBase_Monster::Bind_Transition(vector<DTO::STATE_TRANSITION>& transition)
 {
-	for (auto& trans : m_pDesc->vecStateTransition)
+	for (auto& trans : transition)
 	{
 		if (FAILED(Bind_Condition(trans.vecCondition)))
 			return E_FAIL;
@@ -210,8 +186,6 @@ HRESULT CStateBase_Monster::Bind_Transition()
 			trans.vecConditionIdx.push_back((*iter).second);
 		}
 
-		//std::sort(trans.vecConditionIdx.begin(), trans.vecConditionIdx.end());
-
 		// 전이 상태 id 매핑
 		for (auto& value : trans.mapRandomStatePool)
 		{
@@ -220,8 +194,6 @@ HRESULT CStateBase_Monster::Bind_Transition()
 			_int stateIdx = (*m_umapState.find(value.first)).second;
 			trans.mapRandomStatePoolIdx.emplace(stateIdx, value.second);
 		}
-
-		//std::sort(trans.mapRandomStatePoolIdx.begin(), trans.mapRandomStatePoolIdx.end());
 	}
 
 	return S_OK;
@@ -284,6 +256,39 @@ HRESULT CStateBase_Monster::Bind_Feature()
 	}
 
 	return S_OK;
+}
+
+void CStateBase_Monster::Check_Transition(vector<DTO::STATE_TRANSITION>& transition)
+{
+	for (auto& trans : transition)
+	{
+		_bool allClear = { true };
+		for (auto& condIdx : trans.vecConditionIdx)
+		{
+			if (m_vecCondition[condIdx]() == false)
+			{
+				allClear = false;
+				break;
+			}
+		}
+
+		// 모든 조건 통과
+		if (allClear)
+		{
+			_float randomValue = (rand() % (_int)trans.fTotalWeight);
+
+			_float curWeight = {};
+			for (auto& to : trans.mapRandomStatePoolIdx)
+			{
+				curWeight += to.second;
+				if (randomValue < curWeight)
+				{
+					Change_MonsterState(to.first); // 다음 state로 change
+					return;
+				}
+			}
+		}
+	}
 }
 
 void CStateBase_Monster::Free()

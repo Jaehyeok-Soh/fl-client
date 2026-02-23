@@ -54,6 +54,7 @@ void CPanel_State::StateEditor()
     if (ImGui::Button("Save State"))
     {
         SyncStateNamesToSet();
+        SyncGlobalStateTransition();
         OpenSaveModal();
     }
     ImGui::SameLine();
@@ -72,6 +73,13 @@ void CPanel_State::StateEditor()
 
     // 1. 최상위 정보 (strTag, global setStates)
     DrawTopLevelInfo();
+
+    ImGui::Separator();
+
+    ImGui::Separator();
+
+    // 2. 글로벌 트랜지션
+    DrawGlobalStateTransition();
 
     ImGui::Separator();
 
@@ -373,6 +381,32 @@ void CPanel_State::DrawStateTransition(DTO::STATE_TRANSITION& transition, int in
     ImGui::PopID();
 }
 
+void CPanel_State::DrawGlobalStateTransition()
+{
+    // State Transitions
+    if (ImGui::CollapsingHeader("State Transitions"))
+    {
+        if (ImGui::Button("Add Transition"))
+            m_vecGlobalStateTransition.push_back(DTO::STATE_TRANSITION());
+        ImGui::SameLine();
+        if (ImGui::Button("Clear Global Transition"))
+            m_vecGlobalStateTransition.clear();
+
+        for (int i = 0; i < (int)m_vecGlobalStateTransition.size(); ++i)
+        {
+            DrawStateTransition(m_vecGlobalStateTransition[i], i);
+            ImGui::PushID(i);
+            if (ImGui::Button("Remove Transition"))
+            {
+                m_vecGlobalStateTransition.erase(m_vecGlobalStateTransition.begin() + i);
+                i--;
+            }
+            ImGui::PopID();
+            ImGui::Separator();
+        }
+    }
+}
+
 bool CPanel_State::InputTextString(const char* label, std::string& str)
 {
     char buffer[256];
@@ -397,6 +431,15 @@ void CPanel_State::SyncStateNamesToSet()
     {
         state.setStates.clear();
         state.setStates = m_MonsterData.setStates;
+    }
+}
+
+void CPanel_State::SyncGlobalStateTransition()
+{
+    for (auto& state : m_MonsterData.vecMonsterStateDesc)
+    {
+        state.vecGlobalStateTransition.clear();
+        state.vecGlobalStateTransition = m_vecGlobalStateTransition;
     }
 }
 
@@ -513,7 +556,9 @@ HRESULT CPanel_State::Load(fs::path path)
     CDataDocument_MonsterState* pMonsterStateDoc = static_cast<CDataDocument_MonsterState*>(pDocument);
 
     m_MonsterData = static_cast<CDataStruct_MonsterState*>(pMonsterStateDoc->Get_AllList()[0])->Get_Data();
-
+    
+    if (m_MonsterData.vecMonsterStateDesc.size() > 0)
+        m_vecGlobalStateTransition = m_MonsterData.vecMonsterStateDesc.front().vecGlobalStateTransition;
     //m_pBuilderSystem->Build_File(ENUM_TO_UINT(ELevelType::ANIMATION), DTO::ECategory::MONSTER_STATE, path.filename().stem().string());
 
     return S_OK;

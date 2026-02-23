@@ -62,6 +62,8 @@ protected:
 	_float m_fFontRotate	= {};
 
 	_float m_fTimeAcc = {};
+	_float m_fScaleOffset = {1.f};
+
 public:
 	virtual void Free()override;
 };
