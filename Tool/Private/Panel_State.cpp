@@ -54,6 +54,7 @@ void CPanel_State::StateEditor()
     if (ImGui::Button("Save State"))
     {
         SyncStateNamesToSet();
+        SyncGlobalStateTransition();
         OpenSaveModal();
     }
     ImGui::SameLine();
@@ -555,7 +556,9 @@ HRESULT CPanel_State::Load(fs::path path)
     CDataDocument_MonsterState* pMonsterStateDoc = static_cast<CDataDocument_MonsterState*>(pDocument);
 
     m_MonsterData = static_cast<CDataStruct_MonsterState*>(pMonsterStateDoc->Get_AllList()[0])->Get_Data();
-
+    
+    if (m_MonsterData.vecMonsterStateDesc.size() > 0)
+        m_vecGlobalStateTransition = m_MonsterData.vecMonsterStateDesc.front().vecGlobalStateTransition;
     //m_pBuilderSystem->Build_File(ENUM_TO_UINT(ELevelType::ANIMATION), DTO::ECategory::MONSTER_STATE, path.filename().stem().string());
 
     return S_OK;
