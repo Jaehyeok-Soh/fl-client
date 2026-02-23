@@ -22,6 +22,10 @@ void CPanel_PresetMain::Update(const _float fTimeDelta)
 
 HRESULT CPanel_PresetMain::Render(CToolObject* pGo)
 {
+    static constexpr const _char* s_ColliderTypeItmes[] =
+    {
+        "Overlap", "PhysicsCollider"
+    };
     static constexpr const _char* s_HitTypeItems[] =
     {
         "Light", "Heavy", "Launch", "Knockdown", "None"
@@ -78,6 +82,13 @@ HRESULT CPanel_PresetMain::Render(CToolObject* pGo)
     {
         pData->strTag = tagBuf;
         m_pPresetManager->Upsert_Data(*pData);
+    }
+
+    ImGui::SeparatorText("ColliderType");
+    {
+        _int iColliderType = static_cast<_int>(pData->eColliderType);
+        if (ImGui::Combo("ColliderType##Combo", &iColliderType, s_ColliderTypeItmes, static_cast<_int>(DTO::g_AttackPresetColliderTypeCount)))
+            pData->eColliderType = static_cast<DTO::EAttackPresetColliderType>(iColliderType);
     }
 
     ImGui::SeparatorText("Combat");

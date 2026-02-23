@@ -18,7 +18,7 @@ HRESULT CDataDocument_AttackPreset::Initialize()
 json CDataDocument_AttackPreset::ToJson() const
 {
 	json j;
-	j["Category"] = DTO::ECategory::OVERLAP_SCRIPT;
+	j["Category"] = DTO::ECategory::ATTACK_PRESET;
 
 	json jsonArray = json::array();
 
@@ -37,7 +37,7 @@ HRESULT CDataDocument_AttackPreset::FromJson(const json& j)
 	if (j.contains("Category"))
 	{
 		const DTO::ECategory eCategory = j.at("Category").get<DTO::ECategory>();
-		if (eCategory != DTO::ECategory::OVERLAP_SCRIPT)
+		if (eCategory != DTO::ECategory::ATTACK_PRESET)
 			return E_FAIL;
 	}
 	else

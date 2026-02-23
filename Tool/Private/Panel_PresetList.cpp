@@ -123,7 +123,7 @@ HRESULT CPanel_PresetList::All_Load()
                 return E_FAIL;
             }
 
-            const CDataDocumentBase* pBaseDoc = pGameInstance->Get_Document(iLevelID, eCategory, strFileKey);
+            CDataDocumentBase* pBaseDoc = pGameInstance->Ensure_Document(iLevelID, eCategory, strFileKey);
             if (pBaseDoc == nullptr)
             {
                 MSG_BOX("CPanel_PresetList::All_Load, BaseDocument was nullptr");
@@ -135,6 +135,7 @@ HRESULT CPanel_PresetList::All_Load()
                 MSG_BOX("CPanel_PresetList::All_Load, Build failed");
                 return E_FAIL;
             }
+            pBaseDoc->Clear();
         }
     }
     return S_OK;
@@ -179,6 +180,7 @@ HRESULT CPanel_PresetList::Save_One(const DTO::TAttackPreset_Data& inData)
         return E_FAIL;
     }
 
+    MSG_BOX("Save");
     return S_OK;
 }
 
@@ -193,7 +195,7 @@ HRESULT CPanel_PresetList::Render(CToolObject* pGo)
     _uint iSelected = pLevel->Get_SelectedKey();
     static _char s_Search[MAX_NAME]{};
     // All
-    static _int  s_iCategoryFilter = -1;
+    static _int  s_iCategoryFilter = 0;
 
     ImGui::InputText("Search (Tag)", s_Search, IM_ARRAYSIZE(s_Search));
 

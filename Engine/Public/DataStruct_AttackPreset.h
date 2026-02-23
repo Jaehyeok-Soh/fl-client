@@ -49,6 +49,22 @@ NLOHMANN_JSON_SERIALIZE_ENUM(EAttackPresetCategory,
 	}
 )
 
+enum class EAttackPresetColliderType : _uint
+{
+	Overlap = 0,
+	PhysicsCollider,
+	END
+};
+inline constexpr _uint g_AttackPresetColliderTypeCount{ ENUM_TO_UINT(EAttackPresetColliderType::END) };
+
+NLOHMANN_JSON_SERIALIZE_ENUM(EAttackPresetColliderType,
+	{
+		{EAttackPresetColliderType::Overlap, "Overlap"},
+		{EAttackPresetColliderType::PhysicsCollider, "PhysicsCollider"},
+		{EAttackPresetColliderType::END, "END"},
+	}
+	)
+
 enum class EHitType : _uint
 {
 	Light = 0,
@@ -132,6 +148,8 @@ struct TAttackPreset_Data
 	string strTag{ "" };
 
 	EAttackPresetCategory eCategory{ EAttackPresetCategory::END };
+	EAttackPresetColliderType eColliderType{ EAttackPresetColliderType::Overlap };
+
 	_ushort iID{ 0 }; // 0 = invalid
 	_uint iPresetKey{ 0 };
 
@@ -204,6 +222,7 @@ inline void to_json(json& j, const TAttackPreset_Data& data)
 		{ "Type", TAttackPreset_Data::eType },
 		{ "strTag", data.strTag },
 		{ "eCategory", data.eCategory },
+		{ "eColliderType", data.eColliderType},
 		{ "iID", data.iID },
 		{ "tCombat", data.tCombat },
 		{ "tPolicy", data.tPolicy },
@@ -214,6 +233,8 @@ inline void from_json(const json& j, TAttackPreset_Data& data)
 	j.at("strTag").get_to(data.strTag);
 	if (j.contains("eCategory"))
 		data.eCategory = j["eCategory"].get<EAttackPresetCategory>();
+	if (j.contains("eColliderType"))
+		data.eColliderType = j["eColliderType"].get<EAttackPresetColliderType>();
 	if (j.contains("iID"))
 		data.iID = j["iID"].get<_ushort>();
 	if (j.contains("tCombat"))

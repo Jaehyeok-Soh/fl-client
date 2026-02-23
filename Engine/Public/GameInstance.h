@@ -221,7 +221,7 @@ public:
 	HRESULT Save_File_Json(_uint iLevelID, DTO::ECategory eCategory, const path& filePath) const;
 	CDataDocumentBase* Ensure_Document(_uint iLevelID, DTO::ECategory eCategory, const path& filePath);
 	const CDataDocumentBase* Get_Document(_uint iLevelID, DTO::ECategory eCategory, const string& strFileKey);
-	 
+
 	template<typename T>
 	HRESULT Regist_Document(_uint iLevelID, DTO::ECategory eCategory);
 #pragma endregion
