@@ -517,11 +517,13 @@ void CAnimTool_Manager::Awake_AttackOverlap()
 void CAnimTool_Manager::Modify_AttackOverlap(_uint eventIdx, DTO::ATTACKEVENT event)
 {
 	m_pOverlapModule->Modify_AttackOverlap(eventIdx, event);
+	m_pOverlapModule->SetOwner(m_tAnimControllInfo.pCurrentObject);
 }
 
 void CAnimTool_Manager::Modify_AttackOverlap(vector<DTO::ATTACKEVENT> events)
 {
 	m_pOverlapModule->Modify_AttackOverlap(events);
+	m_pOverlapModule->SetOwner(m_tAnimControllInfo.pCurrentObject);
 }
 
 void CAnimTool_Manager::Modify_EffectEvent(vector<DTO::EFFECTEVENT> events)

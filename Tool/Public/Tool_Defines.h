@@ -36,9 +36,6 @@ extern HINSTANCE	g_hInstance;
 #define	To_DEGREE ( 180.f / XM_PI )
 
 
-
-
-
 namespace Tool
 {
 	extern unsigned int g_iWinSizeX;
@@ -258,29 +255,45 @@ namespace Tool
 			return EClientLevelType::END;
 	}
 
-	inline constexpr _tchar g_wszMapObjectLayer[]{ L"MapObject_Layer" };
-	inline constexpr _tchar g_wszStaticLightLayer[]{ L"StaticLight_Layer" };
-	inline constexpr _tchar g_wszMeshEffectPresetPath[]{ L"../../Resources/Data/EffectData/EffectMeshPreset.json" };
-	inline constexpr _tchar g_wszMeshPreviewLayer[]{ L"MeshPreview_Layer" };
-	inline constexpr _tchar g_wszPolygonLayer[]{ L"Polygon_Layer" };
-	inline constexpr _tchar g_wszTriggerBoxLayer[]{ L"TriggerBox_Layer" };
-	inline constexpr _tchar g_wszColMeshLayer[]{ L"ColMesh_Layer" };
-	inline constexpr _tchar g_wszStaticModelLayer[]{ L"StaticModel_Layer" };
-	inline constexpr _tchar g_wszInstanceModelLayer[]{ L"InstanceModel_Layer" };
-	inline constexpr _tchar g_wszCameraLayer[]{ L"Camera_Layer" };
+	inline constexpr _tchar g_wszMapObjectLayer				[]{ L"MapObject_Layer" };
+	inline constexpr _tchar g_wszMapModelPath				[]{ L"../../Resources/Models/Map/"};
+	inline constexpr _tchar g_wszStaticLightLayer			[]{ L"StaticLight_Layer" };
+	inline constexpr _tchar g_wszMeshEffectPresetPath		[]{ L"../../Resources/Data/EffectData/EffectMeshPreset.json" };
+	inline constexpr _tchar g_wszMeshPreviewLayer			[]{ L"MeshPreview_Layer" };
+	inline constexpr _tchar g_wszPolygonLayer				[]{ L"Polygon_Layer" };
+	inline constexpr _tchar g_wszTriggerBoxLayer			[]{ L"TriggerBox_Layer" };
+	inline constexpr _tchar g_wszColMeshLayer				[]{ L"ColMesh_Layer" };
+	inline constexpr _tchar g_wszStaticModelLayer			[]{ L"StaticModel_Layer" };
+	inline constexpr _tchar g_wszInstanceModelLayer			[]{ L"InstanceModel_Layer" };
+	inline constexpr _tchar g_wszCameraLayer				[]{ L"Camera_Layer" };
 
-	inline constexpr _tchar g_wszPrototypeTagCanvas[]{ L"Prototype_UI_Canvas" };
-	inline constexpr _tchar g_wszPrototypeTagLayer[]{ L"Prototype_UI_Layer" };
-	inline constexpr _tchar g_wszPrototypeTagUI[]{ L"Prototype_UI_UI" };
+	inline constexpr _tchar g_wszPrototypeTagCanvas			[]{ L"Prototype_UI_Canvas" };
+	inline constexpr _tchar g_wszPrototypeTagLayer			[]{ L"Prototype_UI_Layer" };
+	inline constexpr _tchar g_wszPrototypeTagUI				[]{ L"Prototype_UI_UI" };
+
+	inline constexpr _char  g_szMapObject_State				[]{ "g_iMapObject_State" };
+
+	inline constexpr _char  g_szLandScape_TextureUV_LT		[]{ "g_LandScape_TextureUV_LT" };
+	inline constexpr _char  g_szLandScape_TextureUV_RB		[]{ "g_LandScape_TextureUV_RB" };
 
 
-	inline constexpr _char  g_szMapObject_State[]{ "g_iMapObject_State" };
+	inline constexpr _tchar g_wszMapTexture_Path			[]{L"../../Resources/Textures/Map/LandScape"};
+	inline constexpr _char	g_szTexLandScape_Mix_RGB		[]{"g_TexLandScape_Mix_RGB" };
+	inline constexpr _char	g_szTexLandScape_Mix_RGBA		[]{"g_TexLandScape_Mix_RGBA" };
 
-	inline constexpr _char  g_szLandScape_TextureUV_LT[]{ "g_LandScape_TextureUV_LT" };
-	inline constexpr _char  g_szLandScape_TextureUV_RB[]{ "g_LandScape_TextureUV_RB" };
+	inline constexpr _char  g_szBase_Texture				[]{"g_Base_Texture"};
+	inline constexpr _char  g_szMix_RGBA_Texture			[]{"g_Mix_RGBA_Texture"};
 
 
-	inline constexpr _uint  g_Uint_NoneIndex{ 0xFFFFFFFF };
+	inline constexpr _char	g_szMix_DH_Tile_Texture			[]{ "g_Mix_DH_Tile_Texture" };
+	inline constexpr _char	g_szMix_NBR_Tile_Texture		[]{ "g_Mix_NBR_Tile_Texture"};
+
+
+	inline constexpr _char	g_szCB_MIX_RGBA_INFO			[]{"CB_MIX_RGBA_INFO" };
+	inline constexpr _char	g_szUse_Mix_RGBA_Map_Count		[]{"g_iUse_Mix_RGBA_Count"};
+
+
+	inline constexpr _uint  Uint_NoneIndex{ 0xFFFFFFFF };
 
 #pragma region Enum
 
@@ -572,6 +585,7 @@ namespace Tool
 		COLOR,
 		PROGRESS,
 		DISOLVE,
+		NOISE,
 		END
 	};
 
@@ -583,6 +597,7 @@ namespace Tool
 		case EUIShaderPass::COLOR: return "COLOR";
 		case EUIShaderPass::PROGRESS: return "PROGRESS";
 		case EUIShaderPass::DISOLVE: return "DISOLVE";
+		case EUIShaderPass::NOISE: return "NOISE";
 		default: return "";
 		}
 	}
@@ -593,6 +608,7 @@ namespace Tool
 		else if (str == "COLOR") return EUIShaderPass::COLOR;
 		else if (str == "PROGRESS") return EUIShaderPass::PROGRESS;
 		else if (str == "DISOLVE") return EUIShaderPass::DISOLVE;
+		else if (str == "NOISE") return EUIShaderPass::NOISE;
 		else return EUIShaderPass::DEFAULT;
 	}
 

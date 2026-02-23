@@ -27,7 +27,6 @@
 #include "Graphic_Device.h"
 #include "Render_Manager.h"
 #include "Physics_Module.h"
-#include "UIAction_Registry.h"
 #include "Effect_Manager.h"
 
 IMPLEMENT_SINGLETON(CGameInstance)
@@ -59,7 +58,7 @@ HRESULT CGameInstance::Initialize_Engine(const ENGINE_DESC& Engine_Desc, _Inout_
 	if (!(m_pCollision_Manager = CCollision_Manager::Create(Engine_Desc.iCollideLayerCount)))
 		return E_FAIL;
 
-	if(!(m_pGameData_Manager = CGameDataManager::Create()))
+	if(!(m_pGameData_Manager = CGameDataManager::Create(*ppDevice , *ppContext)))
 		return E_FAIL;
 
 	if (!(m_pDataRepository = CDataRepository::Create(Engine_Desc.iLevelCount)))
@@ -120,9 +119,6 @@ HRESULT CGameInstance::Initialize_Engine(const ENGINE_DESC& Engine_Desc, _Inout_
 		return E_FAIL;
 
 	if (!(m_pPhysics_Module = CPhysics_Module::Create(*ppDevice, *ppContext)))
-		return E_FAIL;
-
-	if (!(m_pUIAction_Registry = CUIAction_Registry::Create()))
 		return E_FAIL;
 
 	if (!(m_pOctree_Manager = COctree_Manager::Create()))
@@ -831,11 +827,14 @@ HRESULT CGameInstance::Add_Font(const _wstring& strFontTag, const _tchar* pFontF
 {
 	return m_pFont_Manager->Add_Font(strFontTag, pFontFilePath);
 }
-HRESULT CGameInstance::Draw_Text(const _wstring& strFontTag, const _tchar* pText, const Vec2& vPosition, Vec4 vColor, EFontPivotType ePivot, const _float fRotate, const _float fScale)
+HRESULT CGameInstance::Request_DrawFont(FONT_DESC Desc)
 {
-	return m_pFont_Manager->Draw_Text(strFontTag, pText, vPosition, vColor, ePivot, fRotate, fScale);
+	return m_pFont_Manager->Request_DrawFont(Desc);
 }
-
+HRESULT CGameInstance::Render_Fonts()
+{
+	return m_pFont_Manager->Render_Fonts();
+}
 #pragma endregion
 
 #pragma region EFFECT_MANAGER
@@ -1071,14 +1070,17 @@ void CGameInstance::Physics_Render(const PxGeometry& geom, const PxTransform& tr
 #endif
 #pragma endregion
 
-#pragma region UIACTION_REGISTRY
-CUIAction_Registry* CGameInstance::Get_UIAction_Registry() const
-{ 
-	return m_pUIAction_Registry;
-}
-#pragma endregion
-
 #pragma region GAMEDATA_MANAGER
+
+HRESULT CGameInstance::GameDataManager_Load_TextureSplatingInfoData()
+{
+	return m_pGameData_Manager->Load_TextureSplatingInfoData();
+}
+HRESULT CGameInstance::GameDataManager_Bind_SplatingTextureInfo(CShader* pBindShader, const wstring& wstrTextureSplatingInfoDataName)
+{
+	return m_pGameData_Manager->Bind_SplatingTextureInfo(pBindShader, wstrTextureSplatingInfoDataName);
+}
+
 const DTO::TAttackPreset_Data* CGameInstance::Find_AttackPrseet(_uint iPresetKey) const
 {
 	return m_pGameData_Manager->Find_AttackPrseet(iPresetKey);
@@ -1122,7 +1124,6 @@ void CGameInstance::Free()
 	Safe_Release(m_pEventBus_Manager);
 	Safe_Release(m_pShaderAsset_Manager);
 	Safe_Release(m_pResource_Manager);
-	Safe_Release(m_pUIAction_Registry);
 	Safe_Release(m_pPhysics_Module);
 	Safe_Release(m_pGraphic_Device);
 	Super::Free();

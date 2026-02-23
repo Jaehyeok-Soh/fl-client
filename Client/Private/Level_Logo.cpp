@@ -26,6 +26,8 @@
 #include "Effect.h"
 #include "EffectObject.h"
 #include "Physics_LandScape.h"
+#include "Monster_Dummy.h"
+#include "Monster_Dummy_Body.h"
 
 //=================
 // UI
@@ -39,6 +41,7 @@
 // Component
 //=================
 #include "Bounds.h"
+#include "PhysicsCCT.h"
 
 #include "GameInstance.h"
 
@@ -350,10 +353,49 @@ HRESULT CLevel_Logo::Ready_Monster()
 	{
 		CGameObject* pResult = { nullptr };
 
+		CMonster_Base::MONSTER_DESC monsterDesc = {};
+		CTransform::TRANSFORM_DESC transformDesc = {};
+		monsterDesc.iLevelIndex = ENUM_TO_UINT(ELevelType::LOGO);
+		monsterDesc.wstrBodyModelTag = L"Prototype_Component_Model_Monster_Dog";
+		monsterDesc.wstrPartBodyPrototypeTag = L"Prototype_GameObject_Monster_Dummy_Body";
+		monsterDesc.wstrAttackOverlapPrototypeTag = L"Prototype_Component_AttackOverlap_Monster_Dog";
+		transformDesc.TranslationMatrix = Matrix::CreateTranslation(Vec3(18.f, 12.f, 19.f));
+		monsterDesc.pTransform_Desc = &transformDesc;
+		monsterDesc.wstrMonsterStateTag = L"Monster_Dog";
+
+		{
+			PHYSICSCCT_DESC desc;
+			desc.pOwner = nullptr;
+			desc.bIsPlayer = false;
+			desc.eType = EPhysicsCCTType::BOX;
+			desc.pOwnerMatrix = nullptr;
+			desc.fRadius = 0.5f;
+			desc.fHeight = 1.f;
+			desc.vExtens = { 2.f, 2.f, 2.f };
+
+			PHYSICSMATERIAL_DESC mtrlDesc{};
+			mtrlDesc.eMaterial = EPhysicsMaterial::PLAYER;
+			desc.tMaterial = mtrlDesc;
+
+			desc.eFilterLayer = PHYSICSFILTERGROUP::Enum::MONSTER;
+			desc.iFilterMask =
+				PHYSICSFILTERGROUP::Enum::MONSTER
+				| PHYSICSFILTERGROUP::Enum::PLAYER
+				| PHYSICSFILTERGROUP::Enum::ATTACK
+				| PHYSICSFILTERGROUP::Enum::ATTACK_PROJECTTILE
+				| PHYSICSFILTERGROUP::Enum::SKILL
+				| PHYSICSFILTERGROUP::Enum::SKILL_PROJECTTILE
+				| PHYSICSFILTERGROUP::Enum::MAP
+				| PHYSICSFILTERGROUP::Enum::OBJECT1
+				| PHYSICSFILTERGROUP::Enum::OBJECT2;
+
+			monsterDesc.tCCTDesc = desc;
+		}
+
 		if (!(pResult = m_pGameInstance->Add_GameObject(ENUM_TO_UINT(ELevelType::LOGO),
 			L"Prototype_GameObject_Monster_Dummy",
 			ENUM_TO_UINT(ELevelType::LOGO),
-			L"Monster", nullptr)))
+			L"Monster", &monsterDesc)))
 			return E_FAIL;
 	}
 

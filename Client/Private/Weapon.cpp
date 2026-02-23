@@ -134,7 +134,7 @@ void CWeapon::Ready_Before_Render(_float fTimeDelta)
 	switch (m_eState)
 	{
 	case State::HOLD:
-		Super::Update_CombinedWorldMatrix((*m_pMatSocket) * (*m_pMatParent));
+		Super::Update_CombinedWorldMatrix(m_matRotation * (*m_pMatSocket) * (*m_pMatParent));
 		//Update_HoldingPos();
 		break;
 

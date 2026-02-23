@@ -211,12 +211,6 @@
     <Filter Include="09. Builder\Map">
       <UniqueIdentifier>{316c30da-42c6-486a-bbfd-7736152fabec}</UniqueIdentifier>
     </Filter>
-    <Filter Include="02. GameObjects\Map\00. MapObject\01. StaticModel">
-      <UniqueIdentifier>{2cfbf0d2-bd5d-4728-87d5-d2bb19dfb549}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="02. GameObjects\Map\00. MapObject\02. InstanceModel">
-      <UniqueIdentifier>{32494c10-0bf8-420f-a857-a2d263860bfa}</UniqueIdentifier>
-    </Filter>
     <Filter Include="02. GameObjects\UI\02.UI">
       <UniqueIdentifier>{6a558198-77c1-41fb-9345-05c1fc4f9daf}</UniqueIdentifier>
     </Filter>
@@ -228,9 +222,6 @@
     </Filter>
     <Filter Include="04. Component\UI\Progress">
       <UniqueIdentifier>{27815419-4fa4-4be0-9d62-f21f634f2338}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="02. GameObjects\Map\00. MapObject\03. BatchObject">
-      <UniqueIdentifier>{4cbea894-fe8a-484a-b84b-a0522058102a}</UniqueIdentifier>
     </Filter>
     <Filter Include="02. GameObjects\UI\00.Action">
       <UniqueIdentifier>{566d6d02-9c34-4ed7-beae-db2b024e4049}</UniqueIdentifier>
@@ -294,6 +285,15 @@
     </Filter>
     <Filter Include="06. ImGui\01. Panel\Animation\Panel_Parts">
       <UniqueIdentifier>{066939c9-786f-43ed-8c48-88882c1e8089}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02. GameObjects\Map\01. SceneData">
+      <UniqueIdentifier>{796e0779-af03-4219-87f2-4ff1d7e85f49}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="09. Builder\Builder_MonsterState">
+      <UniqueIdentifier>{6cd3e072-0e67-41b9-a8e3-d3d8fba2778f}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="06. ImGui\01. Panel\Animation\Panel_State">
+      <UniqueIdentifier>{f8ea57a4-1227-451f-bfeb-abde0f94e887}</UniqueIdentifier>
     </Filter>
     <Filter Include="03. Level\AttackPreset">
       <UniqueIdentifier>{bf464770-40f1-4342-b2e3-be2af144f024}</UniqueIdentifier>
@@ -595,6 +595,15 @@
     <ClInclude Include="..\Public\Panel_Parts.h">
       <Filter>06. ImGui\01. Panel\Animation\Panel_Parts</Filter>
     </ClInclude>
+    <ClInclude Include="..\Public\SceneData.h">
+      <Filter>02. GameObjects\Map\01. SceneData</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\Builder_MonsterState.h">
+      <Filter>09. Builder\Builder_MonsterState</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\Panel_State.h">
+      <Filter>06. ImGui\01. Panel\Animation\Panel_State</Filter>
+    </ClInclude>
     <ClInclude Include="..\public\Level_AttackPreset.h">
       <Filter>03. Level\AttackPreset</Filter>
     </ClInclude>
@@ -879,6 +888,15 @@
     </ClCompile>
     <ClCompile Include="..\Private\Panel_Parts.cpp">
       <Filter>06. ImGui\01. Panel\Animation\Panel_Parts</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\SceneData.cpp">
+      <Filter>02. GameObjects\Map\01. SceneData</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\Builder_MonsterState.cpp">
+      <Filter>09. Builder\Builder_MonsterState</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\Panel_State.cpp">
+      <Filter>06. ImGui\01. Panel\Animation\Panel_State</Filter>
     </ClCompile>
     <ClCompile Include="..\private\Level_AttackPreset.cpp">
       <Filter>03. Level\AttackPreset</Filter>

@@ -223,6 +223,7 @@ void CImGui_Dockspace_MenuBar::Save_EffectData(const wstring& wstrFilePath)
 	Request_ExportData(ELevelType::EFFECT, eCategory, ContainerObjectLayerTag, pDocument);
 
 	m_pGameInstance->Save_File_Json(iLevelID, eCategory, wstrFilePath);
+
 }
 
 void CImGui_Dockspace_MenuBar::Save_CameraData(const wstring& wstrFilePath)
@@ -425,6 +426,8 @@ void CImGui_Dockspace_MenuBar::Load_UIData(const wstring& wstrFilePath)
 void CImGui_Dockspace_MenuBar::Request_ExportData(ELevelType eLevelID, DTO::ECategory eCategory, const wstring& wstrLayerTag, CDataDocumentBase* pDocument)
 {
 	bool isSelectObjectSave = {false};
+
+	CMapToolManager::GetInstance()->Export_SaveSceneData(eCategory,pDocument);
 
 	if (isSelectObjectSave == false)
 	{

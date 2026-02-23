@@ -152,7 +152,12 @@ _bool CStateBase_Player::Check_MoveKey(const _float fTimeDelta)
 
 	if (Engine_Utils::Has_Flag(m_FMoves, MOVEFLAGS::UP_CHANGE))
 	{
-		
+		// move key input이 없을 때
+		if (!Key_Input(ENUM_TO_UINT(CControlContext::CONTROL_KEY::MOVE)))
+		{
+			Change_PlayerState(STATEKEY::MOVE);
+			return true;
+		}
 	}
 
 	return false;

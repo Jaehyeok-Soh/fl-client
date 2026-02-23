@@ -26,7 +26,6 @@ typedef struct tagCONVERTED_MAPDATA		CONVERTED_MAPDATA;
 typedef struct tagUsingModelInfo		USING_MODEL_INFO;
 typedef struct tagOverrideMaterials		OVERRIDE_MATERIALS;
 
-
 class CUEMapdataParser final : public CBase
 {
 	using Super = CBase;
@@ -89,10 +88,14 @@ private:
 	unordered_map< wstring, vector<MAPDATA_BASE*>>		m_umapConvertedMapData{};
 
 	unordered_map< wstring , vector<UE_MAP_DATA>>		m_umapUnreal_Map_Data{};
+	unordered_map< wstring, _bool>						m_umapUnreal_Map_Data_IsLoadedCheck{};
+	unordered_map< wstring, wstring>					m_umapUnreal_Map_Data_FullPath{};
+
 	vector<string>										m_vecTypeFilter{};
 	vector<string>										m_vecOuterFilter{};
 	float												m_fMulScale{0.01f};
 
+	wstring												m_wstrCurrentBatch_UERawDataPath{L""};
 
 	const Matrix										m_ChangeMatrix	  =
 	{

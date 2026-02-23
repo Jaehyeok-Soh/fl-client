@@ -78,7 +78,7 @@ protected:
 
 	// player 객체 연결 함수들
 protected:
-	_bool	Check_OnGround(_float fMaxDist = 0.72f); // 땅에 있는지 검사
+	_bool	Check_OnGround(_float fMaxDist = 0.8f); // 땅에 있는지 검사
 
 	void	Check_Monster();
 
@@ -96,8 +96,6 @@ protected:
 
 private:
 	_uint					m_iEndStateIdx = { 0 };			// CPlayer::State::END 캐싱 해둠 : 만약 END면 state change x
-
-
 
 private:
 	_bool Has_ChangeState(STATEKEY eKey);

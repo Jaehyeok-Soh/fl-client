@@ -21,10 +21,21 @@ json CDataDocument_Map::ToJson() const
 	json j;
 	j["Category"] = DTO::ECategory::MAP;
 
+	IObjectDataBase* pSceneData{nullptr};
+
 	json jsonArray = json::array();
 	for (const auto& [iType, umapTags] : m_Datas)
 		for (const auto& [strTag, object] : umapTags)
-			jsonArray.push_back(object->ToJson());
+		{
+			if (ENUM_TO_UINT(DTO::EMapObject_Type::SCENEDATA) != object->Get_Type())
+				jsonArray.push_back(object->ToJson());
+			else
+				pSceneData = object;
+		}
+
+	if(pSceneData)
+		j["Scene Data"] = pSceneData->ToJson();
+
 
 	j["Objects"] = std::move(jsonArray);
 	return j;
@@ -40,6 +51,24 @@ HRESULT CDataDocument_Map::FromJson(const json& j)
 
 	if (!j.contains("Objects")) return E_FAIL;
 	if (!j["Objects"].is_array()) return E_FAIL;
+
+
+
+	if (j.contains("Scene Data"))
+	{
+		CData_SceneData* pSceneData = CData_SceneData::Create();
+
+		if (FAILED(pSceneData->FromJson(j["Scene Data"])))
+		{
+			Safe_Release(pSceneData);
+			return E_FAIL;
+		}
+
+		if (FAILED(Try_Add(pSceneData->Get_Data())))
+			return E_FAIL;
+
+	}
+
 
 	for (const auto& object : j["Objects"])
 	{
@@ -65,6 +94,7 @@ HRESULT CDataDocument_Map::FromJson(const json& j)
 		}
 	}
 
+
 	return S_OK;
 }
 
@@ -72,6 +102,13 @@ HRESULT CDataDocument_Map::FromJson(const json& j)
 HRESULT CDataDocument_Map::Try_Add(const DTO::TMap_MapObjectData& data)
 {
 	CData_MapObject* pObjectBase = CData_MapObject::Create();
+	pObjectBase->Get_Data() = data;
+	return Try_Add(pObjectBase);
+}
+
+HRESULT CDataDocument_Map::Try_Add(const DTO::TSceneData& data)
+{
+	CData_SceneData* pObjectBase = CData_SceneData::Create();
 	pObjectBase->Get_Data() = data;
 	return Try_Add(pObjectBase);
 }

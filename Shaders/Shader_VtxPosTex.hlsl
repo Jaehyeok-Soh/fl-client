@@ -144,10 +144,34 @@ PS_OUT PS_DISOLVE(PS_IN_POS_TEX input)
     return output;
 }
 
+PS_OUT PS_NOISE(PS_IN_POS_TEX input)
+{
+    PS_OUT output;
+    float2 Uv = input.vUV;
+ 
+    Uv = ApplyFlip(Uv);
+    
+    vector vBaseColor = g_DefaultTextures[DEFAULT].Sample(PointSampler, Uv);
+    float2 noiseUv = float2(Uv.x, 0.5f); // y를 고정(가로 방향만 노이즈)
+    float Noise = g_DefaultTextures[UI_NOISE].Sample(LinearSampler, noiseUv).r;
+    
+    float3 c0 = SRGBToLinear(g_vColorTint.rgb);
+    float3 c1 = SRGBToLinear(g_vGradiateColorTint.rgb);
+    vBaseColor.rgb = lerp(c0, c1, Noise);
+    vBaseColor.rgb *= g_fBrightness;
+    
+    vBaseColor.a *= g_fAlphaRatio;
+    if (vBaseColor.a < 0.001f)
+        discard;
+    output.vColor = vBaseColor;
+    return output;
+}
+
 technique11 T0
 {
     PASS_RS_DS_BS_VP(Default,       RS_Default, DS_Disabled, BS_AlphaBlend, VS_MAIN, PS_MAIN)
     PASS_RS_DS_BS_VP(Color,         RS_Default, DS_Disabled, BS_AlphaBlend, VS_MAIN, PS_COLOR)
     PASS_RS_DS_BS_VP(Progress,      RS_Default, DS_Disabled, BS_AlphaBlend, VS_MAIN, PS_PROGRESS)
     PASS_RS_DS_BS_VP(Disolve,       RS_Default, DS_Disabled, BS_AlphaBlend, VS_MAIN, PS_DISOLVE)
+    PASS_RS_DS_BS_VP(Noise,         RS_Default, DS_Disabled, BS_AlphaBlend, VS_MAIN, PS_NOISE)
 };

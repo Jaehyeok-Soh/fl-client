@@ -584,6 +584,7 @@ namespace Engine
 	{
 		float fTimeAcc = { 0.f }; // 누적 타임
 		float fMaxTime = { 0.f }; // 최대 시간
+		float fMinTime = { 0.f }; // 최소 시간(ex 상태를 이 시간은 꼭 유지시켜야한다)
 
 		bool bCountTime = { true }; // 타임 카운트를 할래?
 		bool bTimeReset = { true }; // 한 주기가 끝나고 acc를 0으로 다시 맞출건지
@@ -608,7 +609,33 @@ namespace Engine
 			return fTimeAcc / fMaxTime;
 		}
 
-		float Get_Rate() { return fTimeAcc / fMaxTime; }
+		float CountMinTime(const float fTimeDelta) // TimeCount 함수
+		{
+			// 카운트를 하지 않을 거라면 음수 반환
+			if (!bCountTime)
+				return -1.f;
+
+			// 타임 누적
+			fTimeAcc += fTimeDelta;
+
+			// 넘었는지 검사
+			if (fTimeAcc >= fMinTime)
+			{
+				fTimeAcc = bTimeReset ? 0.f : fMinTime; // timeacc 리셋
+				return 1.f;
+			}
+
+			// 비율 값으로 반환
+			return fTimeAcc / fMinTime;
+		}
+
+		float Get_Rate() 
+		{ 
+			if (fMaxTime <= 0.f) 
+				return 1.f;  
+
+			return fTimeAcc / fMaxTime;
+		}
 
 	}TIME_COUNTER;
 #pragma endregion
@@ -764,6 +791,22 @@ namespace Engine
 		D3DX11_TECHNIQUE_DESC tDesc = {};
 		vector<tagPass> vecPasses;
 	} TECHNIQUE;
+
+#pragma region Font
+	typedef struct tagFontDesc
+	{
+		EFontShaderType eFontShaderType;
+		std::wstring strFontTag;
+		std::wstring strText;
+		DirectX::SimpleMath::Vector2 vPosition;
+		DirectX::SimpleMath::Vector4 vColor;
+		EFontPivotType ePivot;
+		float fRotate;
+		float fScale;
+	}FONT_DESC;
+
+#pragma endregion
+
 #pragma region EFFECT
 	typedef struct tagEffectSpawnDesc {
 		SimpleMath::Matrix matWorld;             // 계산된 최종 행렬

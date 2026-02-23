@@ -34,6 +34,7 @@
 // Map
 //=================
 #include "MapObject.h"
+#include "SceneData.h"
 //=================
 // Resource
 //=================
@@ -141,8 +142,6 @@ HRESULT CLoader::Loading_For_Map()
 	// For. Prototype_Component_Bounds
 	m_pGameInstance->Add_Prototype(ENUM_TO_UINT(ELevelType::MAP), L"Prototype_Component_Bounds", CBounds::Create(m_pDevice, m_pDeviceContext));
 
-
-
 	/* Model Prototype */
 	CUEMapDataLoader* pMapDataLoader = CUEMapDataLoader::Create(m_pDevice,m_pDeviceContext);
 	if (pMapDataLoader == nullptr) return E_FAIL;
@@ -154,8 +153,6 @@ HRESULT CLoader::Loading_For_Map()
 	Safe_Release(pMapDataLoader);
 
 
-	/* Texture Prototype */
-	//if(FAILED())
 
 
 	//=================
@@ -319,8 +316,7 @@ HRESULT CLoader::Loading_For_UI()
 	// Resource Component
 	//=================
 
-	std::filesystem::path root = L"../../Resources/Textures/UI_Tool/";
-
+	std::filesystem::path root = L"../../Resources/Textures/UI/UI_Tool/";
 	std::error_code ec;
 	for (auto it = std::filesystem::recursive_directory_iterator(
 		root,

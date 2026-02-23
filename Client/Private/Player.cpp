@@ -6,7 +6,6 @@
 
 // component
 #include "Navigation.h"
-#include "StatComponent.h"
 #include "Model.h"
 #include "Bounding_AABB.h"
 #include "Bounding_OBB.h"
@@ -17,7 +16,7 @@
 #include "Collider.h"
 #include "ComputeShader.h"
 #include "StatCom_Player.h"
-#include "SkillComponent.h"
+#include "ActionSkill.h"
 
 // parts objs
 #include "Weapon.h"
@@ -226,12 +225,12 @@ _bool CPlayer::Check_ColliWithMonster()
 
 void CPlayer::Count_Combo()
 {
-    static_cast<CStatCom_Player*>(m_pStatComp)->Add_ComboCount();
+    static_cast<CStatCom_Player*>(Get_Component<CMyStat>())->Add_ComboCount();
 }
 
 void CPlayer::Count_Dash()
 {
-    static_cast<CStatCom_Player*>(m_pStatComp)->Sub_DashCount();
+    static_cast<CStatCom_Player*>(Get_Component<CMyStat>())->Sub_DashCount();
 }
 
 _bool CPlayer::Start_Attack(State iState)
@@ -242,24 +241,20 @@ _bool CPlayer::Start_Attack(State iState)
     case State::COMBO:
     case State::CHARGE:
     case State::JUMPATTEND:
-        bChange = static_cast<CStatCom_Player*>(m_pStatComp)->Set_AttackState(CStatCom_Player::Attack_State::Melee, true);
+        bChange = static_cast<CStatCom_Player*>(Get_Component<CMyStat>())->Set_AttackState(CStatCom_Player::Attack_State::Melee, true);
         break;
 
     case State::JUMPGUN:
     case State::GUN:
-        bChange = static_cast<CStatCom_Player*>(m_pStatComp)->Set_AttackState(CStatCom_Player::Attack_State::Gun, true);
+        bChange = static_cast<CStatCom_Player*>(Get_Component<CMyStat>())->Set_AttackState(CStatCom_Player::Attack_State::Gun, true);
         break;
 
     case State::SKILL1:
-        bChange = static_cast<CStatCom_Player*>(m_pStatComp)->Set_AttackState(CStatCom_Player::Attack_State::E, true);
-        if (bChange && m_pSkillEComp)
-            m_pSkillEComp->Start_Skill(m_pStatComp);
+        bChange = Get_Component<CActionSkill>()->Start_Skill(MoonE);
         break;
 
     case State::SKILL2:
-        bChange = static_cast<CStatCom_Player*>(m_pStatComp)->Set_AttackState(CStatCom_Player::Attack_State::Q, true);
-        if (bChange && m_pSkillQComp)
-            m_pSkillQComp->Start_Skill(m_pStatComp);
+        bChange = Get_Component<CActionSkill>()->Start_Skill(MoonQ);
         break;
     }
 
@@ -273,22 +268,20 @@ void CPlayer::End_Attack(State iState)
     case State::COMBO:
     case State::CHARGE:
     case State::JUMPATTEND:
-        static_cast<CStatCom_Player*>(m_pStatComp)->Set_AttackState(CStatCom_Player::Attack_State::Melee, false);
+        static_cast<CStatCom_Player*>(Get_Component<CMyStat>())->Set_AttackState(CStatCom_Player::Attack_State::Melee, false);
         break;
 
     case State::JUMPGUN:
     case State::GUN:
-        static_cast<CStatCom_Player*>(m_pStatComp)->Set_AttackState(CStatCom_Player::Attack_State::Gun, false);
+        static_cast<CStatCom_Player*>(Get_Component<CMyStat>())->Set_AttackState(CStatCom_Player::Attack_State::Gun, false);
         break;
 
     case State::SKILL1:
-        static_cast<CStatCom_Player*>(m_pStatComp)->Set_AttackState(CStatCom_Player::Attack_State::E, false);
-        m_pSkillEComp->End_Skill(m_pStatComp);
+        Get_Component<CActionSkill>()->End_Skill(MoonE);
         break;
 
     case State::SKILL2:
-        static_cast<CStatCom_Player*>(m_pStatComp)->Set_AttackState(CStatCom_Player::Attack_State::Q, false);
-        m_pSkillQComp->End_Skill(m_pStatComp);
+        Get_Component<CActionSkill>()->End_Skill(MoonE);
         break;
     }
 }
@@ -492,6 +485,9 @@ HRESULT CPlayer::Ready_BaseStates()
         //vecChangeState_ByKey[ENUM_TO_SZET(CStateBase_Player::STATEKEY::RM)]           = ENUM_TO_UINT(State::END);
         vecChangeState_ByKey[ENUM_TO_SZET(CStateBase_Player::STATEKEY::CHARGE)]         = ENUM_TO_UINT(State::END);
         desc.vecChangeState_ByKey = vecChangeState_ByKey;
+
+        tKeyTimer.bCountTime = true;
+        tKeyTimer.fMaxTime = 0.05f;
         desc.tKeyTimer = tKeyTimer;
 
         if (FAILED(pActionState->Add_State(ENUM_TO_UINT(State::DASHBACK), CState_DashBack::Create(pActionState, &desc))))
@@ -540,7 +536,7 @@ HRESULT CPlayer::Ready_BaseStates()
         desc.bBlend = true;
         desc.bLoop = false;
 
-        desc.FMoves = CStateBase_Player::MOVEFLAGS::NORMAL;
+        desc.FMoves = CStateBase_Player::MOVEFLAGS::UP_CHANGE;
         desc.FCollis = CStateBase_Player::COLLISIONFLAGS::C_DOWN;
         vecChangeState_ByKey[ENUM_TO_SZET(CStateBase_Player::STATEKEY::MOVE)]           = ENUM_TO_UINT(State::IDLE);
         vecChangeState_ByKey[ENUM_TO_SZET(CStateBase_Player::STATEKEY::SPACE)]          = ENUM_TO_UINT(State::JUMP);
@@ -634,9 +630,9 @@ HRESULT CPlayer::Ready_BaseStates()
         vecChangeState_ByKey[ENUM_TO_SZET(CStateBase_Player::STATEKEY::LCRTL_PRESS)]    = ENUM_TO_UINT(State::SLIDE);
         vecChangeState_ByKey[ENUM_TO_SZET(CStateBase_Player::STATEKEY::LCRTL_UP)]       = ENUM_TO_UINT(State::END);
         vecChangeState_ByKey[ENUM_TO_SZET(CStateBase_Player::STATEKEY::LOOPDONE)]       = ENUM_TO_UINT(State::FALL);
-
-        vecChangeState_ByKey[ENUM_TO_SZET(CStateBase_Player::STATEKEY::E)] = ENUM_TO_UINT(State::SKILL1);
-        vecChangeState_ByKey[ENUM_TO_SZET(CStateBase_Player::STATEKEY::Q)] = ENUM_TO_UINT(State::END);
+        
+        vecChangeState_ByKey[ENUM_TO_SZET(CStateBase_Player::STATEKEY::E)]              = ENUM_TO_UINT(State::SKILL1);
+        vecChangeState_ByKey[ENUM_TO_SZET(CStateBase_Player::STATEKEY::Q)]              = ENUM_TO_UINT(State::END);
         vecChangeState_ByKey[ENUM_TO_SZET(CStateBase_Player::STATEKEY::LM)]             = ENUM_TO_UINT(State::JUMPATTSTART);
         //vecChangeState_ByKey[ENUM_TO_SZET(CStateBase_Player::STATEKEY::RM)]           = ENUM_TO_UINT(State::JUMPGUN);
         vecChangeState_ByKey[ENUM_TO_SZET(CStateBase_Player::STATEKEY::CHARGE)]         = ENUM_TO_UINT(State::END);
@@ -741,7 +737,7 @@ HRESULT CPlayer::Ready_BaseStates()
         CState_RunLoop::PLAYER_STATEBASE_DESC  desc = {};
         desc.FAniFlags = 0;
         desc.vecMainAnims = { Get_AnimationIndex(L"Animation_PlayerMoon_Land_Inplace"), Get_AnimationIndex(L"Animation_PlayerMoon_LandHeavy_Inplace") };
-        desc.bBlend = true;
+        desc.bBlend = false;
         desc.bLoop = false;
 
         desc.FMoves = CStateBase_Player::MOVEFLAGS::PRESS_CHANGE;

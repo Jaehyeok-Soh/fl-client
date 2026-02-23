@@ -18,7 +18,13 @@
 #include "PhysicsRigidBody.h"
 #include "PhysicsCollider.h"
 #include "PhysicsCCT.h"
+#include "MyStat.h"
+#include "SkillBase.h"
+#include "ActionSkill.h"
+
+#include "Canvas.h"
 #include "UI_Manager.h"
+#include "CameraMan_Targeter.h"
 
 USING(Client)
 
@@ -63,6 +69,8 @@ HRESULT CMainApplication::Initialize()
 
 	if (FAILED(Start_Level(ELevelType::LOGO)))
 		return E_FAIL;	
+
+	CMonsterState_Factory::GetInstance()->Initialize();
 
 	return S_OK;
 }
@@ -297,6 +305,10 @@ HRESULT CMainApplication::Ready_Static_Prototype()
 			return E_FAIL;
 	}
 
+	// For. UI Texture
+	if (FAILED(Loading_Textures(L"../../Resources/Textures/UI/UI_Client/")))
+		return E_FAIL;
+
 	// For. Prototype_Component_Transform
 	{
 		if (FAILED(m_pGameInstance->Add_Prototype(ENUM_TO_UINT(ELevelType::STATIC),
@@ -433,6 +445,30 @@ HRESULT CMainApplication::Ready_Static_Prototype()
 			return E_FAIL;
 	}
 
+	//=================
+	// Skill & Stat
+	//=================
+	// For. Prototype_Component_Stat
+	{
+		if (FAILED(m_pGameInstance->Add_Prototype(ENUM_TO_UINT(ELevelType::STATIC), L"Prototype_Component_Stat",
+			CMyStat::Create())))
+			return E_FAIL;
+	}
+	// For. Prototype_Component_ActionSkill
+	{
+		if (FAILED(m_pGameInstance->Add_Prototype(ENUM_TO_UINT(ELevelType::STATIC), L"Prototype_Component_ActionSkill",
+			CActionSkill::Create())))
+			return E_FAIL;
+	}
+
+	// For. Prototype_UI_Canvas
+	{
+		if (FAILED(m_pGameInstance->Add_Prototype(ENUM_TO_UINT(ELevelType::STATIC), L"Prototype_UI_Canvas",
+			CCanvas::Create(m_pDevice, m_pDeviceContext))))
+			return E_FAIL;
+	}
+
+
 	return S_OK;
 }
 
@@ -454,8 +490,44 @@ HRESULT CMainApplication::Ready_Fonts()
 	return S_OK;
 }
 
+HRESULT CMainApplication::Loading_Textures(const wstring& wstrFolder)
+{
+	if (std::filesystem::exists(wstrFolder) == false)
+		return E_FAIL;
+
+	size_t iFileCount = { 0 };
+	for (const auto& entry : std::filesystem::directory_iterator(wstrFolder))
+	{
+		if (entry.is_regular_file())
+		{
+			++iFileCount;
+		}
+	}
+
+	for (const auto& entry : std::filesystem::directory_iterator(wstrFolder))
+	{
+		wstring wstrFileName = { L"" };
+		_wstring ext = { L"" };
+		if (entry.is_regular_file())
+		{
+			ext = entry.path().extension().wstring();
+			if (ext == L".ini")
+				continue;
+			wstrFileName = entry.path().filename().lexically_normal().stem();
+			CTextureBase::RESOURCE_BASE_DESC desc = {};
+			desc.wstrName = wstrFileName;
+			desc.wstrPath = entry.path();
+			if (FAILED(m_pGameInstance->Add_Resource(L"Texture_" + wstrFileName, CTextureBase::Create(m_pDevice, m_pDeviceContext, &desc))))
+				return E_FAIL;
+		}
+	}
+	return S_OK;
+}
+
 void CMainApplication::Free()
 {	
+	CMonsterState_Factory::DestroyInstance();
+
 	Safe_Release(m_pDeviceContext);
 	Safe_Release(m_pDevice);
 	CUI_Manager::GetInstance()->DestroyInstance();

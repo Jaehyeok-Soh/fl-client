@@ -35,6 +35,7 @@ public:
 	{
 		/* UE 에서 추출되었거나 Or 로드한 데이터 인지 아닌지 */
 		bool								isUELoaded	{false};
+		wstring								wstrUERawDataPath{L""};
 		bool								isLoaded	{ false };
 
 		/* 다불러와놓고 판단을 해야할거같은데..  */
@@ -121,6 +122,8 @@ public:
 	/* Load 관련 */
 	_bool								Get_IsLoaded()				const { return m_isLoaded; }
 	_bool								Get_IsUELoaded()			const { return m_isUELoaded; }
+	wstring								Get_UERawDataPath()			const { return m_wstrUERawDataPath; }
+
 
 	/* SRT Data 관련 */
 	const vector< Tool::SRT_DATA >&		Get_SRTDatas(bool isOrigin) const { return isOrigin == true ? m_vecOriginSRTs : m_vecSRTs; }
@@ -179,6 +182,7 @@ public:
 	HRESULT								Render_Instance(_int iPass = -1);
 
 protected:
+	wstring								m_wstrUERawDataPath{L""};
 	_uint								m_iSectionNum{};
 	bool								m_isBatced{false};
 	CMapToolManager*					m_pMapToolManager{ nullptr };

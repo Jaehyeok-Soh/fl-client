@@ -255,6 +255,14 @@ void CChannel::Update_MotionBone(Vec3 vLeftTrans, Vec3 vRightTrans,  CTransform*
 
 	Vec3 finalPos = pOwnerPhyCCT->GetFootPosition();
 
+	// y lerp
+	{
+		Vec3 currentPos = pOwnerTransform->Get_Info(TRANSFORM_INFO_STATE::POS);
+
+		_float yLerp = std::lerp(currentPos.y, finalPos.y, fTimeDelta * 15.f);
+		finalPos.y = yLerp;
+	}
+
 	pOwnerTransform->Set_Info(TRANSFORM_INFO_STATE::POS, finalPos);
 }
 

@@ -10,7 +10,10 @@
 #include "StatCom_Player.h"
 #include "Navigation.h"
 #include "Bone.h"
-#include "SkillComponent.h"
+#include "MyStat.h"
+#include "ActionSkill.h"
+#include "SkillComp_MoonE.h"
+#include "SkillComp_MoonQ.h"
 
 // objects
 #include "CameraMan_Targeter.h"
@@ -68,7 +71,7 @@ HRESULT CMainPlayer::Initialize(void* pArg)
     if (FAILED(Super::Initialize(pArg)))
         return E_FAIL;
 
-    Set_Name("Eun_bi");
+    Set_Name("Eun_bi_Main");
 
     if (FAILED(Ready_Ability()))
         return E_FAIL;
@@ -131,6 +134,9 @@ void CMainPlayer::Update_Priority(const _float fTimeDelta)
 void CMainPlayer::Update(const _float fTimeDelta)
 {
     Super::Update(fTimeDelta);
+
+    Get_Component<CMyStat>()->Update_Stat(fTimeDelta);
+    Get_Component<CActionSkill>()->Update_Skills(fTimeDelta);
 
 }
 
@@ -377,48 +383,80 @@ _bool CMainPlayer::Try_AttackHit(ECollideLayer eMyLayer, CCollider* pOther)
 
 HRESULT CMainPlayer::Ready_Ability()
 {
-    CPlayerActionState* pActionState = { nullptr };
-    CModel* pModel = Get_Part<CBody>(ENUM_TO_UINT(Part::BODY))->Get_Component<CModel>();
+    CSkillBase* pESkill = CSkillComp_MoonE::Create();
+    CSkillBase* pQSkill = CSkillComp_MoonE::Create();
 
-    if (!pModel)
-        return E_FAIL;
-
-    if (!(pActionState = Get_Component<CPlayerActionState>()))
-        return E_FAIL;
-
-    // skill components
-    {
-        if (FAILED(Add_Script_Component(L"SkillComponent_E", L"Prototype_Component_Skill_MoonE", nullptr)))
-            return E_FAIL;
-
-        if (FAILED(Add_Script_Component(L"SkillComponent_Q", L"Prototype_Component_Skill_MoonQ", nullptr)))
-            return E_FAIL;
-
-        m_pSkillEComp = static_cast<CSkillComponent*>(Get_Script_Component(L"SkillComponent_E"));
-        m_pSkillQComp = static_cast<CSkillComponent*>(Get_Script_Component(L"SkillComponent_Q"));
-    }
-
+    // stat
     {
         CStatCom_Player::PLAYER_STATCOMP_DESC desc = {};
-        desc.iMaxHp = 320;
+        desc.fMaxHp = 320;
+        desc.fDefense = 400.f;
+        desc.fMental = 105.f;
+        desc.FStatFlags = CStatCom_Player::StatFlags::DefenseUpdtae | CStatCom_Player::StatFlags::MentalUpdate;
+
         desc.fComboCoolTime = 2.f;
-        desc.fDashCoolTime =2.f;
-        desc.fMaxDefense = 400.f;
-        desc.fMaxMental =105.f;
+        desc.fDashCoolTime = 2.f;
 
-        desc.tESkill = m_pSkillEComp->Get_SkillDesc();
-        desc.tQSkill = m_pSkillQComp->Get_SkillDesc();
+        desc.fMeleeAttack = 20.f;
+        desc.fGunAttack = 20.f;
 
-        ATTACK_ELEMNETS tAttackDesc = {};
-        tAttackDesc = { 20,0 };
-        desc.tMelee = tAttackDesc;
-        desc.tGun   = tAttackDesc;
+        desc.pESkill = pESkill;
+        desc.pQSkill = pQSkill;
 
-        if (FAILED(Add_Script_Component(L"StatComponent", L"Prototype_Component_Stat_Player", &desc)))
+        if (FAILED(Add_Component<CMyStat>(0/* STATIC */, L"Prototype_Component_Stat_Player", &desc)))
+            return E_FAIL;
+    }
+
+    // skill
+    {
+        CActionSkill::ACTIONSKILL_DESC desc = {};
+        desc.iSkillCount = 2;
+        desc.pOwnerStat = Get_Component<CMyStat>();
+
+        if (FAILED(Add_Component<CActionSkill>(0/* STATIC */, L"Prototype_Component_ActionSkill", &desc)))
             return E_FAIL;
 
-        m_pStatComp = static_cast<CStatComponent*>(Get_Script_Component(L"StatComponent"));
-    }    
+        CActionSkill* pActionSkill = Get_Component<CActionSkill>();
+
+        if (FAILED(pActionSkill->Add_Skill(Skill::MoonE, pESkill)))
+            return E_FAIL;
+        if (FAILED(pActionSkill->Add_Skill(Skill::MoonQ, pQSkill)))
+            return E_FAIL;
+    }
+
+
+
+
+
+    //CPlayerActionState* pActionState = { nullptr };
+    //CModel* pModel = Get_Part<CBody>(ENUM_TO_UINT(Part::BODY))->Get_Component<CModel>();
+
+    //if (!pModel)
+    //    return E_FAIL;
+
+    //if (!(pActionState = Get_Component<CPlayerActionState>()))
+    //    return E_FAIL;
+
+    //// skill components
+    //{
+    //    if (FAILED(Add_Script_Component(L"SkillComponent_E", L"Prototype_Component_Skill_MoonE", nullptr)))
+    //        return E_FAIL;
+
+    //    if (FAILED(Add_Script_Component(L"SkillComponent_Q", L"Prototype_Component_Skill_MoonQ", nullptr)))
+    //        return E_FAIL;
+
+    //    m_pSkillEComp = static_cast<CSkillComponent*>(Get_Script_Component(L"SkillComponent_E"));
+    //    m_pSkillQComp = static_cast<CSkillComponent*>(Get_Script_Component(L"SkillComponent_Q"));
+    //}
+
+    //{
+
+
+    //    if (FAILED(Add_Script_Component(L"StatComponent", L"Prototype_Component_Stat_Player", &desc)))
+    //        return E_FAIL;
+
+    //    m_pStatComp = static_cast<CStatComponent*>(Get_Script_Component(L"StatComponent"));
+    //}    
 
     //// HandCombo_Right
     //{
@@ -666,7 +704,7 @@ HRESULT CMainPlayer::Ready_CCT()
 {
     PHYSICSCCT_DESC desc;
     desc.pOwner = this;
-    desc.bIsPlayer = true;
+    desc.bIsPlayer = false;
     desc.eType = EPhysicsCCTType::CAPSULE;
     desc.pOwnerMatrix = &Get_Component<CTransform>()->Get_WorldMatrix();
     desc.fRadius = 0.5f;
@@ -679,7 +717,8 @@ HRESULT CMainPlayer::Ready_CCT()
 
     desc.eFilterLayer = PHYSICSFILTERGROUP::Enum::PLAYER;
     desc.iFilterMask =
-        PHYSICSFILTERGROUP::Enum::MONSTER
+        PHYSICSFILTERGROUP::Enum::PLAYER
+        | PHYSICSFILTERGROUP::Enum::MONSTER
         | PHYSICSFILTERGROUP::Enum::MONSTER_ATTACK
         | PHYSICSFILTERGROUP::Enum::MONSTER_ATTACK_PROJECTTILE
         | PHYSICSFILTERGROUP::Enum::MONSTER_SKILL

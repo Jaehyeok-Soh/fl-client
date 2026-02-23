@@ -252,7 +252,8 @@ public:
 
 #pragma region FONT_MANAGER
 	HRESULT Add_Font(const _wstring& strFontTag, const _tchar* pFontFilePath);
-	HRESULT Draw_Text(const _wstring& strFontTag, const _tchar* pText, const Vec2& vPosition, Vec4 vColor = Vec4(1.f, 1.f, 1.f, 1.f), EFontPivotType ePivot = EFontPivotType::CENTER, const _float fRotate = 0.f, const _float fScale = 1.f);
+	HRESULT Request_DrawFont(FONT_DESC Desc);
+	HRESULT Render_Fonts();
 #pragma endregion
 
 #pragma region EVENTBUS_MANAGER
@@ -351,16 +352,16 @@ public:
 #endif // _DEBUG
 #pragma endregion
 
-#pragma region UIACTION_REGISTRY	
-	class CUIAction_Registry* Get_UIAction_Registry()const;
-#pragma endregion
-
 #pragma region EFFECT_MANAGER
 	void Spawn_Effect(const std::string& strTag, const Matrix& matWorld, _float fDuration, _bool bIsLocal, void* pTargetBone = nullptr);
 
 #pragma endregion
 // Todo - 쓰레기통 정리
 #pragma region GAMEDATA_MANAGER
+	HRESULT		GameDataManager_Load_TextureSplatingInfoData();
+	/* 이름으로 Binding 하는 함수 */
+	HRESULT		GameDataManager_Bind_SplatingTextureInfo(CShader* pBindShader, const wstring& wstrTextureSplatingInfoDataName);
+
 	const DTO::TAttackPreset_Data* Find_AttackPrseet(_uint iPresetKey) const;
 	const DTO::TAttackPreset_Data* Find_AttackPresetByTag(const string& strTag) const;
 	HRESULT Upsert_AttackPresetData(const DTO::TAttackPreset_Data& inData);
@@ -392,7 +393,6 @@ private:
 	class CFrustrum* m_pFrustrum = { nullptr };
 	class CShaderAsset_Manager* m_pShaderAsset_Manager = { nullptr };
 	class CPhysics_Module* m_pPhysics_Module = { nullptr };
-	class CUIAction_Registry* m_pUIAction_Registry = { nullptr };
 	class CEffect_Manager* m_pEffect_Manager = { nullptr };
 private:
 	std::mt19937_64 m_rng;

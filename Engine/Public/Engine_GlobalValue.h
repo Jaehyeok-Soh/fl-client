@@ -15,6 +15,28 @@ inline constexpr wchar_t g_wszAnimationExtension[]{ L".clip" };
 
 inline constexpr wchar_t g_wszAttackPresetDataPath[]{ L"../../Resources/Data/AttackPresetDatas/" };
 
+#pragma region Texture Splating
+
+
+inline constexpr _tchar g_wszMapTexture_Path[]{ L"../../Resources/Textures/Map/LandScape" };
+inline constexpr _char	g_szTexLandScape_Mix_RGB[]{ "g_TexLandScape_Mix_RGB" };
+inline constexpr _char	g_szTexLandScape_Mix_RGBA[]{ "g_TexLandScape_Mix_RGBA" };
+
+inline constexpr _char  g_szBase_Texture[]{ "g_Base_Texture" };
+inline constexpr _char  g_szMix_RGBA_Texture[]{ "g_Mix_RGBA_Texture" };
+
+
+inline constexpr _char	g_szMix_DH_Tile_Texture[]{ "g_Mix_DH_Tile_Texture" };
+inline constexpr _char	g_szMix_NBR_Tile_Texture[]{ "g_Mix_NBR_Tile_Texture" };
+
+
+inline constexpr _char	g_szCB_MIX_RGBA_INFO[]{ "CB_MIX_RGBA_INFO" };
+inline constexpr _char	g_szUse_Mix_RGBA_Map_Count[]{ "g_iUse_Mix_RGBA_Count" };
+
+
+#pragma endregion
+
+
 inline constexpr _uint OF_Outline = 1u << 0;
 
 const unsigned int		 MIN = 0;

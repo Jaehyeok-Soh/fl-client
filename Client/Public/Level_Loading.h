@@ -16,6 +16,14 @@ public:
 	virtual void Update(const _float fTimeDelta) override;
 	virtual HRESULT Render() override;
 private:
+	HRESULT Ready_UI_Layer(const wstring& wstrLayerTag);
+
+	HRESULT Ready_Camera_Layer(const wstring& wstrLayerTag);
+
+private:
+	HRESULT Build_Prototype();
+	HRESULT Build_Files();
+private:
 	class CLoader* m_pLoader = { nullptr };
 	ELevelType m_eNextLevelID = { ELevelType::END };
 public:

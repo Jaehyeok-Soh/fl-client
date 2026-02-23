@@ -289,9 +289,6 @@
     <Filter Include="00. System\05. Component\PhysicsCCT">
       <UniqueIdentifier>{20045528-a719-46f9-8133-abf66bb4da37}</UniqueIdentifier>
     </Filter>
-    <Filter Include="00. System\04. GameObject\UIObject\Registry">
-      <UniqueIdentifier>{01d57898-da08-45d1-a15c-f74cab4f144e}</UniqueIdentifier>
-    </Filter>
     <Filter Include="01. Utility\11. DataRepository\Datas\Map\DataStruct_Map">
       <UniqueIdentifier>{1e9392f0-97f4-4afb-8c29-c6afefc0eb48}</UniqueIdentifier>
     </Filter>
@@ -391,14 +388,38 @@
     <Filter Include="00. System\14. Effect">
       <UniqueIdentifier>{c23244ad-e8e9-4cf2-a239-d294e4326c9d}</UniqueIdentifier>
     </Filter>
-    <Filter Include="99. Defines\Anim_Event_Defines">
-      <UniqueIdentifier>{8be12a9c-a542-4d68-baf2-2c1e05623b97}</UniqueIdentifier>
+    <Filter Include="00. System\05. Component\Stat">
+      <UniqueIdentifier>{8cd3b9ae-e121-4864-875b-ff81bd506e47}</UniqueIdentifier>
     </Filter>
-    <Filter Include="99. Defines\Anim_Event_Defines\AttackOverlap">
-      <UniqueIdentifier>{0b13688a-4abe-4c27-9488-3ba9b15c53f3}</UniqueIdentifier>
+    <Filter Include="00. System\05. Component\Skill">
+      <UniqueIdentifier>{d682b013-a237-479c-b114-c77885becaf2}</UniqueIdentifier>
     </Filter>
-    <Filter Include="99. Defines\Anim_Event_Defines\VFX">
-      <UniqueIdentifier>{518140e5-2def-408b-8bc4-eddea573b43c}</UniqueIdentifier>
+    <Filter Include="00. System\05. Component\Skill\SkillBase">
+      <UniqueIdentifier>{3efa9987-ce41-4c1f-bc22-da6da73c23a8}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="01. Utility\08. GameData\00. Struct">
+      <UniqueIdentifier>{bb8f41bb-a3ed-4948-8171-6eb23fc3d412}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="01. Utility\11. DataRepository\Datas\MonsterState">
+      <UniqueIdentifier>{3b62d917-8222-4e40-a889-eaa00ed6c2c2}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="01. Utility\11. DataRepository\Datas\MonsterState\DataStruct_MonsterState">
+      <UniqueIdentifier>{10791b6a-e65a-4592-974c-f0af2740d161}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="01. Utility\11. DataRepository\Datas\MonsterState\DataDocument_MonsterState">
+      <UniqueIdentifier>{ad7a96f7-3443-49e6-adee-bcafcd800dfd}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="01. Utility\11. DataRepository\Datas\MonsterState\DataModel">
+      <UniqueIdentifier>{8653909c-26cd-48fd-b091-a9d17e600ea7}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="01. Utility\11. DataRepository\Datas\AnimationEvent">
+      <UniqueIdentifier>{245fc36c-2432-4f62-883c-f0e85fb8fd90}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="01. Utility\11. DataRepository\Datas\AnimationEvent\DataModel">
+      <UniqueIdentifier>{220df8df-8a4b-4866-92a3-c09af97a203d}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="01. Utility\11. DataRepository\Datas\AttackOverlap\DataModel">
+      <UniqueIdentifier>{bfe3ade1-8530-4886-9b5d-2cf2f22983d4}</UniqueIdentifier>
     </Filter>
     <Filter Include="00. System\15. Judgement">
       <UniqueIdentifier>{3f980915-24ba-4ab0-b30b-a79f025183ae}</UniqueIdentifier>
@@ -745,9 +766,6 @@
     <ClCompile Include="..\Private\ComputeShader.cpp">
       <Filter>00. System\05. Component\Monobehaviour\ComputeShader</Filter>
     </ClCompile>
-    <ClCompile Include="..\Private\UIAction_Registry.cpp">
-      <Filter>00. System\04. GameObject\UIObject\Registry</Filter>
-    </ClCompile>
     <ClCompile Include="..\Private\UIObject.cpp">
       <Filter>00. System\04. GameObject\UIObject</Filter>
     </ClCompile>
@@ -820,8 +838,26 @@
     <ClCompile Include="..\Private\Effect_Manager.cpp">
       <Filter>00. System\14. Effect</Filter>
     </ClCompile>
+    <ClCompile Include="..\Private\MyStat.cpp">
+      <Filter>00. System\05. Component\Stat</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\SkillBase.cpp">
+      <Filter>00. System\05. Component\Skill\SkillBase</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\ActionSkill.cpp">
+      <Filter>00. System\05. Component\Skill</Filter>
+    </ClCompile>
     <ClCompile Include="..\private\TimeScale_Manager.cpp">
       <Filter>00. System\01. Timer\Manager</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\GameData_Struct.cpp">
+      <Filter>01. Utility\08. GameData\00. Struct</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\DataStruct_MonsterState.cpp">
+      <Filter>01. Utility\11. DataRepository\Datas\MonsterState\DataStruct_MonsterState</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\DataDocument_MonsterState.cpp">
+      <Filter>01. Utility\11. DataRepository\Datas\MonsterState\DataDocument_MonsterState</Filter>
     </ClCompile>
     <ClCompile Include="..\Private\JudgementSystem.cpp">
       <Filter>00. System\15. Judgement</Filter>
@@ -1192,9 +1228,6 @@
     <ClInclude Include="..\Public\ComputeShader.h">
       <Filter>00. System\05. Component\Monobehaviour\ComputeShader</Filter>
     </ClInclude>
-    <ClInclude Include="..\Public\UIAction_Registry.h">
-      <Filter>00. System\04. GameObject\UIObject\Registry</Filter>
-    </ClInclude>
     <ClInclude Include="..\Public\UIObject.h">
       <Filter>00. System\04. GameObject\UIObject</Filter>
     </ClInclude>
@@ -1267,26 +1300,45 @@
     <ClInclude Include="..\Public\Effect_Manager.h">
       <Filter>00. System\14. Effect</Filter>
     </ClInclude>
-    <ClInclude Include="..\Public\Anim_Event_Script_Base.h">
-      <Filter>99. Defines\Anim_Event_Defines</Filter>
+    <ClInclude Include="..\Public\MyStat.h">
+      <Filter>00. System\05. Component\Stat</Filter>
     </ClInclude>
-    <ClInclude Include="..\Public\Anim_Event_Base.h">
-      <Filter>99. Defines\Anim_Event_Defines</Filter>
+    <ClInclude Include="..\Public\SkillBase.h">
+      <Filter>00. System\05. Component\Skill\SkillBase</Filter>
     </ClInclude>
-    <ClInclude Include="..\Public\Anim_Event_Info.h">
-      <Filter>99. Defines\Anim_Event_Defines</Filter>
-    </ClInclude>
-    <ClInclude Include="..\Public\Anim_Event_AttackOverlap.h">
-      <Filter>99. Defines\Anim_Event_Defines\AttackOverlap</Filter>
-    </ClInclude>
-    <ClInclude Include="..\Public\Anim_Event_Hitbox.h">
-      <Filter>99. Defines\Anim_Event_Defines\AttackOverlap</Filter>
-    </ClInclude>
-    <ClInclude Include="..\Public\AttackOverlap_Desc.h">
-      <Filter>99. Defines\Anim_Event_Defines\AttackOverlap</Filter>
+    <ClInclude Include="..\Public\ActionSkill.h">
+      <Filter>00. System\05. Component\Skill</Filter>
     </ClInclude>
     <ClInclude Include="..\public\TimeScale_Manager.h">
       <Filter>00. System\01. Timer\Manager</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\DataStruct_MonsterState.h">
+      <Filter>01. Utility\11. DataRepository\Datas\MonsterState\DataStruct_MonsterState</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\DataDocument_MonsterState.h">
+      <Filter>01. Utility\11. DataRepository\Datas\MonsterState\DataDocument_MonsterState</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\DTO_MonsterState.h">
+      <Filter>01. Utility\11. DataRepository\Datas\MonsterState\DataModel</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\GameData_Struct.h" />
+    <ClInclude Include="..\Public\Anim_Event_Script_Base.h">
+      <Filter>01. Utility\11. DataRepository\Datas\AnimationEvent\DataModel</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\Anim_Event_Base.h">
+      <Filter>01. Utility\11. DataRepository\Datas\AnimationEvent\DataModel</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\Anim_Event_Info.h">
+      <Filter>01. Utility\11. DataRepository\Datas\AnimationEvent\DataModel</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\Anim_Event_AttackOverlap.h">
+      <Filter>01. Utility\11. DataRepository\Datas\AttackOverlap\DataModel</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\Anim_Event_Hitbox.h">
+      <Filter>01. Utility\11. DataRepository\Datas\AttackOverlap\DataModel</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\AttackOverlap_Desc.h">
+      <Filter>01. Utility\11. DataRepository\Datas\AttackOverlap\DataModel</Filter>
     </ClInclude>
     <ClInclude Include="..\Public\JudgementSystem.h">
       <Filter>00. System\15. Judgement</Filter>

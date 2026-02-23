@@ -74,6 +74,7 @@ private:
 	CCameraMan*					m_pCamera{nullptr};
 	CCamera*					m_pCameraCom{nullptr};
 
+	_uint						m_iObjectCount{};
 
 	string						m_strBuffer{};
 	_int						m_iBuffer{};
@@ -97,6 +98,7 @@ private:
 
 
 	std::array<ID3D11ShaderResourceView*, ENUM_TO_SZET(EMaterialTextureType::MAX_COUNT)>	m_arrayMtl_SRVs{};
+	std::array<wstring, ENUM_TO_SZET(EMaterialTextureType::MAX_COUNT)>						m_arrayMtl_Textures{};
 	_uint						m_iSelectMtSlot{};
 
 	ImVec2						m_vTextureInfoTableSize{ ImVec2(0,50) };

@@ -113,7 +113,10 @@ void CUI_Manager::Request_SortUI()
 
 void CUI_Manager::Clear_Cache(uint32_t iLevelIndex)
 {
-
+	m_vecCanvasCache[iLevelIndex].clear();
+	m_vecGenericUICache[iLevelIndex].clear();
+	m_mapCanvasCache[iLevelIndex].clear();
+	m_mapUICache[iLevelIndex].clear();
 }
 
 void CUI_Manager::Add_TriggerUI(std::vector<CUITrigger*>&& vecUIs)
@@ -123,7 +126,7 @@ void CUI_Manager::Add_TriggerUI(std::vector<CUITrigger*>&& vecUIs)
 		std::make_move_iterator(vecUIs.begin()),
 		std::make_move_iterator(vecUIs.end())
 	);
-	vecUIs.clear(); // 소스 비움(선택)
+	vecUIs.clear();
 }
 
 HRESULT CUI_Manager::Bind_Trigger(_uint iLevelID)
