@@ -13,17 +13,13 @@ public:
 	{
 		_string strName;
 	}CANVAS_DESC;
-
-
 private:
 	CCanvas(ID3D11Device* pDevice, ID3D11DeviceContext* pDeviceContext);
 	CCanvas(const CCanvas& rhs);
 	virtual ~CCanvas() = default;
-
 public:
 	HRESULT Initialize_Prototype() override;
 	HRESULT Initialize(void* pArg) override;
-
 public:
 	virtual HRESULT Awake(const _uint iCurrentLevelID) override;
 	void Transmit_for_UI();
@@ -58,12 +54,12 @@ private:
 
 private:
 	vector<CGenericUI*> m_vecUI;
-
 	CGenericUI* m_pCaptureUI = { nullptr };
 	CGenericUI* m_pHoveringUI = { nullptr };
 	array<CGenericUI*, 2> m_ArrReleasedUI = { nullptr };
 	_bool m_isPreUIPressing = { FALSE };
 	_bool m_isPreHovering = { FALSE };
+
 
 public:
 	static CCanvas* Create(ID3D11Device* pDevice, ID3D11DeviceContext* pDeviceContext);

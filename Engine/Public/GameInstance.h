@@ -221,7 +221,7 @@ public:
 	HRESULT Save_File_Json(_uint iLevelID, DTO::ECategory eCategory, const path& filePath) const;
 	CDataDocumentBase* Ensure_Document(_uint iLevelID, DTO::ECategory eCategory, const path& filePath);
 	const CDataDocumentBase* Get_Document(_uint iLevelID, DTO::ECategory eCategory, const string& strFileKey);
-	 
+
 	template<typename T>
 	HRESULT Regist_Document(_uint iLevelID, DTO::ECategory eCategory);
 #pragma endregion
@@ -357,18 +357,15 @@ public:
 
 #pragma endregion
 // Todo - 쓰레기통 정리
-#pragma region GAMEDATA
-
-#pragma region Texture Splating Info Data
-
+#pragma region GAMEDATA_MANAGER
 	HRESULT		GameDataManager_Load_TextureSplatingInfoData();
-
 	/* 이름으로 Binding 하는 함수 */
 	HRESULT		GameDataManager_Bind_SplatingTextureInfo(CShader* pBindShader, const wstring& wstrTextureSplatingInfoDataName);
 
-
-#pragma endregion
-
+	const DTO::TAttackPreset_Data* Find_AttackPrseet(_uint iPresetKey) const;
+	const DTO::TAttackPreset_Data* Find_AttackPresetByTag(const string& strTag) const;
+	HRESULT Upsert_AttackPresetData(const DTO::TAttackPreset_Data& inData);
+	const unordered_map<_uint, DTO::TAttackPreset_Data>& Get_AttackPresetsData_ForDebug() const;
 #pragma endregion
 private:
 	class CObjectPool_Manager* m_pObjectPool_Manager = { nullptr };

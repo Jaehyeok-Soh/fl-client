@@ -13,7 +13,6 @@ namespace Client
 {
 	static const unsigned int g_iWinSizeX = 1280;
 	static const unsigned int g_iWinSizeY = 720;
-
 	enum class ELevelType : unsigned int
 	{
 		STATIC = 0,
@@ -23,79 +22,6 @@ namespace Client
 	};
 	inline constexpr size_t g_iLevelType_Count = static_cast<size_t>(ELevelType::END);
 
-	enum class ECollideLayer : unsigned int
-	{
-		PLAYER_BODY,
-		PLAYER_WEAPON,
-		PLAYER_SKILL,
-		PLAYER_LEFTHAND,
-		PLAYER_RIGHTHAND,
-		PLAYER_LEFTFOOT,
-		PLAYER_RIGHTFOOT,
-		PLAYER_LEFTSHOULDER,
-		ENEMY_BODY,
-		ENEMY_WEAPON,
-		ENEMY_SKILL,
-		ENEMY_LEFTHAND,
-		ENEMY_RIGHTHAND,
-		ENEMY_LEFTFOOT,
-		ENEMY_RIGHTFOOT,
-		ENEMY_LEFTSHOULDER,
-		ENEMY_RIGHTSHOULDER,
-		TRIGGER,
-		COLMESH,
-		END
-	};
-
-	inline bool Is_PlayerAttackLayer(ECollideLayer eLayer)
-	{
-		switch (eLayer)
-		{
-		case Client::ECollideLayer::PLAYER_WEAPON:
-		case Client::ECollideLayer::PLAYER_LEFTHAND:
-		case Client::ECollideLayer::PLAYER_RIGHTHAND:
-		case Client::ECollideLayer::PLAYER_LEFTFOOT:
-		case Client::ECollideLayer::PLAYER_RIGHTFOOT:
-		case Client::ECollideLayer::PLAYER_LEFTSHOULDER:
-			return true;
-		default:
-			return false;
-		}
-	}
-	inline bool Is_PlayerSkillLayer(ECollideLayer eLayer)
-	{
-		if (eLayer == Client::ECollideLayer::PLAYER_SKILL)
-			return true;
-		
-		return false;
-	}
-
-	inline bool Is_EnemyAttackLayer(ECollideLayer eLayer)
-	{
-		switch (eLayer)
-		{
-		case Client::ECollideLayer::ENEMY_WEAPON:
-		case Client::ECollideLayer::ENEMY_LEFTHAND:
-		case Client::ECollideLayer::ENEMY_RIGHTHAND:
-		case Client::ECollideLayer::ENEMY_LEFTFOOT:
-		case Client::ECollideLayer::ENEMY_RIGHTFOOT:
-		case Client::ECollideLayer::ENEMY_LEFTSHOULDER:
-		case Client::ECollideLayer::ENEMY_RIGHTSHOULDER:
-			return true;
-		default:
-			return false;
-		}
-	}
-	inline bool Is_EnemySkillLayer(ECollideLayer eLayer)
-	{
-		if (eLayer == Client::ECollideLayer::ENEMY_SKILL)
-			return true;
-
-		return false;
-	}
-
-	inline constexpr unsigned int g_iCollideLayer_Count = static_cast<unsigned int>(ECollideLayer::END);
-	
 	//===================
 	// HitType
 	//===================
@@ -382,6 +308,12 @@ namespace Client
 		FLIP_XY,
 		END
 	};
+	enum class EUIPrefabType
+	{
+		MONSTER_NAMEPLATE,
+		END
+	};
+
 #pragma endregion
 
 #pragma region SKILL

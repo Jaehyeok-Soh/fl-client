@@ -29,8 +29,23 @@ public:
 protected:
 	HRESULT Ready_Components(PROGRESS_BAR_DESC* pDesc);
 	HRESULT Bind_ShaderResources();
+
+	void Trigger_Ratio();
+	void Tick_Ratio(const _float fTimeDelta);
+
 protected:
 	DTO::EUISubClassType m_eSubClassType = {};
+
+	// Lerp Movement Values
+	_float	m_fCurRatio		= {};
+	_float	m_fPreRatio		= {};
+	_float	m_fStartRatio	= {};
+	_float	m_fTargetRatio	= {};
+	_float	m_fDuration		= { 0.2f };
+	_float	m_fTimeAcc		= {};
+	_bool	m_isChangeRatio = { false };
+	_float m_fDelayTimeAcc	= {};
+
 public:
 	virtual void Free()override;
 };

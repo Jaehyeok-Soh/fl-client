@@ -140,23 +140,23 @@ _wstring CMonster_Base::Get_AnimationName(_uint iAniIndex)
 	return L"";
 }
 
-void CMonster_Base::OnCollision(_uint iMyColliderLayer, CGameObject* pOther)
+void CMonster_Base::OnCollision(_uint iMyColliderLayer, _uint iOtherLayer, CGameObject* pOther)
 {
 }
 
-void CMonster_Base::OnCollision_Enter(_uint iMyColliderLayer, CGameObject* pOther)
+void CMonster_Base::OnCollision_Enter(_uint iMyColliderLayer, _uint iOtherLayer, CGameObject* pOther, const COL_HIT_INFO &tHitInfo)
 {
 }
 
-void CMonster_Base::OnCollision_Exit(_uint iMyColliderLayer, CGameObject* pOther)
+void CMonster_Base::OnCollision_Exit(_uint iMyColliderLayer, _uint iOtherLayer, CGameObject* pOther)
 {
 }
 
-void CMonster_Base::OnTrigger_Enter(_uint iMyColliderLayer, CGameObject* pOther)
+void CMonster_Base::OnTrigger_Enter(_uint iMyColliderLayer, _uint iOtherLayer, CGameObject* pOther)
 {
 }
 
-void CMonster_Base::OnTrigger_Exit(_uint iMyColliderLayer, CGameObject* pOther)
+void CMonster_Base::OnTrigger_Exit(_uint iMyColliderLayer, _uint iOtherLayer, CGameObject* pOther)
 {
 }
 

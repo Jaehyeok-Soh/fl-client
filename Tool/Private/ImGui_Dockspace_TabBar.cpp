@@ -45,6 +45,11 @@ HRESULT CImGui_Dockspace_TabBar::Render(CToolObject* pGo)
 			eNowSelected = ELevelType::UI;
 			ImGui::EndTabItem();
 		}
+		if (ImGui::BeginTabItem("AttackPreset##TabBar"))
+		{
+			eNowSelected = ELevelType::ATTACK_PRESET;
+			ImGui::EndTabItem();
+		}
 		if (ImGui::BeginTabItem("AssetConvert##TabBar"))
 		{
 			eNowSelected = ELevelType::ASSET_CONVERT;

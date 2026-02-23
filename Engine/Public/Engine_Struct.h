@@ -36,6 +36,24 @@ namespace Engine
 		string		  strParam{ "" };
 	};
 
+	typedef struct tagCollisionHitInformation
+	{
+		bool bHasHitPoint{ false };
+		SimpleMath::Vector3 vPosition{ SimpleMath::Vector3::Zero };
+		SimpleMath::Vector3 vRawNormal{ SimpleMath::Vector3::Zero };
+		float fDepth{ 0.f };
+	}COL_HIT_INFO;
+
+	typedef struct tagCollidedDesc
+	{
+		unsigned int iCollisionType{ COLLISIONEVENT::Enum::END };
+		unsigned int iRequesterLayer{ PHYSICSFILTERGROUP::Enum::END };
+		unsigned int iOtherLayer{ PHYSICSFILTERGROUP::Enum::END };
+		class CGameObject* pRequester{ nullptr };
+		class CGameObject* pOther{ nullptr };
+		COL_HIT_INFO tHitInfo{};
+	}COLLIDED_DESC;
+
 	typedef struct tagTimeline
 	{
 		float fDuration{ 0.f };
@@ -496,17 +514,17 @@ namespace Engine
 		float  Padding0 = { 0.f };
 	}CS_MU_ANIMB;
 
-	// output
-	//typedef struct tagBone_Output
-	//{
-	//	float3              vScale;
-	//	uint                iCurKeyFrameIndex;
+#pragma endregion
 
-	//	float4              vQuat;
+#pragma region ANIM_MIX_CS
+	// 가변 데이터
+	typedef struct tagAnimMix_Immu_Ratio
+	{
+		float fMixRatio = 0.f;
 
-	//	float3              vTranslation;
-	//	uint                iAnimIndex
-	//}CS_OUT_ANIME;
+		SimpleMath::Vector3 Padding0 = {};
+	}CS_IMMU_ANIMMIX;
+
 #pragma endregion
 
 #pragma endregion

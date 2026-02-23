@@ -35,6 +35,9 @@ public:
 
 	_bool CheckAlreadyHit(CGameObject* hitObject);
 
+private:
+	_bool Build_HitInfo_FromOverlap(const PxGeometry& hitboxGeometry, const PxTransform& hitBoxPose, const PxOverlapHit& overlap, OUT COL_HIT_INFO& outInfo);
+
 #ifdef _DEBUG
 public:
 	void Render();

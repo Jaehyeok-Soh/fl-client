@@ -51,7 +51,6 @@ private:
 	void Ready_OverlapInfo();
 
 	void PoolClear();
-
 private:
 	DTO::ATTACKOVERLAP_DESC m_tDesc = {};
 

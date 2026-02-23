@@ -87,29 +87,29 @@ HRESULT CMonster_Dummy::Render()
 	return S_OK;
 }
 
-void CMonster_Dummy::OnCollision(_uint iMyColliderLayer, CGameObject* pOther)
+void CMonster_Dummy::OnCollision(_uint iMyColliderLayer, _uint iOtherLayer, CGameObject* pOther)
 {
-	Super::OnCollision(iMyColliderLayer, pOther);
+	Super::OnCollision(iMyColliderLayer, iOtherLayer, pOther);
 }
 
-void CMonster_Dummy::OnCollision_Enter(_uint iMyColliderLayer, CGameObject* pOther)
+void CMonster_Dummy::OnCollision_Enter(_uint iMyColliderLayer, _uint iOtherLayer, CGameObject* pOther, const COL_HIT_INFO& tHitInfo)
 {
-	Super::OnCollision_Enter(iMyColliderLayer, pOther);
+	Super::OnCollision_Enter(iMyColliderLayer, iOtherLayer, pOther, tHitInfo);
 }
 
-void CMonster_Dummy::OnCollision_Exit(_uint iMyColliderLayer, CGameObject* pOther)
+void CMonster_Dummy::OnCollision_Exit(_uint iMyColliderLayer, _uint iOtherLayer, CGameObject* pOther)
 {
-	Super::OnCollision_Exit(iMyColliderLayer, pOther);
+	Super::OnCollision_Exit(iMyColliderLayer, iOtherLayer, pOther);
 }
 
-void CMonster_Dummy::OnTrigger_Enter(_uint iMyColliderLayer, CGameObject* pOther)
+void CMonster_Dummy::OnTrigger_Enter(_uint iMyColliderLayer, _uint iOtherLayer, CGameObject* pOther)
 {
-	Super::OnTrigger_Enter(iMyColliderLayer, pOther);
+	Super::OnTrigger_Enter(iMyColliderLayer, iOtherLayer, pOther);
 }
 
-void CMonster_Dummy::OnTrigger_Exit(_uint iMyColliderLayer, CGameObject* pOther)
+void CMonster_Dummy::OnTrigger_Exit(_uint iMyColliderLayer, _uint iOtherLayer, CGameObject* pOther)
 {
-	Super::OnTrigger_Exit(iMyColliderLayer, pOther);
+	Super::OnTrigger_Exit(iMyColliderLayer, iOtherLayer, pOther);
 }
 
 HRESULT CMonster_Dummy::Ready_BaseStates()

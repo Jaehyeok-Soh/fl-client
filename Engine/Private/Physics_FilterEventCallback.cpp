@@ -15,6 +15,25 @@ void CPhysics_FilterEventCallback::onContact(const PxContactPairHeader& pairHead
 	{
 		if (pairs[i].events & PxPairFlag::eNOTIFY_TOUCH_FOUND)
 		{
+			// HitPoint
+			PxContactPairPoint points[4];
+			const PxU32 N = pairs[i].extractContacts(points, PX_ARRAY_SIZE(points));
+
+			if (N > 0)
+			{
+				info.bHasHitPoint = true;
+				// 추후에 BestPoint를 검출하려면 연산이 필요함
+				::memcpy(&info.vHitPoint.x, &points[0].position.x, sizeof(Vec3));
+				::memcpy(&info.vRawNormal.x, &points[0].normal.x, sizeof(Vec3));
+				const _float fSep = points[0].separation;
+				info.fDepth = (std::max)(0.0f, -fSep);
+			}
+			else
+			{
+				info.bHasHitPoint = false;
+				info.fDepth = 0.0f;
+			}
+
 			// On collision enter
 			m_arrCollisionEvent[COLLISIONEVENT::Enum::ON_COLLISION_ENTER](info);
 		}
@@ -93,40 +112,36 @@ CPhysics_FilterEventCallback::GAMEOBJECTINFO CPhysics_FilterEventCallback::Get_G
 void CPhysics_FilterEventCallback::Ready_EventCallChain()
 {
 	m_arrCollisionEvent[COLLISIONEVENT::Enum::ON_COLLISION_ENTER] = [=](GAMEOBJECTINFO& info) {
-		info.leftObject->OnCollision_Enter(info.rightColliderDesc->eFilterLayer, info.rightObject);
-		info.rightObject->OnCollision_Enter(info.leftColliderDesc->eFilterLayer, info.leftObject);
+		info.leftObject->OnCollision_Enter(info.leftColliderDesc->eFilterLayer, info.rightColliderDesc->eFilterLayer, info.rightObject,
+			COL_HIT_INFO{ info.bHasHitPoint, info.vHitPoint, info.vRawNormal, info.fDepth });
 #ifdef _DEBUG
-		Debug_Log(COLLISIONEVENT::Enum::ON_COLLISION_ENTER, info);
+		Debug_Log(COLLISIONEVENT::Enum::ON_COLLISION_ENTER, info); 
 #endif // _DEBUG
 		};
 
 	m_arrCollisionEvent[COLLISIONEVENT::Enum::ON_COLLISION_STAY] = [=](GAMEOBJECTINFO& info) {
-		info.leftObject->OnCollision(info.rightColliderDesc->eFilterLayer, info.rightObject);
-		info.rightObject->OnCollision(info.leftColliderDesc->eFilterLayer, info.leftObject);
+		info.leftObject->OnCollision(info.leftColliderDesc->eFilterLayer, info.rightColliderDesc->eFilterLayer, info.rightObject);
 #ifdef _DEBUG
 		Debug_Log(COLLISIONEVENT::Enum::ON_COLLISION_STAY, info);
 #endif // _DEBUG
 		};
 
 	m_arrCollisionEvent[COLLISIONEVENT::Enum::ON_COLLISION_EXIT] = [=](GAMEOBJECTINFO& info) {
-		info.leftObject->OnCollision_Exit(info.rightColliderDesc->eFilterLayer, info.rightObject);
-		info.rightObject->OnCollision_Exit(info.leftColliderDesc->eFilterLayer, info.leftObject);
+		info.leftObject->OnCollision_Exit(info.leftColliderDesc->eFilterLayer, info.rightColliderDesc->eFilterLayer, info.rightObject);
 #ifdef _DEBUG
 		Debug_Log(COLLISIONEVENT::Enum::ON_COLLISION_EXIT, info);
 #endif // _DEBUG
 		};
 
 	m_arrCollisionEvent[COLLISIONEVENT::Enum::ON_TRIGGER_ENTER] = [=](GAMEOBJECTINFO& info) {
-		info.leftObject->OnTrigger_Enter(info.rightColliderDesc->eFilterLayer, info.rightObject);
-		info.rightObject->OnTrigger_Enter(info.leftColliderDesc->eFilterLayer, info.leftObject);
+		info.leftObject->OnTrigger_Enter(info.leftColliderDesc->eFilterLayer, info.rightColliderDesc->eFilterLayer, info.rightObject);
 #ifdef _DEBUG
 		Debug_Log(COLLISIONEVENT::Enum::ON_TRIGGER_ENTER, info);
 #endif // _DEBUG
 		};
 
 	m_arrCollisionEvent[COLLISIONEVENT::Enum::ON_TRIGGER_EXIT] = [=](GAMEOBJECTINFO& info) {
-		info.leftObject->OnTrigger_Exit(info.rightColliderDesc->eFilterLayer, info.rightObject);
-		info.rightObject->OnTrigger_Exit(info.leftColliderDesc->eFilterLayer, info.leftObject);
+		info.leftObject->OnTrigger_Exit(info.leftColliderDesc->eFilterLayer, info.rightColliderDesc->eFilterLayer, info.rightObject);
 #ifdef _DEBUG
 		Debug_Log(COLLISIONEVENT::Enum::ON_TRIGGER_EXIT, info);
 #endif // _DEBUG

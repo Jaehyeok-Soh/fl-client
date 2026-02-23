@@ -31,6 +31,10 @@ HRESULT CUI_Maker::Initialize_Prototype()
 		m_szArrClientLevelType[i] = m_vecClientLevelType[i].c_str();
 	}
 
+	m_vecPrefabtypes.reserve(ENUM_TO_UINT(EUIPrefabType::END));
+	for (uint32_t i = 0; i < ENUM_TO_UINT(EUIPrefabType::END); ++i)
+		m_vecPrefabtypes.push_back(UIPrefabTypeToString(static_cast<EUIPrefabType>(i)));
+
 	return S_OK;
 }
 
@@ -578,6 +582,31 @@ void CUI_Maker::Input_Canvas_TransformInfo()
 
 		*pCanvas->Get_Width_Ptr() = Viewports.Width;
 		*pCanvas->Get_Height_Ptr() = Viewports.Height;
+
+		// Prefab Types
+		_int curFontShader = ENUM_TO_UINT(pCanvas->Get_Prefabtype());
+		curFontShader = (curFontShader < 0) ? 0 : (curFontShader >= ENUM_TO_UINT(m_vecPrefabtypes.size()) ? ENUM_TO_UINT(m_vecPrefabtypes.size() - 1) : curFontShader);
+		const _char* fontShaderPreview = m_vecPrefabtypes.empty() ? "" : m_vecPrefabtypes[curFontShader].c_str();
+		_bool changed = false;
+
+		if (ImGui::BeginCombo("Prefab Type", fontShaderPreview))
+		{
+			for (size_t i = 0; i < m_vecPrefabtypes.size(); ++i)
+			{
+				const _bool isSelected = (curFontShader == ENUM_TO_UINT(i));
+
+				if (ImGui::Selectable(m_vecPrefabtypes[i].c_str(), isSelected))
+				{
+					curFontShader = ENUM_TO_UINT(i);
+					pCanvas->Set_Prefabtype(static_cast<EUIPrefabType>(i));
+					changed = true;
+				}
+
+				if (isSelected)
+					ImGui::SetItemDefaultFocus();
+			}
+			ImGui::EndCombo();
+		}
 	}
 }
 

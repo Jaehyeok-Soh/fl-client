@@ -8,6 +8,7 @@
 #include "Level_Camera.h"
 #include "Level_UI.h"
 #include "Level_Effect.h"
+#include "Level_AttackPreset.h"
 #include "GameInstance.h"
 #include "Loader.h"
 
@@ -67,6 +68,9 @@ void CLevel_Loading::Update(const _float fTimeDelta)
 			break;
 		case Tool::ELevelType::UI:
 			pNewLevel = CLevel_UI::Create(m_pDevice, m_pDeviceContext);
+			break;
+		case Tool::ELevelType::ATTACK_PRESET:
+			pNewLevel = CLevel_AttackPreset::Create(m_pDevice, m_pDeviceContext);
 			break;
 		case Tool::ELevelType::ASSET_CONVERT:
 			pNewLevel = CLevel_Assimp::Create(m_pDevice, m_pDeviceContext);

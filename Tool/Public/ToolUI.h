@@ -68,6 +68,7 @@ protected:
 	void Sync_TriggerData();
 	void Sync_ButtonTriggerData();
 	void Sync_DImageData();
+	void Sync_WorldUIData();
 #pragma region GETTER/SETTER
 public:
 	const _string& Get_Name()const { return m_strName; }
@@ -184,11 +185,13 @@ public:
 	DTO::EUITextSubClassType Get_UITextSubClassType() const { return m_eTextSubClassType; }
 	DTO::EUIDImageSubClassType Get_UIDImageSubClassType()const { return m_eDImageSubClassType; }
 	DTO::EUITriggerSubClassType Get_UITriggerSubClassType()const { return m_eTriggerSubClass; }
+	DTO::EUIWorldUISubClassType Get_WorldUISubClassType()const { return m_eWorldUISubClassType; }
 	void Set_UIClassType(DTO::EUIClassType eType) { m_eClassType = eType; }
 	void Set_UISubClassType(DTO::EUISubClassType eType) { m_eSubClassType = eType; }
 	void Set_UITextSubClassType(DTO::EUITextSubClassType eType) { m_eTextSubClassType = eType; }
 	void Set_UIDImageSubClassType(DTO::EUIDImageSubClassType eType) { m_eDImageSubClassType = eType; }
 	void Set_UITriggerSubClassType(DTO::EUITriggerSubClassType eType) { m_eTriggerSubClass = eType; }
+	void Set_WorldUISubClassType(DTO::EUIWorldUISubClassType eType) { m_eWorldUISubClassType = eType; }
 
 #pragma endregion
 
@@ -252,6 +255,11 @@ protected:
 	// Client Bind Values Dynamic Image Data
 	DTO::TUI_DImageData m_tDImageData = {};
 	DTO::EUIDImageSubClassType m_eDImageSubClassType = {};
+
+	// Client Bind Values World UI Data
+	DTO::TUI_WorldUIData m_tWorldUIData = {};
+	DTO::EUIWorldUISubClassType m_eWorldUISubClassType = {};
+
 
 	// Local Values
 	Vec3 m_vRenderPos		= {};

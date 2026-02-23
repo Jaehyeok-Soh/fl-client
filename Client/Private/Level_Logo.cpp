@@ -58,6 +58,9 @@ HRESULT CLevel_Logo::Initialize()
 	if (FAILED(Build_Prototype()))
 		return E_FAIL;
 
+	if (FAILED(Ready_Monster()))
+		return E_FAIL;
+
 	if (FAILED(Build_Files()))
 		return E_FAIL;
 
@@ -76,8 +79,6 @@ HRESULT CLevel_Logo::Initialize()
 	if (FAILED(Ready_Lights()))
 		return E_FAIL;
 
-	if (FAILED(Ready_Monster()))
-		return E_FAIL;
 
 	return S_OK;
 }
@@ -157,6 +158,8 @@ void CLevel_Logo::Update(const _float fTimeDelta)
 		if (m_pGameInstance->KeyButton_Down(DIK_7))
 		{
 			m_pGameInstance->Deactivate_SloMo();
+
+			
 		}
 	}
 }

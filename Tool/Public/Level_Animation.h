@@ -33,6 +33,7 @@ public:
 			MODELINFO,
 			PARTSINFO,
 			STATEEDITOR,
+			MIXER,
 			END
 		};
 	};
