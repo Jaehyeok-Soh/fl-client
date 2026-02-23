@@ -150,7 +150,7 @@ HRESULT CMonster_Dummy::Ready_Components()
 	desc.fMeleeRange = 2.f;
 	desc.fAttackRange = 4.f;
 	desc.fCloseRange = 1.f;
-	desc.fDetectionRange = 10.f;
+	desc.fDetectionRange = 15.f;
 	desc.fSpeed = 1.f;
 	//desc.iSkillCount;
 	//desc.vecSkillRange;

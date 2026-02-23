@@ -38,6 +38,7 @@ public:
 
 public:
 	virtual void Change_MonsterState(_int eKey);	// change 랩핑 함수 : 필요시 오버라이드
+	_bool IsCancellation() { return m_pDesc->bCancellation; }
 
 protected:
 	STATE_START_DESC		m_tNextStateDesc = {};
