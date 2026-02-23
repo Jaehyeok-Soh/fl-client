@@ -60,7 +60,7 @@ _bool CBone::Get_IsChildBone(const vector<CBone*>& Bones, _uint iIndex)
         if (m_iParentIndex < 0)
             return false;
 
-        Bones[m_iParentIndex]->Get_IsChildBone(Bones, iIndex);
+        return Bones[m_iParentIndex]->Get_IsChildBone(Bones, iIndex);
     }
 }
 
