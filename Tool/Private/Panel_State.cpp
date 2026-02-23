@@ -75,6 +75,13 @@ void CPanel_State::StateEditor()
 
     ImGui::Separator();
 
+    ImGui::Separator();
+
+    // 2. 글로벌 트랜지션
+    DrawGlobalStateTransition();
+
+    ImGui::Separator();
+
     // 좌우 패널 분할 (좌: State 리스트, 우: 상세 정보)
     ImGui::Columns(2, "SplitColumns", true);
     ImGui::SetColumnWidth(0, 250.0f); // 좌측 패널 너비 고정
@@ -373,6 +380,32 @@ void CPanel_State::DrawStateTransition(DTO::STATE_TRANSITION& transition, int in
     ImGui::PopID();
 }
 
+void CPanel_State::DrawGlobalStateTransition()
+{
+    // State Transitions
+    if (ImGui::CollapsingHeader("State Transitions"))
+    {
+        if (ImGui::Button("Add Transition"))
+            m_vecGlobalStateTransition.push_back(DTO::STATE_TRANSITION());
+        ImGui::SameLine();
+        if (ImGui::Button("Clear Global Transition"))
+            m_vecGlobalStateTransition.clear();
+
+        for (int i = 0; i < (int)m_vecGlobalStateTransition.size(); ++i)
+        {
+            DrawStateTransition(m_vecGlobalStateTransition[i], i);
+            ImGui::PushID(i);
+            if (ImGui::Button("Remove Transition"))
+            {
+                m_vecGlobalStateTransition.erase(m_vecGlobalStateTransition.begin() + i);
+                i--;
+            }
+            ImGui::PopID();
+            ImGui::Separator();
+        }
+    }
+}
+
 bool CPanel_State::InputTextString(const char* label, std::string& str)
 {
     char buffer[256];
@@ -397,6 +430,15 @@ void CPanel_State::SyncStateNamesToSet()
     {
         state.setStates.clear();
         state.setStates = m_MonsterData.setStates;
+    }
+}
+
+void CPanel_State::SyncGlobalStateTransition()
+{
+    for (auto& state : m_MonsterData.vecMonsterStateDesc)
+    {
+        state.vecGlobalStateTransition.clear();
+        state.vecGlobalStateTransition = m_vecGlobalStateTransition;
     }
 }
 

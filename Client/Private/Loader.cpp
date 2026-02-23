@@ -383,7 +383,7 @@ HRESULT CLoader::Loading_For_Logo()
 		desc.vecStageBoneIndices = { };
 
 		CModel::DATA_ANIMCHANNEL tAniChannelData = {};
-		tAniChannelData.iRootBoneIndex = 2;
+		tAniChannelData.iRootBoneIndex = 3;
 		desc.pAniChannelData = &tAniChannelData;
 
 		m_pGameInstance->Add_Prototype(ENUM_TO_UINT(ELevelType::STATIC), L"Prototype_Component_Model_Monster_Dog", CModel::Create(m_pDevice, m_pDeviceContext, &desc));
