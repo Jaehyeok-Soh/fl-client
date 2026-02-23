@@ -34,7 +34,13 @@ HRESULT CUIObject::Initialize(void* pArg)
 	m_isInteract = pDesc->isInitInteract;
 	m_isActive	= pDesc->isInitActivate;
 
-	m_eCategory = (pDesc->isAlpha ? RENDER_CATEGORY::BLENDUI : RENDER_CATEGORY::UI);
+	m_eCategory = RENDER_CATEGORY::BLEND;
+
+	//if(pDesc->isWorld)
+	//	m_eCategory = RENDER_CATEGORY::BLEND;
+	//else
+	//	m_eCategory = (pDesc->isAlpha ? RENDER_CATEGORY::BLENDUI : RENDER_CATEGORY::UI);
+
 	m_fX = pDesc->fX;
 	m_fY = pDesc->fY;
 	m_fZ = pDesc->fZ;
@@ -67,9 +73,6 @@ HRESULT CUIObject::Awake(const _uint iCurrentLevelID)
 {
 	if (FAILED(Super::Awake(iCurrentLevelID)))
 		return E_FAIL;
-
-	if (m_eCategory == RENDER_CATEGORY::BLENDUI)
-		Get_Component<CShader>()->Set_Pass(1);
 
 	return S_OK;
 }
@@ -181,6 +184,14 @@ void CUIObject::Set_Size(_float fWidth, _float fHeight)
 void CUIObject::Set_Size(const Vec2 &vSize)
 {
 	Set_Size(vSize.x, vSize.y);
+}
+
+void CUIObject::Move_Size(_float fWidth, _float fHeight)
+{
+	if (fWidth < 0.1f || fHeight < 0.1f)
+		return;
+	Get_Component<CTransform>()->Set_Scale(fWidth, fHeight, 1.f);
+	SetUp_Rect();
 }
 
 void CUIObject::Set_Position(const Vec3 &vPosition)

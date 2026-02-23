@@ -18,6 +18,8 @@ public:
 
 		uint32_t iEditorSizeX;
 		uint32_t iEditorSizeY;
+
+		uint32_t iPrefabType;
 	}TOOLCANVAS_DESC;
 
 private:
@@ -63,10 +65,15 @@ public:
 	Vec2 Get_LB() { return Vec2{ m_fX - m_fWidth * 0.5f , m_fY + m_fHeight * 0.5f }; }	// Left Bottom
 	Vec2 Get_CB() { return Vec2{ m_fX, m_fY + m_fHeight * 0.5f }; }						// Center Bottom
 	Vec2 Get_RB() { return Vec2{ m_fX + m_fWidth * 0.5f , m_fY + m_fHeight * 0.5f }; }	// Right Bottom
+
+	EUIPrefabType Get_Prefabtype() const { return m_ePrefabType; }
+	void Set_Prefabtype(EUIPrefabType e) { m_ePrefabType = e; }
+
 	virtual _bool Export_Data(DTO::ECategory eCategory, CDataDocumentBase* pDocument) override;
 	void Set_CaptureUI(CToolUI* pUI) { m_pCaptureUI = pUI; }
 	const DTO::TUI_CanvasData& Get_Data()const { return m_tCanvasData; }
 	DTO::TUI_CanvasData& Get_Data_Ref() { return m_tCanvasData; }
+
 
 private:
 	PrimitiveBatch<DirectX::VertexPositionColor>* m_pBatch = { nullptr };
@@ -79,6 +86,7 @@ private:
 
 	uint32_t m_iClientLevelIndex = {};
 	_string m_strTag;
+	EUIPrefabType m_ePrefabType = { EUIPrefabType::NOT_PREFAB };
 
 	CToolUI* m_pCaptureUI = {nullptr};
 	CToolUI* m_pHoveringUI = { nullptr };

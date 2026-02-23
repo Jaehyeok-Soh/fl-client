@@ -62,6 +62,11 @@ HRESULT CUI_Inspector::Initialize_Prototype()
 	m_VecFonstShaderTypes.reserve(ENUM_TO_UINT(EFontShaderType::END));
 	for (uint32_t i = 0; i < ENUM_TO_UINT(EFontShaderType::END); ++i)
 		m_VecFonstShaderTypes.push_back(DTO::FontShaderTypeToString(static_cast<EFontShaderType>(i)));
+
+	m_VecWorldUISubClassTag.reserve(ENUM_TO_UINT(DTO::EUIWorldUISubClassType::END));
+	for (uint32_t i = 0; i < ENUM_TO_UINT(DTO::EUIWorldUISubClassType::END); ++i)
+		m_VecWorldUISubClassTag.push_back(DTO::UIWorldUISubTypeToString(static_cast<DTO::EUIWorldUISubClassType>(i)));
+
 	return S_OK;
 }
 

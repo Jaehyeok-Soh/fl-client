@@ -56,6 +56,7 @@ HRESULT CUIPlayerStat_Progress::Attach_Personal_Info()
 
 	m_vOriginColor = m_vColorTint;
 	m_vOriginGradiantColor = m_vGradiantColorTint;
+	return S_OK;
 }
 
 HRESULT CUIPlayerStat_Progress::Awake(const _uint iCurrentLevelID)

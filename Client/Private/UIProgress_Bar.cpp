@@ -128,8 +128,6 @@ void CUIProgress_Bar::Tick_Ratio(const _float fTimeDelta)
 			m_fProgress_Ratio = m_fStartRatio + (m_fTargetRatio - m_fStartRatio) * t;
 		}
 	}
-	
-	CLOG_INFO(std::to_string(m_fProgress_Ratio));
 }
 
 void CUIProgress_Bar::Free()

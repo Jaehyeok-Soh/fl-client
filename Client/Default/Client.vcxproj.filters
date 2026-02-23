@@ -355,6 +355,21 @@
     <Filter Include="03. GameObject\UIObjects\02.UI\Image\Dynamic Image\04.LoadingImage">
       <UniqueIdentifier>{7f017932-b1db-4253-9356-3b8cd034857d}</UniqueIdentifier>
     </Filter>
+    <Filter Include="03. GameObject\UIObjects\02.UI\World">
+      <UniqueIdentifier>{8a889375-58df-405c-aa49-2221cd20c171}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="05. Component\WorldUI">
+      <UniqueIdentifier>{8e22024d-4e3d-4939-938e-33aa2af517cb}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="03. GameObject\UIObjects\02.UI\Text\Monster Stat Text">
+      <UniqueIdentifier>{5d3f0be5-ffc3-44fc-9119-9d81aa03b857}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="03. GameObject\UIObjects\02.UI\Progress Bar\Monster Stat">
+      <UniqueIdentifier>{4b1e0e58-01df-4e73-867d-55b38392bafa}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="03. GameObject\UIObjects\02.UI\Image\Dynamic Image\05.MonsterNameplate">
+      <UniqueIdentifier>{f79a616a-c763-4d11-814c-b386d1f581f2}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="targetver.h">
@@ -678,6 +693,28 @@
     <ClInclude Include="..\Public\UILoading_Image.h">
       <Filter>03. GameObject\UIObjects\02.UI\Image\Dynamic Image\04.LoadingImage</Filter>
     </ClInclude>
+    <ClInclude Include="..\Public\LandScape.h" />
+    <ClInclude Include="..\Public\UI_World.h">
+      <Filter>03. GameObject\UIObjects\02.UI\World</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\WorldUI.h">
+      <Filter>03. GameObject\UIObjects\02.UI\World</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\WorldUI_Component.h">
+      <Filter>05. Component\WorldUI</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\Builder_UIPrefabs.h">
+      <Filter>07. System\01. Builder\UI</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\UIMonsterStat_Text.h">
+      <Filter>03. GameObject\UIObjects\02.UI\Text\Monster Stat Text</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\UIMonsterStat_Progress.h">
+      <Filter>03. GameObject\UIObjects\02.UI\Progress Bar\Monster Stat</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\UINameplate_BG.h">
+      <Filter>03. GameObject\UIObjects\02.UI\Image\Dynamic Image\05.MonsterNameplate</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <Image Include="Client.ico">
@@ -992,6 +1029,28 @@
     </ClCompile>
     <ClCompile Include="..\Private\UILoading_Image.cpp">
       <Filter>03. GameObject\UIObjects\02.UI\Image\Dynamic Image\04.LoadingImage</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\LandScape.cpp" />
+    <ClCompile Include="..\Private\UI_World.cpp">
+      <Filter>03. GameObject\UIObjects\02.UI\World</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\WorldUI.cpp">
+      <Filter>03. GameObject\UIObjects\02.UI\World</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\WorldUI_Component.cpp">
+      <Filter>05. Component\WorldUI</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\Builder_UIPrefabs.cpp">
+      <Filter>07. System\01. Builder\UI</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\UIMonsterStat_Text.cpp">
+      <Filter>03. GameObject\UIObjects\02.UI\Text\Monster Stat Text</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\UIMonsterStat_Progress.cpp">
+      <Filter>03. GameObject\UIObjects\02.UI\Progress Bar\Monster Stat</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\UINameplate_BG.cpp">
+      <Filter>03. GameObject\UIObjects\02.UI\Image\Dynamic Image\05.MonsterNameplate</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

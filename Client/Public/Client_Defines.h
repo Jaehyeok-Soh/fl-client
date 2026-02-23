@@ -382,6 +382,12 @@ namespace Client
 		FLIP_XY,
 		END
 	};
+	enum class EUIPrefabType
+	{
+		MONSTER_NAMEPLATE,
+		END
+	};
+
 #pragma endregion
 
 #pragma region SKILL
