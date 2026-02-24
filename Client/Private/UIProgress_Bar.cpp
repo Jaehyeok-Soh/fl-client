@@ -45,6 +45,7 @@ HRESULT CUIProgress_Bar::Awake(const _uint iCurrentLevelID)
 {
 	if (FAILED(Super::Awake(iCurrentLevelID)))
 		return E_FAIL;
+	m_fDuration = 1.f;
 	return S_OK;
 }
 
@@ -56,17 +57,19 @@ void CUIProgress_Bar::Update_Priority(const _float fTimeDelta)
 void CUIProgress_Bar::Update(const _float fTimeDelta)
 {
 	Super::Update(fTimeDelta);
+
 }
 
 void CUIProgress_Bar::Update_Late(const _float fTimeDelta)
 {
 	Super::Update_Late(fTimeDelta);
+	Trigger_Ratio();
 }
 
 void CUIProgress_Bar::Ready_Before_Render(const _float fTimeDelta)
 {
 	Super::Ready_Before_Render(fTimeDelta);
-	Acting_By_InteractState();
+	Tick_Ratio(fTimeDelta);
 }
 
 HRESULT CUIProgress_Bar::Render()
@@ -88,6 +91,43 @@ HRESULT CUIProgress_Bar::Ready_Components(PROGRESS_BAR_DESC* pDesc)
 HRESULT CUIProgress_Bar::Bind_ShaderResources()
 {
 	return S_OK;
+}
+
+void CUIProgress_Bar::Trigger_Ratio()
+{
+	_float fEpsilon = 0.0001f;
+	if (fabs(m_fCurRatio - m_fPreRatio) > fEpsilon)
+	{
+		m_isChangeRatio = TRUE;
+		m_fStartRatio = m_fProgress_Ratio;
+		m_fTargetRatio = m_fCurRatio;
+		m_fTimeAcc = 0.f;
+		m_fDelayTimeAcc = 0.f;
+	}
+	m_fPreRatio = m_fCurRatio;
+}
+
+void CUIProgress_Bar::Tick_Ratio(const _float fTimeDelta)
+{
+	if (m_isChangeRatio)
+	{
+		m_fDelayTimeAcc += fTimeDelta;
+		if (m_fDelayTimeAcc <= m_fDelay)
+			return;
+
+		m_fTimeAcc += fTimeDelta;
+		_float t = m_fTimeAcc / m_fDuration;
+
+		if (t >= 1.f)
+		{
+			m_fProgress_Ratio = m_fTargetRatio;
+			m_isChangeRatio = FALSE;
+		}
+		else
+		{
+			m_fProgress_Ratio = m_fStartRatio + (m_fTargetRatio - m_fStartRatio) * t;
+		}
+	}
 }
 
 void CUIProgress_Bar::Free()

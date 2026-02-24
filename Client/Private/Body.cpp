@@ -78,6 +78,18 @@ HRESULT CBody::Awake(const _uint iCurrentLevelIndex)
 	Get_Component<CPhysicsAttackOverlap>()->Awake();
 	Get_Component<CAnimEffectHandler>()->Awake();
 
+	//Face_Smile
+
+	_uint iFaceAnimIdx = Get_Component<CModel>()->Get_AnimationIndex(L"Animation_PlayerMoon_Face_LipSync");
+	vector<CModel::DATA_ANIMIX> vecMix = { {113,false,1.f} };
+
+	CComputeShader* pAnimMixCS = static_cast<CComputeShader*>(Get_Script_Component(TEXT("ComputeShader_AnimMix")));
+
+	Get_Component<CModel>()->Set_MixAnim(true);
+	Get_Component<CModel>()->Set_MixAnim_ResetSize(1);
+	Get_Component<CModel>()->Make_MixRatio(iFaceAnimIdx, vecMix, pAnimMixCS);
+	Get_Component<CModel>()->Set_MixAnim_AnimIndex(0, iFaceAnimIdx);
+
 	return S_OK;
 }
 
@@ -93,14 +105,20 @@ void CBody::Update(_float fTimeDelta)
 	CComputeShader* pBonCS = static_cast<CComputeShader*>(Get_Script_Component(TEXT("ComputeShader_BoneCombine")));
 	CComputeShader* pAnimECS = static_cast<CComputeShader*>(Get_Script_Component(TEXT("ComputeShader_AnimE")));
 	CComputeShader* pAnimBCS = static_cast<CComputeShader*>(Get_Script_Component(TEXT("ComputeShader_AnimB")));
+
+	CComputeShader* pAnimMixCS = static_cast<CComputeShader*>(Get_Script_Component(TEXT("ComputeShader_AnimMix")));
+
+	if (pAnimMixCS == nullptr)
+		int a = 0;
 	//CComputeShader* pGetBoneCS = static_cast<CComputeShader*>(Get_Script_Component(TEXT("ComputeShader_GetBone")));
 
 	Get_Component<CModel>()->Update_Animation(pBonCS, pAnimECS, fTimeDelta, 
-		Get_Parent()->Get_Component<CTransform>(), Get_Parent()->Get_Component<CPhysicsCCT>(), pAnimBCS);
+		Get_Parent()->Get_Component<CTransform>(), Get_Parent()->Get_Component<CPhysicsCCT>(), pAnimBCS, pAnimMixCS);
 
 	if(CCollider* pCollider = Get_Component<CCollider>())
 		pCollider->Update(m_matCombinedWorld);
 }
+
 
 void CBody::Update_Late(_float fTimeDelta)
 {
@@ -125,29 +143,29 @@ void CBody::Ready_Before_Render(_float fTimeDelta)
 #endif 
 }
 
-void CBody::OnCollision(_uint iMyColliderLayer, CGameObject* pOther)
+void CBody::OnCollision(_uint iMyColliderLayer, _uint iOtherLayer, CGameObject* pOther)
 {
-	Get_Parent()->OnCollision(iMyColliderLayer, pOther);
+	Get_Parent()->OnCollision(iMyColliderLayer, iOtherLayer, pOther);
 }
 
-void CBody::OnCollision_Enter(_uint iMyColliderLayer, CGameObject* pOther)
+void CBody::OnCollision_Enter(_uint iMyColliderLayer, _uint iOtherLayer, CGameObject* pOther, const COL_HIT_INFO& tHitInfo)
 {
-	Get_Parent()->OnCollision_Enter(iMyColliderLayer, pOther);
+	Get_Parent()->OnCollision_Enter(iMyColliderLayer, iOtherLayer, pOther, tHitInfo);
 }
 
-void CBody::OnCollision_Exit(_uint iMyColliderLayer, CGameObject* pOther)
+void CBody::OnCollision_Exit(_uint iMyColliderLayer, _uint iOtherLayer, CGameObject* pOther)
 {
-	Get_Parent()->OnCollision_Exit(iMyColliderLayer, pOther);
+	Get_Parent()->OnCollision_Exit(iMyColliderLayer, iOtherLayer, pOther);
 }
 
-void CBody::OnTrigger_Enter(_uint iMyColliderLayer, CGameObject* pOther)
+void CBody::OnTrigger_Enter(_uint iMyColliderLayer, _uint iOtherLayer, CGameObject* pOther)
 {
-	Get_Parent()->OnTrigger_Enter(iMyColliderLayer, pOther);
+	Get_Parent()->OnTrigger_Enter(iMyColliderLayer, iOtherLayer, pOther);
 }
 
-void CBody::OnTrigger_Exit(_uint iMyColliderLayer, CGameObject* pOther)
+void CBody::OnTrigger_Exit(_uint iMyColliderLayer, _uint iOtherLayer, CGameObject* pOther)
 {
-	Get_Parent()->OnTrigger_Exit(iMyColliderLayer, pOther);
+	Get_Parent()->OnTrigger_Exit(iMyColliderLayer, iOtherLayer, pOther);
 }
 
 _bool CBody::On_Hit(_uint iCollideMyLayer, ATTACK_DESC* pDesc, CGameObject* pOther)
@@ -233,6 +251,7 @@ CBone* CBody::Get_Spine1Bone()
 
 CBone* CBody::Get_WeaponSocket()
 {
+	//289
 	if (CBone* pHead = Get_Component<CModel>()->Get_Bone(289)) //285 ~ 289
 		return pHead;
 
@@ -462,6 +481,27 @@ HRESULT CBody::Ready_ComputeShader()
 			return E_FAIL;
 	}
 
+	// ========   Compute Shader : AnimMix  ========
+	{
+		CComputeShader::ComShaderCopyDesc ShaderDesc = {};
+		ShaderDesc.Output_SRVBuffer_Name = "CHANNEL_OUTPUT_SRV";
+
+		ShaderDesc.InputBufferNum = 4;
+		ShaderDesc.bMakeSB = false;
+		//// 입력 버퍼
+		//ShaderDesc.Input_StructBuffer.sBufferName = "IMMU_EFFECT_PARTICLE";
+		//ShaderDesc.Input_StructBuffer.iElementSize = sizeof(EFFECT_PARTICLE_IMMU_ELEMENT);
+		//ShaderDesc.Input_StructBuffer.iNumElements = iBoneNums;
+
+		// 출력 버퍼
+		ShaderDesc.OutPut_StructBuffer.sBufferName = "CHANNEL_OUTPUT";
+		ShaderDesc.OutPut_StructBuffer.iElementSize = sizeof(CS_SRT);
+		ShaderDesc.OutPut_StructBuffer.iNumElements = iBoneNums;
+
+		if (FAILED(Add_Script_Component(L"ComputeShader_AnimMix", L"Prototype_Component_Shader_AnimMix", &ShaderDesc)))
+			return E_FAIL;
+	}
+
 	// ========   Compute Shader : GetBone  ========
 	{
 		//CComputeShader::ComShaderCopyDesc ShaderDesc = {};
@@ -487,9 +527,9 @@ HRESULT CBody::Ready_ComputeShader()
 	CComputeShader* pBonCombineCS = static_cast<CComputeShader*>(Get_Script_Component(TEXT("ComputeShader_BoneCombine")));
 	CComputeShader* pAnimECS = static_cast<CComputeShader*>(Get_Script_Component(TEXT("ComputeShader_AnimE")));
 	CComputeShader* pAnimBlendCS = static_cast<CComputeShader*>(Get_Script_Component(TEXT("ComputeShader_AnimB")));
-	//CComputeShader* pGetBoneCS = static_cast<CComputeShader*>(Get_Script_Component(TEXT("ComputeShader_GetBone")));
+	CComputeShader* pAnimMix = static_cast<CComputeShader*>(Get_Script_Component(TEXT("ComputeShader_AnimMix")));
 
-	if (FAILED(Get_Component<CModel>()->Ready_ComputeShaders(pBoneMeshCS, pBonCombineCS, pAnimECS, pAnimBlendCS)))
+	if (FAILED(Get_Component<CModel>()->Ready_ComputeShaders(pBoneMeshCS, pBonCombineCS, pAnimECS, pAnimBlendCS, pAnimMix)))
 		return E_FAIL;
 
 	return S_OK;

@@ -91,6 +91,7 @@ namespace Tool
 		EFFECT,
 		CAMERA,
 		UI,
+		ATTACK_PRESET,
 		ASSET_CONVERT,
 		END
 	};
@@ -655,10 +656,25 @@ namespace Tool
 		FLIP_XY,
 		END
 	};
+
+	enum class EUIPrefabType
+	{
+		NOT_PREFAB,
+		MONSTER_NAMEPLATE,
+		END
+	};
+
+	inline std::string UIPrefabTypeToString(EUIPrefabType eType)
+	{
+		switch (eType)
+		{
+		case EUIPrefabType::NOT_PREFAB:			return "NOT_PREFAB";
+		case EUIPrefabType::MONSTER_NAMEPLATE:	return "MONSTER_NAMEPLATE";
+		case EUIPrefabType::END:				return "";
+		default: return "";
+		}
+	}
 #pragma endregion
-
-
-
 	static void Model_Path_Check(OUT wstring& wstrModelPath)
 	{
 		std::wstring searchPath = wstrModelPath;
@@ -694,7 +710,6 @@ namespace Tool
 			wstrModelPath = p.wstring();
 		}
 	}
-
 #pragma region Struct
 #pragma endregion
 }

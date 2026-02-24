@@ -69,10 +69,11 @@ private:
 	_string m_strCanvasTag = {};
 	_string m_strLayerTag = {};
 	_string m_strUIName = {};
-
 	int32_t m_iRectTransformIndex = {4};
-
 	uint32_t m_iUIClassIndex = {};
+	
+	vector<_string> m_vecPrefabtypes;
+
 
 private:
 	int32_t m_iCurSelectLevelID = {};

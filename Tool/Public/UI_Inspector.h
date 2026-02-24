@@ -71,7 +71,7 @@ private:
 	std::vector<_string> m_VecTriggerSubClassTag;
 	std::vector<_string> m_VecFontPivotTypes;
 	std::vector<_string> m_VecFonstShaderTypes;
-
+	std::vector<_string> m_VecWorldUISubClassTag;
 
 	// Trigger Values
 	_bool m_isHoverEnter	= {FALSE};

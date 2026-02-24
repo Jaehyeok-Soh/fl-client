@@ -588,7 +588,7 @@ string CConverter::Write_Texture(const _char *szSaveFolder, const _char* szFile)
 			desc.Height = pSrcTexture->mHeight;
 			desc.MipLevels = 1;
 			desc.ArraySize = 1;
-			desc.Format = DXGI_FORMAT_R8G8B8A8_UNORM;
+			desc.Format = DXGI_FORMAT_R8G8B8A8_UNORM; // eunbi : weapon 뽑을때 DXGI_FORMAT_R8G8B8A8_UNORM_SRGB 로 변경 후 추출 //DXGI_FORMAT_R8G8B8A8_UNORM
 			desc.SampleDesc.Count = 1;
 			desc.SampleDesc.Quality = 0;
 			desc.Usage = D3D11_USAGE_IMMUTABLE;

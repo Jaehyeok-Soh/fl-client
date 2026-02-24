@@ -46,6 +46,7 @@ private:
 	HRESULT Build_Prototype();
 	HRESULT Build_Files();
 	HRESULT Ready_AttackOverlap();
+	HRESULT Ready_AttackPresets();
 	HRESULT Ready_EffectEvent();
 
 	HRESULT Ready_AttackOverlap_PlayerMoon();

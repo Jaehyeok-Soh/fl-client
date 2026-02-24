@@ -39,6 +39,7 @@ private:
 	HRESULT Loading_For_Effect();
 	HRESULT Loading_For_Camera();
 	HRESULT Loading_For_UI();
+	HRESULT Loading_For_AttackPreset();
 	HRESULT Loading_For_AssetConverter();
 private:
 	HRESULT Loading_Textures_Effect(const wstring& wstrFolder);

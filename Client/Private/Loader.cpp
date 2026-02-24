@@ -39,6 +39,8 @@
 #include "Builder_EffectEvent.h"
 #include "DataStruct_EffectEvent.h"
 #include "DataDocument_EffectEvent.h"
+#include "Builder_AttackPreset.h"
+#include "DataDocument_AttackPreset.h"
 
 //=================
 // Object
@@ -81,10 +83,12 @@
 //프로그레스바
 #include "UIPlayerStat_Progress.h"
 #include "UILoading_Progress.h"
+#include "UIMonsterStat_Progress.h"
 // 텍스트 
 #include "UIMenu_Text.h"
 #include "UIPlayerStat_Text.h"
 #include "UILoading_Text.h"
+#include "UIMonsterStat_Text.h"
 // 그냥 이미지
 #include "UIJust_Image.h"
 // 다이나믹 이미지 
@@ -94,6 +98,7 @@
 #include "UIMenu_Image.h"
 #include "UIMenu_OutLine.h"
 #include "UILoading_Image.h"
+#include "UINameplate_BG.h"
 // 트리거 
 #include "UIMenu_Trigger.h"
 #include "UICommon_Trigger.h"
@@ -232,6 +237,9 @@ HRESULT CLoader::Loading_For_Logo()
 
 			if (FAILED(m_pGameInstance->Regist_Document<CDataDocument_AttackOverlap>(ENUM_TO_UINT(ELevelType::LOGO), DTO::ECategory::OVERLAP_SCRIPT)))
 				return E_FAIL;
+
+			if (FAILED(m_pGameInstance->Regist_Document<CDataDocument_AttackPreset>(ENUM_TO_UINT(ELevelType::LOGO), DTO::ECategory::ATTACK_PRESET)))
+				return E_FAIL;
 		}
 
 		// Build prototype
@@ -322,6 +330,11 @@ HRESULT CLoader::Loading_For_Logo()
 		if (FAILED(Loading_Textures(L"../../Resources/Textures/Effect/Wave/")))
 			return E_FAIL;
 	}
+
+	// For. UI Texture
+	if (FAILED(Loading_Textures(L"../../Resources/Textures/UI/UI_Client/")))
+		return E_FAIL;
+
 #pragma endregion
 
 #pragma region Texture Splating Data
@@ -395,6 +408,17 @@ HRESULT CLoader::Loading_For_Logo()
 
 		m_pGameInstance->Add_Prototype(ENUM_TO_UINT(ELevelType::STATIC), L"Prototype_Component_Model_MoonSkillWeap", CModel::Create(m_pDevice, m_pDeviceContext, &desc));
 	}
+	// For. Prototype_Component_Model_MoonGun
+	{
+		CModel::MODEL_ORIGIN_DESC desc = {};
+		desc.eType = EModelType::ANIM;
+		desc.iPrototypeLevelIndex = ENUM_TO_UINT(ELevelType::STATIC);
+		desc.pMatPreTransform = &(matPreTransformScale);
+		desc.wstrModelFolderName = L"Weapon_MoonGun";		
+		desc.FStageBone = CModel::STAGEING_BONE::SB_ZEROBONE;
+
+		m_pGameInstance->Add_Prototype(ENUM_TO_UINT(ELevelType::STATIC), L"Prototype_Component_Model_MoonGun", CModel::Create(m_pDevice, m_pDeviceContext, &desc));
+	}
 	// For.Prototype_Component_Model_Monster_Dog
 	{
 		CModel::MODEL_ORIGIN_DESC desc = {};
@@ -406,7 +430,7 @@ HRESULT CLoader::Loading_For_Logo()
 		desc.vecStageBoneIndices = { };
 
 		CModel::DATA_ANIMCHANNEL tAniChannelData = {};
-		tAniChannelData.iRootBoneIndex = 2;
+		tAniChannelData.iRootBoneIndex = 3;
 		desc.pAniChannelData = &tAniChannelData;
 
 		m_pGameInstance->Add_Prototype(ENUM_TO_UINT(ELevelType::STATIC), L"Prototype_Component_Model_Monster_Dog", CModel::Create(m_pDevice, m_pDeviceContext, &desc));
@@ -513,7 +537,9 @@ HRESULT CLoader::Loading_For_Logo()
 	ADD_PROTOTYPE(ELevelType::LOGO, L"Prototype_UI_HoverImage",			CUIHover_Image::Create(m_pDevice, m_pDeviceContext));
 	ADD_PROTOTYPE(ELevelType::LOGO, L"Prototype_UI_MenuImage",			CUIMenu_Image::Create(m_pDevice, m_pDeviceContext));
 	ADD_PROTOTYPE(ELevelType::LOGO, L"Prototype_UI_MenuOutline",		CUIMenu_OutLine::Create(m_pDevice, m_pDeviceContext));
-
+	ADD_PROTOTYPE(ELevelType::LOGO, L"Prototype_UI_MonsterStatText",	CUIMonsterStat_Text::Create(m_pDevice, m_pDeviceContext));
+	ADD_PROTOTYPE(ELevelType::LOGO, L"Prototype_UI_MonsterStatProgress",CUIMonsterStat_Progress::Create(m_pDevice, m_pDeviceContext));
+	ADD_PROTOTYPE(ELevelType::LOGO, L"Prototype_UI_Nameplate_BG",		CUINameplate_BG::Create(m_pDevice, m_pDeviceContext));
 #pragma endregion
 
 	m_isFinished = true;
@@ -654,6 +680,9 @@ HRESULT CLoader::Build_Prototype()
 	if (FAILED(m_pBuilderSystem->Ready_Builder(DTO::ECategory::EFFECTEVENT, CBuilder_EffectEvent::Create(m_pDevice, m_pDeviceContext, ENUM_TO_UINT(ELevelType::LOGO)))))
 		return E_FAIL;
 
+	if (FAILED(m_pBuilderSystem->Ready_Builder(DTO::ECategory::ATTACK_PRESET, CBuilder_AttackPreset::Create(m_pDevice, m_pDeviceContext, ENUM_TO_UINT(ELevelType::LOGO)))))
+		return E_FAIL;
+
 	if (FAILED(Build_Files()))
 		return E_FAIL;
 
@@ -663,6 +692,9 @@ HRESULT CLoader::Build_Prototype()
 HRESULT CLoader::Build_Files()
 {
 	if (FAILED(Ready_AttackOverlap()))
+		return E_FAIL;
+
+	if (FAILED(Ready_AttackPresets()))
 		return E_FAIL;
 
 	if (FAILED(Ready_EffectEvent()))
@@ -700,6 +732,57 @@ HRESULT CLoader::Ready_AttackOverlap_PlayerMoon()
 	if (FAILED(m_pBuilderSystem->Build_File(iLevelID, eCategory, FilePath.stem().string())))
 		return E_FAIL;
 
+	return S_OK;
+}
+
+HRESULT CLoader::Ready_AttackPresets()
+{
+	ELevelType eLevelType = ELevelType::LOGO;
+	DTO::ECategory eCategory = DTO::ECategory::ATTACK_PRESET;
+	_uint iLevelID = ENUM_TO_UINT(eLevelType);
+
+	std::filesystem::path rootFolder{ g_wszAttackPresetDataPath };
+
+	if (std::filesystem::exists(rootFolder) == false)
+	{
+		MSG_BOX("CLoader::Ready_AttackPresets, RootFolder exist failed");
+		return E_FAIL;
+	}
+
+	for (const auto& dirEntry : std::filesystem::directory_iterator(rootFolder))
+	{
+		if (dirEntry.is_directory() == false)
+			continue;
+
+		const std::filesystem::path categoryFolder = dirEntry.path();
+		for (const auto& fileEntry : std::filesystem::directory_iterator(categoryFolder))
+		{
+			if (fileEntry.is_regular_file() == false)
+				continue;
+
+			const std::filesystem::path filePath = fileEntry.path();
+			if (filePath.extension() != ".json")
+				continue;
+
+			string strFileKey = filePath.filename().stem().string();
+			if (FAILED(Loading_File(iLevelID, eCategory, filePath)))
+			{
+				MSG_BOX("CLoader::Ready_AttackPresets, Load_File_Json failed");
+				return E_FAIL;
+			}
+
+			if (FAILED(m_pBuilderSystem->Build_File(iLevelID, eCategory, filePath.stem().string())))
+				return E_FAIL;
+		}
+	}
+
+	const auto& debugForDatas = m_pGameInstance->Get_AttackPresetsData_ForDebug();
+	for (const auto& [key, value] : debugForDatas)
+	{
+		_uint iKey = key;
+		const DTO::TAttackPreset_Data &data = value;
+		iKey += 2;
+	}
 	return S_OK;
 }
 

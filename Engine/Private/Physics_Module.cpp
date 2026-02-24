@@ -69,14 +69,17 @@ HRESULT CPhysics_Module::Initialize()
 	{
 		PxSceneDesc sceneDesc(m_pPhysics->getTolerancesScale());
 		sceneDesc.gravity = PxVec3(0.f, -9.81f, 0.f);
-		m_pDispatcher = PxDefaultCpuDispatcherCreate(4);
+		sceneDesc.flags |= PxSceneFlag::eENABLE_PCM;
+		sceneDesc.flags |= PxSceneFlag::eENABLE_ACTIVE_ACTORS;
+
+		PxU32 numCores = PxThread::getNbPhysicalCores();
+		m_pDispatcher = PxDefaultCpuDispatcherCreate(numCores == 0 ? 0 : numCores - 1);
 		sceneDesc.cpuDispatcher = m_pDispatcher;
 
 		if (m_pCudaContextManager)
 		{
 			sceneDesc.cudaContextManager = m_pCudaContextManager;
 			sceneDesc.flags |= PxSceneFlag::eENABLE_GPU_DYNAMICS;
-			sceneDesc.flags |= PxSceneFlag::eENABLE_PCM;
 			//sceneDesc.flags |= PxSceneFlag::eENABLE_STABILIZATION; // 물체가 겹실 시 밀어내는 연산 가속
 			sceneDesc.broadPhaseType = PxBroadPhaseType::eGPU;
 			sceneDesc.gpuMaxNumPartitions = 8;
@@ -104,7 +107,13 @@ HRESULT CPhysics_Module::Initialize()
 		{
 			sceneDesc.cudaContextManager = NULL;
 			sceneDesc.flags &= ~PxSceneFlag::eENABLE_GPU_DYNAMICS;
-			sceneDesc.broadPhaseType = PxBroadPhaseType::eSAP;
+			sceneDesc.broadPhaseType = PxBroadPhaseType::ePABP;
+
+#ifdef _DEBUG
+			sceneDesc.staticNbObjectsPerNode = 12;
+			sceneDesc.dynamicNbObjectsPerNode = 12;
+			sceneDesc.dynamicTreeRebuildRateHint = 300;
+#endif // _DEBUG
 		}
 
 		//////////////////////////////////
@@ -132,6 +141,9 @@ HRESULT CPhysics_Module::Initialize()
 			MSG_BOX("Failed to created : PxScene");
 			return E_FAIL;
 		}
+
+		m_pScene->setVisualizationParameter(PxVisualizationParameter::eSCALE, 0.f);
+		m_pScene->setVisualizationCullingBox(PxBounds3(PxVec3(0.f, 0.f, 0.f), PxVec3(0.f, 0.f, 0.f)));
 	}
 
 #ifdef _DEBUG
@@ -145,10 +157,10 @@ HRESULT CPhysics_Module::Initialize()
 #endif // _DEBUG
 
 #ifdef _DEBUG
-	m_pScene->setVisualizationParameter(PxVisualizationParameter::eSCALE, 1.f);
-	m_pScene->setVisualizationParameter(PxVisualizationParameter::eCOLLISION_SHAPES, 1.f);
-	m_pScene->setVisualizationParameter(PxVisualizationParameter::eACTOR_AXES, 2.f);
-	m_pScene->getVisualizationCullingBox();
+	//m_pScene->setVisualizationParameter(PxVisualizationParameter::eSCALE, 1.f);
+	//m_pScene->setVisualizationParameter(PxVisualizationParameter::eCOLLISION_SHAPES, 1.f);
+	//m_pScene->setVisualizationParameter(PxVisualizationParameter::eACTOR_AXES, 2.f);
+	//m_pScene->getVisualizationCullingBox();
 #endif // _DEBUG
 
 	{
@@ -188,7 +200,7 @@ HRESULT CPhysics_Module::Initialize()
 
 void CPhysics_Module::StepPhysics(_float fTimeDelta)
 {
-	m_pScene->simulate(fTimeDelta);
+	m_pScene->simulate(std::clamp(fTimeDelta, fTimeDelta, 0.33f));
 	m_pScene->fetchResults(true);
 
 #ifdef _DEBUG
@@ -323,6 +335,14 @@ PxFilterFlags CPhysics_Module::FilterShader(
 			| PxPairFlag::eNOTIFY_TOUCH_FOUND
 			| PxPairFlag::eNOTIFY_TOUCH_LOST
 			| PxPairFlag::eNOTIFY_TOUCH_PERSISTS;
+
+		// 02/21
+		// HitPoint 추출을 위한 Flag 설정
+		// Enter에서만 추출하기 위해 사용
+		// CPhysics_FilterEventCallback::onContact에서 Flag 체크후 GAMEOBJECTINFO에 넣는중
+		if (PHYSICSFILTERGROUP::IsAttackPair(filterData0.word0, filterData1.word0))
+			pairFlags |= PxPairFlag::eNOTIFY_CONTACT_POINTS;
+
 		return PxFilterFlag::eDEFAULT;
 	}
 
@@ -361,6 +381,15 @@ void CPhysics_Module::Check_Leak()
 	OutputDebugStringW(L"----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- \r ");
 	OutputDebugStringW(L"                                                                          PhysX Leak Checker END \r ");
 	OutputDebugStringW(L"----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- \r ");
+}
+
+void CPhysics_Module::GetActiveActors()
+{
+	PxU32 nbActiveActors;
+	PxActor** activeActors = m_pScene->getActiveActors(nbActiveActors);
+	for (PxU32 i = 0; i < nbActiveActors; ++i)
+	{
+	}
 }
 
 _bool CPhysics_Module::RayCast(Vec3 vWorldPos, Vec3 vDir, _float fMaxDist, CPhysics_QueryFilterCallback* pFilterCall)

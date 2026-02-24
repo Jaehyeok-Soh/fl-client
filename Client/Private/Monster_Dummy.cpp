@@ -87,29 +87,29 @@ HRESULT CMonster_Dummy::Render()
 	return S_OK;
 }
 
-void CMonster_Dummy::OnCollision(_uint iMyColliderLayer, CGameObject* pOther)
+void CMonster_Dummy::OnCollision(_uint iMyColliderLayer, _uint iOtherLayer, CGameObject* pOther)
 {
-	Super::OnCollision(iMyColliderLayer, pOther);
+	Super::OnCollision(iMyColliderLayer, iOtherLayer, pOther);
 }
 
-void CMonster_Dummy::OnCollision_Enter(_uint iMyColliderLayer, CGameObject* pOther)
+void CMonster_Dummy::OnCollision_Enter(_uint iMyColliderLayer, _uint iOtherLayer, CGameObject* pOther, const COL_HIT_INFO& tHitInfo)
 {
-	Super::OnCollision_Enter(iMyColliderLayer, pOther);
+	Super::OnCollision_Enter(iMyColliderLayer, iOtherLayer, pOther, tHitInfo);
 }
 
-void CMonster_Dummy::OnCollision_Exit(_uint iMyColliderLayer, CGameObject* pOther)
+void CMonster_Dummy::OnCollision_Exit(_uint iMyColliderLayer, _uint iOtherLayer, CGameObject* pOther)
 {
-	Super::OnCollision_Exit(iMyColliderLayer, pOther);
+	Super::OnCollision_Exit(iMyColliderLayer, iOtherLayer, pOther);
 }
 
-void CMonster_Dummy::OnTrigger_Enter(_uint iMyColliderLayer, CGameObject* pOther)
+void CMonster_Dummy::OnTrigger_Enter(_uint iMyColliderLayer, _uint iOtherLayer, CGameObject* pOther)
 {
-	Super::OnTrigger_Enter(iMyColliderLayer, pOther);
+	Super::OnTrigger_Enter(iMyColliderLayer, iOtherLayer, pOther);
 }
 
-void CMonster_Dummy::OnTrigger_Exit(_uint iMyColliderLayer, CGameObject* pOther)
+void CMonster_Dummy::OnTrigger_Exit(_uint iMyColliderLayer, _uint iOtherLayer, CGameObject* pOther)
 {
-	Super::OnTrigger_Exit(iMyColliderLayer, pOther);
+	Super::OnTrigger_Exit(iMyColliderLayer, iOtherLayer, pOther);
 }
 
 HRESULT CMonster_Dummy::Ready_BaseStates()
@@ -149,8 +149,8 @@ HRESULT CMonster_Dummy::Ready_Components()
 	CMonsterControlContext::MONSTER_CONTROLCONTEXT_DESC desc{};
 	desc.fMeleeRange = 2.f;
 	desc.fAttackRange = 4.f;
-	desc.fCloseRange = 0.2f;
-	desc.fDetectionRange = 5.f;
+	desc.fCloseRange = 1.f;
+	desc.fDetectionRange = 15.f;
 	desc.fSpeed = 1.f;
 	//desc.iSkillCount;
 	//desc.vecSkillRange;

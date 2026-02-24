@@ -41,8 +41,13 @@ void CState_JumpAttStart::Update(const _float fTimeDelta)
 {
 	CStateBase::Update(fTimeDelta);
 
-	if (Check_OnGround(0.2f))
+	// 벽이랑 충돌했는지 먼저 검사
+	if (IsOn_CCTFlag(PxControllerCollisionFlag::Enum::eCOLLISION_SIDES) ||
+		IsOn_CCTFlag(PxControllerCollisionFlag::Enum::eCOLLISION_DOWN))
+	{
 		Change_PlayerState(ENUM_TO_UINT(CPlayer::State::JUMPATTEND));
+		return;
+	}
 
 	OwnMove(fTimeDelta);
 }
@@ -74,11 +79,13 @@ void CState_JumpAttStart::OwnMove(const _float fTimeDelta)
 	Vec3 vDir = vLook * 1.f + vUp * (-1.f);
 	Vec3 disp = vDir * moveps * fTimeDelta * 4.5f;
 
-	pCCT->Move(disp, 0.01f, fTimeDelta);
+	Move(disp, 0.01f, fTimeDelta);
 
-	Vec3 finalPos = pCCT->GetFootPosition();
+	//pCCT->Move(disp, 0.01f, fTimeDelta);
 
-	pPlayerTrans->Set_Info(TRANSFORM_INFO_STATE::POS, finalPos);
+	//Vec3 finalPos = pCCT->GetFootPosition();
+
+	//pPlayerTrans->Set_Info(TRANSFORM_INFO_STATE::POS, finalPos);
 }
 
 CState_JumpAttStart* CState_JumpAttStart::Create(CActionState* pOwnerComponent, void* pArg)

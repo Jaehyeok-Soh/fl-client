@@ -50,6 +50,10 @@ private:
 	// imgui
 	EAnimEvent::Enum m_eEventTypeCombo = EAnimEvent::NONE;
 
+
+private:
+	_float m_fTimeScale = { 1.f };
+
 public:
 	static			CPanel_AnimationController* Create(const _char* pLabel, CLevel* pOwner, ID3D11Device* pDevice, ID3D11DeviceContext* pDeviceContext);
 	virtual void	Free() override;

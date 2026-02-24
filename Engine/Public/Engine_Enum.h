@@ -95,6 +95,7 @@ namespace Engine
 		HDRparam,
 		Bloomparam,
 		Outlineparam,
+		RGBMapping,
 		COUNT
 	};
 	constexpr const char* g_CBNames[static_cast<unsigned int>(EFXCB::COUNT)] =
@@ -113,7 +114,8 @@ namespace Engine
 		"SSAOParamBuffer",
 		"HDRParamBuffer",
 		"BLOOMParamBuffer",
-		"OUTLINEParamBuffer"
+		"OUTLINEParamBuffer",
+		"CB_MAPPING_RGB"
 	};
 	//===================
 	// FX SRV
@@ -378,6 +380,19 @@ namespace Engine
 		END
 	};
 
+	typedef struct tagCollisionEvent
+	{
+		enum Enum
+		{
+			ON_COLLISION_ENTER,
+			ON_COLLISION_STAY,
+			ON_COLLISION_EXIT,
+			ON_TRIGGER_ENTER,
+			ON_TRIGGER_EXIT,
+			END
+		};
+	}COLLISIONEVENT;
+
 	typedef struct tagPhysicsFilterGroup
 	{
 		enum Enum : unsigned int
@@ -407,6 +422,48 @@ namespace Engine
 			NONE = 1 << 17,
 			END
 		};
+
+		static bool IsPlayer(unsigned int iFlag) { return (iFlag & PLAYER) != 0; }
+		static bool IsMonster(unsigned int iFlag) { return (iFlag & MONSTER) != 0; }
+		static bool IsMap(unsigned int iFlag) { return (iFlag & MAP) != 0; }
+
+		static bool IsTrigger(unsigned int iFlag)
+		{
+			static constexpr unsigned int iTriggerLayer
+			{
+				TRIGGER_UI | TRIGGER_QUEST | TRIGGER_SPAWN | TRIGGER_DIRECTION
+			};
+			return (iFlag & iTriggerLayer) != 0;
+		}
+
+		static bool IsAttackLayer(unsigned int iFlag)
+		{
+			static constexpr unsigned int iAttackLayer
+			{
+				ATTACK | SKILL | ATTACK_PROJECTTILE | SKILL_PROJECTTILE |
+				MONSTER_ATTACK | MONSTER_SKILL | MONSTER_ATTACK_PROJECTTILE | MONSTER_SKILL_PROJECTTILE
+			};
+			return (iFlag & iAttackLayer) != 0;
+		}
+
+		// 공격 쪽이냐? ( 한쪽은 Attack관련, 한쪽은 Monster, Player 몸체 )
+		static bool IsAttackPair(unsigned int iFlagA, unsigned int iFlagB)
+		{
+			const bool bAttack_A = IsAttackLayer(iFlagA);
+			const bool bAttack_B = IsAttackLayer(iFlagB);
+			// 둘다 공격쪽이거나 아니라면
+			if (bAttack_A == bAttack_B)
+				return false;
+
+			const unsigned int iVictim = bAttack_A == true ? iFlagA : iFlagB;
+
+			return IsPlayer(iVictim) || IsMonster(iVictim);
+		}
+
+		static bool IsTriggerPair(unsigned int iFlagA, unsigned int iFlagB)
+		{
+			return IsTrigger(iFlagA) || IsTrigger(iFlagB);
+		}
 	}PHYSICSFILTERGROUP;
 
 	struct EPhysicsFilterType

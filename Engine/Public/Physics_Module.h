@@ -89,6 +89,7 @@ public:
         PxPairFlags& pairFlags, const void* constantBlock, PxU32 constantBlockSize);
     
     void Check_Leak();
+    void GetActiveActors();
 
 public:
     _bool RayCast(Vec3 vWorldPos, Vec3 vDir, _float fMaxDist, CPhysics_QueryFilterCallback* pFilterCall); // 월드 좌표 기준으로 // 방향으로 max dist까지 범위까지 검사

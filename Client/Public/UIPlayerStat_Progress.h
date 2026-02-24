@@ -50,16 +50,6 @@ private:
 private:
 	CStatCom_Player* m_pPlayerStatCom = { nullptr };
 
-	// Lerp Movement Values
-	_float	m_fCurRatio		= {};
-	_float	m_fPreRatio		= {};
-	_float	m_fStartRatio	= {};
-	_float	m_fTargetRatio	= {};
-	_float	m_fDuration		= { 0.2f };
-	_float	m_fTimeAcc		= {};
-	_bool	m_isChangeRatio = { false };
-
-	_float m_fDelayTimeAcc	= {};
 
 	// Player HP Values
 	_bool m_isStartLowHp	= { FALSE };

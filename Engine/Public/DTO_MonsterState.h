@@ -71,6 +71,7 @@ namespace DTO
 		unsigned int FAniFlags = { 0 };
 		bool bBlend = { false };
 		bool bLoop = { false };
+		bool bCancellation = { false };
 
 		MONSTERTIME_COUNTER tStateLifeTime = {};
 		MONSTERTIME_COUNTER tStateCoolDownTime = {};
@@ -81,6 +82,9 @@ namespace DTO
 		// state name, anim name
 		map<string, string>		mapPreAnimNames;
 		vector<string>			vecMainAnimNames;
+
+		// condition(function), to state name
+		vector<STATE_TRANSITION> vecGlobalStateTransition;
 
 		// condition(function), to state name
 		vector<STATE_TRANSITION> vecStateTransition;
@@ -99,6 +103,7 @@ namespace DTO
 		j["FAniFlags"] = d.FAniFlags;
 		j["bBlend"] = d.bBlend;
 		j["bLoop"] = d.bLoop;
+		j["bCancellation"] = d.bCancellation;
 
 		j["tStateLifeTime"] = d.tStateLifeTime;
 		j["tStateCoolDownTime"] = d.tStateCoolDownTime;
@@ -107,6 +112,8 @@ namespace DTO
 
 		j["mapPreAnimNames"] = d.mapPreAnimNames;
 		j["vecMainAnimNames"] = d.vecMainAnimNames;
+
+		j["vecGlobalStateTransition"] = d.vecGlobalStateTransition;
 
 		j["vecStateTransition"] = d.vecStateTransition;
 
@@ -124,6 +131,11 @@ namespace DTO
 		j.at("bBlend").get_to(d.bBlend);
 		j.at("bLoop").get_to(d.bLoop);
 
+		if (j.contains("bCancellation"))
+			j.at("bCancellation").get_to(d.bCancellation);
+		else
+			d.bCancellation = false;
+
 		j.at("tStateLifeTime").get_to(d.tStateLifeTime);
 		j.at("tStateCoolDownTime").get_to(d.tStateCoolDownTime);
 
@@ -131,6 +143,11 @@ namespace DTO
 
 		j.at("mapPreAnimNames").get_to(d.mapPreAnimNames);
 		j.at("vecMainAnimNames").get_to(d.vecMainAnimNames);
+
+		if (j.contains("vecGlobalStateTransition"))
+			j.at("vecGlobalStateTransition").get_to(d.vecGlobalStateTransition);
+		else
+			d.vecGlobalStateTransition = vector<STATE_TRANSITION>();
 
 		j.at("vecStateTransition").get_to(d.vecStateTransition);
 

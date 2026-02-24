@@ -431,6 +431,13 @@ void CToolUI::Sync_DImageData()
 	m_tDImageData.eDISubClassType	= m_eDImageSubClassType;
 }
 
+void CToolUI::Sync_WorldUIData()
+{
+	m_tWorldUIData.strTag			= m_strName + "_WorldUIData";
+	m_tWorldUIData.strOwnerName		= m_strName;
+	m_tWorldUIData.eWorldUISubClass = m_eWorldUISubClassType;
+}
+
 _bool CToolUI::Add_Tag(vector<_string>& vec, const _string& str)
 {
 	if (str == "")

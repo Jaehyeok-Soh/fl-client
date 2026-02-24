@@ -35,11 +35,11 @@ public:
 	virtual void Update(const _float fTimeDelta);
 	virtual void Update_Late(const _float fTimeDelta);
 	virtual void Ready_Before_Render(const _float fTimeDelta);
-	virtual void OnCollision(_uint iMyColliderLayer, CGameObject* pOther) {}
-	virtual void OnCollision_Enter(_uint iMyColliderLayer, CGameObject* pOther) {}
-	virtual void OnCollision_Exit(_uint iMyColliderLayer, CGameObject* pOther) {}
-	virtual void OnTrigger_Enter(_uint iMyColliderLayer, CGameObject* pOther) {}
-	virtual void OnTrigger_Exit(_uint iMyColliderLayer, CGameObject* pOther) {}
+	virtual void OnCollision(_uint iMyColliderLayer, _uint iOtherLayer, CGameObject* pOther) {}
+	virtual void OnCollision_Enter(_uint iMyColliderLayer, _uint iOtherLayer, CGameObject* pOther, const COL_HIT_INFO &tHitInfo) {}
+	virtual void OnCollision_Exit(_uint iMyColliderLayer, _uint iOtherLayer, CGameObject* pOther) {}
+	virtual void OnTrigger_Enter(_uint iMyColliderLayer, _uint iOtherLayer, CGameObject* pOther) {}
+	virtual void OnTrigger_Exit(_uint iMyColliderLayer, _uint iOtherLayer, CGameObject* pOther) {}
 	virtual _bool Picking(OUT Vec3& vOut) { return false; }
 	virtual HRESULT Render();
 	virtual HRESULT Spawn_FromPool(void* pArg) { return S_OK; }

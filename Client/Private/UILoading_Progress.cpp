@@ -31,6 +31,9 @@ HRESULT CUILoading_Progress::Initialize_Prototype()
 HRESULT CUILoading_Progress::Initialize(void* pArg)
 {
 	LOADING_PROGRESS_DESC* pDesc = static_cast<LOADING_PROGRESS_DESC*>(pArg);
+	m_pLoadingRatio = pDesc->pLoadingRatio;
+	m_fProgress_Ratio = 0.f;
+
 	if (FAILED(Super::Initialize(pArg)))
 		return E_FAIL;
 
@@ -55,6 +58,7 @@ void CUILoading_Progress::Update_Priority(const _float fTimeDelta)
 void CUILoading_Progress::Update(const _float fTimeDelta)
 {
 	Super::Update(fTimeDelta);
+	m_fCurRatio = *m_pLoadingRatio;
 }
 
 void CUILoading_Progress::Update_Late(const _float fTimeDelta)
@@ -83,53 +87,6 @@ HRESULT CUILoading_Progress::Render()
 	Get_Component<CVIBuffer>()->Render();
 
 	return S_OK;
-}
-
-void CUILoading_Progress::OnUIEvent(ETriggerEventType eEvent, CGenericUI* pSender)
-{
-	if (!m_isActive)
-		return;
-
-	if (eEvent == ETriggerEventType::PRESS_ENTER)
-	{
-		if (m_isVisible)
-			Set_Invisible();
-		else
-			Set_Visible();
-	}
-}
-
-void CUILoading_Progress::Initialize_Visible_Event()
-{
-	m_isActive		= false;
-	m_isFin_Event	= false;
-	m_fTimeAcc		= 0.f;
-	m_fAlpha_Ratio	= 0.f;
-}
-
-void CUILoading_Progress::Initialize_InVisible_Event()
-{
-	m_isFin_Event	= false;
-	m_fTimeAcc		= 0.f;
-}
-
-_bool CUILoading_Progress::Tick_Visible_Event(const _float fTimeDelta)
-{
-	m_fAlpha_Ratio += fTimeDelta * 2.f;
-	if (m_fAlpha_Ratio >= 1.f)
-	{
-		m_fAlpha_Ratio = 1.f;
-		m_isFin_Event = true;
-		m_isActive = true;
-		return true;
-	}
-	return false;
-}
-
-_bool CUILoading_Progress::Tick_InVisible_Event(const _float fTimeDelta)
-{
-	m_isFin_Event = true;
-	return true;
 }
 
 HRESULT CUILoading_Progress::Ready_Components(LOADING_PROGRESS_DESC* pDesc)

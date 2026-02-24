@@ -49,10 +49,12 @@ private:
 
 	void DrawTimeCounter(const char* label, DTO::MONSTERTIME_COUNTER& counter);
 	void DrawStateTransition(DTO::STATE_TRANSITION& transition, int index);
+	void DrawGlobalStateTransition();
 
 	bool InputTextString(const char* label, std::string& str);
 
 	void SyncStateNamesToSet();
+	void SyncGlobalStateTransition();
 	bool DrawStateComboBox(const char* label, std::string& selectedState);
 	bool DrawAnimationComboBox(const char* label, std::string& selectedAnim);
 
@@ -85,6 +87,8 @@ private:
 private:
 	DTO::MONSTERSTATE_DESC m_MonsterData;
 	int m_iSelectedIndex = -1;
+
+	vector<DTO::STATE_TRANSITION> m_vecGlobalStateTransition;
 
 	char m_szGlobalSetBuf[256] = "";
 

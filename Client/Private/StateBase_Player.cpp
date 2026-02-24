@@ -50,6 +50,7 @@ HRESULT CStateBase_Player::Start(void* pArg, _bool bForce)
 	m_tKeyTimer.fTimeAcc = 0.f;
 
 	m_TFallingCount.x = 0.f;
+	m_TChargeCount.x = 0.f;
 
 	return S_OK;
 }
@@ -175,9 +176,24 @@ _bool CStateBase_Player::Check_JumpKey(const _float fTimeDelta)
 			return true;
 		}
 
+		// 만약 jump double을 할거라면 한번 체크
+		if (m_vecChangeState_ByKey[ENUM_TO_UINT(STATEKEY::SPACE)] == ENUM_TO_UINT(CPlayer::State::JUMPDOUBLE))
+		{
+			if (Check_Double())
+			{
+				Change_PlayerState(STATEKEY::SPACE);
+				return true;
+			}
+
+			return false;
+		}
+
 		// 아니라면 그냥 키전환
-		Change_PlayerState(STATEKEY::SPACE);
-		return true;
+		else
+		{
+			Change_PlayerState(STATEKEY::SPACE);
+			return true;
+		}
 	}
 
 	return false;
@@ -224,8 +240,14 @@ _bool CStateBase_Player::Check_MeleeKey(const _float fTimeDelta)
 	if (Has_ChangeState(STATEKEY::CHARGE) &&
 		Key_Input(ENUM_TO_UINT(CControlContext::CONTROL_KEY::CHARGATT)))
 	{
-		Change_PlayerState(STATEKEY::CHARGE);
-		return true;
+		m_TChargeCount.x += fTimeDelta;
+
+		if (m_TChargeCount.x >= m_TChargeCount.y)
+		{
+			m_TChargeCount.x = 0.f;
+			Change_PlayerState(STATEKEY::CHARGE);
+			return true;
+		}
 	}
 
 	else if (Has_ChangeState(STATEKEY::LM) &&
@@ -322,6 +344,21 @@ _bool CStateBase_Player::Start_Att(_uint iPlayerState)
 void CStateBase_Player::End_Att(_uint iPlayerState)
 {
 	static_cast<CPlayer*>(Get_OwnerObject())->End_Attack(static_cast<CPlayer::State>(iPlayerState));
+}
+
+void CStateBase_Player::Set_RootMotion_Apply(_bool bApply)
+{
+	static_cast<CPlayer*>(Get_OwnerObject())->Set_RootMotion_Apply(bApply);
+}
+
+void CStateBase_Player::Set_DoubleJump(_bool bCount)
+{
+	static_cast<CPlayer*>(Get_OwnerObject())->Set_DoubleJump(bCount);
+}
+
+_bool CStateBase_Player::Check_Double()
+{
+	return static_cast<CPlayer*>(Get_OwnerObject())->Check_DoubleJump();
 }
 
 _bool CStateBase_Player::Has_ChangeState(STATEKEY eKey)

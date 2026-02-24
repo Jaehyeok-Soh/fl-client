@@ -24,7 +24,7 @@
 
 #include "Canvas.h"
 #include "UI_Manager.h"
-#include "CameraMan_Targeter.h"
+#include "WorldUI_Component.h"
 
 USING(Client)
 
@@ -42,7 +42,6 @@ HRESULT CMainApplication::Initialize()
 	EngineDesc.iWinCX = g_iWinSizeX;
 	EngineDesc.iWinCY = g_iWinSizeY;
 	EngineDesc.iLevelCount = g_iLevelType_Count;
-	EngineDesc.iCollideLayerCount = g_iCollideLayer_Count;
 	EngineDesc.hWnd = g_hWnd;
 	EngineDesc.hInst = g_hInstance;
 
@@ -229,11 +228,21 @@ HRESULT CMainApplication::Ready_Static_Prototype()
 			return E_FAIL;
 	}
 
-	// For. Prototype_Component_Shader_GetBone
+	//// For. Prototype_Component_Shader_GetBone
+	//{
+	//	CComputeShader::ComShaderOriginDesc shaderDesc = {};
+	//	shaderDesc.pShaderFilePath = L"../../Shaders/ComShader_GetBoneCombine.hlsl";
+	//	if (FAILED(m_pGameInstance->Add_Prototype(ENUM_TO_UINT(ELevelType::STATIC), L"Prototype_Component_Shader_GetBone",
+	//		CComputeShader::Create(m_pDevice, m_pDeviceContext, &shaderDesc))))
+	//		return E_FAIL;
+	//}
+
+	// For. Prototype_Component_Shader_AnimMix
 	{
+		//ComShader_AnimMix
 		CComputeShader::ComShaderOriginDesc shaderDesc = {};
-		shaderDesc.pShaderFilePath = L"../../Shaders/ComShader_GetBoneCombine.hlsl";
-		if (FAILED(m_pGameInstance->Add_Prototype(ENUM_TO_UINT(ELevelType::STATIC), L"Prototype_Component_Shader_GetBone",
+		shaderDesc.pShaderFilePath = L"../../Shaders/ComShader_AnimMix.hlsl";
+		if (FAILED(m_pGameInstance->Add_Prototype(ENUM_TO_UINT(ELevelType::STATIC), L"Prototype_Component_Shader_AnimMix",
 			CComputeShader::Create(m_pDevice, m_pDeviceContext, &shaderDesc))))
 			return E_FAIL;
 	}
@@ -306,8 +315,14 @@ HRESULT CMainApplication::Ready_Static_Prototype()
 			return E_FAIL;
 	}
 
+	// For. Prototype_ScriptComponent_WorldUI
+	{
+		if (FAILED(m_pGameInstance->Add_Prototype(ENUM_TO_UINT(ELevelType::STATIC), L"Prototype_ScriptComponent_WorldUI",
+			CWorldUI_Component::Create())))
+			return E_FAIL;
+	}
 	// For. UI Texture
-	if (FAILED(Loading_Textures(L"../../Resources/Textures/UI/UI_Client/")))
+	if (FAILED(Loading_Textures(L"../../Resources/Textures/UI/UI_Client/Loading/")))
 		return E_FAIL;
 
 	// For. Prototype_Component_Transform

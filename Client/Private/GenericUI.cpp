@@ -8,6 +8,7 @@
 #include "Texture.h"
 #include "Shader.h"
 #include "VIBuffer_Rect_Tex.h"
+#include "WorldUI_Component.h"
 #include "UI_Manager.h"
 #include "GameInstance.h"
 
@@ -111,6 +112,11 @@ void CGenericUI::Update_Late(const _float fTimeDelta)
 
 void CGenericUI::Ready_Before_Render(const _float fTimeDelta)
 {
+	if (nullptr != m_pWorldUIComp)
+	{
+		Set_Position(Vec3{ m_pWorldUIComp->Get_TargetScreenPos().x, m_pWorldUIComp->Get_TargetScreenPos().y, m_fZ }) ;
+		Move_Size(m_fWidth * m_pWorldUIComp->Get_ScaleOffset(), m_fHeight * m_pWorldUIComp->Get_ScaleOffset());
+	}
 	Super::Ready_Before_Render(fTimeDelta);
 }
 
@@ -128,8 +134,6 @@ _bool CGenericUI::Calc_HitEvent()
 {
 	if (!m_isInteract)
 		return FALSE;
-	_string strName = m_strName;
-
 	if (::PtInRect(&m_tRenderRect, m_pGameInstance->Get_MousePos()))
 		return TRUE;
 	return FALSE;
@@ -152,6 +156,35 @@ HRESULT CGenericUI::Ready_Components(GENERIC_UI_DESC* pDesc)
 	if (FAILED(Add_Component<CVIBuffer_Rect_Tex>(0, L"Prototype_Component_VIBuffer_Rect_Tex", pDesc)))
 		return E_FAIL;
 
+	if ((pDesc->iComponentFlag & DTO::EComponentTypeFlag::WORLDUI_COMPONENT) != 0)
+	{
+		CWorldUI_Component::WOLRD_UI_COMP_DESC Desc = {};
+		auto* p = m_pGameInstance->Get_GameObject_Front(ENUM_TO_UINT(ELevelType::LOGO), L"Monster");
+		if (nullptr == p)
+			return E_FAIL;
+		//Desc.pTargetTransform = (pDesc->pTarget->Get_Component<CTransform>());
+		Desc.pTargetObject = (p);
+
+		D3D11_VIEWPORT vp = {};
+		_uint n = 1;
+		m_pDeviceContext->RSGetViewports(&n, &vp);
+		Desc.fVPWidth		= vp.Width;
+		Desc.fVPHegiht		= vp.Height;
+		Desc.fVPTopLeftX	= vp.TopLeftX;
+		Desc.fVPTopLeftY	= vp.TopLeftY;
+		Desc.fInitOffset = Vec2{ m_fX, m_fY };
+
+		if (FAILED(Add_Script_Component(L"WorldUIComponent", L"Prototype_ScriptComponent_WorldUI", &Desc)))
+			return E_FAIL;
+
+		auto* pScriptComp = Get_Script_Component(L"WorldUIComponent");
+		if (nullptr == pScriptComp)
+			return E_FAIL;
+		auto* pWorldUIComp = static_cast<CWorldUI_Component*>(pScriptComp);
+		if (nullptr == pWorldUIComp)
+			return E_FAIL;
+		m_pWorldUIComp = pWorldUIComp;
+	}
 	return S_OK;
 }
 

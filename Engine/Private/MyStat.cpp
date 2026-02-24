@@ -244,6 +244,5 @@ CComponent* CMyStat::Clone(void* pArg)
 
 void CMyStat::Free()
 {
-	Safe_Release(m_pGameInstance);
 	Super::Free();
 }

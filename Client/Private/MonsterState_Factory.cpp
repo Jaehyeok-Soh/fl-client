@@ -1,6 +1,8 @@
 #include "pch.h"
 #include "MonsterState_Factory.h"
 
+#include "GameObject.h"
+
 #include "StateBase_Monster.h"
 #include "ActionState.h"
 #include "ControlContext.h"
@@ -57,6 +59,22 @@ HRESULT CMonsterState_Factory::Ready_Condition()
 	REGISTER_CONDITION("condition_target_lost", CONDITION{ return MONSTERCC(state)->IsTargetLost(); });
 	
 	REGISTER_CONDITION("condition_animation_finish", CONDITION{ return state->Is_MainAnimFinished(); });
+	
+	REGISTER_CONDITION("condition_die", CONDITION{ return state->Get_OwnerObject()->IsDead(); });
+
+	REGISTER_CONDITION("condition_hit_light", CONDITION{ return false; /*hit light*/ });
+
+	REGISTER_CONDITION("condition_hit_heavy", CONDITION{ return false; /*hit heady*/ });
+
+	REGISTER_CONDITION("condition_hit_additive", CONDITION{ return false; /*hit additive*/ });
+
+	REGISTER_CONDITION("condition_loop_animation", CONDITION{ return state->IsLoop(); });
+
+	REGISTER_CONDITION("condition_cancellation", CONDITION{ return state->IsCancellation(); });
+
+	REGISTER_CONDITION("condition_non_cancellation", CONDITION{ return !state->IsCancellation(); });
+
+
 
 	return S_OK;
 }
@@ -66,6 +84,8 @@ HRESULT CMonsterState_Factory::Ready_Feature()
 	REGISTER_FEATURE("feat_walk", FEATURE{ MONSTERCC(state)->UpdateWalk(fTimeDelta); state->Align_Movement(fTimeDelta); });
 
 	REGISTER_FEATURE("feat_chase", FEATURE{ MONSTERCC(state)->UpdateChase(fTimeDelta); state->Align_Movement(fTimeDelta); });
+
+	REGISTER_FEATURE("feat_align_attack", FEATURE{ MONSTERCC(state)->UpdateChase(fTimeDelta); state->Turn_byCam(fTimeDelta); });
 
 	return S_OK;
 }

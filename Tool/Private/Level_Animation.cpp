@@ -29,6 +29,7 @@
 #include "Panel_ModelInfo.h"
 #include "Panel_Parts.h"
 #include "Panel_State.h"
+#include "Panel_AnimationMix.h"
 
 #include "DebugDraw.h"
 
@@ -209,6 +210,8 @@ HRESULT CLevel_Animation::Ready_Panels()
 
 	m_GuiElements[Elements::STATEEDITOR] = CPanel_State::Create("Panel_State", this, m_pDevice, m_pDeviceContext);
 
+	m_GuiElements[Elements::MIXER] = CPanel_AnimationMix::Create("Panel_AnimMixer", this, m_pDevice, m_pDeviceContext);
+
 	return S_OK;
 }
 
@@ -303,7 +306,7 @@ void CLevel_Animation::Load_AnimModel(fs::path animModelPath)
 	SetAnimationInfo(animModelPath);
 }
 
-void CLevel_Animation::Load_PartObject(fs::path animPartModelPath, _int iSocketBondIdx, _bool bCombine)
+void CLevel_Animation::Load_PartObject(fs::path animPartModelPath, _int iSocketBondIdx, _bool bCombine, _bool bStatic)
 {
 	if (!m_pSelectedObject)
 	{
@@ -317,7 +320,7 @@ void CLevel_Animation::Load_PartObject(fs::path animPartModelPath, _int iSocketB
 	// 모델 프로토타입 추가.
 	wstring modelProtoTag = L"Prototype_Component_Model_" + animPartModelPath.stem().wstring();
 	CModel::MODEL_ORIGIN_DESC desc = {};
-	desc.eType = EModelType::STATIC; // 무기는 보통 고정 모델, 필요시 분기
+	desc.eType = bStatic ? EModelType::STATIC : EModelType::ANIM; // 무기는 보통 고정 모델, 필요시 분기
 	desc.iPrototypeLevelIndex = ENUM_TO_UINT(ELevelType::ANIMATION);
 	desc.wstrModelFolderName = animPartModelPath.stem().wstring();
 	desc.pMatPreTransform;
@@ -338,7 +341,7 @@ void CLevel_Animation::Load_PartObject(fs::path animPartModelPath, _int iSocketB
 	else
 		weaponDesc.pMatSocket = &pParentModel->Get_Bone(iSocketBondIdx)->Get_BindPoseTransformMatrix();
 
-	weaponDesc.eModel = CTool_Weapon::Weapon_ModelType::STATIC;
+	weaponDesc.eModel = bStatic ? CTool_Weapon::Weapon_ModelType::STATIC : CTool_Weapon::Weapon_ModelType::ANIM;
 	weaponDesc.iSocketIdx = iSocketBondIdx;
 
 	_uint iPartID = (_uint)pAnimObj->Get_PartList().size();

@@ -29,6 +29,7 @@ public:
 		BODY = 0,
 		SWORD,
 		SKILL,
+		GUN,
 		END
 	};
 
@@ -97,23 +98,33 @@ public:
 
 	// state funcs
 public:
-	void Change_Weapon(_uint iPart, _uint iState); // 어떤 weapon을 어떤 state로
-	_bool Check_OnGround(_float fMaxDist = 0.72f);
-	_bool Check_ColliWithMonster();
-	void Count_Combo();
-	void Count_Dash();
+	void	Change_Weapon(_uint iPart, _uint iState); // 어떤 weapon을 어떤 state로
+	_bool	Check_OnGround(_float fMaxDist = 0.72f);
+	_bool	Check_ColliWithMonster();
+	void	Count_Combo();
+	void	Count_Dash();
+	void	Set_RootMotion_Apply(_bool bApply);
+
+	_bool	Check_DoubleJump();
+	void	Set_DoubleJump(_bool bCount) { m_tDoubleJumpCount.bCountTime = bCount; if (!bCount) m_tDoubleJumpCount.fTimeAcc = 0.f; }
 
 public:
 	_bool	Start_Attack(State iState);
 	void	End_Attack(State iState);
+
+protected:
+	CPhysics_QueryFilterCallback* m_pPhysic_QueryFilter = { nullptr };
+
+protected:
+	TIME_COUNTER m_tDoubleJumpCount = {};
 
 private:
 	HRESULT Ready_BaseStates();
 	HRESULT Ready_PartObjects(PLAYER_DESC* pDesc);
 	HRESULT Ready_Components(PLAYER_DESC* pDesc);
 
-protected:
-	CPhysics_QueryFilterCallback* m_pPhysic_QueryFilter = { nullptr };
+private:
+	void Count_DoubleJump(const _float fTimeDelta);
 
 public:
 	virtual CGameObject* Clone(void* pArg) PURE;

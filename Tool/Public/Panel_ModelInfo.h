@@ -34,6 +34,8 @@ private:
 
 	_bool m_bFirst = { true };
 
+	_float m_iAnimationSpeed = { 1.f };
+
 	// render
 private:
 	void Render_RootMotionInfo();
@@ -41,6 +43,7 @@ private:
 	void Render_AnimationInfo();
 	void Anim_Info();
 	void RootOffset_Info();
+	void AnimationSpeed();
 
 private:
 	void Set_RootBone();

@@ -61,6 +61,7 @@ CPlayer::CPlayer(ID3D11Device* pDevice, ID3D11DeviceContext* pDeviceContext)
 CPlayer::CPlayer(const CPlayer& rhs)
     : Super(rhs)
     , m_pPhysic_QueryFilter(rhs.m_pPhysic_QueryFilter)
+    , m_tDoubleJumpCount(rhs.m_tDoubleJumpCount)
 {
     m_vecPartObjects.resize(Part::END, nullptr);
     Safe_AddRef(m_pPhysic_QueryFilter);
@@ -70,6 +71,11 @@ HRESULT CPlayer::Initialize_Prototype()
 {
     if (FAILED(Super::Initialize_Prototype()))
         return E_FAIL;
+
+    m_tDoubleJumpCount.bCountTime = false;
+    m_tDoubleJumpCount.bTimeReset = true;
+    m_tDoubleJumpCount.fMaxTime = 5.f;
+    m_tDoubleJumpCount.fTimeAcc = 0.f;
 
     m_pPhysic_QueryFilter = CPhysics_QueryFilterCallback::Create();
     m_pPhysic_QueryFilter->SetOwner(this);
@@ -115,6 +121,7 @@ HRESULT CPlayer::Awake(const _uint iCurrentLevelID)
 
 void CPlayer::Update_Priority(const _float fTimeDelta)
 {
+    Count_DoubleJump(fTimeDelta);
     Super::Update_Priority(fTimeDelta);
 }
 
@@ -233,6 +240,16 @@ void CPlayer::Count_Dash()
     static_cast<CStatCom_Player*>(Get_Component<CMyStat>())->Sub_DashCount();
 }
 
+void CPlayer::Set_RootMotion_Apply(_bool bApply)
+{
+    Get_Part<CBody>(Part::BODY)->Get_Component<CModel>()->Set_CurAnimation_RootApply(bApply);
+}
+
+_bool CPlayer::Check_DoubleJump()
+{
+    return !(m_tDoubleJumpCount.bCountTime);
+}
+
 _bool CPlayer::Start_Attack(State iState)
 {
     _bool bChange = { false };
@@ -317,7 +334,7 @@ HRESULT CPlayer::Ready_BaseStates()
                                 ,{ENUM_TO_UINT(State::RUNLOOP), Get_AnimationIndex(L"Animation_PlayerMoon_Run_Stop_L_Acc")}
         };
         desc.vecMainAnims   = { Get_AnimationIndex(L"Animation_PlayerMoon_Idle") }; //Animation_PlayerMoon_Idle //Animation_Pino_Combo_Slash1
-        desc.bBlend         = false;
+        desc.bBlend         = true;
         desc.bLoop          = true;
 
         desc.FMoves = CStateBase_Player::MOVEFLAGS::PRESS_CHANGE;
@@ -335,7 +352,7 @@ HRESULT CPlayer::Ready_BaseStates()
         desc.vecChangeState_ByKey = vecChangeState_ByKey;
 
         tKeyTimer.bCountTime    = true;
-        tKeyTimer.fMaxTime      = 0.05f;
+        tKeyTimer.fMaxTime      = 0.08f;
         desc.tKeyTimer = tKeyTimer;
 
         if (FAILED(pActionState->Add_State(ENUM_TO_UINT(State::IDLE), CState_Idle::Create(pActionState, &desc))))
@@ -369,6 +386,7 @@ HRESULT CPlayer::Ready_BaseStates()
         vecChangeState_ByKey[ENUM_TO_SZET(CStateBase_Player::STATEKEY::CHARGE)]         = ENUM_TO_UINT(CPlayer::State::CHARGE);
         desc.vecChangeState_ByKey = vecChangeState_ByKey;
 
+        tKeyTimer.bCountTime = false;
         desc.tKeyTimer = tKeyTimer;
 
         if (FAILED(pActionState->Add_State(ENUM_TO_UINT(State::WALK), CState_Walk::Create(pActionState, &desc))))
@@ -390,13 +408,14 @@ HRESULT CPlayer::Ready_BaseStates()
         vecChangeState_ByKey[ENUM_TO_SZET(CStateBase_Player::STATEKEY::SHIFT)]          = ENUM_TO_UINT(State::DASHBACK);
         vecChangeState_ByKey[ENUM_TO_SZET(CStateBase_Player::STATEKEY::LCRTL_PRESS)]    = ENUM_TO_UINT(State::END);
         vecChangeState_ByKey[ENUM_TO_SZET(CStateBase_Player::STATEKEY::LCRTL_UP)]       = ENUM_TO_UINT(State::IDLE);
-        vecChangeState_ByKey[ENUM_TO_SZET(CStateBase_Player::STATEKEY::E)] = ENUM_TO_UINT(State::SKILL1);
-        vecChangeState_ByKey[ENUM_TO_SZET(CStateBase_Player::STATEKEY::Q)] = ENUM_TO_UINT(State::SKILL2);
+        vecChangeState_ByKey[ENUM_TO_SZET(CStateBase_Player::STATEKEY::E)]              = ENUM_TO_UINT(State::SKILL1);
+        vecChangeState_ByKey[ENUM_TO_SZET(CStateBase_Player::STATEKEY::Q)]              = ENUM_TO_UINT(State::SKILL2);
         vecChangeState_ByKey[ENUM_TO_SZET(CStateBase_Player::STATEKEY::LM)]             = ENUM_TO_UINT(State::COMBO);
         //vecChangeState_ByKey[ENUM_TO_SZET(CStateBase_Player::STATEKEY::RM)]           = ENUM_TO_UINT(State::GUN);
         vecChangeState_ByKey[ENUM_TO_SZET(CStateBase_Player::STATEKEY::CHARGE)]         = ENUM_TO_UINT(State::END);
         desc.vecChangeState_ByKey = vecChangeState_ByKey;
 
+        tKeyTimer.bCountTime = false;
         desc.tKeyTimer = tKeyTimer;
 
         if (FAILED(pActionState->Add_State(ENUM_TO_UINT(State::CROUCH), CState_Crouch::Create(pActionState, &desc))))
@@ -425,6 +444,7 @@ HRESULT CPlayer::Ready_BaseStates()
         vecChangeState_ByKey[ENUM_TO_SZET(CStateBase_Player::STATEKEY::CHARGE)]         = ENUM_TO_UINT(State::END);
         desc.vecChangeState_ByKey = vecChangeState_ByKey;
 
+        tKeyTimer.bCountTime = false;
         desc.tKeyTimer = tKeyTimer;
 
         if (FAILED(pActionState->Add_State(ENUM_TO_UINT(State::CROUCHWALK), CState_CrouchWalk::Create(pActionState, &desc))))
@@ -457,6 +477,9 @@ HRESULT CPlayer::Ready_BaseStates()
         //vecChangeState_ByKey[ENUM_TO_SZET(CStateBase_Player::STATEKEY::RM)]             = ENUM_TO_UINT(State::END);
         vecChangeState_ByKey[ENUM_TO_SZET(CStateBase_Player::STATEKEY::CHARGE)]         = ENUM_TO_UINT(State::END);
         desc.vecChangeState_ByKey = vecChangeState_ByKey;
+
+        tKeyTimer.bCountTime = true;
+        tKeyTimer.fMaxTime = 0.1f;
         desc.tKeyTimer = tKeyTimer;
 
         if (FAILED(pActionState->Add_State(ENUM_TO_UINT(State::SLIDE), CState_Slide::Create(pActionState, &desc))))
@@ -487,7 +510,7 @@ HRESULT CPlayer::Ready_BaseStates()
         desc.vecChangeState_ByKey = vecChangeState_ByKey;
 
         tKeyTimer.bCountTime = true;
-        tKeyTimer.fMaxTime = 0.05f;
+        tKeyTimer.fMaxTime = 0.1f;
         desc.tKeyTimer = tKeyTimer;
 
         if (FAILED(pActionState->Add_State(ENUM_TO_UINT(State::DASHBACK), CState_DashBack::Create(pActionState, &desc))))
@@ -830,6 +853,16 @@ HRESULT CPlayer::Ready_Components(PLAYER_DESC* pDesc)
     }
 
     return S_OK;
+}
+
+void CPlayer::Count_DoubleJump(const _float fTimeDelta)
+{
+    // count time¿Ã ¥Ÿ √°¥Ÿ∏È
+    if (m_tDoubleJumpCount.CountTime(fTimeDelta) ==1.f)
+    {
+        // false∑Œ πŸ≤„¡‹
+        m_tDoubleJumpCount.bCountTime = false;
+    }
 }
 
 void CPlayer::Free()
