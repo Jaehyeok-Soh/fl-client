@@ -69,6 +69,19 @@ void CVine::Ready_Before_Render(const _float fTimeDelta)
 
 HRESULT CVine::Render()
 {
+	if (m_eMapObjectDrawType == EMapObject_DrawType::Instance)
+	{
+		if (FAILED(CMapObject::Render_Instance(ENUM_TO_UINT(EMapObjectShaderPass::Vine))))
+			return E_FAIL;
+	}
+	else
+	{
+		if (FAILED(CMapObject::Render_Default(ENUM_TO_UINT(EMapObjectShaderPass::Vine))))
+			return E_FAIL;
+	}
+
+
+
 	return S_OK;
 }
 

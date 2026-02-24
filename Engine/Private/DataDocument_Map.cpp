@@ -34,7 +34,7 @@ json CDataDocument_Map::ToJson() const
 		}
 
 	if(pSceneData)
-		j["Scene Data"] = pSceneData->ToJson();
+		j["Level Data"] = pSceneData->ToJson();
 
 
 	j["Objects"] = std::move(jsonArray);
@@ -54,11 +54,11 @@ HRESULT CDataDocument_Map::FromJson(const json& j)
 
 
 
-	if (j.contains("Scene Data"))
+	if (j.contains("Level Data"))
 	{
-		CData_SceneData* pSceneData = CData_SceneData::Create();
+		CData_LevelData* pSceneData = CData_LevelData::Create();
 
-		if (FAILED(pSceneData->FromJson(j["Scene Data"])))
+		if (FAILED(pSceneData->FromJson(j["Level Data"])))
 		{
 			Safe_Release(pSceneData);
 			return E_FAIL;
@@ -106,9 +106,9 @@ HRESULT CDataDocument_Map::Try_Add(const DTO::TMap_MapObjectData& data)
 	return Try_Add(pObjectBase);
 }
 
-HRESULT CDataDocument_Map::Try_Add(const DTO::TSceneData& data)
+HRESULT CDataDocument_Map::Try_Add(const DTO::TLevelData& data)
 {
-	CData_SceneData* pObjectBase = CData_SceneData::Create();
+	CData_LevelData* pObjectBase = CData_LevelData::Create();
 	pObjectBase->Get_Data() = data;
 	return Try_Add(pObjectBase);
 }

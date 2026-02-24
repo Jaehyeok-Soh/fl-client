@@ -21,7 +21,7 @@ private:
 public:
 	virtual HRESULT Build(const CDataDocumentBase& document) override;
 private:
-	HRESULT SceneData_Setting(const DTO::TSceneData& tData);
+	HRESULT SceneData_Setting(const DTO::TLevelData& tData);
 	HRESULT Create_StaticObject(const DTO::TMap_MapObjectData& tData);
 	HRESULT Create_LandScape(const DTO::TMap_MapObjectData& tData);
 

@@ -73,7 +73,7 @@ HRESULT CLevel_Map::Initialize()
 
 	m_pMapToolManager->Set_LevelMap(this);
 	
-	m_pMapToolManager->Ready_SceneData();
+	m_pMapToolManager->Ready_LevelData();
 
 
 	if (FAILED(m_pMapToolManager->Register_MapTexture()))

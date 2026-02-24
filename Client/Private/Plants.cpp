@@ -39,7 +39,7 @@ HRESULT CPlants::Ready_Component(PLANTS_DESC* pDesc)
 
 HRESULT CPlants::Awake(const _uint iCurrentLevelID)
 {
-	if (FAILED(Awake(iCurrentLevelID)))
+	if (FAILED(Super::Awake(iCurrentLevelID)))
 		return E_FAIL;
 
 	return S_OK;

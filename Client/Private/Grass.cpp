@@ -69,6 +69,9 @@ void CGrass::Ready_Before_Render(const _float fTimeDelta)
 
 HRESULT CGrass::Render()
 {
+
+
+
 	return S_OK;
 }
 

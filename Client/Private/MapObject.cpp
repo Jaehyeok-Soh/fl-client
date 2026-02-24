@@ -177,6 +177,10 @@ void	CMapObject::Update_Late(const _float fTimeelta)
 void	CMapObject::Ready_Before_Render(const _float fTimeDelta)
 {
 	Super::Ready_Before_Render(fTimeDelta);
+
+    m_pGameInstance->Push_RenderObject(RENDER_CATEGORY::NONEBLEND, this);
+
+
 #ifdef _DEBUG
     if (m_eMapObjectDrawType == EMapObject_DrawType::Instance)
         m_pGameInstance->Push_DebugComponent(Get_Component<CBounds>());

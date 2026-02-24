@@ -415,6 +415,15 @@
     <Filter Include="03. GameObject\MapObject\05. Water">
       <UniqueIdentifier>{4cae9daa-fe9c-46ab-b571-910568be8b8b}</UniqueIdentifier>
     </Filter>
+    <Filter Include="02. Level\Tutorial_Village">
+      <UniqueIdentifier>{b2fed15e-bf3a-4c63-8815-60f37d6ce25c}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02. Level\Tutorial_Boss">
+      <UniqueIdentifier>{2bfda849-9bb8-4f16-b297-2e1c6dcf6c85}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02. Level\Square">
+      <UniqueIdentifier>{0214ac06-4136-4164-90f8-af92c061bfe3}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="targetver.h">
@@ -771,7 +780,6 @@
     <ClInclude Include="..\Public\Builder_MonsterState.h">
       <Filter>07. System\01. Builder\Builder_MonsterState</Filter>
     </ClInclude>
-    <ClInclude Include="..\Public\LandScape.h" />
     <ClInclude Include="..\Public\Plants.h">
       <Filter>03. GameObject\MapObject\03. Plants\00. Plants</Filter>
     </ClInclude>
@@ -795,6 +803,18 @@
     </ClInclude>
     <ClInclude Include="..\Public\Water.h">
       <Filter>03. GameObject\MapObject\05. Water</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\LandScape.h">
+      <Filter>03. GameObject\MapObject\02. LandScape</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\Level_Tutorial_Village.h">
+      <Filter>02. Level\Tutorial_Village</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\Level_Tutorial_Boss.h">
+      <Filter>02. Level\Tutorial_Boss</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\Level_Square.h">
+      <Filter>02. Level\Square</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -1144,7 +1164,6 @@
     <ClCompile Include="..\Private\Builder_MonsterState.cpp">
       <Filter>07. System\01. Builder\Builder_MonsterState</Filter>
     </ClCompile>
-    <ClCompile Include="..\Private\LandScape.cpp" />
     <ClCompile Include="..\Private\Plants.cpp">
       <Filter>03. GameObject\MapObject\03. Plants\00. Plants</Filter>
     </ClCompile>
@@ -1168,6 +1187,18 @@
     </ClCompile>
     <ClCompile Include="..\Private\Water.cpp">
       <Filter>03. GameObject\MapObject\05. Water</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\LandScape.cpp">
+      <Filter>03. GameObject\MapObject\02. LandScape</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\Level_Tutorial_Village.cpp">
+      <Filter>02. Level\Tutorial_Village</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\Level_Tutorial_Boss.cpp">
+      <Filter>02. Level\Tutorial_Boss</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\Level_Square.cpp">
+      <Filter>02. Level\Square</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

@@ -41,9 +41,9 @@ HRESULT CBuilder_Map::Build(const CDataDocumentBase& document)
 		const vector<Engine::IObjectDataBase*> vecSceneData = doc.Get_ListByType(ENUM_TO_UINT(DTO::EMapObject_Type::SCENEDATA));
 		for (const auto& pObjectData : vecSceneData)
 		{
-			const auto* pSceneData = static_cast<const Engine::CData_SceneData*>(pObjectData);
+			const auto* pSceneData = static_cast<const Engine::CData_LevelData*>(pObjectData);
 
-			DTO::TSceneData tData = pSceneData->Get_Data();
+			DTO::TLevelData tData = pSceneData->Get_Data();
 
 			/* Scene Data */
 			SceneData_Setting(tData);
@@ -64,8 +64,14 @@ HRESULT CBuilder_Map::Build(const CDataDocumentBase& document)
 			switch (eClientMakePath)
 			{
 			case DTO::EClientMakePath::StaticObject:	Create_StaticObject(tData); break;
-			case DTO::EClientMakePath::LandScape:		Create_LandScape(tData); break;
-			case DTO::EClientMakePath::Bush:			(tData); break;
+			case DTO::EClientMakePath::LandScape:		Create_LandScape(tData);	break;
+			case DTO::EClientMakePath::Bush:			Create_Bush(tData);			break;
+			case DTO::EClientMakePath::Tree:			Create_Tree(tData);			break;
+			case DTO::EClientMakePath::Grass:			Create_Grass(tData);		break;
+			case DTO::EClientMakePath::Moss:			Create_Moss(tData);			break;
+			case DTO::EClientMakePath::Rock:			Create_Rock(tData);			break;
+			case DTO::EClientMakePath::Vine:			Create_Vine(tData);			break;
+			case DTO::EClientMakePath::Water:			Create_Water(tData);		break;
 			default:									return E_FAIL;
 			}
 		}
@@ -74,7 +80,7 @@ HRESULT CBuilder_Map::Build(const CDataDocumentBase& document)
 	return S_OK;
 }
 
-HRESULT CBuilder_Map::SceneData_Setting(const DTO::TSceneData& tData)
+HRESULT CBuilder_Map::SceneData_Setting(const DTO::TLevelData& tData)
 {
 	/*  None이라면 돌아가기  */
 	if (tData.strTextureSplatingInfoName != "None")

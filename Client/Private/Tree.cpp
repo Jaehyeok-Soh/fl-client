@@ -69,6 +69,17 @@ void CTree::Ready_Before_Render(const _float fTimeDelta)
 
 HRESULT CTree::Render()
 {
+	if (m_eMapObjectDrawType == EMapObject_DrawType::Instance)
+	{
+		if (FAILED(Render_Instance(ENUM_TO_UINT(EMapObjectShaderPass::Tree))))
+			return E_FAIL;
+	}
+	else
+	{
+		if (FAILED(Render_Default(ENUM_TO_UINT(EMapObjectShaderPass::Tree))))
+			return E_FAIL;
+	}
+
 	return S_OK;
 }
 

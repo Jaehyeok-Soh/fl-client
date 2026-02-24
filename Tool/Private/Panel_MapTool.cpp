@@ -3,7 +3,7 @@
 #include "GameInstance.h"
 #include "MapObject.h"
 #include "Camera.h"
-#include "SceneData.h"
+#include "LevelData.h"
 #include "CameraMan.h"
 
 CPanel_MapTool::CPanel_MapTool(const _char* pLabel, CLevel* pOwner, ID3D11Device* pDevice, ID3D11DeviceContext* pDeviceContext)
@@ -123,7 +123,7 @@ HRESULT CPanel_MapTool::Render(CToolObject* pGo)
 
 	if (ImGui::CollapsingHeader(" Save Scene Data Setting "))
 	{
-		if (FAILED((Render_SaveSceneDataSetting())))
+		if (FAILED((Render_SaveLevelDataSetting())))
 		{
 			ImGui::TreePop();
 			return E_FAIL;
@@ -1057,11 +1057,11 @@ HRESULT CPanel_MapTool::Render_PreViewInfo()
 	return S_OK;
 }
 
-HRESULT CPanel_MapTool::Render_SaveSceneDataSetting()
+HRESULT CPanel_MapTool::Render_SaveLevelDataSetting()
 {
 	ImGui::SeparatorText(" Save Scene Data Setting ");
 
-	if (m_pMapToolManager->m_pSceneData == nullptr) return E_FAIL;
+	if (m_pMapToolManager->m_pLevelData == nullptr) return E_FAIL;
 
 	ImGui::NewLine();
 
@@ -1080,7 +1080,7 @@ HRESULT CPanel_MapTool::Render_SaveSceneDataSetting()
 			if (ImGui::Selectable(m_vecTextureSplatingInfoDataName[i].c_str(), isSelected))
 			{
 				m_iSelectTextureSplatingInfoData = static_cast<_int>(i);
-				m_pMapToolManager->m_pSceneData->m_strTextureSplatingInfoName = m_vecTextureSplatingInfoDataName[i];
+				m_pMapToolManager->m_pLevelData->m_strTextureSplatingInfoName = m_vecTextureSplatingInfoDataName[i];
 			}
 			if (isSelected)
 				ImGui::SetItemDefaultFocus();
@@ -1088,15 +1088,15 @@ HRESULT CPanel_MapTool::Render_SaveSceneDataSetting()
 		ImGui::EndCombo();
 	}
 
-	ImGui::Text(" Save Texture Splating Info Name => [ %s ] ", m_pMapToolManager->m_pSceneData->m_strTextureSplatingInfoName.c_str());
+	ImGui::Text(" Save Texture Splating Info Name => [ %s ] ", m_pMapToolManager->m_pLevelData->m_strTextureSplatingInfoName.c_str());
 	ImGui::NewLine();
 	if (ImGui::Button(" Don't Use Texture Splating Info "))
-		m_pMapToolManager->m_pSceneData->m_strTextureSplatingInfoName = "None";
+		m_pMapToolManager->m_pLevelData->m_strTextureSplatingInfoName = "None";
 
 	ImGui::Separator();
 
 
-	m_pMapToolManager->m_pSceneData->Draw_ImGui();
+	m_pMapToolManager->m_pLevelData->Draw_ImGui();
 
 	ImGui::Separator();
 	return S_OK;

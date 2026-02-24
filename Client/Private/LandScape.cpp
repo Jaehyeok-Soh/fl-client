@@ -89,7 +89,6 @@ void CLandScape::Ready_Before_Render(const _float fTimeDelta)
 {
 	Super::Ready_Before_Render(fTimeDelta);
 
-	m_pGameInstance->Push_RenderObject(RENDER_CATEGORY::NONEBLEND  , this);
 }
 
 HRESULT CLandScape::Render()
@@ -109,7 +108,8 @@ HRESULT CLandScape::Render()
 
 
 	pShader->Bind_TransformData(pTransform->Get_WorldMatrix());
-	pShader->Set_Pass(ENUM_TO_UINT(Shader_VtxMesh_Pass::LandScape));
+	pShader->Set_Pass(ENUM_TO_UINT(EMapObjectShaderPass::LandScape));
+
 
 	for (_uint i = 0; i < iMeshCount; ++i)
 	{

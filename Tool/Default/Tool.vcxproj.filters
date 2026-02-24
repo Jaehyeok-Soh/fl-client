@@ -577,7 +577,7 @@
     <ClInclude Include="..\Public\Panel_Parts.h">
       <Filter>06. ImGui\01. Panel\Animation\Panel_Parts</Filter>
     </ClInclude>
-    <ClInclude Include="..\Public\SceneData.h">
+    <ClInclude Include="..\Public\LevelData.h">
       <Filter>02. GameObjects\Map\01. SceneData</Filter>
     </ClInclude>
     <ClInclude Include="..\Public\Builder_MonsterState.h">
@@ -856,7 +856,7 @@
     <ClCompile Include="..\Private\Panel_Parts.cpp">
       <Filter>06. ImGui\01. Panel\Animation\Panel_Parts</Filter>
     </ClCompile>
-    <ClCompile Include="..\Private\SceneData.cpp">
+    <ClCompile Include="..\Private\LevelData.cpp">
       <Filter>02. GameObjects\Map\01. SceneData</Filter>
     </ClCompile>
     <ClCompile Include="..\Private\Builder_MonsterState.cpp">

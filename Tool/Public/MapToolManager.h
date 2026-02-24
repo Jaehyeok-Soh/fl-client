@@ -22,7 +22,7 @@ NS_BEGIN(Tool)
 class CMapObject;
 class CImGui_ToolManager;
 class CLevel_Map;
-class CSceneData;
+class CLevelData;
 
 using MapObjectCloneFactory = std::function<CGameObject*(void* pArg)>;
 using PairKey = std::pair<wstring, vector<wstring>>;
@@ -137,8 +137,8 @@ public:
 	HRESULT						Batch_Preview();
 	HRESULT						Register_MapObjectCloneFactory();
 public:
-	HRESULT						Ready_SceneData();
-	HRESULT						Apply_SceneData(const DTO::TSceneData* tData);
+	HRESULT						Ready_LevelData();
+	HRESULT						Apply_LevelData(const DTO::TLevelData* tData);
 	HRESULT						Release_SceneData();
 public:
 	HRESULT						Bind_SplatingTextureInfo();
@@ -288,7 +288,7 @@ private:
 
 
 
-	CSceneData*															m_pSceneData{nullptr};
+	CLevelData*															m_pLevelData{nullptr};
 
 private:
 	virtual void Free() override;

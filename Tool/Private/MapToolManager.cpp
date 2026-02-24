@@ -10,7 +10,7 @@
 #include "GameInstance.h"
 #include "Texture.h"
 #include "Shader.h"
-#include "SceneData.h"
+#include "LevelData.h"
 
 IMPLEMENT_SINGLETON(CMapToolManager)
 
@@ -25,7 +25,7 @@ CMapToolManager::CMapToolManager()
 	, m_pDefaultBlackSRV				{nullptr}
 	, m_pDefaultWhiteSRV				{nullptr}
 	, m_mapTextureSplatingInfoDatas		{}
-	, m_pSceneData						{nullptr}
+	, m_pLevelData						{nullptr}
 {
 	Safe_AddRef(m_pGameInstance);
 	m_arrayMapObjectCloneFactory.fill(nullptr);
@@ -385,15 +385,15 @@ HRESULT CMapToolManager::Register_MapObjectCloneFactory()
 	return S_OK;
 }
 
-HRESULT CMapToolManager::Ready_SceneData()
+HRESULT CMapToolManager::Ready_LevelData()
 {
-	m_pSceneData = CSceneData::Create(EToolObjectType::MAPOBJECT, m_pDevice, m_pContext);
-	if (m_pSceneData == nullptr) return E_FAIL;
+	m_pLevelData= CLevelData::Create(EToolObjectType::MAPOBJECT, m_pDevice, m_pContext);
+	if (m_pLevelData == nullptr) return E_FAIL;
 
 	return S_OK;
 }
 
-HRESULT CMapToolManager::Apply_SceneData(const DTO::TSceneData* tData)
+HRESULT CMapToolManager::Apply_LevelData(const DTO::TLevelData* tData)
 {
 	if (tData == nullptr) return E_FAIL;
 
@@ -402,14 +402,14 @@ HRESULT CMapToolManager::Apply_SceneData(const DTO::TSceneData* tData)
 		return E_FAIL;
 
 	/* None => [Don't Use Texture Splating Info] */
-	m_pSceneData->m_strTextureSplatingInfoName = tData->strTextureSplatingInfoName;
+	m_pLevelData->m_strTextureSplatingInfoName = tData->strTextureSplatingInfoName;
 
 	return S_OK;
 }
 
 HRESULT CMapToolManager::Release_SceneData()
 {
-	Safe_Release(m_pSceneData);
+	Safe_Release(m_pLevelData);
 
 	return S_OK;
 }
@@ -879,9 +879,9 @@ const Vec3& CMapToolManager::Get_MousePickingPos() const
 
 HRESULT CMapToolManager::Export_SaveSceneData(DTO::ECategory eCategory, CDataDocumentBase* pDocument)
 {
-	if (m_pSceneData == nullptr) return E_FAIL;
+	if (m_pLevelData == nullptr) return E_FAIL;
 
-	m_pSceneData->Export_Data(eCategory , pDocument);
+	m_pLevelData->Export_Data(eCategory , pDocument);
 
 	return S_OK;
 }

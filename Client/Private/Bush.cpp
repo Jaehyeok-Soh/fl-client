@@ -71,7 +71,15 @@ void CBush::Ready_Before_Render(const _float fTimeDelta)
 HRESULT CBush::Render()
 {
 	if (m_eMapObjectDrawType == EMapObject_DrawType::Instance)
-		CMapObject::Render_Default(DTO::EClientMakePath::);
+	{
+		if (FAILED(CMapObject::Render_Default(ENUM_TO_UINT(DTO::EClientMakePath::Bush))))
+			return E_FAIL;
+	}
+	else
+	{
+		if (FAILED(CMapObject::Render_Default(ENUM_TO_UINT(DTO::EClientMakePath::Bush))))
+			return E_FAIL;
+	}
 
 
 	return S_OK;

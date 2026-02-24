@@ -264,7 +264,6 @@ void CUEMapdataParser::Change_SRT(OUT SRT_DATA& tSRT_Data)
 	WorldMatrix.Decompose(tSRT_Data.vScale, tSRT_Data.vQuat, tSRT_Data.vPosition);
 }
 
-
 void CUEMapdataParser::Change_ObjectPath(OUT _wstring& wstrModelName, OUT _wstring& wstrModelPath,EObject_Path_Type eType)
 {
 	if (wstrModelPath.empty())

@@ -42,7 +42,7 @@ private:
 	HRESULT					Render_PreViewInfo();
 	
 	/* Save Scene Data Setting */
-	HRESULT					Render_SaveSceneDataSetting();
+	HRESULT					Render_SaveLevelDataSetting();
 
 	/* MapTool Setting Render */
 	HRESULT					Render_CheckAndBind();
