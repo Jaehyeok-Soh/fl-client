@@ -200,6 +200,8 @@ HRESULT CEffectObject::Ready_Component_Buffer(void* pArg)
         pParticleDesc.pOwner = this;
         pParticleDesc.pComputeShader = static_cast<CComputeShader*>(Get_Script_Component(L"ComputeShader"));
         pParticleDesc.EmissionFlagType = m_tEffectDesc.Data._Effect_EmissionType;
+        pParticleDesc.fDuration = m_tEffectDesc.Data._Effect_Duration;
+        pParticleDesc.UseBurst = m_tEffectDesc.Data._Use_Effect_Particle_Burst;
 
         if (FAILED(Add_Component<CVIBuffer_Particle_Point>(static_cast<CVIBuffer_Particle_Point*>(m_pGameInstance->Clone_Prototype(EPrototypeType::COMPONENT, m_pGameInstance->Get_CurrentLevelIndex(), L"Prototype_Component_VIBuffer_Particle_Point", &pParticleDesc)))))
             return E_FAIL;
@@ -225,6 +227,9 @@ HRESULT CEffectObject::Ready_Component_Buffer(void* pArg)
             MeshBufferDesc.pModel = pInstance;
             MeshBufferDesc.pOwner = this;
             MeshBufferDesc.EmissionFlagType = m_tEffectDesc.Data._Effect_EmissionType;
+            MeshBufferDesc.fDuration = m_tEffectDesc.Data._Effect_Duration;
+            MeshBufferDesc.UseBurst = m_tEffectDesc.Data._Use_Effect_Particle_Burst;
+
             if (FAILED(Add_Component<CVIBuffer_Particle_Mesh>(static_cast<CVIBuffer_Particle_Mesh*>(m_pGameInstance->Clone_Prototype(EPrototypeType::COMPONENT, m_pGameInstance->Get_CurrentLevelIndex(), L"Prototype_Component_VIBuffer_Particle_Mesh", &MeshBufferDesc)))))
                 return E_FAIL;
         }
@@ -244,6 +249,8 @@ HRESULT CEffectObject::Ready_Component_Buffer(void* pArg)
         pParticleDesc.iRandomFlags = m_tEffectDesc.Data.iRandomFlags;
         pParticleDesc.pOwner = this;
         pParticleDesc.pComputeShader = static_cast<CComputeShader*>(Get_Script_Component(L"ComputeShader"));
+        pParticleDesc.fDuration = m_tEffectDesc.Data._Effect_Duration;
+        pParticleDesc.UseBurst = m_tEffectDesc.Data._Use_Effect_Particle_Burst;
 
         if (FAILED(Add_Component<CVIBuffer_Particle_Point>(static_cast<CVIBuffer_Particle_Point*>(m_pGameInstance->Clone_Prototype(EPrototypeType::COMPONENT, m_pGameInstance->Get_CurrentLevelIndex(), L"Prototype_Component_VIBuffer_Particle_Point", &pParticleDesc)))))
             return E_FAIL;
@@ -301,6 +308,8 @@ void CEffectObject::Buffer_Setting()
             pParticleDesc.pOwner = this;
             pParticleDesc.pComputeShader = static_cast<CComputeShader*>(Get_Script_Component(L"ComputeShader"));
             pParticleDesc.EmissionFlagType = (_uint)m_tEffectDesc.Data._Effect_EmissionType;
+            pParticleDesc.fDuration = m_tEffectDesc.Data._Effect_Duration;
+            pParticleDesc.UseBurst = m_tEffectDesc.Data._Use_Effect_Particle_Burst;
 
             Change_Component<CVIBuffer_Particle_Point>(static_cast<CVIBuffer_Particle_Point*>(m_pGameInstance->Clone_Prototype(EPrototypeType::COMPONENT, ENUM_TO_UINT(ELevelType::EFFECT), L"Prototype_Component_VIBuffer_Particle_Point", &pParticleDesc)));
             break;
@@ -325,6 +334,8 @@ void CEffectObject::Buffer_Setting()
                 MeshBufferDesc.pModel = pInstance;
                 MeshBufferDesc.pOwner = this;
                 MeshBufferDesc.EmissionFlagType = (_uint)m_tEffectDesc.Data._Effect_EmissionType;
+                MeshBufferDesc.fDuration = m_tEffectDesc.Data._Effect_Duration;
+                MeshBufferDesc.UseBurst = m_tEffectDesc.Data._Use_Effect_Particle_Burst;
 
                 Change_Component<CVIBuffer_Particle_Mesh>(static_cast<CVIBuffer_Particle_Mesh*>(m_pGameInstance->Clone_Prototype(EPrototypeType::COMPONENT, ENUM_TO_UINT(ELevelType::EFFECT), L"Prototype_Component_VIBuffer_Particle_Mesh", &MeshBufferDesc)));
             }
@@ -345,6 +356,8 @@ void CEffectObject::Buffer_Setting()
             pParticleDesc.pOwner = this;
             pParticleDesc.pComputeShader = static_cast<CComputeShader*>(Get_Script_Component(L"ComputeShader"));
             pParticleDesc.EmissionFlagType = (_uint)m_tEffectDesc.Data._Effect_EmissionType;
+            pParticleDesc.fDuration = m_tEffectDesc.Data._Effect_Duration;
+            pParticleDesc.UseBurst = m_tEffectDesc.Data._Use_Effect_Particle_Burst;
 
             Change_Component<CVIBuffer_Particle_Point>(static_cast<CVIBuffer_Particle_Point*>(m_pGameInstance->Clone_Prototype(EPrototypeType::COMPONENT, ENUM_TO_UINT(ELevelType::EFFECT), L"Prototype_Component_VIBuffer_Particle_Point", &pParticleDesc)));
             break;
@@ -379,6 +392,8 @@ void CEffectObject::Particle_Setting()
         desc.pOwner = this;
         desc.pComputeShader = static_cast<CComputeShader*>(Get_Script_Component(L"ComputeShader"));
         desc.EmissionFlagType = (_uint)m_tEffectDesc.Data._Effect_EmissionType;
+        desc.fDuration = m_tEffectDesc.Data._Effect_Duration;
+        desc.UseBurst = m_tEffectDesc.Data._Use_Effect_Particle_Burst;
 
         pInstance->Set_ParticleDesc(desc);
     }
@@ -511,6 +526,7 @@ HRESULT CEffectObject::Bind_ShaderResource()
         pDesc.NoiseTexture_ScrollWeight = m_tEffectDesc.Data._Effect_NoiseTexture_ScrollWeight;
         pDesc.MaskingTexture_ScrollWeight = m_tEffectDesc.Data._Effect_MaskingTexture_ScrollWeight;
         pDesc.GradationTexture_ScrollWeight = m_tEffectDesc.Data._Effect_GradationTexture_ScrollWeight;
+        pDesc.GlowTexture_ScrollWeight= m_tEffectDesc.Data._Effect_GlowTexture_ScrollWeight;
 
         pShader->Bind_EffectData(pDesc);
 

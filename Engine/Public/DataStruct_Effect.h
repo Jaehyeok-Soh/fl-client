@@ -54,7 +54,8 @@ enum E_RANDOM_FLAG {
     RAND_NONE = 0,
     RAND_POS = 1 << 0,
     RAND_LIFE = 1 << 1,
-    RAND_SIZE = 1 << 2
+    RAND_SIZE = 1 << 2,
+    RAND_SPEED = 1 << 3
 };
 
 // 비트 연산자 오버로딩
@@ -123,14 +124,15 @@ struct TEFFECT_PartsData
 
 
     // =========   이펙트 Emission 전용   =============
-    _float      _Effect_RateOverTime = {};
-    _float      _Effect_RateOverDistance = {};
+    _float              _Effect_RateOverTime = {};
+    _float              _Effect_RateOverDistance = {};
 
 
     // ========   이펙트 파티클 전용   ============
     Vec2                _Effect_ParticleSize = { 0.05f, 0.15f };
     _float              _Effect_Duration = { 5.f };
     _bool               _Effect_Looping = { true };
+    _bool               _Use_Effect_Particle_Burst = { false };
     E_RANDOM_FLAG       iRandomFlags = RAND_NONE;
 
     _float              _Effect_PlayBackSpeed = { 1.f };
@@ -207,6 +209,7 @@ struct TEFFECT_PartsData
     Vec2                _Effect_MaskingTexture_ScrollWeight = { 1.f, 1.f };
     Vec2                _Effect_GradationTexture_ScrollWeight = { 1.f, 1.f };
     Vec2                _Effect_DissolveTexture_ScrollWeight = { 1.f, 1.f };
+    Vec2                _Effect_GlowTexture_ScrollWeight = { 1.f, 1.f };
 
     // 툴용 텍스처 스크롤 
 

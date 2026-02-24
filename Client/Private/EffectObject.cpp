@@ -310,6 +310,7 @@ HRESULT CEffectObject::Bind_ShaderResource()
         pDesc.NoiseTexture_ScrollWeight = m_tEffectDesc.Data._Effect_NoiseTexture_ScrollWeight;
         pDesc.MaskingTexture_ScrollWeight = m_tEffectDesc.Data._Effect_MaskingTexture_ScrollWeight;
         pDesc.GradationTexture_ScrollWeight = m_tEffectDesc.Data._Effect_GradationTexture_ScrollWeight;
+        pDesc.GlowTexture_ScrollWeight = m_tEffectDesc.Data._Effect_GlowTexture_ScrollWeight;
 
         m_pShader->Bind_EffectData(pDesc);
 

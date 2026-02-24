@@ -96,6 +96,7 @@ HRESULT CVIBuffer_Particle_Mesh::Set_ResizeBuffer_SpecificRandom()
 	if (fDuration <= 0.f) fDuration = 1.f; // 방어 코드
 
 	_float fSpawnInterval = fDuration / (_float)m_iInstanceCount;
+	_float fSpeed = 1.f;
 
 	for (size_t i = 0; i < m_iInstanceCount; i++)
 	{
@@ -111,13 +112,24 @@ HRESULT CVIBuffer_Particle_Mesh::Set_ResizeBuffer_SpecificRandom()
 		if (iFlags & DTO::E_RANDOM_FLAG::RAND_LIFE)
 			fMaxLifeTime = m_pGameInstance->Rand_Float(m_tParticleDesc.vLifeTime.x, m_tParticleDesc.vLifeTime.y);
 
+		if (iFlags & DTO::E_RANDOM_FLAG::RAND_SPEED)
+			fSpeed = m_pGameInstance->Rand_Float(0.1f, 1.f);
+
 		if (fMaxLifeTime < 1.0f)
 			fMaxLifeTime = 1.0f;
 
-		_float fInitialDelay = i * fSpawnInterval;
-		pInitialData[i].vParticle_LifeTime = Vec2(-fInitialDelay, fMaxLifeTime);
 
-		pInitialData[i].fSpeed = 1.f;
+		if (m_tParticleDesc.UseBurst)
+		{
+			pInitialData[i].vParticle_LifeTime = Vec2(m_tParticleDesc.vLifeTime.x, fMaxLifeTime);
+		}
+		else
+		{
+			_float fInitialDelay = i * fSpawnInterval;
+			pInitialData[i].vParticle_LifeTime = Vec2(-fInitialDelay, fMaxLifeTime);
+		}
+
+		pInitialData[i].fSpeed = fSpeed;
 		pInitialData[i].vRight = Vec4(fScale, 0.f, 0.f, 0.f);
 		pInitialData[i].vUp = Vec4(0.f, fScale, 0.f, 0.f);
 		pInitialData[i].vLook = Vec4(0.f, 0.f, fScale, 0.f);
@@ -215,7 +227,7 @@ HRESULT CVIBuffer_Particle_Mesh::Set_Instance_Buffer()
 
 	for (size_t i = 0; i < m_iInstanceCount; i++)
 	{
-		m_pInstanceVertices->vInstanceNumber = (_uint)i;
+		m_pInstanceVertices[i].vInstanceNumber = (_uint)i;
 	}
 
 	return S_OK;

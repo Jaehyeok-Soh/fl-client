@@ -27,6 +27,7 @@ public:
 		float m_fStartSpeeds = { 1.f };
 		Vec2 vLifeTime = { 0.f, 0.f };
 		_bool isLoop = { false };
+		_bool UseBurst = { false };
 		_uint iRandomFlags = { DTO::E_RANDOM_FLAG::RAND_NONE};
 		CModel*	pModel = { nullptr };
 		CGameObject* pOwner = { nullptr };

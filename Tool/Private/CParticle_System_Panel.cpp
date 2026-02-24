@@ -284,6 +284,8 @@ void CParticle_System_Panel::Draw_ParticleSystem(CToolObject* pGo)
 			ImGui::TreePop();
 		}
 
+		m_bModified |= ImGui::Checkbox("Effect Particle Burst", &m_tCurrentDesc.Data._Use_Effect_Particle_Burst);
+
 		ImGui::AlignTextToFramePadding();
 		if (ImGui::TreeNode("Timeline Setting"))
 		{
@@ -313,6 +315,7 @@ void CParticle_System_Panel::Draw_ParticleSystem(CToolObject* pGo)
 			bool bRandPos = (m_tCurrentDesc.Data.iRandomFlags & DTO::RAND_POS) != 0;
 			bool bRandLife = (m_tCurrentDesc.Data.iRandomFlags & DTO::RAND_LIFE) != 0;
 			bool bRandSize = (m_tCurrentDesc.Data.iRandomFlags & DTO::RAND_SIZE) != 0;
+			bool bRandSpeed = (m_tCurrentDesc.Data.iRandomFlags & DTO::RAND_SPEED) != 0;
 
 			// 위치 랜덤 체크박스
 			if (ImGui::Checkbox("Random Position", &bRandPos))
@@ -335,6 +338,13 @@ void CParticle_System_Panel::Draw_ParticleSystem(CToolObject* pGo)
 			{
 				if (bRandSize) m_tCurrentDesc.Data.iRandomFlags |= DTO::RAND_SIZE;
 				else m_tCurrentDesc.Data.iRandomFlags &= ~DTO::RAND_SIZE;
+				m_bModified = true;
+			}
+
+			if (ImGui::Checkbox("Random Speed", &bRandSpeed))
+			{
+				if (bRandSpeed) m_tCurrentDesc.Data.iRandomFlags |= DTO::RAND_SPEED;
+				else m_tCurrentDesc.Data.iRandomFlags &= ~DTO::RAND_SPEED;
 				m_bModified = true;
 			}
 
@@ -943,7 +953,8 @@ void CParticle_System_Panel::Draw_ParticleSystem(CToolObject* pGo)
 			DrawTextureScrollUI("Gradation", m_tCurrentDesc.Data._Effect_Tool_UseScroll_Gradation, 1 << 9, m_tCurrentDesc.Data._Effect_GradationTexture_ScrollWeight);
 			// 5. DissolveTexture (1 << 10)
 			DrawTextureScrollUI("Dissolve", m_tCurrentDesc.Data._Effect_Tool_UseScroll_Dissolve, 1 << 10, m_tCurrentDesc.Data._Effect_DissolveTexture_ScrollWeight);
-
+			// 6. GlowTexture(1 << 11)
+			DrawTextureScrollUI("Glow", m_tCurrentDesc.Data._Effect_Tool_UseScroll_Glow, 1 << 11, m_tCurrentDesc.Data._Effect_GlowTexture_ScrollWeight);
 			ImGui::TreePop();
 		}
 

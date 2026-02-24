@@ -22,49 +22,49 @@
 
 struct IMMU_ELEMENT
 {
-    float4             vRight;
-    float4             vUp;
-    float4             vLook;
-    float4             vTranslation;
+    float4 vRight;
+    float4 vUp;
+    float4 vLook;
+    float4 vTranslation;
     
-    float2             vLifeTime;
+    float2 vLifeTime;
     
-    float              vSpeed;
-    float              vPadding;
+    float vSpeed;
+    float vPadding;
     row_major float4x4 vOriginMatrix;
 };
 
 // 가변 데이터
 struct MU_ELEMENT
 {
-    float               fTimeDelta;
-    float               fTotalTime;
-    float               fDuration;
-    float               fStartDelay;
+    float fTimeDelta;
+    float fTotalTime;
+    float fDuration;
+    float fStartDelay;
     
-    uint                iMoveState;
-    int                 bIsLoop;
-    uint                iTimeFlag;
-    float               fPadding4;
+    uint iMoveState;
+    int bIsLoop;
+    uint iTimeFlag;
+    float fPadding4;
     
-    float3              vFinalGravity; // 계산된 최종 중력 벡터 (방향 * 세기)
-    float               fExternalStrength; // 외부 중력장 강도
+    float3 vFinalGravity; // 계산된 최종 중력 벡터 (방향 * 세기)
+    float fExternalStrength; // 외부 중력장 강도
     
-    float3              vPivot;
-    float               fPadding1;
-    float3              vLook;
-    float               fPadding2;
+    float3 vPivot;
+    float fPadding1;
+    float3 vLook;
+    float fPadding2;
     
-    float               fStartSpeed;
-    float               fSpiralRadius;
-    float               fSpiralSpeed;
-    float               fPadding3;
+    float fStartSpeed;
+    float fSpiralRadius;
+    float fSpiralSpeed;
+    float fPadding3;
 };
 
 struct CurveKey
 {
     float fTimeKey; // 0.0 ~ 1.0
-    float fValue;   // 해당 시간의 값
+    float fValue; // 해당 시간의 값
 };
 
 cbuffer MU_ParticleUpdate
@@ -122,7 +122,7 @@ void CS_Main(int3 dtid : SV_DispatchThreadID)
 {
     IMMU_ELEMENT input = IMMU_EFFECT_PARTICLE[dtid.x];
     VTXPARTICLE currentData = INSTANCE_OUTPUT[dtid.x];
-
+    
     // 리셋/중단 강제 명령 처리
     if (g_InputB.iTimeFlag == RESET || g_InputB.iTimeFlag == STOP)
     {
@@ -155,54 +155,78 @@ void CS_Main(int3 dtid : SV_DispatchThreadID)
         return;
     }
     
+    float3 vVelocity = float3(0.f, 0.f, 0.f);
+
     // 중력 커브 샘플링
     float fGravityCurveValue = SampleCurve(g_GravityCurve, g_iGravityKeyCount, fRatio);
-    
-    // 최종 중력 강도 = (기본 중력 방향/세기) * (커브에서 뽑은 현재 시간의 비율값)
     float3 vAppliedGravity = g_InputB.vFinalGravity * fGravityCurveValue;
-    
 
-    // 이동 로직 (수명이 유효할 때만 수행)
+    // --- 이동 로직 시작 ---
     if (g_InputB.iMoveState == DROP)
-        currentData.matTransform._42 -= input.vSpeed * g_InputB.fTimeDelta;
+    {
+        vVelocity = float3(0.f, -input.vSpeed, 0.f);
+        currentData.matTransform._42 += vVelocity.y * g_InputB.fTimeDelta;
+    }
     else if (g_InputB.iMoveState == RISE)
-        currentData.matTransform._42 += input.vSpeed * g_InputB.fTimeDelta;
-    
-    if (g_InputB.iMoveState == GATHER)
+    {
+        vVelocity = float3(0.f, input.vSpeed, 0.f);
+        currentData.matTransform._42 += vVelocity.y * g_InputB.fTimeDelta;
+    }
+    else if (g_InputB.iMoveState == GATHER)
     {
         float3 vTargetPos = g_InputB.vPivot;
         float3 vCurPos = currentData.matTransform._41_42_43;
         float fRemainingTime = max(currentData.vLifeTime.y - currentData.vLifeTime.x, 0.01f);
         float3 vToTarget = vTargetPos - vCurPos;
-        float3 vRequiredVelocity = vToTarget / fRemainingTime;
-        currentData.matTransform._41_42_43 += vRequiredVelocity * g_InputB.fTimeDelta;
+        
+        // [수정] 지역 변수가 아닌 공용 vVelocity에 저장
+        vVelocity = vToTarget / fRemainingTime;
+        currentData.matTransform._41_42_43 += vVelocity * g_InputB.fTimeDelta;
     }
-
-    // FOUNTAIN: 분수처럼 솟구쳤다가 중력에 의해 낙하 (포물선)
     else if (g_InputB.iMoveState == FOUNTAIN)
     {
         float3 vStartVelocity = float3(0.f, g_InputB.fStartSpeed, 0.f);
-        
-        float3 vCurrentVelocity = vStartVelocity + (vAppliedGravity * currentData.vLifeTime.x);
-       
-        currentData.matTransform._41_42_43 += vCurrentVelocity * g_InputB.fTimeDelta;
-        
         float3 vSideDir = normalize(input.vTranslation.xyz - g_InputB.vPivot);
         vSideDir.y = 0.f;
-        currentData.matTransform._41_43 += vSideDir.xz * (g_InputB.fStartSpeed * 0.3f) * g_InputB.fTimeDelta;
+        
+        // [수정] 수직 속도와 수평 속도를 합산하여 vVelocity 계산
+        vVelocity = (vStartVelocity + (vAppliedGravity * currentData.vLifeTime.x)) * input.vSpeed;
+        vVelocity += vSideDir * (g_InputB.fStartSpeed * 0.3f);
+        
+        currentData.matTransform._41_42_43 += vVelocity * g_InputB.fTimeDelta;
     }
-    
     else if (g_InputB.iMoveState == SPREAD)
     {
-       // 초기 발사 속도 방향
         float3 vDir = normalize(input.vTranslation.xyz - g_InputB.vPivot);
-        float3 vStartVelocity = vDir * g_InputB.fStartSpeed;
-        float3 vCurrentVelocity = vStartVelocity + (vAppliedGravity * currentData.vLifeTime.x);
+        float3 vStartVelocity = vDir * g_InputB.fStartSpeed * input.vSpeed;
         
-        currentData.matTransform._41_42_43 += vCurrentVelocity * g_InputB.fTimeDelta;
+        // [수정] 최종 이동 속도를 vVelocity에 저장
+        vVelocity = vStartVelocity + (vAppliedGravity * currentData.vLifeTime.x);
+        currentData.matTransform._41_42_43 += vVelocity * g_InputB.fTimeDelta;
     }
 
-    // 최종 결과 저장
+    if (g_InputB.iMoveState == SPREAD || g_InputB.iMoveState == FOUNTAIN || g_InputB.iMoveState == GATHER)
+    {
+        if (length(vVelocity) > 0.001f)
+        {
+            float3 vLook = normalize(vVelocity);
+            
+            float3 vWorldUp = abs(vLook.y) > 0.99f ? float3(0, 0, 1) : float3(0, 1, 0);
+            float3 vRight = normalize(cross(vWorldUp, vLook));
+            float3 vUp = cross(vLook, vRight);
+
+            float3 vScale = float3(
+                length(currentData.matTransform[0].xyz),
+                length(currentData.matTransform[1].xyz),
+                length(currentData.matTransform[2].xyz)
+            );
+
+            currentData.matTransform[0].xyz = vRight * vScale.x;
+            currentData.matTransform[1].xyz = vUp * vScale.y;
+            currentData.matTransform[2].xyz = vLook * vScale.z;
+        }
+    }
+    
     INSTANCE_OUTPUT[dtid.x] = currentData;
 }
 

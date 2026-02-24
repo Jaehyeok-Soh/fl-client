@@ -131,6 +131,7 @@ HRESULT CVIBuffer_Particle_Point::Set_ResizeBuffer_SpecificRandom()
 
 	// 생성 간격 계산
 	_float fSpawnInterval = fDuration / (_float)m_iInstanceCount;
+	_float fSpeed = 1.f;
 
 	for (size_t i = 0; i < m_iInstanceCount; i++)
 	{
@@ -143,17 +144,24 @@ HRESULT CVIBuffer_Particle_Point::Set_ResizeBuffer_SpecificRandom()
 		if (iFlags & DTO::E_RANDOM_FLAG::RAND_LIFE)
 			fMaxLifeTime = m_pGameInstance->Rand_Float(m_tParticleDesc.vLifeTime.x, m_tParticleDesc.vLifeTime.y);
 
+		if (iFlags & DTO::E_RANDOM_FLAG::RAND_SPEED)
+			fSpeed = m_pGameInstance->Rand_Float(0.1f, 1.f);
+
 		if (fMaxLifeTime < 1.0f) 
 			fMaxLifeTime = 1.0f;
 
 
-		// [핵심 수정] 2. 수명 설정 (vLifeTime.x = 현재수명, vLifeTime.y = 최대수명)
-		// i가 커질수록 더 큰 음수값이 들어가서 더 늦게 0(탄생)에 도달합니다.
-		_float fInitialDelay = i * fSpawnInterval;
-		pInitialData[i].vParticle_LifeTime = Vec2(-fInitialDelay, fMaxLifeTime);
+		if (m_tParticleDesc.UseBurst)
+		{
+			pInitialData[i].vParticle_LifeTime = Vec2(m_tParticleDesc.vLifeTime.x, fMaxLifeTime);
+		}
+		else
+		{
+			_float fInitialDelay = i * fSpawnInterval;
+			pInitialData[i].vParticle_LifeTime = Vec2(-fInitialDelay, fMaxLifeTime);
+		}
 
-
-		pInitialData[i].fSpeed = 1.f;
+		pInitialData[i].fSpeed = fSpeed;
 		pInitialData[i].vRight = Vec4(fScale, 0.f, 0.f, 0.f);
 		pInitialData[i].vUp = Vec4(0.f, fScale, 0.f, 0.f);
 		pInitialData[i].vLook = Vec4(0.f, 0.f, fScale, 0.f);
