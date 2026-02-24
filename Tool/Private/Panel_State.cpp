@@ -213,6 +213,8 @@ void CPanel_State::DrawStateDetails()
         ImGui::Checkbox("Blend", &state.bBlend);
         ImGui::SameLine();
         ImGui::Checkbox("Loop", &state.bLoop);
+        ImGui::SameLine();
+        ImGui::Checkbox("Cancellation", &state.bCancellation);
     }
 
     // 2. ≈∏¿Ã∏” (Time Counters)

@@ -71,6 +71,7 @@ namespace DTO
 		unsigned int FAniFlags = { 0 };
 		bool bBlend = { false };
 		bool bLoop = { false };
+		bool bCancellation = { false };
 
 		MONSTERTIME_COUNTER tStateLifeTime = {};
 		MONSTERTIME_COUNTER tStateCoolDownTime = {};
@@ -102,6 +103,7 @@ namespace DTO
 		j["FAniFlags"] = d.FAniFlags;
 		j["bBlend"] = d.bBlend;
 		j["bLoop"] = d.bLoop;
+		j["bCancellation"] = d.bCancellation;
 
 		j["tStateLifeTime"] = d.tStateLifeTime;
 		j["tStateCoolDownTime"] = d.tStateCoolDownTime;
@@ -128,6 +130,11 @@ namespace DTO
 		j.at("FAniFlags").get_to(d.FAniFlags);
 		j.at("bBlend").get_to(d.bBlend);
 		j.at("bLoop").get_to(d.bLoop);
+
+		if (j.contains("bCancellation"))
+			j.at("bCancellation").get_to(d.bCancellation);
+		else
+			d.bCancellation = false;
 
 		j.at("tStateLifeTime").get_to(d.tStateLifeTime);
 		j.at("tStateCoolDownTime").get_to(d.tStateCoolDownTime);

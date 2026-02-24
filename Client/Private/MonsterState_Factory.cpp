@@ -68,11 +68,11 @@ HRESULT CMonsterState_Factory::Ready_Condition()
 
 	REGISTER_CONDITION("condition_hit_additive", CONDITION{ return false; /*hit additive*/ });
 
-	REGISTER_CONDITION("condition_loop_animation", CONDITION{ return false; /**/ });
+	REGISTER_CONDITION("condition_loop_animation", CONDITION{ return state->IsLoop(); });
 
-	REGISTER_CONDITION("condition_cancellation", CONDITION{ return false; /**/ });
+	REGISTER_CONDITION("condition_cancellation", CONDITION{ return state->IsCancellation(); });
 
-	REGISTER_CONDITION("condition_non_cancellation", CONDITION{ return false; /**/ });
+	REGISTER_CONDITION("condition_non_cancellation", CONDITION{ return !state->IsCancellation(); });
 
 
 
