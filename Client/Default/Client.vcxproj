@@ -168,6 +168,7 @@
     <ClInclude Include="..\Public\Builder_UIPrefabs.h" />
     <ClInclude Include="..\Public\CameraMan_Targeter.h" />
     <ClInclude Include="..\Public\Canvas.h" />
+    <ClInclude Include="..\Public\Gun.h" />
     <ClInclude Include="..\public\ImGuiBase.h" />
     <ClInclude Include="..\public\ImGui_ClientDebug.h" />
     <ClInclude Include="..\Public\Client_Defines.h" />
@@ -233,6 +234,7 @@
     <ClInclude Include="..\Public\State_DashBack.h" />
     <ClInclude Include="..\Public\State_DashSky.h" />
     <ClInclude Include="..\Public\State_Fall.h" />
+    <ClInclude Include="..\Public\State_GunBase.h" />
     <ClInclude Include="..\Public\State_Idle.h" />
     <ClInclude Include="..\Public\State_Jump.h" />
     <ClInclude Include="..\Public\State_JumpAttEnd.h" />
@@ -309,6 +311,7 @@
     <ClCompile Include="..\Private\Builder_Effect.cpp" />
     <ClCompile Include="..\Private\EffectObject.cpp" />
     <ClCompile Include="..\Private\GenericUI.cpp" />
+    <ClCompile Include="..\Private\Gun.cpp" />
     <ClCompile Include="..\Private\imgui.cpp">
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">NotUsing</PrecompiledHeader>
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|x64'">NotUsing</PrecompiledHeader>
@@ -388,6 +391,7 @@
     <ClCompile Include="..\Private\State_DashBack.cpp" />
     <ClCompile Include="..\Private\State_DashSky.cpp" />
     <ClCompile Include="..\Private\State_Fall.cpp" />
+    <ClCompile Include="..\Private\State_GunBase.cpp" />
     <ClCompile Include="..\Private\State_Idle.cpp" />
     <ClCompile Include="..\Private\State_Jump.cpp" />
     <ClCompile Include="..\Private\State_JumpAttEnd.cpp" />

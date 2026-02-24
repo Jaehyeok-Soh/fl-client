@@ -41,12 +41,18 @@ void CImGui_StateLayout::Render(CGameObject* pGo)
 	_uint iDashCount = pStat->Get_Count(CStatCom_Player::TIMER_TYPE::DASH);
 	_float fMental = pStat->Get_Stat_Vec2(CMyStat::STAT_TYPE::MENTAL).x;
 
+	string strRootApply = pModel->Is_RootMotion_Apply() ? "Yes" : " No";
+
 	ImGui::BeginGroup();
 	ImGui::SeparatorText(m_strLabel.c_str());;
 
 	ImGui::Text("State : ");
 	ImGui::SameLine();
 	ImGui::Text(strStateName.c_str());
+
+	ImGui::Text("RootApply : ");
+	ImGui::SameLine();
+	ImGui::Text(strRootApply.c_str());
 
 	ImGui::Text("Dash Count : ");
 	ImGui::SameLine();

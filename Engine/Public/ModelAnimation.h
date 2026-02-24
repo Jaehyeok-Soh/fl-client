@@ -44,7 +44,7 @@ private:
 public:
 	_bool Update_TransformationMatrices(const vector<class CBone*>& vecBones,_bool& bLoopDone, _float fTimeDelta, _bool isLoop, CTransform* pOwnerTransform, CPhysicsCCT* pOwnerPhyCCT, CComputeShader* pAnimECS);
 	void SetUp_PoseDatasForBlending(std::span<LOCALSRT> spanLocalSrtData, _float fTimeDelta, CTransform* pOwnerTransform, CPhysicsCCT* pOwnerPhyCCT, _uint iTotalBoneNum, CComputeShader* pAnimECS);
-	void	Update_MixAnimation(const vector<class CBone*>& vecBones, CComputeShader* pAnimMixCS, CComputeShader* pPreAnimCS, const _float fTimeDelta, _uint iTotalBoneNum);
+	void	Update_MixAnimation(const vector<class CBone*>& vecBones, CComputeShader* pAnimMixCS, CComputeShader* pPreAnimCS, const _float fTimeDelta, _uint iTotalBoneNum, _bool bFirst);
 	void Clear();
 
 	_float Get_DurationTime() const { return m_fDuration; }
@@ -59,21 +59,12 @@ public:
 	_float Get_TickPerSecond() { return m_fTickPerSecond; }
 	void Set_TickPerSecond(_float fValue) { m_fTickPerSecond = fValue; }
 
-	_bool	Update_TransformMatrices(CComputeShader* pAnimECS, _float fTimeDelta, _bool isLoop, CTransform* pOwnerTransform, CPhysicsCCT* pOwnerPhyCCT, _uint iTotalBoneNum);
-	void	Update_BlendAnimation(CComputeShader* pAnimECS, _float fTimeDelta, CTransform* pOwnerTransform, CPhysicsCCT* pOwnerPhyCCT, _uint iTotalBoneNum);
-	
 	void	Bind_AnimationEData(CComputeShader* pAnimEShader);
 	void	Bind_AnimationMixData(CComputeShader* pAnimMixCS, CComputeShader* pPreAnimCS);
 	HRESULT Ready_BindBuffers(CComputeShader* pAnimESahder);
 
-
-
-
 	// test
-	void Set_ApplyRootMotion(_bool Apply) { m_bApplyRootMotion = Apply; }
-
 	void Check_UpdateCpu(const vector<class CBone*>& vecBones);
-
 	void Reset_PrePosition();
 
 public:
@@ -81,6 +72,11 @@ public:
 	void Set_MotionOffset(_float fOffset) { m_fRootMotionOffset = fOffset; if (m_fRootMotionOffset < 0.f) m_fRootMotionOffset = 1.f; }
 	_float Get_MotionOffset() const { return m_fRootMotionOffset; }
 	void Set_MixRatio(vector<_float>& vecMixRatio, CComputeShader* pAnimMixCS);
+	void Set_ApplyRootMotion(_bool Apply) { 
+		m_bApplyRootMotion = Apply; 
+	};
+	_bool Get_ApplyRoot() const { return m_bApplyRootMotion; }
+	void Set_AnimationSpeed(_float fSpeed) { m_fAnimationSpeed_Offset = fSpeed; if (m_fAnimationSpeed_Offset <= 0.f) m_fAnimationSpeed_Offset = 1.f; }
 
 	///////////////
 	//// Event ////
@@ -122,8 +118,9 @@ private:
 	_int m_iRootBoneIdx = { -1 };
 	_int m_iRootChannelIdx = { -1 };
 
-	_bool m_bApplyRootMotion = { true };
-	_float m_fRootMotionOffset = { 1.f };
+	_bool m_bApplyRootMotion		= { true };
+	_float m_fRootMotionOffset		= { 1.f };
+	_float m_fAnimationSpeed_Offset = { 1.f };
 
 	///////////////
 	//// Event ////

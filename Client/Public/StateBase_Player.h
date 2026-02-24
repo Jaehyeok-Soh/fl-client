@@ -88,6 +88,10 @@ protected:
 	_bool	Start_Att(_uint iPlayerState);
 	void	End_Att(_uint iPlayerState);
 
+	void	Set_RootMotion_Apply(_bool bApply);
+
+	void	Set_DoubleJump(_bool bCount);
+	_bool	Check_Double();
 
 protected:
 	virtual void OwnMove(const _float fTimeDelta) {};		// state 내부에서 알아서 움직일때

@@ -49,6 +49,13 @@ cbuffer cbLandScap_TextureUV
     float2 g_LandScape_TextureUV_RB = { 1.f, 1.f };
 };
 
+cbuffer CB_MAPPING_RGB
+{
+    float4 Color_R = { 1.f, 1.f, 1.f, 1.f };
+    float4 Color_G = { 1.f, 1.f, 1.f, 1.f };
+    float4 Color_B = { 1.f, 1.f, 1.f, 1.f };
+};
+
 
 VS_OUT_MESH VS_MAIN(VS_IN_MESH input)
 {
@@ -197,10 +204,41 @@ PS_OUT_DEFFERED PS_LANDSCAPE(PS_IN_MESH input)
     return output;
 }
 
+PS_OUT_DEFFERED PS_RGBMAPPING(PS_IN_MESH input)
+{
+    PS_OUT_DEFFERED output;
+    
+    float4 vDiffuse = 1.f;
+    Compute_Diffse(vDiffuse, input.vUV);
+
+    float4 final =
+     saturate(vDiffuse.r * Color_R) +
+     saturate(vDiffuse.g * Color_G) +
+     saturate(vDiffuse.b * Color_B);
+    
+    saturate(final);
+    
+    output.vDiffuse = final;
+    
+    float3 vNormal = input.vNormal;
+    Compute_Normal(vNormal, input.vTangent, input.vBinormal, input.vUV);
+    output.vNormal = vNormal * 0.5f + 0.5f;
+    
+    float3 vSpecMask = float3(1.f, 1.f, 0.f);
+    if (Has(g_iMaterialMask, METALNESS))
+        vSpecMask = g_MaterialTextures[METALNESS].Sample(LinearSampler, input.vUV).xyz;
+    output.vSpecularMask = float4(vSpecMask, 1.f);
+    output.vObjectInfo = PackObjectInfo(objectInfo.iObjectID, objectInfo.iFlags);
+    output.vDepth = float4(input.vProjPos.z / input.vProjPos.w, input.vProjPos.w, 0.f, 0.f);
+    return output;
+}
+
 technique11 T0
 {
 	PASS_RS_DS_BS_VP(StaticObject, RS_Default_CullNone, DS_Default, BS_Default, VS_MAIN, PS_MAIN)
+
 	PASS_RS_DS_BS_VP(LandScape, RS_Default_CullNone, DS_Default, BS_Default, VS_MAIN, PS_LANDSCAPE)
     PASS_RS_DS_BS_VP(SHADOW_BAKE, RS_Default, DS_Default, BS_Default, VS_MAIN, PS_BAKESHADOW)
 	PASS_RS_DS_BS_VP(Debug, RS_Wire, DS_Default, BS_Default, VS_MAIN, PS_BLACK)
+	PASS_RS_DS_BS_VP(RGBMapping, RS_Default_CullNone, DS_Default, BS_Default, VS_MAIN, PS_RGBMAPPING)
 };

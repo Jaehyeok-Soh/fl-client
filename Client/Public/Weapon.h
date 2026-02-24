@@ -25,20 +25,28 @@ public:
 		HAND
 	};
 
+	enum class AnimState : _uint
+	{
+		PLAY,
+		STOP
+	};
+
 	typedef struct tagWeaponDesc : public CPartObject::PARTOBJ_DESC
 	{
-		wstring				wstrModelPrototypeName	= { L"" };
-		const Matrix*		pMatHandSocket			= { nullptr };
-		const Matrix*		pMatSocket				= { nullptr };
+		wstring				wstrModelPrototypeName = { L"" };
+		const Matrix* pMatHandSocket = { nullptr };
+		const Matrix* pMatSocket = { nullptr };
 
-		Weapon_ModelType	eModel	= { Weapon_ModelType::STATIC };
+		Weapon_ModelType	eModel = { Weapon_ModelType::STATIC };
 
 		_bool				bMianWeapon = { false };
+		_bool bRGBShader = { true };
+
+		Vec4 vColorR = Vec4::Zero;
+		Vec4 vColorG = Vec4::Zero;
+		Vec4 vColorB = Vec4::Zero;
 
 	}WEAPON_DESC;
-
-protected:
-
 
 protected:
 	CWeapon(ID3D11Device* pDevice, ID3D11DeviceContext* pDeviceContext, Weapon_Type eWeapon);
@@ -69,17 +77,25 @@ public:
 	void	Set_WeaponState(State eState) { m_eState = eState; }
 	void	Set_WeaponState(_uint iState) { m_eState = static_cast<State>(iState); }
 
+	void	Set_Weapon_PlayState(_uint iPlayState) { m_eAnimState = static_cast<AnimState>(iPlayState); }
+
 protected:
-	State				m_eState		= { State::NONE };
-	Weapon_Type			m_eWaeponType	= { Weapon_Type::SWORD };
-	Weapon_ModelType	m_eModleType	= { Weapon_ModelType::STATIC };
+	State				m_eState = { State::NONE };
+	AnimState			m_eAnimState = { AnimState::STOP };
 
-	const Matrix*		m_pMatHandSocket	= { nullptr };
-	const Matrix*		m_pMatSocket		= { nullptr };
+	Weapon_Type			m_eWaeponType = { Weapon_Type::SWORD };
+	Weapon_ModelType	m_eModleType = { Weapon_ModelType::STATIC };
 
-	_bool				m_bMainWeapon		= { false };
+	const Matrix*		m_pMatHandSocket = { nullptr };
+	const Matrix*		m_pMatSocket = { nullptr };
+
+	_bool				m_bMainWeapon = { false };
 
 	Matrix				m_matRotation = {  };
+
+	_bool m_bColorMapping = { false };
+
+	SHADER_RGBCOLOR_DESC m_tColorDesc = {};
 
 private:
 	HRESULT Ready_Components(WEAPON_DESC* pDesc);

@@ -60,6 +60,7 @@ public:
 	HRESULT Bind_BoneData(const SHADER_BONEDESC& boneDesc);
 	HRESULT Bind_KeyFrameData(const SHADER_KEYFRAMEDESC& keyframeDesc);
 	HRESULT Bind_ObjectInfoData(const SHADER_OBJECTINFO_DESC& objectInfoDesc);
+	HRESULT Bind_RGBColorData(const SHADER_RGBCOLOR_DESC& RGBColorDesc);
 
 
 	// 외부에서 ConstantBuffer를 생성후 바인딩할 때
@@ -83,6 +84,8 @@ private:
 	CConstant_Buffer<SHADER_KEYFRAMEDESC>* m_pKeyFrame_CBuffer{ nullptr };
 	CConstant_Buffer<SHADER_EFFECT_DESC>* m_pEffect_CBuffer{ nullptr };
 	CConstant_Buffer<SHADER_OBJECTINFO_DESC>* m_pObjectInfo_CBuffer{ nullptr };
+
+	CConstant_Buffer<SHADER_RGBCOLOR_DESC>* m_pRGB_CBuffer{ nullptr };
 
 public:
 	static CShader* Create(ID3D11Device* pDevice, ID3D11DeviceContext* pContext, void* pArg);

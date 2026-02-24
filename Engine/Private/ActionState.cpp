@@ -186,6 +186,22 @@ HRESULT CActionState::Set_OwnerComponents()
 	return S_OK;
 }
 
+void CActionState::Move(Vec3 disp, _float minDist, _float fTimeDelta)
+{
+	CPhysicsCCT* cct = { nullptr };
+	if (cct = m_pOwner->Get_Component<CPhysicsCCT>())
+	{
+		//cct를 움직이고
+		CCTFlags  = cct->Move(disp, 0.01f, fTimeDelta);
+
+		// todo_eunbi : 여기에는 y lerp 없는데 필요하다면 추가 해야함
+
+		// cct 움직임의 결과를 transform에 적용시킨다
+		Vec3 finalPos = cct->GetFootPosition();
+		m_pOwnerTransform->Set_Info(TRANSFORM_INFO_STATE::POS, finalPos);
+	}
+}
+
 HRESULT CActionState::Request_ChangeAnimation(_uint iAnimationIndex, _bool bBlend, _bool bLoop, _bool bForce)
 {
 	if (m_pOwnerModel == nullptr)
