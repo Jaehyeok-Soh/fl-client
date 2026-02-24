@@ -268,6 +268,9 @@ void CEffectHandler::Request_SpawnEffect(const DTO::EFFECTEVENT& Script)
 
     if (Script.iBoneIndex != -1 && Script.bFollowBone)
     {
+        if (m_pOwnerModel == nullptr)
+            return;
+
         pTargetBoneMatrix = &m_pOwnerModel->Get_Bone(Script.iBoneIndex)->Get_CombinedTransformMatrix();
     }
 
@@ -319,6 +322,9 @@ void CEffectHandler::Request_SpawnEffect(const DTO::EFFECTEVENT& script, const s
 
     if (script.iBoneIndex != -1 && script.bFollowBone)
     {
+        if (m_pOwnerModel == nullptr)
+            return;
+
         pTargetBoneMatrix = &m_pOwnerModel->Get_Bone(script.iBoneIndex)->Get_CombinedTransformMatrix();
     }
 

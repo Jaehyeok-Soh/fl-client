@@ -118,8 +118,8 @@ private:
 	CConstant_Buffer<EFFECT_PARTICLE_MU_ELEMENT>*	m_pEffect_Mutable_Element_CBuffer		= { nullptr };
 	ID3DX11EffectConstantBuffer*					m_pEffect_MutableBuffer					= { nullptr };
 
-	CConstant_Buffer<EFFECT_CURVEINFO>*				m_pEffect_CurveInfo = { nullptr };
-	ID3DX11EffectConstantBuffer*					m_pEffect_CurveInfoBuffer = { nullptr };
+	CConstant_Buffer<EFFECT_CURVEINFO>*				m_pEffect_CurveInfo						= { nullptr };
+	ID3DX11EffectConstantBuffer*					m_pEffect_CurveInfoBuffer				= { nullptr };
 
 	CConstant_Buffer<CS_MU_TRACK>*					m_pAnimE_Mutable_Element_CBuffer		= { nullptr };
 	ID3DX11EffectConstantBuffer*					m_pAnimE_MutableBuffer					= { nullptr };

@@ -130,13 +130,6 @@ void CLevel_Logo::Update(const _float fTimeDelta)
 		m_pGameInstance->Request_CursorMode(m_eCursorMode);
 	}
 
-
-	// 오브젝트 풀링 테스트
-	if (m_pGameInstance->KeyButton_Down(DIK_0))
-	{
-		m_pGameInstance->Request_AddObject(ENUM_TO_UINT(ELevelType::LOGO), L"POOL_Attack_1", 0, nullptr);
-	}
-
 	// GlobalTimeScale 테스트
 	{
 		if (m_pGameInstance->KeyButton_Down(DIK_9))

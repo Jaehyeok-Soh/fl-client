@@ -681,6 +681,9 @@ void CEffectObject::Free()
 {
     Super::Free();
 
-    Safe_Release(pSRV);
-    Safe_Release(pSB);
+    if (IsClone())
+    {
+        Safe_Release(pSB);
+        Safe_Release(pSRV);
+    }
 }

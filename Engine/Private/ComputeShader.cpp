@@ -41,8 +41,12 @@ CComputeShader::CComputeShader(const CComputeShader& rhs)
 	Safe_AddRef(m_pComputeShader);
 	Safe_AddRef(m_pDevice);
 	Safe_AddRef(m_pDeviceContext);
+
 	Safe_AddRef(m_pEffect_Mutable_Element_CBuffer);
 	Safe_AddRef(m_pEffect_MutableBuffer);
+
+	Safe_AddRef(m_pEffect_CurveInfoBuffer);
+	Safe_AddRef(m_pEffect_CurveInfo);
 
 	Safe_AddRef(m_pAnimE_Mutable_Element_CBuffer);
 	Safe_AddRef(m_pAnimE_MutableBuffer);
