@@ -36,7 +36,6 @@ HRESULT CUIJust_Image::Initialize(void* pArg)
 	if (FAILED(Ready_Components(pDesc)))
 		return E_FAIL;
 	m_fOriginAlpha = m_fAlpha_Ratio;
-
 	return S_OK;
 }
 
@@ -44,7 +43,6 @@ HRESULT CUIJust_Image::Awake(const _uint iCurrentLevelID)
 {
 	if (FAILED(Super::Awake(iCurrentLevelID)))
 		return E_FAIL;
-
 	return S_OK;
 }
 
@@ -65,7 +63,6 @@ void CUIJust_Image::Update_Late(const _float fTimeDelta)
 
 void CUIJust_Image::Ready_Before_Render(const _float fTimeDelta)
 {
-	Acting_By_InteractState();
 	Super::Ready_Before_Render(fTimeDelta);
 }
 
@@ -73,17 +70,10 @@ HRESULT CUIJust_Image::Render()
 {
 	if (!m_isVisible)
 		return S_OK;
-
-	if (FAILED(Super::Render()))
-		return E_FAIL;
-
 	if (FAILED(Bind_ShaderResources()))
 		return E_FAIL;
-
-	Get_Component<CShader>()->Apply();
-	Get_Component<CVIBuffer>()->Bind_Resource();
-	Get_Component<CVIBuffer>()->Render();
-
+	if (FAILED(Super::Render()))
+		return E_FAIL;
 	return S_OK;
 }
 
@@ -131,6 +121,7 @@ _bool CUIJust_Image::Tick_InVisible_Event(const _float fTimeDelta)
 
 HRESULT CUIJust_Image::Ready_Components(JUST_IMAGE_DESC* pDesc)
 {
+	Super::Ready_Components(pDesc);
 	return S_OK;
 }
 
@@ -141,7 +132,6 @@ HRESULT CUIJust_Image::Bind_ShaderResources()
 		return E_FAIL;
 
 	Super::Bind_ShaderResources();
-
 	return S_OK;
 }
 

@@ -10,6 +10,7 @@
 // Builder
 //=================
 #include "Builder_UI.h"
+#include "Builder_UIPrefabs.h"
 #include "Builder_Example.h"
 #include "BuilderSystem.h"
 #include "Builder_Map.h"
@@ -143,10 +144,6 @@ void CLevel_Logo::Update(const _float fTimeDelta)
 		 CUI_Manager::GetInstance()->Request_SortUI();
 
 	}
-	if (m_pGameInstance->KeyButton_Down(DIK_1))
-	{
-		m_pGameInstance->Request_DeleteGameObject(ENUM_TO_UINT(ELevelType::LOGO), g_wszUILayer);
-	}
 
 	// GlobalTimeScale Å×½ºÆ®
 	{
@@ -182,6 +179,8 @@ HRESULT CLevel_Logo::Build_Prototype()
 	if (FAILED(Ready_Builder(DTO::ECategory::MAP,CBuilder_Map::Create(m_pDevice, m_pDeviceContext, static_cast<_uint>(ELevelType::LOGO)))))
 		return E_FAIL;
 	if (FAILED(Ready_Builder(DTO::ECategory::UI, CBuilder_UI::Create(m_pDevice, m_pDeviceContext, static_cast<_uint>(ELevelType::LOGO)))))
+		return E_FAIL;
+	if (FAILED(Ready_Builder(DTO::ECategory::UI_PREFAB, CBuilder_UIPrefabs::Create(m_pDevice, m_pDeviceContext, static_cast<_uint>(ELevelType::LOGO)))))
 		return E_FAIL;
 	if (FAILED(Ready_Builder(DTO::ECategory::EFFECT, CBuilder_Effect::Create(m_pDevice, m_pDeviceContext, ENUM_TO_UINT(ELevelType::LOGO)))))
 		return E_FAIL;
@@ -220,6 +219,22 @@ HRESULT CLevel_Logo::Build_Files()
 	if (FAILED(m_pGameInstance->Regist_Document<CDataDocument_UI>(iLevelID, eCategory)))
 		return E_FAIL;
 	strUIFolderPath = L"../../Resources/Data/UIData/Logo/";
+	if (std::filesystem::exists(strUIFolderPath))
+	{
+		for (auto iter : std::filesystem::directory_iterator(strUIFolderPath))
+		{
+			if (FAILED(m_pGameInstance->Load_File_Json(iLevelID, eCategory, iter.path())))
+				return E_FAIL;
+
+			if (FAILED(Build_File(iLevelID, eCategory, iter.path().stem().string())))
+				return E_FAIL;
+		}
+	}
+
+	eCategory = DTO::ECategory::UI_PREFAB;
+	if (FAILED(m_pGameInstance->Regist_Document<CDataDocument_UI>(iLevelID, eCategory)))
+		return E_FAIL;
+	strUIFolderPath = L"../../Resources/Data/UIData/Prefab/";
 	if (std::filesystem::exists(strUIFolderPath))
 	{
 		for (auto iter : std::filesystem::directory_iterator(strUIFolderPath))

@@ -122,7 +122,7 @@ void CUI_Inspector::Input_RectTransform()
 {
 	ImGui::PushID("RectTransform");
 	ImGui::SeparatorText("Rect Transform");
-	ImGui::BeginChild("RectTransformCard", ImVec2(0, 200.f), true, ImGuiWindowFlags_NoScrollbar);
+	ImGui::BeginChild("RectTransformCard", ImVec2(0, 150.f), true, ImGuiWindowFlags_NoScrollbar);
 	ImGui::TextDisabled("Anchor / pivot preset (3x3).");
 	ImGui::Spacing();
 
@@ -165,7 +165,7 @@ void CUI_Inspector::Input_RectTransform()
 	////////////////////////////
 	// Transform / Size Card
 	ImGui::Spacing();
-	ImGui::BeginChild("RectTransformValuesCard", ImVec2(0, 112.f), true, ImGuiWindowFlags_NoScrollbar);
+	ImGui::BeginChild("RectTransformValuesCard", ImVec2(0, 300.f), true, ImGuiWindowFlags_NoScrollbar);
 
 	ImGui::TextDisabled("Size and position (local).");
 	ImGui::Spacing();
@@ -204,6 +204,24 @@ void CUI_Inspector::Input_RectTransform()
 			m_pUIManager->Request_SortUI();
 
 		ImGui::EndTable();
+	}
+
+	ImGui::Spacing();
+
+	// Scale / Rotate
+	{
+		_float fRotate = m_pSelectedUI->Get_Rotate();
+		_float fDeg = DirectX::XMConvertToDegrees(fRotate);
+		
+		// degree로 편집 (min==max => 제한 없음)
+		if (ImGui::DragFloat("##UIRotateDeg", &fDeg, 0.1f, 0.f, 0.f, "%.2f deg"))
+		{
+			const _float fRad = DirectX::XMConvertToRadians(fDeg);
+			m_pSelectedUI->Set_Rotate(fRad);
+		}
+		ImGui::SameLine();
+		if (ImGui::Button("0.0##RotateReset"))
+			m_pSelectedUI->Set_Rotate(0.f);
 	}
 
 	ImGui::InputFloat("Alpha", &m_pSelectedUI->Get_AlphaRatio_Ref());

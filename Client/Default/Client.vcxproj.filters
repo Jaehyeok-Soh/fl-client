@@ -397,6 +397,12 @@
     <Filter Include="03. GameObject\UIObjects\02.UI\Prefabs">
       <UniqueIdentifier>{7159d328-f3de-4c5a-9cd0-76f40ccc27d0}</UniqueIdentifier>
     </Filter>
+    <Filter Include="03. GameObject\UIObjects\02.UI\Prefabs\Prefab">
+      <UniqueIdentifier>{a36be2ed-bef5-49a1-9796-40afe7062436}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="03. GameObject\UIObjects\02.UI\Image\Dynamic Image\06.AimDot">
+      <UniqueIdentifier>{91eeeaa9-73a6-40da-bff2-b5e05c436f98}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="targetver.h">
@@ -781,6 +787,12 @@
     <ClInclude Include="..\Public\UIPrefab_MonsterNameplate.h">
       <Filter>03. GameObject\UIObjects\02.UI\Prefabs</Filter>
     </ClInclude>
+    <ClInclude Include="..\Public\UIPrefab.h">
+      <Filter>03. GameObject\UIObjects\02.UI\Prefabs\Prefab</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\UIAimDot_Image.h">
+      <Filter>03. GameObject\UIObjects\02.UI\Image\Dynamic Image\06.AimDot</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <Image Include="Client.ico">
@@ -1156,6 +1168,12 @@
     </ClCompile>
     <ClCompile Include="..\Private\UIPrefab_MonsterNameplate.cpp">
       <Filter>03. GameObject\UIObjects\02.UI\Prefabs</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\UIPrefab.cpp">
+      <Filter>03. GameObject\UIObjects\02.UI\Prefabs\Prefab</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\UIAimDot_Image.cpp">
+      <Filter>03. GameObject\UIObjects\02.UI\Image\Dynamic Image\06.AimDot</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

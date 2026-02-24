@@ -46,6 +46,8 @@ HRESULT CUIObject::Initialize(void* pArg)
 	m_fZ = pDesc->fZ;
 	m_fWidth = 1.f;
 	m_fHeight = 1.f;
+	m_fScale = pDesc->fScale;
+	m_fRotate = pDesc->fRotate;
 
 	D3D11_VIEWPORT          ViewportDesc = {};
 	_uint					iNumViewports = { 1 };
@@ -168,7 +170,6 @@ HRESULT CUIObject::Render()
 	return S_OK;
 }
 
-
 void CUIObject::Set_Size(_float fWidth, _float fHeight)
 {
 	if (fWidth < 0.1f || fHeight < 0.1f)
@@ -211,6 +212,24 @@ void CUIObject::Set_Position(_float fX, _float fY, _float fZ)
 void CUIObject::Move_Position(_float fX, _float fY, _float fZ)
 {
 	Get_Component<CTransform>()->Set_Info(TRANSFORM_INFO_STATE::POS, XMVectorSet(fX - m_iViewportWidth * 0.5f, -fY + m_iViewportHeight * 0.5f, fZ, 1.f));
+	SetUp_Rect();
+}
+
+void CUIObject::Set_Scale(const _float fScale)
+{
+	m_fScale = fScale;
+}
+
+void CUIObject::Set_Rotate(const _float fRad)
+{
+	m_fRotate = fRad;
+	Get_Component<CTransform>()->Rotation(Vec3{ 0.f, 0.f, -1.f }, fRad);
+	SetUp_Rect();
+}
+
+void CUIObject::Move_Rotate(const _float fRad)
+{
+	Get_Component<CTransform>()->Rotation(Vec3{ 0.f, 0.f, -1.f }, fRad);
 	SetUp_Rect();
 }
 

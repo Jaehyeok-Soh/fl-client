@@ -111,7 +111,7 @@ inline std::string UISubClasstypeToString(EUISubClassType eType)
 {
 	switch (eType)
 	{
-	case EUISubClassType::NONE_OWNER:		return "NONE_OWNER";
+	case EUISubClassType::NONE_OWNER:			return "NONE_OWNER";
 
 	case EUISubClassType::PLAYER_STAT_BEGIN:	return "PLAYER_STAT_BEGIN";
 	case EUISubClassType::PLAYER_HP:			return "PLAYER_HP";
@@ -120,14 +120,14 @@ inline std::string UISubClasstypeToString(EUISubClassType eType)
 	case EUISubClassType::PLAYER_LV:			return "PLAYER_LV";
 	case EUISubClassType::PLAYER_STAT_END:		return "PLAYER_STAT_END";
 
-	case EUISubClassType::LOADING_PROGRESS:	return "LOADING_PROGRESS";
+	case EUISubClassType::LOADING_PROGRESS:		return "LOADING_PROGRESS";
 
-	case EUISubClassType::MONSTER_STAT_BEGIN:		return "MONSTER_STAT_BEGIN";
-	case EUISubClassType::MONSTER_HP:	return "MONSTER_HP";
-	case EUISubClassType::MONSTER_ARMOR:	return "MONSTER_ARMOR";
-	case EUISubClassType::MONSTER_STAT_END:	return "MONSTER_STAT_END";
+	case EUISubClassType::MONSTER_STAT_BEGIN:	return "MONSTER_STAT_BEGIN";
+	case EUISubClassType::MONSTER_HP:			return "MONSTER_HP";
+	case EUISubClassType::MONSTER_ARMOR:		return "MONSTER_ARMOR";
+	case EUISubClassType::MONSTER_STAT_END:		return "MONSTER_STAT_END";
 
-	case EUISubClassType::END:				return "END";
+	case EUISubClassType::END:					return "END";
 	default: return "";
 	}
 }
@@ -271,7 +271,6 @@ NLOHMANN_JSON_SERIALIZE_ENUM(EUITextSubClassType,
 
 		{ EUITextSubClassType::END,									"END" },
 	})
-
 	inline EUITextSubClassType StringToUITextSubClassType(const std::string& str)
 {
 	if (str == "NONE_OWNER")									return EUITextSubClassType::NONE_OWNER;
@@ -489,6 +488,12 @@ enum class EUIDImageSubClassType
 	LOADING_BG_BOTTOM,
 	LOADING_END,
 
+	// 전투 UI
+	BATTLE_UI_BEGIN,
+	BATTLE_AIMDOT_COMMON,
+	BATTLE_AIM_LOCK,
+	BATTLE_UI_END,
+
 	// 몬스터 네임플레이트
 	MONSTER_NAMEPLATE_BG,
 	END
@@ -531,6 +536,11 @@ NLOHMANN_JSON_SERIALIZE_ENUM(EUIDImageSubClassType,
 	{ EUIDImageSubClassType::LOADING_BG_TOP,			"LOADING_BG_TOP" },
 	{ EUIDImageSubClassType::LOADING_BG_BOTTOM,			"LOADING_BG_BOTTOM" },
 	{ EUIDImageSubClassType::LOADING_END,				"LOADING_END" },
+
+	{ EUIDImageSubClassType::BATTLE_UI_BEGIN,				"BATTLE_UI_BEGIN" },
+	{ EUIDImageSubClassType::BATTLE_AIMDOT_COMMON,				"BATTLE_AIMDOT_COMMON" },
+	{ EUIDImageSubClassType::BATTLE_AIM_LOCK,				"BATTLE_AIM_LOCK" },
+	{ EUIDImageSubClassType::BATTLE_UI_END,				"BATTLE_UI_END" },
 		
 	{ EUIDImageSubClassType::MONSTER_NAMEPLATE_BG,				"MONSTER_NAMEPLATE_BG" },
 
@@ -574,6 +584,11 @@ NLOHMANN_JSON_SERIALIZE_ENUM(EUIDImageSubClassType,
 	if (str == "LOADING_BG_TOP")			return EUIDImageSubClassType::LOADING_BG_TOP;
 	if (str == "LOADING_BG_BOTTOM")			return EUIDImageSubClassType::LOADING_BG_BOTTOM;
 	if (str == "LOADING_END")				return EUIDImageSubClassType::LOADING_END;
+
+	if (str == "BATTLE_UI_BEGIN")				return EUIDImageSubClassType::BATTLE_UI_BEGIN;
+	if (str == "BATTLE_AIMDOT_COMMON")				return EUIDImageSubClassType::BATTLE_AIMDOT_COMMON;
+	if (str == "BATTLE_AIM_LOCK")				return EUIDImageSubClassType::BATTLE_AIM_LOCK;
+	if (str == "BATTLE_UI_END")				return EUIDImageSubClassType::BATTLE_UI_END;
 	
 	if (str == "MONSTER_NAMEPLATE_BG")				return EUIDImageSubClassType::MONSTER_NAMEPLATE_BG;
 
@@ -620,6 +635,11 @@ inline const char* UIDImageSubTypeToString(EUIDImageSubClassType type)
 	case EUIDImageSubClassType::LOADING_BG_TOP:			return "LOADING_BG_TOP";
 	case EUIDImageSubClassType::LOADING_BG_BOTTOM:		return "LOADING_BG_BOTTOM";
 	case EUIDImageSubClassType::LOADING_END:			return "LOADING_END";
+
+	case EUIDImageSubClassType::BATTLE_UI_BEGIN:			return "BATTLE_UI_BEGIN";
+	case EUIDImageSubClassType::BATTLE_AIMDOT_COMMON:			return "BATTLE_AIMDOT_COMMON";
+	case EUIDImageSubClassType::BATTLE_AIM_LOCK:			return "BATTLE_AIM_LOCK";
+	case EUIDImageSubClassType::BATTLE_UI_END:			return "BATTLE_UI_END";
 	
 	case EUIDImageSubClassType::MONSTER_NAMEPLATE_BG:	return "MONSTER_NAMEPLATE_BG";
 
@@ -795,6 +815,8 @@ struct TUI_GenericUIData
 	_float			fPosX;
 	_float			fPosY;
 	_float			fPosZ;
+	_float			fScale;
+	_float			fRotate;
 	_string			strTextureTag;
 	_bool			isVisible;
 	_bool			isInteract;

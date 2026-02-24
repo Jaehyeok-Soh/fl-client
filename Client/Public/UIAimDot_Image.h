@@ -1,25 +1,24 @@
 #pragma once
-#include "UIPrefab.h"
+#include "UIDynamic_Image.h"
 #include "DataStruct_UI.h"
 
 NS_BEGIN(Client)
-class CCanvas;
-class CStatComponent;
-class CUIPrefab_MonsterNameplate final : public CUIPrefab
+class CUIAimDot_Image final : public  CUIDynamic_Image
 {
-	using Super = CUIPrefab;
+	using Super = CUIDynamic_Image;
 public:
-	typedef struct tagPrefabMonsterNamplate : public PREFAB_MONSTER_NAMEPLATE_DESC
+	typedef struct tagNamePlateBGDesc : public DIMAGE_DESC
 	{
-	}PREFAB_MONSTER_NAMEPLATE_DESC;
+	}NAMEPLATE_BG_DESC;
 
 private:
-	CUIPrefab_MonsterNameplate(ID3D11Device* pDevice, ID3D11DeviceContext* pDeviceContext);
-	CUIPrefab_MonsterNameplate(const CUIPrefab_MonsterNameplate& rhs);
-	virtual ~CUIPrefab_MonsterNameplate() = default;
+	CUIAimDot_Image(ID3D11Device* pDevice, ID3D11DeviceContext* pDeviceContext);
+	CUIAimDot_Image(const CUIAimDot_Image& rhs);
+	virtual ~CUIAimDot_Image() = default;
 public:
 	HRESULT Initialize_Prototype() override;
 	HRESULT Initialize(void* pArg) override;
+	HRESULT Attach_Personal_Info();
 public:
 	virtual HRESULT Awake(const _uint iCurrentLevelID) override;
 	virtual void Update_Priority(const _float fTimeDelta) override;
@@ -27,17 +26,15 @@ public:
 	virtual void Update_Late(const _float fTimeDelta) override;
 	virtual void Ready_Before_Render(const _float fTimeDelta) override;
 	virtual HRESULT Render() override;
-public:
+private:
+	HRESULT Ready_Components(NAMEPLATE_BG_DESC* pDesc);
+	HRESULT Bind_ShaderResources();
+private:
 	virtual void OnUIEvent(ETriggerEventType eEvent, CGenericUI* pSender)override;
 	virtual void Initialize_Visible_Event()override;
-	virtual void Initialize_InVisible_Event()override;
 	virtual _bool Tick_Visible_Event(const _float fTimeDelta)override;
-	virtual _bool Tick_InVisible_Event(const _float fTimeDelta)override;
-private:
-	HRESULT Ready_Components(PREFAB_MONSTER_NAMEPLATE_DESC* pDesc);
-	HRESULT Bind_ShaderResources();
 public:
-	static CUIPrefab_MonsterNameplate* Create(ID3D11Device* pDevice, ID3D11DeviceContext* pDeviceContext);
+	static CUIAimDot_Image* Create(ID3D11Device* pDevice, ID3D11DeviceContext* pDeviceContext);
 	CGameObject* Clone(void* pArg);
 	virtual void Free()override;
 };

@@ -10,6 +10,7 @@ NS_BEGIN(Client)
 class CCanvas;
 class CGenericUI;
 class CUITrigger;
+class CUIPrefab;
 class CUI_Manager final : public CBase
 {
 	DECLARE_SINGLETON(CUI_Manager)
@@ -44,12 +45,11 @@ public:
 	HRESULT Bind_Trigger(_uint iLevelID);
 	void Clear_TriggerUI();
 
-	HRESULT Regist_Prefab(_uint iLevelIndex, EUIPrefabType ePrefab, const _wstring& wstrPrototype, void* pArg);
+	HRESULT Regist_Prefab(_uint iLevelIndex, EUIPrefabType ePrefab, const _wstring& wstrPrototype, const _wstring& wstrPooltag, void* pArg);
 	void Request_Add_Prefab(_uint iLevelIndex, EUIPrefabType ePrefab);
 
 private:
 	void Sort_UI(vector<CGenericUI*>& Target);
-
 public:
 	// UI 전달 변수 Getter Setter
 	const _float* Get_LoadingRatio() const { return m_pLoadingRatio; }
@@ -68,6 +68,7 @@ private:
 	_bool m_isSort = { FALSE };
 	vector <CUITrigger*> m_vecTriggerUIs;
 
+	array<vector<_wstring>, ENUM_TO_UINT(EUIPrefabType::END)> m_vecPrefabs;
 
 private:
 	// UI 전달 변수 

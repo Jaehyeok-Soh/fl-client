@@ -303,10 +303,14 @@ void CImGui_Dockspace_MenuBar::Load_EffectData(const wstring& wstrFilePath)
 
 	const auto okay = pTest->Get_ListByType(ENUM_TO_UINT(DTO::EEffectType::EFFECT_CONTAINER));
 
-	if (okay.size() > 0)
+	if (okay.size() > 0) {
+
 		MSG_BOX("Okay");
+	}
 	else
+	{
 		MSG_BOX("Failed");
+	}
 
 	// 객체 로딩중 .. 
 	CToolObject* pEffectContainer = { nullptr };

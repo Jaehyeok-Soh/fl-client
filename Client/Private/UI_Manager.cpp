@@ -4,6 +4,7 @@
 #include "Engine_Utils.h"
 #include "Canvas.h"
 #include "GenericUI.h"
+#include "UIPrefab.h"
 #include "GameInstance.h"
 #include "UITrigger.h"
 
@@ -160,10 +161,12 @@ void CUI_Manager::Clear_TriggerUI()
 	m_vecTriggerUIs.clear();
 }
 
-HRESULT CUI_Manager::Regist_Prefab(_uint iLevelIndex, EUIPrefabType ePrefab, const _wstring& wstrPrototype, void* pArg)
+HRESULT CUI_Manager::Regist_Prefab(_uint iLevelIndex, EUIPrefabType ePrefab, const _wstring& wstrPrototype, const _wstring& wstrPooltag, void* pArg)
 {
-	if (FAILED(m_pGameInstance->Regist_Pool(iLevelIndex, UIPrefabtypeToWstring(ePrefab), g_wszUILayer, ENUM_TO_UINT(ELevelType::LOGO), wstrPrototype, pArg, 10)))
+	if (FAILED(m_pGameInstance->Regist_Pool(iLevelIndex, wstrPooltag, g_wszUILayer, ENUM_TO_UINT(ELevelType::LOGO), wstrPrototype, pArg, 10)))
 		return E_FAIL;
+	m_vecPrefabs[ENUM_TO_UINT(ePrefab)].push_back(wstrPooltag);
+	return S_OK;
 }
 
 void CUI_Manager::Request_Add_Prefab(_uint iLevelIndex, EUIPrefabType ePrefab)
@@ -171,9 +174,14 @@ void CUI_Manager::Request_Add_Prefab(_uint iLevelIndex, EUIPrefabType ePrefab)
 	switch (ePrefab)
 	{
 	case Client::EUIPrefabType::MONSTER_NAMEPLATE:
-		m_pGameInstance->Request_AddObject(iLevelIndex, UIPrefabtypeToWstring(EUIPrefabType::MONSTER_NAMEPLATE), ENUM_TO_UINT(ELevelType::LOGO), nullptr,
-			[this, iLevelIndex](CGameObject* pObj) {this->Add_VecGenericUICache(iLevelIndex, static_cast<CGenericUI*>(pObj)); });
-
+		for (auto wstr : m_vecPrefabs[ENUM_TO_UINT(EUIPrefabType::MONSTER_NAMEPLATE)])
+		{
+			m_pGameInstance->Request_AddObject(iLevelIndex, wstr, ENUM_TO_UINT(ELevelType::LOGO), nullptr,
+				[this, iLevelIndex](CGameObject* pObj) 
+				{
+					this->Add_VecGenericUICache(iLevelIndex, static_cast<CGenericUI*>(pObj)); 
+				});
+		}
 		break;
 	case Client::EUIPrefabType::END:
 		break;

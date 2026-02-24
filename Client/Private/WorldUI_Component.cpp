@@ -69,8 +69,8 @@ void CWorldUI_Component::Proj_World_To_Screen()
 	clip /= clip.w;
 
 	Calc_Perspective();
-	m_vScreenPos.x = ((clip.x * 0.5f + 0.5f) * m_fVPWidth + m_fVPTopLeftX) + m_fInitOffset.x * m_fScaleOffset;
-	m_vScreenPos.y = ((1.f - (clip.y * 0.5f + 0.5f)) * m_fVPHegiht + m_fVPTopLeftY) + m_fInitOffset.y * m_fScaleOffset;
+	m_vScreenPos.x = floor(((clip.x * 0.5f + 0.5f) * m_fVPWidth + m_fVPTopLeftX) + m_fInitOffset.x * m_fScaleOffset);
+	m_vScreenPos.y = floor(((1.f - (clip.y * 0.5f + 0.5f)) * m_fVPHegiht + m_fVPTopLeftY) + m_fInitOffset.y * m_fScaleOffset);
 }
 
 void CWorldUI_Component::Calc_Perspective()

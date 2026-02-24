@@ -235,15 +235,6 @@ HRESULT CBuilder_UI::Register_Class(DTO::EUIClassType eClassType, const DTO::TUI
 			pResult = m_pGameInstance->Add_GameObject(m_iLevelID, L"Prototype_UI_LoadingProgress", m_iLevelID, g_wszUILayer, &LoadingProgressDesc);
 			wstrProtoTag = L"Prototype_UI_LoadingProgress";
 		}
-		else if(isMonsterStat)
-		{
-			CUIMonsterStat_Progress::MONSTER_STAT_PROGRESS_DESC  MonsterStatProgressDesc= {};
-			static_cast<CGenericUI::GENERIC_UI_DESC&>(MonsterStatProgressDesc) = DefaultDesc;
-			MonsterStatProgressDesc.eOwner = data.eSubClassType;
-			MonsterStatProgressDesc.iComponentFlag = DTO::EComponentTypeFlag::WORLDUI_COMPONENT;
-			pResult = m_pGameInstance->Add_GameObject(m_iLevelID, L"Prototype_UI_MonsterStatProgress", m_iLevelID, g_wszUILayer, &MonsterStatProgressDesc);
-			wstrProtoTag = L"Prototype_UI_MonsterStatProgress";
-		}
 		else
 		{
 			data.eSubClassType;
@@ -299,15 +290,6 @@ HRESULT CBuilder_UI::Register_Class(DTO::EUIClassType eClassType, const DTO::TUI
 			pResult = m_pGameInstance->Add_GameObject(m_iLevelID, L"Prototype_UI_LoadingText", m_iLevelID, g_wszUILayer, &LoadingTextDesc);
 			wstrProtoTag = L"Prototype_UI_LoadingText";
 		}
-		else if (isMonsterNameplate)
-		{
-			CUIMonsterStat_Text::MONSTER_STAT_DESC MonsterStatDesc = {};
-			static_cast<CUIText::UI_TEXT_DESC&>(MonsterStatDesc) = TextDesc;
-			MonsterStatDesc.iComponentFlag = DTO::EComponentTypeFlag::WORLDUI_COMPONENT;
-			pResult = m_pGameInstance->Add_GameObject(m_iLevelID, L"Prototype_UI_MonsterStatText", m_iLevelID, g_wszUILayer, &MonsterStatDesc);
-			wstrProtoTag = L"Prototype_UI_MonsterStatText";
-
-		}
 		else
 		{
 			data.strTag;
@@ -352,7 +334,6 @@ HRESULT CBuilder_UI::Register_Class(DTO::EUIClassType eClassType, const DTO::TUI
 			MenuExitTriggerDesc.eTriggerSubClass = Type;
 			MenuExitTriggerDesc.tTriggerData = std::move(iter->second);
 			pResult = m_pGameInstance->Add_GameObject(m_iLevelID, L"Prototype_UI_UIMenuExitTrigger", m_iLevelID, g_wszUILayer, &MenuExitTriggerDesc);
-
 			wstrProtoTag = L"Prototype_UI_UIMenuExitTrigger";
 		}
 		else
@@ -365,9 +346,11 @@ HRESULT CBuilder_UI::Register_Class(DTO::EUIClassType eClassType, const DTO::TUI
 			wstrProtoTag = L"Prototype_UI_UICommonTrigger";
 		}
 
-		data.strTag;
 		if (nullptr == pResult)
+		{
+			data.strTag;
 			return E_FAIL;
+		}
 
 		auto* pUI = dynamic_cast<CGenericUI*>(pResult);
 		if (nullptr == pUI)
@@ -448,19 +431,8 @@ HRESULT CBuilder_UI::Register_Class(DTO::EUIClassType eClassType, const DTO::TUI
 		}
 		else if (isMonsterNameplate)
 		{
-			CUINameplate_BG::NAMEPLATE_BG_DESC NameplateDesc = {};
-			static_cast<CGenericUI::GENERIC_UI_DESC&>(NameplateDesc) = DefaultDesc;
-			NameplateDesc.iComponentFlag = DTO::EComponentTypeFlag::WORLDUI_COMPONENT;
-			// pResult = m_pGameInstance->Add_GameObject(m_iLevelID, L"Prototype_UI_Nameplate_BG", m_iLevelID, g_wszUILayer, &NameplateDesc);
-			wstrProtoTag = L"Prototype_UI_Nameplate_BG";
-			if (FAILED(CUI_Manager::GetInstance()->Regist_Prefab(m_iLevelID, m_ePrefabtype, wstrProtoTag, &NameplateDesc)))
-			{
-				data.strTag;
-				return E_FAIL;
-			}
 		}
 	}
-
 	////////////////////////////////////////
 	// WORLD_UI //
 	else if (eClassType == DTO::EUIClassType::WORLD_UI)
@@ -469,9 +441,6 @@ HRESULT CBuilder_UI::Register_Class(DTO::EUIClassType eClassType, const DTO::TUI
 	else
 	{
 	}
-
-
-
 	if (Client::EUIPrefabType::NOT_PREFAB == m_ePrefabtype)
 	{
 		if (pResult == nullptr)

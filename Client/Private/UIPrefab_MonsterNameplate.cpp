@@ -12,12 +12,12 @@
 #include "GameInstance.h"
 
 CUIPrefab_MonsterNameplate::CUIPrefab_MonsterNameplate(ID3D11Device* pDevice, ID3D11DeviceContext* pDeviceContext)
-	:CGenericUI(pDevice, pDeviceContext)
+	:CUIPrefab(pDevice, pDeviceContext)
 {
 }
 
 CUIPrefab_MonsterNameplate::CUIPrefab_MonsterNameplate(const CUIPrefab_MonsterNameplate& rhs)
-	:CGenericUI(rhs)
+	:CUIPrefab(rhs)
 {
 }
 
@@ -70,16 +70,10 @@ HRESULT CUIPrefab_MonsterNameplate::Render()
 {
 	if (!m_isVisible)
 		return S_OK;
-
-	if (FAILED(Super::Render()))
-		return E_FAIL;
-
 	if (FAILED(Bind_ShaderResources()))
 		return E_FAIL;
-
-	Get_Component<CShader>()->Apply();
-	Get_Component<CVIBuffer>()->Bind_Resource();
-	Get_Component<CVIBuffer>()->Render();
+	if (FAILED(Super::Render()))
+		return E_FAIL;
 	return S_OK;
 }
 
@@ -99,6 +93,7 @@ void CUIPrefab_MonsterNameplate::Initialize_InVisible_Event()
 
 _bool CUIPrefab_MonsterNameplate::Tick_Visible_Event(const _float fTimeDelta)
 {
+	m_isFin_Event = true;
 	return true;
 }
 
@@ -110,6 +105,7 @@ _bool CUIPrefab_MonsterNameplate::Tick_InVisible_Event(const _float fTimeDelta)
 
 HRESULT CUIPrefab_MonsterNameplate::Ready_Components(PREFAB_MONSTER_NAMEPLATE_DESC* pDesc)
 {
+	Super::Ready_Components(pDesc);
 	return S_OK;
 }
 
@@ -119,8 +115,8 @@ HRESULT CUIPrefab_MonsterNameplate::Bind_ShaderResources()
 	if (FAILED(Get_Component<CTransform>()->Bind_ShaderResource(pShader)))
 		return E_FAIL;
 
-	Super::Bind_ShaderResources();
-	return S_OK;
+	if (FAILED(Super::Bind_ShaderResources()))
+		return E_FAIL;
 }
 
 CUIPrefab_MonsterNameplate* CUIPrefab_MonsterNameplate::Create(ID3D11Device* pDevice, ID3D11DeviceContext* pDeviceContext)

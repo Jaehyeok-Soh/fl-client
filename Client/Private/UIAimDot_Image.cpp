@@ -1,5 +1,5 @@
 #include "pch.h"
-#include "UINameplate_BG.h"
+#include "UIAimDot_Image.h"
 #include "Client_Defines.h"
 //=================
 // Component
@@ -9,24 +9,24 @@
 #include "VIBuffer_Rect_Tex.h"
 #include "GameInstance.h"
 
-CUINameplate_BG::CUINameplate_BG(ID3D11Device* pDevice, ID3D11DeviceContext* pDeviceContext)
+CUIAimDot_Image::CUIAimDot_Image(ID3D11Device* pDevice, ID3D11DeviceContext* pDeviceContext)
 	:CUIDynamic_Image(pDevice, pDeviceContext)
 {
 }
 
-CUINameplate_BG::CUINameplate_BG(const CUINameplate_BG& rhs)
+CUIAimDot_Image::CUIAimDot_Image(const CUIAimDot_Image& rhs)
 	:CUIDynamic_Image(rhs)
 {
 }
 
-HRESULT CUINameplate_BG::Initialize_Prototype()
+HRESULT CUIAimDot_Image::Initialize_Prototype()
 {
 	if (FAILED(Super::Initialize_Prototype()))
 		return E_FAIL;
 	return S_OK;
 }
 
-HRESULT CUINameplate_BG::Initialize(void* pArg)
+HRESULT CUIAimDot_Image::Initialize(void* pArg)
 {
 	NAMEPLATE_BG_DESC* pDesc = static_cast<NAMEPLATE_BG_DESC*>(pArg);
 	m_isInteract = true;
@@ -37,12 +37,12 @@ HRESULT CUINameplate_BG::Initialize(void* pArg)
 	return S_OK;
 }
 
-HRESULT CUINameplate_BG::Attach_Personal_Info()
+HRESULT CUIAimDot_Image::Attach_Personal_Info()
 {
 	return S_OK;
 }
 
-HRESULT CUINameplate_BG::Awake(const _uint iCurrentLevelID)
+HRESULT CUIAimDot_Image::Awake(const _uint iCurrentLevelID)
 {
 	if (FAILED(Super::Awake(iCurrentLevelID)))
 		return E_FAIL;
@@ -53,27 +53,27 @@ HRESULT CUINameplate_BG::Awake(const _uint iCurrentLevelID)
 	return S_OK;
 }
 
-void CUINameplate_BG::Update_Priority(const _float fTimeDelta)
+void CUIAimDot_Image::Update_Priority(const _float fTimeDelta)
 {
 	Super::Update_Priority(fTimeDelta);
 }
 
-void CUINameplate_BG::Update(const _float fTimeDelta)
+void CUIAimDot_Image::Update(const _float fTimeDelta)
 {
 	Super::Update(fTimeDelta);
 }
 
-void CUINameplate_BG::Update_Late(const _float fTimeDelta)
+void CUIAimDot_Image::Update_Late(const _float fTimeDelta)
 {
- 	Super::Update_Late(fTimeDelta);
+	Super::Update_Late(fTimeDelta);
 }
 
-void CUINameplate_BG::Ready_Before_Render(const _float fTimeDelta)
+void CUIAimDot_Image::Ready_Before_Render(const _float fTimeDelta)
 {
 	Super::Ready_Before_Render(fTimeDelta);
 }
 
-HRESULT CUINameplate_BG::Render()
+HRESULT CUIAimDot_Image::Render()
 {
 	if (!m_isVisible)
 		return S_OK;
@@ -84,13 +84,13 @@ HRESULT CUINameplate_BG::Render()
 	return S_OK;
 }
 
-HRESULT CUINameplate_BG::Ready_Components(NAMEPLATE_BG_DESC* pDesc)
+HRESULT CUIAimDot_Image::Ready_Components(NAMEPLATE_BG_DESC* pDesc)
 {
 	Super::Ready_Components(pDesc);
 	return S_OK;
 }
 
-HRESULT CUINameplate_BG::Bind_ShaderResources()
+HRESULT CUIAimDot_Image::Bind_ShaderResources()
 {
 	CShader* pShader = Get_Component<CShader>();
 	if (FAILED(Get_Component<CTransform>()->Bind_ShaderResource(pShader)))
@@ -100,46 +100,46 @@ HRESULT CUINameplate_BG::Bind_ShaderResources()
 	return S_OK;
 }
 
-void CUINameplate_BG::OnUIEvent(ETriggerEventType eEvent, CGenericUI* pSender)
+void CUIAimDot_Image::OnUIEvent(ETriggerEventType eEvent, CGenericUI* pSender)
 {
 	if (!m_isActive)
 		return;
 }
 
-void CUINameplate_BG::Initialize_Visible_Event()
+void CUIAimDot_Image::Initialize_Visible_Event()
 {
 	m_isFin_Event = false;
 	m_isActive = false;
 }
 
-_bool CUINameplate_BG::Tick_Visible_Event(const _float fTimeDelta)
+_bool CUIAimDot_Image::Tick_Visible_Event(const _float fTimeDelta)
 {
 	return true;
 }
 
-CUINameplate_BG* CUINameplate_BG::Create(ID3D11Device* pDevice, ID3D11DeviceContext* pDeviceContext)
+CUIAimDot_Image* CUIAimDot_Image::Create(ID3D11Device* pDevice, ID3D11DeviceContext* pDeviceContext)
 {
-	CUINameplate_BG* pInstance = new CUINameplate_BG(pDevice, pDeviceContext);
+	CUIAimDot_Image* pInstance = new CUIAimDot_Image(pDevice, pDeviceContext);
 	if (FAILED(pInstance->Initialize_Prototype()))
 	{
-		MSG_BOX("CUINameplate_BG::Create, Create Failed");
+		MSG_BOX("CUIAimDot_Image::Create, Create Failed");
 		Safe_Release(pInstance);
 	}
 	return pInstance;
 }
 
-CGameObject* CUINameplate_BG::Clone(void* pArg)
+CGameObject* CUIAimDot_Image::Clone(void* pArg)
 {
-	CUINameplate_BG* pInstance = new CUINameplate_BG(*this);
+	CUIAimDot_Image* pInstance = new CUIAimDot_Image(*this);
 	if (FAILED(pInstance->Initialize(pArg)))
 	{
-		MSG_BOX("CUINameplate_BG::Clone, Clone Failed");
+		MSG_BOX("CUIAimDot_Image::Clone, Clone Failed");
 		Safe_Release(pInstance);
 	}
 	return pInstance;
 }
 
-void CUINameplate_BG::Free()
+void CUIAimDot_Image::Free()
 {
 	Super::Free();
 }

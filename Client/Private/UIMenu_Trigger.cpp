@@ -35,6 +35,8 @@ HRESULT CUIMenu_Trigger::Initialize(void* pArg)
 	UI_TRIGGER_DESC* pDesc = static_cast<UI_TRIGGER_DESC*>(pArg);
 	if (FAILED(Super::Initialize(pArg)))
 		return E_FAIL;
+	if (FAILED(Ready_Components(pDesc)))
+		return E_FAIL;
 	if (FAILED(Attach_Personal_Info()))
 		return E_FAIL;
 	return S_OK;
@@ -177,6 +179,8 @@ _bool CUIMenu_Trigger::Tick_NonInteractable_Event(const _float fTimeDelta)
 
 HRESULT CUIMenu_Trigger::Ready_Components(UI_TRIGGER_DESC* pDesc)
 {
+	if (FAILED(Super::Ready_Components(pDesc)))
+		return E_FAIL;
 	return S_OK;
 }
 
@@ -186,8 +190,8 @@ HRESULT CUIMenu_Trigger::Bind_ShaderResources()
 	if (FAILED(Get_Component<CTransform>()->Bind_ShaderResource(pShader)))
 		return E_FAIL;
 
-	Super::Bind_ShaderResources();
-
+	if (FAILED(Super::Bind_ShaderResources()))
+		return E_FAIL;
 	return S_OK;
 }
 
