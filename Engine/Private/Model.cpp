@@ -663,6 +663,14 @@ void CModel::Set_CurAnimation_RootApply(_bool bRootApply)
 	m_vecAnimations[m_iCurrentAnimIndex]->Set_ApplyRootMotion(bRootApply);
 }
 
+void CModel::Set_ApplyRootMotionAll(_bool bRootApply)
+{
+	for (auto& pAnim : m_vecAnimations)
+	{
+		pAnim->Set_ApplyRootMotion(bRootApply);
+	}
+}
+
 HRESULT CModel::Ready_ComputeShaders(CComputeShader* pBoneMeshCS, CComputeShader* pBoneComBineCS, CComputeShader* pAnimEvalCS, CComputeShader* pAnimBlendCS, CComputeShader* pAnimMixCS)
 {
 	Make_GroupBuffers();	// group buffer만 우선 생성

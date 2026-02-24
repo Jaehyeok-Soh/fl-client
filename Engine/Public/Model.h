@@ -195,6 +195,7 @@ public:
 	void								Set_AnimationPlayRate(_uint iIndex, _float fValue);
 	void								Set_AnimationSpeed(_float fSpeed) { m_fAnimationSpeed = fSpeed; if (m_fAnimationSpeed <= 0) m_fAnimationSpeed = 1.f; }
 	void								Set_CurAnimation_RootApply(_bool bRootApply);
+	void								Set_ApplyRootMotionAll(_bool bRootApply);
 
 	// materials funcs
 public:
