@@ -6,6 +6,8 @@
 #define MAX_MODEL_INSTANCE 512
 #define MAX_NAME 128
 #define HITSTOP_TIME 0.1f
+#define CAST_VOID_P(p) reinterpret_cast<void*>(p)
+#define CAST_VOID_PP(p) reinterpret_cast<void**>(p)
 
 // PhysX
 #define PVD_HOST "127.0.0.1"
