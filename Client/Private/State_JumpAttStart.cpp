@@ -39,6 +39,8 @@ HRESULT CState_JumpAttStart::Start(void* pArg, _bool bForce)
 
 void CState_JumpAttStart::Update(const _float fTimeDelta)
 {
+	CStateBase::Update(fTimeDelta);
+
 	// 벽이랑 충돌했는지 먼저 검사
 	if (IsOn_CCTFlag(PxControllerCollisionFlag::Enum::eCOLLISION_SIDES) ||
 		IsOn_CCTFlag(PxControllerCollisionFlag::Enum::eCOLLISION_DOWN))
@@ -46,11 +48,6 @@ void CState_JumpAttStart::Update(const _float fTimeDelta)
 		Change_PlayerState(ENUM_TO_UINT(CPlayer::State::JUMPATTEND));
 		return;
 	}
-
-	CStateBase::Update(fTimeDelta);
-
-	if (Check_OnGround(0.2f))
-		Change_PlayerState(ENUM_TO_UINT(CPlayer::State::JUMPATTEND));
 
 	OwnMove(fTimeDelta);
 }
