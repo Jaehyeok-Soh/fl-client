@@ -210,16 +210,12 @@ PS_OUT_DEFFERED PS_RGBMAPPING(PS_IN_MESH input)
     
     float4 vDiffuse = 1.f;
     Compute_Diffse(vDiffuse, input.vUV);
-    
-    pow(Color_R, 2.2);
-    pow(Color_G, 2.2);
-    pow(Color_B, 2.2);
 
     float4 final =
-      saturate(vDiffuse.r * Color_R) +
-      saturate(vDiffuse.g * Color_G) +
-      saturate(vDiffuse.b * Color_B);
-
+     saturate(vDiffuse.r * Color_R) +
+     saturate(vDiffuse.g * Color_G) +
+     saturate(vDiffuse.b * Color_B);
+    
     saturate(final);
     
     output.vDiffuse = final;
@@ -240,8 +236,9 @@ PS_OUT_DEFFERED PS_RGBMAPPING(PS_IN_MESH input)
 technique11 T0
 {
 	PASS_RS_DS_BS_VP(StaticObject, RS_Default_CullNone, DS_Default, BS_Default, VS_MAIN, PS_MAIN)
-	PASS_RS_DS_BS_VP(RGBMapping, RS_Default_CullNone, DS_Default, BS_Default, VS_MAIN, PS_RGBMAPPING)
+
 	PASS_RS_DS_BS_VP(LandScape, RS_Default_CullNone, DS_Default, BS_Default, VS_MAIN, PS_LANDSCAPE)
     PASS_RS_DS_BS_VP(SHADOW_BAKE, RS_Default, DS_Default, BS_Default, VS_MAIN, PS_BAKESHADOW)
 	PASS_RS_DS_BS_VP(Debug, RS_Wire, DS_Default, BS_Default, VS_MAIN, PS_BLACK)
+	PASS_RS_DS_BS_VP(RGBMapping, RS_Default_CullNone, DS_Default, BS_Default, VS_MAIN, PS_RGBMAPPING)
 };

@@ -230,7 +230,7 @@ HRESULT CWeapon::Ready_Components(WEAPON_DESC* pDesc)
 
 	if (m_bColorMapping = pDesc->bRGBShader)
 	{
-		Get_Component<CShader>()->Set_Pass(1);
+		Get_Component<CShader>()->Set_Pass(4);
 		m_tColorDesc.vColorR = pDesc->vColorR;
 		m_tColorDesc.vColorG = pDesc->vColorG;
 		m_tColorDesc.vColorB = pDesc->vColorB;
@@ -388,18 +388,21 @@ HRESULT CWeapon::Render_AnimWeap()
 
 void CWeapon::Play_Anim(const _float fTimeDelta)
 {
-	CComputeShader* pBonCS		= static_cast<CComputeShader*>(Get_Script_Component(TEXT("ComputeShader_BoneCombine")));
-	CComputeShader* pAnimECS	= static_cast<CComputeShader*>(Get_Script_Component(TEXT("ComputeShader_AnimE")));
-
-	switch (m_eAnimState)
+	if (m_eState != State::NONE)
 	{
-	case AnimState::PLAY:
-		Get_Component<CModel>()->Update_Animation(pBonCS, pAnimECS, fTimeDelta);
-		break;
+		CComputeShader* pBonCS = static_cast<CComputeShader*>(Get_Script_Component(TEXT("ComputeShader_BoneCombine")));
+		CComputeShader* pAnimECS = static_cast<CComputeShader*>(Get_Script_Component(TEXT("ComputeShader_AnimE")));
 
-	case AnimState::STOP:
-		Get_Component<CModel>()->Update_Animation(pBonCS, pAnimECS, 0.f);
-		break;
+		switch (m_eAnimState)
+		{
+		case AnimState::PLAY:
+			Get_Component<CModel>()->Update_Animation(pBonCS, pAnimECS, fTimeDelta);
+			break;
+
+		case AnimState::STOP:
+			Get_Component<CModel>()->Update_Animation(pBonCS, pAnimECS, 0.f);
+			break;
+		}
 	}
 }
 

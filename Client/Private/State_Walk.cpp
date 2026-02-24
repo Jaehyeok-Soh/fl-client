@@ -61,7 +61,7 @@ void CState_Walk::Update(const _float fTimeDelta)
 			return;
 	}
 
-	else
+	//else
 	{
 		Super::Update(fTimeDelta);
 	}

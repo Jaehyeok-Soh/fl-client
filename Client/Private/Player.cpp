@@ -340,7 +340,7 @@ HRESULT CPlayer::Ready_BaseStates()
         desc.vecChangeState_ByKey = vecChangeState_ByKey;
 
         tKeyTimer.bCountTime    = true;
-        tKeyTimer.fMaxTime      = 0.15f;
+        tKeyTimer.fMaxTime      = 0.08f;
         desc.tKeyTimer = tKeyTimer;
 
         if (FAILED(pActionState->Add_State(ENUM_TO_UINT(State::IDLE), CState_Idle::Create(pActionState, &desc))))
@@ -374,6 +374,7 @@ HRESULT CPlayer::Ready_BaseStates()
         vecChangeState_ByKey[ENUM_TO_SZET(CStateBase_Player::STATEKEY::CHARGE)]         = ENUM_TO_UINT(CPlayer::State::CHARGE);
         desc.vecChangeState_ByKey = vecChangeState_ByKey;
 
+        tKeyTimer.bCountTime = false;
         desc.tKeyTimer = tKeyTimer;
 
         if (FAILED(pActionState->Add_State(ENUM_TO_UINT(State::WALK), CState_Walk::Create(pActionState, &desc))))
@@ -402,6 +403,7 @@ HRESULT CPlayer::Ready_BaseStates()
         vecChangeState_ByKey[ENUM_TO_SZET(CStateBase_Player::STATEKEY::CHARGE)]         = ENUM_TO_UINT(State::END);
         desc.vecChangeState_ByKey = vecChangeState_ByKey;
 
+        tKeyTimer.bCountTime = false;
         desc.tKeyTimer = tKeyTimer;
 
         if (FAILED(pActionState->Add_State(ENUM_TO_UINT(State::CROUCH), CState_Crouch::Create(pActionState, &desc))))
@@ -430,6 +432,7 @@ HRESULT CPlayer::Ready_BaseStates()
         vecChangeState_ByKey[ENUM_TO_SZET(CStateBase_Player::STATEKEY::CHARGE)]         = ENUM_TO_UINT(State::END);
         desc.vecChangeState_ByKey = vecChangeState_ByKey;
 
+        tKeyTimer.bCountTime = false;
         desc.tKeyTimer = tKeyTimer;
 
         if (FAILED(pActionState->Add_State(ENUM_TO_UINT(State::CROUCHWALK), CState_CrouchWalk::Create(pActionState, &desc))))
@@ -462,6 +465,9 @@ HRESULT CPlayer::Ready_BaseStates()
         //vecChangeState_ByKey[ENUM_TO_SZET(CStateBase_Player::STATEKEY::RM)]             = ENUM_TO_UINT(State::END);
         vecChangeState_ByKey[ENUM_TO_SZET(CStateBase_Player::STATEKEY::CHARGE)]         = ENUM_TO_UINT(State::END);
         desc.vecChangeState_ByKey = vecChangeState_ByKey;
+
+        tKeyTimer.bCountTime = true;
+        tKeyTimer.fMaxTime = 0.1f;
         desc.tKeyTimer = tKeyTimer;
 
         if (FAILED(pActionState->Add_State(ENUM_TO_UINT(State::SLIDE), CState_Slide::Create(pActionState, &desc))))
@@ -492,7 +498,7 @@ HRESULT CPlayer::Ready_BaseStates()
         desc.vecChangeState_ByKey = vecChangeState_ByKey;
 
         tKeyTimer.bCountTime = true;
-        tKeyTimer.fMaxTime = 0.05f;
+        tKeyTimer.fMaxTime = 0.1f;
         desc.tKeyTimer = tKeyTimer;
 
         if (FAILED(pActionState->Add_State(ENUM_TO_UINT(State::DASHBACK), CState_DashBack::Create(pActionState, &desc))))

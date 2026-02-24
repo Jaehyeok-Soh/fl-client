@@ -29,6 +29,7 @@ public:
 		BODY = 0,
 		SWORD,
 		SKILL,
+		GUN,
 		END
 	};
 

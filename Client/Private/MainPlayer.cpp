@@ -513,7 +513,7 @@ HRESULT CMainPlayer::Ready_Ability()
 
 HRESULT CMainPlayer::Ready_Weapons()
 {
-    // Weapons
+    // Weapons : Sword
     {
         CWeapon::WEAPON_DESC weaponDesc     = {};
         weaponDesc.wstrModelPrototypeName   = L"Prototype_Component_Model_MoonSword";
@@ -523,15 +523,15 @@ HRESULT CMainPlayer::Ready_Weapons()
         weaponDesc.eModel                   = CWeapon::Weapon_ModelType::STATIC;
         weaponDesc.bMianWeapon              = true;
         weaponDesc.bRGBShader = true;
-        weaponDesc.vColorR = Vec4(0.84375f, 0.84375f, 0.84375f, 1.f);
-        weaponDesc.vColorG = Vec4(0.686686f, 0.686686f, 0.686686f, 1.f);
-        weaponDesc.vColorB = Vec4(0.234375f, 0.234375f, 0.234375f, 1.f);
+        weaponDesc.vColorR = Vec4(0.119538f, 0.119538f, 0.119538f, 1.f);
+        weaponDesc.vColorG = Vec4(1.f, 0.751839f, 0.182292f, 1.f);
+        weaponDesc.vColorB = Vec4(0.458824f, 0.435294f, 0.45098f, 1.f);
 
         if (FAILED(Add_Part(Part::SWORD, ENUM_TO_UINT(ELevelType::STATIC), L"Prototype_GameObject_Part_Sword", &weaponDesc)))
             return E_FAIL;
     }
 
-    // Weapons
+    // Weapons : Skill
     {
         CWeapon::WEAPON_DESC weaponDesc = {};
         weaponDesc.wstrModelPrototypeName = L"Prototype_Component_Model_MoonSkillWeap";
@@ -540,8 +540,29 @@ HRESULT CMainPlayer::Ready_Weapons()
         weaponDesc.pMatSocket = &Get_Part<CBody>(Part::BODY)->Get_WeaponSocket()->Get_BindPoseTransformMatrix();
         weaponDesc.eModel = CWeapon::Weapon_ModelType::STATIC;
         weaponDesc.bMianWeapon = false;
+        weaponDesc.bRGBShader = true;
+        weaponDesc.vColorR = Vec4(0.84375f, 0.84375f, 0.84375f, 1.f);
+        weaponDesc.vColorG = Vec4(0.686686f, 0.686686f, 0.686686f, 1.f);
+        weaponDesc.vColorB = Vec4(0.234375f, 0.234375f, 0.234375f, 1.f);
         if (FAILED(Add_Part(Part::SKILL, ENUM_TO_UINT(ELevelType::STATIC), L"Prototype_GameObject_Part_Sword", &weaponDesc)))
             return E_FAIL;
+    }
+
+    // Weapons : Gun
+    {
+        //CWeapon::WEAPON_DESC weaponDesc = {};
+        //weaponDesc.wstrModelPrototypeName = L"Prototype_Component_Model_MoonGun";
+        //weaponDesc.pMatParent = &Get_Component<CTransform>()->Get_WorldMatrix();
+        //weaponDesc.pMatHandSocket = &Get_Part<CBody>(Part::BODY)->Get_RightHandSocket()->Get_CombinedTransformMatrix();
+        //weaponDesc.pMatSocket = &Get_Part<CBody>(Part::BODY)->Get_WeaponSocket()->Get_BindPoseTransformMatrix();
+        //weaponDesc.eModel = CWeapon::Weapon_ModelType::STATIC;
+        //weaponDesc.bMianWeapon = false;
+        //weaponDesc.bRGBShader = true;
+        //weaponDesc.vColorR = Vec4(0.84375f, 0.84375f, 0.84375f, 1.f);
+        //weaponDesc.vColorG = Vec4(0.686686f, 0.686686f, 0.686686f, 1.f);
+        //weaponDesc.vColorB = Vec4(0.234375f, 0.234375f, 0.234375f, 1.f);
+        //if (FAILED(Add_Part(Part::GUN, ENUM_TO_UINT(ELevelType::STATIC), L"Prototype_GameObject_Part_Weapon", &weaponDesc)))
+        //    return E_FAIL;
     }
     //// LeftHand
     //{
@@ -762,7 +783,7 @@ HRESULT CMainPlayer::Ready_AttackStates()
     // combo state
     {
         CState_MoonCombo::MOONCOMBO_DESC tDesc = {};
-        tDesc.vCombo_CheckTimes = Vec4{ 0.9f,0.9f,1.5f,2.f };
+        tDesc.vCombo_CheckTimes = Vec4{ 0.5f,0.5f,1.f,1.5f };
         tDesc.iSlideAnimIdx = Get_AnimationIndex(L"Animation_PlayerMoon_Sword_SlideAttack");
         tDesc.iFirstAnimIdx = Get_AnimationIndex(L"Animation_PlayerMoon_Sword_RunAttack_01");
         tDesc.iSecondAnimIdx = Get_AnimationIndex(L"Animation_PlayerMoon_Sword_RunAttack_02");
@@ -822,7 +843,7 @@ HRESULT CMainPlayer::Ready_AttackStates()
 
 
         tKeyTimer.bCountTime = true;
-        tKeyTimer.fMaxTime = 2.3f;
+        tKeyTimer.fMaxTime = 0.5 ;
         desc.tKeyTimer = tKeyTimer;
 
         if (FAILED(pActionState->Add_State(ENUM_TO_UINT(State::JUMPATTEND), CState_JumpAttEnd::Create(pActionState, &desc))))
@@ -853,9 +874,8 @@ HRESULT CMainPlayer::Ready_AttackStates()
         vecChangeState_ByKey[ENUM_TO_SZET(CStateBase_Player::STATEKEY::LOOPDONE)]       = ENUM_TO_UINT(State::IDLE);
         desc.vecChangeState_ByKey = vecChangeState_ByKey;
 
-
         tKeyTimer.bCountTime = true;
-        tKeyTimer.fMaxTime = 1.7f;
+        tKeyTimer.fMaxTime = 0.8f;
         desc.tKeyTimer = tKeyTimer;
 
         if (FAILED(pActionState->Add_State(ENUM_TO_UINT(State::CHARGE), CState_MoonCharge::Create(pActionState, &desc))))
