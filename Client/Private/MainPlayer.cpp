@@ -522,6 +522,11 @@ HRESULT CMainPlayer::Ready_Weapons()
         weaponDesc.pMatSocket               = &Get_Part<CBody>(Part::BODY)->Get_WeaponSocket()->Get_BindPoseTransformMatrix();
         weaponDesc.eModel                   = CWeapon::Weapon_ModelType::STATIC;
         weaponDesc.bMianWeapon              = true;
+        weaponDesc.bRGBShader = true;
+        weaponDesc.vColorR = Vec4(0.84375f, 0.84375f, 0.84375f, 1.f);
+        weaponDesc.vColorG = Vec4(0.686686f, 0.686686f, 0.686686f, 1.f);
+        weaponDesc.vColorB = Vec4(0.234375f, 0.234375f, 0.234375f, 1.f);
+
         if (FAILED(Add_Part(Part::SWORD, ENUM_TO_UINT(ELevelType::STATIC), L"Prototype_GameObject_Part_Sword", &weaponDesc)))
             return E_FAIL;
     }

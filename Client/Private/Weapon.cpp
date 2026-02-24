@@ -19,6 +19,9 @@ CWeapon::CWeapon(const CWeapon& rhs)
 	: Super(rhs)
 	, m_eWaeponType(rhs.m_eWaeponType)
 	, m_matRotation(rhs.m_matRotation)
+	, m_tColorDesc(rhs.m_tColorDesc
+	)
+	, m_bColorMapping(rhs.m_bColorMapping)
 {
 }
 
@@ -225,6 +228,14 @@ HRESULT CWeapon::Ready_Components(WEAPON_DESC* pDesc)
 			return E_FAIL;
 	}
 
+	if (m_bColorMapping = pDesc->bRGBShader)
+	{
+		Get_Component<CShader>()->Set_Pass(1);
+		m_tColorDesc.vColorR = pDesc->vColorR;
+		m_tColorDesc.vColorG = pDesc->vColorG;
+		m_tColorDesc.vColorB = pDesc->vColorB;
+	}
+
 	return S_OK;
 }
 
@@ -335,6 +346,11 @@ HRESULT CWeapon::Render_StaticWeap()
 	CShader* pShader = Get_Component<CShader>();
 	CModel* pModel = Get_Component<CModel>();
 	_uint iMeshCount = pModel->Get_MeshCount();
+
+	if (m_bColorMapping)
+	{
+		pShader->Bind_RGBColorData(m_tColorDesc);
+	}
 
 	pShader->Bind_ObjectInfoData(m_tObjectInfoDesc);
 	pShader->Bind_TransformData(m_matCombinedWorld);

@@ -27,13 +27,18 @@ public:
 
 	typedef struct tagWeaponDesc : public CPartObject::PARTOBJ_DESC
 	{
-		wstring				wstrModelPrototypeName	= { L"" };
-		const Matrix*		pMatHandSocket			= { nullptr };
-		const Matrix*		pMatSocket				= { nullptr };
+		wstring				wstrModelPrototypeName = { L"" };
+		const Matrix* pMatHandSocket = { nullptr };
+		const Matrix* pMatSocket = { nullptr };
 
-		Weapon_ModelType	eModel	= { Weapon_ModelType::STATIC };
+		Weapon_ModelType	eModel = { Weapon_ModelType::STATIC };
 
 		_bool				bMianWeapon = { false };
+		_bool bRGBShader = { true };
+
+		Vec4 vColorR = Vec4::Zero;
+		Vec4 vColorG = Vec4::Zero;
+		Vec4 vColorB = Vec4::Zero;
 
 	}WEAPON_DESC;
 
@@ -70,16 +75,20 @@ public:
 	void	Set_WeaponState(_uint iState) { m_eState = static_cast<State>(iState); }
 
 protected:
-	State				m_eState		= { State::NONE };
-	Weapon_Type			m_eWaeponType	= { Weapon_Type::SWORD };
-	Weapon_ModelType	m_eModleType	= { Weapon_ModelType::STATIC };
+	State				m_eState = { State::NONE };
+	Weapon_Type			m_eWaeponType = { Weapon_Type::SWORD };
+	Weapon_ModelType	m_eModleType = { Weapon_ModelType::STATIC };
 
-	const Matrix*		m_pMatHandSocket	= { nullptr };
-	const Matrix*		m_pMatSocket		= { nullptr };
+	const Matrix* m_pMatHandSocket = { nullptr };
+	const Matrix* m_pMatSocket = { nullptr };
 
-	_bool				m_bMainWeapon		= { false };
+	_bool				m_bMainWeapon = { false };
 
 	Matrix				m_matRotation = {  };
+
+	_bool m_bColorMapping = { false };
+
+	SHADER_RGBCOLOR_DESC m_tColorDesc = {};
 
 private:
 	HRESULT Ready_Components(WEAPON_DESC* pDesc);
