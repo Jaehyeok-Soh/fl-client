@@ -65,8 +65,7 @@ public:
 protected:
 	EFFECT_CONTAINERDESC			m_eDesc = {};
 	Matrix							m_pOffsetMartix = {};
-	const Matrix*					m_pBoneMatrix = { nullptr };
-	const Matrix*					m_pBoneOwnerMatrix = { nullptr };
+	const Matrix* m_pBoneMatrix = { nullptr };
 	_uint							m_iBoneFlag = {};
 	Matrix							m_matCombinedWorld = {};
 };

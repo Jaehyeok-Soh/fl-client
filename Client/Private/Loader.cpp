@@ -240,17 +240,6 @@ HRESULT CLoader::Loading_For_Logo()
 
 		if (FAILED(Make_StaticObject_Prototype(ELevelType::STATIC, L"../../Resources/Models/Effect_FBX/blade")))
 			return E_FAIL;
-
-		if (FAILED(Make_StaticObject_Prototype(ELevelType::STATIC, L"../../Resources/Models/Effect_FBX/Circle")))
-			return E_FAIL;
-		if (FAILED(Make_StaticObject_Prototype(ELevelType::STATIC, L"../../Resources/Models/Effect_FBX/Object_Chain")))
-			return E_FAIL;
-		if (FAILED(Make_StaticObject_Prototype(ELevelType::STATIC, L"../../Resources/Models/Effect_FBX/Object_Female_Character")))
-			return E_FAIL;
-		//if (FAILED(Make_StaticObject_Prototype(ELevelType::STATIC, L"../../Resources/Models/Effect_FBX/Rock/Model/")))
-		//	return E_FAIL;
-		if (FAILED(Make_StaticObject_Prototype(ELevelType::STATIC, L"../../Resources/Models/Effect_FBX/Tornado")))
-			return E_FAIL;
 	}
 	m_fLoadingRatio = 0.13f;
 	// For. Prototype_Component_Button_Test_Texture

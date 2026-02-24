@@ -128,21 +128,10 @@ void Effect::Update(const _float fTimeDelta)
 
 		if (Engine_Utils::Has_Flag(m_iBoneFlag, DTO::BONE_POS))
 		{
-			matCustom.Translation(Vec3(vBonePos));
+			matCustom.Translation(Vec3(vBonePos.x * 0.01f, vBonePos.y * 0.01f, vBonePos.z * 0.01f));
 		}
 
-		Matrix matBoneOwner = *m_pBoneOwnerMatrix;
-		Matrix matCustom2 = XMMatrixIdentity();
-
-		Vector3 vBoneScale2;
-		Quat vBoneQuat2;
-		Vector3 vBonePos2;
-
-		matBoneOwner.Decompose(vBoneScale2, vBoneQuat2, vBonePos2);
-		matCustom2 *= Matrix::CreateFromQuaternion(vBoneQuat2);
-		matCustom2.Translation(Vec3(vBonePos2.x, vBonePos2.y, vBonePos2.z));
-
-		m_matCombinedWorld = m_pOffsetMartix * (matCustom) * (matCustom2);
+		m_matCombinedWorld = m_pOffsetMartix * (matCustom);
 	}
 	else
 	{
@@ -218,7 +207,6 @@ HRESULT Effect::Spawn_FromPool(void* pArg)
 	// Engine 데이터를 기반으로 Client의 데이터 갱신
 	m_eDesc._Effect_SimulationType = (DTO::E_SIMULATION_SPACE)pEngineDesc->iSimulationType;
 	m_pBoneMatrix = *pEngineDesc->pTargetBoneMatrix;
-	m_pBoneOwnerMatrix = *pEngineDesc->pTransformMatrix;
 	m_iBoneFlag = pEngineDesc->iFlag;
 
 	if (m_eDesc._Effect_SimulationType == DTO::E_SIMULATION_SPACE::WORLD)
