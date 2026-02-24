@@ -402,6 +402,8 @@ void CModel::Make_MixRatio(_uint iAnimIdx, vector<DATA_ANIMIX>& vecAniMixData, C
 
 	for (auto& pMixData : vecAniMixData)
 	{
+		if (pMixData.iParentIdx < 0)
+			continue;
 		for (size_t i = 0 ; i< m_vecBones.size(); i++)
 		{
 			// 만약 내가 저 인덱스의 child라면
