@@ -17,6 +17,8 @@ HRESULT CPanel_ModelInfo::Initialize()
 
 HRESULT CPanel_ModelInfo::Render(CToolObject* pGo)
 {
+	Render_ObjInfo();
+
 	Render_RootMotionInfo();
 
 	Render_AnimationInfo();
@@ -36,6 +38,23 @@ void CPanel_ModelInfo::Update(const _float fTimeDelta)
 		//m_iRootBondIdx = tInfo.pModel->Get_RootBone();
 		//m_fRootMotionOffset = tInfo.pModel->Get_Animatioin_MotionOffset(m_iCurAnimIdx);
 	}
+
+	pObj = tInfo.pCurrentObject;
+}
+
+void CPanel_ModelInfo::Render_ObjInfo()
+{
+	ImGui::Begin("Object Info");
+
+	if (pObj)
+	{
+		Vec3 vPos =	pObj->Get_Component<CTransform>()->Get_Info(TRANSFORM_INFO_STATE::POS);
+
+		ImGui::Text("Position : %.3f, %.3f, %.3f",
+			vPos.x, vPos.y, vPos.z);
+	}
+
+	ImGui::End();
 }
 
 void CPanel_ModelInfo::Render_RootMotionInfo()

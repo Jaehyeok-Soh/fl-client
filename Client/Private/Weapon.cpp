@@ -214,7 +214,7 @@ void CWeapon::Set_DefaultSocket()
 
 HRESULT CWeapon::Ready_Components(WEAPON_DESC* pDesc)
 {
-	if (FAILED(Add_Component<CModel>(0/*static*/, pDesc->wstrModelPrototypeName, pDesc)))
+	if (FAILED(Add_Component<CModel>(0/*static*/, pDesc->wstrModelPrototypeName, nullptr)))
 		return E_FAIL;
 
 	if (pDesc->eModel == Weapon_ModelType::STATIC)

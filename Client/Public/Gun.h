@@ -18,6 +18,12 @@ public:
 	};
 
 public:
+	typedef struct tagGunInfo
+	{
+		_float fTotalBullet		= { 0.f };
+		_float fCurrentBullet	= { 0.f };
+	}GUN_INFO;
+
 	typedef struct tagGunDesc : public CWeapon::WEAPON_DESC
 	{
 		_float fAllBullet		= { 0.f };
@@ -47,9 +53,10 @@ public:
 	virtual HRESULT			Render() override;
 
 public:
-	void Change_GunState(GunState eState);
-	void Change_GunState(_uint iState);
+	void					Change_GunState(GunState eState);
+	void					Change_GunState(_uint iState);
 
+	void					Reload_Bullet();
 
 	// getter setter
 public:
@@ -62,7 +69,7 @@ private:
 	_float m_fSpeed		= { 1.f };
 
 	// 항상 x가 cur개수. y는 max 개수
-	MinMax			m_MAllBullet = { 0.f,0.f };
+	MinMax			m_MTotalBullet = { 0.f,0.f };
 	MinMax			m_MCurBullet = { 0.f,0.f };
 
 	TIME_COUNTER	m_tFireTimeCounter = { 0.f,0.f };
