@@ -164,8 +164,10 @@
     <ClInclude Include="..\Public\Builder_Map.h" />
     <ClInclude Include="..\Public\Builder_MonsterState.h" />
     <ClInclude Include="..\Public\Builder_UI.h" />
+    <ClInclude Include="..\Public\Bush.h" />
     <ClInclude Include="..\Public\CameraMan_Targeter.h" />
     <ClInclude Include="..\Public\Canvas.h" />
+    <ClInclude Include="..\Public\Grass.h" />
     <ClInclude Include="..\public\ImGuiBase.h" />
     <ClInclude Include="..\public\ImGui_ClientDebug.h" />
     <ClInclude Include="..\Public\Client_Defines.h" />
@@ -204,8 +206,11 @@
     <ClInclude Include="..\Public\Monster_Body_Base.h" />
     <ClInclude Include="..\Public\Monster_Dummy.h" />
     <ClInclude Include="..\Public\Monster_Dummy_Body.h" />
+    <ClInclude Include="..\Public\Moss.h" />
     <ClInclude Include="..\Public\Physics_LandScape.h" />
     <ClInclude Include="..\Public\Physics_Terrain.h" />
+    <ClInclude Include="..\Public\Plants.h" />
+    <ClInclude Include="..\Public\Rock.h" />
     <ClInclude Include="..\Public\SkillComp_MoonE.h" />
     <ClInclude Include="..\Public\SkillComp_MoonQ.h" />
     <ClInclude Include="..\Public\StatCom_Player.h" />
@@ -256,6 +261,7 @@
     <ClInclude Include="..\Public\State_Walk.h" />
     <ClInclude Include="..\Public\StaticObject.h" />
     <ClInclude Include="..\Public\Sword.h" />
+    <ClInclude Include="..\Public\Tree.h" />
     <ClInclude Include="..\Public\UIButton_Trigger.h" />
     <ClInclude Include="..\Public\UICommon_Trigger.h" />
     <ClInclude Include="..\Public\UIDynamic_Image.h" />
@@ -277,6 +283,8 @@
     <ClInclude Include="..\Public\UIText.h" />
     <ClInclude Include="..\Public\UITrigger.h" />
     <ClInclude Include="..\Public\UI_Manager.h" />
+    <ClInclude Include="..\Public\Vine.h" />
+    <ClInclude Include="..\Public\Water.h" />
     <ClInclude Include="..\Public\Weapon.h" />
     <ClInclude Include="Client.h" />
     <ClInclude Include="framework.h" />
@@ -292,6 +300,7 @@
     <ClCompile Include="..\Private\Builder_Map.cpp" />
     <ClCompile Include="..\Private\Builder_MonsterState.cpp" />
     <ClCompile Include="..\Private\Builder_UI.cpp" />
+    <ClCompile Include="..\Private\Bush.cpp" />
     <ClCompile Include="..\Private\CameraMan_Targeter.cpp" />
     <ClCompile Include="..\Private\Canvas.cpp" />
     <ClCompile Include="..\Private\ColliderPart.cpp" />
@@ -299,6 +308,7 @@
     <ClCompile Include="..\Private\Builder_Effect.cpp" />
     <ClCompile Include="..\Private\EffectObject.cpp" />
     <ClCompile Include="..\Private\GenericUI.cpp" />
+    <ClCompile Include="..\Private\Grass.cpp" />
     <ClCompile Include="..\Private\imgui.cpp">
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">NotUsing</PrecompiledHeader>
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|x64'">NotUsing</PrecompiledHeader>
@@ -352,7 +362,10 @@
     <ClCompile Include="..\Private\Monster_Body_Base.cpp" />
     <ClCompile Include="..\Private\Monster_Dummy.cpp" />
     <ClCompile Include="..\Private\Monster_Dummy_Body.cpp" />
+    <ClCompile Include="..\Private\Moss.cpp" />
     <ClCompile Include="..\Private\Physics_LandScape.cpp" />
+    <ClCompile Include="..\Private\Plants.cpp" />
+    <ClCompile Include="..\Private\Rock.cpp" />
     <ClCompile Include="..\Private\SkillComp_MoonE.cpp" />
     <ClCompile Include="..\Private\SkillComp_MoonQ.cpp" />
     <ClCompile Include="..\Private\StatCom_Player.cpp" />
@@ -403,6 +416,7 @@
     <ClCompile Include="..\Private\State_Walk.cpp" />
     <ClCompile Include="..\Private\StaticObject.cpp" />
     <ClCompile Include="..\Private\Sword.cpp" />
+    <ClCompile Include="..\Private\Tree.cpp" />
     <ClCompile Include="..\Private\UIButton_Trigger.cpp" />
     <ClCompile Include="..\Private\UICommon_Trigger.cpp" />
     <ClCompile Include="..\Private\UIDynamic_Image.cpp" />
@@ -424,6 +438,8 @@
     <ClCompile Include="..\Private\UIText.cpp" />
     <ClCompile Include="..\Private\UITrigger.cpp" />
     <ClCompile Include="..\Private\UI_Manager.cpp" />
+    <ClCompile Include="..\Private\Vine.cpp" />
+    <ClCompile Include="..\Private\Water.cpp" />
     <ClCompile Include="..\Private\Weapon.cpp" />
     <ClCompile Include="..\Public\Physics_Terrain.cpp" />
     <ClCompile Include="Client.cpp" />

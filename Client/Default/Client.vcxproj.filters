@@ -388,6 +388,33 @@
     <Filter Include="03. GameObject\MapObject\00. MapObject\UIObjects\02.UI\Trigger\02.Menu Exit">
       <UniqueIdentifier>{63c9a3d7-bedc-44a7-89d4-febe6b9de520}</UniqueIdentifier>
     </Filter>
+    <Filter Include="03. GameObject\MapObject\03. Plants">
+      <UniqueIdentifier>{e0ccc92c-8caa-4c39-8270-998fdc97d602}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="03. GameObject\MapObject\03. Plants\00. Plants">
+      <UniqueIdentifier>{ec2dd632-4d92-4877-ab79-a60542085874}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="03. GameObject\MapObject\03. Plants\01. Bush">
+      <UniqueIdentifier>{2db74ba0-4a40-4b6f-b2e7-925677aab52b}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="03. GameObject\MapObject\03. Plants\02. Grass">
+      <UniqueIdentifier>{222fcc28-c0ae-401d-bf5c-03c82236ff30}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="03. GameObject\MapObject\03. Plants\03. Moss">
+      <UniqueIdentifier>{f96db740-5a89-4d2a-8a4d-a498f7ef0554}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="03. GameObject\MapObject\03. Plants\04. Tree">
+      <UniqueIdentifier>{ff59a5bd-c930-4031-8c51-0ac80ae71fc5}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="03. GameObject\MapObject\03. Plants\05. Vine">
+      <UniqueIdentifier>{7c7bc525-4b2f-410f-8d4c-3c439b341282}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="03. GameObject\MapObject\04. Rock">
+      <UniqueIdentifier>{1f5db521-b63b-4cb7-a6a6-90bad385d5f4}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="03. GameObject\MapObject\05. Water">
+      <UniqueIdentifier>{4cae9daa-fe9c-46ab-b571-910568be8b8b}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="targetver.h">
@@ -745,6 +772,30 @@
       <Filter>07. System\01. Builder\Builder_MonsterState</Filter>
     </ClInclude>
     <ClInclude Include="..\Public\LandScape.h" />
+    <ClInclude Include="..\Public\Plants.h">
+      <Filter>03. GameObject\MapObject\03. Plants\00. Plants</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\Bush.h">
+      <Filter>03. GameObject\MapObject\03. Plants\01. Bush</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\Grass.h">
+      <Filter>03. GameObject\MapObject\03. Plants\02. Grass</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\Moss.h">
+      <Filter>03. GameObject\MapObject\03. Plants\03. Moss</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\Tree.h">
+      <Filter>03. GameObject\MapObject\03. Plants\04. Tree</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\Vine.h">
+      <Filter>03. GameObject\MapObject\03. Plants\05. Vine</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\Rock.h">
+      <Filter>03. GameObject\MapObject\04. Rock</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\Water.h">
+      <Filter>03. GameObject\MapObject\05. Water</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <Image Include="Client.ico">
@@ -1094,6 +1145,30 @@
       <Filter>07. System\01. Builder\Builder_MonsterState</Filter>
     </ClCompile>
     <ClCompile Include="..\Private\LandScape.cpp" />
+    <ClCompile Include="..\Private\Plants.cpp">
+      <Filter>03. GameObject\MapObject\03. Plants\00. Plants</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\Bush.cpp">
+      <Filter>03. GameObject\MapObject\03. Plants\01. Bush</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\Grass.cpp">
+      <Filter>03. GameObject\MapObject\03. Plants\02. Grass</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\Moss.cpp">
+      <Filter>03. GameObject\MapObject\03. Plants\03. Moss</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\Tree.cpp">
+      <Filter>03. GameObject\MapObject\03. Plants\04. Tree</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\Vine.cpp">
+      <Filter>03. GameObject\MapObject\03. Plants\05. Vine</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\Rock.cpp">
+      <Filter>03. GameObject\MapObject\04. Rock</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\Water.cpp">
+      <Filter>03. GameObject\MapObject\05. Water</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <FxCompile Include="..\..\Shaders\Shader_VtxAnimMesh.hlsl">

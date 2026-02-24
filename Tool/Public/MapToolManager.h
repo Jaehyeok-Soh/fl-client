@@ -130,6 +130,8 @@ private:
 	CMapToolManager();
 	virtual ~CMapToolManager() = default;
 public:
+	EClientMakePath				Get_ClientMakePath_ByFilePath(const wstring& wstrFilePullPath);
+public:
 	HRESULT						Initialize(ID3D11Device* pDevice , ID3D11DeviceContext* pContext);
 	CMapObject*					Make_MapObject(void* pArg , _bool isPreview = false);
 	HRESULT						Batch_Preview();

@@ -5,6 +5,13 @@
 #include "LandScape.h"
 #include "Bounds.h"
 #include "DataDocument_Map.h"
+#include "Bush.h"
+#include "Grass.h"
+#include "Moss.h"
+#include "Tree.h"
+#include "Vine.h"
+#include "Rock.h"
+#include "Water.h"
 #include "Shader.h"
 
 CBuilder_Map::CBuilder_Map(ID3D11Device* pDevice, ID3D11DeviceContext* pDeviceContext, _uint iLevelID)
@@ -58,6 +65,7 @@ HRESULT CBuilder_Map::Build(const CDataDocumentBase& document)
 			{
 			case DTO::EClientMakePath::StaticObject:	Create_StaticObject(tData); break;
 			case DTO::EClientMakePath::LandScape:		Create_LandScape(tData); break;
+			case DTO::EClientMakePath::Bush:			(tData); break;
 			default:									return E_FAIL;
 			}
 		}
@@ -140,6 +148,166 @@ HRESULT CBuilder_Map::Create_LandScape(const DTO::TMap_MapObjectData& tData)
 		ENUM_TO_UINT(ELevelType::STATIC), L"Prototype_GameObject_LandScape", 
 		tLandSapceDesc.iLevelIndex, g_wszStaticObjectLayer, &tLandSapceDesc);
 
+
+	return S_OK;
+}
+
+HRESULT CBuilder_Map::Create_Bush(const DTO::TMap_MapObjectData& tData)
+{
+	CBush::BUSH_DESC tBush_Desc{};
+
+	tBush_Desc.iLevelIndex = tData.eClientLevelType;
+	tBush_Desc.isUELoaded = tData.isUELoaded;
+	tBush_Desc.eMapObjectDrawType = static_cast<EMapObject_DrawType>(tData.eMapObjectDrawType);
+	tBush_Desc.wstrModelPath = Engine_Utils::ToWString(tData.strModelPath);
+	tBush_Desc.iSectionNum = tData.iSectionNum;
+
+	/* SRT DATA */
+	for (auto& SRT_DATA : tData.vecSRTs)
+	{
+		tBush_Desc.vecSRT.push_back(SRT_DATA);
+	}
+
+
+	m_pGameInstance->Add_GameObject(
+		ENUM_TO_UINT(ELevelType::STATIC), L"Prototype_GameObject_Bush",
+		tBush_Desc.iLevelIndex, g_wszStaticObjectLayer, &tBush_Desc);
+
+	return S_OK;
+}
+HRESULT CBuilder_Map::Create_Grass(const DTO::TMap_MapObjectData& tData)
+{
+	CGrass::GRASS_DESC tGrass_Desc{};
+
+	tGrass_Desc.iLevelIndex = tData.eClientLevelType;
+	tGrass_Desc.isUELoaded = tData.isUELoaded;
+	tGrass_Desc.eMapObjectDrawType = static_cast<EMapObject_DrawType>(tData.eMapObjectDrawType);
+	tGrass_Desc.wstrModelPath = Engine_Utils::ToWString(tData.strModelPath);
+	tGrass_Desc.iSectionNum = tData.iSectionNum;
+
+	/* SRT DATA */
+	for (auto& SRT_DATA : tData.vecSRTs)
+	{
+		tGrass_Desc.vecSRT.push_back(SRT_DATA);
+	}
+
+
+	m_pGameInstance->Add_GameObject(
+		ENUM_TO_UINT(ELevelType::STATIC), L"Prototype_GameObject_Grass",
+		tGrass_Desc.iLevelIndex, g_wszStaticObjectLayer, &tGrass_Desc);
+
+	return S_OK;
+}
+HRESULT CBuilder_Map::Create_Moss(const DTO::TMap_MapObjectData& tData)
+{
+
+	CGrass::GRASS_DESC tMoss_Desc{};
+
+	tMoss_Desc.iLevelIndex = tData.eClientLevelType;
+	tMoss_Desc.isUELoaded = tData.isUELoaded;
+	tMoss_Desc.eMapObjectDrawType = static_cast<EMapObject_DrawType>(tData.eMapObjectDrawType);
+	tMoss_Desc.wstrModelPath = Engine_Utils::ToWString(tData.strModelPath);
+	tMoss_Desc.iSectionNum = tData.iSectionNum;
+
+	/* SRT DATA */
+	for (auto& SRT_DATA : tData.vecSRTs)
+	{
+		tMoss_Desc.vecSRT.push_back(SRT_DATA);
+	}
+
+
+	m_pGameInstance->Add_GameObject(
+		ENUM_TO_UINT(ELevelType::STATIC), L"Prototype_GameObject_Moss",
+		tMoss_Desc.iLevelIndex, g_wszStaticObjectLayer, &tMoss_Desc);
+
+	return S_OK;
+
+}
+HRESULT CBuilder_Map::Create_Tree(const DTO::TMap_MapObjectData& tData)
+{
+	CTree::TREE_DESC tTree_Desc{};
+
+	tTree_Desc.iLevelIndex = tData.eClientLevelType;
+	tTree_Desc.isUELoaded = tData.isUELoaded;
+	tTree_Desc.eMapObjectDrawType = static_cast<EMapObject_DrawType>(tData.eMapObjectDrawType);
+	tTree_Desc.wstrModelPath = Engine_Utils::ToWString(tData.strModelPath);
+	tTree_Desc.iSectionNum = tData.iSectionNum;
+
+	for (auto& SRT_DATA : tData.vecSRTs)
+	{
+		tTree_Desc.vecSRT.push_back(SRT_DATA);
+	}
+
+
+	m_pGameInstance->Add_GameObject(
+		ENUM_TO_UINT(ELevelType::STATIC), L"Prototype_GameObject_Tree",
+		tTree_Desc.iLevelIndex, g_wszStaticObjectLayer, &tTree_Desc);
+
+	return S_OK;
+}
+HRESULT CBuilder_Map::Create_Vine(const DTO::TMap_MapObjectData& tData)
+{
+	CVine::VINE_DESC tVine_Desc{};
+
+	tVine_Desc.iLevelIndex = tData.eClientLevelType;
+	tVine_Desc.isUELoaded = tData.isUELoaded;
+	tVine_Desc.eMapObjectDrawType = static_cast<EMapObject_DrawType>(tData.eMapObjectDrawType);
+	tVine_Desc.wstrModelPath = Engine_Utils::ToWString(tData.strModelPath);
+	tVine_Desc.iSectionNum = tData.iSectionNum;
+
+	for (auto& SRT_DATA : tData.vecSRTs)
+	{
+		tVine_Desc.vecSRT.push_back(SRT_DATA);
+	}
+
+
+	m_pGameInstance->Add_GameObject(
+		ENUM_TO_UINT(ELevelType::STATIC), L"Prototype_GameObject_Vine",
+		tVine_Desc.iLevelIndex, g_wszStaticObjectLayer, &tVine_Desc);
+
+	return S_OK;
+}
+HRESULT CBuilder_Map::Create_Water(const DTO::TMap_MapObjectData& tData)
+{
+	CVine::VINE_DESC tWater_Desc{};
+
+	tWater_Desc.iLevelIndex = tData.eClientLevelType;
+	tWater_Desc.isUELoaded = tData.isUELoaded;
+	tWater_Desc.eMapObjectDrawType = static_cast<EMapObject_DrawType>(tData.eMapObjectDrawType);
+	tWater_Desc.wstrModelPath = Engine_Utils::ToWString(tData.strModelPath);
+	tWater_Desc.iSectionNum = tData.iSectionNum;
+
+	for (auto& SRT_DATA : tData.vecSRTs)
+	{
+		tWater_Desc.vecSRT.push_back(SRT_DATA);
+	}
+
+
+	m_pGameInstance->Add_GameObject(
+		ENUM_TO_UINT(ELevelType::STATIC), L"Prototype_GameObject_Water",
+		tWater_Desc.iLevelIndex, g_wszStaticObjectLayer, &tWater_Desc);
+
+	return S_OK;
+}
+HRESULT CBuilder_Map::Create_Rock(const DTO::TMap_MapObjectData& tData)
+{
+	CVine::VINE_DESC tRock_Desc{};
+
+	tRock_Desc.iLevelIndex = tData.eClientLevelType;
+	tRock_Desc.isUELoaded = tData.isUELoaded;
+	tRock_Desc.eMapObjectDrawType = static_cast<EMapObject_DrawType>(tData.eMapObjectDrawType);
+	tRock_Desc.wstrModelPath = Engine_Utils::ToWString(tData.strModelPath);
+	tRock_Desc.iSectionNum = tData.iSectionNum;
+
+	for (auto& SRT_DATA : tData.vecSRTs)
+	{
+		tRock_Desc.vecSRT.push_back(SRT_DATA);
+	}
+
+
+	m_pGameInstance->Add_GameObject(
+		ENUM_TO_UINT(ELevelType::STATIC), L"Prototype_GameObject_Rock",
+		tRock_Desc.iLevelIndex, g_wszStaticObjectLayer, &tRock_Desc);
 
 	return S_OK;
 }

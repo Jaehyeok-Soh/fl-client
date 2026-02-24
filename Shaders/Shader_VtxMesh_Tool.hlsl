@@ -34,6 +34,10 @@ struct MIX_RGBA_DATA
 {
 	// Mix할떄 UV좌표에 곱해주어 정밀한 표현을 담당해준다
     float4 fRGBA_Mix_Forces;
+    
+    // Mix해서 Height 값과 섞어서 영향력을 표현할 Height mix Force
+    float4 fRGBA_Mix_Height_Force;
+    
 	// Mix될 RGBA 맵에서 각 R , G , B , A 가 연결된 Splating Texture들의 Index
     int4   iRGBA_Connected_Tile_Index;
 	// Mix될 RGBA 맵에서 각 R , G , B , A 가 Splating을 사용할건지 안할건지에 대한 Flag값 false => BaseTexture가 그대로 들어감 true => Splating
@@ -90,6 +94,35 @@ VS_OUT_MESH VS_MAIN(VS_IN_MESH input)
     return output;
 }
 
+PS_OUT_DEFFERED PS_MAIN(PS_IN_MESH input)
+{
+    PS_OUT_DEFFERED output = (PS_OUT_DEFFERED) 0;
+    
+    float4 vDiffuse = 1.f;
+    Compute_Diffse(vDiffuse, input.vUV);
+    vDiffuse.rgb *= MIDesc.vTintColor.rgb;
+    output.vDiffuse = vDiffuse;
+    
+    float3 vNormal = input.vNormal;
+    Compute_Normal(vNormal, input.vTangent, input.vBinormal, input.vUV);
+    output.vNormal = vNormal * 0.5f + 0.5f;
+    
+    float3 vSpecMask = float3(1.f, 1.f, 0.f);
+    if (Has(g_iMaterialMask, SPECULAR))
+        vSpecMask = g_MaterialTextures[SPECULAR].Sample(LinearSampler, input.vUV).xyz;
+    output.vSpecularMask = float4(vSpecMask, 1.f);
+    output.vObjectInfo = PackObjectInfo(objectInfo.iObjectID, objectInfo.iFlags);
+    output.vDepth = float4(input.vProjPos.z / input.vProjPos.w, input.vProjPos.w, 0.f, 0.f);
+    
+    
+    if (output.vDiffuse.a < 0.1f)
+        discard;
+    
+    
+    return output;
+}
+
+
 PS_OUT_DEFFERED PS_STATICOBJECT(PS_IN_MESH input)
 {
     PS_OUT_DEFFERED output = (PS_OUT_DEFFERED)0;
@@ -104,36 +137,34 @@ PS_OUT_DEFFERED PS_STATICOBJECT(PS_IN_MESH input)
     Compute_Normal(vNormal, input.vTangent, input.vBinormal, input.vUV);
     output.vNormal = vNormal * 0.5f + 0.5f;
     output.vDepth = float4(input.vProjPos.z / input.vProjPos.w, input.vProjPos.w, 0.f, 0.f);
-    
     output.vDiffuse = Get_Modified_Diffuse(output.vDiffuse);
+    
     return output;
 }
 
 PS_OUT_DEFFERED PS_LANDSCAPE(PS_IN_MESH input)
 {
-    PS_OUT_DEFFERED output = (PS_OUT_DEFFERED) 0; 
+    PS_OUT_DEFFERED output = (PS_OUT_DEFFERED) 0;
     
-    float2 FilpUV       = float2(input.vUV.x, 1.0 - input.vUV.y);
-    float2 Size         = g_LandScape_TextureUV_RB - g_LandScape_TextureUV_LT;
-    float2 vUV          = g_LandScape_TextureUV_LT + (Size * FilpUV);
+    float2 FilpUV = float2(input.vUV.x, 1.0 - input.vUV.y);
+    float2 Size = g_LandScape_TextureUV_RB - g_LandScape_TextureUV_LT;
+    float2 vUV = g_LandScape_TextureUV_LT + (Size * FilpUV);
+    float2 vTileUV = vUV;
     
-    // TileForce 타일이 얼마나 촘촘하게 입혀질지에대한 기본 Force값
-    float2 vTileUV      = vUV;
+    float4 vDiffuse = float4(MIDesc.vTintColor.rgb, 1.f);
     
+    float3 vNBR_Tile_TangentNormal = float3(0.0f, 0.0f, 1.0f);
+    float  fNBR_Tile_Roughness = 0.5f;
     
-    
-    float4 vDiffuse = float4(MIDesc.vTintColor.rgb,1.f);
     
     // 각각 Texture를 지형 Index에 맞는 UV에로 치환
     float4 vBaseColor   = g_Base_Texture.Sample(LinearSampler, vUV);
-    
-    //vBaseColor.rgb = lerp(vBaseColor.rgb, dot(vBaseColor.rgb, float3(0.3, 0.59, 0.11)), 0.5f); // 흑백과 50% 섞기 (채도 감소)
-    
-    float4 vMixRGBA , vRGBA_RedTile, vRGBA_GreenTile, vRGBA_BlueTile, vRGBA_AlphaTile;
+
+    float4 vMixRGBA , vRGBA_DH_RedTile, vRGBA_DH_GreenTile, vRGBA_DH_BlueTile, vRGBA_DH_AlphaTile;
+    float4 vRGBA_NBR_RedTile, vRGBA_NBR_GreenTile, vRGBA_NBR_BlueTile, vRGBA_NBR_AlphaTile;
     
     vDiffuse = vBaseColor;
     
-    // 사용하는 RBBA Texture Count 만큼 Lerp 해주기 
     [unroll]
     for (int i = 0; i < g_iUse_Mix_RGBA_Count; ++i)
     {
@@ -141,102 +172,130 @@ PS_OUT_DEFFERED PS_LANDSCAPE(PS_IN_MESH input)
         vMixRGBA = g_Mix_RGBA_Texture[i].Sample(LinearSampler, vUV);
         MIX_RGBA_DATA Data = g_MIX_RGBA_DATA[i];
 
-        // [Red Channel] - 흙/바위 등
         if (Data.iUseFlags.r == 1 && vMixRGBA.r > 0.0f)
         {
-            float3 vTileUV_R = float3(vTileUV * Data.fRGBA_Mix_Forces.r, Data.iRGBA_Connected_Tile_Index.r);
-            vRGBA_RedTile = g_Mix_DH_Tile_Texture.Sample(LinearSampler, vTileUV_R);
-            
-            // ★ Height Blend 적용 ★
-            float fLayerHeight = vRGBA_RedTile.a; 
+            float3 vTileUV_R    = float3(vTileUV * Data.fRGBA_Mix_Forces.r, Data.iRGBA_Connected_Tile_Index.r);
+            vRGBA_DH_RedTile    = g_Mix_DH_Tile_Texture.Sample(LinearSampler, vTileUV_R);
+            vRGBA_NBR_RedTile   = g_Mix_NBR_Tile_Texture.Sample(LinearSampler, vTileUV_R);
+          
+            float fLayerHeight = vRGBA_NBR_RedTile.b; 
             float fWeight = vMixRGBA.r; 
-
-            // 1. 높이 기반 가중치 계산
-            float fBlendFactor = fWeight * fLayerHeight;
+            float fMixHeight = lerp(1.0f, fLayerHeight, Data.fRGBA_Mix_Height_Force.r);
+            float fBlendFactor = smoothstep(0.1f, 0.9f, (fWeight * fMixHeight) + fWeight);
             
-            // 2. 경계 부드럽게 (Smoothstep)
-            // 0.1 ~ 0.9: 경계를 매우 부드럽게 풉니다. (각진 느낌 해소)
-            // 이 범위를 조절해서 부드러움 정도를 결정하세요.
-            fBlendFactor = smoothstep(0.1f, 0.9f, fBlendFactor + fWeight);
+            vDiffuse    = lerp(vDiffuse, vRGBA_DH_RedTile, fBlendFactor);
             
-            // 3. 최종 섞기
-            vDiffuse = lerp(vDiffuse, vRGBA_RedTile, fBlendFactor);
+            float3 vNormal_R = { 0.f , 0.f, 0.f };            
+            vNormal_R.x = vRGBA_NBR_RedTile.r * 2.f - 1.f;
+            vNormal_R.y = vRGBA_NBR_RedTile.g * 2.f - 1.f;
+            vNormal_R.z = sqrt(max(1.f - (vNormal_R.x * vNormal_R.x) - (vNormal_R.y * vNormal_R.y), 0.f));
+            vNBR_Tile_TangentNormal = lerp(vNBR_Tile_TangentNormal, vNormal_R, fBlendFactor);
+            fNBR_Tile_Roughness = lerp(fNBR_Tile_Roughness, vRGBA_NBR_RedTile.a, fBlendFactor);
         }
 
-        // [Green Channel] - 풀 등
         if (Data.iUseFlags.g == 1 && vMixRGBA.g > 0.0f)
         {
             float3 vTileUV_G = float3(vTileUV * Data.fRGBA_Mix_Forces.g, Data.iRGBA_Connected_Tile_Index.g);
-            vRGBA_GreenTile = g_Mix_DH_Tile_Texture.Sample(LinearSampler, vTileUV_G);
+            vRGBA_DH_GreenTile = g_Mix_DH_Tile_Texture.Sample(LinearSampler, vTileUV_G);
+            vRGBA_NBR_GreenTile = g_Mix_NBR_Tile_Texture.Sample(LinearSampler, vTileUV_G);
             
-            float fLayerHeight = vRGBA_GreenTile.a;
+            float fLayerHeight = vRGBA_NBR_GreenTile.b;
             float fWeight = vMixRGBA.g;
-            float fBlendFactor = smoothstep(0.1f, 0.9f, (fWeight * fLayerHeight) + fWeight);
+            float fMixHeight = lerp(0.f, fLayerHeight, Data.fRGBA_Mix_Height_Force.g);
+            float fBlendFactor = smoothstep(0.1f, 0.9f, (fWeight * fMixHeight) + fWeight);
+            
+            vDiffuse = lerp(vDiffuse, vRGBA_DH_GreenTile, fBlendFactor);
 
-            vDiffuse = lerp(vDiffuse, vRGBA_GreenTile, fBlendFactor);
+            
+            float3 vNormal = { 0.f, 0.f, 0.f };
+            vNormal.x = vRGBA_NBR_GreenTile.r * 2.f - 1.f;
+            vNormal.y = vRGBA_NBR_GreenTile.g * 2.f - 1.f;
+            vNormal.z = sqrt(max(1.f - (vNormal.x * vNormal.x) - (vNormal.y * vNormal.y), 0.f));
+            vNBR_Tile_TangentNormal = lerp(vNBR_Tile_TangentNormal, vNormal, fBlendFactor);
+            fNBR_Tile_Roughness = lerp(fNBR_Tile_Roughness, vRGBA_NBR_GreenTile.a, fBlendFactor);
         }
 
-        // [Blue Channel]
         if (Data.iUseFlags.b == 1 && vMixRGBA.b > 0.0f)
         {
             float3 vTileUV_B = float3(vTileUV * Data.fRGBA_Mix_Forces.b, Data.iRGBA_Connected_Tile_Index.b);
-            vRGBA_BlueTile = g_Mix_DH_Tile_Texture.Sample(LinearSampler, vTileUV_B);
-            
-            float fLayerHeight = vRGBA_BlueTile.a;
-            float fWeight = vMixRGBA.b;
-            float fBlendFactor = smoothstep(0.1f, 0.9f, (fWeight * fLayerHeight) + fWeight);
+            vRGBA_DH_BlueTile = g_Mix_DH_Tile_Texture.Sample(LinearSampler, vTileUV_B);
+            vRGBA_NBR_BlueTile = g_Mix_NBR_Tile_Texture.Sample(LinearSampler, vTileUV_B);
 
-            vDiffuse = lerp(vDiffuse, vRGBA_BlueTile, fBlendFactor);
+            float fLayerHeight = vRGBA_NBR_BlueTile.b;
+            float fWeight = vMixRGBA.b;
+            float fMixHeight = lerp(0.0f, fLayerHeight, Data.fRGBA_Mix_Height_Force.b);
+            float fBlendFactor = smoothstep(0.1f, 0.9f, (fWeight * fMixHeight) + fWeight);
+            
+            
+            vDiffuse = lerp(vDiffuse, vRGBA_DH_BlueTile, fBlendFactor);
+            
+            float3 vNormal = { 0.f, 0.f, 0.f };
+            vNormal.x = vRGBA_NBR_BlueTile.r * 2.f - 1.f;
+            vNormal.y = vRGBA_NBR_BlueTile.g * 2.f - 1.f;
+            vNormal.z = sqrt(max(1.f - (vNormal.x * vNormal.x) - (vNormal.y * vNormal.y), 0.f));
+            vNBR_Tile_TangentNormal = lerp(vNBR_Tile_TangentNormal, vNormal, fBlendFactor);
+            fNBR_Tile_Roughness = lerp(fNBR_Tile_Roughness, vRGBA_NBR_BlueTile.a, fBlendFactor);
         }
 
-        // [Alpha Channel]
         if (Data.iUseFlags.a == 1 && vMixRGBA.a > 0.0f)
         {
             float3 vTileUV_A = float3(vTileUV * Data.fRGBA_Mix_Forces.a, Data.iRGBA_Connected_Tile_Index.a);
-            vRGBA_AlphaTile = g_Mix_DH_Tile_Texture.Sample(LinearSampler, vTileUV_A);
+            vRGBA_DH_AlphaTile = g_Mix_DH_Tile_Texture.Sample(LinearSampler, vTileUV_A);
+            vRGBA_NBR_AlphaTile = g_Mix_NBR_Tile_Texture.Sample(LinearSampler, vTileUV_A);
             
-            float fLayerHeight = vRGBA_AlphaTile.a;
+            float fLayerHeight = vRGBA_NBR_AlphaTile.b;
             float fWeight = vMixRGBA.a;
-            float fBlendFactor = smoothstep(0.1f, 0.9f, (fWeight * fLayerHeight) + fWeight);
-
-            vDiffuse = lerp(vDiffuse, vRGBA_AlphaTile, fBlendFactor);
+            float fMixHeight = lerp(0.0f, fLayerHeight, Data.fRGBA_Mix_Height_Force.a);
+            float fBlendFactor = smoothstep(0.1f, 0.9f, (fWeight * fMixHeight) + fWeight);
+            
+            
+            vDiffuse = lerp(vDiffuse, vRGBA_DH_AlphaTile, fBlendFactor);
+            
+            float3 vNormal = { 0.f, 0.f, 0.f };
+            vNormal.x = vRGBA_NBR_AlphaTile.r * 2.f - 1.f;
+            vNormal.y = vRGBA_NBR_AlphaTile.g * 2.f - 1.f;
+            vNormal.z = sqrt(max(1.f - (vNormal.x * vNormal.x) - (vNormal.y * vNormal.y), 0.f));
+            vNBR_Tile_TangentNormal = lerp(vNBR_Tile_TangentNormal, vNormal, fBlendFactor);
+            fNBR_Tile_Roughness = lerp(fNBR_Tile_Roughness, vRGBA_NBR_AlphaTile.a, fBlendFactor);
         }
-        
-        //vMixRGBA = g_Mix_RGBA_Texture[i].Sample(LinearSampler, vUV);
-        
-        //if (g_MIX_RGBA_DATA[i].iUseFlags.r == 1 && vMixRGBA.r > 0.0f)
-        //{
-        //    vRGBA_RedTile = g_Mix_DH_Tile_Texture.Sample(LinearSampler, float3(vTileUV * g_MIX_RGBA_DATA[i].fRGBA_Mix_Forces.r, g_MIX_RGBA_DATA[i].iRGBA_Connected_Tile_Index.r));
-        //    vDiffuse = lerp(vDiffuse, vRGBA_RedTile, vMixRGBA.r);
-        //}
-        //if (g_MIX_RGBA_DATA[i].iUseFlags.g == 1 && vMixRGBA.g > 0.0f)
-        //{
-        //    vRGBA_GreenTile = g_Mix_DH_Tile_Texture.Sample(LinearSampler, float3(vTileUV * g_MIX_RGBA_DATA[i].fRGBA_Mix_Forces.g, g_MIX_RGBA_DATA[i].iRGBA_Connected_Tile_Index.g));
-        //    vDiffuse = lerp(vDiffuse, vRGBA_GreenTile, vMixRGBA.g);
-        //}
-        //if (g_MIX_RGBA_DATA[i].iUseFlags.b == 1 && vMixRGBA.b > 0.0f)
-        //{
-        //    vRGBA_BlueTile = g_Mix_DH_Tile_Texture.Sample(LinearSampler, float3(vTileUV * g_MIX_RGBA_DATA[i].fRGBA_Mix_Forces.b, g_MIX_RGBA_DATA[i].iRGBA_Connected_Tile_Index.b));
-        //    vDiffuse = lerp(vDiffuse, vRGBA_BlueTile, vMixRGBA.b);
-        //}
-        //if (g_MIX_RGBA_DATA[i].iUseFlags.a == 1 && vMixRGBA.a > 0.0f)
-        //{
-        //    vRGBA_AlphaTile = g_Mix_DH_Tile_Texture.Sample(LinearSampler, float3(vTileUV * g_MIX_RGBA_DATA[i].fRGBA_Mix_Forces.a, g_MIX_RGBA_DATA[i].iRGBA_Connected_Tile_Index.a));
-        //    vDiffuse = lerp(vDiffuse, vRGBA_AlphaTile, vMixRGBA.a);
-        //}
     }
     
-    float3 vNormal  = input.vNormal;
-    Compute_Normal(vNormal, input.vTangent, input.vBinormal, input.vUV);
-    output.vNormal  = vNormal * 0.5f + 0.5f;
-    output.vDepth   = float4(input.vProjPos.z / input.vProjPos.w, input.vProjPos.w, 0.f, 0.f);
-    output.vDiffuse = Get_Modified_Diffuse(vDiffuse);
+    vNBR_Tile_TangentNormal = normalize(vNBR_Tile_TangentNormal);
+    
+    float3 vNormal = normalize(input.vNormal);
+    float3 vTangent = normalize(input.vTangent);
+    float3 vBinormal = normalize(input.vBinormal);    
+    float3x3 TBN = float3x3(vTangent, vBinormal, vNormal);
+    float3 finalWorldNormal = normalize(mul(vNBR_Tile_TangentNormal, TBN));
+    
+    output.vNormal          = finalWorldNormal * 0.5f + 0.5f;
+    output.vDepth           = float4(input.vProjPos.z / input.vProjPos.w, input.vProjPos.w, 0.f, 0.f);
+    output.vDiffuse         = Get_Modified_Diffuse(vDiffuse);
+    output.vSpecularMask    = float4( 0.f, fNBR_Tile_Roughness , 0.f,0.f);
     
     return output;
 }
 
 technique11 T0
 {
-	PASS_RS_DS_BS_VP(P0, RS_Default_CullNone, DS_Default, BS_Default, VS_MAIN, PS_STATICOBJECT)
-	PASS_RS_DS_BS_VP(P1, RS_Default_CullNone, DS_Default, BS_Default, VS_MAIN, PS_LANDSCAPE)
+    // 기본 오브젝트
+	PASS_RS_DS_BS_VP(StaticObject, RS_Default_CullNone, DS_Default, BS_Default, VS_MAIN, PS_MAIN)
+	
+    // 지형
+    PASS_RS_DS_BS_VP(LandScape, RS_Default_CullNone, DS_Default, BS_Default, VS_MAIN, PS_LANDSCAPE)
+
+    // 식생
+	PASS_RS_DS_BS_VP(Bush, RS_Default_CullNone, DS_Default, BS_Default, VS_MAIN, PS_MAIN)
+	PASS_RS_DS_BS_VP(Grass, RS_Default_CullNone, DS_Default, BS_Default, VS_MAIN, PS_MAIN)
+	PASS_RS_DS_BS_VP(Moss, RS_Default_CullNone, DS_Default, BS_Default, VS_MAIN, PS_MAIN)
+	PASS_RS_DS_BS_VP(Tree, RS_Default_CullNone, DS_Default, BS_Default, VS_MAIN, PS_MAIN)
+	PASS_RS_DS_BS_VP(Vine, RS_Default_CullNone, DS_Default, BS_Default, VS_MAIN, PS_MAIN)
+
+    // 환경요소
+	PASS_RS_DS_BS_VP(Rock, RS_Default_CullNone, DS_Default, BS_Default, VS_MAIN, PS_MAIN)
+	PASS_RS_DS_BS_VP(Water, RS_Default_CullNone, DS_Default, BS_Default, VS_MAIN, PS_MAIN)
+
+    //EXT
+    PASS_RS_DS_BS_VP(SHADOW_BAKE, RS_Default, DS_Default, BS_Default, VS_MAIN, PS_MAIN)
+	PASS_RS_DS_BS_VP(Debug, RS_Wire, DS_Default, BS_Default, VS_MAIN, PS_MAIN)
 };

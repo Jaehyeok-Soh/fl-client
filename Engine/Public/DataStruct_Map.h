@@ -117,6 +117,13 @@ enum class EClientMakePath
 {
 	StaticObject,
 	LandScape,
+	Bush,
+	Grass,
+	Moss,
+	Tree,
+	Vine,
+	Rock,
+	Water,
 	END
 };
 
@@ -156,6 +163,13 @@ NLOHMANN_JSON_SERIALIZE_ENUM(EMapObject_DrawType,
 		{
 			{EClientMakePath::StaticObject, "StaticObject"},
 			{EClientMakePath::LandScape,	"LandScape"},
+			{EClientMakePath::Bush,			"Bush"},
+			{EClientMakePath::Grass,		"Grass"},
+			{EClientMakePath::Moss,			"Moss"},
+			{EClientMakePath::Tree,			"Tree"},
+			{EClientMakePath::Vine,			"Vine"},
+			{EClientMakePath::Rock,			"Rock"},
+			{EClientMakePath::Water,		"Water"},
 			{EClientMakePath::END,			"Unknown"},
 		}
 		)

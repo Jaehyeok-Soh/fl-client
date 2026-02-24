@@ -24,6 +24,16 @@ private:
 	HRESULT SceneData_Setting(const DTO::TSceneData& tData);
 	HRESULT Create_StaticObject(const DTO::TMap_MapObjectData& tData);
 	HRESULT Create_LandScape(const DTO::TMap_MapObjectData& tData);
+
+	/* Plants */
+	HRESULT Create_Bush(const DTO::TMap_MapObjectData& tData);
+	HRESULT Create_Grass(const DTO::TMap_MapObjectData& tData);
+	HRESULT Create_Moss(const DTO::TMap_MapObjectData& tData);
+	HRESULT Create_Tree(const DTO::TMap_MapObjectData& tData);
+	HRESULT Create_Vine(const DTO::TMap_MapObjectData& tData);
+	/* ------ */
+	HRESULT Create_Water(const DTO::TMap_MapObjectData& tData);
+	HRESULT Create_Rock(const DTO::TMap_MapObjectData& tData);
 private:
 	CShader*		m_pMeshShader{nullptr};
 

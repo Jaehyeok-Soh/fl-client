@@ -367,7 +367,7 @@ HRESULT CPanel_MapTool::Render_SplatingTextureSetting()
 
 					/* Red Channel */
 					ImGui::PushID("Red");
-					Render_Single_Channel_Setting("RED", ImVec4(0.f, 0.3f, 0.f, 1.f), CurrentData.iRGBA_Connected_Tile_Index[CHANNEL_R],CurrentData.fRGBA_Mix_Forces[CHANNEL_R],CurrentData.iUseFlags[CHANNEL_R],&isbOpenTileSelectPopup); // 멤버변수 등
+					Render_Single_Channel_Setting("RED", ImVec4(0.f, 0.3f, 0.f, 1.f), CurrentData.iRGBA_Connected_Tile_Index[CHANNEL_R],CurrentData.fRGBA_Mix_Forces[CHANNEL_R], CurrentData.fRGBA_Mix_Height_Forces[CHANNEL_R],CurrentData.iUseFlags[CHANNEL_R],&isbOpenTileSelectPopup); // 멤버변수 등
 					ImGui::PopID();
 
 
@@ -375,21 +375,21 @@ HRESULT CPanel_MapTool::Render_SplatingTextureSetting()
 
 					/* Green Channel */
 					ImGui::PushID("Green");
-					Render_Single_Channel_Setting("Green", ImVec4(0.f, 1.0f, 0.f, 1.f), CurrentData.iRGBA_Connected_Tile_Index[CHANNEL_G], CurrentData.fRGBA_Mix_Forces[CHANNEL_G], CurrentData.iUseFlags[CHANNEL_G], &isbOpenTileSelectPopup); // 멤버변수 등
+					Render_Single_Channel_Setting("Green", ImVec4(0.f, 1.0f, 0.f, 1.f), CurrentData.iRGBA_Connected_Tile_Index[CHANNEL_G], CurrentData.fRGBA_Mix_Forces[CHANNEL_G], CurrentData.fRGBA_Mix_Height_Forces[CHANNEL_G], CurrentData.iUseFlags[CHANNEL_G], &isbOpenTileSelectPopup); // 멤버변수 등
 					ImGui::PopID();
 
 					ImGui::SameLine();
 
 					/* Blue Channel */
 					ImGui::PushID("Blue");
-					Render_Single_Channel_Setting("Blue", ImVec4(0.f, 0.f, 1.0f, 1.f), CurrentData.iRGBA_Connected_Tile_Index[CHANNEL_B], CurrentData.fRGBA_Mix_Forces[CHANNEL_B], CurrentData.iUseFlags[CHANNEL_B], &isbOpenTileSelectPopup); // 멤버변수 등
+					Render_Single_Channel_Setting("Blue", ImVec4(0.f, 0.f, 1.0f, 1.f), CurrentData.iRGBA_Connected_Tile_Index[CHANNEL_B], CurrentData.fRGBA_Mix_Forces[CHANNEL_B], CurrentData.fRGBA_Mix_Height_Forces[CHANNEL_B],CurrentData.iUseFlags[CHANNEL_B], &isbOpenTileSelectPopup); // 멤버변수 등
 					ImGui::PopID();
 
 					ImGui::SameLine();
 
 					/* Alpha Channel */
 					ImGui::PushID("Alpha");
-					Render_Single_Channel_Setting("Alpha", ImVec4(1.f, 1.f, 1.f, 1.f), CurrentData.iRGBA_Connected_Tile_Index[CHANNEL_A], CurrentData.fRGBA_Mix_Forces[CHANNEL_A], CurrentData.iUseFlags[CHANNEL_A], &isbOpenTileSelectPopup); // 멤버변수 등
+					Render_Single_Channel_Setting("Alpha", ImVec4(1.f, 1.f, 1.f, 1.f), CurrentData.iRGBA_Connected_Tile_Index[CHANNEL_A], CurrentData.fRGBA_Mix_Forces[CHANNEL_A], CurrentData.fRGBA_Mix_Height_Forces[CHANNEL_A],CurrentData.iUseFlags[CHANNEL_A], &isbOpenTileSelectPopup); // 멤버변수 등
 					ImGui::PopID();
 
 					if (isbOpenTileSelectPopup)
@@ -426,7 +426,7 @@ HRESULT CPanel_MapTool::Render_SplatingTextureSetting()
 }
 
 
-HRESULT CPanel_MapTool::Render_Single_Channel_Setting(const char* szLabel, const ImVec4& vColor, OUT int& iConnectedIndex, OUT float& fForce, int& iFlag, OUT bool* pIsOpenPopup)
+HRESULT CPanel_MapTool::Render_Single_Channel_Setting(const char* szLabel, const ImVec4& vColor, OUT int& iConnectedIndex, OUT float& fForce, OUT float& fHeightForce, int& iFlag, OUT bool* pIsOpenPopup)
 {
 	ImGui::BeginGroup(); // 그룹 시작
 	{
@@ -452,16 +452,22 @@ HRESULT CPanel_MapTool::Render_Single_Channel_Setting(const char* szLabel, const
 		// 정보 표시 및 조작
 		ImGui::PushItemWidth(60); // 입력창 너비 고정
 
-		if (ImGui::DragFloat("##Force", &fForce, 0.1f, 0.1f, 100.0f, "T:%.1f"))
+		if (ImGui::DragFloat("Mix Force##Mix Force", &fForce, 0.1f, 0.1f, 100.0f, "T:%.1f"))
 			isFixInfo = true;
 		if (ImGui::IsItemHovered())
 		{
-			ImGui::SetTooltip("Tiling Force");
+			ImGui::SetTooltip("Mix Tiling Force");
+		}
+
+		if (ImGui::DragFloat("Mix Height Force##Mix Height Force", &fHeightForce, 0.0f, 0.01f, 100.0f , "T:%.1f"))
+			isFixInfo = true;
+		if (ImGui::IsItemHovered())
+		{
+			ImGui::SetTooltip("Mix Tiling Height Force");
 		}
 
 		ImGui::PopItemWidth();
 
-		// 사용 여부 체크박스 (int를 bool처럼)
 		bool bUse = (iFlag != 0);
 		if (ImGui::Checkbox("Use", &bUse))
 		{

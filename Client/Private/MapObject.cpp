@@ -291,8 +291,8 @@ HRESULT	CMapObject::Render_Instance(_uint iPassIndex)
 
 HRESULT	CMapObject::Render_Default(_uint iPassIndex)
 {
-    CShader* pShader        = Get_Component<CShader>();      if (pShader == nullptr)         return E_FAIL;
-    CModel* pModel          = Get_Component<CModel>();       if (pModel == nullptr)          return E_FAIL;
+    CShader*    pShader     = Get_Component<CShader>();      if (pShader == nullptr)         return E_FAIL;
+    CModel*     pModel      = Get_Component<CModel>();       if (pModel == nullptr)          return E_FAIL;
     CTransform* pTransform  = Get_Component<CTransform>();   if (pTransform == nullptr)      return E_FAIL;
 
 

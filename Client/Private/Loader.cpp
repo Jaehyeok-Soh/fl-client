@@ -54,13 +54,24 @@
 #include "EffectObject.h"
 #include "Physics_LandScape.h" // physics test
 
-/* ------- Map --------- */
+
+
+//=================
+// Map Object
+//=================
 #include "StaticObject.h"
 #include "LandScape.h"
+#include "Bush.h"
+#include "Moss.h"
+#include "Water.h"
+#include "Rock.h"
+#include "Vine.h"
+#include "Tree.h"
+#include "Grass.h"
+
 /* --------------------- */
 #include "Monster_Dummy.h" // test
 #include "Sword.h"
-#include "Monster_Dummy.h" // test
 #include "Monster_Dummy_Body.h" // test
 
 //=================
@@ -436,7 +447,14 @@ HRESULT CLoader::Loading_For_Logo()
 
 		/* Map Object */
 		ADD_PROTOTYPE(ELevelType::STATIC, L"Prototype_GameObject_StaticObject", CStaticObject::Create(m_pDevice, m_pDeviceContext));
-		ADD_PROTOTYPE(ELevelType::STATIC, L"Prototype_GameObject_LandScape", CLandScape::Create(m_pDevice, m_pDeviceContext));
+		ADD_PROTOTYPE(ELevelType::STATIC, L"Prototype_GameObject_LandScape",	CLandScape::Create(m_pDevice, m_pDeviceContext));
+		ADD_PROTOTYPE(ELevelType::STATIC, L"Prototype_GameObject_Bush",			CBush::Create(m_pDevice, m_pDeviceContext));
+		ADD_PROTOTYPE(ELevelType::STATIC, L"Prototype_GameObject_Grass",		CGrass::Create(m_pDevice, m_pDeviceContext));
+		ADD_PROTOTYPE(ELevelType::STATIC, L"Prototype_GameObject_Moss",			CMoss::Create(m_pDevice, m_pDeviceContext));
+		ADD_PROTOTYPE(ELevelType::STATIC, L"Prototype_GameObject_Tree",			CTree::Create(m_pDevice, m_pDeviceContext));
+		ADD_PROTOTYPE(ELevelType::STATIC, L"Prototype_GameObject_Vine",			CVine::Create(m_pDevice, m_pDeviceContext));
+		ADD_PROTOTYPE(ELevelType::STATIC, L"Prototype_GameObject_Rock",			CRock::Create(m_pDevice, m_pDeviceContext));
+		ADD_PROTOTYPE(ELevelType::STATIC, L"Prototype_GameObject_Water",		CWater::Create(m_pDevice, m_pDeviceContext));
 
 		/* Weapons */
 		ADD_PROTOTYPE(ELevelType::STATIC, L"Prototype_GameObject_Part_Sword", CSword::Create(m_pDevice, m_pDeviceContext));

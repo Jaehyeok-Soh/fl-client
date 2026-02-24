@@ -473,8 +473,8 @@ HRESULT CUEMapdataParser::Batch_UnrealRawMapData(const wchar_t* wszFileName)
 				Tool::STATICMODEL_DATA* pData = static_cast<Tool::STATICMODEL_DATA*> (CONVERTED_MAPDATA);
 
 				CMapObject::MAPOBJECT_DESC tDesc{};
-
-				tDesc.eClientMakePath = eClientMakePath;
+				tDesc.eClientMakePath = m_pMapToolManager->Get_ClientMakePath_ByFilePath(pData->tUsingModelInfo.wstrPath);
+				tDesc.tUsingModelInfo = pData->tUsingModelInfo;
 				tDesc.eMapObjectDrawType = EMapObject_DrawType::Default;
 				tDesc.eClientLevelType = eClientLevelType;
 				tDesc.iLevelIndex = ENUM_TO_UINT(ELevelType::MAP);
@@ -482,7 +482,6 @@ HRESULT CUEMapdataParser::Batch_UnrealRawMapData(const wchar_t* wszFileName)
 				tDesc.isUELoaded = true;
 				tDesc.wstrLayerTag = g_wszMapObjectLayer;
 				tDesc.eState = CMapObject::EState::Default;
-				tDesc.tUsingModelInfo = pData->tUsingModelInfo;
 				tDesc.iSectionNumber = m_pMapToolManager->Get_MakeObjectSectionNubmer();
 				tDesc.vecSRTs.push_back(pData->tOriginSRT);
 				tDesc.wstrUERawDataPath = m_wstrCurrentBatch_UERawDataPath;
@@ -507,7 +506,9 @@ HRESULT CUEMapdataParser::Batch_UnrealRawMapData(const wchar_t* wszFileName)
 				Tool::INSTANCEMODEL_DATA* pData = static_cast<Tool::INSTANCEMODEL_DATA*> (CONVERTED_MAPDATA);
 
 				CMapObject::MAPOBJECT_DESC tDesc{};
-				tDesc.eClientMakePath = eClientMakePath;
+				/* Floder 검사를 통해 Plants 관련 MakePath 를 걸러내준다 기본적으로 똑같다 */
+				/* Floder  */
+				tDesc.eClientMakePath = m_pMapToolManager->Get_ClientMakePath_ByFilePath(pData->tUsingModelInfo.wstrPath);
 				tDesc.eMapObjectDrawType = EMapObject_DrawType::Instance;
 				tDesc.eClientLevelType = eClientLevelType;
 				tDesc.iLevelIndex = ENUM_TO_UINT(ELevelType::MAP);
@@ -539,7 +540,6 @@ HRESULT CUEMapdataParser::Batch_UnrealRawMapData(const wchar_t* wszFileName)
 		UINT				iLevelID			= ENUM_TO_UINT(ELevelType::MAP);
 		EClientMakePath		eClientMakePath		= m_pMapToolManager->Get_MakeMapObjectClientMakePath();
 		EClientLevelType	eClientLevelType	= m_pMapToolManager->Get_MakeMapObejctClientLevelType();
-
 
 		map< wstring, INSTANCEMODEL_DATA >		mapBindInstance{};
 
@@ -575,7 +575,7 @@ HRESULT CUEMapdataParser::Batch_UnrealRawMapData(const wchar_t* wszFileName)
 			auto& tData = pInsData.second;
 
 			CMapObject::MAPOBJECT_DESC tDesc{};
-			tDesc.eClientMakePath = eClientMakePath;
+			tDesc.eClientMakePath = m_pMapToolManager->Get_ClientMakePath_ByFilePath(tData.tUsingModelInfo.wstrPath);
 			tDesc.eClientLevelType = eClientLevelType;
 			tDesc.iLevelIndex = iLevelID;
 			tDesc.isLoaded = true;
@@ -603,10 +603,6 @@ HRESULT CUEMapdataParser::Batch_UnrealRawMapData(const wchar_t* wszFileName)
 		}
 
 	}
-
-
-
-
 
 	return S_OK;
 }
@@ -660,14 +656,14 @@ HRESULT CUEMapdataParser::Save_FilteringRawMapData(const wchar_t* wszFileName)
 	if (pFind == nullptr) return E_FAIL;
 
 	wstring wstrFilePath = m_umapUnreal_Map_Data_FullPath[wszFileName];
-	wstrFilePath += L"_Converted.json";
+	wstrFilePath += L"_Filtering.json";
 
 	json SaveJson = json::array();
 
-	for (auto& Converted_MapData : *pFind)
-		SaveJson.push_back(Converted_MapData);
+	for (auto& Filtering_MapData : *pFind)
+		SaveJson.push_back(Filtering_MapData);
 
-	std::ofstream ofs{ wszFileName };
+	std::ofstream ofs{ wstrFilePath };
 
 	ofs << SaveJson.dump(4);
 

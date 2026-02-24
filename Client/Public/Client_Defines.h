@@ -256,12 +256,20 @@ namespace Client
 		END,
 	};
 
-	enum class Shader_VtxMesh_Pass
+	enum class EMapObjectShaderPass
 	{
 		StaticObject,
 		LandScape,
+		Bush,
+		Grass,
+		Moss,
+		Tree,
+		Vine,
+		Rock,
+		Water,
 		SHADOW_BAKE,
 		DEBUG,
+		END,
 	};
 
 

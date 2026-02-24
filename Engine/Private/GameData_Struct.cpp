@@ -77,40 +77,45 @@ namespace Engine
 	{
 
 		SaveJson["R"]["RGBA Mix Force"] = this->fRGBA_Mix_Forces[CHANNEL_R];
+		SaveJson["R"]["RGBA Mix Height Force"] = this->fRGBA_Mix_Height_Forces[CHANNEL_R];
 		SaveJson["R"]["RGBA Connected Tile Index"] = this->iRGBA_Connected_Tile_Index[CHANNEL_R];
 		SaveJson["R"]["Use Flags"] = this->iUseFlags[CHANNEL_R];
 
 		SaveJson["G"]["RGBA Mix Force"] = this->fRGBA_Mix_Forces[CHANNEL_G];
+		SaveJson["G"]["RGBA Mix Height Force"] = this->fRGBA_Mix_Height_Forces[CHANNEL_G];
 		SaveJson["G"]["RGBA Connected Tile Index"] = this->iRGBA_Connected_Tile_Index[CHANNEL_G];
 		SaveJson["G"]["Use Flags"] = this->iUseFlags[CHANNEL_G];
 
 		SaveJson["B"]["RGBA Mix Force"] = this->fRGBA_Mix_Forces[CHANNEL_B];
+		SaveJson["B"]["RGBA Mix Height Force"] = this->fRGBA_Mix_Height_Forces[CHANNEL_B];
 		SaveJson["B"]["RGBA Connected Tile Index"] = this->iRGBA_Connected_Tile_Index[CHANNEL_B];
 		SaveJson["B"]["Use Flags"] = this->iUseFlags[CHANNEL_B];
 
 		SaveJson["A"]["RGBA Mix Force"] = this->fRGBA_Mix_Forces[CHANNEL_A];
+		SaveJson["A"]["RGBA Mix Height Force"] = this->fRGBA_Mix_Height_Forces[CHANNEL_A];
 		SaveJson["A"]["RGBA Connected Tile Index"] = this->iRGBA_Connected_Tile_Index[CHANNEL_A];
 		SaveJson["A"]["Use Flags"] = this->iUseFlags[CHANNEL_A];
 
 	}
+
 	void MIX_RGBA_DATA::Load_Json(const json& LoadJson)
 	{
+
 		if (LoadJson.contains("R"))
 		{
 			auto& LoadJson_R = LoadJson["R"];
-
 			this->fRGBA_Mix_Forces[CHANNEL_R] = LoadJson_R.value("RGBA Mix Force", 1.f);
+			this->fRGBA_Mix_Height_Forces[CHANNEL_R] = LoadJson_R.value("RGBA Mix Height Force", 1.f);
 			this->iRGBA_Connected_Tile_Index[CHANNEL_R] = LoadJson_R.value("RGBA Connected Tile Index", 0);
 			this->iUseFlags[CHANNEL_R] = LoadJson_R.value("Use Flags", 1);
-
 		}
 
 
 		if (LoadJson.contains("G"))
 		{
 			auto& LoadJson_G = LoadJson["G"];
-
 			this->fRGBA_Mix_Forces[CHANNEL_G] = LoadJson_G.value("RGBA Mix Force", 1.f);
+			this->fRGBA_Mix_Height_Forces[CHANNEL_G] = LoadJson_G.value("RGBA Mix Height Force", 1.f);
 			this->iRGBA_Connected_Tile_Index[CHANNEL_G] = LoadJson_G.value("RGBA Connected Tile Index", 0);
 			this->iUseFlags[CHANNEL_G] = LoadJson_G.value("Use Flags", 1);
 		}
@@ -119,21 +124,20 @@ namespace Engine
 		if (LoadJson.contains("B"))
 		{
 			auto& LoadJson_B = LoadJson["B"];
-
 			this->fRGBA_Mix_Forces[CHANNEL_B] = LoadJson_B.value("RGBA Mix Force", 1.f);
+			this->fRGBA_Mix_Height_Forces[CHANNEL_B] = LoadJson_B.value("RGBA Mix Height Force", 1.f);
 			this->iRGBA_Connected_Tile_Index[CHANNEL_B] = LoadJson_B.value("RGBA Connected Tile Index", 0);
 			this->iUseFlags[CHANNEL_B] = LoadJson_B.value("Use Flags", 1);
-
 		}
+
 
 		if (LoadJson.contains("A"))
 		{
 			auto& LoadJson_A = LoadJson["A"];
-
 			this->fRGBA_Mix_Forces[CHANNEL_A] = LoadJson_A.value("RGBA Mix Force", 1.f);
+			this->fRGBA_Mix_Height_Forces[CHANNEL_A] = LoadJson_A.value("RGBA Mix Height Force", 1.f);
 			this->iRGBA_Connected_Tile_Index[CHANNEL_A] = LoadJson_A.value("RGBA Connected Tile Index", 0);
 			this->iUseFlags[CHANNEL_A] = LoadJson_A.value("Use Flags", 1);
-
 		}
 	}
 

@@ -31,6 +31,31 @@ CMapToolManager::CMapToolManager()
 	m_arrayMapObjectCloneFactory.fill(nullptr);
 }
 
+EClientMakePath CMapToolManager::Get_ClientMakePath_ByFilePath(const wstring& wstrFilePullPath)
+{
+	if (wstrFilePullPath.empty())
+		return m_eMakeMapObjectClientMakePath;
+
+	if (wstrFilePullPath.find(L"Bush") != std::wstring::npos)
+		return EClientMakePath::Bush;
+	if (wstrFilePullPath.find(L"Grass") != std::wstring::npos)
+		return EClientMakePath::Grass;
+	else if (wstrFilePullPath.find(L"Moss") != std::wstring::npos)
+		return EClientMakePath::Moss;
+	else if (wstrFilePullPath.find(L"Tree") != std::wstring::npos)
+		return EClientMakePath::Tree;
+	else if (wstrFilePullPath.find(L"Vine") != std::wstring::npos)
+		return EClientMakePath::Vine;
+	else if (wstrFilePullPath.find(L"Rock") != std::wstring::npos)
+		return EClientMakePath::Rock;
+	else if (wstrFilePullPath.find(L"Water") != std::wstring::npos)
+		return EClientMakePath::Water;
+	else if (wstrFilePullPath.find(L"Land") != std::wstring::npos)
+		return EClientMakePath::LandScape;
+
+	return m_eMakeMapObjectClientMakePath;
+}
+
 HRESULT CMapToolManager::Initialize(ID3D11Device* pDevice, ID3D11DeviceContext* pContext)
 {
 	m_pDevice  = pDevice;
@@ -222,13 +247,23 @@ HRESULT CMapToolManager::Load_TextureSplatingInfoData()
 	
 	if (ifs.is_open() == false) return E_FAIL;
 
-	if (ifs.peek() == std::ifstream::traits_type::eof())
-	{
-		return S_OK; // 텅 비어있으니 로드할 것도 없다! 안전하게 리턴.
-	}
+	//if (ifs.peek() == std::ifstream::traits_type::eof())
+	//{
+	//	return S_OK; // 텅 비어있으니 로드할 것도 없다! 안전하게 리턴.
+	//}
 
 	nlohmann::json LoadJson{};
-	ifs >> LoadJson;
+	try
+	{
+		ifs >> LoadJson;
+	}
+	catch (nlohmann::json::parse_error& e)
+	{
+		// JSON 문법이 틀렸거나 인코딩 문제일 때
+		OutputDebugStringA(e.what());
+		OutputDebugStringA("\nJSON 파싱 에러 발생!\n");
+		return E_FAIL;
+	}
 
 
 

@@ -34,7 +34,7 @@ private:
 	/* 전체적인 맵지형에 사용될 Texture 선택 ImGUi */
 	HRESULT					Render_SplatingTextureSetting();
 
-	HRESULT					Render_Single_Channel_Setting(const char* szLabel, const ImVec4& vColor,OUT int& iConnectedIndex, OUT float& fForce, int& iFlag,OUT bool* pIsOpenPopup);
+	HRESULT					Render_Single_Channel_Setting(const char* szLabel, const ImVec4& vColor,OUT int& iConnectedIndex, OUT float& fForce, OUT float& fHeightForce, int& iFlag,OUT bool* pIsOpenPopup);
 
 
 	HRESULT					Render_RaySetting();
