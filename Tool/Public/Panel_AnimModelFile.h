@@ -100,6 +100,7 @@ private:
 private:
 	_int m_iSocketBoneIdx	= { -1 };
 	_bool m_bCombine		= { true };
+	_bool m_bWeaponStatic	= { true };
 	ANIM_SRT				m_tAnimSrt{};
 	ANIM_SRT				m_tPartSrt{};
 

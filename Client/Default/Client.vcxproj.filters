@@ -753,7 +753,7 @@
     <ClInclude Include="..\public\Builder_AttackPreset.h">
       <Filter>07. System\01. Builder\AttackPreset</Filter>
     </ClInclude>
-    <ClInclude Include="..\Public\LandScape.h"/>
+    <ClInclude Include="..\Public\LandScape.h" />
     <ClInclude Include="..\Public\UI_World.h">
       <Filter>03. GameObject\UIObjects\02.UI\World</Filter>
     </ClInclude>
@@ -774,6 +774,12 @@
     </ClInclude>
     <ClInclude Include="..\Public\UINameplate_BG.h">
       <Filter>03. GameObject\UIObjects\02.UI\Image\Dynamic Image\05.MonsterNameplate</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\Gun.h">
+      <Filter>03. GameObject\PartObjects\Weapon\Gun</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\State_GunBase.h">
+      <Filter>06. FSM\Player\Attack\Gun</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -1126,7 +1132,7 @@
     <ClCompile Include="..\private\Builder_AttackPreset.cpp">
       <Filter>07. System\01. Builder\AttackPreset</Filter>
     </ClCompile>
-    <ClCompile Include="..\Private\LandScape.cpp"/>
+    <ClCompile Include="..\Private\LandScape.cpp" />
     <ClCompile Include="..\Private\UI_World.cpp">
       <Filter>03. GameObject\UIObjects\02.UI\World</Filter>
     </ClCompile>
@@ -1147,6 +1153,12 @@
     </ClCompile>
     <ClCompile Include="..\Private\UINameplate_BG.cpp">
       <Filter>03. GameObject\UIObjects\02.UI\Image\Dynamic Image\05.MonsterNameplate</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\Gun.cpp">
+      <Filter>03. GameObject\PartObjects\Weapon\Gun</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\State_GunBase.cpp">
+      <Filter>06. FSM\Player\Attack\Gun</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

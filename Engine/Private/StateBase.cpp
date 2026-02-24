@@ -231,6 +231,11 @@ _bool CStateBase::Align_Move(_uint iRunState, _bool bForce, void* pArg)
 	return m_pOwnerStateComp->Align_Move(iRunState, bForce, pArg);
 }
 
+void CStateBase::Move(Vec3 disp, _float minDist, _float fTimeDelta)
+{
+	return m_pOwnerStateComp->Move(disp, minDist, fTimeDelta);
+}
+
 void CStateBase::Follow_CameraLook(const _float fTimeDelta)
 {
 	if (m_pOwnerStateComp == nullptr)

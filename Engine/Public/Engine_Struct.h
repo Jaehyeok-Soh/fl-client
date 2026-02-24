@@ -344,6 +344,13 @@ namespace Engine
 	{
 		tagShaderTweenDesc tweens[MAX_MODEL_INSTANCE];
 	}SHADER_INST_TWEENDESC;
+
+	typedef struct tagShaderRGBColor
+	{
+		SimpleMath::Vector4 vColorR = { 1.f, 1.f,1.f, 1.f };
+		SimpleMath::Vector4 vColorG = { 1.f, 1.f,1.f, 1.f };
+		SimpleMath::Vector4 vColorB = { 1.f, 1.f,1.f, 1.f };
+	}SHADER_RGBCOLOR_DESC;
 #pragma endregion
 
 #pragma region Shader_StructuredBuffer

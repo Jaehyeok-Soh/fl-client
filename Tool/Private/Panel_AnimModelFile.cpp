@@ -529,6 +529,8 @@ void CPanel_AnimModelFile::CheckAnimModel(DIR dir, fs::path parent)
 				ImGui::InputInt("Socket Bone Index", &m_iSocketBoneIdx);
 				ImGui::SameLine();
 				ImGui::Checkbox("Combine Matrix", &m_bCombine);
+				ImGui::SameLine();
+				ImGui::Checkbox("Static", &m_bWeaponStatic);
 			}
 
 			DrawPreTransformMatrix("PartModel PreTransform Matrix", m_tPartSrt);
@@ -536,7 +538,7 @@ void CPanel_AnimModelFile::CheckAnimModel(DIR dir, fs::path parent)
 			if (ImGui::SmallButton("Load Part Weapon"))
 			{
 				fs::path targetPath = allProjectMeshes[selectedIdxMap[nodeKey]];
-				CGameInstance::GetInstance()->Broadcast<LoadAnimModelPart>(targetPath, m_tPartSrt, m_iSocketBoneIdx, m_bCombine);
+				CGameInstance::GetInstance()->Broadcast<LoadAnimModelPart>(targetPath, m_tPartSrt, m_iSocketBoneIdx, m_bCombine, m_bWeaponStatic);
 			}
 		}
 	}

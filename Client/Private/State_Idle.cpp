@@ -1,6 +1,9 @@
 #include "pch.h"
 #include "State_Idle.h"
+
 #include "Player.h"
+#include "ControlContext.h"
+
 #include "GameInstance.h"
 
 CState_Idle::CState_Idle(CActionState* pOwnerComponent)
@@ -26,6 +29,12 @@ HRESULT CState_Idle::Awake(const _uint iLevelIndex)
 
 HRESULT CState_Idle::Start(void *pArg, _bool bForce)
 {
+	if (Key_Input(ENUM_TO_UINT(CControlContext::CONTROL_KEY::MOVE)))
+	{
+		Change_PlayerState(STATEKEY::MOVE);
+		return S_OK;
+	}
+
 	if (FAILED(Super::Start(pArg, bForce)))
 		return E_FAIL;
 
