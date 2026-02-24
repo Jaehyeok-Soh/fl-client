@@ -3,13 +3,15 @@
 #include "DataStruct_UI.h"
 
 NS_BEGIN(Client)
+class CStatCom_Player;
+
 class CUIAimDot_Image final : public  CUIDynamic_Image
 {
 	using Super = CUIDynamic_Image;
 public:
-	typedef struct tagNamePlateBGDesc : public DIMAGE_DESC
+	typedef struct tagUIAimDotImageDesc : public DIMAGE_DESC
 	{
-	}NAMEPLATE_BG_DESC;
+	}AIMDOT_IMAGE_DESC;
 
 private:
 	CUIAimDot_Image(ID3D11Device* pDevice, ID3D11DeviceContext* pDeviceContext);
@@ -27,12 +29,26 @@ public:
 	virtual void Ready_Before_Render(const _float fTimeDelta) override;
 	virtual HRESULT Render() override;
 private:
-	HRESULT Ready_Components(NAMEPLATE_BG_DESC* pDesc);
+	HRESULT Ready_Components(AIMDOT_IMAGE_DESC* pDesc);
 	HRESULT Bind_ShaderResources();
 private:
 	virtual void OnUIEvent(ETriggerEventType eEvent, CGenericUI* pSender)override;
 	virtual void Initialize_Visible_Event()override;
 	virtual _bool Tick_Visible_Event(const _float fTimeDelta)override;
+private:
+	CStatCom_Player* m_pPlayerStatCom = { nullptr };
+	_bool m_isHitScan = { false };
+
+	_bool m_isPreRangeAtt = { false };
+	_bool m_isPreMeeleAtt = { false };
+
+	_float m_fAttSpeed = {0.1f};
+	_bool m_isShootingTrigger = {};
+	Vec2 m_vMaxOffset = {};
+
+	_bool m_isSpreadStart = {};
+	_bool m_isSpreadEnd = {};
+
 public:
 	static CUIAimDot_Image* Create(ID3D11Device* pDevice, ID3D11DeviceContext* pDeviceContext);
 	CGameObject* Clone(void* pArg);

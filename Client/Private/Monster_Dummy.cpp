@@ -114,16 +114,16 @@ void CMonster_Dummy::OnTrigger_Exit(_uint iMyColliderLayer, _uint iOtherLayer, C
 
 HRESULT CMonster_Dummy::Ready_BaseStates()
 {
-	//CMonsterActionState* pActionState = { nullptr };
-	//CModel* pModel = Get_Part<CMonster_Body_Base>(Part::BODY)->Get_Component<CModel>();
-	//if (!pModel)
-	//	return E_FAIL;
+	CMonsterActionState* pActionState = { nullptr };
+	CModel* pModel = Get_Part<CMonster_Body_Base>(Part::BODY)->Get_Component<CModel>();
+	if (!pModel)
+		return E_FAIL;
 
-	//if (!(pActionState = Get_Component<CMonsterActionState>()))
-	//	return E_FAIL;
+	if (!(pActionState = Get_Component<CMonsterActionState>()))
+		return E_FAIL;
 
-	//TIME_COUNTER tStateLifeTime = {};
-	//TIME_COUNTER tStateCoolDownTime = {};
+	TIME_COUNTER tStateLifeTime = {};
+	TIME_COUNTER tStateCoolDownTime = {};
 
 	return S_OK;
 }
@@ -146,17 +146,17 @@ HRESULT CMonster_Dummy::Ready_Components()
 	//	vector<_int> vecSkillRange;
 	//}MONSTER_CONTROLCONTEXT_DESC;
 
-	//CMonsterControlContext::MONSTER_CONTROLCONTEXT_DESC desc{};
-	//desc.fMeleeRange = 2.f;
-	//desc.fAttackRange = 4.f;
-	//desc.fCloseRange = 0.2f;
-	//desc.fDetectionRange = 5.f;
-	//desc.fSpeed = 1.f;
-	////desc.iSkillCount;
-	////desc.vecSkillRange;
+	CMonsterControlContext::MONSTER_CONTROLCONTEXT_DESC desc{};
+	desc.fMeleeRange = 2.f;
+	desc.fAttackRange = 4.f;
+	desc.fCloseRange = 1.f;
+	desc.fDetectionRange = 15.f;
+	desc.fSpeed = 1.f;
+	desc.iSkillCount;
+	desc.vecSkillRange;
 
-	//if (FAILED(Add_Component<CMonsterControlContext>(0 /*static*/, L"Prototype_Component_ControlContext_Monster", &desc)))
-	//	return E_FAIL;
+	if (FAILED(Add_Component<CMonsterControlContext>(0 /*static*/, L"Prototype_Component_ControlContext_Monster", &desc)))
+		return E_FAIL;
 
 	return S_OK;
 }

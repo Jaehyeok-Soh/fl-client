@@ -403,6 +403,9 @@
     <Filter Include="03. GameObject\UIObjects\02.UI\Image\Dynamic Image\06.AimDot">
       <UniqueIdentifier>{91eeeaa9-73a6-40da-bff2-b5e05c436f98}</UniqueIdentifier>
     </Filter>
+    <Filter Include="03. GameObject\UIObjects\02.UI\Progress Bar\Player Ammo">
+      <UniqueIdentifier>{e50622ce-f6b5-4828-847f-cf19391be008}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="targetver.h">
@@ -793,6 +796,9 @@
     <ClInclude Include="..\Public\UIAimDot_Image.h">
       <Filter>03. GameObject\UIObjects\02.UI\Image\Dynamic Image\06.AimDot</Filter>
     </ClInclude>
+    <ClInclude Include="..\Public\UIPlayerAmmo_Progress.h">
+      <Filter>03. GameObject\UIObjects\02.UI\Progress Bar\Player Ammo</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <Image Include="Client.ico">
@@ -1174,6 +1180,9 @@
     </ClCompile>
     <ClCompile Include="..\Private\UIAimDot_Image.cpp">
       <Filter>03. GameObject\UIObjects\02.UI\Image\Dynamic Image\06.AimDot</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\UIPlayerAmmo_Progress.cpp">
+      <Filter>03. GameObject\UIObjects\02.UI\Progress Bar\Player Ammo</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

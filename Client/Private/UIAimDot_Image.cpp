@@ -4,6 +4,7 @@
 //=================
 // Component
 //=================
+#include "StatCom_Player.h"
 #include "Texture.h"
 #include "Shader.h"
 #include "VIBuffer_Rect_Tex.h"
@@ -28,7 +29,7 @@ HRESULT CUIAimDot_Image::Initialize_Prototype()
 
 HRESULT CUIAimDot_Image::Initialize(void* pArg)
 {
-	NAMEPLATE_BG_DESC* pDesc = static_cast<NAMEPLATE_BG_DESC*>(pArg);
+	AIMDOT_IMAGE_DESC* pDesc = static_cast<AIMDOT_IMAGE_DESC*>(pArg);
 	m_isInteract = true;
 	if (FAILED(Super::Initialize(pArg)))
 		return E_FAIL;
@@ -39,6 +40,139 @@ HRESULT CUIAimDot_Image::Initialize(void* pArg)
 
 HRESULT CUIAimDot_Image::Attach_Personal_Info()
 {
+	_bool isRangeAtt = { false };
+	_bool isMeeleAtt = { false };
+	if (Engine_Utils::Has_Flag(m_pPlayerStatCom->Get_AttState(), CStatCom_Player::Attack_State::Gun))
+		isRangeAtt = true;
+	else if (Engine_Utils::Has_Flag(m_pPlayerStatCom->Get_AttState(), CStatCom_Player::Attack_State::Melee))
+		isMeeleAtt = true;
+
+	switch (m_eDImageSubClass)
+	{
+	case DTO::EUIDImageSubClassType::BATTLE_UI_BEGIN:
+		break;
+	case DTO::EUIDImageSubClassType::BATTLE_AIMDOT_COMMON:
+	{
+		// 원거리 공격 중일 때
+		if (isRangeAtt)
+		{
+			// 플레이어 에임이 적에 맞았는지
+			if (m_isHitScan)
+				m_vColorTint = Vec4{ 1.f, 0.f, 0.f, 1.f };
+			else 
+				m_vColorTint = Vec4{ 1.f, 1.f, 1.f, 1.f };
+		}
+		break;
+	}
+	case DTO::EUIDImageSubClassType::BATTLE_AIMDOT_CROSSHAIR_TOP:
+	{
+		// 지금 총 들고 있는데
+		if (Engine_Utils::Has_Flag(m_pPlayerStatCom->Get_AttState(), CStatCom_Player::Attack_State::Gun))
+		{
+			// 이전 프레임엔 총 안 들고 있었는데?
+			if (!m_isPreRangeAtt)
+			{
+				Set_Visible();
+			}
+
+			if (m_isShootingTrigger)
+			{
+				Ready_Lerp_Movement(m_vMoveOffset, Vec2{0.f, -10.f}, m_fAttSpeed, 1.f, m_fDelay);
+				m_vMaxOffset = Vec2{ 0.f, -10.f };
+				m_isSpreadStart = true;
+				m_isSpreadEnd = false;
+			}
+		}
+		// 지금 칼 들고 있는데, 혹은 아무것도 안 들고 있는데
+		else if (Engine_Utils::Has_Flag(m_pPlayerStatCom->Get_AttState(), CStatCom_Player::Attack_State::Melee))
+		{
+			// 이전 프레임엔 총 들고 있었는데?
+			if (m_isPreRangeAtt)
+			{
+				Set_Invisible();
+			}
+		}
+		break;
+	}
+	case DTO::EUIDImageSubClassType::BATTLE_AIMDOT_CROSSHAIR_RIGHT:
+	{
+		if (Engine_Utils::Has_Flag(m_pPlayerStatCom->Get_AttState(), CStatCom_Player::Attack_State::Gun))
+		{
+			if (!m_isPreRangeAtt)
+				Set_Visible();
+
+			if (m_isShootingTrigger)
+			{
+				Ready_Lerp_Movement(m_vMoveOffset, Vec2{ 10.f, 0.f }, m_fAttSpeed, 1.f, m_fDelay);
+				m_vMaxOffset = Vec2{ 10.f, 0.f };
+				m_isSpreadStart = true;
+				m_isSpreadEnd = false;
+			}
+		}
+		else if (Engine_Utils::Has_Flag(m_pPlayerStatCom->Get_AttState(), CStatCom_Player::Attack_State::Melee))
+		{
+			if (m_isPreRangeAtt)
+				Set_Invisible();
+		}
+		break;
+	}
+	case DTO::EUIDImageSubClassType::BATTLE_AIMDOT_CROSSHAIR_BOTTOM:
+	{
+		if (Engine_Utils::Has_Flag(m_pPlayerStatCom->Get_AttState(), CStatCom_Player::Attack_State::Gun))
+		{
+			if (!m_isPreRangeAtt)
+				Set_Visible();
+
+			if (m_isShootingTrigger)
+			{
+				Ready_Lerp_Movement(m_vMoveOffset, Vec2{ 0.f, 10.f }, m_fAttSpeed, 1.f, m_fDelay);
+				m_vMaxOffset = Vec2{ 0.f, 10.f };
+				m_isSpreadStart = true;
+				m_isSpreadEnd = false;
+			}
+		}
+		else if (Engine_Utils::Has_Flag(m_pPlayerStatCom->Get_AttState(), CStatCom_Player::Attack_State::Melee))
+		{
+			if (m_isPreRangeAtt)
+				Set_Invisible();
+		}
+		break;
+	}
+	case DTO::EUIDImageSubClassType::BATTLE_AIMDOT_CROSSHAIR_LEFT:
+	{
+		if (Engine_Utils::Has_Flag(m_pPlayerStatCom->Get_AttState(), CStatCom_Player::Attack_State::Gun))
+		{
+			if (!m_isPreRangeAtt)
+				Set_Visible();
+
+			if (m_isShootingTrigger)
+			{
+				Ready_Lerp_Movement(m_vMoveOffset, Vec2{ -10.f, 0.f }, m_fAttSpeed, 1.f, m_fDelay);
+				m_vMaxOffset = Vec2{ -10.f, 0.f };
+				m_isSpreadStart = true;
+				m_isSpreadEnd = false;
+			}
+		}
+		else if (Engine_Utils::Has_Flag(m_pPlayerStatCom->Get_AttState(), CStatCom_Player::Attack_State::Melee))
+		{
+			if (m_isPreRangeAtt)
+				Set_Invisible();
+		}
+		break;
+	}
+	case DTO::EUIDImageSubClassType::BATTLE_AIM_HIT:
+		break;
+	case DTO::EUIDImageSubClassType::BATTLE_AIM_LOCK:
+		break;
+	case DTO::EUIDImageSubClassType::BATTLE_UI_END:
+		break;
+	case DTO::EUIDImageSubClassType::END:
+	default:
+		return E_FAIL;
+	}
+
+	m_isPreRangeAtt = isRangeAtt;
+	m_isPreMeeleAtt = isMeeleAtt;
 	return S_OK;
 }
 
@@ -47,7 +181,12 @@ HRESULT CUIAimDot_Image::Awake(const _uint iCurrentLevelID)
 	if (FAILED(Super::Awake(iCurrentLevelID)))
 		return E_FAIL;
 
-	if (FAILED(Attach_Personal_Info()))
+	CGameObject* pResult = m_pGameInstance->Get_GameObject_Front(ENUM_TO_UINT(ELevelType::LOGO), g_wszPlayerLayer);
+	if (nullptr == pResult)
+		return E_FAIL;
+
+	m_pPlayerStatCom = static_cast<CStatCom_Player*>(pResult->Get_Component<CMyStat>());
+	if (nullptr == m_pPlayerStatCom)
 		return E_FAIL;
 
 	return S_OK;
@@ -60,11 +199,44 @@ void CUIAimDot_Image::Update_Priority(const _float fTimeDelta)
 
 void CUIAimDot_Image::Update(const _float fTimeDelta)
 {
+	m_isShootingTrigger = false;
+
+	if (MOUSE_LBUTTON_DOWN)
+	{
+		m_pPlayerStatCom->Set_AttackState(CStatCom_Player::Attack_State::Melee, true);
+		m_pPlayerStatCom->Set_AttackState(CStatCom_Player::Attack_State::Gun, false);
+	}
+	else if (MOUSE_RBUTTON_DOWN)
+	{
+		m_pPlayerStatCom->Set_AttackState(CStatCom_Player::Attack_State::Melee, false);
+		m_pPlayerStatCom->Set_AttackState(CStatCom_Player::Attack_State::Gun, true);
+	}
+	else if (MOUSE_RBUTTON_HOLD)
+	{
+		m_isShootingTrigger = true;
+	}
+
 	Super::Update(fTimeDelta);
 }
 
 void CUIAimDot_Image::Update_Late(const _float fTimeDelta)
 {
+	if (FAILED(Attach_Personal_Info()))
+		return ;
+
+	_bool is = Tick_Lerp_Movement(fTimeDelta);
+
+	// 올라가는 중일때 
+	if (m_isSpreadStart)
+	{
+		if (is)
+		{
+			m_isSpreadStart = false;
+			m_isSpreadEnd = true;
+			Ready_Lerp_Movement(m_vMaxOffset, Vec2{ 0.f, 0.f }, m_fAttSpeed, 1.f, m_fDelay);
+		}
+	}
+
 	Super::Update_Late(fTimeDelta);
 }
 
@@ -84,7 +256,7 @@ HRESULT CUIAimDot_Image::Render()
 	return S_OK;
 }
 
-HRESULT CUIAimDot_Image::Ready_Components(NAMEPLATE_BG_DESC* pDesc)
+HRESULT CUIAimDot_Image::Ready_Components(AIMDOT_IMAGE_DESC* pDesc)
 {
 	Super::Ready_Components(pDesc);
 	return S_OK;

@@ -168,6 +168,8 @@ void to_json(json& j, const TUI_GenericUIData& data)
 		{ "fPosX", data.fPosX },
 		{ "fPosY", data.fPosY },
 		{ "fPosZ", data.fPosZ },
+		{ "fScale", data.fScale	},
+		{ "fRotate", data.fRotate},
 		{ "strTextureTag", data.strTextureTag },
 		{ "isVisible", data.isVisible },
 		{ "isInteract", data.isInteract },

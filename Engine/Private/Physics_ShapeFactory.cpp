@@ -90,7 +90,9 @@ vector<PxShape*> CPhysics_ShapeFactory::MakeShape(PHYSICSCOLLIDER_DESC* pDesc, v
 
 	PxMaterial* pMaterial = m_pResourceManager->GetMaterial(&pDesc->tMaterial);
 	if (pMaterial == nullptr)
+	{
 		MSG_BOX("ShapeFactory : material null");
+	}
 
 	for (auto& geometry : geometries)
 	{

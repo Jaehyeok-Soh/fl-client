@@ -38,6 +38,7 @@ public:
 
 public:
 	virtual void Change_MonsterState(_int eKey);	// change 랩핑 함수 : 필요시 오버라이드
+	_bool IsCancellation() { return m_pDesc->bCancellation; }
 
 protected:
 	STATE_START_DESC		m_tNextStateDesc = {};
@@ -71,9 +72,11 @@ protected:
 	HRESULT Bind_State();
 	HRESULT Bind_PreAnims();
 	HRESULT Bind_MainAnims();
-	HRESULT Bind_Transition();
+	HRESULT Bind_Transition(vector<DTO::STATE_TRANSITION>& transition);
 	HRESULT Bind_Condition(vector<string> conds);
 	HRESULT Bind_Feature();
+
+	void Check_Transition(vector<DTO::STATE_TRANSITION>& transition);
 
 	DTO::MONSTER_STATEBASE_DESC* m_pDesc = { nullptr };
 

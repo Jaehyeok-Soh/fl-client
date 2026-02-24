@@ -104,6 +104,10 @@ enum class EUISubClassType
 	MONSTER_HP,
 	MONSTER_ARMOR,
 	MONSTER_STAT_END,
+
+	PLAYER_AMMO_PROGRESS,
+
+
 	END
 };
 
@@ -126,6 +130,7 @@ inline std::string UISubClasstypeToString(EUISubClassType eType)
 	case EUISubClassType::MONSTER_HP:			return "MONSTER_HP";
 	case EUISubClassType::MONSTER_ARMOR:		return "MONSTER_ARMOR";
 	case EUISubClassType::MONSTER_STAT_END:		return "MONSTER_STAT_END";
+	case EUISubClassType::PLAYER_AMMO_PROGRESS:		return "PLAYER_AMMO_PROGRESS";
 
 	case EUISubClassType::END:					return "END";
 	default: return "";
@@ -149,6 +154,8 @@ inline EUISubClassType StringToUISubClassType(const std::string& str)
 	else if (str == "MONSTER_HP")	return EUISubClassType::MONSTER_HP;
 	else if (str == "MONSTER_ARMOR")	return EUISubClassType::MONSTER_ARMOR;
 	else if (str == "MONSTER_STAT_END")	return EUISubClassType::MONSTER_STAT_END;
+
+	else if (str == "PLAYER_AMMO_PROGRESS")	return EUISubClassType::PLAYER_AMMO_PROGRESS;
 	else return EUISubClassType::END;
 }
 
@@ -165,10 +172,12 @@ NLOHMANN_JSON_SERIALIZE_ENUM(EUISubClassType,
 
 		{EUISubClassType::LOADING_PROGRESS,		"LOADING_PROGRESS"},
 
-		{EUISubClassType::MONSTER_STAT_BEGIN,			"MONSTER_STAT_BEGIN"},
-		{EUISubClassType::MONSTER_HP,		"MONSTER_HP"},
+		{EUISubClassType::MONSTER_STAT_BEGIN,	"MONSTER_STAT_BEGIN"},
+		{EUISubClassType::MONSTER_HP,			"MONSTER_HP"},
 		{ EUISubClassType::MONSTER_ARMOR,		"MONSTER_ARMOR" },
-		{ EUISubClassType::MONSTER_STAT_END,		"MONSTER_STAT_END"}
+		{ EUISubClassType::MONSTER_STAT_END,	"MONSTER_STAT_END"},
+
+		{ EUISubClassType::PLAYER_AMMO_PROGRESS,			"PLAYER_AMMO_PROGRESS"}
 	})
 
 #pragma region 텍스트 서브 클래스
@@ -491,6 +500,11 @@ enum class EUIDImageSubClassType
 	// 전투 UI
 	BATTLE_UI_BEGIN,
 	BATTLE_AIMDOT_COMMON,
+	BATTLE_AIMDOT_CROSSHAIR_TOP,
+	BATTLE_AIMDOT_CROSSHAIR_RIGHT,
+	BATTLE_AIMDOT_CROSSHAIR_BOTTOM,
+	BATTLE_AIMDOT_CROSSHAIR_LEFT,
+	BATTLE_AIM_HIT,
 	BATTLE_AIM_LOCK,
 	BATTLE_UI_END,
 
@@ -537,8 +551,13 @@ NLOHMANN_JSON_SERIALIZE_ENUM(EUIDImageSubClassType,
 	{ EUIDImageSubClassType::LOADING_BG_BOTTOM,			"LOADING_BG_BOTTOM" },
 	{ EUIDImageSubClassType::LOADING_END,				"LOADING_END" },
 
-	{ EUIDImageSubClassType::BATTLE_UI_BEGIN,				"BATTLE_UI_BEGIN" },
-	{ EUIDImageSubClassType::BATTLE_AIMDOT_COMMON,				"BATTLE_AIMDOT_COMMON" },
+	{ EUIDImageSubClassType::BATTLE_UI_BEGIN,			"BATTLE_UI_BEGIN" },
+	{ EUIDImageSubClassType::BATTLE_AIMDOT_COMMON,		"BATTLE_AIMDOT_COMMON" },
+	{ EUIDImageSubClassType::BATTLE_AIMDOT_CROSSHAIR_TOP,			"BATTLE_AIMDOT_CROSSHAIR_TOP" },
+	{ EUIDImageSubClassType::BATTLE_AIMDOT_CROSSHAIR_RIGHT,				"BATTLE_AIMDOT_CROSSHAIR_RIGHT" },
+	{ EUIDImageSubClassType::BATTLE_AIMDOT_CROSSHAIR_BOTTOM,				"BATTLE_AIMDOT_CROSSHAIR_BOTTOM" },
+	{ EUIDImageSubClassType::BATTLE_AIMDOT_CROSSHAIR_LEFT,				"BATTLE_AIMDOT_CROSSHAIR_LEFT" },
+	{ EUIDImageSubClassType::BATTLE_AIM_HIT,				"BATTLE_AIM_HIT" },
 	{ EUIDImageSubClassType::BATTLE_AIM_LOCK,				"BATTLE_AIM_LOCK" },
 	{ EUIDImageSubClassType::BATTLE_UI_END,				"BATTLE_UI_END" },
 		
@@ -587,6 +606,11 @@ NLOHMANN_JSON_SERIALIZE_ENUM(EUIDImageSubClassType,
 
 	if (str == "BATTLE_UI_BEGIN")				return EUIDImageSubClassType::BATTLE_UI_BEGIN;
 	if (str == "BATTLE_AIMDOT_COMMON")				return EUIDImageSubClassType::BATTLE_AIMDOT_COMMON;
+	if (str == "BATTLE_AIMDOT_CROSSHAIR_TOP")				return EUIDImageSubClassType::BATTLE_AIMDOT_CROSSHAIR_TOP;
+	if (str == "BATTLE_AIMDOT_CROSSHAIR_RIGHT")				return EUIDImageSubClassType::BATTLE_AIMDOT_CROSSHAIR_RIGHT;
+	if (str == "BATTLE_AIMDOT_CROSSHAIR_BOTTOM")				return EUIDImageSubClassType::BATTLE_AIMDOT_CROSSHAIR_BOTTOM;
+	if (str == "BATTLE_AIMDOT_CROSSHAIR_LEFT")				return EUIDImageSubClassType::BATTLE_AIMDOT_CROSSHAIR_LEFT;
+	if (str == "BATTLE_AIM_HIT")				return EUIDImageSubClassType::BATTLE_AIM_HIT;
 	if (str == "BATTLE_AIM_LOCK")				return EUIDImageSubClassType::BATTLE_AIM_LOCK;
 	if (str == "BATTLE_UI_END")				return EUIDImageSubClassType::BATTLE_UI_END;
 	
@@ -638,6 +662,11 @@ inline const char* UIDImageSubTypeToString(EUIDImageSubClassType type)
 
 	case EUIDImageSubClassType::BATTLE_UI_BEGIN:			return "BATTLE_UI_BEGIN";
 	case EUIDImageSubClassType::BATTLE_AIMDOT_COMMON:			return "BATTLE_AIMDOT_COMMON";
+	case EUIDImageSubClassType::BATTLE_AIMDOT_CROSSHAIR_TOP:			return "BATTLE_AIMDOT_CROSSHAIR_TOP";
+	case EUIDImageSubClassType::BATTLE_AIMDOT_CROSSHAIR_RIGHT:			return "BATTLE_AIMDOT_CROSSHAIR_RIGHT";
+	case EUIDImageSubClassType::BATTLE_AIMDOT_CROSSHAIR_BOTTOM:			return "BATTLE_AIMDOT_CROSSHAIR_BOTTOM";
+	case EUIDImageSubClassType::BATTLE_AIMDOT_CROSSHAIR_LEFT:			return "BATTLE_AIMDOT_CROSSHAIR_LEFT";
+	case EUIDImageSubClassType::BATTLE_AIM_HIT:			return "BATTLE_AIM_HIT";
 	case EUIDImageSubClassType::BATTLE_AIM_LOCK:			return "BATTLE_AIM_LOCK";
 	case EUIDImageSubClassType::BATTLE_UI_END:			return "BATTLE_UI_END";
 	

@@ -43,8 +43,8 @@ HRESULT CMonster_Base::Initialize(void* pArg)
 	if (FAILED(Ready_Components(pArg)))
 		return E_FAIL;
 
-	//if (FAILED(Ready_BaseStates()))
-	//	return E_FAIL;
+	if (FAILED(Ready_BaseStates()))
+		return E_FAIL;
 
 	//if (FAILED(Ready_Ability()))
 	//	return E_FAIL;
@@ -57,16 +57,16 @@ HRESULT CMonster_Base::Awake(const _uint iCurrentLevelID)
 	if (FAILED(Super::Awake(iCurrentLevelID)))
 		return E_FAIL;
 
-	//CGameInstance::GetInstance()->Add_Actor_Object(this);
-	//if (CMonsterActionState* pMonsterState = Get_Component<CMonsterActionState>())
-	//	if (FAILED(pMonsterState->Awake(iCurrentLevelID)))
-	//		return E_FAIL;
+	CGameInstance::GetInstance()->Add_Actor_Object(this);
+	if (CMonsterActionState* pMonsterState = Get_Component<CMonsterActionState>())
+		if (FAILED(pMonsterState->Awake(iCurrentLevelID)))
+			return E_FAIL;
 
-	//if (FAILED(Get_Component<CMonsterActionState>()->Change_State(ENUM_TO_UINT(State::IDLE))))
-	//	return E_FAIL;
+	if (FAILED(Get_Component<CMonsterActionState>()->Change_State(ENUM_TO_UINT(State::IDLE))))
+		return E_FAIL;
 
-	//if (FAILED(Get_Component<CControlContext>()->Awake(iCurrentLevelID)))
-	//	return E_FAIL;
+	if (FAILED(Get_Component<CControlContext>()->Awake(iCurrentLevelID)))
+		return E_FAIL;
 
 	Get_Component<CTransform>()->Set_Info(TRANSFORM_INFO_STATE::POS, Vec3{ 21.f, 17.5f, -1.f });
 
@@ -82,10 +82,10 @@ void CMonster_Base::Update_Priority(const _float fTimeDelta)
 
 void CMonster_Base::Update(const _float fTimeDelta)
 {
-	//if (CMonsterActionState* pMonsterState = Get_Component<CMonsterActionState>())
-	//{
-	//	pMonsterState->Update(fTimeDelta);
-	//}
+	if (CMonsterActionState* pMonsterState = Get_Component<CMonsterActionState>())
+	{
+		pMonsterState->Update(fTimeDelta);
+	}
 
 	Super::Update(fTimeDelta);
 }
@@ -199,18 +199,18 @@ HRESULT CMonster_Base::Ready_PartObjects(void* pArg)
 
 HRESULT CMonster_Base::Ready_Components(void* pArgs)
 {
-	//MONSTER_DESC* pDesc = static_cast<MONSTER_DESC*>(pArgs);
+	MONSTER_DESC* pDesc = static_cast<MONSTER_DESC*>(pArgs);
 
-	//{
-	//	CMonsterActionState::MONSTERACTIONSTATE_DESC desc = {};
-	//	desc.iStateCount = ENUM_TO_UINT(State::END);
-	//	desc.pOwnerModel = Get_Part<CMonster_Body_Base>(ENUM_TO_UINT(Part::BODY))->Get_Component<CModel>();
-	//	desc.pOwnerAnimECS = static_cast<CComputeShader*>(Get_Part<CMonster_Body_Base>(ENUM_TO_UINT(Part::BODY))->Get_Script_Component(TEXT("ComputeShader_AnimE")));
-	//	desc.wstrMonsterStateTag = pDesc->wstrMonsterStateTag;
-	//	desc.iLevelIndex = pDesc->iLevelIndex;
-	//	if (FAILED(Add_Component<CMonsterActionState>(0, L"Prototype_Component_ActionState_Monster", &desc)))
-	//		return E_FAIL;
-	//}
+	{
+		CMonsterActionState::MONSTERACTIONSTATE_DESC desc = {};
+		desc.iStateCount = ENUM_TO_UINT(State::END);
+		desc.pOwnerModel = Get_Part<CMonster_Body_Base>(ENUM_TO_UINT(Part::BODY))->Get_Component<CModel>();
+		desc.pOwnerAnimECS = static_cast<CComputeShader*>(Get_Part<CMonster_Body_Base>(ENUM_TO_UINT(Part::BODY))->Get_Script_Component(TEXT("ComputeShader_AnimE")));
+		desc.wstrMonsterStateTag = pDesc->wstrMonsterStateTag;
+		desc.iLevelIndex = pDesc->iLevelIndex;
+		if (FAILED(Add_Component<CMonsterActionState>(0, L"Prototype_Component_ActionState_Monster", &desc)))
+			return E_FAIL;
+	}
 
 	if (FAILED(Ready_CCT(pArgs)))
 		return E_FAIL;

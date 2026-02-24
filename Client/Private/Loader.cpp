@@ -77,6 +77,7 @@
 #include "UIPlayerStat_Progress.h"
 #include "UILoading_Progress.h"
 #include "UIMonsterStat_Progress.h"
+#include "UIPlayerAmmo_Progress.h"
 // 텍스트 
 #include "UIMenu_Text.h"
 #include "UIPlayerStat_Text.h"
@@ -92,6 +93,7 @@
 #include "UIMenu_OutLine.h"
 #include "UILoading_Image.h"
 #include "UINameplate_BG.h"
+#include "UIAimDot_Image.h"
 // 트리거 
 #include "UIMenu_Trigger.h"
 #include "UICommon_Trigger.h"
@@ -400,7 +402,7 @@ HRESULT CLoader::Loading_For_Logo()
 		desc.vecStageBoneIndices = { };
 
 		CModel::DATA_ANIMCHANNEL tAniChannelData = {};
-		tAniChannelData.iRootBoneIndex = 2;
+		tAniChannelData.iRootBoneIndex = 3;
 		desc.pAniChannelData = &tAniChannelData;
 
 		m_pGameInstance->Add_Prototype(ENUM_TO_UINT(ELevelType::STATIC), L"Prototype_Component_Model_Monster_Dog", CModel::Create(m_pDevice, m_pDeviceContext, &desc));
@@ -501,7 +503,9 @@ HRESULT CLoader::Loading_For_Logo()
 	ADD_PROTOTYPE(ELevelType::LOGO, L"Prototype_UI_MonsterStatText",		CUIMonsterStat_Text::Create(m_pDevice, m_pDeviceContext));
 	ADD_PROTOTYPE(ELevelType::LOGO, L"Prototype_UI_MonsterStatProgress",	CUIMonsterStat_Progress::Create(m_pDevice, m_pDeviceContext));
 	ADD_PROTOTYPE(ELevelType::LOGO, L"Prototype_UI_Nameplate_BG",			CUINameplate_BG::Create(m_pDevice, m_pDeviceContext));
-	ADD_PROTOTYPE(ELevelType::LOGO, L"Prototype_UIPrefab_MonsterNameplate",		CUIPrefab_MonsterNameplate::Create(m_pDevice, m_pDeviceContext));
+	ADD_PROTOTYPE(ELevelType::LOGO, L"Prototype_UIPrefab_MonsterNameplate",	CUIPrefab_MonsterNameplate::Create(m_pDevice, m_pDeviceContext));
+	ADD_PROTOTYPE(ELevelType::LOGO, L"Prototype_UI_AimDotImage",			CUIAimDot_Image::Create(m_pDevice, m_pDeviceContext));
+	ADD_PROTOTYPE(ELevelType::LOGO, L"Prototype_UI_PlayerAmmoProgress",			CUIPlayerAmmo_Progress::Create(m_pDevice, m_pDeviceContext));
 
 #pragma endregion
 

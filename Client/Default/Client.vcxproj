@@ -276,6 +276,7 @@
     <ClInclude Include="..\Public\UIMonsterStat_Progress.h" />
     <ClInclude Include="..\Public\UIMonsterStat_Text.h" />
     <ClInclude Include="..\Public\UINameplate_BG.h" />
+    <ClInclude Include="..\Public\UIPlayerAmmo_Progress.h" />
     <ClInclude Include="..\Public\UIPlayerStat_Progress.h" />
     <ClInclude Include="..\Public\UIPlayerStat_Text.h" />
     <ClInclude Include="..\Public\UIPrefab.h" />
@@ -434,6 +435,7 @@
     <ClCompile Include="..\Private\UIMonsterStat_Progress.cpp" />
     <ClCompile Include="..\Private\UIMonsterStat_Text.cpp" />
     <ClCompile Include="..\Private\UINameplate_BG.cpp" />
+    <ClCompile Include="..\Private\UIPlayerAmmo_Progress.cpp" />
     <ClCompile Include="..\Private\UIPlayerStat_Progress.cpp" />
     <ClCompile Include="..\Private\UIPlayerStat_Text.cpp" />
     <ClCompile Include="..\Private\UIPrefab.cpp" />
