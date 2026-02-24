@@ -63,6 +63,9 @@ public:
 
 	void			Set_GravityOffset(_float fOffset) { if (fOffset > m_fGravity)return; m_fGravityOffset = fOffset; }
 
+	// action state 내부에 CCTFlags 가지고 있음 -> 외부에서는 어떻게 윰직일지만 값을 넘겨준다
+	void			Move(Vec3 disp, _float minDist, _float fTimeDelta); 
+
 	/* animation funcs*/
 protected:
 	HRESULT			Request_ChangeAnimation(_uint iAnimationIndex, _bool bBlend, _bool bLoop, _bool bForce = false);
