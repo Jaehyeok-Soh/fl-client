@@ -94,14 +94,15 @@ public:
 public:
 	// Constant Buffer Àü¿ë
 	void Bind_Compute_EffectData(const EFFECT_PARTICLE_MU_ELEMENT& desc);
+	void Bind_Compute_EffectCurveData(const EFFECT_CURVEINFO& desc);
 	void Bind_Compute_Track(const CS_MU_TRACK& desc);
 	void Bind_Compute_BlendMu(const CS_MU_ANIMB& desc);
 	void Bind_Compute_BoneMuCB(const CS_MU_GROUPNUMS& desc);
 	void Bind_Compute_BoneMeshCB(const CS_CB_MU_BONEMESH& desc);
 
 public:
-	void	Resize_InputStruct(_uint Index, void* pArg, _uint iElementSize, _uint iNumElements);
-	void	Resize_OutputStruct(_uint Index, void* pArg, _uint iElementSize, _uint iNumElements);
+	void Resize_InputStruct(_uint Index, void* pArg, _uint iElementSize, _uint iNumElements);
+	void Resize_OutputStruct(_uint Index, void* pArg, _uint iElementSize, _uint iNumElements);
 
 private:
 	//StructuredBuffer* m_pInputStructedBuffer = nullptr;
@@ -116,6 +117,9 @@ private:
 	//  ===================   ConstantBuffer   ====================
 	CConstant_Buffer<EFFECT_PARTICLE_MU_ELEMENT>*	m_pEffect_Mutable_Element_CBuffer		= { nullptr };
 	ID3DX11EffectConstantBuffer*					m_pEffect_MutableBuffer					= { nullptr };
+
+	CConstant_Buffer<EFFECT_CURVEINFO>*				m_pEffect_CurveInfo = { nullptr };
+	ID3DX11EffectConstantBuffer*					m_pEffect_CurveInfoBuffer = { nullptr };
 
 	CConstant_Buffer<CS_MU_TRACK>*					m_pAnimE_Mutable_Element_CBuffer		= { nullptr };
 	ID3DX11EffectConstantBuffer*					m_pAnimE_MutableBuffer					= { nullptr };

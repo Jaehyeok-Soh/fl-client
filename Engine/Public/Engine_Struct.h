@@ -376,8 +376,14 @@ namespace Engine
 		float				Padding3 = {};
 
 		// 
-
 	}EFFECT_PARTICLE_MU_ELEMENT;
+
+
+	typedef struct tagEffect_CurveInfo
+	{
+		unsigned int g_iGravityKeyCount = {0};
+		SimpleMath::Vector3 g_vPadding = {0.f, 0.f, 0.f};
+	}EFFECT_CURVEINFO;
 #pragma endregion
 
 #pragma region Model_ComShader_Structures

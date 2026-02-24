@@ -33,6 +33,8 @@ CComputeShader::CComputeShader(const CComputeShader& rhs)
 	, m_pBone_MutableBuffer(rhs.m_pBone_MutableBuffer)
 	, m_pBoneMesh_Mutable_Element_CBuffer(rhs.m_pBoneMesh_Mutable_Element_CBuffer)
 	, m_pBoneMesh_MutableBuffer(rhs.m_pBoneMesh_MutableBuffer)
+	, m_pEffect_CurveInfoBuffer(rhs.m_pEffect_CurveInfoBuffer)
+	, m_pEffect_CurveInfo(rhs.m_pEffect_CurveInfo)
 
 {
 	Safe_AddRef(m_pOwner);
@@ -268,6 +270,11 @@ void CComputeShader::Bind_Compute_EffectData(const EFFECT_PARTICLE_MU_ELEMENT& d
 	m_pEffect_Mutable_Element_CBuffer->Copy_Data(desc);
 }
 
+void CComputeShader::Bind_Compute_EffectCurveData(const EFFECT_CURVEINFO& desc)
+{
+	m_pEffect_CurveInfo->Copy_Data(desc);
+}
+
 void CComputeShader::Bind_Compute_Track(const CS_MU_TRACK& desc)
 {
 	m_pAnimE_Mutable_Element_CBuffer->Copy_Data(desc);
@@ -297,6 +304,12 @@ HRESULT CComputeShader::Create_ConstantBuffer()
 	{
 		m_pEffect_Mutable_Element_CBuffer = CConstant_Buffer<EFFECT_PARTICLE_MU_ELEMENT>::Create(m_pDevice, m_pDeviceContext);
 		m_pEffect_MutableBuffer->SetConstantBuffer(m_pEffect_Mutable_Element_CBuffer->Get_Buffer());
+	}
+
+	if (m_pEffect_CurveInfoBuffer = Get_ConstantBuffer("CurveInfo"))
+	{
+		m_pEffect_CurveInfo = CConstant_Buffer<EFFECT_CURVEINFO>::Create(m_pDevice, m_pDeviceContext);
+		m_pEffect_CurveInfoBuffer->SetConstantBuffer(m_pEffect_CurveInfo->Get_Buffer());
 	}
 
 	// AnimE Àü¿ë
@@ -416,6 +429,9 @@ void CComputeShader::Clear_ConstantBuffer()
 
 	Safe_Release(m_pBoneMesh_Mutable_Element_CBuffer);
 	Safe_Release(m_pBoneMesh_MutableBuffer);
+
+	Safe_Release(m_pEffect_CurveInfo);
+	Safe_Release(m_pEffect_CurveInfoBuffer);
 }
 
 void CComputeShader::Clear_StructBuffer()

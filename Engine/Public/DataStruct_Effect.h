@@ -144,6 +144,7 @@ struct TEFFECT_PartsData
 
     // ========  이펙트 UV Offset  ==========
     Vec2               _Effect_UV_Offset = { 0.f, 0.f };
+    _bool              _Use_Effect_UV_OverScroll = false;
 
     // ==============  중력 값들   ==============
     // Base Data

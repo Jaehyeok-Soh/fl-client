@@ -69,11 +69,6 @@ HRESULT CVIBuffer_Particle_Mesh::Resize_InstanceBuffer(const PARTICLE_ORIGIN_DES
 	// 인스턴스 버퍼 재할당.
 	Set_Instance_Buffer();
 
-	//if (Desc.isRandomSeed == false)
-	//	Set_ResizeBuffer_NoneUseRandomSeed();
-
-	//else
-	//	Set_ResizeBuffer_UseRandomSeed();
 	Set_ResizeBuffer_SpecificRandom();
 		
 	D3D11_SUBRESOURCE_DATA InstanceInitialData{};
@@ -92,134 +87,15 @@ void CVIBuffer_Particle_Mesh::Set_ParticleDesc(const PARTICLE_ORIGIN_DESC& Desc)
 	m_tParticleDesc = Desc;
 }
 
-//HRESULT CVIBuffer_Particle_Mesh::Set_ResizeBuffer_UseRandomSeed()
-//{
-//	EFFECT_PARTICLE_IMMU_ELEMENT* pInitialData = new EFFECT_PARTICLE_IMMU_ELEMENT[m_iInstanceCount];
-//
-//	for (size_t i = 0; i < m_iInstanceCount; i++)
-//	{
-//		_float      fScale = m_tParticleDesc.vSize.y;
-//		pInitialData[i].fSpeed = 1.f;
-//		pInitialData[i].vParticle_LifeTime = Vec2(0.f, m_tParticleDesc.vLifeTime.y);
-//		pInitialData[i].vRight = Vec4(fScale, 0.f, 0.f, 0.f);
-//		pInitialData[i].vUp = Vec4(0.f, fScale, 0.f, 0.f);
-//		pInitialData[i].vLook = Vec4(0.f, 0.f, fScale, 0.f);
-//
-//		// ======== Emission Type에 따른 위치 계산 ========
-//		SimpleMath::Vector3 vPos = m_tParticleDesc.vCenter;
-//
-//		switch (m_tParticleDesc.EmissionFlagType)
-//		{
-//		case BOX:
-//		{
-//			vPos.x += m_pGameInstance->Rand_Float(-m_tParticleDesc.vRange.x * 0.5f, m_tParticleDesc.vRange.x * 0.5f);
-//			vPos.y += m_pGameInstance->Rand_Float(-m_tParticleDesc.vRange.y * 0.5f, m_tParticleDesc.vRange.y * 0.5f);
-//			vPos.z += m_pGameInstance->Rand_Float(-m_tParticleDesc.vRange.z * 0.5f, m_tParticleDesc.vRange.z * 0.5f);
-//			break;
-//		}
-//
-//		case CIRCLE:
-//		{
-//			_float fRadius = m_tParticleDesc.vRange.x;
-//			_float fAngle = m_pGameInstance->Rand_Float(0.f, DirectX::XM_2PI);
-//
-//			vPos.x += cos(fAngle) * fRadius;
-//			vPos.y += sin(fAngle) * fRadius;
-//			break;
-//		}
-//		case SPHERE:
-//		{
-//			_float fPhi = m_pGameInstance->Rand_Float(0.f, DirectX::XM_2PI);
-//			_float fTheta = acos(m_pGameInstance->Rand_Float(-1.f, 1.f));
-//
-//			Vec3 vUnitVector;
-//			vUnitVector.x = sin(fTheta) * cos(fPhi);
-//			vUnitVector.y = sin(fTheta) * sin(fPhi);
-//			vUnitVector.z = cos(fTheta);
-//
-//			// 반지름과 부피 적용
-//			_float fRadius = m_tParticleDesc.vRange.x * m_pGameInstance->Rand_Float(0.f, 1.f);
-//			vPos += vUnitVector * fRadius;
-//			break;
-//		}
-//
-//		case CONE:
-//		{
-//			// vRange.x : 밑면 반지름으로 쓰기
-//			// vRange.y : 원뿔 각도 
-//			_float fRadius = m_tParticleDesc.vRange.x * m_pGameInstance->Rand_Float(0.f, 1.f);
-//			_float fAngle = m_pGameInstance->Rand_Float(0.f, DirectX::XM_2PI);
-//
-//			// 밑면 위치 Circle과 동일함.
-//			Vec3 vBottomPos;
-//			vBottomPos.x = cos(fAngle) * fRadius;
-//			vBottomPos.z = sin(fAngle) * fRadius;
-//			vBottomPos.y = 0.f;
-//
-//			// 원뿔 위쪽으로 퍼지는 오프셋
-//			vPos += vBottomPos;
-//			break;
-//		}
-//		}
-//
-//		pInitialData[i].vTranslation = Vec4(vPos.x, vPos.y, vPos.z, 1.f);
-//
-//		pInitialData[i].vParticle_OriginMatrix =
-//			Matrix(pInitialData[i].vRight,
-//				pInitialData[i].vUp,
-//				pInitialData[i].vLook,
-//				pInitialData[i].vTranslation);
-//	}
-//
-//	CComputeShader* pShader = m_tParticleDesc.pComputeShader;
-//	if (pShader == nullptr)
-//	{
-//		MSG_BOX("VIBUFFER_PARTICLE_POINT : Can't Bind Effect Compute Data : ERROR SHADER NULLPTR");
-//		return E_FAIL;
-//	}
-//	pShader->Resize_InputStruct(0, pInitialData, sizeof(EFFECT_PARTICLE_IMMU_ELEMENT), m_iInstanceCount);
-//	Safe_Delete_Array(pInitialData);
-//
-//	return S_OK;
-//}
-//
-//HRESULT CVIBuffer_Particle_Mesh::Set_ResizeBuffer_NoneUseRandomSeed()
-//{
-//	EFFECT_PARTICLE_IMMU_ELEMENT* pInitialData = new EFFECT_PARTICLE_IMMU_ELEMENT[m_iInstanceCount];
-//
-//	for (size_t i = 0; i < m_iInstanceCount; i++)
-//	{
-//		_float      fScale = m_tParticleDesc.vSize.y;
-//
-//		pInitialData[i].fSpeed = 1.f;
-//		pInitialData[i].vParticle_LifeTime = Vec2(0.f, m_tParticleDesc.vLifeTime.y);
-//		pInitialData[i].vRight = Vec4(fScale, 0.f, 0.f, 0.f);
-//		pInitialData[i].vUp = Vec4(0.f, fScale, 0.f, 0.f);
-//		pInitialData[i].vLook = Vec4(0.f, 0.f, fScale, 0.f);
-//		pInitialData[i].vTranslation = Vec4(0.f, 0.f, 0.f, 1.f);
-//		pInitialData[i].vParticle_OriginMatrix =
-//			Matrix(pInitialData[i].vRight,
-//				pInitialData[i].vUp,
-//				pInitialData[i].vLook,
-//				pInitialData[i].vTranslation);
-//	}
-//
-//	CComputeShader* pShader = m_tParticleDesc.pComputeShader;
-//	if (pShader == nullptr)
-//	{
-//		MSG_BOX("VIBUFFER_PARTICLE_POINT : Can't Bind Effect Compute Data : ERROR SHADER NULLPTR");
-//		return E_FAIL;
-//	}
-//	pShader->Resize_InputStruct(0, pInitialData, sizeof(EFFECT_PARTICLE_IMMU_ELEMENT), m_iInstanceCount);
-//	Safe_Delete_Array(pInitialData);
-//
-//	return S_OK;
-//}
-
 HRESULT CVIBuffer_Particle_Mesh::Set_ResizeBuffer_SpecificRandom()
 {
 	EFFECT_PARTICLE_IMMU_ELEMENT* pInitialData = new EFFECT_PARTICLE_IMMU_ELEMENT[m_iInstanceCount];
 	_uint iFlags = m_tParticleDesc.iRandomFlags; // 툴에서 받아온 비트 플래그
+
+	_float fDuration = m_tParticleDesc.fDuration;
+	if (fDuration <= 0.f) fDuration = 1.f; // 방어 코드
+
+	_float fSpawnInterval = fDuration / (_float)m_iInstanceCount;
 
 	for (size_t i = 0; i < m_iInstanceCount; i++)
 	{
@@ -231,17 +107,16 @@ HRESULT CVIBuffer_Particle_Mesh::Set_ResizeBuffer_SpecificRandom()
 			fScale = m_pGameInstance->Rand_Float(m_tParticleDesc.vSize.x, m_tParticleDesc.vSize.y);
 		}
 
-		// 2. 수명(LifeTime) 결정
 		_float fMaxLifeTime = m_tParticleDesc.vLifeTime.y;
 		if (iFlags & DTO::E_RANDOM_FLAG::RAND_LIFE)
-		{
 			fMaxLifeTime = m_pGameInstance->Rand_Float(m_tParticleDesc.vLifeTime.x, m_tParticleDesc.vLifeTime.y);
-		}
 
-		// 매쉬도 동일하게 수명 하한선 보정 (최소 1초)
-		if (fMaxLifeTime < 1.0f) fMaxLifeTime = 1.0f;
+		if (fMaxLifeTime < 1.0f)
+			fMaxLifeTime = 1.0f;
 
-		pInitialData[i].vParticle_LifeTime = Vec2(0.f, fMaxLifeTime);
+		_float fInitialDelay = i * fSpawnInterval;
+		pInitialData[i].vParticle_LifeTime = Vec2(-fInitialDelay, fMaxLifeTime);
+
 		pInitialData[i].fSpeed = 1.f;
 		pInitialData[i].vRight = Vec4(fScale, 0.f, 0.f, 0.f);
 		pInitialData[i].vUp = Vec4(0.f, fScale, 0.f, 0.f);

@@ -144,6 +144,7 @@ void to_json(json& j, const TEFFECT_PartsData& data)
         {"TargetRotation", {{"x", data._Effect_TargetRotation.x}, {"y", data._Effect_TargetRotation.y}, {"z", data._Effect_TargetRotation.z}}},
         {"UseStartRotation", data._bUseStartRotation},
         {"UseRotationCurve", data._bUseRotationCurve},
+        {"_Use_Effect_UV_OverScroll", data._Use_Effect_UV_OverScroll},
         {"SeparateAxes", data._bSeparateAxes},
 
         // --- Flags ---
@@ -286,6 +287,7 @@ void from_json(const json& j, TEFFECT_PartsData& data)
     }
 
     // 툴 전용 스크롤 체크박스 상태 로드
+    j.at("_Use_Effect_UV_OverScroll").get_to(data._Use_Effect_UV_OverScroll);
     if (j.contains("Tool_ScrollFlags")) {
         auto& tf = j.at("Tool_ScrollFlags");
         tf.at("Diffuse").get_to(data._Effect_Tool_UseScroll_Diffuse);

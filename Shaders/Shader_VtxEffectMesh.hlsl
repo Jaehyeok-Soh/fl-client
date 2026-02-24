@@ -343,6 +343,9 @@ VS_OUT_INST_MESH_PARTICLE
 }
 float4 PS_DEFAULT(VS_OUT_INST_MESH_PARTICLE In) : SV_Target0
 {
+    if (In.vLifeTime.x < 0.0f)
+        discard;
+    
     // =======              노이즈 계산                     ===========
     
     float2 noiseUV = In.vUV;
@@ -419,8 +422,10 @@ float4 PS_DEFAULT(VS_OUT_INST_MESH_PARTICLE In) : SV_Target0
     return float4(DiffuseSample.rgb + g_Effect.g_EffectColor.rgb, finalAlpha);
 }
 
-float4 PS_ARCADO(VS_OUT_INST_MESH_PARTICLE In) : SV_Target0
+float4 PS_SPRITEMESH(VS_OUT_INST_MESH_PARTICLE In) : SV_Target0
 {
+    if (In.vLifeTime.x < 0.0f)
+        discard;
    // =======              노이즈 텍스처 샘플링             ===========
     float2 finalUV = In.vUV;
     float2 noiseUV = In.vUV;
@@ -438,19 +443,46 @@ float4 PS_ARCADO(VS_OUT_INST_MESH_PARTICLE In) : SV_Target0
     // 생명 주기
     float LifeRatio = saturate(In.vLifeTime.x / In.vLifeTime.y);
     
-    float2 scrolledUV = In.vUV + g_Effect.g_UVOffset;
-    scrolledUV += g_Effect.g_ScrollOffset;
     
     if (Has(g_Effect.g_TextureFlags, DEFAULTTEXTURE))
     {
-        DiffuseSample = g_DefaultTextures[DEFAULTTEXTURE].Sample(LinearClampSampler, scrolledUV);
-    }
+        if (HasSprite())
+        {
+            //float2 RotatedBaseUV = Get90DegreeRotatedUV(In.vUV, g_Effect.g_TextureFlags, DEFAULTTEXTURE);
 
-    float dissolveNoise = NoiseTextureSample(Get90DegreeRotatedUV(In.vUV, g_Effect.g_TextureFlags, NOISETEXTURE)).r;
+            float2 cellsize = float2(1.0f / g_Effect.g_SpriteCol, 1.0f / g_Effect.g_SpriteRow);
+          
+            float2 SpriteUV = In.vUV * cellsize;
+            
+            // 4. 인덱스 계산
+            uint xIndex = g_Effect.g_CurSpriteIndex % g_Effect.g_SpriteCol;
+            uint yIndex = g_Effect.g_CurSpriteIndex / g_Effect.g_SpriteCol;
+        
+            SpriteUV.x += (float) xIndex * cellsize.x;
+            SpriteUV.y += (float) yIndex * cellsize.y;
+
+            DiffuseSample = DefaultTextureSample(SpriteUV);
+        }
+        
+        else
+            DiffuseSample = g_DefaultTextures[DEFAULTTEXTURE].Sample(LinearClampSampler, In.vUV);
+    }
+    else
+        DiffuseSample = float4(1.f, 1.f, 1.f, 1.f);
+
+    float dissolveNoise = float(1.f);
+    
+    if (Has(g_Effect.g_TextureFlags, NOISETEXTURE))
+    {
+        dissolveNoise = NoiseTextureSample(Get90DegreeRotatedUV(In.vUV, g_Effect.g_TextureFlags, NOISETEXTURE)).r;
+    }
+    else
+        dissolveNoise = float(1.f);
+    
     float dissolveMask = step(LifeRatio, dissolveNoise);
     
-    // 3. 최종 알파 결합
-    float finalAlpha = DiffuseSample.a * dissolveMask;
+    // 최종 알파 결합
+    float finalAlpha = DiffuseSample.a * dissolveMask * g_Effect.g_EffectColor.a;
     
     // 수명에 따른 전체 투명도 조절 (원하신다면 유지)
     finalAlpha *= (1.0f - 3* LifeRatio);
@@ -469,6 +501,9 @@ float4 PS_ARCADO(VS_OUT_INST_MESH_PARTICLE In) : SV_Target0
 
 float4 PS_UnityConvert(VS_OUT_INST_MESH_PARTICLE In) : SV_Target0
 {
+    if (In.vLifeTime.x < 0.0f)
+        discard;
+    
     float4 DissolveSample = { 0.f, 0.f, 0.f, 0.f };
     float4 GradationSample = { 0.f, 0.f, 0.f, 0.f };
     float4 DefaultSample = { 0.f, 0.f, 0.f, 0.f };
@@ -541,6 +576,9 @@ float4 PS_UnityConvert(VS_OUT_INST_MESH_PARTICLE In) : SV_Target0
 
 float4 PS_DISTOTION(VS_OUT_INST_MESH_PARTICLE In) : SV_Target0
 {
+    if (In.vLifeTime.x < 0.0f)
+        discard;
+    
     // 1. 화면 좌표계(ScreenUV) 계산 - 현재 픽셀의 정확한 위치
     float2 ScreenUV = In.vProjPos.xy / In.vProjPos.w;
     ScreenUV.x = ScreenUV.x * 0.5f + 0.5f;
@@ -617,6 +655,9 @@ float4 PS_DISTOTION(VS_OUT_INST_MESH_PARTICLE In) : SV_Target0
 
 float4 PS_SWORDEFFECT(VS_OUT_INST_MESH_PARTICLE In) : SV_Target0
 {
+    if (In.vLifeTime.x < 0.0f)
+        discard;
+    
     float2 finalUV = In.vUV;
     float4 DiffuseSample = { 1.f, 1.f, 1.f, 1.f };
     
@@ -692,14 +733,14 @@ technique11 T0
         SetPixelShader(CompileShader(ps_5_0, PS_DEFAULT()));
     }
 
-    pass BULLET_EFFECT
+    pass SPRITE_EFFECT
     {
         SetRasterizerState(RS_Default_CullNone);
         SetDepthStencilState(DS_ReadOnly, 0);
         SetBlendState(BS_AlphaBlend, float4(0.f, 0.f, 0.f, 0.f), 0xffffffff);
         SetVertexShader(CompileShader(vs_5_0, VS_DEFAULT()));
         GeometryShader = NULL;
-        SetPixelShader(CompileShader(ps_5_0, PS_ARCADO()));
+        SetPixelShader(CompileShader(ps_5_0, PS_SPRITEMESH()));
     }
     
     pass TRAIL_EFFECT

@@ -10,6 +10,7 @@ class CTexture;
 class CShader;
 class CComputeShader;
 class CTransform;
+class StructuredBuffer;
 
 NS_END
 
@@ -64,11 +65,12 @@ public:
 private:
     //  ==========  Shader Binding Setting  =============
     HRESULT Bind_ShaderResource();
+    HRESULT Bind_Curve_To_GPU();    // GPU에게 연산시키기.
 private:
     // ====== 계산함수 ====== 
     void TimeCalculate(const _float fDT);
-    float Sample_GravityCurve(const vector<DTO::Gravity_CurveKey>& vecVurve, float fLifeRatio);
-    void Update_Gravity_Force(float fLifeRatio); // 중력 계산하기.
+    //float Sample_GravityCurve(const vector<DTO::Gravity_CurveKey>& vecVurve, float fLifeRatio);   // 이제 GPU에서 계산함.
+    void Update_Gravity_Force(); // 중력 계산하기.
     float Sample_RotationCurve(const vector<DTO::Rotation_CurveKey>& vecCurve, float fLifeRatio);
     void Update_Rotation_Lerp(float fDT, float fRatio);
     void Update_UV_Scroll_Curve(float fRatio);
@@ -103,6 +105,9 @@ private:
 
     //  ========== 현재 이펙트 sprite Number  ===========
 private:
+    ID3DX11EffectShaderResourceVariable* pSRV = nullptr;        // GPU 중력 계산 보낼 것.
+   StructuredBuffer*              pSB = nullptr;         
+
     _bool              m_bIsTool = { false };
 
 private:

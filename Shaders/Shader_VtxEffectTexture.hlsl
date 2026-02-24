@@ -343,95 +343,90 @@ VS_OUT_POS_GS_PARTICLE VS_Texture(VS_IN_POS_GS_PARTICLE In)
     return Out;
 }
 
+
 [maxvertexcount(6)]
 void GS_Texture(point VS_OUT_POS_GS_PARTICLE In[1], inout TriangleStream<GS_OUT_EFFECT_PARTICLE> OutStream)
 {
     GS_OUT_EFFECT_PARTICLE Out[4];
     
-    // =========        빌보드 계산          ==============
     float3 vRight = float3(1.f, 0.f, 0.f);
     float3 vUp = float3(0.f, 1.f, 0.f);
-    matrix matVP = mul(V, P);
-    
-    if (HasDirBillboard())
+
+    // 1. 빌보드 플래그가 켜진 경우 (카메라 응시)
+    if (HasBillboard())
     {
-        matrix matInst = INSTANCE_OUTPUT[In[0].vInstID].matTransform;
-        float3 vLook = normalize(matInst[2].xyz); // row_major 기준 Z축
-        
-        float3 vCamDir = normalize(CameraPosition() - In[0].vPosition.xyz);
-        vRight = normalize(cross(vCamDir, vLook)) * In[0].vPSize.x;
-        
-        vUp = vLook * In[0].vPSize.z;
-    }
-    else if (HasBillboard())
-    {
+        // 카메라와의 방향 벡터(Look) 계산
         float3 vLook = normalize(CameraPosition() - In[0].vPosition.xyz);
-        vRight = normalize(cross(float3(0.f, 1.f, 0.f), vLook)) * In[0].vPSize.x;
-        vUp = normalize(cross(vLook, vRight)) * In[0].vPSize.y;
+        
+        // 카메라의 Look과 월드 Up(0,1,0)을 외적하여 Right 축 생성
+        vRight = normalize(cross(float3(0.f, 1.f, 0.f), vLook));
+        
+        // 생성된 Right와 Look을 외적하여 수직 Up 축 생성
+        vUp = normalize(cross(vLook, vRight));
     }
+    // 2. 빌보드 플래그가 꺼진 경우 (월드/인스턴스 행렬 회전 반영)
     else
     {
-        vRight = float3(1.f, 0.f, 0.f) * In[0].vPSize.x;
-        vUp = float3(0.f, 1.f, 0.f) * In[0].vPSize.y;
+        matrix matInst = INSTANCE_OUTPUT[In[0].vInstID].matTransform;
+        matrix matWorld = mul(matInst, W);
+        
+        // 행렬에서 월드 기준 X축(0번행)과 Y축(1번행) 추출
+        vRight = normalize(matWorld[0].xyz);
+        vUp = normalize(matWorld[1].xyz);
     }
-    
-    float3 vFinalPos[4];
-    float2 vFinalUV[4];
-    float2 vFinalSpriteUV[4];
-    
-     // ========         정점 4개 생성        =============
-    vFinalPos[0] = In[0].vPosition.xyz - vRight + vUp; // 좌상 
-    vFinalPos[1] = In[0].vPosition.xyz + vRight + vUp; // 우상 
-    vFinalPos[2] = In[0].vPosition.xyz - vRight - vUp; // 좌하 
-    vFinalPos[3] = In[0].vPosition.xyz + vRight - vUp; // 우하 
 
-    vFinalUV[0] = float2(0, 0);
-    vFinalUV[1] = float2(1, 0);
-    vFinalUV[2] = float2(0, 1);
-    vFinalUV[3] = float2(1, 1);
+    // 3. 최종 크기 적용
+    vRight *= In[0].vPSize.x;
+    vUp *= In[0].vPSize.y;
     
+    matrix matVP = mul(V, P);
     
+    // 4. 정점 위치 계산
+    float3 vFinalPos[4];
+    vFinalPos[0] = In[0].vPosition.xyz - vRight + vUp; // 좌상
+    vFinalPos[1] = In[0].vPosition.xyz + vRight + vUp; // 우상
+    vFinalPos[2] = In[0].vPosition.xyz - vRight - vUp; // 좌하
+    vFinalPos[3] = In[0].vPosition.xyz + vRight - vUp; // 우하
+
+    // 5. UV 설정 (Sprite 연산 포함)
+    float2 vFinalUV[4] = { float2(0, 0), float2(1, 0), float2(0, 1), float2(1, 1) };
+    float2 vFinalSpriteUV[4];
+
     if (HasSprite())
     {
         float2 vUVSize = float2(1.0f / g_Effect.g_SpriteCol, 1.0f / g_Effect.g_SpriteRow);
         uint curCol = g_Effect.g_CurSpriteIndex % g_Effect.g_SpriteCol;
         uint curRow = g_Effect.g_CurSpriteIndex / g_Effect.g_SpriteCol;
-    
         float2 vStartUV = float2(curCol * vUVSize.x, curRow * vUVSize.y);
         
-        vFinalSpriteUV[0] = vStartUV; // 좌상
-        vFinalSpriteUV[1] = vStartUV + float2(vUVSize.x, 0); // 우상
-        vFinalSpriteUV[2] = vStartUV + float2(0, vUVSize.y); // 좌하
-        vFinalSpriteUV[3] = vStartUV + vUVSize; // 우하
-
+        vFinalSpriteUV[0] = vStartUV;
+        vFinalSpriteUV[1] = vStartUV + float2(vUVSize.x, 0);
+        vFinalSpriteUV[2] = vStartUV + float2(0, vUVSize.y);
+        vFinalSpriteUV[3] = vStartUV + vUVSize;
     }
     else
     {
-        vFinalSpriteUV[0] = vFinalUV[0];
-        vFinalSpriteUV[1] = vFinalUV[1];
-        vFinalSpriteUV[2] = vFinalUV[2];
-        vFinalSpriteUV[3] = vFinalUV[3];
+        for (int k = 0; k < 4; ++k)
+            vFinalSpriteUV[k] = vFinalUV[k];
     }
-    
+
+    // 6. 스트림 출력
     for (int i = 0; i < 4; ++i)
     {
         Out[i].vPosition = mul(float4(vFinalPos[i], 1.f), matVP);
         Out[i].vUV = vFinalUV[i];
         Out[i].vSpriteUV = vFinalSpriteUV[i];
         Out[i].vLifeTime = In[0].vLifeTime;
+        OutStream.Append(Out[i]);
     }
-    
-
-    // 삼각형 스트립 출력 (0-1-2, 0-2-3)
-    OutStream.Append(Out[0]);
-    OutStream.Append(Out[1]);
-    OutStream.Append(Out[2]);
-    OutStream.Append(Out[3]);
     OutStream.RestartStrip();
 }
 
 float4 PS_Texture(GS_OUT_EFFECT_PARTICLE In) : SV_TARGET0
 {
+    if (In.vLifeTime.x < 0.0f)
+        discard;
+    
     float2 noiseUV = In.vUV + g_Effect.g_ScrollOffset;
     float4 noiseSample = { 1.f, 1.f, 1.f, 1.f };
     float4 DiffuseSample = { 1.f, 1.f, 1.f, 1.f };

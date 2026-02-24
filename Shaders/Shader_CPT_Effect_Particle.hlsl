@@ -61,19 +61,61 @@ struct MU_ELEMENT
     float               fPadding3;
 };
 
+struct CurveKey
+{
+    float fTimeKey; // 0.0 ~ 1.0
+    float fValue;   // 해당 시간의 값
+};
 
 cbuffer MU_ParticleUpdate
 {
     MU_ELEMENT g_InputB;
 };
 
+cbuffer CurveInfo
+{
+    uint g_iGravityKeyCount;
+    float3 g_vPadding;
+};
 
+StructuredBuffer<CurveKey> g_GravityCurve;
 StructuredBuffer<IMMU_ELEMENT> IMMU_EFFECT_PARTICLE;
 RWStructuredBuffer<VTXPARTICLE> INSTANCE_OUTPUT;
 StructuredBuffer<VTXPARTICLE> INSTANCE_RESULT_SRV;
 
-// Read Write가 둘다 된다고 해서 RWStructuredBuffer
+// 중력을 전체적으로 관리하니까 난리가 나서 개별적으로 뺀다.
+float SampleCurve(StructuredBuffer<CurveKey> curve, uint keyCount, float fRatio)
+{
+    // 키가 없으면 기본값 1.0 반환
+    if (keyCount == 0)
+        return 1.0f;
+    
+    // 키가 하나면 그 값 반환
+    if (keyCount == 1)
+        return curve[0].fValue;
+    
+    // 시간이 0보다 작거나 1보다 크면 처음/끝값 반환
+    if (fRatio <= curve[0].fTimeKey)
+        return curve[0].fValue;
+    
+    if (fRatio >= curve[keyCount - 1].fTimeKey)
+        return curve[keyCount - 1].fValue;
 
+    // 현재 fRatio가 위치한 인덱스 찾기 (선형 탐색)
+    for (uint i = 0; i < keyCount - 1; ++i)
+    {
+        if (fRatio >= curve[i].fTimeKey && fRatio <= curve[i + 1].fTimeKey)
+        {
+            // 두 키 사이의 비율 계산 (t)
+            float t = (fRatio - curve[i].fTimeKey) / (curve[i + 1].fTimeKey - curve[i].fTimeKey);
+            // 선형 보간
+            return lerp(curve[i].fValue, curve[i + 1].fValue, t);
+        }
+    }
+    return curve[keyCount - 1].fValue;
+}
+
+// Read Write가 둘다 된다고 해서 RWStructuredBuffer
 // Warp/Wavefront는 32명씩 묶여서 연산을 한다.
 [numthreads(32, 1, 1)]
 void CS_Main(int3 dtid : SV_DispatchThreadID)
@@ -85,24 +127,40 @@ void CS_Main(int3 dtid : SV_DispatchThreadID)
     if (g_InputB.iTimeFlag == RESET || g_InputB.iTimeFlag == STOP)
     {
         currentData.matTransform = input.vOriginMatrix;
-        currentData.vLifeTime.x = 0.f;
+        currentData.vLifeTime.x = input.vLifeTime.x;
         currentData.vLifeTime.y = input.vLifeTime.y;
         INSTANCE_OUTPUT[dtid.x] = currentData;
         return;
     }
-
+  
     // 수명 업데이트 (누적)
     currentData.vLifeTime.x += g_InputB.fTimeDelta;
     
-    // currentData.vLifeTime.y는 툴에서 준 개별 파티클의 최대 수명입니다.
-    if (g_InputB.bIsLoop && currentData.vLifeTime.x >= currentData.vLifeTime.y)
+    // 개별 파티클의 시간 비율 (0.0 ~ 1.0) 
+    float fRatio = saturate(currentData.vLifeTime.x / currentData.vLifeTime.y);
+    
+    if (currentData.vLifeTime.x < 0.0f)
     {
-        currentData.vLifeTime.x = 0.0f;
-        currentData.matTransform = input.vOriginMatrix;
-        
+        currentData.matTransform._41_42_43 = float3(9999.f, 9999.f, 9999.f);
         INSTANCE_OUTPUT[dtid.x] = currentData;
         return;
     }
+    
+    // currentData.vLifeTime.y는 툴에서 준 개별 파티클의 최대 수명
+    if (g_InputB.bIsLoop && currentData.vLifeTime.x >= currentData.vLifeTime.y)
+    {
+        currentData.vLifeTime.x = 0.0f; // 리셋 후에는 대기 없이 0부터 시작
+        currentData.matTransform = input.vOriginMatrix;
+        INSTANCE_OUTPUT[dtid.x] = currentData;
+        return;
+    }
+    
+    // 중력 커브 샘플링
+    float fGravityCurveValue = SampleCurve(g_GravityCurve, g_iGravityKeyCount, fRatio);
+    
+    // 최종 중력 강도 = (기본 중력 방향/세기) * (커브에서 뽑은 현재 시간의 비율값)
+    float3 vAppliedGravity = g_InputB.vFinalGravity * fGravityCurveValue;
+    
 
     // 이동 로직 (수명이 유효할 때만 수행)
     if (g_InputB.iMoveState == DROP)
@@ -112,46 +170,36 @@ void CS_Main(int3 dtid : SV_DispatchThreadID)
     
     if (g_InputB.iMoveState == GATHER)
     {
-        // 목표 지점(중앙) 및 현재 위치 파악
         float3 vTargetPos = g_InputB.vPivot;
         float3 vCurPos = currentData.matTransform._41_42_43;
-
-        // 남은 시간 계산 (수명 - 경과시간)
         float fRemainingTime = max(currentData.vLifeTime.y - currentData.vLifeTime.x, 0.01f);
-
-        // 목적지까지 남은 거리 벡터
         float3 vToTarget = vTargetPos - vCurPos;
-
-        // 남은 시간 동안 중앙에 도착하기 위한 속도 계산 (v = s / t)
         float3 vRequiredVelocity = vToTarget / fRemainingTime;
-
-        // 위치 업데이트
         currentData.matTransform._41_42_43 += vRequiredVelocity * g_InputB.fTimeDelta;
-        
-        // 팁: 중앙에 거의 다 왔을 때(수명 90% 이상) 작아지게 하고 싶다면 
-        // Vertex Shader에서 LifeRatio를 이용해 스케일을 줄여주면 더 예쁩니다.
     }
 
     // FOUNTAIN: 분수처럼 솟구쳤다가 중력에 의해 낙하 (포물선)
     else if (g_InputB.iMoveState == FOUNTAIN)
     {
-       // [수정] vFinalGravity의 y값(혹은 길이)을 사용하여 수직 속도 계산
-    // 만약 vFinalGravity가 (0, -9.8, 0)이라면 절대값이나 .y를 사용해야 합니다.
-        float fGravityStrength = length(g_InputB.vFinalGravity);
-    
-        float fVerticalVelocity = g_InputB.fStartSpeed - (fGravityStrength * currentData.vLifeTime.x);
-    
-        currentData.matTransform._42 += fVerticalVelocity * g_InputB.fTimeDelta;
-    
-    // 옆으로 퍼지는 효과
+        float3 vStartVelocity = float3(0.f, g_InputB.fStartSpeed, 0.f);
+        
+        float3 vCurrentVelocity = vStartVelocity + (vAppliedGravity * currentData.vLifeTime.x);
+       
+        currentData.matTransform._41_42_43 += vCurrentVelocity * g_InputB.fTimeDelta;
+        
         float3 vSideDir = normalize(input.vTranslation.xyz - g_InputB.vPivot);
-        currentData.matTransform._41_43 += vSideDir.xz * g_InputB.fTimeDelta * (g_InputB.fStartSpeed * 0.3f);
+        vSideDir.y = 0.f;
+        currentData.matTransform._41_43 += vSideDir.xz * (g_InputB.fStartSpeed * 0.3f) * g_InputB.fTimeDelta;
     }
     
     else if (g_InputB.iMoveState == SPREAD)
     {
+       // 초기 발사 속도 방향
         float3 vDir = normalize(input.vTranslation.xyz - g_InputB.vPivot);
-        currentData.matTransform._41_42_43 += vDir * g_InputB.fTimeDelta * g_InputB.fStartSpeed;
+        float3 vStartVelocity = vDir * g_InputB.fStartSpeed;
+        float3 vCurrentVelocity = vStartVelocity + (vAppliedGravity * currentData.vLifeTime.x);
+        
+        currentData.matTransform._41_42_43 += vCurrentVelocity * g_InputB.fTimeDelta;
     }
 
     // 최종 결과 저장

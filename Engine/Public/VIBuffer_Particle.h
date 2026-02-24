@@ -16,6 +16,7 @@ class ENGINE_DLL CVIBuffer_Particle abstract : public CVIBuffer
 public:
 	typedef struct tagVIBuffer_ParticleOriginDesc : public Super::tagVIBufferOriginDesc
 	{
+		_float fDuration = { 1.f };
 		_uint iInstnaceCount = { 0 };
 		Vec3 vScale = { 0.f, 0.f, 0.f};
 		Vec2 vSize = { 0.f, 0.f };
