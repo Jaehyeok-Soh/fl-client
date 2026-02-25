@@ -31,13 +31,13 @@ HRESULT CGun::Initialize(void* pArg)
 
 	GUN_DESC* pDesc = static_cast<GUN_DESC*>(pArg);
 
-	m_MAllBullet = { pDesc->fAllBullet,pDesc->fAllBullet };
+	m_MTotalBullet = { pDesc->fAllBullet,pDesc->fAllBullet };
 	m_MCurBullet = { pDesc->fCurBullet ,pDesc->fCurBullet };
 
-	m_tFireTimeCounter.bCountTime = false;
-	m_tFireTimeCounter.bTimeReset = true;
-	m_tFireTimeCounter.fMaxTime = pDesc->fAttackCoolTime;
-	m_tFireTimeCounter.fTimeAcc = pDesc->fAttackCoolTime; // 처음에 바로 쏠 수 있도록 하기 위함
+	m_tFireTimeCounter.bCountTime	= false;
+	m_tFireTimeCounter.bTimeReset	= true;
+	m_tFireTimeCounter.fMaxTime		= pDesc->fAttackCoolTime;
+	m_tFireTimeCounter.fTimeAcc		= 0.f; // 처음에 바로 쏠 수 있도록 하기 위함
 
 	return S_OK;
 }
@@ -129,6 +129,29 @@ void CGun::Change_GunState(_uint iState)
 	State_Start(m_eGunState);
 }
 
+void CGun::Reload_Bullet()
+{
+	// 한번에 재장전 할 양이 충분하다면
+	if (m_MTotalBullet.x >= m_MCurBullet.y)
+	{
+		// Total 값 빼주고
+		m_MTotalBullet.x -= m_MCurBullet.y;
+
+		// Cur 값 더해줌
+		m_MCurBullet.x = m_MTotalBullet.y;
+	}
+
+	// 충분하지 않다면
+	else
+	{
+		// Cur값 바로 total.x 값으로 셋팅
+		m_MCurBullet.x = m_MTotalBullet.x;
+
+		// total.x == 0
+		m_MTotalBullet.x = 0.f;
+	}
+}
+
 _bool CGun::Get_CanFire()
 {
 	return (m_MCurBullet.x > 0.f);
@@ -136,7 +159,7 @@ _bool CGun::Get_CanFire()
 
 _bool CGun::Get_CanReleod()
 {
-	return (m_MAllBullet.x > 0.f);
+	return (m_MTotalBullet.x > 0.f);
 }
 
 CGun* CGun::Create(ID3D11Device* pDevice, ID3D11DeviceContext* pDeviceContext)

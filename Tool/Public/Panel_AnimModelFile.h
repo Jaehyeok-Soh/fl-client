@@ -56,6 +56,8 @@ private:
 	void FileWindow();
 	void ButtonsWindow();
 
+	void DrawPreTransformMatrix(string id, ANIM_SRT& pretransform);
+
 	// modal
 private:
 	LOAD_OPTIONS m_tLoadOptions; // 모달 상태 변수
@@ -99,6 +101,8 @@ private:
 	_int m_iSocketBoneIdx	= { -1 };
 	_bool m_bCombine		= { true };
 	_bool m_bWeaponStatic	= { true };
+	ANIM_SRT				m_tAnimSrt{};
+	ANIM_SRT				m_tPartSrt{};
 
 public:
 	static			CPanel_AnimModelFile* Create(const _char* pLabel, CLevel* pOwner, ID3D11Device* pDevice, ID3D11DeviceContext* pDeviceContext);

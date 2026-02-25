@@ -36,8 +36,12 @@ private:
 
 	_float m_iAnimationSpeed = { 1.f };
 
+	CGameObject* pObj = { nullptr };
+
 	// render
 private:
+	void Render_ObjInfo();
+
 	void Render_RootMotionInfo();
 
 	void Render_AnimationInfo();
