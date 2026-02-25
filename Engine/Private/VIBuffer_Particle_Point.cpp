@@ -126,26 +126,42 @@ HRESULT CVIBuffer_Particle_Point::Set_ResizeBuffer_SpecificRandom()
 	EFFECT_PARTICLE_IMMU_ELEMENT* pInitialData = new EFFECT_PARTICLE_IMMU_ELEMENT[m_iInstanceCount];
 	_uint iFlags = m_tParticleDesc.iRandomFlags;
 
+	_float fDuration = m_tParticleDesc.fDuration;
+	if (fDuration <= 0.f) fDuration = 1.f; // 방어 코드
+
+	// 생성 간격 계산
+	_float fSpawnInterval = fDuration / (_float)m_iInstanceCount;
+	_float fSpeed = 1.f;
+
 	for (size_t i = 0; i < m_iInstanceCount; i++)
 	{
-		_float      fScale = m_tParticleDesc.vSize.x * 0.5f;
+		_float fScale = m_tParticleDesc.vSize.x * 0.5f;
 
 		if (iFlags & DTO::E_RANDOM_FLAG::RAND_SIZE)
-		{
 			fScale = m_pGameInstance->Rand_Float(m_tParticleDesc.vSize.x, m_tParticleDesc.vSize.y) * 0.5f;
-		}
 
-		_float fMaxLifeTime = m_tParticleDesc.vLifeTime.y; // 지정된 Max 값
+		_float fMaxLifeTime = m_tParticleDesc.vLifeTime.y;
 		if (iFlags & DTO::E_RANDOM_FLAG::RAND_LIFE)
-		{
 			fMaxLifeTime = m_pGameInstance->Rand_Float(m_tParticleDesc.vLifeTime.x, m_tParticleDesc.vLifeTime.y);
+
+		if (iFlags & DTO::E_RANDOM_FLAG::RAND_SPEED)
+			fSpeed = m_pGameInstance->Rand_Float(0.1f, 1.f);
+
+		if (fMaxLifeTime < 1.0f) 
+			fMaxLifeTime = 1.0f;
+
+
+		if (m_tParticleDesc.UseBurst)
+		{
+			pInitialData[i].vParticle_LifeTime = Vec2(m_tParticleDesc.vLifeTime.x, fMaxLifeTime);
+		}
+		else
+		{
+			_float fInitialDelay = i * fSpawnInterval;
+			pInitialData[i].vParticle_LifeTime = Vec2(-fInitialDelay, fMaxLifeTime);
 		}
 
-		// 적어도 1초
-		if (fMaxLifeTime < 1.0f) fMaxLifeTime = 1.0f;
-
-		pInitialData[i].fSpeed = 1.f;
-		pInitialData[i].vParticle_LifeTime = Vec2(0.f, fMaxLifeTime);
+		pInitialData[i].fSpeed = fSpeed;
 		pInitialData[i].vRight = Vec4(fScale, 0.f, 0.f, 0.f);
 		pInitialData[i].vUp = Vec4(0.f, fScale, 0.f, 0.f);
 		pInitialData[i].vLook = Vec4(0.f, 0.f, fScale, 0.f);

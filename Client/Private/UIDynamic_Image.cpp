@@ -32,10 +32,7 @@ HRESULT CUIDynamic_Image::Initialize(void* pArg)
 {
 	DIMAGE_DESC* pDesc = static_cast<DIMAGE_DESC*>(pArg);
 	m_eDImageSubClass = pDesc->eSubClassType;
-
 	if (FAILED(Super::Initialize(pArg)))
-		return E_FAIL;
-	if (FAILED(Ready_Components(pDesc)))
 		return E_FAIL;
 	return S_OK;
 }
@@ -70,24 +67,20 @@ void CUIDynamic_Image::Ready_Before_Render(const _float fTimeDelta)
 
 HRESULT CUIDynamic_Image::Render()
 {
-	if (!m_isVisible)
-		return S_OK;
-
 	if (FAILED(Super::Render()))
-		return E_FAIL;
-
-	if (FAILED(Bind_ShaderResources()))
 		return E_FAIL;
 	return S_OK;
 }
 
 HRESULT CUIDynamic_Image::Ready_Components(DIMAGE_DESC* pDesc)
 {
+	Super::Ready_Components(pDesc);
 	return S_OK;
 }
 
 HRESULT CUIDynamic_Image::Bind_ShaderResources()
 {
+	Super::Bind_ShaderResources();
 	return S_OK;
 }
 

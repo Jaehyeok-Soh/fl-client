@@ -209,6 +209,25 @@ HRESULT CLoader::Loading_For_Animation()
 	if (pMapDataLoader == nullptr) return E_FAIL;
 	if (FAILED(pMapDataLoader->Make_Prototype(ENUM_TO_UINT(ELevelType::ANIMATION), L"../../Resources/Models/Effect_FBX/blade/Model/")))
 		return E_FAIL;
+	if (FAILED(pMapDataLoader->Make_Prototype(ENUM_TO_UINT(ELevelType::ANIMATION), L"../../Resources/Models/Effect_FBX/Circle/Model/")))
+		return E_FAIL;
+	if (FAILED(pMapDataLoader->Make_Prototype(ENUM_TO_UINT(ELevelType::ANIMATION), L"../../Resources/Models/Effect_FBX/Cone/Model/")))
+		return E_FAIL;
+	if (FAILED(pMapDataLoader->Make_Prototype(ENUM_TO_UINT(ELevelType::ANIMATION), L"../../Resources/Models/Effect_FBX/Object_Chain/Model/")))
+		return E_FAIL;
+	if (FAILED(pMapDataLoader->Make_Prototype(ENUM_TO_UINT(ELevelType::ANIMATION), L"../../Resources/Models/Effect_FBX/Object_Female_Character/Model/")))
+		return E_FAIL;
+	if (FAILED(pMapDataLoader->Make_Prototype(ENUM_TO_UINT(ELevelType::ANIMATION), L"../../Resources/Models/Effect_FBX/Rock/Model/")))
+		return E_FAIL;
+	if (FAILED(pMapDataLoader->Make_Prototype(ENUM_TO_UINT(ELevelType::ANIMATION), L"../../Resources/Models/Effect_FBX/Tornado/Model/")))
+		return E_FAIL;
+	if (FAILED(pMapDataLoader->Make_Prototype(ENUM_TO_UINT(ELevelType::ANIMATION), L"../../Resources/Models/Effect_FBX/Lightning/Model/")))
+		return E_FAIL;
+	if (FAILED(pMapDataLoader->Make_Prototype(ENUM_TO_UINT(ELevelType::ANIMATION), L"../../Resources/Models/Effect_FBX/Twist/Model/")))
+		return E_FAIL;
+	if (FAILED(pMapDataLoader->Make_Prototype(ENUM_TO_UINT(ELevelType::ANIMATION), L"../../Resources/Models/Effect_FBX/Plane/Model/")))
+		return E_FAIL;
+
 	if (FAILED(pMapDataLoader->Make_Prototype(ENUM_TO_UINT(ELevelType::ANIMATION), basicBoxPath)))
 		return E_FAIL;
 	Safe_Release(pMapDataLoader);
@@ -234,6 +253,7 @@ HRESULT CLoader::Loading_For_Effect()
 
 	m_pGameInstance->Add_Prototype(ENUM_TO_UINT(ELevelType::EFFECT), L"Prototype_Component_VIBuffer_Particle_Point", CVIBuffer_Particle_Point::Create(m_pDevice, m_pDeviceContext, &ExploDesc));
 	m_pGameInstance->Add_Prototype(ENUM_TO_UINT(ELevelType::EFFECT), L"Prototype_Component_VIBuffer_Particle_Mesh", CVIBuffer_Particle_Mesh::Create(m_pDevice, m_pDeviceContext, &ExploDesc));
+	m_pGameInstance->Add_Prototype(ENUM_TO_UINT(ELevelType::EFFECT), L"Prototype_GameObject_MapObject", CMapObject::Create(EToolObjectType::MAPOBJECT, m_pDevice, m_pDeviceContext));
 
 	//====================
 	// Resource Material
@@ -293,6 +313,25 @@ HRESULT CLoader::Loading_For_Effect()
 	if (pMapDataLoader == nullptr) return E_FAIL;
 	if (FAILED(pMapDataLoader->Make_Prototype(ENUM_TO_UINT(ELevelType::EFFECT), L"../../Resources/Models/Effect_FBX/blade/Model/")))
 		return E_FAIL;
+	if (FAILED(pMapDataLoader->Make_Prototype(ENUM_TO_UINT(ELevelType::EFFECT), L"../../Resources/Models/Effect_FBX/Circle/Model/")))
+		return E_FAIL;
+	if (FAILED(pMapDataLoader->Make_Prototype(ENUM_TO_UINT(ELevelType::EFFECT), L"../../Resources/Models/Effect_FBX/Cone/Model/")))
+		return E_FAIL;
+	if (FAILED(pMapDataLoader->Make_Prototype(ENUM_TO_UINT(ELevelType::EFFECT), L"../../Resources/Models/Effect_FBX/Object_Chain/Model/")))
+		return E_FAIL;
+	if (FAILED(pMapDataLoader->Make_Prototype(ENUM_TO_UINT(ELevelType::EFFECT), L"../../Resources/Models/Effect_FBX/Object_Female_Character/Model/")))
+		return E_FAIL;
+	if (FAILED(pMapDataLoader->Make_Prototype(ENUM_TO_UINT(ELevelType::EFFECT), L"../../Resources/Models/Effect_FBX/Rock/Model/")))
+		return E_FAIL;
+	if (FAILED(pMapDataLoader->Make_Prototype(ENUM_TO_UINT(ELevelType::EFFECT), L"../../Resources/Models/Effect_FBX/Lightning/Model/")))
+		return E_FAIL;
+	if (FAILED(pMapDataLoader->Make_Prototype(ENUM_TO_UINT(ELevelType::EFFECT), L"../../Resources/Models/Effect_FBX/Tornado/Model/")))
+		return E_FAIL;
+	if (FAILED(pMapDataLoader->Make_Prototype(ENUM_TO_UINT(ELevelType::EFFECT), L"../../Resources/Models/Effect_FBX/Plane/Model/")))
+		return E_FAIL;
+	if (FAILED(pMapDataLoader->Make_Prototype(ENUM_TO_UINT(ELevelType::EFFECT), L"../../Resources/Models/Effect_FBX/Twist/Model/")))
+		return E_FAIL;
+
 	if (FAILED(pMapDataLoader->Make_Prototype(ENUM_TO_UINT(ELevelType::EFFECT), basicBoxPath)))
 		return E_FAIL;
 	Safe_Release(pMapDataLoader);

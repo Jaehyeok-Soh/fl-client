@@ -424,6 +424,58 @@
     <Filter Include="02. Level\Test">
       <UniqueIdentifier>{a2daef10-3d20-4e39-ace1-5ff40c2ab0d2}</UniqueIdentifier>
     </Filter>
+    <Filter Include="03. GameObject\ContainerObjects\Monster\Boss">
+      <UniqueIdentifier>{8772f096-9dc8-4081-957f-3400771c469c}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="03. GameObject\PartObjects\Monster\Body\Xibi">
+      <UniqueIdentifier>{5386aadc-21bf-4b31-b43a-0b216b6c0e88}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="03. GameObject\MapObject\03. Plants">
+      <UniqueIdentifier>{e0ccc92c-8caa-4c39-8270-998fdc97d602}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="03. GameObject\MapObject\03. Plants\00. Plants">
+      <UniqueIdentifier>{ec2dd632-4d92-4877-ab79-a60542085874}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="03. GameObject\MapObject\03. Plants\01. Bush">
+      <UniqueIdentifier>{2db74ba0-4a40-4b6f-b2e7-925677aab52b}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="03. GameObject\MapObject\03. Plants\02. Grass">
+      <UniqueIdentifier>{222fcc28-c0ae-401d-bf5c-03c82236ff30}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="03. GameObject\MapObject\03. Plants\03. Moss">
+      <UniqueIdentifier>{f96db740-5a89-4d2a-8a4d-a498f7ef0554}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="03. GameObject\MapObject\03. Plants\04. Tree">
+      <UniqueIdentifier>{ff59a5bd-c930-4031-8c51-0ac80ae71fc5}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="03. GameObject\MapObject\03. Plants\05. Vine">
+      <UniqueIdentifier>{7c7bc525-4b2f-410f-8d4c-3c439b341282}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="03. GameObject\MapObject\04. Rock">
+      <UniqueIdentifier>{1f5db521-b63b-4cb7-a6a6-90bad385d5f4}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="03. GameObject\MapObject\05. Water">
+      <UniqueIdentifier>{4cae9daa-fe9c-46ab-b571-910568be8b8b}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02. Level\Tutorial_Village">
+      <UniqueIdentifier>{b2fed15e-bf3a-4c63-8815-60f37d6ce25c}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02. Level\Tutorial_Boss">
+      <UniqueIdentifier>{2bfda849-9bb8-4f16-b297-2e1c6dcf6c85}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02. Level\Square">
+      <UniqueIdentifier>{0214ac06-4136-4164-90f8-af92c061bfe3}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02. Level\Test">
+      <UniqueIdentifier>{a2daef10-3d20-4e39-ace1-5ff40c2ab0d2}</UniqueIdentifier>
+    </Filter>
+	  
+    <Filter Include="03. GameObject\UIObjects\02.UI\Image\Dynamic Image\06.AimDot">
+      <UniqueIdentifier>{91eeeaa9-73a6-40da-bff2-b5e05c436f98}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="03. GameObject\UIObjects\02.UI\Progress Bar\Player Ammo">
+      <UniqueIdentifier>{e50622ce-f6b5-4828-847f-cf19391be008}</UniqueIdentifier>
+    </Filter>
     <Filter Include="03. GameObject\UIObjects">
       <UniqueIdentifier>{b8fa4419-f65b-4ff0-9246-77dad0e88328}</UniqueIdentifier>
     </Filter>
@@ -504,6 +556,9 @@
     </Filter>
     <Filter Include="03. GameObject\TriggerBox\01. TriggerBox_LevelChange">
       <UniqueIdentifier>{97926faf-3735-4208-8cb7-b4ef15e4599e}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="03. GameObject\UIObjects\02.UI\Image\Dynamic Image\05.MonsterNamePlate">
+      <UniqueIdentifier>{761751c8-ba94-4e88-987b-53bc16a7f52f}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
@@ -816,6 +871,57 @@
     <ClInclude Include="..\Public\UILoading_Progress.h">
       <Filter>03. GameObject\UIObjects\02.UI\Progress Bar\Loading</Filter>
     </ClInclude>
+    <ClInclude Include="..\Public\Gun.h">
+      <Filter>03. GameObject\PartObjects\Weapon\Gun</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\State_GunBase.h">
+      <Filter>06. FSM\Player\Attack\Gun</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\Plants.h">
+      <Filter>03. GameObject\MapObject\03. Plants\00. Plants</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\Bush.h">
+      <Filter>03. GameObject\MapObject\03. Plants\01. Bush</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\Grass.h">
+      <Filter>03. GameObject\MapObject\03. Plants\02. Grass</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\Moss.h">
+      <Filter>03. GameObject\MapObject\03. Plants\03. Moss</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\Tree.h">
+      <Filter>03. GameObject\MapObject\03. Plants\04. Tree</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\Vine.h">
+      <Filter>03. GameObject\MapObject\03. Plants\05. Vine</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\Rock.h">
+      <Filter>03. GameObject\MapObject\04. Rock</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\Water.h">
+      <Filter>03. GameObject\MapObject\05. Water</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\LandScape.h">
+      <Filter>03. GameObject\MapObject\02. LandScape</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\Level_Tutorial_Village.h">
+      <Filter>02. Level\Tutorial_Village</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\Level_Tutorial_Boss.h">
+      <Filter>02. Level\Tutorial_Boss</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\Level_Square.h">
+      <Filter>02. Level\Square</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\Level_Test.h">
+      <Filter>02. Level\Test</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\UIAimDot_Image.h">
+      <Filter>03. GameObject\UIObjects\02.UI\Image\Dynamic Image\06.AimDot</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\UIPlayerAmmo_Progress.h">
+      <Filter>03. GameObject\UIObjects\02.UI\Progress Bar\Player Ammo</Filter>
+    </ClInclude>
     <ClInclude Include="..\Public\UILoading_Image.h">
       <Filter>03. GameObject\UIObjects\02.UI\Image\Dynamic Image\04.LoadingImage</Filter>
     </ClInclude>
@@ -886,44 +992,11 @@
     <ClInclude Include="..\Public\State_GunBase.h">
       <Filter>06. FSM\Player\Attack\Gun</Filter>
     </ClInclude>
-    <ClInclude Include="..\Public\Plants.h">
-      <Filter>03. GameObject\MapObject\03. Plants\00. Plants</Filter>
+    <ClInclude Include="..\public\Boss_Xibi.h">
+      <Filter>03. GameObject\ContainerObjects\Monster\Boss</Filter>
     </ClInclude>
-    <ClInclude Include="..\Public\Bush.h">
-      <Filter>03. GameObject\MapObject\03. Plants\01. Bush</Filter>
-    </ClInclude>
-    <ClInclude Include="..\Public\Grass.h">
-      <Filter>03. GameObject\MapObject\03. Plants\02. Grass</Filter>
-    </ClInclude>
-    <ClInclude Include="..\Public\Moss.h">
-      <Filter>03. GameObject\MapObject\03. Plants\03. Moss</Filter>
-    </ClInclude>
-    <ClInclude Include="..\Public\Tree.h">
-      <Filter>03. GameObject\MapObject\03. Plants\04. Tree</Filter>
-    </ClInclude>
-    <ClInclude Include="..\Public\Vine.h">
-      <Filter>03. GameObject\MapObject\03. Plants\05. Vine</Filter>
-    </ClInclude>
-    <ClInclude Include="..\Public\Rock.h">
-      <Filter>03. GameObject\MapObject\04. Rock</Filter>
-    </ClInclude>
-    <ClInclude Include="..\Public\Water.h">
-      <Filter>03. GameObject\MapObject\05. Water</Filter>
-    </ClInclude>
-    <ClInclude Include="..\Public\LandScape.h">
-      <Filter>03. GameObject\MapObject\02. LandScape</Filter>
-    </ClInclude>
-    <ClInclude Include="..\Public\Level_Tutorial_Village.h">
-      <Filter>02. Level\Tutorial_Village</Filter>
-    </ClInclude>
-    <ClInclude Include="..\Public\Level_Tutorial_Boss.h">
-      <Filter>02. Level\Tutorial_Boss</Filter>
-    </ClInclude>
-    <ClInclude Include="..\Public\Level_Square.h">
-      <Filter>02. Level\Square</Filter>
-    </ClInclude>
-    <ClInclude Include="..\Public\Level_Test.h">
-      <Filter>02. Level\Test</Filter>
+    <ClInclude Include="..\public\Boss_Xibi_Body.h">
+      <Filter>03. GameObject\PartObjects\Monster\Body\Xibi</Filter>
     </ClInclude>
     <ClInclude Include="..\Public\UI_World.h" />
     <ClInclude Include="..\Public\WorldUI.h" />
@@ -1235,15 +1308,64 @@
     </ClCompile>
     <ClCompile Include="..\Private\UILoading_Progress.cpp">
       <Filter>03. GameObject\UIObjects\02.UI\Progress Bar\Loading</Filter>
+      <Filter>03. GameObject\UIObjects\02.UI\Progress Bar\Loading</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\Gun.cpp">
+      <Filter>03. GameObject\PartObjects\Weapon\Gun</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\State_GunBase.cpp">
+      <Filter>06. FSM\Player\Attack\Gun</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\Plants.cpp">
+      <Filter>03. GameObject\MapObject\03. Plants\00. Plants</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\Bush.cpp">
+      <Filter>03. GameObject\MapObject\03. Plants\01. Bush</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\Grass.cpp">
+      <Filter>03. GameObject\MapObject\03. Plants\02. Grass</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\Moss.cpp">
+      <Filter>03. GameObject\MapObject\03. Plants\03. Moss</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\Tree.cpp">
+      <Filter>03. GameObject\MapObject\03. Plants\04. Tree</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\Vine.cpp">
+      <Filter>03. GameObject\MapObject\03. Plants\05. Vine</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\Rock.cpp">
+      <Filter>03. GameObject\MapObject\04. Rock</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\Water.cpp">
+      <Filter>03. GameObject\MapObject\05. Water</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\LandScape.cpp">
+      <Filter>03. GameObject\MapObject\02. LandScape</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\Level_Tutorial_Village.cpp">
+      <Filter>02. Level\Tutorial_Village</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\Level_Tutorial_Boss.cpp">
+      <Filter>02. Level\Tutorial_Boss</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\Level_Square.cpp">
+      <Filter>02. Level\Square</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\Level_Test.cpp">
+      <Filter>02. Level\Test</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\UIAimDot_Image.cpp">
+      <Filter>03. GameObject\UIObjects\02.UI\Image\Dynamic Image\06.AimDot</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\UIPlayerAmmo_Progress.cpp">
+      <Filter>03. GameObject\UIObjects\02.UI\Progress Bar\Player Ammo</Filter>
     </ClCompile>
     <ClCompile Include="..\Private\UILoading_Image.cpp">
       <Filter>03. GameObject\UIObjects\02.UI\Image\Dynamic Image\04.LoadingImage</Filter>
     </ClCompile>
     <ClCompile Include="..\Private\Monster_Base.cpp">
       <Filter>03. GameObject\ContainerObjects\Monster</Filter>
-    </ClCompile>
-    <ClCompile Include="..\Private\Monster_Dummy.cpp">
-      <Filter>03. GameObject\ContainerObjects\Monster\Dummy</Filter>
     </ClCompile>
     <ClCompile Include="..\Private\Monster_Body_Base.cpp">
       <Filter>03. GameObject\PartObjects\Monster\Body</Filter>
@@ -1306,44 +1428,14 @@
     <ClCompile Include="..\Private\State_GunBase.cpp">
       <Filter>06. FSM\Player\Attack\Gun</Filter>
     </ClCompile>
-    <ClCompile Include="..\Private\Plants.cpp">
-      <Filter>03. GameObject\MapObject\03. Plants\00. Plants</Filter>
+    <ClCompile Include="..\Private\Monster_Dummy.cpp">
+      <Filter>03. GameObject\ContainerObjects\Monster\Dummy</Filter>
     </ClCompile>
-    <ClCompile Include="..\Private\Bush.cpp">
-      <Filter>03. GameObject\MapObject\03. Plants\01. Bush</Filter>
+    <ClCompile Include="..\private\Boss_Xibi.cpp">
+      <Filter>03. GameObject\ContainerObjects\Monster\Boss</Filter>
     </ClCompile>
-    <ClCompile Include="..\Private\Grass.cpp">
-      <Filter>03. GameObject\MapObject\03. Plants\02. Grass</Filter>
-    </ClCompile>
-    <ClCompile Include="..\Private\Moss.cpp">
-      <Filter>03. GameObject\MapObject\03. Plants\03. Moss</Filter>
-    </ClCompile>
-    <ClCompile Include="..\Private\Tree.cpp">
-      <Filter>03. GameObject\MapObject\03. Plants\04. Tree</Filter>
-    </ClCompile>
-    <ClCompile Include="..\Private\Vine.cpp">
-      <Filter>03. GameObject\MapObject\03. Plants\05. Vine</Filter>
-    </ClCompile>
-    <ClCompile Include="..\Private\Rock.cpp">
-      <Filter>03. GameObject\MapObject\04. Rock</Filter>
-    </ClCompile>
-    <ClCompile Include="..\Private\Water.cpp">
-      <Filter>03. GameObject\MapObject\05. Water</Filter>
-    </ClCompile>
-    <ClCompile Include="..\Private\LandScape.cpp">
-      <Filter>03. GameObject\MapObject\02. LandScape</Filter>
-    </ClCompile>
-    <ClCompile Include="..\Private\Level_Tutorial_Village.cpp">
-      <Filter>02. Level\Tutorial_Village</Filter>
-    </ClCompile>
-    <ClCompile Include="..\Private\Level_Tutorial_Boss.cpp">
-      <Filter>02. Level\Tutorial_Boss</Filter>
-    </ClCompile>
-    <ClCompile Include="..\Private\Level_Square.cpp">
-      <Filter>02. Level\Square</Filter>
-    </ClCompile>
-    <ClCompile Include="..\Private\Level_Test.cpp">
-      <Filter>02. Level\Test</Filter>
+    <ClCompile Include="..\private\Boss_Xibi_Body.cpp">
+      <Filter>03. GameObject\PartObjects\Monster\Body\Xibi</Filter>
     </ClCompile>
     <ClCompile Include="..\Private\UI_World.cpp" />
     <ClCompile Include="..\Private\WorldUI.cpp" />

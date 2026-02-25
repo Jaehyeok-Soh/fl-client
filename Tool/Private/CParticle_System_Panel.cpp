@@ -284,6 +284,10 @@ void CParticle_System_Panel::Draw_ParticleSystem(CToolObject* pGo)
 			ImGui::TreePop();
 		}
 
+		m_bModified |= ImGui::Checkbox("Effect Particle Burst", &m_tCurrentDesc.Data._Use_Effect_Particle_Burst);
+
+		m_bModified |= ImGui::Checkbox("Effect Particle Continue", &m_tCurrentDesc.Data._Use_Effect_Continue);
+
 		ImGui::AlignTextToFramePadding();
 		if (ImGui::TreeNode("Timeline Setting"))
 		{
@@ -313,6 +317,7 @@ void CParticle_System_Panel::Draw_ParticleSystem(CToolObject* pGo)
 			bool bRandPos = (m_tCurrentDesc.Data.iRandomFlags & DTO::RAND_POS) != 0;
 			bool bRandLife = (m_tCurrentDesc.Data.iRandomFlags & DTO::RAND_LIFE) != 0;
 			bool bRandSize = (m_tCurrentDesc.Data.iRandomFlags & DTO::RAND_SIZE) != 0;
+			bool bRandSpeed = (m_tCurrentDesc.Data.iRandomFlags & DTO::RAND_SPEED) != 0;
 
 			// 위치 랜덤 체크박스
 			if (ImGui::Checkbox("Random Position", &bRandPos))
@@ -335,6 +340,13 @@ void CParticle_System_Panel::Draw_ParticleSystem(CToolObject* pGo)
 			{
 				if (bRandSize) m_tCurrentDesc.Data.iRandomFlags |= DTO::RAND_SIZE;
 				else m_tCurrentDesc.Data.iRandomFlags &= ~DTO::RAND_SIZE;
+				m_bModified = true;
+			}
+
+			if (ImGui::Checkbox("Random Speed", &bRandSpeed))
+			{
+				if (bRandSpeed) m_tCurrentDesc.Data.iRandomFlags |= DTO::RAND_SPEED;
+				else m_tCurrentDesc.Data.iRandomFlags &= ~DTO::RAND_SPEED;
 				m_bModified = true;
 			}
 
@@ -691,6 +703,7 @@ void CParticle_System_Panel::Draw_ParticleSystem(CToolObject* pGo)
 
 	if (ImGui::CollapsingHeader("UV Scroll Curve (X/Y Separate)##UV Scroll Curve"))
 	{
+		m_bModified |= ImGui::Checkbox("Use OverScroll Curve", &m_tCurrentDesc.Data._Use_Effect_UV_OverScroll); ImGui::NewLine();
 		// 1. 사용 여부 체크박스
 		m_bModified |= ImGui::Checkbox("Use Scroll Curve", &m_tCurrentDesc.Data._bUseUVScrollCurve);
 
@@ -909,6 +922,7 @@ void CParticle_System_Panel::Draw_ParticleSystem(CToolObject* pGo)
 
 		// ============ Scroll 값 설정하기 ============
 		ImGui::AlignTextToFramePadding();
+
 		if (ImGui::TreeNode("Scroll Settings##Shape"))
 		{
 			// 공용 베이스 스크롤 속도
@@ -941,7 +955,8 @@ void CParticle_System_Panel::Draw_ParticleSystem(CToolObject* pGo)
 			DrawTextureScrollUI("Gradation", m_tCurrentDesc.Data._Effect_Tool_UseScroll_Gradation, 1 << 9, m_tCurrentDesc.Data._Effect_GradationTexture_ScrollWeight);
 			// 5. DissolveTexture (1 << 10)
 			DrawTextureScrollUI("Dissolve", m_tCurrentDesc.Data._Effect_Tool_UseScroll_Dissolve, 1 << 10, m_tCurrentDesc.Data._Effect_DissolveTexture_ScrollWeight);
-
+			// 6. GlowTexture(1 << 11)
+			DrawTextureScrollUI("Glow", m_tCurrentDesc.Data._Effect_Tool_UseScroll_Glow, 1 << 11, m_tCurrentDesc.Data._Effect_GlowTexture_ScrollWeight);
 			ImGui::TreePop();
 		}
 
@@ -1374,7 +1389,7 @@ void CParticle_System_Panel::Draw_ParticleSystem(CToolObject* pGo)
 					break;
 				case (_uint)DTO::E_PARTICLETYPE::MESH:
 					m_PParticleTypeList.push_back("DEFAULT_MESH");
-					m_PParticleTypeList.push_back("BULLET");
+					m_PParticleTypeList.push_back("SPRITE_MESH");
 					m_PParticleTypeList.push_back("TRAIL");
 					m_PParticleTypeList.push_back("DISTOTION");
 					m_PParticleTypeList.push_back("SwordEffect");

@@ -222,6 +222,7 @@ namespace Client
 		Vine,
 		Rock,
 		Water,
+		RGBMapping,
 		SHADOW_BAKE,
 		DEBUG,
 		END,
@@ -347,9 +348,23 @@ namespace Client
 	};
 	enum class EUIPrefabType
 	{
+		NOT_PREFAB,
 		MONSTER_NAMEPLATE,
 		END
 	};
+
+	inline _wstring UIPrefabtypeToWstring(EUIPrefabType eType)
+	{
+		switch (eType)
+		{
+		case Client::EUIPrefabType::NOT_PREFAB:return L"NOT_PREFAB";
+		case Client::EUIPrefabType::MONSTER_NAMEPLATE:return L"MONSTER_NAMEPLATE";
+		case Client::EUIPrefabType::END:
+		default:
+			break;
+		}
+		return L"NOT_PREFAB";
+	}
 
 #pragma endregion
 

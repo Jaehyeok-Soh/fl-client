@@ -40,7 +40,8 @@ HRESULT CActionState::Initialize(void* pArg)
 
 	ACTIONSTATE_DESC* pDesc = static_cast<ACTIONSTATE_DESC*>(pArg);
 	m_iStateCount = pDesc->iStateCount;
-	m_vecStates.resize(m_iStateCount);
+	if(m_iStateCount > 0)
+		m_vecStates.resize(m_iStateCount);
 	m_pOwnerModel = pDesc->pOwnerModel;
 	m_pOwnerAnimECS = pDesc->pOwnerAnimECS;
 

@@ -161,9 +161,11 @@
     <ClInclude Include="..\Public\Builder_MonsterState.h" />
     <ClInclude Include="..\Public\Builder_UI.h" />
     <ClInclude Include="..\Public\CameraMan_Free.h" />
+    <ClInclude Include="..\Public\Tool_EffectBase.h" />
     <ClInclude Include="..\Public\Panel_AnimationMix.h" />
     <ClInclude Include="..\public\Level_AttackPreset.h" />
     <ClInclude Include="..\Public\Panel_Parts.h" />
+    <ClInclude Include="..\Public\Tool_EffectPartBase.h" />
     <ClInclude Include="..\Public\Panel_State.h" />
     <ClInclude Include="..\public\Panel_PresetList.h" />
     <ClInclude Include="..\public\Panel_PresetMain.h" />
@@ -266,9 +268,11 @@
     <ClCompile Include="..\Private\Builder_MonsterState.cpp" />
     <ClCompile Include="..\Private\Builder_UI.cpp" />
     <ClCompile Include="..\Private\CameraMan_Free.cpp" />
+    <ClCompile Include="..\Private\Tool_EffectBase.cpp" />
     <ClCompile Include="..\private\Level_AttackPreset.cpp" />
     <ClCompile Include="..\Private\Panel_AnimationMix.cpp" />
     <ClCompile Include="..\Private\Panel_Parts.cpp" />
+    <ClCompile Include="..\Private\Tool_EffectPartBase.cpp" />
     <ClCompile Include="..\Private\LevelData.cpp" />
     <ClCompile Include="..\Private\Panel_State.cpp" />
     <ClCompile Include="..\private\Panel_PresetList.cpp" />

@@ -27,7 +27,7 @@ public:
 	{
 		_bool			bRootAni = { false };
 		_bool			bMixAni = { false };
-
+		
 		_int			iRootBoneIndex = -1;
 		vector<_float>	vecMixRatios;
 	}DATA_ANIMCHANNEL;
@@ -105,6 +105,7 @@ public:
 public:
 	HRESULT								Change_Animation(CComputeShader* pAnimEComShader,_uint iAnimationIndex, _bool bBlend, _bool isLoop = true, _bool bForce = false);
 	void								Add_Animation(class CModelAnimation* pAnimation) { m_vecAnimations.push_back(pAnimation); }
+	// Transform과 CCT를 바인딩 안할 시 RootMotion적용은 되나, 포지션을 반영안한다.
 	void								Update_Animation(CComputeShader* pBoneComBineCS, CComputeShader* pAnimEComShader, _float fTimeDelta, CTransform* pOwnerTransform = nullptr, CPhysicsCCT* pOwnerPhyCCT = nullptr, CComputeShader* pAnimBlendCS = nullptr, CComputeShader* pAnimMixCS = nullptr); // transform, phsics는 rootmotion 적용시 넘겨줘야함
 
 	// bind funcs

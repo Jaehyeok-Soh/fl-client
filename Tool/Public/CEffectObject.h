@@ -72,12 +72,13 @@ public:
 private:
     //  ==========  Shader Binding Setting  =============
     HRESULT Bind_ShaderResource();
+    HRESULT Bind_Curve_To_GPU();
 
 private:
     // ====== 계산함수 ====== 
     void TimeCalculate(const _float fDT);
-    float Sample_GravityCurve(const vector<DTO::Gravity_CurveKey>& vecVurve, float fLifeRatio);
-    void Update_Gravity_Force(float fLifeRatio); // 중력 계산하기.
+    //float Sample_GravityCurve(const vector<DTO::Gravity_CurveKey>& vecVurve, float fLifeRatio);   // 이제 GPU에서
+    void Update_Gravity_Force(); // 중력 계산하기.
     float Sample_RotationCurve(const vector<DTO::Rotation_CurveKey>& vecCurve, float fLifeRatio);
     void Update_Rotation_Lerp(float fDT, float fRatio);
     void Update_UV_Scroll_Curve(float fRatio);
@@ -104,9 +105,13 @@ public:
 
 private:
     //  ========== 이펙트 Desc ===========
+    ID3DX11EffectShaderResourceVariable* pSRV = nullptr;
+    StructuredBuffer* pSB = nullptr;
+
     Effect_Desc        m_tEffectDesc = {};
     Effect_Desc        m_tPrevEffectDesc = {};
 
+    Effect_Desc        m_tOriginEffectDesc = {};
     //  ========== 스크롤 OffSet ========
     Vec2      m_vScrollOffset = { 0.f, 0.f };
     _float    m_fTimeAccumulation = 0.f;

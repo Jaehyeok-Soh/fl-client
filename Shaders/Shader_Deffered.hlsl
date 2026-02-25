@@ -70,35 +70,37 @@ float3 BloomPrefilter(float3 vColor, float fThreshold, float fKnee)
 
 float3 Downsample2x2_SceneHDR(float2 vUV, float2 vHalfInvSize)
 {
-    float2 vO = vHalfInvSize;
-    float3 c0 = g_RenderTargetSceneHDRTexture.Sample(LinearClampSampler, vUV + float2(-vO.x, -vO.y)).rgb;
-    float3 c1 = g_RenderTargetSceneHDRTexture.Sample(LinearClampSampler, vUV + float2(vO.x, -vO.y)).rgb;
-    float3 c2 = g_RenderTargetSceneHDRTexture.Sample(LinearClampSampler, vUV + float2(-vO.x, vO.y)).rgb;
-    float3 c3 = g_RenderTargetSceneHDRTexture.Sample(LinearClampSampler, vUV + float2(vO.x, vO.y)).rgb;
-    return (c0 + c1 + c2 + c3) * 0.25;
+    //float2 vO = vHalfInvSize;
+    //float3 c0 = g_RenderTargetSceneHDRTexture.Sample(LinearSampler, vUV + float2(-vO.x, -vO.y)).rgb;
+    //float3 c1 = g_RenderTargetSceneHDRTexture.Sample(LinearSampler, vUV + float2(vO.x, -vO.y)).rgb;
+    //float3 c2 = g_RenderTargetSceneHDRTexture.Sample(LinearSampler, vUV + float2(-vO.x, vO.y)).rgb;
+    //float3 c3 = g_RenderTargetSceneHDRTexture.Sample(LinearSampler, vUV + float2(vO.x, vO.y)).rgb;
+    //return (c0 + c1 + c2 + c3) * 0.25;
+    
+    return g_RenderTargetSceneHDRTexture.Sample(LinearClampSampler, vUV).rgb;
 }
 
 float3 Blur9(Texture2D vTexture, float2 vUV, float2 vDir, float2 vInvSize)
 {
     float2 stepUV = vDir * vInvSize;
-
     float w0 = 0.227027;
     float w1 = 0.1945946;
     float w2 = 0.1216216;
     float w3 = 0.054054;
     float w4 = 0.016216;
 
+    // 모든 Sample 호출에 LinearClampSampler를 명시적으로 사용
     float3 c = vTexture.Sample(LinearClampSampler, vUV).rgb * w0;
 
     c += vTexture.Sample(LinearClampSampler, vUV + stepUV * 1).rgb * w1;
     c += vTexture.Sample(LinearClampSampler, vUV - stepUV * 1).rgb * w1;
-
+    
     c += vTexture.Sample(LinearClampSampler, vUV + stepUV * 2).rgb * w2;
     c += vTexture.Sample(LinearClampSampler, vUV - stepUV * 2).rgb * w2;
-
+    
     c += vTexture.Sample(LinearClampSampler, vUV + stepUV * 3).rgb * w3;
     c += vTexture.Sample(LinearClampSampler, vUV - stepUV * 3).rgb * w3;
-
+    
     c += vTexture.Sample(LinearClampSampler, vUV + stepUV * 4).rgb * w4;
     c += vTexture.Sample(LinearClampSampler, vUV - stepUV * 4).rgb * w4;
     return c;
@@ -258,7 +260,7 @@ VS_OUT_POS_TEX VS_MAIN(VS_IN_POS_TEX input)
     VS_OUT_POS_TEX output;
     output.vPosition = mul(float4(input.vPosition, 1.f), W);
     output.vPosition = mul(output.vPosition, VP);
-    output.vUV = input.vUV;
+    output.vUV = saturate(input.vUV);
 
     return output;
 }
@@ -704,10 +706,10 @@ PS_OUT_BACKBUFFER PS_MAIN_TONEMAP(PS_IN_POS_TEX input)
     vLDR = ApplyLUT_16(vLDR);
     
     // 대비
-    vLDR = max(vLDR, 0.0.xxx);
-    vLDR /= 0.18f;
-    vLDR = pow(vLDR, HDRparam.fGamma);
-    vLDR *= 0.18f;
+    //vLDR = max(vLDR, 0.0.xxx);
+    //vLDR /= 0.18f;
+    //vLDR = pow(vLDR, HDRparam.fGamma);
+    //vLDR *= 0.18f;
     
     float3 invGamma = 1.f / max(0.001f, 2.2f);
     vLDR = pow(saturate(vLDR), invGamma);

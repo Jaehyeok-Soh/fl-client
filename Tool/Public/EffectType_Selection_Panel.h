@@ -41,6 +41,7 @@ public:
     // 내가 생성한 Effect List를 가지고 온다.
     void DrawEffectList();
     void EditEffect();
+    void TransformEffect(CToolObject* pGo);
     // ==========   Effect Type 별 생성 함수  =====================
     void CreateParticleEffect();
     void CreateForceFieldEffect();

@@ -184,8 +184,8 @@ void	CMapObject::Ready_Before_Render(const _float fTimeDelta)
 
 
 #ifdef _DEBUG
-    if (m_eMapObjectDrawType == EMapObject_DrawType::Instance)
-        m_pGameInstance->Push_DebugComponent(Get_Component<CBounds>());
+    //if (m_eMapObjectDrawType == EMapObject_DrawType::Instance)
+    //    m_pGameInstance->Push_DebugComponent(Get_Component<CBounds>());
 #endif
 }
 

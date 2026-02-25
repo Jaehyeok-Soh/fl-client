@@ -109,7 +109,7 @@ public:
 	HRESULT Load_AttackOverlap(fs::path path);
 	HRESULT Load_EffectEvent(fs::path path);
 	void Set_AttackOverlap(CPhysicsAttackOverlap* pAttackOverlap);
-	void Set_EffectEvent(CAnimEffectHandler* pEffectEvent);
+	void Set_EffectEvent(CEffectHandler* pEffectEvent);
 	HRESULT Save_AttackOverlap(fs::path path, string strAnimTag, _int iPool);
 	HRESULT Save_EffectEvent(fs::path path, string strAnimTag, _int iPool);
 private:
