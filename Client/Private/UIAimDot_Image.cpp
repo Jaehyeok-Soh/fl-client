@@ -126,6 +126,10 @@ HRESULT CUIAimDot_Image::Awake(const _uint iCurrentLevelID)
 
 	switch (m_eDImageSubClass)
 	{
+	case DTO::EUIDImageSubClassType::BATTLE_UI_BEGIN:
+		break;
+	case DTO::EUIDImageSubClassType::BATTLE_AIMDOT_COMMON:
+		break;
 	case DTO::EUIDImageSubClassType::BATTLE_AIMDOT_CROSSHAIR_TOP:
 		m_vMaxOffset = Vec2{ 0.f, -10.f };
 		break;
@@ -141,6 +145,8 @@ HRESULT CUIAimDot_Image::Awake(const _uint iCurrentLevelID)
 	case DTO::EUIDImageSubClassType::BATTLE_AIM_HIT:
 		break;
 	case DTO::EUIDImageSubClassType::BATTLE_AIM_LOCK:
+		break;
+	case DTO::EUIDImageSubClassType::BATTLE_UI_END:
 		break;
 	case DTO::EUIDImageSubClassType::END:
 	default:
