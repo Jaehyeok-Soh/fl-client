@@ -63,7 +63,7 @@ NLOHMANN_JSON_SERIALIZE_ENUM(EAttackPresetColliderType,
 		{EAttackPresetColliderType::PhysicsCollider, "PhysicsCollider"},
 		{EAttackPresetColliderType::END, "END"},
 	}
-	)
+)
 
 enum class EHitType : _uint
 {

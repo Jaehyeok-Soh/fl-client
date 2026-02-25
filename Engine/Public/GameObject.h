@@ -45,8 +45,8 @@ public:
 	virtual HRESULT Spawn_FromPool(void* pArg) { return S_OK; }
 	virtual HRESULT Despawn_FromPool() { return S_OK; }
 	virtual _bool IntersectWithFrustrum(BoundingFrustum* pFrustrum) { return true; }
-	virtual _bool On_Hit(_uint iCollideMyLayer, ATTACK_DESC* pDesc, CGameObject* pOther) { return true; }
-	virtual void Try_Attack() {};
+	virtual _bool On_Hit(const HIT_DESC& hitDesc) { return true; }
+	virtual void Try_Attack(const HIT_DESC& hitDesc) {};
 	template<typename T>
 	inline void Change_Component(T* pSrc);
 	template<typename T>

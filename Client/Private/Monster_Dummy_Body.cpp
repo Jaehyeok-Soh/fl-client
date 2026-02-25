@@ -104,9 +104,9 @@ void CMonster_Dummy_Body::OnTrigger_Exit(_uint iMyColliderLayer, _uint iOtherLay
 	Super::OnTrigger_Exit(iMyColliderLayer, iOtherLayer, pOther);
 }
 
-_bool CMonster_Dummy_Body::On_Hit(_uint iCollideMyLayer, ATTACK_DESC* pDesc, CGameObject* pOther)
+_bool CMonster_Dummy_Body::On_Hit(const HIT_DESC& hitDesc)
 {
-	return Super::On_Hit(iCollideMyLayer, pDesc, pOther);
+	return Super::On_Hit(hitDesc);
 }
 
 HRESULT CMonster_Dummy_Body::Render()
