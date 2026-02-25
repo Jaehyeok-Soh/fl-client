@@ -24,7 +24,6 @@ private:
 	HRESULT Ready_UI_Layer(const wstring& wstrLayerTag);
 	HRESULT Ready_Camera_Layer(const wstring& wstrLayerTag);
 	HRESULT Ready_Camera_Setting(const _uint iLevelIndex);
-	HRESULT Ready_UI_Layer(const wstring& wstrLayerTag);
 
 
 	
