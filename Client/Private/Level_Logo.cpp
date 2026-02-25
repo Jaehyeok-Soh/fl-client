@@ -264,7 +264,7 @@ HRESULT CLevel_Logo::Ready_Player_Layer(const wstring& wstrLayerTag)
 		CPlayer::PLAYER_DESC playerDesc = {};
 		CTransform::TRANSFORM_DESC transformDesc = {};
 		playerDesc.iLevelIndex = ENUM_TO_UINT(ELevelType::LOGO);
-		playerDesc.wstrBodyModelTag = L"Prototype_Component_Model_Master";
+		playerDesc.wstrBodyModelTag = L"Prototype_Component_Model_Moon";
 		transformDesc.TranslationMatrix = Matrix::CreateTranslation(Vec3(229.12f,256.72f,-245.039f));
 		playerDesc.pTransform_Desc = &transformDesc;
 		if (!(pResult = m_pGameInstance->Add_GameObject(ENUM_TO_UINT(ELevelType::STATIC),

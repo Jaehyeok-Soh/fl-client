@@ -393,7 +393,7 @@ HRESULT CLoader::Loading_For_Logo()
 	// Component
 	//=================
 
-	// For. Prototype_Component_Model_Master
+	// For. Prototype_Component_Model_Moon
 	{
 		m_fLoadingRatio = 0.99f;
 		CModel::MODEL_ORIGIN_DESC desc = {};
@@ -408,7 +408,7 @@ HRESULT CLoader::Loading_For_Logo()
 		tAniChannelData.iRootBoneIndex = 2;
 		desc.pAniChannelData = &tAniChannelData;
 
-		m_pGameInstance->Add_Prototype(ENUM_TO_UINT(ELevelType::STATIC), L"Prototype_Component_Model_Master", CModel::Create(m_pDevice, m_pDeviceContext, &desc));
+		m_pGameInstance->Add_Prototype(ENUM_TO_UINT(ELevelType::STATIC), L"Prototype_Component_Model_Moon", CModel::Create(m_pDevice, m_pDeviceContext, &desc));
 	}
 
 	// For. Prototype_Component_Model_MoonSword
