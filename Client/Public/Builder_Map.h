@@ -21,7 +21,7 @@ private:
 public:
 	virtual HRESULT Build(const CDataDocumentBase& document) override;
 private:
-	HRESULT SceneData_Setting(const DTO::TLevelData& tData);
+	HRESULT LevelData_Setting(const DTO::TLevelData& tData);
 	HRESULT Create_StaticObject(const DTO::TMap_MapObjectData& tData);
 	HRESULT Create_LandScape(const DTO::TMap_MapObjectData& tData);
 
@@ -36,6 +36,8 @@ private:
 	HRESULT Create_Rock(const DTO::TMap_MapObjectData& tData);
 private:
 	CShader*		m_pMeshShader{nullptr};
+
+	ELevelType		m_eLevelType{};
 
 	CGameInstance* m_pGameInstance{ nullptr };
 public:
