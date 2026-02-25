@@ -200,6 +200,7 @@ namespace Client
 		Vine,
 		Rock,
 		Water,
+		RGBMapping,
 		SHADOW_BAKE,
 		DEBUG,
 		END,
