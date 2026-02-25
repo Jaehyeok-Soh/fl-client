@@ -9,6 +9,7 @@
 #include "PhysicsCollider.h"
 #include "PhysicsRigidBody.h"
 #include "GameInstance.h"
+#include "TriggerBox.h"
 
 CMapObject::CMapObject(ID3D11Device* pDevice, ID3D11DeviceContext* pContext)
 	: CGameObject(pDevice, pContext), m_eMapObjectType{EMapObject_Type::END}
@@ -148,8 +149,9 @@ HRESULT	CMapObject::Ready_Component(MAPOBJECT_DESC* pDesc)
 
 HRESULT	CMapObject::Add_MapToolComponent(CMapObject::COMPONENT eType)
 {
-	return S_OK;
+    return S_OK;
 }
+
 
 HRESULT	CMapObject::Awake(const _uint iCurrentLevelID)
 {
@@ -182,8 +184,8 @@ void	CMapObject::Ready_Before_Render(const _float fTimeDelta)
 
 
 #ifdef _DEBUG
-    if (m_eMapObjectDrawType == EMapObject_DrawType::Instance)
-        m_pGameInstance->Push_DebugComponent(Get_Component<CBounds>());
+    //if (m_eMapObjectDrawType == EMapObject_DrawType::Instance)
+    //    m_pGameInstance->Push_DebugComponent(Get_Component<CBounds>());
 #endif
 }
 

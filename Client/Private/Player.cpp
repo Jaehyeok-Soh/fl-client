@@ -21,6 +21,7 @@
 // parts objs
 #include "Weapon.h"
 #include "Body.h"
+#include "Gun.h"
 
 #include "MainPlayer.h"
 #include "CameraMan_Targeter.h"
@@ -250,6 +251,21 @@ _bool CPlayer::Check_DoubleJump()
     return !(m_tDoubleJumpCount.bCountTime);
 }
 
+_uint CPlayer::Get_GunState()
+{
+    return static_cast<CGun*>(Get_Part<CWeapon>(Part::GUN))->Get_GunState();
+}
+
+_bool CPlayer::Get_CanFire()
+{
+    return _bool();
+}
+
+_bool CPlayer::Get_CanReload()
+{
+    return _bool();
+}
+
 _bool CPlayer::Start_Attack(State iState)
 {
     _bool bChange = { false };
@@ -261,8 +277,9 @@ _bool CPlayer::Start_Attack(State iState)
         bChange = static_cast<CStatCom_Player*>(Get_Component<CMyStat>())->Set_AttackState(CStatCom_Player::Attack_State::Melee, true);
         break;
 
-    case State::JUMPGUN:
-    case State::GUN:
+    case State::GUNHOLDING:
+    case State::GUNATTACK:
+    case State::GUNRELOAD:
         bChange = static_cast<CStatCom_Player*>(Get_Component<CMyStat>())->Set_AttackState(CStatCom_Player::Attack_State::Gun, true);
         break;
 
@@ -288,8 +305,9 @@ void CPlayer::End_Attack(State iState)
         static_cast<CStatCom_Player*>(Get_Component<CMyStat>())->Set_AttackState(CStatCom_Player::Attack_State::Melee, false);
         break;
 
-    case State::JUMPGUN:
-    case State::GUN:
+    case State::GUNHOLDING:
+    case State::GUNATTACK:
+    case State::GUNRELOAD:
         static_cast<CStatCom_Player*>(Get_Component<CMyStat>())->Set_AttackState(CStatCom_Player::Attack_State::Gun, false);
         break;
 

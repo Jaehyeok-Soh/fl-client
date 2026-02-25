@@ -1,8 +1,11 @@
 #include "pch.h"
 #include "EffectType_Selection_Panel.h"
 #include "CEffectObject.h"
+#include "Transform.h"
 #include "Effect.h"
+#include "CameraMan.h"
 #include "GameInstance.h"
+
 
 CEffectType_Selection_Panel::CEffectType_Selection_Panel(const _char* pLabel, CLevel* pOwner, ID3D11Device* pDevice, ID3D11DeviceContext* pDeviceContext)
     :CImGui_Panel(pLabel, pOwner, pDevice, pDeviceContext),
@@ -104,7 +107,7 @@ HRESULT CEffectType_Selection_Panel::Render(CToolObject* pGo)
 	m_eSelectedEffectType = E_EffectSystemType::None;
 
 	EditEffect();
-
+	TransformEffect(pGo);
 	ImGui::End();
 	
 	return S_OK;
@@ -261,6 +264,44 @@ void CEffectType_Selection_Panel::EditEffect()
 
 			ImGui::TreePop();
 		}
+		ImGui::TreePop();
+	}
+}
+
+void CEffectType_Selection_Panel::TransformEffect(CToolObject* pGo)
+{
+	if (ImGui::TreeNode("Transform##Position"))
+	{
+		CTransform* pTransform = pGo->Get_Component<CTransform>();
+		Vec3 Position = pTransform->Get_Info(TRANSFORM_INFO_STATE::POS);
+		Vec3 Scale = pTransform->Get_Scaled();
+
+		if (ImGui::Button("Test"))
+		{
+			Position = Vec3(20.f, 17.f, 0.f);
+			pTransform->Set_Info(TRANSFORM_INFO_STATE::POS, Position);
+
+			m_pGameInstance->Get_MainCamera()->Get_Component<CTransform>()->Set_Info(TRANSFORM_INFO_STATE::POS, Position);
+		}
+
+		ImGui::SameLine(); 
+
+		if (ImGui::Button("RollBack"))
+		{
+			Position = Vec3(0.f, 0.f, 0.f);
+			pTransform->Set_Info(TRANSFORM_INFO_STATE::POS, Position);
+
+			m_pGameInstance->Get_MainCamera()->Get_Component<CTransform>()->Set_Info(TRANSFORM_INFO_STATE::POS, Position);
+		}
+		// -----------------------
+		if (ImGui::DragFloat3(" ##Transform_ParticleSystem", &Position.x, 0.1f))
+		{
+			pTransform->Set_Info(TRANSFORM_INFO_STATE::POS, Position);
+		}
+
+		ImGui::Text("ObjectPos : (%g, %g, %g)", Position.x, Position.y, Position.z);
+		ImGui::Text("ObjectScale : (%g, %g, %g)", Scale.x, Scale.y, Scale.z);
+
 		ImGui::TreePop();
 	}
 }

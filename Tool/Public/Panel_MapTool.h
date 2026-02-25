@@ -86,7 +86,9 @@ private:
 	_int					m_iSelectTextureSplatingInfoData{};
 
 	char					m_szTextureSplatingInfoData_SaveName[MAX_PATH];
-	
+
+
+	char					m_szLevelTypeName[ENUM_TO_UINT(EClientLevelType::END)][MAX_PATH];
 
 public:
 	static  CPanel_MapTool* Create(const _char* pLabel, CLevel* pOwner, ID3D11Device* pDevice, ID3D11DeviceContext* pDeviceContext);

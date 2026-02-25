@@ -12,6 +12,7 @@ class CStatComponent;
 class CSkillComponent;
 class CCameraMan_Targeter;
 class CBody;
+class CGun;
 
 class CPlayer abstract : public CContainerObject
 {
@@ -67,8 +68,9 @@ public:
 		, JUMPATTSTART
 		, JUMPATTEND
 
-		,GUN
-		, JUMPGUN
+		,GUNHOLDING
+		,GUNATTACK
+		,GUNRELOAD
 
 		,SKILL1
 		,SKILL2
@@ -107,6 +109,10 @@ public:
 
 	_bool	Check_DoubleJump();
 	void	Set_DoubleJump(_bool bCount) { m_tDoubleJumpCount.bCountTime = bCount; if (!bCount) m_tDoubleJumpCount.fTimeAcc = 0.f; }
+
+	_uint	Get_GunState();
+	_bool	Get_CanFire();
+	_bool	Get_CanReload();
 
 public:
 	_bool	Start_Attack(State iState);

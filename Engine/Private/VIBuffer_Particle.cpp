@@ -95,6 +95,7 @@ void CVIBuffer_Particle::Update_Simulation(CComputeShader* ComputeShader, Vec3 v
 	tMUDesc.iTimeFlag = TimeFlag;
 	tMUDesc.vFinalGravity = finalGravity;
 	tMUDesc.fExternalStrength = {};
+	tMUDesc.UseContinueFlag = m_tParticleDesc.UseContinueFlag;
 	
 	// comshader에 컨스턴트 버퍼를 통해 매 프레임 갱신 : 가변 데이터
 	ComputeShader->Bind_Compute_EffectData(tMUDesc);

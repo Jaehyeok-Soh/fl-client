@@ -30,6 +30,7 @@ HRESULT CPanel_AnimationController::Render(CToolObject* pGo)
 
 void CPanel_AnimationController::Update(const _float fTimeDelta)
 {
+    m_fTimeDebug = fTimeDelta;
 }
 
 void CPanel_AnimationController::AnimationListWindow()
@@ -116,6 +117,7 @@ void CPanel_AnimationController::AnimationControllPanelWindow()
 		ImGui::Separator();
 		ImGui::Text("Duration: %d ", m_tAnimControllInfo->fDuration);
 		ImGui::Text("Speed: %.2f TPS", m_tAnimControllInfo->fTickPerSecond);
+        ImGui::Text("TimeDelta : %.2f ", m_fTimeDebug);
         //if (ImGui::DragFloat("Play Rate", &m_tAnimControllInfo->fPlayRate, 0.1f, 0.1f, 5.0f))
         //{
         //    if (m_tAnimControllInfo->fTickPerSecond <= 72.f && m_tAnimControllInfo->fTickPerSecond >= 0.01f)
@@ -143,6 +145,8 @@ void CPanel_AnimationController::AnimationControllPanelWindow()
                 }
             }
         }
+
+
 
 		_float currentPosition = (_float)m_tAnimControllInfo->fTrackPosition;
         if (ImGui::SliderFloat("Trackposition Seek", &currentPosition, 0, (_float)m_tAnimControllInfo->fDuration))

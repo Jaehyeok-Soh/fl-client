@@ -62,7 +62,7 @@ public:
 	inline CMonoBehaviour* Get_Script_Component(const wstring& wstrComponentTag);
 	inline CMonoBehaviour* Detach_Script_Component(const wstring& wstrComponentTag);
 	HRESULT Add_Script_Component(const wstring& wstrComponentTag, CMonoBehaviour* pComp);
-	HRESULT Add_Script_Component(const wstring& wstrComponentTag, const wstring& wstrPrototypeTag, void* pArg);
+	HRESULT Add_Script_Component(const wstring& wstrComponentTag, const wstring& wstrPrototypeTag, void* pArg, void** ppCaching = nullptr);
 	void Remove_Script_Component(const wstring& wstrComponentTag);
 	HRESULT Change_Script_Component(const wstring& wsrtTargetComponentTag, CMonoBehaviour* pComp);
 	virtual _int Get_AnimationIndex(const wstring& wstrName);

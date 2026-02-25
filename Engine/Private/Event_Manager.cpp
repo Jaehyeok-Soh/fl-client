@@ -190,7 +190,6 @@ void CEvent_Manager::Flush_Pending(EventType eType)
 		break;
 	}
 }
-
 HRESULT CEvent_Manager::Spawn_GameObject(SpawnEventDesc& spawnDesc)
 {
 	if (!spawnDesc.pClone)

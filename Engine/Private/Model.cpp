@@ -1010,6 +1010,8 @@ void CModel::Play_Begin(CComputeShader* pAnimEvalCS, _uint iAnimationIndex, _boo
 	if (pAnimEvalCS)
 		m_vecAnimations[iAnimationIndex]->Bind_AnimationEData(pAnimEvalCS);
 
+	m_vecAnimations[iAnimationIndex]->Reset_NotifyCursor();
+
 	if (bChannelReset)
 		m_vecAnimations[iAnimationIndex]->Reset_PrePosition();
 
@@ -1040,6 +1042,7 @@ void CModel::Blend_Begin(_uint CurAnimationIndex)
 {
 	m_fBlendedTime = 0.f;
 
+	m_vecAnimations[CurAnimationIndex]->Reset_NotifyCursor();
 	m_vecAnimations[CurAnimationIndex]->Reset_PrePosition();
 }
 
@@ -1487,6 +1490,7 @@ void CModel::Emit_Notifies(CModelAnimation* pAnimation, _float fPrevPos, _float 
 			{
 				if (notifyKeys[iIndex].fTrackPosition > fFrom)
 					OnNotify.Broadcast(notifyKeys[iIndex]);
+
 
 				pAnimation->Set_NotifyCursor(++iIndex);
 			}

@@ -158,6 +158,7 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClInclude Include="..\Public\Body.h" />
+    <ClInclude Include="..\public\Boss_Xibi.h" />
     <ClInclude Include="..\Public\Builder_AttackOverlap.h" />
     <ClInclude Include="..\public\Builder_AttackPreset.h" />
     <ClInclude Include="..\Public\Builder_EffectEvent.h" />
@@ -271,6 +272,8 @@
     <ClInclude Include="..\Public\Level_Tutorial_Boss.h" />
     <ClInclude Include="..\Public\Level_Tutorial_Village.h" />
     <ClInclude Include="..\Public\UIAimDot_Image.h" />
+    <ClInclude Include="..\Public\TriggerBox.h" />
+    <ClInclude Include="..\Public\TriggerBox_LevelChange.h" />
     <ClInclude Include="..\Public\UIButton_Trigger.h" />
     <ClInclude Include="..\Public\UICommon_Trigger.h" />
     <ClInclude Include="..\Public\UIDynamic_Image.h" />
@@ -301,6 +304,7 @@
     <ClInclude Include="..\Public\Water.h" />
     <ClInclude Include="..\Public\Weapon.h" />
     <ClInclude Include="..\Public\WorldUI_Component.h" />
+    <ClInclude Include="..\public\Boss_Xibi_Body.h" />
     <ClInclude Include="Client.h" />
     <ClInclude Include="framework.h" />
     <ClInclude Include="pch.h" />
@@ -309,6 +313,7 @@
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="..\Private\Body.cpp" />
+    <ClCompile Include="..\private\Boss_Xibi.cpp" />
     <ClCompile Include="..\Private\Builder_AttackOverlap.cpp" />
     <ClCompile Include="..\private\Builder_AttackPreset.cpp" />
     <ClCompile Include="..\Private\Builder_EffectEvent.cpp" />
@@ -440,6 +445,8 @@
     <ClCompile Include="..\Private\Tree.cpp" />
     <ClCompile Include="..\Private\Level_Tutorial_Boss.cpp" />
     <ClCompile Include="..\Private\Level_Tutorial_Village.cpp" />
+    <ClCompile Include="..\Private\TriggerBox.cpp" />
+    <ClCompile Include="..\Private\TriggerBox_LevelChange.cpp" />
     <ClCompile Include="..\Private\UIAimDot_Image.cpp" />
     <ClCompile Include="..\Private\UIButton_Trigger.cpp" />
     <ClCompile Include="..\Private\UICommon_Trigger.cpp" />
@@ -471,6 +478,7 @@
     <ClCompile Include="..\Private\Water.cpp" />
     <ClCompile Include="..\Private\Weapon.cpp" />
     <ClCompile Include="..\Private\WorldUI_Component.cpp" />
+    <ClCompile Include="..\private\Boss_Xibi_Body.cpp" />
     <ClCompile Include="..\Public\Physics_Terrain.cpp" />
     <ClCompile Include="Client.cpp" />
     <ClCompile Include="pch.cpp">
