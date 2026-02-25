@@ -9,21 +9,21 @@ class CMapToolManager;
 class CPanel_MapTool;
 
 
-class CSceneData : public CToolObject
+class CLevelData : public CToolObject
 {
 	using Super = CGameObject;
 public:
 	friend CPanel_MapTool;
 	friend CMapToolManager;
 public:
-	typedef struct tagSceneData_Desc
+	typedef struct tagLevelData_Desc
 	{
 		std::string strTextureSplatingInfoName{"None"};
-	}SCENEDATA_DESC;
+	}LevelData_DESC;
 protected:
-	CSceneData(EToolObjectType eType, ID3D11Device* pDevice, ID3D11DeviceContext* pDeviceContext);
-	explicit CSceneData(const CSceneData& rhs);
-	virtual ~CSceneData() = default;
+	CLevelData(EToolObjectType eType, ID3D11Device* pDevice, ID3D11DeviceContext* pDeviceContext);
+	explicit CLevelData(const CLevelData& rhs);
+	virtual ~CLevelData() = default;
 
 	virtual HRESULT Initialize_Prototype() override;
 	virtual HRESULT Initialize(void* pArg) override;
@@ -40,9 +40,9 @@ public:
 public:
 	virtual _bool	Export_Data(DTO::ECategory eCategory, CDataDocumentBase* pDocument)override;
 private:
-	std::string m_strTextureSplatingInfoName{"None"};
+	std::string		m_strTextureSplatingInfoName{"None"};
 public:
-	static	CSceneData*		Create(EToolObjectType eType, ID3D11Device* pDevice, ID3D11DeviceContext* pContext);
+	static	CLevelData*		Create(EToolObjectType eType, ID3D11Device* pDevice, ID3D11DeviceContext* pContext);
 	virtual CGameObject*	Clone(void* pArg)override;
 	virtual void			Free() override;
 };

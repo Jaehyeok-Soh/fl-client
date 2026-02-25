@@ -20,8 +20,15 @@ namespace fs = std::filesystem;
 extern HWND			g_hWnd;
 extern HINSTANCE	g_hInstance;
 
-struct LoadAnimModel { using Signature = void(path animModelPath); };
-struct LoadAnimModelPart { using Signature = void(path PartModelPath,  int iSocketBondIdx, bool bCombine); };
+typedef struct tagAnimSRT
+{
+	Vec3 vScale{1.f, 1.f, 1.f};
+	Vec3 vRot{};
+	Vec3 vTranslation{};
+}ANIM_SRT;
+
+struct LoadAnimModel { using Signature = void(path animModelPath, ANIM_SRT pretransform); };
+struct LoadAnimModelPart { using Signature = void(path PartModelPath, ANIM_SRT pretransform, int iSocketBondIdx, bool bCombine, bool bStaticModel); };
 struct LoadAttackOverlap { using Signature = void(CPhysicsAttackOverlap* pAttackOverlap); };
 struct LoadEffectEvent { using Signature = void(CAnimEffectHandler* pEffectEvent);};
 

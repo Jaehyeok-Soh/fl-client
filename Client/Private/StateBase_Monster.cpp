@@ -99,10 +99,12 @@ void CStateBase_Monster::Update(const _float fTimeDelta)
 		return;
 
 	// 글로벌 전이부터 검사 ( Die, Damage 등)
-	Check_Transition(m_pDesc->vecGlobalStateTransition);
-
+	if (Check_Transition(m_pDesc->vecGlobalStateTransition))
+		return;
+	
 	// 로컬 상태 전이
-	Check_Transition(m_pDesc->vecStateTransition);
+	if (Check_Transition(m_pDesc->vecStateTransition))
+		return;
 
 	// 기능 실행
 	for (auto& featIdx : m_pDesc->vecFeatureIdx)
@@ -258,7 +260,7 @@ HRESULT CStateBase_Monster::Bind_Feature()
 	return S_OK;
 }
 
-void CStateBase_Monster::Check_Transition(vector<DTO::STATE_TRANSITION>& transition)
+_bool CStateBase_Monster::Check_Transition(vector<DTO::STATE_TRANSITION>& transition)
 {
 	for (auto& trans : transition)
 	{
@@ -284,11 +286,13 @@ void CStateBase_Monster::Check_Transition(vector<DTO::STATE_TRANSITION>& transit
 				if (randomValue < curWeight)
 				{
 					Change_MonsterState(to.first); // 다음 state로 change
-					return;
+					return true;
 				}
 			}
 		}
 	}
+
+	return false;
 }
 
 void CStateBase_Monster::Free()

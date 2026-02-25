@@ -4,9 +4,6 @@
 #include "GenericUI.h"
 #include "UIJust_Image.h"
 
-// 프리팹
-#include "UIPrefab_MonsterNameplate.h"
-
 // 프로그레스 클래스
 #include "UIMonsterStat_Progress.h"
 // 텍스트 클래스

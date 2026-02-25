@@ -89,7 +89,6 @@ void CLandScape::Ready_Before_Render(const _float fTimeDelta)
 {
 	Super::Ready_Before_Render(fTimeDelta);
 
-	m_pGameInstance->Push_RenderObject(RENDER_CATEGORY::NONEBLEND  , this);
 }
 
 HRESULT CLandScape::Render()
@@ -98,8 +97,8 @@ HRESULT CLandScape::Render()
 	CModel*		pModel		= Get_Component<CModel>();       if (pModel == nullptr)              return E_FAIL;
 	CTransform* pTransform	= Get_Component<CTransform>();   if (pTransform == nullptr)          return E_FAIL;
 
-	if (FAILED(m_pGameInstance->GameDataManager_Bind_SplatingTextureInfo(pShader, L"Village")))
-		return E_FAIL;
+	//if (FAILED(m_pGameInstance->GameDataManager_Bind_SplatingTextureInfo(pShader, L"Village")))
+	//	return E_FAIL;
 
 	/* UV 좌표 업데이트 */
 	if (FAILED(pShader->Get_Vector("g_LandScape_TextureUV_LT")->SetRawValue(&m_vTextureUV_LT, 0, sizeof(m_vTextureUV_LT)))) return E_FAIL;
@@ -109,7 +108,8 @@ HRESULT CLandScape::Render()
 
 
 	pShader->Bind_TransformData(pTransform->Get_WorldMatrix());
-	pShader->Set_Pass(ENUM_TO_UINT(Shader_VtxMesh_Pass::LandScape));
+	pShader->Set_Pass(ENUM_TO_UINT(EMapObjectShaderPass::LandScape));
+
 
 	for (_uint i = 0; i < iMeshCount; ++i)
 	{

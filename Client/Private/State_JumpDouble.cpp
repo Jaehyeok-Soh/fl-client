@@ -47,6 +47,8 @@ void CState_JumpDouble::Update(const _float fTimeDelta)
 	if (Get_AnimElpasedTimeSeconds() > 0.6f)
 	{
 		Set_ApplyGravity(true);
+
+		Set_RootMotion_Apply(false);
 	}
 
 	Super::Update(fTimeDelta);
@@ -58,6 +60,10 @@ HRESULT CState_JumpDouble::End()
 		return E_FAIL;
 
 	Set_ApplyGravity(true);
+
+	Set_RootMotion_Apply(true);
+
+	Set_DoubleJump(true);
 
 	return S_OK;
 }

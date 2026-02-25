@@ -61,7 +61,11 @@ void CState_Walk::Update(const _float fTimeDelta)
 			return;
 	}
 
-	Super::Update(fTimeDelta);
+	//else
+	{
+		Super::Update(fTimeDelta);
+	}
+
 
 	//if (Align_Movement(fTimeDelta) == false)	// 8방향 움직임 
 	//{

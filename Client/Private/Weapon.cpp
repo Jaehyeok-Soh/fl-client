@@ -19,6 +19,9 @@ CWeapon::CWeapon(const CWeapon& rhs)
 	: Super(rhs)
 	, m_eWaeponType(rhs.m_eWaeponType)
 	, m_matRotation(rhs.m_matRotation)
+	, m_tColorDesc(rhs.m_tColorDesc)
+	, m_bColorMapping(rhs.m_bColorMapping)
+	, m_eAnimState(rhs.m_eAnimState)
 {
 }
 
@@ -135,7 +138,7 @@ void CWeapon::Ready_Before_Render(_float fTimeDelta)
 	{
 	case State::HOLD:
 		Super::Update_CombinedWorldMatrix(m_matRotation * (*m_pMatSocket) * (*m_pMatParent));
-		//Update_HoldingPos();
+		Update_HoldingPos();
 		break;
 
 	case State::HAND:
@@ -211,7 +214,7 @@ void CWeapon::Set_DefaultSocket()
 
 HRESULT CWeapon::Ready_Components(WEAPON_DESC* pDesc)
 {
-	if (FAILED(Add_Component<CModel>(0/*static*/, pDesc->wstrModelPrototypeName, pDesc)))
+	if (FAILED(Add_Component<CModel>(0/*static*/, pDesc->wstrModelPrototypeName, nullptr)))
 		return E_FAIL;
 
 	if (pDesc->eModel == Weapon_ModelType::STATIC)
@@ -223,6 +226,14 @@ HRESULT CWeapon::Ready_Components(WEAPON_DESC* pDesc)
 	{
 		if (FAILED(Add_Component<CShader>(0/*static*/, L"Prototype_Component_Shader_VtxAnimMesh", pDesc)))
 			return E_FAIL;
+	}
+
+	if (m_bColorMapping = pDesc->bRGBShader)
+	{
+		Get_Component<CShader>()->Set_Pass(4);
+		m_tColorDesc.vColorR = pDesc->vColorR;
+		m_tColorDesc.vColorG = pDesc->vColorG;
+		m_tColorDesc.vColorB = pDesc->vColorB;
 	}
 
 	return S_OK;
@@ -336,6 +347,11 @@ HRESULT CWeapon::Render_StaticWeap()
 	CModel* pModel = Get_Component<CModel>();
 	_uint iMeshCount = pModel->Get_MeshCount();
 
+	if (m_bColorMapping)
+	{
+		pShader->Bind_RGBColorData(m_tColorDesc);
+	}
+
 	pShader->Bind_ObjectInfoData(m_tObjectInfoDesc);
 	pShader->Bind_TransformData(m_matCombinedWorld);
 	for (_uint i = 0; i < iMeshCount; ++i)
@@ -372,21 +388,33 @@ HRESULT CWeapon::Render_AnimWeap()
 
 void CWeapon::Play_Anim(const _float fTimeDelta)
 {
-	CComputeShader* pBonCS		= static_cast<CComputeShader*>(Get_Script_Component(TEXT("ComputeShader_BoneCombine")));
-	CComputeShader* pAnimECS	= static_cast<CComputeShader*>(Get_Script_Component(TEXT("ComputeShader_AnimE")));
+	if (m_eState != State::NONE)
+	{
+		CComputeShader* pBonCS = static_cast<CComputeShader*>(Get_Script_Component(TEXT("ComputeShader_BoneCombine")));
+		CComputeShader* pAnimECS = static_cast<CComputeShader*>(Get_Script_Component(TEXT("ComputeShader_AnimE")));
 
-	Get_Component<CModel>()->Update_Animation(pBonCS, pAnimECS, fTimeDelta);
+		switch (m_eAnimState)
+		{
+		case AnimState::PLAY:
+			Get_Component<CModel>()->Update_Animation(pBonCS, pAnimECS, fTimeDelta);
+			break;
+
+		case AnimState::STOP:
+			Get_Component<CModel>()->Update_Animation(pBonCS, pAnimECS, 0.f);
+			break;
+		}
+	}
 }
 
 void CWeapon::Update_HoldingPos()
 {
 	// 현재 com transform 기준으로 부터 약간 뒤로, 약간 위로
 
-	Vec3 vLook = m_matCombinedWorld.Up();
+	Vec3 vLook = m_matCombinedWorld.Backward();
 	Vec3 vUp = m_matCombinedWorld.Left();
 	Vec3 vPos = m_matCombinedWorld.Translation();
 
-	Vec3 vMove = (-vLook * 0.4f) + (vUp * 0.3f);
+	Vec3 vMove = (vLook * 0.4f);
 
 	m_matCombinedWorld.Translation(vPos + vMove);
 }

@@ -391,6 +391,25 @@ _float CModel::Get_Animatioin_MotionOffset(_uint iAnimIdx)
 	return m_vecAnimations[(size_t)iAnimIdx]->Get_MotionOffset();
 }
 
+void CModel::Set_Animation_Speed(_uint iAnimIdx, _float fSpeed)
+{
+	if (iAnimIdx >= Get_AnimationCount())
+		return;
+
+	m_vecAnimations[(size_t)iAnimIdx]->Set_AnimationSpeed(fSpeed);
+}
+
+void CModel::Set_MixAnim(_bool bMix)
+{
+	m_bMixAnim = bMix;
+
+	for (auto pMixIdx : m_vecMixAnimIndices)
+	{
+		m_vecAnimations[m_bMixAnim]->Reset_PrePosition();
+		m_vecAnimations[m_bMixAnim]->Set_TrackPosition(0.f);
+	}
+}
+
 void CModel::Make_MixRatio(_uint iAnimIdx, vector<DATA_ANIMIX>& vecAniMixData, CComputeShader* pAnimMixCS)
 {
 	if (iAnimIdx >= Get_AnimationCount())
@@ -402,6 +421,9 @@ void CModel::Make_MixRatio(_uint iAnimIdx, vector<DATA_ANIMIX>& vecAniMixData, C
 
 	for (auto& pMixData : vecAniMixData)
 	{
+		if (pMixData.iParentIdx < 0)
+			continue;
+
 		for (size_t i = 0 ; i< m_vecBones.size(); i++)
 		{
 			// 만약 내가 저 인덱스의 child라면
@@ -597,6 +619,11 @@ _bool CModel::Is_AnimTrackPositionAtHalf() const
 	return m_vecAnimations[m_iCurrentAnimIndex]->Is_TrackPositionAtHalf();
 }
 
+_bool CModel::Is_RootMotion_Apply() const
+{
+	return m_vecAnimations[m_iCurrentAnimIndex]->Get_ApplyRoot();
+}
+
 _int CModel::Get_AnimationIndex(const wstring& wstrName)
 {
 	if (wstrName.empty())
@@ -629,6 +656,19 @@ void CModel::Set_AnimationPlayRate(_uint iIndex, _float fValue)
 {
 	if (m_vecAnimations[iIndex])
 		m_vecAnimations[iIndex]->Set_PlayRate(fValue);
+}
+
+void CModel::Set_CurAnimation_RootApply(_bool bRootApply)
+{
+	m_vecAnimations[m_iCurrentAnimIndex]->Set_ApplyRootMotion(bRootApply);
+}
+
+void CModel::Set_ApplyRootMotionAll(_bool bRootApply)
+{
+	for (auto& pAnim : m_vecAnimations)
+	{
+		pAnim->Set_ApplyRootMotion(bRootApply);
+	}
 }
 
 HRESULT CModel::Ready_ComputeShaders(CComputeShader* pBoneMeshCS, CComputeShader* pBoneComBineCS, CComputeShader* pAnimEvalCS, CComputeShader* pAnimBlendCS, CComputeShader* pAnimMixCS)
@@ -708,7 +748,7 @@ HRESULT CModel::Load_StaticModel(const wstring& wstrModelName)
 {
 	CModelLoader* pModelLoader = CModelLoader::Create(m_pDevice, m_pDeviceContext, wstrModelName.c_str());
 
-if (FAILED(pModelLoader->Read_Model(m_eType, nullptr, &m_vecMeshes)))
+	if (FAILED(pModelLoader->Read_Model(m_eType, nullptr, &m_vecMeshes)))
 		return E_FAIL;
 	if (FAILED(pModelLoader->Read_Material(&m_vecMaterials)))
 		return E_FAIL;
@@ -1297,15 +1337,14 @@ void CModel::DisPatch_BondMatrix(CComputeShader* pBoneComBineCS, CComputeShader*
 
 void CModel::Mix_Animation(CComputeShader* pAnimMixCS, CComputeShader* pPreAnimCS, CComputeShader* pBoneComBineCS, const _float fTimeDelta)
 {
+	_bool bFirst = true;
 	// todo_eunbi : 만약 이전 mix animation 값을 넘겨줘야한다면 i 값에 따라 분기 나누기
 	for (size_t i = 0; i < m_vecMixAnimIndices.size(); i++)
 	{
 		if (m_vecMixAnimIndices[i] >= 0)
 		{
-			//if(i == 0)
-				m_vecAnimations[m_vecMixAnimIndices[i]]->Update_MixAnimation(m_vecBones, pAnimMixCS, pPreAnimCS,fTimeDelta, Get_BoneCount());
-			//else
-			//	m_vecAnimations[m_vecMixAnimIndices[i]]->Update_MixAnimation(m_vecBones, pAnimMixCS, pAnimMixCS, fTimeDelta, Get_BoneCount());
+			m_vecAnimations[m_vecMixAnimIndices[i]]->Update_MixAnimation(m_vecBones, pAnimMixCS, pPreAnimCS,fTimeDelta, Get_BoneCount(), bFirst);
+			bFirst = false;
 		}
 	}
 }

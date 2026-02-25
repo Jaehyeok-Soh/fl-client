@@ -17,6 +17,8 @@ HRESULT CPanel_ModelInfo::Initialize()
 
 HRESULT CPanel_ModelInfo::Render(CToolObject* pGo)
 {
+	Render_ObjInfo();
+
 	Render_RootMotionInfo();
 
 	Render_AnimationInfo();
@@ -36,6 +38,23 @@ void CPanel_ModelInfo::Update(const _float fTimeDelta)
 		//m_iRootBondIdx = tInfo.pModel->Get_RootBone();
 		//m_fRootMotionOffset = tInfo.pModel->Get_Animatioin_MotionOffset(m_iCurAnimIdx);
 	}
+
+	pObj = tInfo.pCurrentObject;
+}
+
+void CPanel_ModelInfo::Render_ObjInfo()
+{
+	ImGui::Begin("Object Info");
+
+	if (pObj)
+	{
+		Vec3 vPos =	pObj->Get_Component<CTransform>()->Get_Info(TRANSFORM_INFO_STATE::POS);
+
+		ImGui::Text("Position : %.3f, %.3f, %.3f",
+			vPos.x, vPos.y, vPos.z);
+	}
+
+	ImGui::End();
 }
 
 void CPanel_ModelInfo::Render_RootMotionInfo()
@@ -66,6 +85,8 @@ void CPanel_ModelInfo::Render_AnimationInfo()
 	Anim_Info();
 
 	RootOffset_Info();
+
+	AnimationSpeed();
 
 	ImGui::End();
 }
@@ -100,6 +121,26 @@ void CPanel_ModelInfo::RootOffset_Info()
 	if (ImGui::Button("Apply##RootOffset"))
 	{
 		Set_RootOffset();
+	}
+}
+
+void CPanel_ModelInfo::AnimationSpeed()
+{
+	ImGui::Separator();
+
+	ImGui::SetNextItemWidth(120.f);  // 원하는 픽셀 길이
+	ImGui::InputFloat("Animation Speed", &m_iAnimationSpeed, 0.01f, 1.0f, "%.3f");
+
+	// 최소값 -1 제한
+	if (m_iAnimationSpeed < 0.01f)
+		m_iAnimationSpeed = 0.01f;
+
+	ImGui::SameLine();
+
+	if (ImGui::Button("Apply##AnimationSpeed"))
+	{
+		if (m_pAnimToolManager->Get_AnimControllInfo().pModel)
+			m_pAnimToolManager->Get_AnimControllInfo().pModel->Set_Animation_Speed(m_iCurAnimIdx, m_iAnimationSpeed);
 	}
 }
 

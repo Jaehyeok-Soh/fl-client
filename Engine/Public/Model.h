@@ -119,14 +119,14 @@ public:
 	void	Set_Animtion_MotionOffset(_uint iAnimIdx, _float fOffset);
 	_int	Get_RootBone() const { return m_iRootBoneIdx; }
 	_float	Get_Animatioin_MotionOffset(_uint iAnimIdx);
-
+	void	Set_Animation_Speed(_uint iAnimIdx, _float fSpeed);
 
 	// mix anim funcs
 public:
 	void	Make_MixRatio(_uint iAnimIdx, vector<DATA_ANIMIX>& vecAniMixData, CComputeShader* pAnimMixCS);
 	void	Set_MixAnim_ResetSize(_uint iSize);
 	void	Set_MixAnim_AnimIndex(_uint iVectorIdx, _int iAnimIdx);
-	void	Set_MixAnim(_bool bMix) { m_bMixAnim = bMix; }
+	void	Set_MixAnim(_bool bMix);
 
 	// tool
 	_bool	Get_MixBool() const { return m_bMixAnim; }
@@ -171,6 +171,7 @@ public:
 	_bool								Is_AnimTrackPositionAtHalf() const;
 
 	_bool								Is_LoopAnimDone() const { return m_bLoopAnimDone; }
+	_bool								Is_RootMotion_Apply() const;
 
 
 	_float								Get_AnimDurationTime() const;
@@ -193,6 +194,8 @@ public:
 	HRESULT								Set_DefaultPassByMesh(_uint iMeshIndex);
 	void								Set_AnimationPlayRate(_uint iIndex, _float fValue);
 	void								Set_AnimationSpeed(_float fSpeed) { m_fAnimationSpeed = fSpeed; if (m_fAnimationSpeed <= 0) m_fAnimationSpeed = 1.f; }
+	void								Set_CurAnimation_RootApply(_bool bRootApply);
+	void								Set_ApplyRootMotionAll(_bool bRootApply);
 
 	// materials funcs
 public:
