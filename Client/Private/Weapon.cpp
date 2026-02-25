@@ -22,6 +22,8 @@ CWeapon::CWeapon(const CWeapon& rhs)
 	, m_tColorDesc(rhs.m_tColorDesc)
 	, m_bColorMapping(rhs.m_bColorMapping)
 	, m_eAnimState(rhs.m_eAnimState)
+	, m_matHandOffsetMatrix(rhs.m_matHandOffsetMatrix)
+	, m_matHoldOffsetMatrix(rhs.m_matHoldOffsetMatrix)
 {
 }
 
@@ -31,6 +33,9 @@ HRESULT CWeapon::Initialize_Prototype()
 		return E_FAIL;
 
 	m_matRotation = Matrix::CreateRotationX(XMConvertToRadians(-90.f));
+
+	m_matHandOffsetMatrix = Matrix::Identity;
+	m_matHoldOffsetMatrix = Matrix::Identity;
 
 	return S_OK;
 }
@@ -49,6 +54,9 @@ HRESULT CWeapon::Initialize(void* pArg)
 	m_eModleType = pDesc->eModel;
 	m_bMainWeapon = pDesc->bMianWeapon;
 
+	m_matHandOffsetMatrix = pDesc->matHandOffsetMatrix;
+	m_matHoldOffsetMatrix = pDesc->matHoldOffsetMatrix;
+
 	if (FAILED(Ready_Components(pDesc)))
 		return E_FAIL;
 
@@ -64,6 +72,9 @@ HRESULT CWeapon::Initialize(void* pArg)
 	case Weapon_ModelType::ANIM:
 		if (FAILED(Ready_ComputeShaders()))
 			return E_FAIL;
+
+		Get_Component<CModel>()->Change_Animation(m_pAnimECS, pDesc->iStartAnimIdx, false,true,true);
+
 		break;
 	}
 
@@ -137,12 +148,12 @@ void CWeapon::Ready_Before_Render(_float fTimeDelta)
 	switch (m_eState)
 	{
 	case State::HOLD:
-		Super::Update_CombinedWorldMatrix(m_matRotation * (*m_pMatSocket) * (*m_pMatParent));
-		Update_HoldingPos();
+		Super::Update_CombinedWorldMatrix(m_matHoldOffsetMatrix * (*m_pMatSocket) * (*m_pMatParent));
+		//Update_HoldingPos();
 		break;
 
 	case State::HAND:
-		Super::Update_CombinedWorldMatrix(m_matRotation *(*m_pMatHandSocket) * (*m_pMatParent));
+		Super::Update_CombinedWorldMatrix(m_matHandOffsetMatrix *(*m_pMatHandSocket) * (*m_pMatParent));
 		break;
 	}
 
@@ -196,6 +207,12 @@ HRESULT CWeapon::Render()
 	return S_OK;
 }
 
+void CWeapon::Change_WeaponAnim(_uint iAnimIdx, _bool bLoop, _bool bForce, _bool bBlend)
+{
+	// 우선 weapon은 blend 안 한다 생각하고 진행 : todo blend 필요하다면 바꿔야함
+	Get_Component<CModel>()->Change_Animation(m_pAnimECS, iAnimIdx, false , bLoop, bForce);
+}
+
 void CWeapon::Set_HandSocket()
 {
 	if (m_eState == State::HAND)
@@ -230,7 +247,13 @@ HRESULT CWeapon::Ready_Components(WEAPON_DESC* pDesc)
 
 	if (m_bColorMapping = pDesc->bRGBShader)
 	{
-		Get_Component<CShader>()->Set_Pass(ENUM_TO_UINT(EMapObjectShaderPass::RGBMapping));
+		_uint iPass = 0;
+		if (pDesc->eModel == Weapon_ModelType::STATIC)
+			iPass = ENUM_TO_UINT(EMapObjectShaderPass::RGBMapping);
+		else
+			iPass = 2;
+
+		Get_Component<CShader>()->Set_Pass(iPass);
 		m_tColorDesc.vColorR = pDesc->vColorR;
 		m_tColorDesc.vColorG = pDesc->vColorG;
 		m_tColorDesc.vColorB = pDesc->vColorB;
@@ -366,6 +389,11 @@ HRESULT CWeapon::Render_AnimWeap()
 	CModel*				pModel			= Get_Component<CModel>();
 	_uint				iMeshCount		= pModel->Get_MeshCount();
 
+	if (m_bColorMapping)
+	{
+		pShader->Bind_RGBColorData(m_tColorDesc);
+	}
+
 	pShader->Bind_ObjectInfoData(m_tObjectInfoDesc);
 	pShader->Bind_TransformData(m_matCombinedWorld);
 	for (_uint i = 0; i < iMeshCount; ++i)
@@ -390,7 +418,7 @@ void CWeapon::Play_Anim(const _float fTimeDelta)
 			break;
 
 		case AnimState::STOP:
-			Get_Component<CModel>()->Update_Animation(m_pBoneCombineCS, m_pAnimECS, 0.f);
+			Get_Component<CModel>()->Update_Animation(m_pBoneCombineCS, m_pAnimECS, 0.f); //0.f
 			break;
 		}
 	}

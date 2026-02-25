@@ -49,6 +49,12 @@ public:
 		Vec4 vColorR = Vec4::Zero;
 		Vec4 vColorG = Vec4::Zero;
 		Vec4 vColorB = Vec4::Zero;
+		
+		Matrix matHoldOffsetMatrix = Matrix::Identity;
+		Matrix matHandOffsetMatrix = Matrix::Identity;
+
+		
+		_uint iStartAnimIdx = { 0 };
 	}WEAPON_DESC;
 
 protected:
@@ -71,6 +77,9 @@ public:
 	virtual void OnTrigger_Enter(_uint iMyColliderLayer, _uint iOtherLayer, CGameObject* pOther) override;
 	virtual void OnTrigger_Exit(_uint iMyColliderLayer, _uint iOtherLayer, CGameObject* pOther) override;
 	virtual HRESULT Render() override;
+
+public:
+	void Change_WeaponAnim(_uint iAnimIdx, _bool bLoop, _bool bForce, _bool bBlend =false);
 
 	// getter setter funcs
 public:
@@ -95,6 +104,9 @@ protected:
 	_bool				m_bMainWeapon = { false };
 
 	Matrix				m_matRotation = {  };
+
+	Matrix				m_matHoldOffsetMatrix = {  };
+	Matrix				m_matHandOffsetMatrix = {  };
 
 	_bool m_bColorMapping = { false };
 

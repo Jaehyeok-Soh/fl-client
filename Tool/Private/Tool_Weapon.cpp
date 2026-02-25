@@ -56,6 +56,9 @@ HRESULT CTool_Weapon::Initialize(void* pArg)
 	case Weapon_ModelType::ANIM:
 		if (FAILED(Ready_ComputeShaders()))
 			return E_FAIL;
+
+		CComputeShader* pAnimECS = static_cast<CComputeShader*>(Get_Script_Component(TEXT("ComputeShader_AnimE")));
+		Get_Component<CModel>()->Change_Animation(pAnimECS, 0, false,true,true);
 		break;
 	}
 
