@@ -22,9 +22,6 @@
     <Filter Include="02. Level\Logo">
       <UniqueIdentifier>{1cdeefb3-8ba8-48fd-8354-bfe672cfa1ed}</UniqueIdentifier>
     </Filter>
-    <Filter Include="02. Level\Dev">
-      <UniqueIdentifier>{a2daef10-3d20-4e39-ace1-5ff40c2ab0d2}</UniqueIdentifier>
-    </Filter>
     <Filter Include="02. Level\Loading\Loader">
       <UniqueIdentifier>{a017ef8a-3027-4490-9479-8f057105a565}</UniqueIdentifier>
     </Filter>
@@ -163,9 +160,6 @@
     <Filter Include="99. ETC\01. ImGui">
       <UniqueIdentifier>{aa2685d2-18f6-417c-ba8e-cf78608c7618}</UniqueIdentifier>
     </Filter>
-    <Filter Include="03. GameObject\UIObjects\02.UI">
-      <UniqueIdentifier>{6d2a781d-ab40-4385-b96c-b3366f4eaba6}</UniqueIdentifier>
-    </Filter>
     <Filter Include="03. GameObject\UIObjects\02.UI\Image">
       <UniqueIdentifier>{6d340ec4-9fd3-485b-bb1c-8989cfd57761}</UniqueIdentifier>
     </Filter>
@@ -259,9 +253,6 @@
     <Filter Include="07. System\01. Builder\Effect\Builder_EffectEvent">
       <UniqueIdentifier>{5d286e09-eee0-4b43-bcea-01a835550da6}</UniqueIdentifier>
     </Filter>
-    <Filter Include="03. GameObject\UIObjects\02.UI\Image\Dynamic Image\03.MenuImage\00.OutLine">
-      <UniqueIdentifier>{4abf4708-1f00-4a67-ba1b-f638539f3a5c}</UniqueIdentifier>
-    </Filter>
     <Filter Include="07. System\02. Debug_ImGui\Layout\Shader">
       <UniqueIdentifier>{241e78ea-3b24-473b-a83b-6c32e682ad95}</UniqueIdentifier>
     </Filter>
@@ -324,6 +315,7 @@
     </Filter>
     <Filter Include="03. GameObject\UIObjects\02.UI\World">
       <UniqueIdentifier>{8a889375-58df-405c-aa49-2221cd20c171}</UniqueIdentifier>
+    </Filter>
     <Filter Include="03. GameObject\PartObjects\Monster">
       <UniqueIdentifier>{dd6c64a1-8604-4ada-acfe-59285f1d7176}</UniqueIdentifier>
     </Filter>
@@ -515,6 +507,9 @@
     </Filter>
     <Filter Include="02. Level\Square">
       <UniqueIdentifier>{0214ac06-4136-4164-90f8-af92c061bfe3}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02. Level\Test">
+      <UniqueIdentifier>{a2daef10-3d20-4e39-ace1-5ff40c2ab0d2}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
@@ -939,6 +934,9 @@
     <ClInclude Include="..\Public\Level_Square.h">
       <Filter>02. Level\Square</Filter>
     </ClInclude>
+    <ClInclude Include="..\Public\Level_Test.h">
+      <Filter>02. Level\Test</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <Image Include="Client.ico">
@@ -1353,6 +1351,9 @@
     </ClCompile>
     <ClCompile Include="..\Private\Level_Square.cpp">
       <Filter>02. Level\Square</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\Level_Test.cpp">
+      <Filter>02. Level\Test</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

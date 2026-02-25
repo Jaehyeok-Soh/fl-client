@@ -201,6 +201,7 @@
     <ClInclude Include="..\Public\imstb_truetype.h" />
     <ClInclude Include="..\Public\LandScape.h" />
     <ClInclude Include="..\Public\Level_Square.h" />
+    <ClInclude Include="..\Public\Level_Test.h" />
     <ClInclude Include="..\Public\MapObject.h" />
     <ClInclude Include="..\Public\MonsterActionState.h" />
     <ClInclude Include="..\Public\MonsterControlContext.h" />
@@ -370,6 +371,7 @@
     </ClCompile>
     <ClCompile Include="..\Private\LandScape.cpp" />
     <ClCompile Include="..\Private\Level_Square.cpp" />
+    <ClCompile Include="..\Private\Level_Test.cpp" />
     <ClCompile Include="..\Private\MapObject.cpp" />
     <ClCompile Include="..\Private\MonsterActionState.cpp" />
     <ClCompile Include="..\Private\MonsterControlContext.cpp" />
