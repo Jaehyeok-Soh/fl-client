@@ -56,16 +56,18 @@ HRESULT CDataDocument_Map::FromJson(const json& j)
 
 	if (j.contains("Level Data"))
 	{
-		CData_LevelData* pSceneData = CData_LevelData::Create();
+		CData_LevelData* pLevelData = CData_LevelData::Create();
 
-		if (FAILED(pSceneData->FromJson(j["Level Data"])))
+		if (FAILED(pLevelData->FromJson(j["Level Data"])))
 		{
-			Safe_Release(pSceneData);
+			Safe_Release(pLevelData);
 			return E_FAIL;
 		}
 
-		if (FAILED(Try_Add(pSceneData->Get_Data())))
+		if (FAILED(Try_Add(pLevelData->Get_Data())))
 			return E_FAIL;
+
+		Safe_Release(pLevelData);
 
 	}
 
