@@ -9,6 +9,11 @@ class CTriggerBox : public CGameObject
 public:
 	typedef struct tagTriggerBox_Desc : public CGameObject::GAMEOBJECT_DESC
 	{
+		/* 대충 Trigger Box 크기 받아오는 Desc 필요하고*/
+		/* Trigger Box */
+
+
+
 	}TRIGGERBOX_DESC;
 protected:
 	CTriggerBox(ID3D11Device* pDevice, ID3D11DeviceContext* pContext);

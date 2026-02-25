@@ -271,6 +271,7 @@
     <ClInclude Include="..\Public\Level_Tutorial_Boss.h" />
     <ClInclude Include="..\Public\Level_Tutorial_Village.h" />
     <ClInclude Include="..\Public\TriggerBox.h" />
+    <ClInclude Include="..\Public\TriggerBox_LevelChange.h" />
     <ClInclude Include="..\Public\UIButton_Trigger.h" />
     <ClInclude Include="..\Public\UICommon_Trigger.h" />
     <ClInclude Include="..\Public\UIDynamic_Image.h" />
@@ -441,6 +442,7 @@
     <ClCompile Include="..\Private\Level_Tutorial_Boss.cpp" />
     <ClCompile Include="..\Private\Level_Tutorial_Village.cpp" />
     <ClCompile Include="..\Private\TriggerBox.cpp" />
+    <ClCompile Include="..\Private\TriggerBox_LevelChange.cpp" />
     <ClCompile Include="..\Private\UIButton_Trigger.cpp" />
     <ClCompile Include="..\Private\UICommon_Trigger.cpp" />
     <ClCompile Include="..\Private\UIDynamic_Image.cpp" />

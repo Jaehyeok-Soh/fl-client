@@ -1,6 +1,7 @@
 #include "pch.h"
 #include "TriggerBox.h"
-
+#include "PhysicsRigidBody.h"
+#include "PhysicsCollider.h"
 
 CTriggerBox::CTriggerBox(ID3D11Device* pDevice, ID3D11DeviceContext* pContext)
     : CGameObject(pDevice , pContext)
@@ -29,14 +30,11 @@ HRESULT CTriggerBox::Initialize(void* pArg)
     CTriggerBox::TRIGGERBOX_DESC* pDesc = static_cast<CTriggerBox::TRIGGERBOX_DESC*>(pArg);
 
 
-
-
     if (FAILED(Ready_Transform(pDesc)))
         return E_FAIL;
 
     if (FAILED(Ready_Component(pDesc)))
         return E_FAIL;
-
 
 
     return S_OK;
@@ -50,6 +48,10 @@ HRESULT CTriggerBox::Ready_Transform(TRIGGERBOX_DESC* pDesc)
 
 HRESULT CTriggerBox::Ready_Component(TRIGGERBOX_DESC* pDesc)
 {
+    
+
+
+
     return S_OK;
 }
 

@@ -499,6 +499,12 @@
     <Filter Include="03. GameObject\TriggerBox">
       <UniqueIdentifier>{0d360f5b-9f01-4e63-94fd-b809239f8b4c}</UniqueIdentifier>
     </Filter>
+    <Filter Include="03. GameObject\TriggerBox\00. TriggerBox">
+      <UniqueIdentifier>{70b74bb6-7ead-4caa-b189-78cf6a9fe938}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="03. GameObject\TriggerBox\01. TriggerBox_LevelChange">
+      <UniqueIdentifier>{97926faf-3735-4208-8cb7-b4ef15e4599e}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="targetver.h">
@@ -922,7 +928,10 @@
     <ClInclude Include="..\Public\UI_World.h" />
     <ClInclude Include="..\Public\WorldUI.h" />
     <ClInclude Include="..\Public\TriggerBox.h">
-      <Filter>03. GameObject\TriggerBox</Filter>
+      <Filter>03. GameObject\TriggerBox\00. TriggerBox</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\TriggerBox_LevelChange.h">
+      <Filter>03. GameObject\TriggerBox\01. TriggerBox_LevelChange</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -1339,7 +1348,10 @@
     <ClCompile Include="..\Private\UI_World.cpp" />
     <ClCompile Include="..\Private\WorldUI.cpp" />
     <ClCompile Include="..\Private\TriggerBox.cpp">
-      <Filter>03. GameObject\TriggerBox</Filter>
+      <Filter>03. GameObject\TriggerBox\00. TriggerBox</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\TriggerBox_LevelChange.cpp">
+      <Filter>03. GameObject\TriggerBox\01. TriggerBox_LevelChange</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
