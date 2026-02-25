@@ -72,10 +72,6 @@ HRESULT CLevel_Logo::Initialize()
 	if (FAILED(Ready_Boss_Layer(g_wszBossLayer)))
 		return E_FAIL;
 
-	if (FAILED(Build_Files()))
-		return E_FAIL;
-
-
 	/* 朝五虞 持失 */
 	if (FAILED(Ready_Camera_Layer(g_wszDynamicCameraLayer)))
 		return E_FAIL;

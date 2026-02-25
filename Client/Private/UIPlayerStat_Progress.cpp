@@ -42,7 +42,7 @@ HRESULT CUIPlayerStat_Progress::Initialize(void* pArg)
 
 HRESULT CUIPlayerStat_Progress::Attach_Personal_Info()
 {
-	CGameObject* pResult = m_pGameInstance->Get_GameObject_Front(ENUM_TO_UINT(ELevelType::LOGO), g_wszPlayerLayer);
+	CGameObject* pResult = m_pGameInstance->Get_GameObject_Front(ENUM_TO_UINT(ELevelType::STATIC), g_wszPlayerLayer);
 	if (nullptr == pResult)
 		return E_FAIL;
 
