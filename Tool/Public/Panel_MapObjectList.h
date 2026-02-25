@@ -8,6 +8,10 @@ class CCamera;
 class CModel;
 struct STATICOBJECT_DESC;
 struct LANDSCAPE_DESC;
+
+/* Trigger Box 관련 */
+struct TRIGGERBOX_DESC;
+struct TRIGGERBOX_CHANGELEVEL_DESC;
 NS_END
 
 
@@ -55,6 +59,11 @@ private:
 	
 	void						ImGuiUpdate_StaticObject_Desc(STATICOBJECT_DESC* pDesc);
 	void						ImGuiUpdate_LandScape_Desc(LANDSCAPE_DESC* pDesc);
+
+
+	/* Trigger Box 관련 */
+	void						ImGuiUpdate_TriggerBox(TRIGGERBOX_DESC* pDesc);
+	void						ImGuiUpdate_TriggerBox_ChanageLevel_Desc(TRIGGERBOX_CHANGELEVEL_DESC* pDesc);
 
 private:
 	void						Compute_LandScape_TextureUV(_uint iLandScapeIndex , OUT Vec2& vOut_LT , OUT Vec2& vOut_RB );
@@ -111,6 +120,10 @@ private:
 	/* 가로 세로 개수 */
 	_int	m_iLandScape_Col{1}; // 세로
 	_int	m_iLandScape_Row{1}; // 가로
+
+
+
+	/* Trigger Box Change Level Desc */
 
 public:
 	static  CPanel_MapObjectList* Create(const _char* pLabel, CLevel* pOwner, ID3D11Device* pDevice, ID3D11DeviceContext* pDeviceContext);

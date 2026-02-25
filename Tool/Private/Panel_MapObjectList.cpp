@@ -964,9 +964,11 @@ HRESULT CPanel_MapObjectList::Render_Description()
 
 	switch (ePath)
 	{
-	case Tool::EClientMakePath::StaticObject: ImGuiUpdate_StaticObject_Desc	(static_cast<STATICOBJECT_DESC*>(pDesc));	return S_OK;
-	case Tool::EClientMakePath::LandScape:	  ImGuiUpdate_LandScape_Desc	(static_cast<LANDSCAPE_DESC*>(pDesc));		return S_OK;
-	default:																											return E_FAIL;
+	case Tool::EClientMakePath::StaticObject:			ImGuiUpdate_StaticObject_Desc					(static_cast<STATICOBJECT_DESC*>(pDesc));					return S_OK;
+	case Tool::EClientMakePath::LandScape:				ImGuiUpdate_LandScape_Desc						(static_cast<LANDSCAPE_DESC*>(pDesc));						return S_OK;
+
+	case Tool::EClientMakePath::TriggerBox_ChangeLevel:	ImGuiUpdate_TriggerBox_ChanageLevel_Desc		(static_cast<TRIGGERBOX_CHANGELEVEL_DESC*>(pDesc));			return S_OK;
+	default:																																						return E_FAIL;
 	}
 
 	return S_OK;
@@ -992,6 +994,9 @@ void CPanel_MapObjectList::ImGuiUpdate_StaticObject_Desc(STATICOBJECT_DESC* pDes
 	return;
 }
 
+#pragma endregion
+
+#pragma region LandScape
 void CPanel_MapObjectList::ImGuiUpdate_LandScape_Desc(LANDSCAPE_DESC* pDesc)
 {
 	if (pDesc == nullptr) return;
@@ -1039,6 +1044,72 @@ void CPanel_MapObjectList::ImGuiUpdate_LandScape_Desc(LANDSCAPE_DESC* pDesc)
 
 	ImGui::Separator();
 }
+#pragma endregion
+
+
+
+#pragma region Trigger Box
+
+
+
+void CPanel_MapObjectList::ImGuiUpdate_TriggerBox(TRIGGERBOX_DESC* pDesc)
+{
+	ImGui::SeparatorText(" Trigger Box Desc ");
+
+	if (ImGui::DragFloat3("Extents##TriggerBox_Extents", &pDesc->vExtents.x, 0.1f, 0.1f, 100.f, "%.2f"))
+	{
+		if (m_pSelectMapObject == nullptr) return;
+		m_pSelectMapObject->Update_Collider();
+	}
+
+	ImGui::Separator();
+}
+
+
+
+#pragma region TriggerBox Change Level Desc
+
+void CPanel_MapObjectList::ImGuiUpdate_TriggerBox_ChanageLevel_Desc(TRIGGERBOX_CHANGELEVEL_DESC* pDesc)
+{
+
+	/* 필수 요소 */
+	ImGuiUpdate_TriggerBox(pDesc);
+
+	ImGui::SeparatorText(" TriggerBox Change Level Desc");
+
+	ImGui::SeparatorText("Client Level Type ");
+
+	EClientLevelType eLevelType = StringToClientleveltype(pDesc->strChangeLevelTypeName);
+	m_iBuffer = ENUM_TO_UINT(eLevelType);
+
+
+	if (ImGui::BeginCombo("##Client Level Type", ClientleveltypeToString(static_cast<EClientLevelType>(m_iBuffer)).c_str()))
+	{
+		for (_int i = 0; i < ENUM_TO_UINT(EClientLevelType::END); ++i)
+		{
+			EClientLevelType eCurType = static_cast<EClientLevelType>(i);
+			bool isSelected = m_iBuffer == i;
+			string strCurName = ClientleveltypeToString(eCurType).c_str();
+			if (ImGui::Selectable(strCurName.c_str(), &isSelected))
+			{
+				/* 이름 Update 해주기 */
+				pDesc->strChangeLevelTypeName = strCurName;
+			}
+			if (isSelected)
+				ImGui::SetItemDefaultFocus();
+		}
+
+		ImGui::EndCombo();
+	}
+
+	ImGui::Separator();
+
+}
+#pragma endregion
+
+
+
+#pragma endregion
 
 #pragma endregion
 

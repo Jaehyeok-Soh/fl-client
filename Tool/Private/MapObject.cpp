@@ -13,9 +13,12 @@
 #include "DataStruct_Map.h"
 #include "GameInstance.h"
 #include "CameraMan.h"
-
+#include "Collider.h"
+#include "Bounding.h"
+#include "Bounding_AABB.h"
 
 USING(Tool)
+
 
 CMapObject::CMapObject(EToolObjectType eType, ID3D11Device* pDevice, ID3D11DeviceContext* pDeviceContext)
     : CToolObject(eType, pDevice, pDeviceContext), m_isLoaded{ false }, m_vecOverrideMaterials{} , m_isUseOverrideMaterials{false}
@@ -88,19 +91,24 @@ HRESULT CMapObject::Initialize(void* pArg)
         m_wstrModelPath = pDesc->tUsingModelInfo.wstrPath;
         Set_Name(m_strModelFileName);
     }
+
+    Check_ClientMakePathAndDrawType_TriggerBox();
     
-
+    /* Trigger Box관련 설정 체크하는 함수 */
     if (FAILED(Ready_SRTDatas(pDesc)))
-        return E_FAIL;
-
-    if (FAILED(Ready_Component()))
         return E_FAIL;
 
     if (FAILED(Ready_ClientMakePath(pDesc)))
         return E_FAIL;
 
+    if (FAILED(Ready_Component()))
+        return E_FAIL;
 
     if (FAILED(Check_DrawType_ByClientPath()))
+        return E_FAIL;
+
+
+    if (FAILED(Ready_ColliderTypeName()))
         return E_FAIL;
 
 
@@ -139,8 +147,13 @@ HRESULT CMapObject::Ready_SRTDatas(CMapObject::MAPOBJECT_DESC* pDesc)
 
 HRESULT CMapObject::Ready_Component()
 {
+    /* Collider 면 Collider 박스 달아주기 */
     if (m_eMapObjectDrawType == EMapObject_DrawType::Collider)
+    {
+        if (FAILED(Ready_ColliderTypeComponet()))
+            return E_FAIL;
         return S_OK;
+    }
 
     /* ReadyShader Shader */
     m_eMapObjectDrawType == EMapObject_DrawType::Instance ?
@@ -163,19 +176,22 @@ HRESULT CMapObject::Ready_Component()
 
     if (m_eMapObjectDrawType == EMapObject_DrawType::Instance)
     {
-        /* InstanceMehs  */
+        /* InstanceMesh */
         CInstanceMesh::INSTANCEMESH_DESC tInstanceMeshDesc{};
         tInstanceMeshDesc.IB_Usage = D3D11_USAGE_DYNAMIC;
         tInstanceMeshDesc.VB_Usage = D3D11_USAGE_DYNAMIC;
-        tInstanceMeshDesc.pModelMinMax = Get_Component<CModel>()->Get_StaticModelMinMax();
+        const Vec3* pMinMax = Get_Component<CModel>()->Get_StaticModelMinMax();
+        tInstanceMeshDesc.pModelMinMax = pMinMax == nullptr ? m_vDefaultMinMax : pMinMax ;
         tInstanceMeshDesc.vecInstanceMatrixPointer = &m_vecMatrix;
         Add_Component<CInstanceMesh>(ENUM_TO_UINT(ELevelType::STATIC), L"Prototype_Component_VIBuffer_InstanceMesh", &tInstanceMeshDesc);
     }
 
     CBounds::BOUND_COMP_DESC tBoundDesc{};
     tBoundDesc.fRatio = 1.f;
-    tBoundDesc.pMinMax =  m_eMapObjectDrawType == EMapObject_DrawType::Instance ?  Get_Component<CInstanceMesh>()->Get_InstanceWorldMinMax() : Get_Component<CModel>()->Get_StaticModelMinMax();
-    if (FAILED(Add_Component<CBounds>(0, L"Prototype_Component_Bounds", &tBoundDesc)))
+    const Vec3* pMinMax = m_eMapObjectDrawType == EMapObject_DrawType::Instance ? Get_Component<CInstanceMesh>()->Get_InstanceWorldMinMax() :
+        Get_Component<CModel>()->Get_StaticModelMinMax();
+    tBoundDesc.pMinMax = pMinMax == nullptr ? m_vDefaultMinMax : pMinMax;
+    if (FAILED(Add_Component<CBounds>( ENUM_TO_UINT(ELevelType::STATIC), L"Prototype_Component_Bounds", &tBoundDesc)))
         return E_FAIL;
 
     /* Bounding Box 업데이트 , Instnace모델이면 0 0 0월드좌표로 들어가는게 맞다 */
@@ -184,6 +200,51 @@ HRESULT CMapObject::Ready_Component()
     if(m_eMapObjectDrawType == EMapObject_DrawType::Instance)
         Get_Component<CBounds>()->Add_SubBounds(
             Get_Component<CModel>()->Get_StaticModelMinMax(),span<Matrix>(m_vecMatrix.data() , m_vecMatrix.size()),1.f);
+
+    return S_OK;
+}
+
+HRESULT CMapObject::Ready_ColliderTypeComponet()
+{
+
+    /* Collider 면 Collider 박스 달아주기 */
+    if (m_eMapObjectDrawType != EMapObject_DrawType::Collider)
+        return E_FAIL;
+
+    if (m_vecSRTs.size() > 1)
+    {
+        MSG_BOX(" Collider Draw Type의 SRT 데이터가 2개를 넘어갈 수 없습니다 ");
+        return E_FAIL;
+    }
+
+    /* Collider 는 Instance가 될수 없다. 그냥 내 정의 */
+    if(m_vecClientMakePathDesc.size() > 1)
+    {
+        MSG_BOX(" Collider Draw Type의 Desc 데이터가 2개를 넘어갈 수 없습니다 ");
+        return E_FAIL;
+    }
+
+    Engine::TRIGGERBOX_DESC* pTriggerBoxDesc = dynamic_cast<TRIGGERBOX_DESC*>(m_vecClientMakePathDesc.front());
+    if (pTriggerBoxDesc == nullptr)
+    {
+        MSG_BOX(" Trigger Box Desc 정보를 확인 할 수 없습니다 확인해주세요 ");
+        return E_FAIL;
+    }
+
+    /* 혹시 있을 콜라이더 컴포넌트 삭제시켜주기 */
+    CGameObject::Remove_Component<CCollider>();
+
+    /* Extents 지정 */
+    /* Center는 Offset이라 상관없음 */
+    CBounding_AABB::BOUNDING_AABB_DESC tAABBDesc{};
+    tAABBDesc.vExtens = pTriggerBoxDesc->vExtents;
+
+    CCollider::COLLIDER_DESC tColliderDesc{};
+    tColliderDesc.pBoundingDesc = &tAABBDesc;
+
+    if (FAILED(CGameObject::Add_Component<CCollider>(ENUM_TO_UINT(ELevelType::STATIC), L"Prototype_Component_Collider_AABB", &tColliderDesc)))
+        return E_FAIL;
+
 
     return S_OK;
 }
@@ -302,6 +363,30 @@ HRESULT CMapObject::Ready_OverrideMtl(const USING_MODEL_INFO& tUsingModelInfo)
 
 }
 
+HRESULT CMapObject::Ready_ColliderTypeName()
+{
+    /* Collider Type */
+    if (m_eMapObjectDrawType != EMapObject_DrawType::Collider)
+        return S_OK;
+
+
+    switch (m_eClientMakePath)
+    {
+    case Tool::EClientMakePath::TriggerBox_ChangeLevel:
+        m_strName = "TriggerBox_ChangeLevel";
+        break;
+    case Tool::EClientMakePath::TriggerBox_MonsterSpawner:
+        m_strName = "TriggerBox_MonsterSpawner";
+        break;
+    case Tool::EClientMakePath::END:
+        break;
+    default:
+        break;
+    }
+
+    return S_OK;
+}
+
 _bool CMapObject::Check_OutBound(_int iIndex) const
 {
     if (iIndex == -1)
@@ -316,6 +401,27 @@ _bool CMapObject::Check_OutBound(_int iIndex) const
     }
 
     return true;
+}
+
+void CMapObject::Check_ClientMakePathAndDrawType_TriggerBox()
+{
+    /* Collider Box Draw Type */
+    if (m_eMapObjectDrawType != EMapObject_DrawType::Collider)
+    {
+        switch (m_eClientMakePath)
+        {
+        case Tool::EClientMakePath::TriggerBox_ChangeLevel:
+        case Tool::EClientMakePath::TriggerBox_MonsterSpawner:
+            MSG_BOX(" Trigger Box 관련 Client Make Path는 Draw Type으로 Collider로 자동 지정 됩니다 ");
+            m_eMapObjectDrawType = EMapObject_DrawType::Collider;
+            break;
+        default:
+            break;
+        }
+        return;
+    }
+
+    return;
 }
 
 HRESULT CMapObject::Change_Instance_To_Default()
@@ -425,6 +531,27 @@ void CMapObject::Update_Bounds(_uint iIndex)
     }
 }
 
+void CMapObject::Update_Collider()
+{
+    if (m_eMapObjectDrawType != EMapObject_DrawType::Collider)
+        return;
+
+    CCollider* pCollider = Get_Component<CCollider>();
+    if (pCollider == nullptr) return;
+
+
+    CBounding* pBounding = pCollider->Get_Bounding();
+    if (pBounding == nullptr) return;
+    CBounding_AABB* pAABB = dynamic_cast<CBounding_AABB*>(pBounding);
+    if (pAABB == nullptr) return;
+    BoundingBox* pBoundingBox = pAABB->Get_OriginalDesc();
+    if (pBoundingBox == nullptr) return;
+
+    TRIGGERBOX_DESC* pDesc = dynamic_cast<TRIGGERBOX_DESC*>(m_vecClientMakePathDesc.front());
+    if (pDesc == nullptr) return;
+    pBoundingBox->Extents = pDesc->vExtents;
+}
+
 bool CMapObject::Get_SRT(OUT Vec3& vOutScale, OUT Quat& vQuat, OUT Vec3& vPosition)
 {
     if (m_iSelectedInstanceID >= m_vecSRTs.size())
@@ -467,7 +594,6 @@ void CMapObject::Set_WorldMatrix(const Matrix& WorldMatrix)
 
     return;
 }
-
 
 void CMapObject::Set_Scale(const Vec3& vScale ,_int iIndex)
 {
@@ -545,7 +671,6 @@ void CMapObject::Set_ClientMakePath(EClientMakePath eClientMakePath)
         m_vecClientMakePathDesc.push_back(pDesc);
     }
 
-
     if (FAILED(Check_DrawType_ByClientPath()))
         return;
 
@@ -558,7 +683,7 @@ void CMapObject::Set_MapObjectDrawType(EMapObject_DrawType eDrawType)
 
     if (eDrawType == EMapObject_DrawType::Collider)
     {
-        MSG_BOX("콜라이더 타입은 추후 추가예정");
+        MSG_BOX(" 콜라이더 타입 은 처음에 생성시점에 생성시 적용 외에 Type으로 지정 할 수 없습니다 ");
         return;
     }
 
@@ -786,14 +911,11 @@ void CMapObject::Update_Priority(const _float fTimeDelta)
 void CMapObject::Update(const _float fTimeDelta)
 {
     Super::Update(fTimeDelta);
-
-
 }
 
 void CMapObject::Update_Late(const _float fTimeDelta)
 {
     Super::Update_Late(fTimeDelta);
-
 }
 
 void CMapObject::Ready_Before_Render(const _float fTimeDelta)
@@ -815,7 +937,6 @@ HRESULT CMapObject::Render()
         return E_FAIL;
 
     CShader* pShader{nullptr};
-
 
     switch (m_eClientMakePath)
     {
@@ -845,6 +966,14 @@ HRESULT CMapObject::Render()
         break;
     case Tool::EClientMakePath::Rock:                
         Render_Rock();
+        break;
+
+
+
+    /* Trigger Box 전용 */
+    case Tool::EClientMakePath::TriggerBox_ChangeLevel:
+    case Tool::EClientMakePath::TriggerBox_MonsterSpawner:
+        Render_TriggerBox();
         break;
     default:
         break;
@@ -1010,13 +1139,6 @@ HRESULT CMapObject::Check_DrawType_ByClientPath()
     switch (m_eClientMakePath)
     {
     case Tool::EClientMakePath::StaticObject:           return S_OK;
-    case Tool::EClientMakePath::LandScape:
-    {
-        if (m_eMapObjectDrawType == EMapObject_DrawType::Instance)
-            MSG_BOX(" Land Scape는 Instance Draw를 지원하지 않습니다 렌더가 진행되지 않으니 Default Draw로 바꿔주세요 ");
-        return S_OK;
-
-    }
     case Tool::EClientMakePath::Grass:                  return S_OK;
     case Tool::EClientMakePath::Vine:                   return S_OK;
     case Tool::EClientMakePath::Tree:                   return S_OK;
@@ -1024,14 +1146,25 @@ HRESULT CMapObject::Check_DrawType_ByClientPath()
     case Tool::EClientMakePath::Bush:                   return S_OK;
     case Tool::EClientMakePath::Water:                  return S_OK;
     case Tool::EClientMakePath::Rock:                   return S_OK;
-
         break;
+
+
+
+    case Tool::EClientMakePath::LandScape:
+    case Tool::EClientMakePath::TriggerBox_ChangeLevel:
+    case Tool::EClientMakePath::TriggerBox_MonsterSpawner:
+    {
+        if (m_eMapObjectDrawType == EMapObject_DrawType::Instance)
+            MSG_BOX(" Land Scape는 Instance Draw를 지원하지 않습니다 렌더가 진행되지 않으니 Default Draw로 바꿔주세요 ");
+        return S_OK;
+    }
+
+
     default:                                            return S_OK;
     }
 
     return S_OK;
 }
-
 
 _int CMapObject::Get_InstanceCount()
 {
@@ -1093,8 +1226,6 @@ CMapObject* CMapObject::Create(EToolObjectType eType, ID3D11Device* pDevice, ID3
     return pMapObject;
 }
 
-
-
 CMapObject* CMapObject::Clone(CMapObject* pPrototype, const SRT_DATA& tSRT)
 {
     if (pPrototype->m_eMapObjectDrawType == EMapObject_DrawType::Instance)
@@ -1140,9 +1271,6 @@ CGameObject* CMapObject::Clone(void* pArg)
     return pMapObject;
 }
 
-
-
-
 void CMapObject::Free()
 { 
     m_pMapToolManager = nullptr;
@@ -1157,9 +1285,7 @@ void CMapObject::Free()
 }
 
 
-
 #pragma region 기본적인 Render 함수
-
 
 HRESULT CMapObject::Render_Default(_int iPass)
 {
@@ -1381,6 +1507,31 @@ HRESULT CMapObject::Render_Water()
 
     return S_OK;
 }
+#pragma endregion
+
+
+
+
+#pragma region TriggerBox 전용 Draw Type Collider
+
+HRESULT CMapObject::Render_TriggerBox()
+{
+    if (m_eMapObjectDrawType != EMapObject_DrawType::Collider)
+        return E_FAIL;
+
+    CTransform* pTransform = Get_Component<CTransform>();
+    CCollider* pCollider = Get_Component<CCollider>();
+
+    if (pTransform == nullptr) return E_FAIL;
+    if (pCollider == nullptr) return E_FAIL;
+
+    /* Update전 콜라이더 업데이트해주기 별로안되니까 상관없을듯? */
+    pCollider->Update(pTransform->Get_WorldMatrix());
+    pCollider->Render();
+
+    return S_OK;
+}
+
 #pragma endregion
 
 #pragma endregion

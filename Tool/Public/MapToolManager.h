@@ -23,6 +23,7 @@ class CMapObject;
 class CImGui_ToolManager;
 class CLevel_Map;
 class CLevelData;
+class CPanel_MapObjectList;
 
 using MapObjectCloneFactory = std::function<CGameObject*(void* pArg)>;
 using PairKey = std::pair<wstring, vector<wstring>>;
@@ -294,6 +295,7 @@ private:
 	virtual void Free() override;
 public:
 	friend class CPanel_MapTool;
+	friend class CPanel_MapObjectList;
 };
 
 NS_END

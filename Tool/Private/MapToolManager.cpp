@@ -413,8 +413,11 @@ HRESULT CMapToolManager::Apply_LevelData(const DTO::TLevelData* tData)
 	if (tData == nullptr) return E_FAIL;
 
 	/* 다른 이름이 저장되어있다면 E_FAIL 반환된다 */
-	if (FAILED(CMapToolManager::Load_TextureSplatingInfoData(Engine_Utils::ToWString(tData->strTextureSplatingInfoName))))
-		return E_FAIL;
+
+	/* None이 아니라면 반환한다 */
+	if(tData->strTextureSplatingInfoName != "None")
+		if (FAILED(CMapToolManager::Load_TextureSplatingInfoData(Engine_Utils::ToWString(tData->strTextureSplatingInfoName))))
+			return E_FAIL;
 
 	/* None => [Don't Use Texture Splating Info] */
 	m_pLevelData->m_strTextureSplatingInfoName	= tData->strTextureSplatingInfoName;

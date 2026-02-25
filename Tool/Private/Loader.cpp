@@ -122,6 +122,9 @@ HRESULT CLoader::Loading()
 
 HRESULT CLoader::Loading_For_Logo()
 {
+
+
+
 	m_isFinished = true;
 	return S_OK;
 }
@@ -130,17 +133,9 @@ HRESULT CLoader::Loading_For_Map()
 {
 	Matrix matPreTransformScale100 = Matrix::CreateScale(0.01f, 0.01f, 0.01f);
 
-	//=================
-	// Componment
-	//=================
-	// For. Prototype_Component_Collider_Sphere
-	m_pGameInstance->Add_Prototype(ENUM_TO_UINT(ELevelType::MAP), L"Prototype_Component_Collider_Sphere", CCollider::Create(m_pDevice, m_pDeviceContext, EColliderType::SPHERE));
-	// For. Prototype_Component_Collider_AABB
-	m_pGameInstance->Add_Prototype(ENUM_TO_UINT(ELevelType::MAP), L"Prototype_Component_Collider_AABB", CCollider::Create(m_pDevice, m_pDeviceContext, EColliderType::AABB));
-	// For. Prototype_Component_Collider_OBB
-	m_pGameInstance->Add_Prototype(ENUM_TO_UINT(ELevelType::MAP), L"Prototype_Component_Collider_OBB", CCollider::Create(m_pDevice, m_pDeviceContext, EColliderType::OBB));
-	// For. Prototype_Component_Bounds
-	m_pGameInstance->Add_Prototype(ENUM_TO_UINT(ELevelType::MAP), L"Prototype_Component_Bounds", CBounds::Create(m_pDevice, m_pDeviceContext));
+
+
+
 
 	/* Model Prototype */
 	CUEMapDataLoader* pMapDataLoader = CUEMapDataLoader::Create(m_pDevice,m_pDeviceContext);

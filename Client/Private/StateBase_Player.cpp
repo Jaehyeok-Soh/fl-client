@@ -334,6 +334,8 @@ _uint CStateBase_Player::Check_GunStates()
 	case ENUM_TO_UINT(CGun::GunState::RELOAD):
 		return m_iEndStateIdx;
 	}
+
+	return 0;
 }
 
 _bool CStateBase_Player::Check_OnGround(_float fMaxDist)

@@ -302,6 +302,13 @@ inline CLIENT_MAKEPATH_DESC_BASE* Create_ClientMakePathDesc(DTO::EClientMakePath
 	{
 	case DTO::EClientMakePath::StaticObject: return pSource == nullptr ? new STATICOBJECT_DESC	: new STATICOBJECT_DESC(*static_cast<STATICOBJECT_DESC*>(pSource));
 	case DTO::EClientMakePath::LandScape:	 return pSource == nullptr ? new LANDSCAPE_DESC		: new LANDSCAPE_DESC(*static_cast<LANDSCAPE_DESC*>(pSource));
+
+
+	case DTO::EClientMakePath::TriggerBox_ChangeLevel:	 return pSource == nullptr ? new TRIGGERBOX_CHANGELEVEL_DESC : new TRIGGERBOX_CHANGELEVEL_DESC(*static_cast<TRIGGERBOX_CHANGELEVEL_DESC*>(pSource));
+
+
+
+
 	default:								 return nullptr;
 	}
 
@@ -366,6 +373,46 @@ void LANDSCAPE_DESC::to_Json(json& SaveJson)
 
 	return;
 }
+
+
+#pragma region Trigger Box
+
+void TRIGGERBOX_DESC::from_Json(const json& LoadJson)
+{
+	if (LoadJson.contains("Extents"))
+	{
+		Engine_Utils::read_vec3_xyz(LoadJson["Extents"], this->vExtents);
+	}
+}
+
+void TRIGGERBOX_DESC::to_Json(json& SaveJson)
+{
+	Engine_Utils::write_vec3_xyz(SaveJson["Extents"], this->vExtents);
+}
+
+
+
+#pragma region Change Level
+
+void TRIGGERBOX_CHANGELEVEL_DESC::from_Json(const json& LoadJson)
+{
+	Super::from_Json(LoadJson);
+
+	if (LoadJson.contains("Change Level Type Name"))
+		this->strChangeLevelTypeName = LoadJson["Change Level Type Name"].get<string>();
+}
+
+void TRIGGERBOX_CHANGELEVEL_DESC::to_Json(json& SaveJson)
+{
+	Super::to_Json(SaveJson);
+
+
+	SaveJson["Change Level Type Name"] = this->strChangeLevelTypeName;
+}
+
+#pragma endregion
+
+#pragma endregion
 
 
 #pragma endregion

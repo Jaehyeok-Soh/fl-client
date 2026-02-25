@@ -85,8 +85,68 @@ public:
 #pragma endregion
 
 
+
+#pragma region Trigger Box
+
+struct ENGINE_DLL TRIGGERBOX_DESC : CLIENT_MAKEPATH_DESC_BASE
+{
+public:
+	Vec3		 vExtents{0.5f,0.5f ,0.5f};
+public:
+	explicit TRIGGERBOX_DESC()
+		: vExtents{ 0.5f,0.5f ,0.5f }
+	{
+	}
+	explicit TRIGGERBOX_DESC(const TRIGGERBOX_DESC& rhs)
+		: CLIENT_MAKEPATH_DESC_BASE(rhs) , vExtents(rhs.vExtents)
+	{
+		return;
+	}
+	virtual ~TRIGGERBOX_DESC() {}
+public:
+	virtual void from_Json(const json& LoadJson);
+	virtual void to_Json(json& SaveJson);
+};
+
+
+#pragma region ChangeLevel
+
+struct ENGINE_DLL TRIGGERBOX_CHANGELEVEL_DESC : TRIGGERBOX_DESC
+{
+	using Super = TRIGGERBOX_DESC;
+public:
+	std::string strChangeLevelTypeName{ "NONE" };
+public:
+	explicit TRIGGERBOX_CHANGELEVEL_DESC()
+		: TRIGGERBOX_DESC(), strChangeLevelTypeName{"NONE"}
+	{
+	}
+	explicit TRIGGERBOX_CHANGELEVEL_DESC(const TRIGGERBOX_CHANGELEVEL_DESC& rhs)
+		: TRIGGERBOX_DESC(rhs), strChangeLevelTypeName{rhs.strChangeLevelTypeName}
+	{
+		return;
+	}
+	virtual ~TRIGGERBOX_CHANGELEVEL_DESC() {};
+public:
+public:
+	virtual void from_Json(const json& LoadJson);
+	virtual void to_Json(json& SaveJson);
+};
+
+#pragma endregion
+
+
+#pragma region Spawner
+
+
+#pragma endregion
+
+#pragma endregion
+
+
 #pragma endregion
 NS_END
+
 NS_BEGIN(DTO)
 /////////////////-------------------  MAP  -------------------/////////////////
 
@@ -124,6 +184,18 @@ enum class EClientMakePath
 	Vine,
 	Rock,
 	Water,
+
+
+
+	/* 단순 객체 */
+	Monster_Dog,
+	Monster_Shooter,
+
+	/* Trigger Box 관련 */
+	TriggerBox_ChangeLevel,
+	TriggerBox_MonsterSpawner,
+
+
 	END
 };
 
@@ -161,16 +233,26 @@ NLOHMANN_JSON_SERIALIZE_ENUM(EMapObject_DrawType,
 
 	NLOHMANN_JSON_SERIALIZE_ENUM(EClientMakePath,
 		{
-			{EClientMakePath::StaticObject, "StaticObject"},
-			{EClientMakePath::LandScape,	"LandScape"},
-			{EClientMakePath::Bush,			"Bush"},
-			{EClientMakePath::Grass,		"Grass"},
-			{EClientMakePath::Moss,			"Moss"},
-			{EClientMakePath::Tree,			"Tree"},
-			{EClientMakePath::Vine,			"Vine"},
-			{EClientMakePath::Rock,			"Rock"},
-			{EClientMakePath::Water,		"Water"},
-			{EClientMakePath::END,			"Unknown"},
+			{EClientMakePath::StaticObject,					"StaticObject"},
+			{EClientMakePath::LandScape,					"LandScape"},
+			{EClientMakePath::Bush,							"Bush"},
+			{EClientMakePath::Grass,						"Grass"},
+			{EClientMakePath::Moss,							"Moss"},
+			{EClientMakePath::Tree,							"Tree"},
+			{EClientMakePath::Vine,							"Vine"},
+			{EClientMakePath::Rock,							"Rock"},
+			{EClientMakePath::Water,						"Water"},
+
+
+
+			{EClientMakePath::Monster_Dog,					"Monster_Dog"},
+			{EClientMakePath::Monster_Shooter,				"Monster_Shooter"},
+
+
+			{EClientMakePath::TriggerBox_ChangeLevel,		"TriggerBox_ChangeLevel"},
+			{EClientMakePath::TriggerBox_MonsterSpawner,	"TriggerBox_MonsterSpawner"},
+
+			{EClientMakePath::END,							"Unknown"},
 		}
 		)
 

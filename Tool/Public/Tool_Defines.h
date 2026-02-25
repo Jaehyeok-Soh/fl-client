@@ -1,5 +1,4 @@
 #pragma once
-
 #include "Engine_Define.h"
 #include "Tool_EventDefines.h"
 #include <windows.h>
@@ -371,6 +370,7 @@ namespace Tool
 
 	enum class EClientMakePath
 	{
+		/* Map Object 관련 */
 		StaticObject,
 		LandScape,
 		Bush,
@@ -380,6 +380,15 @@ namespace Tool
 		Vine,
 		Rock,
 		Water,
+
+		/* 단순 객체 */
+		Monster_Dog,
+		Monster_Shooter,
+
+		/* Trigger Box 관련 */
+		TriggerBox_ChangeLevel,
+		TriggerBox_MonsterSpawner,
+
 		END,
 	};
 
@@ -412,6 +421,16 @@ namespace Tool
 		case Tool::EClientMakePath::Rock:			return "Rock";
 		case Tool::EClientMakePath::Water:			return "Water";
 			/* ------------------------------------------- */
+
+			/*  --------- 단순 객체 ---------*/
+
+		case Tool::EClientMakePath::Monster_Dog:					return "Monster_Dog";
+		case Tool::EClientMakePath::Monster_Shooter:				return "Monster_Shooter";
+
+			/* -------------- Trigger Box -------------- */
+		case Tool::EClientMakePath::TriggerBox_ChangeLevel:			return "TriggerBox_ChangeLevel";
+		case Tool::EClientMakePath::TriggerBox_MonsterSpawner:		return "TriggerBox_MonsterSpawner";
+
 		default:									return "Unknown";
 		}
 	};
