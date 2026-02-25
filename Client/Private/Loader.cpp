@@ -626,7 +626,12 @@ HRESULT CLoader::Loading_For_Logo()
 HRESULT CLoader::Loading_For_Tutorial_Village()
 {
 	/* Tutorial Village */
-
+		
+	// 오브젝트
+	
+		// 이펙트 Object
+	ADD_PROTOTYPE(ELevelType::TUTORIAL_VILLAGE, L"Prototype_GameObject_Effect", Effect::Create(m_pDevice, m_pDeviceContext));
+	ADD_PROTOTYPE(ELevelType::TUTORIAL_VILLAGE, L"Prototype_GameObject_Effect_Parts", CEffectObject::Create(m_pDevice, m_pDeviceContext));
 
 
 
@@ -638,6 +643,11 @@ HRESULT CLoader::Loading_For_Tutorial_Boss()
 {
 	/* Tutorial Boss */
 
+	// 오브젝트
+	
+		// 이펙트 Object
+	ADD_PROTOTYPE(ELevelType::TUTORIAL_VILLAGE, L"Prototype_GameObject_Effect", Effect::Create(m_pDevice, m_pDeviceContext));
+	ADD_PROTOTYPE(ELevelType::TUTORIAL_VILLAGE, L"Prototype_GameObject_Effect_Parts", CEffectObject::Create(m_pDevice, m_pDeviceContext));
 
 	return S_OK;
 }
@@ -646,6 +656,11 @@ HRESULT CLoader::Loading_For_Square()
 {
 	/* Square */
 
+	// 오브젝트
+
+		// 이펙트 Object
+	ADD_PROTOTYPE(ELevelType::TUTORIAL_VILLAGE, L"Prototype_GameObject_Effect", Effect::Create(m_pDevice, m_pDeviceContext));
+	ADD_PROTOTYPE(ELevelType::TUTORIAL_VILLAGE, L"Prototype_GameObject_Effect_Parts", CEffectObject::Create(m_pDevice, m_pDeviceContext));
 
 	return S_OK;
 }
