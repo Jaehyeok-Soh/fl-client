@@ -177,7 +177,7 @@ NLOHMANN_JSON_SERIALIZE_ENUM(EUISubClassType,
 		{ EUISubClassType::MONSTER_ARMOR,		"MONSTER_ARMOR" },
 		{ EUISubClassType::MONSTER_STAT_END,	"MONSTER_STAT_END"},
 
-		{ EUISubClassType::PLAYER_AMMO_PROGRESS,			"PLAYER_AMMO_PROGRESS"}
+		{ EUISubClassType::PLAYER_AMMO_PROGRESS,"PLAYER_AMMO_PROGRESS"}
 	})
 
 #pragma region 텍스트 서브 클래스
@@ -510,6 +510,8 @@ enum class EUIDImageSubClassType
 
 	// 몬스터 네임플레이트
 	MONSTER_NAMEPLATE_BG,
+
+	// 유틸 
 	END
 };
 

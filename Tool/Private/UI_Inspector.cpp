@@ -259,7 +259,63 @@ void CUI_Inspector::Input_RectTransform()
 			}
 		}
 	}
+	if (ImGui::Button("All Activate"))
+	{
+		auto* pCanvas = m_pUIManager->Safe_Access_Canvas(m_pUIManager->Get_CurCanvasIndex());
+		if (nullptr != pCanvas)
+		{
+			for (auto* pUI : *(pCanvas->Safe_Access_UI_Vector()))
+			{
+				if (nullptr == pUI)
+					continue;
 
+				pUI->Set_Activate();
+			}
+		}
+	}
+	if (ImGui::Button("All InActivate"))
+	{
+		auto* pCanvas = m_pUIManager->Safe_Access_Canvas(m_pUIManager->Get_CurCanvasIndex());
+		if (nullptr != pCanvas)
+		{
+			for (auto* pUI : *(pCanvas->Safe_Access_UI_Vector()))
+			{
+				if (nullptr == pUI)
+					continue;
+
+				pUI->Set_InActivate();
+			}
+		}
+	}
+
+	if (ImGui::Button("All Interact"))
+	{
+		auto* pCanvas = m_pUIManager->Safe_Access_Canvas(m_pUIManager->Get_CurCanvasIndex());
+		if (nullptr != pCanvas)
+		{
+			for (auto* pUI : *(pCanvas->Safe_Access_UI_Vector()))
+			{
+				if (nullptr == pUI)
+					continue;
+
+				pUI->Set_Interactable();
+			}
+		}
+	}
+	if (ImGui::Button("All NonInteract"))
+	{
+		auto* pCanvas = m_pUIManager->Safe_Access_Canvas(m_pUIManager->Get_CurCanvasIndex());
+		if (nullptr != pCanvas)
+		{
+			for (auto* pUI : *(pCanvas->Safe_Access_UI_Vector()))
+			{
+				if (nullptr == pUI)
+					continue;
+
+				pUI->Set_NonInteractable();
+			}
+		}
+	}
 	ImGui::EndChild();
 	ImGui::PopID();
 }

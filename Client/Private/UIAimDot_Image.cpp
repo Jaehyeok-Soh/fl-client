@@ -64,6 +64,9 @@ HRESULT CUIAimDot_Image::Attach_Personal_Info()
 		}
 		break;
 	}
+	case DTO::EUIDImageSubClassType::BATTLE_AIMDOT_CROSSHAIR_RIGHT:
+	case DTO::EUIDImageSubClassType::BATTLE_AIMDOT_CROSSHAIR_BOTTOM:
+	case DTO::EUIDImageSubClassType::BATTLE_AIMDOT_CROSSHAIR_LEFT:
 	case DTO::EUIDImageSubClassType::BATTLE_AIMDOT_CROSSHAIR_TOP:
 	{
 		// 지금 총 들고 있는데
@@ -74,11 +77,9 @@ HRESULT CUIAimDot_Image::Attach_Personal_Info()
 			{
 				Set_Visible();
 			}
-
 			if (m_isShootingTrigger)
 			{
-				Ready_Lerp_Movement(m_vMoveOffset, Vec2{0.f, -10.f}, m_fAttSpeed, 1.f, m_fDelay);
-				m_vMaxOffset = Vec2{ 0.f, -10.f };
+				Ready_Lerp_Movement(m_vMoveOffset, m_vMaxOffset, m_fAttSpeed, 1.f, m_fDelay);
 				m_isSpreadStart = true;
 				m_isSpreadEnd = false;
 			}
@@ -92,74 +93,8 @@ HRESULT CUIAimDot_Image::Attach_Personal_Info()
 				Set_Invisible();
 			}
 		}
-		break;
 	}
-	case DTO::EUIDImageSubClassType::BATTLE_AIMDOT_CROSSHAIR_RIGHT:
-	{
-		if (Engine_Utils::Has_Flag(m_pPlayerStatCom->Get_AttState(), CStatCom_Player::Attack_State::Gun))
-		{
-			if (!m_isPreRangeAtt)
-				Set_Visible();
-
-			if (m_isShootingTrigger)
-			{
-				Ready_Lerp_Movement(m_vMoveOffset, Vec2{ 10.f, 0.f }, m_fAttSpeed, 1.f, m_fDelay);
-				m_vMaxOffset = Vec2{ 10.f, 0.f };
-				m_isSpreadStart = true;
-				m_isSpreadEnd = false;
-			}
-		}
-		else if (Engine_Utils::Has_Flag(m_pPlayerStatCom->Get_AttState(), CStatCom_Player::Attack_State::Melee))
-		{
-			if (m_isPreRangeAtt)
-				Set_Invisible();
-		}
 		break;
-	}
-	case DTO::EUIDImageSubClassType::BATTLE_AIMDOT_CROSSHAIR_BOTTOM:
-	{
-		if (Engine_Utils::Has_Flag(m_pPlayerStatCom->Get_AttState(), CStatCom_Player::Attack_State::Gun))
-		{
-			if (!m_isPreRangeAtt)
-				Set_Visible();
-
-			if (m_isShootingTrigger)
-			{
-				Ready_Lerp_Movement(m_vMoveOffset, Vec2{ 0.f, 10.f }, m_fAttSpeed, 1.f, m_fDelay);
-				m_vMaxOffset = Vec2{ 0.f, 10.f };
-				m_isSpreadStart = true;
-				m_isSpreadEnd = false;
-			}
-		}
-		else if (Engine_Utils::Has_Flag(m_pPlayerStatCom->Get_AttState(), CStatCom_Player::Attack_State::Melee))
-		{
-			if (m_isPreRangeAtt)
-				Set_Invisible();
-		}
-		break;
-	}
-	case DTO::EUIDImageSubClassType::BATTLE_AIMDOT_CROSSHAIR_LEFT:
-	{
-		if (Engine_Utils::Has_Flag(m_pPlayerStatCom->Get_AttState(), CStatCom_Player::Attack_State::Gun))
-		{
-			if (!m_isPreRangeAtt)
-				Set_Visible();
-
-			if (m_isShootingTrigger)
-			{
-				Ready_Lerp_Movement(m_vMoveOffset, Vec2{ -10.f, 0.f }, m_fAttSpeed, 1.f, m_fDelay);
-				m_vMaxOffset = Vec2{ -10.f, 0.f };
-				m_isSpreadStart = true;
-				m_isSpreadEnd = false;
-			}
-		}
-		else if (Engine_Utils::Has_Flag(m_pPlayerStatCom->Get_AttState(), CStatCom_Player::Attack_State::Melee))
-		{
-			if (m_isPreRangeAtt)
-				Set_Invisible();
-		}
-		break;
-	}
 	case DTO::EUIDImageSubClassType::BATTLE_AIM_HIT:
 		break;
 	case DTO::EUIDImageSubClassType::BATTLE_AIM_LOCK:
@@ -189,6 +124,28 @@ HRESULT CUIAimDot_Image::Awake(const _uint iCurrentLevelID)
 	if (nullptr == m_pPlayerStatCom)
 		return E_FAIL;
 
+	switch (m_eDImageSubClass)
+	{
+	case DTO::EUIDImageSubClassType::BATTLE_AIMDOT_CROSSHAIR_TOP:
+		m_vMaxOffset = Vec2{ 0.f, -10.f };
+		break;
+	case DTO::EUIDImageSubClassType::BATTLE_AIMDOT_CROSSHAIR_RIGHT:
+		m_vMaxOffset = Vec2{ 10.f, 0.f };
+		break;
+	case DTO::EUIDImageSubClassType::BATTLE_AIMDOT_CROSSHAIR_BOTTOM:
+		m_vMaxOffset = Vec2{ 0.f, 10.f };
+		break;
+	case DTO::EUIDImageSubClassType::BATTLE_AIMDOT_CROSSHAIR_LEFT:
+		m_vMaxOffset = Vec2{ -10.f, 0.f };
+		break;
+	case DTO::EUIDImageSubClassType::BATTLE_AIM_HIT:
+		break;
+	case DTO::EUIDImageSubClassType::BATTLE_AIM_LOCK:
+		break;
+	case DTO::EUIDImageSubClassType::END:
+	default:
+		return E_FAIL;
+	}
 	return S_OK;
 }
 
@@ -210,9 +167,6 @@ void CUIAimDot_Image::Update(const _float fTimeDelta)
 	{
 		m_pPlayerStatCom->Set_AttackState(CStatCom_Player::Attack_State::Melee, false);
 		m_pPlayerStatCom->Set_AttackState(CStatCom_Player::Attack_State::Gun, true);
-	}
-	else if (MOUSE_RBUTTON_HOLD)
-	{
 		m_isShootingTrigger = true;
 	}
 
