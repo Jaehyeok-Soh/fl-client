@@ -394,6 +394,12 @@
     <Filter Include="07. System\99. Debug_ImGui\Layout\Transform">
       <UniqueIdentifier>{C518D0B1-BF6A-4AC3-93EB-A5DC2C9C95A6}</UniqueIdentifier>
     </Filter>
+    <Filter Include="03. GameObject\ContainerObjects\Monster\Boss">
+      <UniqueIdentifier>{8772f096-9dc8-4081-957f-3400771c469c}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="03. GameObject\PartObjects\Monster\Body\Xibi">
+      <UniqueIdentifier>{5386aadc-21bf-4b31-b43a-0b216b6c0e88}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="targetver.h">
@@ -781,6 +787,12 @@
     <ClInclude Include="..\Public\State_GunBase.h">
       <Filter>06. FSM\Player\Attack\Gun</Filter>
     </ClInclude>
+    <ClInclude Include="..\public\Boss_Xibi.h">
+      <Filter>03. GameObject\ContainerObjects\Monster\Boss</Filter>
+    </ClInclude>
+    <ClInclude Include="..\public\Boss_Xibi_Body.h">
+      <Filter>03. GameObject\PartObjects\Monster\Body\Xibi</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <Image Include="Client.ico">
@@ -1090,9 +1102,6 @@
     <ClCompile Include="..\Private\Monster_Base.cpp">
       <Filter>03. GameObject\ContainerObjects\Monster</Filter>
     </ClCompile>
-    <ClCompile Include="..\Private\Monster_Dummy.cpp">
-      <Filter>03. GameObject\ContainerObjects\Monster\Dummy</Filter>
-    </ClCompile>
     <ClCompile Include="..\Private\Monster_Body_Base.cpp">
       <Filter>03. GameObject\PartObjects\Monster\Body</Filter>
     </ClCompile>
@@ -1159,6 +1168,15 @@
     </ClCompile>
     <ClCompile Include="..\Private\State_GunBase.cpp">
       <Filter>06. FSM\Player\Attack\Gun</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\Monster_Dummy.cpp">
+      <Filter>03. GameObject\ContainerObjects\Monster\Dummy</Filter>
+    </ClCompile>
+    <ClCompile Include="..\private\Boss_Xibi.cpp">
+      <Filter>03. GameObject\ContainerObjects\Monster\Boss</Filter>
+    </ClCompile>
+    <ClCompile Include="..\private\Boss_Xibi_Body.cpp">
+      <Filter>03. GameObject\PartObjects\Monster\Body\Xibi</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

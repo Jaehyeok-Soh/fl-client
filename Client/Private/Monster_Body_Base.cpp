@@ -40,10 +40,14 @@ HRESULT CMonster_Body_Base::Initialize(void* pArg)
 		return E_FAIL;
 
 	MONSTERBODY_DESC* pDesc = static_cast<MONSTERBODY_DESC*>(pArg);
+
 	if (FAILED(Ready_Components(pDesc)))
 		return E_FAIL;
 
 	if (FAILED(Ready_ComputeShader()))
+		return E_FAIL;
+
+	if (FAILED(Ready_Bones(pDesc)))
 		return E_FAIL;
 
 	Set_Flag(OF_Outline, true);
@@ -55,7 +59,8 @@ HRESULT CMonster_Body_Base::Awake(const _uint iCurrentLevelIndex)
 	if (FAILED(Super::Awake(iCurrentLevelIndex)))
 		return E_FAIL;
 
-	Get_Component<CPhysicsAttackOverlap>()->Awake();
+	if(Get_Component<CPhysicsAttackOverlap>() != nullptr)
+		Get_Component<CPhysicsAttackOverlap>()->Awake();
 
 	return S_OK;
 }
@@ -72,16 +77,18 @@ void CMonster_Body_Base::Update(_float fTimeDelta)
 	CComputeShader* pBonCS = static_cast<CComputeShader*>(Get_Script_Component(TEXT("ComputeShader_BoneCombine")));
 	CComputeShader* pAnimECS = static_cast<CComputeShader*>(Get_Script_Component(TEXT("ComputeShader_AnimE")));
 	CComputeShader* pAnimBCS = static_cast<CComputeShader*>(Get_Script_Component(TEXT("ComputeShader_AnimB")));
+	CComputeShader* pAnimMix = static_cast<CComputeShader*>(Get_Script_Component(TEXT("ComputeShader_AnimMix")));
 
 	Get_Component<CModel>()->Update_Animation(pBonCS, pAnimECS, fTimeDelta,
-		Get_Parent()->Get_Component<CTransform>(), Get_Parent()->Get_Component<CPhysicsCCT>(), pAnimBCS, nullptr);
+		Get_Parent()->Get_Component<CTransform>(), Get_Parent()->Get_Component<CPhysicsCCT>(), pAnimBCS, pAnimMix);
 }
 
 void CMonster_Body_Base::Update_Late(_float fTimeDelta)
 {
 	Super::Update_Late(fTimeDelta);
 
-	Get_Component<CPhysicsAttackOverlap>()->Update(fTimeDelta);
+	if(Get_Component<CPhysicsAttackOverlap>())
+		Get_Component<CPhysicsAttackOverlap>()->Update(fTimeDelta);
 }
 
 void CMonster_Body_Base::Ready_Before_Render(_float fTimeDelta)
@@ -148,6 +155,15 @@ HRESULT CMonster_Body_Base::Render()
 	return S_OK;
 }
 
+CBone* CMonster_Body_Base::Get_Bone(CMonster_Body_Base::EBone eBone)
+{
+	_uint iIndex = ENUM_TO_UINT(eBone);
+	if (m_vecBoneIndices.size() <= iIndex)
+		return nullptr;
+
+	return Get_Component<CModel>()->Get_Bone(m_vecBoneIndices[iIndex]);
+}
+
 const Matrix* CMonster_Body_Base::Get_SocketMatrix(const _char* szBoneName)
 {
 	if (CBone* pReturn = Get_Component<CModel>()->Get_Bone(szBoneName))
@@ -170,14 +186,15 @@ const Matrix* CMonster_Body_Base::Get_SocketMatrix(_uint iIndex)
 
 HRESULT CMonster_Body_Base::Ready_Components(MONSTERBODY_DESC* pDesc)
 {
-	if (FAILED(Add_Component<CModel>(0/*static*/, pDesc->wstrModelPrototypeTag, pDesc)))
+	if (FAILED(Add_Component<CModel>(0/*static*/, pDesc->wstrModelPrototypeTag, nullptr)))
 		return E_FAIL;
 
-	if (FAILED(Add_Component<CShader>(0/*static*/, L"Prototype_Component_Shader_VtxAnimMesh", pDesc)))
+	if (FAILED(Add_Component<CShader>(0/*static*/, L"Prototype_Component_Shader_VtxAnimMesh", nullptr)))
 		return E_FAIL;
 
-	if (FAILED(Ready_AttackOverlap(pDesc->wstrAttackOverlapPrototypeTag)))
-		return E_FAIL;
+	if(pDesc->wstrAttackOverlapPrototypeTag.empty() == false)
+		if (FAILED(Ready_AttackOverlap(pDesc->wstrAttackOverlapPrototypeTag)))
+			return E_FAIL;
 
 	return S_OK;
 }
@@ -282,14 +299,62 @@ HRESULT CMonster_Body_Base::Ready_ComputeShader()
 			return E_FAIL;
 	}
 
+	// ========   Compute Shader : AnimMix  ========
+	{
+		CComputeShader::ComShaderCopyDesc ShaderDesc = {};
+		ShaderDesc.Output_SRVBuffer_Name = "CHANNEL_OUTPUT_SRV";
+
+		ShaderDesc.InputBufferNum = 4;
+		ShaderDesc.bMakeSB = false;
+		//// 입력 버퍼
+		//ShaderDesc.Input_StructBuffer.sBufferName = "IMMU_EFFECT_PARTICLE";
+		//ShaderDesc.Input_StructBuffer.iElementSize = sizeof(EFFECT_PARTICLE_IMMU_ELEMENT);
+		//ShaderDesc.Input_StructBuffer.iNumElements = iBoneNums;
+
+		// 출력 버퍼
+		ShaderDesc.OutPut_StructBuffer.sBufferName = "CHANNEL_OUTPUT";
+		ShaderDesc.OutPut_StructBuffer.iElementSize = sizeof(CS_SRT);
+		ShaderDesc.OutPut_StructBuffer.iNumElements = iBoneNums;
+
+		if (FAILED(Add_Script_Component(L"ComputeShader_AnimMix", L"Prototype_Component_Shader_AnimMix", &ShaderDesc)))
+			return E_FAIL;
+	}
+
 	CComputeShader* pBoneMeshCS = static_cast<CComputeShader*>(Get_Script_Component(TEXT("ComputeShader_BoneMesh")));
 	CComputeShader* pBonCombineCS = static_cast<CComputeShader*>(Get_Script_Component(TEXT("ComputeShader_BoneCombine")));
 	CComputeShader* pAnimECS = static_cast<CComputeShader*>(Get_Script_Component(TEXT("ComputeShader_AnimE")));
 	CComputeShader* pAnimBlendCS = static_cast<CComputeShader*>(Get_Script_Component(TEXT("ComputeShader_AnimB")));
-	CComputeShader* pGetBoneCS = static_cast<CComputeShader*>(Get_Script_Component(TEXT("ComputeShader_GetBone")));
+	CComputeShader* pAnimMix = static_cast<CComputeShader*>(Get_Script_Component(TEXT("ComputeShader_AnimMix")));
 
-	if (FAILED(Get_Component<CModel>()->Ready_ComputeShaders(pBoneMeshCS, pBonCombineCS, pAnimECS, pAnimBlendCS, pGetBoneCS)))
+	if (FAILED(Get_Component<CModel>()->Ready_ComputeShaders(pBoneMeshCS, pBonCombineCS, pAnimECS, pAnimBlendCS, pAnimMix)))
 		return E_FAIL;
+
+	return S_OK;
+}
+
+HRESULT CMonster_Body_Base::Ready_Bones(MONSTERBODY_DESC* pDesc)
+{
+	const auto& boneNames = pDesc->spanBoneNames;
+	if (boneNames.size() <= 0)
+		return S_OK;
+
+	CModel* pModel = Get_Component <CModel>();
+	if (pModel == nullptr)
+		return E_FAIL;
+
+	m_vecBoneIndices.resize(ENUM_TO_UINT(EBone::END));
+	for (size_t i = 0; i < boneNames.size(); ++i)
+	{
+		EBone eBone = static_cast<EBone>(boneNames[i].first);
+		if (eBone >= EBone::END)
+			return E_FAIL;
+
+		_int iBoneIndex = pModel->Get_BoneIndex(boneNames[i].second.c_str());
+		if (iBoneIndex == -1)
+			return E_FAIL;
+
+		m_vecBoneIndices[ENUM_TO_UINT(eBone)] = iBoneIndex;
+	}
 
 	return S_OK;
 }

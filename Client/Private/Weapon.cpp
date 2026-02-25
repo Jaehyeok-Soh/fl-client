@@ -219,12 +219,12 @@ HRESULT CWeapon::Ready_Components(WEAPON_DESC* pDesc)
 
 	if (pDesc->eModel == Weapon_ModelType::STATIC)
 	{
-		if (FAILED(Add_Component<CShader>(0/*static*/, L"Prototype_Component_Shader_VtxMesh", pDesc)))
+		if (FAILED(Add_Component<CShader>(0/*static*/, L"Prototype_Component_Shader_VtxMesh", nullptr)))
 			return E_FAIL;
 	}
 	else
 	{
-		if (FAILED(Add_Component<CShader>(0/*static*/, L"Prototype_Component_Shader_VtxAnimMesh", pDesc)))
+		if (FAILED(Add_Component<CShader>(0/*static*/, L"Prototype_Component_Shader_VtxAnimMesh", nullptr)))
 			return E_FAIL;
 	}
 

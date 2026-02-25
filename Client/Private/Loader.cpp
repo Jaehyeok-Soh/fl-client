@@ -50,6 +50,7 @@
 #include "CameraMan_Targeter.h"
 #include "Body.h"
 #include "Weapon.h"
+#include "Sword.h"
 #include "ColliderPart.h"
 #include "Loader.h"
 #include "Effect.h"
@@ -59,11 +60,12 @@
 /* ------- Map --------- */
 #include "StaticObject.h"
 #include "LandScape.h"
-/* --------------------- */
-#include "Monster_Dummy.h" // test
-#include "Sword.h"
+/* ------ Monster ------- */
 #include "Monster_Dummy.h" // test
 #include "Monster_Dummy_Body.h" // test
+/* ------- Boss -------- */
+#include "Boss_Xibi.h"
+#include "Boss_Xibi_Body.h"
 
 //=================
 // UI
@@ -191,6 +193,7 @@ HRESULT CLoader::Loading_For_Logo()
 	m_fLoadingRatio = 0.f;
 
 #pragma region PretransformMatrix
+	Matrix matPreTransformScaleTest = Matrix::CreateScale(100.f, 100.f, 100.f);
 	Matrix matPreTransformScale = Matrix::CreateScale(0.01f, 0.01f, 0.01f);
 	Matrix matPreTransformIdentity = Matrix::Identity;
 	Matrix matPreTransformTurn90 = matPreTransformScale * Matrix::CreateFromYawPitchRoll(XMConvertToRadians(90.f), 0.f, 0.f);
@@ -396,6 +399,40 @@ HRESULT CLoader::Loading_For_Logo()
 
 		m_pGameInstance->Add_Prototype(ENUM_TO_UINT(ELevelType::STATIC), L"Prototype_Component_Model_MoonGun", CModel::Create(m_pDevice, m_pDeviceContext, &desc));
 	}
+
+	// For.Prototype_Component_Model_Xibi
+	{
+		CModel::MODEL_ORIGIN_DESC desc = {};
+		desc.eType = EModelType::ANIM;
+		desc.iPrototypeLevelIndex = ENUM_TO_UINT(ELevelType::STATIC);
+		desc.pMatPreTransform = &(matPreTransformScale);
+		desc.wstrModelFolderName = L"Xibi";
+		desc.FStageBone = CModel::STAGEING_BONE::SB_SPCIPICBONE;
+		desc.vecStageBoneIndices = { 75 };
+
+		CModel::DATA_ANIMCHANNEL tAniChannelData = {};
+		tAniChannelData.iRootBoneIndex = 2;
+		desc.pAniChannelData = &tAniChannelData;
+
+		m_pGameInstance->Add_Prototype(ENUM_TO_UINT(ELevelType::STATIC), L"Prototype_Component_Model_Xibi", CModel::Create(m_pDevice, m_pDeviceContext, &desc));
+	}
+
+	// For.Prototype_Component_Model_XibiWeapon
+	{
+		CModel::MODEL_ORIGIN_DESC desc = {};
+		desc.eType = EModelType::ANIM;
+		desc.iPrototypeLevelIndex = ENUM_TO_UINT(ELevelType::STATIC);
+		desc.pMatPreTransform = &(matPreTransformIdentity);
+		desc.wstrModelFolderName = L"XibiWeapon";
+		desc.FStageBone = CModel::STAGEING_BONE::SB_ZEROBONE;
+
+		CModel::DATA_ANIMCHANNEL tAniChannelData = {};
+		tAniChannelData.iRootBoneIndex = 2;
+		desc.pAniChannelData = &tAniChannelData;
+
+		m_pGameInstance->Add_Prototype(ENUM_TO_UINT(ELevelType::STATIC), L"Prototype_Component_Model_XibiWeapon", CModel::Create(m_pDevice, m_pDeviceContext, &desc));
+	}
+
 	// For.Prototype_Component_Model_Monster_Dog
 	{
 		CModel::MODEL_ORIGIN_DESC desc = {};
@@ -465,11 +502,14 @@ HRESULT CLoader::Loading_For_Logo()
 		/* Weapons */
 		ADD_PROTOTYPE(ELevelType::STATIC, L"Prototype_GameObject_Part_Sword", CSword::Create(m_pDevice, m_pDeviceContext));
 
-		/* Monster Object */
+		// For. Prototype_GameObject_Monster_Dummy
 		ADD_PROTOTYPE(ELevelType::LOGO, L"Prototype_GameObject_Monster_Dummy", CMonster_Dummy::Create(m_pDevice, m_pDeviceContext));
-
-		/* Monster Part Object */
+		// For. Prototype_GameObject_Monster_Dummy_Body
 		ADD_PROTOTYPE(ELevelType::LOGO, L"Prototype_GameObject_Monster_Dummy_Body", CMonster_Dummy_Body::Create(m_pDevice, m_pDeviceContext));
+		// For. Prototype_GameObject_Boss_Xibi
+		ADD_PROTOTYPE(ELevelType::LOGO, L"Prototype_GameObject_Boss_Xibi", CBoss_Xibi::Create(m_pDevice, m_pDeviceContext));
+		// For. Prototype_GameObject_Boss_XibiBody
+		ADD_PROTOTYPE(ELevelType::LOGO, L"Prototype_GameObject_Boss_Xibi_Body", CBoss_Xibi_Body::Create(m_pDevice, m_pDeviceContext));
 	}
 #pragma endregion
 #pragma region BUFFER

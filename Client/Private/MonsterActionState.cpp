@@ -42,7 +42,8 @@ HRESULT CMonsterActionState::Initialize(void* pArg)
 
 	MONSTERACTIONSTATE_DESC* pDesc = static_cast<MONSTERACTIONSTATE_DESC*>(pArg);
 	
-	LoadStates(pDesc->wstrMonsterStateTag, pDesc->iLevelIndex);
+	if (FAILED(LoadStates(pDesc->wstrMonsterStateTag, pDesc->iLevelIndex)))
+		return E_FAIL;
 
 	return S_OK;
 }
@@ -51,6 +52,7 @@ HRESULT CMonsterActionState::Bind_State(std::set<string> setState)
 {
 	m_umapState.clear();
 
+	m_vecStates.resize(setState.size());
 	m_umapState.reserve(setState.size());
 	for (auto iter = setState.begin(); iter != setState.end(); iter++)
 		m_umapState.emplace(*iter, std::distance(setState.begin(), iter));
