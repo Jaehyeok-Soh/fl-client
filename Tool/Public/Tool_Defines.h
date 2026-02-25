@@ -229,7 +229,7 @@ namespace Tool
 		TUTORIAL_VILLAGE,	
 		TUTORIAL_BOSS,	
 		SQUARE,				
-		Test,
+		TEST,
 		END
 	};
 

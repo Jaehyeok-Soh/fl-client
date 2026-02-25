@@ -24,7 +24,7 @@ namespace Client
 
 
 		/* Test Scene은 맨 마지막 */
-		Test,
+		TEST,
 		END
 	};
 	inline constexpr size_t g_iLevelType_Count = static_cast<size_t>(ELevelType::END);
