@@ -178,7 +178,7 @@
     <ClInclude Include="..\Public\Panel_Model.h" />
     <ClInclude Include="..\Public\Panel_AnimModelFile.h" />
     <ClInclude Include="..\Public\Panel_ModelInfo.h" />
-    <ClInclude Include="..\Public\SceneData.h" />
+    <ClInclude Include="..\Public\LevelData.h" />
     <ClInclude Include="..\Public\UIButton_Component.h" />
     <ClInclude Include="..\Public\UIComponent_Inspector.h" />
     <ClInclude Include="..\Public\DebugLine.h" />
@@ -269,7 +269,7 @@
     <ClCompile Include="..\private\Level_AttackPreset.cpp" />
     <ClCompile Include="..\Private\Panel_AnimationMix.cpp" />
     <ClCompile Include="..\Private\Panel_Parts.cpp" />
-    <ClCompile Include="..\Private\SceneData.cpp" />
+    <ClCompile Include="..\Private\LevelData.cpp" />
     <ClCompile Include="..\Private\Panel_State.cpp" />
     <ClCompile Include="..\private\Panel_PresetList.cpp" />
     <ClCompile Include="..\private\Panel_PresetMain.cpp" />

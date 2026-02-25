@@ -18,6 +18,8 @@ namespace Engine
 	{
 		// Mix할떄 UV좌표에 곱해주어 정밀한 표현을 담당해준다
 		float	fRGBA_Mix_Forces[MAX_RGBA]{ 1.f, 1.f, 1.f, 1.f };
+		// Mix 할때 높이값에 대해서 부드럽게 섞여울 Mix값 곱해지는 값
+		float	fRGBA_Mix_Height_Forces[MAX_RGBA]{ 1.f, 1.f, 1.f, 1.f };
 		// Mix될 RGBA 맵에서 각 R , G , B , A 가 연결된 Splating Texture들의 Index
 		int		iRGBA_Connected_Tile_Index[MAX_RGBA]{ 0 , 0 , 0 , 0 };
 		// Mix될 RGBA 맵에서 각 R , G , B , A 가 Splating을 사용할건지 안할건지에 대한 Flag값 false => BaseTexture가 그대로 들어감 true => Splating

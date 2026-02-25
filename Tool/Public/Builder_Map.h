@@ -22,7 +22,7 @@ private:
 public:
 	virtual HRESULT Build(const CDataDocumentBase& document) override;
 	HRESULT			Create_MapObject(const DTO::TMap_MapObjectData& tData);
-	HRESULT			Apply_ScenceData(const DTO::TSceneData& tData);
+	HRESULT			Apply_ScenceData(const DTO::TLevelData& tData);
 private:
 	CGameInstance*		m_pGameInstance{ nullptr };
 	CMapToolManager*	m_pMapToolManager{nullptr};

@@ -67,35 +67,8 @@ VS_OUT_INST_MESH VS_MAIN(VS_IN_INST_MESH input)
     return Out;
 }
 
-                                                                                                                          
-PS_OUT_DEFFERED PS_STATICOBJECT(PS_IN_INST_MESH input)
-{
-    PS_OUT_DEFFERED output = (PS_OUT_DEFFERED)0;
-    
-    float4 vDiffuse = 1.f;
-    Compute_Diffse(vDiffuse, input.vUV);
-    vDiffuse.rgb *= MIDesc.vTintColor.rgb;
-    output.vDiffuse = vDiffuse;
-    
-    float3 vNormal = input.vNormal;
-    Compute_Normal(vNormal, input.vTangent, input.vBinormal, input.vUV);
-    output.vNormal = vNormal * 0.5f + 0.5f;
-    
-    output.vDepth = float4(input.vProjPos.z / input.vProjPos.w, input.vProjPos.w, 0.f, 0.f);
 
-    
-    output.vDiffuse = Get_Modified_Diffuse(output.vDiffuse, input.iCurInstanceID);
-    
-    
-    if(output.vDiffuse.a < 0.1f)
-        discard;
-    
-    
-    return output;
-}
-
-
-PS_OUT_DEFFERED PS_LANDSCAPE(PS_IN_INST_MESH input)
+PS_OUT_DEFFERED PS_MAIN(PS_IN_INST_MESH input)
 {
     PS_OUT_DEFFERED output = (PS_OUT_DEFFERED) 0;
     
@@ -107,17 +80,44 @@ PS_OUT_DEFFERED PS_LANDSCAPE(PS_IN_INST_MESH input)
     float3 vNormal = input.vNormal;
     Compute_Normal(vNormal, input.vTangent, input.vBinormal, input.vUV);
     output.vNormal = vNormal * 0.5f + 0.5f;
+    
+    float3 vSpecMask = float3(1.f, 1.f, 0.f);
+    if (Has(g_iMaterialMask, SPECULAR))
+        vSpecMask = g_MaterialTextures[SPECULAR].Sample(LinearSampler, input.vUV).xyz;
+    output.vSpecularMask = float4(vSpecMask, 1.f);
+    output.vObjectInfo = PackObjectInfo(objectInfo.iObjectID, objectInfo.iFlags);
     output.vDepth = float4(input.vProjPos.z / input.vProjPos.w, input.vProjPos.w, 0.f, 0.f);
-
-    output.vDiffuse = Get_Modified_Diffuse(output.vDiffuse, input.iCurInstanceID);
+    
+    
+    if (output.vDiffuse.a < 0.1f)
+        discard;
     
     
     return output;
 }
 
 
+
 technique11 T0
 {
-	PASS_RS_DS_BS_VP(P0, RS_Default_CullNone, DS_Default, BS_Default, VS_MAIN, PS_STATICOBJECT)
-	PASS_RS_DS_BS_VP(P1, RS_Default_CullNone, DS_Default, BS_Default, VS_MAIN, PS_LANDSCAPE)
+    // 기본 오브젝트
+	PASS_RS_DS_BS_VP(StaticObject, RS_Default_CullNone, DS_Default, BS_Default, VS_MAIN, PS_MAIN)
+	
+    // 지형
+    PASS_RS_DS_BS_VP(LandScape, RS_Default_CullNone, DS_Default, BS_Default, VS_MAIN, PS_MAIN)
+
+    // 식생
+	PASS_RS_DS_BS_VP(Bush, RS_Default_CullNone, DS_Default, BS_Default, VS_MAIN, PS_MAIN)
+	PASS_RS_DS_BS_VP(Grass, RS_Default_CullNone, DS_Default, BS_Default, VS_MAIN, PS_MAIN)
+	PASS_RS_DS_BS_VP(Moss, RS_Default_CullNone, DS_Default, BS_Default, VS_MAIN, PS_MAIN)
+	PASS_RS_DS_BS_VP(Tree, RS_Default_CullNone, DS_Default, BS_Default, VS_MAIN, PS_MAIN)
+	PASS_RS_DS_BS_VP(Vine, RS_Default_CullNone, DS_Default, BS_Default, VS_MAIN, PS_MAIN)
+
+    // 환경요소
+	PASS_RS_DS_BS_VP(Rock, RS_Default_CullNone, DS_Default, BS_Default, VS_MAIN, PS_MAIN)
+	PASS_RS_DS_BS_VP(Water, RS_Default_CullNone, DS_Default, BS_Default, VS_MAIN, PS_MAIN)
+
+    //EXT
+    PASS_RS_DS_BS_VP(SHADOW_BAKE, RS_Default, DS_Default, BS_Default, VS_MAIN, PS_MAIN)
+	PASS_RS_DS_BS_VP(Debug, RS_Wire, DS_Default, BS_Default, VS_MAIN, PS_MAIN)
 };

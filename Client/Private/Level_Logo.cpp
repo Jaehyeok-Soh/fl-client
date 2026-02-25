@@ -44,6 +44,9 @@
 #include "PhysicsCCT.h"
 
 #include "GameInstance.h"
+#include "Level_Square.h"
+#include "Level_Tutorial_Village.h"
+#include "Level_Tutorial_Boss.h"
 
 CLevel_Logo::CLevel_Logo(ID3D11Device* pDevice, ID3D11DeviceContext* pDeviceContext)
 	: Super(pDevice, pDeviceContext)
@@ -238,7 +241,7 @@ HRESULT CLevel_Logo::Ready_Player_Layer(const wstring& wstrLayerTag)
 		CTransform::TRANSFORM_DESC transformDesc = {};
 		playerDesc.iLevelIndex = ENUM_TO_UINT(ELevelType::LOGO);
 		playerDesc.wstrBodyModelTag = L"Prototype_Component_Model_Master";
-		transformDesc.TranslationMatrix = Matrix::CreateTranslation(Vec3(18.f,12.f,19.f));
+		transformDesc.TranslationMatrix = Matrix::CreateTranslation(Vec3(229.12f,256.72f,-245.039f));
 		playerDesc.pTransform_Desc = &transformDesc;
 		if (!(pResult = m_pGameInstance->Add_GameObject(ENUM_TO_UINT(ELevelType::STATIC),
 			L"Prototype_GameObject_MainPlayer",
@@ -336,8 +339,7 @@ HRESULT CLevel_Logo::Ready_DevMap()
 	if (FAILED(m_pGameInstance->Regist_Document<CDataDocument_Map>(iLevelID, eCategory)))
 		return E_FAIL;
 
-	std::filesystem::path FilePath = L"../../Resources/Data/MapData/LevelData/DevLevel/DevMap.json";
-	vector<path> vecfiles;
+	std::filesystem::path FilePath = L"../../Resources/Data/MapData/LevelData/Prolog/Clouds/Clouds.json";
 
 	if (!std::filesystem::exists(FilePath))
 		return E_FAIL;
@@ -493,6 +495,7 @@ HRESULT CLevel_Logo::Ready_Octree()
 
 	return S_OK;
 }
+
 
 
 CLevel_Logo* CLevel_Logo::Create(ID3D11Device* pDevice, ID3D11DeviceContext* pDeviceContext)
