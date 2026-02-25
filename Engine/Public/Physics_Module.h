@@ -91,7 +91,11 @@ public:
     void Check_Leak();
     void GetActiveActors();
 
+/// <summary>
+/// Scene query
+/// </summary>
 public:
+    void Overlap_EventCallback(CGameObject* pOwner, const PxVec3& vOverlapPoint, PxOverlapHit* pOverlapHit, PxPairFlag::Enum event);
     _bool RayCast(Vec3 vWorldPos, Vec3 vDir, _float fMaxDist, CPhysics_QueryFilterCallback* pFilterCall); // 월드 좌표 기준으로 // 방향으로 max dist까지 범위까지 검사
 
 private:

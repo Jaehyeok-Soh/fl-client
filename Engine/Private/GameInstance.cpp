@@ -1064,6 +1064,11 @@ PxVec3 CGameInstance::GetPureScale(const Matrix& mat)
 	return m_pPhysics_Module->GetPureScale(mat);
 }
 
+void CGameInstance::Overlap_EventCallback(CGameObject* pOwner, const PxVec3& vOverlapPoint, PxOverlapHit* pOverlapHit, PxPairFlag::Enum event)
+{
+	return m_pPhysics_Module->Overlap_EventCallback(pOwner, vOverlapPoint, pOverlapHit, event);
+}
+
 _bool CGameInstance::RayCast(Vec3 vWorldPos, Vec3 vDir, _float fMaxDist, CPhysics_QueryFilterCallback* pFilterCall)
 {
 	return m_pPhysics_Module->RayCast(vWorldPos, vDir, fMaxDist, pFilterCall);

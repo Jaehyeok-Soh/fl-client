@@ -20,7 +20,6 @@
 #include "Shader.h"
 #include "Camera.h"
 #include "Transform.h"
-#include "PhysicsCollider.h"
 #include "SkillComp_MoonE.h"
 #include "SkillComp_MoonQ.h"
 //=================

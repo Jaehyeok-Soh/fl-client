@@ -10,7 +10,6 @@
 #include "ActionState.h"
 #include "Shader.h"
 #include "Model.h"
-#include "PhysicsAttackOverlap.h"
 #include "ComputeShader.h"
 #include "PhysicsCCT.h"
 
@@ -55,8 +54,6 @@ HRESULT CMonster_Body_Base::Awake(const _uint iCurrentLevelIndex)
 	if (FAILED(Super::Awake(iCurrentLevelIndex)))
 		return E_FAIL;
 
-	Get_Component<CPhysicsAttackOverlap>()->Awake();
-
 	return S_OK;
 }
 
@@ -80,8 +77,6 @@ void CMonster_Body_Base::Update(_float fTimeDelta)
 void CMonster_Body_Base::Update_Late(_float fTimeDelta)
 {
 	Super::Update_Late(fTimeDelta);
-
-	Get_Component<CPhysicsAttackOverlap>()->Update(fTimeDelta);
 }
 
 void CMonster_Body_Base::Ready_Before_Render(_float fTimeDelta)
@@ -89,9 +84,6 @@ void CMonster_Body_Base::Ready_Before_Render(_float fTimeDelta)
 	Super::Ready_Before_Render(fTimeDelta);
 	m_pGameInstance->Push_RenderObject(RENDER_CATEGORY::NONEBLEND, this);
 	Super::Update_CombinedWorldMatrix(m_pMatParent);
-#ifdef _DEBUG
-	m_pGameInstance->Push_DebugComponent(Get_Component<CPhysicsAttackOverlap>());
-#endif 
 }
 
 void CMonster_Body_Base::OnCollision(_uint iMyColliderLayer, _uint iOtherLayer, CGameObject* pOther)
@@ -174,17 +166,6 @@ HRESULT CMonster_Body_Base::Ready_Components(MONSTERBODY_DESC* pDesc)
 		return E_FAIL;
 
 	if (FAILED(Add_Component<CShader>(0/*static*/, L"Prototype_Component_Shader_VtxAnimMesh", pDesc)))
-		return E_FAIL;
-
-	if (FAILED(Ready_AttackOverlap(pDesc->wstrAttackOverlapPrototypeTag)))
-		return E_FAIL;
-
-	return S_OK;
-}
-
-HRESULT CMonster_Body_Base::Ready_AttackOverlap(wstring prototypeName)
-{
-	if (FAILED(Add_Component<CPhysicsAttackOverlap>(0, prototypeName, nullptr)))
 		return E_FAIL;
 
 	return S_OK;

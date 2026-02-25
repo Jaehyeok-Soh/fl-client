@@ -10,7 +10,6 @@ public:
 	typedef struct tagMonsterBodyDesc : public CPartObject::PARTOBJ_DESC
 	{
 		wstring wstrModelPrototypeTag = { L"" };
-		wstring wstrAttackOverlapPrototypeTag = { L"" };
 	}MONSTERBODY_DESC;
 
 protected:
@@ -41,7 +40,6 @@ public:
 
 protected:
 	HRESULT Ready_Components(MONSTERBODY_DESC* pDesc);
-	HRESULT Ready_AttackOverlap(wstring prototypeName);
 	HRESULT Bind_ShaderResources();
 	HRESULT Ready_ComputeShader();
 

@@ -370,10 +370,10 @@ HRESULT CLevel_Logo::Ready_Monster()
 			PHYSICSCCT_DESC desc;
 			desc.pOwner = nullptr;
 			desc.bIsPlayer = false;
-			desc.eType = EPhysicsCCTType::BOX;
+			desc.eType = EPhysicsCCTType::CAPSULE;
 			desc.pOwnerMatrix = nullptr;
-			desc.fRadius = 0.5f;
-			desc.fHeight = 1.f;
+			desc.fRadius = 1.f;
+			desc.fHeight = 0.1f;
 			desc.vExtens = { 2.f, 2.f, 2.f };
 
 			PHYSICSMATERIAL_DESC mtrlDesc{};
