@@ -62,26 +62,43 @@ HRESULT CLevel_Logo::Initialize()
 		return E_FAIL;
 
 	if (FAILED(Build_Prototype()))
+	{
+		MSG_BOX("CLevel_Logo::Initialize, Build_Prototype Create Failed");
 		return E_FAIL;
+	}
 
 	if (FAILED(Build_Files()))
+	{
 		return E_FAIL;
+	}
 
 	/* 플레이어 제일먼저 세팅 */
 	if (FAILED(Ready_Player_Layer(g_wszPlayerLayer)))
+	{
+	}
 	if (FAILED(Ready_Boss_Layer(g_wszBossLayer)))
+	{
 		return E_FAIL;
+	}
 
 	/* 카메라 생성 */
 	if (FAILED(Ready_Camera_Layer(g_wszDynamicCameraLayer)))
+	{
+		MSG_BOX("CLevel_Logo::Initialize, Ready_Camera_Layer Create Failed");
 		return E_FAIL;
+	}
 
 	/* 카메라 생성 후 세팅 */
 	if (FAILED(Ready_Camera_Setting(ENUM_TO_UINT(ELevelType::LOGO))))
+	{
 		return E_FAIL;
+	}
 
 	if (FAILED(Ready_UI_Layer(g_wszUILayer)))
+	{
+		MSG_BOX("CLevel_Logo::Initialize, Ready_UI_Layer Create Failed");
 		return E_FAIL;
+	}
 
 
 	/* 임시 주석처리 */
@@ -223,6 +240,20 @@ HRESULT CLevel_Logo::Build_Files()
 	eCategory = DTO::ECategory::UI;
 	if (FAILED(m_pGameInstance->Regist_Document<CDataDocument_UI>(iLevelID, eCategory)))
 		return E_FAIL;
+
+	strUIFolderPath = L"../../Resources/Data/UIData/Static/";
+	if (std::filesystem::exists(strUIFolderPath))
+	{
+		for (auto iter : std::filesystem::directory_iterator(strUIFolderPath))
+		{
+			if (FAILED(m_pGameInstance->Load_File_Json(iLevelID, eCategory, iter.path())))
+				return E_FAIL;
+
+			if (FAILED(Build_File(iLevelID, eCategory, iter.path().stem().string())))
+				return E_FAIL;
+		}
+	}
+
 	strUIFolderPath = L"../../Resources/Data/UIData/Logo/";
 	if (std::filesystem::exists(strUIFolderPath))
 	{

@@ -560,6 +560,9 @@
     <Filter Include="03. GameObject\UIObjects\02.UI\Image\Dynamic Image\05.MonsterNamePlate">
       <UniqueIdentifier>{761751c8-ba94-4e88-987b-53bc16a7f52f}</UniqueIdentifier>
     </Filter>
+    <Filter Include="03. GameObject\UIObjects\02.UI\Image\Dynamic Image\07.Level Chnage">
+      <UniqueIdentifier>{441fee0b-1c67-4053-a110-de1fdb40d73f}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="targetver.h">
@@ -998,13 +1001,14 @@
     <ClInclude Include="..\public\Boss_Xibi_Body.h">
       <Filter>03. GameObject\PartObjects\Monster\Body\Xibi</Filter>
     </ClInclude>
-    <ClInclude Include="..\Public\UI_World.h" />
-    <ClInclude Include="..\Public\WorldUI.h" />
     <ClInclude Include="..\Public\TriggerBox.h">
       <Filter>03. GameObject\TriggerBox\00. TriggerBox</Filter>
     </ClInclude>
     <ClInclude Include="..\Public\TriggerBox_LevelChange.h">
       <Filter>03. GameObject\TriggerBox\01. TriggerBox_LevelChange</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\UILevelChange_Image.h">
+      <Filter>03. GameObject\UIObjects\02.UI\Image\Dynamic Image\07.Level Chnage</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -1437,13 +1441,14 @@
     <ClCompile Include="..\private\Boss_Xibi_Body.cpp">
       <Filter>03. GameObject\PartObjects\Monster\Body\Xibi</Filter>
     </ClCompile>
-    <ClCompile Include="..\Private\UI_World.cpp" />
-    <ClCompile Include="..\Private\WorldUI.cpp" />
     <ClCompile Include="..\Private\TriggerBox.cpp">
       <Filter>03. GameObject\TriggerBox\00. TriggerBox</Filter>
     </ClCompile>
     <ClCompile Include="..\Private\TriggerBox_LevelChange.cpp">
       <Filter>03. GameObject\TriggerBox\01. TriggerBox_LevelChange</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\UILevelChange_Image.cpp">
+      <Filter>03. GameObject\UIObjects\02.UI\Image\Dynamic Image\07.Level Chnage</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
