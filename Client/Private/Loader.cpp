@@ -647,8 +647,8 @@ HRESULT CLoader::Loading_For_Tutorial_Boss()
 	// 오브젝트
 	
 		// 이펙트 Object
-	ADD_PROTOTYPE(ELevelType::TUTORIAL_VILLAGE, L"Prototype_GameObject_Effect", Effect::Create(m_pDevice, m_pDeviceContext));
-	ADD_PROTOTYPE(ELevelType::TUTORIAL_VILLAGE, L"Prototype_GameObject_Effect_Parts", CEffectObject::Create(m_pDevice, m_pDeviceContext));
+	ADD_PROTOTYPE(ELevelType::TUTORIAL_BOSS, L"Prototype_GameObject_Effect", Effect::Create(m_pDevice, m_pDeviceContext));
+	ADD_PROTOTYPE(ELevelType::TUTORIAL_BOSS, L"Prototype_GameObject_Effect_Parts", CEffectObject::Create(m_pDevice, m_pDeviceContext));
 
 	m_isFinished = true;
 	return S_OK;
@@ -661,8 +661,8 @@ HRESULT CLoader::Loading_For_Square()
 	// 오브젝트
 
 		// 이펙트 Object
-	ADD_PROTOTYPE(ELevelType::TUTORIAL_VILLAGE, L"Prototype_GameObject_Effect", Effect::Create(m_pDevice, m_pDeviceContext));
-	ADD_PROTOTYPE(ELevelType::TUTORIAL_VILLAGE, L"Prototype_GameObject_Effect_Parts", CEffectObject::Create(m_pDevice, m_pDeviceContext));
+	ADD_PROTOTYPE(ELevelType::SQUARE, L"Prototype_GameObject_Effect", Effect::Create(m_pDevice, m_pDeviceContext));
+	ADD_PROTOTYPE(ELevelType::SQUARE, L"Prototype_GameObject_Effect_Parts", CEffectObject::Create(m_pDevice, m_pDeviceContext));
 
 	m_isFinished = true;
 	return S_OK;

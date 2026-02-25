@@ -49,7 +49,8 @@ HRESULT CLevel_Tutorial_Village::Build_Prototype()
 {
 	if (FAILED(Ready_Builder(DTO::ECategory::EFFECT, CBuilder_Effect::Create(m_pDevice, m_pDeviceContext, ENUM_TO_UINT(ELevelType::TUTORIAL_VILLAGE)))))
 		return E_FAIL;
-
+	if (FAILED(Ready_Builder(DTO::ECategory::UI, CBuilder_UI::Create(m_pDevice, m_pDeviceContext, static_cast<_uint>(ELevelType::TUTORIAL_VILLAGE)))))
+		return E_FAIL;
 	return S_OK;
 }
 
@@ -76,13 +77,13 @@ HRESULT CLevel_Tutorial_Village::Build_Files()
 	}
 #pragma endregion
 
-	ELevelType eLevelType = ELevelType::TUTORIAL_VILLAGE;
-	_uint iLevelID = ENUM_TO_UINT(eLevelType);
-	DTO::ECategory eCategory = DTO::ECategory::UI;
+	eLevelType = ELevelType::TUTORIAL_VILLAGE;
+	iLevelID = ENUM_TO_UINT(eLevelType);
+	eCategory = DTO::ECategory::UI;
 	if (FAILED(m_pGameInstance->Regist_Document<CDataDocument_UI>(iLevelID, eCategory)))
 		return E_FAIL;
 
-	_wstring strUIFolderPath = L"../../Resources/Data/UIData/Static/";
+	strUIFolderPath = L"../../Resources/Data/UIData/Static/";
 	if (std::filesystem::exists(strUIFolderPath))
 	{
 		for (auto iter : std::filesystem::directory_iterator(strUIFolderPath))
@@ -148,12 +149,6 @@ HRESULT CLevel_Tutorial_Village::Render()
 	if(FAILED(Super::Render()))
 		return E_FAIL;
 
-	return S_OK;
-}
-HRESULT CLevel_Tutorial_Village::Build_Prototype()
-{
-	if (FAILED(Ready_Builder(DTO::ECategory::UI, CBuilder_UI::Create(m_pDevice, m_pDeviceContext, static_cast<_uint>(ELevelType::TUTORIAL_VILLAGE)))))
-		return E_FAIL;
 	return S_OK;
 }
 
