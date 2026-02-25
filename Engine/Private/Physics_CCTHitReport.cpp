@@ -1,6 +1,6 @@
 #include "Engine_pch.h"
 
-#include "Physics_NPCHitReport.h"
+#include "Physics_CCTHitReport.h"
 
 #include "GameInstance.h"
 #include "EngineConsole.h"
@@ -38,7 +38,7 @@
 //	PxController* other;			//!< Touched controller
 //};
 
-void CPhysics_NPCHitReport::onShapeHit(const PxControllerShapeHit& hit)
+void CPhysics_CCTHitReport::onShapeHit(const PxControllerShapeHit& hit)
 {
 	GAMEOBJECTINFO info = Get_GameObject(hit.controller->getUserData(), hit.actor->userData);
 
@@ -56,7 +56,7 @@ void CPhysics_NPCHitReport::onShapeHit(const PxControllerShapeHit& hit)
 //#endif // _DEBUG
 }
 
-void CPhysics_NPCHitReport::onControllerHit(const PxControllersHit& hit)
+void CPhysics_CCTHitReport::onControllerHit(const PxControllersHit& hit)
 {
 	GAMEOBJECTINFO info = Get_GameObject(hit.controller->getUserData(), hit.other->getUserData());
 
@@ -65,26 +65,26 @@ void CPhysics_NPCHitReport::onControllerHit(const PxControllersHit& hit)
 #endif // _DEBUG
 }
 
-CPhysics_NPCHitReport::CPhysics_NPCHitReport()
+CPhysics_CCTHitReport::CPhysics_CCTHitReport()
 {
 }
 
-HRESULT CPhysics_NPCHitReport::Initialize()
+HRESULT CPhysics_CCTHitReport::Initialize()
 {
 	Ready_EventCallChain();
 
-	m_arrEventString[HITEVENT::Enum::ON_SHAPE_HIT] = L"[On player to shape hit]\n";
-	m_arrEventString[HITEVENT::Enum::ON_CCT_HIT] = L"[On player to character hit]\n";
+	m_arrEventString[HITEVENT::Enum::ON_SHAPE_HIT] = L"[On NPC to shape hit]\n";
+	m_arrEventString[HITEVENT::Enum::ON_CCT_HIT] = L"[On NPC to character hit]\n";
 
 	return S_OK;
 }
 
-CGameObject* CPhysics_NPCHitReport::Conversion_GameObject(void* userData)
+CGameObject* CPhysics_CCTHitReport::Conversion_GameObject(void* userData)
 {
 	return static_cast<CGameObject*>(userData);
 }
 
-CPhysics_NPCHitReport::GAMEOBJECTINFO CPhysics_NPCHitReport::Get_GameObject(void* leftArgs, void* rightArgs)
+CPhysics_CCTHitReport::GAMEOBJECTINFO CPhysics_CCTHitReport::Get_GameObject(void* leftArgs, void* rightArgs)
 {
 	CGameObject* leftObject = Conversion_GameObject(leftArgs);
 	PHYSICSCOLLIDER_DESC* leftColliderDesc = { nullptr };
@@ -99,12 +99,12 @@ CPhysics_NPCHitReport::GAMEOBJECTINFO CPhysics_NPCHitReport::Get_GameObject(void
 	return GAMEOBJECTINFO(leftObject, leftColliderDesc, rightObject, rightColliderDesc);
 }
 
-void CPhysics_NPCHitReport::Ready_EventCallChain()
+void CPhysics_CCTHitReport::Ready_EventCallChain()
 {
 }
 
 #ifdef _DEBUG
-void CPhysics_NPCHitReport::Debug_Log(HITEVENT::Enum event, GAMEOBJECTINFO& info)
+void CPhysics_CCTHitReport::Debug_Log(HITEVENT::Enum event, GAMEOBJECTINFO& info)
 {
 	if (event == HITEVENT::Enum::END)
 		return;
@@ -117,7 +117,7 @@ void CPhysics_NPCHitReport::Debug_Log(HITEVENT::Enum event, GAMEOBJECTINFO& info
 		leftInfo = info.leftName + L", ID : " + std::to_wstring(info.leftID) + L"\n";
 	else
 		leftInfo = L"NULL\n";
-
+	
 	if (info.rightObject)
 		rightInfo = info.rightName + L", ID : " + std::to_wstring(info.rightID) + L"\n";
 	else
@@ -127,20 +127,20 @@ void CPhysics_NPCHitReport::Debug_Log(HITEVENT::Enum event, GAMEOBJECTINFO& info
 }
 #endif // _DEBUG
 
-CPhysics_NPCHitReport* CPhysics_NPCHitReport::Create()
+CPhysics_CCTHitReport* CPhysics_CCTHitReport::Create()
 {
-	CPhysics_NPCHitReport* pInstance = new CPhysics_NPCHitReport();
+	CPhysics_CCTHitReport* pInstance = new CPhysics_CCTHitReport();
 
 	if (FAILED(pInstance->Initialize()))
 	{
-		MSG_BOX("Failed to Created : CPhysics_NPCHitReport");
+		MSG_BOX("Failed to Created : CPhysics_CCTHitReport");
 		Safe_Release(pInstance);
 	}
 
 	return pInstance;
 }
 
-void CPhysics_NPCHitReport::Free()
+void CPhysics_CCTHitReport::Free()
 {
 	Super::Free();
 }
