@@ -91,6 +91,7 @@ namespace Tool
 		EFFECT,
 		CAMERA,
 		UI,
+		ATTACK_PRESET,
 		ASSET_CONVERT,
 		END
 	};
@@ -225,6 +226,10 @@ namespace Tool
 		STATIC = 0,
 		LOADING,
 		LOGO,
+		TUTORIAL_VILLAGE,	
+		TUTORIAL_BOSS,	
+		SQUARE,				
+		Test,
 		END
 	};
 
@@ -356,6 +361,27 @@ namespace Tool
 	{
 		StaticObject,
 		LandScape,
+		Bush,
+		Grass,
+		Moss,
+		Tree,
+		Vine,
+		Rock,
+		Water,
+		END,
+	};
+
+	enum class EMapObjectShaderPass
+	{
+		StaticObject,
+		LandScape,
+		Bush,
+		Grass,
+		Moss,
+		Tree,
+		Vine,
+		Rock,
+		Water,
 		END,
 	};
 
@@ -365,6 +391,15 @@ namespace Tool
 		{
 		case Tool::EClientMakePath::StaticObject:	return "StaticObject";
 		case Tool::EClientMakePath::LandScape:		return "LandScape";
+
+			/* ------------------환경 요소---------------- */
+		case Tool::EClientMakePath::Bush:			return "Bush";
+		case Tool::EClientMakePath::Grass:			return "Grass";
+		case Tool::EClientMakePath::Tree:			return "Tree";
+		case Tool::EClientMakePath::Vine:			return "Vine";
+		case Tool::EClientMakePath::Rock:			return "Rock";
+		case Tool::EClientMakePath::Water:			return "Water";
+			/* ------------------------------------------- */
 		default:									return "Unknown";
 		}
 	};
@@ -373,6 +408,12 @@ namespace Tool
 	{
 		if (strType == "StaticObject")	return EClientMakePath::StaticObject;
 		if (strType == "LandScape")		return EClientMakePath::LandScape;
+		if (strType == "Bush")			return EClientMakePath::Bush;
+		if (strType == "Grass")			return EClientMakePath::Grass;
+		if (strType == "Tree")			return EClientMakePath::Tree;
+		if (strType == "Vine")			return EClientMakePath::Vine;
+		if (strType == "Rock")			return EClientMakePath::Rock;
+		if (strType == "Water")			return EClientMakePath::Water;
 
 		return EClientMakePath::END;
 	}
@@ -619,10 +660,25 @@ namespace Tool
 		FLIP_XY,
 		END
 	};
+
+	enum class EUIPrefabType
+	{
+		NOT_PREFAB,
+		MONSTER_NAMEPLATE,
+		END
+	};
+
+	inline std::string UIPrefabTypeToString(EUIPrefabType eType)
+	{
+		switch (eType)
+		{
+		case EUIPrefabType::NOT_PREFAB:			return "NOT_PREFAB";
+		case EUIPrefabType::MONSTER_NAMEPLATE:	return "MONSTER_NAMEPLATE";
+		case EUIPrefabType::END:				return "";
+		default: return "";
+		}
+	}
 #pragma endregion
-
-
-
 	static void Model_Path_Check(OUT wstring& wstrModelPath)
 	{
 		std::wstring searchPath = wstrModelPath;
@@ -658,7 +714,6 @@ namespace Tool
 			wstrModelPath = p.wstring();
 		}
 	}
-
 #pragma region Struct
 #pragma endregion
 }

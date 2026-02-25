@@ -36,6 +36,24 @@ namespace Engine
 		string		  strParam{ "" };
 	};
 
+	typedef struct tagCollisionHitInformation
+	{
+		bool bHasHitPoint{ false };
+		SimpleMath::Vector3 vPosition{ SimpleMath::Vector3::Zero };
+		SimpleMath::Vector3 vRawNormal{ SimpleMath::Vector3::Zero };
+		float fDepth{ 0.f };
+	}COL_HIT_INFO;
+
+	typedef struct tagCollidedDesc
+	{
+		unsigned int iCollisionType{ COLLISIONEVENT::Enum::END };
+		unsigned int iRequesterLayer{ PHYSICSFILTERGROUP::Enum::END };
+		unsigned int iOtherLayer{ PHYSICSFILTERGROUP::Enum::END };
+		class CGameObject* pRequester{ nullptr };
+		class CGameObject* pOther{ nullptr };
+		COL_HIT_INFO tHitInfo{};
+	}COLLIDED_DESC;
+
 	typedef struct tagTimeline
 	{
 		float fDuration{ 0.f };
@@ -335,6 +353,13 @@ namespace Engine
 	{
 		tagShaderTweenDesc tweens[MAX_MODEL_INSTANCE];
 	}SHADER_INST_TWEENDESC;
+
+	typedef struct tagShaderRGBColor
+	{
+		SimpleMath::Vector4 vColorR = { 1.f, 1.f,1.f, 1.f };
+		SimpleMath::Vector4 vColorG = { 1.f, 1.f,1.f, 1.f };
+		SimpleMath::Vector4 vColorB = { 1.f, 1.f,1.f, 1.f };
+	}SHADER_RGBCOLOR_DESC;
 #pragma endregion
 
 #pragma region Shader_StructuredBuffer
@@ -511,17 +536,17 @@ namespace Engine
 		float  Padding0 = { 0.f };
 	}CS_MU_ANIMB;
 
-	// output
-	//typedef struct tagBone_Output
-	//{
-	//	float3              vScale;
-	//	uint                iCurKeyFrameIndex;
+#pragma endregion
 
-	//	float4              vQuat;
+#pragma region ANIM_MIX_CS
+	// 가변 데이터
+	typedef struct tagAnimMix_Immu_Ratio
+	{
+		float fMixRatio = 0.f;
 
-	//	float3              vTranslation;
-	//	uint                iAnimIndex
-	//}CS_OUT_ANIME;
+		SimpleMath::Vector3 Padding0 = {};
+	}CS_IMMU_ANIMMIX;
+
 #pragma endregion
 
 #pragma endregion
@@ -581,6 +606,7 @@ namespace Engine
 	{
 		float fTimeAcc = { 0.f }; // 누적 타임
 		float fMaxTime = { 0.f }; // 최대 시간
+		float fMinTime = { 0.f }; // 최소 시간(ex 상태를 이 시간은 꼭 유지시켜야한다)
 
 		bool bCountTime = { true }; // 타임 카운트를 할래?
 		bool bTimeReset = { true }; // 한 주기가 끝나고 acc를 0으로 다시 맞출건지
@@ -605,7 +631,33 @@ namespace Engine
 			return fTimeAcc / fMaxTime;
 		}
 
-		float Get_Rate() { return fTimeAcc / fMaxTime; }
+		float CountMinTime(const float fTimeDelta) // TimeCount 함수
+		{
+			// 카운트를 하지 않을 거라면 음수 반환
+			if (!bCountTime)
+				return -1.f;
+
+			// 타임 누적
+			fTimeAcc += fTimeDelta;
+
+			// 넘었는지 검사
+			if (fTimeAcc >= fMinTime)
+			{
+				fTimeAcc = bTimeReset ? 0.f : fMinTime; // timeacc 리셋
+				return 1.f;
+			}
+
+			// 비율 값으로 반환
+			return fTimeAcc / fMinTime;
+		}
+
+		float Get_Rate() 
+		{ 
+			if (fMaxTime <= 0.f) 
+				return 1.f;  
+
+			return fTimeAcc / fMaxTime;
+		}
 
 	}TIME_COUNTER;
 #pragma endregion

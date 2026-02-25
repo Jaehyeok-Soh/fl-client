@@ -30,7 +30,6 @@ HRESULT CState_Jump::Start(void* pArg, _bool bForce)
 		return E_FAIL;
 
 	Set_ApplyGravity(false);
-	//Set_GravityOffset(5.f);
 
 	return S_OK;
 }
@@ -46,6 +45,13 @@ void CState_Jump::Update(const _float fTimeDelta)
 		return;
 	}
 
+	if (Get_AnimElpasedTimeSeconds() > 0.5f)
+	{
+		Set_ApplyGravity(true);
+
+		Set_RootMotion_Apply(false);
+	}
+
 	Super::Update(fTimeDelta);
 }
 
@@ -54,8 +60,9 @@ HRESULT CState_Jump::End()
 	if (FAILED(Super::End()))
 		return E_FAIL;
 
-	//Set_GravityOffset(0.f);
 	Set_ApplyGravity(true);
+
+	Set_RootMotion_Apply(true);
 
 	return S_OK;
 }

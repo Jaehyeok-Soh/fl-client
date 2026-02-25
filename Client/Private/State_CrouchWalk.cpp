@@ -29,7 +29,7 @@ HRESULT CState_CrouchWalk::Start(void* pArg, _bool bForce)
 	if (FAILED(Super::Start(pArg, bForce)))
 		return E_FAIL;
 
-	Set_ApplyYLerp(true);
+	//Set_ApplyYLerp(true);
 
 	return S_OK;
 }

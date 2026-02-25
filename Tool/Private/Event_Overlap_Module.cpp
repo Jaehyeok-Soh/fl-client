@@ -57,18 +57,40 @@ void CEvent_Overlap_Module::SetOwner(CAnimObj* pOwner)
 
 void CEvent_Overlap_Module::Modify_AttackOverlap(_uint eventIdx, DTO::ATTACKEVENT event)
 {
-	m_pOverlap->Modify_AttackOverlap(eventIdx, event);
+	if (m_pOverlap != nullptr)
+		m_pOverlap->Modify_AttackOverlap(eventIdx, event);
+	else
+	{
+		vector<DTO::ATTACKEVENT> newEvetns;
+		newEvetns.push_back(event);
+		Create_AttackOverlap(newEvetns);
+	}
 }
 
 void CEvent_Overlap_Module::Modify_AttackOverlap(vector<DTO::ATTACKEVENT> events)
 {
-	m_pOverlap->Modify_AttackOverlap(events);
+	if (m_pOverlap != nullptr)
+		m_pOverlap->Modify_AttackOverlap(events);
+	else
+		Create_AttackOverlap(events);
 }
 
 void CEvent_Overlap_Module::Awake()
 {
 	if (m_pOverlap)
 		m_pOverlap->Awake();
+}
+
+void CEvent_Overlap_Module::Create_AttackOverlap(vector<DTO::ATTACKEVENT> events)
+{
+	Safe_Release(m_pOverlap);
+
+	DTO::ATTACKOVERLAP_DESC desc{};
+	desc.strTag = "TEMP";
+	desc.iNumPool = 32;
+	desc.attackEvents = events;
+
+	m_pOverlap = CPhysicsAttackOverlap::Create(&desc);
 }
 
 CEvent_Overlap_Module* CEvent_Overlap_Module::Create(ID3D11Device* pDevice, ID3D11DeviceContext* pDeviceContext)

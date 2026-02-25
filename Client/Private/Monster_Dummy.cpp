@@ -3,20 +3,22 @@
 
 #include "GameInstance.h"
 
-#include "StatComponent.h"
+#include "Monster_Body_Base.h"
+
+#include "MonsterActionState.h"
+#include "MonsterControlContext.h"
+#include "StateBase_Monster.h"
 #include "Model.h"
 #include "PhysicsCCT.h"
 
 CMonster_Dummy::CMonster_Dummy(ID3D11Device* pDevice, ID3D11DeviceContext* pDeviceContext)
 	: Super(pDevice, pDeviceContext)
 {
-	//m_vecPartObjects.resize(Part::END, nullptr);
 }
 
 CMonster_Dummy::CMonster_Dummy(const CMonster_Dummy& rhs)
 	: Super(rhs)
 {
-	//m_vecPartObjects.resize(Part::END, nullptr);
 }
 
 HRESULT CMonster_Dummy::Initialize_Prototype()
@@ -32,6 +34,9 @@ HRESULT CMonster_Dummy::Initialize(void* pArg)
 	if (FAILED(Super::Initialize(pArg)))
 		return E_FAIL;
 
+	//if (FAILED(Ready_Ability()))
+	//	return E_FAIL;
+
 	Set_Name("Monster_Dummy");
 
 	if (FAILED(Ready_PartObjects()))
@@ -43,9 +48,6 @@ HRESULT CMonster_Dummy::Initialize(void* pArg)
 	if (FAILED(Ready_BaseStates()))
 		return E_FAIL;
 
-	//if (FAILED(Ready_Ability()))
-	//	return E_FAIL;
-
 	return S_OK;
 }
 
@@ -54,10 +56,6 @@ HRESULT CMonster_Dummy::Awake(const _uint iCurrentLevelID)
 	if (FAILED(Super::Awake(iCurrentLevelID)))
 		return E_FAIL;
 	
-	Get_Component<CTransform>()->Set_Info(TRANSFORM_INFO_STATE::POS, Vec3{ 21.f, 17.5f, -1.f });
-
-	Get_Component<CPhysicsCCT>()->Awake();
-
 	return S_OK;
 }
 
@@ -79,10 +77,6 @@ void CMonster_Dummy::Update_Late(const _float fTimeDelta)
 void CMonster_Dummy::Ready_Before_Render(const _float fTimeDelta)
 {
 	Super::Ready_Before_Render(fTimeDelta);
-
-#ifdef _DEBUG
-	m_pGameInstance->Push_DebugComponent(Get_Component<CPhysicsCCT>());
-#endif // _DEBUG
 }
 
 HRESULT CMonster_Dummy::Render()
@@ -93,54 +87,44 @@ HRESULT CMonster_Dummy::Render()
 	return S_OK;
 }
 
-_int CMonster_Dummy::Get_AnimationIndex(const wstring& wstrName)
+void CMonster_Dummy::OnCollision(_uint iMyColliderLayer, _uint iOtherLayer, CGameObject* pOther)
 {
-	//if (CBody* pBody = Get_Part<CBody>(Part::BODY))
-	//{
-	//	if (CModel* pModel = pBody->Get_Component<CModel>())
-	//	{
-	//		return pModel->Get_AnimationIndex(wstrName);
-	//	}
-	//	return -1;
-	//}
-	return -1;
+	Super::OnCollision(iMyColliderLayer, iOtherLayer, pOther);
 }
 
-_wstring CMonster_Dummy::Get_AnimationName(_uint iAniIndex)
+void CMonster_Dummy::OnCollision_Enter(_uint iMyColliderLayer, _uint iOtherLayer, CGameObject* pOther, const COL_HIT_INFO& tHitInfo)
 {
-	//if (CBody* pBody = Get_Part<CBody>(Part::BODY))
-	//{
-	//	if (CModel* pModel = pBody->Get_Component<CModel>())
-	//	{
-	//		return pModel->Get_AnimationName(iAniIndex);
-	//	}
-	//	return L"";
-	//}
-	return L"";
+	Super::OnCollision_Enter(iMyColliderLayer, iOtherLayer, pOther, tHitInfo);
 }
 
-void CMonster_Dummy::OnCollision(_uint iMyColliderLayer, CGameObject* pOther)
+void CMonster_Dummy::OnCollision_Exit(_uint iMyColliderLayer, _uint iOtherLayer, CGameObject* pOther)
 {
+	Super::OnCollision_Exit(iMyColliderLayer, iOtherLayer, pOther);
 }
 
-void CMonster_Dummy::OnCollision_Enter(_uint iMyColliderLayer, CGameObject* pOther)
+void CMonster_Dummy::OnTrigger_Enter(_uint iMyColliderLayer, _uint iOtherLayer, CGameObject* pOther)
 {
+	Super::OnTrigger_Enter(iMyColliderLayer, iOtherLayer, pOther);
 }
 
-void CMonster_Dummy::OnCollision_Exit(_uint iMyColliderLayer, CGameObject* pOther)
+void CMonster_Dummy::OnTrigger_Exit(_uint iMyColliderLayer, _uint iOtherLayer, CGameObject* pOther)
 {
-}
-
-void CMonster_Dummy::OnTrigger_Enter(_uint iMyColliderLayer, CGameObject* pOther)
-{
-}
-
-void CMonster_Dummy::OnTrigger_Exit(_uint iMyColliderLayer, CGameObject* pOther)
-{
+	Super::OnTrigger_Exit(iMyColliderLayer, iOtherLayer, pOther);
 }
 
 HRESULT CMonster_Dummy::Ready_BaseStates()
 {
+	CMonsterActionState* pActionState = { nullptr };
+	CModel* pModel = Get_Part<CMonster_Body_Base>(Part::BODY)->Get_Component<CModel>();
+	if (!pModel)
+		return E_FAIL;
+
+	if (!(pActionState = Get_Component<CMonsterActionState>()))
+		return E_FAIL;
+
+	TIME_COUNTER tStateLifeTime = {};
+	TIME_COUNTER tStateCoolDownTime = {};
+
 	return S_OK;
 }
 
@@ -151,31 +135,27 @@ HRESULT CMonster_Dummy::Ready_PartObjects()
 
 HRESULT CMonster_Dummy::Ready_Components()
 {
-	if (FAILED(Ready_CCT()))
-		return E_FAIL;
+	//typedef struct tagMonsterControlContextDesc
+	//{
+	//	_float fMeleeRange = {};
+	//	_float fAttackRange = {};
+	//	_float fCloseRange = {};
+	//	_float fDetectionRange = {};
+	//	_float fSpeed = {};
+	//	_int iSkillCount = { -1 };
+	//	vector<_int> vecSkillRange;
+	//}MONSTER_CONTROLCONTEXT_DESC;
 
-	return S_OK;
-}
+	CMonsterControlContext::MONSTER_CONTROLCONTEXT_DESC desc{};
+	desc.fMeleeRange = 2.f;
+	desc.fAttackRange = 4.f;
+	desc.fCloseRange = 1.f;
+	desc.fDetectionRange = 15.f;
+	desc.fSpeed = 1.f;
+	//desc.iSkillCount;
+	//desc.vecSkillRange;
 
-HRESULT CMonster_Dummy::Ready_CCT()
-{
-	PHYSICSCCT_DESC desc;
-	desc.pOwner = this;
-	desc.bIsPlayer = false;
-	desc.eType = EPhysicsCCTType::CAPSULE;
-	desc.pOwnerMatrix = &Get_Component<CTransform>()->Get_WorldMatrix();
-	desc.fRadius = 0.5f;
-	desc.fHeight = 1.f;
-	desc.vExtens = { 0.f, 0.f, 0.f };
-
-	PHYSICSMATERIAL_DESC mtrlDesc{};
-	mtrlDesc.eMaterial = EPhysicsMaterial::PLAYER;
-	desc.tMaterial = mtrlDesc;
-
-	desc.eFilterLayer = PHYSICSFILTERGROUP::Enum::MONSTER;
-	desc.iFilterMask = 0xFFFFFFFF;
-
-	if (FAILED(Add_Component<CPhysicsCCT>(0, L"Prototype_Component_Physics_CCT", &desc)))
+	if (FAILED(Add_Component<CMonsterControlContext>(0 /*static*/, L"Prototype_Component_ControlContext_Monster", &desc)))
 		return E_FAIL;
 
 	return S_OK;
@@ -189,6 +169,7 @@ CMonster_Dummy* CMonster_Dummy::Create(ID3D11Device* pDevice, ID3D11DeviceContex
 		MSG_BOX("CMonster_Dummy::Create, Failed");
 		Safe_Release(pInsatnce);
 	}
+
 	return pInsatnce;
 }
 

@@ -34,13 +34,20 @@ private:
 
 	_bool m_bFirst = { true };
 
+	_float m_iAnimationSpeed = { 1.f };
+
+	CGameObject* pObj = { nullptr };
+
 	// render
 private:
+	void Render_ObjInfo();
+
 	void Render_RootMotionInfo();
 
 	void Render_AnimationInfo();
 	void Anim_Info();
 	void RootOffset_Info();
+	void AnimationSpeed();
 
 private:
 	void Set_RootBone();

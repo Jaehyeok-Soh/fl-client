@@ -43,10 +43,11 @@ HRESULT CToolCanvas::Initialize(void* pArg)
 
 
 	TOOLCANVAS_DESC* pDesc = static_cast<TOOLCANVAS_DESC*>(pArg);
-	m_strTag = pDesc->strTag;
-	m_iClientLevelIndex = pDesc->iClientLevelIndex;
-	m_tCanvasData.iEditorSizeX = pDesc->iEditorSizeX;
-	m_tCanvasData.iEditorSizeY = pDesc->iEditorSizeY;
+	m_strTag					= pDesc->strTag;
+	m_iClientLevelIndex			= pDesc->iClientLevelIndex;
+	m_tCanvasData.iEditorSizeX	= pDesc->iEditorSizeX;
+	m_tCanvasData.iEditorSizeY	= pDesc->iEditorSizeY;
+	m_ePrefabType				= static_cast<EUIPrefabType>(pDesc->iPrefabType);
 
 	if (FAILED(Super::Initialize(pArg)))
 		return E_FAIL;
@@ -331,6 +332,7 @@ void CToolCanvas::Sync_Data()
 	m_tCanvasData.fPosZ			= m_fZ;
 	m_tCanvasData.iEditorSizeX	= g_iWinSizeX;
 	m_tCanvasData.iEditorSizeY	= g_iWinSizeY;
+	m_tCanvasData.iPrefabType	= ENUM_TO_UINT(m_ePrefabType);
 }
 
 _bool CToolCanvas::Export_Data(DTO::ECategory eCategory, CDataDocumentBase* pDocument)

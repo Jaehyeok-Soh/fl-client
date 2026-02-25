@@ -12,14 +12,14 @@ CStatCom_Player::CStatCom_Player()
 
 CStatCom_Player::CStatCom_Player(const CStatCom_Player& rhs)
 	:Super(rhs)
-	, m_vDefense(rhs.m_vDefense)
-	, m_vMentality(rhs.m_vMentality)
 	, m_iDashCount(rhs.m_iDashCount)
 	, m_iComboCount(rhs.m_iComboCount)
 	, m_tDashTimeCounter(rhs.m_tDashTimeCounter)
 	, m_tComboTimeCounter(rhs.m_tComboTimeCounter)
 	, m_FAttState(rhs.m_FAttState)
 	, m_iSkillAttack(rhs.m_iSkillAttack)
+	, m_pESkillBase(rhs.m_pESkillBase)
+	, m_pQSkillBase(rhs.m_pQSkillBase)
 {
 }
 
@@ -31,42 +31,30 @@ HRESULT CStatCom_Player::Initialize_Prototype()
 	return S_OK;
 }
 
-HRESULT CStatCom_Player::Awake(_uint iLevelIndex)
-{
-	if (Super::Awake(iLevelIndex))
-		return E_FAIL;
-
-	return S_OK;
-}
-
 HRESULT CStatCom_Player::Initialize(void* pArg)
 {
 	PLAYER_STATCOMP_DESC* pDesc = static_cast<PLAYER_STATCOMP_DESC*>(pArg);
+
+	m_fMeleeAtt = pDesc->fMeleeAttack;
+	m_fGunAtt = pDesc->fGunAttack;
+	m_tComboTimeCounter.fMaxTime = pDesc->fComboCoolTime;
+	m_tDashTimeCounter.fMaxTime = pDesc->fDashCoolTime;
 
 	m_tDashTimeCounter.bCountTime	= true;
 	m_tDashTimeCounter.bTimeReset	= true;
 	m_tComboTimeCounter.bCountTime	= false;
 	m_tComboTimeCounter.bTimeReset	= true;
 
-	m_tESkill		= pDesc->tESkill;
-	m_tQSkill		= pDesc->tQSkill;
-	m_tAttackMelee	= pDesc->tMelee;
-	m_tAttackGun	= pDesc->tGun;
+	m_pESkillBase = pDesc->pESkill;
+	m_pQSkillBase = pDesc->pQSkill;
+	Safe_AddRef(m_pESkillBase);
+	Safe_AddRef(m_pQSkillBase);
 
-	// skill cool time 일단 max로 맞춰두기
-	m_tESkill.TCoolTime.x = m_tESkill.TCoolTime.y;
-	m_tQSkill.TCoolTime.x = m_tQSkill.TCoolTime.y;
 
-	m_vDefense		= { pDesc->fMaxDefense, pDesc->fMaxDefense };
-	m_vMentality	= { pDesc->fMaxMental, pDesc->fMaxMental };
-
-	m_tDashTimeCounter.fMaxTime		= pDesc->fDashCoolTime;
-	m_tComboTimeCounter.fMaxTime	= pDesc->fComboCoolTime;
 
 	// 초기는 우선 근접 무기로 설정해둠
 	m_FAttState = Attack_State::Melee;
-	pDesc->iAttack = m_tAttackMelee.iAttack;
-	pDesc->iSheild = m_tAttackMelee.iSheild;
+	pDesc->fAttack = m_fMeleeAtt;
 
 	if (Super::Initialize(pDesc))
 		return E_FAIL;
@@ -74,24 +62,12 @@ HRESULT CStatCom_Player::Initialize(void* pArg)
 	return S_OK;
 }
 
-void CStatCom_Player::Update(const _float fTimeDelta)
+void CStatCom_Player::Update_Stat(const _float fTimeDelta)
 {
+	Super::Update_Stat(fTimeDelta);
+
 	Count_Dash(fTimeDelta);
 	Count_Combo(fTimeDelta);
-	Count_Skill(fTimeDelta);
-
-	Count_Defense(fTimeDelta);
-	Count_Mental(fTimeDelta);
-}
-
-_bool CStatCom_Player::IsCan_SkillE()
-{
-	return (m_vMentality.x >= m_tESkill.iNeedMental) && (m_tESkill.TCoolTime.x == m_tESkill.TCoolTime.y);
-}
-
-_bool CStatCom_Player::IsCan_SkillQ()
-{
-	return (m_vMentality.x >= m_tQSkill.iNeedMental) && (m_tQSkill.TCoolTime.x == m_tQSkill.TCoolTime.y);
 }
 
 _bool CStatCom_Player::Set_AttackState(_uint iState, _bool bOn)
@@ -112,23 +88,6 @@ _bool CStatCom_Player::Set_AttackState(_uint iState, _bool bOn)
 			Engine_Utils::RemoveHard_Flag(m_FAttState, Attack_State::Melee);
 			break;
 		}
-		case Attack_State::E:
-		{
-			if (!IsCan_SkillE())
-				return false;
-
-			m_tESkill.TCoolTime.x = 0.f;
-			break;
-		}
-
-		case Attack_State::Q:
-		{
-			if (!IsCan_SkillQ())
-				return false;
-
-			m_tQSkill.TCoolTime.x = 0.f; 
-			break;
-		}
 
 		}
 
@@ -147,16 +106,6 @@ _bool CStatCom_Player::Set_AttackState(_uint iState, _bool bOn)
 			break;
 		}
 
-		case Attack_State::E:
-		{
-			m_tESkill.TCoolTime.x = m_tESkill.TCoolTime.y; break;
-		}
-
-		case Attack_State::Q:
-		{
-			m_tQSkill.TCoolTime.x = m_tESkill.TCoolTime.y; break;
-		}
-
 		}
 
 		Engine_Utils::RemoveHard_Flag(m_FAttState, iState);
@@ -164,36 +113,22 @@ _bool CStatCom_Player::Set_AttackState(_uint iState, _bool bOn)
 
 
 	// attack, sheild 다시 셋팅
-	m_iAttack = 0;
-	m_iSheild = 0;
-	m_bSheildOn = false;
+	m_fAttack = 0;
+	m_fSheild = 0;
+	Engine_Utils::RemoveHard_Flag(m_FStatFlags, StatFlags::SheildOn);
+
 	if (Engine_Utils::Has_Flag(m_FAttState, Attack_State::Melee))
 	{
-		m_iAttack += m_tAttackMelee.iAttack;
-		m_iSheild += m_tAttackMelee.iSheild;
+		m_fAttack += m_fMeleeAtt;
 	}
 
 	if (Engine_Utils::Has_Flag(m_FAttState, Attack_State::Gun))
 	{
-		m_iAttack += m_tAttackGun.iAttack;
-		m_iSheild += m_tAttackGun.iSheild;
+		m_fAttack += m_fGunAtt;
 	}
 
-	// todo : skill쪽은 아예 빼서... skill component가 전반적으로 관리 하도록 변경 할 수도
-	if (Engine_Utils::Has_Flag(m_FAttState, Attack_State::E))
-	{
-		m_iAttack += m_tESkill.tAttDesc.iAttack;
-		m_iSheild += m_tESkill.tAttDesc.iSheild;
-	}
-
-	if (Engine_Utils::Has_Flag(m_FAttState, Attack_State::Q))
-	{
-		m_iAttack += m_tQSkill.tAttDesc.iAttack;
-		m_iSheild += m_tQSkill.tAttDesc.iSheild;
-	}
-
-	if (m_iSheild > 0)
-		m_bSheildOn = true;
+	if (m_fSheild > 0)
+		Engine_Utils::Add_Flag(m_FStatFlags, StatFlags::SheildOn);
 
 	return true;
 }
@@ -219,43 +154,11 @@ void CStatCom_Player::Sub_DashCount()
 	}
 }
 
-void CStatCom_Player::Add_State(STAT_TYPE eState, _float fValue)
-{
-	switch (eState)
-	{
-	case STAT_TYPE::HP:
-		Add_Health(fValue);
-		break;
-
-	case STAT_TYPE::DEFENSE:
-		m_vDefense.x += fValue;
-		{
-			if (m_vDefense.x > m_vDefense.y)
-				m_vDefense.x = m_vDefense.y;
-
-			else if (m_vDefense.x < 0)
-				m_vDefense.x = 0.f;
-		}
-		break;
-
-	case STAT_TYPE::MENTAL:
-		m_vMentality.x += fValue;
-		{
-			if (m_vMentality.x > m_vMentality.y)
-				m_vMentality.x = m_vMentality.y;
-
-			else if (m_vMentality.x < 0)
-				m_vMentality.x = 0.f;
-		}
-		break;
-	}
-}
-
-void CStatCom_Player::Sub_Hp(_int iHealth)
+void CStatCom_Player::Sub_Hp(_float iHealth)
 {
 	// 쉴드 온이면 쉴드 값을 더해줌
-	if (m_bSheildOn)
-		iHealth += m_iSheild;
+	if (Engine_Utils::Has_Flag(m_FStatFlags, StatFlags::SheildOn))
+		iHealth += m_fSheild;
 
 	// 그래도 health가 음수일때
 	if (iHealth < 0)
@@ -266,7 +169,7 @@ void CStatCom_Player::Sub_Hp(_int iHealth)
 		// 디펜스가 음수가 되었다면 이제서야 health를 뺌
 		if (m_vDefense.x < 0)
 		{
-			m_iHealth += (_uint)m_vDefense.x;
+			m_vHealth.x += (_uint)m_vDefense.x;
 
 			m_vDefense.x = 0;
 		}
@@ -297,69 +200,6 @@ void CStatCom_Player::Count_Combo(const _float fTimeDelta)
 			m_tComboTimeCounter.bCountTime = false;
 			m_iComboCount = 0;
 		}
-	}
-}
-
-void CStatCom_Player::Count_Skill(const _float fTimeDelta)
-{
-	// E Skill
-	//if (Engine_Utils::Has_Flag(m_FAttState, Attack_State::E))
-	{
-		// cool timer
-		if (m_tESkill.TCoolTime.x < m_tESkill.TCoolTime.y)
-		{
-			m_tESkill.TCoolTime.x += fTimeDelta;
-
-			if (m_tESkill.TCoolTime.x >= m_tESkill.TCoolTime.y)
-			{
-				m_tESkill.TCoolTime.x = m_tESkill.TCoolTime.y;
-				Set_PlayerKey(CPlayerControlContext::SKILL1, true);
-			}
-		}
-	}
-
-	// Q skill
-	//if (Engine_Utils::Has_Flag(m_FAttState, Attack_State::Q))
-	{
-		// cool timer
-		if (m_tQSkill.TCoolTime.x < m_tQSkill.TCoolTime.y)
-		{
-			m_tQSkill.TCoolTime.x += fTimeDelta;
-
-			if (m_tQSkill.TCoolTime.x >= m_tQSkill.TCoolTime.y)
-			{
-				m_tQSkill.TCoolTime.x = m_tQSkill.TCoolTime.y;
-				Set_PlayerKey(CPlayerControlContext::SKILL2, true);
-			}
-		}
-	}
-}
-
-void CStatCom_Player::Count_Defense(const _float fTimeDelta)
-{
-	// 만약 max치 보다 적다면
-	if (m_vDefense.x < m_vDefense.y)
-	{
-		// 더해줌
-		m_vDefense.x += fTimeDelta;
-
-		// max 넘어가지 않게 조정
-		if (m_vDefense.x > m_vDefense.y)
-			m_vDefense.x = m_vDefense.y;
-	}
-}
-
-void CStatCom_Player::Count_Mental(const _float fTimeDelta)
-{
-	// 만약 max치 보다 적다면
-	if (m_vMentality.x < m_vMentality.y)
-	{
-		// 더해줌
-		m_vMentality.x += fTimeDelta;
-
-		// max 넘어가지 않게 조정
-		if (m_vMentality.x > m_vMentality.y)
-			m_vMentality.x = m_vMentality.y;
 	}
 }
 
@@ -394,4 +234,10 @@ CComponent* CStatCom_Player::Clone(void* pArg)
 void CStatCom_Player::Free()
 {
 	__super::Free();
+
+	if (IsClone())
+	{
+		Safe_Release(m_pESkillBase);
+		Safe_Release(m_pQSkillBase);
+	}
 }

@@ -173,13 +173,23 @@ public:
 private:
 	HRESULT								Check_DrawType_ByClientPath();
 public:
+#pragma region Render 함수 모음
+	HRESULT								Render_MapObject();
 	HRESULT								Render_StaticObject();
 	HRESULT								Render_LandScape();
-
+	HRESULT								Render_Grass();
+	HRESULT								Render_Tree();
+	HRESULT								Render_Moss();
+	HRESULT								Render_Vine();
+	HRESULT								Render_Bush();
+	HRESULT								Render_Rock();
+	HRESULT								Render_Water();
+#pragma endregion 
 public:
 	/* 기본적으로 사용할 애들 */
-	HRESULT								Render_Default(_int iPass = -1);
-	HRESULT								Render_Instance(_int iPass = -1);
+	/* Client Make Path를  */
+	HRESULT								Render_Default(_int iPass = 0 );
+	HRESULT								Render_Instance(_int iPass = 0);
 
 protected:
 	wstring								m_wstrUERawDataPath{L""};

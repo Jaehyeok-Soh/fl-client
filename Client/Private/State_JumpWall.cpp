@@ -29,7 +29,6 @@ HRESULT CState_JumpWall::Start(void* pArg, _bool bForce)
 	if (FAILED(Super::Start(pArg, bForce)))
 		return E_FAIL;
 
-	//Set_GravityOffset(5.f);
 
 	Set_ApplyGravity(false);
 
@@ -38,13 +37,6 @@ HRESULT CState_JumpWall::Start(void* pArg, _bool bForce)
 
 void CState_JumpWall::Update(const _float fTimeDelta)
 {
-	//// 바닥 충돌 검사 후 change
-	//if (IsOn_CCTFlag(PxControllerCollisionFlag::Enum::eCOLLISION_DOWN))
-	//{
-	//	Change_PlayerState(ENUM_TO_UINT(CPlayer::State::LAND));
-	//	return;
-	//}
-
 	// 바닥 충돌 검사 후 change
 	if (m_fStateElapsed > 0.6f &&
 		Check_OnGround(0.1f))

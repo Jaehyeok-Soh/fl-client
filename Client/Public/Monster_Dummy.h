@@ -1,14 +1,14 @@
 #pragma once
-#include "ContainerObject.h"
+#include "Monster_Base.h"
 
 NS_BEGIN(Engine)
 NS_END
 
 NS_BEGIN(Client)
 
-class CMonster_Dummy final : public CContainerObject
+class CMonster_Dummy final : public CMonster_Base
 {
-	using Super = CContainerObject;
+	using Super = CMonster_Base;
 private:
 	CMonster_Dummy(ID3D11Device* pDevice, ID3D11DeviceContext* pDeviceContext);
 	explicit CMonster_Dummy(const CMonster_Dummy& rhs);
@@ -24,23 +24,18 @@ public:
 	virtual void		Update_Late(const _float fTimeDelta) override;
 	virtual void		Ready_Before_Render(const _float fTimeDelta) override;
 	virtual HRESULT		Render() override;
-	virtual _int		Get_AnimationIndex(const wstring& wstrName) override;
-	virtual _wstring	Get_AnimationName(_uint iAniIndex);
 
 public:
-	virtual void OnCollision(_uint iMyColliderLayer, CGameObject* pOther) override;
-	virtual void OnCollision_Enter(_uint iMyColliderLayer, CGameObject* pOther) override;
-	virtual void OnCollision_Exit(_uint iMyColliderLayer, CGameObject* pOther) override;
-	virtual void OnTrigger_Enter(_uint iMyColliderLayer, CGameObject* pOther) override;
-	virtual void OnTrigger_Exit(_uint iMyColliderLayer, CGameObject* pOther) override;
+	virtual void OnCollision(_uint iMyColliderLayer, _uint iOtherLayer, CGameObject* pOther) override;
+	virtual void OnCollision_Enter(_uint iMyColliderLayer, _uint iOtherLayer, CGameObject* pOther, const COL_HIT_INFO& tHitInfo) override;
+	virtual void OnCollision_Exit(_uint iMyColliderLayer, _uint iOtherLayer, CGameObject* pOther) override;
+	virtual void OnTrigger_Enter(_uint iMyColliderLayer, _uint iOtherLayer, CGameObject* pOther) override;
+	virtual void OnTrigger_Exit(_uint iMyColliderLayer, _uint iOtherLayer, CGameObject* pOther) override;
 
 private:
 	HRESULT Ready_BaseStates();
 	HRESULT Ready_PartObjects();
 	HRESULT Ready_Components();
-
-private:
-	HRESULT Ready_CCT();
 
 public:
 	static CMonster_Dummy* Create(ID3D11Device* pDevice, ID3D11DeviceContext* pDeviceContext);

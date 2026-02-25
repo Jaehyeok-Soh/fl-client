@@ -177,6 +177,10 @@ void	CMapObject::Update_Late(const _float fTimeelta)
 void	CMapObject::Ready_Before_Render(const _float fTimeDelta)
 {
 	Super::Ready_Before_Render(fTimeDelta);
+
+    m_pGameInstance->Push_RenderObject(RENDER_CATEGORY::NONEBLEND, this);
+
+
 #ifdef _DEBUG
     if (m_eMapObjectDrawType == EMapObject_DrawType::Instance)
         m_pGameInstance->Push_DebugComponent(Get_Component<CBounds>());
@@ -217,7 +221,12 @@ HRESULT CMapObject::Ready_PhysicsCollider(MAPOBJECT_DESC* pDesc)
             Safe_Release(pCollider);
     }
 
-    if (FAILED(Add_Component<CPhysicsCollider>(pDesc->iLevelIndex, L"Prototype_Component_Physics_Collider_" + wstrModelName, nullptr)))
+    PHYSICSCOLLIDER_DESC cloneDesc{};
+    cloneDesc.eFilterLayer = PHYSICSFILTERGROUP::MAP;
+    cloneDesc.iFilterMask = 0xFFFFFFFF;
+    cloneDesc.bSetOnlyFilter = true;
+
+    if (FAILED(Add_Component<CPhysicsCollider>(pDesc->iLevelIndex, L"Prototype_Component_Physics_Collider_" + wstrModelName, &cloneDesc)))
         return E_FAIL;
 
     return S_OK;
@@ -286,8 +295,8 @@ HRESULT	CMapObject::Render_Instance(_uint iPassIndex)
 
 HRESULT	CMapObject::Render_Default(_uint iPassIndex)
 {
-    CShader* pShader        = Get_Component<CShader>();      if (pShader == nullptr)         return E_FAIL;
-    CModel* pModel          = Get_Component<CModel>();       if (pModel == nullptr)          return E_FAIL;
+    CShader*    pShader     = Get_Component<CShader>();      if (pShader == nullptr)         return E_FAIL;
+    CModel*     pModel      = Get_Component<CModel>();       if (pModel == nullptr)          return E_FAIL;
     CTransform* pTransform  = Get_Component<CTransform>();   if (pTransform == nullptr)      return E_FAIL;
 
 

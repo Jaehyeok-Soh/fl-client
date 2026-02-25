@@ -144,6 +144,23 @@ void CUI_Manager::Clear_TriggerUI()
 	m_vecTriggerUIs.clear();
 }
 
+void CUI_Manager::Regist_Prefab(EUIPrefabType ePrefab)
+{
+}
+
+void CUI_Manager::Request_Add_Prefab(EUIPrefabType ePrefab)
+{
+	switch (ePrefab)
+	{
+	case Client::EUIPrefabType::MONSTER_NAMEPLATE:
+		break;
+	case Client::EUIPrefabType::END:
+		break;
+	default:
+		break;
+	}
+}
+
 void CUI_Manager::Sort_UI(vector<CGenericUI*>& Target)
 {
 	const auto& Base = m_vecGenericUICache[ENUM_TO_UINT(ELevelType::STATIC)];

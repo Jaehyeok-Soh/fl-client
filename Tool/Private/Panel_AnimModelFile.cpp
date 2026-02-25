@@ -98,6 +98,27 @@ void CPanel_AnimModelFile::ButtonsWindow()
 	ImGui::End();
 }
 
+void CPanel_AnimModelFile::DrawPreTransformMatrix(string id, ANIM_SRT& pretransform)
+{
+	ImGui::PushID(&pretransform);
+
+	if (ImGui::CollapsingHeader(id.c_str()))
+	{
+		if (ImGui::Button("Reset PreTransform"))
+		{
+			pretransform.vScale = Vec3(1.f, 1.f, 1.f);
+			pretransform.vRot = Vec3(0.f, 0.f, 0.f);
+			pretransform.vTranslation = Vec3(0.f, 0.f, 0.f);
+		}
+
+		ImGui::DragFloat3("Scale", &pretransform.vScale.x, 0.01f, 0.01f, 10.f);
+		ImGui::DragFloat3("Rotation", &pretransform.vRot.x, 0.01f, 0.01f);
+		ImGui::DragFloat3("Translation", &pretransform.vTranslation.x, 0.01f, 0.01f);
+	}
+
+	ImGui::PopID();
+}
+
 void CPanel_AnimModelFile::OpenFileDialog(char* buffer, const char* filter)
 {
 	OPENFILENAMEA ofn;
@@ -460,8 +481,10 @@ void CPanel_AnimModelFile::CheckAnimModel(DIR dir, fs::path parent)
 
 	if (hasAnimations && hasMesh && hasSkel && hasMtrl)
 	{
+		DrawPreTransformMatrix("AnimModel PreTransform Matrix", m_tAnimSrt);
+
 		if (ImGui::SmallButton("Load anim model"))
-			CGameInstance::GetInstance()->Broadcast<LoadAnimModel>(dir.directory);
+			CGameInstance::GetInstance()->Broadcast<LoadAnimModel>(dir.directory, m_tAnimSrt);
 		vector<fs::path> allProjectMeshes;
 
 		std::function<void(const DIR&)> findAllMeshes = [&](const DIR& current) {
@@ -506,13 +529,16 @@ void CPanel_AnimModelFile::CheckAnimModel(DIR dir, fs::path parent)
 				ImGui::InputInt("Socket Bone Index", &m_iSocketBoneIdx);
 				ImGui::SameLine();
 				ImGui::Checkbox("Combine Matrix", &m_bCombine);
+				ImGui::SameLine();
+				ImGui::Checkbox("Static", &m_bWeaponStatic);
 			}
 
-
+			DrawPreTransformMatrix("PartModel PreTransform Matrix", m_tPartSrt);
+			
 			if (ImGui::SmallButton("Load Part Weapon"))
 			{
 				fs::path targetPath = allProjectMeshes[selectedIdxMap[nodeKey]];
-				CGameInstance::GetInstance()->Broadcast<LoadAnimModelPart>(targetPath, m_iSocketBoneIdx, m_bCombine);
+				CGameInstance::GetInstance()->Broadcast<LoadAnimModelPart>(targetPath, m_tPartSrt, m_iSocketBoneIdx, m_bCombine, m_bWeaponStatic);
 			}
 		}
 	}

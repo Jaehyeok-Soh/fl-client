@@ -60,7 +60,8 @@ protected:
 
 	STATE_START_DESC		m_tNextStateDesc = {};
 
-	TimeCount				m_TFallingCount = { 0.f,0.3f };
+	TimeCount				m_TFallingCount = { 0.f,0.4f };
+	TimeCount				m_TChargeCount = { 0.f,0.3f };
 
 	// state가 변환 했다면 true
 protected:
@@ -78,7 +79,7 @@ protected:
 
 	// player 객체 연결 함수들
 protected:
-	_bool	Check_OnGround(_float fMaxDist = 0.72f); // 땅에 있는지 검사
+	_bool	Check_OnGround(_float fMaxDist = 0.8f); // 땅에 있는지 검사
 
 	void	Check_Monster();
 
@@ -87,6 +88,10 @@ protected:
 	_bool	Start_Att(_uint iPlayerState);
 	void	End_Att(_uint iPlayerState);
 
+	void	Set_RootMotion_Apply(_bool bApply);
+
+	void	Set_DoubleJump(_bool bCount);
+	_bool	Check_Double();
 
 protected:
 	virtual void OwnMove(const _float fTimeDelta) {};		// state 내부에서 알아서 움직일때

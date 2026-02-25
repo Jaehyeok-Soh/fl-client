@@ -253,11 +253,13 @@ void CPanel_AnimDescription::Desc_AttackOverlapWindow()
         DTO::HITBOX_DESC& desc = pEvent->tHitboxDesc;
 
         // 필터 레이어 (누가 때리는 것인가?)
-        int currentLayer = (int)desc.eFilterLayer;
+        int currentLayer = 0;
+        int tempLayer = (int)desc.eFilterLayer;
+        while (tempLayer >>= 1)
+            currentLayer++;
+
         if (ImGui::Combo("Filter Layer", &currentLayer, filterGroupItems, IM_ARRAYSIZE(filterGroupItems)))
-        {
-            desc.eFilterLayer = (PHYSICSFILTERGROUP::Enum)currentLayer;
-        }
+            desc.eFilterLayer = static_cast<PHYSICSFILTERGROUP::Enum>(1 << currentLayer);
 
         // 필터 마스크 (누구를 때릴 것인가?) - 비트마스크 입력은 CheckboxGroup 추천
         ImGui::Text("Filter Mask (Target Layer)");

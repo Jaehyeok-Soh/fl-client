@@ -36,6 +36,9 @@ public:
 	void Awake();
 
 private:
+	void Create_AttackOverlap(vector<DTO::ATTACKEVENT> events);
+
+private:
 	ID3D11Device* m_pDevice{};
 	ID3D11DeviceContext* m_pDeviceContext{};
 

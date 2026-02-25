@@ -1,11 +1,6 @@
 #pragma once
 #include "Base.h"
-#pragma push_macro("new")
-#undef new
-#include "json.hpp"
-using json = nlohmann::json;
-using ordered_json = nlohmann::ordered_json;
-#pragma pop_macro("new")
+
 
 NS_BEGIN(Engine)
 class CGameInstance;
@@ -18,11 +13,9 @@ class CUITrigger;
 class CUI_Manager final : public CBase
 {
 	DECLARE_SINGLETON(CUI_Manager)
-
 private:
 	CUI_Manager();
 	virtual ~CUI_Manager() = default;
-
 public:
 	/* Builder에서 만들면서 넣어줄거임 */
 	HRESULT Add_VecCanvasCache(uint32_t iLevelIndex, CCanvas* pCache) { if (iLevelIndex >= g_iLevelType_Count)return E_FAIL; m_vecCanvasCache[iLevelIndex].push_back(pCache); return S_OK; }
@@ -50,6 +43,10 @@ public:
 	void Add_TriggerUI(vector<CUITrigger*>&& vecUIs);
 	HRESULT Bind_Trigger(_uint iLevelID);
 	void Clear_TriggerUI();
+
+	void Regist_Prefab(EUIPrefabType ePrefab);
+	void Request_Add_Prefab(EUIPrefabType ePrefab);
+
 private:
 	void Sort_UI(vector<CGenericUI*>& Target);
 
@@ -57,24 +54,20 @@ public:
 	// UI 전달 변수 Getter Setter
 	const _float* Get_LoadingRatio() const { return m_pLoadingRatio; }
 
-
 	void Set_LoadingRatio(const _float* p) { m_pLoadingRatio = p; }
 
 private:
 	CGameInstance* m_pGameInstance = { nullptr };
-
 	/* 특정 오브젝트를 딱 찝어서 이벤트를 발생 시켜야 할 때 */
 	array<unordered_map<_string, CCanvas*>,		g_iLevelType_Count >m_mapCanvasCache;
 	array<unordered_map<_string, CGenericUI*>,	g_iLevelType_Count >m_mapUICache;
-
 	/* 레벨에 같은 타입의 모든 오브젝트들에게 이벤트를 발생시킬 때 */
 	array<vector<CCanvas*>, g_iLevelType_Count> m_vecCanvasCache;
 	array<vector<CGenericUI*>, g_iLevelType_Count> m_vecGenericUICache;
-
 	vector<CGenericUI*> m_vecSortUI;
 	_bool m_isSort = { FALSE };
-
 	vector <CUITrigger*> m_vecTriggerUIs;
+
 
 private:
 	// UI 전달 변수 

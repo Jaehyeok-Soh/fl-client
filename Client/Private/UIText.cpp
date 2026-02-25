@@ -5,10 +5,11 @@
 //=================
 // Component
 //=================
+#include "WorldUI_Component.h"
 #include "Texture.h"
 #include "Shader.h"
 #include "VIBuffer_Rect_Tex.h"
-#include "StatComponent.h"
+#include "MyStat.h"
 #include "GameInstance.h"
 
 CUIText::CUIText(ID3D11Device* pDevice, ID3D11DeviceContext* pDeviceContext)
@@ -77,8 +78,18 @@ void CUIText::Update(const _float fTimeDelta)
 
 void CUIText::Update_Late(const _float fTimeDelta)
 {
-	m_vFontPos.x = m_vRenderPos.x;
-	m_vFontPos.y = m_vRenderPos.y;
+	if (nullptr != m_pWorldUIComp)
+	{
+		m_vFontPos.x = m_fX;
+		m_vFontPos.y = m_fY;
+		m_fScaleOffset = m_pWorldUIComp->Get_ScaleOffset();
+	}
+	else
+	{
+		m_vFontPos.x = m_vRenderPos.x;
+		m_vFontPos.y = m_vRenderPos.y;
+		m_fScaleOffset = 1.f;
+	}
 
 	Super::Update_Late(fTimeDelta);
 }
@@ -125,12 +136,12 @@ void CUIText::Sync_FontDesc()
 	m_tFontDesc.eFontShaderType = m_eShaderType;
 	m_tFontDesc.strFontTag = m_wstrFontTag;
 	m_tFontDesc.strText = m_wstrText;
-	Vec2 fontPos = Vec2{ m_vRenderPos.x, m_vRenderPos.y };
+	Vec2 fontPos = Vec2{ m_vFontPos.x, m_vFontPos.y };
 	m_tFontDesc.vPosition = fontPos;
 	m_tFontDesc.vColor = m_vFontColor;
 	m_tFontDesc.ePivot = m_ePivot;
 	m_tFontDesc.fRotate = m_fFontRotate;
-	m_tFontDesc.fScale = m_fFontScale;
+	m_tFontDesc.fScale = m_fFontScale * m_fScaleOffset;
 }
 
 _wstring CUIText::Float_To_Wstring(const _float f, _uint iDecimal)

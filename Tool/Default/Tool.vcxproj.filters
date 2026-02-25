@@ -292,6 +292,33 @@
     <Filter Include="02. GameObjects\Map\01. SceneData">
       <UniqueIdentifier>{796e0779-af03-4219-87f2-4ff1d7e85f49}</UniqueIdentifier>
     </Filter>
+    <Filter Include="09. Builder\Builder_MonsterState">
+      <UniqueIdentifier>{6cd3e072-0e67-41b9-a8e3-d3d8fba2778f}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="06. ImGui\01. Panel\Animation\Panel_State">
+      <UniqueIdentifier>{f8ea57a4-1227-451f-bfeb-abde0f94e887}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="03. Level\AttackPreset">
+      <UniqueIdentifier>{bf464770-40f1-4342-b2e3-be2af144f024}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="06. ImGui\01. Panel\AttackPreset">
+      <UniqueIdentifier>{996bac93-c5d4-4b51-83e9-4d6fd00b0dbc}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="06. ImGui\01. Panel\AttackPreset\Panel_PresetList">
+      <UniqueIdentifier>{473e4376-90c1-4d45-abf4-4368f2acefa7}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="06. ImGui\01. Panel\AttackPreset\Panel_PresetMain">
+      <UniqueIdentifier>{8905ec16-9d02-4d16-aec8-15d5da3f843e}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="09. Builder\AttackPreset">
+      <UniqueIdentifier>{4738cfac-9f86-4af3-b8a6-84e6e355de2d}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="03. Level\AttackPreset\Manager">
+      <UniqueIdentifier>{1346bdc0-b327-4d83-bfe1-52b8df01dc43}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="06. ImGui\01. Panel\Animation\Panel_AnimationMix">
+      <UniqueIdentifier>{beab9b2a-5282-4997-9256-1ad828bcd254}</UniqueIdentifier>
+    </Filter>
     <Filter Include="02. GameObjects\Effect\Container\EffectBase">
       <UniqueIdentifier>{4688e8c2-b7fa-4bfb-85c4-39ca80b9260d}</UniqueIdentifier>
     </Filter>
@@ -580,7 +607,7 @@
     <ClInclude Include="..\Public\Panel_Parts.h">
       <Filter>06. ImGui\01. Panel\Animation\Panel_Parts</Filter>
     </ClInclude>
-    <ClInclude Include="..\Public\SceneData.h">
+    <ClInclude Include="..\Public\LevelData.h">
       <Filter>02. GameObjects\Map\01. SceneData</Filter>
     </ClInclude>
     <ClInclude Include="..\Public\Tool_EffectBase.h">
@@ -588,6 +615,30 @@
     </ClInclude>
     <ClInclude Include="..\Public\Tool_EffectPartBase.h">
       <Filter>02. GameObjects\Effect\Part\Tool_EffectPartBase</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\Builder_MonsterState.h">
+      <Filter>09. Builder\Builder_MonsterState</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\Panel_State.h">
+      <Filter>06. ImGui\01. Panel\Animation\Panel_State</Filter>
+    </ClInclude>
+    <ClInclude Include="..\public\Level_AttackPreset.h">
+      <Filter>03. Level\AttackPreset</Filter>
+    </ClInclude>
+    <ClInclude Include="..\public\Panel_PresetList.h">
+      <Filter>06. ImGui\01. Panel\AttackPreset\Panel_PresetList</Filter>
+    </ClInclude>
+    <ClInclude Include="..\public\Panel_PresetMain.h">
+      <Filter>06. ImGui\01. Panel\AttackPreset\Panel_PresetMain</Filter>
+    </ClInclude>
+    <ClInclude Include="..\public\Builder_AttackPreset.h">
+      <Filter>09. Builder\AttackPreset</Filter>
+    </ClInclude>
+    <ClInclude Include="..\public\AttackPreset_DataManager.h">
+      <Filter>03. Level\AttackPreset\Manager</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\Panel_AnimationMix.h">
+      <Filter>06. ImGui\01. Panel\Animation\Panel_AnimationMix</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -859,7 +910,7 @@
     <ClCompile Include="..\Private\Panel_Parts.cpp">
       <Filter>06. ImGui\01. Panel\Animation\Panel_Parts</Filter>
     </ClCompile>
-    <ClCompile Include="..\Private\SceneData.cpp">
+    <ClCompile Include="..\Private\LevelData.cpp">
       <Filter>02. GameObjects\Map\01. SceneData</Filter>
     </ClCompile>
     <ClCompile Include="..\Private\Tool_EffectBase.cpp">
@@ -867,6 +918,30 @@
     </ClCompile>
     <ClCompile Include="..\Private\Tool_EffectPartBase.cpp">
       <Filter>02. GameObjects\Effect\Part\Tool_EffectPartBase</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\Builder_MonsterState.cpp">
+      <Filter>09. Builder\Builder_MonsterState</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\Panel_State.cpp">
+      <Filter>06. ImGui\01. Panel\Animation\Panel_State</Filter>
+    </ClCompile>
+    <ClCompile Include="..\private\Level_AttackPreset.cpp">
+      <Filter>03. Level\AttackPreset</Filter>
+    </ClCompile>
+    <ClCompile Include="..\private\Panel_PresetList.cpp">
+      <Filter>06. ImGui\01. Panel\AttackPreset\Panel_PresetList</Filter>
+    </ClCompile>
+    <ClCompile Include="..\private\Panel_PresetMain.cpp">
+      <Filter>06. ImGui\01. Panel\AttackPreset\Panel_PresetMain</Filter>
+    </ClCompile>
+    <ClCompile Include="..\private\Builder_AttackPreset.cpp">
+      <Filter>09. Builder\AttackPreset</Filter>
+    </ClCompile>
+    <ClCompile Include="..\private\AttackPreset_DataManager.cpp">
+      <Filter>03. Level\AttackPreset\Manager</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\Panel_AnimationMix.cpp">
+      <Filter>06. ImGui\01. Panel\Animation\Panel_AnimationMix</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

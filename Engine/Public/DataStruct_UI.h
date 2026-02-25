@@ -83,7 +83,8 @@ NLOHMANN_JSON_SERIALIZE_ENUM(EUIClassType,
 enum EComponentTypeFlag
 {
 	BUTTON_COMPONENT = 1 << 0,
-	PROGRESS_COMPONENT = 1 << 1
+	PROGRESS_COMPONENT = 1 << 1,
+	WORLDUI_COMPONENT = 1 << 2
 };
 
 enum class EUISubClassType
@@ -98,6 +99,11 @@ enum class EUISubClassType
 	PLAYER_STAT_END,
 
 	LOADING_PROGRESS,
+
+	MONSTER_STAT_BEGIN,
+	MONSTER_HP,
+	MONSTER_ARMOR,
+	MONSTER_STAT_END,
 	END
 };
 
@@ -115,6 +121,12 @@ inline std::string UISubClasstypeToString(EUISubClassType eType)
 	case EUISubClassType::PLAYER_STAT_END:		return "PLAYER_STAT_END";
 
 	case EUISubClassType::LOADING_PROGRESS:	return "LOADING_PROGRESS";
+
+	case EUISubClassType::MONSTER_STAT_BEGIN:		return "MONSTER_STAT_BEGIN";
+	case EUISubClassType::MONSTER_HP:	return "MONSTER_HP";
+	case EUISubClassType::MONSTER_ARMOR:	return "MONSTER_ARMOR";
+	case EUISubClassType::MONSTER_STAT_END:	return "MONSTER_STAT_END";
+
 	case EUISubClassType::END:				return "END";
 	default: return "";
 	}
@@ -125,13 +137,18 @@ inline EUISubClassType StringToUISubClassType(const std::string& str)
 	if (str == "NONE_OWNER")			return EUISubClassType::NONE_OWNER;
 
 	else if (str == "PLAYER_STAT_BEGIN")		return EUISubClassType::PLAYER_STAT_BEGIN;
-	else if (str == "PLAYER_HP")		return EUISubClassType::PLAYER_HP;
-	else if (str == "PLAYER_ARMOR")		return EUISubClassType::PLAYER_ARMOR;
+	else if (str == "PLAYER_HP")			return EUISubClassType::PLAYER_HP;
+	else if (str == "PLAYER_ARMOR")			return EUISubClassType::PLAYER_ARMOR;
 	else if (str == "PLAYER_ENERGY")		return EUISubClassType::PLAYER_ENERGY;
-	else if (str == "PLAYER_LV")	return EUISubClassType::PLAYER_LV;
+	else if (str == "PLAYER_LV")			return EUISubClassType::PLAYER_LV;
 	else if (str == "PLAYER_STAT_END")		return EUISubClassType::PLAYER_STAT_END;
 
 	else if (str == "LOADING_PROGRESS")	return EUISubClassType::LOADING_PROGRESS;
+
+	else if (str == "MONSTER_STAT_BEGIN")	return EUISubClassType::MONSTER_STAT_BEGIN;
+	else if (str == "MONSTER_HP")	return EUISubClassType::MONSTER_HP;
+	else if (str == "MONSTER_ARMOR")	return EUISubClassType::MONSTER_ARMOR;
+	else if (str == "MONSTER_STAT_END")	return EUISubClassType::MONSTER_STAT_END;
 	else return EUISubClassType::END;
 }
 
@@ -146,7 +163,12 @@ NLOHMANN_JSON_SERIALIZE_ENUM(EUISubClassType,
 		{EUISubClassType::PLAYER_LV,			"PLAYER_LV"},
 		{EUISubClassType::PLAYER_STAT_END,		"PLAYER_STAT_END"},
 
-		{EUISubClassType::LOADING_PROGRESS,		"LOADING_PROGRESS"}
+		{EUISubClassType::LOADING_PROGRESS,		"LOADING_PROGRESS"},
+
+		{EUISubClassType::MONSTER_STAT_BEGIN,			"MONSTER_STAT_BEGIN"},
+		{EUISubClassType::MONSTER_HP,		"MONSTER_HP"},
+		{ EUISubClassType::MONSTER_ARMOR,		"MONSTER_ARMOR" },
+		{ EUISubClassType::MONSTER_STAT_END,		"MONSTER_STAT_END"}
 	})
 
 #pragma region 텍스트 서브 클래스
@@ -192,6 +214,12 @@ NLOHMANN_JSON_SERIALIZE_ENUM(EUISubClassType,
 	LOADING_TEXT_CONTENTS,
 	LOADING_TEXT_PERCENT,
 	LOADING_TEXT_END,
+	
+	// 몬스터 스탯
+	MONSTER_STAT_TEXT_BEGIN,
+	MONSTER_STAT_TEXT_LV,
+	MONSTER_STAT_TEXT_NICKNAME,
+	MONSTER_STAT_TEXT_END,
 
 	END
 };
@@ -230,11 +258,16 @@ NLOHMANN_JSON_SERIALIZE_ENUM(EUITextSubClassType,
 		{ EUITextSubClassType::MENU_ICON_TEXT,						"MENU_ICON_TEXT" },
 		{ EUITextSubClassType::MENU_TEXT_END,						"MENU_TEXT_END" },
 
-		{ EUITextSubClassType::LOADING_TEXT_BEGIN,						"LOADING_TEXT_BEGIN" },
-		{ EUITextSubClassType::LOADING_TEXT_TITLE,						"LOADING_TEXT_TITLE" },
-		{ EUITextSubClassType::LOADING_TEXT_CONTENTS,						"LOADING_TEXT_CONTENTS" },
-		{ EUITextSubClassType::LOADING_TEXT_PERCENT,						"LOADING_TEXT_PERCENT" },
-		{ EUITextSubClassType::LOADING_TEXT_END,						"LOADING_TEXT_END" },
+		{ EUITextSubClassType::LOADING_TEXT_BEGIN,					"LOADING_TEXT_BEGIN" },
+		{ EUITextSubClassType::LOADING_TEXT_TITLE,					"LOADING_TEXT_TITLE" },
+		{ EUITextSubClassType::LOADING_TEXT_CONTENTS,				"LOADING_TEXT_CONTENTS" },
+		{ EUITextSubClassType::LOADING_TEXT_PERCENT,				"LOADING_TEXT_PERCENT" },
+		{ EUITextSubClassType::LOADING_TEXT_END,					"LOADING_TEXT_END" },
+
+		{ EUITextSubClassType::MONSTER_STAT_TEXT_BEGIN,				"MONSTER_STAT_TEXT_BEGIN" },
+		{ EUITextSubClassType::MONSTER_STAT_TEXT_LV,				"MONSTER_STAT_TEXT_LV" },
+		{ EUITextSubClassType::MONSTER_STAT_TEXT_NICKNAME,			"MONSTER_STAT_TEXT_NICKNAME" },
+		{ EUITextSubClassType::MONSTER_STAT_TEXT_END,				"MONSTER_STAT_TEXT_END" },
 
 		{ EUITextSubClassType::END,									"END" },
 	})
@@ -262,9 +295,9 @@ NLOHMANN_JSON_SERIALIZE_ENUM(EUITextSubClassType,
 	else if (str == "PLAYER_STAT_TEXT_ZSKILL_COST")				return EUITextSubClassType::PLAYER_STAT_TEXT_ZSKILL_COST;
 
 	else if (str == "PLAYER_STAT_TEXT_DODGESKILL_COOLTIME")		return EUITextSubClassType::PLAYER_STAT_TEXT_DODGESKILL_COOLTIME;
-	else if (str == "PLAYER_STAT_TEXT_DODGESKILL_COUNT")			return EUITextSubClassType::PLAYER_STAT_TEXT_DODGESKILL_COUNT;
-	else if (str == "PLAYER_STAT_TEXT_MAX_BULLET_COUNT")			return EUITextSubClassType::PLAYER_STAT_TEXT_MAX_BULLET_COUNT;
-	else if (str == "PLAYER_STAT_TEXT_CUR_BULLET_COUNT")			return EUITextSubClassType::PLAYER_STAT_TEXT_CUR_BULLET_COUNT;
+	else if (str == "PLAYER_STAT_TEXT_DODGESKILL_COUNT")		return EUITextSubClassType::PLAYER_STAT_TEXT_DODGESKILL_COUNT;
+	else if (str == "PLAYER_STAT_TEXT_MAX_BULLET_COUNT")		return EUITextSubClassType::PLAYER_STAT_TEXT_MAX_BULLET_COUNT;
+	else if (str == "PLAYER_STAT_TEXT_CUR_BULLET_COUNT")		return EUITextSubClassType::PLAYER_STAT_TEXT_CUR_BULLET_COUNT;
 
 	else if (str == "PLAYER_STAT_TEXT_END")						return EUITextSubClassType::PLAYER_STAT_TEXT_END;
 	else if (str == "MENU_TEXT_BEGIN")							return EUITextSubClassType::MENU_TEXT_BEGIN;
@@ -272,11 +305,16 @@ NLOHMANN_JSON_SERIALIZE_ENUM(EUITextSubClassType,
 	else if (str == "MENU_ICON_TEXT")							return EUITextSubClassType::MENU_ICON_TEXT;
 	else if (str == "MENU_TEXT_END")							return EUITextSubClassType::MENU_TEXT_END;
 
-	else if (str == "LOADING_TEXT_BEGIN")							return EUITextSubClassType::LOADING_TEXT_BEGIN;
-	else if (str == "LOADING_TEXT_TITLE")							return EUITextSubClassType::LOADING_TEXT_TITLE;
-	else if (str == "LOADING_TEXT_CONTENTS")							return EUITextSubClassType::LOADING_TEXT_CONTENTS;
-	else if (str == "LOADING_TEXT_PERCENT")							return EUITextSubClassType::LOADING_TEXT_PERCENT;
+	else if (str == "LOADING_TEXT_BEGIN")						return EUITextSubClassType::LOADING_TEXT_BEGIN;
+	else if (str == "LOADING_TEXT_TITLE")						return EUITextSubClassType::LOADING_TEXT_TITLE;
+	else if (str == "LOADING_TEXT_CONTENTS")					return EUITextSubClassType::LOADING_TEXT_CONTENTS;
+	else if (str == "LOADING_TEXT_PERCENT")						return EUITextSubClassType::LOADING_TEXT_PERCENT;
 	else if (str == "LOADING_TEXT_END")							return EUITextSubClassType::LOADING_TEXT_END;
+
+	else if (str == "MONSTER_STAT_TEXT_BEGIN")					return EUITextSubClassType::MONSTER_STAT_TEXT_BEGIN;
+	else if (str == "MONSTER_STAT_TEXT_LV")						return EUITextSubClassType::MONSTER_STAT_TEXT_LV;
+	else if (str == "MONSTER_STAT_TEXT_NICKNAME")				return EUITextSubClassType::MONSTER_STAT_TEXT_NICKNAME;
+	else if (str == "MONSTER_STAT_TEXT_END")					return EUITextSubClassType::MONSTER_STAT_TEXT_END;
 	
 	else if (str == "END")										return EUITextSubClassType::END;
 
@@ -318,11 +356,16 @@ inline std::string UITextSubClassTypeToString(EUITextSubClassType e)
 	case EUITextSubClassType::MENU_ICON_TEXT:						return "MENU_ICON_TEXT";
 	case EUITextSubClassType::MENU_TEXT_END:						return "MENU_TEXT_END";
 	
-	case EUITextSubClassType::LOADING_TEXT_BEGIN:						return "LOADING_TEXT_BEGIN";
-	case EUITextSubClassType::LOADING_TEXT_TITLE:						return "LOADING_TEXT_TITLE";
-	case EUITextSubClassType::LOADING_TEXT_CONTENTS:						return "LOADING_TEXT_CONTENTS";
-	case EUITextSubClassType::LOADING_TEXT_PERCENT:						return "LOADING_TEXT_PERCENT";
+	case EUITextSubClassType::LOADING_TEXT_BEGIN:					return "LOADING_TEXT_BEGIN";
+	case EUITextSubClassType::LOADING_TEXT_TITLE:					return "LOADING_TEXT_TITLE";
+	case EUITextSubClassType::LOADING_TEXT_CONTENTS:				return "LOADING_TEXT_CONTENTS";
+	case EUITextSubClassType::LOADING_TEXT_PERCENT:					return "LOADING_TEXT_PERCENT";
 	case EUITextSubClassType::LOADING_TEXT_END:						return "LOADING_TEXT_END";
+	
+	case EUITextSubClassType::MONSTER_STAT_TEXT_BEGIN:				return "MONSTER_STAT_TEXT_BEGIN";
+	case EUITextSubClassType::MONSTER_STAT_TEXT_LV:					return "MONSTER_STAT_TEXT_LV";
+	case EUITextSubClassType::MONSTER_STAT_TEXT_NICKNAME:			return "MONSTER_STAT_TEXT_NICKNAME";
+	case EUITextSubClassType::MONSTER_STAT_TEXT_END:				return "MONSTER_STAT_TEXT_END";
 	
 	default:														return "END";
 	}
@@ -403,7 +446,7 @@ inline const char* FontShaderTypeToString(const EFontShaderType eType)
 
 #pragma region 다이나믹 이미지 서브 클래스
 
-	enum class EUIDImageSubClassType
+enum class EUIDImageSubClassType
 {
 	NONE_OWNER,
 
@@ -446,46 +489,50 @@ inline const char* FontShaderTypeToString(const EFontShaderType eType)
 	LOADING_BG_BOTTOM,
 	LOADING_END,
 
+	// 몬스터 네임플레이트
+	MONSTER_NAMEPLATE_BG,
 	END
 };
 
 NLOHMANN_JSON_SERIALIZE_ENUM(EUIDImageSubClassType,
 	{
-		{ EUIDImageSubClassType::NONE_OWNER,			"NONE_OWNER" },
+	{ EUIDImageSubClassType::NONE_OWNER,			"NONE_OWNER" },
 
-		{ EUIDImageSubClassType::PLAYER_SKILL_BEGIN,	"PLAYER_SKILL_BEGIN" },
-		{ EUIDImageSubClassType::PLAYER_E,				"PLAYER_E" },
-		{ EUIDImageSubClassType::PLAYER_Q,				"PLAYER_Q" },
-		{ EUIDImageSubClassType::PLAYER_Z,				"PLAYER_Z" },
-		{ EUIDImageSubClassType::PLAYER_GUN,			"PLAYER_GUN" },
-		{ EUIDImageSubClassType::PLAYER_DODGE,			"PLAYER_DODGE" },
-		{ EUIDImageSubClassType::PLAYER_SKILL_END,		"PLAYER_SKILL_END" },
+	{ EUIDImageSubClassType::PLAYER_SKILL_BEGIN,	"PLAYER_SKILL_BEGIN" },
+	{ EUIDImageSubClassType::PLAYER_E,				"PLAYER_E" },
+	{ EUIDImageSubClassType::PLAYER_Q,				"PLAYER_Q" },
+	{ EUIDImageSubClassType::PLAYER_Z,				"PLAYER_Z" },
+	{ EUIDImageSubClassType::PLAYER_GUN,			"PLAYER_GUN" },
+	{ EUIDImageSubClassType::PLAYER_DODGE,			"PLAYER_DODGE" },
+	{ EUIDImageSubClassType::PLAYER_SKILL_END,		"PLAYER_SKILL_END" },
 
-		{ EUIDImageSubClassType::HOVER_POPUP_BEGIN,		"HOVER_POPUP_BEGIN" },
-		{ EUIDImageSubClassType::HOVER_POPUP_BG,		"HOVER_POPUP_BG" },
-		{ EUIDImageSubClassType::HOVER_POPUP_ICON,		"HOVER_POPUP_ICON" },
-		{ EUIDImageSubClassType::HOVER_POPUP_TEXT,		"HOVER_POPUP_TEXT" },
-		{ EUIDImageSubClassType::HOVER_POPUP_END,		"HOVER_POPUP_END" },
+	{ EUIDImageSubClassType::HOVER_POPUP_BEGIN,		"HOVER_POPUP_BEGIN" },
+	{ EUIDImageSubClassType::HOVER_POPUP_BG,		"HOVER_POPUP_BG" },
+	{ EUIDImageSubClassType::HOVER_POPUP_ICON,		"HOVER_POPUP_ICON" },
+	{ EUIDImageSubClassType::HOVER_POPUP_TEXT,		"HOVER_POPUP_TEXT" },
+	{ EUIDImageSubClassType::HOVER_POPUP_END,		"HOVER_POPUP_END" },
 
-		{ EUIDImageSubClassType::MINIMAP_BEGIN,			"MINIMAP_BEGIN" },
-		{ EUIDImageSubClassType::MINIMAP_PLAYER_ICON,	"MINIMAP_PLAYER_ICON" },
-		{ EUIDImageSubClassType::MINIMAP_CAMERA_SIGHT,	"MINIMAP_CAMERA_SIGHT" },
-		{ EUIDImageSubClassType::MINIMAP_BGFRAME,		"MINIMAP_BGFRAME" },
-		{ EUIDImageSubClassType::MINIMAP_WARNING_FRAME,	"MINIMAP_WARNING_FRAME" },
-		{ EUIDImageSubClassType::MINIMAP_END,			"MINIMAP_END" },
+	{ EUIDImageSubClassType::MINIMAP_BEGIN,			"MINIMAP_BEGIN" },
+	{ EUIDImageSubClassType::MINIMAP_PLAYER_ICON,	"MINIMAP_PLAYER_ICON" },
+	{ EUIDImageSubClassType::MINIMAP_CAMERA_SIGHT,	"MINIMAP_CAMERA_SIGHT" },
+	{ EUIDImageSubClassType::MINIMAP_BGFRAME,		"MINIMAP_BGFRAME" },
+	{ EUIDImageSubClassType::MINIMAP_WARNING_FRAME,	"MINIMAP_WARNING_FRAME" },
+	{ EUIDImageSubClassType::MINIMAP_END,			"MINIMAP_END" },
 
-		{ EUIDImageSubClassType::MENU_BEGIN,			"MENU_BEGIN" },
-		{ EUIDImageSubClassType::MENU_BG,				"MENU_BG" },
-		{ EUIDImageSubClassType::MENU_ICON,				"MENU_ICON" },
-		{ EUIDImageSubClassType::MENU_ICON_BG,			"MENU_ICON_BG" },
-		{ EUIDImageSubClassType::MENU_ICON_OUTLINE,		"MENU_ICON_OUTLINE" },
-		{ EUIDImageSubClassType::MENU_END,				"MENU_END" },
+	{ EUIDImageSubClassType::MENU_BEGIN,			"MENU_BEGIN" },
+	{ EUIDImageSubClassType::MENU_BG,				"MENU_BG" },
+	{ EUIDImageSubClassType::MENU_ICON,				"MENU_ICON" },
+	{ EUIDImageSubClassType::MENU_ICON_BG,			"MENU_ICON_BG" },
+	{ EUIDImageSubClassType::MENU_ICON_OUTLINE,		"MENU_ICON_OUTLINE" },
+	{ EUIDImageSubClassType::MENU_END,				"MENU_END" },
 
-		{ EUIDImageSubClassType::LOADING_BEGIN,				"LOADING_BEGIN" },
-		{ EUIDImageSubClassType::LOADING_BG,				"LOADING_BG" },
-		{ EUIDImageSubClassType::LOADING_BG_TOP,			"LOADING_BG_TOP" },
-		{ EUIDImageSubClassType::LOADING_BG_BOTTOM,			"LOADING_BG_BOTTOM" },
-		{ EUIDImageSubClassType::LOADING_END,				"LOADING_END" },
+	{ EUIDImageSubClassType::LOADING_BEGIN,				"LOADING_BEGIN" },
+	{ EUIDImageSubClassType::LOADING_BG,				"LOADING_BG" },
+	{ EUIDImageSubClassType::LOADING_BG_TOP,			"LOADING_BG_TOP" },
+	{ EUIDImageSubClassType::LOADING_BG_BOTTOM,			"LOADING_BG_BOTTOM" },
+	{ EUIDImageSubClassType::LOADING_END,				"LOADING_END" },
+		
+	{ EUIDImageSubClassType::MONSTER_NAMEPLATE_BG,				"MONSTER_NAMEPLATE_BG" },
 
 		{ EUIDImageSubClassType::END,					"END" }
 	})
@@ -527,6 +574,8 @@ NLOHMANN_JSON_SERIALIZE_ENUM(EUIDImageSubClassType,
 	if (str == "LOADING_BG_TOP")			return EUIDImageSubClassType::LOADING_BG_TOP;
 	if (str == "LOADING_BG_BOTTOM")			return EUIDImageSubClassType::LOADING_BG_BOTTOM;
 	if (str == "LOADING_END")				return EUIDImageSubClassType::LOADING_END;
+	
+	if (str == "MONSTER_NAMEPLATE_BG")				return EUIDImageSubClassType::MONSTER_NAMEPLATE_BG;
 
 	if (str == "END")					return EUIDImageSubClassType::END;
 	return EUIDImageSubClassType::NONE_OWNER;
@@ -536,21 +585,21 @@ inline const char* UIDImageSubTypeToString(EUIDImageSubClassType type)
 {
 	switch (type)
 	{
-	case EUIDImageSubClassType::NONE_OWNER:			return "NONE_OWNER";
+	case EUIDImageSubClassType::NONE_OWNER:				return "NONE_OWNER";
 
-	case EUIDImageSubClassType::PLAYER_SKILL_BEGIN:	return "PLAYER_SKILL_BEGIN";
-	case EUIDImageSubClassType::PLAYER_E:			return "PLAYER_E";
-	case EUIDImageSubClassType::PLAYER_Q:			return "PLAYER_Q";
-	case EUIDImageSubClassType::PLAYER_Z:			return "PLAYER_Z";
-	case EUIDImageSubClassType::PLAYER_GUN:			return "PLAYER_GUN";
-	case EUIDImageSubClassType::PLAYER_DODGE:		return "PLAYER_DODGE";
-	case EUIDImageSubClassType::PLAYER_SKILL_END:	return "PLAYER_SKILL_END";
+	case EUIDImageSubClassType::PLAYER_SKILL_BEGIN:		return "PLAYER_SKILL_BEGIN";
+	case EUIDImageSubClassType::PLAYER_E:				return "PLAYER_E";
+	case EUIDImageSubClassType::PLAYER_Q:				return "PLAYER_Q";
+	case EUIDImageSubClassType::PLAYER_Z:				return "PLAYER_Z";
+	case EUIDImageSubClassType::PLAYER_GUN:				return "PLAYER_GUN";
+	case EUIDImageSubClassType::PLAYER_DODGE:			return "PLAYER_DODGE";
+	case EUIDImageSubClassType::PLAYER_SKILL_END:		return "PLAYER_SKILL_END";
 
-	case EUIDImageSubClassType::HOVER_POPUP_BEGIN:	return "HOVER_POPUP_BEGIN";
-	case EUIDImageSubClassType::HOVER_POPUP_BG:		return "HOVER_POPUP_BG";
-	case EUIDImageSubClassType::HOVER_POPUP_ICON:	return "HOVER_POPUP_ICON";
-	case EUIDImageSubClassType::HOVER_POPUP_TEXT:	return "HOVER_POPUP_TEXT";
-	case EUIDImageSubClassType::HOVER_POPUP_END:	return "HOVER_POPUP_END";
+	case EUIDImageSubClassType::HOVER_POPUP_BEGIN:		return "HOVER_POPUP_BEGIN";
+	case EUIDImageSubClassType::HOVER_POPUP_BG:			return "HOVER_POPUP_BG";
+	case EUIDImageSubClassType::HOVER_POPUP_ICON:		return "HOVER_POPUP_ICON";
+	case EUIDImageSubClassType::HOVER_POPUP_TEXT:		return "HOVER_POPUP_TEXT";
+	case EUIDImageSubClassType::HOVER_POPUP_END:		return "HOVER_POPUP_END";
 
 	case EUIDImageSubClassType::MINIMAP_BEGIN:			return "MINIMAP_BEGIN";
 	case EUIDImageSubClassType::MINIMAP_PLAYER_ICON:	return "MINIMAP_PLAYER_ICON";
@@ -559,21 +608,23 @@ inline const char* UIDImageSubTypeToString(EUIDImageSubClassType type)
 	case EUIDImageSubClassType::MINIMAP_WARNING_FRAME:	return "MINIMAP_WARNING_FRAME";
 	case EUIDImageSubClassType::MINIMAP_END:			return "MINIMAP_END";
 
-	case EUIDImageSubClassType::MENU_BEGIN:		return "MENU_BEGIN";
-	case EUIDImageSubClassType::MENU_BG:		return "MENU_BG";
-	case EUIDImageSubClassType::MENU_ICON:		return "MENU_ICON";
-	case EUIDImageSubClassType::MENU_ICON_BG:	return "MENU_ICON_BG";
-	case EUIDImageSubClassType::MENU_ICON_OUTLINE:return "MENU_ICON_OUTLINE";
-	case EUIDImageSubClassType::MENU_END:		return "MENU_END";
+	case EUIDImageSubClassType::MENU_BEGIN:				return "MENU_BEGIN";
+	case EUIDImageSubClassType::MENU_BG:				return "MENU_BG";
+	case EUIDImageSubClassType::MENU_ICON:				return "MENU_ICON";
+	case EUIDImageSubClassType::MENU_ICON_BG:			return "MENU_ICON_BG";
+	case EUIDImageSubClassType::MENU_ICON_OUTLINE:		return "MENU_ICON_OUTLINE";
+	case EUIDImageSubClassType::MENU_END:				return "MENU_END";
 	
-	case EUIDImageSubClassType::LOADING_BEGIN:		return "LOADING_BEGIN";
-	case EUIDImageSubClassType::LOADING_BG:			return "LOADING_BG";
-	case EUIDImageSubClassType::LOADING_BG_TOP:		return "LOADING_BG_TOP";
-	case EUIDImageSubClassType::LOADING_BG_BOTTOM:	return "LOADING_BG_BOTTOM";
-	case EUIDImageSubClassType::LOADING_END:		return "LOADING_END";
+	case EUIDImageSubClassType::LOADING_BEGIN:			return "LOADING_BEGIN";
+	case EUIDImageSubClassType::LOADING_BG:				return "LOADING_BG";
+	case EUIDImageSubClassType::LOADING_BG_TOP:			return "LOADING_BG_TOP";
+	case EUIDImageSubClassType::LOADING_BG_BOTTOM:		return "LOADING_BG_BOTTOM";
+	case EUIDImageSubClassType::LOADING_END:			return "LOADING_END";
+	
+	case EUIDImageSubClassType::MONSTER_NAMEPLATE_BG:	return "MONSTER_NAMEPLATE_BG";
 
-	case EUIDImageSubClassType::END:			return "END";
-	default:									return "NONE_OWNER";
+	case EUIDImageSubClassType::END:					return "END";
+	default:											return "NONE_OWNER";
 	}
 }
 #pragma endregion
@@ -622,6 +673,7 @@ enum class EUIWorldUISubClassType
 	WORLD_UI_NONE,
 	MONSTER_HP,
 	WORLD_DAMAGE_FONT,
+
 	END
 };
 
@@ -639,6 +691,7 @@ NLOHMANN_JSON_SERIALIZE_ENUM(EUIWorldUISubClassType,
 	if (str == "MONSTER_HP")          return EUIWorldUISubClassType::MONSTER_HP;
 	if (str == "WORLD_DAMAGE_FONT")   return EUIWorldUISubClassType::WORLD_DAMAGE_FONT;
 	if (str == "END")                 return EUIWorldUISubClassType::END;
+
 	return EUIWorldUISubClassType::WORLD_UI_NONE;
 }
 
@@ -681,7 +734,7 @@ struct TUI_TriggerData
 	static constexpr EUIType eType = EUIType::TRIGGER;
 	std::string		strTag;
 	std::string		strOwnerName;
-	EUITriggerSubClassType		eTriggerSubClassType;
+	EUITriggerSubClassType	eTriggerSubClassType;
 	
 	vector<std::string> vecHoverEnterTriggerCanvas;
 	vector<std::string> vecHoverEnterTriggerUI;
@@ -770,8 +823,10 @@ struct TUI_CanvasData
 	_float		fPosX;
 	_float		fPosY;
 	_float		fPosZ;
-	uint32_t	iEditorSizeX ;
+	uint32_t	iEditorSizeX;
 	uint32_t	iEditorSizeY;
+
+	uint32_t	iPrefabType;
 };
 
 #pragma endregion

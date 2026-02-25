@@ -3,6 +3,7 @@
 
 NS_BEGIN(Engine)
 class CBone;
+class CComputeShader;
 NS_END
 
 NS_BEGIN(Client)
@@ -28,11 +29,11 @@ public:
 	virtual void Update(_float fTimeDelta) override;
 	virtual void Update_Late(_float fTimeDelta) override;
 	virtual void Ready_Before_Render(_float fTimeDelta) override;
-	virtual void OnCollision(_uint iMyColliderLayer, CGameObject* pOther) override;
-	virtual void OnCollision_Enter(_uint iMyColliderLayer, CGameObject* pOther) override;
-	virtual void OnCollision_Exit(_uint iMyColliderLayer, CGameObject* pOther) override;
-	virtual void OnTrigger_Enter(_uint iMyColliderLayer, CGameObject* pOther) override;
-	virtual void OnTrigger_Exit(_uint iMyColliderLayer, CGameObject* pOther) override;
+	virtual void OnCollision(_uint iMyColliderLayer, _uint iOtherLayer, CGameObject* pOther) override;
+	virtual void OnCollision_Enter(_uint iMyColliderLayer, _uint iOtherLayer, CGameObject* pOther, const COL_HIT_INFO& tHitInfo) override;
+	virtual void OnCollision_Exit(_uint iMyColliderLayer, _uint iOtherLayer, CGameObject* pOther) override;
+	virtual void OnTrigger_Enter(_uint iMyColliderLayer, _uint iOtherLayer, CGameObject* pOther) override;
+	virtual void OnTrigger_Exit(_uint iMyColliderLayer, _uint iOtherLayer, CGameObject* pOther) override;
 	virtual _bool On_Hit(_uint iCollideMyLayer, ATTACK_DESC* pDesc, CGameObject* pOther) override;
 	virtual HRESULT Render() override;
 public:
@@ -78,6 +79,14 @@ private:
 	//_int m_iRightShoulderSocket_Index = { 0 };
 	//_int m_iEffectMouseSocket_Index = { 0 };
 	//_int m_iRightHandWeaponSocket_Index = { 0 };
+
+private:
+	CComputeShader* m_pBoneMeshCS			= { nullptr };
+	CComputeShader* m_pBoneCombineCS		= { nullptr };
+	CComputeShader* m_pBoneAnimEvaluateCS	= { nullptr };
+	CComputeShader* m_pBoneAnimBlendCS		= { nullptr };
+	CComputeShader* m_pBoneAnimMixCS		= { nullptr };
+
 public:
 	static CBody* Create(ID3D11Device* pDevice, ID3D11DeviceContext* pDeviceContext);
 	virtual CGameObject* Clone(void* pArg) override;

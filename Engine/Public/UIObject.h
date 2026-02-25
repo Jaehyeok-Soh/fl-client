@@ -10,6 +10,7 @@ class ENGINE_DLL CUIObject abstract : public CGameObject
 public:
 	typedef struct tagUIObjectDesc : public Super::GAMEOBJECT_DESC
 	{
+		_bool isWorld;
 		_bool isAlpha;
 		_bool isInitVisible;
 		_bool isInitInteract;
@@ -46,6 +47,8 @@ public:
 	_float Get_PosZ() const { return m_fZ; }
 	void Set_Size(_float fWidth, _float fHeight);
 	void Set_Size(const Vec2 &vSize);
+	void Move_Size(_float fWidth, _float fHeight);
+
 	void Set_Position(const Vec3& vPosition);
 	void Set_Position(_float fX, _float fY, _float fZ);
 	void Move_Position(_float fX, _float fY, _float fZ);
@@ -118,7 +121,7 @@ protected:
 
 protected:
 	RECT m_tRect = {};
-	RENDER_CATEGORY m_eCategory = { RENDER_CATEGORY::UI };
+	RENDER_CATEGORY m_eCategory = { RENDER_CATEGORY::BLEND };
 	_uint m_iViewportWidth = { 0 };
 	_uint m_iViewportHeight = { 0 };
 	_uint m_iShaderPass = { 0 };

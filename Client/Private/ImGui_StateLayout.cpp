@@ -32,13 +32,16 @@ void CImGui_StateLayout::Render(CGameObject* pGo)
 	string	strStateName	= pActionState->Get_CurrentStateName();
 	_uint	iMainIdx		= pActionState->Get_CurrentState()->Get_MainAnimIdx();
 	_float	fStateTime		= pActionState->Get_CurrentState()->Get_StateElapsedTime();
-	CStatCom_Player* pStat = static_cast<CStatCom_Player*>(static_cast<CPlayer*>(pGo)->Get_Stat());
+	CStatCom_Player* pStat = static_cast<CStatCom_Player*>(static_cast<CPlayer*>(pGo)->Get_Component<CMyStat>());
 
 	CModel* pModel = static_cast<CContainerObject*>(pGo)->Get_Part<CBody>(0)->Get_Component<CModel>();
 	_float fBlendTime = pModel->Get_BlentTime();
 	_int iAnimIdx = pModel->Get_CurrentAnimationIndex();
 	Vector3 vCamBonePos = pModel->Get_Bone(417)->Get_CombinedTransformMatrix().Translation();
 	_uint iDashCount = pStat->Get_Count(CStatCom_Player::TIMER_TYPE::DASH);
+	_float fMental = pStat->Get_Stat_Vec2(CMyStat::STAT_TYPE::MENTAL).x;
+
+	string strRootApply = pModel->Is_RootMotion_Apply() ? "Yes" : " No";
 
 	ImGui::BeginGroup();
 	ImGui::SeparatorText(m_strLabel.c_str());;
@@ -47,9 +50,17 @@ void CImGui_StateLayout::Render(CGameObject* pGo)
 	ImGui::SameLine();
 	ImGui::Text(strStateName.c_str());
 
+	ImGui::Text("RootApply : ");
+	ImGui::SameLine();
+	ImGui::Text(strRootApply.c_str());
+
 	ImGui::Text("Dash Count : ");
 	ImGui::SameLine();
 	ImGui::Text("%u", iDashCount);
+
+	ImGui::Text("Mental : ");
+	ImGui::SameLine();
+	ImGui::Text("%f", fMental);
 
 	ImGui::Text("Main Ani Idx : "); // state 내부에서 anim idx
 	ImGui::SameLine();

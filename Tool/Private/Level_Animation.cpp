@@ -1,7 +1,6 @@
 #include "pch.h"
 #include "Level_Animation.h"
 #include "Level_Loading.h"
-#include "Animation_Defines.h"
 
 // ready obj
 #include "CameraMan_Free.h"
@@ -28,6 +27,8 @@
 #include "Panel_AnimDescription.h"
 #include "Panel_ModelInfo.h"
 #include "Panel_Parts.h"
+#include "Panel_State.h"
+#include "Panel_AnimationMix.h"
 
 #include "DebugDraw.h"
 
@@ -206,6 +207,10 @@ HRESULT CLevel_Animation::Ready_Panels()
 
 	m_GuiElements[Elements::PARTSINFO] = CPanel_Parts::Create("Panel_PartsInfo", this, m_pDevice, m_pDeviceContext);
 
+	m_GuiElements[Elements::STATEEDITOR] = CPanel_State::Create("Panel_State", this, m_pDevice, m_pDeviceContext);
+
+	m_GuiElements[Elements::MIXER] = CPanel_AnimationMix::Create("Panel_AnimMixer", this, m_pDevice, m_pDeviceContext);
+
 	return S_OK;
 }
 
@@ -288,7 +293,7 @@ void CLevel_Animation::Render_Grid()
 }
 #endif // _DEBUG
 
-void CLevel_Animation::Load_AnimModel(fs::path animModelPath)
+void CLevel_Animation::Load_AnimModel(fs::path animModelPath, ANIM_SRT pretransform)
 {
 	m_pGameInstance->Clear_Layer(ENUM_TO_UINT(ELevelType::ANIMATION), m_wstrLayer);
 	//Safe_Release(m_pSelectedObject);
@@ -296,12 +301,17 @@ void CLevel_Animation::Load_AnimModel(fs::path animModelPath)
 	//	m_pGameInstance->Request_DeleteGameObject(ENUM_TO_UINT(ELevelType::ANIMATION), m_wstrLayer, m_pSelectedObject);
 	//if (m_pSelectedObject)
 	//	m_pGameInstance->Immediately_DeleteGameObject(ENUM_TO_UINT(ELevelType::ANIMATION), m_wstrLayer, m_pSelectedObject);
-	Create_AnimModel(animModelPath);
+	Create_AnimModel(animModelPath, pretransform);
 	SetAnimationInfo(animModelPath);
 }
 
-void CLevel_Animation::Load_PartObject(fs::path animPartModelPath, _int iSocketBondIdx, _bool bCombine)
+void CLevel_Animation::Load_PartObject(fs::path animPartModelPath, ANIM_SRT pretransform, _int iSocketBondIdx, _bool bCombine, _bool bStatic)
 {
+	Matrix matScale = Matrix::CreateScale(pretransform.vScale);
+	Matrix matRotation = Matrix::CreateFromYawPitchRoll(pretransform.vRot);
+	Matrix matTranslation = Matrix::CreateTranslation(pretransform.vTranslation);
+	Matrix matPreTransform = matScale * matRotation * matTranslation;
+
 	if (!m_pSelectedObject)
 	{
 		MSG_BOX("먼저 베이스 모델을 로드하세요");
@@ -314,14 +324,15 @@ void CLevel_Animation::Load_PartObject(fs::path animPartModelPath, _int iSocketB
 	// 모델 프로토타입 추가.
 	wstring modelProtoTag = L"Prototype_Component_Model_" + animPartModelPath.stem().wstring();
 	CModel::MODEL_ORIGIN_DESC desc = {};
-	desc.eType = EModelType::STATIC; // 무기는 보통 고정 모델, 필요시 분기
+	desc.eType = bStatic ? EModelType::STATIC : EModelType::ANIM; // 무기는 보통 고정 모델, 필요시 분기
 	desc.iPrototypeLevelIndex = ENUM_TO_UINT(ELevelType::ANIMATION);
 	desc.wstrModelFolderName = animPartModelPath.stem().wstring();
-	desc.pMatPreTransform;
+	desc.pMatPreTransform = &matPreTransform;
 	desc.FStageBone = CModel::STAGEING_BONE::SB_ZEROBONE;
 
 	CModel* pModelProto = CModel::Create(m_pDevice, m_pDeviceContext, &desc);
-	m_pGameInstance->Add_Prototype(ENUM_TO_UINT(ELevelType::ANIMATION), modelProtoTag, pModelProto);
+	if (FAILED(m_pGameInstance->Add_Prototype(ENUM_TO_UINT(ELevelType::ANIMATION), modelProtoTag, pModelProto)))
+		Safe_Release(pModelProto);
 
 	// 컨테이너 파츠 추가
 	CTool_Weapon::WEAPON_DESC weaponDesc;
@@ -335,17 +346,17 @@ void CLevel_Animation::Load_PartObject(fs::path animPartModelPath, _int iSocketB
 	else
 		weaponDesc.pMatSocket = &pParentModel->Get_Bone(iSocketBondIdx)->Get_BindPoseTransformMatrix();
 
-	weaponDesc.eModel = CTool_Weapon::Weapon_ModelType::STATIC;
+	weaponDesc.eModel = bStatic ? CTool_Weapon::Weapon_ModelType::STATIC : CTool_Weapon::Weapon_ModelType::ANIM;
 	weaponDesc.iSocketIdx = iSocketBondIdx;
 
 	_uint iPartID = (_uint)pAnimObj->Get_PartList().size();
 	pAnimObj->Add_Part(iPartID, ENUM_TO_UINT(ELevelType::ANIMATION), L"Prototype_GameObject_Tool_Weapon", &weaponDesc);
 }
 
-void CLevel_Animation::Create_AnimModel(fs::path animModelPath)
+void CLevel_Animation::Create_AnimModel(fs::path animModelPath, ANIM_SRT pretransform)
 {
 	//m_pSelectedObject;
-	wstring prototypeTag = Create_AnimModelPrototype(animModelPath);
+	wstring prototypeTag = Create_AnimModelPrototype(animModelPath, pretransform);
 
 	CAnimObj::ANIMOBJ_DESC animObjDesc{};
 	CTransform::TRANSFORM_DESC transformDesc = {};
@@ -357,14 +368,16 @@ void CLevel_Animation::Create_AnimModel(fs::path animModelPath)
 
 	if (!(m_pSelectedObject = static_cast<CToolObject*>(m_pGameInstance->Add_GameObject(ENUM_TO_UINT(ELevelType::ANIMATION), L"Prototype_GameObject_AnimObject", ENUM_TO_UINT(ELevelType::ANIMATION), m_wstrLayer, &animObjDesc))))
 		m_pGameInstance->Immediately_DeleteGameObject(ENUM_TO_UINT(ELevelType::ANIMATION), m_wstrLayer, m_pSelectedObject);
+
+	m_pSelectedObject->Get_Component<CTransform>()->Set_WorldMatrix(Matrix::Identity);
 }
 
-wstring CLevel_Animation::Create_AnimModelPrototype(fs::path animModelPath)
+wstring CLevel_Animation::Create_AnimModelPrototype(fs::path animModelPath, ANIM_SRT pretransform)
 {
-	//Matrix matPreTransformScale = Matrix::CreateScale(0.01f, 0.01f, 0.01f);
-	Matrix matPreTransformScale = Matrix::Identity;
-	Matrix matPreTransformIdentity = Matrix::Identity;
-	Matrix matPreTransformTurn90 = matPreTransformScale * Matrix::CreateFromYawPitchRoll(XMConvertToRadians(90.f), 0.f, 0.f);
+	Matrix matScale = Matrix::CreateScale(pretransform.vScale);
+	Matrix matRotation = Matrix::CreateFromYawPitchRoll(pretransform.vRot);
+	Matrix matTranslation = Matrix::CreateTranslation(pretransform.vTranslation);
+	Matrix matPreTransform = matScale * matRotation * matTranslation;
 
 	wstring prototypeTag(L"Prototype_Component_Model_");
 
@@ -373,7 +386,7 @@ wstring CLevel_Animation::Create_AnimModelPrototype(fs::path animModelPath)
 		CModel::MODEL_ORIGIN_DESC desc = {};
 		desc.eType = EModelType::ANIM;
 		desc.iPrototypeLevelIndex = ENUM_TO_UINT(ELevelType::ANIMATION);
-		desc.pMatPreTransform = &(matPreTransformScale);	// matPreTransformScale // matPreTransformTurn90
+		desc.pMatPreTransform = &(matPreTransform);
 		desc.wstrModelFolderName = animModelPath.stem().wstring();
 
 		desc.FStageBone = CModel::STAGEING_BONE::SB_ALLBONE;

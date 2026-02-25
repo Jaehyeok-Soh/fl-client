@@ -35,7 +35,7 @@ HRESULT CBuilder_Map::Build(const CDataDocumentBase& document)
 		for (const auto& pObjectData : vecSceneData)
 		{
 			pObjectData->Get_Type();
-			const auto* pMapObjectData = static_cast<const Engine::CData_SceneData*>(pObjectData);
+			const auto* pMapObjectData = static_cast<const Engine::CData_LevelData*>(pObjectData);
 
 			if (FAILED(Apply_ScenceData(pMapObjectData->Get_Data())))
 				return E_FAIL;
@@ -75,11 +75,11 @@ HRESULT CBuilder_Map::Create_MapObject(const DTO::TMap_MapObjectData& tData)
 	return S_OK;
 }
 
-HRESULT CBuilder_Map::Apply_ScenceData(const DTO::TSceneData& tData)
+HRESULT CBuilder_Map::Apply_ScenceData(const DTO::TLevelData& tData)
 {
 	/* None 이면 사용하지 않는 다는 뜻 */
 	if(tData.strTextureSplatingInfoName != "None")
-		m_pMapToolManager->Apply_SceneData(&tData);
+		m_pMapToolManager->Apply_LevelData(&tData);
 
 	return S_OK;
 }
