@@ -147,7 +147,7 @@ HRESULT CGameObject::Add_Script_Component(const wstring& wstrComponentTag, CMono
 /// <param name="wstrPrototypeTag">원본 태그</param>
 /// <param name="pArg">Desc</param>
 /// <returns></returns>
-HRESULT CGameObject::Add_Script_Component(const wstring &wstrComponentTag, const wstring& wstrPrototypeTag, void* pArg)
+HRESULT CGameObject::Add_Script_Component(const wstring &wstrComponentTag, const wstring& wstrPrototypeTag, void* pArg, void** ppCaching)
 {
     CMonoBehaviour* pComp = { nullptr };
     if ( nullptr == (pComp = dynamic_cast<CMonoBehaviour*>(m_pGameInstance->Clone_Prototype(EPrototypeType::COMPONENT, 0/* STATIC */, wstrPrototypeTag, pArg))))
@@ -159,6 +159,10 @@ HRESULT CGameObject::Add_Script_Component(const wstring &wstrComponentTag, const
 
     m_ScriptComponents.insert(unordered_map<wstring, CMonoBehaviour*>::value_type(wstrComponentTag, pComp));
     pComp->Set_Owner(this);
+
+    if (ppCaching != nullptr)
+        *ppCaching = pComp;
+
     return S_OK;
 }
 

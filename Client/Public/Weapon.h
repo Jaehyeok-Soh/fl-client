@@ -1,6 +1,10 @@
 #pragma once
 #include "PartObject.h"
 
+NS_BEGIN(Engine)
+class CComputeShader;
+NS_END
+
 NS_BEGIN(Client)
 
 class CWeapon abstract : public CPartObject
@@ -40,12 +44,11 @@ public:
 		Weapon_ModelType	eModel = { Weapon_ModelType::STATIC };
 
 		_bool				bMianWeapon = { false };
-		_bool bRGBShader = { true };
+		_bool				bRGBShader = { true };
 
 		Vec4 vColorR = Vec4::Zero;
 		Vec4 vColorG = Vec4::Zero;
 		Vec4 vColorB = Vec4::Zero;
-
 	}WEAPON_DESC;
 
 protected:
@@ -96,7 +99,9 @@ protected:
 	_bool m_bColorMapping = { false };
 
 	SHADER_RGBCOLOR_DESC m_tColorDesc = {};
-
+	CComputeShader* m_pBoneMeshCS{ nullptr };
+	CComputeShader* m_pBoneCombineCS{ nullptr };
+	CComputeShader* m_pAnimECS{ nullptr };
 private:
 	HRESULT Ready_Components(WEAPON_DESC* pDesc);
 	HRESULT Bind_ShaderResources();

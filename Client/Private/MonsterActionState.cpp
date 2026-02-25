@@ -42,7 +42,8 @@ HRESULT CMonsterActionState::Initialize(void* pArg)
 
 	MONSTERACTIONSTATE_DESC* pDesc = static_cast<MONSTERACTIONSTATE_DESC*>(pArg);
 	
-	LoadStates(pDesc->wstrMonsterStateTag, pDesc->iLevelIndex);
+	if (FAILED(LoadStates(pDesc->wstrMonsterStateTag, pDesc->iLevelIndex)))
+		return E_FAIL;
 
 	return S_OK;
 }
@@ -51,6 +52,7 @@ HRESULT CMonsterActionState::Bind_State(std::set<string> setState)
 {
 	m_umapState.clear();
 
+	m_vecStates.resize(setState.size());
 	m_umapState.reserve(setState.size());
 	for (auto iter = setState.begin(); iter != setState.end(); iter++)
 		m_umapState.emplace(*iter, std::distance(setState.begin(), iter));
@@ -62,23 +64,34 @@ DTO::MONSTERSTATE_DESC CMonsterActionState::LoadStateFile(std::filesystem::path 
 {
 	CBuilderSystem* pBuilderSystem = { nullptr };
 	pBuilderSystem = CBuilderSystem::Create();
-	if (pBuilderSystem == nullptr) MSG_BOX("Failed to read : Monster State");
+	if (pBuilderSystem == nullptr)
+	{
+		MSG_BOX("Failed to read : Monster State");
+	}
 
 	if (FAILED(pBuilderSystem->Ready_Builder(DTO::ECategory::MONSTER_STATE, CBuilder_MonsterState::Create(m_pDevice, m_pDeviceContext, iLevelIndex))))
+	{
 		MSG_BOX("Failed to read : Monster State");
+	}
 
 	DTO::ECategory eCategory = DTO::ECategory::MONSTER_STATE;
 	_uint iLevelID = iLevelIndex;
 
 	if (FAILED(m_pGameInstance->Regist_Document<CDataDocument_MonsterState>(iLevelID, eCategory)))
+	{
 		MSG_BOX("Failed to read : Monster State");
+	}
 
 	if (FAILED(m_pGameInstance->Load_File_Json(iLevelID, eCategory, path)))
+	{
 		MSG_BOX("Failed to read : Monster State");
+	}
 
 	CDataDocumentBase* pDocument = m_pGameInstance->Ensure_Document(iLevelID, eCategory, path);
 	if (pDocument == nullptr)
+	{
 		MSG_BOX("Failed to read : Monster State");
+	}
 
 	DTO::MONSTERSTATE_DESC result{};
 

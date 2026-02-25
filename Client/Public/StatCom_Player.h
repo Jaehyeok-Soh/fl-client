@@ -69,6 +69,8 @@ public:
 			return m_pESkillBase->Get_SkillDesc();
 		case Attack_State::Q:
 			return m_pQSkillBase->Get_SkillDesc();
+		default:
+			return m_pQSkillBase->Get_SkillDesc();
 		}
 	};
 
@@ -81,6 +83,8 @@ public:
 			return m_tDashTimeCounter;
 		case TIMER_TYPE::COMBO:
 			return m_tComboTimeCounter;
+		default:
+			return m_tComboTimeCounter;
 		}
 	}
 
@@ -92,11 +96,12 @@ public:
 			return (_uint)m_iDashCount;
 		case TIMER_TYPE::COMBO:
 			return (_uint)m_iComboCount;
-
 		default:
 			return 0;
 		}
 	}
+
+	_uint Get_AttState()const { return m_FAttState; }
 
 public:
 	_bool Set_AttackState(_uint iState, _bool bOn); // Attack_State 을 통해 넣을것

@@ -156,15 +156,8 @@ void CUITrigger::Ready_Before_Render(const _float fTimeDelta)
 
 HRESULT CUITrigger::Render()
 {
-	if (!m_isVisible)
-		return S_OK;
-
 	if (FAILED(Super::Render()))
 		return E_FAIL;
-
-	if (FAILED(Bind_ShaderResources()))
-		return E_FAIL;
-
 	return S_OK;
 }
 
@@ -198,11 +191,15 @@ _bool  CUITrigger::Check_FinEvent(ETriggerEventType eEvent)
 
 HRESULT CUITrigger::Ready_Components(UI_TRIGGER_DESC* pDesc)
 {
+	if (FAILED(Super::Ready_Components(pDesc)))
+		return E_FAIL;
 	return S_OK;
 }
 
 HRESULT CUITrigger::Bind_ShaderResources()
 {
+	if (FAILED(Super::Bind_ShaderResources()))
+		return E_FAIL;
 	return S_OK;
 }
 

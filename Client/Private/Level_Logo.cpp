@@ -10,6 +10,7 @@
 // Builder
 //=================
 #include "Builder_UI.h"
+#include "Builder_UIPrefabs.h"
 #include "Builder_Example.h"
 #include "BuilderSystem.h"
 #include "Builder_Map.h"
@@ -28,6 +29,8 @@
 #include "Physics_LandScape.h"
 #include "Monster_Dummy.h"
 #include "Monster_Dummy_Body.h"
+#include "Boss_Xibi.h"
+#include "Boss_Xibi_Body.h"
 
 //=================
 // UI
@@ -62,6 +65,9 @@ HRESULT CLevel_Logo::Initialize()
 		return E_FAIL;
 
 	if (FAILED(Ready_Monster()))
+		return E_FAIL;
+
+	if (FAILED(Ready_Boss_Layer(g_wszBossLayer)))
 		return E_FAIL;
 
 	if (FAILED(Build_Files()))
@@ -137,12 +143,21 @@ void CLevel_Logo::Update(const _float fTimeDelta)
 		m_pGameInstance->Request_CursorMode(m_eCursorMode);
 	}
 
+	// 오브젝트 풀링 테스트
+	if (m_pGameInstance->KeyButton_Down(DIK_0))
+	{
+		 CUI_Manager::GetInstance()->Request_Add_Prefab(ENUM_TO_UINT(ELevelType::LOGO),EUIPrefabType::MONSTER_NAMEPLATE);
+		 m_pGameInstance->Flush_All();
+		 CUI_Manager::GetInstance()->Request_SortUI();
+
+	}
+
 	// GlobalTimeScale 테스트
 	{
 		if (m_pGameInstance->KeyButton_Down(DIK_9))
 		{
 			m_pGameInstance->Request_HitStop();
-		}
+		} 
 		if (m_pGameInstance->KeyButton_Down(DIK_8))
 		{
 			m_pGameInstance->Request_SloMo(0.2f, 2.f);
@@ -154,8 +169,6 @@ void CLevel_Logo::Update(const _float fTimeDelta)
 		if (m_pGameInstance->KeyButton_Down(DIK_7))
 		{
 			m_pGameInstance->Deactivate_SloMo();
-
-			
 		}
 	}
 }
@@ -173,6 +186,8 @@ HRESULT CLevel_Logo::Build_Prototype()
 	if (FAILED(Ready_Builder(DTO::ECategory::MAP,CBuilder_Map::Create(m_pDevice, m_pDeviceContext, static_cast<_uint>(ELevelType::LOGO)))))
 		return E_FAIL;
 	if (FAILED(Ready_Builder(DTO::ECategory::UI, CBuilder_UI::Create(m_pDevice, m_pDeviceContext, static_cast<_uint>(ELevelType::LOGO)))))
+		return E_FAIL;
+	if (FAILED(Ready_Builder(DTO::ECategory::UI_PREFAB, CBuilder_UIPrefabs::Create(m_pDevice, m_pDeviceContext, static_cast<_uint>(ELevelType::LOGO)))))
 		return E_FAIL;
 	if (FAILED(Ready_Builder(DTO::ECategory::EFFECT, CBuilder_Effect::Create(m_pDevice, m_pDeviceContext, ENUM_TO_UINT(ELevelType::LOGO)))))
 		return E_FAIL;
@@ -222,6 +237,22 @@ HRESULT CLevel_Logo::Build_Files()
 				return E_FAIL;
 		}
 	}
+
+	eCategory = DTO::ECategory::UI_PREFAB;
+	if (FAILED(m_pGameInstance->Regist_Document<CDataDocument_UI>(iLevelID, eCategory)))
+		return E_FAIL;
+	strUIFolderPath = L"../../Resources/Data/UIData/Prefab/";
+	if (std::filesystem::exists(strUIFolderPath))
+	{
+		for (auto iter : std::filesystem::directory_iterator(strUIFolderPath))
+		{
+			if (FAILED(m_pGameInstance->Load_File_Json(iLevelID, eCategory, iter.path())))
+				return E_FAIL;
+
+			if (FAILED(Build_File(iLevelID, eCategory, iter.path().stem().string())))
+				return E_FAIL;
+		}
+	}
 	return S_OK;
 }
 
@@ -240,6 +271,66 @@ HRESULT CLevel_Logo::Ready_Player_Layer(const wstring& wstrLayerTag)
 			L"Prototype_GameObject_MainPlayer",
 			ENUM_TO_UINT(ELevelType::LOGO),
 			wstrLayerTag, &playerDesc)))
+			return E_FAIL;
+	}
+
+	return S_OK;
+}
+
+HRESULT CLevel_Logo::Ready_Boss_Layer(const wstring& wstrLayerTag)
+{
+	// BoneInfo
+	vector<std::pair<_uint, string>> vecboneNames
+	{
+		{ENUM_TO_UINT(CMonster_Body_Base::EBone::RightHand), "hook_arm_r"}
+	};
+
+	{
+		CGameObject* pResult = { nullptr };
+
+		CMonster_Base::MONSTER_DESC monsterDesc = {};
+		CTransform::TRANSFORM_DESC transformDesc = {};
+		monsterDesc.iLevelIndex = ENUM_TO_UINT(ELevelType::LOGO);
+		monsterDesc.wstrBodyModelTag = L"Prototype_Component_Model_Xibi";
+		monsterDesc.wstrPartBodyPrototypeTag = L"Prototype_GameObject_Boss_Xibi_Body";
+		transformDesc.TranslationMatrix = Matrix::CreateTranslation(Vec3(18.f, 12.f, 19.f));
+		monsterDesc.spanBoneNames = vecboneNames;
+		monsterDesc.pTransform_Desc = &transformDesc;
+		monsterDesc.wstrMonsterStateTag = L"Boss_Xibi";
+
+		{
+			PHYSICSCCT_DESC desc;
+			desc.pOwner = nullptr;
+			desc.bIsPlayer = false;
+			desc.eType = EPhysicsCCTType::BOX;
+			desc.pOwnerMatrix = nullptr;
+			desc.fRadius = 0.5f;
+			desc.fHeight = 1.f;
+			desc.vExtens = { 2.f, 2.f, 2.f };
+
+			PHYSICSMATERIAL_DESC mtrlDesc{};
+			mtrlDesc.eMaterial = EPhysicsMaterial::PLAYER;
+			desc.tMaterial = mtrlDesc;
+
+			desc.eFilterLayer = PHYSICSFILTERGROUP::Enum::MONSTER;
+			desc.iFilterMask =
+				PHYSICSFILTERGROUP::Enum::MONSTER
+				| PHYSICSFILTERGROUP::Enum::PLAYER
+				| PHYSICSFILTERGROUP::Enum::ATTACK
+				| PHYSICSFILTERGROUP::Enum::ATTACK_PROJECTTILE
+				| PHYSICSFILTERGROUP::Enum::SKILL
+				| PHYSICSFILTERGROUP::Enum::SKILL_PROJECTTILE
+				| PHYSICSFILTERGROUP::Enum::MAP
+				| PHYSICSFILTERGROUP::Enum::OBJECT1
+				| PHYSICSFILTERGROUP::Enum::OBJECT2;
+
+			monsterDesc.tCCTDesc = desc;
+		}
+
+		if (!(pResult = m_pGameInstance->Add_GameObject(ENUM_TO_UINT(ELevelType::LOGO),
+			L"Prototype_GameObject_Boss_Xibi",
+			ENUM_TO_UINT(ELevelType::LOGO),
+			g_wszBossLayer, &monsterDesc)))
 			return E_FAIL;
 	}
 

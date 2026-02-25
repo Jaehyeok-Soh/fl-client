@@ -348,7 +348,7 @@ HRESULT CBody::Ready_Components(BODY_DESC* pDesc)
 	if (FAILED(Add_Component<CModel>(0/*static*/, pDesc->wstrModelPrototypeName, nullptr)))
 		return E_FAIL;
 
-	if (FAILED(Add_Component<CShader>(0/*static*/, L"Prototype_Component_Shader_VtxAnimMesh", pDesc)))
+	if (FAILED(Add_Component<CShader>(0/*static*/, L"Prototype_Component_Shader_VtxAnimMesh", nullptr)))
 		return E_FAIL;
 
 	if (FAILED(Ready_AttackOverlap()))
