@@ -272,7 +272,6 @@
     <ClCompile Include="..\private\Level_AttackPreset.cpp" />
     <ClCompile Include="..\Private\Panel_AnimationMix.cpp" />
     <ClCompile Include="..\Private\Panel_Parts.cpp" />
-    <ClCompile Include="..\Private\SceneData.cpp" />
     <ClCompile Include="..\Private\Tool_EffectPartBase.cpp" />
     <ClCompile Include="..\Private\LevelData.cpp" />
     <ClCompile Include="..\Private\Panel_State.cpp" />

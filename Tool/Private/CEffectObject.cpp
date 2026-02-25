@@ -1074,12 +1074,10 @@ CGameObject* CEffectObject::Clone(void* pArg)
 
 void CEffectObject::Free()
 {
-    Super::Free();
-
     if (IsClone())
     {
         Safe_Release(pSB);
         Safe_Release(pSRV);
     }
-    
+    Super::Free();
 }
