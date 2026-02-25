@@ -1,11 +1,8 @@
 #include "Engine_pch.h"
 #include "ActiveAttackOverlap.h"
-#include "GameInstance.h"
-#include "EngineConsole.h"
-
 #include "GameObject.h"
-
 #include "EngineConsole.h"
+#include "GameInstance.h"
 
 CActiveAttackOverlap::CActiveAttackOverlap()
 	: Super(),
@@ -52,11 +49,12 @@ void CActiveAttackOverlap::Update(_float fTimeDelta)
 
 			COL_HIT_INFO hitInfo{};
 			Build_HitInfo_FromOverlap(m_tHitboxDesc->geometry.any(), m_pxTransform, hitBuffer.touches[i], hitInfo);
+			hitInfo.iRequester_AttackPresetID = m_tHitboxDesc->iAttackPresetID;
 
 			const PxFilterData &victimFilterData = hitBuffer.touches[i].shape->getSimulationFilterData();
 			_uint iAttackerLayer = m_tHitboxDesc->eFilterLayer;
 			_uint iVictimLayer = victimFilterData.word0;
-
+			
 			m_pOwner->OnCollision_Enter(iAttackerLayer, iVictimLayer, hitObject, hitInfo);
 			m_hitObjects.insert(hitObject);
 		}
@@ -87,6 +85,8 @@ void CActiveAttackOverlap::Set(DTO::HITBOX_DESC* pDesc, Matrix ownerMatrix, CGam
 	hitResults.resize(m_tHitboxDesc->iMaxHit);
 	hitBuffer.touches = hitResults.data();
 	hitBuffer.maxNbTouches = m_tHitboxDesc->iMaxHit;
+
+	m_tHitboxDesc->iAttackPresetID = m_pGameInstance->Get_AttackPresetIdByTag(m_tHitboxDesc->strAttackPresetTag);
 }
 
 void CActiveAttackOverlap::Tick(_float fTimeDelta)

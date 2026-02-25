@@ -33,6 +33,7 @@ void CJudgementSystem::Flush_CollidedEvent()
 			Process_Collision(desc);
 		}
 	}
+	m_vecPending.clear();
 }
 
 void CJudgementSystem::Clear()
@@ -42,14 +43,24 @@ void CJudgementSystem::Clear()
 
 void CJudgementSystem::Process_Trigger(const COLLIDED_DESC& desc)
 {
+	if (desc.pOther->IsDead() || desc.pRequester->IsDead())
+		return;
+
 }
 
 void CJudgementSystem::Process_Battle(const COLLIDED_DESC& desc)
 {
+	if (desc.pOther->IsDead() || desc.pRequester->IsDead())
+		return;
+
 }
 
 void CJudgementSystem::Process_Collision(const COLLIDED_DESC& desc)
 {
+	if (desc.pOther->IsDead() || desc.pRequester->IsDead())
+		return;
+
+
 }
 
 void CJudgementSystem::Resolve_Attacker_Victim(const COLLIDED_DESC& desc, OUT CGameObject*& pOutAttacker, OUT CGameObject*& pOutVictim, OUT _uint& iOutAttackerLayer, OUT _uint& iOutVictimLayer)

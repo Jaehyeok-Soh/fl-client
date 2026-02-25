@@ -39,9 +39,11 @@ namespace Engine
 	typedef struct tagCollisionHitInformation
 	{
 		bool bHasHitPoint{ false };
+		unsigned int iRequester_AttackPresetID{ UINT_MAX };
+		unsigned int iOther_AttackPresetID{ UINT_MAX };
+		float fDepth{ 0.f };
 		SimpleMath::Vector3 vPosition{ SimpleMath::Vector3::Zero };
 		SimpleMath::Vector3 vRawNormal{ SimpleMath::Vector3::Zero };
-		float fDepth{ 0.f };
 	}COL_HIT_INFO;
 
 	typedef struct tagCollidedDesc
@@ -780,6 +782,12 @@ namespace Engine
 		bool bSetOnlyFilter = { false };
 		PHYSICSFILTERGROUP::Enum eFilterLayer = PHYSICSFILTERGROUP::Enum::NONE;
 		unsigned int iFilterMask = {};
+
+		////////////////////
+		/// Attack Preset///
+		////////////////////
+		string strAttackPresetTag = { "" };
+		unsigned int iAttackPresetID = { UINT_MAX };
 	}PHYSICSCOLLIDER_DESC;
 
 	typedef struct tagPhysicsFilterShader

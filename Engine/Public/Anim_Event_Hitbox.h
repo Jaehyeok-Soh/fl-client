@@ -35,6 +35,8 @@ namespace DTO
 		PHYSICSFILTERGROUP::Enum eFilterLayer = PHYSICSFILTERGROUP::Enum::NONE;
 		_uint iFilterMask = {};
 
+		string strAttackPresetTag = {""};
+		_uint iAttackPresetID = { UINT_MAX };
 		////////////////////////////
 		// ANIM_EVENT_SCRIPT_BASE //
 		////////////////////////////
@@ -57,6 +59,7 @@ namespace DTO
 		j["iMaxHit"] = d.iMaxHit;
 		j["eFilterLayer"] = d.eFilterLayer;
 		j["iFilterMask"] = d.iFilterMask;
+		j["strAttackPresetTag"] = d.strAttackPresetTag;
 	}
 
 	inline void from_json(const json& j, HITBOX_DESC& d)
@@ -86,5 +89,7 @@ namespace DTO
 		j.at("iMaxHit").get_to(d.iMaxHit);
 		j.at("eFilterLayer").get_to(d.eFilterLayer);
 		j.at("iFilterMask").get_to(d.iFilterMask);
+		if (j.contains("strAttackPresetTag"))
+			j.at("strAttackpresetTag").get_to(d.strAttackPresetTag);
 	}
 }
