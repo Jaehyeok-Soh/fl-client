@@ -74,7 +74,8 @@ HRESULT CMonster_Base::Awake(const _uint iCurrentLevelID)
 
 	Get_Component<CPhysicsCCT>()->Awake();
 
-	Get_Component<CPhysicsAttackOverlap>()->Awake();
+	if (CPhysicsAttackOverlap* attackOverlap = Get_Component<CPhysicsAttackOverlap>())
+		attackOverlap->Awake();
 
 	return S_OK;
 }
@@ -229,8 +230,11 @@ HRESULT CMonster_Base::Ready_Components(void* pArgs)
 
 HRESULT CMonster_Base::Ready_AttackOverlap(wstring prototypeName)
 {
-	if (FAILED(Add_Component<CPhysicsAttackOverlap>(0, prototypeName, nullptr)))
-		return E_FAIL;
+	if (prototypeName.size() > 0)
+	{
+		if (FAILED(Add_Component<CPhysicsAttackOverlap>(0, prototypeName, nullptr)))
+			return E_FAIL;
+	}
 
 	return S_OK;
 }
