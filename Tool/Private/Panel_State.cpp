@@ -386,9 +386,9 @@ void CPanel_State::DrawStateTransition(DTO::STATE_TRANSITION& transition, int in
 void CPanel_State::DrawGlobalStateTransition()
 {
     // State Transitions
-    if (ImGui::CollapsingHeader("State Transitions"))
+    if (ImGui::CollapsingHeader("Global State Transitions"))
     {
-        if (ImGui::Button("Add Transition"))
+        if (ImGui::Button("Add Global Transition"))
             m_vecGlobalStateTransition.push_back(DTO::STATE_TRANSITION());
         ImGui::SameLine();
         if (ImGui::Button("Clear Global Transition"))

@@ -3,6 +3,7 @@
 
 NS_BEGIN(Engine)
 class CBone;
+class CComputeShader;
 NS_END
 
 NS_BEGIN(Client)
@@ -78,6 +79,14 @@ private:
 	//_int m_iRightShoulderSocket_Index = { 0 };
 	//_int m_iEffectMouseSocket_Index = { 0 };
 	//_int m_iRightHandWeaponSocket_Index = { 0 };
+
+private:
+	CComputeShader* m_pBoneMeshCS			= { nullptr };
+	CComputeShader* m_pBoneCombineCS		= { nullptr };
+	CComputeShader* m_pBoneAnimEvaluateCS	= { nullptr };
+	CComputeShader* m_pBoneAnimBlendCS		= { nullptr };
+	CComputeShader* m_pBoneAnimMixCS		= { nullptr };
+
 public:
 	static CBody* Create(ID3D11Device* pDevice, ID3D11DeviceContext* pDeviceContext);
 	virtual CGameObject* Clone(void* pArg) override;

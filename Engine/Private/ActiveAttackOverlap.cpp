@@ -80,7 +80,7 @@ void CActiveAttackOverlap::Set(DTO::HITBOX_DESC* pDesc, Matrix ownerMatrix, CGam
 	m_pOwner = pOwner;
 
 	m_tHitboxDesc = pDesc;
-
+	
 	m_matTransform = m_tHitboxDesc->matOffset * ownerMatrix;
 	m_pxTransform = m_pGameInstance->XMMatrixToPxTransform(m_matTransform);
 

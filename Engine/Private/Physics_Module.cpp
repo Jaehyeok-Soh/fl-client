@@ -200,7 +200,7 @@ HRESULT CPhysics_Module::Initialize()
 
 void CPhysics_Module::StepPhysics(_float fTimeDelta)
 {
-	m_pScene->simulate(std::clamp(fTimeDelta, fTimeDelta, 0.33f));
+	m_pScene->simulate(std::clamp(fTimeDelta, 1.f / 120.f, 1.f / 30.f));
 	m_pScene->fetchResults(true);
 
 #ifdef _DEBUG

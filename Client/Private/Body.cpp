@@ -79,15 +79,12 @@ HRESULT CBody::Awake(const _uint iCurrentLevelIndex)
 	Get_Component<CAnimEffectHandler>()->Awake();
 
 	//Face_Smile
-
-	_uint iFaceAnimIdx = Get_Component<CModel>()->Get_AnimationIndex(L"Animation_PlayerMoon_Face_LipSync");
-	vector<CModel::DATA_ANIMIX> vecMix = { {113,false,1.f} };
-
-	CComputeShader* pAnimMixCS = static_cast<CComputeShader*>(Get_Script_Component(TEXT("ComputeShader_AnimMix")));
+	_uint iFaceAnimIdx					= Get_Component<CModel>()->Get_AnimationIndex(L"Animation_PlayerMoon_Face_LipSync");
+	vector<CModel::DATA_ANIMIX> vecMix	= { {113,false,1.f} };
 
 	Get_Component<CModel>()->Set_MixAnim(true);
 	Get_Component<CModel>()->Set_MixAnim_ResetSize(1);
-	Get_Component<CModel>()->Make_MixRatio(iFaceAnimIdx, vecMix, pAnimMixCS);
+	Get_Component<CModel>()->Make_MixRatio(iFaceAnimIdx, vecMix, m_pBoneAnimMixCS);
 	Get_Component<CModel>()->Set_MixAnim_AnimIndex(0, iFaceAnimIdx);
 
 	return S_OK;
@@ -102,18 +99,10 @@ void CBody::Update(_float fTimeDelta)
 {
 	Super::Update(fTimeDelta);
 
-	CComputeShader* pBonCS = static_cast<CComputeShader*>(Get_Script_Component(TEXT("ComputeShader_BoneCombine")));
-	CComputeShader* pAnimECS = static_cast<CComputeShader*>(Get_Script_Component(TEXT("ComputeShader_AnimE")));
-	CComputeShader* pAnimBCS = static_cast<CComputeShader*>(Get_Script_Component(TEXT("ComputeShader_AnimB")));
-
-	CComputeShader* pAnimMixCS = static_cast<CComputeShader*>(Get_Script_Component(TEXT("ComputeShader_AnimMix")));
-
-	if (pAnimMixCS == nullptr)
-		int a = 0;
 	//CComputeShader* pGetBoneCS = static_cast<CComputeShader*>(Get_Script_Component(TEXT("ComputeShader_GetBone")));
 
-	Get_Component<CModel>()->Update_Animation(pBonCS, pAnimECS, fTimeDelta, 
-		Get_Parent()->Get_Component<CTransform>(), Get_Parent()->Get_Component<CPhysicsCCT>(), pAnimBCS, pAnimMixCS);
+	Get_Component<CModel>()->Update_Animation(m_pBoneCombineCS, m_pBoneAnimEvaluateCS, fTimeDelta,
+		Get_Parent()->Get_Component<CTransform>(), Get_Parent()->Get_Component<CPhysicsCCT>(), m_pBoneAnimBlendCS, m_pBoneAnimMixCS);
 
 	if(CCollider* pCollider = Get_Component<CCollider>())
 		pCollider->Update(m_matCombinedWorld);
@@ -181,15 +170,13 @@ HRESULT CBody::Render()
 	CShader* pShader = Get_Component<CShader>();
 	CModel* pModel = Get_Component<CModel>();
 	_uint iMeshCount = pModel->Get_MeshCount();
-	CComputeShader* pBoneMeshCS = static_cast<CComputeShader*>(Get_Script_Component(TEXT("ComputeShader_BoneMesh")));
-	CComputeShader* pBoneCombineCS = static_cast<CComputeShader*>(Get_Script_Component(TEXT("ComputeShader_BoneCombine")));
 
 	pShader->Bind_ObjectInfoData(m_tObjectInfoDesc);
 	pShader->Bind_TransformData(m_matCombinedWorld);
 	for (_uint i = 0; i < iMeshCount; ++i)
 	{
 		pModel->Bind_Material(pShader, i);
-		pModel->Bind_Bones(pShader, i, pBoneMeshCS, pBoneCombineCS);
+		pModel->Bind_Bones(pShader, i, m_pBoneMeshCS, m_pBoneCombineCS);
 		pShader->Apply();
 		pModel->Render(i);
 	}
@@ -358,7 +345,7 @@ CBone* CBody::Get_NeckBone()
 
 HRESULT CBody::Ready_Components(BODY_DESC* pDesc)
 {
-	if (FAILED(Add_Component<CModel>(0/*static*/, pDesc->wstrModelPrototypeName, pDesc)))
+	if (FAILED(Add_Component<CModel>(0/*static*/, pDesc->wstrModelPrototypeName, nullptr)))
 		return E_FAIL;
 
 	if (FAILED(Add_Component<CShader>(0/*static*/, L"Prototype_Component_Shader_VtxAnimMesh", pDesc)))
@@ -523,13 +510,13 @@ HRESULT CBody::Ready_ComputeShader()
 		//	return E_FAIL;
 	}
 
-	CComputeShader* pBoneMeshCS = static_cast<CComputeShader*>(Get_Script_Component(TEXT("ComputeShader_BoneMesh")));
-	CComputeShader* pBonCombineCS = static_cast<CComputeShader*>(Get_Script_Component(TEXT("ComputeShader_BoneCombine")));
-	CComputeShader* pAnimECS = static_cast<CComputeShader*>(Get_Script_Component(TEXT("ComputeShader_AnimE")));
-	CComputeShader* pAnimBlendCS = static_cast<CComputeShader*>(Get_Script_Component(TEXT("ComputeShader_AnimB")));
-	CComputeShader* pAnimMix = static_cast<CComputeShader*>(Get_Script_Component(TEXT("ComputeShader_AnimMix")));
+	m_pBoneMeshCS = static_cast<CComputeShader*>(Get_Script_Component(TEXT("ComputeShader_BoneMesh")));
+	m_pBoneCombineCS = static_cast<CComputeShader*>(Get_Script_Component(TEXT("ComputeShader_BoneCombine")));
+	m_pBoneAnimEvaluateCS = static_cast<CComputeShader*>(Get_Script_Component(TEXT("ComputeShader_AnimE")));
+	m_pBoneAnimBlendCS = static_cast<CComputeShader*>(Get_Script_Component(TEXT("ComputeShader_AnimB")));
+	m_pBoneAnimMixCS = static_cast<CComputeShader*>(Get_Script_Component(TEXT("ComputeShader_AnimMix")));
 
-	if (FAILED(Get_Component<CModel>()->Ready_ComputeShaders(pBoneMeshCS, pBonCombineCS, pAnimECS, pAnimBlendCS, pAnimMix)))
+	if (FAILED(Get_Component<CModel>()->Ready_ComputeShaders(m_pBoneMeshCS, m_pBoneCombineCS, m_pBoneAnimEvaluateCS, m_pBoneAnimBlendCS, m_pBoneAnimMixCS)))
 		return E_FAIL;
 
 	return S_OK;
