@@ -255,7 +255,7 @@ inline void from_json(const json& LoadJson, DTO::TMap_MapObjectData& tData)
 #pragma endregion
 
 
-#pragma region Scene Data
+#pragma region Level Data
 
 
 inline void to_json(json& SaveJson, const TLevelData& tData)
@@ -263,7 +263,8 @@ inline void to_json(json& SaveJson, const TLevelData& tData)
 	SaveJson = json
 	{
 		{ "strTag", tData.strTag },
-		{ "Texture Splating Info", tData.strTextureSplatingInfoName },
+		{ "Texture Splating Info"	, tData.strTextureSplatingInfoName },
+		{ "Level Type"				, tData.strLevelTypeName},
 	};
 
 	return;
@@ -275,6 +276,11 @@ inline void from_json(const json& LoadJson, TLevelData& tData)
 	
 	if (LoadJson.contains("Texture Splating Info"))
 		tData.strTextureSplatingInfoName = LoadJson["Texture Splating Info"].get<string>();
+	
+
+	if (LoadJson.contains("Level Type"))
+		tData.strLevelTypeName = LoadJson["Level Type"].get<string>();
+	
 	return;
 }
 

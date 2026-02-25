@@ -234,9 +234,9 @@ typedef struct TMap_MapObjectData
 	string								strModelPath{ "" };
 
 	/* Client Make Level Type */
-	_uint	eClientMakePath{};
-	_uint	eClientLevelType{};
-	_uint	eMapObjectDrawType{};
+	_uint								eClientMakePath{};
+	_uint								eClientLevelType{};
+	_uint								eMapObjectDrawType{};
 
 	/* SRT Data , Cient Make Path Desc */
 	vector<SRT_DATA>					vecSRTs{};
@@ -255,6 +255,7 @@ typedef struct TLevelData
 {
 	string								strTag{};
 	string								strTextureSplatingInfoName{"None"};
+	string								strLevelTypeName{"STATIC"};
 
 }SCENEDATA;
 
@@ -286,7 +287,7 @@ inline void from_json(const json& LoadJson, TMap_MapObjectData& tData);
 #pragma endregion
 
 
-#pragma region Scene Data
+#pragma region Level Data
 
 inline void to_json(json& SaveJson, const TLevelData& tData);
 inline void from_json(const json& LoadJson, TLevelData& tData);

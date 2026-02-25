@@ -2,7 +2,7 @@
 #include "Weapon.h"
 
 NS_BEGIN(Client)
-class CGun final : public CWeapon
+class CGun : public CWeapon
 {
 	using Super = CWeapon;
 
@@ -63,16 +63,18 @@ public:
 	_bool Get_CanFire();
 	_bool Get_CanReleod();
 
+	_uint Get_GunState() const { return static_cast<_uint>(m_eGunState); }
+
 private:
 	GunState m_eGunState = { GunState::NOATT };
 
 	_float m_fSpeed		= { 1.f };
 
 	// 항상 x가 cur개수. y는 max 개수
-	MinMax			m_MTotalBullet = { 0.f,0.f };
-	MinMax			m_MCurBullet = { 0.f,0.f };
+	MinMax			m_MTotalBullet		= { 0.f,0.f };
+	MinMax			m_MCurBullet		= { 0.f,0.f };
 
-	TIME_COUNTER	m_tFireTimeCounter = { 0.f,0.f };
+	TIME_COUNTER	m_tFireTimeCounter	= { 0.f,0.f };
 
 private:
 	void State_Start(GunState eState);
@@ -83,6 +85,9 @@ private:
 	void Attack_Update(const _float fTimeDelta);
 	void Empty_Update(const _float fTimeDelta);
 	void Reload_Update(const _float fTimeDelta);
+
+private:
+	void Fire();
 
 public:
 	static CGun* Create(ID3D11Device* pDevice, ID3D11DeviceContext* pDeviceContext);

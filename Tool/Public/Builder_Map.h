@@ -26,6 +26,9 @@ public:
 private:
 	CGameInstance*		m_pGameInstance{ nullptr };
 	CMapToolManager*	m_pMapToolManager{nullptr};
+
+	EClientLevelType	m_eClientLevelType{};
+
 public:
 	static CBuilder_Map* Create(ID3D11Device* pDevice, ID3D11DeviceContext* pDeviceContext, _uint iLevelID);
 	virtual void Free() override;

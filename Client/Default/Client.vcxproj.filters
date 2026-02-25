@@ -385,6 +385,45 @@
     <Filter Include="07. System\99. Debug_ImGui\Layout\Transform">
       <UniqueIdentifier>{C518D0B1-BF6A-4AC3-93EB-A5DC2C9C95A6}</UniqueIdentifier>
     </Filter>
+    <Filter Include="03. GameObject\MapObject\03. Plants">
+      <UniqueIdentifier>{e0ccc92c-8caa-4c39-8270-998fdc97d602}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="03. GameObject\MapObject\03. Plants\00. Plants">
+      <UniqueIdentifier>{ec2dd632-4d92-4877-ab79-a60542085874}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="03. GameObject\MapObject\03. Plants\01. Bush">
+      <UniqueIdentifier>{2db74ba0-4a40-4b6f-b2e7-925677aab52b}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="03. GameObject\MapObject\03. Plants\02. Grass">
+      <UniqueIdentifier>{222fcc28-c0ae-401d-bf5c-03c82236ff30}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="03. GameObject\MapObject\03. Plants\03. Moss">
+      <UniqueIdentifier>{f96db740-5a89-4d2a-8a4d-a498f7ef0554}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="03. GameObject\MapObject\03. Plants\04. Tree">
+      <UniqueIdentifier>{ff59a5bd-c930-4031-8c51-0ac80ae71fc5}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="03. GameObject\MapObject\03. Plants\05. Vine">
+      <UniqueIdentifier>{7c7bc525-4b2f-410f-8d4c-3c439b341282}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="03. GameObject\MapObject\04. Rock">
+      <UniqueIdentifier>{1f5db521-b63b-4cb7-a6a6-90bad385d5f4}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="03. GameObject\MapObject\05. Water">
+      <UniqueIdentifier>{4cae9daa-fe9c-46ab-b571-910568be8b8b}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02. Level\Tutorial_Village">
+      <UniqueIdentifier>{b2fed15e-bf3a-4c63-8815-60f37d6ce25c}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02. Level\Tutorial_Boss">
+      <UniqueIdentifier>{2bfda849-9bb8-4f16-b297-2e1c6dcf6c85}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02. Level\Square">
+      <UniqueIdentifier>{0214ac06-4136-4164-90f8-af92c061bfe3}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02. Level\Test">
+      <UniqueIdentifier>{a2daef10-3d20-4e39-ace1-5ff40c2ab0d2}</UniqueIdentifier>
+    </Filter>
     <Filter Include="03. GameObject\ContainerObjects\Monster\Boss">
       <UniqueIdentifier>{8772f096-9dc8-4081-957f-3400771c469c}</UniqueIdentifier>
     </Filter>
@@ -430,6 +469,7 @@
     <Filter Include="02. Level\Test">
       <UniqueIdentifier>{a2daef10-3d20-4e39-ace1-5ff40c2ab0d2}</UniqueIdentifier>
     </Filter>
+	  
     <Filter Include="03. GameObject\UIObjects\02.UI\Image\Dynamic Image\06.AimDot">
       <UniqueIdentifier>{91eeeaa9-73a6-40da-bff2-b5e05c436f98}</UniqueIdentifier>
     </Filter>
@@ -507,6 +547,15 @@
     </Filter>
     <Filter Include="03. GameObject\UIObjects\02.UI\Trigger\02.Menu Exit">
       <UniqueIdentifier>{63c9a3d7-bedc-44a7-89d4-febe6b9de520}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="03. GameObject\TriggerBox">
+      <UniqueIdentifier>{0d360f5b-9f01-4e63-94fd-b809239f8b4c}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="03. GameObject\TriggerBox\00. TriggerBox">
+      <UniqueIdentifier>{70b74bb6-7ead-4caa-b189-78cf6a9fe938}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="03. GameObject\TriggerBox\01. TriggerBox_LevelChange">
+      <UniqueIdentifier>{97926faf-3735-4208-8cb7-b4ef15e4599e}</UniqueIdentifier>
     </Filter>
     <Filter Include="03. GameObject\UIObjects\02.UI\Image\Dynamic Image\05.MonsterNamePlate">
       <UniqueIdentifier>{761751c8-ba94-4e88-987b-53bc16a7f52f}</UniqueIdentifier>
@@ -949,6 +998,14 @@
     <ClInclude Include="..\public\Boss_Xibi_Body.h">
       <Filter>03. GameObject\PartObjects\Monster\Body\Xibi</Filter>
     </ClInclude>
+    <ClInclude Include="..\Public\UI_World.h" />
+    <ClInclude Include="..\Public\WorldUI.h" />
+    <ClInclude Include="..\Public\TriggerBox.h">
+      <Filter>03. GameObject\TriggerBox\00. TriggerBox</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\TriggerBox_LevelChange.h">
+      <Filter>03. GameObject\TriggerBox\01. TriggerBox_LevelChange</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <Image Include="Client.ico">
@@ -1251,6 +1308,7 @@
     </ClCompile>
     <ClCompile Include="..\Private\UILoading_Progress.cpp">
       <Filter>03. GameObject\UIObjects\02.UI\Progress Bar\Loading</Filter>
+      <Filter>03. GameObject\UIObjects\02.UI\Progress Bar\Loading</Filter>
     </ClCompile>
     <ClCompile Include="..\Private\Gun.cpp">
       <Filter>03. GameObject\PartObjects\Weapon\Gun</Filter>
@@ -1378,6 +1436,14 @@
     </ClCompile>
     <ClCompile Include="..\private\Boss_Xibi_Body.cpp">
       <Filter>03. GameObject\PartObjects\Monster\Body\Xibi</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\UI_World.cpp" />
+    <ClCompile Include="..\Private\WorldUI.cpp" />
+    <ClCompile Include="..\Private\TriggerBox.cpp">
+      <Filter>03. GameObject\TriggerBox\00. TriggerBox</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\TriggerBox_LevelChange.cpp">
+      <Filter>03. GameObject\TriggerBox\01. TriggerBox_LevelChange</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

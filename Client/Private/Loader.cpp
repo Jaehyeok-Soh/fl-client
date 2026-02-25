@@ -211,6 +211,7 @@ HRESULT CLoader::Loading_For_LoadLevel()
 	return S_OK;
 }
 
+/* 첫 실행 떄 등록해야하는 것들 등록 */
 HRESULT CLoader::Loading_For_Logo()
 {
 	m_fLoadingRatio = 0.f;
@@ -393,7 +394,7 @@ HRESULT CLoader::Loading_For_Logo()
 	// Component
 	//=================
 
-	// For. Prototype_Component_Model_Master
+	// For. Prototype_Component_Model_Moon
 	{
 		m_fLoadingRatio = 0.99f;
 		CModel::MODEL_ORIGIN_DESC desc = {};
@@ -408,7 +409,7 @@ HRESULT CLoader::Loading_For_Logo()
 		tAniChannelData.iRootBoneIndex = 2;
 		desc.pAniChannelData = &tAniChannelData;
 
-		m_pGameInstance->Add_Prototype(ENUM_TO_UINT(ELevelType::STATIC), L"Prototype_Component_Model_Master", CModel::Create(m_pDevice, m_pDeviceContext, &desc));
+		m_pGameInstance->Add_Prototype(ENUM_TO_UINT(ELevelType::STATIC), L"Prototype_Component_Model_Moon", CModel::Create(m_pDevice, m_pDeviceContext, &desc));
 	}
 
 	// For. Prototype_Component_Model_MoonSword
@@ -530,28 +531,31 @@ HRESULT CLoader::Loading_For_Logo()
 #pragma region Objects
 	{
 		// For. Prototype_GameObject_MainPlayer
-		ADD_PROTOTYPE(ELevelType::STATIC, L"Prototype_GameObject_MainPlayer", CMainPlayer::Create(m_pDevice, m_pDeviceContext));
+		ADD_PROTOTYPE(ELevelType::STATIC, L"Prototype_GameObject_MainPlayer",			CMainPlayer::Create(m_pDevice, m_pDeviceContext));
 		// For. Prototype_GameObject_CameraManTargeter
-		ADD_PROTOTYPE(ELevelType::STATIC, L"Prototype_GameObject_CameraManTargeter", CCameraMan_Targeter::Create(m_pDevice, m_pDeviceContext));
+		ADD_PROTOTYPE(ELevelType::STATIC, L"Prototype_GameObject_CameraManTargeter",	CCameraMan_Targeter::Create(m_pDevice, m_pDeviceContext));
 		// For. Prototype_GameObject_Part_Body
-		ADD_PROTOTYPE(ELevelType::STATIC, L"Prototype_GameObject_Part_Body", CBody::Create(m_pDevice, m_pDeviceContext));
+		ADD_PROTOTYPE(ELevelType::STATIC, L"Prototype_GameObject_Part_Body",			CBody::Create(m_pDevice, m_pDeviceContext));
 		// For. Prototype_GameObject_Part_Collider
-		ADD_PROTOTYPE(ELevelType::STATIC, L"Prototype_GameObject_Part_Collider", CColliderPart::Create(m_pDevice, m_pDeviceContext));
+		ADD_PROTOTYPE(ELevelType::STATIC, L"Prototype_GameObject_Part_Collider",		CColliderPart::Create(m_pDevice, m_pDeviceContext));
 
 		// 이펙트 Object
-		ADD_PROTOTYPE(ELevelType::LOGO, L"Prototype_GameObject_Effect", Effect::Create(m_pDevice, m_pDeviceContext));
-		ADD_PROTOTYPE(ELevelType::LOGO, L"Prototype_GameObject_Effect_Parts", CEffectObject::Create(m_pDevice, m_pDeviceContext));
+		ADD_PROTOTYPE(ELevelType::LOGO, L"Prototype_GameObject_Effect",					Effect::Create(m_pDevice, m_pDeviceContext));
+		ADD_PROTOTYPE(ELevelType::LOGO, L"Prototype_GameObject_Effect_Parts",			CEffectObject::Create(m_pDevice, m_pDeviceContext));
 
+
+#pragma region Map Object
 		/* Map Object */
-		ADD_PROTOTYPE(ELevelType::STATIC, L"Prototype_GameObject_StaticObject", CStaticObject::Create(m_pDevice, m_pDeviceContext));
-		ADD_PROTOTYPE(ELevelType::STATIC, L"Prototype_GameObject_LandScape",	CLandScape::Create(m_pDevice, m_pDeviceContext));
-		ADD_PROTOTYPE(ELevelType::STATIC, L"Prototype_GameObject_Bush",			CBush::Create(m_pDevice, m_pDeviceContext));
-		ADD_PROTOTYPE(ELevelType::STATIC, L"Prototype_GameObject_Grass",		CGrass::Create(m_pDevice, m_pDeviceContext));
-		ADD_PROTOTYPE(ELevelType::STATIC, L"Prototype_GameObject_Moss",			CMoss::Create(m_pDevice, m_pDeviceContext));
-		ADD_PROTOTYPE(ELevelType::STATIC, L"Prototype_GameObject_Tree",			CTree::Create(m_pDevice, m_pDeviceContext));
-		ADD_PROTOTYPE(ELevelType::STATIC, L"Prototype_GameObject_Vine",			CVine::Create(m_pDevice, m_pDeviceContext));
-		ADD_PROTOTYPE(ELevelType::STATIC, L"Prototype_GameObject_Rock",			CRock::Create(m_pDevice, m_pDeviceContext));
-		ADD_PROTOTYPE(ELevelType::STATIC, L"Prototype_GameObject_Water",		CWater::Create(m_pDevice, m_pDeviceContext));
+		ADD_PROTOTYPE(ELevelType::STATIC, L"Prototype_GameObject_StaticObject", CStaticObject::		Create(m_pDevice, m_pDeviceContext));
+		ADD_PROTOTYPE(ELevelType::STATIC, L"Prototype_GameObject_LandScape",	CLandScape::		Create(m_pDevice, m_pDeviceContext));
+		ADD_PROTOTYPE(ELevelType::STATIC, L"Prototype_GameObject_Bush",			CBush::				Create(m_pDevice, m_pDeviceContext));
+		ADD_PROTOTYPE(ELevelType::STATIC, L"Prototype_GameObject_Grass",		CGrass::			Create(m_pDevice, m_pDeviceContext));
+		ADD_PROTOTYPE(ELevelType::STATIC, L"Prototype_GameObject_Moss",			CMoss::				Create(m_pDevice, m_pDeviceContext));
+		ADD_PROTOTYPE(ELevelType::STATIC, L"Prototype_GameObject_Tree",			CTree::				Create(m_pDevice, m_pDeviceContext));
+		ADD_PROTOTYPE(ELevelType::STATIC, L"Prototype_GameObject_Vine",			CVine::				Create(m_pDevice, m_pDeviceContext));
+		ADD_PROTOTYPE(ELevelType::STATIC, L"Prototype_GameObject_Rock",			CRock::				Create(m_pDevice, m_pDeviceContext));
+		ADD_PROTOTYPE(ELevelType::STATIC, L"Prototype_GameObject_Water",		CWater::			Create(m_pDevice, m_pDeviceContext));
+#pragma endregion
 
 		/* Weapons */
 		ADD_PROTOTYPE(ELevelType::STATIC, L"Prototype_GameObject_Part_Sword", CSword::Create(m_pDevice, m_pDeviceContext));
@@ -564,6 +568,11 @@ HRESULT CLoader::Loading_For_Logo()
 		ADD_PROTOTYPE(ELevelType::LOGO, L"Prototype_GameObject_Boss_Xibi", CBoss_Xibi::Create(m_pDevice, m_pDeviceContext));
 		// For. Prototype_GameObject_Boss_XibiBody
 		ADD_PROTOTYPE(ELevelType::LOGO, L"Prototype_GameObject_Boss_Xibi_Body", CBoss_Xibi_Body::Create(m_pDevice, m_pDeviceContext));
+		/* Monster Object */
+		ADD_PROTOTYPE(ELevelType::STATIC, L"Prototype_GameObject_Monster_Dummy", CMonster_Dummy::Create(m_pDevice, m_pDeviceContext));
+
+		/* Monster Part Object */
+		ADD_PROTOTYPE(ELevelType::STATIC, L"Prototype_GameObject_Monster_Dummy_Body", CMonster_Dummy_Body::Create(m_pDevice, m_pDeviceContext));
 	}
 #pragma endregion
 
