@@ -58,7 +58,7 @@ struct MU_ELEMENT
     float fStartSpeed;
     float fSpiralRadius;
     float fSpiralSpeed;
-    float fPadding3;
+    int  UseContinueFlag;
 };
 
 struct CurveKey
@@ -135,9 +135,17 @@ void CS_Main(int3 dtid : SV_DispatchThreadID)
   
     // 수명 업데이트 (누적)
     currentData.vLifeTime.x += g_InputB.fTimeDelta;
-    
-    // 개별 파티클의 시간 비율 (0.0 ~ 1.0) 
+
+    // 그 이후에 fRatio 계산
     float fRatio = saturate(currentData.vLifeTime.x / currentData.vLifeTime.y);
+    
+    if (g_InputB.UseContinueFlag == 1)
+    {
+        if (fRatio >= 0.5f)
+        {
+            currentData.vLifeTime.x = currentData.vLifeTime.y * 0.5f;
+        }
+    }
     
     if (currentData.vLifeTime.x < 0.0f)
     {

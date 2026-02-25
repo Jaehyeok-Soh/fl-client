@@ -59,38 +59,39 @@ texture2D g_EffectTexture;
 
 struct EffectDesc
 {
-    // Texture 바인딩 Flag들
+    // Row 0
     uint g_TextureFlags;
-    // 기타 Render 설정값들
     uint g_RenderFlags;
-     // 특정 텍스처마다 먹일 SamplerState
     uint g_StateFlags;
-    // discard 먹일 값 바인딩
     float g_DiscardValue;
-    
-    // 텍스처 산술 연산자 flag 
+
+    // Row 1
     uint g_OperatorFlags;
     uint g_RotationFlags;
     float2 g_UVOffset;
-    
-    // sprite일 때
-    uint g_SpriteCol; // 가로 프레임 수
-    uint g_SpriteRow; // 세로 프레임 수
-    uint g_CurSpriteIndex; // 현재 재생 중인 인덱스
+
+    // Row 2
+    uint g_SpriteCol;
+    uint g_SpriteRow;
+    uint g_CurSpriteIndex;
     float g_AppearRatio;
-    
+
+    // Row 3
     float2 g_ScrollOffset;
     float2 g_DistortionScale;
-    
-    float4 g_EffectColor;
-    
-    // 각 텍스처별 Scroll Weight (0 ~ 1)
+
+    // Row 4
+    float4 g_EffectColor; // 여기서부터는 위치가 절대 안 변함
+
+    // Row 5
     float2 DiffuseTexture_ScrollWeight;
     float2 NoiseTexture_ScrollWeight;
-    
+
+    // Row 6
     float2 MaskingTexture_ScrollWeight;
     float2 GradationTexture_ScrollWeight;
-    
+
+    // Row 7
     float2 DissolveTexture_ScrollWeight;
     float2 GlowTexture_ScrollWeight;
 };
@@ -446,7 +447,7 @@ float4 PS_DefaultMesh(VS_OUT_INST_MESH_PARTICLE In) : SV_Target0
    
     
      // ================     노이즈 텍스처     ===============
-    
+
         // 3. 왜곡량(Offset) 계산
     float2 distortionOffset = float2(0.f, 0.f);
     
@@ -628,14 +629,13 @@ float4 PS_DefaultMesh(VS_OUT_INST_MESH_PARTICLE In) : SV_Target0
 
 
     // 7. 휘도 컷팅 (깔끔한 마무리)
-    float luminance = dot(finalRGB, float3(0.2126f, 0.7152f, 0.0722f));
-    if (luminance < 0.1f)
-        discard;
+    //float luminance = dot(finalRGB, float3(0.2126f, 0.7152f, 0.0722f));
+    //if (luminance < 0.1f)
+    //    discard;
     
     if (finalAlpha <= g_Effect.g_DiscardValue)
         discard;
     
-
     return float4(finalRGB, finalAlpha);
 }
 

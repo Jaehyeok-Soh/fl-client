@@ -133,6 +133,7 @@ struct TEFFECT_PartsData
     _float              _Effect_Duration = { 5.f };
     _bool               _Effect_Looping = { true };
     _bool               _Use_Effect_Particle_Burst = { false };
+    _bool               _Use_Effect_Continue = { false };
     E_RANDOM_FLAG       iRandomFlags = RAND_NONE;
 
     _float              _Effect_PlayBackSpeed = { 1.f };

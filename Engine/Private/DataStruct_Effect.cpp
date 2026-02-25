@@ -102,6 +102,7 @@ void to_json(json& j, const TEFFECT_PartsData& data)
         {"LifeTime", data._Effect_LifeTime},
         {"Duration", data._Effect_Duration},
         {"Looping", data._Effect_Looping},
+        {"_Use_Effect_Continue", data._Use_Effect_Continue},
         {"MaxParticle", data._Effect_MaxParticle},
        {"RandomFlags", static_cast<int>(data.iRandomFlags)},
         {"PlayBackSpeed", data._Effect_PlayBackSpeed},
@@ -254,6 +255,7 @@ void from_json(const json& j, TEFFECT_PartsData& data)
     j.at("LifeTime").get_to(data._Effect_LifeTime);
     j.at("Duration").get_to(data._Effect_Duration);
     j.at("Looping").get_to(data._Effect_Looping);
+    j.at("_Use_Effect_Continue").get_to(data._Use_Effect_Continue);
     j.at("MaxParticle").get_to(data._Effect_MaxParticle);
 
     if (j.contains("RandomFlags"))

@@ -286,6 +286,8 @@ void CParticle_System_Panel::Draw_ParticleSystem(CToolObject* pGo)
 
 		m_bModified |= ImGui::Checkbox("Effect Particle Burst", &m_tCurrentDesc.Data._Use_Effect_Particle_Burst);
 
+		m_bModified |= ImGui::Checkbox("Effect Particle Continue", &m_tCurrentDesc.Data._Use_Effect_Continue);
+
 		ImGui::AlignTextToFramePadding();
 		if (ImGui::TreeNode("Timeline Setting"))
 		{

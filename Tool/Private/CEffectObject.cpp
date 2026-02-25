@@ -202,6 +202,7 @@ HRESULT CEffectObject::Ready_Component_Buffer(void* pArg)
         pParticleDesc.EmissionFlagType = m_tEffectDesc.Data._Effect_EmissionType;
         pParticleDesc.fDuration = m_tEffectDesc.Data._Effect_Duration;
         pParticleDesc.UseBurst = m_tEffectDesc.Data._Use_Effect_Particle_Burst;
+        pParticleDesc.UseContinueFlag = m_tEffectDesc.Data._Use_Effect_Continue;
 
         if (FAILED(Add_Component<CVIBuffer_Particle_Point>(static_cast<CVIBuffer_Particle_Point*>(m_pGameInstance->Clone_Prototype(EPrototypeType::COMPONENT, m_pGameInstance->Get_CurrentLevelIndex(), L"Prototype_Component_VIBuffer_Particle_Point", &pParticleDesc)))))
             return E_FAIL;
@@ -229,6 +230,7 @@ HRESULT CEffectObject::Ready_Component_Buffer(void* pArg)
             MeshBufferDesc.EmissionFlagType = m_tEffectDesc.Data._Effect_EmissionType;
             MeshBufferDesc.fDuration = m_tEffectDesc.Data._Effect_Duration;
             MeshBufferDesc.UseBurst = m_tEffectDesc.Data._Use_Effect_Particle_Burst;
+            MeshBufferDesc.UseContinueFlag = m_tEffectDesc.Data._Use_Effect_Continue;
 
             if (FAILED(Add_Component<CVIBuffer_Particle_Mesh>(static_cast<CVIBuffer_Particle_Mesh*>(m_pGameInstance->Clone_Prototype(EPrototypeType::COMPONENT, m_pGameInstance->Get_CurrentLevelIndex(), L"Prototype_Component_VIBuffer_Particle_Mesh", &MeshBufferDesc)))))
                 return E_FAIL;
@@ -251,6 +253,7 @@ HRESULT CEffectObject::Ready_Component_Buffer(void* pArg)
         pParticleDesc.pComputeShader = static_cast<CComputeShader*>(Get_Script_Component(L"ComputeShader"));
         pParticleDesc.fDuration = m_tEffectDesc.Data._Effect_Duration;
         pParticleDesc.UseBurst = m_tEffectDesc.Data._Use_Effect_Particle_Burst;
+        pParticleDesc.UseContinueFlag = m_tEffectDesc.Data._Use_Effect_Continue;
 
         if (FAILED(Add_Component<CVIBuffer_Particle_Point>(static_cast<CVIBuffer_Particle_Point*>(m_pGameInstance->Clone_Prototype(EPrototypeType::COMPONENT, m_pGameInstance->Get_CurrentLevelIndex(), L"Prototype_Component_VIBuffer_Particle_Point", &pParticleDesc)))))
             return E_FAIL;
@@ -310,6 +313,7 @@ void CEffectObject::Buffer_Setting()
             pParticleDesc.EmissionFlagType = (_uint)m_tEffectDesc.Data._Effect_EmissionType;
             pParticleDesc.fDuration = m_tEffectDesc.Data._Effect_Duration;
             pParticleDesc.UseBurst = m_tEffectDesc.Data._Use_Effect_Particle_Burst;
+            pParticleDesc.UseContinueFlag = m_tEffectDesc.Data._Use_Effect_Continue;
 
             Change_Component<CVIBuffer_Particle_Point>(static_cast<CVIBuffer_Particle_Point*>(m_pGameInstance->Clone_Prototype(EPrototypeType::COMPONENT, ENUM_TO_UINT(ELevelType::EFFECT), L"Prototype_Component_VIBuffer_Particle_Point", &pParticleDesc)));
             break;
@@ -336,6 +340,7 @@ void CEffectObject::Buffer_Setting()
                 MeshBufferDesc.EmissionFlagType = (_uint)m_tEffectDesc.Data._Effect_EmissionType;
                 MeshBufferDesc.fDuration = m_tEffectDesc.Data._Effect_Duration;
                 MeshBufferDesc.UseBurst = m_tEffectDesc.Data._Use_Effect_Particle_Burst;
+                MeshBufferDesc.UseContinueFlag = m_tEffectDesc.Data._Use_Effect_Continue;
 
                 Change_Component<CVIBuffer_Particle_Mesh>(static_cast<CVIBuffer_Particle_Mesh*>(m_pGameInstance->Clone_Prototype(EPrototypeType::COMPONENT, ENUM_TO_UINT(ELevelType::EFFECT), L"Prototype_Component_VIBuffer_Particle_Mesh", &MeshBufferDesc)));
             }
@@ -358,6 +363,7 @@ void CEffectObject::Buffer_Setting()
             pParticleDesc.EmissionFlagType = (_uint)m_tEffectDesc.Data._Effect_EmissionType;
             pParticleDesc.fDuration = m_tEffectDesc.Data._Effect_Duration;
             pParticleDesc.UseBurst = m_tEffectDesc.Data._Use_Effect_Particle_Burst;
+            pParticleDesc.UseContinueFlag = m_tEffectDesc.Data._Use_Effect_Continue;
 
             Change_Component<CVIBuffer_Particle_Point>(static_cast<CVIBuffer_Particle_Point*>(m_pGameInstance->Clone_Prototype(EPrototypeType::COMPONENT, ENUM_TO_UINT(ELevelType::EFFECT), L"Prototype_Component_VIBuffer_Particle_Point", &pParticleDesc)));
             break;
@@ -394,6 +400,7 @@ void CEffectObject::Particle_Setting()
         desc.EmissionFlagType = (_uint)m_tEffectDesc.Data._Effect_EmissionType;
         desc.fDuration = m_tEffectDesc.Data._Effect_Duration;
         desc.UseBurst = m_tEffectDesc.Data._Use_Effect_Particle_Burst;
+        desc.UseContinueFlag = m_tEffectDesc.Data._Use_Effect_Continue;
 
         pInstance->Set_ParticleDesc(desc);
     }
@@ -526,6 +533,7 @@ HRESULT CEffectObject::Bind_ShaderResource()
         pDesc.NoiseTexture_ScrollWeight = m_tEffectDesc.Data._Effect_NoiseTexture_ScrollWeight;
         pDesc.MaskingTexture_ScrollWeight = m_tEffectDesc.Data._Effect_MaskingTexture_ScrollWeight;
         pDesc.GradationTexture_ScrollWeight = m_tEffectDesc.Data._Effect_GradationTexture_ScrollWeight;
+        pDesc.DissolveTexture_ScrollWeight = m_tEffectDesc.Data._Effect_DissolveTexture_ScrollWeight;
         pDesc.GlowTexture_ScrollWeight= m_tEffectDesc.Data._Effect_GlowTexture_ScrollWeight;
 
         pShader->Bind_EffectData(pDesc);
@@ -621,13 +629,13 @@ void CEffectObject::Update(const _float fTimeDelta)
     // Duration 및 Loop 제어 설정
     if (fActiveTime >= m_tEffectDesc.Data._Effect_Duration)
     {
-        if (m_tEffectDesc.Data._Effect_Looping)
+        if (m_tEffectDesc.Data._Use_Effect_Continue || m_tEffectDesc.Data._Effect_Looping)
         {
             m_fTimeAccumulation = m_tEffectDesc.Data._Effect_StartDelay + fmod(fActiveTime, m_tEffectDesc.Data._Effect_Duration);
             fActiveTime = m_fTimeAccumulation - m_tEffectDesc.Data._Effect_StartDelay;
         }
         
-        else
+        else if(m_tEffectDesc.Data._Use_Effect_Continue == false|| m_tEffectDesc.Data._Effect_Looping == false)
         {
             if (fActiveTime >= m_tEffectDesc.Data._Effect_Duration + m_tEffectDesc.Data._Effect_LifeTime)
             {
@@ -637,6 +645,12 @@ void CEffectObject::Update(const _float fTimeDelta)
     }
     _float fRatio = fActiveTime / m_tEffectDesc.Data._Effect_Duration;
    if (fRatio > 1.f) fRatio = 1.f;
+
+   if (m_tEffectDesc.Data._Use_Effect_Continue)
+   {
+       if (fRatio >= 0.5f)
+           fRatio = 0.5f;
+   }
 
    Vec3 vCurrentScale = Vec3::Lerp(m_tEffectDesc.Data._Effect_StartScale, m_tEffectDesc.Data._Effect_EndScale, fRatio);
     Get_Component<CTransform>()->Set_Scale(vCurrentScale);
