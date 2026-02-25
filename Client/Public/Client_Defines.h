@@ -21,6 +21,9 @@ namespace Client
 		TUTORIAL_VILLAGE,	/* 튜토리얼 처음 진입되는 Level */
 		TUTORIAL_BOSS,		/* 튜토리얼 진입 이후 Boss전 가는 Level Type */
 		SQUARE,				/* 광장 */
+
+
+		/* Test Scene은 맨 마지막 */
 		Test,
 		END
 	};

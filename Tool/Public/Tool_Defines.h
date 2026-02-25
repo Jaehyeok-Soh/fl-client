@@ -226,6 +226,10 @@ namespace Tool
 		STATIC = 0,
 		LOADING,
 		LOGO,
+		TUTORIAL_VILLAGE,	
+		TUTORIAL_BOSS,	
+		SQUARE,				
+		Test,
 		END
 	};
 
