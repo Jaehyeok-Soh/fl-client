@@ -12,7 +12,8 @@
 #include "Collider.h"
 #include "Model.h"
 #include "PhysicsCCT.h"
-#include "AnimEffectHandler.h"
+#include "PhysicsAttackOverlap.h"
+#include "EffectHandler.h"
 #include "ComputeShader.h"
 
 #include "GameInstance.h"
@@ -74,7 +75,8 @@ HRESULT CBody::Awake(const _uint iCurrentLevelIndex)
 	if (FAILED(Super::Awake(iCurrentLevelIndex)))
 		return E_FAIL;
 
-	Get_Component<CAnimEffectHandler>()->Awake();
+	Get_Component<CPhysicsAttackOverlap>()->Awake();
+	Get_Component<CEffectHandler>()->Awake();
 
 	//Face_Smile
 	_uint iFaceAnimIdx					= Get_Component<CModel>()->Get_AnimationIndex(L"Animation_PlayerMoon_Face_LipSync");
@@ -111,7 +113,8 @@ void CBody::Update_Late(_float fTimeDelta)
 {
 	Super::Update_Late(fTimeDelta);
 	
-	Get_Component<CAnimEffectHandler>()->Update(fTimeDelta);
+	Get_Component<CPhysicsAttackOverlap>()->Update(fTimeDelta);
+	Get_Component<CEffectHandler>()->Update(fTimeDelta);
 }
 
 void CBody::Ready_Before_Render(_float fTimeDelta)
@@ -344,7 +347,7 @@ HRESULT CBody::Ready_Components(BODY_DESC* pDesc)
 	if (FAILED(Add_Component<CModel>(0/*static*/, pDesc->wstrModelPrototypeName, nullptr)))
 		return E_FAIL;
 
-	if (FAILED(Add_Component<CShader>(0/*static*/, L"Prototype_Component_Shader_VtxAnimMesh", pDesc)))
+	if (FAILED(Add_Component<CShader>(0/*static*/, L"Prototype_Component_Shader_VtxAnimMesh", nullptr)))
 		return E_FAIL;
 
 	if(FAILED(Ready_EffectEvent()))
@@ -355,7 +358,7 @@ HRESULT CBody::Ready_Components(BODY_DESC* pDesc)
 
 HRESULT CBody::Ready_EffectEvent()
 {
-	if (FAILED(Add_Component<CAnimEffectHandler>(0, L"Prototype_Component_AnimEffectHandler_PlayerMoon", nullptr)))
+	if (FAILED(Add_Component<CEffectHandler>(0, L"Prototype_Component_EffectHandler_PlayerMoon", nullptr)))
 		return E_FAIL;
 
 	return S_OK;

@@ -20,7 +20,7 @@ public:
 		_int iNavigationCellIndex = { -1 };
 		Vec3 vSpawnPosition = {};
 		wstring wstrMonsterStateTag = {};
-
+		std::span<std::pair<_uint, string>> spanBoneNames;
 		PHYSICSCCT_DESC tCCTDesc{};
 	}MONSTER_DESC;
 

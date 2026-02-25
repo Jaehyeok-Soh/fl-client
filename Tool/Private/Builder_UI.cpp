@@ -152,6 +152,8 @@ HRESULT CBuilder_UI::Create_GenericUIDTO(const DTO::TUI_GenericUIData& data)
 	Desc.fX					= data.fPosX;
 	Desc.fY					= data.fPosY;
 	Desc.fZ					= data.fPosZ;
+	Desc.fScale				= data.fScale;
+	Desc.fRotate			= data.fRotate;
 	Desc.strInitTextureTag	= data.strTextureTag;
 	Desc.strNoiseTextureTag	= data.strNoiseTextureTag;
 	Desc.strAlphaMaskTextureTag	= data.strAlphaMaskTextureTag;

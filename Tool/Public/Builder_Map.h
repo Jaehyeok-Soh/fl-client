@@ -22,10 +22,13 @@ private:
 public:
 	virtual HRESULT Build(const CDataDocumentBase& document) override;
 	HRESULT			Create_MapObject(const DTO::TMap_MapObjectData& tData);
-	HRESULT			Apply_ScenceData(const DTO::TSceneData& tData);
+	HRESULT			Apply_ScenceData(const DTO::TLevelData& tData);
 private:
 	CGameInstance*		m_pGameInstance{ nullptr };
 	CMapToolManager*	m_pMapToolManager{nullptr};
+
+	EClientLevelType	m_eClientLevelType{};
+
 public:
 	static CBuilder_Map* Create(ID3D11Device* pDevice, ID3D11DeviceContext* pDeviceContext, _uint iLevelID);
 	virtual void Free() override;

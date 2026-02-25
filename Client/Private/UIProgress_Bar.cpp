@@ -34,10 +34,6 @@ HRESULT CUIProgress_Bar::Initialize(void* pArg)
 	m_eSubClassType = pDesc->eOwner;
 	if (FAILED(Super::Initialize(pArg)))
 		return E_FAIL;
-
-	if (FAILED(Ready_Components(pDesc)))
-		return E_FAIL;
-
 	return S_OK;
 }
 
@@ -57,7 +53,6 @@ void CUIProgress_Bar::Update_Priority(const _float fTimeDelta)
 void CUIProgress_Bar::Update(const _float fTimeDelta)
 {
 	Super::Update(fTimeDelta);
-
 }
 
 void CUIProgress_Bar::Update_Late(const _float fTimeDelta)
@@ -74,22 +69,20 @@ void CUIProgress_Bar::Ready_Before_Render(const _float fTimeDelta)
 
 HRESULT CUIProgress_Bar::Render()
 {
-	if (!m_isVisible)
-		return S_OK;
 	if (FAILED(Super::Render()))
-		return E_FAIL;
-	if (FAILED(Bind_ShaderResources()))
 		return E_FAIL;
 	return S_OK;
 }
 
 HRESULT CUIProgress_Bar::Ready_Components(PROGRESS_BAR_DESC* pDesc)
 {
+	Super::Ready_Components(pDesc);
 	return S_OK;
 }
 
 HRESULT CUIProgress_Bar::Bind_ShaderResources()
 {
+	Super::Bind_ShaderResources();
 	return S_OK;
 }
 

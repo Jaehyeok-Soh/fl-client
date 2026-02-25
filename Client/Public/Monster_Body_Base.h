@@ -1,17 +1,26 @@
 #pragma once
 #include "PartObject.h"
 
+NS_BEGIN(Engine)
+class CBone;
+NS_END
+
 NS_BEGIN(Client)
 
 class CMonster_Body_Base abstract : public CPartObject
 {
 	using Super = CPartObject;
 public:
+	enum class EBone : _uint
+	{
+		RightHand = 0,
+		END
+	};
 	typedef struct tagMonsterBodyDesc : public CPartObject::PARTOBJ_DESC
 	{
 		wstring wstrModelPrototypeTag = { L"" };
+		std::span<std::pair<_uint, string>> spanBoneNames;
 	}MONSTERBODY_DESC;
-
 protected:
 	CMonster_Body_Base(ID3D11Device* pDevice, ID3D11DeviceContext* pDeviceContext);
 	CMonster_Body_Base(const CMonster_Body_Base& rhs);
@@ -33,8 +42,8 @@ public:
 	virtual void OnTrigger_Exit(_uint iMyColliderLayer, _uint iOtherLayer, CGameObject* pOther) override;
 	virtual _bool On_Hit(_uint iCollideMyLayer, ATTACK_DESC* pDesc, CGameObject* pOther) override;
 	virtual HRESULT Render() override;
-
 public:
+	CBone* Get_Bone(CMonster_Body_Base::EBone eBone);
 	const Matrix* Get_SocketMatrix(const _char* szBoneName);
 	const Matrix* Get_SocketMatrix(_uint iIndex);
 
@@ -42,10 +51,9 @@ protected:
 	HRESULT Ready_Components(MONSTERBODY_DESC* pDesc);
 	HRESULT Bind_ShaderResources();
 	HRESULT Ready_ComputeShader();
-
+	HRESULT Ready_Bones(MONSTERBODY_DESC* pDesc);
 protected:
-	_int m_iRootMotion_Index = { 0 }; // rootmotion »À idx
-
+	std::vector<_uint> m_vecBoneIndices;
 public:
 	virtual CGameObject* Clone(void* pArg) PURE;
 	virtual void Free() override;

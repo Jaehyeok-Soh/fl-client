@@ -19,7 +19,7 @@ public:
 	virtual json ToJson() const override;
 	virtual HRESULT FromJson(const json& j) override;
 	HRESULT Try_Add(const DTO::TMap_MapObjectData& data);
-	HRESULT Try_Add(const DTO::TSceneData& data);
+	HRESULT Try_Add(const DTO::TLevelData& data);
 private:
 	HRESULT Try_Add(IObjectDataBase* pObject);
 

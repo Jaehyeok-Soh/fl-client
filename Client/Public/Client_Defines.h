@@ -17,7 +17,14 @@ namespace Client
 	{
 		STATIC = 0,
 		LOADING,
-		LOGO,
+		LOGO,				/* 현재 임시 Test Level용 추후 Logo Scene으로 바뀔예정  */
+		TUTORIAL_VILLAGE,	/* 튜토리얼 처음 진입되는 Level */
+		TUTORIAL_BOSS,		/* 튜토리얼 진입 이후 Boss전 가는 Level Type */
+		SQUARE,				/* 광장 */
+
+
+		/* Test Scene은 맨 마지막 */
+		TEST,
 		END
 	};
 	inline constexpr size_t g_iLevelType_Count = static_cast<size_t>(ELevelType::END);
@@ -154,6 +161,28 @@ namespace Client
 #pragma region MapObject
 
 
+	static ELevelType StringToClientleveltype(const _string& str)
+	{
+		if (::strcmp(str.c_str(), "STATIC") == 0)
+			return ELevelType::STATIC;
+		else if (::strcmp(str.c_str(), "LOADING") == 0)
+			return ELevelType::LOADING;
+		else if (::strcmp(str.c_str(), "LOGO") == 0)
+			return ELevelType::LOGO;
+		else if (::strcmp(str.c_str(), "TUTORIAL_VILLAGE") == 0)
+			return ELevelType::TUTORIAL_VILLAGE;
+		else if (::strcmp(str.c_str(), "TUTORIAL_BOSS") == 0)
+			return ELevelType::TUTORIAL_BOSS;
+		else if (::strcmp(str.c_str(), "SQUARE") == 0)
+			return ELevelType::SQUARE;
+		else if (::strcmp(str.c_str(), "TEST") == 0)
+			return ELevelType::TEST;
+		else
+			return ELevelType::END;
+	}
+
+
+
 	/* Tool과 1ㄷ1 대응 */
 	static _uint Get_IndexByMaterialSlotName(const wstring& wstrSlotName)
 	{
@@ -182,12 +211,21 @@ namespace Client
 		END,
 	};
 
-	enum class Shader_VtxMesh_Pass
+	enum class EMapObjectShaderPass
 	{
 		StaticObject,
 		LandScape,
+		Bush,
+		Grass,
+		Moss,
+		Tree,
+		Vine,
+		Rock,
+		Water,
+		RGBMapping,
 		SHADOW_BAKE,
 		DEBUG,
+		END,
 	};
 
 
@@ -310,9 +348,23 @@ namespace Client
 	};
 	enum class EUIPrefabType
 	{
+		NOT_PREFAB,
 		MONSTER_NAMEPLATE,
 		END
 	};
+
+	inline _wstring UIPrefabtypeToWstring(EUIPrefabType eType)
+	{
+		switch (eType)
+		{
+		case Client::EUIPrefabType::NOT_PREFAB:return L"NOT_PREFAB";
+		case Client::EUIPrefabType::MONSTER_NAMEPLATE:return L"MONSTER_NAMEPLATE";
+		case Client::EUIPrefabType::END:
+		default:
+			break;
+		}
+		return L"NOT_PREFAB";
+	}
 
 #pragma endregion
 

@@ -20,6 +20,8 @@ public:
 		_float fZ;
 		_float fWidth;
 		_float fHeight;
+		_float fScale;
+		_float fRotate;
 
 	}UIOBJECT_DESC;
 
@@ -45,6 +47,9 @@ public:
 	_float Get_PosX() const { return m_fX; }
 	_float Get_PosY() const { return m_fY; }
 	_float Get_PosZ() const { return m_fZ; }
+	_float Get_Scale() const { return m_fScale; }
+	_float Get_Rotate()const { return m_fRotate; }
+
 	void Set_Size(_float fWidth, _float fHeight);
 	void Set_Size(const Vec2 &vSize);
 	void Move_Size(_float fWidth, _float fHeight);
@@ -52,6 +57,12 @@ public:
 	void Set_Position(const Vec3& vPosition);
 	void Set_Position(_float fX, _float fY, _float fZ);
 	void Move_Position(_float fX, _float fY, _float fZ);
+
+	void Set_Scale(const _float fScale);
+
+	void Set_Rotate(const _float fRad);
+	void Move_Rotate(const _float fRad);
+
 	_bool IsVisible() const { return m_isVisible; }
 	uint32_t Get_InteractState() const { return m_iInteractState; }
 	uint32_t& Get_InteractState_Ref() { return m_iInteractState; }
@@ -137,6 +148,9 @@ protected:
 	_float m_fHeight = {};
 	_float m_fAspect = {};
 	
+	_float m_fScale = { 1.f };
+	_float m_fRotate = { 0.f };
+
 	uint32_t m_iInteractState = {};
 
 public:

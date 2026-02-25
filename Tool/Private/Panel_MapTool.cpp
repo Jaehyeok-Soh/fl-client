@@ -3,13 +3,19 @@
 #include "GameInstance.h"
 #include "MapObject.h"
 #include "Camera.h"
-#include "SceneData.h"
+#include "LevelData.h"
 #include "CameraMan.h"
 
 CPanel_MapTool::CPanel_MapTool(const _char* pLabel, CLevel* pOwner, ID3D11Device* pDevice, ID3D11DeviceContext* pDeviceContext)
 	: CImGui_Panel(pLabel, pOwner, pDevice, pDeviceContext), m_szBuffer{}, m_isTexArraySelect{ false }, m_szTextureSplatingInfoData_SaveName{}, m_iSelectTextureSplatingInfoData{}
 	, m_vecTextureSplatingInfoDataName{}
+	, m_szLevelTypeName{}
 {
+	for (_uint i = 0; i < ENUM_TO_UINT(EClientLevelType::END); ++i)
+	{
+		string strLevelName = ClientleveltypeToString((EClientLevelType)i);
+		::strncpy_s(m_szLevelTypeName[i] , MAX_PATH , strLevelName.c_str() , MAX_PATH );
+	}
 }
 
 HRESULT CPanel_MapTool::Initialize()
@@ -123,7 +129,7 @@ HRESULT CPanel_MapTool::Render(CToolObject* pGo)
 
 	if (ImGui::CollapsingHeader(" Save Scene Data Setting "))
 	{
-		if (FAILED((Render_SaveSceneDataSetting())))
+		if (FAILED((Render_SaveLevelDataSetting())))
 		{
 			ImGui::TreePop();
 			return E_FAIL;
@@ -367,7 +373,7 @@ HRESULT CPanel_MapTool::Render_SplatingTextureSetting()
 
 					/* Red Channel */
 					ImGui::PushID("Red");
-					Render_Single_Channel_Setting("RED", ImVec4(0.f, 0.3f, 0.f, 1.f), CurrentData.iRGBA_Connected_Tile_Index[CHANNEL_R],CurrentData.fRGBA_Mix_Forces[CHANNEL_R],CurrentData.iUseFlags[CHANNEL_R],&isbOpenTileSelectPopup); // 멤버변수 등
+					Render_Single_Channel_Setting("RED", ImVec4(0.f, 0.3f, 0.f, 1.f), CurrentData.iRGBA_Connected_Tile_Index[CHANNEL_R],CurrentData.fRGBA_Mix_Forces[CHANNEL_R], CurrentData.fRGBA_Mix_Height_Forces[CHANNEL_R],CurrentData.iUseFlags[CHANNEL_R],&isbOpenTileSelectPopup); // 멤버변수 등
 					ImGui::PopID();
 
 
@@ -375,21 +381,21 @@ HRESULT CPanel_MapTool::Render_SplatingTextureSetting()
 
 					/* Green Channel */
 					ImGui::PushID("Green");
-					Render_Single_Channel_Setting("Green", ImVec4(0.f, 1.0f, 0.f, 1.f), CurrentData.iRGBA_Connected_Tile_Index[CHANNEL_G], CurrentData.fRGBA_Mix_Forces[CHANNEL_G], CurrentData.iUseFlags[CHANNEL_G], &isbOpenTileSelectPopup); // 멤버변수 등
+					Render_Single_Channel_Setting("Green", ImVec4(0.f, 1.0f, 0.f, 1.f), CurrentData.iRGBA_Connected_Tile_Index[CHANNEL_G], CurrentData.fRGBA_Mix_Forces[CHANNEL_G], CurrentData.fRGBA_Mix_Height_Forces[CHANNEL_G], CurrentData.iUseFlags[CHANNEL_G], &isbOpenTileSelectPopup); // 멤버변수 등
 					ImGui::PopID();
 
 					ImGui::SameLine();
 
 					/* Blue Channel */
 					ImGui::PushID("Blue");
-					Render_Single_Channel_Setting("Blue", ImVec4(0.f, 0.f, 1.0f, 1.f), CurrentData.iRGBA_Connected_Tile_Index[CHANNEL_B], CurrentData.fRGBA_Mix_Forces[CHANNEL_B], CurrentData.iUseFlags[CHANNEL_B], &isbOpenTileSelectPopup); // 멤버변수 등
+					Render_Single_Channel_Setting("Blue", ImVec4(0.f, 0.f, 1.0f, 1.f), CurrentData.iRGBA_Connected_Tile_Index[CHANNEL_B], CurrentData.fRGBA_Mix_Forces[CHANNEL_B], CurrentData.fRGBA_Mix_Height_Forces[CHANNEL_B],CurrentData.iUseFlags[CHANNEL_B], &isbOpenTileSelectPopup); // 멤버변수 등
 					ImGui::PopID();
 
 					ImGui::SameLine();
 
 					/* Alpha Channel */
 					ImGui::PushID("Alpha");
-					Render_Single_Channel_Setting("Alpha", ImVec4(1.f, 1.f, 1.f, 1.f), CurrentData.iRGBA_Connected_Tile_Index[CHANNEL_A], CurrentData.fRGBA_Mix_Forces[CHANNEL_A], CurrentData.iUseFlags[CHANNEL_A], &isbOpenTileSelectPopup); // 멤버변수 등
+					Render_Single_Channel_Setting("Alpha", ImVec4(1.f, 1.f, 1.f, 1.f), CurrentData.iRGBA_Connected_Tile_Index[CHANNEL_A], CurrentData.fRGBA_Mix_Forces[CHANNEL_A], CurrentData.fRGBA_Mix_Height_Forces[CHANNEL_A],CurrentData.iUseFlags[CHANNEL_A], &isbOpenTileSelectPopup); // 멤버변수 등
 					ImGui::PopID();
 
 					if (isbOpenTileSelectPopup)
@@ -426,7 +432,7 @@ HRESULT CPanel_MapTool::Render_SplatingTextureSetting()
 }
 
 
-HRESULT CPanel_MapTool::Render_Single_Channel_Setting(const char* szLabel, const ImVec4& vColor, OUT int& iConnectedIndex, OUT float& fForce, int& iFlag, OUT bool* pIsOpenPopup)
+HRESULT CPanel_MapTool::Render_Single_Channel_Setting(const char* szLabel, const ImVec4& vColor, OUT int& iConnectedIndex, OUT float& fForce, OUT float& fHeightForce, int& iFlag, OUT bool* pIsOpenPopup)
 {
 	ImGui::BeginGroup(); // 그룹 시작
 	{
@@ -452,16 +458,22 @@ HRESULT CPanel_MapTool::Render_Single_Channel_Setting(const char* szLabel, const
 		// 정보 표시 및 조작
 		ImGui::PushItemWidth(60); // 입력창 너비 고정
 
-		if (ImGui::DragFloat("##Force", &fForce, 0.1f, 0.1f, 100.0f, "T:%.1f"))
+		if (ImGui::DragFloat("Mix Force##Mix Force", &fForce, 0.1f, 0.1f, 100.0f, "T:%.1f"))
 			isFixInfo = true;
 		if (ImGui::IsItemHovered())
 		{
-			ImGui::SetTooltip("Tiling Force");
+			ImGui::SetTooltip("Mix Tiling Force");
+		}
+
+		if (ImGui::DragFloat("Mix Height Force##Mix Height Force", &fHeightForce, 0.0f, 0.01f, 100.0f , "T:%.1f"))
+			isFixInfo = true;
+		if (ImGui::IsItemHovered())
+		{
+			ImGui::SetTooltip("Mix Tiling Height Force");
 		}
 
 		ImGui::PopItemWidth();
 
-		// 사용 여부 체크박스 (int를 bool처럼)
 		bool bUse = (iFlag != 0);
 		if (ImGui::Checkbox("Use", &bUse))
 		{
@@ -1051,11 +1063,11 @@ HRESULT CPanel_MapTool::Render_PreViewInfo()
 	return S_OK;
 }
 
-HRESULT CPanel_MapTool::Render_SaveSceneDataSetting()
+HRESULT CPanel_MapTool::Render_SaveLevelDataSetting()
 {
 	ImGui::SeparatorText(" Save Scene Data Setting ");
 
-	if (m_pMapToolManager->m_pSceneData == nullptr) return E_FAIL;
+	if (m_pMapToolManager->m_pLevelData == nullptr) return E_FAIL;
 
 	ImGui::NewLine();
 
@@ -1074,7 +1086,7 @@ HRESULT CPanel_MapTool::Render_SaveSceneDataSetting()
 			if (ImGui::Selectable(m_vecTextureSplatingInfoDataName[i].c_str(), isSelected))
 			{
 				m_iSelectTextureSplatingInfoData = static_cast<_int>(i);
-				m_pMapToolManager->m_pSceneData->m_strTextureSplatingInfoName = m_vecTextureSplatingInfoDataName[i];
+				m_pMapToolManager->m_pLevelData->m_strTextureSplatingInfoName = m_vecTextureSplatingInfoDataName[i];
 			}
 			if (isSelected)
 				ImGui::SetItemDefaultFocus();
@@ -1082,15 +1094,39 @@ HRESULT CPanel_MapTool::Render_SaveSceneDataSetting()
 		ImGui::EndCombo();
 	}
 
-	ImGui::Text(" Save Texture Splating Info Name => [ %s ] ", m_pMapToolManager->m_pSceneData->m_strTextureSplatingInfoName.c_str());
+	ImGui::Text(" Save Texture Splating Info Name => [ %s ] ", m_pMapToolManager->m_pLevelData->m_strTextureSplatingInfoName.c_str());
 	ImGui::NewLine();
 	if (ImGui::Button(" Don't Use Texture Splating Info "))
-		m_pMapToolManager->m_pSceneData->m_strTextureSplatingInfoName = "None";
+		m_pMapToolManager->m_pLevelData->m_strTextureSplatingInfoName = "None";
 
 	ImGui::Separator();
 
 
-	m_pMapToolManager->m_pSceneData->Draw_ImGui();
+
+	ImGui::SeparatorText(" Level Type ");
+
+	m_strBuffer = ClientleveltypeToString(m_pMapToolManager->m_pLevelData->m_eClientLevelType);
+
+	if (ImGui::BeginCombo("##LevelType", m_strBuffer.c_str()))
+	{
+		for (size_t i = 0; i < ENUM_TO_UINT(EClientLevelType::END) ; ++i)
+		{
+			_bool isSelected = i == ENUM_TO_UINT(m_pMapToolManager->m_pLevelData->m_eClientLevelType);
+			if (ImGui::Selectable(m_szLevelTypeName[i], isSelected))
+			{
+				m_pMapToolManager->m_pLevelData->m_eClientLevelType = (EClientLevelType)i;
+			}
+			if (isSelected)
+				ImGui::SetItemDefaultFocus();
+		}
+		ImGui::EndCombo();
+	}
+
+	
+
+	ImGui::Separator();
+
+	m_pMapToolManager->m_pLevelData->Draw_ImGui();
 
 	ImGui::Separator();
 	return S_OK;

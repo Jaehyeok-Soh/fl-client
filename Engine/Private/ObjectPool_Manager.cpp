@@ -59,7 +59,7 @@ CGameObject* CObjectPool_Manager::Spawn(_uint iLevelIndex, const wstring& wstrPo
 	if (Is_OutOfRange(iLevelIndex))
 		return nullptr;
 
-	CObjectPool* pPool = Find_Pool(iLevelIndex, wstrPoolTag);
+ 	CObjectPool* pPool = Find_Pool(iLevelIndex, wstrPoolTag);
 	if (pPool == nullptr)
 		return nullptr;
 

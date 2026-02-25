@@ -78,23 +78,17 @@ HRESULT CUIMenu_Text::Render()
 {
 	if (!m_isVisible)
 		return S_OK;
-
-
-	if (FAILED(Super::Render()))
-		return E_FAIL;
-
 	if (FAILED(Bind_ShaderResources()))
 		return E_FAIL;
-
-	Get_Component<CShader>()->Apply();
-	Get_Component<CVIBuffer>()->Bind_Resource();
-	Get_Component<CVIBuffer>()->Render();
-
+	if (FAILED(Super::Render()))
+		return E_FAIL;
 	return S_OK;
 }
 
 HRESULT CUIMenu_Text::Ready_Components(MENU_TEXT_DESC* pDesc)
 {
+	if (FAILED(Super::Ready_Components(pDesc)))
+		return E_FAIL;
 	return S_OK;
 }
 
@@ -102,6 +96,8 @@ HRESULT CUIMenu_Text::Bind_ShaderResources()
 {
 	CShader* pShader = Get_Component<CShader>();
 	if (FAILED(Get_Component<CTransform>()->Bind_ShaderResource(pShader)))
+		return E_FAIL;
+	if (FAILED(Super::Bind_ShaderResources()))
 		return E_FAIL;
 	return S_OK;
 }

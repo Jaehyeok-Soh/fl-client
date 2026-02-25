@@ -45,9 +45,6 @@ HRESULT CUIText::Initialize(void* pArg)
 
 	if (FAILED(Super::Initialize(pArg)))
 		return E_FAIL;
-	if (FAILED(Ready_Components(pDesc)))
-		return E_FAIL;
-
 	m_vFontPos = Vec2{ m_fX, m_fY };
 	return S_OK;
 }
@@ -78,6 +75,13 @@ void CUIText::Update(const _float fTimeDelta)
 
 void CUIText::Update_Late(const _float fTimeDelta)
 {
+	Super::Update_Late(fTimeDelta);
+}
+
+void CUIText::Ready_Before_Render(const _float fTimeDelta)
+{
+	Super::Ready_Before_Render(fTimeDelta);
+
 	if (nullptr != m_pWorldUIComp)
 	{
 		m_vFontPos.x = m_fX;
@@ -90,36 +94,20 @@ void CUIText::Update_Late(const _float fTimeDelta)
 		m_vFontPos.y = m_vRenderPos.y;
 		m_fScaleOffset = 1.f;
 	}
-
-	Super::Update_Late(fTimeDelta);
-}
-
-void CUIText::Ready_Before_Render(const _float fTimeDelta)
-{
-	Super::Ready_Before_Render(fTimeDelta);
 }
 
 HRESULT CUIText::Render()
 {
-	if (!m_isVisible)
-		return S_OK;
-	
 	Sync_FontDesc();
-
 	if (FAILED(m_pGameInstance->Request_DrawFont(m_tFontDesc)))
 		return E_FAIL;
-		
-	if (FAILED(Super::Render()))
-		return E_FAIL;
-
-	if (FAILED(Bind_ShaderResources()))
-		return E_FAIL;
-
 	return S_OK;
 }
 
 HRESULT CUIText::Ready_Components(UI_TEXT_DESC* pDesc)
 {
+	if (FAILED(Super::Ready_Components(pDesc)))
+		return E_FAIL;
 	return S_OK;
 }
 
@@ -127,6 +115,8 @@ HRESULT CUIText::Bind_ShaderResources()
 {
 	CShader* pShader = Get_Component<CShader>();
 	if (FAILED(Get_Component<CTransform>()->Bind_ShaderResource(pShader)))
+		return E_FAIL;
+	if (FAILED(Super::Bind_ShaderResources()))
 		return E_FAIL;
 	return S_OK;
 }

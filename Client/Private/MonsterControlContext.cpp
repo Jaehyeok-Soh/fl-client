@@ -291,7 +291,7 @@ _bool CMonsterControlContext::IsPathBlocked()
 	return _bool();
 }
 
-void CMonsterControlContext::UpdateWalk(const _float& fTimeDelta)
+void CMonsterControlContext::UpdateWalk(const _float fTimeDelta)
 {
 	CTransform* pOwnerTransform = Get_Owner()->Get_Component<CTransform>();
 
@@ -302,7 +302,7 @@ void CMonsterControlContext::UpdateWalk(const _float& fTimeDelta)
 	m_vMoveDir = vOwnerLook;
 }
 
-void CMonsterControlContext::UpdateChase(const _float& fTimeDelta)
+void CMonsterControlContext::UpdateChase(const _float fTimeDelta)
 {
 	CTransform* pOwnerTransform = Get_Owner()->Get_Component<CTransform>();
 	CTransform* pTargetTransform = m_pTarget->Get_Component<CTransform>();
@@ -316,39 +316,49 @@ void CMonsterControlContext::UpdateChase(const _float& fTimeDelta)
 	m_vMoveDir = vToTarget;
 }
 
-void CMonsterControlContext::UpdateRun(const _float& fTimeDelta)
+void CMonsterControlContext::Update_8Dir_LocalAxisXZ(const _float fTimeDelta, _float fForward, _float fRight)
+{
+	CTransform* pOwnerTransform = Get_Owner()->Get_Component<CTransform>();
+	Vec3 vLook = pOwnerTransform->Get_Info(TRANSFORM_INFO_STATE::LOOK);
+	Vec3 vRight = pOwnerTransform->Get_Info(TRANSFORM_INFO_STATE::RIGHT);
+
+	Vec3 vDir = vLook * fForward + vRight * fRight;
+	return vDir.Normalize();
+}
+
+void CMonsterControlContext::UpdateRun(const _float fTimeDelta)
 {
 }
 
-void CMonsterControlContext::UpdateFly(const _float& fTimeDelta)
+void CMonsterControlContext::UpdateFly(const _float fTimeDelta)
 {
 }
 
-void CMonsterControlContext::UpdateFall(const _float& fTimeDelta)
+void CMonsterControlContext::UpdateFall(const _float fTimeDelta)
 {
 }
 
-void CMonsterControlContext::UpdateJump(const _float& fTimeDelta)
+void CMonsterControlContext::UpdateJump(const _float fTimeDelta)
 {
 }
 
-void CMonsterControlContext::UpdateDash(const _float& fTimeDelta)
+void CMonsterControlContext::UpdateDash(const _float fTimeDelta)
 {
 }
 
-void CMonsterControlContext::UpdateCircleMove(const _float& fTimeDelta)
+void CMonsterControlContext::UpdateCircleMove(const _float fTimeDelta)
 {
 }
 
-void CMonsterControlContext::UpdateSideWalk(const _float& fTimeDelta)
+void CMonsterControlContext::UpdateSideWalk(const _float fTimeDelta)
 {
 }
 
-void CMonsterControlContext::UpdateTurn90(const _float& fTimeDelta)
+void CMonsterControlContext::UpdateTurn90(const _float fTimeDelta)
 {
 }
 
-void CMonsterControlContext::UpdateTrun180(const _float& fTimeDelta)
+void CMonsterControlContext::UpdateTrun180(const _float fTimeDelta)
 {
 }
 

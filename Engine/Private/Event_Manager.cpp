@@ -190,7 +190,6 @@ void CEvent_Manager::Flush_Pending(EventType eType)
 		break;
 	}
 }
-
 HRESULT CEvent_Manager::Spawn_GameObject(SpawnEventDesc& spawnDesc)
 {
 	if (!spawnDesc.pClone)
@@ -205,6 +204,9 @@ HRESULT CEvent_Manager::Spawn_GameObject(SpawnEventDesc& spawnDesc)
 		MSG_BOX("CEvent_Manager::Spawn_GameObject, add layer failed");
 		return E_FAIL;
 	}
+
+	if (spawnDesc.callback)
+		spawnDesc.callback(pResult);
 
 	return S_OK;
 }

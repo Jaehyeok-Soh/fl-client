@@ -165,7 +165,8 @@
     <ClCompile Include="..\Private\ActionSkill.cpp" />
     <ClCompile Include="..\Private\ActionState.cpp" />
     <ClCompile Include="..\Private\ActiveAttackOverlap.cpp" />
-    <ClCompile Include="..\private\AnimEffectHandler.cpp" />
+    <ClCompile Include="..\Private\EffectBase.cpp" />
+    <ClCompile Include="..\private\EffectHandler.cpp" />
     <ClCompile Include="..\Private\AsTypes.cpp" />
     <ClCompile Include="..\Private\Base.cpp">
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Use</PrecompiledHeader>
@@ -189,6 +190,7 @@
     <ClCompile Include="..\Private\DataStruct_AttackOverlap.cpp" />
     <ClCompile Include="..\private\DataStruct_AttackPreset.cpp" />
     <ClCompile Include="..\Private\DataStruct_EffectEvent.cpp" />
+    <ClCompile Include="..\Private\EffectPartBase.cpp" />
     <ClCompile Include="..\Private\Effect_Manager.cpp" />
     <ClCompile Include="..\Private\DataStruct_MonsterState.cpp" />
     <ClCompile Include="..\private\FxEffectAsset.cpp" />
@@ -328,7 +330,8 @@
     <ClInclude Include="..\Public\ActionSkill.h" />
     <ClInclude Include="..\Public\ActionState.h" />
     <ClInclude Include="..\Public\ActiveAttackOverlap.h" />
-    <ClInclude Include="..\Public\AnimEffectHandler.h" />
+    <ClInclude Include="..\public\EffectBase.h" />
+    <ClInclude Include="..\Public\EffectHandler.h" />
     <ClInclude Include="..\Public\Anim_Event_AttackOverlap.h" />
     <ClInclude Include="..\Public\Anim_Event_Base.h" />
     <ClInclude Include="..\Public\Anim_Event_Hitbox.h" />
@@ -354,6 +357,7 @@
     <ClInclude Include="..\Public\DataStruct_AttackOverlap.h" />
     <ClInclude Include="..\public\DataStruct_AttackPreset.h" />
     <ClInclude Include="..\Public\DataStruct_EffectEvent.h" />
+    <ClInclude Include="..\Public\EffectPartBase.h" />
     <ClInclude Include="..\Public\Effect_Manager.h" />
     <ClInclude Include="..\Public\DataStruct_MonsterState.h" />
     <ClInclude Include="..\Public\DTO_MonsterState.h" />

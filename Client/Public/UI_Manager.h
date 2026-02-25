@@ -10,6 +10,7 @@ NS_BEGIN(Client)
 class CCanvas;
 class CGenericUI;
 class CUITrigger;
+class CUIPrefab;
 class CUI_Manager final : public CBase
 {
 	DECLARE_SINGLETON(CUI_Manager)
@@ -18,8 +19,8 @@ private:
 	virtual ~CUI_Manager() = default;
 public:
 	/* Builder에서 만들면서 넣어줄거임 */
-	HRESULT Add_VecCanvasCache(uint32_t iLevelIndex, CCanvas* pCache) { if (iLevelIndex >= g_iLevelType_Count)return E_FAIL; m_vecCanvasCache[iLevelIndex].push_back(pCache); return S_OK; }
-	HRESULT Add_VecGenericUICache(uint32_t iLevelIndex, CGenericUI* pCache) { if (iLevelIndex >= g_iLevelType_Count)return E_FAIL; m_vecGenericUICache[iLevelIndex].push_back(pCache); return S_OK; }
+	HRESULT Add_VecCanvasCache(uint32_t iLevelIndex, CCanvas* pCache);
+	HRESULT Add_VecGenericUICache(uint32_t iLevelIndex, CGenericUI* pCache);
 
 	/* Builder에 MapCache를 넘길거임 (누적 Merge) */
 	HRESULT Merge_MapCanvasCache(uint32_t iLevelIndex, unordered_map<_string, CCanvas*>&& Cache);
@@ -44,12 +45,13 @@ public:
 	HRESULT Bind_Trigger(_uint iLevelID);
 	void Clear_TriggerUI();
 
-	void Regist_Prefab(EUIPrefabType ePrefab);
-	void Request_Add_Prefab(EUIPrefabType ePrefab);
+	HRESULT Regist_Prefab(_uint iLevelIndex, EUIPrefabType ePrefab, const _wstring& wstrPrototype, const _wstring& wstrPooltag,const _uint iSeedLevel, void* pArg);
+	void Request_Add_Prefab(_uint iLevelIndex, EUIPrefabType ePrefab);
+
+	void Request_Clear();
 
 private:
 	void Sort_UI(vector<CGenericUI*>& Target);
-
 public:
 	// UI 전달 변수 Getter Setter
 	const _float* Get_LoadingRatio() const { return m_pLoadingRatio; }
@@ -66,8 +68,11 @@ private:
 	array<vector<CGenericUI*>, g_iLevelType_Count> m_vecGenericUICache;
 	vector<CGenericUI*> m_vecSortUI;
 	_bool m_isSort = { FALSE };
+	_bool m_isClear = {false};
+
 	vector <CUITrigger*> m_vecTriggerUIs;
 
+	array<vector<_wstring>, ENUM_TO_UINT(EUIPrefabType::END)> m_vecPrefabs;
 
 private:
 	// UI 전달 변수 

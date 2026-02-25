@@ -5,6 +5,9 @@
 
 NS_BEGIN(Engine)
 
+class CGameObject;
+class CEffectHandler;
+
 class CEffect_Manager :
     public CBase
 {
@@ -17,7 +20,8 @@ private:
 public:
 	void Update(_float fTimeDelta);
 	// 컴토넌트에서 호출하게 될 함수
-	void Spawn_Effect(const std::string& strTag, const Matrix& matWorld, _float fDuration, _bool bIsLocal, void* pTargetBone = nullptr);
+	void Spawn_PoolEffect(CEffectHandler* handler, const std::string& UniqueEffectName, const std::string& strTag, const Matrix& matWorld, _float fDuration, _uint bIsLocal, _uint iFlag, const Matrix* pTargetBone = nullptr, const Matrix* pTransMatrix = nullptr);
+	void Spawn_PoolEffect(const std::string& strTag, const Matrix& matWorld, _float fDuration, _uint bIsLocal, _uint iFlag, const Matrix* pTargetBone = nullptr, const Matrix* pTransMatrix = nullptr);
 private:
 	class CGameInstance* m_pGameInstance = { nullptr };
 public:

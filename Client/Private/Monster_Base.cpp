@@ -196,6 +196,7 @@ HRESULT CMonster_Base::Ready_PartObjects(void* pArg)
 		bodyDesc.pMatParent = &Get_Component<CTransform>()->Get_WorldMatrix();
 		bodyDesc.iLevelIndex = pDesc->iLevelIndex;
 		bodyDesc.wstrModelPrototypeTag = pDesc->wstrBodyModelTag;
+		bodyDesc.spanBoneNames = pDesc->spanBoneNames;
 		if (FAILED(Add_Part(Part::BODY, ENUM_TO_UINT(ELevelType::LOGO), pDesc->wstrPartBodyPrototypeTag, &bodyDesc)))
 			return E_FAIL;
 	}
@@ -209,7 +210,6 @@ HRESULT CMonster_Base::Ready_Components(void* pArgs)
 
 	{
 		CMonsterActionState::MONSTERACTIONSTATE_DESC desc = {};
-		desc.iStateCount = ENUM_TO_UINT(State::END);
 		desc.pOwnerModel = Get_Part<CMonster_Body_Base>(ENUM_TO_UINT(Part::BODY))->Get_Component<CModel>();
 		desc.pOwnerAnimECS = static_cast<CComputeShader*>(Get_Part<CMonster_Body_Base>(ENUM_TO_UINT(Part::BODY))->Get_Script_Component(TEXT("ComputeShader_AnimE")));
 		desc.wstrMonsterStateTag = pDesc->wstrMonsterStateTag;

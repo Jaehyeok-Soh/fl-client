@@ -352,9 +352,13 @@ HRESULT CPanel_ModelConverter::Render_FunctionWindow()
 			}
 
 			if (isExport)
+			{
 				MSG_BOX("This Model is Complete Export Fbx File , Work Next File");
+			}
 			else
+			{
 				MSG_BOX("This Model is None Export");
+			}
 		}
 		
 		if (ImGui::Button(" End Work "))

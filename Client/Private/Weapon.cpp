@@ -219,23 +219,22 @@ HRESULT CWeapon::Ready_Components(WEAPON_DESC* pDesc)
 
 	if (pDesc->eModel == Weapon_ModelType::STATIC)
 	{
-		if (FAILED(Add_Component<CShader>(0/*static*/, L"Prototype_Component_Shader_VtxMesh", pDesc)))
+		if (FAILED(Add_Component<CShader>(0/*static*/, L"Prototype_Component_Shader_VtxMesh", nullptr)))
 			return E_FAIL;
 	}
 	else
 	{
-		if (FAILED(Add_Component<CShader>(0/*static*/, L"Prototype_Component_Shader_VtxAnimMesh", pDesc)))
+		if (FAILED(Add_Component<CShader>(0/*static*/, L"Prototype_Component_Shader_VtxAnimMesh", nullptr)))
 			return E_FAIL;
 	}
 
 	if (m_bColorMapping = pDesc->bRGBShader)
 	{
-		Get_Component<CShader>()->Set_Pass(4);
+		Get_Component<CShader>()->Set_Pass(ENUM_TO_UINT(EMapObjectShaderPass::RGBMapping));
 		m_tColorDesc.vColorR = pDesc->vColorR;
 		m_tColorDesc.vColorG = pDesc->vColorG;
 		m_tColorDesc.vColorB = pDesc->vColorB;
 	}
-
 	return S_OK;
 }
 
@@ -265,7 +264,7 @@ HRESULT CWeapon::Ready_ComputeShaders()
 		ShaderDesc.OutPut_StructBuffer.iElementSize = sizeof(CS_OUT_BONE);
 		ShaderDesc.OutPut_StructBuffer.iNumElements = iBoneNums;
 
-		if (FAILED(Add_Script_Component(L"ComputeShader_BoneMesh", L"Prototype_Component_Shader_BoneMesh", &ShaderDesc)))
+		if (FAILED(Add_Script_Component(L"ComputeShader_BoneMesh", L"Prototype_Component_Shader_BoneMesh", &ShaderDesc, CAST_VOID_PP(&m_pBoneMeshCS))))
 			return E_FAIL;
 	}
 
@@ -285,7 +284,7 @@ HRESULT CWeapon::Ready_ComputeShaders()
 		ShaderDesc.OutPut_StructBuffer.iElementSize = sizeof(CS_OUT_BONE);
 		ShaderDesc.OutPut_StructBuffer.iNumElements = iBoneNums;
 
-		if (FAILED(Add_Script_Component(L"ComputeShader_BoneCombine", L"Prototype_Component_Shader_BondCombine", &ShaderDesc)))
+		if (FAILED(Add_Script_Component(L"ComputeShader_BoneCombine", L"Prototype_Component_Shader_BondCombine", &ShaderDesc, CAST_VOID_PP(&m_pBoneCombineCS))))
 			return E_FAIL;
 	}
 
@@ -306,7 +305,7 @@ HRESULT CWeapon::Ready_ComputeShaders()
 		ShaderDesc.OutPut_StructBuffer.iElementSize = sizeof(CS_SRT);
 		ShaderDesc.OutPut_StructBuffer.iNumElements = iBoneNums;
 
-		if (FAILED(Add_Script_Component(L"ComputeShader_AnimE", L"Prototype_Component_Shader_AnimEv", &ShaderDesc)))
+		if (FAILED(Add_Script_Component(L"ComputeShader_AnimE", L"Prototype_Component_Shader_AnimEv", &ShaderDesc, CAST_VOID_PP(&m_pAnimECS))))
 			return E_FAIL;
 	}
 
@@ -331,11 +330,7 @@ HRESULT CWeapon::Ready_ComputeShaders()
 			return E_FAIL;
 	}
 
-	CComputeShader* pBoneMeshCS = static_cast<CComputeShader*>(Get_Script_Component(TEXT("ComputeShader_BoneMesh")));
-	CComputeShader* pBonCombineCS = static_cast<CComputeShader*>(Get_Script_Component(TEXT("ComputeShader_BoneCombine")));
-	CComputeShader* pAnimECS = static_cast<CComputeShader*>(Get_Script_Component(TEXT("ComputeShader_AnimE")));
-
-	if (FAILED(Get_Component<CModel>()->Ready_ComputeShaders(pBoneMeshCS, pBonCombineCS, pAnimECS)))
+	if (FAILED(Get_Component<CModel>()->Ready_ComputeShaders(m_pBoneMeshCS, m_pBoneCombineCS, m_pAnimECS)))
 		return E_FAIL;
 
 	return S_OK;
@@ -370,15 +365,13 @@ HRESULT CWeapon::Render_AnimWeap()
 	CShader*			pShader			= Get_Component<CShader>();
 	CModel*				pModel			= Get_Component<CModel>();
 	_uint				iMeshCount		= pModel->Get_MeshCount();
-	CComputeShader*		pBoneMeshCS		= static_cast<CComputeShader*>(Get_Script_Component(TEXT("ComputeShader_BoneMesh")));
-	CComputeShader*		pBoneCombineCS	= static_cast<CComputeShader*>(Get_Script_Component(TEXT("ComputeShader_BoneCombine")));
 
 	pShader->Bind_ObjectInfoData(m_tObjectInfoDesc);
 	pShader->Bind_TransformData(m_matCombinedWorld);
 	for (_uint i = 0; i < iMeshCount; ++i)
 	{
 		pModel->Bind_Material(pShader, i);
-		pModel->Bind_Bones(pShader, i, pBoneMeshCS, pBoneCombineCS);
+		pModel->Bind_Bones(pShader, i, m_pBoneMeshCS, m_pBoneCombineCS);
 		pShader->Apply();
 		pModel->Render(i);
 	}
@@ -390,17 +383,14 @@ void CWeapon::Play_Anim(const _float fTimeDelta)
 {
 	if (m_eState != State::NONE)
 	{
-		CComputeShader* pBonCS = static_cast<CComputeShader*>(Get_Script_Component(TEXT("ComputeShader_BoneCombine")));
-		CComputeShader* pAnimECS = static_cast<CComputeShader*>(Get_Script_Component(TEXT("ComputeShader_AnimE")));
-
 		switch (m_eAnimState)
 		{
 		case AnimState::PLAY:
-			Get_Component<CModel>()->Update_Animation(pBonCS, pAnimECS, fTimeDelta);
+			Get_Component<CModel>()->Update_Animation(m_pBoneCombineCS, m_pAnimECS, fTimeDelta);
 			break;
 
 		case AnimState::STOP:
-			Get_Component<CModel>()->Update_Animation(pBonCS, pAnimECS, 0.f);
+			Get_Component<CModel>()->Update_Animation(m_pBoneCombineCS, m_pAnimECS, 0.f);
 			break;
 		}
 	}

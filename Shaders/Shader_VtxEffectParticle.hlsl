@@ -22,8 +22,9 @@ texture2D g_EffectTexture;
 #define RIGHT 1 << 2 // LEFT -> RIGHT 이펙트 방향
 #define DOWN 1 << 3     // DOWN -> UP
 
+// 진행 방향으로 y를 돌려버리는 플래그
+#define DIRBILLBOARD 1 << 4
     // Use Sprite
-#define DIRBILLBOARD 1 << 4 
 #define SPRITE 1<< 5    // 스프라이트를 사용하는가?
 
     // Use Scroll (텍스처별)
@@ -32,6 +33,7 @@ texture2D g_EffectTexture;
 #define SCROLL_MASKING 1 << 8
 #define SCROLL_GRADATION 1 << 9
 #define SCROLL_DISSOLVE 1 << 10
+#define SCROLL_GLOW 1 << 11
         
 // SamplerState Flag
 #define LINEARSAMPLER 1 << 0
@@ -57,40 +59,41 @@ texture2D g_EffectTexture;
 
 struct EffectDesc
 {
-    // Texture 바인딩 Flag들
+    // Row 0
     uint g_TextureFlags;
-    // 기타 Render 설정값들
     uint g_RenderFlags;
-     // 특정 텍스처마다 먹일 SamplerState
     uint g_StateFlags;
-    // discard 먹일 값 바인딩
     float g_DiscardValue;
-    
-    // 텍스처 산술 연산자 flag 
+
+    // Row 1
     uint g_OperatorFlags;
     uint g_RotationFlags;
     float2 g_UVOffset;
-    
-    // sprite일 때
-    uint g_SpriteCol; // 가로 프레임 수
-    uint g_SpriteRow; // 세로 프레임 수
-    uint g_CurSpriteIndex; // 현재 재생 중인 인덱스
+
+    // Row 2
+    uint g_SpriteCol;
+    uint g_SpriteRow;
+    uint g_CurSpriteIndex;
     float g_AppearRatio;
-    
+
+    // Row 3
     float2 g_ScrollOffset;
     float2 g_DistortionScale;
-    
-    float4 g_EffectColor;
-    
-    // 각 텍스처별 Scroll Weight (0 ~ 1)
+
+    // Row 4
+    float4 g_EffectColor; // 여기서부터는 위치가 절대 안 변함
+
+    // Row 5
     float2 DiffuseTexture_ScrollWeight;
     float2 NoiseTexture_ScrollWeight;
-    
+
+    // Row 6
     float2 MaskingTexture_ScrollWeight;
     float2 GradationTexture_ScrollWeight;
-    
+
+    // Row 7
     float2 DissolveTexture_ScrollWeight;
-    float2 Padding1;
+    float2 GlowTexture_ScrollWeight;
 };
 
 
@@ -403,54 +406,41 @@ void GS_Particle(point VS_OUT_POS_GS_PARTICLE In[1], inout TriangleStream<GS_OUT
     GS_OUT_POS_PARTICLE Out[4];
     matrix matVP = mul(V, P);
 
-    float3 vPos[4];
-    float2 vUV[4] = { float2(0, 0), float2(1, 0), float2(0, 1), float2(1, 1) };
+    float3 vRight, vUp;
 
-    if (HasDirBillboard())
+    // 1. 회전축(방향) 결정
+    if (HasBillboard())
     {
-        matrix matInst = INSTANCE_OUTPUT[In[0].vInstID].matTransform;
-
-        float fHalfX = In[0].vPSize.x * 0.5f;
-        float fHalfZ = In[0].vPSize.z * 0.5f; // Z스케일을 길이로 사용
-
-        float3 vLocalPos[4];
-        vLocalPos[0] = float3(-fHalfX, 0.f, fHalfZ); // 좌상
-        vLocalPos[1] = float3(fHalfX, 0.f, fHalfZ); // 우상
-        vLocalPos[2] = float3(-fHalfX, 0.f, -fHalfZ); // 좌하
-        vLocalPos[3] = float3(fHalfX, 0.f, -fHalfZ); // 우하
-
-        for (int i = 0; i < 4; ++i)
-        {
-            float4 vWorldPos = mul(float4(vLocalPos[i], 1.f), matInst);
-            vWorldPos = mul(vWorldPos, W);
-            vPos[i] = vWorldPos.xyz;
-        }
-    }
-    else if (HasBillboard())
-    {
-        // 일반 빌보드 로직 (기존 방식 유지)
+        // 일반 빌보드: 카메라를 바라보는 축 계산
         float3 vLook = normalize(CameraPosition() - In[0].vPosition.xyz);
-        float3 vRight = normalize(cross(float3(0.f, 1.f, 0.f), vLook)) * In[0].vPSize.x;
-        float3 vUp = normalize(cross(vLook, vRight)) * In[0].vPSize.y;
-
-        vPos[0] = In[0].vPosition.xyz - vRight + vUp; // 좌상
-        vPos[1] = In[0].vPosition.xyz + vRight + vUp; // 우상
-        vPos[2] = In[0].vPosition.xyz - vRight - vUp; // 좌하
-        vPos[3] = In[0].vPosition.xyz + vRight - vUp; // 우하
+        vRight = normalize(cross(float3(0.f, 1.f, 0.f), vLook));
+        vUp = normalize(cross(vLook, vRight));
     }
     else
     {
-        // 빌보드 없을 때 기본 평면
-        float3 vRight = float3(1.f, 0.f, 0.f) * In[0].vPSize.x;
-        float3 vUp = float3(0.f, 1.f, 0.f) * In[0].vPSize.y;
-
-        vPos[0] = In[0].vPosition.xyz - vRight + vUp;
-        vPos[1] = In[0].vPosition.xyz + vRight + vUp;
-        vPos[2] = In[0].vPosition.xyz - vRight - vUp;
-        vPos[3] = In[0].vPosition.xyz + vRight - vUp;
+        // 회전 반영: 인스턴스 행렬에서 직접 X, Y축 추출 (W는 전역 월드행렬이라 가정)
+        matrix matInst = INSTANCE_OUTPUT[In[0].vInstID].matTransform;
+        matrix matWorld = mul(matInst, W);
+        
+        vRight = normalize(matWorld[0].xyz);
+        vUp = normalize(matWorld[1].xyz);
     }
 
-    // 4. 최종 변환 및 출력
+    // 2. 크기 적용 (기존 코드처럼 반경으로 계산하려면 0.5f 사용, 아니면 그대로 사용)
+    // 기존 코드에서 사각형이 잘 나왔던 크기 스케일을 그대로 유지하세요.
+    float3 vScaledRight = vRight * In[0].vPSize.x * 0.5f;
+    float3 vScaledUp = vUp * In[0].vPSize.y * 0.5f;
+
+    // 3. 정점 위치 계산 (기존에 잘 나오던 순서: 좌상-우상-좌하-우하)
+    float3 vPos[4];
+    vPos[0] = In[0].vPosition.xyz - vScaledRight + vScaledUp; // 좌상
+    vPos[1] = In[0].vPosition.xyz + vScaledRight + vScaledUp; // 우상
+    vPos[2] = In[0].vPosition.xyz - vScaledRight - vScaledUp; // 좌하
+    vPos[3] = In[0].vPosition.xyz + vScaledRight - vScaledUp; // 우하
+
+    // 4. UV 설정 (기존에 잘 나오던 순서 그대로)
+    float2 vUV[4] = { float2(0, 0), float2(1, 0), float2(0, 1), float2(1, 1) };
+
     [unroll]
     for (int i = 0; i < 4; ++i)
     {
@@ -465,6 +455,8 @@ void GS_Particle(point VS_OUT_POS_GS_PARTICLE In[1], inout TriangleStream<GS_OUT
 float4 PS_Particle(GS_OUT_POS_PARTICLE In) : SV_TARGET0
 {
     // 클라에서 넘겨준 색상 그대로
+    if (In.vLifeTime.x < 0.0f)
+        discard;
     
     vector color = g_Effect.g_EffectColor;
 

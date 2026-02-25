@@ -3,7 +3,7 @@
 #include "Animation_Defines.h"
 #include "Anim_Event_Info.h"
 #include "DataStruct_EffectEvent.h"
-#include "AnimEffectHandler.h"
+#include "EffectHandler.h"
 
 NS_BEGIN(Engine)
 class CGameInstance;
@@ -27,13 +27,13 @@ public:
     void Render();
 
     // 이펙트 핸들러 세팅
-    void SetEFfectEvent(CAnimEffectHandler* pEffectHandler, CAnimObj* pOwner);
+    void SetEFfectEvent(CEffectHandler* pEffectHandler, CAnimObj* pOwner);
     void SetOwner(CAnimObj* pOwner);
 
     unordered_map<_uint, vector<DTO::EFFECTEVENT>>& GetEvents();
-    CAnimEffectHandler* GetHandler() { return m_pEffectEvent; }
+    CEffectHandler* GetHandler() { return m_pEffectEvent; }
 
-    void SetHandler(CAnimEffectHandler* pHandler) { m_pEffectEvent = pHandler; }
+    void SetHandler(CEffectHandler* pHandler) { m_pEffectEvent = pHandler; }
 
     // 툴에서 수정된 이펙트 데이터를 컴포넌트에 동기화
     void Modify_EFfectEvent(vector<DTO::EFFECTEVENT> events);
@@ -46,7 +46,7 @@ private:
 
 private:
     // 툴 매니저가 관리하는 이펙트 핸들러 컴포넌트
-    CAnimEffectHandler* m_pEffectEvent = { nullptr };
+    CEffectHandler* m_pEffectEvent = { nullptr };
 
 public:
     static CEvent_Effect_Module* Create(ID3D11Device* pDevice, ID3D11DeviceContext* pDeviceContext);

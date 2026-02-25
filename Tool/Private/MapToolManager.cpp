@@ -10,7 +10,7 @@
 #include "GameInstance.h"
 #include "Texture.h"
 #include "Shader.h"
-#include "SceneData.h"
+#include "LevelData.h"
 
 IMPLEMENT_SINGLETON(CMapToolManager)
 
@@ -25,20 +25,47 @@ CMapToolManager::CMapToolManager()
 	, m_pDefaultBlackSRV				{nullptr}
 	, m_pDefaultWhiteSRV				{nullptr}
 	, m_mapTextureSplatingInfoDatas		{}
-	, m_pSceneData						{nullptr}
+	, m_pLevelData						{nullptr}
 {
 	Safe_AddRef(m_pGameInstance);
 	m_arrayMapObjectCloneFactory.fill(nullptr);
 }
 
+EClientMakePath CMapToolManager::Get_ClientMakePath_ByFilePath(const wstring& wstrFilePullPath)
+{
+	if (wstrFilePullPath.empty())
+		return m_eMakeMapObjectClientMakePath;
+
+	if (wstrFilePullPath.find(L"Bush") != std::wstring::npos)
+		return EClientMakePath::Bush;
+	if (wstrFilePullPath.find(L"Grass") != std::wstring::npos)
+		return EClientMakePath::Grass;
+	else if (wstrFilePullPath.find(L"Moss") != std::wstring::npos)
+		return EClientMakePath::Moss;
+	else if (wstrFilePullPath.find(L"Tree") != std::wstring::npos)
+		return EClientMakePath::Tree;
+	else if (wstrFilePullPath.find(L"Vine") != std::wstring::npos)
+		return EClientMakePath::Vine;
+	else if (wstrFilePullPath.find(L"Rock") != std::wstring::npos)
+		return EClientMakePath::Rock;
+	else if (wstrFilePullPath.find(L"Water") != std::wstring::npos)
+		return EClientMakePath::Water;
+	else if (wstrFilePullPath.find(L"Land") != std::wstring::npos)
+		return EClientMakePath::LandScape;
+
+	return m_eMakeMapObjectClientMakePath;
+}
+
 HRESULT CMapToolManager::Initialize(ID3D11Device* pDevice, ID3D11DeviceContext* pContext)
 {
-	m_pDevice  = pDevice;
-	m_pContext = pContext;
+	if (!m_pDevice || !pContext)
+	{
+		m_pDevice = pDevice;
+		m_pContext = pContext;
 
-	Safe_AddRef(m_pDevice);
-	Safe_AddRef(m_pContext);
-
+		Safe_AddRef(m_pDevice);
+		Safe_AddRef(m_pContext);
+	}
 
 	m_fMouseWheelSpeed = 0.001f;
 	m_fMouseRange = 1.f;
@@ -222,13 +249,23 @@ HRESULT CMapToolManager::Load_TextureSplatingInfoData()
 	
 	if (ifs.is_open() == false) return E_FAIL;
 
-	if (ifs.peek() == std::ifstream::traits_type::eof())
-	{
-		return S_OK; // 텅 비어있으니 로드할 것도 없다! 안전하게 리턴.
-	}
+	//if (ifs.peek() == std::ifstream::traits_type::eof())
+	//{
+	//	return S_OK; // 텅 비어있으니 로드할 것도 없다! 안전하게 리턴.
+	//}
 
 	nlohmann::json LoadJson{};
-	ifs >> LoadJson;
+	try
+	{
+		ifs >> LoadJson;
+	}
+	catch (nlohmann::json::parse_error& e)
+	{
+		// JSON 문법이 틀렸거나 인코딩 문제일 때
+		OutputDebugStringA(e.what());
+		OutputDebugStringA("\nJSON 파싱 에러 발생!\n");
+		return E_FAIL;
+	}
 
 
 
@@ -343,22 +380,35 @@ HRESULT CMapToolManager::UnRegister_MapTexture()
 
 HRESULT CMapToolManager::Register_MapObjectCloneFactory()
 {
-	m_funcMapObjectCloneFactory =
-		[=](void* pArg)->CGameObject* { return m_pGameInstance->Add_GameObject(ENUM_TO_UINT(ELevelType::MAP), L"Prototype_GameObject_MapObject",
-			ENUM_TO_UINT(ELevelType::MAP), g_wszMapObjectLayer, pArg); };
+	// 거 이펙트에서 좀 꽁쳐가겠습니다.
+		// 어차피 무조건 else 걸릴겁니다. 
+		// Load 단계에서는 어차피 Loader라서 0이거든
+	if (m_pGameInstance->Get_CurrentLevelIndex() == ENUM_TO_UINT(ELevelType::EFFECT))
+	{
+		m_funcMapObjectCloneFactory =
+			[=](void* pArg)->CGameObject* { return m_pGameInstance->Add_GameObject(ENUM_TO_UINT(ELevelType::EFFECT), L"Prototype_GameObject_MapObject",
+				ENUM_TO_UINT(ELevelType::EFFECT), g_wszMapObjectLayer, pArg); };
+	}
+
+	else
+	{
+		m_funcMapObjectCloneFactory =
+			[=](void* pArg)->CGameObject* { return m_pGameInstance->Add_GameObject(ENUM_TO_UINT(ELevelType::MAP), L"Prototype_GameObject_MapObject",
+				ENUM_TO_UINT(ELevelType::MAP), g_wszMapObjectLayer, pArg); };
+	}
 
 	return S_OK;
 }
 
-HRESULT CMapToolManager::Ready_SceneData()
+HRESULT CMapToolManager::Ready_LevelData()
 {
-	m_pSceneData = CSceneData::Create(EToolObjectType::MAPOBJECT, m_pDevice, m_pContext);
-	if (m_pSceneData == nullptr) return E_FAIL;
+	m_pLevelData= CLevelData::Create(EToolObjectType::MAPOBJECT, m_pDevice, m_pContext);
+	if (m_pLevelData == nullptr) return E_FAIL;
 
 	return S_OK;
 }
 
-HRESULT CMapToolManager::Apply_SceneData(const DTO::TSceneData* tData)
+HRESULT CMapToolManager::Apply_LevelData(const DTO::TLevelData* tData)
 {
 	if (tData == nullptr) return E_FAIL;
 
@@ -367,14 +417,18 @@ HRESULT CMapToolManager::Apply_SceneData(const DTO::TSceneData* tData)
 		return E_FAIL;
 
 	/* None => [Don't Use Texture Splating Info] */
-	m_pSceneData->m_strTextureSplatingInfoName = tData->strTextureSplatingInfoName;
+	m_pLevelData->m_strTextureSplatingInfoName	= tData->strTextureSplatingInfoName;
+
+	/* Level Type */
+	m_pLevelData->m_eClientLevelType			= StringToClientleveltype(tData->strLevelTypeName);
+
 
 	return S_OK;
 }
 
 HRESULT CMapToolManager::Release_SceneData()
 {
-	Safe_Release(m_pSceneData);
+	Safe_Release(m_pLevelData);
 
 	return S_OK;
 }
@@ -844,9 +898,9 @@ const Vec3& CMapToolManager::Get_MousePickingPos() const
 
 HRESULT CMapToolManager::Export_SaveSceneData(DTO::ECategory eCategory, CDataDocumentBase* pDocument)
 {
-	if (m_pSceneData == nullptr) return E_FAIL;
+	if (m_pLevelData == nullptr) return E_FAIL;
 
-	m_pSceneData->Export_Data(eCategory , pDocument);
+	m_pLevelData->Export_Data(eCategory , pDocument);
 
 	return S_OK;
 }

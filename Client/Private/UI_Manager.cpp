@@ -16,6 +16,22 @@ CUI_Manager::CUI_Manager()
 	Safe_AddRef(m_pGameInstance);
 }
 
+HRESULT CUI_Manager::Add_VecCanvasCache(uint32_t iLevelIndex, CCanvas* pCache)
+{
+	if (iLevelIndex >= g_iLevelType_Count)
+		return E_FAIL; 
+	m_vecCanvasCache[iLevelIndex].push_back(pCache); 
+	return S_OK;
+}
+
+HRESULT CUI_Manager::Add_VecGenericUICache(uint32_t iLevelIndex, CGenericUI* pCache)
+{
+	if (iLevelIndex >= g_iLevelType_Count)
+		return E_FAIL; 
+	m_vecGenericUICache[iLevelIndex].push_back(pCache); 
+	return S_OK;
+}
+
 HRESULT CUI_Manager::Merge_MapCanvasCache(uint32_t iLevelIndex, unordered_map<_string, CCanvas*>&& Cache)
 {
 	if (iLevelIndex >= g_iLevelType_Count)
@@ -89,6 +105,14 @@ vector<CGenericUI*>* CUI_Manager::Get_Level_All_GenericUI(uint32_t iLevelIndex)
 
 void CUI_Manager::Add_RenderGroup(uint32_t iLevelIndex)
 {
+	if (m_isClear)
+	{
+		m_vecSortUI.clear();
+		Clear_Cache(iLevelIndex);
+		m_isClear = false;
+		return;
+	}
+
 	if (m_isSort)
 	{
 		Sort_UI(m_vecGenericUICache[iLevelIndex]);
@@ -144,21 +168,38 @@ void CUI_Manager::Clear_TriggerUI()
 	m_vecTriggerUIs.clear();
 }
 
-void CUI_Manager::Regist_Prefab(EUIPrefabType ePrefab)
+HRESULT CUI_Manager::Regist_Prefab(_uint iLevelIndex, EUIPrefabType ePrefab, const _wstring& wstrPrototype, const _wstring& wstrPooltag, const _uint iSeedLevel, void* pArg)
 {
+	if (FAILED(m_pGameInstance->Regist_Pool(iLevelIndex, wstrPooltag, g_wszUILayer, iSeedLevel, wstrPrototype, pArg, 10)))
+		return E_FAIL;
+	m_vecPrefabs[ENUM_TO_UINT(ePrefab)].push_back(wstrPooltag);
+	return S_OK;
 }
 
-void CUI_Manager::Request_Add_Prefab(EUIPrefabType ePrefab)
+void CUI_Manager::Request_Add_Prefab(_uint iLevelIndex, EUIPrefabType ePrefab)
 {
 	switch (ePrefab)
 	{
 	case Client::EUIPrefabType::MONSTER_NAMEPLATE:
+		for (auto wstr : m_vecPrefabs[ENUM_TO_UINT(EUIPrefabType::MONSTER_NAMEPLATE)])
+		{
+			m_pGameInstance->Request_AddObject(iLevelIndex, wstr, ENUM_TO_UINT(ELevelType::LOGO), nullptr,
+				[this, iLevelIndex](CGameObject* pObj) 
+				{
+					this->Add_VecGenericUICache(iLevelIndex, static_cast<CGenericUI*>(pObj)); 
+				});
+		}
 		break;
 	case Client::EUIPrefabType::END:
 		break;
 	default:
 		break;
 	}
+}
+
+void CUI_Manager::Request_Clear()
+{
+	m_isClear = true;
 }
 
 void CUI_Manager::Sort_UI(vector<CGenericUI*>& Target)

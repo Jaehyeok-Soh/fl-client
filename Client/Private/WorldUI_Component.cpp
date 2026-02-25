@@ -59,6 +59,9 @@ void CWorldUI_Component::Update(const _float fTimeDelta)
 
 void CWorldUI_Component::Proj_World_To_Screen()
 {
+	if (nullptr == m_pTargetObject)
+		return;
+
 	Vec3 vWorldPos = m_pTargetObject->Get_Component<CTransform>()->Get_Info(TRANSFORM_INFO_STATE::POS);
 	Vec4 clip = Vec4(vWorldPos.x, vWorldPos.y, vWorldPos.z, 1.f);
 	clip = Vec4::Transform(clip, m_pGameInstance->Get_ViewMatrix());
@@ -69,8 +72,8 @@ void CWorldUI_Component::Proj_World_To_Screen()
 	clip /= clip.w;
 
 	Calc_Perspective();
-	m_vScreenPos.x = ((clip.x * 0.5f + 0.5f) * m_fVPWidth + m_fVPTopLeftX) + m_fInitOffset.x * m_fScaleOffset;
-	m_vScreenPos.y = ((1.f - (clip.y * 0.5f + 0.5f)) * m_fVPHegiht + m_fVPTopLeftY) + m_fInitOffset.y * m_fScaleOffset;
+	m_vScreenPos.x = floor(((clip.x * 0.5f + 0.5f) * m_fVPWidth + m_fVPTopLeftX) + m_fInitOffset.x * m_fScaleOffset);
+	m_vScreenPos.y = floor(((1.f - (clip.y * 0.5f + 0.5f)) * m_fVPHegiht + m_fVPTopLeftY) + m_fInitOffset.y * m_fScaleOffset);
 }
 
 void CWorldUI_Component::Calc_Perspective()

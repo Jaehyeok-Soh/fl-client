@@ -226,6 +226,10 @@ namespace Tool
 		STATIC = 0,
 		LOADING,
 		LOGO,
+		TUTORIAL_VILLAGE,	
+		TUTORIAL_BOSS,	
+		SQUARE,				
+		TEST,
 		END
 	};
 
@@ -235,10 +239,14 @@ namespace Tool
 	{
 		switch (eType)
 		{
-		case Tool::EClientLevelType::STATIC: return "STATIC";
-		case Tool::EClientLevelType::LOGO:	 return "LOGO";
-		case Tool::EClientLevelType::LOADING:return "LOADING";
-		default:							 return "NONE";
+		case Tool::EClientLevelType::STATIC:			return "STATIC";
+		case Tool::EClientLevelType::LOADING:			return "LOADING";
+		case Tool::EClientLevelType::LOGO:				return "LOGO";
+		case Tool::EClientLevelType::TUTORIAL_VILLAGE:	return "TUTORIAL_VILLAGE";
+		case Tool::EClientLevelType::TUTORIAL_BOSS:		return "TUTORIAL_BOSS";
+		case Tool::EClientLevelType::SQUARE:			return "SQUARE";
+		case Tool::EClientLevelType::TEST:				return "TEST";
+		default:										return "NONE";
 		}
 		return "NONE";
 	}
@@ -247,10 +255,18 @@ namespace Tool
 	{
 		if (::strcmp(str.c_str(), "STATIC") == 0)
 			return EClientLevelType::STATIC;
-		else if (::strcmp(str.c_str(), "LOGO") == 0)
-			return EClientLevelType::LOGO;
 		else if (::strcmp(str.c_str(), "LOADING") == 0)
 			return EClientLevelType::LOADING;
+		else if (::strcmp(str.c_str(), "LOGO") == 0)
+			return EClientLevelType::LOGO;
+		else if (::strcmp(str.c_str(), "TUTORIAL_VILLAGE") == 0)
+			return EClientLevelType::TUTORIAL_VILLAGE;
+		else if (::strcmp(str.c_str(), "TUTORIAL_BOSS") == 0)
+			return EClientLevelType::TUTORIAL_BOSS;
+		else if (::strcmp(str.c_str(), "SQUARE") == 0)
+			return EClientLevelType::SQUARE;
+		else if (::strcmp(str.c_str(), "TEST") == 0)
+			return EClientLevelType::TEST;
 		else
 			return EClientLevelType::END;
 	}
@@ -357,6 +373,27 @@ namespace Tool
 	{
 		StaticObject,
 		LandScape,
+		Bush,
+		Grass,
+		Moss,
+		Tree,
+		Vine,
+		Rock,
+		Water,
+		END,
+	};
+
+	enum class EMapObjectShaderPass
+	{
+		StaticObject,
+		LandScape,
+		Bush,
+		Grass,
+		Moss,
+		Tree,
+		Vine,
+		Rock,
+		Water,
 		END,
 	};
 
@@ -366,6 +403,15 @@ namespace Tool
 		{
 		case Tool::EClientMakePath::StaticObject:	return "StaticObject";
 		case Tool::EClientMakePath::LandScape:		return "LandScape";
+
+			/* ------------------환경 요소---------------- */
+		case Tool::EClientMakePath::Bush:			return "Bush";
+		case Tool::EClientMakePath::Grass:			return "Grass";
+		case Tool::EClientMakePath::Tree:			return "Tree";
+		case Tool::EClientMakePath::Vine:			return "Vine";
+		case Tool::EClientMakePath::Rock:			return "Rock";
+		case Tool::EClientMakePath::Water:			return "Water";
+			/* ------------------------------------------- */
 		default:									return "Unknown";
 		}
 	};
@@ -374,6 +420,12 @@ namespace Tool
 	{
 		if (strType == "StaticObject")	return EClientMakePath::StaticObject;
 		if (strType == "LandScape")		return EClientMakePath::LandScape;
+		if (strType == "Bush")			return EClientMakePath::Bush;
+		if (strType == "Grass")			return EClientMakePath::Grass;
+		if (strType == "Tree")			return EClientMakePath::Tree;
+		if (strType == "Vine")			return EClientMakePath::Vine;
+		if (strType == "Rock")			return EClientMakePath::Rock;
+		if (strType == "Water")			return EClientMakePath::Water;
 
 		return EClientMakePath::END;
 	}

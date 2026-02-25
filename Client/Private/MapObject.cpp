@@ -9,6 +9,7 @@
 #include "PhysicsCollider.h"
 #include "PhysicsRigidBody.h"
 #include "GameInstance.h"
+#include "TriggerBox.h"
 
 CMapObject::CMapObject(ID3D11Device* pDevice, ID3D11DeviceContext* pContext)
 	: CGameObject(pDevice, pContext), m_eMapObjectType{EMapObject_Type::END}
@@ -148,8 +149,9 @@ HRESULT	CMapObject::Ready_Component(MAPOBJECT_DESC* pDesc)
 
 HRESULT	CMapObject::Add_MapToolComponent(CMapObject::COMPONENT eType)
 {
-	return S_OK;
+    return S_OK;
 }
+
 
 HRESULT	CMapObject::Awake(const _uint iCurrentLevelID)
 {
@@ -177,9 +179,13 @@ void	CMapObject::Update_Late(const _float fTimeelta)
 void	CMapObject::Ready_Before_Render(const _float fTimeDelta)
 {
 	Super::Ready_Before_Render(fTimeDelta);
+
+    m_pGameInstance->Push_RenderObject(RENDER_CATEGORY::NONEBLEND, this);
+
+
 #ifdef _DEBUG
-    if (m_eMapObjectDrawType == EMapObject_DrawType::Instance)
-        m_pGameInstance->Push_DebugComponent(Get_Component<CBounds>());
+    //if (m_eMapObjectDrawType == EMapObject_DrawType::Instance)
+    //    m_pGameInstance->Push_DebugComponent(Get_Component<CBounds>());
 #endif
 }
 
@@ -291,8 +297,8 @@ HRESULT	CMapObject::Render_Instance(_uint iPassIndex)
 
 HRESULT	CMapObject::Render_Default(_uint iPassIndex)
 {
-    CShader* pShader        = Get_Component<CShader>();      if (pShader == nullptr)         return E_FAIL;
-    CModel* pModel          = Get_Component<CModel>();       if (pModel == nullptr)          return E_FAIL;
+    CShader*    pShader     = Get_Component<CShader>();      if (pShader == nullptr)         return E_FAIL;
+    CModel*     pModel      = Get_Component<CModel>();       if (pModel == nullptr)          return E_FAIL;
     CTransform* pTransform  = Get_Component<CTransform>();   if (pTransform == nullptr)      return E_FAIL;
 
 

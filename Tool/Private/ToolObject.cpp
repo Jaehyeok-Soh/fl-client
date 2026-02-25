@@ -7,7 +7,7 @@
 #include "Picking_ToolManager.h"
 #include "MapObject.h"
 #include "GameInstance.h"
-#include "SceneData.h"
+#include "LevelData.h"
 
 CToolObject::CToolObject(EToolObjectType eType, ID3D11Device* pDevice, ID3D11DeviceContext* pDeviceContext)
     : Super(pDevice, pDeviceContext)

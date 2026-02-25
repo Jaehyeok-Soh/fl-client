@@ -8,6 +8,7 @@
 #include "UIPlayerStat_Progress.h"
 #include "UILoading_Progress.h"
 #include "UIMonsterStat_Progress.h"
+#include "UIPlayerAmmo_Progress.h"
 // 텍스트 클래스
 #include "UIMenu_Text.h"
 #include "UIPlayerStat_Text.h"
@@ -21,11 +22,13 @@
 #include "UIMenu_OutLine.h"
 #include "UILoading_Image.h"
 #include "UINameplate_BG.h"
+#include "UIAimDot_Image.h"	
+#include "UILevelChange_Image.h"
+
 // 트리거 클래스
 #include "UICommon_Trigger.h"
 #include "UIMenu_Trigger.h"
 #include "UIMenu_Exit_Trigger.h"
-
 
 #include "WorldUI_Component.h"
 
@@ -141,6 +144,7 @@ HRESULT CBuilder_UI::Create_CanvasDTO(const DTO::TUI_CanvasData& data)
 	Desc.fZ				= data.fPosZ;
 	Desc.fWidth			= m_vViewportSIze.x;
 	Desc.fHeight		= m_vViewportSIze.y;
+	m_ePrefabtype = static_cast<Client::EUIPrefabType>(data.iPrefabType);
 
 	CGameObject* pResult = m_pGameInstance->Add_GameObject(ENUM_TO_UINT(ELevelType::STATIC), L"Prototype_UI_Canvas", m_iLevelID, g_wszUILayer, &Desc);
 	if (pResult == nullptr)
@@ -205,7 +209,7 @@ HRESULT CBuilder_UI::Register_Class(DTO::EUIClassType eClassType, const DTO::TUI
 		return E_FAIL;
 
 	CGenericUI::GENERIC_UI_DESC DefaultDesc = Make_DefaultInfo(data, pCanvas);
-	const _wstring wstrProtoTag = L"Prototype_UI_" + Engine_Utils::ToWString(DTO::UIClassTypeToString(eClassType));
+	_wstring wstrProtoTag = L"Prototype_UI_" + Engine_Utils::ToWString(DTO::UIClassTypeToString(eClassType));
 	CGameObject* pResult = nullptr;
 
 	////////////////////////////////////////
@@ -216,13 +220,14 @@ HRESULT CBuilder_UI::Register_Class(DTO::EUIClassType eClassType, const DTO::TUI
 		const _bool isPlayerStat	= Type >= DTO::EUISubClassType::PLAYER_STAT_BEGIN && Type <= DTO::EUISubClassType::PLAYER_STAT_END;
 		const _bool isLoading		= Type == DTO::EUISubClassType::LOADING_PROGRESS;
 		const _bool isMonsterStat	= Type >= DTO::EUISubClassType::MONSTER_STAT_BEGIN && Type <= DTO::EUISubClassType::MONSTER_STAT_END;
+		const _bool isPlayerAmmo	= Type == DTO::EUISubClassType::PLAYER_AMMO_PROGRESS;
 
 		if (isPlayerStat)
 		{
 			CUIPlayerStat_Progress::PLAYER_STAT_PROGRESS_DESC  PlayerStatProgressDesc = {};
 			static_cast<CGenericUI::GENERIC_UI_DESC&>(PlayerStatProgressDesc) = DefaultDesc;
 			PlayerStatProgressDesc.eOwner = data.eSubClassType;
-			pResult = m_pGameInstance->Add_GameObject(m_iLevelID, L"Prototype_UI_PlayerStatProgress", m_iLevelID, g_wszUILayer, &PlayerStatProgressDesc);
+			pResult = m_pGameInstance->Add_GameObject(ENUM_TO_UINT(ELevelType::STATIC), L"Prototype_UI_PlayerStatProgress", m_iLevelID, g_wszUILayer, &PlayerStatProgressDesc);
 		}
 		else if (isLoading)
 		{
@@ -230,20 +235,20 @@ HRESULT CBuilder_UI::Register_Class(DTO::EUIClassType eClassType, const DTO::TUI
 			static_cast<CGenericUI::GENERIC_UI_DESC&>(LoadingProgressDesc) = DefaultDesc;
 			LoadingProgressDesc.eOwner = data.eSubClassType;
 			LoadingProgressDesc.pLoadingRatio = CUI_Manager::GetInstance()->Get_LoadingRatio();
-			pResult = m_pGameInstance->Add_GameObject(m_iLevelID, L"Prototype_UI_LoadingProgress", m_iLevelID, g_wszUILayer, &LoadingProgressDesc);
+			pResult = m_pGameInstance->Add_GameObject(ENUM_TO_UINT(ELevelType::STATIC), L"Prototype_UI_LoadingProgress", m_iLevelID, g_wszUILayer, &LoadingProgressDesc);
 		}
-		else if(isMonsterStat)
+		else if (isPlayerAmmo)
 		{
-			CUIMonsterStat_Progress::MONSTER_STAT_PROGRESS_DESC  MonsterStatProgressDesc= {};
-			static_cast<CGenericUI::GENERIC_UI_DESC&>(MonsterStatProgressDesc) = DefaultDesc;
-			MonsterStatProgressDesc.eOwner = data.eSubClassType;
-			MonsterStatProgressDesc.iComponentFlag = DTO::EComponentTypeFlag::WORLDUI_COMPONENT;
-			pResult = m_pGameInstance->Add_GameObject(m_iLevelID, L"Prototype_UI_MonsterStatProgress", m_iLevelID, g_wszUILayer, &MonsterStatProgressDesc);
+			CUIPlayerAmmo_Progress::PLAYER_AMMO_PROGRESS_DESC  PlayerAmmoDesc = {};
+			static_cast<CGenericUI::GENERIC_UI_DESC&>(PlayerAmmoDesc) = DefaultDesc;
+			PlayerAmmoDesc.eOwner = data.eSubClassType;
+			pResult = m_pGameInstance->Add_GameObject(ENUM_TO_UINT(ELevelType::STATIC), L"Prototype_UI_PlayerAmmoProgress", m_iLevelID, g_wszUILayer, &PlayerAmmoDesc);
 		}
 		else
 		{
-			data.eSubClassType;
-			return E_FAIL;	
+			_wstring wstr = Engine_Utils::ToWString(data.strTag) + L" <- 얘가 문제";
+			MSG_BOXW(wstr.c_str());
+			return E_FAIL;
 		}
 	}
 
@@ -276,34 +281,27 @@ HRESULT CBuilder_UI::Register_Class(DTO::EUIClassType eClassType, const DTO::TUI
 		{
 			CUIPlayerStat_Text::PLAYER_STAT_DESC PlayerStatTextDesc= {};
 			static_cast<CUIText::UI_TEXT_DESC&>(PlayerStatTextDesc) = TextDesc;
-			pResult = m_pGameInstance->Add_GameObject(m_iLevelID, L"Prototype_UI_PlayerStatText", m_iLevelID, g_wszUILayer, &PlayerStatTextDesc);
+			pResult = m_pGameInstance->Add_GameObject(ENUM_TO_UINT(ELevelType::STATIC), L"Prototype_UI_PlayerStatText", m_iLevelID, g_wszUILayer, &PlayerStatTextDesc);
 
 		}
 		else if (isMenu)
 		{
 			CUIMenu_Text::MENU_TEXT_DESC MenuTextDesc = {};
 			static_cast<CUIText::UI_TEXT_DESC&>(MenuTextDesc) = TextDesc;
-			pResult = m_pGameInstance->Add_GameObject(m_iLevelID, L"Prototype_UI_MenuText", m_iLevelID, g_wszUILayer, &MenuTextDesc);
+			pResult = m_pGameInstance->Add_GameObject(ENUM_TO_UINT(ELevelType::STATIC), L"Prototype_UI_MenuText", m_iLevelID, g_wszUILayer, &MenuTextDesc);
 		}
 		else if (isLoading)
 		{
 			CUILoading_Text::LOADING_TEXT_DESC LoadingTextDesc = {};
 			static_cast<CUIText::UI_TEXT_DESC&>(LoadingTextDesc) = TextDesc;
 			LoadingTextDesc.pLoadingRatio = CUI_Manager::GetInstance()->Get_LoadingRatio();
-			pResult = m_pGameInstance->Add_GameObject(m_iLevelID, L"Prototype_UI_LoadingText", m_iLevelID, g_wszUILayer, &LoadingTextDesc);
-		}
-		else if (isMonsterNameplate)
-		{
-			CUIMonsterStat_Text::MONSTER_STAT_DESC MonsterStatDesc = {};
-			static_cast<CUIText::UI_TEXT_DESC&>(MonsterStatDesc) = TextDesc;
-			MonsterStatDesc.iComponentFlag = DTO::EComponentTypeFlag::WORLDUI_COMPONENT;
-			pResult = m_pGameInstance->Add_GameObject(m_iLevelID, L"Prototype_UI_MonsterStatText", m_iLevelID, g_wszUILayer, &MonsterStatDesc);
-
+			pResult = m_pGameInstance->Add_GameObject(ENUM_TO_UINT(ELevelType::STATIC), L"Prototype_UI_LoadingText", m_iLevelID, g_wszUILayer, &LoadingTextDesc);
 		}
 		else
 		{
-			data.strTag;
-			int a = 0;
+			_wstring wstr = Engine_Utils::ToWString(data.strTag) + L" <- 얘가 문제";
+			MSG_BOXW(wstr.c_str());
+			return E_FAIL;
 		}
 	}
 
@@ -313,7 +311,7 @@ HRESULT CBuilder_UI::Register_Class(DTO::EUIClassType eClassType, const DTO::TUI
 	{
 		CUIJust_Image::JUST_IMAGE_DESC JustImageDesc = {};
 		static_cast<CGenericUI::GENERIC_UI_DESC&>(JustImageDesc) = DefaultDesc;
-		pResult = m_pGameInstance->Add_GameObject(m_iLevelID, wstrProtoTag, m_iLevelID, g_wszUILayer, &JustImageDesc);
+		pResult = m_pGameInstance->Add_GameObject(ENUM_TO_UINT(ELevelType::STATIC), wstrProtoTag, m_iLevelID, g_wszUILayer, &JustImageDesc);
 	}
 
 	////////////////////////////////////////
@@ -333,8 +331,8 @@ HRESULT CBuilder_UI::Register_Class(DTO::EUIClassType eClassType, const DTO::TUI
 			static_cast<CGenericUI::GENERIC_UI_DESC&>(MenuTriggerDesc) = DefaultDesc;
 			MenuTriggerDesc.eTriggerSubClass = Type;
 			MenuTriggerDesc.tTriggerData = std::move(iter->second);
-			pResult = m_pGameInstance->Add_GameObject(m_iLevelID, L"Prototype_UI_UIMenuTrigger", m_iLevelID, g_wszUILayer, &MenuTriggerDesc);
-		
+			pResult = m_pGameInstance->Add_GameObject(ENUM_TO_UINT(ELevelType::STATIC), L"Prototype_UI_UIMenuTrigger", m_iLevelID, g_wszUILayer, &MenuTriggerDesc);
+
 		}
 		else if (isMenuExit)
 		{
@@ -342,8 +340,7 @@ HRESULT CBuilder_UI::Register_Class(DTO::EUIClassType eClassType, const DTO::TUI
 			static_cast<CGenericUI::GENERIC_UI_DESC&>(MenuExitTriggerDesc) = DefaultDesc;
 			MenuExitTriggerDesc.eTriggerSubClass = Type;
 			MenuExitTriggerDesc.tTriggerData = std::move(iter->second);
-			pResult = m_pGameInstance->Add_GameObject(m_iLevelID, L"Prototype_UI_UIMenuExitTrigger", m_iLevelID, g_wszUILayer, &MenuExitTriggerDesc);
-
+			pResult = m_pGameInstance->Add_GameObject(ENUM_TO_UINT(ELevelType::STATIC), L"Prototype_UI_UIMenuExitTrigger", m_iLevelID, g_wszUILayer, &MenuExitTriggerDesc);
 		}
 		else
 		{
@@ -351,21 +348,21 @@ HRESULT CBuilder_UI::Register_Class(DTO::EUIClassType eClassType, const DTO::TUI
 			static_cast<CGenericUI::GENERIC_UI_DESC&>(CommonTriggerDesc) = DefaultDesc;
 			CommonTriggerDesc.eTriggerSubClass = Type;
 			CommonTriggerDesc.tTriggerData = std::move(iter->second);
-			pResult = m_pGameInstance->Add_GameObject(m_iLevelID, L"Prototype_UI_UICommonTrigger", m_iLevelID, g_wszUILayer, &CommonTriggerDesc);
+			pResult = m_pGameInstance->Add_GameObject(ENUM_TO_UINT(ELevelType::STATIC), L"Prototype_UI_UICommonTrigger", m_iLevelID, g_wszUILayer, &CommonTriggerDesc);
 		}
 
-		data.strTag;
 		if (nullptr == pResult)
+		{
+			_wstring wstr = Engine_Utils::ToWString(data.strTag) + L" <- 얘가 문제";
+			MSG_BOXW(wstr.c_str());
 			return E_FAIL;
-
+		}
 		auto* pUI = dynamic_cast<CGenericUI*>(pResult);
 		if (nullptr == pUI)
 			return E_FAIL;
-
 		auto* pTriggerUI = dynamic_cast<CUITrigger*>(pUI);
 		if (nullptr == pTriggerUI)
 			return E_FAIL;
-
 		m_vecTriggerUIs.push_back(pTriggerUI);
 	}
 
@@ -379,78 +376,84 @@ HRESULT CBuilder_UI::Register_Class(DTO::EUIClassType eClassType, const DTO::TUI
 
 		const auto Type = iter->second.eDISubClassType;
 
-		const _bool isPlayerSkill	= (Type >= DTO::EUIDImageSubClassType::PLAYER_SKILL_BEGIN	&& Type <= DTO::EUIDImageSubClassType::PLAYER_SKILL_END);
-		const _bool isMiniMap		= (Type >= DTO::EUIDImageSubClassType::MINIMAP_BEGIN		&& Type <= DTO::EUIDImageSubClassType::MINIMAP_END);
-		const _bool isHoverIcon		= (Type >= DTO::EUIDImageSubClassType::HOVER_POPUP_BEGIN	&& Type <= DTO::EUIDImageSubClassType::HOVER_POPUP_END);
-		const _bool isMenu			= (Type >= DTO::EUIDImageSubClassType::MENU_BEGIN			&& Type <= DTO::EUIDImageSubClassType::MENU_ICON_BG);
-		const _bool isOutLine		= (Type >= DTO::EUIDImageSubClassType::MENU_ICON_OUTLINE	&& Type <= DTO::EUIDImageSubClassType::MENU_END);
-		const _bool isLoading		= (Type >= DTO::EUIDImageSubClassType::LOADING_BEGIN		&& Type <= DTO::EUIDImageSubClassType::LOADING_END);
+		const _bool isPlayerSkill		= (Type >= DTO::EUIDImageSubClassType::PLAYER_SKILL_BEGIN	&& Type <= DTO::EUIDImageSubClassType::PLAYER_SKILL_END);
+		const _bool isMiniMap			= (Type >= DTO::EUIDImageSubClassType::MINIMAP_BEGIN		&& Type <= DTO::EUIDImageSubClassType::MINIMAP_END);
+		const _bool isHoverIcon			= (Type >= DTO::EUIDImageSubClassType::HOVER_POPUP_BEGIN	&& Type <= DTO::EUIDImageSubClassType::HOVER_POPUP_END);
+		const _bool isMenu				= (Type >= DTO::EUIDImageSubClassType::MENU_BEGIN			&& Type <= DTO::EUIDImageSubClassType::MENU_ICON_BG);
+		const _bool isOutLine			= (Type >= DTO::EUIDImageSubClassType::MENU_ICON_OUTLINE	&& Type <= DTO::EUIDImageSubClassType::MENU_END);
+		const _bool isLoading			= (Type >= DTO::EUIDImageSubClassType::LOADING_BEGIN		&& Type <= DTO::EUIDImageSubClassType::LOADING_END);
 		const _bool isMonsterNameplate	= (Type == DTO::EUIDImageSubClassType::MONSTER_NAMEPLATE_BG);
+		const _bool isAimDot			= (Type >= DTO::EUIDImageSubClassType::BATTLE_UI_BEGIN		&& Type <= DTO::EUIDImageSubClassType::BATTLE_UI_END);
+		const _bool isLevelChange		= (Type >= DTO::EUIDImageSubClassType::LEVEL_CHAGE_1		&& Type <= DTO::EUIDImageSubClassType::LEVEL_CHAGE_5);
 
 		if (isPlayerSkill)
 		{
 			CUISkill_BG::SKILL_BG_DESC SkillBGDesc = {};
 			static_cast<CGenericUI::GENERIC_UI_DESC&>(SkillBGDesc) = DefaultDesc;
 			SkillBGDesc.eSubClassType = Type;
-			pResult = m_pGameInstance->Add_GameObject(m_iLevelID, L"Prototype_UI_SkillBG", m_iLevelID, g_wszUILayer, &SkillBGDesc);
+			pResult = m_pGameInstance->Add_GameObject(ENUM_TO_UINT(ELevelType::STATIC), L"Prototype_UI_SkillBG", m_iLevelID, g_wszUILayer, &SkillBGDesc);
 		}
 		else if (isMiniMap)
 		{
 			CUIMini_Map::MINIMAP_DESC SkillBGDesc = {};
 			static_cast<CGenericUI::GENERIC_UI_DESC&>(SkillBGDesc) = DefaultDesc;
 			SkillBGDesc.eSubClassType = Type;
-			pResult = m_pGameInstance->Add_GameObject(m_iLevelID, L"Prototype_UI_MiniMap", m_iLevelID, g_wszUILayer, &SkillBGDesc);
+			pResult = m_pGameInstance->Add_GameObject(ENUM_TO_UINT(ELevelType::STATIC), L"Prototype_UI_MiniMap", m_iLevelID, g_wszUILayer, &SkillBGDesc);
 		}
 		else if (isHoverIcon)
 		{
 			CUIHover_Image::HOVER_IMAGE_DESC HoverImageDesc = {};
 			static_cast<CGenericUI::GENERIC_UI_DESC&>(HoverImageDesc) = DefaultDesc;
 			HoverImageDesc.eSubClassType = Type;
-			pResult = m_pGameInstance->Add_GameObject(m_iLevelID, L"Prototype_UI_HoverImage", m_iLevelID, g_wszUILayer, &HoverImageDesc);
+			pResult = m_pGameInstance->Add_GameObject(ENUM_TO_UINT(ELevelType::STATIC), L"Prototype_UI_HoverImage", m_iLevelID, g_wszUILayer, &HoverImageDesc);
 		}
 		else if (isMenu)
 		{
 			CUIMenu_Image::MENU_IMAGE_DESC MenuImageDesc = {};
 			static_cast<CGenericUI::GENERIC_UI_DESC&>(MenuImageDesc) = DefaultDesc;
 			MenuImageDesc.eSubClassType = Type;
-			pResult = m_pGameInstance->Add_GameObject(m_iLevelID, L"Prototype_UI_MenuImage", m_iLevelID, g_wszUILayer, &MenuImageDesc);
+			pResult = m_pGameInstance->Add_GameObject(ENUM_TO_UINT(ELevelType::STATIC), L"Prototype_UI_MenuImage", m_iLevelID, g_wszUILayer, &MenuImageDesc);
 		}
 		else if (isOutLine)
 		{
 			CUIMenu_OutLine::MENU_OUTLINE_DESC MenuOutlineDesc = {};
 			static_cast<CGenericUI::GENERIC_UI_DESC&>(MenuOutlineDesc) = DefaultDesc;
 			MenuOutlineDesc.eSubClassType = Type;
-			pResult = m_pGameInstance->Add_GameObject(m_iLevelID, L"Prototype_UI_MenuOutline", m_iLevelID, g_wszUILayer, &MenuOutlineDesc);
+			pResult = m_pGameInstance->Add_GameObject(ENUM_TO_UINT(ELevelType::STATIC), L"Prototype_UI_MenuOutline", m_iLevelID, g_wszUILayer, &MenuOutlineDesc);
 		}
 		else if (isLoading)
 		{
 			CUILoading_Image::LOADING_IMAGE_DESC LoadingImageDesc = {};
 			static_cast<CGenericUI::GENERIC_UI_DESC&>(LoadingImageDesc) = DefaultDesc;
 			LoadingImageDesc.eSubClassType = Type;
-			pResult = m_pGameInstance->Add_GameObject(m_iLevelID, L"Prototype_UI_LoadingImage", m_iLevelID, g_wszUILayer, &LoadingImageDesc);
+			pResult = m_pGameInstance->Add_GameObject(ENUM_TO_UINT(ELevelType::STATIC), L"Prototype_UI_LoadingImage", m_iLevelID, g_wszUILayer, &LoadingImageDesc);
 		}
-		else if (isMonsterNameplate)
+		else if (isAimDot)
 		{
-			CUINameplate_BG::NAMEPLATE_BG_DESC NameplateDesc = {};
-			static_cast<CGenericUI::GENERIC_UI_DESC&>(NameplateDesc) = DefaultDesc;
-			NameplateDesc.iComponentFlag = DTO::EComponentTypeFlag::WORLDUI_COMPONENT;
-			pResult = m_pGameInstance->Add_GameObject(m_iLevelID, L"Prototype_UI_Nameplate_BG", m_iLevelID, g_wszUILayer, &NameplateDesc);
+			CUIAimDot_Image::AIMDOT_IMAGE_DESC AimDotImageDesc= {};
+			static_cast<CGenericUI::GENERIC_UI_DESC&>(AimDotImageDesc) = DefaultDesc;
+			AimDotImageDesc.eSubClassType = Type;
+			pResult = m_pGameInstance->Add_GameObject(ENUM_TO_UINT(ELevelType::STATIC), L"Prototype_UI_AimDotImage", m_iLevelID, g_wszUILayer, &AimDotImageDesc);
 		}
-	}
-
-	////////////////////////////////////////
-	// WORLD_UI //
-	else if (eClassType == DTO::EUIClassType::WORLD_UI)
-	{
-	}
-	else
-	{
-		pResult = m_pGameInstance->Add_GameObject(m_iLevelID, wstrProtoTag, m_iLevelID, g_wszUILayer, &DefaultDesc);
+		else if (isLevelChange)
+		{
+			CUILevelChange_Image::LEVEL_CHANGE_DESC LevelChangeDesc = {};
+			static_cast<CGenericUI::GENERIC_UI_DESC&>(LevelChangeDesc) = DefaultDesc;
+			LevelChangeDesc.eSubClassType = Type;
+			pResult = m_pGameInstance->Add_GameObject(ENUM_TO_UINT(ELevelType::STATIC), L"Prototype_UI_LevelChangeImage", m_iLevelID, g_wszUILayer, &LevelChangeDesc);
+		}
+		else
+		{
+			_wstring wstr = Engine_Utils::ToWString(data.strTag) + L" <- 얘가 문제";
+			MSG_BOXW(wstr.c_str());
+			return E_FAIL;
+		}
 	}
 
 	if (pResult == nullptr)
 	{
-		data.strTag;
+		_wstring wstr = Engine_Utils::ToWString(data.strTag) + L" <- 얘가 문제";
+		MSG_BOXW(wstr.c_str());
 		return E_FAIL;
 	}
 
@@ -478,6 +481,8 @@ CGenericUI::GENERIC_UI_DESC CBuilder_UI::Make_DefaultInfo(const DTO::TUI_Generic
 	Desc.fX						= data.fPosX * m_vAspect.x;
 	Desc.fY						= data.fPosY * m_vAspect.y;
 	Desc.fZ						= data.fPosZ;
+	Desc.fScale					= data.fScale;
+	Desc.fRotate				= data.fRotate;
 	Desc.wstrTextureTag			= Engine_Utils::ToWString(data.strTextureTag);
 	Desc.wstrNoiseTextureTag	= Engine_Utils::ToWString(data.strNoiseTextureTag);
 	Desc.wstrAlphaMaskTextureTag= Engine_Utils::ToWString(data.strAlphaMaskTextureTag);

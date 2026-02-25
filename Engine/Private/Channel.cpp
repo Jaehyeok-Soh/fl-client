@@ -251,7 +251,7 @@ void CChannel::Update_MotionBone(Vec3 vLeftTrans, Vec3 vRightTrans,  CTransform*
 
 	Vec3 moveDistance = vOwnerRight * vDelta.x + vOwnerUp * vDelta.z + vOwnerLook * vDelta.y;
 
-	pOwnerPhyCCT->Move(moveDistance * fMotionOffset, 0.0f, fTimeDelta);
+	pOwnerPhyCCT->Move(moveDistance * fMotionOffset, 0.01f, fTimeDelta);
 
 	Vec3 finalPos = pOwnerPhyCCT->GetFootPosition();
 
