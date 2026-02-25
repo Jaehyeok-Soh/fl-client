@@ -49,6 +49,8 @@ private:
 
 	// imgui
 	EAnimEvent::Enum m_eEventTypeCombo = EAnimEvent::NONE;
+	_float		 m_fGlobalTimeScale = 1.f;
+	_float		 m_fTimeDebug = 1.f;
 
 
 private:

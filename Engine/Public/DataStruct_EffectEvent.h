@@ -5,17 +5,29 @@
 
 NS_BEGIN(DTO)
 
+enum E_BONE_FLAG
+{
+    BONE_NONE = 0,
+    BONE_SCALE = 1 << 0,
+    BONE_ROTATAION= 1 << 1,
+    BONE_POS = 1 << 2
+};
+
 // 이펙트 이벤트 스크립트
 typedef struct tagEffectEvent : public ANIM_EVENT_BASE1 {
+    _uint       iNotifyId = { 0 };
+
     string      strEffectTag = {};
     _int        iSimulationType = { 1 };
-    string      strSocketName = {};
     Vec3        vOffset = {};
     Vec3        vRotation = {};
+
     _bool       bFollowBone = { true };
+    _int        iBoneIndex = { -1 };
+    _uint       iBoneFlag = { 0 };
+
     _float      fDuration = {};
 }EFFECTEVENT;
-
 
 // 특정 캐릭터(Owner)의 전체 애니메이션 이벤트 묶음
 typedef struct tagEffectEventInfoDesc {

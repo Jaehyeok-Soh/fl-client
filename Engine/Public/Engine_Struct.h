@@ -245,33 +245,42 @@ namespace Engine
 
 	typedef struct tagShaderEffectDesc
 	{
-		unsigned int iTextureFlags = { 0 };
-		unsigned int iRenderFlags = { 0 };
-		unsigned int  iSamplerStateFlags = { 0 };
-		float iDiscardValue = { 0.f };
+		// Row 0
+		unsigned int iTextureFlags;
+		unsigned int iRenderFlags;
+		unsigned int iSamplerStateFlags;
+		float iDiscardValue;
 
-		unsigned int iOperatorFlags = { 0 };
-		unsigned int iRotationFlags = { 0 };
-		SimpleMath::Vector2 vUVOffset = { 0.f, 0.f };
+		// Row 1
+		unsigned int iOperatorFlags;
+		unsigned int iRotationFlags;
+		SimpleMath::Vector2 vUVOffset;
 
-		// 스프라이트 정보 추가
-		unsigned int SpriteColCount = {0};		// 가로 프레임 수
-		unsigned int SpriteRowCount = {0};		// 세로 프레임 수
-		unsigned int CurSpriteIndex = {0};		// 현재 스프라이트 인덱스
-		float		 fLifeRatio = {0.0f};
+		// Row 2
+		unsigned int SpriteColCount;
+		unsigned int SpriteRowCount;
+		unsigned int CurSpriteIndex;
+		float fLifeRatio;
 
-		SimpleMath::Vector2 vScrollOffset = { 0.f, 0.f };
-		SimpleMath::Vector2 vDistortionScale = { 0.f, 0.f };
-		SimpleMath::Vector4 vEffectColor = { 0.f, 0.f, 0.f, 0.f };
+		// Row 3
+		SimpleMath::Vector2 vScrollOffset;
+		SimpleMath::Vector2 vDistortionScale;
 
-		SimpleMath::Vector2 DiffuseTexture_ScrollWeight = { 0.f, 0.f };
-		SimpleMath::Vector2 NoiseTexture_ScrollWeight = { 0.f, 0.f };
-		SimpleMath::Vector2 MaskingTexture_ScrollWeight = { 0.f, 0.f };
-		SimpleMath::Vector2 GradationTexture_ScrollWeight = { 0.f, 0.f };
+		// Row 4
+		SimpleMath::Vector4 vEffectColor; // 위치 사수
 
-		SimpleMath::Vector2	DissolveTexture_ScrollWeight = { 0.f, 0.f };
-		SimpleMath::Vector2 Padding1 = { 0.f, 0.f };
-	}SHADER_EFFECT_DESC;
+		// Row 5
+		SimpleMath::Vector2 DiffuseTexture_ScrollWeight;
+		SimpleMath::Vector2 NoiseTexture_ScrollWeight;
+
+		// Row 6
+		SimpleMath::Vector2 MaskingTexture_ScrollWeight;
+		SimpleMath::Vector2 GradationTexture_ScrollWeight;
+
+		// Row 7
+		SimpleMath::Vector2 DissolveTexture_ScrollWeight;
+		SimpleMath::Vector2 GlowTexture_ScrollWeight;
+	} SHADER_EFFECT_DESC;
 
 	typedef struct tagShaderBoneDesc
 	{
@@ -398,11 +407,17 @@ namespace Engine
 		float				fStartSpeed = { 0.f };
 		float				fSpiralRadius = { 0.f };
 		float				fSpiralSpeed = { 0.f };
-		float				Padding3 = {};
+		int					UseContinueFlag = {};
 
 		// 
-
 	}EFFECT_PARTICLE_MU_ELEMENT;
+
+
+	typedef struct tagEffect_CurveInfo
+	{
+		unsigned int g_iGravityKeyCount = {0};
+		SimpleMath::Vector3 g_vPadding = {0.f, 0.f, 0.f};
+	}EFFECT_CURVEINFO;
 #pragma endregion
 
 #pragma region Model_ComShader_Structures
@@ -819,7 +834,9 @@ namespace Engine
 		SimpleMath::Matrix matWorld;             // 계산된 최종 행렬
 		float fDuration;            // 유지 시간
 		int iSimulationType;        // LOCAL(1) or WORLD(0)
-		const SimpleMath::Matrix* pTargetBoneMatrix; // 실시간 추적용 본 행렬 주소
+		const SimpleMath::Matrix** pTargetBoneMatrix; // 실시간 추적용 본 행렬 주소
+		const SimpleMath::Matrix** pTransformMatrix; // 실시간 추적용 본 행렬 주소
+		int iFlag;
 	} EFFECT_SPAWN_DESC;
 
 }

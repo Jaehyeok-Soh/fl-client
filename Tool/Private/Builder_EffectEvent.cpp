@@ -1,7 +1,7 @@
 #include "pch.h"
 #include "Builder_EffectEvent.h"
 #include "DataDocument_EffectEvent.h"
-#include "AnimEffectHandler.h"
+#include "EffectHandler.h"
 #include "Engine_Utils.h"
 #include "Animation_Defines.h"
 #include "GameInstance.h"
@@ -34,7 +34,7 @@ HRESULT CBuilder_EffectEvent::Build(const CDataDocumentBase& document)
 
 HRESULT CBuilder_EffectEvent::Create_Effect_Prototype(const DTO::EFFECT_EVENT_INFO_DESC& data)
 {
-    CAnimEffectHandler::ANIM_EFFECT_HANDLER_DESC tHandlerDesc = {};
+    CEffectHandler::ANIM_EFFECT_HANDLER_DESC tHandlerDesc = {};
     tHandlerDesc.strOwnerTag = data.strOwnerTag;
 
     for (auto& event : data.vecEffectEvents)
@@ -42,7 +42,7 @@ HRESULT CBuilder_EffectEvent::Create_Effect_Prototype(const DTO::EFFECT_EVENT_IN
         tHandlerDesc.mapEvents[event.iAnimIndex].push_back(event);
     }
 
-    CAnimEffectHandler* pHandler = CAnimEffectHandler::Create(&tHandlerDesc);
+    CEffectHandler* pHandler = CEffectHandler::Create(&tHandlerDesc);
     if (nullptr == pHandler) return E_FAIL;
 
     CGameInstance::GetInstance()->Broadcast<LoadEffectEvent>(pHandler);

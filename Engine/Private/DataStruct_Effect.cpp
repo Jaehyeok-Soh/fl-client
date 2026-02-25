@@ -90,6 +90,7 @@ void to_json(json& j, const TEFFECT_PartsData& data)
         {"EndScale", {{"x", data._Effect_EndScale.x}, {"y", data._Effect_EndScale.y}, {"z", data._Effect_EndScale.z}}},
         {"Color", {{"x", data._Effect_Color.x}, {"y", data._Effect_Color.y}, {"z", data._Effect_Color.z}, {"w", data._Effect_Color.w}}},
         {"DiscardValue", data._Effect_DiscardValue},
+        {"_Use_Effect_Particle_Burst", data._Use_Effect_Particle_Burst},
         {"Range", {{"x", data._Effect_Range.x}, {"y", data._Effect_Range.y}, {"z", data._Effect_Range.z}}},
         {"ParticleSize", {{"x", data._Effect_ParticleSize.x}, {"y", data._Effect_ParticleSize.y}}},
         {"SpiralData", {{"Radius", data._Effect_Spiral_Radius}, {"Speed", data._Effect_Spiral_Speed}}},
@@ -101,6 +102,7 @@ void to_json(json& j, const TEFFECT_PartsData& data)
         {"LifeTime", data._Effect_LifeTime},
         {"Duration", data._Effect_Duration},
         {"Looping", data._Effect_Looping},
+        {"_Use_Effect_Continue", data._Use_Effect_Continue},
         {"MaxParticle", data._Effect_MaxParticle},
        {"RandomFlags", static_cast<int>(data.iRandomFlags)},
         {"PlayBackSpeed", data._Effect_PlayBackSpeed},
@@ -118,7 +120,8 @@ void to_json(json& j, const TEFFECT_PartsData& data)
             {"Noise", {{"x", data._Effect_NoiseTexture_ScrollWeight.x}, {"y", data._Effect_NoiseTexture_ScrollWeight.y}}},
             {"Masking", {{"x", data._Effect_MaskingTexture_ScrollWeight.x}, {"y", data._Effect_MaskingTexture_ScrollWeight.y}}},
             {"Gradation", {{"x", data._Effect_GradationTexture_ScrollWeight.x}, {"y", data._Effect_GradationTexture_ScrollWeight.y}}},
-            {"Dissolve", {{"x", data._Effect_DissolveTexture_ScrollWeight.x}, {"y", data._Effect_DissolveTexture_ScrollWeight.y}}}
+            {"Dissolve", {{"x", data._Effect_DissolveTexture_ScrollWeight.x}, {"y", data._Effect_DissolveTexture_ScrollWeight.y}}},
+            {"Glow", {{"x", data._Effect_GlowTexture_ScrollWeight.x}, {"y", data._Effect_GlowTexture_ScrollWeight.y}}}
         }},
         {"Tool_ScrollFlags", {
             {"Diffuse", data._Effect_Tool_UseScroll_Diffuse},
@@ -144,6 +147,7 @@ void to_json(json& j, const TEFFECT_PartsData& data)
         {"TargetRotation", {{"x", data._Effect_TargetRotation.x}, {"y", data._Effect_TargetRotation.y}, {"z", data._Effect_TargetRotation.z}}},
         {"UseStartRotation", data._bUseStartRotation},
         {"UseRotationCurve", data._bUseRotationCurve},
+        {"_Use_Effect_UV_OverScroll", data._Use_Effect_UV_OverScroll},
         {"SeparateAxes", data._bSeparateAxes},
 
         // --- Flags ---
@@ -251,6 +255,7 @@ void from_json(const json& j, TEFFECT_PartsData& data)
     j.at("LifeTime").get_to(data._Effect_LifeTime);
     j.at("Duration").get_to(data._Effect_Duration);
     j.at("Looping").get_to(data._Effect_Looping);
+    j.at("_Use_Effect_Continue").get_to(data._Use_Effect_Continue);
     j.at("MaxParticle").get_to(data._Effect_MaxParticle);
 
     if (j.contains("RandomFlags"))
@@ -283,9 +288,12 @@ void from_json(const json& j, TEFFECT_PartsData& data)
         data._Effect_MaskingTexture_ScrollWeight = { sw["Masking"]["x"], sw["Masking"]["y"] };
         data._Effect_GradationTexture_ScrollWeight = { sw["Gradation"]["x"], sw["Gradation"]["y"] };
         if (sw.contains("Dissolve")) data._Effect_DissolveTexture_ScrollWeight = { sw["Dissolve"]["x"], sw["Dissolve"]["y"] };
+        if (sw.contains("Glow")) data._Effect_GlowTexture_ScrollWeight = { sw["Glow"]["x"], sw["Glow"]["y"] };
     }
 
     // 툴 전용 스크롤 체크박스 상태 로드
+    j.at("_Use_Effect_UV_OverScroll").get_to(data._Use_Effect_UV_OverScroll);
+    j.at("_Use_Effect_Particle_Burst").get_to(data._Use_Effect_Particle_Burst);
     if (j.contains("Tool_ScrollFlags")) {
         auto& tf = j.at("Tool_ScrollFlags");
         tf.at("Diffuse").get_to(data._Effect_Tool_UseScroll_Diffuse);

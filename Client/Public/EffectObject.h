@@ -1,5 +1,5 @@
 #pragma once
-#include "PartObject.h"
+#include "EffectPartBase.h"
 #include "Client_Defines.h"
 #include "DataStruct_Effect.h"
 
@@ -10,16 +10,17 @@ class CTexture;
 class CShader;
 class CComputeShader;
 class CTransform;
+class StructuredBuffer;
 
 NS_END
 
 NS_BEGIN(Client)
 
 class CEffectObject :
-    public CPartObject
+    public CEffectPartBase
 {
 public:
-    using Super = CPartObject;
+    using Super = CEffectPartBase;
 
     typedef struct tagEffectObjectDesc : public Super::PARTOBJ_DESC
     {
@@ -56,6 +57,7 @@ public:
         // 외부 호출 함수
     virtual HRESULT Spawn_FromPool(void* pArg);
     virtual HRESULT Despawn_FromPool();
+    virtual void LoopState_Change(E_LoopState eState) override;
 
 public:
     _bool IsEffectfinish() {return m_bIsEffectFinish;}
@@ -63,11 +65,12 @@ public:
 private:
     //  ==========  Shader Binding Setting  =============
     HRESULT Bind_ShaderResource();
+    HRESULT Bind_Curve_To_GPU();    // GPU에게 연산시키기.
 private:
     // ====== 계산함수 ====== 
     void TimeCalculate(const _float fDT);
-    float Sample_GravityCurve(const vector<DTO::Gravity_CurveKey>& vecVurve, float fLifeRatio);
-    void Update_Gravity_Force(float fLifeRatio); // 중력 계산하기.
+    //float Sample_GravityCurve(const vector<DTO::Gravity_CurveKey>& vecVurve, float fLifeRatio);   // 이제 GPU에서 계산함.
+    void Update_Gravity_Force(); // 중력 계산하기.
     float Sample_RotationCurve(const vector<DTO::Rotation_CurveKey>& vecCurve, float fLifeRatio);
     void Update_Rotation_Lerp(float fDT, float fRatio);
     void Update_UV_Scroll_Curve(float fRatio);
@@ -89,6 +92,8 @@ private:
     Effect_Desc        m_tEffectDesc = {};
     Effect_Desc        m_tPrevEffectDesc = {};
 
+    Effect_Desc        m_tOriginEffectDesc = {};
+
     //  ========== 스크롤 OffSet ========
     Vec2      m_vScrollOffset = { 0.f, 0.f };
     _float    m_fTimeAccumulation = 0.f;
@@ -100,6 +105,9 @@ private:
 
     //  ========== 현재 이펙트 sprite Number  ===========
 private:
+    ID3DX11EffectShaderResourceVariable* pSRV = nullptr;        // GPU 중력 계산 보낼 것.
+   StructuredBuffer*              pSB = nullptr;         
+
     _bool              m_bIsTool = { false };
 
 private:

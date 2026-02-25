@@ -29,6 +29,8 @@
 #include "Physics_LandScape.h"
 #include "Monster_Dummy.h"
 #include "Monster_Dummy_Body.h"
+#include "Boss_Xibi.h"
+#include "Boss_Xibi_Body.h"
 
 //=================
 // UI
@@ -63,6 +65,9 @@ HRESULT CLevel_Logo::Initialize()
 		return E_FAIL;
 
 	if (FAILED(Ready_Monster()))
+		return E_FAIL;
+
+	if (FAILED(Ready_Boss_Layer(g_wszBossLayer)))
 		return E_FAIL;
 
 	if (FAILED(Build_Files()))
@@ -141,7 +146,6 @@ void CLevel_Logo::Update(const _float fTimeDelta)
 	// 오브젝트 풀링 테스트
 	if (m_pGameInstance->KeyButton_Down(DIK_0))
 	{
-		//m_pGameInstance->Request_AddObject(ENUM_TO_UINT(ELevelType::LOGO), L"POOL_Attack_1", 0, nullptr);
 		 CUI_Manager::GetInstance()->Request_Add_Prefab(ENUM_TO_UINT(ELevelType::LOGO),EUIPrefabType::MONSTER_NAMEPLATE);
 		 m_pGameInstance->Flush_All();
 		 CUI_Manager::GetInstance()->Request_SortUI();
@@ -267,6 +271,66 @@ HRESULT CLevel_Logo::Ready_Player_Layer(const wstring& wstrLayerTag)
 			L"Prototype_GameObject_MainPlayer",
 			ENUM_TO_UINT(ELevelType::LOGO),
 			wstrLayerTag, &playerDesc)))
+			return E_FAIL;
+	}
+
+	return S_OK;
+}
+
+HRESULT CLevel_Logo::Ready_Boss_Layer(const wstring& wstrLayerTag)
+{
+	// BoneInfo
+	vector<std::pair<_uint, string>> vecboneNames
+	{
+		{ENUM_TO_UINT(CMonster_Body_Base::EBone::RightHand), "hook_arm_r"}
+	};
+
+	{
+		CGameObject* pResult = { nullptr };
+
+		CMonster_Base::MONSTER_DESC monsterDesc = {};
+		CTransform::TRANSFORM_DESC transformDesc = {};
+		monsterDesc.iLevelIndex = ENUM_TO_UINT(ELevelType::LOGO);
+		monsterDesc.wstrBodyModelTag = L"Prototype_Component_Model_Xibi";
+		monsterDesc.wstrPartBodyPrototypeTag = L"Prototype_GameObject_Boss_Xibi_Body";
+		transformDesc.TranslationMatrix = Matrix::CreateTranslation(Vec3(18.f, 12.f, 19.f));
+		monsterDesc.spanBoneNames = vecboneNames;
+		monsterDesc.pTransform_Desc = &transformDesc;
+		monsterDesc.wstrMonsterStateTag = L"Boss_Xibi";
+
+		{
+			PHYSICSCCT_DESC desc;
+			desc.pOwner = nullptr;
+			desc.bIsPlayer = false;
+			desc.eType = EPhysicsCCTType::BOX;
+			desc.pOwnerMatrix = nullptr;
+			desc.fRadius = 0.5f;
+			desc.fHeight = 1.f;
+			desc.vExtens = { 2.f, 2.f, 2.f };
+
+			PHYSICSMATERIAL_DESC mtrlDesc{};
+			mtrlDesc.eMaterial = EPhysicsMaterial::PLAYER;
+			desc.tMaterial = mtrlDesc;
+
+			desc.eFilterLayer = PHYSICSFILTERGROUP::Enum::MONSTER;
+			desc.iFilterMask =
+				PHYSICSFILTERGROUP::Enum::MONSTER
+				| PHYSICSFILTERGROUP::Enum::PLAYER
+				| PHYSICSFILTERGROUP::Enum::ATTACK
+				| PHYSICSFILTERGROUP::Enum::ATTACK_PROJECTTILE
+				| PHYSICSFILTERGROUP::Enum::SKILL
+				| PHYSICSFILTERGROUP::Enum::SKILL_PROJECTTILE
+				| PHYSICSFILTERGROUP::Enum::MAP
+				| PHYSICSFILTERGROUP::Enum::OBJECT1
+				| PHYSICSFILTERGROUP::Enum::OBJECT2;
+
+			monsterDesc.tCCTDesc = desc;
+		}
+
+		if (!(pResult = m_pGameInstance->Add_GameObject(ENUM_TO_UINT(ELevelType::LOGO),
+			L"Prototype_GameObject_Boss_Xibi",
+			ENUM_TO_UINT(ELevelType::LOGO),
+			g_wszBossLayer, &monsterDesc)))
 			return E_FAIL;
 	}
 

@@ -1,7 +1,7 @@
 #include "pch.h"
 #include "Builder_EffectEvent.h"
 #include "DataDocument_EffectEvent.h"
-#include "AnimEffectHandler.h"
+#include "EffectHandler.h"
 #include "Engine_Utils.h"
 #include "GameInstance.h"
 
@@ -37,7 +37,7 @@ HRESULT CBuilder_EffectEvent::Build(const CDataDocumentBase& document)
 
 HRESULT CBuilder_EffectEvent::Create_Effect(const DTO::EFFECT_EVENT_INFO_DESC& data)
 {
-	CAnimEffectHandler::ANIM_EFFECT_HANDLER_DESC tHandlerDesc = {};
+	CEffectHandler::ANIM_EFFECT_HANDLER_DESC tHandlerDesc = {};
 	tHandlerDesc.strOwnerTag = data.strOwnerTag;
 	for (const auto& effectEvent : data.vecEffectEvents)
 	{
@@ -45,10 +45,10 @@ HRESULT CBuilder_EffectEvent::Create_Effect(const DTO::EFFECT_EVENT_INFO_DESC& d
 	}
 
 	wstring wstrOwnerTag = Engine_Utils::ToWString(data.strOwnerTag);
-	wstring prototypeTag = L"Prototype_Component_AnimEffectHandler_" + wstrOwnerTag;
+	wstring prototypeTag = L"Prototype_Component_EffectHandler_" + wstrOwnerTag;
 
 	if (FAILED(m_pGameInstance->Add_Prototype(ENUM_TO_UINT(ELevelType::STATIC),
-		prototypeTag, CAnimEffectHandler::Create(&tHandlerDesc))))
+		prototypeTag, CEffectHandler::Create(&tHandlerDesc))))
 	{
 		return E_FAIL;
 	}

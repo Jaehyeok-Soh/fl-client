@@ -114,17 +114,18 @@ public:
 /// Feature
 /// </summary>
 public:
-	void UpdateWalk(const _float& fTimeDelta);
-	void UpdateChase(const _float& fTimeDelta);
-	void UpdateRun(const _float& fTimeDelta);
-	void UpdateFly(const _float& fTimeDelta);
-	void UpdateFall(const _float& fTimeDelta);
-	void UpdateJump(const _float& fTimeDelta);
-	void UpdateDash(const _float& fTimeDelta);
-	void UpdateCircleMove(const _float& fTimeDelta);
-	void UpdateSideWalk(const _float& fTimeDelta);
-	void UpdateTurn90(const _float& fTimeDelta);
-	void UpdateTrun180(const _float& fTimeDelta);
+	void UpdateWalk(const _float fTimeDelta);
+	void UpdateChase(const _float fTimeDelta);
+	void Update_8Dir_LocalAxisXZ(const _float fTimeDelta, _float fForward, _float fRight);
+	void UpdateRun(const _float fTimeDelta);
+	void UpdateFly(const _float fTimeDelta);
+	void UpdateFall(const _float fTimeDelta);
+	void UpdateJump(const _float fTimeDelta);
+	void UpdateDash(const _float fTimeDelta);
+	void UpdateCircleMove(const _float fTimeDelta);
+	void UpdateSideWalk(const _float fTimeDelta);
+	void UpdateTurn90(const _float fTimeDelta);
+	void UpdateTrun180(const _float fTimeDelta);
 
 
 private:

@@ -251,7 +251,7 @@ _bool CStateBase_Player::Check_MeleeKey(const _float fTimeDelta)
 		}
 	}
 
-	else if (Has_ChangeState(STATEKEY::LM) &&
+	/*else */if (Has_ChangeState(STATEKEY::LM) &&
 		Key_Input(ENUM_TO_UINT(CControlContext::CONTROL_KEY::LATT)))
 	{
 		Change_PlayerState(STATEKEY::LM);

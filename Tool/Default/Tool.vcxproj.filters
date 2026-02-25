@@ -280,6 +280,9 @@
     <Filter Include="02. GameObjects\PartObject\AnimPart">
       <UniqueIdentifier>{5f37dc5c-8136-45a1-a390-81efe16de549}</UniqueIdentifier>
     </Filter>
+    <Filter Include="03. Level\Effect\EffectMap_Manager">
+      <UniqueIdentifier>{f6e885fe-6ab5-4919-9664-08fb2ffebacc}</UniqueIdentifier>
+    </Filter>
     <Filter Include="06. ImGui\01. Panel\Animation\Panel_ModelInfo">
       <UniqueIdentifier>{29f62679-dbdb-4d76-ad02-f317e0acb029}</UniqueIdentifier>
     </Filter>
@@ -315,6 +318,12 @@
     </Filter>
     <Filter Include="06. ImGui\01. Panel\Animation\Panel_AnimationMix">
       <UniqueIdentifier>{beab9b2a-5282-4997-9256-1ad828bcd254}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02. GameObjects\Effect\Container\EffectBase">
+      <UniqueIdentifier>{4688e8c2-b7fa-4bfb-85c4-39ca80b9260d}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02. GameObjects\Effect\Part\Tool_EffectPartBase">
+      <UniqueIdentifier>{6cb443e8-4689-44fa-9e46-ecfa4325eb4c}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
@@ -600,6 +609,12 @@
     </ClInclude>
     <ClInclude Include="..\Public\LevelData.h">
       <Filter>02. GameObjects\Map\01. SceneData</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\Tool_EffectBase.h">
+      <Filter>02. GameObjects\Effect\Container\EffectBase</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\Tool_EffectPartBase.h">
+      <Filter>02. GameObjects\Effect\Part\Tool_EffectPartBase</Filter>
     </ClInclude>
     <ClInclude Include="..\Public\Builder_MonsterState.h">
       <Filter>09. Builder\Builder_MonsterState</Filter>
@@ -897,6 +912,12 @@
     </ClCompile>
     <ClCompile Include="..\Private\LevelData.cpp">
       <Filter>02. GameObjects\Map\01. SceneData</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\Tool_EffectBase.cpp">
+      <Filter>02. GameObjects\Effect\Container\EffectBase</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\Tool_EffectPartBase.cpp">
+      <Filter>02. GameObjects\Effect\Part\Tool_EffectPartBase</Filter>
     </ClCompile>
     <ClCompile Include="..\Private\Builder_MonsterState.cpp">
       <Filter>09. Builder\Builder_MonsterState</Filter>

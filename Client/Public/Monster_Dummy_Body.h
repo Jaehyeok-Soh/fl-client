@@ -31,10 +31,6 @@ public:
 private:
 	HRESULT Ready_Components(MONSTERBODY_DESC* pDesc);
 	HRESULT Bind_ShaderResources();
-
-private:
-	_int m_iRootMotion_Index = { 0 }; // rootmotion »À idx
-
 public:
 	static CMonster_Dummy_Body* Create(ID3D11Device* pDevice, ID3D11DeviceContext* pDeviceContext);
 	virtual CGameObject* Clone(void* pArg) override;

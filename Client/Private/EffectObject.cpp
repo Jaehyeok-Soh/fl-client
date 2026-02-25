@@ -17,12 +17,12 @@
 #define STOP 3
 
 CEffectObject::CEffectObject(ID3D11Device* pDevice, ID3D11DeviceContext* pDeviceContext)
-    :CPartObject(pDevice, pDeviceContext)
+    :Super(pDevice, pDeviceContext)
 {
 }
 
 CEffectObject::CEffectObject(const CEffectObject& rhs)
-    :CPartObject(rhs)
+    :Super(rhs)
 {
 }
 
@@ -60,6 +60,7 @@ HRESULT CEffectObject::EffectDesc_Initialize(void* pArg)
         return E_FAIL;
 
     m_tEffectDesc = *pEffectDesc;
+    m_tOriginEffectDesc = *pEffectDesc;
     return S_OK;
 }
 
@@ -83,6 +84,19 @@ HRESULT CEffectObject::Ready_Component(void* pArg)
     m_pComputeShader = static_cast<CComputeShader*>(Get_Script_Component(L"ComputeShader"));
     m_pTransform = Get_Component<CTransform>();
 
+
+    if (pSRV = m_pComputeShader->Get_SRV("g_GravityCurve"))
+    {
+        if (m_tEffectDesc.Data._vecGlobalGravityCurve.size() != 0)
+            pSB = StructuredBuffer::Create(m_pDevice, m_pDeviceContext, sizeof(DTO::Gravity_CurveKey), m_tEffectDesc.Data._vecGlobalGravityCurve.size());
+
+        else
+            pSB = StructuredBuffer::Create(m_pDevice, m_pDeviceContext, sizeof(DTO::Gravity_CurveKey), 1);
+
+        pSRV->SetResource(pSB->Get_SRV());
+    }
+    m_pComputeShader->Bind_InputStructuredBuffer(1, pSRV, pSB);
+
     return S_OK;
 }
 
@@ -104,7 +118,7 @@ HRESULT CEffectObject::Ready_Component_Shader()
         ShaderDesc.Input_StructBuffer.sBufferName = "IMMU_EFFECT_PARTICLE";
         ShaderDesc.Input_StructBuffer.iElementSize = sizeof(EFFECT_PARTICLE_IMMU_ELEMENT);
         ShaderDesc.Input_StructBuffer.iNumElements = m_tEffectDesc.Data._Effect_MaxParticle;
-        ShaderDesc.InputBufferNum = 1;
+        ShaderDesc.InputBufferNum = 2;
 
         // 출력 버퍼
         ShaderDesc.OutPut_StructBuffer.sBufferName = "INSTANCE_OUTPUT";
@@ -196,6 +210,9 @@ HRESULT CEffectObject::Ready_Component_Buffer(void* pArg)
             pParticleDesc.pOwner = this;
             pParticleDesc.pComputeShader = static_cast<CComputeShader*>(Get_Script_Component(L"ComputeShader"));
             pParticleDesc.EmissionFlagType = m_tEffectDesc.Data._Effect_EmissionType;
+            pParticleDesc.fDuration = m_tEffectDesc.Data._Effect_Duration;
+            pParticleDesc.UseBurst = m_tEffectDesc.Data._Use_Effect_Particle_Burst;
+            pParticleDesc.UseContinueFlag = m_tEffectDesc.Data._Use_Effect_Continue;
 
             if (FAILED(Add_Component<CVIBuffer_Particle_Point>(static_cast<CVIBuffer_Particle_Point*>(m_pGameInstance->Clone_Prototype(EPrototypeType::COMPONENT, 0, L"Prototype_Component_VIBuffer_Particle_Point", &pParticleDesc)))))
                 return E_FAIL;
@@ -221,6 +238,10 @@ HRESULT CEffectObject::Ready_Component_Buffer(void* pArg)
                 MeshBufferDesc.pModel = pInstance;
                 MeshBufferDesc.pOwner = this;
                 MeshBufferDesc.EmissionFlagType = m_tEffectDesc.Data._Effect_EmissionType;
+                MeshBufferDesc.fDuration = m_tEffectDesc.Data._Effect_Duration;
+                MeshBufferDesc.UseBurst = m_tEffectDesc.Data._Use_Effect_Particle_Burst;
+                MeshBufferDesc.UseContinueFlag = m_tEffectDesc.Data._Use_Effect_Continue;
+
                 if (FAILED(Add_Component<CVIBuffer_Particle_Mesh>(static_cast<CVIBuffer_Particle_Mesh*>(m_pGameInstance->Clone_Prototype(EPrototypeType::COMPONENT, 0, L"Prototype_Component_VIBuffer_Particle_Mesh", &MeshBufferDesc)))))
                     return E_FAIL;
             }
@@ -240,6 +261,9 @@ HRESULT CEffectObject::Ready_Component_Buffer(void* pArg)
             pParticleDesc.iRandomFlags = m_tEffectDesc.Data.iRandomFlags;
             pParticleDesc.pOwner = this;
             pParticleDesc.pComputeShader = static_cast<CComputeShader*>(Get_Script_Component(L"ComputeShader"));
+            pParticleDesc.fDuration = m_tEffectDesc.Data._Effect_Duration;
+            pParticleDesc.UseBurst = m_tEffectDesc.Data._Use_Effect_Particle_Burst;
+            pParticleDesc.UseContinueFlag = m_tEffectDesc.Data._Use_Effect_Continue;
 
             if (FAILED(Add_Component<CVIBuffer_Particle_Point>(static_cast<CVIBuffer_Particle_Point*>(m_pGameInstance->Clone_Prototype(EPrototypeType::COMPONENT, 0, L"Prototype_Component_VIBuffer_Particle_Point", &pParticleDesc)))))
                 return E_FAIL;
@@ -296,6 +320,7 @@ HRESULT CEffectObject::Bind_ShaderResource()
         pDesc.NoiseTexture_ScrollWeight = m_tEffectDesc.Data._Effect_NoiseTexture_ScrollWeight;
         pDesc.MaskingTexture_ScrollWeight = m_tEffectDesc.Data._Effect_MaskingTexture_ScrollWeight;
         pDesc.GradationTexture_ScrollWeight = m_tEffectDesc.Data._Effect_GradationTexture_ScrollWeight;
+        pDesc.GlowTexture_ScrollWeight = m_tEffectDesc.Data._Effect_GlowTexture_ScrollWeight;
 
         m_pShader->Bind_EffectData(pDesc);
 
@@ -341,6 +366,21 @@ HRESULT CEffectObject::Bind_ShaderResource()
     return S_OK;
 }
 
+HRESULT CEffectObject::Bind_Curve_To_GPU()
+{
+    auto& vecCurve = m_tEffectDesc.Data._vecGlobalGravityCurve; // CPU에 있는 커브 데이터
+    if (vecCurve.empty()) return E_FAIL;
+
+    m_pComputeShader->Bind_InputStructuredBuffer_Data(1, vecCurve.data(), sizeof(DTO::Gravity_CurveKey), (_uint)vecCurve.size());
+
+    EFFECT_CURVEINFO desc;
+    desc.g_iGravityKeyCount = vecCurve.size();
+    m_pComputeShader->Bind_Compute_EffectCurveData(desc);
+
+    return S_OK;
+}
+
+
 HRESULT CEffectObject::Awake(const _uint iCurrentLevelID)
 {
     // 절대로 절대로 Loader에서 불리면 안된다.
@@ -354,125 +394,66 @@ void CEffectObject::Update_Priority(const _float fDT)
 
 void CEffectObject::Update(const _float fTimeDelta)
 {
-    float TimeFlag = 0.f;
-
-    switch (m_tEffectDesc.Data._Effect_TimeFlag)
-    {
-    case PLAY: TimeFlag = 1.f; break;
-    case PAUSE:TimeFlag = 0.f; break;
-    case RESET: TimeFlag = 1.f; break;
-    case STOP: TimeFlag = 0.f; break;
-    }
-
+    // 시간 누적 (Timeflag가 PLAY일 때만,)
+    float TimeFlag = (m_tEffectDesc.Data._Effect_TimeFlag == PLAY) ? 1.f : 0.f;
     _float TimeT = m_tEffectDesc.Data._Effect_PlayBackSpeed * fTimeDelta * TimeFlag;
-    m_fTimeAccumulation += TimeT; // 전체 시간 누적
+    m_fTimeAccumulation += TimeT;
 
-    //  ========   Start Delay 체크   ========   
+    // Start Delay 체크
     if (m_fTimeAccumulation < m_tEffectDesc.Data._Effect_StartDelay)
     {
         m_bIsStarted = false;
-        return; // 아직 대기 중이므로 업데이트 안 함
+        return;
     }
     m_bIsStarted = true;
 
-    //========   실제 시뮬레이션 시간 (Delay를 제외한 시간)  ========   
     _float fActiveTime = m_fTimeAccumulation - m_tEffectDesc.Data._Effect_StartDelay;
 
-    // ========   Duration 및 Looping 제어   ========   
+    // Duration 및 Loop 제어 설정
     if (fActiveTime >= m_tEffectDesc.Data._Effect_Duration)
     {
-        if (m_tEffectDesc.Data._Effect_Looping)
+        if (m_tEffectDesc.Data._Use_Effect_Continue || m_tEffectDesc.Data._Effect_Looping)
         {
-            m_bIsEffectFinish = false;
-            m_fTimeAccumulation = 0.f; // 완전 리셋
-            fActiveTime = 0.f;
-            m_vScrollOffset = { 0.f, 0.f }; // 스크롤 값도 완전 초기화
-
-            // 루프 시 파티클 버퍼 리셋이 필요하다면 호출
-            //auto pVIBuffer = Get_Component<CVIBuffer_Particle_Point>();
-            //if (pVIBuffer) pVIBuffer->Reset_Simulation();
+            m_fTimeAccumulation = m_tEffectDesc.Data._Effect_StartDelay + fmod(fActiveTime, m_tEffectDesc.Data._Effect_Duration);
+            fActiveTime = m_fTimeAccumulation - m_tEffectDesc.Data._Effect_StartDelay;
         }
-        else
+
+        else if (m_tEffectDesc.Data._Use_Effect_Continue == false || m_tEffectDesc.Data._Effect_Looping == false)
         {
-            m_bIsEffectFinish = true;
-            return;
+            if (fActiveTime >= m_tEffectDesc.Data._Effect_Duration + m_tEffectDesc.Data._Effect_LifeTime)
+            {
+                m_bIsEffectFinish = true;
+            }
         }
     }
 
-    // ========   크기 보간 (Start Size -> End Size)   ========   
-    // 진행률 계산 (0.0 ~ 1.0)
     _float fRatio = fActiveTime / m_tEffectDesc.Data._Effect_Duration;
     if (fRatio > 1.f) fRatio = 1.f;
 
-    // 선형 보간을 통한 실시간 스케일 계산
-    Vec3 vCurrentScale = Vec3::Lerp(m_tEffectDesc.Data._Effect_StartScale, m_tEffectDesc.Data._Effect_EndScale, fRatio);
-    m_pTransform->Set_Scale(vCurrentScale);
+    if (m_tEffectDesc.Data._Use_Effect_Continue)
+    {
+        if (fRatio >= 0.5f)
+            fRatio = 0.5f;
+    }
 
+
+    Vec3 vCurrentScale = Vec3::Lerp(m_tEffectDesc.Data._Effect_StartScale, m_tEffectDesc.Data._Effect_EndScale, fRatio);
+    Get_Component<CTransform>()->Set_Scale(vCurrentScale);
+
+    // GPU에 백터 바인딩.
+    Bind_Curve_To_GPU();
     TimeCalculate(TimeT);
     Update_UV_Scroll_Curve(fRatio);
     Update_Rotation_Lerp(TimeT, fRatio);
+    Update_Gravity_Force();   // 중력값 전달.
     Super::Update(TimeT);
-    // == 스크롤 값 == 
 
-    switch (m_tEffectDesc.Data._Effect_ShapeType)
+    auto CTShader = static_cast<CComputeShader*>(Get_Script_Component(L"ComputeShader"));
+    if (CTShader)
     {
-    case (_uint)DTO::E_SHAPETYPE::NONE:
-        break;
-
-    case (_uint)DTO::E_SHAPETYPE::SPREAD:
-    {
+        // Object의 TimeFlag가 PLAY라면 그대로 전달하여 CS가 멈추지 않게 함
         CVIBuffer_Particle_Point* pInstance = Get_Component<CVIBuffer_Particle_Point>();
-        if (pInstance) pInstance->Update_Simulation(m_pComputeShader, Vec3{}, m_vFinalGravity, TimeT, m_tEffectDesc.Data._Effect_TimeFlag, DTO::E_SHAPETYPE::SPREAD);
-        break;
-    }
-    case (_uint)DTO::E_SHAPETYPE::DROP:
-    {
-        CVIBuffer_Particle_Point* pInstance = Get_Component<CVIBuffer_Particle_Point>();
-        if (pInstance) pInstance->Update_Simulation(m_pComputeShader, Vec3{}, m_vFinalGravity, TimeT, m_tEffectDesc.Data._Effect_TimeFlag, DTO::E_SHAPETYPE::DROP);
-        break;
-    }
-    case (_uint)DTO::E_SHAPETYPE::RISE:
-    {
-        CVIBuffer_Particle_Point* pInstance = Get_Component<CVIBuffer_Particle_Point>();
-        if (pInstance) pInstance->Update_Simulation(m_pComputeShader, Vec3{}, m_vFinalGravity, TimeT, m_tEffectDesc.Data._Effect_TimeFlag, DTO::E_SHAPETYPE::RISE);
-        break;
-    }
-    case (_uint)DTO::E_SHAPETYPE::SPIRAL:
-    {
-        CVIBuffer_Particle_Point* pInstance = Get_Component<CVIBuffer_Particle_Point>();
-        if (pInstance) pInstance->Update_Simulation(m_pComputeShader, Vec3{}, m_vFinalGravity, TimeT, m_tEffectDesc.Data._Effect_TimeFlag, DTO::E_SHAPETYPE::SPIRAL);
-        break;
-    }
-
-    case (_uint)DTO::E_SHAPETYPE::DNA:
-    {
-        CVIBuffer_Particle_Point* pInstance = Get_Component<CVIBuffer_Particle_Point>();
-        if (pInstance) pInstance->Update_Simulation(m_pComputeShader, Vec3{}, m_vFinalGravity, TimeT, m_tEffectDesc.Data._Effect_TimeFlag, DTO::E_SHAPETYPE::DNA);
-        break;
-    }
-
-    case (_uint)DTO::E_SHAPETYPE::STRAIGHT:
-    {
-        CVIBuffer_Particle_Point* pInstance = Get_Component<CVIBuffer_Particle_Point>();
-        if (pInstance) pInstance->Update_Simulation(m_pComputeShader, Get_Component<CTransform>()->Get_Info(TRANSFORM_INFO_STATE::LOOK), m_vFinalGravity, TimeT, m_tEffectDesc.Data._Effect_TimeFlag, DTO::E_SHAPETYPE::STRAIGHT);
-        break;
-    }
-
-    case ENUM_TO_UINT(DTO::E_SHAPETYPE::GATHER):
-    {
-        CVIBuffer_Particle_Point* pInstance = Get_Component<CVIBuffer_Particle_Point>();
-        if (pInstance) pInstance->Update_Simulation(m_pComputeShader, Vec3{}, m_vFinalGravity, TimeT,
-            m_tEffectDesc.Data._Effect_TimeFlag, DTO::E_SHAPETYPE::GATHER);
-        break;
-    }
-
-    case ENUM_TO_UINT(DTO::E_SHAPETYPE::FOUNTAIN):
-    {
-        CVIBuffer_Particle_Point* pInstance = Get_Component<CVIBuffer_Particle_Point>();
-        if (pInstance) pInstance->Update_Simulation(m_pComputeShader, Vec3{}, m_vFinalGravity, TimeT,
-            m_tEffectDesc.Data._Effect_TimeFlag, DTO::E_SHAPETYPE::FOUNTAIN);
-        break;
-    }
+        if (pInstance) pInstance->Update_Simulation(CTShader, Vec3{}, m_vFinalGravity, TimeT, m_tEffectDesc.Data._Effect_TimeFlag, (DTO::E_SHAPETYPE)m_tEffectDesc.Data._Effect_ShapeType);
     }
 }
 
@@ -522,6 +503,7 @@ void CEffectObject::Set_Dead(const wstring& wstrLayerTag)
 
 HRESULT CEffectObject::Spawn_FromPool(void* pArg)
 {
+    m_tEffectDesc = m_tOriginEffectDesc;
     TimeFlagRequest(RESET);
 
     return S_OK;
@@ -531,6 +513,23 @@ HRESULT CEffectObject::Despawn_FromPool()
     TimeFlagRequest(RESET);
 
     return S_OK;
+}
+
+void CEffectObject::LoopState_Change(E_LoopState eState)
+{
+    // TODO : 
+
+    switch (eState)
+    {
+    case E_LoopState::LOOP_START:
+    {
+        break;
+    }
+    case E_LoopState::LOOP_END:
+    {
+        break;
+    }
+    }
 }
 
 void CEffectObject::TimeFlagRequest(_uint iTimeFlag)
@@ -596,59 +595,9 @@ void CEffectObject::TimeCalculate(const _float fDT)
     }
 }
 
-
-float CEffectObject::Sample_GravityCurve(const vector<DTO::Gravity_CurveKey>& vecCurve, float fLifeRatio)
+void CEffectObject::Update_Gravity_Force()
 {
-    // 키 프레임 데이터가 없다면 기본 1.0f 반환
-    if (vecCurve.empty())
-        return 1.0f;
-
-    // 데이터가 만약에 하나라면 그놈만 반환하기.
-    if (vecCurve.size() == 1)
-        return vecCurve[0].fValue;
-
-    // 비율이 범위를 벗어나면 처음이나 끝으로 clamp하기.
-    if (fLifeRatio <= vecCurve.front().fTimeKey) return vecCurve.front().fValue;
-    if (fLifeRatio >= vecCurve.back().fTimeKey) return vecCurve.back().fValue;
-
-    // 현재 비율이 위치한 key frame 찾기.
-    for (size_t i = 0; i < vecCurve.size() - 1; ++i)
-    {
-        if (fLifeRatio >= vecCurve[i].fTimeKey && fLifeRatio <= vecCurve[i + 1].fTimeKey)
-        {
-            // 두 키 프레임 사이의 진행도 계산
-            float fDeltaTime = vecCurve[i + 1].fTimeKey - vecCurve[i].fTimeKey;
-            float fLerpRatio = (fLifeRatio - vecCurve[i].fTimeKey) / fDeltaTime;
-
-            // 선형보간
-            return vecCurve[i].fValue + (vecCurve[i + 1].fValue - vecCurve[i].fValue) * fLerpRatio;
-        }
-    }
-
-    return 0.f;
-}
-
-void CEffectObject::Update_Gravity_Force(float fLifeRatio)
-{
-    // << 자연 중력 계산 >>
-    float fGlobalCurveMod = 1.f;
-    if (m_tEffectDesc.Data._bUseGlobalGravityCurve)
-        fGlobalCurveMod = Sample_GravityCurve(m_tEffectDesc.Data._vecGlobalGravityCurve, fLifeRatio);
-
-    // 최종 자연 중력 벡터 = 방향 * 기본 세기 * 전체 배수 * 커브 배수
-    m_vFinalGravity = m_tEffectDesc.Data._Effect_GravityDir * m_tEffectDesc.Data._Effect_Gravity_Value * m_tEffectDesc.Data._Effect_GravityModifier * fGlobalCurveMod;
-    // << 외부 중력 계산 >>
-    float fExternalCurveMod = 1.0f;
-    if (m_tEffectDesc.Data._bUseExternalForceCurve)
-        fExternalCurveMod = Sample_GravityCurve(m_tEffectDesc.Data._vecExternalForceCurve, fLifeRatio);
-
-    // Force Field 
-    float fFinalExternalStrength = m_tEffectDesc.Data.fExternalForceStrength * fExternalCurveMod;
-
-    // TODO: 이 값들을 Compute Shader에게 넘겨주기.
-    //       vecCurve의 fTime은 반드시 오름차순으로 정렬해주기. Sort 한번 해주는 것이 좋다.
-    //       fDeltaTime이 아주 작을 떄 나누기 에러가 날 수 있다. 조심하자.
-
+    m_vFinalGravity = m_tEffectDesc.Data._Effect_GravityDir * m_tEffectDesc.Data._Effect_Gravity_Value * m_tEffectDesc.Data._Effect_GravityModifier;
 }
 
 float CEffectObject::Sample_RotationCurve(const vector<DTO::Rotation_CurveKey>& vecCurve, float fLifeRatio)
@@ -749,5 +698,12 @@ CGameObject* CEffectObject::Clone(void* pArg)
 
 void CEffectObject::Free()
 {
+    if (IsClone())
+    {
+        Safe_Release(pSB);
+        Safe_Release(pSRV);
+    }
+
     Super::Free();
+
 }

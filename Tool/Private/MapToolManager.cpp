@@ -58,12 +58,14 @@ EClientMakePath CMapToolManager::Get_ClientMakePath_ByFilePath(const wstring& ws
 
 HRESULT CMapToolManager::Initialize(ID3D11Device* pDevice, ID3D11DeviceContext* pContext)
 {
-	m_pDevice  = pDevice;
-	m_pContext = pContext;
+	if (!m_pDevice || !pContext)
+	{
+		m_pDevice = pDevice;
+		m_pContext = pContext;
 
-	Safe_AddRef(m_pDevice);
-	Safe_AddRef(m_pContext);
-
+		Safe_AddRef(m_pDevice);
+		Safe_AddRef(m_pContext);
+	}
 
 	m_fMouseWheelSpeed = 0.001f;
 	m_fMouseRange = 1.f;
@@ -378,9 +380,22 @@ HRESULT CMapToolManager::UnRegister_MapTexture()
 
 HRESULT CMapToolManager::Register_MapObjectCloneFactory()
 {
-	m_funcMapObjectCloneFactory =
-		[=](void* pArg)->CGameObject* { return m_pGameInstance->Add_GameObject(ENUM_TO_UINT(ELevelType::MAP), L"Prototype_GameObject_MapObject",
-			ENUM_TO_UINT(ELevelType::MAP), g_wszMapObjectLayer, pArg); };
+	// 거 이펙트에서 좀 꽁쳐가겠습니다.
+		// 어차피 무조건 else 걸릴겁니다. 
+		// Load 단계에서는 어차피 Loader라서 0이거든
+	if (m_pGameInstance->Get_CurrentLevelIndex() == ENUM_TO_UINT(ELevelType::EFFECT))
+	{
+		m_funcMapObjectCloneFactory =
+			[=](void* pArg)->CGameObject* { return m_pGameInstance->Add_GameObject(ENUM_TO_UINT(ELevelType::EFFECT), L"Prototype_GameObject_MapObject",
+				ENUM_TO_UINT(ELevelType::EFFECT), g_wszMapObjectLayer, pArg); };
+	}
+
+	else
+	{
+		m_funcMapObjectCloneFactory =
+			[=](void* pArg)->CGameObject* { return m_pGameInstance->Add_GameObject(ENUM_TO_UINT(ELevelType::MAP), L"Prototype_GameObject_MapObject",
+				ENUM_TO_UINT(ELevelType::MAP), g_wszMapObjectLayer, pArg); };
+	}
 
 	return S_OK;
 }
