@@ -160,17 +160,8 @@
     <Filter Include="99. ETC\01. ImGui">
       <UniqueIdentifier>{aa2685d2-18f6-417c-ba8e-cf78608c7618}</UniqueIdentifier>
     </Filter>
-    <Filter Include="03. GameObject\UIObjects\02.UI\Image">
-      <UniqueIdentifier>{6d340ec4-9fd3-485b-bb1c-8989cfd57761}</UniqueIdentifier>
-    </Filter>
     <Filter Include="03. GameObject\UIObjects\02.UI\Image\JustImage">
       <UniqueIdentifier>{fd843193-a085-4c64-9708-e0849b95da7d}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="03. GameObject\UIObjects\02.UI\Progress Bar">
-      <UniqueIdentifier>{bd7da17c-04aa-4842-8652-0f67ca4cf8ad}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="03. GameObject\UIObjects\02.UI\Text">
-      <UniqueIdentifier>{4c552970-7965-46f3-85ec-73d256c4eba8}</UniqueIdentifier>
     </Filter>
     <Filter Include="07. System\02. Debug_ImGui">
       <UniqueIdentifier>{d4543967-6d08-419a-ad9e-aa4e953bd61f}</UniqueIdentifier>
@@ -207,9 +198,6 @@
     </Filter>
     <Filter Include="03. GameObject\ContainerObjects\Monster">
       <UniqueIdentifier>{a9cba2b5-38c2-4050-8518-588960127889}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="03. GameObject\UIObjects\02.UI\Trigger">
-      <UniqueIdentifier>{48b4a088-d124-4a5f-a826-7eac6ea855f7}</UniqueIdentifier>
     </Filter>
     <Filter Include="03. GameObject\UIObjects\02.UI\Image\Dynamic Image">
       <UniqueIdentifier>{3a479948-c2c8-4326-9dcd-9a9c7536eb7e}</UniqueIdentifier>
@@ -313,9 +301,6 @@
     <Filter Include="03. GameObject\UIObjects\02.UI\Image\Dynamic Image\04.LoadingImage">
       <UniqueIdentifier>{7f017932-b1db-4253-9356-3b8cd034857d}</UniqueIdentifier>
     </Filter>
-    <Filter Include="03. GameObject\UIObjects\02.UI\World">
-      <UniqueIdentifier>{8a889375-58df-405c-aa49-2221cd20c171}</UniqueIdentifier>
-    </Filter>
     <Filter Include="03. GameObject\PartObjects\Monster">
       <UniqueIdentifier>{dd6c64a1-8604-4ada-acfe-59285f1d7176}</UniqueIdentifier>
     </Filter>
@@ -400,78 +385,6 @@
     <Filter Include="07. System\99. Debug_ImGui\Layout\Transform">
       <UniqueIdentifier>{C518D0B1-BF6A-4AC3-93EB-A5DC2C9C95A6}</UniqueIdentifier>
     </Filter>
-    <Filter Include="03. GameObject\MapObject\00. MapObject\UIObjects">
-      <UniqueIdentifier>{b8fa4419-f65b-4ff0-9246-77dad0e88328}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="03. GameObject\MapObject\00. MapObject\UIObjects\00.Manager">
-      <UniqueIdentifier>{7559622c-8d80-4e5c-81bd-e123eb0f162c}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="03. GameObject\MapObject\00. MapObject\UIObjects\01.Canvas">
-      <UniqueIdentifier>{bef61798-c2ef-48e4-8db0-faf0d1677c2d}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="03. GameObject\MapObject\00. MapObject\UIObjects\02.UI">
-      <UniqueIdentifier>{6d2a781d-ab40-4385-b96c-b3366f4eaba6}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="03. GameObject\MapObject\00. MapObject\UIObjects\02.UI\Image">
-      <UniqueIdentifier>{6d340ec4-9fd3-485b-bb1c-8989cfd57761}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="03. GameObject\MapObject\00. MapObject\UIObjects\02.UI\Image\JustImage">
-      <UniqueIdentifier>{fd843193-a085-4c64-9708-e0849b95da7d}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="03. GameObject\MapObject\00. MapObject\UIObjects\02.UI\Image\Dynamic Image">
-      <UniqueIdentifier>{3a479948-c2c8-4326-9dcd-9a9c7536eb7e}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="03. GameObject\MapObject\00. MapObject\UIObjects\02.UI\Image\Dynamic Image\00.SkillBG">
-      <UniqueIdentifier>{f1acf951-62e0-4e8b-b106-6fd9b77c5697}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="03. GameObject\MapObject\00. MapObject\UIObjects\02.UI\Image\Dynamic Image\02.HoverImage">
-      <UniqueIdentifier>{871de243-5883-42bb-b109-9645901ce4d2}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="03. GameObject\MapObject\00. MapObject\UIObjects\02.UI\Image\Dynamic Image\01.Minimap">
-      <UniqueIdentifier>{f89b605a-01f2-485c-87d7-f34d36eeef01}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="03. GameObject\MapObject\00. MapObject\UIObjects\02.UI\Image\Dynamic Image\03.MenuImage">
-      <UniqueIdentifier>{41ffc1c4-c6ab-4e1e-8a96-b2da6de22285}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="03. GameObject\MapObject\00. MapObject\UIObjects\02.UI\Image\Dynamic Image\03.MenuImage\00.OutLine">
-      <UniqueIdentifier>{4abf4708-1f00-4a67-ba1b-f638539f3a5c}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="03. GameObject\MapObject\00. MapObject\UIObjects\02.UI\Image\Dynamic Image\04.LoadingImage">
-      <UniqueIdentifier>{7f017932-b1db-4253-9356-3b8cd034857d}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="03. GameObject\MapObject\00. MapObject\UIObjects\02.UI\Progress Bar">
-      <UniqueIdentifier>{bd7da17c-04aa-4842-8652-0f67ca4cf8ad}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="03. GameObject\MapObject\00. MapObject\UIObjects\02.UI\Progress Bar\Loading">
-      <UniqueIdentifier>{5d46b6c3-a13f-4703-a848-708f9a73243a}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="03. GameObject\MapObject\00. MapObject\UIObjects\02.UI\Progress Bar\Stat">
-      <UniqueIdentifier>{2ad35cd2-80d4-4363-8d53-affc1c049ae8}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="03. GameObject\MapObject\00. MapObject\UIObjects\02.UI\Text">
-      <UniqueIdentifier>{4c552970-7965-46f3-85ec-73d256c4eba8}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="03. GameObject\MapObject\00. MapObject\UIObjects\02.UI\Text\Menu Text">
-      <UniqueIdentifier>{c8f806c3-d027-4861-9696-bc78504a554a}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="03. GameObject\MapObject\00. MapObject\UIObjects\02.UI\Text\Stat Text">
-      <UniqueIdentifier>{ba675289-98b0-43ba-990d-7137e8849731}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="03. GameObject\MapObject\00. MapObject\UIObjects\02.UI\Text\Loading Text">
-      <UniqueIdentifier>{0ebf2b41-2b05-4ee9-a49a-641d42db1c72}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="03. GameObject\MapObject\00. MapObject\UIObjects\02.UI\Trigger">
-      <UniqueIdentifier>{48b4a088-d124-4a5f-a826-7eac6ea855f7}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="03. GameObject\MapObject\00. MapObject\UIObjects\02.UI\Trigger\00.Basic">
-      <UniqueIdentifier>{ddd0e1e9-b54e-4f7e-b25d-40433ae876b3}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="03. GameObject\MapObject\00. MapObject\UIObjects\02.UI\Trigger\01.MenuTab">
-      <UniqueIdentifier>{13d70f3a-1964-4c43-a1e8-30b582165d71}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="03. GameObject\MapObject\00. MapObject\UIObjects\02.UI\Trigger\02.Menu Exit">
-      <UniqueIdentifier>{63c9a3d7-bedc-44a7-89d4-febe6b9de520}</UniqueIdentifier>
-    </Filter>
     <Filter Include="03. GameObject\MapObject\03. Plants">
       <UniqueIdentifier>{e0ccc92c-8caa-4c39-8270-998fdc97d602}</UniqueIdentifier>
     </Filter>
@@ -510,6 +423,87 @@
     </Filter>
     <Filter Include="02. Level\Test">
       <UniqueIdentifier>{a2daef10-3d20-4e39-ace1-5ff40c2ab0d2}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="03. GameObject\UIObjects\02.UI\Image\Dynamic Image\06.AimDot">
+      <UniqueIdentifier>{91eeeaa9-73a6-40da-bff2-b5e05c436f98}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="03. GameObject\UIObjects\02.UI\Progress Bar\Player Ammo">
+      <UniqueIdentifier>{e50622ce-f6b5-4828-847f-cf19391be008}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="03. GameObject\UIObjects">
+      <UniqueIdentifier>{b8fa4419-f65b-4ff0-9246-77dad0e88328}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="03. GameObject\UIObjects\00.Manager">
+      <UniqueIdentifier>{7559622c-8d80-4e5c-81bd-e123eb0f162c}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="03. GameObject\UIObjects\01.Canvas">
+      <UniqueIdentifier>{bef61798-c2ef-48e4-8db0-faf0d1677c2d}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="03. GameObject\UIObjects\02.UI">
+      <UniqueIdentifier>{6d2a781d-ab40-4385-b96c-b3366f4eaba6}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="03. GameObject\UIObjects\02.UI\Image">
+      <UniqueIdentifier>{6d340ec4-9fd3-485b-bb1c-8989cfd57761}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="03. GameObject\UIObjects\02.UI\Image\JustImage">
+      <UniqueIdentifier>{fd843193-a085-4c64-9708-e0849b95da7d}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="03. GameObject\UIObjects\02.UI\Image\Dynamic Image">
+      <UniqueIdentifier>{3a479948-c2c8-4326-9dcd-9a9c7536eb7e}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="03. GameObject\UIObjects\02.UI\Image\Dynamic Image\00.SkillBG">
+      <UniqueIdentifier>{f1acf951-62e0-4e8b-b106-6fd9b77c5697}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="03. GameObject\UIObjects\02.UI\Image\Dynamic Image\02.HoverImage">
+      <UniqueIdentifier>{871de243-5883-42bb-b109-9645901ce4d2}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="03. GameObject\UIObjects\02.UI\Image\Dynamic Image\01.Minimap">
+      <UniqueIdentifier>{f89b605a-01f2-485c-87d7-f34d36eeef01}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="03. GameObject\UIObjects\02.UI\Image\Dynamic Image\03.MenuImage">
+      <UniqueIdentifier>{41ffc1c4-c6ab-4e1e-8a96-b2da6de22285}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="03. GameObject\UIObjects\02.UI\Image\Dynamic Image\03.MenuImage\00.OutLine">
+      <UniqueIdentifier>{4abf4708-1f00-4a67-ba1b-f638539f3a5c}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="03. GameObject\UIObjects\02.UI\Image\Dynamic Image\04.LoadingImage">
+      <UniqueIdentifier>{7f017932-b1db-4253-9356-3b8cd034857d}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="03. GameObject\UIObjects\02.UI\Progress Bar">
+      <UniqueIdentifier>{bd7da17c-04aa-4842-8652-0f67ca4cf8ad}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="03. GameObject\UIObjects\02.UI\Progress Bar\Loading">
+      <UniqueIdentifier>{5d46b6c3-a13f-4703-a848-708f9a73243a}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="03. GameObject\UIObjects\02.UI\Progress Bar\Stat">
+      <UniqueIdentifier>{2ad35cd2-80d4-4363-8d53-affc1c049ae8}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="03. GameObject\UIObjects\02.UI\Text">
+      <UniqueIdentifier>{4c552970-7965-46f3-85ec-73d256c4eba8}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="03. GameObject\UIObjects\02.UI\Text\Menu Text">
+      <UniqueIdentifier>{c8f806c3-d027-4861-9696-bc78504a554a}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="03. GameObject\UIObjects\02.UI\Text\Stat Text">
+      <UniqueIdentifier>{ba675289-98b0-43ba-990d-7137e8849731}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="03. GameObject\UIObjects\02.UI\Text\Loading Text">
+      <UniqueIdentifier>{0ebf2b41-2b05-4ee9-a49a-641d42db1c72}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="03. GameObject\UIObjects\02.UI\Trigger">
+      <UniqueIdentifier>{48b4a088-d124-4a5f-a826-7eac6ea855f7}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="03. GameObject\UIObjects\02.UI\Trigger\00.Basic">
+      <UniqueIdentifier>{ddd0e1e9-b54e-4f7e-b25d-40433ae876b3}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="03. GameObject\UIObjects\02.UI\Trigger\01.MenuTab">
+      <UniqueIdentifier>{13d70f3a-1964-4c43-a1e8-30b582165d71}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="03. GameObject\UIObjects\02.UI\Trigger\02.Menu Exit">
+      <UniqueIdentifier>{63c9a3d7-bedc-44a7-89d4-febe6b9de520}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="03. GameObject\UIObjects\02.UI\Image\Dynamic Image\05.MonsterNamePlate">
+      <UniqueIdentifier>{761751c8-ba94-4e88-987b-53bc16a7f52f}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
@@ -613,7 +607,7 @@
       <Filter>06. FSM\Player\Slide</Filter>
     </ClInclude>
     <ClInclude Include="..\Public\UI_Manager.h">
-      <Filter>03. GameObject\MapObject\00. MapObject\UIObjects\00.Manager</Filter>
+      <Filter>03. GameObject\UIObjects\00.Manager</Filter>
     </ClInclude>
     <ClInclude Include="..\Public\State_Fall.h">
       <Filter>06. FSM\Player\Fall</Filter>
@@ -637,10 +631,10 @@
       <Filter>07. System\01. Builder\UI</Filter>
     </ClInclude>
     <ClInclude Include="..\Public\GenericUI.h">
-      <Filter>03. GameObject\MapObject\00. MapObject\UIObjects\02.UI</Filter>
+      <Filter>03. GameObject\UIObjects\02.UI</Filter>
     </ClInclude>
     <ClInclude Include="..\Public\Canvas.h">
-      <Filter>03. GameObject\MapObject\00. MapObject\UIObjects\01.Canvas</Filter>
+      <Filter>03. GameObject\UIObjects\01.Canvas</Filter>
     </ClInclude>
     <ClInclude Include="..\Public\Physics_LandScape.h">
       <Filter>03. GameObject\PhysicsTerrain</Filter>
@@ -706,16 +700,16 @@
       <Filter>06. FSM\Player\Attack\Melee\Combo\Moon</Filter>
     </ClInclude>
     <ClInclude Include="..\Public\UIJust_Image.h">
-      <Filter>03. GameObject\MapObject\00. MapObject\UIObjects\02.UI\Image\JustImage</Filter>
+      <Filter>03. GameObject\UIObjects\02.UI\Image\JustImage</Filter>
     </ClInclude>
     <ClInclude Include="..\Public\UISkill_BG.h">
-      <Filter>03. GameObject\MapObject\00. MapObject\UIObjects\02.UI\Image\Dynamic Image\00.SkillBG</Filter>
+      <Filter>03. GameObject\UIObjects\02.UI\Image\Dynamic Image\00.SkillBG</Filter>
     </ClInclude>
     <ClInclude Include="..\Public\UIProgress_Bar.h">
-      <Filter>03. GameObject\MapObject\00. MapObject\UIObjects\02.UI\Progress Bar</Filter>
+      <Filter>03. GameObject\UIObjects\02.UI\Progress Bar</Filter>
     </ClInclude>
     <ClInclude Include="..\Public\UIText.h">
-      <Filter>03. GameObject\MapObject\00. MapObject\UIObjects\02.UI\Text</Filter>
+      <Filter>03. GameObject\UIObjects\02.UI\Text</Filter>
     </ClInclude>
     <ClInclude Include="..\public\ImGui_FrustrumLayout.h">
       <Filter>07. System\99. Debug_ImGui\Layout\Frustrum</Filter>
@@ -727,16 +721,16 @@
       <Filter>07. System\01. Builder\Builder_AttackOverlap</Filter>
     </ClInclude>
     <ClInclude Include="..\Public\UITrigger.h">
-      <Filter>03. GameObject\MapObject\00. MapObject\UIObjects\02.UI\Trigger</Filter>
+      <Filter>03. GameObject\UIObjects\02.UI\Trigger</Filter>
     </ClInclude>
     <ClInclude Include="..\Public\UIDynamic_Image.h">
-      <Filter>03. GameObject\MapObject\00. MapObject\UIObjects\02.UI\Image\Dynamic Image</Filter>
+      <Filter>03. GameObject\UIObjects\02.UI\Image\Dynamic Image</Filter>
     </ClInclude>
     <ClInclude Include="..\Public\UIMini_Map.h">
-      <Filter>03. GameObject\MapObject\00. MapObject\UIObjects\02.UI\Image\Dynamic Image\01.Minimap</Filter>
+      <Filter>03. GameObject\UIObjects\02.UI\Image\Dynamic Image\01.Minimap</Filter>
     </ClInclude>
     <ClInclude Include="..\Public\UIButton_Trigger.h">
-      <Filter>03. GameObject\MapObject\00. MapObject\UIObjects\02.UI\Trigger</Filter>
+      <Filter>03. GameObject\UIObjects\02.UI\Trigger</Filter>
     </ClInclude>
     <ClInclude Include="..\public\ImGui_Layout.h">
       <Filter>07. System\99. Debug_ImGui\Layout</Filter>
@@ -751,7 +745,7 @@
       <Filter>03. GameObject\PartObjects\Weapon\Sword</Filter>
     </ClInclude>
     <ClInclude Include="..\Public\UIHover_Image.h">
-      <Filter>03. GameObject\MapObject\00. MapObject\UIObjects\02.UI\Image\Dynamic Image\02.HoverImage</Filter>
+      <Filter>03. GameObject\UIObjects\02.UI\Image\Dynamic Image\02.HoverImage</Filter>
     </ClInclude>
     <ClInclude Include="..\Public\State_JumpWall.h">
       <Filter>06. FSM\Player\JumpWall</Filter>
@@ -769,22 +763,22 @@
       <Filter>06. FSM\Player\Attack\Melee\Charge</Filter>
     </ClInclude>
     <ClInclude Include="..\Public\UIMenu_Image.h">
-      <Filter>03. GameObject\MapObject\00. MapObject\UIObjects\02.UI\Image\Dynamic Image\03.MenuImage</Filter>
+      <Filter>03. GameObject\UIObjects\02.UI\Image\Dynamic Image\03.MenuImage</Filter>
     </ClInclude>
     <ClInclude Include="..\Public\UIMenu_Trigger.h">
-      <Filter>03. GameObject\MapObject\00. MapObject\UIObjects\02.UI\Trigger\01.MenuTab</Filter>
+      <Filter>03. GameObject\UIObjects\02.UI\Trigger\01.MenuTab</Filter>
     </ClInclude>
     <ClInclude Include="..\Public\UICommon_Trigger.h">
-      <Filter>03. GameObject\MapObject\00. MapObject\UIObjects\02.UI\Trigger\00.Basic</Filter>
+      <Filter>03. GameObject\UIObjects\02.UI\Trigger\00.Basic</Filter>
     </ClInclude>
     <ClInclude Include="..\Public\UIMenu_Exit_Trigger.h">
-      <Filter>03. GameObject\MapObject\00. MapObject\UIObjects\02.UI\Trigger\02.Menu Exit</Filter>
+      <Filter>03. GameObject\UIObjects\02.UI\Trigger\02.Menu Exit</Filter>
     </ClInclude>
     <ClInclude Include="..\Public\UIMenu_Text.h">
-      <Filter>03. GameObject\MapObject\00. MapObject\UIObjects\02.UI\Text\Menu Text</Filter>
+      <Filter>03. GameObject\UIObjects\02.UI\Text\Menu Text</Filter>
     </ClInclude>
     <ClInclude Include="..\Public\UIPlayerStat_Text.h">
-      <Filter>03. GameObject\MapObject\00. MapObject\UIObjects\02.UI\Text\Stat Text</Filter>
+      <Filter>03. GameObject\UIObjects\02.UI\Text\Stat Text</Filter>
     </ClInclude>
     <ClInclude Include="..\Public\Builder_Effect.h">
       <Filter>07. System\01. Builder\Effect\Builder_Effect</Filter>
@@ -796,7 +790,7 @@
       <Filter>07. System\99. Debug_ImGui\Layout\Shader</Filter>
     </ClInclude>
     <ClInclude Include="..\Public\UIMenu_OutLine.h">
-      <Filter>03. GameObject\MapObject\00. MapObject\UIObjects\02.UI\Image\Dynamic Image\03.MenuImage\00.OutLine</Filter>
+      <Filter>03. GameObject\UIObjects\02.UI\Image\Dynamic Image\03.MenuImage\00.OutLine</Filter>
     </ClInclude>
     <ClInclude Include="..\Public\State_MoonCharge.h">
       <Filter>06. FSM\Player\Attack\Melee\Charge\Moon</Filter>
@@ -814,16 +808,67 @@
       <Filter>05. Component\Skill\Moon</Filter>
     </ClInclude>
     <ClInclude Include="..\Public\UILoading_Text.h">
-      <Filter>03. GameObject\MapObject\00. MapObject\UIObjects\02.UI\Text\Loading Text</Filter>
+      <Filter>03. GameObject\UIObjects\02.UI\Text\Loading Text</Filter>
     </ClInclude>
     <ClInclude Include="..\Public\UIPlayerStat_Progress.h">
-      <Filter>03. GameObject\MapObject\00. MapObject\UIObjects\02.UI\Progress Bar\Stat</Filter>
+      <Filter>03. GameObject\UIObjects\02.UI\Progress Bar\Stat</Filter>
     </ClInclude>
     <ClInclude Include="..\Public\UILoading_Progress.h">
-      <Filter>03. GameObject\MapObject\00. MapObject\UIObjects\02.UI\Progress Bar\Loading</Filter>
+      <Filter>03. GameObject\UIObjects\02.UI\Progress Bar\Loading</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\Gun.h">
+      <Filter>03. GameObject\PartObjects\Weapon\Gun</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\State_GunBase.h">
+      <Filter>06. FSM\Player\Attack\Gun</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\Plants.h">
+      <Filter>03. GameObject\MapObject\03. Plants\00. Plants</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\Bush.h">
+      <Filter>03. GameObject\MapObject\03. Plants\01. Bush</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\Grass.h">
+      <Filter>03. GameObject\MapObject\03. Plants\02. Grass</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\Moss.h">
+      <Filter>03. GameObject\MapObject\03. Plants\03. Moss</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\Tree.h">
+      <Filter>03. GameObject\MapObject\03. Plants\04. Tree</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\Vine.h">
+      <Filter>03. GameObject\MapObject\03. Plants\05. Vine</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\Rock.h">
+      <Filter>03. GameObject\MapObject\04. Rock</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\Water.h">
+      <Filter>03. GameObject\MapObject\05. Water</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\LandScape.h">
+      <Filter>03. GameObject\MapObject\02. LandScape</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\Level_Tutorial_Village.h">
+      <Filter>02. Level\Tutorial_Village</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\Level_Tutorial_Boss.h">
+      <Filter>02. Level\Tutorial_Boss</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\Level_Square.h">
+      <Filter>02. Level\Square</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\Level_Test.h">
+      <Filter>02. Level\Test</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\UIAimDot_Image.h">
+      <Filter>03. GameObject\UIObjects\02.UI\Image\Dynamic Image\06.AimDot</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\UIPlayerAmmo_Progress.h">
+      <Filter>03. GameObject\UIObjects\02.UI\Progress Bar\Player Ammo</Filter>
     </ClInclude>
     <ClInclude Include="..\Public\UILoading_Image.h">
-      <Filter>03. GameObject\MapObject\00. MapObject\UIObjects\02.UI\Image\Dynamic Image\04.LoadingImage</Filter>
+      <Filter>03. GameObject\UIObjects\02.UI\Image\Dynamic Image\04.LoadingImage</Filter>
     </ClInclude>
     <ClInclude Include="..\Public\Monster_Base.h">
       <Filter>03. GameObject\ContainerObjects\Monster</Filter>
@@ -871,12 +916,6 @@
       <Filter>07. System\01. Builder\AttackPreset</Filter>
     </ClInclude>
     <ClInclude Include="..\Public\LandScape.h" />
-    <ClInclude Include="..\Public\UI_World.h">
-      <Filter>03. GameObject\UIObjects\02.UI\World</Filter>
-    </ClInclude>
-    <ClInclude Include="..\Public\WorldUI.h">
-      <Filter>03. GameObject\UIObjects\02.UI\World</Filter>
-    </ClInclude>
     <ClInclude Include="..\Public\WorldUI_Component.h">
       <Filter>05. Component\WorldUI</Filter>
     </ClInclude>
@@ -891,51 +930,6 @@
     </ClInclude>
     <ClInclude Include="..\Public\UINameplate_BG.h">
       <Filter>03. GameObject\UIObjects\02.UI\Image\Dynamic Image\05.MonsterNameplate</Filter>
-    </ClInclude>
-    <ClInclude Include="..\Public\Gun.h">
-      <Filter>03. GameObject\PartObjects\Weapon\Gun</Filter>
-    </ClInclude>
-    <ClInclude Include="..\Public\State_GunBase.h">
-      <Filter>06. FSM\Player\Attack\Gun</Filter>
-    </ClInclude>
-    <ClInclude Include="..\Public\Plants.h">
-      <Filter>03. GameObject\MapObject\03. Plants\00. Plants</Filter>
-    </ClInclude>
-    <ClInclude Include="..\Public\Bush.h">
-      <Filter>03. GameObject\MapObject\03. Plants\01. Bush</Filter>
-    </ClInclude>
-    <ClInclude Include="..\Public\Grass.h">
-      <Filter>03. GameObject\MapObject\03. Plants\02. Grass</Filter>
-    </ClInclude>
-    <ClInclude Include="..\Public\Moss.h">
-      <Filter>03. GameObject\MapObject\03. Plants\03. Moss</Filter>
-    </ClInclude>
-    <ClInclude Include="..\Public\Tree.h">
-      <Filter>03. GameObject\MapObject\03. Plants\04. Tree</Filter>
-    </ClInclude>
-    <ClInclude Include="..\Public\Vine.h">
-      <Filter>03. GameObject\MapObject\03. Plants\05. Vine</Filter>
-    </ClInclude>
-    <ClInclude Include="..\Public\Rock.h">
-      <Filter>03. GameObject\MapObject\04. Rock</Filter>
-    </ClInclude>
-    <ClInclude Include="..\Public\Water.h">
-      <Filter>03. GameObject\MapObject\05. Water</Filter>
-    </ClInclude>
-    <ClInclude Include="..\Public\LandScape.h">
-      <Filter>03. GameObject\MapObject\02. LandScape</Filter>
-    </ClInclude>
-    <ClInclude Include="..\Public\Level_Tutorial_Village.h">
-      <Filter>02. Level\Tutorial_Village</Filter>
-    </ClInclude>
-    <ClInclude Include="..\Public\Level_Tutorial_Boss.h">
-      <Filter>02. Level\Tutorial_Boss</Filter>
-    </ClInclude>
-    <ClInclude Include="..\Public\Level_Square.h">
-      <Filter>02. Level\Square</Filter>
-    </ClInclude>
-    <ClInclude Include="..\Public\Level_Test.h">
-      <Filter>02. Level\Test</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -1025,7 +1019,7 @@
       <Filter>06. FSM\Player\JumpBack</Filter>
     </ClCompile>
     <ClCompile Include="..\Private\UI_Manager.cpp">
-      <Filter>03. GameObject\MapObject\00. MapObject\UIObjects\00.Manager</Filter>
+      <Filter>03. GameObject\UIObjects\00.Manager</Filter>
     </ClCompile>
     <ClCompile Include="..\Private\State_Fall.cpp">
       <Filter>06. FSM\Player\Fall</Filter>
@@ -1049,10 +1043,10 @@
       <Filter>07. System\01. Builder\UI</Filter>
     </ClCompile>
     <ClCompile Include="..\Private\GenericUI.cpp">
-      <Filter>03. GameObject\MapObject\00. MapObject\UIObjects\02.UI</Filter>
+      <Filter>03. GameObject\UIObjects\02.UI</Filter>
     </ClCompile>
     <ClCompile Include="..\Private\Canvas.cpp">
-      <Filter>03. GameObject\MapObject\00. MapObject\UIObjects\01.Canvas</Filter>
+      <Filter>03. GameObject\UIObjects\01.Canvas</Filter>
     </ClCompile>
     <ClCompile Include="..\Private\Physics_LandScape.cpp">
       <Filter>03. GameObject\PhysicsTerrain</Filter>
@@ -1106,16 +1100,16 @@
       <Filter>07. System\99. Debug_ImGui\Inspector\Player</Filter>
     </ClCompile>
     <ClCompile Include="..\Private\UIJust_Image.cpp">
-      <Filter>03. GameObject\MapObject\00. MapObject\UIObjects\02.UI\Image\JustImage</Filter>
+      <Filter>03. GameObject\UIObjects\02.UI\Image\JustImage</Filter>
     </ClCompile>
     <ClCompile Include="..\Private\UISkill_BG.cpp">
-      <Filter>03. GameObject\MapObject\00. MapObject\UIObjects\02.UI\Image\Dynamic Image\00.SkillBG</Filter>
+      <Filter>03. GameObject\UIObjects\02.UI\Image\Dynamic Image\00.SkillBG</Filter>
     </ClCompile>
     <ClCompile Include="..\Private\UIProgress_Bar.cpp">
-      <Filter>03. GameObject\MapObject\00. MapObject\UIObjects\02.UI\Progress Bar</Filter>
+      <Filter>03. GameObject\UIObjects\02.UI\Progress Bar</Filter>
     </ClCompile>
     <ClCompile Include="..\Private\UIText.cpp">
-      <Filter>03. GameObject\MapObject\00. MapObject\UIObjects\02.UI\Text</Filter>
+      <Filter>03. GameObject\UIObjects\02.UI\Text</Filter>
     </ClCompile>
     <ClCompile Include="..\private\ImGui_FrustrumLayout.cpp">
       <Filter>07. System\99. Debug_ImGui\Layout\Frustrum</Filter>
@@ -1127,7 +1121,7 @@
       <Filter>07. System\01. Builder\Builder_AttackOverlap</Filter>
     </ClCompile>
     <ClCompile Include="..\Private\UITrigger.cpp">
-      <Filter>03. GameObject\MapObject\00. MapObject\UIObjects\02.UI\Trigger</Filter>
+      <Filter>03. GameObject\UIObjects\02.UI\Trigger</Filter>
     </ClCompile>
     <ClCompile Include="..\Private\State_Walk.cpp">
       <Filter>06. FSM\Player\Walk</Filter>
@@ -1148,10 +1142,10 @@
       <Filter>06. FSM\Player\Attack\Melee\Combo\Moon</Filter>
     </ClCompile>
     <ClCompile Include="..\Private\UIMini_Map.cpp">
-      <Filter>03. GameObject\MapObject\00. MapObject\UIObjects\02.UI\Image\Dynamic Image\01.Minimap</Filter>
+      <Filter>03. GameObject\UIObjects\02.UI\Image\Dynamic Image\01.Minimap</Filter>
     </ClCompile>
     <ClCompile Include="..\Private\UIButton_Trigger.cpp">
-      <Filter>03. GameObject\MapObject\00. MapObject\UIObjects\02.UI\Trigger</Filter>
+      <Filter>03. GameObject\UIObjects\02.UI\Trigger</Filter>
     </ClCompile>
     <ClCompile Include="..\private\ImGui_Layout.cpp">
       <Filter>07. System\99. Debug_ImGui\Layout</Filter>
@@ -1175,7 +1169,7 @@
       <Filter>06. FSM\Player\JumpWall</Filter>
     </ClCompile>
     <ClCompile Include="..\Private\UIHover_Image.cpp">
-      <Filter>03. GameObject\MapObject\00. MapObject\UIObjects\02.UI\Image\Dynamic Image\02.HoverImage</Filter>
+      <Filter>03. GameObject\UIObjects\02.UI\Image\Dynamic Image\02.HoverImage</Filter>
     </ClCompile>
     <ClCompile Include="..\Private\StatCom_Player.cpp">
       <Filter>05. Component\Stat\StatCom_Player</Filter>
@@ -1190,31 +1184,31 @@
       <Filter>06. FSM\Player\Attack\Melee\Charge</Filter>
     </ClCompile>
     <ClCompile Include="..\Private\UIMenu_Image.cpp">
-      <Filter>03. GameObject\MapObject\00. MapObject\UIObjects\02.UI\Image\Dynamic Image\03.MenuImage</Filter>
+      <Filter>03. GameObject\UIObjects\02.UI\Image\Dynamic Image\03.MenuImage</Filter>
     </ClCompile>
     <ClCompile Include="..\Private\UIMenu_Trigger.cpp">
-      <Filter>03. GameObject\MapObject\00. MapObject\UIObjects\02.UI\Trigger\01.MenuTab</Filter>
+      <Filter>03. GameObject\UIObjects\02.UI\Trigger\01.MenuTab</Filter>
     </ClCompile>
     <ClCompile Include="..\Private\UICommon_Trigger.cpp">
-      <Filter>03. GameObject\MapObject\00. MapObject\UIObjects\02.UI\Trigger\00.Basic</Filter>
+      <Filter>03. GameObject\UIObjects\02.UI\Trigger\00.Basic</Filter>
     </ClCompile>
     <ClCompile Include="..\Private\UIMenu_Exit_Trigger.cpp">
-      <Filter>03. GameObject\MapObject\00. MapObject\UIObjects\02.UI\Trigger\02.Menu Exit</Filter>
+      <Filter>03. GameObject\UIObjects\02.UI\Trigger\02.Menu Exit</Filter>
     </ClCompile>
     <ClCompile Include="..\Private\UIDynamic_Image.cpp">
-      <Filter>03. GameObject\MapObject\00. MapObject\UIObjects\02.UI\Image\Dynamic Image</Filter>
+      <Filter>03. GameObject\UIObjects\02.UI\Image\Dynamic Image</Filter>
     </ClCompile>
     <ClCompile Include="..\Private\UIMenu_Text.cpp">
-      <Filter>03. GameObject\MapObject\00. MapObject\UIObjects\02.UI\Text\Menu Text</Filter>
+      <Filter>03. GameObject\UIObjects\02.UI\Text\Menu Text</Filter>
     </ClCompile>
     <ClCompile Include="..\Private\UIPlayerStat_Text.cpp">
-      <Filter>03. GameObject\MapObject\00. MapObject\UIObjects\02.UI\Text\Stat Text</Filter>
+      <Filter>03. GameObject\UIObjects\02.UI\Text\Stat Text</Filter>
     </ClCompile>
     <ClCompile Include="..\private\ImGui_ShaderLayout.cpp">
       <Filter>07. System\99. Debug_ImGui\Layout\Shader</Filter>
     </ClCompile>
     <ClCompile Include="..\Private\UIMenu_OutLine.cpp">
-      <Filter>03. GameObject\MapObject\00. MapObject\UIObjects\02.UI\Image\Dynamic Image\03.MenuImage\00.OutLine</Filter>
+      <Filter>03. GameObject\UIObjects\02.UI\Image\Dynamic Image\03.MenuImage\00.OutLine</Filter>
     </ClCompile>
     <ClCompile Include="..\Private\State_MoonCharge.cpp">
       <Filter>06. FSM\Player\Attack\Melee\Charge\Moon</Filter>
@@ -1232,16 +1226,67 @@
       <Filter>05. Component\Skill\Moon</Filter>
     </ClCompile>
     <ClCompile Include="..\Private\UILoading_Text.cpp">
-      <Filter>03. GameObject\MapObject\00. MapObject\UIObjects\02.UI\Text\Loading Text</Filter>
+      <Filter>03. GameObject\UIObjects\02.UI\Text\Loading Text</Filter>
     </ClCompile>
     <ClCompile Include="..\Private\UIPlayerStat_Progress.cpp">
-      <Filter>03. GameObject\MapObject\00. MapObject\UIObjects\02.UI\Progress Bar\Stat</Filter>
+      <Filter>03. GameObject\UIObjects\02.UI\Progress Bar\Stat</Filter>
     </ClCompile>
     <ClCompile Include="..\Private\UILoading_Progress.cpp">
-      <Filter>03. GameObject\MapObject\00. MapObject\UIObjects\02.UI\Progress Bar\Loading</Filter>
+      <Filter>03. GameObject\UIObjects\02.UI\Progress Bar\Loading</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\Gun.cpp">
+      <Filter>03. GameObject\PartObjects\Weapon\Gun</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\State_GunBase.cpp">
+      <Filter>06. FSM\Player\Attack\Gun</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\Plants.cpp">
+      <Filter>03. GameObject\MapObject\03. Plants\00. Plants</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\Bush.cpp">
+      <Filter>03. GameObject\MapObject\03. Plants\01. Bush</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\Grass.cpp">
+      <Filter>03. GameObject\MapObject\03. Plants\02. Grass</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\Moss.cpp">
+      <Filter>03. GameObject\MapObject\03. Plants\03. Moss</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\Tree.cpp">
+      <Filter>03. GameObject\MapObject\03. Plants\04. Tree</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\Vine.cpp">
+      <Filter>03. GameObject\MapObject\03. Plants\05. Vine</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\Rock.cpp">
+      <Filter>03. GameObject\MapObject\04. Rock</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\Water.cpp">
+      <Filter>03. GameObject\MapObject\05. Water</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\LandScape.cpp">
+      <Filter>03. GameObject\MapObject\02. LandScape</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\Level_Tutorial_Village.cpp">
+      <Filter>02. Level\Tutorial_Village</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\Level_Tutorial_Boss.cpp">
+      <Filter>02. Level\Tutorial_Boss</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\Level_Square.cpp">
+      <Filter>02. Level\Square</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\Level_Test.cpp">
+      <Filter>02. Level\Test</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\UIAimDot_Image.cpp">
+      <Filter>03. GameObject\UIObjects\02.UI\Image\Dynamic Image\06.AimDot</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\UIPlayerAmmo_Progress.cpp">
+      <Filter>03. GameObject\UIObjects\02.UI\Progress Bar\Player Ammo</Filter>
     </ClCompile>
     <ClCompile Include="..\Private\UILoading_Image.cpp">
-      <Filter>03. GameObject\MapObject\00. MapObject\UIObjects\02.UI\Image\Dynamic Image\04.LoadingImage</Filter>
+      <Filter>03. GameObject\UIObjects\02.UI\Image\Dynamic Image\04.LoadingImage</Filter>
     </ClCompile>
     <ClCompile Include="..\Private\Monster_Base.cpp">
       <Filter>03. GameObject\ContainerObjects\Monster</Filter>
@@ -1289,12 +1334,6 @@
       <Filter>07. System\01. Builder\AttackPreset</Filter>
     </ClCompile>
     <ClCompile Include="..\Private\LandScape.cpp" />
-    <ClCompile Include="..\Private\UI_World.cpp">
-      <Filter>03. GameObject\UIObjects\02.UI\World</Filter>
-    </ClCompile>
-    <ClCompile Include="..\Private\WorldUI.cpp">
-      <Filter>03. GameObject\UIObjects\02.UI\World</Filter>
-    </ClCompile>
     <ClCompile Include="..\Private\WorldUI_Component.cpp">
       <Filter>05. Component\WorldUI</Filter>
     </ClCompile>
@@ -1309,51 +1348,6 @@
     </ClCompile>
     <ClCompile Include="..\Private\UINameplate_BG.cpp">
       <Filter>03. GameObject\UIObjects\02.UI\Image\Dynamic Image\05.MonsterNameplate</Filter>
-    </ClCompile>
-    <ClCompile Include="..\Private\Gun.cpp">
-      <Filter>03. GameObject\PartObjects\Weapon\Gun</Filter>
-    </ClCompile>
-    <ClCompile Include="..\Private\State_GunBase.cpp">
-      <Filter>06. FSM\Player\Attack\Gun</Filter>
-    </ClCompile>
-    <ClCompile Include="..\Private\Plants.cpp">
-      <Filter>03. GameObject\MapObject\03. Plants\00. Plants</Filter>
-    </ClCompile>
-    <ClCompile Include="..\Private\Bush.cpp">
-      <Filter>03. GameObject\MapObject\03. Plants\01. Bush</Filter>
-    </ClCompile>
-    <ClCompile Include="..\Private\Grass.cpp">
-      <Filter>03. GameObject\MapObject\03. Plants\02. Grass</Filter>
-    </ClCompile>
-    <ClCompile Include="..\Private\Moss.cpp">
-      <Filter>03. GameObject\MapObject\03. Plants\03. Moss</Filter>
-    </ClCompile>
-    <ClCompile Include="..\Private\Tree.cpp">
-      <Filter>03. GameObject\MapObject\03. Plants\04. Tree</Filter>
-    </ClCompile>
-    <ClCompile Include="..\Private\Vine.cpp">
-      <Filter>03. GameObject\MapObject\03. Plants\05. Vine</Filter>
-    </ClCompile>
-    <ClCompile Include="..\Private\Rock.cpp">
-      <Filter>03. GameObject\MapObject\04. Rock</Filter>
-    </ClCompile>
-    <ClCompile Include="..\Private\Water.cpp">
-      <Filter>03. GameObject\MapObject\05. Water</Filter>
-    </ClCompile>
-    <ClCompile Include="..\Private\LandScape.cpp">
-      <Filter>03. GameObject\MapObject\02. LandScape</Filter>
-    </ClCompile>
-    <ClCompile Include="..\Private\Level_Tutorial_Village.cpp">
-      <Filter>02. Level\Tutorial_Village</Filter>
-    </ClCompile>
-    <ClCompile Include="..\Private\Level_Tutorial_Boss.cpp">
-      <Filter>02. Level\Tutorial_Boss</Filter>
-    </ClCompile>
-    <ClCompile Include="..\Private\Level_Square.cpp">
-      <Filter>02. Level\Square</Filter>
-    </ClCompile>
-    <ClCompile Include="..\Private\Level_Test.cpp">
-      <Filter>02. Level\Test</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

@@ -122,7 +122,7 @@ void CUI_Inspector::Input_RectTransform()
 {
 	ImGui::PushID("RectTransform");
 	ImGui::SeparatorText("Rect Transform");
-	ImGui::BeginChild("RectTransformCard", ImVec2(0, 200.f), true, ImGuiWindowFlags_NoScrollbar);
+	ImGui::BeginChild("RectTransformCard", ImVec2(0, 150.f), true, ImGuiWindowFlags_NoScrollbar);
 	ImGui::TextDisabled("Anchor / pivot preset (3x3).");
 	ImGui::Spacing();
 
@@ -165,7 +165,7 @@ void CUI_Inspector::Input_RectTransform()
 	////////////////////////////
 	// Transform / Size Card
 	ImGui::Spacing();
-	ImGui::BeginChild("RectTransformValuesCard", ImVec2(0, 112.f), true, ImGuiWindowFlags_NoScrollbar);
+	ImGui::BeginChild("RectTransformValuesCard", ImVec2(0, 300.f), true, ImGuiWindowFlags_NoScrollbar);
 
 	ImGui::TextDisabled("Size and position (local).");
 	ImGui::Spacing();
@@ -206,6 +206,24 @@ void CUI_Inspector::Input_RectTransform()
 		ImGui::EndTable();
 	}
 
+	ImGui::Spacing();
+
+	// Scale / Rotate
+	{
+		_float fRotate = m_pSelectedUI->Get_Rotate();
+		_float fDeg = DirectX::XMConvertToDegrees(fRotate);
+		
+		// degree로 편집 (min==max => 제한 없음)
+		if (ImGui::DragFloat("##UIRotateDeg", &fDeg, 0.1f, 0.f, 0.f, "%.2f deg"))
+		{
+			const _float fRad = DirectX::XMConvertToRadians(fDeg);
+			m_pSelectedUI->Set_Rotate(fRad);
+		}
+		ImGui::SameLine();
+		if (ImGui::Button("0.0##RotateReset"))
+			m_pSelectedUI->Set_Rotate(0.f);
+	}
+
 	ImGui::InputFloat("Alpha", &m_pSelectedUI->Get_AlphaRatio_Ref());
 	ImGui::Checkbox("Visible", &m_pSelectedUI->Get_InitVisible());
 	ImGui::SameLine();
@@ -241,7 +259,63 @@ void CUI_Inspector::Input_RectTransform()
 			}
 		}
 	}
+	if (ImGui::Button("All Activate"))
+	{
+		auto* pCanvas = m_pUIManager->Safe_Access_Canvas(m_pUIManager->Get_CurCanvasIndex());
+		if (nullptr != pCanvas)
+		{
+			for (auto* pUI : *(pCanvas->Safe_Access_UI_Vector()))
+			{
+				if (nullptr == pUI)
+					continue;
 
+				pUI->Set_Activate();
+			}
+		}
+	}
+	if (ImGui::Button("All InActivate"))
+	{
+		auto* pCanvas = m_pUIManager->Safe_Access_Canvas(m_pUIManager->Get_CurCanvasIndex());
+		if (nullptr != pCanvas)
+		{
+			for (auto* pUI : *(pCanvas->Safe_Access_UI_Vector()))
+			{
+				if (nullptr == pUI)
+					continue;
+
+				pUI->Set_InActivate();
+			}
+		}
+	}
+
+	if (ImGui::Button("All Interact"))
+	{
+		auto* pCanvas = m_pUIManager->Safe_Access_Canvas(m_pUIManager->Get_CurCanvasIndex());
+		if (nullptr != pCanvas)
+		{
+			for (auto* pUI : *(pCanvas->Safe_Access_UI_Vector()))
+			{
+				if (nullptr == pUI)
+					continue;
+
+				pUI->Set_Interactable();
+			}
+		}
+	}
+	if (ImGui::Button("All NonInteract"))
+	{
+		auto* pCanvas = m_pUIManager->Safe_Access_Canvas(m_pUIManager->Get_CurCanvasIndex());
+		if (nullptr != pCanvas)
+		{
+			for (auto* pUI : *(pCanvas->Safe_Access_UI_Vector()))
+			{
+				if (nullptr == pUI)
+					continue;
+
+				pUI->Set_NonInteractable();
+			}
+		}
+	}
 	ImGui::EndChild();
 	ImGui::PopID();
 }

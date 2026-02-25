@@ -348,6 +348,8 @@ void CToolUI::Sync_Data()
 	m_tUIData.isVisible				= m_isVisible;
 	m_tUIData.isInteract			= m_isInteract;
 	m_tUIData.isActivate			= m_isActive;
+	m_tUIData.fScale				= m_fScale;
+	m_tUIData.fRotate				= m_fRotate;
 
 	// Tool UI Values
 	m_tUIData.strTag				= m_strName;

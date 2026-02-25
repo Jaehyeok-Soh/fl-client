@@ -270,6 +270,7 @@
     <ClInclude Include="..\Public\Tree.h" />
     <ClInclude Include="..\Public\Level_Tutorial_Boss.h" />
     <ClInclude Include="..\Public\Level_Tutorial_Village.h" />
+    <ClInclude Include="..\Public\UIAimDot_Image.h" />
     <ClInclude Include="..\Public\UIButton_Trigger.h" />
     <ClInclude Include="..\Public\UICommon_Trigger.h" />
     <ClInclude Include="..\Public\UIDynamic_Image.h" />
@@ -287,6 +288,7 @@
     <ClInclude Include="..\Public\UIMonsterStat_Progress.h" />
     <ClInclude Include="..\Public\UIMonsterStat_Text.h" />
     <ClInclude Include="..\Public\UINameplate_BG.h" />
+    <ClInclude Include="..\Public\UIPlayerAmmo_Progress.h" />
     <ClInclude Include="..\Public\UIPlayerStat_Progress.h" />
     <ClInclude Include="..\Public\UIPlayerStat_Text.h" />
     <ClInclude Include="..\Public\UIProgress_Bar.h" />
@@ -294,11 +296,9 @@
     <ClInclude Include="..\Public\UIText.h" />
     <ClInclude Include="..\Public\UITrigger.h" />
     <ClInclude Include="..\Public\UI_Manager.h" />
-    <ClInclude Include="..\Public\UI_World.h" />
     <ClInclude Include="..\Public\Vine.h" />
     <ClInclude Include="..\Public\Water.h" />
     <ClInclude Include="..\Public\Weapon.h" />
-    <ClInclude Include="..\Public\WorldUI.h" />
     <ClInclude Include="..\Public\WorldUI_Component.h" />
     <ClInclude Include="Client.h" />
     <ClInclude Include="framework.h" />
@@ -439,6 +439,7 @@
     <ClCompile Include="..\Private\Tree.cpp" />
     <ClCompile Include="..\Private\Level_Tutorial_Boss.cpp" />
     <ClCompile Include="..\Private\Level_Tutorial_Village.cpp" />
+    <ClCompile Include="..\Private\UIAimDot_Image.cpp" />
     <ClCompile Include="..\Private\UIButton_Trigger.cpp" />
     <ClCompile Include="..\Private\UICommon_Trigger.cpp" />
     <ClCompile Include="..\Private\UIDynamic_Image.cpp" />
@@ -456,6 +457,7 @@
     <ClCompile Include="..\Private\UIMonsterStat_Progress.cpp" />
     <ClCompile Include="..\Private\UIMonsterStat_Text.cpp" />
     <ClCompile Include="..\Private\UINameplate_BG.cpp" />
+    <ClCompile Include="..\Private\UIPlayerAmmo_Progress.cpp" />
     <ClCompile Include="..\Private\UIPlayerStat_Progress.cpp" />
     <ClCompile Include="..\Private\UIPlayerStat_Text.cpp" />
     <ClCompile Include="..\Private\UIProgress_Bar.cpp" />
@@ -463,11 +465,9 @@
     <ClCompile Include="..\Private\UIText.cpp" />
     <ClCompile Include="..\Private\UITrigger.cpp" />
     <ClCompile Include="..\Private\UI_Manager.cpp" />
-    <ClCompile Include="..\Private\UI_World.cpp" />
     <ClCompile Include="..\Private\Vine.cpp" />
     <ClCompile Include="..\Private\Water.cpp" />
     <ClCompile Include="..\Private\Weapon.cpp" />
-    <ClCompile Include="..\Private\WorldUI.cpp" />
     <ClCompile Include="..\Private\WorldUI_Component.cpp" />
     <ClCompile Include="..\Public\Physics_Terrain.cpp" />
     <ClCompile Include="Client.cpp" />

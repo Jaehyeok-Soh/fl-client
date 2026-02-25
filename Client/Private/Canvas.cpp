@@ -287,7 +287,6 @@ CGenericUI* CCanvas::Calc_TopUI()
 				if (pTopUI->Get_PosZ() > pUI->Get_PosZ())
 					pTopUI = pUI;
 			}
-
 		}
 	}
 	return pTopUI;

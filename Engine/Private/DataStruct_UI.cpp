@@ -168,6 +168,8 @@ void to_json(json& j, const TUI_GenericUIData& data)
 		{ "fPosX", data.fPosX },
 		{ "fPosY", data.fPosY },
 		{ "fPosZ", data.fPosZ },
+		{ "fScale", data.fScale	},
+		{ "fRotate", data.fRotate},
 		{ "strTextureTag", data.strTextureTag },
 		{ "isVisible", data.isVisible },
 		{ "isInteract", data.isInteract },
@@ -198,6 +200,8 @@ void from_json(const json& j, TUI_GenericUIData& data)
 	data.fPosX				= 0.f;
 	data.fPosY				= 0.f;
 	data.fPosZ				= 0.f;
+	data.fScale				= 1.f;
+	data.fRotate			= 0.f;
 	data.strTextureTag		= "";
 	data.isVisible			= true;
 	data.isInteract			= true;
@@ -231,6 +235,8 @@ void from_json(const json& j, TUI_GenericUIData& data)
 	data.fPosX				= j.value("fPosX", data.fPosX);
 	data.fPosY				= j.value("fPosY", data.fPosY);
 	data.fPosZ				= j.value("fPosZ", data.fPosZ);
+	data.fScale				= j.value("fScale", data.fScale);
+	data.fRotate			= j.value("fRotate", data.fRotate);
 	data.strTextureTag		= j.value("strTextureTag", data.strTextureTag);
 	data.isVisible			= j.value("isVisible", data.isVisible);
 	data.isInteract			= j.value("isInteract", data.isInteract);

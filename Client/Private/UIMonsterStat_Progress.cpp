@@ -88,17 +88,10 @@ HRESULT CUIMonsterStat_Progress::Render()
 {
 	if (!m_isVisible)
 		return S_OK;
-
-	if (FAILED(Super::Render()))
-		return E_FAIL;
-
 	if (FAILED(Bind_ShaderResources()))
 		return E_FAIL;
-
-	Get_Component<CShader>()->Apply();
-	Get_Component<CVIBuffer>()->Bind_Resource();
-	Get_Component<CVIBuffer>()->Render();
-
+	if (FAILED(Super::Render()))
+		return E_FAIL;
 	return S_OK;
 }
 
@@ -143,6 +136,8 @@ _bool CUIMonsterStat_Progress::Tick_InVisible_Event(const _float fTimeDelta)
 
 HRESULT CUIMonsterStat_Progress::Ready_Components(MONSTER_STAT_PROGRESS_DESC* pDesc)
 {
+	if (FAILED(Super::Ready_Components(pDesc)))
+		return E_FAIL;
 	return S_OK;
 }
 
@@ -151,6 +146,8 @@ HRESULT CUIMonsterStat_Progress::Bind_ShaderResources()
 	Super::Bind_ShaderResources();
 	CShader* pShader = Get_Component<CShader>();
 	if (FAILED(Get_Component<CTransform>()->Bind_ShaderResource(pShader)))
+		return E_FAIL;
+	if (FAILED(Super::Bind_ShaderResources()))
 		return E_FAIL;
 	return S_OK;
 }

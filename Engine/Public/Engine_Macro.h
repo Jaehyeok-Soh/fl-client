@@ -18,8 +18,22 @@
 #define CLOG_ERROR(msg) ((void)0)
 #endif
 
-#ifndef			MSG_BOX
-#define			MSG_BOX(_message)			MessageBox(nullptr, TEXT(_message), L"System Message", MB_OK)
+#ifndef MSG_BOX
+#define MSG_BOX(_message) \
+	do { \
+		OutputDebugString(TEXT(_message)); \
+		OutputDebugString(TEXT("\n")); \
+		MessageBox(nullptr, TEXT(_message), L"System Message", MB_OK); \
+	} while (false)
+#endif
+
+#ifndef MSG_BOXW
+#define MSG_BOXW(_message) \
+	do { \
+		OutputDebugStringW((_message)); \
+		OutputDebugStringW(L"\n"); \
+		MessageBoxW(nullptr, (_message), L"System Message", MB_OK); \
+	} while (false)
 #endif
 
 #define			NS_BEGIN(NAMESPACE)			namespace NAMESPACE {

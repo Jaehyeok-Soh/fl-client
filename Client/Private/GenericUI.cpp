@@ -56,12 +56,21 @@ HRESULT CGenericUI::Initialize(void* pArg)
 
 	if (FAILED(Super::Initialize(pArg)))
 		return E_FAIL;
-	if (FAILED(Ready_Components(pDesc)))
+	m_vMoveOffsetBase = m_vMoveOffset;
+	m_fBrightness = 1.f;
+	return S_OK;
+}
+
+HRESULT CGenericUI::Awake(const _uint iCurrentLevelID)
+{
+	if (FAILED(Super::Awake(iCurrentLevelID)))
 		return E_FAIL;
 
 	Get_Component<CShader>()->Set_Pass(m_iShaderPass);
+
 	if (FAILED(Get_Component<CTexture>()->Add_DefaultTexture(m_wstrTextureTag, DEFAULT)))
 		return E_FAIL;
+
 	if (m_wstrNoiseTextureTag != L"")
 	{
 		if (FAILED(Get_Component<CTexture>()->Add_DefaultTexture(m_wstrNoiseTextureTag, NOISE)))
@@ -72,16 +81,6 @@ HRESULT CGenericUI::Initialize(void* pArg)
 		if (FAILED(Get_Component<CTexture>()->Add_DefaultTexture(m_wstrAlphaMaskTextureTag, ALPHA_MASK)))
 			return E_FAIL;
 	}
-
-	m_vMoveOffsetBase = m_vMoveOffset;
-	m_fBrightness = 1.f;
-	return S_OK;
-}
-
-HRESULT CGenericUI::Awake(const _uint iCurrentLevelID)
-{
-	if (FAILED(Super::Awake(iCurrentLevelID)))
-		return E_FAIL;
 
 	m_iInteractState = static_cast<uint32_t>(EUIEvent_Flag::NONE);
 	return S_OK;
@@ -112,21 +111,23 @@ void CGenericUI::Update_Late(const _float fTimeDelta)
 
 void CGenericUI::Ready_Before_Render(const _float fTimeDelta)
 {
+	Super::Ready_Before_Render(fTimeDelta);
+
 	if (nullptr != m_pWorldUIComp)
 	{
 		Set_Position(Vec3{ m_pWorldUIComp->Get_TargetScreenPos().x, m_pWorldUIComp->Get_TargetScreenPos().y, m_fZ }) ;
 		Move_Size(m_fWidth * m_pWorldUIComp->Get_ScaleOffset(), m_fHeight * m_pWorldUIComp->Get_ScaleOffset());
 	}
-	Super::Ready_Before_Render(fTimeDelta);
 }
 
 HRESULT CGenericUI::Render()
 {
 	if (FAILED(Super::Render()))
 		return E_FAIL;
-	if (FAILED(Bind_ShaderResources()))
-		return E_FAIL;
 
+	Get_Component<CShader>()->Apply();
+	Get_Component<CVIBuffer>()->Bind_Resource();
+	Get_Component<CVIBuffer>()->Render();
 	return S_OK;
 }
 
@@ -162,8 +163,7 @@ HRESULT CGenericUI::Ready_Components(GENERIC_UI_DESC* pDesc)
 		auto* p = m_pGameInstance->Get_GameObject_Front(ENUM_TO_UINT(ELevelType::LOGO), L"Monster");
 		if (nullptr == p)
 			return E_FAIL;
-		//Desc.pTargetTransform = (pDesc->pTarget->Get_Component<CTransform>());
-		Desc.pTargetObject = (p);
+		Desc.pTargetObject = p;
 
 		D3D11_VIEWPORT vp = {};
 		_uint n = 1;
@@ -172,7 +172,7 @@ HRESULT CGenericUI::Ready_Components(GENERIC_UI_DESC* pDesc)
 		Desc.fVPHegiht		= vp.Height;
 		Desc.fVPTopLeftX	= vp.TopLeftX;
 		Desc.fVPTopLeftY	= vp.TopLeftY;
-		Desc.fInitOffset = Vec2{ m_fX, m_fY };
+		Desc.fInitOffset	= Vec2{ m_fX, m_fY };
 
 		if (FAILED(Add_Script_Component(L"WorldUIComponent", L"Prototype_ScriptComponent_WorldUI", &Desc)))
 			return E_FAIL;

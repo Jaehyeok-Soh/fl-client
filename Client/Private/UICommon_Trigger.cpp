@@ -35,6 +35,8 @@ HRESULT CUICommon_Trigger::Initialize(void* pArg)
 	UI_TRIGGER_DESC* pDesc = static_cast<UI_TRIGGER_DESC*>(pArg);
 	if (FAILED(Super::Initialize(pArg)))
 		return E_FAIL;
+	if (FAILED(Ready_Components(pDesc)))
+		return E_FAIL;
 	if (FAILED(Attach_Personal_Info()))
 		return E_FAIL;
 	return S_OK;
@@ -105,17 +107,10 @@ HRESULT CUICommon_Trigger::Render()
 {
 	if (!m_isVisible)
 		return S_OK;
-
-	if (FAILED(Super::Render()))
-		return E_FAIL;
-
 	if (FAILED(Bind_ShaderResources()))
 		return E_FAIL;
-
-	Get_Component<CShader>()->Apply();
-	Get_Component<CVIBuffer>()->Bind_Resource();
-	Get_Component<CVIBuffer>()->Render();
-
+	if (FAILED(Super::Render()))
+		return E_FAIL;
 	return S_OK;
 }
 
@@ -147,7 +142,6 @@ void CUICommon_Trigger::OnUIEvent(ETriggerEventType eEvent, CGenericUI* pSender)
 			m_eCurTriggerType = ETriggerEventType::PRESS_ENTER;
 			Set_Interactable();
 		}
-
 		break;
 	case Client::ETriggerEventType::PRESS_EXIT:
 		break;
@@ -189,17 +183,15 @@ _bool CUICommon_Trigger::Tick_NonInteractable_Event(const _float fTimeDelta)
 
 HRESULT CUICommon_Trigger::Ready_Components(UI_TRIGGER_DESC* pDesc)
 {
+	if (FAILED(Super::Ready_Components(pDesc)))
+		return E_FAIL;
 	return S_OK;
 }
 
 HRESULT CUICommon_Trigger::Bind_ShaderResources()
 {
-	CShader* pShader = Get_Component<CShader>();
-	if (FAILED(Get_Component<CTransform>()->Bind_ShaderResource(pShader)))
+	if (FAILED(Super::Bind_ShaderResources()))
 		return E_FAIL;
-
-	Super::Bind_ShaderResources();
-
 	return S_OK;
 }
 
