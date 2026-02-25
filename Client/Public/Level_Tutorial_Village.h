@@ -16,14 +16,13 @@ public:
 	virtual void	Update(const _float fTimeDelta) override;
 	virtual HRESULT Render() override;
 private:
-	/* Logo Scene에서 Player를 만들예정 */
 	HRESULT Build_Prototype();
 	HRESULT Build_Files();
 	HRESULT Ready_Player_Layer(const wstring& wstrLayerTag);
 	HRESULT Ready_UI_Layer(const wstring& wstrLayerTag);
 	HRESULT Ready_Camera_Layer(const wstring& wstrLayerTag);
 	HRESULT Ready_Lights();
-	HRESULT Ready_DevMap();
+	HRESULT Ready_Map();
 	HRESULT Ready_Monster();
 	HRESULT Ready_Camera_Setting(const _uint iLevelIndex);
 	HRESULT Ready_Octree();

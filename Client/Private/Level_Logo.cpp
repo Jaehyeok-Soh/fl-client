@@ -27,10 +27,6 @@
 #include "Effect.h"
 #include "EffectObject.h"
 #include "Physics_LandScape.h"
-#include "Monster_Dummy.h"
-#include "Monster_Dummy_Body.h"
-#include "Boss_Xibi.h"
-#include "Boss_Xibi_Body.h"
 
 //=================
 // UI
@@ -47,9 +43,6 @@
 #include "PhysicsCCT.h"
 
 #include "GameInstance.h"
-#include "Level_Square.h"
-#include "Level_Tutorial_Village.h"
-#include "Level_Tutorial_Boss.h"
 
 CLevel_Logo::CLevel_Logo(ID3D11Device* pDevice, ID3D11DeviceContext* pDeviceContext)
 	: Super(pDevice, pDeviceContext)
@@ -62,32 +55,34 @@ HRESULT CLevel_Logo::Initialize()
 		return E_FAIL;
 
 	if (FAILED(Build_Prototype()))
+	{
+		MSG_BOX("CLevel_Logo::Initialize, Build_Prototype Create Failed");
 		return E_FAIL;
-
-	if (FAILED(Ready_Monster()))
-		return E_FAIL;
-
-	if (FAILED(Ready_Boss_Layer(g_wszBossLayer)))
-		return E_FAIL;
+	}
 
 	if (FAILED(Build_Files()))
+	{
 		return E_FAIL;
+	}
 
+	/* 카메라 생성 */
 	if (FAILED(Ready_Camera_Layer(g_wszDynamicCameraLayer)))
+	{
+		MSG_BOX("CLevel_Logo::Initialize, Ready_Camera_Layer Create Failed");
 		return E_FAIL;
+	}
 
-	if (FAILED(Ready_Player_Layer(g_wszPlayerLayer)))
+	/* 카메라 생성 후 세팅 */
+	if (FAILED(Ready_Camera_Setting(ENUM_TO_UINT(ELevelType::LOGO))))
+	{
 		return E_FAIL;
-
-	if (FAILED(Ready_DevMap()))
-		return E_FAIL;
+	}
 
 	if (FAILED(Ready_UI_Layer(g_wszUILayer)))
+	{
+		MSG_BOX("CLevel_Logo::Initialize, Ready_UI_Layer Create Failed");
 		return E_FAIL;
-
-	if (FAILED(Ready_Lights()))
-		return E_FAIL;
-
+	}
 
 	return S_OK;
 }
@@ -95,9 +90,6 @@ HRESULT CLevel_Logo::Initialize()
 HRESULT CLevel_Logo::Awake(const _uint iLevelID)
 {
 	if (FAILED(Super::Awake(iLevelID)))
-		return E_FAIL;
-
-	if (FAILED(Ready_Octree()))
 		return E_FAIL;
 
 	if (FAILED(Ready_Camera_Setting(iLevelID)))
@@ -141,35 +133,6 @@ void CLevel_Logo::Update(const _float fTimeDelta)
 		}
 #endif
 		m_pGameInstance->Request_CursorMode(m_eCursorMode);
-	}
-
-	// 오브젝트 풀링 테스트
-	if (m_pGameInstance->KeyButton_Down(DIK_0))
-	{
-		 CUI_Manager::GetInstance()->Request_Add_Prefab(ENUM_TO_UINT(ELevelType::LOGO),EUIPrefabType::MONSTER_NAMEPLATE);
-		 m_pGameInstance->Flush_All();
-		 CUI_Manager::GetInstance()->Request_SortUI();
-
-	}
-
-	// GlobalTimeScale 테스트
-	{
-		if (m_pGameInstance->KeyButton_Down(DIK_9))
-		{
-			m_pGameInstance->Request_HitStop();
-		} 
-		if (m_pGameInstance->KeyButton_Down(DIK_8))
-		{
-			m_pGameInstance->Request_SloMo(0.2f, 2.f);
-		}
-		if (m_pGameInstance->KeyButton_Down(DIK_6))
-		{
-			m_pGameInstance->Active_SloMo(0.5f);
-		}
-		if (m_pGameInstance->KeyButton_Down(DIK_7))
-		{
-			m_pGameInstance->Deactivate_SloMo();
-		}
 	}
 }
 
@@ -238,101 +201,6 @@ HRESULT CLevel_Logo::Build_Files()
 		}
 	}
 
-	eCategory = DTO::ECategory::UI_PREFAB;
-	if (FAILED(m_pGameInstance->Regist_Document<CDataDocument_UI>(iLevelID, eCategory)))
-		return E_FAIL;
-	strUIFolderPath = L"../../Resources/Data/UIData/Prefab/";
-	if (std::filesystem::exists(strUIFolderPath))
-	{
-		for (auto iter : std::filesystem::directory_iterator(strUIFolderPath))
-		{
-			if (FAILED(m_pGameInstance->Load_File_Json(iLevelID, eCategory, iter.path())))
-				return E_FAIL;
-
-			if (FAILED(Build_File(iLevelID, eCategory, iter.path().stem().string())))
-				return E_FAIL;
-		}
-	}
-	return S_OK;
-}
-
-HRESULT CLevel_Logo::Ready_Player_Layer(const wstring& wstrLayerTag)
-{
-	{
-		CGameObject* pResult = { nullptr };
-
-		CPlayer::PLAYER_DESC playerDesc = {};
-		CTransform::TRANSFORM_DESC transformDesc = {};
-		playerDesc.iLevelIndex = ENUM_TO_UINT(ELevelType::LOGO);
-		playerDesc.wstrBodyModelTag = L"Prototype_Component_Model_Master";
-		transformDesc.TranslationMatrix = Matrix::CreateTranslation(Vec3(229.12f,256.72f,-245.039f));
-		playerDesc.pTransform_Desc = &transformDesc;
-		if (!(pResult = m_pGameInstance->Add_GameObject(ENUM_TO_UINT(ELevelType::STATIC),
-			L"Prototype_GameObject_MainPlayer",
-			ENUM_TO_UINT(ELevelType::LOGO),
-			wstrLayerTag, &playerDesc)))
-			return E_FAIL;
-	}
-
-	return S_OK;
-}
-
-HRESULT CLevel_Logo::Ready_Boss_Layer(const wstring& wstrLayerTag)
-{
-	// BoneInfo
-	vector<std::pair<_uint, string>> vecboneNames
-	{
-		{ENUM_TO_UINT(CMonster_Body_Base::EBone::RightHand), "hook_arm_r"}
-	};
-
-	{
-		CGameObject* pResult = { nullptr };
-
-		CMonster_Base::MONSTER_DESC monsterDesc = {};
-		CTransform::TRANSFORM_DESC transformDesc = {};
-		monsterDesc.iLevelIndex = ENUM_TO_UINT(ELevelType::LOGO);
-		monsterDesc.wstrBodyModelTag = L"Prototype_Component_Model_Xibi";
-		monsterDesc.wstrPartBodyPrototypeTag = L"Prototype_GameObject_Boss_Xibi_Body";
-		transformDesc.TranslationMatrix = Matrix::CreateTranslation(Vec3(18.f, 12.f, 19.f));
-		monsterDesc.spanBoneNames = vecboneNames;
-		monsterDesc.pTransform_Desc = &transformDesc;
-		monsterDesc.wstrMonsterStateTag = L"Boss_Xibi";
-
-		{
-			PHYSICSCCT_DESC desc;
-			desc.pOwner = nullptr;
-			desc.bIsPlayer = false;
-			desc.eType = EPhysicsCCTType::BOX;
-			desc.pOwnerMatrix = nullptr;
-			desc.fRadius = 0.5f;
-			desc.fHeight = 1.f;
-			desc.vExtens = { 2.f, 2.f, 2.f };
-
-			PHYSICSMATERIAL_DESC mtrlDesc{};
-			mtrlDesc.eMaterial = EPhysicsMaterial::PLAYER;
-			desc.tMaterial = mtrlDesc;
-
-			desc.eFilterLayer = PHYSICSFILTERGROUP::Enum::MONSTER;
-			desc.iFilterMask =
-				PHYSICSFILTERGROUP::Enum::MONSTER
-				| PHYSICSFILTERGROUP::Enum::PLAYER
-				| PHYSICSFILTERGROUP::Enum::ATTACK
-				| PHYSICSFILTERGROUP::Enum::ATTACK_PROJECTTILE
-				| PHYSICSFILTERGROUP::Enum::SKILL
-				| PHYSICSFILTERGROUP::Enum::SKILL_PROJECTTILE
-				| PHYSICSFILTERGROUP::Enum::MAP
-				| PHYSICSFILTERGROUP::Enum::OBJECT1
-				| PHYSICSFILTERGROUP::Enum::OBJECT2;
-
-			monsterDesc.tCCTDesc = desc;
-		}
-
-		if (!(pResult = m_pGameInstance->Add_GameObject(ENUM_TO_UINT(ELevelType::LOGO),
-			L"Prototype_GameObject_Boss_Xibi",
-			ENUM_TO_UINT(ELevelType::LOGO),
-			g_wszBossLayer, &monsterDesc)))
-			return E_FAIL;
-	}
 
 	return S_OK;
 }
@@ -375,119 +243,6 @@ HRESULT CLevel_Logo::Ready_Camera_Layer(const wstring& wstrLayerTag)
 
 HRESULT CLevel_Logo::Ready_Lights()
 {
-	{
-		LIGHT_DESC desc = {};
-		desc.eType = LIGHT_TYPE::DIRECTIONAL;
-		desc.vDirection = Vec3{ 1.f, -1.f, 1.f };
-		desc.vDiffuse = Vec4(0.7f, 0.7f, 0.7f, 1.f);
-		desc.vAmbient = Vec4(0.3f, 0.3f, 0.3f, 1.f);
-		desc.vSpecular = desc.vDiffuse;
-
-		if (FAILED(m_pGameInstance->Add_Light(desc)))
-			return E_FAIL;
-	}
-	{
-		LIGHT_DESC desc = {};
-		desc.eType = LIGHT_TYPE::STATICPOINT;
-		desc.vDiffuse = Vec4(0.5f, 0.3f, 0.7f, 1.f);
-		desc.vAmbient = Vec4(0.2f, 0.1f, 0.3f, 1.f);
-		desc.vSpecular = desc.vDiffuse;
-		desc.vPosition = Vec4(21.f, 18.f, 0.f, 1.f);
-		desc.fRange = 10.f;
-
-		if (FAILED(m_pGameInstance->Add_Light(desc)))
-			return E_FAIL;
-	}
-	{
-		LIGHT_DESC desc = {};
-		desc.eType = LIGHT_TYPE::STATICPOINT;
-		desc.vDiffuse = Vec4(0.3f, 0.6f, 0.4f, 1.f);
-		desc.vAmbient = Vec4(0.1f, 0.3f, 0.2f, 1.f);
-		desc.vSpecular = desc.vDiffuse;
-		desc.vPosition = Vec4(21.f, 14.5f, 25.f, 1.f);
-		desc.fRange = 10.f;
-
-		if (FAILED(m_pGameInstance->Add_Light(desc)))
-			return E_FAIL;
-	}
-
-	return S_OK;
-}
-
-HRESULT CLevel_Logo::Ready_DevMap()
-{
-	ELevelType eLevelType = ELevelType::LOGO;
-	DTO::ECategory eCategory = DTO::ECategory::MAP;
-	_uint iLevelID = ENUM_TO_UINT(eLevelType);
-
-	if (FAILED(m_pGameInstance->Regist_Document<CDataDocument_Map>(iLevelID, eCategory)))
-		return E_FAIL;
-
-	std::filesystem::path FilePath = L"../../Resources/Data/MapData/LevelData/Prolog/Clouds/Clouds.json";
-
-	if (!std::filesystem::exists(FilePath))
-		return E_FAIL;
-
-	if (FAILED(m_pGameInstance->Load_File_Json(iLevelID, eCategory , FilePath )))
-		return E_FAIL;
-
-	if (FAILED(Build_File(iLevelID,eCategory,FilePath.stem().string())))
-		return E_FAIL;
-
-	return S_OK;
-}
-
-HRESULT CLevel_Logo::Ready_Monster()
-{
-	{
-		CGameObject* pResult = { nullptr };
-
-		CMonster_Base::MONSTER_DESC monsterDesc = {};
-		CTransform::TRANSFORM_DESC transformDesc = {};
-		monsterDesc.iLevelIndex = ENUM_TO_UINT(ELevelType::LOGO);
-		monsterDesc.wstrBodyModelTag = L"Prototype_Component_Model_Monster_Dog";
-		monsterDesc.wstrPartBodyPrototypeTag = L"Prototype_GameObject_Monster_Dummy_Body";
-		monsterDesc.wstrAttackOverlapPrototypeTag = L"Prototype_Component_AttackOverlap_Monster_Dog";
-		transformDesc.TranslationMatrix = Matrix::CreateTranslation(Vec3(18.f, 12.f, 19.f));
-		monsterDesc.pTransform_Desc = &transformDesc;
-		monsterDesc.wstrMonsterStateTag = L"Monster_Dog";
-
-		{
-			PHYSICSCCT_DESC desc;
-			desc.pOwner = nullptr;
-			desc.bIsPlayer = false;
-			desc.eType = EPhysicsCCTType::BOX;
-			desc.pOwnerMatrix = nullptr;
-			desc.fRadius = 0.5f;
-			desc.fHeight = 1.f;
-			desc.vExtens = { 2.f, 2.f, 2.f };
-
-			PHYSICSMATERIAL_DESC mtrlDesc{};
-			mtrlDesc.eMaterial = EPhysicsMaterial::PLAYER;
-			desc.tMaterial = mtrlDesc;
-
-			desc.eFilterLayer = PHYSICSFILTERGROUP::Enum::MONSTER;
-			desc.iFilterMask =
-				PHYSICSFILTERGROUP::Enum::MONSTER
-				| PHYSICSFILTERGROUP::Enum::PLAYER
-				| PHYSICSFILTERGROUP::Enum::ATTACK
-				| PHYSICSFILTERGROUP::Enum::ATTACK_PROJECTTILE
-				| PHYSICSFILTERGROUP::Enum::SKILL
-				| PHYSICSFILTERGROUP::Enum::SKILL_PROJECTTILE
-				| PHYSICSFILTERGROUP::Enum::MAP
-				| PHYSICSFILTERGROUP::Enum::OBJECT1
-				| PHYSICSFILTERGROUP::Enum::OBJECT2;
-
-			monsterDesc.tCCTDesc = desc;
-		}
-
-		if (!(pResult = m_pGameInstance->Add_GameObject(ENUM_TO_UINT(ELevelType::LOGO),
-			L"Prototype_GameObject_Monster_Dummy",
-			ENUM_TO_UINT(ELevelType::LOGO),
-			L"Monster", &monsterDesc)))
-			return E_FAIL;
-	}
-
 	return S_OK;
 }
 
@@ -499,84 +254,6 @@ HRESULT CLevel_Logo::Ready_Camera_Setting(const _uint iLevelIndex)
 	CGameObject* pPlayer = m_pGameInstance->Get_GameObject_Front(iLevelIndex, g_wszPlayerLayer);
 	m_pGameInstance->Change_Target(pPlayer);
 	m_pGameInstance->Ready_Frustrum();
-	return S_OK;
-}
-
-HRESULT CLevel_Logo::Ready_Octree()
-{
-	// 순회하며 OCTREE BOX 사이즈 검출
-	auto* pList = m_pGameInstance->Get_GameObject_List(ENUM_TO_UINT(ELevelType::LOGO), g_wszStaticObjectLayer);
-	
-	// Registe에 필요한 Object, Bound 버퍼 reserve
-	vector<CGameObject*> vecWillReigstObject;
-	vector<BoundingBox*> vecWillRegistBounds;
-	vecWillReigstObject.reserve(pList->size());
-	vecWillRegistBounds.reserve(pList->size());
-	{
-		Vec3 vMin{ FLT_MAX, FLT_MAX, FLT_MAX };
-		Vec3 vMax{ -FLT_MAX, -FLT_MAX, -FLT_MAX };
-		// 사이즈 검출 및 버퍼에 밀어넣기
-		for (auto* pElement : *pList)
-		{
-			CBounds* pBounds = pElement->Get_Component<CBounds>();
-			if (pBounds == nullptr)
-				continue;
-
-			vecWillReigstObject.push_back(pElement);
-			vecWillRegistBounds.push_back(pBounds->Get_WolrdAABB());
-			const BoundingBox& AABB = *pBounds->Get_WolrdAABB();
-
-			Vec3 vElementMinMax[2] =
-			{
-				AABB.Center - AABB.Extents,
-				AABB.Center + AABB.Extents
-			};
-
-			Engine_Utils::Merge_MinMax(vElementMinMax, vMin, vMax);
-		}
-
-		// 안맞으면 FAIL
-		if (vecWillRegistBounds.size() != vecWillReigstObject.size())
-			return E_FAIL;
-
-		// RootBox 생성
-		const _float fMargin = 50.f;
-
-		vMin -= Vec3(fMargin, fMargin, fMargin);
-		vMax += Vec3(fMargin, fMargin, fMargin);
-
-		const Vec3 vFinalCenter = (vMin + vMax) * 0.5f;
-		const Vec3 vFinalExtents = (vMax - vMin) * 0.5f;
-
-#ifdef _DEBUG
-		string strLog{
-			"RootBound Center = X: " + std::to_string(vFinalCenter.x) + "/ Y: " + std::to_string(vFinalCenter.y) + "/ Z: " + std::to_string(vFinalCenter.z)
-		};
-		CLOG_INFO(strLog);
-		strLog = {
-			"RootBound Extents = X: " + std::to_string(vFinalExtents.x) + "/ Y: " + std::to_string(vFinalExtents.y) + "/ Z: " + std::to_string(vFinalExtents.z)
-		};
-		CLOG_INFO(strLog);
-#endif
-
-
-		// RootBounds 생성
- 		OCTREE_DESC desc{};
-		desc.rootBounds = BoundingBox(vFinalCenter, vFinalExtents);
-		if (FAILED(m_pGameInstance->Ready_Octree(desc)))
-			return E_FAIL;
-	}
-
-	// 이제 버퍼를 순회하며 옥트리에 등록
-	for (size_t i = 0; i < vecWillReigstObject.size(); ++i)
-	{
-		if (FAILED(m_pGameInstance->Register_Octree(
-			vecWillReigstObject[i],
-			RENDER_CATEGORY::NONEBLEND,
-			*vecWillRegistBounds[i])))
-			return E_FAIL;
-	}
-
 	return S_OK;
 }
 

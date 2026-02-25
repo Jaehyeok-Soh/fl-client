@@ -75,7 +75,6 @@ HRESULT CBody::Awake(const _uint iCurrentLevelIndex)
 	if (FAILED(Super::Awake(iCurrentLevelIndex)))
 		return E_FAIL;
 
-	Get_Component<CPhysicsAttackOverlap>()->Awake();
 	Get_Component<CEffectHandler>()->Awake();
 
 	//Face_Smile
@@ -128,7 +127,6 @@ void CBody::Ready_Before_Render(_float fTimeDelta)
 
 #ifdef _DEBUG
 	m_pGameInstance->Push_DebugComponent(Get_Component<CCollider>());
-	m_pGameInstance->Push_DebugComponent(Get_Component<CPhysicsAttackOverlap>());
 #endif 
 }
 
@@ -351,18 +349,7 @@ HRESULT CBody::Ready_Components(BODY_DESC* pDesc)
 	if (FAILED(Add_Component<CShader>(0/*static*/, L"Prototype_Component_Shader_VtxAnimMesh", nullptr)))
 		return E_FAIL;
 
-	if (FAILED(Ready_AttackOverlap()))
-		return E_FAIL;
-
 	if(FAILED(Ready_EffectEvent()))
-		return E_FAIL;
-
-	return S_OK;
-}
-
-HRESULT CBody::Ready_AttackOverlap()
-{
-	if (FAILED(Add_Component<CPhysicsAttackOverlap>(0, L"Prototype_Component_AttackOverlap_PlayerMoon", nullptr)))
 		return E_FAIL;
 
 	return S_OK;

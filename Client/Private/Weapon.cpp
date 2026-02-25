@@ -230,7 +230,7 @@ HRESULT CWeapon::Ready_Components(WEAPON_DESC* pDesc)
 
 	if (m_bColorMapping = pDesc->bRGBShader)
 	{
-		Get_Component<CShader>()->Set_Pass(4);
+		Get_Component<CShader>()->Set_Pass(ENUM_TO_UINT(EMapObjectShaderPass::RGBMapping));
 		m_tColorDesc.vColorR = pDesc->vColorR;
 		m_tColorDesc.vColorG = pDesc->vColorG;
 		m_tColorDesc.vColorB = pDesc->vColorB;

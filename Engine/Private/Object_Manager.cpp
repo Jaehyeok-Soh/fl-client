@@ -37,6 +37,16 @@ HRESULT CObject_Manager::Awake(const _uint iCurrentLevelID)
 		}
 	}
 
+	for (auto& Pair : m_pLayers[0])
+	{
+		CLayer*& pLayer = Pair.second;
+		if (pLayer != nullptr)
+		{
+			if (FAILED(pLayer->Awake(iCurrentLevelID)))
+				return E_FAIL;
+		}
+	}
+
 	return S_OK;
 }
 
@@ -139,6 +149,9 @@ CGameObject* CObject_Manager::Add_GameObject(_uint iCloneLevelIndex, const wstri
 CGameObject* CObject_Manager::Add_GameObject(_uint iPrototypeLevelIndex, const wstring& wstrPrototypeTag, _uint iCloneLevelIndex, const wstring& wstrLayerTag, void* pArg)
 {
 	CGameObject* pGo = { nullptr };
+
+	if (iCloneLevelIndex == 0)
+		int a = 0;
 
 	// Pool쪽 먼저 체크
 	wstring wstrLayerTagFromPool = { L"" };

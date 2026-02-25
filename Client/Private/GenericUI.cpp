@@ -160,11 +160,7 @@ HRESULT CGenericUI::Ready_Components(GENERIC_UI_DESC* pDesc)
 	if ((pDesc->iComponentFlag & DTO::EComponentTypeFlag::WORLDUI_COMPONENT) != 0)
 	{
 		CWorldUI_Component::WOLRD_UI_COMP_DESC Desc = {};
-		auto* p = m_pGameInstance->Get_GameObject_Front(ENUM_TO_UINT(ELevelType::LOGO), L"Monster");
-		if (nullptr == p)
-			return E_FAIL;
-		Desc.pTargetObject = p;
-
+		Desc.pTargetObject = nullptr;
 		D3D11_VIEWPORT vp = {};
 		_uint n = 1;
 		m_pDeviceContext->RSGetViewports(&n, &vp);

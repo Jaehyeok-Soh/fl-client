@@ -132,7 +132,7 @@ _bool CLevelData::Export_Data(DTO::ECategory eCategory, CDataDocumentBase* pDocu
     /* Scenc Data 구조체 저장 */
     tData.strTag = m_strName + std::to_string(m_iObjectID);
     tData.strTextureSplatingInfoName = m_strTextureSplatingInfoName;
-
+    tData.strLevelTypeName = ClientleveltypeToString(m_eClientLevelType);
 
     if (FAILED(pMapDoc->Try_Add(tData)))
         return false;

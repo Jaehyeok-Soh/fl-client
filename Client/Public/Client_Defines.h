@@ -24,7 +24,7 @@ namespace Client
 
 
 		/* Test Scene은 맨 마지막 */
-		Test,
+		TEST,
 		END
 	};
 	inline constexpr size_t g_iLevelType_Count = static_cast<size_t>(ELevelType::END);
@@ -161,6 +161,28 @@ namespace Client
 #pragma region MapObject
 
 
+	static ELevelType StringToClientleveltype(const _string& str)
+	{
+		if (::strcmp(str.c_str(), "STATIC") == 0)
+			return ELevelType::STATIC;
+		else if (::strcmp(str.c_str(), "LOADING") == 0)
+			return ELevelType::LOADING;
+		else if (::strcmp(str.c_str(), "LOGO") == 0)
+			return ELevelType::LOGO;
+		else if (::strcmp(str.c_str(), "TUTORIAL_VILLAGE") == 0)
+			return ELevelType::TUTORIAL_VILLAGE;
+		else if (::strcmp(str.c_str(), "TUTORIAL_BOSS") == 0)
+			return ELevelType::TUTORIAL_BOSS;
+		else if (::strcmp(str.c_str(), "SQUARE") == 0)
+			return ELevelType::SQUARE;
+		else if (::strcmp(str.c_str(), "TEST") == 0)
+			return ELevelType::TEST;
+		else
+			return ELevelType::END;
+	}
+
+
+
 	/* Tool과 1ㄷ1 대응 */
 	static _uint Get_IndexByMaterialSlotName(const wstring& wstrSlotName)
 	{
@@ -200,6 +222,7 @@ namespace Client
 		Vine,
 		Rock,
 		Water,
+		RGBMapping,
 		SHADOW_BAKE,
 		DEBUG,
 		END,

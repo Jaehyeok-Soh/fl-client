@@ -162,48 +162,20 @@ _bool CGun::Get_CanReleod()
 	return (m_MTotalBullet.x > 0.f);
 }
 
-CGun* CGun::Create(ID3D11Device* pDevice, ID3D11DeviceContext* pDeviceContext)
-{
-	CGun* pInsatnce = new CGun(pDevice, pDeviceContext);
-	if (FAILED(pInsatnce->Initialize_Prototype()))
-	{
-		MSG_BOX("CGun::Create, Failed");
-		Safe_Release(pInsatnce);
-	}
-	return pInsatnce;
-}
-
-CGameObject* CGun::Clone(void* pArg)
-{
-	CGun* pClone = new CGun(*this);
-	if (FAILED(pClone->Initialize(pArg)))
-	{
-		MSG_BOX("CGun::Clone, Failed");
-		Safe_Release(pClone);
-	}
-	return pClone;
-}
-
-void CGun::Free()
-{
-	__super::Free();
-}
-
 void CGun::State_Start(GunState eState)
 {
 	switch (eState)
 	{
 	case GunState::NOATT:
-
 		break;
+
 	case GunState::ATT:
-
 		break;
+
 	case GunState::EMPTY:
-
 		break;
-	case GunState::RELOAD:
 
+	case GunState::RELOAD:
 		break;
 	}
 }
@@ -232,16 +204,16 @@ void CGun::State_End(GunState eState)
 	switch (eState)
 	{
 	case GunState::NOATT:
-
 		break;
+
 	case GunState::ATT:
-
 		break;
+
 	case GunState::EMPTY:
-
 		break;
-	case GunState::RELOAD:
 
+	case GunState::RELOAD:
+		Reload_Bullet();
 		break;
 	}
 }
@@ -252,7 +224,24 @@ void CGun::NoAttack_Update(const _float fTimeDelta)
 
 void CGun::Attack_Update(const _float fTimeDelta)
 {
-	
+	// 총을 쏠 수 있을때
+	if (Get_CanFire())
+	{
+		// Cool Timer가 다 되었다면 
+		if (m_tFireTimeCounter.CountTime(fTimeDelta) == 1.f)
+		{
+			// 실제로 총격 판정
+			Fire();
+		}
+	}
+
+	// 총을 쏠 수 없는데 reload도 못하는 상태 -> no att
+	else if (Get_CanReleod())
+		Change_GunState(GunState::NOATT);
+
+	// reload도 가능 하다면 일단 empty
+	else
+		Change_GunState(GunState::EMPTY);
 }
 
 void CGun::Empty_Update(const _float fTimeDelta)
@@ -261,4 +250,35 @@ void CGun::Empty_Update(const _float fTimeDelta)
 
 void CGun::Reload_Update(const _float fTimeDelta)
 {
+}
+
+void CGun::Fire()
+{
+}
+
+CGun* CGun::Create(ID3D11Device* pDevice, ID3D11DeviceContext* pDeviceContext)
+{
+	CGun* pInsatnce = new CGun(pDevice, pDeviceContext);
+	if (FAILED(pInsatnce->Initialize_Prototype()))
+	{
+		MSG_BOX("CGun::Create, Failed");
+		Safe_Release(pInsatnce);
+	}
+	return pInsatnce;
+}
+
+CGameObject* CGun::Clone(void* pArg)
+{
+	CGun* pClone = new CGun(*this);
+	if (FAILED(pClone->Initialize(pArg)))
+	{
+		MSG_BOX("CGun::Clone, Failed");
+		Safe_Release(pClone);
+	}
+	return pClone;
+}
+
+void CGun::Free()
+{
+	__super::Free();
 }

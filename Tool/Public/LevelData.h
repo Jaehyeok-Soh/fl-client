@@ -19,6 +19,7 @@ public:
 	typedef struct tagLevelData_Desc
 	{
 		std::string strTextureSplatingInfoName{"None"};
+		std::string strLevelTypeName{"STATIC"};
 	}LevelData_DESC;
 protected:
 	CLevelData(EToolObjectType eType, ID3D11Device* pDevice, ID3D11DeviceContext* pDeviceContext);
@@ -40,7 +41,9 @@ public:
 public:
 	virtual _bool	Export_Data(DTO::ECategory eCategory, CDataDocumentBase* pDocument)override;
 private:
-	std::string		m_strTextureSplatingInfoName{"None"};
+	/* 클라이언테이서 오브젝트들이 추가될 Level Path 값들을 한번에 관리하기 위한 Path값 */
+	EClientLevelType	m_eClientLevelType{EClientLevelType::STATIC};
+	std::string			m_strTextureSplatingInfoName{"None"};
 public:
 	static	CLevelData*		Create(EToolObjectType eType, ID3D11Device* pDevice, ID3D11DeviceContext* pContext);
 	virtual CGameObject*	Clone(void* pArg)override;

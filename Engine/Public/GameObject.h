@@ -47,6 +47,8 @@ public:
 	virtual _bool IntersectWithFrustrum(BoundingFrustum* pFrustrum) { return true; }
 	virtual _bool On_Hit(const HIT_DESC& hitDesc) { return true; }
 	virtual void Try_Attack(const HIT_DESC& hitDesc) {};
+	/* Static Object가 LevelExit할때 Caching 정보 초기화용 */
+	virtual void On_LevelExit(_uint iLevelID) {};
 	template<typename T>
 	inline void Change_Component(T* pSrc);
 	template<typename T>

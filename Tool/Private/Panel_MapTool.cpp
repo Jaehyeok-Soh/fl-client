@@ -9,7 +9,13 @@
 CPanel_MapTool::CPanel_MapTool(const _char* pLabel, CLevel* pOwner, ID3D11Device* pDevice, ID3D11DeviceContext* pDeviceContext)
 	: CImGui_Panel(pLabel, pOwner, pDevice, pDeviceContext), m_szBuffer{}, m_isTexArraySelect{ false }, m_szTextureSplatingInfoData_SaveName{}, m_iSelectTextureSplatingInfoData{}
 	, m_vecTextureSplatingInfoDataName{}
+	, m_szLevelTypeName{}
 {
+	for (_uint i = 0; i < ENUM_TO_UINT(EClientLevelType::END); ++i)
+	{
+		string strLevelName = ClientleveltypeToString((EClientLevelType)i);
+		::strncpy_s(m_szLevelTypeName[i] , MAX_PATH , strLevelName.c_str() , MAX_PATH );
+	}
 }
 
 HRESULT CPanel_MapTool::Initialize()
@@ -1095,6 +1101,30 @@ HRESULT CPanel_MapTool::Render_SaveLevelDataSetting()
 
 	ImGui::Separator();
 
+
+
+	ImGui::SeparatorText(" Level Type ");
+
+	m_strBuffer = ClientleveltypeToString(m_pMapToolManager->m_pLevelData->m_eClientLevelType);
+
+	if (ImGui::BeginCombo("##LevelType", m_strBuffer.c_str()))
+	{
+		for (size_t i = 0; i < ENUM_TO_UINT(EClientLevelType::END) ; ++i)
+		{
+			_bool isSelected = i == ENUM_TO_UINT(m_pMapToolManager->m_pLevelData->m_eClientLevelType);
+			if (ImGui::Selectable(m_szLevelTypeName[i], isSelected))
+			{
+				m_pMapToolManager->m_pLevelData->m_eClientLevelType = (EClientLevelType)i;
+			}
+			if (isSelected)
+				ImGui::SetItemDefaultFocus();
+		}
+		ImGui::EndCombo();
+	}
+
+	
+
+	ImGui::Separator();
 
 	m_pMapToolManager->m_pLevelData->Draw_ImGui();
 

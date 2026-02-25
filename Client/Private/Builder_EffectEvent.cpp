@@ -50,7 +50,7 @@ HRESULT CBuilder_EffectEvent::Create_Effect(const DTO::EFFECT_EVENT_INFO_DESC& d
 	if (FAILED(m_pGameInstance->Add_Prototype(ENUM_TO_UINT(ELevelType::STATIC),
 		prototypeTag, CEffectHandler::Create(&tHandlerDesc))))
 	{
-		return E_FAIL;
+		return S_OK;
 	}
 
 	return S_OK;

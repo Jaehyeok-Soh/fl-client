@@ -512,6 +512,12 @@ enum class EUIDImageSubClassType
 	MONSTER_NAMEPLATE_BG,
 
 	// À¯Æ¿ 
+	LEVEL_CHAGE_1,
+	LEVEL_CHAGE_2,
+	LEVEL_CHAGE_3,
+	LEVEL_CHAGE_4,
+	LEVEL_CHAGE_5,
+
 	END
 };
 
@@ -565,6 +571,12 @@ NLOHMANN_JSON_SERIALIZE_ENUM(EUIDImageSubClassType,
 		
 	{ EUIDImageSubClassType::MONSTER_NAMEPLATE_BG,				"MONSTER_NAMEPLATE_BG" },
 
+	{ EUIDImageSubClassType::LEVEL_CHAGE_1,				"LEVEL_CHAGE_1" },
+	{ EUIDImageSubClassType::LEVEL_CHAGE_2,				"LEVEL_CHAGE_2" },
+	{ EUIDImageSubClassType::LEVEL_CHAGE_3,				"LEVEL_CHAGE_3" },
+	{ EUIDImageSubClassType::LEVEL_CHAGE_4,				"LEVEL_CHAGE_4" },
+	{ EUIDImageSubClassType::LEVEL_CHAGE_5,				"LEVEL_CHAGE_5" },
+
 		{ EUIDImageSubClassType::END,					"END" }
 	})
 
@@ -617,6 +629,12 @@ NLOHMANN_JSON_SERIALIZE_ENUM(EUIDImageSubClassType,
 	if (str == "BATTLE_UI_END")				return EUIDImageSubClassType::BATTLE_UI_END;
 	
 	if (str == "MONSTER_NAMEPLATE_BG")				return EUIDImageSubClassType::MONSTER_NAMEPLATE_BG;
+
+	if (str == "LEVEL_CHAGE_1")				return EUIDImageSubClassType::LEVEL_CHAGE_1;
+	if (str == "LEVEL_CHAGE_2")				return EUIDImageSubClassType::LEVEL_CHAGE_2;
+	if (str == "LEVEL_CHAGE_3")				return EUIDImageSubClassType::LEVEL_CHAGE_3;
+	if (str == "LEVEL_CHAGE_4")				return EUIDImageSubClassType::LEVEL_CHAGE_4;
+	if (str == "LEVEL_CHAGE_5")				return EUIDImageSubClassType::LEVEL_CHAGE_5;
 
 	if (str == "END")					return EUIDImageSubClassType::END;
 	return EUIDImageSubClassType::NONE_OWNER;
@@ -673,6 +691,12 @@ inline const char* UIDImageSubTypeToString(EUIDImageSubClassType type)
 	case EUIDImageSubClassType::BATTLE_UI_END:			return "BATTLE_UI_END";
 	
 	case EUIDImageSubClassType::MONSTER_NAMEPLATE_BG:	return "MONSTER_NAMEPLATE_BG";
+
+	case EUIDImageSubClassType::LEVEL_CHAGE_1:	return "LEVEL_CHAGE_1";
+	case EUIDImageSubClassType::LEVEL_CHAGE_2:	return "LEVEL_CHAGE_2";
+	case EUIDImageSubClassType::LEVEL_CHAGE_3:	return "LEVEL_CHAGE_3";
+	case EUIDImageSubClassType::LEVEL_CHAGE_4:	return "LEVEL_CHAGE_4";
+	case EUIDImageSubClassType::LEVEL_CHAGE_5:	return "LEVEL_CHAGE_5";
 
 	case EUIDImageSubClassType::END:					return "END";
 	default:											return "NONE_OWNER";

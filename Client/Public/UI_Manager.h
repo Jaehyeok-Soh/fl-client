@@ -45,8 +45,10 @@ public:
 	HRESULT Bind_Trigger(_uint iLevelID);
 	void Clear_TriggerUI();
 
-	HRESULT Regist_Prefab(_uint iLevelIndex, EUIPrefabType ePrefab, const _wstring& wstrPrototype, const _wstring& wstrPooltag, void* pArg);
+	HRESULT Regist_Prefab(_uint iLevelIndex, EUIPrefabType ePrefab, const _wstring& wstrPrototype, const _wstring& wstrPooltag,const _uint iSeedLevel, void* pArg);
 	void Request_Add_Prefab(_uint iLevelIndex, EUIPrefabType ePrefab);
+
+	void Request_Clear();
 
 private:
 	void Sort_UI(vector<CGenericUI*>& Target);
@@ -66,6 +68,8 @@ private:
 	array<vector<CGenericUI*>, g_iLevelType_Count> m_vecGenericUICache;
 	vector<CGenericUI*> m_vecSortUI;
 	_bool m_isSort = { FALSE };
+	_bool m_isClear = {false};
+
 	vector <CUITrigger*> m_vecTriggerUIs;
 
 	array<vector<_wstring>, ENUM_TO_UINT(EUIPrefabType::END)> m_vecPrefabs;

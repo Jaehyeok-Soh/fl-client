@@ -22,8 +22,9 @@ texture2D g_EffectTexture;
 #define RIGHT 1 << 2 // LEFT -> RIGHT 이펙트 방향
 #define DOWN 1 << 3     // DOWN -> UP
 
+// 진행 방향으로 y를 돌려버리는 플래그
+#define DIRBILLBOARD 1 << 4
     // Use Sprite
-#define DIRBILLBOARD 1 << 4 
 #define SPRITE 1<< 5    // 스프라이트를 사용하는가?
 
     // Use Scroll (텍스처별)
@@ -32,6 +33,7 @@ texture2D g_EffectTexture;
 #define SCROLL_MASKING 1 << 8
 #define SCROLL_GRADATION 1 << 9
 #define SCROLL_DISSOLVE 1 << 10
+#define SCROLL_GLOW 1 << 11
         
 // SamplerState Flag
 #define LINEARSAMPLER 1 << 0
@@ -57,40 +59,41 @@ texture2D g_EffectTexture;
 
 struct EffectDesc
 {
-    // Texture 바인딩 Flag들
+    // Row 0
     uint g_TextureFlags;
-    // 기타 Render 설정값들
     uint g_RenderFlags;
-     // 특정 텍스처마다 먹일 SamplerState
     uint g_StateFlags;
-    // discard 먹일 값 바인딩
     float g_DiscardValue;
-    
-    // 텍스처 산술 연산자 flag 
+
+    // Row 1
     uint g_OperatorFlags;
     uint g_RotationFlags;
     float2 g_UVOffset;
-    
-    // sprite일 때
-    uint g_SpriteCol; // 가로 프레임 수
-    uint g_SpriteRow; // 세로 프레임 수
-    uint g_CurSpriteIndex; // 현재 재생 중인 인덱스
+
+    // Row 2
+    uint g_SpriteCol;
+    uint g_SpriteRow;
+    uint g_CurSpriteIndex;
     float g_AppearRatio;
-    
+
+    // Row 3
     float2 g_ScrollOffset;
     float2 g_DistortionScale;
-    
-    float4 g_EffectColor;
-    
-    // 각 텍스처별 Scroll Weight (0 ~ 1)
+
+    // Row 4
+    float4 g_EffectColor; // 여기서부터는 위치가 절대 안 변함
+
+    // Row 5
     float2 DiffuseTexture_ScrollWeight;
     float2 NoiseTexture_ScrollWeight;
-    
+
+    // Row 6
     float2 MaskingTexture_ScrollWeight;
     float2 GradationTexture_ScrollWeight;
-    
+
+    // Row 7
     float2 DissolveTexture_ScrollWeight;
-    float2 Padding1;
+    float2 GlowTexture_ScrollWeight;
 };
 
 

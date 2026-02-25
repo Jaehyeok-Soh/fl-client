@@ -76,6 +76,7 @@ protected:
 
 protected:
 	_bool Check_Collis(const _float fTimeDelta);
+	_uint Check_GunStates();
 
 	// player °´Ã¼ ¿¬°á ÇÔ¼öµé
 protected:
@@ -101,8 +102,6 @@ protected:
 
 private:
 	_uint					m_iEndStateIdx = { 0 };			// CPlayer::State::END Ä³½Ì ÇØµÒ : ¸¸¾à END¸é state change x
-
-
 
 private:
 	_bool Has_ChangeState(STATEKEY eKey);

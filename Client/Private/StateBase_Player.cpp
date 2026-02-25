@@ -5,6 +5,7 @@
 #include "Player.h"
 #include "PlayerControlContext.h"
 #include "Transform.h"
+#include "Gun.h"
 
 // manager
 #include "GameInstance.h"
@@ -312,6 +313,27 @@ _bool CStateBase_Player::Check_Collis(const _float fTimeDelta)
 	}
 
 	return false;
+}
+
+_uint CStateBase_Player::Check_GunStates()
+{
+	_uint iGunState = static_cast<CPlayer*>(Get_OwnerObject())->Get_GunState();
+
+	//		NOATT, ATT, EMPTY, RELOAD
+	switch (iGunState)
+	{
+	case ENUM_TO_UINT(CGun::GunState::NOATT):
+		return m_iEndStateIdx;
+
+	case ENUM_TO_UINT(CGun::GunState::ATT):
+		return m_iEndStateIdx;
+
+	case ENUM_TO_UINT(CGun::GunState::EMPTY):
+		return m_iEndStateIdx;
+
+	case ENUM_TO_UINT(CGun::GunState::RELOAD):
+		return m_iEndStateIdx;
+	}
 }
 
 _bool CStateBase_Player::Check_OnGround(_float fMaxDist)

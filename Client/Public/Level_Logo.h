@@ -19,16 +19,10 @@ public:
 private:
 	HRESULT Build_Prototype();
 	HRESULT Build_Files();
-	HRESULT Ready_Player_Layer(const wstring& wstrLayerTag);
-	HRESULT Ready_Boss_Layer(const wstring& wstrLayerTag);
 	HRESULT Ready_UI_Layer(const wstring& wstrLayerTag);
 	HRESULT Ready_Camera_Layer(const wstring& wstrLayerTag);
-	HRESULT Ready_Lights();
-	HRESULT Ready_DevMap();
-	HRESULT Ready_Monster();
-
 	HRESULT Ready_Camera_Setting(const _uint iLevelIndex);
-	HRESULT Ready_Octree();
+	HRESULT Ready_Lights();
 private:
 	ECursorMode m_eCursorMode = ECursorMode::LockedHiddenCenter;
 public:
