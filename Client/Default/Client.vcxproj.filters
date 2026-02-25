@@ -505,6 +505,9 @@
     <Filter Include="03. GameObject\UIObjects\02.UI\Image\Dynamic Image\05.MonsterNamePlate">
       <UniqueIdentifier>{761751c8-ba94-4e88-987b-53bc16a7f52f}</UniqueIdentifier>
     </Filter>
+    <Filter Include="03. GameObject\UIObjects\02.UI\Image\Dynamic Image\07.Level Chnage">
+      <UniqueIdentifier>{441fee0b-1c67-4053-a110-de1fdb40d73f}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="targetver.h">
@@ -931,6 +934,9 @@
     <ClInclude Include="..\Public\UINameplate_BG.h">
       <Filter>03. GameObject\UIObjects\02.UI\Image\Dynamic Image\05.MonsterNameplate</Filter>
     </ClInclude>
+    <ClInclude Include="..\Public\UILevelChange_Image.h">
+      <Filter>03. GameObject\UIObjects\02.UI\Image\Dynamic Image\07.Level Chnage</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <Image Include="Client.ico">
@@ -1348,6 +1354,9 @@
     </ClCompile>
     <ClCompile Include="..\Private\UINameplate_BG.cpp">
       <Filter>03. GameObject\UIObjects\02.UI\Image\Dynamic Image\05.MonsterNameplate</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\UILevelChange_Image.cpp">
+      <Filter>03. GameObject\UIObjects\02.UI\Image\Dynamic Image\07.Level Chnage</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

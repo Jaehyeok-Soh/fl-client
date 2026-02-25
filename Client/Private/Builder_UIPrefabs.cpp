@@ -221,15 +221,17 @@ HRESULT CBuilder_UIPrefabs::Register_Class(DTO::EUIClassType eClassType, const D
 			MonsterStatProgressDesc.iComponentFlag = DTO::EComponentTypeFlag::WORLDUI_COMPONENT;
 			wstrProtoTag = L"Prototype_UI_MonsterStatProgress";
 			_wstring wstrPoolTag = L"Prefab_" + Engine_Utils::ToWString(MonsterStatProgressDesc.strName);
-			if (FAILED(CUI_Manager::GetInstance()->Regist_Prefab(m_iLevelID, m_ePrefabtype, wstrProtoTag, wstrPoolTag, &MonsterStatProgressDesc)))
+			if (FAILED(CUI_Manager::GetInstance()->Regist_Prefab(m_iLevelID, m_ePrefabtype, wstrProtoTag, wstrPoolTag, ENUM_TO_UINT(ELevelType::STATIC), &MonsterStatProgressDesc)))
 			{
-				data.strTag;
+				_wstring wstr = Engine_Utils::ToWString(data.strTag) + L" <- ¾ê°¡ ¹®Á¦";
+				MSG_BOXW(wstr.c_str());
 				return E_FAIL;
 			}
 		}
 		else
 		{
-			data.strTag;
+			_wstring wstr = Engine_Utils::ToWString(data.strTag) + L" <- ¾ê°¡ ¹®Á¦";
+			MSG_BOXW(wstr.c_str());
 			return E_FAIL;
 		}
 	}
@@ -266,15 +268,17 @@ HRESULT CBuilder_UIPrefabs::Register_Class(DTO::EUIClassType eClassType, const D
 			MonsterStatDesc.iComponentFlag = DTO::EComponentTypeFlag::WORLDUI_COMPONENT;
 			wstrProtoTag = L"Prototype_UI_MonsterStatText";
 			_wstring wstrPoolTag = L"Prefab_" + Engine_Utils::ToWString(MonsterStatDesc.strName);
-			if (FAILED(CUI_Manager::GetInstance()->Regist_Prefab(m_iLevelID, m_ePrefabtype, wstrProtoTag, wstrPoolTag, &MonsterStatDesc)))
+			if (FAILED(CUI_Manager::GetInstance()->Regist_Prefab(m_iLevelID, m_ePrefabtype, wstrProtoTag, wstrPoolTag, ENUM_TO_UINT(ELevelType::STATIC), &MonsterStatDesc)))
 			{
-				data.strTag;
+				_wstring wstr = Engine_Utils::ToWString(data.strTag) + L" <- ¾ê°¡ ¹®Á¦";
+				MSG_BOXW(wstr.c_str());
 				return E_FAIL;
 			}
 		}
 		else
 		{
-			data.strTag;
+			_wstring wstr = Engine_Utils::ToWString(data.strTag) + L" <- ¾ê°¡ ¹®Á¦";
+			MSG_BOXW(wstr.c_str());
 			return E_FAIL;
 		}
 	}
@@ -326,40 +330,20 @@ HRESULT CBuilder_UIPrefabs::Register_Class(DTO::EUIClassType eClassType, const D
 			NameplateDesc.iComponentFlag = DTO::EComponentTypeFlag::WORLDUI_COMPONENT;
 			wstrProtoTag = L"Prototype_UI_Nameplate_BG";
 			_wstring wstrPoolTag = L"Prefab_" + Engine_Utils::ToWString(NameplateDesc.strName);
-			if (FAILED(CUI_Manager::GetInstance()->Regist_Prefab(m_iLevelID, m_ePrefabtype, wstrProtoTag, wstrPoolTag, &NameplateDesc)))
+			if (FAILED(CUI_Manager::GetInstance()->Regist_Prefab(m_iLevelID, m_ePrefabtype, wstrProtoTag, wstrPoolTag, ENUM_TO_UINT(ELevelType::STATIC), &NameplateDesc)))
 			{
-				data.strTag;
+				_wstring wstr = Engine_Utils::ToWString(data.strTag) + L" <- ¾ê°¡ ¹®Á¦";
+				MSG_BOXW(wstr.c_str());
 				return E_FAIL;
 			}
 		}
 		else
 		{
-			data.strTag;
+			_wstring wstr = Engine_Utils::ToWString(data.strTag) + L" <- ¾ê°¡ ¹®Á¦";
+			MSG_BOXW(wstr.c_str());
 			return E_FAIL;
 		}
 	}
-	////////////////////////////////////////
-	// WORLD_UI //
-	else if (eClassType == DTO::EUIClassType::WORLD_UI)
-	{
-
-	}
-
-	if (pResult == nullptr)
-	{
-		data.strTag;
-		return S_OK;
-	}
-
-	auto* pUI = dynamic_cast<CGenericUI*>(pResult);
-	if (nullptr == pUI)
-		return E_FAIL;
-
-	pCanvas->Get_UIVector()->push_back(pUI);
-	m_pMapUICache.emplace(data.strTag, pUI);
-	if (FAILED(CUI_Manager::GetInstance()->Add_VecGenericUICache(m_iLevelID, pUI)))
-		return E_FAIL;
-
 	return S_OK;
 }
 
@@ -376,22 +360,22 @@ CGenericUI::GENERIC_UI_DESC CBuilder_UIPrefabs::Make_DefaultInfo(const DTO::TUI_
 	Desc.fZ							= data.fPosZ;
 	Desc.wstrTextureTag				= Engine_Utils::ToWString(data.strTextureTag);
 	Desc.wstrNoiseTextureTag		= Engine_Utils::ToWString(data.strNoiseTextureTag);
-	Desc.wstrAlphaMaskTextureTag = Engine_Utils::ToWString(data.strAlphaMaskTextureTag);
-	Desc.isAlpha = TRUE;
-	Desc.isInitVisible = data.isVisible;
-	Desc.isInitInteract = data.isInteract;
-	Desc.isInitActivate = data.isActivate;
-	Desc.isUseColorTint = data.isUseColorTint;
-	Desc.pCanvasCache = pCanvas;
-	Desc.iComponentFlag = data.iComponentFlag;
-	Desc.isUseColorTint = data.isUseColorTint;
-	Desc.vColorTint = data.vColorTint;
-	Desc.vGradiantColorTint = data.vGradiantColorTint;
-	Desc.iShaderPass = data.iShaderPass;
-	Desc.fDelay = data.fDelay;
-	Desc.iFillDir = data.iFillDir;
-	Desc.fAlpha = data.fAlphaRatio;
-	Desc.iFlip = data.iFlip;
+	Desc.wstrAlphaMaskTextureTag	= Engine_Utils::ToWString(data.strAlphaMaskTextureTag);
+	Desc.isAlpha					= TRUE;
+	Desc.isInitVisible				= data.isVisible;
+	Desc.isInitInteract				= data.isInteract;
+	Desc.isInitActivate				= data.isActivate;
+	Desc.isUseColorTint				= data.isUseColorTint;
+	Desc.pCanvasCache				= pCanvas;
+	Desc.iComponentFlag				= data.iComponentFlag;
+	Desc.isUseColorTint				= data.isUseColorTint;
+	Desc.vColorTint					= data.vColorTint;
+	Desc.vGradiantColorTint			= data.vGradiantColorTint;
+	Desc.iShaderPass				= data.iShaderPass;
+	Desc.fDelay						= data.fDelay;
+	Desc.iFillDir					= data.iFillDir;
+	Desc.fAlpha						= data.fAlphaRatio;
+	Desc.iFlip						= data.iFlip;
 
 	return Desc;
 }

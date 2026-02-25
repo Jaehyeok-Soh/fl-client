@@ -140,6 +140,9 @@ CGameObject* CObject_Manager::Add_GameObject(_uint iPrototypeLevelIndex, const w
 {
 	CGameObject* pGo = { nullptr };
 
+	if (iCloneLevelIndex == 0)
+		int a = 0;
+
 	// Pool쪽 먼저 체크
 	wstring wstrLayerTagFromPool = { L"" };
 	pGo = m_pPoolManager->Spawn(iPrototypeLevelIndex, wstrPrototypeTag, wstrLayerTagFromPool, pArg);

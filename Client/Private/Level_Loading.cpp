@@ -1,6 +1,10 @@
 #include "pch.h"
 #include "Level_Loading.h"
 #include "Level_Logo.h"
+#include "Level_Square.h"
+#include "Level_Test.h"
+#include "Level_Tutorial_Boss.h"
+#include "Level_Tutorial_Village.h"
 #include "TextureBase.h"
 #include "Loader.h"
 
@@ -14,9 +18,6 @@
 #include "CameraMan_Targeter.h"
 
 #include "UI_Manager.h"
-#include "UILoading_Text.h"
-#include "UILoading_Progress.h"
-#include "UILoading_Image.h"
 
 #include "GameInstance.h"
 CLevel_Loading::CLevel_Loading(ID3D11Device* pDevice, ID3D11DeviceContext* pDeviceContext)
@@ -65,12 +66,23 @@ void CLevel_Loading::Update(const _float fTimeDelta)
 	if (m_pLoader->IsFinished())
 	{
 		CLevel* pNewLevel = { nullptr };
-
 		switch (m_eNextLevelID)
 		{
 		case Client::ELevelType::LOGO:
 			pNewLevel = CLevel_Logo::Create(m_pDevice, m_pDeviceContext);
 			break;
+		case Client::ELevelType::TUTORIAL_VILLAGE:
+			pNewLevel = CLevel_Tutorial_Village::Create(m_pDevice, m_pDeviceContext);
+			break;
+		case Client::ELevelType::TUTORIAL_BOSS:
+			pNewLevel = CLevel_Tutorial_Boss::Create(m_pDevice, m_pDeviceContext);
+			break;
+		case Client::ELevelType::SQUARE:
+			pNewLevel = CLevel_Square::Create(m_pDevice, m_pDeviceContext);
+			break;
+		case Client::ELevelType::Test:
+			break;
+		case Client::ELevelType::END:
 		default:
 			break;
 		}
@@ -93,12 +105,7 @@ HRESULT CLevel_Loading::Render()
 
 HRESULT CLevel_Loading::Ready_UI_Layer(const wstring& wstrLayerTag)
 {
-	if (FAILED(m_pGameInstance->Add_Prototype(ENUM_TO_UINT(ELevelType::LOADING), L"Prototype_UI_LoadingImage", CUILoading_Image::Create(m_pDevice, m_pDeviceContext))))
-		return E_FAIL;
-	if (FAILED(m_pGameInstance->Add_Prototype(ENUM_TO_UINT(ELevelType::LOADING), L"Prototype_UI_LoadingProgress", CUILoading_Progress::Create(m_pDevice, m_pDeviceContext))))
-		return E_FAIL;
-	if (FAILED(m_pGameInstance->Add_Prototype(ENUM_TO_UINT(ELevelType::LOADING), L"Prototype_UI_LoadingText", CUILoading_Text::Create(m_pDevice, m_pDeviceContext))))
-		return E_FAIL;
+
 	return S_OK;
 }
 

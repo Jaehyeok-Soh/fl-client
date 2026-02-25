@@ -27,7 +27,7 @@ void CEffect_Manager::Spawn_Effect(const std::string& strTag, const Matrix& matW
     m_pGameInstance->Request_AddObject(
         m_pGameInstance->Get_CurrentLevelIndex(),
         wstrPrototypeTag,
-        0,
+        m_pGameInstance->Get_CurrentLevelIndex(),
         &tEngineDesc
     );
 }

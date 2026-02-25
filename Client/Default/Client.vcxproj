@@ -276,6 +276,7 @@
     <ClInclude Include="..\Public\UIDynamic_Image.h" />
     <ClInclude Include="..\Public\UIHover_Image.h" />
     <ClInclude Include="..\Public\UIJust_Image.h" />
+    <ClInclude Include="..\Public\UILevelChange_Image.h" />
     <ClInclude Include="..\Public\UILoading_Image.h" />
     <ClInclude Include="..\Public\UILoading_Progress.h" />
     <ClInclude Include="..\Public\UILoading_Text.h" />
@@ -445,6 +446,7 @@
     <ClCompile Include="..\Private\UIDynamic_Image.cpp" />
     <ClCompile Include="..\Private\UIHover_Image.cpp" />
     <ClCompile Include="..\Private\UIJust_Image.cpp" />
+    <ClCompile Include="..\Private\UILevelChange_Image.cpp" />
     <ClCompile Include="..\Private\UILoading_Image.cpp" />
     <ClCompile Include="..\Private\UILoading_Progress.cpp" />
     <ClCompile Include="..\Private\UILoading_Text.cpp" />
