@@ -46,6 +46,8 @@ private:
 	Vec2 m_vAspect = {};
 	Vec2 m_vViewportSIze = {};
 
+	Client::EUIPrefabType m_ePrefabtype = { Client::EUIPrefabType::NOT_PREFAB };
+
 public:
 	static CBuilder_UI* Create(ID3D11Device* pDevice, ID3D11DeviceContext* pDeviceContext, _uint iLevelID);
 	virtual void Free() override;

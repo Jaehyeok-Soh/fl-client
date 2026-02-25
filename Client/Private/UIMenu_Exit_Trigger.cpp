@@ -35,6 +35,8 @@ HRESULT CUIMenu_Exit_Trigger::Initialize(void* pArg)
 	UI_MENU_EXIT_TRIGGER_DESC* pDesc = static_cast<UI_MENU_EXIT_TRIGGER_DESC*>(pArg);
 	if (FAILED(Super::Initialize(pArg)))
 		return E_FAIL;
+	if (FAILED(Ready_Components(pDesc)))
+		return E_FAIL;
 	if (FAILED(Attach_Personal_Info()))
 		return E_FAIL;
 	return S_OK;
@@ -91,17 +93,10 @@ HRESULT CUIMenu_Exit_Trigger::Render()
 {
 	if (!m_isVisible)
 		return S_OK;
-
-	if (FAILED(Super::Render()))
-		return E_FAIL;
-
 	if (FAILED(Bind_ShaderResources()))
 		return E_FAIL;
-
-	Get_Component<CShader>()->Apply();
-	Get_Component<CVIBuffer>()->Bind_Resource();
-	Get_Component<CVIBuffer>()->Render();
-
+	if (FAILED(Super::Render()))
+		return E_FAIL;
 	return S_OK;
 }
 
@@ -161,6 +156,8 @@ _bool CUIMenu_Exit_Trigger::Tick_NonInteractable_Event(const _float fTimeDelta)
 
 HRESULT CUIMenu_Exit_Trigger::Ready_Components(UI_MENU_EXIT_TRIGGER_DESC* pDesc)
 {
+	if (FAILED(Super::Ready_Components(pDesc)))
+		return E_FAIL;
 	return S_OK;
 }
 

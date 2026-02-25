@@ -101,6 +101,8 @@ public:
 		}
 	}
 
+	_uint Get_AttState()const { return m_FAttState; }
+
 public:
 	_bool Set_AttackState(_uint iState, _bool bOn); // Attack_State 을 통해 넣을것
 	void Add_ComboCount();

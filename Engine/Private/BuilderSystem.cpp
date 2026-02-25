@@ -23,7 +23,9 @@ HRESULT CBuilderSystem::Ready_Builder(DTO::ECategory eCategory, CBuilderBase* pB
 	if (Has_Builder(eCategory) == false)
 		m_arrBuilders[ENUM_TO_UINT(eCategory)] = pBuilder;
 	else
+	{
 		MSG_BOX("CBuilderSystem::Ready_Builder, Already have builder");
+	}
 	
 	return S_OK;
 }

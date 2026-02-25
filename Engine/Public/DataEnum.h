@@ -13,6 +13,7 @@ enum class ECategory : _uint
 	EFFECT,
 	EFFECTEVENT,
 	UI,
+	UI_PREFAB,
 	ANIMATION,
 	CAMERA,
 	OVERLAP_SCRIPT,

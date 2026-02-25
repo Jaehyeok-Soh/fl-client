@@ -10,6 +10,7 @@
 // Builder
 //=================
 #include "Builder_UI.h"
+#include "Builder_UIPrefabs.h"
 #include "Builder_Example.h"
 #include "BuilderSystem.h"
 #include "Builder_Map.h"
@@ -46,6 +47,9 @@
 #include "PhysicsCCT.h"
 
 #include "GameInstance.h"
+#include "Level_Square.h"
+#include "Level_Tutorial_Village.h"
+#include "Level_Tutorial_Boss.h"
 
 CLevel_Logo::CLevel_Logo(ID3D11Device* pDevice, ID3D11DeviceContext* pDeviceContext)
 	: Super(pDevice, pDeviceContext)
@@ -139,11 +143,14 @@ void CLevel_Logo::Update(const _float fTimeDelta)
 		m_pGameInstance->Request_CursorMode(m_eCursorMode);
 	}
 
-
 	// 오브젝트 풀링 테스트
 	if (m_pGameInstance->KeyButton_Down(DIK_0))
 	{
-		m_pGameInstance->Request_AddObject(ENUM_TO_UINT(ELevelType::LOGO), L"POOL_Attack_1", 0, nullptr);
+		//m_pGameInstance->Request_AddObject(ENUM_TO_UINT(ELevelType::LOGO), L"POOL_Attack_1", 0, nullptr);
+		 CUI_Manager::GetInstance()->Request_Add_Prefab(ENUM_TO_UINT(ELevelType::LOGO),EUIPrefabType::MONSTER_NAMEPLATE);
+		 m_pGameInstance->Flush_All();
+		 CUI_Manager::GetInstance()->Request_SortUI();
+
 	}
 
 	// GlobalTimeScale 테스트
@@ -151,7 +158,7 @@ void CLevel_Logo::Update(const _float fTimeDelta)
 		if (m_pGameInstance->KeyButton_Down(DIK_9))
 		{
 			m_pGameInstance->Request_HitStop();
-		}
+		} 
 		if (m_pGameInstance->KeyButton_Down(DIK_8))
 		{
 			m_pGameInstance->Request_SloMo(0.2f, 2.f);
@@ -163,8 +170,6 @@ void CLevel_Logo::Update(const _float fTimeDelta)
 		if (m_pGameInstance->KeyButton_Down(DIK_7))
 		{
 			m_pGameInstance->Deactivate_SloMo();
-
-			
 		}
 	}
 }
@@ -182,6 +187,8 @@ HRESULT CLevel_Logo::Build_Prototype()
 	if (FAILED(Ready_Builder(DTO::ECategory::MAP,CBuilder_Map::Create(m_pDevice, m_pDeviceContext, static_cast<_uint>(ELevelType::LOGO)))))
 		return E_FAIL;
 	if (FAILED(Ready_Builder(DTO::ECategory::UI, CBuilder_UI::Create(m_pDevice, m_pDeviceContext, static_cast<_uint>(ELevelType::LOGO)))))
+		return E_FAIL;
+	if (FAILED(Ready_Builder(DTO::ECategory::UI_PREFAB, CBuilder_UIPrefabs::Create(m_pDevice, m_pDeviceContext, static_cast<_uint>(ELevelType::LOGO)))))
 		return E_FAIL;
 	if (FAILED(Ready_Builder(DTO::ECategory::EFFECT, CBuilder_Effect::Create(m_pDevice, m_pDeviceContext, ENUM_TO_UINT(ELevelType::LOGO)))))
 		return E_FAIL;
@@ -231,6 +238,22 @@ HRESULT CLevel_Logo::Build_Files()
 				return E_FAIL;
 		}
 	}
+
+	eCategory = DTO::ECategory::UI_PREFAB;
+	if (FAILED(m_pGameInstance->Regist_Document<CDataDocument_UI>(iLevelID, eCategory)))
+		return E_FAIL;
+	strUIFolderPath = L"../../Resources/Data/UIData/Prefab/";
+	if (std::filesystem::exists(strUIFolderPath))
+	{
+		for (auto iter : std::filesystem::directory_iterator(strUIFolderPath))
+		{
+			if (FAILED(m_pGameInstance->Load_File_Json(iLevelID, eCategory, iter.path())))
+				return E_FAIL;
+
+			if (FAILED(Build_File(iLevelID, eCategory, iter.path().stem().string())))
+				return E_FAIL;
+		}
+	}
 	return S_OK;
 }
 
@@ -243,7 +266,7 @@ HRESULT CLevel_Logo::Ready_Player_Layer(const wstring& wstrLayerTag)
 		CTransform::TRANSFORM_DESC transformDesc = {};
 		playerDesc.iLevelIndex = ENUM_TO_UINT(ELevelType::LOGO);
 		playerDesc.wstrBodyModelTag = L"Prototype_Component_Model_Master";
-		transformDesc.TranslationMatrix = Matrix::CreateTranslation(Vec3(18.f,12.f,19.f));
+		transformDesc.TranslationMatrix = Matrix::CreateTranslation(Vec3(229.12f,256.72f,-245.039f));
 		playerDesc.pTransform_Desc = &transformDesc;
 		if (!(pResult = m_pGameInstance->Add_GameObject(ENUM_TO_UINT(ELevelType::STATIC),
 			L"Prototype_GameObject_MainPlayer",
@@ -401,8 +424,7 @@ HRESULT CLevel_Logo::Ready_DevMap()
 	if (FAILED(m_pGameInstance->Regist_Document<CDataDocument_Map>(iLevelID, eCategory)))
 		return E_FAIL;
 
-	std::filesystem::path FilePath = L"../../Resources/Data/MapData/LevelData/DevLevel/DevMap.json";
-	vector<path> vecfiles;
+	std::filesystem::path FilePath = L"../../Resources/Data/MapData/LevelData/Prolog/Clouds/Clouds.json";
 
 	if (!std::filesystem::exists(FilePath))
 		return E_FAIL;
@@ -558,6 +580,7 @@ HRESULT CLevel_Logo::Ready_Octree()
 
 	return S_OK;
 }
+
 
 
 CLevel_Logo* CLevel_Logo::Create(ID3D11Device* pDevice, ID3D11DeviceContext* pDeviceContext)

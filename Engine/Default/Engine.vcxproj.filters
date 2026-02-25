@@ -1321,7 +1321,6 @@
     <ClInclude Include="..\Public\DTO_MonsterState.h">
       <Filter>01. Utility\11. DataRepository\Datas\MonsterState\DataModel</Filter>
     </ClInclude>
-    <ClInclude Include="..\Public\GameData_Struct.h" />
     <ClInclude Include="..\Public\Anim_Event_Script_Base.h">
       <Filter>01. Utility\11. DataRepository\Datas\AnimationEvent\DataModel</Filter>
     </ClInclude>
@@ -1348,6 +1347,9 @@
     </ClInclude>
     <ClInclude Include="..\public\DataDocument_AttackPreset.h">
       <Filter>01. Utility\11. DataRepository\Datas\AttackPreset\DataDocument_AttackPreset</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\GameData_Struct.h">
+      <Filter>01. Utility\08. GameData\00. Struct</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

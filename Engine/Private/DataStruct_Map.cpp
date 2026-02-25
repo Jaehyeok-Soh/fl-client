@@ -36,18 +36,18 @@ void CData_MapObject::Free()
 
 #pragma region 
 
-json CData_SceneData::ToJson() const
+json CData_LevelData::ToJson() const
 {
 	return json(m_tData);
 }
 
-HRESULT CData_SceneData::FromJson(const json& j)
+HRESULT CData_LevelData::FromJson(const json& j)
 {
-	m_tData = j.get<DTO::TSceneData>();
+	m_tData = j.get<DTO::TLevelData>();
 	return S_OK;
 }
 
-void CData_SceneData::Free()
+void CData_LevelData::Free()
 {
 	Super::Free();
 
@@ -258,7 +258,7 @@ inline void from_json(const json& LoadJson, DTO::TMap_MapObjectData& tData)
 #pragma region Scene Data
 
 
-inline void to_json(json& SaveJson, const TSceneData& tData)
+inline void to_json(json& SaveJson, const TLevelData& tData)
 {
 	SaveJson = json
 	{
@@ -268,7 +268,7 @@ inline void to_json(json& SaveJson, const TSceneData& tData)
 
 	return;
 }
-inline void from_json(const json& LoadJson, TSceneData& tData)
+inline void from_json(const json& LoadJson, TLevelData& tData)
 {
 	if (LoadJson.contains("strTag"))
 		tData.strTag = LoadJson["strTag"].get<string>();

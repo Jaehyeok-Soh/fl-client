@@ -825,7 +825,26 @@ HRESULT CMapObject::Render()
     case Tool::EClientMakePath::LandScape:
         Render_LandScape();
         break;
-    case Tool::EClientMakePath::END:
+    case Tool::EClientMakePath::Grass:                  
+        Render_Grass();
+        break;
+    case Tool::EClientMakePath::Vine:               
+        Render_Vine();
+        break;
+    case Tool::EClientMakePath::Tree:
+        Render_Tree();
+        break;
+    case Tool::EClientMakePath::Moss:                   
+        Render_Moss();
+        break;
+    case Tool::EClientMakePath::Bush:
+        Render_Bush();
+        break;
+    case Tool::EClientMakePath::Water:                  
+        Render_Water();
+        break;
+    case Tool::EClientMakePath::Rock:                
+        Render_Rock();
         break;
     default:
         break;
@@ -994,11 +1013,18 @@ HRESULT CMapObject::Check_DrawType_ByClientPath()
     case Tool::EClientMakePath::LandScape:
     {
         if (m_eMapObjectDrawType == EMapObject_DrawType::Instance)
-        {
-            MSG_BOX( " Land Scape는 Instance Draw를 지원하지 않습니다 렌더가 진행되지 않으니 Default Draw로 바꿔주세요 " );
-            return S_OK;
-        }
+            MSG_BOX(" Land Scape는 Instance Draw를 지원하지 않습니다 렌더가 진행되지 않으니 Default Draw로 바꿔주세요 ");
+        return S_OK;
+
     }
+    case Tool::EClientMakePath::Grass:                  return S_OK;
+    case Tool::EClientMakePath::Vine:                   return S_OK;
+    case Tool::EClientMakePath::Tree:                   return S_OK;
+    case Tool::EClientMakePath::Moss:                   return S_OK;
+    case Tool::EClientMakePath::Bush:                   return S_OK;
+    case Tool::EClientMakePath::Water:                  return S_OK;
+    case Tool::EClientMakePath::Rock:                   return S_OK;
+
         break;
     default:                                            return S_OK;
     }
@@ -1147,7 +1173,7 @@ HRESULT CMapObject::Render_Default(_int iPass)
     _uint iMeshCount = static_cast<_uint>(pModel->Get_MeshCount());
 
     /* Client Make Path를 이용한다 */
-    pShader->Set_Pass(iPass == -1 ? static_cast<_int>(m_eClientMakePath) : iPass);
+    pShader->Set_Pass(iPass);
     if (FAILED(Set_GPU_MapObjectState(pShader)))
         return E_FAIL;
 
@@ -1174,13 +1200,13 @@ HRESULT CMapObject::Render_Instance(_int iPass)
     pShader->Get_Scalar("g_iSelectInstanceID")->SetRawValue(&m_iSelectedInstanceID, 0, sizeof(m_iSelectedInstanceID));
     _uint iMeshCount = static_cast<_uint>(pModel->Get_MeshCount());
 
-    pShader->Set_Pass(iPass == -1 ? static_cast<_int>(m_eClientMakePath) : iPass);
 
     _uint iInstanceCount = Get_InstanceCount();
 
     if (FAILED(Set_GPU_MapObjectState(pShader)))
         return E_FAIL;
 
+    pShader->Set_Pass(iPass);
 
     pInstanceMesh->Bind_Instance(1);
     for (_uint i = 0; i < iMeshCount; ++i)
@@ -1195,16 +1221,28 @@ HRESULT CMapObject::Render_Instance(_int iPass)
     return S_OK;
 }
 
-
-
 #pragma endregion
 
 
 
 #pragma region Client Path Type 별 Render 함수
 
+#pragma region 완전 기초 함수
+
+HRESULT CMapObject::Render_MapObject()
+{
+    if (m_eMapObjectDrawType == EMapObject_DrawType::Instance)
+        Render_Instance();
+    else
+        Render_Default();
+
+    return S_OK;
+}
+
+#pragma endregion
 
 #pragma region Static Object
+
 HRESULT CMapObject::Render_StaticObject()
 {
     if (m_eMapObjectDrawType == EMapObject_DrawType::Instance)
@@ -1215,7 +1253,6 @@ HRESULT CMapObject::Render_StaticObject()
     return S_OK;
 }
 #pragma endregion
-
 
 #pragma region LandScape
 
@@ -1245,7 +1282,7 @@ HRESULT CMapObject::Render_LandScape()
     Set_GPU_MapObjectState(pShader);
    
     pShader->Bind_TransformData(pTransform->Get_WorldMatrix());
-    pShader->Set_Pass(static_cast<_int>(m_eClientMakePath));
+    pShader->Set_Pass(ENUM_TO_UINT(EMapObjectShaderPass::LandScape));
 
     for (_uint i = 0; i < iMeshCount; ++i)
     {
@@ -1259,6 +1296,96 @@ HRESULT CMapObject::Render_LandScape()
 }
 
 #pragma endregion
+
+#pragma region Grass
+
+HRESULT CMapObject::Render_Grass()
+{
+    if (m_eMapObjectDrawType == EMapObject_DrawType::Instance)
+        Render_Instance(ENUM_TO_UINT(EClientMakePath::StaticObject));
+    else
+        Render_Default(ENUM_TO_UINT(EClientMakePath::StaticObject));
+
+    return S_OK;
+}
+#pragma endregion
+
+#pragma region Tree
+
+HRESULT CMapObject::Render_Tree()
+{
+    if (m_eMapObjectDrawType == EMapObject_DrawType::Instance)
+        Render_Instance(ENUM_TO_UINT(EMapObjectShaderPass::Tree));
+    else
+        Render_Default(ENUM_TO_UINT(EMapObjectShaderPass::Tree));
+
+    return S_OK;
+}
+#pragma endregion
+
+#pragma region Moss
+HRESULT CMapObject::Render_Moss()
+{
+    if (m_eMapObjectDrawType == EMapObject_DrawType::Instance)
+        Render_Instance(ENUM_TO_UINT(EMapObjectShaderPass::Moss));
+    else
+        Render_Default(ENUM_TO_UINT(EMapObjectShaderPass::Moss));
+
+    return S_OK;
+}
+#pragma endregion
+
+#pragma region Vine
+HRESULT CMapObject::Render_Vine()
+{
+    if (m_eMapObjectDrawType == EMapObject_DrawType::Instance)
+        Render_Instance(ENUM_TO_UINT(EMapObjectShaderPass::Vine));
+    else
+        Render_Default(ENUM_TO_UINT(EMapObjectShaderPass::Vine));
+
+    return S_OK;
+}
+#pragma endregion 
+
+#pragma region Bush
+HRESULT CMapObject::Render_Bush()
+{
+    if (m_eMapObjectDrawType == EMapObject_DrawType::Instance)
+        Render_Instance(ENUM_TO_UINT(EMapObjectShaderPass::Bush));
+    else
+        Render_Default(ENUM_TO_UINT(EMapObjectShaderPass::Bush));
+
+    return S_OK;
+}
+#pragma endregion 
+
+#pragma region Rock
+HRESULT CMapObject::Render_Rock()
+{
+    if (m_eMapObjectDrawType == EMapObject_DrawType::Instance)
+        Render_Instance(ENUM_TO_UINT(EMapObjectShaderPass::Rock));
+    else
+        Render_Default(ENUM_TO_UINT(EMapObjectShaderPass::Rock));
+
+    return S_OK;
+}
+#pragma endregion
+
+#pragma region Water
+HRESULT CMapObject::Render_Water()
+{
+    if (m_eMapObjectDrawType == EMapObject_DrawType::Instance)
+        Render_Instance(ENUM_TO_UINT(EMapObjectShaderPass::Water));
+    else
+        Render_Default(ENUM_TO_UINT(EMapObjectShaderPass::Water));
+
+    return S_OK;
+}
+#pragma endregion
+
+#pragma endregion
+
+
 
 
 #pragma endregion

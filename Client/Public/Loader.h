@@ -31,6 +31,9 @@ public:
 private:
 	HRESULT Loading();
 	HRESULT Loading_For_Logo();
+	HRESULT Loading_For_Tutorial_Village();
+	HRESULT Loading_For_Tutorial_Boss();
+	HRESULT Loading_For_Square();
 	HRESULT Loading_For_LoadLevel();
 private:
 	HRESULT Loading_Files(_uint iLevelID, DTO::ECategory eCategory, const wstring& wstrFolderPath);

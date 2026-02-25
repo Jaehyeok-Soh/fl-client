@@ -32,6 +32,7 @@
 #include "DataDocument_UI.h"
 #include "Builder_Example.h"
 #include "Builder_UI.h"
+#include "Builder_UIPrefabs.h"
 #include "BuilderSystem.h"
 #include "Builder_AttackOverlap.h"
 #include "DataStruct_AttackOverlap.h"
@@ -57,13 +58,24 @@
 #include "EffectObject.h"
 #include "Physics_LandScape.h" // physics test
 
-/* ------- Map --------- */
+
+
+//=================
+// Map Object
+//=================
 #include "StaticObject.h"
 #include "LandScape.h"
-/* ------ Monster ------- */
+#include "Bush.h"
+#include "Moss.h"
+#include "Water.h"
+#include "Rock.h"
+#include "Vine.h"
+#include "Tree.h"
+#include "Grass.h"
+
+/* --------------------- */
 #include "Monster_Dummy.h" // test
 #include "Monster_Dummy_Body.h" // test
-/* ------- Boss -------- */
 #include "Boss_Xibi.h"
 #include "Boss_Xibi_Body.h"
 
@@ -75,6 +87,7 @@
 #include "UIPlayerStat_Progress.h"
 #include "UILoading_Progress.h"
 #include "UIMonsterStat_Progress.h"
+#include "UIPlayerAmmo_Progress.h"
 // 텍스트 
 #include "UIMenu_Text.h"
 #include "UIPlayerStat_Text.h"
@@ -90,6 +103,7 @@
 #include "UIMenu_OutLine.h"
 #include "UILoading_Image.h"
 #include "UINameplate_BG.h"
+#include "UIAimDot_Image.h"
 // 트리거 
 #include "UIMenu_Trigger.h"
 #include "UICommon_Trigger.h"
@@ -154,6 +168,15 @@ HRESULT CLoader::Loading()
 		break;
 	case Client::ELevelType::LOGO:
 		hr = Loading_For_Logo();
+		break;
+	case Client::ELevelType::TUTORIAL_VILLAGE:
+		hr = Loading_For_Tutorial_Village();
+		break;
+	case Client::ELevelType::TUTORIAL_BOSS:
+		hr = Loading_For_Tutorial_Boss();
+		break;
+	case Client::ELevelType::SQUARE:
+		hr = Loading_For_Square();
 		break;
 	default:
 		hr = E_FAIL;
@@ -327,11 +350,14 @@ HRESULT CLoader::Loading_For_Logo()
 	///////////////////////////////////////////////////////
 
 	/* Texture Loading */
+	/* Village 사진 */
 	if (FAILED(Loading_Textures(L"../../Resources/Textures/Map/LandScape/Village/")))
 		return E_FAIL;
-
-	//if (FAILED(m_pGameInstance->GameDataManager_Load_TextureSplatingInfoData()))
-	//	return E_FAIL;
+	/* Clouds 사진 */
+	if (FAILED(Loading_Textures(L"../../Resources/Textures/Map/LandScape/Clouds/")))
+		return E_FAIL;
+	if (FAILED(m_pGameInstance->GameDataManager_Load_TextureSplatingInfoData()))
+		return E_FAIL;
 
 #pragma endregion
 
@@ -480,6 +506,7 @@ HRESULT CLoader::Loading_For_Logo()
 	///////////////////////////////////////
 	//////////// Ready Objects ////////////
 	///////////////////////////////////////
+
 #pragma region Objects
 	{
 		// For. Prototype_GameObject_MainPlayer
@@ -497,7 +524,14 @@ HRESULT CLoader::Loading_For_Logo()
 
 		/* Map Object */
 		ADD_PROTOTYPE(ELevelType::STATIC, L"Prototype_GameObject_StaticObject", CStaticObject::Create(m_pDevice, m_pDeviceContext));
-		ADD_PROTOTYPE(ELevelType::STATIC, L"Prototype_GameObject_LandScape", CLandScape::Create(m_pDevice, m_pDeviceContext));
+		ADD_PROTOTYPE(ELevelType::STATIC, L"Prototype_GameObject_LandScape",	CLandScape::Create(m_pDevice, m_pDeviceContext));
+		ADD_PROTOTYPE(ELevelType::STATIC, L"Prototype_GameObject_Bush",			CBush::Create(m_pDevice, m_pDeviceContext));
+		ADD_PROTOTYPE(ELevelType::STATIC, L"Prototype_GameObject_Grass",		CGrass::Create(m_pDevice, m_pDeviceContext));
+		ADD_PROTOTYPE(ELevelType::STATIC, L"Prototype_GameObject_Moss",			CMoss::Create(m_pDevice, m_pDeviceContext));
+		ADD_PROTOTYPE(ELevelType::STATIC, L"Prototype_GameObject_Tree",			CTree::Create(m_pDevice, m_pDeviceContext));
+		ADD_PROTOTYPE(ELevelType::STATIC, L"Prototype_GameObject_Vine",			CVine::Create(m_pDevice, m_pDeviceContext));
+		ADD_PROTOTYPE(ELevelType::STATIC, L"Prototype_GameObject_Rock",			CRock::Create(m_pDevice, m_pDeviceContext));
+		ADD_PROTOTYPE(ELevelType::STATIC, L"Prototype_GameObject_Water",		CWater::Create(m_pDevice, m_pDeviceContext));
 
 		/* Weapons */
 		ADD_PROTOTYPE(ELevelType::STATIC, L"Prototype_GameObject_Part_Sword", CSword::Create(m_pDevice, m_pDeviceContext));
@@ -512,6 +546,7 @@ HRESULT CLoader::Loading_For_Logo()
 		ADD_PROTOTYPE(ELevelType::LOGO, L"Prototype_GameObject_Boss_Xibi_Body", CBoss_Xibi_Body::Create(m_pDevice, m_pDeviceContext));
 	}
 #pragma endregion
+
 #pragma region BUFFER
 	{
 		CVIBuffer_Particle_Point::PARTICLE_POINT_ORIGIN_DESC	ExploDesc{};
@@ -533,24 +568,56 @@ HRESULT CLoader::Loading_For_Logo()
 #pragma endregion
 
 #pragma region UI
-	ADD_PROTOTYPE(ELevelType::LOGO, L"Prototype_UI_PlayerStatProgress",	CUIPlayerStat_Progress::Create(m_pDevice, m_pDeviceContext));
-	ADD_PROTOTYPE(ELevelType::LOGO, L"Prototype_UI_MenuText",			CUIMenu_Text::Create(m_pDevice, m_pDeviceContext));
-	ADD_PROTOTYPE(ELevelType::LOGO, L"Prototype_UI_PlayerStatText",		CUIPlayerStat_Text::Create(m_pDevice, m_pDeviceContext));
-	ADD_PROTOTYPE(ELevelType::LOGO, L"Prototype_UI_JUST_IMAGE",			CUIJust_Image::Create(m_pDevice, m_pDeviceContext));
-	ADD_PROTOTYPE(ELevelType::LOGO, L"Prototype_UI_UIMenuTrigger",		CUIMenu_Trigger::Create(m_pDevice, m_pDeviceContext));
-	ADD_PROTOTYPE(ELevelType::LOGO, L"Prototype_UI_UICommonTrigger",	CUICommon_Trigger::Create(m_pDevice, m_pDeviceContext));
-	ADD_PROTOTYPE(ELevelType::LOGO, L"Prototype_UI_UIMenuExitTrigger",	CUIMenu_Exit_Trigger::Create(m_pDevice, m_pDeviceContext));
-	ADD_PROTOTYPE(ELevelType::LOGO, L"Prototype_UI_SkillBG",			CUISkill_BG::Create(m_pDevice, m_pDeviceContext));
-	ADD_PROTOTYPE(ELevelType::LOGO, L"Prototype_UI_MiniMap",			CUIMini_Map::Create(m_pDevice, m_pDeviceContext));
-	ADD_PROTOTYPE(ELevelType::LOGO, L"Prototype_UI_HoverImage",			CUIHover_Image::Create(m_pDevice, m_pDeviceContext));
-	ADD_PROTOTYPE(ELevelType::LOGO, L"Prototype_UI_MenuImage",			CUIMenu_Image::Create(m_pDevice, m_pDeviceContext));
-	ADD_PROTOTYPE(ELevelType::LOGO, L"Prototype_UI_MenuOutline",		CUIMenu_OutLine::Create(m_pDevice, m_pDeviceContext));
-	ADD_PROTOTYPE(ELevelType::LOGO, L"Prototype_UI_MonsterStatText",	CUIMonsterStat_Text::Create(m_pDevice, m_pDeviceContext));
-	ADD_PROTOTYPE(ELevelType::LOGO, L"Prototype_UI_MonsterStatProgress",CUIMonsterStat_Progress::Create(m_pDevice, m_pDeviceContext));
-	ADD_PROTOTYPE(ELevelType::LOGO, L"Prototype_UI_Nameplate_BG",		CUINameplate_BG::Create(m_pDevice, m_pDeviceContext));
+	ADD_PROTOTYPE(ELevelType::LOGO, L"Prototype_UI_PlayerStatProgress",		CUIPlayerStat_Progress::Create(m_pDevice, m_pDeviceContext));
+	ADD_PROTOTYPE(ELevelType::LOGO, L"Prototype_UI_MenuText",				CUIMenu_Text::Create(m_pDevice, m_pDeviceContext));
+	ADD_PROTOTYPE(ELevelType::LOGO, L"Prototype_UI_PlayerStatText",			CUIPlayerStat_Text::Create(m_pDevice, m_pDeviceContext));
+	ADD_PROTOTYPE(ELevelType::LOGO, L"Prototype_UI_JUST_IMAGE",				CUIJust_Image::Create(m_pDevice, m_pDeviceContext));
+	ADD_PROTOTYPE(ELevelType::LOGO, L"Prototype_UI_UIMenuTrigger",			CUIMenu_Trigger::Create(m_pDevice, m_pDeviceContext));
+	ADD_PROTOTYPE(ELevelType::LOGO, L"Prototype_UI_UICommonTrigger",		CUICommon_Trigger::Create(m_pDevice, m_pDeviceContext));
+	ADD_PROTOTYPE(ELevelType::LOGO, L"Prototype_UI_UIMenuExitTrigger",		CUIMenu_Exit_Trigger::Create(m_pDevice, m_pDeviceContext));
+	ADD_PROTOTYPE(ELevelType::LOGO, L"Prototype_UI_SkillBG",				CUISkill_BG::Create(m_pDevice, m_pDeviceContext));
+	ADD_PROTOTYPE(ELevelType::LOGO, L"Prototype_UI_MiniMap",				CUIMini_Map::Create(m_pDevice, m_pDeviceContext));
+	ADD_PROTOTYPE(ELevelType::LOGO, L"Prototype_UI_HoverImage",				CUIHover_Image::Create(m_pDevice, m_pDeviceContext));
+	ADD_PROTOTYPE(ELevelType::LOGO, L"Prototype_UI_MenuImage",				CUIMenu_Image::Create(m_pDevice, m_pDeviceContext));
+	ADD_PROTOTYPE(ELevelType::LOGO, L"Prototype_UI_MenuOutline",			CUIMenu_OutLine::Create(m_pDevice, m_pDeviceContext));
+	ADD_PROTOTYPE(ELevelType::LOGO, L"Prototype_UI_MonsterStatText",		CUIMonsterStat_Text::Create(m_pDevice, m_pDeviceContext));
+	ADD_PROTOTYPE(ELevelType::LOGO, L"Prototype_UI_MonsterStatProgress",	CUIMonsterStat_Progress::Create(m_pDevice, m_pDeviceContext));
+	ADD_PROTOTYPE(ELevelType::LOGO, L"Prototype_UI_Nameplate_BG",			CUINameplate_BG::Create(m_pDevice, m_pDeviceContext));
+	ADD_PROTOTYPE(ELevelType::LOGO, L"Prototype_UI_AimDotImage",			CUIAimDot_Image::Create(m_pDevice, m_pDeviceContext));
+	ADD_PROTOTYPE(ELevelType::LOGO, L"Prototype_UI_PlayerAmmoProgress",			CUIPlayerAmmo_Progress::Create(m_pDevice, m_pDeviceContext));
+
 #pragma endregion
 
 	m_isFinished = true;
+	return S_OK;
+}
+
+
+
+HRESULT CLoader::Loading_For_Tutorial_Village()
+{
+	/* Tutorial Village */
+
+
+
+
+
+	return S_OK;
+}
+
+HRESULT CLoader::Loading_For_Tutorial_Boss()
+{
+	/* Tutorial Boss */
+
+
+	return S_OK;
+}
+
+HRESULT CLoader::Loading_For_Square()
+{
+	/* Square */
+
+
 	return S_OK;
 }
 

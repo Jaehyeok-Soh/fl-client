@@ -17,7 +17,14 @@ namespace Client
 	{
 		STATIC = 0,
 		LOADING,
-		LOGO,
+		LOGO,				/* 현재 임시 Test Level용 추후 Logo Scene으로 바뀔예정  */
+		TUTORIAL_VILLAGE,	/* 튜토리얼 처음 진입되는 Level */
+		TUTORIAL_BOSS,		/* 튜토리얼 진입 이후 Boss전 가는 Level Type */
+		SQUARE,				/* 광장 */
+
+
+		/* Test Scene은 맨 마지막 */
+		Test,
 		END
 	};
 	inline constexpr size_t g_iLevelType_Count = static_cast<size_t>(ELevelType::END);
@@ -182,12 +189,20 @@ namespace Client
 		END,
 	};
 
-	enum class Shader_VtxMesh_Pass
+	enum class EMapObjectShaderPass
 	{
 		StaticObject,
 		LandScape,
+		Bush,
+		Grass,
+		Moss,
+		Tree,
+		Vine,
+		Rock,
+		Water,
 		SHADOW_BAKE,
 		DEBUG,
+		END,
 	};
 
 
@@ -310,9 +325,23 @@ namespace Client
 	};
 	enum class EUIPrefabType
 	{
+		NOT_PREFAB,
 		MONSTER_NAMEPLATE,
 		END
 	};
+
+	inline _wstring UIPrefabtypeToWstring(EUIPrefabType eType)
+	{
+		switch (eType)
+		{
+		case Client::EUIPrefabType::NOT_PREFAB:return L"NOT_PREFAB";
+		case Client::EUIPrefabType::MONSTER_NAMEPLATE:return L"MONSTER_NAMEPLATE";
+		case Client::EUIPrefabType::END:
+		default:
+			break;
+		}
+		return L"NOT_PREFAB";
+	}
 
 #pragma endregion
 

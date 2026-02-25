@@ -22,9 +22,6 @@
     <Filter Include="02. Level\Logo">
       <UniqueIdentifier>{1cdeefb3-8ba8-48fd-8354-bfe672cfa1ed}</UniqueIdentifier>
     </Filter>
-    <Filter Include="02. Level\Dev">
-      <UniqueIdentifier>{a2daef10-3d20-4e39-ace1-5ff40c2ab0d2}</UniqueIdentifier>
-    </Filter>
     <Filter Include="02. Level\Loading\Loader">
       <UniqueIdentifier>{a017ef8a-3027-4490-9479-8f057105a565}</UniqueIdentifier>
     </Filter>
@@ -118,9 +115,6 @@
     <Filter Include="06. FSM\Player\RunShort">
       <UniqueIdentifier>{94a246c4-b42f-494a-aad5-0ee9bf6ba581}</UniqueIdentifier>
     </Filter>
-    <Filter Include="03. GameObject\UIObjects">
-      <UniqueIdentifier>{b8fa4419-f65b-4ff0-9246-77dad0e88328}</UniqueIdentifier>
-    </Filter>
     <Filter Include="06. FSM\Player\Fall">
       <UniqueIdentifier>{058d7e2d-7dc5-46cd-ae4f-e96fbf12fcfe}</UniqueIdentifier>
     </Filter>
@@ -148,12 +142,6 @@
     <Filter Include="07. System\01. Builder\UI">
       <UniqueIdentifier>{c030ae43-15b7-4d22-8ca7-b55ab7fdc119}</UniqueIdentifier>
     </Filter>
-    <Filter Include="03. GameObject\UIObjects\00.Manager">
-      <UniqueIdentifier>{7559622c-8d80-4e5c-81bd-e123eb0f162c}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="03. GameObject\UIObjects\01.Canvas">
-      <UniqueIdentifier>{bef61798-c2ef-48e4-8db0-faf0d1677c2d}</UniqueIdentifier>
-    </Filter>
     <Filter Include="06. FSM\Player\Attack">
       <UniqueIdentifier>{7ebbc28f-6b61-485b-b6e8-1bfe363c2de3}</UniqueIdentifier>
     </Filter>
@@ -172,29 +160,44 @@
     <Filter Include="99. ETC\01. ImGui">
       <UniqueIdentifier>{aa2685d2-18f6-417c-ba8e-cf78608c7618}</UniqueIdentifier>
     </Filter>
-    <Filter Include="03. GameObject\UIObjects\02.UI">
-      <UniqueIdentifier>{6d2a781d-ab40-4385-b96c-b3366f4eaba6}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="03. GameObject\UIObjects\02.UI\Image">
-      <UniqueIdentifier>{6d340ec4-9fd3-485b-bb1c-8989cfd57761}</UniqueIdentifier>
-    </Filter>
     <Filter Include="03. GameObject\UIObjects\02.UI\Image\JustImage">
       <UniqueIdentifier>{fd843193-a085-4c64-9708-e0849b95da7d}</UniqueIdentifier>
     </Filter>
-    <Filter Include="03. GameObject\UIObjects\02.UI\Progress Bar">
-      <UniqueIdentifier>{bd7da17c-04aa-4842-8652-0f67ca4cf8ad}</UniqueIdentifier>
+    <Filter Include="07. System\02. Debug_ImGui">
+      <UniqueIdentifier>{d4543967-6d08-419a-ad9e-aa4e953bd61f}</UniqueIdentifier>
     </Filter>
-    <Filter Include="03. GameObject\UIObjects\02.UI\Text">
-      <UniqueIdentifier>{4c552970-7965-46f3-85ec-73d256c4eba8}</UniqueIdentifier>
+    <Filter Include="07. System\02. Debug_ImGui\Inspector">
+      <UniqueIdentifier>{82f89ad1-c551-4868-8388-3d21f36c43d8}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="07. System\02. Debug_ImGui\ImGuiBase">
+      <UniqueIdentifier>{9fbb367b-4faa-448c-a302-857cca40b4ea}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="07. System\02. Debug_ImGui\Inspector\Player">
+      <UniqueIdentifier>{e56eb5ab-6ccc-4be7-935b-8756a82b5757}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="07. System\02. Debug_ImGui\Layout">
+      <UniqueIdentifier>{1dbf159f-2786-4b5f-a54a-a7fa44eac4d0}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="07. System\02. Debug_ImGui\Layout\Transform">
+      <UniqueIdentifier>{75112bf1-2fde-4f84-a058-ff26cbe40c27}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="07. System\02. Debug_ImGui\Layout\ActionState">
+      <UniqueIdentifier>{08101873-1d09-4a2d-9022-d599b7d73c9d}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="04. Shaders\ComputeShader_Labs">
+      <UniqueIdentifier>{8c14e548-7930-4ec0-b748-e471998a55b9}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="07. System\02. Debug_ImGui\Layout\Frustrum">
+      <UniqueIdentifier>{bfce2568-6c1b-4d14-9071-f78dd8aba44c}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="07. System\02. Debug_ImGui\Inspector\Global">
+      <UniqueIdentifier>{ff13b3dc-1ddc-457a-a989-4a75e72737e2}</UniqueIdentifier>
     </Filter>
     <Filter Include="07. System\01. Builder\Builder_AttackOverlap">
       <UniqueIdentifier>{c1589ec0-b521-4810-8e66-71ed1cf97227}</UniqueIdentifier>
     </Filter>
     <Filter Include="03. GameObject\ContainerObjects\Monster">
       <UniqueIdentifier>{a9cba2b5-38c2-4050-8518-588960127889}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="03. GameObject\UIObjects\02.UI\Trigger">
-      <UniqueIdentifier>{48b4a088-d124-4a5f-a826-7eac6ea855f7}</UniqueIdentifier>
     </Filter>
     <Filter Include="03. GameObject\UIObjects\02.UI\Image\Dynamic Image">
       <UniqueIdentifier>{3a479948-c2c8-4326-9dcd-9a9c7536eb7e}</UniqueIdentifier>
@@ -207,6 +210,12 @@
     </Filter>
     <Filter Include="03. GameObject\UIObjects\02.UI\Image\Dynamic Image\01.Minimap">
       <UniqueIdentifier>{f89b605a-01f2-485c-87d7-f34d36eeef01}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="07. System\02. Debug_ImGui\Layout\Frame">
+      <UniqueIdentifier>{26872d9e-983a-47c0-940f-aa4b37bb39e5}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="07. System\02. Debug_ImGui\Layout\Frame">
+      <UniqueIdentifier>{26872d9e-983a-47c0-940f-aa4b37bb39e5}</UniqueIdentifier>
     </Filter>
     <Filter Include="04. Shaders\ComputeShaders">
       <UniqueIdentifier>{f29a8226-048f-4c41-b7e7-685b07e919a6}</UniqueIdentifier>
@@ -223,24 +232,6 @@
     <Filter Include="03. GameObject\PartObjects\Weapon\Gun">
       <UniqueIdentifier>{6a93f015-83a7-4ad9-a084-d7e71fa8f3a4}</UniqueIdentifier>
     </Filter>
-    <Filter Include="03. GameObject\UIObjects\02.UI\Image\Dynamic Image\03.MenuImage">
-      <UniqueIdentifier>{41ffc1c4-c6ab-4e1e-8a96-b2da6de22285}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="03. GameObject\UIObjects\02.UI\Trigger\00.Basic">
-      <UniqueIdentifier>{ddd0e1e9-b54e-4f7e-b25d-40433ae876b3}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="03. GameObject\UIObjects\02.UI\Trigger\01.MenuTab">
-      <UniqueIdentifier>{13d70f3a-1964-4c43-a1e8-30b582165d71}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="03. GameObject\UIObjects\02.UI\Trigger\02.Menu Exit">
-      <UniqueIdentifier>{63c9a3d7-bedc-44a7-89d4-febe6b9de520}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="03. GameObject\UIObjects\02.UI\Text\Menu Text">
-      <UniqueIdentifier>{c8f806c3-d027-4861-9696-bc78504a554a}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="03. GameObject\UIObjects\02.UI\Text\Stat Text">
-      <UniqueIdentifier>{ba675289-98b0-43ba-990d-7137e8849731}</UniqueIdentifier>
-    </Filter>
     <Filter Include="07. System\01. Builder\Effect">
       <UniqueIdentifier>{0a51c3b4-11ce-445a-904c-410b2a5ef809}</UniqueIdentifier>
     </Filter>
@@ -250,8 +241,8 @@
     <Filter Include="07. System\01. Builder\Effect\Builder_EffectEvent">
       <UniqueIdentifier>{5d286e09-eee0-4b43-bcea-01a835550da6}</UniqueIdentifier>
     </Filter>
-    <Filter Include="03. GameObject\UIObjects\02.UI\Image\Dynamic Image\03.MenuImage\00.OutLine">
-      <UniqueIdentifier>{4abf4708-1f00-4a67-ba1b-f638539f3a5c}</UniqueIdentifier>
+    <Filter Include="07. System\02. Debug_ImGui\Layout\Shader">
+      <UniqueIdentifier>{241e78ea-3b24-473b-a83b-6c32e682ad95}</UniqueIdentifier>
     </Filter>
     <Filter Include="06. FSM\Player\JumpWall">
       <UniqueIdentifier>{2c8ee512-8e94-467f-9f3f-35d518b8ff89}</UniqueIdentifier>
@@ -310,8 +301,8 @@
     <Filter Include="03. GameObject\UIObjects\02.UI\Image\Dynamic Image\04.LoadingImage">
       <UniqueIdentifier>{7f017932-b1db-4253-9356-3b8cd034857d}</UniqueIdentifier>
     </Filter>
-    <Filter Include="03. GameObject\UIObjects\02.UI\World">
-      <UniqueIdentifier>{8a889375-58df-405c-aa49-2221cd20c171}</UniqueIdentifier>
+    <Filter Include="03. GameObject\PartObjects\Monster">
+      <UniqueIdentifier>{dd6c64a1-8604-4ada-acfe-59285f1d7176}</UniqueIdentifier>
     </Filter>
     <Filter Include="05. Component\WorldUI">
       <UniqueIdentifier>{8e22024d-4e3d-4939-938e-33aa2af517cb}</UniqueIdentifier>
@@ -399,6 +390,126 @@
     </Filter>
     <Filter Include="03. GameObject\PartObjects\Monster\Body\Xibi">
       <UniqueIdentifier>{5386aadc-21bf-4b31-b43a-0b216b6c0e88}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="03. GameObject\MapObject\03. Plants">
+      <UniqueIdentifier>{e0ccc92c-8caa-4c39-8270-998fdc97d602}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="03. GameObject\MapObject\03. Plants\00. Plants">
+      <UniqueIdentifier>{ec2dd632-4d92-4877-ab79-a60542085874}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="03. GameObject\MapObject\03. Plants\01. Bush">
+      <UniqueIdentifier>{2db74ba0-4a40-4b6f-b2e7-925677aab52b}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="03. GameObject\MapObject\03. Plants\02. Grass">
+      <UniqueIdentifier>{222fcc28-c0ae-401d-bf5c-03c82236ff30}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="03. GameObject\MapObject\03. Plants\03. Moss">
+      <UniqueIdentifier>{f96db740-5a89-4d2a-8a4d-a498f7ef0554}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="03. GameObject\MapObject\03. Plants\04. Tree">
+      <UniqueIdentifier>{ff59a5bd-c930-4031-8c51-0ac80ae71fc5}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="03. GameObject\MapObject\03. Plants\05. Vine">
+      <UniqueIdentifier>{7c7bc525-4b2f-410f-8d4c-3c439b341282}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="03. GameObject\MapObject\04. Rock">
+      <UniqueIdentifier>{1f5db521-b63b-4cb7-a6a6-90bad385d5f4}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="03. GameObject\MapObject\05. Water">
+      <UniqueIdentifier>{4cae9daa-fe9c-46ab-b571-910568be8b8b}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02. Level\Tutorial_Village">
+      <UniqueIdentifier>{b2fed15e-bf3a-4c63-8815-60f37d6ce25c}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02. Level\Tutorial_Boss">
+      <UniqueIdentifier>{2bfda849-9bb8-4f16-b297-2e1c6dcf6c85}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02. Level\Square">
+      <UniqueIdentifier>{0214ac06-4136-4164-90f8-af92c061bfe3}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02. Level\Test">
+      <UniqueIdentifier>{a2daef10-3d20-4e39-ace1-5ff40c2ab0d2}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="03. GameObject\UIObjects\02.UI\Image\Dynamic Image\06.AimDot">
+      <UniqueIdentifier>{91eeeaa9-73a6-40da-bff2-b5e05c436f98}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="03. GameObject\UIObjects\02.UI\Progress Bar\Player Ammo">
+      <UniqueIdentifier>{e50622ce-f6b5-4828-847f-cf19391be008}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="03. GameObject\UIObjects">
+      <UniqueIdentifier>{b8fa4419-f65b-4ff0-9246-77dad0e88328}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="03. GameObject\UIObjects\00.Manager">
+      <UniqueIdentifier>{7559622c-8d80-4e5c-81bd-e123eb0f162c}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="03. GameObject\UIObjects\01.Canvas">
+      <UniqueIdentifier>{bef61798-c2ef-48e4-8db0-faf0d1677c2d}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="03. GameObject\UIObjects\02.UI">
+      <UniqueIdentifier>{6d2a781d-ab40-4385-b96c-b3366f4eaba6}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="03. GameObject\UIObjects\02.UI\Image">
+      <UniqueIdentifier>{6d340ec4-9fd3-485b-bb1c-8989cfd57761}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="03. GameObject\UIObjects\02.UI\Image\JustImage">
+      <UniqueIdentifier>{fd843193-a085-4c64-9708-e0849b95da7d}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="03. GameObject\UIObjects\02.UI\Image\Dynamic Image">
+      <UniqueIdentifier>{3a479948-c2c8-4326-9dcd-9a9c7536eb7e}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="03. GameObject\UIObjects\02.UI\Image\Dynamic Image\00.SkillBG">
+      <UniqueIdentifier>{f1acf951-62e0-4e8b-b106-6fd9b77c5697}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="03. GameObject\UIObjects\02.UI\Image\Dynamic Image\02.HoverImage">
+      <UniqueIdentifier>{871de243-5883-42bb-b109-9645901ce4d2}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="03. GameObject\UIObjects\02.UI\Image\Dynamic Image\01.Minimap">
+      <UniqueIdentifier>{f89b605a-01f2-485c-87d7-f34d36eeef01}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="03. GameObject\UIObjects\02.UI\Image\Dynamic Image\03.MenuImage">
+      <UniqueIdentifier>{41ffc1c4-c6ab-4e1e-8a96-b2da6de22285}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="03. GameObject\UIObjects\02.UI\Image\Dynamic Image\03.MenuImage\00.OutLine">
+      <UniqueIdentifier>{4abf4708-1f00-4a67-ba1b-f638539f3a5c}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="03. GameObject\UIObjects\02.UI\Image\Dynamic Image\04.LoadingImage">
+      <UniqueIdentifier>{7f017932-b1db-4253-9356-3b8cd034857d}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="03. GameObject\UIObjects\02.UI\Progress Bar">
+      <UniqueIdentifier>{bd7da17c-04aa-4842-8652-0f67ca4cf8ad}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="03. GameObject\UIObjects\02.UI\Progress Bar\Loading">
+      <UniqueIdentifier>{5d46b6c3-a13f-4703-a848-708f9a73243a}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="03. GameObject\UIObjects\02.UI\Progress Bar\Stat">
+      <UniqueIdentifier>{2ad35cd2-80d4-4363-8d53-affc1c049ae8}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="03. GameObject\UIObjects\02.UI\Text">
+      <UniqueIdentifier>{4c552970-7965-46f3-85ec-73d256c4eba8}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="03. GameObject\UIObjects\02.UI\Text\Menu Text">
+      <UniqueIdentifier>{c8f806c3-d027-4861-9696-bc78504a554a}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="03. GameObject\UIObjects\02.UI\Text\Stat Text">
+      <UniqueIdentifier>{ba675289-98b0-43ba-990d-7137e8849731}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="03. GameObject\UIObjects\02.UI\Text\Loading Text">
+      <UniqueIdentifier>{0ebf2b41-2b05-4ee9-a49a-641d42db1c72}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="03. GameObject\UIObjects\02.UI\Trigger">
+      <UniqueIdentifier>{48b4a088-d124-4a5f-a826-7eac6ea855f7}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="03. GameObject\UIObjects\02.UI\Trigger\00.Basic">
+      <UniqueIdentifier>{ddd0e1e9-b54e-4f7e-b25d-40433ae876b3}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="03. GameObject\UIObjects\02.UI\Trigger\01.MenuTab">
+      <UniqueIdentifier>{13d70f3a-1964-4c43-a1e8-30b582165d71}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="03. GameObject\UIObjects\02.UI\Trigger\02.Menu Exit">
+      <UniqueIdentifier>{63c9a3d7-bedc-44a7-89d4-febe6b9de520}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="03. GameObject\UIObjects\02.UI\Image\Dynamic Image\05.MonsterNamePlate">
+      <UniqueIdentifier>{761751c8-ba94-4e88-987b-53bc16a7f52f}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
@@ -711,6 +822,57 @@
     <ClInclude Include="..\Public\UILoading_Progress.h">
       <Filter>03. GameObject\UIObjects\02.UI\Progress Bar\Loading</Filter>
     </ClInclude>
+    <ClInclude Include="..\Public\Gun.h">
+      <Filter>03. GameObject\PartObjects\Weapon\Gun</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\State_GunBase.h">
+      <Filter>06. FSM\Player\Attack\Gun</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\Plants.h">
+      <Filter>03. GameObject\MapObject\03. Plants\00. Plants</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\Bush.h">
+      <Filter>03. GameObject\MapObject\03. Plants\01. Bush</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\Grass.h">
+      <Filter>03. GameObject\MapObject\03. Plants\02. Grass</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\Moss.h">
+      <Filter>03. GameObject\MapObject\03. Plants\03. Moss</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\Tree.h">
+      <Filter>03. GameObject\MapObject\03. Plants\04. Tree</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\Vine.h">
+      <Filter>03. GameObject\MapObject\03. Plants\05. Vine</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\Rock.h">
+      <Filter>03. GameObject\MapObject\04. Rock</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\Water.h">
+      <Filter>03. GameObject\MapObject\05. Water</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\LandScape.h">
+      <Filter>03. GameObject\MapObject\02. LandScape</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\Level_Tutorial_Village.h">
+      <Filter>02. Level\Tutorial_Village</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\Level_Tutorial_Boss.h">
+      <Filter>02. Level\Tutorial_Boss</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\Level_Square.h">
+      <Filter>02. Level\Square</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\Level_Test.h">
+      <Filter>02. Level\Test</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\UIAimDot_Image.h">
+      <Filter>03. GameObject\UIObjects\02.UI\Image\Dynamic Image\06.AimDot</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\UIPlayerAmmo_Progress.h">
+      <Filter>03. GameObject\UIObjects\02.UI\Progress Bar\Player Ammo</Filter>
+    </ClInclude>
     <ClInclude Include="..\Public\UILoading_Image.h">
       <Filter>03. GameObject\UIObjects\02.UI\Image\Dynamic Image\04.LoadingImage</Filter>
     </ClInclude>
@@ -760,12 +922,6 @@
       <Filter>07. System\01. Builder\AttackPreset</Filter>
     </ClInclude>
     <ClInclude Include="..\Public\LandScape.h" />
-    <ClInclude Include="..\Public\UI_World.h">
-      <Filter>03. GameObject\UIObjects\02.UI\World</Filter>
-    </ClInclude>
-    <ClInclude Include="..\Public\WorldUI.h">
-      <Filter>03. GameObject\UIObjects\02.UI\World</Filter>
-    </ClInclude>
     <ClInclude Include="..\Public\WorldUI_Component.h">
       <Filter>05. Component\WorldUI</Filter>
     </ClInclude>
@@ -1096,6 +1252,57 @@
     <ClCompile Include="..\Private\UILoading_Progress.cpp">
       <Filter>03. GameObject\UIObjects\02.UI\Progress Bar\Loading</Filter>
     </ClCompile>
+    <ClCompile Include="..\Private\Gun.cpp">
+      <Filter>03. GameObject\PartObjects\Weapon\Gun</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\State_GunBase.cpp">
+      <Filter>06. FSM\Player\Attack\Gun</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\Plants.cpp">
+      <Filter>03. GameObject\MapObject\03. Plants\00. Plants</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\Bush.cpp">
+      <Filter>03. GameObject\MapObject\03. Plants\01. Bush</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\Grass.cpp">
+      <Filter>03. GameObject\MapObject\03. Plants\02. Grass</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\Moss.cpp">
+      <Filter>03. GameObject\MapObject\03. Plants\03. Moss</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\Tree.cpp">
+      <Filter>03. GameObject\MapObject\03. Plants\04. Tree</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\Vine.cpp">
+      <Filter>03. GameObject\MapObject\03. Plants\05. Vine</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\Rock.cpp">
+      <Filter>03. GameObject\MapObject\04. Rock</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\Water.cpp">
+      <Filter>03. GameObject\MapObject\05. Water</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\LandScape.cpp">
+      <Filter>03. GameObject\MapObject\02. LandScape</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\Level_Tutorial_Village.cpp">
+      <Filter>02. Level\Tutorial_Village</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\Level_Tutorial_Boss.cpp">
+      <Filter>02. Level\Tutorial_Boss</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\Level_Square.cpp">
+      <Filter>02. Level\Square</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\Level_Test.cpp">
+      <Filter>02. Level\Test</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\UIAimDot_Image.cpp">
+      <Filter>03. GameObject\UIObjects\02.UI\Image\Dynamic Image\06.AimDot</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\UIPlayerAmmo_Progress.cpp">
+      <Filter>03. GameObject\UIObjects\02.UI\Progress Bar\Player Ammo</Filter>
+    </ClCompile>
     <ClCompile Include="..\Private\UILoading_Image.cpp">
       <Filter>03. GameObject\UIObjects\02.UI\Image\Dynamic Image\04.LoadingImage</Filter>
     </ClCompile>
@@ -1142,12 +1349,6 @@
       <Filter>07. System\01. Builder\AttackPreset</Filter>
     </ClCompile>
     <ClCompile Include="..\Private\LandScape.cpp" />
-    <ClCompile Include="..\Private\UI_World.cpp">
-      <Filter>03. GameObject\UIObjects\02.UI\World</Filter>
-    </ClCompile>
-    <ClCompile Include="..\Private\WorldUI.cpp">
-      <Filter>03. GameObject\UIObjects\02.UI\World</Filter>
-    </ClCompile>
     <ClCompile Include="..\Private\WorldUI_Component.cpp">
       <Filter>05. Component\WorldUI</Filter>
     </ClCompile>

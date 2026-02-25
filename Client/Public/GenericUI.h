@@ -93,7 +93,7 @@ protected:
 	_bool m_isFin_Event					= { true };
 
 	// Shader Bind Values
-	_bool m_isUseColorTint				= {false};
+	_bool m_isUseColorTint				= { false };
 	Vec4 m_vColorTint					= {};
 	Vec4 m_vGradiantColorTint			= {};
 	_float m_fAlpha_Ratio				= {};
