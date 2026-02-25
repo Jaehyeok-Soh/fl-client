@@ -35,6 +35,9 @@ HRESULT	CBuilder_Map::Initialize()
 
 HRESULT CBuilder_Map::Build(const CDataDocumentBase& document)
 {
+	m_eLevelType = ELevelType::STATIC;
+
+
 	const auto& doc = static_cast<const CDataDocument_Map&>(document);
 	// For Scene Data 
 	{
@@ -46,7 +49,7 @@ HRESULT CBuilder_Map::Build(const CDataDocumentBase& document)
 			DTO::TLevelData tData = pSceneData->Get_Data();
 
 			/* Scene Data */
-			SceneData_Setting(tData);
+			LevelData_Setting(tData);
 		}
 	}
 
@@ -80,8 +83,11 @@ HRESULT CBuilder_Map::Build(const CDataDocumentBase& document)
 	return S_OK;
 }
 
-HRESULT CBuilder_Map::SceneData_Setting(const DTO::TLevelData& tData)
+HRESULT CBuilder_Map::LevelData_Setting(const DTO::TLevelData& tData)
 {
+	m_eLevelType = StringToClientleveltype(tData.strLevelTypeName);
+
+
 	/*  None이라면 돌아가기  */
 	if (tData.strTextureSplatingInfoName != "None")
 	{
@@ -97,7 +103,7 @@ HRESULT CBuilder_Map::Create_StaticObject(const DTO::TMap_MapObjectData& tData)
 {
 	CStaticObject::STATICOBJECT_DESC tStaticObjectDesc{};
 
-	tStaticObjectDesc.iLevelIndex		 = tData.eClientLevelType;
+	tStaticObjectDesc.iLevelIndex		 = ENUM_TO_UINT(m_eLevelType);
 	tStaticObjectDesc.isUELoaded		 = tData.isUELoaded;
 	tStaticObjectDesc.eMapObjectDrawType = static_cast<EMapObject_DrawType>(tData.eMapObjectDrawType);
 	tStaticObjectDesc.wstrModelPath		 = Engine_Utils::ToWString(tData.strModelPath);
@@ -122,13 +128,11 @@ HRESULT CBuilder_Map::Create_LandScape(const DTO::TMap_MapObjectData& tData)
 {
 	CLandScape::LANDSCAPE_DESC tLandSapceDesc{};
 
-	tLandSapceDesc.iLevelIndex			= tData.eClientLevelType;
+	tLandSapceDesc.iLevelIndex			= ENUM_TO_UINT(m_eLevelType);
 	tLandSapceDesc.isUELoaded			= tData.isUELoaded;
 	tLandSapceDesc.eMapObjectDrawType	= static_cast<EMapObject_DrawType>(tData.eMapObjectDrawType);
 	tLandSapceDesc.wstrModelPath		= Engine_Utils::ToWString(tData.strModelPath);
 	tLandSapceDesc.iSectionNum			= tData.iSectionNum;
-
-
 
 	/* Land Scape 는 Instance Draw Type 불가능  */
 	if (tLandSapceDesc.eMapObjectDrawType == EMapObject_DrawType::Instance)
@@ -162,7 +166,7 @@ HRESULT CBuilder_Map::Create_Bush(const DTO::TMap_MapObjectData& tData)
 {
 	CBush::BUSH_DESC tBush_Desc{};
 
-	tBush_Desc.iLevelIndex = tData.eClientLevelType;
+	tBush_Desc.iLevelIndex = ENUM_TO_UINT(m_eLevelType);
 	tBush_Desc.isUELoaded = tData.isUELoaded;
 	tBush_Desc.eMapObjectDrawType = static_cast<EMapObject_DrawType>(tData.eMapObjectDrawType);
 	tBush_Desc.wstrModelPath = Engine_Utils::ToWString(tData.strModelPath);
@@ -185,7 +189,7 @@ HRESULT CBuilder_Map::Create_Grass(const DTO::TMap_MapObjectData& tData)
 {
 	CGrass::GRASS_DESC tGrass_Desc{};
 
-	tGrass_Desc.iLevelIndex = tData.eClientLevelType;
+	tGrass_Desc.iLevelIndex = ENUM_TO_UINT(m_eLevelType);
 	tGrass_Desc.isUELoaded = tData.isUELoaded;
 	tGrass_Desc.eMapObjectDrawType = static_cast<EMapObject_DrawType>(tData.eMapObjectDrawType);
 	tGrass_Desc.wstrModelPath = Engine_Utils::ToWString(tData.strModelPath);
@@ -209,7 +213,7 @@ HRESULT CBuilder_Map::Create_Moss(const DTO::TMap_MapObjectData& tData)
 
 	CGrass::GRASS_DESC tMoss_Desc{};
 
-	tMoss_Desc.iLevelIndex = tData.eClientLevelType;
+	tMoss_Desc.iLevelIndex = ENUM_TO_UINT(m_eLevelType);
 	tMoss_Desc.isUELoaded = tData.isUELoaded;
 	tMoss_Desc.eMapObjectDrawType = static_cast<EMapObject_DrawType>(tData.eMapObjectDrawType);
 	tMoss_Desc.wstrModelPath = Engine_Utils::ToWString(tData.strModelPath);
@@ -233,7 +237,7 @@ HRESULT CBuilder_Map::Create_Tree(const DTO::TMap_MapObjectData& tData)
 {
 	CTree::TREE_DESC tTree_Desc{};
 
-	tTree_Desc.iLevelIndex = tData.eClientLevelType;
+	tTree_Desc.iLevelIndex = ENUM_TO_UINT(m_eLevelType);
 	tTree_Desc.isUELoaded = tData.isUELoaded;
 	tTree_Desc.eMapObjectDrawType = static_cast<EMapObject_DrawType>(tData.eMapObjectDrawType);
 	tTree_Desc.wstrModelPath = Engine_Utils::ToWString(tData.strModelPath);
@@ -255,7 +259,7 @@ HRESULT CBuilder_Map::Create_Vine(const DTO::TMap_MapObjectData& tData)
 {
 	CVine::VINE_DESC tVine_Desc{};
 
-	tVine_Desc.iLevelIndex = tData.eClientLevelType;
+	tVine_Desc.iLevelIndex = ENUM_TO_UINT(m_eLevelType);
 	tVine_Desc.isUELoaded = tData.isUELoaded;
 	tVine_Desc.eMapObjectDrawType = static_cast<EMapObject_DrawType>(tData.eMapObjectDrawType);
 	tVine_Desc.wstrModelPath = Engine_Utils::ToWString(tData.strModelPath);
@@ -277,7 +281,7 @@ HRESULT CBuilder_Map::Create_Water(const DTO::TMap_MapObjectData& tData)
 {
 	CVine::VINE_DESC tWater_Desc{};
 
-	tWater_Desc.iLevelIndex = tData.eClientLevelType;
+	tWater_Desc.iLevelIndex = ENUM_TO_UINT(m_eLevelType);;
 	tWater_Desc.isUELoaded = tData.isUELoaded;
 	tWater_Desc.eMapObjectDrawType = static_cast<EMapObject_DrawType>(tData.eMapObjectDrawType);
 	tWater_Desc.wstrModelPath = Engine_Utils::ToWString(tData.strModelPath);
@@ -299,7 +303,7 @@ HRESULT CBuilder_Map::Create_Rock(const DTO::TMap_MapObjectData& tData)
 {
 	CVine::VINE_DESC tRock_Desc{};
 
-	tRock_Desc.iLevelIndex = tData.eClientLevelType;
+	tRock_Desc.iLevelIndex = ENUM_TO_UINT(m_eLevelType);
 	tRock_Desc.isUELoaded = tData.isUELoaded;
 	tRock_Desc.eMapObjectDrawType = static_cast<EMapObject_DrawType>(tData.eMapObjectDrawType);
 	tRock_Desc.wstrModelPath = Engine_Utils::ToWString(tData.strModelPath);

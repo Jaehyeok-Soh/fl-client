@@ -18,19 +18,12 @@ HRESULT	CBuilder_Map::Initialize()
 
 HRESULT CBuilder_Map::Build(const CDataDocumentBase& document)
 {
-	const auto& doc = static_cast<const CDataDocument_Map&>(document);
-	// For. StaticModel
-	{
-		const vector<Engine::IObjectDataBase*> vecMapObjectList = doc.Get_ListByType(ENUM_TO_UINT(DTO::EMapObject_Type::MAPOBJECT));
-		for (const auto& pObjectData : vecMapObjectList)
-		{
-			pObjectData->Get_Type();
-			const auto* pMapObjectData = static_cast<const Engine::CData_MapObject*>(pObjectData);
-			
-			if (FAILED(Create_MapObject(pMapObjectData->Get_Data())))
-				return E_FAIL;
-		}
+	m_eClientLevelType = EClientLevelType::STATIC;
 
+	const auto& doc = static_cast<const CDataDocument_Map&>(document);
+
+	/* Level Data 먼지 필수 */
+	{
 		const vector<Engine::IObjectDataBase*> vecSceneData = doc.Get_ListByType(ENUM_TO_UINT(DTO::EMapObject_Type::SCENEDATA));
 		for (const auto& pObjectData : vecSceneData)
 		{
@@ -41,6 +34,18 @@ HRESULT CBuilder_Map::Build(const CDataDocumentBase& document)
 				return E_FAIL;
 		}
 	}
+
+	{
+		const vector<Engine::IObjectDataBase*> vecMapObjectList = doc.Get_ListByType(ENUM_TO_UINT(DTO::EMapObject_Type::MAPOBJECT));
+		for (const auto& pObjectData : vecMapObjectList)
+		{
+			pObjectData->Get_Type();
+			const auto* pMapObjectData = static_cast<const Engine::CData_MapObject*>(pObjectData);
+			
+			if (FAILED(Create_MapObject(pMapObjectData->Get_Data())))
+				return E_FAIL;
+		}
+	}
 	return S_OK;
 }
 
@@ -48,7 +53,7 @@ HRESULT CBuilder_Map::Create_MapObject(const DTO::TMap_MapObjectData& tData)
 {
 
 	CMapObject::MAPOBJECT_DESC tDesc{};
-	tDesc.eClientLevelType					= static_cast<EClientLevelType>(tData.eClientLevelType);
+	tDesc.eClientLevelType					= m_eClientLevelType;
 	tDesc.eClientMakePath					= static_cast<EClientMakePath>(tData.eClientMakePath);
 	tDesc.eMapObjectDrawType				= static_cast<EMapObject_DrawType>(tData.eMapObjectDrawType);
 
@@ -77,6 +82,9 @@ HRESULT CBuilder_Map::Create_MapObject(const DTO::TMap_MapObjectData& tData)
 
 HRESULT CBuilder_Map::Apply_ScenceData(const DTO::TLevelData& tData)
 {
+	m_eClientLevelType = StringToClientleveltype(tData.strLevelTypeName);
+
+
 	/* None 이면 사용하지 않는 다는 뜻 */
 	if(tData.strTextureSplatingInfoName != "None")
 		m_pMapToolManager->Apply_LevelData(&tData);

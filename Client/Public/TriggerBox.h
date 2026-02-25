@@ -9,9 +9,8 @@ class CTriggerBox : public CGameObject
 public:
 	typedef struct tagTriggerBox_Desc : public CGameObject::GAMEOBJECT_DESC
 	{
-		/* 대충 Trigger Box 크기 받아오는 Desc 필요하고*/
 		/* Trigger Box */
-
+		Vec3		vTriggerBox_Extents{1.f,1.f,1.f};
 
 
 	}TRIGGERBOX_DESC;

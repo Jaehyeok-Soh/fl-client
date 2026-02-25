@@ -239,10 +239,14 @@ namespace Tool
 	{
 		switch (eType)
 		{
-		case Tool::EClientLevelType::STATIC: return "STATIC";
-		case Tool::EClientLevelType::LOGO:	 return "LOGO";
-		case Tool::EClientLevelType::LOADING:return "LOADING";
-		default:							 return "NONE";
+		case Tool::EClientLevelType::STATIC:			return "STATIC";
+		case Tool::EClientLevelType::LOADING:			return "LOADING";
+		case Tool::EClientLevelType::LOGO:				return "LOGO";
+		case Tool::EClientLevelType::TUTORIAL_VILLAGE:	return "TUTORIAL_VILLAGE";
+		case Tool::EClientLevelType::TUTORIAL_BOSS:		return "TUTORIAL_BOSS";
+		case Tool::EClientLevelType::SQUARE:			return "SQUARE";
+		case Tool::EClientLevelType::TEST:				return "TEST";
+		default:										return "NONE";
 		}
 		return "NONE";
 	}
@@ -251,10 +255,18 @@ namespace Tool
 	{
 		if (::strcmp(str.c_str(), "STATIC") == 0)
 			return EClientLevelType::STATIC;
-		else if (::strcmp(str.c_str(), "LOGO") == 0)
-			return EClientLevelType::LOGO;
 		else if (::strcmp(str.c_str(), "LOADING") == 0)
 			return EClientLevelType::LOADING;
+		else if (::strcmp(str.c_str(), "LOGO") == 0)
+			return EClientLevelType::LOGO;
+		else if (::strcmp(str.c_str(), "TUTORIAL_VILLAGE") == 0)
+			return EClientLevelType::TUTORIAL_VILLAGE;
+		else if (::strcmp(str.c_str(), "TUTORIAL_BOSS") == 0)
+			return EClientLevelType::TUTORIAL_BOSS;
+		else if (::strcmp(str.c_str(), "SQUARE") == 0)
+			return EClientLevelType::SQUARE;
+		else if (::strcmp(str.c_str(), "TEST") == 0)
+			return EClientLevelType::TEST;
 		else
 			return EClientLevelType::END;
 	}

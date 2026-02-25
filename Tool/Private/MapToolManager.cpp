@@ -402,7 +402,11 @@ HRESULT CMapToolManager::Apply_LevelData(const DTO::TLevelData* tData)
 		return E_FAIL;
 
 	/* None => [Don't Use Texture Splating Info] */
-	m_pLevelData->m_strTextureSplatingInfoName = tData->strTextureSplatingInfoName;
+	m_pLevelData->m_strTextureSplatingInfoName	= tData->strTextureSplatingInfoName;
+
+	/* Level Type */
+	m_pLevelData->m_eClientLevelType			= StringToClientleveltype(tData->strLevelTypeName);
+
 
 	return S_OK;
 }

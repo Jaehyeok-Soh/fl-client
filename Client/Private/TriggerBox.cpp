@@ -2,6 +2,7 @@
 #include "TriggerBox.h"
 #include "PhysicsRigidBody.h"
 #include "PhysicsCollider.h"
+#include "GameInstance.h"
 
 CTriggerBox::CTriggerBox(ID3D11Device* pDevice, ID3D11DeviceContext* pContext)
     : CGameObject(pDevice , pContext)
@@ -48,9 +49,33 @@ HRESULT CTriggerBox::Ready_Transform(TRIGGERBOX_DESC* pDesc)
 
 HRESULT CTriggerBox::Ready_Component(TRIGGERBOX_DESC* pDesc)
 {
-    
 
+    /* Ready PhysicCollider */
+    {
 
+        PHYSICSCOLLIDER_DESC pcDesc{};
+
+        /* Collider Box 悼老 */
+        pcDesc.eConvexShape = EPhysicsConvexShape::BOX;
+        pcDesc.eShape = EPhysicsShape::BOX;
+
+        ///* Trigger Box Prototype阑 刚历积己? */
+        //CPhysicsCollider* pCollider = CPhysicsCollider::Create(m_pDevice, m_pDeviceContext, &pcDesc);
+        //if (pCollider)
+        //{
+        //    if (FAILED(m_pGameInstance->Add_Prototype(pDesc->iLevelIndex, L"Prototype_Component_Physics_Collider_" + wstrModelName, pCollider)))
+        //        Safe_Release(pCollider);
+        //}
+
+        //PHYSICSCOLLIDER_DESC cloneDesc{};
+        //cloneDesc.eFilterLayer = PHYSICSFILTERGROUP::MAP;
+        //cloneDesc.iFilterMask = 0xFFFFFFFF;
+        //cloneDesc.bSetOnlyFilter = true;
+
+        //if (FAILED(Add_Component<CPhysicsCollider>(pDesc->iLevelIndex, L"Prototype_Component_Physics_Collider_" + wstrModelName, &cloneDesc)))
+        //    return E_FAIL;
+
+    }
 
     return S_OK;
 }

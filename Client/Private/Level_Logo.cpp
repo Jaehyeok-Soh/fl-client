@@ -333,7 +333,7 @@ HRESULT CLevel_Logo::Ready_Lights()
 	//		return E_FAIL;
 	//}
 
-	//return S_OK;
+	return S_OK;
 }
 
 HRESULT CLevel_Logo::Ready_Camera_Setting(const _uint iLevelIndex)

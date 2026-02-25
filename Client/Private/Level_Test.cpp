@@ -312,7 +312,7 @@ HRESULT CLevel_Test::Ready_Lights()
 
 HRESULT CLevel_Test::Ready_Map()
 {
-	ELevelType eLevelType = ELevelType::LOGO;
+	ELevelType eLevelType = ELevelType::TEST;
 	DTO::ECategory eCategory = DTO::ECategory::MAP;
 	_uint iLevelID = ENUM_TO_UINT(eLevelType);
 
