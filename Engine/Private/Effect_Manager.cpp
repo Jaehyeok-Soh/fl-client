@@ -31,7 +31,7 @@ void CEffect_Manager::Spawn_PoolEffect(CEffectHandler* handler, const std::strin
     m_pGameInstance->Request_AddObject(
         m_pGameInstance->Get_CurrentLevelIndex(),
         wstrPrototypeTag,
-        0,
+        m_pGameInstance->Get_CurrentLevelIndex(),
         &tEngineDesc,
         [handler, UniqueEffectName](CGameObject* pGo)
         {
@@ -56,7 +56,7 @@ void CEffect_Manager::Spawn_PoolEffect(const std::string& strTag, const Matrix& 
     m_pGameInstance->Request_AddObject(
         m_pGameInstance->Get_CurrentLevelIndex(),
         wstrPrototypeTag,
-        0,
+        m_pGameInstance->Get_CurrentLevelIndex(),
         &tEngineDesc
     );
 }

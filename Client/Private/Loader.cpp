@@ -20,7 +20,6 @@
 #include "Shader.h"
 #include "Camera.h"
 #include "Transform.h"
-#include "PhysicsCollider.h"
 #include "SkillComp_MoonE.h"
 #include "SkillComp_MoonQ.h"
 //=================
@@ -52,6 +51,7 @@
 #include "Body.h"
 #include "Weapon.h"
 #include "Sword.h"
+#include "Gun.h"
 #include "ColliderPart.h"
 #include "Loader.h"
 #include "Effect.h"
@@ -104,6 +104,7 @@
 #include "UILoading_Image.h"
 #include "UINameplate_BG.h"
 #include "UIAimDot_Image.h"
+#include "UILevelChange_Image.h"
 // 트리거 
 #include "UIMenu_Trigger.h"
 #include "UICommon_Trigger.h"
@@ -178,6 +179,9 @@ HRESULT CLoader::Loading()
 	case Client::ELevelType::SQUARE:
 		hr = Loading_For_Square();
 		break;
+	case Client::ELevelType::TEST:
+		hr = Loading_For_Test();
+		break;
 	default:
 		hr = E_FAIL;
 		break;
@@ -207,6 +211,12 @@ HRESULT CLoader::Loading_For_LoadLevel()
 
 #pragma endregion
 
+	m_isFinished = true;
+	return S_OK;
+}
+
+HRESULT CLoader::Loading_For_Test()
+{
 	m_isFinished = true;
 	return S_OK;
 }
@@ -405,6 +415,7 @@ HRESULT CLoader::Loading_For_Logo()
 		desc.FStageBone				= CModel::STAGEING_BONE::SB_SPCIPICBONE;
 		desc.vecStageBoneIndices	= { 285,286,287,288,289,414,415,416 ,417,418,419 };
 
+		// root bone 정보 셋팅 : 없으면 아예 안 넘겨주면 됨
 		CModel::DATA_ANIMCHANNEL tAniChannelData = {};
 		tAniChannelData.iRootBoneIndex = 2;
 		desc.pAniChannelData = &tAniChannelData;
@@ -469,7 +480,7 @@ HRESULT CLoader::Loading_For_Logo()
 		CModel::MODEL_ORIGIN_DESC desc = {};
 		desc.eType = EModelType::ANIM;
 		desc.iPrototypeLevelIndex = ENUM_TO_UINT(ELevelType::STATIC);
-		desc.pMatPreTransform = &(matPreTransformIdentity);
+		desc.pMatPreTransform = &(matPreTransformScale);
 		desc.wstrModelFolderName = L"XibiWeapon";
 		desc.FStageBone = CModel::STAGEING_BONE::SB_ZEROBONE;
 
@@ -540,8 +551,8 @@ HRESULT CLoader::Loading_For_Logo()
 		ADD_PROTOTYPE(ELevelType::STATIC, L"Prototype_GameObject_Part_Collider",		CColliderPart::Create(m_pDevice, m_pDeviceContext));
 
 		// 이펙트 Object
-		ADD_PROTOTYPE(ELevelType::LOGO, L"Prototype_GameObject_Effect",					Effect::Create(m_pDevice, m_pDeviceContext));
-		ADD_PROTOTYPE(ELevelType::LOGO, L"Prototype_GameObject_Effect_Parts",			CEffectObject::Create(m_pDevice, m_pDeviceContext));
+		ADD_PROTOTYPE(ELevelType::STATIC, L"Prototype_GameObject_Effect",					Effect::Create(m_pDevice, m_pDeviceContext));
+		ADD_PROTOTYPE(ELevelType::STATIC, L"Prototype_GameObject_Effect_Parts",			CEffectObject::Create(m_pDevice, m_pDeviceContext));
 
 
 #pragma region Map Object
@@ -559,15 +570,16 @@ HRESULT CLoader::Loading_For_Logo()
 
 		/* Weapons */
 		ADD_PROTOTYPE(ELevelType::STATIC, L"Prototype_GameObject_Part_Sword", CSword::Create(m_pDevice, m_pDeviceContext));
+		ADD_PROTOTYPE(ELevelType::STATIC, L"Prototype_GameObject_Part_Gun", CGun::Create(m_pDevice, m_pDeviceContext));
 
 		// For. Prototype_GameObject_Monster_Dummy
-		ADD_PROTOTYPE(ELevelType::LOGO, L"Prototype_GameObject_Monster_Dummy", CMonster_Dummy::Create(m_pDevice, m_pDeviceContext));
+		ADD_PROTOTYPE(ELevelType::TEST, L"Prototype_GameObject_Monster_Dummy", CMonster_Dummy::Create(m_pDevice, m_pDeviceContext));
 		// For. Prototype_GameObject_Monster_Dummy_Body
-		ADD_PROTOTYPE(ELevelType::LOGO, L"Prototype_GameObject_Monster_Dummy_Body", CMonster_Dummy_Body::Create(m_pDevice, m_pDeviceContext));
+		ADD_PROTOTYPE(ELevelType::TEST, L"Prototype_GameObject_Monster_Dummy_Body", CMonster_Dummy_Body::Create(m_pDevice, m_pDeviceContext));
 		// For. Prototype_GameObject_Boss_Xibi
-		ADD_PROTOTYPE(ELevelType::LOGO, L"Prototype_GameObject_Boss_Xibi", CBoss_Xibi::Create(m_pDevice, m_pDeviceContext));
+		ADD_PROTOTYPE(ELevelType::TEST, L"Prototype_GameObject_Boss_Xibi", CBoss_Xibi::Create(m_pDevice, m_pDeviceContext));
 		// For. Prototype_GameObject_Boss_XibiBody
-		ADD_PROTOTYPE(ELevelType::LOGO, L"Prototype_GameObject_Boss_Xibi_Body", CBoss_Xibi_Body::Create(m_pDevice, m_pDeviceContext));
+		ADD_PROTOTYPE(ELevelType::TEST, L"Prototype_GameObject_Boss_Xibi_Body", CBoss_Xibi_Body::Create(m_pDevice, m_pDeviceContext));
 		/* Monster Object */
 		ADD_PROTOTYPE(ELevelType::STATIC, L"Prototype_GameObject_Monster_Dummy", CMonster_Dummy::Create(m_pDevice, m_pDeviceContext));
 
@@ -597,24 +609,24 @@ HRESULT CLoader::Loading_For_Logo()
 #pragma endregion
 
 #pragma region UI
-	ADD_PROTOTYPE(ELevelType::LOGO, L"Prototype_UI_PlayerStatProgress",		CUIPlayerStat_Progress::Create(m_pDevice, m_pDeviceContext));
-	ADD_PROTOTYPE(ELevelType::LOGO, L"Prototype_UI_MenuText",				CUIMenu_Text::Create(m_pDevice, m_pDeviceContext));
-	ADD_PROTOTYPE(ELevelType::LOGO, L"Prototype_UI_PlayerStatText",			CUIPlayerStat_Text::Create(m_pDevice, m_pDeviceContext));
-	ADD_PROTOTYPE(ELevelType::LOGO, L"Prototype_UI_JUST_IMAGE",				CUIJust_Image::Create(m_pDevice, m_pDeviceContext));
-	ADD_PROTOTYPE(ELevelType::LOGO, L"Prototype_UI_UIMenuTrigger",			CUIMenu_Trigger::Create(m_pDevice, m_pDeviceContext));
-	ADD_PROTOTYPE(ELevelType::LOGO, L"Prototype_UI_UICommonTrigger",		CUICommon_Trigger::Create(m_pDevice, m_pDeviceContext));
-	ADD_PROTOTYPE(ELevelType::LOGO, L"Prototype_UI_UIMenuExitTrigger",		CUIMenu_Exit_Trigger::Create(m_pDevice, m_pDeviceContext));
-	ADD_PROTOTYPE(ELevelType::LOGO, L"Prototype_UI_SkillBG",				CUISkill_BG::Create(m_pDevice, m_pDeviceContext));
-	ADD_PROTOTYPE(ELevelType::LOGO, L"Prototype_UI_MiniMap",				CUIMini_Map::Create(m_pDevice, m_pDeviceContext));
-	ADD_PROTOTYPE(ELevelType::LOGO, L"Prototype_UI_HoverImage",				CUIHover_Image::Create(m_pDevice, m_pDeviceContext));
-	ADD_PROTOTYPE(ELevelType::LOGO, L"Prototype_UI_MenuImage",				CUIMenu_Image::Create(m_pDevice, m_pDeviceContext));
-	ADD_PROTOTYPE(ELevelType::LOGO, L"Prototype_UI_MenuOutline",			CUIMenu_OutLine::Create(m_pDevice, m_pDeviceContext));
-	ADD_PROTOTYPE(ELevelType::LOGO, L"Prototype_UI_MonsterStatText",		CUIMonsterStat_Text::Create(m_pDevice, m_pDeviceContext));
-	ADD_PROTOTYPE(ELevelType::LOGO, L"Prototype_UI_MonsterStatProgress",	CUIMonsterStat_Progress::Create(m_pDevice, m_pDeviceContext));
-	ADD_PROTOTYPE(ELevelType::LOGO, L"Prototype_UI_Nameplate_BG",			CUINameplate_BG::Create(m_pDevice, m_pDeviceContext));
-	ADD_PROTOTYPE(ELevelType::LOGO, L"Prototype_UI_AimDotImage",			CUIAimDot_Image::Create(m_pDevice, m_pDeviceContext));
-	ADD_PROTOTYPE(ELevelType::LOGO, L"Prototype_UI_PlayerAmmoProgress",			CUIPlayerAmmo_Progress::Create(m_pDevice, m_pDeviceContext));
-
+	ADD_PROTOTYPE(ELevelType::STATIC, L"Prototype_UI_PlayerStatProgress",		CUIPlayerStat_Progress::Create(m_pDevice, m_pDeviceContext));
+	ADD_PROTOTYPE(ELevelType::STATIC, L"Prototype_UI_MenuText",					CUIMenu_Text::Create(m_pDevice, m_pDeviceContext));
+	ADD_PROTOTYPE(ELevelType::STATIC, L"Prototype_UI_PlayerStatText",			CUIPlayerStat_Text::Create(m_pDevice, m_pDeviceContext));
+	ADD_PROTOTYPE(ELevelType::STATIC, L"Prototype_UI_JUST_IMAGE",				CUIJust_Image::Create(m_pDevice, m_pDeviceContext));
+	ADD_PROTOTYPE(ELevelType::STATIC, L"Prototype_UI_UIMenuTrigger",			CUIMenu_Trigger::Create(m_pDevice, m_pDeviceContext));
+	ADD_PROTOTYPE(ELevelType::STATIC, L"Prototype_UI_UICommonTrigger",			CUICommon_Trigger::Create(m_pDevice, m_pDeviceContext));
+	ADD_PROTOTYPE(ELevelType::STATIC, L"Prototype_UI_UIMenuExitTrigger",		CUIMenu_Exit_Trigger::Create(m_pDevice, m_pDeviceContext));
+	ADD_PROTOTYPE(ELevelType::STATIC, L"Prototype_UI_SkillBG",					CUISkill_BG::Create(m_pDevice, m_pDeviceContext));
+	ADD_PROTOTYPE(ELevelType::STATIC, L"Prototype_UI_MiniMap",					CUIMini_Map::Create(m_pDevice, m_pDeviceContext));
+	ADD_PROTOTYPE(ELevelType::STATIC, L"Prototype_UI_HoverImage",				CUIHover_Image::Create(m_pDevice, m_pDeviceContext));
+	ADD_PROTOTYPE(ELevelType::STATIC, L"Prototype_UI_MenuImage",				CUIMenu_Image::Create(m_pDevice, m_pDeviceContext));
+	ADD_PROTOTYPE(ELevelType::STATIC, L"Prototype_UI_MenuOutline",				CUIMenu_OutLine::Create(m_pDevice, m_pDeviceContext));
+	ADD_PROTOTYPE(ELevelType::STATIC, L"Prototype_UI_MonsterStatText",			CUIMonsterStat_Text::Create(m_pDevice, m_pDeviceContext));
+	ADD_PROTOTYPE(ELevelType::STATIC, L"Prototype_UI_MonsterStatProgress",		CUIMonsterStat_Progress::Create(m_pDevice, m_pDeviceContext));
+	ADD_PROTOTYPE(ELevelType::STATIC, L"Prototype_UI_Nameplate_BG",				CUINameplate_BG::Create(m_pDevice, m_pDeviceContext));
+	ADD_PROTOTYPE(ELevelType::STATIC, L"Prototype_UI_AimDotImage",				CUIAimDot_Image::Create(m_pDevice, m_pDeviceContext));
+	ADD_PROTOTYPE(ELevelType::STATIC, L"Prototype_UI_PlayerAmmoProgress",		CUIPlayerAmmo_Progress::Create(m_pDevice, m_pDeviceContext));
+	ADD_PROTOTYPE(ELevelType::STATIC, L"Prototype_UI_LevelChangeImage",			CUILevelChange_Image::Create(m_pDevice, m_pDeviceContext));
 #pragma endregion
 
 	m_isFinished = true;
@@ -626,11 +638,16 @@ HRESULT CLoader::Loading_For_Logo()
 HRESULT CLoader::Loading_For_Tutorial_Village()
 {
 	/* Tutorial Village */
+		
+	// 오브젝트
+	
+	// 이펙트 Object
+	ADD_PROTOTYPE(ELevelType::TUTORIAL_VILLAGE, L"Prototype_GameObject_Effect", Effect::Create(m_pDevice, m_pDeviceContext));
+	ADD_PROTOTYPE(ELevelType::TUTORIAL_VILLAGE, L"Prototype_GameObject_Effect_Parts", CEffectObject::Create(m_pDevice, m_pDeviceContext));
 
 
 
-
-
+	m_isFinished = true;
 	return S_OK;
 }
 
@@ -638,7 +655,13 @@ HRESULT CLoader::Loading_For_Tutorial_Boss()
 {
 	/* Tutorial Boss */
 
+	// 오브젝트
+	
+	// 이펙트 Object
+	ADD_PROTOTYPE(ELevelType::TUTORIAL_BOSS, L"Prototype_GameObject_Effect", Effect::Create(m_pDevice, m_pDeviceContext));
+	ADD_PROTOTYPE(ELevelType::TUTORIAL_BOSS, L"Prototype_GameObject_Effect_Parts", CEffectObject::Create(m_pDevice, m_pDeviceContext));
 
+	m_isFinished = true;
 	return S_OK;
 }
 
@@ -646,7 +669,13 @@ HRESULT CLoader::Loading_For_Square()
 {
 	/* Square */
 
+	// 오브젝트
 
+	// 이펙트 Object
+	ADD_PROTOTYPE(ELevelType::SQUARE, L"Prototype_GameObject_Effect", Effect::Create(m_pDevice, m_pDeviceContext));
+	ADD_PROTOTYPE(ELevelType::SQUARE, L"Prototype_GameObject_Effect_Parts", CEffectObject::Create(m_pDevice, m_pDeviceContext));
+
+	m_isFinished = true;
 	return S_OK;
 }
 
@@ -766,10 +795,10 @@ HRESULT CLoader::Build_Prototype()
 
 HRESULT CLoader::Build_Files()
 {
-	if (FAILED(Ready_AttackOverlap()))
+	if (FAILED(Ready_AttackPresets()))
 		return E_FAIL;
 
-	if (FAILED(Ready_AttackPresets()))
+	if (FAILED(Ready_AttackOverlap()))
 		return E_FAIL;
 
 	if (FAILED(Ready_EffectEvent()))

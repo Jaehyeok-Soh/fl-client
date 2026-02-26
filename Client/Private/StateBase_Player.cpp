@@ -30,6 +30,10 @@ HRESULT CStateBase_Player::Initialize(void* pArg)
 
 	m_tKeyTimer						= pDesc->tKeyTimer;
 
+	m_pOwnerGun = pDesc->pOwnerGun;
+	//if (m_pOwnerGun)
+	//	Safe_AddRef(m_pOwnerGun);
+
 	return S_OK;
 }
 
@@ -196,7 +200,7 @@ _bool CStateBase_Player::Check_JumpKey(const _float fTimeDelta)
 			return true;
 		}
 	}
-
+	
 	return false;
 }
 
@@ -266,8 +270,24 @@ _bool CStateBase_Player::Check_RangeKey(const _float fTimeDelta)
 	if (Has_ChangeState(STATEKEY::RM) &&
 		Key_Input(ENUM_TO_UINT(CControlContext::CONTROL_KEY::RATT)))
 	{
-		Change_PlayerState(STATEKEY::RM);
-		return true;
+		if (m_pOwnerGun)
+		{
+			// 공격이 가능 하다면 : attack
+			if (Can_Fire())
+			{
+				Change_PlayerState(ENUM_TO_UINT(CPlayer::State::GUNATTACK));
+				return true;
+			}
+
+			// 공격은 불가능 하지만 reload는 가능 하다면 : reload
+			else if (Can_Reload())
+			{
+				Change_PlayerState(ENUM_TO_UINT(CPlayer::State::GUNATTACK));
+				return true;
+			}
+
+			return false;
+		}
 	}
 
 	return false;
@@ -313,29 +333,6 @@ _bool CStateBase_Player::Check_Collis(const _float fTimeDelta)
 	}
 
 	return false;
-}
-
-_uint CStateBase_Player::Check_GunStates()
-{
-	_uint iGunState = static_cast<CPlayer*>(Get_OwnerObject())->Get_GunState();
-
-	//		NOATT, ATT, EMPTY, RELOAD
-	switch (iGunState)
-	{
-	case ENUM_TO_UINT(CGun::GunState::NOATT):
-		return m_iEndStateIdx;
-
-	case ENUM_TO_UINT(CGun::GunState::ATT):
-		return m_iEndStateIdx;
-
-	case ENUM_TO_UINT(CGun::GunState::EMPTY):
-		return m_iEndStateIdx;
-
-	case ENUM_TO_UINT(CGun::GunState::RELOAD):
-		return m_iEndStateIdx;
-	}
-
-	return 0;
 }
 
 _bool CStateBase_Player::Check_OnGround(_float fMaxDist)
@@ -385,6 +382,22 @@ _bool CStateBase_Player::Check_Double()
 	return static_cast<CPlayer*>(Get_OwnerObject())->Check_DoubleJump();
 }
 
+_bool CStateBase_Player::Can_Fire()
+{
+	if (!m_pOwnerGun)
+		return false;
+
+	return m_pOwnerGun->Get_CanFire();
+}
+
+_bool CStateBase_Player::Can_Reload()
+{
+	if (!m_pOwnerGun)
+		return false;
+
+	return m_pOwnerGun->Get_CanReleod();
+}
+
 _bool CStateBase_Player::Has_ChangeState(STATEKEY eKey)
 {
 	// state end 이면 state change를 안 한다
@@ -403,5 +416,6 @@ void CStateBase_Player::Count_Combo()
 
 void CStateBase_Player::Free()
 {
+	//Safe_Release(m_pOwnerGun);
 	Super::Free();
 }

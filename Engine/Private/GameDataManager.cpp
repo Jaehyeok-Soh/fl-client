@@ -266,6 +266,24 @@ const DTO::TAttackPreset_Data* CGameDataManager::Find_AttackPresetByTag(const st
 	return Find_AttackPrseet(itr->second);
 }
 
+_uint CGameDataManager::Get_AttackPresetIdByTag(const string& strTag) const
+{
+	if (strTag.empty() == true)
+	{
+		MSG_BOX("CGameDataManager::Get_AttackPresetIdByTag, Empty tag");
+		return UINT_MAX;
+	}
+
+	auto itr = m_umapAttackPresetTagToKey.find(strTag);
+	if (itr == m_umapAttackPresetTagToKey.end())
+	{
+		MSG_BOX("CGameDataManager::Get_AttackPresetIdByTag, Invalid tag");
+		return UINT_MAX;
+	}
+
+	return itr->second;
+}
+
 void CGameDataManager::Clear_AttackPreset()
 {
 	m_bAttackPresetLoaded = false;

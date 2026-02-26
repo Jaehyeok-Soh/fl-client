@@ -279,6 +279,34 @@ void CModel::Set_CpuBone(_uint iBoneIdx)
 	m_iCpuBoneCount++;
 }
 
+HRESULT CModel::Change_Animation(CComputeShader* pAnimEComShader, const wstring& wstrName, _bool bBlend, _bool isLoop, _bool bForce)
+{
+	if (pAnimEComShader == nullptr)
+		return E_FAIL;
+
+	_int iAnimIdx = Get_AnimationIndex(wstrName);
+
+	if (iAnimIdx < 0)
+		return E_FAIL;
+
+	if (m_iCurrentAnimIndex == iAnimIdx && bForce == false)
+		return S_OK;
+
+	if (bBlend)
+	{
+		m_iPrevAnimIndex = m_iCurrentAnimIndex;
+		Change_AnimationPlayState(AnimationPlayState::BLEND, nullptr, iAnimIdx);
+	}
+	else
+		Change_AnimationPlayState(AnimationPlayState::PLAY, pAnimEComShader, iAnimIdx);
+
+	m_iCurrentAnimIndex = iAnimIdx;
+	m_vecAnimations[m_iCurrentAnimIndex]->Clear();
+	m_isAnimLoop = isLoop;
+
+	return S_OK;
+}
+
 HRESULT CModel::Change_Animation(CComputeShader* pAnimEComShader, _uint iAnimationIndex, _bool bBlend, _bool isLoop, _bool bForce)
 {
 	if (m_iCurrentAnimIndex == iAnimationIndex && bForce == false)
@@ -406,8 +434,11 @@ void CModel::Set_MixAnim(_bool bMix)
 
 	for (auto pMixIdx : m_vecMixAnimIndices)
 	{
-		m_vecAnimations[m_bMixAnim]->Reset_PrePosition();
-		m_vecAnimations[m_bMixAnim]->Set_TrackPosition(0.f);
+		if (pMixIdx > 0)
+		{
+			m_vecAnimations[pMixIdx]->Reset_PrePosition();
+			m_vecAnimations[pMixIdx]->Set_TrackPosition(0.f);
+		}
 	}
 }
 
@@ -449,8 +480,18 @@ void CModel::Set_MixAnim_ResetSize(_uint iSize)
 void CModel::Set_MixAnim_AnimIndex(_uint iVectorIdx, _int iAnimIdx)
 {
 	size_t idx = size_t(iVectorIdx);
+
+
 	if (idx < m_vecMixAnimIndices.size())
 	{
+		// 만약 원래 있던걸 지우는 거면 원래 담겨져 있던건 셋팅 리셋해주고
+		if (iAnimIdx < 0)
+		{
+			 m_vecAnimations[m_vecMixAnimIndices[idx]]->Reset_PrePosition();
+			 m_vecAnimations[m_vecMixAnimIndices[idx]]->Set_TrackPosition(0.f);
+		}
+
+		// anim idx 바인딩
 		m_vecMixAnimIndices[idx] = iAnimIdx;
 	}
 }
@@ -669,6 +710,14 @@ void CModel::Set_ApplyRootMotionAll(_bool bRootApply)
 	for (auto& pAnim : m_vecAnimations)
 	{
 		pAnim->Set_ApplyRootMotion(bRootApply);
+	}
+}
+
+void CModel::Set_Animtion_MotionOffset_All(_float fOffset)
+{
+	for (auto& pAnim : m_vecAnimations)
+	{
+		pAnim->Set_MotionOffset(fOffset);
 	}
 }
 

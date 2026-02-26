@@ -3,6 +3,7 @@
 #include "GameInstance.h"
 
 #include "GameObject.h"
+#include "ContainerObject.h"
 #include "PartObject.h"
 
 #include "ActiveAttackOverlap.h"
@@ -95,10 +96,6 @@ void CPhysicsAttackOverlap::Update(_float fTimeDelta)
 
 void CPhysicsAttackOverlap::Ready_Event()
 {
-	auto& animations = m_pOwnerModel->Get_Animations();
-	for (auto& anim : animations)
-		anim->Clear_Notifies();
-
 	Release_Event();
 
 	m_EventHandle = m_pOwnerModel->OnNotify.Subscribe(
@@ -212,7 +209,12 @@ void CPhysicsAttackOverlap::GetAnimation()
 {
 	Safe_Release(m_pOwnerModel);
 
-	m_pOwnerModel = Get_Owner()->Get_Component<CModel>();
+	auto partObject = dynamic_cast<CPartObject*>(Get_Owner());
+	if (partObject != nullptr)
+		m_pOwnerModel = partObject->Get_Component<CModel>();
+	else
+		m_pOwnerModel = static_cast<CContainerObject*>(Get_Owner())->Get_Part<CPartObject>(0)->Get_Component<CModel>();
+
 	Safe_AddRef(m_pOwnerModel);
 }
 

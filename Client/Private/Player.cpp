@@ -251,21 +251,6 @@ _bool CPlayer::Check_DoubleJump()
     return !(m_tDoubleJumpCount.bCountTime);
 }
 
-_uint CPlayer::Get_GunState()
-{
-    return static_cast<CGun*>(Get_Part<CWeapon>(Part::GUN))->Get_GunState();
-}
-
-_bool CPlayer::Get_CanFire()
-{
-    return _bool();
-}
-
-_bool CPlayer::Get_CanReload()
-{
-    return _bool();
-}
-
 _bool CPlayer::Start_Attack(State iState)
 {
     _bool bChange = { false };
@@ -277,7 +262,8 @@ _bool CPlayer::Start_Attack(State iState)
         bChange = static_cast<CStatCom_Player*>(Get_Component<CMyStat>())->Set_AttackState(CStatCom_Player::Attack_State::Melee, true);
         break;
 
-    case State::GUNHOLDING:
+    case State::GUNHIDLE:
+    case State::GUNWALK:
     case State::GUNATTACK:
     case State::GUNRELOAD:
         bChange = static_cast<CStatCom_Player*>(Get_Component<CMyStat>())->Set_AttackState(CStatCom_Player::Attack_State::Gun, true);
@@ -305,7 +291,8 @@ void CPlayer::End_Attack(State iState)
         static_cast<CStatCom_Player*>(Get_Component<CMyStat>())->Set_AttackState(CStatCom_Player::Attack_State::Melee, false);
         break;
 
-    case State::GUNHOLDING:
+    case State::GUNHIDLE:
+    case State::GUNWALK:
     case State::GUNATTACK:
     case State::GUNRELOAD:
         static_cast<CStatCom_Player*>(Get_Component<CMyStat>())->Set_AttackState(CStatCom_Player::Attack_State::Gun, false);
@@ -330,6 +317,8 @@ HRESULT CPlayer::Ready_BaseStates()
 
     if (!(pActionState = Get_Component<CPlayerActionState>()))
         return E_FAIL;
+
+    CGun* pMyGun = static_cast<CGun*>(Get_Part<CWeapon>(ENUM_TO_UINT(Part::GUN)));
 
     vector<_uint> vecChangeState_ByKey{};
     vecChangeState_ByKey.resize(ENUM_TO_SZET(CStateBase_Player::STATEKEY::END), ENUM_TO_UINT(State::END));
@@ -372,6 +361,7 @@ HRESULT CPlayer::Ready_BaseStates()
         tKeyTimer.bCountTime    = true;
         tKeyTimer.fMaxTime      = 0.08f;
         desc.tKeyTimer = tKeyTimer;
+        desc.pOwnerGun = pMyGun;
 
         if (FAILED(pActionState->Add_State(ENUM_TO_UINT(State::IDLE), CState_Idle::Create(pActionState, &desc))))
             return E_FAIL;
@@ -406,6 +396,7 @@ HRESULT CPlayer::Ready_BaseStates()
 
         tKeyTimer.bCountTime = false;
         desc.tKeyTimer = tKeyTimer;
+        desc.pOwnerGun = pMyGun;
 
         if (FAILED(pActionState->Add_State(ENUM_TO_UINT(State::WALK), CState_Walk::Create(pActionState, &desc))))
             return E_FAIL;
@@ -435,6 +426,7 @@ HRESULT CPlayer::Ready_BaseStates()
 
         tKeyTimer.bCountTime = false;
         desc.tKeyTimer = tKeyTimer;
+        desc.pOwnerGun = pMyGun;
 
         if (FAILED(pActionState->Add_State(ENUM_TO_UINT(State::CROUCH), CState_Crouch::Create(pActionState, &desc))))
             return E_FAIL;
@@ -464,6 +456,7 @@ HRESULT CPlayer::Ready_BaseStates()
 
         tKeyTimer.bCountTime = false;
         desc.tKeyTimer = tKeyTimer;
+        desc.pOwnerGun = pMyGun;
 
         if (FAILED(pActionState->Add_State(ENUM_TO_UINT(State::CROUCHWALK), CState_CrouchWalk::Create(pActionState, &desc))))
             return E_FAIL;
@@ -499,6 +492,7 @@ HRESULT CPlayer::Ready_BaseStates()
         tKeyTimer.bCountTime = true;
         tKeyTimer.fMaxTime = 0.1f;
         desc.tKeyTimer = tKeyTimer;
+        desc.pOwnerGun = pMyGun;
 
         if (FAILED(pActionState->Add_State(ENUM_TO_UINT(State::SLIDE), CState_Slide::Create(pActionState, &desc))))
             return E_FAIL;
@@ -530,6 +524,7 @@ HRESULT CPlayer::Ready_BaseStates()
         tKeyTimer.bCountTime = true;
         tKeyTimer.fMaxTime = 0.1f;
         desc.tKeyTimer = tKeyTimer;
+        desc.pOwnerGun = pMyGun;
 
         if (FAILED(pActionState->Add_State(ENUM_TO_UINT(State::DASHBACK), CState_DashBack::Create(pActionState, &desc))))
             return E_FAIL;
@@ -562,6 +557,7 @@ HRESULT CPlayer::Ready_BaseStates()
         tKeyTimer.bCountTime    = true;
         tKeyTimer.fMaxTime      = 0.4f;
         desc.tKeyTimer          = tKeyTimer;
+        desc.pOwnerGun = pMyGun;
 
         if (FAILED(pActionState->Add_State(ENUM_TO_UINT(State::DASHSKY), CState_DashSky::Create(pActionState, &desc))))
             return E_FAIL;
@@ -593,6 +589,7 @@ HRESULT CPlayer::Ready_BaseStates()
         desc.vecChangeState_ByKey = vecChangeState_ByKey;
 
         desc.tKeyTimer = tKeyTimer;
+        desc.pOwnerGun = pMyGun;
 
         if (FAILED(pActionState->Add_State(ENUM_TO_UINT(State::RUNSHORT), CState_RunShort::Create(pActionState, &desc))))
             return E_FAIL;
@@ -621,6 +618,7 @@ HRESULT CPlayer::Ready_BaseStates()
         desc.vecChangeState_ByKey = vecChangeState_ByKey;
 
         desc.tKeyTimer = tKeyTimer;
+        desc.pOwnerGun = pMyGun;
 
         if (FAILED(pActionState->Add_State(ENUM_TO_UINT(State::RUNLOOP), CState_RunLoop::Create(pActionState, &desc))))
             return E_FAIL;
@@ -651,6 +649,7 @@ HRESULT CPlayer::Ready_BaseStates()
         desc.vecChangeState_ByKey = vecChangeState_ByKey;
 
         desc.tKeyTimer = tKeyTimer;
+        desc.pOwnerGun = pMyGun;
 
         if (FAILED(pActionState->Add_State(ENUM_TO_UINT(State::JUMP), CState_Jump::Create(pActionState, &desc))))
             return E_FAIL;
@@ -681,6 +680,7 @@ HRESULT CPlayer::Ready_BaseStates()
         desc.vecChangeState_ByKey = vecChangeState_ByKey;
 
         desc.tKeyTimer = tKeyTimer;
+        desc.pOwnerGun = pMyGun;
 
         if (FAILED(pActionState->Add_State(ENUM_TO_UINT(State::JUMPDOUBLE), CState_JumpDouble::Create(pActionState, &desc))))
             return E_FAIL;
@@ -710,6 +710,7 @@ HRESULT CPlayer::Ready_BaseStates()
         desc.vecChangeState_ByKey = vecChangeState_ByKey;
 
         desc.tKeyTimer = tKeyTimer;
+        desc.pOwnerGun = pMyGun;
 
         if (FAILED(pActionState->Add_State(ENUM_TO_UINT(State::JUMPBULLET), CState_JumpBullet::Create(pActionState, &desc))))
             return E_FAIL;
@@ -739,6 +740,7 @@ HRESULT CPlayer::Ready_BaseStates()
         desc.vecChangeState_ByKey = vecChangeState_ByKey;
 
         desc.tKeyTimer = tKeyTimer;
+        desc.pOwnerGun = pMyGun;
 
         if (FAILED(pActionState->Add_State(ENUM_TO_UINT(State::JUMPBACK), CState_JumpBack::Create(pActionState, &desc))))
             return E_FAIL;
@@ -768,6 +770,7 @@ HRESULT CPlayer::Ready_BaseStates()
         desc.vecChangeState_ByKey = vecChangeState_ByKey;
 
         desc.tKeyTimer = tKeyTimer;
+        desc.pOwnerGun = pMyGun;
 
         if (FAILED(pActionState->Add_State(ENUM_TO_UINT(State::FALL), CState_Fall::Create(pActionState, &desc))))
             return E_FAIL;
@@ -799,6 +802,7 @@ HRESULT CPlayer::Ready_BaseStates()
         tKeyTimer.bCountTime = true;
         tKeyTimer.fMaxTime   = 0.3f;
         desc.tKeyTimer       = tKeyTimer;
+        desc.pOwnerGun = pMyGun;
 
         if (FAILED(pActionState->Add_State(ENUM_TO_UINT(State::LAND), CState_Land::Create(pActionState, &desc))))
             return E_FAIL;
@@ -828,6 +832,7 @@ HRESULT CPlayer::Ready_BaseStates()
         desc.vecChangeState_ByKey = vecChangeState_ByKey;
 
         desc.tKeyTimer = tKeyTimer;
+        desc.pOwnerGun = pMyGun;
 
         if (FAILED(pActionState->Add_State(ENUM_TO_UINT(State::JUMPWALL), CState_JumpWall::Create(pActionState, &desc))))
             return E_FAIL;
@@ -845,6 +850,105 @@ HRESULT CPlayer::Ready_PartObjects(PLAYER_DESC* pDesc)
         bodyDesc.wstrModelPrototypeName = pDesc->wstrBodyModelTag;
         if (FAILED(Add_Part(Part::BODY, ENUM_TO_UINT(ELevelType::STATIC), L"Prototype_GameObject_Part_Body", &bodyDesc)))
             return E_FAIL;
+    }
+
+    // weapons
+    {
+        // Weapons : Sword
+        {
+            CWeapon::WEAPON_DESC weaponDesc = {};
+            weaponDesc.wstrModelPrototypeName = L"Prototype_Component_Model_MoonSword";
+            weaponDesc.pMatParent = &Get_Component<CTransform>()->Get_WorldMatrix();
+            weaponDesc.pMatHandSocket = &Get_Part<CBody>(Part::BODY)->Get_RightHandSocket()->Get_CombinedTransformMatrix();
+            weaponDesc.pMatSocket = &Get_Part<CBody>(Part::BODY)->Get_WeaponSocket()->Get_BindPoseTransformMatrix();
+            weaponDesc.eModel = CWeapon::Weapon_ModelType::STATIC;
+            weaponDesc.eState = CWeapon::State::HOLD;
+
+            weaponDesc.bMianWeapon = true;
+            weaponDesc.FDescFlag = CWeapon::WeaponDescFlag::WF_RGBMappingOn;
+            weaponDesc.vColorR = Vec4(0.119538f, 0.119538f, 0.119538f, 1.f);
+            weaponDesc.vColorG = Vec4(1.f, 0.751839f, 0.182292f, 1.f);
+            weaponDesc.vColorB = Vec4(0.458824f, 0.435294f, 0.45098f, 1.f);
+
+
+            weaponDesc.matHandOffsetMatrix = Matrix::CreateRotationX(XMConvertToRadians(-90.f));
+            weaponDesc.matHoldOffsetMatrix = Matrix::CreateRotationX(XMConvertToRadians(-90.f));
+
+            if (FAILED(Add_Part(Part::SWORD, ENUM_TO_UINT(ELevelType::STATIC), L"Prototype_GameObject_Part_Sword", &weaponDesc)))
+                return E_FAIL;
+        }
+
+        // Weapons : Skill
+        {
+            CWeapon::WEAPON_DESC weaponDesc = {};
+            weaponDesc.wstrModelPrototypeName = L"Prototype_Component_Model_MoonSkillWeap";
+            weaponDesc.pMatParent = &Get_Component<CTransform>()->Get_WorldMatrix();
+            weaponDesc.pMatHandSocket = &Get_Part<CBody>(Part::BODY)->Get_RightHandSocket()->Get_CombinedTransformMatrix();
+            weaponDesc.pMatSocket = &Get_Part<CBody>(Part::BODY)->Get_WeaponSocket()->Get_BindPoseTransformMatrix();
+            weaponDesc.eModel = CWeapon::Weapon_ModelType::STATIC;
+            weaponDesc.bMianWeapon = false;
+            weaponDesc.FDescFlag = CWeapon::WeaponDescFlag::WF_RGBMappingOn;
+            weaponDesc.vColorR = Vec4(0.84375f, 0.84375f, 0.84375f, 1.f);
+            weaponDesc.vColorG = Vec4(0.686686f, 0.686686f, 0.686686f, 1.f);
+            weaponDesc.vColorB = Vec4(0.234375f, 0.234375f, 0.234375f, 1.f);
+
+            weaponDesc.matHandOffsetMatrix = Matrix::CreateRotationX(XMConvertToRadians(-90.f));
+            weaponDesc.matHoldOffsetMatrix = Matrix::CreateRotationX(XMConvertToRadians(-90.f));
+            if (FAILED(Add_Part(Part::SKILL, ENUM_TO_UINT(ELevelType::STATIC), L"Prototype_GameObject_Part_Sword", &weaponDesc)))
+                return E_FAIL;
+        }
+
+         //Weapons : Gun
+        {
+            CWeapon::WEAPON_DESC weaponDesc = {};
+            weaponDesc.wstrModelPrototypeName = L"Prototype_Component_Model_MoonGun"; //Prototype_Component_Model_XibiWeapon //Prototype_Component_Model_MoonGun
+            weaponDesc.pMatParent = &Get_Component<CTransform>()->Get_WorldMatrix();
+            weaponDesc.pMatHandSocket = &Get_Part<CBody>(Part::BODY)->Get_RightHandSocket()->Get_CombinedTransformMatrix();
+            weaponDesc.pMatSocket = &Get_Part<CBody>(Part::BODY)->Get_WeaponSocket()->Get_BindPoseTransformMatrix();
+            weaponDesc.eModel = CWeapon::Weapon_ModelType::ANIM;
+            weaponDesc.eAnimState = CWeapon::AnimState::STOP;
+            weaponDesc.bMianWeapon = false;
+            weaponDesc.eState = CWeapon::State::HOLD;
+            weaponDesc.FDescFlag = CWeapon::WeaponDescFlag::WF_RGBMappingOn;
+            weaponDesc.vColorR = Vec4(0.947917f, 0.947917f, 0.947917f, 1.f);
+            weaponDesc.vColorG = Vec4(0.364583f, 0.355613f, 0.351292f, 1.f);
+            weaponDesc.vColorB = Vec4(0.03954f, 0.035601f, 0.03434f, 1.f);
+            if (FAILED(Add_Part(Part::GUN, ENUM_TO_UINT(ELevelType::STATIC), L"Prototype_GameObject_Part_Gun", &weaponDesc)))
+                return E_FAIL;
+        }
+        //// LeftHand
+        //{
+        //    CColliderPart::COLLIDERPART_DESC colliderPartDesc = {};
+        //    colliderPartDesc.pMatParent = &Get_Component<CTransform>()->Get_WorldMatrix();
+        //    colliderPartDesc.pMatSocket = &Get_Part<CBody>(Part::BODY)->Get_LeftHandSocket()->Get_CombinedTransformMatrix();
+        //    if (FAILED(Add_Part(Part::LEFTHAND, ENUM_TO_UINT(ELevelType::STATIC), L"Prototype_GameObject_Part_Collider", &colliderPartDesc)))
+        //        return E_FAIL;
+        //}
+        //// RightHand
+        //{
+        //    CColliderPart::COLLIDERPART_DESC colliderPartDesc = {};
+        //    colliderPartDesc.pMatParent = &Get_Component<CTransform>()->Get_WorldMatrix();
+        //    colliderPartDesc.pMatSocket = &Get_Part<CBody>(Part::BODY)->Get_RightHandSocket()->Get_CombinedTransformMatrix();
+        //    if (FAILED(Add_Part(Part::RIGHTHAND, ENUM_TO_UINT(ELevelType::STATIC), L"Prototype_GameObject_Part_Collider", &colliderPartDesc)))
+        //        return E_FAIL;
+        //}
+        //// LeftFoot
+        //{
+        //    CColliderPart::COLLIDERPART_DESC colliderPartDesc = {};
+        //    colliderPartDesc.pMatParent = &Get_Component<CTransform>()->Get_WorldMatrix();
+        //    colliderPartDesc.pMatSocket = &Get_Part<CBody>(Part::BODY)->Get_LeftFootSocket()->Get_CombinedTransformMatrix();
+        //    if (FAILED(Add_Part(Part::LEFTFOOT, ENUM_TO_UINT(ELevelType::STATIC), L"Prototype_GameObject_Part_Collider", &colliderPartDesc)))
+        //        return E_FAIL;
+        //}
+        //// RightFoot
+        //{
+        //    CColliderPart::COLLIDERPART_DESC colliderPartDesc = {};
+        //    colliderPartDesc.pMatParent = &Get_Component<CTransform>()->Get_WorldMatrix();
+        //    colliderPartDesc.pMatSocket = &Get_Part<CBody>(Part::BODY)->Get_RightFootSocket()->Get_CombinedTransformMatrix();
+        //    if (FAILED(Add_Part(Part::RIGHTFOOT, ENUM_TO_UINT(ELevelType::STATIC), L"Prototype_GameObject_Part_Collider", &colliderPartDesc)))
+        //        return E_FAIL;
+        //}
+        return S_OK;
     }
 
     return S_OK;

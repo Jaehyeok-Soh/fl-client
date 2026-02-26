@@ -31,6 +31,7 @@ private:
 public:
 	HRESULT Set_ShaderResources();
 	HRESULT Render();
+	void Clear();
 	void Push_RenderObject(RENDER_CATEGORY eCategory, CGameObject* pGO);
 private:	
 	HRESULT Render_Priority();

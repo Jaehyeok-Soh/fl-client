@@ -98,6 +98,7 @@ private:
 	class CAnimTool_Manager* m_pAnimToolManager = { nullptr };
 
 private:
+	_int m_iRootBoneIdx		= { -1 };
 	_int m_iSocketBoneIdx	= { -1 };
 	_bool m_bCombine		= { true };
 	_bool m_bWeaponStatic	= { true };

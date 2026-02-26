@@ -77,7 +77,7 @@ HRESULT Effect::Ready_PartsData(void* pArg)
 		tObjDesc.iLevelIndex = pDesc->iLevelIndex;
 
 		// Part 추가 및 이름 설정
-		if (FAILED(Add_Part(index, pDesc->iLevelIndex, L"Prototype_GameObject_Effect_Parts", &tObjDesc)))
+		if (FAILED(Add_Part(index, 0, L"Prototype_GameObject_Effect_Parts", &tObjDesc)))
 			return E_FAIL;
 
 		auto pPartObject = Get_Part<CEffectObject>(index);
@@ -189,7 +189,7 @@ void Effect::Update_CombinedWorldMatrix(const Matrix* pMatParent)
 
 void Effect::Set_Dead(const wstring& wstrLayerTag)
 {
-	m_pGameInstance->Request_DeleteGameObject(0, wstrLayerTag, this);
+	m_pGameInstance->Request_DeleteGameObject(m_pGameInstance->Get_CurrentLevelIndex(), wstrLayerTag, this);
 }
 
 void Effect::IsEffectFinish()

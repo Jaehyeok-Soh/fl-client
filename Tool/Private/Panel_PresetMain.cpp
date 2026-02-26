@@ -28,7 +28,7 @@ HRESULT CPanel_PresetMain::Render(CToolObject* pGo)
     };
     static constexpr const _char* s_HitTypeItems[] =
     {
-        "Light", "Heavy", "Launch", "Knockdown", "None"
+        "Additive", "Light", "Heavy", "Launch", "Knockdown", "None"
     };
     static constexpr const _char* s_DamageTypeItems[] =
     {

@@ -163,35 +163,8 @@
     <Filter Include="03. GameObject\UIObjects\02.UI\Image\JustImage">
       <UniqueIdentifier>{fd843193-a085-4c64-9708-e0849b95da7d}</UniqueIdentifier>
     </Filter>
-    <Filter Include="07. System\02. Debug_ImGui">
-      <UniqueIdentifier>{d4543967-6d08-419a-ad9e-aa4e953bd61f}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="07. System\02. Debug_ImGui\Inspector">
-      <UniqueIdentifier>{82f89ad1-c551-4868-8388-3d21f36c43d8}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="07. System\02. Debug_ImGui\ImGuiBase">
-      <UniqueIdentifier>{9fbb367b-4faa-448c-a302-857cca40b4ea}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="07. System\02. Debug_ImGui\Inspector\Player">
-      <UniqueIdentifier>{e56eb5ab-6ccc-4be7-935b-8756a82b5757}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="07. System\02. Debug_ImGui\Layout">
-      <UniqueIdentifier>{1dbf159f-2786-4b5f-a54a-a7fa44eac4d0}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="07. System\02. Debug_ImGui\Layout\Transform">
-      <UniqueIdentifier>{75112bf1-2fde-4f84-a058-ff26cbe40c27}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="07. System\02. Debug_ImGui\Layout\ActionState">
-      <UniqueIdentifier>{08101873-1d09-4a2d-9022-d599b7d73c9d}</UniqueIdentifier>
-    </Filter>
     <Filter Include="04. Shaders\ComputeShader_Labs">
       <UniqueIdentifier>{8c14e548-7930-4ec0-b748-e471998a55b9}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="07. System\02. Debug_ImGui\Layout\Frustrum">
-      <UniqueIdentifier>{bfce2568-6c1b-4d14-9071-f78dd8aba44c}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="07. System\02. Debug_ImGui\Inspector\Global">
-      <UniqueIdentifier>{ff13b3dc-1ddc-457a-a989-4a75e72737e2}</UniqueIdentifier>
     </Filter>
     <Filter Include="07. System\01. Builder\Builder_AttackOverlap">
       <UniqueIdentifier>{c1589ec0-b521-4810-8e66-71ed1cf97227}</UniqueIdentifier>
@@ -210,9 +183,6 @@
     </Filter>
     <Filter Include="03. GameObject\UIObjects\02.UI\Image\Dynamic Image\01.Minimap">
       <UniqueIdentifier>{f89b605a-01f2-485c-87d7-f34d36eeef01}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="07. System\02. Debug_ImGui\Layout\Frame">
-      <UniqueIdentifier>{26872d9e-983a-47c0-940f-aa4b37bb39e5}</UniqueIdentifier>
     </Filter>
     <Filter Include="07. System\02. Debug_ImGui\Layout\Frame">
       <UniqueIdentifier>{26872d9e-983a-47c0-940f-aa4b37bb39e5}</UniqueIdentifier>
@@ -240,9 +210,6 @@
     </Filter>
     <Filter Include="07. System\01. Builder\Effect\Builder_EffectEvent">
       <UniqueIdentifier>{5d286e09-eee0-4b43-bcea-01a835550da6}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="07. System\02. Debug_ImGui\Layout\Shader">
-      <UniqueIdentifier>{241e78ea-3b24-473b-a83b-6c32e682ad95}</UniqueIdentifier>
     </Filter>
     <Filter Include="06. FSM\Player\JumpWall">
       <UniqueIdentifier>{2c8ee512-8e94-467f-9f3f-35d518b8ff89}</UniqueIdentifier>
@@ -357,15 +324,6 @@
     </Filter>
     <Filter Include="07. System\99. Debug_ImGui\ImGuiBase">
       <UniqueIdentifier>{71CABC14-B36D-481A-A1AD-88FE0C2A916C}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="07. System\99. Debug_ImGui\Inspector">
-      <UniqueIdentifier>{2A6EE529-AE71-491B-9591-59007A3BEF12}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="07. System\99. Debug_ImGui\Inspector\Global">
-      <UniqueIdentifier>{1419F979-0E37-4A2E-BE0B-45C90A76576A}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="07. System\99. Debug_ImGui\Inspector\Player">
-      <UniqueIdentifier>{0BC54C27-8736-41A1-A4FB-1796F1580479}</UniqueIdentifier>
     </Filter>
     <Filter Include="07. System\99. Debug_ImGui\Layout">
       <UniqueIdentifier>{2C6946D4-9B56-404E-A829-1864680D15BD}</UniqueIdentifier>
@@ -558,6 +516,30 @@
     </Filter>
     <Filter Include="03. GameObject\UIObjects\02.UI\Image\Dynamic Image\05.MonsterNamePlate">
       <UniqueIdentifier>{761751c8-ba94-4e88-987b-53bc16a7f52f}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="06. FSM\Player\Attack\Gun\Holding">
+      <UniqueIdentifier>{2ea2a8e0-8b63-4991-b623-1685d95acae0}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="06. FSM\Player\Attack\Gun\Attack">
+      <UniqueIdentifier>{94646764-3ce1-40c8-8e22-3ebf84f0db89}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="06. FSM\Player\Attack\Gun\Reload">
+      <UniqueIdentifier>{18445d4b-10df-4411-8b45-def1c25a996d}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="03. GameObject\UIObjects\02.UI\Image\Dynamic Image\07.Level Chnage">
+      <UniqueIdentifier>{441fee0b-1c67-4053-a110-de1fdb40d73f}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="07. System\99. Debug_ImGui\Inspector">
+      <UniqueIdentifier>{2A6EE529-AE71-491B-9591-59007A3BEF12}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="07. System\99. Debug_ImGui\Inspector\Global">
+      <UniqueIdentifier>{1419F979-0E37-4A2E-BE0B-45C90A76576A}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="07. System\99. Debug_ImGui\Inspector\Player">
+      <UniqueIdentifier>{0BC54C27-8736-41A1-A4FB-1796F1580479}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="07. System\99. Debug_ImGui\Inspector\ShaderDebug">
+      <UniqueIdentifier>{0b3e7565-de1d-44a2-b248-637354f68a85}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
@@ -1000,6 +982,15 @@
     <ClInclude Include="..\Public\TriggerBox_LevelChange.h">
       <Filter>03. GameObject\TriggerBox\01. TriggerBox_LevelChange</Filter>
     </ClInclude>
+    <ClInclude Include="..\Public\UILevelChange_Image.h">
+      <Filter>03. GameObject\UIObjects\02.UI\Image\Dynamic Image\07.Level Chnage</Filter>
+    </ClInclude>
+    <ClInclude Include="..\public\ImGui_ShaderDebugLayout.h">
+      <Filter>07. System\99. Debug_ImGui\Layout\Shader</Filter>
+    </ClInclude>
+    <ClInclude Include="..\public\ImGui_TextureDebugInspector.h">
+      <Filter>07. System\99. Debug_ImGui\Inspector\ShaderDebug</Filter>
+    </ClInclude>
     <ClInclude Include="..\Public\LandScape.h">
       <Filter>03. GameObject\MapObject\02. LandScape</Filter>
     </ClInclude>
@@ -1437,8 +1428,14 @@
     <ClCompile Include="..\Private\TriggerBox_LevelChange.cpp">
       <Filter>03. GameObject\TriggerBox\01. TriggerBox_LevelChange</Filter>
     </ClCompile>
-    <ClCompile Include="..\Private\LandScape.cpp">
-      <Filter>03. GameObject\MapObject\02. LandScape</Filter>
+    <ClCompile Include="..\Private\UILevelChange_Image.cpp">
+      <Filter>03. GameObject\UIObjects\02.UI\Image\Dynamic Image\07.Level Chnage</Filter>
+    </ClCompile>
+    <ClCompile Include="..\private\ImGui_ShaderDebugLayout.cpp">
+      <Filter>07. System\99. Debug_ImGui\Layout\Shader</Filter>
+    </ClCompile>
+    <ClCompile Include="..\private\ImGui_TextureDebugInspector.cpp">
+      <Filter>07. System\99. Debug_ImGui\Inspector\ShaderDebug</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

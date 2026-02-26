@@ -108,6 +108,7 @@ protected:
 	HRESULT Ready_BaseStates();
 	HRESULT Ready_PartObjects(void* pArg);
 	HRESULT Ready_Components(void* pArgs);
+	HRESULT Ready_AttackOverlap(wstring prototypeName);
 
 protected:
 	HRESULT Ready_CCT(void* pArgs);

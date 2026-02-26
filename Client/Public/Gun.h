@@ -12,11 +12,6 @@ public:
 		MACHINGUN, 
 	};
 
-	enum class GunState : _uint
-	{
-		NOATT, ATT, EMPTY, RELOAD
-	};
-
 public:
 	typedef struct tagGunInfo
 	{
@@ -53,9 +48,6 @@ public:
 	virtual HRESULT			Render() override;
 
 public:
-	void					Change_GunState(GunState eState);
-	void					Change_GunState(_uint iState);
-
 	void					Reload_Bullet();
 
 	// getter setter
@@ -63,11 +55,10 @@ public:
 	_bool Get_CanFire();
 	_bool Get_CanReleod();
 
-	_uint Get_GunState() const { return static_cast<_uint>(m_eGunState); }
+	void Set_FireTimer(_bool bCount) { m_tFireTimeCounter.bCountTime = bCount; }
+	void Reset_FireTimer() { m_tFireTimeCounter.fTimeAcc = m_tFireTimeCounter.fMaxTime; m_tFireTimeCounter.bCountTime = false; }
 
 private:
-	GunState m_eGunState = { GunState::NOATT };
-
 	_float m_fSpeed		= { 1.f };
 
 	// 항상 x가 cur개수. y는 max 개수
@@ -77,10 +68,6 @@ private:
 	TIME_COUNTER	m_tFireTimeCounter	= { 0.f,0.f };
 
 private:
-	void State_Start(GunState eState);
-	void State_Update(const _float fTimeDelta);
-	void State_End(GunState eState);
-
 	void NoAttack_Update(const _float fTimeDelta);
 	void Attack_Update(const _float fTimeDelta);
 	void Empty_Update(const _float fTimeDelta);

@@ -41,7 +41,7 @@ public:
 /// </summary>
 public:
 	vector<DTO::ATTACKEVENT>& GetEvents() { return m_tDesc.attackEvents; }
-	
+
 	void Modify_AttackOverlap(_uint eventIdx, DTO::ATTACKEVENT event);
 	void Modify_AttackOverlap(vector<DTO::ATTACKEVENT> events);
 

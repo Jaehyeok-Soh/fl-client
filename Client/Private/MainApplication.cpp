@@ -22,9 +22,13 @@
 #include "SkillBase.h"
 #include "ActionSkill.h"
 
-#include "Canvas.h"
+// UI
 #include "UI_Manager.h"
+#include "Canvas.h"
 #include "WorldUI_Component.h"
+#include "UILoading_Text.h"
+#include "UILoading_Progress.h"
+#include "UILoading_Image.h"
 
 USING(Client)
 
@@ -88,6 +92,7 @@ void CMainApplication::Update(const _float fTimeDelta)
 	m_pGameInstance->Flush_All();
 
 	m_pGameInstance->Update_Engine(fTimeDelta);
+
 	// ÀÚµ¿ Á¤·Ä X / Request Sort È£ÃâÇØÁà¾ßµÊ 
 	CUI_Manager::GetInstance()->Add_RenderGroup(m_pGameInstance->Get_CurrentLevelIndex());
 }
@@ -321,8 +326,13 @@ HRESULT CMainApplication::Ready_Static_Prototype()
 			CWorldUI_Component::Create())))
 			return E_FAIL;
 	}
+
 	// For. UI Texture
 	if (FAILED(Loading_Textures(L"../../Resources/Textures/UI/UI_Client/Loading/")))
+		return E_FAIL;
+
+	// For. UI Texture
+	if (FAILED(Loading_Textures(L"../../Resources/Textures/UI/UI_Client/")))
 		return E_FAIL;
 
 	// For. Prototype_Component_Transform
@@ -483,7 +493,12 @@ HRESULT CMainApplication::Ready_Static_Prototype()
 			CCanvas::Create(m_pDevice, m_pDeviceContext))))
 			return E_FAIL;
 	}
-
+	if (FAILED(m_pGameInstance->Add_Prototype(ENUM_TO_UINT(ELevelType::STATIC), L"Prototype_UI_LoadingImage", CUILoading_Image::Create(m_pDevice, m_pDeviceContext))))
+		return E_FAIL;
+	if (FAILED(m_pGameInstance->Add_Prototype(ENUM_TO_UINT(ELevelType::STATIC), L"Prototype_UI_LoadingProgress", CUILoading_Progress::Create(m_pDevice, m_pDeviceContext))))
+		return E_FAIL;
+	if (FAILED(m_pGameInstance->Add_Prototype(ENUM_TO_UINT(ELevelType::STATIC), L"Prototype_UI_LoadingText", CUILoading_Text::Create(m_pDevice, m_pDeviceContext))))
+		return E_FAIL;
 
 	return S_OK;
 }

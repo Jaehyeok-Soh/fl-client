@@ -69,7 +69,7 @@ public:
 			return m_vMental;
 		}
 
-		return m_vDummy;
+		return Vec2::Zero;
 	}
 
 	_float Get_Rate(STAT_TYPE eType)
