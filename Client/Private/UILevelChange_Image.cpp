@@ -48,14 +48,23 @@ HRESULT CUILevelChange_Image::Attach_Personal_Info()
 		break;
 	case DTO::EUIDImageSubClassType::LEVEL_CHAGE_2:
 		m_eNextLevelID = ELevelType::TUTORIAL_VILLAGE;
+		m_wstrText = L"Æ©Åä¸®¾ó ºô¸®Áö";
+		m_vFontColor = Vec4{ 0.0f, 222.0f / 255.0f, 165.0f / 255.0f, 1.f };
 		break;
 	case DTO::EUIDImageSubClassType::LEVEL_CHAGE_3:
 		m_eNextLevelID = ELevelType::TUTORIAL_BOSS;
+		m_wstrText = L"Æ©Åä¸®¾ó º¸½º";
+		m_vFontColor = Vec4{ 0.78f, 0.28f, 0.90f, 1.f };
 		break;
 	case DTO::EUIDImageSubClassType::LEVEL_CHAGE_4:
 		m_eNextLevelID = ELevelType::SQUARE;
+		m_wstrText = L"±¤Àå";
+		m_vFontColor = Vec4{ 0.20f, 0.65f, 1.00f, 1.f };
 		break;
 	case DTO::EUIDImageSubClassType::LEVEL_CHAGE_5:
+		m_eNextLevelID = ELevelType::TEST;
+		m_wstrText = L"Å×½ºÆ®";
+		m_vFontColor = Vec4{ 1.0f, 0.423f, 0.051f, 1.f };
 		break;
 	case DTO::EUIDImageSubClassType::END:
 	default:
@@ -81,6 +90,20 @@ void CUILevelChange_Image::Update_Priority(const _float fTimeDelta)
 
 void CUILevelChange_Image::Update(const _float fTimeDelta)
 {
+	if (m_isHover)
+	{
+		FONT_DESC Desc = {};
+		Desc.eFontShaderType	= EFontShaderType::OUTLINE_NOISE;
+		Desc.strFontTag			= L"ContentsKO24";
+		Desc.strText			= m_wstrText;
+		Desc.vPosition			= Vec2{ m_vRenderPos.x - 50.f, m_vRenderPos.y };
+		Desc.fRotate			= 0.f;
+		Desc.fScale				= 0.7f;
+		Desc.vColor				= m_vFontColor;
+		Desc.ePivot				= EFontPivotType::RIGHT;
+		m_pGameInstance->Request_DrawFont(Desc);
+	}
+
 	Super::Update(fTimeDelta);
 }
 
@@ -123,11 +146,19 @@ HRESULT CUILevelChange_Image::Bind_ShaderResources()
 
 void CUILevelChange_Image::Acting_By_InteractState()
 {
+	if (Engine_Utils::Has_Flag(m_iInteractState, EUIEvent_Flag::HOVER_ENTER))
+	{
+		m_isHover = true;
+	}
+	if (Engine_Utils::Has_Flag(m_iInteractState, EUIEvent_Flag::HOVER_EXIT))
+	{
+		m_isHover = false;
+	}
+
 	if (Engine_Utils::Has_Flag(m_iInteractState, EUIEvent_Flag::PRESS_EXIT))
 	{
 		if (m_eNextLevelID == ELevelType::END)
 			return;
-
 		m_pGameInstance->Request_ChangeLevel(ENUM_TO_UINT(ELevelType::LOADING), CLevel_Loading::Create(m_pDevice, m_pDeviceContext, m_eNextLevelID));
 		m_pUIManager->Request_Clear();
 	}

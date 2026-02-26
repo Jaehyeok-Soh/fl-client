@@ -115,6 +115,7 @@ public:
 
 	/* animation funcs */
 protected:
+	HRESULT Request_MixAnimation(_uint iVectorIdx, _int iAnimIdx);
 	HRESULT Request_ChangeAnimation(_uint iAnimationIndex, _bool bBlend, _bool bLoop, _bool bForce = false);
 	HRESULT Request_Change_State(_uint iIndex, void *pArg = nullptr);
 	CGameObject* Get_OwnerObject();

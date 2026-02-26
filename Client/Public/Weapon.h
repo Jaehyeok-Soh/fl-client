@@ -24,31 +24,42 @@ public:
 
 	enum class State : _uint
 	{
-		NONE,
-		HOLD,
-		HAND
+		NONE, HOLD, HAND
 	};
 
 	enum class AnimState : _uint
 	{
-		PLAY,
-		STOP
+		PLAY, STOP
+	};
+
+	enum WeaponDescFlag : Flags
+	{
+		WF_RGBMappingOn = 0x000001
 	};
 
 	typedef struct tagWeaponDesc : public CPartObject::PARTOBJ_DESC
 	{
-		wstring				wstrModelPrototypeName = { L"" };
-		const Matrix* pMatHandSocket = { nullptr };
-		const Matrix* pMatSocket = { nullptr };
+		wstring				wstrModelPrototypeName	= { L"" };
+		const Matrix*		pMatHandSocket			= { nullptr };
+		const Matrix*		pMatSocket				= { nullptr };
 
-		Weapon_ModelType	eModel = { Weapon_ModelType::STATIC };
+		Weapon_ModelType	eModel		= { Weapon_ModelType::STATIC };
+		AnimState			eAnimState	= { AnimState::STOP };
+		State				eState		= { State::NONE };
 
-		_bool				bMianWeapon = { false };
-		_bool				bRGBShader = { true };
+		_bool				bMianWeapon		= { false };
+
+		Flags				FDescFlag = { 0 }; //WeaponDescFlag 참고 해서 설정
 
 		Vec4 vColorR = Vec4::Zero;
 		Vec4 vColorG = Vec4::Zero;
 		Vec4 vColorB = Vec4::Zero;
+		
+		Matrix matHoldOffsetMatrix = Matrix::Identity;
+		Matrix matHandOffsetMatrix = Matrix::Identity;
+
+		_uint iStartAnimIdx = { 0 };
+
 	}WEAPON_DESC;
 
 protected:
@@ -72,6 +83,9 @@ public:
 	virtual void OnTrigger_Exit(_uint iMyColliderLayer, _uint iOtherLayer, CGameObject* pOther) override;
 	virtual HRESULT Render() override;
 
+public:
+	void Change_WeaponAnim(_uint iAnimIdx, _bool bLoop, _bool bForce, _bool bBlend =false);
+
 	// getter setter funcs
 public:
 	void	Set_HandSocket();
@@ -94,9 +108,10 @@ protected:
 
 	_bool				m_bMainWeapon = { false };
 
-	Matrix				m_matRotation = {  };
+	Matrix				m_matHoldOffsetMatrix = {  };
+	Matrix				m_matHandOffsetMatrix = {  };
 
-	_bool m_bColorMapping = { false };
+	Flags				m_FDescFlags = { 0 };
 
 	SHADER_RGBCOLOR_DESC m_tColorDesc = {};
 	CComputeShader* m_pBoneMeshCS{ nullptr };

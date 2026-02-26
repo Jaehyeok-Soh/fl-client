@@ -51,6 +51,7 @@
 #include "Body.h"
 #include "Weapon.h"
 #include "Sword.h"
+#include "Gun.h"
 #include "ColliderPart.h"
 #include "Loader.h"
 #include "Effect.h"
@@ -414,6 +415,7 @@ HRESULT CLoader::Loading_For_Logo()
 		desc.FStageBone				= CModel::STAGEING_BONE::SB_SPCIPICBONE;
 		desc.vecStageBoneIndices	= { 285,286,287,288,289,414,415,416 ,417,418,419 };
 
+		// root bone 정보 셋팅 : 없으면 아예 안 넘겨주면 됨
 		CModel::DATA_ANIMCHANNEL tAniChannelData = {};
 		tAniChannelData.iRootBoneIndex = 2;
 		desc.pAniChannelData = &tAniChannelData;
@@ -478,7 +480,7 @@ HRESULT CLoader::Loading_For_Logo()
 		CModel::MODEL_ORIGIN_DESC desc = {};
 		desc.eType = EModelType::ANIM;
 		desc.iPrototypeLevelIndex = ENUM_TO_UINT(ELevelType::STATIC);
-		desc.pMatPreTransform = &(matPreTransformIdentity);
+		desc.pMatPreTransform = &(matPreTransformScale);
 		desc.wstrModelFolderName = L"XibiWeapon";
 		desc.FStageBone = CModel::STAGEING_BONE::SB_ZEROBONE;
 
@@ -568,6 +570,7 @@ HRESULT CLoader::Loading_For_Logo()
 
 		/* Weapons */
 		ADD_PROTOTYPE(ELevelType::STATIC, L"Prototype_GameObject_Part_Sword", CSword::Create(m_pDevice, m_pDeviceContext));
+		ADD_PROTOTYPE(ELevelType::STATIC, L"Prototype_GameObject_Part_Gun", CGun::Create(m_pDevice, m_pDeviceContext));
 
 		// For. Prototype_GameObject_Monster_Dummy
 		ADD_PROTOTYPE(ELevelType::TEST, L"Prototype_GameObject_Monster_Dummy", CMonster_Dummy::Create(m_pDevice, m_pDeviceContext));

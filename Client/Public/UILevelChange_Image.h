@@ -38,6 +38,9 @@ private:
 
 private:
 	ELevelType m_eNextLevelID = { ELevelType::END };
+	_wstring m_wstrText = {};
+	Vec4 m_vFontColor = {};
+	_bool m_isHover = { false };
 
 public:
 	static CUILevelChange_Image* Create(ID3D11Device* pDevice, ID3D11DeviceContext* pDeviceContext);

@@ -45,12 +45,12 @@ HRESULT CBoss_Xibi::Awake(const _uint iCurrentLevelID)
 {
 	if (FAILED(Super::Awake(iCurrentLevelID)))
 		return E_FAIL;
-	CComputeShader* pCom = static_cast<CComputeShader*>(Get_Script_Component(L"ComputeShader_AnimE"));
-	CWeapon* pWaepon = Get_Part<CWeapon>(Part::SWORD);
+	//CComputeShader* pCom = static_cast<CComputeShader*>(Get_Script_Component(L"ComputeShader_AnimE"));
+	//CWeapon* pWaepon = Get_Part<CWeapon>(Part::SWORD);
 
-	pWaepon->Set_WeaponState(CWeapon::State::HAND);
-	pWaepon->Get_Component<CModel>()->Change_Animation(pCom, 1, true);
-	pWaepon->Set_Weapon_PlayState(0);
+	//pWaepon->Set_WeaponState(CWeapon::State::HAND);
+	//pWaepon->Get_Component<CModel>()->Change_Animation(pCom, 0, false);
+	//pWaepon->Set_Weapon_PlayState(0);
 	return S_OK;
 }
 
@@ -109,10 +109,17 @@ HRESULT CBoss_Xibi::Ready_Weapon()
 		CWeapon::WEAPON_DESC weaponDesc = {};
 		weaponDesc.wstrModelPrototypeName = L"Prototype_Component_Model_XibiWeapon";
 		weaponDesc.pMatParent = &Get_Component<CTransform>()->Get_WorldMatrix();
-		weaponDesc.pMatHandSocket = &Get_Part<CBoss_Xibi_Body>(Part::BODY)->Get_Bone(CMonster_Body_Base::EBone::RightHand)->Get_CombinedTransformMatrix();
+		//weaponDesc.pMatHandSocket = &Get_Part<CBoss_Xibi_Body>(Part::BODY)->Get_Bone(CMonster_Body_Base::EBone::RightHand)->Get_CombinedTransformMatrix();
+		weaponDesc.pMatHandSocket = Get_Part<CBoss_Xibi_Body>(Part::BODY)->Get_SocketMatrix(75);
+
 		weaponDesc.eModel = CWeapon::Weapon_ModelType::ANIM;
+		weaponDesc.eAnimState = CWeapon::AnimState::PLAY;
+		weaponDesc.eState = CWeapon::State::HAND;
 		weaponDesc.bMianWeapon = true;
-		weaponDesc.bRGBShader = false;
+		weaponDesc.FDescFlag = 0;
+
+		weaponDesc.iStartAnimIdx = 2;
+
 		if (FAILED(Add_Part(Part::SWORD, ENUM_TO_UINT(ELevelType::STATIC), L"Prototype_GameObject_Part_Sword", &weaponDesc)))
 			return E_FAIL;
 	}

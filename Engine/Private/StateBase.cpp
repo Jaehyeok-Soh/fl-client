@@ -103,6 +103,14 @@ HRESULT CStateBase::End()
 	return S_OK;
 }
 
+HRESULT CStateBase::Request_MixAnimation(_uint iVectorIdx, _int iAnimIdx)
+{
+	if (m_pOwnerStateComp == nullptr)
+		return E_FAIL;
+
+	return m_pOwnerStateComp->Request_MixAnimation(iVectorIdx, iAnimIdx);
+}
+
 HRESULT CStateBase::Request_ChangeAnimation(_uint iAnimationIndex, _bool bBlend, _bool bLoop, _bool bForce)
 {
 	if (m_pOwnerStateComp == nullptr)

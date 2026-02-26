@@ -203,6 +203,16 @@ void CActionState::Move(Vec3 disp, _float minDist, _float fTimeDelta)
 	}
 }
 
+HRESULT CActionState::Request_MixAnimation(_uint iVectorIdx, _int iAnimIdx)
+{
+	if (m_pOwnerModel == nullptr)
+		return E_FAIL;
+
+	m_pOwnerModel->Set_MixAnim_AnimIndex(iVectorIdx, iAnimIdx);
+
+	return S_OK;
+}
+
 HRESULT CActionState::Request_ChangeAnimation(_uint iAnimationIndex, _bool bBlend, _bool bLoop, _bool bForce)
 {
 	if (m_pOwnerModel == nullptr)
