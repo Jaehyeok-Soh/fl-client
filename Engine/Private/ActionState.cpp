@@ -44,7 +44,8 @@ HRESULT CActionState::Initialize(void* pArg)
 		m_vecStates.resize(m_iStateCount);
 	m_pOwnerModel = pDesc->pOwnerModel;
 	m_pOwnerAnimECS = pDesc->pOwnerAnimECS;
-
+	m_pOwnerWeaponModel = pDesc->pOwnerWeaponModel;
+	m_pOwnerWeaponAnimECS = pDesc->pOwnerWeaponAnimECS;
 	return S_OK;
 }
 
@@ -219,6 +220,15 @@ HRESULT CActionState::Request_ChangeAnimation(_uint iAnimationIndex, _bool bBlen
 		return E_FAIL;
 
 	return m_pOwnerModel->Change_Animation(m_pOwnerAnimECS, iAnimationIndex, bBlend, bLoop, bForce);
+}
+
+HRESULT CActionState::Request_Change_WeaponAnimation(_uint iAnimationIndex, _bool bBlend, _bool bLoop, _bool bForce)
+{
+	if (m_pOwnerWeaponModel == nullptr || m_pOwnerWeaponAnimECS == nullptr)
+		return E_FAIL;
+
+	// TODO : 은비야 여기 Weapon Blend Off 다
+	return m_pOwnerWeaponModel->Change_Animation(m_pOwnerWeaponAnimECS, iAnimationIndex, false, bLoop, bForce);
 }
 
 _float CActionState::Get_AnimElpasedTimeSeconds()

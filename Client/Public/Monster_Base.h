@@ -94,7 +94,7 @@ public:
 	virtual void		Update_Late(const _float fTimeDelta) override;
 	virtual void		Ready_Before_Render(const _float fTimeDelta) override;
 	virtual HRESULT		Render() override;
-	virtual _int		Get_AnimationIndex(const wstring& wstrName) override;
+	virtual _int		Get_AnimationIndex(const wstring& wstrName) override;	
 	virtual _wstring	Get_AnimationName(_uint iAniIndex);
 
 public:

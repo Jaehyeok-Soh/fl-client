@@ -21,7 +21,7 @@ public:
 	virtual void		Update_Late(const _float fTimeDelta) override;
 	virtual void		Ready_Before_Render(const _float fTimeDelta) override;
 	virtual HRESULT		Render() override;
-
+	virtual _int		Get_WeaponAnimationIndex(const wstring& wstrName) override;
 public:
 	virtual void OnCollision(_uint iMyColliderLayer, _uint iOtherLayer, CGameObject* pOther) override;
 	virtual void OnCollision_Enter(_uint iMyColliderLayer, _uint iOtherLayer, CGameObject* pOther, const COL_HIT_INFO& tHitInfo) override;
@@ -31,7 +31,7 @@ public:
 
 private:
 	HRESULT Ready_Weapon();
-	HRESULT Ready_Components();
+	HRESULT Ready_Components(void* pArg);
 
 public:
 	static CBoss_Xibi* Create(ID3D11Device* pDevice, ID3D11DeviceContext* pDeviceContext);

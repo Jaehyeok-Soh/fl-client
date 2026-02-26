@@ -30,7 +30,6 @@ public:
 	CControlContext* GetOwnerControlContext() { return m_pOwnerControlContext; }
 
 	unordered_map<string, _int>& GetUmapState() { return m_umapState; }
-
 private:
 	ID3D11Device* m_pDevice = { nullptr };
 	ID3D11DeviceContext* m_pDeviceContext = { nullptr };

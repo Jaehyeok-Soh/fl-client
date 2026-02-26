@@ -1,8 +1,6 @@
 #include "pch.h"
 #include "MonsterActionState.h"
 
-#include "GameInstance.h"
-
 // Builder
 #include "BuilderSystem.h"
 #include "Builder_MonsterState.h"
@@ -12,6 +10,7 @@
 
 // State
 #include "State_Monster.h"
+#include "GameInstance.h"
 
 CMonsterActionState::CMonsterActionState(ID3D11Device* pDevice, ID3D11DeviceContext* pDeviceContext)
 	: Super(),

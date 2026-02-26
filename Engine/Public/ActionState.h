@@ -18,12 +18,13 @@ public:
 	constexpr static EComponentType _ID = EComponentType::ACTIONSTATE;
 	typedef struct tagActionStateDesc
 	{
-		_uint			iStateCount = { 0 };
-		CModel*			pOwnerModel		= { nullptr };
-
+		_uint			iStateCount			= { 0 };
+		CModel*			pOwnerModel			= { nullptr };
+		CModel*			pOwnerWeaponModel	= { nullptr };
 		// state가 달린 객체들은 animation change를 state 내부에서 하기 때문에 
 		// 꼭 값 넣어줘야 함
 		CComputeShader* pOwnerAnimECS		= { nullptr }; 
+		CComputeShader* pOwnerWeaponAnimECS = { nullptr };
 	}ACTIONSTATE_DESC;
 
 protected:
@@ -44,7 +45,6 @@ public:
 	HRESULT			Remove_State(_uint iIndex);
 	HRESULT			Swap_State(_uint iIndex, CStateBase *pState, CStateBase** ppSwappedState);
 	CStateBase*		Get_State(_uint iIndex);
-
 	/* getter setter funcs */
 public:
 	_bool			IsInState(_uint iIndex) const { return m_iCurrentState == iIndex; }
@@ -70,6 +70,7 @@ public:
 protected:
 	HRESULT			Request_MixAnimation(_uint iVectorIdx, _int iAnimIdx);
 	HRESULT			Request_ChangeAnimation(_uint iAnimationIndex, _bool bBlend, _bool bLoop, _bool bForce = false);
+	HRESULT			Request_Change_WeaponAnimation(_uint iAnimationIndex, _bool bBlend, _bool bLoop, _bool bForce = false);
 	_float			Get_AnimElpasedTimeSeconds();
 	_float			Get_AnimNormalizedTime();
 	_bool			Is_AnimFinished();
@@ -125,6 +126,8 @@ protected:
 	CModel*				m_pOwnerModel			= { nullptr };
 	CCameraMan*			m_pOwnerTargetCamera	= { nullptr };
 	CComputeShader*		m_pOwnerAnimECS			= { nullptr };
+	CModel*				m_pOwnerWeaponModel		= { nullptr };
+	CComputeShader*		m_pOwnerWeaponAnimECS	= { nullptr };
 
 	_uint				m_iStateCount			= { 0 };
 	_int				m_iCurrentState			= { -1 };

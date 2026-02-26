@@ -82,6 +82,7 @@ namespace DTO
 		// state name, anim name
 		map<string, string>		mapPreAnimNames;
 		vector<string>			vecMainAnimNames;
+		vector<string>			vecWeaponAnimNames;
 
 		// condition(function), to state name
 		vector<STATE_TRANSITION> vecGlobalStateTransition;
@@ -112,6 +113,7 @@ namespace DTO
 
 		j["mapPreAnimNames"] = d.mapPreAnimNames;
 		j["vecMainAnimNames"] = d.vecMainAnimNames;
+		j["vecWeaponAnimNames"] = d.vecWeaponAnimNames;
 
 		j["vecGlobalStateTransition"] = d.vecGlobalStateTransition;
 
@@ -143,6 +145,8 @@ namespace DTO
 
 		j.at("mapPreAnimNames").get_to(d.mapPreAnimNames);
 		j.at("vecMainAnimNames").get_to(d.vecMainAnimNames);
+		if (j.contains("vecWeaponAnimNames"))
+			d.vecWeaponAnimNames = j["vecWeaponAnimNames"].get<vector<string>>();
 
 		if (j.contains("vecGlobalStateTransition"))
 			j.at("vecGlobalStateTransition").get_to(d.vecGlobalStateTransition);

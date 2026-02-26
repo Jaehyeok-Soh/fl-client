@@ -273,6 +273,38 @@ void CPanel_State::DrawStateDetails()
         if (!mapEraseTarget.empty()) state.mapPreAnimNames.erase(mapEraseTarget);
     }
 
+    // 3-1. Weapon Anim Names
+    if (ImGui::CollapsingHeader("Weapon Anim Names"))
+    {
+        static std::string s_newWeaponAnimName;
+
+        ImGui::SetNextItemWidth(260.f);
+        ImGui::InputText("##NewWeaponAnimName", &s_newWeaponAnimName);
+        ImGui::SameLine();
+        if (ImGui::Button("Add##WeaponAnim") && !s_newWeaponAnimName.empty())
+        {
+            state.vecWeaponAnimNames.push_back(s_newWeaponAnimName);
+            s_newWeaponAnimName.clear();
+        }
+
+        for (size_t i = 0; i < state.vecWeaponAnimNames.size(); ++i)
+        {
+            ImGui::PushID((int)i);
+            ImGui::SetNextItemWidth(260.f);
+            ImGui::InputText("##WeaponAnimEdit", &state.vecWeaponAnimNames[i]);
+            ImGui::SameLine();
+            if (ImGui::Button("X"))
+            {
+                state.vecWeaponAnimNames.erase(state.vecWeaponAnimNames.begin() + i);
+                ImGui::PopID();
+                --i;
+                continue;
+            }
+            ImGui::PopID();
+        }
+    }
+
+
     // 4. State Transitions
     if (ImGui::CollapsingHeader("State Transitions"))
     {
