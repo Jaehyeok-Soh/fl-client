@@ -130,8 +130,9 @@ private:
     CShader* m_pShader = { nullptr };
     CComputeShader* m_pComputeShader = { nullptr };
     CTransform* m_pTransform = { nullptr };
-
     _bool       m_bIsTool = { false };
+
+    vector<_uint>           m_iSpriteCurrentNumber = {};
 
 private:
     _bool       m_bIsEffectFinish = { false };

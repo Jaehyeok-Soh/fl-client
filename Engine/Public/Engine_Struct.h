@@ -286,9 +286,7 @@ namespace Engine
 		SimpleMath::Vector2 vUVOffset;
 
 		// Row 2
-		unsigned int SpriteColCount;
-		unsigned int SpriteRowCount;
-		unsigned int CurSpriteIndex;
+		SimpleMath::Vector3 vPadding0;
 		float fLifeRatio;
 
 		// Row 3
@@ -309,6 +307,26 @@ namespace Engine
 		// Row 7
 		SimpleMath::Vector2 DissolveTexture_ScrollWeight;
 		SimpleMath::Vector2 GlowTexture_ScrollWeight;
+
+		// Row 8
+		SimpleMath::Vector2 CurveTexture_ScrollWeight;
+		SimpleMath::Vector2 Padding1;
+
+		// Row 9
+		SimpleMath::Vector4 DiffuseTexture_SpriteInfo;
+		// Row 10
+		SimpleMath::Vector4 NoiseTexture_SpriteInfo;
+		// Row 11
+		SimpleMath::Vector4 GradationTexture_SpriteInfo;
+		// Row 12
+		SimpleMath::Vector4 DissolveTexture_SpriteInfo;
+		// Row 13
+		SimpleMath::Vector4 GlowTexture_SpriteInfo;
+		// Row 14
+		SimpleMath::Vector4 CurveTexture_SpriteInfo;
+		// Row 15
+		SimpleMath::Vector4 MaskTexture_SpriteInfo;
+
 	} SHADER_EFFECT_DESC;
 
 	typedef struct tagShaderBoneDesc

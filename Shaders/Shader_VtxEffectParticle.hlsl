@@ -7,7 +7,7 @@
 #define NOISETEXTURE 1
 #define MASKINGTEXTURE 2
 #define GRADATIONTEXTURE 3
-#define TRAILTEXTURE 4
+#define CURVETEXTURE 4
 #define NORMALTEXTURE 5
 #define GLOWTEXTURE 6
 #define DISSOLVETEXTURE 7
@@ -23,9 +23,9 @@ texture2D g_EffectTexture;
 #define DOWN 1 << 3     // DOWN -> UP
 
 // 진행 방향으로 y를 돌려버리는 플래그
-#define DIRBILLBOARD 1 << 4
+#define DIR_BILLBOARD 1 << 4
     // Use Sprite
-#define SPRITE 1<< 5    // 스프라이트를 사용하는가?
+#define SPRITE 1<< 5    // 스프라이트를 사용하는가?  이제 이거 폐기.
 
     // Use Scroll (텍스처별)
 #define SCROLL_DIFFUSE 1 << 6
@@ -34,6 +34,7 @@ texture2D g_EffectTexture;
 #define SCROLL_GRADATION 1 << 9
 #define SCROLL_DISSOLVE 1 << 10
 #define SCROLL_GLOW 1 << 11
+#define SCROLL_CURVE 1 << 12
         
 // SamplerState Flag
 #define LINEARSAMPLER 1 << 0
@@ -47,8 +48,9 @@ texture2D g_EffectTexture;
 #define ROTATE_NOISE        (1 << 1)
 #define ROTATE_MASK         (1 << 2)
 #define ROTATE_GRADATION    (1 << 3)
-#define ROTATE_TRAIL        (1 << 4)
+#define ROTATE_CURVE        (1 << 4)
 #define ROTATE_NORMAL       (1 << 5)
+#define ROTATE_GLOW         (1 << 6)
 
 // 산술 연산자 
 #define ADD 1 << 0      // Add          더하기
@@ -71,9 +73,7 @@ struct EffectDesc
     float2 g_UVOffset;
 
     // Row 2
-    uint g_SpriteCol;
-    uint g_SpriteRow;
-    uint g_CurSpriteIndex;
+    float3 Padding0;
     float g_AppearRatio;
 
     // Row 3
@@ -94,8 +94,26 @@ struct EffectDesc
     // Row 7
     float2 DissolveTexture_ScrollWeight;
     float2 GlowTexture_ScrollWeight;
+    
+    // Row 8
+    float2 CurveTexture_ScrollWeight;
+    float2 Padding1;
+    
+    // Row 9
+    float4 DiffuseTexture_SpriteInfo;
+    // Row 10
+    float4 NoiseTexture_SpriteInfo;
+    // Row 11
+    float4 GradationTexture_SpriteInfo;
+    // Row 12
+    float4 DissolveTexture_SpriteInfo;
+    // Row 13
+    float4 GlowTexture_SpriteInfo;
+    // Row 14
+    float4 CurveTexture_SpriteInfo;
+    // Row 15
+    float4 MaskTexture_SpriteInfo;
 };
-
 
 // ========== StruturedBuffer Binding value  ===========  (CS Shader에서 계산해서 넘어온 값.)
 StructuredBuffer<VTXPARTICLE> INSTANCE_OUTPUT;
@@ -113,24 +131,14 @@ bool HasBillboard()
     return (g_Effect.g_RenderFlags & BILLBOARD) != 0;
 }
 
-bool HasDirBillboard()
-{
-    return (g_Effect.g_RenderFlags & DIRBILLBOARD) != 0;
-}
-
-bool HasScroll()
-{
-    return (g_Effect.g_RenderFlags & SCROLL) != 0;
-}
-
 bool HasTextureScroll(uint Flag)
 {
     return (g_Effect.g_RenderFlags & Flag) != 0;
 }
 
-bool HasSprite()
+bool HasTextureSprite(float4 spriteInfo)
 {
-    return (g_Effect.g_RenderFlags & SPRITE) != 0;
+    return spriteInfo.x > 0.5f;
 }
 
 // ======== 연산용 함수들 ============
@@ -163,6 +171,31 @@ float2 ScrollUV_Calculator(uint Flag, float2 InUV)
     }
 
     return finalUV;
+}
+
+float2 GetStaticSpriteUV(float2 InUV, float4 spriteInfo)
+{
+    // x가 0이면 스프라이트 미사용이므로 원본 UV 반환
+    if (spriteInfo.x < 0.5f)
+        return InUV;
+
+    float numCols = spriteInfo.y; // 가로 칸 수
+    float numRows = spriteInfo.z; // 세로 칸 수
+    uint curIdx = (uint) spriteInfo.w; // Cpp에서 계산해서 넘겨준 그려야 할 번호
+
+    // 행/열 위치 계산
+    uint xIdx = curIdx % (uint) numCols;
+    uint yIdx = curIdx / (uint) numCols;
+
+    // 한 칸의 크기
+    float2 cellSize = float2(1.0f / numCols, 1.0f / numRows);
+    
+    // UV를 한 칸 크기로 줄이고 해당 위치로 오프셋 이동
+    float2 spriteUV = InUV * cellSize;
+    spriteUV.x += (float) xIdx * cellSize.x;
+    spriteUV.y += (float) yIdx * cellSize.y;
+
+    return spriteUV;
 }
 
 void DecodeDepth(float2 vUV, out float fNDCZ, out float fViewZ)
@@ -297,9 +330,9 @@ float4 GradationTextureSample(float2 UV)
     return SampleTextureWithFlags(g_DefaultTextures[GRADATIONTEXTURE], g_Effect.g_StateFlags, 9, UV);
 }
 
-float4 TrailTextureSample(float2 UV)
+float4 CurveTextureSample(float2 UV)
 {
-    return SampleTextureWithFlags(g_DefaultTextures[TRAILTEXTURE], g_Effect.g_StateFlags, 12, UV);
+    return SampleTextureWithFlags(g_DefaultTextures[CURVETEXTURE], g_Effect.g_StateFlags, 12, UV);
 }
 
 float4 DissolveTextureSample(float2 UV)
@@ -310,8 +343,8 @@ float4 DissolveTextureSample(float2 UV)
 float GlowTextureSample(float2 UV)
 {
     return SampleTextureWithFlags(g_DefaultTextures[GLOWTEXTURE], g_Effect.g_StateFlags, 18, UV);
-
 }
+
 float4 SceneTextureSample(float2 UV, uint Flag)
 {
     if (Flag == 0)
@@ -319,7 +352,6 @@ float4 SceneTextureSample(float2 UV, uint Flag)
     else if (Flag == 1)
         return g_RenderTargetSceneHDRCopyTexture.Sample(LinearClampSampler, UV);
 }
-
 
 // =========== VS In  ==============
 
@@ -423,7 +455,7 @@ void GS_Particle(point VS_OUT_POS_GS_PARTICLE In[1], inout TriangleStream<GS_OUT
         matrix matWorld = mul(matInst, W);
         
         vRight = normalize(matWorld[0].xyz);
-        vUp = normalize(matWorld[1].xyz);
+        vUp = normalize(matWorld[2].xyz);
     }
 
     // 2. 크기 적용 (기존 코드처럼 반경으로 계산하려면 0.5f 사용, 아니면 그대로 사용)
@@ -458,7 +490,51 @@ float4 PS_Particle(GS_OUT_POS_PARTICLE In) : SV_TARGET0
     if (In.vLifeTime.x < 0.0f)
         discard;
     
-    vector color = g_Effect.g_EffectColor;
+        // ================    Curve 텍스처     ===============
+    float4 CurveSample = { 1.f, 1.f, 1.f, 1.f };
+    float CurvePowerStrength = 1.0f;
+    float LifeRatio = saturate(In.vLifeTime.x / In.vLifeTime.y);
+    
+    if (Has(g_Effect.g_TextureFlags, CURVETEXTURE))
+    {
+        if (HasTextureScroll(SCROLL_CURVE))
+        {
+            float2 scrolledUV = In.vUV + g_Effect.g_UVOffset;
+            scrolledUV += g_Effect.g_ScrollOffset * g_Effect.CurveTexture_ScrollWeight;
+            CurveSample = DissolveTextureSample(Get90DegreeRotatedUV(scrolledUV, g_Effect.g_RotationFlags, CURVETEXTURE));
+            CurvePowerStrength = CurveSample.r;
+            CurvePowerStrength *= 3.f;
+        }
+        else if (HasTextureSprite(g_Effect.CurveTexture_SpriteInfo))
+        {
+            float2 SpriteUV = GetStaticSpriteUV(In.vUV, g_Effect.CurveTexture_SpriteInfo);
+            
+            SpriteUV.x /= 4.0f;
+            
+            // ㅁ ㅁ ㅁ 형태의 구역으로 나누었다면 3번째 구역부터 1번째 구역으로 스크롤을 하자.
+            // 스크롤이 될 변수는 lifeRatio
+            float scrollOffset = lerp(3.0f / 4.0f, 0.0f, LifeRatio);
+            
+            SpriteUV.x += scrollOffset;
+            
+            CurveSample = CurveTextureSample(Get90DegreeRotatedUV(SpriteUV, g_Effect.g_RotationFlags, CURVETEXTURE));
+            CurvePowerStrength = CurveSample.r;
+            CurvePowerStrength *= 3.f;
+        }
+        else
+        {
+            CurveSample = CurveTextureSample(Get90DegreeRotatedUV(In.vUV, g_Effect.g_RotationFlags, CURVETEXTURE));
+            CurvePowerStrength = CurveSample.r;
+            CurvePowerStrength *= 3.f;
+        }
+
+    }
+    else
+    {
+        CurvePowerStrength = 1.f;
+    }
+    
+    float4 color = g_Effect.g_EffectColor * CurvePowerStrength;
 
     // ===========  라이프타임에 따른 투명도 적용  =============
     color.a = saturate(In.vLifeTime.y - In.vLifeTime.x);
