@@ -128,6 +128,11 @@ void CLevel_Logo::Update(const _float fTimeDelta)
 #endif
 		m_pGameInstance->Request_CursorMode(m_eCursorMode);
 	}
+
+	if (m_pGameInstance->KeyButton_Down(DIK_2))
+	{
+		m_pGameInstance->Request_ChangeLevel(ENUM_TO_UINT(ELevelType::LOADING), CLevel_Loading::Create(m_pDevice, m_pDeviceContext, ELevelType::TEST));
+	}
 }
 
 HRESULT CLevel_Logo::Render()
