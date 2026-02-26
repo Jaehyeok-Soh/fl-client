@@ -88,6 +88,8 @@ void CState_ComboBase::Change_NextCombo()
 	m_tKeyTimer.fMaxTime = m_ComboTimes[m_iComboCount -1];
 	m_fStateElapsed = 0.f;
 
+	m_TChargeCount.x = 0.f;
+
 	Request_ChangeAnimation(m_vecMainAnims[m_iComboCount], true, false, true);
 }
 
@@ -102,6 +104,8 @@ void CState_ComboBase::Change_FirstCombo()
 	m_tKeyTimer.fTimeAcc = 0.f;
 	m_tKeyTimer.fMaxTime = m_ComboTimes[0];
 	m_fStateElapsed = 0.f;
+
+	m_TChargeCount.x = 0.f;
 
 	Request_ChangeAnimation(m_vecMainAnims[0], false, false, true);
 }
