@@ -36,15 +36,22 @@ HRESULT CBoss_Xibi_Body::Awake(const _uint iCurrentLevelIndex)
 	if (FAILED(Super::Awake(iCurrentLevelIndex)))
 		return E_FAIL;
 
+	CModel* pMyModle = Get_Component<CModel>();
+
 	// Mixing Face
 	{
 		_uint iFaceAnimIdx = Get_Component<CModel>()->Get_AnimationIndex(L"Animation_Xibi_FaceNone");
 		vector<CModel::DATA_ANIMIX> vecMix = { { 139, false, 1.f } };
 		CComputeShader* pAnimMixCS = static_cast<CComputeShader*>(Get_Script_Component(TEXT("ComputeShader_AnimMix")));
-		Get_Component<CModel>()->Set_MixAnim(true);
-		Get_Component<CModel>()->Set_MixAnim_ResetSize(1);
-		Get_Component<CModel>()->Make_MixRatio(iFaceAnimIdx, vecMix, pAnimMixCS);
-		Get_Component<CModel>()->Set_MixAnim_AnimIndex(0, iFaceAnimIdx);
+		pMyModle->Set_MixAnim(true);
+		pMyModle->Set_MixAnim_ResetSize(1);
+		pMyModle->Make_MixRatio(iFaceAnimIdx, vecMix, pAnimMixCS);
+		pMyModle->Set_MixAnim_AnimIndex(0, iFaceAnimIdx);
+	}
+
+	// root motion offset : eunbi's present
+	{
+		pMyModle->Set_Animtion_MotionOffset_All(0.01f);
 	}
 
 	return S_OK;
@@ -90,7 +97,7 @@ void CBoss_Xibi_Body::OnTrigger_Exit(_uint iMyColliderLayer, _uint iOtherLayer, 
 {
 }
 
-_bool CBoss_Xibi_Body::On_Hit(_uint iCollideMyLayer, ATTACK_DESC* pDesc, CGameObject* pOther)
+_bool CBoss_Xibi_Body::On_Hit(const HIT_DESC& hitDesc)
 {
 	return true;
 }

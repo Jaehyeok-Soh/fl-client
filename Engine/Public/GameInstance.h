@@ -346,6 +346,7 @@ public:
 	void RegisterPhysicsMesh(_uint levelIndex, _wstring prototypeTag);
 	PxQuat GetPureRotation(const Matrix& mat);
 	PxVec3 GetPureScale(const Matrix& mat);
+	void Overlap_EventCallback(CGameObject* pOwner, const PxVec3& vOverlapPoint, PxOverlapHit* pOverlapHit, PxPairFlag::Enum event);
 	_bool RayCast(Vec3 vWorldPos, Vec3 vDir, _float fMaxDist, CPhysics_QueryFilterCallback* pFilterCall);
 #ifdef _DEBUG
 	void Physics_Render(PxRigidActor* pActor, XMVECTOR color = DirectX::Colors::White);
@@ -362,9 +363,10 @@ public:
 	HRESULT		GameDataManager_Load_TextureSplatingInfoData();
 	/* 이름으로 Binding 하는 함수 */
 	HRESULT		GameDataManager_Bind_SplatingTextureInfo(CShader* pBindShader, const wstring& wstrTextureSplatingInfoDataName);
-
+	
 	const DTO::TAttackPreset_Data* Find_AttackPrseet(_uint iPresetKey) const;
 	const DTO::TAttackPreset_Data* Find_AttackPresetByTag(const string& strTag) const;
+	_uint Get_AttackPresetIdByTag(const string& strTag) const;
 	HRESULT Upsert_AttackPresetData(const DTO::TAttackPreset_Data& inData);
 	const unordered_map<_uint, DTO::TAttackPreset_Data>& Get_AttackPresetsData_ForDebug() const;
 #pragma endregion

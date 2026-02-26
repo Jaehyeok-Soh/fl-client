@@ -526,6 +526,14 @@ HRESULT CRender_Manager::Render()
 	return S_OK;
 }
 
+void CRender_Manager::Clear()
+{
+	for (auto& list : m_renderObjects)
+	{
+		list.clear();
+	}
+}
+
 HRESULT CRender_Manager::Render_Priority()
 {
 	for (CGameObject* pElement : m_renderObjects[ENUM_TO_UINT(RENDER_CATEGORY::PRIORITY)])

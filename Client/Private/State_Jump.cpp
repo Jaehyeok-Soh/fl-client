@@ -37,7 +37,7 @@ HRESULT CState_Jump::Start(void* pArg, _bool bForce)
 void CState_Jump::Update(const _float fTimeDelta)
 {
 	// 바닥 충돌 검사 후 change
-	if (m_fStateElapsed > 0.65f &&
+	if (m_fStateElapsed > 0.3f &&
 		Check_OnGround(0.1f))
 	{
  		//Get_OwnerObject()->Get_Component<CTransform>()->Is_OnGround(0.1f);

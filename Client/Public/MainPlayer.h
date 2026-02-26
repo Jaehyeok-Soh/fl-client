@@ -43,10 +43,10 @@ private:
 	//_bool Try_AttackHit(ECollideLayer eMyLayer, CCollider* pOther);
 private:
 	HRESULT Ready_Ability();
-	HRESULT Ready_Weapons();
 	HRESULT Ready_Colliders();
 	HRESULT Ready_Ray();
 	HRESULT Ready_CCT();
+	HRESULT Ready_AttackOverlap();
 
 	HRESULT Ready_AttackStates();
 

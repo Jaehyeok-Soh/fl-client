@@ -34,6 +34,7 @@ public:
 	void Tick(_float fTimeDelta);
 
 	_bool CheckAlreadyHit(CGameObject* hitObject);
+	void HitObjectsClear();
 
 private:
 	_bool Build_HitInfo_FromOverlap(const PxGeometry& hitboxGeometry, const PxTransform& hitBoxPose, const PxOverlapHit& overlap, OUT COL_HIT_INFO& outInfo);
@@ -57,8 +58,8 @@ private:
 	
 	Enum m_eState = { Enum::WAIT };
 
-	vector<PxOverlapHit> hitResults;
-	PxOverlapBuffer hitBuffer;
+	vector<PxOverlapHit> m_vecHitResults;
+	PxOverlapBuffer m_hitBuffer;
 	std::set<CGameObject*> m_hitObjects;
 
 	wstring m_strEventString = {};

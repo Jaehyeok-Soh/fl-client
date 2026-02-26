@@ -37,6 +37,7 @@ public:
 #pragma region ATTACK_PRESET
 	const DTO::TAttackPreset_Data* Find_AttackPrseet(_uint iPresetKey) const;
 	const DTO::TAttackPreset_Data* Find_AttackPresetByTag(const string& strTag) const;
+	_uint Get_AttackPresetIdByTag(const string& strTag) const;
 	HRESULT Upsert_AttackPresetData(const DTO::TAttackPreset_Data& inData);
 	const unordered_map<_uint, DTO::TAttackPreset_Data>& Get_AttackPresetsData_ForDebug() const { return m_umapAttackPresetDatas; }
 #pragma endregion

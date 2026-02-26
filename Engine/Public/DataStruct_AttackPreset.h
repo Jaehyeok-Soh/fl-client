@@ -63,11 +63,12 @@ NLOHMANN_JSON_SERIALIZE_ENUM(EAttackPresetColliderType,
 		{EAttackPresetColliderType::PhysicsCollider, "PhysicsCollider"},
 		{EAttackPresetColliderType::END, "END"},
 	}
-	)
+)
 
 enum class EHitType : _uint
 {
-	Light = 0,
+	Additive = 0,
+	Light,
 	Heavy,
 	Launch,
 	Knockdown,
@@ -78,13 +79,14 @@ inline constexpr _uint g_HitTypeCount{ ENUM_TO_UINT(EHitType::END) };
 
 NLOHMANN_JSON_SERIALIZE_ENUM(EHitType,
 	{
+		{EHitType::Additive, "Additive"},
 		{EHitType::Light, "Light"},
 		{EHitType::Heavy, "Heavy"},
 		{EHitType::Launch, "Launch"},
 		{EHitType::Knockdown, "Knockdown"},
 		{EHitType::None, "None"},
 		{EHitType::END, "END"},
-	}
+	} 
 )
 
 enum class EDamageType : _uint

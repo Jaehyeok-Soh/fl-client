@@ -68,6 +68,8 @@ public:
 		case STAT_TYPE::MENTAL:
 			return m_vMental;
 		}
+
+		return Vec2::Zero;
 	}
 
 	_float Get_Rate(STAT_TYPE eType)

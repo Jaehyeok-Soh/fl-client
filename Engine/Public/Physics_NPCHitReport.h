@@ -5,8 +5,7 @@
 
 NS_BEGIN(Engine)
 
-class CPhysics_NPCHitReport :
-    public CBase, public PxUserControllerHitReport
+class CPhysics_NPCHitReport : public CBase, public PxUserControllerHitReport
 {
     typedef struct tagGameObjectInfo
     {

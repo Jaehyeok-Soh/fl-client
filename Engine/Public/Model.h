@@ -103,6 +103,7 @@ public:
 
 	// animation funcs
 public:
+	HRESULT								Change_Animation(CComputeShader* pAnimEComShader, const wstring& wstrName, _bool bBlend, _bool isLoop = true, _bool bForce = false);
 	HRESULT								Change_Animation(CComputeShader* pAnimEComShader,_uint iAnimationIndex, _bool bBlend, _bool isLoop = true, _bool bForce = false);
 	void								Add_Animation(class CModelAnimation* pAnimation) { m_vecAnimations.push_back(pAnimation); }
 	// Transform과 CCT를 바인딩 안할 시 RootMotion적용은 되나, 포지션을 반영안한다.
@@ -197,6 +198,8 @@ public:
 	void								Set_AnimationSpeed(_float fSpeed) { m_fAnimationSpeed = fSpeed; if (m_fAnimationSpeed <= 0) m_fAnimationSpeed = 1.f; }
 	void								Set_CurAnimation_RootApply(_bool bRootApply);
 	void								Set_ApplyRootMotionAll(_bool bRootApply);
+
+	void								Set_Animtion_MotionOffset_All(_float fOffset);
 
 	// materials funcs
 public:

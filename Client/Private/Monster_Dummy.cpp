@@ -152,8 +152,8 @@ HRESULT CMonster_Dummy::Ready_Components()
 	desc.fCloseRange = 1.f;
 	desc.fDetectionRange = 15.f;
 	desc.fSpeed = 1.f;
-	desc.iSkillCount;
-	desc.vecSkillRange;
+	//desc.iSkillCount;
+	//desc.vecSkillRange;
 
 	if (FAILED(Add_Component<CMonsterControlContext>(0 /*static*/, L"Prototype_Component_ControlContext_Monster", &desc)))
 		return E_FAIL;
