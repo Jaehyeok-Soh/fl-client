@@ -295,7 +295,7 @@ public:
 #ifdef _DEBUG
 	HRESULT Ready_RT_Debug(ERenderTarget eTarget, _float fX, _float fY, _float fSizeX, _float fSizeY);
 	HRESULT Debug_RT_Render(EMRTLayer eMRTLayer, class CShader* pShader, class CVIBuffer_Rect_Tex* pVIBuffer);
-	
+	ID3D11ShaderResourceView* Get_RenderTargetSRV(ERenderTarget eTarget);
 	SHADER_SSAOPARAM_DESC& Get_SSAOParamDesc();
 	const SHADER_SSAOPARAM_DESC& Get_SSAOParamDesc() const;
 	HRESULT Commit_SSAOParam();

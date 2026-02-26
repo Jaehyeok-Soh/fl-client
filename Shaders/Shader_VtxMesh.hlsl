@@ -88,7 +88,7 @@ PS_OUT_DEFFERED PS_MAIN(PS_IN_MESH input)
     
     float3 vNormal = input.vNormal;
     Compute_Normal(vNormal, input.vTangent, input.vBinormal, input.vUV);
-    output.vNormal = vNormal * 0.5f + 0.5f;
+    output.vNormal = float4(vNormal * 0.5f + 0.5f, 1.f);
     
     float3 vSpecMask = float3(1.f, 1.f, 0.f);
     if (Has(g_iMaterialMask, METALNESS))
@@ -241,7 +241,7 @@ PS_OUT_DEFFERED PS_LANDSCAPE(PS_IN_MESH input)
     float3 finalWorldNormal = normalize(mul(vNBR_Tile_TangentNormal, TBN));
     
     output.vDiffuse = vDiffuse;
-    output.vNormal = finalWorldNormal * 0.5f + 0.5f;
+    output.vNormal = float4(finalWorldNormal * 0.5f + 0.5f, 1.f);
     output.vDepth = float4(input.vProjPos.z / input.vProjPos.w, input.vProjPos.w, 0.f, 0.f);
     output.vSpecularMask = float4(0.f, fNBR_Tile_Roughness, 0.f, 0.f);
     
@@ -266,7 +266,7 @@ PS_OUT_DEFFERED PS_RGBMAPPING(PS_IN_MESH input)
     
     float3 vNormal = input.vNormal;
     Compute_Normal(vNormal, input.vTangent, input.vBinormal, input.vUV);
-    output.vNormal = vNormal * 0.5f + 0.5f;
+    output.vNormal = float4(vNormal * 0.5f + 0.5f, 1.f);
     
     float3 vSpecMask = float3(1.f, 1.f, 0.f);
     if (Has(g_iMaterialMask, METALNESS))
