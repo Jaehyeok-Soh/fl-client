@@ -61,6 +61,7 @@ HRESULT CEffectObject::EffectDesc_Initialize(void* pArg)
 
     m_tEffectDesc = *pEffectDesc;
     m_tOriginEffectDesc = *pEffectDesc;
+    m_iSpriteCurrentNumber.resize(ENUM_TO_UINT(DTO::TEXTURE_INFO::END));
     return S_OK;
 }
 
