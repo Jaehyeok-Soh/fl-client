@@ -543,7 +543,7 @@ namespace Engine
 	//===================
 	enum class EFontShaderType
 	{
-		NORMAL,OUTLINE, NOISE, NOISE_KOR, OUTLINE_NOISE, OUTLINE_NOISE_KOR, END
+		NORMAL, OUTLINE, NOISE, NOISE_KOR, OUTLINE_NOISE, OUTLINE_NOISE_KOR, GRADATION, OUTLINE_GRADATION, HIT, END
 	};
 
 	//===================

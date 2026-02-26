@@ -42,8 +42,11 @@ public:
 	/// <param name="isOutline"> / 아웃라인인가? </param>
 	/// <param name="isKorean"> / 한국어인가? </param>
 	/// <param name="isNoise"> / 노이즈인가? </param>
+	/// <param name="isHit"> / 히트 데미지 폰트인가? </param>
 	/// <returns></returns>
-	HRESULT Begin_Draw_OutlineNoise(const _bool isOutline, const _bool isKorean, const _bool isNoise);
+	HRESULT Begin_Draw_OutlineNoise(const _bool isOutline, const _bool isKorean, const _bool isNoise, const _bool isHit = false);
+	HRESULT Begin_Draw_Gradation(const _bool isOutline);
+
 
 	void End_Draw();
 
@@ -66,6 +69,8 @@ private:
 
 	// Pixel Shader & Constant Buffer
 	ID3D11PixelShader* m_pPS_Outline = nullptr;
+	ID3D11PixelShader* m_pPS_OutlineGrad = nullptr;
+
 	CConstant_Buffer<CB_FONT_OUTLINE_NOISE>* m_pOutlineNoiseCB = { nullptr };
 	ID3D11ShaderResourceView* m_pNoiseSRV = { nullptr };
 

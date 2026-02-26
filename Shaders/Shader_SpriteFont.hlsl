@@ -84,3 +84,50 @@ float4 PS_OUTLINE_NOISE(float4 color : COLOR0, float2 texCoord : TEXCOORD0) : SV
     float4 vResult = vFinalPMColor + outlinePM * (1.0f - vFinalPMColor.a);
     return vResult;
 }
+
+float4 PS_OUTLINE_GRADATION(float4 color : COLOR0, float2 texCoord : TEXCOORD0) : SV_Target0
+{
+    float4 vGlyph = g_FontTexture.Sample(g_FontTextureSampler, texCoord);
+    float fCoverage = vGlyph.a;
+    
+    g_FontDesc.vNoiseUVScale;
+
+    float3 vBaseRGB = color.rgb;
+    float vBaseA = color.a;
+
+    // RGB만 그라데이션, A는 고정
+    float3 gradRGB = lerp(float3(1.f, 1.f, 1.f), vBaseRGB, texCoord.y);
+
+    // Fill (premultiplied)
+    float fillA = fCoverage * vBaseA;
+    float4 fillPM = float4(gradRGB * fillA, fillA);
+
+    float outlineMask = 0.0f;
+    if (g_FontDesc.fOutlineSizePx > 0.0f && g_FontDesc.fOutlineStrength > 0.0f && g_FontDesc.vOutlineColor.a > 0.0f)
+    {
+        float2 texel = Get_TexelSize() * g_FontDesc.fOutlineSizePx;
+
+        float a0 = g_FontTexture.Sample(g_FontTextureSampler, texCoord + float2(texel.x, 0)).a;
+        float a1 = g_FontTexture.Sample(g_FontTextureSampler, texCoord + float2(-texel.x, 0)).a;
+        float a2 = g_FontTexture.Sample(g_FontTextureSampler, texCoord + float2(0, texel.y)).a;
+        float a3 = g_FontTexture.Sample(g_FontTextureSampler, texCoord + float2(0, -texel.y)).a;
+
+        float a4 = g_FontTexture.Sample(g_FontTextureSampler, texCoord + float2(texel.x, texel.y)).a;
+        float a5 = g_FontTexture.Sample(g_FontTextureSampler, texCoord + float2(-texel.x, texel.y)).a;
+        float a6 = g_FontTexture.Sample(g_FontTextureSampler, texCoord + float2(texel.x, -texel.y)).a;
+        float a7 = g_FontTexture.Sample(g_FontTextureSampler, texCoord + float2(-texel.x, -texel.y)).a;
+
+        float aN = max(max(a0, a1), max(a2, a3));
+        aN = max(aN, max(max(a4, a5), max(a6, a7)));
+
+        outlineMask = saturate(aN - fCoverage);
+        outlineMask = smoothstep(0.0f, 1.0f, outlineMask);
+    }
+
+    float outlineA = outlineMask * g_FontDesc.fOutlineStrength * g_FontDesc.vOutlineColor.a * vBaseA;
+    float3 outlineRGB = g_FontDesc.vOutlineColor.rgb;
+    float4 outlinePM = float4(outlineRGB * outlineA, outlineA);
+
+    // outlineMask가 이미 외곽만 잡으므로 그냥 합산
+    return outlinePM + fillPM;
+}

@@ -469,7 +469,6 @@
     <Filter Include="02. Level\Test">
       <UniqueIdentifier>{a2daef10-3d20-4e39-ace1-5ff40c2ab0d2}</UniqueIdentifier>
     </Filter>
-	  
     <Filter Include="03. GameObject\UIObjects\02.UI\Image\Dynamic Image\06.AimDot">
       <UniqueIdentifier>{91eeeaa9-73a6-40da-bff2-b5e05c436f98}</UniqueIdentifier>
     </Filter>
@@ -562,6 +561,9 @@
     </Filter>
     <Filter Include="03. GameObject\UIObjects\02.UI\Image\Dynamic Image\07.Level Chnage">
       <UniqueIdentifier>{441fee0b-1c67-4053-a110-de1fdb40d73f}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="03. GameObject\UIObjects\02.UI\Text\Damage Text">
+      <UniqueIdentifier>{677a64cd-1317-409c-a79c-d9f17b5e967a}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
@@ -1010,6 +1012,9 @@
     <ClInclude Include="..\Public\UILevelChange_Image.h">
       <Filter>03. GameObject\UIObjects\02.UI\Image\Dynamic Image\07.Level Chnage</Filter>
     </ClInclude>
+    <ClInclude Include="..\Public\UIDamageFont_Text.h">
+      <Filter>03. GameObject\UIObjects\02.UI\Text\Damage Text</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <Image Include="Client.ico">
@@ -1449,6 +1454,9 @@
     </ClCompile>
     <ClCompile Include="..\Private\UILevelChange_Image.cpp">
       <Filter>03. GameObject\UIObjects\02.UI\Image\Dynamic Image\07.Level Chnage</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\UIDamageFont_Text.cpp">
+      <Filter>03. GameObject\UIObjects\02.UI\Text\Damage Text</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

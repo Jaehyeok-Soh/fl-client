@@ -677,6 +677,7 @@ namespace Tool
 	{
 		NOT_PREFAB,
 		MONSTER_NAMEPLATE,
+		DAMAGE_FONTS,
 		END
 	};
 
@@ -686,6 +687,7 @@ namespace Tool
 		{
 		case EUIPrefabType::NOT_PREFAB:			return "NOT_PREFAB";
 		case EUIPrefabType::MONSTER_NAMEPLATE:	return "MONSTER_NAMEPLATE";
+		case EUIPrefabType::DAMAGE_FONTS:		return "DAMAGE_FONTS";
 		case EUIPrefabType::END:				return "";
 		default: return "";
 		}

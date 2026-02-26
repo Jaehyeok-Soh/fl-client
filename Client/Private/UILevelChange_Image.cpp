@@ -56,6 +56,7 @@ HRESULT CUILevelChange_Image::Attach_Personal_Info()
 		m_eNextLevelID = ELevelType::SQUARE;
 		break;
 	case DTO::EUIDImageSubClassType::LEVEL_CHAGE_5:
+		m_eNextLevelID = ELevelType::TEST;
 		break;
 	case DTO::EUIDImageSubClassType::END:
 	default:
@@ -131,6 +132,7 @@ void CUILevelChange_Image::Acting_By_InteractState()
 		m_pGameInstance->Request_ChangeLevel(ENUM_TO_UINT(ELevelType::LOADING), CLevel_Loading::Create(m_pDevice, m_pDeviceContext, m_eNextLevelID));
 		m_pUIManager->Request_Clear();
 	}
+
 }
 
 void CUILevelChange_Image::OnUIEvent(ETriggerEventType eEvent, CGenericUI* pSender)

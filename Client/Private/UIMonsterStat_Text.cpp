@@ -51,11 +51,6 @@ HRESULT CUIMonsterStat_Text::Awake(const _uint iCurrentLevelID)
 
 HRESULT CUIMonsterStat_Text::Attach_Personal_Info(const _uint iCurrentLevelID)
 {
-	CGameObject* pResult = m_pGameInstance->Get_GameObject_Front(iCurrentLevelID, g_wszPlayerLayer);
-	if (nullptr == pResult)
-		return E_FAIL;
-
-
 	return S_OK;
 }
 
