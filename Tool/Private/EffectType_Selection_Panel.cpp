@@ -195,8 +195,6 @@ void CEffectType_Selection_Panel::CreateParticleEffect()
 		pEffectDesc.Data._Effect_NoiseTexture_Tag = {};
 		pEffectDesc.Data._Effect_DiffuseTexture_Tag = {};
 
-		pEffectDesc.Data._Effect_TileCount = DTO::_uint2{0, 0};
-
 		// =======   이펙트 스크롤 Value   ===========
 		pEffectDesc.Data._Effect_ScrollSpeed = { 0.f, 0.f };
 		pEffectDesc.Data._Effect_DiscardValue = { 0.05f };

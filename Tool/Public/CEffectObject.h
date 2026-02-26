@@ -14,6 +14,20 @@ NS_END
 
 NS_BEGIN(Tool)
 
+enum class TEXTURE_INFO
+{
+    DEFAULTTEXTURE = 0,
+    NOISETEXTURE  = 1,
+    MASKINGTEXTURE  = 2,
+    GRADATIONTEXTURE  = 3,
+    TRAILTEXTURE  = 4,
+    NORMALTEXTURE = 5,
+    GLOWTEXTURE  = 6,
+    DISSOLVETEXTURE  = 7,
+    CURVETEXTURE  = 8,
+    END
+};
+
 class CEffectObject :
     public Tool_PartObject
 {
@@ -130,8 +144,9 @@ private:
     CShader* m_pShader = { nullptr };
     CComputeShader* m_pComputeShader = { nullptr };
     CTransform* m_pTransform = { nullptr };
-
     _bool       m_bIsTool = { false };
+
+    vector<_uint>           m_iSpriteCurrentNumber = {};
 
 private:
     _bool       m_bIsEffectFinish = { false };

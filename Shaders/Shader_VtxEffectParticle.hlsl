@@ -423,7 +423,7 @@ void GS_Particle(point VS_OUT_POS_GS_PARTICLE In[1], inout TriangleStream<GS_OUT
         matrix matWorld = mul(matInst, W);
         
         vRight = normalize(matWorld[0].xyz);
-        vUp = normalize(matWorld[1].xyz);
+        vUp = normalize(matWorld[2].xyz);
     }
 
     // 2. 크기 적용 (기존 코드처럼 반경으로 계산하려면 0.5f 사용, 아니면 그대로 사용)

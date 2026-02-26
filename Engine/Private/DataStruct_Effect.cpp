@@ -107,12 +107,19 @@ void to_json(json& j, const TEFFECT_PartsData& data)
        {"RandomFlags", static_cast<int>(data.iRandomFlags)},
         {"PlayBackSpeed", data._Effect_PlayBackSpeed},
         {"StartSpeed", data._Effect_StartSpeed},
-        {"UseSprite", data._Effect_bUseSprite},
-        {"TileCount", {{"x", data._Effect_TileCount.x}, {"y", data._Effect_TileCount.y}}},
         {"PlayAnimation", data._Effect_bPlayAnim},
         {"AnimationSpeed", data._Effect_AnimSpeed},
-        {"SpriteNumber", data.m_iCurSpriteNumber},
         {"AppearRatio", data._Effect_ApearRatio},
+
+        // ---- Sprite 가중치 ----
+        {"SpriteInfo", {
+            {"Diffuse",   {{"x", data._Effect_DiffuseTexture_SpriteInfo.x}, {"y", data._Effect_DiffuseTexture_SpriteInfo.y}, {"z", data._Effect_DiffuseTexture_SpriteInfo.z}, {"w", data._Effect_DiffuseTexture_SpriteInfo.w}}},
+            {"Noise",     {{"x", data._Effect_NoiseTexture_SpriteInfo.x},   {"y", data._Effect_NoiseTexture_SpriteInfo.y},   {"z", data._Effect_NoiseTexture_SpriteInfo.z},   {"w", data._Effect_NoiseTexture_SpriteInfo.w}}},
+            {"Gradation", {{"x", data._Effect_GradationTexture_SpriteInfo.x}, {"y", data._Effect_GradationTexture_SpriteInfo.y}, {"z", data._Effect_GradationTexture_SpriteInfo.z}, {"w", data._Effect_GradationTexture_SpriteInfo.w}}},
+            {"Dissolve",  {{"x", data._Effect_DissolveTexture_SpriteInfo.x},  {"y", data._Effect_DissolveTexture_SpriteInfo.y},  {"z", data._Effect_DissolveTexture_SpriteInfo.z},  {"w", data._Effect_DissolveTexture_SpriteInfo.w}}},
+            {"Glow",      {{"x", data._Effect_GlowTexture_SpriteInfo.x},      {"y", data._Effect_GlowTexture_SpriteInfo.y},      {"z", data._Effect_GlowTexture_SpriteInfo.z},      {"w", data._Effect_GlowTexture_SpriteInfo.w}}},
+             {"Curve",      {{"x", data._Effect_CurveTexture_SpriteInfo.x},      {"y", data._Effect_CurveTexture_SpriteInfo.y},      {"z", data._Effect_CurveTexture_SpriteInfo.z},      {"w", data._Effect_CurveTexture_SpriteInfo.w}}}
+        }},
 
         // --- 스크롤 가중치 & 개별 활성화 ---
         {"ScrollWeights", {
@@ -121,7 +128,8 @@ void to_json(json& j, const TEFFECT_PartsData& data)
             {"Masking", {{"x", data._Effect_MaskingTexture_ScrollWeight.x}, {"y", data._Effect_MaskingTexture_ScrollWeight.y}}},
             {"Gradation", {{"x", data._Effect_GradationTexture_ScrollWeight.x}, {"y", data._Effect_GradationTexture_ScrollWeight.y}}},
             {"Dissolve", {{"x", data._Effect_DissolveTexture_ScrollWeight.x}, {"y", data._Effect_DissolveTexture_ScrollWeight.y}}},
-            {"Glow", {{"x", data._Effect_GlowTexture_ScrollWeight.x}, {"y", data._Effect_GlowTexture_ScrollWeight.y}}}
+            {"Glow", {{"x", data._Effect_GlowTexture_ScrollWeight.x}, {"y", data._Effect_GlowTexture_ScrollWeight.y}}},
+            {"Curve", {{"x", data._Effect_CurveTexture_ScrollWeight.x}, {"y", data._Effect_CurveTexture_ScrollWeight.y}}}
         }},
         {"Tool_ScrollFlags", {
             {"Diffuse", data._Effect_Tool_UseScroll_Diffuse},
@@ -129,7 +137,8 @@ void to_json(json& j, const TEFFECT_PartsData& data)
             {"Masking", data._Effect_Tool_UseScroll_Masking},
             {"Gradation", data._Effect_Tool_UseScroll_Gradation},
             {"Dissolve", data._Effect_Tool_UseScroll_Dissolve},
-            {"Glow", data._Effect_Tool_UseScroll_Glow}
+            {"Glow", data._Effect_Tool_UseScroll_Glow},
+            {"Curve", data._Effect_Tool_UseScroll_Curve}
         }},
 
         // --- Physics & Gravity ---
@@ -164,7 +173,8 @@ void to_json(json& j, const TEFFECT_PartsData& data)
             {"Masking", data._Effect_Tool_MaskingTexture},
             {"Gradation", data._Effect_Tool_GradationTexture},
             {"Dissolve", data._Effect_Tool_DissolveTexture},
-            {"Glow", data._Effect_Tool_GlowTexture}
+            {"Glow", data._Effect_Tool_GlowTexture},
+            {"Curve", data._Effect_Tool_CurveTexture}
         }},
         {"Tool_Render", {
             {"Billboard", data._Effect_Tool_UseBillboard},
@@ -273,11 +283,8 @@ void from_json(const json& j, TEFFECT_PartsData& data)
 
     j.at("PlayBackSpeed").get_to(data._Effect_PlayBackSpeed);
     j.at("StartSpeed").get_to(data._Effect_StartSpeed);
-    j.at("UseSprite").get_to(data._Effect_bUseSprite);
-    data._Effect_TileCount = { j.at("TileCount").at("x"), j.at("TileCount").at("y") };
     j.at("PlayAnimation").get_to(data._Effect_bPlayAnim);
     j.at("AnimationSpeed").get_to(data._Effect_AnimSpeed);
-    if (j.contains("SpriteNumber")) j.at("SpriteNumber").get_to(data.m_iCurSpriteNumber);
     if (j.contains("AppearRatio")) j.at("AppearRatio").get_to(data._Effect_ApearRatio);
 
     // 스크롤 가중치 복구
@@ -289,6 +296,35 @@ void from_json(const json& j, TEFFECT_PartsData& data)
         data._Effect_GradationTexture_ScrollWeight = { sw["Gradation"]["x"], sw["Gradation"]["y"] };
         if (sw.contains("Dissolve")) data._Effect_DissolveTexture_ScrollWeight = { sw["Dissolve"]["x"], sw["Dissolve"]["y"] };
         if (sw.contains("Glow")) data._Effect_GlowTexture_ScrollWeight = { sw["Glow"]["x"], sw["Glow"]["y"] };
+        if (sw.contains("Curve")) data._Effect_CurveTexture_ScrollWeight = { sw["Curve"]["x"], sw["Curve"]["y"] };
+    }
+
+    // 스프라이트 전용 값들
+
+    if (j.contains("SpriteInfo")) {
+        const auto& si = j.at("SpriteInfo");
+
+        if (si.contains("Diffuse"))
+            data._Effect_DiffuseTexture_SpriteInfo = { si["Diffuse"]["x"], si["Diffuse"]["y"], si["Diffuse"]["z"], si["Diffuse"]["w"] };
+
+        if (si.contains("Noise"))
+            data._Effect_NoiseTexture_SpriteInfo = { si["Noise"]["x"], si["Noise"]["y"], si["Noise"]["z"], si["Noise"]["w"] };
+
+        if (si.contains("Gradation"))
+            data._Effect_GradationTexture_SpriteInfo = { si["Gradation"]["x"], si["Gradation"]["y"], si["Gradation"]["z"], si["Gradation"]["w"] };
+
+        if (si.contains("Dissolve"))
+            data._Effect_DissolveTexture_SpriteInfo = { si["Dissolve"]["x"], si["Dissolve"]["y"], si["Dissolve"]["z"], si["Dissolve"]["w"] };
+
+        if (si.contains("Glow"))
+            data._Effect_GlowTexture_SpriteInfo = { si["Glow"]["x"], si["Glow"]["y"], si["Glow"]["z"], si["Glow"]["w"] };
+
+        if (si.contains("Curve"))
+            data._Effect_CurveTexture_SpriteInfo = { si["Curve"]["x"], si["Curve"]["y"], si["Curve"]["z"], si["Curve"]["w"] };
+    
+        if (si.contains("Mask"))
+            data._Effect_MaskTexture_SpriteInfo = { si["Mask"]["x"], si["Mask"]["y"], si["Mask"]["z"], si["Mask"]["w"] };
+
     }
 
     // 툴 전용 스크롤 체크박스 상태 로드
@@ -302,6 +338,7 @@ void from_json(const json& j, TEFFECT_PartsData& data)
         tf.at("Gradation").get_to(data._Effect_Tool_UseScroll_Gradation);
         if (tf.contains("Dissolve")) tf.at("Dissolve").get_to(data._Effect_Tool_UseScroll_Dissolve);
         if (tf.contains("Glow")) tf.at("Glow").get_to(data._Effect_Tool_UseScroll_Glow);
+        if (tf.contains("Curve")) tf.at("Curve").get_to(data._Effect_Tool_UseScroll_Curve);
     }
 
     // 물리 및 커브 설정 로드

@@ -11,6 +11,7 @@
 #define NORMALTEXTURE 5
 #define GLOWTEXTURE 6
 #define DISSOLVETEXTURE 7
+#define CURVETEXTURE 8
 
 texture2D g_EffectTexture;
 
@@ -25,7 +26,7 @@ texture2D g_EffectTexture;
 // 진행 방향으로 y를 돌려버리는 플래그
 #define DIR_BILLBOARD 1 << 4
     // Use Sprite
-#define SPRITE 1<< 5    // 스프라이트를 사용하는가?
+#define SPRITE 1<< 5    // 스프라이트를 사용하는가?  이제 이거 폐기.
 
     // Use Scroll (텍스처별)
 #define SCROLL_DIFFUSE 1 << 6
@@ -34,6 +35,7 @@ texture2D g_EffectTexture;
 #define SCROLL_GRADATION 1 << 9
 #define SCROLL_DISSOLVE 1 << 10
 #define SCROLL_GLOW 1 << 11
+#define SCROLL_CURVE 1 << 12
         
 // SamplerState Flag
 #define LINEARSAMPLER 1 << 0
@@ -49,6 +51,8 @@ texture2D g_EffectTexture;
 #define ROTATE_GRADATION    (1 << 3)
 #define ROTATE_TRAIL        (1 << 4)
 #define ROTATE_NORMAL       (1 << 5)
+#define ROTATE_GLOW         (1 << 6)
+#define ROTATE_CURVE        (1 << 7)
 
 // 산술 연산자 
 #define ADD 1 << 0      // Add          더하기
@@ -71,9 +75,7 @@ struct EffectDesc
     float2 g_UVOffset;
 
     // Row 2
-    uint g_SpriteCol;
-    uint g_SpriteRow;
-    uint g_CurSpriteIndex;
+    float3 Padding0;
     float g_AppearRatio;
 
     // Row 3
@@ -94,8 +96,26 @@ struct EffectDesc
     // Row 7
     float2 DissolveTexture_ScrollWeight;
     float2 GlowTexture_ScrollWeight;
+    
+    // Row 8
+    float2 CurveTexture_ScrollWeight;
+    float2 Padding1;
+    
+    // Row 9
+    float4 DiffuseTexture_SpriteInfo;
+    // Row 10
+    float4 NoiseTexture_SpriteInfo;
+    // Row 11
+    float4 GradationTexture_SpriteInfo;
+    // Row 12
+    float4 DissolveTexture_SpriteInfo;
+    // Row 13
+    float4 GlowTexture_SpriteInfo;
+    // Row 14
+    float4 CurveTexture_SpriteInfo;
+    // Row 15
+    float4 MaskTexture_SpriteInfo;
 };
-
 
 // ========== StruturedBuffer Binding value  ===========  (CS Shader에서 계산해서 넘어온 값.)
 StructuredBuffer<VTXPARTICLE> INSTANCE_OUTPUT;
@@ -113,19 +133,14 @@ bool HasBillboard()
     return (g_Effect.g_RenderFlags & BILLBOARD) != 0;
 }
 
-bool HasScroll()
-{
-    return (g_Effect.g_RenderFlags & SCROLL) != 0;
-}
-
 bool HasTextureScroll(uint Flag)
 {
     return (g_Effect.g_RenderFlags & Flag) != 0;
 }
 
-bool HasSprite()
+bool HasTextureSprite(float4 spriteInfo)
 {
-    return (g_Effect.g_RenderFlags & SPRITE) != 0;
+    return spriteInfo.x > 0.5f;
 }
 
 // ======== 연산용 함수들 ============
@@ -158,6 +173,31 @@ float2 ScrollUV_Calculator(uint Flag, float2 InUV)
     }
 
     return finalUV;
+}
+
+float2 GetStaticSpriteUV(float2 InUV, float4 spriteInfo)
+{
+    // x가 0이면 스프라이트 미사용이므로 원본 UV 반환
+    if (spriteInfo.x < 0.5f)
+        return InUV;
+
+    float numCols = spriteInfo.y; // 가로 칸 수
+    float numRows = spriteInfo.z; // 세로 칸 수
+    uint curIdx = (uint) spriteInfo.w; // Cpp에서 계산해서 넘겨준 그려야 할 번호
+
+    // 행/열 위치 계산
+    uint xIdx = curIdx % (uint) numCols;
+    uint yIdx = curIdx / (uint) numCols;
+
+    // 한 칸의 크기
+    float2 cellSize = float2(1.0f / numCols, 1.0f / numRows);
+    
+    // UV를 한 칸 크기로 줄이고 해당 위치로 오프셋 이동
+    float2 spriteUV = InUV * cellSize;
+    spriteUV.x += (float) xIdx * cellSize.x;
+    spriteUV.y += (float) yIdx * cellSize.y;
+
+    return spriteUV;
 }
 
 void DecodeDepth(float2 vUV, out float fNDCZ, out float fViewZ)
@@ -483,29 +523,13 @@ float4 PS_DefaultMesh(VS_OUT_INST_MESH_PARTICLE In) : SV_Target0
     // ================     메인 텍스처      ===============
     if (Has(g_Effect.g_TextureFlags, DEFAULTTEXTURE))
     {
-        float2 cellsize = float2(1.0f / g_Effect.g_SpriteCol, 1.0f / g_Effect.g_SpriteRow);
-        float2 SpriteUV = float2(1.f, 1.f);
-        
-        if (HasSprite())
+        if (HasTextureSprite(g_Effect.DiffuseTexture_SpriteInfo))
         {
-            if (Has(g_Effect.g_TextureFlags, NOISETEXTURE))
-            {
-                SpriteUV = (In.vUV + distortionUV) * cellsize;
-            }
-            else
-            {
-                SpriteUV = In.vUV * cellsize;
-            }
-           
-            // 4. 인덱스 계산
-            uint xIndex = g_Effect.g_CurSpriteIndex % g_Effect.g_SpriteCol;
-            uint yIndex = g_Effect.g_CurSpriteIndex / g_Effect.g_SpriteCol;
-        
-            SpriteUV.x += (float) xIndex * cellsize.x;
-            SpriteUV.y += (float) yIndex * cellsize.y;
+            float2 SpriteUV = GetStaticSpriteUV(In.vUV, g_Effect.DiffuseTexture_SpriteInfo);
 
             DiffuseSample = DefaultTextureSample(Get90DegreeRotatedUV(SpriteUV, g_Effect.g_RotationFlags, DEFAULTTEXTURE));
         }
+        
         else if (HasTextureScroll(SCROLL_DIFFUSE))
         {
             if (Has(g_Effect.g_TextureFlags, NOISETEXTURE))
@@ -528,7 +552,6 @@ float4 PS_DefaultMesh(VS_OUT_INST_MESH_PARTICLE In) : SV_Target0
         {
             DiffuseSample = DefaultTextureSample(Get90DegreeRotatedUV(In.vUV, g_Effect.g_RotationFlags, DEFAULTTEXTURE));
         }
-
     }
     else
         DiffuseSample = float4(1.f, 1.f, 1.f, 1.f);
@@ -636,7 +659,10 @@ float4 PS_DefaultMesh(VS_OUT_INST_MESH_PARTICLE In) : SV_Target0
     if (finalAlpha <= g_Effect.g_DiscardValue)
         discard;
     
-    return float4(finalRGB, finalAlpha);
+    float PowerStrength = 1.f;
+    
+    
+    return float4(float3(finalRGB * PowerStrength), finalAlpha);
 }
 
 
@@ -664,20 +690,9 @@ float4 PS_SPRITEMESH(VS_OUT_INST_MESH_PARTICLE In) : SV_Target0
     
     if (Has(g_Effect.g_TextureFlags, DEFAULTTEXTURE))
     {
-        if (HasSprite())
+        if (HasTextureSprite(g_Effect.DiffuseTexture_SpriteInfo))
         {
-            //float2 RotatedBaseUV = Get90DegreeRotatedUV(In.vUV, g_Effect.g_TextureFlags, DEFAULTTEXTURE);
-
-            float2 cellsize = float2(1.0f / g_Effect.g_SpriteCol, 1.0f / g_Effect.g_SpriteRow);
-          
-            float2 SpriteUV = In.vUV * cellsize;
-            
-            // 4. 인덱스 계산
-            uint xIndex = g_Effect.g_CurSpriteIndex % g_Effect.g_SpriteCol;
-            uint yIndex = g_Effect.g_CurSpriteIndex / g_Effect.g_SpriteCol;
-        
-            SpriteUV.x += (float) xIndex * cellsize.x;
-            SpriteUV.y += (float) yIndex * cellsize.y;
+            float2 SpriteUV = GetStaticSpriteUV(In.vUV, g_Effect.DiffuseTexture_SpriteInfo);
 
             DiffuseSample = DefaultTextureSample(SpriteUV);
         }
@@ -738,15 +753,9 @@ float4 PS_UnityConvert(VS_OUT_INST_MESH_PARTICLE In) : SV_Target0
     
     if (Has(g_Effect.g_TextureFlags, GRADATIONTEXTURE))
     {
-        if (HasSprite())
+        if (HasTextureSprite(g_Effect.GradationTexture_SpriteInfo))
         {
-            float2 cellsize = float2(1.0 / g_Effect.g_SpriteCol, 1.0f / g_Effect.g_SpriteRow);
-            float2 SpriteUV = In.vUV * cellsize;
-            uint xIndex = g_Effect.g_CurSpriteIndex % g_Effect.g_SpriteCol;
-            uint yIndex = g_Effect.g_CurSpriteIndex / g_Effect.g_SpriteCol;
-        
-            SpriteUV.x += (float) xIndex * cellsize.x; // 가로로 밀고
-            SpriteUV.y += (float) yIndex * cellsize.y; // 세로로 밀고
+            float2 SpriteUV = GetStaticSpriteUV(In.vUV, g_Effect.GradationTexture_SpriteInfo);
             
             // 전체 UV를 3등분 (0 ~ 1 범위를 0 ~ 0.333으로 자른다.)
             SpriteUV.x /= 4.0f;
