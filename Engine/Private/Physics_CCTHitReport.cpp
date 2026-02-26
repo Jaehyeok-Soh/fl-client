@@ -40,6 +40,12 @@
 
 void CPhysics_CCTHitReport::onShapeHit(const PxControllerShapeHit& hit)
 {
+	// 아직 미사용 2026 02 26
+	return;
+
+	if (hit.shape->getQueryFilterData().word0 & PHYSICSFILTERGROUP::MAP)
+		return;
+
 	GAMEOBJECTINFO info = Get_GameObject(hit.controller->getUserData(), hit.actor->userData);
 
 	if (hit.actor->getType() == PxActorType::Enum::eRIGID_STATIC)
@@ -58,6 +64,9 @@ void CPhysics_CCTHitReport::onShapeHit(const PxControllerShapeHit& hit)
 
 void CPhysics_CCTHitReport::onControllerHit(const PxControllersHit& hit)
 {
+	// 아직 미사용 2026 02 26
+	return;
+
 	GAMEOBJECTINFO info = Get_GameObject(hit.controller->getUserData(), hit.other->getUserData());
 
 #ifdef _DEBUG
@@ -73,8 +82,10 @@ HRESULT CPhysics_CCTHitReport::Initialize()
 {
 	Ready_EventCallChain();
 
-	m_arrEventString[HITEVENT::Enum::ON_SHAPE_HIT] = L"[On NPC to shape hit]\n";
-	m_arrEventString[HITEVENT::Enum::ON_CCT_HIT] = L"[On NPC to character hit]\n";
+#ifdef _DEBUG
+	m_arrEventString[HITEVENT::Enum::ON_SHAPE_HIT] = L"[On shape hit]\n";
+	m_arrEventString[HITEVENT::Enum::ON_CCT_HIT] = L"[On character hit]\n";
+#endif // _DEBUG
 
 	return S_OK;
 }

@@ -65,7 +65,11 @@ private:
 #endif // _DEBUG
 
     array<std::function<void(GAMEOBJECTINFO& info)>, HITEVENT::Enum::END> m_arrHitEvent{};
+
+#ifdef _DEBUG
     array<wstring, HITEVENT::Enum::END> m_arrEventString;
+#endif // _DEBUG
+
 public:
     static CPhysics_CCTHitReport* Create();
     virtual void Free() override;
