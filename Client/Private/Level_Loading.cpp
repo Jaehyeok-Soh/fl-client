@@ -81,6 +81,7 @@ void CLevel_Loading::Update(const _float fTimeDelta)
 			pNewLevel = CLevel_Square::Create(m_pDevice, m_pDeviceContext);
 			break;
 		case Client::ELevelType::TEST:
+			pNewLevel = CLevel_Test::Create(m_pDevice, m_pDeviceContext);
 			break;
 		case Client::ELevelType::END:
 		default:

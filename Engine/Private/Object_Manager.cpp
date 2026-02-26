@@ -37,6 +37,16 @@ HRESULT CObject_Manager::Awake(const _uint iCurrentLevelID)
 		}
 	}
 
+	for (auto& Pair : m_pLayers[0])
+	{
+		CLayer*& pLayer = Pair.second;
+		if (pLayer != nullptr)
+		{
+			if (FAILED(pLayer->Awake(iCurrentLevelID)))
+				return E_FAIL;
+		}
+	}
+
 	return S_OK;
 }
 

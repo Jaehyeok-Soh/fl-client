@@ -1386,6 +1386,8 @@ void CParticle_System_Panel::Draw_ParticleSystem(CToolObject* pGo)
 				case (_uint)DTO::E_PARTICLETYPE::TEXTURE:
 					m_PParticleTypeList.push_back("DEFAULT_TEXTURE");
 					m_PParticleTypeList.push_back("BLEND_TEXTURE");
+					m_PParticleTypeList.push_back("MASK_TEXTURE");
+					m_PParticleTypeList.push_back("BLENDMASK_TEXTURE");
 					break;
 				case (_uint)DTO::E_PARTICLETYPE::MESH:
 					m_PParticleTypeList.push_back("DEFAULT_MESH");

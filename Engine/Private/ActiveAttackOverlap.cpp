@@ -1,11 +1,8 @@
 #include "Engine_pch.h"
 #include "ActiveAttackOverlap.h"
-#include "GameInstance.h"
-#include "EngineConsole.h"
-
 #include "GameObject.h"
-
 #include "EngineConsole.h"
+#include "GameInstance.h"
 
 CActiveAttackOverlap::CActiveAttackOverlap()
 	: Super(),
@@ -35,29 +32,26 @@ void CActiveAttackOverlap::Update(_float fTimeDelta)
 	if (m_pGameInstance->Execute_Overlap(
 		m_tHitboxDesc->geometry.any(),
 		m_pxTransform,
-		hitBuffer,
+		m_hitBuffer,
 		m_tHitboxDesc->filterData,
 		(PxQueryFilterCallback*)m_tHitboxDesc->filterCallback))
 	{
-		for (PxU32 i = 0; i < hitBuffer.nbTouches; i++)
+		for (PxU32 i = 0; i < m_hitBuffer.nbTouches; i++)
 		{
-			CGameObject* hitObject = static_cast<CGameObject*>(hitBuffer.touches[i].actor->userData);
+			CGameObject* hitObject = static_cast<CGameObject*>(m_hitBuffer.touches[i].actor->userData);
 			
 			if (CheckAlreadyHit(hitObject))
+			{
+				//m_pGameInstance->Overlap_EventCallback(m_pOwner, &m_hitBuffer, PxPairFlag::eNOTIFY_TOUCH_PERSISTS);
 				continue;
+			}
 
 #ifdef _DEBUG
-			Debug_Log(hitObject);
+			//Debug_Log(hitObject);
 #endif // _DEBUG
 
-			COL_HIT_INFO hitInfo{};
-			Build_HitInfo_FromOverlap(m_tHitboxDesc->geometry.any(), m_pxTransform, hitBuffer.touches[i], hitInfo);
+			m_pGameInstance->Overlap_EventCallback(m_pOwner, m_pxTransform.p, &m_hitBuffer.touches[i], PxPairFlag::eNOTIFY_TOUCH_FOUND);
 
-			const PxFilterData &victimFilterData = hitBuffer.touches[i].shape->getSimulationFilterData();
-			_uint iAttackerLayer = m_tHitboxDesc->eFilterLayer;
-			_uint iVictimLayer = victimFilterData.word0;
-
-			m_pOwner->OnCollision_Enter(iAttackerLayer, iVictimLayer, hitObject, hitInfo);
 			m_hitObjects.insert(hitObject);
 		}
 	}
@@ -71,8 +65,8 @@ void CActiveAttackOverlap::Reset()
 	m_matTransform = Matrix::Identity;
 	m_pxTransform = {};
 	m_tHitboxDesc = { nullptr };
-	m_hitObjects.clear();
-	hitResults.clear();
+	HitObjectsClear();
+	m_vecHitResults.clear();
 }
 
 void CActiveAttackOverlap::Set(DTO::HITBOX_DESC* pDesc, Matrix ownerMatrix, CGameObject* pOwner)
@@ -84,9 +78,11 @@ void CActiveAttackOverlap::Set(DTO::HITBOX_DESC* pDesc, Matrix ownerMatrix, CGam
 	m_matTransform = m_tHitboxDesc->matOffset * ownerMatrix;
 	m_pxTransform = m_pGameInstance->XMMatrixToPxTransform(m_matTransform);
 
-	hitResults.resize(m_tHitboxDesc->iMaxHit);
-	hitBuffer.touches = hitResults.data();
-	hitBuffer.maxNbTouches = m_tHitboxDesc->iMaxHit;
+	m_vecHitResults.resize(m_tHitboxDesc->iMaxHit);
+	m_hitBuffer.touches = m_vecHitResults.data();
+	m_hitBuffer.maxNbTouches = m_tHitboxDesc->iMaxHit;
+	// TODO : AttackPreset ID Desc¿¡ ÀúÀå
+	// m_tHitboxDesc->iAttackPresetID = m_pGameInstance->Get_AttackPresetIdByTag(m_tHitboxDesc->strAttackPresetTag);
 }
 
 void CActiveAttackOverlap::Tick(_float fTimeDelta)
@@ -98,7 +94,8 @@ void CActiveAttackOverlap::Tick(_float fTimeDelta)
 	if (m_fSumTickTime >= m_tHitboxDesc->fTickTime)
 	{
 		m_fSumTickTime = 0.f;
-		m_hitObjects.clear();
+
+		HitObjectsClear();
 	}
 }
 
@@ -109,6 +106,13 @@ _bool CActiveAttackOverlap::CheckAlreadyHit(CGameObject* hitObject)
 		return true;
 
 	return false;
+}
+
+void CActiveAttackOverlap::HitObjectsClear()
+{
+	//for (auto& obj : m_hitObjects)
+	//	m_pGameInstance->Overlap_EventCallback(m_pOwner, &m_hitBuffer, PxPairFlag::eNOTIFY_TOUCH_LOST);
+	m_hitObjects.clear();
 }
 
 _bool CActiveAttackOverlap::Build_HitInfo_FromOverlap(const PxGeometry& hitboxGeometry, const PxTransform& hitBoxPose, const PxOverlapHit& overlap, OUT COL_HIT_INFO& outInfo)

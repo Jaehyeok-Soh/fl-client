@@ -458,14 +458,14 @@ float4 PS_DefaultMesh(VS_OUT_INST_MESH_PARTICLE In) : SV_Target0
             float2 scrolledUV = In.vUV + g_Effect.g_UVOffset;
             scrolledUV += g_Effect.g_ScrollOffset * g_Effect.NoiseTexture_ScrollWeight;
             
-            noiseSample = NoiseTextureSample(Get90DegreeRotatedUV(scrolledUV, g_Effect.g_TextureFlags, NOISETEXTURE));
+            noiseSample = NoiseTextureSample(Get90DegreeRotatedUV(scrolledUV, g_Effect.g_RotationFlags, NOISETEXTURE));
             
             distortionOffset.x = (noiseSample.r - 0.5f) * g_Effect.g_DistortionScale.x;
             distortionOffset.y = (noiseSample.g - 0.5f) * g_Effect.g_DistortionScale.y;
         }
         else
         {
-            noiseSample = NoiseTextureSample(Get90DegreeRotatedUV(In.vUV, g_Effect.g_TextureFlags, NOISETEXTURE));
+            noiseSample = NoiseTextureSample(Get90DegreeRotatedUV(In.vUV, g_Effect.g_RotationFlags, NOISETEXTURE));
             
             distortionOffset.x = (noiseSample.r - 0.5f) * g_Effect.g_DistortionScale.x;
             distortionOffset.y = (noiseSample.g - 0.5f) * g_Effect.g_DistortionScale.y;
@@ -504,7 +504,7 @@ float4 PS_DefaultMesh(VS_OUT_INST_MESH_PARTICLE In) : SV_Target0
             SpriteUV.x += (float) xIndex * cellsize.x;
             SpriteUV.y += (float) yIndex * cellsize.y;
 
-            DiffuseSample = DefaultTextureSample(Get90DegreeRotatedUV(SpriteUV, g_Effect.g_TextureFlags, DEFAULTTEXTURE));
+            DiffuseSample = DefaultTextureSample(Get90DegreeRotatedUV(SpriteUV, g_Effect.g_RotationFlags, DEFAULTTEXTURE));
         }
         else if (HasTextureScroll(SCROLL_DIFFUSE))
         {
@@ -513,20 +513,20 @@ float4 PS_DefaultMesh(VS_OUT_INST_MESH_PARTICLE In) : SV_Target0
                 float2 scrolledUV = In.vUV + g_Effect.g_UVOffset;
                 scrolledUV += g_Effect.g_ScrollOffset * g_Effect.DiffuseTexture_ScrollWeight;
                 scrolledUV += distortionUV;
-                DiffuseSample = DefaultTextureSample(Get90DegreeRotatedUV(scrolledUV, g_Effect.g_TextureFlags, DEFAULTTEXTURE));
+                DiffuseSample = DefaultTextureSample(Get90DegreeRotatedUV(scrolledUV, g_Effect.g_RotationFlags, DEFAULTTEXTURE));
             }
             
             else
             {
                 float2 scrolledUV = In.vUV + g_Effect.g_UVOffset;
                 scrolledUV += g_Effect.g_ScrollOffset * g_Effect.DiffuseTexture_ScrollWeight;
-                DiffuseSample = DefaultTextureSample(Get90DegreeRotatedUV(scrolledUV, g_Effect.g_TextureFlags, DEFAULTTEXTURE));
+                DiffuseSample = DefaultTextureSample(Get90DegreeRotatedUV(scrolledUV, g_Effect.g_RotationFlags, DEFAULTTEXTURE));
             }
         }
 
         else
         {
-            DiffuseSample = DefaultTextureSample(Get90DegreeRotatedUV(In.vUV, g_Effect.g_TextureFlags, DEFAULTTEXTURE));
+            DiffuseSample = DefaultTextureSample(Get90DegreeRotatedUV(In.vUV, g_Effect.g_RotationFlags, DEFAULTTEXTURE));
         }
 
     }
@@ -541,11 +541,11 @@ float4 PS_DefaultMesh(VS_OUT_INST_MESH_PARTICLE In) : SV_Target0
         {
             float2 scrolledUV = In.vUV + g_Effect.g_UVOffset;
             scrolledUV += g_Effect.g_ScrollOffset * g_Effect.GradationTexture_ScrollWeight;
-            GradationSample = GradationTextureSample(Get90DegreeRotatedUV(scrolledUV, g_Effect.g_TextureFlags, GRADATIONTEXTURE));
+            GradationSample = GradationTextureSample(Get90DegreeRotatedUV(scrolledUV, g_Effect.g_RotationFlags, GRADATIONTEXTURE));
         }
         else
         {
-            GradationSample = GradationTextureSample(Get90DegreeRotatedUV(In.vUV, g_Effect.g_TextureFlags, GRADATIONTEXTURE));
+            GradationSample = GradationTextureSample(Get90DegreeRotatedUV(In.vUV, g_Effect.g_RotationFlags, GRADATIONTEXTURE));
         }
 
     }
@@ -560,11 +560,11 @@ float4 PS_DefaultMesh(VS_OUT_INST_MESH_PARTICLE In) : SV_Target0
         {
             float2 scrolledUV = In.vUV + g_Effect.g_UVOffset;
             scrolledUV += g_Effect.g_ScrollOffset * g_Effect.GlowTexture_ScrollWeight;
-            GlowSample = GradationTextureSample(Get90DegreeRotatedUV(scrolledUV, g_Effect.g_TextureFlags, GLOWTEXTURE));
+            GlowSample = GradationTextureSample(Get90DegreeRotatedUV(scrolledUV, g_Effect.g_RotationFlags, GLOWTEXTURE));
         }
         else
         {
-            GlowSample = GradationTextureSample(Get90DegreeRotatedUV(In.vUV, g_Effect.g_TextureFlags, GLOWTEXTURE));
+            GlowSample = GradationTextureSample(Get90DegreeRotatedUV(In.vUV, g_Effect.g_RotationFlags, GLOWTEXTURE));
         }
 
     }
@@ -580,11 +580,11 @@ float4 PS_DefaultMesh(VS_OUT_INST_MESH_PARTICLE In) : SV_Target0
         {
             float2 scrolledUV = In.vUV + g_Effect.g_UVOffset;
             scrolledUV += g_Effect.g_ScrollOffset * g_Effect.MaskingTexture_ScrollWeight;
-            MaskSample = MaskTextureSample(Get90DegreeRotatedUV(scrolledUV, g_Effect.g_TextureFlags, MASKINGTEXTURE));
+            MaskSample = MaskTextureSample(Get90DegreeRotatedUV(scrolledUV, g_Effect.g_RotationFlags, MASKINGTEXTURE));
         }
         else
         {
-            MaskSample = MaskTextureSample(Get90DegreeRotatedUV(In.vUV, g_Effect.g_TextureFlags, MASKINGTEXTURE));
+            MaskSample = MaskTextureSample(Get90DegreeRotatedUV(In.vUV, g_Effect.g_RotationFlags, MASKINGTEXTURE));
         }
 
     }
@@ -602,13 +602,13 @@ float4 PS_DefaultMesh(VS_OUT_INST_MESH_PARTICLE In) : SV_Target0
         {
             float2 scrolledUV = In.vUV + g_Effect.g_UVOffset;
             scrolledUV += g_Effect.g_ScrollOffset * g_Effect.DissolveTexture_ScrollWeight;
-            DissolveSample = DissolveTextureSample(Get90DegreeRotatedUV(scrolledUV, g_Effect.g_TextureFlags, DISSOLVETEXTURE));
+            DissolveSample = DissolveTextureSample(Get90DegreeRotatedUV(scrolledUV, g_Effect.g_RotationFlags, DISSOLVETEXTURE));
             dissolveNoise = DissolveSample.r;
             dissolveMask = step(DissolveProgress, dissolveNoise);
         }
         else
         {
-            DissolveSample = DissolveTextureSample(Get90DegreeRotatedUV(In.vUV, g_Effect.g_TextureFlags, DISSOLVETEXTURE));
+            DissolveSample = DissolveTextureSample(Get90DegreeRotatedUV(In.vUV, g_Effect.g_RotationFlags, DISSOLVETEXTURE));
             dissolveNoise = DissolveSample.r;
             dissolveMask = step(DissolveProgress, dissolveNoise);
         }
@@ -625,7 +625,7 @@ float4 PS_DefaultMesh(VS_OUT_INST_MESH_PARTICLE In) : SV_Target0
     float3 finalRGB = DiffuseSample.rgb * GradationSample.rgb * g_Effect.g_EffectColor.rgb;
     
     float lifeAlpha = 1.0f - LifeRatio;
-    float finalAlpha = DiffuseSample.a * GlowSample.r * MaskSample.r * dissolveMask * g_Effect.g_EffectColor.a * lifeAlpha;
+    float finalAlpha = DiffuseSample.a * GlowSample.r * MaskSample.r * dissolveMask * g_Effect.g_EffectColor.a /** lifeAlpha*/;
 
 
     // 7. ÈÖµµ ÄÆÆÃ (±ò²ûÇÑ ¸¶¹«¸®)

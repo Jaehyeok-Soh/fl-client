@@ -646,6 +646,10 @@ void CEffectObject::Update(const _float fTimeDelta)
     _float fRatio = fActiveTime / m_tEffectDesc.Data._Effect_Duration;
    if (fRatio > 1.f) fRatio = 1.f;
 
+   _float fTotalSimTime = m_tEffectDesc.Data._Effect_Duration + m_tEffectDesc.Data._Effect_LifeTime;
+   _float fScrollRatio = fActiveTime / fTotalSimTime;
+   if (fScrollRatio > 1.f) fScrollRatio = 1.f;
+
    if (m_tEffectDesc.Data._Use_Effect_Continue)
    {
        if (fRatio >= 0.5f)
@@ -658,7 +662,7 @@ void CEffectObject::Update(const _float fTimeDelta)
     // GPU에 백터 바인딩.
     Bind_Curve_To_GPU();
     TimeCalculate(TimeT);
-    Update_UV_Scroll_Curve(fRatio);
+    Update_UV_Scroll_Curve(fScrollRatio);
     Update_Rotation_Lerp(TimeT, fRatio);
     Update_Gravity_Force();   // 중력값 전달.
     Super::Update(TimeT);
@@ -1028,14 +1032,14 @@ void CEffectObject::Update_UV_Scroll_Curve(float fRatio)
             float Length_X = abs(m_tEffectDesc.Data._Effect_UV_Offset.x) + 1;
             float Length_Y = abs(m_tEffectDesc.Data._Effect_UV_Offset.y) + 1;
 
-            m_vScrollOffset.x = fCurveX * Length_X;
-            m_vScrollOffset.y = fCurveY * Length_Y;
+            m_vScrollOffset.x = fCurveX * Length_X * m_tEffectDesc.Data._Effect_ScrollSpeed.x;
+            m_vScrollOffset.y = fCurveY * Length_Y * m_tEffectDesc.Data._Effect_ScrollSpeed.y;
         }
 
         else
         {
-            m_vScrollOffset.x = fCurveX;
-            m_vScrollOffset.y = fCurveY;
+            m_vScrollOffset.x = fCurveX* m_tEffectDesc.Data._Effect_ScrollSpeed.x;
+            m_vScrollOffset.y = fCurveY* m_tEffectDesc.Data._Effect_ScrollSpeed.y;
         }
 
     }

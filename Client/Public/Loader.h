@@ -35,6 +35,7 @@ private:
 	HRESULT Loading_For_Tutorial_Boss();
 	HRESULT Loading_For_Square();
 	HRESULT Loading_For_LoadLevel();
+	HRESULT Loading_For_Test();
 private:
 	HRESULT Loading_Files(_uint iLevelID, DTO::ECategory eCategory, const wstring& wstrFolderPath);
 	HRESULT Loading_File(_uint iLevelID, DTO::ECategory eCategory,const wstring& wstrFilePath);
