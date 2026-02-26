@@ -112,7 +112,8 @@ HRESULT CBoss_Xibi::Ready_Weapon()
 		weaponDesc.pMatHandSocket = &Get_Part<CBoss_Xibi_Body>(Part::BODY)->Get_Bone(CMonster_Body_Base::EBone::RightHand)->Get_CombinedTransformMatrix();
 		weaponDesc.eModel = CWeapon::Weapon_ModelType::ANIM;
 		weaponDesc.bMianWeapon = true;
-		weaponDesc.bRGBShader = false;
+		weaponDesc.FDescFlag = 0;
+		weaponDesc.eAnimState = CWeapon::AnimState::PLAY;
 		if (FAILED(Add_Part(Part::SWORD, ENUM_TO_UINT(ELevelType::STATIC), L"Prototype_GameObject_Part_Sword", &weaponDesc)))
 			return E_FAIL;
 	}

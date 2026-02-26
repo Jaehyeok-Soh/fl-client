@@ -7,6 +7,7 @@
 #include "Model.h"
 #include "ComputeShader.h"
 
+#include "Engine_Utils.h"
 #include "GameInstance.h"
 
 CWeapon::CWeapon(ID3D11Device* pDevice, ID3D11DeviceContext* pDeviceContext, Weapon_Type eWeapon)
@@ -18,9 +19,7 @@ CWeapon::CWeapon(ID3D11Device* pDevice, ID3D11DeviceContext* pDeviceContext, Wea
 CWeapon::CWeapon(const CWeapon& rhs)
 	: Super(rhs)
 	, m_eWaeponType(rhs.m_eWaeponType)
-	, m_matRotation(rhs.m_matRotation)
 	, m_tColorDesc(rhs.m_tColorDesc)
-	, m_bColorMapping(rhs.m_bColorMapping)
 	, m_eAnimState(rhs.m_eAnimState)
 	, m_matHandOffsetMatrix(rhs.m_matHandOffsetMatrix)
 	, m_matHoldOffsetMatrix(rhs.m_matHoldOffsetMatrix)
@@ -31,8 +30,6 @@ HRESULT CWeapon::Initialize_Prototype()
 {
 	if (FAILED(Super::Initialize_Prototype()))
 		return E_FAIL;
-
-	m_matRotation = Matrix::CreateRotationX(XMConvertToRadians(-90.f));
 
 	m_matHandOffsetMatrix = Matrix::Identity;
 	m_matHoldOffsetMatrix = Matrix::Identity;
@@ -57,12 +54,15 @@ HRESULT CWeapon::Initialize(void* pArg)
 	m_matHandOffsetMatrix = pDesc->matHandOffsetMatrix;
 	m_matHoldOffsetMatrix = pDesc->matHoldOffsetMatrix;
 
-	if (FAILED(Ready_Components(pDesc)))
-		return E_FAIL;
+	m_FDescFlags = pDesc->FDescFlag;
+	m_eAnimState = pDesc->eAnimState;
 
 	// model과 desc 정보 다를때를 위한 방어
 	if (Get_Component<CModel>()->Get_Type() == EModelType::NONANIM)
 		m_eModleType = Weapon_ModelType::STATIC;
+
+	if (FAILED(Ready_Components(pDesc)))
+		return E_FAIL;
 
 	switch (m_eModleType)
 	{
@@ -234,7 +234,7 @@ HRESULT CWeapon::Ready_Components(WEAPON_DESC* pDesc)
 	if (FAILED(Add_Component<CModel>(0/*static*/, pDesc->wstrModelPrototypeName, nullptr)))
 		return E_FAIL;
 
-	if (pDesc->eModel == Weapon_ModelType::STATIC)
+	if (m_eModleType == Weapon_ModelType::STATIC)
 	{
 		if (FAILED(Add_Component<CShader>(0/*static*/, L"Prototype_Component_Shader_VtxMesh", nullptr)))
 			return E_FAIL;
@@ -245,10 +245,11 @@ HRESULT CWeapon::Ready_Components(WEAPON_DESC* pDesc)
 			return E_FAIL;
 	}
 
-	if (m_bColorMapping = pDesc->bRGBShader)
+
+	if (Engine_Utils::Has_Flag(m_FDescFlags, WeaponDescFlag::WF_RGBMappingOn))
 	{
 		_uint iPass = 0;
-		if (pDesc->eModel == Weapon_ModelType::STATIC)
+		if (m_eModleType == Weapon_ModelType::STATIC)
 			iPass = ENUM_TO_UINT(EMapObjectShaderPass::RGBMapping);
 		else
 			iPass = 2;
@@ -365,7 +366,7 @@ HRESULT CWeapon::Render_StaticWeap()
 	CModel* pModel = Get_Component<CModel>();
 	_uint iMeshCount = pModel->Get_MeshCount();
 
-	if (m_bColorMapping)
+	if (Engine_Utils::Has_Flag(m_FDescFlags, WeaponDescFlag::WF_RGBMappingOn))
 	{
 		pShader->Bind_RGBColorData(m_tColorDesc);
 	}
@@ -389,7 +390,7 @@ HRESULT CWeapon::Render_AnimWeap()
 	CModel*				pModel			= Get_Component<CModel>();
 	_uint				iMeshCount		= pModel->Get_MeshCount();
 
-	if (m_bColorMapping)
+	if (Engine_Utils::Has_Flag(m_FDescFlags, WeaponDescFlag::WF_RGBMappingOn))
 	{
 		pShader->Bind_RGBColorData(m_tColorDesc);
 	}

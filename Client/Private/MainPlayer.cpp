@@ -522,14 +522,14 @@ HRESULT CMainPlayer::Ready_Weapons()
         weaponDesc.pMatSocket               = &Get_Part<CBody>(Part::BODY)->Get_WeaponSocket()->Get_BindPoseTransformMatrix();
         weaponDesc.eModel                   = CWeapon::Weapon_ModelType::ANIM;
         weaponDesc.bMianWeapon              = true;
-        weaponDesc.bRGBShader = true;
+        weaponDesc.FDescFlag = CWeapon::WeaponDescFlag::WF_RGBMappingOn;
         weaponDesc.vColorR = Vec4(0.119538f, 0.119538f, 0.119538f, 1.f);
         weaponDesc.vColorG = Vec4(1.f, 0.751839f, 0.182292f, 1.f);
         weaponDesc.vColorB = Vec4(0.458824f, 0.435294f, 0.45098f, 1.f);
 
 
-        weaponDesc.matHandOffsetMatrix = Matrix::CreateScale(1.f);
-        weaponDesc.matHoldOffsetMatrix = Matrix::CreateScale(1.f) * Matrix::CreateFromYawPitchRoll(XMConvertToRadians(90.f), 0.f, 0.f);
+        weaponDesc.matHandOffsetMatrix = Matrix::CreateRotationX(XMConvertToRadians(-90.f));
+        weaponDesc.matHoldOffsetMatrix = Matrix::CreateRotationX(XMConvertToRadians(-90.f));
 
         if (FAILED(Add_Part(Part::SWORD, ENUM_TO_UINT(ELevelType::STATIC), L"Prototype_GameObject_Part_Sword", &weaponDesc)))
             return E_FAIL;
@@ -544,7 +544,7 @@ HRESULT CMainPlayer::Ready_Weapons()
         weaponDesc.pMatSocket = &Get_Part<CBody>(Part::BODY)->Get_WeaponSocket()->Get_BindPoseTransformMatrix();
         weaponDesc.eModel = CWeapon::Weapon_ModelType::STATIC;
         weaponDesc.bMianWeapon = false;
-        weaponDesc.bRGBShader = true;
+        weaponDesc.FDescFlag = CWeapon::WeaponDescFlag::WF_RGBMappingOn;
         weaponDesc.vColorR = Vec4(0.84375f, 0.84375f, 0.84375f, 1.f);
         weaponDesc.vColorG = Vec4(0.686686f, 0.686686f, 0.686686f, 1.f);
         weaponDesc.vColorB = Vec4(0.234375f, 0.234375f, 0.234375f, 1.f);
