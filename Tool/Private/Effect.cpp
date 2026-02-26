@@ -226,7 +226,7 @@ void Effect::Update_CombinedWorldMatrix(const Matrix* pBoneMatrix)
 
 void Effect::Set_Dead(const wstring& wstrLayerTag)
 {
-	m_pGameInstance->Request_DeleteGameObject(0, wstrLayerTag, this);
+	m_pGameInstance->Request_DeleteGameObject(m_pGameInstance->Get_CurrentLevelIndex(), wstrLayerTag, this);
 }
 
 void Effect::IsEffectFinish()

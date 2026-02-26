@@ -47,6 +47,7 @@ private:
 	HRESULT Ready_Colliders();
 	HRESULT Ready_Ray();
 	HRESULT Ready_CCT();
+	HRESULT Ready_AttackOverlap();
 
 	HRESULT Ready_AttackStates();
 

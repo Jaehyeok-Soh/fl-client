@@ -11,6 +11,8 @@
 #include "Model.h"
 #include "ComputeShader.h"
 #include "PhysicsCCT.h"
+#include "PhysicsCollider.h"
+#include "PhysicsAttackOverlap.h"
 
 CMonster_Base::CMonster_Base(ID3D11Device* pDevice, ID3D11DeviceContext* pDeviceContext)
 	: Super(pDevice, pDeviceContext)
@@ -72,6 +74,9 @@ HRESULT CMonster_Base::Awake(const _uint iCurrentLevelID)
 
 	Get_Component<CPhysicsCCT>()->Awake();
 
+	if (CPhysicsAttackOverlap* attackOverlap = Get_Component<CPhysicsAttackOverlap>())
+		attackOverlap->Awake();
+
 	return S_OK;
 }
 
@@ -93,6 +98,9 @@ void CMonster_Base::Update(const _float fTimeDelta)
 void CMonster_Base::Update_Late(const _float fTimeDelta)
 {
 	Super::Update_Late(fTimeDelta);
+
+	if (Get_Component <CPhysicsAttackOverlap>())
+		Get_Component<CPhysicsAttackOverlap>()->Update(fTimeDelta);
 }
 
 void CMonster_Base::Ready_Before_Render(const _float fTimeDelta)
@@ -101,6 +109,7 @@ void CMonster_Base::Ready_Before_Render(const _float fTimeDelta)
 
 #ifdef _DEBUG
 	m_pGameInstance->Push_DebugComponent(Get_Component<CPhysicsCCT>());
+	m_pGameInstance->Push_DebugComponent(Get_Component<CPhysicsAttackOverlap>());
 #endif // _DEBUG
 }
 
@@ -189,9 +198,9 @@ HRESULT CMonster_Base::Ready_PartObjects(void* pArg)
 		bodyDesc.pMatParent = &Get_Component<CTransform>()->Get_WorldMatrix();
 		bodyDesc.iLevelIndex = pDesc->iLevelIndex;
 		bodyDesc.wstrModelPrototypeTag = pDesc->wstrBodyModelTag;
-		bodyDesc.wstrAttackOverlapPrototypeTag = pDesc->wstrAttackOverlapPrototypeTag;
 		bodyDesc.spanBoneNames = pDesc->spanBoneNames;
-		if (FAILED(Add_Part(Part::BODY, ENUM_TO_UINT(ELevelType::LOGO), pDesc->wstrPartBodyPrototypeTag, &bodyDesc)))
+		// TODO : 재혁아 이거 LevelID 바꿔야할수도있다 Static에 넣어두고 쓸까 ...?
+		if (FAILED(Add_Part(Part::BODY, pDesc->iLevelIndex, pDesc->wstrPartBodyPrototypeTag, &bodyDesc)))
 			return E_FAIL;
 	}
 
@@ -215,6 +224,20 @@ HRESULT CMonster_Base::Ready_Components(void* pArgs)
 	if (FAILED(Ready_CCT(pArgs)))
 		return E_FAIL;
 
+	if (FAILED(Ready_AttackOverlap(pDesc->wstrAttackOverlapPrototypeTag)))
+		return E_FAIL;
+
+	return S_OK;
+}
+
+HRESULT CMonster_Base::Ready_AttackOverlap(wstring prototypeName)
+{
+	if (prototypeName.size() > 0)
+	{
+		if (FAILED(Add_Component<CPhysicsAttackOverlap>(0, prototypeName, nullptr)))
+			return E_FAIL;
+	}
+
 	return S_OK;
 }
 
@@ -224,8 +247,19 @@ HRESULT CMonster_Base::Ready_CCT(void* pArgs)
 	pDesc->tCCTDesc.pOwner = this;
 	pDesc->tCCTDesc.pOwnerMatrix = &Get_Component<CTransform>()->Get_WorldMatrix();
 
-	if (FAILED(Add_Component<CPhysicsCCT>(0, L"Prototype_Component_Physics_CCT", &pDesc->tCCTDesc)))
+	if (FAILED(Add_Component<CPhysicsCCT>(ENUM_TO_UINT(ELevelType::STATIC), L"Prototype_Component_Physics_CCT", &pDesc->tCCTDesc)))
 		return E_FAIL;
+
+	{
+		// CCT, PhysicsCollider 세트
+		PHYSICSCOLLIDER_DESC cloneDesc{};
+		cloneDesc.eFilterLayer = pDesc->tCCTDesc.eFilterLayer;
+		cloneDesc.iFilterMask = pDesc->tCCTDesc.iFilterMask;
+		cloneDesc.bSetOnlyFilter = true;
+
+		if (FAILED(Add_Component<CPhysicsCollider>(ENUM_TO_UINT(ELevelType::STATIC), L"Prototype_Component_Physics_Collider", &cloneDesc)))
+			return E_FAIL;
+	}
 
 	return S_OK;
 }

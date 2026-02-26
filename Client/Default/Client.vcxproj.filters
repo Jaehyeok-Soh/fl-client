@@ -568,6 +568,9 @@
     <Filter Include="06. FSM\Player\Attack\Gun\Reload">
       <UniqueIdentifier>{18445d4b-10df-4411-8b45-def1c25a996d}</UniqueIdentifier>
     </Filter>
+    <Filter Include="03. GameObject\UIObjects\02.UI\Image\Dynamic Image\07.Level Chnage">
+      <UniqueIdentifier>{441fee0b-1c67-4053-a110-de1fdb40d73f}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="targetver.h">
@@ -1012,6 +1015,9 @@
     <ClInclude Include="..\Public\TriggerBox_LevelChange.h">
       <Filter>03. GameObject\TriggerBox\01. TriggerBox_LevelChange</Filter>
     </ClInclude>
+    <ClInclude Include="..\Public\UILevelChange_Image.h">
+      <Filter>03. GameObject\UIObjects\02.UI\Image\Dynamic Image\07.Level Chnage</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <Image Include="Client.ico">
@@ -1448,6 +1454,9 @@
     </ClCompile>
     <ClCompile Include="..\Private\TriggerBox_LevelChange.cpp">
       <Filter>03. GameObject\TriggerBox\01. TriggerBox_LevelChange</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\UILevelChange_Image.cpp">
+      <Filter>03. GameObject\UIObjects\02.UI\Image\Dynamic Image\07.Level Chnage</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

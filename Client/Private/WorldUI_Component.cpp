@@ -59,6 +59,9 @@ void CWorldUI_Component::Update(const _float fTimeDelta)
 
 void CWorldUI_Component::Proj_World_To_Screen()
 {
+	if (nullptr == m_pTargetObject)
+		return;
+
 	Vec3 vWorldPos = m_pTargetObject->Get_Component<CTransform>()->Get_Info(TRANSFORM_INFO_STATE::POS);
 	Vec4 clip = Vec4(vWorldPos.x, vWorldPos.y, vWorldPos.z, 1.f);
 	clip = Vec4::Transform(clip, m_pGameInstance->Get_ViewMatrix());

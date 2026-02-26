@@ -2,6 +2,11 @@
 #define Engine_Struct_h__
 #include "VertexData.h"
 
+namespace DTO
+{
+	struct TAttackPreset_Data;
+}
+
 namespace Engine
 {
 #pragma region Engine
@@ -39,10 +44,34 @@ namespace Engine
 	typedef struct tagCollisionHitInformation
 	{
 		bool bHasHitPoint{ false };
+		unsigned int iCollisionPhase{ COLLISIONEVENT::Enum::END };
+		unsigned int iRequester_AttackPresetID{ UINT_MAX };
+		unsigned int iOther_AttackPresetID{ UINT_MAX };
+		float fDepth{ 0.f };
 		SimpleMath::Vector3 vPosition{ SimpleMath::Vector3::Zero };
 		SimpleMath::Vector3 vRawNormal{ SimpleMath::Vector3::Zero };
-		float fDepth{ 0.f };
 	}COL_HIT_INFO;
+
+	typedef struct tagAttakerDesc
+	{
+		unsigned int iCollisionType{ COLLISIONEVENT::Enum::END };
+		unsigned int iAttackPresetInstanceID{ 0 };
+		unsigned int iAttackerLayer{ 0 };
+		const DTO::TAttackPreset_Data* pAttackPreset{ nullptr };
+		class CGameObject* pAttacker{ nullptr };
+	}ATTACKER_DESC;
+
+	typedef struct tagVictimDesc
+	{
+		bool bHasHitPoint{ false };
+		unsigned int iVictimLayer{ 0 };
+		float fDepth{ 0.f };
+		class CGameObject* pVictim{ nullptr };
+		
+		SimpleMath::Vector3 vHitPoint{ SimpleMath::Vector3::Zero };
+		SimpleMath::Vector3 vHitNormal{ SimpleMath::Vector3::Zero };
+		ATTACKER_DESC attackDesc{}; // 지연 처리용
+	}HIT_DESC;
 
 	typedef struct tagCollidedDesc
 	{
@@ -780,6 +809,12 @@ namespace Engine
 		bool bSetOnlyFilter = { false };
 		PHYSICSFILTERGROUP::Enum eFilterLayer = PHYSICSFILTERGROUP::Enum::NONE;
 		unsigned int iFilterMask = {};
+
+		////////////////////
+		/// Attack Preset///
+		////////////////////
+		string strAttackPresetTag = { "" };
+		unsigned int iAttackPresetID = { UINT_MAX };
 	}PHYSICSCOLLIDER_DESC;
 
 	typedef struct tagPhysicsFilterShader

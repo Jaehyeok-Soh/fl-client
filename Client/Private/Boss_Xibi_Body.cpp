@@ -97,7 +97,7 @@ void CBoss_Xibi_Body::OnTrigger_Exit(_uint iMyColliderLayer, _uint iOtherLayer, 
 {
 }
 
-_bool CBoss_Xibi_Body::On_Hit(_uint iCollideMyLayer, ATTACK_DESC* pDesc, CGameObject* pOther)
+_bool CBoss_Xibi_Body::On_Hit(const HIT_DESC& hitDesc)
 {
 	return true;
 }

@@ -3,18 +3,18 @@
 #include "DataStruct_UI.h"
 
 NS_BEGIN(Client)
-class CUILevelMove_Image final : public  CUIDynamic_Image
+class CUILevelChange_Image final : public  CUIDynamic_Image
 {
 	using Super = CUIDynamic_Image;
 public:
-	typedef struct tagUILevelMoveImageDesc : public DIMAGE_DESC
+	typedef struct tagUILevelChangeImageDesc : public DIMAGE_DESC
 	{
-	}LEVEL_MOVE_DESC;
+	}LEVEL_CHANGE_DESC;
 
 private:
-	CUILevelMove_Image(ID3D11Device* pDevice, ID3D11DeviceContext* pDeviceContext);
-	CUILevelMove_Image(const CUILevelMove_Image& rhs);
-	virtual ~CUILevelMove_Image() = default;
+	CUILevelChange_Image(ID3D11Device* pDevice, ID3D11DeviceContext* pDeviceContext);
+	CUILevelChange_Image(const CUILevelChange_Image& rhs);
+	virtual ~CUILevelChange_Image() = default;
 public:
 	HRESULT Initialize_Prototype() override;
 	HRESULT Initialize(void* pArg) override;
@@ -27,15 +27,23 @@ public:
 	virtual void Ready_Before_Render(const _float fTimeDelta) override;
 	virtual HRESULT Render() override;
 private:
-	HRESULT Ready_Components(LEVEL_MOVE_DESC* pDesc);
+	HRESULT Ready_Components(LEVEL_CHANGE_DESC* pDesc);
 	HRESULT Bind_ShaderResources();
+	virtual void Acting_By_InteractState()override;
+
 private:
 	virtual void OnUIEvent(ETriggerEventType eEvent, CGenericUI* pSender)override;
 	virtual void Initialize_Visible_Event()override;
 	virtual _bool Tick_Visible_Event(const _float fTimeDelta)override;
 
+private:
+	ELevelType m_eNextLevelID = { ELevelType::END };
+	_wstring m_wstrText = {};
+	Vec4 m_vFontColor = {};
+	_bool m_isHover = { false };
+
 public:
-	static CUILevelMove_Image* Create(ID3D11Device* pDevice, ID3D11DeviceContext* pDeviceContext);
+	static CUILevelChange_Image* Create(ID3D11Device* pDevice, ID3D11DeviceContext* pDeviceContext);
 	CGameObject* Clone(void* pArg);
 	virtual void Free()override;
 };

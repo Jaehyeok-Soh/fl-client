@@ -20,6 +20,8 @@
 #include "Camera.h"
 #include "ColliderPart.h"
 #include "PhysicsCCT.h"
+#include "PhysicsCollider.h"
+#include "PhysicsAttackOverlap.h"
 #include "Ray.h"
 #include "CameraMan.h"
 #include "Body.h"
@@ -99,6 +101,9 @@ HRESULT CMainPlayer::Initialize(void* pArg)
     if (FAILED(Ready_CCT()))
         return E_FAIL;
 
+    if (FAILED(Ready_AttackOverlap()))
+        return E_FAIL;
+
     if (FAILED(Ready_AttackStates()))
         return E_FAIL;
 
@@ -120,6 +125,8 @@ HRESULT CMainPlayer::Awake(const _uint iCurrentLevelID)
     //Get_Component<CTransform>()->Set_Info(TRANSFORM_INFO_STATE::POS, Vec3{ 18.f,30.f,19.f });
 
     Get_Component<CPhysicsCCT>()->Awake();
+
+    Get_Component<CPhysicsAttackOverlap>()->Awake();
 
     CImGui_ClientDebug::GetInstance()->Set_Player(this);
     return S_OK;
@@ -145,6 +152,8 @@ void CMainPlayer::Update_Late(const _float fTimeDelta)
 {
     Super::Update_Late(fTimeDelta);
     
+    Get_Component<CPhysicsAttackOverlap>()->Update(fTimeDelta);
+
     //CPlayerControlContext* pControlContext = Get_Component<CPlayerControlContext>();
     //if (pControlContext == nullptr)
     //    return;
@@ -162,6 +171,7 @@ void CMainPlayer::Ready_Before_Render(const _float fTimeDelta)
     Super::Ready_Before_Render(fTimeDelta);
 
 #ifdef _DEBUG
+    m_pGameInstance->Push_DebugComponent(Get_Component<CPhysicsAttackOverlap>());
     m_pGameInstance->Push_DebugComponent(Get_Component<CPhysicsCCT>());
 #endif // _DEBUG
 }
@@ -738,7 +748,7 @@ HRESULT CMainPlayer::Ready_CCT()
 {
     PHYSICSCCT_DESC desc;
     desc.pOwner = this;
-    desc.bIsPlayer = false;
+    desc.bIsPlayer = true;
     desc.eType = EPhysicsCCTType::CAPSULE;
     desc.pOwnerMatrix = &Get_Component<CTransform>()->Get_WorldMatrix();
     desc.fRadius = 0.5f;
@@ -766,6 +776,25 @@ HRESULT CMainPlayer::Ready_CCT()
         | PHYSICSFILTERGROUP::Enum::TRIGGER_DIRECTION;
 
     if (FAILED(Add_Component<CPhysicsCCT>(0, L"Prototype_Component_Physics_CCT", &desc)))
+        return E_FAIL;
+
+    {
+        // CCT, PhysicsCollider ¼¼Æ®
+        PHYSICSCOLLIDER_DESC cloneDesc{};
+        cloneDesc.eFilterLayer = desc.eFilterLayer;
+        cloneDesc.iFilterMask = desc.iFilterMask;
+        cloneDesc.bSetOnlyFilter = true;
+
+        if (FAILED(Add_Component<CPhysicsCollider>(ENUM_TO_UINT(ELevelType::STATIC), L"Prototype_Component_Physics_Collider", &cloneDesc)))
+            return E_FAIL;
+    }
+
+    return S_OK;
+}
+
+HRESULT CMainPlayer::Ready_AttackOverlap()
+{
+    if (FAILED(Add_Component<CPhysicsAttackOverlap>(0, L"Prototype_Component_AttackOverlap_PlayerMoon", nullptr)))
         return E_FAIL;
 
     return S_OK;

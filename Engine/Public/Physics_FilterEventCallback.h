@@ -37,6 +37,7 @@ class CPhysics_FilterEventCallback final : public CBase , public PxSimulationEve
             rightColliderDesc = rightDesc;
         }
     }GAMEOBJECTINFO;
+
     using Super = CBase;
 private:
     CPhysics_FilterEventCallback();
@@ -46,6 +47,7 @@ private:
 
     CGameObject* Conversion_GameObject(void* userData);
     GAMEOBJECTINFO Get_GameObject(void* leftArgs, void* rightArgs);
+    GAMEOBJECTINFO Get_GameObject(CGameObject* leftObj, CGameObject* rightObj);
     
     void Ready_EventCallChain();
 #ifdef _DEBUG
@@ -53,17 +55,24 @@ private:
 #endif // _DEBUG
 
     array<std::function<void(GAMEOBJECTINFO& info)>, COLLISIONEVENT::Enum::END> m_arrCollisionEvent{};
+
+#ifdef _DEBUG
     array<wstring, COLLISIONEVENT::Enum::END> m_arrEventString;
+#endif // _DEBUG
+
 public:
     static CPhysics_FilterEventCallback* Create();
     virtual void Free() override;
 
 
 
+private:
+    void OnCollisionEnter(GAMEOBJECTINFO& info);
+    void OnCollision(GAMEOBJECTINFO& info);
+    void OnCollisionExit(GAMEOBJECTINFO& info);
 
-
-
-
+public:
+    void ProcessOverlap(CGameObject* pOwner, const PxVec3& vOverlapPoint, PxOverlapHit* pOverlapHit, PxPairFlag::Enum event);
 
 private:
     // PxSimulationEventCallback을(를) 통해 상속됨
