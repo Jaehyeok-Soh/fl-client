@@ -18,6 +18,8 @@ public:
 
 		_uint iEndStateIndex = {};
 
+		CGun* pOwnerGun = { nullptr };
+
 	}MOONCOMBO_DESC;
 
 private:

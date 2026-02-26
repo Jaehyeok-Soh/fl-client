@@ -251,21 +251,6 @@ _bool CPlayer::Check_DoubleJump()
     return !(m_tDoubleJumpCount.bCountTime);
 }
 
-_uint CPlayer::Get_GunState()
-{
-    return static_cast<CGun*>(Get_Part<CWeapon>(Part::GUN))->Get_GunState();
-}
-
-_bool CPlayer::Get_CanFire()
-{
-    return _bool();
-}
-
-_bool CPlayer::Get_CanReload()
-{
-    return _bool();
-}
-
 _bool CPlayer::Start_Attack(State iState)
 {
     _bool bChange = { false };
@@ -277,7 +262,8 @@ _bool CPlayer::Start_Attack(State iState)
         bChange = static_cast<CStatCom_Player*>(Get_Component<CMyStat>())->Set_AttackState(CStatCom_Player::Attack_State::Melee, true);
         break;
 
-    case State::GUNHOLDING:
+    case State::GUNHIDLE:
+    case State::GUNWALK:
     case State::GUNATTACK:
     case State::GUNRELOAD:
         bChange = static_cast<CStatCom_Player*>(Get_Component<CMyStat>())->Set_AttackState(CStatCom_Player::Attack_State::Gun, true);
@@ -305,7 +291,8 @@ void CPlayer::End_Attack(State iState)
         static_cast<CStatCom_Player*>(Get_Component<CMyStat>())->Set_AttackState(CStatCom_Player::Attack_State::Melee, false);
         break;
 
-    case State::GUNHOLDING:
+    case State::GUNHIDLE:
+    case State::GUNWALK:
     case State::GUNATTACK:
     case State::GUNRELOAD:
         static_cast<CStatCom_Player*>(Get_Component<CMyStat>())->Set_AttackState(CStatCom_Player::Attack_State::Gun, false);
@@ -330,6 +317,8 @@ HRESULT CPlayer::Ready_BaseStates()
 
     if (!(pActionState = Get_Component<CPlayerActionState>()))
         return E_FAIL;
+
+    CGun* pMyGun = static_cast<CGun*>(Get_Part<CWeapon>(ENUM_TO_UINT(Part::GUN)));
 
     vector<_uint> vecChangeState_ByKey{};
     vecChangeState_ByKey.resize(ENUM_TO_SZET(CStateBase_Player::STATEKEY::END), ENUM_TO_UINT(State::END));
@@ -372,6 +361,7 @@ HRESULT CPlayer::Ready_BaseStates()
         tKeyTimer.bCountTime    = true;
         tKeyTimer.fMaxTime      = 0.08f;
         desc.tKeyTimer = tKeyTimer;
+        desc.pOwnerGun = pMyGun;
 
         if (FAILED(pActionState->Add_State(ENUM_TO_UINT(State::IDLE), CState_Idle::Create(pActionState, &desc))))
             return E_FAIL;
@@ -406,6 +396,7 @@ HRESULT CPlayer::Ready_BaseStates()
 
         tKeyTimer.bCountTime = false;
         desc.tKeyTimer = tKeyTimer;
+        desc.pOwnerGun = pMyGun;
 
         if (FAILED(pActionState->Add_State(ENUM_TO_UINT(State::WALK), CState_Walk::Create(pActionState, &desc))))
             return E_FAIL;
@@ -435,6 +426,7 @@ HRESULT CPlayer::Ready_BaseStates()
 
         tKeyTimer.bCountTime = false;
         desc.tKeyTimer = tKeyTimer;
+        desc.pOwnerGun = pMyGun;
 
         if (FAILED(pActionState->Add_State(ENUM_TO_UINT(State::CROUCH), CState_Crouch::Create(pActionState, &desc))))
             return E_FAIL;
@@ -464,6 +456,7 @@ HRESULT CPlayer::Ready_BaseStates()
 
         tKeyTimer.bCountTime = false;
         desc.tKeyTimer = tKeyTimer;
+        desc.pOwnerGun = pMyGun;
 
         if (FAILED(pActionState->Add_State(ENUM_TO_UINT(State::CROUCHWALK), CState_CrouchWalk::Create(pActionState, &desc))))
             return E_FAIL;
@@ -499,6 +492,7 @@ HRESULT CPlayer::Ready_BaseStates()
         tKeyTimer.bCountTime = true;
         tKeyTimer.fMaxTime = 0.1f;
         desc.tKeyTimer = tKeyTimer;
+        desc.pOwnerGun = pMyGun;
 
         if (FAILED(pActionState->Add_State(ENUM_TO_UINT(State::SLIDE), CState_Slide::Create(pActionState, &desc))))
             return E_FAIL;
@@ -530,6 +524,7 @@ HRESULT CPlayer::Ready_BaseStates()
         tKeyTimer.bCountTime = true;
         tKeyTimer.fMaxTime = 0.1f;
         desc.tKeyTimer = tKeyTimer;
+        desc.pOwnerGun = pMyGun;
 
         if (FAILED(pActionState->Add_State(ENUM_TO_UINT(State::DASHBACK), CState_DashBack::Create(pActionState, &desc))))
             return E_FAIL;
@@ -562,6 +557,7 @@ HRESULT CPlayer::Ready_BaseStates()
         tKeyTimer.bCountTime    = true;
         tKeyTimer.fMaxTime      = 0.4f;
         desc.tKeyTimer          = tKeyTimer;
+        desc.pOwnerGun = pMyGun;
 
         if (FAILED(pActionState->Add_State(ENUM_TO_UINT(State::DASHSKY), CState_DashSky::Create(pActionState, &desc))))
             return E_FAIL;
@@ -593,6 +589,7 @@ HRESULT CPlayer::Ready_BaseStates()
         desc.vecChangeState_ByKey = vecChangeState_ByKey;
 
         desc.tKeyTimer = tKeyTimer;
+        desc.pOwnerGun = pMyGun;
 
         if (FAILED(pActionState->Add_State(ENUM_TO_UINT(State::RUNSHORT), CState_RunShort::Create(pActionState, &desc))))
             return E_FAIL;
@@ -621,6 +618,7 @@ HRESULT CPlayer::Ready_BaseStates()
         desc.vecChangeState_ByKey = vecChangeState_ByKey;
 
         desc.tKeyTimer = tKeyTimer;
+        desc.pOwnerGun = pMyGun;
 
         if (FAILED(pActionState->Add_State(ENUM_TO_UINT(State::RUNLOOP), CState_RunLoop::Create(pActionState, &desc))))
             return E_FAIL;
@@ -651,6 +649,7 @@ HRESULT CPlayer::Ready_BaseStates()
         desc.vecChangeState_ByKey = vecChangeState_ByKey;
 
         desc.tKeyTimer = tKeyTimer;
+        desc.pOwnerGun = pMyGun;
 
         if (FAILED(pActionState->Add_State(ENUM_TO_UINT(State::JUMP), CState_Jump::Create(pActionState, &desc))))
             return E_FAIL;
@@ -681,6 +680,7 @@ HRESULT CPlayer::Ready_BaseStates()
         desc.vecChangeState_ByKey = vecChangeState_ByKey;
 
         desc.tKeyTimer = tKeyTimer;
+        desc.pOwnerGun = pMyGun;
 
         if (FAILED(pActionState->Add_State(ENUM_TO_UINT(State::JUMPDOUBLE), CState_JumpDouble::Create(pActionState, &desc))))
             return E_FAIL;
@@ -710,6 +710,7 @@ HRESULT CPlayer::Ready_BaseStates()
         desc.vecChangeState_ByKey = vecChangeState_ByKey;
 
         desc.tKeyTimer = tKeyTimer;
+        desc.pOwnerGun = pMyGun;
 
         if (FAILED(pActionState->Add_State(ENUM_TO_UINT(State::JUMPBULLET), CState_JumpBullet::Create(pActionState, &desc))))
             return E_FAIL;
@@ -739,6 +740,7 @@ HRESULT CPlayer::Ready_BaseStates()
         desc.vecChangeState_ByKey = vecChangeState_ByKey;
 
         desc.tKeyTimer = tKeyTimer;
+        desc.pOwnerGun = pMyGun;
 
         if (FAILED(pActionState->Add_State(ENUM_TO_UINT(State::JUMPBACK), CState_JumpBack::Create(pActionState, &desc))))
             return E_FAIL;
@@ -768,6 +770,7 @@ HRESULT CPlayer::Ready_BaseStates()
         desc.vecChangeState_ByKey = vecChangeState_ByKey;
 
         desc.tKeyTimer = tKeyTimer;
+        desc.pOwnerGun = pMyGun;
 
         if (FAILED(pActionState->Add_State(ENUM_TO_UINT(State::FALL), CState_Fall::Create(pActionState, &desc))))
             return E_FAIL;
@@ -799,6 +802,7 @@ HRESULT CPlayer::Ready_BaseStates()
         tKeyTimer.bCountTime = true;
         tKeyTimer.fMaxTime   = 0.3f;
         desc.tKeyTimer       = tKeyTimer;
+        desc.pOwnerGun = pMyGun;
 
         if (FAILED(pActionState->Add_State(ENUM_TO_UINT(State::LAND), CState_Land::Create(pActionState, &desc))))
             return E_FAIL;
@@ -828,6 +832,7 @@ HRESULT CPlayer::Ready_BaseStates()
         desc.vecChangeState_ByKey = vecChangeState_ByKey;
 
         desc.tKeyTimer = tKeyTimer;
+        desc.pOwnerGun = pMyGun;
 
         if (FAILED(pActionState->Add_State(ENUM_TO_UINT(State::JUMPWALL), CState_JumpWall::Create(pActionState, &desc))))
             return E_FAIL;

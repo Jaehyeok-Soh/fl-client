@@ -24,6 +24,7 @@
 #include "CameraMan.h"
 #include "Body.h"
 #include "Weapon.h"
+#include "Gun.h"
 
 #include "StateBase_Player.h"
 
@@ -68,6 +69,10 @@ HRESULT CMainPlayer::Initialize_Prototype()
 
 HRESULT CMainPlayer::Initialize(void* pArg)
 {
+    // player가 weapon을 알아야 해서
+    if (FAILED(Ready_Weapons()))
+        return E_FAIL;
+
     if (FAILED(Super::Initialize(pArg)))
         return E_FAIL;
 
@@ -75,10 +80,6 @@ HRESULT CMainPlayer::Initialize(void* pArg)
 
     if (FAILED(Ready_Ability()))
         return E_FAIL;
-
-    if (FAILED(Ready_Weapons()))
-        return E_FAIL;
-
 
     CPlayerControlContext::PLAYER_CONTROLCONTEXT_DESC tDesc = {};
     tDesc.FKeys = CPlayerControlContext::KEYFLAGS::MOVE     | CPlayerControlContext::KEYFLAGS::JUMP
@@ -780,6 +781,10 @@ HRESULT CMainPlayer::Ready_AttackStates()
     if (!(pActionState = Get_Component<CPlayerActionState>()))
         return E_FAIL;
 
+    CGun* pMyGun = static_cast<CGun*>(Get_Part<CWeapon>(ENUM_TO_UINT(Part::GUN)));
+    if(!pMyGun)
+        return E_FAIL;
+
     vector<_uint> vecChangeState_ByKey{};
     vecChangeState_ByKey.resize(ENUM_TO_SZET(CStateBase_Player::STATEKEY::END), ENUM_TO_UINT(State::END));
 
@@ -797,6 +802,7 @@ HRESULT CMainPlayer::Ready_AttackStates()
         tDesc.iThirdAnimIdx = Get_AnimationIndex(L"Animation_PlayerMoon_Sword_RunAttack_03");
         tDesc.iFourthAnimIdx = Get_AnimationIndex(L"Animation_PlayerMoon_Sword_RunAttack_04");
         tDesc.iEndStateIndex = ENUM_TO_UINT(State::END);
+        tDesc.pOwnerGun = pMyGun;
 
         if (FAILED(pActionState->Add_State(ENUM_TO_UINT(State::COMBO), CState_MoonCombo::Create(pActionState, &tDesc))))
             return E_FAIL;
@@ -820,6 +826,8 @@ HRESULT CMainPlayer::Ready_AttackStates()
         desc.vecChangeState_ByKey = vecChangeState_ByKey;
 
         desc.tKeyTimer = tKeyTimer;
+
+        desc.pOwnerGun = pMyGun;
 
         if (FAILED(pActionState->Add_State(ENUM_TO_UINT(State::JUMPATTSTART), CState_JumpAttStart::Create(pActionState, &desc))))
             return E_FAIL;
@@ -853,6 +861,8 @@ HRESULT CMainPlayer::Ready_AttackStates()
         tKeyTimer.fMaxTime = 0.5 ;
         desc.tKeyTimer = tKeyTimer;
 
+        desc.pOwnerGun = pMyGun;
+
         if (FAILED(pActionState->Add_State(ENUM_TO_UINT(State::JUMPATTEND), CState_JumpAttEnd::Create(pActionState, &desc))))
             return E_FAIL;
     }
@@ -885,6 +895,8 @@ HRESULT CMainPlayer::Ready_AttackStates()
         tKeyTimer.fMaxTime = 0.8f;
         desc.tKeyTimer = tKeyTimer;
 
+        desc.pOwnerGun = pMyGun;
+
         if (FAILED(pActionState->Add_State(ENUM_TO_UINT(State::CHARGE), CState_MoonCharge::Create(pActionState, &desc))))
             return E_FAIL;
     }
@@ -897,6 +909,8 @@ HRESULT CMainPlayer::Ready_AttackStates()
         tDesc.iAnimIdx = Get_AnimationIndex(L"Animation_PlayerMoon_Light_Skill01");
         tDesc.iPlayerState = ENUM_TO_UINT(State::SKILL1);
 
+        tDesc.pOwnerGun = pMyGun;
+
         if (FAILED(pActionState->Add_State(ENUM_TO_UINT(State::SKILL1), CState_MoonSkill::Create(pActionState, "SkillE", &tDesc))))
             return E_FAIL;
     }
@@ -908,6 +922,7 @@ HRESULT CMainPlayer::Ready_AttackStates()
         tDesc.fKeyCoolTime  = 4.5f;
         tDesc.iAnimIdx = Get_AnimationIndex(L"Animation_PlayerMoon_Light_Skill02_Red");
         tDesc.iPlayerState = ENUM_TO_UINT(State::SKILL2);
+        tDesc.pOwnerGun = pMyGun;
 
         if (FAILED(pActionState->Add_State(ENUM_TO_UINT(State::SKILL2), CState_MoonSkill::Create(pActionState,"SkillQ", & tDesc))))
             return E_FAIL;

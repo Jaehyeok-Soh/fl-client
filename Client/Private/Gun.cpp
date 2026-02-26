@@ -8,7 +8,6 @@ CGun::CGun(ID3D11Device* pDevice, ID3D11DeviceContext* pDeviceContext)
 
 CGun::CGun(const CGun& rhs)
 	:Super(rhs)
-	, m_eGunState(rhs.m_eGunState)
 	, m_fSpeed(rhs.m_fSpeed)
 {
 }
@@ -57,9 +56,6 @@ void CGun::Update_Priority(_float fTimeDelta)
 
 void CGun::Update(_float fTimeDelta)
 {
-	if (m_eState != State::NONE)
-		State_Update(fTimeDelta);
-
 	Super::Update(fTimeDelta);
 }
 
@@ -103,32 +99,6 @@ HRESULT CGun::Render()
 	return Super::Render();
 }
 
-void CGun::Change_GunState(GunState eState)
-{
-	if (m_eGunState == eState)
-		return;
-
-	State_End(m_eGunState);
-
-	m_eGunState = eState;
-
-	State_Start(m_eGunState);
-}
-
-void CGun::Change_GunState(_uint iState)
-{
-	GunState eState = static_cast<GunState>(iState);
-
-	if (m_eGunState == eState)
-		return;
-
-	State_End(m_eGunState);
-
-	m_eGunState = eState;
-
-	State_Start(m_eGunState);
-}
-
 void CGun::Reload_Bullet()
 {
 	// 한번에 재장전 할 양이 충분하다면
@@ -162,62 +132,6 @@ _bool CGun::Get_CanReleod()
 	return (m_MTotalBullet.x > 0.f);
 }
 
-void CGun::State_Start(GunState eState)
-{
-	switch (eState)
-	{
-	case GunState::NOATT:
-		break;
-
-	case GunState::ATT:
-		break;
-
-	case GunState::EMPTY:
-		break;
-
-	case GunState::RELOAD:
-		break;
-	}
-}
-
-void CGun::State_Update(const _float fTimeDelta)
-{
-	switch (m_eGunState)
-	{
-	case GunState::NOATT:
-		NoAttack_Update(fTimeDelta);
-		break;
-	case GunState::ATT:
-		Attack_Update(fTimeDelta);
-		break;
-	case GunState::EMPTY:
-		Empty_Update(fTimeDelta);
-		break;
-	case GunState::RELOAD:
-		Reload_Update(fTimeDelta);
-		break;
-	}
-}
-
-void CGun::State_End(GunState eState)
-{
-	switch (eState)
-	{
-	case GunState::NOATT:
-		break;
-
-	case GunState::ATT:
-		break;
-
-	case GunState::EMPTY:
-		break;
-
-	case GunState::RELOAD:
-		Reload_Bullet();
-		break;
-	}
-}
-
 void CGun::NoAttack_Update(const _float fTimeDelta)
 {
 }
@@ -225,7 +139,7 @@ void CGun::NoAttack_Update(const _float fTimeDelta)
 void CGun::Attack_Update(const _float fTimeDelta)
 {
 	// 총을 쏠 수 있을때
-	if (Get_CanFire())
+	//if (Get_CanFire())
 	{
 		// Cool Timer가 다 되었다면 
 		if (m_tFireTimeCounter.CountTime(fTimeDelta) == 1.f)
@@ -235,13 +149,13 @@ void CGun::Attack_Update(const _float fTimeDelta)
 		}
 	}
 
-	// 총을 쏠 수 없는데 reload도 못하는 상태 -> no att
-	else if (Get_CanReleod())
-		Change_GunState(GunState::NOATT);
+	//// 총을 쏠 수 없는데 reload도 못하는 상태 -> no att
+	//else if (Get_CanReleod())
+	//	Change_GunState(GunState::NOATT);
 
-	// reload도 가능 하다면 일단 empty
-	else
-		Change_GunState(GunState::EMPTY);
+	//// reload도 가능 하다면 일단 empty
+	//else
+	//	Change_GunState(GunState::EMPTY);
 }
 
 void CGun::Empty_Update(const _float fTimeDelta)

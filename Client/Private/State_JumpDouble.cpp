@@ -37,7 +37,7 @@ HRESULT CState_JumpDouble::Start(void* pArg, _bool bForce)
 void CState_JumpDouble::Update(const _float fTimeDelta)
 {
 	// 바닥 충돌 검사 후 change
-	if (m_fStateElapsed > 0.6f &&
+	if (m_fStateElapsed > 0.3f &&
 		Check_OnGround(0.1f))
 	{
 		Change_PlayerState(ENUM_TO_UINT(CPlayer::State::LAND));
