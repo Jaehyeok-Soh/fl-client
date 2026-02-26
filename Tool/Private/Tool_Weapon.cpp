@@ -56,6 +56,9 @@ HRESULT CTool_Weapon::Initialize(void* pArg)
 	case Weapon_ModelType::ANIM:
 		if (FAILED(Ready_ComputeShaders()))
 			return E_FAIL;
+
+		CComputeShader* pAnimECS = static_cast<CComputeShader*>(Get_Script_Component(TEXT("ComputeShader_AnimE")));
+		Get_Component<CModel>()->Change_Animation(pAnimECS, 0, false,true,true);
 		break;
 	}
 
@@ -233,8 +236,11 @@ void CTool_Weapon::Ready_Before_Render(const _float fTimeDelta)
 	switch (m_eState)
 	{
 	case State::HOLD:
-		if(m_pMatSocket)
+		if (m_pMatSocket)
+		{
 			Super::Update_CombinedWorldMatrix(m_matRotation * (*m_pMatSocket) * (*m_pMatParent));
+
+		}
 		else
 			Super::Update_CombinedWorldMatrix(m_matRotation * (*m_pMatParent));
 		break;

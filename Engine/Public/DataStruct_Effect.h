@@ -7,6 +7,19 @@ NS_BEGIN(DTO)
 // 선언부
 using _uint2 = struct { _uint x; _uint y; };
 
+enum class TEXTURE_INFO
+{
+    DEFAULTTEXTURE = 0,
+    NOISETEXTURE = 1,
+    MASKINGTEXTURE = 2,
+    GRADATIONTEXTURE = 3,
+    CURVETEXTURE = 4,
+    NORMALTEXTURE = 5,
+    GLOWTEXTURE = 6,
+    DISSOLVETEXTURE = 7,
+    END
+};
+
 enum class E_EFFECTTYPE { NONE = 0, Particle, Mesh, Trail };
 enum class E_RENDER_TYPE { NONE = 0, BILBOARD, NONE_BILBOARD };
 enum class E_PARTICLETYPE { NONE = 0, PARTICLE, TEXTURE, MESH };
@@ -16,7 +29,7 @@ enum class E_TEXTURETYPE {
     NOISE = 1,
     MASKING = 2,
     GRADATION = 3,
-    TRAIL = 4,
+    CURVETEXTURE = 4,
     NORMAL = 5,
     GLOW = 6,
     DISSOLVE = 7,
@@ -85,7 +98,7 @@ struct TEFFECT_PartsData
     wstring     _Effect_NoiseTexture_Tag = {};
     wstring     _Effect_MaskingTexture_Tag = {};
     wstring     _Effect_GradationTexture_Tag = {};
-    wstring     _Effect_TrailTexture_Tag = {};
+    wstring     _Effect_CurveTexture_Tag = {};
     wstring     _Effect_NormalTexture_Tag = {};
     wstring     _Effect_DissolveTexture_Tag = {};
     wstring     _Effect_GlowTexture_Tag = {};
@@ -116,12 +129,8 @@ struct TEFFECT_PartsData
     _float              _Effect_ApearRatio = { 0.f };
 
     // =========   이펙트 Sprite 사용 여부    ============
-    bool                 _Effect_bUseSprite = {};
-    _uint2               _Effect_TileCount = {};
     bool                 _Effect_bPlayAnim = { false };
     _float               _Effect_AnimSpeed = { 1.0f };
-    _uint                m_iCurSpriteNumber = {};
-
 
     // =========   이펙트 Emission 전용   =============
     _float              _Effect_RateOverTime = {};
@@ -196,6 +205,7 @@ struct TEFFECT_PartsData
     _bool               _Effect_Tool_GradationTexture = { false };
     _bool               _Effect_Tool_DissolveTexture = { false };
     _bool               _Effect_Tool_GlowTexture = { false };
+    _bool               _Effect_Tool_CurveTexture = { false };
 
     // 빌보드는 있니, 스크롤은 먹이니
     _bool               _Effect_Tool_UseBillboard = { false };
@@ -211,15 +221,30 @@ struct TEFFECT_PartsData
     Vec2                _Effect_GradationTexture_ScrollWeight = { 1.f, 1.f };
     Vec2                _Effect_DissolveTexture_ScrollWeight = { 1.f, 1.f };
     Vec2                _Effect_GlowTexture_ScrollWeight = { 1.f, 1.f };
+    Vec2                _Effect_CurveTexture_ScrollWeight = { 1.f, 1.f };
+
+    // 스프라이트 전용 값 적용
+        //    x(Enable Flag) : 0 : 사용 안 함 / 1 : 고정 인덱스 사용 / 2 : 애니메이션 재생
+        //    y(Rows) : 가로 칸 수
+        //    z(Cols) : 세로 칸 수
+        //    w(Index / Speed) : x가 1이면 Fixed Index, x가 2이면 Play Speed
+
+    Vec4                _Effect_DiffuseTexture_SpriteInfo = { 0.f, 0.f, 0.f, 0.f };
+    Vec4                _Effect_NoiseTexture_SpriteInfo = { 0.f, 0.f, 0.f, 0.f };
+    Vec4                _Effect_GradationTexture_SpriteInfo = { 0.f, 0.f, 0.f, 0.f };
+    Vec4                _Effect_DissolveTexture_SpriteInfo = { 0.f, 0.f, 0.f, 0.f };
+    Vec4                _Effect_GlowTexture_SpriteInfo = { 0.f, 0.f, 0.f, 0.f };
+    Vec4                _Effect_CurveTexture_SpriteInfo = { 0.f, 0.f, 0.f, 0.f };
+    Vec4                _Effect_MaskTexture_SpriteInfo = { 0.f, 0.f, 0.f, 0.f };
 
     // 툴용 텍스처 스크롤 
-
     _bool               _Effect_Tool_UseScroll_Diffuse = { false };
     _bool               _Effect_Tool_UseScroll_Noise = { false };
     _bool               _Effect_Tool_UseScroll_Masking = { false };
     _bool               _Effect_Tool_UseScroll_Gradation = { false };
     _bool               _Effect_Tool_UseScroll_Dissolve = { false };
     _bool               _Effect_Tool_UseScroll_Glow = { false };
+    _bool               _Effect_Tool_UseScroll_Curve = { false };
 
     // SamplerState 몇번 쓸거니
     int               _Effect_Tool_DiffuseSamplerState_Flag = {};

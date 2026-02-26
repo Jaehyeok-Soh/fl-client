@@ -44,7 +44,8 @@ void CPanel_Parts::Render_SelectPart()
 		ImGui::SameLine();
 		if (ImGui::Button("Apply##PartObj"))
 		{
-			Set_PartObj();
+			if(m_iSelectPartIdx >=0)
+				Set_PartObj();
 		}
 
 		ImGui::Text("Current Part Index : %d", m_iSelectPartIdx);

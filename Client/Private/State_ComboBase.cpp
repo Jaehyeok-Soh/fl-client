@@ -103,7 +103,7 @@ void CState_ComboBase::Change_FirstCombo()
 	m_tKeyTimer.fMaxTime = m_ComboTimes[0];
 	m_fStateElapsed = 0.f;
 
-	Request_ChangeAnimation(m_vecMainAnims[0], true, false, true);
+	Request_ChangeAnimation(m_vecMainAnims[0], false, false, true);
 }
 
 void CState_ComboBase::Count_ComboTime(const _float fTimeDelta)

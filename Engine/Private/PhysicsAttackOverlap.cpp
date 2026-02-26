@@ -96,10 +96,6 @@ void CPhysicsAttackOverlap::Update(_float fTimeDelta)
 
 void CPhysicsAttackOverlap::Ready_Event()
 {
-	auto& animations = m_pOwnerModel->Get_Animations();
-	for (auto& anim : animations)
-		anim->Clear_Notifies();
-
 	Release_Event();
 
 	m_EventHandle = m_pOwnerModel->OnNotify.Subscribe(

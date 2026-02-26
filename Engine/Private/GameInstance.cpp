@@ -748,6 +748,11 @@ void CGameInstance::Push_RenderObject(RENDER_CATEGORY eCategory, CGameObject* pG
 	m_pRender_Manager->Push_RenderObject(eCategory, pGO);
 }
 #ifdef _DEBUG
+ID3D11ShaderResourceView* CGameInstance::Get_RenderTargetSRV(ERenderTarget eTarget)
+{
+	return m_pRenderTarget_Manager->Get_RenderTargetSRV(eTarget);
+}
+
 inline void CGameInstance::Push_DebugComponent(CComponent* pComp)
 {
 	m_pRender_Manager->Push_DebugComponent(pComp);

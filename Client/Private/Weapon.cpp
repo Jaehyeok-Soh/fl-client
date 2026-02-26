@@ -7,6 +7,7 @@
 #include "Model.h"
 #include "ComputeShader.h"
 
+#include "Engine_Utils.h"
 #include "GameInstance.h"
 
 CWeapon::CWeapon(ID3D11Device* pDevice, ID3D11DeviceContext* pDeviceContext, Weapon_Type eWeapon)
@@ -18,10 +19,10 @@ CWeapon::CWeapon(ID3D11Device* pDevice, ID3D11DeviceContext* pDeviceContext, Wea
 CWeapon::CWeapon(const CWeapon& rhs)
 	: Super(rhs)
 	, m_eWaeponType(rhs.m_eWaeponType)
-	, m_matRotation(rhs.m_matRotation)
 	, m_tColorDesc(rhs.m_tColorDesc)
-	, m_bColorMapping(rhs.m_bColorMapping)
 	, m_eAnimState(rhs.m_eAnimState)
+	, m_matHandOffsetMatrix(rhs.m_matHandOffsetMatrix)
+	, m_matHoldOffsetMatrix(rhs.m_matHoldOffsetMatrix)
 {
 }
 
@@ -30,7 +31,8 @@ HRESULT CWeapon::Initialize_Prototype()
 	if (FAILED(Super::Initialize_Prototype()))
 		return E_FAIL;
 
-	m_matRotation = Matrix::CreateRotationX(XMConvertToRadians(-90.f));
+	m_matHandOffsetMatrix = Matrix::Identity;
+	m_matHoldOffsetMatrix = Matrix::Identity;
 
 	return S_OK;
 }
@@ -46,15 +48,19 @@ HRESULT CWeapon::Initialize(void* pArg)
 	WEAPON_DESC* pDesc = static_cast<WEAPON_DESC*>(pArg);
 	m_pMatHandSocket = pDesc->pMatHandSocket;
 	m_pMatSocket = pDesc->pMatSocket;
+
 	m_eModleType = pDesc->eModel;
+	m_eAnimState = pDesc->eAnimState;
+	m_eState = pDesc->eState;
+
+	m_FDescFlags = pDesc->FDescFlag;
 	m_bMainWeapon = pDesc->bMianWeapon;
+
+	m_matHandOffsetMatrix = pDesc->matHandOffsetMatrix;
+	m_matHoldOffsetMatrix = pDesc->matHoldOffsetMatrix;
 
 	if (FAILED(Ready_Components(pDesc)))
 		return E_FAIL;
-
-	// model과 desc 정보 다를때를 위한 방어
-	if (Get_Component<CModel>()->Get_Type() == EModelType::NONANIM)
-		m_eModleType = Weapon_ModelType::STATIC;
 
 	switch (m_eModleType)
 	{
@@ -64,12 +70,13 @@ HRESULT CWeapon::Initialize(void* pArg)
 	case Weapon_ModelType::ANIM:
 		if (FAILED(Ready_ComputeShaders()))
 			return E_FAIL;
+
+		Get_Component<CModel>()->Change_Animation(m_pAnimECS, pDesc->iStartAnimIdx, false,true,true);
+
 		break;
 	}
 
-	if (m_bMainWeapon)
-		m_eState = State::HOLD;
-	else
+	if (!m_bMainWeapon)
 		m_eState = State::NONE;
 
 	//Get_Component<CTransform>()->Set_Scale(0.1f, 0.1f, 0.1f);
@@ -137,12 +144,12 @@ void CWeapon::Ready_Before_Render(_float fTimeDelta)
 	switch (m_eState)
 	{
 	case State::HOLD:
-		Super::Update_CombinedWorldMatrix(m_matRotation * (*m_pMatSocket) * (*m_pMatParent));
+		Super::Update_CombinedWorldMatrix(m_matHoldOffsetMatrix * (*m_pMatSocket) * (*m_pMatParent));
 		Update_HoldingPos();
 		break;
 
 	case State::HAND:
-		Super::Update_CombinedWorldMatrix(m_matRotation *(*m_pMatHandSocket) * (*m_pMatParent));
+		Super::Update_CombinedWorldMatrix(m_matHandOffsetMatrix *(*m_pMatHandSocket) * (*m_pMatParent));
 		break;
 	}
 
@@ -196,6 +203,12 @@ HRESULT CWeapon::Render()
 	return S_OK;
 }
 
+void CWeapon::Change_WeaponAnim(_uint iAnimIdx, _bool bLoop, _bool bForce, _bool bBlend)
+{
+	// 우선 weapon은 blend 안 한다 생각하고 진행 : todo blend 필요하다면 바꿔야함
+	Get_Component<CModel>()->Change_Animation(m_pAnimECS, iAnimIdx, false , bLoop, bForce);
+}
+
 void CWeapon::Set_HandSocket()
 {
 	if (m_eState == State::HAND)
@@ -217,7 +230,11 @@ HRESULT CWeapon::Ready_Components(WEAPON_DESC* pDesc)
 	if (FAILED(Add_Component<CModel>(0/*static*/, pDesc->wstrModelPrototypeName, nullptr)))
 		return E_FAIL;
 
-	if (pDesc->eModel == Weapon_ModelType::STATIC)
+	// model과 desc 정보 다를때를 위한 방어
+	if (Get_Component<CModel>()->Get_Type() == EModelType::STATIC)
+		m_eModleType = Weapon_ModelType::STATIC;
+
+	if (m_eModleType == Weapon_ModelType::STATIC)
 	{
 		if (FAILED(Add_Component<CShader>(0/*static*/, L"Prototype_Component_Shader_VtxMesh", nullptr)))
 			return E_FAIL;
@@ -228,9 +245,16 @@ HRESULT CWeapon::Ready_Components(WEAPON_DESC* pDesc)
 			return E_FAIL;
 	}
 
-	if (m_bColorMapping = pDesc->bRGBShader)
+
+	if (Engine_Utils::Has_Flag(m_FDescFlags, WeaponDescFlag::WF_RGBMappingOn))
 	{
-		Get_Component<CShader>()->Set_Pass(ENUM_TO_UINT(EMapObjectShaderPass::RGBMapping));
+		_uint iPass = 0;
+		if (m_eModleType == Weapon_ModelType::STATIC)
+			iPass = ENUM_TO_UINT(EMapObjectShaderPass::RGBMapping);
+		else
+			iPass = 2;
+
+		Get_Component<CShader>()->Set_Pass(iPass);
 		m_tColorDesc.vColorR = pDesc->vColorR;
 		m_tColorDesc.vColorG = pDesc->vColorG;
 		m_tColorDesc.vColorB = pDesc->vColorB;
@@ -342,7 +366,7 @@ HRESULT CWeapon::Render_StaticWeap()
 	CModel* pModel = Get_Component<CModel>();
 	_uint iMeshCount = pModel->Get_MeshCount();
 
-	if (m_bColorMapping)
+	if (Engine_Utils::Has_Flag(m_FDescFlags, WeaponDescFlag::WF_RGBMappingOn))
 	{
 		pShader->Bind_RGBColorData(m_tColorDesc);
 	}
@@ -365,6 +389,11 @@ HRESULT CWeapon::Render_AnimWeap()
 	CShader*			pShader			= Get_Component<CShader>();
 	CModel*				pModel			= Get_Component<CModel>();
 	_uint				iMeshCount		= pModel->Get_MeshCount();
+
+	if (Engine_Utils::Has_Flag(m_FDescFlags, WeaponDescFlag::WF_RGBMappingOn))
+	{
+		pShader->Bind_RGBColorData(m_tColorDesc);
+	}
 
 	pShader->Bind_ObjectInfoData(m_tObjectInfoDesc);
 	pShader->Bind_TransformData(m_matCombinedWorld);
@@ -390,7 +419,7 @@ void CWeapon::Play_Anim(const _float fTimeDelta)
 			break;
 
 		case AnimState::STOP:
-			Get_Component<CModel>()->Update_Animation(m_pBoneCombineCS, m_pAnimECS, 0.f);
+			Get_Component<CModel>()->Update_Animation(m_pBoneCombineCS, m_pAnimECS, 0.f); //0.f
 			break;
 		}
 	}

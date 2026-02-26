@@ -68,6 +68,7 @@ public:
 
 	/* animation funcs*/
 protected:
+	HRESULT			Request_MixAnimation(_uint iVectorIdx, _int iAnimIdx);
 	HRESULT			Request_ChangeAnimation(_uint iAnimationIndex, _bool bBlend, _bool bLoop, _bool bForce = false);
 	_float			Get_AnimElpasedTimeSeconds();
 	_float			Get_AnimNormalizedTime();
