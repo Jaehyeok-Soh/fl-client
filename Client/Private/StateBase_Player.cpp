@@ -34,6 +34,8 @@ HRESULT CStateBase_Player::Initialize(void* pArg)
 	//if (m_pOwnerGun)
 	//	Safe_AddRef(m_pOwnerGun);
 
+	m_iEndStateIdx = ENUM_TO_UINT(CPlayer::State::END);
+
 	return S_OK;
 }
 
@@ -41,8 +43,6 @@ HRESULT CStateBase_Player::Awake(const _uint iLevelIndex)
 {
 	if (FAILED(Super::Awake(iLevelIndex)))
 		return E_FAIL;
-
-	m_iEndStateIdx = ENUM_TO_UINT(CPlayer::State::END);
 
 	return S_OK;
 }
@@ -396,6 +396,21 @@ _bool CStateBase_Player::Can_Reload()
 		return false;
 
 	return m_pOwnerGun->Get_CanReleod();
+}
+
+void CStateBase_Player::Set_GunTimer(_bool bOn)
+{
+	m_pOwnerGun->Set_FireTimer(bOn);
+}
+
+void CStateBase_Player::Reset_GunTimer()
+{
+	m_pOwnerGun->Reset_FireTimer();
+}
+
+void CStateBase_Player::Reload_Gun()
+{
+	m_pOwnerGun->Reload_Bullet();
 }
 
 _bool CStateBase_Player::Has_ChangeState(STATEKEY eKey)

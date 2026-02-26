@@ -86,7 +86,7 @@ HRESULT CBody::Awake(const _uint iCurrentLevelIndex)
 	vector<CModel::DATA_ANIMIX> vecMix	= { {113,false,1.f} };
 
 	pMyModel->Set_MixAnim(true);
-	pMyModel->Set_MixAnim_ResetSize(1);
+	pMyModel->Set_MixAnim_ResetSize(2);
 	pMyModel->Make_MixRatio(iFaceAnimIdx, vecMix, m_pBoneAnimMixCS);
 	pMyModel->Set_MixAnim_AnimIndex(0, iFaceAnimIdx);
 

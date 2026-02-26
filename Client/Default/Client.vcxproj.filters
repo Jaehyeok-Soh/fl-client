@@ -559,9 +559,6 @@
     <Filter Include="03. GameObject\UIObjects\02.UI\Image\Dynamic Image\05.MonsterNamePlate">
       <UniqueIdentifier>{761751c8-ba94-4e88-987b-53bc16a7f52f}</UniqueIdentifier>
     </Filter>
-    <Filter Include="06. FSM\Player\Attack\Gun\Holding">
-      <UniqueIdentifier>{2ea2a8e0-8b63-4991-b623-1685d95acae0}</UniqueIdentifier>
-    </Filter>
     <Filter Include="06. FSM\Player\Attack\Gun\Attack">
       <UniqueIdentifier>{94646764-3ce1-40c8-8e22-3ebf84f0db89}</UniqueIdentifier>
     </Filter>
@@ -570,6 +567,12 @@
     </Filter>
     <Filter Include="03. GameObject\UIObjects\02.UI\Image\Dynamic Image\07.Level Chnage">
       <UniqueIdentifier>{441fee0b-1c67-4053-a110-de1fdb40d73f}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="06. FSM\Player\Attack\Gun\Idle">
+      <UniqueIdentifier>{2ba6e959-3319-4e68-825e-863b9871084d}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="06. FSM\Player\Attack\Gun\Walk">
+      <UniqueIdentifier>{2ea2a8e0-8b63-4991-b623-1685d95acae0}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
@@ -912,9 +915,6 @@
     <ClInclude Include="..\Public\Water.h">
       <Filter>03. GameObject\MapObject\05. Water</Filter>
     </ClInclude>
-    <ClInclude Include="..\Public\LandScape.h">
-      <Filter>03. GameObject\MapObject\02. LandScape</Filter>
-    </ClInclude>
     <ClInclude Include="..\Public\Level_Tutorial_Village.h">
       <Filter>02. Level\Tutorial_Village</Filter>
     </ClInclude>
@@ -1017,6 +1017,21 @@
     </ClInclude>
     <ClInclude Include="..\Public\UILevelChange_Image.h">
       <Filter>03. GameObject\UIObjects\02.UI\Image\Dynamic Image\07.Level Chnage</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\State_GunAttack.h">
+      <Filter>06. FSM\Player\Attack\Gun\Attack</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\State_GunReload.h">
+      <Filter>06. FSM\Player\Attack\Gun\Reload</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\LandScape.h">
+      <Filter>03. GameObject\MapObject\02. LandScape</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\State_GunIdle.h">
+      <Filter>06. FSM\Player\Attack\Gun\Idle</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\State_GunWalk.h">
+      <Filter>06. FSM\Player\Attack\Gun\Walk</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -1352,9 +1367,6 @@
     <ClCompile Include="..\Private\Water.cpp">
       <Filter>03. GameObject\MapObject\05. Water</Filter>
     </ClCompile>
-    <ClCompile Include="..\Private\LandScape.cpp">
-      <Filter>03. GameObject\MapObject\02. LandScape</Filter>
-    </ClCompile>
     <ClCompile Include="..\Private\Level_Tutorial_Village.cpp">
       <Filter>02. Level\Tutorial_Village</Filter>
     </ClCompile>
@@ -1457,6 +1469,21 @@
     </ClCompile>
     <ClCompile Include="..\Private\UILevelChange_Image.cpp">
       <Filter>03. GameObject\UIObjects\02.UI\Image\Dynamic Image\07.Level Chnage</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\State_GunAttack.cpp">
+      <Filter>06. FSM\Player\Attack\Gun\Attack</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\State_GunReload.cpp">
+      <Filter>06. FSM\Player\Attack\Gun\Reload</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\LandScape.cpp">
+      <Filter>03. GameObject\MapObject\02. LandScape</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\State_GunIdle.cpp">
+      <Filter>06. FSM\Player\Attack\Gun\Idle</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\State_GunWalk.cpp">
+      <Filter>06. FSM\Player\Attack\Gun\Walk</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
