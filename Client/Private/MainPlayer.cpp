@@ -203,6 +203,8 @@ void CMainPlayer::OnCollision_Enter(_uint iMyColliderLayer, _uint iOtherLayer, C
     desc.pRequester = this;
     desc.pOther = pOther;
     desc.tHitInfo = tHitInfo;
+
+    m_pGameInstance->Push_CollidedData(desc);
 }
 
 void CMainPlayer::OnCollision_Exit(_uint iMyColliderLayer, _uint iOtherLayer, CGameObject* pOther)
@@ -233,6 +235,37 @@ void CMainPlayer::OnTrigger_Exit(_uint iMyColliderLayer, _uint iOtherLayer, CGam
     desc.iOtherLayer = iOtherLayer;
     desc.pRequester = this;
     desc.pOther = pOther;
+}
+
+_bool CMainPlayer::On_Hit(const HIT_DESC& hitDesc)
+{
+#ifdef _DEBUG
+    wstring infoHeader(L"Player Hit ");
+    wstring infoSeparate(L": ");
+    wstring infoContant = infoHeader
+        + infoSeparate
+        + Engine_Utils::ToWString(m_strName)
+        + infoSeparate
+        + std::to_wstring(Get_ID());
+
+    CLOG_INFO(infoContant);
+#endif // _DEBUG
+    return true;
+}
+
+void CMainPlayer::Try_Attack(const HIT_DESC& hitDesc)
+{
+#ifdef _DEBUG
+    wstring infoHeader(L"Player Attack ");
+    wstring infoSeparate(L": ");
+    wstring infoContant = infoHeader
+        + infoSeparate
+        + Engine_Utils::ToWString(m_strName)
+        + infoSeparate
+        + std::to_wstring(Get_ID());
+
+    CLOG_INFO(infoContant);
+#endif // _DEBUG
 }
 
 #pragma region Legacy

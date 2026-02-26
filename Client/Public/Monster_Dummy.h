@@ -32,6 +32,9 @@ public:
 	virtual void OnTrigger_Enter(_uint iMyColliderLayer, _uint iOtherLayer, CGameObject* pOther) override;
 	virtual void OnTrigger_Exit(_uint iMyColliderLayer, _uint iOtherLayer, CGameObject* pOther) override;
 
+	virtual _bool On_Hit(const HIT_DESC& hitDesc) override;
+	virtual void Try_Attack(const HIT_DESC& hitDesc) override;
+
 private:
 	HRESULT Ready_BaseStates();
 	HRESULT Ready_PartObjects();

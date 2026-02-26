@@ -243,17 +243,23 @@ _bool CMonsterControlContext::IsTargetOutOfAttackRange()
 
 _bool CMonsterControlContext::IsFalling()
 {
-	return _bool();
-}
-
-_bool CMonsterControlContext::IsGrounded()
-{
-	return _bool();
+	_bool result = m_iSubState & SUB_STATE::FALL;
+	m_iSubState &= ~SUB_STATE::FALL;
+	return result;
 }
 
 _bool CMonsterControlContext::IsDown()
 {
-	return _bool();
+	_bool result = m_iSubState & SUB_STATE::DOWN;
+	m_iSubState &= ~SUB_STATE::DOWN;
+	return result;
+}
+
+_bool CMonsterControlContext::IsHit()
+{
+	_bool result = m_iSubState & SUB_STATE::HIT;
+	m_iSubState &= ~SUB_STATE::HIT;
+	return result;
 }
 
 _bool CMonsterControlContext::IsDamageRecently()

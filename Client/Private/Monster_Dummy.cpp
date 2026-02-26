@@ -112,6 +112,18 @@ void CMonster_Dummy::OnTrigger_Exit(_uint iMyColliderLayer, _uint iOtherLayer, C
 	Super::OnTrigger_Exit(iMyColliderLayer, iOtherLayer, pOther);
 }
 
+_bool CMonster_Dummy::On_Hit(const HIT_DESC& hitDesc)
+{
+	Super::On_Hit(hitDesc);
+
+	return true;
+}
+
+void CMonster_Dummy::Try_Attack(const HIT_DESC& hitDesc)
+{
+	Super::Try_Attack(hitDesc);
+}
+
 HRESULT CMonster_Dummy::Ready_BaseStates()
 {
 	CMonsterActionState* pActionState = { nullptr };

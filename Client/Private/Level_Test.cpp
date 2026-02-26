@@ -366,7 +366,7 @@ HRESULT CLevel_Test::Ready_Monster()
 			desc.bIsPlayer = false;
 			desc.eType = EPhysicsCCTType::CAPSULE;
 			desc.pOwnerMatrix = nullptr;
-			desc.fRadius = 1.f;
+			desc.fRadius = 0.7f;
 			desc.fHeight = 0.1f;
 			desc.vExtens = { 2.f, 2.f, 2.f };
 

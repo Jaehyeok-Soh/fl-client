@@ -5,6 +5,7 @@
 #include "Resource_Manager.h"
 #include "EventBus_Manager.h"
 #include "DataRepository.h"
+#include "Anim_Event_Hitbox.h"
 
 NS_BEGIN(Engine)
  
@@ -346,7 +347,7 @@ public:
 	void RegisterPhysicsMesh(_uint levelIndex, _wstring prototypeTag);
 	PxQuat GetPureRotation(const Matrix& mat);
 	PxVec3 GetPureScale(const Matrix& mat);
-	void Overlap_EventCallback(CGameObject* pOwner, const PxVec3& vOverlapPoint, PxOverlapHit* pOverlapHit, PxPairFlag::Enum event);
+	void Overlap_EventCallback(CGameObject* pOwner, const PxVec3& vOverlapPoint, PxOverlapHit* pOverlapHit, PxPairFlag::Enum event, DTO::HITBOX_DESC* hitboxDesc);
 	_bool RayCast(Vec3 vWorldPos, Vec3 vDir, _float fMaxDist, CPhysics_QueryFilterCallback* pFilterCall);
 #ifdef _DEBUG
 	void Physics_Render(PxRigidActor* pActor, XMVECTOR color = DirectX::Colors::White);
@@ -358,6 +359,11 @@ public:
 	void Spawn_PoolEffect(CEffectHandler* handler, const std::string& UniqueEffectName, const std::string& strTag, const Matrix& matWorld, _float fDuration, _uint bIsLocal, _uint iFlag, const Matrix* = nullptr, const Matrix* = nullptr);
 	void Spawn_PoolEffect(const std::string& strTag, const Matrix& matWorld, _float fDuration, _uint bIsLocal, _uint iFlag, const Matrix* = nullptr, const Matrix* = nullptr);
 #pragma endregion
+
+#pragma region JUDGEMENT_SYSTEM
+	void Push_CollidedData(const COLLIDED_DESC& desc);
+#pragma endregion
+
 // Todo - 쓰레기통 정리
 #pragma region GAMEDATA_MANAGER
 	HRESULT		GameDataManager_Load_TextureSplatingInfoData();
@@ -397,6 +403,7 @@ private:
 	class CShaderAsset_Manager* m_pShaderAsset_Manager = { nullptr };
 	class CPhysics_Module* m_pPhysics_Module = { nullptr };
 	class CEffect_Manager* m_pEffect_Manager = { nullptr };
+	class CJudgementSystem* m_pJudgementSystem = { nullptr };
 private:
 	std::mt19937_64 m_rng;
 public:
