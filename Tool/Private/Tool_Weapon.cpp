@@ -236,8 +236,11 @@ void CTool_Weapon::Ready_Before_Render(const _float fTimeDelta)
 	switch (m_eState)
 	{
 	case State::HOLD:
-		if(m_pMatSocket)
+		if (m_pMatSocket)
+		{
 			Super::Update_CombinedWorldMatrix(m_matRotation * (*m_pMatSocket) * (*m_pMatParent));
+
+		}
 		else
 			Super::Update_CombinedWorldMatrix(m_matRotation * (*m_pMatParent));
 		break;

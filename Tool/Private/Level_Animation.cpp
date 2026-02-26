@@ -305,12 +305,14 @@ void CLevel_Animation::Load_AnimModel(fs::path animModelPath, ANIM_SRT pretransf
 	SetAnimationInfo(animModelPath);
 }
 
-void CLevel_Animation::Load_PartObject(fs::path animPartModelPath, ANIM_SRT pretransform, _int iSocketBondIdx, _bool bCombine, _bool bStatic)
+void CLevel_Animation::Load_PartObject(fs::path animPartModelPath, ANIM_SRT pretransform, _int iSocketBondIdx, _bool bCombine, _bool bStatic, _int iRootBoneIdx)
 {
 	Matrix matScale = Matrix::CreateScale(pretransform.vScale);
 	Matrix matRotation = Matrix::CreateFromYawPitchRoll(pretransform.vRot);
 	Matrix matTranslation = Matrix::CreateTranslation(pretransform.vTranslation);
 	Matrix matPreTransform = matScale * matRotation * matTranslation;
+
+	//Matrix EunbiMat = Matrix::CreateScale(0.0001f);
 
 	if (!m_pSelectedObject)
 	{
@@ -329,6 +331,13 @@ void CLevel_Animation::Load_PartObject(fs::path animPartModelPath, ANIM_SRT pret
 	desc.wstrModelFolderName = animPartModelPath.stem().wstring();
 	desc.pMatPreTransform = &matPreTransform;
 	desc.FStageBone = CModel::STAGEING_BONE::SB_ZEROBONE;
+
+	if (!bStatic && iRootBoneIdx >= 0)
+	{
+		CModel::DATA_ANIMCHANNEL tAniChannelData = {};
+		tAniChannelData.iRootBoneIndex = iRootBoneIdx;
+		desc.pAniChannelData = &tAniChannelData;
+	}
 
 	CModel* pModelProto = CModel::Create(m_pDevice, m_pDeviceContext, &desc);
 	if (FAILED(m_pGameInstance->Add_Prototype(ENUM_TO_UINT(ELevelType::ANIMATION), modelProtoTag, pModelProto)))
