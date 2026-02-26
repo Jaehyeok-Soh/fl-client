@@ -280,8 +280,11 @@ private:
 	///////////////
 	//// Event ////
 	///////////////
+public:
+	// 외부 공개용, 무조건 현재프레임의 애니메이션 기준의 정보
+	HRESULT								Emit_Notifies(EAnimNotifyPhase ePhase);
 private:
-	void								Emit_Notifies(CModelAnimation* pAnimation, _float fPrevPos, _float fCurPos, _bool bIsLooped);
+	void								Emit_Notifies(CModelAnimation* pAnimation, _float fCurPos, EAnimNotifyPhase ePhase);
 
 private:
 	EModelType							m_eType						= { EModelType::END };
@@ -337,6 +340,8 @@ private:
 	///////////////
 	//// Event ////
 	///////////////
+	_bool m_bLooped{ false }; // 외부 공개용 아님, 현재프레임에 Loop가 이루어졌는가?
+	_float m_fAnimPrevTrackPosition{ -1.f }; // 외부 공개용 아님
 public:
 	CMulticastDelegate<void(const AnimNotifyKey&)> OnNotify;
 
