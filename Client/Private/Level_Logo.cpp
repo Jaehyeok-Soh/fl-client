@@ -72,12 +72,6 @@ HRESULT CLevel_Logo::Initialize()
 		return E_FAIL;
 	}
 
-	/* 카메라 생성 후 세팅 */
-	if (FAILED(Ready_Camera_Setting(ENUM_TO_UINT(ELevelType::LOGO))))
-	{
-		return E_FAIL;
-	}
-
 	if (FAILED(Ready_UI_Layer(g_wszUILayer)))
 	{
 		MSG_BOX("CLevel_Logo::Initialize, Ready_UI_Layer Create Failed");

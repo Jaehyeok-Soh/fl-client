@@ -10,6 +10,7 @@
 // Builder
 //=================
 #include "Builder_UI.h"
+#include "Builder_UIPrefabs.h"
 #include "Builder_Example.h"
 #include "BuilderSystem.h"
 #include "Builder_Map.h"
@@ -138,35 +139,6 @@ void CLevel_Test::Update(const _float fTimeDelta)
 #endif
 		m_pGameInstance->Request_CursorMode(m_eCursorMode);
 	}
-
-
-	// 오브젝트 풀링 테스트
-	if (m_pGameInstance->KeyButton_Down(DIK_0))
-	{
-		m_pGameInstance->Request_AddObject(ENUM_TO_UINT(ELevelType::TEST), L"POOL_Attack_1", 0, nullptr);
-	}
-
-	// GlobalTimeScale 테스트
-	{
-		if (m_pGameInstance->KeyButton_Down(DIK_9))
-		{
-			m_pGameInstance->Request_HitStop();
-		}
-		if (m_pGameInstance->KeyButton_Down(DIK_8))
-		{
-			m_pGameInstance->Request_SloMo(0.2f, 2.f);
-		}
-		if (m_pGameInstance->KeyButton_Down(DIK_6))
-		{
-			m_pGameInstance->Active_SloMo(0.5f);
-		}
-		if (m_pGameInstance->KeyButton_Down(DIK_7))
-		{
-			m_pGameInstance->Deactivate_SloMo();
-
-
-		}
-	}
 }
 
 HRESULT CLevel_Test::Render()
@@ -182,6 +154,8 @@ HRESULT CLevel_Test::Build_Prototype()
 	if (FAILED(Ready_Builder(DTO::ECategory::MAP, CBuilder_Map::Create(m_pDevice, m_pDeviceContext, static_cast<_uint>(ELevelType::TEST)))))
 		return E_FAIL;
 	if (FAILED(Ready_Builder(DTO::ECategory::UI, CBuilder_UI::Create(m_pDevice, m_pDeviceContext, static_cast<_uint>(ELevelType::TEST)))))
+		return E_FAIL;
+	if (FAILED(Ready_Builder(DTO::ECategory::UI_PREFAB, CBuilder_UIPrefabs::Create(m_pDevice, m_pDeviceContext, static_cast<_uint>(ELevelType::TEST)))))
 		return E_FAIL;
 	if (FAILED(Ready_Builder(DTO::ECategory::EFFECT, CBuilder_Effect::Create(m_pDevice, m_pDeviceContext, ENUM_TO_UINT(ELevelType::TEST)))))
 		return E_FAIL;
@@ -257,11 +231,11 @@ HRESULT CLevel_Test::Ready_Player_Layer(const wstring& wstrLayerTag)
 		CTransform::TRANSFORM_DESC transformDesc = {};
 		playerDesc.iLevelIndex = ENUM_TO_UINT(ELevelType::LOGO);
 		playerDesc.wstrBodyModelTag = L"Prototype_Component_Model_Moon";
-		transformDesc.TranslationMatrix = Matrix::CreateTranslation(Vec3(229.12f, 256.72f, -245.039f));
+		transformDesc.TranslationMatrix = Matrix::CreateTranslation(Vec3(15.f, 15.f, 15.f));
 		playerDesc.pTransform_Desc = &transformDesc;
 		if (!(pResult = m_pGameInstance->Add_GameObject(ENUM_TO_UINT(ELevelType::STATIC),
 			L"Prototype_GameObject_MainPlayer",
-			ENUM_TO_UINT(ELevelType::TEST),
+			ENUM_TO_UINT(ELevelType::STATIC),
 			wstrLayerTag, &playerDesc)))
 			return E_FAIL;
 	}
@@ -490,7 +464,10 @@ HRESULT CLevel_Test::Ready_Camera_Setting(const _uint iLevelIndex)
 	CGameObject* pMainCamera = m_pGameInstance->Get_GameObject_Front(iLevelIndex, g_wszDynamicCameraLayer);
 	m_pGameInstance->Add_Camera(CameraType::DYNAMIC, g_MainActorCameraName, static_cast<CCameraMan*>(pMainCamera));
 	m_pGameInstance->Change_MainCamera(CameraType::DYNAMIC, g_MainActorCameraName);
-	CGameObject* pPlayer = m_pGameInstance->Get_GameObject_Front(iLevelIndex, g_wszPlayerLayer);
+	CGameObject* pPlayer = m_pGameInstance->Get_GameObject_Front(/* static */ 0, g_wszPlayerLayer);
+	if (pPlayer == nullptr)
+		return E_FAIL;
+
 	m_pGameInstance->Change_Target(pPlayer);
 	m_pGameInstance->Ready_Frustrum();
 	return S_OK;

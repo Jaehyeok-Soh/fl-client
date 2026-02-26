@@ -12,7 +12,6 @@
 #include "Collider.h"
 #include "Model.h"
 #include "PhysicsCCT.h"
-#include "PhysicsAttackOverlap.h"
 #include "EffectHandler.h"
 #include "ComputeShader.h"
 
@@ -112,7 +111,6 @@ void CBody::Update_Late(_float fTimeDelta)
 {
 	Super::Update_Late(fTimeDelta);
 	
-	Get_Component<CPhysicsAttackOverlap>()->Update(fTimeDelta);
 	Get_Component<CEffectHandler>()->Update(fTimeDelta);
 }
 

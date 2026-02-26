@@ -549,8 +549,8 @@ HRESULT CLoader::Loading_For_Logo()
 		ADD_PROTOTYPE(ELevelType::STATIC, L"Prototype_GameObject_Part_Collider",		CColliderPart::Create(m_pDevice, m_pDeviceContext));
 
 		// ¿Ã∆Â∆Æ Object
-		ADD_PROTOTYPE(ELevelType::LOGO, L"Prototype_GameObject_Effect",					Effect::Create(m_pDevice, m_pDeviceContext));
-		ADD_PROTOTYPE(ELevelType::LOGO, L"Prototype_GameObject_Effect_Parts",			CEffectObject::Create(m_pDevice, m_pDeviceContext));
+		ADD_PROTOTYPE(ELevelType::STATIC, L"Prototype_GameObject_Effect",					Effect::Create(m_pDevice, m_pDeviceContext));
+		ADD_PROTOTYPE(ELevelType::STATIC, L"Prototype_GameObject_Effect_Parts",			CEffectObject::Create(m_pDevice, m_pDeviceContext));
 
 
 #pragma region Map Object

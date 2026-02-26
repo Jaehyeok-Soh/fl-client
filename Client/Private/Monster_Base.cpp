@@ -99,7 +99,8 @@ void CMonster_Base::Update_Late(const _float fTimeDelta)
 {
 	Super::Update_Late(fTimeDelta);
 
-	Get_Component<CPhysicsAttackOverlap>()->Update(fTimeDelta);
+	if (Get_Component <CPhysicsAttackOverlap>())
+		Get_Component<CPhysicsAttackOverlap>()->Update(fTimeDelta);
 }
 
 void CMonster_Base::Ready_Before_Render(const _float fTimeDelta)
@@ -198,7 +199,8 @@ HRESULT CMonster_Base::Ready_PartObjects(void* pArg)
 		bodyDesc.iLevelIndex = pDesc->iLevelIndex;
 		bodyDesc.wstrModelPrototypeTag = pDesc->wstrBodyModelTag;
 		bodyDesc.spanBoneNames = pDesc->spanBoneNames;
-		if (FAILED(Add_Part(Part::BODY, ENUM_TO_UINT(ELevelType::LOGO), pDesc->wstrPartBodyPrototypeTag, &bodyDesc)))
+		// TODO : 재혁아 이거 LevelID 바꿔야할수도있다 Static에 넣어두고 쓸까 ...?
+		if (FAILED(Add_Part(Part::BODY, pDesc->iLevelIndex, pDesc->wstrPartBodyPrototypeTag, &bodyDesc)))
 			return E_FAIL;
 	}
 

@@ -47,7 +47,7 @@ HRESULT CUIMini_Map::Attach_Personal_Info()
 	{
 	case DTO::EUIDImageSubClassType::MINIMAP_PLAYER_ICON:
 	{
-		CGameObject* pResult=	m_pGameInstance->Get_GameObject(m_iLevelID, g_wszPlayerLayer, 0);
+		CGameObject* pResult=	m_pGameInstance->Get_GameObject(/* static */ 0, g_wszPlayerLayer, 0);
 		if (nullptr == pResult)
 			return E_FAIL;
 		CMainPlayer* pPlayer = dynamic_cast<CMainPlayer*>(pResult);
@@ -68,6 +68,11 @@ HRESULT CUIMini_Map::Attach_Personal_Info()
 		m_vPivotToOrigin	= m_vOriginPos - m_vPivotPos;
 	}
 		return S_OK;
+	case DTO::EUIDImageSubClassType::MINIMAP_BGFRAME:
+	{
+
+	}
+	break;
 	case DTO::EUIDImageSubClassType::MINIMAP_WARNING_FRAME:
 	{
 		// * 외부 변수 바인딩 *
@@ -75,6 +80,7 @@ HRESULT CUIMini_Map::Attach_Personal_Info()
 	}
 	break;
 	case DTO::EUIDImageSubClassType::END:
+		break;
 	default:
 		return E_FAIL;
 	}
@@ -86,7 +92,9 @@ HRESULT CUIMini_Map::Awake(const _uint iCurrentLevelID)
 {
 	if (FAILED(Super::Awake(iCurrentLevelID)))
 		return E_FAIL;
-	Attach_Personal_Info();
+
+	if (FAILED(Attach_Personal_Info()))
+		return E_FAIL;
 	return S_OK;
 }
 
