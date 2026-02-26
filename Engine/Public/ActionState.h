@@ -134,7 +134,7 @@ protected:
 	_int				m_iCurrentState			= { -1 };
 	_int				m_iPrevState			= { -1 };
 
-	const _float		m_fGravity				= { -25.f };
+	const _float		m_fGravity				= { -10.f };
 	const _float		m_fMaxVerticalSpeed		= { 30.f };
 	const _float		m_fMaxFallSpeed			= { -12.f };
 	_float				m_fVerticalSpeed		= { 0.f };

@@ -48,7 +48,20 @@ HRESULT CState_GunBase::Start(void* pArg, _bool bForce)
         return E_FAIL;
 
     GUN_START_DESC* pDesc = static_cast<GUN_START_DESC*>(pArg);
-    Change_MoveState(pDesc->eMoveState);
+
+    // desc이 없다면 바닥 충돌 검사후 move state 설정
+    if (!pDesc)
+    {
+        if (Check_OnGround(0.3f))
+            Change_MoveState(MoveState::GROUND);
+
+        else
+            Change_MoveState(MoveState::FALL);
+    }
+
+    // desc 정보로 move state 설정
+    else
+        Change_MoveState(pDesc->eMoveState);
 
     return S_OK;
 }
@@ -317,7 +330,7 @@ void CState_GunBase::Start_MoveState(MoveState eNextState)
         m_vecChangeState_ByKey[ENUM_TO_SZET(STATEKEY::LM)]      = ENUM_TO_UINT(CPlayer::State::JUMPATTSTART);
         m_vecChangeState_ByKey[ENUM_TO_SZET(STATEKEY::CHARGE)]  = m_iEndStateIdx;
 
-        Set_GravityOffset(20.f);
+        Set_GravityOffset(8.f);
         break;
     }
 }

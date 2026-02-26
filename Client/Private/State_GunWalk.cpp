@@ -74,7 +74,7 @@ HRESULT CState_GunWalk::End()
 	if (FAILED(Super::End()))
 		return E_FAIL;
 
-	Change_Weapon(CPlayer::Part::GUN, ENUM_TO_UINT(CWeapon::State::NONE));
+	Change_Weapon(CPlayer::Part::GUN, ENUM_TO_UINT(CWeapon::State::HOLD));
 
 	return S_OK;
 }

@@ -274,14 +274,14 @@ _bool CStateBase_Player::Check_RangeKey(const _float fTimeDelta)
 			// 공격이 가능 하다면 : attack
 			if (Can_Fire())
 			{
-				Change_PlayerState(ENUM_TO_UINT(CPlayer::State::GUNATTACK));
+				Request_Change_State(ENUM_TO_UINT(CPlayer::State::GUNATTACK));
 				return true;
 			}
 
 			// 공격은 불가능 하지만 reload는 가능 하다면 : reload
 			else if (Can_Reload())
 			{
-				Change_PlayerState(ENUM_TO_UINT(CPlayer::State::GUNATTACK));
+				Request_Change_State(ENUM_TO_UINT(CPlayer::State::GUNRELOAD));
 				return true;
 			}
 
