@@ -12,8 +12,8 @@ class CState_GunBase abstract : public CStateBase_Player
 
 public:
 	// «œ√º move state
-	enum class MoveState { GROUND, LAND, JUMP, FALL};
-	enum  Douwn_MixAnim : _uint { F =0, B, L, R, LF, LB, RF, RB, JUMP, FALL,LAND, END };
+	enum class MoveState { GROUND, JUMP, FALL};
+	enum  Douwn_MixAnim : _uint { F =0, B, L, R, LF, LB, RF, RB, JUMP, FALL, END };
 
 	enum KeyFlag : Flags
 	{
@@ -95,7 +95,6 @@ protected:
 	void Ground_Update(const _float fTimeDelta);
 	void Jump_Update(const _float fTimeDelta);
 	void Fall_Update(const _float fTimeDelta);
-	void Land_Update(const _float fTimeDelta);
 
 	_bool Change_MoveState(MoveState eState);
 	void Start_MoveState(MoveState eNextState);
@@ -105,6 +104,8 @@ protected:
 
 private:
 	void Jump(const _float fTimeDelta);
+
+	void GunMove(const _float fTimeDelta);
 
 public:
 	virtual void Free() override;

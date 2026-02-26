@@ -16,17 +16,6 @@ CState_GunBase::CState_GunBase(CActionState* pOwnerComponent, const string& strN
 HRESULT CState_GunBase::Initialize(void* pArg)
 {
     GUN_STATEBASE_DESC* pDesc = static_cast<GUN_STATEBASE_DESC*>(pArg);
-    //m_MixAnim_Indices[ENUM_TO_SZET(Douwn_MixAnim::F)] = _uint(pDesc->vWSAD_AnimIdx.x);
-    //m_MixAnim_Indices[ENUM_TO_SZET(Douwn_MixAnim::B)] = _uint(pDesc->vWSAD_AnimIdx.y);
-    //m_MixAnim_Indices[ENUM_TO_SZET(Douwn_MixAnim::L)] = _uint(pDesc->vWSAD_AnimIdx.z);
-    //m_MixAnim_Indices[ENUM_TO_SZET(Douwn_MixAnim::R)] = _uint(pDesc->vWSAD_AnimIdx.w);
-    //m_MixAnim_Indices[ENUM_TO_SZET(Douwn_MixAnim::LF)] = _uint(pDesc->vLFB_RFB_AnimIdx.x);
-    //m_MixAnim_Indices[ENUM_TO_SZET(Douwn_MixAnim::LB)] = _uint(pDesc->vLFB_RFB_AnimIdx.y);
-    //m_MixAnim_Indices[ENUM_TO_SZET(Douwn_MixAnim::RF)] = _uint(pDesc->vLFB_RFB_AnimIdx.z);
-    //m_MixAnim_Indices[ENUM_TO_SZET(Douwn_MixAnim::RB)] = _uint(pDesc->vLFB_RFB_AnimIdx.w);
-    //m_MixAnim_Indices[ENUM_TO_SZET(Douwn_MixAnim::JUMP)] = pDesc->iJumpAnimIdx;
-    //m_MixAnim_Indices[ENUM_TO_SZET(Douwn_MixAnim::FALL)] = pDesc->iFallAnimIdx;
-
     m_MixAnim_Indices = pDesc->arrMixAnims;
 
     PLAYER_STATEBASE_DESC tSuperDesc    = {};
@@ -66,7 +55,7 @@ HRESULT CState_GunBase::Start(void* pArg, _bool bForce)
 
 void CState_GunBase::Update(const _float fTimeDelta)
 {
-    // 만약 r button 눌림이 끝났다면 gun state 탈출
+    // 0. 만약 r button 눌림이 끝났다면 gun state 탈출
     if (MOUSE_RBUTTON_UP)
     {
         // move 상태에 따라
@@ -74,6 +63,20 @@ void CState_GunBase::Update(const _float fTimeDelta)
         return;
     }
 
+    // 1. shif, mouse L, skill 키 검사
+    if (Check_BaseKey(fTimeDelta))
+    {
+        Request_MixAnimation(1, -1);
+        return;
+    }
+
+    // 2. 움직임키 flag check
+    Check_KeyFlag(fTimeDelta);
+
+    // 3. 키값을 받은걸 바탕으로 움직인다 : 8방향
+    GunMove(fTimeDelta);
+
+    // 4. move state update
     Move_Update(fTimeDelta);
 }
 
@@ -88,7 +91,7 @@ HRESULT CState_GunBase::End()
 void CState_GunBase::Change_PlayerState(STATEKEY eKey)
 {
     if (eKey == STATEKEY::SHIFT &&
-        (m_eMoveState == MoveState::GROUND || m_eMoveState == MoveState::LAND) &&
+        (m_eMoveState == MoveState::GROUND) &&
         Key_Input(ENUM_TO_UINT(CControlContext::CONTROL_KEY::MOVE))
         )
     {
@@ -116,7 +119,7 @@ void CState_GunBase::Check_KeyFlag(const _float fTimeDelta)
     if (KEY_BUTTON_HOLD(DIK_D))
         Engine_Utils::Add_Flag(m_FKeyFlags, KeyFlag::D);
 
-    if (KEY_BUTTON_HOLD(DIK_SPACE))
+    if (KEY_BUTTON_DOWN(DIK_SPACE))
         Engine_Utils::Add_Flag(m_FKeyFlags, KeyFlag::Space);
 }
 
@@ -142,10 +145,6 @@ void CState_GunBase::Move_Update(const _float fTimeDelta)
         Ground_Update(fTimeDelta);
         break;
 
-    case MoveState::LAND:
-        Land_Update(fTimeDelta);
-        break;
-
     case MoveState::JUMP:
         Jump_Update(fTimeDelta);
         break;
@@ -158,18 +157,6 @@ void CState_GunBase::Move_Update(const _float fTimeDelta)
 
 void CState_GunBase::Ground_Update(const _float fTimeDelta)
 {
-    // 1. shif, mouse L, skill 키 검사
-    if (Check_BaseKey(fTimeDelta))
-    {
-        Request_MixAnimation(1, -1);
-        return;
-    }
-
-    // 2. 움직임키 flag check
-    Check_KeyFlag(fTimeDelta);
-
-    // 3. key flag를 기준으로 하체 상태 제어
-
     // 3.1 jump 우선 판정
     if (Engine_Utils::Has_Flag(m_FKeyFlags, KeyMask::Mask_Jump))
     {
@@ -188,9 +175,6 @@ void CState_GunBase::Ground_Update(const _float fTimeDelta)
     // 3.3 하체 mix anim 판정
     else
     {
-        // 일단 움직이고
-        Align_Movement(fTimeDelta);
-
         // anim mix 셋팅
         if (Engine_Utils::Has_Flag(m_FKeyFlags, KeyMask::Mask_LF))
         {
@@ -244,21 +228,12 @@ void CState_GunBase::Ground_Update(const _float fTimeDelta)
 
 void CState_GunBase::Jump_Update(const _float fTimeDelta)
 {
-    if (Check_BaseKey(fTimeDelta))
-    {
-        Request_MixAnimation(1, -1);
-        return;
-    }
-
-    if (KEY_BUTTON_DOWN(DIK_SPACE))
+    if (Engine_Utils::Has_Flag(m_FKeyFlags, KeyMask::Mask_Jump))
     {
         Request_MixAnimation(1, -1);
         Request_Change_State(ENUM_TO_UINT(CPlayer::State::JUMPDOUBLE));
         return;
     }
-
-    // 움직임 그냥 적용
-    Align_Movement(fTimeDelta);
 
     Jump(fTimeDelta);
 
@@ -271,41 +246,23 @@ void CState_GunBase::Jump_Update(const _float fTimeDelta)
     }
 
     // 바닥 충돌 검사 -> Land
-    if (m_TJumpTime.x>0.3f && IsOn_CCTFlag(PxControllerCollisionFlag::Enum::eCOLLISION_DOWN))
-        Change_MoveState(MoveState::LAND);
+    if (m_TJumpTime.x > 0.15f &&
+        IsOn_CCTFlag(PxControllerCollisionFlag::Enum::eCOLLISION_DOWN))
+    {
+        Change_MoveState(MoveState::GROUND);
+    }
+
 }
 
 void CState_GunBase::Fall_Update(const _float fTimeDelta)
 {
-    if (Check_BaseKey(fTimeDelta))
-    {
-        Request_MixAnimation(1, -1);
-        return;
-    }
-
-    // 움직임 그냥 적용
-    Align_Movement(fTimeDelta);
-
     // 바닥 충돌 검사 -> Land
-    if (IsOn_CCTFlag(PxControllerCollisionFlag::Enum::eCOLLISION_DOWN))
-        Change_MoveState(MoveState::GROUND);
-}
-
-void CState_GunBase::Land_Update(const _float fTimeDelta)
-{
-    if (Check_BaseKey(fTimeDelta))
+    if (Check_OnGround(0.3f))
     {
         Request_MixAnimation(1, -1);
-        return;
-    }
-
-    // wasd key || cool 타임-> Ground
-    m_TLandTime.x += fTimeDelta;
-    if (Key_Input(ENUM_TO_UINT(CControlContext::CONTROL_KEY::MOVE)) ||
-        m_TLandTime.x >= m_TLandTime.y)
-    {
         Change_MoveState(MoveState::GROUND);
     }
+
 }
 
 _bool CState_GunBase::Change_MoveState(MoveState eState)
@@ -337,18 +294,11 @@ void CState_GunBase::Start_MoveState(MoveState eNextState)
     switch (eNextState)
     {
     case MoveState::GROUND:
+        Request_MixAnimation(1, -1);
         m_vecChangeState_ByKey[ENUM_TO_SZET(STATEKEY::SHIFT)] = ENUM_TO_UINT(CPlayer::State::DASHBACK);
         m_vecChangeState_ByKey[ENUM_TO_SZET(STATEKEY::Q)] = ENUM_TO_UINT(CPlayer::State::SKILL2);
         m_vecChangeState_ByKey[ENUM_TO_SZET(STATEKEY::LM)] = ENUM_TO_UINT(CPlayer::State::COMBO);
         m_vecChangeState_ByKey[ENUM_TO_SZET(STATEKEY::CHARGE)] = ENUM_TO_UINT(CPlayer::State::CHARGE);
-        break;
-
-    case MoveState::LAND:
-        Request_MixAnimation(1, m_MixAnim_Indices[LAND]);
-        m_vecChangeState_ByKey[ENUM_TO_SZET(STATEKEY::SHIFT)]   = ENUM_TO_UINT(CPlayer::State::DASHBACK);
-        m_vecChangeState_ByKey[ENUM_TO_SZET(STATEKEY::Q)]       = ENUM_TO_UINT(CPlayer::State::SKILL2);
-        m_vecChangeState_ByKey[ENUM_TO_SZET(STATEKEY::LM)]      = ENUM_TO_UINT(CPlayer::State::COMBO);
-        m_vecChangeState_ByKey[ENUM_TO_SZET(STATEKEY::CHARGE)]  = ENUM_TO_UINT(CPlayer::State::CHARGE);
         break;
 
     case MoveState::JUMP:
@@ -374,12 +324,11 @@ void CState_GunBase::Start_MoveState(MoveState eNextState)
 
 void CState_GunBase::End_MoveState(MoveState ePreState)
 {
+    Request_MixAnimation(1, -1);
+
     switch (ePreState)
     {
     case MoveState::GROUND:
-        break;
-
-    case MoveState::LAND:
         break;
 
     case MoveState::JUMP:
@@ -401,7 +350,6 @@ void CState_GunBase::GunEnd()
     switch (m_eMoveState)
     {
      case MoveState::GROUND:
-     case MoveState::LAND:
          if (Key_Input(ENUM_TO_UINT(CControlContext::CONTROL_KEY::MOVE)))
          {
              Super::Change_PlayerState(ENUM_TO_UINT(CPlayer::State::GUNWALK));
@@ -424,7 +372,6 @@ void CState_GunBase::GunEnd()
 void CState_GunBase::Jump(const _float fTimeDelta)
 {
     CTransform* pPlayerTrans = Get_OwnerObject()->Get_Component<CTransform>();
-    CPhysicsCCT* pCCT = Get_OwnerObject()->Get_Component<CPhysicsCCT>();
     _float moveps = pPlayerTrans->Get_MovePerSec(); // 속도
 
 
@@ -434,6 +381,46 @@ void CState_GunBase::Jump(const _float fTimeDelta)
     Vec3 disp = vUp * moveps * fTimeDelta;
 
     Move(disp, 0.01f, fTimeDelta);
+}
+
+void CState_GunBase::GunMove(const _float fTimeDelta)
+{
+    CTransform* pPlayerTrans = Get_OwnerObject()->Get_Component<CTransform>();
+
+    _float moveps = pPlayerTrans->Get_MovePerSec() * 0.85f; // 속도
+
+    Vec3 vRight = pPlayerTrans->Get_Info(TRANSFORM_INFO_STATE::RIGHT);
+    vRight.y = 0.f;
+    vRight.Normalize();
+
+    Vec3 vFront = Vec3(vRight.z, 0.f, -vRight.x);
+    vFront.Normalize();
+
+    Vec3 vDir = Vec3::Zero;
+
+    if (Engine_Utils::Has_Flag(m_FKeyFlags, KeyFlag::W))
+    {
+        vDir -= vFront;
+    }
+
+    if (Engine_Utils::Has_Flag(m_FKeyFlags, KeyFlag::S))
+    {
+        vDir += vFront;
+    }
+
+    if (Engine_Utils::Has_Flag(m_FKeyFlags, KeyFlag::A))
+    {
+        vDir -= vRight;
+    }
+
+    if (Engine_Utils::Has_Flag(m_FKeyFlags, KeyFlag::D))
+    {
+        vDir += vRight;
+    }
+
+    if (::XMVector3Equal(vDir, Vec3::Zero) == false)
+        vDir.Normalize();
+    Move(vDir * moveps * fTimeDelta, 0.01f, fTimeDelta);
 }
 
 void CState_GunBase::Free()

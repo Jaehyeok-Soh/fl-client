@@ -900,7 +900,6 @@ HRESULT CMainPlayer::Ready_AttackStates()
     arrMix[ENUM_TO_SZET(CState_GunBase::Douwn_MixAnim::RB)] = Get_AnimationIndex(L"Animation_PlayerMoon_Shotgun_Run_Loop_RB");
     arrMix[ENUM_TO_SZET(CState_GunBase::Douwn_MixAnim::JUMP)] = Get_AnimationIndex(L"Animation_PlayerMoon_FirstJump_InplaceStart");
     arrMix[ENUM_TO_SZET(CState_GunBase::Douwn_MixAnim::FALL)] = Get_AnimationIndex(L"Animation_PlayerMoon_Jump_FallLoop");
-    arrMix[ENUM_TO_SZET(CState_GunBase::Douwn_MixAnim::LAND)] = Get_AnimationIndex(L"Animation_PlayerMoon_Land_Inplace");
 
     vector<CModel::DATA_ANIMIX> vecDownMix = { {304,true,1.f},{329,true,1.f},{378,true,1.f} };
 
