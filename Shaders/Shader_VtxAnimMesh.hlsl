@@ -80,7 +80,7 @@ PS_OUT_DEFFERED PS_RGBMAPPING(PS_IN_SKELETON input)
     
     float3 vNormal = input.vNormal;
     Compute_Normal(vNormal, input.vTangent, input.vBinormal, input.vUV);
-    output.vNormal = vNormal * 0.5f + 0.5f;
+    output.vNormal = float4(vNormal * 0.5f + 0.5f, 1.f);
     
     float3 vSpecMask = float3(1.f, 1.f, 0.f);
     if (Has(g_iMaterialMask, METALNESS))
