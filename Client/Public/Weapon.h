@@ -45,6 +45,7 @@ public:
 
 		Weapon_ModelType	eModel		= { Weapon_ModelType::STATIC };
 		AnimState			eAnimState	= { AnimState::STOP };
+		State				eState		= { State::NONE };
 
 		_bool				bMianWeapon		= { false };
 

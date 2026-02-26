@@ -31,8 +31,8 @@ HRESULT CStateBase_Player::Initialize(void* pArg)
 	m_tKeyTimer						= pDesc->tKeyTimer;
 
 	m_pOwnerGun = pDesc->pOwnerGun;
-	if (m_pOwnerGun)
-		Safe_AddRef(m_pOwnerGun);
+	//if (m_pOwnerGun)
+	//	Safe_AddRef(m_pOwnerGun);
 
 	return S_OK;
 }
@@ -416,6 +416,6 @@ void CStateBase_Player::Count_Combo()
 
 void CStateBase_Player::Free()
 {
-	Safe_Release(m_pOwnerGun);
+	//Safe_Release(m_pOwnerGun);
 	Super::Free();
 }

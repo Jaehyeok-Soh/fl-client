@@ -71,10 +71,6 @@ HRESULT CMainPlayer::Initialize_Prototype()
 
 HRESULT CMainPlayer::Initialize(void* pArg)
 {
-    // player가 weapon을 알아야 해서
-    if (FAILED(Ready_Weapons()))
-        return E_FAIL;
-
     if (FAILED(Super::Initialize(pArg)))
         return E_FAIL;
 
@@ -518,101 +514,6 @@ HRESULT CMainPlayer::Ready_Ability()
     //    }
 
     //    pActionState->Add_State(ENUM_TO_UINT(CPlayer::State::LEFTMELEE), pContainer);
-    //}
-    return S_OK;
-}
-
-HRESULT CMainPlayer::Ready_Weapons()
-{
-    // Weapons : Sword
-    {
-        CWeapon::WEAPON_DESC weaponDesc     = {};
-        weaponDesc.wstrModelPrototypeName   = L"Prototype_Component_Model_MoonGun";
-        weaponDesc.pMatParent               = &Get_Component<CTransform>()->Get_WorldMatrix();
-        weaponDesc.pMatHandSocket           = &Get_Part<CBody>(Part::BODY)->Get_RightHandSocket()->Get_CombinedTransformMatrix();
-        weaponDesc.pMatSocket               = &Get_Part<CBody>(Part::BODY)->Get_WeaponSocket()->Get_BindPoseTransformMatrix();
-        weaponDesc.eModel                   = CWeapon::Weapon_ModelType::ANIM;
-        weaponDesc.bMianWeapon              = true;
-        weaponDesc.FDescFlag = CWeapon::WeaponDescFlag::WF_RGBMappingOn;
-        weaponDesc.vColorR = Vec4(0.119538f, 0.119538f, 0.119538f, 1.f);
-        weaponDesc.vColorG = Vec4(1.f, 0.751839f, 0.182292f, 1.f);
-        weaponDesc.vColorB = Vec4(0.458824f, 0.435294f, 0.45098f, 1.f);
-
-
-        weaponDesc.matHandOffsetMatrix = Matrix::CreateRotationX(XMConvertToRadians(-90.f));
-        weaponDesc.matHoldOffsetMatrix = Matrix::CreateRotationX(XMConvertToRadians(-90.f));
-
-        if (FAILED(Add_Part(Part::SWORD, ENUM_TO_UINT(ELevelType::STATIC), L"Prototype_GameObject_Part_Sword", &weaponDesc)))
-            return E_FAIL;
-    }
-
-    // Weapons : Skill
-    {
-        CWeapon::WEAPON_DESC weaponDesc = {};
-        weaponDesc.wstrModelPrototypeName = L"Prototype_Component_Model_MoonSkillWeap";
-        weaponDesc.pMatParent = &Get_Component<CTransform>()->Get_WorldMatrix();
-        weaponDesc.pMatHandSocket = &Get_Part<CBody>(Part::BODY)->Get_RightHandSocket()->Get_CombinedTransformMatrix();
-        weaponDesc.pMatSocket = &Get_Part<CBody>(Part::BODY)->Get_WeaponSocket()->Get_BindPoseTransformMatrix();
-        weaponDesc.eModel = CWeapon::Weapon_ModelType::STATIC;
-        weaponDesc.bMianWeapon = false;
-        weaponDesc.FDescFlag = CWeapon::WeaponDescFlag::WF_RGBMappingOn;
-        weaponDesc.vColorR = Vec4(0.84375f, 0.84375f, 0.84375f, 1.f);
-        weaponDesc.vColorG = Vec4(0.686686f, 0.686686f, 0.686686f, 1.f);
-        weaponDesc.vColorB = Vec4(0.234375f, 0.234375f, 0.234375f, 1.f);
-
-        weaponDesc.matHandOffsetMatrix = Matrix::CreateRotationX(XMConvertToRadians(-90.f));
-        weaponDesc.matHoldOffsetMatrix = Matrix::CreateRotationX(XMConvertToRadians(-90.f));
-        if (FAILED(Add_Part(Part::SKILL, ENUM_TO_UINT(ELevelType::STATIC), L"Prototype_GameObject_Part_Sword", &weaponDesc)))
-            return E_FAIL;
-    }
-
-    // Weapons : Gun
-    {
-        //CWeapon::WEAPON_DESC weaponDesc = {};
-        //weaponDesc.wstrModelPrototypeName = L"Prototype_Component_Model_MoonGun";
-        //weaponDesc.pMatParent = &Get_Component<CTransform>()->Get_WorldMatrix();
-        //weaponDesc.pMatHandSocket = &Get_Part<CBody>(Part::BODY)->Get_RightHandSocket()->Get_CombinedTransformMatrix();
-        //weaponDesc.pMatSocket = &Get_Part<CBody>(Part::BODY)->Get_WeaponSocket()->Get_BindPoseTransformMatrix();
-        //weaponDesc.eModel = CWeapon::Weapon_ModelType::STATIC;
-        //weaponDesc.bMianWeapon = false;
-        //weaponDesc.bRGBShader = true;
-        //weaponDesc.vColorR = Vec4(0.84375f, 0.84375f, 0.84375f, 1.f);
-        //weaponDesc.vColorG = Vec4(0.686686f, 0.686686f, 0.686686f, 1.f);
-        //weaponDesc.vColorB = Vec4(0.234375f, 0.234375f, 0.234375f, 1.f);
-        //if (FAILED(Add_Part(Part::GUN, ENUM_TO_UINT(ELevelType::STATIC), L"Prototype_GameObject_Part_Weapon", &weaponDesc)))
-        //    return E_FAIL;
-    }
-    //// LeftHand
-    //{
-    //    CColliderPart::COLLIDERPART_DESC colliderPartDesc = {};
-    //    colliderPartDesc.pMatParent = &Get_Component<CTransform>()->Get_WorldMatrix();
-    //    colliderPartDesc.pMatSocket = &Get_Part<CBody>(Part::BODY)->Get_LeftHandSocket()->Get_CombinedTransformMatrix();
-    //    if (FAILED(Add_Part(Part::LEFTHAND, ENUM_TO_UINT(ELevelType::STATIC), L"Prototype_GameObject_Part_Collider", &colliderPartDesc)))
-    //        return E_FAIL;
-    //}
-    //// RightHand
-    //{
-    //    CColliderPart::COLLIDERPART_DESC colliderPartDesc = {};
-    //    colliderPartDesc.pMatParent = &Get_Component<CTransform>()->Get_WorldMatrix();
-    //    colliderPartDesc.pMatSocket = &Get_Part<CBody>(Part::BODY)->Get_RightHandSocket()->Get_CombinedTransformMatrix();
-    //    if (FAILED(Add_Part(Part::RIGHTHAND, ENUM_TO_UINT(ELevelType::STATIC), L"Prototype_GameObject_Part_Collider", &colliderPartDesc)))
-    //        return E_FAIL;
-    //}
-    //// LeftFoot
-    //{
-    //    CColliderPart::COLLIDERPART_DESC colliderPartDesc = {};
-    //    colliderPartDesc.pMatParent = &Get_Component<CTransform>()->Get_WorldMatrix();
-    //    colliderPartDesc.pMatSocket = &Get_Part<CBody>(Part::BODY)->Get_LeftFootSocket()->Get_CombinedTransformMatrix();
-    //    if (FAILED(Add_Part(Part::LEFTFOOT, ENUM_TO_UINT(ELevelType::STATIC), L"Prototype_GameObject_Part_Collider", &colliderPartDesc)))
-    //        return E_FAIL;
-    //}
-    //// RightFoot
-    //{
-    //    CColliderPart::COLLIDERPART_DESC colliderPartDesc = {};
-    //    colliderPartDesc.pMatParent = &Get_Component<CTransform>()->Get_WorldMatrix();
-    //    colliderPartDesc.pMatSocket = &Get_Part<CBody>(Part::BODY)->Get_RightFootSocket()->Get_CombinedTransformMatrix();
-    //    if (FAILED(Add_Part(Part::RIGHTFOOT, ENUM_TO_UINT(ELevelType::STATIC), L"Prototype_GameObject_Part_Collider", &colliderPartDesc)))
-    //        return E_FAIL;
     //}
     return S_OK;
 }

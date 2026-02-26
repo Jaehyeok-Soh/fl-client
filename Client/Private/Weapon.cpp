@@ -48,18 +48,16 @@ HRESULT CWeapon::Initialize(void* pArg)
 	WEAPON_DESC* pDesc = static_cast<WEAPON_DESC*>(pArg);
 	m_pMatHandSocket = pDesc->pMatHandSocket;
 	m_pMatSocket = pDesc->pMatSocket;
+
 	m_eModleType = pDesc->eModel;
+	m_eAnimState = pDesc->eAnimState;
+	m_eState = pDesc->eState;
+
+	m_FDescFlags = pDesc->FDescFlag;
 	m_bMainWeapon = pDesc->bMianWeapon;
 
 	m_matHandOffsetMatrix = pDesc->matHandOffsetMatrix;
 	m_matHoldOffsetMatrix = pDesc->matHoldOffsetMatrix;
-
-	m_FDescFlags = pDesc->FDescFlag;
-	m_eAnimState = pDesc->eAnimState;
-
-	// model과 desc 정보 다를때를 위한 방어
-	if (Get_Component<CModel>()->Get_Type() == EModelType::NONANIM)
-		m_eModleType = Weapon_ModelType::STATIC;
 
 	if (FAILED(Ready_Components(pDesc)))
 		return E_FAIL;
@@ -78,9 +76,7 @@ HRESULT CWeapon::Initialize(void* pArg)
 		break;
 	}
 
-	if (m_bMainWeapon)
-		m_eState = State::HOLD;
-	else
+	if (!m_bMainWeapon)
 		m_eState = State::NONE;
 
 	//Get_Component<CTransform>()->Set_Scale(0.1f, 0.1f, 0.1f);
@@ -149,7 +145,7 @@ void CWeapon::Ready_Before_Render(_float fTimeDelta)
 	{
 	case State::HOLD:
 		Super::Update_CombinedWorldMatrix(m_matHoldOffsetMatrix * (*m_pMatSocket) * (*m_pMatParent));
-		//Update_HoldingPos();
+		Update_HoldingPos();
 		break;
 
 	case State::HAND:
@@ -233,6 +229,10 @@ HRESULT CWeapon::Ready_Components(WEAPON_DESC* pDesc)
 {
 	if (FAILED(Add_Component<CModel>(0/*static*/, pDesc->wstrModelPrototypeName, nullptr)))
 		return E_FAIL;
+
+	// model과 desc 정보 다를때를 위한 방어
+	if (Get_Component<CModel>()->Get_Type() == EModelType::STATIC)
+		m_eModleType = Weapon_ModelType::STATIC;
 
 	if (m_eModleType == Weapon_ModelType::STATIC)
 	{
