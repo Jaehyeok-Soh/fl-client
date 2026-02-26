@@ -40,7 +40,7 @@ public:
 	virtual void OnCollision_Exit(_uint iMyColliderLayer, _uint iOtherLayer, CGameObject* pOther) override;
 	virtual void OnTrigger_Enter(_uint iMyColliderLayer, _uint iOtherLayer, CGameObject* pOther) override;
 	virtual void OnTrigger_Exit(_uint iMyColliderLayer, _uint iOtherLayer, CGameObject* pOther) override;
-	virtual _bool On_Hit(_uint iCollideMyLayer, ATTACK_DESC* pDesc, CGameObject* pOther) override;
+	virtual _bool On_Hit(const HIT_DESC& hitDesc) override;
 	virtual HRESULT Render() override;
 public:
 	CBone* Get_Bone(CMonster_Body_Base::EBone eBone);

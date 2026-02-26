@@ -16,7 +16,6 @@ public:
 	virtual void	Update(const _float fTimeDelta) override;
 	virtual HRESULT Render() override;
 private:
-	/* Logo Scene에서 Player를 만들예정 */
 	HRESULT Build_Prototype();
 	HRESULT Build_Files();
 	HRESULT Ready_Player_Layer(const wstring& wstrLayerTag);

@@ -195,6 +195,7 @@ HRESULT CGameInstance::Copy_BackBufferTexture(ID3D11Texture2D** ppTexture)
 }
 void CGameInstance::Clear(_uint iLevelID)
 {
+	m_pRender_Manager->Clear();
 	m_pDataRepository->Clear(iLevelID);
 	m_pObjectPool_Manager->All_Despawn_StaticLevel();
 	m_pTimeScale_Manager->Clear();
@@ -1111,6 +1112,10 @@ const DTO::TAttackPreset_Data* CGameInstance::Find_AttackPrseet(_uint iPresetKey
 const DTO::TAttackPreset_Data* CGameInstance::Find_AttackPresetByTag(const string& strTag) const
 {
 	return m_pGameData_Manager->Find_AttackPresetByTag(strTag);
+}
+_uint CGameInstance::Get_AttackPresetIdByTag(const string& strTag) const
+{
+	return m_pGameData_Manager->Get_AttackPresetIdByTag(strTag);
 }
 HRESULT CGameInstance::Upsert_AttackPresetData(const DTO::TAttackPreset_Data& inData)
 {

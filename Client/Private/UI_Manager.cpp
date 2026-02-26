@@ -107,7 +107,6 @@ void CUI_Manager::Add_RenderGroup(uint32_t iLevelIndex)
 {
 	if (m_isClear)
 	{
-		m_vecSortUI.clear();
 		Clear_Cache(iLevelIndex);
 		m_isClear = false;
 		return;
@@ -137,6 +136,7 @@ void CUI_Manager::Request_SortUI()
 
 void CUI_Manager::Clear_Cache(uint32_t iLevelIndex)
 {
+	m_vecSortUI.clear();
 	m_vecCanvasCache[iLevelIndex].clear();
 	m_vecGenericUICache[iLevelIndex].clear();
 	m_mapCanvasCache[iLevelIndex].clear();

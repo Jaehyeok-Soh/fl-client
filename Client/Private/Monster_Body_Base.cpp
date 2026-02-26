@@ -116,9 +116,9 @@ void CMonster_Body_Base::OnTrigger_Exit(_uint iMyColliderLayer, _uint iOtherLaye
 	Get_Parent()->OnTrigger_Exit(iMyColliderLayer, iOtherLayer, pOther);
 }
 
-_bool CMonster_Body_Base::On_Hit(_uint iCollideMyLayer, ATTACK_DESC* pDesc, CGameObject* pOther)
+_bool CMonster_Body_Base::On_Hit(const HIT_DESC& hitDesc)
 {
-	return Get_Parent()->On_Hit(iCollideMyLayer, pDesc, pOther);
+	return Get_Parent()->On_Hit(hitDesc);
 }
 
 HRESULT CMonster_Body_Base::Render()

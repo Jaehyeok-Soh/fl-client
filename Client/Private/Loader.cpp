@@ -178,6 +178,9 @@ HRESULT CLoader::Loading()
 	case Client::ELevelType::SQUARE:
 		hr = Loading_For_Square();
 		break;
+	case Client::ELevelType::TEST:
+		hr = Loading_For_Test();
+		break;
 	default:
 		hr = E_FAIL;
 		break;
@@ -207,6 +210,12 @@ HRESULT CLoader::Loading_For_LoadLevel()
 
 #pragma endregion
 
+	m_isFinished = true;
+	return S_OK;
+}
+
+HRESULT CLoader::Loading_For_Test()
+{
 	m_isFinished = true;
 	return S_OK;
 }
@@ -540,8 +549,8 @@ HRESULT CLoader::Loading_For_Logo()
 		ADD_PROTOTYPE(ELevelType::STATIC, L"Prototype_GameObject_Part_Collider",		CColliderPart::Create(m_pDevice, m_pDeviceContext));
 
 		// ¿Ã∆Â∆Æ Object
-		ADD_PROTOTYPE(ELevelType::LOGO, L"Prototype_GameObject_Effect",					Effect::Create(m_pDevice, m_pDeviceContext));
-		ADD_PROTOTYPE(ELevelType::LOGO, L"Prototype_GameObject_Effect_Parts",			CEffectObject::Create(m_pDevice, m_pDeviceContext));
+		ADD_PROTOTYPE(ELevelType::STATIC, L"Prototype_GameObject_Effect",					Effect::Create(m_pDevice, m_pDeviceContext));
+		ADD_PROTOTYPE(ELevelType::STATIC, L"Prototype_GameObject_Effect_Parts",			CEffectObject::Create(m_pDevice, m_pDeviceContext));
 
 
 #pragma region Map Object
@@ -561,13 +570,13 @@ HRESULT CLoader::Loading_For_Logo()
 		ADD_PROTOTYPE(ELevelType::STATIC, L"Prototype_GameObject_Part_Sword", CSword::Create(m_pDevice, m_pDeviceContext));
 
 		// For. Prototype_GameObject_Monster_Dummy
-		ADD_PROTOTYPE(ELevelType::LOGO, L"Prototype_GameObject_Monster_Dummy", CMonster_Dummy::Create(m_pDevice, m_pDeviceContext));
+		ADD_PROTOTYPE(ELevelType::TEST, L"Prototype_GameObject_Monster_Dummy", CMonster_Dummy::Create(m_pDevice, m_pDeviceContext));
 		// For. Prototype_GameObject_Monster_Dummy_Body
-		ADD_PROTOTYPE(ELevelType::LOGO, L"Prototype_GameObject_Monster_Dummy_Body", CMonster_Dummy_Body::Create(m_pDevice, m_pDeviceContext));
+		ADD_PROTOTYPE(ELevelType::TEST, L"Prototype_GameObject_Monster_Dummy_Body", CMonster_Dummy_Body::Create(m_pDevice, m_pDeviceContext));
 		// For. Prototype_GameObject_Boss_Xibi
-		ADD_PROTOTYPE(ELevelType::LOGO, L"Prototype_GameObject_Boss_Xibi", CBoss_Xibi::Create(m_pDevice, m_pDeviceContext));
+		ADD_PROTOTYPE(ELevelType::TEST, L"Prototype_GameObject_Boss_Xibi", CBoss_Xibi::Create(m_pDevice, m_pDeviceContext));
 		// For. Prototype_GameObject_Boss_XibiBody
-		ADD_PROTOTYPE(ELevelType::LOGO, L"Prototype_GameObject_Boss_Xibi_Body", CBoss_Xibi_Body::Create(m_pDevice, m_pDeviceContext));
+		ADD_PROTOTYPE(ELevelType::TEST, L"Prototype_GameObject_Boss_Xibi_Body", CBoss_Xibi_Body::Create(m_pDevice, m_pDeviceContext));
 		/* Monster Object */
 		ADD_PROTOTYPE(ELevelType::STATIC, L"Prototype_GameObject_Monster_Dummy", CMonster_Dummy::Create(m_pDevice, m_pDeviceContext));
 
@@ -629,7 +638,7 @@ HRESULT CLoader::Loading_For_Tutorial_Village()
 		
 	// ø¿∫Í¡ß∆Æ
 	
-		// ¿Ã∆Â∆Æ Object
+	// ¿Ã∆Â∆Æ Object
 	ADD_PROTOTYPE(ELevelType::TUTORIAL_VILLAGE, L"Prototype_GameObject_Effect", Effect::Create(m_pDevice, m_pDeviceContext));
 	ADD_PROTOTYPE(ELevelType::TUTORIAL_VILLAGE, L"Prototype_GameObject_Effect_Parts", CEffectObject::Create(m_pDevice, m_pDeviceContext));
 
@@ -645,7 +654,7 @@ HRESULT CLoader::Loading_For_Tutorial_Boss()
 
 	// ø¿∫Í¡ß∆Æ
 	
-		// ¿Ã∆Â∆Æ Object
+	// ¿Ã∆Â∆Æ Object
 	ADD_PROTOTYPE(ELevelType::TUTORIAL_BOSS, L"Prototype_GameObject_Effect", Effect::Create(m_pDevice, m_pDeviceContext));
 	ADD_PROTOTYPE(ELevelType::TUTORIAL_BOSS, L"Prototype_GameObject_Effect_Parts", CEffectObject::Create(m_pDevice, m_pDeviceContext));
 
@@ -659,7 +668,7 @@ HRESULT CLoader::Loading_For_Square()
 
 	// ø¿∫Í¡ß∆Æ
 
-		// ¿Ã∆Â∆Æ Object
+	// ¿Ã∆Â∆Æ Object
 	ADD_PROTOTYPE(ELevelType::SQUARE, L"Prototype_GameObject_Effect", Effect::Create(m_pDevice, m_pDeviceContext));
 	ADD_PROTOTYPE(ELevelType::SQUARE, L"Prototype_GameObject_Effect_Parts", CEffectObject::Create(m_pDevice, m_pDeviceContext));
 
@@ -783,10 +792,10 @@ HRESULT CLoader::Build_Prototype()
 
 HRESULT CLoader::Build_Files()
 {
-	if (FAILED(Ready_AttackOverlap()))
+	if (FAILED(Ready_AttackPresets()))
 		return E_FAIL;
 
-	if (FAILED(Ready_AttackPresets()))
+	if (FAILED(Ready_AttackOverlap()))
 		return E_FAIL;
 
 	if (FAILED(Ready_EffectEvent()))

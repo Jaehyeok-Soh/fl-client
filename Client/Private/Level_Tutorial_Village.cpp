@@ -6,15 +6,26 @@
 #include "DataDocument_Effect.h"
 #include "Builder_Effect.h"
 
-#include "GameInstance.h"
-
-
 //=================
 // Builder
 //=================
 #include "Builder_UI.h"
-
 #include "DataStruct_UI.h"
+
+//=================
+// Object
+//=================
+#include "Player.h"
+
+//=================
+// UI
+//=================
+
+//=================
+// Component
+//=================
+
+#include "GameInstance.h"
 
 CLevel_Tutorial_Village::CLevel_Tutorial_Village(ID3D11Device* pDevice, ID3D11DeviceContext* pDeviceContext)
 	: CLevel(pDevice , pDeviceContext)
@@ -37,6 +48,10 @@ HRESULT CLevel_Tutorial_Village::Initialize()
 		MSG_BOX("CLevel_Tutorial_Village::Initialize, Build_Files Create Failed");
 		return E_FAIL;
 	}
+
+	/* 플레이어 제일먼저 세팅 */
+	if (FAILED(Ready_Player_Layer(g_wszPlayerLayer)))
+		return E_FAIL;
 
 	if (FAILED(Ready_Map()))
 		return E_FAIL;
@@ -100,7 +115,27 @@ HRESULT CLevel_Tutorial_Village::Build_Files()
 	return S_OK;
 }
 
+HRESULT CLevel_Tutorial_Village::Ready_Player_Layer(const wstring& wstrLayerTag)
+{
+	/* Player 최초 생성 */
+	{
+		CGameObject* pResult = { nullptr };
 
+		CPlayer::PLAYER_DESC playerDesc = {};
+		CTransform::TRANSFORM_DESC transformDesc = {};
+		playerDesc.iLevelIndex = ENUM_TO_UINT(ELevelType::LOGO);
+		playerDesc.wstrBodyModelTag = L"Prototype_Component_Model_Moon";
+		transformDesc.TranslationMatrix = Matrix::CreateTranslation(Vec3(229.12f, 256.72f, -245.039f));
+		playerDesc.pTransform_Desc = &transformDesc;
+		if (!(pResult = m_pGameInstance->Add_GameObject(ENUM_TO_UINT(ELevelType::STATIC),
+			L"Prototype_GameObject_MainPlayer",
+			ENUM_TO_UINT(ELevelType::STATIC),
+			wstrLayerTag, &playerDesc)))
+			return E_FAIL;
+	}
+
+	return S_OK;
+}
 
 HRESULT CLevel_Tutorial_Village::Ready_Map()
 {

@@ -187,7 +187,7 @@ void CPhysics_FilterEventCallback::Ready_EventCallChain()
 {
 	m_arrCollisionEvent[COLLISIONEVENT::Enum::ON_COLLISION_ENTER] = [=](GAMEOBJECTINFO& info) {
 		info.leftObject->OnCollision_Enter(info.leftColliderDesc->eFilterLayer, info.rightColliderDesc->eFilterLayer, info.rightObject,
-			COL_HIT_INFO{ info.bHasHitPoint, info.vHitPoint, info.vRawNormal, info.fDepth });
+			COL_HIT_INFO{ info.bHasHitPoint, COLLISIONEVENT::Enum::ON_COLLISION_ENTER, info.leftColliderDesc->iAttackPresetID , info.rightColliderDesc->iAttackPresetID, info.fDepth, info.vHitPoint, info.vRawNormal });
 #ifdef _DEBUG
 		Debug_Log(COLLISIONEVENT::Enum::ON_COLLISION_ENTER, info);
 #endif // _DEBUG

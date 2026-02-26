@@ -12,7 +12,6 @@
 #include "Collider.h"
 #include "Model.h"
 #include "PhysicsCCT.h"
-#include "PhysicsAttackOverlap.h"
 #include "EffectHandler.h"
 #include "ComputeShader.h"
 
@@ -75,7 +74,6 @@ HRESULT CBody::Awake(const _uint iCurrentLevelIndex)
 	if (FAILED(Super::Awake(iCurrentLevelIndex)))
 		return E_FAIL;
 
-	Get_Component<CPhysicsAttackOverlap>()->Awake();
 	Get_Component<CEffectHandler>()->Awake();
 
 	//Face_Smile
@@ -113,7 +111,6 @@ void CBody::Update_Late(_float fTimeDelta)
 {
 	Super::Update_Late(fTimeDelta);
 	
-	Get_Component<CPhysicsAttackOverlap>()->Update(fTimeDelta);
 	Get_Component<CEffectHandler>()->Update(fTimeDelta);
 }
 
@@ -156,9 +153,9 @@ void CBody::OnTrigger_Exit(_uint iMyColliderLayer, _uint iOtherLayer, CGameObjec
 	Get_Parent()->OnTrigger_Exit(iMyColliderLayer, iOtherLayer, pOther);
 }
 
-_bool CBody::On_Hit(_uint iCollideMyLayer, ATTACK_DESC* pDesc, CGameObject* pOther)
+_bool CBody::On_Hit(const HIT_DESC& hitDesc)
 {
-	return Get_Parent()->On_Hit(iCollideMyLayer, pDesc, pOther);
+	return Get_Parent()->On_Hit(hitDesc);
 }
 
 HRESULT CBody::Render()

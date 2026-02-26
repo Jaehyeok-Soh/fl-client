@@ -77,7 +77,7 @@ HRESULT Effect::Ready_PartsData(void* pArg)
 		tObjDesc.iLevelIndex = pDesc->iLevelIndex;
 
 		// Part 추가 및 이름 설정
-		if (FAILED(Add_Part(index, pDesc->iLevelIndex, L"Prototype_GameObject_Effect_Parts", &tObjDesc)))
+		if (FAILED(Add_Part(index, 0, L"Prototype_GameObject_Effect_Parts", &tObjDesc)))
 			return E_FAIL;
 
 		auto pPartObject = Get_Part<CEffectObject>(index);

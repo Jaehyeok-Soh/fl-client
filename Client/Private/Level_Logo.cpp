@@ -27,10 +27,6 @@
 #include "Effect.h"
 #include "EffectObject.h"
 #include "Physics_LandScape.h"
-#include "Monster_Dummy.h"
-#include "Monster_Dummy_Body.h"
-#include "Boss_Xibi.h"
-#include "Boss_Xibi_Body.h"
 
 //=================
 // UI
@@ -47,9 +43,6 @@
 #include "PhysicsCCT.h"
 
 #include "GameInstance.h"
-#include "Level_Square.h"
-#include "Level_Tutorial_Village.h"
-#include "Level_Tutorial_Boss.h"
 
 CLevel_Logo::CLevel_Logo(ID3D11Device* pDevice, ID3D11DeviceContext* pDeviceContext)
 	: Super(pDevice, pDeviceContext)
@@ -72,21 +65,10 @@ HRESULT CLevel_Logo::Initialize()
 		return E_FAIL;
 	}
 
-	/* 플레이어 제일먼저 세팅 */
-	if (FAILED(Ready_Player_Layer(g_wszPlayerLayer)))
-	{
-	}
-
 	/* 카메라 생성 */
 	if (FAILED(Ready_Camera_Layer(g_wszDynamicCameraLayer)))
 	{
 		MSG_BOX("CLevel_Logo::Initialize, Ready_Camera_Layer Create Failed");
-		return E_FAIL;
-	}
-
-	/* 카메라 생성 후 세팅 */
-	if (FAILED(Ready_Camera_Setting(ENUM_TO_UINT(ELevelType::LOGO))))
-	{
 		return E_FAIL;
 	}
 
@@ -95,12 +77,6 @@ HRESULT CLevel_Logo::Initialize()
 		MSG_BOX("CLevel_Logo::Initialize, Ready_UI_Layer Create Failed");
 		return E_FAIL;
 	}
-
-
-	/* 임시 주석처리 */
-	//if (FAILED(Ready_Lights()))
-	//	return E_FAIL;
-
 
 	return S_OK;
 }
@@ -152,36 +128,6 @@ void CLevel_Logo::Update(const _float fTimeDelta)
 #endif
 		m_pGameInstance->Request_CursorMode(m_eCursorMode);
 	}
-
-	// 오브젝트 풀링 테스트
-	if (m_pGameInstance->KeyButton_Down(DIK_0))
-	{
-		 CUI_Manager::GetInstance()->Request_Add_Prefab(ENUM_TO_UINT(ELevelType::LOGO),EUIPrefabType::MONSTER_NAMEPLATE);
-		 m_pGameInstance->Flush_All();
-		 CUI_Manager::GetInstance()->Request_SortUI();
-
-	}
-
-	// GlobalTimeScale 테스트
-	{
-		if (m_pGameInstance->KeyButton_Down(DIK_9))
-		{
-			m_pGameInstance->Request_HitStop();
-		} 
-		if (m_pGameInstance->KeyButton_Down(DIK_8))
-		{
-			m_pGameInstance->Request_SloMo(0.2f, 2.f);
-		}
-		if (m_pGameInstance->KeyButton_Down(DIK_6))
-		{
-			m_pGameInstance->Active_SloMo(0.5f);
-		}
-		if (m_pGameInstance->KeyButton_Down(DIK_7))
-		{
-			m_pGameInstance->Deactivate_SloMo();
-		}
-	}
-
 }
 
 HRESULT CLevel_Logo::Render()
@@ -236,20 +182,6 @@ HRESULT CLevel_Logo::Build_Files()
 	eCategory = DTO::ECategory::UI;
 	if (FAILED(m_pGameInstance->Regist_Document<CDataDocument_UI>(iLevelID, eCategory)))
 		return E_FAIL;
-
-	strUIFolderPath = L"../../Resources/Data/UIData/Static/";
-	if (std::filesystem::exists(strUIFolderPath))
-	{
-		for (auto iter : std::filesystem::directory_iterator(strUIFolderPath))
-		{
-			if (FAILED(m_pGameInstance->Load_File_Json(iLevelID, eCategory, iter.path())))
-				return E_FAIL;
-
-			if (FAILED(Build_File(iLevelID, eCategory, iter.path().stem().string())))
-				return E_FAIL;
-		}
-	}
-
 	strUIFolderPath = L"../../Resources/Data/UIData/Logo/";
 	if (std::filesystem::exists(strUIFolderPath))
 	{
@@ -263,44 +195,6 @@ HRESULT CLevel_Logo::Build_Files()
 		}
 	}
 
-	eCategory = DTO::ECategory::UI_PREFAB;
-	if (FAILED(m_pGameInstance->Regist_Document<CDataDocument_UI>(iLevelID, eCategory)))
-		return E_FAIL;
-	strUIFolderPath = L"../../Resources/Data/UIData/Prefab/";
-	if (std::filesystem::exists(strUIFolderPath))
-	{
-		for (auto iter : std::filesystem::directory_iterator(strUIFolderPath))
-		{
-			if (FAILED(m_pGameInstance->Load_File_Json(iLevelID, eCategory, iter.path())))
-				return E_FAIL;
-
-			if (FAILED(Build_File(iLevelID, eCategory, iter.path().stem().string())))
-				return E_FAIL;
-		}
-	}
-	return S_OK;
-}
-
-HRESULT CLevel_Logo::Ready_Player_Layer(const wstring& wstrLayerTag)
-{
-	/* Player 최초 생성 */
-
-
-	{
-		CGameObject* pResult = { nullptr };
-
-		CPlayer::PLAYER_DESC playerDesc = {};
-		CTransform::TRANSFORM_DESC transformDesc = {};
-		playerDesc.iLevelIndex = ENUM_TO_UINT(ELevelType::LOGO);
-		playerDesc.wstrBodyModelTag = L"Prototype_Component_Model_Moon";
-		transformDesc.TranslationMatrix = Matrix::CreateTranslation(Vec3(229.12f,256.72f,-245.039f));
-		playerDesc.pTransform_Desc = &transformDesc;
-		if (!(pResult = m_pGameInstance->Add_GameObject(ENUM_TO_UINT(ELevelType::STATIC),
-			L"Prototype_GameObject_MainPlayer",
-			ENUM_TO_UINT(ELevelType::STATIC),
-			wstrLayerTag, &playerDesc)))
-			return E_FAIL;
-	}
 
 	return S_OK;
 }
@@ -343,44 +237,6 @@ HRESULT CLevel_Logo::Ready_Camera_Layer(const wstring& wstrLayerTag)
 
 HRESULT CLevel_Logo::Ready_Lights()
 {
-	/* 임시 주석처리 */
-
-	//{
-	//	LIGHT_DESC desc = {};
-	//	desc.eType = LIGHT_TYPE::DIRECTIONAL;
-	//	desc.vDirection = Vec3{ 1.f, -1.f, 1.f };
-	//	desc.vDiffuse = Vec4(0.7f, 0.7f, 0.7f, 1.f);
-	//	desc.vAmbient = Vec4(0.3f, 0.3f, 0.3f, 1.f);
-	//	desc.vSpecular = desc.vDiffuse;
-
-	//	if (FAILED(m_pGameInstance->Add_Light(desc)))
-	//		return E_FAIL;
-	//}
-	//{
-	//	LIGHT_DESC desc = {};
-	//	desc.eType = LIGHT_TYPE::STATICPOINT;
-	//	desc.vDiffuse = Vec4(0.5f, 0.3f, 0.7f, 1.f);
-	//	desc.vAmbient = Vec4(0.2f, 0.1f, 0.3f, 1.f);
-	//	desc.vSpecular = desc.vDiffuse;
-	//	desc.vPosition = Vec4(21.f, 18.f, 0.f, 1.f);
-	//	desc.fRange = 10.f;
-
-	//	if (FAILED(m_pGameInstance->Add_Light(desc)))
-	//		return E_FAIL;
-	//}
-	//{
-	//	LIGHT_DESC desc = {};
-	//	desc.eType = LIGHT_TYPE::STATICPOINT;
-	//	desc.vDiffuse = Vec4(0.3f, 0.6f, 0.4f, 1.f);
-	//	desc.vAmbient = Vec4(0.1f, 0.3f, 0.2f, 1.f);
-	//	desc.vSpecular = desc.vDiffuse;
-	//	desc.vPosition = Vec4(21.f, 14.5f, 25.f, 1.f);
-	//	desc.fRange = 10.f;
-
-	//	if (FAILED(m_pGameInstance->Add_Light(desc)))
-	//		return E_FAIL;
-	//}
-
 	return S_OK;
 }
 
