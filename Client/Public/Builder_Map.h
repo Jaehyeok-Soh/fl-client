@@ -34,6 +34,17 @@ private:
 	/* ------ */
 	HRESULT Create_Water(const DTO::TMap_MapObjectData& tData);
 	HRESULT Create_Rock(const DTO::TMap_MapObjectData& tData);
+
+
+	/* Player Start Postition */
+	HRESULT Batch_Player();
+	/* Monster Spawn Position */
+	HRESULT	Batch_Monster();
+
+	/* Trigger Box */
+	HRESULT	Create_TriggerBox_ChangeLevel();
+	HRESULT	Create_TriggerBox_MonsterSpawner();
+
 private:
 	CShader*		m_pMeshShader{nullptr};
 

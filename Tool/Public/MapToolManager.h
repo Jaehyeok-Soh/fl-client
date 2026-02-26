@@ -138,6 +138,9 @@ public:
 	HRESULT						Batch_Preview();
 	HRESULT						Register_MapObjectCloneFactory();
 public:
+	CModel*						Get_MonsterPreviewModel(DTO::EMakeMonsterType eMakeMonsterType );
+	CModel*						Get_PlayerPreviewModel();
+public:
 	HRESULT						Ready_LevelData();
 	HRESULT						Apply_LevelData(const DTO::TLevelData* tData);
 	HRESULT						Release_SceneData();
@@ -163,8 +166,6 @@ public:
 	HRESULT						Save_TextureSplatingInfoData();
 	HRESULT						Save_TextureSplatingInfoData(const wstring& wstrSaveName);
 	HRESULT						UnRegister_MapTexture();
-
-
 public:
 	void						Update(float DT);
 	void						Input_Update(float DT);

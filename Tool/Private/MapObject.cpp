@@ -107,10 +107,12 @@ HRESULT CMapObject::Initialize(void* pArg)
     if (FAILED(Check_DrawType_ByClientPath()))
         return E_FAIL;
 
-
     if (FAILED(Ready_ColliderTypeName()))
         return E_FAIL;
 
+
+    if (FAILED(Ready_PlusData_ByClientMakePath()))
+        return E_FAIL;
 
     return S_OK;
 }
@@ -224,6 +226,9 @@ HRESULT CMapObject::Ready_ColliderTypeComponet()
         return E_FAIL;
     }
 
+    if (m_vecClientMakePathDesc.empty())
+        return S_OK;
+
     Engine::TRIGGERBOX_DESC* pTriggerBoxDesc = dynamic_cast<TRIGGERBOX_DESC*>(m_vecClientMakePathDesc.front());
     if (pTriggerBoxDesc == nullptr)
     {
@@ -244,6 +249,10 @@ HRESULT CMapObject::Ready_ColliderTypeComponet()
 
     if (FAILED(CGameObject::Add_Component<CCollider>(ENUM_TO_UINT(ELevelType::STATIC), L"Prototype_Component_Collider_AABB", &tColliderDesc)))
         return E_FAIL;
+
+
+    /* Shader 는 기본으로 Mesh를 들고있어준다 */
+    Add_Component<CShader>(ENUM_TO_UINT(ELevelType::STATIC), L"Prototype_Component_Shader_VtxMesh_Tool", nullptr);
 
 
     return S_OK;
@@ -361,6 +370,120 @@ HRESULT CMapObject::Ready_OverrideMtl(const USING_MODEL_INFO& tUsingModelInfo)
 
     return S_OK;
 
+}
+
+HRESULT CMapObject::Ready_PlusData_ByClientMakePath()
+{
+    //if (m_vecClientMakePathDesc.empty())
+    //    return S_OK;
+
+    switch (m_eClientMakePath)
+    {
+
+    case Tool::EClientMakePath::Batch_Player:
+        if (FAILED(Ready_Batch_Player()))
+            return E_FAIL;
+        break;
+
+    case Tool::EClientMakePath::Batch_Monster:
+        if (FAILED(Ready_Batch_Monster()))
+            return E_FAIL;
+        break;
+
+    case Tool::EClientMakePath::TriggerBox_MonsterSpawner:
+        if (FAILED(Ready_TriggerBox_MonsterSpawner()))
+            return E_FAIL;
+        break;
+    case Tool::EClientMakePath::END:
+        break;
+    default:
+        break;
+    }
+
+    return S_OK;
+}
+
+
+HRESULT CMapObject::Ready_Batch_Player()
+{
+
+    Remove_Component<CModel>();
+    CModel* pModel = m_pMapToolManager->Get_PlayerPreviewModel();
+    if (pModel == nullptr) return E_FAIL;
+    Add_Component<CModel>(pModel);
+
+
+    Remove_Component<CBounds>();
+
+    CBounds::BOUND_COMP_DESC tBoundDesc{};
+    tBoundDesc.fRatio = 1.f;
+    const Vec3* pMinMax =  Get_Component<CModel>()->Get_StaticModelMinMax();
+    tBoundDesc.pMinMax = pMinMax == nullptr ? m_vDefaultMinMax : pMinMax;
+    if (FAILED(Add_Component<CBounds>(ENUM_TO_UINT(ELevelType::STATIC), L"Prototype_Component_Bounds", &tBoundDesc)))
+        return E_FAIL;
+
+    /* Bounding Box 업데이트 , Instnace모델이면 0 0 0월드좌표로 들어가는게 맞다 */
+    Get_Component<CBounds>()->Update_BoundingDesc(Get_Component<CTransform>()->Get_WorldMatrix());
+
+
+    m_strName = "Batch_Player";
+
+
+
+    return S_OK;
+}
+
+HRESULT CMapObject::Ready_Batch_Monster()
+{
+    /* 현재 Model 무적권 삭제 */
+    Remove_Component<CModel>();
+
+    if (m_vecClientMakePathDesc.empty())
+        return E_FAIL;
+
+    BATCH_MONSTER_DESC* pDesc = dynamic_cast<BATCH_MONSTER_DESC*>(m_vecClientMakePathDesc.front());
+    if (pDesc == nullptr) return E_FAIL;
+
+    CModel* pModel = m_pMapToolManager->Get_MonsterPreviewModel(pDesc->eBatchMonsterType);
+    Add_Component<CModel>(pModel);
+
+
+    Remove_Component<CBounds>();
+
+    CBounds::BOUND_COMP_DESC tBoundDesc{};
+    tBoundDesc.fRatio = 1.f;
+    const Vec3* pMinMax = Get_Component<CModel>()->Get_StaticModelMinMax();
+    tBoundDesc.pMinMax = pMinMax == nullptr ? m_vDefaultMinMax : pMinMax;
+    if (FAILED(Add_Component<CBounds>(ENUM_TO_UINT(ELevelType::STATIC), L"Prototype_Component_Bounds", &tBoundDesc)))
+        return E_FAIL;
+
+    /* Bounding Box 업데이트 , Instnace모델이면 0 0 0월드좌표로 들어가는게 맞다 */
+    Get_Component<CBounds>()->Update_BoundingDesc(Get_Component<CTransform>()->Get_WorldMatrix());
+
+
+    m_strName = "Batch_Monster" + DTO::MakeMonsterType_ToString(pDesc->eBatchMonsterType);
+
+
+
+    return S_OK;
+}
+
+HRESULT CMapObject::Ready_TriggerBox_MonsterSpawner()
+{
+    if (m_vecClientMakePathDesc.empty())
+        return E_FAIL;
+
+    TRIGGERBOX_MONSTERSPAWNER_DESC* pDesc = dynamic_cast<TRIGGERBOX_MONSTERSPAWNER_DESC*>(m_vecClientMakePathDesc.front());
+    if (pDesc == nullptr) return E_FAIL;
+
+
+    for (auto& MonsterSpawnData : pDesc->vecMonsterSpawnData)
+    {
+        Safe_Release(MonsterSpawnData.pDebugModel);
+        MonsterSpawnData.pDebugModel =  m_pMapToolManager->Get_MonsterPreviewModel(MonsterSpawnData.eMakeMonsterType);
+    }
+
+    return S_OK;
 }
 
 HRESULT CMapObject::Ready_ColliderTypeName()
@@ -969,11 +1092,19 @@ HRESULT CMapObject::Render()
         break;
 
 
+    case Tool::EClientMakePath::Batch_Player:
+        Render_Batch_Player();
+        break;
+    case Tool::EClientMakePath::Batch_Monster:
+        Render_Batch_Monster();
+        break;
 
-    /* Trigger Box 전용 */
+
     case Tool::EClientMakePath::TriggerBox_ChangeLevel:
+        Render_TriggerBox_ChangeLevel();
+        break;
     case Tool::EClientMakePath::TriggerBox_MonsterSpawner:
-        Render_TriggerBox();
+        Render_TriggerBox_MonsterSpawner();
         break;
     default:
         break;
@@ -1149,13 +1280,14 @@ HRESULT CMapObject::Check_DrawType_ByClientPath()
         break;
 
 
-
+    case Tool::EClientMakePath::Batch_Player:
+    case Tool::EClientMakePath::Batch_Monster:          
     case Tool::EClientMakePath::LandScape:
     case Tool::EClientMakePath::TriggerBox_ChangeLevel:
     case Tool::EClientMakePath::TriggerBox_MonsterSpawner:
     {
         if (m_eMapObjectDrawType == EMapObject_DrawType::Instance)
-            MSG_BOX(" Land Scape는 Instance Draw를 지원하지 않습니다 렌더가 진행되지 않으니 Default Draw로 바꿔주세요 ");
+            MSG_BOX(" 현재 바꾸는 Client MakePth 관련 오브젝트는 Instance 를 지원하지 않습니다 Default Draw로  바꿔주세요 ");
         return S_OK;
     }
 
@@ -1510,11 +1642,106 @@ HRESULT CMapObject::Render_Water()
 #pragma endregion
 
 
+#pragma region Batch Player
+HRESULT CMapObject::Render_Batch_Player()
+{
+    if (m_eMapObjectDrawType != EMapObject_DrawType::Default)
+        return S_OK;
+
+    if (FAILED(Render_Default()))
+        return S_OK;
+
+    return S_OK;
+}
+#pragma endregion
+
+#pragma region Batch Monster
+HRESULT CMapObject::Render_Batch_Monster()
+{
+    if (m_eMapObjectDrawType != EMapObject_DrawType::Default)
+        return S_OK;
+
+    if (FAILED(Render_Default()))
+        return S_OK;
+
+    return S_OK;
+}
+#pragma endregion
+
+
+
+#pragma region TriggerBox Change Level
+
+HRESULT CMapObject::Render_TriggerBox_ChangeLevel()
+{
+    if (FAILED(Render_Collider()))
+        return E_FAIL;
+
+    return S_OK;
+}
+#pragma endregion
+#pragma region TriggerBox Monster Spawner
+HRESULT CMapObject::Render_TriggerBox_MonsterSpawner()
+{
+    if (FAILED(Render_Collider()))
+        return E_FAIL;
+
+
+    if (m_vecClientMakePathDesc.empty()) return E_FAIL;
+
+    /* Debug Mode가 켜져있다면 Model Render를 해보자.....*/
+    TRIGGERBOX_MONSTERSPAWNER_DESC* pDesc = static_cast<TRIGGERBOX_MONSTERSPAWNER_DESC*>(m_vecClientMakePathDesc.front());
+    if (pDesc == nullptr) return E_FAIL;
+
+    Matrix WorldMatrix{Matrix::Identity};
+    
+    CShader* pShader = Get_Component<CShader>();
+    if (pShader == nullptr) return E_FAIL;
+
+    for (auto& SpawnMonsterData : pDesc->vecMonsterSpawnData)
+    {
+        if (SpawnMonsterData.isPreviewDebugModel == false)
+            continue;
+        if (SpawnMonsterData.pDebugModel == nullptr)
+            continue;
+
+        WorldMatrix = Matrix::CreateScale(SpawnMonsterData.vScale) * 
+            Matrix::CreateFromYawPitchRoll(XMConvertToRadians(SpawnMonsterData.vPitchYawRoll.y), XMConvertToRadians(SpawnMonsterData.vPitchYawRoll.x), XMConvertToRadians(SpawnMonsterData.vPitchYawRoll.z))
+            * Matrix::CreateTranslation(SpawnMonsterData.vPosition);
+
+        pShader->Bind_TransformData(WorldMatrix);
+
+        CModel* pModel = SpawnMonsterData.pDebugModel;
+        _uint iMeshCount = pModel->Get_MeshCount();
+
+        /* Client Make Path를 이용한다 */
+        pShader->Set_Pass(ENUM_TO_UINT(EClientMakePath::StaticObject));
+
+
+        for (_uint i = 0; i < iMeshCount; ++i)
+        {
+            pModel->Bind_Material(pShader, i);
+            pModel->Bind_MaterialInstance(pShader, i);
+            pShader->Apply();
+            pModel->Render(i);
+        }
+
+    }
+
+
+
+
+    return S_OK;
+}
+#pragma endregion
+#pragma endregion
+
+
 
 
 #pragma region TriggerBox 전용 Draw Type Collider
 
-HRESULT CMapObject::Render_TriggerBox()
+HRESULT CMapObject::Render_Collider()
 {
     if (m_eMapObjectDrawType != EMapObject_DrawType::Collider)
         return E_FAIL;

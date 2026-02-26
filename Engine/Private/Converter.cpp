@@ -716,15 +716,6 @@ HRESULT CConverter::Check_Folder()
 		if (m_vecAssetPaths.size() != 1)
 			return E_FAIL;
 
-		//for (const auto& entry : std::filesystem::directory_iterator(m_AssetParentPath))
-		//{
-		//	if (entry.is_regular_file())
-		//	{
-		//		m_wstrAssetName = entry.path().filename().lexically_normal().stem();
-		//		break;
-		//	}
-		//}
-
 		m_wstrAssetName = m_vecAssetPaths[0].filename().lexically_normal().stem();
 
 

@@ -322,6 +322,27 @@ HRESULT CBuilder_Map::Create_Rock(const DTO::TMap_MapObjectData& tData)
 	return S_OK;
 }
 
+HRESULT CBuilder_Map::Create_Player()
+{
+	return S_OK;
+}
+
+HRESULT CBuilder_Map::Create_Monster()
+{
+	return S_OK;
+}
+
+
+HRESULT CBuilder_Map::Create_TriggerBox_ChangeLevel()
+{
+	return S_OK;
+}
+
+HRESULT CBuilder_Map::Create_TriggerBox_MonsterSpawner()
+{
+	return S_OK;
+}
+
 
 CBuilder_Map* CBuilder_Map::Create(ID3D11Device* pDevice, ID3D11DeviceContext* pDeviceContext, _uint iLevelID)
 {

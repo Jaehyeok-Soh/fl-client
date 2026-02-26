@@ -161,6 +161,10 @@ namespace Client
 #pragma region MapObject
 
 
+
+
+
+
 	static ELevelType StringToClientleveltype(const _string& str)
 	{
 		if (::strcmp(str.c_str(), "STATIC") == 0)

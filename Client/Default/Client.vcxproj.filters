@@ -469,7 +469,6 @@
     <Filter Include="02. Level\Test">
       <UniqueIdentifier>{a2daef10-3d20-4e39-ace1-5ff40c2ab0d2}</UniqueIdentifier>
     </Filter>
-	  
     <Filter Include="03. GameObject\UIObjects\02.UI\Image\Dynamic Image\06.AimDot">
       <UniqueIdentifier>{91eeeaa9-73a6-40da-bff2-b5e05c436f98}</UniqueIdentifier>
     </Filter>
@@ -901,9 +900,6 @@
     <ClInclude Include="..\Public\Water.h">
       <Filter>03. GameObject\MapObject\05. Water</Filter>
     </ClInclude>
-    <ClInclude Include="..\Public\LandScape.h">
-      <Filter>03. GameObject\MapObject\02. LandScape</Filter>
-    </ClInclude>
     <ClInclude Include="..\Public\Level_Tutorial_Village.h">
       <Filter>02. Level\Tutorial_Village</Filter>
     </ClInclude>
@@ -998,13 +994,14 @@
     <ClInclude Include="..\public\Boss_Xibi_Body.h">
       <Filter>03. GameObject\PartObjects\Monster\Body\Xibi</Filter>
     </ClInclude>
-    <ClInclude Include="..\Public\UI_World.h" />
-    <ClInclude Include="..\Public\WorldUI.h" />
     <ClInclude Include="..\Public\TriggerBox.h">
       <Filter>03. GameObject\TriggerBox\00. TriggerBox</Filter>
     </ClInclude>
     <ClInclude Include="..\Public\TriggerBox_LevelChange.h">
       <Filter>03. GameObject\TriggerBox\01. TriggerBox_LevelChange</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\LandScape.h">
+      <Filter>03. GameObject\MapObject\02. LandScape</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -1340,9 +1337,6 @@
     <ClCompile Include="..\Private\Water.cpp">
       <Filter>03. GameObject\MapObject\05. Water</Filter>
     </ClCompile>
-    <ClCompile Include="..\Private\LandScape.cpp">
-      <Filter>03. GameObject\MapObject\02. LandScape</Filter>
-    </ClCompile>
     <ClCompile Include="..\Private\Level_Tutorial_Village.cpp">
       <Filter>02. Level\Tutorial_Village</Filter>
     </ClCompile>
@@ -1437,13 +1431,14 @@
     <ClCompile Include="..\private\Boss_Xibi_Body.cpp">
       <Filter>03. GameObject\PartObjects\Monster\Body\Xibi</Filter>
     </ClCompile>
-    <ClCompile Include="..\Private\UI_World.cpp" />
-    <ClCompile Include="..\Private\WorldUI.cpp" />
     <ClCompile Include="..\Private\TriggerBox.cpp">
       <Filter>03. GameObject\TriggerBox\00. TriggerBox</Filter>
     </ClCompile>
     <ClCompile Include="..\Private\TriggerBox_LevelChange.cpp">
       <Filter>03. GameObject\TriggerBox\01. TriggerBox_LevelChange</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\LandScape.cpp">
+      <Filter>03. GameObject\MapObject\02. LandScape</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

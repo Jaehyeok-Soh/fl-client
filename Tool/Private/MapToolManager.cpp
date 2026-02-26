@@ -400,6 +400,50 @@ HRESULT CMapToolManager::Register_MapObjectCloneFactory()
 	return S_OK;
 }
 
+CModel* CMapToolManager::Get_MonsterPreviewModel(DTO::EMakeMonsterType eMakeMonsterType)
+{
+	CModel* pModel{ nullptr };
+
+	wstring wstrDefualtPath = g_wszPreviewObejctModelPath;
+
+	wstring wstrModelName{};
+
+	switch (eMakeMonsterType)
+	{
+	case DTO::EMakeMonsterType::Dog:				
+		wstrModelName = L"Preveiw_Monster_Dog";
+		break;
+	case DTO::EMakeMonsterType::Shooter:
+		wstrModelName = L"Preveiw_Monster_Shooter";
+		break;
+	case DTO::EMakeMonsterType::Xibi:
+		wstrModelName = L"Preveiw_Xibi";
+		break;
+	default:									return nullptr;
+	}
+
+	CModel::MODEL_COPY_DESC tModelCopyDesc{};
+	pModel =
+		static_cast<CModel*>
+		(m_pGameInstance->Clone_Prototype(EPrototypeType::COMPONENT, ENUM_TO_UINT(ELevelType::MAP), L"Prototype_Component_Model_" + wstrModelName, &tModelCopyDesc));
+
+	return pModel;
+}
+
+CModel* CMapToolManager::Get_PlayerPreviewModel()
+{
+	CModel* pModel{ nullptr };
+
+	wstring wstrPlayerModelName = L"Preveiw_Player";
+
+	CModel::MODEL_COPY_DESC tModelCopyDesc{};
+	pModel =
+		static_cast<CModel*>
+		(m_pGameInstance->Clone_Prototype(EPrototypeType::COMPONENT, ENUM_TO_UINT(ELevelType::MAP), L"Prototype_Component_Model_" + wstrPlayerModelName, &tModelCopyDesc));
+
+	return pModel;
+}
+
 HRESULT CMapToolManager::Ready_LevelData()
 {
 	m_pLevelData= CLevelData::Create(EToolObjectType::MAPOBJECT, m_pDevice, m_pContext);

@@ -270,6 +270,8 @@ namespace Tool
 			return EClientLevelType::END;
 	}
 
+
+	inline constexpr _tchar g_wszPreviewObejctModelPath		[]{L"L../../Resources/Models/Map/Level/MakeObjectPreview/Model/"};
 	inline constexpr _tchar g_wszMapObjectLayer				[]{ L"MapObject_Layer" };
 	inline constexpr _tchar g_wszMapModelPath				[]{ L"../../Resources/Models/Map/"};
 	inline constexpr _tchar g_wszStaticLightLayer			[]{ L"StaticLight_Layer" };
@@ -381,9 +383,9 @@ namespace Tool
 		Rock,
 		Water,
 
-		/* 단순 객체 */
-		Monster_Dog,
-		Monster_Shooter,
+		/*  생성 위치 잡아주는 역할  */
+		Batch_Player,
+		Batch_Monster,
 
 		/* Trigger Box 관련 */
 		TriggerBox_ChangeLevel,
@@ -410,22 +412,22 @@ namespace Tool
 	{
 		switch (eType)
 		{
-		case Tool::EClientMakePath::StaticObject:	return "StaticObject";
-		case Tool::EClientMakePath::LandScape:		return "LandScape";
+		case Tool::EClientMakePath::StaticObject:					return "StaticObject";
+		case Tool::EClientMakePath::LandScape:						return "LandScape";
 
 			/* ------------------환경 요소---------------- */
-		case Tool::EClientMakePath::Bush:			return "Bush";
-		case Tool::EClientMakePath::Grass:			return "Grass";
-		case Tool::EClientMakePath::Tree:			return "Tree";
-		case Tool::EClientMakePath::Vine:			return "Vine";
-		case Tool::EClientMakePath::Rock:			return "Rock";
-		case Tool::EClientMakePath::Water:			return "Water";
+		case Tool::EClientMakePath::Bush:							return "Bush";
+		case Tool::EClientMakePath::Grass:							return "Grass";
+		case Tool::EClientMakePath::Tree:							return "Tree";
+		case Tool::EClientMakePath::Vine:							return "Vine";
+		case Tool::EClientMakePath::Rock:							return "Rock";
+		case Tool::EClientMakePath::Water:							return "Water";
 			/* ------------------------------------------- */
 
-			/*  --------- 단순 객체 ---------*/
+			/*  --------- 생성 위치 잡아주는 역할 ---------*/
 
-		case Tool::EClientMakePath::Monster_Dog:					return "Monster_Dog";
-		case Tool::EClientMakePath::Monster_Shooter:				return "Monster_Shooter";
+		case Tool::EClientMakePath::Batch_Player:					return "Batch_Player";
+		case Tool::EClientMakePath::Batch_Monster:					return "Batch_Monster";
 
 			/* -------------- Trigger Box -------------- */
 		case Tool::EClientMakePath::TriggerBox_ChangeLevel:			return "TriggerBox_ChangeLevel";
@@ -437,14 +439,24 @@ namespace Tool
 
 	static EClientMakePath ClientMakePath_ToEnum(string strType)
 	{
-		if (strType == "StaticObject")	return EClientMakePath::StaticObject;
-		if (strType == "LandScape")		return EClientMakePath::LandScape;
-		if (strType == "Bush")			return EClientMakePath::Bush;
-		if (strType == "Grass")			return EClientMakePath::Grass;
-		if (strType == "Tree")			return EClientMakePath::Tree;
-		if (strType == "Vine")			return EClientMakePath::Vine;
-		if (strType == "Rock")			return EClientMakePath::Rock;
-		if (strType == "Water")			return EClientMakePath::Water;
+		/* 진짜 Map Object 관련  */
+		if (strType == "StaticObject")					return EClientMakePath::StaticObject;
+		if (strType == "LandScape")						return EClientMakePath::LandScape;
+		if (strType == "Bush")							return EClientMakePath::Bush;
+		if (strType == "Grass")							return EClientMakePath::Grass;
+		if (strType == "Tree")							return EClientMakePath::Tree;
+		if (strType == "Vine")							return EClientMakePath::Vine;
+		if (strType == "Rock")							return EClientMakePath::Rock;
+		if (strType == "Water")							return EClientMakePath::Water;
+
+		/* 생성 위치관련 */
+		if (strType == "Batch_Player")					return EClientMakePath::Batch_Player;
+		if (strType == "Batch_Monster")					return EClientMakePath::Batch_Monster;
+
+		/* Trigger Box 관련 */
+		if (strType == "TriggerBox_ChangeLevel")		return EClientMakePath::TriggerBox_ChangeLevel;
+		if (strType == "TriggerBox_MonsterSpawner")		return EClientMakePath::TriggerBox_MonsterSpawner;
+
 
 		return EClientMakePath::END;
 	}

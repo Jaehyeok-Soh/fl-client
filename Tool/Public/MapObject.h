@@ -75,6 +75,16 @@ private:
 	HRESULT								Ready_ClientMakePath(CMapObject::MAPOBJECT_DESC* pDesc);
 	HRESULT								Ready_OverrideMtl(const USING_MODEL_INFO& tUsingModelInfo);
 
+
+public:
+	HRESULT								Ready_PlusData_ByClientMakePath();
+
+public:
+	HRESULT								Ready_Batch_Player();
+	HRESULT								Ready_Batch_Monster();
+	HRESULT								Ready_TriggerBox_MonsterSpawner();
+
+private:
 	HRESULT								Ready_ColliderTypeName();
 	_bool								Check_OutBound(_int iIndex) const;
 private:
@@ -192,7 +202,15 @@ public:
 	HRESULT								Render_Water();
 
 
-	HRESULT								Render_TriggerBox();
+
+	HRESULT								Render_Batch_Player();
+	HRESULT								Render_Batch_Monster();
+
+	HRESULT								Render_TriggerBox_ChangeLevel();
+	HRESULT								Render_TriggerBox_MonsterSpawner();
+
+	/* Collider Type 전용 Render함수 */
+	HRESULT								Render_Collider();
 #pragma endregion 
 
 
