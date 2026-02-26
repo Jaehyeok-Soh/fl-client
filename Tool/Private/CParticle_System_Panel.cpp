@@ -1035,7 +1035,7 @@ void CParticle_System_Panel::Draw_ParticleSystem(CToolObject* pGo)
 
 		ImGui::Spacing();
 
-		// 4. Gradation Texture (Color Atlas)
+		// 3. Gradation Texture (Color Atlas)
 		ImGui::Text("Gradation Tex"); ImGui::SameLine(130);
 		if (ImGui::Button("Select##Gradation")) ImGui::OpenPopup("TextureSelector##Gradation");
 		ImGui::SameLine();
@@ -1047,6 +1047,17 @@ void CParticle_System_Panel::Draw_ParticleSystem(CToolObject* pGo)
 		Draw_TextureSelectorPopup("TextureSelector##Gradation", m_tCurrentDesc.Data._Effect_GradationTexture_Tag);
 
 		ImGui::Spacing();
+
+		// 4. Curve Texture 
+		ImGui::Text("Curve Texture"); ImGui::SameLine(130);
+		if (ImGui::Button("Select##Curve")) ImGui::OpenPopup("TextureSelector##Curve");
+		ImGui::SameLine();
+		if (ImGui::Checkbox("Use##Curve", &m_tCurrentDesc.Data._Effect_Tool_CurveTexture)) {
+			if (m_tCurrentDesc.Data._Effect_Tool_CurveTexture) m_tCurrentDesc.Data._Effect_TextureFlag |= (1 << 4); // DISSOLVETEXTURE 7
+			else m_tCurrentDesc.Data._Effect_TextureFlag &= ~(1 << 4);
+			m_bModified = true;
+		}
+		Draw_TextureSelectorPopup("TextureSelector##Curve", m_tCurrentDesc.Data._Effect_CurveTexture_Tag);
 
 		// 5. Dissolve Texture
 		ImGui::Text("Dissolve Texture"); ImGui::SameLine(130);
@@ -1066,17 +1077,6 @@ void CParticle_System_Panel::Draw_ParticleSystem(CToolObject* pGo)
 		ImGui::SameLine();
 		if (ImGui::Checkbox("Use##Glow", &m_tCurrentDesc.Data._Effect_Tool_GlowTexture)) {
 			if (m_tCurrentDesc.Data._Effect_Tool_GlowTexture) m_tCurrentDesc.Data._Effect_TextureFlag |= (1 << 6); // DISSOLVETEXTURE 7
-			else m_tCurrentDesc.Data._Effect_TextureFlag &= ~(1 << 6);
-			m_bModified = true;
-		}
-		Draw_TextureSelectorPopup("TextureSelector##Glow", m_tCurrentDesc.Data._Effect_GlowTexture_Tag);
-
-		// 5. Curve Texture 
-		ImGui::Text("Curve Texture"); ImGui::SameLine(130);
-		if (ImGui::Button("Select##Curve")) ImGui::OpenPopup("TextureSelector##Curve");
-		ImGui::SameLine();
-		if (ImGui::Checkbox("Use##Curve", &m_tCurrentDesc.Data._Effect_Tool_CurveTexture)) {
-			if (m_tCurrentDesc.Data._Effect_Tool_CurveTexture) m_tCurrentDesc.Data._Effect_TextureFlag |= (1 << 8); // DISSOLVETEXTURE 7
 			else m_tCurrentDesc.Data._Effect_TextureFlag &= ~(1 << 6);
 			m_bModified = true;
 		}
@@ -1501,7 +1501,7 @@ void CParticle_System_Panel::Draw_Rotation_Texture(CToolObject* pGo)
 	{
 		if (ImGui::BeginTable("RotationTable", 3, ImGuiTableFlags_Borders | ImGuiTableFlags_RowBg))
 		{
-			const char* textureNames[] = { "Diffuse", "Noise", "Masking", "Gradation", "Trail", "Normal","Glow", "Curve"};
+			const char* textureNames[] = { "Diffuse", "Noise", "Masking", "Gradation", "Curve", "Normal","Glow"};
 			const char* rotationLabels[] = { "0", "90", "180", "270" };
 
 			for (int i = 0; i < 6; i++)
@@ -1665,7 +1665,7 @@ void CParticle_System_Panel::Draw_Preview_Texture(CToolObject* pGo)
 
 	if (ImGui::BeginChild("TexturePreview", ImVec2(0, 100), true, ImGuiWindowFlags_HorizontalScrollbar))
 	{
-		const char* SlotName[] = { "Diffuse", "Noise", "Mask", "Gradation", "Trail", "Normal" };
+		const char* SlotName[] = { "Diffuse", "Noise", "Mask", "Gradation", "Curve", "Normal" };
 
 		for (int i = 0; i < 6; i++)
 		{

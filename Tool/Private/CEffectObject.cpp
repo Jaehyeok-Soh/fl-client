@@ -39,7 +39,7 @@ HRESULT CEffectObject::Initialize(void* pArg)
     {
         m_tEffectDesc = *pDesc;
         m_tOriginEffectDesc = *pDesc;
-        m_iSpriteCurrentNumber.resize(ENUM_TO_UINT(TEXTURE_INFO::END));
+        m_iSpriteCurrentNumber.resize(ENUM_TO_UINT(DTO::TEXTURE_INFO::END));
     }
 
     if (FAILED(__super::Initialize(pArg)))
@@ -138,6 +138,7 @@ HRESULT CEffectObject::Ready_Component_Texture()
             pInstance->Add_DefaultTexture(s + m_tEffectDesc.Data._Effect_DiffuseTexture_Tag, ENUM_TO_UINT(DTO::E_TEXTURETYPE::DIFFUSE));
             pInstance->Add_DefaultTexture(s + m_tEffectDesc.Data._Effect_NoiseTexture_Tag, ENUM_TO_UINT(DTO::E_TEXTURETYPE::NOISE));
             pInstance->Add_DefaultTexture(s + m_tEffectDesc.Data._Effect_MaskingTexture_Tag, ENUM_TO_UINT(DTO::E_TEXTURETYPE::MASKING));
+            pInstance->Add_DefaultTexture(s + m_tEffectDesc.Data._Effect_CurveTexture_Tag, ENUM_TO_UINT(DTO::E_TEXTURETYPE::CURVETEXTURE));
             pInstance->Add_DefaultTexture(s + m_tEffectDesc.Data._Effect_GradationTexture_Tag, ENUM_TO_UINT(DTO::E_TEXTURETYPE::GRADATION));
             pInstance->Add_DefaultTexture(s + m_tEffectDesc.Data._Effect_DissolveTexture_Tag, ENUM_TO_UINT(DTO::E_TEXTURETYPE::DISSOLVE));
             pInstance->Add_DefaultTexture(s + m_tEffectDesc.Data._Effect_GlowTexture_Tag, ENUM_TO_UINT(DTO::E_TEXTURETYPE::GLOW));
@@ -154,6 +155,7 @@ HRESULT CEffectObject::Ready_Component_Texture()
             pInstance->Add_DefaultTexture(s + m_tEffectDesc.Data._Effect_DiffuseTexture_Tag, ENUM_TO_UINT(DTO::E_TEXTURETYPE::DIFFUSE));
             pInstance->Add_DefaultTexture(s + m_tEffectDesc.Data._Effect_NoiseTexture_Tag, ENUM_TO_UINT(DTO::E_TEXTURETYPE::NOISE));
             pInstance->Add_DefaultTexture(s + m_tEffectDesc.Data._Effect_MaskingTexture_Tag, ENUM_TO_UINT(DTO::E_TEXTURETYPE::MASKING));
+            pInstance->Add_DefaultTexture(s + m_tEffectDesc.Data._Effect_CurveTexture_Tag, ENUM_TO_UINT(DTO::E_TEXTURETYPE::CURVETEXTURE));
             pInstance->Add_DefaultTexture(s + m_tEffectDesc.Data._Effect_GradationTexture_Tag, ENUM_TO_UINT(DTO::E_TEXTURETYPE::GRADATION));
             pInstance->Add_DefaultTexture(s + m_tEffectDesc.Data._Effect_DissolveTexture_Tag, ENUM_TO_UINT(DTO::E_TEXTURETYPE::DISSOLVE));
             pInstance->Add_DefaultTexture(s + m_tEffectDesc.Data._Effect_GlowTexture_Tag, ENUM_TO_UINT(DTO::E_TEXTURETYPE::GLOW));
@@ -439,6 +441,7 @@ void CEffectObject::Texture_Setting(const wstring& TextureName)
             pInstance->Add_DefaultTexture(s + m_tEffectDesc.Data._Effect_DiffuseTexture_Tag, ENUM_TO_UINT(DTO::E_TEXTURETYPE::DIFFUSE));
             pInstance->Add_DefaultTexture(s + m_tEffectDesc.Data._Effect_NoiseTexture_Tag, ENUM_TO_UINT(DTO::E_TEXTURETYPE::NOISE));
             pInstance->Add_DefaultTexture(s + m_tEffectDesc.Data._Effect_MaskingTexture_Tag, ENUM_TO_UINT(DTO::E_TEXTURETYPE::MASKING));
+            pInstance->Add_DefaultTexture(s + m_tEffectDesc.Data._Effect_CurveTexture_Tag, ENUM_TO_UINT(DTO::E_TEXTURETYPE::CURVETEXTURE));
             pInstance->Add_DefaultTexture(s + m_tEffectDesc.Data._Effect_GradationTexture_Tag, ENUM_TO_UINT(DTO::E_TEXTURETYPE::GRADATION));
             pInstance->Add_DefaultTexture(s + m_tEffectDesc.Data._Effect_DissolveTexture_Tag, ENUM_TO_UINT(DTO::E_TEXTURETYPE::DISSOLVE));
             pInstance->Add_DefaultTexture(s + m_tEffectDesc.Data._Effect_GlowTexture_Tag, ENUM_TO_UINT(DTO::E_TEXTURETYPE::GLOW));
@@ -455,6 +458,7 @@ void CEffectObject::Texture_Setting(const wstring& TextureName)
             pInstance->Add_DefaultTexture(s + m_tEffectDesc.Data._Effect_DiffuseTexture_Tag, ENUM_TO_UINT(DTO::E_TEXTURETYPE::DIFFUSE));
             pInstance->Add_DefaultTexture(s + m_tEffectDesc.Data._Effect_NoiseTexture_Tag, ENUM_TO_UINT(DTO::E_TEXTURETYPE::NOISE));
             pInstance->Add_DefaultTexture(s + m_tEffectDesc.Data._Effect_MaskingTexture_Tag, ENUM_TO_UINT(DTO::E_TEXTURETYPE::MASKING));
+            pInstance->Add_DefaultTexture(s + m_tEffectDesc.Data._Effect_CurveTexture_Tag, ENUM_TO_UINT(DTO::E_TEXTURETYPE::CURVETEXTURE));
             pInstance->Add_DefaultTexture(s + m_tEffectDesc.Data._Effect_GradationTexture_Tag, ENUM_TO_UINT(DTO::E_TEXTURETYPE::GRADATION));
             pInstance->Add_DefaultTexture(s + m_tEffectDesc.Data._Effect_DissolveTexture_Tag, ENUM_TO_UINT(DTO::E_TEXTURETYPE::DISSOLVE));
             pInstance->Add_DefaultTexture(s + m_tEffectDesc.Data._Effect_GlowTexture_Tag, ENUM_TO_UINT(DTO::E_TEXTURETYPE::GLOW));
@@ -536,37 +540,37 @@ HRESULT CEffectObject::Bind_ShaderResource()
         pDesc.DiffuseTexture_SpriteInfo = Vec4(m_tEffectDesc.Data._Effect_DiffuseTexture_SpriteInfo.x, 
             m_tEffectDesc.Data._Effect_DiffuseTexture_SpriteInfo.y, 
             m_tEffectDesc.Data._Effect_DiffuseTexture_SpriteInfo.z, 
-            m_iSpriteCurrentNumber[ENUM_TO_UINT(TEXTURE_INFO::DEFAULTTEXTURE)]);
+            m_iSpriteCurrentNumber[ENUM_TO_UINT(DTO::TEXTURE_INFO::DEFAULTTEXTURE)]);
 
         pDesc.NoiseTexture_SpriteInfo = Vec4(m_tEffectDesc.Data._Effect_NoiseTexture_SpriteInfo.x,
             m_tEffectDesc.Data._Effect_NoiseTexture_SpriteInfo.y,
             m_tEffectDesc.Data._Effect_NoiseTexture_SpriteInfo.z,
-            m_iSpriteCurrentNumber[ENUM_TO_UINT(TEXTURE_INFO::NOISETEXTURE)]);
+            m_iSpriteCurrentNumber[ENUM_TO_UINT(DTO::TEXTURE_INFO::NOISETEXTURE)]);
 
         pDesc.GradationTexture_SpriteInfo = Vec4(m_tEffectDesc.Data._Effect_GradationTexture_SpriteInfo.x,
             m_tEffectDesc.Data._Effect_GradationTexture_SpriteInfo.y,
             m_tEffectDesc.Data._Effect_GradationTexture_SpriteInfo.z,
-            m_iSpriteCurrentNumber[ENUM_TO_UINT(TEXTURE_INFO::GRADATIONTEXTURE)]);
+            m_iSpriteCurrentNumber[ENUM_TO_UINT(DTO::TEXTURE_INFO::GRADATIONTEXTURE)]);
 
         pDesc.DissolveTexture_SpriteInfo = Vec4(m_tEffectDesc.Data._Effect_DissolveTexture_SpriteInfo.x,
             m_tEffectDesc.Data._Effect_DissolveTexture_SpriteInfo.y,
             m_tEffectDesc.Data._Effect_DissolveTexture_SpriteInfo.z,
-            m_iSpriteCurrentNumber[ENUM_TO_UINT(TEXTURE_INFO::DISSOLVETEXTURE)]);
+            m_iSpriteCurrentNumber[ENUM_TO_UINT(DTO::TEXTURE_INFO::DISSOLVETEXTURE)]);
 
         pDesc.GlowTexture_SpriteInfo = Vec4(m_tEffectDesc.Data._Effect_GlowTexture_SpriteInfo.x,
             m_tEffectDesc.Data._Effect_GlowTexture_SpriteInfo.y,
             m_tEffectDesc.Data._Effect_GlowTexture_SpriteInfo.z,
-            m_iSpriteCurrentNumber[ENUM_TO_UINT(TEXTURE_INFO::GLOWTEXTURE)]);
+            m_iSpriteCurrentNumber[ENUM_TO_UINT(DTO::TEXTURE_INFO::GLOWTEXTURE)]);
 
         pDesc.CurveTexture_SpriteInfo = Vec4(m_tEffectDesc.Data._Effect_CurveTexture_SpriteInfo.x,
             m_tEffectDesc.Data._Effect_CurveTexture_SpriteInfo.y,
             m_tEffectDesc.Data._Effect_CurveTexture_SpriteInfo.z,
-            m_iSpriteCurrentNumber[ENUM_TO_UINT(TEXTURE_INFO::CURVETEXTURE)]);
+            m_iSpriteCurrentNumber[ENUM_TO_UINT(DTO::TEXTURE_INFO::CURVETEXTURE)]);
 
         pDesc.CurveTexture_SpriteInfo = Vec4(m_tEffectDesc.Data._Effect_MaskTexture_SpriteInfo.x,
             m_tEffectDesc.Data._Effect_MaskTexture_SpriteInfo.y,
             m_tEffectDesc.Data._Effect_MaskTexture_SpriteInfo.z,
-            m_iSpriteCurrentNumber[ENUM_TO_UINT(TEXTURE_INFO::MASKINGTEXTURE)]);
+            m_iSpriteCurrentNumber[ENUM_TO_UINT(DTO::TEXTURE_INFO::MASKINGTEXTURE)]);
 
         pShader->Bind_EffectData(pDesc);
 
@@ -1004,19 +1008,19 @@ void CEffectObject::TimeCalculate(const _float fDT)
     if (fRatio > 1.f) fRatio = 1.f;
 
     // 모든 텍스처 타입을 순회하며 인덱스 계산
-    for (_uint i = 0; i < ENUM_TO_UINT(TEXTURE_INFO::END); ++i)
+    for (_uint i = 0; i < ENUM_TO_UINT(DTO::TEXTURE_INFO::END); ++i)
     {
         Vec4* pSpriteInfo = nullptr;
 
         switch (i)
         {
-        case ENUM_TO_UINT(TEXTURE_INFO::DEFAULTTEXTURE):   pSpriteInfo = &m_tEffectDesc.Data._Effect_DiffuseTexture_SpriteInfo; break;
-        case ENUM_TO_UINT(TEXTURE_INFO::NOISETEXTURE):     pSpriteInfo = &m_tEffectDesc.Data._Effect_NoiseTexture_SpriteInfo; break;
-        case ENUM_TO_UINT(TEXTURE_INFO::MASKINGTEXTURE):   pSpriteInfo = &m_tEffectDesc.Data._Effect_MaskTexture_SpriteInfo; break;
-        case ENUM_TO_UINT(TEXTURE_INFO::GRADATIONTEXTURE): pSpriteInfo = &m_tEffectDesc.Data._Effect_GradationTexture_SpriteInfo; break;
-        case ENUM_TO_UINT(TEXTURE_INFO::DISSOLVETEXTURE):  pSpriteInfo = &m_tEffectDesc.Data._Effect_DissolveTexture_SpriteInfo; break;
-        case ENUM_TO_UINT(TEXTURE_INFO::GLOWTEXTURE):      pSpriteInfo = &m_tEffectDesc.Data._Effect_GlowTexture_SpriteInfo; break;
-        case ENUM_TO_UINT(TEXTURE_INFO::CURVETEXTURE):      pSpriteInfo = &m_tEffectDesc.Data._Effect_CurveTexture_SpriteInfo; break;
+        case ENUM_TO_UINT(DTO::TEXTURE_INFO::DEFAULTTEXTURE):   pSpriteInfo = &m_tEffectDesc.Data._Effect_DiffuseTexture_SpriteInfo; break;
+        case ENUM_TO_UINT(DTO::TEXTURE_INFO::NOISETEXTURE):     pSpriteInfo = &m_tEffectDesc.Data._Effect_NoiseTexture_SpriteInfo; break;
+        case ENUM_TO_UINT(DTO::TEXTURE_INFO::MASKINGTEXTURE):   pSpriteInfo = &m_tEffectDesc.Data._Effect_MaskTexture_SpriteInfo; break;
+        case ENUM_TO_UINT(DTO::TEXTURE_INFO::GRADATIONTEXTURE): pSpriteInfo = &m_tEffectDesc.Data._Effect_GradationTexture_SpriteInfo; break;
+        case ENUM_TO_UINT(DTO::TEXTURE_INFO::DISSOLVETEXTURE):  pSpriteInfo = &m_tEffectDesc.Data._Effect_DissolveTexture_SpriteInfo; break;
+        case ENUM_TO_UINT(DTO::TEXTURE_INFO::GLOWTEXTURE):      pSpriteInfo = &m_tEffectDesc.Data._Effect_GlowTexture_SpriteInfo; break;
+        case ENUM_TO_UINT(DTO::TEXTURE_INFO::CURVETEXTURE):     pSpriteInfo = &m_tEffectDesc.Data._Effect_CurveTexture_SpriteInfo; break;
             // 필요에 따라 추가 케이스 확장
         default: continue;
         }

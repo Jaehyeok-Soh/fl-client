@@ -13,11 +13,10 @@ enum class TEXTURE_INFO
     NOISETEXTURE = 1,
     MASKINGTEXTURE = 2,
     GRADATIONTEXTURE = 3,
-    TRAILTEXTURE = 4,
+    CURVETEXTURE = 4,
     NORMALTEXTURE = 5,
     GLOWTEXTURE = 6,
     DISSOLVETEXTURE = 7,
-    CURVETEXTURE = 8,
     END
 };
 
@@ -30,7 +29,7 @@ enum class E_TEXTURETYPE {
     NOISE = 1,
     MASKING = 2,
     GRADATION = 3,
-    TRAIL = 4,
+    CURVETEXTURE = 4,
     NORMAL = 5,
     GLOW = 6,
     DISSOLVE = 7,
@@ -99,7 +98,7 @@ struct TEFFECT_PartsData
     wstring     _Effect_NoiseTexture_Tag = {};
     wstring     _Effect_MaskingTexture_Tag = {};
     wstring     _Effect_GradationTexture_Tag = {};
-    wstring     _Effect_TrailTexture_Tag = {};
+    wstring     _Effect_CurveTexture_Tag = {};
     wstring     _Effect_NormalTexture_Tag = {};
     wstring     _Effect_DissolveTexture_Tag = {};
     wstring     _Effect_GlowTexture_Tag = {};

@@ -75,7 +75,7 @@ void to_json(json& j, const TEFFECT_PartsData& data)
         {"NoiseTexture_Tag", Engine_Utils::ToString(data._Effect_NoiseTexture_Tag)},
         {"MaskingTexture_Tag", Engine_Utils::ToString(data._Effect_MaskingTexture_Tag)},
         {"GradationTexture_Tag", Engine_Utils::ToString(data._Effect_GradationTexture_Tag)},
-        {"TrailTexture_Tag", Engine_Utils::ToString(data._Effect_TrailTexture_Tag)},
+        {"CurveTexture_Tag", Engine_Utils::ToString(data._Effect_CurveTexture_Tag)},
         {"NormalTexture_Tag", Engine_Utils::ToString(data._Effect_NormalTexture_Tag)},
         {"DissolveTexture_Tag", Engine_Utils::ToString(data._Effect_DissolveTexture_Tag)},
         {"GlowTexture_Tag", Engine_Utils::ToString(data._Effect_GlowTexture_Tag)},
@@ -236,7 +236,7 @@ void from_json(const json& j, TEFFECT_PartsData& data)
     data._Effect_NoiseTexture_Tag = Engine_Utils::ToWString(j.at("NoiseTexture_Tag").get<string>());
     data._Effect_MaskingTexture_Tag = Engine_Utils::ToWString(j.at("MaskingTexture_Tag").get<string>());
     data._Effect_GradationTexture_Tag = Engine_Utils::ToWString(j.at("GradationTexture_Tag").get<string>());
-    data._Effect_TrailTexture_Tag = Engine_Utils::ToWString(j.at("TrailTexture_Tag").get<string>());
+    data._Effect_CurveTexture_Tag = Engine_Utils::ToWString(j.at("CurveTexture_Tag").get<string>());
     data._Effect_NormalTexture_Tag = Engine_Utils::ToWString(j.at("NormalTexture_Tag").get<string>());
     if (j.contains("DissolveTexture_Tag")) data._Effect_DissolveTexture_Tag = Engine_Utils::ToWString(j.at("DissolveTexture_Tag").get<string>());
     if (j.contains("GlowTexture_Tag")) data._Effect_GlowTexture_Tag = Engine_Utils::ToWString(j.at("GlowTexture_Tag").get<string>());
@@ -407,6 +407,7 @@ void from_json(const json& j, TEFFECT_PartsData& data)
         res.at("Gradation").get_to(data._Effect_Tool_GradationTexture);
         if (res.contains("Dissolve")) res.at("Dissolve").get_to(data._Effect_Tool_DissolveTexture);
         if (res.contains("Glow")) res.at("Glow").get_to(data._Effect_Tool_GlowTexture);
+        if (res.contains("Curve")) res.at("Curve").get_to(data._Effect_Tool_CurveTexture);
     }
 }
 
