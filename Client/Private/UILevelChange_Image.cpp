@@ -56,6 +56,7 @@ HRESULT CUILevelChange_Image::Attach_Personal_Info()
 		m_eNextLevelID = ELevelType::SQUARE;
 		break;
 	case DTO::EUIDImageSubClassType::LEVEL_CHAGE_5:
+		m_eNextLevelID = ELevelType::TEST;
 		break;
 	case DTO::EUIDImageSubClassType::END:
 	default:
