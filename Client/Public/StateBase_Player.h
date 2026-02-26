@@ -118,6 +118,8 @@ protected:
 
 	virtual void CheckAni_WhenStart() {};					// 만약 자체에서 로직을 통해 바꾸고 싶다면
 
+	virtual _bool Can_CheckKey(const _float fTimeDelta);
+
 private:
 	CGun*					m_pOwnerGun = { nullptr };
 

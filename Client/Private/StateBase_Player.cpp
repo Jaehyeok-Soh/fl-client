@@ -70,8 +70,7 @@ void CStateBase_Player::Update(const _float fTimeDelta)
 		return;
 	 
 	// keyCount를 하지 않거나, coolTime이 다 되었다면 : key 입력을 처리하자
-	if (!(m_tKeyTimer.bCountTime) ||
-		m_tKeyTimer.CountTime(fTimeDelta) == 1.f)
+	if (Can_CheckKey(fTimeDelta))
 	{
 		if (!m_bLoop && Is_MainAnimFinished())		// loop가 아닌데 애니메이션이 끝났다면
 		{
@@ -411,6 +410,12 @@ void CStateBase_Player::Reset_GunTimer()
 void CStateBase_Player::Reload_Gun()
 {
 	m_pOwnerGun->Reload_Bullet();
+}
+
+_bool CStateBase_Player::Can_CheckKey(const _float fTimeDelta)
+{
+	return (!(m_tKeyTimer.bCountTime) ||
+		m_tKeyTimer.CountTime(fTimeDelta) == 1.f);
 }
 
 _bool CStateBase_Player::Has_ChangeState(STATEKEY eKey)
