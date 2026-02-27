@@ -87,6 +87,7 @@ public:
 	_bool IsTargetInAttackRange();
 	_bool IsTargetOutOfMeleeRange();
 	_bool IsTargetOutOfAttackRange();
+	_bool IsTargetDistanceOver(_float fValue);
 
 	// °ø°£
 	_bool IsFalling();

@@ -46,7 +46,6 @@
 //=================
 #include "Bounds.h"
 #include "PhysicsCCT.h"
-
 #include "GameInstance.h"
 
 CLevel_Test::CLevel_Test(ID3D11Device* pDevice, ID3D11DeviceContext* pDeviceContext)
@@ -85,7 +84,6 @@ HRESULT CLevel_Test::Initialize()
 
 	if (FAILED(Ready_Lights()))
 		return E_FAIL;
-
 
 	return S_OK;
 }

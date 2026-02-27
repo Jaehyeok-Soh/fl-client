@@ -241,6 +241,22 @@ _bool CMonsterControlContext::IsTargetOutOfAttackRange()
 	return IsTargetFound() && IsTargetInAttackRange() == false;
 }
 
+_bool CMonsterControlContext::IsTargetDistanceOver(_float fValue)
+{
+	if (m_pTarget == nullptr)
+		return FLT_MAX;
+
+	CTransform* pOwnerTransform = Get_Owner()->Get_Component<CTransform>();
+	CTransform* pTargetTransform = m_pTarget->Get_Component<CTransform>();
+
+	Vec3 vOwnerPosition = pOwnerTransform->Get_Info(TRANSFORM_INFO_STATE::POS);
+	Vec3 vTargetPosition = pTargetTransform->Get_Info(TRANSFORM_INFO_STATE::POS);
+
+	Vec3 vToTarget = vTargetPosition - vOwnerPosition;
+	_float fDistance = ::XMVectorGetX(::XMVector3Length(vToTarget));
+	return fDistance > fValue;
+}
+
 _bool CMonsterControlContext::IsFalling()
 {
 	return _bool();

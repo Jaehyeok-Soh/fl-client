@@ -12,13 +12,14 @@
 IMPLEMENT_SINGLETON(CMonsterState_Factory)
 
 #define REGISTER_CONDITION(NAME, FUNC) if(FAILED(RegisterCondition(NAME, FUNC))) return E_FAIL;
-#define REGISTER_FEATURE(NAME, FUNC) if(FAILED(RegisterFeature(NAME, FUNC))) return E_FAIL;
+#define REGISTER_FEATURE(NAME, FUNC)   if(FAILED(RegisterFeature(NAME, FUNC))) return E_FAIL;
 
 #define MONSTERACTIONSTATE(STATE) GetActionState(STATE)
-#define MONSTERCC(STATE) GetControlContext(STATE)
+#define MONSTERCC(STATE)          GetControlContext(STATE)
 
-#define CONDITION [](class CStateBase_Monster* state)->_bool
-#define FEATURE [](class CStateBase_Monster* state, const _float& fTimeDelta)
+// 시그니처 통일
+#define CONDITION [](class CStateBase_Monster* state, const DTO::STATE_PARAM& param)->_bool
+#define FEATURE   [](class CStateBase_Monster* state, const _float& fTimeDelta, const DTO::STATE_PARAM& param)
 
 CMonsterState_Factory::CMonsterState_Factory()
 	: Super()
@@ -76,6 +77,9 @@ HRESULT CMonsterState_Factory::Ready_Condition()
 
 	REGISTER_CONDITION("condition_over_lifetime", CONDITION{ return state->IsOverLifeTime(); });
 
+
+	// 02-27 구조 변경 후 예시
+	REGISTER_CONDITION("param_condition_distance_over", CONDITION{ return MONSTERCC(state)->IsTargetDistanceOver(param.fParam[0]); });
 	return S_OK;
 }
 
@@ -98,10 +102,13 @@ HRESULT CMonsterState_Factory::Ready_Feature()
 	REGISTER_FEATURE("feat_move_front_left", FEATURE{ MONSTERCC(state)->Update_8Dir_LocalAxisXZ(fTimeDelta, 1.f, -1.f); state->Align_Movement_MoveDir(fTimeDelta); });
 	REGISTER_FEATURE("feat_move_backward_right", FEATURE{ MONSTERCC(state)->Update_8Dir_LocalAxisXZ(fTimeDelta, -1.f, 1.f); state->Align_Movement_MoveDir(fTimeDelta); });
 	REGISTER_FEATURE("feat_move_backward_left", FEATURE{ MONSTERCC(state)->Update_8Dir_LocalAxisXZ(fTimeDelta, -1.f, -1.f); state->Align_Movement_MoveDir(fTimeDelta); });
+
+	// 02-27 구조 변경 후 예시
+	REGISTER_FEATURE("param_feat_move_local", FEATURE{ MONSTERCC(state)->Update_8Dir_LocalAxisXZ(fTimeDelta, param.fParam[0], param.fParam[1]); state->Align_Movement(fTimeDelta); });
 	return S_OK;
 }
 
-HRESULT CMonsterState_Factory::RegisterCondition(string name, std::function<_bool(class CStateBase_Monster*)> func)
+HRESULT CMonsterState_Factory::RegisterCondition(string name, ConditionFunc func)
 {
 	auto iter = m_mapCondition.find(name);
 	if (iter != m_mapCondition.end())
@@ -112,7 +119,7 @@ HRESULT CMonsterState_Factory::RegisterCondition(string name, std::function<_boo
 	return S_OK;
 }
 
-std::function<_bool(class CStateBase_Monster*)> CMonsterState_Factory::GetCondition(string name)
+ConditionFunc CMonsterState_Factory::GetCondition(string name)
 {
 	auto iter = m_mapCondition.find(name);
 	if (iter == m_mapCondition.end())
@@ -121,7 +128,7 @@ std::function<_bool(class CStateBase_Monster*)> CMonsterState_Factory::GetCondit
 	return (*iter).second;
 }
 
-HRESULT CMonsterState_Factory::RegisterFeature(string name, std::function<void(class CStateBase_Monster*, const _float& fTimeDelta)> func)
+HRESULT CMonsterState_Factory::RegisterFeature(string name, FeatureFunc func)
 {
 	auto iter = m_mapFeature.find(name);
 	if (iter != m_mapFeature.end())
@@ -132,7 +139,7 @@ HRESULT CMonsterState_Factory::RegisterFeature(string name, std::function<void(c
 	return S_OK;
 }
 
-std::function<void(class CStateBase_Monster*, const _float& fTimeDelta)> CMonsterState_Factory::GetFeature(string name)
+FeatureFunc CMonsterState_Factory::GetFeature(string name)
 {
 	auto iter = m_mapFeature.find(name);
 	if (iter == m_mapFeature.end())
@@ -153,11 +160,6 @@ CMonsterControlContext* CMonsterState_Factory::GetControlContext(CStateBase_Mons
 
 void CMonsterState_Factory::Free()
 {
-	//for (auto& cond : m_mapCondition)
-	//	Safe_Delete(cond.second);
 	m_mapCondition.clear();
-
-	//for (auto& feat : m_mapFeature)
-	//	Safe_Delete(feat.second);
 	m_mapFeature.clear();
 }

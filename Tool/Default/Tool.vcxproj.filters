@@ -640,6 +640,9 @@
     <ClInclude Include="..\Public\Panel_AnimationMix.h">
       <Filter>06. ImGui\01. Panel\Animation\Panel_AnimationMix</Filter>
     </ClInclude>
+    <ClInclude Include="Registry_State.h">
+      <Filter>06. ImGui\01. Panel\Animation\Panel_State</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <Image Include="small.ico">
