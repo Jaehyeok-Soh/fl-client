@@ -10,10 +10,10 @@ public:
 	{
 		Vec4 vCombo_CheckTimes = Vec4::Zero;
 
-		_int iSlideAnimIdx = { -1 };
-		_int iFirstAnimIdx = { -1 };
+		_int iSlideAnimIdx	= { -1 };
+		_int iFirstAnimIdx	= { -1 };
 		_int iSecondAnimIdx = { -1 };
-		_int iThirdAnimIdx = { -1 };
+		_int iThirdAnimIdx	= { -1 };
 		_int iFourthAnimIdx = { -1 };
 
 		_uint iEndStateIndex = {};

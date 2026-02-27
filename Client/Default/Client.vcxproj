@@ -244,7 +244,11 @@
     <ClInclude Include="..\Public\State_DashBack.h" />
     <ClInclude Include="..\Public\State_DashSky.h" />
     <ClInclude Include="..\Public\State_Fall.h" />
+    <ClInclude Include="..\Public\State_GunAttack.h" />
     <ClInclude Include="..\Public\State_GunBase.h" />
+    <ClInclude Include="..\Public\State_GunIdle.h" />
+    <ClInclude Include="..\Public\State_GunReload.h" />
+    <ClInclude Include="..\Public\State_GunWalk.h" />
     <ClInclude Include="..\Public\State_Idle.h" />
     <ClInclude Include="..\Public\State_Jump.h" />
     <ClInclude Include="..\Public\State_JumpAttEnd.h" />
@@ -278,6 +282,7 @@
     <ClInclude Include="..\Public\TriggerBox_LevelChange.h" />
     <ClInclude Include="..\Public\UIButton_Trigger.h" />
     <ClInclude Include="..\Public\UICommon_Trigger.h" />
+    <ClInclude Include="..\Public\UIDamageFont_Text.h" />
     <ClInclude Include="..\Public\UIDynamic_Image.h" />
     <ClInclude Include="..\Public\UIHover_Image.h" />
     <ClInclude Include="..\Public\UIJust_Image.h" />
@@ -420,7 +425,11 @@
     <ClCompile Include="..\Private\State_DashBack.cpp" />
     <ClCompile Include="..\Private\State_DashSky.cpp" />
     <ClCompile Include="..\Private\State_Fall.cpp" />
+    <ClCompile Include="..\Private\State_GunAttack.cpp" />
     <ClCompile Include="..\Private\State_GunBase.cpp" />
+    <ClCompile Include="..\Private\State_GunIdle.cpp" />
+    <ClCompile Include="..\Private\State_GunReload.cpp" />
+    <ClCompile Include="..\Private\State_GunWalk.cpp" />
     <ClCompile Include="..\Private\State_Idle.cpp" />
     <ClCompile Include="..\Private\State_Jump.cpp" />
     <ClCompile Include="..\Private\State_JumpAttEnd.cpp" />
@@ -454,6 +463,7 @@
     <ClCompile Include="..\Private\UIAimDot_Image.cpp" />
     <ClCompile Include="..\Private\UIButton_Trigger.cpp" />
     <ClCompile Include="..\Private\UICommon_Trigger.cpp" />
+    <ClCompile Include="..\Private\UIDamageFont_Text.cpp" />
     <ClCompile Include="..\Private\UIDynamic_Image.cpp" />
     <ClCompile Include="..\Private\UIHover_Image.cpp" />
     <ClCompile Include="..\Private\UIJust_Image.cpp" />

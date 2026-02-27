@@ -8,6 +8,7 @@
 #include "UIMonsterStat_Progress.h"
 // 텍스트 클래스
 #include "UIMonsterStat_Text.h"
+#include "UIDamageFont_Text.h"
 // 다이나믹 이미지 클래스
 #include "UINameplate_BG.h"
 // 트리거 클래스
@@ -37,20 +38,11 @@ HRESULT CBuilder_UIPrefabs::Build(const CDataDocumentBase& document)
 	m_vViewportSIze.y = vp.Height;
 
 	const auto& doc = static_cast<const CDataDocument_UI&>(document);
-
-	// For. Canvas
-	{
-		/* 문서에 저장된 IObjectDataBase -> 데이터를 가진 클래스의 부모 */
-		const vector<Engine::IObjectDataBase*> vecDtoList = doc.Get_ListByType(ENUM_TO_UINT(DTO::EUIType::CANVAS));
-		for (const auto& pDtoBase : vecDtoList)
-		{
-			/* 데이터를 보유한 클래스 다운캐스팅 */
-			const auto* pDto = static_cast<const Engine::CUI_Canvas_DTO*>(pDtoBase);
-			/* 데이터를 보유한 클래스에서 데이터를 추출 -> 오브젝트 매니저 레이어에 추가까지 */
-			if (FAILED(Create_CanvasDTO(pDto->Get_Data())))
-				return E_FAIL;
-		}
-	}
+	const vector<Engine::IObjectDataBase*> vecCanvasDtoList = doc.Get_ListByType(ENUM_TO_UINT(DTO::EUIType::CANVAS));
+	const auto* pCanvasDto = static_cast<const Engine::CUI_Canvas_DTO*>(vecCanvasDtoList.front());
+	m_iNumPrefab = pCanvasDto->Get_Data().iNumPrefabs;
+	m_vAspect.x = (_float)g_iWinSizeX / (_float)pCanvasDto->Get_Data().iEditorSizeX;
+	m_vAspect.y = (_float)g_iWinSizeY / (_float)pCanvasDto->Get_Data().iEditorSizeY;
 
 	// For. TextData
 	{
@@ -62,7 +54,6 @@ HRESULT CBuilder_UIPrefabs::Build(const CDataDocumentBase& document)
 				return E_FAIL;
 		}
 	}
-
 	// For. Trigger
 	{
 		const vector<Engine::IObjectDataBase*> vecDataList = doc.Get_ListByType(ENUM_TO_UINT(DTO::EUIType::TRIGGER));
@@ -73,7 +64,6 @@ HRESULT CBuilder_UIPrefabs::Build(const CDataDocumentBase& document)
 				return E_FAIL;
 		}
 	}
-
 	// For. DImage
 	{
 		const vector<Engine::IObjectDataBase*> vecDataList = doc.Get_ListByType(ENUM_TO_UINT(DTO::EUIType::DYNAMIC_IMAGE));
@@ -84,7 +74,6 @@ HRESULT CBuilder_UIPrefabs::Build(const CDataDocumentBase& document)
 				return E_FAIL;
 		}
 	}
-
 	// For. GenericUI
 	{
 		const vector<Engine::IObjectDataBase*> vecDataList = doc.Get_ListByType(ENUM_TO_UINT(DTO::EUIType::GENERICUI));
@@ -95,17 +84,11 @@ HRESULT CBuilder_UIPrefabs::Build(const CDataDocumentBase& document)
 				return E_FAIL;
 		}
 	}
-
-	if (FAILED(CUI_Manager::GetInstance()->Merge_MapCanvasCache(m_iLevelID, std::move(m_MapCanvasCache))))
-		return E_FAIL;
-	if (FAILED(CUI_Manager::GetInstance()->Merge_MapGenericUICache(m_iLevelID, std::move(m_pMapUICache))))
-		return E_FAIL;
-
-	m_MapTextDataCache.clear();
-	m_MapTriggerDataCache.clear();
-
-	CUI_Manager::GetInstance()->Add_TriggerUI(std::move(m_vecTriggerUIs));
-	CUI_Manager::GetInstance()->Request_SortUI();
+	// For. Canvas
+	{
+		if (FAILED(Create_CanvasDTO(pCanvasDto->Get_Data())))
+			return E_FAIL;
+	}
 	return S_OK;
 }
 
@@ -115,41 +98,27 @@ HRESULT CBuilder_UIPrefabs::Create_CanvasDTO(const DTO::TUI_CanvasData& data)
 		return E_FAIL;
 
 	CCanvas::CANVAS_DESC Desc = {};
-	Desc.iLevelIndex = data.iLevelIndex;
-	Desc.strName = data.strTag;
-	m_vAspect.x = (_float)g_iWinSizeX / (_float)data.iEditorSizeX;
-	m_vAspect.y = (_float)g_iWinSizeY / (_float)data.iEditorSizeY;
-	Desc.fX = data.fPosX * m_vAspect.x;
-	Desc.fY = data.fPosY * m_vAspect.y;
-	Desc.fZ = data.fPosZ;
-	Desc.fWidth = m_vViewportSIze.x;
-	Desc.fHeight = m_vViewportSIze.y;
+	Desc.iLevelIndex		= data.iLevelIndex;
+	Desc.strName			= data.strTag;
+	m_vAspect.x				= (_float)g_iWinSizeX / (_float)data.iEditorSizeX;
+	m_vAspect.y				= (_float)g_iWinSizeY / (_float)data.iEditorSizeY;
+	Desc.fX					= data.fPosX * m_vAspect.x;
+	Desc.fY					= data.fPosY * m_vAspect.y;
+	Desc.fZ					= data.fPosZ;
+	Desc.fWidth				= m_vViewportSIze.x;
+	Desc.fHeight			= m_vViewportSIze.y;
+	Desc.vecPrefabs			= std::move(m_vecPrefabTags);
+
 	m_ePrefabtype = static_cast<Client::EUIPrefabType>(data.iPrefabType);
 
-	CGameObject* pResult = m_pGameInstance->Add_GameObject(ENUM_TO_UINT(ELevelType::STATIC), L"Prototype_UI_Canvas", m_iLevelID, g_wszUILayer, &Desc);
-	if (pResult == nullptr)
-		return E_FAIL;
-
-	auto* pCanvas = dynamic_cast<CCanvas*>(pResult);
-	if (nullptr == pCanvas)
-		return E_FAIL;
-
-	m_MapCanvasCache.emplace(data.strTag, pCanvas);
-	if (FAILED(CUI_Manager::GetInstance()->Add_VecCanvasCache(m_iLevelID, pCanvas)))
-		return E_FAIL;
-
-
-	switch (m_ePrefabtype)
+	_wstring wstrProtoTag = L"Prototype_UI_Canvas";
+	_wstring wstrPoolTag = L"Prefab_" + Engine_Utils::ToWString(Desc.strName);
+	if (FAILED(CUI_Manager::GetInstance()->Regist_Prefab(m_iLevelID, m_ePrefabtype, wstrProtoTag, wstrPoolTag, ENUM_TO_UINT(ELevelType::STATIC), &Desc, m_iNumPrefab)))
 	{
-	case Client::EUIPrefabType::MONSTER_NAMEPLATE:
-		break;
-	case Client::EUIPrefabType::END:
-		break;
-	default:
-		break;
+		_wstring wstr = Engine_Utils::ToWString(data.strTag) + L" <- 얘가 문제";
+		MSG_BOXW(wstr.c_str());
+		return E_FAIL;
 	}
-
-
 	return S_OK;
 }
 
@@ -157,14 +126,8 @@ HRESULT CBuilder_UIPrefabs::Create_GenericUIDTO(const DTO::TUI_GenericUIData& da
 {
 	if (data.eType != DTO::EUIType::GENERICUI)
 		return E_FAIL;
-
-	auto iter = m_MapCanvasCache.find(data.strCanvasName);
-	if (iter == m_MapCanvasCache.end())
+	if (FAILED(Register_Class(data.eClassType, data)))
 		return E_FAIL;
-
-	if (FAILED(Register_Class(data.eClassType, data, iter->second)))
-		return E_FAIL;
-
 	return S_OK;
 }
 
@@ -195,14 +158,10 @@ HRESULT CBuilder_UIPrefabs::Create_DImageDTO(const DTO::TUI_DImageData& data)
 	return S_OK;
 }
 
-HRESULT CBuilder_UIPrefabs::Register_Class(DTO::EUIClassType eClassType, const DTO::TUI_GenericUIData& data, CCanvas* pCanvas)
+HRESULT CBuilder_UIPrefabs::Register_Class(DTO::EUIClassType eClassType, const DTO::TUI_GenericUIData& data)
 {
-	if (nullptr == pCanvas)
-		return E_FAIL;
-
-	CGenericUI::GENERIC_UI_DESC DefaultDesc = Make_DefaultInfo(data, pCanvas);
+	CGenericUI::GENERIC_UI_DESC DefaultDesc = Make_DefaultInfo(data);
 	_wstring wstrProtoTag	= {};
-	CGameObject* pResult	= nullptr;
 
 	////////////////////////////////////////
 	// PROGRESS_BAR //
@@ -221,12 +180,14 @@ HRESULT CBuilder_UIPrefabs::Register_Class(DTO::EUIClassType eClassType, const D
 			MonsterStatProgressDesc.iComponentFlag = DTO::EComponentTypeFlag::WORLDUI_COMPONENT;
 			wstrProtoTag = L"Prototype_UI_MonsterStatProgress";
 			_wstring wstrPoolTag = L"Prefab_" + Engine_Utils::ToWString(MonsterStatProgressDesc.strName);
-			if (FAILED(CUI_Manager::GetInstance()->Regist_Prefab(m_iLevelID, m_ePrefabtype, wstrProtoTag, wstrPoolTag, ENUM_TO_UINT(ELevelType::STATIC), &MonsterStatProgressDesc)))
+
+			if(FAILED(m_pGameInstance->Regist_Pool(m_iLevelID, wstrPoolTag, g_wszUILayer, ENUM_TO_UINT(ELevelType::STATIC), wstrProtoTag, &MonsterStatProgressDesc, m_iNumPrefab)))
 			{
 				_wstring wstr = Engine_Utils::ToWString(data.strTag) + L" <- 얘가 문제";
 				MSG_BOXW(wstr.c_str());
 				return E_FAIL;
 			}
+			m_vecPrefabTags.push_back(wstrPoolTag);
 		}
 		else
 		{
@@ -250,6 +211,7 @@ HRESULT CBuilder_UIPrefabs::Register_Class(DTO::EUIClassType eClassType, const D
 		const _bool isMenu				= (Type >= DTO::EUITextSubClassType::MENU_TEXT_BEGIN && Type <= DTO::EUITextSubClassType::MENU_TEXT_END);
 		const _bool isLoading			= (Type >= DTO::EUITextSubClassType::LOADING_TEXT_BEGIN && Type <= DTO::EUITextSubClassType::LOADING_TEXT_END);
 		const _bool isMonsterNameplate	= (Type >= DTO::EUITextSubClassType::MONSTER_STAT_TEXT_BEGIN && Type <= DTO::EUITextSubClassType::MONSTER_STAT_TEXT_END);
+		const _bool isDamageFont		= (Type >= DTO::EUITextSubClassType::BATTLE_DAMAGE_TEXT_BEGIN && Type <= DTO::EUITextSubClassType::BATTLE_DAMAGE_TEXT_END);
 
 		static_cast<CGenericUI::GENERIC_UI_DESC&>(TextDesc) = DefaultDesc;
 		TextDesc.eTextSubClass	= Type;
@@ -268,12 +230,30 @@ HRESULT CBuilder_UIPrefabs::Register_Class(DTO::EUIClassType eClassType, const D
 			MonsterStatDesc.iComponentFlag = DTO::EComponentTypeFlag::WORLDUI_COMPONENT;
 			wstrProtoTag = L"Prototype_UI_MonsterStatText";
 			_wstring wstrPoolTag = L"Prefab_" + Engine_Utils::ToWString(MonsterStatDesc.strName);
-			if (FAILED(CUI_Manager::GetInstance()->Regist_Prefab(m_iLevelID, m_ePrefabtype, wstrProtoTag, wstrPoolTag, ENUM_TO_UINT(ELevelType::STATIC), &MonsterStatDesc)))
+
+			if (FAILED(m_pGameInstance->Regist_Pool(m_iLevelID, wstrPoolTag, g_wszUILayer, ENUM_TO_UINT(ELevelType::STATIC), wstrProtoTag, &MonsterStatDesc, m_iNumPrefab)))
 			{
 				_wstring wstr = Engine_Utils::ToWString(data.strTag) + L" <- 얘가 문제";
 				MSG_BOXW(wstr.c_str());
 				return E_FAIL;
 			}
+			m_vecPrefabTags.push_back(wstrPoolTag);
+		}
+		else if (isDamageFont)
+		{
+			CUIDamageFont_Text::DAMAGE_FONT_DESC DamageFontDesc = {};
+			static_cast<CUIText::UI_TEXT_DESC&>(DamageFontDesc) = TextDesc;
+			DamageFontDesc.iComponentFlag = DTO::EComponentTypeFlag::WORLDUI_COMPONENT;
+			wstrProtoTag = L"Prototype_UI_DamageFontText";
+			_wstring wstrPoolTag = L"Prefab_" + Engine_Utils::ToWString(DamageFontDesc.strName);
+
+			if (FAILED(m_pGameInstance->Regist_Pool(m_iLevelID, wstrPoolTag, g_wszUILayer, ENUM_TO_UINT(ELevelType::STATIC), wstrProtoTag, &DamageFontDesc, m_iNumPrefab)))
+			{
+				_wstring wstr = Engine_Utils::ToWString(data.strTag) + L" <- 얘가 문제";
+				MSG_BOXW(wstr.c_str());
+				return E_FAIL;
+			}
+			m_vecPrefabTags.push_back(wstrPoolTag);
 		}
 		else
 		{
@@ -289,7 +269,6 @@ HRESULT CBuilder_UIPrefabs::Register_Class(DTO::EUIClassType eClassType, const D
 	{
 		CUIJust_Image::JUST_IMAGE_DESC JustImageDesc = {};
 		static_cast<CGenericUI::GENERIC_UI_DESC&>(JustImageDesc) = DefaultDesc;
-		pResult = m_pGameInstance->Add_GameObject(m_iLevelID, wstrProtoTag, m_iLevelID, g_wszUILayer, &JustImageDesc);
 		JustImageDesc.iComponentFlag = DTO::EComponentTypeFlag::WORLDUI_COMPONENT;			
 	}
 
@@ -330,12 +309,14 @@ HRESULT CBuilder_UIPrefabs::Register_Class(DTO::EUIClassType eClassType, const D
 			NameplateDesc.iComponentFlag = DTO::EComponentTypeFlag::WORLDUI_COMPONENT;
 			wstrProtoTag = L"Prototype_UI_Nameplate_BG";
 			_wstring wstrPoolTag = L"Prefab_" + Engine_Utils::ToWString(NameplateDesc.strName);
-			if (FAILED(CUI_Manager::GetInstance()->Regist_Prefab(m_iLevelID, m_ePrefabtype, wstrProtoTag, wstrPoolTag, ENUM_TO_UINT(ELevelType::STATIC), &NameplateDesc)))
+
+			if (FAILED(m_pGameInstance->Regist_Pool(m_iLevelID, wstrPoolTag, g_wszUILayer, ENUM_TO_UINT(ELevelType::STATIC), wstrProtoTag, &NameplateDesc, m_iNumPrefab)))
 			{
 				_wstring wstr = Engine_Utils::ToWString(data.strTag) + L" <- 얘가 문제";
 				MSG_BOXW(wstr.c_str());
 				return E_FAIL;
 			}
+			m_vecPrefabTags.push_back(wstrPoolTag);
 		}
 		else
 		{
@@ -347,7 +328,7 @@ HRESULT CBuilder_UIPrefabs::Register_Class(DTO::EUIClassType eClassType, const D
 	return S_OK;
 }
 
-CGenericUI::GENERIC_UI_DESC CBuilder_UIPrefabs::Make_DefaultInfo(const DTO::TUI_GenericUIData& data, CCanvas* pCanvas)
+CGenericUI::GENERIC_UI_DESC CBuilder_UIPrefabs::Make_DefaultInfo(const DTO::TUI_GenericUIData& data)
 {
 	CGenericUI::GENERIC_UI_DESC Desc = {};
 	Desc.strName					= data.strTag;
@@ -366,7 +347,6 @@ CGenericUI::GENERIC_UI_DESC CBuilder_UIPrefabs::Make_DefaultInfo(const DTO::TUI_
 	Desc.isInitInteract				= data.isInteract;
 	Desc.isInitActivate				= data.isActivate;
 	Desc.isUseColorTint				= data.isUseColorTint;
-	Desc.pCanvasCache				= pCanvas;
 	Desc.iComponentFlag				= data.iComponentFlag;
 	Desc.isUseColorTint				= data.isUseColorTint;
 	Desc.vColorTint					= data.vColorTint;
@@ -376,7 +356,6 @@ CGenericUI::GENERIC_UI_DESC CBuilder_UIPrefabs::Make_DefaultInfo(const DTO::TUI_
 	Desc.iFillDir					= data.iFillDir;
 	Desc.fAlpha						= data.fAlphaRatio;
 	Desc.iFlip						= data.iFlip;
-
 	return Desc;
 }
 

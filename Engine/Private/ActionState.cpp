@@ -228,7 +228,7 @@ HRESULT CActionState::Request_Change_WeaponAnimation(_uint iAnimationIndex, _boo
 		return E_FAIL;
 
 	// TODO : 은비야 여기 Weapon Blend Off 다
-	return m_pOwnerWeaponModel->Change_Animation(m_pOwnerWeaponAnimECS, iAnimationIndex, false, bLoop, bForce);
+	return m_pOwnerWeaponModel->Change_Animation(m_pOwnerWeaponAnimECS, iAnimationIndex, bBlend, bLoop, bForce);
 }
 
 _float CActionState::Get_AnimElpasedTimeSeconds()

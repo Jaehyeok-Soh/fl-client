@@ -96,9 +96,9 @@ void CStateBase::Update(const _float fTimeDelta)
 		if (Is_AnimFinished())
 		{
 			Engine_Utils::Add_Flag(m_FAniFlags, STATEANI_FLAG::SA_PreAniDone);
-			Request_ChangeAnimation((size_t)m_vecMainAnims[m_iMainAnimIdx], m_bBlend, m_bLoop, m_bMainForce);
+			Request_ChangeAnimation((size_t)m_vecMainAnims[m_iMainAnimIdx], true, m_bLoop, m_bMainForce);
 			if (Engine_Utils::Has_Flag(m_FAniFlags, STATEANI_FLAG::SA_WeaponAni))
-				Request_Change_WeaponAnimation((size_t)m_vecWeaponAnims[m_vecPreAnims.size() + m_iMainAnimIdx], m_bBlend, m_bLoop, m_bMainForce);
+				Request_Change_WeaponAnimation((size_t)m_vecWeaponAnims[m_vecPreAnims.size() + m_iMainAnimIdx], true, m_bLoop, m_bMainForce);
 		}
 	}
 

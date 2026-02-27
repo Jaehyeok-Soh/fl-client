@@ -162,6 +162,7 @@ void CUILevelChange_Image::Acting_By_InteractState()
 		m_pGameInstance->Request_ChangeLevel(ENUM_TO_UINT(ELevelType::LOADING), CLevel_Loading::Create(m_pDevice, m_pDeviceContext, m_eNextLevelID));
 		m_pUIManager->Request_Clear();
 	}
+
 }
 
 void CUILevelChange_Image::OnUIEvent(ETriggerEventType eEvent, CGenericUI* pSender)

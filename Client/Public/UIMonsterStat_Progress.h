@@ -3,7 +3,7 @@
 #include "DataStruct_UI.h"
 
 NS_BEGIN(Client)
-class CStatCom_Player;
+class CWorldUI_Component;
 class CUIMonsterStat_Progress final : public CUIProgress_Bar
 {
 	using Super = CUIProgress_Bar;
@@ -36,6 +36,8 @@ public:
 	void Initialize_InVisible_Event()override;
 	_bool Tick_Visible_Event(const _float fTimeDelta)override;
 	_bool Tick_InVisible_Event(const _float fTimeDelta)override;
+	virtual HRESULT Spawn_FromPool(void* pArg)override;
+	virtual HRESULT Despawn_FromPool()override;
 
 private:
 	HRESULT Ready_Components(MONSTER_STAT_PROGRESS_DESC* pDesc);
@@ -44,7 +46,7 @@ private:
 	HRESULT Convert_Stat_To_Ratio();
 
 private:
-	CStatCom_Player* m_pPlayerStatCom = { nullptr };
+	CWorldUI_Component* m_pWorldUIComp = { nullptr };
 
 	// Player HP Values
 	_bool m_isStartLowHp = { FALSE };

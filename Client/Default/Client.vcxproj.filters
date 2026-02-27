@@ -514,9 +514,6 @@
     <Filter Include="03. GameObject\UIObjects\02.UI\Image\Dynamic Image\05.MonsterNamePlate">
       <UniqueIdentifier>{761751c8-ba94-4e88-987b-53bc16a7f52f}</UniqueIdentifier>
     </Filter>
-    <Filter Include="06. FSM\Player\Attack\Gun\Holding">
-      <UniqueIdentifier>{2ea2a8e0-8b63-4991-b623-1685d95acae0}</UniqueIdentifier>
-    </Filter>
     <Filter Include="06. FSM\Player\Attack\Gun\Attack">
       <UniqueIdentifier>{94646764-3ce1-40c8-8e22-3ebf84f0db89}</UniqueIdentifier>
     </Filter>
@@ -525,6 +522,12 @@
     </Filter>
     <Filter Include="03. GameObject\UIObjects\02.UI\Image\Dynamic Image\07.Level Chnage">
       <UniqueIdentifier>{441fee0b-1c67-4053-a110-de1fdb40d73f}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="06. FSM\Player\Attack\Gun\Idle">
+      <UniqueIdentifier>{2ba6e959-3319-4e68-825e-863b9871084d}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="06. FSM\Player\Attack\Gun\Walk">
+      <UniqueIdentifier>{2ea2a8e0-8b63-4991-b623-1685d95acae0}</UniqueIdentifier>
     </Filter>
     <Filter Include="07. System\99. Debug_ImGui\Inspector">
       <UniqueIdentifier>{2A6EE529-AE71-491B-9591-59007A3BEF12}</UniqueIdentifier>
@@ -537,6 +540,9 @@
     </Filter>
     <Filter Include="07. System\99. Debug_ImGui\Inspector\ShaderDebug">
       <UniqueIdentifier>{0b3e7565-de1d-44a2-b248-637354f68a85}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="03. GameObject\UIObjects\02.UI\Text\Damage Text">
+      <UniqueIdentifier>{677a64cd-1317-409c-a79c-d9f17b5e967a}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
@@ -982,14 +988,29 @@
     <ClInclude Include="..\Public\UILevelChange_Image.h">
       <Filter>03. GameObject\UIObjects\02.UI\Image\Dynamic Image\07.Level Chnage</Filter>
     </ClInclude>
+    <ClInclude Include="..\Public\State_GunAttack.h">
+      <Filter>06. FSM\Player\Attack\Gun\Attack</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\State_GunReload.h">
+      <Filter>06. FSM\Player\Attack\Gun\Reload</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\LandScape.h">
+      <Filter>03. GameObject\MapObject\02. LandScape</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\State_GunIdle.h">
+      <Filter>06. FSM\Player\Attack\Gun\Idle</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\State_GunWalk.h">
+      <Filter>06. FSM\Player\Attack\Gun\Walk</Filter>
+    </ClInclude>
     <ClInclude Include="..\public\ImGui_ShaderDebugLayout.h">
       <Filter>07. System\99. Debug_ImGui\Layout\Shader</Filter>
     </ClInclude>
     <ClInclude Include="..\public\ImGui_TextureDebugInspector.h">
       <Filter>07. System\99. Debug_ImGui\Inspector\ShaderDebug</Filter>
     </ClInclude>
-    <ClInclude Include="..\Public\LandScape.h">
-      <Filter>03. GameObject\MapObject\02. LandScape</Filter>
+    <ClInclude Include="..\Public\UIDamageFont_Text.h">
+      <Filter>03. GameObject\UIObjects\02.UI\Text\Damage Text</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -1427,14 +1448,29 @@
     <ClCompile Include="..\Private\UILevelChange_Image.cpp">
       <Filter>03. GameObject\UIObjects\02.UI\Image\Dynamic Image\07.Level Chnage</Filter>
     </ClCompile>
+    <ClCompile Include="..\Private\State_GunAttack.cpp">
+      <Filter>06. FSM\Player\Attack\Gun\Attack</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\State_GunReload.cpp">
+      <Filter>06. FSM\Player\Attack\Gun\Reload</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\LandScape.cpp">
+      <Filter>03. GameObject\MapObject\02. LandScape</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\State_GunIdle.cpp">
+      <Filter>06. FSM\Player\Attack\Gun\Idle</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\State_GunWalk.cpp">
+      <Filter>06. FSM\Player\Attack\Gun\Walk</Filter>
+    </ClCompile>
     <ClCompile Include="..\private\ImGui_ShaderDebugLayout.cpp">
       <Filter>07. System\99. Debug_ImGui\Layout\Shader</Filter>
     </ClCompile>
     <ClCompile Include="..\private\ImGui_TextureDebugInspector.cpp">
       <Filter>07. System\99. Debug_ImGui\Inspector\ShaderDebug</Filter>
     </ClCompile>
-    <ClCompile Include="..\Private\LandScape.cpp">
-      <Filter>03. GameObject\MapObject\02. LandScape</Filter>
+    <ClCompile Include="..\Private\UIDamageFont_Text.cpp">
+      <Filter>03. GameObject\UIObjects\02.UI\Text\Damage Text</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

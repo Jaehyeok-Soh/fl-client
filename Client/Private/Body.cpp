@@ -76,14 +76,22 @@ HRESULT CBody::Awake(const _uint iCurrentLevelIndex)
 
 	Get_Component<CEffectHandler>()->Awake();
 
+	CModel* pMyModel = Get_Component<CModel>();
+
 	//Face_Smile
-	_uint iFaceAnimIdx					= Get_Component<CModel>()->Get_AnimationIndex(L"Animation_PlayerMoon_Face_LipSync");
+	_uint iFaceAnimIdx					= pMyModel->Get_AnimationIndex(L"Animation_PlayerMoon_Face_LipSync");
+	_uint iJumpAnimIdx = pMyModel->Get_AnimationIndex(L"Animation_PlayerMoon_FirstJump_InplaceStart");
+	_uint iBulletAnimIdx = pMyModel->Get_AnimationIndex(L"Animation_PlayerMoon_BulletJump_Start");
+
 	vector<CModel::DATA_ANIMIX> vecMix	= { {113,false,1.f} };
 
-	Get_Component<CModel>()->Set_MixAnim(true);
-	Get_Component<CModel>()->Set_MixAnim_ResetSize(1);
-	Get_Component<CModel>()->Make_MixRatio(iFaceAnimIdx, vecMix, m_pBoneAnimMixCS);
-	Get_Component<CModel>()->Set_MixAnim_AnimIndex(0, iFaceAnimIdx);
+	pMyModel->Set_MixAnim(true);
+	pMyModel->Set_MixAnim_ResetSize(2);
+	pMyModel->Make_MixRatio(iFaceAnimIdx, vecMix, m_pBoneAnimMixCS);
+	pMyModel->Set_MixAnim_AnimIndex(0, iFaceAnimIdx);
+
+	pMyModel->Set_Animtion_MotionOffset(iJumpAnimIdx, 2.f);
+	pMyModel->Set_Animtion_MotionOffset(iBulletAnimIdx, 2.f);
 
 	return S_OK;
 }

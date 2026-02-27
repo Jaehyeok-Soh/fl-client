@@ -453,8 +453,15 @@ void CModel::Make_MixRatio(_uint iAnimIdx, vector<DATA_ANIMIX>& vecAniMixData, C
 
 	for (auto& pMixData : vecAniMixData)
 	{
+		// 음수라면 전체 적용
 		if (pMixData.iParentIdx < 0)
+		{
+			for (size_t i = 0; i < m_vecBones.size(); i++)
+			{
+				vecRatios[i] = pMixData.fRatio;
+			}
 			continue;
+		}
 
 		for (size_t i = 0 ; i< m_vecBones.size(); i++)
 		{
@@ -485,7 +492,7 @@ void CModel::Set_MixAnim_AnimIndex(_uint iVectorIdx, _int iAnimIdx)
 	if (idx < m_vecMixAnimIndices.size())
 	{
 		// 만약 원래 있던걸 지우는 거면 원래 담겨져 있던건 셋팅 리셋해주고
-		if (iAnimIdx < 0)
+		if (iAnimIdx < 0 && m_vecMixAnimIndices[idx] >= 0 )
 		{
 			 m_vecAnimations[m_vecMixAnimIndices[idx]]->Reset_PrePosition();
 			 m_vecAnimations[m_vecMixAnimIndices[idx]]->Set_TrackPosition(0.f);
@@ -1116,6 +1123,7 @@ void CModel::Blend_Update(CComputeShader* pBoneComBineCS, CComputeShader* pAnimE
 			Blend_Animation(pBoneComBineCS, pAnimEvalCS, pAnimBlendCS, fTimeDelta, fRatio, pOwnerTransform, pOwnerPhyCCT, pAnimMixCS);
 		else
 			Blend_Animation(pBoneComBineCS, pAnimEvalCS, pAnimBlendCS, fTimeDelta, fRatio, m_pOwner->Get_Component<CTransform>(), m_pOwner->Get_Component<CPhysicsCCT>(), pAnimMixCS);
+			//Blend_Animation(pBoneComBineCS, pAnimEvalCS, pAnimBlendCS, fTimeDelta, fRatio, m_pOwner->Get_Component<CTransform>(), m_pOwner->Get_Component<CPhysicsCCT>(), pAnimMixCS);
 	}
 	else
 		Change_AnimationPlayState(PLAY, pAnimEvalCS, m_iCurrentAnimIndex, false);
