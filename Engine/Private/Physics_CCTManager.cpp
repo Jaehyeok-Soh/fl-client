@@ -4,8 +4,7 @@
 #include "Physics_CCTManager.h"
 #include "Physics_ResourceManager.h"
 
-#include "Physics_UserHitReport.h"
-#include "Physics_NPCHitReport.h"
+#include "Physics_CCTHitReport.h"
 
 CPhysics_CCTManager::CPhysics_CCTManager(ID3D11Device* pDevice, ID3D11DeviceContext* pContext, PxPhysics* pPhysics, PxScene* pScene, CPhysics_ResourceManager* pResourceManager)
 	: m_pGameInstance{ CGameInstance::GetInstance() },
@@ -25,8 +24,7 @@ HRESULT CPhysics_CCTManager::Initialize()
 {
 	m_pControllerManager = PxCreateControllerManager(*m_pScene);
 
-	m_pUserHitReport = CPhysics_UserHitReport::Create();
-	m_pNPCHitReport = CPhysics_NPCHitReport::Create();
+	m_pCCTHitReport = CPhysics_CCTHitReport::Create();
 
 	return S_OK;
 }
@@ -83,10 +81,7 @@ PxController* CPhysics_CCTManager::MakeBoxController(PHYSICSCCT_DESC* pDesc)
 	desc.contactOffset = 0.1f;
 	desc.stepOffset = 0.5f;
 
-	if (pDesc->bIsPlayer)
-		desc.reportCallback = m_pUserHitReport;
-	else
-		desc.reportCallback = m_pNPCHitReport;
+	desc.reportCallback = m_pCCTHitReport;
 
 	return m_pControllerManager->createController(desc);
 }
@@ -101,10 +96,7 @@ PxController* CPhysics_CCTManager::MakeCapsuleController(PHYSICSCCT_DESC* pDesc)
 	desc.contactOffset = 0.1f;
 	desc.stepOffset = 0.5f;
 
-	if (pDesc->bIsPlayer)
-		desc.reportCallback = m_pUserHitReport;
-	else
-		desc.reportCallback = m_pNPCHitReport;
+	desc.reportCallback = m_pCCTHitReport;
 
 	return m_pControllerManager->createController(desc);
 }
@@ -124,8 +116,7 @@ CPhysics_CCTManager* CPhysics_CCTManager::Create(ID3D11Device* pDevice, ID3D11De
 
 void CPhysics_CCTManager::Free()
 {
-	Safe_Release(m_pUserHitReport);
-	Safe_Release(m_pNPCHitReport);
+	Safe_Release(m_pCCTHitReport);
 
 	Safe_Release(m_pResourceManager);
 

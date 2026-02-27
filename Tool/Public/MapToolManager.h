@@ -23,6 +23,7 @@ class CMapObject;
 class CImGui_ToolManager;
 class CLevel_Map;
 class CLevelData;
+class CPanel_MapObjectList;
 
 using MapObjectCloneFactory = std::function<CGameObject*(void* pArg)>;
 using PairKey = std::pair<wstring, vector<wstring>>;
@@ -137,6 +138,9 @@ public:
 	HRESULT						Batch_Preview();
 	HRESULT						Register_MapObjectCloneFactory();
 public:
+	CModel*						Get_MonsterPreviewModel(DTO::EMakeMonsterType eMakeMonsterType );
+	CModel*						Get_PlayerPreviewModel();
+public:
 	HRESULT						Ready_LevelData();
 	HRESULT						Apply_LevelData(const DTO::TLevelData* tData);
 	HRESULT						Release_SceneData();
@@ -162,8 +166,6 @@ public:
 	HRESULT						Save_TextureSplatingInfoData();
 	HRESULT						Save_TextureSplatingInfoData(const wstring& wstrSaveName);
 	HRESULT						UnRegister_MapTexture();
-
-
 public:
 	void						Update(float DT);
 	void						Input_Update(float DT);
@@ -294,6 +296,7 @@ private:
 	virtual void Free() override;
 public:
 	friend class CPanel_MapTool;
+	friend class CPanel_MapObjectList;
 };
 
 NS_END

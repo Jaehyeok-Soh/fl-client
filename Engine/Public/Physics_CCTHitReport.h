@@ -5,7 +5,7 @@
 
 NS_BEGIN(Engine)
 
-class CPhysics_NPCHitReport : public CBase, public PxUserControllerHitReport
+class CPhysics_CCTHitReport : public CBase, public PxUserControllerHitReport
 {
     typedef struct tagGameObjectInfo
     {
@@ -28,7 +28,7 @@ class CPhysics_NPCHitReport : public CBase, public PxUserControllerHitReport
                 leftObject = left;
                 leftColliderDesc = leftDesc;
             }
-
+            
             if (right)
             {
                 rightName = right->Get_WName();
@@ -51,8 +51,8 @@ class CPhysics_NPCHitReport : public CBase, public PxUserControllerHitReport
 
     using Super = CBase;
 private:
-    CPhysics_NPCHitReport();
-    virtual ~CPhysics_NPCHitReport() = default;
+    CPhysics_CCTHitReport();
+    virtual ~CPhysics_CCTHitReport() = default;
 
     HRESULT Initialize();
 
@@ -65,9 +65,13 @@ private:
 #endif // _DEBUG
 
     array<std::function<void(GAMEOBJECTINFO& info)>, HITEVENT::Enum::END> m_arrHitEvent{};
+
+#ifdef _DEBUG
     array<wstring, HITEVENT::Enum::END> m_arrEventString;
+#endif // _DEBUG
+
 public:
-    static CPhysics_NPCHitReport* Create();
+    static CPhysics_CCTHitReport* Create();
     virtual void Free() override;
 
 
@@ -80,10 +84,9 @@ public:
     // PxUserControllerHitReport을(를) 통해 상속됨
     void onShapeHit(const PxControllerShapeHit& hit) override;
     void onControllerHit(const PxControllersHit& hit) override;
-
+    
     // PxUserControllerHitReport을(를) 통해 상속됨
     void onObstacleHit(const PxControllerObstacleHit& hit) override { PX_UNUSED(hit); }
-
 };
 
 NS_END

@@ -80,6 +80,8 @@ public:
 
 	virtual _bool Is_ChargingAttackPressed() override;
 	virtual Vec3  Get_MoveDir() override;
+
+	virtual void Clear_WhenChangeLevel() override;
 private:
 	void OnChangeLockonTarget(CGameObject* pGo);
 

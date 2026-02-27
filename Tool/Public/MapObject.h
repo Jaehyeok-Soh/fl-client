@@ -71,10 +71,25 @@ private:
 	virtual HRESULT						Initialize(void* pArg)							override;
 	HRESULT								Ready_SRTDatas(CMapObject::MAPOBJECT_DESC* pDesc);
 	HRESULT								Ready_Component();
+	HRESULT								Ready_ColliderTypeComponet();
 	HRESULT								Ready_ClientMakePath(CMapObject::MAPOBJECT_DESC* pDesc);
 	HRESULT								Ready_OverrideMtl(const USING_MODEL_INFO& tUsingModelInfo);
+
+
+public:
+	HRESULT								Ready_PlusData_ByClientMakePath();
+
+public:
+	HRESULT								Ready_Batch_Player();
+	HRESULT								Ready_Batch_Monster();
+	HRESULT								Ready_TriggerBox_MonsterSpawner();
+
+private:
+	HRESULT								Ready_ColliderTypeName();
 	_bool								Check_OutBound(_int iIndex) const;
 private:
+	void								Check_ClientMakePathAndDrawType_TriggerBox();
+
 	HRESULT								Change_Instance_To_Default();
 	HRESULT								Update_Instance_WorldMinMax(const Vec3* pModelMinMax, const vector<Matrix>* vecInstanceMatrixPointer);
 public:
@@ -85,6 +100,7 @@ public:
 public:
 	void								Update_InstanceWorldMatrix(_bool isAllUpdate , _int iIndex = -1);
 	void								Update_Bounds(_uint iIndex);
+	void								Update_Collider();
 
 public:
 	virtual bool						Get_SRT(OUT  Vec3& vOutScale, OUT Quat& vQuat, OUT Vec3& vPosition)override;
@@ -184,13 +200,28 @@ public:
 	HRESULT								Render_Bush();
 	HRESULT								Render_Rock();
 	HRESULT								Render_Water();
+
+
+
+	HRESULT								Render_Batch_Player();
+	HRESULT								Render_Batch_Monster();
+
+	HRESULT								Render_TriggerBox_ChangeLevel();
+	HRESULT								Render_TriggerBox_MonsterSpawner();
+
+	/* Collider Type 전용 Render함수 */
+	HRESULT								Render_Collider();
 #pragma endregion 
+
+
 public:
 	/* 기본적으로 사용할 애들 */
 	/* Client Make Path를  */
 	HRESULT								Render_Default(_int iPass = 0 );
 	HRESULT								Render_Instance(_int iPass = 0);
 
+protected:
+	static constexpr	Vec3			m_vDefaultMinMax[2] = { Vec3(-5.f,-5.f, -5.f),Vec3(+5.f,+5.f, +5.f) };
 protected:
 	wstring								m_wstrUERawDataPath{L""};
 	_uint								m_iSectionNum{};

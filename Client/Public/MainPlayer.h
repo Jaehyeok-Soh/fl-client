@@ -24,6 +24,9 @@ private:
 	virtual HRESULT Initialize_Prototype() override;
 	virtual HRESULT Initialize(void* pArg) override;
 public:
+	// Static Object가 다른 Level에 갈때 호출
+	virtual HRESULT Reinitialize(GAMEOBJECT_REINIT_DESC* pDesc) override;
+	virtual HRESULT Clear_WhenChangeLevel() override;
 	virtual HRESULT Awake(const _uint iCurrentLevelID) override;
 	virtual void	Update_Priority(const _float fTimeDelta) override;
 	virtual void	Update(const _float fTimeDelta) override;
@@ -32,11 +35,14 @@ public:
 	virtual HRESULT Render() override;
 
 public:
-	virtual void OnCollision(_uint iMyColliderLayer, _uint iOtherLayer, CGameObject* pOther) override;
-	virtual void OnCollision_Enter(_uint iMyColliderLayer, _uint iOtherLayer, CGameObject* pOther, const COL_HIT_INFO& tHitInfo) override;
-	virtual void OnCollision_Exit(_uint iMyColliderLayer, _uint iOtherLayer, CGameObject* pOther) override;
-	virtual void OnTrigger_Enter(_uint iMyColliderLayer, _uint iOtherLayer, CGameObject* pOther) override;
-	virtual void OnTrigger_Exit(_uint iMyColliderLayer, _uint iOtherLayer, CGameObject* pOther) override;
+	virtual void	OnCollision(_uint iMyColliderLayer, _uint iOtherLayer, CGameObject* pOther) override;
+	virtual void	OnCollision_Enter(_uint iMyColliderLayer, _uint iOtherLayer, CGameObject* pOther, const COL_HIT_INFO& tHitInfo) override;
+	virtual void	OnCollision_Exit(_uint iMyColliderLayer, _uint iOtherLayer, CGameObject* pOther) override;
+	virtual void	OnTrigger_Enter(_uint iMyColliderLayer, _uint iOtherLayer, CGameObject* pOther) override;
+	virtual void	OnTrigger_Exit(_uint iMyColliderLayer, _uint iOtherLayer, CGameObject* pOther) override;
+
+	virtual _bool On_Hit(const HIT_DESC& hitDesc) override;
+	virtual void Try_Attack(const HIT_DESC& hitDesc) override;
 
 private:
 	// void Movement_Ground(const _float fTimeDelta);

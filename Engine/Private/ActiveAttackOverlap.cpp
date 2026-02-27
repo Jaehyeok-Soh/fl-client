@@ -50,7 +50,7 @@ void CActiveAttackOverlap::Update(_float fTimeDelta)
 			//Debug_Log(hitObject);
 #endif // _DEBUG
 
-			m_pGameInstance->Overlap_EventCallback(m_pOwner, m_pxTransform.p, &m_hitBuffer.touches[i], PxPairFlag::eNOTIFY_TOUCH_FOUND);
+			m_pGameInstance->Overlap_EventCallback(m_pOwner, m_pxTransform.p, &m_hitBuffer.touches[i], PxPairFlag::eNOTIFY_TOUCH_FOUND, m_tHitboxDesc);
 
 			m_hitObjects.insert(hitObject);
 		}
@@ -81,8 +81,9 @@ void CActiveAttackOverlap::Set(DTO::HITBOX_DESC* pDesc, Matrix ownerMatrix, CGam
 	m_vecHitResults.resize(m_tHitboxDesc->iMaxHit);
 	m_hitBuffer.touches = m_vecHitResults.data();
 	m_hitBuffer.maxNbTouches = m_tHitboxDesc->iMaxHit;
-	// TODO : AttackPreset ID Desc¿¡ ÀúÀå
-	// m_tHitboxDesc->iAttackPresetID = m_pGameInstance->Get_AttackPresetIdByTag(m_tHitboxDesc->strAttackPresetTag);
+
+	if (m_tHitboxDesc->strAttackPresetTag.size() > 0)
+		m_tHitboxDesc->iAttackPresetID = m_pGameInstance->Get_AttackPresetIdByTag(m_tHitboxDesc->strAttackPresetTag);
 }
 
 void CActiveAttackOverlap::Tick(_float fTimeDelta)

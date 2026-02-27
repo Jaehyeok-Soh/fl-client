@@ -65,7 +65,7 @@ void CPhysicsCCT::Awake()
 {
 	Vec3 vPos = m_pOwner->Get_Component<CTransform>()->Get_Info(TRANSFORM_INFO_STATE::POS);
 
-	SetPosition(vPos);
+	SetFootPosition(vPos);
 }
 
 void CPhysicsCCT::Update()

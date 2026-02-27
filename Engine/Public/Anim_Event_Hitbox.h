@@ -45,7 +45,7 @@ namespace DTO
 	}HITBOX_DESC;
 
 	inline void to_json(json& j, const HITBOX_DESC& d)
-	{
+	{ 
 		nlohmann::to_json(j, static_cast<const ANIM_EVENT_SCRIPT_BASE1&>(d));
 
 		j["eType"] = d.eType;
