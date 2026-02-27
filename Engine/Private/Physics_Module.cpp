@@ -122,6 +122,7 @@ HRESULT CPhysics_Module::Initialize()
 		{
 			//sceneDesc.kineKineFilteringMode; // eDEFAULT = eSUPPRESS
 			//sceneDesc.staticKineFilteringMode; // eDEFAULT = eSUPPRESS
+			sceneDesc.staticKineFilteringMode = PxPairFilteringMode::eKEEP;
 		}
 
 		/////////////////////
@@ -323,7 +324,9 @@ PxFilterFlags CPhysics_Module::FilterShader(
 	{
 		if ((filterData0.word0 & filterData1.word1) && (filterData1.word0 & filterData0.word1))
 		{
-			pairFlags = PxPairFlag::eTRIGGER_DEFAULT;
+			pairFlags = PxPairFlag::eTRIGGER_DEFAULT
+				| PxPairFlag::eNOTIFY_TOUCH_FOUND
+				| PxPairFlag::eNOTIFY_TOUCH_LOST;
 			return PxFilterFlag::eDEFAULT;
 		}
 		return PxFilterFlag::eSUPPRESS;

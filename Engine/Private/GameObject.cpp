@@ -275,7 +275,7 @@ string CGameObject::Get_Name()
 
 wstring CGameObject::Get_WName()
 {
-    return Engine_Utils::ToWString(m_strName);
+    return (m_strName.size() > 0) ? Engine_Utils::ToWString(m_strName) : L"";
 }
 
 /// <summary>

@@ -104,9 +104,7 @@ HRESULT CTriggerBox::Awake(const _uint iCurrentLevelID)
     if (FAILED(Super::Awake(iCurrentLevelID)))
         return E_FAIL;
 
-
     Get_Component<CPhysicsRigidBody>()->Awake();
-
 
     return S_OK;
 }
@@ -159,27 +157,22 @@ HRESULT CTriggerBox::Render()
 
 void CTriggerBox::OnCollision(_uint iMyColliderLayer, _uint iOtherLayer, CGameObject* pOther)
 {
-    int a = 0;
 }
 
 void CTriggerBox::OnCollision_Enter(_uint iMyColliderLayer, _uint iOtherLayer, CGameObject* pOther, const COL_HIT_INFO& tHitInfo)
 {
-    int a = 0;
 }
 
 void CTriggerBox::OnCollision_Exit(_uint iMyColliderLayer, _uint iOtherLayer, CGameObject* pOther)
 {
-    int a = 0;
 }
 
 void CTriggerBox::OnTrigger_Enter(_uint iMyColliderLayer, _uint iOtherLayer, CGameObject* pOther)
 {
-    int a = 0;
 }
 
 void CTriggerBox::OnTrigger_Exit(_uint iMyColliderLayer, _uint iOtherLayer, CGameObject* pOther)
 {
-    int a = 0;
 }
 
 

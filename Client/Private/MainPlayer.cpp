@@ -727,7 +727,8 @@ HRESULT CMainPlayer::Ready_CCT()
         | PHYSICSFILTERGROUP::Enum::TRIGGER_UI
         | PHYSICSFILTERGROUP::Enum::TRIGGER_QUEST
         | PHYSICSFILTERGROUP::Enum::TRIGGER_SPAWN
-        | PHYSICSFILTERGROUP::Enum::TRIGGER_DIRECTION;
+        | PHYSICSFILTERGROUP::Enum::TRIGGER_DIRECTION
+        | PHYSICSFILTERGROUP::Enum::TRIGGER_BOX;
 
     if (FAILED(Add_Component<CPhysicsCCT>(0, L"Prototype_Component_Physics_CCT", &desc)))
         return E_FAIL;
