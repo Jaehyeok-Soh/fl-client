@@ -62,11 +62,6 @@ HRESULT CUIObject::Initialize(void* pArg)
 	if (FAILED(Add_Component<CShader>(0, L"Prototype_Component_Shader_VtxPosTex", pArg)))
 		return E_FAIL;
 
-	m_isPreVisible		= m_isVisible;
-	m_isVisibleTrigger	= m_isVisible;
-	m_isPreActive		= m_isActive;
-	m_isPreInteract		= m_isInteract;
-	m_isInteractTrigger	= m_isInteract;
 
 	return S_OK;
 }
@@ -75,6 +70,12 @@ HRESULT CUIObject::Awake(const _uint iCurrentLevelID)
 {
 	if (FAILED(Super::Awake(iCurrentLevelID)))
 		return E_FAIL;
+
+	m_isPreVisible			= m_isVisible;
+	m_isVisibleTrigger		= m_isVisible;
+	m_isPreActive			= m_isActive;
+	m_isPreInteract			= m_isInteract;
+	m_isInteractTrigger		= m_isInteract;
 
 	return S_OK;
 }

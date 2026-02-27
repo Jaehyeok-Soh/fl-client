@@ -5,7 +5,7 @@
 //=================
 // Component
 //=================
-#include "StatCom_Player.h"
+#include "WorldUI_Component.h"	
 #include "Texture.h"
 #include "Shader.h"
 #include "VIBuffer_Rect_Tex.h"
@@ -134,6 +134,30 @@ _bool CUIMonsterStat_Progress::Tick_InVisible_Event(const _float fTimeDelta)
 	return true;
 }
 
+HRESULT CUIMonsterStat_Progress::Spawn_FromPool(void* pArg)
+{
+	UI_PREFAB_DATA* pDesc = static_cast<UI_PREFAB_DATA*>(pArg);
+
+	auto* pComp = Get_Script_Component(L"WorldUIComponent");
+	if (nullptr == pComp)
+		return E_FAIL;
+
+	m_pWorldUIComp = static_cast<CWorldUI_Component*>(pComp);
+	if (nullptr == m_pWorldUIComp)
+		return E_FAIL;
+
+	m_pWorldUIComp->Set_Target(pDesc->pTarget);
+	/* ¸ó½ºÅÍ ½ºÅÈ ÄÄÆ÷³ÍÆ® ºÎÂø */
+
+	m_bDead = false;
+	return S_OK;
+}
+
+HRESULT CUIMonsterStat_Progress::Despawn_FromPool()
+{
+	return S_OK;
+}
+
 HRESULT CUIMonsterStat_Progress::Ready_Components(MONSTER_STAT_PROGRESS_DESC* pDesc)
 {
 	if (FAILED(Super::Ready_Components(pDesc)))
@@ -143,7 +167,6 @@ HRESULT CUIMonsterStat_Progress::Ready_Components(MONSTER_STAT_PROGRESS_DESC* pD
 
 HRESULT CUIMonsterStat_Progress::Bind_ShaderResources()
 {
-	Super::Bind_ShaderResources();
 	CShader* pShader = Get_Component<CShader>();
 	if (FAILED(Get_Component<CTransform>()->Bind_ShaderResource(pShader)))
 		return E_FAIL;

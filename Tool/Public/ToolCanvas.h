@@ -67,7 +67,9 @@ public:
 	Vec2 Get_RB() { return Vec2{ m_fX + m_fWidth * 0.5f , m_fY + m_fHeight * 0.5f }; }	// Right Bottom
 
 	EUIPrefabType Get_Prefabtype() const { return m_ePrefabType; }
+	_uint Get_NumPrefab() const { return m_iNumPrefabs; }
 	void Set_Prefabtype(EUIPrefabType e) { m_ePrefabType = e; }
+	void Set_NumPrefab(_uint i ) { m_iNumPrefabs = i; }
 
 	virtual _bool Export_Data(DTO::ECategory eCategory, CDataDocumentBase* pDocument) override;
 	void Set_CaptureUI(CToolUI* pUI) { m_pCaptureUI = pUI; }
@@ -87,6 +89,7 @@ private:
 	uint32_t m_iClientLevelIndex = {};
 	_string m_strTag;
 	EUIPrefabType m_ePrefabType = { EUIPrefabType::NOT_PREFAB };
+	_uint m_iNumPrefabs = {};
 
 	CToolUI* m_pCaptureUI = {nullptr};
 	CToolUI* m_pHoveringUI = { nullptr };

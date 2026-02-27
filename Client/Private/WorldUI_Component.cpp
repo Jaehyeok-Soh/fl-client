@@ -59,10 +59,16 @@ void CWorldUI_Component::Update(const _float fTimeDelta)
 
 void CWorldUI_Component::Proj_World_To_Screen()
 {
-	if (nullptr == m_pTargetObject)
-		return;
+	Vec3 vWorldPos = {};
+	if (nullptr != m_pTargetObject)
+	{
+		vWorldPos = m_pTargetObject->Get_Component<CTransform>()->Get_Info(TRANSFORM_INFO_STATE::POS);
+	}
+	else
+	{
+		vWorldPos = m_vTargetPos;
+	}
 
-	Vec3 vWorldPos = m_pTargetObject->Get_Component<CTransform>()->Get_Info(TRANSFORM_INFO_STATE::POS);
 	Vec4 clip = Vec4(vWorldPos.x, vWorldPos.y, vWorldPos.z, 1.f);
 	clip = Vec4::Transform(clip, m_pGameInstance->Get_ViewMatrix());
 	m_fViewZ = clip.z;
@@ -78,8 +84,23 @@ void CWorldUI_Component::Proj_World_To_Screen()
 
 void CWorldUI_Component::Calc_Perspective()
 {
-	m_fScaleOffset = ZREF / m_fViewZ;
-	m_fScaleOffset = std::clamp(m_fScaleOffset, MIN_SCALE_OFFSET, MAX_SCALE_OFFSET);
+	if (m_isRequestScaleOffset)
+	{
+		m_fScaleOffset = m_fRequestScaleOffset;
+	}
+	else
+	{
+		m_fScaleOffset = ZREF / m_fViewZ;
+		m_fScaleOffset = std::clamp(m_fScaleOffset, MIN_SCALE_OFFSET, MAX_SCALE_OFFSET);
+	}
+
+	m_isRequestScaleOffset = false;
+}
+
+void CWorldUI_Component::Request_ScaleOffset(const _float fScale)
+{
+	m_isRequestScaleOffset = true;
+	m_fRequestScaleOffset = fScale;
 }
 
 CWorldUI_Component* CWorldUI_Component::Create()

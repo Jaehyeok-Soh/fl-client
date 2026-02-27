@@ -3,25 +3,23 @@
 #include "DataStruct_UI.h"
 
 NS_BEGIN(Client)
-class CWorldUI_Component;
-class CUIMonsterStat_Text final : public CUIText
+class CStatCom_Player;
+class CUIDamageFont_Text final : public CUIText
 {
 	using Super = CUIText;
 public:
-	typedef struct tagUIMonsterStatDesc : public UI_TEXT_DESC
+	typedef struct tagUIDamageFontTextDesc : public UI_TEXT_DESC
 	{
-	}MONSTER_STAT_DESC;
+	}DAMAGE_FONT_DESC;
 
 private:
-	CUIMonsterStat_Text(ID3D11Device* pDevice, ID3D11DeviceContext* pDeviceContext);
-	CUIMonsterStat_Text(const CUIMonsterStat_Text& rhs);
-	virtual ~CUIMonsterStat_Text() = default;
-
+	CUIDamageFont_Text(ID3D11Device* pDevice, ID3D11DeviceContext* pDeviceContext);
+	CUIDamageFont_Text(const CUIDamageFont_Text& rhs);
+	virtual ~CUIDamageFont_Text() = default;
 public:
 	HRESULT Initialize_Prototype() override;
 	HRESULT Initialize(void* pArg) override;
-	HRESULT Attach_Personal_Info(const _uint iCurrentLevelID);
-
+	HRESULT Attach_Personal_Info();
 public:
 	virtual HRESULT Awake(const _uint iCurrentLevelID) override;
 	virtual void Update_Priority(const _float fTimeDelta) override;
@@ -29,12 +27,12 @@ public:
 	virtual void Update_Late(const _float fTimeDelta) override;
 	virtual void Ready_Before_Render(const _float fTimeDelta) override;
 	virtual HRESULT Render() override;
-
 private:
-	HRESULT Ready_Components(MONSTER_STAT_DESC* pDesc);
+	HRESULT Ready_Components(DAMAGE_FONT_DESC* pDesc);
 	HRESULT Bind_ShaderResources();
-
 	HRESULT Convert_Stat_To_Text();
+	HRESULT Tick_By_Type(const _float fTimeDelta);
+
 private:
 	virtual void OnUIEvent(ETriggerEventType eEvent, CGenericUI* pSender)override;
 	virtual void Initialize_Visible_Event()override;
@@ -43,13 +41,15 @@ private:
 	virtual _bool Tick_InVisible_Event(const _float fTimeDelta)override;
 	virtual HRESULT Spawn_FromPool(void* pArg)override;
 	virtual HRESULT Despawn_FromPool()override;
-
 private:
 	CWorldUI_Component* m_pWorldUIComp = { nullptr };
-	_float m_fStat = {};
+	CStatCom_Player* m_pPlayerStatCom = { nullptr };
+
+	_float m_fDamageFontScaleOffet = {1.f};
+	_bool m_isSpawned = { false };
 
 public:
-	static CUIMonsterStat_Text* Create(ID3D11Device* pDevice, ID3D11DeviceContext* pDeviceContext);
+	static CUIDamageFont_Text* Create(ID3D11Device* pDevice, ID3D11DeviceContext* pDeviceContext);
 	CGameObject* Clone(void* pArg);
 	virtual void Free()override;
 };

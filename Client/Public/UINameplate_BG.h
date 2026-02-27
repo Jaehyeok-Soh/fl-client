@@ -3,7 +3,7 @@
 #include "DataStruct_UI.h"
 
 NS_BEGIN(Client)
-class CStatComponent;
+class CWorldUI_Component;
 class CUINameplate_BG final : public  CUIDynamic_Image
 {
 	using Super = CUIDynamic_Image;
@@ -34,6 +34,11 @@ private:
 	virtual void OnUIEvent(ETriggerEventType eEvent, CGenericUI* pSender)override;
 	virtual void Initialize_Visible_Event()override;
 	virtual _bool Tick_Visible_Event(const _float fTimeDelta)override;
+	virtual HRESULT Spawn_FromPool(void* pArg)override;
+	virtual HRESULT Despawn_FromPool()override;
+
+	CWorldUI_Component* m_pWorldUIComp = { nullptr };
+
 public:
 	static CUINameplate_BG* Create(ID3D11Device* pDevice, ID3D11DeviceContext* pDeviceContext);
 	CGameObject* Clone(void* pArg);

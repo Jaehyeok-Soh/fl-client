@@ -350,6 +350,9 @@ namespace Client
 	{
 		NOT_PREFAB,
 		MONSTER_NAMEPLATE,
+		DAMAGE_FONTS_COMMON,
+		DAMAGE_FONTS_CRITICAL,
+		DAMAGE_FONTS_HIT,
 		END
 	};
 
@@ -357,14 +360,29 @@ namespace Client
 	{
 		switch (eType)
 		{
-		case Client::EUIPrefabType::NOT_PREFAB:return L"NOT_PREFAB";
-		case Client::EUIPrefabType::MONSTER_NAMEPLATE:return L"MONSTER_NAMEPLATE";
+		case Client::EUIPrefabType::NOT_PREFAB:				return L"NOT_PREFAB";
+		case Client::EUIPrefabType::MONSTER_NAMEPLATE:		return L"MONSTER_NAMEPLATE";
+		case Client::EUIPrefabType::DAMAGE_FONTS_COMMON:	return L"DAMAGE_FONTS_COMMON";
+		case Client::EUIPrefabType::DAMAGE_FONTS_CRITICAL:	return L"DAMAGE_FONTS_CRITICAL";
+		case Client::EUIPrefabType::DAMAGE_FONTS_HIT:		return L"DAMAGE_FONTS_HIT";
 		case Client::EUIPrefabType::END:
 		default:
 			break;
 		}
 		return L"NOT_PREFAB";
 	}
+
+	typedef struct tagUIDamageFontPrefabData
+	{
+		Vec4	vFontColor = {};
+		Vec3	vHitPos = {};
+		_uint	iDamage = {};
+	}UI_DAMAGEFONT_PREFAB_DATA;
+	typedef struct tagUIPrefabData
+	{
+		CGameObject* pTarget = { nullptr };
+		UI_DAMAGEFONT_PREFAB_DATA DamageFontData = {};
+	}UI_PREFAB_DATA;
 
 #pragma endregion
 
