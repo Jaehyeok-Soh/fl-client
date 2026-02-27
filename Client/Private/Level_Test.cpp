@@ -424,7 +424,7 @@ HRESULT CLevel_Test::Ready_Monster()
 			monsterDesc.tCCTDesc = desc;
 		}
 
-		if (!(pResult = m_pGameInstance->Add_GameObject(ENUM_TO_UINT(ELevelType::TEST),
+		if (!(pResult = m_pGameInstance->Add_GameObject(ENUM_TO_UINT(ELevelType::STATIC),
 			L"Prototype_GameObject_Monster_Dummy",
 			ENUM_TO_UINT(ELevelType::TEST),
 			L"Monster", &monsterDesc)))

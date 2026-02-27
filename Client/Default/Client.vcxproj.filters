@@ -1012,6 +1012,9 @@
     <ClInclude Include="..\Public\UIDamageFont_Text.h">
       <Filter>03. GameObject\UIObjects\02.UI\Text\Damage Text</Filter>
     </ClInclude>
+    <ClInclude Include="..\Public\TriggerBox_MonsterSpawner.h">
+      <Filter>03. GameObject\TriggerBox\01. TriggerBox_LevelChange</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <Image Include="Client.ico">
@@ -1471,6 +1474,9 @@
     </ClCompile>
     <ClCompile Include="..\Private\UIDamageFont_Text.cpp">
       <Filter>03. GameObject\UIObjects\02.UI\Text\Damage Text</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\TriggerBox_MonsterSpawner.cpp">
+      <Filter>03. GameObject\TriggerBox\01. TriggerBox_LevelChange</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

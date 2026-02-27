@@ -70,7 +70,8 @@ void CTriggerBox_LevelChange::Update(const _float fTimeDelta)
 
 
 
-
+    if (m_isTriggerEventPlay)
+        return;
     /* 임시로 충돌처리 */
 
     CGameObject* pGameObject = m_pGameInstance->Get_GameObject_Front(ENUM_TO_UINT(ELevelType::STATIC), g_wszPlayerLayer);
@@ -87,11 +88,11 @@ void CTriggerBox_LevelChange::Update(const _float fTimeDelta)
     /* 충돌 임시 로직 Check */
     if (fLength < 2.5f)
     {
+        m_isTriggerEventPlay = true;
         m_pGameInstance->Request_ChangeLevel(ENUM_TO_UINT(ELevelType::LOADING), CLevel_Loading::Create(m_pDevice, m_pDeviceContext, m_eChangeLevelType));
     }
 
     /* Player 위치랑 */
-
 }
 
 void CTriggerBox_LevelChange::Update_Late(const _float fTimeDelta)

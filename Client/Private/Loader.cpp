@@ -79,6 +79,7 @@
 // Trigger Box
 //=================
 #include "TriggerBox_LevelChange.h"
+#include "TriggerBox_MonsterSpawner.h"
 
 /* --------------------- */
 #include "Monster_Dummy.h" // test
@@ -543,6 +544,7 @@ HRESULT CLoader::Loading_For_Logo()
 	// For. Prototype_Component_ActionState_Monster
 	m_pGameInstance->Add_Prototype(ENUM_TO_UINT(ELevelType::STATIC), L"Prototype_Component_ActionState_Monster", CMonsterActionState::Create(m_pDevice, m_pDeviceContext));
 
+#pragma endregion
 
 	///////////////////////////////////////
 	//////////// Ready Objects ////////////
@@ -579,6 +581,7 @@ HRESULT CLoader::Loading_For_Logo()
 
 #pragma region TriggerBox
 		ADD_PROTOTYPE(ELevelType::STATIC, L"Prototype_GameObject_TriggerBox_ChangeLevel", CTriggerBox_LevelChange::Create(m_pDevice, m_pDeviceContext));
+		ADD_PROTOTYPE(ELevelType::STATIC, L"Prototype_GameObject_TriggerBox_MonsterSpawner", CTriggerBox_MonsterSpawner::Create(m_pDevice, m_pDeviceContext));
 #pragma endregion
 
 		/* Weapons */
@@ -586,18 +589,14 @@ HRESULT CLoader::Loading_For_Logo()
 		ADD_PROTOTYPE(ELevelType::STATIC, L"Prototype_GameObject_Part_Gun", CGun::Create(m_pDevice, m_pDeviceContext));
 
 		// For. Prototype_GameObject_Monster_Dummy
-		ADD_PROTOTYPE(ELevelType::TEST, L"Prototype_GameObject_Monster_Dummy", CMonster_Dummy::Create(m_pDevice, m_pDeviceContext));
-		// For. Prototype_GameObject_Monster_Dummy_Body
-		ADD_PROTOTYPE(ELevelType::TEST, L"Prototype_GameObject_Monster_Dummy_Body", CMonster_Dummy_Body::Create(m_pDevice, m_pDeviceContext));
-		// For. Prototype_GameObject_Boss_Xibi
-		ADD_PROTOTYPE(ELevelType::TEST, L"Prototype_GameObject_Boss_Xibi", CBoss_Xibi::Create(m_pDevice, m_pDeviceContext));
-		// For. Prototype_GameObject_Boss_XibiBody
-		ADD_PROTOTYPE(ELevelType::TEST, L"Prototype_GameObject_Boss_Xibi_Body", CBoss_Xibi_Body::Create(m_pDevice, m_pDeviceContext));
-		/* Monster Object */
 		ADD_PROTOTYPE(ELevelType::STATIC, L"Prototype_GameObject_Monster_Dummy", CMonster_Dummy::Create(m_pDevice, m_pDeviceContext));
-
-		/* Monster Part Object */
+		// For. Prototype_GameObject_Monster_Dummy_Body
 		ADD_PROTOTYPE(ELevelType::STATIC, L"Prototype_GameObject_Monster_Dummy_Body", CMonster_Dummy_Body::Create(m_pDevice, m_pDeviceContext));
+		// For. Prototype_GameObject_Boss_Xibi
+		ADD_PROTOTYPE(ELevelType::STATIC, L"Prototype_GameObject_Boss_Xibi", CBoss_Xibi::Create(m_pDevice, m_pDeviceContext));
+		// For. Prototype_GameObject_Boss_XibiBody
+		ADD_PROTOTYPE(ELevelType::STATIC, L"Prototype_GameObject_Boss_Xibi_Body", CBoss_Xibi_Body::Create(m_pDevice, m_pDeviceContext));
+
 	}
 #pragma endregion
 

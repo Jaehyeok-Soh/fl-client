@@ -195,7 +195,7 @@ HRESULT CMonster_Base::Ready_PartObjects(void* pArg)
 		bodyDesc.wstrModelPrototypeTag = pDesc->wstrBodyModelTag;
 		bodyDesc.spanBoneNames = pDesc->spanBoneNames;
 		// TODO : 재혁아 이거 LevelID 바꿔야할수도있다 Static에 넣어두고 쓸까 ...?
-		if (FAILED(Add_Part(Part::BODY, pDesc->iLevelIndex, pDesc->wstrPartBodyPrototypeTag, &bodyDesc)))
+		if (FAILED(Add_Part(Part::BODY, 0 , pDesc->wstrPartBodyPrototypeTag, &bodyDesc)))
 			return E_FAIL;
 	}
 

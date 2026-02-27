@@ -21,6 +21,7 @@
 
 #pragma region Trigger Box
 #include "TriggerBox_LevelChange.h"
+#include "TriggerBox_MonsterSpawner.h"
 #pragma endregion
 
 #include "PhysicsCCT.h"
@@ -92,7 +93,8 @@ HRESULT CBuilder_Map::Build(const CDataDocumentBase& document)
 			case DTO::EClientMakePath::Batch_Player:	Batch_Player(tData);		break;
 			case DTO::EClientMakePath::Batch_Monster:	Batch_Monster(tData);		break;
 
-			case DTO::EClientMakePath::TriggerBox_ChangeLevel: Create_TriggerBox_ChangeLevel(tData); break;
+			case DTO::EClientMakePath::TriggerBox_ChangeLevel:		Create_TriggerBox_ChangeLevel(tData); break;
+			case DTO::EClientMakePath::TriggerBox_MonsterSpawner:	Create_TriggerBox_MonsterSpawner(tData); break;
 
 
 			default:									return E_FAIL;
@@ -380,9 +382,6 @@ HRESULT CBuilder_Map::Batch_Monster(const DTO::TMap_MapObjectData& tData)
 	CTransform::TRANSFORM_DESC transformDesc = {};
 	transformDesc.TranslationMatrix = tSRT.Get_World();
 
-
-
-
 	BATCH_MONSTER_DESC* pDesc = static_cast<BATCH_MONSTER_DESC*>(tData.vecClientMakePathDesc.front());
 	if (pDesc == nullptr) return E_FAIL;
 
@@ -433,15 +432,16 @@ HRESULT CBuilder_Map::Batch_Monster(const DTO::TMap_MapObjectData& tData)
 				monsterDesc.tCCTDesc = desc;
 			}
 
-			if (!(pResult = m_pGameInstance->Add_GameObject(ENUM_TO_UINT(m_eLevelType),
+			if (!(pResult = m_pGameInstance->Add_GameObject(ENUM_TO_UINT(ELevelType::STATIC),
 				L"Prototype_GameObject_Monster_Dummy",
 				ENUM_TO_UINT(m_eLevelType),
 				L"Monster", &monsterDesc)))
 				return E_FAIL;
 		}
+	
 
-		return S_OK;
 	}
+	break;
 	case DTO::EMakeMonsterType::Shooter:	return S_OK;
 	case DTO::EMakeMonsterType::Xibi:
 	{
@@ -490,7 +490,7 @@ HRESULT CBuilder_Map::Batch_Monster(const DTO::TMap_MapObjectData& tData)
 				monsterDesc.tCCTDesc = desc;
 			}
 
-			if (!(pResult = m_pGameInstance->Add_GameObject(ENUM_TO_UINT(m_eLevelType),
+			if (!(pResult = m_pGameInstance->Add_GameObject( ENUM_TO_UINT(ELevelType::STATIC),
 				L"Prototype_GameObject_Boss_Xibi",
 				ENUM_TO_UINT(m_eLevelType),
 				g_wszBossLayer, &monsterDesc)))
@@ -533,9 +533,24 @@ HRESULT CBuilder_Map::Create_TriggerBox_ChangeLevel(const DTO::TMap_MapObjectDat
 
 HRESULT CBuilder_Map::Create_TriggerBox_MonsterSpawner(const DTO::TMap_MapObjectData& tData)
 {
+	if (tData.vecSRTs.empty()) return E_FAIL;
+	if (tData.vecClientMakePathDesc.empty()) return E_FAIL;
 
 
+	TRIGGERBOX_MONSTERSPAWNER_DESC* pTriggerBox_MonsterSpawner = static_cast<TRIGGERBOX_MONSTERSPAWNER_DESC*> (tData.vecClientMakePathDesc.front());
+	if (pTriggerBox_MonsterSpawner == nullptr) return E_FAIL;
 
+	DTO::SRT_DATA tSRT{ tData.vecSRTs.front() };
+	CTriggerBox_MonsterSpawner::TRIGGERBOX_MONSTERSPAWNER_DESC  pDesc{};
+	CTransform::TRANSFORM_DESC transformDesc = {};
+	transformDesc.TranslationMatrix = { tSRT.Get_World() };
+
+	pDesc.iLevelIndex = ENUM_TO_UINT(m_eLevelType);
+	pDesc.pSRTData = &tSRT;
+	pDesc.pTransform_Desc = &transformDesc;
+	pDesc.vTriggerBox_Extents = pTriggerBox_MonsterSpawner->vExtents;
+	pDesc.vecMonsterSpawnData = pTriggerBox_MonsterSpawner->vecMonsterSpawnData;
+	m_pGameInstance->Add_GameObject(ENUM_TO_UINT(ELevelType::STATIC), L"Prototype_GameObject_TriggerBox_MonsterSpawner", ENUM_TO_UINT(m_eLevelType), g_wszTriggerBoxLayer, &pDesc);
 	return S_OK;
 }
 
