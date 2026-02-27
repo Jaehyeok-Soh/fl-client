@@ -253,6 +253,14 @@ _bool CStateBase::Align_Movement(const _float fTimeDelta)
 	return m_pOwnerStateComp->Align_Movement(fTimeDelta);
 }
 
+_bool CStateBase::Align_Movement_MoveDir(const _float fTimeDelta)
+{
+	if (m_pOwnerStateComp == nullptr)
+		return false;
+
+	return m_pOwnerStateComp->Align_Movement_MoveDir(fTimeDelta);
+}
+
 _bool CStateBase::Align_Move(_uint iRunState, _bool bForce, void* pArg)
 {
 	return m_pOwnerStateComp->Align_Move(iRunState, bForce, pArg);

@@ -323,6 +323,46 @@ _bool CActionState::Align_Movement(const _float fTimeDelta)
 	return true;
 }
 
+_bool CActionState::Align_Movement_MoveDir(const _float fTimeDelta)
+{
+	Vec3 vMoveDir = m_pOwnerControlContext->Get_MoveDir();
+	if (::XMVector3Equal(vMoveDir, Vec3::Zero))
+		return false;
+
+	vMoveDir.y = 0.f;
+	if (::XMVector3Equal(vMoveDir, Vec3::Zero))
+		return false;
+
+	vMoveDir.Normalize();
+
+	CPhysicsCCT* cct = nullptr;
+	if (cct = m_pOwner->Get_Component<CPhysicsCCT>())
+	{
+		_float moveps = m_pOwnerTransform->Get_MovePerSec();
+		Vec3 disp = vMoveDir * moveps * fTimeDelta;
+		disp.y = 0.f;
+
+		_float fDelta = m_fVerticalSpeed * fTimeDelta;
+		CCTFlags = cct->Move(disp, 0.01f, fTimeDelta);
+
+		if (CCTFlags & PxControllerCollisionFlag::eCOLLISION_DOWN)
+			m_fVerticalSpeed = 0.f;
+
+		Vec3 finalPos = cct->GetFootPosition();
+		Vec3 currentPos = m_pOwnerTransform->Get_Info(TRANSFORM_INFO_STATE::POS);
+
+		_float yLerp = std::lerp(currentPos.y, finalPos.y, fTimeDelta * 15.f);
+		finalPos.y = yLerp;
+
+		m_pOwnerTransform->Set_Info(TRANSFORM_INFO_STATE::POS, finalPos);
+	}
+	else
+		m_pOwnerTransform->Go_Dir(vMoveDir, fTimeDelta, m_pOwnerNavigation);
+
+
+	return true;
+}
+
 void CActionState::Follow_CameraLook(const _float fTimeDelta)
 {
 	if (!m_pOwnerTargetCamera)

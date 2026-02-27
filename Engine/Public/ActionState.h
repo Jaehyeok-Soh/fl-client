@@ -86,6 +86,7 @@ protected:
 	/* moves funcs */
 protected:
 	_bool			Align_Movement(const _float fTimeDelta);
+	_bool			Align_Movement_MoveDir(const _float fTimeDelta);
 	void			Follow_CameraLook(const _float fTimeDelta);
 	_bool			Is_Grounded() const;
 	_bool			Is_ApplyGravity() const;
