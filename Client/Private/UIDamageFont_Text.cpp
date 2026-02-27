@@ -157,9 +157,14 @@ HRESULT CUIDamageFont_Text::Tick_By_Type(const _float fTimeDelta)
 		// 올라왔다가 다시 내려가기
 		break;
 	case DTO::EUITextSubClassType::BATTLE_DAMAGE_TEXT_CRITCAL:
+	case DTO::EUITextSubClassType::BATTLE_DAMAGE_TEXT_CRITICAL_DAMAGE:
 	{
 		if (m_isFin_Event)
 		{
+			m_fTimeAcc += fTimeDelta;
+			if (m_fTimeAcc > 3.f)
+ 				Request_SetDead();
+
 			//m_vFontColor.x = 1.f + ((m_vOriginFontColor.x - 1.f) * t);
 			//m_vFontColor.y = 1.f + ((m_vOriginFontColor.y - 1.f) * t);
 			//m_vFontColor.z = 1.f + ((m_vOriginFontColor.z - 1.f) * t);
@@ -167,9 +172,6 @@ HRESULT CUIDamageFont_Text::Tick_By_Type(const _float fTimeDelta)
 		}
 	}
 	break;
-	case DTO::EUITextSubClassType::BATTLE_DAMAGE_TEXT_CRITICAL_DAMAGE:
-		// 
-		break;
 	case DTO::EUITextSubClassType::BATTLE_DAMAGE_TEXT_END:
 		break;
 	case DTO::EUITextSubClassType::END:

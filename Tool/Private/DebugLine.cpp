@@ -164,7 +164,7 @@ CGameObject* CDebugLine::Clone(void* pArg)
 
 void CDebugLine::Free()
 {
-	if (IsClone())
+	if (6())
 	{
 		Safe_Delete(m_pBatch);
 		Safe_Delete(m_pEffect);

@@ -63,7 +63,7 @@ HRESULT CState_JumpAttStart::End()
 void CState_JumpAttStart::OwnMove(const _float fTimeDelta)
 {
 	// 30도로 빠르게 떨어지기
-	CStateBase::Turn_byCam(fTimeDelta);
+	CStateBase::Turn_byCam(fTimeDelta*2.f);
 
 	CTransform* pPlayerTrans = Get_OwnerObject()->Get_Component<CTransform>();
 	CPhysicsCCT* pCCT = Get_OwnerObject()->Get_Component<CPhysicsCCT>();

@@ -155,8 +155,6 @@ HRESULT CGenericUI::Ready_Components(GENERIC_UI_DESC* pDesc)
 {
 	if (FAILED(Add_Component<CTexture>(ENUM_TO_UINT(ELevelType::STATIC), L"Prototype_Component_Texture_Empty", pDesc)))
 		return E_FAIL;
-	if (FAILED(Add_Component<CShader>(0, L"Prototype_Component_Shader_VtxPosTex", pDesc)))
-		return E_FAIL;
 	if (FAILED(Add_Component<CVIBuffer_Rect_Tex>(0, L"Prototype_Component_VIBuffer_Rect_Tex", pDesc)))
 		return E_FAIL;
 
