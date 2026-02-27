@@ -57,6 +57,8 @@ HRESULT CState_GunBase::Start(void* pArg, _bool bForce)
 
         else
             Change_MoveState(MoveState::FALL);
+
+        CStateBase::SetupLook_CameraLook();
     }
 
     // desc 정보로 move state 설정
