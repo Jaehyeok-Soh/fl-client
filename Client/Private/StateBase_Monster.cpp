@@ -164,9 +164,16 @@ HRESULT CStateBase_Monster::Bind_MainAnims()
 
 	CGameObject* owner = m_pOwnerStateComp->Get_Owner();
 
+	m_vecMainAnims.reserve(m_pDesc->vecMainAnimNames.size());
 	for (auto& animName : m_pDesc->vecMainAnimNames)
 		m_vecMainAnims.push_back(owner->Get_AnimationIndex(Engine_Utils::ToWString(animName)));
-
+	// WeaponAni가 있을때
+	if (Engine_Utils::Has_Flag(m_FAniFlags, SA_WeaponAni))
+	{
+		m_vecWeaponAnims.reserve(m_pDesc->vecWeaponAnimNames.size());
+		for (auto& animWeaponNames : m_pDesc->vecWeaponAnimNames)
+			m_vecWeaponAnims.push_back(owner->Get_WeaponAnimationIndex(Engine_Utils::ToWString(animWeaponNames)));
+	}
 	return S_OK;
 }
 

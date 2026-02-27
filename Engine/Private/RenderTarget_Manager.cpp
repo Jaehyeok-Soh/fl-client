@@ -65,7 +65,7 @@ HRESULT CRenderTarget_Manager::Begin_MRT(EMRTLayer eMRTLayer, _bool bClear, _boo
 
     ID3D11DepthStencilView* pDSV = bUseDSV ? m_pDSV : nullptr;
     ID3D11RenderTargetView* pRTVs[8]{ nullptr };
-    _uint   iRenderTargetCount = { };
+    _uint   iRenderTargetCount = {0};
 
     for (auto& pRenderTarget : *pMRTList)
     {
@@ -80,9 +80,8 @@ HRESULT CRenderTarget_Manager::Begin_MRT(EMRTLayer eMRTLayer, _bool bClear, _boo
 
 HRESULT CRenderTarget_Manager::End_MRT()
 {
-    ID3D11RenderTargetView* pRenderTargets[8] = {
-        m_pBackBuffer
-    };
+    ID3D11RenderTargetView* pRenderTargets[8]{nullptr};
+    pRenderTargets[0] = m_pBackBuffer;
 
     m_pDeviceContext->OMSetRenderTargets(8, pRenderTargets, m_pDSV);
     Safe_Release(m_pBackBuffer);
@@ -144,6 +143,11 @@ HRESULT CRenderTarget_Manager::Copy_SceneHDRResource(ERenderTarget eTarget)
 }
 
 #ifdef _DEBUG
+
+ID3D11ShaderResourceView* CRenderTarget_Manager::Get_RenderTargetSRV(ERenderTarget eTarget)
+{
+    return m_arrRenderTargets[ENUM_TO_UINT(eTarget)]->Get_SRV();
+}
 
 HRESULT CRenderTarget_Manager::Ready_Debug(ERenderTarget eTarget, _float fX, _float fY, _float fSizeX, _float fSizeY)
 {

@@ -59,7 +59,7 @@ HRESULT CRender_Manager::Initialize()
 		desc.ePixelFormat = DXGI_FORMAT_R16G16B16A16_UNORM;
 		desc.iWidth = iWidth;
 		desc.iHeight = iHeight;
-		desc.vClearColor = Vec4::Zero;
+		desc.vClearColor = Vec4{ 0.f,0.f,0.f,1.f };
 		if (FAILED(m_pGameInstance->Add_RenderTarget(ERenderTarget::Normal, &desc)))
 			return E_FAIL;
 	}
@@ -1288,17 +1288,7 @@ HRESULT CRender_Manager::Commit_AllPostParams()
 
 HRESULT CRender_Manager::Ready_Debug()
 {
-	if (FAILED(m_pGameInstance->Ready_RT_Debug(ERenderTarget::Diffuse, 150.f, 150.f, 300.f, 300.f)))
-		return E_FAIL;
-	if (FAILED(m_pGameInstance->Ready_RT_Debug(ERenderTarget::Normal, 150.f, 450.f, 300.f, 300.f)))
-		return E_FAIL;
-	if (FAILED(m_pGameInstance->Ready_RT_Debug(ERenderTarget::Shade, 450.f, 150.f, 300.f, 300.f)))
-		return E_FAIL;
-	if (FAILED(m_pGameInstance->Ready_RT_Debug(ERenderTarget::SSAO_Ping, 450.f, 450.f, 300.f, 300.f)))
-		return E_FAIL;
-	if (FAILED(m_pGameInstance->Ready_RT_Debug(ERenderTarget::Bloom_Pong, 750.f, 150.f, 300.f, 300.f)))
-		return E_FAIL;
-	if (FAILED(m_pGameInstance->Ready_RT_Debug(ERenderTarget::Specular, 750.f, 450.f, 300.f, 300.f)))
+	if (FAILED(m_pGameInstance->Ready_RT_Debug(ERenderTarget::Normal, 150.f, 150.f, 300.f, 300.f)))
 		return E_FAIL;
 	return S_OK;
 }
@@ -1314,27 +1304,6 @@ HRESULT CRender_Manager::Render_Debug()
 		}
 	}
 	m_debugComponents.clear();
-
-	m_pShader->Set_Pass(ENUM_TO_UINT(DEFFERRED::DEBUG));
-
-	if (FAILED(m_pVIBuffer->Bind_Resource()))
-		return E_FAIL;
-
-	//if (FAILED(m_pGameInstance->Debug_RT_Render(EMRTLayer::GameObjects, m_pShader, m_pVIBuffer)))
-	//	return E_FAIL;
-
-	//if (FAILED(m_pGameInstance->Debug_RT_Render(EMRTLayer::LightAcc, m_pShader, m_pVIBuffer)))
-	//	return E_FAIL;
-
-	//if (FAILED(m_pGameInstance->Debug_RT_Render(EMRTLayer::SSAO_Gen, m_pShader, m_pVIBuffer)))
-	//	return E_FAIL;
-
-	//if (FAILED(m_pGameInstance->Debug_RT_Render(EMRTLayer::SSAO_Upsample, m_pShader, m_pVIBuffer)))
-	//	return E_FAIL;
-
-	//if (FAILED(m_pGameInstance->Debug_RT_Render(EMRTLayer::Bloom_BlurH, m_pShader, m_pVIBuffer)))
-	//	return E_FAIL;
-
 	return S_OK;
 }
 #endif

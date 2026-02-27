@@ -2,6 +2,7 @@
 #include "ImGui_TransformLayout.h"
 #include "GameObject.h"
 #include "Transform.h"
+#include "PhysicsCCT.h"
 #include "GameInstance.h"
 
 CImGui_TransformLayout::CImGui_TransformLayout()
@@ -24,15 +25,50 @@ void CImGui_TransformLayout::Render(CGameObject* pGo)
     Matrix matWorld = pTransform->Get_WorldMatrix();
     Vec3 vPos = matWorld.Translation();
 
+    if (m_bInit == false)
+    {
+        m_vDefaultPos = vPos;
+        m_vEditPos = vPos;
+        m_bInit = true;
+    }
+
+    const _bool bDirty =
+        fabsf(m_vEditPos.x - vPos.x) > g_XMEpsilon.f[0] ||
+        fabsf(m_vEditPos.y - vPos.y) > g_XMEpsilon.f[0] ||
+        fabsf(m_vEditPos.z - vPos.z) > g_XMEpsilon.f[0];
+
     ImGui::BeginGroup();
     ImGui::SeparatorText(m_strLabel.c_str());
 
-    ImGui::Text("X: %.3f", vPos.x);
-    ImGui::SameLine();
-    ImGui::Text("Y: %.3f", vPos.y);
-    ImGui::SameLine();
-    ImGui::Text("Z: %.3f", vPos.z);
+    _float pos[3]{ m_vEditPos.x, m_vEditPos.y, m_vEditPos.z };
+    if (ImGui::DragFloat3("##Pos", pos, 0.01f, -100000.f, 100000.f, "%.3f"))
+    {
+        m_vEditPos = Vec3(pos[0], pos[1], pos[2]);
+    }
     
+    {
+        ImGui::BeginDisabled(bDirty == false);
+
+        if (ImGui::Button("Apply"))
+        {
+            pTransform->Set_Info(TRANSFORM_INFO_STATE::POS, m_vEditPos);
+            pGo->Get_Component<CPhysicsCCT>()->Move(m_vEditPos, 0.01f, 1.f / 60.f);
+            m_vDefaultPos = m_vEditPos;
+        }
+
+        ImGui::SameLine();
+
+        if (ImGui::Button("Cancel"))
+        {
+            m_vEditPos = pTransform->Get_Info(TRANSFORM_INFO_STATE::POS);
+        }
+
+        ImGui::EndDisabled();
+    }
+    
+
+    ImGui::Spacing();
+
     ImGui::Spacing();
 
     if (ImGui::TreeNode("WorldMatrix"))

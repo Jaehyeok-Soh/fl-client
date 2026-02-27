@@ -118,6 +118,9 @@ private:
    CComputeShader*           m_pComputeShader = { nullptr };
    CTransform*               m_pTransform = { nullptr };
 
+   vector<_uint>           m_iSpriteCurrentNumber = {};
+ private:
+
    _bool                     m_bIsEffectFinish = { false };
 };
 

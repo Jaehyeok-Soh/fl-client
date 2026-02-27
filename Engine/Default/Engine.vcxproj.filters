@@ -880,6 +880,9 @@
     <ClCompile Include="..\private\DataDocument_AttackPreset.cpp">
       <Filter>01. Utility\11. DataRepository\Datas\AttackPreset\DataDocument_AttackPreset</Filter>
     </ClCompile>
+    <ClCompile Include="Anim_Event_Base.cpp">
+      <Filter>01. Utility\11. DataRepository\Datas\AnimationEvent\DataModel</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\Public\Timer_Manager.h">

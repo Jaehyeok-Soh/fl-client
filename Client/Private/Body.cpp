@@ -120,14 +120,16 @@ void CBody::Update_Late(_float fTimeDelta)
 	Super::Update_Late(fTimeDelta);
 	
 	Get_Component<CEffectHandler>()->Update(fTimeDelta);
+	Get_Component<CModel>()->Emit_Notifies(EAnimNotifyPhase::Late);
 }
 
 void CBody::Ready_Before_Render(_float fTimeDelta)
 {
 	Super::Ready_Before_Render(fTimeDelta);
-	m_pGameInstance->Push_RenderObject(RENDER_CATEGORY::NONEBLEND, this);
 	Super::Update_CombinedWorldMatrix(m_pMatParent);
 
+	Get_Component<CModel>()->Emit_Notifies(EAnimNotifyPhase::PreRender);
+	m_pGameInstance->Push_RenderObject(RENDER_CATEGORY::NONEBLEND, this);
 	//CComputeShader* pGetBoneCS = static_cast<CComputeShader*>(Get_Script_Component(TEXT("ComputeShader_GetBone")));
 	//Get_Component<CModel>()->Get_BoneMatrix(pGetBoneCS);
 

@@ -96,10 +96,6 @@ void CPhysicsAttackOverlap::Update(_float fTimeDelta)
 
 void CPhysicsAttackOverlap::Ready_Event()
 {
-	auto& animations = m_pOwnerModel->Get_Animations();
-	for (auto& anim : animations)
-		anim->Clear_Notifies();
-
 	Release_Event();
 
 	m_EventHandle = m_pOwnerModel->OnNotify.Subscribe(
@@ -309,25 +305,9 @@ void CPhysicsAttackOverlap::Ready_OverlapInfo()
 		key.fTrackPosition = event.fStartTrackPosition;
 		key.iParam0 = eventIdx;
 		key.iParam1 = event.iAnimIndex;
-
-		if (animIter != animations.end())
-		{
-			auto notiKeys = (*animIter)->Get_Notifies();
-
-			if (notiKeys.size() != 0)
-			{
-				notiKeys.push_back(key);
-				(*animIter)->Set_Notifies(notiKeys);
-			}
-			else
-			{
-				vector<AnimNotifyKey> newkeys;
-				newkeys.push_back(key);
-				(*animIter)->Set_Notifies(newkeys);
-			}
-		}
-
+		(*animIter)->Pushback_Notifies(event.ePhase, key);
 		eventIdx++;
+		(*animIter)->Sort_Notifies();
 	}
 }
 

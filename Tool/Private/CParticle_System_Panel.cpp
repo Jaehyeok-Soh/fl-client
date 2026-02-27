@@ -957,6 +957,9 @@ void CParticle_System_Panel::Draw_ParticleSystem(CToolObject* pGo)
 			DrawTextureScrollUI("Dissolve", m_tCurrentDesc.Data._Effect_Tool_UseScroll_Dissolve, 1 << 10, m_tCurrentDesc.Data._Effect_DissolveTexture_ScrollWeight);
 			// 6. GlowTexture(1 << 11)
 			DrawTextureScrollUI("Glow", m_tCurrentDesc.Data._Effect_Tool_UseScroll_Glow, 1 << 11, m_tCurrentDesc.Data._Effect_GlowTexture_ScrollWeight);
+			// 7. CurveTexture(1 << 12)
+			DrawTextureScrollUI("Curve", m_tCurrentDesc.Data._Effect_Tool_UseScroll_Curve, 1 << 12, m_tCurrentDesc.Data._Effect_CurveTexture_ScrollWeight);
+			
 			ImGui::TreePop();
 		}
 
@@ -1032,7 +1035,7 @@ void CParticle_System_Panel::Draw_ParticleSystem(CToolObject* pGo)
 
 		ImGui::Spacing();
 
-		// 4. Gradation Texture (Color Atlas)
+		// 3. Gradation Texture (Color Atlas)
 		ImGui::Text("Gradation Tex"); ImGui::SameLine(130);
 		if (ImGui::Button("Select##Gradation")) ImGui::OpenPopup("TextureSelector##Gradation");
 		ImGui::SameLine();
@@ -1044,6 +1047,17 @@ void CParticle_System_Panel::Draw_ParticleSystem(CToolObject* pGo)
 		Draw_TextureSelectorPopup("TextureSelector##Gradation", m_tCurrentDesc.Data._Effect_GradationTexture_Tag);
 
 		ImGui::Spacing();
+
+		// 4. Curve Texture 
+		ImGui::Text("Curve Texture"); ImGui::SameLine(130);
+		if (ImGui::Button("Select##Curve")) ImGui::OpenPopup("TextureSelector##Curve");
+		ImGui::SameLine();
+		if (ImGui::Checkbox("Use##Curve", &m_tCurrentDesc.Data._Effect_Tool_CurveTexture)) {
+			if (m_tCurrentDesc.Data._Effect_Tool_CurveTexture) m_tCurrentDesc.Data._Effect_TextureFlag |= (1 << 4); // DISSOLVETEXTURE 7
+			else m_tCurrentDesc.Data._Effect_TextureFlag &= ~(1 << 4);
+			m_bModified = true;
+		}
+		Draw_TextureSelectorPopup("TextureSelector##Curve", m_tCurrentDesc.Data._Effect_CurveTexture_Tag);
 
 		// 5. Dissolve Texture
 		ImGui::Text("Dissolve Texture"); ImGui::SameLine(130);
@@ -1386,8 +1400,6 @@ void CParticle_System_Panel::Draw_ParticleSystem(CToolObject* pGo)
 				case (_uint)DTO::E_PARTICLETYPE::TEXTURE:
 					m_PParticleTypeList.push_back("DEFAULT_TEXTURE");
 					m_PParticleTypeList.push_back("BLEND_TEXTURE");
-					m_PParticleTypeList.push_back("MASK_TEXTURE");
-					m_PParticleTypeList.push_back("BLENDMASK_TEXTURE");
 					break;
 				case (_uint)DTO::E_PARTICLETYPE::MESH:
 					m_PParticleTypeList.push_back("DEFAULT_MESH");
@@ -1489,7 +1501,7 @@ void CParticle_System_Panel::Draw_Rotation_Texture(CToolObject* pGo)
 	{
 		if (ImGui::BeginTable("RotationTable", 3, ImGuiTableFlags_Borders | ImGuiTableFlags_RowBg))
 		{
-			const char* textureNames[] = { "Diffuse", "Noise", "Masking", "Gradation", "Trail", "Normal" };
+			const char* textureNames[] = { "Diffuse", "Noise", "Masking", "Gradation", "Curve", "Normal","Glow"};
 			const char* rotationLabels[] = { "0", "90", "180", "270" };
 
 			for (int i = 0; i < 6; i++)
@@ -1527,117 +1539,112 @@ void CParticle_System_Panel::Draw_Rotation_Texture(CToolObject* pGo)
 void CParticle_System_Panel::Draw_Sprite_Texture(CToolObject* pGo)
 {
 	ImGui::Spacing();
-	ImGui::Separator();
+	ImGui::SeparatorText("TEXTURE SPRITE SETTINGS (Individual)");
 	ImGui::Spacing();
 
-	// 1. SPRITE 헤더 (비트 플래그 기반)
-	if (ImGui::TreeNodeEx("SPRITE ANIMATION SETTING", ImGuiTreeNodeFlags_DefaultOpen))
+	// -------------------------------------------------------------------------
+	// pData.x : 0.0f이면 미사용, 1.0f이면 사용
+	// pData.y : Column Count
+	// pData.z : Row Count
+	// pData.w : Playback Speed
+	// -------------------------------------------------------------------------
+
+	auto DrawSpriteSlotUI = [&](const char* label, Vec4& pData)
+		{
+			ImGui::PushID(label);
+
+			if (ImGui::TreeNodeEx(label, ImGuiTreeNodeFlags_FramePadding | ImGuiTreeNodeFlags_DefaultOpen))
+			{
+				// 1. Sprite Mode 결정 (0: None, 1: Fixed, 2: Animation)
+				const char* items[] = { "None", "Fixed Index", "Animation" };
+				int iMode = (int)pData.x; // 0, 1, 2
+
+				ImGui::Text("Sprite Mode"); ImGui::SameLine();
+				ImGui::SetNextItemWidth(-1);
+				if (ImGui::Combo("##SpriteMode", &iMode, items, IM_ARRAYSIZE(items)))
+				{
+					pData.x = (float)iMode;
+					m_bModified = true;
+				}
+
+				if (iMode > 0) // Fixed(1) 또는 Animation(2) 일 때만 설정창 활성화
+				{
+					ImGui::PushStyleVar(ImGuiStyleVar_ChildRounding, 5.0f);
+					// 모드에 따라 UI 높이를 살짝 조절 (Fixed는 속도가 필요 없으므로)
+					float childHeight = (iMode == 2) ? 110.0f : 80.0f;
+					ImGui::BeginChild("Settings", ImVec2(0, childHeight), true);
+
+					// 2. 타일 수 설정 (y: Cols, z: Rows) - 셰이더 함수 인자와 맞춤
+					int iCol = (int)pData.y;
+					int iRow = (int)pData.z;
+
+					ImGui::Columns(2, nullptr, false);
+					ImGui::Text("Grid Columns"); ImGui::NextColumn();
+					ImGui::SetNextItemWidth(-1);
+					if (ImGui::DragInt("##Cols", &iCol, 0.1f, 1, 64)) { pData.y = (float)iCol; m_bModified = true; }
+					ImGui::NextColumn();
+
+					ImGui::Text("Grid Rows"); ImGui::NextColumn();
+					ImGui::SetNextItemWidth(-1);
+					if (ImGui::DragInt("##Rows", &iRow, 0.1f, 1, 64)) { pData.z = (float)iRow; m_bModified = true; }
+					ImGui::Columns(1);
+
+					ImGui::Separator();
+
+					// 3. 상황별 설정 (w)
+					if (iMode == 1) // Fixed Index 모드
+					{
+						int iFixedIdx = (int)pData.w;
+						int iMaxIdx = (iCol * iRow) - 1;
+						ImGui::Text("Target Index"); ImGui::SameLine();
+						ImGui::SetNextItemWidth(-1);
+						if (ImGui::SliderInt("##Index", &iFixedIdx, 0, max(0, iMaxIdx)))
+						{
+							pData.w = (float)iFixedIdx;
+							m_bModified = true;
+						}
+					}
+					else if (iMode == 2) // Animation 모드
+					{
+						ImGui::Text("Anim Speed"); ImGui::SameLine();
+						ImGui::SetNextItemWidth(-1);
+						if (ImGui::DragFloat("##Speed", &pData.w, 0.05f, 0.f, 100.f, "%.2f x"))
+						{
+							m_bModified = true;
+						}
+					}
+
+					ImGui::EndChild();
+					ImGui::PopStyleVar();
+				}
+				ImGui::TreePop();
+			}
+			ImGui::PopID();
+			ImGui::Spacing();
+		};
+
+	// Diffuse
+	DrawSpriteSlotUI("Diffuse Texture Sprite", m_tCurrentDesc.Data._Effect_DiffuseTexture_SpriteInfo);
+
+	// Noise
+	DrawSpriteSlotUI("Noise Texture Sprite", m_tCurrentDesc.Data._Effect_NoiseTexture_SpriteInfo);
+
+	// Gradation
+	DrawSpriteSlotUI("Gradation Texture Sprite", m_tCurrentDesc.Data._Effect_GradationTexture_SpriteInfo);
+
+	// Dissolve
+	DrawSpriteSlotUI("Dissolve Texture Sprite", m_tCurrentDesc.Data._Effect_DissolveTexture_SpriteInfo);
+
+	// Glow
+	DrawSpriteSlotUI("Glow Texture Sprite", m_tCurrentDesc.Data._Effect_GlowTexture_SpriteInfo);
+
+	// Curve
+	DrawSpriteSlotUI("Curve Texture Sprite", m_tCurrentDesc.Data._Effect_CurveTexture_SpriteInfo);
+
+	// 닫기 버튼
+	if (ImGui::Button("Close Modal", ImVec2(ImGui::GetContentRegionAvail().x, 40)))
 	{
-		// 2. SPRITE 비트 플래그 체크 (1 << 5)
-		bool bUseSprite = (m_tCurrentDesc.Data._Effect_RenderFlag & (1 << 5)) != 0;
-
-		ImGui::Text("Enable Sprite"); ImGui::SameLine(130);
-		if (ImGui::Checkbox("##UseSpriteFlag", &bUseSprite))
-		{
-			if (bUseSprite)
-				m_tCurrentDesc.Data._Effect_RenderFlag |= (1 << 5); // SPRITE 비트 켜기
-			else
-				m_tCurrentDesc.Data._Effect_RenderFlag &= ~(1 << 5); // SPRITE 비트 끄기
-
-			m_bModified = true;
-		}
-
-		// 3. 스프라이트 활성화 시 세부 타일 설정 (디자인 유지)
-		if (bUseSprite)
-		{
-			ImGui::PushStyleColor(ImGuiCol_ChildBg, ImVec4(0.12f, 0.12f, 0.12f, 1.0f));
-			ImGui::BeginChild("SpriteTileDetail", ImVec2(0, 75), true, ImGuiWindowFlags_NoScrollbar);
-
-			if (ImGui::BeginTable("SpriteTileTable", 2))
-			{
-				// 가로 칸수 (g_SpriteCol)
-				ImGui::TableNextColumn();
-				ImGui::AlignTextToFramePadding();
-				ImGui::Text("Col (X)");
-
-				ImGui::TableNextColumn();
-				ImGui::SetNextItemWidth(-1.0f);
-				int col = (int)m_tCurrentDesc.Data._Effect_TileCount.x;
-				if (ImGui::DragInt("##ColX", &col, 0.1f, 1, 64)) {
-					m_tCurrentDesc.Data._Effect_TileCount.x = (uint32_t)col;
-					m_bModified = true;
-				}
-
-				// 세로 칸수 (g_SpriteRow)
-				ImGui::TableNextColumn();
-				ImGui::Text("Row (Y)");
-
-				ImGui::TableNextColumn();
-				ImGui::SetNextItemWidth(-1.0f);
-				int row = (int)m_tCurrentDesc.Data._Effect_TileCount.y;
-				if (ImGui::DragInt("##RowY", &row, 0.1f, 1, 64)) {
-					m_tCurrentDesc.Data._Effect_TileCount.y = (uint32_t)row;
-					m_bModified = true;
-				}
-
-				ImGui::EndTable();
-			}
-			ImGui::EndChild();
-			ImGui::PopStyleColor();
-
-			ImGui::TextColored(ImVec4(0.5f, 0.6f, 1.0f, 1.0f),
-				"  * Grid: %d x %d (Total %d)",
-				m_tCurrentDesc.Data._Effect_TileCount.x,
-				m_tCurrentDesc.Data._Effect_TileCount.y,
-				m_tCurrentDesc.Data._Effect_TileCount.x * m_tCurrentDesc.Data._Effect_TileCount.y);
-
-
-			// ================  재생 제어 설정 구역  ==============
-
-			ImGui::Spacing();
-			ImGui::Separator();
-			ImGui::Spacing();
-
-			ImGui::TextColored(ImVec4(1.0f, 1.0f, 0.f, 1.f), "PlayBack Settings");
-
-			// =============  애니메이션 고정 여부 체크박스 ============
-			if (ImGui::Checkbox("Play Animation", &m_tCurrentDesc.Data._Effect_bPlayAnim))
-			{
-				m_bModified |= true;
-			}
-
-			if (m_tCurrentDesc.Data._Effect_bPlayAnim)
-			{
-				// 애니메이션이 켜졌을 때,
-				ImGui::AlignTextToFramePadding();
-				ImGui::Text("Anim Speed"); ImGui::SameLine(100);
-				ImGui::SetNextItemWidth(-1.0f);
-				if (ImGui::DragFloat("##AnimSpeed", &m_tCurrentDesc.Data._Effect_AnimSpeed, 0.1f, 0.0f, 100.0f, "%.2f FPS"))
-				{
-					m_bModified |= true;
-				}
-			}
-
-			else
-			{
-				// 애니메이션이 켜진게 아닐 때.
-				int maxIndex = (int)(m_tCurrentDesc.Data._Effect_TileCount.x * m_tCurrentDesc.Data._Effect_TileCount.y);
-				if (maxIndex < 0) maxIndex = 0;
-
-				int curIdx = (int)m_tCurrentDesc.Data.m_iCurSpriteNumber;
-
-				ImGui::AlignTextToFramePadding();
-				ImGui::Text("Frame Index"); ImGui::SameLine();
-				ImGui::SetNextItemWidth(-1.0f);
-				if (ImGui::DragInt("##CurIndex", &curIdx, 0, maxIndex))
-				{
-					m_tCurrentDesc.Data.m_iCurSpriteNumber = (uint32_t)curIdx;
-					m_bModified |= true;
-				}
-			}
-		}
-
-		ImGui::TreePop();
+		m_bShowRotationModal = false;
 	}
 }
 
@@ -1658,7 +1665,7 @@ void CParticle_System_Panel::Draw_Preview_Texture(CToolObject* pGo)
 
 	if (ImGui::BeginChild("TexturePreview", ImVec2(0, 100), true, ImGuiWindowFlags_HorizontalScrollbar))
 	{
-		const char* SlotName[] = { "Diffuse", "Noise", "Mask", "Gradation", "Trail", "Normal" };
+		const char* SlotName[] = { "Diffuse", "Noise", "Mask", "Gradation", "Curve", "Normal" };
 
 		for (int i = 0; i < 6; i++)
 		{

@@ -404,9 +404,8 @@ PS_OUT_LIGHT PS_MAIN_POINT(PS_IN_POS_TEX input)
     float3 kS = F;
     float3 kD = (1.0f - kS) * (1.0f - metal);
     float3 diffFactor = kD;
-
-    // Point는 ambient를 누적하면 과해질 수 있으니, 기존 방침대로 diffuse만(원하면 옵션)
-    float3 radiance = Light.vAmbient.rgb * fAtt;
+    
+    float3 radiance = Light.vDiffuse.rgb * fAtt;
 
     float fDirectOcc = lerp(1.f, fOcc, 0.35f);
     float3 shade = (radiance * (NdotL * fDirectOcc)) * diffFactor;
@@ -434,7 +433,7 @@ PS_OUT_HDR PS_MAIN_OUTLINE(PS_IN_POS_TEX input)
     // 필요한 경우에만 Depth 1회 (fade용)
     float fNdcZ = 0.0f;
     float fViewZ = 0.0f;
-    DecodeDepth(fEdge, fNdcZ, fViewZ);
+    DecodeDepth(vUV, fNdcZ, fViewZ);
 
     if (fNdcZ >= 0.9999f)
     {
@@ -703,13 +702,13 @@ PS_OUT_BACKBUFFER PS_MAIN_TONEMAP(PS_IN_POS_TEX input)
     // Tonemap
     float3 vLDR = ToneMap_ACES(vHDR.rgb);
     
-    vLDR = ApplyLUT_16(vLDR);
-    
     // 대비
-    //vLDR = max(vLDR, 0.0.xxx);
-    //vLDR /= 0.18f;
-    //vLDR = pow(vLDR, HDRparam.fGamma);
-    //vLDR *= 0.18f;
+    vLDR = max(vLDR, 0.0.xxx);
+    vLDR /= 0.18f;
+    vLDR = pow(vLDR, HDRparam.fGamma);
+    vLDR *= 0.18f;
+    
+    vLDR = ApplyLUT_16(vLDR);
     
     float3 invGamma = 1.f / max(0.001f, 2.2f);
     vLDR = pow(saturate(vLDR), invGamma);

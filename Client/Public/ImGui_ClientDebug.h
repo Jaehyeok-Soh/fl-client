@@ -21,6 +21,7 @@ private:
 	{
 		Player = 0,
 		Global,
+		TextureDebug,
 		Monster,
 		Light,
 		END
