@@ -541,6 +541,9 @@
     <Filter Include="07. System\99. Debug_ImGui\Inspector\ShaderDebug">
       <UniqueIdentifier>{0b3e7565-de1d-44a2-b248-637354f68a85}</UniqueIdentifier>
     </Filter>
+    <Filter Include="03. GameObject\UIObjects\02.UI\Text\Damage Text">
+      <UniqueIdentifier>{677a64cd-1317-409c-a79c-d9f17b5e967a}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="targetver.h">
@@ -994,6 +997,9 @@
     <ClInclude Include="..\public\ImGui_TextureDebugInspector.h">
       <Filter>07. System\99. Debug_ImGui\Inspector\ShaderDebug</Filter>
     </ClInclude>
+    <ClInclude Include="..\Public\UIDamageFont_Text.h">
+      <Filter>03. GameObject\UIObjects\02.UI\Text\Damage Text</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <Image Include="Client.ico">
@@ -1439,6 +1445,9 @@
     </ClCompile>
     <ClCompile Include="..\private\ImGui_TextureDebugInspector.cpp">
       <Filter>07. System\99. Debug_ImGui\Inspector\ShaderDebug</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\UIDamageFont_Text.cpp">
+      <Filter>03. GameObject\UIObjects\02.UI\Text\Damage Text</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

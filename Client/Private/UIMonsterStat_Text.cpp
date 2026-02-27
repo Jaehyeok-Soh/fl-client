@@ -5,7 +5,7 @@
 //=================
 // Component
 //=================
-#include "StatCom_Player.h"
+#include "WorldUI_Component.h"
 #include "Texture.h"
 #include "Shader.h"
 #include "VIBuffer_Rect_Tex.h"
@@ -51,11 +51,6 @@ HRESULT CUIMonsterStat_Text::Awake(const _uint iCurrentLevelID)
 
 HRESULT CUIMonsterStat_Text::Attach_Personal_Info(const _uint iCurrentLevelID)
 {
-	CGameObject* pResult = m_pGameInstance->Get_GameObject_Front(iCurrentLevelID, g_wszPlayerLayer);
-	if (nullptr == pResult)
-		return E_FAIL;
-
-
 	return S_OK;
 }
 
@@ -150,6 +145,30 @@ _bool CUIMonsterStat_Text::Tick_Visible_Event(const _float fTimeDelta)
 _bool CUIMonsterStat_Text::Tick_InVisible_Event(const _float fTimeDelta)
 {
 	return true;
+}
+
+HRESULT CUIMonsterStat_Text::Spawn_FromPool(void* pArg)
+{
+	UI_PREFAB_DATA* pDesc = static_cast<UI_PREFAB_DATA*>(pArg);
+
+	auto* pComp = Get_Script_Component(L"WorldUIComponent");
+	if (nullptr == pComp)
+		return E_FAIL;
+
+	m_pWorldUIComp = static_cast<CWorldUI_Component*>(pComp);
+	if (nullptr == m_pWorldUIComp)
+		return E_FAIL;
+
+	m_pWorldUIComp->Set_Target(pDesc->pTarget);
+	/* ¸ó½ºÅÍ ½ºÅÈ ÄÄÆ÷³ÍÆ® ºÎÂø */
+	
+	m_bDead = false;
+	return S_OK;
+}
+
+HRESULT CUIMonsterStat_Text::Despawn_FromPool()
+{
+	return S_OK;
 }
 
 CUIMonsterStat_Text* CUIMonsterStat_Text::Create(ID3D11Device* pDevice, ID3D11DeviceContext* pDeviceContext)

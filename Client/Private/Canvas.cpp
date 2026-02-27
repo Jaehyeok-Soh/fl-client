@@ -11,6 +11,7 @@
 
 #include "GenericUI.h"
 
+#include "UI_Manager.h"
 #include "GameInstance.h"
 
 CCanvas::CCanvas(ID3D11Device* pDevice, ID3D11DeviceContext* pDeviceContext)
@@ -34,6 +35,8 @@ HRESULT CCanvas::Initialize(void* pArg)
 {
 	CANVAS_DESC* pDesc = static_cast<CANVAS_DESC*>(pArg);
 	m_strName = pDesc->strName;
+	m_vecChildPrefabTag = (pDesc->vecPrefabs);
+
 	if (FAILED(Super::Initialize(pArg)))
 		return E_FAIL;
 
@@ -102,6 +105,9 @@ void CCanvas::Update_Late(const _float fTimeDelta)
 
 void CCanvas::Ready_Before_Render(const _float fTimeDelta)
 {
+	if (Check_Dead())
+		All_Dead();
+
 	Super::Ready_Before_Render(fTimeDelta);
 }
 
@@ -128,6 +134,53 @@ _bool CCanvas::Check_FinEvent()
 			return false;
 	}
 	return true;
+}
+
+HRESULT CCanvas::Ready_Prefab(_uint iPoolLevel, _uint iSpawnLevel)
+{
+	for (const auto& wstr : m_vecChildPrefabTag)
+	{
+		m_pGameInstance->Request_AddObject(iPoolLevel, wstr, iSpawnLevel, &m_pPrefabData,
+			[this, iSpawnLevel](CGameObject* p)
+			{
+				auto* pUI = static_cast<CGenericUI*>(p);
+				if (nullptr == pUI)
+					return;
+				(this->Get_UIVector())->push_back(pUI);
+				CUI_Manager::GetInstance()->Add_VecGenericUICache(iSpawnLevel,pUI);
+				CUI_Manager::GetInstance()->Request_SortUI();
+			});
+	}
+	m_isAllDead = false;
+	return S_OK;
+}
+
+_bool CCanvas::Check_Dead()
+{
+	if (m_vecUI.empty())
+		return false;
+
+	for (auto* pUI : m_vecUI)
+	{
+		if (!pUI->IsDead())
+			return false;
+	}
+	 return m_isAllDead = true;
+}
+
+void CCanvas::All_Dead()
+{
+	if (!m_isAllDead)
+		return;
+
+	for (auto* pUI : m_vecUI)
+	{
+		pUI->Set_Dead(g_wszUILayer);
+	}
+
+	CUI_Manager::GetInstance()->Request_Clear_DeadUI();
+	m_vecUI.clear();
+	Set_Dead(g_wszUILayer);
 }
 
 HRESULT CCanvas::Ready_Components(CANVAS_DESC* pDesc)
@@ -290,6 +343,17 @@ CGenericUI* CCanvas::Calc_TopUI()
 		}
 	}
 	return pTopUI;
+}
+
+HRESULT CCanvas::Spawn_FromPool(void* pArg)
+{
+	m_pPrefabData = *static_cast<UI_PREFAB_DATA*>(pArg);
+	return S_OK;
+}
+
+HRESULT CCanvas::Despawn_FromPool()
+{
+	return S_OK;
 }
 
 CCanvas* CCanvas::Create(ID3D11Device* pDevice, ID3D11DeviceContext* pDeviceContext)

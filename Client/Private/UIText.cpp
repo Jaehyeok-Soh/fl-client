@@ -58,8 +58,6 @@ HRESULT CUIText::Awake(const _uint iCurrentLevelID)
 {
 	if (FAILED(Super::Awake(iCurrentLevelID)))
 		return E_FAIL;
-
-	m_vOriginFontColor = m_vFontColor;
 	return S_OK;
 }
 
@@ -98,6 +96,9 @@ void CUIText::Ready_Before_Render(const _float fTimeDelta)
 
 HRESULT CUIText::Render()
 {
+	// UI는 별도의 UI Manager에서 Render 그룹에 넣어주고, m_isVisible 같은 예외처리를 최하단 객체에서 해줌
+	// Request_DrawFont를 Update계열에서 호출하면 Text UI는 매니저의 Render나 m_isVisible 같은 렌더 상태 제어를 받지 않고 무조건 출력됨
+	// Text만 따로 예외처리 하기 싫어서 Render에서 호출
 	Sync_FontDesc();
 	if (FAILED(m_pGameInstance->Request_DrawFont(m_tFontDesc)))
 		return E_FAIL;
