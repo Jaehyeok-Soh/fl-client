@@ -444,8 +444,8 @@ void CActionState::SetupLookAt(const Vec3& vPoint)
 
 void CActionState::SetupLook_Target_XZ()
 {
-	CGameObject* pTarget = { nullptr };
-	if (Get_Target() == nullptr)
+	CGameObject* pTarget = Get_Target();
+	if (pTarget == nullptr) 
 		return;
 	CTransform* pTargetTransform = pTarget->Get_Component<CTransform>();
 
