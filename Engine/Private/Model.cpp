@@ -431,6 +431,7 @@ void CModel::Set_MixAnim(_bool bMix)
 {
 	m_bMixAnim = bMix;
 
+	// 껐다 킬때, track 정리
 	for (auto pMixIdx : m_vecMixAnimIndices)
 	{
 		if (pMixIdx > 0)
@@ -443,6 +444,7 @@ void CModel::Set_MixAnim(_bool bMix)
 
 void CModel::Make_MixRatio(_uint iAnimIdx, vector<DATA_ANIMIX>& vecAniMixData, CComputeShader* pAnimMixCS)
 {
+	// 1. 인덱스 방어
 	if (iAnimIdx >= Get_AnimationCount())
 		return;
 
@@ -462,6 +464,7 @@ void CModel::Make_MixRatio(_uint iAnimIdx, vector<DATA_ANIMIX>& vecAniMixData, C
 			continue;
 		}
 
+		// 양수라면 해당 인덱스의 자식 계층구조에 포함하는지 검사
 		for (size_t i = 0 ; i< m_vecBones.size(); i++)
 		{
 			// 만약 내가 저 인덱스의 child라면
@@ -469,6 +472,7 @@ void CModel::Make_MixRatio(_uint iAnimIdx, vector<DATA_ANIMIX>& vecAniMixData, C
 				vecRatios[i] = pMixData.fRatio;
 		}
 
+		// 내꺼 추가 할래 말래
 		if (pMixData.bInClude)
 		{
 			vecRatios[size_t(pMixData.iParentIdx)] = pMixData.fRatio;
