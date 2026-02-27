@@ -24,6 +24,9 @@ private:
 	virtual HRESULT Initialize_Prototype() override;
 	virtual HRESULT Initialize(void* pArg) override;
 public:
+	// Static Object가 다른 Level에 갈때 호출
+	virtual HRESULT Reinitialize(GAMEOBJECT_REINIT_DESC* pDesc) override;
+	virtual HRESULT Clear_WhenChangeLevel() override;
 	virtual HRESULT Awake(const _uint iCurrentLevelID) override;
 	virtual void	Update_Priority(const _float fTimeDelta) override;
 	virtual void	Update(const _float fTimeDelta) override;

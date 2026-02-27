@@ -242,6 +242,16 @@ void CObject_Manager::Clear(_uint iLevelIndex)
 		Safe_Release(Pair.second);
 	}
 	m_pLayers[iLevelIndex].clear();
+
+	// 스태틱 레벨 오브젝트들 정보 정리
+	for (auto& Pair : m_pLayers[/* static */ 0])
+	{
+		for (auto& go : *Pair.second->Get_GameObject_List())
+		{
+			if(FAILED(go->Clear_WhenChangeLevel()))
+				MSG_BOX("CObject_Manager::Clear, Clear_WhenChangeLevel failed");
+		}
+	}
 }
 
 CLayer* CObject_Manager::Find_Layer(_uint iLevelIndex, const wstring& wstrLayerTag)

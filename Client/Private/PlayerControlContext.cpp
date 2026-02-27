@@ -320,6 +320,11 @@ Vec3 CPlayerControlContext::Get_MoveDir()
 	return vDesiredDir;
 }
 
+void CPlayerControlContext::Clear_WhenChangeLevel()
+{
+	m_pOwnerTargetCamera = nullptr;
+}
+
 void CPlayerControlContext::OnChangeLockonTarget(CGameObject* pGo)
 {
 	if (pGo == m_pTarget)

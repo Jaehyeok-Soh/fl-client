@@ -73,6 +73,11 @@ void CActionState::Update(const _float fTimeDelta)
 		m_vecStates[m_iCurrentState]->Update(fTimeDelta);
 }
 
+void CActionState::Clear_WhenChangeLevel()
+{
+	m_pOwnerTargetCamera = nullptr;
+}
+
 HRESULT CActionState::Add_State(_uint iIndex, CStateBase* pState)
 {
 	if (m_vecStates.size() <= iIndex)

@@ -38,6 +38,8 @@ public:
 	HRESULT			Awake(_uint iLvelIndex);
 	void			Update(const _float fTimeDelta);
 
+	virtual void	Clear_WhenChangeLevel()override;
+
 	/* state funcs */
 public:
 	HRESULT			Change_State(_uint iIndex, _bool bForce = false, void* pArg = nullptr);
@@ -69,7 +71,6 @@ public:
 
 	// action state 내부에 CCTFlags 가지고 있음 -> 외부에서는 어떻게 윰직일지만 값을 넘겨준다
 	void			Move(Vec3 disp, _float minDist, _float fTimeDelta); 
-
 	/* animation funcs*/
 protected:
 	HRESULT			Request_MixAnimation(_uint iVectorIdx, _int iAnimIdx);

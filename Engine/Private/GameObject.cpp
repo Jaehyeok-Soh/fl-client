@@ -261,6 +261,13 @@ void CGameObject::Set_Name(const wstring& wstrName)
     m_strName = Engine_Utils::ToString(wstrName);
 }
 
+void CGameObject::Clear_Components_WhenChangeLevel()
+{
+    for (auto& comp : m_Components)
+        if(comp)
+            comp->Clear_WhenChangeLevel();
+}
+
 string CGameObject::Get_Name()
 {
     return m_strName;

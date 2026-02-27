@@ -87,7 +87,7 @@ void CTriggerBox_LevelChange::Update(const _float fTimeDelta)
     /* 충돌 임시 로직 Check */
     if (fLength < 2.5f)
     {
-        m_pGameInstance->Request_ChangeLevel(ENUM_TO_UINT(m_eChangeLevelType), CLevel_Loading::Create(m_pDevice, m_pDeviceContext, m_eChangeLevelType));
+        m_pGameInstance->Request_ChangeLevel(ENUM_TO_UINT(ELevelType::LOADING), CLevel_Loading::Create(m_pDevice, m_pDeviceContext, m_eChangeLevelType));
     }
 
     /* Player 위치랑 */

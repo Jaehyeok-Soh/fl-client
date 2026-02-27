@@ -661,6 +661,9 @@ HRESULT CLoader::Loading_For_Tutorial_Village()
 
 
 
+
+
+
 	m_isFinished = true;
 	return S_OK;
 }

@@ -20,6 +20,10 @@ public:
 	{
 		_uint iLevelIndex = { 999 };
 	}GAMEOBJECT_DESC;
+	typedef struct tagGameObjectReinitDesc
+	{
+
+	}GAMEOBJECT_REINIT_DESC;
 protected:
 	// TODO - type 다 지정해줘야됨, 현재 툴때문이 임시로
 	CGameObject(ID3D11Device* pDevice, ID3D11DeviceContext* pDeviceContext);
@@ -29,6 +33,10 @@ protected:
 	virtual HRESULT Initialize_Prototype() PURE;
 	virtual HRESULT Initialize(void* pArg) PURE;
 public:
+	// Static Object가 다른 Level에 init 될때 호출
+	virtual HRESULT Reinitialize(GAMEOBJECT_REINIT_DESC* pDesc) { return S_OK; }
+	// Static Object가 다른 Level에 가기전 해당 Level이 정리 될때 호출
+	virtual HRESULT Clear_WhenChangeLevel() { return S_OK; }
 	// 객체 생성이 완료되고 Change_Level이 완료되었을 때 호출
 	virtual HRESULT Awake(const _uint iCurrentLevelID) PURE;
 	virtual void Update_Priority(const _float fTimeDelta);
@@ -89,6 +97,7 @@ public:
 public:
 	void Set_Name(const string& strName);
 	void Set_Name(const wstring& wstrName);
+	void Clear_Components_WhenChangeLevel();
 
 	string Get_Name();
 	wstring Get_WName();
