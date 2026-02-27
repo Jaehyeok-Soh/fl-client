@@ -92,9 +92,9 @@ protected:
 	void			Move_Right(const _float fTimeDelta, const _float fSpeedRatio = 1.f);
 	void			Move_Front(const _float fTimeDelta, const _float fSpeedRatio = 1.f);
 	void			Move_Backward(const _float fTimeDelta, const _float fSpeedRatio = 1.f);
+	void			StartForce_Backward_ForAnimation(_float fForceAbs, _float fDragK);
 	void			Move_Down(const _float fTimeDelta, const _float fSpeedRatio = 1.f);
 	void			StartForce_Front_ForAnimation(_float fForceAbs, _float fDragK);
-	void			StartForce_Backward_ForAnimation(_float fForceAbs, _float fDragK);
 	void			StartForce_Left_ForAnimation(_float fForceAbs, _float fDragK);
 	void			StartForce_Right_ForAnimation(_float fForceAbs, _float fDragK);
 	void			Set_AttackCollider(_uint iPartIndex, _bool bActive, ATTACK_DESC* pDesc);

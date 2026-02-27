@@ -32,7 +32,6 @@ inline std::string MakeMonsterType_ToString(EMakeMonsterType eType)
 	default:									return "Unknown";
 	}
 }
-
 inline EMakeMonsterType MakeMonsterType_ToEnum(const std::string strType)
 { 
 	if (strType == "Dog")		return DTO::EMakeMonsterType::Dog;
@@ -43,6 +42,18 @@ inline EMakeMonsterType MakeMonsterType_ToEnum(const std::string strType)
 
 	return EMakeMonsterType::END;
 }
+
+#pragma endregion
+
+#pragma region Make TriggerBox Type
+
+enum class EMakeTriggerBoxType
+{
+	Change_Level,
+	Monster_Spawner,
+	END,
+};
+
 #pragma endregion
 NS_END
 
@@ -393,18 +404,18 @@ NLOHMANN_JSON_SERIALIZE_ENUM(EMapObject_DrawType,
 
 
 #pragma region SRT Data
-	typedef struct tagSRT_Data
+	struct SRT_DATA
 {
 	Vec3	vScale{1.f,1.f,1.f};
 	Quat	vQuat{0.f,0.f,0.f,1.f};
 	Vec3	vPosition{ 0.f,0.f,0.f };
 	Vec3	vScale_Isolated{}; //TEST: 소재혁 임시 추가
 public:
-	Matrix  Get_World()
+	Matrix  Get_World() const
 	{
 		return Matrix::CreateScale(vScale) * Matrix::CreateFromQuaternion(vQuat) * Matrix::CreateTranslation(vPosition);
 	}
-}SRT_DATA;
+};
 #pragma endregion
 
 #pragma region Using Material 

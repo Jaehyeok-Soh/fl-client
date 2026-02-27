@@ -184,6 +184,7 @@ void	CMapObject::Ready_Before_Render(const _float fTimeDelta)
 
 
 #ifdef _DEBUG
+    m_pGameInstance->Push_DebugComponent(Get_Component<CPhysicsRigidBody>());
     //if (m_eMapObjectDrawType == EMapObject_DrawType::Instance)
     //    m_pGameInstance->Push_DebugComponent(Get_Component<CBounds>());
 #endif
