@@ -403,15 +403,42 @@ void CModelAnimation::Set_MixRatio(vector<_float>& vecMixRatio, CComputeShader* 
 		return;
 }
 
-void CModelAnimation::Set_Notifies(vector<AnimNotifyKey> vecKeys)
+void CModelAnimation::Set_Notifies(EAnimNotifyPhase ePhase, vector<AnimNotifyKey> vecKeys)
 {
 	std::sort(vecKeys.begin(), vecKeys.end(),
 		[](const AnimNotifyKey& a, const AnimNotifyKey& b)->_bool
 		{
 			return a.fTrackPosition < b.fTrackPosition;
 		});
-	m_vecNotifies = std::move(vecKeys);
-	m_iNextNotifyIndex = 0;
+	m_vecNotifies[ENUM_TO_UINT(ePhase)] = std::move(vecKeys);
+	m_iNextNotifyIndices[ENUM_TO_UINT(ePhase)] = 0;
+}
+
+void CModelAnimation::Pushback_Notifies(EAnimNotifyPhase ePhase, const AnimNotifyKey& key)
+{
+	m_vecNotifies[ENUM_TO_UINT(ePhase)].push_back(key);
+
+	std::sort(m_vecNotifies[ENUM_TO_UINT(ePhase)].begin(), m_vecNotifies[ENUM_TO_UINT(ePhase)].end(),
+		[](const AnimNotifyKey& a, const AnimNotifyKey& b)->_bool
+		{
+			return a.fTrackPosition < b.fTrackPosition;
+		});
+
+	m_iNextNotifyIndices[ENUM_TO_UINT(ePhase)] = 0;
+}
+
+void CModelAnimation::Sort_Notifies()
+{
+	_uint iIndex{ 0 };
+	for (auto& vecKeys : m_vecNotifies)
+	{
+		std::sort(vecKeys.begin(), vecKeys.end(),
+			[](const AnimNotifyKey& a, const AnimNotifyKey& b)->_bool
+			{
+				return a.fTrackPosition < b.fTrackPosition;
+			});
+		m_iNextNotifyIndices[iIndex++] = 0;
+	}
 }
 
 CModelAnimation* CModelAnimation::Create(ID3D11Device* pDevice, ID3D11DeviceContext* pDeviceContext, void* pArg)

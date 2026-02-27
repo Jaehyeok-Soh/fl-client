@@ -11,8 +11,8 @@ extern _bool		g_bStart;
 
 namespace Client
 {
-	static const unsigned int g_iWinSizeX = 1280;
-	static const unsigned int g_iWinSizeY = 720;
+	static const unsigned int g_iWinSizeX = 1600;
+	static const unsigned int g_iWinSizeY = 900;
 	enum class ELevelType : unsigned int
 	{
 		STATIC = 0,

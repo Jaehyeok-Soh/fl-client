@@ -121,7 +121,6 @@ void CEffectHandler::Ready_Event()
         if (iAnimIndex >= vecAnimations.size()) continue;
 
         auto pAnimation = vecAnimations[iAnimIndex];
-        vector<AnimNotifyKey> vecKeys = pAnimation->Get_Notifies();
 
         for (size_t i = 0; i < pair.second.size(); ++i)
         {
@@ -140,7 +139,6 @@ void CEffectHandler::Ready_Event()
             tOnKey.iParam0 = (_int)i;
             tOnKey.iParam1 = (_int)pair.first;
             tOnKey.strParam = tEffectData.strEffectTag;
-            vecKeys.push_back(tOnKey);
 
             // Attach 타입이라면 종료 키도 생성
             if (tOnKey.eID == EAnimNotifyId::Vfx_Attach_On)
@@ -151,10 +149,13 @@ void CEffectHandler::Ready_Event()
                 tOffKey.iParam0 = (_int)i;
                 tOffKey.iParam1 = (_int)pair.first;
                 tOffKey.strParam = tEffectData.strEffectTag;
-                vecKeys.push_back(tOffKey);
+                pAnimation->Pushback_Notifies(pair.second[i].ePhase, tOffKey);
             }
+
+            pAnimation->Pushback_Notifies(pair.second[i].ePhase, tOnKey);
         }
-        pAnimation->Set_Notifies(vecKeys);
+
+        pAnimation->Sort_Notifies();
     }
 }
 

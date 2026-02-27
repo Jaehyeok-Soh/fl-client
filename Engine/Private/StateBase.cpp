@@ -59,6 +59,7 @@ HRESULT CStateBase::Start(void *pArg, _bool bForce)
 	// vecPreAnims 탐색 후 preAni 결정
 	if (Engine_Utils::Has_Flag(m_FAniFlags, STATEANI_FLAG::SA_HasPreAni))
 	{
+		_int iIndex{ 0 };
 		for (auto& pAniData : m_vecPreAnims)
 		{
 			// 만약 preidx가 없다면 무조건 업데이트
@@ -66,6 +67,9 @@ HRESULT CStateBase::Start(void *pArg, _bool bForce)
 			{
 				Engine_Utils::RemoveHard_Flag(m_FAniFlags, STATEANI_FLAG::SA_PreAniDone);
 				Request_ChangeAnimation(pAniData.iAnimationIdex, true, false, true); // 무조건 loop : false
+				if (Engine_Utils::Has_Flag(m_FAniFlags, STATEANI_FLAG::SA_WeaponAni))
+					Request_Change_WeaponAnimation(m_vecWeaponAnims[iIndex], m_bBlend, m_bLoop, bForce);
+				++iIndex;
 				return S_OK;
 			}
 		}
@@ -77,6 +81,8 @@ HRESULT CStateBase::Start(void *pArg, _bool bForce)
 
 	// 만약 preAni가 없다면 내꺼 재생
 	Request_ChangeAnimation((size_t)m_vecMainAnims[m_iMainAnimIdx], m_bBlend, m_bLoop, bForce);
+	if(Engine_Utils::Has_Flag(m_FAniFlags, STATEANI_FLAG::SA_WeaponAni))
+		Request_Change_WeaponAnimation((size_t)m_vecWeaponAnims[m_vecPreAnims.size() + m_iMainAnimIdx], m_bBlend, m_bLoop, bForce);
 	return S_OK;
 }
 
@@ -91,6 +97,8 @@ void CStateBase::Update(const _float fTimeDelta)
 		{
 			Engine_Utils::Add_Flag(m_FAniFlags, STATEANI_FLAG::SA_PreAniDone);
 			Request_ChangeAnimation((size_t)m_vecMainAnims[m_iMainAnimIdx], m_bBlend, m_bLoop, m_bMainForce);
+			if (Engine_Utils::Has_Flag(m_FAniFlags, STATEANI_FLAG::SA_WeaponAni))
+				Request_Change_WeaponAnimation((size_t)m_vecWeaponAnims[m_vecPreAnims.size() + m_iMainAnimIdx], m_bBlend, m_bLoop, m_bMainForce);
 		}
 	}
 
@@ -120,6 +128,17 @@ HRESULT CStateBase::Request_ChangeAnimation(_uint iAnimationIndex, _bool bBlend,
 	//	bBlend = false;
 
 	return m_pOwnerStateComp->Request_ChangeAnimation(iAnimationIndex, bBlend, bLoop, bForce);
+}
+
+HRESULT CStateBase::Request_Change_WeaponAnimation(_int iAnimationIndex, _bool bBlend, _bool bLoop, _bool bForce)
+{
+	if (iAnimationIndex < 0)
+		return E_FAIL;
+
+	if (m_pOwnerStateComp == nullptr)
+		return E_FAIL;
+
+	return m_pOwnerStateComp->Request_Change_WeaponAnimation(iAnimationIndex, bBlend, bLoop, bForce);
 }
 
 HRESULT CStateBase::Request_Change_State(_uint iIndex, void* pArg)
