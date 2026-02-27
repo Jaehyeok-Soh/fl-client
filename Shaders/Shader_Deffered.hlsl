@@ -706,10 +706,10 @@ PS_OUT_BACKBUFFER PS_MAIN_TONEMAP(PS_IN_POS_TEX input)
     vLDR = ApplyLUT_16(vLDR);
     
     // ´ëºñ
-    vLDR = max(vLDR, 0.0.xxx);
-    vLDR /= 0.18f;
-    vLDR = pow(vLDR, HDRparam.fGamma);
-    vLDR *= 0.18f;
+    //vLDR = max(vLDR, 0.0.xxx);
+    //vLDR /= 0.18f;
+    //vLDR = pow(vLDR, HDRparam.fGamma);
+    //vLDR *= 0.18f;
     
     float3 invGamma = 1.f / max(0.001f, 2.2f);
     vLDR = pow(saturate(vLDR), invGamma);

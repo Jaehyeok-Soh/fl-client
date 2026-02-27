@@ -544,7 +544,7 @@ void CAnimTool_Manager::Modify_EffectEvent(vector<DTO::EFFECTEVENT> events)
 			if (pNewHandler)
 			{
 				m_pEffectModule->SetEFfectEvent(pNewHandler, m_tAnimControllInfo.pCurrentObject);
-				Safe_Release(pNewHandler);
+				//Safe_Release(pNewHandler);
 			}
 		}
 	}

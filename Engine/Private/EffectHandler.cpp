@@ -451,14 +451,11 @@ void CEffectHandler::Free()
 
     for (_uint i = 0; i < ENUM_TO_UINT(E_HANDLER_TYPE::TYPE_END); ++i)
     {
-        for (auto& pair : m_ActiveEffects[i])
-        {
-            if (pair.second)
-                m_pGameInstance->Request_DeleteGameObject(m_pGameInstance->Get_CurrentLevelIndex(), L"Layer_Effect", pair.second);
-        }
         m_ActiveEffects[i].clear();
     }
 
+    // 3. 캐싱된 모델 참조 해제
     Safe_Release(m_pOwnerModel);
+
     Super::Free();
 }

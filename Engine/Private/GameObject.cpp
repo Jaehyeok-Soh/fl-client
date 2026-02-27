@@ -311,10 +311,11 @@ void CGameObject::Safe_Release_ScriptComponent()
 
 void CGameObject::Free()
 {
-    Super::Free();
     Safe_Release_Component();
     Safe_Release_ScriptComponent();
     Safe_Release(m_pGameInstance);
     Safe_Release(m_pDeviceContext);
     Safe_Release(m_pDevice);
+
+    Super::Free();
 }

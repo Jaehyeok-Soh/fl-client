@@ -120,15 +120,17 @@ void CObject_Manager::Delete_GameObject(_uint iCloneLevelIndex, const wstring& w
 	{
 		if (CLayer* pFindLayer = Find_Layer(iCloneLevelIndex, wstrLayerTag))
 			pFindLayer->Delete_GameObject(pGo);
-
-		Safe_Release(pGo);
 	}
+	Safe_Release(pGo);
 }
 
 CGameObject* CObject_Manager::Add_GameObject(_uint iCloneLevelIndex, const wstring& wstrLayerTag, CGameObject* pGo)
 {
 	if (!pGo || wstrLayerTag.empty())
 		return nullptr;
+
+	if (pGo)
+		Safe_AddRef(pGo);
 
 	CLayer* pLayer = Find_Layer(iCloneLevelIndex, wstrLayerTag);
 	if (pLayer == nullptr)
@@ -159,7 +161,7 @@ CGameObject* CObject_Manager::Add_GameObject(_uint iPrototypeLevelIndex, const w
 
 	// Pool에 없으면 Clone
 	if (pGo == nullptr)
-		pGo =  static_cast<CGameObject*>(m_pGameInstance->Clone_Prototype(EPrototypeType::GAMEOBJECT, iPrototypeLevelIndex, wstrPrototypeTag, pArg));
+		pGo = static_cast<CGameObject*>(m_pGameInstance->Clone_Prototype(EPrototypeType::GAMEOBJECT, iPrototypeLevelIndex, wstrPrototypeTag, pArg));
 
 	if (pGo == nullptr)
 		return nullptr;

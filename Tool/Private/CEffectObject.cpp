@@ -567,7 +567,7 @@ HRESULT CEffectObject::Bind_ShaderResource()
             m_tEffectDesc.Data._Effect_CurveTexture_SpriteInfo.z,
             m_iSpriteCurrentNumber[ENUM_TO_UINT(DTO::TEXTURE_INFO::CURVETEXTURE)]);
 
-        pDesc.CurveTexture_SpriteInfo = Vec4(m_tEffectDesc.Data._Effect_MaskTexture_SpriteInfo.x,
+        pDesc.MaskTexture_SpriteInfo = Vec4(m_tEffectDesc.Data._Effect_MaskTexture_SpriteInfo.x,
             m_tEffectDesc.Data._Effect_MaskTexture_SpriteInfo.y,
             m_tEffectDesc.Data._Effect_MaskTexture_SpriteInfo.z,
             m_iSpriteCurrentNumber[ENUM_TO_UINT(DTO::TEXTURE_INFO::MASKINGTEXTURE)]);
@@ -1184,8 +1184,17 @@ void CEffectObject::Free()
 {
     if (IsClone())
     {
-        Safe_Release(pSB);
-        Safe_Release(pSRV);
+        ID3D11ShaderResourceView* pNullSRV = nullptr;
+        m_pDeviceContext->CSSetShaderResources(1, 1, &pNullSRV);
+
+        if (m_pComputeShader)
+            m_pComputeShader->Bind_InputStructuredBuffer(1, nullptr, nullptr);
+
+        // 2. 내가 직접 만든 버퍼(SB)만 지운다.
+        //Safe_Release(pSB);
+
+        // 3. pSRV가 셰이더 변수라면 Release 하지 말고 nullptr 처리만 한다.
+        pSRV = nullptr;
     }
     Super::Free();
 }

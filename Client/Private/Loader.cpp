@@ -290,6 +290,8 @@ HRESULT CLoader::Loading_For_Logo()
 
 		if (FAILED(Make_StaticObject_Prototype(ELevelType::STATIC, L"../../Resources/Models/Effect_FBX/Circle")))
 			return E_FAIL;
+		if (FAILED(Make_StaticObject_Prototype(ELevelType::STATIC, L"../../Resources/Models/Effect_FBX/Object")))
+			return E_FAIL;
 		if (FAILED(Make_StaticObject_Prototype(ELevelType::STATIC, L"../../Resources/Models/Effect_FBX/Object_Chain")))
 			return E_FAIL;
 		if (FAILED(Make_StaticObject_Prototype(ELevelType::STATIC, L"../../Resources/Models/Effect_FBX/Lightning")))
@@ -303,6 +305,8 @@ HRESULT CLoader::Loading_For_Logo()
 		if (FAILED(Make_StaticObject_Prototype(ELevelType::STATIC, L"../../Resources/Models/Effect_FBX/Plane")))
 			return E_FAIL;
 		if (FAILED(Make_StaticObject_Prototype(ELevelType::STATIC, L"../../Resources/Models/Effect_FBX/Tornado")))
+			return E_FAIL;
+		if (FAILED(Make_StaticObject_Prototype(ELevelType::STATIC, L"../../Resources/Models/Effect_FBX/Claw")))
 			return E_FAIL;
 
 		if (FAILED(Make_StaticObject_Prototype(ELevelType::STATIC, L"../../Resources/Models/Effect_FBX/Twist")))
@@ -329,6 +333,8 @@ HRESULT CLoader::Loading_For_Logo()
 		if (FAILED(Loading_Textures(L"../../Resources/Textures/Effect/Ice/")))
 			return E_FAIL;
 		if (FAILED(Loading_Textures(L"../../Resources/Textures/Effect/Knife/")))
+			return E_FAIL;
+		if (FAILED(Loading_Textures(L"../../Resources/Textures/Effect/Rock/")))
 			return E_FAIL;
 		m_fLoadingRatio = 0.33f;
 		if (FAILED(Loading_Textures(L"../../Resources/Textures/Effect/Lens/")))
@@ -818,6 +824,15 @@ HRESULT CLoader::Ready_AttackOverlap()
 	return S_OK;
 }
 
+HRESULT CLoader::Ready_EffectEvent()
+{
+	if (FAILED(Ready_EffectEvent_PlayerMoon()))
+		return E_FAIL;
+
+	if (FAILED(Ready_EffectEvent_MonsterDog()))
+		return E_FAIL;
+}
+
 HRESULT CLoader::Ready_AttackOverlap_PlayerMoon()
 {
 	ELevelType eLevelType = ELevelType::LOGO;
@@ -890,13 +905,34 @@ HRESULT CLoader::Ready_AttackPresets()
 	return S_OK;
 }
 
-HRESULT CLoader::Ready_EffectEvent()
+HRESULT CLoader::Ready_EffectEvent_PlayerMoon()
 {
 	ELevelType eLevelType = ELevelType::LOGO;
 	DTO::ECategory eCategory = DTO::ECategory::EFFECTEVENT;
 	_uint iLevelID = ENUM_TO_UINT(eLevelType);
 
 	std::filesystem::path FilePath = L"../../Resources/Data/EffectAnimationData/PlayerMoon.json";
+	vector<path> vecfiles;
+
+	if (!std::filesystem::exists(FilePath))
+		return E_FAIL;
+
+	if (FAILED(m_pGameInstance->Load_File_Json(iLevelID, eCategory, FilePath)))
+		return E_FAIL;
+
+	if (FAILED(m_pBuilderSystem->Build_File(iLevelID, eCategory, FilePath.stem().string())))
+		return E_FAIL;
+
+	return S_OK;
+}
+
+HRESULT CLoader::Ready_EffectEvent_MonsterDog()
+{
+	ELevelType eLevelType = ELevelType::LOGO;
+	DTO::ECategory eCategory = DTO::ECategory::EFFECTEVENT;
+	_uint iLevelID = ENUM_TO_UINT(eLevelType);
+
+	std::filesystem::path FilePath = L"../../Resources/Data/EffectAnimationData/Monster_Dog.json";
 	vector<path> vecfiles;
 
 	if (!std::filesystem::exists(FilePath))

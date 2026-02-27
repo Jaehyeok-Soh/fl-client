@@ -245,6 +245,7 @@ struct TEFFECT_PartsData
     _bool               _Effect_Tool_UseScroll_Dissolve = { false };
     _bool               _Effect_Tool_UseScroll_Glow = { false };
     _bool               _Effect_Tool_UseScroll_Curve = { false };
+    _bool               _Effect_Tool_UseLifeDissolve = { false };
 
     // SamplerState 몇번 쓸거니
     int               _Effect_Tool_DiffuseSamplerState_Flag = {};

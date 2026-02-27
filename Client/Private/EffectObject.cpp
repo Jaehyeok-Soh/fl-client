@@ -352,7 +352,7 @@ HRESULT CEffectObject::Bind_ShaderResource()
             m_tEffectDesc.Data._Effect_CurveTexture_SpriteInfo.z,
             m_iSpriteCurrentNumber[ENUM_TO_UINT(DTO::TEXTURE_INFO::CURVETEXTURE)]);
 
-        pDesc.CurveTexture_SpriteInfo = Vec4(m_tEffectDesc.Data._Effect_MaskTexture_SpriteInfo.x,
+        pDesc.MaskTexture_SpriteInfo = Vec4(m_tEffectDesc.Data._Effect_MaskTexture_SpriteInfo.x,
             m_tEffectDesc.Data._Effect_MaskTexture_SpriteInfo.y,
             m_tEffectDesc.Data._Effect_MaskTexture_SpriteInfo.z,
             m_iSpriteCurrentNumber[ENUM_TO_UINT(DTO::TEXTURE_INFO::MASKINGTEXTURE)]);
@@ -736,11 +736,24 @@ void CEffectObject::Update_UV_Scroll_Curve(float fRatio)
 
         float fCurveY = Sample_RotationCurve(m_tEffectDesc.Data._vecUVScrollCurveY, fRatio);
         // 결과값을 저장한다.
-        m_vScrollOffset.x = fCurveX;
-        m_vScrollOffset.y = fCurveY;
+
+        if (m_tEffectDesc.Data._Use_Effect_UV_OverScroll)
+        {
+            float Length_X = abs(m_tEffectDesc.Data._Effect_UV_Offset.x) + 1;
+            float Length_Y = abs(m_tEffectDesc.Data._Effect_UV_Offset.y) + 1;
+
+            m_vScrollOffset.x = fCurveX * Length_X * m_tEffectDesc.Data._Effect_ScrollSpeed.x;
+            m_vScrollOffset.y = fCurveY * Length_Y * m_tEffectDesc.Data._Effect_ScrollSpeed.y;
+        }
+
+        else
+        {
+            m_vScrollOffset.x = fCurveX * m_tEffectDesc.Data._Effect_ScrollSpeed.x;
+            m_vScrollOffset.y = fCurveY * m_tEffectDesc.Data._Effect_ScrollSpeed.y;
+        }
+
     }
 }
-
 CEffectObject* CEffectObject::Create(ID3D11Device* pDevice, ID3D11DeviceContext* pDeviceContext)
 {
     CEffectObject* pInstance = new CEffectObject(pDevice, pDeviceContext);
@@ -776,10 +789,15 @@ void CEffectObject::Free()
 {
     if (IsClone())
     {
+        ID3D11ShaderResourceView* pNullSRV = nullptr;
+        m_pDeviceContext->CSSetShaderResources(1, 1, &pNullSRV);
+
+        if (m_pComputeShader)
+            m_pComputeShader->Bind_InputStructuredBuffer(1, nullptr, nullptr);
+
         Safe_Release(pSB);
         Safe_Release(pSRV);
     }
-
     Super::Free();
 
 }
