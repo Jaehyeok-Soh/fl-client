@@ -934,6 +934,7 @@ struct TUI_CanvasData
 	uint32_t	iEditorSizeY;
 
 	uint32_t	iPrefabType;
+	uint32_t	iNumPrefabs;
 };
 
 #pragma endregion

@@ -279,12 +279,14 @@ void to_json(json& j, const TUI_CanvasData& data)
 		{ "iEditorSizeX", data.iEditorSizeX },
 		{ "iEditorSizeY", data.iEditorSizeY },
 		{ "iPrefabType", data.iPrefabType },
+		{ "iNumPrefabs", data.iNumPrefabs },
 	};
 }
 
 void from_json(const json& j, TUI_CanvasData& data)
 {
 	data.iPrefabType = 0;
+	data.iNumPrefabs = 0;
 
 	data.strTag			= j.value("strTag", data.strTag);
 	data.iLevelIndex	= j.value("iLevelIndex", data.iLevelIndex);
@@ -296,6 +298,7 @@ void from_json(const json& j, TUI_CanvasData& data)
 	data.iEditorSizeX	= j.value("iEditorSizeX", data.iEditorSizeX);
 	data.iEditorSizeY	= j.value("iEditorSizeY", data.iEditorSizeY);
 	data.iPrefabType	= j.value("iPrefabType", data.iPrefabType);
+	data.iNumPrefabs	= j.value("iNumPrefabs", data.iNumPrefabs);
 }
 
 NS_END

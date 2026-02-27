@@ -106,6 +106,9 @@ void CGenericUI::Update(const _float fTimeDelta)
 
 void CGenericUI::Update_Late(const _float fTimeDelta)
 {
+	if (KEY_BUTTON_DOWN(DIK_4))
+		Set_Dead(g_wszUILayer);
+
 	Super::Update_Late(fTimeDelta);
 }
 
@@ -213,6 +216,11 @@ HRESULT CGenericUI::Bind_ShaderResources()
 	return S_OK;
 }
 
+HRESULT CGenericUI::Spawn_FromPool(void* pArg)
+{
+	return S_OK;
+}
+
 void CGenericUI::Ready_Lerp_Movement(const Vec2& vStartOffset, const Vec2& vTargetOffset, const _float fDuration, const _float fEaseValue, const _float fDelay)
 {
 	m_fTimeAcc		= 0.f;
@@ -291,6 +299,11 @@ _bool CGenericUI::Tick_Fade(const _float fTimeDelta)
 	_float f = m_fStartAlphaRatio + (m_fTargetAlphaRatio - m_fStartAlphaRatio) * t;
 	m_fAlpha_Ratio = f;
 	return false;
+}
+
+void CGenericUI::Request_SetDead()
+{
+	m_bDead = true;
 }
 
 void CGenericUI::Free()

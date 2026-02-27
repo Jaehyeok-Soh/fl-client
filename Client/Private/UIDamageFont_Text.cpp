@@ -5,6 +5,7 @@
 //=================
 // Component
 //=================
+#include "WorldUI_Component.h"
 #include "StatCom_Player.h"
 #include "Texture.h"
 #include "Shader.h"
@@ -59,6 +60,12 @@ HRESULT CUIDamageFont_Text::Attach_Personal_Info()
 	if (nullptr == m_pPlayerStatCom)
 		return E_FAIL;
 
+	if (m_isSpawned)
+	{
+		Set_Visible();
+		m_isSpawned = false;
+	}
+
 	return S_OK;
 }
 
@@ -75,6 +82,7 @@ void CUIDamageFont_Text::Update(const _float fTimeDelta)
 void CUIDamageFont_Text::Update_Late(const _float fTimeDelta)
 {
 	Super::Update_Late(fTimeDelta);
+	Tick_By_Type(fTimeDelta);
 }
 
 void CUIDamageFont_Text::Ready_Before_Render(const _float fTimeDelta)
@@ -143,15 +151,24 @@ HRESULT CUIDamageFont_Text::Tick_By_Type(const _float fTimeDelta)
 	case DTO::EUITextSubClassType::BATTLE_DAMAGE_TEXT_BEGIN:
 		break;
 	case DTO::EUITextSubClassType::BATTLE_DAMAGE_TEXT_COMMON:
-		// 개크게 나왔다가 줄어들기 일정시간 지나면 사라지기 
+		// 크게 나왔다가 줄어들기 일정시간 지나면 사라지기 
 		break;
 	case DTO::EUITextSubClassType::BATTLE_DAMAGE_TEXT_HIT:
 		// 올라왔다가 다시 내려가기
 		break;
 	case DTO::EUITextSubClassType::BATTLE_DAMAGE_TEXT_CRITCAL:
-		// 개크게 빛나게 나
-		break;
+	{
+		if (m_isFin_Event)
+		{
+			//m_vFontColor.x = 1.f + ((m_vOriginFontColor.x - 1.f) * t);
+			//m_vFontColor.y = 1.f + ((m_vOriginFontColor.y - 1.f) * t);
+			//m_vFontColor.z = 1.f + ((m_vOriginFontColor.z - 1.f) * t);
+			//m_vFontColor.w = 1.f + ((m_vOriginFontColor.w - 1.f) * t);
+		}
+	}
+	break;
 	case DTO::EUITextSubClassType::BATTLE_DAMAGE_TEXT_CRITICAL_DAMAGE:
+		// 
 		break;
 	case DTO::EUITextSubClassType::BATTLE_DAMAGE_TEXT_END:
 		break;
@@ -159,6 +176,7 @@ HRESULT CUIDamageFont_Text::Tick_By_Type(const _float fTimeDelta)
 	default:
 		return E_FAIL;
 	}
+	return S_OK;
 }
 
 void CUIDamageFont_Text::OnUIEvent(ETriggerEventType eEvent, CGenericUI* pSender)
@@ -179,14 +197,108 @@ void CUIDamageFont_Text::Initialize_InVisible_Event()
 
 _bool CUIDamageFont_Text::Tick_Visible_Event(const _float fTimeDelta)
 {
-	m_isActive = true;
-	m_isFin_Event = true;
-	return true;
+	switch (m_eTextSubClassType)
+	{
+	case DTO::EUITextSubClassType::BATTLE_DAMAGE_TEXT_BEGIN:
+		break;
+	case DTO::EUITextSubClassType::BATTLE_DAMAGE_TEXT_COMMON:
+		break;
+	case DTO::EUITextSubClassType::BATTLE_DAMAGE_TEXT_HIT:
+		break;
+	case DTO::EUITextSubClassType::BATTLE_DAMAGE_TEXT_CRITCAL:
+	case DTO::EUITextSubClassType::BATTLE_DAMAGE_TEXT_CRITICAL_DAMAGE:
+	{
+		m_fTimeAcc += fTimeDelta;
+		const _float fDuration = 0.1f;
+		_float t = m_fTimeAcc / fDuration;
+		if (1.f < t)
+		{
+			m_fDamageFontScaleOffet = 1.f;
+			m_pWorldUIComp->Request_ScaleOffset(m_fDamageFontScaleOffet);
+			m_vFontColor = m_vOriginFontColor;
+			m_isActive = true;
+			m_isFin_Event = true;
+			return true;
+		}
+
+		m_fDamageFontScaleOffet = 10.f + ((-9.f) * t);
+		m_pWorldUIComp->Request_ScaleOffset(m_fDamageFontScaleOffet);
+		return false;
+	}
+	break;
+	case DTO::EUITextSubClassType::BATTLE_DAMAGE_TEXT_END:
+		break;
+	case DTO::EUITextSubClassType::END:
+	default:
+		return true;
+	}
+
+	return false;
 }
 
 _bool CUIDamageFont_Text::Tick_InVisible_Event(const _float fTimeDelta)
 {
 	return true;
+}
+
+HRESULT CUIDamageFont_Text::Spawn_FromPool(void* pArg)
+{
+	UI_PREFAB_DATA* pDesc = static_cast<UI_PREFAB_DATA*>(pArg);
+
+	auto* pComp = Get_Script_Component(L"WorldUIComponent");
+	if (nullptr == pComp)
+		return E_FAIL;
+
+	m_pWorldUIComp = static_cast<CWorldUI_Component*>(pComp);
+	if (nullptr == m_pWorldUIComp)
+		return E_FAIL;
+
+	m_pWorldUIComp->Set_TargetPos(pDesc->DamageFontData.vHitPos);
+	m_bDead = false;
+
+	switch (m_eTextSubClassType)
+	{
+	case DTO::EUITextSubClassType::BATTLE_DAMAGE_TEXT_BEGIN:
+		break;
+	case DTO::EUITextSubClassType::BATTLE_DAMAGE_TEXT_COMMON:
+		break;
+	case DTO::EUITextSubClassType::BATTLE_DAMAGE_TEXT_HIT:
+		break;
+	case DTO::EUITextSubClassType::BATTLE_DAMAGE_TEXT_CRITCAL:
+	{
+		m_vOriginFontColor			= pDesc->DamageFontData.vFontColor;
+		m_fDamageFontScaleOffet		= 3.f;
+		m_fTimeAcc					= 0.f;
+		m_isSpawned = true;
+	}
+	break;
+	case DTO::EUITextSubClassType::BATTLE_DAMAGE_TEXT_CRITICAL_DAMAGE:
+	{
+		m_vOriginFontColor			= pDesc->DamageFontData.vFontColor;
+		m_fDamageFontScaleOffet		= 3.f;
+		m_fTimeAcc					= 0.f;
+		m_isSpawned					= true;
+	}
+	break;
+	case DTO::EUITextSubClassType::BATTLE_DAMAGE_TEXT_END:
+		break;
+	case DTO::EUITextSubClassType::END:
+	default:
+		return E_FAIL;
+	}
+
+	return S_OK;
+}
+
+HRESULT CUIDamageFont_Text::Despawn_FromPool()
+{
+	m_vFontColor = m_vOriginFontColor;
+	m_fDamageFontScaleOffet = 1.f;
+	m_isVisible = false;
+	m_isPreVisible = false;
+	m_isVisibleTrigger = false;
+	m_isSpawned = false;
+	return S_OK;
 }
 
 CUIDamageFont_Text* CUIDamageFont_Text::Create(ID3D11Device* pDevice, ID3D11DeviceContext* pDeviceContext)

@@ -677,7 +677,9 @@ namespace Tool
 	{
 		NOT_PREFAB,
 		MONSTER_NAMEPLATE,
-		DAMAGE_FONTS,
+		DAMAGE_FONTS_COMMON,
+		DAMAGE_FONTS_CRITICAL,
+		DAMAGE_FONTS_HIT,
 		END
 	};
 
@@ -685,10 +687,12 @@ namespace Tool
 	{
 		switch (eType)
 		{
-		case EUIPrefabType::NOT_PREFAB:			return "NOT_PREFAB";
-		case EUIPrefabType::MONSTER_NAMEPLATE:	return "MONSTER_NAMEPLATE";
-		case EUIPrefabType::DAMAGE_FONTS:		return "DAMAGE_FONTS";
-		case EUIPrefabType::END:				return "";
+		case EUIPrefabType::NOT_PREFAB:				return "NOT_PREFAB";
+		case EUIPrefabType::MONSTER_NAMEPLATE:		return "MONSTER_NAMEPLATE";
+		case EUIPrefabType::DAMAGE_FONTS_COMMON:	return "DAMAGE_FONTS_COMMON";
+		case EUIPrefabType::DAMAGE_FONTS_CRITICAL:	return "DAMAGE_FONTS_CRITICAL";
+		case EUIPrefabType::DAMAGE_FONTS_HIT:		return "DAMAGE_FONTS_HIT";
+		case EUIPrefabType::END:					return "";
 		default: return "";
 		}
 	}

@@ -39,8 +39,15 @@ private:
 	virtual void Initialize_InVisible_Event()override;
 	virtual _bool Tick_Visible_Event(const _float fTimeDelta)override;
 	virtual _bool Tick_InVisible_Event(const _float fTimeDelta)override;
+	virtual HRESULT Spawn_FromPool(void* pArg)override;
+	virtual HRESULT Despawn_FromPool()override;
 private:
+	CWorldUI_Component* m_pWorldUIComp = { nullptr };
 	CStatCom_Player* m_pPlayerStatCom = { nullptr };
+
+	_float m_fDamageFontScaleOffet = {1.f};
+	_bool m_isSpawned = { false };
+
 public:
 	static CUIDamageFont_Text* Create(ID3D11Device* pDevice, ID3D11DeviceContext* pDeviceContext);
 	CGameObject* Clone(void* pArg);

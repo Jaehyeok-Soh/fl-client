@@ -333,6 +333,7 @@ void CToolCanvas::Sync_Data()
 	m_tCanvasData.iEditorSizeX	= g_iWinSizeX;
 	m_tCanvasData.iEditorSizeY	= g_iWinSizeY;
 	m_tCanvasData.iPrefabType	= ENUM_TO_UINT(m_ePrefabType);
+	m_tCanvasData.iNumPrefabs	= m_iNumPrefabs;
 }
 
 _bool CToolCanvas::Export_Data(DTO::ECategory eCategory, CDataDocumentBase* pDocument)
