@@ -40,6 +40,8 @@ HRESULT CTransform::Initialize(void* pArg)
 		{
 			TRANSFORM_DESC* pTsDesc = static_cast<TRANSFORM_DESC*>(pDesc->pTransform_Desc);
 			m_matWorld = pTsDesc->ScaleMatrix * pTsDesc->RotationMatrix * pTsDesc->TranslationMatrix;
+			m_fMovePerSec = pTsDesc->fMovePerSec;
+			m_fRotatePerSec = pTsDesc->fRotatePerSec;
 		}
 	}
 	else

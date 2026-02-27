@@ -74,6 +74,8 @@ HRESULT CMonsterState_Factory::Ready_Condition()
 
 	REGISTER_CONDITION("condition_non_cancellation", CONDITION{ return !state->IsCancellation(); });
 
+	REGISTER_CONDITION("condition_over_lifetime", CONDITION{ return state->IsOverLifeTime(); });
+
 	return S_OK;
 }
 
