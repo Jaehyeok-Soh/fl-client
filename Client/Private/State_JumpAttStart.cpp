@@ -32,6 +32,8 @@ HRESULT CState_JumpAttStart::Start(void* pArg, _bool bForce)
 	if (FAILED(Super::Start(pArg, bForce)))
 		return E_FAIL;
 
+	CStateBase::SetupLook_CameraLook();
+
 	Change_Weapon(CPlayer::Part::SWORD, ENUM_TO_UINT(CWeapon::State::HAND));
 
 	return S_OK;
@@ -62,8 +64,6 @@ HRESULT CState_JumpAttStart::End()
 
 void CState_JumpAttStart::OwnMove(const _float fTimeDelta)
 {
-	// 30도로 빠르게 떨어지기
-	CStateBase::Turn_byCam(fTimeDelta);
 
 	CTransform* pPlayerTrans = Get_OwnerObject()->Get_Component<CTransform>();
 	CPhysicsCCT* pCCT = Get_OwnerObject()->Get_Component<CPhysicsCCT>();
