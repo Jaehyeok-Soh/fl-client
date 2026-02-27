@@ -12,8 +12,8 @@ public:
 	{
 		EProjectionType eProjectionType = { EProjectionType::PERSPECTIVE };
 		_float			fFov = { g_XMPi.f[0] / 4.f };
-		_float			fViewWidth = { 1280.f };
-		_float			fViewHeight = { 720.f };
+		_float			fViewWidth = { 1600.f };
+		_float			fViewHeight = { 900.f };
 		_float			fNear = { 1.f };
 		_float			fFar = { 1000.f };
 	}CAMERA_DESC;

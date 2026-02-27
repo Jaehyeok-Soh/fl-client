@@ -35,9 +35,14 @@ public:
 	void Proj_World_To_Screen();
 	void Calc_Perspective();
 
+	void Request_ScaleOffset(const _float fScale);
+
 public:
 	const Vec2& Get_TargetScreenPos() const { return m_vScreenPos; }
 	const _float Get_ScaleOffset() const { return m_fScaleOffset; }
+
+	void Set_Target(CGameObject* pTarget) { m_pTargetObject = pTarget; }
+	void Set_TargetPos(const Vec3& vPos ) { m_vTargetPos = vPos; }
 
 private:
 	CGameInstance* m_pGameInstance = { nullptr };
@@ -53,6 +58,11 @@ private:
 	Vec2 m_fCalcOffset			= {};
 	Vec2 m_vScreenPos			= {};
 	_float m_fScaleOffset		= {};
+
+	_bool m_isRequestScaleOffset = { false };
+	_float m_fRequestScaleOffset = {};
+
+	Vec3 m_vTargetPos = {};
 
 public:
 	static CWorldUI_Component* Create();

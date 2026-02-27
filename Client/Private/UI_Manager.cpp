@@ -105,6 +105,28 @@ vector<CGenericUI*>* CUI_Manager::Get_Level_All_GenericUI(uint32_t iLevelIndex)
 
 void CUI_Manager::Add_RenderGroup(uint32_t iLevelIndex)
 {
+	if (m_isDeadUIClear)
+	{
+		auto& vec = m_vecGenericUICache[iLevelIndex];
+
+		for (size_t i = 0; i < vec.size(); )
+		{
+			CGenericUI* pUI = vec[i];
+
+			if (pUI && pUI->IsDead())
+			{
+				vec[i] = vec.back(); 
+				vec.pop_back();      
+			}
+			else
+			{
+				++i;
+			}
+		}
+		m_isSort = true;
+		m_isDeadUIClear = false;
+	}
+
 	if (m_isClear)
 	{
 		Clear_Cache(iLevelIndex);
@@ -168,38 +190,78 @@ void CUI_Manager::Clear_TriggerUI()
 	m_vecTriggerUIs.clear();
 }
 
-HRESULT CUI_Manager::Regist_Prefab(_uint iLevelIndex, EUIPrefabType ePrefab, const _wstring& wstrPrototype, const _wstring& wstrPooltag, const _uint iSeedLevel, void* pArg)
+HRESULT CUI_Manager::Regist_Prefab(_uint iPoolRegistLevel, EUIPrefabType ePrefab, const _wstring& wstrPrototype, const _wstring& wstrPooltag, const _uint iPrototypeLevel, void* pArg, _uint iNumPrefab)
 {
-	if (FAILED(m_pGameInstance->Regist_Pool(iLevelIndex, wstrPooltag, g_wszUILayer, iSeedLevel, wstrPrototype, pArg, 10)))
+	if (FAILED(m_pGameInstance->Regist_Pool(iPoolRegistLevel, wstrPooltag, g_wszUILayer, iPrototypeLevel, wstrPrototype, pArg, iNumPrefab)))
 		return E_FAIL;
-	m_vecPrefabs[ENUM_TO_UINT(ePrefab)].push_back(wstrPooltag);
+	m_vecPrefabs[ENUM_TO_UINT(ePrefab)] = wstrPooltag;
 	return S_OK;
 }
 
-void CUI_Manager::Request_Add_Prefab(_uint iLevelIndex, EUIPrefabType ePrefab)
+void CUI_Manager::Request_Add_Prefab(_uint iPoolRegistLevel, EUIPrefabType ePrefab, _uint iSpawnLevel, void* pArg)
 {
 	switch (ePrefab)
 	{
 	case Client::EUIPrefabType::MONSTER_NAMEPLATE:
-		for (auto wstr : m_vecPrefabs[ENUM_TO_UINT(EUIPrefabType::MONSTER_NAMEPLATE)])
-		{
-			m_pGameInstance->Request_AddObject(iLevelIndex, wstr, ENUM_TO_UINT(ELevelType::LOGO), nullptr,
-				[this, iLevelIndex](CGameObject* pObj) 
-				{
-					this->Add_VecGenericUICache(iLevelIndex, static_cast<CGenericUI*>(pObj)); 
-				});
-		}
-		break;
+	{
+		_wstring wstr = m_vecPrefabs[ENUM_TO_UINT(EUIPrefabType::MONSTER_NAMEPLATE)];
+		m_pGameInstance->Request_AddObject(iPoolRegistLevel, wstr, iSpawnLevel, pArg,
+			[this, iPoolRegistLevel, iSpawnLevel](CGameObject* pObj)
+			{
+				auto* p = static_cast<CCanvas*>(pObj);
+				p->Ready_Prefab(iPoolRegistLevel, iSpawnLevel);
+			});
+	}
+	break;
+	case Client::EUIPrefabType::DAMAGE_FONTS_COMMON:
+	{
+		_wstring wstr = m_vecPrefabs[ENUM_TO_UINT(EUIPrefabType::DAMAGE_FONTS_COMMON)];
+		m_pGameInstance->Request_AddObject(iPoolRegistLevel, wstr, iSpawnLevel, pArg,
+			[this, iPoolRegistLevel, iSpawnLevel](CGameObject* pObj)
+			{
+				auto* p = static_cast<CCanvas*>(pObj);
+				p->Ready_Prefab(iPoolRegistLevel, iSpawnLevel);
+			});
+	}
+	break;
+	case Client::EUIPrefabType::DAMAGE_FONTS_CRITICAL:
+	{
+		_wstring wstr = m_vecPrefabs[ENUM_TO_UINT(EUIPrefabType::DAMAGE_FONTS_CRITICAL)];
+		m_pGameInstance->Request_AddObject(iPoolRegistLevel, wstr, iSpawnLevel, pArg,
+			[this, iPoolRegistLevel, iSpawnLevel](CGameObject* pObj)
+			{
+				auto* p = static_cast<CCanvas*>(pObj);
+				p->Ready_Prefab(iPoolRegistLevel, iSpawnLevel);
+			});
+	}
+	break;
+	case Client::EUIPrefabType::DAMAGE_FONTS_HIT:
+	{
+		_wstring wstr = m_vecPrefabs[ENUM_TO_UINT(EUIPrefabType::DAMAGE_FONTS_HIT)];
+		m_pGameInstance->Request_AddObject(iPoolRegistLevel, wstr, iSpawnLevel, pArg,
+			[this, iPoolRegistLevel, iSpawnLevel](CGameObject* pObj)
+			{
+				auto* p = static_cast<CCanvas*>(pObj);
+				p->Ready_Prefab(iPoolRegistLevel, iSpawnLevel);
+			});
+	}
+	break;
 	case Client::EUIPrefabType::END:
 		break;
 	default:
 		break;
 	}
+	Request_SortUI();
 }
 
 void CUI_Manager::Request_Clear()
 {
 	m_isClear = true;
+}
+
+void CUI_Manager::Request_Clear_DeadUI()
+{
+	m_isDeadUIClear = true;
 }
 
 void CUI_Manager::Sort_UI(vector<CGenericUI*>& Target)

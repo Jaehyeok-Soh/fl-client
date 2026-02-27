@@ -44,7 +44,8 @@ HRESULT CActionState::Initialize(void* pArg)
 		m_vecStates.resize(m_iStateCount);
 	m_pOwnerModel = pDesc->pOwnerModel;
 	m_pOwnerAnimECS = pDesc->pOwnerAnimECS;
-
+	m_pOwnerWeaponModel = pDesc->pOwnerWeaponModel;
+	m_pOwnerWeaponAnimECS = pDesc->pOwnerWeaponAnimECS;
 	return S_OK;
 }
 
@@ -221,6 +222,15 @@ HRESULT CActionState::Request_ChangeAnimation(_uint iAnimationIndex, _bool bBlen
 	return m_pOwnerModel->Change_Animation(m_pOwnerAnimECS, iAnimationIndex, bBlend, bLoop, bForce);
 }
 
+HRESULT CActionState::Request_Change_WeaponAnimation(_uint iAnimationIndex, _bool bBlend, _bool bLoop, _bool bForce)
+{
+	if (m_pOwnerWeaponModel == nullptr || m_pOwnerWeaponAnimECS == nullptr)
+		return E_FAIL;
+
+	// TODO : 은비야 여기 Weapon Blend Off 다
+	return m_pOwnerWeaponModel->Change_Animation(m_pOwnerWeaponAnimECS, iAnimationIndex, bBlend, bLoop, bForce);
+}
+
 _float CActionState::Get_AnimElpasedTimeSeconds()
 {
 	if (m_pOwnerModel == nullptr)
@@ -310,6 +320,46 @@ _bool CActionState::Align_Movement(const _float fTimeDelta)
 		m_pOwnerTransform->Go_Straight(fTimeDelta, m_pOwnerNavigation);
 	}
 	
+	return true;
+}
+
+_bool CActionState::Align_Movement_MoveDir(const _float fTimeDelta)
+{
+	Vec3 vMoveDir = m_pOwnerControlContext->Get_MoveDir();
+	if (::XMVector3Equal(vMoveDir, Vec3::Zero))
+		return false;
+
+	vMoveDir.y = 0.f;
+	if (::XMVector3Equal(vMoveDir, Vec3::Zero))
+		return false;
+
+	vMoveDir.Normalize();
+
+	CPhysicsCCT* cct = nullptr;
+	if (cct = m_pOwner->Get_Component<CPhysicsCCT>())
+	{
+		_float moveps = m_pOwnerTransform->Get_MovePerSec();
+		Vec3 disp = vMoveDir * moveps * fTimeDelta;
+		disp.y = 0.f;
+
+		_float fDelta = m_fVerticalSpeed * fTimeDelta;
+		CCTFlags = cct->Move(disp, 0.01f, fTimeDelta);
+
+		if (CCTFlags & PxControllerCollisionFlag::eCOLLISION_DOWN)
+			m_fVerticalSpeed = 0.f;
+
+		Vec3 finalPos = cct->GetFootPosition();
+		Vec3 currentPos = m_pOwnerTransform->Get_Info(TRANSFORM_INFO_STATE::POS);
+
+		_float yLerp = std::lerp(currentPos.y, finalPos.y, fTimeDelta * 15.f);
+		finalPos.y = yLerp;
+
+		m_pOwnerTransform->Set_Info(TRANSFORM_INFO_STATE::POS, finalPos);
+	}
+	else
+		m_pOwnerTransform->Go_Dir(vMoveDir, fTimeDelta, m_pOwnerNavigation);
+
+
 	return true;
 }
 
@@ -434,8 +484,8 @@ void CActionState::SetupLookAt(const Vec3& vPoint)
 
 void CActionState::SetupLook_Target_XZ()
 {
-	CGameObject* pTarget = { nullptr };
-	if (Get_Target() == nullptr)
+	CGameObject* pTarget = Get_Target();
+	if (pTarget == nullptr) 
 		return;
 	CTransform* pTargetTransform = pTarget->Get_Component<CTransform>();
 

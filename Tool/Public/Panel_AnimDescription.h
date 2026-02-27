@@ -36,6 +36,7 @@ private:
 	void Desc_EffectWindow();
 	//void Desc_BoneWindow();
 	//void Desc_AnimWindow();
+	EAnimNotifyPhase MappingPhase();
 
 private:
 	class CAnimTool_Manager* m_pAnimToolManager = { nullptr };

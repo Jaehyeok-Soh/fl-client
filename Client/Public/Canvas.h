@@ -12,6 +12,8 @@ public:
 	typedef struct tagCanvasDesc : public UIOBJECT_DESC
 	{
 		_string strName;
+		// std::move·Î ³Ñ±â±â
+		vector<_wstring> vecPrefabs;
 	}CANVAS_DESC;
 private:
 	CCanvas(ID3D11Device* pDevice, ID3D11DeviceContext* pDeviceContext);
@@ -39,27 +41,41 @@ public:
 	Vec3 Get_CB() { return Vec3{ m_fX, m_fY + m_fHeight * 0.5f, m_fZ }; }						// Center Bottom
 	Vec3 Get_RB() { return Vec3{ m_fX + m_fWidth * 0.5f , m_fY + m_fHeight * 0.5f, m_fZ }; }	// Right Bottom
 
-	const _string& Get_Name() { return m_strName; }
-	vector<CGenericUI*>* Get_UIVector() { return &m_vecUI; }
-
 	virtual void OnCanvasEvent(ETriggerEventType eEvent, CGenericUI* pSender);
 	_bool Check_FinEvent();
+
+	HRESULT Ready_Prefab(_uint iPoolLevel, _uint iSpawnLevel);
+	_bool Check_Dead();
+	void All_Dead();
+
 private:
 	HRESULT Ready_Components(CANVAS_DESC* pDesc);
 	HRESULT Bind_ShaderResources();
-
 	void Calc_HitUpdate();
 	void Sync_Data();
 	CGenericUI* Calc_TopUI();
 
-private:
-	vector<CGenericUI*> m_vecUI;
-	CGenericUI* m_pCaptureUI = { nullptr };
-	CGenericUI* m_pHoveringUI = { nullptr };
-	array<CGenericUI*, 2> m_ArrReleasedUI = { nullptr };
-	_bool m_isPreUIPressing = { FALSE };
-	_bool m_isPreHovering = { FALSE };
+public:
+	vector<CGenericUI*>* Get_UIVector() { return &m_vecUI; }
+	const _string& Get_Name() { return m_strName; }
 
+	virtual HRESULT Spawn_FromPool(void* pArg)override;
+	virtual HRESULT Despawn_FromPool()override;
+
+private:
+	// ÀÏ¹Ý Äµ¹ö½º
+	vector<CGenericUI*> m_vecUI;
+	CGenericUI* m_pCaptureUI				= { nullptr };
+	CGenericUI* m_pHoveringUI				= { nullptr };
+	array<CGenericUI*, 2> m_ArrReleasedUI	= { nullptr };
+	_bool m_isPreUIPressing					= { FALSE };
+	_bool m_isPreHovering					= { FALSE };
+
+	// ÇÁ¸®ÆÕ Äµ¹ö½º
+	vector<_wstring> m_vecChildPrefabTag;
+	_bool m_isAllDead = { false };
+
+	UI_PREFAB_DATA m_pPrefabData;
 
 public:
 	static CCanvas* Create(ID3D11Device* pDevice, ID3D11DeviceContext* pDeviceContext);

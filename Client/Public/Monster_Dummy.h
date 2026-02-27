@@ -38,7 +38,7 @@ public:
 private:
 	HRESULT Ready_BaseStates();
 	HRESULT Ready_PartObjects();
-	HRESULT Ready_Components();
+	HRESULT Ready_Components(void *pArg);
 
 public:
 	static CMonster_Dummy* Create(ID3D11Device* pDevice, ID3D11DeviceContext* pDeviceContext);

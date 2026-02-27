@@ -594,6 +594,21 @@ namespace Engine
 		SimpleMath::Vector3 Padding0 = {};
 	}CS_IMMU_ANIMMIX;
 
+	// 가변 데이터
+	typedef struct tagAnimMix_Mu
+	{
+		float   fCurTrackPosition = { 0.f };
+		unsigned int   iChannelCount = { 0 };
+
+		int     iRootMotionBoneIndex = { -1 }; // root motion일 경우 tralation을 0으로 만들기 위함
+
+		float     iFirst = { true };
+
+		unsigned int         iMixType = { 0 }; // 0 : bone mix, 1 : addtive
+
+		SimpleMath::Vector3  Padding0 = {};
+	}CS_MU_ANIMMIX;
+
 #pragma endregion
 
 #pragma endregion

@@ -134,40 +134,77 @@ HRESULT CFont_Manager::Settig_SpriteBatchStates()
 
 HRESULT CFont_Manager::Setting_PixelShader()
 {
-	Safe_Release(m_pPS_Outline);
-	ID3DBlob* pBlob = nullptr;
-	ID3DBlob* pErr	= nullptr;
 
-	UINT flags = 0;
-#if defined(_DEBUG)
-	flags |= D3DCOMPILE_DEBUG;
-	flags |= D3DCOMPILE_SKIP_OPTIMIZATION;
-#endif
-	const wchar_t* pFile	= L"../../Shaders/Shader_SpriteFont.hlsl";
-	const char* pEntry		= "PS_OUTLINE_NOISE";
-	const char* pTarget		= "ps_5_0";
-
-	HRESULT hr = D3DCompileFromFile(pFile, nullptr, D3D_COMPILE_STANDARD_FILE_INCLUDE, pEntry, pTarget, flags, 0, &pBlob, &pErr);
-	if (FAILED(hr))
 	{
-		if (pErr)
+		ID3DBlob* pBlob = nullptr;
+		ID3DBlob* pErr = nullptr;
+
+		UINT flags = 0;
+#if defined(_DEBUG)
+		flags |= D3DCOMPILE_DEBUG;
+		flags |= D3DCOMPILE_SKIP_OPTIMIZATION;
+#endif
+		Safe_Release(m_pPS_Outline);
+		const wchar_t* pFile = L"../../Shaders/Shader_SpriteFont.hlsl";
+		const char* pEntry = "PS_OUTLINE_NOISE";
+		const char* pTarget = "ps_5_0";
+
+		HRESULT hr = D3DCompileFromFile(pFile, nullptr, D3D_COMPILE_STANDARD_FILE_INCLUDE, pEntry, pTarget, flags, 0, &pBlob, &pErr);
+		if (FAILED(hr))
 		{
-			const char* msg = (const char*)pErr->GetBufferPointer();
-			_string strmsg = msg;
-			_wstring wstrmsg = Engine_Utils::ToWString(strmsg);
-			MessageBox(nullptr, wstrmsg.c_str(), L"System Message", MB_OK);
+			if (pErr)
+			{
+				const char* msg = (const char*)pErr->GetBufferPointer();
+				_string strmsg = msg;
+				_wstring wstrmsg = Engine_Utils::ToWString(strmsg);
+				MessageBox(nullptr, wstrmsg.c_str(), L"System Message", MB_OK);
+			}
+			Safe_Release(pErr);
+			Safe_Release(pBlob);
+			return E_FAIL;
 		}
+
+		hr = m_pDevice->CreatePixelShader(pBlob->GetBufferPointer(), pBlob->GetBufferSize(), nullptr, &m_pPS_Outline);
 		Safe_Release(pErr);
 		Safe_Release(pBlob);
-		return E_FAIL;
+		if (FAILED(hr))
+			return E_FAIL;
 	}
 
-	hr = m_pDevice->CreatePixelShader(pBlob->GetBufferPointer(), pBlob->GetBufferSize(), nullptr, &m_pPS_Outline);
-	Safe_Release(pErr);
-	Safe_Release(pBlob);
-	if (FAILED(hr))
-		return E_FAIL;
+	{
+		ID3DBlob* pBlob = nullptr;
+		ID3DBlob* pErr = nullptr;
 
+		UINT flags = 0;
+#if defined(_DEBUG)
+		flags |= D3DCOMPILE_DEBUG;
+		flags |= D3DCOMPILE_SKIP_OPTIMIZATION;
+#endif
+		Safe_Release(m_pPS_OutlineGrad);
+		const wchar_t* pFile = L"../../Shaders/Shader_SpriteFont.hlsl";
+		const char* pEntry = "PS_OUTLINE_GRADATION";
+		const char* pTarget = "ps_5_0";
+		HRESULT hr = D3DCompileFromFile(pFile, nullptr, D3D_COMPILE_STANDARD_FILE_INCLUDE, pEntry, pTarget, flags, 0, &pBlob, &pErr);
+		if (FAILED(hr))
+		{
+			if (pErr)
+			{
+				const char* msg = (const char*)pErr->GetBufferPointer();
+				_string strmsg = msg;
+				_wstring wstrmsg = Engine_Utils::ToWString(strmsg);
+				MessageBox(nullptr, wstrmsg.c_str(), L"System Message", MB_OK);
+			}
+			Safe_Release(pErr);
+			Safe_Release(pBlob);
+			return E_FAIL;
+		}
+
+		hr = m_pDevice->CreatePixelShader(pBlob->GetBufferPointer(), pBlob->GetBufferSize(), nullptr, &m_pPS_OutlineGrad);
+		Safe_Release(pErr);
+		Safe_Release(pBlob);
+		if (FAILED(hr))
+			return E_FAIL;
+	}
 	return S_OK;
 }
 
@@ -262,6 +299,24 @@ HRESULT CFont_Manager::Render_Fonts()
 		return E_FAIL;
 	for (const auto& Desc : m_vecFontData[ENUM_TO_UINT(EFontShaderType::OUTLINE_NOISE_KOR)])
 		Draw_Text(Desc);
+	End_Draw();
+
+	if (FAILED(Begin_Draw_Gradation(false)))
+		return E_FAIL;
+	for (const auto& Desc : m_vecFontData[ENUM_TO_UINT(EFontShaderType::GRADATION)])
+		Draw_Text(Desc);
+	End_Draw();
+
+	if (FAILED(Begin_Draw_Gradation(true)))
+		return E_FAIL;
+	for (const auto& Desc : m_vecFontData[ENUM_TO_UINT(EFontShaderType::OUTLINE_GRADATION)])
+		Draw_Text(Desc);
+	End_Draw();
+
+	if (FAILED(Begin_Draw_OutlineNoise(true, false, false, true)))
+		return E_FAIL;
+	for (const auto& Desc : m_vecFontData[ENUM_TO_UINT(EFontShaderType::HIT)])
+		Draw_Text(Desc);
 
 	End_Draw();
 	Clear_FontQueue();
@@ -282,7 +337,7 @@ HRESULT CFont_Manager::Begin_Draw_Normal()
 	return S_OK;
 }
 
-HRESULT CFont_Manager::Begin_Draw_OutlineNoise(const _bool isOutline, const _bool isKorean, const _bool isNoise)
+HRESULT CFont_Manager::Begin_Draw_OutlineNoise(const _bool isOutline, const _bool isKorean, const _bool isNoise, const _bool isHit)
 {
 	CB_FONT_OUTLINE_NOISE cb = {};
 	cb.vOutlineColor	= Vec4(0.f, 0.f, 0.f, 1.f);
@@ -303,11 +358,50 @@ HRESULT CFont_Manager::Begin_Draw_OutlineNoise(const _bool isOutline, const _boo
 	if (isNoise)	{ cb.fFillMix = 1.0f; }
 	else			{ cb.fFillMix = 0.0f; }
 
+	if (isHit)
+	{
+		cb.fOutlineSizePx = 1.f;
+		cb.vOutlineColor = Vec4(0.55f, 0.05f, 0.08f, 1.0f);
+	}
+
 	m_pOutlineNoiseCB->Copy_Data(cb);
 	m_pBatch->Begin(SpriteSortMode_Deferred, m_pBlend_Premultiplied, m_pSampler_LinearClamp, nullptr, nullptr,
 		[this]()
 		{
 			m_pDeviceContext->PSSetShader(m_pPS_Outline, nullptr, 0);
+
+			ID3D11Buffer* pCB = m_pOutlineNoiseCB->Get_Buffer();
+			m_pDeviceContext->PSSetConstantBuffers(1, 1, &pCB);			// b1	// 노이즈 상수버퍼 바인드 
+
+			ID3D11ShaderResourceView* pNoiseSRV = m_pNoiseSRV;
+			m_pDeviceContext->PSSetShaderResources(1, 1, &pNoiseSRV);	// t1	// 노이즈 텍스쳐 바인드
+
+			ID3D11SamplerState* pNoiseSamp = m_pSampler_LinearWrap;
+			m_pDeviceContext->PSSetSamplers(1, 1, &pNoiseSamp);			// s1	// 노이즈 샘플러 바인드
+		});
+
+	return S_OK;
+}
+
+HRESULT CFont_Manager::Begin_Draw_Gradation(const _bool isOutline)
+{
+	CB_FONT_OUTLINE_NOISE cb = {};
+	cb.vOutlineColor = Vec4(0.f, 0.f, 0.f, 1.f);
+	cb.fOutlineStrength = 2.0f;
+	m_vScrollUV.x += 0.0016f;
+	if (m_vScrollUV.x > 1.f)
+		m_vScrollUV.x = 0.f;
+	cb.vNoiseUVScroll = m_vScrollUV;
+	cb.fNoiseStrength = 1.0f;
+	if (isOutline) { cb.fOutlineSizePx = 1.f; }
+	else { cb.fOutlineSizePx = 0.f; }
+	cb.vNoiseUVScale = Vec2(0.f, 0.f);
+	cb.fFillMix = 0.0f;
+	m_pOutlineNoiseCB->Copy_Data(cb);
+	m_pBatch->Begin(SpriteSortMode_Deferred, m_pBlend_Premultiplied, m_pSampler_LinearClamp, nullptr, nullptr,
+		[this]()
+		{
+			m_pDeviceContext->PSSetShader(m_pPS_OutlineGrad, nullptr, 0);
 
 			ID3D11Buffer* pCB = m_pOutlineNoiseCB->Get_Buffer();
 			m_pDeviceContext->PSSetConstantBuffers(1, 1, &pCB);			// b1	// 노이즈 상수버퍼 바인드 
@@ -402,6 +496,7 @@ void CFont_Manager::Free()
 	Safe_Release(m_pSampler_PointClamp);
 
 	Safe_Release(m_pPS_Outline);
+	Safe_Release(m_pPS_OutlineGrad);
 	Safe_Release(m_pOutlineNoiseCB);
 
     Safe_Release(m_pDevice);

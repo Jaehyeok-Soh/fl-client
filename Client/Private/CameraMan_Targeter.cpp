@@ -354,7 +354,7 @@ Vec3 CCameraMan_Targeter::Get_CamBoneWorldPos_FromBody(CBody* pBody, CTransform*
     Matrix matWorld = pTrnasform->Get_WorldMatrix(); // player matrix
 
     // player body의 ""가 있다면 -> bondM * camM
-    if (CBone* pCamBone = pBody->Get_CamBone()) //Get_CamBone ?? Get_CamSocketBone
+    if (CBone* pCamBone = pBody->Get_CamSocketBone()) //Get_CamBone ?? Get_CamSocketBone
     {
         matReturn = pCamBone->Get_CombinedTransformMatrix() * matWorld;
     }

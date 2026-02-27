@@ -57,6 +57,7 @@ public:
 protected:
 	HRESULT Ready_Components(GENERIC_UI_DESC* pDesc);
 	HRESULT Bind_ShaderResources();
+	virtual HRESULT Spawn_FromPool(void* pArg)override;
 
 public:
 	void Set_RectPos(const Vec3& pos) { m_vRectPos = pos; }
@@ -71,6 +72,9 @@ public:
 	void Ready_Fade(const _float fDuration, const _float fStartAlpha, const _float fTargetAlpha, const _float fDelay);
 	void Ready_ExplosionFade(const _float fDuration, const _float fStartAlpha,const _float fExplosionAlpha, const _float fTargetAlpha, const _float fDelay);
 	_bool Tick_Fade(const _float fTimeDelta);
+
+	// 해야될 이벤트가 끝나면 Request SetDead 호출 -> 나중에 캔버스에서 일괄적으로 SetDead를 해줌
+	void Request_SetDead();
 
 protected:
 	CUI_Manager* m_pUIManager = { nullptr };	

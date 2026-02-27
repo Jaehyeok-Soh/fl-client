@@ -99,6 +99,7 @@ public:
 	void Bind_Compute_BlendMu(const CS_MU_ANIMB& desc);
 	void Bind_Compute_BoneMuCB(const CS_MU_GROUPNUMS& desc);
 	void Bind_Compute_BoneMeshCB(const CS_CB_MU_BONEMESH& desc);
+	void Bind_Compute_AnimMixCB(const CS_MU_ANIMMIX& desc);
 
 public:
 	void Resize_InputStruct(_uint Index, void* pArg, _uint iElementSize, _uint iNumElements);
@@ -132,6 +133,9 @@ private:
 
 	CConstant_Buffer<CS_CB_MU_BONEMESH>*			m_pBoneMesh_Mutable_Element_CBuffer		= { nullptr };
 	ID3DX11EffectConstantBuffer*					m_pBoneMesh_MutableBuffer				= { nullptr };
+
+	CConstant_Buffer<CS_MU_ANIMMIX>*				m_pAnimMix_Mutable_Element_CBuffer		= { nullptr };
+	ID3DX11EffectConstantBuffer*					m_pAnimMix_MutableBuffer				= { nullptr };
 
 	// SHader
 private:

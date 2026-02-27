@@ -29,30 +29,22 @@ private:
 	HRESULT Create_TriggerDTO(const DTO::TUI_TriggerData& data);
 	HRESULT Create_DImageDTO(const DTO::TUI_DImageData& data);
 
-	HRESULT Register_Class(DTO::EUIClassType eClassType, const DTO::TUI_GenericUIData& data, CCanvas* pCanvas);
-	CGenericUI::GENERIC_UI_DESC Make_DefaultInfo(const DTO::TUI_GenericUIData& data, CCanvas* pCanvas);
+	HRESULT Register_Class(DTO::EUIClassType eClassType, const DTO::TUI_GenericUIData& data);
+	CGenericUI::GENERIC_UI_DESC Make_DefaultInfo(const DTO::TUI_GenericUIData& data);
 
 private:
 	EUIPrefabType m_eUIPrefabType = {};
-
-	CGenericUI* m_pController = { nullptr };
-
-
-
-	unordered_map<_string, CCanvas*> m_MapCanvasCache;
-	unordered_map<_string, CGenericUI* >m_pMapUICache;
-
 	// Data Cache 
 	unordered_map<_string, DTO::TUI_TextData> m_MapTextDataCache;
 	unordered_map<_string, DTO::TUI_TriggerData> m_MapTriggerDataCache;
 	unordered_map<_string, DTO::TUI_DImageData> m_MapDImageDataCache;
 
-	vector<CUITrigger*> m_vecTriggerUIs;
-
 	Vec2 m_vAspect = {};
 	Vec2 m_vViewportSIze = {};
 
 	Client::EUIPrefabType m_ePrefabtype = { Client::EUIPrefabType::NOT_PREFAB };
+	vector<_wstring> m_vecPrefabTags;
+	_uint m_iNumPrefab = {};
 
 public:
 	static CBuilder_UIPrefabs* Create(ID3D11Device* pDevice, ID3D11DeviceContext* pDeviceContext, _uint iLevelID);

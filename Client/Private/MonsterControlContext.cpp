@@ -329,7 +329,8 @@ void CMonsterControlContext::Update_8Dir_LocalAxisXZ(const _float fTimeDelta, _f
 	Vec3 vRight = pOwnerTransform->Get_Info(TRANSFORM_INFO_STATE::RIGHT);
 
 	Vec3 vDir = vLook * fForward + vRight * fRight;
-	return vDir.Normalize();
+	vDir.Normalize();
+	m_vMoveDir = vDir;
 }
 
 void CMonsterControlContext::UpdateRun(const _float fTimeDelta)
