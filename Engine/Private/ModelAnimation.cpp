@@ -26,6 +26,7 @@ CModelAnimation::CModelAnimation(const CModelAnimation& rhs)
 	, m_bApplyRootMotion(rhs.m_bApplyRootMotion)
 	, m_fRootMotionOffset(rhs.m_fRootMotionOffset)
 	, m_fAnimationSpeed_Offset(rhs.m_fAnimationSpeed_Offset)
+	, m_iMixType(rhs.m_iMixType)
 {
 	//Safe_AddRef(m_pKeyFrameBuffer);
 	//Safe_AddRef(m_pInputKeySB_SRV);
@@ -158,12 +159,14 @@ void CModelAnimation::Update_MixAnimation(const vector<class CBone*>& vecBones, 
 	}
 
 	// 가변 데이터 작성
-	CS_MU_TRACK tMuDesc{};
+	CS_MU_ANIMMIX tMuDesc{};
 	tMuDesc.fCurTrackPosition = m_fCurrentTrackPosition;
 	tMuDesc.iChannelCount = m_iChannelCount;
 	tMuDesc.iRootMotionBoneIndex = m_iRootBoneIdx;
-	tMuDesc.Padding0 = (_float)bFirst;
-	pAnimMixCS->Bind_Compute_Track(tMuDesc);
+	tMuDesc.iFirst = (_float)bFirst;
+	tMuDesc.iMixType = m_iMixType;
+
+	pAnimMixCS->Bind_Compute_AnimMixCB(tMuDesc);
 
 	// dispatch
 	_uint iGroupX = (iTotalBoneNum + 31) / 32;

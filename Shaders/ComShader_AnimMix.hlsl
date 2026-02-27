@@ -41,7 +41,7 @@ struct MU_ELEMENT
     
     float     iFirst;
     
-    int         iMixType; // 0 : bone mix, 1 : addtive
+    uint iMixType; // 0 : bone mix, 1 : addtive
     float3 Padding0;
 };
 
@@ -65,7 +65,7 @@ struct SRT
     float               Padding1;
 };
 
-cbuffer MU_Track
+cbuffer MU_MIX
 {
     MU_ELEMENT g_InputData;
 };
