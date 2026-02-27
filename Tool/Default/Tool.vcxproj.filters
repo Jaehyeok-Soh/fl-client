@@ -289,9 +289,6 @@
     <Filter Include="06. ImGui\01. Panel\Animation\Panel_Parts">
       <UniqueIdentifier>{066939c9-786f-43ed-8c48-88882c1e8089}</UniqueIdentifier>
     </Filter>
-    <Filter Include="02. GameObjects\Map\01. SceneData">
-      <UniqueIdentifier>{796e0779-af03-4219-87f2-4ff1d7e85f49}</UniqueIdentifier>
-    </Filter>
     <Filter Include="09. Builder\Builder_MonsterState">
       <UniqueIdentifier>{6cd3e072-0e67-41b9-a8e3-d3d8fba2778f}</UniqueIdentifier>
     </Filter>
@@ -324,6 +321,12 @@
     </Filter>
     <Filter Include="02. GameObjects\Effect\Part\Tool_EffectPartBase">
       <UniqueIdentifier>{6cb443e8-4689-44fa-9e46-ecfa4325eb4c}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02. GameObjects\ToolObject">
+      <UniqueIdentifier>{c95f2943-627a-427c-975c-f24173dcaca5}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02. GameObjects\Map\01. LevelData">
+      <UniqueIdentifier>{796e0779-af03-4219-87f2-4ff1d7e85f49}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
@@ -455,9 +458,6 @@
     </ClInclude>
     <ClInclude Include="..\Public\ToolCanvas.h">
       <Filter>02. GameObjects\UI\01.Canvas</Filter>
-    </ClInclude>
-    <ClInclude Include="..\Public\ToolObject.h">
-      <Filter>02. GameObjects</Filter>
     </ClInclude>
     <ClInclude Include="..\Public\Panel_MapObjectList.h">
       <Filter>06. ImGui\01. Panel\Map\Panel_MapObjectList</Filter>
@@ -608,7 +608,7 @@
       <Filter>06. ImGui\01. Panel\Animation\Panel_Parts</Filter>
     </ClInclude>
     <ClInclude Include="..\Public\LevelData.h">
-      <Filter>02. GameObjects\Map\01. SceneData</Filter>
+      <Filter>02. GameObjects\Map\01. LevelData</Filter>
     </ClInclude>
     <ClInclude Include="..\Public\Tool_EffectBase.h">
       <Filter>02. GameObjects\Effect\Container\EffectBase</Filter>
@@ -639,6 +639,9 @@
     </ClInclude>
     <ClInclude Include="..\Public\Panel_AnimationMix.h">
       <Filter>06. ImGui\01. Panel\Animation\Panel_AnimationMix</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\ToolObject.h">
+      <Filter>02. GameObjects\ToolObject</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -765,9 +768,6 @@
     </ClCompile>
     <ClCompile Include="..\Private\ToolCanvas.cpp">
       <Filter>02. GameObjects\UI\01.Canvas</Filter>
-    </ClCompile>
-    <ClCompile Include="..\Private\ToolObject.cpp">
-      <Filter>02. GameObjects</Filter>
     </ClCompile>
     <ClCompile Include="..\Private\Panel_MapObjectList.cpp">
       <Filter>06. ImGui\01. Panel\Map\Panel_MapObjectList</Filter>
@@ -911,7 +911,7 @@
       <Filter>06. ImGui\01. Panel\Animation\Panel_Parts</Filter>
     </ClCompile>
     <ClCompile Include="..\Private\LevelData.cpp">
-      <Filter>02. GameObjects\Map\01. SceneData</Filter>
+      <Filter>02. GameObjects\Map\01. LevelData</Filter>
     </ClCompile>
     <ClCompile Include="..\Private\Tool_EffectBase.cpp">
       <Filter>02. GameObjects\Effect\Container\EffectBase</Filter>
@@ -942,6 +942,9 @@
     </ClCompile>
     <ClCompile Include="..\Private\Panel_AnimationMix.cpp">
       <Filter>06. ImGui\01. Panel\Animation\Panel_AnimationMix</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\ToolObject.cpp">
+      <Filter>02. GameObjects\ToolObject</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

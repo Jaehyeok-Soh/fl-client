@@ -5,6 +5,57 @@
 #include "Engine_Utils.h"
 
 
+NS_BEGIN(DTO)
+#pragma region Make Monster Type
+enum class EMakeMonsterType
+{
+	Dog,
+	Shooter,
+
+
+	/* Boss 관련 */
+	Xibi,
+	END,
+};
+
+inline std::string MakeMonsterType_ToString(EMakeMonsterType eType)
+{
+	switch (eType)
+	{
+	case DTO::EMakeMonsterType::Dog:			return "Dog";
+	case DTO::EMakeMonsterType::Shooter:		return "Shooter";
+
+
+
+		/* Boss관련 */
+	case DTO::EMakeMonsterType::Xibi:			return "Xibi";
+	default:									return "Unknown";
+	}
+}
+inline EMakeMonsterType MakeMonsterType_ToEnum(const std::string strType)
+{ 
+	if (strType == "Dog")		return DTO::EMakeMonsterType::Dog;
+	if (strType == "Shooter")	return DTO::EMakeMonsterType::Shooter;
+
+
+	if (strType == "Xibi")		return DTO::EMakeMonsterType::Xibi;
+
+	return EMakeMonsterType::END;
+}
+
+#pragma endregion
+
+#pragma region Make TriggerBox Type
+
+enum class EMakeTriggerBoxType
+{
+	Change_Level,
+	Monster_Spawner,
+	END,
+};
+
+#pragma endregion
+NS_END
 
 NS_BEGIN(Engine)
 struct ENGINE_DLL CLIENT_MAKEPATH_DESC_BASE
@@ -85,10 +136,161 @@ public:
 #pragma endregion
 
 
+#pragma region Batch 관련
+
+#pragma region Batch Player = None Desc
+#pragma endregion
+
+#pragma region Batch Monster
+
+struct ENGINE_DLL BATCH_MONSTER_DESC : public CLIENT_MAKEPATH_DESC_BASE
+{
+	DTO::EMakeMonsterType eBatchMonsterType{DTO::EMakeMonsterType::Dog};
+public:
+	BATCH_MONSTER_DESC()
+		: eBatchMonsterType{DTO::EMakeMonsterType::Dog}
+	{
+
+	}
+	BATCH_MONSTER_DESC(const BATCH_MONSTER_DESC& Copy)
+		: eBatchMonsterType{ Copy .eBatchMonsterType }
+	{
+
+	}
+	virtual ~BATCH_MONSTER_DESC() {}
+public:
+	virtual void from_Json(const json& LoadJson);
+	virtual void to_Json(json& SaveJson);
+};
+
+#pragma endregion
+
+
+#pragma region 
+
+
+#pragma region Trigger Box
+
+struct ENGINE_DLL TRIGGERBOX_DESC : CLIENT_MAKEPATH_DESC_BASE
+{
+public:
+	Vec3		 vExtents{0.5f,0.5f ,0.5f};
+public:
+	explicit TRIGGERBOX_DESC()
+		: vExtents{ 0.5f,0.5f ,0.5f }
+	{
+	}
+	explicit TRIGGERBOX_DESC(const TRIGGERBOX_DESC& rhs)
+		: CLIENT_MAKEPATH_DESC_BASE(rhs) , vExtents(rhs.vExtents)
+	{
+		return;
+	}
+	virtual ~TRIGGERBOX_DESC() {}
+public:
+	virtual void from_Json(const json& LoadJson);
+	virtual void to_Json(json& SaveJson);
+};
+
+
+#pragma region ChangeLevel
+
+struct ENGINE_DLL TRIGGERBOX_CHANGELEVEL_DESC : TRIGGERBOX_DESC
+{
+	using Super = TRIGGERBOX_DESC;
+public:
+	std::string strChangeLevelTypeName{ "NONE" };
+public:
+	explicit TRIGGERBOX_CHANGELEVEL_DESC()
+		: TRIGGERBOX_DESC(), strChangeLevelTypeName{"NONE"}
+	{
+	}
+	explicit TRIGGERBOX_CHANGELEVEL_DESC(const TRIGGERBOX_CHANGELEVEL_DESC& rhs)
+		: TRIGGERBOX_DESC(rhs), strChangeLevelTypeName{rhs.strChangeLevelTypeName}
+	{
+		return;
+	}
+	virtual ~TRIGGERBOX_CHANGELEVEL_DESC() {};
+public:
+public:
+	virtual void from_Json(const json& LoadJson);
+	virtual void to_Json(json& SaveJson);
+};
+
+#pragma endregion
+
+
+#pragma region Spawner
+
+class CModel;
+
+struct  ENGINE_DLL MonsterSpawnData
+{
+	/* SRT */
+	Vec3					vPosition{ Vec3::Zero };
+	Vec3					vScale{1.f,1.f,1.f };
+	Vec3					vPitchYawRoll{Vec3::Zero};
+
+	/* 스폰할 몬스터 Type */
+	DTO::EMakeMonsterType	eMakeMonsterType{DTO::EMakeMonsterType::Dog};
+
+	/* 스폰되는 시간 값 조절 */
+	float					fSpawnDelayTime{0.f};
+
+	
+
+	/* Debug 모델을 확인할지 말지 Checkbool값 */
+	bool					isPreviewDebugModel{true};
+	/* Debug용 모델 쓸미말지 미지수 */
+	CModel*					pDebugModel{nullptr};
+
+public:
+	MonsterSpawnData()
+		: vPosition{ Vec3::Zero }, vScale{ 1.f,1.f,1.f }, vPitchYawRoll{ Vec3::Zero }, eMakeMonsterType{ DTO::EMakeMonsterType::Dog }, fSpawnDelayTime{ 0.f }, isPreviewDebugModel{true},
+		pDebugModel{nullptr}
+	{
+
+	}
+	MonsterSpawnData(const MonsterSpawnData& Copy);
+	virtual ~MonsterSpawnData();
+public:
+	void					from_Json(const json& LoadJson);
+	void					to_Json(json& SaveJson);
+};
+
+struct ENGINE_DLL TRIGGERBOX_MONSTERSPAWNER_DESC : TRIGGERBOX_DESC
+{
+	using Super = TRIGGERBOX_DESC;
+public:
+	/* Monster Spawn Data */
+	std::vector<MonsterSpawnData>	vecMonsterSpawnData{};
+
+public:
+	explicit TRIGGERBOX_MONSTERSPAWNER_DESC()
+		: TRIGGERBOX_DESC(), vecMonsterSpawnData{}
+	{
+	}
+	explicit TRIGGERBOX_MONSTERSPAWNER_DESC(const TRIGGERBOX_MONSTERSPAWNER_DESC& rhs)
+		: TRIGGERBOX_DESC(rhs), vecMonsterSpawnData{ rhs.vecMonsterSpawnData }
+	{
+		return;
+	}
+	virtual ~TRIGGERBOX_MONSTERSPAWNER_DESC() {};
+public:
+	virtual void from_Json(const json& LoadJson);
+	virtual void to_Json(json& SaveJson);
+};
+
+
+#pragma endregion
+
+#pragma endregion
+
 #pragma endregion
 NS_END
+
 NS_BEGIN(DTO)
 /////////////////-------------------  MAP  -------------------/////////////////
+
 
 enum class EMapObject_Type : _uint
 {
@@ -124,6 +326,18 @@ enum class EClientMakePath
 	Vine,
 	Rock,
 	Water,
+
+
+
+	/* 몬스터 , Player 위치잡는 용도  */
+	Batch_Player,
+	Batch_Monster,
+
+	/* Trigger Box 관련 */
+	TriggerBox_ChangeLevel,
+	TriggerBox_MonsterSpawner,
+
+
 	END
 };
 
@@ -161,16 +375,26 @@ NLOHMANN_JSON_SERIALIZE_ENUM(EMapObject_DrawType,
 
 	NLOHMANN_JSON_SERIALIZE_ENUM(EClientMakePath,
 		{
-			{EClientMakePath::StaticObject, "StaticObject"},
-			{EClientMakePath::LandScape,	"LandScape"},
-			{EClientMakePath::Bush,			"Bush"},
-			{EClientMakePath::Grass,		"Grass"},
-			{EClientMakePath::Moss,			"Moss"},
-			{EClientMakePath::Tree,			"Tree"},
-			{EClientMakePath::Vine,			"Vine"},
-			{EClientMakePath::Rock,			"Rock"},
-			{EClientMakePath::Water,		"Water"},
-			{EClientMakePath::END,			"Unknown"},
+			{EClientMakePath::StaticObject,					"StaticObject"},
+			{EClientMakePath::LandScape,					"LandScape"},
+			{EClientMakePath::Bush,							"Bush"},
+			{EClientMakePath::Grass,						"Grass"},
+			{EClientMakePath::Moss,							"Moss"},
+			{EClientMakePath::Tree,							"Tree"},
+			{EClientMakePath::Vine,							"Vine"},
+			{EClientMakePath::Rock,							"Rock"},
+			{EClientMakePath::Water,						"Water"},
+
+
+
+			{EClientMakePath::Player,						"Player"},
+			{EClientMakePath::Monster,						"Monster"},
+
+
+			{EClientMakePath::TriggerBox_ChangeLevel,		"TriggerBox_ChangeLevel"},
+			{EClientMakePath::TriggerBox_MonsterSpawner,	"TriggerBox_MonsterSpawner"},
+
+			{EClientMakePath::END,							"Unknown"},
 		}
 		)
 
@@ -180,18 +404,18 @@ NLOHMANN_JSON_SERIALIZE_ENUM(EMapObject_DrawType,
 
 
 #pragma region SRT Data
-	typedef struct tagSRT_Data
+	struct SRT_DATA
 {
-	Vec3	vScale{0.f,0.f,0.f};
+	Vec3	vScale{1.f,1.f,1.f};
 	Quat	vQuat{0.f,0.f,0.f,1.f};
 	Vec3	vPosition{ 0.f,0.f,0.f };
 	Vec3	vScale_Isolated{}; //TEST: 소재혁 임시 추가
 public:
-	Matrix  Get_World()
+	Matrix  Get_World() const
 	{
 		return Matrix::CreateScale(vScale) * Matrix::CreateFromQuaternion(vQuat) * Matrix::CreateTranslation(vPosition);
 	}
-}SRT_DATA;
+};
 #pragma endregion
 
 #pragma region Using Material 

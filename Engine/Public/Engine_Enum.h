@@ -430,8 +430,11 @@ namespace Engine
 			TRIGGER_QUEST = 1 << 14,
 			TRIGGER_SPAWN = 1 << 15,
 			TRIGGER_DIRECTION = 1 << 16,
+			TRIGGER_BOX = 1 << 17,
 
-			NONE = 1 << 17,
+
+
+			NONE = 1 << 18,
 			END
 		};
 

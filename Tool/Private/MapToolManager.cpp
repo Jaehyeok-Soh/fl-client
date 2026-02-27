@@ -400,6 +400,50 @@ HRESULT CMapToolManager::Register_MapObjectCloneFactory()
 	return S_OK;
 }
 
+CModel* CMapToolManager::Get_MonsterPreviewModel(DTO::EMakeMonsterType eMakeMonsterType)
+{
+	CModel* pModel{ nullptr };
+
+	wstring wstrDefualtPath = g_wszPreviewObejctModelPath;
+
+	wstring wstrModelName{};
+
+	switch (eMakeMonsterType)
+	{
+	case DTO::EMakeMonsterType::Dog:				
+		wstrModelName = L"Preveiw_Monster_Dog";
+		break;
+	case DTO::EMakeMonsterType::Shooter:
+		wstrModelName = L"Preveiw_Monster_Shooter";
+		break;
+	case DTO::EMakeMonsterType::Xibi:
+		wstrModelName = L"Preveiw_Xibi";
+		break;
+	default:									return nullptr;
+	}
+
+	CModel::MODEL_COPY_DESC tModelCopyDesc{};
+	pModel =
+		static_cast<CModel*>
+		(m_pGameInstance->Clone_Prototype(EPrototypeType::COMPONENT, ENUM_TO_UINT(ELevelType::MAP), L"Prototype_Component_Model_" + wstrModelName, &tModelCopyDesc));
+
+	return pModel;
+}
+
+CModel* CMapToolManager::Get_PlayerPreviewModel()
+{
+	CModel* pModel{ nullptr };
+
+	wstring wstrPlayerModelName = L"Preveiw_Player";
+
+	CModel::MODEL_COPY_DESC tModelCopyDesc{};
+	pModel =
+		static_cast<CModel*>
+		(m_pGameInstance->Clone_Prototype(EPrototypeType::COMPONENT, ENUM_TO_UINT(ELevelType::MAP), L"Prototype_Component_Model_" + wstrPlayerModelName, &tModelCopyDesc));
+
+	return pModel;
+}
+
 HRESULT CMapToolManager::Ready_LevelData()
 {
 	m_pLevelData= CLevelData::Create(EToolObjectType::MAPOBJECT, m_pDevice, m_pContext);
@@ -413,8 +457,11 @@ HRESULT CMapToolManager::Apply_LevelData(const DTO::TLevelData* tData)
 	if (tData == nullptr) return E_FAIL;
 
 	/* 다른 이름이 저장되어있다면 E_FAIL 반환된다 */
-	if (FAILED(CMapToolManager::Load_TextureSplatingInfoData(Engine_Utils::ToWString(tData->strTextureSplatingInfoName))))
-		return E_FAIL;
+
+	/* None이 아니라면 반환한다 */
+	if(tData->strTextureSplatingInfoName != "None")
+		if (FAILED(CMapToolManager::Load_TextureSplatingInfoData(Engine_Utils::ToWString(tData->strTextureSplatingInfoName))))
+			return E_FAIL;
 
 	/* None => [Don't Use Texture Splating Info] */
 	m_pLevelData->m_strTextureSplatingInfoName	= tData->strTextureSplatingInfoName;

@@ -22,6 +22,8 @@
 #include "Transform.h"
 #include "SkillComp_MoonE.h"
 #include "SkillComp_MoonQ.h"
+#include "PhysicsCollider.h"
+#include "PhysicsRigidBody.h"
 //=================
 // Builder
 //=================
@@ -71,6 +73,11 @@
 #include "Vine.h"
 #include "Tree.h"
 #include "Grass.h"
+
+//=================
+// Trigger Box
+//=================
+#include "TriggerBox_LevelChange.h"
 
 /* --------------------- */
 //=================
@@ -561,6 +568,7 @@ HRESULT CLoader::Loading_For_Logo()
 	// For. Prototype_Component_ActionState_Monster
 	m_pGameInstance->Add_Prototype(ENUM_TO_UINT(ELevelType::STATIC), L"Prototype_Component_ActionState_Monster", CMonsterActionState::Create(m_pDevice, m_pDeviceContext));
 
+
 	///////////////////////////////////////
 	//////////// Ready Objects ////////////
 	///////////////////////////////////////
@@ -592,6 +600,10 @@ HRESULT CLoader::Loading_For_Logo()
 		ADD_PROTOTYPE(ELevelType::STATIC, L"Prototype_GameObject_Vine",			CVine::				Create(m_pDevice, m_pDeviceContext));
 		ADD_PROTOTYPE(ELevelType::STATIC, L"Prototype_GameObject_Rock",			CRock::				Create(m_pDevice, m_pDeviceContext));
 		ADD_PROTOTYPE(ELevelType::STATIC, L"Prototype_GameObject_Water",		CWater::			Create(m_pDevice, m_pDeviceContext));
+#pragma endregion
+
+#pragma region TriggerBox
+		ADD_PROTOTYPE(ELevelType::STATIC, L"Prototype_GameObject_TriggerBox_ChangeLevel", CTriggerBox_LevelChange::Create(m_pDevice, m_pDeviceContext));
 #pragma endregion
 
 		/* Weapons */
@@ -671,6 +683,9 @@ HRESULT CLoader::Loading_For_Tutorial_Village()
 	// ¿Ã∆Â∆Æ Object
 	ADD_PROTOTYPE(ELevelType::TUTORIAL_VILLAGE, L"Prototype_GameObject_Effect", Effect::Create(m_pDevice, m_pDeviceContext));
 	ADD_PROTOTYPE(ELevelType::TUTORIAL_VILLAGE, L"Prototype_GameObject_Effect_Parts", CEffectObject::Create(m_pDevice, m_pDeviceContext));
+
+
+
 
 
 

@@ -28,6 +28,11 @@ HRESULT CControlContext::Initialize(void* pArg)
     return S_OK;
 }
 
+void CControlContext::Clear_WhenChangeLevel()
+{
+    m_pTarget = nullptr;
+}
+
 void CControlContext::Free()
 {
     Super::Free();

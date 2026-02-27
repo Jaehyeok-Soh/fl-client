@@ -1,5 +1,6 @@
 #pragma once
 #include "ImGui_Panel.h"
+#include "DataStruct_Map.h"
 
 NS_BEGIN(Engine)
 class CGameInstance;
@@ -8,6 +9,12 @@ class CCamera;
 class CModel;
 struct STATICOBJECT_DESC;
 struct LANDSCAPE_DESC;
+
+/* Trigger Box 관련 */
+struct MonsterSpawnData;
+struct TRIGGERBOX_DESC;
+struct TRIGGERBOX_CHANGELEVEL_DESC;
+struct TRIGGERBOX_MONSTERSPAWNER_DESC;
 NS_END
 
 
@@ -56,6 +63,19 @@ private:
 	void						ImGuiUpdate_StaticObject_Desc(STATICOBJECT_DESC* pDesc);
 	void						ImGuiUpdate_LandScape_Desc(LANDSCAPE_DESC* pDesc);
 
+
+	/* Batch 관련 */
+	void						ImGuiUpdate_Batch_Monster_Desc(BATCH_MONSTER_DESC* pDesc);
+
+	/* Trigger Box 관련 */
+	void						ImGuiUpdate_TriggerBox(TRIGGERBOX_DESC* pDesc);
+	void						ImGuiUpdate_TriggerBox_ChanageLevel_Desc(TRIGGERBOX_CHANGELEVEL_DESC* pDesc);
+	void						ImGuiUpdate_TriggerBox_MonsterSpawner(TRIGGERBOX_MONSTERSPAWNER_DESC* pDesc);
+
+
+	/* Mosnter Spawn ImGuiUpdate */
+	void						ImGuiUpdate_MonsterSpawnData(Engine::MonsterSpawnData* pMonsterSpawnData);
+
 private:
 	void						Compute_LandScape_TextureUV(_uint iLandScapeIndex , OUT Vec2& vOut_LT , OUT Vec2& vOut_RB );
 
@@ -65,6 +85,8 @@ private:
 	CGameInstance*				m_pGameInstance{nullptr};
 
 	wchar_t						m_wszMapObjectLayerTag[ENUM_TO_UINT(EMapObject_Type::END)][MAX_PATH];
+
+	char						m_szMakeMonsterTypeName[ENUM_TO_UINT(DTO::EMakeMonsterType::END)][MAX_PATH];
 
 	char						m_szFindName[MAX_PATH];
 
@@ -111,6 +133,10 @@ private:
 	/* 가로 세로 개수 */
 	_int	m_iLandScape_Col{1}; // 세로
 	_int	m_iLandScape_Row{1}; // 가로
+
+
+
+	/* Trigger Box Change Level Desc */
 
 public:
 	static  CPanel_MapObjectList* Create(const _char* pLabel, CLevel* pOwner, ID3D11Device* pDevice, ID3D11DeviceContext* pDeviceContext);

@@ -7,6 +7,13 @@
 #include "UI_Manager.h"
 
 //=================
+// Data Struct
+//=================
+#include "DataStruct_Effect.h"
+#include "DataStruct_Map.h"
+#include "DataStruct_UI.h"
+
+//=================
 // Builder
 //=================
 #include "Builder_UI.h"
@@ -15,12 +22,30 @@
 #include "BuilderSystem.h"
 #include "Builder_Map.h"
 #include "Builder_Effect.h"
-#include "DataStruct_Effect.h"
-#include "DataDocument_Effect.h"
-#include "DataDocument_Map.h"
 
 //=================
-// Object
+// Document
+//=================
+#include "DataDocument_Effect.h"
+#include "DataDocument_Map.h"
+#include "DataDocument_UI.h"
+
+
+//=================
+// UI
+//=================
+#include "Canvas.h"
+#include "GenericUI.h"
+
+//=================
+// Component
+//=================
+#include "Bounds.h"
+#include "PhysicsCCT.h"
+
+
+//=================
+// Game Object
 //=================
 #include "Player.h"
 #include "CameraMan_Targeter.h"
@@ -34,21 +59,10 @@
 #include "Boss_Xibi.h"
 #include "Boss_Xibi_Body.h"
 
-//=================
-// UI
-//=================
-#include "DataDocument_UI.h"
-#include "DataStruct_UI.h"
-#include "Canvas.h"
-#include "GenericUI.h"
-#include "UI_Manager.h"
 
 //=================
-// Component
+// Game Instance
 //=================
-#include "Bounds.h"
-#include "PhysicsCCT.h"
-
 #include "GameInstance.h"
 
 CLevel_Test::CLevel_Test(ID3D11Device* pDevice, ID3D11DeviceContext* pDeviceContext)
@@ -58,6 +72,7 @@ CLevel_Test::CLevel_Test(ID3D11Device* pDevice, ID3D11DeviceContext* pDeviceCont
 
 HRESULT CLevel_Test::Initialize()
 {
+
 	if (FAILED(Super::Initialize()))
 		return E_FAIL;
 
@@ -67,29 +82,23 @@ HRESULT CLevel_Test::Initialize()
 	if (FAILED(Build_Files()))
 		return E_FAIL;
 
-	if (FAILED(Ready_Camera_Layer(g_wszDynamicCameraLayer)))
+	if (FAILED(Ready_Lights()))
 		return E_FAIL;
 
 	if (FAILED(Ready_Player_Layer(g_wszPlayerLayer)))
 		return E_FAIL;
 
+	if (FAILED(Ready_Camera_Layer(g_wszDynamicCameraLayer)))
+		return E_FAIL;
+
 	if (FAILED(Ready_Map()))
-		return E_FAIL;
-
-	if (FAILED(Ready_Boss_Layer(g_wszBossLayer)))
-		return E_FAIL;
-
-	if (FAILED(Ready_Monster()))
 		return E_FAIL;
 
 	if (FAILED(Ready_UI_Layer(g_wszUILayer)))
 		return E_FAIL;
 
-	if (FAILED(Ready_Lights()))
-		return E_FAIL;
-
-
 	return S_OK;
+
 }
 
 HRESULT CLevel_Test::Awake(const _uint iLevelID)
@@ -544,20 +553,6 @@ HRESULT CLevel_Test::Ready_Boss_Layer(const wstring& wstrLayerTag)
 	return S_OK;
 }
 
-HRESULT CLevel_Test::Ready_Camera_Setting(const _uint iLevelIndex)
-{
-	CGameObject* pMainCamera = m_pGameInstance->Get_GameObject_Front(iLevelIndex, g_wszDynamicCameraLayer);
-	m_pGameInstance->Add_Camera(CameraType::DYNAMIC, g_MainActorCameraName, static_cast<CCameraMan*>(pMainCamera));
-	m_pGameInstance->Change_MainCamera(CameraType::DYNAMIC, g_MainActorCameraName);
-	CGameObject* pPlayer = m_pGameInstance->Get_GameObject_Front(/* static */ 0, g_wszPlayerLayer);
-	if (pPlayer == nullptr)
-		return E_FAIL;
-
-	m_pGameInstance->Change_Target(pPlayer);
-	m_pGameInstance->Ready_Frustrum();
-	return S_OK;
-}
-
 HRESULT CLevel_Test::Ready_Octree()
 {
 	// 순회하며 OCTREE BOX 사이즈 검출
@@ -635,6 +630,20 @@ HRESULT CLevel_Test::Ready_Octree()
 
 	return S_OK;
 }
+HRESULT CLevel_Test::Ready_Camera_Setting(const _uint iLevelIndex)
+{
+	CGameObject* pMainCamera = m_pGameInstance->Get_GameObject_Front(iLevelIndex, g_wszDynamicCameraLayer);
+	m_pGameInstance->Add_Camera(CameraType::DYNAMIC, g_MainActorCameraName, static_cast<CCameraMan*>(pMainCamera));
+	m_pGameInstance->Change_MainCamera(CameraType::DYNAMIC, g_MainActorCameraName);
+	CGameObject* pPlayer = m_pGameInstance->Get_GameObject_Front(/* static */ 0, g_wszPlayerLayer);
+	if (pPlayer == nullptr)
+		return E_FAIL;
+
+	m_pGameInstance->Change_Target(pPlayer);
+	m_pGameInstance->Ready_Frustrum();
+	return S_OK;
+}
+
 
 CLevel_Test* CLevel_Test::Create(ID3D11Device* pDevice, ID3D11DeviceContext* pDeviceContext)
 {

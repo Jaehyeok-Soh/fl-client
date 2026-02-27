@@ -1421,7 +1421,6 @@
     <ClCompile Include="..\private\Builder_AttackPreset.cpp">
       <Filter>07. System\01. Builder\AttackPreset</Filter>
     </ClCompile>
-    <ClCompile Include="..\Private\LandScape.cpp" />
     <ClCompile Include="..\Private\WorldUI_Component.cpp">
       <Filter>05. Component\WorldUI</Filter>
     </ClCompile>

@@ -111,6 +111,21 @@ HRESULT CMainPlayer::Initialize(void* pArg)
     return S_OK;
 }
 
+HRESULT CMainPlayer::Reinitialize(GAMEOBJECT_REINIT_DESC* pDesc)
+{
+    if (pDesc == nullptr)
+        return E_FAIL;
+
+    return S_OK;
+}
+
+HRESULT CMainPlayer::Clear_WhenChangeLevel()
+{
+    m_pTargeter = nullptr;
+    Clear_Components_WhenChangeLevel();
+    return S_OK;
+}
+
 HRESULT CMainPlayer::Awake(const _uint iCurrentLevelID)
 {
     if (FAILED(Super::Awake(iCurrentLevelID)))
