@@ -2,6 +2,7 @@
 #include "Panel_State.h"
 #include "AnimTool_Manager.h"
 
+#include "StateBase.h"
 #include "BuilderSystem.h"
 #include "Builder_MonsterState.h"
 
@@ -122,17 +123,23 @@ void CPanel_State::DrawTopLevelInfo()
             SyncStateNamesToSet();
         }
 
-        // setStates 목록 출력 및 삭제 UI
         ImGui::Indent();
         std::string eraseTarget = "";
+
+        ImGui::BeginChild("##GlobalSetStatesScroll", ImVec2(0.f, 180.f), true,
+            ImGuiWindowFlags_AlwaysVerticalScrollbar);
+
         for (const auto& s : m_MonsterData.setStates)
         {
             ImGui::BulletText("%s", s.c_str());
-            ImGui::SameLine(ImGui::GetWindowWidth() - 60.f);
+            ImGui::SameLine(ImGui::GetContentRegionAvail().x - 40.f);
             ImGui::PushID(s.c_str());
-            if (ImGui::Button("Del")) eraseTarget = s;
+            if (ImGui::Button("Del", ImVec2(40.f, 0.f))) eraseTarget = s;
             ImGui::PopID();
         }
+
+        ImGui::EndChild();
+
         if (!eraseTarget.empty()) m_MonsterData.setStates.erase(eraseTarget);
         ImGui::Unindent();
     }
@@ -205,16 +212,36 @@ void CPanel_State::DrawStateDetails()
         ImGui::Checkbox("Is Boss", &state.bIsBoss);
         ImGui::SameLine();
         ImGui::Checkbox("Is Combo", &state.bIsCombo);
+    }
 
-        // 플래그 및 옵션
-        int aniFlags = state.FAniFlags;
-        if (ImGui::InputInt("Anim Flags", &aniFlags)) state.FAniFlags = aniFlags;
+    // 플래그 및 옵션
+    if (ImGui::CollapsingHeader("Anim Flags", ImGuiTreeNodeFlags_DefaultOpen))
+    {
+        ImGui::TextDisabled("Current : 0x%04X", state.FAniFlags);
 
-        ImGui::Checkbox("Blend", &state.bBlend);
+        _bool bHasPreAni = (state.FAniFlags & CStateBase::SA_HasPreAni) != 0;
+        _bool bPreNonEvent = (state.FAniFlags & CStateBase::SA_PreNonEvent) != 0;
+        _bool bWeaponAni = (state.FAniFlags & CStateBase::SA_WeaponAni) != 0;
+
+        if (ImGui::Checkbox("SA_HasPreAni (0x0001) : Has pre animation", &bHasPreAni))
+            state.FAniFlags = bHasPreAni ? (state.FAniFlags | CStateBase::SA_HasPreAni) : (state.FAniFlags & ~CStateBase::SA_HasPreAni);
+
+        if (ImGui::Checkbox("SA_PreNonEvent (0x0002) : No state transition during pre ani", &bPreNonEvent))
+            state.FAniFlags = bPreNonEvent ? (state.FAniFlags | CStateBase::SA_PreNonEvent) : (state.FAniFlags & ~CStateBase::SA_PreNonEvent);
+
+        if (ImGui::Checkbox("SA_WeaponAni (0x0008) : Has weapon animation", &bWeaponAni))
+            state.FAniFlags = bWeaponAni ? (state.FAniFlags | CStateBase::SA_WeaponAni) : (state.FAniFlags & ~CStateBase::SA_WeaponAni);
+
+        ImGui::Separator();
+        if (ImGui::Button("Clear Flags"))
+            state.FAniFlags = 0;
         ImGui::SameLine();
+        if (ImGui::Button("All Flags"))
+            state.FAniFlags = CStateBase::SA_HasPreAni | CStateBase::SA_PreNonEvent | CStateBase::SA_WeaponAni;
+
         ImGui::Checkbox("Loop", &state.bLoop);
         ImGui::SameLine();
-        ImGui::Checkbox("Cancellation", &state.bCancellation);
+        ImGui::Checkbox("Blend", &state.bBlend);
     }
 
     // 2. 타이머 (Time Counters)
@@ -243,7 +270,7 @@ void CPanel_State::DrawStateDetails()
             ImGui::PushID((int)i);
             InputTextString("##Anim", state.vecMainAnimNames[i]);
             ImGui::SameLine();
-            if (ImGui::Button("X")) {
+            if (ImGui::Button("X##Anim")) {
                 state.vecMainAnimNames.erase(state.vecMainAnimNames.begin() + i);
                 i--;
             }
@@ -293,7 +320,7 @@ void CPanel_State::DrawStateDetails()
             ImGui::SetNextItemWidth(260.f);
             ImGui::InputText("##WeaponAnimEdit", &state.vecWeaponAnimNames[i]);
             ImGui::SameLine();
-            if (ImGui::Button("X"))
+            if (ImGui::Button("X##WeaponAnimEdit"))
             {
                 state.vecWeaponAnimNames.erase(state.vecWeaponAnimNames.begin() + i);
                 ImGui::PopID();
@@ -334,7 +361,7 @@ void CPanel_State::DrawStateDetails()
             ImGui::PushID((int)c);
             InputTextString("##Feat", state.vecFeature[c]);
             ImGui::SameLine();
-            if (ImGui::Button("X")) {
+            if (ImGui::Button("X##Feat")) {
                 state.vecFeature.erase(state.vecFeature.begin() + c);
                 c--;
             }
@@ -349,7 +376,6 @@ void CPanel_State::DrawTimeCounter(const char* label, DTO::MONSTERTIME_COUNTER& 
 {
     if (ImGui::TreeNode(label))
     {
-        ImGui::DragFloat("Acc Time", &counter.fTimeAcc, 0.01f);
         ImGui::DragFloat("Max Time", &counter.fMaxTime, 0.01f);
         ImGui::DragFloat("Min Time", &counter.fMinTime, 0.01f);
         ImGui::Checkbox("Count Time", &counter.bCountTime);
@@ -372,7 +398,7 @@ void CPanel_State::DrawStateTransition(DTO::STATE_TRANSITION& transition, int in
                 ImGui::PushID((int)c);
                 InputTextString("##Cond", transition.vecCondition[c]);
                 ImGui::SameLine();
-                if (ImGui::Button("X")) {
+                if (ImGui::Button("X##Cond")) {
                     transition.vecCondition.erase(transition.vecCondition.begin() + c);
                     c--;
                 }
@@ -404,7 +430,7 @@ void CPanel_State::DrawStateTransition(DTO::STATE_TRANSITION& transition, int in
                     transition.mapRandomStatePool[pair.first] = weight;
                 }
                 ImGui::SameLine();
-                if (ImGui::Button("X")) poolEraseTarget = pair.first;
+                if (ImGui::Button("X##Weight")) poolEraseTarget = pair.first;
                 ImGui::PopID();
             }
             if (!poolEraseTarget.empty()) transition.mapRandomStatePool.erase(poolEraseTarget);
@@ -636,6 +662,7 @@ void CPanel_State::SaveFileDialog(char* buffer, const char* filter)
     ofn.lpstrFileTitle = NULL;
     ofn.nMaxFileTitle = 0;
     ofn.lpstrInitialDir = NULL;
+    ofn.lpstrDefExt = "json";
     ofn.Flags = OFN_PATHMUSTEXIST | OFN_FILEMUSTEXIST | OFN_NOCHANGEDIR;
 
     if (GetSaveFileNameA(&ofn) == TRUE)
@@ -670,7 +697,7 @@ void CPanel_State::RenderLoadModal()
         ImGui::SameLine();
         if (ImGui::Button("...##AnimBtn"))
         {
-            OpenFileDialog(m_tLoadOptions.strStatePath, "JSON Files\0*.json\0All\0*.*\0");
+            OpenFileDialog(m_tLoadOptions.strStatePath, "Json Files (*.json)\0*.json\0All Files (*.*)\0*.*\0\0");
         }
 
         ImGui::Separator();
@@ -710,7 +737,7 @@ void CPanel_State::RenderSaveModal()
         ImGui::SameLine();
         if (ImGui::Button("...##AnimBtn"))
         {
-            SaveFileDialog(m_tLoadOptions.strStatePath, "JSON Files\0*.json\0All\0*.*\0");
+            SaveFileDialog(m_tLoadOptions.strStatePath, "Json Files (*.json)\0*.json\0All Files (*.*)\0*.*\0\0");
         }
 
         ImGui::Separator();

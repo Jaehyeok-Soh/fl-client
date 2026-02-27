@@ -77,6 +77,8 @@ public:
 	};
 	_bool Get_ApplyRoot() const { return m_bApplyRootMotion; }
 	void Set_AnimationSpeed(_float fSpeed) { m_fAnimationSpeed_Offset = fSpeed; if (m_fAnimationSpeed_Offset <= 0.f) m_fAnimationSpeed_Offset = 1.f; }
+	void Set_MixType(_uint iMixType) { if (iMixType > 1) return; m_iMixType = iMixType; }
+
 
 	///////////////
 	//// Event ////
@@ -127,6 +129,9 @@ private:
 	_bool m_bApplyRootMotion		= { true };
 	_float m_fRootMotionOffset		= { 1.f };
 	_float m_fAnimationSpeed_Offset = { 1.f };
+
+	_uint m_iMixType	= { 0 };		// 0 : bone mix, 1 : additive mix
+	_uint m_iMyMixBlend = { 0 };		// 0 : non blend, 1 : blend
 
 	///////////////
 	//// Event ////

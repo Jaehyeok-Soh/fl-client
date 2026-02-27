@@ -34,6 +34,8 @@ HRESULT CStateBase_Player::Initialize(void* pArg)
 	//if (m_pOwnerGun)
 	//	Safe_AddRef(m_pOwnerGun);
 
+	m_iEndStateIdx = ENUM_TO_UINT(CPlayer::State::END);
+
 	return S_OK;
 }
 
@@ -41,8 +43,6 @@ HRESULT CStateBase_Player::Awake(const _uint iLevelIndex)
 {
 	if (FAILED(Super::Awake(iLevelIndex)))
 		return E_FAIL;
-
-	m_iEndStateIdx = ENUM_TO_UINT(CPlayer::State::END);
 
 	return S_OK;
 }
@@ -70,8 +70,7 @@ void CStateBase_Player::Update(const _float fTimeDelta)
 		return;
 	 
 	// keyCount를 하지 않거나, coolTime이 다 되었다면 : key 입력을 처리하자
-	if (!(m_tKeyTimer.bCountTime) ||
-		m_tKeyTimer.CountTime(fTimeDelta) == 1.f)
+	if (Can_CheckKey(fTimeDelta))
 	{
 		if (!m_bLoop && Is_MainAnimFinished())		// loop가 아닌데 애니메이션이 끝났다면
 		{
@@ -275,14 +274,14 @@ _bool CStateBase_Player::Check_RangeKey(const _float fTimeDelta)
 			// 공격이 가능 하다면 : attack
 			if (Can_Fire())
 			{
-				Change_PlayerState(ENUM_TO_UINT(CPlayer::State::GUNATTACK));
+				Request_Change_State(ENUM_TO_UINT(CPlayer::State::GUNATTACK));
 				return true;
 			}
 
 			// 공격은 불가능 하지만 reload는 가능 하다면 : reload
 			else if (Can_Reload())
 			{
-				Change_PlayerState(ENUM_TO_UINT(CPlayer::State::GUNATTACK));
+				Request_Change_State(ENUM_TO_UINT(CPlayer::State::GUNRELOAD));
 				return true;
 			}
 
@@ -396,6 +395,27 @@ _bool CStateBase_Player::Can_Reload()
 		return false;
 
 	return m_pOwnerGun->Get_CanReleod();
+}
+
+void CStateBase_Player::Set_GunTimer(_bool bOn)
+{
+	m_pOwnerGun->Set_FireTimer(bOn);
+}
+
+void CStateBase_Player::Reset_GunTimer()
+{
+	m_pOwnerGun->Reset_FireTimer();
+}
+
+void CStateBase_Player::Reload_Gun()
+{
+	m_pOwnerGun->Reload_Bullet();
+}
+
+_bool CStateBase_Player::Can_CheckKey(const _float fTimeDelta)
+{
+	return (!(m_tKeyTimer.bCountTime) ||
+		m_tKeyTimer.CountTime(fTimeDelta) == 1.f);
 }
 
 _bool CStateBase_Player::Has_ChangeState(STATEKEY eKey)

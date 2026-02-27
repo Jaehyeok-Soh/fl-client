@@ -61,7 +61,11 @@ public:
 	void			Set_ApplyGravity(_bool bApply) { m_bApplyGravity = bApply; }
 	void			Set_ApplyYLerp(_bool bApply) { m_bApplyYLerp = bApply; }
 
-	void			Set_GravityOffset(_float fOffset) { if (fOffset > m_fGravity)return; m_fGravityOffset = fOffset; }
+	void			Set_GravityOffset(_float fOffset) { 
+		if (fOffset > m_fGravity * -1.f)
+			return; 
+		m_fGravityOffset = fOffset; 
+	}
 
 	// action state 내부에 CCTFlags 가지고 있음 -> 외부에서는 어떻게 윰직일지만 값을 넘겨준다
 	void			Move(Vec3 disp, _float minDist, _float fTimeDelta); 
@@ -82,6 +86,7 @@ protected:
 	/* moves funcs */
 protected:
 	_bool			Align_Movement(const _float fTimeDelta);
+	_bool			Align_Movement_MoveDir(const _float fTimeDelta);
 	void			Follow_CameraLook(const _float fTimeDelta);
 	_bool			Is_Grounded() const;
 	_bool			Is_ApplyGravity() const;
@@ -133,7 +138,7 @@ protected:
 	_int				m_iCurrentState			= { -1 };
 	_int				m_iPrevState			= { -1 };
 
-	const _float		m_fGravity				= { -25.f };
+	const _float		m_fGravity				= { -10.f };
 	const _float		m_fMaxVerticalSpeed		= { 30.f };
 	const _float		m_fMaxFallSpeed			= { -12.f };
 	_float				m_fVerticalSpeed		= { 0.f };

@@ -443,6 +443,8 @@ HRESULT CLevel_Test::Ready_Boss_Layer(const wstring& wstrLayerTag)
 		monsterDesc.wstrBodyModelTag = L"Prototype_Component_Model_Xibi";
 		monsterDesc.wstrPartBodyPrototypeTag = L"Prototype_GameObject_Boss_Xibi_Body";
 		transformDesc.TranslationMatrix = Matrix::CreateTranslation(Vec3(18.f, 12.f, 19.f));
+		transformDesc.fMovePerSec = 2.f;
+		transformDesc.fRotatePerSec = 4.f;
 		monsterDesc.spanBoneNames = vecboneNames;
 		monsterDesc.pTransform_Desc = &transformDesc;
 		monsterDesc.wstrMonsterStateTag = L"Boss_Xibi";
@@ -454,8 +456,8 @@ HRESULT CLevel_Test::Ready_Boss_Layer(const wstring& wstrLayerTag)
 			desc.eType = EPhysicsCCTType::CAPSULE;
 			desc.pOwnerMatrix = nullptr;
 			desc.fRadius = 1.f;
-			desc.fHeight = 1.f;
-			desc.vExtens = { 2.f, 2.f, 2.f };
+			desc.fHeight = 0.7f;
+			desc.vExtens = { 1.5f, 1.5f, 1.5f };
 
 			PHYSICSMATERIAL_DESC mtrlDesc{};
 			mtrlDesc.eMaterial = EPhysicsMaterial::PLAYER;

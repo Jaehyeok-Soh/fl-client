@@ -44,7 +44,7 @@ void CState_DashSky::Update(const _float fTimeDelta)
 {
 	Super::Update(fTimeDelta);
 
-	if (Get_AnimElpasedTimeSeconds() > 0.7f)
+	if (Get_AnimElpasedTimeSeconds() > 0.6f)
 	{
 		Set_ApplyGravity(true);
 	}

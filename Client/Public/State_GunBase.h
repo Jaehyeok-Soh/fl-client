@@ -12,7 +12,7 @@ class CState_GunBase abstract : public CStateBase_Player
 
 public:
 	// 하체 move state
-	enum class MoveState { GROUND, LAND, JUMP, FALL};
+	enum class MoveState { GROUND, JUMP, FALL};
 	enum  Douwn_MixAnim : _uint { F =0, B, L, R, LF, LB, RF, RB, JUMP, FALL, END };
 
 	enum KeyFlag : Flags
@@ -40,11 +40,28 @@ public:
 		Mask_RB = KeyFlag::S | KeyFlag::A,
 	};
 
-	typedef struct tagGunStateDesc : public CStateBase_Player::PLAYER_STATEBASE_DESC
+	typedef struct tagGunStateDesc
 	{
-		Vec4 vWSAD_AnimIdx = {-1.f,-1.f ,-1.f ,-1.f };
-		Vec4 vLFB_RFB_AnimIdx = { -1.f,-1.f ,-1.f ,-1.f };
+		//Vec4 vWSAD_AnimIdx = {-1.f,-1.f ,-1.f ,-1.f };
+		//Vec4 vLFB_RFB_AnimIdx = { -1.f,-1.f ,-1.f ,-1.f };
+
+		//_uint iJumpAnimIdx = { 0 };
+		//_uint iFallAnimIdx = { 0 };
+
+		array<_uint, ENUM_TO_SZET(Douwn_MixAnim::END)> arrMixAnims;
+
+		CGun* pOwnerGun = { nullptr };
+
+		_int iMainAnimIdx = { 0 };
+
+		_bool bLoop = { false };
 	}GUN_STATEBASE_DESC;
+
+	// change state 할때 들어오는 desc
+	typedef struct tagStateBaseStartDesc : public CStateBase::STATE_START_DESC
+	{
+		MoveState eMoveState ={ MoveState::GROUND };
+	}GUN_START_DESC;
 
 protected:
 	CState_GunBase(CActionState* pOwnerComponent, const string& strName);
@@ -63,9 +80,11 @@ protected:
 
 	array<_uint, ENUM_TO_SZET(Douwn_MixAnim::END)> m_MixAnim_Indices;
 
-	TimeCount m_TJumpTime = { 0.f, 2.f };
+	TimeCount m_TJumpTime = { 0.f, 0.28f };
 	TimeCount m_TLandTime = { 0.f, 1.f };
 
+protected:
+	virtual void Change_PlayerState(STATEKEY eKey) override;
 
 protected:
 	void Check_KeyFlag(const _float fTimeDelta);
@@ -76,13 +95,17 @@ protected:
 	void Ground_Update(const _float fTimeDelta);
 	void Jump_Update(const _float fTimeDelta);
 	void Fall_Update(const _float fTimeDelta);
-	void Land_Update(const _float fTimeDelta);
 
 	_bool Change_MoveState(MoveState eState);
 	void Start_MoveState(MoveState eNextState);
 	void End_MoveState(MoveState ePreState);
 
 	void GunEnd();
+
+private:
+	void Jump(const _float fTimeDelta);
+
+	void GunMove(const _float fTimeDelta);
 
 public:
 	virtual void Free() override;

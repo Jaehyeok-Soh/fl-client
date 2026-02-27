@@ -36,7 +36,7 @@ HRESULT CGun::Initialize(void* pArg)
 	m_tFireTimeCounter.bCountTime	= false;
 	m_tFireTimeCounter.bTimeReset	= true;
 	m_tFireTimeCounter.fMaxTime		= pDesc->fAttackCoolTime;
-	m_tFireTimeCounter.fTimeAcc		= 0.f; // 처음에 바로 쏠 수 있도록 하기 위함
+	m_tFireTimeCounter.fTimeAcc = pDesc->fAttackCoolTime; // 처음에 바로 쏠 수 있도록 하기 위함
 
 	return S_OK;
 }
@@ -57,6 +57,8 @@ void CGun::Update_Priority(_float fTimeDelta)
 void CGun::Update(_float fTimeDelta)
 {
 	Super::Update(fTimeDelta);
+
+	Attack_Update(fTimeDelta);
 }
 
 void CGun::Update_Late(_float fTimeDelta)
@@ -108,7 +110,7 @@ void CGun::Reload_Bullet()
 		m_MTotalBullet.x -= m_MCurBullet.y;
 
 		// Cur 값 더해줌
-		m_MCurBullet.x = m_MTotalBullet.y;
+		m_MCurBullet.x = m_MCurBullet.y;
 	}
 
 	// 충분하지 않다면
@@ -139,7 +141,7 @@ void CGun::NoAttack_Update(const _float fTimeDelta)
 void CGun::Attack_Update(const _float fTimeDelta)
 {
 	// 총을 쏠 수 있을때
-	//if (Get_CanFire())
+	if (m_tFireTimeCounter.bCountTime)
 	{
 		// Cool Timer가 다 되었다면 
 		if (m_tFireTimeCounter.CountTime(fTimeDelta) == 1.f)
@@ -168,6 +170,10 @@ void CGun::Reload_Update(const _float fTimeDelta)
 
 void CGun::Fire()
 {
+	m_MCurBullet.x -=1.f;
+
+	if (m_MCurBullet.x == 0.f)
+		Reset_FireTimer();
 }
 
 CGun* CGun::Create(ID3D11Device* pDevice, ID3D11DeviceContext* pDeviceContext)
