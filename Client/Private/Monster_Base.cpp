@@ -256,7 +256,7 @@ HRESULT CMonster_Base::Ready_Components(void* pArgs)
 		return E_FAIL;
 
 	if (FAILED(Ready_AttackOverlap(pDesc->wstrAttackOverlapPrototypeTag)))
-		return E_FAIL;
+			return E_FAIL;
 
 	return S_OK;
 }

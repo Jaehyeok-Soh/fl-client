@@ -691,7 +691,7 @@ HRESULT CMainPlayer::Ready_CCT()
     desc.eType = EPhysicsCCTType::CAPSULE;
     desc.pOwnerMatrix = &Get_Component<CTransform>()->Get_WorldMatrix();
     desc.fRadius = 0.5f;
-    desc.fHeight = 1.f;
+    desc.fHeight = 0.7f;
     desc.vExtens = { 0.f, 0.f, 0.f };
 
     PHYSICSMATERIAL_DESC mtrlDesc{};

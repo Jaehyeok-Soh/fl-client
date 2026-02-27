@@ -1,5 +1,5 @@
 #include "pch.h"
-#include "Monster_Dummy.h"
+#include "Monster_Boomer.h"
 #include "Monster_Body_Base.h"
 #include "MonsterActionState.h"
 #include "MonsterControlContext.h"
@@ -9,17 +9,17 @@
 #include "ComputeShader.h"
 #include "GameInstance.h"
 
-CMonster_Dummy::CMonster_Dummy(ID3D11Device* pDevice, ID3D11DeviceContext* pDeviceContext)
+CMonster_Boomer::CMonster_Boomer(ID3D11Device* pDevice, ID3D11DeviceContext* pDeviceContext)
 	: Super(pDevice, pDeviceContext)
 {
 }
 
-CMonster_Dummy::CMonster_Dummy(const CMonster_Dummy& rhs)
+CMonster_Boomer::CMonster_Boomer(const CMonster_Boomer& rhs)
 	: Super(rhs)
 {
 }
 
-HRESULT CMonster_Dummy::Initialize_Prototype()
+HRESULT CMonster_Boomer::Initialize_Prototype()
 {
 	if (FAILED(Super::Initialize_Prototype()))
 		return E_FAIL;
@@ -27,7 +27,7 @@ HRESULT CMonster_Dummy::Initialize_Prototype()
 	return S_OK;
 }
 
-HRESULT CMonster_Dummy::Initialize(void* pArg)
+HRESULT CMonster_Boomer::Initialize(void* pArg)
 {
 	if (FAILED(Super::Initialize(pArg)))
 		return E_FAIL;
@@ -35,7 +35,7 @@ HRESULT CMonster_Dummy::Initialize(void* pArg)
 	//if (FAILED(Ready_Ability()))
 	//	return E_FAIL;
 
-	Set_Name("Monster_Dummy");
+	Set_Name("Monster_Boomer");
 
 	if (FAILED(Ready_PartObjects()))
 		return E_FAIL;
@@ -49,35 +49,35 @@ HRESULT CMonster_Dummy::Initialize(void* pArg)
 	return S_OK;
 }
 
-HRESULT CMonster_Dummy::Awake(const _uint iCurrentLevelID)
+HRESULT CMonster_Boomer::Awake(const _uint iCurrentLevelID)
 {
 	if (FAILED(Super::Awake(iCurrentLevelID)))
 		return E_FAIL;
-	
+
 	return S_OK;
 }
 
-void CMonster_Dummy::Update_Priority(const _float fTimeDelta)
+void CMonster_Boomer::Update_Priority(const _float fTimeDelta)
 {
 	Super::Update_Priority(fTimeDelta);
 }
 
-void CMonster_Dummy::Update(const _float fTimeDelta)
+void CMonster_Boomer::Update(const _float fTimeDelta)
 {
 	Super::Update(fTimeDelta);
 }
 
-void CMonster_Dummy::Update_Late(const _float fTimeDelta)
+void CMonster_Boomer::Update_Late(const _float fTimeDelta)
 {
 	Super::Update_Late(fTimeDelta);
 }
 
-void CMonster_Dummy::Ready_Before_Render(const _float fTimeDelta)
+void CMonster_Boomer::Ready_Before_Render(const _float fTimeDelta)
 {
 	Super::Ready_Before_Render(fTimeDelta);
 }
 
-HRESULT CMonster_Dummy::Render()
+HRESULT CMonster_Boomer::Render()
 {
 	if (FAILED(Super::Render()))
 		return E_FAIL;
@@ -85,44 +85,42 @@ HRESULT CMonster_Dummy::Render()
 	return S_OK;
 }
 
-void CMonster_Dummy::OnCollision(_uint iMyColliderLayer, _uint iOtherLayer, CGameObject* pOther)
+void CMonster_Boomer::OnCollision(_uint iMyColliderLayer, _uint iOtherLayer, CGameObject* pOther)
 {
 	Super::OnCollision(iMyColliderLayer, iOtherLayer, pOther);
 }
 
-void CMonster_Dummy::OnCollision_Enter(_uint iMyColliderLayer, _uint iOtherLayer, CGameObject* pOther, const COL_HIT_INFO& tHitInfo)
+void CMonster_Boomer::OnCollision_Enter(_uint iMyColliderLayer, _uint iOtherLayer, CGameObject* pOther, const COL_HIT_INFO& tHitInfo)
 {
 	Super::OnCollision_Enter(iMyColliderLayer, iOtherLayer, pOther, tHitInfo);
 }
 
-void CMonster_Dummy::OnCollision_Exit(_uint iMyColliderLayer, _uint iOtherLayer, CGameObject* pOther)
+void CMonster_Boomer::OnCollision_Exit(_uint iMyColliderLayer, _uint iOtherLayer, CGameObject* pOther)
 {
 	Super::OnCollision_Exit(iMyColliderLayer, iOtherLayer, pOther);
 }
 
-void CMonster_Dummy::OnTrigger_Enter(_uint iMyColliderLayer, _uint iOtherLayer, CGameObject* pOther)
+void CMonster_Boomer::OnTrigger_Enter(_uint iMyColliderLayer, _uint iOtherLayer, CGameObject* pOther)
 {
 	Super::OnTrigger_Enter(iMyColliderLayer, iOtherLayer, pOther);
 }
 
-void CMonster_Dummy::OnTrigger_Exit(_uint iMyColliderLayer, _uint iOtherLayer, CGameObject* pOther)
+void CMonster_Boomer::OnTrigger_Exit(_uint iMyColliderLayer, _uint iOtherLayer, CGameObject* pOther)
 {
 	Super::OnTrigger_Exit(iMyColliderLayer, iOtherLayer, pOther);
 }
 
-_bool CMonster_Dummy::On_Hit(const HIT_DESC& hitDesc)
+_bool CMonster_Boomer::On_Hit(const HIT_DESC& hitDesc)
 {
-	Super::On_Hit(hitDesc);
-
-	return true;
+	return Super::On_Hit(hitDesc);
 }
 
-void CMonster_Dummy::Try_Attack(const HIT_DESC& hitDesc)
+void CMonster_Boomer::Try_Attack(const HIT_DESC& hitDesc)
 {
 	Super::Try_Attack(hitDesc);
 }
 
-HRESULT CMonster_Dummy::Ready_BaseStates()
+HRESULT CMonster_Boomer::Ready_BaseStates()
 {
 	CMonsterActionState* pActionState = { nullptr };
 	CModel* pModel = Get_Part<CMonster_Body_Base>(Part::BODY)->Get_Component<CModel>();
@@ -138,15 +136,15 @@ HRESULT CMonster_Dummy::Ready_BaseStates()
 	return S_OK;
 }
 
-HRESULT CMonster_Dummy::Ready_PartObjects()
+HRESULT CMonster_Boomer::Ready_PartObjects()
 {
 	return S_OK;
 }
 
-HRESULT CMonster_Dummy::Ready_Components(void* pArgs)
+HRESULT CMonster_Boomer::Ready_Components(void* pArg)
 {
 	// TODO : Dummy나 파생클래스의 Desc가 생긴다면 수정해야함
-	MONSTER_DESC* pDesc = static_cast<MONSTER_DESC*>(pArgs);
+	MONSTER_DESC* pDesc = static_cast<MONSTER_DESC*>(pArg);
 
 	//typedef struct tagMonsterControlContextDesc
 	//{
@@ -170,7 +168,7 @@ HRESULT CMonster_Dummy::Ready_Components(void* pArgs)
 
 	CMonsterControlContext::MONSTER_CONTROLCONTEXT_DESC desc{};
 	desc.fMeleeRange = 2.f;
-	desc.fAttackRange = 4.f;
+	desc.fAttackRange = 6.f;
 	desc.fCloseRange = 1.f;
 	desc.fDetectionRange = 15.f;
 	desc.fSpeed = 1.f;
@@ -183,30 +181,30 @@ HRESULT CMonster_Dummy::Ready_Components(void* pArgs)
 	return S_OK;
 }
 
-CMonster_Dummy* CMonster_Dummy::Create(ID3D11Device* pDevice, ID3D11DeviceContext* pDeviceContext)
+CMonster_Boomer* CMonster_Boomer::Create(ID3D11Device* pDevice, ID3D11DeviceContext* pDeviceContext)
 {
-	CMonster_Dummy* pInsatnce = new CMonster_Dummy(pDevice, pDeviceContext);
+	CMonster_Boomer* pInsatnce = new CMonster_Boomer(pDevice, pDeviceContext);
 	if (FAILED(pInsatnce->Initialize_Prototype()))
 	{
-		MSG_BOX("CMonster_Dummy::Create, Failed");
+		MSG_BOX("CMonster_Boomer::Create, Failed");
 		Safe_Release(pInsatnce);
 	}
 
 	return pInsatnce;
 }
 
-CGameObject* CMonster_Dummy::Clone(void* pArg)
+CGameObject* CMonster_Boomer::Clone(void* pArg)
 {
-	CMonster_Dummy* pClone = new CMonster_Dummy(*this);
+	CMonster_Boomer* pClone = new CMonster_Boomer(*this);
 	if (FAILED(pClone->Initialize(pArg)))
 	{
-		MSG_BOX("CMonster_Dummy::Clone, Failed");
+		MSG_BOX("CMonster_Boomer::Clone, Failed");
 		Safe_Release(pClone);
 	}
 	return pClone;
 }
 
-void CMonster_Dummy::Free()
+void CMonster_Boomer::Free()
 {
 	Super::Free();
 }
