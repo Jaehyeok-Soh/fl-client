@@ -184,9 +184,6 @@
     <Filter Include="03. GameObject\UIObjects\02.UI\Image\Dynamic Image\01.Minimap">
       <UniqueIdentifier>{f89b605a-01f2-485c-87d7-f34d36eeef01}</UniqueIdentifier>
     </Filter>
-    <Filter Include="07. System\02. Debug_ImGui\Layout\Frame">
-      <UniqueIdentifier>{26872d9e-983a-47c0-940f-aa4b37bb39e5}</UniqueIdentifier>
-    </Filter>
     <Filter Include="04. Shaders\ComputeShaders">
       <UniqueIdentifier>{f29a8226-048f-4c41-b7e7-685b07e919a6}</UniqueIdentifier>
     </Filter>
@@ -1391,7 +1388,6 @@
     <ClCompile Include="..\private\Builder_AttackPreset.cpp">
       <Filter>07. System\01. Builder\AttackPreset</Filter>
     </ClCompile>
-    <ClCompile Include="..\Private\LandScape.cpp" />
     <ClCompile Include="..\Private\WorldUI_Component.cpp">
       <Filter>05. Component\WorldUI</Filter>
     </ClCompile>
@@ -1436,6 +1432,9 @@
     </ClCompile>
     <ClCompile Include="..\private\ImGui_TextureDebugInspector.cpp">
       <Filter>07. System\99. Debug_ImGui\Inspector\ShaderDebug</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\LandScape.cpp">
+      <Filter>03. GameObject\MapObject\02. LandScape</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

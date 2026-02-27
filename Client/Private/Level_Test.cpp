@@ -58,6 +58,9 @@ HRESULT CLevel_Test::Initialize()
 	if (FAILED(Super::Initialize()))
 		return E_FAIL;
 
+	if (FAILED(Ready_Player_Layer(g_wszPlayerLayer)))
+		return E_FAIL;
+
 	if (FAILED(Build_Prototype()))
 		return E_FAIL;
 
@@ -67,17 +70,14 @@ HRESULT CLevel_Test::Initialize()
 	if (FAILED(Ready_Camera_Layer(g_wszDynamicCameraLayer)))
 		return E_FAIL;
 
-	if (FAILED(Ready_Player_Layer(g_wszPlayerLayer)))
-		return E_FAIL;
-
 	if (FAILED(Ready_Map()))
 		return E_FAIL;
 
-	if (FAILED(Ready_Boss_Layer(g_wszBossLayer)))
-		return E_FAIL;
+	//if (FAILED(Ready_Boss_Layer(g_wszBossLayer)))
+	//	return E_FAIL;
 
-	if (FAILED(Ready_Monster()))
-		return E_FAIL;
+	//if (FAILED(Ready_Monster()))
+	//	return E_FAIL;
 
 	if (FAILED(Ready_UI_Layer(g_wszUILayer)))
 		return E_FAIL;
