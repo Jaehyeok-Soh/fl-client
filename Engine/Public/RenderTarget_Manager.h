@@ -60,6 +60,7 @@ public:
 
 #ifdef _DEBUG
 public:
+	ID3D11ShaderResourceView* Get_RenderTargetSRV(ERenderTarget eTarget);
 	HRESULT Ready_Debug(ERenderTarget eTarget, _float fX, _float fY, _float fSizeX, _float fSizeY);
 	HRESULT Render(EMRTLayer eMRTLayer, class CShader* pShader, class CVIBuffer_Rect_Tex* pVIBuffer);
 #endif

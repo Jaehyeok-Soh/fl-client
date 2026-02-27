@@ -278,6 +278,34 @@ void CModel::Set_CpuBone(_uint iBoneIdx)
 	m_iCpuBoneCount++;
 }
 
+HRESULT CModel::Change_Animation(CComputeShader* pAnimEComShader, const wstring& wstrName, _bool bBlend, _bool isLoop, _bool bForce)
+{
+	if (pAnimEComShader == nullptr)
+		return E_FAIL;
+
+	_int iAnimIdx = Get_AnimationIndex(wstrName);
+
+	if (iAnimIdx < 0)
+		return E_FAIL;
+
+	if (m_iCurrentAnimIndex == iAnimIdx && bForce == false)
+		return S_OK;
+
+	if (bBlend)
+	{
+		m_iPrevAnimIndex = m_iCurrentAnimIndex;
+		Change_AnimationPlayState(AnimationPlayState::BLEND, nullptr, iAnimIdx);
+	}
+	else
+		Change_AnimationPlayState(AnimationPlayState::PLAY, pAnimEComShader, iAnimIdx);
+
+	m_iCurrentAnimIndex = iAnimIdx;
+	m_vecAnimations[m_iCurrentAnimIndex]->Clear();
+	m_isAnimLoop = isLoop;
+
+	return S_OK;
+}
+
 HRESULT CModel::Change_Animation(CComputeShader* pAnimEComShader, _uint iAnimationIndex, _bool bBlend, _bool isLoop, _bool bForce)
 {
 	if (m_iCurrentAnimIndex == iAnimationIndex && bForce == false)
@@ -405,8 +433,11 @@ void CModel::Set_MixAnim(_bool bMix)
 
 	for (auto pMixIdx : m_vecMixAnimIndices)
 	{
-		m_vecAnimations[m_bMixAnim]->Reset_PrePosition();
-		m_vecAnimations[m_bMixAnim]->Set_TrackPosition(0.f);
+		if (pMixIdx > 0)
+		{
+			m_vecAnimations[pMixIdx]->Reset_PrePosition();
+			m_vecAnimations[pMixIdx]->Set_TrackPosition(0.f);
+		}
 	}
 }
 
@@ -448,8 +479,18 @@ void CModel::Set_MixAnim_ResetSize(_uint iSize)
 void CModel::Set_MixAnim_AnimIndex(_uint iVectorIdx, _int iAnimIdx)
 {
 	size_t idx = size_t(iVectorIdx);
+
+
 	if (idx < m_vecMixAnimIndices.size())
 	{
+		// 만약 원래 있던걸 지우는 거면 원래 담겨져 있던건 셋팅 리셋해주고
+		if (iAnimIdx < 0)
+		{
+			 m_vecAnimations[m_vecMixAnimIndices[idx]]->Reset_PrePosition();
+			 m_vecAnimations[m_vecMixAnimIndices[idx]]->Set_TrackPosition(0.f);
+		}
+
+		// anim idx 바인딩
 		m_vecMixAnimIndices[idx] = iAnimIdx;
 	}
 }
@@ -668,6 +709,14 @@ void CModel::Set_ApplyRootMotionAll(_bool bRootApply)
 	for (auto& pAnim : m_vecAnimations)
 	{
 		pAnim->Set_ApplyRootMotion(bRootApply);
+	}
+}
+
+void CModel::Set_Animtion_MotionOffset_All(_float fOffset)
+{
+	for (auto& pAnim : m_vecAnimations)
+	{
+		pAnim->Set_MotionOffset(fOffset);
 	}
 }
 
@@ -1022,13 +1071,12 @@ void CModel::Play_Begin(CComputeShader* pAnimEvalCS, _uint iAnimationIndex, _boo
 void CModel::Play_Update(CComputeShader* pBoneComBineCS, CComputeShader* pAnimEvalCS, const _float fTimeDelta, CTransform* pOwnerTransform, CPhysicsCCT* pOwnerPhyCCT, CComputeShader* pAnimMixCS)
 {
 	CModelAnimation* pAnimation = m_vecAnimations[m_iCurrentAnimIndex];
-	_float fPrevPosition = pAnimation->Get_TrackPosition();
-
+	m_fAnimPrevTrackPosition = pAnimation->Get_TrackPosition();
 	Play_Animation(pBoneComBineCS, pAnimEvalCS, fTimeDelta,  pOwnerTransform ,  pOwnerPhyCCT, pAnimMixCS);
 
 	_float fCurrentPosition = pAnimation->Get_TrackPosition();
-	const _bool bLooped = m_isAnimLoop && (fCurrentPosition < fPrevPosition);
-	Emit_Notifies(pAnimation, fPrevPosition, fCurrentPosition, bLooped);
+	m_bLooped = m_isAnimLoop && (fCurrentPosition < m_fAnimPrevTrackPosition);
+	Emit_Notifies(pAnimation, fCurrentPosition, EAnimNotifyPhase::Immediatley);
 }
 
 void CModel::Play_End()
@@ -1055,7 +1103,7 @@ void CModel::Blend_Update(CComputeShader* pBoneComBineCS, CComputeShader* pAnimE
 	}
 
 	CModelAnimation* pAnimation = m_vecAnimations[m_iCurrentAnimIndex];
-	_float fPrevPosition = pAnimation->Get_TrackPosition();
+	m_fAnimPrevTrackPosition = pAnimation->Get_TrackPosition();
 
 	m_fBlendedTime += fTimeDelta;
 	if (m_fBlendedTime < m_fBlendDuration)
@@ -1072,8 +1120,8 @@ void CModel::Blend_Update(CComputeShader* pBoneComBineCS, CComputeShader* pAnimE
 		Change_AnimationPlayState(PLAY, pAnimEvalCS, m_iCurrentAnimIndex, false);
 
 	const _float fCurrentPosition = pAnimation->Get_TrackPosition();
-	const _bool bLooped = (m_isAnimLoop && fCurrentPosition < fPrevPosition);
-	Emit_Notifies(pAnimation, fPrevPosition, fCurrentPosition, bLooped);
+	m_bLooped = (m_isAnimLoop && fCurrentPosition < m_fAnimPrevTrackPosition);
+	Emit_Notifies(pAnimation, fCurrentPosition, EAnimNotifyPhase::Immediatley);
 }
 
 void CModel::Blend_End()
@@ -1469,10 +1517,24 @@ HRESULT CModel::Bind_StagingBuffer(CComputeShader* pAnimMixCS)
 //	}
 //}
 
-void CModel::Emit_Notifies(CModelAnimation* pAnimation, _float fPrevPos, _float fCurPos, _bool bIsLooped)
+// Phase로직이 잘 이루어지려면 애니메이션 제어권은 무조건 ActionState에게 있어야하며
+// 해당 ActionState의 Update가 이루어지고 난 이후에 Body의 ModelComponent PlayAnimation이 호출되어야한다.
+HRESULT CModel::Emit_Notifies(EAnimNotifyPhase ePhase)
+{
+	if (ePhase >= EAnimNotifyPhase::END)
+		return E_FAIL;
+
+	if (m_iCurrentAnimIndex < 0 || m_iCurrentAnimIndex >= m_vecAnimations.size())
+		return S_OK;
+
+	Emit_Notifies(m_vecAnimations[m_iCurrentAnimIndex], m_vecAnimations[m_iCurrentAnimIndex]->Get_TrackPosition(), ePhase);
+	return S_OK;
+}
+
+void CModel::Emit_Notifies(CModelAnimation* pAnimation, _float fCurPos, EAnimNotifyPhase ePhase)
 {
 	// Animation 이벤트들
-	const auto& notifyKeys = pAnimation->Get_Notifies();
+	const auto& notifyKeys = pAnimation->Get_Notifies(ePhase);
 	if (notifyKeys.empty() == true)
 		return;
 
@@ -1480,7 +1542,7 @@ void CModel::Emit_Notifies(CModelAnimation* pAnimation, _float fPrevPos, _float 
 	const _float fDuration = pAnimation->Get_DurationTime();
 
 	// Event Cursor ( 실행 될 이벤트의 Index를 가리킨다 )
-	_uint iIndex = pAnimation->Get_NotifyCursor();
+	_uint iIndex = pAnimation->Get_NotifyCursor(ePhase);
 
 	// 람다 ( From, To 사이에 있는 이벤트 Broadcast )
 	auto Emit_Range = [&](_float fFrom, _float fTo)->void
@@ -1491,18 +1553,17 @@ void CModel::Emit_Notifies(CModelAnimation* pAnimation, _float fPrevPos, _float 
 				if (notifyKeys[iIndex].fTrackPosition > fFrom)
 					OnNotify.Broadcast(notifyKeys[iIndex]);
 
-
-				pAnimation->Set_NotifyCursor(++iIndex);
+				pAnimation->Set_NotifyCursor(ePhase, ++iIndex);
 			}
 		};
 
-	if (bIsLooped == false)
-		Emit_Range(fPrevPos, fCurPos);
+	if (m_bLooped == false)
+		Emit_Range(m_fAnimPrevTrackPosition, fCurPos);
 	// Loop가 처리됬을때 세팅
 	else
 	{
-		Emit_Range(fPrevPos, fDuration);
-		pAnimation->Set_NotifyCursor(0);
+		Emit_Range(m_fAnimPrevTrackPosition, fDuration);
+		pAnimation->Set_NotifyCursor(ePhase, 0);
 		iIndex = 0;
 		Emit_Range(0.f, fCurPos);
 	}

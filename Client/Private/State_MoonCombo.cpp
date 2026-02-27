@@ -14,6 +14,7 @@ HRESULT CState_MoonCombo::Initialize(void* pArg)
 
 	PLAYER_COMBOBASE_DESC tMyDesc = {};
 	tMyDesc.vCombo_CheckTimes = pDesc->vCombo_CheckTimes;
+	tMyDesc.pOwnerGun = pDesc->pOwnerGun;
 
 	tMyDesc.bBlend = true;
 	tMyDesc.bLoop = false;

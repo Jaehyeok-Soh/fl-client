@@ -39,8 +39,8 @@ HRESULT CEffectObject::Initialize(void* pArg)
     {
         m_tEffectDesc = *pDesc;
         m_tOriginEffectDesc = *pDesc;
+        m_iSpriteCurrentNumber.resize(ENUM_TO_UINT(DTO::TEXTURE_INFO::END));
     }
-
 
     if (FAILED(__super::Initialize(pArg)))
     {
@@ -138,6 +138,7 @@ HRESULT CEffectObject::Ready_Component_Texture()
             pInstance->Add_DefaultTexture(s + m_tEffectDesc.Data._Effect_DiffuseTexture_Tag, ENUM_TO_UINT(DTO::E_TEXTURETYPE::DIFFUSE));
             pInstance->Add_DefaultTexture(s + m_tEffectDesc.Data._Effect_NoiseTexture_Tag, ENUM_TO_UINT(DTO::E_TEXTURETYPE::NOISE));
             pInstance->Add_DefaultTexture(s + m_tEffectDesc.Data._Effect_MaskingTexture_Tag, ENUM_TO_UINT(DTO::E_TEXTURETYPE::MASKING));
+            pInstance->Add_DefaultTexture(s + m_tEffectDesc.Data._Effect_CurveTexture_Tag, ENUM_TO_UINT(DTO::E_TEXTURETYPE::CURVETEXTURE));
             pInstance->Add_DefaultTexture(s + m_tEffectDesc.Data._Effect_GradationTexture_Tag, ENUM_TO_UINT(DTO::E_TEXTURETYPE::GRADATION));
             pInstance->Add_DefaultTexture(s + m_tEffectDesc.Data._Effect_DissolveTexture_Tag, ENUM_TO_UINT(DTO::E_TEXTURETYPE::DISSOLVE));
             pInstance->Add_DefaultTexture(s + m_tEffectDesc.Data._Effect_GlowTexture_Tag, ENUM_TO_UINT(DTO::E_TEXTURETYPE::GLOW));
@@ -154,6 +155,7 @@ HRESULT CEffectObject::Ready_Component_Texture()
             pInstance->Add_DefaultTexture(s + m_tEffectDesc.Data._Effect_DiffuseTexture_Tag, ENUM_TO_UINT(DTO::E_TEXTURETYPE::DIFFUSE));
             pInstance->Add_DefaultTexture(s + m_tEffectDesc.Data._Effect_NoiseTexture_Tag, ENUM_TO_UINT(DTO::E_TEXTURETYPE::NOISE));
             pInstance->Add_DefaultTexture(s + m_tEffectDesc.Data._Effect_MaskingTexture_Tag, ENUM_TO_UINT(DTO::E_TEXTURETYPE::MASKING));
+            pInstance->Add_DefaultTexture(s + m_tEffectDesc.Data._Effect_CurveTexture_Tag, ENUM_TO_UINT(DTO::E_TEXTURETYPE::CURVETEXTURE));
             pInstance->Add_DefaultTexture(s + m_tEffectDesc.Data._Effect_GradationTexture_Tag, ENUM_TO_UINT(DTO::E_TEXTURETYPE::GRADATION));
             pInstance->Add_DefaultTexture(s + m_tEffectDesc.Data._Effect_DissolveTexture_Tag, ENUM_TO_UINT(DTO::E_TEXTURETYPE::DISSOLVE));
             pInstance->Add_DefaultTexture(s + m_tEffectDesc.Data._Effect_GlowTexture_Tag, ENUM_TO_UINT(DTO::E_TEXTURETYPE::GLOW));
@@ -439,6 +441,7 @@ void CEffectObject::Texture_Setting(const wstring& TextureName)
             pInstance->Add_DefaultTexture(s + m_tEffectDesc.Data._Effect_DiffuseTexture_Tag, ENUM_TO_UINT(DTO::E_TEXTURETYPE::DIFFUSE));
             pInstance->Add_DefaultTexture(s + m_tEffectDesc.Data._Effect_NoiseTexture_Tag, ENUM_TO_UINT(DTO::E_TEXTURETYPE::NOISE));
             pInstance->Add_DefaultTexture(s + m_tEffectDesc.Data._Effect_MaskingTexture_Tag, ENUM_TO_UINT(DTO::E_TEXTURETYPE::MASKING));
+            pInstance->Add_DefaultTexture(s + m_tEffectDesc.Data._Effect_CurveTexture_Tag, ENUM_TO_UINT(DTO::E_TEXTURETYPE::CURVETEXTURE));
             pInstance->Add_DefaultTexture(s + m_tEffectDesc.Data._Effect_GradationTexture_Tag, ENUM_TO_UINT(DTO::E_TEXTURETYPE::GRADATION));
             pInstance->Add_DefaultTexture(s + m_tEffectDesc.Data._Effect_DissolveTexture_Tag, ENUM_TO_UINT(DTO::E_TEXTURETYPE::DISSOLVE));
             pInstance->Add_DefaultTexture(s + m_tEffectDesc.Data._Effect_GlowTexture_Tag, ENUM_TO_UINT(DTO::E_TEXTURETYPE::GLOW));
@@ -455,6 +458,7 @@ void CEffectObject::Texture_Setting(const wstring& TextureName)
             pInstance->Add_DefaultTexture(s + m_tEffectDesc.Data._Effect_DiffuseTexture_Tag, ENUM_TO_UINT(DTO::E_TEXTURETYPE::DIFFUSE));
             pInstance->Add_DefaultTexture(s + m_tEffectDesc.Data._Effect_NoiseTexture_Tag, ENUM_TO_UINT(DTO::E_TEXTURETYPE::NOISE));
             pInstance->Add_DefaultTexture(s + m_tEffectDesc.Data._Effect_MaskingTexture_Tag, ENUM_TO_UINT(DTO::E_TEXTURETYPE::MASKING));
+            pInstance->Add_DefaultTexture(s + m_tEffectDesc.Data._Effect_CurveTexture_Tag, ENUM_TO_UINT(DTO::E_TEXTURETYPE::CURVETEXTURE));
             pInstance->Add_DefaultTexture(s + m_tEffectDesc.Data._Effect_GradationTexture_Tag, ENUM_TO_UINT(DTO::E_TEXTURETYPE::GRADATION));
             pInstance->Add_DefaultTexture(s + m_tEffectDesc.Data._Effect_DissolveTexture_Tag, ENUM_TO_UINT(DTO::E_TEXTURETYPE::DISSOLVE));
             pInstance->Add_DefaultTexture(s + m_tEffectDesc.Data._Effect_GlowTexture_Tag, ENUM_TO_UINT(DTO::E_TEXTURETYPE::GLOW));
@@ -519,10 +523,6 @@ HRESULT CEffectObject::Bind_ShaderResource()
         // Texture_OperatorFlag
         pDesc.iOperatorFlags = m_tEffectDesc.Data._Effect_TextureOperatorFlag;
         pDesc.vUVOffset = m_tEffectDesc.Data._Effect_UV_Offset;
-
-        pDesc.SpriteColCount = m_tEffectDesc.Data._Effect_TileCount.x;
-        pDesc.SpriteRowCount = m_tEffectDesc.Data._Effect_TileCount.y;
-        pDesc.CurSpriteIndex = m_tEffectDesc.Data.m_iCurSpriteNumber;
         pDesc.fLifeRatio = m_tEffectDesc.Data._Effect_ApearRatio;
 
         pDesc.vDistortionScale = m_tEffectDesc.Data._Effect_DistortionScale;
@@ -531,10 +531,46 @@ HRESULT CEffectObject::Bind_ShaderResource()
 
         pDesc.DiffuseTexture_ScrollWeight = m_tEffectDesc.Data._Effect_DiffuseTexture_ScrollWeight;
         pDesc.NoiseTexture_ScrollWeight = m_tEffectDesc.Data._Effect_NoiseTexture_ScrollWeight;
-        pDesc.MaskingTexture_ScrollWeight = m_tEffectDesc.Data._Effect_MaskingTexture_ScrollWeight;
         pDesc.GradationTexture_ScrollWeight = m_tEffectDesc.Data._Effect_GradationTexture_ScrollWeight;
         pDesc.DissolveTexture_ScrollWeight = m_tEffectDesc.Data._Effect_DissolveTexture_ScrollWeight;
         pDesc.GlowTexture_ScrollWeight= m_tEffectDesc.Data._Effect_GlowTexture_ScrollWeight;
+        pDesc.CurveTexture_ScrollWeight= m_tEffectDesc.Data._Effect_CurveTexture_ScrollWeight;
+        pDesc.MaskingTexture_ScrollWeight = m_tEffectDesc.Data._Effect_MaskingTexture_ScrollWeight;
+
+        pDesc.DiffuseTexture_SpriteInfo = Vec4(m_tEffectDesc.Data._Effect_DiffuseTexture_SpriteInfo.x, 
+            m_tEffectDesc.Data._Effect_DiffuseTexture_SpriteInfo.y, 
+            m_tEffectDesc.Data._Effect_DiffuseTexture_SpriteInfo.z, 
+            m_iSpriteCurrentNumber[ENUM_TO_UINT(DTO::TEXTURE_INFO::DEFAULTTEXTURE)]);
+
+        pDesc.NoiseTexture_SpriteInfo = Vec4(m_tEffectDesc.Data._Effect_NoiseTexture_SpriteInfo.x,
+            m_tEffectDesc.Data._Effect_NoiseTexture_SpriteInfo.y,
+            m_tEffectDesc.Data._Effect_NoiseTexture_SpriteInfo.z,
+            m_iSpriteCurrentNumber[ENUM_TO_UINT(DTO::TEXTURE_INFO::NOISETEXTURE)]);
+
+        pDesc.GradationTexture_SpriteInfo = Vec4(m_tEffectDesc.Data._Effect_GradationTexture_SpriteInfo.x,
+            m_tEffectDesc.Data._Effect_GradationTexture_SpriteInfo.y,
+            m_tEffectDesc.Data._Effect_GradationTexture_SpriteInfo.z,
+            m_iSpriteCurrentNumber[ENUM_TO_UINT(DTO::TEXTURE_INFO::GRADATIONTEXTURE)]);
+
+        pDesc.DissolveTexture_SpriteInfo = Vec4(m_tEffectDesc.Data._Effect_DissolveTexture_SpriteInfo.x,
+            m_tEffectDesc.Data._Effect_DissolveTexture_SpriteInfo.y,
+            m_tEffectDesc.Data._Effect_DissolveTexture_SpriteInfo.z,
+            m_iSpriteCurrentNumber[ENUM_TO_UINT(DTO::TEXTURE_INFO::DISSOLVETEXTURE)]);
+
+        pDesc.GlowTexture_SpriteInfo = Vec4(m_tEffectDesc.Data._Effect_GlowTexture_SpriteInfo.x,
+            m_tEffectDesc.Data._Effect_GlowTexture_SpriteInfo.y,
+            m_tEffectDesc.Data._Effect_GlowTexture_SpriteInfo.z,
+            m_iSpriteCurrentNumber[ENUM_TO_UINT(DTO::TEXTURE_INFO::GLOWTEXTURE)]);
+
+        pDesc.CurveTexture_SpriteInfo = Vec4(m_tEffectDesc.Data._Effect_CurveTexture_SpriteInfo.x,
+            m_tEffectDesc.Data._Effect_CurveTexture_SpriteInfo.y,
+            m_tEffectDesc.Data._Effect_CurveTexture_SpriteInfo.z,
+            m_iSpriteCurrentNumber[ENUM_TO_UINT(DTO::TEXTURE_INFO::CURVETEXTURE)]);
+
+        pDesc.CurveTexture_SpriteInfo = Vec4(m_tEffectDesc.Data._Effect_MaskTexture_SpriteInfo.x,
+            m_tEffectDesc.Data._Effect_MaskTexture_SpriteInfo.y,
+            m_tEffectDesc.Data._Effect_MaskTexture_SpriteInfo.z,
+            m_iSpriteCurrentNumber[ENUM_TO_UINT(DTO::TEXTURE_INFO::MASKINGTEXTURE)]);
 
         pShader->Bind_EffectData(pDesc);
 
@@ -927,36 +963,104 @@ void CEffectObject::TimeFlagRequest(_uint iTimeFlag)
     else
         Set_Visible();
 }
+//
+//void CEffectObject::TimeCalculate(const _float fDT)
+//{
+//    //// Start Delay를 제외한 순수 실행 시간 기반 진행률
+//    //_float fActiveTime = m_fTimeAccumulation - m_tEffectDesc.Data._Effect_StartDelay;
+//    //if (fActiveTime < 0.f) fActiveTime = 0.f;
+//
+//    //_float fRatio = fActiveTime / m_tEffectDesc.Data._Effect_Duration;
+//    //if (fRatio > 1.f) fRatio = 1.f;
+//
+//    //// ======= [스프라이트 애니메이션] =======
+//    //if ((m_tEffectDesc.Data._Effect_RenderFlag & (1 << 5)) && m_tEffectDesc.Data._Effect_bPlayAnim)
+//    //{
+//    //    _uint iTotalFrame = m_tEffectDesc.Data._Effect_TileCount.x * m_tEffectDesc.Data._Effect_TileCount.y;
+//    //    if (iTotalFrame > 0)
+//    //    {
+//    //       /* _uint iFrame = (_uint)(fActiveTime * m_tEffectDesc.Data._Effect_AnimSpeed);*/
+//    //        _uint iFrame = (_uint)(fRatio * (iTotalFrame - 1));
+//
+//    //        if (m_tEffectDesc.Data._Effect_Looping)
+//    //        {
+//    //            // 속도가 1이면 Duration 동안 1번 재생, 2면 2번 재생
+//    //            _uint iLoopFrame = (_uint)(fRatio * iTotalFrame * m_tEffectDesc.Data._Effect_AnimSpeed);
+//    //            m_tEffectDesc.Data.m_iCurSpriteNumber = iLoopFrame % iTotalFrame;
+//    //        }
+//    //         
+//    //        else
+//    //        {
+//    //            m_tEffectDesc.Data.m_iCurSpriteNumber = iFrame;
+//    //        }
+//    //    }
+//    //}
+//
+//
+//}
 
 void CEffectObject::TimeCalculate(const _float fDT)
 {
-    // Start Delay를 제외한 순수 실행 시간 기반 진행률
     _float fActiveTime = m_fTimeAccumulation - m_tEffectDesc.Data._Effect_StartDelay;
     if (fActiveTime < 0.f) fActiveTime = 0.f;
 
     _float fRatio = fActiveTime / m_tEffectDesc.Data._Effect_Duration;
     if (fRatio > 1.f) fRatio = 1.f;
 
-    // ======= [스프라이트 애니메이션] =======
-    if ((m_tEffectDesc.Data._Effect_RenderFlag & (1 << 5)) && m_tEffectDesc.Data._Effect_bPlayAnim)
+    // 모든 텍스처 타입을 순회하며 인덱스 계산
+    for (_uint i = 0; i < ENUM_TO_UINT(DTO::TEXTURE_INFO::END); ++i)
     {
-        _uint iTotalFrame = m_tEffectDesc.Data._Effect_TileCount.x * m_tEffectDesc.Data._Effect_TileCount.y;
-        if (iTotalFrame > 0)
-        {
-           /* _uint iFrame = (_uint)(fActiveTime * m_tEffectDesc.Data._Effect_AnimSpeed);*/
-            _uint iFrame = (_uint)(fRatio * (iTotalFrame - 1));
+        Vec4* pSpriteInfo = nullptr;
 
-            if (m_tEffectDesc.Data._Effect_Looping)
+        switch (i)
+        {
+        case ENUM_TO_UINT(DTO::TEXTURE_INFO::DEFAULTTEXTURE):   pSpriteInfo = &m_tEffectDesc.Data._Effect_DiffuseTexture_SpriteInfo; break;
+        case ENUM_TO_UINT(DTO::TEXTURE_INFO::NOISETEXTURE):     pSpriteInfo = &m_tEffectDesc.Data._Effect_NoiseTexture_SpriteInfo; break;
+        case ENUM_TO_UINT(DTO::TEXTURE_INFO::MASKINGTEXTURE):   pSpriteInfo = &m_tEffectDesc.Data._Effect_MaskTexture_SpriteInfo; break;
+        case ENUM_TO_UINT(DTO::TEXTURE_INFO::GRADATIONTEXTURE): pSpriteInfo = &m_tEffectDesc.Data._Effect_GradationTexture_SpriteInfo; break;
+        case ENUM_TO_UINT(DTO::TEXTURE_INFO::DISSOLVETEXTURE):  pSpriteInfo = &m_tEffectDesc.Data._Effect_DissolveTexture_SpriteInfo; break;
+        case ENUM_TO_UINT(DTO::TEXTURE_INFO::GLOWTEXTURE):      pSpriteInfo = &m_tEffectDesc.Data._Effect_GlowTexture_SpriteInfo; break;
+        case ENUM_TO_UINT(DTO::TEXTURE_INFO::CURVETEXTURE):     pSpriteInfo = &m_tEffectDesc.Data._Effect_CurveTexture_SpriteInfo; break;
+            // 필요에 따라 추가 케이스 확장
+        default: continue;
+        }
+
+        if (nullptr == pSpriteInfo) continue;
+
+        // x(Enable Flag) : 0(미사용), 1(고정 인덱스), 2(애니메이션)
+        _uint iFlag = (_uint)pSpriteInfo->x;
+        _uint iCols = (_uint)pSpriteInfo->y;
+        _uint iRows = (_uint)pSpriteInfo->z;
+        _uint iTotalFrame = iCols * iRows;
+
+        if (iFlag == 2) // 애니메이션 재생 모드
+        {
+            if (iTotalFrame > 0)
             {
-                // 속도가 1이면 Duration 동안 1번 재생, 2면 2번 재생
-                _uint iLoopFrame = (_uint)(fRatio * iTotalFrame * m_tEffectDesc.Data._Effect_AnimSpeed);
-                m_tEffectDesc.Data.m_iCurSpriteNumber = iLoopFrame % iTotalFrame;
+                // w값은 각 텍스처별 개별 속도(Speed)
+                _float fSpeed = pSpriteInfo->w;
+
+                if (m_tEffectDesc.Data._Effect_Looping)
+                {
+                    // 시간과 속도에 따라 계속 회전 (나머지 연산)
+                    _uint iLoopFrame = (_uint)(fRatio * iTotalFrame * fSpeed);
+                    m_iSpriteCurrentNumber[i] = iLoopFrame % iTotalFrame;
+                }
+                else
+                {
+                    _uint iFrame = (_uint)(fRatio * (iTotalFrame - 1));
+                    m_iSpriteCurrentNumber[i] = iFrame;
+                }
             }
-             
-            else
-            {
-                m_tEffectDesc.Data.m_iCurSpriteNumber = iFrame;
-            }
+        }
+        else if (iFlag == 1) // 고정 인덱스 모드
+        {
+            // w값 자체가 고정 Index
+            m_iSpriteCurrentNumber[i] = (_uint)pSpriteInfo->w;
+        }
+        else // 사용 안 함 (x == 0)
+        {
+            m_iSpriteCurrentNumber[i] = 0;
         }
     }
 }

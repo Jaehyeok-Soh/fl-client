@@ -50,6 +50,8 @@ HRESULT CUIMenu_Text::Awake(const _uint iCurrentLevelID)
 {
 	if (FAILED(Super::Awake(iCurrentLevelID)))
 		return E_FAIL;
+	m_vOriginFontColor = m_vFontColor;
+
 	return S_OK;
 }
 

@@ -68,6 +68,7 @@ public:
 	void Remove_Script_Component(const wstring& wstrComponentTag);
 	HRESULT Change_Script_Component(const wstring& wsrtTargetComponentTag, CMonoBehaviour* pComp);
 	virtual _int Get_AnimationIndex(const wstring& wstrName);
+	virtual _int Get_WeaponAnimationIndex(const wstring& wstrName) { return -1; };
 	virtual HRESULT Change_State(_uint iIndex);
 	CCameraMan* Get_CameraTargeter() { return m_pTargeter; }
 	void Set_CameraTargeter(CCameraMan* pTargeter) { m_pTargeter = pTargeter; }

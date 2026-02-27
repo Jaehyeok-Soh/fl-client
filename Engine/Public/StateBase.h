@@ -53,6 +53,7 @@ public:
 		SA_HasPreAni		= 0x0001	// pre ani가 있니
 		, SA_PreNonEvent	= 0x0002	// pre ani때 상태 변환 유무 flag.
 		, SA_PreAniDone		= 0x0004	// 이전 ani가 끝났니
+		, SA_WeaponAni		= 0x0008	// Weapon ani가 있니
 	};
 
 	// 먼저 실행할 animation 정보
@@ -115,7 +116,9 @@ public:
 
 	/* animation funcs */
 protected:
+	HRESULT Request_MixAnimation(_uint iVectorIdx, _int iAnimIdx);
 	HRESULT Request_ChangeAnimation(_uint iAnimationIndex, _bool bBlend, _bool bLoop, _bool bForce = false);
+	HRESULT Request_Change_WeaponAnimation(_int iAnimationIndex, _bool bBlend, _bool bLoop, _bool bForce = false);
 	HRESULT Request_Change_State(_uint iIndex, void *pArg = nullptr);
 	CGameObject* Get_OwnerObject();
 	_float Get_AnimElpasedTimeSeconds();
@@ -191,6 +194,7 @@ protected:
 	Flags					m_FAniFlags		= { 0 };
 	vector<CHECK_ANIMATION>	m_vecPreAnims;
 	vector<_int>			m_vecMainAnims;
+	vector<_int>			m_vecWeaponAnims; // pre + main 개수만큼 1대 1로 들고 있는다. 재생 안 할거면 -1로 넣기
 	_uint					m_iMainAnimIdx = { 0 }; // mainAnimIdx
 
 	_int m_iMixAni			= { -1 }; // todo : animation 섞는거 어떻게 할지...

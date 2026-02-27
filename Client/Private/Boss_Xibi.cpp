@@ -5,6 +5,7 @@
 #include "Boss_Xibi_Body.h"
 #include "Bone.h"
 #include "ComputeShader.h"
+#include "MonsterActionState.h"
 #include "MonsterControlContext.h"
 #include "Weapon.h"
 #include "GameInstance.h"
@@ -35,7 +36,7 @@ HRESULT CBoss_Xibi::Initialize(void* pArg)
 	if (FAILED(Ready_Weapon()))
 		return E_FAIL;
 
-	if (FAILED(Ready_Components()))
+	if (FAILED(Ready_Components(pArg)))
 		return E_FAIL;
 
 	return S_OK;
@@ -45,12 +46,7 @@ HRESULT CBoss_Xibi::Awake(const _uint iCurrentLevelID)
 {
 	if (FAILED(Super::Awake(iCurrentLevelID)))
 		return E_FAIL;
-	CComputeShader* pCom = static_cast<CComputeShader*>(Get_Script_Component(L"ComputeShader_AnimE"));
-	CWeapon* pWaepon = Get_Part<CWeapon>(Part::SWORD);
 
-	pWaepon->Set_WeaponState(CWeapon::State::HAND);
-	pWaepon->Get_Component<CModel>()->Change_Animation(pCom, 1, true);
-	pWaepon->Set_Weapon_PlayState(0);
 	return S_OK;
 }
 
@@ -82,6 +78,22 @@ HRESULT CBoss_Xibi::Render()
 	return S_OK;
 }
 
+_int CBoss_Xibi::Get_WeaponAnimationIndex(const wstring& wstrName)
+{
+	if (wstrName.empty() == true)
+		return -1;
+
+	CSword* pSword = Get_Part<CSword>(Part::SWORD);
+	if (pSword == nullptr)
+		return -1;
+
+	CModel* pModel = pSword->Get_Component<CModel>();
+	if (pModel == nullptr)
+		return -1;
+
+	return pModel->Get_AnimationIndex(wstrName);
+}
+
 void CBoss_Xibi::OnCollision(_uint iMyColliderLayer, _uint iOtherLayer, CGameObject* pOther)
 {
 }
@@ -109,10 +121,17 @@ HRESULT CBoss_Xibi::Ready_Weapon()
 		CWeapon::WEAPON_DESC weaponDesc = {};
 		weaponDesc.wstrModelPrototypeName = L"Prototype_Component_Model_XibiWeapon";
 		weaponDesc.pMatParent = &Get_Component<CTransform>()->Get_WorldMatrix();
-		weaponDesc.pMatHandSocket = &Get_Part<CBoss_Xibi_Body>(Part::BODY)->Get_Bone(CMonster_Body_Base::EBone::RightHand)->Get_CombinedTransformMatrix();
+		//weaponDesc.pMatHandSocket = &Get_Part<CBoss_Xibi_Body>(Part::BODY)->Get_Bone(CMonster_Body_Base::EBone::RightHand)->Get_CombinedTransformMatrix();
+		weaponDesc.pMatHandSocket = Get_Part<CBoss_Xibi_Body>(Part::BODY)->Get_SocketMatrix(75);
+
 		weaponDesc.eModel = CWeapon::Weapon_ModelType::ANIM;
+		weaponDesc.eAnimState = CWeapon::AnimState::PLAY;
+		weaponDesc.eState = CWeapon::State::HAND;
 		weaponDesc.bMianWeapon = true;
-		weaponDesc.bRGBShader = false;
+		weaponDesc.FDescFlag = 0;
+
+		weaponDesc.iStartAnimIdx = 2;
+
 		if (FAILED(Add_Part(Part::SWORD, ENUM_TO_UINT(ELevelType::STATIC), L"Prototype_GameObject_Part_Sword", &weaponDesc)))
 			return E_FAIL;
 	}
@@ -120,21 +139,36 @@ HRESULT CBoss_Xibi::Ready_Weapon()
 	return S_OK;
 }
 
-HRESULT CBoss_Xibi::Ready_Components()
+HRESULT CBoss_Xibi::Ready_Components(void* pArg)
 {
+	MONSTER_DESC* pDesc = static_cast<MONSTER_DESC*>(pArg);
+
 	// TODO : BattleFiled
 
+	{
+		CMonster_Body_Base* pBody = Get_Part<CMonster_Body_Base>(ENUM_TO_UINT(Part::BODY));
+		if (pBody == nullptr)
+			return E_FAIL;
+		CSword* pSword = Get_Part<CSword>(ENUM_TO_UINT(Part::SWORD));
+		if (pSword == nullptr)
+			return E_FAIL;
+		CComputeShader* pBodyAnimECS = static_cast<CComputeShader*>(pBody->Get_Script_Component(TEXT("ComputeShader_AnimE")));
+		if (pBodyAnimECS == nullptr)
+			return E_FAIL;
+		CComputeShader* pSwordAnimECS = static_cast<CComputeShader*>(pSword->Get_Script_Component(TEXT("ComputeShader_AnimE")));
+		if (pSwordAnimECS == nullptr)
+			return E_FAIL;
 
-	//typedef struct tagMonsterControlContextDesc
-	//{
-	//	_float fMeleeRange = {};
-	//	_float fAttackRange = {};
-	//	_float fCloseRange = {};
-	//	_float fDetectionRange = {};
-	//	_float fSpeed = {};
-	//	_int iSkillCount = { -1 };
-	//	vector<_int> vecSkillRange;
-	//}MONSTER_CONTROLCONTEXT_DESC;
+		CMonsterActionState::MONSTERACTIONSTATE_DESC desc = {};
+		desc.pOwnerModel = pBody->Get_Component<CModel>();
+		desc.pOwnerWeaponModel = pSword->Get_Component<CModel>();
+		desc.pOwnerAnimECS = pBodyAnimECS;
+		desc.pOwnerWeaponAnimECS = pSwordAnimECS;
+		desc.wstrMonsterStateTag = pDesc->wstrMonsterStateTag;
+		desc.iLevelIndex = pDesc->iLevelIndex;
+		if (FAILED(Add_Component<CMonsterActionState>(0, L"Prototype_Component_ActionState_Monster", &desc)))
+			return E_FAIL;
+	}
 
 	CMonsterControlContext::MONSTER_CONTROLCONTEXT_DESC desc{};
 	desc.fMeleeRange = 2.f;

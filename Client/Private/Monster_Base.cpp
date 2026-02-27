@@ -45,9 +45,6 @@ HRESULT CMonster_Base::Initialize(void* pArg)
 	if (FAILED(Ready_Components(pArg)))
 		return E_FAIL;
 
-	if (FAILED(Ready_BaseStates()))
-		return E_FAIL;
-
 	//if (FAILED(Ready_Ability()))
 	//	return E_FAIL;
 
@@ -210,16 +207,6 @@ HRESULT CMonster_Base::Ready_PartObjects(void* pArg)
 HRESULT CMonster_Base::Ready_Components(void* pArgs)
 {
 	MONSTER_DESC* pDesc = static_cast<MONSTER_DESC*>(pArgs);
-
-	{
-		CMonsterActionState::MONSTERACTIONSTATE_DESC desc = {};
-		desc.pOwnerModel = Get_Part<CMonster_Body_Base>(ENUM_TO_UINT(Part::BODY))->Get_Component<CModel>();
-		desc.pOwnerAnimECS = static_cast<CComputeShader*>(Get_Part<CMonster_Body_Base>(ENUM_TO_UINT(Part::BODY))->Get_Script_Component(TEXT("ComputeShader_AnimE")));
-		desc.wstrMonsterStateTag = pDesc->wstrMonsterStateTag;
-		desc.iLevelIndex = pDesc->iLevelIndex;
-		if (FAILED(Add_Component<CMonsterActionState>(0, L"Prototype_Component_ActionState_Monster", &desc)))
-			return E_FAIL;
-	}
 
 	if (FAILED(Ready_CCT(pArgs)))
 		return E_FAIL;

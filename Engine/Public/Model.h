@@ -103,6 +103,7 @@ public:
 
 	// animation funcs
 public:
+	HRESULT								Change_Animation(CComputeShader* pAnimEComShader, const wstring& wstrName, _bool bBlend, _bool isLoop = true, _bool bForce = false);
 	HRESULT								Change_Animation(CComputeShader* pAnimEComShader,_uint iAnimationIndex, _bool bBlend, _bool isLoop = true, _bool bForce = false);
 	void								Add_Animation(class CModelAnimation* pAnimation) { m_vecAnimations.push_back(pAnimation); }
 	// Transform과 CCT를 바인딩 안할 시 RootMotion적용은 되나, 포지션을 반영안한다.
@@ -198,6 +199,8 @@ public:
 	void								Set_CurAnimation_RootApply(_bool bRootApply);
 	void								Set_ApplyRootMotionAll(_bool bRootApply);
 
+	void								Set_Animtion_MotionOffset_All(_float fOffset);
+
 	// materials funcs
 public:
 	HRESULT								Change_MI(_uint iIndex, const wstring& wstrMITag);
@@ -277,8 +280,11 @@ private:
 	///////////////
 	//// Event ////
 	///////////////
+public:
+	// 외부 공개용, 무조건 현재프레임의 애니메이션 기준의 정보
+	HRESULT								Emit_Notifies(EAnimNotifyPhase ePhase);
 private:
-	void								Emit_Notifies(CModelAnimation* pAnimation, _float fPrevPos, _float fCurPos, _bool bIsLooped);
+	void								Emit_Notifies(CModelAnimation* pAnimation, _float fCurPos, EAnimNotifyPhase ePhase);
 
 private:
 	EModelType							m_eType						= { EModelType::END };
@@ -334,6 +340,8 @@ private:
 	///////////////
 	//// Event ////
 	///////////////
+	_bool m_bLooped{ false }; // 외부 공개용 아님, 현재프레임에 Loop가 이루어졌는가?
+	_float m_fAnimPrevTrackPosition{ -1.f }; // 외부 공개용 아님
 public:
 	CMulticastDelegate<void(const AnimNotifyKey&)> OnNotify;
 

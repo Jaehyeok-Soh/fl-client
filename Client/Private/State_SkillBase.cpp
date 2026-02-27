@@ -17,6 +17,8 @@ HRESULT CState_SkillBase::Initialize(void* pArg)
 
 	PLAYER_STATEBASE_DESC tMyDesc = {};
 
+	tMyDesc.pOwnerGun = pDesc->pOwnerGun;
+
 	tMyDesc.bBlend = true;
 	tMyDesc.bLoop = false;
 	tMyDesc.FAniFlags = 0;

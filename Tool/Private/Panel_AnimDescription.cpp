@@ -101,6 +101,13 @@ void CPanel_AnimDescription::Description_TabWindow()
 
 void CPanel_AnimDescription::Desc_AttackOverlapWindow()
 {
+    static constexpr const _char* s_AnimNotifyPhaseItems[] =
+    {
+        "Immediatley",
+        "Late",
+        "PreRender"
+    };
+
     auto pEvent = &m_tEventInfo->vecAttackEvents[m_tAnimControllInfo->iCurrentAttackEventIndex];
 
     if (pEvent == nullptr)
@@ -147,6 +154,13 @@ void CPanel_AnimDescription::Desc_AttackOverlapWindow()
         if (ImGui::InputText("Description", descBuf, 256))
         {
             pEvent->strDescription = descBuf;
+        }
+
+        ImGui::SeparatorText("EventNotifyPhase");
+        {
+            _int iAnimNotifyPhase = static_cast<_int>(pEvent->ePhase);
+            if (ImGui::Combo("EventNotifyPhase##Combo", &iAnimNotifyPhase, s_AnimNotifyPhaseItems, static_cast<_int>(Engine::g_AnimNotifyPhaseTypeCount)))
+                pEvent->ePhase = static_cast<Engine::EAnimNotifyPhase>(iAnimNotifyPhase);
         }
 
         // 애니메이션 태그
@@ -288,6 +302,13 @@ void CPanel_AnimDescription::Desc_AttackOverlapWindow()
 }
 void CPanel_AnimDescription::Desc_EffectWindow()
 {
+    static constexpr const _char* s_AnimNotifyPhaseItems[] =
+    {
+        "Immediatley",
+        "Late",
+        "PreRender"
+    };
+
     // 현재 선택된 이펙트 데이터 가져오기
     auto& pEvent = m_tEventInfo->vecVFXEvents[m_tAnimControllInfo->iCurrentEffectEventIndex];
 
@@ -307,6 +328,13 @@ void CPanel_AnimDescription::Desc_EffectWindow()
             m_pAnimToolManager->Modify_EffectEvent(m_tEventInfo->vecVFXEvents);
 
         auto& effectTags = m_pAnimToolManager->Get_LoadedEffectTags();
+
+        ImGui::SeparatorText("EventNotifyPhase");
+        {
+            _int iAnimNotifyPhase = static_cast<_int>(pEvent.ePhase);
+            if (ImGui::Combo("EventNotifyPhase##Combo", &iAnimNotifyPhase, s_AnimNotifyPhaseItems, static_cast<_int>(Engine::g_AnimNotifyPhaseTypeCount)))
+                pEvent.ePhase = static_cast<Engine::EAnimNotifyPhase>(iAnimNotifyPhase);
+        }
 
         if (ImGui::BeginCombo("Effect Tag", pEvent.strEffectTag.c_str()))
         {

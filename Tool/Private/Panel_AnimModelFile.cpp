@@ -158,6 +158,7 @@ void CPanel_AnimModelFile::SaveFileDialog(char* buffer, const char* filter)
 	ofn.lpstrFileTitle = NULL;
 	ofn.nMaxFileTitle = 0;
 	ofn.lpstrInitialDir = NULL;
+	ofn.lpstrDefExt = "json";
 	ofn.Flags = OFN_PATHMUSTEXIST | OFN_FILEMUSTEXIST | OFN_NOCHANGEDIR;
 
 	if (GetSaveFileNameA(&ofn) == TRUE)
@@ -202,7 +203,7 @@ void CPanel_AnimModelFile::RenderLoadModal()
 		ImGui::SameLine();
 		if (ImGui::Button("...##AnimBtn"))
 		{
-			OpenFileDialog(m_tLoadOptions.strAnimPath, "JSON Files\0*.json\0All\0*.*\0");
+			OpenFileDialog(m_tLoadOptions.strAnimPath, "Json Files (*.json)\0*.json\0All Files (*.*)\0*.*\0\0");
 		}
 
 		// ---------------------------------------------------------
@@ -215,7 +216,7 @@ void CPanel_AnimModelFile::RenderLoadModal()
 		ImGui::SameLine();
 		if (ImGui::Button("...##HitboxBtn"))
 		{
-			OpenFileDialog(m_tLoadOptions.strHitboxPath, "JSON Files\0*.json\0All\0*.*\0");
+			OpenFileDialog(m_tLoadOptions.strHitboxPath, "Json Files (*.json)\0*.json\0All Files (*.*)\0*.*\0\0");
 		}
 
 		// ---------------------------------------------------------
@@ -228,7 +229,7 @@ void CPanel_AnimModelFile::RenderLoadModal()
 		ImGui::SameLine();
 		if (ImGui::Button("...##EffectBtn"))
 		{
-			OpenFileDialog(m_tLoadOptions.strEffectPath, "JSON Files\0*.json\0All\0*.*\0");
+			OpenFileDialog(m_tLoadOptions.strEffectPath, "Json Files (*.json)\0*.json\0All Files (*.*)\0*.*\0\0");
 		}
 
 		// ---------------------------------------------------------
@@ -241,7 +242,7 @@ void CPanel_AnimModelFile::RenderLoadModal()
 		ImGui::SameLine();
 		if (ImGui::Button("...##SoundBtn"))
 		{
-			OpenFileDialog(m_tLoadOptions.strSoundPath, "JSON Files\0*.json\0All\0*.*\0");
+			OpenFileDialog(m_tLoadOptions.strSoundPath, "Json Files (*.json)\0*.json\0All Files (*.*)\0*.*\0\0");
 		}
 
 		ImGui::Separator();
@@ -306,7 +307,7 @@ void CPanel_AnimModelFile::RenderSaveModal()
 		ImGui::SameLine();
 		if (ImGui::Button("...##AnimBtn"))
 		{
-			SaveFileDialog(m_tLoadOptions.strAnimPath, "JSON Files\0*.json\0All\0*.*\0");
+			SaveFileDialog(m_tLoadOptions.strAnimPath, "Json Files (*.json)\0*.json\0All Files (*.*)\0*.*\0\0");
 		}
 
 		// ---------------------------------------------------------
@@ -319,7 +320,7 @@ void CPanel_AnimModelFile::RenderSaveModal()
 		ImGui::SameLine();
 		if (ImGui::Button("...##HitboxBtn"))
 		{
-			SaveFileDialog(m_tLoadOptions.strHitboxPath, "JSON Files\0*.json\0All\0*.*\0");
+			SaveFileDialog(m_tLoadOptions.strHitboxPath, "Json Files (*.json)\0*.json\0All Files (*.*)\0*.*\0\0");
 		}
 
 		// ---------------------------------------------------------
@@ -332,7 +333,7 @@ void CPanel_AnimModelFile::RenderSaveModal()
 		ImGui::SameLine();
 		if (ImGui::Button("...##EffectBtn"))
 		{
-			SaveFileDialog(m_tLoadOptions.strEffectPath, "JSON Files\0*.json\0All\0*.*\0");
+			SaveFileDialog(m_tLoadOptions.strEffectPath, "Json Files (*.json)\0*.json\0All Files (*.*)\0*.*\0\0");
 		}
 
 		// ---------------------------------------------------------
@@ -345,7 +346,7 @@ void CPanel_AnimModelFile::RenderSaveModal()
 		ImGui::SameLine();
 		if (ImGui::Button("...##SoundBtn"))
 		{
-			SaveFileDialog(m_tLoadOptions.strSoundPath, "JSON Files\0*.json\0All\0*.*\0");
+			SaveFileDialog(m_tLoadOptions.strSoundPath, "Json Files (*.json)\0*.json\0All Files (*.*)\0*.*\0\0");
 		}
 
 		ImGui::Separator();
@@ -499,6 +500,8 @@ void CPanel_AnimModelFile::CheckAnimModel(DIR dir, fs::path parent)
 
 		findAllMeshes(m_tRootDirectory);
 
+		ImGui::Separator();
+		ImGui::Spacing();
 		if (!allProjectMeshes.empty())
 		{
 			static map<string, int> selectedIdxMap;
@@ -523,14 +526,16 @@ void CPanel_AnimModelFile::CheckAnimModel(DIR dir, fs::path parent)
 				ImGui::EndCombo();
 			}
 
-
 			{
-				ImGui::SetNextItemWidth(80.f); // 원하는 픽셀 길이
+				ImGui::SetNextItemWidth(70.f); // 원하는 픽셀 길이
 				ImGui::InputInt("Socket Bone Index", &m_iSocketBoneIdx);
 				ImGui::SameLine();
 				ImGui::Checkbox("Combine Matrix", &m_bCombine);
 				ImGui::SameLine();
 				ImGui::Checkbox("Static", &m_bWeaponStatic);
+				ImGui::SameLine();
+				ImGui::SetNextItemWidth(70.f); // 원하는 픽셀 길이
+				ImGui::InputInt("RootBoneIdx", &m_iRootBoneIdx);
 			}
 
 			DrawPreTransformMatrix("PartModel PreTransform Matrix", m_tPartSrt);
@@ -538,7 +543,7 @@ void CPanel_AnimModelFile::CheckAnimModel(DIR dir, fs::path parent)
 			if (ImGui::SmallButton("Load Part Weapon"))
 			{
 				fs::path targetPath = allProjectMeshes[selectedIdxMap[nodeKey]];
-				CGameInstance::GetInstance()->Broadcast<LoadAnimModelPart>(targetPath, m_tPartSrt, m_iSocketBoneIdx, m_bCombine, m_bWeaponStatic);
+				CGameInstance::GetInstance()->Broadcast<LoadAnimModelPart>(targetPath, m_tPartSrt, m_iSocketBoneIdx, m_bCombine, m_bWeaponStatic, m_iRootBoneIdx);
 			}
 		}
 	}

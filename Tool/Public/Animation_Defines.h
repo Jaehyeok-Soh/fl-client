@@ -28,7 +28,7 @@ typedef struct tagAnimSRT
 }ANIM_SRT;
 
 struct LoadAnimModel { using Signature = void(path animModelPath, ANIM_SRT pretransform); };
-struct LoadAnimModelPart { using Signature = void(path PartModelPath, ANIM_SRT pretransform, int iSocketBondIdx, bool bCombine, bool bStaticModel); };
+struct LoadAnimModelPart { using Signature = void(path PartModelPath, ANIM_SRT pretransform, int iSocketBondIdx, bool bCombine, bool bStaticModel, int iRootBoneIdx); };
 struct LoadAttackOverlap { using Signature = void(CPhysicsAttackOverlap* pAttackOverlap); };
 struct LoadEffectEvent { using Signature = void(CEffectHandler* pEffectEvent);};
 

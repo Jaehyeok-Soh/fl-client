@@ -368,7 +368,7 @@ struct PS_OUT_AO
 struct PS_OUT_DEFFERED
 {
     float4 vDiffuse : SV_TARGET0;
-    float3 vNormal : SV_TARGET1;
+    float4 vNormal : SV_TARGET1;
     float4 vSpecularMask : SV_TARGET2;
     float4 vDepth : SV_TARGET3;
     uint4 vObjectInfo : SV_Target4;

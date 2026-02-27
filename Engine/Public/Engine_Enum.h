@@ -180,6 +180,18 @@ namespace Engine
 		END
 	};
 	//===================
+	// AnimEventPhase
+	//===================
+	enum class EAnimNotifyPhase : unsigned int
+	{
+		Immediatley = 0,
+		Late,
+		PreRender,
+		END
+	};
+	inline constexpr size_t g_AnimNotifyPhaseTypeCount = static_cast<size_t>(EAnimNotifyPhase::END);
+
+	//===================
 	// Component
 	//===================
 	enum class EComponentType : unsigned int

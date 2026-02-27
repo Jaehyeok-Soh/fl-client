@@ -1,15 +1,13 @@
 #include "pch.h"
 #include "Monster_Dummy.h"
-
-#include "GameInstance.h"
-
 #include "Monster_Body_Base.h"
-
 #include "MonsterActionState.h"
 #include "MonsterControlContext.h"
 #include "StateBase_Monster.h"
 #include "Model.h"
 #include "PhysicsCCT.h"
+#include "ComputeShader.h"
+#include "GameInstance.h"
 
 CMonster_Dummy::CMonster_Dummy(ID3D11Device* pDevice, ID3D11DeviceContext* pDeviceContext)
 	: Super(pDevice, pDeviceContext)
@@ -42,7 +40,7 @@ HRESULT CMonster_Dummy::Initialize(void* pArg)
 	if (FAILED(Ready_PartObjects()))
 		return E_FAIL;
 
-	if (FAILED(Ready_Components()))
+	if (FAILED(Ready_Components(pArg)))
 		return E_FAIL;
 
 	if (FAILED(Ready_BaseStates()))
@@ -133,8 +131,11 @@ HRESULT CMonster_Dummy::Ready_PartObjects()
 	return S_OK;
 }
 
-HRESULT CMonster_Dummy::Ready_Components()
+HRESULT CMonster_Dummy::Ready_Components(void* pArgs)
 {
+	// TODO : Dummy나 파생클래스의 Desc가 생긴다면 수정해야함
+	MONSTER_DESC* pDesc = static_cast<MONSTER_DESC*>(pArgs);
+
 	//typedef struct tagMonsterControlContextDesc
 	//{
 	//	_float fMeleeRange = {};
@@ -145,6 +146,15 @@ HRESULT CMonster_Dummy::Ready_Components()
 	//	_int iSkillCount = { -1 };
 	//	vector<_int> vecSkillRange;
 	//}MONSTER_CONTROLCONTEXT_DESC;
+	{
+		CMonsterActionState::MONSTERACTIONSTATE_DESC desc = {};
+		desc.pOwnerModel = Get_Part<CMonster_Body_Base>(ENUM_TO_UINT(Part::BODY))->Get_Component<CModel>();
+		desc.pOwnerAnimECS = static_cast<CComputeShader*>(Get_Part<CMonster_Body_Base>(ENUM_TO_UINT(Part::BODY))->Get_Script_Component(TEXT("ComputeShader_AnimE")));
+		desc.wstrMonsterStateTag = pDesc->wstrMonsterStateTag;
+		desc.iLevelIndex = pDesc->iLevelIndex;
+		if (FAILED(Add_Component<CMonsterActionState>(0, L"Prototype_Component_ActionState_Monster", &desc)))
+			return E_FAIL;
+	}
 
 	CMonsterControlContext::MONSTER_CONTROLCONTEXT_DESC desc{};
 	desc.fMeleeRange = 2.f;
