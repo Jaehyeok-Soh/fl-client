@@ -122,8 +122,7 @@ HRESULT CBoss_Xibi::Ready_Weapon()
 		weaponDesc.wstrModelPrototypeName = L"Prototype_Component_Model_XibiWeapon";
 		weaponDesc.pMatParent = &Get_Component<CTransform>()->Get_WorldMatrix();
 		//weaponDesc.pMatHandSocket = &Get_Part<CBoss_Xibi_Body>(Part::BODY)->Get_Bone(CMonster_Body_Base::EBone::RightHand)->Get_CombinedTransformMatrix();
-		weaponDesc.pMatHandSocket = Get_Part<CBoss_Xibi_Body>(Part::BODY)->Get_SocketMatrix(75);
-
+		weaponDesc.pMatHandSocket = Get_Part<CBoss_Xibi_Body>(Part::BODY)->Get_SocketMatrix(375);
 		weaponDesc.eModel = CWeapon::Weapon_ModelType::ANIM;
 		weaponDesc.eAnimState = CWeapon::AnimState::PLAY;
 		weaponDesc.eState = CWeapon::State::HAND;

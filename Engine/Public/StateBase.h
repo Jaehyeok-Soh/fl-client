@@ -132,6 +132,7 @@ protected:
 	/* move funcs */
 protected:
 	_bool Align_Movement(const _float fTimeDelta);
+	_bool Align_Movement_MoveDir(const _float fTimeDelta);
 	_bool Align_Move(_uint iRunState, _bool bForce = false, void* pArg = nullptr);
 	void Move(Vec3 disp, _float minDist, _float fTimeDelta);
 

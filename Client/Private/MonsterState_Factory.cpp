@@ -74,6 +74,8 @@ HRESULT CMonsterState_Factory::Ready_Condition()
 
 	REGISTER_CONDITION("condition_non_cancellation", CONDITION{ return !state->IsCancellation(); });
 
+	REGISTER_CONDITION("condition_over_lifetime", CONDITION{ return state->IsOverLifeTime(); });
+
 	return S_OK;
 }
 
@@ -88,14 +90,14 @@ HRESULT CMonsterState_Factory::Ready_Feature()
 	REGISTER_FEATURE("feat_keep_look_target", FEATURE{ state->SetupLook_Target_XZ(); });
 
 	// 8방향 움직임
-	REGISTER_FEATURE("feat_move_front", FEATURE{ MONSTERCC(state)->Update_8Dir_LocalAxisXZ(fTimeDelta, 1.f, 0.f); state->Align_Movement(fTimeDelta); });
-	REGISTER_FEATURE("feat_move_right", FEATURE{ MONSTERCC(state)->Update_8Dir_LocalAxisXZ(fTimeDelta, 0.f, 1.f); state->Align_Movement(fTimeDelta); });
-	REGISTER_FEATURE("feat_move_left", FEATURE{ MONSTERCC(state)->Update_8Dir_LocalAxisXZ(fTimeDelta, 0.f, -1.f); state->Align_Movement(fTimeDelta); });
-	REGISTER_FEATURE("feat_move_backward", FEATURE{ MONSTERCC(state)->Update_8Dir_LocalAxisXZ(fTimeDelta, -1.f, 0.f); state->Align_Movement(fTimeDelta); });
-	REGISTER_FEATURE("feat_move_front_right", FEATURE{ MONSTERCC(state)->Update_8Dir_LocalAxisXZ(fTimeDelta, 1.f, 1.f); state->Align_Movement(fTimeDelta); });
-	REGISTER_FEATURE("feat_move_front_left", FEATURE{ MONSTERCC(state)->Update_8Dir_LocalAxisXZ(fTimeDelta, 1.f, -1.f); state->Align_Movement(fTimeDelta); });
-	REGISTER_FEATURE("feat_move_backward_right", FEATURE{ MONSTERCC(state)->Update_8Dir_LocalAxisXZ(fTimeDelta, -1.f, 1.f); state->Align_Movement(fTimeDelta); });
-	REGISTER_FEATURE("feat_move_backward_left", FEATURE{ MONSTERCC(state)->Update_8Dir_LocalAxisXZ(fTimeDelta, -1.f, -1.f); state->Align_Movement(fTimeDelta); });
+	REGISTER_FEATURE("feat_move_front", FEATURE{ MONSTERCC(state)->Update_8Dir_LocalAxisXZ(fTimeDelta, 1.f, 0.f); state->Align_Movement_MoveDir(fTimeDelta); });
+	REGISTER_FEATURE("feat_move_right", FEATURE{ MONSTERCC(state)->Update_8Dir_LocalAxisXZ(fTimeDelta, 0.f, 1.f); state->Align_Movement_MoveDir(fTimeDelta); });
+	REGISTER_FEATURE("feat_move_left", FEATURE{ MONSTERCC(state)->Update_8Dir_LocalAxisXZ(fTimeDelta, 0.f, -1.f); state->Align_Movement_MoveDir(fTimeDelta); });
+	REGISTER_FEATURE("feat_move_backward", FEATURE{ MONSTERCC(state)->Update_8Dir_LocalAxisXZ(fTimeDelta, -1.f, 0.f); state->Align_Movement_MoveDir(fTimeDelta); });
+	REGISTER_FEATURE("feat_move_front_right", FEATURE{ MONSTERCC(state)->Update_8Dir_LocalAxisXZ(fTimeDelta, 1.f, 1.f); state->Align_Movement_MoveDir(fTimeDelta); });
+	REGISTER_FEATURE("feat_move_front_left", FEATURE{ MONSTERCC(state)->Update_8Dir_LocalAxisXZ(fTimeDelta, 1.f, -1.f); state->Align_Movement_MoveDir(fTimeDelta); });
+	REGISTER_FEATURE("feat_move_backward_right", FEATURE{ MONSTERCC(state)->Update_8Dir_LocalAxisXZ(fTimeDelta, -1.f, 1.f); state->Align_Movement_MoveDir(fTimeDelta); });
+	REGISTER_FEATURE("feat_move_backward_left", FEATURE{ MONSTERCC(state)->Update_8Dir_LocalAxisXZ(fTimeDelta, -1.f, -1.f); state->Align_Movement_MoveDir(fTimeDelta); });
 	return S_OK;
 }
 
