@@ -50,13 +50,13 @@ HRESULT CState_ComboBase::Start(void* pArg, _bool bForce)
 
 void CState_ComboBase::Update(const _float fTimeDelta)
 {
-	Super::Update(fTimeDelta);
-
 	Count_ComboTime(fTimeDelta);
 
 	Check_Combo();
 
 	Check_Monster();
+
+	Super::Update(fTimeDelta);
 }
 
 HRESULT CState_ComboBase::End()
@@ -69,6 +69,14 @@ HRESULT CState_ComboBase::End()
 	Change_Weapon(CPlayer::Part::SWORD, ENUM_TO_UINT(CWeapon::State::HOLD));
 
 	return S_OK;
+}
+
+_bool CState_ComboBase::Can_CheckKey(const _float fTimeDelta)
+{
+	if (!m_bNextCombo && m_tKeyTimer.CountTime(fTimeDelta) == 1.f)
+		return true;
+
+	return false;
 }
 
 void CState_ComboBase::Change_NextCombo()
@@ -88,6 +96,8 @@ void CState_ComboBase::Change_NextCombo()
 	m_tKeyTimer.fMaxTime = m_ComboTimes[m_iComboCount -1];
 	m_fStateElapsed = 0.f;
 
+	m_TChargeCount.x = 0.f;
+
 	Request_ChangeAnimation(m_vecMainAnims[m_iComboCount], true, false, true);
 }
 
@@ -102,6 +112,8 @@ void CState_ComboBase::Change_FirstCombo()
 	m_tKeyTimer.fTimeAcc = 0.f;
 	m_tKeyTimer.fMaxTime = m_ComboTimes[0];
 	m_fStateElapsed = 0.f;
+
+	m_TChargeCount.x = 0.f;
 
 	Request_ChangeAnimation(m_vecMainAnims[0], false, false, true);
 }

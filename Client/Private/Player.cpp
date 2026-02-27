@@ -204,6 +204,7 @@ void CPlayer::Change_Weapon(_uint iPart, _uint iState)
     // 우선 다 none으로 바꾼다음
     static_cast<CWeapon*>(Get_Part<CWeapon>(Part::SWORD))->Set_WeaponState(CWeapon::State::NONE);
     static_cast<CWeapon*>(Get_Part<CWeapon>(Part::SKILL))->Set_WeaponState(CWeapon::State::NONE);
+    static_cast<CWeapon*>(Get_Part<CWeapon>(Part::GUN))->Set_WeaponState(CWeapon::State::NONE);
 
     switch (iPart)
     {
@@ -213,6 +214,10 @@ void CPlayer::Change_Weapon(_uint iPart, _uint iState)
 
     case static_cast<_uint>(Part::SKILL):
         static_cast<CWeapon*>(Get_Part<CWeapon>(Part::SKILL))->Set_WeaponState(iState);
+        break;
+
+    case static_cast<_uint>(Part::GUN):
+        static_cast<CWeapon*>(Get_Part<CWeapon>(Part::GUN))->Set_WeaponState(iState);
         break;
     }
 
@@ -262,7 +267,7 @@ _bool CPlayer::Start_Attack(State iState)
         bChange = static_cast<CStatCom_Player*>(Get_Component<CMyStat>())->Set_AttackState(CStatCom_Player::Attack_State::Melee, true);
         break;
 
-    case State::GUNHIDLE:
+    case State::GUNIDLE:
     case State::GUNWALK:
     case State::GUNATTACK:
     case State::GUNRELOAD:
@@ -291,7 +296,7 @@ void CPlayer::End_Attack(State iState)
         static_cast<CStatCom_Player*>(Get_Component<CMyStat>())->Set_AttackState(CStatCom_Player::Attack_State::Melee, false);
         break;
 
-    case State::GUNHIDLE:
+    case State::GUNIDLE:
     case State::GUNWALK:
     case State::GUNATTACK:
     case State::GUNRELOAD:
@@ -353,7 +358,7 @@ HRESULT CPlayer::Ready_BaseStates()
         vecChangeState_ByKey[ENUM_TO_SZET(CStateBase_Player::STATEKEY::E)] = ENUM_TO_UINT(State::SKILL1);
         vecChangeState_ByKey[ENUM_TO_SZET(CStateBase_Player::STATEKEY::Q)] = ENUM_TO_UINT(State::SKILL2);
         vecChangeState_ByKey[ENUM_TO_SZET(CStateBase_Player::STATEKEY::LM)]             = ENUM_TO_UINT(CPlayer::State::COMBO);
-        //vecChangeState_ByKey[ENUM_TO_SZET(CStateBase_Player::STATEKEY::RM)]           = ENUM_TO_UINT(CPlayer::State::GUN);
+        vecChangeState_ByKey[ENUM_TO_SZET(CStateBase_Player::STATEKEY::RM)]           = ENUM_TO_UINT(CPlayer::State::GUNATTACK);
         vecChangeState_ByKey[ENUM_TO_SZET(CStateBase_Player::STATEKEY::CHARGE)]         = ENUM_TO_UINT(CPlayer::State::CHARGE);
 
         desc.vecChangeState_ByKey = vecChangeState_ByKey;
@@ -366,6 +371,8 @@ HRESULT CPlayer::Ready_BaseStates()
         if (FAILED(pActionState->Add_State(ENUM_TO_UINT(State::IDLE), CState_Idle::Create(pActionState, &desc))))
             return E_FAIL;
     }
+
+    vecChangeState_ByKey[ENUM_TO_SZET(CStateBase_Player::STATEKEY::RM)] = ENUM_TO_UINT(CPlayer::State::END);
 
     // Walk
     {
@@ -390,7 +397,7 @@ HRESULT CPlayer::Ready_BaseStates()
         vecChangeState_ByKey[ENUM_TO_SZET(CStateBase_Player::STATEKEY::E)] = ENUM_TO_UINT(State::SKILL1);
         vecChangeState_ByKey[ENUM_TO_SZET(CStateBase_Player::STATEKEY::Q)] = ENUM_TO_UINT(State::SKILL2);
         vecChangeState_ByKey[ENUM_TO_SZET(CStateBase_Player::STATEKEY::LM)]             = ENUM_TO_UINT(CPlayer::State::COMBO);
-        //vecChangeState_ByKey[ENUM_TO_SZET(CStateBase_Player::STATEKEY::RM)]           = ENUM_TO_UINT(CPlayer::State::GUN);
+        vecChangeState_ByKey[ENUM_TO_SZET(CStateBase_Player::STATEKEY::RM)]           = ENUM_TO_UINT(CPlayer::State::GUNATTACK);
         vecChangeState_ByKey[ENUM_TO_SZET(CStateBase_Player::STATEKEY::CHARGE)]         = ENUM_TO_UINT(CPlayer::State::CHARGE);
         desc.vecChangeState_ByKey = vecChangeState_ByKey;
 
@@ -420,7 +427,7 @@ HRESULT CPlayer::Ready_BaseStates()
         vecChangeState_ByKey[ENUM_TO_SZET(CStateBase_Player::STATEKEY::E)]              = ENUM_TO_UINT(State::SKILL1);
         vecChangeState_ByKey[ENUM_TO_SZET(CStateBase_Player::STATEKEY::Q)]              = ENUM_TO_UINT(State::SKILL2);
         vecChangeState_ByKey[ENUM_TO_SZET(CStateBase_Player::STATEKEY::LM)]             = ENUM_TO_UINT(State::COMBO);
-        //vecChangeState_ByKey[ENUM_TO_SZET(CStateBase_Player::STATEKEY::RM)]           = ENUM_TO_UINT(State::GUN);
+        vecChangeState_ByKey[ENUM_TO_SZET(CStateBase_Player::STATEKEY::RM)] = ENUM_TO_UINT(State::GUNATTACK);
         vecChangeState_ByKey[ENUM_TO_SZET(CStateBase_Player::STATEKEY::CHARGE)]         = ENUM_TO_UINT(State::END);
         desc.vecChangeState_ByKey = vecChangeState_ByKey;
 
@@ -450,7 +457,7 @@ HRESULT CPlayer::Ready_BaseStates()
         vecChangeState_ByKey[ENUM_TO_SZET(CStateBase_Player::STATEKEY::E)] = ENUM_TO_UINT(State::SKILL1);
         vecChangeState_ByKey[ENUM_TO_SZET(CStateBase_Player::STATEKEY::Q)] = ENUM_TO_UINT(State::SKILL2);
         vecChangeState_ByKey[ENUM_TO_SZET(CStateBase_Player::STATEKEY::LM)]             = ENUM_TO_UINT(State::COMBO);
-        //vecChangeState_ByKey[ENUM_TO_SZET(CStateBase_Player::STATEKEY::RM)]           = ENUM_TO_UINT(State::GUN);
+        vecChangeState_ByKey[ENUM_TO_SZET(CStateBase_Player::STATEKEY::RM)] = ENUM_TO_UINT(State::GUNATTACK);
         vecChangeState_ByKey[ENUM_TO_SZET(CStateBase_Player::STATEKEY::CHARGE)]         = ENUM_TO_UINT(State::END);
         desc.vecChangeState_ByKey = vecChangeState_ByKey;
 
@@ -485,7 +492,7 @@ HRESULT CPlayer::Ready_BaseStates()
         vecChangeState_ByKey[ENUM_TO_SZET(CStateBase_Player::STATEKEY::E)]              = ENUM_TO_UINT(State::SKILL1);
         vecChangeState_ByKey[ENUM_TO_SZET(CStateBase_Player::STATEKEY::Q)]              = ENUM_TO_UINT(State::SKILL2);
         vecChangeState_ByKey[ENUM_TO_SZET(CStateBase_Player::STATEKEY::LM)]             = ENUM_TO_UINT(State::COMBO);
-        //vecChangeState_ByKey[ENUM_TO_SZET(CStateBase_Player::STATEKEY::RM)]             = ENUM_TO_UINT(State::END);
+        vecChangeState_ByKey[ENUM_TO_SZET(CStateBase_Player::STATEKEY::RM)]             = ENUM_TO_UINT(State::END);
         vecChangeState_ByKey[ENUM_TO_SZET(CStateBase_Player::STATEKEY::CHARGE)]         = ENUM_TO_UINT(State::END);
         desc.vecChangeState_ByKey = vecChangeState_ByKey;
 
@@ -517,7 +524,7 @@ HRESULT CPlayer::Ready_BaseStates()
         vecChangeState_ByKey[ENUM_TO_SZET(CStateBase_Player::STATEKEY::E)]              = ENUM_TO_UINT(State::SKILL1);
         vecChangeState_ByKey[ENUM_TO_SZET(CStateBase_Player::STATEKEY::Q)]              = ENUM_TO_UINT(State::SKILL2);
         vecChangeState_ByKey[ENUM_TO_SZET(CStateBase_Player::STATEKEY::LM)]             = ENUM_TO_UINT(State::END);
-        //vecChangeState_ByKey[ENUM_TO_SZET(CStateBase_Player::STATEKEY::RM)]           = ENUM_TO_UINT(State::END);
+        vecChangeState_ByKey[ENUM_TO_SZET(CStateBase_Player::STATEKEY::RM)]           = ENUM_TO_UINT(State::GUNATTACK);
         vecChangeState_ByKey[ENUM_TO_SZET(CStateBase_Player::STATEKEY::CHARGE)]         = ENUM_TO_UINT(State::END);
         desc.vecChangeState_ByKey = vecChangeState_ByKey;
 
@@ -548,7 +555,7 @@ HRESULT CPlayer::Ready_BaseStates()
         vecChangeState_ByKey[ENUM_TO_SZET(CStateBase_Player::STATEKEY::E)]              = ENUM_TO_UINT(State::SKILL1);
         vecChangeState_ByKey[ENUM_TO_SZET(CStateBase_Player::STATEKEY::Q)]              = ENUM_TO_UINT(State::END);
         vecChangeState_ByKey[ENUM_TO_SZET(CStateBase_Player::STATEKEY::LM)]             = ENUM_TO_UINT(State::JUMPATTSTART);
-        //vecChangeState_ByKey[ENUM_TO_SZET(CStateBase_Player::STATEKEY::RM)]           = ENUM_TO_UINT(State::JUMPGUN);
+        vecChangeState_ByKey[ENUM_TO_SZET(CStateBase_Player::STATEKEY::RM)]           = ENUM_TO_UINT(State::GUNATTACK);
         vecChangeState_ByKey[ENUM_TO_SZET(CStateBase_Player::STATEKEY::CHARGE)]         = ENUM_TO_UINT(State::END);
 
         desc.vecChangeState_ByKey = vecChangeState_ByKey;
@@ -584,7 +591,7 @@ HRESULT CPlayer::Ready_BaseStates()
         vecChangeState_ByKey[ENUM_TO_SZET(CStateBase_Player::STATEKEY::E)]              = ENUM_TO_UINT(State::SKILL1);
         vecChangeState_ByKey[ENUM_TO_SZET(CStateBase_Player::STATEKEY::Q)]              = ENUM_TO_UINT(State::SKILL2);
         vecChangeState_ByKey[ENUM_TO_SZET(CStateBase_Player::STATEKEY::LM)]             = ENUM_TO_UINT(State::COMBO);
-        //vecChangeState_ByKey[ENUM_TO_SZET(CStateBase_Player::STATEKEY::RM)]           = ENUM_TO_UINT(State::GUN);
+        vecChangeState_ByKey[ENUM_TO_SZET(CStateBase_Player::STATEKEY::RM)]           = ENUM_TO_UINT(State::GUNATTACK);
         vecChangeState_ByKey[ENUM_TO_SZET(CStateBase_Player::STATEKEY::CHARGE)]         = ENUM_TO_UINT(State::CHARGE);
         desc.vecChangeState_ByKey = vecChangeState_ByKey;
 
@@ -613,7 +620,7 @@ HRESULT CPlayer::Ready_BaseStates()
         vecChangeState_ByKey[ENUM_TO_SZET(CStateBase_Player::STATEKEY::E)]              = ENUM_TO_UINT(State::SKILL1);
         vecChangeState_ByKey[ENUM_TO_SZET(CStateBase_Player::STATEKEY::Q)]              = ENUM_TO_UINT(State::SKILL2);
         vecChangeState_ByKey[ENUM_TO_SZET(CStateBase_Player::STATEKEY::LM)]             = ENUM_TO_UINT(State::COMBO);
-        //vecChangeState_ByKey[ENUM_TO_SZET(CStateBase_Player::STATEKEY::RM)]           = ENUM_TO_UINT(State::GUN);
+        vecChangeState_ByKey[ENUM_TO_SZET(CStateBase_Player::STATEKEY::RM)]           = ENUM_TO_UINT(State::GUNATTACK);
         vecChangeState_ByKey[ENUM_TO_SZET(CStateBase_Player::STATEKEY::CHARGE)]         = ENUM_TO_UINT(State::CHARGE);
         desc.vecChangeState_ByKey = vecChangeState_ByKey;
 
@@ -643,7 +650,7 @@ HRESULT CPlayer::Ready_BaseStates()
         vecChangeState_ByKey[ENUM_TO_SZET(CStateBase_Player::STATEKEY::E)] = ENUM_TO_UINT(State::SKILL1);
         vecChangeState_ByKey[ENUM_TO_SZET(CStateBase_Player::STATEKEY::Q)] = ENUM_TO_UINT(State::END);
         vecChangeState_ByKey[ENUM_TO_SZET(CStateBase_Player::STATEKEY::LM)]             = ENUM_TO_UINT(State::JUMPATTSTART);
-        //vecChangeState_ByKey[ENUM_TO_SZET(CStateBase_Player::STATEKEY::RM)]           = ENUM_TO_UINT(State::JUMPGUN);
+        vecChangeState_ByKey[ENUM_TO_SZET(CStateBase_Player::STATEKEY::RM)]           = ENUM_TO_UINT(State::GUNATTACK);
         vecChangeState_ByKey[ENUM_TO_SZET(CStateBase_Player::STATEKEY::CHARGE)]         = ENUM_TO_UINT(State::END);
 
         desc.vecChangeState_ByKey = vecChangeState_ByKey;
@@ -674,7 +681,7 @@ HRESULT CPlayer::Ready_BaseStates()
         vecChangeState_ByKey[ENUM_TO_SZET(CStateBase_Player::STATEKEY::E)]              = ENUM_TO_UINT(State::SKILL1);
         vecChangeState_ByKey[ENUM_TO_SZET(CStateBase_Player::STATEKEY::Q)]              = ENUM_TO_UINT(State::END);
         vecChangeState_ByKey[ENUM_TO_SZET(CStateBase_Player::STATEKEY::LM)]             = ENUM_TO_UINT(State::JUMPATTSTART);
-        //vecChangeState_ByKey[ENUM_TO_SZET(CStateBase_Player::STATEKEY::RM)]           = ENUM_TO_UINT(State::JUMPGUN);
+        vecChangeState_ByKey[ENUM_TO_SZET(CStateBase_Player::STATEKEY::RM)]           = ENUM_TO_UINT(State::GUNATTACK);
         vecChangeState_ByKey[ENUM_TO_SZET(CStateBase_Player::STATEKEY::CHARGE)]         = ENUM_TO_UINT(State::END);
 
         desc.vecChangeState_ByKey = vecChangeState_ByKey;
@@ -705,7 +712,7 @@ HRESULT CPlayer::Ready_BaseStates()
         vecChangeState_ByKey[ENUM_TO_SZET(CStateBase_Player::STATEKEY::E)] = ENUM_TO_UINT(State::SKILL1);
         vecChangeState_ByKey[ENUM_TO_SZET(CStateBase_Player::STATEKEY::Q)] = ENUM_TO_UINT(State::END);
         vecChangeState_ByKey[ENUM_TO_SZET(CStateBase_Player::STATEKEY::LM)]             = ENUM_TO_UINT(State::JUMPATTSTART);
-        //vecChangeState_ByKey[ENUM_TO_SZET(CStateBase_Player::STATEKEY::RM)]           = ENUM_TO_UINT(State::JUMPGUN);
+        vecChangeState_ByKey[ENUM_TO_SZET(CStateBase_Player::STATEKEY::RM)]           = ENUM_TO_UINT(State::GUNATTACK);
         vecChangeState_ByKey[ENUM_TO_SZET(CStateBase_Player::STATEKEY::CHARGE)]         = ENUM_TO_UINT(State::END);
         desc.vecChangeState_ByKey = vecChangeState_ByKey;
 
@@ -735,7 +742,7 @@ HRESULT CPlayer::Ready_BaseStates()
         vecChangeState_ByKey[ENUM_TO_SZET(CStateBase_Player::STATEKEY::E)] = ENUM_TO_UINT(State::SKILL1);
         vecChangeState_ByKey[ENUM_TO_SZET(CStateBase_Player::STATEKEY::Q)] = ENUM_TO_UINT(State::END);
         vecChangeState_ByKey[ENUM_TO_SZET(CStateBase_Player::STATEKEY::LM)]             = ENUM_TO_UINT(State::JUMPATTSTART);
-        //vecChangeState_ByKey[ENUM_TO_SZET(CStateBase_Player::STATEKEY::RM)]           = ENUM_TO_UINT(State::JUMPGUN);
+        vecChangeState_ByKey[ENUM_TO_SZET(CStateBase_Player::STATEKEY::RM)]           = ENUM_TO_UINT(State::GUNATTACK);
         vecChangeState_ByKey[ENUM_TO_SZET(CStateBase_Player::STATEKEY::CHARGE)]         = ENUM_TO_UINT(State::END);
         desc.vecChangeState_ByKey = vecChangeState_ByKey;
 
@@ -765,7 +772,7 @@ HRESULT CPlayer::Ready_BaseStates()
         vecChangeState_ByKey[ENUM_TO_SZET(CStateBase_Player::STATEKEY::E)] = ENUM_TO_UINT(State::SKILL1);
         vecChangeState_ByKey[ENUM_TO_SZET(CStateBase_Player::STATEKEY::Q)] = ENUM_TO_UINT(State::END);
         vecChangeState_ByKey[ENUM_TO_SZET(CStateBase_Player::STATEKEY::LM)]             = ENUM_TO_UINT(State::JUMPATTSTART);
-        //vecChangeState_ByKey[ENUM_TO_SZET(CStateBase_Player::STATEKEY::RM)]           = ENUM_TO_UINT(State::JUMPGUN);
+        vecChangeState_ByKey[ENUM_TO_SZET(CStateBase_Player::STATEKEY::RM)]           = ENUM_TO_UINT(State::GUNATTACK);
         vecChangeState_ByKey[ENUM_TO_SZET(CStateBase_Player::STATEKEY::CHARGE)]         = ENUM_TO_UINT(State::END);
         desc.vecChangeState_ByKey = vecChangeState_ByKey;
 
@@ -795,7 +802,7 @@ HRESULT CPlayer::Ready_BaseStates()
         vecChangeState_ByKey[ENUM_TO_SZET(CStateBase_Player::STATEKEY::E)]              = ENUM_TO_UINT(State::SKILL1);
         vecChangeState_ByKey[ENUM_TO_SZET(CStateBase_Player::STATEKEY::Q)]              = ENUM_TO_UINT(State::SKILL2);
         vecChangeState_ByKey[ENUM_TO_SZET(CStateBase_Player::STATEKEY::LM)]             = ENUM_TO_UINT(State::COMBO);
-        //vecChangeState_ByKey[ENUM_TO_SZET(CStateBase_Player::STATEKEY::RM)]           = ENUM_TO_UINT(State::GUN);
+        vecChangeState_ByKey[ENUM_TO_SZET(CStateBase_Player::STATEKEY::RM)]           = ENUM_TO_UINT(State::GUNATTACK);
         vecChangeState_ByKey[ENUM_TO_SZET(CStateBase_Player::STATEKEY::CHARGE)]         = ENUM_TO_UINT(State::CHARGE);
         desc.vecChangeState_ByKey                                                       = vecChangeState_ByKey;
 
@@ -827,7 +834,7 @@ HRESULT CPlayer::Ready_BaseStates()
         vecChangeState_ByKey[ENUM_TO_SZET(CStateBase_Player::STATEKEY::E)]              = ENUM_TO_UINT(State::SKILL1);
         vecChangeState_ByKey[ENUM_TO_SZET(CStateBase_Player::STATEKEY::Q)]              = ENUM_TO_UINT(State::END);
         vecChangeState_ByKey[ENUM_TO_SZET(CStateBase_Player::STATEKEY::LM)]             = ENUM_TO_UINT(State::JUMPATTSTART);
-        //vecChangeState_ByKey[ENUM_TO_SZET(CStateBase_Player::STATEKEY::RM)]           = ENUM_TO_UINT(State::JUMPGUN);
+        vecChangeState_ByKey[ENUM_TO_SZET(CStateBase_Player::STATEKEY::RM)]           = ENUM_TO_UINT(State::GUNATTACK);
         vecChangeState_ByKey[ENUM_TO_SZET(CStateBase_Player::STATEKEY::CHARGE)]         = ENUM_TO_UINT(State::END);
         desc.vecChangeState_ByKey = vecChangeState_ByKey;
 
@@ -900,7 +907,7 @@ HRESULT CPlayer::Ready_PartObjects(PLAYER_DESC* pDesc)
 
          //Weapons : Gun
         {
-            CWeapon::WEAPON_DESC weaponDesc = {};
+            CGun::GUN_DESC weaponDesc = {};
             weaponDesc.wstrModelPrototypeName = L"Prototype_Component_Model_MoonGun"; //Prototype_Component_Model_XibiWeapon //Prototype_Component_Model_MoonGun
             weaponDesc.pMatParent = &Get_Component<CTransform>()->Get_WorldMatrix();
             weaponDesc.pMatHandSocket = &Get_Part<CBody>(Part::BODY)->Get_RightHandSocket()->Get_CombinedTransformMatrix();
@@ -913,6 +920,14 @@ HRESULT CPlayer::Ready_PartObjects(PLAYER_DESC* pDesc)
             weaponDesc.vColorR = Vec4(0.947917f, 0.947917f, 0.947917f, 1.f);
             weaponDesc.vColorG = Vec4(0.364583f, 0.355613f, 0.351292f, 1.f);
             weaponDesc.vColorB = Vec4(0.03954f, 0.035601f, 0.03434f, 1.f);
+
+            weaponDesc.fAllBullet = 100.f;
+            weaponDesc.fCurBullet = 5.f;
+            weaponDesc.fAttackCoolTime = 0.5f;
+
+            weaponDesc.matHandOffsetMatrix = Matrix::CreateFromYawPitchRoll(XMConvertToRadians(90.f), XMConvertToRadians(90.f), XMConvertToRadians(-90.f));
+            weaponDesc.matHoldOffsetMatrix = Matrix::CreateFromYawPitchRoll(XMConvertToRadians(0.f), XMConvertToRadians(-90.f), XMConvertToRadians(90.f));
+           
             if (FAILED(Add_Part(Part::GUN, ENUM_TO_UINT(ELevelType::STATIC), L"Prototype_GameObject_Part_Gun", &weaponDesc)))
                 return E_FAIL;
         }

@@ -16,7 +16,7 @@
 #include "Builder_EffectEvent.h"
 #include "DataDocument_EffectEvent.h"
 #include "DataStruct_EffectEvent.h"
-#include "AnimEffectHandler.h"
+#include "EffectHandler.h"
 
 // Effect
 #include "Builder_Effect.h"
