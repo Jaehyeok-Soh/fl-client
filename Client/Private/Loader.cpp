@@ -78,6 +78,7 @@
 // Trigger Box
 //=================
 #include "TriggerBox_LevelChange.h"
+#include "TriggerBox_MonsterSpawner.h"
 
 /* --------------------- */
 //=================
@@ -282,15 +283,6 @@ HRESULT CLoader::Loading_For_Logo()
 			if (FAILED(Build_Prototype()))
 				return E_FAIL;
 		}
-
-		// Read Json
-		{
-			//if (FAILED(Loading_File(ENUM_TO_UINT(ELevelType::LOGO), DTO::ECategory::EFFECT, L"../../Resources/Data/EffectData/Attack_1.json")))
-			//	return E_FAIL;
-			// For. Example
-			// if (FAILED(Loading_File(ENUM_TO_UINT(ELevelType::LOGO), DTO::ECategory::MAP, L"asdf")))
-			// 	return E_FAIL;
-		}
 	}
 #pragma endregion
 
@@ -308,6 +300,8 @@ HRESULT CLoader::Loading_For_Logo()
 
 		if (FAILED(Make_StaticObject_Prototype(ELevelType::STATIC, L"../../Resources/Models/Effect_FBX/Circle")))
 			return E_FAIL;
+		if (FAILED(Make_StaticObject_Prototype(ELevelType::STATIC, L"../../Resources/Models/Effect_FBX/Object")))
+			return E_FAIL;
 		if (FAILED(Make_StaticObject_Prototype(ELevelType::STATIC, L"../../Resources/Models/Effect_FBX/Object_Chain")))
 			return E_FAIL;
 		if (FAILED(Make_StaticObject_Prototype(ELevelType::STATIC, L"../../Resources/Models/Effect_FBX/Lightning")))
@@ -321,6 +315,8 @@ HRESULT CLoader::Loading_For_Logo()
 		if (FAILED(Make_StaticObject_Prototype(ELevelType::STATIC, L"../../Resources/Models/Effect_FBX/Plane")))
 			return E_FAIL;
 		if (FAILED(Make_StaticObject_Prototype(ELevelType::STATIC, L"../../Resources/Models/Effect_FBX/Tornado")))
+			return E_FAIL;
+		if (FAILED(Make_StaticObject_Prototype(ELevelType::STATIC, L"../../Resources/Models/Effect_FBX/Claw")))
 			return E_FAIL;
 
 		if (FAILED(Make_StaticObject_Prototype(ELevelType::STATIC, L"../../Resources/Models/Effect_FBX/Twist")))
@@ -347,6 +343,8 @@ HRESULT CLoader::Loading_For_Logo()
 		if (FAILED(Loading_Textures(L"../../Resources/Textures/Effect/Ice/")))
 			return E_FAIL;
 		if (FAILED(Loading_Textures(L"../../Resources/Textures/Effect/Knife/")))
+			return E_FAIL;
+		if (FAILED(Loading_Textures(L"../../Resources/Textures/Effect/Rock/")))
 			return E_FAIL;
 		m_fLoadingRatio = 0.33f;
 		if (FAILED(Loading_Textures(L"../../Resources/Textures/Effect/Lens/")))
@@ -490,7 +488,7 @@ HRESULT CLoader::Loading_For_Logo()
 		tAniChannelData.iRootBoneIndex = 2;
 		desc.pAniChannelData = &tAniChannelData;
 
-		m_pGameInstance->Add_Prototype(ENUM_TO_UINT(ELevelType::STATIC), L"Prototype_Component_Model_Xibi", CModel::Create(m_pDevice, m_pDeviceContext, &desc));
+		m_pGameInstance->Add_Prototype(ENUM_TO_UINT(ELevelType::STATIC), g_wszBoss_Xibi_Model_Prototype_Tag , CModel::Create(m_pDevice, m_pDeviceContext, &desc));
 	}
 
 	// For.Prototype_Component_Model_XibiWeapon
@@ -523,7 +521,7 @@ HRESULT CLoader::Loading_For_Logo()
 		tAniChannelData.iRootBoneIndex = 3;
 		desc.pAniChannelData = &tAniChannelData;
 
-		m_pGameInstance->Add_Prototype(ENUM_TO_UINT(ELevelType::STATIC), L"Prototype_Component_Model_Monster_Dog", CModel::Create(m_pDevice, m_pDeviceContext, &desc));
+		m_pGameInstance->Add_Prototype(ENUM_TO_UINT(ELevelType::STATIC), g_wszMonster_Dog_Model_Prototype_Tag, CModel::Create(m_pDevice, m_pDeviceContext, &desc));
 	}
 
 	// For.Prototype_Component_Model_Monster_Boomer
@@ -540,7 +538,7 @@ HRESULT CLoader::Loading_For_Logo()
 		tAniChannelData.iRootBoneIndex = 3;
 		desc.pAniChannelData = &tAniChannelData;
 
-		m_pGameInstance->Add_Prototype(ENUM_TO_UINT(ELevelType::STATIC), L"Prototype_Component_Model_Monster_Boomer", CModel::Create(m_pDevice, m_pDeviceContext, &desc));
+		m_pGameInstance->Add_Prototype(ENUM_TO_UINT(ELevelType::STATIC), g_wszMonster_Boomer_Model_Prototype_Tag , CModel::Create(m_pDevice, m_pDeviceContext, &desc));
 	}
 	// For. Prototype_Component_Camera
 	m_pGameInstance->Add_Prototype(ENUM_TO_UINT(ELevelType::STATIC), L"Prototype_Component_Camera", CCamera::Create());
@@ -570,6 +568,7 @@ HRESULT CLoader::Loading_For_Logo()
 	// For. Prototype_Component_ActionState_Monster
 	m_pGameInstance->Add_Prototype(ENUM_TO_UINT(ELevelType::STATIC), L"Prototype_Component_ActionState_Monster", CMonsterActionState::Create(m_pDevice, m_pDeviceContext));
 
+#pragma endregion
 
 	///////////////////////////////////////
 	//////////// Ready Objects ////////////
@@ -587,25 +586,26 @@ HRESULT CLoader::Loading_For_Logo()
 		ADD_PROTOTYPE(ELevelType::STATIC, L"Prototype_GameObject_Part_Collider",		CColliderPart::Create(m_pDevice, m_pDeviceContext));
 
 		// ÀÌÆåÆ® Object
-		ADD_PROTOTYPE(ELevelType::STATIC, L"Prototype_GameObject_Effect",					Effect::Create(m_pDevice, m_pDeviceContext));
+		ADD_PROTOTYPE(ELevelType::STATIC, L"Prototype_GameObject_Effect",				Effect::Create(m_pDevice, m_pDeviceContext));
 		ADD_PROTOTYPE(ELevelType::STATIC, L"Prototype_GameObject_Effect_Parts",			CEffectObject::Create(m_pDevice, m_pDeviceContext));
 
 
 #pragma region Map Object
 		/* Map Object */
-		ADD_PROTOTYPE(ELevelType::STATIC, L"Prototype_GameObject_StaticObject", CStaticObject::		Create(m_pDevice, m_pDeviceContext));
-		ADD_PROTOTYPE(ELevelType::STATIC, L"Prototype_GameObject_LandScape",	CLandScape::		Create(m_pDevice, m_pDeviceContext));
-		ADD_PROTOTYPE(ELevelType::STATIC, L"Prototype_GameObject_Bush",			CBush::				Create(m_pDevice, m_pDeviceContext));
-		ADD_PROTOTYPE(ELevelType::STATIC, L"Prototype_GameObject_Grass",		CGrass::			Create(m_pDevice, m_pDeviceContext));
-		ADD_PROTOTYPE(ELevelType::STATIC, L"Prototype_GameObject_Moss",			CMoss::				Create(m_pDevice, m_pDeviceContext));
-		ADD_PROTOTYPE(ELevelType::STATIC, L"Prototype_GameObject_Tree",			CTree::				Create(m_pDevice, m_pDeviceContext));
-		ADD_PROTOTYPE(ELevelType::STATIC, L"Prototype_GameObject_Vine",			CVine::				Create(m_pDevice, m_pDeviceContext));
-		ADD_PROTOTYPE(ELevelType::STATIC, L"Prototype_GameObject_Rock",			CRock::				Create(m_pDevice, m_pDeviceContext));
-		ADD_PROTOTYPE(ELevelType::STATIC, L"Prototype_GameObject_Water",		CWater::			Create(m_pDevice, m_pDeviceContext));
+		ADD_PROTOTYPE(ELevelType::STATIC, g_wszStaticObject_Prototype_Tag ,				CStaticObject::Create(m_pDevice, m_pDeviceContext));
+		ADD_PROTOTYPE(ELevelType::STATIC, g_wszLandScape_Prototype_Tag,					CLandScape::Create(m_pDevice, m_pDeviceContext));
+		ADD_PROTOTYPE(ELevelType::STATIC, g_wszBush_Prototype_Tag,						CBush::Create(m_pDevice, m_pDeviceContext));
+		ADD_PROTOTYPE(ELevelType::STATIC, g_wszGrass_Prototype_Tag,						CGrass::Create(m_pDevice, m_pDeviceContext));
+		ADD_PROTOTYPE(ELevelType::STATIC, g_wszMoss_Prototype_Tag,						CMoss::Create(m_pDevice, m_pDeviceContext));
+		ADD_PROTOTYPE(ELevelType::STATIC, g_wszTree_Prototype_Tag,						CTree::Create(m_pDevice, m_pDeviceContext));
+		ADD_PROTOTYPE(ELevelType::STATIC, g_wszVine_Prototype_Tag,						CVine::Create(m_pDevice, m_pDeviceContext));
+		ADD_PROTOTYPE(ELevelType::STATIC, g_wszRock_Prototype_Tag,						CRock::Create(m_pDevice, m_pDeviceContext));
+		ADD_PROTOTYPE(ELevelType::STATIC, g_wszWater_Prototype_Tag,						CWater::Create(m_pDevice, m_pDeviceContext));
 #pragma endregion
 
 #pragma region TriggerBox
-		ADD_PROTOTYPE(ELevelType::STATIC, L"Prototype_GameObject_TriggerBox_ChangeLevel", CTriggerBox_LevelChange::Create(m_pDevice, m_pDeviceContext));
+		ADD_PROTOTYPE(ELevelType::STATIC, g_wszTriggerBox_ChangeLevel_Prototype_Tag,	CTriggerBox_LevelChange::Create(m_pDevice, m_pDeviceContext));
+		ADD_PROTOTYPE(ELevelType::STATIC, g_wszTriggerBox_MonsterSapwner_Prototype_Tag, CTriggerBox_MonsterSpawner::Create(m_pDevice, m_pDeviceContext));
 #pragma endregion
 
 		/* Weapons */
@@ -613,17 +613,17 @@ HRESULT CLoader::Loading_For_Logo()
 		ADD_PROTOTYPE(ELevelType::STATIC, L"Prototype_GameObject_Part_Gun", CGun::Create(m_pDevice, m_pDeviceContext));
 
 		// For. Prototype_GameObject_Monster_Dummy
-		ADD_PROTOTYPE(ELevelType::TEST, L"Prototype_GameObject_Monster_Dog", CMonster_Dog::Create(m_pDevice, m_pDeviceContext));
+		ADD_PROTOTYPE(ELevelType::STATIC , g_wszMonster_Dog_Prototype_Tag , CMonster_Dog::Create(m_pDevice, m_pDeviceContext));
 		// For. Prototype_GameObject_Monster_Dummy_Body
-		ADD_PROTOTYPE(ELevelType::TEST, L"Prototype_GameObject_Monster_Dog_Body", CMonster_Dog_Body::Create(m_pDevice, m_pDeviceContext));
+		ADD_PROTOTYPE(ELevelType::STATIC, g_wszMonster_Dog_Body_Prototype_Tag, CMonster_Dog_Body::Create(m_pDevice, m_pDeviceContext));
 		// For. Prototype_GameObject_Monster_Dummy
-		ADD_PROTOTYPE(ELevelType::TEST, L"Prototype_GameObject_Monster_Boomer", CMonster_Boomer::Create(m_pDevice, m_pDeviceContext));
+		ADD_PROTOTYPE(ELevelType::STATIC, g_wszMonster_Boomer_Prototype_Tag , CMonster_Boomer::Create(m_pDevice, m_pDeviceContext));
 		// For. Prototype_GameObject_Monster_Dummy_Body
-		ADD_PROTOTYPE(ELevelType::TEST, L"Prototype_GameObject_Monster_Boomer_Body", CMonster_Boomer_Body::Create(m_pDevice, m_pDeviceContext));
+		ADD_PROTOTYPE(ELevelType::STATIC, g_wszMonster_Boomer_Body_Prototype_Tag, CMonster_Boomer_Body::Create(m_pDevice, m_pDeviceContext));
 		// For. Prototype_GameObject_Boss_Xibi
-		ADD_PROTOTYPE(ELevelType::TEST, L"Prototype_GameObject_Boss_Xibi", CBoss_Xibi::Create(m_pDevice, m_pDeviceContext));
+		ADD_PROTOTYPE(ELevelType::STATIC, g_wszBoss_Xibi_Prototype_Tag , CBoss_Xibi::Create(m_pDevice, m_pDeviceContext));
 		// For. Prototype_GameObject_Boss_XibiBody
-		ADD_PROTOTYPE(ELevelType::TEST, L"Prototype_GameObject_Boss_Xibi_Body", CBoss_Xibi_Body::Create(m_pDevice, m_pDeviceContext));
+		ADD_PROTOTYPE(ELevelType::STATIC, g_wszBoss_Xibi_Body_Prototype_Tag, CBoss_Xibi_Body::Create(m_pDevice, m_pDeviceContext));
 
 	}
 #pragma endregion
@@ -867,6 +867,14 @@ HRESULT CLoader::Ready_AttackOverlap()
 	return S_OK;
 }
 
+HRESULT CLoader::Ready_EffectEvent()
+{
+	if (FAILED(Ready_EffectEvent_AnimationData()))
+		return E_FAIL;
+
+	return S_OK;
+}
+
 HRESULT CLoader::Ready_AttackOverlap_PlayerMoon()
 {
 	ELevelType eLevelType = ELevelType::LOGO;
@@ -939,23 +947,22 @@ HRESULT CLoader::Ready_AttackPresets()
 	return S_OK;
 }
 
-HRESULT CLoader::Ready_EffectEvent()
+HRESULT CLoader::Ready_EffectEvent_AnimationData()
 {
-	ELevelType eLevelType = ELevelType::LOGO;
+	_uint iLevelID = ENUM_TO_UINT(ELevelType::LOGO);
 	DTO::ECategory eCategory = DTO::ECategory::EFFECTEVENT;
-	_uint iLevelID = ENUM_TO_UINT(eLevelType);
+	std::filesystem::path FilePath = L"../../Resources/Data/EffectAnimationData/";
+	if (std::filesystem::exists(FilePath))
+	{
+		for (auto iter : std::filesystem::directory_iterator(FilePath))
+		{
+			if (FAILED(m_pGameInstance->Load_File_Json(iLevelID, eCategory, iter.path())))
+				return E_FAIL;
 
-	std::filesystem::path FilePath = L"../../Resources/Data/EffectAnimationData/PlayerMoon.json";
-	vector<path> vecfiles;
-
-	if (!std::filesystem::exists(FilePath))
-		return E_FAIL;
-
-	if (FAILED(m_pGameInstance->Load_File_Json(iLevelID, eCategory, FilePath)))
-		return E_FAIL;
-
-	if (FAILED(m_pBuilderSystem->Build_File(iLevelID, eCategory, FilePath.stem().string())))
-		return E_FAIL;
+			if (FAILED(m_pBuilderSystem->Build_File(iLevelID, eCategory, iter.path().stem().string())))
+				return E_FAIL;
+		}
+	}
 
 	return S_OK;
 }

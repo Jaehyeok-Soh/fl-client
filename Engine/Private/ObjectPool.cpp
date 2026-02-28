@@ -126,6 +126,8 @@ CObjectPool* CObjectPool::Create(const wstring& wstrLayerTag, void* pArg, CGameO
 
 void CObjectPool::Free()
 {
+	All_Despawn();
+
 	for (CGameObject* pElement : m_vecObjects)
 	{
 		Safe_Release(pElement);

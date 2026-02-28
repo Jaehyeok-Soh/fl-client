@@ -35,6 +35,8 @@ texture2D g_EffectTexture;
 #define SCROLL_DISSOLVE 1 << 10
 #define SCROLL_GLOW 1 << 11
 #define SCROLL_CURVE 1 << 12
+
+#define USE_LIFEDISSOLVE 1 << 13
         
 // SamplerState Flag
 #define LINEARSAMPLER 1 << 0
@@ -139,6 +141,11 @@ bool HasTextureScroll(uint Flag)
 bool HasTextureSprite(float4 spriteInfo)
 {
     return spriteInfo.x > 0.5f;
+}
+
+bool HasLifeDissolve()
+{
+    return (g_Effect.g_RenderFlags & USE_LIFEDISSOLVE) != 0;
 }
 
 // ======== 연산용 함수들 ============

@@ -147,6 +147,25 @@ void Effect::Update(const _float fTimeDelta)
 
 		m_matCombinedWorld = m_pOffsetMartix * (matCustom) * (matCustom2);
 	}
+
+	else if (m_eDesc._Effect_SimulationType == DTO::E_SIMULATION_SPACE::LOCAL && m_pBoneMatrix == nullptr)
+	{
+		if (m_pBoneOwnerMatrix == nullptr)
+			return;
+
+		Matrix matBoneOwner = *m_pBoneOwnerMatrix;
+		Matrix matCustom2 = XMMatrixIdentity();
+
+		Vector3 vBoneScale2;
+		Quat vBoneQuat2;
+		Vector3 vBonePos2;
+
+		matBoneOwner.Decompose(vBoneScale2, vBoneQuat2, vBonePos2);
+		matCustom2 *= Matrix::CreateFromQuaternion(vBoneQuat2);
+		matCustom2.Translation(Vec3(vBonePos2.x, vBonePos2.y, vBonePos2.z));
+
+		m_matCombinedWorld = m_pOffsetMartix * (matCustom2);
+	}
 	else
 	{
 		m_matCombinedWorld = Get_Component<CTransform>()->Get_WorldMatrix();

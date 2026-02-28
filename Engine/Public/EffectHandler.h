@@ -86,6 +86,9 @@ public:
     // 오브젝트 상태가 변경되서 Effect를 바꿔주어야할때.
     HRESULT Trigger_Lifecycle_Effect(E_OBJ_LIFECYCLE_STATE eStage);
     void PoolObject_CallBack(CGameObject* pGo);
+
+    // 툴전용
+    HRESULT Gizmo_Setting();
 private:
     void GetAnimation();
     void Request_SpawnEffect(const DTO::EFFECTEVENT& script);

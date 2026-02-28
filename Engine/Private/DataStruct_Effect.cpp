@@ -157,6 +157,7 @@ void to_json(json& j, const TEFFECT_PartsData& data)
         {"UseStartRotation", data._bUseStartRotation},
         {"UseRotationCurve", data._bUseRotationCurve},
         {"_Use_Effect_UV_OverScroll", data._Use_Effect_UV_OverScroll},
+        {"_Effect_Tool_UseLifeDissolve", data._Effect_Tool_UseLifeDissolve },
         {"SeparateAxes", data._bSeparateAxes},
 
         // --- Flags ---
@@ -337,6 +338,7 @@ void from_json(const json& j, TEFFECT_PartsData& data)
         tf.at("Masking").get_to(data._Effect_Tool_UseScroll_Masking);
         tf.at("Gradation").get_to(data._Effect_Tool_UseScroll_Gradation);
         if (tf.contains("Dissolve")) tf.at("Dissolve").get_to(data._Effect_Tool_UseScroll_Dissolve);
+        if (tf.contains("_Effect_Tool_UseLifeDissolve")) tf.at("_Effect_Tool_UseLifeDissolve").get_to(data._Effect_Tool_UseLifeDissolve);
         if (tf.contains("Glow")) tf.at("Glow").get_to(data._Effect_Tool_UseScroll_Glow);
         if (tf.contains("Curve")) tf.at("Curve").get_to(data._Effect_Tool_UseScroll_Curve);
     }

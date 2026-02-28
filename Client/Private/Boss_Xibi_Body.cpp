@@ -2,6 +2,7 @@
 #include "Boss_Xibi_Body.h"
 #include "ComputeShader.h"
 #include "Model.h"
+#include "EffectHandler.h"
 #include "GameInstance.h"
 
 CBoss_Xibi_Body::CBoss_Xibi_Body(ID3D11Device* pDevice, ID3D11DeviceContext* pDeviceContext)
@@ -65,6 +66,16 @@ void CBoss_Xibi_Body::Update_Priority(_float fTimeDelta)
 void CBoss_Xibi_Body::Update(_float fTimeDelta)
 {
 	Super::Update(fTimeDelta);
+
+	// 이펙트 테스트용
+	if (m_pEffectHandler)
+	{
+		if(m_pGameInstance->KeyButton_Down(DIK_1))
+			m_pEffectHandler->Trigger_Lifecycle_Effect(CEffectHandler::E_OBJ_LIFECYCLE_STATE::ON_SPAWN);
+
+		if (m_pGameInstance->KeyButton_Down(DIK_2))
+			m_pEffectHandler->Trigger_Lifecycle_Effect(CEffectHandler::E_OBJ_LIFECYCLE_STATE::ON_DESTROY);
+	}
 }
 
 void CBoss_Xibi_Body::Update_Late(_float fTimeDelta)

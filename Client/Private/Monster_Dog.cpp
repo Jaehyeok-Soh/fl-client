@@ -12,6 +12,7 @@
 CMonster_Dog::CMonster_Dog(ID3D11Device* pDevice, ID3D11DeviceContext* pDeviceContext)
 	: Super(pDevice, pDeviceContext)
 {
+	m_eMonsterType = EMonster_Type::Dog;
 }
 
 CMonster_Dog::CMonster_Dog(const CMonster_Dog& rhs)

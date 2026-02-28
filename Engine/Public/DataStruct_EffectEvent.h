@@ -13,6 +13,12 @@ enum E_BONE_FLAG
     BONE_POS = 1 << 2
 };
 
+enum class E_LoopState
+{
+    LOOP_START,
+    LOOP_END,
+};
+
 // 이펙트 이벤트 스크립트
 typedef struct tagEffectEvent : public ANIM_EVENT_BASE1 {
     _uint       iNotifyId = { 0 };

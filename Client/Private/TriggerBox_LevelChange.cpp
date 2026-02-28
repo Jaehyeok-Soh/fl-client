@@ -68,6 +68,8 @@ void CTriggerBox_LevelChange::Update(const _float fTimeDelta)
 {
     Super::Update(fTimeDelta);
 
+
+    /* Player À§Ä¡¶û */
 }
 
 void CTriggerBox_LevelChange::Update_Late(const _float fTimeDelta)
@@ -106,7 +108,10 @@ void CTriggerBox_LevelChange::OnTrigger_Enter(_uint iMyColliderLayer, _uint iOth
     Super::OnTrigger_Enter(iMyColliderLayer, iOtherLayer, pOther);
 
     if (iOtherLayer & PHYSICSFILTERGROUP::PLAYER)
+    {
         m_pGameInstance->Request_ChangeLevel(ENUM_TO_UINT(ELevelType::LOADING), CLevel_Loading::Create(m_pDevice, m_pDeviceContext, m_eChangeLevelType));
+        Set_Dead(g_wszTriggerBoxLayer);
+    }
 }
 
 void CTriggerBox_LevelChange::OnTrigger_Exit(_uint iMyColliderLayer, _uint iOtherLayer, CGameObject* pOther)
