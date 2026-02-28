@@ -65,7 +65,7 @@ HRESULT CMonsterState_Factory::Ready_Condition()
 
 	REGISTER_CONDITION("condition_hit_light", CONDITION{ return false; /*hit light*/ });
 
-	REGISTER_CONDITION("condition_hit_heavy", CONDITION{ return false; /*hit heady*/ });
+	REGISTER_CONDITION("condition_hit_heavy", CONDITION{ return false; /*hit heavy*/ });
 
 	REGISTER_CONDITION("condition_hit_additive", CONDITION{ return false; /*hit additive*/ });
 
@@ -82,6 +82,8 @@ HRESULT CMonsterState_Factory::Ready_Condition()
 	REGISTER_CONDITION("condition_down", CONDITION{ return MONSTERCC(state)->IsDown(); });
 
 	REGISTER_CONDITION("condition_over_lifetime", CONDITION{ return state->IsOverLifeTime(); });
+
+	REGISTER_CONDITION("condition_cooldowntime_satisfy", CONDITION{ return state->IsCooldownTimeSatisfy(); });
 
 
 	// 02-27 구조 변경 후 예시

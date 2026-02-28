@@ -184,7 +184,7 @@ _bool CMonsterControlContext::IsTargetAhead()
 
 	_float dot = vOwnerLook.Dot(vToTarget);
 
-	return dot > 0.7f;
+	return dot > 0 && dot > 0.9f;
 }
 
 _bool CMonsterControlContext::IsCliffAhead()

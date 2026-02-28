@@ -399,7 +399,7 @@ HRESULT CBuilder_Map::Batch_Monster(const DTO::TMap_MapObjectData& tData)
 			CMonster_Base::MONSTER_DESC monsterDesc = {};
 			monsterDesc.iLevelIndex = ENUM_TO_UINT(m_eLevelType);
 			monsterDesc.wstrBodyModelTag = L"Prototype_Component_Model_Monster_Dog";
-			monsterDesc.wstrPartBodyPrototypeTag = L"Prototype_GameObject_Monster_Dummy_Body";
+			monsterDesc.wstrPartBodyPrototypeTag = L"Prototype_GameObject_Monster_Dog_Body";
 			monsterDesc.wstrAttackOverlapPrototypeTag = L"Prototype_Component_AttackOverlap_Monster_Dog";
 			monsterDesc.pTransform_Desc = &transformDesc;
 			monsterDesc.wstrMonsterStateTag = L"Monster_Dog";
@@ -434,7 +434,7 @@ HRESULT CBuilder_Map::Batch_Monster(const DTO::TMap_MapObjectData& tData)
 			}
 
 			if (!(pResult = m_pGameInstance->Add_GameObject(ENUM_TO_UINT(m_eLevelType),
-				L"Prototype_GameObject_Monster_Dummy",
+				L"Prototype_GameObject_Monster_Dog",
 				ENUM_TO_UINT(m_eLevelType),
 				L"Monster", &monsterDesc)))
 				return E_FAIL;

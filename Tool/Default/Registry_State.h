@@ -26,6 +26,7 @@ namespace Tool
         "condition_cancellation",
         "condition_non_cancellation",
         "condition_over_lifetime",
+        "condition_cooldowntime_satisfy",
 
         // param examples
         "param_condition_distance_over",
