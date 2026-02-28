@@ -488,7 +488,7 @@ void	MonsterSpawnData::from_Json(const json& LoadJson)
 void	MonsterSpawnData::to_Json(json& SaveJson)
 {
 	/* 몬스터 타입 */
-	SaveJson["Mosnter Type"] = DTO::MakeMonsterType_ToString(this->eMakeMonsterType);
+	SaveJson["Monster Type"] = DTO::MakeMonsterType_ToString(this->eMakeMonsterType);
 	
 	/* 소환 딜레이 시간 */
 	SaveJson["Delay Time"] = this->fSpawnDelayTime;

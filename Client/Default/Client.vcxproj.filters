@@ -1030,6 +1030,9 @@
     <ClInclude Include="..\Public\Monster_Boomer.h">
       <Filter>03. GameObject\ContainerObjects\Monster\Boomer</Filter>
     </ClInclude>
+    <ClInclude Include="..\Public\TriggerBox_MonsterSpawner.h">
+      <Filter>03. GameObject\TriggerBox\01. TriggerBox_LevelChange</Filter>
+    </ClInclude>
     <ClInclude Include="..\public\Xibi_GimmikController.h">
       <Filter>05. Component\GimmikController</Filter>
     </ClInclude>
@@ -1498,6 +1501,9 @@
     </ClCompile>
     <ClCompile Include="..\Private\State_GunBase.cpp">
       <Filter>06. FSM\Player\Attack\Gun\Base</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\TriggerBox_MonsterSpawner.cpp">
+      <Filter>03. GameObject\TriggerBox\01. TriggerBox_LevelChange</Filter>
     </ClCompile>
     <ClCompile Include="..\private\Xibi_GimmikController.cpp">
       <Filter>05. Component\GimmikController</Filter>

@@ -1,9 +1,8 @@
 #pragma once
 #include "ContainerObject.h"
+#include "DataStruct_EffectEvent.h"
 
 NS_BEGIN(Engine)
-
-
 
 class ENGINE_DLL CEffectBase abstract:
     public CContainerObject
@@ -36,7 +35,7 @@ public:
 	virtual void Set_Dead(const wstring& wstrLayerTag) override;
 
 public:
-	virtual void LoopStateChange(E_LoopState EState);
+	virtual void LoopStateChange(DTO::E_LoopState EState);
 
 public:
 	virtual void Free() override;

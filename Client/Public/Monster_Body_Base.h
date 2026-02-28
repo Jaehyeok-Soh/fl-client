@@ -3,6 +3,7 @@
 
 NS_BEGIN(Engine)
 class CBone;
+class CEffectHandler;
 NS_END
 
 NS_BEGIN(Client)
@@ -36,7 +37,7 @@ public:
 	virtual void Update_Late(_float fTimeDelta) override;
 	virtual void Ready_Before_Render(_float fTimeDelta) override;
 	virtual void OnCollision(_uint iMyColliderLayer, _uint iOtherLayer, CGameObject* pOther) override;
-	virtual void OnCollision_Enter(_uint iMyColliderLayer, _uint iOtherLayer, CGameObject* pOther, const COL_HIT_INFO &tHitInfo) override;
+	virtual void OnCollision_Enter(_uint iMyColliderLayer, _uint iOtherLayer, CGameObject* pOther, const COL_HIT_INFO& tHitInfo) override;
 	virtual void OnCollision_Exit(_uint iMyColliderLayer, _uint iOtherLayer, CGameObject* pOther) override;
 	virtual void OnTrigger_Enter(_uint iMyColliderLayer, _uint iOtherLayer, CGameObject* pOther) override;
 	virtual void OnTrigger_Exit(_uint iMyColliderLayer, _uint iOtherLayer, CGameObject* pOther) override;
@@ -52,8 +53,10 @@ protected:
 	HRESULT Bind_ShaderResources();
 	HRESULT Ready_ComputeShader();
 	HRESULT Ready_Bones(MONSTERBODY_DESC* pDesc);
+	HRESULT Ready_EffectHandler(MONSTERBODY_DESC* pDesc);
 protected:
 	std::vector<_uint> m_vecBoneIndices;
+	CEffectHandler* m_pEffectHandler = { nullptr };
 public:
 	virtual CGameObject* Clone(void* pArg) PURE;
 	virtual void Free() override;

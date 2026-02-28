@@ -14,7 +14,10 @@
 CBoss_Xibi::CBoss_Xibi(ID3D11Device* pDevice, ID3D11DeviceContext* pDeviceContext)
 	: Super(pDevice, pDeviceContext)
 {
+	m_eMonsterType = EMonster_Type::Xibi;
+
 }
+
 
 CBoss_Xibi::CBoss_Xibi(const CBoss_Xibi& rhs)
 	: Super(rhs)
