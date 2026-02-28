@@ -40,6 +40,9 @@ struct MU_ELEMENT
     int     iRootMotionBoneIndex; // root motion일 경우 tralation을 0으로 만들기 위함
     
     float     iFirst;
+    
+    uint iMixType; // 0 : bone mix, 1 : addtive
+    float3 Padding0;
 };
 
 // 불변 데이터 : cpu.. but 매번 바인딩
@@ -62,7 +65,7 @@ struct SRT
     float               Padding1;
 };
 
-cbuffer MU_Track
+cbuffer MU_MIX
 {
     MU_ELEMENT g_InputData;
 };
@@ -100,6 +103,26 @@ uint BinarySearchKeyframe(float trackPos, uint firstIdx, uint keyCount)
     }
 
     return low; // left index (local)
+}
+
+float4 QuaternionMultiply(float4 q1, float4 q2)
+{
+    float3 v1 = q1.xyz;
+    float3 v2 = q2.xyz;
+    float w1 = q1.w;
+    float w2 = q2.w;
+    
+    float3 v =
+    w1 * v2 +
+    w2 * v1 +
+    cross(v1, v2);
+
+    float w =
+    w1 * w2 -
+    dot(v1, v2);
+
+    return float4(v, w);
+    
 }
 
 
@@ -204,28 +227,59 @@ void CS_Main(uint3 id : SV_DispatchThreadID)
     float3 vFinalScale, vFinalTranslation;
     float4 vFinalQuat;
     
-    vFinalScale = lerp(MU_PRETRANSFORMS[iBoneIdx].vScale, vScale, fMixRatio);
+    // bone mix
+    if(g_InputData.iMixType == 0 )
+    {
+        vFinalScale = lerp(MU_PRETRANSFORMS[iBoneIdx].vScale, vScale, fMixRatio);
+   
+        float4 q0 = MU_PRETRANSFORMS[iBoneIdx].vQuat;
+        float4 q1 = vQuat;
     
+        if (dot(q0, q1) < 0.0f)
+            q1 = -q1;
+        
+        vFinalQuat = normalize(lerp(q0, q1, fMixRatio));
+        
+        if (g_InputData.iRootMotionBoneIndex == iBoneIdx)
+            vFinalTranslation = float3(0.f, 0.f, 0.f);
+        else
+            vFinalTranslation = lerp(MU_PRETRANSFORMS[iBoneIdx].vTranslation, vTranslation, fMixRatio);
+    }
     
-    float4 q0 = MU_PRETRANSFORMS[iBoneIdx].vQuat;
-    float4 q1 = vQuat;
-    
-    if (dot(q0, q1) < 0.0f)
-        q1 = -q1;
-    
-    vFinalQuat = normalize(lerp(q0, q1, fMixRatio));
-    
-    if (g_InputData.iRootMotionBoneIndex == iBoneIdx)
-        vFinalTranslation = float3(0.f, 0.f, 0.f);
-    else
-        vFinalTranslation = lerp(MU_PRETRANSFORMS[iBoneIdx].vTranslation, vTranslation, fMixRatio);
-    
+    // addtive
+    else if (g_InputData.iMixType == 1)
+    {
+        // 1. scale
+        float3 ScaledDelta = 1 + (vScale - 1.f) * fMixRatio;
+        vFinalScale = MU_PRETRANSFORMS[iBoneIdx].vScale * ScaledDelta;
+        
+        // 2. quat
+        float4 Quatbase = MU_PRETRANSFORMS[iBoneIdx].vQuat;
+        float4 delta = vQuat;
+        
+        // ratio만큼 줄이기
+        float4 identity = float4(0, 0, 0, 1);
+
+        if (dot(identity, delta) < 0.0f)
+            delta = -delta;
+        
+        float4 QuatDelta = normalize(lerp(identity, delta, fMixRatio));
+
+        // base에 곱하기
+        float4 vFinalQuat = normalize(QuaternionMultiply(Quatbase, QuatDelta));
+        
+        // 3. translation
+        // todo_eunbi : mix때도 zero로 만들어야 하나
+        if (g_InputData.iRootMotionBoneIndex == iBoneIdx)
+            vFinalTranslation = float3(0.f, 0.f, 0.f);
+        else
+            vFinalTranslation = MU_PRETRANSFORMS[iBoneIdx].vTranslation + vTranslation * fMixRatio;
+    }
     
     // 결과 값 바인드
     CHANNEL_OUTPUT[iBoneIdx].vScale = vFinalScale;
     CHANNEL_OUTPUT[iBoneIdx].vQuat = vFinalQuat;
     CHANNEL_OUTPUT[iBoneIdx].vTranslation = vFinalTranslation;
-
 }
 
 technique11 T0

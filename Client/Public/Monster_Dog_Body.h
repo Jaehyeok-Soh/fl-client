@@ -3,13 +3,13 @@
 
 NS_BEGIN(Client)
 
-class CMonster_Dummy_Body final : public CMonster_Body_Base
+class CMonster_Dog_Body final : public CMonster_Body_Base
 {
 	using Super = CMonster_Body_Base;
 private:
-	CMonster_Dummy_Body(ID3D11Device* pDevice, ID3D11DeviceContext* pDeviceContext);
-	CMonster_Dummy_Body(const CMonster_Dummy_Body& rhs);
-	virtual ~CMonster_Dummy_Body() = default;
+	CMonster_Dog_Body(ID3D11Device* pDevice, ID3D11DeviceContext* pDeviceContext);
+	CMonster_Dog_Body(const CMonster_Dog_Body& rhs);
+	virtual ~CMonster_Dog_Body() = default;
 
 	virtual HRESULT Initialize_Prototype() override;
 	virtual HRESULT Initialize(void* pArg) override;
@@ -32,7 +32,7 @@ private:
 	HRESULT Ready_Components(MONSTERBODY_DESC* pDesc);
 	HRESULT Bind_ShaderResources();
 public:
-	static CMonster_Dummy_Body* Create(ID3D11Device* pDevice, ID3D11DeviceContext* pDeviceContext);
+	static CMonster_Dog_Body* Create(ID3D11Device* pDevice, ID3D11DeviceContext* pDeviceContext);
 	virtual CGameObject* Clone(void* pArg) override;
 	virtual void Free() override;
 };

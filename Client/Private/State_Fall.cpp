@@ -43,7 +43,10 @@ void CState_Fall::Update(const _float fTimeDelta)
 {
 	// 바닥 충돌 검사 후 change
 	if (IsOn_CCTFlag(PxControllerCollisionFlag::Enum::eCOLLISION_DOWN))
+	{
 		Change_PlayerState(ENUM_TO_UINT(CPlayer::State::LAND));
+		return;
+	}
 
 	Super::Update(fTimeDelta);
 

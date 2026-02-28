@@ -77,20 +77,28 @@ public:
 	};
 	_bool Get_ApplyRoot() const { return m_bApplyRootMotion; }
 	void Set_AnimationSpeed(_float fSpeed) { m_fAnimationSpeed_Offset = fSpeed; if (m_fAnimationSpeed_Offset <= 0.f) m_fAnimationSpeed_Offset = 1.f; }
+	void Set_MixType(_uint iMixType) { if (iMixType > 1) return; m_iMixType = iMixType; }
+
 
 	///////////////
 	//// Event ////
 	///////////////
-	const vector<AnimNotifyKey>& Get_Notifies() const { return m_vecNotifies; }
-	void Set_Notifies(vector<AnimNotifyKey> vecKeys);
-	void Reset_NotifyCursor() { m_iNextNotifyIndex = 0; }
-	_uint Get_NotifyCursor() const { return m_iNextNotifyIndex; }
-	void Set_NotifyCursor(size_t iIndex)
+	const vector<AnimNotifyKey>& Get_Notifies(EAnimNotifyPhase ePhase) const { return m_vecNotifies[ENUM_TO_UINT(ePhase)]; }
+	void Set_Notifies(EAnimNotifyPhase ePhase, vector<AnimNotifyKey> vecKeys);
+	void Pushback_Notifies(EAnimNotifyPhase ePhase, const AnimNotifyKey& key);
+	void Sort_Notifies();
+	void Reset_NotifyCursor()
 	{
-		if (m_vecNotifies.size() <= iIndex) return;
-		m_iNextNotifyIndex = (_uint)iIndex;
+		for (auto& iCursor : m_iNextNotifyIndices)
+			iCursor = 0;
 	}
-	void Clear_Notifies() { m_vecNotifies.clear(); }
+	_uint Get_NotifyCursor(EAnimNotifyPhase ePhase) const { return m_iNextNotifyIndices[ENUM_TO_UINT(ePhase)]; }
+	void Set_NotifyCursor(EAnimNotifyPhase ePhase, size_t iIndex)
+	{
+		if (m_vecNotifies[ENUM_TO_UINT(ePhase)].size() <= iIndex) return;
+		m_iNextNotifyIndices[ENUM_TO_UINT(ePhase)] = (_uint)iIndex;
+	}
+	void Clear_Notifies() { for (auto& notifies : m_vecNotifies) notifies.clear(); }
 private:
 	_uint m_iChannelCount = { 0 };
 	vector<class CChannel*> m_vecChannels;
@@ -122,12 +130,15 @@ private:
 	_float m_fRootMotionOffset		= { 1.f };
 	_float m_fAnimationSpeed_Offset = { 1.f };
 
+	_uint m_iMixType	= { 0 };		// 0 : bone mix, 1 : additive mix
+	_uint m_iMyMixBlend = { 0 };		// 0 : non blend, 1 : blend
+
 	///////////////
 	//// Event ////
 	///////////////
 private:
-	vector<AnimNotifyKey> m_vecNotifies;
-	_uint m_iNextNotifyIndex = 0;
+	vector<AnimNotifyKey> m_vecNotifies[ENUM_TO_UINT(EAnimNotifyPhase::END)];
+	_uint m_iNextNotifyIndices[ENUM_TO_UINT(EAnimNotifyPhase::END)]{ 0 };
 
 private:
 	HRESULT Ready_Buffers();

@@ -39,6 +39,11 @@
 #include "State_Charge.h"
 #include "State_MoonCharge.h"
 
+#include "State_GunAttack.h"
+#include "State_GunIdle.h"
+#include "State_GunReload.h"
+#include "State_GunWalk.h"
+
 #include "State_MoonSkill.h"
 
 #pragma endregion
@@ -103,6 +108,21 @@ HRESULT CMainPlayer::Initialize(void* pArg)
     if (FAILED(Ready_AttackStates()))
         return E_FAIL;
 
+    return S_OK;
+}
+
+HRESULT CMainPlayer::Reinitialize(GAMEOBJECT_REINIT_DESC* pDesc)
+{
+    if (pDesc == nullptr)
+        return E_FAIL;
+
+    return S_OK;
+}
+
+HRESULT CMainPlayer::Clear_WhenChangeLevel()
+{
+    m_pTargeter = nullptr;
+    Clear_Components_WhenChangeLevel();
     return S_OK;
 }
 
@@ -200,6 +220,8 @@ void CMainPlayer::OnCollision_Enter(_uint iMyColliderLayer, _uint iOtherLayer, C
     desc.pRequester = this;
     desc.pOther = pOther;
     desc.tHitInfo = tHitInfo;
+
+    m_pGameInstance->Push_CollidedData(desc);
 }
 
 void CMainPlayer::OnCollision_Exit(_uint iMyColliderLayer, _uint iOtherLayer, CGameObject* pOther)
@@ -230,6 +252,37 @@ void CMainPlayer::OnTrigger_Exit(_uint iMyColliderLayer, _uint iOtherLayer, CGam
     desc.iOtherLayer = iOtherLayer;
     desc.pRequester = this;
     desc.pOther = pOther;
+}
+
+_bool CMainPlayer::On_Hit(const HIT_DESC& hitDesc)
+{
+#ifdef _DEBUG
+    wstring infoHeader(L"Player Hit ");
+    wstring infoSeparate(L": ");
+    wstring infoContant = infoHeader
+        + infoSeparate
+        + Engine_Utils::ToWString(m_strName)
+        + infoSeparate
+        + std::to_wstring(Get_ID());
+
+    CLOG_INFO(infoContant);
+#endif // _DEBUG
+    return true;
+}
+
+void CMainPlayer::Try_Attack(const HIT_DESC& hitDesc)
+{
+#ifdef _DEBUG
+    wstring infoHeader(L"Player Attack ");
+    wstring infoSeparate(L": ");
+    wstring infoContant = infoHeader
+        + infoSeparate
+        + Engine_Utils::ToWString(m_strName)
+        + infoSeparate
+        + std::to_wstring(Get_ID());
+
+    CLOG_INFO(infoContant);
+#endif // _DEBUG
 }
 
 #pragma region Legacy
@@ -391,7 +444,7 @@ _bool CMainPlayer::Try_AttackHit(ECollideLayer eMyLayer, CCollider* pOther)
 HRESULT CMainPlayer::Ready_Ability()
 {
     CSkillBase* pESkill = CSkillComp_MoonE::Create();
-    CSkillBase* pQSkill = CSkillComp_MoonE::Create();
+    CSkillBase* pQSkill = CSkillComp_MoonQ::Create();
 
     // stat
     {
@@ -652,8 +705,8 @@ HRESULT CMainPlayer::Ready_CCT()
     desc.bIsPlayer = true;
     desc.eType = EPhysicsCCTType::CAPSULE;
     desc.pOwnerMatrix = &Get_Component<CTransform>()->Get_WorldMatrix();
-    desc.fRadius = 0.5f;
-    desc.fHeight = 1.f;
+    desc.fRadius = 0.35f;
+    desc.fHeight = 0.7f;
     desc.vExtens = { 0.f, 0.f, 0.f };
 
     PHYSICSMATERIAL_DESC mtrlDesc{};
@@ -674,7 +727,8 @@ HRESULT CMainPlayer::Ready_CCT()
         | PHYSICSFILTERGROUP::Enum::TRIGGER_UI
         | PHYSICSFILTERGROUP::Enum::TRIGGER_QUEST
         | PHYSICSFILTERGROUP::Enum::TRIGGER_SPAWN
-        | PHYSICSFILTERGROUP::Enum::TRIGGER_DIRECTION;
+        | PHYSICSFILTERGROUP::Enum::TRIGGER_DIRECTION
+        | PHYSICSFILTERGROUP::Enum::TRIGGER_BOX;
 
     if (FAILED(Add_Component<CPhysicsCCT>(0, L"Prototype_Component_Physics_CCT", &desc)))
         return E_FAIL;
@@ -707,6 +761,8 @@ HRESULT CMainPlayer::Ready_AttackStates()
     CModel* pModel = Get_Part<CBody>(ENUM_TO_UINT(Part::BODY))->Get_Component<CModel>();
     if (!pModel)
         return E_FAIL;
+
+    CComputeShader* pAnimMixCS = static_cast<CBody*>(Get_Part<CBody>(ENUM_TO_UINT(Part::BODY)))->Get_AnimMixCS();
 
     if (!(pActionState = Get_Component<CPlayerActionState>()))
         return E_FAIL;
@@ -781,14 +837,14 @@ HRESULT CMainPlayer::Ready_AttackStates()
         vecChangeState_ByKey[ENUM_TO_SZET(CStateBase_Player::STATEKEY::E)] = ENUM_TO_UINT(State::SKILL1);
         vecChangeState_ByKey[ENUM_TO_SZET(CStateBase_Player::STATEKEY::Q)] = ENUM_TO_UINT(State::SKILL2);
         vecChangeState_ByKey[ENUM_TO_SZET(CStateBase_Player::STATEKEY::LM)] = ENUM_TO_UINT(CPlayer::State::COMBO);
-        //vecChangeState_ByKey[ENUM_TO_SZET(CStateBase_Player::STATEKEY::RM)]           = ENUM_TO_UINT(CPlayer::State::GUN);
+        vecChangeState_ByKey[ENUM_TO_SZET(CStateBase_Player::STATEKEY::RM)]           = ENUM_TO_UINT(CPlayer::State::GUNATTACK);
         vecChangeState_ByKey[ENUM_TO_SZET(CStateBase_Player::STATEKEY::CHARGE)] = ENUM_TO_UINT(CPlayer::State::CHARGE);
         vecChangeState_ByKey[ENUM_TO_SZET(CStateBase_Player::STATEKEY::LOOPDONE)] = ENUM_TO_UINT(State::IDLE);
         desc.vecChangeState_ByKey = vecChangeState_ByKey;
 
 
         tKeyTimer.bCountTime = true;
-        tKeyTimer.fMaxTime = 0.5 ;
+        tKeyTimer.fMaxTime = 0.65f ;
         desc.tKeyTimer = tKeyTimer;
 
         desc.pOwnerGun = pMyGun;
@@ -816,7 +872,7 @@ HRESULT CMainPlayer::Ready_AttackStates()
         vecChangeState_ByKey[ENUM_TO_SZET(CStateBase_Player::STATEKEY::E)]              = ENUM_TO_UINT(State::SKILL1);
         vecChangeState_ByKey[ENUM_TO_SZET(CStateBase_Player::STATEKEY::Q)]              = ENUM_TO_UINT(State::SKILL2);
         vecChangeState_ByKey[ENUM_TO_SZET(CStateBase_Player::STATEKEY::LM)]             = ENUM_TO_UINT(CPlayer::State::COMBO);
-        //vecChangeState_ByKey[ENUM_TO_SZET(CStateBase_Player::STATEKEY::RM)]           = ENUM_TO_UINT(CPlayer::State::GUN);
+        vecChangeState_ByKey[ENUM_TO_SZET(CStateBase_Player::STATEKEY::RM)]           = ENUM_TO_UINT(CPlayer::State::GUNATTACK);
         vecChangeState_ByKey[ENUM_TO_SZET(CStateBase_Player::STATEKEY::CHARGE)]         = ENUM_TO_UINT(CPlayer::State::CHARGE);
         vecChangeState_ByKey[ENUM_TO_SZET(CStateBase_Player::STATEKEY::LOOPDONE)]       = ENUM_TO_UINT(State::IDLE);
         desc.vecChangeState_ByKey = vecChangeState_ByKey;
@@ -855,6 +911,77 @@ HRESULT CMainPlayer::Ready_AttackStates()
         tDesc.pOwnerGun = pMyGun;
 
         if (FAILED(pActionState->Add_State(ENUM_TO_UINT(State::SKILL2), CState_MoonSkill::Create(pActionState,"SkillQ", & tDesc))))
+            return E_FAIL;
+    }
+
+    // gun idle
+    {
+        CStateBase_Player::PLAYER_STATE_SPECIFICDESC tDesc = {};
+        tDesc.bBlend = true;
+        tDesc.bLoop = true;
+        tDesc.vecMainAnims = { Get_AnimationIndex(L"Animation_PlayerMoon_Shotgun_Holding_Loop") };
+        tDesc.pOwnerGun = pMyGun;
+
+        if (FAILED(pActionState->Add_State(ENUM_TO_UINT(State::GUNIDLE), CState_GunIdle::Create(pActionState, &tDesc))))
+            return E_FAIL;
+    }
+
+    // gun walk
+    {
+        CStateBase_Player::PLAYER_STATE_SPECIFICDESC tDesc = {};
+        tDesc.bBlend = true;
+        tDesc.bLoop = true;
+        tDesc.vecMainAnims = { Get_AnimationIndex(L"Animation_PlayerMoon_Shotgun_Holding_Run_Loop") };
+        tDesc.pOwnerGun = pMyGun;
+
+        if (FAILED(pActionState->Add_State(ENUM_TO_UINT(State::GUNWALK), CState_GunWalk::Create(pActionState, &tDesc))))
+            return E_FAIL;
+    }
+
+    array<_uint, ENUM_TO_SZET(CState_GunBase::Douwn_MixAnim::END)> arrMix;
+    arrMix[ENUM_TO_SZET(CState_GunBase::Douwn_MixAnim::F)] = Get_AnimationIndex(L"Animation_PlayerMoon_Shotgun_Run_Loop_F");
+    arrMix[ENUM_TO_SZET(CState_GunBase::Douwn_MixAnim::B)] = Get_AnimationIndex(L"Animation_PlayerMoon_Shotgun_Run_Loop_B");
+    arrMix[ENUM_TO_SZET(CState_GunBase::Douwn_MixAnim::L)] = Get_AnimationIndex(L"Animation_PlayerMoon_Shotgun_Run_Loop_l");
+    arrMix[ENUM_TO_SZET(CState_GunBase::Douwn_MixAnim::R)] = Get_AnimationIndex(L"Animation_PlayerMoon_Shotgun_Run_Loop_R");
+    arrMix[ENUM_TO_SZET(CState_GunBase::Douwn_MixAnim::LF)] = Get_AnimationIndex(L"Animation_PlayerMoon_Shotgun_Run_Loop_LF");
+    arrMix[ENUM_TO_SZET(CState_GunBase::Douwn_MixAnim::LB)] = Get_AnimationIndex(L"Animation_PlayerMoon_Shotgun_Run_Loop_LB");
+    arrMix[ENUM_TO_SZET(CState_GunBase::Douwn_MixAnim::RF)] = Get_AnimationIndex(L"Animation_PlayerMoon_Shotgun_Run_Loop_RF");
+    arrMix[ENUM_TO_SZET(CState_GunBase::Douwn_MixAnim::RB)] = Get_AnimationIndex(L"Animation_PlayerMoon_Shotgun_Run_Loop_RB");
+    arrMix[ENUM_TO_SZET(CState_GunBase::Douwn_MixAnim::JUMP)] = Get_AnimationIndex(L"Animation_PlayerMoon_FirstJump_InplaceStart");
+    arrMix[ENUM_TO_SZET(CState_GunBase::Douwn_MixAnim::FALL)] = Get_AnimationIndex(L"Animation_PlayerMoon_Jump_FallLoop");
+
+    vector<CModel::DATA_ANIMIX> vecDownMix = { {304,true,1.f},{329,true,1.f},{378,true,1.f} };
+
+    for (auto& MixAnim : arrMix)
+    {
+        pModel->Make_MixRatio(MixAnim, vecDownMix, pAnimMixCS);
+    }
+
+    // gun attack
+    {
+        CState_GunBase::GUN_STATEBASE_DESC tDesc = {};
+
+        tDesc.arrMixAnims = arrMix;
+
+        tDesc.bLoop = true;
+        tDesc.pOwnerGun = pMyGun;
+        tDesc.iMainAnimIdx = Get_AnimationIndex(L"Animation_PlayerMoon_Machinegun01_Shooting_Loop");
+
+        if (FAILED(pActionState->Add_State(ENUM_TO_UINT(State::GUNATTACK), CState_GunAttack::Create(pActionState, &tDesc))))
+            return E_FAIL;
+    }
+
+    // gun reload
+    {
+        CState_GunBase::GUN_STATEBASE_DESC tDesc = {};
+
+        tDesc.arrMixAnims = arrMix;
+
+        tDesc.bLoop = false;
+        tDesc.pOwnerGun = pMyGun;
+        tDesc.iMainAnimIdx = Get_AnimationIndex(L"Animation_PlayerMoon_Machinegun01_Reload");
+
+        if (FAILED(pActionState->Add_State(ENUM_TO_UINT(State::GUNRELOAD), CState_GunReload::Create(pActionState, &tDesc))))
             return E_FAIL;
     }
 

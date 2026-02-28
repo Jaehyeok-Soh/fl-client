@@ -241,19 +241,41 @@ _bool CMonsterControlContext::IsTargetOutOfAttackRange()
 	return IsTargetFound() && IsTargetInAttackRange() == false;
 }
 
-_bool CMonsterControlContext::IsFalling()
+_bool CMonsterControlContext::IsTargetDistanceOver(_float fValue)
 {
-	return _bool();
+	if (m_pTarget == nullptr)
+		return FLT_MAX;
+
+	CTransform* pOwnerTransform = Get_Owner()->Get_Component<CTransform>();
+	CTransform* pTargetTransform = m_pTarget->Get_Component<CTransform>();
+
+	Vec3 vOwnerPosition = pOwnerTransform->Get_Info(TRANSFORM_INFO_STATE::POS);
+	Vec3 vTargetPosition = pTargetTransform->Get_Info(TRANSFORM_INFO_STATE::POS);
+
+	Vec3 vToTarget = vTargetPosition - vOwnerPosition;
+	_float fDistance = ::XMVectorGetX(::XMVector3Length(vToTarget));
+	return fDistance > fValue;
 }
 
-_bool CMonsterControlContext::IsGrounded()
+_bool CMonsterControlContext::IsFalling()
 {
-	return _bool();
+	_bool result = m_iSubState & SUB_STATE::FALL;
+	m_iSubState &= ~SUB_STATE::FALL;
+	return result;
 }
 
 _bool CMonsterControlContext::IsDown()
 {
-	return _bool();
+	_bool result = m_iSubState & SUB_STATE::DOWN;
+	m_iSubState &= ~SUB_STATE::DOWN;
+	return result;
+}
+
+_bool CMonsterControlContext::IsHit()
+{
+	_bool result = m_iSubState & SUB_STATE::HIT;
+	m_iSubState &= ~SUB_STATE::HIT;
+	return result;
 }
 
 _bool CMonsterControlContext::IsDamageRecently()
@@ -323,7 +345,8 @@ void CMonsterControlContext::Update_8Dir_LocalAxisXZ(const _float fTimeDelta, _f
 	Vec3 vRight = pOwnerTransform->Get_Info(TRANSFORM_INFO_STATE::RIGHT);
 
 	Vec3 vDir = vLook * fForward + vRight * fRight;
-	return vDir.Normalize();
+	vDir.Normalize();
+	m_vMoveDir = vDir;
 }
 
 void CMonsterControlContext::UpdateRun(const _float fTimeDelta)

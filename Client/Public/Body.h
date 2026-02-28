@@ -55,6 +55,10 @@ public:
 	//CBone* Get_LeftShoulderSocket();
 	//CBone* Get_RightShoulderSocket();
 	//CBone* Get_EffectMouseSocket();
+
+public:
+	CComputeShader* Get_AnimMixCS() const { return m_pBoneAnimMixCS; }
+
 private:
 	HRESULT Ready_Components(BODY_DESC *pDesc);
 	HRESULT Ready_EffectEvent();

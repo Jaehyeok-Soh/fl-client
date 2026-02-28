@@ -28,6 +28,12 @@ public:
 
 	enum class STATEKEY : _uint {MOVE, SPACE, SHIFT, LCRTL_PRESS, LCRTL_UP, E,Q, LM, RM, CHARGE, LOOPDONE , END}; //END에는 키가 없을떄 바꿀 state를 넣자
 
+	// 최소 desc
+	typedef struct tagBaseDesc : public CStateBase::STATE_DESC
+	{
+		CGun* pOwnerGun = { nullptr };
+	}PLAYER_STATE_SPECIFICDESC;
+
 	typedef struct tagPlayerStateDesc : public CStateBase::STATE_DESC
 	{
 		Flags					FMoves		= { 0 }; // MOVEFLAGS 이용
@@ -98,8 +104,13 @@ protected:
 	void	Set_DoubleJump(_bool bCount);
 	_bool	Check_Double();
 
+	// gun util funcs
+protected:
 	_bool	Can_Fire();
 	_bool	Can_Reload();
+	void	Set_GunTimer(_bool bOn);
+	void	Reset_GunTimer();
+	void	Reload_Gun();
 
 protected:
 	virtual void OwnMove(const _float fTimeDelta) {};		// state 내부에서 알아서 움직일때
@@ -107,9 +118,9 @@ protected:
 
 	virtual void CheckAni_WhenStart() {};					// 만약 자체에서 로직을 통해 바꾸고 싶다면
 
-private:
+	virtual _bool Can_CheckKey(const _float fTimeDelta);
 
-	
+private:
 	CGun*					m_pOwnerGun = { nullptr };
 
 private:

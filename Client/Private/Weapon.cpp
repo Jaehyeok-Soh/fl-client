@@ -151,6 +151,26 @@ void CWeapon::Ready_Before_Render(_float fTimeDelta)
 	case State::HAND:
 		Super::Update_CombinedWorldMatrix(m_matHandOffsetMatrix *(*m_pMatHandSocket) * (*m_pMatParent));
 		break;
+
+	case State::HAND_ONLY_POS:
+	{
+		Matrix matfinalMat = Matrix::Identity;
+		matfinalMat.Translation((*m_pMatHandSocket).Translation());
+		Super::Update_CombinedWorldMatrix(m_matHandOffsetMatrix * matfinalMat * (*m_pMatParent));
+	}
+		break;
+	case State::HAND_ONLY_POS_SCALE:
+	{
+		Vec3 vPos{ Vec3::Zero };
+		Vec3 vScale{ Vec3::One };
+		Quat qRot{ Quat::Identity };
+		Matrix* pMat = const_cast<Matrix*>(m_pMatHandSocket);
+		pMat->Decompose(vScale, qRot, vPos);
+		Matrix matfinalMat = Matrix::CreateScale(vScale);
+		matfinalMat *= Matrix::CreateTranslation(vPos);
+		Super::Update_CombinedWorldMatrix(m_matHandOffsetMatrix * matfinalMat * (*m_pMatParent));
+	}
+		break;
 	}
 
 #ifdef _DEBUG
@@ -206,7 +226,7 @@ HRESULT CWeapon::Render()
 void CWeapon::Change_WeaponAnim(_uint iAnimIdx, _bool bLoop, _bool bForce, _bool bBlend)
 {
 	// 우선 weapon은 blend 안 한다 생각하고 진행 : todo blend 필요하다면 바꿔야함
-	Get_Component<CModel>()->Change_Animation(m_pAnimECS, iAnimIdx, false , bLoop, bForce);
+	Get_Component<CModel>()->Change_Animation(m_pAnimECS, iAnimIdx, bBlend, bLoop, bForce);
 }
 
 void CWeapon::Set_HandSocket()
@@ -350,11 +370,11 @@ HRESULT CWeapon::Ready_ComputeShaders()
 		ShaderDesc.OutPut_StructBuffer.iElementSize = sizeof(CS_SRT);
 		ShaderDesc.OutPut_StructBuffer.iNumElements = iBoneNums;
 
-		if (FAILED(Add_Script_Component(L"ComputeShader_AnimB", L"Prototype_Component_Shader_AnimB", &ShaderDesc)))
+		if (FAILED(Add_Script_Component(L"ComputeShader_AnimB", L"Prototype_Component_Shader_AnimB", &ShaderDesc, CAST_VOID_PP(&m_pAnimBlendECS))))
 			return E_FAIL;
 	}
 
-	if (FAILED(Get_Component<CModel>()->Ready_ComputeShaders(m_pBoneMeshCS, m_pBoneCombineCS, m_pAnimECS)))
+	if (FAILED(Get_Component<CModel>()->Ready_ComputeShaders(m_pBoneMeshCS, m_pBoneCombineCS, m_pAnimECS, m_pAnimBlendECS)))
 		return E_FAIL;
 
 	return S_OK;
@@ -415,11 +435,11 @@ void CWeapon::Play_Anim(const _float fTimeDelta)
 		switch (m_eAnimState)
 		{
 		case AnimState::PLAY:
-			Get_Component<CModel>()->Update_Animation(m_pBoneCombineCS, m_pAnimECS, fTimeDelta);
+			Get_Component<CModel>()->Update_Animation(m_pBoneCombineCS, m_pAnimECS, fTimeDelta,nullptr,nullptr, m_pAnimBlendECS);
 			break;
 
 		case AnimState::STOP:
-			Get_Component<CModel>()->Update_Animation(m_pBoneCombineCS, m_pAnimECS, 0.f); //0.f
+			Get_Component<CModel>()->Update_Animation(m_pBoneCombineCS, m_pAnimECS, 0.f, nullptr, nullptr, m_pAnimBlendECS);
 			break;
 		}
 	}

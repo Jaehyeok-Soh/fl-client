@@ -14,7 +14,6 @@ namespace DTO
 {
 	typedef struct tagHitboxDesc : public ANIM_EVENT_SCRIPT_BASE1
 	{
-
 		PxGeometryHolder geometry;
 		PxQueryFilterData filterData = { PxQueryFilterData() };
 		Matrix matOffset;
@@ -46,7 +45,7 @@ namespace DTO
 	}HITBOX_DESC;
 
 	inline void to_json(json& j, const HITBOX_DESC& d)
-	{
+	{ 
 		nlohmann::to_json(j, static_cast<const ANIM_EVENT_SCRIPT_BASE1&>(d));
 
 		j["eType"] = d.eType;
@@ -90,6 +89,6 @@ namespace DTO
 		j.at("eFilterLayer").get_to(d.eFilterLayer);
 		j.at("iFilterMask").get_to(d.iFilterMask);
 		if (j.contains("strAttackPresetTag"))
-			j.at("strAttackpresetTag").get_to(d.strAttackPresetTag);
+			j.at("strAttackPresetTag").get_to(d.strAttackPresetTag);
 	}
 }

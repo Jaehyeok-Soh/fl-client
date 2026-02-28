@@ -1,6 +1,7 @@
 #pragma once
 #include "BuilderBase.h"
 #include "DataStruct_Map.h"
+#include "Monster_Base.h"
 
 NS_BEGIN(Engine)
 
@@ -34,6 +35,17 @@ private:
 	/* ------ */
 	HRESULT Create_Water(const DTO::TMap_MapObjectData& tData);
 	HRESULT Create_Rock(const DTO::TMap_MapObjectData& tData);
+
+
+	/* Player Start Postition */
+	HRESULT Batch_Player(const DTO::TMap_MapObjectData& tData);
+	/* Monster Spawn Position */
+	HRESULT	Batch_Monster(const DTO::TMap_MapObjectData& tData);
+
+	/* Trigger Box */
+	HRESULT	Create_TriggerBox_ChangeLevel(const DTO::TMap_MapObjectData& tData);
+	HRESULT	Create_TriggerBox_MonsterSpawner(const DTO::TMap_MapObjectData& tData);
+
 private:
 	CShader*		m_pMeshShader{nullptr};
 
@@ -41,6 +53,7 @@ private:
 
 	CGameInstance* m_pGameInstance{ nullptr };
 public:
+	static EMonster_Type Change_MakeMonsterType_To_MonsterType(DTO::EMakeMonsterType eMakeMonsterType);
 	static CBuilder_Map* Create(ID3D11Device* pDevice, ID3D11DeviceContext* pDeviceContext, _uint iLevelID);
 	virtual void Free() override;
 };

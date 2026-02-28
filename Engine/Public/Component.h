@@ -27,6 +27,7 @@ protected:
 public:
 	virtual void Render() {};
 	_bool IsClone() const { return m_bClone; }
+	virtual void Clear_WhenChangeLevel() {};
 public:
 	HRESULT Set_Owner(CGameObject* pOwner);
 	CGameObject* Get_Owner() { return m_pOwner; }

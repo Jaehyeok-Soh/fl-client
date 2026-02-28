@@ -7,6 +7,13 @@
 #include "UI_Manager.h"
 
 //=================
+// Data Struct
+//=================
+#include "DataStruct_Effect.h"
+#include "DataStruct_Map.h"
+#include "DataStruct_UI.h"
+
+//=================
 // Builder
 //=================
 #include "Builder_UI.h"
@@ -15,28 +22,18 @@
 #include "BuilderSystem.h"
 #include "Builder_Map.h"
 #include "Builder_Effect.h"
-#include "DataStruct_Effect.h"
-#include "DataDocument_Effect.h"
-#include "DataDocument_Map.h"
 
 //=================
-// Object
+// Document
 //=================
-#include "Player.h"
-#include "CameraMan_Targeter.h"
-#include "Effect.h"
-#include "EffectObject.h"
-#include "Physics_LandScape.h"
-#include "Monster_Dummy.h"
-#include "Monster_Dummy_Body.h"
-#include "Boss_Xibi.h"
-#include "Boss_Xibi_Body.h"
+#include "DataDocument_Effect.h"
+#include "DataDocument_Map.h"
+#include "DataDocument_UI.h"
+
 
 //=================
 // UI
 //=================
-#include "DataDocument_UI.h"
-#include "DataStruct_UI.h"
 #include "Canvas.h"
 #include "GenericUI.h"
 
@@ -46,6 +43,26 @@
 #include "Bounds.h"
 #include "PhysicsCCT.h"
 
+
+//=================
+// Game Object
+//=================
+#include "Player.h"
+#include "CameraMan_Targeter.h"
+#include "Effect.h"
+#include "EffectObject.h"
+#include "Physics_LandScape.h"
+#include "Monster_Dog.h"
+#include "Monster_Dog_Body.h"
+#include "Monster_Boomer.h"
+#include "Monster_Boomer_Body.h"
+#include "Boss_Xibi.h"
+#include "Boss_Xibi_Body.h"
+
+
+//=================
+// GameInstance
+//=================
 #include "GameInstance.h"
 
 CLevel_Test::CLevel_Test(ID3D11Device* pDevice, ID3D11DeviceContext* pDeviceContext)
@@ -55,6 +72,7 @@ CLevel_Test::CLevel_Test(ID3D11Device* pDevice, ID3D11DeviceContext* pDeviceCont
 
 HRESULT CLevel_Test::Initialize()
 {
+
 	if (FAILED(Super::Initialize()))
 		return E_FAIL;
 
@@ -64,29 +82,23 @@ HRESULT CLevel_Test::Initialize()
 	if (FAILED(Build_Files()))
 		return E_FAIL;
 
-	if (FAILED(Ready_Camera_Layer(g_wszDynamicCameraLayer)))
+	if (FAILED(Ready_Lights()))
 		return E_FAIL;
 
 	if (FAILED(Ready_Player_Layer(g_wszPlayerLayer)))
 		return E_FAIL;
 
+	if (FAILED(Ready_Camera_Layer(g_wszDynamicCameraLayer)))
+		return E_FAIL;
+
 	if (FAILED(Ready_Map()))
-		return E_FAIL;
-
-	if (FAILED(Ready_Boss_Layer(g_wszBossLayer)))
-		return E_FAIL;
-
-	if (FAILED(Ready_Monster()))
 		return E_FAIL;
 
 	if (FAILED(Ready_UI_Layer(g_wszUILayer)))
 		return E_FAIL;
 
-	if (FAILED(Ready_Lights()))
-		return E_FAIL;
-
-
 	return S_OK;
+
 }
 
 HRESULT CLevel_Test::Awake(const _uint iLevelID)
@@ -102,11 +114,6 @@ HRESULT CLevel_Test::Awake(const _uint iLevelID)
 
 	m_eCursorMode = ECursorMode::LockedHiddenCenter;
 	m_pGameInstance->Request_CursorMode(m_eCursorMode);
-
-	CLOG_TRACE(L"테스트, Logo Awake() 확인");
-	CLOG_INFO(L"테스트, Logo Awake() 확인");
-	CLOG_WARN(L"테스트, Logo Awake() 확인");
-	CLOG_ERROR(L"테스트, Logo Awake() 확인");
 	return S_OK;
 }
 
@@ -114,7 +121,6 @@ void CLevel_Test::Update(const _float fTimeDelta)
 {
 	Super::Update(fTimeDelta);
 
-	// TODO : 어디다 두지?
 	static _uint s_iCount = { 0 };
 	if (m_pGameInstance->KeyButton_Down(DIK_LALT))
 	{
@@ -139,6 +145,31 @@ void CLevel_Test::Update(const _float fTimeDelta)
 #endif
 		m_pGameInstance->Request_CursorMode(m_eCursorMode);
 	}
+
+	if (KEY_BUTTON_DOWN(DIK_5))
+	{
+		UI_PREFAB_DATA Desc = {};
+		Desc.DamageFontData.iDamage = 100;
+		Desc.DamageFontData.vFontColor = Vec4(0.f, 0.f, 1.f, 1.f);
+		Desc.DamageFontData.vHitPos = Vec3{ 0.f, 0.f, 0.f };
+		CUI_Manager::GetInstance()->Request_Add_Prefab(ENUM_TO_UINT(ELevelType::TEST), EUIPrefabType::DAMAGE_FONTS_COMMON, ENUM_TO_UINT(ELevelType::TEST), &Desc);
+	}
+	if (KEY_BUTTON_DOWN(DIK_6))
+	{
+		UI_PREFAB_DATA Desc = {};
+		Desc.DamageFontData.iDamage = 50000;
+		Desc.DamageFontData.vFontColor = Vec4(0.f, 1.f, 1.f, 1.f);
+		Desc.DamageFontData.vHitPos = Vec3{ 0.f, 0.f, 0.f };
+		CUI_Manager::GetInstance()->Request_Add_Prefab(ENUM_TO_UINT(ELevelType::TEST), EUIPrefabType::DAMAGE_FONTS_CRITICAL, ENUM_TO_UINT(ELevelType::TEST), &Desc);
+	}
+	if (KEY_BUTTON_DOWN(DIK_7))
+	{
+		UI_PREFAB_DATA Desc = {};
+		Desc.DamageFontData.iDamage = 999;
+		Desc.DamageFontData.vFontColor = Vec4(1.f, 0.f, 1.f, 1.f);
+		Desc.DamageFontData.vHitPos = Vec3{ 0.f, 0.f, 0.f };
+		CUI_Manager::GetInstance()->Request_Add_Prefab(ENUM_TO_UINT(ELevelType::TEST), EUIPrefabType::DAMAGE_FONTS_HIT, ENUM_TO_UINT(ELevelType::TEST), &Desc);
+	}
 }
 
 HRESULT CLevel_Test::Render()
@@ -151,13 +182,15 @@ HRESULT CLevel_Test::Render()
 
 HRESULT CLevel_Test::Build_Prototype()
 {
-	if (FAILED(Ready_Builder(DTO::ECategory::MAP, CBuilder_Map::Create(m_pDevice, m_pDeviceContext, static_cast<_uint>(ELevelType::TEST)))))
+	_uint iLevelType = ENUM_TO_UINT(ELevelType::TEST);
+
+	if (FAILED(Ready_Builder(DTO::ECategory::MAP, CBuilder_Map::Create(m_pDevice, m_pDeviceContext, iLevelType ))))
 		return E_FAIL;
-	if (FAILED(Ready_Builder(DTO::ECategory::UI, CBuilder_UI::Create(m_pDevice, m_pDeviceContext, static_cast<_uint>(ELevelType::TEST)))))
+	if (FAILED(Ready_Builder(DTO::ECategory::UI, CBuilder_UI::Create(m_pDevice, m_pDeviceContext, iLevelType))))
 		return E_FAIL;
-	if (FAILED(Ready_Builder(DTO::ECategory::UI_PREFAB, CBuilder_UIPrefabs::Create(m_pDevice, m_pDeviceContext, static_cast<_uint>(ELevelType::TEST)))))
+	if (FAILED(Ready_Builder(DTO::ECategory::UI_PREFAB, CBuilder_UIPrefabs::Create(m_pDevice, m_pDeviceContext, iLevelType))))
 		return E_FAIL;
-	if (FAILED(Ready_Builder(DTO::ECategory::EFFECT, CBuilder_Effect::Create(m_pDevice, m_pDeviceContext, ENUM_TO_UINT(ELevelType::TEST)))))
+	if (FAILED(Ready_Builder(DTO::ECategory::EFFECT, CBuilder_Effect::Create(m_pDevice, m_pDeviceContext, iLevelType))))
 		return E_FAIL;
 
 	return S_OK;
@@ -347,6 +380,9 @@ HRESULT CLevel_Test::Ready_Map()
 
 HRESULT CLevel_Test::Ready_Monster()
 {
+	/////////////////
+	// MONSTER DOG //
+	/////////////////
 	{
 		CGameObject* pResult = { nullptr };
 
@@ -354,7 +390,7 @@ HRESULT CLevel_Test::Ready_Monster()
 		CTransform::TRANSFORM_DESC transformDesc = {};
 		monsterDesc.iLevelIndex = ENUM_TO_UINT(ELevelType::TEST);
 		monsterDesc.wstrBodyModelTag = L"Prototype_Component_Model_Monster_Dog";
-		monsterDesc.wstrPartBodyPrototypeTag = L"Prototype_GameObject_Monster_Dummy_Body";
+		monsterDesc.wstrPartBodyPrototypeTag = L"Prototype_GameObject_Monster_Dog_Body";
 		monsterDesc.wstrAttackOverlapPrototypeTag = L"Prototype_Component_AttackOverlap_Monster_Dog";
 		transformDesc.TranslationMatrix = Matrix::CreateTranslation(Vec3(18.f, 12.f, 19.f));
 		monsterDesc.pTransform_Desc = &transformDesc;
@@ -366,7 +402,7 @@ HRESULT CLevel_Test::Ready_Monster()
 			desc.bIsPlayer = false;
 			desc.eType = EPhysicsCCTType::CAPSULE;
 			desc.pOwnerMatrix = nullptr;
-			desc.fRadius = 1.f;
+			desc.fRadius = 0.5f;
 			desc.fHeight = 0.1f;
 			desc.vExtens = { 2.f, 2.f, 2.f };
 
@@ -390,7 +426,59 @@ HRESULT CLevel_Test::Ready_Monster()
 		}
 
 		if (!(pResult = m_pGameInstance->Add_GameObject(ENUM_TO_UINT(ELevelType::TEST),
-			L"Prototype_GameObject_Monster_Dummy",
+			L"Prototype_GameObject_Monster_Dog",
+			ENUM_TO_UINT(ELevelType::TEST),
+			L"Monster", &monsterDesc)))
+			return E_FAIL;
+	}
+
+	////////////////////
+	// MONSTER BOOMER //
+	////////////////////
+	{
+		CGameObject* pResult = { nullptr };
+
+		CMonster_Base::MONSTER_DESC monsterDesc = {};
+		CTransform::TRANSFORM_DESC transformDesc = {};
+		monsterDesc.iLevelIndex = ENUM_TO_UINT(ELevelType::TEST);
+		monsterDesc.wstrBodyModelTag = L"Prototype_Component_Model_Monster_Boomer";
+		monsterDesc.wstrPartBodyPrototypeTag = L"Prototype_GameObject_Monster_Boomer_Body";
+		//monsterDesc.wstrAttackOverlapPrototypeTag = L"Prototype_Component_AttackOverlap_Monster_Boomer";
+		transformDesc.TranslationMatrix = Matrix::CreateTranslation(Vec3(18.f, 12.f, 19.f));
+		monsterDesc.pTransform_Desc = &transformDesc;
+		monsterDesc.wstrMonsterStateTag = L"Monster_Boomer";
+
+		{
+			PHYSICSCCT_DESC desc;
+			desc.pOwner = nullptr;
+			desc.bIsPlayer = false;
+			desc.eType = EPhysicsCCTType::CAPSULE;
+			desc.pOwnerMatrix = nullptr;
+			desc.fRadius = 1.f;
+			desc.fHeight = 1.5f;
+			desc.vExtens = { 2.f, 2.f, 2.f };
+
+			PHYSICSMATERIAL_DESC mtrlDesc{};
+			mtrlDesc.eMaterial = EPhysicsMaterial::PLAYER;
+			desc.tMaterial = mtrlDesc;
+
+			desc.eFilterLayer = PHYSICSFILTERGROUP::Enum::MONSTER;
+			desc.iFilterMask =
+				PHYSICSFILTERGROUP::Enum::MONSTER
+				| PHYSICSFILTERGROUP::Enum::PLAYER
+				| PHYSICSFILTERGROUP::Enum::ATTACK
+				| PHYSICSFILTERGROUP::Enum::ATTACK_PROJECTTILE
+				| PHYSICSFILTERGROUP::Enum::SKILL
+				| PHYSICSFILTERGROUP::Enum::SKILL_PROJECTTILE
+				| PHYSICSFILTERGROUP::Enum::MAP
+				| PHYSICSFILTERGROUP::Enum::OBJECT1
+				| PHYSICSFILTERGROUP::Enum::OBJECT2;
+
+			monsterDesc.tCCTDesc = desc;
+		}
+
+		if (!(pResult = m_pGameInstance->Add_GameObject(ENUM_TO_UINT(ELevelType::TEST),
+			L"Prototype_GameObject_Monster_Boomer",
 			ENUM_TO_UINT(ELevelType::TEST),
 			L"Monster", &monsterDesc)))
 			return E_FAIL;
@@ -416,6 +504,8 @@ HRESULT CLevel_Test::Ready_Boss_Layer(const wstring& wstrLayerTag)
 		monsterDesc.wstrBodyModelTag = L"Prototype_Component_Model_Xibi";
 		monsterDesc.wstrPartBodyPrototypeTag = L"Prototype_GameObject_Boss_Xibi_Body";
 		transformDesc.TranslationMatrix = Matrix::CreateTranslation(Vec3(18.f, 12.f, 19.f));
+		transformDesc.fMovePerSec = 2.f;
+		transformDesc.fRotatePerSec = 4.f;
 		monsterDesc.spanBoneNames = vecboneNames;
 		monsterDesc.pTransform_Desc = &transformDesc;
 		monsterDesc.wstrMonsterStateTag = L"Boss_Xibi";
@@ -426,9 +516,9 @@ HRESULT CLevel_Test::Ready_Boss_Layer(const wstring& wstrLayerTag)
 			desc.bIsPlayer = false;
 			desc.eType = EPhysicsCCTType::CAPSULE;
 			desc.pOwnerMatrix = nullptr;
-			desc.fRadius = 1.f;
-			desc.fHeight = 1.f;
-			desc.vExtens = { 2.f, 2.f, 2.f };
+			desc.fRadius = 0.5f;
+			desc.fHeight = 0.7f;
+			desc.vExtens = { 1.5f, 1.5f, 1.5f };
 
 			PHYSICSMATERIAL_DESC mtrlDesc{};
 			mtrlDesc.eMaterial = EPhysicsMaterial::PLAYER;
@@ -456,20 +546,6 @@ HRESULT CLevel_Test::Ready_Boss_Layer(const wstring& wstrLayerTag)
 			return E_FAIL;
 	}
 
-	return S_OK;
-}
-
-HRESULT CLevel_Test::Ready_Camera_Setting(const _uint iLevelIndex)
-{
-	CGameObject* pMainCamera = m_pGameInstance->Get_GameObject_Front(iLevelIndex, g_wszDynamicCameraLayer);
-	m_pGameInstance->Add_Camera(CameraType::DYNAMIC, g_MainActorCameraName, static_cast<CCameraMan*>(pMainCamera));
-	m_pGameInstance->Change_MainCamera(CameraType::DYNAMIC, g_MainActorCameraName);
-	CGameObject* pPlayer = m_pGameInstance->Get_GameObject_Front(/* static */ 0, g_wszPlayerLayer);
-	if (pPlayer == nullptr)
-		return E_FAIL;
-
-	m_pGameInstance->Change_Target(pPlayer);
-	m_pGameInstance->Ready_Frustrum();
 	return S_OK;
 }
 
@@ -550,6 +626,20 @@ HRESULT CLevel_Test::Ready_Octree()
 
 	return S_OK;
 }
+HRESULT CLevel_Test::Ready_Camera_Setting(const _uint iLevelIndex)
+{
+	CGameObject* pMainCamera = m_pGameInstance->Get_GameObject_Front(iLevelIndex, g_wszDynamicCameraLayer);
+	m_pGameInstance->Add_Camera(CameraType::DYNAMIC, g_MainActorCameraName, static_cast<CCameraMan*>(pMainCamera));
+	m_pGameInstance->Change_MainCamera(CameraType::DYNAMIC, g_MainActorCameraName);
+	CGameObject* pPlayer = m_pGameInstance->Get_GameObject_Front(/* static */ 0, g_wszPlayerLayer);
+	if (pPlayer == nullptr)
+		return E_FAIL;
+
+	m_pGameInstance->Change_Target(pPlayer);
+	m_pGameInstance->Ready_Frustrum();
+	return S_OK;
+}
+
 
 CLevel_Test* CLevel_Test::Create(ID3D11Device* pDevice, ID3D11DeviceContext* pDeviceContext)
 {

@@ -1,7 +1,8 @@
 #include "pch.h"
 #include "Monster_Base.h"
 
-#include "GameInstance.h"
+
+#include "EngineConsole.h"
 
 #include "Monster_Body_Base.h"
 #include "Ray.h"
@@ -14,14 +15,18 @@
 #include "PhysicsCollider.h"
 #include "PhysicsAttackOverlap.h"
 
+#include "GameInstance.h"
+
+
+
 CMonster_Base::CMonster_Base(ID3D11Device* pDevice, ID3D11DeviceContext* pDeviceContext)
-	: Super(pDevice, pDeviceContext)
+	: Super(pDevice, pDeviceContext), m_eMonsterType{ EMonster_Type::END}
 {
 	m_vecPartObjects.resize(Part::END, nullptr);
 }
 
 CMonster_Base::CMonster_Base(const CMonster_Base& rhs)
-	: Super(rhs)
+	: Super(rhs), m_eMonsterType{rhs.m_eMonsterType }
 {
 	m_vecPartObjects.resize(Part::END, nullptr);
 }
@@ -45,9 +50,6 @@ HRESULT CMonster_Base::Initialize(void* pArg)
 	if (FAILED(Ready_Components(pArg)))
 		return E_FAIL;
 
-	if (FAILED(Ready_BaseStates()))
-		return E_FAIL;
-
 	//if (FAILED(Ready_Ability()))
 	//	return E_FAIL;
 
@@ -69,8 +71,6 @@ HRESULT CMonster_Base::Awake(const _uint iCurrentLevelID)
 
 	if (FAILED(Get_Component<CControlContext>()->Awake(iCurrentLevelID)))
 		return E_FAIL;
-
-	Get_Component<CTransform>()->Set_Info(TRANSFORM_INFO_STATE::POS, Vec3{ 21.f, 17.5f, -1.f });
 
 	Get_Component<CPhysicsCCT>()->Awake();
 
@@ -155,6 +155,15 @@ void CMonster_Base::OnCollision(_uint iMyColliderLayer, _uint iOtherLayer, CGame
 
 void CMonster_Base::OnCollision_Enter(_uint iMyColliderLayer, _uint iOtherLayer, CGameObject* pOther, const COL_HIT_INFO &tHitInfo)
 {
+	COLLIDED_DESC collidedDesc{};
+	collidedDesc.iCollisionType = COLLISIONEVENT::ON_COLLISION_ENTER;
+	collidedDesc.iRequesterLayer = iMyColliderLayer;
+	collidedDesc.iOtherLayer = iOtherLayer;
+	collidedDesc.pRequester = this;
+	collidedDesc.pOther = pOther;
+	collidedDesc.tHitInfo = tHitInfo;
+
+	m_pGameInstance->Push_CollidedData(collidedDesc);
 }
 
 void CMonster_Base::OnCollision_Exit(_uint iMyColliderLayer, _uint iOtherLayer, CGameObject* pOther)
@@ -167,6 +176,39 @@ void CMonster_Base::OnTrigger_Enter(_uint iMyColliderLayer, _uint iOtherLayer, C
 
 void CMonster_Base::OnTrigger_Exit(_uint iMyColliderLayer, _uint iOtherLayer, CGameObject* pOther)
 {
+}
+
+_bool CMonster_Base::On_Hit(const HIT_DESC& hitDesc)
+{
+	Get_Component<CMonsterControlContext>()->Set_HitDesc(hitDesc);
+
+#ifdef _DEBUG
+	wstring infoHeader(L"Monster Hit ");
+	wstring infoSeparate(L": ");
+	wstring infoContant = infoHeader
+		+ infoSeparate
+		+ Engine_Utils::ToWString(m_strName)
+		+ infoSeparate
+		+ std::to_wstring(Get_ID());
+
+	CLOG_INFO(infoContant);
+#endif // _DEBUG
+	return true;
+}
+
+void CMonster_Base::Try_Attack(const HIT_DESC& hitDesc)
+{
+#ifdef _DEBUG
+	wstring infoHeader(L"Monster Attack ");
+	wstring infoSeparate(L": ");
+	wstring infoContant = infoHeader
+		+ infoSeparate
+		+ Engine_Utils::ToWString(m_strName)
+		+ infoSeparate
+		+ std::to_wstring(Get_ID());
+
+	CLOG_INFO(infoContant);
+#endif // _DEBUG
 }
 
 HRESULT CMonster_Base::Ready_BaseStates()
@@ -200,7 +242,7 @@ HRESULT CMonster_Base::Ready_PartObjects(void* pArg)
 		bodyDesc.wstrModelPrototypeTag = pDesc->wstrBodyModelTag;
 		bodyDesc.spanBoneNames = pDesc->spanBoneNames;
 		// TODO : 재혁아 이거 LevelID 바꿔야할수도있다 Static에 넣어두고 쓸까 ...?
-		if (FAILED(Add_Part(Part::BODY, pDesc->iLevelIndex, pDesc->wstrPartBodyPrototypeTag, &bodyDesc)))
+		if (FAILED(Add_Part(Part::BODY,ENUM_TO_UINT(ELevelType::STATIC), pDesc->wstrPartBodyPrototypeTag, &bodyDesc)))
 			return E_FAIL;
 	}
 
@@ -211,21 +253,11 @@ HRESULT CMonster_Base::Ready_Components(void* pArgs)
 {
 	MONSTER_DESC* pDesc = static_cast<MONSTER_DESC*>(pArgs);
 
-	{
-		CMonsterActionState::MONSTERACTIONSTATE_DESC desc = {};
-		desc.pOwnerModel = Get_Part<CMonster_Body_Base>(ENUM_TO_UINT(Part::BODY))->Get_Component<CModel>();
-		desc.pOwnerAnimECS = static_cast<CComputeShader*>(Get_Part<CMonster_Body_Base>(ENUM_TO_UINT(Part::BODY))->Get_Script_Component(TEXT("ComputeShader_AnimE")));
-		desc.wstrMonsterStateTag = pDesc->wstrMonsterStateTag;
-		desc.iLevelIndex = pDesc->iLevelIndex;
-		if (FAILED(Add_Component<CMonsterActionState>(0, L"Prototype_Component_ActionState_Monster", &desc)))
-			return E_FAIL;
-	}
-
 	if (FAILED(Ready_CCT(pArgs)))
 		return E_FAIL;
 
 	if (FAILED(Ready_AttackOverlap(pDesc->wstrAttackOverlapPrototypeTag)))
-		return E_FAIL;
+			return E_FAIL;
 
 	return S_OK;
 }
@@ -260,6 +292,160 @@ HRESULT CMonster_Base::Ready_CCT(void* pArgs)
 		if (FAILED(Add_Component<CPhysicsCollider>(ENUM_TO_UINT(ELevelType::STATIC), L"Prototype_Component_Physics_Collider", &cloneDesc)))
 			return E_FAIL;
 	}
+
+	return S_OK;
+}
+
+HRESULT CMonster_Base::Create_Mosnter(EMonster_Type eCreateMonsterType, _uint iFindPrototypeLevelType, _uint iAddLevelType, CTransform::TRANSFORM_DESC* pTransformDesc)
+{
+	/* Monster Type별로 Batch */
+	CGameObject* pResult{ nullptr };
+
+	_uint	iFindPrototypeIndex = ENUM_TO_UINT(ELevelType::STATIC);
+	wstring wstrAddLayerName{};
+	wstring wstrFindPrototypeName{};
+
+	CMonster_Base::MONSTER_DESC monsterDesc = {};
+	monsterDesc.iLevelIndex = iAddLevelType;
+	monsterDesc.pTransform_Desc = pTransformDesc;
+
+
+	switch (eCreateMonsterType)
+	{
+	case EMonster_Type::Dog:
+	{
+		monsterDesc.wstrBodyModelTag				= g_wszMonster_Dog_Model_Prototype_Tag;
+		monsterDesc.wstrPartBodyPrototypeTag		= g_wszMonster_Dog_Body_Prototype_Tag;
+		monsterDesc.wstrAttackOverlapPrototypeTag	= g_wszMonster_Dog_AttackOverlap_Prototype_Tag;
+		monsterDesc.wstrMonsterStateTag				= g_wszMonster_Dog_State_Tag;
+
+		{
+			PHYSICSCCT_DESC desc;
+			desc.pOwner = nullptr;
+			desc.bIsPlayer = false;
+			desc.eType = EPhysicsCCTType::CAPSULE;
+			desc.pOwnerMatrix = nullptr;
+			desc.fRadius = 1.f;
+			desc.fHeight = 0.1f;
+			desc.vExtens = { 2.f, 2.f, 2.f };
+
+			PHYSICSMATERIAL_DESC mtrlDesc{};
+			mtrlDesc.eMaterial = EPhysicsMaterial::PLAYER;
+			desc.tMaterial = mtrlDesc;
+
+			desc.eFilterLayer = PHYSICSFILTERGROUP::Enum::MONSTER;
+			desc.iFilterMask =
+				PHYSICSFILTERGROUP::Enum::MONSTER
+				| PHYSICSFILTERGROUP::Enum::PLAYER
+				| PHYSICSFILTERGROUP::Enum::ATTACK
+				| PHYSICSFILTERGROUP::Enum::ATTACK_PROJECTTILE
+				| PHYSICSFILTERGROUP::Enum::SKILL
+				| PHYSICSFILTERGROUP::Enum::SKILL_PROJECTTILE
+				| PHYSICSFILTERGROUP::Enum::MAP
+				| PHYSICSFILTERGROUP::Enum::OBJECT1
+				| PHYSICSFILTERGROUP::Enum::OBJECT2;
+
+			monsterDesc.tCCTDesc = desc;
+		}
+		wstrFindPrototypeName	= g_wszMonster_Dog_Prototype_Tag;
+		wstrAddLayerName		= g_wszMonstereLayer;
+	}
+	break;
+	case EMonster_Type::Shooter:
+	{
+		MSG_BOX(" Mosnter Shooter is None Ready Now Version ");
+		return S_OK;
+	}
+	break;
+	case EMonster_Type::Boomer:
+	{
+		////////////////////
+		// MONSTER BOOMER //
+		////////////////////
+		monsterDesc.wstrPartBodyPrototypeTag		= g_wszMonster_Boomer_Body_Prototype_Tag;
+		monsterDesc.wstrBodyModelTag				= g_wszMonster_Boomer_Model_Prototype_Tag;
+		monsterDesc.wstrMonsterStateTag				= g_wszMonster_Boomer_State_Tag;
+
+		{
+			PHYSICSCCT_DESC desc;
+			desc.pOwner = nullptr;
+			desc.bIsPlayer = false;
+			desc.eType = EPhysicsCCTType::CAPSULE;
+			desc.pOwnerMatrix = nullptr;
+			desc.fRadius = 1.f;
+			desc.fHeight = 1.5f;
+			desc.vExtens = { 2.f, 2.f, 2.f };
+
+			PHYSICSMATERIAL_DESC mtrlDesc{};
+			mtrlDesc.eMaterial = EPhysicsMaterial::PLAYER;
+			desc.tMaterial = mtrlDesc;
+
+			desc.eFilterLayer = PHYSICSFILTERGROUP::Enum::MONSTER;
+			desc.iFilterMask =
+				PHYSICSFILTERGROUP::Enum::MONSTER
+				| PHYSICSFILTERGROUP::Enum::PLAYER
+				| PHYSICSFILTERGROUP::Enum::ATTACK
+				| PHYSICSFILTERGROUP::Enum::ATTACK_PROJECTTILE
+				| PHYSICSFILTERGROUP::Enum::SKILL
+				| PHYSICSFILTERGROUP::Enum::SKILL_PROJECTTILE
+				| PHYSICSFILTERGROUP::Enum::MAP
+				| PHYSICSFILTERGROUP::Enum::OBJECT1
+				| PHYSICSFILTERGROUP::Enum::OBJECT2;
+
+			monsterDesc.tCCTDesc = desc;
+		}
+
+		wstrFindPrototypeName		= g_wszMonster_Boomer_Prototype_Tag;
+		wstrAddLayerName			= g_wszMonstereLayer;
+	}
+	break;
+	case EMonster_Type::Xibi:
+	{
+		////////////////////
+		//  BOSS Xibi  //
+		////////////////////
+		monsterDesc.wstrBodyModelTag			= g_wszBoss_Xibi_Model_Prototype_Tag;
+		monsterDesc.wstrPartBodyPrototypeTag	= g_wszBoss_Xibi_Body_Prototype_Tag;
+		monsterDesc.wstrMonsterStateTag			= g_wszBoss_Xibi_State_Tag;
+		{
+			PHYSICSCCT_DESC desc;
+			desc.pOwner = nullptr;
+			desc.bIsPlayer = false;
+			desc.eType = EPhysicsCCTType::CAPSULE;
+			desc.pOwnerMatrix = nullptr;
+			desc.fRadius = 1.f;
+			desc.fHeight = 1.f;
+			desc.vExtens = { 2.f, 2.f, 2.f };
+
+			PHYSICSMATERIAL_DESC mtrlDesc{};
+			mtrlDesc.eMaterial = EPhysicsMaterial::PLAYER;
+			desc.tMaterial = mtrlDesc;
+
+			desc.eFilterLayer = PHYSICSFILTERGROUP::Enum::MONSTER;
+			desc.iFilterMask =
+				PHYSICSFILTERGROUP::Enum::MONSTER
+				| PHYSICSFILTERGROUP::Enum::PLAYER
+				| PHYSICSFILTERGROUP::Enum::ATTACK
+				| PHYSICSFILTERGROUP::Enum::ATTACK_PROJECTTILE
+				| PHYSICSFILTERGROUP::Enum::SKILL
+				| PHYSICSFILTERGROUP::Enum::SKILL_PROJECTTILE
+				| PHYSICSFILTERGROUP::Enum::MAP
+				| PHYSICSFILTERGROUP::Enum::OBJECT1
+				| PHYSICSFILTERGROUP::Enum::OBJECT2;
+
+			monsterDesc.tCCTDesc = desc;
+		}
+		wstrFindPrototypeName		= g_wszBoss_Xibi_Prototype_Tag;
+		wstrAddLayerName			= g_wszBossLayer;
+	}
+	break;
+	default:
+		break;
+	}
+
+
+	if (!(pResult = CGameInstance::GetInstance()->Add_GameObject(iFindPrototypeIndex, wstrFindPrototypeName,iAddLevelType, wstrAddLayerName, &monsterDesc)))
+		return E_FAIL;
 
 	return S_OK;
 }

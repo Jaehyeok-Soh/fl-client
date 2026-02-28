@@ -11,9 +11,9 @@
 #include "MonsterActionState.h"
 
 // manager
-#include "GameInstance.h"
 #include "ControlContext.h"
 #include "Engine_Utils.h"
+#include "GameInstance.h"
 
 CStateBase_Monster::CStateBase_Monster(CActionState* pOwnerComponent, const string& strName)
 	: Super(pOwnerComponent, strName)
@@ -57,6 +57,9 @@ HRESULT CStateBase_Monster::Initialize(void* pArg)
 		return E_FAIL;
 
 	if (FAILED(Bind_Feature()))
+		return E_FAIL;
+
+	if (FAILED(Bind_ConditionFeature()))
 		return E_FAIL;
 
 	return S_OK;
@@ -107,8 +110,14 @@ void CStateBase_Monster::Update(const _float fTimeDelta)
 		return;
 
 	// 기능 실행
-	for (auto& featIdx : m_pDesc->vecFeatureIdx)
-		m_vecFeature[featIdx](fTimeDelta);
+	for (auto& feat : m_vecFeature)
+		feat.func(fTimeDelta, feat.tParam);
+
+	for (auto& conditionfeature : m_vecConditionFeature)
+	{
+		if (conditionfeature.condition(conditionfeature.condParam))
+			conditionfeature.feature(fTimeDelta, conditionfeature.featParam);
+	}
 }
 
 HRESULT CStateBase_Monster::End()
@@ -150,8 +159,11 @@ HRESULT CStateBase_Monster::Bind_PreAnims()
 
 	for (auto& keyValue : m_pDesc->mapPreAnimNames)
 	{
-		auto state = m_umapState.find(keyValue.first);
-		m_vecPreAnims.emplace_back((*state).second, owner->Get_AnimationIndex(Engine_Utils::ToWString(keyValue.second)));
+		auto itr = m_umapState.find(keyValue.first);
+		if (itr == m_umapState.end())
+			return E_FAIL;
+		const auto &state = *itr;
+		m_vecPreAnims.emplace_back(state.second, owner->Get_AnimationIndex(Engine_Utils::ToWString(keyValue.second)));
 	}
 
 	return S_OK;
@@ -164,63 +176,69 @@ HRESULT CStateBase_Monster::Bind_MainAnims()
 
 	CGameObject* owner = m_pOwnerStateComp->Get_Owner();
 
+	m_vecMainAnims.reserve(m_pDesc->vecMainAnimNames.size());
 	for (auto& animName : m_pDesc->vecMainAnimNames)
 		m_vecMainAnims.push_back(owner->Get_AnimationIndex(Engine_Utils::ToWString(animName)));
-
+	// WeaponAni가 있을때
+	if (Engine_Utils::Has_Flag(m_FAniFlags, SA_WeaponAni))
+	{
+		m_vecWeaponAnims.reserve(m_pDesc->vecWeaponAnimNames.size());
+		for (auto& animWeaponNames : m_pDesc->vecWeaponAnimNames)
+			m_vecWeaponAnims.push_back(owner->Get_WeaponAnimationIndex(Engine_Utils::ToWString(animWeaponNames)));
+	}
 	return S_OK;
 }
 
 HRESULT CStateBase_Monster::Bind_Transition(vector<DTO::STATE_TRANSITION>& transition)
 {
+	auto factory = CMonsterState_Factory::GetInstance();
+
 	for (auto& trans : transition)
 	{
-		if (FAILED(Bind_Condition(trans.vecCondition)))
-			return E_FAIL;
+		trans.vecConditionIdx.clear();
+		trans.mapRandomStatePoolIdx.clear();
+		trans.fTotalWeight = 0.f;
 
-		// 조건 id 매핑
-		trans.vecConditionIdx.reserve(trans.vecCondition.size());
-		for (auto& cond : trans.vecCondition)
+		// CONDITION_ENTRY 순회 런타임 바인딩
+		for (auto& entry : trans.vecConditionEntry)
 		{
-			auto iter = m_umapCondition.find(cond);
-			if (iter == m_umapCondition.end())
-				continue;
+			auto func = factory->GetCondition(entry.strCondition);
+			if (func == nullptr)
+				return E_FAIL;
 
-			trans.vecConditionIdx.push_back((*iter).second);
+			_uint idx = (_uint)m_vecCondition.size();
+
+			BOUND_CONDITION bound{};
+			bound.func = std::bind(func, this, std::placeholders::_1);
+			bound.tParam = entry.tParam;
+
+			m_vecCondition.push_back(bound);
+			trans.vecConditionIdx.push_back(idx);
 		}
+
+		// 조건 id 매핑 = 폐기
+		// 왜냐하면 같은 condition 이름이여도 tParam이 달라지기때문에 정의가 달라짐
+		//trans.vecConditionIdx.reserve(trans.vecCondition.size());
+		//for (auto& cond : trans.vecCondition)
+		//{
+		//	auto iter = m_umapCondition.find(cond);
+		//	if (iter == m_umapCondition.end())
+		//		continue;
+
+		//	trans.vecConditionIdx.push_back((*iter).second);
+		//}
 
 		// 전이 상태 id 매핑
 		for (auto& value : trans.mapRandomStatePool)
 		{
 			trans.fTotalWeight += value.second;
 
-			_int stateIdx = (*m_umapState.find(value.first)).second;
+			auto itr = m_umapState.find(value.first);
+			if (itr == m_umapState.end())
+				return E_FAIL;
+			_int stateIdx = itr->second;
 			trans.mapRandomStatePoolIdx.emplace(stateIdx, value.second);
 		}
-	}
-
-	return S_OK;
-}
-
-HRESULT CStateBase_Monster::Bind_Condition(vector<string> conds)
-{
-	auto factory = CMonsterState_Factory::GetInstance();
-
-	m_vecCondition.reserve(conds.size());
-
-	for (auto& cond : conds)
-	{
-		auto func = factory->GetCondition(cond);
-		if (func == nullptr)
-			return E_FAIL;
-
-		size_t idx = m_vecCondition.size();
-
-		auto iter = m_umapCondition.find(cond);
-		if (iter != m_umapCondition.end())
-			continue;
-
-		m_umapCondition.emplace(cond, idx);
-		m_vecCondition.push_back(std::bind(func, this));
 	}
 
 	return S_OK;
@@ -230,31 +248,52 @@ HRESULT CStateBase_Monster::Bind_Feature()
 {
 	auto factory = CMonsterState_Factory::GetInstance();
 
-	m_vecFeature.reserve(m_pDesc->vecFeature.size());
-	for (auto& feat : m_pDesc->vecFeature)
+	m_vecFeature.clear();
+	m_vecFeature.reserve(m_pDesc->vecFeatureEntry.size());
+	// Entry 순회
+    for (auto& entry : m_pDesc->vecFeatureEntry)
+    {
+		// Feature 이름으로 가져오기
+        auto func = factory->GetFeature(entry.strFeature);
+        if (func == nullptr)
+            return E_FAIL;
+
+		// 파람 및 함수 바인딩 후 벡터에 밀어넣기
+        BOUND_FEATURE bound{};
+		// 원본 시그니쳐 = state, fTimeDelta, param
+		// state(this)는 지금 고정
+		// fTimeDelta(_1) 호출시 첫번째 인자로 받겠다.
+		// param(_2) 호출시 두번째 인자로 받겠다.
+        bound.func = std::bind(func, this, std::placeholders::_1, std::placeholders::_2);
+        bound.tParam = entry.tParam;
+        m_vecFeature.push_back(bound);
+    }
+
+    return S_OK;
+}
+
+HRESULT CStateBase_Monster::Bind_ConditionFeature()
+{
+	auto factory = CMonsterState_Factory::GetInstance();
+
+	m_vecConditionFeature.clear();
+	m_vecConditionFeature.reserve(m_pDesc->vecConditionFeature.size());
+	for (auto& cf : m_pDesc->vecConditionFeature)
 	{
-		auto func = factory->GetFeature(feat);
-		if (func == nullptr)
+		auto condFunc = factory->GetCondition(cf.cond.strCondition);
+		auto featFunc = factory->GetFeature(cf.feat.strFeature);
+
+		if (condFunc == nullptr || featFunc == nullptr)
 			return E_FAIL;
 
-		size_t idx = m_vecFeature.size();
+		BOUND_CONDFEATURE bound{};
+		bound.condParam = cf.cond.tParam;
+		bound.featParam = cf.feat.tParam;
 
-		auto iter = m_umapFeature.find(feat);
-		if (iter != m_umapFeature.end())
-			continue;
+		bound.condition = std::bind(condFunc, this, std::placeholders::_1);
+		bound.feature = std::bind(featFunc, this, std::placeholders::_1, std::placeholders::_2);
 
-		m_umapFeature.emplace(feat, idx);
-		m_vecFeature.push_back(std::bind(func, this, std::placeholders::_1));
-	}
-
-	m_pDesc->vecFeatureIdx.reserve(m_pDesc->vecFeature.size());
-	for (auto& feat : m_pDesc->vecFeature)
-	{
-		auto iter = m_umapFeature.find(feat);
-		if (iter == m_umapFeature.end())
-			continue;
-
-		m_pDesc->vecFeatureIdx.push_back((*iter).second);
+		m_vecConditionFeature.push_back(bound);
 	}
 
 	return S_OK;
@@ -267,7 +306,7 @@ _bool CStateBase_Monster::Check_Transition(vector<DTO::STATE_TRANSITION>& transi
 		_bool allClear = { true };
 		for (auto& condIdx : trans.vecConditionIdx)
 		{
-			if (m_vecCondition[condIdx]() == false)
+			if (m_vecCondition[condIdx].func(m_vecCondition[condIdx].tParam) == false)
 			{
 				allClear = false;
 				break;
@@ -277,7 +316,14 @@ _bool CStateBase_Monster::Check_Transition(vector<DTO::STATE_TRANSITION>& transi
 		// 모든 조건 통과
 		if (allClear)
 		{
-			_float randomValue = (rand() % (_int)trans.fTotalWeight);
+			if (trans.fTotalWeight <= 0.f || trans.mapRandomStatePoolIdx.empty())
+				continue;
+
+			_int total = (_int)trans.fTotalWeight;
+			if (total <= 0)
+				continue;
+
+			_float randomValue = (_float)(rand() % total);
 
 			_float curWeight = {};
 			for (auto& to : trans.mapRandomStatePoolIdx)

@@ -163,35 +163,8 @@
     <Filter Include="03. GameObject\UIObjects\02.UI\Image\JustImage">
       <UniqueIdentifier>{fd843193-a085-4c64-9708-e0849b95da7d}</UniqueIdentifier>
     </Filter>
-    <Filter Include="07. System\02. Debug_ImGui">
-      <UniqueIdentifier>{d4543967-6d08-419a-ad9e-aa4e953bd61f}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="07. System\02. Debug_ImGui\Inspector">
-      <UniqueIdentifier>{82f89ad1-c551-4868-8388-3d21f36c43d8}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="07. System\02. Debug_ImGui\ImGuiBase">
-      <UniqueIdentifier>{9fbb367b-4faa-448c-a302-857cca40b4ea}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="07. System\02. Debug_ImGui\Inspector\Player">
-      <UniqueIdentifier>{e56eb5ab-6ccc-4be7-935b-8756a82b5757}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="07. System\02. Debug_ImGui\Layout">
-      <UniqueIdentifier>{1dbf159f-2786-4b5f-a54a-a7fa44eac4d0}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="07. System\02. Debug_ImGui\Layout\Transform">
-      <UniqueIdentifier>{75112bf1-2fde-4f84-a058-ff26cbe40c27}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="07. System\02. Debug_ImGui\Layout\ActionState">
-      <UniqueIdentifier>{08101873-1d09-4a2d-9022-d599b7d73c9d}</UniqueIdentifier>
-    </Filter>
     <Filter Include="04. Shaders\ComputeShader_Labs">
       <UniqueIdentifier>{8c14e548-7930-4ec0-b748-e471998a55b9}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="07. System\02. Debug_ImGui\Layout\Frustrum">
-      <UniqueIdentifier>{bfce2568-6c1b-4d14-9071-f78dd8aba44c}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="07. System\02. Debug_ImGui\Inspector\Global">
-      <UniqueIdentifier>{ff13b3dc-1ddc-457a-a989-4a75e72737e2}</UniqueIdentifier>
     </Filter>
     <Filter Include="07. System\01. Builder\Builder_AttackOverlap">
       <UniqueIdentifier>{c1589ec0-b521-4810-8e66-71ed1cf97227}</UniqueIdentifier>
@@ -210,12 +183,6 @@
     </Filter>
     <Filter Include="03. GameObject\UIObjects\02.UI\Image\Dynamic Image\01.Minimap">
       <UniqueIdentifier>{f89b605a-01f2-485c-87d7-f34d36eeef01}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="07. System\02. Debug_ImGui\Layout\Frame">
-      <UniqueIdentifier>{26872d9e-983a-47c0-940f-aa4b37bb39e5}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="07. System\02. Debug_ImGui\Layout\Frame">
-      <UniqueIdentifier>{26872d9e-983a-47c0-940f-aa4b37bb39e5}</UniqueIdentifier>
     </Filter>
     <Filter Include="04. Shaders\ComputeShaders">
       <UniqueIdentifier>{f29a8226-048f-4c41-b7e7-685b07e919a6}</UniqueIdentifier>
@@ -240,9 +207,6 @@
     </Filter>
     <Filter Include="07. System\01. Builder\Effect\Builder_EffectEvent">
       <UniqueIdentifier>{5d286e09-eee0-4b43-bcea-01a835550da6}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="07. System\02. Debug_ImGui\Layout\Shader">
-      <UniqueIdentifier>{241e78ea-3b24-473b-a83b-6c32e682ad95}</UniqueIdentifier>
     </Filter>
     <Filter Include="06. FSM\Player\JumpWall">
       <UniqueIdentifier>{2c8ee512-8e94-467f-9f3f-35d518b8ff89}</UniqueIdentifier>
@@ -316,17 +280,11 @@
     <Filter Include="03. GameObject\UIObjects\02.UI\Image\Dynamic Image\05.MonsterNameplate">
       <UniqueIdentifier>{f79a616a-c763-4d11-814c-b386d1f581f2}</UniqueIdentifier>
     </Filter>
-    <Filter Include="03. GameObject\ContainerObjects\Monster\Dummy">
-      <UniqueIdentifier>{06590E81-322B-4D40-8764-D34116611722}</UniqueIdentifier>
-    </Filter>
     <Filter Include="03. GameObject\PartObjects\Monster">
       <UniqueIdentifier>{8D23A3C7-24D5-4AE9-AC31-25364BA015E2}</UniqueIdentifier>
     </Filter>
     <Filter Include="03. GameObject\PartObjects\Monster\Body">
       <UniqueIdentifier>{85D632B0-1470-4D93-A4A8-0ADBA3B79E95}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="03. GameObject\PartObjects\Monster\Body\Dummy">
-      <UniqueIdentifier>{8A4455BB-DC96-4AA7-AEFA-F35C885875C9}</UniqueIdentifier>
     </Filter>
     <Filter Include="05. Component\Monster">
       <UniqueIdentifier>{B1DED375-A417-4FAC-A147-06883C162BC9}</UniqueIdentifier>
@@ -357,15 +315,6 @@
     </Filter>
     <Filter Include="07. System\99. Debug_ImGui\ImGuiBase">
       <UniqueIdentifier>{71CABC14-B36D-481A-A1AD-88FE0C2A916C}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="07. System\99. Debug_ImGui\Inspector">
-      <UniqueIdentifier>{2A6EE529-AE71-491B-9591-59007A3BEF12}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="07. System\99. Debug_ImGui\Inspector\Global">
-      <UniqueIdentifier>{1419F979-0E37-4A2E-BE0B-45C90A76576A}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="07. System\99. Debug_ImGui\Inspector\Player">
-      <UniqueIdentifier>{0BC54C27-8736-41A1-A4FB-1796F1580479}</UniqueIdentifier>
     </Filter>
     <Filter Include="07. System\99. Debug_ImGui\Layout">
       <UniqueIdentifier>{2C6946D4-9B56-404E-A829-1864680D15BD}</UniqueIdentifier>
@@ -559,17 +508,50 @@
     <Filter Include="03. GameObject\UIObjects\02.UI\Image\Dynamic Image\05.MonsterNamePlate">
       <UniqueIdentifier>{761751c8-ba94-4e88-987b-53bc16a7f52f}</UniqueIdentifier>
     </Filter>
-    <Filter Include="06. FSM\Player\Attack\Gun\Holding">
-      <UniqueIdentifier>{2ea2a8e0-8b63-4991-b623-1685d95acae0}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="06. FSM\Player\Attack\Gun\Attack">
-      <UniqueIdentifier>{94646764-3ce1-40c8-8e22-3ebf84f0db89}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="06. FSM\Player\Attack\Gun\Reload">
-      <UniqueIdentifier>{18445d4b-10df-4411-8b45-def1c25a996d}</UniqueIdentifier>
-    </Filter>
     <Filter Include="03. GameObject\UIObjects\02.UI\Image\Dynamic Image\07.Level Chnage">
       <UniqueIdentifier>{441fee0b-1c67-4053-a110-de1fdb40d73f}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="06. FSM\Player\Attack\Gun\Idle">
+      <UniqueIdentifier>{2ba6e959-3319-4e68-825e-863b9871084d}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="06. FSM\Player\Attack\Gun\Walk">
+      <UniqueIdentifier>{2ea2a8e0-8b63-4991-b623-1685d95acae0}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="07. System\99. Debug_ImGui\Inspector">
+      <UniqueIdentifier>{2A6EE529-AE71-491B-9591-59007A3BEF12}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="07. System\99. Debug_ImGui\Inspector\Global">
+      <UniqueIdentifier>{1419F979-0E37-4A2E-BE0B-45C90A76576A}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="07. System\99. Debug_ImGui\Inspector\Player">
+      <UniqueIdentifier>{0BC54C27-8736-41A1-A4FB-1796F1580479}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="07. System\99. Debug_ImGui\Inspector\ShaderDebug">
+      <UniqueIdentifier>{0b3e7565-de1d-44a2-b248-637354f68a85}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="03. GameObject\UIObjects\02.UI\Text\Damage Text">
+      <UniqueIdentifier>{677a64cd-1317-409c-a79c-d9f17b5e967a}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="06. FSM\Player\Attack\Gun\Base">
+      <UniqueIdentifier>{2fe06ae1-d9fc-4a2a-9f4d-c6056176c36a}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="06. FSM\Player\Attack\Gun\Base\Attack">
+      <UniqueIdentifier>{94646764-3ce1-40c8-8e22-3ebf84f0db89}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="06. FSM\Player\Attack\Gun\Base\Reload">
+      <UniqueIdentifier>{18445d4b-10df-4411-8b45-def1c25a996d}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="03. GameObject\ContainerObjects\Monster\Dog">
+      <UniqueIdentifier>{06590E81-322B-4D40-8764-D34116611722}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="03. GameObject\ContainerObjects\Monster\Boomer">
+      <UniqueIdentifier>{85818392-a86e-4f12-abce-91566c51393e}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="03. GameObject\PartObjects\Monster\Body\Dog">
+      <UniqueIdentifier>{8A4455BB-DC96-4AA7-AEFA-F35C885875C9}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="03. GameObject\PartObjects\Monster\Body\Boomer">
+      <UniqueIdentifier>{6c2ae324-f31e-44b8-b14f-ef67a7faf29d}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
@@ -885,9 +867,6 @@
     <ClInclude Include="..\Public\Gun.h">
       <Filter>03. GameObject\PartObjects\Weapon\Gun</Filter>
     </ClInclude>
-    <ClInclude Include="..\Public\State_GunBase.h">
-      <Filter>06. FSM\Player\Attack\Gun</Filter>
-    </ClInclude>
     <ClInclude Include="..\Public\Plants.h">
       <Filter>03. GameObject\MapObject\03. Plants\00. Plants</Filter>
     </ClInclude>
@@ -911,9 +890,6 @@
     </ClInclude>
     <ClInclude Include="..\Public\Water.h">
       <Filter>03. GameObject\MapObject\05. Water</Filter>
-    </ClInclude>
-    <ClInclude Include="..\Public\LandScape.h">
-      <Filter>03. GameObject\MapObject\02. LandScape</Filter>
     </ClInclude>
     <ClInclude Include="..\Public\Level_Tutorial_Village.h">
       <Filter>02. Level\Tutorial_Village</Filter>
@@ -939,14 +915,14 @@
     <ClInclude Include="..\Public\Monster_Base.h">
       <Filter>03. GameObject\ContainerObjects\Monster</Filter>
     </ClInclude>
-    <ClInclude Include="..\Public\Monster_Dummy.h">
-      <Filter>03. GameObject\ContainerObjects\Monster\Dummy</Filter>
+    <ClInclude Include="..\Public\Monster_Dog.h">
+      <Filter>03. GameObject\ContainerObjects\Monster\Dog</Filter>
     </ClInclude>
     <ClInclude Include="..\Public\Monster_Body_Base.h">
       <Filter>03. GameObject\PartObjects\Monster\Body</Filter>
     </ClInclude>
-    <ClInclude Include="..\Public\Monster_Dummy_Body.h">
-      <Filter>03. GameObject\PartObjects\Monster\Body\Dummy</Filter>
+    <ClInclude Include="..\Public\Monster_Dog_Body.h">
+      <Filter>03. GameObject\PartObjects\Monster\Body\Dog</Filter>
     </ClInclude>
     <ClInclude Include="..\Public\MonsterActionState.h">
       <Filter>05. Component\Monster\MonsterActionState</Filter>
@@ -1017,6 +993,42 @@
     </ClInclude>
     <ClInclude Include="..\Public\UILevelChange_Image.h">
       <Filter>03. GameObject\UIObjects\02.UI\Image\Dynamic Image\07.Level Chnage</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\State_GunAttack.h">
+      <Filter>06. FSM\Player\Attack\Gun\Base\Attack</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\State_GunReload.h">
+      <Filter>06. FSM\Player\Attack\Gun\Base\Reload</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\LandScape.h">
+      <Filter>03. GameObject\MapObject\02. LandScape</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\State_GunIdle.h">
+      <Filter>06. FSM\Player\Attack\Gun\Idle</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\State_GunWalk.h">
+      <Filter>06. FSM\Player\Attack\Gun\Walk</Filter>
+    </ClInclude>
+    <ClInclude Include="..\public\ImGui_ShaderDebugLayout.h">
+      <Filter>07. System\99. Debug_ImGui\Layout\Shader</Filter>
+    </ClInclude>
+    <ClInclude Include="..\public\ImGui_TextureDebugInspector.h">
+      <Filter>07. System\99. Debug_ImGui\Inspector\ShaderDebug</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\UIDamageFont_Text.h">
+      <Filter>03. GameObject\UIObjects\02.UI\Text\Damage Text</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\State_GunBase.h">
+      <Filter>06. FSM\Player\Attack\Gun\Base</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\Monster_Boomer_Body.h">
+      <Filter>03. GameObject\PartObjects\Monster\Body\Boomer</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\Monster_Boomer.h">
+      <Filter>03. GameObject\ContainerObjects\Monster\Boomer</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\TriggerBox_MonsterSpawner.h">
+      <Filter>03. GameObject\TriggerBox\01. TriggerBox_LevelChange</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -1325,9 +1337,6 @@
     <ClCompile Include="..\Private\Gun.cpp">
       <Filter>03. GameObject\PartObjects\Weapon\Gun</Filter>
     </ClCompile>
-    <ClCompile Include="..\Private\State_GunBase.cpp">
-      <Filter>06. FSM\Player\Attack\Gun</Filter>
-    </ClCompile>
     <ClCompile Include="..\Private\Plants.cpp">
       <Filter>03. GameObject\MapObject\03. Plants\00. Plants</Filter>
     </ClCompile>
@@ -1351,9 +1360,6 @@
     </ClCompile>
     <ClCompile Include="..\Private\Water.cpp">
       <Filter>03. GameObject\MapObject\05. Water</Filter>
-    </ClCompile>
-    <ClCompile Include="..\Private\LandScape.cpp">
-      <Filter>03. GameObject\MapObject\02. LandScape</Filter>
     </ClCompile>
     <ClCompile Include="..\Private\Level_Tutorial_Village.cpp">
       <Filter>02. Level\Tutorial_Village</Filter>
@@ -1382,8 +1388,8 @@
     <ClCompile Include="..\Private\Monster_Body_Base.cpp">
       <Filter>03. GameObject\PartObjects\Monster\Body</Filter>
     </ClCompile>
-    <ClCompile Include="..\Private\Monster_Dummy_Body.cpp">
-      <Filter>03. GameObject\PartObjects\Monster\Body\Dummy</Filter>
+    <ClCompile Include="..\Private\Monster_Dog_Body.cpp">
+      <Filter>03. GameObject\PartObjects\Monster\Body\Dog</Filter>
     </ClCompile>
     <ClCompile Include="..\Private\MonsterActionState.cpp">
       <Filter>05. Component\Monster\MonsterActionState</Filter>
@@ -1418,7 +1424,6 @@
     <ClCompile Include="..\private\Builder_AttackPreset.cpp">
       <Filter>07. System\01. Builder\AttackPreset</Filter>
     </ClCompile>
-    <ClCompile Include="..\Private\LandScape.cpp" />
     <ClCompile Include="..\Private\WorldUI_Component.cpp">
       <Filter>05. Component\WorldUI</Filter>
     </ClCompile>
@@ -1440,8 +1445,8 @@
     <ClCompile Include="..\Private\State_GunBase.cpp">
       <Filter>06. FSM\Player\Attack\Gun</Filter>
     </ClCompile>
-    <ClCompile Include="..\Private\Monster_Dummy.cpp">
-      <Filter>03. GameObject\ContainerObjects\Monster\Dummy</Filter>
+    <ClCompile Include="..\Private\Monster_Dog.cpp">
+      <Filter>03. GameObject\ContainerObjects\Monster\Dog</Filter>
     </ClCompile>
     <ClCompile Include="..\private\Boss_Xibi.cpp">
       <Filter>03. GameObject\ContainerObjects\Monster\Boss</Filter>
@@ -1457,6 +1462,42 @@
     </ClCompile>
     <ClCompile Include="..\Private\UILevelChange_Image.cpp">
       <Filter>03. GameObject\UIObjects\02.UI\Image\Dynamic Image\07.Level Chnage</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\State_GunAttack.cpp">
+      <Filter>06. FSM\Player\Attack\Gun\Base\Attack</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\State_GunReload.cpp">
+      <Filter>06. FSM\Player\Attack\Gun\Base\Reload</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\LandScape.cpp">
+      <Filter>03. GameObject\MapObject\02. LandScape</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\State_GunIdle.cpp">
+      <Filter>06. FSM\Player\Attack\Gun\Idle</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\State_GunWalk.cpp">
+      <Filter>06. FSM\Player\Attack\Gun\Walk</Filter>
+    </ClCompile>
+    <ClCompile Include="..\private\ImGui_ShaderDebugLayout.cpp">
+      <Filter>07. System\99. Debug_ImGui\Layout\Shader</Filter>
+    </ClCompile>
+    <ClCompile Include="..\private\ImGui_TextureDebugInspector.cpp">
+      <Filter>07. System\99. Debug_ImGui\Inspector\ShaderDebug</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\UIDamageFont_Text.cpp">
+      <Filter>03. GameObject\UIObjects\02.UI\Text\Damage Text</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\Monster_Boomer_Body.cpp">
+      <Filter>03. GameObject\PartObjects\Monster\Body\Boomer</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\Monster_Boomer.cpp">
+      <Filter>03. GameObject\ContainerObjects\Monster\Boomer</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\State_GunBase.cpp">
+      <Filter>06. FSM\Player\Attack\Gun\Base</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\TriggerBox_MonsterSpawner.cpp">
+      <Filter>03. GameObject\TriggerBox\01. TriggerBox_LevelChange</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

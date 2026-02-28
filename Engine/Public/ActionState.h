@@ -18,12 +18,13 @@ public:
 	constexpr static EComponentType _ID = EComponentType::ACTIONSTATE;
 	typedef struct tagActionStateDesc
 	{
-		_uint			iStateCount = { 0 };
-		CModel*			pOwnerModel		= { nullptr };
-
+		_uint			iStateCount			= { 0 };
+		CModel*			pOwnerModel			= { nullptr };
+		CModel*			pOwnerWeaponModel	= { nullptr };
 		// state가 달린 객체들은 animation change를 state 내부에서 하기 때문에 
 		// 꼭 값 넣어줘야 함
 		CComputeShader* pOwnerAnimECS		= { nullptr }; 
+		CComputeShader* pOwnerWeaponAnimECS = { nullptr };
 	}ACTIONSTATE_DESC;
 
 protected:
@@ -37,6 +38,8 @@ public:
 	HRESULT			Awake(_uint iLvelIndex);
 	void			Update(const _float fTimeDelta);
 
+	virtual void	Clear_WhenChangeLevel()override;
+
 	/* state funcs */
 public:
 	HRESULT			Change_State(_uint iIndex, _bool bForce = false, void* pArg = nullptr);
@@ -44,7 +47,6 @@ public:
 	HRESULT			Remove_State(_uint iIndex);
 	HRESULT			Swap_State(_uint iIndex, CStateBase *pState, CStateBase** ppSwappedState);
 	CStateBase*		Get_State(_uint iIndex);
-
 	/* getter setter funcs */
 public:
 	_bool			IsInState(_uint iIndex) const { return m_iCurrentState == iIndex; }
@@ -61,15 +63,19 @@ public:
 	void			Set_ApplyGravity(_bool bApply) { m_bApplyGravity = bApply; }
 	void			Set_ApplyYLerp(_bool bApply) { m_bApplyYLerp = bApply; }
 
-	void			Set_GravityOffset(_float fOffset) { if (fOffset > m_fGravity)return; m_fGravityOffset = fOffset; }
+	void			Set_GravityOffset(_float fOffset) { 
+		if (fOffset > m_fGravity * -1.f)
+			return; 
+		m_fGravityOffset = fOffset; 
+	}
 
 	// action state 내부에 CCTFlags 가지고 있음 -> 외부에서는 어떻게 윰직일지만 값을 넘겨준다
 	void			Move(Vec3 disp, _float minDist, _float fTimeDelta); 
-
 	/* animation funcs*/
 protected:
 	HRESULT			Request_MixAnimation(_uint iVectorIdx, _int iAnimIdx);
 	HRESULT			Request_ChangeAnimation(_uint iAnimationIndex, _bool bBlend, _bool bLoop, _bool bForce = false);
+	HRESULT			Request_Change_WeaponAnimation(_uint iAnimationIndex, _bool bBlend, _bool bLoop, _bool bForce = false);
 	_float			Get_AnimElpasedTimeSeconds();
 	_float			Get_AnimNormalizedTime();
 	_bool			Is_AnimFinished();
@@ -81,6 +87,7 @@ protected:
 	/* moves funcs */
 protected:
 	_bool			Align_Movement(const _float fTimeDelta);
+	_bool			Align_Movement_MoveDir(const _float fTimeDelta);
 	void			Follow_CameraLook(const _float fTimeDelta);
 	_bool			Is_Grounded() const;
 	_bool			Is_ApplyGravity() const;
@@ -91,9 +98,9 @@ protected:
 	void			Move_Right(const _float fTimeDelta, const _float fSpeedRatio = 1.f);
 	void			Move_Front(const _float fTimeDelta, const _float fSpeedRatio = 1.f);
 	void			Move_Backward(const _float fTimeDelta, const _float fSpeedRatio = 1.f);
+	void			StartForce_Backward_ForAnimation(_float fForceAbs, _float fDragK);
 	void			Move_Down(const _float fTimeDelta, const _float fSpeedRatio = 1.f);
 	void			StartForce_Front_ForAnimation(_float fForceAbs, _float fDragK);
-	void			StartForce_Backward_ForAnimation(_float fForceAbs, _float fDragK);
 	void			StartForce_Left_ForAnimation(_float fForceAbs, _float fDragK);
 	void			StartForce_Right_ForAnimation(_float fForceAbs, _float fDragK);
 	void			Set_AttackCollider(_uint iPartIndex, _bool bActive, ATTACK_DESC* pDesc);
@@ -125,12 +132,14 @@ protected:
 	CModel*				m_pOwnerModel			= { nullptr };
 	CCameraMan*			m_pOwnerTargetCamera	= { nullptr };
 	CComputeShader*		m_pOwnerAnimECS			= { nullptr };
+	CModel*				m_pOwnerWeaponModel		= { nullptr };
+	CComputeShader*		m_pOwnerWeaponAnimECS	= { nullptr };
 
 	_uint				m_iStateCount			= { 0 };
 	_int				m_iCurrentState			= { -1 };
 	_int				m_iPrevState			= { -1 };
 
-	const _float		m_fGravity				= { -25.f };
+	const _float		m_fGravity				= { -10.f };
 	const _float		m_fMaxVerticalSpeed		= { 30.f };
 	const _float		m_fMaxFallSpeed			= { -12.f };
 	_float				m_fVerticalSpeed		= { 0.f };

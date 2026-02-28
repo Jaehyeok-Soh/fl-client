@@ -86,8 +86,7 @@ HRESULT CBuilder_Map::Apply_ScenceData(const DTO::TLevelData& tData)
 
 
 	/* None 이면 사용하지 않는 다는 뜻 */
-	if(tData.strTextureSplatingInfoName != "None")
-		m_pMapToolManager->Apply_LevelData(&tData);
+	m_pMapToolManager->Apply_LevelData(&tData);
 
 	return S_OK;
 }

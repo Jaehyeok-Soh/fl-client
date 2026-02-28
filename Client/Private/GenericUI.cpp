@@ -106,6 +106,9 @@ void CGenericUI::Update(const _float fTimeDelta)
 
 void CGenericUI::Update_Late(const _float fTimeDelta)
 {
+	if (KEY_BUTTON_DOWN(DIK_4))
+		Set_Dead(g_wszUILayer);
+
 	Super::Update_Late(fTimeDelta);
 }
 
@@ -151,8 +154,6 @@ void CGenericUI::OnUIEvent(ETriggerEventType eEvent, CGenericUI* pSender)
 HRESULT CGenericUI::Ready_Components(GENERIC_UI_DESC* pDesc)
 {
 	if (FAILED(Add_Component<CTexture>(ENUM_TO_UINT(ELevelType::STATIC), L"Prototype_Component_Texture_Empty", pDesc)))
-		return E_FAIL;
-	if (FAILED(Add_Component<CShader>(0, L"Prototype_Component_Shader_VtxPosTex", pDesc)))
 		return E_FAIL;
 	if (FAILED(Add_Component<CVIBuffer_Rect_Tex>(0, L"Prototype_Component_VIBuffer_Rect_Tex", pDesc)))
 		return E_FAIL;
@@ -210,6 +211,11 @@ HRESULT CGenericUI::Bind_ShaderResources()
 	if (FAILED(pShader->Get_Variable("g_fBrightness")->SetRawValue(&m_fBrightness, 0, sizeof(_float))))
 		return E_FAIL;
 	
+	return S_OK;
+}
+
+HRESULT CGenericUI::Spawn_FromPool(void* pArg)
+{
 	return S_OK;
 }
 
@@ -291,6 +297,11 @@ _bool CGenericUI::Tick_Fade(const _float fTimeDelta)
 	_float f = m_fStartAlphaRatio + (m_fTargetAlphaRatio - m_fStartAlphaRatio) * t;
 	m_fAlpha_Ratio = f;
 	return false;
+}
+
+void CGenericUI::Request_SetDead()
+{
+	m_bDead = true;
 }
 
 void CGenericUI::Free()

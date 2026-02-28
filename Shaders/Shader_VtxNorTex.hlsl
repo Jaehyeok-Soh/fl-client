@@ -19,7 +19,7 @@ PS_OUT_DEFFERED PS_MAIN(PS_IN_POS_TEX_NOR input)
 {
     PS_OUT_DEFFERED output;
     output.vDiffuse = g_DefaultTextures[DEFAULT].Sample(LinearSampler, input.vUV);
-    output.vNormal = input.vNormal * 0.5f + 0.5f;
+    output.vNormal = float4(input.vNormal * 0.5f + 0.5f, 1.f);
     output.vDepth = float4(input.vProjPos.z / input.vProjPos.w, input.vProjPos.w, 0.f, 0.f);
     
     return output;

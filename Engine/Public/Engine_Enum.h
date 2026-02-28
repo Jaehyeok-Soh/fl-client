@@ -180,6 +180,18 @@ namespace Engine
 		END
 	};
 	//===================
+	// AnimEventPhase
+	//===================
+	enum class EAnimNotifyPhase : unsigned int
+	{
+		Immediatley = 0,
+		Late,
+		PreRender,
+		END
+	};
+	inline constexpr size_t g_AnimNotifyPhaseTypeCount = static_cast<size_t>(EAnimNotifyPhase::END);
+
+	//===================
 	// Component
 	//===================
 	enum class EComponentType : unsigned int
@@ -418,8 +430,11 @@ namespace Engine
 			TRIGGER_QUEST = 1 << 14,
 			TRIGGER_SPAWN = 1 << 15,
 			TRIGGER_DIRECTION = 1 << 16,
+			TRIGGER_BOX = 1 << 17,
 
-			NONE = 1 << 17,
+
+
+			NONE = 1 << 18,
 			END
 		};
 
@@ -455,7 +470,7 @@ namespace Engine
 			if (bAttack_A == bAttack_B)
 				return false;
 
-			const unsigned int iVictim = bAttack_A == true ? iFlagA : iFlagB;
+			const unsigned int iVictim = bAttack_A != true ? iFlagA : iFlagB;
 
 			return IsPlayer(iVictim) || IsMonster(iVictim);
 		}
@@ -543,7 +558,7 @@ namespace Engine
 	//===================
 	enum class EFontShaderType
 	{
-		NORMAL,OUTLINE, NOISE, NOISE_KOR, OUTLINE_NOISE, OUTLINE_NOISE_KOR, END
+		NORMAL, OUTLINE, NOISE, NOISE_KOR, OUTLINE_NOISE, OUTLINE_NOISE_KOR, GRADATION, OUTLINE_GRADATION, HIT, END
 	};
 
 	//===================

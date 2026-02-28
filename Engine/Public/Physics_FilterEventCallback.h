@@ -2,6 +2,7 @@
 #include "Base.h"
 
 #include "GameObject.h"
+#include <Anim_Event_Hitbox.h>
 
 NS_BEGIN(Engine)
 
@@ -12,19 +13,19 @@ class CPhysics_FilterEventCallback final : public CBase , public PxSimulationEve
         wstring leftName = {};
         uint64 leftID = {};
         CGameObject* leftObject = { nullptr };
-        PHYSICSCOLLIDER_DESC* leftColliderDesc = { nullptr };
+        PHYSICSCOLLIDER_DESC leftColliderDesc{};
 
         wstring rightName = {};
         uint64 rightID = {};
         CGameObject* rightObject = { nullptr };
-        PHYSICSCOLLIDER_DESC* rightColliderDesc = { nullptr };
+        PHYSICSCOLLIDER_DESC rightColliderDesc{};
 
         _bool bHasHitPoint = { false };
         SimpleMath::Vector3 vHitPoint = { SimpleMath::Vector3::Zero };
         SimpleMath::Vector3 vRawNormal = { SimpleMath::Vector3::Zero };
         _float fDepth = { 0.f };
 
-        tagGameObjectInfo(CGameObject* left, PHYSICSCOLLIDER_DESC* leftDesc, CGameObject* right, PHYSICSCOLLIDER_DESC* rightDesc)
+        tagGameObjectInfo(CGameObject* left, PHYSICSCOLLIDER_DESC leftDesc, CGameObject* right, PHYSICSCOLLIDER_DESC rightDesc)
         {
             leftName = left->Get_WName();
             leftID = left->Get_ID();
@@ -72,7 +73,7 @@ private:
     void OnCollisionExit(GAMEOBJECTINFO& info);
 
 public:
-    void ProcessOverlap(CGameObject* pOwner, const PxVec3& vOverlapPoint, PxOverlapHit* pOverlapHit, PxPairFlag::Enum event);
+    void ProcessOverlap(CGameObject* pOwner, const PxVec3& vOverlapPoint, PxOverlapHit* pOverlapHit, PxPairFlag::Enum event, DTO::HITBOX_DESC* hitboxDesc);
 
 private:
     // PxSimulationEventCallback을(를) 통해 상속됨

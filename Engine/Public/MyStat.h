@@ -120,6 +120,9 @@ protected:
 
 	Flags			m_FStatFlags = { 0 };
 
+
+	inline static Vec2		m_vDummy{0.f,0.f};
+
 protected:
 	virtual void Add_Hp(_float fHealth);		// 매게변수 값이 양수일때
 	virtual void Sub_Hp(_float fHealth);		// 매게변수 값이 음수일때

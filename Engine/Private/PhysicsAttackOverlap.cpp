@@ -211,9 +211,17 @@ void CPhysicsAttackOverlap::GetAnimation()
 
 	auto partObject = dynamic_cast<CPartObject*>(Get_Owner());
 	if (partObject != nullptr)
+	{
 		m_pOwnerModel = partObject->Get_Component<CModel>();
+	}
 	else
-		m_pOwnerModel = static_cast<CContainerObject*>(Get_Owner())->Get_Part<CPartObject>(0)->Get_Component<CModel>();
+	{
+		CContainerObject* containerObj = static_cast<CContainerObject*>(Get_Owner());
+		if (containerObj->Get_PartSize() > 0)
+			m_pOwnerModel = containerObj->Get_Part<CPartObject>(0)->Get_Component<CModel>();
+		else
+			m_pOwnerModel = containerObj->Get_Component<CModel>();
+	}
 
 	Safe_AddRef(m_pOwnerModel);
 }
@@ -305,25 +313,9 @@ void CPhysicsAttackOverlap::Ready_OverlapInfo()
 		key.fTrackPosition = event.fStartTrackPosition;
 		key.iParam0 = eventIdx;
 		key.iParam1 = event.iAnimIndex;
-
-		if (animIter != animations.end())
-		{
-			auto notiKeys = (*animIter)->Get_Notifies();
-
-			if (notiKeys.size() != 0)
-			{
-				notiKeys.push_back(key);
-				(*animIter)->Set_Notifies(notiKeys);
-			}
-			else
-			{
-				vector<AnimNotifyKey> newkeys;
-				newkeys.push_back(key);
-				(*animIter)->Set_Notifies(newkeys);
-			}
-		}
-
+		(*animIter)->Pushback_Notifies(event.ePhase, key);
 		eventIdx++;
+		(*animIter)->Sort_Notifies();
 	}
 }
 

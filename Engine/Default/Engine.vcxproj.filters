@@ -808,10 +808,7 @@
     <ClCompile Include="..\Private\Physics_FilterEventCallback.cpp">
       <Filter>00. System\12. PhysX\EventCallback\Filter</Filter>
     </ClCompile>
-    <ClCompile Include="..\Private\Physics_NPCHitReport.cpp">
-      <Filter>00. System\12. PhysX\EventCallback\HitReport</Filter>
-    </ClCompile>
-    <ClCompile Include="..\Private\Physics_UserHitReport.cpp">
+    <ClCompile Include="..\Private\Physics_CCTHitReport.cpp">
       <Filter>00. System\12. PhysX\EventCallback\HitReport</Filter>
     </ClCompile>
     <ClCompile Include="..\Private\DataStruct_AttackOverlap.cpp">
@@ -879,6 +876,9 @@
     </ClCompile>
     <ClCompile Include="..\private\DataDocument_AttackPreset.cpp">
       <Filter>01. Utility\11. DataRepository\Datas\AttackPreset\DataDocument_AttackPreset</Filter>
+    </ClCompile>
+    <ClCompile Include="Anim_Event_Base.cpp">
+      <Filter>01. Utility\11. DataRepository\Datas\AnimationEvent\DataModel</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -1276,10 +1276,7 @@
     <ClInclude Include="..\Public\Physics_FilterEventCallback.h">
       <Filter>00. System\12. PhysX\EventCallback\Filter</Filter>
     </ClInclude>
-    <ClInclude Include="..\Public\Physics_UserHitReport.h">
-      <Filter>00. System\12. PhysX\EventCallback\HitReport</Filter>
-    </ClInclude>
-    <ClInclude Include="..\Public\Physics_NPCHitReport.h">
+    <ClInclude Include="..\Public\Physics_CCTHitReport.h">
       <Filter>00. System\12. PhysX\EventCallback\HitReport</Filter>
     </ClInclude>
     <ClInclude Include="..\Public\DataStruct_AttackOverlap.h">

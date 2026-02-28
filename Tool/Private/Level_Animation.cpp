@@ -121,7 +121,9 @@ HRESULT CLevel_Animation::Render()
 	if (FAILED(Super::Render()))
 		return E_FAIL;
 	
+#if _DEBUG
 	Render_Grid();
+#endif
 
 	m_pAnimToolManager->Render(); // ????여기 맞는지 확인필요 소재혁 26.02.14
 
@@ -455,6 +457,7 @@ void CLevel_Animation::Free()
 
 	m_pAnimToolManager->DestroyInstance();
 
+	m_pImGuiManager->Clear_GuizmoTarget();
 	Safe_Release(m_pImGuiManager);
 	Safe_Release(m_pPickingManager);
 	Super::Free();

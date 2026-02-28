@@ -373,7 +373,8 @@ HRESULT CBuilder_UI::Register_Class(DTO::EUIClassType eClassType, const DTO::TUI
 		auto iter = m_MapDImageDataCache.find(data.strTag);
 		if (iter == m_MapDImageDataCache.end())
 			return E_FAIL;
-
+		if ("MiniMap_Player_Icon" == data.strTag)
+			int a = 0;
 		const auto Type = iter->second.eDISubClassType;
 
 		const _bool isPlayerSkill		= (Type >= DTO::EUIDImageSubClassType::PLAYER_SKILL_BEGIN	&& Type <= DTO::EUIDImageSubClassType::PLAYER_SKILL_END);

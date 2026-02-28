@@ -24,7 +24,7 @@ public:
 
 	enum class State : _uint
 	{
-		NONE, HOLD, HAND
+		NONE, HOLD, HAND, HAND_ONLY_POS, HAND_ONLY_POS_SCALE
 	};
 
 	enum class AnimState : _uint
@@ -117,6 +117,7 @@ protected:
 	CComputeShader* m_pBoneMeshCS{ nullptr };
 	CComputeShader* m_pBoneCombineCS{ nullptr };
 	CComputeShader* m_pAnimECS{ nullptr };
+	CComputeShader* m_pAnimBlendECS{ nullptr };
 private:
 	HRESULT Ready_Components(WEAPON_DESC* pDesc);
 	HRESULT Bind_ShaderResources();

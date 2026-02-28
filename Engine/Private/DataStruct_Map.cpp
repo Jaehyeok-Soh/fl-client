@@ -1,5 +1,7 @@
 #include "Engine_pch.h"
 #include "DataStruct_Map.h"
+#include "Model.h"
+
 
 #pragma push_macro("new")
 #undef new
@@ -302,6 +304,19 @@ inline CLIENT_MAKEPATH_DESC_BASE* Create_ClientMakePathDesc(DTO::EClientMakePath
 	{
 	case DTO::EClientMakePath::StaticObject: return pSource == nullptr ? new STATICOBJECT_DESC	: new STATICOBJECT_DESC(*static_cast<STATICOBJECT_DESC*>(pSource));
 	case DTO::EClientMakePath::LandScape:	 return pSource == nullptr ? new LANDSCAPE_DESC		: new LANDSCAPE_DESC(*static_cast<LANDSCAPE_DESC*>(pSource));
+
+
+	
+		/* Batch Object 관련 */
+	case DTO::EClientMakePath::Batch_Monster:	return pSource == nullptr ? new BATCH_MONSTER_DESC : new BATCH_MONSTER_DESC(*static_cast<BATCH_MONSTER_DESC*>(pSource));
+
+		/* Trigger Box 관련 */
+	case DTO::EClientMakePath::TriggerBox_ChangeLevel:		return pSource == nullptr ? new TRIGGERBOX_CHANGELEVEL_DESC : new TRIGGERBOX_CHANGELEVEL_DESC(*static_cast<TRIGGERBOX_CHANGELEVEL_DESC*>(pSource));
+	case DTO::EClientMakePath::TriggerBox_MonsterSpawner:	return pSource == nullptr ? new TRIGGERBOX_MONSTERSPAWNER_DESC : new TRIGGERBOX_MONSTERSPAWNER_DESC(*static_cast<TRIGGERBOX_MONSTERSPAWNER_DESC*>(pSource));
+
+
+
+
 	default:								 return nullptr;
 	}
 
@@ -321,6 +336,7 @@ inline _bool IsExist_ClientMakePathDesc(DTO::EClientMakePath ePath)
 }
 
 
+#pragma region Static Object
 
 void STATICOBJECT_DESC::from_Json(const json& LoadJson)
 {
@@ -335,6 +351,10 @@ void STATICOBJECT_DESC::to_Json(json& SaveJson)
 
 	return;
 }
+
+#pragma endregion
+
+#pragma region LandScape
 
 void LANDSCAPE_DESC::from_Json(const json& LoadJson)
 {
@@ -366,6 +386,163 @@ void LANDSCAPE_DESC::to_Json(json& SaveJson)
 
 	return;
 }
+
+#pragma endregion
+
+#pragma region Batch Monster
+
+void BATCH_MONSTER_DESC::from_Json(const json& LoadJson)
+{
+	if (LoadJson.contains("Batch Monster Type"))
+	{
+		this->eBatchMonsterType = DTO::MakeMonsterType_ToEnum(LoadJson["Batch Monster Type"].get<string>());
+	}
+}
+
+void BATCH_MONSTER_DESC::to_Json(json& SaveJson)
+{
+	SaveJson["Batch Monster Type"] = DTO::MakeMonsterType_ToString(this->eBatchMonsterType);
+}
+
+#pragma endregion 
+
+#pragma region Trigger Box
+
+void TRIGGERBOX_DESC::from_Json(const json& LoadJson)
+{
+	if (LoadJson.contains("Extents"))
+	{
+		Engine_Utils::read_vec3_xyz(LoadJson["Extents"], this->vExtents);
+	}
+}
+
+void TRIGGERBOX_DESC::to_Json(json& SaveJson)
+{
+	Engine_Utils::write_vec3_xyz(SaveJson["Extents"], this->vExtents);
+}
+
+
+
+#pragma region Change Level
+
+void TRIGGERBOX_CHANGELEVEL_DESC::from_Json(const json& LoadJson)
+{
+	Super::from_Json(LoadJson);
+
+	if (LoadJson.contains("Change Level Type Name"))
+		this->strChangeLevelTypeName = LoadJson["Change Level Type Name"].get<string>();
+}
+
+void TRIGGERBOX_CHANGELEVEL_DESC::to_Json(json& SaveJson)
+{
+	Super::to_Json(SaveJson);
+
+
+	SaveJson["Change Level Type Name"] = this->strChangeLevelTypeName;
+}
+
+#pragma endregion
+
+#pragma region Monster Spawner 
+
+MonsterSpawnData::MonsterSpawnData(const MonsterSpawnData& Copy)
+	: vPosition(Copy.vPosition) , vScale(Copy.vScale) , vPitchYawRoll(Copy.vPitchYawRoll) , eMakeMonsterType(Copy.eMakeMonsterType)
+	 , fSpawnDelayTime(Copy.fSpawnDelayTime) , isPreviewDebugModel(Copy.isPreviewDebugModel), pDebugModel(Copy.pDebugModel)
+{
+	Safe_AddRef(pDebugModel);
+}
+
+MonsterSpawnData::~MonsterSpawnData()
+{
+	Safe_Release(pDebugModel);
+}
+
+void	MonsterSpawnData::from_Json(const json& LoadJson)
+{
+	if (LoadJson.contains("Monster Type"))
+		this->eMakeMonsterType = DTO::MakeMonsterType_ToEnum(LoadJson["Monster Type"].get<string>());
+
+	if (LoadJson.contains("Delay Time"))
+		this->fSpawnDelayTime = LoadJson["Delay Time"];
+
+	if (LoadJson.contains("SRT"))
+	{
+		const auto& SRT_LoadJson = LoadJson["SRT"];
+		if (SRT_LoadJson.contains("Scale"))
+		{
+			Engine_Utils::read_vec3_xyz(SRT_LoadJson["Scale"] , this->vScale);
+		}
+		if (SRT_LoadJson.contains("PitchYawRoll"))
+		{
+			Engine_Utils::read_vec3_PitchYawRoll(SRT_LoadJson["PitchYawRoll"], this->vPitchYawRoll);
+		}
+		if (SRT_LoadJson.contains("Position"))
+		{
+			Engine_Utils::read_vec3_xyz(SRT_LoadJson["Position"], this->vPosition);
+		}
+	}
+
+	return;
+}
+
+void	MonsterSpawnData::to_Json(json& SaveJson)
+{
+	/* 몬스터 타입 */
+	SaveJson["Monster Type"] = DTO::MakeMonsterType_ToString(this->eMakeMonsterType);
+	
+	/* 소환 딜레이 시간 */
+	SaveJson["Delay Time"] = this->fSpawnDelayTime;
+
+	/* 위치 데이터 */
+	Engine_Utils::write_vec3_xyz(SaveJson["SRT"]["Scale"],					this->vScale);
+	Engine_Utils::write_vec3_PitchYawRoll(SaveJson["SRT"]["PitchYawRoll"],	this->vPitchYawRoll);
+	Engine_Utils::write_vec3_xyz(SaveJson["SRT"]["Position"],				this->vPosition);
+
+
+
+	return;
+}
+
+
+
+void TRIGGERBOX_MONSTERSPAWNER_DESC::from_Json(const json& LoadJson)
+{
+	Super::from_Json(LoadJson);
+	
+	this->vecMonsterSpawnData.clear();
+	if(LoadJson.contains("Monster Spawn Data"))
+	{
+		const auto& MonsterSpawnData_LoadJsonArray = LoadJson["Monster Spawn Data"];
+		this->vecMonsterSpawnData.reserve(MonsterSpawnData_LoadJsonArray.size());
+		for (auto& MonsterSpawnData_LoadJson : MonsterSpawnData_LoadJsonArray)
+		{
+			if (MonsterSpawnData_LoadJson.is_null())
+				continue;
+			MonsterSpawnData tData{};
+			tData.from_Json(MonsterSpawnData_LoadJson);
+			vecMonsterSpawnData.push_back(tData);
+		}
+	}
+}
+
+void TRIGGERBOX_MONSTERSPAWNER_DESC::to_Json(json& SaveJson)
+{
+	Super::to_Json(SaveJson);
+
+	for (auto& MonsterSpawnData : this->vecMonsterSpawnData)
+	{
+		json SaveObject{};
+		MonsterSpawnData.to_Json(SaveObject);
+		SaveJson["Monster Spawn Data"].push_back(SaveObject);
+	}
+}
+
+#pragma endregion
+
+
+
+
+#pragma endregion
 
 
 #pragma endregion

@@ -123,7 +123,8 @@ void CLayer::Free()
 {
 	for (CGameObject*& pElement : m_pGameObjects)
 	{
-		Safe_Release(pElement);
+		if(pElement->Is_PoolObject() == false)
+			Safe_Release(pElement);
 	}
 
 	m_pGameObjects.clear();

@@ -261,6 +261,13 @@ void CGameObject::Set_Name(const wstring& wstrName)
     m_strName = Engine_Utils::ToString(wstrName);
 }
 
+void CGameObject::Clear_Components_WhenChangeLevel()
+{
+    for (auto& comp : m_Components)
+        if(comp)
+            comp->Clear_WhenChangeLevel();
+}
+
 string CGameObject::Get_Name()
 {
     return m_strName;
@@ -268,7 +275,7 @@ string CGameObject::Get_Name()
 
 wstring CGameObject::Get_WName()
 {
-    return Engine_Utils::ToWString(m_strName);
+    return (m_strName.size() > 0) ? Engine_Utils::ToWString(m_strName) : L"";
 }
 
 /// <summary>

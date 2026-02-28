@@ -22,7 +22,7 @@ USING(Tool)
 CPanel_MapObjectList::CPanel_MapObjectList(const _char* pLabel, CLevel* pOwner, ID3D11Device* pDevice, ID3D11DeviceContext* pDeviceContext)
 	: CImGui_Panel(pLabel, pOwner, pDevice, pDeviceContext), m_pGameInstance(CGameInstance::GetInstance()), m_pTransformLayout(nullptr), m_pCamera(nullptr)
 	, m_pCameraCom(nullptr), m_wszMapObjectLayerTag{}, m_szFindName{}, m_iSelectInstanceID{} 
-	, m_iSelectOriginMtlTexture{ 0 }, m_pMapToolManager{ CMapToolManager ::GetInstance()}
+	, m_iSelectOriginMtlTexture{ 0 }, m_pMapToolManager{ CMapToolManager::GetInstance() }, m_szMakeMonsterTypeName{}
 {
 
 	m_pTransformLayout = CImGui_Layout_Transform::Create("Layout_Transform", m_pDevice, m_pDeviceContext);
@@ -34,6 +34,14 @@ CPanel_MapObjectList::CPanel_MapObjectList(const _char* pLabel, CLevel* pOwner, 
 	m_pCameraCom = m_pCamera->Get_Component<CCamera>();
 
 	m_arrayMtl_SRVs.fill(nullptr);
+
+
+
+	for (_uint i = 0; i < ENUM_TO_UINT(DTO::EMakeMonsterType::END); ++i)
+	{
+		string strCurName = DTO::MakeMonsterType_ToString(DTO::EMakeMonsterType(i));
+		::strcpy_s(m_szMakeMonsterTypeName[i] , MAX_PATH , strCurName.c_str());
+	}
 }
 
 
@@ -964,9 +972,16 @@ HRESULT CPanel_MapObjectList::Render_Description()
 
 	switch (ePath)
 	{
-	case Tool::EClientMakePath::StaticObject: ImGuiUpdate_StaticObject_Desc	(static_cast<STATICOBJECT_DESC*>(pDesc));	return S_OK;
-	case Tool::EClientMakePath::LandScape:	  ImGuiUpdate_LandScape_Desc	(static_cast<LANDSCAPE_DESC*>(pDesc));		return S_OK;
-	default:																											return E_FAIL;
+	case Tool::EClientMakePath::StaticObject:			ImGuiUpdate_StaticObject_Desc					(static_cast<STATICOBJECT_DESC*>(pDesc));					return S_OK;
+	case Tool::EClientMakePath::LandScape:				ImGuiUpdate_LandScape_Desc						(static_cast<LANDSCAPE_DESC*>(pDesc));						return S_OK;
+
+
+
+	case Tool::EClientMakePath::Batch_Monster:			ImGuiUpdate_Batch_Monster_Desc					(static_cast<BATCH_MONSTER_DESC*>(pDesc));						return S_OK;
+
+	case Tool::EClientMakePath::TriggerBox_ChangeLevel:		ImGuiUpdate_TriggerBox_ChanageLevel_Desc	(static_cast<TRIGGERBOX_CHANGELEVEL_DESC*>(pDesc));			return S_OK;
+	case Tool::EClientMakePath::TriggerBox_MonsterSpawner:	ImGuiUpdate_TriggerBox_MonsterSpawner		(static_cast<TRIGGERBOX_MONSTERSPAWNER_DESC*>(pDesc));		return S_OK;
+	default:																																						return E_FAIL;
 	}
 
 	return S_OK;
@@ -992,6 +1007,9 @@ void CPanel_MapObjectList::ImGuiUpdate_StaticObject_Desc(STATICOBJECT_DESC* pDes
 	return;
 }
 
+#pragma endregion
+
+#pragma region LandScape
 void CPanel_MapObjectList::ImGuiUpdate_LandScape_Desc(LANDSCAPE_DESC* pDesc)
 {
 	if (pDesc == nullptr) return;
@@ -1039,6 +1057,232 @@ void CPanel_MapObjectList::ImGuiUpdate_LandScape_Desc(LANDSCAPE_DESC* pDesc)
 
 	ImGui::Separator();
 }
+#pragma endregion
+
+
+
+#pragma region Batch Monster
+
+void CPanel_MapObjectList::ImGuiUpdate_Batch_Monster_Desc(BATCH_MONSTER_DESC* pDesc)
+{
+	if (pDesc == nullptr) return;
+
+	m_strBuffer = DTO::MakeMonsterType_ToString(pDesc->eBatchMonsterType);
+	m_iBuffer = _int(pDesc->eBatchMonsterType);
+
+	if (ImGui::BeginCombo("Batch Monster Type List##Batch Monster Desc", m_strBuffer.c_str()))
+	{
+		for (_uint i = 0; i < ENUM_TO_UINT(DTO::EMakeMonsterType::END); ++i)
+		{
+			bool isSelected = i == m_iBuffer;
+			if (ImGui::Selectable(m_szMakeMonsterTypeName[i], &isSelected))
+			{
+				pDesc->eBatchMonsterType= DTO::EMakeMonsterType(i);
+				m_pSelectMapObject->Ready_Batch_Monster();
+			}
+			if (isSelected)
+				ImGui::SetItemDefaultFocus();
+		}
+		ImGui::EndCombo();
+	}
+
+
+	return;
+
+}
+
+#pragma endregion
+
+#pragma region Trigger Box
+
+void CPanel_MapObjectList::ImGuiUpdate_TriggerBox(TRIGGERBOX_DESC* pDesc)
+{
+	ImGui::SeparatorText(" Trigger Box Desc ");
+
+	if (ImGui::DragFloat3("Extents##TriggerBox_Extents", &pDesc->vExtents.x, 0.1f, 0.1f, 100.f, "%.2f"))
+	{
+		if (m_pSelectMapObject == nullptr) return;
+		m_pSelectMapObject->Update_Collider();
+	}
+
+	ImGui::Separator();
+}
+
+
+
+#pragma region TriggerBox Change Level Desc
+
+void CPanel_MapObjectList::ImGuiUpdate_TriggerBox_ChanageLevel_Desc(TRIGGERBOX_CHANGELEVEL_DESC* pDesc)
+{
+
+	/* 필수 요소 */
+	ImGuiUpdate_TriggerBox(pDesc);
+
+	ImGui::SeparatorText(" TriggerBox Change Level Desc");
+
+	ImGui::SeparatorText("Client Level Type ");
+
+	EClientLevelType eLevelType = StringToClientleveltype(pDesc->strChangeLevelTypeName);
+	m_iBuffer = ENUM_TO_UINT(eLevelType);
+
+
+	if (ImGui::BeginCombo("##Client Level Type", ClientleveltypeToString(static_cast<EClientLevelType>(m_iBuffer)).c_str()))
+	{
+		for (_int i = 0; i < ENUM_TO_UINT(EClientLevelType::END); ++i)
+		{
+			EClientLevelType eCurType = static_cast<EClientLevelType>(i);
+			bool isSelected = m_iBuffer == i;
+			string strCurName = ClientleveltypeToString(eCurType).c_str();
+			if (ImGui::Selectable(strCurName.c_str(), &isSelected))
+			{
+				/* 이름 Update 해주기 */
+				pDesc->strChangeLevelTypeName = strCurName;
+			}
+			if (isSelected)
+				ImGui::SetItemDefaultFocus();
+		}
+
+		ImGui::EndCombo();
+	}
+
+	ImGui::Separator();
+
+}
+
+
+#pragma region Monster Spawn Data ImGuiUpdate
+void CPanel_MapObjectList::ImGuiUpdate_MonsterSpawnData(Engine::MonsterSpawnData* pMonsterSpawnData)
+{
+	if (pMonsterSpawnData == nullptr) return;
+
+
+	ImGui::SeparatorText(" Monster Spawn Data ");
+
+
+	ImGui::Text("--------Make Monster Type--------");
+
+	m_strBuffer = DTO::MakeMonsterType_ToString(pMonsterSpawnData->eMakeMonsterType);
+	m_iBuffer	= _int(pMonsterSpawnData->eMakeMonsterType);
+
+	if (ImGui::BeginCombo("Make Monster Type List##Monstre Spawn Data Make Monster Type", m_strBuffer.c_str()))
+	{
+		for (_uint i = 0; i < ENUM_TO_UINT(DTO::EMakeMonsterType::END); ++i)
+		{
+			bool isSelected = i == m_iBuffer;
+			if (ImGui::Selectable(m_szMakeMonsterTypeName[i], &isSelected))
+			{
+				pMonsterSpawnData->eMakeMonsterType = DTO::EMakeMonsterType(i);
+				/* Mosnter 다시 배당 */
+				Safe_Release(pMonsterSpawnData->pDebugModel);
+				pMonsterSpawnData->pDebugModel = m_pMapToolManager->Get_MonsterPreviewModel(pMonsterSpawnData->eMakeMonsterType);
+			}
+			if (isSelected)
+				ImGui::SetItemDefaultFocus();
+		}
+		ImGui::EndCombo();
+	}
+
+	ImGui::Text("-------Delay Time--------");
+
+	ImGui::DragFloat("Delay Time##Monster Spawn Data Delay Time",&pMonsterSpawnData->fSpawnDelayTime,0.01f);
+
+	ImGui::Text("-------SRT--------");
+
+	ImGui::NewLine();
+
+	ImGui::DragFloat3("Scale##Monster Spawn Data Scale",				&pMonsterSpawnData->vScale.x,		0.1f);
+	ImGui::DragFloat3("PitchYawRoll##Monster Spawn Data PitchYawRoll",	&pMonsterSpawnData->vPitchYawRoll.x,	0.1f);
+	ImGui::DragFloat3("Position##Monster Spawn Data Position",			&pMonsterSpawnData->vPosition.x,			0.1f);
+
+	ImGui::NewLine();
+
+	ImGui::Text("--------Use Debug Model--------");
+
+	ImGui::Checkbox("Use Debug Model##Monster Spawn Data Use Debug Model", &pMonsterSpawnData->isPreviewDebugModel);
+
+	ImGui::Separator();
+
+
+	return;
+}
+#pragma endregion
+
+
+void CPanel_MapObjectList::ImGuiUpdate_TriggerBox_MonsterSpawner(TRIGGERBOX_MONSTERSPAWNER_DESC* pDesc)
+{
+
+	if (pDesc == nullptr) return;
+
+	// 기본 TriggerBox 공통 데이터 (Extents 등)
+	ImGuiUpdate_TriggerBox(pDesc);
+
+	ImGui::SeparatorText(" Monster Spawn List ");
+
+	// [ 데이터 추가 버튼 ]
+	if (ImGui::Button(" + Add New Spawn Data ", ImVec2(-1, 0)))
+	{
+		pDesc->vecMonsterSpawnData.push_back(Engine::MonsterSpawnData());
+		MonsterSpawnData& Data = pDesc->vecMonsterSpawnData.back();
+		Data.pDebugModel = m_pMapToolManager->Get_MonsterPreviewModel(Data.eMakeMonsterType);
+		
+		if (m_pSelectMapObject)
+		{
+			Data.vPosition = m_pSelectMapObject->Get_Component<CTransform>()->Get_Info(TRANSFORM_INFO_STATE::POS);
+		}
+	}
+
+	ImGui::Spacing();
+
+	// 테이블 시작: [ID/Type | Control]
+	static ImGuiTableFlags flags = ImGuiTableFlags_Borders | ImGuiTableFlags_RowBg | ImGuiTableFlags_Resizable;
+
+	if (ImGui::BeginTable("MonsterSpawnTable", 2, flags))
+	{
+		ImGui::TableSetupColumn("Spawn Info", ImGuiTableColumnFlags_WidthStretch);
+		ImGui::TableSetupColumn("Action", ImGuiTableColumnFlags_WidthFixed, 80.0f);
+		ImGui::TableHeadersRow();
+
+		int iDeleteIndex = -1;
+
+		for (int i = 0; i < (int)pDesc->vecMonsterSpawnData.size(); ++i)
+		{
+			ImGui::TableNextRow();
+			ImGui::TableSetColumnIndex(0);
+
+			// 트리 노드로 개별 데이터 감싸기 (ID를 부여해야 충돌이 안 남)
+			string strLabel = std::to_string(i) + ": " + DTO::MakeMonsterType_ToString(pDesc->vecMonsterSpawnData[i].eMakeMonsterType);
+			bool bOpen = ImGui::TreeNodeEx((void*)(intptr_t)i, ImGuiTreeNodeFlags_SpanFullWidth, strLabel.c_str());
+
+			ImGui::TableSetColumnIndex(1);
+			// 삭제 버튼
+			string strDelBtnLabel = "Delete##" + std::to_string(i);
+			if (ImGui::Button(strDelBtnLabel.c_str(), ImVec2(-1, 0)))
+			{
+				iDeleteIndex = i;
+			}
+
+			if (bOpen)
+			{
+				ImGuiUpdate_MonsterSpawnData(&pDesc->vecMonsterSpawnData[i]);
+				ImGui::TreePop();
+			}
+		}
+
+		// 삭제 처리
+		if (iDeleteIndex != -1)
+		{
+			pDesc->vecMonsterSpawnData.erase(pDesc->vecMonsterSpawnData.begin() + iDeleteIndex);
+		}
+
+		ImGui::EndTable();
+	}
+
+}
+#pragma endregion
+
+
+
+#pragma endregion
 
 #pragma endregion
 

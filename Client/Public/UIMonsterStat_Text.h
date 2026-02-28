@@ -3,7 +3,7 @@
 #include "DataStruct_UI.h"
 
 NS_BEGIN(Client)
-class CStatCom_Player;
+class CWorldUI_Component;
 class CUIMonsterStat_Text final : public CUIText
 {
 	using Super = CUIText;
@@ -41,10 +41,12 @@ private:
 	virtual void Initialize_InVisible_Event()override;
 	virtual _bool Tick_Visible_Event(const _float fTimeDelta)override;
 	virtual _bool Tick_InVisible_Event(const _float fTimeDelta)override;
+	virtual HRESULT Spawn_FromPool(void* pArg)override;
+	virtual HRESULT Despawn_FromPool()override;
 
 private:
+	CWorldUI_Component* m_pWorldUIComp = { nullptr };
 	_float m_fStat = {};
-	CStatCom_Player* m_pPlayerStatCom = { nullptr };
 
 public:
 	static CUIMonsterStat_Text* Create(ID3D11Device* pDevice, ID3D11DeviceContext* pDeviceContext);

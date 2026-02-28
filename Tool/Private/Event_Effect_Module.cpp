@@ -1,6 +1,7 @@
 #include "pch.h"
 #include "Event_Effect_Module.h"
 #include "GameInstance.h"
+#include "Anim_Event_Base.h"
 #include "AnimObj.h"
 
 CEvent_Effect_Module::CEvent_Effect_Module(ID3D11Device* pDevice, ID3D11DeviceContext* pDeviceContext)

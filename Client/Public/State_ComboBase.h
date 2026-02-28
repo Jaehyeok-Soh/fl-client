@@ -35,6 +35,9 @@ protected:
 	_uint		m_iComboCount	= { 1 };
 
 protected:
+	virtual _bool Can_CheckKey(const _float fTimeDelta) override;;
+
+protected:
 	void Change_NextCombo();
 	void Change_FirstCombo();
 	void Check_Combo();

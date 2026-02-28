@@ -273,9 +273,8 @@
     <ClCompile Include="..\Private\PhysicsCollider.cpp" />
     <ClCompile Include="..\Private\PhysicsRigidBody.cpp" />
     <ClCompile Include="..\Private\Physics_ActorFactory.cpp" />
-    <ClCompile Include="..\Private\Physics_NPCHitReport.cpp" />
     <ClCompile Include="..\Private\Physics_QueryFilterCallback.cpp" />
-    <ClCompile Include="..\Private\Physics_UserHitReport.cpp" />
+    <ClCompile Include="..\Private\Physics_CCTHitReport.cpp" />
     <ClCompile Include="..\Private\Physics_CCTManager.cpp" />
     <ClCompile Include="..\Private\Physics_FilterEventCallback.cpp" />
     <ClCompile Include="..\Private\Physics_Module.cpp" />
@@ -319,6 +318,7 @@
     <ClCompile Include="..\Private\VIBuffer_Rect_Tex.cpp" />
     <ClCompile Include="..\Private\VIBuffer_Terrain.cpp" />
     <ClCompile Include="..\public\ThreadPool.cpp" />
+    <ClCompile Include="Anim_Event_Base.cpp" />
     <ClCompile Include="Engine_pch.cpp">
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Create</PrecompiledHeader>
       <PrecompiledHeaderFile Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Engine_pch.h</PrecompiledHeaderFile>
@@ -440,9 +440,8 @@
     <ClInclude Include="..\Public\PhysicsCollider.h" />
     <ClInclude Include="..\Public\PhysicsRigidBody.h" />
     <ClInclude Include="..\Public\Physics_ActorFactory.h" />
-    <ClInclude Include="..\Public\Physics_NPCHitReport.h" />
     <ClInclude Include="..\Public\Physics_QueryFilterCallback.h" />
-    <ClInclude Include="..\Public\Physics_UserHitReport.h" />
+    <ClInclude Include="..\Public\Physics_CCTHitReport.h" />
     <ClInclude Include="..\Public\Physics_CCTManager.h" />
     <ClInclude Include="..\Public\Physics_FilterEventCallback.h" />
     <ClInclude Include="..\Public\Physics_Module.h" />
