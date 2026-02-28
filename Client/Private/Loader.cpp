@@ -498,7 +498,7 @@ HRESULT CLoader::Loading_For_Logo()
 		desc.iPrototypeLevelIndex = ENUM_TO_UINT(ELevelType::STATIC);
 		desc.pMatPreTransform = &(matPreTransformScale);
 		desc.wstrModelFolderName = L"XibiWeapon";
-		desc.FStageBone = CModel::STAGEING_BONE::SB_ZEROBONE;
+		desc.FStageBone = CModel::STAGEING_BONE::SB_SPCIPICBONE;
 
 		CModel::DATA_ANIMCHANNEL tAniChannelData = {};
 		tAniChannelData.iRootBoneIndex = 2;
@@ -514,8 +514,8 @@ HRESULT CLoader::Loading_For_Logo()
 		desc.iPrototypeLevelIndex = ENUM_TO_UINT(ELevelType::STATIC);
 		desc.pMatPreTransform = &(matPreTransformIdentity);
 		desc.wstrModelFolderName = L"Monster_Dog";
-		desc.FStageBone = CModel::STAGEING_BONE::SB_ZEROBONE;
-		desc.vecStageBoneIndices = { };
+		desc.FStageBone = CModel::STAGEING_BONE::SB_SPCIPICBONE;
+		desc.vecStageBoneIndices = {150, 152};
 
 		CModel::DATA_ANIMCHANNEL tAniChannelData = {};
 		tAniChannelData.iRootBoneIndex = 3;
@@ -531,8 +531,8 @@ HRESULT CLoader::Loading_For_Logo()
 		desc.iPrototypeLevelIndex = ENUM_TO_UINT(ELevelType::STATIC);
 		desc.pMatPreTransform = &(matPreTransformScale150);
 		desc.wstrModelFolderName = L"Monster_Boomer";
-		desc.FStageBone = CModel::STAGEING_BONE::SB_ZEROBONE;
-		desc.vecStageBoneIndices = { };
+		desc.FStageBone = CModel::STAGEING_BONE::SB_SPCIPICBONE;
+		desc.vecStageBoneIndices = {114, 116 };
 
 		CModel::DATA_ANIMCHANNEL tAniChannelData = {};
 		tAniChannelData.iRootBoneIndex = 3;

@@ -56,6 +56,7 @@ HRESULT CMonster_Dog_Body::Awake(const _uint iCurrentLevelIndex)
 
 	Get_Component<CModel>()->Change_Animation(pAnimECS, 1, true, true, false);
 
+
 	return S_OK;
 }
 
