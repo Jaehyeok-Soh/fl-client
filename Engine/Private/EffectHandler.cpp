@@ -28,13 +28,21 @@ HRESULT CEffectHandler::Initialize_Prototype(void* pArg)
     if(FAILED(Ready_Desc(pArg)))
         return E_FAIL;
 
-    Ready_State();
-
     return S_OK;
 }
 
 HRESULT CEffectHandler::Initialize(void* pArg) 
 { 
+    ANIM_EFFECT_HANDLER_DESC* pDesc = static_cast<ANIM_EFFECT_HANDLER_DESC*>(pArg);
+
+    if (pDesc)
+    {
+        if (FAILED(Ready_Desc(pArg)))
+            return E_FAIL;
+    }
+
+    Ready_State();
+
     return S_OK;
 }
 
@@ -91,6 +99,12 @@ void CEffectHandler::Awake()
 
 void CEffectHandler::Update(_float fDT)
 {
+}
+
+HRESULT CEffectHandler::Gizmo_Setting()
+{
+
+    return S_OK;
 }
 
 void CEffectHandler::GetAnimation()
@@ -187,8 +201,11 @@ HRESULT CEffectHandler::Create_SpawnEffect()
 {
     if (m_tDesc.eType == E_HANDLER_TYPE::MODEL_ANIM) return E_FAIL;
 
-    if (FAILED(Trigger_Lifecycle_Effect(m_eCurrentState)))
-        return E_FAIL;
+    auto pTransform = Get_Owner()->Get_Component<CTransform>();
+    m_pOwnerMatrix = &pTransform->Get_WorldMatrix();
+
+    //if (FAILED(Trigger_Lifecycle_Effect(m_eCurrentState)))
+    //    return E_FAIL;
 
     return S_OK;
 }
@@ -309,7 +326,7 @@ void CEffectHandler::Request_SpawnEffect(const DTO::EFFECTEVENT& Script)
         (_bool)Script.iSimulationType,
         Script.iBoneFlag,
         Script.bFollowBone ? pTargetBoneMatrix : nullptr,
-        Script.bFollowBone ? m_pOwnerMatrix : nullptr
+        m_pOwnerMatrix
     );
 }
 
@@ -365,7 +382,7 @@ void CEffectHandler::Request_SpawnEffect(const DTO::EFFECTEVENT& script, const s
         (_bool)script.iSimulationType,
         script.iBoneFlag,
         script.bFollowBone ? pTargetBoneMatrix : nullptr,
-        script.bFollowBone ? m_pOwnerMatrix : nullptr
+        m_pOwnerMatrix
     );
 }
 
@@ -392,7 +409,7 @@ HRESULT CEffectHandler::Trigger_Lifecycle_Effect(E_OBJ_LIFECYCLE_STATE eState)
         if (pBase)
         {
             // 이전 State Loop 종료시키기 (Dissolve 되게끔.)
-            pBase->LoopStateChange(CEffectBase::E_LoopState::LOOP_END);
+            pBase->LoopStateChange(DTO::E_LoopState::LOOP_END);
         }
     }
 
@@ -452,14 +469,11 @@ void CEffectHandler::Free()
 
     for (_uint i = 0; i < ENUM_TO_UINT(E_HANDLER_TYPE::TYPE_END); ++i)
     {
-        for (auto& pair : m_ActiveEffects[i])
-        {
-            if (pair.second)
-                m_pGameInstance->Request_DeleteGameObject(m_pGameInstance->Get_CurrentLevelIndex(), L"Layer_Effect", pair.second);
-        }
         m_ActiveEffects[i].clear();
     }
 
+    // 3. 캐싱된 모델 참조 해제
     Safe_Release(m_pOwnerModel);
+
     Super::Free();
 }

@@ -63,9 +63,9 @@ void to_json(json& j, const TUI_TriggerData& data)
 	j = json
 	{
 		{"Type", TUI_TriggerData::eType},
-		{"strTag", data.strTag},
-		{"strOwnerName", data.strOwnerName},
-		{"eTriggerSubClassType", data.eTriggerSubClassType},
+		{"strTag",						data.strTag},
+		{"strOwnerName",				data.strOwnerName},
+		{"eTriggerSubClassType",		data.eTriggerSubClassType},
 		{"vecHoverEnterTriggerCanvas",  data.vecHoverEnterTriggerCanvas},
 		{"vecHoverEnterTriggerUI",      data.vecHoverEnterTriggerUI},
 		{"vecHoverExitTriggerCanvas",	data.vecHoverExitTriggerCanvas},
@@ -108,17 +108,21 @@ void to_json(json& j, const TUI_TextData& data)
 {
 	j = json
 	{
-		{"Type", TUI_TextData::eType },
-		{"strTag", data.strTag},
-		{"strOwnerName", data.strOwnerName},
-		{"eTextSubClassType", data.eTextSubClassType},
-		{"eShaderType", data.eShaderType},
-		{"strFontTag", data.strFontTag},
-		{"strText", data.strText},
-		{"vFontColor", {{ "x", data.vFontColor.x },{ "y", data.vFontColor.y },{ "z", data.vFontColor.z },{ "w", data.vFontColor.w }}},
-		{"ePivot", data.ePivot},
-		{"fRotate", data.fRotate},
-		{"fScale", data.fScale},
+		{"Type",				TUI_TextData::eType },
+		{"strTag",				data.strTag},
+		{"strOwnerName",		data.strOwnerName},
+		{"eTextSubClassType",	data.eTextSubClassType},
+		{"eShaderType",			data.eShaderType},
+		{"strFontTag",			data.strFontTag},
+		{"strText",				data.strText},
+		{"vFontColor", {
+			{ "x",	data.vFontColor.x },
+			{ "y",	data.vFontColor.y },
+			{ "z",	data.vFontColor.z },
+			{ "w",	data.vFontColor.w }}},
+		{"ePivot",				data.ePivot},
+		{"fRotate",				data.fRotate},
+		{"fScale",				data.fScale},
 	};
 }
 

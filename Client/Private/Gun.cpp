@@ -140,6 +140,8 @@ void CGun::NoAttack_Update(const _float fTimeDelta)
 
 void CGun::Attack_Update(const _float fTimeDelta)
 {
+	m_isFire = false;
+
 	// ÃÑÀ» ½ò ¼ö ÀÖÀ»¶§
 	if (m_tFireTimeCounter.bCountTime)
 	{
@@ -148,6 +150,7 @@ void CGun::Attack_Update(const _float fTimeDelta)
 		{
 			// ½ÇÁ¦·Î ÃÑ°Ý ÆÇÁ¤
 			Fire();
+			m_isFire = true;
 		}
 	}
 

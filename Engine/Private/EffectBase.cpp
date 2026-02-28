@@ -67,23 +67,23 @@ void CEffectBase::Set_Dead(const wstring& wstrLayerTag)
 	Super::Set_Dead(wstrLayerTag);
 }
 
-void CEffectBase::LoopStateChange(E_LoopState EState)
+void CEffectBase::LoopStateChange(DTO::E_LoopState EState)
 {
 	switch (EState)
 	{
-	case E_LoopState::LOOP_START:
+	case DTO::E_LoopState::LOOP_START:
 	{
 		for (auto PartObject : m_vecPartObjects)
 		{
-			static_cast<CEffectPartBase*>(PartObject)->LoopState_Change(CEffectPartBase::E_LoopState::LOOP_START);
+			static_cast<CEffectPartBase*>(PartObject)->LoopState_Change(DTO::E_LoopState::LOOP_START);
 		}
 	}
 	break;
-	case E_LoopState::LOOP_END:
+	case DTO::E_LoopState::LOOP_END:
 	{
 		for (auto PartObject : m_vecPartObjects)
 		{
-			static_cast<CEffectPartBase*>(PartObject)->LoopState_Change(CEffectPartBase::E_LoopState::LOOP_END);
+			static_cast<CEffectPartBase*>(PartObject)->LoopState_Change(DTO::E_LoopState::LOOP_END);
 		}
 	}
 	break;

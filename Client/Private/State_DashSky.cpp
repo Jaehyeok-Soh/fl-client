@@ -44,8 +44,14 @@ void CState_DashSky::Update(const _float fTimeDelta)
 {
 	Super::Update(fTimeDelta);
 
-	if (Get_AnimElpasedTimeSeconds() > 0.6f)
+	if (Get_AnimElpasedTimeSeconds() > 0.5f)
 	{
+		if(Check_OnGround(0.3f))
+		{
+			//Get_OwnerObject()->Get_Component<CTransform>()->Is_OnGround(0.1f);
+			Change_PlayerState(ENUM_TO_UINT(CPlayer::State::IDLE));
+			return;
+		}
 		Set_ApplyGravity(true);
 	}
 }
@@ -54,6 +60,8 @@ HRESULT CState_DashSky::End()
 {
 	if (FAILED(Super::End()))
 		return E_FAIL;
+
+	m_FCollisions = 0;
 
 	Set_ApplyGravity(true);
 

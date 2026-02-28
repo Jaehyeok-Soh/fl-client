@@ -413,11 +413,14 @@ CModel* CMapToolManager::Get_MonsterPreviewModel(DTO::EMakeMonsterType eMakeMons
 	case DTO::EMakeMonsterType::Dog:				
 		wstrModelName = L"Preveiw_Monster_Dog";
 		break;
+	case DTO::EMakeMonsterType::Boomer:
+		wstrModelName = L"Preveiw_Monster_Boomer";
+		break;
 	case DTO::EMakeMonsterType::Shooter:
 		wstrModelName = L"Preveiw_Monster_Shooter";
 		break;
 	case DTO::EMakeMonsterType::Xibi:
-		wstrModelName = L"Preveiw_Xibi";
+		wstrModelName = L"Preveiw_Boss_Xibi";
 		break;
 	default:									return nullptr;
 	}

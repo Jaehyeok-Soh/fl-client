@@ -1,6 +1,7 @@
 #pragma once
 #include "BuilderBase.h"
 #include "DataStruct_Map.h"
+#include "Monster_Base.h"
 
 NS_BEGIN(Engine)
 
@@ -52,6 +53,7 @@ private:
 
 	CGameInstance* m_pGameInstance{ nullptr };
 public:
+	static EMonster_Type Change_MakeMonsterType_To_MonsterType(DTO::EMakeMonsterType eMakeMonsterType);
 	static CBuilder_Map* Create(ID3D11Device* pDevice, ID3D11DeviceContext* pDeviceContext, _uint iLevelID);
 	virtual void Free() override;
 };

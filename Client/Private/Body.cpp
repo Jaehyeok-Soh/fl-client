@@ -90,7 +90,7 @@ HRESULT CBody::Awake(const _uint iCurrentLevelIndex)
 	pMyModel->Make_MixRatio(iFaceAnimIdx, vecMix, m_pBoneAnimMixCS);
 	pMyModel->Set_MixAnim_AnimIndex(0, iFaceAnimIdx);
 
-	pMyModel->Set_Animtion_MotionOffset(iJumpAnimIdx, 2.f);
+	pMyModel->Set_Animtion_MotionOffset(iJumpAnimIdx, 2.5f);
 	pMyModel->Set_Animtion_MotionOffset(iBulletAnimIdx, 2.f);
 
 	return S_OK;

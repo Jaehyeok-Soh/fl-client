@@ -1,5 +1,6 @@
 #pragma once
 #include "PartObject.h"
+#include "DataStruct_EffectEvent.h"
 
 NS_BEGIN(Engine)
 
@@ -7,14 +8,6 @@ class ENGINE_DLL CEffectPartBase abstract:
 public CPartObject
 {
      using Super = CPartObject;
-
-public:
-    enum class E_LoopState
-    {
-        LOOP_START,
-        LOOP_END,
-    };
-
 protected:
     CEffectPartBase(ID3D11Device* pDevice, ID3D11DeviceContext* pDeviceContext);
     explicit CEffectPartBase(const CEffectPartBase& rhs);
@@ -32,7 +25,7 @@ public:
     virtual void Set_Dead(const wstring& wstrLayerTag) override;
 
 public:
-    virtual void LoopState_Change(E_LoopState eState) = 0;
+    virtual void LoopState_Change(DTO::E_LoopState eState) = 0;
 
 public:
     virtual void Free() override;

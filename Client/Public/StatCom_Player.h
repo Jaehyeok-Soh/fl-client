@@ -62,7 +62,7 @@ public:
 	// to UI 담당자 : getter func 필요에 따라 바꿔도 좋고, 추가해도 상관없을듯. from 플레이어 담당자
 	// to UI 담당자 : cool time은 항상 0에서 1로 채우는 형식으로 갈거임.
 	// 0에서 1? 0에서 Max? -> 0에서 max
-	const CSkillBase::SKILL_INFO& Get_Skill(Attack_State iAttState) const {
+	const CSkillBase::SKILL_INFO& Get_Skill(Attack_State iAttState)  const {
 		switch (iAttState)
 		{
 		case Attack_State::E:
@@ -74,6 +74,17 @@ public:
 		}
 	};
 
+	CSkillBase* Get_Skill_Ptr(Attack_State iAttState)  const {
+		switch (iAttState)
+		{
+		case Attack_State::E:
+			return m_pESkillBase;
+		case Attack_State::Q:
+			return m_pQSkillBase;
+		default:
+			return nullptr;
+		}
+	};
 
 	const TIME_COUNTER& Get_Timer(TIMER_TYPE eTimerType) const
 	{

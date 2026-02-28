@@ -16,11 +16,11 @@
 #pragma region Batch 관련
 #include "MainPlayer.h"
 #include "Monster_Body_Base.h"
-#include "Monster_Base.h"
 #pragma endregion
 
 #pragma region Trigger Box
 #include "TriggerBox_LevelChange.h"
+#include "TriggerBox_MonsterSpawner.h"
 #pragma endregion
 
 #include "PhysicsCCT.h"
@@ -92,7 +92,8 @@ HRESULT CBuilder_Map::Build(const CDataDocumentBase& document)
 			case DTO::EClientMakePath::Batch_Player:	Batch_Player(tData);		break;
 			case DTO::EClientMakePath::Batch_Monster:	Batch_Monster(tData);		break;
 
-			case DTO::EClientMakePath::TriggerBox_ChangeLevel: Create_TriggerBox_ChangeLevel(tData); break;
+			case DTO::EClientMakePath::TriggerBox_ChangeLevel:		Create_TriggerBox_ChangeLevel(tData); break;
+			case DTO::EClientMakePath::TriggerBox_MonsterSpawner:	Create_TriggerBox_MonsterSpawner(tData); break;
 
 
 			default:									return E_FAIL;
@@ -138,12 +139,10 @@ HRESULT CBuilder_Map::Create_StaticObject(const DTO::TMap_MapObjectData& tData)
 		tStaticObjectDesc.vecSRT.push_back(SRT_DATA);
 	}
 
-
-	m_pGameInstance->Add_GameObject( ENUM_TO_UINT(ELevelType::STATIC),L"Prototype_GameObject_StaticObject", tStaticObjectDesc.iLevelIndex , g_wszStaticObjectLayer,&tStaticObjectDesc);
+	m_pGameInstance->Add_GameObject( ENUM_TO_UINT(ELevelType::STATIC),g_wszStaticObject_Prototype_Tag , tStaticObjectDesc.iLevelIndex , g_wszStaticObjectLayer,&tStaticObjectDesc);
 
 	return S_OK;
 }
-
 HRESULT CBuilder_Map::Create_LandScape(const DTO::TMap_MapObjectData& tData)
 {
 	CLandScape::LANDSCAPE_DESC tLandSapceDesc{};
@@ -175,13 +174,12 @@ HRESULT CBuilder_Map::Create_LandScape(const DTO::TMap_MapObjectData& tData)
 
 
 	m_pGameInstance->Add_GameObject(
-		ENUM_TO_UINT(ELevelType::STATIC), L"Prototype_GameObject_LandScape", 
+		ENUM_TO_UINT(ELevelType::STATIC), g_wszLandScape_Prototype_Tag , 
 		tLandSapceDesc.iLevelIndex, g_wszStaticObjectLayer, &tLandSapceDesc);
 
 
 	return S_OK;
 }
-
 HRESULT CBuilder_Map::Create_Bush(const DTO::TMap_MapObjectData& tData)
 {
 	CBush::BUSH_DESC tBush_Desc{};
@@ -200,7 +198,7 @@ HRESULT CBuilder_Map::Create_Bush(const DTO::TMap_MapObjectData& tData)
 
 
 	m_pGameInstance->Add_GameObject(
-		ENUM_TO_UINT(ELevelType::STATIC), L"Prototype_GameObject_Bush",
+		ENUM_TO_UINT(ELevelType::STATIC), g_wszBush_Prototype_Tag ,
 		tBush_Desc.iLevelIndex, g_wszStaticObjectLayer, &tBush_Desc);
 
 	return S_OK;
@@ -223,7 +221,7 @@ HRESULT CBuilder_Map::Create_Grass(const DTO::TMap_MapObjectData& tData)
 
 
 	m_pGameInstance->Add_GameObject(
-		ENUM_TO_UINT(ELevelType::STATIC), L"Prototype_GameObject_Grass",
+		ENUM_TO_UINT(ELevelType::STATIC), g_wszGrass_Prototype_Tag ,
 		tGrass_Desc.iLevelIndex, g_wszStaticObjectLayer, &tGrass_Desc);
 
 	return S_OK;
@@ -247,7 +245,7 @@ HRESULT CBuilder_Map::Create_Moss(const DTO::TMap_MapObjectData& tData)
 
 
 	m_pGameInstance->Add_GameObject(
-		ENUM_TO_UINT(ELevelType::STATIC), L"Prototype_GameObject_Moss",
+		ENUM_TO_UINT(ELevelType::STATIC), g_wszMoss_Prototype_Tag ,
 		tMoss_Desc.iLevelIndex, g_wszStaticObjectLayer, &tMoss_Desc);
 
 	return S_OK;
@@ -270,7 +268,7 @@ HRESULT CBuilder_Map::Create_Tree(const DTO::TMap_MapObjectData& tData)
 
 
 	m_pGameInstance->Add_GameObject(
-		ENUM_TO_UINT(ELevelType::STATIC), L"Prototype_GameObject_Tree",
+		ENUM_TO_UINT(ELevelType::STATIC), g_wszTree_Prototype_Tag ,
 		tTree_Desc.iLevelIndex, g_wszStaticObjectLayer, &tTree_Desc);
 
 	return S_OK;
@@ -292,7 +290,7 @@ HRESULT CBuilder_Map::Create_Vine(const DTO::TMap_MapObjectData& tData)
 
 
 	m_pGameInstance->Add_GameObject(
-		ENUM_TO_UINT(ELevelType::STATIC), L"Prototype_GameObject_Vine",
+		ENUM_TO_UINT(ELevelType::STATIC),g_wszVine_Prototype_Tag ,
 		tVine_Desc.iLevelIndex, g_wszStaticObjectLayer, &tVine_Desc);
 
 	return S_OK;
@@ -314,7 +312,7 @@ HRESULT CBuilder_Map::Create_Water(const DTO::TMap_MapObjectData& tData)
 
 
 	m_pGameInstance->Add_GameObject(
-		ENUM_TO_UINT(ELevelType::STATIC), L"Prototype_GameObject_Water",
+		ENUM_TO_UINT(ELevelType::STATIC), g_wszWater_Prototype_Tag ,
 		tWater_Desc.iLevelIndex, g_wszStaticObjectLayer, &tWater_Desc);
 
 	return S_OK;
@@ -336,12 +334,11 @@ HRESULT CBuilder_Map::Create_Rock(const DTO::TMap_MapObjectData& tData)
 
 
 	m_pGameInstance->Add_GameObject(
-		ENUM_TO_UINT(ELevelType::STATIC), L"Prototype_GameObject_Rock",
+		ENUM_TO_UINT(ELevelType::STATIC), g_wszRock_Prototype_Tag ,
 		tRock_Desc.iLevelIndex, g_wszStaticObjectLayer, &tRock_Desc);
 
 	return S_OK;
 }
-
 HRESULT CBuilder_Map::Batch_Player(const DTO::TMap_MapObjectData& tData)
 {
 	CGameObject* pPlayer = m_pGameInstance->Get_GameObject_Front(ENUM_TO_UINT(ELevelType::STATIC),g_wszPlayerLayer);
@@ -366,7 +363,6 @@ HRESULT CBuilder_Map::Batch_Player(const DTO::TMap_MapObjectData& tData)
 
 	return S_OK;
 }
-
 HRESULT CBuilder_Map::Batch_Monster(const DTO::TMap_MapObjectData& tData)
 {
 	/* Monster Type별로 Batch */
@@ -374,133 +370,24 @@ HRESULT CBuilder_Map::Batch_Monster(const DTO::TMap_MapObjectData& tData)
 	if (tData.vecClientMakePathDesc.empty())		return E_FAIL;
 	if (tData.vecSRTs.empty())						return E_FAIL;
 
+	CGameObject* pResult{nullptr};
+
+	_uint iFindPrototypeIndex = ENUM_TO_UINT(ELevelType::STATIC);
+	wstring wstrAddLayerName{};
+	wstring wstrFindPrototypeName{};
+	_uint iCurLevelIndex = ENUM_TO_UINT(m_eLevelType);
 
 	/* SRT Data를 들고온다 */
 	DTO::SRT_DATA tSRT = tData.vecSRTs.front();
-	CTransform::TRANSFORM_DESC transformDesc = {};
-	transformDesc.TranslationMatrix = tSRT.Get_World();
+	CTransform::TRANSFORM_DESC tTransformDesc = {};
+	tTransformDesc.TranslationMatrix = tSRT.Get_World();
 
-
-
-
+	/* Description 제일 맨앞 */
 	BATCH_MONSTER_DESC* pDesc = static_cast<BATCH_MONSTER_DESC*>(tData.vecClientMakePathDesc.front());
 	if (pDesc == nullptr) return E_FAIL;
 
-	/* Make Monster Type */
-	DTO::EMakeMonsterType eMakeMonsterType = pDesc->eBatchMonsterType;
-
-	switch (eMakeMonsterType)
-	{
-	case DTO::EMakeMonsterType::Dog:
-	{
-		{
-			CGameObject* pResult = { nullptr };
-
-			CMonster_Base::MONSTER_DESC monsterDesc = {};
-			monsterDesc.iLevelIndex = ENUM_TO_UINT(m_eLevelType);
-			monsterDesc.wstrBodyModelTag = L"Prototype_Component_Model_Monster_Dog";
-			monsterDesc.wstrPartBodyPrototypeTag = L"Prototype_GameObject_Monster_Dog_Body";
-			monsterDesc.wstrAttackOverlapPrototypeTag = L"Prototype_Component_AttackOverlap_Monster_Dog";
-			monsterDesc.pTransform_Desc = &transformDesc;
-			monsterDesc.wstrMonsterStateTag = L"Monster_Dog";
-
-			{
-				PHYSICSCCT_DESC desc;
-				desc.pOwner = nullptr;
-				desc.bIsPlayer = false;
-				desc.eType = EPhysicsCCTType::CAPSULE;
-				desc.pOwnerMatrix = nullptr;
-				desc.fRadius = 1.f;
-				desc.fHeight = 0.1f;
-				desc.vExtens = { 2.f, 2.f, 2.f };
-
-				PHYSICSMATERIAL_DESC mtrlDesc{};
-				mtrlDesc.eMaterial = EPhysicsMaterial::PLAYER;
-				desc.tMaterial = mtrlDesc;
-
-				desc.eFilterLayer = PHYSICSFILTERGROUP::Enum::MONSTER;
-				desc.iFilterMask =
-					PHYSICSFILTERGROUP::Enum::MONSTER
-					| PHYSICSFILTERGROUP::Enum::PLAYER
-					| PHYSICSFILTERGROUP::Enum::ATTACK
-					| PHYSICSFILTERGROUP::Enum::ATTACK_PROJECTTILE
-					| PHYSICSFILTERGROUP::Enum::SKILL
-					| PHYSICSFILTERGROUP::Enum::SKILL_PROJECTTILE
-					| PHYSICSFILTERGROUP::Enum::MAP
-					| PHYSICSFILTERGROUP::Enum::OBJECT1
-					| PHYSICSFILTERGROUP::Enum::OBJECT2;
-
-				monsterDesc.tCCTDesc = desc;
-			}
-
-			if (!(pResult = m_pGameInstance->Add_GameObject(ENUM_TO_UINT(m_eLevelType),
-				L"Prototype_GameObject_Monster_Dog",
-				ENUM_TO_UINT(m_eLevelType),
-				L"Monster", &monsterDesc)))
-				return E_FAIL;
-		}
-
-		return S_OK;
-	}
-	case DTO::EMakeMonsterType::Shooter:	return S_OK;
-	case DTO::EMakeMonsterType::Xibi:
-	{
-		// BoneInfo
-		vector<std::pair<_uint, string>> vecboneNames
-		{
-			{ENUM_TO_UINT(CMonster_Body_Base::EBone::RightHand), "hook_arm_r"}
-		};
-
-		{
-			CGameObject* pResult = { nullptr };
-
-			CMonster_Base::MONSTER_DESC monsterDesc = {};
-			monsterDesc.iLevelIndex = ENUM_TO_UINT(m_eLevelType);
-			monsterDesc.wstrBodyModelTag = L"Prototype_Component_Model_Xibi";
-			monsterDesc.wstrPartBodyPrototypeTag = L"Prototype_GameObject_Boss_Xibi_Body";
-			monsterDesc.pTransform_Desc = &transformDesc;
-			monsterDesc.wstrMonsterStateTag = L"Boss_Xibi";
-
-			{
-				PHYSICSCCT_DESC desc;
-				desc.pOwner = nullptr;
-				desc.bIsPlayer = false;
-				desc.eType = EPhysicsCCTType::CAPSULE;
-				desc.pOwnerMatrix = nullptr;
-				desc.fRadius = 1.f;
-				desc.fHeight = 1.f;
-				desc.vExtens = { 2.f, 2.f, 2.f };
-
-				PHYSICSMATERIAL_DESC mtrlDesc{};
-				mtrlDesc.eMaterial = EPhysicsMaterial::PLAYER;
-				desc.tMaterial = mtrlDesc;
-
-				desc.eFilterLayer = PHYSICSFILTERGROUP::Enum::MONSTER;
-				desc.iFilterMask =
-					PHYSICSFILTERGROUP::Enum::MONSTER
-					| PHYSICSFILTERGROUP::Enum::PLAYER
-					| PHYSICSFILTERGROUP::Enum::ATTACK
-					| PHYSICSFILTERGROUP::Enum::ATTACK_PROJECTTILE
-					| PHYSICSFILTERGROUP::Enum::SKILL
-					| PHYSICSFILTERGROUP::Enum::SKILL_PROJECTTILE
-					| PHYSICSFILTERGROUP::Enum::MAP
-					| PHYSICSFILTERGROUP::Enum::OBJECT1
-					| PHYSICSFILTERGROUP::Enum::OBJECT2;
-
-				monsterDesc.tCCTDesc = desc;
-			}
-
-			if (!(pResult = m_pGameInstance->Add_GameObject(ENUM_TO_UINT(m_eLevelType),
-				L"Prototype_GameObject_Boss_Xibi",
-				ENUM_TO_UINT(m_eLevelType),
-				g_wszBossLayer, &monsterDesc)))
-				return E_FAIL;
-		}
-	}
-	break;
-	default:
-		break;
-	}
+	if (FAILED(CMonster_Base::Create_Mosnter(CBuilder_Map::Change_MakeMonsterType_To_MonsterType(pDesc->eBatchMonsterType), iFindPrototypeIndex , iCurLevelIndex , &tTransformDesc)))
+		return E_FAIL;
 
 	return S_OK;
 }
@@ -526,19 +413,45 @@ HRESULT CBuilder_Map::Create_TriggerBox_ChangeLevel(const DTO::TMap_MapObjectDat
 	pDesc.eChangeLevelType = StringToClientleveltype(pTriggerBox_ChangeLevel_Desc->strChangeLevelTypeName);
 
 
-	m_pGameInstance->Add_GameObject( ENUM_TO_UINT(ELevelType::STATIC) , L"Prototype_GameObject_TriggerBox_ChangeLevel" , ENUM_TO_UINT(m_eLevelType) , g_wszTriggerBoxLayer ,&pDesc);
+	m_pGameInstance->Add_GameObject( ENUM_TO_UINT(ELevelType::STATIC) , g_wszTriggerBox_ChangeLevel_Prototype_Tag , ENUM_TO_UINT(m_eLevelType) , g_wszTriggerBoxLayer ,&pDesc);
 
 	return S_OK;
 }
-
 HRESULT CBuilder_Map::Create_TriggerBox_MonsterSpawner(const DTO::TMap_MapObjectData& tData)
 {
+	if (tData.vecSRTs.empty()) return E_FAIL;
+	if (tData.vecClientMakePathDesc.empty()) return E_FAIL;
 
 
+	TRIGGERBOX_MONSTERSPAWNER_DESC* pTriggerBox_MonsterSpawner = static_cast<TRIGGERBOX_MONSTERSPAWNER_DESC*> (tData.vecClientMakePathDesc.front());
+	if (pTriggerBox_MonsterSpawner == nullptr) return E_FAIL;
 
+	DTO::SRT_DATA tSRT{ tData.vecSRTs.front() };
+	CTriggerBox_MonsterSpawner::TRIGGERBOX_MONSTERSPAWNER_DESC  pDesc{};
+	CTransform::TRANSFORM_DESC transformDesc = {};
+	transformDesc.TranslationMatrix = { tSRT.Get_World() };
+
+	pDesc.iLevelIndex = ENUM_TO_UINT(m_eLevelType);
+	pDesc.pSRTData = &tSRT;
+	pDesc.pTransform_Desc = &transformDesc;
+	pDesc.vTriggerBox_Extents = pTriggerBox_MonsterSpawner->vExtents;
+	pDesc.vecMonsterSpawnData = pTriggerBox_MonsterSpawner->vecMonsterSpawnData;
+	m_pGameInstance->Add_GameObject(ENUM_TO_UINT(ELevelType::STATIC), g_wszTriggerBox_MonsterSapwner_Prototype_Tag , ENUM_TO_UINT(m_eLevelType), g_wszTriggerBoxLayer, &pDesc);
 	return S_OK;
 }
 
+EMonster_Type CBuilder_Map::Change_MakeMonsterType_To_MonsterType(DTO::EMakeMonsterType eMakeMonsterType)
+{
+	switch (eMakeMonsterType)
+	{
+	case DTO::EMakeMonsterType::Dog:			return EMonster_Type::Dog;
+	case DTO::EMakeMonsterType::Boomer:			return EMonster_Type::Boomer;
+	case DTO::EMakeMonsterType::Shooter:		return EMonster_Type::Shooter;
+	case DTO::EMakeMonsterType::Xibi:			return EMonster_Type::Xibi;
+	default:									return EMonster_Type::END;
+	}
+	return EMonster_Type::END;
+}
 
 CBuilder_Map* CBuilder_Map::Create(ID3D11Device* pDevice, ID3D11DeviceContext* pDeviceContext, _uint iLevelID)
 {

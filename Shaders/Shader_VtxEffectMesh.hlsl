@@ -35,6 +35,8 @@ texture2D g_EffectTexture;
 #define SCROLL_DISSOLVE 1 << 10
 #define SCROLL_GLOW 1 << 11
 #define SCROLL_CURVE 1 << 12
+
+#define USE_LIFEDISSOLVE 1 << 13
         
 // SamplerState Flag
 #define LINEARSAMPLER 1 << 0
@@ -139,6 +141,11 @@ bool HasTextureScroll(uint Flag)
 bool HasTextureSprite(float4 spriteInfo)
 {
     return spriteInfo.x > 0.5f;
+}
+
+bool HasLifeDissolve()
+{
+    return (g_Effect.g_RenderFlags & USE_LIFEDISSOLVE) != 0;
 }
 
 // ======== 연산용 함수들 ============
@@ -589,33 +596,21 @@ float4 PS_DefaultMesh(VS_OUT_INST_MESH_PARTICLE In) : SV_Target0
     
     if (Has(g_Effect.g_TextureFlags, CURVETEXTURE))
     {
-        if (HasTextureScroll(SCROLL_CURVE))
-        {
-            float2 scrolledUV = In.vUV + g_Effect.g_UVOffset;
-            scrolledUV += g_Effect.g_ScrollOffset * g_Effect.CurveTexture_ScrollWeight;
-            CurveSample = DissolveTextureSample(Get90DegreeRotatedUV(scrolledUV, g_Effect.g_RotationFlags, CURVETEXTURE));
-            CurvePowerStrength = CurveSample.r;
-            CurvePowerStrength *= 3.f;
-        }
-        else if (HasTextureSprite(g_Effect.CurveTexture_SpriteInfo))
+        if (HasTextureSprite(g_Effect.CurveTexture_SpriteInfo))
         {
             float2 SpriteUV = GetStaticSpriteUV(In.vUV, g_Effect.CurveTexture_SpriteInfo);
-            SpriteUV.x /= 4.0f;
-            
-            // ㅁ ㅁ ㅁ 형태의 구역으로 나누었다면 3번째 구역부터 1번째 구역으로 스크롤을 하자.
-            // 스크롤이 될 변수는 lifeRatio
-            float scrollOffset = lerp(3.0f / 4.0f, 0.0f, LifeRatio);
-            
-            SpriteUV.x += scrollOffset;
+
+            SpriteUV.x += g_Effect.g_ScrollOffset * g_Effect.CurveTexture_ScrollWeight;
+           
             CurveSample = CurveTextureSample(Get90DegreeRotatedUV(SpriteUV, g_Effect.g_RotationFlags, CURVETEXTURE));
             CurvePowerStrength = CurveSample.r;
-            CurvePowerStrength *= 3.f;
+            CurvePowerStrength *= 1.6f;
         }
         else
         {
             CurveSample = CurveTextureSample(Get90DegreeRotatedUV(In.vUV, g_Effect.g_RotationFlags, CURVETEXTURE));
             CurvePowerStrength = CurveSample.r;
-            CurvePowerStrength *= 3.f;
+            CurvePowerStrength *= 1.6f;
         }
 
     }
@@ -632,6 +627,8 @@ float4 PS_DefaultMesh(VS_OUT_INST_MESH_PARTICLE In) : SV_Target0
     float lifeAlpha = 1.0f - LifeRatio;
     float finalAlpha = DiffuseSample.a * GlowSample.r * MaskSample.r * dissolveMask * g_Effect.g_EffectColor.a /** lifeAlpha*/;
 
+    if (HasLifeDissolve())
+        finalAlpha *= lifeAlpha;
 
     // 7. 휘도 컷팅 (깔끔한 마무리)
     //float luminance = dot(finalRGB, float3(0.2126f, 0.7152f, 0.0722f));
@@ -736,14 +733,7 @@ float4 PS_UnityConvert(VS_OUT_INST_MESH_PARTICLE In) : SV_Target0
         {
             float2 SpriteUV = GetStaticSpriteUV(In.vUV, g_Effect.GradationTexture_SpriteInfo);
             
-            // 전체 UV를 3등분 (0 ~ 1 범위를 0 ~ 0.333으로 자른다.)
-            SpriteUV.x /= 4.0f;
-            
-            // ㅁ ㅁ ㅁ 형태의 구역으로 나누었다면 3번째 구역부터 1번째 구역으로 스크롤을 하자.
-            // 스크롤이 될 변수는 lifeRatio
-            float scrollOffset = lerp(3.0f / 4.0f, 0.0f, LifeRatio);
-            
-            SpriteUV.x += scrollOffset;
+            SpriteUV.x += g_Effect.g_ScrollOffset * g_Effect.GradationTexture_ScrollWeight;
             
         // 어차피 1번줄을 참조할거지만.
             GradationSample = GradationTextureSample(Get90DegreeRotatedUV(SpriteUV, g_Effect.g_TextureFlags, GRADATIONTEXTURE));
@@ -762,15 +752,15 @@ float4 PS_UnityConvert(VS_OUT_INST_MESH_PARTICLE In) : SV_Target0
     }
     
     // 유니티 셰이더의 최종 출력 공식: col * _Emissive * col.a
-    float4 finalColor = DefaultSample * g_Effect.g_EffectColor;
-    float EnergyStrength = GradationSample.r;
-    finalColor *= (EnergyStrength * 3);
+    float4 finalColor = DefaultSample * g_Effect.g_EffectColor * (GradationSample * 1.6);
+    //float EnergyStrength = GradationSample.rgb;
+    //finalColor *= (EnergyStrength * 3);
    
     float lifeAlpha = 1.0f - LifeRatio;
     float finalAlpha = DefaultSample.a * dissolveMask * lifeAlpha;
-
-    if (finalAlpha <= g_Effect.g_DiscardValue)
-        discard;
+    
+        if (finalAlpha <= g_Effect.g_DiscardValue)
+            discard;
     
     //finalColor.a *= finalAlpha;
     

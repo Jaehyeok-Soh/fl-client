@@ -711,6 +711,7 @@ namespace Tool
 		DAMAGE_FONTS_COMMON,
 		DAMAGE_FONTS_CRITICAL,
 		DAMAGE_FONTS_HIT,
+		BOSS_NAMEPLATE,
 		END
 	};
 
@@ -723,6 +724,7 @@ namespace Tool
 		case EUIPrefabType::DAMAGE_FONTS_COMMON:	return "DAMAGE_FONTS_COMMON";
 		case EUIPrefabType::DAMAGE_FONTS_CRITICAL:	return "DAMAGE_FONTS_CRITICAL";
 		case EUIPrefabType::DAMAGE_FONTS_HIT:		return "DAMAGE_FONTS_HIT";
+		case EUIPrefabType::BOSS_NAMEPLATE:			return "BOSS_NAMEPLATE";
 		case EUIPrefabType::END:					return "";
 		default: return "";
 		}

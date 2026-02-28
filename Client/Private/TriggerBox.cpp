@@ -155,26 +155,6 @@ HRESULT CTriggerBox::Render()
     return S_OK;
 }
 
-void CTriggerBox::OnCollision(_uint iMyColliderLayer, _uint iOtherLayer, CGameObject* pOther)
-{
-}
-
-void CTriggerBox::OnCollision_Enter(_uint iMyColliderLayer, _uint iOtherLayer, CGameObject* pOther, const COL_HIT_INFO& tHitInfo)
-{
-}
-
-void CTriggerBox::OnCollision_Exit(_uint iMyColliderLayer, _uint iOtherLayer, CGameObject* pOther)
-{
-}
-
-void CTriggerBox::OnTrigger_Enter(_uint iMyColliderLayer, _uint iOtherLayer, CGameObject* pOther)
-{
-}
-
-void CTriggerBox::OnTrigger_Exit(_uint iMyColliderLayer, _uint iOtherLayer, CGameObject* pOther)
-{
-}
-
 
 void CTriggerBox::Free()
 {

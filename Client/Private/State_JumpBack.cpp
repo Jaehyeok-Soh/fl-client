@@ -37,8 +37,10 @@ HRESULT CState_JumpBack::Start(void* pArg, _bool bForce)
 void CState_JumpBack::Update(const _float fTimeDelta)
 {
 	// 바닥 충돌 검사 후 change
-	if (IsOn_CCTFlag(PxControllerCollisionFlag::Enum::eCOLLISION_DOWN))
+	if (m_fStateElapsed > 0.28f &&
+		Check_OnGround(0.3f))
 	{
+		//Get_OwnerObject()->Get_Component<CTransform>()->Is_OnGround(0.1f);
 		Change_PlayerState(ENUM_TO_UINT(CPlayer::State::LAND));
 		return;
 	}
@@ -58,7 +60,7 @@ HRESULT CState_JumpBack::End()
 
 void CState_JumpBack::OwnMove(const _float fTimeDelta)
 {
-	Move_Backward(fTimeDelta);
+	//Move_Backward(fTimeDelta);
 }
 
 void CState_JumpBack::Set_NextStateDesc(_uint iNextState)

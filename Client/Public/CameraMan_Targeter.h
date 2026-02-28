@@ -12,15 +12,17 @@ NS_BEGIN(Client)
 class CPlayer;
 class CBody;
 
-enum class TargeterState
+enum class TargeterState : _uint
 {
 	NORMAL = 0,
 	TARGETSYNC,
+	GUN
 };
 
 class CCameraMan_Targeter final : public CCameraMan
 {
 	using Super = CCameraMan;
+
 private:
 	CCameraMan_Targeter(ID3D11Device* pDevice, ID3D11DeviceContext* pDeviceContext);
 	explicit CCameraMan_Targeter(const CCameraMan_Targeter& rhs);
@@ -35,28 +37,38 @@ public:
 	virtual void Update_Late(const _float fTimeDelta) override;
 	virtual void Ready_Before_Render(const _float fTimeDelta) override;
 	void Initialize_WhenChangeTarget(CGameObject* pTarget);
-	void Change_State(TargeterState eState);
+	void Change_CamState(TargeterState eState);
+	void Change_CamState(_uint iState);
 private:
-	void Update_Priority_State(const _float fDeltaTime);
-	void Update_State(const _float fDeltaTime);
+	void Update_Priority_State(const _float fTimeDelta);
+	void Update_State(const _float fTimeDelta);
 	void State_Begin(TargeterState eState);
 	void State_End(TargeterState eState);
 
 	void Normal_Begin();
-	void Normal_Update_Priority(const _float fDeltaTime);
-	void Normal_Update(const _float fDeltaTime);
+	void Normal_Update_Priority(const _float fTimeDelta);
+	void Normal_Update(const _float fTimeDelta);
 	void Normal_End();
 
 	void TargetSync_Begin();
-	void TargetSync_Update_Priority(const _float fDeltaTime);
-	void TargetSync_Update(const _float fDeltaTime);
+	void TargetSync_Update_Priority(const _float fTimeDelta);
+	void TargetSync_Update(const _float fTimeDelta);
 	void TargetSync_End();
+
+	void GunCam_Begin();
+	void GunCam_Update_Priority(const _float fTimeDelta);
+	void GunCam_Update(const _float fTimeDelta);
+	void GunCam_End();
+
 private:
 	void Update_Input(const _float fTimeDelta);
 	void Chase_Actor(const _float fTimeDelta);
 	void Chase_Player(CContainerObject* pObject, const _float fTimeDelta);
 	void OnChangeLockonTarget(CGameObject* pGo);
 	Vec3 Get_CamBoneWorldPos_FromBody(CBody* pBody, CTransform* pTrnasform);
+
+	_bool Change_Distance(_float fTargetDistance, const _float fTimeDelta);
+
 private:
 	TargeterState m_eCurrentState = { TargeterState::NORMAL };
 	CGameObject* m_pLockonTarget = { nullptr };
@@ -81,7 +93,17 @@ private:
 	_float m_fPitch			= { 0.f };
 	_float m_fPitch_Target	= { 0.f };
 	
-	_float m_fDistance = { 3.f };
+	_float m_fCurDistance		= { 3.f };
+
+	_float m_fNormalDistance	= { 3.f };
+	_float m_fGunDistance		= { 1.f };
+	_float m_fDistanceSpeed		= { 5.f };
+	MinMax m_MGun_RightDistance = { 0.f,3.f };
+
+	Vec3 m_vTargetPos = Vec3::Zero;
+
+	_bool m_bChangeFirst = { true }; // ÃÊ±â change °ª
+
 public:
 	static CCameraMan_Targeter* Create(ID3D11Device* pDevice, ID3D11DeviceContext* pDeviceContext);
 	virtual CGameObject* Clone(void* pArg) override;

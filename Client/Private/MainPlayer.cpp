@@ -444,7 +444,7 @@ _bool CMainPlayer::Try_AttackHit(ECollideLayer eMyLayer, CCollider* pOther)
 HRESULT CMainPlayer::Ready_Ability()
 {
     CSkillBase* pESkill = CSkillComp_MoonE::Create();
-    CSkillBase* pQSkill = CSkillComp_MoonE::Create();
+    CSkillBase* pQSkill = CSkillComp_MoonQ::Create();
 
     // stat
     {
@@ -705,7 +705,7 @@ HRESULT CMainPlayer::Ready_CCT()
     desc.bIsPlayer = true;
     desc.eType = EPhysicsCCTType::CAPSULE;
     desc.pOwnerMatrix = &Get_Component<CTransform>()->Get_WorldMatrix();
-    desc.fRadius = 0.5f;
+    desc.fRadius = 0.35f;
     desc.fHeight = 0.7f;
     desc.vExtens = { 0.f, 0.f, 0.f };
 

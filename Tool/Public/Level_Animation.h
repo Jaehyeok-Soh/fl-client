@@ -17,6 +17,8 @@ public:
 			LOAD_PART,
 			LOAD_OVERLAP_SCRIPT,
 			LOAD_EFFECT_SCRIPT,
+
+			ChangeSelectedObject,
 			END
 		};
 	};
@@ -74,6 +76,7 @@ private:
 	wstring Create_AnimModelPrototype(fs::path animModelPath, ANIM_SRT pretransform);
 	void Load_PartObject(fs::path animPartModelPath, ANIM_SRT pretransform, _int iSocketBondIdx, _bool bCombine, _bool bStatic, _int iRootBoneIdx);
 	void SetAnimationInfo(fs::path animModelPath);
+	void On_ChangeSelectedObject(CGameObject* pGo);
 
 private:
 	class CImGui_ToolManager*	m_pImGuiManager		= { nullptr };

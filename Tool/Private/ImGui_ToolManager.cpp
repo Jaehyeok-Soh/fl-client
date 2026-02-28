@@ -136,6 +136,41 @@ void CImGui_ToolManager::ImGuizmo_Render(CToolObject* pSelectedObject)
 		m_eGuizmoState = EGuizmoState::TRANSLATION;
 }
 
+void CImGui_ToolManager::ImGuizmo_Render_Matrix(Matrix* pMatrix)
+{
+	if (pMatrix == nullptr)
+		return;
+
+	ImGuizmo::SetOrthographic(false);
+	ImGuizmo::SetDrawlist();
+	ImGuizmo::SetGizmoSizeClipSpace(0.07f);
+	ImGuizmo::SetRect(m_vViewportBounds[0].x, m_vViewportBounds[0].y,
+		m_vViewportBounds[1].x - m_vViewportBounds[0].x,
+		m_vViewportBounds[1].y - m_vViewportBounds[0].y);
+
+	const Matrix& matView = m_pGameInstance->Get_ViewMatrix();
+	const Matrix& matProj = m_pGameInstance->Get_ProjMatrix();
+
+	_bool bSnap = KEY_BUTTON_HOLD(DIK_LSHIFT);
+	_float fSnapValue = 0.5f;
+
+	ImGuizmo::OPERATION operation = {};
+	switch (m_eGuizmoState)
+	{
+	case EGuizmoState::TRANSLATION: operation = ImGuizmo::TRANSLATE; break;
+	case EGuizmoState::ROTATION:    operation = ImGuizmo::ROTATE;    break;
+	case EGuizmoState::SCALE:       operation = ImGuizmo::SCALE;     break;
+	}
+
+	if (operation == ImGuizmo::OPERATION::ROTATE)
+		fSnapValue = 45.0f;
+
+	float snapValues[3] = { fSnapValue, fSnapValue, fSnapValue };
+
+	ImGuizmo::Manipulate(*matView.m, *matProj.m, operation,
+		ImGuizmo::WORLD, *pMatrix->m, nullptr, bSnap ? snapValues : nullptr);
+}
+
 bool CImGui_ToolManager::Calculate_ViewportUV(OUT _float &fU, OUT _float& fV)
 {
 	POINT			ptMouse;
@@ -296,7 +331,10 @@ void CImGui_ToolManager::Render_Viewport(CToolObject* pSelectedObject)
 	m_vViewportSize = { fViewWidth, fViewHeight };
 	m_vViewportOffset = { fOffset_X, fOffset_Y };
 	Calc_ViewportMousePos();
-	ImGuizmo_Render(pSelectedObject);
+	if (m_pGuizmoMatrix)
+		ImGuizmo_Render_Matrix(m_pGuizmoMatrix);
+	else
+		ImGuizmo_Render(pSelectedObject);
 
 	ImGui::End();
 	ImGui::PopStyleVar();

@@ -43,6 +43,13 @@ public:
 	void Render_Viewport(CToolObject* pSelectedObject);
 	void Render_End();
 
+	// ToolObject 아닌것들, AnimationTool 특화
+	// TODO : 분리
+	void ImGuizmo_Render_Matrix(Matrix* pMatrix);
+	// void Set_GuizmoTarget(CGameObject* pObject) { m_pGuizmoTarget = pObject; }
+	void Set_GuizmoTarget(Matrix* pMatrix) { m_pGuizmoMatrix = pMatrix; }
+	void Clear_GuizmoTarget() { m_pGuizmoMatrix = nullptr; }
+
 	_bool IsOutofViewport() const {	return m_bOutofViewport; }
 	HRESULT Ready_Events();
 	EGuizmoState Get_GuizmoState() const { return m_eGuizmoState; }
@@ -86,6 +93,10 @@ private:
 	_float m_fXScale = {};
 	_float m_fYScale = {};
 	Vec2 m_vCalcMousePos = {};
+private:
+	// ToolObject 아닌것들
+	// CGameObject* m_pGuizmoTarget = { nullptr };
+	Matrix* m_pGuizmoMatrix = { nullptr };
 public:
 	static CImGui_ToolManager* Create(HWND hWnd, ID3D11Device* pDevice, ID3D11DeviceContext* pDeviceContext, ELevelType eStartLevel);
 	virtual void Free() override;
