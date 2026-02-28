@@ -572,6 +572,13 @@ CMaterialInstance* CModel::Get_MaterialInstance(_uint iIndex)
 
 	return m_vecMaterialInstances[iIndex];
 }
+CModelAnimation* CModel::Get_Animation(_uint iIndex)
+{
+	if (iIndex >= m_vecAnimations.size())
+		return nullptr;
+
+	return m_vecAnimations[iIndex];
+}
 CMesh* CModel::Get_Mesh(_uint iIndex)
 {
 	if (iIndex >= m_vecMeshes.size())

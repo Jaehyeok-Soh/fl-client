@@ -165,6 +165,7 @@ public:
 	class CBone*						Get_Bone(const _char* szName);
 	class CBone*						Get_Bone(_uint iIndex);
 	class CMaterialInstance*			Get_MaterialInstance(_uint iIndex);
+	class CModelAnimation*				Get_Animation(_uint iIndex);
 
 	// animations
 	_bool								Is_AnimFinished() const { return m_bIsAnimFinished; }
