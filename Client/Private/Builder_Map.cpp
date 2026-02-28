@@ -391,6 +391,7 @@ HRESULT CBuilder_Map::Batch_Monster(const DTO::TMap_MapObjectData& tData)
 
 	return S_OK;
 }
+
 HRESULT CBuilder_Map::Create_TriggerBox_ChangeLevel(const DTO::TMap_MapObjectData& tData)
 {
 	if (tData.vecSRTs.empty()) return E_FAIL;
