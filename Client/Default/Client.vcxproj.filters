@@ -1027,6 +1027,9 @@
     <ClInclude Include="..\Public\Monster_Boomer.h">
       <Filter>03. GameObject\ContainerObjects\Monster\Boomer</Filter>
     </ClInclude>
+    <ClInclude Include="..\Public\TriggerBox_MonsterSpawner.h">
+      <Filter>03. GameObject\TriggerBox\01. TriggerBox_LevelChange</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <Image Include="Client.ico">
@@ -1492,6 +1495,9 @@
     </ClCompile>
     <ClCompile Include="..\Private\State_GunBase.cpp">
       <Filter>06. FSM\Player\Attack\Gun\Base</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\TriggerBox_MonsterSpawner.cpp">
+      <Filter>03. GameObject\TriggerBox\01. TriggerBox_LevelChange</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

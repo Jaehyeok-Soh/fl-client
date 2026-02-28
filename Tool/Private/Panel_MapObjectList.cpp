@@ -1224,6 +1224,11 @@ void CPanel_MapObjectList::ImGuiUpdate_TriggerBox_MonsterSpawner(TRIGGERBOX_MONS
 		pDesc->vecMonsterSpawnData.push_back(Engine::MonsterSpawnData());
 		MonsterSpawnData& Data = pDesc->vecMonsterSpawnData.back();
 		Data.pDebugModel = m_pMapToolManager->Get_MonsterPreviewModel(Data.eMakeMonsterType);
+		
+		if (m_pSelectMapObject)
+		{
+			Data.vPosition = m_pSelectMapObject->Get_Component<CTransform>()->Get_Info(TRANSFORM_INFO_STATE::POS);
+		}
 	}
 
 	ImGui::Spacing();

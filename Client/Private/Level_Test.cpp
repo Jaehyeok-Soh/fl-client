@@ -61,10 +61,8 @@
 
 
 //=================
-// Component
+// GameInstance
 //=================
-#include "Bounds.h"
-#include "PhysicsCCT.h"
 #include "GameInstance.h"
 
 CLevel_Test::CLevel_Test(ID3D11Device* pDevice, ID3D11DeviceContext* pDeviceContext)
@@ -116,11 +114,6 @@ HRESULT CLevel_Test::Awake(const _uint iLevelID)
 
 	m_eCursorMode = ECursorMode::LockedHiddenCenter;
 	m_pGameInstance->Request_CursorMode(m_eCursorMode);
-
-	CLOG_TRACE(L"테스트, Logo Awake() 확인");
-	CLOG_INFO(L"테스트, Logo Awake() 확인");
-	CLOG_WARN(L"테스트, Logo Awake() 확인");
-	CLOG_ERROR(L"테스트, Logo Awake() 확인");
 	return S_OK;
 }
 
@@ -128,7 +121,6 @@ void CLevel_Test::Update(const _float fTimeDelta)
 {
 	Super::Update(fTimeDelta);
 
-	// TODO : 어디다 두지?
 	static _uint s_iCount = { 0 };
 	if (m_pGameInstance->KeyButton_Down(DIK_LALT))
 	{
@@ -190,13 +182,15 @@ HRESULT CLevel_Test::Render()
 
 HRESULT CLevel_Test::Build_Prototype()
 {
-	if (FAILED(Ready_Builder(DTO::ECategory::MAP, CBuilder_Map::Create(m_pDevice, m_pDeviceContext, static_cast<_uint>(ELevelType::TEST)))))
+	_uint iLevelType = ENUM_TO_UINT(ELevelType::TEST);
+
+	if (FAILED(Ready_Builder(DTO::ECategory::MAP, CBuilder_Map::Create(m_pDevice, m_pDeviceContext, iLevelType ))))
 		return E_FAIL;
-	if (FAILED(Ready_Builder(DTO::ECategory::UI, CBuilder_UI::Create(m_pDevice, m_pDeviceContext, static_cast<_uint>(ELevelType::TEST)))))
+	if (FAILED(Ready_Builder(DTO::ECategory::UI, CBuilder_UI::Create(m_pDevice, m_pDeviceContext, iLevelType))))
 		return E_FAIL;
-	if (FAILED(Ready_Builder(DTO::ECategory::UI_PREFAB, CBuilder_UIPrefabs::Create(m_pDevice, m_pDeviceContext, static_cast<_uint>(ELevelType::TEST)))))
+	if (FAILED(Ready_Builder(DTO::ECategory::UI_PREFAB, CBuilder_UIPrefabs::Create(m_pDevice, m_pDeviceContext, iLevelType))))
 		return E_FAIL;
-	if (FAILED(Ready_Builder(DTO::ECategory::EFFECT, CBuilder_Effect::Create(m_pDevice, m_pDeviceContext, ENUM_TO_UINT(ELevelType::TEST)))))
+	if (FAILED(Ready_Builder(DTO::ECategory::EFFECT, CBuilder_Effect::Create(m_pDevice, m_pDeviceContext, iLevelType))))
 		return E_FAIL;
 
 	return S_OK;

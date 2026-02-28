@@ -12,6 +12,7 @@
 CMonster_Boomer::CMonster_Boomer(ID3D11Device* pDevice, ID3D11DeviceContext* pDeviceContext)
 	: Super(pDevice, pDeviceContext)
 {
+	m_eMonsterType = EMonster_Type::Boomer;
 }
 
 CMonster_Boomer::CMonster_Boomer(const CMonster_Boomer& rhs)
