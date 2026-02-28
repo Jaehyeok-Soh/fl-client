@@ -121,6 +121,7 @@ HRESULT CPhysics_Module::Initialize()
 		//////////////////////////////////
 		{
 			//sceneDesc.kineKineFilteringMode; // eDEFAULT = eSUPPRESS
+			sceneDesc.kineKineFilteringMode = PxPairFilteringMode::eKEEP;
 			//sceneDesc.staticKineFilteringMode; // eDEFAULT = eSUPPRESS
 			sceneDesc.staticKineFilteringMode = PxPairFilteringMode::eKEEP;
 		}
