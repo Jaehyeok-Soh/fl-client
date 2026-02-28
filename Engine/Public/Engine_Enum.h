@@ -176,7 +176,7 @@ namespace Engine
 		Vfx_Attach_On,
 		Vfx_Attach_Off,
 		Hitbox,
-
+		Trigger_Gimmik,
 		END
 	};
 	//===================
@@ -208,6 +208,7 @@ namespace Engine
 		BOUND,
 		STAT,
 		ACTIONSKILL,
+		GIMMIKCTRL,
 		//
 		PX_RIGIDBODY,
 		PX_COLLIDER,

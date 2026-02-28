@@ -58,13 +58,6 @@
 #include "Monster_Boomer_Body.h"
 #include "Boss_Xibi.h"
 #include "Boss_Xibi_Body.h"
-
-
-//=================
-// Component
-//=================
-#include "Bounds.h"
-#include "PhysicsCCT.h"
 #include "GameInstance.h"
 
 CLevel_Test::CLevel_Test(ID3D11Device* pDevice, ID3D11DeviceContext* pDeviceContext)
@@ -74,7 +67,6 @@ CLevel_Test::CLevel_Test(ID3D11Device* pDevice, ID3D11DeviceContext* pDeviceCont
 
 HRESULT CLevel_Test::Initialize()
 {
-
 	if (FAILED(Super::Initialize()))
 		return E_FAIL;
 

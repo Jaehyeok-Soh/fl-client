@@ -47,6 +47,9 @@ HRESULT CBoss_Xibi::Awake(const _uint iCurrentLevelID)
 	if (FAILED(Super::Awake(iCurrentLevelID)))
 		return E_FAIL;
 
+	CTransform* pTrnasform = Get_Component<CTransform>();
+	pTrnasform->Set_MovePerSec(2.f);
+	pTrnasform->Set_RotatePerSec(4.f);
 	return S_OK;
 }
 

@@ -550,6 +550,9 @@
     <Filter Include="03. GameObject\PartObjects\Monster\Body\Boomer">
       <UniqueIdentifier>{6c2ae324-f31e-44b8-b14f-ef67a7faf29d}</UniqueIdentifier>
     </Filter>
+    <Filter Include="05. Component\GimmikController">
+      <UniqueIdentifier>{6400d921-2ea9-4ca2-99ee-960c9e7d162a}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="targetver.h">
@@ -1024,6 +1027,9 @@
     <ClInclude Include="..\Public\Monster_Boomer.h">
       <Filter>03. GameObject\ContainerObjects\Monster\Boomer</Filter>
     </ClInclude>
+    <ClInclude Include="..\public\Xibi_GimmikController.h">
+      <Filter>05. Component\GimmikController</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <Image Include="Client.ico">
@@ -1489,6 +1495,9 @@
     </ClCompile>
     <ClCompile Include="..\Private\Monster_Boomer.cpp">
       <Filter>03. GameObject\ContainerObjects\Monster\Boomer</Filter>
+    </ClCompile>
+    <ClCompile Include="..\private\Xibi_GimmikController.cpp">
+      <Filter>05. Component\GimmikController</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
