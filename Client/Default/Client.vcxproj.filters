@@ -508,12 +508,6 @@
     <Filter Include="03. GameObject\UIObjects\02.UI\Image\Dynamic Image\05.MonsterNamePlate">
       <UniqueIdentifier>{761751c8-ba94-4e88-987b-53bc16a7f52f}</UniqueIdentifier>
     </Filter>
-    <Filter Include="06. FSM\Player\Attack\Gun\Attack">
-      <UniqueIdentifier>{94646764-3ce1-40c8-8e22-3ebf84f0db89}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="06. FSM\Player\Attack\Gun\Reload">
-      <UniqueIdentifier>{18445d4b-10df-4411-8b45-def1c25a996d}</UniqueIdentifier>
-    </Filter>
     <Filter Include="03. GameObject\UIObjects\02.UI\Image\Dynamic Image\07.Level Chnage">
       <UniqueIdentifier>{441fee0b-1c67-4053-a110-de1fdb40d73f}</UniqueIdentifier>
     </Filter>
@@ -537,6 +531,15 @@
     </Filter>
     <Filter Include="03. GameObject\UIObjects\02.UI\Text\Damage Text">
       <UniqueIdentifier>{677a64cd-1317-409c-a79c-d9f17b5e967a}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="06. FSM\Player\Attack\Gun\Base">
+      <UniqueIdentifier>{2fe06ae1-d9fc-4a2a-9f4d-c6056176c36a}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="06. FSM\Player\Attack\Gun\Base\Attack">
+      <UniqueIdentifier>{94646764-3ce1-40c8-8e22-3ebf84f0db89}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="06. FSM\Player\Attack\Gun\Base\Reload">
+      <UniqueIdentifier>{18445d4b-10df-4411-8b45-def1c25a996d}</UniqueIdentifier>
     </Filter>
     <Filter Include="03. GameObject\ContainerObjects\Monster\Dog">
       <UniqueIdentifier>{06590E81-322B-4D40-8764-D34116611722}</UniqueIdentifier>
@@ -867,9 +870,6 @@
     <ClInclude Include="..\Public\Gun.h">
       <Filter>03. GameObject\PartObjects\Weapon\Gun</Filter>
     </ClInclude>
-    <ClInclude Include="..\Public\State_GunBase.h">
-      <Filter>06. FSM\Player\Attack\Gun</Filter>
-    </ClInclude>
     <ClInclude Include="..\Public\Plants.h">
       <Filter>03. GameObject\MapObject\03. Plants\00. Plants</Filter>
     </ClInclude>
@@ -998,10 +998,10 @@
       <Filter>03. GameObject\UIObjects\02.UI\Image\Dynamic Image\07.Level Chnage</Filter>
     </ClInclude>
     <ClInclude Include="..\Public\State_GunAttack.h">
-      <Filter>06. FSM\Player\Attack\Gun\Attack</Filter>
+      <Filter>06. FSM\Player\Attack\Gun\Base\Attack</Filter>
     </ClInclude>
     <ClInclude Include="..\Public\State_GunReload.h">
-      <Filter>06. FSM\Player\Attack\Gun\Reload</Filter>
+      <Filter>06. FSM\Player\Attack\Gun\Base\Reload</Filter>
     </ClInclude>
     <ClInclude Include="..\Public\LandScape.h">
       <Filter>03. GameObject\MapObject\02. LandScape</Filter>
@@ -1020,6 +1020,9 @@
     </ClInclude>
     <ClInclude Include="..\Public\UIDamageFont_Text.h">
       <Filter>03. GameObject\UIObjects\02.UI\Text\Damage Text</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\State_GunBase.h">
+      <Filter>06. FSM\Player\Attack\Gun\Base</Filter>
     </ClInclude>
     <ClInclude Include="..\Public\Monster_Boomer_Body.h">
       <Filter>03. GameObject\PartObjects\Monster\Body\Boomer</Filter>
@@ -1337,9 +1340,6 @@
     <ClCompile Include="..\Private\Gun.cpp">
       <Filter>03. GameObject\PartObjects\Weapon\Gun</Filter>
     </ClCompile>
-    <ClCompile Include="..\Private\State_GunBase.cpp">
-      <Filter>06. FSM\Player\Attack\Gun</Filter>
-    </ClCompile>
     <ClCompile Include="..\Private\Plants.cpp">
       <Filter>03. GameObject\MapObject\03. Plants\00. Plants</Filter>
     </ClCompile>
@@ -1467,10 +1467,10 @@
       <Filter>03. GameObject\UIObjects\02.UI\Image\Dynamic Image\07.Level Chnage</Filter>
     </ClCompile>
     <ClCompile Include="..\Private\State_GunAttack.cpp">
-      <Filter>06. FSM\Player\Attack\Gun\Attack</Filter>
+      <Filter>06. FSM\Player\Attack\Gun\Base\Attack</Filter>
     </ClCompile>
     <ClCompile Include="..\Private\State_GunReload.cpp">
-      <Filter>06. FSM\Player\Attack\Gun\Reload</Filter>
+      <Filter>06. FSM\Player\Attack\Gun\Base\Reload</Filter>
     </ClCompile>
     <ClCompile Include="..\Private\LandScape.cpp">
       <Filter>03. GameObject\MapObject\02. LandScape</Filter>
@@ -1495,6 +1495,9 @@
     </ClCompile>
     <ClCompile Include="..\Private\Monster_Boomer.cpp">
       <Filter>03. GameObject\ContainerObjects\Monster\Boomer</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\State_GunBase.cpp">
+      <Filter>06. FSM\Player\Attack\Gun\Base</Filter>
     </ClCompile>
     <ClCompile Include="..\private\Xibi_GimmikController.cpp">
       <Filter>05. Component\GimmikController</Filter>

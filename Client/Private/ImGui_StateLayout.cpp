@@ -41,6 +41,10 @@ void CImGui_StateLayout::Render(CGameObject* pGo)
 	_uint iDashCount = pStat->Get_Count(CStatCom_Player::TIMER_TYPE::DASH);
 	_float fMental = pStat->Get_Stat_Vec2(CMyStat::STAT_TYPE::MENTAL).x;
 
+	CTransform* pTrans = pGo->Get_Component<CTransform>();
+
+	Vec3 vPositoin = pTrans->Get_Info(TRANSFORM_INFO_STATE::POS);
+
 	string strRootApply = pModel->Is_RootMotion_Apply() ? "Yes" : " No";
 
 	ImGui::BeginGroup();
@@ -49,6 +53,14 @@ void CImGui_StateLayout::Render(CGameObject* pGo)
 	ImGui::Text("State : ");
 	ImGui::SameLine();
 	ImGui::Text(strStateName.c_str());
+
+	ImGui::Text("Position : ");
+	ImGui::SameLine();
+	ImGui::Text("%f", vPositoin.x);
+	ImGui::SameLine();
+	ImGui::Text("%f", vPositoin.y);
+	ImGui::SameLine();
+	ImGui::Text("%f", vPositoin.z);
 
 	ImGui::Text("RootApply : ");
 	ImGui::SameLine();

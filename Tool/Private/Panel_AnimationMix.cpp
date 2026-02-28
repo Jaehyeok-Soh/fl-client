@@ -38,11 +38,11 @@ void CPanel_AnimationMix::Update(const _float fTimeDelta)
 {
 	ANIMCTRLINFO tInfo = m_pAnimToolManager->Get_AnimControllInfo();
 
-	if (pModel = tInfo.pModel)
-	{
-		//m_bMix = tInfo.pModel->Get_MixBool();
-		m_vecMixIdx = tInfo.pModel->Get_MixIdx();
-	}
+    if (pModel = tInfo.pModel)
+    {
+        //m_bMix = tInfo.pModel->Get_MixBool();
+        m_vecMixIdx = tInfo.pModel->Get_MixIdx();
+    }
 
 }
 
@@ -50,7 +50,11 @@ void CPanel_AnimationMix::Current_Info()
 {
     /* mix 할래말래 */
 	ImGui::Checkbox("Mix On", &m_bMix);
-    pModel->Set_MixAnim(m_bMix);
+
+    if (ImGui::Button("Apply Mix##MixSize"))
+    {
+        pModel->Set_MixAnim(m_bMix);
+    }
 
     //if (!m_vecMixIdx.empty())
     //{
@@ -109,7 +113,7 @@ void CPanel_AnimationMix::Set_AnimationMixInfo()
         m_iMixSize = 0;
 
     ImGui::SameLine();
-    if (ImGui::Button("Apply##MixSize"))
+    if (ImGui::Button("Apply Mix Size to Model##MixSize"))
     {
         pModel->Set_MixAnim_ResetSize(m_iMixSize);
     }
@@ -125,7 +129,7 @@ void CPanel_AnimationMix::Set_AnimMationMix()
 
     Set_MixData();
 
-    if (ImGui::Button("Apply##RootBone"))
+    if (ImGui::Button("Make Mix Data to Model and Anim ##RootBone"))
     {
         // index 값 검사 후 적용
         if (m_iMixAnimIdx >= 0 &&
