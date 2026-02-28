@@ -396,7 +396,7 @@ _bool CMainPlayer::Try_AttackHit(ECollideLayer eMyLayer, CCollider* pOther)
 HRESULT CMainPlayer::Ready_Ability()
 {
     CSkillBase* pESkill = CSkillComp_MoonE::Create();
-    CSkillBase* pQSkill = CSkillComp_MoonE::Create();
+    CSkillBase* pQSkill = CSkillComp_MoonQ::Create();
 
     // stat
     {

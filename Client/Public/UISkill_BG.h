@@ -3,8 +3,7 @@
 #include "DataStruct_UI.h"
 
 NS_BEGIN(Client)
-class CCanvas;
-class CStatComponent;
+class CStatCom_Player;
 class CUISkill_BG final : public  CUIDynamic_Image
 {
 	using Super = CUIDynamic_Image;
@@ -33,6 +32,7 @@ public:
 	virtual HRESULT Render() override;
 
 	void Trigger_User_Use_Skill();
+	void Tick_Use_Skill_Event(const _float fTimeDelta);
 
 	virtual void Initialize_Visible_Event()override;
 	virtual _bool Tick_Visible_Event(const _float fTimeDelta)override;
@@ -42,13 +42,16 @@ private:
 	HRESULT Bind_ShaderResources();
 
 private:
-	_bool m_isUseESkillEventStart = { FALSE };
-	_bool m_isUseESkillEvnetEnd = { FALSE };
+	CStatCom_Player* m_pPlayerStatCom = { nullptr };
 
-	_bool m_isUseSkillEventStart = { FALSE };
-	_bool m_isUseSkillEventEnd = { FALSE };
+	_bool m_isUseE		= { false };
+	_bool m_isUseSkill	= { false };
 
-	_float m_fSkillCoolTimeRatio = {1.f};
+	_bool m_isFinUseE	= { false };
+
+	_bool m_isSkillFlash = { false };
+
+	_float m_fPreCoolTimeRatio = { 0.f };
 
 public:
 	static CUISkill_BG* Create(ID3D11Device* pDevice, ID3D11DeviceContext* pDeviceContext);

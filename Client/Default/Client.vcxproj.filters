@@ -184,9 +184,6 @@
     <Filter Include="03. GameObject\UIObjects\02.UI\Image\Dynamic Image\01.Minimap">
       <UniqueIdentifier>{f89b605a-01f2-485c-87d7-f34d36eeef01}</UniqueIdentifier>
     </Filter>
-    <Filter Include="07. System\02. Debug_ImGui\Layout\Frame">
-      <UniqueIdentifier>{26872d9e-983a-47c0-940f-aa4b37bb39e5}</UniqueIdentifier>
-    </Filter>
     <Filter Include="04. Shaders\ComputeShaders">
       <UniqueIdentifier>{f29a8226-048f-4c41-b7e7-685b07e919a6}</UniqueIdentifier>
     </Filter>
@@ -546,6 +543,15 @@
     </Filter>
     <Filter Include="03. GameObject\UIObjects\02.UI\Text\Damage Text">
       <UniqueIdentifier>{677a64cd-1317-409c-a79c-d9f17b5e967a}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="03. GameObject\UIObjects\02.UI\Progress Bar\Boss Stat">
+      <UniqueIdentifier>{1fd4e4f2-2b0f-4f1c-8be1-d0d43024b71e}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="03. GameObject\UIObjects\02.UI\Text\Boss Stat">
+      <UniqueIdentifier>{e25e844a-91c2-4e51-94f4-8342f4347985}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="03. GameObject\UIObjects\02.UI\Image\Dynamic Image\08.Boss Stat">
+      <UniqueIdentifier>{e031f721-b76b-4d49-ac59-e279c691cdda}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
@@ -1015,6 +1021,15 @@
     <ClInclude Include="..\Public\UIDamageFont_Text.h">
       <Filter>03. GameObject\UIObjects\02.UI\Text\Damage Text</Filter>
     </ClInclude>
+    <ClInclude Include="..\Public\UIBossStat_Image.h">
+      <Filter>03. GameObject\UIObjects\02.UI\Image\Dynamic Image\08.Boss Stat</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\UIBossStat_Progress.h">
+      <Filter>03. GameObject\UIObjects\02.UI\Progress Bar\Boss Stat</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\UIBossStat_Text.h">
+      <Filter>03. GameObject\UIObjects\02.UI\Text\Boss Stat</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <Image Include="Client.ico">
@@ -1475,6 +1490,15 @@
     </ClCompile>
     <ClCompile Include="..\Private\UIDamageFont_Text.cpp">
       <Filter>03. GameObject\UIObjects\02.UI\Text\Damage Text</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\UIBossStat_Image.cpp">
+      <Filter>03. GameObject\UIObjects\02.UI\Image\Dynamic Image\08.Boss Stat</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\UIBossStat_Progress.cpp">
+      <Filter>03. GameObject\UIObjects\02.UI\Progress Bar\Boss Stat</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\UIBossStat_Text.cpp">
+      <Filter>03. GameObject\UIObjects\02.UI\Text\Boss Stat</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

@@ -299,6 +299,41 @@ _bool CGenericUI::Tick_Fade(const _float fTimeDelta)
 	return false;
 }
 
+void CGenericUI::Ready_LerpChange(const _float fDuration, const _float fStartAlpha, const _float fTargetAlpha, const _float fEaseValue, const _float fDelay)
+{
+	m_fFadeTimeAcc		= 0.f;
+	m_fFadeDelayTimeAcc = 0.f;
+	m_fFadeDelay		= fDelay;
+	m_fFadeDuration		= fDuration;
+	m_fStartAlphaRatio	= fStartAlpha;
+	m_fTargetAlphaRatio = fTargetAlpha;
+	m_fEaseValue		= fEaseValue;
+}
+
+_bool CGenericUI::Tick_LerpChange(_float* p, const _float fTimeDelta)
+{
+	m_fFadeDelayTimeAcc += fTimeDelta;
+	if (m_fFadeDelayTimeAcc < m_fFadeDelay)
+		return false;
+
+	m_fFadeTimeAcc += fTimeDelta;
+
+	_float t = m_fFadeTimeAcc / m_fFadeDuration;
+	if (t >= 1.f)
+	{
+		*p = m_fTargetAlphaRatio;
+		return true;
+	}
+
+	_float eased = t;
+	if (m_fEaseValue > 0.f)
+		eased = powf(t, m_fEaseValue);
+
+	_float f = m_fStartAlphaRatio + (m_fTargetAlphaRatio - m_fStartAlphaRatio) * eased;
+	*p = f;
+	return false;
+}
+
 void CGenericUI::Request_SetDead()
 {
 	m_bDead = true;

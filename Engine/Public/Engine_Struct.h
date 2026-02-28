@@ -669,6 +669,7 @@ namespace Engine
 		float fTimeAcc = { 0.f }; // 누적 타임
 		float fMaxTime = { 0.f }; // 최대 시간
 		float fMinTime = { 0.f }; // 최소 시간(ex 상태를 이 시간은 꼭 유지시켜야한다)
+		float fCoolTimeRatio = { 0.f }; // UI가 받으려고 추가 
 
 		bool bCountTime = { true }; // 타임 카운트를 할래?
 		bool bTimeReset = { true }; // 한 주기가 끝나고 acc를 0으로 다시 맞출건지
@@ -713,12 +714,15 @@ namespace Engine
 			return fTimeAcc / fMinTime;
 		}
 
-		float Get_Rate() 
+		void Get_Rate() 
 		{ 
-			if (fMaxTime <= 0.f) 
-				return 1.f;  
-
-			return fTimeAcc / fMaxTime;
+			if (fMaxTime <= 0.f)
+			{
+				fCoolTimeRatio = 1.f;
+				return;
+			}
+			fCoolTimeRatio = fTimeAcc / fMaxTime;
+			return;
 		}
 
 	}TIME_COUNTER;

@@ -87,7 +87,8 @@ HRESULT CUINameplate_BG::Render()
 
 HRESULT CUINameplate_BG::Ready_Components(NAMEPLATE_BG_DESC* pDesc)
 {
-	Super::Ready_Components(pDesc);
+	if (FAILED(Super::Ready_Components(pDesc)))
+		return E_FAIL;
 	return S_OK;
 }
 
