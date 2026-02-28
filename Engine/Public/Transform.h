@@ -57,7 +57,7 @@ public:
 	inline void Turn(const Vec3 &vAxis, const _float fTimeDelta);
 	inline void Look_At(const Vec3 &vPoint);
 	inline void Look_At_XZ(Vec3 vPoint);
-	inline void Chase(const Vec3 &vPoint, _float fMinDistance, const _float fTimeDelta, CNavigation* pNavigation = nullptr);
+	inline _bool Chase(const Vec3 &vPoint, _float fMinDistance, const _float fTimeDelta, CNavigation* pNavigation = nullptr);
 	const Vec3& Get_PrevPosition() const { return m_vPrevPosition; }
 	_float Get_RotatePerSec() const { return m_fRotatePerSec; }
 	void Set_RotatePerSec(_float fSpeed) { m_fRotatePerSec = fSpeed; }

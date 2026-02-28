@@ -405,18 +405,24 @@ inline void CTransform::Look_At_XZ(Vec3 vPoint)
 	Set_Info(TRANSFORM_INFO_STATE::LOOK, vLookDir * vScale.z);
 }
 
-inline void CTransform::Chase(const Vec3& vPoint, _float fMinDistance, const _float fTimeDelta, CNavigation* pNavigation)
+inline _bool CTransform::Chase(const Vec3& vPoint, _float fMinDistance, const _float fTimeDelta, CNavigation* pNavigation)
 {
 	Vec3 vPosition = Get_Info(TRANSFORM_INFO_STATE::POS);
 	Vec3 vTargetDir = vPoint - vPosition;
 	_float fLength = vTargetDir.Length();
 	vTargetDir.Normalize();
 
+	_bool StillChasing = false;
 	if (fLength >= fMinDistance)
+	{
 		vPosition += vTargetDir * m_fMovePerSec * m_fMoveScale * fTimeDelta;
+		StillChasing = true;
+	}
 
 	if (pNavigation == nullptr || pNavigation->Is_Move(vPosition))
 		Set_Info(TRANSFORM_INFO_STATE::POS, vPosition);
+
+	return StillChasing;
 }
 
 void CTransform::Start_Force(Vec3 vTargetDir, _float fForceAbs, _float fDragK)

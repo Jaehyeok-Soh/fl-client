@@ -256,6 +256,14 @@ _bool CPlayer::Check_DoubleJump()
     return !(m_tDoubleJumpCount.bCountTime);
 }
 
+void CPlayer::Change_CamState(_uint iCamState)
+{
+    if (m_pTargeter)
+    {
+        static_cast<CCameraMan_Targeter*>(m_pTargeter)->Change_CamState(iCamState);
+    }
+}
+
 _bool CPlayer::Start_Attack(State iState)
 {
     _bool bChange = { false };
@@ -364,7 +372,7 @@ HRESULT CPlayer::Ready_BaseStates()
         desc.vecChangeState_ByKey = vecChangeState_ByKey;
 
         tKeyTimer.bCountTime    = true;
-        tKeyTimer.fMaxTime      = 0.08f;
+        tKeyTimer.fMaxTime      = 0.065f;
         desc.tKeyTimer = tKeyTimer;
         desc.pOwnerGun = pMyGun;
 

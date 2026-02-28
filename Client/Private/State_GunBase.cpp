@@ -4,6 +4,7 @@
 #include "Player.h"
 #include "ControlContext.h"
 #include "PhysicsCCT.h"
+#include "CameraMan_Targeter.h"
 
 #include "Engine_Utils.h"
 #include "GameInstance.h"
@@ -65,6 +66,9 @@ HRESULT CState_GunBase::Start(void* pArg, _bool bForce)
     else
         Change_MoveState(pDesc->eMoveState);
 
+    // cameara state change
+    static_cast<CPlayer*>(Get_OwnerObject())->Change_CamState(ENUM_TO_UINT(Client::TargeterState::GUN));
+
     return S_OK;
 }
 
@@ -99,6 +103,9 @@ HRESULT CState_GunBase::End()
 {
     if (FAILED(Super::End()))
         return E_FAIL;
+
+    // cameara state change
+    static_cast<CPlayer*>(Get_OwnerObject())->Change_CamState(ENUM_TO_UINT(Client::TargeterState::NORMAL));
 
     return S_OK;
 }
@@ -402,7 +409,7 @@ void CState_GunBase::GunMove(const _float fTimeDelta)
 {
     CTransform* pPlayerTrans = Get_OwnerObject()->Get_Component<CTransform>();
 
-    _float moveps = pPlayerTrans->Get_MovePerSec() * 0.85f; // 속도
+    _float moveps = pPlayerTrans->Get_MovePerSec(); // 속도
 
     Vec3 vRight = pPlayerTrans->Get_Info(TRANSFORM_INFO_STATE::RIGHT);
     vRight.y = 0.f;
