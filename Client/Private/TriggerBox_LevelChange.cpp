@@ -119,20 +119,19 @@ void CTriggerBox_LevelChange::OnCollision(_uint iMyColliderLayer, _uint iOtherLa
 void CTriggerBox_LevelChange::OnCollision_Enter(_uint iMyColliderLayer, _uint iOtherLayer, CGameObject* pOther, const COL_HIT_INFO& tHitInfo)
 {
     Super::OnCollision_Enter(iMyColliderLayer, iOtherLayer, pOther, tHitInfo);
-
-
 }
 
 void CTriggerBox_LevelChange::OnCollision_Exit(_uint iMyColliderLayer, _uint iOtherLayer, CGameObject* pOther)
 {
     Super::OnCollision_Exit(iMyColliderLayer, iOtherLayer, pOther);
-
 }
 
 void CTriggerBox_LevelChange::OnTrigger_Enter(_uint iMyColliderLayer, _uint iOtherLayer, CGameObject* pOther)
 {
     Super::OnTrigger_Enter(iMyColliderLayer, iOtherLayer, pOther);
 
+    if (iOtherLayer & PHYSICSFILTERGROUP::PLAYER)
+        m_pGameInstance->Request_ChangeLevel(ENUM_TO_UINT(ELevelType::LOADING), CLevel_Loading::Create(m_pDevice, m_pDeviceContext, m_eChangeLevelType));
 }
 
 void CTriggerBox_LevelChange::OnTrigger_Exit(_uint iMyColliderLayer, _uint iOtherLayer, CGameObject* pOther)

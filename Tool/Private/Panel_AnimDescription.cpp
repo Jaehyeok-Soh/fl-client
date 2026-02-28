@@ -243,6 +243,13 @@ void CPanel_AnimDescription::Desc_AttackOverlapWindow()
     {
         DTO::HITBOX_DESC& desc = pEvent->tHitboxDesc;
 
+        static char atkBuf[256];
+        strcpy_s(atkBuf, desc.strAttackPresetTag.c_str());
+        if (ImGui::InputText("Attack Preset Tag", atkBuf, 256))
+        {
+            desc.strAttackPresetTag = atkBuf;
+        }
+
         // µ¥¹ÌÁö
         ImGui::DragFloat("Damage", &desc.fDamage, 1.0f, 0.0f, 99999.f);
 

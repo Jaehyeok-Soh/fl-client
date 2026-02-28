@@ -58,7 +58,6 @@
 #include "Loader.h"
 #include "Effect.h"
 #include "EffectObject.h"
-#include "Physics_LandScape.h" // physics test
 
 
 
@@ -82,8 +81,16 @@
 #include "TriggerBox_MonsterSpawner.h"
 
 /* --------------------- */
-#include "Monster_Dummy.h" // test
-#include "Monster_Dummy_Body.h" // test
+//=================
+// MONSTER
+//=================
+#include "Monster_Dog.h"
+#include "Monster_Dog_Body.h"
+#include "Monster_Boomer.h"
+#include "Monster_Boomer_Body.h"
+//=================
+// BOSS
+//=================
 #include "Boss_Xibi.h"
 #include "Boss_Xibi_Body.h"
 
@@ -238,6 +245,7 @@ HRESULT CLoader::Loading_For_Logo()
 #pragma region PretransformMatrix
 	Matrix matPreTransformScaleTest = Matrix::CreateScale(100.f, 100.f, 100.f);
 	Matrix matPreTransformScale = Matrix::CreateScale(0.01f, 0.01f, 0.01f);
+	Matrix matPreTransformScale150 = Matrix::CreateScale(1.5f, 1.5f, 1.5f);
 	Matrix matPreTransformIdentity = Matrix::Identity;
 	Matrix matPreTransformTurn90 = matPreTransformScale * Matrix::CreateFromYawPitchRoll(XMConvertToRadians(90.f), 0.f, 0.f);
 #pragma endregion
@@ -516,6 +524,23 @@ HRESULT CLoader::Loading_For_Logo()
 
 		m_pGameInstance->Add_Prototype(ENUM_TO_UINT(ELevelType::STATIC), L"Prototype_Component_Model_Monster_Dog", CModel::Create(m_pDevice, m_pDeviceContext, &desc));
 	}
+
+	// For.Prototype_Component_Model_Monster_Boomer
+	{
+		CModel::MODEL_ORIGIN_DESC desc = {};
+		desc.eType = EModelType::ANIM;
+		desc.iPrototypeLevelIndex = ENUM_TO_UINT(ELevelType::STATIC);
+		desc.pMatPreTransform = &(matPreTransformScale150);
+		desc.wstrModelFolderName = L"Monster_Boomer";
+		desc.FStageBone = CModel::STAGEING_BONE::SB_ZEROBONE;
+		desc.vecStageBoneIndices = { };
+
+		CModel::DATA_ANIMCHANNEL tAniChannelData = {};
+		tAniChannelData.iRootBoneIndex = 3;
+		desc.pAniChannelData = &tAniChannelData;
+
+		m_pGameInstance->Add_Prototype(ENUM_TO_UINT(ELevelType::STATIC), L"Prototype_Component_Model_Monster_Boomer", CModel::Create(m_pDevice, m_pDeviceContext, &desc));
+	}
 	// For. Prototype_Component_Camera
 	m_pGameInstance->Add_Prototype(ENUM_TO_UINT(ELevelType::STATIC), L"Prototype_Component_Camera", CCamera::Create());
 	// For. Prototype_Component_ActionState_Player
@@ -589,13 +614,19 @@ HRESULT CLoader::Loading_For_Logo()
 		ADD_PROTOTYPE(ELevelType::STATIC, L"Prototype_GameObject_Part_Gun", CGun::Create(m_pDevice, m_pDeviceContext));
 
 		// For. Prototype_GameObject_Monster_Dummy
-		ADD_PROTOTYPE(ELevelType::STATIC, L"Prototype_GameObject_Monster_Dummy", CMonster_Dummy::Create(m_pDevice, m_pDeviceContext));
+		ADD_PROTOTYPE(ELevelType::TEST, L"Prototype_GameObject_Monster_Dog", CMonster_Dog::Create(m_pDevice, m_pDeviceContext));
 		// For. Prototype_GameObject_Monster_Dummy_Body
-		ADD_PROTOTYPE(ELevelType::STATIC, L"Prototype_GameObject_Monster_Dummy_Body", CMonster_Dummy_Body::Create(m_pDevice, m_pDeviceContext));
+		ADD_PROTOTYPE(ELevelType::TEST, L"Prototype_GameObject_Monster_Dog_Body", CMonster_Dog_Body::Create(m_pDevice, m_pDeviceContext));
+		// For. Prototype_GameObject_Monster_Dummy
+		ADD_PROTOTYPE(ELevelType::TEST, L"Prototype_GameObject_Monster_Boomer", CMonster_Boomer::Create(m_pDevice, m_pDeviceContext));
+		// For. Prototype_GameObject_Monster_Dummy_Body
+		ADD_PROTOTYPE(ELevelType::TEST, L"Prototype_GameObject_Monster_Boomer_Body", CMonster_Boomer_Body::Create(m_pDevice, m_pDeviceContext));
 		// For. Prototype_GameObject_Boss_Xibi
-		ADD_PROTOTYPE(ELevelType::STATIC, L"Prototype_GameObject_Boss_Xibi", CBoss_Xibi::Create(m_pDevice, m_pDeviceContext));
+		ADD_PROTOTYPE(ELevelType::TEST, L"Prototype_GameObject_Boss_Xibi", CBoss_Xibi::Create(m_pDevice, m_pDeviceContext));
 		// For. Prototype_GameObject_Boss_XibiBody
-		ADD_PROTOTYPE(ELevelType::STATIC, L"Prototype_GameObject_Boss_Xibi_Body", CBoss_Xibi_Body::Create(m_pDevice, m_pDeviceContext));
+		ADD_PROTOTYPE(ELevelType::TEST, L"Prototype_GameObject_Boss_Xibi_Body", CBoss_Xibi_Body::Create(m_pDevice, m_pDeviceContext));
+		/* Monster Object */
+		ADD_PROTOTYPE(ELevelType::STATIC, L"Prototype_GameObject_Monster_Dummy", CMonster_Dummy::Create(m_pDevice, m_pDeviceContext));
 
 	}
 #pragma endregion

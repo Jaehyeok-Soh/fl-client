@@ -1,7 +1,6 @@
 #pragma once
 #include <set>
 #include "StateBase.h"
-
 #include "DTO_MonsterState.h"
 
 NS_BEGIN(Client)
@@ -21,7 +20,28 @@ public:
 		, UP_CHANGE = 0x0004 // state change : up
 		, OWN = 0x0008 // 자신만의 움직임
 	};
+private:
+	// For. Transition
+	typedef struct tagBoundCondition
+	{
+		std::function<_bool(const DTO::STATE_PARAM&)> func;
+		DTO::STATE_PARAM tParam{};
+	}BOUND_CONDITION;
+	// For. ConditionFeature
+	typedef struct tagBoundConditionFeature
+	{
+		std::function<_bool(const DTO::STATE_PARAM&)>               condition;
+		std::function<void(const _float&, const DTO::STATE_PARAM&)> feature;
 
+		DTO::STATE_PARAM condParam;
+		DTO::STATE_PARAM featParam;
+	}BOUND_CONDFEATURE;
+	// For. Feature
+	typedef struct tagBoundFeature
+	{
+		std::function<void(const _float&, const DTO::STATE_PARAM&)> func;
+		DTO::STATE_PARAM tParam{};
+	}BOUND_FEATURE;
 protected:
 	using Super = CStateBase;
 
@@ -60,9 +80,7 @@ protected:
 protected:
 	virtual void OwnMove(const _float fTimeDelta) {};		// state 내부에서 알아서 움직일때
 	virtual void Set_NextStateDesc(_uint iNextState) {};	// 다음 state에 따라 desc을 작성한다 : 각 state 내부에서
-
 	virtual void CheckAni_WhenStart() {};					// 만약 자체에서 로직을 통해 바꾸고 싶다면
-
 protected:
 	_uint m_iEndStateIdx = { 0 };			// CPlayer::State::END 캐싱 해둠 : 만약 END면 state change x
 
@@ -72,22 +90,17 @@ protected:
 	HRESULT Bind_State();
 	HRESULT Bind_PreAnims();
 	HRESULT Bind_MainAnims();
-	HRESULT Bind_Transition(vector<DTO::STATE_TRANSITION>& transition);
-	HRESULT Bind_Condition(vector<string> conds);
+	HRESULT Bind_Transition(vector<DTO::STATE_TRANSITION> &transition);
 	HRESULT Bind_Feature();
-
+	HRESULT Bind_ConditionFeature();
 	_bool Check_Transition(vector<DTO::STATE_TRANSITION>& transition);
-
+protected:
 	DTO::MONSTER_STATEBASE_DESC* m_pDesc = { nullptr };
 
 	unordered_map<string, _int> m_umapState;
-
-	unordered_map<string, _int> m_umapCondition;
-	vector<std::function<_bool()>> m_vecCondition;
-
-	unordered_map<string, _int> m_umapFeature;
-	vector<std::function<void(const _float& fTimeDelta)>> m_vecFeature;
-
+	vector<BOUND_CONDITION> m_vecCondition;
+	vector<BOUND_FEATURE> m_vecFeature;
+	vector<BOUND_CONDFEATURE> m_vecConditionFeature;
 public:
 	virtual void Free() override;
 

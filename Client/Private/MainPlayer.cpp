@@ -220,6 +220,8 @@ void CMainPlayer::OnCollision_Enter(_uint iMyColliderLayer, _uint iOtherLayer, C
     desc.pRequester = this;
     desc.pOther = pOther;
     desc.tHitInfo = tHitInfo;
+
+    m_pGameInstance->Push_CollidedData(desc);
 }
 
 void CMainPlayer::OnCollision_Exit(_uint iMyColliderLayer, _uint iOtherLayer, CGameObject* pOther)
@@ -250,6 +252,37 @@ void CMainPlayer::OnTrigger_Exit(_uint iMyColliderLayer, _uint iOtherLayer, CGam
     desc.iOtherLayer = iOtherLayer;
     desc.pRequester = this;
     desc.pOther = pOther;
+}
+
+_bool CMainPlayer::On_Hit(const HIT_DESC& hitDesc)
+{
+#ifdef _DEBUG
+    wstring infoHeader(L"Player Hit ");
+    wstring infoSeparate(L": ");
+    wstring infoContant = infoHeader
+        + infoSeparate
+        + Engine_Utils::ToWString(m_strName)
+        + infoSeparate
+        + std::to_wstring(Get_ID());
+
+    CLOG_INFO(infoContant);
+#endif // _DEBUG
+    return true;
+}
+
+void CMainPlayer::Try_Attack(const HIT_DESC& hitDesc)
+{
+#ifdef _DEBUG
+    wstring infoHeader(L"Player Attack ");
+    wstring infoSeparate(L": ");
+    wstring infoContant = infoHeader
+        + infoSeparate
+        + Engine_Utils::ToWString(m_strName)
+        + infoSeparate
+        + std::to_wstring(Get_ID());
+
+    CLOG_INFO(infoContant);
+#endif // _DEBUG
 }
 
 #pragma region Legacy
@@ -673,7 +706,7 @@ HRESULT CMainPlayer::Ready_CCT()
     desc.eType = EPhysicsCCTType::CAPSULE;
     desc.pOwnerMatrix = &Get_Component<CTransform>()->Get_WorldMatrix();
     desc.fRadius = 0.5f;
-    desc.fHeight = 1.f;
+    desc.fHeight = 0.7f;
     desc.vExtens = { 0.f, 0.f, 0.f };
 
     PHYSICSMATERIAL_DESC mtrlDesc{};
@@ -694,7 +727,8 @@ HRESULT CMainPlayer::Ready_CCT()
         | PHYSICSFILTERGROUP::Enum::TRIGGER_UI
         | PHYSICSFILTERGROUP::Enum::TRIGGER_QUEST
         | PHYSICSFILTERGROUP::Enum::TRIGGER_SPAWN
-        | PHYSICSFILTERGROUP::Enum::TRIGGER_DIRECTION;
+        | PHYSICSFILTERGROUP::Enum::TRIGGER_DIRECTION
+        | PHYSICSFILTERGROUP::Enum::TRIGGER_BOX;
 
     if (FAILED(Add_Component<CPhysicsCCT>(0, L"Prototype_Component_Physics_CCT", &desc)))
         return E_FAIL;

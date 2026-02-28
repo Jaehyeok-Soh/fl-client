@@ -24,7 +24,7 @@ public:
 
 	enum class State : _uint
 	{
-		NONE, HOLD, HAND
+		NONE, HOLD, HAND, HAND_ONLY_POS, HAND_ONLY_POS_SCALE
 	};
 
 	enum class AnimState : _uint

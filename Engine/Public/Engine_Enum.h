@@ -470,7 +470,7 @@ namespace Engine
 			if (bAttack_A == bAttack_B)
 				return false;
 
-			const unsigned int iVictim = bAttack_A == true ? iFlagA : iFlagB;
+			const unsigned int iVictim = bAttack_A != true ? iFlagA : iFlagB;
 
 			return IsPlayer(iVictim) || IsMonster(iVictim);
 		}

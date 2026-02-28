@@ -8,6 +8,110 @@
 
 namespace DTO
 {
+	/////////////////------- StateParam -------/////////////////
+	typedef struct tagStateParam
+	{
+		int		iParam[4]{ 0 };
+		float	fParam[4]{ 0.f };
+		bool	bParam[4]{ 0 };
+	}STATE_PARAM;
+
+	inline void to_json(json& j, const STATE_PARAM& d)
+	{
+		j["iParam"] = vector<int>(d.iParam, d.iParam + 4);
+		j["fParam"] = vector<float>(d.fParam, d.fParam + 4);
+		j["bParam"] = vector<bool>(d.bParam, d.bParam + 4);
+	}
+
+	inline void from_json(const json& j, STATE_PARAM& d)
+	{
+		d = {};
+
+		if (j.contains("iParam"))
+		{
+			auto v = j.at("iParam").get<vector<int>>();
+			const size_t n = (std::min<size_t>)(4, v.size());
+			for (size_t i = 0; i < n; ++i) d.iParam[i] = v[i];
+		}
+
+		if (j.contains("fParam"))
+		{
+			auto v = j.at("fParam").get<vector<float>>();
+			const size_t n = (std::min<size_t>)(4, v.size());
+			for (size_t i = 0; i < n; ++i) d.fParam[i] = v[i];
+		}
+
+		if (j.contains("bParam"))
+		{
+			auto v = j.at("bParam").get<vector<bool>>();
+			const size_t n = (std::min<size_t>)(4, v.size());
+			for (size_t i = 0; i < n; ++i) d.bParam[i] = v[i];
+		}
+	}
+
+	/////////////////------- Condition Entry -------/////////////////
+	typedef struct tagConditionEntry
+	{
+		string strCondition{ "" };
+		STATE_PARAM tParam{};
+	}CONDITION_ENTRY;
+
+	inline void to_json(json& j, const CONDITION_ENTRY& d)
+	{
+		j["strCondition"] = d.strCondition;
+		j["tParam"] = d.tParam;
+	}
+
+	inline void from_json(const json& j, CONDITION_ENTRY& d)
+	{
+		j.at("strCondition").get_to(d.strCondition);
+		if (j.contains("tParam"))
+			j.at("tParam").get_to(d.tParam);
+	}
+
+	/////////////////------- ConditionFeature Desc -------/////////////////
+	typedef struct tagFeatureEntry
+	{
+		string strFeature{ "" };
+		STATE_PARAM tParam{};
+	}FEATURE_ENTRY;
+
+	inline void to_json(json& j, const FEATURE_ENTRY& d)
+	{
+		j["strFeature"] = d.strFeature;
+		j["tParam"] = d.tParam;
+	}
+
+	inline void from_json(const json& j, FEATURE_ENTRY& d)
+	{
+		j.at("strFeature").get_to(d.strFeature);
+		if (j.contains("tParam"))
+			j.at("tParam").get_to(d.tParam);
+	}
+
+
+	/////////////////------- ConditionFeature Entry -------/////////////////
+	typedef struct tagConditionFeatureEntry
+	{
+		CONDITION_ENTRY cond{};
+		FEATURE_ENTRY   feat{};
+	}CONDITIONFEATURE_ENTRY;
+
+	inline void to_json(json& j, const CONDITIONFEATURE_ENTRY& d)
+	{
+		j["cond"] = d.cond;
+		j["feat"] = d.feat;
+	}
+
+	inline void from_json(const json& j, CONDITIONFEATURE_ENTRY& d)
+	{
+		if (j.contains("cond") || j.contains("feat"))
+		{
+			if (j.contains("cond")) j.at("cond").get_to(d.cond);
+			if (j.contains("feat")) j.at("feat").get_to(d.feat);
+		}
+	}
+
 	typedef struct tagMonsterTimeCounter
 	{
 		float fTimeAcc = { 0.f };
@@ -38,7 +142,7 @@ namespace DTO
 
 	typedef struct tagStateTransition
 	{
-		vector<string> vecCondition;
+		vector<CONDITION_ENTRY> vecConditionEntry;
 		// state name, weight
 		map<string, float> mapRandomStatePool;
 
@@ -49,13 +153,26 @@ namespace DTO
 
 	inline void to_json(json& j, const STATE_TRANSITION& d)
 	{
-		j["vecCondition"] = d.vecCondition;
+		j["vecConditionEntry"] = d.vecConditionEntry;
 		j["mapRandomStatePool"] = d.mapRandomStatePool;
 	}
 
 	inline void from_json(const json& j, STATE_TRANSITION& d)
 	{
-		j.at("vecCondition").get_to(d.vecCondition);
+		if (j.contains("vecConditionEntry"))
+		{
+			j.at("vecConditionEntry").get_to(d.vecConditionEntry);
+		}
+		else if (j.contains("vecCondition"))
+		{
+			auto vec = j.at("vecCondition").get<vector<string>>();
+			for (auto& str : vec)
+			{
+				CONDITION_ENTRY entry{};
+				entry.strCondition = str;
+				d.vecConditionEntry.push_back(entry);
+			}
+		}
 		j.at("mapRandomStatePool").get_to(d.mapRandomStatePool);
 	}
 
@@ -79,7 +196,7 @@ namespace DTO
 		// state names
 		std::set<string>		setStates;
 
-		// state name, anim name
+		// state name, anim name, weapon anim name
 		map<string, string>		mapPreAnimNames;
 		vector<string>			vecMainAnimNames;
 		vector<string>			vecWeaponAnimNames;
@@ -90,7 +207,10 @@ namespace DTO
 		// condition(function), to state name
 		vector<STATE_TRANSITION> vecStateTransition;
 
-		vector<string> vecFeature;
+		// condition feature
+		vector<CONDITIONFEATURE_ENTRY> vecConditionFeature;
+
+		vector<FEATURE_ENTRY> vecFeatureEntry;
 		vector<int> vecFeatureIdx;
 	}MONSTER_STATEBASE_DESC;
 
@@ -119,7 +239,9 @@ namespace DTO
 
 		j["vecStateTransition"] = d.vecStateTransition;
 
-		j["vecFeature"] = d.vecFeature;
+		j["vecConditionFeature"] = d.vecConditionFeature;
+
+		j["vecFeatureEntry"] = d.vecFeatureEntry;
 	}
 
 	inline void from_json(const json& j, MONSTER_STATEBASE_DESC& d)
@@ -155,10 +277,25 @@ namespace DTO
 
 		j.at("vecStateTransition").get_to(d.vecStateTransition);
 
-		if (j.contains("vecFeature"))
-			j.at("vecFeature").get_to(d.vecFeature);
+		if (j.contains("vecConditionFeature"))
+			j.at("vecConditionFeature").get_to(d.vecConditionFeature);
 		else
-			d.vecFeature = vector<string>();
+			d.vecConditionFeature = vector<CONDITIONFEATURE_ENTRY>();
+
+		if (j.contains("vecFeatureEntry"))
+		{
+			j.at("vecFeatureEntry").get_to(d.vecFeatureEntry);
+		}
+		else if (j.contains("vecFeature"))
+		{
+			auto vec = j.at("vecFeature").get<vector<string>>();
+			for (auto& str : vec)
+			{
+				FEATURE_ENTRY entry{};
+				entry.strFeature = str;
+				d.vecFeatureEntry.push_back(entry);
+			}
+		}
 	}
 
 	typedef struct tagMonsterStateDesc

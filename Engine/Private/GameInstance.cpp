@@ -29,6 +29,7 @@
 #include "Physics_Module.h"
 #include "Effect_Manager.h"
 #include "EffectHandler.h"
+#include "JudgementSystem.h"
 
 IMPLEMENT_SINGLETON(CGameInstance)
 
@@ -127,6 +128,9 @@ HRESULT CGameInstance::Initialize_Engine(const ENGINE_DESC& Engine_Desc, _Inout_
 
 	if (!(m_pEffect_Manager = CEffect_Manager::Create()))
 		return E_FAIL;
+	
+	if (!(m_pJudgementSystem = CJudgementSystem::Create()))
+		return E_FAIL;
 
 	return S_OK;
 }
@@ -146,6 +150,8 @@ void CGameInstance::Update_Engine(_float fTimeDelta)
 	// 피직스 시뮬레이트
 	if(fScaledTimeDelta > g_XMEpsilon.f[0])
 		m_pPhysics_Module->StepPhysics(fScaledTimeDelta);
+
+	m_pJudgementSystem->Flush_CollidedEvent();
 
 	// 메인카메라 업데이트
 	m_pCamera_Manager->Update_ViewMatrix();
@@ -867,11 +873,17 @@ void CGameInstance::Spawn_PoolEffect(const std::string& strTag, const Matrix& ma
 	m_pEffect_Manager->Spawn_PoolEffect(strTag, matWorld, fDuration, bIsLocal, iFlag, pTargetBone, pTargetTransMatrix);
 }
 
+void CGameInstance::Push_CollidedData(const COLLIDED_DESC& desc)
+{
+	m_pJudgementSystem->Push_CollidedData(desc);
+}
+
 #pragma endregion
 
 
 void CGameInstance::Destroy_Engine()
 {
+	Safe_Release(m_pJudgementSystem);
 	Safe_Release(m_pFrustrum);
 	Safe_Release(m_pInput_Manager);
 	Safe_Release(m_pTimer_Manager);
@@ -1077,9 +1089,9 @@ PxVec3 CGameInstance::GetPureScale(const Matrix& mat)
 	return m_pPhysics_Module->GetPureScale(mat);
 }
 
-void CGameInstance::Overlap_EventCallback(CGameObject* pOwner, const PxVec3& vOverlapPoint, PxOverlapHit* pOverlapHit, PxPairFlag::Enum event)
+void CGameInstance::Overlap_EventCallback(CGameObject* pOwner, const PxVec3& vOverlapPoint, PxOverlapHit* pOverlapHit, PxPairFlag::Enum event, DTO::HITBOX_DESC* hitboxDesc)
 {
-	return m_pPhysics_Module->Overlap_EventCallback(pOwner, vOverlapPoint, pOverlapHit, event);
+	return m_pPhysics_Module->Overlap_EventCallback(pOwner, vOverlapPoint, pOverlapHit, event, hitboxDesc);
 }
 
 _bool CGameInstance::RayCast(Vec3 vWorldPos, Vec3 vDir, _float fMaxDist, CPhysics_QueryFilterCallback* pFilterCall)
@@ -1133,6 +1145,7 @@ const unordered_map<_uint, DTO::TAttackPreset_Data>& CGameInstance::Get_AttackPr
 #pragma endregion
 void CGameInstance::Free()
 {
+	Safe_Release(m_pJudgementSystem);
 	Safe_Release(m_pFrustrum);
 	Safe_Release(m_pLight_Manager);
 	Safe_Release(m_pInput_Manager);

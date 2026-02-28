@@ -643,6 +643,9 @@
     <ClInclude Include="..\Public\ToolObject.h">
       <Filter>02. GameObjects\ToolObject</Filter>
     </ClInclude>
+    <ClInclude Include="Registry_State.h">
+      <Filter>06. ImGui\01. Panel\Animation\Panel_State</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <Image Include="small.ico">

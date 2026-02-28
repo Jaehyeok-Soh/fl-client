@@ -51,8 +51,8 @@
 #include "Effect.h"
 #include "EffectObject.h"
 #include "Physics_LandScape.h"
-#include "Monster_Dummy.h"
-#include "Monster_Dummy_Body.h"
+#include "Monster_Dog.h"
+#include "Monster_Dog_Body.h"
 #include "Boss_Xibi.h"
 #include "Boss_Xibi_Body.h"
 

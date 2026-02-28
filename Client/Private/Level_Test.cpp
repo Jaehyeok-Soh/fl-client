@@ -52,15 +52,19 @@
 #include "Effect.h"
 #include "EffectObject.h"
 #include "Physics_LandScape.h"
-#include "Monster_Dummy.h"
-#include "Monster_Dummy_Body.h"
+#include "Monster_Dog.h"
+#include "Monster_Dog_Body.h"
+#include "Monster_Boomer.h"
+#include "Monster_Boomer_Body.h"
 #include "Boss_Xibi.h"
 #include "Boss_Xibi_Body.h"
 
 
 //=================
-// Game Instance
+// Component
 //=================
+#include "Bounds.h"
+#include "PhysicsCCT.h"
 #include "GameInstance.h"
 
 CLevel_Test::CLevel_Test(ID3D11Device* pDevice, ID3D11DeviceContext* pDeviceContext)
@@ -382,6 +386,9 @@ HRESULT CLevel_Test::Ready_Map()
 
 HRESULT CLevel_Test::Ready_Monster()
 {
+	/////////////////
+	// MONSTER DOG //
+	/////////////////
 	{
 		CGameObject* pResult = { nullptr };
 
@@ -389,7 +396,7 @@ HRESULT CLevel_Test::Ready_Monster()
 		CTransform::TRANSFORM_DESC transformDesc = {};
 		monsterDesc.iLevelIndex = ENUM_TO_UINT(ELevelType::TEST);
 		monsterDesc.wstrBodyModelTag = L"Prototype_Component_Model_Monster_Dog";
-		monsterDesc.wstrPartBodyPrototypeTag = L"Prototype_GameObject_Monster_Dummy_Body";
+		monsterDesc.wstrPartBodyPrototypeTag = L"Prototype_GameObject_Monster_Dog_Body";
 		monsterDesc.wstrAttackOverlapPrototypeTag = L"Prototype_Component_AttackOverlap_Monster_Dog";
 		transformDesc.TranslationMatrix = Matrix::CreateTranslation(Vec3(18.f, 12.f, 19.f));
 		monsterDesc.pTransform_Desc = &transformDesc;
@@ -401,7 +408,7 @@ HRESULT CLevel_Test::Ready_Monster()
 			desc.bIsPlayer = false;
 			desc.eType = EPhysicsCCTType::CAPSULE;
 			desc.pOwnerMatrix = nullptr;
-			desc.fRadius = 1.f;
+			desc.fRadius = 0.5f;
 			desc.fHeight = 0.1f;
 			desc.vExtens = { 2.f, 2.f, 2.f };
 
@@ -424,8 +431,60 @@ HRESULT CLevel_Test::Ready_Monster()
 			monsterDesc.tCCTDesc = desc;
 		}
 
-		if (!(pResult = m_pGameInstance->Add_GameObject(ENUM_TO_UINT(ELevelType::STATIC),
-			L"Prototype_GameObject_Monster_Dummy",
+		if (!(pResult = m_pGameInstance->Add_GameObject(ENUM_TO_UINT(ELevelType::TEST),
+			L"Prototype_GameObject_Monster_Dog",
+			ENUM_TO_UINT(ELevelType::TEST),
+			L"Monster", &monsterDesc)))
+			return E_FAIL;
+	}
+
+	////////////////////
+	// MONSTER BOOMER //
+	////////////////////
+	{
+		CGameObject* pResult = { nullptr };
+
+		CMonster_Base::MONSTER_DESC monsterDesc = {};
+		CTransform::TRANSFORM_DESC transformDesc = {};
+		monsterDesc.iLevelIndex = ENUM_TO_UINT(ELevelType::TEST);
+		monsterDesc.wstrBodyModelTag = L"Prototype_Component_Model_Monster_Boomer";
+		monsterDesc.wstrPartBodyPrototypeTag = L"Prototype_GameObject_Monster_Boomer_Body";
+		//monsterDesc.wstrAttackOverlapPrototypeTag = L"Prototype_Component_AttackOverlap_Monster_Boomer";
+		transformDesc.TranslationMatrix = Matrix::CreateTranslation(Vec3(18.f, 12.f, 19.f));
+		monsterDesc.pTransform_Desc = &transformDesc;
+		monsterDesc.wstrMonsterStateTag = L"Monster_Boomer";
+
+		{
+			PHYSICSCCT_DESC desc;
+			desc.pOwner = nullptr;
+			desc.bIsPlayer = false;
+			desc.eType = EPhysicsCCTType::CAPSULE;
+			desc.pOwnerMatrix = nullptr;
+			desc.fRadius = 1.f;
+			desc.fHeight = 1.5f;
+			desc.vExtens = { 2.f, 2.f, 2.f };
+
+			PHYSICSMATERIAL_DESC mtrlDesc{};
+			mtrlDesc.eMaterial = EPhysicsMaterial::PLAYER;
+			desc.tMaterial = mtrlDesc;
+
+			desc.eFilterLayer = PHYSICSFILTERGROUP::Enum::MONSTER;
+			desc.iFilterMask =
+				PHYSICSFILTERGROUP::Enum::MONSTER
+				| PHYSICSFILTERGROUP::Enum::PLAYER
+				| PHYSICSFILTERGROUP::Enum::ATTACK
+				| PHYSICSFILTERGROUP::Enum::ATTACK_PROJECTTILE
+				| PHYSICSFILTERGROUP::Enum::SKILL
+				| PHYSICSFILTERGROUP::Enum::SKILL_PROJECTTILE
+				| PHYSICSFILTERGROUP::Enum::MAP
+				| PHYSICSFILTERGROUP::Enum::OBJECT1
+				| PHYSICSFILTERGROUP::Enum::OBJECT2;
+
+			monsterDesc.tCCTDesc = desc;
+		}
+
+		if (!(pResult = m_pGameInstance->Add_GameObject(ENUM_TO_UINT(ELevelType::TEST),
+			L"Prototype_GameObject_Monster_Boomer",
 			ENUM_TO_UINT(ELevelType::TEST),
 			L"Monster", &monsterDesc)))
 			return E_FAIL;
@@ -463,7 +522,7 @@ HRESULT CLevel_Test::Ready_Boss_Layer(const wstring& wstrLayerTag)
 			desc.bIsPlayer = false;
 			desc.eType = EPhysicsCCTType::CAPSULE;
 			desc.pOwnerMatrix = nullptr;
-			desc.fRadius = 1.f;
+			desc.fRadius = 0.5f;
 			desc.fHeight = 0.7f;
 			desc.vExtens = { 1.5f, 1.5f, 1.5f };
 
