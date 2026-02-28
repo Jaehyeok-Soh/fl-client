@@ -92,7 +92,6 @@ void CEffectHandler::Awake()
 {
     if (m_tDesc.eType == E_HANDLER_TYPE::MODEL_ANIM)
         Ready_AnimState();
-
     else
         Create_SpawnEffect();
 }

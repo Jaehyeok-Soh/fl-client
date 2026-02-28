@@ -114,10 +114,6 @@ private:
 private:
     DelegateHandle      m_EventHandle = {};
     std::unordered_map<string, CGameObject*> m_ActiveEffects[ENUM_TO_UINT(E_HANDLER_TYPE::TYPE_END)];
-
-public:
-    CMulticastDelegate<void(CGameObject*)> OnNotify;
-
 public:
     static CEffectHandler* Create(void* pArg);
     virtual CComponent* Clone(void* pArg) override;
