@@ -16,13 +16,17 @@ HRESULT CSkillBase::Initialize(void* pArg)
 	m_tSkillInfo = pDesc->tSkillInfo;
 	m_bCountTime = pDesc->bCountTime;
 
+	// 만약 스킬 지속 시간을 카운팅 할거라면 -> skill timer 값 셋팅
 	if (m_bCountTime)
 		m_TSkillTimer.y = pDesc->fSkillTime;
 
 	m_FSkillFlags = pDesc->FSkillFlags;
 
+	// 처음에는 max로 맞춤 -> 바로 스킬을 사용할 수 있도록 하기 위해
 	m_tSkillInfo.tCoolTimer.fTimeAcc = m_tSkillInfo.tCoolTimer.fMaxTime;
+	// reset을 하지 않음. 그래야 cool time 체크가 됨
 	m_tSkillInfo.tCoolTimer.bTimeReset = false;
+	// 처음에는 당연히 count를 하지 않음.
 	m_tSkillInfo.tCoolTimer.bCountTime = false;
 
 	return S_OK;
@@ -36,18 +40,11 @@ void CSkillBase::Update(const _float fTimeDelta)
 		// skill update
 		Update_Skill(fTimeDelta);
 
-		// 만약 timer를 기준으로 돌고 싶다면
+		// 만약 skill end를 지속 타임을 기준으로 하고 싶다면
 		Count_SkillTime(fTimeDelta);
 	}
 
-	// skill cooltime을 카운트 할때
-	// 만약 1.f가 되었다면
-	// false로 바꿔라
-	if (m_tSkillInfo.tCoolTimer.bCountTime &&
-		m_tSkillInfo.tCoolTimer.CountTime(fTimeDelta) == 1.f)
-	{
-		m_tSkillInfo.tCoolTimer.bCountTime = false;
-	}
+	Count_NextCoolTime(fTimeDelta);
 }
 
 _bool CSkillBase::Can_StartSkill(CMyStat* pStatCom)
@@ -62,11 +59,6 @@ _bool CSkillBase::Can_StartSkill(CMyStat* pStatCom)
 	return false;
 }
 
-void CSkillBase::Update_Skill(const _float fTimeDelta)
-{
-	
-}
-
 _bool CSkillBase::Start_Skill(CMyStat* pStatCom)
 {
 	if (Can_StartSkill(pStatCom))
@@ -76,6 +68,8 @@ _bool CSkillBase::Start_Skill(CMyStat* pStatCom)
 
 		m_tSkillInfo.tCoolTimer.bCountTime = true;
 		m_tSkillInfo.tCoolTimer.fTimeAcc = 0.f;
+
+		m_TSkillTimer.x = 0.f;
 
 		m_iOnSkillCount++;
 		
@@ -103,6 +97,10 @@ _bool CSkillBase::On_Collision(const _float fTimeDelta, CGameObject* pObj)
 	return true;
 }
 
+void CSkillBase::Update_Skill(const _float fTimeDelta)
+{
+}
+
 void CSkillBase::Count_SkillTime(const _float fTimeDelta)
 {
 	// 타이머를 카운트 할거고, skill이 끝나지 않았고
@@ -116,6 +114,18 @@ void CSkillBase::Count_SkillTime(const _float fTimeDelta)
 		}
 
 		m_TSkillTimer.x += fTimeDelta;
+	}
+}
+
+void CSkillBase::Count_NextCoolTime(const _float fTimeDelta)
+{
+	// skill cooltime을 카운트 할때
+	// 만약 1.f가 되었다면
+	// false로 바꿔라
+	if (m_tSkillInfo.tCoolTimer.bCountTime &&
+		m_tSkillInfo.tCoolTimer.CountTime(fTimeDelta) == 1.f)
+	{
+		m_tSkillInfo.tCoolTimer.bCountTime = false;
 	}
 }
 
