@@ -1,6 +1,7 @@
 #include "Engine_pch.h"
 #include "SkillObject_Base.h"
 #include "GameObject.h"
+#include "PhysicsCCT.h"
 #include "Engine_Utils.h"
 #include "GameInstance.h"
 
@@ -123,11 +124,22 @@ void CSkillObject_Base::Process_Move(const _float fTimeDelta)
 		return;
 
 	m_runtimeDesc.vCurDir = vMoveDir;
-
-	Vec3 vDisp = vMoveDir * fTimeDelta;
+	const _float fSpeed = pTransform->Get_MovePerSec();
+	Vec3 vDisp = vMoveDir * fSpeed * fTimeDelta;
 	Vec3 vPos = pTransform->Get_Info(TRANSFORM_INFO_STATE::POS);
-	pTransform->Set_Info(TRANSFORM_INFO_STATE::POS, vDisp);
 
+	if (CPhysicsCCT* pCCT = Get_Component<CPhysicsCCT>())
+	{
+		PxControllerCollisionFlags CCTFlags{};
+		CCTFlags = pCCT->Move(vDisp, 0.01f, fTimeDelta);
+
+		Vec3 vFinalPos = pCCT->GetFootPosition();
+		pTransform->Set_Info(TRANSFORM_INFO_STATE::POS, vFinalPos);
+		m_runtimeDesc.fTravelDistance += (vPos - vFinalPos).Length();
+		return;
+	}
+
+	pTransform->Set_Info(TRANSFORM_INFO_STATE::POS, vPos + vDisp);
 	m_runtimeDesc.fTravelDistance += vDisp.Length();
 }
 
@@ -166,8 +178,11 @@ Vec3 CSkillObject_Base::Compute_MoveDir(const _float fTimeDelta, const Vec3& vCu
 		Vec3 vTargetPos = m_desc.pTarget->Get_Component<CTransform>()->Get_Info(TRANSFORM_INFO_STATE::POS);
 		Vec3 vMyPos = Get_Component<CTransform>()->Get_Info(TRANSFORM_INFO_STATE::POS);
 		Vec3 vDesired = vTargetPos - vMyPos;
-		vDesired.Normalize();
-		vDir = Vec3::Lerp(vDir, vDesired, fTimeDelta * m_desc.fHomingStrength);
+		if (vDesired != Vec3::Zero)
+		{
+			vDesired.Normalize();
+			vDir = Vec3::Lerp(vDir, vDesired, fTimeDelta * m_desc.fHomingStrength);
+		}
 	}
 	else if (Has_Flag(ESkillObjectFlag::Move_Straight))
 	{

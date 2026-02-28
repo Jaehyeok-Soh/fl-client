@@ -297,6 +297,7 @@
     <ClCompile Include="..\private\SingleSkillSpawner.cpp" />
     <ClCompile Include="..\Private\SkillBase.cpp" />
     <ClCompile Include="..\private\SkillObjectSpawnerBase.cpp" />
+    <ClCompile Include="..\private\SkillObjectSpawner_RandomXZ.cpp" />
     <ClCompile Include="..\private\SkillObject_Base.cpp" />
     <ClCompile Include="..\Private\Sound_Manager.cpp" />
     <ClCompile Include="..\Private\MyStat.cpp" />
@@ -470,6 +471,7 @@
     <ClInclude Include="..\public\SingleSkillSpawner.h" />
     <ClInclude Include="..\Public\SkillBase.h" />
     <ClInclude Include="..\public\SkillObjectSpawnerBase.h" />
+    <ClInclude Include="..\public\SkillObjectSpawner_RandomXZ.h" />
     <ClInclude Include="..\public\SkillObject_Base.h" />
     <ClInclude Include="..\Public\Sound_Manager.h" />
     <ClInclude Include="..\Public\MyStat.h" />

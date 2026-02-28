@@ -133,6 +133,9 @@ void CSkillObjectSpawnerBase::Trigger(const SPAWNER_COPY_DESC& desc, _bool bForc
 	if (m_eState != EState::Idle && !bForceRestart)
 		return;
 
+	if (bForceRestart && m_eState != EState::Idle)
+		End_State(m_eState);
+
 	m_desc = desc;
 	CTransform* pTransform = Get_Component<CTransform>();
 	pTransform->Set_Info(TRANSFORM_INFO_STATE::POS, m_desc.vOrigin);
@@ -158,9 +161,9 @@ void CSkillObjectSpawnerBase::Change_State(EState eState)
 		return;
 
 	End_State(m_eState);
-	Start_State(eState);
-	m_eState = eState;
 	m_fStateElapsed = 0.f;
+	m_eState = eState;
+	Start_State(m_eState);
 }
 
 void CSkillObjectSpawnerBase::Start_State(EState eState)
@@ -242,7 +245,7 @@ void CSkillObjectSpawnerBase::End_Appear()
 
 void CSkillObjectSpawnerBase::Start_Spawn()
 {
-	m_fSpawnAcc = 0.f;
+	m_fSpawnAcc = m_pOriginDesc->fInterval;
 }
 
 void CSkillObjectSpawnerBase::Update_Spawn(const _float fTimeDelta)
@@ -306,7 +309,7 @@ void CSkillObjectSpawnerBase::Update_Disappear(const _float fTimeDelta)
 	const _float fT = std::clamp((m_fStateElapsed - m_pOriginDesc->fAfterSpawnHold) / fDenom, 0.f, 1.f);
 
 	Vec3 vScale{ Vec3::One };
-	vScale = Vec3::Lerp(m_pOriginDesc->vScaleStart, m_pOriginDesc->vScaleEnd, fT);
+	vScale = Vec3::Lerp(m_pOriginDesc->vScaleEnd, m_pOriginDesc->vScaleStart, fT);
 	Get_Component<CTransform>()->Set_Scale(vScale);
 
 	if (fT >= 1.f)
