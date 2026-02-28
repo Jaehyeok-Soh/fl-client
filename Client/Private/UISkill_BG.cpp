@@ -56,14 +56,17 @@ HRESULT CUISkill_BG::Attach_Personal_Info()
 	case DTO::EUIDImageSubClassType::NONE_OWNER:
 		return S_OK;
 	case DTO::EUIDImageSubClassType::PLAYER_E:
+		m_fMaxCoolTime = m_pPlayerStatCom->Get_Skill(CStatCom_Player::E).tCoolTimer.fMaxTime;
 		return S_OK;
 	case DTO::EUIDImageSubClassType::PLAYER_Q:
+		m_fMaxCoolTime = m_pPlayerStatCom->Get_Skill(CStatCom_Player::Q).tCoolTimer.fMaxTime;
 		return S_OK;
 	case DTO::EUIDImageSubClassType::PLAYER_Z:
 		return S_OK;
 	case DTO::EUIDImageSubClassType::PLAYER_GUN:
 		return S_OK;
 	case DTO::EUIDImageSubClassType::PLAYER_DODGE:
+		m_fMaxCoolTime = m_pPlayerStatCom->Get_Timer(CStatCom_Player::TIMER_TYPE::DASH).fMaxTime;
 		return S_OK;
 	case DTO::EUIDImageSubClassType::PLAYER_SKILL_END:
 	case DTO::EUIDImageSubClassType::END:
@@ -86,28 +89,39 @@ HRESULT CUISkill_BG::Awake(const _uint iCurrentLevelID)
 
 void CUISkill_BG::Update_Priority(const _float fTimeDelta)
 {
+	if (m_strName == "Player_QSkill_fx")
+		int a = 0;
 	Super::Update_Priority(fTimeDelta);
 	Trigger_User_Use_Skill();
 }
 
 void CUISkill_BG::Update(const _float fTimeDelta)
 {
+	if (m_strName == "Player_QSkill_fx")
+		int a = 0;
 	Super::Update(fTimeDelta);
 	Tick_Use_Skill_Event(fTimeDelta);
 }
 
 void CUISkill_BG::Update_Late(const _float fTimeDelta)
 {
+	if (m_strName == "Player_QSkill_fx")
+		int a = 0;
 	Super::Update_Late(fTimeDelta);
 }
 
 void CUISkill_BG::Ready_Before_Render(const _float fTimeDelta)
 {
+	if (m_strName == "Player_QSkill_fx")
+		int a = 0;
 	Super::Ready_Before_Render(fTimeDelta);
 }
 
 HRESULT CUISkill_BG::Render()
 {
+	if (m_strName == "Player_QSkill_fx")
+		int a = 0;
+
 	if (!m_isVisible)
 		return S_OK;
 	if (FAILED(Bind_ShaderResources()))
@@ -119,28 +133,40 @@ HRESULT CUISkill_BG::Render()
 
 void CUISkill_BG::Trigger_User_Use_Skill()
 {
-	_float fRatio	= {};
-	_bool isE		= { false };
+	_bool isE = { false };
+	_bool is = { false };
 
 	switch (m_eDImageSubClass)
 	{
 	case DTO::EUIDImageSubClassType::PLAYER_SKILL_BEGIN:
 		break;
 	case DTO::EUIDImageSubClassType::PLAYER_E:
-		isE		= true;
-		// 지금 E스킬 쿨타임 Ratio를 받음 
-		fRatio	= m_pPlayerStatCom->Get_Skill(CStatCom_Player::E).tCoolTimer.fCoolTimeRatio;
+		isE	= true;
+		if (m_isUsingE)
+			break;
+		is = m_pPlayerStatCom->Get_Skill_Ptr(CStatCom_Player::E)->Is_OnSkill();
 		break;
 	case DTO::EUIDImageSubClassType::PLAYER_Q:
-		fRatio	= m_pPlayerStatCom->Get_Skill(CStatCom_Player::Q).tCoolTimer.fCoolTimeRatio;
+		m_fCurCoolTime = m_pPlayerStatCom->Get_Skill(CStatCom_Player::Q).tCoolTimer.fTimeAcc;
+		if (m_isUsingSkill)
+			break;
+		is = m_pPlayerStatCom->Get_Skill_Ptr(CStatCom_Player::Q)->Is_OnSkill();
 		break;
 	case DTO::EUIDImageSubClassType::PLAYER_Z:
 		break;
 	case DTO::EUIDImageSubClassType::PLAYER_GUN:
 		break;
 	case DTO::EUIDImageSubClassType::PLAYER_DODGE:
-		fRatio	= m_pPlayerStatCom->Get_Timer(CStatCom_Player::TIMER_TYPE::DASH).fCoolTimeRatio;
-		break;
+	{
+		_float f = m_pPlayerStatCom->Get_Timer(CStatCom_Player::TIMER_TYPE::DASH).fTimeAcc;
+
+		if (m_fCurCoolTime == 0 && m_fCurCoolTime < f)
+			if(!m_isUsingSkill)
+				is = true;
+
+		m_fCurCoolTime = f;
+	}
+	break;
 	case DTO::EUIDImageSubClassType::PLAYER_SKILL_END:
 		break;
 	case DTO::EUIDImageSubClassType::END:
@@ -148,59 +174,33 @@ void CUISkill_BG::Trigger_User_Use_Skill()
 		break;
 	}
 
-	// 만약 이전에 CoolTime Ratio 가 0이였는데 
-	if (0.f == m_fPreCoolTimeRatio)
+	if (is)
 	{
-		// 지금 CoolTime Ratio 가 0보다 크다? -> 스킬을 사용했다.
-		if (fRatio > 0.f)
+		if (isE)
 		{
-			// 초기화 
-			if (isE)
-			{
-				Ready_Fade(0.3f, 0.f, 1.f, m_fDelay);
-				m_isUseE = true;
-			}
-			else
-			{
-				Ready_Fade(0.1f, 0.f, 1.f, m_fDelay);
-				m_isUseSkill = true;
-				m_isSkillFlash = false;
-			}
+			Ready_Fade(0.3f, 0.f, 0.7f, m_fDelay);
+			m_isUsingE = true;
+			m_isFinUseE = false;
 		}
-	}
-	m_fPreCoolTimeRatio = fRatio;
-	
-	if (KEY_BUTTON_DOWN(DIK_E))
-	{
-		Ready_Fade(0.3f, 0.f, 1.f, m_fDelay);
-		m_fProgress_Ratio = 1.f;
-		m_isUseE = true;
-	}
-	if (KEY_BUTTON_DOWN(DIK_Q))
-	{
-		Ready_Fade(0.1f, 0.f, 1.f, m_fDelay);
-		m_fProgress_Ratio = 1.f;
-		m_isUseSkill = true;
-	}
-	if (KEY_BUTTON_DOWN(DIK_LSHIFT))
-	{
-		Ready_Fade(0.1f, 0.f, 1.f, m_fDelay);
-		m_fProgress_Ratio = 1.f;
-		m_isUseSkill = true;
+		else
+		{
+			Ready_Fade(0.2f, 0.f, 0.7f, m_fDelay);
+			m_isUsingSkill = true;
+			m_isSkillFlash = false;
+		}
 	}
 }
 
 void CUISkill_BG::Tick_Use_Skill_Event(const _float fTimeDelta)
 {
-	if (m_isUseE)
+	if (m_isUsingE)
 	{
 		_bool is = Tick_Fade(fTimeDelta);
-
 		if (is)
 		{
 			if (m_isFinUseE)
 			{
-				m_isUseE = false;
+				m_isUsingE = false;
 				m_isFinUseE = false;
 			}
 			else
@@ -210,8 +210,7 @@ void CUISkill_BG::Tick_Use_Skill_Event(const _float fTimeDelta)
 			}
 		}
 	}
-
-	if (m_isUseSkill)
+	else if (m_isUsingSkill)
 	{
 		_bool is = { false };
 
@@ -219,11 +218,15 @@ void CUISkill_BG::Tick_Use_Skill_Event(const _float fTimeDelta)
 			is = Tick_Fade(fTimeDelta);
 		else
 		{
-			//m_fProgress_Ratio = m_pPlayerStatCom->Get_Skill(CStatCom_Player::Q).tCoolTimer.fCoolTimeRatio;
-			m_fProgress_Ratio -= fTimeDelta;
+			m_fProgress_Ratio = 1.f - (m_fCurCoolTime / m_fMaxCoolTime);
+
+			if (m_fProgress_Ratio <= 0.1f)
+			{
+				m_isUsingSkill = false;
+				m_fProgress_Ratio = 0.f;
+			}
 			return;
 		}
-
 		if (is)
 		{
 			if (!m_isSkillFlash)
@@ -231,7 +234,6 @@ void CUISkill_BG::Tick_Use_Skill_Event(const _float fTimeDelta)
 				m_isSkillFlash = true;
 			}
 		}
-
 	}
 }
 

@@ -44,14 +44,15 @@ private:
 private:
 	CStatCom_Player* m_pPlayerStatCom = { nullptr };
 
-	_bool m_isUseE		= { false };
-	_bool m_isUseSkill	= { false };
+	_bool m_isUsingE			= { false };
+	_bool m_isUsingSkill		= { false };
 
-	_bool m_isFinUseE	= { false };
+	_bool m_isFinUseE = { false };
 
-	_bool m_isSkillFlash = { false };
+	_bool m_isSkillFlash	= { false };
 
-	_float m_fPreCoolTimeRatio = { 0.f };
+	_float m_fCurCoolTime	= { 0.f };
+	_float m_fMaxCoolTime	= { 0.f };
 
 public:
 	static CUISkill_BG* Create(ID3D11Device* pDevice, ID3D11DeviceContext* pDeviceContext);
