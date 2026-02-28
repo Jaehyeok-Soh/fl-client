@@ -197,6 +197,7 @@ void CPhysicsAttackOverlap::Modify_AttackOverlap(_uint eventIdx, DTO::ATTACKEVEN
 	event.tHitboxDesc.filterCallback = m_pFilterCallback;
 
 	m_tDesc.attackEvents[eventIdx] = event;
+	Ready_OverlapInfo();
 }
 
 void CPhysicsAttackOverlap::Modify_AttackOverlap(vector<DTO::ATTACKEVENT> events)
