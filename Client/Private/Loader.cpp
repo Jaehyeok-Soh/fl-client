@@ -489,7 +489,7 @@ HRESULT CLoader::Loading_For_Logo()
 		tAniChannelData.iRootBoneIndex = 2;
 		desc.pAniChannelData = &tAniChannelData;
 
-		m_pGameInstance->Add_Prototype(ENUM_TO_UINT(ELevelType::STATIC), L"Prototype_Component_Model_Xibi", CModel::Create(m_pDevice, m_pDeviceContext, &desc));
+		m_pGameInstance->Add_Prototype(ENUM_TO_UINT(ELevelType::STATIC), g_wszBoss_Xibi_Model_Prototype_Tag , CModel::Create(m_pDevice, m_pDeviceContext, &desc));
 	}
 
 	// For.Prototype_Component_Model_XibiWeapon
@@ -522,7 +522,7 @@ HRESULT CLoader::Loading_For_Logo()
 		tAniChannelData.iRootBoneIndex = 3;
 		desc.pAniChannelData = &tAniChannelData;
 
-		m_pGameInstance->Add_Prototype(ENUM_TO_UINT(ELevelType::STATIC), L"Prototype_Component_Model_Monster_Dog", CModel::Create(m_pDevice, m_pDeviceContext, &desc));
+		m_pGameInstance->Add_Prototype(ENUM_TO_UINT(ELevelType::STATIC), g_wszMonster_Dog_Model_Prototype_Tag, CModel::Create(m_pDevice, m_pDeviceContext, &desc));
 	}
 
 	// For.Prototype_Component_Model_Monster_Boomer
@@ -539,7 +539,7 @@ HRESULT CLoader::Loading_For_Logo()
 		tAniChannelData.iRootBoneIndex = 3;
 		desc.pAniChannelData = &tAniChannelData;
 
-		m_pGameInstance->Add_Prototype(ENUM_TO_UINT(ELevelType::STATIC), L"Prototype_Component_Model_Monster_Boomer", CModel::Create(m_pDevice, m_pDeviceContext, &desc));
+		m_pGameInstance->Add_Prototype(ENUM_TO_UINT(ELevelType::STATIC), g_wszMonster_Boomer_Model_Prototype_Tag , CModel::Create(m_pDevice, m_pDeviceContext, &desc));
 	}
 	// For. Prototype_Component_Camera
 	m_pGameInstance->Add_Prototype(ENUM_TO_UINT(ELevelType::STATIC), L"Prototype_Component_Camera", CCamera::Create());
@@ -587,26 +587,26 @@ HRESULT CLoader::Loading_For_Logo()
 		ADD_PROTOTYPE(ELevelType::STATIC, L"Prototype_GameObject_Part_Collider",		CColliderPart::Create(m_pDevice, m_pDeviceContext));
 
 		// ¿Ã∆Â∆Æ Object
-		ADD_PROTOTYPE(ELevelType::STATIC, L"Prototype_GameObject_Effect",					Effect::Create(m_pDevice, m_pDeviceContext));
+		ADD_PROTOTYPE(ELevelType::STATIC, L"Prototype_GameObject_Effect",				Effect::Create(m_pDevice, m_pDeviceContext));
 		ADD_PROTOTYPE(ELevelType::STATIC, L"Prototype_GameObject_Effect_Parts",			CEffectObject::Create(m_pDevice, m_pDeviceContext));
 
 
 #pragma region Map Object
 		/* Map Object */
-		ADD_PROTOTYPE(ELevelType::STATIC, L"Prototype_GameObject_StaticObject", CStaticObject::		Create(m_pDevice, m_pDeviceContext));
-		ADD_PROTOTYPE(ELevelType::STATIC, L"Prototype_GameObject_LandScape",	CLandScape::		Create(m_pDevice, m_pDeviceContext));
-		ADD_PROTOTYPE(ELevelType::STATIC, L"Prototype_GameObject_Bush",			CBush::				Create(m_pDevice, m_pDeviceContext));
-		ADD_PROTOTYPE(ELevelType::STATIC, L"Prototype_GameObject_Grass",		CGrass::			Create(m_pDevice, m_pDeviceContext));
-		ADD_PROTOTYPE(ELevelType::STATIC, L"Prototype_GameObject_Moss",			CMoss::				Create(m_pDevice, m_pDeviceContext));
-		ADD_PROTOTYPE(ELevelType::STATIC, L"Prototype_GameObject_Tree",			CTree::				Create(m_pDevice, m_pDeviceContext));
-		ADD_PROTOTYPE(ELevelType::STATIC, L"Prototype_GameObject_Vine",			CVine::				Create(m_pDevice, m_pDeviceContext));
-		ADD_PROTOTYPE(ELevelType::STATIC, L"Prototype_GameObject_Rock",			CRock::				Create(m_pDevice, m_pDeviceContext));
-		ADD_PROTOTYPE(ELevelType::STATIC, L"Prototype_GameObject_Water",		CWater::			Create(m_pDevice, m_pDeviceContext));
+		ADD_PROTOTYPE(ELevelType::STATIC, g_wszStaticObject_Prototype_Tag ,				CStaticObject::Create(m_pDevice, m_pDeviceContext));
+		ADD_PROTOTYPE(ELevelType::STATIC, g_wszLandScape_Prototype_Tag,					CLandScape::Create(m_pDevice, m_pDeviceContext));
+		ADD_PROTOTYPE(ELevelType::STATIC, g_wszBush_Prototype_Tag,						CBush::Create(m_pDevice, m_pDeviceContext));
+		ADD_PROTOTYPE(ELevelType::STATIC, g_wszGrass_Prototype_Tag,						CGrass::Create(m_pDevice, m_pDeviceContext));
+		ADD_PROTOTYPE(ELevelType::STATIC, g_wszMoss_Prototype_Tag,						CMoss::Create(m_pDevice, m_pDeviceContext));
+		ADD_PROTOTYPE(ELevelType::STATIC, g_wszTree_Prototype_Tag,						CTree::Create(m_pDevice, m_pDeviceContext));
+		ADD_PROTOTYPE(ELevelType::STATIC, g_wszVine_Prototype_Tag,						CVine::Create(m_pDevice, m_pDeviceContext));
+		ADD_PROTOTYPE(ELevelType::STATIC, g_wszRock_Prototype_Tag,						CRock::Create(m_pDevice, m_pDeviceContext));
+		ADD_PROTOTYPE(ELevelType::STATIC, g_wszWater_Prototype_Tag,						CWater::Create(m_pDevice, m_pDeviceContext));
 #pragma endregion
 
 #pragma region TriggerBox
-		ADD_PROTOTYPE(ELevelType::STATIC, L"Prototype_GameObject_TriggerBox_ChangeLevel", CTriggerBox_LevelChange::Create(m_pDevice, m_pDeviceContext));
-		ADD_PROTOTYPE(ELevelType::STATIC, L"Prototype_GameObject_TriggerBox_MonsterSpawner", CTriggerBox_MonsterSpawner::Create(m_pDevice, m_pDeviceContext));
+		ADD_PROTOTYPE(ELevelType::STATIC, g_wszTriggerBox_ChangeLevel_Prototype_Tag,	CTriggerBox_LevelChange::Create(m_pDevice, m_pDeviceContext));
+		ADD_PROTOTYPE(ELevelType::STATIC, g_wszTriggerBox_MonsterSapwner_Prototype_Tag, CTriggerBox_MonsterSpawner::Create(m_pDevice, m_pDeviceContext));
 #pragma endregion
 
 		/* Weapons */
@@ -614,19 +614,17 @@ HRESULT CLoader::Loading_For_Logo()
 		ADD_PROTOTYPE(ELevelType::STATIC, L"Prototype_GameObject_Part_Gun", CGun::Create(m_pDevice, m_pDeviceContext));
 
 		// For. Prototype_GameObject_Monster_Dummy
-		ADD_PROTOTYPE(ELevelType::TEST, L"Prototype_GameObject_Monster_Dog", CMonster_Dog::Create(m_pDevice, m_pDeviceContext));
+		ADD_PROTOTYPE(ELevelType::STATIC , g_wszMonster_Dog_Prototype_Tag , CMonster_Dog::Create(m_pDevice, m_pDeviceContext));
 		// For. Prototype_GameObject_Monster_Dummy_Body
-		ADD_PROTOTYPE(ELevelType::TEST, L"Prototype_GameObject_Monster_Dog_Body", CMonster_Dog_Body::Create(m_pDevice, m_pDeviceContext));
+		ADD_PROTOTYPE(ELevelType::STATIC, g_wszMonster_Dog_Body_Prototype_Tag, CMonster_Dog_Body::Create(m_pDevice, m_pDeviceContext));
 		// For. Prototype_GameObject_Monster_Dummy
-		ADD_PROTOTYPE(ELevelType::TEST, L"Prototype_GameObject_Monster_Boomer", CMonster_Boomer::Create(m_pDevice, m_pDeviceContext));
+		ADD_PROTOTYPE(ELevelType::STATIC, g_wszMonster_Boomer_Prototype_Tag , CMonster_Boomer::Create(m_pDevice, m_pDeviceContext));
 		// For. Prototype_GameObject_Monster_Dummy_Body
-		ADD_PROTOTYPE(ELevelType::TEST, L"Prototype_GameObject_Monster_Boomer_Body", CMonster_Boomer_Body::Create(m_pDevice, m_pDeviceContext));
+		ADD_PROTOTYPE(ELevelType::STATIC, g_wszMonster_Boomer_Body_Prototype_Tag, CMonster_Boomer_Body::Create(m_pDevice, m_pDeviceContext));
 		// For. Prototype_GameObject_Boss_Xibi
-		ADD_PROTOTYPE(ELevelType::TEST, L"Prototype_GameObject_Boss_Xibi", CBoss_Xibi::Create(m_pDevice, m_pDeviceContext));
+		ADD_PROTOTYPE(ELevelType::STATIC, g_wszBoss_Xibi_Prototype_Tag , CBoss_Xibi::Create(m_pDevice, m_pDeviceContext));
 		// For. Prototype_GameObject_Boss_XibiBody
-		ADD_PROTOTYPE(ELevelType::TEST, L"Prototype_GameObject_Boss_Xibi_Body", CBoss_Xibi_Body::Create(m_pDevice, m_pDeviceContext));
-		/* Monster Object */
-		ADD_PROTOTYPE(ELevelType::STATIC, L"Prototype_GameObject_Monster_Dummy", CMonster_Dummy::Create(m_pDevice, m_pDeviceContext));
+		ADD_PROTOTYPE(ELevelType::STATIC, g_wszBoss_Xibi_Body_Prototype_Tag, CBoss_Xibi_Body::Create(m_pDevice, m_pDeviceContext));
 
 	}
 #pragma endregion

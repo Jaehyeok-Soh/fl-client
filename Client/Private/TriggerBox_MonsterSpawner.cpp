@@ -6,6 +6,12 @@
 
 
 //=================
+// Builder
+//=================
+#include "Builder_Map.h"
+
+
+//=================
 // Monster
 //=================
 #include "Monster_Base.h"
@@ -81,33 +87,6 @@ void CTriggerBox_MonsterSpawner::Update(const _float fTimeDelta)
 {
     Super::Update(fTimeDelta);
 
-	if (m_isTriggerEventPlay)
-		return;
-
-    /* 임시로 충돌처리 */
-
-    CGameObject* pGameObject = m_pGameInstance->Get_GameObject_Front(ENUM_TO_UINT(ELevelType::STATIC), g_wszPlayerLayer);
-    if (pGameObject == nullptr) return;
-    CTransform* pTs = pGameObject->Get_Component<CTransform>();
-    if (pTs == nullptr) return;
-    Vec3 vPosition = pTs->Get_Info(TRANSFORM_INFO_STATE::POS);
-
-
-    /* 거리 체크 */
-    Vec3 vDir = vPosition - Get_Component<CTransform>()->Get_Info(TRANSFORM_INFO_STATE::POS);
-    float fLength = vDir.Length();
-
-    /* 충돌 임시 로직 Check */
-    if (fLength < 2.5f)
-    {
-		m_isTriggerEventPlay = true;
-        if (FAILED(SpawnMonster()))
-        {
-            MSG_BOX(" Monster Spawn is failed");
-            return;
-        }
-    }
-
 }
 
 void CTriggerBox_MonsterSpawner::Update_Late(const _float fTimeDelta)
@@ -148,6 +127,16 @@ void CTriggerBox_MonsterSpawner::OnTrigger_Enter(_uint iMyColliderLayer, _uint i
 {
     Super::OnTrigger_Enter(iMyColliderLayer, iOtherLayer, pOther);
 
+
+	if (iOtherLayer & PHYSICSFILTERGROUP::PLAYER)
+	{
+		if (FAILED(SpawnMonster()))
+		{
+			MSG_BOX("Mosnter Spawner 작동 오류");
+			return;
+		}
+	}
+
 }
 
 void CTriggerBox_MonsterSpawner::OnTrigger_Exit(_uint iMyColliderLayer, _uint iOtherLayer, CGameObject* pOther)
@@ -158,132 +147,25 @@ void CTriggerBox_MonsterSpawner::OnTrigger_Exit(_uint iMyColliderLayer, _uint iO
 
 HRESULT CTriggerBox_MonsterSpawner::SpawnMonster()
 {
-	CTransform::TRANSFORM_DESC transformDesc = {};
-
 	_uint iCurLevelIndex = m_pGameInstance->Get_CurrentLevelIndex();
+	CGameObject* pResult = { nullptr };
+
+	_uint iFindPrototypeIndex = ENUM_TO_UINT(ELevelType::STATIC);
+	wstring wstrAddLayerName{};
+	wstring wstrFindPrototypeName{};
+
+	CTransform::TRANSFORM_DESC tTransformDesc = {};
 
 	for (auto& tData : m_vecMonsterSpawnData)
 	{
-		DTO::EMakeMonsterType eMakeMonsterType{ tData.eMakeMonsterType};
-		transformDesc.ScaleMatrix		= Matrix::CreateScale(tData.vScale);
-		transformDesc.TranslationMatrix = Matrix::CreateTranslation(tData.vPosition);
-		transformDesc.RotationMatrix	= Matrix::CreateFromYawPitchRoll(
+		tTransformDesc.ScaleMatrix		= Matrix::CreateScale(tData.vScale);
+        tTransformDesc.TranslationMatrix = Matrix::CreateTranslation(tData.vPosition);
+        tTransformDesc.RotationMatrix	= Matrix::CreateFromYawPitchRoll(
 			XMConvertToRadians(tData.vPitchYawRoll.y), XMConvertToRadians(tData.vPitchYawRoll.x), XMConvertToRadians(tData.vPitchYawRoll.z)
 		);
 
-		switch (eMakeMonsterType)
-		{
-		case DTO::EMakeMonsterType::Dog:
-		{
-			{
-				CGameObject* pResult = { nullptr };
-
-				CMonster_Base::MONSTER_DESC monsterDesc = {};
-				monsterDesc.iLevelIndex = iCurLevelIndex;
-				monsterDesc.wstrBodyModelTag = L"Prototype_Component_Model_Monster_Dog";
-				monsterDesc.wstrPartBodyPrototypeTag = L"Prototype_GameObject_Monster_Dummy_Body";
-				monsterDesc.wstrAttackOverlapPrototypeTag = L"Prototype_Component_AttackOverlap_Monster_Dog";
-				monsterDesc.pTransform_Desc = &transformDesc;
-				monsterDesc.wstrMonsterStateTag = L"Monster_Dog";
-				{
-					PHYSICSCCT_DESC desc;
-					desc.pOwner = nullptr;
-					desc.bIsPlayer = false;
-					desc.eType = EPhysicsCCTType::CAPSULE;
-					desc.pOwnerMatrix = nullptr;
-					desc.fRadius = 1.f;
-					desc.fHeight = 0.1f;
-					desc.vExtens = { 2.f, 2.f, 2.f };
-
-					PHYSICSMATERIAL_DESC mtrlDesc{};
-					mtrlDesc.eMaterial = EPhysicsMaterial::PLAYER;
-					desc.tMaterial = mtrlDesc;
-
-					desc.eFilterLayer = PHYSICSFILTERGROUP::Enum::MONSTER;
-					desc.iFilterMask =
-						PHYSICSFILTERGROUP::Enum::MONSTER
-						| PHYSICSFILTERGROUP::Enum::PLAYER
-						| PHYSICSFILTERGROUP::Enum::ATTACK
-						| PHYSICSFILTERGROUP::Enum::ATTACK_PROJECTTILE
-						| PHYSICSFILTERGROUP::Enum::SKILL
-						| PHYSICSFILTERGROUP::Enum::SKILL_PROJECTTILE
-						| PHYSICSFILTERGROUP::Enum::MAP
-						| PHYSICSFILTERGROUP::Enum::OBJECT1
-						| PHYSICSFILTERGROUP::Enum::OBJECT2;
-
-					monsterDesc.tCCTDesc = desc;
-				}
-
-				if (!(pResult = m_pGameInstance->Add_GameObject(ENUM_TO_UINT(ELevelType::STATIC),
-					L"Prototype_GameObject_Monster_Dummy",
-					iCurLevelIndex,
-					L"Monster", &monsterDesc)))
-					return E_FAIL;
-			}
-		}
-		break;
-		case DTO::EMakeMonsterType::Shooter:	return S_OK;
-		case DTO::EMakeMonsterType::Xibi:
-		{
-			// BoneInfo
-			vector<std::pair<_uint, string>> vecboneNames
-			{
-				{ENUM_TO_UINT(CMonster_Body_Base::EBone::RightHand), "hook_arm_r"}
-			};
-
-			{
-				CGameObject* pResult = { nullptr };
-
-				CMonster_Base::MONSTER_DESC monsterDesc = {};
-				monsterDesc.iLevelIndex = iCurLevelIndex;
-				monsterDesc.wstrBodyModelTag = L"Prototype_Component_Model_Xibi";
-				monsterDesc.wstrPartBodyPrototypeTag = L"Prototype_GameObject_Boss_Xibi_Body";
-				monsterDesc.pTransform_Desc = &transformDesc;
-				monsterDesc.wstrMonsterStateTag = L"Boss_Xibi";
-
-				{
-					PHYSICSCCT_DESC desc;
-					desc.pOwner = nullptr;
-					desc.bIsPlayer = false;
-					desc.eType = EPhysicsCCTType::CAPSULE;
-					desc.pOwnerMatrix = nullptr;
-					desc.fRadius = 1.f;
-					desc.fHeight = 1.f;
-					desc.vExtens = { 2.f, 2.f, 2.f };
-
-					PHYSICSMATERIAL_DESC mtrlDesc{};
-					mtrlDesc.eMaterial = EPhysicsMaterial::PLAYER;
-					desc.tMaterial = mtrlDesc;
-
-					desc.eFilterLayer = PHYSICSFILTERGROUP::Enum::MONSTER;
-					desc.iFilterMask =
-						PHYSICSFILTERGROUP::Enum::MONSTER
-						| PHYSICSFILTERGROUP::Enum::PLAYER
-						| PHYSICSFILTERGROUP::Enum::ATTACK
-						| PHYSICSFILTERGROUP::Enum::ATTACK_PROJECTTILE
-						| PHYSICSFILTERGROUP::Enum::SKILL
-						| PHYSICSFILTERGROUP::Enum::SKILL_PROJECTTILE
-						| PHYSICSFILTERGROUP::Enum::MAP
-						| PHYSICSFILTERGROUP::Enum::OBJECT1
-						| PHYSICSFILTERGROUP::Enum::OBJECT2;
-
-					monsterDesc.tCCTDesc = desc;
-				}
-
-				if (!(pResult = m_pGameInstance->Add_GameObject(ENUM_TO_UINT(ELevelType::STATIC),
-					L"Prototype_GameObject_Boss_Xibi",
-					iCurLevelIndex,
-					g_wszBossLayer, &monsterDesc)))
-					return E_FAIL;
-			}
-		}
-		break;
-		default:
-			break;
-		}
-
-
-
+        if (FAILED(CMonster_Base::Create_Mosnter(CBuilder_Map::Change_MakeMonsterType_To_MonsterType(tData.eMakeMonsterType) , iFindPrototypeIndex , iCurLevelIndex  , &tTransformDesc)))
+            return E_FAIL;
 	}
 
     return S_OK;
