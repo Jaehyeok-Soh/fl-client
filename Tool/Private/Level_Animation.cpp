@@ -35,8 +35,10 @@
 CLevel_Animation::CLevel_Animation(ID3D11Device* pDevice, ID3D11DeviceContext* pDeviceContext)
 	: Super(pDevice, pDeviceContext)
 	, m_pImGuiManager(CImGui_ToolManager::GetInstance())
+	, m_pPickingManager(CPicking_ToolManager::GetInstance())
 {
 	Safe_AddRef(m_pImGuiManager);
+	Safe_AddRef(m_pPickingManager);
 }
 
 HRESULT CLevel_Animation::Initialize()
@@ -111,7 +113,7 @@ void CLevel_Animation::Update(const _float fTimeDelta)
 void CLevel_Animation::Update_Picking()
 {
 	Super::Update_Picking();
-	//m_pPickingManager->Picking();
+	m_pPickingManager->Picking();
 }
 
 HRESULT CLevel_Animation::Render()

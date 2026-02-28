@@ -264,15 +264,6 @@ HRESULT CLoader::Loading_For_Logo()
 			if (FAILED(Build_Prototype()))
 				return E_FAIL;
 		}
-
-		// Read Json
-		{
-			//if (FAILED(Loading_File(ENUM_TO_UINT(ELevelType::LOGO), DTO::ECategory::EFFECT, L"../../Resources/Data/EffectData/Attack_1.json")))
-			//	return E_FAIL;
-			// For. Example
-			// if (FAILED(Loading_File(ENUM_TO_UINT(ELevelType::LOGO), DTO::ECategory::MAP, L"asdf")))
-			// 	return E_FAIL;
-		}
 	}
 #pragma endregion
 
@@ -826,11 +817,10 @@ HRESULT CLoader::Ready_AttackOverlap()
 
 HRESULT CLoader::Ready_EffectEvent()
 {
-	if (FAILED(Ready_EffectEvent_PlayerMoon()))
+	if (FAILED(Ready_EffectEvent_AnimationData()))
 		return E_FAIL;
 
-	if (FAILED(Ready_EffectEvent_MonsterDog()))
-		return E_FAIL;
+	return S_OK;
 }
 
 HRESULT CLoader::Ready_AttackOverlap_PlayerMoon()
@@ -905,44 +895,22 @@ HRESULT CLoader::Ready_AttackPresets()
 	return S_OK;
 }
 
-HRESULT CLoader::Ready_EffectEvent_PlayerMoon()
+HRESULT CLoader::Ready_EffectEvent_AnimationData()
 {
-	ELevelType eLevelType = ELevelType::LOGO;
+	_uint iLevelID = ENUM_TO_UINT(ELevelType::LOGO);
 	DTO::ECategory eCategory = DTO::ECategory::EFFECTEVENT;
-	_uint iLevelID = ENUM_TO_UINT(eLevelType);
+	std::filesystem::path FilePath = L"../../Resources/Data/EffectAnimationData/";
+	if (std::filesystem::exists(FilePath))
+	{
+		for (auto iter : std::filesystem::directory_iterator(FilePath))
+		{
+			if (FAILED(m_pGameInstance->Load_File_Json(iLevelID, eCategory, iter.path())))
+				return E_FAIL;
 
-	std::filesystem::path FilePath = L"../../Resources/Data/EffectAnimationData/PlayerMoon.json";
-	vector<path> vecfiles;
-
-	if (!std::filesystem::exists(FilePath))
-		return E_FAIL;
-
-	if (FAILED(m_pGameInstance->Load_File_Json(iLevelID, eCategory, FilePath)))
-		return E_FAIL;
-
-	if (FAILED(m_pBuilderSystem->Build_File(iLevelID, eCategory, FilePath.stem().string())))
-		return E_FAIL;
-
-	return S_OK;
-}
-
-HRESULT CLoader::Ready_EffectEvent_MonsterDog()
-{
-	ELevelType eLevelType = ELevelType::LOGO;
-	DTO::ECategory eCategory = DTO::ECategory::EFFECTEVENT;
-	_uint iLevelID = ENUM_TO_UINT(eLevelType);
-
-	std::filesystem::path FilePath = L"../../Resources/Data/EffectAnimationData/Monster_Dog.json";
-	vector<path> vecfiles;
-
-	if (!std::filesystem::exists(FilePath))
-		return E_FAIL;
-
-	if (FAILED(m_pGameInstance->Load_File_Json(iLevelID, eCategory, FilePath)))
-		return E_FAIL;
-
-	if (FAILED(m_pBuilderSystem->Build_File(iLevelID, eCategory, FilePath.stem().string())))
-		return E_FAIL;
+			if (FAILED(m_pBuilderSystem->Build_File(iLevelID, eCategory, iter.path().stem().string())))
+				return E_FAIL;
+		}
+	}
 
 	return S_OK;
 }

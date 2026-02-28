@@ -62,6 +62,8 @@ HRESULT CEffectObject::EffectDesc_Initialize(void* pArg)
     m_tEffectDesc = *pEffectDesc;
     m_tOriginEffectDesc = *pEffectDesc;
     m_iSpriteCurrentNumber.resize(ENUM_TO_UINT(DTO::TEXTURE_INFO::END));
+    m_iSpriteAccumulation.resize(ENUM_TO_UINT(DTO::TEXTURE_INFO::END));
+
     return S_OK;
 }
 
@@ -432,7 +434,18 @@ void CEffectObject::Update(const _float fTimeDelta)
     // 시간 누적 (Timeflag가 PLAY일 때만,)
     float TimeFlag = (m_tEffectDesc.Data._Effect_TimeFlag == PLAY) ? 1.f : 0.f;
     _float TimeT = m_tEffectDesc.Data._Effect_PlayBackSpeed * fTimeDelta * TimeFlag;
-    m_fTimeAccumulation += TimeT;
+    _float fActiveTime = m_fTimeAccumulation - m_tEffectDesc.Data._Effect_StartDelay;
+    _float fRatio = fActiveTime / m_tEffectDesc.Data._Effect_Duration;
+
+    if (m_tEffectDesc.Data._Use_Effect_Continue && fRatio >= 0.5f && m_bDespawnFlag == false)
+    {
+        m_fTimeAccumulation += 0.f;
+    }
+
+    else
+    {
+        m_fTimeAccumulation += TimeT;
+    }
 
     // Start Delay 체크
     if (m_fTimeAccumulation < m_tEffectDesc.Data._Effect_StartDelay)
@@ -442,18 +455,16 @@ void CEffectObject::Update(const _float fTimeDelta)
     }
     m_bIsStarted = true;
 
-    _float fActiveTime = m_fTimeAccumulation - m_tEffectDesc.Data._Effect_StartDelay;
-
     // Duration 및 Loop 제어 설정
     if (fActiveTime >= m_tEffectDesc.Data._Effect_Duration)
     {
-        if (m_tEffectDesc.Data._Use_Effect_Continue || m_tEffectDesc.Data._Effect_Looping)
+        if (m_bDespawnFlag == false && (m_tEffectDesc.Data._Use_Effect_Continue || m_tEffectDesc.Data._Effect_Looping))
         {
             m_fTimeAccumulation = m_tEffectDesc.Data._Effect_StartDelay + fmod(fActiveTime, m_tEffectDesc.Data._Effect_Duration);
             fActiveTime = m_fTimeAccumulation - m_tEffectDesc.Data._Effect_StartDelay;
         }
 
-        else if (m_tEffectDesc.Data._Use_Effect_Continue == false || m_tEffectDesc.Data._Effect_Looping == false)
+        else /*if (m_tEffectDesc.Data._Use_Effect_Continue == false || m_tEffectDesc.Data._Effect_Looping == false)*/
         {
             if (fActiveTime >= m_tEffectDesc.Data._Effect_Duration + m_tEffectDesc.Data._Effect_LifeTime)
             {
@@ -461,9 +472,11 @@ void CEffectObject::Update(const _float fTimeDelta)
             }
         }
     }
-
-    _float fRatio = fActiveTime / m_tEffectDesc.Data._Effect_Duration;
     if (fRatio > 1.f) fRatio = 1.f;
+
+    _float fTotalSimTime = m_tEffectDesc.Data._Effect_Duration + m_tEffectDesc.Data._Effect_LifeTime;
+    _float fScrollRatio = fActiveTime / fTotalSimTime;
+    if (fScrollRatio > 1.f) fScrollRatio = 1.f;
 
     if (m_tEffectDesc.Data._Use_Effect_Continue)
     {
@@ -478,7 +491,7 @@ void CEffectObject::Update(const _float fTimeDelta)
     // GPU에 백터 바인딩.
     Bind_Curve_To_GPU();
     TimeCalculate(TimeT);
-    Update_UV_Scroll_Curve(fRatio);
+    Update_UV_Scroll_Curve(fScrollRatio);
     Update_Rotation_Lerp(TimeT, fRatio);
     Update_Gravity_Force();   // 중력값 전달.
     Super::Update(TimeT);
@@ -538,6 +551,7 @@ void CEffectObject::Set_Dead(const wstring& wstrLayerTag)
 
 HRESULT CEffectObject::Spawn_FromPool(void* pArg)
 {
+    m_bDespawnFlag = false;
     m_tEffectDesc = m_tOriginEffectDesc;
     TimeFlagRequest(RESET);
 
@@ -547,21 +561,34 @@ HRESULT CEffectObject::Despawn_FromPool()
 {
     TimeFlagRequest(RESET);
 
+    for (_uint i = 0; i < ENUM_TO_UINT(DTO::TEXTURE_INFO::END); i++)
+    {
+        m_iSpriteAccumulation[i] = 0.f;
+    }
+
+    for (_uint i = 0; i < ENUM_TO_UINT(DTO::TEXTURE_INFO::END); i++)
+    {
+        m_iSpriteCurrentNumber[i] = 0;
+    }
     return S_OK;
 }
 
-void CEffectObject::LoopState_Change(E_LoopState eState)
+void CEffectObject::LoopState_Change(DTO::E_LoopState eState)
 {
     // TODO : 
-
     switch (eState)
     {
-    case E_LoopState::LOOP_START:
+    case DTO::E_LoopState::LOOP_START:
     {
+        // 얘는 상황보고 판단.
+ /*       m_tEffectDesc.Data._Use_Effect_Continue = true;*/
+        /*m_tEffectDesc.Data._Effect_Looping = true;*/
         break;
     }
-    case E_LoopState::LOOP_END:
+    case DTO::E_LoopState::LOOP_END:
     {
+        m_tEffectDesc.Data._Use_Effect_Continue = false;
+        m_bDespawnFlag = true;
         break;
     }
     }
@@ -626,7 +653,7 @@ void CEffectObject::TimeCalculate(const _float fDT)
         case ENUM_TO_UINT(DTO::TEXTURE_INFO::GRADATIONTEXTURE): pSpriteInfo = &m_tEffectDesc.Data._Effect_GradationTexture_SpriteInfo; break;
         case ENUM_TO_UINT(DTO::TEXTURE_INFO::DISSOLVETEXTURE):  pSpriteInfo = &m_tEffectDesc.Data._Effect_DissolveTexture_SpriteInfo; break;
         case ENUM_TO_UINT(DTO::TEXTURE_INFO::GLOWTEXTURE):      pSpriteInfo = &m_tEffectDesc.Data._Effect_GlowTexture_SpriteInfo; break;
-        case ENUM_TO_UINT(DTO::TEXTURE_INFO::CURVETEXTURE):      pSpriteInfo = &m_tEffectDesc.Data._Effect_CurveTexture_SpriteInfo; break;
+        case ENUM_TO_UINT(DTO::TEXTURE_INFO::CURVETEXTURE):     pSpriteInfo = &m_tEffectDesc.Data._Effect_CurveTexture_SpriteInfo; break;
             // 필요에 따라 추가 케이스 확장
         default: continue;
         }
@@ -649,8 +676,8 @@ void CEffectObject::TimeCalculate(const _float fDT)
                 if (m_tEffectDesc.Data._Effect_Looping)
                 {
                     // 시간과 속도에 따라 계속 회전 (나머지 연산)
-                    _uint iLoopFrame = (_uint)(fRatio * iTotalFrame * fSpeed);
-                    m_iSpriteCurrentNumber[i] = iLoopFrame % iTotalFrame;
+                    m_iSpriteAccumulation[i] += fDT * fSpeed;
+                    m_iSpriteCurrentNumber[i] = (_uint)(m_iSpriteAccumulation[i]) % iTotalFrame;
                 }
                 else
                 {
@@ -714,12 +741,23 @@ void CEffectObject::Update_Rotation_Lerp(float fDT, float fRatio)
         // 최종 회전 = 시작 각도 + (전체 목표 회전량 * 현재 커브 진행 비율)
         // 이렇게 하면 커브 값이 1.0에 도달했을 때 딱 TargetRotation만큼만 돌아있게 돼.
         Vec3 vFinalRot;
-        vFinalRot.x = m_tEffectDesc.Data._Effect_StartRotation.x + (m_tEffectDesc.Data._Effect_TargetRotation.x * vCurveRatio.x);
-        vFinalRot.y = m_tEffectDesc.Data._Effect_StartRotation.y + (m_tEffectDesc.Data._Effect_TargetRotation.y * vCurveRatio.y);
-        vFinalRot.z = m_tEffectDesc.Data._Effect_StartRotation.z + (m_tEffectDesc.Data._Effect_TargetRotation.z * vCurveRatio.z);
+
+        if (m_tEffectDesc.Data._Effect_Looping)
+        {
+            vFinalRot.x += m_tEffectDesc.Data._Effect_StartRotation.x + (m_tEffectDesc.Data._Effect_TargetRotation.x * vCurveRatio.x);
+            vFinalRot.y += m_tEffectDesc.Data._Effect_StartRotation.y + (m_tEffectDesc.Data._Effect_TargetRotation.y * vCurveRatio.y);
+            vFinalRot.z += m_tEffectDesc.Data._Effect_StartRotation.z + (m_tEffectDesc.Data._Effect_TargetRotation.z * vCurveRatio.z);
+        }
+
+        else
+        {
+            vFinalRot.x = m_tEffectDesc.Data._Effect_StartRotation.x + (m_tEffectDesc.Data._Effect_TargetRotation.x * vCurveRatio.x);
+            vFinalRot.y = m_tEffectDesc.Data._Effect_StartRotation.y + (m_tEffectDesc.Data._Effect_TargetRotation.y * vCurveRatio.y);
+            vFinalRot.z = m_tEffectDesc.Data._Effect_StartRotation.z + (m_tEffectDesc.Data._Effect_TargetRotation.z * vCurveRatio.z);
+        }
 
         // 3. 변환 후 적용
-        m_pTransform->Rotation(
+        Get_Component<CTransform>()->Rotation(
             DirectX::XMConvertToRadians(vFinalRot.x),
             DirectX::XMConvertToRadians(vFinalRot.y),
             DirectX::XMConvertToRadians(vFinalRot.z)
@@ -733,25 +771,31 @@ void CEffectObject::Update_UV_Scroll_Curve(float fRatio)
     {
         // Rotataion 커브 재활용이요
         float fCurveX = Sample_RotationCurve(m_tEffectDesc.Data._vecUVScrollCurveX, fRatio);
-
         float fCurveY = Sample_RotationCurve(m_tEffectDesc.Data._vecUVScrollCurveY, fRatio);
         // 결과값을 저장한다.
-
-        if (m_tEffectDesc.Data._Use_Effect_UV_OverScroll)
+        if (m_tEffectDesc.Data._Effect_Looping)
         {
-            float Length_X = abs(m_tEffectDesc.Data._Effect_UV_Offset.x) + 1;
-            float Length_Y = abs(m_tEffectDesc.Data._Effect_UV_Offset.y) + 1;
-
-            m_vScrollOffset.x = fCurveX * Length_X * m_tEffectDesc.Data._Effect_ScrollSpeed.x;
-            m_vScrollOffset.y = fCurveY * Length_Y * m_tEffectDesc.Data._Effect_ScrollSpeed.y;
+            m_vScrollOffset.x += fCurveX * m_tEffectDesc.Data._Effect_ScrollSpeed.x;
+            m_vScrollOffset.y += fCurveY * m_tEffectDesc.Data._Effect_ScrollSpeed.y;
         }
 
         else
         {
-            m_vScrollOffset.x = fCurveX * m_tEffectDesc.Data._Effect_ScrollSpeed.x;
-            m_vScrollOffset.y = fCurveY * m_tEffectDesc.Data._Effect_ScrollSpeed.y;
-        }
+            if (m_tEffectDesc.Data._Use_Effect_UV_OverScroll)
+            {
+                float Length_X = abs(m_tEffectDesc.Data._Effect_UV_Offset.x) + 1;
+                float Length_Y = abs(m_tEffectDesc.Data._Effect_UV_Offset.y) + 1;
 
+                m_vScrollOffset.x = fCurveX * Length_X * m_tEffectDesc.Data._Effect_ScrollSpeed.x;
+                m_vScrollOffset.y = fCurveY * Length_Y * m_tEffectDesc.Data._Effect_ScrollSpeed.y;
+            }
+
+            else
+            {
+                m_vScrollOffset.x = fCurveX * m_tEffectDesc.Data._Effect_ScrollSpeed.x;
+                m_vScrollOffset.y = fCurveY * m_tEffectDesc.Data._Effect_ScrollSpeed.y;
+            }
+        }
     }
 }
 CEffectObject* CEffectObject::Create(ID3D11Device* pDevice, ID3D11DeviceContext* pDeviceContext)

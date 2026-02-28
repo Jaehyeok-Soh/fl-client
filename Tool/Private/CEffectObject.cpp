@@ -40,6 +40,7 @@ HRESULT CEffectObject::Initialize(void* pArg)
         m_tEffectDesc = *pDesc;
         m_tOriginEffectDesc = *pDesc;
         m_iSpriteCurrentNumber.resize(ENUM_TO_UINT(DTO::TEXTURE_INFO::END));
+        m_iSpriteAccumulation.resize(ENUM_TO_UINT(DTO::TEXTURE_INFO::END));
     }
 
     if (FAILED(__super::Initialize(pArg)))
@@ -650,7 +651,18 @@ void CEffectObject::Update(const _float fTimeDelta)
     // 시간 누적 (Timeflag가 PLAY일 때만,)
     float TimeFlag = (m_tEffectDesc.Data._Effect_TimeFlag == PLAY) ? 1.f : 0.f;
     _float TimeT = m_tEffectDesc.Data._Effect_PlayBackSpeed * fTimeDelta * TimeFlag;
-    m_fTimeAccumulation += TimeT;
+    _float fActiveTime = m_fTimeAccumulation - m_tEffectDesc.Data._Effect_StartDelay;
+    _float fRatio = fActiveTime / m_tEffectDesc.Data._Effect_Duration;
+
+    if (m_tEffectDesc.Data._Use_Effect_Continue && fRatio >= 0.5f)
+    {
+        m_fTimeAccumulation += 0.f;
+    }
+
+    else
+    {
+        m_fTimeAccumulation += TimeT;
+    }
 
     // Start Delay 체크
     if (m_fTimeAccumulation < m_tEffectDesc.Data._Effect_StartDelay)
@@ -660,7 +672,6 @@ void CEffectObject::Update(const _float fTimeDelta)
     }
     m_bIsStarted = true;
 
-    _float fActiveTime = m_fTimeAccumulation - m_tEffectDesc.Data._Effect_StartDelay;
 
     // Duration 및 Loop 제어 설정
     if (fActiveTime >= m_tEffectDesc.Data._Effect_Duration)
@@ -679,18 +690,11 @@ void CEffectObject::Update(const _float fTimeDelta)
             }
         }
     }
-    _float fRatio = fActiveTime / m_tEffectDesc.Data._Effect_Duration;
    if (fRatio > 1.f) fRatio = 1.f;
 
    _float fTotalSimTime = m_tEffectDesc.Data._Effect_Duration + m_tEffectDesc.Data._Effect_LifeTime;
    _float fScrollRatio = fActiveTime / fTotalSimTime;
    if (fScrollRatio > 1.f) fScrollRatio = 1.f;
-
-   if (m_tEffectDesc.Data._Use_Effect_Continue)
-   {
-       if (fRatio >= 0.5f)
-           fRatio = 0.5f;
-   }
 
    Vec3 vCurrentScale = Vec3::Lerp(m_tEffectDesc.Data._Effect_StartScale, m_tEffectDesc.Data._Effect_EndScale, fRatio);
     Get_Component<CTransform>()->Set_Scale(vCurrentScale);
@@ -710,129 +714,7 @@ void CEffectObject::Update(const _float fTimeDelta)
         CVIBuffer_Particle_Point* pInstance = Get_Component<CVIBuffer_Particle_Point>();
         if (pInstance) pInstance->Update_Simulation(CTShader, Vec3{}, m_vFinalGravity, TimeT, m_tEffectDesc.Data._Effect_TimeFlag, (DTO::E_SHAPETYPE)m_tEffectDesc.Data._Effect_ShapeType);
     }
-// 
-    //float TimeFlag = 0.f;
 
-    //switch (m_tEffectDesc.Data._Effect_TimeFlag)
-    //{
-    //case PLAY: TimeFlag = 1.f; break;
-    //case PAUSE:TimeFlag = 0.f; break;
-    //case RESET: TimeFlag = 1.f; break;
-    //case STOP: TimeFlag = 0.f; break;
-    //}
-
-    //_float TimeT = m_tEffectDesc.Data._Effect_PlayBackSpeed * fTimeDelta * TimeFlag;
-    //m_fTimeAccumulation += TimeT; // 전체 시간 누적
-
-    ////  ========   Start Delay 체크   ========   
-    //if (m_fTimeAccumulation < m_tEffectDesc.Data._Effect_StartDelay)
-    //{
-    //    m_bIsStarted = false;
-    //    return; // 아직 대기 중이므로 업데이트 안 함
-    //}
-    //m_bIsStarted = true;
-
-    ////========   실제 시뮬레이션 시간 (Delay를 제외한 시간)  ========   
-    //_float fActiveTime = m_fTimeAccumulation - m_tEffectDesc.Data._Effect_StartDelay;
-
-    //// ========   Duration 및 Looping 제어   ========   
-    //if (fActiveTime >= m_tEffectDesc.Data._Effect_Duration)
-    //{
-    //    if (m_tEffectDesc.Data._Effect_Looping)
-    //    {
-    //        m_bIsEffectFinish = false;
-    //        m_fTimeAccumulation = 0.f; // 완전 리셋
-    //        fActiveTime = 0.f;
-    //        m_vScrollOffset = { 0.f, 0.f }; // 스크롤 값도 완전 초기화
-
-    //        // 루프 시 파티클 버퍼 리셋이 필요하다면 호출
-    //        auto pVIBuffer = Get_Component<CVIBuffer_Particle_Point>();
-    //        if (pVIBuffer) pVIBuffer->Reset_Simulation();
-    //    }
-    //    else
-    //    {
-    //        m_bIsEffectFinish = true;
-    //        return;
-    //    }
-    //}
-
-    //// ========   크기 보간 (Start Size -> End Size)   ========   
-    //// 진행률 계산 (0.0 ~ 1.0)
-    //_float fRatio = fActiveTime / m_tEffectDesc.Data._Effect_Duration;
-    //if (fRatio > 1.f) fRatio = 1.f;
-
-    //// 선형 보간을 통한 실시간 스케일 계산
-    //Vec3 vCurrentScale = Vec3::Lerp(m_tEffectDesc.Data._Effect_StartScale, m_tEffectDesc.Data._Effect_EndScale, fRatio);
-    //Get_Component<CTransform>()->Set_Scale(vCurrentScale);
-
-    //TimeCalculate(TimeT);
-    //Update_UV_Scroll_Curve(fRatio);
-    //Update_Rotation_Lerp(TimeT, fRatio);
-    //Update_Gravity_Force(fRatio);   // 중력값 전달.
-    //Super::Update(TimeT);
-    //// == 스크롤 값 == 
-
-    //auto CTShader = static_cast<CComputeShader*>(Get_Script_Component(L"ComputeShader"));
-    //switch (m_tEffectDesc.Data._Effect_ShapeType)
-    //{
-    //    case ENUM_TO_UINT(DTO::E_SHAPETYPE::NONE):
-    //    break;
-
-    //    case ENUM_TO_UINT(DTO::E_SHAPETYPE::SPREAD):
-    //{
-    //    CVIBuffer_Particle_Point* pInstance = Get_Component<CVIBuffer_Particle_Point>();
-    //    if (pInstance) pInstance->Update_Simulation(CTShader, Vec3{}, m_vFinalGravity, TimeT, m_tEffectDesc.Data._Effect_TimeFlag, DTO::E_SHAPETYPE::SPREAD);
-    //    break;
-    //}
-    //case ENUM_TO_UINT(DTO::E_SHAPETYPE::DROP):
-    //{
-    //    CVIBuffer_Particle_Point* pInstance = Get_Component<CVIBuffer_Particle_Point>();
-    //    if (pInstance) pInstance->Update_Simulation(CTShader, Vec3{}, m_vFinalGravity, TimeT, m_tEffectDesc.Data._Effect_TimeFlag, DTO::E_SHAPETYPE::DROP);
-    //    break;
-    //}
-    //case ENUM_TO_UINT(DTO::E_SHAPETYPE::RISE):
-    //{
-    //    CVIBuffer_Particle_Point* pInstance = Get_Component<CVIBuffer_Particle_Point>();
-    //    if (pInstance) pInstance->Update_Simulation(CTShader, Vec3{}, m_vFinalGravity, TimeT, m_tEffectDesc.Data._Effect_TimeFlag, DTO::E_SHAPETYPE::RISE);
-    //    break;
-    //}
-    //case ENUM_TO_UINT(DTO::E_SHAPETYPE::SPIRAL):
-    //{
-    //    CVIBuffer_Particle_Point* pInstance = Get_Component<CVIBuffer_Particle_Point>();
-    //    if (pInstance) pInstance->Update_Simulation(CTShader, Vec3{}, m_vFinalGravity, TimeT, m_tEffectDesc.Data._Effect_TimeFlag, DTO::E_SHAPETYPE::SPIRAL);
-    //    break;
-    //}
-
-    //case ENUM_TO_UINT(DTO::E_SHAPETYPE::DNA):
-    //{
-    //    CVIBuffer_Particle_Point* pInstance = Get_Component<CVIBuffer_Particle_Point>();
-    //    if (pInstance) pInstance->Update_Simulation(CTShader, Vec3{}, m_vFinalGravity, TimeT, m_tEffectDesc.Data._Effect_TimeFlag, DTO::E_SHAPETYPE::DNA);
-    //    break;
-    //}
-
-    //case ENUM_TO_UINT(DTO::E_SHAPETYPE::STRAIGHT):
-    //{
-    //    CVIBuffer_Particle_Point* pInstance = Get_Component<CVIBuffer_Particle_Point>();
-    //    if (pInstance) pInstance->Update_Simulation(CTShader, Get_Component<CTransform>()->Get_Info(TRANSFORM_INFO_STATE::LOOK), m_vFinalGravity, TimeT, m_tEffectDesc.Data._Effect_TimeFlag, DTO::E_SHAPETYPE::STRAIGHT);
-    //    break;
-    //}
-    //
-    //case ENUM_TO_UINT(DTO::E_SHAPETYPE::GATHER):
-    //{
-    //    CVIBuffer_Particle_Point* pInstance = Get_Component<CVIBuffer_Particle_Point>();
-    //    if (pInstance) pInstance->Update_Simulation(m_pComputeShader, Vec3{}, m_vFinalGravity, TimeT,
-    //        m_tEffectDesc.Data._Effect_TimeFlag, DTO::E_SHAPETYPE::GATHER);
-    //    break;
-    //}
-
-    //case ENUM_TO_UINT(DTO::E_SHAPETYPE::FOUNTAIN):
-    //{
-    //    CVIBuffer_Particle_Point* pInstance = Get_Component<CVIBuffer_Particle_Point>();
-    //    if (pInstance) pInstance->Update_Simulation(m_pComputeShader, Vec3{}, m_vFinalGravity, TimeT,
-    //        m_tEffectDesc.Data._Effect_TimeFlag, DTO::E_SHAPETYPE::FOUNTAIN);
-    //    break;
-    //}
-    //}
 }
 
 void CEffectObject::Update_Late(const _float fTimeDelta)
@@ -917,6 +799,16 @@ HRESULT CEffectObject::Despawn_FromPool()
 {
     TimeFlagRequest(RESET);
 
+    for (_uint i = 0; i < ENUM_TO_UINT(DTO::TEXTURE_INFO::END); i++)
+    {
+        m_iSpriteAccumulation[i] = 0.f;
+    }
+
+    for (_uint i = 0; i < ENUM_TO_UINT(DTO::TEXTURE_INFO::END); i++)
+    {
+        m_iSpriteCurrentNumber[i] = 0;
+    }
+
     return S_OK;
 }
 
@@ -963,41 +855,6 @@ void CEffectObject::TimeFlagRequest(_uint iTimeFlag)
     else
         Set_Visible();
 }
-//
-//void CEffectObject::TimeCalculate(const _float fDT)
-//{
-//    //// Start Delay를 제외한 순수 실행 시간 기반 진행률
-//    //_float fActiveTime = m_fTimeAccumulation - m_tEffectDesc.Data._Effect_StartDelay;
-//    //if (fActiveTime < 0.f) fActiveTime = 0.f;
-//
-//    //_float fRatio = fActiveTime / m_tEffectDesc.Data._Effect_Duration;
-//    //if (fRatio > 1.f) fRatio = 1.f;
-//
-//    //// ======= [스프라이트 애니메이션] =======
-//    //if ((m_tEffectDesc.Data._Effect_RenderFlag & (1 << 5)) && m_tEffectDesc.Data._Effect_bPlayAnim)
-//    //{
-//    //    _uint iTotalFrame = m_tEffectDesc.Data._Effect_TileCount.x * m_tEffectDesc.Data._Effect_TileCount.y;
-//    //    if (iTotalFrame > 0)
-//    //    {
-//    //       /* _uint iFrame = (_uint)(fActiveTime * m_tEffectDesc.Data._Effect_AnimSpeed);*/
-//    //        _uint iFrame = (_uint)(fRatio * (iTotalFrame - 1));
-//
-//    //        if (m_tEffectDesc.Data._Effect_Looping)
-//    //        {
-//    //            // 속도가 1이면 Duration 동안 1번 재생, 2면 2번 재생
-//    //            _uint iLoopFrame = (_uint)(fRatio * iTotalFrame * m_tEffectDesc.Data._Effect_AnimSpeed);
-//    //            m_tEffectDesc.Data.m_iCurSpriteNumber = iLoopFrame % iTotalFrame;
-//    //        }
-//    //         
-//    //        else
-//    //        {
-//    //            m_tEffectDesc.Data.m_iCurSpriteNumber = iFrame;
-//    //        }
-//    //    }
-//    //}
-//
-//
-//}
 
 void CEffectObject::TimeCalculate(const _float fDT)
 {
@@ -1043,8 +900,8 @@ void CEffectObject::TimeCalculate(const _float fDT)
                 if (m_tEffectDesc.Data._Effect_Looping)
                 {
                     // 시간과 속도에 따라 계속 회전 (나머지 연산)
-                    _uint iLoopFrame = (_uint)(fRatio * iTotalFrame * fSpeed);
-                    m_iSpriteCurrentNumber[i] = iLoopFrame % iTotalFrame;
+                    m_iSpriteAccumulation[i] += fDT * fSpeed;
+                    m_iSpriteCurrentNumber[i] = (_uint)(m_iSpriteAccumulation[i]) % iTotalFrame;
                 }
                 else
                 {
@@ -1108,9 +965,20 @@ void CEffectObject::Update_Rotation_Lerp(float fDT, float fRatio)
         // 최종 회전 = 시작 각도 + (전체 목표 회전량 * 현재 커브 진행 비율)
         // 이렇게 하면 커브 값이 1.0에 도달했을 때 딱 TargetRotation만큼만 돌아있게 돼.
         Vec3 vFinalRot;
-        vFinalRot.x = m_tEffectDesc.Data._Effect_StartRotation.x + (m_tEffectDesc.Data._Effect_TargetRotation.x * vCurveRatio.x);
-        vFinalRot.y = m_tEffectDesc.Data._Effect_StartRotation.y + (m_tEffectDesc.Data._Effect_TargetRotation.y * vCurveRatio.y);
-        vFinalRot.z = m_tEffectDesc.Data._Effect_StartRotation.z + (m_tEffectDesc.Data._Effect_TargetRotation.z * vCurveRatio.z);
+
+        if (m_tEffectDesc.Data._Effect_Looping)
+        {
+            vFinalRot.x += m_tEffectDesc.Data._Effect_StartRotation.x + (m_tEffectDesc.Data._Effect_TargetRotation.x * vCurveRatio.x);
+            vFinalRot.y += m_tEffectDesc.Data._Effect_StartRotation.y + (m_tEffectDesc.Data._Effect_TargetRotation.y * vCurveRatio.y);
+            vFinalRot.z += m_tEffectDesc.Data._Effect_StartRotation.z + (m_tEffectDesc.Data._Effect_TargetRotation.z * vCurveRatio.z);
+        }
+
+        else
+        {
+            vFinalRot.x = m_tEffectDesc.Data._Effect_StartRotation.x + (m_tEffectDesc.Data._Effect_TargetRotation.x * vCurveRatio.x);
+            vFinalRot.y = m_tEffectDesc.Data._Effect_StartRotation.y + (m_tEffectDesc.Data._Effect_TargetRotation.y * vCurveRatio.y);
+            vFinalRot.z = m_tEffectDesc.Data._Effect_StartRotation.z + (m_tEffectDesc.Data._Effect_TargetRotation.z * vCurveRatio.z);
+        }
 
         // 3. 변환 후 적용
         Get_Component<CTransform>()->Rotation(
@@ -1127,25 +995,31 @@ void CEffectObject::Update_UV_Scroll_Curve(float fRatio)
     {
         // Rotataion 커브 재활용이요
         float fCurveX = Sample_RotationCurve(m_tEffectDesc.Data._vecUVScrollCurveX, fRatio);
-
         float fCurveY = Sample_RotationCurve(m_tEffectDesc.Data._vecUVScrollCurveY, fRatio);
         // 결과값을 저장한다.
-
-        if (m_tEffectDesc.Data._Use_Effect_UV_OverScroll)
+        if (m_tEffectDesc.Data._Effect_Looping)
         {
-            float Length_X = abs(m_tEffectDesc.Data._Effect_UV_Offset.x) + 1;
-            float Length_Y = abs(m_tEffectDesc.Data._Effect_UV_Offset.y) + 1;
-
-            m_vScrollOffset.x = fCurveX * Length_X * m_tEffectDesc.Data._Effect_ScrollSpeed.x;
-            m_vScrollOffset.y = fCurveY * Length_Y * m_tEffectDesc.Data._Effect_ScrollSpeed.y;
+            m_vScrollOffset.x += fCurveX * m_tEffectDesc.Data._Effect_ScrollSpeed.x;
+            m_vScrollOffset.y += fCurveY * m_tEffectDesc.Data._Effect_ScrollSpeed.y;
         }
 
         else
         {
-            m_vScrollOffset.x = fCurveX* m_tEffectDesc.Data._Effect_ScrollSpeed.x;
-            m_vScrollOffset.y = fCurveY* m_tEffectDesc.Data._Effect_ScrollSpeed.y;
-        }
+            if (m_tEffectDesc.Data._Use_Effect_UV_OverScroll)
+            {
+                float Length_X = abs(m_tEffectDesc.Data._Effect_UV_Offset.x) + 1;
+                float Length_Y = abs(m_tEffectDesc.Data._Effect_UV_Offset.y) + 1;
 
+                m_vScrollOffset.x = fCurveX * Length_X * m_tEffectDesc.Data._Effect_ScrollSpeed.x;
+                m_vScrollOffset.y = fCurveY * Length_Y * m_tEffectDesc.Data._Effect_ScrollSpeed.y;
+            }
+
+            else
+            {
+                m_vScrollOffset.x = fCurveX * m_tEffectDesc.Data._Effect_ScrollSpeed.x;
+                m_vScrollOffset.y = fCurveY * m_tEffectDesc.Data._Effect_ScrollSpeed.y;
+            }
+        }
     }
 }
 

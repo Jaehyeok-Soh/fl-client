@@ -50,8 +50,7 @@ private:
 	HRESULT Ready_AttackPresets();
 	HRESULT Ready_EffectEvent();
 
-	HRESULT Ready_EffectEvent_PlayerMoon();
-	HRESULT Ready_EffectEvent_MonsterDog();
+	HRESULT Ready_EffectEvent_AnimationData();
 	HRESULT Ready_AttackOverlap_PlayerMoon();
 	HRESULT Ready_AttackOverlap_Monster_Dog();
 

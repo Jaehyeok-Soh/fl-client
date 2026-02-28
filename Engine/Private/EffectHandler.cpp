@@ -28,13 +28,21 @@ HRESULT CEffectHandler::Initialize_Prototype(void* pArg)
     if(FAILED(Ready_Desc(pArg)))
         return E_FAIL;
 
-    Ready_State();
-
     return S_OK;
 }
 
 HRESULT CEffectHandler::Initialize(void* pArg) 
 { 
+    ANIM_EFFECT_HANDLER_DESC* pDesc = static_cast<ANIM_EFFECT_HANDLER_DESC*>(pArg);
+
+    if (pDesc)
+    {
+        if (FAILED(Ready_Desc(pArg)))
+            return E_FAIL;
+    }
+
+    Ready_State();
+
     return S_OK;
 }
 
@@ -186,8 +194,11 @@ HRESULT CEffectHandler::Create_SpawnEffect()
 {
     if (m_tDesc.eType == E_HANDLER_TYPE::MODEL_ANIM) return E_FAIL;
 
-    if (FAILED(Trigger_Lifecycle_Effect(m_eCurrentState)))
-        return E_FAIL;
+    auto pTransform = Get_Owner()->Get_Component<CTransform>();
+    m_pOwnerMatrix = &pTransform->Get_WorldMatrix();
+
+    //if (FAILED(Trigger_Lifecycle_Effect(m_eCurrentState)))
+    //    return E_FAIL;
 
     return S_OK;
 }
@@ -308,7 +319,7 @@ void CEffectHandler::Request_SpawnEffect(const DTO::EFFECTEVENT& Script)
         (_bool)Script.iSimulationType,
         Script.iBoneFlag,
         Script.bFollowBone ? pTargetBoneMatrix : nullptr,
-        Script.bFollowBone ? m_pOwnerMatrix : nullptr
+        m_pOwnerMatrix
     );
 }
 
@@ -364,7 +375,7 @@ void CEffectHandler::Request_SpawnEffect(const DTO::EFFECTEVENT& script, const s
         (_bool)script.iSimulationType,
         script.iBoneFlag,
         script.bFollowBone ? pTargetBoneMatrix : nullptr,
-        script.bFollowBone ? m_pOwnerMatrix : nullptr
+        m_pOwnerMatrix
     );
 }
 
@@ -391,7 +402,7 @@ HRESULT CEffectHandler::Trigger_Lifecycle_Effect(E_OBJ_LIFECYCLE_STATE eState)
         if (pBase)
         {
             // 이전 State Loop 종료시키기 (Dissolve 되게끔.)
-            pBase->LoopStateChange(CEffectBase::E_LoopState::LOOP_END);
+            pBase->LoopStateChange(DTO::E_LoopState::LOOP_END);
         }
     }
 
