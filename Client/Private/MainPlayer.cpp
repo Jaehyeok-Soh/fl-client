@@ -145,6 +145,7 @@ HRESULT CMainPlayer::Awake(const _uint iCurrentLevelID)
     Get_Component<CPhysicsAttackOverlap>()->Awake();
 
     CImGui_ClientDebug::GetInstance()->Set_Player(this);
+
     return S_OK;
 }
 
@@ -484,6 +485,7 @@ HRESULT CMainPlayer::Ready_Ability()
             return E_FAIL;
     }
 
+    Start_Attack(State::COMBO);
 
 
 

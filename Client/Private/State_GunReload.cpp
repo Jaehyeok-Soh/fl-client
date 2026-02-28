@@ -33,6 +33,8 @@ HRESULT CState_GunReload::Start(void* pArg, _bool bForce)
 
     Change_Weapon(CPlayer::Part::GUN, ENUM_TO_UINT(CWeapon::State::HAND));
 
+    Start_Att(ENUM_TO_UINT(CPlayer::State::GUNRELOAD));
+
     return S_OK;
 }
 
