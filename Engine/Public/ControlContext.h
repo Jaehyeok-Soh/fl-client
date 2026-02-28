@@ -84,6 +84,7 @@ public:
 	virtual Vec3	Get_MoveDir()					PURE;
 
 	CGameObject* Get_Target() { return m_pTarget; }
+	virtual void	Clear_WhenChangeLevel() override;
 protected:
 	EMovementMode	m_eCurrentMovement		= { EMovementMode::GROUND };
 	CGameObject*	m_pTarget				= { nullptr };

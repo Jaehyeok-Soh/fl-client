@@ -116,10 +116,6 @@ PxRigidActor* CPhysics_ActorFactory::MakeStatic(const Matrix& world, PHYSICS_SRT
 				shape->setGeometry(triGeom);
 			}
 		}
-		else
-		{
-			continue;
-		}
 
 		if (!shape->isExclusive() && shape->getReferenceCount() > 0)
 		{
@@ -131,6 +127,10 @@ PxRigidActor* CPhysics_ActorFactory::MakeStatic(const Matrix& world, PHYSICS_SRT
 
 				staticActor->attachShape(*newShape);
 				PX_RELEASE(newShape);
+			}
+			else
+			{
+				staticActor->attachShape(*shape);
 			}
 		}
 		else

@@ -89,6 +89,8 @@ private:
 	Vec3		m_vForceVelocity = { 0.f, 0.f, 0.f };
 	Vec3		m_vPrevPosition = { 0.f, 0.f, 0.f };
 	Matrix		m_matWorld;
+
+	_float		m_fMovePSRate = { 1.f };
 public:
 	virtual CComponent* Clone(void* pArg) override;
 	static CTransform* Create();

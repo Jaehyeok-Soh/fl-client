@@ -6,6 +6,7 @@
 #include "BuilderSystem.h"
 #include "Builder_MonsterState.h"
 
+#include "Registry_State.h"
 #include "DataDocument_MonsterState.h"
 #include "DataStruct_MonsterState.h"
 
@@ -340,7 +341,8 @@ void CPanel_State::DrawStateDetails()
 
         for (int i = 0; i < (int)state.vecStateTransition.size(); ++i)
         {
-            DrawStateTransition(state.vecStateTransition[i], i);
+            DrawStateTransition(state.vecStateTransition[i], i, ETransOwner::Local);
+
             ImGui::PushID(i);
             if (ImGui::Button("Remove Transition"))
             {
@@ -352,21 +354,146 @@ void CPanel_State::DrawStateDetails()
         }
     }
 
+    // 로컬 transition 모달 렌더: 루프 밖에서 1번만
+    if (m_eCondOwner == ETransOwner::Local &&
+        m_iCondTransIndex >= 0 &&
+        m_iCondTransIndex < (int)state.vecStateTransition.size())
+    {
+        if (m_bReqOpenCondPopup == true)
+        {
+            ImGui::OpenPopup("ConditionEntry Editor");
+            m_bReqOpenCondPopup = false;
+        }
+
+        RenderConditionEntryModal(state.vecStateTransition[m_iCondTransIndex]);
+    }
+
+    // 4-1. Condition Features
+    if (ImGui::CollapsingHeader("Condition Features"))
+    {
+        if (ImGui::Button("Add ConditionFeature", ImVec2(-1, 0)))
+        {
+            m_tCondFeatDraft = DTO::CONDITIONFEATURE_ENTRY{};
+            m_iCondFeatEditIndex = -1;
+            m_bReqOpenCondFeatPopup = true;
+        }
+
+        ImGui::Separator();
+
+        if (ImGui::BeginTable("##CondFeatTable", 4,
+            ImGuiTableFlags_Borders | ImGuiTableFlags_RowBg | ImGuiTableFlags_Resizable))
+        {
+            ImGui::TableSetupColumn("Idx##cf", ImGuiTableColumnFlags_WidthFixed, 40.f);
+            ImGui::TableSetupColumn("Condition##cf");
+            ImGui::TableSetupColumn("Feature##cf");
+            ImGui::TableSetupColumn("Actions##cf", ImGuiTableColumnFlags_WidthFixed, 140.f);
+            ImGui::TableHeadersRow();
+
+            _int iEraseIndex = -1;
+
+            for (_int i = 0; i < (_int)state.vecConditionFeature.size(); ++i)
+            {
+                auto& conditionfeature = state.vecConditionFeature[i];
+
+                ImGui::PushID(i);
+                ImGui::TableNextRow();
+
+                ImGui::TableSetColumnIndex(0);
+                ImGui::Text("%d", i);
+
+                ImGui::TableSetColumnIndex(1);
+                ImGui::TextUnformatted(conditionfeature.cond.strCondition.c_str());
+
+                ImGui::TableSetColumnIndex(2);
+                ImGui::TextUnformatted(conditionfeature.feat.strFeature.c_str());
+
+                ImGui::TableSetColumnIndex(3);
+                if (ImGui::SmallButton("Edit"))
+                {
+                    m_tCondFeatDraft = conditionfeature;
+                    m_iCondFeatEditIndex = i;
+                    m_bReqOpenCondFeatPopup = true;
+                }
+                ImGui::SameLine();
+                if (ImGui::SmallButton("Del"))
+                    iEraseIndex = i;
+
+                ImGui::PopID();
+            }
+
+            ImGui::EndTable();
+
+            if (iEraseIndex >= 0)
+                state.vecConditionFeature.erase(state.vecConditionFeature.begin() + iEraseIndex);
+        }
+    }
+
+    if (m_bReqOpenCondFeatPopup == true)
+    {
+        ImGui::OpenPopup("ConditionFeature Editor");
+        m_bReqOpenCondFeatPopup = false;
+    }
+
+    RenderConditionFeatureModal(state);
+
     // 5. State Features
     if (ImGui::CollapsingHeader("State Features"))
     {
-        if (ImGui::Button("Add Features")) state.vecFeature.push_back("");
-        for (size_t c = 0; c < state.vecFeature.size(); ++c)
+        if (ImGui::Button("Add Feature (Param)", ImVec2(-1, 0)))
         {
-            ImGui::PushID((int)c);
-            InputTextString("##Feat", state.vecFeature[c]);
-            ImGui::SameLine();
-            if (ImGui::Button("X##Feat")) {
-                state.vecFeature.erase(state.vecFeature.begin() + c);
-                c--;
-            }
-            ImGui::PopID();
+            m_tFeatDraft = DTO::FEATURE_ENTRY{};
+            m_iFeatEditIndex = -1;
+            m_bReqOpenFeatPopup = true;
         }
+
+        ImGui::Separator();
+
+        if (ImGui::BeginTable("##FeatEntryTable", 3, ImGuiTableFlags_Borders | ImGuiTableFlags_RowBg))
+        {
+            ImGui::TableSetupColumn("Idx", ImGuiTableColumnFlags_WidthFixed, 40.f);
+            ImGui::TableSetupColumn("Feature");
+            ImGui::TableSetupColumn("Actions", ImGuiTableColumnFlags_WidthFixed, 120.f);
+            ImGui::TableHeadersRow();
+
+            int eraseIdx = -1;
+
+            for (int i = 0; i < (int)state.vecFeatureEntry.size(); ++i)
+            {
+                ImGui::PushID(i);
+                ImGui::TableNextRow();
+
+                ImGui::TableSetColumnIndex(0);
+                ImGui::Text("%d", i);
+
+                ImGui::TableSetColumnIndex(1);
+                ImGui::TextUnformatted(state.vecFeatureEntry[i].strFeature.c_str());
+
+                ImGui::TableSetColumnIndex(2);
+                if (ImGui::SmallButton("Edit"))
+                {
+                    m_tFeatDraft = state.vecFeatureEntry[i];
+                    m_iFeatEditIndex = i;
+                    m_bReqOpenFeatPopup = true;
+                }
+                ImGui::SameLine();
+                if (ImGui::SmallButton("Del"))
+                    eraseIdx = i;
+
+                ImGui::PopID();
+            }
+
+            ImGui::EndTable();
+
+            if (eraseIdx >= 0)
+                state.vecFeatureEntry.erase(state.vecFeatureEntry.begin() + eraseIdx);
+        }
+
+        if (m_bReqOpenFeatPopup == true)
+        {
+            ImGui::OpenPopup("FeatureEntry Editor");
+            m_bReqOpenFeatPopup = false;
+        }
+        RenderFeatureEntryModal(state);
     }
 
     ImGui::EndChild();
@@ -385,25 +512,49 @@ void CPanel_State::DrawTimeCounter(const char* label, DTO::MONSTERTIME_COUNTER& 
     }
 }
 
-void CPanel_State::DrawStateTransition(DTO::STATE_TRANSITION& transition, int index)
+void CPanel_State::DrawStateTransition(DTO::STATE_TRANSITION& transition, int index, ETransOwner eOwner)
 {
     ImGui::PushID(index);
     if (ImGui::TreeNode("Transition Node"))
     {
         if (ImGui::TreeNode("Conditions"))
         {
-            if (ImGui::Button("Add Condition")) transition.vecCondition.push_back("");
-            for (size_t c = 0; c < transition.vecCondition.size(); ++c)
+            if (ImGui::Button("Add Condition (Param)"))
             {
-                ImGui::PushID((int)c);
-                InputTextString("##Cond", transition.vecCondition[c]);
+                m_tCondDraft = DTO::CONDITION_ENTRY{};
+                m_iCondEditIndex = -1;
+                m_eCondOwner = eOwner;
+                m_iCondTransIndex = index;
+                m_bReqOpenCondPopup = true;
+            }
+
+            int eraseIdx = -1;
+            for (int c = 0; c < (int)transition.vecConditionEntry.size(); ++c)
+            {
+                ImGui::PushID(c);
+
+                ImGui::BulletText("%s", transition.vecConditionEntry[c].strCondition.c_str());
                 ImGui::SameLine();
-                if (ImGui::Button("X##Cond")) {
-                    transition.vecCondition.erase(transition.vecCondition.begin() + c);
-                    c--;
+
+                if (ImGui::SmallButton("Edit##Cond"))
+                {
+                    m_tCondDraft = transition.vecConditionEntry[c];
+                    m_iCondEditIndex = c;
+                    m_eCondOwner = eOwner;
+                    m_iCondTransIndex = index;
+                    m_bReqOpenCondPopup = true;
                 }
+                ImGui::SameLine();
+
+                if (ImGui::SmallButton("X##Cond"))
+                    eraseIdx = c;
+
                 ImGui::PopID();
             }
+
+            if (eraseIdx >= 0)
+                transition.vecConditionEntry.erase(transition.vecConditionEntry.begin() + eraseIdx);
+
             ImGui::TreePop();
         }
 
@@ -454,7 +605,7 @@ void CPanel_State::DrawGlobalStateTransition()
 
         for (int i = 0; i < (int)m_vecGlobalStateTransition.size(); ++i)
         {
-            DrawStateTransition(m_vecGlobalStateTransition[i], i);
+            DrawStateTransition(m_vecGlobalStateTransition[i], i, ETransOwner::Global);
             ImGui::PushID(i);
             if (ImGui::Button("Remove Transition"))
             {
@@ -465,12 +616,25 @@ void CPanel_State::DrawGlobalStateTransition()
             ImGui::Separator();
         }
     }
+
+    if (m_eCondOwner == ETransOwner::Global &&
+        m_iCondTransIndex >= 0 &&
+        m_iCondTransIndex < (int)m_vecGlobalStateTransition.size())
+    {
+        if (m_bReqOpenCondPopup == true)
+        {
+            ImGui::OpenPopup("ConditionEntry Editor");
+            m_bReqOpenCondPopup = false;
+        }
+
+        RenderConditionEntryModal(m_vecGlobalStateTransition[m_iCondTransIndex]);
+    }
 }
 
 bool CPanel_State::InputTextString(const char* label, std::string& str)
 {
-    char buffer[256];
-    strcpy_s(buffer, str.c_str());
+    char buffer[MAX_PATH]{};
+    strcpy_s(buffer, MAX_PATH, str.c_str());
     bool changed = ImGui::InputText(label, buffer, sizeof(buffer));
     if (changed) str = buffer;
     return changed;
@@ -565,6 +729,42 @@ bool CPanel_State::DrawAnimationComboBox(const char* label, std::string& selecte
     }
 
     return isChanged;
+}
+
+void CPanel_State::DrawRegistryPicker(const _char* comboID, const _char* const* items, _int iCount, string& strIOvalue, string& strIOfilter)
+{
+    if (ImGui::BeginCombo(comboID, "Pick..."))
+    {
+        ImGui::PushID(comboID);
+
+        ImGui::SetNextItemWidth(-1);
+        ImGui::InputText("##filter", &strIOfilter);
+        ImGui::Separator();
+
+        for (_int i = 0; i < iCount; ++i)
+        {
+            const _char* name = items[i];
+            if (PassFilter(name, strIOfilter) == false)
+                continue;
+
+            _bool selected = (strIOvalue == name);
+            if (ImGui::Selectable(name, selected))
+                strIOvalue = name;
+
+            if (selected)
+                ImGui::SetItemDefaultFocus();
+        }
+
+        ImGui::PopID();
+        ImGui::EndCombo();
+    }
+}
+
+_bool CPanel_State::PassFilter(const _char* item, const string& strFilter)
+{
+    if (strFilter.empty())
+        return true;
+    return std::string_view(item).find(strFilter) != std::string_view::npos;
 }
 
 HRESULT CPanel_State::Save(fs::path path)
@@ -758,6 +958,243 @@ void CPanel_State::RenderSaveModal()
 
         if (ImGui::Button("Cancel", ImVec2(50, 0)))
         {
+            ImGui::CloseCurrentPopup();
+        }
+
+        ImGui::EndPopup();
+    }
+}
+
+void CPanel_State::RenderStateParamEditor(DTO::STATE_PARAM& param)
+{
+    ImGui::PushID(&param);
+
+    ImGui::SeparatorText("Params");
+    ImGui::InputInt4("iParam[4]", param.iParam);
+    ImGui::InputFloat4("fParam[4]", param.fParam);
+
+    ImGui::Text("bParam[4]");
+    ImGui::Checkbox("##b0", &param.bParam[0]); ImGui::SameLine();
+    ImGui::Checkbox("##b1", &param.bParam[1]); ImGui::SameLine();
+    ImGui::Checkbox("##b2", &param.bParam[2]); ImGui::SameLine();
+    ImGui::Checkbox("##b3", &param.bParam[3]);
+
+    ImGui::PopID();
+}
+
+void CPanel_State::RenderFeatureEntryModal(DTO::MONSTER_STATEBASE_DESC& state)
+{
+    ImGui::SetNextWindowPos(ImGui::GetMainViewport()->GetCenter(), ImGuiCond_Appearing, ImVec2(0.5f, 0.5f));
+
+    if (ImGui::BeginPopupModal("FeatureEntry Editor", nullptr,
+        ImGuiWindowFlags_AlwaysAutoResize | ImGuiWindowFlags_NoSavedSettings))
+    {
+        const _float wInput = 320.f;
+
+        ImGui::Text("Feature");
+        ImGui::Separator();
+
+        ImGui::SetNextItemWidth(wInput);
+        ImGui::InputText("##FeatName", &m_tFeatDraft.strFeature);
+        ImGui::SameLine();
+        DrawRegistryPicker("##FeatPick",
+            kFeatureNames, kFeatureCount,
+            m_tFeatDraft.strFeature, m_filterFeat);
+
+        const bool valid = IsKnownFeature(m_tFeatDraft.strFeature);
+        if (!m_tFeatDraft.strFeature.empty() && !valid)
+            ImGui::Text("Unknown feature (not in Registry_State.h)");
+
+        RenderStateParamEditor(m_tFeatDraft.tParam);
+
+        ImGui::Separator();
+
+        if (!m_errFeatModal.empty())
+            ImGui::Text("%s", m_errFeatModal.c_str());
+
+        if (ImGui::Button("OK", ImVec2(100.f, 0.f)))
+        {
+            if (!valid && m_bStrictNameCheck)
+            {
+                m_errFeatModal = "Unknown feature name. Add it to Tool registry.";
+            }
+            else
+            {
+                m_errFeatModal.clear();
+
+                if (m_iFeatEditIndex < 0) state.vecFeatureEntry.push_back(m_tFeatDraft);
+                else state.vecFeatureEntry[m_iFeatEditIndex] = m_tFeatDraft;
+
+                m_iFeatEditIndex = -1;
+                ImGui::CloseCurrentPopup();
+            }
+        }
+        ImGui::SameLine();
+        if (ImGui::Button("Cancel", ImVec2(100.f, 0.f)))
+        {
+            m_iFeatEditIndex = -1;
+            m_errFeatModal.clear();
+            m_filterFeat.clear();
+            ImGui::CloseCurrentPopup();
+        }
+
+        ImGui::EndPopup();
+    }
+}
+
+void CPanel_State::RenderConditionEntryModal(DTO::STATE_TRANSITION& transition)
+{
+    ImGui::SetNextWindowPos(ImGui::GetMainViewport()->GetCenter(), ImGuiCond_Appearing, ImVec2(0.5f, 0.5f));
+
+    if (ImGui::BeginPopupModal("ConditionEntry Editor", nullptr,
+        ImGuiWindowFlags_AlwaysAutoResize | ImGuiWindowFlags_NoSavedSettings))
+    {
+        const _float wInput = 320.f;
+
+        ImGui::Text("Condition");
+        ImGui::Separator();
+
+        ImGui::SetNextItemWidth(wInput);
+        ImGui::InputText("##CondName", &m_tCondDraft.strCondition);
+        ImGui::SameLine();
+        DrawRegistryPicker("##CondPick",
+            kConditionNames, kConditionCount,
+            m_tCondDraft.strCondition, m_filterCond);
+
+        const _bool bValid = IsKnownCondition(m_tCondDraft.strCondition);
+        if (!m_tCondDraft.strCondition.empty() && !bValid)
+            ImGui::Text("Unknown condition (not in Registry_State.h)");
+
+        RenderStateParamEditor(m_tCondDraft.tParam);
+
+        ImGui::Separator();
+
+        if (!m_errCondModal.empty())
+            ImGui::Text("%s", m_errCondModal.c_str());
+
+        if (ImGui::Button("OK", ImVec2(100.f, 0.f)))
+        {
+            if (!bValid && m_bStrictNameCheck)
+            {
+                m_errCondModal = "Unknown condition name. Add it to Tool registry.";
+            }
+            else
+            {
+                m_errCondModal.clear();
+
+                if (m_iCondEditIndex < 0) transition.vecConditionEntry.push_back(m_tCondDraft);
+                else transition.vecConditionEntry[m_iCondEditIndex] = m_tCondDraft;
+
+                m_iCondEditIndex = -1;
+                m_iCondTransIndex = -1;
+                m_eCondOwner = ETransOwner::None;
+
+                ImGui::CloseCurrentPopup();
+            }
+        }
+        ImGui::SameLine();
+        if (ImGui::Button("Cancel", ImVec2(100.f, 0.f)))
+        {
+            // 리셋
+            m_iCondEditIndex = -1;
+            m_iCondTransIndex = -1;
+            m_eCondOwner = ETransOwner::None;
+            m_errCondModal.clear();
+            m_filterCond.clear();
+            ImGui::CloseCurrentPopup();
+        }
+
+        ImGui::EndPopup();
+    }
+}
+
+void CPanel_State::RenderConditionFeatureModal(DTO::MONSTER_STATEBASE_DESC& state)
+{
+    ImGui::SetNextWindowPos(ImGui::GetMainViewport()->GetCenter(), ImGuiCond_Appearing, ImVec2(0.5f, 0.5f));
+
+    if (ImGui::BeginPopupModal("ConditionFeature Editor", nullptr,
+        ImGuiWindowFlags_AlwaysAutoResize | ImGuiWindowFlags_NoSavedSettings))
+    {
+        const _float wInput = 320.f;
+
+        ImGui::Text("Condition / Feature");
+        ImGui::Separator();
+
+        // ---- Condition side ----
+        ImGui::SeparatorText("Condition");
+        ImGui::SetNextItemWidth(wInput);
+        ImGui::InputText("Condition", &m_tCondFeatDraft.cond.strCondition);
+        ImGui::SameLine();
+        
+        // Registry에 있는것 그림
+        {
+            DrawRegistryPicker("##CFCondPick",
+                kConditionNames, kConditionCount,
+                m_tCondFeatDraft.cond.strCondition, m_filterCondFeat_Cond);
+        }
+
+        // Registry와 싱크가 맞는가?
+        const _bool bCondOk = IsKnownCondition(m_tCondFeatDraft.cond.strCondition);
+        // 경고 텍스트
+        {
+            if (!m_tCondFeatDraft.cond.strCondition.empty() && !bCondOk)
+                ImGui::Text("Unknown condition (not in Registry_State.h)");
+        }
+
+        // Parameter Editor 모달 그림
+        RenderStateParamEditor(m_tCondFeatDraft.cond.tParam);
+
+        // ---- Feature side ----
+        ImGui::SeparatorText("Feature");
+        ImGui::SetNextItemWidth(wInput);
+        ImGui::InputText("Feature", &m_tCondFeatDraft.feat.strFeature);
+        ImGui::SameLine();
+
+        // Registry에 있는것 그림
+        {
+            DrawRegistryPicker("##CFFeatPick",
+                kFeatureNames, kFeatureCount,
+                m_tCondFeatDraft.feat.strFeature, m_filterCondFeat_Feat);
+        }
+
+        // Registry와 싱크가 맞는가?
+        const _bool bFeatOk = IsKnownFeature(m_tCondFeatDraft.feat.strFeature);
+        // 경고 텍스트
+        {
+            if (!m_tCondFeatDraft.feat.strFeature.empty() && !bFeatOk)
+                ImGui::Text("Unknown feature (not in Registry_State.h)");
+        }
+
+        // Parameter Editor 모달 그림
+        RenderStateParamEditor(m_tCondFeatDraft.feat.tParam);
+
+        ImGui::Separator();
+
+        // OK
+        if (ImGui::Button("OK", ImVec2(100.f, 0.f)))
+        {
+            if (m_bStrictNameCheck && (!bCondOk || !bFeatOk))
+            {
+                m_errCondFeatModal = "Unknown condition/feature. Add to Tool registry.";
+            }
+            else
+            {
+                m_errCondFeatModal.clear();
+
+                if (m_iCondFeatEditIndex < 0) state.vecConditionFeature.push_back(m_tCondFeatDraft);
+                else state.vecConditionFeature[m_iCondFeatEditIndex] = m_tCondFeatDraft;
+
+                m_iCondFeatEditIndex = -1;
+                ImGui::CloseCurrentPopup();
+            }
+        }
+        ImGui::SameLine();
+        if (ImGui::Button("Cancel", ImVec2(100.f, 0.f)))
+        {
+            m_iCondFeatEditIndex = -1;
+            m_errCondFeatModal.clear();
+            m_filterCondFeat_Cond.clear();
+            m_filterCondFeat_Feat.clear();
             ImGui::CloseCurrentPopup();
         }
 

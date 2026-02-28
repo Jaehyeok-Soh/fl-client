@@ -122,6 +122,7 @@ HRESULT CPhysics_Module::Initialize()
 		{
 			//sceneDesc.kineKineFilteringMode; // eDEFAULT = eSUPPRESS
 			//sceneDesc.staticKineFilteringMode; // eDEFAULT = eSUPPRESS
+			sceneDesc.staticKineFilteringMode = PxPairFilteringMode::eKEEP;
 		}
 
 		/////////////////////
@@ -323,7 +324,9 @@ PxFilterFlags CPhysics_Module::FilterShader(
 	{
 		if ((filterData0.word0 & filterData1.word1) && (filterData1.word0 & filterData0.word1))
 		{
-			pairFlags = PxPairFlag::eTRIGGER_DEFAULT;
+			pairFlags = PxPairFlag::eTRIGGER_DEFAULT
+				| PxPairFlag::eNOTIFY_TOUCH_FOUND
+				| PxPairFlag::eNOTIFY_TOUCH_LOST;
 			return PxFilterFlag::eDEFAULT;
 		}
 		return PxFilterFlag::eSUPPRESS;
@@ -392,9 +395,9 @@ void CPhysics_Module::GetActiveActors()
 	}
 }
 
-void CPhysics_Module::Overlap_EventCallback(CGameObject* pOwner, const PxVec3& vOverlapPoint, PxOverlapHit* pOverlapHit, PxPairFlag::Enum event)
+void CPhysics_Module::Overlap_EventCallback(CGameObject* pOwner, const PxVec3& vOverlapPoint, PxOverlapHit* pOverlapHit, PxPairFlag::Enum event, DTO::HITBOX_DESC* hitboxDesc)
 {
-	m_pFilterEventCallback->ProcessOverlap(pOwner, vOverlapPoint, pOverlapHit, event);
+	m_pFilterEventCallback->ProcessOverlap(pOwner, vOverlapPoint, pOverlapHit, event, hitboxDesc);
 }
 
 _bool CPhysics_Module::RayCast(Vec3 vWorldPos, Vec3 vDir, _float fMaxDist, CPhysics_QueryFilterCallback* pFilterCall)

@@ -125,7 +125,7 @@ HRESULT CBoss_Xibi::Ready_Weapon()
 		weaponDesc.pMatHandSocket = Get_Part<CBoss_Xibi_Body>(Part::BODY)->Get_SocketMatrix(375);
 		weaponDesc.eModel = CWeapon::Weapon_ModelType::ANIM;
 		weaponDesc.eAnimState = CWeapon::AnimState::PLAY;
-		weaponDesc.eState = CWeapon::State::HAND;
+		weaponDesc.eState = CWeapon::State::HAND_ONLY_POS_SCALE;
 		weaponDesc.bMianWeapon = true;
 		weaponDesc.FDescFlag = 0;
 

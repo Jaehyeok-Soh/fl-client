@@ -151,6 +151,26 @@ void CWeapon::Ready_Before_Render(_float fTimeDelta)
 	case State::HAND:
 		Super::Update_CombinedWorldMatrix(m_matHandOffsetMatrix *(*m_pMatHandSocket) * (*m_pMatParent));
 		break;
+
+	case State::HAND_ONLY_POS:
+	{
+		Matrix matfinalMat = Matrix::Identity;
+		matfinalMat.Translation((*m_pMatHandSocket).Translation());
+		Super::Update_CombinedWorldMatrix(m_matHandOffsetMatrix * matfinalMat * (*m_pMatParent));
+	}
+		break;
+	case State::HAND_ONLY_POS_SCALE:
+	{
+		Vec3 vPos{ Vec3::Zero };
+		Vec3 vScale{ Vec3::One };
+		Quat qRot{ Quat::Identity };
+		Matrix* pMat = const_cast<Matrix*>(m_pMatHandSocket);
+		pMat->Decompose(vScale, qRot, vPos);
+		Matrix matfinalMat = Matrix::CreateScale(vScale);
+		matfinalMat *= Matrix::CreateTranslation(vPos);
+		Super::Update_CombinedWorldMatrix(m_matHandOffsetMatrix * matfinalMat * (*m_pMatParent));
+	}
+		break;
 	}
 
 #ifdef _DEBUG

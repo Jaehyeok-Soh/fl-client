@@ -11,6 +11,20 @@ class CSkillComponent;
 class CMonsterControlContext final : public CControlContext
 {
 public:
+	typedef struct tagSubState
+	{
+		enum Enum
+		{
+			FALL = 1 << 0,
+			DOWN = 1 << 1,
+			AIRBORNE = 1 << 2,
+			FLY = 1 << 3,
+			HIT = 1 << 4,
+			NONE,
+			END
+		};
+	}SUB_STATE;
+
 	typedef struct tagMonsterControlContextDesc
 	{
 		_float fMeleeRange = {};
@@ -60,6 +74,12 @@ public:
 public:
 	virtual Vec3  Get_MoveDir() override;
 
+	void Set_HitDesc(HIT_DESC hitDesc)
+	{
+		m_tHitDesc = hitDesc;
+		m_iSubState |= SUB_STATE::HIT;
+	}
+
 /// <summary>
 /// Condition
 /// </summary>
@@ -87,11 +107,12 @@ public:
 	_bool IsTargetInAttackRange();
 	_bool IsTargetOutOfMeleeRange();
 	_bool IsTargetOutOfAttackRange();
+	_bool IsTargetDistanceOver(_float fValue);
 
 	// 공간
 	_bool IsFalling();
-	_bool IsGrounded();
 	_bool IsDown();
+	_bool IsHit();
 
 	// 데미지
 	_bool IsDamageRecently();
@@ -138,12 +159,9 @@ private:
 
 	Vec3 m_vMoveDir = {};
 
-	_bool m_bIsFall = { false };
-	_bool m_bIsDown = { false };
-	_bool m_bIsAirborne = { false };
-	_bool m_bIsFly = { false };
-
 	MONSTER_CONTROLCONTEXT_DESC m_tDesc = {};
+	HIT_DESC m_tHitDesc = {};
+	_uint m_iSubState = SUB_STATE::NONE;
 
 public:
 	static CMonsterControlContext* Create();

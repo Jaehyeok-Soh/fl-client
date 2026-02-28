@@ -1,16 +1,20 @@
 #include "pch.h"
 #include "TriggerBox.h"
+#include "DataStruct_Map.h"
 #include "PhysicsRigidBody.h"
 #include "PhysicsCollider.h"
 #include "GameInstance.h"
+#include "TriggerBox_LevelChange.h"
+
+
 
 CTriggerBox::CTriggerBox(ID3D11Device* pDevice, ID3D11DeviceContext* pContext)
-    : CGameObject(pDevice , pContext)
+    : CGameObject(pDevice, pContext), m_eTriggerBoxType{CTriggerBox::Type::CHANGE_LEVEL}
 {
 }
 
 CTriggerBox::CTriggerBox(const CTriggerBox& rhs)
-    : CGameObject(rhs)
+    : CGameObject(rhs), m_eTriggerBoxType{rhs.m_eTriggerBoxType}
 {
 }
 
@@ -31,18 +35,9 @@ HRESULT CTriggerBox::Initialize(void* pArg)
     CTriggerBox::TRIGGERBOX_DESC* pDesc = static_cast<CTriggerBox::TRIGGERBOX_DESC*>(pArg);
 
 
-    if (FAILED(Ready_Transform(pDesc)))
-        return E_FAIL;
-
     if (FAILED(Ready_Component(pDesc)))
         return E_FAIL;
 
-
-    return S_OK;
-}
-
-HRESULT CTriggerBox::Ready_Transform(TRIGGERBOX_DESC* pDesc)
-{
 
     return S_OK;
 }
@@ -52,39 +47,64 @@ HRESULT CTriggerBox::Ready_Component(TRIGGERBOX_DESC* pDesc)
 
     /* Ready PhysicCollider */
     {
+        /* 피직스 콜라이더 */
+        {
+            PHYSICSCOLLIDER_DESC cloneDesc{};
+            cloneDesc.eShape = EPhysicsShape::BOX;
+            cloneDesc.eFilterLayer = tagPhysicsFilterGroup::TRIGGER_BOX;
+            cloneDesc.iFilterMask = 0xFFFFFFFF;
+            cloneDesc.bSetOnlyFilter = false;
+            cloneDesc.bIsActive = true;
+            cloneDesc.bIsTrigger = true;
 
-        PHYSICSCOLLIDER_DESC pcDesc{};
+            /* 맵툴에서 정해준 Trigger Box 크기로 설정 */
+            cloneDesc.vExtents = pDesc->vTriggerBox_Extents * 2.f;
 
-        /* Collider Box 동일 */
-        pcDesc.eConvexShape = EPhysicsConvexShape::BOX;
-        pcDesc.eShape = EPhysicsShape::BOX;
+            if (FAILED(Add_Component<CPhysicsCollider>(ENUM_TO_UINT(ELevelType::STATIC), L"Prototype_Component_Physics_Collider", &cloneDesc)))
+                return E_FAIL;
+        }
+    }
 
-        ///* Trigger Box Prototype을 먼저생성? */
-        //CPhysicsCollider* pCollider = CPhysicsCollider::Create(m_pDevice, m_pDeviceContext, &pcDesc);
-        //if (pCollider)
-        //{
-        //    if (FAILED(m_pGameInstance->Add_Prototype(pDesc->iLevelIndex, L"Prototype_Component_Physics_Collider_" + wstrModelName, pCollider)))
-        //        Safe_Release(pCollider);
-        //}
+    /* Rigid Body */
+    {
+        PHYSICSRIGIDBODY_DESC desc{};
+        desc.eType = EPhysicsActorType::STATIC;
+        desc.detection = EPhysicsCollisionDetection::DISCRETE;
+        desc.fDensity = 10.f;
+        desc.bUseGravity = false;
+        desc.bIsKinematic = false;
+        desc.fLinearDamping = 0.f;
+        desc.fAngularDamping = 0.f;
+        if (pDesc->pSRTData == nullptr)
+        {
+            CTransform* pTs = Get_Component<CTransform>();
+            if (pTs == nullptr) return E_FAIL;
+            Matrix WorldMatrix = pTs->Get_WorldMatrix();
+            desc.pOwnerMatrices = { WorldMatrix };
+            desc.vecSRT.resize(1);
+            WorldMatrix.Decompose(desc.vecSRT[0].vScale, desc.vecSRT[0].vQuat, desc.vecSRT[0].vPosition);
+        }
+        else
+        {
+            desc.pOwnerMatrices = { pDesc->pSRTData->Get_World() };
+            desc.vecSRT         = { PHYSICS_SRT(pDesc->pSRTData->vScale , pDesc->pSRTData->vQuat , pDesc->pSRTData->vPosition) };
+        }
 
-        //PHYSICSCOLLIDER_DESC cloneDesc{};
-        //cloneDesc.eFilterLayer = PHYSICSFILTERGROUP::MAP;
-        //cloneDesc.iFilterMask = 0xFFFFFFFF;
-        //cloneDesc.bSetOnlyFilter = true;
+        if (FAILED(Add_Component<CPhysicsRigidBody>(0, L"Prototype_Component_Physics_RigidBody", &desc)))
+            return E_FAIL;
 
-        //if (FAILED(Add_Component<CPhysicsCollider>(pDesc->iLevelIndex, L"Prototype_Component_Physics_Collider_" + wstrModelName, &cloneDesc)))
-        //    return E_FAIL;
-
+        return S_OK;
     }
 
     return S_OK;
 }
 
-
 HRESULT CTriggerBox::Awake(const _uint iCurrentLevelID)
 {
     if (FAILED(Super::Awake(iCurrentLevelID)))
         return E_FAIL;
+
+    Get_Component<CPhysicsRigidBody>()->Awake();
 
     return S_OK;
 }
@@ -99,7 +119,10 @@ void CTriggerBox::Update_Priority(const _float fTimeDelta)
 void CTriggerBox::Update(const _float fTimeDelta)
 {
     Super::Update(fTimeDelta);
-
+    
+    
+    
+    
     return;
 }
 
@@ -115,6 +138,12 @@ void CTriggerBox::Ready_Before_Render(const _float fTimeDelta)
 {
     Super::Ready_Before_Render(fTimeDelta);
 
+    /* 일단 무적권 추가 */
+
+    CPhysicsRigidBody* pRigidBody = Get_Component<CPhysicsRigidBody>();
+    if (pRigidBody)
+        m_pGameInstance->Push_DebugComponent(pRigidBody);
+
     return;
 }
 
@@ -124,6 +153,26 @@ HRESULT CTriggerBox::Render()
         return E_FAIL;
 
     return S_OK;
+}
+
+void CTriggerBox::OnCollision(_uint iMyColliderLayer, _uint iOtherLayer, CGameObject* pOther)
+{
+}
+
+void CTriggerBox::OnCollision_Enter(_uint iMyColliderLayer, _uint iOtherLayer, CGameObject* pOther, const COL_HIT_INFO& tHitInfo)
+{
+}
+
+void CTriggerBox::OnCollision_Exit(_uint iMyColliderLayer, _uint iOtherLayer, CGameObject* pOther)
+{
+}
+
+void CTriggerBox::OnTrigger_Enter(_uint iMyColliderLayer, _uint iOtherLayer, CGameObject* pOther)
+{
+}
+
+void CTriggerBox::OnTrigger_Exit(_uint iMyColliderLayer, _uint iOtherLayer, CGameObject* pOther)
+{
 }
 
 
