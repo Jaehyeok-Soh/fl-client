@@ -224,8 +224,6 @@ void CPhysicsAttackOverlap::GetAnimation()
 		else
 			m_pOwnerModel = containerObj->Get_Component<CModel>();
 	}
-
-	Safe_AddRef(m_pOwnerModel);
 }
 
 void CPhysicsAttackOverlap::Ready_OverlapInfo()
@@ -365,7 +363,6 @@ void CPhysicsAttackOverlap::Free()
 
 	PoolClear();
 
-	Safe_Release(m_pOwnerModel);
 	Safe_Release(m_pFilterCallback);
 
 	Super::Free();
