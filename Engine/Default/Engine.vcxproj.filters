@@ -442,6 +442,9 @@
     <Filter Include="00. System\05. Component\GimmikController">
       <UniqueIdentifier>{faa8bbf7-f518-4ecb-8872-994c4c5778c3}</UniqueIdentifier>
     </Filter>
+    <Filter Include="00. System\04. GameObject\SkillObject_Base">
+      <UniqueIdentifier>{9ae53c38-bb95-4a13-93a5-a07fb8b2799c}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="..\Private\Timer.cpp">
@@ -885,6 +888,9 @@
     </ClCompile>
     <ClCompile Include="..\private\GimmikController.cpp">
       <Filter>00. System\05. Component\GimmikController</Filter>
+    </ClCompile>
+    <ClCompile Include="..\private\SkillObject_Base.cpp">
+      <Filter>00. System\04. GameObject\SkillObject_Base</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -1375,6 +1381,9 @@
     </ClInclude>
     <ClInclude Include="..\public\GimmikController.h">
       <Filter>00. System\05. Component\GimmikController</Filter>
+    </ClInclude>
+    <ClInclude Include="..\public\SkillObject_Base.h">
+      <Filter>00. System\04. GameObject\SkillObject_Base</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

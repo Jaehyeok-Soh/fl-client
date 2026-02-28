@@ -30,18 +30,23 @@ HRESULT CGimmikController::Initialize(void* pArg)
     if (FAILED(Super::Initialize(pArg)))
         return E_FAIL;
 
+    GIMMIKCTRL_DESC* pDesc = static_cast<GIMMIKCTRL_DESC*>(pArg);
+    m_pOwnerModel = pDesc->pOwnerModel;
+
+    if (m_pOwnerModel == nullptr)
+        return E_FAIL;
+
     return S_OK;
 }
 
 void CGimmikController::Bind_ModelAnimNotify()
 {
-    CModel* pModel = Get_Owner()->Get_Component<CModel>();
-    if (pModel == nullptr)
+    if (m_pOwnerModel == nullptr)
         return;
 
     Unbind_ModelAnimNotify();
-
-    m_hAnimNotifyHandle = pModel->OnNotify.Subscribe(
+    
+    m_hAnimNotifyHandle = m_pOwnerModel->OnNotify.Subscribe(
         [this](const AnimNotifyKey& key)
         {
             this->On_ModelAnimNotify(key);
@@ -50,11 +55,10 @@ void CGimmikController::Bind_ModelAnimNotify()
 
 void CGimmikController::Unbind_ModelAnimNotify()
 {
-    CModel* pModel = Get_Owner()->Get_Component<CModel>();
-    if (pModel == nullptr)
+    if (m_pOwnerModel == nullptr)
         return;
 
-    pModel->OnNotify.Unsubscribe(m_hAnimNotifyHandle);
+    m_pOwnerModel->OnNotify.Unsubscribe(m_hAnimNotifyHandle);
     m_hAnimNotifyHandle = {};
 }
 

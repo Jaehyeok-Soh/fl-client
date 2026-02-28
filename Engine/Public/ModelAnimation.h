@@ -11,7 +11,7 @@ class CPhysicsCCT;
 class CComputeShader;
 class StructuredBuffer;
 
-class CModelAnimation final : public CResourceBase
+class ENGINE_DLL CModelAnimation final : public CResourceBase
 {
 	using Super = CResourceBase;
 public:

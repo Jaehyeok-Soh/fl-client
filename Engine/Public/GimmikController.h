@@ -3,11 +3,17 @@
 
 NS_BEGIN(Engine)
 
-class CGimmikController abstract : public CComponent
+class CModel;
+
+class ENGINE_DLL CGimmikController abstract : public CComponent
 {
 	using Super = CComponent;
 public:
 	constexpr static EComponentType _ID = EComponentType::GIMMIKCTRL;
+	typedef struct tagGimmikControllerDesc
+	{
+		CModel* pOwnerModel{ nullptr };
+	}GIMMIKCTRL_DESC;
 protected:
 	CGimmikController();
 	CGimmikController(const CGimmikController& rhs);
@@ -25,6 +31,7 @@ protected:
 	void Unbind_ModelAnimNotify();
 	virtual void On_ModelAnimNotify(const AnimNotifyKey& key) PURE;
 protected:
+	CModel* m_pOwnerModel{ nullptr };
 	DelegateHandle m_hAnimNotifyHandle;
 public:
 	virtual CComponent* Clone(void* pArg) PURE;

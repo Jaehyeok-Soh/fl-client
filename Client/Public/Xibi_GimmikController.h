@@ -9,8 +9,10 @@ class CXibi_GimmikController final : public CGimmikController
 public:
 	enum class EGimmikType
 	{
-		TeleportRandom,
-		TeleportCenter,
+		TeleportRandom_Disappear,
+		TeleportRandom_Appear,
+		TeleportCenter_Disappear,
+		TeleportCenter_Appear,
 		COUNT
 	};
 private:
@@ -21,10 +23,14 @@ private:
 	virtual HRESULT						Initialize_Prototype() override;
 	virtual HRESULT						Initialize(void* pArg) override; 
 public:
-
+	HRESULT Awake(const _uint iCurLevelIndex);
 private:
-	void On_TeleportRandom();
-	void On_TeleportCenter();
+	//TODO - Åø·Î »©±â
+	HRESULT Set_Event();
+	void On_TeleportRandom_Disappear();
+	void On_TeleportRandom_Appear();
+	void On_TeleportCenter_Disappear();
+	void On_TeleportCenter_Appear();
 	virtual void On_ModelAnimNotify(const AnimNotifyKey& key) override;
 public:
 	static CXibi_GimmikController* Create();

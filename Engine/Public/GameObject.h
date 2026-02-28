@@ -112,7 +112,7 @@ private:
 protected:
 	_bool m_bAwaked = { false };
 	_bool m_bDead = { false };
-	_bool m_bRender = { false };
+	_bool m_bRender = { true };
 	_int m_iActiveIndex = { -1 };
 	CObjectPool* m_pOwnerPool = { nullptr };
 	CCameraMan* m_pTargeter = { nullptr };
