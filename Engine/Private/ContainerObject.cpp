@@ -118,6 +118,15 @@ void CContainerObject::OnTrigger_Exit(_uint iMyColliderLayer, _uint iOtherCollid
 {
 }
 
+void CContainerObject::Set_Render(_bool bRender)
+{
+	for (auto& part : m_vecPartObjects)
+	{
+		if (part)
+			part->Set_Render(bRender);
+	}
+}
+
 void CContainerObject::Remove_Part(_uint iPartID)
 {
 	if (m_vecPartObjects[iPartID])
