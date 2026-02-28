@@ -38,6 +38,8 @@ public:
 	HRESULT			Awake(_uint iLvelIndex);
 	void			Update(const _float fTimeDelta);
 
+	virtual void	Clear_WhenChangeLevel()override;
+
 	/* state funcs */
 public:
 	HRESULT			Change_State(_uint iIndex, _bool bForce = false, void* pArg = nullptr);
@@ -69,7 +71,6 @@ public:
 
 	// action state 내부에 CCTFlags 가지고 있음 -> 외부에서는 어떻게 윰직일지만 값을 넘겨준다
 	void			Move(Vec3 disp, _float minDist, _float fTimeDelta); 
-
 	/* animation funcs*/
 protected:
 	HRESULT			Request_MixAnimation(_uint iVectorIdx, _int iAnimIdx);
@@ -97,9 +98,9 @@ protected:
 	void			Move_Right(const _float fTimeDelta, const _float fSpeedRatio = 1.f);
 	void			Move_Front(const _float fTimeDelta, const _float fSpeedRatio = 1.f);
 	void			Move_Backward(const _float fTimeDelta, const _float fSpeedRatio = 1.f);
+	void			StartForce_Backward_ForAnimation(_float fForceAbs, _float fDragK);
 	void			Move_Down(const _float fTimeDelta, const _float fSpeedRatio = 1.f);
 	void			StartForce_Front_ForAnimation(_float fForceAbs, _float fDragK);
-	void			StartForce_Backward_ForAnimation(_float fForceAbs, _float fDragK);
 	void			StartForce_Left_ForAnimation(_float fForceAbs, _float fDragK);
 	void			StartForce_Right_ForAnimation(_float fForceAbs, _float fDragK);
 	void			Set_AttackCollider(_uint iPartIndex, _bool bActive, ATTACK_DESC* pDesc);

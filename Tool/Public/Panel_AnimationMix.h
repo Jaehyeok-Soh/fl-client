@@ -27,7 +27,8 @@ private:
 
 private:
 	//_bool			m_bHasModel = { false };
-	_bool			m_bMix	= { false };
+
+	_bool			m_bMix	= { true };
 	vector<_int>	m_vecMixIdx;
 
 	CModel* pModel			= { nullptr };

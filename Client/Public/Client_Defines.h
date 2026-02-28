@@ -161,6 +161,10 @@ namespace Client
 #pragma region MapObject
 
 
+
+
+
+
 	static ELevelType StringToClientleveltype(const _string& str)
 	{
 		if (::strcmp(str.c_str(), "STATIC") == 0)
@@ -407,6 +411,8 @@ namespace Client
 
 
 	inline constexpr wchar_t g_wszTriggerBoxLayer[]{ L"TriggerBox_Layer" };
+	inline constexpr wchar_t g_wszTriggerBoxPrototype[]{ L"Prototype_Component_Physics_Collider_TriggerBox" };
+
 	inline constexpr wchar_t g_wszColMeshLayer[]{ L"ColMesh_Layer" };
 	inline constexpr wchar_t g_wszStaticObjectLayer[]{ L"StaticObject_Layer" };
 	inline constexpr wchar_t g_wszInstanceModelLayer[]{ L"InstanceModel_Layer" };

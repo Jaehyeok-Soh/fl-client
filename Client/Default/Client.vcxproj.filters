@@ -280,17 +280,11 @@
     <Filter Include="03. GameObject\UIObjects\02.UI\Image\Dynamic Image\05.MonsterNameplate">
       <UniqueIdentifier>{f79a616a-c763-4d11-814c-b386d1f581f2}</UniqueIdentifier>
     </Filter>
-    <Filter Include="03. GameObject\ContainerObjects\Monster\Dummy">
-      <UniqueIdentifier>{06590E81-322B-4D40-8764-D34116611722}</UniqueIdentifier>
-    </Filter>
     <Filter Include="03. GameObject\PartObjects\Monster">
       <UniqueIdentifier>{8D23A3C7-24D5-4AE9-AC31-25364BA015E2}</UniqueIdentifier>
     </Filter>
     <Filter Include="03. GameObject\PartObjects\Monster\Body">
       <UniqueIdentifier>{85D632B0-1470-4D93-A4A8-0ADBA3B79E95}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="03. GameObject\PartObjects\Monster\Body\Dummy">
-      <UniqueIdentifier>{8A4455BB-DC96-4AA7-AEFA-F35C885875C9}</UniqueIdentifier>
     </Filter>
     <Filter Include="05. Component\Monster">
       <UniqueIdentifier>{B1DED375-A417-4FAC-A147-06883C162BC9}</UniqueIdentifier>
@@ -514,12 +508,6 @@
     <Filter Include="03. GameObject\UIObjects\02.UI\Image\Dynamic Image\05.MonsterNamePlate">
       <UniqueIdentifier>{761751c8-ba94-4e88-987b-53bc16a7f52f}</UniqueIdentifier>
     </Filter>
-    <Filter Include="06. FSM\Player\Attack\Gun\Attack">
-      <UniqueIdentifier>{94646764-3ce1-40c8-8e22-3ebf84f0db89}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="06. FSM\Player\Attack\Gun\Reload">
-      <UniqueIdentifier>{18445d4b-10df-4411-8b45-def1c25a996d}</UniqueIdentifier>
-    </Filter>
     <Filter Include="03. GameObject\UIObjects\02.UI\Image\Dynamic Image\07.Level Chnage">
       <UniqueIdentifier>{441fee0b-1c67-4053-a110-de1fdb40d73f}</UniqueIdentifier>
     </Filter>
@@ -543,6 +531,27 @@
     </Filter>
     <Filter Include="03. GameObject\UIObjects\02.UI\Text\Damage Text">
       <UniqueIdentifier>{677a64cd-1317-409c-a79c-d9f17b5e967a}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="06. FSM\Player\Attack\Gun\Base">
+      <UniqueIdentifier>{2fe06ae1-d9fc-4a2a-9f4d-c6056176c36a}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="06. FSM\Player\Attack\Gun\Base\Attack">
+      <UniqueIdentifier>{94646764-3ce1-40c8-8e22-3ebf84f0db89}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="06. FSM\Player\Attack\Gun\Base\Reload">
+      <UniqueIdentifier>{18445d4b-10df-4411-8b45-def1c25a996d}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="03. GameObject\ContainerObjects\Monster\Dog">
+      <UniqueIdentifier>{06590E81-322B-4D40-8764-D34116611722}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="03. GameObject\ContainerObjects\Monster\Boomer">
+      <UniqueIdentifier>{85818392-a86e-4f12-abce-91566c51393e}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="03. GameObject\PartObjects\Monster\Body\Dog">
+      <UniqueIdentifier>{8A4455BB-DC96-4AA7-AEFA-F35C885875C9}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="03. GameObject\PartObjects\Monster\Body\Boomer">
+      <UniqueIdentifier>{6c2ae324-f31e-44b8-b14f-ef67a7faf29d}</UniqueIdentifier>
     </Filter>
     <Filter Include="03. GameObject\UIObjects\02.UI\Progress Bar\Boss Stat">
       <UniqueIdentifier>{1fd4e4f2-2b0f-4f1c-8be1-d0d43024b71e}</UniqueIdentifier>
@@ -867,9 +876,6 @@
     <ClInclude Include="..\Public\Gun.h">
       <Filter>03. GameObject\PartObjects\Weapon\Gun</Filter>
     </ClInclude>
-    <ClInclude Include="..\Public\State_GunBase.h">
-      <Filter>06. FSM\Player\Attack\Gun</Filter>
-    </ClInclude>
     <ClInclude Include="..\Public\Plants.h">
       <Filter>03. GameObject\MapObject\03. Plants\00. Plants</Filter>
     </ClInclude>
@@ -918,14 +924,14 @@
     <ClInclude Include="..\Public\Monster_Base.h">
       <Filter>03. GameObject\ContainerObjects\Monster</Filter>
     </ClInclude>
-    <ClInclude Include="..\Public\Monster_Dummy.h">
-      <Filter>03. GameObject\ContainerObjects\Monster\Dummy</Filter>
+    <ClInclude Include="..\Public\Monster_Dog.h">
+      <Filter>03. GameObject\ContainerObjects\Monster\Dog</Filter>
     </ClInclude>
     <ClInclude Include="..\Public\Monster_Body_Base.h">
       <Filter>03. GameObject\PartObjects\Monster\Body</Filter>
     </ClInclude>
-    <ClInclude Include="..\Public\Monster_Dummy_Body.h">
-      <Filter>03. GameObject\PartObjects\Monster\Body\Dummy</Filter>
+    <ClInclude Include="..\Public\Monster_Dog_Body.h">
+      <Filter>03. GameObject\PartObjects\Monster\Body\Dog</Filter>
     </ClInclude>
     <ClInclude Include="..\Public\MonsterActionState.h">
       <Filter>05. Component\Monster\MonsterActionState</Filter>
@@ -998,10 +1004,10 @@
       <Filter>03. GameObject\UIObjects\02.UI\Image\Dynamic Image\07.Level Chnage</Filter>
     </ClInclude>
     <ClInclude Include="..\Public\State_GunAttack.h">
-      <Filter>06. FSM\Player\Attack\Gun\Attack</Filter>
+      <Filter>06. FSM\Player\Attack\Gun\Base\Attack</Filter>
     </ClInclude>
     <ClInclude Include="..\Public\State_GunReload.h">
-      <Filter>06. FSM\Player\Attack\Gun\Reload</Filter>
+      <Filter>06. FSM\Player\Attack\Gun\Base\Reload</Filter>
     </ClInclude>
     <ClInclude Include="..\Public\LandScape.h">
       <Filter>03. GameObject\MapObject\02. LandScape</Filter>
@@ -1020,6 +1026,15 @@
     </ClInclude>
     <ClInclude Include="..\Public\UIDamageFont_Text.h">
       <Filter>03. GameObject\UIObjects\02.UI\Text\Damage Text</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\State_GunBase.h">
+      <Filter>06. FSM\Player\Attack\Gun\Base</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\Monster_Boomer_Body.h">
+      <Filter>03. GameObject\PartObjects\Monster\Body\Boomer</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\Monster_Boomer.h">
+      <Filter>03. GameObject\ContainerObjects\Monster\Boomer</Filter>
     </ClInclude>
     <ClInclude Include="..\Public\UIBossStat_Image.h">
       <Filter>03. GameObject\UIObjects\02.UI\Image\Dynamic Image\08.Boss Stat</Filter>
@@ -1337,9 +1352,6 @@
     <ClCompile Include="..\Private\Gun.cpp">
       <Filter>03. GameObject\PartObjects\Weapon\Gun</Filter>
     </ClCompile>
-    <ClCompile Include="..\Private\State_GunBase.cpp">
-      <Filter>06. FSM\Player\Attack\Gun</Filter>
-    </ClCompile>
     <ClCompile Include="..\Private\Plants.cpp">
       <Filter>03. GameObject\MapObject\03. Plants\00. Plants</Filter>
     </ClCompile>
@@ -1391,8 +1403,8 @@
     <ClCompile Include="..\Private\Monster_Body_Base.cpp">
       <Filter>03. GameObject\PartObjects\Monster\Body</Filter>
     </ClCompile>
-    <ClCompile Include="..\Private\Monster_Dummy_Body.cpp">
-      <Filter>03. GameObject\PartObjects\Monster\Body\Dummy</Filter>
+    <ClCompile Include="..\Private\Monster_Dog_Body.cpp">
+      <Filter>03. GameObject\PartObjects\Monster\Body\Dog</Filter>
     </ClCompile>
     <ClCompile Include="..\Private\MonsterActionState.cpp">
       <Filter>05. Component\Monster\MonsterActionState</Filter>
@@ -1427,7 +1439,6 @@
     <ClCompile Include="..\private\Builder_AttackPreset.cpp">
       <Filter>07. System\01. Builder\AttackPreset</Filter>
     </ClCompile>
-    <ClCompile Include="..\Private\LandScape.cpp" />
     <ClCompile Include="..\Private\WorldUI_Component.cpp">
       <Filter>05. Component\WorldUI</Filter>
     </ClCompile>
@@ -1449,8 +1460,8 @@
     <ClCompile Include="..\Private\State_GunBase.cpp">
       <Filter>06. FSM\Player\Attack\Gun</Filter>
     </ClCompile>
-    <ClCompile Include="..\Private\Monster_Dummy.cpp">
-      <Filter>03. GameObject\ContainerObjects\Monster\Dummy</Filter>
+    <ClCompile Include="..\Private\Monster_Dog.cpp">
+      <Filter>03. GameObject\ContainerObjects\Monster\Dog</Filter>
     </ClCompile>
     <ClCompile Include="..\private\Boss_Xibi.cpp">
       <Filter>03. GameObject\ContainerObjects\Monster\Boss</Filter>
@@ -1468,10 +1479,10 @@
       <Filter>03. GameObject\UIObjects\02.UI\Image\Dynamic Image\07.Level Chnage</Filter>
     </ClCompile>
     <ClCompile Include="..\Private\State_GunAttack.cpp">
-      <Filter>06. FSM\Player\Attack\Gun\Attack</Filter>
+      <Filter>06. FSM\Player\Attack\Gun\Base\Attack</Filter>
     </ClCompile>
     <ClCompile Include="..\Private\State_GunReload.cpp">
-      <Filter>06. FSM\Player\Attack\Gun\Reload</Filter>
+      <Filter>06. FSM\Player\Attack\Gun\Base\Reload</Filter>
     </ClCompile>
     <ClCompile Include="..\Private\LandScape.cpp">
       <Filter>03. GameObject\MapObject\02. LandScape</Filter>
@@ -1490,6 +1501,15 @@
     </ClCompile>
     <ClCompile Include="..\Private\UIDamageFont_Text.cpp">
       <Filter>03. GameObject\UIObjects\02.UI\Text\Damage Text</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\Monster_Boomer_Body.cpp">
+      <Filter>03. GameObject\PartObjects\Monster\Body\Boomer</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\Monster_Boomer.cpp">
+      <Filter>03. GameObject\ContainerObjects\Monster\Boomer</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\State_GunBase.cpp">
+      <Filter>06. FSM\Player\Attack\Gun\Base</Filter>
     </ClCompile>
     <ClCompile Include="..\Private\UIBossStat_Image.cpp">
       <Filter>03. GameObject\UIObjects\02.UI\Image\Dynamic Image\08.Boss Stat</Filter>

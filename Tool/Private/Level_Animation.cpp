@@ -119,7 +119,9 @@ HRESULT CLevel_Animation::Render()
 	if (FAILED(Super::Render()))
 		return E_FAIL;
 	
+#if _DEBUG
 	Render_Grid();
+#endif
 
 	m_pAnimToolManager->Render(); // ????여기 맞는지 확인필요 소재혁 26.02.14
 

@@ -55,7 +55,10 @@ void CPhysicsRigidBody::Awake()
 	for (auto& actor : m_pActors)
 	{
 		if (actor)
+		{
 			m_pGameInstance->AddActor(actor);
+			SetUserData(Get_Owner());
+		}
 	}
 }
 

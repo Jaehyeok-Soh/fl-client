@@ -21,7 +21,7 @@ HRESULT CSkillBase::Initialize(void* pArg)
 
 	m_FSkillFlags = pDesc->FSkillFlags;
 
-	m_tSkillInfo.tCoolTimer.fTimeAcc = 0.f;
+	m_tSkillInfo.tCoolTimer.fTimeAcc = m_tSkillInfo.tCoolTimer.fMaxTime;
 	m_tSkillInfo.tCoolTimer.bTimeReset = false;
 	m_tSkillInfo.tCoolTimer.bCountTime = false;
 

@@ -3,6 +3,8 @@
 
 #include "GameInstance.h"
 
+#include "EngineConsole.h"
+
 #include "Monster_Body_Base.h"
 #include "Ray.h"
 
@@ -66,8 +68,6 @@ HRESULT CMonster_Base::Awake(const _uint iCurrentLevelID)
 
 	if (FAILED(Get_Component<CControlContext>()->Awake(iCurrentLevelID)))
 		return E_FAIL;
-
-	Get_Component<CTransform>()->Set_Info(TRANSFORM_INFO_STATE::POS, Vec3{ 21.f, 17.5f, -1.f });
 
 	Get_Component<CPhysicsCCT>()->Awake();
 
@@ -152,6 +152,15 @@ void CMonster_Base::OnCollision(_uint iMyColliderLayer, _uint iOtherLayer, CGame
 
 void CMonster_Base::OnCollision_Enter(_uint iMyColliderLayer, _uint iOtherLayer, CGameObject* pOther, const COL_HIT_INFO &tHitInfo)
 {
+	COLLIDED_DESC collidedDesc{};
+	collidedDesc.iCollisionType = COLLISIONEVENT::ON_COLLISION_ENTER;
+	collidedDesc.iRequesterLayer = iMyColliderLayer;
+	collidedDesc.iOtherLayer = iOtherLayer;
+	collidedDesc.pRequester = this;
+	collidedDesc.pOther = pOther;
+	collidedDesc.tHitInfo = tHitInfo;
+
+	m_pGameInstance->Push_CollidedData(collidedDesc);
 }
 
 void CMonster_Base::OnCollision_Exit(_uint iMyColliderLayer, _uint iOtherLayer, CGameObject* pOther)
@@ -164,6 +173,39 @@ void CMonster_Base::OnTrigger_Enter(_uint iMyColliderLayer, _uint iOtherLayer, C
 
 void CMonster_Base::OnTrigger_Exit(_uint iMyColliderLayer, _uint iOtherLayer, CGameObject* pOther)
 {
+}
+
+_bool CMonster_Base::On_Hit(const HIT_DESC& hitDesc)
+{
+	Get_Component<CMonsterControlContext>()->Set_HitDesc(hitDesc);
+
+#ifdef _DEBUG
+	wstring infoHeader(L"Monster Hit ");
+	wstring infoSeparate(L": ");
+	wstring infoContant = infoHeader
+		+ infoSeparate
+		+ Engine_Utils::ToWString(m_strName)
+		+ infoSeparate
+		+ std::to_wstring(Get_ID());
+
+	CLOG_INFO(infoContant);
+#endif // _DEBUG
+	return true;
+}
+
+void CMonster_Base::Try_Attack(const HIT_DESC& hitDesc)
+{
+#ifdef _DEBUG
+	wstring infoHeader(L"Monster Attack ");
+	wstring infoSeparate(L": ");
+	wstring infoContant = infoHeader
+		+ infoSeparate
+		+ Engine_Utils::ToWString(m_strName)
+		+ infoSeparate
+		+ std::to_wstring(Get_ID());
+
+	CLOG_INFO(infoContant);
+#endif // _DEBUG
 }
 
 HRESULT CMonster_Base::Ready_BaseStates()
@@ -212,7 +254,7 @@ HRESULT CMonster_Base::Ready_Components(void* pArgs)
 		return E_FAIL;
 
 	if (FAILED(Ready_AttackOverlap(pDesc->wstrAttackOverlapPrototypeTag)))
-		return E_FAIL;
+			return E_FAIL;
 
 	return S_OK;
 }

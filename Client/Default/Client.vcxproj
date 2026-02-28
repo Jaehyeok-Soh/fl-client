@@ -212,8 +212,10 @@
     <ClInclude Include="..\Public\MonsterState_Factory.h" />
     <ClInclude Include="..\Public\Monster_Base.h" />
     <ClInclude Include="..\Public\Monster_Body_Base.h" />
-    <ClInclude Include="..\Public\Monster_Dummy.h" />
-    <ClInclude Include="..\Public\Monster_Dummy_Body.h" />
+    <ClInclude Include="..\Public\Monster_Boomer.h" />
+    <ClInclude Include="..\Public\Monster_Boomer_Body.h" />
+    <ClInclude Include="..\Public\Monster_Dog.h" />
+    <ClInclude Include="..\Public\Monster_Dog_Body.h" />
     <ClInclude Include="..\Public\Moss.h" />
     <ClInclude Include="..\Public\Physics_LandScape.h" />
     <ClInclude Include="..\Public\Physics_Terrain.h" />
@@ -397,8 +399,10 @@
     <ClCompile Include="..\Private\MonsterState_Factory.cpp" />
     <ClCompile Include="..\Private\Monster_Base.cpp" />
     <ClCompile Include="..\Private\Monster_Body_Base.cpp" />
-    <ClCompile Include="..\Private\Monster_Dummy.cpp" />
-    <ClCompile Include="..\Private\Monster_Dummy_Body.cpp" />
+    <ClCompile Include="..\Private\Monster_Boomer.cpp" />
+    <ClCompile Include="..\Private\Monster_Boomer_Body.cpp" />
+    <ClCompile Include="..\Private\Monster_Dog.cpp" />
+    <ClCompile Include="..\Private\Monster_Dog_Body.cpp" />
     <ClCompile Include="..\Private\Moss.cpp" />
     <ClCompile Include="..\Private\Physics_LandScape.cpp" />
     <ClCompile Include="..\Private\Plants.cpp" />

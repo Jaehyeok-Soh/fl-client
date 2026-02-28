@@ -111,6 +111,8 @@ public:
 	_bool	Check_DoubleJump();
 	void	Set_DoubleJump(_bool bCount) { m_tDoubleJumpCount.bCountTime = bCount; if (!bCount) m_tDoubleJumpCount.fTimeAcc = 0.f; }
 
+	void	Change_CamState(_uint iCamState);
+
 public:
 	_bool	Start_Attack(State iState);
 	void	End_Attack(State iState);

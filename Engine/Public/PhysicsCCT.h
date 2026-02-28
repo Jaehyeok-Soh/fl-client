@@ -126,6 +126,10 @@ private:
     _float m_fHeightOffset = {};
     _float m_fContactOffset = {};
 
+private:
+    std::set<CGameObject*> m_setCurContact;
+    std::set<CGameObject*> m_setPreContact;
+
 public:
     static CPhysicsCCT* Create(ID3D11Device* pDevice, ID3D11DeviceContext* pDeviceContext);
     virtual CComponent* Clone(void* pArg) override;
