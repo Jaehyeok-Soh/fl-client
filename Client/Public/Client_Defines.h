@@ -395,6 +395,8 @@ namespace Client
 		Vec4	vFontColor = {};
 		Vec3	vHitPos = {};
 		_uint	iDamage = {};
+		Vec3	vRandOffset = {};
+
 	}UI_DAMAGEFONT_PREFAB_DATA;
 
 	typedef struct tagUIPrefabData
