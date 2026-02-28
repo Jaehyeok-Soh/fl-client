@@ -211,13 +211,19 @@ HRESULT CLevel_Tutorial_Village::Build_Files()
 
 HRESULT CLevel_Tutorial_Village::Ready_Player_Layer(const wstring& wstrLayerTag)
 {
+	_uint iLevelIndex = ENUM_TO_UINT(ELevelType::TUTORIAL_VILLAGE);
+
+	// TODO : 만약 플레이어가 늘어난다면 레이어 추가 체크 필수
+	if (CGameObject* pPlayer = m_pGameInstance->Get_GameObject_Front(ENUM_TO_UINT(ELevelType::STATIC), wstrLayerTag))
+		return S_OK;
+
 	/* Player 가 없다면 생성되고 있다면 Safe_Release */
 	{
 		CGameObject* pResult = { nullptr };
 
 		CPlayer::PLAYER_DESC playerDesc = {};
 		CTransform::TRANSFORM_DESC transformDesc = {};
-		playerDesc.iLevelIndex = ENUM_TO_UINT(ELevelType::LOGO);
+		playerDesc.iLevelIndex = ENUM_TO_UINT(ELevelType::TUTORIAL_VILLAGE);
 		playerDesc.wstrBodyModelTag = L"Prototype_Component_Model_Moon";
 		transformDesc.TranslationMatrix = Matrix::CreateTranslation(Vec3(229.12f, 256.72f, -245.039f));
 		playerDesc.pTransform_Desc = &transformDesc;
