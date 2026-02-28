@@ -120,17 +120,15 @@ void CObject_Manager::Delete_GameObject(_uint iCloneLevelIndex, const wstring& w
 	{
 		if (CLayer* pFindLayer = Find_Layer(iCloneLevelIndex, wstrLayerTag))
 			pFindLayer->Delete_GameObject(pGo);
+
+		Safe_Release(pGo);
 	}
-	Safe_Release(pGo);
 }
 
 CGameObject* CObject_Manager::Add_GameObject(_uint iCloneLevelIndex, const wstring& wstrLayerTag, CGameObject* pGo)
 {
 	if (!pGo || wstrLayerTag.empty())
 		return nullptr;
-
-	if (pGo)
-		Safe_AddRef(pGo);
 
 	CLayer* pLayer = Find_Layer(iCloneLevelIndex, wstrLayerTag);
 	if (pLayer == nullptr)

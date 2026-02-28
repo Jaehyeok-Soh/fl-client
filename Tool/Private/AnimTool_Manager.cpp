@@ -551,6 +551,13 @@ void CAnimTool_Manager::Modify_EffectEvent(vector<DTO::EFFECTEVENT> events)
 	m_pEffectModule->Modify_EFfectEvent(events);
 }
 
+HRESULT CAnimTool_Manager::EffectEvent_GizmoObjectSetting()
+{
+
+
+	return E_NOTIMPL;
+}
+
 
 void CAnimTool_Manager::Free()
 {

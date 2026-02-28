@@ -101,6 +101,12 @@ void CEffectHandler::Update(_float fDT)
 {
 }
 
+HRESULT CEffectHandler::Gizmo_Setting()
+{
+
+    return S_OK;
+}
+
 void CEffectHandler::GetAnimation()
 {
     if (Get_Owner())

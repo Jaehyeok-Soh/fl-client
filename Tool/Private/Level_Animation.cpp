@@ -113,7 +113,10 @@ void CLevel_Animation::Update(const _float fTimeDelta)
 void CLevel_Animation::Update_Picking()
 {
 	Super::Update_Picking();
-	m_pPickingManager->Picking();
+
+	if (m_pGameInstance->Mouse_Pressing(MOUSEKEYSTATE::LB))
+		m_pPickingManager->Picking();
+
 }
 
 HRESULT CLevel_Animation::Render()
@@ -136,7 +139,7 @@ HRESULT CLevel_Animation::Render()
 	Render_Elements();
 
 	//////////////////////////
-	m_pImGuiManager->Render_Viewport(nullptr);
+	m_pImGuiManager->Render_Viewport(m_pSelectedObject);
 	m_pImGuiManager->Render_End();
 
 	return S_OK;
@@ -220,6 +223,9 @@ HRESULT CLevel_Animation::Ready_Panels()
 
 HRESULT CLevel_Animation::Ready_Event()
 {
+	m_EventHandles[Event::ChangeSelectedObject] =
+		m_pGameInstance->Subscribe<ChangeSelectedObject>(this, &CLevel_Animation::On_ChangeSelectedObject);
+
 	m_EventHandles[Event::LOAD] =
 		m_pGameInstance->Subscribe<LoadAnimModel>(this, &CLevel_Animation::Load_AnimModel);
 
@@ -229,10 +235,27 @@ HRESULT CLevel_Animation::Ready_Event()
 	return S_OK;
 }
 
+void CLevel_Animation::On_ChangeSelectedObject(CGameObject* pGo)
+{
+	if (pGo) // 무언가 피킹되었다면
+	{
+		if (CToolObject* pToolGo = dynamic_cast<CToolObject*>(pGo))
+		{
+			m_pSelectedObject = pToolGo;
+			return;
+		}
+	}
+	else // 바닥이나 빈 공간을 눌러서 nullptr이 들어왔다면 선택 해제
+	{
+		return;
+	}
+}
+
 HRESULT CLevel_Animation::Release_Event()
 {
 	m_pGameInstance->Unsubscribe<LoadAnimModel>(m_EventHandles[Event::LOAD]);
 	m_pGameInstance->Unsubscribe<LoadAnimModelPart>(m_EventHandles[Event::LOAD_PART]);
+	m_pGameInstance->Unsubscribe<ChangeSelectedObject>(m_EventHandles[Event::ChangeSelectedObject]);
 
 	return S_OK;
 }
