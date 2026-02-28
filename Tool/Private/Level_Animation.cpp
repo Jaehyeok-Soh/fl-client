@@ -455,6 +455,7 @@ void CLevel_Animation::Free()
 
 	m_pAnimToolManager->DestroyInstance();
 
+	m_pImGuiManager->Clear_GuizmoTarget();
 	Safe_Release(m_pImGuiManager);
 	Safe_Release(m_pPickingManager);
 	Super::Free();
