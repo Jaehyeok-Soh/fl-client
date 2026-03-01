@@ -1,0 +1,70 @@
+#include "pch.h"
+#include "State_HitFlyStart.h"
+
+#include "Player.h"
+
+CState_HitFlyStart::CState_HitFlyStart(CActionState* pOwnerComponent)
+	: Super(pOwnerComponent, "HitFlyStart")
+{
+}
+
+HRESULT CState_HitFlyStart::Initialize(void* pArg)
+{
+	if (FAILED(Super::Initialize(pArg)))
+		return E_FAIL;
+
+	return S_OK;
+}
+
+HRESULT CState_HitFlyStart::Awake(const _uint iLevelIndex)
+{
+	if (FAILED(Super::Awake(iLevelIndex)))
+		return E_FAIL;
+
+	return S_OK;
+}
+
+HRESULT CState_HitFlyStart::Start(void* pArg, _bool bForce)
+{
+	if (FAILED(Super::Start(pArg, bForce)))
+		return E_FAIL;
+
+	return S_OK;
+}
+
+void CState_HitFlyStart::Update(const _float fTimeDelta)
+{
+	Super::Update(fTimeDelta);
+
+	// 바닥 충돌 검사 후 change
+	if (m_fStateElapsed > 0.28f &&
+		Check_OnGround(0.3f))
+	{
+		Change_PlayerState(ENUM_TO_UINT(CPlayer::State::HITFLYEND));
+		return;
+	}
+}
+
+HRESULT CState_HitFlyStart::End()
+{
+	if (FAILED(Super::End()))
+		return E_FAIL;
+
+	return S_OK;
+}
+
+CState_HitFlyStart* CState_HitFlyStart::Create(CActionState* pOwnerComponent, void* pArg)
+{
+	CState_HitFlyStart* pInstance = new CState_HitFlyStart(pOwnerComponent);
+	if (FAILED(pInstance->Initialize(pArg)))
+	{
+		MSG_BOX("CState_HitFlyStart::Create, Failed");
+		Safe_Release(pInstance);
+	}
+	return pInstance;
+}
+
+void CState_HitFlyStart::Free()
+{
+	Super::Free();
+}

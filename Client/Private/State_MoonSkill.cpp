@@ -29,9 +29,10 @@ HRESULT CState_MoonSkill::Start(void* pArg, _bool bForce)
 	if (FAILED(Super::Start(pArg, bForce)))
 		return E_FAIL;
 
-	Set_ApplyGravity(false);
 
-	m_FCollisions = 0;
+
+	// 처음에는 바닥 충돌 검사를 하지 않음
+	m_FCollisions &= ~COLLISIONFLAGS::C_DOWN;
 
 	return S_OK;
 }
@@ -62,11 +63,23 @@ HRESULT CState_MoonSkill::End()
 	return S_OK;
 }
 
+_uint CState_MoonSkill::Get_Capabilities() const
+{
+	switch (m_iPlayerState)
+	{
+	case ENUM_TO_UINT(CPlayer::State::SKILL1):
+		return	ENUM_TO_UINT(Engine::StateCapability::BEATTACKED);
+
+	case ENUM_TO_UINT(CPlayer::State::SKILL2):
+		return	0.f;
+	}
+}
+
 void CState_MoonSkill::SkillE_Update(const _float fTimeDelta)
 {
 	if (m_fStateElapsed >= m_tKeyTimer.fMaxTime - 0.3f)
 	{
-		m_FCollisions = COLLISIONFLAGS::C_DOWN;
+		m_FCollisions |= COLLISIONFLAGS::C_DOWN;
 	}
 
 	if (m_fStateElapsed >= 2.5f)

@@ -30,6 +30,8 @@ HRESULT CState_Slide::Start(void* pArg, _bool bForce)
     if (FAILED(Super::Start(pArg, bForce)))
         return E_FAIL;
 
+    Set_ApplyYLerp(true);
+
     return S_OK;
 }
 
@@ -42,6 +44,8 @@ HRESULT CState_Slide::End()
 {
     if (FAILED(Super::End()))
         return E_FAIL;
+
+    Set_ApplyYLerp(false);
 
     return S_OK;
 }

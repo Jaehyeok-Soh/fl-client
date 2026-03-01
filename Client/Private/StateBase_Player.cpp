@@ -6,6 +6,7 @@
 #include "PlayerControlContext.h"
 #include "Transform.h"
 #include "Gun.h"
+#include "PlayerActionState.h"
 
 // manager
 #include "GameInstance.h"
@@ -63,6 +64,10 @@ HRESULT CStateBase_Player::Start(void* pArg, _bool bForce)
 void CStateBase_Player::Update(const _float fTimeDelta)
 {
 	Super::Update(fTimeDelta);
+
+	// hit 충돌 처리 먼저
+	if (Check_Hit(fTimeDelta))
+		return;
 
 	// 만약 이전 애니메이션때 변화하기 싫은데 아직 preAni가 끝나지 않았다면 : key 입력 처리를 하지 않음
 	if (Engine_Utils::Has_Flag(m_FAniFlags, STATEANI_FLAG::SA_PreNonEvent) &&
@@ -129,6 +134,11 @@ void CStateBase_Player::Change_PlayerState(_uint iState)
 	Request_Change_State(iState, &m_tNextStateDesc);
 }
 
+void CStateBase_Player::Change_PlayerHitState(_uint iState, void* pArg)
+{
+	Request_Change_State(iState, pArg);
+}
+
 _bool CStateBase_Player::Check_MoveKey(const _float fTimeDelta)
 {
 	if (Engine_Utils::Has_Flag(m_FMoves, MOVEFLAGS::OWN))
@@ -174,7 +184,8 @@ _bool CStateBase_Player::Check_JumpKey(const _float fTimeDelta)
 		Key_Input(ENUM_TO_UINT(CControlContext::CONTROL_KEY::JUMP)))
 	{
 		// 벽이랑 충돌했는지 먼저 검사
-		if (IsOn_CCTFlag(PxControllerCollisionFlag::Enum::eCOLLISION_SIDES))
+		if (!Engine_Utils::Has_Flag(m_FCollisions, C_WALL_NO) &&
+			IsOn_CCTFlag(PxControllerCollisionFlag::Enum::eCOLLISION_SIDES))
 		{
 			Change_PlayerState(ENUM_TO_UINT(CPlayer::State::JUMPWALL));
 			return true;
@@ -269,28 +280,30 @@ _bool CStateBase_Player::Check_MeleeKey(const _float fTimeDelta)
 
 _bool CStateBase_Player::Check_RangeKey(const _float fTimeDelta)
 {
-	if (Has_ChangeState(STATEKEY::RM) &&
-		Key_Input(ENUM_TO_UINT(CControlContext::CONTROL_KEY::RATT)))
-	{
-		if (m_pOwnerGun)
-		{
-			// 공격이 가능 하다면 : attack
-			if (Can_Fire())
-			{
-				Request_Change_State(ENUM_TO_UINT(CPlayer::State::GUNATTACK));
-				return true;
-			}
+	//  Prototype 이후 고칠 것
+	
+	//if (Has_ChangeState(STATEKEY::RM) &&
+	//	Key_Input(ENUM_TO_UINT(CControlContext::CONTROL_KEY::RATT)))
+	//{
+	//	if (m_pOwnerGun)
+	//	{
+	//		// 공격이 가능 하다면 : attack
+	//		if (Can_Fire())
+	//		{
+	//			Request_Change_State(ENUM_TO_UINT(CPlayer::State::GUNATTACK));
+	//			return true;
+	//		}
 
-			// 공격은 불가능 하지만 reload는 가능 하다면 : reload
-			else if (Can_Reload())
-			{
-				Request_Change_State(ENUM_TO_UINT(CPlayer::State::GUNRELOAD));
-				return true;
-			}
+	//		// 공격은 불가능 하지만 reload는 가능 하다면 : reload
+	//		else if (Can_Reload())
+	//		{
+	//			Request_Change_State(ENUM_TO_UINT(CPlayer::State::GUNRELOAD));
+	//			return true;
+	//		}
 
-			return false;
-		}
-	}
+	//		return false;
+	//	}
+	//}
 
 	return false;
 }
@@ -316,6 +329,45 @@ _bool CStateBase_Player::Check_SkillKey(const _float fTimeDelta)
 		// player key event bus 호출
 		Change_PlayerState(STATEKEY::Q);
 		return true;
+	}
+
+	return false;
+}
+
+_bool CStateBase_Player::Check_Hit(const _float fTimeDelta)
+{
+	CPlayerActionState* pActionState = static_cast<CPlayerActionState*>(m_pOwnerStateComp);
+	// hit 검사 할건디
+	// action state에서 hit 되었는지 체크를 한번 한다
+	if (Can_BeAttacked() && pActionState->Is_OnHit())
+	{
+		Flags fAttackFlag = pActionState->Get_AttackFlag();
+
+		// 해당 hit collision을 체크 할 거고 : state 권한
+		// 해당 hit가 들어왔다면 : action state에서 처리 -> 아님 플레이어?
+		if (Engine_Utils::Has_Flag(m_FCollisions, COLLISIONFLAGS::C_Addtive) &&
+			Engine_Utils::Has_Flag(fAttackFlag, CPlayerActionState::AttackFlag::AF_Addtive))
+		{
+			Change_PlayerHitState(ENUM_TO_UINT(CPlayer::State::HITADDTIVE));
+			return true;
+		}
+
+		if (Engine_Utils::Has_Flag(m_FCollisions, COLLISIONFLAGS::C_Fly) &&
+			Engine_Utils::Has_Flag(fAttackFlag, CPlayerActionState::AttackFlag::AF_Fly))
+		{
+			Change_PlayerHitState(ENUM_TO_UINT(CPlayer::State::HITFLYSTART));
+			return true;
+		}
+
+		if (Engine_Utils::Has_Flag(m_FCollisions, COLLISIONFLAGS::C_Strong) &&
+			Engine_Utils::Has_Flag(fAttackFlag, CPlayerActionState::AttackFlag::AF_Strong))
+		{
+			// 충돌 방향 desc 넘겨줌
+			HITSTATE_START_DESC tStartDesc = {};
+			tStartDesc.vHitDir = pActionState->Get_HitNormal();
+			Change_PlayerHitState(ENUM_TO_UINT(CPlayer::State::HITSTRONG), &tStartDesc);
+			return true;
+		}
 	}
 
 	return false;
@@ -376,9 +428,9 @@ void CStateBase_Player::Set_RootMotion_Apply(_bool bApply)
 	static_cast<CPlayer*>(Get_OwnerObject())->Set_RootMotion_Apply(bApply);
 }
 
-void CStateBase_Player::Set_DoubleJump(_bool bCount)
+void CStateBase_Player::Set_DoubleJumpCount(_bool bCount)
 {
-	static_cast<CPlayer*>(Get_OwnerObject())->Set_DoubleJump(bCount);
+	static_cast<CPlayer*>(Get_OwnerObject())->Set_DoubleJumpCount(bCount);
 }
 
 _bool CStateBase_Player::Check_Double()

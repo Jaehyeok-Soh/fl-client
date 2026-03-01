@@ -129,6 +129,9 @@ void CPhysicsAttackOverlap::CallbackEvent(const AnimNotifyKey& key)
 	//	string		  strParam{ "" };
 	//};
 
+	if (key.eID != EAnimNotifyId::Hitbox)
+		return;
+
 	if (m_tDesc.attackEvents.size() == 0)
 		return;
 

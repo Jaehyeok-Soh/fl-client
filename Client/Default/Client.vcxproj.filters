@@ -34,9 +34,6 @@
     <Filter Include="04. Shaders\Defines">
       <UniqueIdentifier>{354ebfed-a9d5-464c-b65e-bc8fefcfb1ca}</UniqueIdentifier>
     </Filter>
-    <Filter Include="05. Component">
-      <UniqueIdentifier>{2840f41b-a1b7-48e7-80d9-efb16a70f794}</UniqueIdentifier>
-    </Filter>
     <Filter Include="03. GameObject\PartObjects">
       <UniqueIdentifier>{857375ad-fa5b-46b0-b8a5-75a651a83f05}</UniqueIdentifier>
     </Filter>
@@ -55,12 +52,6 @@
     <Filter Include="03. GameObject\PartObjects\ColliderPart">
       <UniqueIdentifier>{f8d10d8d-a30c-435a-a8b3-f1c6c5c3150d}</UniqueIdentifier>
     </Filter>
-    <Filter Include="05. Component\ActionState">
-      <UniqueIdentifier>{c750c7a8-fbd8-4dfa-aae4-0289d588a174}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="05. Component\ControlContext">
-      <UniqueIdentifier>{6eae1188-805a-4682-97be-f5878859d316}</UniqueIdentifier>
-    </Filter>
     <Filter Include="06. FSM">
       <UniqueIdentifier>{890fa858-1135-4621-8559-afa2d60f5830}</UniqueIdentifier>
     </Filter>
@@ -69,9 +60,6 @@
     </Filter>
     <Filter Include="06. FSM\Player\Idle">
       <UniqueIdentifier>{51b09a75-0a10-4351-89ee-c56fb121e232}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="05. Component\Stat">
-      <UniqueIdentifier>{2ced342f-5042-4404-83a0-64377d92387f}</UniqueIdentifier>
     </Filter>
     <Filter Include="03. GameObject\Camera">
       <UniqueIdentifier>{4ef88d48-f7cf-4d3e-bc7a-24d09855396e}</UniqueIdentifier>
@@ -211,17 +199,11 @@
     <Filter Include="06. FSM\Player\JumpWall">
       <UniqueIdentifier>{2c8ee512-8e94-467f-9f3f-35d518b8ff89}</UniqueIdentifier>
     </Filter>
-    <Filter Include="05. Component\Stat\StatCom_Player">
-      <UniqueIdentifier>{65804a62-163c-4d9e-96ad-c89ac5470b42}</UniqueIdentifier>
-    </Filter>
     <Filter Include="06. FSM\Player\Attack\Skill">
       <UniqueIdentifier>{dd83cb06-e5bd-4fe7-b1be-9158657fc3cd}</UniqueIdentifier>
     </Filter>
     <Filter Include="06. FSM\Player\Attack\Skill\Moon">
       <UniqueIdentifier>{819a5a47-1ce5-46ea-a5d0-0a4366274373}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="05. Component\Skill">
-      <UniqueIdentifier>{ff5cd5bd-4f3c-4bba-bad3-c7d7d49ea3e6}</UniqueIdentifier>
     </Filter>
     <Filter Include="06. FSM\Player\Attack\Melee">
       <UniqueIdentifier>{5fdc8b96-aa89-4637-89ee-222e7dac7a3a}</UniqueIdentifier>
@@ -244,9 +226,6 @@
     <Filter Include="06. FSM\Player\Attack\Gun">
       <UniqueIdentifier>{00f67508-9a6b-4c59-9832-98f058c8b1a5}</UniqueIdentifier>
     </Filter>
-    <Filter Include="05. Component\Skill\Moon">
-      <UniqueIdentifier>{967b52e8-d189-41cf-b480-c8f0f6d3fe01}</UniqueIdentifier>
-    </Filter>
     <Filter Include="03. GameObject\MapObject\01. StaticObject">
       <UniqueIdentifier>{f8de0721-b0eb-4bf1-9048-74bfbfacf39f}</UniqueIdentifier>
     </Filter>
@@ -268,9 +247,6 @@
     <Filter Include="03. GameObject\PartObjects\Monster">
       <UniqueIdentifier>{dd6c64a1-8604-4ada-acfe-59285f1d7176}</UniqueIdentifier>
     </Filter>
-    <Filter Include="05. Component\WorldUI">
-      <UniqueIdentifier>{8e22024d-4e3d-4939-938e-33aa2af517cb}</UniqueIdentifier>
-    </Filter>
     <Filter Include="03. GameObject\UIObjects\02.UI\Text\Monster Stat Text">
       <UniqueIdentifier>{5d3f0be5-ffc3-44fc-9119-9d81aa03b857}</UniqueIdentifier>
     </Filter>
@@ -285,15 +261,6 @@
     </Filter>
     <Filter Include="03. GameObject\PartObjects\Monster\Body">
       <UniqueIdentifier>{85D632B0-1470-4D93-A4A8-0ADBA3B79E95}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="05. Component\Monster">
-      <UniqueIdentifier>{B1DED375-A417-4FAC-A147-06883C162BC9}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="05. Component\Monster\MonsterActionState">
-      <UniqueIdentifier>{5507D004-C913-4260-8BCA-C852B54A4717}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="05. Component\Monster\MonsterControlContext">
-      <UniqueIdentifier>{9F6A9D98-F1E9-4E08-A76F-50B9DCAADF19}</UniqueIdentifier>
     </Filter>
     <Filter Include="06. FSM\Monster">
       <UniqueIdentifier>{90F74ABE-86F5-47F7-A2B7-4D5E5CDCFEC5}</UniqueIdentifier>
@@ -562,6 +529,51 @@
     <Filter Include="03. GameObject\UIObjects\02.UI\Image\Dynamic Image\08.Boss Stat">
       <UniqueIdentifier>{e031f721-b76b-4d49-ac59-e279c691cdda}</UniqueIdentifier>
     </Filter>
+    <Filter Include="06. FSM\Player\Hit">
+      <UniqueIdentifier>{4e5b3d45-462f-40ce-b860-06a83a6e4560}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="04. Shaders\05. Component">
+      <UniqueIdentifier>{2840f41b-a1b7-48e7-80d9-efb16a70f794}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="04. Shaders\05. Component\ActionState">
+      <UniqueIdentifier>{c750c7a8-fbd8-4dfa-aae4-0289d588a174}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="04. Shaders\05. Component\ControlContext">
+      <UniqueIdentifier>{6eae1188-805a-4682-97be-f5878859d316}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="04. Shaders\05. Component\Stat">
+      <UniqueIdentifier>{2ced342f-5042-4404-83a0-64377d92387f}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="04. Shaders\05. Component\Stat\StatCom_Player">
+      <UniqueIdentifier>{65804a62-163c-4d9e-96ad-c89ac5470b42}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="04. Shaders\05. Component\Skill">
+      <UniqueIdentifier>{ff5cd5bd-4f3c-4bba-bad3-c7d7d49ea3e6}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="04. Shaders\05. Component\Skill\Moon">
+      <UniqueIdentifier>{967b52e8-d189-41cf-b480-c8f0f6d3fe01}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="04. Shaders\05. Component\WorldUI">
+      <UniqueIdentifier>{8e22024d-4e3d-4939-938e-33aa2af517cb}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="04. Shaders\05. Component\Monster">
+      <UniqueIdentifier>{B1DED375-A417-4FAC-A147-06883C162BC9}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="04. Shaders\05. Component\Monster\MonsterActionState">
+      <UniqueIdentifier>{5507D004-C913-4260-8BCA-C852B54A4717}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="04. Shaders\05. Component\Monster\MonsterControlContext">
+      <UniqueIdentifier>{9F6A9D98-F1E9-4E08-A76F-50B9DCAADF19}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="06. FSM\Player\Hit\HitStrong">
+      <UniqueIdentifier>{c0b54dd6-a75a-4e39-bfe6-36ed2c24482e}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="06. FSM\Player\Hit\HitAdditive">
+      <UniqueIdentifier>{12d17690-be75-461c-8286-b80a5710f1b5}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="06. FSM\Player\Hit\HitFly">
+      <UniqueIdentifier>{2f0bfdde-3a56-4fd7-9e4b-814864127b04}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="targetver.h">
@@ -604,10 +616,10 @@
       <Filter>03. GameObject\PartObjects\Body</Filter>
     </ClInclude>
     <ClInclude Include="..\Public\PlayerActionState.h">
-      <Filter>05. Component\ActionState</Filter>
+      <Filter>04. Shaders\05. Component\ActionState</Filter>
     </ClInclude>
     <ClInclude Include="..\Public\PlayerControlContext.h">
-      <Filter>05. Component\ControlContext</Filter>
+      <Filter>04. Shaders\05. Component\ControlContext</Filter>
     </ClInclude>
     <ClInclude Include="..\Public\State_Idle.h">
       <Filter>06. FSM\Player\Idle</Filter>
@@ -808,7 +820,7 @@
       <Filter>06. FSM\Player\JumpWall</Filter>
     </ClInclude>
     <ClInclude Include="..\Public\StatCom_Player.h">
-      <Filter>05. Component\Stat\StatCom_Player</Filter>
+      <Filter>04. Shaders\05. Component\Stat\StatCom_Player</Filter>
     </ClInclude>
     <ClInclude Include="..\Public\State_JumpAttStart.h">
       <Filter>06. FSM\Player\Attack\Melee\JumpAtt</Filter>
@@ -859,10 +871,10 @@
       <Filter>06. FSM\Player\Attack\Skill\Moon</Filter>
     </ClInclude>
     <ClInclude Include="..\Public\SkillComp_MoonE.h">
-      <Filter>05. Component\Skill\Moon</Filter>
+      <Filter>04. Shaders\05. Component\Skill\Moon</Filter>
     </ClInclude>
     <ClInclude Include="..\Public\SkillComp_MoonQ.h">
-      <Filter>05. Component\Skill\Moon</Filter>
+      <Filter>04. Shaders\05. Component\Skill\Moon</Filter>
     </ClInclude>
     <ClInclude Include="..\Public\UILoading_Text.h">
       <Filter>03. GameObject\UIObjects\02.UI\Text\Loading Text</Filter>
@@ -934,10 +946,10 @@
       <Filter>03. GameObject\PartObjects\Monster\Body\Dog</Filter>
     </ClInclude>
     <ClInclude Include="..\Public\MonsterActionState.h">
-      <Filter>05. Component\Monster\MonsterActionState</Filter>
+      <Filter>04. Shaders\05. Component\Monster\MonsterActionState</Filter>
     </ClInclude>
     <ClInclude Include="..\Public\MonsterControlContext.h">
-      <Filter>05. Component\Monster\MonsterControlContext</Filter>
+      <Filter>04. Shaders\05. Component\Monster\MonsterControlContext</Filter>
     </ClInclude>
     <ClInclude Include="..\Public\StateBase_Monster.h">
       <Filter>06. FSM\Monster</Filter>
@@ -968,7 +980,7 @@
     </ClInclude>
     <ClInclude Include="..\Public\LandScape.h" />
     <ClInclude Include="..\Public\WorldUI_Component.h">
-      <Filter>05. Component\WorldUI</Filter>
+      <Filter>04. Shaders\05. Component\WorldUI</Filter>
     </ClInclude>
     <ClInclude Include="..\Public\Builder_UIPrefabs.h">
       <Filter>07. System\01. Builder\UI</Filter>
@@ -1048,6 +1060,18 @@
     <ClInclude Include="..\Public\UIBossStat_Text.h">
       <Filter>03. GameObject\UIObjects\02.UI\Text\Boss Stat</Filter>
     </ClInclude>
+    <ClInclude Include="..\Public\State_HitAdditive.h">
+      <Filter>06. FSM\Player\Hit\HitAdditive</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\State_HitStrong.h">
+      <Filter>06. FSM\Player\Hit\HitStrong</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\State_HitFlyStart.h">
+      <Filter>06. FSM\Player\Hit\HitFly</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\State_HitFlyEnd.h">
+      <Filter>06. FSM\Player\Hit\HitFly</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <Image Include="Client.ico">
@@ -1088,10 +1112,10 @@
       <Filter>03. GameObject\PartObjects\Body</Filter>
     </ClCompile>
     <ClCompile Include="..\Private\PlayerActionState.cpp">
-      <Filter>05. Component\ActionState</Filter>
+      <Filter>04. Shaders\05. Component\ActionState</Filter>
     </ClCompile>
     <ClCompile Include="..\Private\PlayerControlContext.cpp">
-      <Filter>05. Component\ControlContext</Filter>
+      <Filter>04. Shaders\05. Component\ControlContext</Filter>
     </ClCompile>
     <ClCompile Include="..\Private\State_Idle.cpp">
       <Filter>06. FSM\Player\Idle</Filter>
@@ -1289,7 +1313,7 @@
       <Filter>03. GameObject\UIObjects\02.UI\Image\Dynamic Image\02.HoverImage</Filter>
     </ClCompile>
     <ClCompile Include="..\Private\StatCom_Player.cpp">
-      <Filter>05. Component\Stat\StatCom_Player</Filter>
+      <Filter>04. Shaders\05. Component\Stat\StatCom_Player</Filter>
     </ClCompile>
     <ClCompile Include="..\Private\State_JumpAttStart.cpp">
       <Filter>06. FSM\Player\Attack\Melee\JumpAtt</Filter>
@@ -1337,10 +1361,10 @@
       <Filter>06. FSM\Player\Attack\Skill\Moon</Filter>
     </ClCompile>
     <ClCompile Include="..\Private\SkillComp_MoonE.cpp">
-      <Filter>05. Component\Skill\Moon</Filter>
+      <Filter>04. Shaders\05. Component\Skill\Moon</Filter>
     </ClCompile>
     <ClCompile Include="..\Private\SkillComp_MoonQ.cpp">
-      <Filter>05. Component\Skill\Moon</Filter>
+      <Filter>04. Shaders\05. Component\Skill\Moon</Filter>
     </ClCompile>
     <ClCompile Include="..\Private\UILoading_Text.cpp">
       <Filter>03. GameObject\UIObjects\02.UI\Text\Loading Text</Filter>
@@ -1410,10 +1434,10 @@
       <Filter>03. GameObject\PartObjects\Monster\Body\Dog</Filter>
     </ClCompile>
     <ClCompile Include="..\Private\MonsterActionState.cpp">
-      <Filter>05. Component\Monster\MonsterActionState</Filter>
+      <Filter>04. Shaders\05. Component\Monster\MonsterActionState</Filter>
     </ClCompile>
     <ClCompile Include="..\Private\MonsterControlContext.cpp">
-      <Filter>05. Component\Monster\MonsterControlContext</Filter>
+      <Filter>04. Shaders\05. Component\Monster\MonsterControlContext</Filter>
     </ClCompile>
     <ClCompile Include="..\Private\StateBase_Monster.cpp">
       <Filter>06. FSM\Monster</Filter>
@@ -1443,7 +1467,7 @@
       <Filter>07. System\01. Builder\AttackPreset</Filter>
     </ClCompile>
     <ClCompile Include="..\Private\WorldUI_Component.cpp">
-      <Filter>05. Component\WorldUI</Filter>
+      <Filter>04. Shaders\05. Component\WorldUI</Filter>
     </ClCompile>
     <ClCompile Include="..\Private\Builder_UIPrefabs.cpp">
       <Filter>07. System\01. Builder\UI</Filter>
@@ -1525,6 +1549,18 @@
     </ClCompile>
     <ClCompile Include="..\Private\UIBossStat_Text.cpp">
       <Filter>03. GameObject\UIObjects\02.UI\Text\Boss Stat</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\State_HitAdditive.cpp">
+      <Filter>06. FSM\Player\Hit\HitAdditive</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\State_HitStrong.cpp">
+      <Filter>06. FSM\Player\Hit\HitStrong</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\State_HitFlyStart.cpp">
+      <Filter>06. FSM\Player\Hit\HitFly</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\State_HitFlyEnd.cpp">
+      <Filter>06. FSM\Player\Hit\HitFly</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

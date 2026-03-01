@@ -39,6 +39,20 @@ HRESULT CState_JumpBullet::Start(void* pArg, _bool bForce)
 void CState_JumpBullet::Update(const _float fTimeDelta)
 {
 	Super::Update(fTimeDelta);
+
+	if (Get_AnimElpasedTimeSeconds() > 0.8f)
+	{
+		Set_ApplyGravity(true);
+
+		Set_RootMotion_Apply(false);
+
+		if(Check_OnGround(0.3f))
+		{
+			//Get_OwnerObject()->Get_Component<CTransform>()->Is_OnGround(0.1f);
+			Change_PlayerState(ENUM_TO_UINT(CPlayer::State::IDLE));
+			return;
+		}
+	}
 }
 
 HRESULT CState_JumpBullet::End()
