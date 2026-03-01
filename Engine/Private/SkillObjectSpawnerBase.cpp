@@ -3,6 +3,7 @@
 #include "Model.h"
 #include "Transform.h"
 #include "SkillObject_Base.h"
+#include "EffectHandler.h"
 #include "Engine_Utils.h"
 #include "GameInstance.h"
 
@@ -65,7 +66,12 @@ void CSkillObjectSpawnerBase::Spawn_SkillObject(const Vec3& vSpawnPos, const Vec
 
     CGameInstance::GetInstance()->Request_AddObject(
 		m_pOriginDesc->iPoolLevelIndex, m_pOriginDesc->wstrSkillPoolTag,
-		m_pOriginDesc->iSpawnLevelIndex, &desc);
+		m_pOriginDesc->iSpawnLevelIndex, &desc, [&](CGameObject* pResult)->void
+		{
+			CEffectHandler* pEffectHandler = pResult->Get_Component<CEffectHandler>();
+			if(pEffectHandler)
+				pEffectHandler->Trigger_Lifecycle_Effect(CEffectHandler::E_OBJ_LIFECYCLE_STATE::ON_SPAWN);
+		});
 }
 
 HRESULT CSkillObjectSpawnerBase::Ready_Components()

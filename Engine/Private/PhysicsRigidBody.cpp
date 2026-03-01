@@ -138,6 +138,10 @@ CPhysicsRigidBody* CPhysicsRigidBody::Move(_uint iIndex, Vec3 vDist, _float fTim
 	if (m_tDesc.eType != EPhysicsActorType::KINEMATIC)
 		return this;
 
+	PxTransform pxtf(PxVec3(vDist.x, vDist.y, vDist.z));
+
+	m_pActors[iIndex]->setGlobalPose(pxtf);
+
 	return this;
 }
 
@@ -145,6 +149,11 @@ CPhysicsRigidBody* CPhysicsRigidBody::Move(Vec3 vDist, _float fTimeDelta)
 {
 	if (m_tDesc.eType != EPhysicsActorType::KINEMATIC)
 		return this;
+
+	PxTransform pxtf(PxVec3(vDist.x, vDist.y, vDist.z));
+
+	for (auto& actor : m_pActors)
+		actor->setGlobalPose(pxtf);
 
 	return this;
 }

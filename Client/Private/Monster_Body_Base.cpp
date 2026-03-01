@@ -62,9 +62,6 @@ HRESULT CMonster_Body_Base::Awake(const _uint iCurrentLevelIndex)
 	if (FAILED(Super::Awake(iCurrentLevelIndex)))
 		return E_FAIL;
 
-	if (m_pEffectHandler)
-		m_pEffectHandler->Awake();
-
 	return S_OK;
 }
 
@@ -90,9 +87,6 @@ void CMonster_Body_Base::Update_Late(_float fTimeDelta)
 {
 	Super::Update_Late(fTimeDelta);
 	Get_Component<CModel>()->Emit_Notifies(EAnimNotifyPhase::Late);
-
-	if (m_pEffectHandler)
-		m_pEffectHandler->Update(fTimeDelta);	
 }
 
 void CMonster_Body_Base::Ready_Before_Render(_float fTimeDelta)
@@ -202,56 +196,9 @@ HRESULT CMonster_Body_Base::Ready_EffectHandler(MONSTERBODY_DESC* pDesc)
 	wstring NameTag = pDesc->wstrModelPrototypeTag;
 	Engine_Utils::Replace(NameTag, L"Prototype_Component_Model_", L"");
 
+	if (FAILED(Add_Component<CEffectHandler>(/*Static*/0, L"Prototype_Component_EffectHandler_" + NameTag, nullptr)))
+		return E_FAIL;
 
-	// ================= 스킬 Object 테스트용 =================
-	if (NameTag == L"Xibi")
-	{
-		CEffectHandler::ANIM_EFFECT_HANDLER_DESC Desc;
-		CEffectHandler::STATE_VFX_DESC SkillDesc;
-
-		// SPAWN EFFECT
-		{
-			SkillDesc.bFollowBone = false;
-			SkillDesc.bLocal = false;
-			SkillDesc.iBoneIndex = -1;
-			SkillDesc.vOffSet = Vec3(16.f, 17.f, 0.4f);
-			SkillDesc.vRotation = Vec3(0.f, 0.f, 0.f);
-
-			SkillDesc.EffectPrefabTag = "Boss_Xibi_Lightning";
-			// 스킬 오브젝트가 부모를 들고 있을까.
-			SkillDesc.pParentTransformMatrix = &/*Get_Parent()->*/Get_Component<CTransform>()->Get_WorldMatrix();
-
-			Desc.eType = CEffectHandler::E_HANDLER_TYPE::SKILL_OBJ;
-			Desc.mEffectState.emplace(CEffectHandler::E_OBJ_LIFECYCLE_STATE::ON_SPAWN, SkillDesc);
-		}
-
-		// Distory EFFECT
-		{
-			SkillDesc.bFollowBone = false;
-			SkillDesc.bLocal = false;
-			SkillDesc.iBoneIndex = -1;
-			SkillDesc.vOffSet = Vec3(16.f, 17.f, 0.4f);
-			SkillDesc.vRotation = Vec3(0.f, 0.f, 0.f);
-
-			SkillDesc.EffectPrefabTag = "Boss_Xibi_Bullet_Dead";
-			SkillDesc.pParentTransformMatrix = &/*Get_Parent()->*/Get_Component<CTransform>()->Get_WorldMatrix();
-
-			Desc.eType = CEffectHandler::E_HANDLER_TYPE::SKILL_OBJ;
-			Desc.mEffectState.emplace(CEffectHandler::E_OBJ_LIFECYCLE_STATE::ON_DESTROY, SkillDesc);
-		}
-
-		if (FAILED(Add_Component<CEffectHandler>(/*Static*/0, L"Prototype_Component_EffectHandler_" + NameTag, &Desc)))
-			return E_FAIL;
-	}
-	// ================= 스킬 Object 테스트용 =================
-
-	else
-	{
-		if (FAILED(Add_Component<CEffectHandler>(/*Static*/0, L"Prototype_Component_EffectHandler_" + NameTag, nullptr)))
-			return E_FAIL;
-	}
-
-	m_pEffectHandler = Get_Component<CEffectHandler>();
 	return S_OK;
 }
 

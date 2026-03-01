@@ -1,7 +1,8 @@
 #include "Engine_pch.h"
 #include "SkillObject_Base.h"
 #include "GameObject.h"
-#include "PhysicsCCT.h"
+#include "PhysicsRigidBody.h"
+#include "EffectHandler.h"
 #include "Engine_Utils.h"
 #include "GameInstance.h"
 
@@ -128,14 +129,10 @@ void CSkillObject_Base::Process_Move(const _float fTimeDelta)
 	Vec3 vDisp = vMoveDir * fSpeed * fTimeDelta;
 	Vec3 vPos = pTransform->Get_Info(TRANSFORM_INFO_STATE::POS);
 
-	if (CPhysicsCCT* pCCT = Get_Component<CPhysicsCCT>())
+	if (CPhysicsRigidBody* pRigidBody = Get_Component<CPhysicsRigidBody>())
 	{
-		PxControllerCollisionFlags CCTFlags{};
-		CCTFlags = pCCT->Move(vDisp, 0.01f, fTimeDelta);
-
-		Vec3 vFinalPos = pCCT->GetFootPosition();
-		pTransform->Set_Info(TRANSFORM_INFO_STATE::POS, vFinalPos);
-		m_runtimeDesc.fTravelDistance += (vPos - vFinalPos).Length();
+		pRigidBody->Move(vDisp, fTimeDelta);
+		m_runtimeDesc.fTravelDistance += fSpeed * fTimeDelta;
 		return;
 	}
 
@@ -150,15 +147,16 @@ void CSkillObject_Base::Process_Life(const _float fTimeDelta)
 		if (m_runtimeDesc.Life.Tick(fTimeDelta))
 		{
 			// Set_Dead
+			Set_Dead(L"");
 			return;
 		}
 	}
-
 	if (Has_Flag(ESkillObjectFlag::Life_Distance))
 	{
 		if (m_runtimeDesc.fTravelDistance >= m_desc.fMaxDistance)
 		{
 			// Set_Dead
+			Set_Dead(L"");
 			return;
 		}
 	}

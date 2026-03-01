@@ -6,6 +6,7 @@
 #include "PlayerControlContext.h"
 #include "MonsterControlContext.h"
 #include "MonoBehaviour.h"
+#include "EffectHandler.h"
 #include "PlayerActionState.h"
 #include "MonsterActionState.h"
 #include "StatCom_Player.h"
@@ -557,7 +558,9 @@ HRESULT CLoader::Loading_For_Logo()
 	m_pGameInstance->Add_Prototype(ENUM_TO_UINT(ELevelType::STATIC), L"Prototype_Component_Xibi_GimmikController", CXibi_GimmikController::Create());
 	// For. Prototype_Component_Collider_SPHERE
 	m_pGameInstance->Add_Prototype(ENUM_TO_UINT(ELevelType::STATIC), L"Prototype_Component_VIBuffer_InstanceMesh", CInstanceMesh::Create(m_pDevice, m_pDeviceContext));
-
+	// For. Prototype_Component_EffectHandler_SkillObject
+	m_pGameInstance->Add_Prototype(ENUM_TO_UINT(ELevelType::STATIC), L"Prototype_Component_EffectHandler_SkillObject", CEffectHandler::Create(nullptr));
+	
 	/* player components */
 	// For. Prototype_Component_Stat_Player
 	m_pGameInstance->Add_Prototype(ENUM_TO_UINT(ELevelType::STATIC), L"Prototype_Component_Stat_Player", CStatCom_Player::Create());

@@ -556,6 +556,9 @@
     <Filter Include="05. Component\GimmikController">
       <UniqueIdentifier>{6400d921-2ea9-4ca2-99ee-960c9e7d162a}</UniqueIdentifier>
     </Filter>
+    <Filter Include="03. GameObject\SkillObject">
+      <UniqueIdentifier>{447c781f-70bb-4ec1-aebd-deebe8560b9b}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="targetver.h">
@@ -1036,6 +1039,9 @@
     <ClInclude Include="..\public\Xibi_GimmikController.h">
       <Filter>05. Component\GimmikController</Filter>
     </ClInclude>
+    <ClInclude Include="..\public\Xibi_Projectile_Circle.h">
+      <Filter>03. GameObject\SkillObject</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <Image Include="Client.ico">
@@ -1507,6 +1513,9 @@
     </ClCompile>
     <ClCompile Include="..\private\Xibi_GimmikController.cpp">
       <Filter>05. Component\GimmikController</Filter>
+    </ClCompile>
+    <ClCompile Include="..\private\Xibi_Projectile_Circle.cpp">
+      <Filter>03. GameObject\SkillObject</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

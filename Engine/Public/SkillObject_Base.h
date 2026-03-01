@@ -50,7 +50,7 @@ public:
 		Vec3            vSpawnPos = {};
 		Vec3            vDirection = {};
 	}SKILLOBJECT_DESC;
-private:
+protected:
 	CSkillObject_Base(ID3D11Device* pDevice, ID3D11DeviceContext* pDeviceContext);
 	CSkillObject_Base(const CSkillObject_Base& rhs);
 	virtual ~CSkillObject_Base() = default;
@@ -68,8 +68,6 @@ public:
 	virtual void OnCollision(_uint iMyColliderLayer, _uint iOtherLayer, CGameObject* pOther) override {}
 	virtual void OnCollision_Enter(_uint iMyColliderLayer, _uint iOtherLayer, CGameObject* pOther, const COL_HIT_INFO& tHitInfo) override {}
 	virtual void OnCollision_Exit(_uint iMyColliderLayer, _uint iOtherLayer, CGameObject* pOther) override {}
-	virtual void OnTrigger_Enter(_uint iMyColliderLayer, _uint iOtherLayer, CGameObject* pOther) override {}
-	virtual void OnTrigger_Exit(_uint iMyColliderLayer, _uint iOtherLayer, CGameObject* pOther) override {}
 	
 	virtual _bool On_Hit(const HIT_DESC& hitDesc) override { return false; }
 	virtual void Try_Attack(const HIT_DESC& hitDesc) override {}
