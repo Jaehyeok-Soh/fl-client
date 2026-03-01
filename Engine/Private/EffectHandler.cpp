@@ -109,10 +109,13 @@ HRESULT CEffectHandler::Gizmo_Setting()
 
 void CEffectHandler::GetAnimation()
 {
-    if (Get_Owner() && (m_pOwnerModel == nullptr))
+    if (Get_Owner())
     {
-        m_pOwnerModel = Get_Owner()->Get_Component<CModel>();
-        Safe_AddRef(m_pOwnerModel);
+        if (m_pOwnerModel == nullptr)
+        {
+            m_pOwnerModel = Get_Owner()->Get_Component<CModel>();
+            Safe_AddRef(m_pOwnerModel);
+        }
     }
 }
 
