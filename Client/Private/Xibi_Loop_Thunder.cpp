@@ -1,23 +1,23 @@
 #include "pch.h"
-#include "Xibi_Projectile_Circle.h"
+#include "Xibi_Loop_Thunder.h"
 #include "EffectHandler.h"
 #include "PhysicsCollider.h"
 #include "PhysicsRigidBody.h"
 #include "GameInstance.h"
 
-CXibi_Projectile_Circle::CXibi_Projectile_Circle(ID3D11Device* pDevice, ID3D11DeviceContext* pDeviceContext)
+CXibi_Loop_Thunder::CXibi_Loop_Thunder(ID3D11Device* pDevice, ID3D11DeviceContext* pDeviceContext)
 	: Super(pDevice, pDeviceContext)
 {
 
 }
 
-CXibi_Projectile_Circle::CXibi_Projectile_Circle(const CXibi_Projectile_Circle& rhs)
+CXibi_Loop_Thunder::CXibi_Loop_Thunder(const CXibi_Loop_Thunder& rhs)
 	: Super(rhs)
 {
 
 }
 
-HRESULT CXibi_Projectile_Circle::Initialize_Prototype()
+HRESULT CXibi_Loop_Thunder::Initialize_Prototype()
 {
 	if (FAILED(Super::Initialize_Prototype()))
 		return E_FAIL;
@@ -25,7 +25,7 @@ HRESULT CXibi_Projectile_Circle::Initialize_Prototype()
 	return S_OK;
 }
 
-HRESULT CXibi_Projectile_Circle::Initialize(void* pArg)
+HRESULT CXibi_Loop_Thunder::Initialize(void* pArg)
 {
 	if (FAILED(Super::Initialize(pArg)))
 		return E_FAIL;
@@ -37,7 +37,7 @@ HRESULT CXibi_Projectile_Circle::Initialize(void* pArg)
 	return S_OK;
 }
 
-HRESULT CXibi_Projectile_Circle::Awake(const _uint iCurrentLevelID)
+HRESULT CXibi_Loop_Thunder::Awake(const _uint iCurrentLevelID)
 {
 	if (FAILED(Super::Awake(iCurrentLevelID)))
 		return E_FAIL;
@@ -46,22 +46,22 @@ HRESULT CXibi_Projectile_Circle::Awake(const _uint iCurrentLevelID)
 	return S_OK;
 }
 
-void CXibi_Projectile_Circle::Update_Priority(const _float fTimeDelta)
+void CXibi_Loop_Thunder::Update_Priority(const _float fTimeDelta)
 {
 	Super::Update_Priority(fTimeDelta);
 }
 
-void CXibi_Projectile_Circle::Update(const _float fTimeDelta)
+void CXibi_Loop_Thunder::Update(const _float fTimeDelta)
 {
 	Super::Update(fTimeDelta);
 }
 
-void CXibi_Projectile_Circle::Update_Late(const _float fTimeDelta)
+void CXibi_Loop_Thunder::Update_Late(const _float fTimeDelta)
 {
 	Super::Update_Late(fTimeDelta);
 }
 
-void CXibi_Projectile_Circle::Ready_Before_Render(const _float fTimeDelta)
+void CXibi_Loop_Thunder::Ready_Before_Render(const _float fTimeDelta)
 {
 	Super::Ready_Before_Render(fTimeDelta);
 #ifdef _DEBUG
@@ -69,7 +69,7 @@ void CXibi_Projectile_Circle::Ready_Before_Render(const _float fTimeDelta)
 #endif
 }
 
-HRESULT CXibi_Projectile_Circle::Render()
+HRESULT CXibi_Loop_Thunder::Render()
 {
 	if (FAILED(Super::Render()))
 		return E_FAIL;
@@ -77,20 +77,20 @@ HRESULT CXibi_Projectile_Circle::Render()
 	return S_OK;
 }
 
-void CXibi_Projectile_Circle::OnCollision(_uint iMyColliderLayer, _uint iOtherLayer, CGameObject* pOther)
+void CXibi_Loop_Thunder::OnCollision(_uint iMyColliderLayer, _uint iOtherLayer, CGameObject* pOther)
 {
 
 }
 
-void CXibi_Projectile_Circle::OnCollision_Enter(_uint iMyColliderLayer, _uint iOtherLayer, CGameObject* pOther, const COL_HIT_INFO& tHitInfo)
+void CXibi_Loop_Thunder::OnCollision_Enter(_uint iMyColliderLayer, _uint iOtherLayer, CGameObject* pOther, const COL_HIT_INFO& tHitInfo)
 {
 }
 
-void CXibi_Projectile_Circle::OnCollision_Exit(_uint iMyColliderLayer, _uint iOtherLayer, CGameObject* pOther)
+void CXibi_Loop_Thunder::OnCollision_Exit(_uint iMyColliderLayer, _uint iOtherLayer, CGameObject* pOther)
 {
 }
 
-void CXibi_Projectile_Circle::Set_Dead(const wstring& wstrLayerTag)
+void CXibi_Loop_Thunder::Set_Dead(const wstring& wstrLayerTag)
 {
 	m_bDead = true;
 	m_pGameInstance->Request_DeleteGameObject(
@@ -100,16 +100,16 @@ void CXibi_Projectile_Circle::Set_Dead(const wstring& wstrLayerTag)
 	Get_Component<CEffectHandler>()->Trigger_Lifecycle_Effect(CEffectHandler::E_OBJ_LIFECYCLE_STATE::ON_DESTROY);
 }
 
-_bool CXibi_Projectile_Circle::On_Hit(const HIT_DESC& hitDesc)
+_bool CXibi_Loop_Thunder::On_Hit(const HIT_DESC& hitDesc)
 {
 	return true;
 }
 
-void CXibi_Projectile_Circle::Try_Attack(const HIT_DESC& hitDesc)
+void CXibi_Loop_Thunder::Try_Attack(const HIT_DESC& hitDesc)
 {
 }
 
-HRESULT CXibi_Projectile_Circle::Ready_Components()
+HRESULT CXibi_Loop_Thunder::Ready_Components()
 {
 	// For. Component_EffectHandler
 	{
@@ -118,7 +118,7 @@ HRESULT CXibi_Projectile_Circle::Ready_Components()
 
 		// SPAWN EFFECT
 		{
-			SkillDesc.EffectPrefabTag = "Boss_Xibi_Bullet_Spawn";
+			SkillDesc.EffectPrefabTag = "Boss_Xibi_Lightning";
 			SkillDesc.pParentTransformMatrix = &Get_Component<CTransform>()->Get_WorldMatrix();
 			SkillDesc.bWorld = { CEffectHandler::E_WORLD::E_LOCAL };
 			SkillDesc.bFollowBone = { false };
@@ -131,13 +131,13 @@ HRESULT CXibi_Projectile_Circle::Ready_Components()
 
 		// Distory EFFECT
 		{
-			SkillDesc.EffectPrefabTag = "Boss_Xibi_Bullet_Dead";
+			SkillDesc.EffectPrefabTag = "";
 			SkillDesc.pParentTransformMatrix = &Get_Component<CTransform>()->Get_WorldMatrix();
 			SkillDesc.bWorld = { CEffectHandler::E_WORLD::E_LOCAL };
 			SkillDesc.bFollowBone = { false };
 			SkillDesc.iBoneIndex = -1;
-			SkillDesc.vOffSet = {Vec3::Zero};
-			SkillDesc.vRotation = {Vec3::Zero};			
+			SkillDesc.vOffSet = { Vec3::Zero };
+			SkillDesc.vRotation = { Vec3::Zero };
 			Desc.eType = CEffectHandler::E_HANDLER_TYPE::SKILL_OBJ;
 			Desc.mEffectState.emplace(CEffectHandler::E_OBJ_LIFECYCLE_STATE::ON_DESTROY, SkillDesc);
 		}
@@ -151,9 +151,9 @@ HRESULT CXibi_Projectile_Circle::Ready_Components()
 		/* 피직스 콜라이더 */
 		{
 			PHYSICSCOLLIDER_DESC cloneDesc{};
-			cloneDesc.eShape = EPhysicsShape::SPHERE;
+			cloneDesc.eShape = EPhysicsShape::BOX;
 			cloneDesc.eFilterLayer = tagPhysicsFilterGroup::MONSTER_SKILL_PROJECTTILE;
-			cloneDesc.iFilterMask = 
+			cloneDesc.iFilterMask =
 			{
 				PHYSICSFILTERGROUP::Enum::PLAYER
 				| PHYSICSFILTERGROUP::Enum::ATTACK_PROJECTTILE
@@ -164,7 +164,7 @@ HRESULT CXibi_Projectile_Circle::Ready_Components()
 			cloneDesc.bIsTrigger = true;
 			cloneDesc.bSetOnlyFilter = false;
 			cloneDesc.bIsActive = true;
-			cloneDesc.fRadius = 0.5f;
+			cloneDesc.vExtents = { 0.3f, 5.f,0.3f };
 			PHYSICSMATERIAL_DESC mtrlDesc{};
 			mtrlDesc.eMaterial = EPhysicsMaterial::CONCRETE;
 			cloneDesc.tMaterial = mtrlDesc;
@@ -187,29 +187,29 @@ HRESULT CXibi_Projectile_Circle::Ready_Components()
 	return S_OK;
 }
 
-CXibi_Projectile_Circle* CXibi_Projectile_Circle::Create(ID3D11Device* pDevice, ID3D11DeviceContext* pDeviceContext)
+CXibi_Loop_Thunder* CXibi_Loop_Thunder::Create(ID3D11Device* pDevice, ID3D11DeviceContext* pDeviceContext)
 {
-	CXibi_Projectile_Circle* pInstance = new CXibi_Projectile_Circle(pDevice, pDeviceContext);
+	CXibi_Loop_Thunder* pInstance = new CXibi_Loop_Thunder(pDevice, pDeviceContext);
 	if (FAILED(pInstance->Initialize_Prototype()))
 	{
-		MSG_BOX("CXibi_Projectile_Circle::Create, Failed");
+		MSG_BOX("CXibi_Loop_Thunder::Create, Failed");
 		Safe_Release(pInstance);
 	}
 	return pInstance;
 }
 
-CGameObject* CXibi_Projectile_Circle::Clone(void* pArg)
+CGameObject* CXibi_Loop_Thunder::Clone(void* pArg)
 {
-	CXibi_Projectile_Circle* pInstance = new CXibi_Projectile_Circle(*this);
+	CXibi_Loop_Thunder* pInstance = new CXibi_Loop_Thunder(*this);
 	if (FAILED(pInstance->Initialize(pArg)))
 	{
-		MSG_BOX("CXibi_Projectile_Circle::Clone, Failed");
+		MSG_BOX("CXibi_Loop_Thunder::Clone, Failed");
 		Safe_Release(pInstance);
 	}
 	return pInstance;
 }
 
-void CXibi_Projectile_Circle::Free()
+void CXibi_Loop_Thunder::Free()
 {
 	Super::Free();
 }

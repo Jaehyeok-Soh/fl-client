@@ -58,6 +58,10 @@
 #include "Monster_Boomer_Body.h"
 #include "Boss_Xibi.h"
 #include "Boss_Xibi_Body.h"
+#include "SingleSkillSpawner.h"
+#include "ProjectileSpawner_Fan.h"
+#include "Xibi_Projectile_Circle.h"
+#include "Xibi_Loop_Thunder.h"
 
 //=================
 // GameInstance
@@ -95,6 +99,9 @@ HRESULT CLevel_Test::Initialize()
 	if (FAILED(Ready_UI_Layer(g_wszUILayer)))
 		return E_FAIL;
 
+	if (FAILED(Ready_SkillObjectLayer()))
+		return E_FAIL;
+
 	return S_OK;
 
 }
@@ -102,6 +109,12 @@ HRESULT CLevel_Test::Initialize()
 HRESULT CLevel_Test::Awake(const _uint iLevelID)
 {
 	if (FAILED(Super::Awake(iLevelID)))
+		return E_FAIL;
+
+	if (FAILED(m_pSpawner->Awake(iLevelID)))
+		return E_FAIL;
+
+	if (FAILED(m_pSpawner2->Awake(iLevelID)))
 		return E_FAIL;
 
 	if (FAILED(Ready_Octree()))
@@ -175,6 +188,28 @@ void CLevel_Test::Update(const _float fTimeDelta)
 		UI_PREFAB_DATA Desc = {};
 		CUI_Manager::GetInstance()->Request_Add_Prefab(ENUM_TO_UINT(ELevelType::TEST), EUIPrefabType::BOSS_NAMEPLATE, ENUM_TO_UINT(ELevelType::TEST), &Desc);
 	}
+	if (KEY_BUTTON_DOWN(DIK_3))
+	{
+		CGameObject* pPlayer = m_pGameInstance->Get_GameObject_Front(0, g_wszPlayerLayer);
+		CSkillObjectSpawnerBase::SPAWNER_COPY_DESC desc{};
+		desc.iLevelIndex = ENUM_TO_UINT(ELevelType::TEST);
+		desc.iSpawnLevelIndex = ENUM_TO_UINT(ELevelType::TEST);
+		desc.vOrigin = pPlayer->Get_Component<CTransform>()->Get_Info(TRANSFORM_INFO_STATE::POS);
+		desc.vForward = pPlayer->Get_Component<CTransform>()->Get_Info(TRANSFORM_INFO_STATE::LOOK);
+		m_pSpawner->Trigger(desc);
+	}
+	if (KEY_BUTTON_DOWN(DIK_2))
+	{
+		CGameObject* pPlayer = m_pGameInstance->Get_GameObject_Front(0, g_wszPlayerLayer);
+		CSkillObjectSpawnerBase::SPAWNER_COPY_DESC desc{};
+		desc.iLevelIndex = ENUM_TO_UINT(ELevelType::TEST);
+		desc.iSpawnLevelIndex = ENUM_TO_UINT(ELevelType::TEST);
+		desc.vOrigin = pPlayer->Get_Component<CTransform>()->Get_Info(TRANSFORM_INFO_STATE::POS);
+		desc.vForward = pPlayer->Get_Component<CTransform>()->Get_Info(TRANSFORM_INFO_STATE::LOOK);
+		m_pSpawner2->Trigger(desc);
+	}
+	m_pSpawner->Update(fTimeDelta);
+	m_pSpawner2->Update(fTimeDelta);
 }
 
 HRESULT CLevel_Test::Render()
@@ -355,6 +390,70 @@ HRESULT CLevel_Test::Ready_Lights()
 			return E_FAIL;
 	}
 
+	return S_OK;
+}
+
+HRESULT CLevel_Test::Ready_SkillObjectLayer()
+{
+	CGameObject* pPlayer = m_pGameInstance->Get_GameObject_Front(0, g_wszPlayerLayer);
+
+	_uint iLevelId = ENUM_TO_UINT(ELevelType::TEST);
+
+	// SkillObject Pool
+	{
+		CXibi_Projectile_Circle::SKILLOBJECT_DESC desc{};
+		if (FAILED(m_pGameInstance->Regist_Pool(
+			iLevelId,
+			g_wszPool_XibiCircleProjectile,
+			g_wszSkillObjectLayer,
+			iLevelId,
+			g_wszXibiProjectile_Prototype_Tag,
+			&desc,
+			10)))
+			return E_FAIL;
+	}
+	{
+		CXibi_Loop_Thunder::SKILLOBJECT_DESC desc{};
+		if (FAILED(m_pGameInstance->Regist_Pool(
+			iLevelId,
+			g_wszPool_XibiLoopThunder,
+			g_wszSkillObjectLayer,
+			iLevelId,
+			g_wszXibiLoopThunder_Prototype_Tag,
+			&desc,
+			10)))
+			return E_FAIL;
+	}
+
+	// Spawner
+	{
+		// Xibi - SingleSkill //
+		{
+			CSingleSkillSpawner::SPAWNER_COPY_DESC desc{};
+			desc.iLevelIndex = iLevelId;
+			desc.iSpawnLevelIndex = iLevelId;
+			desc.vOrigin = pPlayer->Get_Component<CTransform>()->Get_Info(TRANSFORM_INFO_STATE::POS);
+			CBase* pResult = m_pGameInstance->Clone_Prototype(EPrototypeType::GAMEOBJECT, iLevelId, g_wszSpawner_XibiCircleProjectile, &desc);
+			if (pResult == nullptr)
+				return E_FAIL;
+
+			m_pSpawner = static_cast<CSingleSkillSpawner*>(pResult);
+		}
+		// Xibi //
+		{
+			CProjectileSpawner_Fan::PR_SPAWNER_FAN_DESC desc{};
+			desc.iLevelIndex = iLevelId;
+			desc.iSpawnLevelIndex = iLevelId;
+			desc.vOrigin = pPlayer->Get_Component<CTransform>()->Get_Info(TRANSFORM_INFO_STATE::POS);
+			desc.iCount = 3;
+			desc.fSpreadDeg = 50.f;
+			CBase* pResult = m_pGameInstance->Clone_Prototype(EPrototypeType::GAMEOBJECT, iLevelId, g_wszSpawner_Xibi3wayLoopThunder, &desc);
+			if(pResult == nullptr)
+				return E_FAIL;
+
+			m_pSpawner2 = static_cast<CProjectileSpawner_Fan*>(pResult);
+		}
+	}
 	return S_OK;
 }
 
@@ -661,6 +760,8 @@ CLevel_Test* CLevel_Test::Create(ID3D11Device* pDevice, ID3D11DeviceContext* pDe
 
 void CLevel_Test::Free()
 {
+	Safe_Release(m_pSpawner);
+	Safe_Release(m_pSpawner2);
 	m_pGameInstance->Clear_Lights();
 	Super::Free();
 }

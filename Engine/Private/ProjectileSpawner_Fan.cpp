@@ -28,6 +28,9 @@ HRESULT CProjectileSpawner_Fan::Initialize(void* pArg)
 	if (FAILED(Super::Initialize(pArg)))
 		return E_FAIL;
 
+    PR_SPAWNER_FAN_DESC* pDesc = static_cast<PR_SPAWNER_FAN_DESC*>(pArg);
+    m_desc = *pDesc;
+
 	return S_OK;
 }
 

@@ -568,6 +568,18 @@
     <Filter Include="03. GameObject\SkillObject">
       <UniqueIdentifier>{447c781f-70bb-4ec1-aebd-deebe8560b9b}</UniqueIdentifier>
     </Filter>
+    <Filter Include="03. GameObject\SkillObject\Boss">
+      <UniqueIdentifier>{452b24b1-a7ab-4221-b619-9fb0a67bedcd}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="03. GameObject\SkillObject\Boss\Xibi">
+      <UniqueIdentifier>{b8939588-7c78-4946-902c-7f3e664b420e}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="03. GameObject\SkillObject\Boss\Xibi\Circle">
+      <UniqueIdentifier>{58b04b1f-3901-4571-a853-87da8f3ed0f0}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="03. GameObject\SkillObject\Boss\Xibi\LoopThunder">
+      <UniqueIdentifier>{cf67d8c5-c358-43fa-83eb-0afde4338646}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="targetver.h">
@@ -1058,7 +1070,10 @@
       <Filter>05. Component\GimmikController</Filter>
     </ClInclude>
     <ClInclude Include="..\public\Xibi_Projectile_Circle.h">
-      <Filter>03. GameObject\SkillObject</Filter>
+      <Filter>03. GameObject\SkillObject\Boss\Xibi\Circle</Filter>
+    </ClInclude>
+    <ClInclude Include="..\public\Xibi_Loop_Thunder.h">
+      <Filter>03. GameObject\SkillObject\Boss\Xibi\LoopThunder</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -1542,7 +1557,10 @@
       <Filter>05. Component\GimmikController</Filter>
     </ClCompile>
     <ClCompile Include="..\private\Xibi_Projectile_Circle.cpp">
-      <Filter>03. GameObject\SkillObject</Filter>
+      <Filter>03. GameObject\SkillObject\Boss\Xibi\Circle</Filter>
+    </ClCompile>
+    <ClCompile Include="..\private\Xibi_Loop_Thunder.cpp">
+      <Filter>03. GameObject\SkillObject\Boss\Xibi\LoopThunder</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

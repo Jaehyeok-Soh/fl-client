@@ -435,6 +435,20 @@ namespace Client
 	inline constexpr wchar_t g_wszTriggerBox_PhysicsColliderBox_PrototypeTag[]	{ L"Prototype_Component_Physics_Collider_TriggerBox" };
 #pragma endregion
 
+#pragma region SkillObject 관련
+	/* Xibi */
+	inline constexpr wchar_t g_wszXibiProjectile_Prototype_Tag[]				{ L"Prototype_GameObject_Xibi_CircleProjectile" };
+	inline constexpr wchar_t g_wszXibiLoopThunder_Prototype_Tag[]				{ L"Prototype_GameObject_Xibi_LoopThunder" };
+	inline constexpr wchar_t g_wszXibiOneshotThunder_Prototype_Tag[]			{ L"Prototype_GameObject_Xibi_OneshotThunder" };
+	inline constexpr wchar_t g_wszPool_XibiLoopThunder[]						{ L"Pool_Xibi_LoopThunder" };
+	inline constexpr wchar_t g_wszPool_XibiCircleProjectile[]					{ L"Pool_Xibi_CircleProjectile" };
+#pragma endregion
+
+#pragma region SkillObjectSpawner 관련
+	inline constexpr wchar_t g_wszSpawner_XibiCircleProjectile[]				{ L"Prototype_Spawner_XibiCircleProjectile" };
+	inline constexpr wchar_t g_wszSpawner_Xibi3wayLoopThunder[]					{ L"Prototype_Spawner_Xibi3wayLoopThunder" };
+#pragma endregion
+
 #pragma region MapObject 관련
 	inline constexpr wchar_t g_wszStaticObject_Prototype_Tag[]					{ L"Prototype_GameObject_StaticObject" };
 	inline constexpr wchar_t g_wszLandScape_Prototype_Tag[]						{ L"Prototype_GameObject_LandScape" };
@@ -448,6 +462,7 @@ namespace Client
 #pragma endregion
 
 #pragma region Layer
+	inline constexpr wchar_t g_wszSkillObjectLayer[]							{ L"SkillObject_Layer"};
 	inline constexpr wchar_t g_wszPlayerLayer[]									{ L"Player_Layer" };
 	inline constexpr wchar_t g_wszMonstereLayer[]								{ L"Monster_Layer" };
 	inline constexpr wchar_t g_wszBossLayer[]									{ L"Boss_Layer" };

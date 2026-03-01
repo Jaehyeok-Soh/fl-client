@@ -61,6 +61,13 @@
 #include "Effect.h"
 #include "EffectObject.h"
 
+//=================
+// SkillObject
+//=================
+#include "SingleSkillSpawner.h"
+#include "ProjectileSpawner_Fan.h"
+#include "Xibi_Projectile_Circle.h"
+#include "Xibi_Loop_Thunder.h"
 
 
 //=================
@@ -245,6 +252,9 @@ HRESULT CLoader::Loading_For_Test()
 HRESULT CLoader::Loading_For_Logo()
 {
 	m_fLoadingRatio = 0.f;
+
+	if (FAILED(Ready_Spawner()))
+		return E_FAIL;
 
 #pragma region PretransformMatrix
 	Matrix matPreTransformScaleTest = Matrix::CreateScale(100.f, 100.f, 100.f);
@@ -558,15 +568,17 @@ HRESULT CLoader::Loading_For_Logo()
 	m_pGameInstance->Add_Prototype(ENUM_TO_UINT(ELevelType::STATIC), L"Prototype_Component_Bounds", CBounds::Create(m_pDevice, m_pDeviceContext));
 	// For. Prototype_Component_Xibi_GimmikController
 	m_pGameInstance->Add_Prototype(ENUM_TO_UINT(ELevelType::STATIC), L"Prototype_Component_Xibi_GimmikController", CXibi_GimmikController::Create());
-	// For. Prototype_Component_Collider_SPHERE
+	// For. Prototype_Component_VIBuffer_InstanceMesh
 	m_pGameInstance->Add_Prototype(ENUM_TO_UINT(ELevelType::STATIC), L"Prototype_Component_VIBuffer_InstanceMesh", CInstanceMesh::Create(m_pDevice, m_pDeviceContext));
 	// For. Prototype_Component_EffectHandler_SkillObject
-	m_pGameInstance->Add_Prototype(ENUM_TO_UINT(ELevelType::STATIC), L"Prototype_Component_EffectHandler_SkillObject", CEffectHandler::Create(nullptr));
-	
+	{
+		CEffectHandler::ANIM_EFFECT_HANDLER_DESC desc{};
+		m_pGameInstance->Add_Prototype(ENUM_TO_UINT(ELevelType::STATIC), L"Prototype_Component_EffectHandler_SkillObject", CEffectHandler::Create(&desc));
+	}
+
 	/* player components */
 	// For. Prototype_Component_Stat_Player
 	m_pGameInstance->Add_Prototype(ENUM_TO_UINT(ELevelType::STATIC), L"Prototype_Component_Stat_Player", CStatCom_Player::Create());
-
 
 	// For. Prototype_Component_ControlContext_Monster
 	m_pGameInstance->Add_Prototype(ENUM_TO_UINT(ELevelType::STATIC), L"Prototype_Component_ControlContext_Monster", CMonsterControlContext::Create());
@@ -593,7 +605,10 @@ HRESULT CLoader::Loading_For_Logo()
 		// ÀÌÆåÆ® Object
 		ADD_PROTOTYPE(ELevelType::STATIC, L"Prototype_GameObject_Effect",				Effect::Create(m_pDevice, m_pDeviceContext));
 		ADD_PROTOTYPE(ELevelType::STATIC, L"Prototype_GameObject_Effect_Parts",			CEffectObject::Create(m_pDevice, m_pDeviceContext));
-
+		
+		// Projectile
+		ADD_PROTOTYPE(ELevelType::TEST, g_wszXibiProjectile_Prototype_Tag,				CXibi_Projectile_Circle::Create(m_pDevice, m_pDeviceContext));
+		ADD_PROTOTYPE(ELevelType::TEST, g_wszXibiLoopThunder_Prototype_Tag,				CXibi_Loop_Thunder::Create(m_pDevice, m_pDeviceContext));
 
 #pragma region Map Object
 		/* Map Object */
@@ -879,6 +894,38 @@ HRESULT CLoader::Ready_EffectEvent()
 {
 	if (FAILED(Ready_EffectEvent_AnimationData()))
 		return E_FAIL;
+
+	return S_OK;
+}
+
+HRESULT CLoader::Ready_Spawner()
+{
+	/* Xibi */
+	{
+		CSingleSkillSpawner::SPAWNER_ORIGIN_DESC desc{};
+		desc.iPoolLevelIndex = ENUM_TO_UINT(ELevelType::TEST);
+		desc.wstrSkillPoolTag = g_wszPool_XibiCircleProjectile;
+		desc.iSkillObjectFlags =
+			ENUM_TO_UINT(ESkillObjectFlag::Move_Straight) |
+			ENUM_TO_UINT(ESkillObjectFlag::Life_Timer) |
+			ENUM_TO_UINT(ESkillObjectFlag::Life_Distance) |
+			ENUM_TO_UINT(ESkillObjectFlag::Hit_Single);
+		if (FAILED(m_pGameInstance->Add_Prototype(ENUM_TO_UINT(ELevelType::TEST), g_wszSpawner_XibiCircleProjectile, CSingleSkillSpawner::Create(m_pDevice, m_pDeviceContext, &desc))))
+			return E_FAIL;
+	}
+	/* Xibi 3way Thunder */
+	{
+		CProjectileSpawner_Fan::SPAWNER_ORIGIN_DESC desc{};
+		desc.iPoolLevelIndex = ENUM_TO_UINT(ELevelType::TEST);
+		desc.wstrSkillPoolTag = g_wszPool_XibiLoopThunder;
+		desc.iSkillObjectFlags =
+			ENUM_TO_UINT(ESkillObjectFlag::Move_Straight) |
+			ENUM_TO_UINT(ESkillObjectFlag::Life_Timer) |
+			ENUM_TO_UINT(ESkillObjectFlag::Life_Distance) |
+			ENUM_TO_UINT(ESkillObjectFlag::Hit_Single);
+		if (FAILED(m_pGameInstance->Add_Prototype(ENUM_TO_UINT(ELevelType::TEST), g_wszSpawner_Xibi3wayLoopThunder, CProjectileSpawner_Fan::Create(m_pDevice, m_pDeviceContext, &desc))))
+			return E_FAIL;
+	}
 
 	return S_OK;
 }

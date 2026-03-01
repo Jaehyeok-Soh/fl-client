@@ -66,12 +66,7 @@ void CSkillObjectSpawnerBase::Spawn_SkillObject(const Vec3& vSpawnPos, const Vec
 
     CGameInstance::GetInstance()->Request_AddObject(
 		m_pOriginDesc->iPoolLevelIndex, m_pOriginDesc->wstrSkillPoolTag,
-		m_pOriginDesc->iSpawnLevelIndex, &desc, [&](CGameObject* pResult)->void
-		{
-			CEffectHandler* pEffectHandler = pResult->Get_Component<CEffectHandler>();
-			if(pEffectHandler)
-				pEffectHandler->Trigger_Lifecycle_Effect(CEffectHandler::E_OBJ_LIFECYCLE_STATE::ON_SPAWN);
-		});
+		m_desc.iSpawnLevelIndex, &desc);
 }
 
 HRESULT CSkillObjectSpawnerBase::Ready_Components()

@@ -31,7 +31,6 @@ public:
 		// 스킬 오브젝트 풀
 		_uint iPoolLevelIndex{ 0 };
 		wstring wstrSkillPoolTag{ L"" };
-		_uint iSpawnLevelIndex{ 0 };
 
 		_uint iSkillObjectFlags{ 0 };
 		_float fSpeed{ 3.f };
@@ -41,6 +40,7 @@ public:
 	}SPAWNER_ORIGIN_DESC;
 	typedef struct tagSpawnerCopyDesc : public GAMEOBJECT_DESC
 	{
+		_uint iSpawnLevelIndex{ 0 };
 		Vec3 vOrigin{ Vec3::Zero };
 		Vec3 vForward{ Vec3::Zero };
 		Vec3 vUp{ Vec3::UnitY };

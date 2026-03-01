@@ -72,6 +72,9 @@ public:
 	virtual _bool On_Hit(const HIT_DESC& hitDesc) override { return false; }
 	virtual void Try_Attack(const HIT_DESC& hitDesc) override {}
 
+	virtual HRESULT Spawn_FromPool(void* pArg) override;
+	virtual HRESULT Despawn_FromPool() override;
+
 	_uint Get_Flags() const { return m_iFlag; }
 protected:
 	_bool Has_Flag(ESkillObjectFlag eFlag) const;

@@ -50,7 +50,6 @@ HRESULT CEffectHandler::Ready_Desc(void* pArg)
 {
     if (pArg)
         m_tDesc = *(static_cast<ANIM_EFFECT_HANDLER_DESC*>(pArg));
-
     else
         return E_FAIL;
 
@@ -221,7 +220,8 @@ void CEffectHandler::Release_Event()
     if (m_tDesc.eType == E_HANDLER_TYPE::MODEL_ANIM)
     {
         if (m_pOwner)
-            m_pOwnerModel->OnNotify.Unsubscribe(m_EventHandle);
+            if(m_pOwnerModel)
+                m_pOwnerModel->OnNotify.Unsubscribe(m_EventHandle);
     }
 }
 

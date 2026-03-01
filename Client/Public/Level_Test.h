@@ -1,6 +1,11 @@
 #pragma once
 #include "Level.h"
 
+NS_BEGIN(Engine)
+class CSingleSkillSpawner;
+class CProjectileSpawner_Fan;
+NS_END
+
 NS_BEGIN(Client)
 
 class CLevel_Test : public CLevel
@@ -22,12 +27,16 @@ private:
 	HRESULT Ready_UI_Layer(const wstring& wstrLayerTag);
 	HRESULT Ready_Camera_Layer(const wstring& wstrLayerTag);
 	HRESULT Ready_Lights();
+	HRESULT Ready_SkillObjectLayer();
 	HRESULT Ready_Map();
 	HRESULT Ready_Monster();
 	HRESULT Ready_Boss_Layer(const wstring& wstrLayerTag);
 	HRESULT Ready_Camera_Setting(const _uint iLevelIndex);
 	HRESULT Ready_Octree();
 private:
+	// TODO : 어디에다?
+	CSingleSkillSpawner* m_pSpawner{ nullptr };
+	CProjectileSpawner_Fan* m_pSpawner2{ nullptr };
 	ECursorMode m_eCursorMode = ECursorMode::LockedHiddenCenter;
 public:
 	static CLevel_Test* Create(ID3D11Device* pDevice, ID3D11DeviceContext* pDeviceContext);

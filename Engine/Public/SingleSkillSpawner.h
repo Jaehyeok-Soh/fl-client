@@ -3,7 +3,7 @@
 
 NS_BEGIN(Engine)
 
-class CSingleSkillSpawner final : public CSkillObjectSpawnerBase
+class ENGINE_DLL CSingleSkillSpawner final : public CSkillObjectSpawnerBase
 {
     using Super = CSkillObjectSpawnerBase;
 private:

@@ -105,6 +105,45 @@ HRESULT CSkillObject_Base::Render()
 	return S_OK;
 }
 
+HRESULT CSkillObject_Base::Spawn_FromPool(void* pArg)
+{
+	if (pArg == nullptr)
+		return E_FAIL;
+
+	CTransform *pTransform = Get_Component<CTransform>();
+	CPhysicsRigidBody* pRigidBody = Get_Component<CPhysicsRigidBody>();
+	CEffectHandler* pEffectHandler = Get_Component<CEffectHandler>();
+
+	SKILLOBJECT_DESC *pDesc = static_cast<SKILLOBJECT_DESC*>(pArg);
+	m_desc = *pDesc;
+	m_iFlag = m_desc.iFlags;
+	m_runtimeDesc.vStartPos = m_desc.vSpawnPos;
+	m_runtimeDesc.vCurDir = m_desc.vDirection;
+	m_runtimeDesc.Life.Start(m_desc.fLifeTime);
+	if (m_runtimeDesc.vCurDir != Vec3::Zero)
+		m_runtimeDesc.vCurDir.Normalize();
+
+	if (Has_Flag(ESkillObjectFlag::Follow_Owner) && Has_Requester())
+	{
+		const Vec3 reqPos = m_desc.pRequester->Get_Component<CTransform>()->Get_Info(TRANSFORM_INFO_STATE::POS);
+		m_runtimeDesc.vFollowOffset = m_desc.vSpawnPos - reqPos;
+	}
+	pTransform->Set_Info(TRANSFORM_INFO_STATE::POS, m_desc.vSpawnPos);
+	if (pRigidBody)
+		pRigidBody->SetTransform(pTransform->Get_WorldMatrix());
+	pEffectHandler->Trigger_Lifecycle_Effect(CEffectHandler::E_OBJ_LIFECYCLE_STATE::ON_SPAWN);
+	m_bDead = false;
+	return S_OK;
+}
+
+HRESULT CSkillObject_Base::Despawn_FromPool()
+{
+   	m_desc = {};
+	m_runtimeDesc = {};
+
+	return S_OK;
+}
+
 _bool CSkillObject_Base::Has_Flag(ESkillObjectFlag eFlag) const
 {
 	return Engine_Utils::Has_Flag(m_iFlag, ENUM_TO_UINT(eFlag));
@@ -125,13 +164,17 @@ void CSkillObject_Base::Process_Move(const _float fTimeDelta)
 		return;
 
 	m_runtimeDesc.vCurDir = vMoveDir;
+
+	pTransform->Look_At_Dir(vMoveDir);
+
 	const _float fSpeed = pTransform->Get_MovePerSec();
 	Vec3 vDisp = vMoveDir * fSpeed * fTimeDelta;
 	Vec3 vPos = pTransform->Get_Info(TRANSFORM_INFO_STATE::POS);
 
 	if (CPhysicsRigidBody* pRigidBody = Get_Component<CPhysicsRigidBody>())
 	{
-		pRigidBody->Move(vDisp, fTimeDelta);
+		pRigidBody->Move(vPos + vDisp, fTimeDelta);
+		pTransform->Set_Info(TRANSFORM_INFO_STATE::POS, vPos + vDisp);
 		m_runtimeDesc.fTravelDistance += fSpeed * fTimeDelta;
 		return;
 	}

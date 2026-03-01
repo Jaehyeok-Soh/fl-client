@@ -405,6 +405,30 @@ inline void CTransform::Look_At_XZ(Vec3 vPoint)
 	Set_Info(TRANSFORM_INFO_STATE::LOOK, vLookDir * vScale.z);
 }
 
+inline void CTransform::Look_At_Dir(Vec3 vDir)
+{
+	Vec3 vLook = vDir;
+	if (vLook == Vec3::Zero)
+		return;
+
+	vLook.Normalize();
+	Vec3 vUp = Vec3(0.f, 1.f, 0.f);
+	Vec3 vRight = vUp.Cross(vLook);
+	if (vRight == Vec3::Zero)
+	{
+		vUp = Vec3(0.f, 0.f, 1.f);
+		vRight = vUp.Cross(vLook);
+	}
+	vRight.Normalize();
+	vUp = vLook.Cross(vRight);
+	vUp.Normalize();
+
+	Vec3 vScale = Get_Scaled();
+	Set_Info(TRANSFORM_INFO_STATE::RIGHT, vRight * vScale.x);
+	Set_Info(TRANSFORM_INFO_STATE::UP, vUp * vScale.y);
+	Set_Info(TRANSFORM_INFO_STATE::LOOK, vLook * vScale.z);
+}
+
 inline _bool CTransform::Chase(const Vec3& vPoint, _float fMinDistance, const _float fTimeDelta, CNavigation* pNavigation)
 {
 	Vec3 vPosition = Get_Info(TRANSFORM_INFO_STATE::POS);

@@ -3,7 +3,7 @@
 
 NS_BEGIN(Engine)
 
-class CSkillObjectSpawner_RandomXZ final : public CSkillObjectSpawnerBase
+class ENGINE_DLL CSkillObjectSpawner_RandomXZ final : public CSkillObjectSpawnerBase
 {
 	using Super = CSkillObjectSpawnerBase;
 

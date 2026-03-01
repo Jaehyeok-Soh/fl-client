@@ -326,20 +326,25 @@ PxFilterFlags CPhysics_Module::FilterShader(
 
 	if (PxFilterObjectIsTrigger(attributes0) || PxFilterObjectIsTrigger(attributes1))
 	{
-		pairFlags = PxPairFlag::eTRIGGER_DEFAULT
-			| PxPairFlag::eNOTIFY_TOUCH_FOUND
-			| PxPairFlag::eNOTIFY_TOUCH_LOST;
-
-		return PxFilterFlag::eDEFAULT;
+		if (PHYSICSFILTERGROUP::IsAttackPair(filterData0.word0, filterData1.word0))
+		{
+			pairFlags = PxPairFlag::eNOTIFY_CONTACT_POINTS
+				| PxPairFlag::eNOTIFY_TOUCH_FOUND
+				| PxPairFlag::eNOTIFY_TOUCH_LOST;
+			return PxFilterFlag::eDEFAULT;
+		}
 	}
 
-	if (PxFilterObjectIsKinematic(attributes0) || PxFilterObjectIsKinematic(attributes1))
+	if (PxFilterObjectIsTrigger(attributes0) || PxFilterObjectIsTrigger(attributes1))
 	{
-		pairFlags = PxPairFlag::eNOTIFY_TOUCH_FOUND
-			| PxPairFlag::eNOTIFY_TOUCH_LOST
-			| PxPairFlag::eNOTIFY_TOUCH_PERSISTS;
-
-		return PxFilterFlag::eDEFAULT;
+		if ((filterData0.word0 & filterData1.word1) && (filterData1.word0 & filterData0.word1))
+		{
+			pairFlags = PxPairFlag::eTRIGGER_DEFAULT
+				| PxPairFlag::eNOTIFY_TOUCH_FOUND
+				| PxPairFlag::eNOTIFY_TOUCH_LOST;
+			return PxFilterFlag::eDEFAULT;
+		}
+		return PxFilterFlag::eSUPPRESS;
 	}
 
 		pairFlags = PxPairFlag::eCONTACT_DEFAULT
