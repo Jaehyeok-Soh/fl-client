@@ -1,24 +1,25 @@
 #pragma once
 #include "TriggerBox.h"
+#include "DataStruct_Map.h"
 
 NS_BEGIN(Client)
 
-class CTriggerBox_LevelChange : public CTriggerBox
+class CTriggerBox_MonsterSpawner : public CTriggerBox
 {
 	using Super = CTriggerBox;
 public:
-	typedef struct tagTriggerBox_LevelChange_Desc : public CTriggerBox::TRIGGERBOX_DESC
+	typedef struct tagTriggerBox_MonsterSpawner_Desc : public CTriggerBox::TRIGGERBOX_DESC
 	{
-		ELevelType				eChangeLevelType{ ELevelType::END };
-	}TRIGGERBOX_LEVELCHANGE_DESC;
+		vector<MonsterSpawnData>		vecMonsterSpawnData{};
+	}TRIGGERBOX_MONSTERSPAWNER_DESC;
 protected:
-	CTriggerBox_LevelChange(ID3D11Device* pDevice, ID3D11DeviceContext* pContext);
-	explicit CTriggerBox_LevelChange(const CTriggerBox_LevelChange& rhs);
-	virtual ~CTriggerBox_LevelChange() = default;
+	CTriggerBox_MonsterSpawner(ID3D11Device* pDevice, ID3D11DeviceContext* pContext);
+	explicit CTriggerBox_MonsterSpawner(const CTriggerBox_MonsterSpawner& rhs);
+	virtual ~CTriggerBox_MonsterSpawner() = default;
 public:
 	virtual HRESULT			Initialize_Prototype()							override;
 	virtual HRESULT			Initialize(void* pArg)							override;
-	HRESULT					Ready_Component(TRIGGERBOX_LEVELCHANGE_DESC* pDesc);
+	HRESULT					Ready_Component(TRIGGERBOX_MONSTERSPAWNER_DESC* pDesc);
 public:
 	virtual HRESULT			Awake(const _uint iCurrentLevelID)				override;
 	virtual void			Update_Priority(const _float fTimeDelta)		override;
@@ -34,10 +35,12 @@ public:
 	virtual void			OnTrigger_Enter(_uint iMyColliderLayer, _uint iOtherLayer, CGameObject* pOther)override;
 	virtual void			OnTrigger_Exit(_uint iMyColliderLayer, _uint iOtherLayer, CGameObject* pOther) override;
 public:
+	HRESULT					SpawnMonster();
 protected:
-	ELevelType				m_eChangeLevelType{ ELevelType ::END };
+	vector<MonsterSpawnData>		m_vecMonsterSpawnData{};
+
 public:
-	static CTriggerBox_LevelChange*	Create(ID3D11Device* pDevice, ID3D11DeviceContext* pContext);
+	static CTriggerBox_MonsterSpawner*	Create(ID3D11Device* pDevice, ID3D11DeviceContext* pContext);
 	virtual	CGameObject*			Clone(void* pArg)override;
 	virtual	void					Free()override;
 };

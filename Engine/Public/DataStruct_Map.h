@@ -9,9 +9,10 @@ NS_BEGIN(DTO)
 #pragma region Make Monster Type
 enum class EMakeMonsterType
 {
+	/* Monster */
 	Dog,
+	Boomer,
 	Shooter,
-
 
 	/* Boss ฐüทร */
 	Xibi,
@@ -24,6 +25,7 @@ inline std::string MakeMonsterType_ToString(EMakeMonsterType eType)
 	{
 	case DTO::EMakeMonsterType::Dog:			return "Dog";
 	case DTO::EMakeMonsterType::Shooter:		return "Shooter";
+	case DTO::EMakeMonsterType::Boomer:			return "Boomer";
 
 
 
@@ -36,6 +38,7 @@ inline EMakeMonsterType MakeMonsterType_ToEnum(const std::string strType)
 { 
 	if (strType == "Dog")		return DTO::EMakeMonsterType::Dog;
 	if (strType == "Shooter")	return DTO::EMakeMonsterType::Shooter;
+	if (strType == "Boomer")	return DTO::EMakeMonsterType::Boomer;
 
 
 	if (strType == "Xibi")		return DTO::EMakeMonsterType::Xibi;

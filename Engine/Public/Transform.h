@@ -28,6 +28,7 @@ private:
 	virtual HRESULT Initialize(void* pArg) override;
 public:
 	HRESULT Bind_ShaderResource(class CShader* pShader);
+	Matrix *Get_WorldMatrixPtr() { return &m_matWorld; }
 	const Matrix& Get_WorldMatrix() const { return m_matWorld; }
 	inline Matrix Get_WorldMatrix_Transpose();
 	inline Matrix Get_WorldMatrix_Inverse();

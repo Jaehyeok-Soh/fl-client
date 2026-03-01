@@ -73,6 +73,9 @@ public:
 	void Ready_ExplosionFade(const _float fDuration, const _float fStartAlpha,const _float fExplosionAlpha, const _float fTargetAlpha, const _float fDelay);
 	_bool Tick_Fade(const _float fTimeDelta);
 
+	void Ready_LerpChange(const _float fDuration, const _float fStartAlpha, const _float fTargetAlpha, const _float fEaseValue, const _float fDelay);
+	_bool Tick_LerpChange(_float* p, const _float fTimeDelta);
+
 	// 해야될 이벤트가 끝나면 Request SetDead 호출 -> 나중에 캔버스에서 일괄적으로 SetDead를 해줌
 	void Request_SetDead();
 

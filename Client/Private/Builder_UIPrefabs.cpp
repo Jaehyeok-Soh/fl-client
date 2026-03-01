@@ -6,11 +6,14 @@
 
 // 프로그레스 클래스
 #include "UIMonsterStat_Progress.h"
+#include "UIBossStat_Progress.h"
 // 텍스트 클래스
 #include "UIMonsterStat_Text.h"
 #include "UIDamageFont_Text.h"
+#include "UIBossStat_Text.h"
 // 다이나믹 이미지 클래스
 #include "UINameplate_BG.h"
+#include "UIBossStat_Image.h"
 // 트리거 클래스
 
 #include"UI_Manager.h"
@@ -168,9 +171,8 @@ HRESULT CBuilder_UIPrefabs::Register_Class(DTO::EUIClassType eClassType, const D
 	if (eClassType == DTO::EUIClassType::PROGRESS_BAR)
 	{
 		const auto Type = data.eSubClassType;
-		const _bool isPlayerStat	= Type >= DTO::EUISubClassType::PLAYER_STAT_BEGIN && Type <= DTO::EUISubClassType::PLAYER_STAT_END;
-		const _bool isLoading		= Type == DTO::EUISubClassType::LOADING_PROGRESS;
 		const _bool isMonsterStat	= Type >= DTO::EUISubClassType::MONSTER_STAT_BEGIN && Type <= DTO::EUISubClassType::MONSTER_STAT_END;
+		const _bool isBossStat		= Type >= DTO::EUISubClassType::BOSS_STAT_BEGIN && Type <= DTO::EUISubClassType::BOSS_STAT_END;
 
 		if (isMonsterStat)
 		{
@@ -181,7 +183,7 @@ HRESULT CBuilder_UIPrefabs::Register_Class(DTO::EUIClassType eClassType, const D
 			wstrProtoTag = L"Prototype_UI_MonsterStatProgress";
 			_wstring wstrPoolTag = L"Prefab_" + Engine_Utils::ToWString(MonsterStatProgressDesc.strName);
 
-			if(FAILED(m_pGameInstance->Regist_Pool(m_iLevelID, wstrPoolTag, g_wszUILayer, ENUM_TO_UINT(ELevelType::STATIC), wstrProtoTag, &MonsterStatProgressDesc, m_iNumPrefab)))
+			if (FAILED(m_pGameInstance->Regist_Pool(m_iLevelID, wstrPoolTag, g_wszUILayer, ENUM_TO_UINT(ELevelType::STATIC), wstrProtoTag, &MonsterStatProgressDesc, m_iNumPrefab)))
 			{
 				_wstring wstr = Engine_Utils::ToWString(data.strTag) + L" <- 얘가 문제";
 				MSG_BOXW(wstr.c_str());
@@ -189,6 +191,23 @@ HRESULT CBuilder_UIPrefabs::Register_Class(DTO::EUIClassType eClassType, const D
 			}
 			m_vecPrefabTags.push_back(wstrPoolTag);
 		}
+		else if (isBossStat)
+		{
+			CUIBossStat_Progress::BOSS_STAT_PROGRESS_DESC Desc = {};
+			static_cast<CGenericUI::GENERIC_UI_DESC&>(Desc) = DefaultDesc;
+			Desc.eOwner = data.eSubClassType;
+			wstrProtoTag = L"Prototype_UI_BossStatProgress";
+			_wstring wstrPoolTag = L"Prefab_" + Engine_Utils::ToWString(Desc.strName);
+
+			if (FAILED(m_pGameInstance->Regist_Pool(m_iLevelID, wstrPoolTag, g_wszUILayer, ENUM_TO_UINT(ELevelType::STATIC), wstrProtoTag, &Desc, m_iNumPrefab)))
+			{
+				_wstring wstr = Engine_Utils::ToWString(data.strTag) + L" <- 얘가 문제";
+				MSG_BOXW(wstr.c_str());
+				return E_FAIL;
+			}
+			m_vecPrefabTags.push_back(wstrPoolTag);
+		}
+
 		else
 		{
 			_wstring wstr = Engine_Utils::ToWString(data.strTag) + L" <- 얘가 문제";
@@ -197,6 +216,10 @@ HRESULT CBuilder_UIPrefabs::Register_Class(DTO::EUIClassType eClassType, const D
 		}
 	}
 
+	//Prototype_UI_BossStatProgress
+	//Prototype_UI_BossStatText 
+	//Prototype_UI_BossStatImage 
+	// 
 	////////////////////////////////////////
 	// UI_TEXT //
 	else if (eClassType == DTO::EUIClassType::UI_TEXT)
@@ -207,11 +230,9 @@ HRESULT CBuilder_UIPrefabs::Register_Class(DTO::EUIClassType eClassType, const D
 			return E_FAIL;
 
 		const auto Type = iter->second.eTextSubClassType;
-		const _bool isPlayerStat		= (Type >= DTO::EUITextSubClassType::PLAYER_STAT_TEXT_BEGIN && Type <= DTO::EUITextSubClassType::PLAYER_STAT_TEXT_END);
-		const _bool isMenu				= (Type >= DTO::EUITextSubClassType::MENU_TEXT_BEGIN && Type <= DTO::EUITextSubClassType::MENU_TEXT_END);
-		const _bool isLoading			= (Type >= DTO::EUITextSubClassType::LOADING_TEXT_BEGIN && Type <= DTO::EUITextSubClassType::LOADING_TEXT_END);
 		const _bool isMonsterNameplate	= (Type >= DTO::EUITextSubClassType::MONSTER_STAT_TEXT_BEGIN && Type <= DTO::EUITextSubClassType::MONSTER_STAT_TEXT_END);
 		const _bool isDamageFont		= (Type >= DTO::EUITextSubClassType::BATTLE_DAMAGE_TEXT_BEGIN && Type <= DTO::EUITextSubClassType::BATTLE_DAMAGE_TEXT_END);
+		const _bool isBossStat			= (Type >= DTO::EUITextSubClassType::BOSS_STAT_TEXT_BEGIN && Type <= DTO::EUITextSubClassType::BOSS_STAT_TEXT_END);
 
 		static_cast<CGenericUI::GENERIC_UI_DESC&>(TextDesc) = DefaultDesc;
 		TextDesc.eTextSubClass	= Type;
@@ -248,6 +269,20 @@ HRESULT CBuilder_UIPrefabs::Register_Class(DTO::EUIClassType eClassType, const D
 			_wstring wstrPoolTag = L"Prefab_" + Engine_Utils::ToWString(DamageFontDesc.strName);
 
 			if (FAILED(m_pGameInstance->Regist_Pool(m_iLevelID, wstrPoolTag, g_wszUILayer, ENUM_TO_UINT(ELevelType::STATIC), wstrProtoTag, &DamageFontDesc, m_iNumPrefab)))
+			{
+				_wstring wstr = Engine_Utils::ToWString(data.strTag) + L" <- 얘가 문제";
+				MSG_BOXW(wstr.c_str());
+				return E_FAIL;
+			}
+			m_vecPrefabTags.push_back(wstrPoolTag);
+		}
+		else if (isBossStat)
+		{
+			CUIBossStat_Text::BOSS_STAT_TEXT_DESC Desc = {};
+			static_cast<CUIText::UI_TEXT_DESC&>(Desc) = TextDesc;
+			wstrProtoTag = L"Prototype_UI_BossStatText";
+			_wstring wstrPoolTag = L"Prefab_" + Engine_Utils::ToWString(Desc.strName);
+			if (FAILED(m_pGameInstance->Regist_Pool(m_iLevelID, wstrPoolTag, g_wszUILayer, ENUM_TO_UINT(ELevelType::STATIC), wstrProtoTag, &Desc, m_iNumPrefab)))
 			{
 				_wstring wstr = Engine_Utils::ToWString(data.strTag) + L" <- 얘가 문제";
 				MSG_BOXW(wstr.c_str());
@@ -294,13 +329,8 @@ HRESULT CBuilder_UIPrefabs::Register_Class(DTO::EUIClassType eClassType, const D
 
 		const auto Type = iter->second.eDISubClassType;
 
-		const _bool isPlayerSkill		= (Type >= DTO::EUIDImageSubClassType::PLAYER_SKILL_BEGIN && Type <= DTO::EUIDImageSubClassType::PLAYER_SKILL_END);
-		const _bool isMiniMap			= (Type >= DTO::EUIDImageSubClassType::MINIMAP_BEGIN && Type <= DTO::EUIDImageSubClassType::MINIMAP_END);
-		const _bool isHoverIcon			= (Type >= DTO::EUIDImageSubClassType::HOVER_POPUP_BEGIN && Type <= DTO::EUIDImageSubClassType::HOVER_POPUP_END);
-		const _bool isMenu				= (Type >= DTO::EUIDImageSubClassType::MENU_BEGIN && Type <= DTO::EUIDImageSubClassType::MENU_ICON_BG);
-		const _bool isOutLine			= (Type >= DTO::EUIDImageSubClassType::MENU_ICON_OUTLINE && Type <= DTO::EUIDImageSubClassType::MENU_END);
-		const _bool isLoading			= (Type >= DTO::EUIDImageSubClassType::LOADING_BEGIN && Type <= DTO::EUIDImageSubClassType::LOADING_END);
 		const _bool isMonsterNameplate	= (Type == DTO::EUIDImageSubClassType::MONSTER_NAMEPLATE_BG);
+		const _bool isBossStat			= (Type >= DTO::EUIDImageSubClassType::BOSS_STAT_BEGIN && Type <= DTO::EUIDImageSubClassType::BOSS_STAT_END);
 
 		if (isMonsterNameplate)
 		{
@@ -311,6 +341,21 @@ HRESULT CBuilder_UIPrefabs::Register_Class(DTO::EUIClassType eClassType, const D
 			_wstring wstrPoolTag = L"Prefab_" + Engine_Utils::ToWString(NameplateDesc.strName);
 
 			if (FAILED(m_pGameInstance->Regist_Pool(m_iLevelID, wstrPoolTag, g_wszUILayer, ENUM_TO_UINT(ELevelType::STATIC), wstrProtoTag, &NameplateDesc, m_iNumPrefab)))
+			{
+				_wstring wstr = Engine_Utils::ToWString(data.strTag) + L" <- 얘가 문제";
+				MSG_BOXW(wstr.c_str());
+				return E_FAIL;
+			}
+			m_vecPrefabTags.push_back(wstrPoolTag);
+		}
+		else if (isBossStat)
+		{
+			CUIBossStat_Image::BOSS_STAT_IMAGE_DESC Desc = {};
+			static_cast<CGenericUI::GENERIC_UI_DESC&>(Desc) = DefaultDesc;
+			wstrProtoTag = L"Prototype_UI_BossStatImage";
+			_wstring wstrPoolTag = L"Prefab_" + Engine_Utils::ToWString(Desc.strName);
+
+			if (FAILED(m_pGameInstance->Regist_Pool(m_iLevelID, wstrPoolTag, g_wszUILayer, ENUM_TO_UINT(ELevelType::STATIC), wstrProtoTag, &Desc, m_iNumPrefab)))
 			{
 				_wstring wstr = Engine_Utils::ToWString(data.strTag) + L" <- 얘가 문제";
 				MSG_BOXW(wstr.c_str());

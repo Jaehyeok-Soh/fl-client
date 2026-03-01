@@ -7,11 +7,13 @@
 #include "Model.h"
 #include "PhysicsCCT.h"
 #include "ComputeShader.h"
+#include "UI_Manager.h"
 #include "GameInstance.h"
 
 CMonster_Dog::CMonster_Dog(ID3D11Device* pDevice, ID3D11DeviceContext* pDeviceContext)
 	: Super(pDevice, pDeviceContext)
 {
+	m_eMonsterType = EMonster_Type::Dog;
 }
 
 CMonster_Dog::CMonster_Dog(const CMonster_Dog& rhs)
@@ -53,7 +55,11 @@ HRESULT CMonster_Dog::Awake(const _uint iCurrentLevelID)
 {
 	if (FAILED(Super::Awake(iCurrentLevelID)))
 		return E_FAIL;
-	
+	{
+		UI_PREFAB_DATA Desc = {};
+		Desc.pTarget = this;
+		CUI_Manager::GetInstance()->Request_Add_Prefab(iCurrentLevelID, EUIPrefabType::MONSTER_NAMEPLATE, iCurrentLevelID, &Desc);
+	}
 	return S_OK;
 }
 

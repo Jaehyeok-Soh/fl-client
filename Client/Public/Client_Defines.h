@@ -107,6 +107,19 @@ namespace Client
 	};
 
 
+	enum class EMonster_Type
+	{
+		/* Mosnter */
+		Dog,
+		Shooter,
+		Boomer,
+
+		/* Boss */
+		Xibi,
+		END
+	};
+
+
 	typedef struct tagColMeshHitInformation
 	{
 		class CColMesh* pColMesh = { nullptr };
@@ -357,6 +370,7 @@ namespace Client
 		DAMAGE_FONTS_COMMON,
 		DAMAGE_FONTS_CRITICAL,
 		DAMAGE_FONTS_HIT,
+		BOSS_NAMEPLATE,
 		END
 	};
 
@@ -381,7 +395,10 @@ namespace Client
 		Vec4	vFontColor = {};
 		Vec3	vHitPos = {};
 		_uint	iDamage = {};
+		Vec3	vRandOffset = {};
+
 	}UI_DAMAGEFONT_PREFAB_DATA;
+
 	typedef struct tagUIPrefabData
 	{
 		CGameObject* pTarget = { nullptr };
@@ -407,19 +424,69 @@ namespace Client
 #pragma endregion
 
 
+#pragma region Tag 모음
 
-	inline constexpr wchar_t g_wszTriggerBoxLayer[]{ L"TriggerBox_Layer" };
-	inline constexpr wchar_t g_wszTriggerBoxPrototype[]{ L"Prototype_Component_Physics_Collider_TriggerBox" };
+#pragma region Monster 관련	
+	/* Monster Prototype Name 모음 */
+	inline constexpr wchar_t g_wszMonster_Dog_Prototype_Tag[]					{ L"Prototype_GameObject_Monster_Dog" };
+	inline constexpr wchar_t g_wszMonster_Boomer_Prototype_Tag[]				{ L"Prototype_GameObject_Monster_Boomer" };
+	inline constexpr wchar_t g_wszBoss_Xibi_Prototype_Tag[]						{ L"Prototype_GameObject_Boss_Xibi" };
 
-	inline constexpr wchar_t g_wszColMeshLayer[]{ L"ColMesh_Layer" };
-	inline constexpr wchar_t g_wszStaticObjectLayer[]{ L"StaticObject_Layer" };
-	inline constexpr wchar_t g_wszInstanceModelLayer[]{ L"InstanceModel_Layer" };
-	inline constexpr wchar_t g_wszBossLayer[]{ L"Boss_Layer" };
-	inline constexpr wchar_t g_wszPlayerLayer[]{ L"Player_Layer" };
-	inline constexpr wchar_t g_wszDynamicCameraLayer[]{ L"DynamicCamera_Layer" };
-	inline constexpr wchar_t g_wszUILayer[]{ L"UI_Layer" };
-	inline constexpr wchar_t g_wszSkillLayer[]{ L"Skill_Layer" };
-	inline constexpr wchar_t g_wszEffectLayer[]{ L"Effect_Layer" };
+	/* Monster Body Prototype Name 모음 */
+	inline constexpr wchar_t g_wszMonster_Dog_Body_Prototype_Tag[]				{ L"Prototype_GameObject_Monster_Dog_Body" };
+	inline constexpr wchar_t g_wszMonster_Boomer_Body_Prototype_Tag[]			{ L"Prototype_GameObject_Monster_Boomer_Body" };
+	inline constexpr wchar_t g_wszBoss_Xibi_Body_Prototype_Tag[]				{ L"Prototype_GameObject_Boss_Xibi_Body" };
+
+	/* Monster Model Tag */
+	inline constexpr wchar_t g_wszMonster_Dog_Model_Prototype_Tag[]				{ L"Prototype_Component_Model_Monster_Dog"};
+	inline constexpr wchar_t g_wszMonster_Boomer_Model_Prototype_Tag[]			{ L"Prototype_Component_Model_Monster_Boomer" };
+	inline constexpr wchar_t g_wszBoss_Xibi_Model_Prototype_Tag[]				{ L"Prototype_Component_Model_Xibi" };
+
+	/* Monster State Tag */
+	inline constexpr wchar_t g_wszMonster_Dog_State_Tag[]						{ L"Monster_Dog" };
+	inline constexpr wchar_t g_wszMonster_Boomer_State_Tag[]					{ L"Monster_Boomer" };
+	inline constexpr wchar_t g_wszBoss_Xibi_State_Tag[]							{ L"Boss_Xibi" };
+
+	/* Monster Attack OverLap */
+	inline constexpr wchar_t g_wszMonster_Dog_AttackOverlap_Prototype_Tag[]		{ L"Prototype_Component_AttackOverlap_Monster_Dog" };
+	inline constexpr wchar_t g_wszMonster_Boomer_AttackOverlap_Prototype_Tag[]	{ L"Monster_Boomer" };
+#pragma endregion
+
+
+#pragma region Trigger Box 관련
+	inline constexpr wchar_t g_wszTriggerBox_ChangeLevel_Prototype_Tag[]		{ L"Prototype_GameObject_TriggerBox_ChangeLevel" };
+	inline constexpr wchar_t g_wszTriggerBox_MonsterSapwner_Prototype_Tag[]		{ L"Prototype_GameObject_TriggerBox_MonsterSpawner" };
+	inline constexpr wchar_t g_wszTriggerBox_PhysicsColliderBox_PrototypeTag[]	{ L"Prototype_Component_Physics_Collider_TriggerBox" };
+#pragma endregion
+
+#pragma region MapObject 관련
+	inline constexpr wchar_t g_wszStaticObject_Prototype_Tag[]					{ L"Prototype_GameObject_StaticObject" };
+	inline constexpr wchar_t g_wszLandScape_Prototype_Tag[]						{ L"Prototype_GameObject_LandScape" };
+	inline constexpr wchar_t g_wszBush_Prototype_Tag[]							{ L"Prototype_GameObject_Bush" };
+	inline constexpr wchar_t g_wszGrass_Prototype_Tag[]							{ L"Prototype_GameObject_Grass" };
+	inline constexpr wchar_t g_wszMoss_Prototype_Tag[]							{ L"Prototype_GameObject_Moss" };
+	inline constexpr wchar_t g_wszTree_Prototype_Tag[]							{ L"Prototype_GameObject_Tree" };
+	inline constexpr wchar_t g_wszVine_Prototype_Tag[]							{ L"Prototype_GameObject_Vine" };
+	inline constexpr wchar_t g_wszRock_Prototype_Tag[]							{ L"Prototype_GameObject_Rock" };
+	inline constexpr wchar_t g_wszWater_Prototype_Tag[]							{ L"Prototype_GameObject_Water" };
+#pragma endregion
+
+#pragma region Layer
+	inline constexpr wchar_t g_wszPlayerLayer[]									{ L"Player_Layer" };
+	inline constexpr wchar_t g_wszMonstereLayer[]								{ L"Monster_Layer" };
+	inline constexpr wchar_t g_wszBossLayer[]									{ L"Boss_Layer" };
+	inline constexpr wchar_t g_wszColMeshLayer[]								{ L"ColMesh_Layer" };
+	inline constexpr wchar_t g_wszStaticObjectLayer[]							{ L"StaticObject_Layer" };
+	inline constexpr wchar_t g_wszInstanceModelLayer[]							{ L"InstanceModel_Layer" };
+	inline constexpr wchar_t g_wszDynamicCameraLayer[]							{ L"DynamicCamera_Layer" };
+	inline constexpr wchar_t g_wszUILayer[]										{ L"UI_Layer" };
+	inline constexpr wchar_t g_wszSkillLayer[]									{ L"Skill_Layer" };
+	inline constexpr wchar_t g_wszEffectLayer[]									{ L"Effect_Layer" };
+	inline constexpr wchar_t g_wszTriggerBoxLayer[]								{ L"TriggerBox_Layer" };
 }
+#pragma endregion
+
+#pragma endregion
+
 
 using namespace Client;

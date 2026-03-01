@@ -133,6 +133,7 @@ private:
     _bool       m_bIsTool = { false };
 
     vector<_uint>           m_iSpriteCurrentNumber = {};
+    vector<float>           m_iSpriteAccumulation = {};
 
 private:
     _bool       m_bIsEffectFinish = { false };

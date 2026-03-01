@@ -86,7 +86,7 @@ public:
 
 	//void Modify_EffectEvent(_uint eventIdx, DTO::ANIM_EVENT_INFO_DESC event);
 	void Modify_EffectEvent(vector<DTO::EFFECTEVENT> events);
-
+	HRESULT EffectEvent_GizmoObjectSetting();
 private:
 	// 매 프레임 가져오는 애니메이션 정보
 	void UpdateAnimationInfo();
@@ -112,6 +112,7 @@ public:
 	void Set_EffectEvent(CEffectHandler* pEffectEvent);
 	HRESULT Save_AttackOverlap(fs::path path, string strAnimTag, _int iPool);
 	HRESULT Save_EffectEvent(fs::path path, string strAnimTag, _int iPool);
+
 private:
 	HRESULT Ready_Builder();
 	HRESULT Ready_BuildFiles();

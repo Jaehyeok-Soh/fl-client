@@ -43,10 +43,11 @@ public:
 protected:
 	HRESULT Ready_Components(UI_TEXT_DESC* pDesc);
 	HRESULT Bind_ShaderResources();
-
 	void Sync_FontDesc();
-
 	_wstring Float_To_Wstring(const _float f, _uint iDecimal);
+
+	void Ready_Fade_Text(const _float fDuration, const _float fStartAlpha, const _float fTargetAlpha, const _float fDelay);
+	_bool Tick_Fade_Text(const _float fTimeDelta);
 
 protected:
 	FONT_DESC m_tFontDesc	= {};

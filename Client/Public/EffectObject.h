@@ -57,7 +57,7 @@ public:
         // 외부 호출 함수
     virtual HRESULT Spawn_FromPool(void* pArg);
     virtual HRESULT Despawn_FromPool();
-    virtual void LoopState_Change(E_LoopState eState) override;
+    virtual void LoopState_Change(DTO::E_LoopState eState) override;
 
 public:
     _bool IsEffectfinish() {return m_bIsEffectFinish;}
@@ -118,10 +118,12 @@ private:
    CComputeShader*           m_pComputeShader = { nullptr };
    CTransform*               m_pTransform = { nullptr };
 
-   vector<_uint>           m_iSpriteCurrentNumber = {};
+   vector<_uint>             m_iSpriteCurrentNumber = {};
+   vector<float>             m_iSpriteAccumulation = {};
  private:
 
    _bool                     m_bIsEffectFinish = { false };
+   _bool                     m_bDespawnFlag = { false };
 };
 
 NS_END

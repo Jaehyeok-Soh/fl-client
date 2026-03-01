@@ -56,7 +56,6 @@ public:
 protected:
 	void Update_CombinedWorldMatrix(const Matrix* pMatParent);
 	void IsEffectFinish();
-
 public:
 	static Effect* Create(ID3D11Device* pDevice, ID3D11DeviceContext* pDeviceContext);
 	virtual CGameObject* Clone(void* pArg);
