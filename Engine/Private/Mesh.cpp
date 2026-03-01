@@ -25,7 +25,6 @@ CMesh::CMesh(const CMesh& rhs)
 	, m_pOffsetMatrices(rhs.m_pOffsetMatrices)
 	, m_pAffectBoneIndices(rhs.m_pAffectBoneIndices)
 	, m_pNormals(rhs.m_pNormals)
-	,m_pBoneMesh_ImmuBuffer(rhs.m_pBoneMesh_ImmuBuffer)
 {
 
 	//Safe_AddRef(m_pInputKeySB_SRV);
@@ -445,7 +444,7 @@ void CMesh::Free()
 	if (m_eModelType == EModelType::ANIM)
 	{
 
-		if (IsClone() == false)
+		//if (IsClone() == false)
 		{
 			Safe_Release(m_pBoneMesh_ImmuBuffer);
 			Safe_Release(m_pBoneMeshSB_SRV);

@@ -50,7 +50,7 @@ HRESULT CState_GunBase::Start(void* pArg, _bool bForce)
 
     GUN_START_DESC* pDesc = static_cast<GUN_START_DESC*>(pArg);
 
-    // desc이 없다면 바닥 충돌 검사후 move state 설정
+    // desc이 없다면 바닥 충돌 검사후 move state 설정 : 외부 -> Gun base
     if (!pDesc)
     {
         if (Check_OnGround(0.3f))

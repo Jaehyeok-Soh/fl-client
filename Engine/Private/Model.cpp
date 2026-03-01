@@ -1631,14 +1631,14 @@ void CModel::Free()
 	{
 		for (auto& pBoneGroup : m_vecBoneGroups)
 		{
-			if (IsClone())
+			//if (IsClone())
 			{
 				Safe_Release(pBoneGroup.pInputGroupSB_SRV);
 				Safe_Release(pBoneGroup.pIndexBuffer);
 			}
 		}
 
-		if (IsClone())
+		//if (IsClone())
 		{
 			Safe_Release(m_pPreSB);
 			Safe_Release(m_pCurSB);
