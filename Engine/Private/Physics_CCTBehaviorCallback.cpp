@@ -18,6 +18,25 @@ PxControllerBehaviorFlags CPhysics_CCTBehaviorCallback::getBehaviorFlags(const P
 	return PxControllerBehaviorFlag::eCCT_SLIDE;
 }
 
+PxControllerBehaviorFlags CPhysics_CCTBehaviorCallback::getBehaviorFlags(const PxShape& shape, const PxActor& actor)
+{
+	//if (actor.is<PxRigidDynamic>())
+	//{
+	//	return PxControllerBehaviorFlag::eCCT_SLIDE;
+	//}
+
+	//return PxControllerBehaviorFlag::eCCT_CAN_RIDE_ON_OBJECT;
+
+	return PxControllerBehaviorFlag::eCCT_SLIDE;
+}
+
+PxControllerBehaviorFlags CPhysics_CCTBehaviorCallback::getBehaviorFlags(const PxObstacle& obstacle)
+{
+	PX_UNUSED(obstacle);
+
+	return PxControllerBehaviorFlags();
+}
+
 CPhysics_CCTBehaviorCallback::CPhysics_CCTBehaviorCallback()
 {
 }

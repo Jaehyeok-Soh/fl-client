@@ -170,6 +170,9 @@ void CMainPlayer::Update_Late(const _float fTimeDelta)
     
     Get_Component<CPhysicsAttackOverlap>()->Update(fTimeDelta);
 
+    if (Get_Component<CPhysicsCCT>())
+        Get_Component<CPhysicsCCT>()->Update(fTimeDelta);
+
     //CPlayerControlContext* pControlContext = Get_Component<CPlayerControlContext>();
     //if (pControlContext == nullptr)
     //    return;
@@ -710,7 +713,7 @@ HRESULT CMainPlayer::Ready_CCT()
     desc.vExtens = { 0.f, 0.f, 0.f };
 
     PHYSICSMATERIAL_DESC mtrlDesc{};
-    mtrlDesc.eMaterial = EPhysicsMaterial::PLAYER;
+    mtrlDesc.eMaterial = EPhysicsMaterial::ICE;
     desc.tMaterial = mtrlDesc;
 
     desc.eFilterLayer = PHYSICSFILTERGROUP::Enum::PLAYER;

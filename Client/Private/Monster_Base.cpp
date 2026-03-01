@@ -101,6 +101,9 @@ void CMonster_Base::Update_Late(const _float fTimeDelta)
 
 	if (Get_Component <CPhysicsAttackOverlap>())
 		Get_Component<CPhysicsAttackOverlap>()->Update(fTimeDelta);
+
+	if (Get_Component<CPhysicsCCT>())
+		Get_Component<CPhysicsCCT>()->Update(fTimeDelta);
 }
 
 void CMonster_Base::Ready_Before_Render(const _float fTimeDelta)

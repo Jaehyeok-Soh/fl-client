@@ -27,8 +27,8 @@ public:
 
     // PxControllerBehaviorCallback을(를) 통해 상속됨
     PxControllerBehaviorFlags getBehaviorFlags(const PxController& controller) override;
-    PxControllerBehaviorFlags getBehaviorFlags(const PxShape& shape, const PxActor& actor) override { PX_UNUSED(shape); PX_UNUSED(actor);}
-    PxControllerBehaviorFlags getBehaviorFlags(const PxObstacle& obstacle) override { PX_UNUSED(obstacle); }
+    PxControllerBehaviorFlags getBehaviorFlags(const PxShape& shape, const PxActor& actor) override;
+    PxControllerBehaviorFlags getBehaviorFlags(const PxObstacle& obstacle) override;
 };
 
 NS_END

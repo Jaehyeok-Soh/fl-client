@@ -80,9 +80,9 @@ PxController* CPhysics_CCTManager::MakeBoxController(PHYSICSCCT_DESC* pDesc)
 	desc.halfForwardExtent = pDesc->vExtens.z / 2.f;
 	desc.material = m_pResourceManager->GetMaterial(&pDesc->tMaterial);
 
-	desc.contactOffset = 0.1f;
-	desc.stepOffset = 0.5f;
-	desc.slopeLimit = 45.f;
+	desc.contactOffset = 0.01f;
+	desc.stepOffset = 0.01f;
+	desc.slopeLimit = 0.5f;
 
 	desc.reportCallback = m_pCCTHitReport;
 	desc.behaviorCallback = m_pCCTBehaviorCallback;
@@ -97,9 +97,9 @@ PxController* CPhysics_CCTManager::MakeCapsuleController(PHYSICSCCT_DESC* pDesc)
 	desc.height = pDesc->fHeight;
 	desc.material = m_pResourceManager->GetMaterial(&pDesc->tMaterial);
 
-	desc.contactOffset = 0.1f;
-	desc.stepOffset = 0.5f;
-	desc.slopeLimit = 45.f;
+	desc.contactOffset = 0.01f;
+	desc.stepOffset = 0.01f;
+	desc.slopeLimit = 0.5f;
 
 	desc.reportCallback = m_pCCTHitReport;
 	desc.behaviorCallback = m_pCCTBehaviorCallback;
