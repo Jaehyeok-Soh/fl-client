@@ -1,6 +1,7 @@
 #include "pch.h"
 #include "UIBossStat_Image.h"
 #include "Client_Defines.h"
+#include "Client_EventDefine.h"
 //=================
 // Component
 //=================
@@ -71,6 +72,16 @@ void CUIBossStat_Image::Update(const _float fTimeDelta)
 void CUIBossStat_Image::Update_Late(const _float fTimeDelta)
 {
 	Super::Update_Late(fTimeDelta);
+
+	m_fTimeAcc += fTimeDelta;
+	if (m_fTimeAcc > 3.f)
+	{
+		if (m_isBossEventTrigger)
+			return;
+
+		m_pGameInstance->Broadcast<BOSS_STAGING_EVENT_END>();
+		m_isBossEventTrigger = true;
+	}
 }
 
 void CUIBossStat_Image::Ready_Before_Render(const _float fTimeDelta)
@@ -128,8 +139,10 @@ HRESULT CUIBossStat_Image::Spawn_FromPool(void* pArg)
 	UI_PREFAB_DATA* pDesc = static_cast<UI_PREFAB_DATA*>(pArg);
 	/* º¸½º ½ºÅÈ ÄÄÆ÷³ÍÆ® ºÎÂø */
 	m_bDead = false;
-
+	m_isBossEventTrigger = false;
+	m_fTimeAcc = 0.f;
 	m_isSpawned = true;
+	m_pGameInstance->Broadcast<BOSS_STAGING_EVENT_START>();
 	return S_OK;
 }
 

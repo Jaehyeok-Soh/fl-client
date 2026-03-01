@@ -1,7 +1,7 @@
 #include "pch.h"
 #include "UIJust_Image.h"
 #include "Client_Defines.h"
-
+#include "Client_EventDefine.h"
 //=================
 // Component
 //=================
@@ -43,6 +43,9 @@ HRESULT CUIJust_Image::Awake(const _uint iCurrentLevelID)
 {
 	if (FAILED(Super::Awake(iCurrentLevelID)))
 		return E_FAIL;
+	m_pGameInstance->Subscribe<BOSS_STAGING_EVENT_START>([this]() { this->Set_Invisible(); });
+	m_pGameInstance->Subscribe<BOSS_STAGING_EVENT_END>([this]() { this->Set_Visible(); });
+
 	return S_OK;
 }
 
@@ -91,20 +94,18 @@ void CUIJust_Image::OnUIEvent(ETriggerEventType eEvent, CGenericUI* pSender)
 void CUIJust_Image::Initialize_Visible_Event()
 {
 	m_isFin_Event = false;
-	m_fTimeAcc = 0.f;
-	m_fAlpha_Ratio = 0.f;
+	Ready_Fade(0.5f, 0.f, m_fOriginAlpha, m_fDelay);
 }
 
 void CUIJust_Image::Initialize_InVisible_Event()
 {
 	m_isFin_Event = false;
-	m_fTimeAcc = 0.f;
+	Ready_Fade(0.5f, m_fOriginAlpha, 0.f, m_fDelay);
 }
 
 _bool CUIJust_Image::Tick_Visible_Event(const _float fTimeDelta)
 {
-	m_fAlpha_Ratio += fTimeDelta * 2.f;
-	if (m_fAlpha_Ratio >= m_fOriginAlpha)
+	if (Tick_Fade(fTimeDelta))
 	{
 		m_fAlpha_Ratio = m_fOriginAlpha;
 		m_isFin_Event = true;
@@ -115,8 +116,13 @@ _bool CUIJust_Image::Tick_Visible_Event(const _float fTimeDelta)
 
 _bool CUIJust_Image::Tick_InVisible_Event(const _float fTimeDelta)
 {
-	m_isFin_Event = true;
-	return true;
+	if (Tick_Fade(fTimeDelta))
+	{
+		m_fAlpha_Ratio = 0.f;
+		m_isFin_Event = true;
+		return true;
+	}
+	return false;
 }
 
 HRESULT CUIJust_Image::Ready_Components(JUST_IMAGE_DESC* pDesc)

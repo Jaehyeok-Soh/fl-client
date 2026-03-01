@@ -20,7 +20,6 @@ private:
 public:
 	HRESULT Initialize_Prototype() override;
 	HRESULT Initialize(void* pArg) override;
-	HRESULT Attach_Personal_Info();
 
 public:
 	virtual HRESULT Awake(const _uint iCurrentLevelID) override;
@@ -30,6 +29,11 @@ public:
 	virtual void Ready_Before_Render(const _float fTimeDelta) override;
 	virtual HRESULT Render() override;
 
+private:
+	HRESULT Ready_Components(BOSS_STAT_PROGRESS_DESC* pDesc);
+	HRESULT Bind_ShaderResources();
+
+	virtual HRESULT Attach_Personal_Info()override;
 	void OnUIEvent(ETriggerEventType eEvent, CGenericUI* pSender)override;
 	void Initialize_Visible_Event()override;
 	void Initialize_InVisible_Event()override;
@@ -38,16 +42,11 @@ public:
 	virtual HRESULT Spawn_FromPool(void* pArg)override;
 	virtual HRESULT Despawn_FromPool()override;
 
-private:
-	HRESULT Ready_Components(BOSS_STAT_PROGRESS_DESC* pDesc);
-	HRESULT Bind_ShaderResources();
 	HRESULT Convert_Stat_To_Ratio();
+
 private:
-	CWorldUI_Component* m_pWorldUIComp = { nullptr };
 	_bool m_isSpawned = { false };
-
 	Vec4 m_vOriginColorTint = {};
-
 public:
 	static CUIBossStat_Progress* Create(ID3D11Device* pDevice, ID3D11DeviceContext* pDeviceContext);
 	CGameObject* Clone(void* pArg);

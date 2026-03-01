@@ -11,14 +11,12 @@ public:
 	typedef struct tagLoadingProgressDesc : public PROGRESS_BAR_DESC
 	{
 		const _float* pLoadingRatio;
-
 	}LOADING_PROGRESS_DESC;
 
 private:
 	CUILoading_Progress(ID3D11Device* pDevice, ID3D11DeviceContext* pDeviceContext);
 	CUILoading_Progress(const CUILoading_Progress& rhs);
 	virtual ~CUILoading_Progress() = default;
-
 public:
 	HRESULT Initialize_Prototype() override;
 	HRESULT Initialize(void* pArg) override;

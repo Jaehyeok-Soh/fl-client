@@ -39,10 +39,6 @@ HRESULT CUIBossStat_Progress::Initialize(void* pArg)
 	return S_OK;
 }
 
-HRESULT CUIBossStat_Progress::Attach_Personal_Info()
-{
-	return S_OK;
-}
 
 HRESULT CUIBossStat_Progress::Awake(const _uint iCurrentLevelID)
 {
@@ -76,6 +72,7 @@ void CUIBossStat_Progress::Update(const _float fTimeDelta)
 
 void CUIBossStat_Progress::Update_Late(const _float fTimeDelta)
 {
+	Super::Update_Late(fTimeDelta);
 	if (m_eSubClassType == DTO::EUISubClassType::BOSS_STAT_HP_PROGRESS)
 	{
 		if (m_fProgress_Ratio == 1.f)
@@ -89,8 +86,6 @@ void CUIBossStat_Progress::Update_Late(const _float fTimeDelta)
 			m_vGradiantColorTint = m_vOriginColorTint;
 		}
 	}
-
-	Super::Update_Late(fTimeDelta);
 }
 
 void CUIBossStat_Progress::Ready_Before_Render(const _float fTimeDelta)
@@ -106,6 +101,28 @@ HRESULT CUIBossStat_Progress::Render()
 		return E_FAIL;
 	if (FAILED(Super::Render()))
 		return E_FAIL;
+	return S_OK;
+}
+
+HRESULT CUIBossStat_Progress::Ready_Components(BOSS_STAT_PROGRESS_DESC* pDesc)
+{
+	if (FAILED(Super::Ready_Components(pDesc)))
+		return E_FAIL;
+	return S_OK;
+}
+
+HRESULT CUIBossStat_Progress::Bind_ShaderResources()
+{
+	CShader* pShader = Get_Component<CShader>();
+	if (FAILED(Get_Component<CTransform>()->Bind_ShaderResource(pShader)))
+		return E_FAIL;
+	if (FAILED(Super::Bind_ShaderResources()))
+		return E_FAIL;
+	return S_OK;
+}
+
+HRESULT CUIBossStat_Progress::Attach_Personal_Info()
+{
 	return S_OK;
 }
 
@@ -173,25 +190,18 @@ HRESULT CUIBossStat_Progress::Despawn_FromPool()
 	return S_OK;
 }
 
-HRESULT CUIBossStat_Progress::Ready_Components(BOSS_STAT_PROGRESS_DESC* pDesc)
-{
-	if (FAILED(Super::Ready_Components(pDesc)))
-		return E_FAIL;
-	return S_OK;
-}
 
-HRESULT CUIBossStat_Progress::Bind_ShaderResources()
-{
-	CShader* pShader = Get_Component<CShader>();
-	if (FAILED(Get_Component<CTransform>()->Bind_ShaderResource(pShader)))
-		return E_FAIL;
-	if (FAILED(Super::Bind_ShaderResources()))
-		return E_FAIL;
-	return S_OK;
-}
 
 HRESULT CUIBossStat_Progress::Convert_Stat_To_Ratio()
 {
+	if (KEY_BUTTON_DOWN(DIK_6))
+	{
+		m_fCurRatio = 1.f;
+	}
+	if (KEY_BUTTON_DOWN(DIK_7))
+	{
+		m_fCurRatio = 0.f;
+	}
 	return S_OK;
 }
 

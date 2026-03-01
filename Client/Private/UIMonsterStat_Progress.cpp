@@ -39,16 +39,6 @@ HRESULT CUIMonsterStat_Progress::Initialize(void* pArg)
 	return S_OK;
 }
 
-HRESULT CUIMonsterStat_Progress::Attach_Personal_Info()
-{
-	CGameObject* pResult = m_pGameInstance->Get_GameObject_Front(ENUM_TO_UINT(ELevelType::STATIC), g_wszPlayerLayer);
-	if (nullptr == pResult)
-		return E_FAIL;
-
-	m_vOriginColor = m_vColorTint;
-	m_vOriginGradiantColor = m_vGradiantColorTint;
-	return S_OK;
-}
 
 HRESULT CUIMonsterStat_Progress::Awake(const _uint iCurrentLevelID)
 {
@@ -92,6 +82,34 @@ HRESULT CUIMonsterStat_Progress::Render()
 		return E_FAIL;
 	if (FAILED(Super::Render()))
 		return E_FAIL;
+	return S_OK;
+}
+
+HRESULT CUIMonsterStat_Progress::Ready_Components(MONSTER_STAT_PROGRESS_DESC* pDesc)
+{
+	if (FAILED(Super::Ready_Components(pDesc)))
+		return E_FAIL;
+	return S_OK;
+}
+
+HRESULT CUIMonsterStat_Progress::Bind_ShaderResources()
+{
+	CShader* pShader = Get_Component<CShader>();
+	if (FAILED(Get_Component<CTransform>()->Bind_ShaderResource(pShader)))
+		return E_FAIL;
+	if (FAILED(Super::Bind_ShaderResources()))
+		return E_FAIL;
+	return S_OK;
+}
+
+HRESULT CUIMonsterStat_Progress::Attach_Personal_Info()
+{
+	CGameObject* pResult = m_pGameInstance->Get_GameObject_Front(ENUM_TO_UINT(ELevelType::STATIC), g_wszPlayerLayer);
+	if (nullptr == pResult)
+		return E_FAIL;
+
+	m_vOriginColor = m_vColorTint;
+	m_vOriginGradiantColor = m_vGradiantColorTint;
 	return S_OK;
 }
 
@@ -158,22 +176,6 @@ HRESULT CUIMonsterStat_Progress::Despawn_FromPool()
 	return S_OK;
 }
 
-HRESULT CUIMonsterStat_Progress::Ready_Components(MONSTER_STAT_PROGRESS_DESC* pDesc)
-{
-	if (FAILED(Super::Ready_Components(pDesc)))
-		return E_FAIL;
-	return S_OK;
-}
-
-HRESULT CUIMonsterStat_Progress::Bind_ShaderResources()
-{
-	CShader* pShader = Get_Component<CShader>();
-	if (FAILED(Get_Component<CTransform>()->Bind_ShaderResource(pShader)))
-		return E_FAIL;
-	if (FAILED(Super::Bind_ShaderResources()))
-		return E_FAIL;
-	return S_OK;
-}
 
 HRESULT CUIMonsterStat_Progress::Convert_Stat_To_Ratio()
 {

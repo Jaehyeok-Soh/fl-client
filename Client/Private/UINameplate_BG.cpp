@@ -38,19 +38,13 @@ HRESULT CUINameplate_BG::Initialize(void* pArg)
 	return S_OK;
 }
 
-HRESULT CUINameplate_BG::Attach_Personal_Info()
-{
-	return S_OK;
-}
 
 HRESULT CUINameplate_BG::Awake(const _uint iCurrentLevelID)
 {
 	if (FAILED(Super::Awake(iCurrentLevelID)))
 		return E_FAIL;
-
 	if (FAILED(Attach_Personal_Info()))
 		return E_FAIL;
-
 	return S_OK;
 }
 
@@ -99,6 +93,11 @@ HRESULT CUINameplate_BG::Bind_ShaderResources()
 		return E_FAIL;
 	if (FAILED(Super::Bind_ShaderResources()))
 		return E_FAIL;
+	return S_OK;
+}
+
+HRESULT CUINameplate_BG::Attach_Personal_Info()
+{
 	return S_OK;
 }
 

@@ -37,6 +37,8 @@ private:
 	virtual HRESULT Despawn_FromPool()override;
 private:
 	_bool m_isSpawned = { false };
+	_bool m_isBossEventTrigger = { false };
+
 public:
 	static CUIBossStat_Image* Create(ID3D11Device* pDevice, ID3D11DeviceContext* pDeviceContext);
 	CGameObject* Clone(void* pArg);

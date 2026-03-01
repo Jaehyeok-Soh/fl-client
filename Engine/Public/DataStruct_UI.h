@@ -594,6 +594,9 @@ enum class EUIDImageSubClassType
 	BOSS_STAT_BG,
 	BOSS_STAT_END,
 
+	// ÄÞº¸ 
+	BATTLE_COMBO,
+
 	END
 };
 

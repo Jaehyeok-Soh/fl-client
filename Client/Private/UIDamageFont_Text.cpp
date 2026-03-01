@@ -50,25 +50,6 @@ HRESULT CUIDamageFont_Text::Awake(const _uint iCurrentLevelID)
 	return S_OK;
 }
 
-HRESULT CUIDamageFont_Text::Attach_Personal_Info()
-{
-	CGameObject* pResult = m_pGameInstance->Get_GameObject_Front(ENUM_TO_UINT(ELevelType::STATIC), g_wszPlayerLayer);
-	if (nullptr == pResult)
-		return E_FAIL;
-
-	m_pPlayerStatCom = static_cast<CStatCom_Player*>(pResult->Get_Component<CMyStat>());
-	if (nullptr == m_pPlayerStatCom)
-		return E_FAIL;
-
-	if (m_isSpawned)
-	{
-		Set_Visible();
-		m_isSpawned = false;
-	}
-
-	return S_OK;
-}
-
 void CUIDamageFont_Text::Update_Priority(const _float fTimeDelta)
 {
 	Super::Update_Priority(fTimeDelta);
@@ -121,30 +102,26 @@ HRESULT CUIDamageFont_Text::Bind_ShaderResources()
 	return S_OK;
 }
 
-HRESULT CUIDamageFont_Text::Convert_Stat_To_Text()
+HRESULT CUIDamageFont_Text::Attach_Personal_Info()
 {
-	switch (m_eTextSubClassType)
-	{
-	case DTO::EUITextSubClassType::BATTLE_DAMAGE_TEXT_BEGIN:
-		break;
-	case DTO::EUITextSubClassType::BATTLE_DAMAGE_TEXT_COMMON:
-		break;
-	case DTO::EUITextSubClassType::BATTLE_DAMAGE_TEXT_HIT:
-		break;
-	case DTO::EUITextSubClassType::BATTLE_DAMAGE_TEXT_CRITCAL:
-		break;
-	case DTO::EUITextSubClassType::BATTLE_DAMAGE_TEXT_CRITICAL_DAMAGE:
-		break;
-	case DTO::EUITextSubClassType::BATTLE_DAMAGE_TEXT_END:
-		break;
-	case DTO::EUITextSubClassType::END:
-	default:
+	CGameObject* pResult = m_pGameInstance->Get_GameObject_Front(ENUM_TO_UINT(ELevelType::STATIC), g_wszPlayerLayer);
+	if (nullptr == pResult)
 		return E_FAIL;
+
+	m_pPlayerStatCom = static_cast<CStatCom_Player*>(pResult->Get_Component<CMyStat>());
+	if (nullptr == m_pPlayerStatCom)
+		return E_FAIL;
+
+	if (m_isSpawned)
+	{
+		Set_Visible();
+		m_isSpawned = false;
 	}
+
 	return S_OK;
 }
 
-HRESULT CUIDamageFont_Text::Tick_By_Type(const _float fTimeDelta)
+void CUIDamageFont_Text::Tick_By_Type(const _float fTimeDelta)
 {
 	switch (m_eTextSubClassType)
 	{
@@ -216,6 +193,29 @@ HRESULT CUIDamageFont_Text::Tick_By_Type(const _float fTimeDelta)
 		}
 	}
 	break;
+	case DTO::EUITextSubClassType::BATTLE_DAMAGE_TEXT_END:
+		break;
+	case DTO::EUITextSubClassType::END:
+	default:
+		return;
+	}
+	return;
+}
+
+HRESULT CUIDamageFont_Text::Convert_Stat_To_Text()
+{
+	switch (m_eTextSubClassType)
+	{
+	case DTO::EUITextSubClassType::BATTLE_DAMAGE_TEXT_BEGIN:
+		break;
+	case DTO::EUITextSubClassType::BATTLE_DAMAGE_TEXT_COMMON:
+		break;
+	case DTO::EUITextSubClassType::BATTLE_DAMAGE_TEXT_HIT:
+		break;
+	case DTO::EUITextSubClassType::BATTLE_DAMAGE_TEXT_CRITCAL:
+		break;
+	case DTO::EUITextSubClassType::BATTLE_DAMAGE_TEXT_CRITICAL_DAMAGE:
+		break;
 	case DTO::EUITextSubClassType::BATTLE_DAMAGE_TEXT_END:
 		break;
 	case DTO::EUITextSubClassType::END:
@@ -352,8 +352,6 @@ HRESULT CUIDamageFont_Text::Spawn_FromPool(void* pArg)
 	{
 		m_pWorldUIComp->Set_TargetPos(Vec3{ pDesc->DamageFontData.vHitPos.x + x,  pDesc->DamageFontData.vHitPos.y + y, pDesc->DamageFontData.vHitPos.z + z });
 	}
-
-
 
 	switch (m_eTextSubClassType)
 	{

@@ -25,7 +25,6 @@ public:
 	virtual void	Update_Late(const _float fTimeDelta)		override;
 	virtual void	Ready_Before_Render(const _float fTimeDelta)override;
 	virtual HRESULT Render()									override;
-
 private:
 	HRESULT Ready_Components(MENU_OUTLINE_DESC* pDesc);
 	HRESULT Bind_ShaderResources();
@@ -41,7 +40,6 @@ private:
 private:
 	_bool m_isTrigger_HoverEnter	= { false };
 	_bool m_isTrigger_HoverExit		= { false };
-
 	_float m_fEmit = { 4.f };
 
 public:

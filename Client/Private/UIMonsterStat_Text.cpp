@@ -43,16 +43,12 @@ HRESULT CUIMonsterStat_Text::Awake(const _uint iCurrentLevelID)
 	if (FAILED(Super::Awake(iCurrentLevelID)))
 		return E_FAIL;
 
-	if (FAILED(Attach_Personal_Info(iCurrentLevelID)))
+	if (FAILED(Attach_Personal_Info()))
 		return E_FAIL;
 
 	return S_OK;
 }
 
-HRESULT CUIMonsterStat_Text::Attach_Personal_Info(const _uint iCurrentLevelID)
-{
-	return S_OK;
-}
 
 void CUIMonsterStat_Text::Update_Priority(const _float fTimeDelta)
 {
@@ -71,10 +67,9 @@ void CUIMonsterStat_Text::Update_Late(const _float fTimeDelta)
 
 void CUIMonsterStat_Text::Ready_Before_Render(const _float fTimeDelta)
 {
+	Super::Ready_Before_Render(fTimeDelta);
 	if (FAILED(Convert_Stat_To_Text()))
 		return;
-
-	Super::Ready_Before_Render(fTimeDelta);
 }
 
 HRESULT CUIMonsterStat_Text::Render()
@@ -105,13 +100,20 @@ HRESULT CUIMonsterStat_Text::Bind_ShaderResources()
 	return S_OK;
 }
 
+HRESULT CUIMonsterStat_Text::Attach_Personal_Info()
+{
+	return S_OK;
+}
+
 HRESULT CUIMonsterStat_Text::Convert_Stat_To_Text()
 {
 	switch (m_eTextSubClassType)
 	{
-	case DTO::EUITextSubClassType::MONSTER_STAT_TEXT_LV:break;
+	case DTO::EUITextSubClassType::MONSTER_STAT_TEXT_LV:
 		m_wstrText = L"Lv.10";
-	case DTO::EUITextSubClassType::MONSTER_STAT_TEXT_NICKNAME:break;
+		break;
+	case DTO::EUITextSubClassType::MONSTER_STAT_TEXT_NICKNAME:
+		break;
 	case DTO::EUITextSubClassType::END:
 	default:
 		return E_FAIL;

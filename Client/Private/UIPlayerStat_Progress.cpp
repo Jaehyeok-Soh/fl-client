@@ -1,7 +1,7 @@
 #include "pch.h"
 #include "UIPlayerStat_Progress.h"
 #include "Client_Defines.h"
-
+#include "Client_EventDefine.h"
 //=================
 // Component
 //=================
@@ -40,20 +40,6 @@ HRESULT CUIPlayerStat_Progress::Initialize(void* pArg)
 	return S_OK;
 }
 
-HRESULT CUIPlayerStat_Progress::Attach_Personal_Info()
-{
-	CGameObject* pResult = m_pGameInstance->Get_GameObject_Front(ENUM_TO_UINT(ELevelType::STATIC), g_wszPlayerLayer);
-	if (nullptr == pResult)
-		return E_FAIL;
-
-	m_pPlayerStatCom = static_cast<CStatCom_Player*>(pResult->Get_Component<CMyStat>());
-	if (nullptr == m_pPlayerStatCom)
-		return E_FAIL;
-
-	m_vOriginColor = m_vColorTint;
-	m_vOriginGradiantColor = m_vGradiantColorTint;
-	return S_OK;
-}
 
 HRESULT CUIPlayerStat_Progress::Awake(const _uint iCurrentLevelID)
 {
@@ -173,6 +159,7 @@ _bool CUIPlayerStat_Progress::Tick_InVisible_Event(const _float fTimeDelta)
 	return true;
 }
 
+
 HRESULT CUIPlayerStat_Progress::Ready_Components(PLAYER_STAT_PROGRESS_DESC* pDesc)
 {
 	if (FAILED(Super::Ready_Components(pDesc)))
@@ -188,6 +175,25 @@ HRESULT CUIPlayerStat_Progress::Bind_ShaderResources()
 
 	if (FAILED(Super::Bind_ShaderResources()))
 		return E_FAIL;
+
+	return S_OK;
+}
+
+HRESULT CUIPlayerStat_Progress::Attach_Personal_Info()
+{
+	CGameObject* pResult = m_pGameInstance->Get_GameObject_Front(ENUM_TO_UINT(ELevelType::STATIC), g_wszPlayerLayer);
+	if (nullptr == pResult)
+		return E_FAIL;
+
+	m_pPlayerStatCom = static_cast<CStatCom_Player*>(pResult->Get_Component<CMyStat>());
+	if (nullptr == m_pPlayerStatCom)
+		return E_FAIL;
+
+	m_vOriginColor = m_vColorTint;
+	m_vOriginGradiantColor = m_vGradiantColorTint;
+
+	m_pGameInstance->Subscribe<BOSS_STAGING_EVENT_START>([this]() { this->Set_Invisible(); });
+	m_pGameInstance->Subscribe<BOSS_STAGING_EVENT_END>([this]() { this->Set_Visible(); });
 
 	return S_OK;
 }

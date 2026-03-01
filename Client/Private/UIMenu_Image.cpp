@@ -1,6 +1,7 @@
 #include "pch.h"
 #include "UIMenu_Image.h"
 #include "Client_Defines.h"
+#include "Client_EventDefine.h"
 #include "CameraMan.h"
 
 #include "MainPlayer.h"
@@ -42,38 +43,13 @@ HRESULT CUIMenu_Image::Initialize(void* pArg)
 	return S_OK;
 }
 
-HRESULT CUIMenu_Image::Attach_Personal_Info()
-{
-	switch (m_eDImageSubClass)
-	{
-	case DTO::EUIDImageSubClassType::MENU_BG:
-	{
-
-	}
-	return S_OK;
-	case DTO::EUIDImageSubClassType::MENU_ICON:
-	{
-
-	}
-	return S_OK;
-	case DTO::EUIDImageSubClassType::MENU_ICON_BG:
-	{
-
-	}
-	return S_OK;
-	case DTO::EUIDImageSubClassType::END:
-	default:
-		return E_FAIL;
-	}
-
-	return S_OK;
-}
 
 HRESULT CUIMenu_Image::Awake(const _uint iCurrentLevelID)
 {
 	if (FAILED(Super::Awake(iCurrentLevelID)))
 		return E_FAIL;
-	Attach_Personal_Info();
+	if (FAILED(Attach_Personal_Info()))
+		return E_FAIL;
 	return S_OK;
 }
 
@@ -94,7 +70,6 @@ void CUIMenu_Image::Update_Late(const _float fTimeDelta)
 
 void CUIMenu_Image::Ready_Before_Render(const _float fTimeDelta)
 {
-	Acting_By_InteractState();
 	Super::Ready_Before_Render(fTimeDelta);
 }
 
@@ -111,7 +86,8 @@ HRESULT CUIMenu_Image::Render()
 
 HRESULT CUIMenu_Image::Ready_Components(MENU_IMAGE_DESC* pDesc)
 {
-	Super::Ready_Components(pDesc);
+	if (FAILED(Super::Ready_Components(pDesc)))
+		return E_FAIL;
 	return S_OK;
 }
 
@@ -122,6 +98,31 @@ HRESULT CUIMenu_Image::Bind_ShaderResources()
 		return E_FAIL;
 	if (FAILED(Super::Bind_ShaderResources()))
 		return E_FAIL;
+	return S_OK;
+}
+
+HRESULT CUIMenu_Image::Attach_Personal_Info()
+{
+	switch (m_eDImageSubClass)
+	{
+	case DTO::EUIDImageSubClassType::MENU_BG:
+	{
+
+	}
+	break;
+	case DTO::EUIDImageSubClassType::MENU_ICON:
+	{
+
+	}
+	break;
+	case DTO::EUIDImageSubClassType::MENU_ICON_BG:
+	{
+	}
+	break;
+	case DTO::EUIDImageSubClassType::END:
+	default:
+		return E_FAIL;
+	}
 	return S_OK;
 }
 
@@ -155,14 +156,21 @@ void CUIMenu_Image::Initialize_Visible_Event()
 		m_fTimeAcc = 0.f;
 		m_fProgress_Ratio = 1.f;
 	}
-		break;
+	break;
 	case DTO::EUIDImageSubClassType::MENU_ICON:
+	{
+		m_pGameInstance->Subscribe<BOSS_STAGING_EVENT_START>([this]() { this->Set_Invisible(); });
+		m_pGameInstance->Subscribe<BOSS_STAGING_EVENT_END>([this]() { this->Set_Visible(); });
+		const _float fDuration = 1.f;
+		Ready_Fade(fDuration, 0.f, 1.f, m_fDelay);
+	}
+	break;
 	case DTO::EUIDImageSubClassType::MENU_ICON_BG:
 	{
 		const _float fDuration = 1.f;
 		Ready_Fade(fDuration, 0.f, 1.f, m_fDelay);
 	}
-		break;
+	break;
 	case DTO::EUIDImageSubClassType::END:
 	default:
 		break;

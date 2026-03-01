@@ -18,7 +18,6 @@ private:
 public:
 	HRESULT Initialize_Prototype() override;
 	HRESULT Initialize(void* pArg) override;
-	HRESULT Attach_Personal_Info();
 public:
 	virtual HRESULT Awake(const _uint iCurrentLevelID) override;
 	virtual void Update_Priority(const _float fTimeDelta) override;
@@ -29,9 +28,8 @@ public:
 private:
 	HRESULT Ready_Components(LEVEL_CHANGE_DESC* pDesc);
 	HRESULT Bind_ShaderResources();
-	virtual void Acting_By_InteractState()override;
-
-private:
+	virtual HRESULT Attach_Personal_Info()override;
+	virtual void Trigger_By_InteractState()override;
 	virtual void OnUIEvent(ETriggerEventType eEvent, CGenericUI* pSender)override;
 	virtual void Initialize_Visible_Event()override;
 	virtual _bool Tick_Visible_Event(const _float fTimeDelta)override;

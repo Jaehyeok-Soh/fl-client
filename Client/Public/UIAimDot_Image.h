@@ -13,7 +13,6 @@ public:
 	typedef struct tagUIAimDotImageDesc : public DIMAGE_DESC
 	{
 	}AIMDOT_IMAGE_DESC;
-
 private:
 	CUIAimDot_Image(ID3D11Device* pDevice, ID3D11DeviceContext* pDeviceContext);
 	CUIAimDot_Image(const CUIAimDot_Image& rhs);
@@ -21,7 +20,6 @@ private:
 public:
 	HRESULT Initialize_Prototype() override;
 	HRESULT Initialize(void* pArg) override;
-	HRESULT Attach_Personal_Info();
 public:
 	virtual HRESULT Awake(const _uint iCurrentLevelID) override;
 	virtual void Update_Priority(const _float fTimeDelta) override;
@@ -32,6 +30,7 @@ public:
 private:
 	HRESULT Ready_Components(AIMDOT_IMAGE_DESC* pDesc);
 	HRESULT Bind_ShaderResources();
+	virtual HRESULT Attach_Personal_Info()override;
 private:
 	virtual void OnUIEvent(ETriggerEventType eEvent, CGenericUI* pSender)override;
 	virtual void Initialize_Visible_Event()override;

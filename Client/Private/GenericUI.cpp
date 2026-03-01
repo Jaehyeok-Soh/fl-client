@@ -106,9 +106,6 @@ void CGenericUI::Update(const _float fTimeDelta)
 
 void CGenericUI::Update_Late(const _float fTimeDelta)
 {
-	if (KEY_BUTTON_DOWN(DIK_4))
-		Set_Dead(g_wszUILayer);
-
 	Super::Update_Late(fTimeDelta);
 }
 
@@ -141,14 +138,6 @@ _bool CGenericUI::Calc_HitEvent()
 	if (::PtInRect(&m_tRenderRect, m_pGameInstance->Get_MousePos()))
 		return TRUE;
 	return FALSE;
-}
-
-void CGenericUI::Acting_By_InteractState()
-{
-}
-
-void CGenericUI::OnUIEvent(ETriggerEventType eEvent, CGenericUI* pSender)
-{
 }
 
 HRESULT CGenericUI::Ready_Components(GENERIC_UI_DESC* pDesc)
@@ -214,14 +203,9 @@ HRESULT CGenericUI::Bind_ShaderResources()
 	return S_OK;
 }
 
-HRESULT CGenericUI::Spawn_FromPool(void* pArg)
-{
-	return S_OK;
-}
-
 void CGenericUI::Ready_Lerp_Movement(const Vec2& vStartOffset, const Vec2& vTargetOffset, const _float fDuration, const _float fEaseValue, const _float fDelay)
 {
-	m_fTimeAcc		= 0.f;
+	m_fLerpTimeAcc = 0.f;
 	m_fDelayTimeAcc = 0.f;
 	m_vStartOffset	= vStartOffset;
 	m_vTargetOffset	= vTargetOffset;
@@ -230,37 +214,14 @@ void CGenericUI::Ready_Lerp_Movement(const Vec2& vStartOffset, const Vec2& vTarg
 	m_fLerpDelay	= fDelay;
 }
 
-_bool CGenericUI::Tick_Lerp_Movement(const _float fTimeDelta)
-{
-	m_fDelayTimeAcc += fTimeDelta;
-	if (m_fDelayTimeAcc < m_fLerpDelay)
-		return false;
-
-	m_fTimeAcc += fTimeDelta;
-
-	_float t = m_fTimeAcc / m_fDuration;
-	if (t >= 1.f)
-	{
-		m_vMoveOffset = m_vMoveOffsetBase + m_vTargetOffset;
-		return true;
-	}
-
-	_float eased = t;
-	if (m_fEaseValue > 0.f)
-		eased = powf(t, m_fEaseValue);
-
-	m_vMoveOffset = m_vMoveOffsetBase + (m_vStartOffset + (m_vTargetOffset - m_vStartOffset) * eased);
-	return false;
-}
-
 void CGenericUI::Ready_Fade(const _float fDuration, const _float fStartAlpha, const _float fTargetAlpha, const _float fDelay)
 {
-	m_fAlpha_Ratio		= fStartAlpha;
-	m_fFadeTimeAcc		= 0.f;
+	m_fAlpha_Ratio = fStartAlpha;
+	m_fFadeTimeAcc = 0.f;
 	m_fFadeDelayTimeAcc = 0.f;
-	m_fFadeDelay		= fDelay;
-	m_fFadeDuration		= fDuration;
-	m_fStartAlphaRatio	= fStartAlpha;
+	m_fFadeDelay = fDelay;
+	m_fFadeDuration = fDuration;
+	m_fStartAlphaRatio = fStartAlpha;
 	m_fTargetAlphaRatio = fTargetAlpha;
 }
 
@@ -273,6 +234,40 @@ void CGenericUI::Ready_ExplosionFade(const _float fDuration, const _float fStart
 	m_fFadeDuration = fDuration;
 	m_fStartAlphaRatio = fExplosionAlpha;
 	m_fTargetAlphaRatio = fTargetAlpha;
+}
+
+void CGenericUI::Ready_LerpChange(const _float fDuration, const _float fStartAlpha, const _float fTargetAlpha, const _float fEaseValue, const _float fDelay)
+{
+	m_fFadeTimeAcc = 0.f;
+	m_fFadeDelayTimeAcc = 0.f;
+	m_fFadeDelay = fDelay;
+	m_fFadeDuration = fDuration;
+	m_fStartAlphaRatio = fStartAlpha;
+	m_fTargetAlphaRatio = fTargetAlpha;
+	m_fEaseValue = fEaseValue;
+}
+
+_bool CGenericUI::Tick_Lerp_Movement(const _float fTimeDelta)
+{
+	m_fDelayTimeAcc += fTimeDelta;
+	if (m_fDelayTimeAcc < m_fLerpDelay)
+		return false;
+
+	m_fLerpTimeAcc += fTimeDelta;
+
+	_float t = m_fLerpTimeAcc / m_fDuration;
+	if (t >= 1.f)
+	{
+		m_vMoveOffset = m_vMoveOffsetBase + m_vTargetOffset;
+		return true;
+	}
+
+	_float eased = t;
+	if (m_fEaseValue > 0.f)
+		eased = powf(t, m_fEaseValue);
+
+	m_vMoveOffset = m_vMoveOffsetBase + (m_vStartOffset + (m_vTargetOffset - m_vStartOffset) * eased);
+	return false;
 }
 
 _bool CGenericUI::Tick_Fade(const _float fTimeDelta)
@@ -297,17 +292,6 @@ _bool CGenericUI::Tick_Fade(const _float fTimeDelta)
 	_float f = m_fStartAlphaRatio + (m_fTargetAlphaRatio - m_fStartAlphaRatio) * t;
 	m_fAlpha_Ratio = f;
 	return false;
-}
-
-void CGenericUI::Ready_LerpChange(const _float fDuration, const _float fStartAlpha, const _float fTargetAlpha, const _float fEaseValue, const _float fDelay)
-{
-	m_fFadeTimeAcc		= 0.f;
-	m_fFadeDelayTimeAcc = 0.f;
-	m_fFadeDelay		= fDelay;
-	m_fFadeDuration		= fDuration;
-	m_fStartAlphaRatio	= fStartAlpha;
-	m_fTargetAlphaRatio = fTargetAlpha;
-	m_fEaseValue		= fEaseValue;
 }
 
 _bool CGenericUI::Tick_LerpChange(_float* p, const _float fTimeDelta)

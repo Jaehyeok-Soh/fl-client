@@ -405,6 +405,7 @@ namespace Client
 		UI_DAMAGEFONT_PREFAB_DATA DamageFontData = {};
 	}UI_PREFAB_DATA;
 
+
 #pragma endregion
 
 #pragma region SKILL

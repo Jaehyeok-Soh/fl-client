@@ -109,7 +109,6 @@ void CUIButton_Trigger::Update_Late(const _float fTimeDelta)
 
 void CUIButton_Trigger::Ready_Before_Render(const _float fTimeDelta)
 {
-	Acting_By_InteractState();
 	Super::Ready_Before_Render(fTimeDelta);
 }
 
