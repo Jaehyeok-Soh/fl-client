@@ -6,8 +6,8 @@
 // TODO:
 // #include "Monster_Weapon_Base.h"
 
-CStateMonster_ComboBase::CStateMonster_ComboBase(CActionState* pOwnerComponent, const string& strName)
-	: Super(pOwnerComponent, strName)
+CStateMonster_ComboBase::CStateMonster_ComboBase(CActionState* pOwnerComponent, const string& strName, _uint iStateIndex)
+	: Super(pOwnerComponent, strName, m_iEndStateIdx)
 {
 }
 

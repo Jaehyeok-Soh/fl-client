@@ -113,6 +113,11 @@ public:
 	_bool IsFalling();
 	_bool IsDown();
 	_bool IsHit();
+	_bool IsHitAdditive();
+	_bool IsHitLight();
+	_bool IsHitHeavy();
+	_bool IsHitLaunch();
+	_bool IsHitKnockdown();
 
 	// 데미지
 	_bool IsDamageRecently();
@@ -126,10 +131,6 @@ public:
 	// 이동 도착
 	_bool IsArrived();
 	_bool IsPathBlocked();
-
-	// 최소 유지시간, 쿨타임 // State에서 직접 계산
-	//_bool IsMinTimeSatisfy();
-	//_bool IsMaxTimeSatisfy();
 
 /// <summary>
 /// Feature

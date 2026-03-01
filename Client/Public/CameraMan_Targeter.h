@@ -98,7 +98,7 @@ private:
 	_float m_fNormalDistance	= { 3.f };
 	_float m_fGunDistance		= { 1.f };
 	_float m_fDistanceSpeed		= { 5.f };
-	MinMax m_MGun_RightDistance = { 0.f,3.f };
+	MinMax m_MGun_RightDistance = { 0.f,1.f };
 
 	Vec3 m_vTargetPos = Vec3::Zero;
 

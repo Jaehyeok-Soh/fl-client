@@ -30,7 +30,7 @@ typedef struct tagEffectEvent : public ANIM_EVENT_BASE1 {
 
     _bool       bFollowBone = { true };
     _int        iBoneIndex = { -1 };
-    _uint       iBoneFlag = { 0 };
+    _uint       iBoneFlag = { 0 };  // Bone Flag는 툴에서 설정한 비트플래그 값. POSITION, SCALE, POSITION 
 
     _float      fDuration = {};
 }EFFECTEVENT;

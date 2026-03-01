@@ -1,6 +1,13 @@
 #pragma once
 #include "Base.h"
 
+/*
+스킬마다 사용하는 방식이 다양하므로
+가상함수로 많이 빼둠.
+
+필요시 오버라이딩을 이용해서 사용할 것
+*/
+
 NS_BEGIN(Engine)
 class CMyStat;
 
@@ -69,7 +76,7 @@ public:
 
 	// start와 end는 외부에서 호출해준다
 public:
-	virtual _bool Start_Skill(CMyStat* pStatCom = nullptr); // stat에 있는 값을 건들일 수 있어서 값 던져줌
+	virtual _bool Start_Skill(CMyStat* pStatCom = nullptr); // stat에 있는 값을 건들일 수 있어서 값 던져줌 : aciton skill에서 던져주고 있는다
 	virtual void End_Skill(CMyStat* pStatCom = nullptr);
 	 
 	virtual _bool On_Collision(const _float fTimeDelta, CGameObject* pObj = nullptr); // 충돌 했을 때
@@ -91,10 +98,11 @@ protected:
 
 	SKILL_INFO	m_tSkillInfo = {};
 
-	_bool		m_bCountTime = { false };
-	TimeCount	m_TSkillTimer = { 0.f,0.f };
+	/* skill 지속 타이머 관련 멤버 변수 */
+	_bool		m_bCountTime = { false };		// skill 지속 시간을 카운팅 할거니
+	TimeCount	m_TSkillTimer = { 0.f,0.f };	// TimeCount : x는 acc 값, y는 max 값
 
-	_uint		m_iOnSkillCount = { 0 }; // 이미 skill이 실행되고 또 skill을 적용가능 할 시를 위해
+	_uint		m_iOnSkillCount = { 0 };		// 이미 skill이 실행되고 또 skill을 적용가능 할 시를 위해
 
 	Flags		m_FSkillFlags = { 0 };
 
@@ -102,8 +110,9 @@ protected:
 	// 시작 전에 start 할수 있는지 없는지 검사 하는 함수
 	virtual _bool Can_StartSkill(CMyStat* pStatCom = nullptr);
 
-	virtual void Update_Skill(const _float fTimeDelta);
-	virtual void Count_SkillTime(const _float fTimeDelta);
+	virtual void Update_Skill(const _float fTimeDelta); // skill on시 계속적으로 처리해아하는 로직
+	virtual void Count_SkillTime(const _float fTimeDelta);   // skill cool time을 체크
+	virtual void Count_NextCoolTime(const _float fTimeDelta);
 
 	// skill 시작과 끝에 flag값을 확인하고
 	// flag에 맞게 stat com의 값을 제어한다

@@ -46,7 +46,7 @@ protected:
 	using Super = CStateBase;
 
 protected:
-	CStateBase_Monster(CActionState* pOwnerComponent, const string& strName);
+	CStateBase_Monster(CActionState* pOwnerComponent, const string& strName, _uint iStateIndex);
 	virtual ~CStateBase_Monster() = default;
 
 	virtual HRESULT Initialize(void* pArg) override;
@@ -57,9 +57,14 @@ public:
 	virtual HRESULT End() override;
 
 public:
+	void Update_Time(TIME_COUNTER timer, _float fTimeDelta);
+	void Update_CooldownTime(_float fTimeDelta, _bool bEntryStart);
+
 	virtual void Change_MonsterState(_int eKey);	// change 랩핑 함수 : 필요시 오버라이드
 	_bool IsCancellation() { return m_pDesc->bCancellation; }
 	_bool IsOverLifeTime() { return m_tStateLifeTime.fMinTime <= m_fStateElapsed; }
+	_bool IsCooldownTimeSatisfy();
+
 protected:
 	STATE_START_DESC		m_tNextStateDesc = {};
 
@@ -101,6 +106,9 @@ protected:
 	vector<BOUND_CONDITION> m_vecCondition;
 	vector<BOUND_FEATURE> m_vecFeature;
 	vector<BOUND_CONDFEATURE> m_vecConditionFeature;
+
+	_uint m_iThisStateIndex = {};
+
 public:
 	virtual void Free() override;
 

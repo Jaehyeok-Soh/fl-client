@@ -237,6 +237,12 @@ HRESULT CLevel_Tutorial_Boss::Ready_Camera_Layer(const wstring& wstrLayerTag)
 
 HRESULT CLevel_Tutorial_Boss::Ready_Player_Layer(const wstring& wstrLayerTag)
 {
+	_uint iLevelIndex = ENUM_TO_UINT(ELevelType::TUTORIAL_VILLAGE);
+
+	// TODO : 만약 플레이어가 늘어난다면 레이어 추가 체크 필수
+	if (CGameObject* pPlayer = m_pGameInstance->Get_GameObject_Front(ENUM_TO_UINT(ELevelType::STATIC), wstrLayerTag))
+		return S_OK;
+
 	/* Player 최초 생성 */
 	{
 		CGameObject* pResult = { nullptr };

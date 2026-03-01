@@ -868,6 +868,9 @@ HRESULT CLoader::Ready_AttackOverlap()
 
 	if (FAILED(Ready_AttackOverlap_Monster_Dog()))
 		return E_FAIL;
+	
+	if (FAILED(Ready_AttackOverlap_Monster_Boomer()))
+		return E_FAIL;
 
 	return S_OK;
 }
@@ -886,7 +889,7 @@ HRESULT CLoader::Ready_AttackOverlap_PlayerMoon()
 	DTO::ECategory eCategory = DTO::ECategory::OVERLAP_SCRIPT;
 	_uint iLevelID = ENUM_TO_UINT(eLevelType);
 
-	std::filesystem::path FilePath = L"../../Resources/Data/AttackOverlapData/PlayerMoon_156_Animations_Save_Test_animTag.json";
+	std::filesystem::path FilePath = L"../../Resources/Data/AttackOverlapData/Moon.json";
 	vector<path> vecfiles;
 
 	if (!std::filesystem::exists(FilePath))
@@ -979,6 +982,27 @@ HRESULT CLoader::Ready_AttackOverlap_Monster_Dog()
 	_uint iLevelID = ENUM_TO_UINT(eLevelType);
 
 	std::filesystem::path FilePath = L"../../Resources/Data/AttackOverlapData/Monster_Dog_Attack.json";
+	vector<path> vecfiles;
+
+	if (!std::filesystem::exists(FilePath))
+		return E_FAIL;
+
+	if (FAILED(m_pGameInstance->Load_File_Json(iLevelID, eCategory, FilePath)))
+		return E_FAIL;
+
+	if (FAILED(m_pBuilderSystem->Build_File(iLevelID, eCategory, FilePath.stem().string())))
+		return E_FAIL;
+
+	return S_OK;
+}
+
+HRESULT CLoader::Ready_AttackOverlap_Monster_Boomer()
+{
+	ELevelType eLevelType = ELevelType::LOGO;
+	DTO::ECategory eCategory = DTO::ECategory::OVERLAP_SCRIPT;
+	_uint iLevelID = ENUM_TO_UINT(eLevelType);
+
+	std::filesystem::path FilePath = L"../../Resources/Data/AttackOverlapData/Monster_Boomer_Attack.json";
 	vector<path> vecfiles;
 
 	if (!std::filesystem::exists(FilePath))

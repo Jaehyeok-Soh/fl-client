@@ -34,7 +34,11 @@ HRESULT CVIBuffer_Particle_Mesh::Initialize(void* pArg)
 	// 슬롯 0번을 채워주기 위해서 값을 복사해온다.
 	PARTICLE_ORIGIN_DESC* pDesc = static_cast<PARTICLE_ORIGIN_DESC*>(pArg);
 	if (pDesc == nullptr) return E_FAIL;
-	else m_tParticleDesc = *pDesc;
+	else
+	{
+		m_tParticleDesc = *pDesc;
+		m_tParticleOriginDesc = m_tParticleDesc;
+	}
 
 	Resize_InstanceBuffer(*pDesc);
 

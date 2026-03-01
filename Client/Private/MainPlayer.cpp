@@ -145,6 +145,7 @@ HRESULT CMainPlayer::Awake(const _uint iCurrentLevelID)
     Get_Component<CPhysicsAttackOverlap>()->Awake();
 
     CImGui_ClientDebug::GetInstance()->Set_Player(this);
+
     return S_OK;
 }
 
@@ -169,6 +170,9 @@ void CMainPlayer::Update_Late(const _float fTimeDelta)
     Super::Update_Late(fTimeDelta);
     
     Get_Component<CPhysicsAttackOverlap>()->Update(fTimeDelta);
+
+    if (Get_Component<CPhysicsCCT>())
+        Get_Component<CPhysicsCCT>()->Update(fTimeDelta);
 
     //CPlayerControlContext* pControlContext = Get_Component<CPlayerControlContext>();
     //if (pControlContext == nullptr)
@@ -522,6 +526,7 @@ HRESULT CMainPlayer::Ready_Ability()
             return E_FAIL;
     }
 
+    Start_Attack(State::COMBO);
 
 
 
@@ -748,7 +753,7 @@ HRESULT CMainPlayer::Ready_CCT()
     desc.vExtens = { 0.f, 0.f, 0.f };
 
     PHYSICSMATERIAL_DESC mtrlDesc{};
-    mtrlDesc.eMaterial = EPhysicsMaterial::PLAYER;
+    mtrlDesc.eMaterial = EPhysicsMaterial::ICE;
     desc.tMaterial = mtrlDesc;
 
     desc.eFilterLayer = PHYSICSFILTERGROUP::Enum::PLAYER;

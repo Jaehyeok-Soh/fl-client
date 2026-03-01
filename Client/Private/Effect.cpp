@@ -247,7 +247,9 @@ HRESULT Effect::Spawn_FromPool(void* pArg)
 		Get_Component<CTransform>()->Set_WorldMatrix(pEngineDesc->matWorld);
 
 	else if ((m_eDesc._Effect_SimulationType == DTO::E_SIMULATION_SPACE::LOCAL))
+	{
 		m_pOffsetMartix = pEngineDesc->matWorld;
+	}
 
 	// 타이머 및 자식들 초기화
 	for (auto effectObject : m_vecPartObjects)

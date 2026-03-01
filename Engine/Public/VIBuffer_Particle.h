@@ -14,6 +14,14 @@ class ENGINE_DLL CVIBuffer_Particle abstract : public CVIBuffer
 {
 	using Super = CVIBuffer;
 public:
+
+	enum E_Continueflag
+	{
+		E_NONE,
+		E_CONTINUE,
+		E_DISTROY
+	};
+
 	typedef struct tagVIBuffer_ParticleOriginDesc : public Super::tagVIBufferOriginDesc
 	{
 		_float fDuration = { 1.f };
@@ -28,9 +36,9 @@ public:
 		Vec2 vLifeTime = { 0.f, 0.f };
 		_bool isLoop = { false };
 		_bool UseBurst = { false };
-		_bool UseContinueFlag = { false };
+		_uint UseContinueFlag = { false };
 		_uint iRandomFlags = { DTO::E_RANDOM_FLAG::RAND_NONE};
-		CModel*	pModel = { nullptr };
+		CModel* pModel = { nullptr };
 		CGameObject* pOwner = { nullptr };
 		CComputeShader* pComputeShader = { nullptr };
 		_uint  EmissionFlagType = { 0 };
@@ -45,7 +53,7 @@ public:
 	virtual HRESULT Initialize(void* pArg) override;
 	virtual HRESULT Bind_Resource() override;
 	virtual void Render() override;
-	
+
 public:
 	virtual void Update_Simulation(CComputeShader* ComputeShader, Vec3 vLook, Vec3 finalGravity, _float fTImeDelta, _uint TimeFlag, DTO::E_SHAPETYPE eType);
 	virtual void Reset_Simulation();
@@ -53,6 +61,8 @@ public:
 public:
 	const PARTICLE_ORIGIN_DESC& Get_ParticleDesc() { return m_tParticleDesc; }
 	virtual void Set_ParticleDesc(const PARTICLE_ORIGIN_DESC& Desc) {}
+	virtual void Set_ContinueFlagEnd() { m_tParticleDesc.UseContinueFlag = E_Continueflag::E_DISTROY;}
+	virtual void Particle_Reset() {m_tParticleDesc = m_tParticleOriginDesc;}
 	virtual HRESULT Resize_InstanceBuffer(const PARTICLE_ORIGIN_DESC& Desc) { return S_OK; }
 
 public:
@@ -72,7 +82,9 @@ protected:
 protected:
 	ID3D11Buffer* m_pVBInstance = { nullptr };
 	D3D11_BUFFER_DESC	m_InstanceBufferDesc = {};
+	PARTICLE_ORIGIN_DESC m_tParticleOriginDesc = {};
 	PARTICLE_ORIGIN_DESC m_tParticleDesc = {};
+
 public:
 	virtual CComponent* Clone(void* pArg) PURE;
 	virtual void Free() override;
