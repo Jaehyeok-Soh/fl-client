@@ -54,6 +54,9 @@ public:
 public:
 	_bool Get_CanFire();
 	_bool Get_CanReleod();
+	const MinMax Get_TotalButtlet() const { return m_MTotalBullet; }
+	const MinMax Get_CurButtlet() const { return m_MCurBullet; }
+	const _bool Get_isFire()const { return m_isFire; }
 
 	void Set_FireTimer(_bool bCount) { m_tFireTimeCounter.bCountTime = bCount; }
 	void Reset_FireTimer() { m_tFireTimeCounter.fTimeAcc = m_tFireTimeCounter.fMaxTime; m_tFireTimeCounter.bCountTime = false; }
@@ -66,6 +69,8 @@ private:
 	MinMax			m_MCurBullet		= { 0.f,0.f };
 
 	TIME_COUNTER	m_tFireTimeCounter	= { 0.f,0.f };
+
+	_bool m_isFire = { false };
 
 private:
 	void NoAttack_Update(const _float fTimeDelta);

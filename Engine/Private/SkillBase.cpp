@@ -54,6 +54,7 @@ _bool CSkillBase::Can_StartSkill(CMyStat* pStatCom)
 {
 	// skill cool time이 다 되고
 	// stat에 mental이 충분할때
+
 	if (m_tSkillInfo.tCoolTimer.Get_Rate() == 1.f &&
 		pStatCom &&
 		pStatCom->Get_Stat_Vec2(CMyStat::STAT_TYPE::MENTAL).x >= m_tSkillInfo.fNeedMental)
@@ -64,7 +65,6 @@ _bool CSkillBase::Can_StartSkill(CMyStat* pStatCom)
 
 void CSkillBase::Update_Skill(const _float fTimeDelta)
 {
-	
 }
 
 _bool CSkillBase::Start_Skill(CMyStat* pStatCom)

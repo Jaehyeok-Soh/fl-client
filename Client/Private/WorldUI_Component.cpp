@@ -2,6 +2,8 @@
 #include "GameObject.h"
 #include "Transform.h"
 #include "WorldUI_Component.h"
+#include "Monster_Base.h"
+#include "Monster_Body_Base.h"
 #include "GameInstance.h"
 
 #define ZREF 10.f
@@ -63,6 +65,10 @@ void CWorldUI_Component::Proj_World_To_Screen()
 	if (nullptr != m_pTargetObject)
 	{
 		vWorldPos = m_pTargetObject->Get_Component<CTransform>()->Get_Info(TRANSFORM_INFO_STATE::POS);
+		//auto* p = static_cast<CMonster_Base*>(m_pTargetObject);
+		//const Matrix worldMat = *(p->Get_Part<CMonster_Body_Base>(ENUM_TO_UINT(CMonster_Base::Part::BODY))->Get_SocketMatrix("camera_test"));
+		//vWorldPos = Vec3::Transform(vWorldPos, worldMat);
+		//vWorldPos = Vec3{ worldMat._41,worldMat._42,worldMat._43 };
 	}
 	else
 	{

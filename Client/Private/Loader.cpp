@@ -105,12 +105,14 @@
 #include "UILoading_Progress.h"
 #include "UIMonsterStat_Progress.h"
 #include "UIPlayerAmmo_Progress.h"
+#include "UIBossStat_Progress.h"
 // 텍스트 
 #include "UIMenu_Text.h"
 #include "UIPlayerStat_Text.h"
 #include "UILoading_Text.h"
 #include "UIMonsterStat_Text.h"
 #include "UIDamageFont_Text.h"
+#include "UIBossStat_Text.h"
 // 그냥 이미지
 #include "UIJust_Image.h"
 // 다이나믹 이미지 
@@ -123,11 +125,11 @@
 #include "UINameplate_BG.h"
 #include "UIAimDot_Image.h"
 #include "UILevelChange_Image.h"
+#include "UIBossStat_Image.h"
 // 트리거 
 #include "UIMenu_Trigger.h"
 #include "UICommon_Trigger.h"
 #include "UIMenu_Exit_Trigger.h"
-
 //=================
 // Resource
 //=================
@@ -498,7 +500,7 @@ HRESULT CLoader::Loading_For_Logo()
 		desc.iPrototypeLevelIndex = ENUM_TO_UINT(ELevelType::STATIC);
 		desc.pMatPreTransform = &(matPreTransformScale);
 		desc.wstrModelFolderName = L"XibiWeapon";
-		desc.FStageBone = CModel::STAGEING_BONE::SB_ZEROBONE;
+		desc.FStageBone = CModel::STAGEING_BONE::SB_SPCIPICBONE;
 
 		CModel::DATA_ANIMCHANNEL tAniChannelData = {};
 		tAniChannelData.iRootBoneIndex = 2;
@@ -514,8 +516,8 @@ HRESULT CLoader::Loading_For_Logo()
 		desc.iPrototypeLevelIndex = ENUM_TO_UINT(ELevelType::STATIC);
 		desc.pMatPreTransform = &(matPreTransformIdentity);
 		desc.wstrModelFolderName = L"Monster_Dog";
-		desc.FStageBone = CModel::STAGEING_BONE::SB_ZEROBONE;
-		desc.vecStageBoneIndices = { };
+		desc.FStageBone = CModel::STAGEING_BONE::SB_SPCIPICBONE;
+		desc.vecStageBoneIndices = {150, 152};
 
 		CModel::DATA_ANIMCHANNEL tAniChannelData = {};
 		tAniChannelData.iRootBoneIndex = 3;
@@ -531,8 +533,8 @@ HRESULT CLoader::Loading_For_Logo()
 		desc.iPrototypeLevelIndex = ENUM_TO_UINT(ELevelType::STATIC);
 		desc.pMatPreTransform = &(matPreTransformScale150);
 		desc.wstrModelFolderName = L"Monster_Boomer";
-		desc.FStageBone = CModel::STAGEING_BONE::SB_ZEROBONE;
-		desc.vecStageBoneIndices = { };
+		desc.FStageBone = CModel::STAGEING_BONE::SB_SPCIPICBONE;
+		desc.vecStageBoneIndices = {114, 116 };
 
 		CModel::DATA_ANIMCHANNEL tAniChannelData = {};
 		tAniChannelData.iRootBoneIndex = 3;
@@ -671,8 +673,13 @@ HRESULT CLoader::Loading_For_Logo()
 	ADD_PROTOTYPE(ELevelType::STATIC, L"Prototype_UI_PlayerAmmoProgress",		CUIPlayerAmmo_Progress::Create(m_pDevice, m_pDeviceContext));
 	ADD_PROTOTYPE(ELevelType::STATIC, L"Prototype_UI_LevelChangeImage",			CUILevelChange_Image::Create(m_pDevice, m_pDeviceContext));
 	ADD_PROTOTYPE(ELevelType::STATIC, L"Prototype_UI_DamageFontText",			CUIDamageFont_Text::Create(m_pDevice, m_pDeviceContext));
-#pragma endregion
 
+	ADD_PROTOTYPE(ELevelType::STATIC, L"Prototype_UI_BossStatProgress",			CUIBossStat_Progress::Create(m_pDevice, m_pDeviceContext));
+	ADD_PROTOTYPE(ELevelType::STATIC, L"Prototype_UI_BossStatText",				CUIBossStat_Text::Create(m_pDevice, m_pDeviceContext));
+	ADD_PROTOTYPE(ELevelType::STATIC, L"Prototype_UI_BossStatImage",			CUIBossStat_Image::Create(m_pDevice, m_pDeviceContext));
+	
+#pragma endregion
+	
 	m_isFinished = true;
 	return S_OK;
 }

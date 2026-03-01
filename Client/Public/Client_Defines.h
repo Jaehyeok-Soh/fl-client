@@ -370,6 +370,7 @@ namespace Client
 		DAMAGE_FONTS_COMMON,
 		DAMAGE_FONTS_CRITICAL,
 		DAMAGE_FONTS_HIT,
+		BOSS_NAMEPLATE,
 		END
 	};
 
@@ -394,7 +395,10 @@ namespace Client
 		Vec4	vFontColor = {};
 		Vec3	vHitPos = {};
 		_uint	iDamage = {};
+		Vec3	vRandOffset = {};
+
 	}UI_DAMAGEFONT_PREFAB_DATA;
+
 	typedef struct tagUIPrefabData
 	{
 		CGameObject* pTarget = { nullptr };

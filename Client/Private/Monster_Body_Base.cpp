@@ -14,6 +14,7 @@
 #include "PhysicsCCT.h"
 #include "EffectHandler.h"
 
+#include "UI_Manager.h"
 #include "GameInstance.h"
 
 CMonster_Body_Base::CMonster_Body_Base(ID3D11Device* pDevice, ID3D11DeviceContext* pDeviceContext)
