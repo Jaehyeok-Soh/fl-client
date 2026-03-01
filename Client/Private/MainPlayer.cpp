@@ -279,7 +279,7 @@ _bool CMainPlayer::On_Hit(const HIT_DESC& hitDesc)
     if (Has_Capability(iStateFlag, Engine::StateCapability::BEATTACKED))
     {
         // stat 컴포넌트에 정보 넘겨주기
-        _float fDamage = hitDesc.attackDesc.pAttackPreset->tCombat.fBaseDamage;
+        _float fDamage = hitDesc.fFinalDamage;
         static_cast<CStatCom_Player*>(Get_Component<CMyStat>())->Add_Health(fDamage * -1.f);
 
         // action state 내부에 set hit desc 넣어주기 : 다음 update때 state에 정보를 주기 위함

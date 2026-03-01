@@ -117,6 +117,8 @@ void CJudgementSystem::Process_Battle(const COLLIDED_DESC& desc)
 		hitDesc.attackDesc = attackerDesc;
 	}
 
+	Compute_FinalDamage(pPreset, desc.tExtraDesc, hitDesc);
+
 	pVictim->On_Hit(hitDesc);
 	pAttacker->Try_Attack(hitDesc);
 }
@@ -184,6 +186,61 @@ Vec3 CJudgementSystem::Compute_HitNormal(CGameObject* pAttacker, CGameObject* pV
 		vReturnNormal *= -1.0f;
 
 	return vReturnNormal;
+}
+
+void CJudgementSystem::Compute_FinalDamage(const DTO::TAttackPreset_Data* pAttackPreset, const EXTRA_ATTACK_DESC& tExtraDesc, OUT HIT_DESC& hitDesc)
+{
+	_float fDamege = pAttackPreset->tCombat.fBaseDamage;
+
+	// 만약 compute order 정보가 없다면
+	if (tExtraDesc.vecCompute_Order.empty())
+	{
+		hitDesc.fFinalDamage = fDamege;
+		return;
+	}
+
+	// compute order 벡터를 순회하면서 순서대로 값을 계산해나감
+	for (auto& pCompute : tExtraDesc.vecCompute_Order)
+	{
+		_float fCanCompute = 0.f;
+		switch (pCompute)
+		{
+		case ENUM_TO_UINT(EXTRA_ATTACK_DESC::ComputeOrder::Normal_Add):
+			fDamege += tExtraDesc.fAddDamage;
+			break;
+
+		case ENUM_TO_UINT(EXTRA_ATTACK_DESC::ComputeOrder::Normal_Rate):
+			fDamege *= (1.f + tExtraDesc.fAddRate);
+			break;
+
+		case ENUM_TO_UINT(EXTRA_ATTACK_DESC::ComputeOrder::Random_Add):
+			fCanCompute = m_pGameInstance->Rand_Float(0.f, 1.f);
+			if (fCanCompute < tExtraDesc.fRandomAdd_Rate)
+			{
+				fDamege += m_pGameInstance->Rand_Float(tExtraDesc.vRandomAdd_MinMax.x, tExtraDesc.vRandomAdd_MinMax.y);
+			}
+			break;
+
+		case ENUM_TO_UINT(EXTRA_ATTACK_DESC::ComputeOrder::Random_Rate):
+			fCanCompute = m_pGameInstance->Rand_Float(0.f, 1.f);
+			if (fCanCompute < tExtraDesc.fRandomMul_Rate)
+			{
+				fDamege *= (1.f + m_pGameInstance->Rand_Float(tExtraDesc.vRandomMul_MinMax.x, tExtraDesc.vRandomMul_MinMax.y));
+			}
+			break;
+		}
+	}
+
+	// damage가 확 튀는 것을 막기 위해 clamp를 해준다
+	if (tExtraDesc.vFinalDamege_MinMax.x <
+		tExtraDesc.vFinalDamege_MinMax.y)
+	{
+		fDamege = std::clamp(fDamege,
+			tExtraDesc.vFinalDamege_MinMax.x,
+			tExtraDesc.vFinalDamege_MinMax.y);
+	}
+
+	hitDesc.fFinalDamage = fDamege;
 }
 
 CJudgementSystem* CJudgementSystem::Create()
