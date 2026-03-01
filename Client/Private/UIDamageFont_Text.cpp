@@ -337,8 +337,23 @@ HRESULT CUIDamageFont_Text::Spawn_FromPool(void* pArg)
 	m_isFin_HitFontEvent		= false;
 	m_isHitFontEventTrigger		= false;
 	m_fDamageFontScaleOffet		= 1.f;
-	m_pWorldUIComp->Set_TargetPos(pDesc->DamageFontData.vHitPos);
-	m_pWorldUIComp->Request_ScaleOffset(1.f);
+
+
+	_float x = pDesc->DamageFontData.vRandOffset.x;
+	_float y = pDesc->DamageFontData.vRandOffset.y;
+	_float z = pDesc->DamageFontData.vRandOffset.z;
+
+	if (m_eTextSubClassType == DTO::EUITextSubClassType::BATTLE_DAMAGE_TEXT_CRITICAL_DAMAGE ||
+		m_eTextSubClassType == DTO::EUITextSubClassType::BATTLE_DAMAGE_TEXT_CRITCAL)
+	{
+		m_pWorldUIComp->Set_TargetPos(Vec3{ pDesc->DamageFontData.vHitPos.x,  pDesc->DamageFontData.vHitPos.y, pDesc->DamageFontData.vHitPos.z});
+	}
+	else
+	{
+		m_pWorldUIComp->Set_TargetPos(Vec3{ pDesc->DamageFontData.vHitPos.x + x,  pDesc->DamageFontData.vHitPos.y + y, pDesc->DamageFontData.vHitPos.z + z });
+	}
+
+
 
 	switch (m_eTextSubClassType)
 	{
