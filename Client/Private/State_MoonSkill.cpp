@@ -71,8 +71,10 @@ _uint CState_MoonSkill::Get_Capabilities() const
 		return	ENUM_TO_UINT(Engine::StateCapability::BEATTACKED);
 
 	case ENUM_TO_UINT(CPlayer::State::SKILL2):
-		return	0.f;
+		return	0;
 	}
+
+	return 0;
 }
 
 void CState_MoonSkill::SkillE_Update(const _float fTimeDelta)
