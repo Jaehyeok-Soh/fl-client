@@ -203,10 +203,12 @@ HRESULT CUIPlayerStat_Progress::Convert_Stat_To_Ratio()
 		break;
 	case DTO::EUISubClassType::PLAYER_ARMOR:
 	{
+		m_fCurRatio = m_pPlayerStatCom->Get_Rate(CMyStat::STAT_TYPE::DEFENSE);
 		break;
 	}
 	case DTO::EUISubClassType::PLAYER_ENERGY:
 	{
+		m_fCurRatio = m_pPlayerStatCom->Get_Rate(CMyStat::STAT_TYPE::MENTAL);
 		break;
 	}
 	case DTO::EUISubClassType::END:

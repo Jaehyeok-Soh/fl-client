@@ -29,30 +29,6 @@ namespace Client
 	};
 	inline constexpr size_t g_iLevelType_Count = static_cast<size_t>(ELevelType::END);
 
-	//===================
-	// HitType
-	//===================
-	enum class EHitType : unsigned int
-	{
-		BLASTED = 0,
-		FRONT,
-		LEFT,
-		RIGHT,
-		ELCTRICKSHOCK,
-		SPINBLOWOFF,
-		SPINBLOWUP,
-		ONEHITDOWNLONG,
-		ONEHITDOWNSHORT,
-		HITDOWNSHORT,
-		HITDOWNLONG,
-		WATERPRISON,
-		EARTHQUAKE,
-		UNIVERSALPULL,
-		ELECTRICKSHOCK,
-		PAIN_SPECIALSKILL,
-		END
-	};
-
 	enum class EDir : unsigned int
 	{
 		BACKWARD = 0,
@@ -370,6 +346,7 @@ namespace Client
 		DAMAGE_FONTS_COMMON,
 		DAMAGE_FONTS_CRITICAL,
 		DAMAGE_FONTS_HIT,
+		BOSS_NAMEPLATE,
 		END
 	};
 
@@ -394,7 +371,10 @@ namespace Client
 		Vec4	vFontColor = {};
 		Vec3	vHitPos = {};
 		_uint	iDamage = {};
+		Vec3	vRandOffset = {};
+
 	}UI_DAMAGEFONT_PREFAB_DATA;
+
 	typedef struct tagUIPrefabData
 	{
 		CGameObject* pTarget = { nullptr };
@@ -445,7 +425,7 @@ namespace Client
 
 	/* Monster Attack OverLap */
 	inline constexpr wchar_t g_wszMonster_Dog_AttackOverlap_Prototype_Tag[]		{ L"Prototype_Component_AttackOverlap_Monster_Dog" };
-	inline constexpr wchar_t g_wszMonster_Boomer_AttackOverlap_Prototype_Tag[]	{ L"Monster_Boomer" };
+	inline constexpr wchar_t g_wszMonster_Boomer_AttackOverlap_Prototype_Tag[]	{ L"Prototype_Component_AttackOverlap_Monster_Boomer" };
 #pragma endregion
 
 

@@ -715,8 +715,10 @@ namespace Engine
 
 		float Get_Rate() 
 		{ 
-			if (fMaxTime <= 0.f) 
-				return 1.f;  
+			if (fMaxTime <= 0.f)
+			{
+				return 1.f;
+			}
 
 			return fTimeAcc / fMaxTime;
 		}

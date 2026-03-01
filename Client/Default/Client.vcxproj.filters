@@ -553,6 +553,15 @@
     <Filter Include="03. GameObject\PartObjects\Monster\Body\Boomer">
       <UniqueIdentifier>{6c2ae324-f31e-44b8-b14f-ef67a7faf29d}</UniqueIdentifier>
     </Filter>
+    <Filter Include="03. GameObject\UIObjects\02.UI\Progress Bar\Boss Stat">
+      <UniqueIdentifier>{1fd4e4f2-2b0f-4f1c-8be1-d0d43024b71e}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="03. GameObject\UIObjects\02.UI\Text\Boss Stat">
+      <UniqueIdentifier>{e25e844a-91c2-4e51-94f4-8342f4347985}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="03. GameObject\UIObjects\02.UI\Image\Dynamic Image\08.Boss Stat">
+      <UniqueIdentifier>{e031f721-b76b-4d49-ac59-e279c691cdda}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="targetver.h">
@@ -1030,6 +1039,15 @@
     <ClInclude Include="..\Public\TriggerBox_MonsterSpawner.h">
       <Filter>03. GameObject\TriggerBox\01. TriggerBox_LevelChange</Filter>
     </ClInclude>
+    <ClInclude Include="..\Public\UIBossStat_Image.h">
+      <Filter>03. GameObject\UIObjects\02.UI\Image\Dynamic Image\08.Boss Stat</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\UIBossStat_Progress.h">
+      <Filter>03. GameObject\UIObjects\02.UI\Progress Bar\Boss Stat</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\UIBossStat_Text.h">
+      <Filter>03. GameObject\UIObjects\02.UI\Text\Boss Stat</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <Image Include="Client.ico">
@@ -1498,6 +1516,15 @@
     </ClCompile>
     <ClCompile Include="..\Private\TriggerBox_MonsterSpawner.cpp">
       <Filter>03. GameObject\TriggerBox\01. TriggerBox_LevelChange</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\UIBossStat_Image.cpp">
+      <Filter>03. GameObject\UIObjects\02.UI\Image\Dynamic Image\08.Boss Stat</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\UIBossStat_Progress.cpp">
+      <Filter>03. GameObject\UIObjects\02.UI\Progress Bar\Boss Stat</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\UIBossStat_Text.cpp">
+      <Filter>03. GameObject\UIObjects\02.UI\Text\Boss Stat</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

@@ -68,8 +68,9 @@ void CPhysicsCCT::Awake()
 	SetFootPosition(vPos);
 }
 
-void CPhysicsCCT::Update()
+void CPhysicsCCT::Update(const _float fTimeDelta)
 {
+	UpdateMove(fTimeDelta);
 }
 
 #ifdef _DEBUG
@@ -78,6 +79,27 @@ void CPhysicsCCT::Render()
 	m_pGameInstance->Physics_Render(m_pController->getActor());
 }
 #endif // _DEBUG
+
+void CPhysicsCCT::Add_Disp(Vec3 disp)
+{
+	m_vAccDisp += disp;
+}
+
+void CPhysicsCCT::UpdateMove(const _float fTimeDelta)
+{
+	//Vec3 totalDisp = m_vVelocity * fTimeDelta;
+	//totalDisp += m_vAccDisp;
+	//m_fVerticalVelocity += m_fGravity * fTimeDelta;
+
+	//totalDisp.y = m_fVerticalVelocity * fTimeDelta;
+
+	//PxControllerFilters filters;
+	//Move(totalDisp, 0.001f, fTimeDelta);
+
+	Move(m_vAccDisp, 0.001f, fTimeDelta);
+
+	m_vAccDisp = { 0.f, 0.f, 0.f };
+}
 
 void CPhysicsCCT::SetHeight(_float height)
 {
@@ -102,7 +124,12 @@ const PxControllerCollisionFlags CPhysicsCCT::Move(Vec3 disp, _float minDist, _f
 {
 	PxVec3 displacementVec(disp.x, disp.y, disp.z);
 	PxControllerFilters filters;
-	const PxControllerCollisionFlags collisionFlag = m_pController->move(displacementVec, minDist, fTimeDelta, filters);
+	PxControllerCollisionFlags collisionFlag = m_pController->move(displacementVec, minDist, fTimeDelta, filters);
+
+	if (m_bIsSteppingOnCCT)
+		collisionFlag &= ~PxControllerCollisionFlag::eCOLLISION_DOWN;
+
+	m_bIsSteppingOnCCT = false;
 
 	return collisionFlag;
 }
@@ -217,6 +244,11 @@ void CPhysicsCCT::SetCollisionFilter()
 
 	for (auto& shape : shapes)
 		shape->setSimulationFilterData(filter);
+}
+
+void CPhysicsCCT::SetIsSteppingOnCCT()
+{
+	m_bIsSteppingOnCCT = true;
 }
 
 CPhysicsCCT* CPhysicsCCT::Create(ID3D11Device* pDevice, ID3D11DeviceContext* pDeviceContext)

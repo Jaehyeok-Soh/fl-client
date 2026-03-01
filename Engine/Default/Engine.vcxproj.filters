@@ -439,6 +439,9 @@
     <Filter Include="01. Utility\11. DataRepository\Datas\AttackPreset\DataStruct_AttackPreset">
       <UniqueIdentifier>{d6fec504-8bdd-43dd-992f-d55bbb4fd9b4}</UniqueIdentifier>
     </Filter>
+    <Filter Include="00. System\12. PhysX\EventCallback\CCTBehavior">
+      <UniqueIdentifier>{4b476549-750d-4f9e-9d62-7051691f5bf3}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="..\Private\Timer.cpp">
@@ -879,6 +882,9 @@
     </ClCompile>
     <ClCompile Include="Anim_Event_Base.cpp">
       <Filter>01. Utility\11. DataRepository\Datas\AnimationEvent\DataModel</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\Physics_CCTBehaviorCallback.cpp">
+      <Filter>00. System\12. PhysX\EventCallback\CCTBehavior</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -1366,6 +1372,9 @@
     <ClInclude Include="..\Public\GameData_Struct.h" />
     <ClInclude Include="..\Public\EffectPartBase.h">
       <Filter>00. System\14. Effect\EffectPartBase</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\Physics_CCTBehaviorCallback.h">
+      <Filter>00. System\12. PhysX\EventCallback\CCTBehavior</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

@@ -114,9 +114,6 @@ HRESULT CUIText::Ready_Components(UI_TEXT_DESC* pDesc)
 
 HRESULT CUIText::Bind_ShaderResources()
 {
-	CShader* pShader = Get_Component<CShader>();
-	if (FAILED(Get_Component<CTransform>()->Bind_ShaderResource(pShader)))
-		return E_FAIL;
 	if (FAILED(Super::Bind_ShaderResources()))
 		return E_FAIL;
 	return S_OK;
@@ -145,6 +142,41 @@ _wstring CUIText::Float_To_Wstring(const _float f, _uint iDecimal)
 	default: swprintf_s(sz, 64, L"%.2f", f); break;
 	}
 	return sz;
+}
+
+void CUIText::Ready_Fade_Text(const _float fDuration, const _float fStartAlpha, const _float fTargetAlpha, const _float fDelay)
+{
+	m_vFontColor.w			= fStartAlpha;
+	m_fFadeTimeAcc			= 0.f;
+	m_fFadeDelayTimeAcc		= 0.f;
+	m_fFadeDelay			= fDelay;
+	m_fFadeDuration			= fDuration;
+	m_fStartAlphaRatio		= fStartAlpha;
+	m_fTargetAlphaRatio		= fTargetAlpha;
+}
+
+_bool CUIText::Tick_Fade_Text(const _float fTimeDelta)
+{
+	m_fFadeDelayTimeAcc += fTimeDelta;
+	if (m_fFadeDelayTimeAcc < m_fFadeDelay)
+		return false;
+
+	m_fFadeTimeAcc += fTimeDelta;
+
+	_float t = m_fFadeTimeAcc / m_fFadeDuration;
+	if (t >= 1.f)
+	{
+		m_vFontColor.w = m_fTargetAlphaRatio;
+		return true;
+	}
+
+	_float eased = t;
+	if (m_fEaseValue > 0.f)
+		eased = powf(t, m_fEaseValue);
+
+	_float f = m_fStartAlphaRatio + (m_fTargetAlphaRatio - m_fStartAlphaRatio) * t;
+	m_vFontColor.w = f;
+	return false;
 }
 
 void CUIText::Free()
