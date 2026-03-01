@@ -56,6 +56,7 @@ protected:
 	HRESULT Ready_EffectHandler(MONSTERBODY_DESC* pDesc);
 protected:
 	std::vector<_uint> m_vecBoneIndices;
+	class CEffectHandler* m_pEffectHandler = { nullptr };
 public:
 	virtual CGameObject* Clone(void* pArg) PURE;
 	virtual void Free() override;
