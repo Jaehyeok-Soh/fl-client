@@ -6,6 +6,7 @@
 #include "EngineConsole.h"
 
 #include "PhysicsCollider.h"
+#include "PhysicsCCT.h"
 
 //struct PxControllerHit
 //{
@@ -64,10 +65,36 @@ void CPhysics_CCTHitReport::onShapeHit(const PxControllerShapeHit& hit)
 
 void CPhysics_CCTHitReport::onControllerHit(const PxControllersHit& hit)
 {
-	// 아직 미사용 2026 02 26
-	return;
-
 	GAMEOBJECTINFO info = Get_GameObject(hit.controller->getUserData(), hit.other->getUserData());
+
+	if (hit.dir.y < -0.8f)
+	{
+		PxExtendedVec3 lowerPos = hit.other->getPosition();
+		PxExtendedVec3 upperPos = hit.controller->getPosition();
+
+		PxVec3 slideDir;
+		slideDir.x = (float)(upperPos.x - lowerPos.x);
+		slideDir.y = 0.f;
+		slideDir.z = (float)(upperPos.z - lowerPos.z);
+
+		if (slideDir.magnitudeSquared() < 1e-6f)
+		{
+			slideDir = PxVec3(0.1f, 0.f, 0.1f);
+		}
+		slideDir.normalize();
+		slideDir = slideDir * 0.01f;
+		Vec3 disp(slideDir.x, slideDir.y, slideDir.z);
+		static_cast<CGameObject*>(hit.controller->getUserData())->Get_Component<CPhysicsCCT>()->Add_Disp(disp);
+		static_cast<CGameObject*>(hit.controller->getUserData())->Get_Component<CPhysicsCCT>()->SetIsSteppingOnCCT();
+	}
+
+	else if (abs(hit.worldNormal.y) < 0.5f)
+	{
+		PxVec3 normal = hit.worldNormal.getNormalized();
+		Vec3 disp(normal.x, normal.y, normal.z);
+		disp *= 0.01f;
+		static_cast<CGameObject*>(hit.controller->getUserData())->Get_Component<CPhysicsCCT>()->Add_Disp(disp);
+	}
 
 #ifdef _DEBUG
 	Debug_Log(HITEVENT::Enum::ON_CCT_HIT, info);

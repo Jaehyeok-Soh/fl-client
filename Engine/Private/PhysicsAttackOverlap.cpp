@@ -199,20 +199,26 @@ void CPhysicsAttackOverlap::Modify_AttackOverlap(_uint eventIdx, DTO::ATTACKEVEN
 
 	event.tHitboxDesc.filterCallback = m_pFilterCallback;
 
+	auto& animations = m_pOwnerModel->Get_Animations();
+	for (auto& anim : animations)
+		anim->Clear_Notifies();
+
 	m_tDesc.attackEvents[eventIdx] = event;
 	Ready_OverlapInfo();
 }
 
 void CPhysicsAttackOverlap::Modify_AttackOverlap(vector<DTO::ATTACKEVENT> events)
 {
+	auto& animations = m_pOwnerModel->Get_Animations();
+	for (auto& anim : animations)
+		anim->Clear_Notifies();
+
 	m_tDesc.attackEvents = events;
 	Ready_OverlapInfo();
 }
 
 void CPhysicsAttackOverlap::GetAnimation()
 {
-	Safe_Release(m_pOwnerModel);
-
 	auto partObject = dynamic_cast<CPartObject*>(Get_Owner());
 	if (partObject != nullptr)
 	{
@@ -226,8 +232,6 @@ void CPhysicsAttackOverlap::GetAnimation()
 		else
 			m_pOwnerModel = containerObj->Get_Component<CModel>();
 	}
-
-	Safe_AddRef(m_pOwnerModel);
 }
 
 void CPhysicsAttackOverlap::Ready_OverlapInfo()
@@ -367,7 +371,6 @@ void CPhysicsAttackOverlap::Free()
 
 	PoolClear();
 
-	Safe_Release(m_pOwnerModel);
 	Safe_Release(m_pFilterCallback);
 
 	Super::Free();

@@ -41,6 +41,7 @@ HRESULT CVIBuffer_Particle_Point::Initialize(void* pArg)
 	if (pParticleDesc == nullptr) return E_FAIL;
 
 	m_tParticleDesc = *pParticleDesc;
+	m_tParticleOriginDesc = m_tParticleDesc;
 	m_iInstanceCount = pParticleDesc->iInstnaceCount;
 	m_iInstanceVertexStride = sizeof(VTXPARTICLE);
 	m_iVertexBufferCount = 2; 

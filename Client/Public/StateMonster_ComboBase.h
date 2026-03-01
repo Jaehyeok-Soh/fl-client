@@ -12,7 +12,7 @@ public:
 	}MONSTER_COMBOBASE_DESC;
 
 protected:
-	CStateMonster_ComboBase(CActionState* pOwnerComponent, const string& strName);
+	CStateMonster_ComboBase(CActionState* pOwnerComponent, const string& strName, _uint iStateIndex);
 	virtual ~CStateMonster_ComboBase() = default;
 
 	virtual HRESULT Initialize(void* pArg) override;

@@ -16,7 +16,7 @@ public:
 	}MONSTERCOMBO_DESC;
 
 private:
-	CStateMonster_Combo(CActionState* pOwnerComponent);
+	CStateMonster_Combo(CActionState* pOwnerComponent, _uint iStateIndex);
 	virtual ~CStateMonster_Combo() = default;
 
 	virtual HRESULT Initialize(void* pArg) override;
@@ -28,7 +28,7 @@ public:
 	virtual HRESULT End() override;
 
 public:
-	static CStateMonster_Combo* Create(CActionState* pOwnerComponent, void* pArg = nullptr);
+	static CStateMonster_Combo* Create(CActionState* pOwnerComponent, _uint iStateIndex, void* pArg = nullptr);
 	virtual void Free() override;
 };
 

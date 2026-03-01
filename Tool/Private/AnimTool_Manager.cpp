@@ -221,6 +221,8 @@ void CAnimTool_Manager::Update_Animation(const _float& fTimeDelta)
 		m_tAnimControllInfo.pCurrentObject->Get_Component<CPhysicsCCT>(),
 		pAnimBCS,
 		pAnimMixCS);
+	m_tAnimControllInfo.pModel->Emit_Notifies(EAnimNotifyPhase::Late);
+	m_tAnimControllInfo.pModel->Emit_Notifies(EAnimNotifyPhase::PreRender);
 
 	if (m_tAnimControllInfo.pModel->Is_AnimFinished() || m_tAnimControllInfo.pModel->Is_LoopAnimDone())
 	{

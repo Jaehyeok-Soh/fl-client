@@ -396,6 +396,11 @@ void GS_Texture(point VS_OUT_POS_GS_PARTICLE In[1], inout TriangleStream<GS_OUT_
     // 1. 빌보드 플래그가 켜진 경우 (카메라 응시)
     if (HasBillboard())
     {
+        matrix matInst = INSTANCE_OUTPUT[In[0].vInstID].matTransform;
+        matrix matWorld = mul(matInst, W);
+        
+        matrix BillboardWorld = (matrix) 0;
+        
         // 카메라와의 방향 벡터(Look) 계산
         float3 vLook = normalize(CameraPosition() - In[0].vPosition.xyz);
         
@@ -403,7 +408,8 @@ void GS_Texture(point VS_OUT_POS_GS_PARTICLE In[1], inout TriangleStream<GS_OUT_
         vRight = normalize(cross(float3(0.f, 1.f, 0.f), vLook));
         
         // 생성된 Right와 Look을 외적하여 수직 Up 축 생성
-        vUp = normalize(cross(vLook, vRight));
+        vUp = normalize(cross(vLook, vRight)); // 그냥 y축에 회전된 행렬 곱하기
+        
     }
     // 2. 빌보드 플래그가 꺼진 경우 (월드/인스턴스 행렬 회전 반영)
     else
