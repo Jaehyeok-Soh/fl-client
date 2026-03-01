@@ -20,6 +20,10 @@
 #define RESET 2
 #define STOP 3
 
+// ContinueFlag
+#define CONTINUE_NONE 0
+#define CONTINUE_PLAY 1
+#define CONTINUE_DISTROY 2
 struct IMMU_ELEMENT
 {
     float4 vRight;
@@ -139,7 +143,7 @@ void CS_Main(int3 dtid : SV_DispatchThreadID)
     // 그 이후에 fRatio 계산
     float fRatio = saturate(currentData.vLifeTime.x / currentData.vLifeTime.y);
     
-    if (g_InputB.UseContinueFlag == 1)
+    if (g_InputB.UseContinueFlag == CONTINUE_PLAY)
     {
         if (fRatio >= 0.5f)
         {
@@ -155,7 +159,7 @@ void CS_Main(int3 dtid : SV_DispatchThreadID)
     }
     
     // currentData.vLifeTime.y는 툴에서 준 개별 파티클의 최대 수명
-    if (g_InputB.bIsLoop && currentData.vLifeTime.x >= currentData.vLifeTime.y)
+    if ((g_InputB.UseContinueFlag != CONTINUE_DISTROY) && g_InputB.bIsLoop && currentData.vLifeTime.x >= currentData.vLifeTime.y)
     {
         currentData.vLifeTime.x = 0.0f; // 리셋 후에는 대기 없이 0부터 시작
         currentData.matTransform = input.vOriginMatrix;
