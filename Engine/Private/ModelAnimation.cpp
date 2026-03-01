@@ -470,7 +470,7 @@ void CModelAnimation::Free()
 	Safe_Release(m_pChannelDataBuffer);
 	Safe_Release(m_pMixDataBuffer);
 
-	if (!IsClone())
+	//if (!IsClone())
 	{
 		Safe_Release(m_pInputKeySB_SRV);
 		Safe_Release(m_pInputChannelSB_SRV);

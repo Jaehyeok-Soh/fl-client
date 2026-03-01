@@ -102,10 +102,6 @@ _bool CSkillBase::On_Collision(const _float fTimeDelta, CGameObject* pObj)
 	return true;
 }
 
-void CSkillBase::Update_Skill(const _float fTimeDelta)
-{
-}
-
 void CSkillBase::Count_SkillTime(const _float fTimeDelta)
 {
 	// 타이머를 카운트 할거고, skill이 끝나지 않았고

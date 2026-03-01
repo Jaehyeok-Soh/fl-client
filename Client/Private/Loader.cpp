@@ -881,7 +881,7 @@ HRESULT CLoader::Ready_AttackOverlap_PlayerMoon()
 	DTO::ECategory eCategory = DTO::ECategory::OVERLAP_SCRIPT;
 	_uint iLevelID = ENUM_TO_UINT(eLevelType);
 
-	std::filesystem::path FilePath = L"../../Resources/Data/AttackOverlapData/MoonAll.json";
+	std::filesystem::path FilePath = L"../../Resources/Data/AttackOverlapData/Moon.json";
 	vector<path> vecfiles;
 
 	if (!std::filesystem::exists(FilePath))
