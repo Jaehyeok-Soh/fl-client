@@ -105,8 +105,6 @@ void CStateBase_Monster::Update(const _float fTimeDelta)
 		!Engine_Utils::Has_Flag(m_FAniFlags, STATEANI_FLAG::SA_PreAniDone))
 		return;
 
-	Update_Time(m_tStateLifeTime, fTimeDelta);
-
 	// 글로벌 전이부터 검사 ( Die, Damage 등)
 	if (Check_Transition(m_pDesc->vecGlobalStateTransition))
 		return;

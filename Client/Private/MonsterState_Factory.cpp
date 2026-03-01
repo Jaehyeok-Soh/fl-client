@@ -63,12 +63,6 @@ HRESULT CMonsterState_Factory::Ready_Condition()
 	
 	REGISTER_CONDITION("condition_die", CONDITION{ return state->Get_OwnerObject()->IsDead(); });
 
-	REGISTER_CONDITION("condition_hit_light", CONDITION{ return false; /*hit light*/ });
-
-	REGISTER_CONDITION("condition_hit_heavy", CONDITION{ return false; /*hit heavy*/ });
-
-	REGISTER_CONDITION("condition_hit_additive", CONDITION{ return false; /*hit additive*/ });
-
 	REGISTER_CONDITION("condition_loop_animation", CONDITION{ return state->IsLoop(); });
 
 	REGISTER_CONDITION("condition_cancellation", CONDITION{ return state->IsCancellation(); });
@@ -77,6 +71,16 @@ HRESULT CMonsterState_Factory::Ready_Condition()
 	
 	REGISTER_CONDITION("condition_hit", CONDITION{ return MONSTERCC(state)->IsHit(); });
 	
+	REGISTER_CONDITION("condition_hit_additive", CONDITION{ return MONSTERCC(state)->IsHitAdditive(); });
+
+	REGISTER_CONDITION("condition_hit_light", CONDITION{ return MONSTERCC(state)->IsHitLight(); });
+
+	REGISTER_CONDITION("condition_hit_heavy", CONDITION{ return MONSTERCC(state)->IsHitHeavy(); });
+
+	REGISTER_CONDITION("condition_hit_launch", CONDITION{ return MONSTERCC(state)->IsHitLaunch(); });
+
+	REGISTER_CONDITION("condition_hit_knockdown", CONDITION{ return MONSTERCC(state)->IsHitKnockdown(); });
+
 	REGISTER_CONDITION("condition_fall", CONDITION{ return MONSTERCC(state)->IsFalling(); });
 
 	REGISTER_CONDITION("condition_down", CONDITION{ return MONSTERCC(state)->IsDown(); });

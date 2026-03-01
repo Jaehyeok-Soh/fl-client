@@ -53,6 +53,7 @@ private:
 	HRESULT Ready_EffectEvent_AnimationData();
 	HRESULT Ready_AttackOverlap_PlayerMoon();
 	HRESULT Ready_AttackOverlap_Monster_Dog();
+	HRESULT Ready_AttackOverlap_Monster_Boomer();
 
 public:
 	const _float* Get_LoadingRatio() const { return &m_fLoadingRatio; }

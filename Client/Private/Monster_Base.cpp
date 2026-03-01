@@ -367,6 +367,7 @@ HRESULT CMonster_Base::Create_Mosnter(EMonster_Type eCreateMonsterType, _uint iF
 		////////////////////
 		monsterDesc.wstrPartBodyPrototypeTag		= g_wszMonster_Boomer_Body_Prototype_Tag;
 		monsterDesc.wstrBodyModelTag				= g_wszMonster_Boomer_Model_Prototype_Tag;
+		monsterDesc.wstrAttackOverlapPrototypeTag	= g_wszMonster_Boomer_AttackOverlap_Prototype_Tag;
 		monsterDesc.wstrMonsterStateTag				= g_wszMonster_Boomer_State_Tag;
 
 		{
