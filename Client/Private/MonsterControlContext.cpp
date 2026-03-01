@@ -46,6 +46,9 @@ HRESULT CMonsterControlContext::Awake(const _uint iLevelIndex)
 		return E_FAIL;
 
 	Safe_AddRef(m_pTarget);
+
+	m_iSubState = 0;
+
 	return S_OK;
 }
 
@@ -336,6 +339,18 @@ _bool CMonsterControlContext::IsHitKnockdown()
 	if (result = (m_tHitDesc.attackDesc.pAttackPreset->tCombat.eHitType == DTO::EHitType::Knockdown))
 		m_iSubState &= ~SUB_STATE::HIT;
 
+	return result;
+}
+
+_bool CMonsterControlContext::IsDead()
+{
+	_bool result = m_iSubState & SUB_STATE::DEAD;
+	return result;
+}
+
+_bool CMonsterControlContext::IsDeadProcessing()
+{
+	_bool result = m_iSubState & SUB_STATE::DEAD_PROCESS;
 	return result;
 }
 

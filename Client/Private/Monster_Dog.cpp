@@ -9,6 +9,7 @@
 #include "ComputeShader.h"
 #include "UI_Manager.h"
 #include "GameInstance.h"
+#include "MyStat.h"
 
 CMonster_Dog::CMonster_Dog(ID3D11Device* pDevice, ID3D11DeviceContext* pDeviceContext)
 	: Super(pDevice, pDeviceContext)
@@ -34,8 +35,8 @@ HRESULT CMonster_Dog::Initialize(void* pArg)
 	if (FAILED(Super::Initialize(pArg)))
 		return E_FAIL;
 
-	//if (FAILED(Ready_Ability()))
-	//	return E_FAIL;
+	if (FAILED(Ready_Ability()))
+		return E_FAIL;
 
 	Set_Name("Monster_Dog");
 
@@ -118,14 +119,37 @@ void CMonster_Dog::OnTrigger_Exit(_uint iMyColliderLayer, _uint iOtherLayer, CGa
 
 _bool CMonster_Dog::On_Hit(const HIT_DESC& hitDesc)
 {
-	Super::On_Hit(hitDesc);
+	_bool result = Super::On_Hit(hitDesc);
 
-	return true;
+	auto myStat = Get_Component<CMyStat>();
+	myStat->Add_Health(-hitDesc.attackDesc.pAttackPreset->tCombat.fBaseDamage);
+
+	auto vHp = myStat->Get_Stat_Vec2(CMyStat::STAT_TYPE::HP);
+	if (vHp.x <= 0)
+		Get_Component<CMonsterControlContext>()->Set_Dead();
+
+	return result;
 }
 
 void CMonster_Dog::Try_Attack(const HIT_DESC& hitDesc)
 {
 	Super::Try_Attack(hitDesc);
+}
+
+HRESULT CMonster_Dog::Ready_Ability()
+{
+	// stat
+	{
+		CMyStat::STAT_DESC desc = {};
+		desc.fMaxHp = 100.f;
+		desc.fDefense = 50.f;
+		desc.FStatFlags = CMyStat::StatFlags::HpUpdate | CMyStat::StatFlags::DefenseUpdtae;
+
+		if (FAILED(Add_Component<CMyStat>(0/* STATIC */, L"Prototype_Component_Stat", &desc)))
+			return E_FAIL;
+	}
+
+	return S_OK;
 }
 
 HRESULT CMonster_Dog::Ready_BaseStates()

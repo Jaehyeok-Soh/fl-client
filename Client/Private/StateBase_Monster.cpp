@@ -369,6 +369,28 @@ _bool CStateBase_Monster::Check_Transition(vector<DTO::STATE_TRANSITION>& transi
 				if (randomValue < curWeight)
 				{
 					Change_MonsterState(to.first); // ´ÙÀ½ state·Î change
+#ifdef _DEBUG
+					if (m_iThisStateIndex != to.first)
+					{
+						string toState{};
+						for (auto pool : m_umapState)
+						{
+							if (pool.second == to.first)
+							{
+								toState = pool.first;
+							}
+						}
+						wstring owneName = m_pOwnerStateComp->Get_Owner()->Get_WName();
+						wstring toInfo{ L"\nchange state to : " };
+						owneName += L"\n";
+						owneName += toInfo;
+						toInfo += Engine_Utils::ToWString(toState);
+						wstring fromInfo{ L"\nfrom state : " };
+						fromInfo += Engine_Utils::ToWString(m_strName);
+						toInfo += fromInfo;
+						CLOG_INFO(toInfo);
+					}
+#endif // _DEBUG
 					return m_iThisStateIndex != to.first;
 				}
 			}
