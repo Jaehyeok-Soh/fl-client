@@ -8,6 +8,8 @@
 #include "GameInstance.h"
 #include "Engine_Utils.h"
 
+#include "PhysicsCCT.h"
+
 CMonsterControlContext::CMonsterControlContext()
 	: Super()
 {
@@ -46,6 +48,9 @@ HRESULT CMonsterControlContext::Awake(const _uint iLevelIndex)
 		return E_FAIL;
 
 	Safe_AddRef(m_pTarget);
+
+	m_iSubState = 0;
+
 	return S_OK;
 }
 
@@ -54,6 +59,13 @@ Vec3 CMonsterControlContext::Get_MoveDir()
 	return m_vMoveDir;
 }
 
+void CMonsterControlContext::Set_Dead()
+{
+	if (IsDeadProcessing())
+		return;
+
+	m_iSubState |= SUB_STATE::DEAD;
+}
 _bool CMonsterControlContext::IsTargetFound()
 {
 	if (m_pTarget == nullptr)
@@ -184,7 +196,7 @@ _bool CMonsterControlContext::IsTargetAhead()
 
 	_float dot = vOwnerLook.Dot(vToTarget);
 
-	return dot > 0.7f;
+	return dot > 0 && dot > 0.9f;
 }
 
 _bool CMonsterControlContext::IsCliffAhead()
@@ -273,8 +285,81 @@ _bool CMonsterControlContext::IsDown()
 
 _bool CMonsterControlContext::IsHit()
 {
-	_bool result = m_iSubState & SUB_STATE::HIT;
-	m_iSubState &= ~SUB_STATE::HIT;
+	if (m_tHitDesc.attackDesc.pAttackPreset == nullptr)
+		return false;
+
+	return m_iSubState & SUB_STATE::HIT;
+}
+
+_bool CMonsterControlContext::IsHitAdditive()
+{
+	_bool result;
+	if ((result = IsHit()) == false)
+		return result;
+
+	if (result = (m_tHitDesc.attackDesc.pAttackPreset->tCombat.eHitType == DTO::EHitType::Additive))
+		m_iSubState &= ~SUB_STATE::HIT;
+
+	return result;
+}
+
+_bool CMonsterControlContext::IsHitLight()
+{
+	_bool result;
+	if ((result = IsHit()) == false)
+		return result;
+
+	if (result = (m_tHitDesc.attackDesc.pAttackPreset->tCombat.eHitType == DTO::EHitType::Light))
+		m_iSubState &= ~SUB_STATE::HIT;
+
+	return result;
+}
+
+_bool CMonsterControlContext::IsHitHeavy()
+{
+	_bool result;
+	if ((result = IsHit()) == false)
+		return result;
+
+	if (result = (m_tHitDesc.attackDesc.pAttackPreset->tCombat.eHitType == DTO::EHitType::Heavy))
+		m_iSubState &= ~SUB_STATE::HIT;
+
+	return result;
+}
+
+_bool CMonsterControlContext::IsHitLaunch()
+{
+	_bool result;
+	if ((result = IsHit()) == false)
+		return result;
+
+	if (result = (m_tHitDesc.attackDesc.pAttackPreset->tCombat.eHitType == DTO::EHitType::Launch))
+		m_iSubState &= ~SUB_STATE::HIT;
+
+	return result;
+}
+
+_bool CMonsterControlContext::IsHitKnockdown()
+{
+	_bool result;
+	if ((result = IsHit()) == false)
+		return result;
+
+	if (result = (m_tHitDesc.attackDesc.pAttackPreset->tCombat.eHitType == DTO::EHitType::Knockdown))
+		m_iSubState &= ~SUB_STATE::HIT;
+
+	return result;
+}
+
+_bool CMonsterControlContext::IsDead()
+{
+	_bool result = m_iSubState & SUB_STATE::DEAD;
+	return result;
+}
+
+_bool CMonsterControlContext::IsDeadProcessing()
+{
+	_bool result = m_iSubState & SUB_STATE::DEAD_PROCESS;
 	return result;
 }
 
@@ -383,6 +468,16 @@ void CMonsterControlContext::UpdateTurn90(const _float fTimeDelta)
 
 void CMonsterControlContext::UpdateTrun180(const _float fTimeDelta)
 {
+}
+
+void CMonsterControlContext::Set_CCT_Collision_Disable()
+{
+	Get_Owner()->Get_Component<CPhysicsCCT>()->EnableCollision(false);
+}
+
+void CMonsterControlContext::Set_CCT_Collision_Enable()
+{
+	Get_Owner()->Get_Component<CPhysicsCCT>()->EnableCollision(true);
 }
 
 CMonsterControlContext* CMonsterControlContext::Create()

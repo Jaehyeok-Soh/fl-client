@@ -1,4 +1,5 @@
 #include "pch.h"
+#include "Client_EventDefine.h"
 #include "Monster_Boomer.h"
 #include "Monster_Body_Base.h"
 #include "MonsterActionState.h"
@@ -7,7 +8,9 @@
 #include "Model.h"
 #include "PhysicsCCT.h"
 #include "ComputeShader.h"
+#include "UI_Manager.h"
 #include "GameInstance.h"
+#include "MyStat.h"
 
 CMonster_Boomer::CMonster_Boomer(ID3D11Device* pDevice, ID3D11DeviceContext* pDeviceContext)
 	: Super(pDevice, pDeviceContext)
@@ -33,10 +36,10 @@ HRESULT CMonster_Boomer::Initialize(void* pArg)
 	if (FAILED(Super::Initialize(pArg)))
 		return E_FAIL;
 
-	//if (FAILED(Ready_Ability()))
-	//	return E_FAIL;
+	if (FAILED(Ready_Ability()))
+		return E_FAIL;
 
-	Set_Name("Monster_Boomer");
+	Set_Name("세비지 필토이드");
 
 	if (FAILED(Ready_PartObjects()))
 		return E_FAIL;
@@ -54,7 +57,12 @@ HRESULT CMonster_Boomer::Awake(const _uint iCurrentLevelID)
 {
 	if (FAILED(Super::Awake(iCurrentLevelID)))
 		return E_FAIL;
-
+	{
+		UI_PREFAB_DATA Desc = {};
+		Desc.pTarget = this;
+		Desc.NamePlateData.vOffset = Vec3{0.f, 2.5f, 0.f};
+		CUI_Manager::GetInstance()->Request_Add_Prefab(iCurrentLevelID, EUIPrefabType::MONSTER_NAMEPLATE, iCurrentLevelID, &Desc);
+	}
 	return S_OK;
 }
 
@@ -113,12 +121,40 @@ void CMonster_Boomer::OnTrigger_Exit(_uint iMyColliderLayer, _uint iOtherLayer, 
 
 _bool CMonster_Boomer::On_Hit(const HIT_DESC& hitDesc)
 {
-	return Super::On_Hit(hitDesc);
+	_bool result = Super::On_Hit(hitDesc);
+	
+	auto myStat = Get_Component<CMyStat>();
+	myStat->Add_Health(-hitDesc.attackDesc.pAttackPreset->tCombat.fBaseDamage);
+	
+	auto vHp = myStat->Get_Stat_Vec2(CMyStat::STAT_TYPE::HP);
+	if (vHp.x <= 0)
+	{
+		Get_Component<CMonsterControlContext>()->Set_Dead();
+		m_pGameInstance->Broadcast<MONSTER_DEAD_EVENT_START>(this);
+	}
+
+	return result;
 }
 
 void CMonster_Boomer::Try_Attack(const HIT_DESC& hitDesc)
 {
 	Super::Try_Attack(hitDesc);
+}
+
+HRESULT CMonster_Boomer::Ready_Ability()
+{
+	// stat
+	{
+		CMyStat::STAT_DESC desc = {};
+		desc.fMaxHp = 200.f;
+		desc.fDefense = 100.f;
+		desc.FStatFlags = CMyStat::StatFlags::HpUpdate | CMyStat::StatFlags::DefenseUpdtae;
+
+		if (FAILED(Add_Component<CMyStat>(0/* STATIC */, L"Prototype_Component_Stat", &desc)))
+			return E_FAIL;
+	}
+
+	return S_OK;
 }
 
 HRESULT CMonster_Boomer::Ready_BaseStates()

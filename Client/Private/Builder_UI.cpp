@@ -14,6 +14,7 @@
 #include "UIPlayerStat_Text.h"
 #include "UILoading_Text.h"
 #include "UIMonsterStat_Text.h"
+#include "UICombo_Text.h"
 // 다이나믹 이미지 클래스
 #include "UIMenu_Image.h"
 #include "UIHover_Image.h"
@@ -24,6 +25,7 @@
 #include "UINameplate_BG.h"
 #include "UIAimDot_Image.h"	
 #include "UILevelChange_Image.h"
+#include "UICombo_Image.h"
 
 // 트리거 클래스
 #include "UICommon_Trigger.h"
@@ -266,6 +268,7 @@ HRESULT CBuilder_UI::Register_Class(DTO::EUIClassType eClassType, const DTO::TUI
 		const _bool isMenu				= (Type >= DTO::EUITextSubClassType::MENU_TEXT_BEGIN	&& Type <= DTO::EUITextSubClassType::MENU_TEXT_END);
 		const _bool isLoading			= (Type >= DTO::EUITextSubClassType::LOADING_TEXT_BEGIN && Type <= DTO::EUITextSubClassType::LOADING_TEXT_END);
 		const _bool isMonsterNameplate	= (Type >= DTO::EUITextSubClassType::MONSTER_STAT_TEXT_BEGIN && Type <= DTO::EUITextSubClassType::MONSTER_STAT_TEXT_END);
+		const _bool isCombo				= (Type >= DTO::EUITextSubClassType::BATTLE_COMBO_TEXT_BEGIN && Type <= DTO::EUITextSubClassType::BATTLE_COMBO_TEXT_END);
 
 		static_cast<CGenericUI::GENERIC_UI_DESC&>(TextDesc) = DefaultDesc;
 		TextDesc.eTextSubClass	= Type;
@@ -296,6 +299,12 @@ HRESULT CBuilder_UI::Register_Class(DTO::EUIClassType eClassType, const DTO::TUI
 			static_cast<CUIText::UI_TEXT_DESC&>(LoadingTextDesc) = TextDesc;
 			LoadingTextDesc.pLoadingRatio = CUI_Manager::GetInstance()->Get_LoadingRatio();
 			pResult = m_pGameInstance->Add_GameObject(ENUM_TO_UINT(ELevelType::STATIC), L"Prototype_UI_LoadingText", m_iLevelID, g_wszUILayer, &LoadingTextDesc);
+		}
+		else if (isCombo)
+		{
+			CUICombo_Text::COMBO_TEXT_DESC ComboTextDesc = {};
+			static_cast<CUIText::UI_TEXT_DESC&>(ComboTextDesc) = TextDesc;
+			pResult = m_pGameInstance->Add_GameObject(ENUM_TO_UINT(ELevelType::STATIC), L"Prototype_UI_ComboText", m_iLevelID, g_wszUILayer, &ComboTextDesc);
 		}
 		else
 		{
@@ -386,6 +395,7 @@ HRESULT CBuilder_UI::Register_Class(DTO::EUIClassType eClassType, const DTO::TUI
 		const _bool isMonsterNameplate	= (Type == DTO::EUIDImageSubClassType::MONSTER_NAMEPLATE_BG);
 		const _bool isAimDot			= (Type >= DTO::EUIDImageSubClassType::BATTLE_UI_BEGIN		&& Type <= DTO::EUIDImageSubClassType::BATTLE_UI_END);
 		const _bool isLevelChange		= (Type >= DTO::EUIDImageSubClassType::LEVEL_CHAGE_1		&& Type <= DTO::EUIDImageSubClassType::LEVEL_CHAGE_5);
+		const _bool isCombo				= (Type >= DTO::EUIDImageSubClassType::BATTLE_COMBO_BEGIN	&& Type <= DTO::EUIDImageSubClassType::BATTLE_COMBO_END);
 
 		if (isPlayerSkill)
 		{
@@ -443,6 +453,13 @@ HRESULT CBuilder_UI::Register_Class(DTO::EUIClassType eClassType, const DTO::TUI
 			LevelChangeDesc.eSubClassType = Type;
 			pResult = m_pGameInstance->Add_GameObject(ENUM_TO_UINT(ELevelType::STATIC), L"Prototype_UI_LevelChangeImage", m_iLevelID, g_wszUILayer, &LevelChangeDesc);
 		}
+		else if (isCombo)
+		{
+			CUICombo_Image::COMBO_IMAGE_DESC ComboImageDesc= {};
+			static_cast<CGenericUI::GENERIC_UI_DESC&>(ComboImageDesc) = DefaultDesc;
+			ComboImageDesc.eSubClassType = Type;
+			pResult = m_pGameInstance->Add_GameObject(ENUM_TO_UINT(ELevelType::STATIC), L"Prototype_UI_ComboImage", m_iLevelID, g_wszUILayer, &ComboImageDesc);
+		}
 		else
 		{
 			_wstring wstr = Engine_Utils::ToWString(data.strTag) + L" <- 얘가 문제";
@@ -487,6 +504,7 @@ CGenericUI::GENERIC_UI_DESC CBuilder_UI::Make_DefaultInfo(const DTO::TUI_Generic
 	Desc.wstrTextureTag			= Engine_Utils::ToWString(data.strTextureTag);
 	Desc.wstrNoiseTextureTag	= Engine_Utils::ToWString(data.strNoiseTextureTag);
 	Desc.wstrAlphaMaskTextureTag= Engine_Utils::ToWString(data.strAlphaMaskTextureTag);
+	Desc.wstrGlowTextureTag		= Engine_Utils::ToWString(data.strGlowTextureTag);
 	Desc.isAlpha				= TRUE;
 	Desc.isInitVisible			= data.isVisible;
 	Desc.isInitInteract			= data.isInteract;

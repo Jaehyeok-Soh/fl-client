@@ -25,6 +25,12 @@ HRESULT CState_GunBase::Initialize(void* pArg)
     tSuperDesc.pOwnerGun                = pDesc->pOwnerGun;
     tSuperDesc.vecMainAnims             = { pDesc->iMainAnimIdx };
 
+
+    // todo down도 넣어야하나
+    tSuperDesc.FCollis = CStateBase_Player::COLLISIONFLAGS::C_DOWN
+        | CStateBase_Player::COLLISIONFLAGS::C_Strong
+        | CStateBase_Player::COLLISIONFLAGS::C_Fly;
+
     vector<_uint> vecChangeState_ByKey{};
     vecChangeState_ByKey.resize(ENUM_TO_SZET(CStateBase_Player::STATEKEY::END), ENUM_TO_UINT(CPlayer::State::END));
     tSuperDesc.vecChangeState_ByKey = vecChangeState_ByKey;
@@ -50,7 +56,7 @@ HRESULT CState_GunBase::Start(void* pArg, _bool bForce)
 
     GUN_START_DESC* pDesc = static_cast<GUN_START_DESC*>(pArg);
 
-    // desc이 없다면 바닥 충돌 검사후 move state 설정
+    // desc이 없다면 바닥 충돌 검사후 move state 설정 : 외부 -> Gun base
     if (!pDesc)
     {
         if (Check_OnGround(0.3f))

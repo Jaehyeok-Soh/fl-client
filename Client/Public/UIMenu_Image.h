@@ -17,13 +17,9 @@ private:
 	CUIMenu_Image(ID3D11Device* pDevice, ID3D11DeviceContext* pDeviceContext);
 	CUIMenu_Image(const CUIMenu_Image& rhs);
 	virtual ~CUIMenu_Image() = default;
-
 public:
 	HRESULT Initialize_Prototype() override;
 	HRESULT Initialize(void* pArg) override;
-
-	HRESULT Attach_Personal_Info();
-
 public:
 	virtual HRESULT Awake(const _uint iCurrentLevelID) override;
 	virtual void Update_Priority(const _float fTimeDelta) override;
@@ -31,29 +27,19 @@ public:
 	virtual void Update_Late(const _float fTimeDelta) override;
 	virtual void Ready_Before_Render(const _float fTimeDelta) override;
 	virtual HRESULT Render() override;
-
 private:
 	HRESULT Ready_Components(MENU_IMAGE_DESC* pDesc);
 	HRESULT Bind_ShaderResources();
-
+	virtual HRESULT Attach_Personal_Info()override;
 private:
 	virtual void OnUIEvent(ETriggerEventType eEvent, CGenericUI* pSender)override;
-
-private:
 	virtual void Initialize_Visible_Event()override;
 	virtual void Initialize_InVisible_Event()override;
-
-private:
 	virtual _bool Tick_Visible_Event(const _float fTimeDelta)override;
 	virtual _bool Tick_InVisible_Event(const _float fTimeDelta)override;
-
 private:
-	_float m_fTimeAcc = {};
-	_float m_fDelayTimeAcc = {};
-
 	Vec2 m_vOriginPos = {};
 	Vec2 m_vTargetPos = {};
-
 public:
 	static CUIMenu_Image* Create(ID3D11Device* pDevice, ID3D11DeviceContext* pDeviceContext);
 	CGameObject* Clone(void* pArg);

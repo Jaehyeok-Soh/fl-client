@@ -19,7 +19,6 @@ private:
 public:
 	HRESULT Initialize_Prototype() override;
 	HRESULT Initialize(void* pArg) override;
-	HRESULT Attach_Personal_Info();
 public:
 	virtual HRESULT Awake(const _uint iCurrentLevelID) override;
 	virtual void Update_Priority(const _float fTimeDelta) override;
@@ -30,10 +29,10 @@ public:
 private:
 	HRESULT Ready_Components(DAMAGE_FONT_DESC* pDesc);
 	HRESULT Bind_ShaderResources();
+	virtual HRESULT Attach_Personal_Info()override;
+	virtual void Tick_By_Type(const _float fTimeDelta)override;
 	HRESULT Convert_Stat_To_Text();
-	HRESULT Tick_By_Type(const _float fTimeDelta);
 
-private:
 	virtual void OnUIEvent(ETriggerEventType eEvent, CGenericUI* pSender)override;
 	virtual void Initialize_Visible_Event()override;
 	virtual void Initialize_InVisible_Event()override;
@@ -42,11 +41,13 @@ private:
 	virtual HRESULT Spawn_FromPool(void* pArg)override;
 	virtual HRESULT Despawn_FromPool()override;
 private:
-	CWorldUI_Component* m_pWorldUIComp = { nullptr };
 	CStatCom_Player* m_pPlayerStatCom = { nullptr };
 
 	_float m_fDamageFontScaleOffet = {1.f};
 	_bool m_isSpawned = { false };
+
+	_bool m_isHitFontEventTrigger = { false };
+	_bool m_isFin_HitFontEvent = { false };
 
 public:
 	static CUIDamageFont_Text* Create(ID3D11Device* pDevice, ID3D11DeviceContext* pDeviceContext);

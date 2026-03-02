@@ -47,6 +47,13 @@ HRESULT CMonsterActionState::Initialize(void* pArg)
 	return S_OK;
 }
 
+void CMonsterActionState::Update(const _float fTimeDelta)
+{
+	Super::Update(fTimeDelta);
+
+	Update_CooldownTime(fTimeDelta);
+}
+
 HRESULT CMonsterActionState::Bind_State(std::set<string> setState)
 {
 	m_umapState.clear();
@@ -121,11 +128,25 @@ HRESULT CMonsterActionState::LoadStates(wstring stateTag, _uint iLevelIndex)
 	{
 		_uint stateIdx = (*m_umapState.find(stateDesc.strName)).second;
 
-		if (FAILED(Add_State(stateIdx, CState_Monster::Create(this, &stateDesc))))
+		if (FAILED(Add_State(stateIdx, CState_Monster::Create(this, stateIdx, &stateDesc))))
 			return E_FAIL;
 	}
 
 	return S_OK;
+}
+
+void CMonsterActionState::Update_CooldownTime(_float fTimeDelta)
+{
+	for (auto& state : m_vecStates)
+	{
+		if (state)
+			static_cast<CStateBase_Monster*>(state)->Update_CooldownTime(fTimeDelta, false);
+	}
+}
+
+_bool CMonsterActionState::IsStateReady(_uint iIdx)
+{
+	return static_cast<CStateBase_Monster*>(m_vecStates[iIdx])->IsCooldownTimeSatisfy();
 }
 
 CMonsterActionState* CMonsterActionState::Create(ID3D11Device* pDevice, ID3D11DeviceContext* pDeviceContext)

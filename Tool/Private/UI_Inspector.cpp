@@ -346,6 +346,12 @@ void CUI_Inspector::Input_TextureTag(CToolUI::EUITextureSlot eSlot)
 		pBtnLabel = "Select Texture##ALPHA_MASK";
 		break;
 
+	case CToolUI::EUITextureSlot::GLOW:
+		wCurTag = m_pSelectedUI->Get_GlowTextureTag();
+		Label = L"Cur Glow : ";
+		pBtnLabel = "Select Texture##GLOW";
+		break;
+
 	default:
 		break;
 	}
@@ -396,6 +402,10 @@ void CUI_Inspector::Input_TextureTag(CToolUI::EUITextureSlot eSlot)
 					m_pSelectedUI->Request_Change_AlphaMaskTexture();
 					break;
 
+				case CToolUI::EUITextureSlot::GLOW:
+					m_pSelectedUI->Set_GlowTextureTag(wNewTag);
+					m_pSelectedUI->Request_Change_GlowTexture();
+					break;
 				default:
 					break;
 				}
@@ -1225,6 +1235,75 @@ void CUI_Inspector::SetUp_ShaderPass()
 			break;
 		}
 
+
+		case EUIShaderPass::GLOW:
+		{
+			Input_TextureTag(CToolUI::EUITextureSlot::NOISE);
+			Input_TextureTag(CToolUI::EUITextureSlot::GLOW);
+
+			static bool s_isPlayGlow = false;
+			static void* s_pPrevSelected = nullptr;
+
+			if (s_pPrevSelected != m_pSelectedUI)
+			{
+				s_pPrevSelected = m_pSelectedUI;
+				s_isPlayGlow = false;
+				m_pSelectedUI->Set_Time(0.f);
+			}
+
+			if (s_isPlayGlow)
+				m_pSelectedUI->Set_Time(m_pSelectedUI->Get_Time() + (_float)ImGui::GetIO().DeltaTime);
+
+			if (ImGui::Button(s_isPlayGlow ? "Stop##Glow" : "Play##Glow"))
+			{
+				s_isPlayGlow = !s_isPlayGlow;
+				if (!s_isPlayGlow)
+					m_pSelectedUI->Set_Time(0.f);
+			}
+			ImGui::SameLine();
+			ImGui::TextDisabled("Time: %.3f", m_pSelectedUI->Get_Time());
+
+			_bool isUseColorTint = m_pSelectedUI->Get_isUseColorTint();
+			if (ImGui::Checkbox("Use Color Tint", (bool*)&isUseColorTint))
+				m_pSelectedUI->Set_isUseColorTint(isUseColorTint);
+
+			Vec4 vColorTint = m_pSelectedUI->Get_ColorTint();
+			ImGui::SetNextItemWidth(150.f);
+			if (ImGui::DragFloat4("Color Tint", (float*)&vColorTint, 0.01f, 0.f, 1.f))
+				m_pSelectedUI->Set_ColorTint(vColorTint);
+
+			Vec4 vGradiantColorTint = m_pSelectedUI->Get_GradiantColorTint();
+			ImGui::SetNextItemWidth(150.f);
+			if (ImGui::DragFloat4("GradiantColor Tint", (float*)&vGradiantColorTint, 0.01f, 0.f, 1.f))
+				m_pSelectedUI->Set_GradiantColorTint(vGradiantColorTint);
+
+			Vec2 vNoiseUVScale = m_pSelectedUI->Get_NoiseUVScale();
+			ImGui::SetNextItemWidth(150.f);
+			if (ImGui::DragFloat2("Noise UV Scale", (float*)&vNoiseUVScale, 0.01f, 0.f, 100.f))
+				m_pSelectedUI->Set_NoiseUVScale(vNoiseUVScale);
+
+			Vec2 vNoiseUVScroll = m_pSelectedUI->Get_NoiseUVScroll();
+			ImGui::SetNextItemWidth(150.f);
+			if (ImGui::DragFloat2("Noise UV Scroll", (float*)&vNoiseUVScroll, 0.01f, -10.f, 10.f))
+				m_pSelectedUI->Set_NoiseUVScroll(vNoiseUVScroll);
+
+			_float fGlowDistort = m_pSelectedUI->Get_GlowDistort();
+			ImGui::SetNextItemWidth(150.f);
+			if (ImGui::DragFloat("Glow Distort", &fGlowDistort, 0.0001f, 0.f, 0.1f))
+				m_pSelectedUI->Set_GlowDistort(fGlowDistort);
+
+			_float fGlowPulseSpeed = m_pSelectedUI->Get_GlowPulseSpeed();
+			ImGui::SetNextItemWidth(150.f);
+			if (ImGui::DragFloat("Glow Pulse Speed", &fGlowPulseSpeed, 0.01f, 0.f, 50.f))
+				m_pSelectedUI->Set_GlowPulseSpeed(fGlowPulseSpeed);
+
+			_float fGlowIntensity = m_pSelectedUI->Get_GlowIntensity();
+			ImGui::SetNextItemWidth(150.f);
+			if (ImGui::DragFloat("Glow Intensity", &fGlowIntensity, 0.01f, 0.f, 50.f))
+				m_pSelectedUI->Set_GlowIntensity(fGlowIntensity);
+
+			break;
+		}
 		default:
 			break;
 		}

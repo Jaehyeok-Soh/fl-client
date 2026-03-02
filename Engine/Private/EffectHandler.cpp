@@ -28,13 +28,21 @@ HRESULT CEffectHandler::Initialize_Prototype(void* pArg)
     if(FAILED(Ready_Desc(pArg)))
         return E_FAIL;
 
-    Ready_State();
-
     return S_OK;
 }
 
 HRESULT CEffectHandler::Initialize(void* pArg) 
 { 
+    ANIM_EFFECT_HANDLER_DESC* pDesc = static_cast<ANIM_EFFECT_HANDLER_DESC*>(pArg);
+
+    if (pDesc)
+    {
+        if (FAILED(Ready_Desc(pArg)))
+            return E_FAIL;
+    }
+
+    Ready_State();
+
     return S_OK;
 }
 
@@ -93,12 +101,21 @@ void CEffectHandler::Update(_float fDT)
 {
 }
 
+HRESULT CEffectHandler::Gizmo_Setting()
+{
+
+    return S_OK;
+}
+
 void CEffectHandler::GetAnimation()
 {
     if (Get_Owner())
     {
-        m_pOwnerModel = Get_Owner()->Get_Component<CModel>();
-        Safe_AddRef(m_pOwnerModel);
+        if (m_pOwnerModel == nullptr)
+        {
+            m_pOwnerModel = Get_Owner()->Get_Component<CModel>();
+            Safe_AddRef(m_pOwnerModel);
+        }
     }
 }
 
@@ -187,8 +204,15 @@ HRESULT CEffectHandler::Create_SpawnEffect()
 {
     if (m_tDesc.eType == E_HANDLER_TYPE::MODEL_ANIM) return E_FAIL;
 
-    if (FAILED(Trigger_Lifecycle_Effect(m_eCurrentState)))
-        return E_FAIL;
+    if (m_pOwnerMatrix == nullptr)
+    {
+        auto pPart = static_cast<CPartObject*>(Get_Owner());
+        if (pPart)
+            m_pOwnerMatrix = &pPart->Get_Parent()->Get_Component<CTransform>()->Get_WorldMatrix();
+
+        else
+            m_pOwnerMatrix = &pPart->Get_Component<CTransform>()->Get_WorldMatrix();
+    }
 
     return S_OK;
 }
@@ -254,16 +278,10 @@ void CEffectHandler::PoolObject_CallBack(CGameObject* pGo)
     m_ActiveEffects[ENUM_TO_UINT(m_tDesc.eType)].emplace(pGo->Get_Name(), pGo);
 }
 
-unordered_map<_uint, vector<DTO::EFFECTEVENT>>& CEffectHandler::GetEvents()
-{
-    Ready_Event();
-
-    return m_tDesc.mapEvents;
-}
-
 void CEffectHandler::Request_SpawnEffect(const DTO::EFFECTEVENT& Script)
 {
-    Matrix matTargetWorld = XMMatrixIdentity();
+    Matrix MatWorldOffset = XMMatrixIdentity();
+    Matrix MatOwnerMatrix = XMMatrixIdentity();
 
     const Matrix* pTargetBoneMatrix = nullptr;
 
@@ -275,49 +293,30 @@ void CEffectHandler::Request_SpawnEffect(const DTO::EFFECTEVENT& Script)
         pTargetBoneMatrix = &m_pOwnerModel->Get_Bone(Script.iBoneIndex)->Get_CombinedTransformMatrix();
     }
 
-    Matrix matOwnerNoScale = *m_pOwnerMatrix;
+    if (m_pOwnerMatrix == nullptr)
+    {
+        auto pPart = static_cast<CPartObject*>(Get_Owner());
+        if (pPart)
+            m_pOwnerMatrix = &pPart->Get_Parent()->Get_Component<CTransform>()->Get_WorldMatrix();
 
-    Vector3 vRight = Vector3(matOwnerNoScale.m[0][0], matOwnerNoScale.m[0][1], matOwnerNoScale.m[0][2]);
-    Vector3 vUp = Vector3(matOwnerNoScale.m[1][0], matOwnerNoScale.m[1][1], matOwnerNoScale.m[1][2]);
-    Vector3 vLook = Vector3(matOwnerNoScale.m[2][0], matOwnerNoScale.m[2][1], matOwnerNoScale.m[2][2]);
+        else
+            m_pOwnerMatrix = &pPart->Get_Component<CTransform>()->Get_WorldMatrix();
+    }
 
-    vRight.Normalize();
-    vUp.Normalize();
-    vLook.Normalize();
-
-    matOwnerNoScale.m[0][0] = vRight.x; matOwnerNoScale.m[0][1] = vRight.y; matOwnerNoScale.m[0][2] = vRight.z;
-    matOwnerNoScale.m[1][0] = vUp.x;    matOwnerNoScale.m[1][1] = vUp.y;    matOwnerNoScale.m[1][2] = vUp.z;
-    matOwnerNoScale.m[2][0] = vLook.x;  matOwnerNoScale.m[2][1] = vLook.y;  matOwnerNoScale.m[2][2] = vLook.z;
-    // ------------------------------------------
-
-    matTargetWorld = matOwnerNoScale;
+    // 애니메이션 모델 떄문에 Scale 행렬을 날려주는 값을 넣어준다.
+    MatOwnerMatrix = Delete_ScaleMatrix(*m_pOwnerMatrix);
 
     // 오프셋 적용
-    Matrix matOffset = XMMatrixTranslation(Script.vOffset.x, Script.vOffset.y, Script.vOffset.z);
-    Matrix matRotation = XMMatrixRotationRollPitchYaw(XMConvertToRadians(Script.vRotation.x), XMConvertToRadians(Script.vRotation.y), XMConvertToRadians(Script.vRotation.z));
-   
-    matTargetWorld = matOffset * matRotation * matTargetWorld;
-
-    if (Script.iBoneIndex != -1 && Script.bFollowBone)
-        matTargetWorld = matOffset * matRotation;
+    MatWorldOffset = Offset_CalCulator(Script);
 
     // 이펙트 생성 요청
-    m_pGameInstance->Spawn_PoolEffect(
-        Script.strEffectTag,
-        matTargetWorld,
-        Script.fDuration,
-        (_bool)Script.iSimulationType,
-        Script.iBoneFlag,
-        Script.bFollowBone ? pTargetBoneMatrix : nullptr,
-        Script.bFollowBone ? m_pOwnerMatrix : nullptr
-    );
+    Spawn_RequestFromEffectManager(Script, MatWorldOffset, MatOwnerMatrix, pTargetBoneMatrix);
 }
 
 void CEffectHandler::Request_SpawnEffect(const DTO::EFFECTEVENT& script, const std::string& EffectTag)
 {
-    Matrix matTargetWorld = XMMatrixIdentity();
-    Matrix matCustomBone = XMMatrixIdentity();
-    Matrix matBoneCopy = XMMatrixIdentity();
+    Matrix MatWorldOffset = XMMatrixIdentity();
+    Matrix MatOwnerMatrix = XMMatrixIdentity();
 
     const Matrix* pTargetBoneMatrix = nullptr;
 
@@ -329,8 +328,151 @@ void CEffectHandler::Request_SpawnEffect(const DTO::EFFECTEVENT& script, const s
         pTargetBoneMatrix = &m_pOwnerModel->Get_Bone(script.iBoneIndex)->Get_CombinedTransformMatrix();
     }
 
+    if (m_pOwnerMatrix == nullptr)
+    {
+        auto pPart = static_cast<CPartObject*>(Get_Owner());
+        if(pPart)
+            m_pOwnerMatrix = &pPart->Get_Parent()->Get_Component<CTransform>()->Get_WorldMatrix();
 
-    Matrix matOwnerNoScale = *m_pOwnerMatrix;
+        else
+            m_pOwnerMatrix = &pPart->Get_Component<CTransform>()->Get_WorldMatrix();
+    }
+
+    // 애니메이션 모델 떄문에 Scale 행렬을 날려주는 값을 넣어준다.
+    MatOwnerMatrix = Delete_ScaleMatrix(*m_pOwnerMatrix);
+
+    // 오프셋 적용
+    MatWorldOffset = Offset_CalCulator(script);
+
+    Spawn_RequestFromEffectManager(script, MatWorldOffset, MatOwnerMatrix, pTargetBoneMatrix, EffectTag);
+}
+
+HRESULT CEffectHandler::Trigger_Lifecycle_Effect(E_OBJ_LIFECYCLE_STATE eState)
+{
+    if (m_tDesc.eType == E_HANDLER_TYPE::MODEL_ANIM) return E_FAIL;
+    if (m_ePrevState == eState) return S_OK;
+
+    auto& activeMap = m_ActiveEffects[ENUM_TO_UINT(m_tDesc.eType)];
+    string prevTag = m_tDesc.mEffectState[m_ePrevState].EffectPrefabTag;
+
+    auto it = activeMap.find(prevTag);
+    if (it != activeMap.end())
+    {
+        CEffectBase* pBase = static_cast<CEffectBase*>(it->second);
+        if (pBase)
+            pBase->LoopStateChange(DTO::E_LoopState::LOOP_END);
+
+        activeMap.erase(it);
+    }
+
+    // State가 등록되어있는지 확인절차를 한다. 만약에 없으면 Event를 통해서 레이어 추가를 시도하면 안되니까.
+    auto iter = m_tDesc.mEffectState.find(eState);
+    if (iter == m_tDesc.mEffectState.end() || iter->second.EffectPrefabTag.empty())
+    {
+        // 등록된 이펙트가 없으면 그냥 상태만 바꾸고 정상 종료
+        m_ePrevState = m_eCurrentState = eState;
+        return S_OK;
+    }
+
+    // 스폰 요청.
+    Request_SpawnEffect(Write_EffectEventDesc(eState), m_tDesc.mEffectState[eState].EffectPrefabTag);
+
+    // State 변경
+    m_ePrevState = m_eCurrentState = eState;
+
+    return S_OK;
+}
+
+void CEffectHandler::Spawn_RequestFromEffectManager(
+    const DTO::EFFECTEVENT& script,
+    SimpleMath::Matrix& OffsetMat,
+    SimpleMath::Matrix& OwnerMatrix,
+    const Matrix* BoneMatrix,
+    const std::string& EffectTag)
+{
+    Matrix matTargetWorld = XMMatrixIdentity();
+
+    if (script.iSimulationType == ENUM_TO_UINT(E_WORLD::E_LOCAL))
+    {
+        matTargetWorld = OffsetMat;
+    }
+
+    else if (script.iSimulationType == ENUM_TO_UINT(E_WORLD::E_WORLD))
+    {
+        matTargetWorld = OffsetMat * OwnerMatrix;
+    }
+
+    // 이펙트 생성 요청
+    m_pGameInstance->Spawn_PoolEffect(
+        this,
+        EffectTag,
+        script.strEffectTag,
+        matTargetWorld,
+        script.fDuration,
+        (_bool)script.iSimulationType,
+        script.iBoneFlag,
+        script.bFollowBone ? BoneMatrix : nullptr,
+        m_pOwnerMatrix
+    );
+}
+
+void CEffectHandler::Spawn_RequestFromEffectManager(
+    const DTO::EFFECTEVENT& script,
+    SimpleMath::Matrix& OffsetMat,
+    SimpleMath::Matrix& OwnerMatrix,
+    const Matrix* BoneMatrix)
+{
+    Matrix matTargetWorld = XMMatrixIdentity();
+
+    if (script.iSimulationType == ENUM_TO_UINT(E_WORLD::E_LOCAL))
+    {
+        matTargetWorld = OffsetMat;
+    }
+
+    else if (script.iSimulationType == ENUM_TO_UINT(E_WORLD::E_WORLD))
+    {
+        matTargetWorld = OffsetMat * OwnerMatrix;
+    }
+
+    // 이펙트 생성 요청
+    m_pGameInstance->Spawn_PoolEffect(
+    script.strEffectTag,
+        matTargetWorld,
+        script.fDuration,
+        (_bool)script.iSimulationType,
+        script.iBoneFlag,
+        script.bFollowBone ? BoneMatrix : nullptr,
+        m_pOwnerMatrix
+    );
+}
+
+DTO::EFFECTEVENT CEffectHandler::Write_EffectEventDesc(const E_OBJ_LIFECYCLE_STATE eState)
+{
+    // 현재 들어온 State에 맞는 이펙트 꺼내오기.
+    STATE_VFX_DESC pDesc = m_tDesc.mEffectState[eState];
+
+    DTO::EFFECTEVENT pEvent = {};
+    pEvent.strEffectTag = pDesc.EffectPrefabTag;
+    pEvent.bFollowBone = pDesc.bFollowBone;
+    pEvent.iBoneIndex = pDesc.iBoneIndex;
+    pEvent.iSimulationType = ENUM_TO_UINT(pDesc.bWorld);
+    pEvent.vOffset = pDesc.vOffSet;
+    pEvent.vRotation = pDesc.vRotation;
+
+    return pEvent;
+}
+
+SimpleMath::Matrix CEffectHandler::Offset_CalCulator(const DTO::EFFECTEVENT& script)
+{
+    // 오프셋 적용
+    Matrix matOffset = XMMatrixTranslation(script.vOffset.x, script.vOffset.y, script.vOffset.z);
+    Matrix matRotation = XMMatrixRotationRollPitchYaw(XMConvertToRadians(script.vRotation.x), XMConvertToRadians(script.vRotation.y), XMConvertToRadians(script.vRotation.z));
+    return (matOffset * matRotation);
+}
+
+SimpleMath::Matrix CEffectHandler::Delete_ScaleMatrix(SimpleMath::Matrix Mat)
+{
+    Matrix matOwnerNoScale = Mat;
 
     Vector3 vRight = Vector3(matOwnerNoScale.m[0][0], matOwnerNoScale.m[0][1], matOwnerNoScale.m[0][2]);
     Vector3 vUp = Vector3(matOwnerNoScale.m[1][0], matOwnerNoScale.m[1][1], matOwnerNoScale.m[1][2]);
@@ -345,83 +487,15 @@ void CEffectHandler::Request_SpawnEffect(const DTO::EFFECTEVENT& script, const s
     matOwnerNoScale.m[2][0] = vLook.x;  matOwnerNoScale.m[2][1] = vLook.y;  matOwnerNoScale.m[2][2] = vLook.z;
     // ------------------------------------------
 
-    matTargetWorld = matOwnerNoScale;
-
-    // 오프셋 적용
-    Matrix matOffset = XMMatrixTranslation(script.vOffset.x, script.vOffset.y, script.vOffset.z);
-    Matrix matRotation = XMMatrixRotationRollPitchYaw(XMConvertToRadians(script.vRotation.x), XMConvertToRadians(script.vRotation.y), XMConvertToRadians(script.vRotation.z));
-    matTargetWorld = matOffset * matRotation * matTargetWorld;
-
-    if (script.iBoneIndex != -1 && script.bFollowBone)
-        matTargetWorld = matOffset * matRotation;
-
-    // 이펙트 생성 요청
-    m_pGameInstance->Spawn_PoolEffect(
-        this,
-        EffectTag,
-        script.strEffectTag,
-        matTargetWorld,
-        script.fDuration,
-        (_bool)script.iSimulationType,
-        script.iBoneFlag,
-        script.bFollowBone ? pTargetBoneMatrix : nullptr,
-        script.bFollowBone ? m_pOwnerMatrix : nullptr
-    );
+    return matOwnerNoScale;
 }
 
-HRESULT CEffectHandler::Trigger_Lifecycle_Effect(E_OBJ_LIFECYCLE_STATE eState)
+// 툴용
+unordered_map<_uint, vector<DTO::EFFECTEVENT>>& CEffectHandler::GetEvents()
 {
-    if (m_tDesc.eType == E_HANDLER_TYPE::MODEL_ANIM) 
-        return E_FAIL;
+    Ready_Event();
 
-    if (m_ePrevState == eState) return E_FAIL;
-
-    CGameObject* pGo = nullptr;
-
-    // 이전 State 꺼내오기. (들어온 State가 Spawn이면 안된다.)
-    if (eState != E_OBJ_LIFECYCLE_STATE::ON_SPAWN)
-    {
-        pGo = m_ActiveEffects[ENUM_TO_UINT(m_tDesc.eType)][(m_tDesc.mEffectState[m_ePrevState].EffectPrefabTag)];
-
-        if (pGo == nullptr)
-        {
-            MSG_BOX("추가 되지 않은 State거나 저장되지 않은 Object입니다");
-            return E_FAIL;
-        }
-        CEffectBase* pBase = static_cast<CEffectBase*>(pGo);
-        if (pBase)
-        {
-            // 이전 State Loop 종료시키기 (Dissolve 되게끔.)
-            pBase->LoopStateChange(CEffectBase::E_LoopState::LOOP_END);
-        }
-    }
-
-    // State가 등록되어있는지 확인절차를 한다. 만약에 없으면 Event를 통해서 레이어 추가를 시도하면 안되니까.
-    auto iter = m_tDesc.mEffectState.find(eState);
-    if (iter == m_tDesc.mEffectState.end() || iter->second.EffectPrefabTag.empty())
-    {
-        // 등록된 이펙트가 없으면 그냥 상태만 바꾸고 정상 종료
-        m_ePrevState = m_eCurrentState = eState;
-        return S_OK;
-    }
-
-    // 현재 들어온 State에 맞는 이펙트 꺼내오기.
-    STATE_VFX_DESC pDesc = m_tDesc.mEffectState[eState];
-
-    DTO::EFFECTEVENT pEvent = {};
-    pEvent.strEffectTag = pDesc.EffectPrefabTag;
-    pEvent.bFollowBone = pDesc.bLocal;
-    pEvent.iBoneIndex = pDesc.iBoneIndex;
-    pEvent.iSimulationType = pDesc.bLocal;
-    pEvent.vOffset = pDesc.vOffSet;
-    pEvent.vRotation = pDesc.vRotation;
-
-    Request_SpawnEffect(pEvent, pDesc.EffectPrefabTag);
-
-    // State 변경
-    m_ePrevState = m_eCurrentState = eState;
-
-    return S_OK;
+    return m_tDesc.mapEvents;
 }
 
 CEffectHandler* CEffectHandler::Create(void* pArg)
@@ -452,14 +526,11 @@ void CEffectHandler::Free()
 
     for (_uint i = 0; i < ENUM_TO_UINT(E_HANDLER_TYPE::TYPE_END); ++i)
     {
-        for (auto& pair : m_ActiveEffects[i])
-        {
-            if (pair.second)
-                m_pGameInstance->Request_DeleteGameObject(m_pGameInstance->Get_CurrentLevelIndex(), L"Layer_Effect", pair.second);
-        }
         m_ActiveEffects[i].clear();
     }
 
+    // 3. 캐싱된 모델 참조 해제
     Safe_Release(m_pOwnerModel);
+
     Super::Free();
 }

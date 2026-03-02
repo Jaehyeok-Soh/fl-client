@@ -3,8 +3,8 @@
 #include "Monster_base.h"
 #include "GameInstance.h"
 
-CState_Monster::CState_Monster(CActionState* pOwnerComponent)
-	: Super(pOwnerComponent, "State_Monster")
+CState_Monster::CState_Monster(CActionState* pOwnerComponent, _uint iStateIndex)
+	: Super(pOwnerComponent, "State_Monster", iStateIndex)
 {
 }
 
@@ -45,9 +45,9 @@ HRESULT CState_Monster::End()
 	return S_OK;
 }
 
-CState_Monster* CState_Monster::Create(CActionState* pOwnerComponent, void* pArg)
+CState_Monster* CState_Monster::Create(CActionState* pOwnerComponent, _uint iStateIndex, void* pArg)
 {
-	CState_Monster* pInstance = new CState_Monster(pOwnerComponent);
+	CState_Monster* pInstance = new CState_Monster(pOwnerComponent, iStateIndex);
 	if (FAILED(pInstance->Initialize(pArg)))
 	{
 		MSG_BOX("CState_Monster::Create, Failed");

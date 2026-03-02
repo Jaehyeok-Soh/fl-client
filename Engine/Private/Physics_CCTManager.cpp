@@ -5,6 +5,7 @@
 #include "Physics_ResourceManager.h"
 
 #include "Physics_CCTHitReport.h"
+#include "Physics_CCTBehaviorCallback.h"
 
 CPhysics_CCTManager::CPhysics_CCTManager(ID3D11Device* pDevice, ID3D11DeviceContext* pContext, PxPhysics* pPhysics, PxScene* pScene, CPhysics_ResourceManager* pResourceManager)
 	: m_pGameInstance{ CGameInstance::GetInstance() },
@@ -25,6 +26,7 @@ HRESULT CPhysics_CCTManager::Initialize()
 	m_pControllerManager = PxCreateControllerManager(*m_pScene);
 
 	m_pCCTHitReport = CPhysics_CCTHitReport::Create();
+	m_pCCTBehaviorCallback = CPhysics_CCTBehaviorCallback::Create();
 
 	return S_OK;
 }
@@ -78,10 +80,12 @@ PxController* CPhysics_CCTManager::MakeBoxController(PHYSICSCCT_DESC* pDesc)
 	desc.halfForwardExtent = pDesc->vExtens.z / 2.f;
 	desc.material = m_pResourceManager->GetMaterial(&pDesc->tMaterial);
 
-	desc.contactOffset = 0.1f;
-	desc.stepOffset = 0.5f;
+	desc.contactOffset = 0.01f;
+	desc.stepOffset = 0.01f;
+	desc.slopeLimit = 0.3f;
 
 	desc.reportCallback = m_pCCTHitReport;
+	desc.behaviorCallback = m_pCCTBehaviorCallback;
 
 	return m_pControllerManager->createController(desc);
 }
@@ -93,10 +97,14 @@ PxController* CPhysics_CCTManager::MakeCapsuleController(PHYSICSCCT_DESC* pDesc)
 	desc.height = pDesc->fHeight;
 	desc.material = m_pResourceManager->GetMaterial(&pDesc->tMaterial);
 
-	desc.contactOffset = 0.1f;
-	desc.stepOffset = 0.5f;
+	desc.contactOffset = 0.01f;
+	desc.stepOffset = 0.01f;
+	desc.slopeLimit = 0.3f;
+
+	desc.climbingMode = PxCapsuleClimbingMode::eCONSTRAINED;
 
 	desc.reportCallback = m_pCCTHitReport;
+	desc.behaviorCallback = m_pCCTBehaviorCallback;
 
 	return m_pControllerManager->createController(desc);
 }
@@ -117,6 +125,7 @@ CPhysics_CCTManager* CPhysics_CCTManager::Create(ID3D11Device* pDevice, ID3D11De
 void CPhysics_CCTManager::Free()
 {
 	Safe_Release(m_pCCTHitReport);
+	Safe_Release(m_pCCTBehaviorCallback);
 
 	Safe_Release(m_pResourceManager);
 

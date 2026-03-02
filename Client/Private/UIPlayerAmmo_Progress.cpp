@@ -1,10 +1,13 @@
 #include "pch.h"
 #include "UIPlayerAmmo_Progress.h"
 #include "Client_Defines.h"
+#include "Client_EventDefine.h"
 
 //=================
 // Component
 //=================
+#include "MainPlayer.h"
+#include "Gun.h"
 #include "StatCom_Player.h"
 #include "Texture.h"
 #include "Shader.h"
@@ -39,14 +42,6 @@ HRESULT CUIPlayerAmmo_Progress::Initialize(void* pArg)
 	return S_OK;
 }
 
-HRESULT CUIPlayerAmmo_Progress::Attach_Personal_Info()
-{
-	CGameObject* pResult = m_pGameInstance->Get_GameObject_Front(ENUM_TO_UINT(ELevelType::STATIC), g_wszPlayerLayer);
-	if (nullptr == pResult)
-		return E_FAIL;
-
-	return S_OK;
-}
 
 HRESULT CUIPlayerAmmo_Progress::Awake(const _uint iCurrentLevelID)
 {
@@ -93,6 +88,46 @@ HRESULT CUIPlayerAmmo_Progress::Render()
 	return S_OK;
 }
 
+HRESULT CUIPlayerAmmo_Progress::Ready_Components(PLAYER_AMMO_PROGRESS_DESC* pDesc)
+{
+	if (FAILED(Super::Ready_Components(pDesc)))
+		return E_FAIL;
+	return S_OK;
+}
+
+HRESULT CUIPlayerAmmo_Progress::Bind_ShaderResources()
+{
+	Super::Bind_ShaderResources();
+	CShader* pShader = Get_Component<CShader>();
+	if (FAILED(Get_Component<CTransform>()->Bind_ShaderResource(pShader)))
+		return E_FAIL;
+	if (FAILED(Super::Bind_ShaderResources()))
+		return E_FAIL;
+	return S_OK;
+}
+
+HRESULT CUIPlayerAmmo_Progress::Attach_Personal_Info()
+{
+	CGameObject* pResult = m_pGameInstance->Get_GameObject_Front(ENUM_TO_UINT(ELevelType::STATIC), g_wszPlayerLayer);
+	if (nullptr == pResult)
+		return E_FAIL;
+
+	m_pPlayerStatCom = static_cast<CStatCom_Player*>(pResult->Get_Component<CMyStat>());
+	if (nullptr == m_pPlayerStatCom)
+		return E_FAIL;
+
+	auto* pPlayer = static_cast<CMainPlayer*>(pResult);
+	if (nullptr == pPlayer)
+		return E_FAIL;
+
+	m_pGunParts = pPlayer->Get_Part<CGun>(ENUM_TO_UINT(CPlayer::Part::GUN));
+	if (nullptr == m_pGunParts)
+		return E_FAIL;
+
+	m_pGameInstance->Subscribe<BOSS_STAGING_EVENT_START>([this]() { this->Set_Invisible(); });
+	return S_OK;
+}
+
 void CUIPlayerAmmo_Progress::OnUIEvent(ETriggerEventType eEvent, CGenericUI* pSender)
 {
 	if (!m_isActive)
@@ -132,27 +167,10 @@ _bool CUIPlayerAmmo_Progress::Tick_InVisible_Event(const _float fTimeDelta)
 	return true;
 }
 
-HRESULT CUIPlayerAmmo_Progress::Ready_Components(PLAYER_AMMO_PROGRESS_DESC* pDesc)
-{
-	if (FAILED(Super::Ready_Components(pDesc)))
-		return E_FAIL;
-	return S_OK;
-}
-
-HRESULT CUIPlayerAmmo_Progress::Bind_ShaderResources()
-{
-	Super::Bind_ShaderResources();
-	CShader* pShader = Get_Component<CShader>();
-	if (FAILED(Get_Component<CTransform>()->Bind_ShaderResource(pShader)))
-		return E_FAIL;
-	if (FAILED(Super::Bind_ShaderResources()))
-		return E_FAIL;
-	return S_OK;
-}
 
 HRESULT CUIPlayerAmmo_Progress::Convert_Stat_To_Ratio()
 {
-	m_fProgress_Ratio = 1.f;
+	m_fProgress_Ratio = m_pGunParts->Get_CurButtlet().x / m_pGunParts->Get_CurButtlet().y;
 	return S_OK;
 }
 

@@ -39,6 +39,7 @@ HRESULT CToolUI::Initialize(void* pArg)
 	m_wstrTextureTag		= Engine_Utils::ToWString(pDesc->strInitTextureTag);
 	m_wstrNoiseTextureTag		= Engine_Utils::ToWString(pDesc->strNoiseTextureTag);
 	m_wstrAlphaMaskTextureTag	= Engine_Utils::ToWString(pDesc->strAlphaMaskTextureTag);
+	m_wstrGlowTextureTag		= Engine_Utils::ToWString(pDesc->strGlowTextureTag);
 	m_eRectTransformType	= static_cast<ERectTransform>(pDesc->iRectTransformType);
 	m_pCacheCanvas			= pDesc->pCacheCanvas;
 	m_isUseColorTint		= pDesc->isUseColorTint;
@@ -249,6 +250,21 @@ HRESULT CToolUI::Bind_ShaderResources()
 	if (FAILED(pShader->Get_Variable("g_fBrightness")->SetRawValue(&m_fBrightness, 0, sizeof(_float))))
 		return E_FAIL;
 
+
+	// Glow 
+	if (FAILED(pShader->Get_Variable("g_vNoiseUVScale")->SetRawValue(&m_vNoiseUVScale, 0, sizeof(Vec2))))
+		return E_FAIL;
+	if (FAILED(pShader->Get_Variable("g_vNoiseUVScroll")->SetRawValue(&m_vNoiseUVScroll, 0, sizeof(Vec2))))
+		return E_FAIL;
+	if (FAILED(pShader->Get_Variable("g_fTime")->SetRawValue(&m_fTime, 0, sizeof(_float))))
+		return E_FAIL;
+	if (FAILED(pShader->Get_Variable("g_fGlowDistort")->SetRawValue(&m_fGlowDistort, 0, sizeof(_float))))
+		return E_FAIL;
+	if (FAILED(pShader->Get_Variable("g_fGlowPulseSpeed")->SetRawValue(&m_fGlowPulseSpeed, 0, sizeof(_float))))
+		return E_FAIL;
+	if (FAILED(pShader->Get_Variable("g_fGlowIntensity")->SetRawValue(&m_fGlowIntensity, 0, sizeof(_float))))
+		return E_FAIL;
+
 	if(m_eClassType == DTO::EUIClassType::UI_TEXT)
 	{
 		m_tFontDesc.eFontShaderType = m_eFontShaderType;
@@ -340,35 +356,36 @@ void CToolUI::Acting_About_State()
 void CToolUI::Sync_Data()
 {
 	// UI Object Values
-	m_tUIData.fWidth				= m_fWidth;
-	m_tUIData.fHeight				= m_fHeight;
-	m_tUIData.fPosX					= m_fX;
-	m_tUIData.fPosY					= m_fY;
-	m_tUIData.fPosZ					= m_fZ;
-	m_tUIData.isVisible				= m_isVisible;
-	m_tUIData.isInteract			= m_isInteract;
-	m_tUIData.isActivate			= m_isActive;
-	m_tUIData.fScale				= m_fScale;
-	m_tUIData.fRotate				= m_fRotate;
+	m_tUIData.fWidth					= m_fWidth;
+	m_tUIData.fHeight					= m_fHeight;
+	m_tUIData.fPosX						= m_fX;
+	m_tUIData.fPosY						= m_fY;
+	m_tUIData.fPosZ						= m_fZ;
+	m_tUIData.isVisible					= m_isVisible;
+	m_tUIData.isInteract				= m_isInteract;
+	m_tUIData.isActivate				= m_isActive;
+	m_tUIData.fScale					= m_fScale;
+	m_tUIData.fRotate					= m_fRotate;
 
 	// Tool UI Values
-	m_tUIData.strTag				= m_strName;
-	m_tUIData.strCanvasName			= m_strCanvasName;
-	m_tUIData.iRectTransformType	= static_cast<uint32_t>( m_eRectTransformType);
-	m_tUIData.strTextureTag			= Engine_Utils::ToString(m_wstrTextureTag);
-	m_tUIData.strNoiseTextureTag	= Engine_Utils::ToString(m_wstrNoiseTextureTag);
-	m_tUIData.strAlphaMaskTextureTag= Engine_Utils::ToString(m_wstrAlphaMaskTextureTag);
-	m_tUIData.eClassType			= m_eClassType;
-	m_tUIData.iComponentFlag		= m_iComponentFlag;
-	m_tUIData.eSubClassType 		= m_eSubClassType;
-	m_tUIData.isUseColorTint 		= m_isUseColorTint;
-	m_tUIData.vColorTint 			= m_vColorTint;
-	m_tUIData.vGradiantColorTint	= m_vGradiantColorTint;
-	m_tUIData.iShaderPass			= m_iShaderPass;
-	m_tUIData.fDelay				= m_fDelay;
-	m_tUIData.iFlip					= m_iFlip;
-	m_tUIData.fAlphaRatio			= m_fTestAlpha;
-	m_tUIData.iFillDir				= m_iFillDir;
+	m_tUIData.strTag					= m_strName;
+	m_tUIData.strCanvasName				= m_strCanvasName;
+	m_tUIData.iRectTransformType		= static_cast<uint32_t>( m_eRectTransformType);
+	m_tUIData.strTextureTag				= Engine_Utils::ToString(m_wstrTextureTag);
+	m_tUIData.strNoiseTextureTag		= Engine_Utils::ToString(m_wstrNoiseTextureTag);
+	m_tUIData.strAlphaMaskTextureTag	= Engine_Utils::ToString(m_wstrAlphaMaskTextureTag);
+	m_tUIData.strGlowTextureTag			= Engine_Utils::ToString(m_wstrGlowTextureTag);
+	m_tUIData.eClassType				= m_eClassType;
+	m_tUIData.iComponentFlag			= m_iComponentFlag;
+	m_tUIData.eSubClassType 			= m_eSubClassType;
+	m_tUIData.isUseColorTint 			= m_isUseColorTint;
+	m_tUIData.vColorTint 				= m_vColorTint;
+	m_tUIData.vGradiantColorTint		= m_vGradiantColorTint;
+	m_tUIData.iShaderPass				= m_iShaderPass;
+	m_tUIData.fDelay					= m_fDelay;
+	m_tUIData.iFlip						= m_iFlip;
+	m_tUIData.fAlphaRatio				= m_fTestAlpha;
+	m_tUIData.iFillDir					= m_iFillDir;
 
 	if (m_eClassType == DTO::EUIClassType::UI_TEXT)
 	{
@@ -481,6 +498,14 @@ HRESULT CToolUI::Request_Change_NoiseTexture()
 HRESULT CToolUI::Request_Change_AlphaMaskTexture()
 {
 	if (FAILED(Get_Component<CTexture>()->Add_DefaultTexture(m_wstrAlphaMaskTextureTag, ALPHA_MASK)))
+		return E_FAIL;
+
+	return S_OK;
+}
+
+HRESULT CToolUI::Request_Change_GlowTexture()
+{
+	if (FAILED(Get_Component<CTexture>()->Add_DefaultTexture(m_wstrGlowTextureTag, GLOW)))
 		return E_FAIL;
 
 	return S_OK;

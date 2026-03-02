@@ -29,7 +29,7 @@ HRESULT CPhysics_Module::Initialize()
 		MSG_BOX("Failed to created : PxFoundation");
 		return E_FAIL;
 	}
-	
+
 
 #ifdef _DEBUG
 	//m_pPvd = PxCreatePvd(*m_pFoundation);
@@ -121,6 +121,7 @@ HRESULT CPhysics_Module::Initialize()
 		//////////////////////////////////
 		{
 			//sceneDesc.kineKineFilteringMode; // eDEFAULT = eSUPPRESS
+			sceneDesc.kineKineFilteringMode = PxPairFilteringMode::eKEEP;
 			//sceneDesc.staticKineFilteringMode; // eDEFAULT = eSUPPRESS
 			sceneDesc.staticKineFilteringMode = PxPairFilteringMode::eKEEP;
 		}
@@ -132,7 +133,7 @@ HRESULT CPhysics_Module::Initialize()
 			// Default Setting
 			//sceneDesc.filterShader = PxDefaultSimulationFilterShader;
 			sceneDesc.filterShader = FilterShader;
-			
+
 			m_pFilterEventCallback = CPhysics_FilterEventCallback::Create();
 			sceneDesc.simulationEventCallback = m_pFilterEventCallback;
 		}
@@ -188,7 +189,7 @@ HRESULT CPhysics_Module::Initialize()
 			MSG_BOX("Failed to created : physics actor factory");
 			return E_FAIL;
 		}
-		
+
 		if (!(m_pCCTManager = CPhysics_CCTManager::Create(m_pDevice, m_pDeviceContext, m_pPhysics, m_pScene, m_pResourceManager)))
 		{
 			MSG_BOX("Failed to created : physics cct manager");
@@ -320,36 +321,51 @@ PxFilterFlags CPhysics_Module::FilterShader(
 	PxFilterObjectAttributes attributes1, PxFilterData filterData1,
 	PxPairFlags& pairFlags, const void* constantBlock, PxU32 constantBlockSize)
 {
-	if (PxFilterObjectIsTrigger(attributes0) || PxFilterObjectIsTrigger(attributes1))
+	if ((filterData0.word0 & filterData1.word1) && (filterData1.word0 & filterData0.word1) == false)
+		return PxFilterFlag::eSUPPRESS;
+
+	// 02/21
+	// HitPoint 추출을 위한 Flag 설정
+	// Enter에서만 추출하기 위해 사용
+	// CPhysics_FilterEventCallback::onContact에서 Flag 체크후 GAMEOBJECTINFO에 넣는중
+	// 03/02 소재혁
+	// 공격 및 스킬은 충돌안하고 감지만해서 oncollision불리게 플래그 수정
+	// 공격이랑 스킬은 충돌체 desc 설정에서 bIsSkillTrigger 셋팅해줘야함(bIsSkillTrigger 추가됨)
+	if (PHYSICSFILTERGROUP::IsAttackPair(filterData0.word0, filterData1.word0))
 	{
-		if ((filterData0.word0 & filterData1.word1) && (filterData1.word0 & filterData0.word1))
-		{
-			pairFlags = PxPairFlag::eTRIGGER_DEFAULT
+			pairFlags = PxPairFlag::eDETECT_DISCRETE_CONTACT
+				| PxPairFlag::eNOTIFY_CONTACT_POINTS
 				| PxPairFlag::eNOTIFY_TOUCH_FOUND
 				| PxPairFlag::eNOTIFY_TOUCH_LOST;
+
 			return PxFilterFlag::eDEFAULT;
-		}
-		return PxFilterFlag::eSUPPRESS;
 	}
 
-	if ((filterData0.word0 & filterData1.word1) && (filterData1.word0 & filterData0.word1))
+	if (PxFilterObjectIsTrigger(attributes0) || PxFilterObjectIsTrigger(attributes1))
 	{
-		pairFlags = PxPairFlag::eCONTACT_DEFAULT
+		pairFlags = PxPairFlag::eTRIGGER_DEFAULT
 			| PxPairFlag::eNOTIFY_TOUCH_FOUND
-			| PxPairFlag::eNOTIFY_TOUCH_LOST
-			| PxPairFlag::eNOTIFY_TOUCH_PERSISTS;
-
-		// 02/21
-		// HitPoint 추출을 위한 Flag 설정
-		// Enter에서만 추출하기 위해 사용
-		// CPhysics_FilterEventCallback::onContact에서 Flag 체크후 GAMEOBJECTINFO에 넣는중
-		if (PHYSICSFILTERGROUP::IsAttackPair(filterData0.word0, filterData1.word0))
-			pairFlags |= PxPairFlag::eNOTIFY_CONTACT_POINTS;
+			| PxPairFlag::eNOTIFY_TOUCH_LOST;
 
 		return PxFilterFlag::eDEFAULT;
 	}
 
-	return PxFilterFlag::eSUPPRESS;
+	if (PxFilterObjectIsKinematic(attributes0) || PxFilterObjectIsKinematic(attributes1))
+	{
+		pairFlags = PxPairFlag::eDETECT_DISCRETE_CONTACT
+			| PxPairFlag::eNOTIFY_TOUCH_FOUND
+			| PxPairFlag::eNOTIFY_TOUCH_LOST
+			| PxPairFlag::eNOTIFY_TOUCH_PERSISTS;
+
+		return PxFilterFlag::eDEFAULT;
+	}
+
+	pairFlags = PxPairFlag::eCONTACT_DEFAULT
+		| PxPairFlag::eNOTIFY_TOUCH_FOUND
+		| PxPairFlag::eNOTIFY_TOUCH_LOST
+		| PxPairFlag::eNOTIFY_TOUCH_PERSISTS;
+
+	return PxFilterFlag::eDEFAULT;
 }
 
 void CPhysics_Module::Check_Leak()
@@ -460,7 +476,7 @@ void CPhysics_Module::Free()
 	Safe_Release(m_pActorFactory);
 	Safe_Release(m_pShapeFactory);
 	Safe_Release(m_pUtils);
-	
+
 	PX_RELEASE(m_pScene);
 	Safe_Release(m_pResourceManager);
 

@@ -2,6 +2,7 @@
 #include "Boss_Xibi_Body.h"
 #include "ComputeShader.h"
 #include "Model.h"
+#include "EffectHandler.h"
 #include "GameInstance.h"
 
 CBoss_Xibi_Body::CBoss_Xibi_Body(ID3D11Device* pDevice, ID3D11DeviceContext* pDeviceContext)

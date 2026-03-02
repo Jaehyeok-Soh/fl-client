@@ -26,10 +26,17 @@ private:
 	DTO::MONSTERSTATE_DESC LoadStateFile(std::filesystem::path path, _uint iLevelIndex);
 	HRESULT LoadStates(wstring stateTag, _uint iLevelIndex);
 
+	void Update_CooldownTime(_float fTimeDelta);
+
 public:
+	virtual void Update(const _float fTimeDelta);
+
 	CControlContext* GetOwnerControlContext() { return m_pOwnerControlContext; }
 
 	unordered_map<string, _int>& GetUmapState() { return m_umapState; }
+
+	_bool IsStateReady(_uint iIdx);
+
 private:
 	ID3D11Device* m_pDevice = { nullptr };
 	ID3D11DeviceContext* m_pDeviceContext = { nullptr };

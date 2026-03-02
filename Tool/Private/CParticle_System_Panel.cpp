@@ -306,6 +306,16 @@ void CParticle_System_Panel::Draw_ParticleSystem(CToolObject* pGo)
 			ImGui::TreePop();
 		}
 
+		if (ImGui::Checkbox("UseLifeDissolve##LifeDissolve", &m_tCurrentDesc.Data._Effect_Tool_UseLifeDissolve))
+		{
+			if (m_tCurrentDesc.Data._Effect_Tool_UseLifeDissolve)
+				Engine_Utils::Add_Flag(m_tCurrentDesc.Data._Effect_RenderFlag, 1 << 13); // SCROLL
+			else
+				Engine_Utils::RemoveHard_Flag(m_tCurrentDesc.Data._Effect_RenderFlag, 1 << 13);
+
+			m_bModified |= true;
+		}
+
 		ImGui::AlignTextToFramePadding();
 		if (ImGui::TreeNode("Random Seed Settings##ParticleSystem"))
 		{
@@ -380,7 +390,7 @@ void CParticle_System_Panel::Draw_ParticleSystem(CToolObject* pGo)
 				static Vec3 StartRotation = { 0.f, 0.f, 0.f };
 
 				ImGui::SeparatorText("Rotation 3D Convert To Radian - X Y Z - ");
-				m_bModified |= ImGui::DragFloat3("##StartRotationX_3D", &m_tCurrentDesc.Data._Effect_StartRotation.x, 0.1f, 0.f, 360.f); ImGui::Spacing();
+				m_bModified |= ImGui::DragFloat3("##StartRotationX_3D", &m_tCurrentDesc.Data._Effect_StartRotation.x, 0.1f, -360.f, 360.f); ImGui::Spacing();
 
 				CEffectObject* pInstance = static_cast<Effect*>(pGo)->Get_Part<CEffectObject>(m_iSelectPartsIndex);
 				CTransform* pTransform = pInstance->Get_Component<CTransform>();
@@ -1555,9 +1565,9 @@ void CParticle_System_Panel::Draw_Sprite_Texture(CToolObject* pGo)
 
 			if (ImGui::TreeNodeEx(label, ImGuiTreeNodeFlags_FramePadding | ImGuiTreeNodeFlags_DefaultOpen))
 			{
-				// 1. Sprite Mode 결정 (0: None, 1: Fixed, 2: Animation)
+				// 1. Sprite Mode 결정
 				const char* items[] = { "None", "Fixed Index", "Animation" };
-				int iMode = (int)pData.x; // 0, 1, 2
+				int iMode = (int)pData.x;
 
 				ImGui::Text("Sprite Mode"); ImGui::SameLine();
 				ImGui::SetNextItemWidth(-1);
@@ -1567,26 +1577,37 @@ void CParticle_System_Panel::Draw_Sprite_Texture(CToolObject* pGo)
 					m_bModified = true;
 				}
 
-				if (iMode > 0) // Fixed(1) 또는 Animation(2) 일 때만 설정창 활성화
+				if (iMode > 0)
 				{
 					ImGui::PushStyleVar(ImGuiStyleVar_ChildRounding, 5.0f);
-					// 모드에 따라 UI 높이를 살짝 조절 (Fixed는 속도가 필요 없으므로)
-					float childHeight = (iMode == 2) ? 110.0f : 80.0f;
+					float childHeight = (iMode == 2) ? 120.0f : 90.0f; // InputInt 사용 시 높이를 약간 더 확보
 					ImGui::BeginChild("Settings", ImVec2(0, childHeight), true);
 
-					// 2. 타일 수 설정 (y: Cols, z: Rows) - 셰이더 함수 인자와 맞춤
 					int iCol = (int)pData.y;
 					int iRow = (int)pData.z;
 
+					// --- Grid Columns (DragInt -> InputInt로 교체) ---
 					ImGui::Columns(2, nullptr, false);
 					ImGui::Text("Grid Columns"); ImGui::NextColumn();
 					ImGui::SetNextItemWidth(-1);
-					if (ImGui::DragInt("##Cols", &iCol, 0.1f, 1, 64)) { pData.y = (float)iCol; m_bModified = true; }
+					// InputInt는 +, - 버튼을 생성하며 직접 입력도 가능합니다.
+					if (ImGui::InputInt("##Cols", &iCol, 1)) // 1씩 증가/감소 스텝 설정
+					{
+						if (iCol < 1) iCol = 1; if (iCol > 100) iCol = 100; // 범위 제한
+						pData.y = (float)iCol;
+						m_bModified = true;
+					}
 					ImGui::NextColumn();
 
+					// --- Grid Rows (DragInt -> InputInt로 교체) ---
 					ImGui::Text("Grid Rows"); ImGui::NextColumn();
 					ImGui::SetNextItemWidth(-1);
-					if (ImGui::DragInt("##Rows", &iRow, 0.1f, 1, 64)) { pData.z = (float)iRow; m_bModified = true; }
+					if (ImGui::InputInt("##Rows", &iRow, 1))
+					{
+						if (iRow < 1) iRow = 1; if (iRow > 100) iRow = 100;
+						pData.z = (float)iRow;
+						m_bModified = true;
+					}
 					ImGui::Columns(1);
 
 					ImGui::Separator();
@@ -1598,8 +1619,11 @@ void CParticle_System_Panel::Draw_Sprite_Texture(CToolObject* pGo)
 						int iMaxIdx = (iCol * iRow) - 1;
 						ImGui::Text("Target Index"); ImGui::SameLine();
 						ImGui::SetNextItemWidth(-1);
-						if (ImGui::SliderInt("##Index", &iFixedIdx, 0, max(0, iMaxIdx)))
+						// Slider 대신 InputInt 사용 (인덱스 조절용)
+						if (ImGui::InputInt("##Index", &iFixedIdx, 1))
 						{
+							if (iFixedIdx < 0) iFixedIdx = 0;
+							if (iFixedIdx > iMaxIdx) iFixedIdx = max(0, iMaxIdx);
 							pData.w = (float)iFixedIdx;
 							m_bModified = true;
 						}
@@ -1608,8 +1632,10 @@ void CParticle_System_Panel::Draw_Sprite_Texture(CToolObject* pGo)
 					{
 						ImGui::Text("Anim Speed"); ImGui::SameLine();
 						ImGui::SetNextItemWidth(-1);
-						if (ImGui::DragFloat("##Speed", &pData.w, 0.05f, 0.f, 100.f, "%.2f x"))
+						// 속도의 경우 소수점 단위 조절이 필요하므로 InputFloat 사용
+						if (ImGui::InputFloat("##Speed", &pData.w, 0.05f, 0.5f, "%.2f x"))
 						{
+							if (pData.w < 0.f) pData.w = 0.f;
 							m_bModified = true;
 						}
 					}
@@ -1637,6 +1663,9 @@ void CParticle_System_Panel::Draw_Sprite_Texture(CToolObject* pGo)
 
 	// Glow
 	DrawSpriteSlotUI("Glow Texture Sprite", m_tCurrentDesc.Data._Effect_GlowTexture_SpriteInfo);
+
+	// Mask
+	DrawSpriteSlotUI("Mask Texture Sprite", m_tCurrentDesc.Data._Effect_MaskTexture_SpriteInfo);
 
 	// Curve
 	DrawSpriteSlotUI("Curve Texture Sprite", m_tCurrentDesc.Data._Effect_CurveTexture_SpriteInfo);

@@ -17,7 +17,7 @@
 
 #include "GameInstance.h"
 
-
+#include "MyStat.h"
 
 CMonster_Base::CMonster_Base(ID3D11Device* pDevice, ID3D11DeviceContext* pDeviceContext)
 	: Super(pDevice, pDeviceContext), m_eMonsterType{ EMonster_Type::END}
@@ -101,6 +101,9 @@ void CMonster_Base::Update_Late(const _float fTimeDelta)
 
 	if (Get_Component <CPhysicsAttackOverlap>())
 		Get_Component<CPhysicsAttackOverlap>()->Update(fTimeDelta);
+
+	if (Get_Component<CPhysicsCCT>())
+		Get_Component<CPhysicsCCT>()->Update(fTimeDelta);
 }
 
 void CMonster_Base::Ready_Before_Render(const _float fTimeDelta)
@@ -181,6 +184,19 @@ void CMonster_Base::OnTrigger_Exit(_uint iMyColliderLayer, _uint iOtherLayer, CG
 _bool CMonster_Base::On_Hit(const HIT_DESC& hitDesc)
 {
 	Get_Component<CMonsterControlContext>()->Set_HitDesc(hitDesc);
+
+	auto myStat = Get_Component<CMyStat>();
+	if (myStat)
+	{
+		myStat->Add_Health(-hitDesc.attackDesc.pAttackPreset->tCombat.fBaseDamage);
+
+		auto vHp = myStat->Get_Stat_Vec2(CMyStat::STAT_TYPE::HP);
+		if (vHp.x <= 0)
+		{
+			Get_Component<CMonsterControlContext>()->Set_Dead();
+			m_bDead = true;
+		}
+	}
 
 #ifdef _DEBUG
 	wstring infoHeader(L"Monster Hit ");
@@ -364,6 +380,7 @@ HRESULT CMonster_Base::Create_Mosnter(EMonster_Type eCreateMonsterType, _uint iF
 		////////////////////
 		monsterDesc.wstrPartBodyPrototypeTag		= g_wszMonster_Boomer_Body_Prototype_Tag;
 		monsterDesc.wstrBodyModelTag				= g_wszMonster_Boomer_Model_Prototype_Tag;
+		monsterDesc.wstrAttackOverlapPrototypeTag	= g_wszMonster_Boomer_AttackOverlap_Prototype_Tag;
 		monsterDesc.wstrMonsterStateTag				= g_wszMonster_Boomer_State_Tag;
 
 		{

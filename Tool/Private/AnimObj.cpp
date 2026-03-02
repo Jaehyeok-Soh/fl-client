@@ -4,6 +4,7 @@
 #include "Model.h"
 #include "Shader.h"
 #include "PhysicsCCT.h"
+#include "Picking_ToolManager.h"
 #include "GameInstance.h"
 
 #include "ComputeShader.h"
@@ -66,6 +67,7 @@ void CAnimObj::Update(const _float fTimeDelta)
 void CAnimObj::Update_Late(const _float fTimeDelta)
 {
 	Super::Update_Late(fTimeDelta);
+	CPicking_ToolManager::GetInstance()->Remove_PickingGroup(this);
 }
 
 void CAnimObj::Ready_Before_Render(const _float fTimeDelta)

@@ -13,7 +13,7 @@ public:
 		_int iAnimIdx = {};
 		_bool bKeyInput = {false};
 		_float fKeyCoolTime = {0.f};
-
+		
 		CGun* pOwnerGun = { nullptr };
 	}Skill_DESC;
 

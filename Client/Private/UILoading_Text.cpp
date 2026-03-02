@@ -42,10 +42,7 @@ HRESULT CUILoading_Text::Initialize(void* pArg)
 	return S_OK;
 }
 
-HRESULT CUILoading_Text::Attach_Personal_Info()
-{
-	return S_OK;
-}
+
 
 HRESULT CUILoading_Text::Awake(const _uint iCurrentLevelID)
 {
@@ -122,6 +119,11 @@ HRESULT CUILoading_Text::Bind_ShaderResources()
 		return E_FAIL;
 	if (FAILED(Super::Bind_ShaderResources()))
 		return E_FAIL;
+	return S_OK;
+}
+
+HRESULT CUILoading_Text::Attach_Personal_Info()
+{
 	return S_OK;
 }
 

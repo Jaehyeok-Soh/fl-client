@@ -36,6 +36,8 @@ texture2D g_EffectTexture;
 #define SCROLL_DISSOLVE 1 << 10
 #define SCROLL_GLOW 1 << 11
 #define SCROLL_CURVE 1 << 12
+
+#define USE_LIFEDISSOLVE 1 << 13
         
 // SamplerState Flag
 #define LINEARSAMPLER 1 << 0
@@ -140,6 +142,11 @@ bool HasTextureScroll(uint Flag)
 bool HasTextureSprite(float4 spriteInfo)
 {
     return spriteInfo.x > 0.5f;
+}
+
+bool HasLifeDissolve()
+{
+    return (g_Effect.g_RenderFlags & USE_LIFEDISSOLVE) != 0;
 }
 
 // ======== 연산용 함수들 ============
@@ -354,8 +361,6 @@ float4 SceneTextureSample(float2 UV, uint Flag)
         return g_RenderTargetSceneHDRCopyTexture.Sample(LinearClampSampler, UV);
 }
 
-
-
 // =========== VS In  ==============
 
 
@@ -391,6 +396,11 @@ void GS_Texture(point VS_OUT_POS_GS_PARTICLE In[1], inout TriangleStream<GS_OUT_
     // 1. 빌보드 플래그가 켜진 경우 (카메라 응시)
     if (HasBillboard())
     {
+        matrix matInst = INSTANCE_OUTPUT[In[0].vInstID].matTransform;
+        matrix matWorld = mul(matInst, W);
+        
+        matrix BillboardWorld = (matrix) 0;
+        
         // 카메라와의 방향 벡터(Look) 계산
         float3 vLook = normalize(CameraPosition() - In[0].vPosition.xyz);
         
@@ -398,7 +408,8 @@ void GS_Texture(point VS_OUT_POS_GS_PARTICLE In[1], inout TriangleStream<GS_OUT_
         vRight = normalize(cross(float3(0.f, 1.f, 0.f), vLook));
         
         // 생성된 Right와 Look을 외적하여 수직 Up 축 생성
-        vUp = normalize(cross(vLook, vRight));
+        vUp = normalize(cross(vLook, vRight)); // 그냥 y축에 회전된 행렬 곱하기
+        
     }
     // 2. 빌보드 플래그가 꺼진 경우 (월드/인스턴스 행렬 회전 반영)
     else
@@ -648,34 +659,21 @@ float4 PS_Texture(GS_OUT_EFFECT_PARTICLE In) : SV_TARGET0
     
     if (Has(g_Effect.g_TextureFlags, CURVETEXTURE))
     {
-        if (HasTextureScroll(SCROLL_CURVE))
-        {
-            float2 scrolledUV = In.vUV + g_Effect.g_UVOffset;
-            scrolledUV += g_Effect.g_ScrollOffset * g_Effect.CurveTexture_ScrollWeight;
-            CurveSample = DissolveTextureSample(Get90DegreeRotatedUV(scrolledUV, g_Effect.g_RotationFlags, CURVETEXTURE));
-            CurvePowerStrength = CurveSample.r;
-            CurvePowerStrength *= 3.f;
-        }
-        else if (HasTextureSprite(g_Effect.CurveTexture_SpriteInfo))
+        if (HasTextureSprite(g_Effect.CurveTexture_SpriteInfo))
         {
             float2 SpriteUV = GetStaticSpriteUV(In.vUV, g_Effect.CurveTexture_SpriteInfo);
-            SpriteUV.x /= 4.0f;
-            
-            // ㅁ ㅁ ㅁ 형태의 구역으로 나누었다면 3번째 구역부터 1번째 구역으로 스크롤을 하자.
-            // 스크롤이 될 변수는 lifeRatio
-            float scrollOffset = lerp(3.0f / 4.0f, 0.0f, LifeRatio);
-            
-            SpriteUV.x += scrollOffset;
-            
+
+            SpriteUV.x += g_Effect.g_ScrollOffset * g_Effect.CurveTexture_ScrollWeight;
+           
             CurveSample = CurveTextureSample(Get90DegreeRotatedUV(SpriteUV, g_Effect.g_RotationFlags, CURVETEXTURE));
             CurvePowerStrength = CurveSample.r;
-            CurvePowerStrength *= 3.f;
+            CurvePowerStrength *= 1.6f;
         }
         else
         {
             CurveSample = CurveTextureSample(Get90DegreeRotatedUV(In.vUV, g_Effect.g_RotationFlags, CURVETEXTURE));
             CurvePowerStrength = CurveSample.r;
-            CurvePowerStrength *= 3.f;
+            CurvePowerStrength *= 1.6f;
         }
 
     }
@@ -692,6 +690,8 @@ float4 PS_Texture(GS_OUT_EFFECT_PARTICLE In) : SV_TARGET0
     float lifeAlpha = 1.0f - LifeRatio;
     float finalAlpha = DiffuseSample.a * GlowSample.r * MaskSample.r * dissolveMask * g_Effect.g_EffectColor.a /** lifeAlpha*/;
 
+    if (HasLifeDissolve())
+        finalAlpha *= lifeAlpha;
 
     // 7. 휘도 컷팅 (깔끔한 마무리)
     //float luminance = dot(finalRGB, float3(0.2126f, 0.7152f, 0.0722f));

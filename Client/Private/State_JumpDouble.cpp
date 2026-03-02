@@ -63,7 +63,7 @@ HRESULT CState_JumpDouble::End()
 
 	Set_RootMotion_Apply(true);
 
-	Set_DoubleJump(true);
+	Set_DoubleJumpCount(true);
 
 	return S_OK;
 }

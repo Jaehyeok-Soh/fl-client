@@ -13,6 +13,7 @@ public:
 	typedef struct tagComboStateDesc : public CStateBase_Player::PLAYER_STATEBASE_DESC
 	{
 		Vec4 vCombo_CheckTimes = Vec4::Zero;
+		_float fSlide_CheckTime = { 0.f };
 	}PLAYER_COMBOBASE_DESC;
 
 protected:
@@ -29,9 +30,10 @@ public:
 
 protected:
 	std::array<_float, 4>		m_ComboTimes; // 4번째 콤보에서는 다음 콤보를 받지 않음
+	_float		m_fSlide_KeyCoolTime = { 0.f };
 	_bool		m_bComboTime	= { false };
 	_bool		m_bNextCombo	= { false };
-
+	
 	_uint		m_iComboCount	= { 1 };
 
 protected:

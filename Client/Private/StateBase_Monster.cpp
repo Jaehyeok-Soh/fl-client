@@ -15,8 +15,9 @@
 #include "Engine_Utils.h"
 #include "GameInstance.h"
 
-CStateBase_Monster::CStateBase_Monster(CActionState* pOwnerComponent, const string& strName)
-	: Super(pOwnerComponent, strName)
+CStateBase_Monster::CStateBase_Monster(CActionState* pOwnerComponent, const string& strName, _uint iStateIndex)
+	: Super(pOwnerComponent, strName),
+	m_iThisStateIndex(iStateIndex)
 {
 }
 
@@ -44,6 +45,7 @@ HRESULT CStateBase_Monster::Initialize(void* pArg)
 
 	m_tStateCoolDownTime.bCountTime = m_pDesc->tStateCoolDownTime.bCountTime;
 	m_tStateCoolDownTime.bTimeReset = m_pDesc->tStateCoolDownTime.bTimeReset;
+	m_tStateCoolDownTime.fTimeAcc = m_pDesc->tStateCoolDownTime.fMaxTime;
 	m_tStateCoolDownTime.fMaxTime = m_pDesc->tStateCoolDownTime.fMaxTime;
 	m_tStateCoolDownTime.fMinTime = m_pDesc->tStateCoolDownTime.fMinTime;
 
@@ -89,6 +91,8 @@ HRESULT CStateBase_Monster::Start(void* pArg, _bool bForce)
 	if (FAILED(Super::Start(pArg, bForce)))
 		return E_FAIL;
 
+	Update_CooldownTime(0.f, true);
+
 	return S_OK;
 }
 
@@ -125,7 +129,31 @@ HRESULT CStateBase_Monster::End()
 	if (FAILED(Super::End()))
 		return E_FAIL;
 
+	if (m_tStateLifeTime.bTimeReset)
+		m_tStateLifeTime.fTimeAcc = 0.f;
+
 	return S_OK;
+}
+
+void CStateBase_Monster::Update_Time(TIME_COUNTER timer, _float fTimeDelta)
+{
+	if (timer.bCountTime)
+		timer.CountTime(fTimeDelta);
+}
+
+void CStateBase_Monster::Update_CooldownTime(_float fTimeDelta, _bool bEntryStart)
+{
+	if (m_tStateCoolDownTime.bCountTime)
+	{
+		if (bEntryStart)
+			m_tStateCoolDownTime.fTimeAcc = 0.f;
+		else if(m_tStateCoolDownTime.fTimeAcc != m_tStateCoolDownTime.fMaxTime)
+		{
+			m_tStateCoolDownTime.fTimeAcc += fTimeDelta;
+			if (m_tStateCoolDownTime.fTimeAcc >= m_tStateCoolDownTime.fMaxTime)
+				m_tStateCoolDownTime.fTimeAcc = m_tStateCoolDownTime.fMaxTime;
+		}
+	}
 }
 
 void CStateBase_Monster::Change_MonsterState(_int eKey)
@@ -135,6 +163,14 @@ void CStateBase_Monster::Change_MonsterState(_int eKey)
 	Request_Change_State(iNextState, &m_tNextStateDesc);
 
 	/* 플레이어가 이런 state를 이런 애니메이션으로 바꿨다 */
+}
+
+_bool CStateBase_Monster::IsCooldownTimeSatisfy()
+{
+	if (!m_tStateCoolDownTime.bCountTime)
+		return true;
+
+	return m_tStateCoolDownTime.fTimeAcc == m_tStateCoolDownTime.fMaxTime;
 }
 
 _bool CStateBase_Monster::Has_ChangeState(_int eKey)
@@ -215,18 +251,6 @@ HRESULT CStateBase_Monster::Bind_Transition(vector<DTO::STATE_TRANSITION>& trans
 			m_vecCondition.push_back(bound);
 			trans.vecConditionIdx.push_back(idx);
 		}
-
-		// 조건 id 매핑 = 폐기
-		// 왜냐하면 같은 condition 이름이여도 tParam이 달라지기때문에 정의가 달라짐
-		//trans.vecConditionIdx.reserve(trans.vecCondition.size());
-		//for (auto& cond : trans.vecCondition)
-		//{
-		//	auto iter = m_umapCondition.find(cond);
-		//	if (iter == m_umapCondition.end())
-		//		continue;
-
-		//	trans.vecConditionIdx.push_back((*iter).second);
-		//}
 
 		// 전이 상태 id 매핑
 		for (auto& value : trans.mapRandomStatePool)
@@ -319,7 +343,17 @@ _bool CStateBase_Monster::Check_Transition(vector<DTO::STATE_TRANSITION>& transi
 			if (trans.fTotalWeight <= 0.f || trans.mapRandomStatePoolIdx.empty())
 				continue;
 
-			_int total = (_int)trans.fTotalWeight;
+			//_int total = (_int)trans.fTotalWeight;
+			//if (total <= 0)
+			//	continue;
+
+			_int total = {};
+			for (auto& to : trans.mapRandomStatePoolIdx)
+			{
+				if (static_cast<CMonsterActionState*>(m_pOwnerStateComp)->IsStateReady(to.first) == true)
+					total += (_int)to.second;
+			}
+
 			if (total <= 0)
 				continue;
 
@@ -328,11 +362,41 @@ _bool CStateBase_Monster::Check_Transition(vector<DTO::STATE_TRANSITION>& transi
 			_float curWeight = {};
 			for (auto& to : trans.mapRandomStatePoolIdx)
 			{
+				if (static_cast<CMonsterActionState*>(m_pOwnerStateComp)->IsStateReady(to.first) == false)
+					continue;
+
 				curWeight += to.second;
 				if (randomValue < curWeight)
 				{
 					Change_MonsterState(to.first); // 다음 state로 change
-					return true;
+#ifdef _DEBUG
+					if (m_iThisStateIndex != to.first)
+					{
+						string toState{};
+						for (auto pool : m_umapState)
+						{
+							if (pool.second == to.first)
+							{
+								toState = pool.first;
+							}
+						}
+						wstring logInfo{};
+						wstring separate{ L"\n//////////////////////////" };
+						wstring owneName = m_pOwnerStateComp->Get_Owner()->Get_WName();
+						wstring toInfo{ L"\nchange state to : " };
+						wstring fromInfo{ L"\nfrom state : " };
+
+						logInfo += separate;
+						logInfo += (L"\ncharacter name : [" + owneName + L"]");
+						logInfo += toInfo;
+						logInfo += Engine_Utils::ToWString(toState);
+						logInfo += fromInfo;
+						logInfo += Engine_Utils::ToWString(m_strName);
+						logInfo += separate;
+						CLOG_INFO(logInfo);
+					}
+#endif // _DEBUG
+					return m_iThisStateIndex != to.first;
 				}
 			}
 		}

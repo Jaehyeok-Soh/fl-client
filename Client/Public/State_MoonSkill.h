@@ -18,6 +18,9 @@ public:
 	virtual void	Update(const _float fTimeDelta) override;
 	virtual HRESULT End() override;
 
+public:
+	virtual _uint	Get_Capabilities() const override;
+
 private:
 	void SkillE_Update(const _float fTimeDelta);
 	void SkillQ_Update(const _float fTimeDelta);

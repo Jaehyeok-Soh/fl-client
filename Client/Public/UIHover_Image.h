@@ -12,7 +12,6 @@ public:
 	typedef struct tagUIHoverImageDesc : public DIMAGE_DESC
 	{
 	}HOVER_IMAGE_DESC;
-
 private:
 	CUIHover_Image(ID3D11Device* pDevice, ID3D11DeviceContext* pDeviceContext);
 	CUIHover_Image(const CUIHover_Image& rhs);
@@ -22,7 +21,6 @@ public:
 	HRESULT Initialize_Prototype() override;
 	HRESULT Initialize(void* pArg) override;
 
-	HRESULT Attach_Personal_Info();
 
 public:
 	virtual HRESULT Awake(const _uint iCurrentLevelID) override;
@@ -35,8 +33,8 @@ public:
 private:
 	HRESULT Ready_Components(HOVER_IMAGE_DESC* pDesc);
 	HRESULT Bind_ShaderResources();
+	virtual HRESULT Attach_Personal_Info()override;
 
-private:
 	virtual void OnUIEvent(ETriggerEventType eEvent, CGenericUI* pSender)override;
 	virtual void Initialize_Visible_Event()override;
 	virtual void Initialize_InVisible_Event()override;

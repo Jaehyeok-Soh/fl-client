@@ -5,6 +5,14 @@
 #include "CEffectObject.h"
 #include "DataStruct_EffectEvent.h"
 #include "Engine_Utils.h"
+#include "Bounding.h"
+#include "Bounds.h"
+#include "Collider.h"
+#include "Bounding_AABB.h"
+#include "Camera.h"
+#include "CameraMan.h"
+#include "Picking_ToolManager.h"
+#include "GameInstance.h"
 
 #define MAX_EFFECTPART 10
 
@@ -33,6 +41,19 @@ HRESULT Effect::Initialize(void* pArg)
 
 	if (FAILED(Ready_PartsData(pArg)))
 		return E_FAIL;
+
+	Vec3 vMinMax[2] = {
+		Vec3(-5.5f, -5.5f, -5.5f), // Min
+		Vec3(5.5f, 5.5f, 5.5f)     // Max
+	};
+	CBounds::BOUND_COMP_DESC tBoundDesc{};
+	tBoundDesc.fRatio = 1.f;
+	tBoundDesc.pMinMax = vMinMax;
+	if (FAILED(Add_Component<CBounds>(ENUM_TO_UINT(ELevelType::STATIC), L"Prototype_Component_Bounds", &tBoundDesc)))
+		return E_FAIL;
+
+	/* Bounding Box 업데이트 , Instnace모델이면 0 0 0월드좌표로 들어가는게 맞다 */
+	Get_Component<CBounds>()->Update_BoundingDesc(Get_Component<CTransform>()->Get_WorldMatrix());
 
 	return S_OK;
 }
@@ -151,6 +172,12 @@ void Effect::Update(const _float fTimeDelta)
 		m_matCombinedWorld = Get_Component<CTransform>()->Get_WorldMatrix();
 	}
 
+	CBounds* pBounds = Get_Component<CBounds>();
+	if (pBounds != nullptr)
+	{
+		pBounds->Update_BoundingDesc(m_matCombinedWorld);
+	}
+
 	if(m_pGameInstance->Get_CurrentLevelIndex() != (ENUM_TO_UINT(ELevelType::EFFECT)))
 		IsEffectFinish();
 }
@@ -172,8 +199,18 @@ HRESULT Effect::Render()
 
 _bool Effect::Picking(OUT Vec3& vOut)
 {
-	return Super::Picking(vOut);
+	CBounds* pBounds = Get_Component<CBounds>();
+	if (pBounds == nullptr)
+		return false;
+
+	_int iDummyIndex = 0;
+	if (pBounds->IntersectWithRay_World(vOut, iDummyIndex) == false)
+		return false;
+
+	return true;
 }
+
+
 
 _bool Effect::Export_Data(DTO::ECategory eCategory, CDataDocumentBase* pDocument)
 {

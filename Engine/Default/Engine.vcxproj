@@ -273,6 +273,7 @@
     <ClCompile Include="..\Private\PhysicsCollider.cpp" />
     <ClCompile Include="..\Private\PhysicsRigidBody.cpp" />
     <ClCompile Include="..\Private\Physics_ActorFactory.cpp" />
+    <ClCompile Include="..\Private\Physics_CCTBehaviorCallback.cpp" />
     <ClCompile Include="..\Private\Physics_QueryFilterCallback.cpp" />
     <ClCompile Include="..\Private\Physics_CCTHitReport.cpp" />
     <ClCompile Include="..\Private\Physics_CCTManager.cpp" />
@@ -440,6 +441,7 @@
     <ClInclude Include="..\Public\PhysicsCollider.h" />
     <ClInclude Include="..\Public\PhysicsRigidBody.h" />
     <ClInclude Include="..\Public\Physics_ActorFactory.h" />
+    <ClInclude Include="..\Public\Physics_CCTBehaviorCallback.h" />
     <ClInclude Include="..\Public\Physics_QueryFilterCallback.h" />
     <ClInclude Include="..\Public\Physics_CCTHitReport.h" />
     <ClInclude Include="..\Public\Physics_CCTManager.h" />

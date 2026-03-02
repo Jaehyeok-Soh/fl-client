@@ -1,9 +1,12 @@
 #include "pch.h"
 #include "UIAimDot_Image.h"
 #include "Client_Defines.h"
+#include "Client_EventDefine.h"
 //=================
 // Component
 //=================
+#include "MainPlayer.h"
+#include "Gun.h"
 #include "StatCom_Player.h"
 #include "Texture.h"
 #include "Shader.h"
@@ -58,12 +61,19 @@ HRESULT CUIAimDot_Image::Attach_Personal_Info()
 		{
 			// 플레이어 에임이 적에 맞았는지
 			if (m_isHitScan)
-				m_vColorTint = Vec4{ 1.f, 0.f, 0.f, 1.f };
-			else 
-				m_vColorTint = Vec4{ 1.f, 1.f, 1.f, 1.f };
+			{
+				m_vColorTint			= Vec4{ 1.f, 0.f, 0.f, 1.f };
+				m_vGradiantColorTint	= Vec4{ 1.f, 0.f, 0.f, 1.f };
+
+			}
+			else
+			{
+				m_vColorTint			= Vec4{ 1.f, 1.f, 1.f, 1.f };
+				m_vGradiantColorTint	= Vec4{ 1.f, 1.f, 1.f, 1.f };
+			}
 		}
-		break;
 	}
+	break;
 	case DTO::EUIDImageSubClassType::BATTLE_AIMDOT_CROSSHAIR_RIGHT:
 	case DTO::EUIDImageSubClassType::BATTLE_AIMDOT_CROSSHAIR_BOTTOM:
 	case DTO::EUIDImageSubClassType::BATTLE_AIMDOT_CROSSHAIR_LEFT:
@@ -83,6 +93,18 @@ HRESULT CUIAimDot_Image::Attach_Personal_Info()
 				m_isSpreadStart = true;
 				m_isSpreadEnd = false;
 			}
+
+			if (m_isHitScan)
+			{
+				m_vColorTint			= Vec4{ 1.f, 0.f, 0.f, 1.f };
+				m_vGradiantColorTint	= Vec4{ 1.f, 0.f, 0.f, 1.f };
+
+			}
+			else
+			{
+				m_vColorTint			= Vec4{ 1.f, 1.f, 1.f, 1.f };
+				m_vGradiantColorTint	= Vec4{ 1.f, 1.f, 1.f, 1.f };
+			}
 		}
 		// 지금 칼 들고 있는데, 혹은 아무것도 안 들고 있는데
 		else if (Engine_Utils::Has_Flag(m_pPlayerStatCom->Get_AttState(), CStatCom_Player::Attack_State::Melee))
@@ -94,7 +116,7 @@ HRESULT CUIAimDot_Image::Attach_Personal_Info()
 			}
 		}
 	}
-		break;
+	break;
 	case DTO::EUIDImageSubClassType::BATTLE_AIM_HIT:
 		break;
 	case DTO::EUIDImageSubClassType::BATTLE_AIM_LOCK:
@@ -124,23 +146,37 @@ HRESULT CUIAimDot_Image::Awake(const _uint iCurrentLevelID)
 	if (nullptr == m_pPlayerStatCom)
 		return E_FAIL;
 
+	auto* pPlayer = static_cast<CMainPlayer*>(pResult);
+	if (nullptr == pPlayer)
+		return E_FAIL;
+
+	m_pGunParts = pPlayer->Get_Part<CGun>(ENUM_TO_UINT(CPlayer::Part::GUN));
+	if (nullptr == m_pGunParts)
+		return E_FAIL;
+
 	switch (m_eDImageSubClass)
 	{
 	case DTO::EUIDImageSubClassType::BATTLE_UI_BEGIN:
 		break;
 	case DTO::EUIDImageSubClassType::BATTLE_AIMDOT_COMMON:
+		m_pGameInstance->Subscribe<BOSS_STAGING_EVENT_START>([this]() { this->Set_Invisible(); });
+		m_pGameInstance->Subscribe<BOSS_STAGING_EVENT_END>([this]() { this->Set_Visible(); });
 		break;
 	case DTO::EUIDImageSubClassType::BATTLE_AIMDOT_CROSSHAIR_TOP:
 		m_vMaxOffset = Vec2{ 0.f, -10.f };
+		m_pGameInstance->Subscribe<BOSS_STAGING_EVENT_START>([this]() { this->Set_Invisible(); });
 		break;
 	case DTO::EUIDImageSubClassType::BATTLE_AIMDOT_CROSSHAIR_RIGHT:
 		m_vMaxOffset = Vec2{ 10.f, 0.f };
+		m_pGameInstance->Subscribe<BOSS_STAGING_EVENT_START>([this]() { this->Set_Invisible(); });
 		break;
 	case DTO::EUIDImageSubClassType::BATTLE_AIMDOT_CROSSHAIR_BOTTOM:
 		m_vMaxOffset = Vec2{ 0.f, 10.f };
+		m_pGameInstance->Subscribe<BOSS_STAGING_EVENT_START>([this]() { this->Set_Invisible(); });
 		break;
 	case DTO::EUIDImageSubClassType::BATTLE_AIMDOT_CROSSHAIR_LEFT:
 		m_vMaxOffset = Vec2{ -10.f, 0.f };
+		m_pGameInstance->Subscribe<BOSS_STAGING_EVENT_START>([this]() { this->Set_Invisible(); });
 		break;
 	case DTO::EUIDImageSubClassType::BATTLE_AIM_HIT:
 		break;
@@ -152,6 +188,7 @@ HRESULT CUIAimDot_Image::Awake(const _uint iCurrentLevelID)
 	default:
 		return E_FAIL;
 	}
+
 	return S_OK;
 }
 
@@ -173,8 +210,10 @@ void CUIAimDot_Image::Update(const _float fTimeDelta)
 	{
 		m_pPlayerStatCom->Set_AttackState(CStatCom_Player::Attack_State::Melee, false);
 		m_pPlayerStatCom->Set_AttackState(CStatCom_Player::Attack_State::Gun, true);
-		m_isShootingTrigger = true;
 	}
+
+	if(m_pGunParts->Get_isFire())
+		m_isShootingTrigger = true;
 
 	Super::Update(fTimeDelta);
 }

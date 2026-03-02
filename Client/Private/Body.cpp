@@ -78,6 +78,9 @@ HRESULT CBody::Awake(const _uint iCurrentLevelIndex)
 
 	CModel* pMyModel = Get_Component<CModel>();
 
+	// mix 값 초기화를 위함
+	pMyModel->Set_MixAnim_ResetSize(0);
+
 	//Face_Smile
 	_uint iFaceAnimIdx					= pMyModel->Get_AnimationIndex(L"Animation_PlayerMoon_Face_LipSync");
 	_uint iJumpAnimIdx = pMyModel->Get_AnimationIndex(L"Animation_PlayerMoon_FirstJump_InplaceStart");
@@ -87,6 +90,7 @@ HRESULT CBody::Awake(const _uint iCurrentLevelIndex)
 
 	pMyModel->Set_MixAnim(true);
 	pMyModel->Set_MixAnim_ResetSize(2);
+
 	pMyModel->Make_MixRatio(iFaceAnimIdx, vecMix, m_pBoneAnimMixCS);
 	pMyModel->Set_MixAnim_AnimIndex(0, iFaceAnimIdx);
 

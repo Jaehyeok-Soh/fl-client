@@ -107,6 +107,10 @@ enum class EUISubClassType
 
 	PLAYER_AMMO_PROGRESS,
 
+	BOSS_STAT_BEGIN,
+	BOSS_STAT_HP_PROGRESS,
+	BOSS_STAT_ARMOR_PROGRESS,
+	BOSS_STAT_END,
 
 	END
 };
@@ -115,69 +119,85 @@ inline std::string UISubClasstypeToString(EUISubClassType eType)
 {
 	switch (eType)
 	{
-	case EUISubClassType::NONE_OWNER:			return "NONE_OWNER";
+	case EUISubClassType::NONE_OWNER:				return "NONE_OWNER";
 
-	case EUISubClassType::PLAYER_STAT_BEGIN:	return "PLAYER_STAT_BEGIN";
-	case EUISubClassType::PLAYER_HP:			return "PLAYER_HP";
-	case EUISubClassType::PLAYER_ARMOR:			return "PLAYER_ARMOR";
-	case EUISubClassType::PLAYER_ENERGY:		return "PLAYER_ENERGY";
-	case EUISubClassType::PLAYER_LV:			return "PLAYER_LV";
-	case EUISubClassType::PLAYER_STAT_END:		return "PLAYER_STAT_END";
+	case EUISubClassType::PLAYER_STAT_BEGIN:		return "PLAYER_STAT_BEGIN";
+	case EUISubClassType::PLAYER_HP:				return "PLAYER_HP";
+	case EUISubClassType::PLAYER_ARMOR:				return "PLAYER_ARMOR";
+	case EUISubClassType::PLAYER_ENERGY:			return "PLAYER_ENERGY";
+	case EUISubClassType::PLAYER_LV:				return "PLAYER_LV";
+	case EUISubClassType::PLAYER_STAT_END:			return "PLAYER_STAT_END";
 
-	case EUISubClassType::LOADING_PROGRESS:		return "LOADING_PROGRESS";
+	case EUISubClassType::LOADING_PROGRESS:			return "LOADING_PROGRESS";
 
-	case EUISubClassType::MONSTER_STAT_BEGIN:	return "MONSTER_STAT_BEGIN";
-	case EUISubClassType::MONSTER_HP:			return "MONSTER_HP";
-	case EUISubClassType::MONSTER_ARMOR:		return "MONSTER_ARMOR";
-	case EUISubClassType::MONSTER_STAT_END:		return "MONSTER_STAT_END";
+	case EUISubClassType::MONSTER_STAT_BEGIN:		return "MONSTER_STAT_BEGIN";
+	case EUISubClassType::MONSTER_HP:				return "MONSTER_HP";
+	case EUISubClassType::MONSTER_ARMOR:			return "MONSTER_ARMOR";
+	case EUISubClassType::MONSTER_STAT_END:			return "MONSTER_STAT_END";
 	case EUISubClassType::PLAYER_AMMO_PROGRESS:		return "PLAYER_AMMO_PROGRESS";
 
-	case EUISubClassType::END:					return "END";
+	case EUISubClassType::BOSS_STAT_BEGIN:			return "BOSS_STAT_BEGIN";
+	case EUISubClassType::BOSS_STAT_HP_PROGRESS:	return "BOSS_STAT_HP_PROGRESS";
+	case EUISubClassType::BOSS_STAT_ARMOR_PROGRESS:	return "BOSS_STAT_ARMOR_PROGRESS";
+	case EUISubClassType::BOSS_STAT_END:			return "BOSS_STAT_END";
+			
+	case EUISubClassType::END:						return "END";
 	default: return "";
 	}
 }
 
 inline EUISubClassType StringToUISubClassType(const std::string& str)
 {
-	if (str == "NONE_OWNER")			return EUISubClassType::NONE_OWNER;
+	if (str == "NONE_OWNER")						return EUISubClassType::NONE_OWNER;
 
-	else if (str == "PLAYER_STAT_BEGIN")		return EUISubClassType::PLAYER_STAT_BEGIN;
-	else if (str == "PLAYER_HP")			return EUISubClassType::PLAYER_HP;
-	else if (str == "PLAYER_ARMOR")			return EUISubClassType::PLAYER_ARMOR;
-	else if (str == "PLAYER_ENERGY")		return EUISubClassType::PLAYER_ENERGY;
-	else if (str == "PLAYER_LV")			return EUISubClassType::PLAYER_LV;
-	else if (str == "PLAYER_STAT_END")		return EUISubClassType::PLAYER_STAT_END;
+	else if (str == "PLAYER_STAT_BEGIN")			return EUISubClassType::PLAYER_STAT_BEGIN;
+	else if (str == "PLAYER_HP")					return EUISubClassType::PLAYER_HP;
+	else if (str == "PLAYER_ARMOR")					return EUISubClassType::PLAYER_ARMOR;
+	else if (str == "PLAYER_ENERGY")				return EUISubClassType::PLAYER_ENERGY;
+	else if (str == "PLAYER_LV")					return EUISubClassType::PLAYER_LV;
+	else if (str == "PLAYER_STAT_END")				return EUISubClassType::PLAYER_STAT_END;
 
-	else if (str == "LOADING_PROGRESS")	return EUISubClassType::LOADING_PROGRESS;
+	else if (str == "LOADING_PROGRESS")				return EUISubClassType::LOADING_PROGRESS;
 
-	else if (str == "MONSTER_STAT_BEGIN")	return EUISubClassType::MONSTER_STAT_BEGIN;
-	else if (str == "MONSTER_HP")	return EUISubClassType::MONSTER_HP;
-	else if (str == "MONSTER_ARMOR")	return EUISubClassType::MONSTER_ARMOR;
-	else if (str == "MONSTER_STAT_END")	return EUISubClassType::MONSTER_STAT_END;
+	else if (str == "MONSTER_STAT_BEGIN")			return EUISubClassType::MONSTER_STAT_BEGIN;
+	else if (str == "MONSTER_HP")					return EUISubClassType::MONSTER_HP;
+	else if (str == "MONSTER_ARMOR")				return EUISubClassType::MONSTER_ARMOR;
+	else if (str == "MONSTER_STAT_END")				return EUISubClassType::MONSTER_STAT_END;
 
-	else if (str == "PLAYER_AMMO_PROGRESS")	return EUISubClassType::PLAYER_AMMO_PROGRESS;
+	else if (str == "PLAYER_AMMO_PROGRESS")			return EUISubClassType::PLAYER_AMMO_PROGRESS;
+
+	else if (str == "BOSS_STAT_BEGIN")				return EUISubClassType::BOSS_STAT_BEGIN;
+	else if (str == "BOSS_STAT_HP_PROGRESS")		return EUISubClassType::BOSS_STAT_HP_PROGRESS;
+	else if (str == "BOSS_STAT_ARMOR_PROGRESS")		return EUISubClassType::BOSS_STAT_ARMOR_PROGRESS;
+	else if (str == "BOSS_STAT_END")				return EUISubClassType::BOSS_STAT_END;
+	
 	else return EUISubClassType::END;
 }
 
 NLOHMANN_JSON_SERIALIZE_ENUM(EUISubClassType,
 	{
-		{EUISubClassType::NONE_OWNER,			"NONE_OWNER"},
+		{EUISubClassType::NONE_OWNER,					"NONE_OWNER"},
 
-		{EUISubClassType::PLAYER_STAT_BEGIN,	"PLAYER_STAT_BEGIN"},
-		{EUISubClassType::PLAYER_HP,			"PLAYER_HP"},
-		{EUISubClassType::PLAYER_ARMOR,			"PLAYER_ARMOR"},
-		{EUISubClassType::PLAYER_ENERGY,		"PLAYER_ENERGY"},
-		{EUISubClassType::PLAYER_LV,			"PLAYER_LV"},
-		{EUISubClassType::PLAYER_STAT_END,		"PLAYER_STAT_END"},
+		{EUISubClassType::PLAYER_STAT_BEGIN,			"PLAYER_STAT_BEGIN"},
+		{EUISubClassType::PLAYER_HP,					"PLAYER_HP"},
+		{EUISubClassType::PLAYER_ARMOR,					"PLAYER_ARMOR"},
+		{EUISubClassType::PLAYER_ENERGY,				"PLAYER_ENERGY"},
+		{EUISubClassType::PLAYER_LV,					"PLAYER_LV"},
+		{EUISubClassType::PLAYER_STAT_END,				"PLAYER_STAT_END"},
 
-		{EUISubClassType::LOADING_PROGRESS,		"LOADING_PROGRESS"},
+		{EUISubClassType::LOADING_PROGRESS,				"LOADING_PROGRESS"},
 
-		{EUISubClassType::MONSTER_STAT_BEGIN,	"MONSTER_STAT_BEGIN"},
-		{EUISubClassType::MONSTER_HP,			"MONSTER_HP"},
-		{ EUISubClassType::MONSTER_ARMOR,		"MONSTER_ARMOR" },
-		{ EUISubClassType::MONSTER_STAT_END,	"MONSTER_STAT_END"},
+		{EUISubClassType::MONSTER_STAT_BEGIN,			"MONSTER_STAT_BEGIN"},
+		{EUISubClassType::MONSTER_HP,					"MONSTER_HP"},
+		{ EUISubClassType::MONSTER_ARMOR,				"MONSTER_ARMOR" },
+		{ EUISubClassType::MONSTER_STAT_END,			"MONSTER_STAT_END"},
 
-		{ EUISubClassType::PLAYER_AMMO_PROGRESS,"PLAYER_AMMO_PROGRESS"}
+		{ EUISubClassType::PLAYER_AMMO_PROGRESS,		"PLAYER_AMMO_PROGRESS"},
+
+		{ EUISubClassType::BOSS_STAT_BEGIN,				"BOSS_STAT_BEGIN"},
+		{ EUISubClassType::BOSS_STAT_HP_PROGRESS,		"BOSS_STAT_HP_PROGRESS"},
+		{ EUISubClassType::BOSS_STAT_ARMOR_PROGRESS,	"BOSS_STAT_ARMOR_PROGRESS"},
+		{ EUISubClassType::BOSS_STAT_END,				"BOSS_STAT_END"},
 	})
 
 #pragma region 텍스트 서브 클래스
@@ -238,6 +258,18 @@ NLOHMANN_JSON_SERIALIZE_ENUM(EUISubClassType,
 	BATTLE_DAMAGE_TEXT_CRITICAL_DAMAGE,
 	BATTLE_DAMAGE_TEXT_END,
 
+	// 보스 스탯
+	BOSS_STAT_TEXT_BEGIN,
+	BOSS_STAT_TEXT_LV,
+	BOSS_STAT_TEXT_NICKNAME,
+	BOSS_STAT_TEXT_END,
+
+	BATTLE_COMBO_TEXT_BEGIN,
+	BATTLE_COMBO_COMBO_TEXT,
+	BATTLE_COMBO_CUR_COUNT_TEXT,
+	BATTLE_COMBO_NEXT_COUNT_TEXT,
+	BATTLE_COMBO_TEXT_END,
+
 	END
 };
 
@@ -292,6 +324,17 @@ NLOHMANN_JSON_SERIALIZE_ENUM(EUITextSubClassType,
 		{ EUITextSubClassType::BATTLE_DAMAGE_TEXT_CRITCAL,		  	"BATTLE_DAMAGE_TEXT_CRITCAL" },
 		{ EUITextSubClassType::BATTLE_DAMAGE_TEXT_CRITICAL_DAMAGE,	"BATTLE_DAMAGE_TEXT_CRITICAL_DAMAGE" },
 		{ EUITextSubClassType::BATTLE_DAMAGE_TEXT_END,			  	"BATTLE_DAMAGE_TEXT_END" },
+
+		{ EUITextSubClassType::BOSS_STAT_TEXT_BEGIN,			  	"BOSS_STAT_TEXT_BEGIN" },
+		{ EUITextSubClassType::BOSS_STAT_TEXT_LV,			  		"BOSS_STAT_TEXT_LV" },
+		{ EUITextSubClassType::BOSS_STAT_TEXT_NICKNAME,			  	"BOSS_STAT_TEXT_NICKNAME" },
+		{ EUITextSubClassType::BOSS_STAT_TEXT_END,			  		"BOSS_STAT_TEXT_END" },
+
+		{ EUITextSubClassType::BATTLE_COMBO_TEXT_BEGIN,			  	"BATTLE_COMBO_TEXT_BEGIN" },
+		{ EUITextSubClassType::BATTLE_COMBO_COMBO_TEXT,			  	"BATTLE_COMBO_COMBO_TEXT" },
+		{ EUITextSubClassType::BATTLE_COMBO_CUR_COUNT_TEXT,			"BATTLE_COMBO_CUR_COUNT_TEXT" },
+		{ EUITextSubClassType::BATTLE_COMBO_NEXT_COUNT_TEXT,		"BATTLE_COMBO_NEXT_COUNT_TEXT" },
+		{ EUITextSubClassType::BATTLE_COMBO_TEXT_END,			  	"BATTLE_COMBO_TEXT_END" },
 	  
 
 		{ EUITextSubClassType::END,									"END" },
@@ -346,6 +389,17 @@ NLOHMANN_JSON_SERIALIZE_ENUM(EUITextSubClassType,
 	else if (str == "BATTLE_DAMAGE_TEXT_CRITCAL")				return EUITextSubClassType::BATTLE_DAMAGE_TEXT_CRITCAL;
 	else if (str == "BATTLE_DAMAGE_TEXT_CRITICAL_DAMAGE")		return EUITextSubClassType::BATTLE_DAMAGE_TEXT_CRITICAL_DAMAGE;
 	else if (str == "BATTLE_DAMAGE_TEXT_END")					return EUITextSubClassType::BATTLE_DAMAGE_TEXT_END;
+
+	else if (str == "BOSS_STAT_TEXT_BEGIN")						return EUITextSubClassType::BOSS_STAT_TEXT_BEGIN;
+	else if (str == "BOSS_STAT_TEXT_LV")						return EUITextSubClassType::BOSS_STAT_TEXT_LV;
+	else if (str == "BOSS_STAT_TEXT_NICKNAME")					return EUITextSubClassType::BOSS_STAT_TEXT_NICKNAME;
+	else if (str == "BOSS_STAT_TEXT_END")						return EUITextSubClassType::BOSS_STAT_TEXT_END;
+
+	else if (str == "BATTLE_COMBO_TEXT_BEGIN")					return EUITextSubClassType::BATTLE_COMBO_TEXT_BEGIN;
+	else if (str == "BATTLE_COMBO_COMBO_TEXT")					return EUITextSubClassType::BATTLE_COMBO_COMBO_TEXT;
+	else if (str == "BATTLE_COMBO_CUR_COUNT_TEXT")				return EUITextSubClassType::BATTLE_COMBO_CUR_COUNT_TEXT;
+	else if (str == "BATTLE_COMBO_NEXT_COUNT_TEXT")				return EUITextSubClassType::BATTLE_COMBO_NEXT_COUNT_TEXT;
+	else if (str == "BATTLE_COMBO_TEXT_END")					return EUITextSubClassType::BATTLE_COMBO_TEXT_END;
 	
 	else if (str == "END")										return EUITextSubClassType::END;
 
@@ -404,6 +458,17 @@ inline std::string UITextSubClassTypeToString(EUITextSubClassType e)
 	case EUITextSubClassType::BATTLE_DAMAGE_TEXT_CRITCAL:			return "BATTLE_DAMAGE_TEXT_CRITCAL";
 	case EUITextSubClassType::BATTLE_DAMAGE_TEXT_CRITICAL_DAMAGE:	return "BATTLE_DAMAGE_TEXT_CRITICAL_DAMAGE";
 	case EUITextSubClassType::BATTLE_DAMAGE_TEXT_END:				return "BATTLE_DAMAGE_TEXT_END";
+
+	case EUITextSubClassType::BOSS_STAT_TEXT_BEGIN:					return "BOSS_STAT_TEXT_BEGIN";
+	case EUITextSubClassType::BOSS_STAT_TEXT_LV:					return "BOSS_STAT_TEXT_LV";
+	case EUITextSubClassType::BOSS_STAT_TEXT_NICKNAME:				return "BOSS_STAT_TEXT_NICKNAME";
+	case EUITextSubClassType::BOSS_STAT_TEXT_END:					return "BOSS_STAT_TEXT_END";
+
+	case EUITextSubClassType::BATTLE_COMBO_TEXT_BEGIN:				return "BATTLE_COMBO_TEXT_BEGIN";
+	case EUITextSubClassType::BATTLE_COMBO_COMBO_TEXT:				return "BATTLE_COMBO_COMBO_TEXT";
+	case EUITextSubClassType::BATTLE_COMBO_CUR_COUNT_TEXT:			return "BATTLE_COMBO_CUR_COUNT_TEXT";
+	case EUITextSubClassType::BATTLE_COMBO_NEXT_COUNT_TEXT:			return "BATTLE_COMBO_NEXT_COUNT_TEXT";
+	case EUITextSubClassType::BATTLE_COMBO_TEXT_END:				return "BATTLE_COMBO_TEXT_END";
 	
 	default:														return "END";
 	}
@@ -548,125 +613,157 @@ enum class EUIDImageSubClassType
 	LEVEL_CHAGE_4,
 	LEVEL_CHAGE_5,
 
+	// 보스 스탯
+	BOSS_STAT_BEGIN,
+	BOSS_STAT_BG,
+	BOSS_STAT_END,
+
+	// 콤보 
+	BATTLE_COMBO_BEGIN,
+	BATTLE_COMBO_RANK,
+	BATTLE_COMBO_BG,
+	BATTLE_COMBO_BG_GLOW,
+	BATTLE_COMBO_END,
+
 	END
 };
 
 NLOHMANN_JSON_SERIALIZE_ENUM(EUIDImageSubClassType,
 	{
-	{ EUIDImageSubClassType::NONE_OWNER,			"NONE_OWNER" },
+	{ EUIDImageSubClassType::NONE_OWNER,						"NONE_OWNER" },
 
-	{ EUIDImageSubClassType::PLAYER_SKILL_BEGIN,	"PLAYER_SKILL_BEGIN" },
-	{ EUIDImageSubClassType::PLAYER_E,				"PLAYER_E" },
-	{ EUIDImageSubClassType::PLAYER_Q,				"PLAYER_Q" },
-	{ EUIDImageSubClassType::PLAYER_Z,				"PLAYER_Z" },
-	{ EUIDImageSubClassType::PLAYER_GUN,			"PLAYER_GUN" },
-	{ EUIDImageSubClassType::PLAYER_DODGE,			"PLAYER_DODGE" },
-	{ EUIDImageSubClassType::PLAYER_SKILL_END,		"PLAYER_SKILL_END" },
+	{ EUIDImageSubClassType::PLAYER_SKILL_BEGIN,				"PLAYER_SKILL_BEGIN" },
+	{ EUIDImageSubClassType::PLAYER_E,							"PLAYER_E" },
+	{ EUIDImageSubClassType::PLAYER_Q,							"PLAYER_Q" },
+	{ EUIDImageSubClassType::PLAYER_Z,							"PLAYER_Z" },
+	{ EUIDImageSubClassType::PLAYER_GUN,						"PLAYER_GUN" },
+	{ EUIDImageSubClassType::PLAYER_DODGE,						"PLAYER_DODGE" },
+	{ EUIDImageSubClassType::PLAYER_SKILL_END,					"PLAYER_SKILL_END" },
 
-	{ EUIDImageSubClassType::HOVER_POPUP_BEGIN,		"HOVER_POPUP_BEGIN" },
-	{ EUIDImageSubClassType::HOVER_POPUP_BG,		"HOVER_POPUP_BG" },
-	{ EUIDImageSubClassType::HOVER_POPUP_ICON,		"HOVER_POPUP_ICON" },
-	{ EUIDImageSubClassType::HOVER_POPUP_TEXT,		"HOVER_POPUP_TEXT" },
-	{ EUIDImageSubClassType::HOVER_POPUP_END,		"HOVER_POPUP_END" },
+	{ EUIDImageSubClassType::HOVER_POPUP_BEGIN,					"HOVER_POPUP_BEGIN" },
+	{ EUIDImageSubClassType::HOVER_POPUP_BG,					"HOVER_POPUP_BG" },
+	{ EUIDImageSubClassType::HOVER_POPUP_ICON,					"HOVER_POPUP_ICON" },
+	{ EUIDImageSubClassType::HOVER_POPUP_TEXT,					"HOVER_POPUP_TEXT" },
+	{ EUIDImageSubClassType::HOVER_POPUP_END,					"HOVER_POPUP_END" },
 
-	{ EUIDImageSubClassType::MINIMAP_BEGIN,			"MINIMAP_BEGIN" },
-	{ EUIDImageSubClassType::MINIMAP_PLAYER_ICON,	"MINIMAP_PLAYER_ICON" },
-	{ EUIDImageSubClassType::MINIMAP_CAMERA_SIGHT,	"MINIMAP_CAMERA_SIGHT" },
-	{ EUIDImageSubClassType::MINIMAP_BGFRAME,		"MINIMAP_BGFRAME" },
-	{ EUIDImageSubClassType::MINIMAP_WARNING_FRAME,	"MINIMAP_WARNING_FRAME" },
-	{ EUIDImageSubClassType::MINIMAP_END,			"MINIMAP_END" },
+	{ EUIDImageSubClassType::MINIMAP_BEGIN,						"MINIMAP_BEGIN" },
+	{ EUIDImageSubClassType::MINIMAP_PLAYER_ICON,				"MINIMAP_PLAYER_ICON" },
+	{ EUIDImageSubClassType::MINIMAP_CAMERA_SIGHT,				"MINIMAP_CAMERA_SIGHT" },
+	{ EUIDImageSubClassType::MINIMAP_BGFRAME,					"MINIMAP_BGFRAME" },
+	{ EUIDImageSubClassType::MINIMAP_WARNING_FRAME,				"MINIMAP_WARNING_FRAME" },
+	{ EUIDImageSubClassType::MINIMAP_END,						"MINIMAP_END" },
 
-	{ EUIDImageSubClassType::MENU_BEGIN,			"MENU_BEGIN" },
-	{ EUIDImageSubClassType::MENU_BG,				"MENU_BG" },
-	{ EUIDImageSubClassType::MENU_ICON,				"MENU_ICON" },
-	{ EUIDImageSubClassType::MENU_ICON_BG,			"MENU_ICON_BG" },
-	{ EUIDImageSubClassType::MENU_ICON_OUTLINE,		"MENU_ICON_OUTLINE" },
-	{ EUIDImageSubClassType::MENU_END,				"MENU_END" },
+	{ EUIDImageSubClassType::MENU_BEGIN,						"MENU_BEGIN" },
+	{ EUIDImageSubClassType::MENU_BG,							"MENU_BG" },
+	{ EUIDImageSubClassType::MENU_ICON,							"MENU_ICON" },
+	{ EUIDImageSubClassType::MENU_ICON_BG,						"MENU_ICON_BG" },
+	{ EUIDImageSubClassType::MENU_ICON_OUTLINE,					"MENU_ICON_OUTLINE" },
+	{ EUIDImageSubClassType::MENU_END,							"MENU_END" },
 
-	{ EUIDImageSubClassType::LOADING_BEGIN,				"LOADING_BEGIN" },
-	{ EUIDImageSubClassType::LOADING_BG,				"LOADING_BG" },
-	{ EUIDImageSubClassType::LOADING_BG_TOP,			"LOADING_BG_TOP" },
-	{ EUIDImageSubClassType::LOADING_BG_BOTTOM,			"LOADING_BG_BOTTOM" },
-	{ EUIDImageSubClassType::LOADING_END,				"LOADING_END" },
+	{ EUIDImageSubClassType::LOADING_BEGIN,						"LOADING_BEGIN" },
+	{ EUIDImageSubClassType::LOADING_BG,						"LOADING_BG" },
+	{ EUIDImageSubClassType::LOADING_BG_TOP,					"LOADING_BG_TOP" },
+	{ EUIDImageSubClassType::LOADING_BG_BOTTOM,					"LOADING_BG_BOTTOM" },
+	{ EUIDImageSubClassType::LOADING_END,						"LOADING_END" },
 
-	{ EUIDImageSubClassType::BATTLE_UI_BEGIN,			"BATTLE_UI_BEGIN" },
-	{ EUIDImageSubClassType::BATTLE_AIMDOT_COMMON,		"BATTLE_AIMDOT_COMMON" },
-	{ EUIDImageSubClassType::BATTLE_AIMDOT_CROSSHAIR_TOP,			"BATTLE_AIMDOT_CROSSHAIR_TOP" },
-	{ EUIDImageSubClassType::BATTLE_AIMDOT_CROSSHAIR_RIGHT,				"BATTLE_AIMDOT_CROSSHAIR_RIGHT" },
-	{ EUIDImageSubClassType::BATTLE_AIMDOT_CROSSHAIR_BOTTOM,				"BATTLE_AIMDOT_CROSSHAIR_BOTTOM" },
-	{ EUIDImageSubClassType::BATTLE_AIMDOT_CROSSHAIR_LEFT,				"BATTLE_AIMDOT_CROSSHAIR_LEFT" },
-	{ EUIDImageSubClassType::BATTLE_AIM_HIT,				"BATTLE_AIM_HIT" },
-	{ EUIDImageSubClassType::BATTLE_AIM_LOCK,				"BATTLE_AIM_LOCK" },
-	{ EUIDImageSubClassType::BATTLE_UI_END,				"BATTLE_UI_END" },
+	{ EUIDImageSubClassType::BATTLE_UI_BEGIN,					"BATTLE_UI_BEGIN" },
+	{ EUIDImageSubClassType::BATTLE_AIMDOT_COMMON,				"BATTLE_AIMDOT_COMMON" },
+	{ EUIDImageSubClassType::BATTLE_AIMDOT_CROSSHAIR_TOP,		"BATTLE_AIMDOT_CROSSHAIR_TOP" },
+	{ EUIDImageSubClassType::BATTLE_AIMDOT_CROSSHAIR_RIGHT,		"BATTLE_AIMDOT_CROSSHAIR_RIGHT" },
+	{ EUIDImageSubClassType::BATTLE_AIMDOT_CROSSHAIR_BOTTOM,	"BATTLE_AIMDOT_CROSSHAIR_BOTTOM" },
+	{ EUIDImageSubClassType::BATTLE_AIMDOT_CROSSHAIR_LEFT,		"BATTLE_AIMDOT_CROSSHAIR_LEFT" },
+	{ EUIDImageSubClassType::BATTLE_AIM_HIT,					"BATTLE_AIM_HIT" },
+	{ EUIDImageSubClassType::BATTLE_AIM_LOCK,					"BATTLE_AIM_LOCK" },
+	{ EUIDImageSubClassType::BATTLE_UI_END,						"BATTLE_UI_END" },
 		
 	{ EUIDImageSubClassType::MONSTER_NAMEPLATE_BG,				"MONSTER_NAMEPLATE_BG" },
 
-	{ EUIDImageSubClassType::LEVEL_CHAGE_1,				"LEVEL_CHAGE_1" },
-	{ EUIDImageSubClassType::LEVEL_CHAGE_2,				"LEVEL_CHAGE_2" },
-	{ EUIDImageSubClassType::LEVEL_CHAGE_3,				"LEVEL_CHAGE_3" },
-	{ EUIDImageSubClassType::LEVEL_CHAGE_4,				"LEVEL_CHAGE_4" },
-	{ EUIDImageSubClassType::LEVEL_CHAGE_5,				"LEVEL_CHAGE_5" },
+	{ EUIDImageSubClassType::LEVEL_CHAGE_1,						"LEVEL_CHAGE_1" },
+	{ EUIDImageSubClassType::LEVEL_CHAGE_2,						"LEVEL_CHAGE_2" },
+	{ EUIDImageSubClassType::LEVEL_CHAGE_3,						"LEVEL_CHAGE_3" },
+	{ EUIDImageSubClassType::LEVEL_CHAGE_4,						"LEVEL_CHAGE_4" },
+	{ EUIDImageSubClassType::LEVEL_CHAGE_5,						"LEVEL_CHAGE_5" },
 
-		{ EUIDImageSubClassType::END,					"END" }
+	{ EUIDImageSubClassType::BOSS_STAT_BEGIN,					"BOSS_STAT_BEGIN" },
+	{ EUIDImageSubClassType::BOSS_STAT_BG,						"BOSS_STAT_BG" },
+	{ EUIDImageSubClassType::BOSS_STAT_END,						"BOSS_STAT_END" },
+
+	{ EUIDImageSubClassType::BATTLE_COMBO_BEGIN,				"BATTLE_COMBO_BEGIN" },
+	{ EUIDImageSubClassType::BATTLE_COMBO_RANK,					"BATTLE_COMBO_RANK" },
+	{ EUIDImageSubClassType::BATTLE_COMBO_BG,					"BATTLE_COMBO_BG" },
+	{ EUIDImageSubClassType::BATTLE_COMBO_BG_GLOW,					"BATTLE_COMBO_BG_GLOW" },
+	{ EUIDImageSubClassType::BATTLE_COMBO_END,					"BATTLE_COMBO_END" },
+
+	{ EUIDImageSubClassType::END,								"END" }
 	})
 
 	inline EUIDImageSubClassType StringToUIDImageSubType(const std::string& str)
 {
-	if (str == "NONE_OWNER")			return EUIDImageSubClassType::NONE_OWNER;
+	if (str == "NONE_OWNER")							return EUIDImageSubClassType::NONE_OWNER;
 
-	if (str == "PLAYER_SKILL_BEGIN")	return EUIDImageSubClassType::PLAYER_SKILL_BEGIN;
-	if (str == "PLAYER_E")				return EUIDImageSubClassType::PLAYER_E;
-	if (str == "PLAYER_Q")				return EUIDImageSubClassType::PLAYER_Q;
-	if (str == "PLAYER_Z")				return EUIDImageSubClassType::PLAYER_Z;
-	if (str == "PLAYER_GUN")			return EUIDImageSubClassType::PLAYER_GUN;
-	if (str == "PLAYER_DODGE")			return EUIDImageSubClassType::PLAYER_DODGE;
-	if (str == "PLAYER_SKILL_END")		return EUIDImageSubClassType::PLAYER_SKILL_END;
+	if (str == "PLAYER_SKILL_BEGIN")					return EUIDImageSubClassType::PLAYER_SKILL_BEGIN;
+	if (str == "PLAYER_E")								return EUIDImageSubClassType::PLAYER_E;
+	if (str == "PLAYER_Q")								return EUIDImageSubClassType::PLAYER_Q;
+	if (str == "PLAYER_Z")								return EUIDImageSubClassType::PLAYER_Z;
+	if (str == "PLAYER_GUN")							return EUIDImageSubClassType::PLAYER_GUN;
+	if (str == "PLAYER_DODGE")							return EUIDImageSubClassType::PLAYER_DODGE;
+	if (str == "PLAYER_SKILL_END")						return EUIDImageSubClassType::PLAYER_SKILL_END;
 
-	if (str == "HOVER_POPUP_BEGIN")		return EUIDImageSubClassType::HOVER_POPUP_BEGIN;
-	if (str == "HOVER_POPUP_BG")		return EUIDImageSubClassType::HOVER_POPUP_BG;
-	if (str == "HOVER_POPUP_ICON")		return EUIDImageSubClassType::HOVER_POPUP_ICON;
-	if (str == "HOVER_POPUP_TEXT")		return EUIDImageSubClassType::HOVER_POPUP_TEXT;
-	if (str == "HOVER_POPUP_END")		return EUIDImageSubClassType::HOVER_POPUP_END;
+	if (str == "HOVER_POPUP_BEGIN")						return EUIDImageSubClassType::HOVER_POPUP_BEGIN;
+	if (str == "HOVER_POPUP_BG")						return EUIDImageSubClassType::HOVER_POPUP_BG;
+	if (str == "HOVER_POPUP_ICON")						return EUIDImageSubClassType::HOVER_POPUP_ICON;
+	if (str == "HOVER_POPUP_TEXT")						return EUIDImageSubClassType::HOVER_POPUP_TEXT;
+	if (str == "HOVER_POPUP_END")						return EUIDImageSubClassType::HOVER_POPUP_END;
 
-	if (str == "MINIMAP_BEGIN")			return EUIDImageSubClassType::MINIMAP_BEGIN;
-	if (str == "MINIMAP_PLAYER_ICON")	return EUIDImageSubClassType::MINIMAP_PLAYER_ICON;
-	if (str == "MINIMAP_CAMERA_SIGHT")	return EUIDImageSubClassType::MINIMAP_CAMERA_SIGHT;
-	if (str == "MINIMAP_BGFRAME")		return EUIDImageSubClassType::MINIMAP_BGFRAME;
-	if (str == "MINIMAP_WARNING_FRAME")	return EUIDImageSubClassType::MINIMAP_WARNING_FRAME;
-	if (str == "MINIMAP_END")			return EUIDImageSubClassType::MINIMAP_END;
+	if (str == "MINIMAP_BEGIN")							return EUIDImageSubClassType::MINIMAP_BEGIN;
+	if (str == "MINIMAP_PLAYER_ICON")					return EUIDImageSubClassType::MINIMAP_PLAYER_ICON;
+	if (str == "MINIMAP_CAMERA_SIGHT")					return EUIDImageSubClassType::MINIMAP_CAMERA_SIGHT;
+	if (str == "MINIMAP_BGFRAME")						return EUIDImageSubClassType::MINIMAP_BGFRAME;
+	if (str == "MINIMAP_WARNING_FRAME")					return EUIDImageSubClassType::MINIMAP_WARNING_FRAME;
+	if (str == "MINIMAP_END")							return EUIDImageSubClassType::MINIMAP_END;
 
-	if (str == "MENU_BEGIN")			return EUIDImageSubClassType::MENU_BEGIN;
-	if (str == "MENU_BG")				return EUIDImageSubClassType::MENU_BG;
-	if (str == "MENU_ICON")				return EUIDImageSubClassType::MENU_ICON;
-	if (str == "MENU_ICON_BG")			return EUIDImageSubClassType::MENU_ICON_BG;
-	if (str == "MENU_ICON_OUTLINE")		return EUIDImageSubClassType::MENU_ICON_OUTLINE;
-	if (str == "MENU_END")				return EUIDImageSubClassType::MENU_END;
+	if (str == "MENU_BEGIN")							return EUIDImageSubClassType::MENU_BEGIN;
+	if (str == "MENU_BG")								return EUIDImageSubClassType::MENU_BG;
+	if (str == "MENU_ICON")								return EUIDImageSubClassType::MENU_ICON;
+	if (str == "MENU_ICON_BG")							return EUIDImageSubClassType::MENU_ICON_BG;
+	if (str == "MENU_ICON_OUTLINE")						return EUIDImageSubClassType::MENU_ICON_OUTLINE;
+	if (str == "MENU_END")								return EUIDImageSubClassType::MENU_END;
 
-	if (str == "LOADING_BEGIN")				return EUIDImageSubClassType::LOADING_BEGIN;
-	if (str == "LOADING_BG")				return EUIDImageSubClassType::LOADING_BG;
-	if (str == "LOADING_BG_TOP")			return EUIDImageSubClassType::LOADING_BG_TOP;
-	if (str == "LOADING_BG_BOTTOM")			return EUIDImageSubClassType::LOADING_BG_BOTTOM;
-	if (str == "LOADING_END")				return EUIDImageSubClassType::LOADING_END;
+	if (str == "LOADING_BEGIN")							return EUIDImageSubClassType::LOADING_BEGIN;
+	if (str == "LOADING_BG")							return EUIDImageSubClassType::LOADING_BG;
+	if (str == "LOADING_BG_TOP")						return EUIDImageSubClassType::LOADING_BG_TOP;
+	if (str == "LOADING_BG_BOTTOM")						return EUIDImageSubClassType::LOADING_BG_BOTTOM;
+	if (str == "LOADING_END")							return EUIDImageSubClassType::LOADING_END;
 
-	if (str == "BATTLE_UI_BEGIN")				return EUIDImageSubClassType::BATTLE_UI_BEGIN;
-	if (str == "BATTLE_AIMDOT_COMMON")				return EUIDImageSubClassType::BATTLE_AIMDOT_COMMON;
-	if (str == "BATTLE_AIMDOT_CROSSHAIR_TOP")				return EUIDImageSubClassType::BATTLE_AIMDOT_CROSSHAIR_TOP;
-	if (str == "BATTLE_AIMDOT_CROSSHAIR_RIGHT")				return EUIDImageSubClassType::BATTLE_AIMDOT_CROSSHAIR_RIGHT;
-	if (str == "BATTLE_AIMDOT_CROSSHAIR_BOTTOM")				return EUIDImageSubClassType::BATTLE_AIMDOT_CROSSHAIR_BOTTOM;
-	if (str == "BATTLE_AIMDOT_CROSSHAIR_LEFT")				return EUIDImageSubClassType::BATTLE_AIMDOT_CROSSHAIR_LEFT;
-	if (str == "BATTLE_AIM_HIT")				return EUIDImageSubClassType::BATTLE_AIM_HIT;
-	if (str == "BATTLE_AIM_LOCK")				return EUIDImageSubClassType::BATTLE_AIM_LOCK;
-	if (str == "BATTLE_UI_END")				return EUIDImageSubClassType::BATTLE_UI_END;
+	if (str == "BATTLE_UI_BEGIN")						return EUIDImageSubClassType::BATTLE_UI_BEGIN;
+	if (str == "BATTLE_AIMDOT_COMMON")					return EUIDImageSubClassType::BATTLE_AIMDOT_COMMON;
+	if (str == "BATTLE_AIMDOT_CROSSHAIR_TOP")			return EUIDImageSubClassType::BATTLE_AIMDOT_CROSSHAIR_TOP;
+	if (str == "BATTLE_AIMDOT_CROSSHAIR_RIGHT")			return EUIDImageSubClassType::BATTLE_AIMDOT_CROSSHAIR_RIGHT;
+	if (str == "BATTLE_AIMDOT_CROSSHAIR_BOTTOM")		return EUIDImageSubClassType::BATTLE_AIMDOT_CROSSHAIR_BOTTOM;
+	if (str == "BATTLE_AIMDOT_CROSSHAIR_LEFT")			return EUIDImageSubClassType::BATTLE_AIMDOT_CROSSHAIR_LEFT;
+	if (str == "BATTLE_AIM_HIT")						return EUIDImageSubClassType::BATTLE_AIM_HIT;
+	if (str == "BATTLE_AIM_LOCK")						return EUIDImageSubClassType::BATTLE_AIM_LOCK;
+	if (str == "BATTLE_UI_END")							return EUIDImageSubClassType::BATTLE_UI_END;
 	
-	if (str == "MONSTER_NAMEPLATE_BG")				return EUIDImageSubClassType::MONSTER_NAMEPLATE_BG;
+	if (str == "MONSTER_NAMEPLATE_BG")					return EUIDImageSubClassType::MONSTER_NAMEPLATE_BG;
 
-	if (str == "LEVEL_CHAGE_1")				return EUIDImageSubClassType::LEVEL_CHAGE_1;
-	if (str == "LEVEL_CHAGE_2")				return EUIDImageSubClassType::LEVEL_CHAGE_2;
-	if (str == "LEVEL_CHAGE_3")				return EUIDImageSubClassType::LEVEL_CHAGE_3;
-	if (str == "LEVEL_CHAGE_4")				return EUIDImageSubClassType::LEVEL_CHAGE_4;
-	if (str == "LEVEL_CHAGE_5")				return EUIDImageSubClassType::LEVEL_CHAGE_5;
+	if (str == "LEVEL_CHAGE_1")							return EUIDImageSubClassType::LEVEL_CHAGE_1;
+	if (str == "LEVEL_CHAGE_2")							return EUIDImageSubClassType::LEVEL_CHAGE_2;
+	if (str == "LEVEL_CHAGE_3")							return EUIDImageSubClassType::LEVEL_CHAGE_3;
+	if (str == "LEVEL_CHAGE_4")							return EUIDImageSubClassType::LEVEL_CHAGE_4;
+	if (str == "LEVEL_CHAGE_5")							return EUIDImageSubClassType::LEVEL_CHAGE_5;
 
-	if (str == "END")					return EUIDImageSubClassType::END;
+	if (str == "BOSS_STAT_BEGIN")						return EUIDImageSubClassType::BOSS_STAT_BEGIN;
+	if (str == "BOSS_STAT_BG")							return EUIDImageSubClassType::BOSS_STAT_BG;
+	if (str == "BOSS_STAT_END")							return EUIDImageSubClassType::BOSS_STAT_END;
+
+	if (str == "BATTLE_COMBO_BEGIN")					return EUIDImageSubClassType::BATTLE_COMBO_BEGIN;
+	if (str == "BATTLE_COMBO_RANK")						return EUIDImageSubClassType::BATTLE_COMBO_RANK;
+	if (str == "BATTLE_COMBO_BG")						return EUIDImageSubClassType::BATTLE_COMBO_BG;
+	if (str == "BATTLE_COMBO_BG_GLOW")						return EUIDImageSubClassType::BATTLE_COMBO_BG_GLOW;
+	if (str == "BATTLE_COMBO_END")						return EUIDImageSubClassType::BATTLE_COMBO_END;
+
+	if (str == "END")									return EUIDImageSubClassType::END;
 	return EUIDImageSubClassType::NONE_OWNER;
 }
 
@@ -674,62 +771,72 @@ inline const char* UIDImageSubTypeToString(EUIDImageSubClassType type)
 {
 	switch (type)
 	{
-	case EUIDImageSubClassType::NONE_OWNER:				return "NONE_OWNER";
+	case EUIDImageSubClassType::NONE_OWNER:							return "NONE_OWNER";
 
-	case EUIDImageSubClassType::PLAYER_SKILL_BEGIN:		return "PLAYER_SKILL_BEGIN";
-	case EUIDImageSubClassType::PLAYER_E:				return "PLAYER_E";
-	case EUIDImageSubClassType::PLAYER_Q:				return "PLAYER_Q";
-	case EUIDImageSubClassType::PLAYER_Z:				return "PLAYER_Z";
-	case EUIDImageSubClassType::PLAYER_GUN:				return "PLAYER_GUN";
-	case EUIDImageSubClassType::PLAYER_DODGE:			return "PLAYER_DODGE";
-	case EUIDImageSubClassType::PLAYER_SKILL_END:		return "PLAYER_SKILL_END";
+	case EUIDImageSubClassType::PLAYER_SKILL_BEGIN:					return "PLAYER_SKILL_BEGIN";
+	case EUIDImageSubClassType::PLAYER_E:							return "PLAYER_E";
+	case EUIDImageSubClassType::PLAYER_Q:							return "PLAYER_Q";
+	case EUIDImageSubClassType::PLAYER_Z:							return "PLAYER_Z";
+	case EUIDImageSubClassType::PLAYER_GUN:							return "PLAYER_GUN";
+	case EUIDImageSubClassType::PLAYER_DODGE:						return "PLAYER_DODGE";
+	case EUIDImageSubClassType::PLAYER_SKILL_END:					return "PLAYER_SKILL_END";
 
-	case EUIDImageSubClassType::HOVER_POPUP_BEGIN:		return "HOVER_POPUP_BEGIN";
-	case EUIDImageSubClassType::HOVER_POPUP_BG:			return "HOVER_POPUP_BG";
-	case EUIDImageSubClassType::HOVER_POPUP_ICON:		return "HOVER_POPUP_ICON";
-	case EUIDImageSubClassType::HOVER_POPUP_TEXT:		return "HOVER_POPUP_TEXT";
-	case EUIDImageSubClassType::HOVER_POPUP_END:		return "HOVER_POPUP_END";
+	case EUIDImageSubClassType::HOVER_POPUP_BEGIN:					return "HOVER_POPUP_BEGIN";
+	case EUIDImageSubClassType::HOVER_POPUP_BG:						return "HOVER_POPUP_BG";
+	case EUIDImageSubClassType::HOVER_POPUP_ICON:					return "HOVER_POPUP_ICON";
+	case EUIDImageSubClassType::HOVER_POPUP_TEXT:					return "HOVER_POPUP_TEXT";
+	case EUIDImageSubClassType::HOVER_POPUP_END:					return "HOVER_POPUP_END";
 
-	case EUIDImageSubClassType::MINIMAP_BEGIN:			return "MINIMAP_BEGIN";
-	case EUIDImageSubClassType::MINIMAP_PLAYER_ICON:	return "MINIMAP_PLAYER_ICON";
-	case EUIDImageSubClassType::MINIMAP_CAMERA_SIGHT:	return "MINIMAP_CAMERA_SIGHT";
-	case EUIDImageSubClassType::MINIMAP_BGFRAME:		return "MINIMAP_BGFRAME";
-	case EUIDImageSubClassType::MINIMAP_WARNING_FRAME:	return "MINIMAP_WARNING_FRAME";
-	case EUIDImageSubClassType::MINIMAP_END:			return "MINIMAP_END";
+	case EUIDImageSubClassType::MINIMAP_BEGIN:						return "MINIMAP_BEGIN";
+	case EUIDImageSubClassType::MINIMAP_PLAYER_ICON:				return "MINIMAP_PLAYER_ICON";
+	case EUIDImageSubClassType::MINIMAP_CAMERA_SIGHT:				return "MINIMAP_CAMERA_SIGHT";
+	case EUIDImageSubClassType::MINIMAP_BGFRAME:					return "MINIMAP_BGFRAME";
+	case EUIDImageSubClassType::MINIMAP_WARNING_FRAME:				return "MINIMAP_WARNING_FRAME";
+	case EUIDImageSubClassType::MINIMAP_END:						return "MINIMAP_END";
 
-	case EUIDImageSubClassType::MENU_BEGIN:				return "MENU_BEGIN";
-	case EUIDImageSubClassType::MENU_BG:				return "MENU_BG";
-	case EUIDImageSubClassType::MENU_ICON:				return "MENU_ICON";
-	case EUIDImageSubClassType::MENU_ICON_BG:			return "MENU_ICON_BG";
-	case EUIDImageSubClassType::MENU_ICON_OUTLINE:		return "MENU_ICON_OUTLINE";
-	case EUIDImageSubClassType::MENU_END:				return "MENU_END";
+	case EUIDImageSubClassType::MENU_BEGIN:							return "MENU_BEGIN";
+	case EUIDImageSubClassType::MENU_BG:							return "MENU_BG";
+	case EUIDImageSubClassType::MENU_ICON:							return "MENU_ICON";
+	case EUIDImageSubClassType::MENU_ICON_BG:						return "MENU_ICON_BG";
+	case EUIDImageSubClassType::MENU_ICON_OUTLINE:					return "MENU_ICON_OUTLINE";
+	case EUIDImageSubClassType::MENU_END:							return "MENU_END";
 	
-	case EUIDImageSubClassType::LOADING_BEGIN:			return "LOADING_BEGIN";
-	case EUIDImageSubClassType::LOADING_BG:				return "LOADING_BG";
-	case EUIDImageSubClassType::LOADING_BG_TOP:			return "LOADING_BG_TOP";
-	case EUIDImageSubClassType::LOADING_BG_BOTTOM:		return "LOADING_BG_BOTTOM";
-	case EUIDImageSubClassType::LOADING_END:			return "LOADING_END";
+	case EUIDImageSubClassType::LOADING_BEGIN:						return "LOADING_BEGIN";
+	case EUIDImageSubClassType::LOADING_BG:							return "LOADING_BG";
+	case EUIDImageSubClassType::LOADING_BG_TOP:						return "LOADING_BG_TOP";
+	case EUIDImageSubClassType::LOADING_BG_BOTTOM:					return "LOADING_BG_BOTTOM";
+	case EUIDImageSubClassType::LOADING_END:						return "LOADING_END";
 
-	case EUIDImageSubClassType::BATTLE_UI_BEGIN:			return "BATTLE_UI_BEGIN";
-	case EUIDImageSubClassType::BATTLE_AIMDOT_COMMON:			return "BATTLE_AIMDOT_COMMON";
-	case EUIDImageSubClassType::BATTLE_AIMDOT_CROSSHAIR_TOP:			return "BATTLE_AIMDOT_CROSSHAIR_TOP";
-	case EUIDImageSubClassType::BATTLE_AIMDOT_CROSSHAIR_RIGHT:			return "BATTLE_AIMDOT_CROSSHAIR_RIGHT";
-	case EUIDImageSubClassType::BATTLE_AIMDOT_CROSSHAIR_BOTTOM:			return "BATTLE_AIMDOT_CROSSHAIR_BOTTOM";
-	case EUIDImageSubClassType::BATTLE_AIMDOT_CROSSHAIR_LEFT:			return "BATTLE_AIMDOT_CROSSHAIR_LEFT";
-	case EUIDImageSubClassType::BATTLE_AIM_HIT:			return "BATTLE_AIM_HIT";
-	case EUIDImageSubClassType::BATTLE_AIM_LOCK:			return "BATTLE_AIM_LOCK";
-	case EUIDImageSubClassType::BATTLE_UI_END:			return "BATTLE_UI_END";
+	case EUIDImageSubClassType::BATTLE_UI_BEGIN:					return "BATTLE_UI_BEGIN";
+	case EUIDImageSubClassType::BATTLE_AIMDOT_COMMON:				return "BATTLE_AIMDOT_COMMON";
+	case EUIDImageSubClassType::BATTLE_AIMDOT_CROSSHAIR_TOP:		return "BATTLE_AIMDOT_CROSSHAIR_TOP";
+	case EUIDImageSubClassType::BATTLE_AIMDOT_CROSSHAIR_RIGHT:		return "BATTLE_AIMDOT_CROSSHAIR_RIGHT";
+	case EUIDImageSubClassType::BATTLE_AIMDOT_CROSSHAIR_BOTTOM:		return "BATTLE_AIMDOT_CROSSHAIR_BOTTOM";
+	case EUIDImageSubClassType::BATTLE_AIMDOT_CROSSHAIR_LEFT:		return "BATTLE_AIMDOT_CROSSHAIR_LEFT";
+	case EUIDImageSubClassType::BATTLE_AIM_HIT:						return "BATTLE_AIM_HIT";
+	case EUIDImageSubClassType::BATTLE_AIM_LOCK:					return "BATTLE_AIM_LOCK";
+	case EUIDImageSubClassType::BATTLE_UI_END:						return "BATTLE_UI_END";
 	
-	case EUIDImageSubClassType::MONSTER_NAMEPLATE_BG:	return "MONSTER_NAMEPLATE_BG";
+	case EUIDImageSubClassType::MONSTER_NAMEPLATE_BG:				return "MONSTER_NAMEPLATE_BG";
 
-	case EUIDImageSubClassType::LEVEL_CHAGE_1:	return "LEVEL_CHAGE_1";
-	case EUIDImageSubClassType::LEVEL_CHAGE_2:	return "LEVEL_CHAGE_2";
-	case EUIDImageSubClassType::LEVEL_CHAGE_3:	return "LEVEL_CHAGE_3";
-	case EUIDImageSubClassType::LEVEL_CHAGE_4:	return "LEVEL_CHAGE_4";
-	case EUIDImageSubClassType::LEVEL_CHAGE_5:	return "LEVEL_CHAGE_5";
+	case EUIDImageSubClassType::LEVEL_CHAGE_1:						return "LEVEL_CHAGE_1";
+	case EUIDImageSubClassType::LEVEL_CHAGE_2:						return "LEVEL_CHAGE_2";
+	case EUIDImageSubClassType::LEVEL_CHAGE_3:						return "LEVEL_CHAGE_3";
+	case EUIDImageSubClassType::LEVEL_CHAGE_4:						return "LEVEL_CHAGE_4";
+	case EUIDImageSubClassType::LEVEL_CHAGE_5:						return "LEVEL_CHAGE_5";
 
-	case EUIDImageSubClassType::END:					return "END";
-	default:											return "NONE_OWNER";
+	case EUIDImageSubClassType::BOSS_STAT_BEGIN:					return "BOSS_STAT_BEGIN";
+	case EUIDImageSubClassType::BOSS_STAT_BG:						return "BOSS_STAT_BG";
+	case EUIDImageSubClassType::BOSS_STAT_END:						return "BOSS_STAT_END";
+
+	case EUIDImageSubClassType::BATTLE_COMBO_BEGIN:					return "BATTLE_COMBO_BEGIN";
+	case EUIDImageSubClassType::BATTLE_COMBO_RANK:					return "BATTLE_COMBO_RANK";
+	case EUIDImageSubClassType::BATTLE_COMBO_BG:					return "BATTLE_COMBO_BG";
+	case EUIDImageSubClassType::BATTLE_COMBO_BG_GLOW:					return "BATTLE_COMBO_BG_GLOW";
+	case EUIDImageSubClassType::BATTLE_COMBO_END:					return "BATTLE_COMBO_END";
+
+	case EUIDImageSubClassType::END:								return "END";
+	default:														return "NONE_OWNER";
 	}
 }
 #pragma endregion
@@ -918,6 +1025,7 @@ struct TUI_GenericUIData
 	_float			fAlphaRatio;
 	_string			strNoiseTextureTag;
 	_string			strAlphaMaskTextureTag;
+	_string			strGlowTextureTag;
 };
 
 struct TUI_CanvasData

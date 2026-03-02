@@ -238,7 +238,9 @@ public:
 
 #pragma region RENDER_MANAGER
 	inline void Push_RenderObject(RENDER_CATEGORY eCategory, CGameObject* pGO);
+#ifdef _DEBUG
 	inline void Push_DebugComponent(class CComponent* pComp);
+#endif
 #pragma endregion
 
 #pragma region LIGHT_MANAGER

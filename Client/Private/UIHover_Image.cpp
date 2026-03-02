@@ -1,6 +1,7 @@
 #include "pch.h"
 #include "UIHover_Image.h"
 #include "Client_Defines.h"
+#include "Client_EventDefine.h"
 #include "CameraMan.h"
 
 #include "MainPlayer.h"
@@ -42,38 +43,12 @@ HRESULT CUIHover_Image::Initialize(void* pArg)
 	return S_OK;
 }
 
-HRESULT CUIHover_Image::Attach_Personal_Info()
-{
-	switch (m_eDImageSubClass)
-	{
-	case DTO::EUIDImageSubClassType::HOVER_POPUP_ICON:
-	{
-
-	}
-	return S_OK;
-	case DTO::EUIDImageSubClassType::HOVER_POPUP_BG:
-	{
-		m_fOriginWidth = m_fWidth;
-	}
-	return S_OK;
-	case DTO::EUIDImageSubClassType::HOVER_POPUP_TEXT:
-	{
-
-	}
-	return S_OK;
-	case DTO::EUIDImageSubClassType::END:
-	default:
-		return E_FAIL;
-	}
-
-	return S_OK;
-}
-
 HRESULT CUIHover_Image::Awake(const _uint iCurrentLevelID)
 {
 	if (FAILED(Super::Awake(iCurrentLevelID)))
 		return E_FAIL;
-	Attach_Personal_Info();
+	if (FAILED(Attach_Personal_Info()))
+		return E_FAIL;
 	return S_OK;
 }
 
@@ -94,7 +69,6 @@ void CUIHover_Image::Update_Late(const _float fTimeDelta)
 
 void CUIHover_Image::Ready_Before_Render(const _float fTimeDelta)
 {
-	Acting_By_InteractState();
 	Super::Ready_Before_Render(fTimeDelta);
 }
 
@@ -111,7 +85,8 @@ HRESULT CUIHover_Image::Render()
 
 HRESULT CUIHover_Image::Ready_Components(HOVER_IMAGE_DESC* pDesc)
 {
-	Super::Ready_Components(pDesc);
+	if (FAILED(Super::Ready_Components(pDesc)))
+		return E_FAIL;
 	return S_OK;
 }
 
@@ -122,6 +97,32 @@ HRESULT CUIHover_Image::Bind_ShaderResources()
 		return E_FAIL;
 	if (FAILED(Super::Bind_ShaderResources()))
 		return E_FAIL;
+	return S_OK;
+}
+
+HRESULT CUIHover_Image::Attach_Personal_Info()
+{
+	switch (m_eDImageSubClass)
+	{
+	case DTO::EUIDImageSubClassType::HOVER_POPUP_ICON:
+	{
+
+	}
+	break;
+	case DTO::EUIDImageSubClassType::HOVER_POPUP_BG:
+	{
+		m_fOriginWidth = m_fWidth;
+	}
+	break;
+	case DTO::EUIDImageSubClassType::HOVER_POPUP_TEXT:
+	{
+
+	}
+	break;
+	case DTO::EUIDImageSubClassType::END:
+	default:
+		return E_FAIL;
+	}
 	return S_OK;
 }
 

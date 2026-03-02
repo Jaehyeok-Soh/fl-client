@@ -61,13 +61,13 @@ HRESULT CMonsterState_Factory::Ready_Condition()
 	
 	REGISTER_CONDITION("condition_animation_finish", CONDITION{ return state->Is_MainAnimFinished(); });
 	
-	REGISTER_CONDITION("condition_die", CONDITION{ return state->Get_OwnerObject()->IsDead(); });
+	REGISTER_CONDITION("condition_die", CONDITION{ return MONSTERCC(state)->IsDead(); });
 
-	REGISTER_CONDITION("condition_hit_light", CONDITION{ return false; /*hit light*/ });
+	REGISTER_CONDITION("condition_none_die", CONDITION{ return !MONSTERCC(state)->IsDead(); });
 
-	REGISTER_CONDITION("condition_hit_heavy", CONDITION{ return false; /*hit heady*/ });
-
-	REGISTER_CONDITION("condition_hit_additive", CONDITION{ return false; /*hit additive*/ });
+	REGISTER_CONDITION("condition_already_die", CONDITION{ return MONSTERCC(state)->IsDeadProcessing(); });
+	
+	REGISTER_CONDITION("condition_none_already_die", CONDITION{ return !MONSTERCC(state)->IsDeadProcessing(); });
 
 	REGISTER_CONDITION("condition_loop_animation", CONDITION{ return state->IsLoop(); });
 
@@ -77,11 +77,23 @@ HRESULT CMonsterState_Factory::Ready_Condition()
 	
 	REGISTER_CONDITION("condition_hit", CONDITION{ return MONSTERCC(state)->IsHit(); });
 	
+	REGISTER_CONDITION("condition_hit_additive", CONDITION{ return MONSTERCC(state)->IsHitAdditive(); });
+
+	REGISTER_CONDITION("condition_hit_light", CONDITION{ return MONSTERCC(state)->IsHitLight(); });
+
+	REGISTER_CONDITION("condition_hit_heavy", CONDITION{ return MONSTERCC(state)->IsHitHeavy(); });
+
+	REGISTER_CONDITION("condition_hit_launch", CONDITION{ return MONSTERCC(state)->IsHitLaunch(); });
+
+	REGISTER_CONDITION("condition_hit_knockdown", CONDITION{ return MONSTERCC(state)->IsHitKnockdown(); });
+
 	REGISTER_CONDITION("condition_fall", CONDITION{ return MONSTERCC(state)->IsFalling(); });
 
 	REGISTER_CONDITION("condition_down", CONDITION{ return MONSTERCC(state)->IsDown(); });
 
 	REGISTER_CONDITION("condition_over_lifetime", CONDITION{ return state->IsOverLifeTime(); });
+
+	REGISTER_CONDITION("condition_cooldowntime_satisfy", CONDITION{ return state->IsCooldownTimeSatisfy(); });
 
 
 	// 02-27 구조 변경 후 예시
@@ -111,6 +123,12 @@ HRESULT CMonsterState_Factory::Ready_Feature()
 
 	// 02-27 구조 변경 후 예시
 	REGISTER_FEATURE("param_feat_move_local", FEATURE{ MONSTERCC(state)->Update_8Dir_LocalAxisXZ(fTimeDelta, param.fParam[0], param.fParam[1]); state->Align_Movement(fTimeDelta); });
+	
+	REGISTER_FEATURE("feat_set_dead", FEATURE{ state->Get_OwnerObject()->Set_Dead(g_wszMonstereLayer); });
+	REGISTER_FEATURE("feat_set_deadprocess", FEATURE{ MONSTERCC(state)->Set_Dead_Process(); });
+	REGISTER_FEATURE("feat_set_cct_collision_disable", FEATURE{ MONSTERCC(state)->Set_CCT_Collision_Disable(); });
+	REGISTER_FEATURE("feat_set_cct_collision_enable", FEATURE{ MONSTERCC(state)->Set_CCT_Collision_Enable(); });
+
 	return S_OK;
 }
 

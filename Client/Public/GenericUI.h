@@ -17,6 +17,7 @@ public:
 		_wstring wstrTextureTag;
 		_wstring wstrNoiseTextureTag;
 		_wstring wstrAlphaMaskTextureTag;
+		_wstring wstrGlowTextureTag;
 		uint32_t iTextureIndex;
 		uint32_t iComponentFlag;
 		_bool isUseColorTint;
@@ -31,17 +32,15 @@ public:
 		CGameObject* pTarget = { nullptr };
 	}GENERIC_UI_DESC;
 
-	enum EUITextureSlot { DEFAULT, NOISE, ALPHA_MASK };
+	enum EUITextureSlot { DEFAULT, NOISE, ALPHA_MASK, GLOW };
 
 protected :
 	CGenericUI(ID3D11Device* pDevice, ID3D11DeviceContext* pDeviceContext);
 	CGenericUI(const CGenericUI& rhs);
 	virtual ~CGenericUI() = default;
-
 public:
 	HRESULT Initialize_Prototype() override;
 	HRESULT Initialize(void* pArg) override;
-
 public:
 	virtual HRESULT Awake(const _uint iCurrentLevelID) override;
 	virtual void Update_Priority(const _float fTimeDelta) override;
@@ -50,32 +49,32 @@ public:
 	virtual void Ready_Before_Render(const _float fTimeDelta) override;
 	virtual HRESULT Render() override;
 
+public:
 	_bool Calc_HitEvent();
-	virtual void Acting_By_InteractState();
-	virtual void OnUIEvent(ETriggerEventType eEvent, CGenericUI* pSender);
+	virtual void OnUIEvent(ETriggerEventType eEvent, CGenericUI* pSender) {}
 
 protected:
 	HRESULT Ready_Components(GENERIC_UI_DESC* pDesc);
 	HRESULT Bind_ShaderResources();
-	virtual HRESULT Spawn_FromPool(void* pArg)override;
 
+	virtual HRESULT Attach_Personal_Info() { return S_OK; }
+	virtual void Tick_By_Type(const _float fTimedelta) {}
+	virtual void Trigger_By_InteractState(){}
+
+	void Ready_Lerp_Movement(const Vec2& vStartOffset, const Vec2& vTargetOffset, const _float fDuration, const _float fEaseValue, const _float fDelay);
+	void Ready_Fade(const _float fDuration, const _float fStartAlpha, const _float fTargetAlpha, const _float fDelay);
+	void Ready_ExplosionFade(const _float fDuration, const _float fStartAlpha,const _float fExplosionAlpha, const _float fTargetAlpha, const _float fDelay);
+	void Ready_LerpChange(const _float fDuration, const _float fStartAlpha, const _float fTargetAlpha, const _float fEaseValue, const _float fDelay);
+	_bool Tick_Lerp_Movement(const _float fTimeDelta);
+	_bool Tick_Fade(const _float fTimeDelta);
+	_bool Tick_LerpChange(_float* p, const _float fTimeDelta);
+	void Request_SetDead();
 public:
 	void Set_RectPos(const Vec3& pos) { m_vRectPos = pos; }
 	ERectTransform Get_RectTransformType() const { return m_eRectTransformType; }
 	void Set_TextureIndex(_uint index) { m_iTextureIndex = index; }
 	const _string& Get_Tag() { return m_strName; }
 	_bool Get_FinEvent()const { return m_isFin_Event; }
-
-	void Ready_Lerp_Movement(const Vec2& vStartOffset, const Vec2& vTargetOffset, const _float fDuration, const _float fEaseValue, const _float fDelay);
-	_bool Tick_Lerp_Movement(const _float fTimeDelta);
-	
-	void Ready_Fade(const _float fDuration, const _float fStartAlpha, const _float fTargetAlpha, const _float fDelay);
-	void Ready_ExplosionFade(const _float fDuration, const _float fStartAlpha,const _float fExplosionAlpha, const _float fTargetAlpha, const _float fDelay);
-	_bool Tick_Fade(const _float fTimeDelta);
-
-	// 해야될 이벤트가 끝나면 Request SetDead 호출 -> 나중에 캔버스에서 일괄적으로 SetDead를 해줌
-	void Request_SetDead();
-
 protected:
 	CUI_Manager* m_pUIManager = { nullptr };	
 	uint32_t m_iLevelID = {};
@@ -86,6 +85,7 @@ protected:
 	_wstring m_wstrTextureTag			= {};
 	_wstring m_wstrNoiseTextureTag		= {};
 	_wstring m_wstrAlphaMaskTextureTag	= {};
+	_wstring m_wstrGlowTextureTag		= {};
 	uint32_t m_iTextureIndex			= {};
 	Vec3 m_vRectPos						= {};
 	Vec3 m_vRenderPos					= {};
@@ -105,27 +105,38 @@ protected:
 	int32_t m_iFillDir					= {};
 	_float m_fDelay						= {};
 	int32_t m_iFlip						= { ENUM_TO_UINT(EUIFlip::NONE) };
-
 	_float m_fBrightness				= {};
 
 	// Lerp Movement Valuse
-	Vec2 m_vMoveOffsetBase	= {};
-	Vec2 m_vStartOffset		= {};
-	Vec2 m_vTargetOffset	= {};
-	_float m_fDuration		= {};
-	_float m_fEaseValue		= {};
-	_float m_fTimeAcc		= {};
-	_float m_fDelayTimeAcc	= {};
-	_float m_fLerpDelay		= {};
+	Vec2 m_vMoveOffsetBase				= {};
+	Vec2 m_vStartOffset					= {};
+	Vec2 m_vTargetOffset				= {};
+	_float m_fDuration					= {};
+	_float m_fEaseValue					= {};
+	_float m_fTimeAcc					= {};
+	_float m_fLerpTimeAcc				= {};
+	_float m_fDelayTimeAcc				= {};
+	_float m_fLerpDelay					= {};
 
 	// Fade 
-	_float m_fFadeDelay = {};
-	_float m_fFadeDelayTimeAcc = {};
-	_float m_fFadeDuration = {};
-	_float m_fFadeTimeAcc = {};
-	_float m_fStartAlphaRatio = {};
-	_float m_fTargetAlphaRatio = {};
-	_float m_fExplosionAlphaRatio = {};
+	_float m_fFadeDelay					= {};
+	_float m_fFadeDelayTimeAcc			= {};
+	_float m_fFadeDuration				= {};
+	_float m_fFadeTimeAcc				= {};
+	_float m_fStartAlphaRatio			= {};
+	_float m_fTargetAlphaRatio			= {};
+	_float m_fExplosionAlphaRatio		= {};
+
+	_float m_fFadeTimeAcc_LerpChange = {};
+	_float m_fFadeDelayTimeAcc_LerpChange = {};
+	_float m_fFadeDelay_LerpChange = {};
+	_float m_fFadeDuration_LerpChange = {};
+	_float m_fStartAlphaRatio_LerpChange = {};
+	_float m_fTargetAlphaRatio_LerpChange = {};
+	_float m_fEaseValue_LerpChange = {};
+
+
+
 
 public:
 	virtual void Free()override;

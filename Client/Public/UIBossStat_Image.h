@@ -1,0 +1,48 @@
+#pragma once
+#include "UIDynamic_Image.h"
+#include "DataStruct_UI.h"
+
+NS_BEGIN(Client)
+class CUIBossStat_Image final : public  CUIDynamic_Image
+{
+	using Super = CUIDynamic_Image;
+public:
+	typedef struct tagUIBossStatImageDesc : public DIMAGE_DESC
+	{
+	}BOSS_STAT_IMAGE_DESC;
+
+private:
+	CUIBossStat_Image(ID3D11Device* pDevice, ID3D11DeviceContext* pDeviceContext);
+	CUIBossStat_Image(const CUIBossStat_Image& rhs);
+	virtual ~CUIBossStat_Image() = default;
+public:
+	HRESULT Initialize_Prototype() override;
+	HRESULT Initialize(void* pArg) override;
+	HRESULT Attach_Personal_Info();
+public:
+	virtual HRESULT Awake(const _uint iCurrentLevelID) override;
+	virtual void Update_Priority(const _float fTimeDelta) override;
+	virtual void Update(const _float fTimeDelta) override;
+	virtual void Update_Late(const _float fTimeDelta) override;
+	virtual void Ready_Before_Render(const _float fTimeDelta) override;
+	virtual HRESULT Render() override;
+private:
+	HRESULT Ready_Components(BOSS_STAT_IMAGE_DESC* pDesc);
+	HRESULT Bind_ShaderResources();
+private:
+	virtual void OnUIEvent(ETriggerEventType eEvent, CGenericUI* pSender)override;
+	virtual void Initialize_Visible_Event()override;
+	virtual _bool Tick_Visible_Event(const _float fTimeDelta)override;
+	virtual HRESULT Spawn_FromPool(void* pArg)override;
+	virtual HRESULT Despawn_FromPool()override;
+private:
+	_bool m_isSpawned = { false };
+	_bool m_isBossEventTrigger = { false };
+
+public:
+	static CUIBossStat_Image* Create(ID3D11Device* pDevice, ID3D11DeviceContext* pDeviceContext);
+	CGameObject* Clone(void* pArg);
+	virtual void Free()override;
+};
+
+NS_END

@@ -364,6 +364,11 @@ void CPanel_AnimDescription::Desc_EffectWindow()
             m_pAnimToolManager->Modify_EffectEvent(m_tEventInfo->vecVFXEvents);
     }
 
+    if (ImGui::Button("Set Gizmo##Effect"))
+    {
+        /*m_pAnimToolManager->*/
+    }
+
     if (ImGui::CollapsingHeader("AnimNotifyId"))
     {
 

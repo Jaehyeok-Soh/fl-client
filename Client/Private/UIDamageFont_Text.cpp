@@ -50,25 +50,6 @@ HRESULT CUIDamageFont_Text::Awake(const _uint iCurrentLevelID)
 	return S_OK;
 }
 
-HRESULT CUIDamageFont_Text::Attach_Personal_Info()
-{
-	CGameObject* pResult = m_pGameInstance->Get_GameObject_Front(ENUM_TO_UINT(ELevelType::STATIC), g_wszPlayerLayer);
-	if (nullptr == pResult)
-		return E_FAIL;
-
-	m_pPlayerStatCom = static_cast<CStatCom_Player*>(pResult->Get_Component<CMyStat>());
-	if (nullptr == m_pPlayerStatCom)
-		return E_FAIL;
-
-	if (m_isSpawned)
-	{
-		Set_Visible();
-		m_isSpawned = false;
-	}
-
-	return S_OK;
-}
-
 void CUIDamageFont_Text::Update_Priority(const _float fTimeDelta)
 {
 	Super::Update_Priority(fTimeDelta);
@@ -121,6 +102,106 @@ HRESULT CUIDamageFont_Text::Bind_ShaderResources()
 	return S_OK;
 }
 
+HRESULT CUIDamageFont_Text::Attach_Personal_Info()
+{
+	CGameObject* pResult = m_pGameInstance->Get_GameObject_Front(ENUM_TO_UINT(ELevelType::STATIC), g_wszPlayerLayer);
+	if (nullptr == pResult)
+		return E_FAIL;
+
+	m_pPlayerStatCom = static_cast<CStatCom_Player*>(pResult->Get_Component<CMyStat>());
+	if (nullptr == m_pPlayerStatCom)
+		return E_FAIL;
+
+	if (m_isSpawned)
+	{
+		Set_Visible();
+		m_isSpawned = false;
+	}
+
+	return S_OK;
+}
+
+void CUIDamageFont_Text::Tick_By_Type(const _float fTimeDelta)
+{
+	switch (m_eTextSubClassType)
+	{
+	case DTO::EUITextSubClassType::BATTLE_DAMAGE_TEXT_BEGIN:
+		break;
+	case DTO::EUITextSubClassType::BATTLE_DAMAGE_TEXT_COMMON:
+	{
+		if (m_isFin_Event)
+		{
+			if (Tick_Lerp_Movement(fTimeDelta))
+				Set_Invisible();
+		}
+	}
+	break;
+	case DTO::EUITextSubClassType::BATTLE_DAMAGE_TEXT_HIT:
+	{
+		if (m_isFin_Event)
+		{
+			m_isFin_HitFontEvent = Tick_Lerp_Movement(fTimeDelta);
+
+			if (m_isFin_HitFontEvent)
+			{
+				if (!m_isHitFontEventTrigger)
+				{
+					m_isHitFontEventTrigger = true;
+				}
+				else
+				{
+					Set_Invisible();
+					break;
+				}
+
+				if (m_isHitFontEventTrigger)
+				{
+					Ready_Lerp_Movement(Vec2{ 0.f, -10.f }, Vec2{ 0.f, 20.f }, 0.7f, 1.5f, m_fDelay);
+				}
+			}
+		}
+	}
+	break;
+	case DTO::EUITextSubClassType::BATTLE_DAMAGE_TEXT_CRITCAL:
+	{
+		if (m_isFin_Event)
+		{
+			m_fTimeAcc += fTimeDelta;
+			_float t = m_fTimeAcc / 1.f;
+
+			if (t > 1.f)
+			{
+				m_vFontColor = m_vOriginFontColor;
+				Set_Invisible();
+				break;
+			}
+			m_vFontColor.x = 1.f + ((m_vOriginFontColor.x - 1.f) * t);
+			m_vFontColor.y = 1.f + ((m_vOriginFontColor.y - 1.f) * t);
+			m_vFontColor.z = 1.f + ((m_vOriginFontColor.z - 1.f) * t);
+		}
+	}
+	break;
+	case DTO::EUITextSubClassType::BATTLE_DAMAGE_TEXT_CRITICAL_DAMAGE:
+	{
+		if (m_isFin_Event)
+		{
+			m_fTimeAcc += fTimeDelta;
+			m_vFontColor = m_vOriginFontColor;
+
+			if (m_fTimeAcc > 1.f)
+				Set_Invisible();
+		}
+	}
+	break;
+	case DTO::EUITextSubClassType::BATTLE_DAMAGE_TEXT_END:
+		break;
+	case DTO::EUITextSubClassType::END:
+	default:
+		return;
+	}
+	return;
+}
+
 HRESULT CUIDamageFont_Text::Convert_Stat_To_Text()
 {
 	switch (m_eTextSubClassType)
@@ -144,43 +225,6 @@ HRESULT CUIDamageFont_Text::Convert_Stat_To_Text()
 	return S_OK;
 }
 
-HRESULT CUIDamageFont_Text::Tick_By_Type(const _float fTimeDelta)
-{
-	switch (m_eTextSubClassType)
-	{
-	case DTO::EUITextSubClassType::BATTLE_DAMAGE_TEXT_BEGIN:
-		break;
-	case DTO::EUITextSubClassType::BATTLE_DAMAGE_TEXT_COMMON:
-		// 크게 나왔다가 줄어들기 일정시간 지나면 사라지기 
-		break;
-	case DTO::EUITextSubClassType::BATTLE_DAMAGE_TEXT_HIT:
-		// 올라왔다가 다시 내려가기
-		break;
-	case DTO::EUITextSubClassType::BATTLE_DAMAGE_TEXT_CRITCAL:
-	case DTO::EUITextSubClassType::BATTLE_DAMAGE_TEXT_CRITICAL_DAMAGE:
-	{
-		if (m_isFin_Event)
-		{
-			m_fTimeAcc += fTimeDelta;
-			if (m_fTimeAcc > 3.f)
- 				Request_SetDead();
-
-			//m_vFontColor.x = 1.f + ((m_vOriginFontColor.x - 1.f) * t);
-			//m_vFontColor.y = 1.f + ((m_vOriginFontColor.y - 1.f) * t);
-			//m_vFontColor.z = 1.f + ((m_vOriginFontColor.z - 1.f) * t);
-			//m_vFontColor.w = 1.f + ((m_vOriginFontColor.w - 1.f) * t);
-		}
-	}
-	break;
-	case DTO::EUITextSubClassType::BATTLE_DAMAGE_TEXT_END:
-		break;
-	case DTO::EUITextSubClassType::END:
-	default:
-		return E_FAIL;
-	}
-	return S_OK;
-}
-
 void CUIDamageFont_Text::OnUIEvent(ETriggerEventType eEvent, CGenericUI* pSender)
 {
 	if (!m_isActive)
@@ -195,6 +239,9 @@ void CUIDamageFont_Text::Initialize_Visible_Event()
 
 void CUIDamageFont_Text::Initialize_InVisible_Event()
 {
+	m_isActive = false;
+	m_isFin_Event = false;
+	Ready_Fade_Text(1.f, 1.f, 0.f, m_fDelay);
 }
 
 _bool CUIDamageFont_Text::Tick_Visible_Event(const _float fTimeDelta)
@@ -204,26 +251,51 @@ _bool CUIDamageFont_Text::Tick_Visible_Event(const _float fTimeDelta)
 	case DTO::EUITextSubClassType::BATTLE_DAMAGE_TEXT_BEGIN:
 		break;
 	case DTO::EUITextSubClassType::BATTLE_DAMAGE_TEXT_COMMON:
-		break;
+	{
+		m_fTimeAcc += fTimeDelta;
+		const _float fDuration			= 0.1f;
+		_float t = m_fTimeAcc / fDuration;
+		if (1.f < t)
+		{
+			Ready_Lerp_Movement(Vec2{ 0.f, 0.f }, Vec2{ 0.f, -30.f }, 1.f, 3.f, m_fDelay);
+			m_fDamageFontScaleOffet		= 1.f;
+			m_pWorldUIComp->Request_ScaleOffset(m_fDamageFontScaleOffet);
+			m_isActive					= true;
+			m_isFin_Event				= true;
+			m_fTimeAcc					= 0.f;
+			return true;
+		}
+		m_fDamageFontScaleOffet			= 1.5f + ((-0.5f) * t);
+		m_pWorldUIComp->Request_ScaleOffset(m_fDamageFontScaleOffet);
+	}
+	break;
 	case DTO::EUITextSubClassType::BATTLE_DAMAGE_TEXT_HIT:
-		break;
+	{
+		Ready_Lerp_Movement(Vec2{ 0.f, 0.f }, Vec2{ 0.f, -10.f }, 0.5f, 0.5f, m_fDelay);
+		m_isActive						= true;
+		m_isFin_Event					= true;
+		m_isFin_HitFontEvent			= false;
+		m_isHitFontEventTrigger			= false;
+		return true;
+	}
+	break;
 	case DTO::EUITextSubClassType::BATTLE_DAMAGE_TEXT_CRITCAL:
 	case DTO::EUITextSubClassType::BATTLE_DAMAGE_TEXT_CRITICAL_DAMAGE:
 	{
 		m_fTimeAcc += fTimeDelta;
-		const _float fDuration = 0.1f;
-		_float t = m_fTimeAcc / fDuration;
+		const _float fDuration			= 0.1f;
+		_float t						= m_fTimeAcc / fDuration;
 		if (1.f < t)
 		{
-			m_fDamageFontScaleOffet = 1.f;
+			m_fDamageFontScaleOffet		= 1.f;
 			m_pWorldUIComp->Request_ScaleOffset(m_fDamageFontScaleOffet);
-			m_vFontColor = m_vOriginFontColor;
-			m_isActive = true;
-			m_isFin_Event = true;
+			m_vFontColor				= Vec4{1.f, 1.f, 1.f, 1.f};
+			m_isActive					= true;
+			m_isFin_Event				= true;
+			m_fTimeAcc					= 0.f;
 			return true;
 		}
-
-		m_fDamageFontScaleOffet = 10.f + ((-9.f) * t);
+		m_fDamageFontScaleOffet			= 5.f + ((-4.f) * t);
 		m_pWorldUIComp->Request_ScaleOffset(m_fDamageFontScaleOffet);
 		return false;
 	}
@@ -234,52 +306,86 @@ _bool CUIDamageFont_Text::Tick_Visible_Event(const _float fTimeDelta)
 	default:
 		return true;
 	}
-
 	return false;
 }
 
 _bool CUIDamageFont_Text::Tick_InVisible_Event(const _float fTimeDelta)
 {
-	return true;
+	_bool is = Tick_Fade_Text(fTimeDelta);
+	if (is)
+	{
+		Request_SetDead();
+		m_isActive = true;
+		m_isFin_Event = true;
+		return true;
+	}
+	return false;
 }
 
 HRESULT CUIDamageFont_Text::Spawn_FromPool(void* pArg)
 {
 	UI_PREFAB_DATA* pDesc = static_cast<UI_PREFAB_DATA*>(pArg);
-
 	auto* pComp = Get_Script_Component(L"WorldUIComponent");
 	if (nullptr == pComp)
 		return E_FAIL;
-
 	m_pWorldUIComp = static_cast<CWorldUI_Component*>(pComp);
 	if (nullptr == m_pWorldUIComp)
 		return E_FAIL;
 
-	m_pWorldUIComp->Set_TargetPos(pDesc->DamageFontData.vHitPos);
-	m_bDead = false;
+	m_bDead						= false;
+	m_isFin_Event				= false;
+	m_isFin_HitFontEvent		= false;
+	m_isHitFontEventTrigger		= false;
+	m_fDamageFontScaleOffet		= 1.f;
+
+
+	_float x = pDesc->DamageFontData.vRandOffset.x;
+	_float y = pDesc->DamageFontData.vRandOffset.y;
+	_float z = pDesc->DamageFontData.vRandOffset.z;
+
+	if (m_eTextSubClassType == DTO::EUITextSubClassType::BATTLE_DAMAGE_TEXT_CRITICAL_DAMAGE ||
+		m_eTextSubClassType == DTO::EUITextSubClassType::BATTLE_DAMAGE_TEXT_CRITCAL)
+	{
+		m_pWorldUIComp->Set_TargetPos(Vec3{ pDesc->DamageFontData.vHitPos.x,  pDesc->DamageFontData.vHitPos.y, pDesc->DamageFontData.vHitPos.z});
+	}
+	else
+	{
+		m_pWorldUIComp->Set_TargetPos(Vec3{ pDesc->DamageFontData.vHitPos.x + x,  pDesc->DamageFontData.vHitPos.y + y, pDesc->DamageFontData.vHitPos.z + z });
+	}
 
 	switch (m_eTextSubClassType)
 	{
 	case DTO::EUITextSubClassType::BATTLE_DAMAGE_TEXT_BEGIN:
 		break;
 	case DTO::EUITextSubClassType::BATTLE_DAMAGE_TEXT_COMMON:
-		break;
-	case DTO::EUITextSubClassType::BATTLE_DAMAGE_TEXT_HIT:
-		break;
-	case DTO::EUITextSubClassType::BATTLE_DAMAGE_TEXT_CRITCAL:
 	{
-		m_vOriginFontColor			= pDesc->DamageFontData.vFontColor;
-		m_fDamageFontScaleOffet		= 3.f;
-		m_fTimeAcc					= 0.f;
-		m_isSpawned = true;
+		m_wstrText				= std::to_wstring(pDesc->DamageFontData.iDamage);
+		m_vOriginFontColor		= pDesc->DamageFontData.vFontColor;
+		m_vFontColor			= m_vOriginFontColor;
+		m_fDamageFontScaleOffet = 1.5f;
+		m_fTimeAcc				= 0.f;
+		m_isSpawned				= true;
+	}
+	break;
+	case DTO::EUITextSubClassType::BATTLE_DAMAGE_TEXT_HIT:
+	{
+		m_wstrText				= std::to_wstring(pDesc->DamageFontData.iDamage);
+		m_vOriginFontColor		= m_vFontColor;
+		m_fTimeAcc				= 0.f;
+		m_isSpawned				= true;
 	}
 	break;
 	case DTO::EUITextSubClassType::BATTLE_DAMAGE_TEXT_CRITICAL_DAMAGE:
 	{
-		m_vOriginFontColor			= pDesc->DamageFontData.vFontColor;
-		m_fDamageFontScaleOffet		= 3.f;
-		m_fTimeAcc					= 0.f;
-		m_isSpawned					= true;
+		m_wstrText				= std::to_wstring(pDesc->DamageFontData.iDamage) + L"!";
+	}
+	case DTO::EUITextSubClassType::BATTLE_DAMAGE_TEXT_CRITCAL:
+	{
+		m_vOriginFontColor		= pDesc->DamageFontData.vFontColor;
+		m_vFontColor			= m_vOriginFontColor;
+		m_fDamageFontScaleOffet = 5.f;
+		m_fTimeAcc				= 0.f;
+		m_isSpawned				= true;
 	}
 	break;
 	case DTO::EUITextSubClassType::BATTLE_DAMAGE_TEXT_END:
@@ -288,18 +394,17 @@ HRESULT CUIDamageFont_Text::Spawn_FromPool(void* pArg)
 	default:
 		return E_FAIL;
 	}
-
 	return S_OK;
 }
 
 HRESULT CUIDamageFont_Text::Despawn_FromPool()
 {
-	m_vFontColor = m_vOriginFontColor;
-	m_fDamageFontScaleOffet = 1.f;
-	m_isVisible = false;
-	m_isPreVisible = false;
-	m_isVisibleTrigger = false;
-	m_isSpawned = false;
+	m_vFontColor				= m_vOriginFontColor;
+	m_fDamageFontScaleOffet		= 1.f;
+	m_isVisible					= false;
+	m_isPreVisible				= false;
+	m_isVisibleTrigger			= false;
+	m_isSpawned					= false;
 	return S_OK;
 }
 

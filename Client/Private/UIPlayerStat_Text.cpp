@@ -1,10 +1,12 @@
 #include "pch.h"
 #include "UIPlayerStat_Text.h"
 #include "Client_Defines.h"
-
+#include "Client_EventDefine.h"
 //=================
 // Component
 //=================
+#include "MainPlayer.h"
+#include "Gun.h"
 #include "StatCom_Player.h"
 #include "Texture.h"
 #include "Shader.h"
@@ -51,24 +53,6 @@ HRESULT CUIPlayerStat_Text::Awake(const _uint iCurrentLevelID)
 	return S_OK;
 }
 
-HRESULT CUIPlayerStat_Text::Attach_Personal_Info()
-{
-	CGameObject* pResult = m_pGameInstance->Get_GameObject_Front(ENUM_TO_UINT(ELevelType::STATIC), g_wszPlayerLayer);
-	if (nullptr == pResult)
-		return E_FAIL;
-
-
-	//auto* p = static_cast<CStatComponent*>(pResult->Get_Script_Component(L"StatComponent"));
-	//if (nullptr == p)
-	//	return E_FAIL;
-
-	m_pPlayerStatCom = static_cast<CStatCom_Player*>(pResult->Get_Component<CMyStat>());
-	if (nullptr == m_pPlayerStatCom)
-		return E_FAIL;
-		
-
-	return S_OK;
-}
 
 void CUIPlayerStat_Text::Update_Priority(const _float fTimeDelta)
 {
@@ -121,26 +105,61 @@ HRESULT CUIPlayerStat_Text::Bind_ShaderResources()
 	return S_OK;
 }
 
+HRESULT CUIPlayerStat_Text::Attach_Personal_Info()
+{
+	CGameObject* pResult = m_pGameInstance->Get_GameObject_Front(ENUM_TO_UINT(ELevelType::STATIC), g_wszPlayerLayer);
+	if (nullptr == pResult)
+		return E_FAIL;
+
+	m_pPlayerStatCom = static_cast<CStatCom_Player*>(pResult->Get_Component<CMyStat>());
+	if (nullptr == m_pPlayerStatCom)
+		return E_FAIL;
+
+	if (m_eTextSubClassType == DTO::EUITextSubClassType::PLAYER_STAT_TEXT_CUR_BULLET_COUNT ||
+		m_eTextSubClassType == DTO::EUITextSubClassType::PLAYER_STAT_TEXT_MAX_BULLET_COUNT)
+	{
+		auto* pPlayer = static_cast<CMainPlayer*>(pResult);
+		if (nullptr == pPlayer)
+			return E_FAIL;
+
+		m_pGunParts = pPlayer->Get_Part<CGun>(ENUM_TO_UINT(CPlayer::Part::GUN));
+		if (nullptr == m_pGunParts)
+			return E_FAIL;
+	}
+
+	m_pGameInstance->Subscribe<BOSS_STAGING_EVENT_START>([this]() { this->Set_Invisible(); });
+	m_pGameInstance->Subscribe<BOSS_STAGING_EVENT_END>([this]() { this->Set_Visible(); });
+
+	return S_OK;
+}
+
 HRESULT CUIPlayerStat_Text::Convert_Stat_To_Text()
 {
 	switch (m_eTextSubClassType)
 	{
 	case DTO::EUITextSubClassType::NONE_OWNER:
 		break;
+	case DTO::EUITextSubClassType::PLAYER_STAT_TEXT_BEGIN:
+		m_wstrText = L"-";
+		break;
 	case DTO::EUITextSubClassType::PLAYER_STAT_TEXT_LV:
 		break;
 	case DTO::EUITextSubClassType::PLAYER_STAT_TEXT_HP:
 		m_wstrText = Float_To_Wstring(m_pPlayerStatCom->Get_Stat_Vec2(CStatCom_Player::STAT_TYPE::HP).x, 0);
 		break;
+
 	case DTO::EUITextSubClassType::PLAYER_STAT_TEXT_ARMOR:
 		m_wstrText = Float_To_Wstring(m_pPlayerStatCom->Get_Stat_Vec2(CStatCom_Player::STAT_TYPE::DEFENSE).x, 0);
 		break;
+
 	case DTO::EUITextSubClassType::PLAYER_STAT_TEXT_ENERGY:
 		m_wstrText = Float_To_Wstring(m_pPlayerStatCom->Get_Stat_Vec2(CStatCom_Player::STAT_TYPE::MENTAL).x, 0);
 		break;
+
 	case DTO::EUITextSubClassType::PLAYER_STAT_TEXT_ESKILL_TYPE:
 		m_wstrText = SKILL_TYPE_ToWstring(m_pPlayerStatCom->Get_Skill(CStatCom_Player::Attack_State::E).eSkillType);
 		break;
+
 	case DTO::EUITextSubClassType::PLAYER_STAT_TEXT_ESKILL_COOLTIME:
 	{
 		_float fMaxCool = m_pPlayerStatCom->Get_Skill(CStatCom_Player::Attack_State::E).tCoolTimer.fMaxTime;
@@ -181,8 +200,10 @@ HRESULT CUIPlayerStat_Text::Convert_Stat_To_Text()
 		m_wstrText = std::to_wstring(m_pPlayerStatCom->Get_Count(CStatCom_Player::TIMER_TYPE::DASH));
 		break;
 	case DTO::EUITextSubClassType::PLAYER_STAT_TEXT_MAX_BULLET_COUNT:
+		m_wstrText = Float_To_Wstring(m_pGunParts->Get_TotalButtlet().x, 0.f);
 		break;
 	case DTO::EUITextSubClassType::PLAYER_STAT_TEXT_CUR_BULLET_COUNT:
+		m_wstrText = Float_To_Wstring(m_pGunParts->Get_CurButtlet().x, 0.f);
 		break;
 	case DTO::EUITextSubClassType::END:
 	default:
@@ -208,10 +229,10 @@ void CUIPlayerStat_Text::OnUIEvent(ETriggerEventType eEvent, CGenericUI* pSender
 
 void CUIPlayerStat_Text::Initialize_Visible_Event()
 {
-	m_isActive = false;
-	m_isFin_Event = false;
-	m_vFontColor = Vec4{ 0.f ,0.f ,0.f ,0.f };
-	m_fTimeAcc = 0.f;
+	m_isActive		= false;
+	m_isFin_Event	= false;
+	m_vFontColor.w	= 0.f;
+	m_fTimeAcc		= 0.f;
 }
 
 void CUIPlayerStat_Text::Initialize_InVisible_Event()
@@ -225,9 +246,6 @@ _bool CUIPlayerStat_Text::Tick_Visible_Event(const _float fTimeDelta)
 	if (m_fTimeAcc < m_fDelay)
 		return false;
 
-	m_vFontColor.x += fTimeDelta * 2.f;
-	m_vFontColor.y += fTimeDelta * 2.f;
-	m_vFontColor.z += fTimeDelta * 2.f;
 	m_vFontColor.w += fTimeDelta * 2.f;
 	if (m_vFontColor.w > 1.f)
 	{

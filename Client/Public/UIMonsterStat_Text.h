@@ -2,8 +2,12 @@
 #include "UIText.h"
 #include "DataStruct_UI.h"
 
+NS_BEGIN(Engine)
+class CMyStat;
+NS_END
+
 NS_BEGIN(Client)
-class CWorldUI_Component;
+
 class CUIMonsterStat_Text final : public CUIText
 {
 	using Super = CUIText;
@@ -20,7 +24,6 @@ private:
 public:
 	HRESULT Initialize_Prototype() override;
 	HRESULT Initialize(void* pArg) override;
-	HRESULT Attach_Personal_Info(const _uint iCurrentLevelID);
 
 public:
 	virtual HRESULT Awake(const _uint iCurrentLevelID) override;
@@ -33,7 +36,7 @@ public:
 private:
 	HRESULT Ready_Components(MONSTER_STAT_DESC* pDesc);
 	HRESULT Bind_ShaderResources();
-
+	HRESULT Attach_Personal_Info();
 	HRESULT Convert_Stat_To_Text();
 private:
 	virtual void OnUIEvent(ETriggerEventType eEvent, CGenericUI* pSender)override;
@@ -45,8 +48,8 @@ private:
 	virtual HRESULT Despawn_FromPool()override;
 
 private:
-	CWorldUI_Component* m_pWorldUIComp = { nullptr };
-	_float m_fStat = {};
+	CGameObject* m_pTargetMoster = { nullptr };
+	CMyStat* m_pTargetStat = { nullptr };
 
 public:
 	static CUIMonsterStat_Text* Create(ID3D11Device* pDevice, ID3D11DeviceContext* pDeviceContext);

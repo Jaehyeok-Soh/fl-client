@@ -302,37 +302,37 @@ void CCameraMan_Targeter::GunCam_Begin()
 {
     m_MGun_RightDistance.x = 0.f;
 
-    CGameObject* pActor = { nullptr };
-    if (!(pActor = Get_Actor()))
-        return;
+    //CGameObject* pActor = { nullptr };
+    //if (!(pActor = Get_Actor()))
+    //    return;
 
-    if (CContainerObject* pObject = dynamic_cast<CContainerObject*>(pActor))
-    {
-        // 플레이어의 바디를 들고 온다
-        CBody* pBodyOfPlayer = nullptr;
-        if (!(pBodyOfPlayer = pObject->Get_Part<CBody>(CPlayer::BODY)))
-            return;
+    //if (CContainerObject* pObject = dynamic_cast<CContainerObject*>(pActor))
+    //{
+    //    // 플레이어의 바디를 들고 온다
+    //    CBody* pBodyOfPlayer = nullptr;
+    //    if (!(pBodyOfPlayer = pObject->Get_Part<CBody>(CPlayer::BODY)))
+    //        return;
 
-        // 플레이어의 transform을 들고 온다
-        CTransform* pPlayerTransform = nullptr;
-        if (!(pPlayerTransform = pObject->Get_Component<CTransform>()))
-            return;
+    //    // 플레이어의 transform을 들고 온다
+    //    CTransform* pPlayerTransform = nullptr;
+    //    if (!(pPlayerTransform = pObject->Get_Component<CTransform>()))
+    //        return;
 
-        Vec3 vChasePositionRaw = Get_CamBoneWorldPos_FromBody(pBodyOfPlayer, pPlayerTransform);
+    //    Vec3 vChasePositionRaw = Get_CamBoneWorldPos_FromBody(pBodyOfPlayer, pPlayerTransform);
 
-        Vec3 vRight = pPlayerTransform->Get_Info(TRANSFORM_INFO_STATE::RIGHT);
-        vRight.Normalize();
+    //    Vec3 vRight = pPlayerTransform->Get_Info(TRANSFORM_INFO_STATE::RIGHT);
+    //    vRight.Normalize();
 
-        Vec3 vFront = Vec3(vRight.z, 0.f, -vRight.x);
+    //    Vec3 vFront = Vec3(vRight.z, 0.f, -vRight.x);
 
-        // 기준 뼈 위치 + 플레이어의 오른쪽 - 뒤로
-        m_vTargetPos = vChasePositionRaw + (vRight * m_MGun_RightDistance.x + vFront * m_fCurDistance) ;
-    }
+    //    // 기준 뼈 위치 + 플레이어의 오른쪽 - 뒤로
+    //    m_vTargetPos = vChasePositionRaw + (vRight * m_MGun_RightDistance.x + vFront * m_fCurDistance) ;
+    //}
 }
 
 void CCameraMan_Targeter::GunCam_Update_Priority(const _float fTimeDelta)
 {
-    m_MGun_RightDistance.x += fTimeDelta;
+    m_MGun_RightDistance.x += m_fDistanceSpeed * fTimeDelta;
     if (m_MGun_RightDistance.x >= m_MGun_RightDistance.y)
         m_MGun_RightDistance.x = m_MGun_RightDistance.y;
 
@@ -355,9 +355,6 @@ void CCameraMan_Targeter::GunCam_Update_Priority(const _float fTimeDelta)
             return;
 
         Vec3 vChasePositionRaw = Get_CamBoneWorldPos_FromBody(pBodyOfPlayer, pPlayerTransform);
-
-        _float fT_Chase = 1.f - std::exp(-fTimeDelta / m_fTau_Pos);
-        Vec3 vChaseFiltered = Vec3::Lerp(m_vChaseFiltered, vChasePositionRaw, fT_Chase);
 
         Vec3 vRight = pPlayerTransform->Get_Info(TRANSFORM_INFO_STATE::RIGHT);
         vRight.Normalize();
@@ -494,7 +491,7 @@ Vec3 CCameraMan_Targeter::Get_CamBoneWorldPos_FromBody(CBody* pBody, CTransform*
     Matrix matWorld = pTrnasform->Get_WorldMatrix(); // player matrix
 
     // player body의 ""가 있다면 -> bondM * camM
-    if (CBone* pCamBone = pBody->Get_CamBone()) //Get_CamBone ?? Get_CamSocketBone
+    if (CBone* pCamBone = pBody->Get_CamSocketBone()) //Get_CamBone ?? Get_CamSocketBone
     {
         matReturn = pCamBone->Get_CombinedTransformMatrix() * matWorld;
     }

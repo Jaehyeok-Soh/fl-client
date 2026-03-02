@@ -17,11 +17,19 @@ private:
 
 public:
 	void Awake();
-	void Update();
+	void Update(const _float fTimeDelta);
 
 #ifdef _DEBUG
 	void Render();
 #endif // _DEBUG
+
+public:
+    /// <summary>
+    /// 이동량 모아서 한번에 업데이트(move)
+    /// </summary>
+    /// <param name="disp"></param>
+    void Add_Disp(Vec3 disp);
+    void UpdateMove(const _float fTimeDelta);
 
 public:
     /// <summary>
@@ -116,6 +124,10 @@ public:
 
     void SetCollisionFilter();
 
+    void SetIsSteppingOnCCT();
+
+    void EnableCollision(_bool bEnable);
+
 private:
     ID3D11Device* m_pDevice = { nullptr };
     ID3D11DeviceContext* m_pDeviceContext = { nullptr };
@@ -125,6 +137,14 @@ private:
     PHYSICSCCT_DESC m_tDesc = {};
     _float m_fHeightOffset = {};
     _float m_fContactOffset = {};
+
+    Vec3 m_vVelocity = {};
+    _float m_fVerticalVelocity = {};
+    _float m_fGravity = { -9.81f };
+
+    Vec3 m_vAccDisp = {};
+
+    _bool m_bIsSteppingOnCCT = { false };
 
 private:
     std::set<CGameObject*> m_setCurContact;

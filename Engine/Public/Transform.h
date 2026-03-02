@@ -19,6 +19,7 @@ public:
 		_float	fMovePerSec = { 5.f };
 		_float	fRotatePerSec = { 8.f };
 	}TRANSFORM_DESC;
+
 private:
 	CTransform();
 	explicit CTransform(const CTransform& rhs);

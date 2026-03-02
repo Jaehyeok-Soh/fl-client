@@ -19,13 +19,20 @@ namespace Tool
         "condition_target_lost",
         "condition_animation_finish",
         "condition_die",
+        "condition_none_die",
+        "condition_already_die",
+        "condition_none_already_die",
+        "condition_hit",
         "condition_hit_light",
         "condition_hit_heavy",
         "condition_hit_additive",
+        "condition_hit_launch",
+        "condition_hit_knockdown",
         "condition_loop_animation",
         "condition_cancellation",
         "condition_non_cancellation",
         "condition_over_lifetime",
+        "condition_cooldowntime_satisfy",
 
         // param examples
         "param_condition_distance_over",
@@ -50,6 +57,9 @@ namespace Tool
 
         // param examples
         "param_feat_move_local",
+
+        "feat_set_dead",
+        "feat_set_deadprocess",
     };
 
     inline constexpr int kConditionCount = (int)(sizeof(kConditionNames) / sizeof(kConditionNames[0]));

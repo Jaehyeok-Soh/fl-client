@@ -679,6 +679,7 @@ namespace Tool
 		PROGRESS,
 		DISOLVE,
 		NOISE,
+		GLOW,
 		END
 	};
 
@@ -691,6 +692,7 @@ namespace Tool
 		case EUIShaderPass::PROGRESS: return "PROGRESS";
 		case EUIShaderPass::DISOLVE: return "DISOLVE";
 		case EUIShaderPass::NOISE: return "NOISE";
+		case EUIShaderPass::GLOW: return "GLOW";
 		default: return "";
 		}
 	}
@@ -702,6 +704,7 @@ namespace Tool
 		else if (str == "PROGRESS") return EUIShaderPass::PROGRESS;
 		else if (str == "DISOLVE") return EUIShaderPass::DISOLVE;
 		else if (str == "NOISE") return EUIShaderPass::NOISE;
+		else if (str == "GLOW") return EUIShaderPass::GLOW;
 		else return EUIShaderPass::DEFAULT;
 	}
 
@@ -721,6 +724,7 @@ namespace Tool
 		DAMAGE_FONTS_COMMON,
 		DAMAGE_FONTS_CRITICAL,
 		DAMAGE_FONTS_HIT,
+		BOSS_NAMEPLATE,
 		END
 	};
 
@@ -733,6 +737,7 @@ namespace Tool
 		case EUIPrefabType::DAMAGE_FONTS_COMMON:	return "DAMAGE_FONTS_COMMON";
 		case EUIPrefabType::DAMAGE_FONTS_CRITICAL:	return "DAMAGE_FONTS_CRITICAL";
 		case EUIPrefabType::DAMAGE_FONTS_HIT:		return "DAMAGE_FONTS_HIT";
+		case EUIPrefabType::BOSS_NAMEPLATE:			return "BOSS_NAMEPLATE";
 		case EUIPrefabType::END:					return "";
 		default: return "";
 		}

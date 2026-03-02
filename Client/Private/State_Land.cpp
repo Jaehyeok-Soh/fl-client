@@ -27,7 +27,7 @@ HRESULT CState_Land::Start(void* pArg, _bool bForce)
 	if (FAILED(Super::Start(pArg, bForce)))
 		return E_FAIL;
 
-	Set_DoubleJump(false);
+	Set_DoubleJumpCount(false);
 
 	return S_OK;
 }
