@@ -1074,6 +1074,11 @@ PxController* CGameInstance::GetController(PHYSICSCCT_DESC* pDesc)
 	return m_pPhysics_Module->GetController(pDesc);
 }
 
+CPhysics_CCTFilterCallback* CGameInstance::GetCCTFilterCallback()
+{
+	return m_pPhysics_Module->GetCCTFilterCallback();
+}
+
 void CGameInstance::RegisterPhysicsMesh(_uint levelIndex, _wstring prototypeTag)
 {
 	m_pPhysics_Module->RegisterPhysicsMesh(levelIndex, prototypeTag);

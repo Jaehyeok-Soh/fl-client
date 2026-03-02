@@ -45,21 +45,26 @@ void CPhysicsRigidBody::Awake()
 		return;
 	}
 
-	PHYSICSCOLLIDER_DESC* colDesc = collider->GetDesc();
-	vector<PxShape*>* shapes = &collider->GetShapes();
-
-	m_pActors = m_pGameInstance->GetActor(&m_tDesc,
-		colDesc,
-		*shapes);
-
-	for (auto& actor : m_pActors)
+	if (m_pActors.size() <= 0 || m_pActors.front() == nullptr)
 	{
-		if (actor)
+		PHYSICSCOLLIDER_DESC* colDesc = collider->GetDesc();
+		vector<PxShape*>* shapes = &collider->GetShapes();
+
+		m_pActors = m_pGameInstance->GetActor(&m_tDesc,
+			colDesc,
+			*shapes);
+
+		for (auto& actor : m_pActors)
 		{
-			m_pGameInstance->AddActor(actor);
-			SetUserData(Get_Owner());
+			if (actor)
+			{
+				m_pGameInstance->AddActor(actor);
+				SetUserData(Get_Owner());
+			}
 		}
 	}
+
+	EnableCollision(true);
 }
 
 void CPhysicsRigidBody::Update(const Matrix& matWorld)
@@ -151,6 +156,48 @@ CPhysicsRigidBody* CPhysicsRigidBody::Move(Vec3 vDist, _float fTimeDelta)
 
 CPhysicsRigidBody* CPhysicsRigidBody::Shot(_uint iIndex, Vec3 vDist, _float fTimeDelta)
 {
+	return this;
+}
+
+CPhysicsRigidBody* CPhysicsRigidBody::EnableCollision(_bool bEnable)
+{
+	if (m_pActors.size() <= 0)
+		return this;
+
+	if (m_pActors.front() == nullptr)
+		return this;
+
+	for (auto& actor : m_pActors)
+	{
+		if (actor)
+		{
+			PxU32 numShape = actor->getNbShapes();
+			vector<PxShape*> vecShape(numShape);
+			actor->getShapes(vecShape.data(), numShape);
+
+			if (vecShape.size() > 0)
+			{
+				for (auto& shape : vecShape)
+				{
+					PxShapeFlags flags = shape->getFlags();
+					if (flags.isSet(PxShapeFlag::eTRIGGER_SHAPE))
+					{
+						shape->setFlag(PxShapeFlag::eTRIGGER_SHAPE, bEnable);
+						shape->setFlag(PxShapeFlag::eSCENE_QUERY_SHAPE, false);
+						shape->setFlag(PxShapeFlag::eSIMULATION_SHAPE, false);
+					}
+					else
+					{
+						shape->setFlag(PxShapeFlag::eSIMULATION_SHAPE, bEnable);
+						shape->setFlag(PxShapeFlag::eSCENE_QUERY_SHAPE, bEnable);
+					}
+				}
+			}
+		}
+
+		actor->setActorFlag(PxActorFlag::eDISABLE_SIMULATION, !bEnable);
+	}
+
 	return this;
 }
 

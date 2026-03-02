@@ -8,6 +8,9 @@
 #include "Camera.h"
 #include "GameInstance.h"
 
+#include "PhysicsCCT.h"
+#include "PhysicsRigidBody.h"
+
 uint64 CGameObject::s_iNextID = 0;
 
 CGameObject::CGameObject(ID3D11Device* pDevice, ID3D11DeviceContext* pDeviceContext)
@@ -219,6 +222,18 @@ HRESULT CGameObject::Change_State(_uint iIndex)
 void CGameObject::Set_Dead(const wstring& wstrLayerTag)
 {
     m_bDead = true;
+
+    // Physics
+    {
+        auto pCCT = Get_Component<CPhysicsCCT>();
+        if (pCCT)
+            pCCT->EnableCollision(false);
+        
+        auto pRigidBody = Get_Component<CPhysicsRigidBody>();
+        if (pRigidBody)
+            pRigidBody->EnableCollision(false);
+    }
+
     m_pGameInstance->Request_DeleteGameObject(m_pGameInstance->Get_CurrentLevelIndex(), wstrLayerTag, this);
 }
 

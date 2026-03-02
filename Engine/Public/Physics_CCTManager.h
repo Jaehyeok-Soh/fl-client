@@ -6,6 +6,7 @@ NS_BEGIN(Engine)
 class CPhysics_ResourceManager;
 class CPhysics_CCTHitReport;
 class CPhysics_CCTBehaviorCallback;
+class CPhysics_CCTFilterCallback;
 
 class CPhysics_CCTManager final : public CBase
 {
@@ -36,6 +37,8 @@ public:
     void ReleaseCharacter(PxController* cct);
     void ReleaseCCTManager();
 
+    CPhysics_CCTFilterCallback* GetCCTFilterCallback() { return m_pCCTFilterCallback; }
+
 private:
     PxController* MakeBoxController(PHYSICSCCT_DESC* pDesc);
     PxController* MakeCapsuleController(PHYSICSCCT_DESC* pDesc);
@@ -55,6 +58,7 @@ private:
 
     CPhysics_CCTHitReport* m_pCCTHitReport = { nullptr };
     CPhysics_CCTBehaviorCallback* m_pCCTBehaviorCallback = { nullptr };
+    CPhysics_CCTFilterCallback* m_pCCTFilterCallback = { nullptr };
 
 public:
     static CPhysics_CCTManager* Create(ID3D11Device* pDevice, ID3D11DeviceContext* pContext, PxPhysics* pPhysics, PxScene* pScene, CPhysics_ResourceManager* pResourceManager);

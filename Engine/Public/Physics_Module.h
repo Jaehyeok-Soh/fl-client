@@ -78,6 +78,7 @@ public:
 /// </summary>
 public:
     PxController* GetController(PHYSICSCCT_DESC* pDesc);
+    CPhysics_CCTFilterCallback* GetCCTFilterCallback();
 
 /// <summary>
 /// Collision Filter Shader

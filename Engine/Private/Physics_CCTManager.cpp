@@ -6,6 +6,7 @@
 
 #include "Physics_CCTHitReport.h"
 #include "Physics_CCTBehaviorCallback.h"
+#include "Physics_CCTFilterCallback.h"
 
 CPhysics_CCTManager::CPhysics_CCTManager(ID3D11Device* pDevice, ID3D11DeviceContext* pContext, PxPhysics* pPhysics, PxScene* pScene, CPhysics_ResourceManager* pResourceManager)
 	: m_pGameInstance{ CGameInstance::GetInstance() },
@@ -27,6 +28,7 @@ HRESULT CPhysics_CCTManager::Initialize()
 
 	m_pCCTHitReport = CPhysics_CCTHitReport::Create();
 	m_pCCTBehaviorCallback = CPhysics_CCTBehaviorCallback::Create();
+	m_pCCTFilterCallback = CPhysics_CCTFilterCallback::Create();
 
 	return S_OK;
 }
@@ -126,6 +128,7 @@ void CPhysics_CCTManager::Free()
 {
 	Safe_Release(m_pCCTHitReport);
 	Safe_Release(m_pCCTBehaviorCallback);
+	Safe_Release(m_pCCTFilterCallback);
 
 	Safe_Release(m_pResourceManager);
 

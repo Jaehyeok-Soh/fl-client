@@ -270,6 +270,7 @@
     <ClCompile Include="..\Private\PartObject.cpp" />
     <ClCompile Include="..\Private\PhysicsAttackOverlap.cpp" />
     <ClCompile Include="..\Private\PhysicsCCT.cpp" />
+    <ClCompile Include="..\Private\Physics_CCTFilterCallback.cpp" />
     <ClCompile Include="..\Private\PhysicsCollider.cpp" />
     <ClCompile Include="..\Private\PhysicsRigidBody.cpp" />
     <ClCompile Include="..\Private\Physics_ActorFactory.cpp" />
@@ -438,6 +439,7 @@
     <ClInclude Include="..\Public\PartObject.h" />
     <ClInclude Include="..\Public\PhysicsAttackOverlap.h" />
     <ClInclude Include="..\Public\PhysicsCCT.h" />
+    <ClInclude Include="..\Public\Physics_CCTFilterCallback.h" />
     <ClInclude Include="..\Public\PhysicsCollider.h" />
     <ClInclude Include="..\Public\PhysicsRigidBody.h" />
     <ClInclude Include="..\Public\Physics_ActorFactory.h" />

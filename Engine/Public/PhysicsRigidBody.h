@@ -53,6 +53,8 @@ public:
 	/// Only dynamic ///
 	////////////////////
 
+	CPhysicsRigidBody* EnableCollision(_bool bEnable);
+
 #ifdef _DEBUG
 	void Render();
 #endif // _DEBUG

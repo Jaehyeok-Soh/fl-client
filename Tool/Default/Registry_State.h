@@ -60,6 +60,9 @@ namespace Tool
 
         "feat_set_dead",
         "feat_set_deadprocess",
+
+        "feat_set_cct_collision_enable",
+        "feat_set_cct_collision_disable",
     };
 
     inline constexpr int kConditionCount = (int)(sizeof(kConditionNames) / sizeof(kConditionNames[0]));
