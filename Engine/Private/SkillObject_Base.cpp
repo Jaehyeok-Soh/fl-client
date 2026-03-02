@@ -58,6 +58,11 @@ HRESULT CSkillObject_Base::Awake(const _uint iCurrentLevelID)
 	if (FAILED(Super::Awake(iCurrentLevelID)))
 		return E_FAIL;
 
+	if(CPhysicsRigidBody* pRigidBody = Get_Component<CPhysicsRigidBody>())
+		pRigidBody->Awake();
+	if(CEffectHandler* pEffectHandler = Get_Component<CEffectHandler>())
+		pEffectHandler->Awake();
+
 	Get_Component<CTransform>()->Set_Info(TRANSFORM_INFO_STATE::POS, m_desc.vSpawnPos);
 	return S_OK;
 }
@@ -110,6 +115,9 @@ HRESULT CSkillObject_Base::Spawn_FromPool(void* pArg)
 	if (pArg == nullptr)
 		return E_FAIL;
 
+	if (FAILED(Super::Spawn_FromPool(pArg)))
+		return E_FAIL;
+
 	CTransform *pTransform = Get_Component<CTransform>();
 	CPhysicsRigidBody* pRigidBody = Get_Component<CPhysicsRigidBody>();
 	CEffectHandler* pEffectHandler = Get_Component<CEffectHandler>();
@@ -138,7 +146,9 @@ HRESULT CSkillObject_Base::Spawn_FromPool(void* pArg)
 
 HRESULT CSkillObject_Base::Despawn_FromPool()
 {
-	Super::Despawn_FromPool();
+	if (FAILED(Super::Despawn_FromPool()))
+		return E_FAIL;
+
 	m_runtimeDesc = {};
 	Get_Component<CEffectHandler>()->Trigger_Lifecycle_Effect(CEffectHandler::E_OBJ_LIFECYCLE_STATE::ON_DESTROY);
 	return S_OK;

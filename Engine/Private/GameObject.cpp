@@ -82,6 +82,12 @@ HRESULT CGameObject::Render()
     return S_OK;
 }
 
+HRESULT CGameObject::Spawn_FromPool(void *pArg)
+{
+    m_bDead = false;
+    return S_OK;
+}
+
 HRESULT CGameObject::Despawn_FromPool()
 {
     // Physics
@@ -237,6 +243,9 @@ HRESULT CGameObject::Change_State(_uint iIndex)
 /// <param name="wstrLayerTag">내가 속한 레이어의 태그</param>
 void CGameObject::Set_Dead(_bool bStatic)
 {
+    if (m_bDead)
+        return;
+
     _uint iLevelIndex = bStatic == true ? 0 : m_pGameInstance->Get_CurrentLevelIndex();
     m_bDead = true;
     m_pGameInstance->Request_DeleteGameObject(iLevelIndex, m_wstrLayerTag, this);

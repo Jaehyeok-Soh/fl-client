@@ -224,6 +224,8 @@ void Effect::IsEffectFinish()
 HRESULT Effect::Spawn_FromPool(void* pArg)
 {
 	if (nullptr == pArg) return E_FAIL;
+	if (FAILED(Super::Spawn_FromPool(pArg)))
+		return E_FAIL;
 
 	Matrix matTargetWorld = XMMatrixIdentity();
 	Get_Component<CTransform>()->Set_WorldMatrix(matTargetWorld);
@@ -263,6 +265,9 @@ HRESULT Effect::Spawn_FromPool(void* pArg)
 
 HRESULT Effect::Despawn_FromPool()
 {
+	if (FAILED(Super::Despawn_FromPool()))
+		return E_FAIL;
+
 	for (auto effectObject : m_vecPartObjects)
 	{
 		if (effectObject != nullptr)

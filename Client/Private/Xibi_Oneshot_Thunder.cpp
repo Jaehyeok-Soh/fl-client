@@ -33,7 +33,8 @@ HRESULT CXibi_Oneshot_Thunder::Initialize(void* pArg)
 	if (FAILED(Ready_Components()))
 		return E_FAIL;
 
-	Get_Component<CPhysicsRigidBody>()->Awake();
+	if (CPhysicsRigidBody* pRigidBody = Get_Component<CPhysicsRigidBody>())
+		pRigidBody->Awake();
 	return S_OK;
 }
 
@@ -42,7 +43,6 @@ HRESULT CXibi_Oneshot_Thunder::Awake(const _uint iCurrentLevelID)
 	if (FAILED(Super::Awake(iCurrentLevelID)))
 		return E_FAIL;
 
-	Get_Component<CEffectHandler>()->Awake();
 	return S_OK;
 }
 
@@ -143,13 +143,10 @@ HRESULT CXibi_Oneshot_Thunder::Ready_Components()
 			PHYSICSCOLLIDER_DESC cloneDesc{};
 			cloneDesc.eShape = EPhysicsShape::BOX;
 			cloneDesc.eFilterLayer = tagPhysicsFilterGroup::MONSTER_SKILL_PROJECTTILE;
-			cloneDesc.bIsSkillTrigger = true;
+			//cloneDesc.bIsSkillTrigger = true;
 			cloneDesc.iFilterMask =
 			{
 				PHYSICSFILTERGROUP::Enum::PLAYER
-				| PHYSICSFILTERGROUP::Enum::ATTACK_PROJECTTILE
-				| PHYSICSFILTERGROUP::Enum::SKILL_PROJECTTILE
-				| PHYSICSFILTERGROUP::Enum::ATTACK
 				| PHYSICSFILTERGROUP::Enum::MAP
 			};
 			cloneDesc.bIsTrigger = true;

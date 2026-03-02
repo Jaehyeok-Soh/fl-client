@@ -50,7 +50,7 @@ public:
 	virtual void OnTrigger_Exit(_uint iMyColliderLayer, _uint iOtherLayer, CGameObject* pOther) {}
 	virtual _bool Picking(OUT Vec3& vOut) { return false; }
 	virtual HRESULT Render();
-	virtual HRESULT Spawn_FromPool(void* pArg) { return S_OK; }
+	virtual HRESULT Spawn_FromPool(void* pArg);
 	virtual HRESULT Despawn_FromPool();
 	virtual _bool IntersectWithFrustrum(BoundingFrustum* pFrustrum) { return true; }
 	virtual _bool On_Hit(const HIT_DESC& hitDesc) { return true; }
