@@ -553,6 +553,9 @@
     <Filter Include="03. GameObject\PartObjects\Monster\Body\Boomer">
       <UniqueIdentifier>{6c2ae324-f31e-44b8-b14f-ef67a7faf29d}</UniqueIdentifier>
     </Filter>
+    <Filter Include="03. GameObject\BattelField">
+      <UniqueIdentifier>{b1195416-a6da-4357-b964-0ea1df18e98b}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="targetver.h">
@@ -1030,6 +1033,9 @@
     <ClInclude Include="..\Public\TriggerBox_MonsterSpawner.h">
       <Filter>03. GameObject\TriggerBox\01. TriggerBox_LevelChange</Filter>
     </ClInclude>
+    <ClInclude Include="..\Public\BattleField.h">
+      <Filter>03. GameObject\BattelField</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <Image Include="Client.ico">
@@ -1498,6 +1504,9 @@
     </ClCompile>
     <ClCompile Include="..\Private\TriggerBox_MonsterSpawner.cpp">
       <Filter>03. GameObject\TriggerBox\01. TriggerBox_LevelChange</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\BattleField.cpp">
+      <Filter>03. GameObject\BattelField</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

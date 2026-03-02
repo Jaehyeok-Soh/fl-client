@@ -132,7 +132,7 @@ HRESULT CAnimObj::Change_ModelCom(_wstring wstrModelTag)
 
 _uint CAnimObj::Get_PartsNums()
 {
-	return Get_PartList().size();
+	return static_cast<_uint>(Get_PartList().size());
 }
 
 HRESULT CAnimObj::Ready_Components(ANIMOBJ_DESC* pDesc)

@@ -15,6 +15,7 @@ public:
 
 private:
 	CBounding_OBB(ID3D11Device* pDevice, ID3D11DeviceContext* pDeviceContext);
+	CBounding_OBB(const CBounding_OBB& rhs);
 	virtual ~CBounding_OBB() = default;
 
 	HRESULT Initialize(const BOUNDING_DESC* pInitialDesc);

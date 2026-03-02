@@ -5,14 +5,17 @@
 
 NS_BEGIN(Engine)
 
-class  CGameInstance;
-struct CLIENT_MAKEPATH_DESC_BASE;
-class CDataDocumentBase;
-
+class	CGameInstance;
+struct	CLIENT_MAKEPATH_DESC_BASE;
+class	CDataDocumentBase;
 
 class CTexture;
 class CShader;
 class CTextureBase;
+
+struct Camera_Cinematic_Sequence;
+struct Camera_Keyframe_Data;
+
 
 NS_END
 
@@ -27,7 +30,6 @@ class CPanel_MapObjectList;
 
 using MapObjectCloneFactory = std::function<CGameObject*(void* pArg)>;
 using PairKey = std::pair<wstring, vector<wstring>>;
-
 
 
 
@@ -140,6 +142,7 @@ public:
 public:
 	CModel*						Get_MonsterPreviewModel(DTO::EMakeMonsterType eMakeMonsterType );
 	CModel*						Get_PlayerPreviewModel();
+	CModel*						Get_BatchObjectModel(DTO::EMakeObjectType eType);
 public:
 	HRESULT						Ready_LevelData();
 	HRESULT						Apply_LevelData(const DTO::TLevelData* tData);
@@ -159,7 +162,6 @@ public:
 	HRESULT						Register_MapTexture();
 
 	HRESULT						Release_SplatingTextureData();
-
 	HRESULT						Delete_TextureSplatingInfoData(const wstring& wstrDeleteName);
 	HRESULT						Load_TextureSplatingInfoData();
 	HRESULT						Load_TextureSplatingInfoData(const wstring& wstrLoadName);
@@ -217,26 +219,42 @@ public:
 	EClientLevelType			Get_MakeMapObejctClientLevelType()	const { return m_eMakeMapObjectClientLevelType; }
 	EClientMakePath				Get_MakeMapObjectClientMakePath()	const { return m_eMakeMapObjectClientMakePath; }
 	EMapObject_DrawType			Get_MakeMapObjectDrawType()			const { return m_eMakeMapObjectDrawType; }
-
+public:
+	HRESULT						Render();
 public:
 	HRESULT						Export_SaveSceneData(DTO::ECategory eCategory, CDataDocumentBase* pDocument);
 
-private:
+#pragma region Camera Cinematic Sequence
+public:
+	HRESULT						Load_Camera_Cinematic_Sequence(const wstring& wstrFindKey);
+	HRESULT						Save_Camera_Cinematic_Sequence(const wstring& wstrSaveKey);
 
+	HRESULT						Reset_Camera_Cinematic_Sequence();
+	HRESULT						Update_Camera_Cinematic_Sequence_Names();
+
+	HRESULT						Ready_CinematicSequenceDebugRender();
+private:
+	/* Camera Cinematic Sequence 관련 데이터를 복사로 받아와서 작업하고 저장하는용도 */	
+	Camera_Cinematic_Sequence*	m_pCamCinematicSequence{nullptr};
+	vector<string>				m_vecCamCinematicSequenceNames{};
+	CModel*						m_pCamCinematicSequenceRenderModel{nullptr};
+	CShader*					m_pCamCinematicSequenceRenderShader{ nullptr };
+#pragma endregion
+private:
 	/* Texture Splating을 사용하는 것들을 위해 데이터를 미리 받아오고 활용할 수 있게 한다... */
 	map<wstring, TEXTURE_SPLATTING_INFO >				m_mapTextureSplatingInfoDatas{};
 private:
-	ID3D11Device*				m_pDevice{};
-	ID3D11DeviceContext*		m_pContext{};
+	ID3D11Device*										m_pDevice{};
+	ID3D11DeviceContext*								m_pContext{};
 	
 	/* 생성되기 직전 PreviewObject */
-	CMapObject*					m_pPreviewMapobject{};
+	CMapObject*											m_pPreviewMapobject{};
 	/* GameInstance */
-	CGameInstance*				m_pGameInstance{ nullptr };
+	CGameInstance*										m_pGameInstance{ nullptr };
 
 	/* Batch Mode */
-	EMapToolObjectBatchMode		m_eMapTooObjectBatchMode{ EMapToolObjectBatchMode::Single};
-	EMapTool_EmplaceType		m_eMapToolEmplaceType{EMapTool_EmplaceType::Free};
+	EMapToolObjectBatchMode								m_eMapTooObjectBatchMode{ EMapToolObjectBatchMode::Single};
+	EMapTool_EmplaceType								m_eMapToolEmplaceType{EMapTool_EmplaceType::Free};
 	
 	/*  */
 	_int						m_iMakeSectionNumber{0};

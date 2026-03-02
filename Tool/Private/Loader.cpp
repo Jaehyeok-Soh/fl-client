@@ -122,10 +122,9 @@ HRESULT CLoader::Loading()
 
 HRESULT CLoader::Loading_For_Logo()
 {
-
-
-
 	m_isFinished = true;
+
+
 	return S_OK;
 }
 
@@ -148,6 +147,20 @@ HRESULT CLoader::Loading_For_Map()
 	Safe_Release(pMapDataLoader);
 
 
+
+	std::filesystem::path mapFolderPath = L"../../Resources/Models/DebugCamera/";
+	if (std::filesystem::exists(mapFolderPath))
+	{
+		/* Model Prototype */
+		CUEMapDataLoader* pMapDataLoader = CUEMapDataLoader::Create(m_pDevice, m_pDeviceContext);
+		if (pMapDataLoader == nullptr) return E_FAIL;
+		if (FAILED(pMapDataLoader->Make_Prototype(ENUM_TO_UINT(ELevelType::MAP), L"../../Resources/Models/DebugCamera/")))
+		{
+			Safe_Release(pMapDataLoader);
+			return E_FAIL;
+		}
+		Safe_Release(pMapDataLoader);
+	}
 
 
 	//=================

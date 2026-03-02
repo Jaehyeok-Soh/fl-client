@@ -138,11 +138,15 @@ void CTriggerBox::Ready_Before_Render(const _float fTimeDelta)
 {
     Super::Ready_Before_Render(fTimeDelta);
 
-    /* 일단 무적권 추가 */
 
+
+#ifdef _DEBUG
+    /* 일단 무적권 추가 */
     CPhysicsRigidBody* pRigidBody = Get_Component<CPhysicsRigidBody>();
     if (pRigidBody)
         m_pGameInstance->Push_DebugComponent(pRigidBody);
+
+#endif // _DEBUG
 
     return;
 }

@@ -1,5 +1,6 @@
 #pragma once
 #include "TextureBase.h"
+#include "GameObject.h"
 
 #pragma region Texture Splating Define
 #define CHANNEL_R 0
@@ -216,5 +217,176 @@ namespace Engine
 
 
 #pragma endregion
+
+
+
+
+#pragma region Camera Cinematic Struct
+
+#pragma region CinematicTarget Enum
+
+	enum class ECinematicTarget
+	{
+		NONE,
+		PLAYER,
+		BOSS,
+		END
+	};
+
+	static const char* g_szCinematicTarget[(int)Engine::ECinematicTarget::END] = {
+		"NONE",
+		"PLAYER",
+		"BOSS"
+	};
+
+	inline string CinematicTarget_ToString(ECinematicTarget eType)
+	{
+		// 인덱스 초과 방지 안전장치
+		if (eType >= Engine::ECinematicTarget::NONE && eType < Engine::ECinematicTarget::END)
+			return g_szCinematicTarget[(int)eType];
+
+		return "Unknown";
+	}
+	inline ECinematicTarget	CinematicTarget_ToEnum(const string& strType)
+	{
+		for (int i = 0; i < (int)Engine::ECinematicTarget::END; ++i)
+		{
+			if (strType == g_szCinematicTarget[i])
+				return (Engine::ECinematicTarget)i;
+		}
+		return Engine::ECinematicTarget::NONE;
+	}
+
+	enum class ELerpType
+	{
+		NONE,           /* 보간 안 함 (Cut 연출. 즉시 텔레포트) */
+		Linear,         /* 등속 이동 (기계처럼 처음부터 끝까지 똑같은 속도) */
+		SlowStart,      /* 서서히 출발 (점점 빨라짐. 상용 엔진의 EaseIn) */
+		SlowEnd,        /* 서서히 도착 (목적지에서 스르륵 멈춤. 상용 엔진의 EaseOut) */
+		SmoothStep,     /* 서서히 출발 + 서서히 도착 (컷신의 꽃. 상용 엔진의 EaseInOut) */
+		END
+	};
+
+	// 헤더 파일의 Enum 선언 바로 밑이나, cpp 파일 상단에 선언해 둡니다.
+	static const char* g_szLerpTypes[(int)Engine::ELerpType::END] = {
+		"NONE",
+		"Linear",
+		"SlowStart",
+		"SlowEnd",
+		"SmoothStep"
+	};
+
+	inline string LerpType_ToString(ELerpType eType)
+	{
+		// 인덱스 초과 방지 안전장치
+		if (eType >= Engine::ELerpType::NONE && eType < Engine::ELerpType::END)
+			return g_szLerpTypes[(int)eType];
+
+		return "Unknown";
+	}
+
+	inline ELerpType LerpType_ToEnum(const string& strType)
+	{
+		for (int i = 0; i < (int)Engine::ELerpType::END; ++i)
+		{
+			if (strType == g_szLerpTypes[i])
+				return (Engine::ELerpType)i;
+		}
+		return Engine::ELerpType::NONE;
+	}
+
+
+#pragma endregion
+
+	/* 각 움직임별 카메라 움직임 정보 */
+	struct ENGINE_DLL Camera_Keyframe_Data
+	{
+	public:
+		/* Json 저장용 데이터 */
+
+		/* 카메라가 움직일 기준이될 Target정보  */
+		ECinematicTarget	eMoveBaseTarget{ ECinematicTarget::NONE };	/* 타겟 정보를 들고온다 */
+		_int				iMoveBaseTargetBoneIndex{ NONE_BONE_INDEX };		/* BoneIndex 정보 없으면 -1 있다면 0 이상 */
+		Vec3				vPosition{ Vec3::Zero };								/* 포지션 */
+
+		ELerpType			eMoveLerpType{ELerpType::NONE};						/* 이번 포지션값 이동에 Lerp를 쓸건지 말건지 */
+		ELerpType			eLookAtLerpType{ELerpType::NONE};					/* 이번 LookAt  이동에  Lerp를 쓸지 말지 */
+		ELerpType			eFovLerpType{ELerpType::NONE};						/* 이번 LookAt  이동에  Lerp를 쓸지 말지 */
+
+		/* Position , Look At , fov 가 전부 동일하게 사용하게된다 3개로 쪼갤려니 크게 어려워질거같아서 못쪼갬 ㅇㅇ */
+		_float				fDuration{ 1.f };									/* 걸리는 시간 (초) */
+		_float				fHoldTime{ 0.f };									/* 대기하는 시간 (초) */
+		
+		_float				fFov{ 60.f };										/* 카메라 줌인용 Fov 값 */
+
+		/* 카메라가 바라볼 대상 */
+		ECinematicTarget    eLookAtTarget{ECinematicTarget::NONE};				/* 바라볼 대상 */
+		Vec3				vPitchYawRoll{0.f,0.f,0.f };						/* 바라볼 대상이 없다면 사용할 데이터 */
+		/* 바라볼 대상이 있을때 사용할 데이터들 */
+		_int                iLookAtBoneIndex{ NONE_BONE_INDEX };				/* 바라볼 대상의 특정 뼈 */
+		Vec3                vLookAtOffset{ Vec3::Zero };						/* 타겟 위치에서 약간 위/아래를 볼 때 쓰는 오프셋 */
+	public:
+		/* Cashing 용 데이터 */
+		/* MoveBase */
+		class CGameObject*	pCinematicMoveBaseTarget{nullptr};
+		class CModel*		pCinematicMoveBaseModel{nullptr};
+
+		/* LookAt Base */
+		class CGameObject*	pCinematicLookAtTarget{ nullptr };
+		class CModel*		pCinematicLookAtModel{ nullptr };
+	public:
+		Camera_Keyframe_Data();
+		Camera_Keyframe_Data(class CCameraMan* pCameraman);
+		Camera_Keyframe_Data(const Camera_Keyframe_Data& rhs);
+		Camera_Keyframe_Data& operator=(const Camera_Keyframe_Data& rhs);
+		~Camera_Keyframe_Data();
+	public:
+		Matrix				Get_WorldMatrix();
+	public:
+		void				Reset();
+		void				Copy_Camera(class CCameraMan* pCameraman);
+	public:
+		void				Save_Json(json& SaveJson);
+		void				Load_Json(const json& LoadJson);
+	private:
+		void				UnBind_CashingData();
+	};
+
+	struct		ENGINE_DLL				Camera_Cinematic_Sequence : CBase
+	{
+	public:
+		string							strDataName;			/* Data Name */
+		vector<Camera_Keyframe_Data>	vecCamKeyFrameData{};	/* 카메라 움직임 정보 */
+		_bool											isDebugRender{ false };
+	private:
+
+		ID3D11Device*									pDevice{nullptr};
+		ID3D11DeviceContext*							pContext{nullptr};
+
+		/* Debug Line을 위한 용도 */			
+		PrimitiveBatch<DirectX::VertexPositionColor>*	pBatch{ nullptr };
+		BasicEffect*									pEffect{ nullptr };
+		ID3D11InputLayout*								pInputLayout{ nullptr };
+
+	public:
+		Camera_Cinematic_Sequence(ID3D11Device* pDevice, ID3D11DeviceContext* pContext);
+		Camera_Cinematic_Sequence(const Camera_Cinematic_Sequence& rhs);
+		Camera_Cinematic_Sequence& operator=(const Camera_Cinematic_Sequence & rhs);
+		virtual ~Camera_Cinematic_Sequence();
+	public:
+		/* 카메라 위치 Render용 Model , Shader */
+		HRESULT	Render_Debug(_uint iPassIndex , class CModel* pCameraModel, class CShader* pShader);
+	public:
+		void	Delete(_int iDeleteIndex);
+		void	Reset(_int iResetIndex = -1);
+		void	Copy_Camera(class CCameraMan* pCamera , _int iCopyIndex = -1);
+		void	Add_KeyFrameData(_int iCopyBeforeDataIndex = false);
+	public:
+		void	Save_Json(json& SaveJson);
+		void	Load_Json(const json& LoadJson);
+	};
+
+#pragma endregion
+
 
 }

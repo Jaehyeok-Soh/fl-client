@@ -11,6 +11,20 @@ CBounding_OBB::CBounding_OBB(ID3D11Device* pDevice, ID3D11DeviceContext* pDevice
 {
 }
 
+CBounding_OBB::CBounding_OBB(const CBounding_OBB& rhs)
+    : Super(rhs)
+{
+    if (rhs.m_pDesc)
+    {
+        m_pDesc = new BoundingOrientedBox(*rhs.m_pDesc);
+    }
+
+    if (rhs.m_pOriginalDesc)
+    {
+        m_pOriginalDesc = new BoundingOrientedBox(*rhs.m_pOriginalDesc);
+    }
+}
+
 HRESULT CBounding_OBB::Initialize(const BOUNDING_DESC* pInitialDesc)
 {
     const BOUNDING_OBB_DESC* pDesc = static_cast<const BOUNDING_OBB_DESC*>(pInitialDesc);

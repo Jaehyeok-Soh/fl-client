@@ -133,7 +133,7 @@ void CPanel_AnimationMix::Set_AnimMationMix()
     {
         // index 값 검사 후 적용
         if (m_iMixAnimIdx >= 0 &&
-            m_iMixVectorIdx < pModel->Get_MixSize())
+            m_iMixVectorIdx < static_cast<_int>(pModel->Get_MixSize()))
         {
             CComputeShader* pAnimMixCS = static_cast<CComputeShader*>(m_pAnimToolManager->Get_AnimControllInfo().pCurrentObject->Get_Script_Component(TEXT("ComputeShader_AnimMix")));
             pModel->Make_MixRatio(m_iMixAnimIdx, m_vecMixData, pAnimMixCS);

@@ -174,6 +174,8 @@ public:
 	void Setup_ViewProj_ToCBuffer();
 	void Setup_UIViewProj_ToCBuffer();
 	void Setup_Inv_ToCBuffer();
+
+	HRESULT Camera_Shaking(const CAM_SHAKING_DATA& tData);
 #pragma endregion
 	
 #pragma region SOUND_MANAGER
@@ -366,10 +368,25 @@ public:
 
 // Todo - 쓰레기통 정리
 #pragma region GAMEDATA_MANAGER
+
+
+#pragma region TextureSplating
 	HRESULT		GameDataManager_Load_TextureSplatingInfoData();
 	/* 이름으로 Binding 하는 함수 */
 	HRESULT		GameDataManager_Bind_SplatingTextureInfo(CShader* pBindShader, const wstring& wstrTextureSplatingInfoDataName);
-	
+#pragma endregion
+
+#pragma region
+	HRESULT		GameDataManager_Load_CameraCinematicSequence();
+	HRESULT		GameDataManager_Save_CameraCinematicSequence();
+	HRESULT		GameDataManager_Load_CameraCinematicSequence(const wstring& wstrFindKey, OUT struct Camera_Cinematic_Sequence* pOutCamCinematicSequence);
+	HRESULT		GameDataManager_Save_CameraCinematicSequence(const wstring& wstrFindKey, const struct Camera_Cinematic_Sequence* pSaveCamCinematicSequence);
+
+	vector<std::string> GameDataManager_Get_CameraCinematicSequenceNames() const;
+
+
+#pragma endregion
+
 	const DTO::TAttackPreset_Data* Find_AttackPrseet(_uint iPresetKey) const;
 	const DTO::TAttackPreset_Data* Find_AttackPresetByTag(const string& strTag) const;
 	_uint Get_AttackPresetIdByTag(const string& strTag) const;

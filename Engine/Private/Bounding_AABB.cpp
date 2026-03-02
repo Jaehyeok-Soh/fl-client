@@ -11,6 +11,20 @@ CBounding_AABB::CBounding_AABB(ID3D11Device* pDevice, ID3D11DeviceContext* pDevi
 {
 }
 
+CBounding_AABB::CBounding_AABB(const CBounding_AABB& rhs)
+    : Super(rhs) 
+{
+    if (rhs.m_pDesc)
+    {
+        m_pDesc = new BoundingBox(*rhs.m_pDesc);
+    }
+
+    if (rhs.m_pOriginalDesc)
+    {
+        m_pOriginalDesc = new BoundingBox(*rhs.m_pOriginalDesc);
+    }
+}
+
 HRESULT CBounding_AABB::Initialize(const BOUNDING_DESC* pInitializeDesc)
 {
     if (pInitializeDesc)

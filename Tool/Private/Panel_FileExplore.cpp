@@ -4,6 +4,7 @@
 #include "File.h"
 #include "MapToolManager.h"
 #include "MapObject.h"
+#include "CPanel_Camera.h"
 
 CPanel_FileExplore::CPanel_FileExplore(const _char* pLabel, CLevel* pOwner, ID3D11Device* pDevice, ID3D11DeviceContext* pDeviceContext)
 	: CImGui_Panel(pLabel, pOwner, pDevice, pDeviceContext), m_pImFileBrowser{}
@@ -13,7 +14,6 @@ CPanel_FileExplore::CPanel_FileExplore(const _char* pLabel, CLevel* pOwner, ID3D
 	Safe_AddRef(m_pMapToolManager);
 	m_vecFiles.clear();
 }
-
 
 HRESULT CPanel_FileExplore::Initialize(const wchar_t* pRootFloaderPath, vector<string> vecShowExtName)
 {
@@ -266,7 +266,6 @@ CPanel_FileExplore* CPanel_FileExplore::Create(const wchar_t* pRootFloaderPath
 
 	return pPanel;
 }
-
 
 void CPanel_FileExplore::Free()
 {

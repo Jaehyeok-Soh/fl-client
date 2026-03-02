@@ -46,7 +46,6 @@ private:
 	HRESULT			Ready_DebugLine();
 	void			Ready_Event();
 	void			Release_Event();
-
 private:
 	void			Set_MapObjectListPanel_ResetSelectValue();
 public:

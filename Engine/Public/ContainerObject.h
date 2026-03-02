@@ -35,7 +35,7 @@ public:
 	HRESULT Add_Part(_uint iPartID, _uint iPrototypeLevelIndex,const  wstring &wstrPrototypeTag, void* pArg);
 	HRESULT Change_Part(class CPartObject* pPart, _uint iPartID);
 	HRESULT Change_Part(_uint iPartID, _uint iPrototypeLevelIndex, const  wstring& wstrPrototypeTag, void* pArg);
-	_uint Get_PartSize() { return m_vecPartObjects.size(); }
+	_uint Get_PartSize() { return static_cast<_uint>(m_vecPartObjects.size()); }
 protected:
 	vector<class CPartObject*> m_vecPartObjects;
 public:
