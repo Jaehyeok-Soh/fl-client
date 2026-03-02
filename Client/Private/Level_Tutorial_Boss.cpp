@@ -130,6 +130,8 @@ HRESULT CLevel_Tutorial_Boss::Build_Prototype()
 		return E_FAIL;
 	if (FAILED(Ready_Builder(DTO::ECategory::UI, CBuilder_UI::Create(m_pDevice, m_pDeviceContext, static_cast<_uint>(ELevelType::TUTORIAL_BOSS)))))
 		return E_FAIL;
+	if (FAILED(Ready_Builder(DTO::ECategory::UI_PREFAB, CBuilder_UIPrefabs::Create(m_pDevice, m_pDeviceContext, static_cast<_uint>(ELevelType::TUTORIAL_VILLAGE)))))
+		return E_FAIL;
 	return S_OK;
 }
 
@@ -159,8 +161,23 @@ HRESULT CLevel_Tutorial_Boss::Build_Files()
 	eCategory = DTO::ECategory::UI;
 	if (FAILED(m_pGameInstance->Regist_Document<CDataDocument_UI>(iLevelID, eCategory)))
 		return E_FAIL;
-
 	strUIFolderPath = L"../../Resources/Data/UIData/Static/";
+	if (std::filesystem::exists(strUIFolderPath))
+	{
+		for (auto iter : std::filesystem::directory_iterator(strUIFolderPath))
+		{
+			if (FAILED(m_pGameInstance->Load_File_Json(iLevelID, eCategory, iter.path())))
+				return E_FAIL;
+
+			if (FAILED(Build_File(iLevelID, eCategory, iter.path().stem().string())))
+				return E_FAIL;
+		}
+	}
+
+	eCategory = DTO::ECategory::UI_PREFAB;
+	if (FAILED(m_pGameInstance->Regist_Document<CDataDocument_UI>(iLevelID, eCategory)))
+		return E_FAIL;
+	strUIFolderPath = L"../../Resources/Data/UIData/Prefab/";
 	if (std::filesystem::exists(strUIFolderPath))
 	{
 		for (auto iter : std::filesystem::directory_iterator(strUIFolderPath))

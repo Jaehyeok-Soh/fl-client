@@ -410,6 +410,9 @@ HRESULT CUIDamageFont_Text::Spawn_FromPool(void* pArg)
 
 HRESULT CUIDamageFont_Text::Despawn_FromPool()
 {
+	if (m_strName == "DamageFont_CriticalText")
+		int a = 0;
+
 	if (FAILED(Super::Despawn_FromPool()))
 		return E_FAIL;
 	m_vFontColor				= m_vOriginFontColor;

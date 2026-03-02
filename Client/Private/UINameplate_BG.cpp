@@ -67,6 +67,10 @@ void CUINameplate_BG::Update_Late(const _float fTimeDelta)
 void CUINameplate_BG::Ready_Before_Render(const _float fTimeDelta)
 {
 	Super::Ready_Before_Render(fTimeDelta);
+	if (m_pWorldUIComp->Get_ScaleOffset() < 0.4f)
+		m_fAlpha_Ratio = 0.f;
+	else
+		m_fAlpha_Ratio = 1.f;
 }
 
 HRESULT CUINameplate_BG::Render()

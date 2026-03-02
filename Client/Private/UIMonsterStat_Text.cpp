@@ -72,6 +72,14 @@ void CUIMonsterStat_Text::Ready_Before_Render(const _float fTimeDelta)
 	Super::Ready_Before_Render(fTimeDelta);
 	if (FAILED(Convert_Stat_To_Text()))
 		return;
+	if (m_pWorldUIComp->Get_ScaleOffset() < 0.4f)
+	{
+		m_vFontColor.w = 0.f;
+	}
+	else
+	{
+		m_vFontColor.w = 1.f;
+	}
 }
 
 HRESULT CUIMonsterStat_Text::Render()
