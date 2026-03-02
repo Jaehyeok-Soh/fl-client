@@ -1,4 +1,5 @@
 #include "pch.h"
+#include "Client_EventDefine.h"
 #include "Monster_Dog.h"
 #include "Monster_Body_Base.h"
 #include "MonsterActionState.h"
@@ -38,7 +39,7 @@ HRESULT CMonster_Dog::Initialize(void* pArg)
 	if (FAILED(Ready_Ability()))
 		return E_FAIL;
 
-	Set_Name("Monster_Dog");
+	Set_Name("벨로시 필토이드");
 
 	if (FAILED(Ready_PartObjects()))
 		return E_FAIL;
@@ -59,6 +60,7 @@ HRESULT CMonster_Dog::Awake(const _uint iCurrentLevelID)
 	{
 		UI_PREFAB_DATA Desc = {};
 		Desc.pTarget = this;
+		Desc.NamePlateData.vOffset = Vec3{ 0.f, 1.f, 0.f };
 		CUI_Manager::GetInstance()->Request_Add_Prefab(iCurrentLevelID, EUIPrefabType::MONSTER_NAMEPLATE, iCurrentLevelID, &Desc);
 	}
 	return S_OK;
@@ -126,7 +128,10 @@ _bool CMonster_Dog::On_Hit(const HIT_DESC& hitDesc)
 
 	auto vHp = myStat->Get_Stat_Vec2(CMyStat::STAT_TYPE::HP);
 	if (vHp.x <= 0)
+	{
 		Get_Component<CMonsterControlContext>()->Set_Dead();
+		m_pGameInstance->Broadcast<MONSTER_DEAD_EVENT_START>(this);
+	}
 
 	return result;
 }

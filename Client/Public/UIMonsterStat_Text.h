@@ -2,8 +2,12 @@
 #include "UIText.h"
 #include "DataStruct_UI.h"
 
+NS_BEGIN(Engine)
+class CMyStat;
+NS_END
+
 NS_BEGIN(Client)
-class CWorldUI_Component;
+
 class CUIMonsterStat_Text final : public CUIText
 {
 	using Super = CUIText;
@@ -44,7 +48,8 @@ private:
 	virtual HRESULT Despawn_FromPool()override;
 
 private:
-	_float m_fStat = {};
+	CGameObject* m_pTargetMoster = { nullptr };
+	CMyStat* m_pTargetStat = { nullptr };
 
 public:
 	static CUIMonsterStat_Text* Create(ID3D11Device* pDevice, ID3D11DeviceContext* pDeviceContext);

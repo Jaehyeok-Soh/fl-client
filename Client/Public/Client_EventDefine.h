@@ -14,4 +14,6 @@ struct BOSS_STAGING_EVENT_END	{ using Signature = void(); };
 
 struct COMBO_ATTACK_EVENT_START { using Signature = void(); };
 struct COMBO_ATTACK_EVENT_END	{ using Signature = void(); };
+
+struct MONSTER_DEAD_EVENT_START { using Signature = void(CGameObject* ); };
 #pragma endregion

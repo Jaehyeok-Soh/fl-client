@@ -1,5 +1,6 @@
 #include "pch.h"
 #include "MainPlayer.h"
+#include "Client_EventDefine.h"
 
 // components
 #include "Model.h"
@@ -340,6 +341,8 @@ void CMainPlayer::Try_Attack(const HIT_DESC& hitDesc)
         CUI_Manager::GetInstance()->Request_Add_Prefab(
             m_pGameInstance->Get_CurrentLevelIndex(), EUIPrefabType::DAMAGE_FONTS_CRITICAL, m_pGameInstance->Get_CurrentLevelIndex(), &tPrefabData);
     }
+
+    m_pGameInstance->Broadcast<COMBO_ATTACK_EVENT_START>();
 
 #endif // _DEBUG
 }
