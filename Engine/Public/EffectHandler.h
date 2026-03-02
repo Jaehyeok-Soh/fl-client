@@ -96,8 +96,9 @@ public:
     // ÅøÀü¿ë
     HRESULT Gizmo_Setting();
     HRESULT Owner_Setting();
+
 private:
-    void GetAnimation();
+    void Set_OwnerModel();
     void Request_SpawnEffect(const DTO::EFFECTEVENT& script);
     void Request_SpawnEffect(const DTO::EFFECTEVENT& script, const std::string& EffectTag);
 
@@ -115,9 +116,10 @@ private:
         const Matrix* BoneMatrix);
 
 private:
-    SimpleMath::Matrix Offset_CalCulator(const DTO::EFFECTEVENT& script);
-    SimpleMath::Matrix Delete_ScaleMatrix(SimpleMath::Matrix Mat);
-    DTO::EFFECTEVENT Write_EffectEventDesc(const E_OBJ_LIFECYCLE_STATE eState);
+    SimpleMath::Matrix  Offset_CalCulator(const DTO::EFFECTEVENT& script);
+    SimpleMath::Matrix  Delete_ScaleMatrix(SimpleMath::Matrix Mat);
+    DTO::EFFECTEVENT    Write_EffectEventDesc(const E_OBJ_LIFECYCLE_STATE eState);
+    void                BoneMatrix_CalCulator(const DTO::EFFECTEVENT& script, OUT const SimpleMath::Matrix*& BoneMatrix);
 
 private:
     _uint m_iPrevAnimIndex = { 999999 };

@@ -25,6 +25,7 @@ CEffectHandler::CEffectHandler(const CEffectHandler& rhs)
 
 HRESULT CEffectHandler::Initialize_Prototype(void* pArg)
 {
+
     if(FAILED(Ready_Desc(pArg)))
         return E_FAIL;
 
@@ -105,7 +106,7 @@ HRESULT CEffectHandler::Gizmo_Setting()
     return S_OK;
 }
 
-void CEffectHandler::GetAnimation()
+void CEffectHandler::Set_OwnerModel()
 {
     if (Get_Owner())
     {
@@ -176,21 +177,12 @@ void CEffectHandler::Ready_Event()
 
 HRESULT CEffectHandler::Ready_AnimState()
 {
-    GetAnimation();
+    Set_OwnerModel();
 
-    if (Get_Owner())
+    if (FAILED(Owner_Setting()))
     {
-        // 툴에서 부모의 Matrix를 참조할 때 안전하게 가져오기
-        auto pTransform = Get_Owner()->Get_Component<CTransform>();
-        if (pTransform)
-        {
-            // PartObject 기반이면 부모 Container의 WorldMatrix를 참조함
-            auto pPart = static_cast<CPartObject*>(Get_Owner());
-            if (pPart->Get_Parent())
-                m_pOwnerMatrix = &pPart->Get_Parent()->Get_Component<CTransform>()->Get_WorldMatrix();
-            else
-                m_pOwnerMatrix = &pTransform->Get_WorldMatrix();
-        }
+        MSG_BOX("Owner Setting Fail : EffectHandler");
+        return E_FAIL;
     }
 
     Ready_Event();
@@ -288,6 +280,7 @@ HRESULT CEffectHandler::Owner_Setting()
 
 void CEffectHandler::PoolObject_CallBack(CGameObject* pGo)
 {
+    // 콜백 받아온 ActiveEffect를 관리 항목으로 저장한다.
     m_ActiveEffects[ENUM_TO_UINT(m_tDesc.eType)].emplace(pGo->Get_Name(), pGo);
 }
 
@@ -295,16 +288,7 @@ void CEffectHandler::Request_SpawnEffect(const DTO::EFFECTEVENT& Script)
 {
     Matrix MatWorldOffset = XMMatrixIdentity();
     Matrix MatOwnerMatrix = XMMatrixIdentity();
-
     const Matrix* pTargetBoneMatrix = nullptr;
-
-    if (Script.iBoneIndex != -1 && Script.bFollowBone)
-    {
-        if (m_pOwnerModel == nullptr)
-            return;
-
-        pTargetBoneMatrix = &m_pOwnerModel->Get_Bone(Script.iBoneIndex)->Get_CombinedTransformMatrix();
-    }
 
     if (FAILED(Owner_Setting()))
     {
@@ -312,12 +296,12 @@ void CEffectHandler::Request_SpawnEffect(const DTO::EFFECTEVENT& Script)
         return;
     }
 
+    // 뼈 행렬 계산
+    BoneMatrix_CalCulator(Script, pTargetBoneMatrix);
     // 애니메이션 모델 떄문에 Scale 행렬을 날려주는 값을 넣어준다.
     MatOwnerMatrix = Delete_ScaleMatrix(*m_pOwnerMatrix);
-
     // 오프셋 적용
     MatWorldOffset = Offset_CalCulator(Script);
-
     // 이펙트 생성 요청
     Spawn_RequestFromEffectManager(Script, MatWorldOffset, MatOwnerMatrix, pTargetBoneMatrix);
 }
@@ -326,16 +310,7 @@ void CEffectHandler::Request_SpawnEffect(const DTO::EFFECTEVENT& script, const s
 {
     Matrix MatWorldOffset = XMMatrixIdentity();
     Matrix MatOwnerMatrix = XMMatrixIdentity();
-
     const Matrix* pTargetBoneMatrix = nullptr;
-
-    if (script.iBoneIndex != -1 && script.bFollowBone)
-    {
-        if (m_pOwnerModel == nullptr)
-            return;
-
-        pTargetBoneMatrix = &m_pOwnerModel->Get_Bone(script.iBoneIndex)->Get_CombinedTransformMatrix();
-    }
 
     if (FAILED(Owner_Setting()))
     {
@@ -343,9 +318,10 @@ void CEffectHandler::Request_SpawnEffect(const DTO::EFFECTEVENT& script, const s
         return;
     }
 
+    // 뼈 행렬 계산
+    BoneMatrix_CalCulator(script, pTargetBoneMatrix);
     // 애니메이션 모델 떄문에 Scale 행렬을 날려주는 값을 넣어준다.
     MatOwnerMatrix = Delete_ScaleMatrix(*m_pOwnerMatrix);
-
     // 오프셋 적용
     MatWorldOffset = Offset_CalCulator(script);
 
@@ -465,6 +441,17 @@ DTO::EFFECTEVENT CEffectHandler::Write_EffectEventDesc(const E_OBJ_LIFECYCLE_STA
     pEvent.vRotation = pDesc.vRotation;
 
     return pEvent;
+}
+
+void CEffectHandler::BoneMatrix_CalCulator(const DTO::EFFECTEVENT& script, OUT const SimpleMath::Matrix*& BoneMatrix)
+{
+    if (script.iBoneIndex != -1 && script.bFollowBone)
+    {
+        if (m_pOwnerModel == nullptr)
+            return;
+
+        (BoneMatrix) = &m_pOwnerModel->Get_Bone(script.iBoneIndex)->Get_CombinedTransformMatrix();
+    }
 }
 
 SimpleMath::Matrix CEffectHandler::Offset_CalCulator(const DTO::EFFECTEVENT& script)
