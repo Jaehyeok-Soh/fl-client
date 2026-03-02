@@ -202,14 +202,12 @@ HRESULT CEffectHandler::Create_SpawnEffect()
 {
     if (m_tDesc.eType == E_HANDLER_TYPE::MODEL_ANIM) return E_FAIL;
 
-    if (m_pOwnerMatrix == nullptr)
-    {
-        auto pPart = static_cast<CPartObject*>(Get_Owner());
-        if (pPart)
-            m_pOwnerMatrix = &pPart->Get_Parent()->Get_Component<CTransform>()->Get_WorldMatrix();
+    m_pOwnerMatrix = m_tDesc.mEffectState[E_OBJ_LIFECYCLE_STATE::ON_SPAWN].pParentTransformMatrix;
 
-        else
-            m_pOwnerMatrix = &pPart->Get_Component<CTransform>()->Get_WorldMatrix();
+    if (FAILED(Owner_Setting()))
+    {
+        MSG_BOX("Owner Setting Fail : EffectHandler");
+        return E_FAIL;
     }
 
     return S_OK;
@@ -272,6 +270,22 @@ void CEffectHandler::CallBackEvent(const AnimNotifyKey& key)
     }
 }
 
+HRESULT CEffectHandler::Owner_Setting()
+{
+    // 넣어준 값이 없다면 여기서 설정을 해준다.
+    if (m_pOwnerMatrix == nullptr)
+    {
+        if (dynamic_cast<CPartObject*>(Get_Owner()))
+            m_pOwnerMatrix = &(static_cast<CPartObject*>(Get_Owner())->Get_Parent()->Get_Component<CTransform>()->Get_WorldMatrix());
+
+        else
+            m_pOwnerMatrix = &(Get_Owner()->Get_Component<CTransform>()->Get_WorldMatrix());
+    }
+
+
+    return m_pOwnerMatrix ? S_OK : E_FAIL;
+}
+
 void CEffectHandler::PoolObject_CallBack(CGameObject* pGo)
 {
     m_ActiveEffects[ENUM_TO_UINT(m_tDesc.eType)].emplace(pGo->Get_Name(), pGo);
@@ -292,14 +306,10 @@ void CEffectHandler::Request_SpawnEffect(const DTO::EFFECTEVENT& Script)
         pTargetBoneMatrix = &m_pOwnerModel->Get_Bone(Script.iBoneIndex)->Get_CombinedTransformMatrix();
     }
 
-    if (m_pOwnerMatrix == nullptr)
+    if (FAILED(Owner_Setting()))
     {
-        auto pPart = static_cast<CPartObject*>(Get_Owner());
-        if (pPart)
-            m_pOwnerMatrix = &pPart->Get_Parent()->Get_Component<CTransform>()->Get_WorldMatrix();
-
-        else
-            m_pOwnerMatrix = &pPart->Get_Component<CTransform>()->Get_WorldMatrix();
+        MSG_BOX("Owner Setting Fail : EffectHandler");
+        return;
     }
 
     // 애니메이션 모델 떄문에 Scale 행렬을 날려주는 값을 넣어준다.
@@ -327,14 +337,10 @@ void CEffectHandler::Request_SpawnEffect(const DTO::EFFECTEVENT& script, const s
         pTargetBoneMatrix = &m_pOwnerModel->Get_Bone(script.iBoneIndex)->Get_CombinedTransformMatrix();
     }
 
-    if (m_pOwnerMatrix == nullptr)
+    if (FAILED(Owner_Setting()))
     {
-        auto pPart = static_cast<CPartObject*>(Get_Owner());
-        if(pPart)
-            m_pOwnerMatrix = &pPart->Get_Parent()->Get_Component<CTransform>()->Get_WorldMatrix();
-
-        else
-            m_pOwnerMatrix = &pPart->Get_Component<CTransform>()->Get_WorldMatrix();
+        MSG_BOX("Owner Setting Fail : EffectHandler");
+        return;
     }
 
     // 애니메이션 모델 떄문에 Scale 행렬을 날려주는 값을 넣어준다.

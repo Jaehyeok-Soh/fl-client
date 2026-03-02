@@ -95,6 +95,7 @@ public:
 
     // ÅøÀü¿ë
     HRESULT Gizmo_Setting();
+    HRESULT Owner_Setting();
 private:
     void GetAnimation();
     void Request_SpawnEffect(const DTO::EFFECTEVENT& script);
