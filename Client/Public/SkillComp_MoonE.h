@@ -13,7 +13,7 @@ private:
 	virtual HRESULT Initialize(void* pArg) override;
 public:
 
-	virtual void	Update(const _float fTimeDelta) override;
+	virtual void	Update(const _float fTimeDelta, CMyStat* pStatCom = nullptr) override;
 
 public:
 	virtual _bool Start_Skill(CMyStat* pStatCom = nullptr)override;

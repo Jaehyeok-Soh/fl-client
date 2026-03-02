@@ -82,7 +82,7 @@ HRESULT CBody::Awake(const _uint iCurrentLevelIndex)
 	pMyModel->Set_MixAnim_ResetSize(0);
 
 	//Face_Smile
-	_uint iFaceAnimIdx					= pMyModel->Get_AnimationIndex(L"Animation_PlayerMoon_Face_None");
+	_uint iFaceAnimIdx					= pMyModel->Get_AnimationIndex(L"Animation_PlayerMoon_Face_Angry");
 	_uint iJumpAnimIdx = pMyModel->Get_AnimationIndex(L"Animation_PlayerMoon_FirstJump_InplaceStart");
 	_uint iBulletAnimIdx = pMyModel->Get_AnimationIndex(L"Animation_PlayerMoon_BulletJump_Start");
 

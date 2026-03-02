@@ -80,6 +80,17 @@ const EXTRA_ATTACK_DESC& CStatCom_Player::Get_ExtraAttack_Desc()
 {
 	// 상황에 맞게 값을 설정해서 내보자
 
+	/* 값 리셋 */
+	m_tExtra_AttackDesc.fAddDamage = 0.f;
+	m_tExtra_AttackDesc.fAddRate = 0.f;
+	m_tExtra_AttackDesc.fRandomAdd_Rate = 0.f;
+	m_tExtra_AttackDesc.fRandomMul_Rate = 0.f;
+	m_tExtra_AttackDesc.iDamageFlag = 0;
+	m_tExtra_AttackDesc.vFinalDamege_MinMax = Vec2::Zero;
+	m_tExtra_AttackDesc.vRandomAdd_MinMax = Vec2::Zero;
+	m_tExtra_AttackDesc.vRandomMul_MinMax = Vec2::Zero;
+
+
 	// critical 정보 처리 : test용으로 일단 무조건 criticla
 	if (m_fCriticalRate + m_fCirticalRate_Add >1.f ||
 	 m_fCriticalRate + m_fCirticalRate_Add <= m_pGameInstance->Rand_Float(0.f, 1.f))
@@ -88,11 +99,6 @@ const EXTRA_ATTACK_DESC& CStatCom_Player::Get_ExtraAttack_Desc()
 
 		// critical은 일단 더하기로 하는걸로
 		m_tExtra_AttackDesc.fAddDamage = m_fCirticalAttack;
-	}
-	else
-	{
-		m_tExtra_AttackDesc.iDamageFlag = 0;
-		m_tExtra_AttackDesc.fAddDamage = 0.f;
 	}
 
 	// skill 이 켜져 있다면 안에서 값 수정 하도록 설정

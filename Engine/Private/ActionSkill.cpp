@@ -61,11 +61,14 @@ void CActionSkill::Update_Skills(const _float fTimeDelta)
 	{
 		if (pSkill)
 		{
+			// skill on off와 상관없이 update 도는 함수
+			pSkill->Update_Default(fTimeDelta, m_pOwnerStat);
+
 			// skill이 켜졌다면
 			if (pSkill->Is_OnSkill())
 			{
 				// skill을 업데이트를 하고
-				pSkill->Update(fTimeDelta);
+				pSkill->Update(fTimeDelta, m_pOwnerStat);
 
 				// 그런데 skill이 끝났어 -> end skill 호출
 				if (pSkill->Is_EndSkill())

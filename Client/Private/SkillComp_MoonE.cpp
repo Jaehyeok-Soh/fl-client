@@ -40,9 +40,9 @@ HRESULT CSkillComp_MoonE::Initialize(void* pArg)
 	return S_OK;
 }
 
-void CSkillComp_MoonE::Update(const _float fTimeDelta)
+void CSkillComp_MoonE::Update(const _float fTimeDelta, CMyStat* pStatCom)
 {
-	Super::Update(fTimeDelta);
+	Super::Update(fTimeDelta, pStatCom);
 }
 
 _bool CSkillComp_MoonE::Start_Skill(CMyStat* pStatCom)
@@ -50,7 +50,7 @@ _bool CSkillComp_MoonE::Start_Skill(CMyStat* pStatCom)
 	if (Super::Start_Skill(pStatCom))
 	{
 		static_cast<CStatCom_Player*>(pStatCom)->Set_AttackState(CStatCom_Player::Attack_State::E, true);
-
+		static_cast<CStatCom_Player*>(pStatCom)->Set_Critical_AddRate(1.f);
 		// 충돌체 2개 발사
 
 		return true;

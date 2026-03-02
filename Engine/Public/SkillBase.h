@@ -72,7 +72,8 @@ protected:
 	virtual HRESULT Initialize(void* pArg);
 
 public:
-	virtual void Update(const _float fTimeDelta);
+	virtual void Update(const _float fTimeDelta, CMyStat* pStatCom = nullptr);
+	virtual void Update_Default(const _float fTimeDelta, CMyStat* pStatCom = nullptr);
 
 	// start와 end는 외부에서 호출해준다
 public:

@@ -316,6 +316,8 @@ void CMainPlayer::Try_Attack(const HIT_DESC& hitDesc)
 
     CLOG_INFO(infoContant);
 
+#endif // _DEBUG
+
     // player state에 따라 combo count 증가 여부 결정
     CStatCom_Player* pStat = Get_Component<CStatCom_Player>();
     switch ((_uint)Get_Component<CActionState>()->Get_CurrentStateIndex())
@@ -366,8 +368,6 @@ void CMainPlayer::Try_Attack(const HIT_DESC& hitDesc)
     }
 
     m_pGameInstance->Broadcast<COMBO_ATTACK_EVENT_START>();
-
-#endif // _DEBUG
 }
 
 #pragma region Legacy
