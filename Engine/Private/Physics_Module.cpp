@@ -348,6 +348,15 @@ PxFilterFlags CPhysics_Module::FilterShader(
 
 	if (PxFilterObjectIsTrigger(attributes0) || PxFilterObjectIsTrigger(attributes1))
 	{
+		if (PxFilterObjectIsKinematic(attributes0) || PxFilterObjectIsKinematic(attributes1))
+		{
+			pairFlags = PxPairFlag::eTRIGGER_DEFAULT
+				| PxPairFlag::eNOTIFY_TOUCH_FOUND
+				| PxPairFlag::eNOTIFY_TOUCH_LOST;
+
+			return PxFilterFlag::eDEFAULT;
+		}
+
 		pairFlags = PxPairFlag::eTRIGGER_DEFAULT
 			| PxPairFlag::eNOTIFY_TOUCH_FOUND
 			| PxPairFlag::eNOTIFY_TOUCH_LOST;

@@ -209,7 +209,7 @@ CPhysicsRigidBody* CPhysicsRigidBody::EnableCollision(_bool bEnable)
 			}
 		}
 
-		actor->setActorFlag(PxActorFlag::eDISABLE_SIMULATION, !bEnable);
+		//actor->setActorFlag(PxActorFlag::eDISABLE_SIMULATION, !bEnable);
 	}
 
 	return this;

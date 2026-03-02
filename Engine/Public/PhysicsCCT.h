@@ -130,6 +130,7 @@ public:
     void SetCollisionFilter_Empty();
 
     void SetIsSteppingOnCCT();
+    void SetIsSideOnCCT();
 
     void EnableCollision(_bool bEnable);
 
@@ -152,6 +153,7 @@ private:
     Vec3 m_vAccDisp = {};
 
     _bool m_bIsSteppingOnCCT = { false };
+    _bool m_bIsSideOnCCT = { false };
 
 private:
     std::set<CGameObject*> m_setCurContact;
