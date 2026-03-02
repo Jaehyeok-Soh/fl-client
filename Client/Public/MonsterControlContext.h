@@ -156,7 +156,8 @@ public:
 	void UpdateSideWalk(const _float fTimeDelta);
 	void UpdateTurn90(const _float fTimeDelta);
 	void UpdateTrun180(const _float fTimeDelta);
-
+	void Set_CCT_Collision_Disable();
+	void Set_CCT_Collision_Enable();
 
 private:
 	//EMovementMode m_eCurrentMovement = { EMovementMode::GROUND };

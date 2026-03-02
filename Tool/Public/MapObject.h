@@ -82,6 +82,7 @@ public:
 public:
 	HRESULT								Ready_Batch_Player();
 	HRESULT								Ready_Batch_Monster();
+	HRESULT								Ready_Batch_Object();
 	HRESULT								Ready_TriggerBox_MonsterSpawner();
 
 private:
@@ -205,6 +206,7 @@ public:
 
 	HRESULT								Render_Batch_Player();
 	HRESULT								Render_Batch_Monster();
+	HRESULT								Render_Batch_Object();
 
 	HRESULT								Render_TriggerBox_ChangeLevel();
 	HRESULT								Render_TriggerBox_MonsterSpawner();

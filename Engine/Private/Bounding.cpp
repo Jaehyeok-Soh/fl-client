@@ -9,6 +9,13 @@ CBounding::CBounding(ID3D11Device* pDevice, ID3D11DeviceContext* pDeviceContext)
 	Safe_AddRef(m_pDeviceContext);
 }
 
+CBounding::CBounding(const CBounding& rhs)
+	: m_pDevice(rhs.m_pDevice), m_pDeviceContext(rhs.m_pDeviceContext)
+{
+	Safe_AddRef(m_pDevice);
+	Safe_AddRef(m_pDeviceContext);
+}
+
 HRESULT CBounding::Initialize(BOUNDING_DESC* pDesc)
 {
 	return S_OK;

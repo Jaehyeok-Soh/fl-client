@@ -328,6 +328,9 @@
     <Filter Include="02. GameObjects\Map\01. LevelData">
       <UniqueIdentifier>{796e0779-af03-4219-87f2-4ff1d7e85f49}</UniqueIdentifier>
     </Filter>
+    <Filter Include="06. ImGui\01. Panel\Camera">
+      <UniqueIdentifier>{8905a5cf-26bc-4a9d-a562-3b55caf442f1}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="framework.h">
@@ -646,6 +649,9 @@
     <ClInclude Include="Registry_State.h">
       <Filter>06. ImGui\01. Panel\Animation\Panel_State</Filter>
     </ClInclude>
+    <ClInclude Include="CPanel_Camera.h">
+      <Filter>06. ImGui\01. Panel\Camera</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <Image Include="small.ico">
@@ -948,6 +954,9 @@
     </ClCompile>
     <ClCompile Include="..\Private\ToolObject.cpp">
       <Filter>02. GameObjects\ToolObject</Filter>
+    </ClCompile>
+    <ClCompile Include="CPanel_Camera.cpp">
+      <Filter>06. ImGui\01. Panel\Camera</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

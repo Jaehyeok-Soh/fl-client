@@ -16,6 +16,8 @@
 #include "Collider.h"
 #include "Bounding.h"
 #include "Bounding_AABB.h"
+#include "Bounding_Obb.h"
+#include "Bounding_Sphere.h"
 
 USING(Tool)
 
@@ -390,6 +392,12 @@ HRESULT CMapObject::Ready_PlusData_ByClientMakePath()
             return E_FAIL;
         break;
 
+    case Tool::EClientMakePath::Batch_Object:
+        if (FAILED(Ready_Batch_Object()))
+            return E_FAIL;
+        break;
+
+
     case Tool::EClientMakePath::TriggerBox_MonsterSpawner:
         if (FAILED(Ready_TriggerBox_MonsterSpawner()))
             return E_FAIL;
@@ -463,6 +471,66 @@ HRESULT CMapObject::Ready_Batch_Monster()
 
     m_strName = "Batch_Monster" + DTO::MakeMonsterType_ToString(pDesc->eBatchMonsterType);
 
+
+
+    return S_OK;
+}
+
+HRESULT CMapObject::Ready_Batch_Object()
+{
+    if (m_vecClientMakePathDesc.empty())
+        return E_FAIL;
+
+
+    BATCH_OBJECT_DESC* pDesc = dynamic_cast<BATCH_OBJECT_DESC*>(m_vecClientMakePathDesc.front());
+    if (pDesc == nullptr) return E_FAIL;
+
+    /* 현재 Model 무적권 삭제 */
+    Remove_Component<CModel>();
+    /* Model은 Cube로 강제조정 */
+    Remove_Component<CModel>();
+    /* 이름도 강제조정 */
+    CModel* pModel = m_pMapToolManager->Get_BatchObjectModel(pDesc->eBatchObjectType);
+    if(pModel)
+        Add_Component<CModel>(pModel);
+
+
+
+    DTO::EMakeObjectType eMakeObjecType = pDesc->eBatchObjectType;
+
+    switch (eMakeObjecType)
+    {
+    case DTO::EMakeObjectType::Battle_Field:
+    {
+        /* Collider 생성해줘야함 */
+        BATTLE_FIELD_DESC* pBattleFieldDesc = static_cast<BATTLE_FIELD_DESC*>(pDesc->pBatchObjectDesc);
+        if (pBattleFieldDesc == nullptr) return E_FAIL;
+        /* Collider 생성전 미리 삭제 */
+        Safe_Release(pBattleFieldDesc->pBattleFieldColliderSphere);
+        CCollider::COLLIDER_DESC tDesc{};
+        CBounding_Sphere::BOUNDING_SPHERE_DESC tBoundingSphere{};
+        tBoundingSphere.fRadius =pBattleFieldDesc->fRadius;
+        Vec3 vMinMax[2] = { Vec3(-tBoundingSphere.fRadius,-tBoundingSphere.fRadius,-tBoundingSphere.fRadius) , Vec3(tBoundingSphere.fRadius,tBoundingSphere.fRadius,tBoundingSphere.fRadius)};
+        tBoundingSphere.pMinMax = vMinMax;
+        tBoundingSphere.vCenter = Vec3::Zero;
+        tDesc.pBoundingDesc = &tBoundingSphere;
+        pBattleFieldDesc->pBattleFieldColliderSphere = 
+            static_cast<CCollider*>(m_pGameInstance->Clone_Prototype(EPrototypeType::COMPONENT, ENUM_TO_UINT(ELevelType::STATIC), g_wszCollider_Sphere_Prototype_Tag, &tDesc));
+        if (pBattleFieldDesc->pBattleFieldColliderSphere == nullptr) return E_FAIL;
+
+
+        CBounding_OBB::BOUNDING_OBB_DESC tBoundingObb{};
+        tBoundingObb.vExtents = pBattleFieldDesc->vExtents;
+        tDesc.pBoundingDesc = &tBoundingObb;
+        pBattleFieldDesc->pBattleFieldColliderBox =
+            static_cast<CCollider*>(m_pGameInstance->Clone_Prototype(EPrototypeType::COMPONENT, ENUM_TO_UINT(ELevelType::STATIC), g_wszCollider_OBB_Prototype_Tag, &tDesc));
+        if (pBattleFieldDesc->pBattleFieldColliderBox == nullptr) return E_FAIL;
+
+        m_strName = "Battle_Field";
+    }
+    break;
+    default:                                    break;
+    }
 
 
     return S_OK;
@@ -1059,52 +1127,55 @@ HRESULT CMapObject::Render()
     if (FAILED(Super::Render()))
         return E_FAIL;
 
+    HRESULT hr{E_FAIL};
+
     CShader* pShader{nullptr};
 
     switch (m_eClientMakePath)
     {
     case Tool::EClientMakePath::StaticObject:
-        Render_StaticObject();
+        hr = Render_StaticObject();
         break;
     case Tool::EClientMakePath::LandScape:
-        Render_LandScape();
+        hr = Render_LandScape();
         break;
     case Tool::EClientMakePath::Grass:                  
-        Render_Grass();
+        hr = Render_Grass();
         break;
     case Tool::EClientMakePath::Vine:               
-        Render_Vine();
+        hr = Render_Vine();
         break;
     case Tool::EClientMakePath::Tree:
-        Render_Tree();
+        hr = Render_Tree();
         break;
     case Tool::EClientMakePath::Moss:                   
-        Render_Moss();
+        hr = Render_Moss();
         break;
     case Tool::EClientMakePath::Bush:
-        Render_Bush();
+        hr = Render_Bush();
         break;
     case Tool::EClientMakePath::Water:                  
-        Render_Water();
+        hr = Render_Water();
         break;
     case Tool::EClientMakePath::Rock:                
-        Render_Rock();
+        hr = Render_Rock();
         break;
 
 
     case Tool::EClientMakePath::Batch_Player:
-        Render_Batch_Player();
+        hr = Render_Batch_Player();
         break;
     case Tool::EClientMakePath::Batch_Monster:
-        Render_Batch_Monster();
+        hr = Render_Batch_Monster();
         break;
-
-
+    case Tool::EClientMakePath::Batch_Object:
+        hr = Render_Batch_Object();
+        break;
     case Tool::EClientMakePath::TriggerBox_ChangeLevel:
-        Render_TriggerBox_ChangeLevel();
+        hr = Render_TriggerBox_ChangeLevel();
         break;
     case Tool::EClientMakePath::TriggerBox_MonsterSpawner:
-        Render_TriggerBox_MonsterSpawner();
+        hr = Render_TriggerBox_MonsterSpawner();
         break;
     default:
         break;
@@ -1232,13 +1303,12 @@ _bool CMapObject::Export_Data(DTO::ECategory eCategory, CDataDocumentBase* pDocu
     tData.strTag = m_strName + std::to_string(m_iObjectID);
 
     tData.isUELoaded = m_isUELoaded;
-    tData.eMapObjectDrawType = ENUM_TO_UINT(m_eMapObjectDrawType);
-    tData.eClientLevelType = ENUM_TO_UINT(m_eClientLevelType);
-    tData.eClientMakePath = ENUM_TO_UINT(m_eClientMakePath);
-    tData.strUERawDataPath = Engine_Utils::ToString(m_wstrUERawDataPath);
+    tData.eMapObjectDrawType    = DTO::EMapObject_DrawType(m_eMapObjectDrawType);
+    tData.eClientLevelType      = DTO::EClientLevelType(m_eClientLevelType);
+    tData.eClientMakePath       = DTO::EClientMakePath(m_eClientMakePath);
+    tData.strUERawDataPath      = Engine_Utils::ToString(m_wstrUERawDataPath);
 
     tData.strModelPath = Engine_Utils::ToString(m_wstrModelPath);
-
 
     if (!m_vecClientMakePathDesc.empty())
     {
@@ -1666,6 +1736,50 @@ HRESULT CMapObject::Render_Batch_Monster()
 
     return S_OK;
 }
+HRESULT CMapObject::Render_Batch_Object()
+{
+    if (m_eMapObjectDrawType != EMapObject_DrawType::Default)
+        return S_OK;
+    
+
+    if (m_vecClientMakePathDesc.empty())
+        return E_FAIL;
+
+    BATCH_OBJECT_DESC* pDesc = static_cast<BATCH_OBJECT_DESC*>(m_vecClientMakePathDesc.front());
+    if (pDesc == nullptr) return E_FAIL;
+
+
+    switch (pDesc->eBatchObjectType)
+    {
+    case DTO::EMakeObjectType::Battle_Field:
+    {
+        if (FAILED(Render_Default(ENUM_TO_UINT(EMapObjectShaderPass::StaticObject))))
+            return E_FAIL;
+
+        /* Battle Field Collider Update */
+        BATTLE_FIELD_DESC* pBattelFieldDesc = static_cast<BATTLE_FIELD_DESC*>(pDesc->pBatchObjectDesc);
+        if (pBattelFieldDesc == nullptr) return E_FAIL;
+
+        CTransform* pTs = Get_Component<CTransform>();
+        pBattelFieldDesc->Update_Collider(&pTs->Get_WorldMatrix());
+
+        if (pBattelFieldDesc->eFieldType == BATTLE_FIELD_DESC::Field_Type::Box)
+        {
+            pBattelFieldDesc->pBattleFieldColliderBox->Render();
+        }
+        else
+        {
+            pBattelFieldDesc->pBattleFieldColliderSphere->Render();
+        }
+
+
+    }
+    break;
+    default:                            return E_FAIL;;
+    }
+
+    return S_OK;
+}
 #pragma endregion
 
 
@@ -1739,12 +1853,12 @@ HRESULT CMapObject::Render_TriggerBox_MonsterSpawner()
 
 
 
-#pragma region TriggerBox 전용 Draw Type Collider
+#pragma region Collider Draw전용
 
 HRESULT CMapObject::Render_Collider()
 {
-    if (m_eMapObjectDrawType != EMapObject_DrawType::Collider)
-        return E_FAIL;
+    //if (m_eMapObjectDrawType != EMapObject_DrawType::Collider)
+    //    return E_FAIL;
 
     CTransform* pTransform = Get_Component<CTransform>();
     CCollider* pCollider = Get_Component<CCollider>();

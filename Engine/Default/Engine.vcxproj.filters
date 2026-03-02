@@ -1369,12 +1369,14 @@
     <ClInclude Include="..\public\TimeScale_Manager.h">
       <Filter>00. System\01. Timer\Manager</Filter>
     </ClInclude>
-    <ClInclude Include="..\Public\GameData_Struct.h" />
     <ClInclude Include="..\Public\EffectPartBase.h">
       <Filter>00. System\14. Effect\EffectPartBase</Filter>
     </ClInclude>
     <ClInclude Include="..\Public\Physics_CCTBehaviorCallback.h">
       <Filter>00. System\12. PhysX\EventCallback\CCTBehavior</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\GameData_Struct.h">
+      <Filter>01. Utility\08. GameData\00. Struct</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

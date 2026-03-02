@@ -323,7 +323,7 @@ PxConvexMesh* CPhysics_ResourceManager::CreateConvexMesh(CMesh* mesh, PxConvexMe
 	params.gaussMapLimit = gaussMapLimit;
 
 	params.meshPreprocessParams |= PxMeshPreprocessingFlag::eWELD_VERTICES;
-	params.meshWeldTolerance = 0.01;
+	params.meshWeldTolerance = physx::PxReal(0.01);
 
 	PxU32 numVertices = {};
 	vector<PxVec3> pxVertices = {};
@@ -570,7 +570,7 @@ PxTriangleMesh* CPhysics_ResourceManager::CreateBV34TriangleMesh(PxU32 numVertic
 	PxCookingParams params(scale);
 
 	params.meshPreprocessParams |= PxMeshPreprocessingFlag::eWELD_VERTICES;
-	params.meshWeldTolerance = 0.01;
+	params.meshWeldTolerance = physx::PxReal(0.01);
 
 	params.midphaseDesc = PxMeshMidPhase::eBVH34;
 

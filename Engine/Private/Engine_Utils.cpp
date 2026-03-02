@@ -146,10 +146,10 @@ wstring Engine_Utils::NormalizePath_WString(const std::filesystem::path& path)
     return ws;
 }
 
-
-
 wstring Engine_Utils::ToWString(string value)
 {
+    // 03/02 소재혁, 한글 추가로 수정
+
     if (value.empty())
         return wstring();
 

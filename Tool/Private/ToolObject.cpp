@@ -114,6 +114,7 @@ Matrix CToolObject::Get_WorldMatrix()
     return Get_Component<CTransform>()->Get_WorldMatrix();
 }
 
+
 bool CToolObject::Get_SRT(OUT Vec3& vOutScale, OUT Quat& vQuat, OUT Vec3& vPosition)
 {
     Matrix WorldMatrix = Get_Component<CTransform>()->Get_WorldMatrix();

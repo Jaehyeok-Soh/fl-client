@@ -583,6 +583,9 @@
     <Filter Include="05. Component\Monster\MonsterControlContext">
       <UniqueIdentifier>{9F6A9D98-F1E9-4E08-A76F-50B9DCAADF19}</UniqueIdentifier>
     </Filter>
+    <Filter Include="03. GameObject\BattelField">
+      <UniqueIdentifier>{b1195416-a6da-4357-b964-0ea1df18e98b}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="targetver.h">
@@ -1087,6 +1090,9 @@
     <ClInclude Include="..\Public\State_HitFlyEnd.h">
       <Filter>06. FSM\Player\Hit\HitFly</Filter>
     </ClInclude>
+    <ClInclude Include="..\Public\BattleField.h">
+      <Filter>03. GameObject\BattelField</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <Image Include="Client.ico">
@@ -1582,6 +1588,9 @@
     </ClCompile>
     <ClCompile Include="..\Private\State_HitFlyEnd.cpp">
       <Filter>06. FSM\Player\Hit\HitFly</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\BattleField.cpp">
+      <Filter>03. GameObject\BattelField</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
