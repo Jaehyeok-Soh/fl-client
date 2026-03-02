@@ -1,4 +1,5 @@
 #include "pch.h"
+#include "Client_EventDefine.h"
 #include "Boss_Xibi.h"
 #include "Sword.h"
 #include "Model.h"
@@ -10,6 +11,7 @@
 #include "Xibi_GimmikController.h"
 #include "Weapon.h"
 #include "GameInstance.h"
+#include "MyStat.h"
 
 CBoss_Xibi::CBoss_Xibi(ID3D11Device* pDevice, ID3D11DeviceContext* pDeviceContext)
 	: Super(pDevice, pDeviceContext)
@@ -36,6 +38,11 @@ HRESULT CBoss_Xibi::Initialize(void* pArg)
 {
 	if (FAILED(Super::Initialize(pArg)))
 		return E_FAIL;
+
+	if (FAILED(Ready_Ability()))
+		return E_FAIL;
+
+	Set_Name("½Ãºô¶ó");
 
 	if (FAILED(Ready_Weapon()))
 		return E_FAIL;
@@ -107,22 +114,52 @@ _int CBoss_Xibi::Get_WeaponAnimationIndex(const wstring& wstrName)
 
 void CBoss_Xibi::OnCollision(_uint iMyColliderLayer, _uint iOtherLayer, CGameObject* pOther)
 {
+	Super::OnCollision(iMyColliderLayer, iOtherLayer, pOther);
 }
 
 void CBoss_Xibi::OnCollision_Enter(_uint iMyColliderLayer, _uint iOtherLayer, CGameObject* pOther, const COL_HIT_INFO& tHitInfo)
 {
+	Super::OnCollision_Enter(iMyColliderLayer, iOtherLayer, pOther, tHitInfo);
 }
 
 void CBoss_Xibi::OnCollision_Exit(_uint iMyColliderLayer, _uint iOtherLayer, CGameObject* pOther)
 {
+	Super::OnCollision_Exit(iMyColliderLayer, iOtherLayer, pOther);
 }
 
 void CBoss_Xibi::OnTrigger_Enter(_uint iMyColliderLayer, _uint iOtherLayer, CGameObject* pOther)
 {
+	Super::OnTrigger_Enter(iMyColliderLayer, iOtherLayer, pOther);
 }
 
 void CBoss_Xibi::OnTrigger_Exit(_uint iMyColliderLayer, _uint iOtherLayer, CGameObject* pOther)
 {
+	Super::OnTrigger_Exit(iMyColliderLayer, iOtherLayer, pOther);
+}
+
+_bool CBoss_Xibi::On_Hit(const HIT_DESC& hitDesc)
+{
+	_bool result = Super::On_Hit(hitDesc);
+
+	return result;
+}
+
+void CBoss_Xibi::Try_Attack(const HIT_DESC& hitDesc)
+{
+	Super::Try_Attack(hitDesc);
+}
+
+HRESULT CBoss_Xibi::Ready_Ability()
+{
+	CMyStat::STAT_DESC desc = {};
+	desc.fMaxHp = 3000.f;
+	desc.fDefense = 1000.f;
+	desc.FStatFlags = CMyStat::StatFlags::HpUpdate | CMyStat::StatFlags::DefenseUpdtae;
+
+	if (FAILED(Add_Component<CMyStat>(0/* STATIC */, L"Prototype_Component_Stat", &desc)))
+		return E_FAIL;
+
+	return S_OK;
 }
 
 HRESULT CBoss_Xibi::Ready_Weapon()
@@ -215,7 +252,7 @@ CBoss_Xibi* CBoss_Xibi::Create(ID3D11Device* pDevice, ID3D11DeviceContext* pDevi
 CGameObject* CBoss_Xibi::Clone(void* pArg)
 {
 	CBoss_Xibi* pInstance = new CBoss_Xibi(*this);
-	if(FAILED(pInstance->Initialize(pArg)))
+	if (FAILED(pInstance->Initialize(pArg)))
 	{
 		MSG_BOX("CBoss_Xibi::Clone, Failed");
 		Safe_Release(pInstance);

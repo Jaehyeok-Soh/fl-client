@@ -129,8 +129,6 @@ _bool CMonster_Boomer::On_Hit(const HIT_DESC& hitDesc)
 	_bool result = Super::On_Hit(hitDesc);
 	
 	auto myStat = Get_Component<CMyStat>();
-	myStat->Add_Health(-hitDesc.attackDesc.pAttackPreset->tCombat.fBaseDamage);
-	
 	auto vHp = myStat->Get_Stat_Vec2(CMyStat::STAT_TYPE::HP);
 	if (vHp.x <= 0)
 	{
@@ -151,7 +149,7 @@ HRESULT CMonster_Boomer::Ready_Ability()
 	// stat
 	{
 		CMyStat::STAT_DESC desc = {};
-		desc.fMaxHp = 200.f;
+		desc.fMaxHp = 600.f;
 		desc.fDefense = 100.f;
 		desc.FStatFlags = CMyStat::StatFlags::HpUpdate | CMyStat::StatFlags::DefenseUpdtae;
 

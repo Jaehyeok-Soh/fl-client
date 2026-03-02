@@ -12,7 +12,7 @@ void CPhysics_FilterEventCallback::onContact(const PxContactPairHeader& pairHead
 	CGameObject* leftObject = Conversion_GameObject(pairHeader.actors[0]->userData);
 	CGameObject* rightObject = Conversion_GameObject(pairHeader.actors[1]->userData);
 
-	if (leftObject->IsDead() || rightObject->IsDead() || leftObject == nullptr || rightObject == nullptr)
+	if (leftObject == nullptr || rightObject == nullptr || leftObject->IsDead() || rightObject->IsDead())
 		return;
 
 	GAMEOBJECTINFO info = Get_GameObject(pairHeader.actors[0]->userData, pairHeader.actors[1]->userData);
@@ -97,9 +97,12 @@ void CPhysics_FilterEventCallback::ProcessOverlap(CGameObject* pOwner, const PxV
 	{
 		PxVec3 closetPoint{};
 		PxU32 closetIndex{};
+
+		PxTransform shapeGlobalPose = pOverlapHit->actor->getGlobalPose() * pOverlapHit->shape->getLocalPose();
+
 		float dist = PxGeometryQuery::pointDistance(vOverlapPoint,
 			pOverlapHit->shape->getGeometry(),
-			pOverlapHit->actor->getGlobalPose(),
+			shapeGlobalPose,
 			&closetPoint,
 			&closetIndex);
 
@@ -117,7 +120,7 @@ void CPhysics_FilterEventCallback::ProcessOverlap(CGameObject* pOwner, const PxV
 			{
 				PxVec3 shapeCenter = pOverlapHit->actor->getGlobalPose().p;
 				hitPoint = vOverlapPoint;
-				normal = vOverlapPoint - shapeCenter;
+				normal = vOverlapPoint - shapeGlobalPose.p;
 
 				if (normal.magnitudeSquared() < 1e-6f)
 					normal = PxVec3(0.f, 1.f, 0.f);

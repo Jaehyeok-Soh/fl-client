@@ -119,6 +119,7 @@ void CPhysics_CCTHitReport::onControllerHit(const PxControllersHit& hit)
 		Vec3 disp(normal.x, 0.f, normal.z);
 		disp *= 0.01f;
 		pCCT->Add_Disp(disp);
+		pCCT->SetIsSideOnCCT();
 	}
 
 //#ifdef _DEBUG

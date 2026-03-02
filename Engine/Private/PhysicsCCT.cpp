@@ -135,7 +135,11 @@ const PxControllerCollisionFlags CPhysicsCCT::Move(Vec3 disp, _float minDist, _f
 	if (m_bIsSteppingOnCCT)
 		collisionFlag &= ~PxControllerCollisionFlag::eCOLLISION_DOWN;
 
+	if (m_bIsSideOnCCT)
+		collisionFlag &= ~PxControllerCollisionFlag::eCOLLISION_SIDES;
+
 	m_bIsSteppingOnCCT = false;
+	m_bIsSideOnCCT = false;
 
 	return collisionFlag;
 }
@@ -269,6 +273,11 @@ void CPhysicsCCT::SetIsSteppingOnCCT()
 	m_bIsSteppingOnCCT = true;
 }
 
+void CPhysicsCCT::SetIsSideOnCCT()
+{
+	m_bIsSideOnCCT = true;
+}
+
 void CPhysicsCCT::EnableCollision(_bool bEnable)
 {
 	if (m_pController == nullptr)
@@ -290,7 +299,7 @@ void CPhysicsCCT::EnableCollision(_bool bEnable)
 			}
 		}
 
-		pActor->setActorFlag(PxActorFlag::eDISABLE_SIMULATION, !bEnable);
+		//pActor->setActorFlag(PxActorFlag::eDISABLE_SIMULATION, !bEnable);
 	}
 
 	if (bEnable)
