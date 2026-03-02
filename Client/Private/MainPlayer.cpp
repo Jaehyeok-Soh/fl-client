@@ -313,6 +313,7 @@ void CMainPlayer::Try_Attack(const HIT_DESC& hitDesc)
         + std::to_wstring(Get_ID());
 
     CLOG_INFO(infoContant);
+#endif // _DEBUG
 
     // 일반 공격 데미지 폰트
     {
@@ -343,8 +344,6 @@ void CMainPlayer::Try_Attack(const HIT_DESC& hitDesc)
     }
 
     m_pGameInstance->Broadcast<COMBO_ATTACK_EVENT_START>();
-
-#endif // _DEBUG
 }
 
 #pragma region Legacy

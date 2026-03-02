@@ -170,7 +170,7 @@ void CUICombo_Text::Tick_By_Type(const _float fTimeDelta)
 		break;
 	case DTO::EUITextSubClassType::BATTLE_COMBO_CUR_COUNT_TEXT:
 	{
-		// m_iCurComboCount = m_pPlayerStatCom->Get_Count(CStatCom_Player::TIMER_TYPE::COMBO);
+		 m_iCurComboCount = m_pPlayerStatCom->Get_Count(CStatCom_Player::TIMER_TYPE::COMBO);
 
 		if (m_isCountChange)
 		{
@@ -183,7 +183,7 @@ void CUICombo_Text::Tick_By_Type(const _float fTimeDelta)
 	}
 	break;
 	case DTO::EUITextSubClassType::BATTLE_COMBO_NEXT_COUNT_TEXT:
-		// m_iCurComboCount = m_pPlayerStatCom->Get_Count(CStatCom_Player::TIMER_TYPE::COMBO);
+		m_iCurComboCount = m_pPlayerStatCom->Get_Count(CStatCom_Player::TIMER_TYPE::COMBO);
 		Convert_Count_To_Rank();
 		break;
 	case DTO::EUITextSubClassType::BATTLE_COMBO_TEXT_END:
