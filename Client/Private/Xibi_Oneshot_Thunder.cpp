@@ -33,7 +33,8 @@ HRESULT CXibi_Oneshot_Thunder::Initialize(void* pArg)
 	if (FAILED(Ready_Components()))
 		return E_FAIL;
 
-	Get_Component<CPhysicsRigidBody>()->Awake();
+	if (CPhysicsRigidBody* pRigidBody = Get_Component<CPhysicsRigidBody>())
+		pRigidBody->Awake();
 	return S_OK;
 }
 
@@ -42,7 +43,6 @@ HRESULT CXibi_Oneshot_Thunder::Awake(const _uint iCurrentLevelID)
 	if (FAILED(Super::Awake(iCurrentLevelID)))
 		return E_FAIL;
 
-	Get_Component<CEffectHandler>()->Awake();
 	return S_OK;
 }
 
@@ -88,16 +88,6 @@ void CXibi_Oneshot_Thunder::OnCollision_Enter(_uint iMyColliderLayer, _uint iOth
 
 void CXibi_Oneshot_Thunder::OnCollision_Exit(_uint iMyColliderLayer, _uint iOtherLayer, CGameObject* pOther)
 {
-}
-
-void CXibi_Oneshot_Thunder::Set_Dead(const wstring& wstrLayerTag)
-{
-	m_bDead = true;
-	m_pGameInstance->Request_DeleteGameObject(
-		m_pGameInstance->Get_CurrentLevelIndex(),
-		g_wszSkillObjectLayer,
-		this);
-	Get_Component<CEffectHandler>()->Trigger_Lifecycle_Effect(CEffectHandler::E_OBJ_LIFECYCLE_STATE::ON_DESTROY);
 }
 
 _bool CXibi_Oneshot_Thunder::On_Hit(const HIT_DESC& hitDesc)
@@ -153,12 +143,10 @@ HRESULT CXibi_Oneshot_Thunder::Ready_Components()
 			PHYSICSCOLLIDER_DESC cloneDesc{};
 			cloneDesc.eShape = EPhysicsShape::BOX;
 			cloneDesc.eFilterLayer = tagPhysicsFilterGroup::MONSTER_SKILL_PROJECTTILE;
+			//cloneDesc.bIsSkillTrigger = true;
 			cloneDesc.iFilterMask =
 			{
 				PHYSICSFILTERGROUP::Enum::PLAYER
-				| PHYSICSFILTERGROUP::Enum::ATTACK_PROJECTTILE
-				| PHYSICSFILTERGROUP::Enum::SKILL_PROJECTTILE
-				| PHYSICSFILTERGROUP::Enum::ATTACK
 				| PHYSICSFILTERGROUP::Enum::MAP
 			};
 			cloneDesc.bIsTrigger = true;
@@ -166,6 +154,7 @@ HRESULT CXibi_Oneshot_Thunder::Ready_Components()
 			cloneDesc.bIsActive = true;
 			cloneDesc.vCenter = { 0.f, 2.f, 0.f };
 			cloneDesc.vExtents = { 0.3f, 4.f,0.3f };
+			cloneDesc.strAttackPresetTag = "Xibi_Thunder";
 			PHYSICSMATERIAL_DESC mtrlDesc{};
 			mtrlDesc.eMaterial = EPhysicsMaterial::CONCRETE;
 			cloneDesc.tMaterial = mtrlDesc;

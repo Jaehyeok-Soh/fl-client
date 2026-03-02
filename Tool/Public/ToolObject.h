@@ -31,7 +31,7 @@ public:
 	virtual HRESULT Render() override;
 	virtual _bool Picking(OUT Vec3& vOut) PURE;
 	virtual void Draw_ImGui();
-	virtual void Set_Dead(const wstring& wstrLayerTag) override;
+	virtual void Set_Dead(_bool bStatic = false) override;
 
 	virtual bool	Get_SRT( OUT  Vec3& vOutScale , OUT Quat& vQuat , OUT Vec3& vPosition  );
 	
@@ -54,7 +54,6 @@ private:
 protected:
 	string m_strModelFileName = "";
 	string m_strObjectType = "";
-	wstring m_wstrLayerTag = L"";
 private:
 	EToolObjectType m_eType = { EToolObjectType::END };
 	_bool m_bVisible = { false };
