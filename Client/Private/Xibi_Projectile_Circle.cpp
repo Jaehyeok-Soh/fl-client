@@ -153,6 +153,7 @@ HRESULT CXibi_Projectile_Circle::Ready_Components()
 			PHYSICSCOLLIDER_DESC cloneDesc{};
 			cloneDesc.eShape = EPhysicsShape::SPHERE;
 			cloneDesc.eFilterLayer = tagPhysicsFilterGroup::MONSTER_SKILL_PROJECTTILE;
+			cloneDesc.bIsSkillTrigger = true;
 			cloneDesc.iFilterMask = 
 			{
 				PHYSICSFILTERGROUP::Enum::PLAYER
@@ -165,6 +166,7 @@ HRESULT CXibi_Projectile_Circle::Ready_Components()
 			cloneDesc.bSetOnlyFilter = false;
 			cloneDesc.bIsActive = true;
 			cloneDesc.fRadius = 0.5f;
+			cloneDesc.strAttackPresetTag = "Xibi_Circle";
 			PHYSICSMATERIAL_DESC mtrlDesc{};
 			mtrlDesc.eMaterial = EPhysicsMaterial::CONCRETE;
 			cloneDesc.tMaterial = mtrlDesc;

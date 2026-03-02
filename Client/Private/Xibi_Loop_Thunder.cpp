@@ -153,6 +153,7 @@ HRESULT CXibi_Loop_Thunder::Ready_Components()
 			PHYSICSCOLLIDER_DESC cloneDesc{};
 			cloneDesc.eShape = EPhysicsShape::BOX;
 			cloneDesc.eFilterLayer = tagPhysicsFilterGroup::MONSTER_SKILL_PROJECTTILE;
+			cloneDesc.bIsSkillTrigger = true;
 			cloneDesc.iFilterMask =
 			{
 				PHYSICSFILTERGROUP::Enum::PLAYER
@@ -166,6 +167,7 @@ HRESULT CXibi_Loop_Thunder::Ready_Components()
 			cloneDesc.bIsActive = true;
 			cloneDesc.vCenter = { 0.f, 2.f, 0.f };
 			cloneDesc.vExtents = { 0.3f, 4.f,0.3f };
+			cloneDesc.strAttackPresetTag = "Xibi_Thunder";
 			PHYSICSMATERIAL_DESC mtrlDesc{};
 			mtrlDesc.eMaterial = EPhysicsMaterial::CONCRETE;
 			cloneDesc.tMaterial = mtrlDesc;
