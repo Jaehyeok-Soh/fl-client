@@ -330,7 +330,7 @@ PxFilterFlags CPhysics_Module::FilterShader(
 	// CPhysics_FilterEventCallback::onContact에서 Flag 체크후 GAMEOBJECTINFO에 넣는중
 	// 03/02 소재혁
 	// 공격 및 스킬은 충돌안하고 감지만해서 oncollision불리게 플래그 수정
-	// 공격이랑 스킬은 충돌체 desc 설정에서 bIsSkill 셋팅해줘야함
+	// 공격이랑 스킬은 충돌체 desc 설정에서 bIsSkillTrigger 셋팅해줘야함(bIsSkillTrigger 추가됨)
 	if (PHYSICSFILTERGROUP::IsAttackPair(filterData0.word0, filterData1.word0))
 	{
 			pairFlags = PxPairFlag::eDETECT_DISCRETE_CONTACT

@@ -38,7 +38,7 @@ HRESULT CMonster_Boomer::Initialize(void* pArg)
 	if (FAILED(Ready_Ability()))
 		return E_FAIL;
 
-	Set_Name("Monster_Boomer");
+	Set_Name("세비지 필토이드");
 
 	if (FAILED(Ready_PartObjects()))
 		return E_FAIL;
@@ -119,16 +119,7 @@ void CMonster_Boomer::OnTrigger_Exit(_uint iMyColliderLayer, _uint iOtherLayer, 
 
 _bool CMonster_Boomer::On_Hit(const HIT_DESC& hitDesc)
 {
-	_bool result = Super::On_Hit(hitDesc);
-	
-	auto myStat = Get_Component<CMyStat>();
-	myStat->Add_Health(-hitDesc.attackDesc.pAttackPreset->tCombat.fBaseDamage);
-	
-	auto vHp = myStat->Get_Stat_Vec2(CMyStat::STAT_TYPE::HP);
-	if (vHp.x <= 0)
-		Get_Component<CMonsterControlContext>()->Set_Dead();
-
-	return result;
+	return Super::On_Hit(hitDesc);
 }
 
 void CMonster_Boomer::Try_Attack(const HIT_DESC& hitDesc)
