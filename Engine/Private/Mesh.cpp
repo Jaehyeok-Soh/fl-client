@@ -443,12 +443,19 @@ void CMesh::Free()
 
 	if (m_eModelType == EModelType::ANIM)
 	{
+		//if (IsClone())
+		//{
+		//	ID3D11ShaderResourceView* pNullSRV = nullptr;
+		//	m_pDeviceContext->CSSetShaderResources(1, 1, &pNullSRV);
+		//}
 
 		//if (IsClone() == false)
 		{
 			Safe_Release(m_pBoneMesh_ImmuBuffer);
 			Safe_Release(m_pBoneMeshSB_SRV);
 		}
+
+
 	}
 
 	Super::Free();

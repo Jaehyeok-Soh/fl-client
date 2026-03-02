@@ -39,8 +39,6 @@ CModel::CModel(const CModel& rhs)
 	, m_vecMaterialInstances(rhs.m_vecMaterialInstances)
 	, m_umapAnimationIndexTable(rhs.m_umapAnimationIndexTable)
 	, m_iRootBoneIdx(rhs.m_iRootBoneIdx)
-	, m_pPreSB(rhs.m_pPreSB)
-	, m_pCurSB(rhs.m_pCurSB)
 	, m_bStageBones(rhs.m_bStageBones)
 	, m_iStageBoneCounts(rhs.m_iStageBoneCounts)
 	, m_pStaticModel_MinMax{rhs.m_pStaticModel_MinMax}
@@ -1654,6 +1652,7 @@ void CModel::Free()
 				Safe_Release(pBoneGroup.pIndexBuffer);
 			}
 		}
+		m_vecBoneGroups.clear();
 
 		//if (IsClone())
 		{

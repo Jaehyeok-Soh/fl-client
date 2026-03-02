@@ -475,6 +475,12 @@ void CModelAnimation::Free()
 	Safe_Release(m_pChannelDataBuffer);
 	Safe_Release(m_pMixDataBuffer);
 
+	//if (IsClone())
+	//{
+	//	ID3D11ShaderResourceView* pNullSRV = nullptr;
+	//	m_pDeviceContext->CSSetShaderResources(1, 1, &pNullSRV);
+	//}
+
 	//if (!IsClone())
 	{
 		Safe_Release(m_pInputKeySB_SRV);
