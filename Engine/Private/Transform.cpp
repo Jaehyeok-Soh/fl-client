@@ -338,6 +338,49 @@ inline void CTransform::Rotation(const Quat& vQuat)
 	Set_Info(TRANSFORM_INFO_STATE::LOOK, Vec3::TransformNormal(vLook, matRotation));
 }
 
+inline void CTransform::Tunr_ToPoint_YAxis(const Vec3& vTargetPoint, const _float fTimeDelta)
+{
+	Vec3 vPos = Get_Info(TRANSFORM_INFO_STATE::POS);
+	Vec3 vToTarget = vTargetPoint - vPos;
+	vToTarget.y = 0.f;
+
+	if (vToTarget.LengthSquared() < g_XMEpsilon.f[0])
+		return;
+
+	vToTarget.Normalize();
+
+	Vec3 vLook = Get_Info(TRANSFORM_INFO_STATE::LOOK);
+	vLook.y = 0.f;
+	if (vLook.LengthSquared() < g_XMEpsilon.f[0])
+		return;
+	vLook.Normalize();
+
+	const _float fDot = std::clamp(vLook.Dot(vToTarget), -1.f, 1.f);
+	const _float fAngleGap = std::acos(fDot);
+
+	// 이미 거의 바라보고 있으면 즉시 세팅
+	if (fAngleGap < 0.001f)
+		return;
+
+	const _float fCross = vLook.Cross(vToTarget).y;
+	const _float fSign = (fCross >= 0.f) ? 1.f : -1.f;
+
+	// 이번 프레임 회전량 (RotatePerSec 기반, 남은 각도 초과 방지)
+	_float fRotate = m_fRotatePerSec * fTimeDelta;
+	if (fRotate > fAngleGap)
+		fRotate = fAngleGap;
+
+	Vec3 vRight = Get_Info(TRANSFORM_INFO_STATE::RIGHT);
+	Vec3 vUp = Get_Info(TRANSFORM_INFO_STATE::UP);
+	vLook = Get_Info(TRANSFORM_INFO_STATE::LOOK);
+
+	Matrix matRot = Matrix::CreateFromAxisAngle(Vec3::UnitY, fSign * fRotate);
+
+	Set_Info(TRANSFORM_INFO_STATE::RIGHT, Vec3::TransformNormal(vRight, matRot));
+	Set_Info(TRANSFORM_INFO_STATE::UP, Vec3::TransformNormal(vUp, matRot));
+	Set_Info(TRANSFORM_INFO_STATE::LOOK, Vec3::TransformNormal(vLook, matRot));
+}
+
 
 inline void CTransform::Turn_WorldYAxis(const Vec3& vTargetDir, const _float fTimeDelta)
 {

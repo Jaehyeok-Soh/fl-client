@@ -1075,6 +1075,9 @@
     <ClInclude Include="..\public\Xibi_Loop_Thunder.h">
       <Filter>03. GameObject\SkillObject\Boss\Xibi\LoopThunder</Filter>
     </ClInclude>
+    <ClInclude Include="..\Public\BossControlContext.h">
+      <Filter>05. Component\ControlContext</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <Image Include="Client.ico">
@@ -1561,6 +1564,9 @@
     </ClCompile>
     <ClCompile Include="..\private\Xibi_Loop_Thunder.cpp">
       <Filter>03. GameObject\SkillObject\Boss\Xibi\LoopThunder</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\BossControlContext.cpp">
+      <Filter>05. Component\ControlContext</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

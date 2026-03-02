@@ -89,6 +89,9 @@ HRESULT CMonsterState_Factory::Ready_Condition()
 
 	REGISTER_CONDITION("condition_cooldowntime_satisfy", CONDITION{ return state->IsCooldownTimeSatisfy(); });
 
+	REGISTER_CONDITION("param_condition_IsTrackPositionBetween", CONDITION{ return MONSTERACTIONSTATE(state)->Is_AnimTrackPositionBetweenRaw(param.fParam[0], param.fParam[1]); });
+
+	REGISTER_CONDITION("param_condition_IsTrackPositionAt", CONDITION{ return MONSTERACTIONSTATE(state)->Is_AnimTrackPositionAtRaw(param.fParam[0]); });
 
 	// 02-27 구조 변경 후 예시
 	REGISTER_CONDITION("param_condition_distance_over", CONDITION{ return MONSTERCC(state)->IsTargetDistanceOver(param.fParam[0]); });
@@ -104,6 +107,9 @@ HRESULT CMonsterState_Factory::Ready_Feature()
 	REGISTER_FEATURE("feat_align_attack", FEATURE{ MONSTERCC(state)->UpdateChase(fTimeDelta); state->Turn_byCam(fTimeDelta); });
 
 	REGISTER_FEATURE("feat_keep_look_target", FEATURE{ state->SetupLook_Target_XZ(); });
+
+	REGISTER_FEATURE("feat_TurnToTarget_XZ", FEATURE{ MONSTERCC(state)->Update_TurnToTarget_XZ(fTimeDelta); });
+	REGISTER_FEATURE("feat_TurnToTarget_XZ_Ratio", FEATURE{ MONSTERCC(state)->Update_TurnToTarget_XZ(fTimeDelta * param.fParam[0]); });
 
 	// 8방향 움직임
 	REGISTER_FEATURE("feat_move_front", FEATURE{ MONSTERCC(state)->Update_8Dir_LocalAxisXZ(fTimeDelta, 1.f, 0.f); state->Align_Movement_MoveDir(fTimeDelta); });

@@ -158,6 +158,7 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClInclude Include="..\Public\Body.h" />
+    <ClInclude Include="..\Public\BossControlContext.h" />
     <ClInclude Include="..\public\Boss_Xibi.h" />
     <ClInclude Include="..\Public\Builder_AttackOverlap.h" />
     <ClInclude Include="..\public\Builder_AttackPreset.h" />
@@ -329,6 +330,7 @@
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="..\Private\Body.cpp" />
+    <ClCompile Include="..\Private\BossControlContext.cpp" />
     <ClCompile Include="..\private\Boss_Xibi.cpp" />
     <ClCompile Include="..\Private\Builder_AttackOverlap.cpp" />
     <ClCompile Include="..\private\Builder_AttackPreset.cpp" />

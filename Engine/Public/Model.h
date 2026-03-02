@@ -170,7 +170,9 @@ public:
 	// animations
 	_bool								Is_AnimFinished() const { return m_bIsAnimFinished; }
 	_bool								Is_AnimTrackPositionBetween(_float fStartRatio, _float fEndRatio);
+	_bool								Is_AnimTrackPositionBetweenRaw(_float fTrackA, _float fTrackB);
 	_bool								Is_AnimTrackPositionAt(_float fRatio);
+	_bool								Is_AnimTrackPositionAtRaw(_float fTrackPosition);
 	_bool								Is_AnimTrackPositionAtHalf() const;
 
 	_bool								Is_LoopAnimDone() const { return m_bLoopAnimDone; }
