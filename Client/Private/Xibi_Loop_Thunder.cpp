@@ -164,7 +164,8 @@ HRESULT CXibi_Loop_Thunder::Ready_Components()
 			cloneDesc.bIsTrigger = true;
 			cloneDesc.bSetOnlyFilter = false;
 			cloneDesc.bIsActive = true;
-			cloneDesc.vExtents = { 0.3f, 5.f,0.3f };
+			cloneDesc.vCenter = { 0.f, 2.f, 0.f };
+			cloneDesc.vExtents = { 0.3f, 4.f,0.3f };
 			PHYSICSMATERIAL_DESC mtrlDesc{};
 			mtrlDesc.eMaterial = EPhysicsMaterial::CONCRETE;
 			cloneDesc.tMaterial = mtrlDesc;

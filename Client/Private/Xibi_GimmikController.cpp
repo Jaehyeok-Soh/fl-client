@@ -61,7 +61,9 @@ void CXibi_GimmikController::Update(const _float fTiemDelta)
 {
 	m_pRandomThunderSpawner->Update(fTiemDelta);
 	m_p3wayThunderSpawner->Update(fTiemDelta);
+	m_pOneshotThunderSpawner->Update(fTiemDelta);
 	m_p360CircleSpawner->Update(fTiemDelta);
+	m_p360ThunderSpawner->Update(fTiemDelta);
 }
 
 HRESULT CXibi_GimmikController::Set_Event()
@@ -150,7 +152,7 @@ HRESULT CXibi_GimmikController::Set_Event()
 		{
 			AnimNotifyKey key{};
 			key.eID = EAnimNotifyId::Trigger_Gimmik;
-			key.fTrackPosition = 26.f;
+			key.fTrackPosition = 35.f;
 			key.iParam0 = ENUM_TO_UINT(EGimmikType::Spawn360Circle);
 			pAnim->Pushback_Notifies(EAnimNotifyPhase::Late, key);
 		}
@@ -158,11 +160,11 @@ HRESULT CXibi_GimmikController::Set_Event()
 
 	// SpawnProjectile
 	{
-		_int iXibiSkill09_AnimIndex = Get_Owner()->Get_AnimationIndex(L"Animation_Xibi_Skill10");
-		if (iXibiSkill09_AnimIndex == -1)
+		_int iXibiSkill10_AnimIndex = Get_Owner()->Get_AnimationIndex(L"Animation_Xibi_Skill10");
+		if (iXibiSkill10_AnimIndex == -1)
 			return E_FAIL;
 
-		CModelAnimation* pAnim = m_pOwnerModel->Get_Animation(iXibiSkill09_AnimIndex);
+		CModelAnimation* pAnim = m_pOwnerModel->Get_Animation(iXibiSkill10_AnimIndex);
 		if (pAnim == nullptr)
 			return E_FAIL;
 
@@ -172,6 +174,14 @@ HRESULT CXibi_GimmikController::Set_Event()
 			key.eID = EAnimNotifyId::Trigger_Gimmik;
 			key.fTrackPosition = 26.f;
 			key.iParam0 = ENUM_TO_UINT(EGimmikType::Spawn360Thunder);
+			pAnim->Pushback_Notifies(EAnimNotifyPhase::Late, key);
+		}
+		// SpawnRandomThunder
+		{
+			AnimNotifyKey key{};
+			key.eID = EAnimNotifyId::Trigger_Gimmik;
+			key.fTrackPosition = 60.f;
+			key.iParam0 = ENUM_TO_UINT(EGimmikType::SpawnThunderRandom);
 			pAnim->Pushback_Notifies(EAnimNotifyPhase::Late, key);
 		}
 	}
@@ -363,13 +373,24 @@ void CXibi_GimmikController::On_SpawnCircle360()
 	desc.iLevelIndex = iLevelIndex;
 	desc.iSpawnLevelIndex = iLevelIndex;
 	desc.vOrigin = pOwner->Get_Component<CTransform>()->Get_Info(TRANSFORM_INFO_STATE::POS);
-	desc.vOrigin.y += 0.5f;
+	desc.vOrigin.y += 0.55f;
 	desc.vForward = pOwner->Get_Component<CTransform>()->Get_Info(TRANSFORM_INFO_STATE::LOOK);
 	m_p360CircleSpawner->Trigger(desc);
 }
 
 void CXibi_GimmikController::On_SpawnThunder360()
 {
+	_uint iLevelIndex = m_pGameInstance->Get_CurrentLevelIndex();
+	CGameObject* pOwner = Get_Owner();
+	if (pOwner->IsDead())
+		return;
+
+	CSkillObjectSpawnerBase::SPAWNER_COPY_DESC desc{};
+	desc.iLevelIndex = iLevelIndex;
+	desc.iSpawnLevelIndex = iLevelIndex;
+	desc.vOrigin = pOwner->Get_Component<CTransform>()->Get_Info(TRANSFORM_INFO_STATE::POS);
+	desc.vForward = pOwner->Get_Component<CTransform>()->Get_Info(TRANSFORM_INFO_STATE::LOOK);
+	m_p360ThunderSpawner->Trigger(desc);
 }
 
 HRESULT CXibi_GimmikController::Ready_Spawner()
@@ -395,10 +416,10 @@ HRESULT CXibi_GimmikController::Ready_Spawner()
 		CSkillObjectSpawner_RandomXZ::SPAWNER_RAND_COPY_DESC desc{};
 		desc.iLevelIndex = iLevelId;
 		desc.iSpawnLevelIndex = iLevelId;
-		desc.fRadiusMin = 1.f;
+		desc.fRadiusMin = 1.3f;
 		desc.fRadiusMax = m_fFieldMaxRange;
 		desc.iPerTick = 1;
-		desc.fDurationSec = 2.5f;
+		desc.fDurationSec = 3.5f;
 		desc.bUseForwardDir = false;
 
 		CBase* pResult = m_pGameInstance->Clone_Prototype(EPrototypeType::GAMEOBJECT,

@@ -355,7 +355,7 @@ HRESULT CLevel_Test::Ready_SkillObjectLayer()
 			iLevelId,
 			g_wszXibiProjectile_Prototype_Tag,
 			&desc,
-			40)))
+			30)))
 			return E_FAIL;
 	}
 	{
@@ -367,19 +367,19 @@ HRESULT CLevel_Test::Ready_SkillObjectLayer()
 			iLevelId,
 			g_wszXibiLoopThunder_Prototype_Tag,
 			&desc,
-			40)))
+			30)))
 			return E_FAIL;
 	}
 	{
 		CXibi_Oneshot_Thunder::SKILLOBJECT_DESC desc{};
 		if (FAILED(m_pGameInstance->Regist_Pool(
 			iLevelId,
-			g_wszPool_XibiLoopThunder,
+			g_wszPool_XibiOneshotThunder,
 			g_wszSkillObjectLayer,
 			iLevelId,
-			g_wszXibiLoopThunder_Prototype_Tag,
+			g_wszXibiOneshotThunder_Prototype_Tag,
 			&desc,
-			40)))
+			100)))
 			return E_FAIL;
 	}
 	return S_OK;
