@@ -7,6 +7,7 @@
 #include "ComputeShader.h"
 #include "MonsterActionState.h"
 #include "MonsterControlContext.h"
+#include "Xibi_GimmikController.h"
 #include "Weapon.h"
 #include "GameInstance.h"
 
@@ -50,6 +51,12 @@ HRESULT CBoss_Xibi::Awake(const _uint iCurrentLevelID)
 	if (FAILED(Super::Awake(iCurrentLevelID)))
 		return E_FAIL;
 
+	if (FAILED(Get_Component<CXibi_GimmikController>()->Awake(iCurrentLevelID)))
+		return E_FAIL;
+
+	CTransform* pTrnasform = Get_Component<CTransform>();
+	pTrnasform->Set_MovePerSec(1.5f);
+	pTrnasform->Set_RotatePerSec(3.f);
 	return S_OK;
 }
 
@@ -61,6 +68,7 @@ void CBoss_Xibi::Update_Priority(const _float fTimeDelta)
 void CBoss_Xibi::Update(const _float fTimeDelta)
 {
 	Super::Update(fTimeDelta);
+	Get_Component<CXibi_GimmikController>()->Update(fTimeDelta);
 }
 
 void CBoss_Xibi::Update_Late(const _float fTimeDelta)
@@ -144,13 +152,12 @@ HRESULT CBoss_Xibi::Ready_Weapon()
 HRESULT CBoss_Xibi::Ready_Components(void* pArg)
 {
 	MONSTER_DESC* pDesc = static_cast<MONSTER_DESC*>(pArg);
-
+	CMonster_Body_Base* pBody = Get_Part<CMonster_Body_Base>(ENUM_TO_UINT(Part::BODY));
+	if (pBody == nullptr)
+		return E_FAIL;
 	// TODO : BattleFiled
 
 	{
-		CMonster_Body_Base* pBody = Get_Part<CMonster_Body_Base>(ENUM_TO_UINT(Part::BODY));
-		if (pBody == nullptr)
-			return E_FAIL;
 		CSword* pSword = Get_Part<CSword>(ENUM_TO_UINT(Part::SWORD));
 		if (pSword == nullptr)
 			return E_FAIL;
@@ -183,6 +190,14 @@ HRESULT CBoss_Xibi::Ready_Components(void* pArg)
 
 	if (FAILED(Add_Component<CMonsterControlContext>(0 /*static*/, L"Prototype_Component_ControlContext_Monster", &desc)))
 		return E_FAIL;
+
+	// GimmikController
+	{
+		CXibi_GimmikController::GIMMIKCTRL_DESC desc{};
+		desc.pOwnerModel = pBody->Get_Component<CModel>();
+		if (FAILED(Add_Component<CXibi_GimmikController>(0 /*static*/, L"Prototype_Component_Xibi_GimmikController", &desc)))
+			return E_FAIL;
+	}
 
 	return S_OK;
 }

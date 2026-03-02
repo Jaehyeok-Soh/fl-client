@@ -276,13 +276,14 @@ HRESULT CRender_Manager::Initialize()
 
 void CRender_Manager::Push_RenderObject(RENDER_CATEGORY eCategory, CGameObject* pGO)
 {
-	if (eCategory >= RENDER_CATEGORY::END)
+	if (pGO == nullptr)
 		return;
 
-	if (pGO)
-		m_renderObjects[ENUM_TO_UINT(eCategory)].push_back(pGO);
+	if (eCategory >= RENDER_CATEGORY::END || (pGO->Is_Render() == false))
+		return;
 
 	Safe_AddRef(pGO);
+	m_renderObjects[ENUM_TO_UINT(eCategory)].push_back(pGO);
 }
 
 #pragma region Legacy

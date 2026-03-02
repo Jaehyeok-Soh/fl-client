@@ -1,6 +1,11 @@
 #pragma once
 #include "Level.h"
 
+NS_BEGIN(Engine)
+class CSingleSkillSpawner;
+class CProjectileSpawner_Fan;
+NS_END
+
 NS_BEGIN(Client)
 
 class CLevel_Test : public CLevel
@@ -22,6 +27,7 @@ private:
 	HRESULT Ready_UI_Layer(const wstring& wstrLayerTag);
 	HRESULT Ready_Camera_Layer(const wstring& wstrLayerTag);
 	HRESULT Ready_Lights();
+	HRESULT Ready_SkillObjectLayer();
 	HRESULT Ready_Map();
 	HRESULT Ready_Monster();
 	HRESULT Ready_Boss_Layer(const wstring& wstrLayerTag);

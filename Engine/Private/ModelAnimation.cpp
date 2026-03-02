@@ -206,6 +206,11 @@ _bool CModelAnimation::Is_TrackPositionBetween(_float fStartRatio, _float fEndRa
 	return Is_TrackPositionAt(fStartRatio) && (Is_TrackPositionAt(fEndRatio) == false);
 }
 
+_bool CModelAnimation::Is_TrackPositionBetweenRaw(_float fTrackPositionA, _float fTrackPositionB)
+{
+	return Is_TrackPositionAtRaw(fTrackPositionA) && (Is_TrackPositionAtRaw(fTrackPositionB) == false);
+}
+
 void CModelAnimation::Bind_AnimationEData(CComputeShader* pAnimEShader)
 {
 	pAnimEShader->Bind_InputStructuredBuffer(ENUM_TO_UINT(CS_SB_IDX::IMMU_KEYFRAME), m_pInputKeySB_SRV, m_pKeyFrameBuffer);

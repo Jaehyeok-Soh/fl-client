@@ -95,8 +95,10 @@ public:
 
     // ÅøÀü¿ë
     HRESULT Gizmo_Setting();
+    HRESULT Owner_Setting();
+
 private:
-    void GetAnimation();
+    void Set_OwnerModel();
     void Request_SpawnEffect(const DTO::EFFECTEVENT& script);
     void Request_SpawnEffect(const DTO::EFFECTEVENT& script, const std::string& EffectTag);
 
@@ -114,9 +116,10 @@ private:
         const Matrix* BoneMatrix);
 
 private:
-    SimpleMath::Matrix Offset_CalCulator(const DTO::EFFECTEVENT& script);
-    SimpleMath::Matrix Delete_ScaleMatrix(SimpleMath::Matrix Mat);
-    DTO::EFFECTEVENT Write_EffectEventDesc(const E_OBJ_LIFECYCLE_STATE eState);
+    SimpleMath::Matrix  Offset_CalCulator(const DTO::EFFECTEVENT& script);
+    SimpleMath::Matrix  Delete_ScaleMatrix(SimpleMath::Matrix Mat);
+    DTO::EFFECTEVENT    Write_EffectEventDesc(const E_OBJ_LIFECYCLE_STATE eState);
+    void                BoneMatrix_CalCulator(const DTO::EFFECTEVENT& script, OUT const SimpleMath::Matrix*& BoneMatrix);
 
 private:
     _uint m_iPrevAnimIndex = { 999999 };
@@ -138,10 +141,6 @@ private:
 private:
     DelegateHandle      m_EventHandle = {};
     std::unordered_map<string, CGameObject*> m_ActiveEffects[ENUM_TO_UINT(E_HANDLER_TYPE::TYPE_END)];
-
-public:
-    CMulticastDelegate<void(CGameObject*)> OnNotify;
-
 public:
     static CEffectHandler* Create(void* pArg);
     virtual CComponent* Clone(void* pArg) override;

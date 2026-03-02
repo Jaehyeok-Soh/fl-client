@@ -449,7 +449,25 @@ namespace Client
 
 #pragma endregion
 
-#pragma region MapObject包访
+#pragma region SkillObject 包访
+	/* Xibi */
+	inline constexpr wchar_t g_wszXibiProjectile_Prototype_Tag[]				{ L"Prototype_GameObject_Xibi_CircleProjectile" };
+	inline constexpr wchar_t g_wszXibiLoopThunder_Prototype_Tag[]				{ L"Prototype_GameObject_Xibi_LoopThunder" };
+	inline constexpr wchar_t g_wszXibiOneshotThunder_Prototype_Tag[]			{ L"Prototype_GameObject_Xibi_OneshotThunder" };
+	inline constexpr wchar_t g_wszPool_XibiLoopThunder[]						{ L"Pool_Xibi_LoopThunder" };
+	inline constexpr wchar_t g_wszPool_XibiCircleProjectile[]					{ L"Pool_Xibi_CircleProjectile" };
+	inline constexpr wchar_t g_wszPool_XibiOneshotThunder[]						{ L"Pool_Xibi_OneshotThunder" };
+#pragma endregion
+
+#pragma region SkillObjectSpawner 包访
+	inline constexpr wchar_t g_wszSpawner_XibiOneshotSingleThunder[]			{ L"Prototype_Spawner_XibiOneshotSingleThunder" };
+	inline constexpr wchar_t g_wszSpawner_XibiOneshotRandomThunder[]			{ L"Prototype_Spawner_XibiOneshotRandomThunder" };
+	inline constexpr wchar_t g_wszSpawner_Xibi360CircleProjectile[]				{ L"Prototype_Spawner_Xibi360CircleProjectile" };
+	inline constexpr wchar_t g_wszSpawner_Xibi360ThunderProjectile[]			{ L"Prototype_Spawner_Xibi360ThunderProjectile" };
+	inline constexpr wchar_t g_wszSpawner_Xibi3wayLoopThunder[]					{ L"Prototype_Spawner_Xibi3wayLoopThunder" };
+#pragma endregion
+
+#pragma region MapObject 包访
 	inline constexpr wchar_t g_wszStaticObject_Prototype_Tag[]					{ L"Prototype_GameObject_StaticObject" };
 	inline constexpr wchar_t g_wszLandScape_Prototype_Tag[]						{ L"Prototype_GameObject_LandScape" };
 	inline constexpr wchar_t g_wszBush_Prototype_Tag[]							{ L"Prototype_GameObject_Bush" };
@@ -487,7 +505,7 @@ namespace Client
 #pragma endregion
 
 #pragma region Layer Tag
-
+	inline constexpr wchar_t g_wszSkillObjectLayer[]							{ L"SkillObject_Layer" };
 	inline constexpr wchar_t g_wszPlayerLayer[]									{ L"Player_Layer" };
 	inline constexpr wchar_t g_wszMonstereLayer[]								{ L"Monster_Layer" };
 	inline constexpr wchar_t g_wszBossLayer[]									{ L"Boss_Layer" };
