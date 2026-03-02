@@ -312,6 +312,15 @@ HRESULT CMonster_Base::Ready_CCT(void* pArgs)
 	return S_OK;
 }
 
+void CMonster_Base::SetSpawnPos(CTransform::TRANSFORM_DESC tTransformDesc)
+{
+	Matrix matWorld = tTransformDesc.ScaleMatrix * tTransformDesc.RotationMatrix * tTransformDesc.TranslationMatrix;
+
+	Get_Component<CTransform>()->Set_WorldMatrix(matWorld);
+
+	Get_Component<CPhysicsCCT>()->SetFootPosition(matWorld.Translation());
+}
+
 HRESULT CMonster_Base::Create_Mosnter(EMonster_Type eCreateMonsterType, _uint iFindPrototypeLevelType, _uint iAddLevelType, CTransform::TRANSFORM_DESC* pTransformDesc)
 {
 	/* Monster Typeº°·Î Batch */

@@ -218,6 +218,48 @@ HRESULT CMonster_Boomer::Ready_Components(void* pArg)
 	return S_OK;
 }
 
+CMonster_Base::MONSTER_DESC CMonster_Boomer::Get_PreSetDesc(_uint iLevelId)
+{
+	CMonster_Base::MONSTER_DESC monsterDesc = {};
+	monsterDesc.iLevelIndex = iLevelId;
+
+	monsterDesc.wstrPartBodyPrototypeTag = g_wszMonster_Boomer_Body_Prototype_Tag;
+	monsterDesc.wstrBodyModelTag = g_wszMonster_Boomer_Model_Prototype_Tag;
+	monsterDesc.wstrAttackOverlapPrototypeTag = g_wszMonster_Boomer_AttackOverlap_Prototype_Tag;
+	monsterDesc.wstrMonsterStateTag = g_wszMonster_Boomer_State_Tag;
+
+	{
+		PHYSICSCCT_DESC desc;
+		desc.pOwner = nullptr;
+		desc.bIsPlayer = false;
+		desc.eType = EPhysicsCCTType::CAPSULE;
+		desc.pOwnerMatrix = nullptr;
+		desc.fRadius = 1.f;
+		desc.fHeight = 1.5f;
+		desc.vExtens = { 2.f, 2.f, 2.f };
+
+		PHYSICSMATERIAL_DESC mtrlDesc{};
+		mtrlDesc.eMaterial = EPhysicsMaterial::PLAYER;
+		desc.tMaterial = mtrlDesc;
+
+		desc.eFilterLayer = PHYSICSFILTERGROUP::Enum::MONSTER;
+		desc.iFilterMask =
+			PHYSICSFILTERGROUP::Enum::MONSTER
+			| PHYSICSFILTERGROUP::Enum::PLAYER
+			| PHYSICSFILTERGROUP::Enum::ATTACK
+			| PHYSICSFILTERGROUP::Enum::ATTACK_PROJECTTILE
+			| PHYSICSFILTERGROUP::Enum::SKILL
+			| PHYSICSFILTERGROUP::Enum::SKILL_PROJECTTILE
+			| PHYSICSFILTERGROUP::Enum::MAP
+			| PHYSICSFILTERGROUP::Enum::OBJECT1
+			| PHYSICSFILTERGROUP::Enum::OBJECT2;
+
+		monsterDesc.tCCTDesc = desc;
+	}
+
+	return monsterDesc;
+}
+
 CMonster_Boomer* CMonster_Boomer::Create(ID3D11Device* pDevice, ID3D11DeviceContext* pDeviceContext)
 {
 	CMonster_Boomer* pInsatnce = new CMonster_Boomer(pDevice, pDeviceContext);
