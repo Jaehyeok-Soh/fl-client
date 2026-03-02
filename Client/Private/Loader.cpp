@@ -124,6 +124,7 @@
 #include "UIDamageFont_Text.h"
 #include "UIBossStat_Text.h"
 #include "UICombo_Text.h"
+#include "UIBossAction_Text.h"
 // 그냥 이미지
 #include "UIJust_Image.h"
 // 다이나믹 이미지 
@@ -138,6 +139,8 @@
 #include "UILevelChange_Image.h"
 #include "UIBossStat_Image.h"
 #include "UICombo_Image.h"
+#include "UIMiniMap_Monster_Icon.h"
+#include "UIBossAction_Image.h"
 // 트리거 
 #include "UIMenu_Trigger.h"
 #include "UICommon_Trigger.h"
@@ -155,6 +158,7 @@
 #pragma endregion
 
 
+#define TIME_DELTA 0.016f 
 
 CLoader::CLoader(ID3D11Device* pDevice, ID3D11DeviceContext* pDeviceContext, ELevelType eLoadingLevelID)
 	: m_pDevice(pDevice)
@@ -249,6 +253,11 @@ HRESULT CLoader::Loading_For_LoadLevel()
 
 HRESULT CLoader::Loading_For_Test()
 {
+	m_fLoadingRatio = 0.f;
+	Sleep(1000);
+	m_fLoadingRatio = 1.f;
+	Sleep(1000);
+
 	m_isFinished = true;
 	return S_OK;
 }
@@ -256,8 +265,6 @@ HRESULT CLoader::Loading_For_Test()
 /* 첫 실행 떄 등록해야하는 것들 등록 */
 HRESULT CLoader::Loading_For_Logo()
 {
-	m_fLoadingRatio = 0.f;
-
 	if (FAILED(Ready_Spawner()))
 		return E_FAIL;
 
@@ -677,7 +684,6 @@ HRESULT CLoader::Loading_For_Logo()
 
 #pragma region PHYSICS
 #pragma endregion
-
 #pragma region UI
 	ADD_PROTOTYPE(ELevelType::STATIC, L"Prototype_UI_PlayerStatProgress",		CUIPlayerStat_Progress::Create(m_pDevice, m_pDeviceContext));
 	ADD_PROTOTYPE(ELevelType::STATIC, L"Prototype_UI_MenuText",					CUIMenu_Text::Create(m_pDevice, m_pDeviceContext));
@@ -698,13 +704,15 @@ HRESULT CLoader::Loading_For_Logo()
 	ADD_PROTOTYPE(ELevelType::STATIC, L"Prototype_UI_PlayerAmmoProgress",		CUIPlayerAmmo_Progress::Create(m_pDevice, m_pDeviceContext));
 	ADD_PROTOTYPE(ELevelType::STATIC, L"Prototype_UI_LevelChangeImage",			CUILevelChange_Image::Create(m_pDevice, m_pDeviceContext));
 	ADD_PROTOTYPE(ELevelType::STATIC, L"Prototype_UI_DamageFontText",			CUIDamageFont_Text::Create(m_pDevice, m_pDeviceContext));
-
 	ADD_PROTOTYPE(ELevelType::STATIC, L"Prototype_UI_BossStatProgress",			CUIBossStat_Progress::Create(m_pDevice, m_pDeviceContext));
 	ADD_PROTOTYPE(ELevelType::STATIC, L"Prototype_UI_BossStatText",				CUIBossStat_Text::Create(m_pDevice, m_pDeviceContext));
 	ADD_PROTOTYPE(ELevelType::STATIC, L"Prototype_UI_BossStatImage",			CUIBossStat_Image::Create(m_pDevice, m_pDeviceContext));
 	ADD_PROTOTYPE(ELevelType::STATIC, L"Prototype_UI_ComboImage",				CUICombo_Image::Create(m_pDevice, m_pDeviceContext));
 	ADD_PROTOTYPE(ELevelType::STATIC, L"Prototype_UI_ComboText",				CUICombo_Text::Create(m_pDevice, m_pDeviceContext));
+	ADD_PROTOTYPE(ELevelType::STATIC, L"Prototype_UI_MiniMapMonsterIconImage",	CUIMiniMap_Monster_Icon::Create(m_pDevice, m_pDeviceContext));
 	
+	ADD_PROTOTYPE(ELevelType::STATIC, L"Prototype_UI_BossActionImage",			CUIBossAction_Image::Create(m_pDevice, m_pDeviceContext));
+	ADD_PROTOTYPE(ELevelType::STATIC, L"Prototype_UI_BossActionText",			CUIBossAction_Text::Create(m_pDevice, m_pDeviceContext));
 #pragma endregion
 	
 	m_isFinished = true;
@@ -726,8 +734,10 @@ HRESULT CLoader::Loading_For_Tutorial_Village()
 
 
 
-
-
+	m_fLoadingRatio = 0.f;
+	Sleep(1000);
+	m_fLoadingRatio = 1.f;
+	Sleep(1000);
 	m_isFinished = true;
 	return S_OK;
 }
@@ -741,7 +751,11 @@ HRESULT CLoader::Loading_For_Tutorial_Boss()
 	// 이펙트 Object
 	ADD_PROTOTYPE(ELevelType::TUTORIAL_BOSS, L"Prototype_GameObject_Effect", Effect::Create(m_pDevice, m_pDeviceContext));
 	ADD_PROTOTYPE(ELevelType::TUTORIAL_BOSS, L"Prototype_GameObject_Effect_Parts", CEffectObject::Create(m_pDevice, m_pDeviceContext));
-
+	
+	m_fLoadingRatio = 0.f;
+	Sleep(1000);
+	m_fLoadingRatio = 1.f;
+	Sleep(1000);
 	m_isFinished = true;
 	return S_OK;
 }
@@ -755,7 +769,11 @@ HRESULT CLoader::Loading_For_Square()
 	// 이펙트 Object
 	ADD_PROTOTYPE(ELevelType::SQUARE, L"Prototype_GameObject_Effect", Effect::Create(m_pDevice, m_pDeviceContext));
 	ADD_PROTOTYPE(ELevelType::SQUARE, L"Prototype_GameObject_Effect_Parts", CEffectObject::Create(m_pDevice, m_pDeviceContext));
-
+	
+	m_fLoadingRatio = 0.f;
+	Sleep(1000);
+	m_fLoadingRatio = 1.f;
+	Sleep(1000);
 	m_isFinished = true;
 	return S_OK;
 }

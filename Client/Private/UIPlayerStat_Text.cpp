@@ -200,10 +200,10 @@ HRESULT CUIPlayerStat_Text::Convert_Stat_To_Text()
 		m_wstrText = std::to_wstring(m_pPlayerStatCom->Get_Count(CStatCom_Player::TIMER_TYPE::DASH));
 		break;
 	case DTO::EUITextSubClassType::PLAYER_STAT_TEXT_MAX_BULLET_COUNT:
-		m_wstrText = Float_To_Wstring(m_pGunParts->Get_TotalButtlet().x, 0.f);
+		m_wstrText = Float_To_Wstring(m_pGunParts->Get_TotalButtlet().x, 0);
 		break;
 	case DTO::EUITextSubClassType::PLAYER_STAT_TEXT_CUR_BULLET_COUNT:
-		m_wstrText = Float_To_Wstring(m_pGunParts->Get_CurButtlet().x, 0.f);
+		m_wstrText = Float_To_Wstring(m_pGunParts->Get_CurButtlet().x, 0);
 		break;
 	case DTO::EUITextSubClassType::END:
 	default:

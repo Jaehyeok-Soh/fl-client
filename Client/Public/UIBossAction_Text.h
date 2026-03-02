@@ -3,19 +3,18 @@
 #include "DataStruct_UI.h"
 
 NS_BEGIN(Client)
-class CUILoading_Text final : public CUIText
+class CUIBossAction_Text final : public CUIText
 {
 	using Super = CUIText;
 public:
-	typedef struct tagLoadingTextDesc : public UI_TEXT_DESC
+	typedef struct tagUIBossActionTextDesc : public UI_TEXT_DESC
 	{
-		const _float* pLoadingRatio;
-	}LOADING_TEXT_DESC;
+	}BOSS_ACTION_TEXT_DESC;
 
 private:
-	CUILoading_Text(ID3D11Device* pDevice, ID3D11DeviceContext* pDeviceContext);
-	CUILoading_Text(const CUILoading_Text& rhs);
-	virtual ~CUILoading_Text() = default;
+	CUIBossAction_Text(ID3D11Device* pDevice, ID3D11DeviceContext* pDeviceContext);
+	CUIBossAction_Text(const CUIBossAction_Text& rhs);
+	virtual ~CUIBossAction_Text() = default;
 
 public:
 	HRESULT Initialize_Prototype() override;
@@ -30,35 +29,25 @@ public:
 	virtual HRESULT Render() override;
 
 private:
-	HRESULT Ready_Components(LOADING_TEXT_DESC* pDesc);
+	HRESULT Ready_Components(BOSS_ACTION_TEXT_DESC* pDesc);
 	HRESULT Bind_ShaderResources();
-	virtual HRESULT Attach_Personal_Info()override;
-	void Lerp_Percent(const _float fTimeDelta);
-	HRESULT Convert_Value_To_Text();
+	HRESULT Attach_Personal_Info();
+	void Tick_By_Type(const _float fTimeDelta)override;
+	HRESULT Convert_Stat_To_Text();
+
+protected:
+	virtual HRESULT Spawn_FromPool(void* pArg) override;
+	virtual HRESULT Despawn_FromPool()override;
+
+private:
 	virtual void OnUIEvent(ETriggerEventType eEvent, CGenericUI* pSender)override;
 	virtual void Initialize_Visible_Event()override;
 	virtual void Initialize_InVisible_Event()override;
 	virtual _bool Tick_Visible_Event(const _float fTimeDelta)override;
 	virtual _bool Tick_InVisible_Event(const _float fTimeDelta)override;
-private:
-	const _float* m_pLoadingRatio = { nullptr };
-
-	_float m_fPercentTimeAcc = {};
-	_float m_fCurPercent = {};
-	_float m_fPrePercent = {};
-
-	_float m_fLerpPercent = {};
-
-	_float m_fStartPercent = {};
-	_float m_fTargetPercent = {};
-
-	_float m_fDuration = { 1.f };
-
-	vector<_wstring> m_vecText;
-	_uint m_iCurTextCursor = {};
 
 public:
-	static CUILoading_Text* Create(ID3D11Device* pDevice, ID3D11DeviceContext* pDeviceContext);
+	static CUIBossAction_Text* Create(ID3D11Device* pDevice, ID3D11DeviceContext* pDeviceContext);
 	CGameObject* Clone(void* pArg);
 	virtual void Free()override;
 };

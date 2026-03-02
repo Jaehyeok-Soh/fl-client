@@ -70,14 +70,6 @@ void CUICombo_Image::Update_Priority(const _float fTimeDelta)
 void CUICombo_Image::Update(const _float fTimeDelta)
 {
 	Super::Update(fTimeDelta);
-	if (KEY_BUTTON_HOLD(DIK_UP))
-	{
-		m_iCurComboCount += 1;
-	}
-	if (KEY_BUTTON_HOLD(DIK_DOWN))
-	{
-		m_iCurComboCount -= 1;
-	}
 }
 
 void CUICombo_Image::Update_Late(const _float fTimeDelta)
@@ -175,7 +167,6 @@ HRESULT CUICombo_Image::Attach_Personal_Info()
 		{
 			if (!this->m_isVisible)
 				this->Set_Visible();
-			this->m_iCurComboCount++;
 		});
 
 	m_pGameInstance->Subscribe<COMBO_ATTACK_EVENT_END>([this]() 

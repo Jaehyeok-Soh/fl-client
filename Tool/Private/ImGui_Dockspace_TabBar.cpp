@@ -20,48 +20,56 @@ HRESULT CImGui_Dockspace_TabBar::Render(CToolObject* pGo)
 		{
 			wstrChangeLevelName = L"LOGO";
 			eNowSelected = ELevelType::LOGO;
+			m_isNo = false;
 			ImGui::EndTabItem();
 		}
 		if (ImGui::BeginTabItem("Map##TabBar"))
 		{
 			wstrChangeLevelName = L"MAP";
 			eNowSelected = ELevelType::MAP;
+			m_isNo = false;
 			ImGui::EndTabItem();
 		}
 		if (ImGui::BeginTabItem("Animation##TabBar"))
 		{
 			wstrChangeLevelName = L"ANIMATION";
 			eNowSelected = ELevelType::ANIMATION;
+			m_isNo = false;
 			ImGui::EndTabItem();
 		}
 		if (ImGui::BeginTabItem("Effect##TabBar"))
 		{
 			wstrChangeLevelName = L"EFFECT";
 			eNowSelected = ELevelType::EFFECT;
+			m_isNo = false;
 			ImGui::EndTabItem();
 		}
 		if (ImGui::BeginTabItem("Camera##TabBar"))
 		{
 			wstrChangeLevelName = L"CAMERA";
 			eNowSelected = ELevelType::CAMERA;
+			m_isNo = false;
 			ImGui::EndTabItem();
 		}
 		if (ImGui::BeginTabItem("UI##TabBar"))
 		{
 			wstrChangeLevelName = L"UI";
 			eNowSelected = ELevelType::UI;
+			m_isNo = false;
 			ImGui::EndTabItem();
 		}
 		if (ImGui::BeginTabItem("AttackPreset##TabBar"))
 		{
 			wstrChangeLevelName = L"ATTACK_PRESET";
 			eNowSelected = ELevelType::ATTACK_PRESET;
+			m_isNo = false;
 			ImGui::EndTabItem();
 		}
 		if (ImGui::BeginTabItem("AssetConvert##TabBar"))
 		{
 			wstrChangeLevelName = L"ASSET_CONVERT";
 			eNowSelected = ELevelType::ASSET_CONVERT;
+			m_isNo = false;
 			ImGui::EndTabItem();
 		}
 		ImGui::EndTabBar();

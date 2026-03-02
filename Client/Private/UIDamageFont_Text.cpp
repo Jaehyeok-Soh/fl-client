@@ -12,6 +12,8 @@
 #include "VIBuffer_Rect_Tex.h"
 #include "GameInstance.h"
 
+#define DESTROY_TIME 0.5f
+
 CUIDamageFont_Text::CUIDamageFont_Text(ID3D11Device* pDevice, ID3D11DeviceContext* pDeviceContext)
 	:CUIText(pDevice, pDeviceContext)
 {
@@ -167,7 +169,7 @@ void CUIDamageFont_Text::Tick_By_Type(const _float fTimeDelta)
 		if (m_isFin_Event)
 		{
 			m_fTimeAcc += fTimeDelta;
-			_float t = m_fTimeAcc / 1.f;
+			_float t = m_fTimeAcc / DESTROY_TIME;
 
 			if (t > 1.f)
 			{
@@ -188,7 +190,7 @@ void CUIDamageFont_Text::Tick_By_Type(const _float fTimeDelta)
 			m_fTimeAcc += fTimeDelta;
 			m_vFontColor = m_vOriginFontColor;
 
-			if (m_fTimeAcc > 1.f)
+			if (m_fTimeAcc > DESTROY_TIME)
 				Set_Invisible();
 		}
 	}
@@ -257,7 +259,7 @@ _bool CUIDamageFont_Text::Tick_Visible_Event(const _float fTimeDelta)
 		_float t = m_fTimeAcc / fDuration;
 		if (1.f < t)
 		{
-			Ready_Lerp_Movement(Vec2{ 0.f, 0.f }, Vec2{ 0.f, -30.f }, 1.f, 3.f, m_fDelay);
+			Ready_Lerp_Movement(Vec2{ 0.f, 0.f }, Vec2{ 0.f, -30.f }, DESTROY_TIME, 3.f, m_fDelay);
 			m_fDamageFontScaleOffet		= 1.f;
 			m_pWorldUIComp->Request_ScaleOffset(m_fDamageFontScaleOffet);
 			m_isActive					= true;
@@ -324,6 +326,9 @@ _bool CUIDamageFont_Text::Tick_InVisible_Event(const _float fTimeDelta)
 
 HRESULT CUIDamageFont_Text::Spawn_FromPool(void* pArg)
 {
+	if (FAILED(Super::Spawn_FromPool(pArg)))
+		return E_FAIL;
+
 	UI_PREFAB_DATA* pDesc = static_cast<UI_PREFAB_DATA*>(pArg);
 	auto* pComp = Get_Script_Component(L"WorldUIComponent");
 	if (nullptr == pComp)
@@ -346,11 +351,17 @@ HRESULT CUIDamageFont_Text::Spawn_FromPool(void* pArg)
 	if (m_eTextSubClassType == DTO::EUITextSubClassType::BATTLE_DAMAGE_TEXT_CRITICAL_DAMAGE ||
 		m_eTextSubClassType == DTO::EUITextSubClassType::BATTLE_DAMAGE_TEXT_CRITCAL)
 	{
-		m_pWorldUIComp->Set_TargetPos(Vec3{ pDesc->DamageFontData.vHitPos.x,  pDesc->DamageFontData.vHitPos.y, pDesc->DamageFontData.vHitPos.z});
+		if(pDesc->DamageFontData.vHitPos.x > 100000 || pDesc->DamageFontData.vHitPos.x < -100000)
+			m_pWorldUIComp->Set_Target(pDesc->pTarget);
+		else
+			m_pWorldUIComp->Set_TargetPos(Vec3{ pDesc->DamageFontData.vHitPos.x,  pDesc->DamageFontData.vHitPos.y, pDesc->DamageFontData.vHitPos.z});
 	}
 	else
 	{
-		m_pWorldUIComp->Set_TargetPos(Vec3{ pDesc->DamageFontData.vHitPos.x + x,  pDesc->DamageFontData.vHitPos.y + y, pDesc->DamageFontData.vHitPos.z + z });
+		if (pDesc->DamageFontData.vHitPos.x > 100000 || pDesc->DamageFontData.vHitPos.x < -100000)
+			m_pWorldUIComp->Set_Target(pDesc->pTarget);
+		else
+			m_pWorldUIComp->Set_TargetPos(Vec3{ pDesc->DamageFontData.vHitPos.x + x,  pDesc->DamageFontData.vHitPos.y + y, pDesc->DamageFontData.vHitPos.z + z });
 	}
 
 	switch (m_eTextSubClassType)
@@ -379,7 +390,7 @@ HRESULT CUIDamageFont_Text::Spawn_FromPool(void* pArg)
 	{
 		m_wstrText				= std::to_wstring(pDesc->DamageFontData.iDamage) + L"!";
 	}
-	case DTO::EUITextSubClassType::BATTLE_DAMAGE_TEXT_CRITCAL:
+	case DTO::EUITextSubClassType::BATTLE_DAMAGE_TEXT_CRITCAL:	// 의도된것
 	{
 		m_vOriginFontColor		= pDesc->DamageFontData.vFontColor;
 		m_vFontColor			= m_vOriginFontColor;
@@ -399,6 +410,8 @@ HRESULT CUIDamageFont_Text::Spawn_FromPool(void* pArg)
 
 HRESULT CUIDamageFont_Text::Despawn_FromPool()
 {
+	if (FAILED(Super::Despawn_FromPool()))
+		return E_FAIL;
 	m_vFontColor				= m_vOriginFontColor;
 	m_fDamageFontScaleOffet		= 1.f;
 	m_isVisible					= false;

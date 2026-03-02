@@ -156,6 +156,12 @@ void CLevel_Test::Update(const _float fTimeDelta)
 		UI_PREFAB_DATA Desc = {};
 		CUI_Manager::GetInstance()->Request_Add_Prefab(ENUM_TO_UINT(ELevelType::TEST), EUIPrefabType::BOSS_NAMEPLATE, ENUM_TO_UINT(ELevelType::TEST), &Desc);
 	}
+
+	if (KEY_BUTTON_DOWN(DIK_7))
+	{
+		UI_PREFAB_DATA Desc = {};
+		CUI_Manager::GetInstance()->Request_Add_Prefab(ENUM_TO_UINT(ELevelType::TEST), EUIPrefabType::MINIMAP_MONSTER_ICON, ENUM_TO_UINT(ELevelType::TEST), &Desc);
+	}
 }
 
 HRESULT CLevel_Test::Render()
