@@ -438,7 +438,7 @@ namespace Client
 	/* Monster Attack OverLap */
 	inline constexpr wchar_t g_wszMonster_Dog_AttackOverlap_Prototype_Tag[]		{ L"Prototype_Component_AttackOverlap_Monster_Dog" };
 	inline constexpr wchar_t g_wszMonster_Boomer_AttackOverlap_Prototype_Tag[]	{ L"Prototype_Component_AttackOverlap_Monster_Boomer" };
-
+	inline constexpr wchar_t g_wszBoss_Xibi_AttackOverlap_Prototype_Tag[]		{ L"Prototype_Component_AttackOverlap_Xibi" };
 #pragma endregion
 
 
