@@ -12,7 +12,7 @@ void CPhysics_FilterEventCallback::onContact(const PxContactPairHeader& pairHead
 	CGameObject* leftObject = Conversion_GameObject(pairHeader.actors[0]->userData);
 	CGameObject* rightObject = Conversion_GameObject(pairHeader.actors[1]->userData);
 
-	if (leftObject->IsDead() || rightObject->IsDead() || leftObject == nullptr || rightObject == nullptr)
+	if (leftObject == nullptr || rightObject == nullptr || leftObject->IsDead() || rightObject->IsDead())
 		return;
 
 	GAMEOBJECTINFO info = Get_GameObject(pairHeader.actors[0]->userData, pairHeader.actors[1]->userData);
