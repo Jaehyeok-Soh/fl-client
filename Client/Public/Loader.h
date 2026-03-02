@@ -49,6 +49,7 @@ private:
 	HRESULT Ready_AttackOverlap();
 	HRESULT Ready_AttackPresets();
 	HRESULT Ready_EffectEvent();
+	HRESULT Ready_Spawner();
 
 	HRESULT Ready_EffectEvent_AnimationData();
 	HRESULT Ready_AttackOverlap_PlayerMoon();

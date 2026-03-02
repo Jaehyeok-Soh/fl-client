@@ -14,6 +14,7 @@ public:
 	}BOUNDING_AABB_DESC;
 private:
 	CBounding_AABB(ID3D11Device* pDevice, ID3D11DeviceContext* pDeviceContext);
+	CBounding_AABB(const CBounding_AABB& rhs);
 	virtual ~CBounding_AABB() = default;
 
 	HRESULT Initialize(const BOUNDING_DESC* pInitializeDesc);

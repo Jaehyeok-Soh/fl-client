@@ -14,6 +14,7 @@ CCollider::CCollider(ID3D11Device* pDevice, ID3D11DeviceContext* pDeviceContext,
 	, m_pDevice(pDevice)
 	, m_pDeviceContext(pDeviceContext)
 	, m_eType(eType)
+	, m_pBounding(nullptr)
 {
 	Safe_AddRef(m_pDevice);
 	Safe_AddRef(m_pDeviceContext);
@@ -25,6 +26,7 @@ CCollider::CCollider(const CCollider& rhs)
 	, m_pDevice(rhs.m_pDevice)
 	, m_pDeviceContext(rhs.m_pDeviceContext)
 	, m_eType(rhs.m_eType)
+	, m_pBounding(rhs.m_pBounding)
 #ifdef _DEBUG
 	, m_pBatch(rhs.m_pBatch)
 	, m_pEffect(rhs.m_pEffect)
@@ -143,11 +145,12 @@ void CCollider::Bind_ModelAnimNotify()
 
 void CCollider::Unbind_ModelAnimNotify()
 {
-	CModel* pModel = Get_Owner()->Get_Component<CModel>();
-	if (pModel == nullptr)
-		return;
-
-	pModel->OnNotify.Unsubscribe(m_hAnimNotifyHandle);
+	if (m_pOwner)
+	{
+		CModel* pModel = m_pOwner->Get_Component<CModel>();
+		if(pModel)
+			pModel->OnNotify.Unsubscribe(m_hAnimNotifyHandle);
+	}
 	m_hAnimNotifyHandle = {};
 }
 

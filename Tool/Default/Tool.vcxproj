@@ -247,6 +247,7 @@
     <ClInclude Include="..\Public\UI_Hierachy.h" />
     <ClInclude Include="..\Public\UI_Inspector.h" />
     <ClInclude Include="..\Public\UI_Maker.h" />
+    <ClInclude Include="CPanel_Camera.h" />
     <ClInclude Include="framework.h" />
     <ClInclude Include="pch.h" />
     <ClInclude Include="Registry_State.h" />
@@ -388,6 +389,7 @@
     <ClCompile Include="..\Private\UI_Hierachy.cpp" />
     <ClCompile Include="..\Private\UI_Inspector.cpp" />
     <ClCompile Include="..\Private\UI_Maker.cpp" />
+    <ClCompile Include="CPanel_Camera.cpp" />
     <ClCompile Include="pch.cpp">
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Create</PrecompiledHeader>
       <PrecompiledHeaderFile Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">pch.h</PrecompiledHeaderFile>

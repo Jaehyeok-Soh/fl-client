@@ -846,6 +846,7 @@ namespace Engine
 		float fLinearDamping = {};
 		float fAngularDamping = {};
 
+		Matrix* pOwnerMatrix = { nullptr };
 		vector<Matrix> pOwnerMatrices;
 		vector<PHYSICS_SRT> vecSRT{};
 	}PHYSICSRIGIDBODY_DESC;
@@ -968,6 +969,24 @@ namespace Engine
 		const SimpleMath::Matrix** pTransformMatrix; // 실시간 추적용 본 행렬 주소
 		int iFlag;
 	} EFFECT_SPAWN_DESC;
+
+#pragma endregion
+
+#pragma region CameraShaking_Data
+
+	typedef struct tagCameraEventDataBase
+	{
+		
+	}CAM_EVENTDATA_BASE;
+
+	typedef struct tagCameraShaking_Data
+	{
+		float  fCurTime		{0.f};		// 현재 누적된 시간
+		float  fTime		{0.f};		// 남은 흔들림 시간
+		float  fPower		{0.f};		// 흔들림 강도
+	}CAM_SHAKING_DATA;
+
+#pragma endregion
 
 }
 #pragma endregion

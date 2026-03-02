@@ -67,6 +67,11 @@ private:
 	/* Batch 관련 */
 	void						ImGuiUpdate_Batch_Monster_Desc(BATCH_MONSTER_DESC* pDesc);
 
+#pragma region Batch Object Desc 관련
+	void						ImGuiUpdate_Batch_Object_Desc(BATCH_OBJECT_DESC* pDesc);
+	void						ImGuiUpdate_Battle_Field_Desc(BATTLE_FIELD_DESC* pDesc);
+#pragma endregion
+
 	/* Trigger Box 관련 */
 	void						ImGuiUpdate_TriggerBox(TRIGGERBOX_DESC* pDesc);
 	void						ImGuiUpdate_TriggerBox_ChanageLevel_Desc(TRIGGERBOX_CHANGELEVEL_DESC* pDesc);
@@ -75,6 +80,8 @@ private:
 
 	/* Mosnter Spawn ImGuiUpdate */
 	void						ImGuiUpdate_MonsterSpawnData(Engine::MonsterSpawnData* pMonsterSpawnData);
+
+
 
 private:
 	void						Compute_LandScape_TextureUV(_uint iLandScapeIndex , OUT Vec2& vOut_LT , OUT Vec2& vOut_RB );
@@ -87,6 +94,8 @@ private:
 	wchar_t						m_wszMapObjectLayerTag[ENUM_TO_UINT(EMapObject_Type::END)][MAX_PATH];
 
 	char						m_szMakeMonsterTypeName[ENUM_TO_UINT(DTO::EMakeMonsterType::END)][MAX_PATH];
+	char						m_szMakeObjectTypeName[ENUM_TO_UINT(DTO::EMakeObjectType::END)][MAX_PATH];
+	char						m_szBattleFieldTypeName[ENUM_TO_UINT(BATTLE_FIELD_DESC::Field_Type::END)][MAX_PATH];
 
 	char						m_szFindName[MAX_PATH];
 

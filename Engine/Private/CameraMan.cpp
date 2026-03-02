@@ -5,6 +5,7 @@
 CCameraMan::CCameraMan(ID3D11Device* pDevice, ID3D11DeviceContext* pDeviceContext, CameraType eType)
     : Super(pDevice, pDeviceContext)
     , m_eType(eType)
+    , m_vCamShakingOffsetPosition{Vec3::Zero}
 {
 }
 
@@ -51,6 +52,11 @@ void CCameraMan::Update_Priority(const _float fTimeDelta)
 void CCameraMan::Update(const _float fTimeDelta)
 {
     Super::Update(fTimeDelta);
+
+
+
+
+    Camera_Shaking(fTimeDelta);
 }
 
 void CCameraMan::Update_Late(const _float fTimeDelta)
@@ -74,9 +80,49 @@ inline void CCameraMan::Change_Actor(CGameObject* pGo)
     m_pActor = pGo;
 }
 
+void CCameraMan::Camera_Shaking(const CAM_SHAKING_DATA& tData)
+{
+    m_listCameraShakingDatas.push_back(tData);
+    return;
+}
+
+
+void CCameraMan::Camera_Shaking(const _float fTimeDelta)
+{
+    m_listCameraShakingDatas.remove_if([](const CAM_SHAKING_DATA& data) {
+        return data.fCurTime >= data.fTime;
+        });
+
+    if (m_listCameraShakingDatas.empty())
+    {
+        m_vCamShakingOffsetPosition = { Vec3::Zero };
+        return;
+    }
+
+
+    m_vCamShakingOffsetPosition = { Vec3::Zero };
+
+    /* CamShakingData */
+    for (auto& CamShakingData : m_listCameraShakingDatas)
+    {
+        CamShakingData.fCurTime += fTimeDelta;
+        _float fTimeRatio = CamShakingData.fCurTime / CamShakingData.fTime;
+
+        /* 카메라 쉐이킹 강도를 시간에 따라 감소시켜줌 */
+        _float strength = CamShakingData.fPower * (1.0f - fTimeRatio);
+
+        _float randX = ((float)rand() / (float)RAND_MAX) * 2.0f - 1.0f;
+        _float randY = ((float)rand() / (float)RAND_MAX) * 2.0f - 1.0f;
+        _float randZ = ((float)rand() / (float)RAND_MAX) * 2.0f - 1.0f;
+
+        m_vCamShakingOffsetPosition += Vec3(randX, randY, randZ) * strength;
+    }
+
+}
+
 HRESULT CCameraMan::Ready_Components(void* pArg)
 {
-    return E_NOTIMPL;
+    return S_OK;
 }
 
 void CCameraMan::Free()

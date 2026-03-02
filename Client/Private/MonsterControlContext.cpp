@@ -8,6 +8,8 @@
 #include "GameInstance.h"
 #include "Engine_Utils.h"
 
+#include "PhysicsCCT.h"
+
 CMonsterControlContext::CMonsterControlContext()
 	: Super()
 {
@@ -421,6 +423,18 @@ void CMonsterControlContext::UpdateChase(const _float fTimeDelta)
 	m_vMoveDir = vToTarget;
 }
 
+void CMonsterControlContext::Update_TurnToTarget_XZ(const _float fTimeDelta)
+{
+	CGameObject* pTarget = Get_Target();
+	if (pTarget == nullptr)
+		return;
+
+	CTransform* pTransform = Get_Owner()->Get_Component<CTransform>();
+	Vec3 vTargetPos = pTarget->Get_Component<CTransform>()->Get_Info(TRANSFORM_INFO_STATE::POS);
+
+	pTransform->Tunr_ToPoint_YAxis(vTargetPos, fTimeDelta);
+}
+
 void CMonsterControlContext::Update_8Dir_LocalAxisXZ(const _float fTimeDelta, _float fForward, _float fRight)
 {
 	CTransform* pOwnerTransform = Get_Owner()->Get_Component<CTransform>();
@@ -466,6 +480,16 @@ void CMonsterControlContext::UpdateTurn90(const _float fTimeDelta)
 
 void CMonsterControlContext::UpdateTrun180(const _float fTimeDelta)
 {
+}
+
+void CMonsterControlContext::Set_CCT_Collision_Disable()
+{
+	Get_Owner()->Get_Component<CPhysicsCCT>()->EnableCollision(false);
+}
+
+void CMonsterControlContext::Set_CCT_Collision_Enable()
+{
+	Get_Owner()->Get_Component<CPhysicsCCT>()->EnableCollision(true);
 }
 
 CMonsterControlContext* CMonsterControlContext::Create()

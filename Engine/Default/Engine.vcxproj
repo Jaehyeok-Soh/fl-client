@@ -196,6 +196,7 @@
     <ClCompile Include="..\private\FxEffectAsset.cpp" />
     <ClCompile Include="..\private\FxShaderVariant.cpp" />
     <ClCompile Include="..\Private\GameData_Struct.cpp" />
+    <ClCompile Include="..\private\GimmikController.cpp" />
     <ClCompile Include="..\Private\InstanceMesh.cpp" />
     <ClCompile Include="..\Private\DataDocument_Effect.cpp" />
     <ClCompile Include="..\Private\Cell.cpp" />
@@ -283,6 +284,8 @@
     <ClCompile Include="..\Private\Physics_ShapeFactory.cpp" />
     <ClCompile Include="..\Private\Physics_Utils.cpp" />
     <ClCompile Include="..\Private\Picking.cpp" />
+    <ClCompile Include="..\private\ProjectileSpawner_Fan.cpp" />
+    <ClCompile Include="..\private\ProjectileSpawner_Radial360.cpp" />
     <ClCompile Include="..\Private\Prototype_Manager.cpp" />
     <ClCompile Include="..\Private\Ray.cpp" />
     <ClCompile Include="..\Private\RenderTarget.cpp" />
@@ -292,7 +295,11 @@
     <ClCompile Include="..\Private\Resource_Manager.cpp" />
     <ClCompile Include="..\Private\Shader.cpp" />
     <ClCompile Include="..\private\ShaderAsset_Manager.cpp" />
+    <ClCompile Include="..\private\SingleSkillSpawner.cpp" />
     <ClCompile Include="..\Private\SkillBase.cpp" />
+    <ClCompile Include="..\private\SkillObjectSpawnerBase.cpp" />
+    <ClCompile Include="..\private\SkillObjectSpawner_RandomXZ.cpp" />
+    <ClCompile Include="..\private\SkillObject_Base.cpp" />
     <ClCompile Include="..\Private\Sound_Manager.cpp" />
     <ClCompile Include="..\Private\MyStat.cpp" />
     <ClCompile Include="..\Private\StateBase.cpp" />
@@ -365,6 +372,7 @@
     <ClInclude Include="..\public\FxEffectAsset.h" />
     <ClInclude Include="..\public\FxShaderVariant.h" />
     <ClInclude Include="..\Public\GameData_Struct.h" />
+    <ClInclude Include="..\public\GimmikController.h" />
     <ClInclude Include="..\Public\InstanceMesh.h" />
     <ClInclude Include="..\Public\ComputeShader.h" />
     <ClInclude Include="..\Public\DataDocument_Effect.h" />
@@ -451,6 +459,8 @@
     <ClInclude Include="..\Public\Physics_ShapeFactory.h" />
     <ClInclude Include="..\Public\Physics_Utils.h" />
     <ClInclude Include="..\Public\Picking.h" />
+    <ClInclude Include="..\public\ProjectileSpawner_Fan.h" />
+    <ClInclude Include="..\public\ProjectileSpawner_Radial360.h" />
     <ClInclude Include="..\Public\Prototype_Manager.h" />
     <ClInclude Include="..\Public\Ray.h" />
     <ClInclude Include="..\Public\RenderTarget.h" />
@@ -460,7 +470,11 @@
     <ClInclude Include="..\Public\Resource_Manager.h" />
     <ClInclude Include="..\Public\Shader.h" />
     <ClInclude Include="..\public\ShaderAsset_Manager.h" />
+    <ClInclude Include="..\public\SingleSkillSpawner.h" />
     <ClInclude Include="..\Public\SkillBase.h" />
+    <ClInclude Include="..\public\SkillObjectSpawnerBase.h" />
+    <ClInclude Include="..\public\SkillObjectSpawner_RandomXZ.h" />
+    <ClInclude Include="..\public\SkillObject_Base.h" />
     <ClInclude Include="..\Public\Sound_Manager.h" />
     <ClInclude Include="..\Public\MyStat.h" />
     <ClInclude Include="..\Public\StateBase.h" />

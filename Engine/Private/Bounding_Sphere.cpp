@@ -11,6 +11,20 @@ CBounding_Sphere::CBounding_Sphere(ID3D11Device* pDevice, ID3D11DeviceContext* p
 {
 }
 
+CBounding_Sphere::CBounding_Sphere(const CBounding_Sphere& rhs)
+    : Super(rhs)
+{
+    if (rhs.m_pOriginalDesc)
+    {
+        m_pDesc = new BoundingSphere(*rhs.m_pOriginalDesc);
+    }
+    if (rhs.m_pDesc)
+    {
+        m_pDesc = new BoundingSphere(*rhs.m_pDesc);
+    }
+}
+
+
 HRESULT CBounding_Sphere::Initialize(const BOUNDING_DESC* pInitialDesc)
 {
     const BOUNDING_SPHERE_DESC* pDesc = static_cast<const BOUNDING_SPHERE_DESC*>(pInitialDesc);

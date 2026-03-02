@@ -146,6 +146,7 @@ public:
 public:
 	void UpdateWalk(const _float fTimeDelta);
 	void UpdateChase(const _float fTimeDelta);
+	void Update_TurnToTarget_XZ(const _float fTimeDelta);
 	void Update_8Dir_LocalAxisXZ(const _float fTimeDelta, _float fForward, _float fRight);
 	void UpdateRun(const _float fTimeDelta);
 	void UpdateFly(const _float fTimeDelta);
@@ -156,7 +157,8 @@ public:
 	void UpdateSideWalk(const _float fTimeDelta);
 	void UpdateTurn90(const _float fTimeDelta);
 	void UpdateTrun180(const _float fTimeDelta);
-
+	void Set_CCT_Collision_Disable();
+	void Set_CCT_Collision_Enable();
 
 private:
 	//EMovementMode m_eCurrentMovement = { EMovementMode::GROUND };

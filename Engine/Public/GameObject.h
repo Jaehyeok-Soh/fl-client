@@ -87,6 +87,8 @@ public:
 	Vec3 Get_CenterFromCollider(EColliderType eType, class CBounding* pBounding);
 	void Set_ActiveIndex(_uint iActiveIndex) { m_iActiveIndex = (_int)iActiveIndex; }
 	_int Get_ActiveIndex() const { return m_iActiveIndex; }
+	virtual void Set_Render(_bool bRender) { m_bRender = bRender; }
+	_bool Is_Render() const { return m_bRender; }
 	_bool Is_PoolObject() const { return m_pOwnerPool != nullptr; }
 	_bool Is_Awaked() const { return m_bAwaked; }
 	void Set_Awake(_bool bAwaked) { m_bAwaked = bAwaked; }
@@ -110,6 +112,7 @@ private:
 protected:
 	_bool m_bAwaked = { false };
 	_bool m_bDead = { false };
+	_bool m_bRender = { true };
 	_int m_iActiveIndex = { -1 };
 	CObjectPool* m_pOwnerPool = { nullptr };
 	CCameraMan* m_pTargeter = { nullptr };
