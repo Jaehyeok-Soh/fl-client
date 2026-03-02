@@ -55,10 +55,12 @@ public:
 	inline void Yaw_Turn(const _float fTimeDelta);
 	inline void Rotation(const Vec3& vAxis, _float fRadian);
 	inline void Rotation(const Quat& vQuat);
+	inline void Tunr_ToPoint_YAxis(const Vec3 &vTargetPoint, const _float fTimeDelta);
 	inline void Turn_WorldYAxis(const Vec3 &vTargetDir, const _float fTimeDelta);
 	inline void Turn(const Vec3 &vAxis, const _float fTimeDelta);
 	inline void Look_At(const Vec3 &vPoint);
 	inline void Look_At_XZ(Vec3 vPoint);
+	inline void Look_At_Dir(Vec3 vDir);
 	inline _bool Chase(const Vec3 &vPoint, _float fMinDistance, const _float fTimeDelta, CNavigation* pNavigation = nullptr);
 	const Vec3& Get_PrevPosition() const { return m_vPrevPosition; }
 	_float Get_RotatePerSec() const { return m_fRotatePerSec; }

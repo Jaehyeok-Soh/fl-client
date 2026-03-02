@@ -276,6 +276,22 @@ _bool CActionState::Is_AnimTrackPositionBetween(_float fStartRatio, _float EndRa
 	return m_pOwnerModel->Is_AnimTrackPositionBetween(fStartRatio, EndRatio);
 }
 
+_bool CActionState::Is_AnimTrackPositionAtRaw(_float fTrack)
+{
+	if (m_pOwnerModel == nullptr)
+		return false;
+
+	return m_pOwnerModel->Is_AnimTrackPositionAt(fTrack);
+}
+
+_bool CActionState::Is_AnimTrackPositionBetweenRaw(_float fTrackA, _float fTrackB)
+{
+	if (m_pOwnerModel == nullptr)
+		return false;
+
+	return m_pOwnerModel->Is_AnimTrackPositionBetweenRaw(fTrackA, fTrackB);
+}
+
 _bool CActionState::Is_AnimTrackPositionHalf()
 {
 	if (m_pOwnerModel == nullptr)

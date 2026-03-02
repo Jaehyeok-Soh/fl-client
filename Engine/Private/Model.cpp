@@ -576,6 +576,13 @@ CMaterialInstance* CModel::Get_MaterialInstance(_uint iIndex)
 
 	return m_vecMaterialInstances[iIndex];
 }
+CModelAnimation* CModel::Get_Animation(_uint iIndex)
+{
+	if (iIndex >= m_vecAnimations.size())
+		return nullptr;
+
+	return m_vecAnimations[iIndex];
+}
 CMesh* CModel::Get_Mesh(_uint iIndex)
 {
 	if (iIndex >= m_vecMeshes.size())
@@ -662,9 +669,19 @@ _bool CModel::Is_AnimTrackPositionBetween(_float fStartRatio, _float fEndRatio)
 	return m_vecAnimations[m_iCurrentAnimIndex]->Is_TrackPositionBetween(fStartRatio, fEndRatio);
 }
 
+_bool CModel::Is_AnimTrackPositionBetweenRaw(_float fTrackA, _float fTrackB)
+{
+	return m_vecAnimations[m_iCurrentAnimIndex]->Is_TrackPositionBetweenRaw(fTrackA, fTrackB);
+}
+
 _bool CModel::Is_AnimTrackPositionAt(_float fRatio)
 {
 	return m_vecAnimations[m_iCurrentAnimIndex]->Is_TrackPositionAt(fRatio);
+}
+
+_bool CModel::Is_AnimTrackPositionAtRaw(_float fTrackPosition)
+{
+	return m_vecAnimations[m_iCurrentAnimIndex]->Is_TrackPositionAtRaw(fTrackPosition);
 }
 
 _bool CModel::Is_AnimTrackPositionAtHalf() const

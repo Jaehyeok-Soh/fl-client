@@ -559,6 +559,27 @@
     <Filter Include="05. Component\ControlContext">
       <UniqueIdentifier>{6eae1188-805a-4682-97be-f5878859d316}</UniqueIdentifier>
     </Filter>
+    <Filter Include="05. Component\GimmikController">
+      <UniqueIdentifier>{6400d921-2ea9-4ca2-99ee-960c9e7d162a}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="03. GameObject\SkillObject">
+      <UniqueIdentifier>{447c781f-70bb-4ec1-aebd-deebe8560b9b}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="03. GameObject\SkillObject\Boss">
+      <UniqueIdentifier>{452b24b1-a7ab-4221-b619-9fb0a67bedcd}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="03. GameObject\SkillObject\Boss\Xibi">
+      <UniqueIdentifier>{b8939588-7c78-4946-902c-7f3e664b420e}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="03. GameObject\SkillObject\Boss\Xibi\Circle">
+      <UniqueIdentifier>{58b04b1f-3901-4571-a853-87da8f3ed0f0}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="03. GameObject\SkillObject\Boss\Xibi\LoopThunder">
+      <UniqueIdentifier>{cf67d8c5-c358-43fa-83eb-0afde4338646}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="03. GameObject\SkillObject\Boss\Xibi\OneshotThunder">
+      <UniqueIdentifier>{8e02636f-76e4-4efd-97df-126215ef3e7c}</UniqueIdentifier>
+    </Filter>
     <Filter Include="05. Component\Stat">
       <UniqueIdentifier>{2ced342f-5042-4404-83a0-64377d92387f}</UniqueIdentifier>
     </Filter>
@@ -1090,6 +1111,21 @@
     <ClInclude Include="..\Public\State_HitFlyEnd.h">
       <Filter>06. FSM\Player\Hit\HitFly</Filter>
     </ClInclude>
+    <ClInclude Include="..\public\Xibi_GimmikController.h">
+      <Filter>05. Component\GimmikController</Filter>
+    </ClInclude>
+    <ClInclude Include="..\public\Xibi_Projectile_Circle.h">
+      <Filter>03. GameObject\SkillObject\Boss\Xibi\Circle</Filter>
+    </ClInclude>
+    <ClInclude Include="..\public\Xibi_Loop_Thunder.h">
+      <Filter>03. GameObject\SkillObject\Boss\Xibi\LoopThunder</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\BossControlContext.h">
+      <Filter>05. Component\ControlContext</Filter>
+    </ClInclude>
+    <ClInclude Include="..\public\Xibi_Oneshot_Thunder.h">
+      <Filter>03. GameObject\SkillObject\Boss\Xibi\OneshotThunder</Filter>
+    </ClInclude>
     <ClInclude Include="..\Public\BattleField.h">
       <Filter>03. GameObject\BattelField</Filter>
     </ClInclude>
@@ -1588,6 +1624,21 @@
     </ClCompile>
     <ClCompile Include="..\Private\State_HitFlyEnd.cpp">
       <Filter>06. FSM\Player\Hit\HitFly</Filter>
+    </ClCompile>
+    <ClCompile Include="..\private\Xibi_GimmikController.cpp">
+      <Filter>05. Component\GimmikController</Filter>
+    </ClCompile>
+    <ClCompile Include="..\private\Xibi_Projectile_Circle.cpp">
+      <Filter>03. GameObject\SkillObject\Boss\Xibi\Circle</Filter>
+    </ClCompile>
+    <ClCompile Include="..\private\Xibi_Loop_Thunder.cpp">
+      <Filter>03. GameObject\SkillObject\Boss\Xibi\LoopThunder</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\BossControlContext.cpp">
+      <Filter>05. Component\ControlContext</Filter>
+    </ClCompile>
+    <ClCompile Include="..\private\Xibi_Oneshot_Thunder.cpp">
+      <Filter>03. GameObject\SkillObject\Boss\Xibi\OneshotThunder</Filter>
     </ClCompile>
     <ClCompile Include="..\Private\BattleField.cpp">
       <Filter>03. GameObject\BattelField</Filter>

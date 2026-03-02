@@ -5,6 +5,8 @@
 
 #include "PhysicsCollider.h"
 
+#include "Transform.h"
+
 CPhysicsRigidBody::CPhysicsRigidBody(ID3D11Device* pDevice, ID3D11DeviceContext* pDeviceContext)
 	: Super()
 	, m_pDevice(pDevice)
@@ -50,9 +52,10 @@ void CPhysicsRigidBody::Awake()
 		PHYSICSCOLLIDER_DESC* colDesc = collider->GetDesc();
 		vector<PxShape*>* shapes = &collider->GetShapes();
 
-		m_pActors = m_pGameInstance->GetActor(&m_tDesc,
-			colDesc,
-			*shapes);
+	m_tDesc.pOwnerMatrix = Get_Owner()->Get_Component<CTransform>()->Get_WorldMatrixPtr();
+	m_pActors = m_pGameInstance->GetActor(&m_tDesc,
+		colDesc,
+		*shapes);
 
 		for (auto& actor : m_pActors)
 		{
@@ -92,16 +95,19 @@ CPhysicsRigidBody* CPhysicsRigidBody::SetUserData(CGameObject* pObject)
 
 CPhysicsRigidBody* CPhysicsRigidBody::SetTransform(_uint iIndex, const Matrix& matWorld)
 {
-	if (m_tDesc.eType != EPhysicsActorType::KINEMATIC)
-		return this;
+	PxTransform pxTf = m_pGameInstance->XMMatrixToPxTransform(matWorld);
+
+	m_pActors[iIndex]->setGlobalPose(pxTf);
 
 	return this;
 }
 
 CPhysicsRigidBody* CPhysicsRigidBody::SetTransform(const Matrix& matWorld)
 {
-	if (m_tDesc.eType != EPhysicsActorType::KINEMATIC)
-		return this;
+	PxTransform pxTf = m_pGameInstance->XMMatrixToPxTransform(matWorld);
+
+	for (auto& actor : m_pActors)
+		actor->setGlobalPose(pxTf);
 
 	return this;
 }
@@ -140,16 +146,24 @@ CPhysicsRigidBody* CPhysicsRigidBody::Rotation(Quat vQuat)
 
 CPhysicsRigidBody* CPhysicsRigidBody::Move(_uint iIndex, Vec3 vDist, _float fTimeDelta)
 {
-	if (m_tDesc.eType != EPhysicsActorType::KINEMATIC)
-		return this;
+	PxTransform pxTf(PxVec3(vDist.x, vDist.y, vDist.z));
+
+	//if (m_pActors[iIndex]->getType() == PxActorType::Enum::eRIGID_DYNAMIC)
+	//	m_pActors[iIndex].
+	//else
+	//	m_pActors[iIndex]->setGlobalPose(pxtf);
+
+	m_pActors[iIndex]->setGlobalPose(pxTf);
 
 	return this;
 }
 
 CPhysicsRigidBody* CPhysicsRigidBody::Move(Vec3 vDist, _float fTimeDelta)
 {
-	if (m_tDesc.eType != EPhysicsActorType::KINEMATIC)
-		return this;
+	PxTransform pxTf(PxVec3(vDist.x, vDist.y, vDist.z));
+
+	for (auto& actor : m_pActors)
+		actor->setGlobalPose(pxTf);
 
 	return this;
 }
@@ -204,6 +218,11 @@ CPhysicsRigidBody* CPhysicsRigidBody::EnableCollision(_bool bEnable)
 #ifdef _DEBUG
 void CPhysicsRigidBody::Render()
 {
+	if (m_pActors[0]->getType() == PxActorType::eRIGID_DYNAMIC)
+	{
+		auto a = 1;
+	}
+
 	for (auto& actor : m_pActors)
 		m_pGameInstance->Physics_Render(actor);
 }

@@ -442,6 +442,27 @@
     <Filter Include="00. System\12. PhysX\EventCallback\CCTBehavior">
       <UniqueIdentifier>{4b476549-750d-4f9e-9d62-7051691f5bf3}</UniqueIdentifier>
     </Filter>
+    <Filter Include="00. System\05. Component\GimmikController">
+      <UniqueIdentifier>{faa8bbf7-f518-4ecb-8872-994c4c5778c3}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="00. System\04. GameObject\SkillObject_Base">
+      <UniqueIdentifier>{9ae53c38-bb95-4a13-93a5-a07fb8b2799c}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="00. System\04. GameObject\SkillObjectSpawner">
+      <UniqueIdentifier>{e46430a0-8477-4162-8de5-07fda1abbbf8}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="00. System\04. GameObject\SkillObjectSpawner\Fan">
+      <UniqueIdentifier>{7813697d-932e-40b8-9a3f-b5f808022b4e}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="00. System\04. GameObject\SkillObjectSpawner\Radial360">
+      <UniqueIdentifier>{746c0899-d99d-4695-bc3b-d8d4a8c74eca}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="00. System\04. GameObject\SkillObjectSpawner\Once">
+      <UniqueIdentifier>{1adc61de-5aeb-45ff-896d-af884e979278}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="00. System\04. GameObject\SkillObjectSpawner\OnceRandom">
+      <UniqueIdentifier>{113383fc-f919-408e-9d5a-8d2124affd32}</UniqueIdentifier>
+    </Filter>
     <Filter Include="00. System\12. PhysX\EventCallback\CCTFilterCallback">
       <UniqueIdentifier>{f0f18817-327c-4f4d-89f9-c5faf15fe01f}</UniqueIdentifier>
     </Filter>
@@ -888,6 +909,27 @@
     </ClCompile>
     <ClCompile Include="..\Private\Physics_CCTBehaviorCallback.cpp">
       <Filter>00. System\12. PhysX\EventCallback\CCTBehavior</Filter>
+    </ClCompile>
+    <ClCompile Include="..\private\GimmikController.cpp">
+      <Filter>00. System\05. Component\GimmikController</Filter>
+    </ClCompile>
+    <ClCompile Include="..\private\SkillObject_Base.cpp">
+      <Filter>00. System\04. GameObject\SkillObject_Base</Filter>
+    </ClCompile>
+    <ClCompile Include="..\private\SkillObjectSpawnerBase.cpp">
+      <Filter>00. System\04. GameObject\SkillObjectSpawner</Filter>
+    </ClCompile>
+    <ClCompile Include="..\private\ProjectileSpawner_Fan.cpp">
+      <Filter>00. System\04. GameObject\SkillObjectSpawner\Fan</Filter>
+    </ClCompile>
+    <ClCompile Include="..\private\ProjectileSpawner_Radial360.cpp">
+      <Filter>00. System\04. GameObject\SkillObjectSpawner\Radial360</Filter>
+    </ClCompile>
+    <ClCompile Include="..\private\SingleSkillSpawner.cpp">
+      <Filter>00. System\04. GameObject\SkillObjectSpawner\Once</Filter>
+    </ClCompile>
+    <ClCompile Include="..\private\SkillObjectSpawner_RandomXZ.cpp">
+      <Filter>00. System\04. GameObject\SkillObjectSpawner\OnceRandom</Filter>
     </ClCompile>
     <ClCompile Include="..\Private\Physics_CCTFilterCallback.cpp">
       <Filter>00. System\12. PhysX\EventCallback\CCTFilterCallback</Filter>
@@ -1380,6 +1422,27 @@
     </ClInclude>
     <ClInclude Include="..\Public\Physics_CCTBehaviorCallback.h">
       <Filter>00. System\12. PhysX\EventCallback\CCTBehavior</Filter>
+    </ClInclude>
+    <ClInclude Include="..\public\GimmikController.h">
+      <Filter>00. System\05. Component\GimmikController</Filter>
+    </ClInclude>
+    <ClInclude Include="..\public\SkillObject_Base.h">
+      <Filter>00. System\04. GameObject\SkillObject_Base</Filter>
+    </ClInclude>
+    <ClInclude Include="..\public\SkillObjectSpawnerBase.h">
+      <Filter>00. System\04. GameObject\SkillObjectSpawner</Filter>
+    </ClInclude>
+    <ClInclude Include="..\public\ProjectileSpawner_Fan.h">
+      <Filter>00. System\04. GameObject\SkillObjectSpawner\Fan</Filter>
+    </ClInclude>
+    <ClInclude Include="..\public\ProjectileSpawner_Radial360.h">
+      <Filter>00. System\04. GameObject\SkillObjectSpawner\Radial360</Filter>
+    </ClInclude>
+    <ClInclude Include="..\public\SingleSkillSpawner.h">
+      <Filter>00. System\04. GameObject\SkillObjectSpawner\Once</Filter>
+    </ClInclude>
+    <ClInclude Include="..\public\SkillObjectSpawner_RandomXZ.h">
+      <Filter>00. System\04. GameObject\SkillObjectSpawner\OnceRandom</Filter>
     </ClInclude>
     <ClInclude Include="..\Public\GameData_Struct.h">
       <Filter>01. Utility\08. GameData\00. Struct</Filter>
