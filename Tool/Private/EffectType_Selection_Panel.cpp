@@ -268,6 +268,8 @@ void CEffectType_Selection_Panel::EditEffect()
 
 void CEffectType_Selection_Panel::TransformEffect(CToolObject* pGo)
 {
+	if (pGo == nullptr) return;
+
 	if (ImGui::TreeNode("Transform##Position"))
 	{
 		CTransform* pTransform = pGo->Get_Component<CTransform>();

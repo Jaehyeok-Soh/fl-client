@@ -29,6 +29,7 @@ public:
 		DTO::EUISubClassType eSubClassType;
 		_string strNoiseTextureTag;
 		_string strAlphaMaskTextureTag;
+		_string strGlowTextureTag;
 		DTO::TUI_TextData tTextData;
 		DTO::TUI_TriggerData tTriggerData;
 		DTO::TUI_ButtonTriggerData tButtonTriggerData;
@@ -36,7 +37,7 @@ public:
 		int32_t iIndex;
 	}TOOLUI_DESC;
 
-	enum EUITextureSlot {DEFAULT = 0, NOISE, ALPHA_MASK};
+	enum EUITextureSlot {DEFAULT = 0, NOISE, ALPHA_MASK, GLOW};
 
 protected:
 	CToolUI(ID3D11Device* pDevice, ID3D11DeviceContext* pDeviceContext);
@@ -76,6 +77,7 @@ public:
 	const _wstring& Get_TextureTag() const { return m_wstrTextureTag; }
 	const _wstring& Get_NoiseTextureTag() const { return m_wstrNoiseTextureTag; }
 	const _wstring& Get_AlphaMaskTextureTag() const { return m_wstrAlphaMaskTextureTag; }
+	const _wstring& Get_GlowTextureTag() const { return m_wstrGlowTextureTag; }
 	_float* Get_WIdth_Ptr() { return &m_fWidth; }
 	_float* Get_Height_Ptr() { return &m_fHeight; }
 	_float* Get_PosX_Ptr() { return &m_fX; }
@@ -93,12 +95,27 @@ public:
 	_bool& Get_InitInteractable() { return m_isInteract; }
 	_bool& Get_InitActivate() { return m_isActive; }
 
+	const Vec2& Get_NoiseUVScale() const { return m_vNoiseUVScale; }
+	const Vec2& Get_NoiseUVScroll() const { return m_vNoiseUVScroll; }
+	_float Get_Time() const { return m_fTime; }
+	_float Get_GlowDistort() const { return m_fGlowDistort; }
+	_float Get_GlowPulseSpeed() const { return m_fGlowPulseSpeed; }
+	_float Get_GlowIntensity() const { return m_fGlowIntensity; }
+
 	void Set_Name(const _string& str) { m_strName = str; }
 	void Set_RectTransformType(ERectTransform value) { m_eRectTransformType = value; }
 	void Set_TextureTag(const _wstring& value) { m_wstrTextureTag = value; }
 	void Set_NoiseTextureTag(const _wstring& value) { m_wstrNoiseTextureTag = value; }
 	void Set_AlphaMaskTextureTag(const _wstring& value) { m_wstrAlphaMaskTextureTag = value; }
+	void Set_GlowTextureTag(const _wstring& value) { m_wstrGlowTextureTag = value; }
 	void Set_HitTest() { m_isHitTest = TRUE; };
+
+	void Set_NoiseUVScale(const Vec2& vNoiseUVScale) { m_vNoiseUVScale = vNoiseUVScale; }
+	void Set_NoiseUVScroll(const Vec2& vNoiseUVScroll) { m_vNoiseUVScroll = vNoiseUVScroll; }
+	void Set_Time(_float fTime) { m_fTime = fTime; }
+	void Set_GlowDistort(_float fGlowDistort) { m_fGlowDistort = fGlowDistort; }
+	void Set_GlowPulseSpeed(_float fGlowPulseSpeed) { m_fGlowPulseSpeed = fGlowPulseSpeed; }
+	void Set_GlowIntensity(_float fGlowIntensity) { m_fGlowIntensity = fGlowIntensity; }
 
 	Vec4 Get_ColorTint()			const	{ return m_vColorTint; }
 	Vec4 Get_GradiantColorTint()	const	{ return m_vGradiantColorTint; }
@@ -166,6 +183,7 @@ public:
  	HRESULT Request_Change_Texture();
 	HRESULT Request_Change_NoiseTexture();
 	HRESULT Request_Change_AlphaMaskTexture();
+	HRESULT Request_Change_GlowTexture();
 
 	void Request_Chnage_ShaderPass(uint32_t pass);
 
@@ -212,6 +230,7 @@ protected:
 	ERectTransform m_eRectTransformType = { ERectTransform::C };
 	_wstring m_wstrTextureTag			= {};
 	_wstring m_wstrNoiseTextureTag		= {};
+	_wstring m_wstrGlowTextureTag = {};
 	_wstring m_wstrAlphaMaskTextureTag	= {};
 	uint32_t m_iComponentFlag			= {};
 	_bool m_isUseColorTint				= {};
@@ -222,6 +241,14 @@ protected:
 	int32_t m_iFillDir					= {};
 	_float m_fDelay						= {};
 	int32_t m_iFlip						= { ENUM_TO_UINT(EUIFlip::NONE) };
+
+	Vec2	m_vNoiseUVScale				= {};
+	Vec2	m_vNoiseUVScroll			= {};
+	_float	m_fTime						= {};
+	_float	m_fGlowDistort				= {};
+	_float	m_fGlowPulseSpeed			= {};
+	_float	m_fGlowIntensity			= {};
+
 
 	// Client Bind Values Text Data
 	DTO::TUI_TextData m_tUITextData					= {};

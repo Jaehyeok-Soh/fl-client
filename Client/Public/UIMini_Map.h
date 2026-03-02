@@ -22,7 +22,6 @@ public:
 	HRESULT Initialize_Prototype() override;
 	HRESULT Initialize(void* pArg) override;
 
-	HRESULT Attach_Personal_Info();
 
 public:
 	virtual HRESULT Awake(const _uint iCurrentLevelID) override;
@@ -43,8 +42,7 @@ public:
 private:
 	HRESULT Ready_Components(MINIMAP_DESC* pDesc);
 	HRESULT Bind_ShaderResources();
-
-public:
+	virtual HRESULT Attach_Personal_Info()override;
 	virtual void OnUIEvent(ETriggerEventType eEvent, CGenericUI* pSender)override;
 	virtual void Initialize_Visible_Event() override;
 	virtual void Initialize_InVisible_Event()override;

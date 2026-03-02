@@ -11,8 +11,8 @@ class CShader;
 class CComputeShader;
 class CTransform;
 class StructuredBuffer;
-
-NS_END
+class CVIBuffer_Particle;
+    NS_END
 
 NS_BEGIN(Client)
 
@@ -117,6 +117,7 @@ private:
    CShader*                  m_pShader = { nullptr };
    CComputeShader*           m_pComputeShader = { nullptr };
    CTransform*               m_pTransform = { nullptr };
+   CVIBuffer_Particle*       m_pParticleBuffer = { nullptr };
 
    vector<_uint>             m_iSpriteCurrentNumber = {};
    vector<float>             m_iSpriteAccumulation = {};

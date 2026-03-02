@@ -669,6 +669,7 @@ namespace Tool
 		PROGRESS,
 		DISOLVE,
 		NOISE,
+		GLOW,
 		END
 	};
 
@@ -681,6 +682,7 @@ namespace Tool
 		case EUIShaderPass::PROGRESS: return "PROGRESS";
 		case EUIShaderPass::DISOLVE: return "DISOLVE";
 		case EUIShaderPass::NOISE: return "NOISE";
+		case EUIShaderPass::GLOW: return "GLOW";
 		default: return "";
 		}
 	}
@@ -692,6 +694,7 @@ namespace Tool
 		else if (str == "PROGRESS") return EUIShaderPass::PROGRESS;
 		else if (str == "DISOLVE") return EUIShaderPass::DISOLVE;
 		else if (str == "NOISE") return EUIShaderPass::NOISE;
+		else if (str == "GLOW") return EUIShaderPass::GLOW;
 		else return EUIShaderPass::DEFAULT;
 	}
 

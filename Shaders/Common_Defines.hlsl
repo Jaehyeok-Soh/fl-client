@@ -198,6 +198,21 @@ BlendState BS_PointLightBlend
     BlendOpAlpha = ADD;
 };
 
+BlendState BS_AlphaAdditive
+{
+    BlendEnable[0] = TRUE;
+
+    AlphaToCoverageEnable = FALSE;
+
+    SrcBlend = SRC_ALPHA;
+    DestBlend = ONE;
+    BlendOp = ADD;
+
+    SrcBlendAlpha = ONE;
+    DestBlendAlpha = ONE;
+    BlendOpAlpha = ADD;
+};
+
 /////////////////////
 // Depth / Stencil //
 /////////////////////

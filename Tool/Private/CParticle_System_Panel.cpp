@@ -1664,6 +1664,9 @@ void CParticle_System_Panel::Draw_Sprite_Texture(CToolObject* pGo)
 	// Glow
 	DrawSpriteSlotUI("Glow Texture Sprite", m_tCurrentDesc.Data._Effect_GlowTexture_SpriteInfo);
 
+	// Mask
+	DrawSpriteSlotUI("Mask Texture Sprite", m_tCurrentDesc.Data._Effect_MaskTexture_SpriteInfo);
+
 	// Curve
 	DrawSpriteSlotUI("Curve Texture Sprite", m_tCurrentDesc.Data._Effect_CurveTexture_SpriteInfo);
 
