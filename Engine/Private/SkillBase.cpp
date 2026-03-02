@@ -4,9 +4,13 @@
 #include "Engine_Utils.h"
 #include "MyStat.h"
 
+#include "GameInstance.h"
+
 CSkillBase::CSkillBase()
 	:Super()
+	, m_pGameInstance(CGameInstance::GetInstance())
 {
+	Safe_AddRef(m_pGameInstance);
 }
 
 HRESULT CSkillBase::Initialize(void* pArg)
@@ -30,6 +34,10 @@ HRESULT CSkillBase::Initialize(void* pArg)
 	m_tSkillInfo.tCoolTimer.bCountTime = false;
 
 	return S_OK;
+}
+
+void CSkillBase::Awake(const _uint iCurLevelIndex)
+{
 }
 
 void CSkillBase::Update(const _float fTimeDelta, CMyStat* pStatCom)
@@ -194,5 +202,6 @@ CSkillBase* CSkillBase::Create(void* pArg)
 
 void CSkillBase::Free()
 {
+	Safe_Release(m_pGameInstance);
 	Super::Free();
 }

@@ -13,8 +13,8 @@
 #include "Bone.h"
 #include "MyStat.h"
 #include "ActionSkill.h"
-#include "SkillComp_MoonE.h"
-#include "SkillComp_MoonQ.h"
+#include "SkillBase_MoonE.h"
+#include "SkillBase_MoonQ.h"
 
 // objects
 #include "CameraMan_Targeter.h"
@@ -528,8 +528,8 @@ _bool CMainPlayer::Try_AttackHit(ECollideLayer eMyLayer, CCollider* pOther)
 
 HRESULT CMainPlayer::Ready_Ability()
 {
-    CSkillBase* pESkill = CSkillComp_MoonE::Create();
-    CSkillBase* pQSkill = CSkillComp_MoonQ::Create();
+    CSkillBase* pESkill = CSkillBase_MoonE::Create();
+    CSkillBase* pQSkill = CSkillBase_MoonQ::Create();
 
     // stat
     {

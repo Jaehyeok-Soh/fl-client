@@ -607,6 +607,15 @@
     <Filter Include="03. GameObject\BattelField">
       <UniqueIdentifier>{b1195416-a6da-4357-b964-0ea1df18e98b}</UniqueIdentifier>
     </Filter>
+    <Filter Include="03. GameObject\SkillObject\Player">
+      <UniqueIdentifier>{6f4f5dc9-1d60-4f2c-b024-4a5ec8f6d5a8}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="03. GameObject\SkillObject\Player\Moon">
+      <UniqueIdentifier>{b30c69b1-aba4-4c50-a337-ca5e7b7f12fb}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="03. GameObject\SkillObject\Player\Moon\SkillE">
+      <UniqueIdentifier>{bb204f36-542f-4eeb-ac29-823025464153}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="targetver.h">
@@ -903,10 +912,10 @@
     <ClInclude Include="..\Public\State_MoonSkill.h">
       <Filter>06. FSM\Player\Attack\Skill\Moon</Filter>
     </ClInclude>
-    <ClInclude Include="..\Public\SkillComp_MoonE.h">
+    <ClInclude Include="..\Public\SkillBase_MoonE.h">
       <Filter>05. Component\Skill\Moon</Filter>
     </ClInclude>
-    <ClInclude Include="..\Public\SkillComp_MoonQ.h">
+    <ClInclude Include="..\Public\SkillBase_MoonQ.h">
       <Filter>05. Component\Skill\Moon</Filter>
     </ClInclude>
     <ClInclude Include="..\Public\UILoading_Text.h">
@@ -1128,6 +1137,9 @@
     </ClInclude>
     <ClInclude Include="..\Public\BattleField.h">
       <Filter>03. GameObject\BattelField</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\Moon_SkillE_Obj.h">
+      <Filter>03. GameObject\SkillObject\Player\Moon\SkillE</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -1417,10 +1429,10 @@
     <ClCompile Include="..\Private\State_MoonSkill.cpp">
       <Filter>06. FSM\Player\Attack\Skill\Moon</Filter>
     </ClCompile>
-    <ClCompile Include="..\Private\SkillComp_MoonE.cpp">
+    <ClCompile Include="..\Private\SkillBase_MoonE.cpp">
       <Filter>05. Component\Skill\Moon</Filter>
     </ClCompile>
-    <ClCompile Include="..\Private\SkillComp_MoonQ.cpp">
+    <ClCompile Include="..\Private\SkillBase_MoonQ.cpp">
       <Filter>05. Component\Skill\Moon</Filter>
     </ClCompile>
     <ClCompile Include="..\Private\UILoading_Text.cpp">
@@ -1642,6 +1654,9 @@
     </ClCompile>
     <ClCompile Include="..\Private\BattleField.cpp">
       <Filter>03. GameObject\BattelField</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\Moon_SkillE_Obj.cpp">
+      <Filter>03. GameObject\SkillObject\Player\Moon\SkillE</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

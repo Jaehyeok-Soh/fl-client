@@ -35,6 +35,14 @@ HRESULT CActionSkill::Initialize(void* pArg)
 	return S_OK;
 }
 
+void CActionSkill::Awake(const _uint iCurLevelIndex)
+{
+	for (auto& pSkill : m_vecSkills)
+	{
+		pSkill->Awake(iCurLevelIndex);
+	}
+}
+
 HRESULT CActionSkill::Add_Skill(_uint iIndex, CSkillBase* pSkill)
 {
 	if (!Check_Index(iIndex))
@@ -61,9 +69,6 @@ void CActionSkill::Update_Skills(const _float fTimeDelta)
 	{
 		if (pSkill)
 		{
-			// skill on off와 상관없이 update 도는 함수
-			pSkill->Update_Default(fTimeDelta, m_pOwnerStat);
-
 			// skill이 켜졌다면
 			if (pSkill->Is_OnSkill())
 			{
@@ -74,6 +79,9 @@ void CActionSkill::Update_Skills(const _float fTimeDelta)
 				if (pSkill->Is_EndSkill())
 					pSkill->End_Skill(m_pOwnerStat);
 			}
+
+			// skill on off와 상관없이 update 도는 함수
+			pSkill->Update_Default(fTimeDelta, m_pOwnerStat);
 		}
 
 	}

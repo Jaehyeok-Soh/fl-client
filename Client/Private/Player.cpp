@@ -125,6 +125,8 @@ HRESULT CPlayer::Awake(const _uint iCurrentLevelID)
 
     Change_Weapon(Part::SWORD, ENUM_TO_UINT(CWeapon::State::HOLD));
 
+    Get_Component<CActionSkill>()->Awake(iCurrentLevelID);
+
     return S_OK;
 }
 

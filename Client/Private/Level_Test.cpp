@@ -63,6 +63,7 @@
 #include "Xibi_Projectile_Circle.h"
 #include "Xibi_Loop_Thunder.h"
 #include "Xibi_Oneshot_Thunder.h"
+#include "Moon_SkillE_Obj.h"
 
 //=================
 // GameInstance
@@ -346,6 +347,18 @@ HRESULT CLevel_Test::Ready_SkillObjectLayer()
 	_uint iLevelId = ENUM_TO_UINT(ELevelType::TEST);
 
 	// SkillObject Pool
+	{
+		CMoon_SkillE_Obj::SKILLOBJECT_DESC desc{};
+		if (FAILED(m_pGameInstance->Regist_Pool(
+			0,
+			g_wszPool_MoonSkillE,
+			g_wszSkillObjectLayer,
+			0,
+			g_wszMoonSkillE__Prototype_Tag,
+			&desc,
+			30)))
+			return E_FAIL;
+	}
 	{
 		CXibi_Projectile_Circle::SKILLOBJECT_DESC desc{};
 		if (FAILED(m_pGameInstance->Regist_Pool(

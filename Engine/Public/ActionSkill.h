@@ -28,6 +28,7 @@ protected:
 	virtual HRESULT Initialize(void* pArg) override;
 
 public:
+	void Awake(const _uint iCurLevelIndex);
 	HRESULT			Add_Skill(_uint iIndex, CSkillBase* pSkill);
 	CSkillBase*		Get_Skill(_uint iIndex);
 
