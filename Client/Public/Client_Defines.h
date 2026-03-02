@@ -348,6 +348,7 @@ namespace Client
 		DAMAGE_FONTS_CRITICAL,
 		DAMAGE_FONTS_HIT,
 		BOSS_NAMEPLATE,
+		MINIMAP_MONSTER_ICON,
 		END
 	};
 
@@ -360,6 +361,7 @@ namespace Client
 		case Client::EUIPrefabType::DAMAGE_FONTS_COMMON:	return L"DAMAGE_FONTS_COMMON";
 		case Client::EUIPrefabType::DAMAGE_FONTS_CRITICAL:	return L"DAMAGE_FONTS_CRITICAL";
 		case Client::EUIPrefabType::DAMAGE_FONTS_HIT:		return L"DAMAGE_FONTS_HIT";
+		case Client::EUIPrefabType::MINIMAP_MONSTER_ICON:	return L"DAMAGE_FONTS_HIT";
 		case Client::EUIPrefabType::END:
 		default:
 			break;

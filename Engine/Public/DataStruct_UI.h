@@ -264,11 +264,19 @@ NLOHMANN_JSON_SERIALIZE_ENUM(EUISubClassType,
 	BOSS_STAT_TEXT_NICKNAME,
 	BOSS_STAT_TEXT_END,
 
+	// ÄÞº¸
 	BATTLE_COMBO_TEXT_BEGIN,
 	BATTLE_COMBO_COMBO_TEXT,
 	BATTLE_COMBO_CUR_COUNT_TEXT,
 	BATTLE_COMBO_NEXT_COUNT_TEXT,
 	BATTLE_COMBO_TEXT_END,
+
+	// º¸½º ½Ãºô¶ó ¾×¼Ç 
+	BOSS_CIVILA_ACTION_BEGIN,
+	BOSS_CIVILA_ACTION_WORLD_TEXT,
+	BOSS_CIVILA_ACTION_NAME_TEXT,
+	BOSS_CIVILA_ACTION_NAME_NIGHTMARE_TEXT,
+	BOSS_CIVILA_ACTION_END,
 
 	END
 };
@@ -335,6 +343,12 @@ NLOHMANN_JSON_SERIALIZE_ENUM(EUITextSubClassType,
 		{ EUITextSubClassType::BATTLE_COMBO_CUR_COUNT_TEXT,			"BATTLE_COMBO_CUR_COUNT_TEXT" },
 		{ EUITextSubClassType::BATTLE_COMBO_NEXT_COUNT_TEXT,		"BATTLE_COMBO_NEXT_COUNT_TEXT" },
 		{ EUITextSubClassType::BATTLE_COMBO_TEXT_END,			  	"BATTLE_COMBO_TEXT_END" },
+
+		{ EUITextSubClassType::BOSS_CIVILA_ACTION_BEGIN,			  	"BOSS_CIVILA_ACTION_BEGIN" },
+		{ EUITextSubClassType::BOSS_CIVILA_ACTION_WORLD_TEXT,			  	"BOSS_CIVILA_ACTION_WORLD_TEXT" },
+		{ EUITextSubClassType::BOSS_CIVILA_ACTION_NAME_TEXT,			  	"BOSS_CIVILA_ACTION_NAME_TEXT" },
+		{ EUITextSubClassType::BOSS_CIVILA_ACTION_NAME_NIGHTMARE_TEXT,			  	"BOSS_CIVILA_ACTION_NAME_NIGHTMARE_TEXT" },
+		{ EUITextSubClassType::BOSS_CIVILA_ACTION_END,			  	"BOSS_CIVILA_ACTION_END" },
 	  
 
 		{ EUITextSubClassType::END,									"END" },
@@ -400,6 +414,12 @@ NLOHMANN_JSON_SERIALIZE_ENUM(EUITextSubClassType,
 	else if (str == "BATTLE_COMBO_CUR_COUNT_TEXT")				return EUITextSubClassType::BATTLE_COMBO_CUR_COUNT_TEXT;
 	else if (str == "BATTLE_COMBO_NEXT_COUNT_TEXT")				return EUITextSubClassType::BATTLE_COMBO_NEXT_COUNT_TEXT;
 	else if (str == "BATTLE_COMBO_TEXT_END")					return EUITextSubClassType::BATTLE_COMBO_TEXT_END;
+	
+	else if (str == "BOSS_CIVILA_ACTION_BEGIN")					return EUITextSubClassType::BOSS_CIVILA_ACTION_BEGIN;
+	else if (str == "BOSS_CIVILA_ACTION_WORLD_TEXT")					return EUITextSubClassType::BOSS_CIVILA_ACTION_WORLD_TEXT;
+	else if (str == "BOSS_CIVILA_ACTION_NAME_TEXT")					return EUITextSubClassType::BOSS_CIVILA_ACTION_NAME_TEXT;
+	else if (str == "BOSS_CIVILA_ACTION_NAME_NIGHTMARE_TEXT")					return EUITextSubClassType::BOSS_CIVILA_ACTION_NAME_NIGHTMARE_TEXT;
+	else if (str == "BOSS_CIVILA_ACTION_END")					return EUITextSubClassType::BOSS_CIVILA_ACTION_END;
 	
 	else if (str == "END")										return EUITextSubClassType::END;
 
@@ -469,6 +489,12 @@ inline std::string UITextSubClassTypeToString(EUITextSubClassType e)
 	case EUITextSubClassType::BATTLE_COMBO_CUR_COUNT_TEXT:			return "BATTLE_COMBO_CUR_COUNT_TEXT";
 	case EUITextSubClassType::BATTLE_COMBO_NEXT_COUNT_TEXT:			return "BATTLE_COMBO_NEXT_COUNT_TEXT";
 	case EUITextSubClassType::BATTLE_COMBO_TEXT_END:				return "BATTLE_COMBO_TEXT_END";
+	
+	case EUITextSubClassType::BOSS_CIVILA_ACTION_BEGIN:				return "BOSS_CIVILA_ACTION_BEGIN";
+	case EUITextSubClassType::BOSS_CIVILA_ACTION_WORLD_TEXT:				return "BOSS_CIVILA_ACTION_WORLD_TEXT";
+	case EUITextSubClassType::BOSS_CIVILA_ACTION_NAME_TEXT:				return "BOSS_CIVILA_ACTION_NAME_TEXT";
+	case EUITextSubClassType::BOSS_CIVILA_ACTION_NAME_NIGHTMARE_TEXT:				return "BOSS_CIVILA_ACTION_NAME_NIGHTMARE_TEXT";
+	case EUITextSubClassType::BOSS_CIVILA_ACTION_END:				return "BOSS_CIVILA_ACTION_END";
 	
 	default:														return "END";
 	}
@@ -625,74 +651,92 @@ enum class EUIDImageSubClassType
 	BATTLE_COMBO_BG_GLOW,
 	BATTLE_COMBO_END,
 
+	MINIMAP_MONSTER_ICON,
+
+	// º¸½º ½Ãºô¶ó ¾×¼Ç
+	BOSS_CIVILA_ACTION_BEGIN,
+	BOSS_CIVILA_ACTION_ICON,
+	BOSS_CIVILA_ACTION_TOP_BG,
+	BOSS_CIVILA_ACTION_BOTTOM_BG,
+	BOSS_CIVILA_ACTION_END,
+
 	END
 };
 
 NLOHMANN_JSON_SERIALIZE_ENUM(EUIDImageSubClassType,
 	{
-	{ EUIDImageSubClassType::NONE_OWNER,						"NONE_OWNER" },
+	{ EUIDImageSubClassType::NONE_OWNER,							"NONE_OWNER" },
 
-	{ EUIDImageSubClassType::PLAYER_SKILL_BEGIN,				"PLAYER_SKILL_BEGIN" },
-	{ EUIDImageSubClassType::PLAYER_E,							"PLAYER_E" },
-	{ EUIDImageSubClassType::PLAYER_Q,							"PLAYER_Q" },
-	{ EUIDImageSubClassType::PLAYER_Z,							"PLAYER_Z" },
-	{ EUIDImageSubClassType::PLAYER_GUN,						"PLAYER_GUN" },
-	{ EUIDImageSubClassType::PLAYER_DODGE,						"PLAYER_DODGE" },
-	{ EUIDImageSubClassType::PLAYER_SKILL_END,					"PLAYER_SKILL_END" },
+	{ EUIDImageSubClassType::PLAYER_SKILL_BEGIN,					"PLAYER_SKILL_BEGIN" },
+	{ EUIDImageSubClassType::PLAYER_E,								"PLAYER_E" },
+	{ EUIDImageSubClassType::PLAYER_Q,								"PLAYER_Q" },
+	{ EUIDImageSubClassType::PLAYER_Z,								"PLAYER_Z" },
+	{ EUIDImageSubClassType::PLAYER_GUN,							"PLAYER_GUN" },
+	{ EUIDImageSubClassType::PLAYER_DODGE,							"PLAYER_DODGE" },
+	{ EUIDImageSubClassType::PLAYER_SKILL_END,						"PLAYER_SKILL_END" },
 
-	{ EUIDImageSubClassType::HOVER_POPUP_BEGIN,					"HOVER_POPUP_BEGIN" },
-	{ EUIDImageSubClassType::HOVER_POPUP_BG,					"HOVER_POPUP_BG" },
-	{ EUIDImageSubClassType::HOVER_POPUP_ICON,					"HOVER_POPUP_ICON" },
-	{ EUIDImageSubClassType::HOVER_POPUP_TEXT,					"HOVER_POPUP_TEXT" },
-	{ EUIDImageSubClassType::HOVER_POPUP_END,					"HOVER_POPUP_END" },
+	{ EUIDImageSubClassType::HOVER_POPUP_BEGIN,						"HOVER_POPUP_BEGIN" },
+	{ EUIDImageSubClassType::HOVER_POPUP_BG,						"HOVER_POPUP_BG" },
+	{ EUIDImageSubClassType::HOVER_POPUP_ICON,						"HOVER_POPUP_ICON" },
+	{ EUIDImageSubClassType::HOVER_POPUP_TEXT,						"HOVER_POPUP_TEXT" },
+	{ EUIDImageSubClassType::HOVER_POPUP_END,						"HOVER_POPUP_END" },
 
-	{ EUIDImageSubClassType::MINIMAP_BEGIN,						"MINIMAP_BEGIN" },
-	{ EUIDImageSubClassType::MINIMAP_PLAYER_ICON,				"MINIMAP_PLAYER_ICON" },
-	{ EUIDImageSubClassType::MINIMAP_CAMERA_SIGHT,				"MINIMAP_CAMERA_SIGHT" },
-	{ EUIDImageSubClassType::MINIMAP_BGFRAME,					"MINIMAP_BGFRAME" },
-	{ EUIDImageSubClassType::MINIMAP_WARNING_FRAME,				"MINIMAP_WARNING_FRAME" },
-	{ EUIDImageSubClassType::MINIMAP_END,						"MINIMAP_END" },
+	{ EUIDImageSubClassType::MINIMAP_BEGIN,							"MINIMAP_BEGIN" },
+	{ EUIDImageSubClassType::MINIMAP_PLAYER_ICON,					"MINIMAP_PLAYER_ICON" },
+	{ EUIDImageSubClassType::MINIMAP_CAMERA_SIGHT,					"MINIMAP_CAMERA_SIGHT" },
+	{ EUIDImageSubClassType::MINIMAP_BGFRAME,						"MINIMAP_BGFRAME" },
+	{ EUIDImageSubClassType::MINIMAP_WARNING_FRAME,					"MINIMAP_WARNING_FRAME" },
+	{ EUIDImageSubClassType::MINIMAP_END,							"MINIMAP_END" },
 
-	{ EUIDImageSubClassType::MENU_BEGIN,						"MENU_BEGIN" },
-	{ EUIDImageSubClassType::MENU_BG,							"MENU_BG" },
-	{ EUIDImageSubClassType::MENU_ICON,							"MENU_ICON" },
-	{ EUIDImageSubClassType::MENU_ICON_BG,						"MENU_ICON_BG" },
-	{ EUIDImageSubClassType::MENU_ICON_OUTLINE,					"MENU_ICON_OUTLINE" },
-	{ EUIDImageSubClassType::MENU_END,							"MENU_END" },
+	{ EUIDImageSubClassType::MENU_BEGIN,							"MENU_BEGIN" },
+	{ EUIDImageSubClassType::MENU_BG,								"MENU_BG" },
+	{ EUIDImageSubClassType::MENU_ICON,								"MENU_ICON" },
+	{ EUIDImageSubClassType::MENU_ICON_BG,							"MENU_ICON_BG" },
+	{ EUIDImageSubClassType::MENU_ICON_OUTLINE,						"MENU_ICON_OUTLINE" },
+	{ EUIDImageSubClassType::MENU_END,								"MENU_END" },
 
-	{ EUIDImageSubClassType::LOADING_BEGIN,						"LOADING_BEGIN" },
-	{ EUIDImageSubClassType::LOADING_BG,						"LOADING_BG" },
-	{ EUIDImageSubClassType::LOADING_BG_TOP,					"LOADING_BG_TOP" },
-	{ EUIDImageSubClassType::LOADING_BG_BOTTOM,					"LOADING_BG_BOTTOM" },
-	{ EUIDImageSubClassType::LOADING_END,						"LOADING_END" },
+	{ EUIDImageSubClassType::LOADING_BEGIN,							"LOADING_BEGIN" },
+	{ EUIDImageSubClassType::LOADING_BG,							"LOADING_BG" },
+	{ EUIDImageSubClassType::LOADING_BG_TOP,						"LOADING_BG_TOP" },
+	{ EUIDImageSubClassType::LOADING_BG_BOTTOM,						"LOADING_BG_BOTTOM" },
+	{ EUIDImageSubClassType::LOADING_END,							"LOADING_END" },
 
-	{ EUIDImageSubClassType::BATTLE_UI_BEGIN,					"BATTLE_UI_BEGIN" },
-	{ EUIDImageSubClassType::BATTLE_AIMDOT_COMMON,				"BATTLE_AIMDOT_COMMON" },
-	{ EUIDImageSubClassType::BATTLE_AIMDOT_CROSSHAIR_TOP,		"BATTLE_AIMDOT_CROSSHAIR_TOP" },
-	{ EUIDImageSubClassType::BATTLE_AIMDOT_CROSSHAIR_RIGHT,		"BATTLE_AIMDOT_CROSSHAIR_RIGHT" },
-	{ EUIDImageSubClassType::BATTLE_AIMDOT_CROSSHAIR_BOTTOM,	"BATTLE_AIMDOT_CROSSHAIR_BOTTOM" },
-	{ EUIDImageSubClassType::BATTLE_AIMDOT_CROSSHAIR_LEFT,		"BATTLE_AIMDOT_CROSSHAIR_LEFT" },
-	{ EUIDImageSubClassType::BATTLE_AIM_HIT,					"BATTLE_AIM_HIT" },
-	{ EUIDImageSubClassType::BATTLE_AIM_LOCK,					"BATTLE_AIM_LOCK" },
-	{ EUIDImageSubClassType::BATTLE_UI_END,						"BATTLE_UI_END" },
+	{ EUIDImageSubClassType::BATTLE_UI_BEGIN,						"BATTLE_UI_BEGIN" },
+	{ EUIDImageSubClassType::BATTLE_AIMDOT_COMMON,					"BATTLE_AIMDOT_COMMON" },
+	{ EUIDImageSubClassType::BATTLE_AIMDOT_CROSSHAIR_TOP,			"BATTLE_AIMDOT_CROSSHAIR_TOP" },
+	{ EUIDImageSubClassType::BATTLE_AIMDOT_CROSSHAIR_RIGHT,			"BATTLE_AIMDOT_CROSSHAIR_RIGHT" },
+	{ EUIDImageSubClassType::BATTLE_AIMDOT_CROSSHAIR_BOTTOM,		"BATTLE_AIMDOT_CROSSHAIR_BOTTOM" },
+	{ EUIDImageSubClassType::BATTLE_AIMDOT_CROSSHAIR_LEFT,			"BATTLE_AIMDOT_CROSSHAIR_LEFT" },
+	{ EUIDImageSubClassType::BATTLE_AIM_HIT,						"BATTLE_AIM_HIT" },
+	{ EUIDImageSubClassType::BATTLE_AIM_LOCK,						"BATTLE_AIM_LOCK" },
+	{ EUIDImageSubClassType::BATTLE_UI_END,							"BATTLE_UI_END" },
 		
-	{ EUIDImageSubClassType::MONSTER_NAMEPLATE_BG,				"MONSTER_NAMEPLATE_BG" },
+	{ EUIDImageSubClassType::MONSTER_NAMEPLATE_BG,					"MONSTER_NAMEPLATE_BG" },
 
-	{ EUIDImageSubClassType::LEVEL_CHAGE_1,						"LEVEL_CHAGE_1" },
-	{ EUIDImageSubClassType::LEVEL_CHAGE_2,						"LEVEL_CHAGE_2" },
-	{ EUIDImageSubClassType::LEVEL_CHAGE_3,						"LEVEL_CHAGE_3" },
-	{ EUIDImageSubClassType::LEVEL_CHAGE_4,						"LEVEL_CHAGE_4" },
-	{ EUIDImageSubClassType::LEVEL_CHAGE_5,						"LEVEL_CHAGE_5" },
+	{ EUIDImageSubClassType::LEVEL_CHAGE_1,							"LEVEL_CHAGE_1" },
+	{ EUIDImageSubClassType::LEVEL_CHAGE_2,							"LEVEL_CHAGE_2" },
+	{ EUIDImageSubClassType::LEVEL_CHAGE_3,							"LEVEL_CHAGE_3" },
+	{ EUIDImageSubClassType::LEVEL_CHAGE_4,							"LEVEL_CHAGE_4" },
+	{ EUIDImageSubClassType::LEVEL_CHAGE_5,							"LEVEL_CHAGE_5" },
 
-	{ EUIDImageSubClassType::BOSS_STAT_BEGIN,					"BOSS_STAT_BEGIN" },
-	{ EUIDImageSubClassType::BOSS_STAT_BG,						"BOSS_STAT_BG" },
-	{ EUIDImageSubClassType::BOSS_STAT_END,						"BOSS_STAT_END" },
+	{ EUIDImageSubClassType::BOSS_STAT_BEGIN,						"BOSS_STAT_BEGIN" },
+	{ EUIDImageSubClassType::BOSS_STAT_BG,							"BOSS_STAT_BG" },
+	{ EUIDImageSubClassType::BOSS_STAT_END,							"BOSS_STAT_END" },
 
-	{ EUIDImageSubClassType::BATTLE_COMBO_BEGIN,				"BATTLE_COMBO_BEGIN" },
-	{ EUIDImageSubClassType::BATTLE_COMBO_RANK,					"BATTLE_COMBO_RANK" },
-	{ EUIDImageSubClassType::BATTLE_COMBO_BG,					"BATTLE_COMBO_BG" },
+	{ EUIDImageSubClassType::BATTLE_COMBO_BEGIN,					"BATTLE_COMBO_BEGIN" },
+	{ EUIDImageSubClassType::BATTLE_COMBO_RANK,						"BATTLE_COMBO_RANK" },
+	{ EUIDImageSubClassType::BATTLE_COMBO_BG,						"BATTLE_COMBO_BG" },
 	{ EUIDImageSubClassType::BATTLE_COMBO_BG_GLOW,					"BATTLE_COMBO_BG_GLOW" },
-	{ EUIDImageSubClassType::BATTLE_COMBO_END,					"BATTLE_COMBO_END" },
+	{ EUIDImageSubClassType::BATTLE_COMBO_END,						"BATTLE_COMBO_END" },
+
+	{ EUIDImageSubClassType::MINIMAP_MONSTER_ICON,					"MINIMAP_MONSTER_ICON" },
+	
+	{ EUIDImageSubClassType::BOSS_CIVILA_ACTION_BEGIN,				"BOSS_CIVILA_ACTION_BEGIN" },
+	{ EUIDImageSubClassType::BOSS_CIVILA_ACTION_ICON,				"BOSS_CIVILA_ACTION_ICON" },
+	{ EUIDImageSubClassType::BOSS_CIVILA_ACTION_TOP_BG,				"BOSS_CIVILA_ACTION_TOP_BG" },
+	{ EUIDImageSubClassType::BOSS_CIVILA_ACTION_BOTTOM_BG,			"BOSS_CIVILA_ACTION_BOTTOM_BG" },
+	{ EUIDImageSubClassType::BOSS_CIVILA_ACTION_END,				"BOSS_CIVILA_ACTION_END" },
+
 
 	{ EUIDImageSubClassType::END,								"END" }
 	})
@@ -760,8 +804,16 @@ NLOHMANN_JSON_SERIALIZE_ENUM(EUIDImageSubClassType,
 	if (str == "BATTLE_COMBO_BEGIN")					return EUIDImageSubClassType::BATTLE_COMBO_BEGIN;
 	if (str == "BATTLE_COMBO_RANK")						return EUIDImageSubClassType::BATTLE_COMBO_RANK;
 	if (str == "BATTLE_COMBO_BG")						return EUIDImageSubClassType::BATTLE_COMBO_BG;
-	if (str == "BATTLE_COMBO_BG_GLOW")						return EUIDImageSubClassType::BATTLE_COMBO_BG_GLOW;
+	if (str == "BATTLE_COMBO_BG_GLOW")					return EUIDImageSubClassType::BATTLE_COMBO_BG_GLOW;
 	if (str == "BATTLE_COMBO_END")						return EUIDImageSubClassType::BATTLE_COMBO_END;
+
+	if (str == "MINIMAP_MONSTER_ICON")					return EUIDImageSubClassType::MINIMAP_MONSTER_ICON;
+	
+	if (str == "BOSS_CIVILA_ACTION_BEGIN")				return EUIDImageSubClassType::BOSS_CIVILA_ACTION_BEGIN;
+	if (str == "BOSS_CIVILA_ACTION_ICON")				return EUIDImageSubClassType::BOSS_CIVILA_ACTION_ICON;
+	if (str == "BOSS_CIVILA_ACTION_TOP_BG")				return EUIDImageSubClassType::BOSS_CIVILA_ACTION_TOP_BG;
+	if (str == "BOSS_CIVILA_ACTION_BOTTOM_BG")			return EUIDImageSubClassType::BOSS_CIVILA_ACTION_BOTTOM_BG;
+	if (str == "BOSS_CIVILA_ACTION_END")				return EUIDImageSubClassType::BOSS_CIVILA_ACTION_END;
 
 	if (str == "END")									return EUIDImageSubClassType::END;
 	return EUIDImageSubClassType::NONE_OWNER;
@@ -771,72 +823,80 @@ inline const char* UIDImageSubTypeToString(EUIDImageSubClassType type)
 {
 	switch (type)
 	{
-	case EUIDImageSubClassType::NONE_OWNER:							return "NONE_OWNER";
+	case EUIDImageSubClassType::NONE_OWNER:								return "NONE_OWNER";
 
-	case EUIDImageSubClassType::PLAYER_SKILL_BEGIN:					return "PLAYER_SKILL_BEGIN";
-	case EUIDImageSubClassType::PLAYER_E:							return "PLAYER_E";
-	case EUIDImageSubClassType::PLAYER_Q:							return "PLAYER_Q";
-	case EUIDImageSubClassType::PLAYER_Z:							return "PLAYER_Z";
-	case EUIDImageSubClassType::PLAYER_GUN:							return "PLAYER_GUN";
-	case EUIDImageSubClassType::PLAYER_DODGE:						return "PLAYER_DODGE";
-	case EUIDImageSubClassType::PLAYER_SKILL_END:					return "PLAYER_SKILL_END";
+	case EUIDImageSubClassType::PLAYER_SKILL_BEGIN:						return "PLAYER_SKILL_BEGIN";
+	case EUIDImageSubClassType::PLAYER_E:								return "PLAYER_E";
+	case EUIDImageSubClassType::PLAYER_Q:								return "PLAYER_Q";
+	case EUIDImageSubClassType::PLAYER_Z:								return "PLAYER_Z";
+	case EUIDImageSubClassType::PLAYER_GUN:								return "PLAYER_GUN";
+	case EUIDImageSubClassType::PLAYER_DODGE:							return "PLAYER_DODGE";
+	case EUIDImageSubClassType::PLAYER_SKILL_END:						return "PLAYER_SKILL_END";
 
-	case EUIDImageSubClassType::HOVER_POPUP_BEGIN:					return "HOVER_POPUP_BEGIN";
-	case EUIDImageSubClassType::HOVER_POPUP_BG:						return "HOVER_POPUP_BG";
-	case EUIDImageSubClassType::HOVER_POPUP_ICON:					return "HOVER_POPUP_ICON";
-	case EUIDImageSubClassType::HOVER_POPUP_TEXT:					return "HOVER_POPUP_TEXT";
-	case EUIDImageSubClassType::HOVER_POPUP_END:					return "HOVER_POPUP_END";
+	case EUIDImageSubClassType::HOVER_POPUP_BEGIN:						return "HOVER_POPUP_BEGIN";
+	case EUIDImageSubClassType::HOVER_POPUP_BG:							return "HOVER_POPUP_BG";
+	case EUIDImageSubClassType::HOVER_POPUP_ICON:						return "HOVER_POPUP_ICON";
+	case EUIDImageSubClassType::HOVER_POPUP_TEXT:						return "HOVER_POPUP_TEXT";
+	case EUIDImageSubClassType::HOVER_POPUP_END:						return "HOVER_POPUP_END";
 
-	case EUIDImageSubClassType::MINIMAP_BEGIN:						return "MINIMAP_BEGIN";
-	case EUIDImageSubClassType::MINIMAP_PLAYER_ICON:				return "MINIMAP_PLAYER_ICON";
-	case EUIDImageSubClassType::MINIMAP_CAMERA_SIGHT:				return "MINIMAP_CAMERA_SIGHT";
-	case EUIDImageSubClassType::MINIMAP_BGFRAME:					return "MINIMAP_BGFRAME";
-	case EUIDImageSubClassType::MINIMAP_WARNING_FRAME:				return "MINIMAP_WARNING_FRAME";
-	case EUIDImageSubClassType::MINIMAP_END:						return "MINIMAP_END";
+	case EUIDImageSubClassType::MINIMAP_BEGIN:							return "MINIMAP_BEGIN";
+	case EUIDImageSubClassType::MINIMAP_PLAYER_ICON:					return "MINIMAP_PLAYER_ICON";
+	case EUIDImageSubClassType::MINIMAP_CAMERA_SIGHT:					return "MINIMAP_CAMERA_SIGHT";
+	case EUIDImageSubClassType::MINIMAP_BGFRAME:						return "MINIMAP_BGFRAME";
+	case EUIDImageSubClassType::MINIMAP_WARNING_FRAME:					return "MINIMAP_WARNING_FRAME";
+	case EUIDImageSubClassType::MINIMAP_END:							return "MINIMAP_END";
 
-	case EUIDImageSubClassType::MENU_BEGIN:							return "MENU_BEGIN";
-	case EUIDImageSubClassType::MENU_BG:							return "MENU_BG";
-	case EUIDImageSubClassType::MENU_ICON:							return "MENU_ICON";
-	case EUIDImageSubClassType::MENU_ICON_BG:						return "MENU_ICON_BG";
-	case EUIDImageSubClassType::MENU_ICON_OUTLINE:					return "MENU_ICON_OUTLINE";
-	case EUIDImageSubClassType::MENU_END:							return "MENU_END";
+	case EUIDImageSubClassType::MENU_BEGIN:								return "MENU_BEGIN";
+	case EUIDImageSubClassType::MENU_BG:								return "MENU_BG";
+	case EUIDImageSubClassType::MENU_ICON:								return "MENU_ICON";
+	case EUIDImageSubClassType::MENU_ICON_BG:							return "MENU_ICON_BG";
+	case EUIDImageSubClassType::MENU_ICON_OUTLINE:						return "MENU_ICON_OUTLINE";
+	case EUIDImageSubClassType::MENU_END:								return "MENU_END";
 	
-	case EUIDImageSubClassType::LOADING_BEGIN:						return "LOADING_BEGIN";
-	case EUIDImageSubClassType::LOADING_BG:							return "LOADING_BG";
-	case EUIDImageSubClassType::LOADING_BG_TOP:						return "LOADING_BG_TOP";
-	case EUIDImageSubClassType::LOADING_BG_BOTTOM:					return "LOADING_BG_BOTTOM";
-	case EUIDImageSubClassType::LOADING_END:						return "LOADING_END";
+	case EUIDImageSubClassType::LOADING_BEGIN:							return "LOADING_BEGIN";
+	case EUIDImageSubClassType::LOADING_BG:								return "LOADING_BG";
+	case EUIDImageSubClassType::LOADING_BG_TOP:							return "LOADING_BG_TOP";
+	case EUIDImageSubClassType::LOADING_BG_BOTTOM:						return "LOADING_BG_BOTTOM";
+	case EUIDImageSubClassType::LOADING_END:							return "LOADING_END";
 
-	case EUIDImageSubClassType::BATTLE_UI_BEGIN:					return "BATTLE_UI_BEGIN";
-	case EUIDImageSubClassType::BATTLE_AIMDOT_COMMON:				return "BATTLE_AIMDOT_COMMON";
-	case EUIDImageSubClassType::BATTLE_AIMDOT_CROSSHAIR_TOP:		return "BATTLE_AIMDOT_CROSSHAIR_TOP";
-	case EUIDImageSubClassType::BATTLE_AIMDOT_CROSSHAIR_RIGHT:		return "BATTLE_AIMDOT_CROSSHAIR_RIGHT";
-	case EUIDImageSubClassType::BATTLE_AIMDOT_CROSSHAIR_BOTTOM:		return "BATTLE_AIMDOT_CROSSHAIR_BOTTOM";
-	case EUIDImageSubClassType::BATTLE_AIMDOT_CROSSHAIR_LEFT:		return "BATTLE_AIMDOT_CROSSHAIR_LEFT";
-	case EUIDImageSubClassType::BATTLE_AIM_HIT:						return "BATTLE_AIM_HIT";
-	case EUIDImageSubClassType::BATTLE_AIM_LOCK:					return "BATTLE_AIM_LOCK";
-	case EUIDImageSubClassType::BATTLE_UI_END:						return "BATTLE_UI_END";
+	case EUIDImageSubClassType::BATTLE_UI_BEGIN:						return "BATTLE_UI_BEGIN";
+	case EUIDImageSubClassType::BATTLE_AIMDOT_COMMON:					return "BATTLE_AIMDOT_COMMON";
+	case EUIDImageSubClassType::BATTLE_AIMDOT_CROSSHAIR_TOP:			return "BATTLE_AIMDOT_CROSSHAIR_TOP";
+	case EUIDImageSubClassType::BATTLE_AIMDOT_CROSSHAIR_RIGHT:			return "BATTLE_AIMDOT_CROSSHAIR_RIGHT";
+	case EUIDImageSubClassType::BATTLE_AIMDOT_CROSSHAIR_BOTTOM:			return "BATTLE_AIMDOT_CROSSHAIR_BOTTOM";
+	case EUIDImageSubClassType::BATTLE_AIMDOT_CROSSHAIR_LEFT:			return "BATTLE_AIMDOT_CROSSHAIR_LEFT";
+	case EUIDImageSubClassType::BATTLE_AIM_HIT:							return "BATTLE_AIM_HIT";
+	case EUIDImageSubClassType::BATTLE_AIM_LOCK:						return "BATTLE_AIM_LOCK";
+	case EUIDImageSubClassType::BATTLE_UI_END:							return "BATTLE_UI_END";
 	
-	case EUIDImageSubClassType::MONSTER_NAMEPLATE_BG:				return "MONSTER_NAMEPLATE_BG";
+	case EUIDImageSubClassType::MONSTER_NAMEPLATE_BG:					return "MONSTER_NAMEPLATE_BG";
 
-	case EUIDImageSubClassType::LEVEL_CHAGE_1:						return "LEVEL_CHAGE_1";
-	case EUIDImageSubClassType::LEVEL_CHAGE_2:						return "LEVEL_CHAGE_2";
-	case EUIDImageSubClassType::LEVEL_CHAGE_3:						return "LEVEL_CHAGE_3";
-	case EUIDImageSubClassType::LEVEL_CHAGE_4:						return "LEVEL_CHAGE_4";
-	case EUIDImageSubClassType::LEVEL_CHAGE_5:						return "LEVEL_CHAGE_5";
+	case EUIDImageSubClassType::LEVEL_CHAGE_1:							return "LEVEL_CHAGE_1";
+	case EUIDImageSubClassType::LEVEL_CHAGE_2:							return "LEVEL_CHAGE_2";
+	case EUIDImageSubClassType::LEVEL_CHAGE_3:							return "LEVEL_CHAGE_3";
+	case EUIDImageSubClassType::LEVEL_CHAGE_4:							return "LEVEL_CHAGE_4";
+	case EUIDImageSubClassType::LEVEL_CHAGE_5:							return "LEVEL_CHAGE_5";
 
-	case EUIDImageSubClassType::BOSS_STAT_BEGIN:					return "BOSS_STAT_BEGIN";
-	case EUIDImageSubClassType::BOSS_STAT_BG:						return "BOSS_STAT_BG";
-	case EUIDImageSubClassType::BOSS_STAT_END:						return "BOSS_STAT_END";
+	case EUIDImageSubClassType::BOSS_STAT_BEGIN:						return "BOSS_STAT_BEGIN";
+	case EUIDImageSubClassType::BOSS_STAT_BG:							return "BOSS_STAT_BG";
+	case EUIDImageSubClassType::BOSS_STAT_END:							return "BOSS_STAT_END";
 
-	case EUIDImageSubClassType::BATTLE_COMBO_BEGIN:					return "BATTLE_COMBO_BEGIN";
-	case EUIDImageSubClassType::BATTLE_COMBO_RANK:					return "BATTLE_COMBO_RANK";
-	case EUIDImageSubClassType::BATTLE_COMBO_BG:					return "BATTLE_COMBO_BG";
+	case EUIDImageSubClassType::BATTLE_COMBO_BEGIN:						return "BATTLE_COMBO_BEGIN";
+	case EUIDImageSubClassType::BATTLE_COMBO_RANK:						return "BATTLE_COMBO_RANK";
+	case EUIDImageSubClassType::BATTLE_COMBO_BG:						return "BATTLE_COMBO_BG";
 	case EUIDImageSubClassType::BATTLE_COMBO_BG_GLOW:					return "BATTLE_COMBO_BG_GLOW";
-	case EUIDImageSubClassType::BATTLE_COMBO_END:					return "BATTLE_COMBO_END";
+	case EUIDImageSubClassType::BATTLE_COMBO_END:						return "BATTLE_COMBO_END";
 
-	case EUIDImageSubClassType::END:								return "END";
-	default:														return "NONE_OWNER";
+	case EUIDImageSubClassType::MINIMAP_MONSTER_ICON:					return "MINIMAP_MONSTER_ICON";
+	
+	case EUIDImageSubClassType::BOSS_CIVILA_ACTION_BEGIN:				return "BOSS_CIVILA_ACTION_BEGIN";
+	case EUIDImageSubClassType::BOSS_CIVILA_ACTION_ICON:				return "BOSS_CIVILA_ACTION_ICON";
+	case EUIDImageSubClassType::BOSS_CIVILA_ACTION_TOP_BG:				return "BOSS_CIVILA_ACTION_TOP_BG";
+	case EUIDImageSubClassType::BOSS_CIVILA_ACTION_BOTTOM_BG:			return "BOSS_CIVILA_ACTION_BOTTOM_BG";
+	case EUIDImageSubClassType::BOSS_CIVILA_ACTION_END:					return "BOSS_CIVILA_ACTION_END";
+
+	case EUIDImageSubClassType::END:									return "END";
+	default:															return "NONE_OWNER";
 	}
 }
 #pragma endregion

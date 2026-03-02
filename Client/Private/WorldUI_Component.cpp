@@ -4,6 +4,7 @@
 #include "WorldUI_Component.h"
 #include "Monster_Base.h"
 #include "Monster_Body_Base.h"
+#include <iostream>
 #include "GameInstance.h"
 
 #define ZREF 10.f
@@ -67,6 +68,11 @@ void CWorldUI_Component::Proj_World_To_Screen()
 		vWorldPos = m_pTargetObject->Get_Component<CTransform>()->Get_Info(TRANSFORM_INFO_STATE::POS);
 		vWorldPos += m_vTargetWorldOffset;
 
+		_wstring wstr = L"World Pos X : " + std::to_wstring(vWorldPos.x) +
+			L"World Pos Y : " + std::to_wstring(vWorldPos.y) +
+			L"World Pos Z : " + std::to_wstring(vWorldPos.z);
+		CLOG_INFO(wstr);
+
 		//auto* p = static_cast<CMonster_Base*>(m_pTargetObject);
 		//const Matrix worldMat = *(p->Get_Part<CMonster_Body_Base>(ENUM_TO_UINT(CMonster_Base::Part::BODY))->Get_SocketMatrix("camera_test"));
 		//vWorldPos = Vec3::Transform(vWorldPos, worldMat);
@@ -81,8 +87,9 @@ void CWorldUI_Component::Proj_World_To_Screen()
 	clip = Vec4::Transform(clip, m_pGameInstance->Get_ViewMatrix());
 	m_fViewZ = clip.z;
 	clip = Vec4::Transform(clip, m_pGameInstance->Get_ProjMatrix());
-	if (clip.w <= 0.0001f)
+	if (clip.w <= 0.01f)
 		return;
+
 	clip /= clip.w;
 
 	Calc_Perspective();

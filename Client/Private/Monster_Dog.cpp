@@ -63,6 +63,11 @@ HRESULT CMonster_Dog::Awake(const _uint iCurrentLevelID)
 		Desc.NamePlateData.vOffset = Vec3{ 0.f, 1.f, 0.f };
 		CUI_Manager::GetInstance()->Request_Add_Prefab(iCurrentLevelID, EUIPrefabType::MONSTER_NAMEPLATE, iCurrentLevelID, &Desc);
 	}
+	{
+		UI_PREFAB_DATA Desc = {};
+		Desc.pTarget = this;
+		CUI_Manager::GetInstance()->Request_Add_Prefab(iCurrentLevelID, EUIPrefabType::MINIMAP_MONSTER_ICON, iCurrentLevelID, &Desc);
+	}
 	return S_OK;
 }
 

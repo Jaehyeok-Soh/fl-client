@@ -34,6 +34,9 @@ protected:
 	void Tick_Ratio(const _float fTimeDelta);
 
 protected:
+	virtual HRESULT Spawn_FromPool(void* pArg) override;
+	virtual HRESULT Despawn_FromPool()override;
+protected:
 	DTO::EUISubClassType m_eSubClassType = {};
 
 	// Lerp Movement Values
