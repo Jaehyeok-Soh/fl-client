@@ -380,15 +380,20 @@ _bool CStateBase_Monster::Check_Transition(vector<DTO::STATE_TRANSITION>& transi
 								toState = pool.first;
 							}
 						}
+						wstring logInfo{};
+						wstring separate{ L"\n//////////////////////////" };
 						wstring owneName = m_pOwnerStateComp->Get_Owner()->Get_WName();
 						wstring toInfo{ L"\nchange state to : " };
-						owneName += L"\n";
-						owneName += toInfo;
-						toInfo += Engine_Utils::ToWString(toState);
 						wstring fromInfo{ L"\nfrom state : " };
-						fromInfo += Engine_Utils::ToWString(m_strName);
-						toInfo += fromInfo;
-						CLOG_INFO(toInfo);
+
+						logInfo += separate;
+						logInfo += (L"\ncharacter name : [" + owneName + L"]");
+						logInfo += toInfo;
+						logInfo += Engine_Utils::ToWString(toState);
+						logInfo += fromInfo;
+						logInfo += Engine_Utils::ToWString(m_strName);
+						logInfo += separate;
+						CLOG_INFO(logInfo);
 					}
 #endif // _DEBUG
 					return m_iThisStateIndex != to.first;

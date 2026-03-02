@@ -58,14 +58,39 @@ void CPhysics_CCTHitReport::onShapeHit(const PxControllerShapeHit& hit)
 		// 동적 오브젝트
 	}
 
-//#ifdef _DEBUG
-//	Debug_Log(HITEVENT::Enum::ON_SHAPE_HIT, info);
-//#endif // _DEBUG
+	//#ifdef _DEBUG
+	//	Debug_Log(HITEVENT::Enum::ON_SHAPE_HIT, info);
+	//#endif // _DEBUG
 }
 
 void CPhysics_CCTHitReport::onControllerHit(const PxControllersHit& hit)
 {
 	GAMEOBJECTINFO info = Get_GameObject(hit.controller->getUserData(), hit.other->getUserData());
+
+	auto pCCT = static_cast<CGameObject*>(hit.controller->getUserData())->Get_Component<CPhysicsCCT>();
+
+	if (hit.worldNormal.y > 0.3f)
+	{
+		PxExtendedVec3 myPos = hit.controller->getPosition();
+		PxExtendedVec3 otherPos = hit.other->getPosition();
+
+		PxVec3 pushDir;
+		pushDir.x = (float)(myPos.x - otherPos.x);
+		pushDir.y = 0.f;
+		pushDir.z = (float)(myPos.z - otherPos.z);
+
+		if (pushDir.magnitudeSquared() < 1e-6f)
+			pushDir = PxVec3(1.f, 0.f, 0.f);
+
+		pushDir.normalize();
+
+		pushDir *= 0.05f;
+
+		Vec3 disp(pushDir.x, -0.1f, pushDir.z);
+		pCCT->Add_Disp(disp);
+		pCCT->SetIsSteppingOnCCT();
+		return;
+	}
 
 	if (hit.dir.y < -0.8f)
 	{
@@ -84,16 +109,16 @@ void CPhysics_CCTHitReport::onControllerHit(const PxControllersHit& hit)
 		slideDir.normalize();
 		slideDir = slideDir * 0.01f;
 		Vec3 disp(slideDir.x, slideDir.y, slideDir.z);
-		static_cast<CGameObject*>(hit.controller->getUserData())->Get_Component<CPhysicsCCT>()->Add_Disp(disp);
-		static_cast<CGameObject*>(hit.controller->getUserData())->Get_Component<CPhysicsCCT>()->SetIsSteppingOnCCT();
+		pCCT->Add_Disp(disp);
+		pCCT->SetIsSteppingOnCCT();
 	}
 
-	else if (abs(hit.worldNormal.y) < 0.5f)
+	if (abs(hit.worldNormal.y) < 0.5f)
 	{
 		PxVec3 normal = hit.worldNormal.getNormalized();
-		Vec3 disp(normal.x, normal.y, normal.z);
+		Vec3 disp(normal.x, 0.f, normal.z);
 		disp *= 0.01f;
-		static_cast<CGameObject*>(hit.controller->getUserData())->Get_Component<CPhysicsCCT>()->Add_Disp(disp);
+		pCCT->Add_Disp(disp);
 	}
 
 //#ifdef _DEBUG
@@ -155,7 +180,7 @@ void CPhysics_CCTHitReport::Debug_Log(HITEVENT::Enum event, GAMEOBJECTINFO& info
 		leftInfo = info.leftName + L", ID : " + std::to_wstring(info.leftID) + L"\n";
 	else
 		leftInfo = L"NULL\n";
-	
+
 	if (info.rightObject)
 		rightInfo = info.rightName + L", ID : " + std::to_wstring(info.rightID) + L"\n";
 	else
