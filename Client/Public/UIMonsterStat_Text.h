@@ -48,6 +48,7 @@ private:
 	virtual HRESULT Despawn_FromPool()override;
 
 private:
+	CGameObject* m_pTargetMoster = { nullptr };
 	CMyStat* m_pTargetStat = { nullptr };
 
 public:

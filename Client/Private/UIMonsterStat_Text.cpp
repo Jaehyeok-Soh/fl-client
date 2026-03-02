@@ -1,6 +1,7 @@
 #include "pch.h"
 #include "UIMonsterStat_Text.h"
 #include "Client_Defines.h"
+#include "Client_EventDefine.h"
 
 //=================
 // Component
@@ -103,6 +104,11 @@ HRESULT CUIMonsterStat_Text::Bind_ShaderResources()
 
 HRESULT CUIMonsterStat_Text::Attach_Personal_Info()
 {
+	m_pGameInstance->Subscribe<MONSTER_DEAD_EVENT_START>([this](CGameObject* pDead)
+		{
+			if (pDead == m_pTargetMoster)
+				this->Set_Invisible();
+		});
 
 	return S_OK;
 }
@@ -138,6 +144,9 @@ void CUIMonsterStat_Text::Initialize_Visible_Event()
 
 void CUIMonsterStat_Text::Initialize_InVisible_Event()
 {
+	m_isActive = false;
+	m_isFin_Event = false;
+	Ready_Fade(1.f, 1.f, 0.f, 1.f);
 }
 
 _bool CUIMonsterStat_Text::Tick_Visible_Event(const _float fTimeDelta)
@@ -149,7 +158,15 @@ _bool CUIMonsterStat_Text::Tick_Visible_Event(const _float fTimeDelta)
 
 _bool CUIMonsterStat_Text::Tick_InVisible_Event(const _float fTimeDelta)
 {
-	return true;
+	if (Tick_Fade(fTimeDelta))
+	{
+		Request_SetDead();
+		m_fAlpha_Ratio = 1.f;
+		m_isFin_Event = true;
+		m_isActive = true;
+		return true;
+	}
+	return false;
 }
 
 HRESULT CUIMonsterStat_Text::Spawn_FromPool(void* pArg)
@@ -165,7 +182,7 @@ HRESULT CUIMonsterStat_Text::Spawn_FromPool(void* pArg)
 		return E_FAIL;
 
 	m_pWorldUIComp->Set_Target(pDesc->pTarget);
-
+	m_pTargetMoster = pDesc->pTarget;
 	m_pTargetStat = pDesc->pTarget->Get_Component<CMyStat>();
 	if (nullptr == m_pTargetStat)
 		return E_FAIL;

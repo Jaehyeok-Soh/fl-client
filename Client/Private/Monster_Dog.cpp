@@ -1,4 +1,5 @@
 #include "pch.h"
+#include "Client_EventDefine.h"
 #include "Monster_Dog.h"
 #include "Monster_Body_Base.h"
 #include "MonsterActionState.h"
@@ -126,7 +127,10 @@ _bool CMonster_Dog::On_Hit(const HIT_DESC& hitDesc)
 
 	auto vHp = myStat->Get_Stat_Vec2(CMyStat::STAT_TYPE::HP);
 	if (vHp.x <= 0)
+	{
 		Get_Component<CMonsterControlContext>()->Set_Dead();
+		m_pGameInstance->Broadcast<MONSTER_DEAD_EVENT_START>(this);
+	}
 
 	return result;
 }

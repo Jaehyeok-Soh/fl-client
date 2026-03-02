@@ -31,6 +31,8 @@ private:
 	virtual void OnUIEvent(ETriggerEventType eEvent, CGenericUI* pSender)override;
 	virtual void Initialize_Visible_Event()override;
 	virtual _bool Tick_Visible_Event(const _float fTimeDelta)override;
+	virtual void Initialize_InVisible_Event()override;
+	virtual _bool Tick_InVisible_Event(const _float fTimeDelta)override;
 	virtual HRESULT Spawn_FromPool(void* pArg)override;
 	virtual HRESULT Despawn_FromPool()override;
 private:

@@ -48,6 +48,7 @@ private:
 	HRESULT Convert_Stat_To_Ratio();
 
 private:
+	CGameObject* m_pTargetMoster = { nullptr };
 	CMyStat* m_pTargetStat = { nullptr };
 
 	// Monster HP Values
