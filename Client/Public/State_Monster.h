@@ -7,7 +7,7 @@ class CState_Monster final : public CStateBase_Monster
 {
 	using Super = CStateBase_Monster;
 private:
-	CState_Monster(CActionState* pOwnerComponent);
+	CState_Monster(CActionState* pOwnerComponent, _uint iStateIndex);
 	virtual ~CState_Monster() = default;
 
 	virtual HRESULT Initialize(void* pArg) override;
@@ -19,7 +19,7 @@ public:
 	virtual HRESULT End() override;
 
 public:
-	static CState_Monster* Create(CActionState* pOwnerComponent, void* pArg = nullptr);
+	static CState_Monster* Create(CActionState* pOwnerComponent, _uint iStateIndex, void* pArg = nullptr);
 	virtual void Free() override;
 };
 

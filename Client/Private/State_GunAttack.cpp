@@ -37,6 +37,8 @@ HRESULT CState_GunAttack::Start(void* pArg, _bool bForce)
 
 	Set_GunTimer(true);
 
+	Start_Att(ENUM_TO_UINT(CPlayer::State::GUNATTACK));
+
 	return S_OK;
 }
 

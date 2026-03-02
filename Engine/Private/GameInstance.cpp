@@ -153,7 +153,7 @@ void CGameInstance::Update_Engine(_float fTimeDelta)
 
 	m_pJudgementSystem->Flush_CollidedEvent();
 
-	// 메인카메라 업데이트
+	// 메인카메라 업데이트#ifdef _DEBUG
 	m_pCamera_Manager->Update_ViewMatrix();
 	m_pFrustrum->Update();
 

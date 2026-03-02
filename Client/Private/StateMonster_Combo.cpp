@@ -8,8 +8,8 @@
 
 #include "Engine_Utils.h"
 
-CStateMonster_Combo::CStateMonster_Combo(CActionState* pOwnerComponent)
-	: Super(pOwnerComponent, "MonsterCombo")
+CStateMonster_Combo::CStateMonster_Combo(CActionState* pOwnerComponent, _uint iStateIndex)
+	: Super(pOwnerComponent, "MonsterCombo", iStateIndex)
 {
 }
 
@@ -59,9 +59,9 @@ HRESULT CStateMonster_Combo::End()
 	return S_OK;
 }
 
-CStateMonster_Combo* CStateMonster_Combo::Create(CActionState* pOwnerComponent, void* pArg)
+CStateMonster_Combo* CStateMonster_Combo::Create(CActionState* pOwnerComponent, _uint iStateIndex, void* pArg)
 {
-	CStateMonster_Combo* pInstance = new CStateMonster_Combo(pOwnerComponent);
+	CStateMonster_Combo* pInstance = new CStateMonster_Combo(pOwnerComponent, iStateIndex);
 	if (FAILED(pInstance->Initialize(pArg)))
 	{
 		MSG_BOX("CStateMonster_Combo::Create, Failed");

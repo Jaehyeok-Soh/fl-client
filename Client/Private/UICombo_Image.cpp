@@ -171,6 +171,17 @@ HRESULT CUICombo_Image::Attach_Personal_Info()
 		return E_FAIL;
 	}
 
+	m_pGameInstance->Subscribe<COMBO_ATTACK_EVENT_START>([this]() 
+		{
+			if(!this->m_isVisible)
+				this->Set_Visible();
+		});
+
+	m_pGameInstance->Subscribe<COMBO_ATTACK_EVENT_END>([this]() 
+		{ 
+			this->Set_Invisible(); 
+		});
+
 	return S_OK;
 }
 

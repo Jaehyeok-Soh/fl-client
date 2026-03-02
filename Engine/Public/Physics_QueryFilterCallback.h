@@ -1,6 +1,9 @@
 #pragma once
 #include "Base.h"
 
+#pragma warning(push)
+#pragma warning(disable: 4275)
+
 NS_BEGIN(Engine)
 
 class CGameObject;
@@ -35,3 +38,5 @@ public:
 };
 
 NS_END
+
+#pragma warning(pop)

@@ -221,6 +221,8 @@ HRESULT CEffectObject::Ready_Component_Buffer(void* pArg)
 
             if (FAILED(Add_Component<CVIBuffer_Particle_Point>(static_cast<CVIBuffer_Particle_Point*>(m_pGameInstance->Clone_Prototype(EPrototypeType::COMPONENT, 0, L"Prototype_Component_VIBuffer_Particle_Point", &pParticleDesc)))))
                 return E_FAIL;
+
+            m_pParticleBuffer = Get_Component<CVIBuffer_Particle_Point>();
             break;
         }
         case (_uint)DTO::E_PARTICLETYPE::MESH:
@@ -249,6 +251,8 @@ HRESULT CEffectObject::Ready_Component_Buffer(void* pArg)
 
                 if (FAILED(Add_Component<CVIBuffer_Particle_Mesh>(static_cast<CVIBuffer_Particle_Mesh*>(m_pGameInstance->Clone_Prototype(EPrototypeType::COMPONENT, 0, L"Prototype_Component_VIBuffer_Particle_Mesh", &MeshBufferDesc)))))
                     return E_FAIL;
+
+                m_pParticleBuffer = Get_Component<CVIBuffer_Particle_Mesh>();
             }
             break;
         }
@@ -272,6 +276,8 @@ HRESULT CEffectObject::Ready_Component_Buffer(void* pArg)
 
             if (FAILED(Add_Component<CVIBuffer_Particle_Point>(static_cast<CVIBuffer_Particle_Point*>(m_pGameInstance->Clone_Prototype(EPrototypeType::COMPONENT, 0, L"Prototype_Component_VIBuffer_Particle_Point", &pParticleDesc)))))
                 return E_FAIL;
+
+            m_pParticleBuffer = Get_Component<CVIBuffer_Particle_Point>();
         }
     }
 
@@ -378,7 +384,7 @@ HRESULT CEffectObject::Bind_ShaderResource()
 
     if (m_tEffectDesc.Data.eEffectParticleType != (_uint)DTO::E_PARTICLETYPE::MESH || !m_pModel)
     {
-        CVIBuffer_Particle_Point* pInstance = static_cast<CVIBuffer_Particle_Point*>(Get_Component<CVIBuffer_Particle_Point>());
+        CVIBuffer_Particle_Point* pInstance = static_cast<CVIBuffer_Particle_Point*>(m_pParticleBuffer);
 
         if (pInstance)
         {
@@ -390,7 +396,7 @@ HRESULT CEffectObject::Bind_ShaderResource()
 
     else if (m_tEffectDesc.Data.eEffectParticleType == (_uint)DTO::E_PARTICLETYPE::MESH && m_pModel)
     {
-        CVIBuffer_Particle_Mesh* pInstance = static_cast<CVIBuffer_Particle_Mesh*>(Get_Component<CVIBuffer_Particle_Mesh>());
+        CVIBuffer_Particle_Mesh* pInstance = static_cast<CVIBuffer_Particle_Mesh*>(m_pParticleBuffer);
 
         if (pInstance)
         {
@@ -500,8 +506,8 @@ void CEffectObject::Update(const _float fTimeDelta)
     if (CTShader)
     {
         // Object의 TimeFlag가 PLAY라면 그대로 전달하여 CS가 멈추지 않게 함
-        CVIBuffer_Particle_Point* pInstance = Get_Component<CVIBuffer_Particle_Point>();
-        if (pInstance) pInstance->Update_Simulation(CTShader, Vec3{}, m_vFinalGravity, TimeT, m_tEffectDesc.Data._Effect_TimeFlag, (DTO::E_SHAPETYPE)m_tEffectDesc.Data._Effect_ShapeType);
+        //CVIBuffer_Particle_Point* pInstance = Get_Component<CVIBuffer_Particle_Point>();
+        if (m_pParticleBuffer) m_pParticleBuffer->Update_Simulation(CTShader, Vec3{}, m_vFinalGravity, TimeT, m_tEffectDesc.Data._Effect_TimeFlag, (DTO::E_SHAPETYPE)m_tEffectDesc.Data._Effect_ShapeType);
     }
 }
 
@@ -553,6 +559,11 @@ HRESULT CEffectObject::Spawn_FromPool(void* pArg)
 {
     m_bDespawnFlag = false;
     m_tEffectDesc = m_tOriginEffectDesc;
+
+    // 초기 상태로 되돌려준다.
+    if (m_pParticleBuffer)
+        m_pParticleBuffer->Particle_Reset();
+
     TimeFlagRequest(RESET);
 
     return S_OK;
@@ -589,6 +600,10 @@ void CEffectObject::LoopState_Change(DTO::E_LoopState eState)
     {
         m_tEffectDesc.Data._Use_Effect_Continue = false;
         m_bDespawnFlag = true;
+
+        if (m_pParticleBuffer)
+            m_pParticleBuffer->Set_ContinueFlagEnd();
+
         break;
     }
     }

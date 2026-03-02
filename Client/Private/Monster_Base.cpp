@@ -101,6 +101,9 @@ void CMonster_Base::Update_Late(const _float fTimeDelta)
 
 	if (Get_Component <CPhysicsAttackOverlap>())
 		Get_Component<CPhysicsAttackOverlap>()->Update(fTimeDelta);
+
+	if (Get_Component<CPhysicsCCT>())
+		Get_Component<CPhysicsCCT>()->Update(fTimeDelta);
 }
 
 void CMonster_Base::Ready_Before_Render(const _float fTimeDelta)
@@ -364,6 +367,7 @@ HRESULT CMonster_Base::Create_Mosnter(EMonster_Type eCreateMonsterType, _uint iF
 		////////////////////
 		monsterDesc.wstrPartBodyPrototypeTag		= g_wszMonster_Boomer_Body_Prototype_Tag;
 		monsterDesc.wstrBodyModelTag				= g_wszMonster_Boomer_Model_Prototype_Tag;
+		monsterDesc.wstrAttackOverlapPrototypeTag	= g_wszMonster_Boomer_AttackOverlap_Prototype_Tag;
 		monsterDesc.wstrMonsterStateTag				= g_wszMonster_Boomer_State_Tag;
 
 		{

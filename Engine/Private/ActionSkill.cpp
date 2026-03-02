@@ -59,8 +59,20 @@ void CActionSkill::Update_Skills(const _float fTimeDelta)
 {
 	for (auto& pSkill : m_vecSkills)
 	{
-		if(pSkill)
-			pSkill->Update(fTimeDelta);
+		if (pSkill)
+		{
+			// skill이 켜졌다면
+			if (pSkill->Is_OnSkill())
+			{
+				// skill을 업데이트를 하고
+				pSkill->Update(fTimeDelta);
+
+				// 그런데 skill이 끝났어 -> end skill 호출
+				if (pSkill->Is_EndSkill())
+					pSkill->End_Skill(m_pOwnerStat);
+			}
+		}
+
 	}
 }
 

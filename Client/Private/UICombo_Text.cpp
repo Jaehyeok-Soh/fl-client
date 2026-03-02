@@ -1,6 +1,7 @@
 #include "pch.h"
 #include "UICombo_Text.h"
 #include "Client_Defines.h"
+#include "Client_EventDefine.h"
 
 //=================
 // Component
@@ -138,6 +139,18 @@ HRESULT CUICombo_Text::Attach_Personal_Info()
 	default:
 		break;
 	}
+
+	m_pGameInstance->Subscribe<COMBO_ATTACK_EVENT_START>([this]()
+		{
+			if (!this->m_isVisible)
+				this->Set_Visible();
+		});
+
+	m_pGameInstance->Subscribe<COMBO_ATTACK_EVENT_END>([this]()
+		{
+			this->Set_Invisible();
+		});
+
 	return S_OK;
 }
 

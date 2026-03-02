@@ -35,8 +35,8 @@ protected:
 	virtual HRESULT Initialize_Prototype() override;
 	virtual HRESULT Initialize(void* pArg) override;
 public:
-	HRESULT			Awake(_uint iLvelIndex);
-	void			Update(const _float fTimeDelta);
+	HRESULT					Awake(_uint iLvelIndex);
+	virtual void			Update(const _float fTimeDelta);
 
 	virtual void	Clear_WhenChangeLevel()override;
 
