@@ -90,16 +90,6 @@ void CXibi_Projectile_Circle::OnCollision_Exit(_uint iMyColliderLayer, _uint iOt
 {
 }
 
-void CXibi_Projectile_Circle::Set_Dead(const wstring& wstrLayerTag)
-{
-	m_bDead = true;
-	m_pGameInstance->Request_DeleteGameObject(
-		m_pGameInstance->Get_CurrentLevelIndex(),
-		g_wszSkillObjectLayer,
-		this);
-	Get_Component<CEffectHandler>()->Trigger_Lifecycle_Effect(CEffectHandler::E_OBJ_LIFECYCLE_STATE::ON_DESTROY);
-}
-
 _bool CXibi_Projectile_Circle::On_Hit(const HIT_DESC& hitDesc)
 {
 	return true;

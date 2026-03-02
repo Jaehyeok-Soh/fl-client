@@ -56,13 +56,6 @@
 #include "Monster_Dog_Body.h"
 #include "Monster_Boomer.h"
 #include "Monster_Boomer_Body.h"
-#include "Boss_Xibi.h"
-#include "Boss_Xibi_Body.h"
-#include "SingleSkillSpawner.h"
-#include "ProjectileSpawner_Fan.h"
-#include "Xibi_Projectile_Circle.h"
-#include "Xibi_Loop_Thunder.h"
-#include "Xibi_Oneshot_Thunder.h"
 
 //=================
 // GameInstance
@@ -98,9 +91,6 @@ HRESULT CLevel_Test::Initialize()
 		return E_FAIL;
 
 	if (FAILED(Ready_UI_Layer(g_wszUILayer)))
-		return E_FAIL;
-
-	if (FAILED(Ready_SkillObjectLayer()))
 		return E_FAIL;
 
 	return S_OK;
@@ -336,52 +326,6 @@ HRESULT CLevel_Test::Ready_Lights()
 			return E_FAIL;
 	}
 
-	return S_OK;
-}
-
-HRESULT CLevel_Test::Ready_SkillObjectLayer()
-{
-	CGameObject* pPlayer = m_pGameInstance->Get_GameObject_Front(0, g_wszPlayerLayer);
-
-	_uint iLevelId = ENUM_TO_UINT(ELevelType::TEST);
-
-	// SkillObject Pool
-	{
-		CXibi_Projectile_Circle::SKILLOBJECT_DESC desc{};
-		if (FAILED(m_pGameInstance->Regist_Pool(
-			iLevelId,
-			g_wszPool_XibiCircleProjectile,
-			g_wszSkillObjectLayer,
-			iLevelId,
-			g_wszXibiProjectile_Prototype_Tag,
-			&desc,
-			30)))
-			return E_FAIL;
-	}
-	{
-		CXibi_Loop_Thunder::SKILLOBJECT_DESC desc{};
-		if (FAILED(m_pGameInstance->Regist_Pool(
-			iLevelId,
-			g_wszPool_XibiLoopThunder,
-			g_wszSkillObjectLayer,
-			iLevelId,
-			g_wszXibiLoopThunder_Prototype_Tag,
-			&desc,
-			30)))
-			return E_FAIL;
-	}
-	{
-		CXibi_Oneshot_Thunder::SKILLOBJECT_DESC desc{};
-		if (FAILED(m_pGameInstance->Regist_Pool(
-			iLevelId,
-			g_wszPool_XibiOneshotThunder,
-			g_wszSkillObjectLayer,
-			iLevelId,
-			g_wszXibiOneshotThunder_Prototype_Tag,
-			&desc,
-			100)))
-			return E_FAIL;
-	}
 	return S_OK;
 }
 

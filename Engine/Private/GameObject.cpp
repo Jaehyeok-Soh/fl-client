@@ -82,6 +82,22 @@ HRESULT CGameObject::Render()
     return S_OK;
 }
 
+HRESULT CGameObject::Despawn_FromPool()
+{
+    // Physics
+    {
+        auto pCCT = Get_Component<CPhysicsCCT>();
+        if (pCCT)
+            pCCT->EnableCollision(false);
+
+        auto pRigidBody = Get_Component<CPhysicsRigidBody>();
+        if (pRigidBody)
+            pRigidBody->EnableCollision(false);
+    }
+
+    return S_OK;
+}
+
 /// <summary>
 /// <para>스크립트 컴포넌틀을 참조하는 함수</para>
 /// RefCount책임은 외부에
@@ -219,22 +235,11 @@ HRESULT CGameObject::Change_State(_uint iIndex)
 /// Static레벨에 속한 오브젝트, 풀오브젝트는 반드시 상속받아서 내부에서 호출하는 Request_DeleteGameObject 파라미터를 변경하여 요청할것을 권장
 /// </summary>
 /// <param name="wstrLayerTag">내가 속한 레이어의 태그</param>
-void CGameObject::Set_Dead(const wstring& wstrLayerTag)
+void CGameObject::Set_Dead(_bool bStatic)
 {
+    _uint iLevelIndex = bStatic == true ? 0 : m_pGameInstance->Get_CurrentLevelIndex();
     m_bDead = true;
-
-    // Physics
-    {
-        auto pCCT = Get_Component<CPhysicsCCT>();
-        if (pCCT)
-            pCCT->EnableCollision(false); 
-        
-        auto pRigidBody = Get_Component<CPhysicsRigidBody>();
-        if (pRigidBody)
-            pRigidBody->EnableCollision(false);
-    }
-
-    m_pGameInstance->Request_DeleteGameObject(m_pGameInstance->Get_CurrentLevelIndex(), wstrLayerTag, this);
+    m_pGameInstance->Request_DeleteGameObject(iLevelIndex, m_wstrLayerTag, this);
 }
 
 /// <summary>

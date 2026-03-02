@@ -205,12 +205,6 @@ void Effect::Update_CombinedWorldMatrix(const Matrix* pMatParent)
 	Get_Component<CTransform>()->Set_WorldMatrix(m_matCombinedWorld);
 }
 
-
-void Effect::Set_Dead(const wstring& wstrLayerTag)
-{
-	m_pGameInstance->Request_DeleteGameObject(m_pGameInstance->Get_CurrentLevelIndex(), wstrLayerTag, this);
-}
-
 void Effect::IsEffectFinish()
 {
 	_uint FinishCount = 0;
@@ -223,7 +217,7 @@ void Effect::IsEffectFinish()
 
 	if (FinishCount == m_vecPartObjects.size())
 	{
- 		Set_Dead(L"Effect_Layer");
+ 		Set_Dead();
 	}
 }
 

@@ -138,9 +138,9 @@ HRESULT CSkillObject_Base::Spawn_FromPool(void* pArg)
 
 HRESULT CSkillObject_Base::Despawn_FromPool()
 {
-   	m_desc = {};
+	Super::Despawn_FromPool();
 	m_runtimeDesc = {};
-
+	Get_Component<CEffectHandler>()->Trigger_Lifecycle_Effect(CEffectHandler::E_OBJ_LIFECYCLE_STATE::ON_DESTROY);
 	return S_OK;
 }
 
@@ -190,7 +190,7 @@ void CSkillObject_Base::Process_Life(const _float fTimeDelta)
 		if (m_runtimeDesc.Life.Tick(fTimeDelta))
 		{
 			// Set_Dead
-			Set_Dead(L"");
+			Set_Dead();
 			return;
 		}
 	}
@@ -199,7 +199,7 @@ void CSkillObject_Base::Process_Life(const _float fTimeDelta)
 		if (m_runtimeDesc.fTravelDistance >= m_desc.fMaxDistance)
 		{
 			// Set_Dead
-			Set_Dead(L"");
+			Set_Dead();
 			return;
 		}
 	}

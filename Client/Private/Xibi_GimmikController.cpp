@@ -395,7 +395,7 @@ void CXibi_GimmikController::On_SpawnThunder360()
 
 HRESULT CXibi_GimmikController::Ready_Spawner()
 {
-	_uint iLevelId = ENUM_TO_UINT(ELevelType::TEST);
+	_uint iLevelId = ENUM_TO_UINT(ELevelType::TUTORIAL_BOSS);
 
 	// Oneshot
 	{

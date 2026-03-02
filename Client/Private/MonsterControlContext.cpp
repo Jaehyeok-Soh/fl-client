@@ -256,7 +256,7 @@ _bool CMonsterControlContext::IsTargetOutOfAttackRange()
 _bool CMonsterControlContext::IsTargetDistanceOver(_float fValue)
 {
 	if (m_pTarget == nullptr)
-		return FLT_MAX;
+		return false;
 
 	CTransform* pOwnerTransform = Get_Owner()->Get_Component<CTransform>();
 	CTransform* pTargetTransform = m_pTarget->Get_Component<CTransform>();

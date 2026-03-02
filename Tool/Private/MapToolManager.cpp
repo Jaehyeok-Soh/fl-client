@@ -659,7 +659,7 @@ HRESULT CMapToolManager::Change_Instance_To_OtherDrawType(CMapObject* pChangeMap
 				return E_FAIL;
 			}
 		}
-		pChangeMapObject->Set_Dead(pChangeMapObject->Get_LayerTag());
+		pChangeMapObject->Set_Dead();
 	}
 	return S_OK;
 }
