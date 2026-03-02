@@ -72,7 +72,8 @@ namespace Engine
 		SimpleMath::Vector3 vHitNormal{ SimpleMath::Vector3::Zero };
 		ATTACKER_DESC attackDesc{}; // 지연 처리용
 
-		float fFinalDamage{ 0.f };
+		float			fFinalDamage{ 0.f };
+		unsigned int	iDamageFlag{ 0 };
 	}HIT_DESC;
 
 	typedef struct tagExtraAttDesc
@@ -89,6 +90,10 @@ namespace Engine
 
 		// clamp 값 : 만약 x < y 일때만 clamp를 함
 		SimpleMath::Vector2 vFinalDamege_MinMax = { SimpleMath::Vector2::Zero };
+
+		// 어떤 종류의 damege를 주었는가에 대한 추가 정보
+		unsigned int iDamageFlag = { 0 };
+		// 예시 : 0번은 일반 공격, 1번은 critical 공격
 
 		// 0. 단순히 추가할 값
 		float fAddDamage{ 0.f }; 

@@ -190,9 +190,14 @@ Vec3 CJudgementSystem::Compute_HitNormal(CGameObject* pAttacker, CGameObject* pV
 
 void CJudgementSystem::Compute_FinalDamage(const DTO::TAttackPreset_Data* pAttackPreset, const EXTRA_ATTACK_DESC& tExtraDesc, OUT HIT_DESC& hitDesc)
 {
+	// base damage 우선 저장
 	_float fDamege = pAttackPreset->tCombat.fBaseDamage;
 
-	// 만약 compute order 정보가 없다면
+	// damage flag는 피격쪽에서 정보 처리용으로 던지는 거기 때문에
+	// 바로 값을 넣어준다
+	hitDesc.iDamageFlag = tExtraDesc.iDamageFlag;
+
+	// 만약 compute order 정보가 없다면 -> 바로 return 
 	if (tExtraDesc.vecCompute_Order.empty())
 	{
 		hitDesc.fFinalDamage = fDamege;
