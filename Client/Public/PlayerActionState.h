@@ -38,6 +38,7 @@ public:
 	_bool Is_OnHit();
 	Flags Get_AttackFlag() const { return m_fAttackFlag; }
 	Vec3 Get_HitNormal() const { return m_tPreHitDesc.vHitNormal; }
+	Vec3 Get_VicPosition() const;
 
 	void Reset_HitDesc() { m_tPreHitDesc = {};  m_fAttackFlag = 0; }
 

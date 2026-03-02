@@ -4,12 +4,10 @@
 #include "GameInstance.h"
 #include "Level_Loading.h"
 
-
 //=================
 // Builder
 //=================
 #include "Builder_Map.h"
-
 
 //=================
 // Monster
@@ -20,6 +18,8 @@
 #include "MonsterControlContext.h"
 #include "MonsterActionState.h"
 
+#include "Monster_Dog.h"
+#include "Monster_Boomer.h"
 
 CTriggerBox_MonsterSpawner::CTriggerBox_MonsterSpawner(ID3D11Device* pDevice, ID3D11DeviceContext* pContext)
     : CTriggerBox(pDevice ,pContext) 
@@ -59,12 +59,64 @@ HRESULT CTriggerBox_MonsterSpawner::Initialize(void* pArg)
     if (FAILED(Ready_Component(pDesc)))
         return E_FAIL;
 
+    if (FAILED(Ready_SpawnPool(pDesc)))
+        return E_FAIL;
+
     return S_OK;
 }
 
 HRESULT CTriggerBox_MonsterSpawner::Ready_Component(TRIGGERBOX_MONSTERSPAWNER_DESC* pDesc)
 {
+    return S_OK;
+}
 
+HRESULT CTriggerBox_MonsterSpawner::Ready_SpawnPool(TRIGGERBOX_MONSTERSPAWNER_DESC* pDesc)
+{
+    _uint iFindPrototypeIndex = ENUM_TO_UINT(ELevelType::STATIC);
+    
+    map<DTO::EMakeMonsterType, _int> poolAggregate;
+
+    for (auto& tData : m_vecMonsterSpawnData)
+    {
+        poolAggregate[tData.eMakeMonsterType]++;
+        //auto item = poolAggregate.find(tData.eMakeMonsterType);
+        //(*item).second += 1;
+    }
+
+    for (auto& item : poolAggregate)
+    {
+        if (FAILED(Register_Pool(pDesc->iLevelIndex, iFindPrototypeIndex, item.first, item.second)))
+            return E_FAIL;
+    }
+
+    return S_OK;
+}
+
+HRESULT CTriggerBox_MonsterSpawner::Register_Pool(_uint iLevelId, _uint iFindPrototypeIndex, DTO::EMakeMonsterType eMakeMonsterType, _int numPool)
+{
+    switch (eMakeMonsterType)
+    {
+    case DTO::EMakeMonsterType::Dog:
+    {
+        auto desc = CMonster_Dog::Get_PreSetDesc(iLevelId);
+        m_pGameInstance->Regist_Pool(iLevelId, g_wszPool_Monster_Dog, g_wszMonstereLayer, ENUM_TO_UINT(ELevelType::STATIC), g_wszMonster_Dog_Prototype_Tag, &desc, numPool + 10);
+    }
+    break;
+    case DTO::EMakeMonsterType::Boomer:
+    {
+        auto desc = CMonster_Boomer::Get_PreSetDesc(iLevelId);
+        m_pGameInstance->Regist_Pool(iLevelId, g_wszPool_Monster_Boomer, g_wszMonstereLayer, ENUM_TO_UINT(ELevelType::STATIC), g_wszMonster_Boomer_Prototype_Tag, &desc, numPool + 10);
+    }
+        break;
+    case DTO::EMakeMonsterType::Shooter:
+        break;
+    case DTO::EMakeMonsterType::Xibi:
+        break;
+    case DTO::EMakeMonsterType::END:
+        break;
+    default:
+        break;
+    }
 
     return S_OK;
 }
@@ -156,6 +208,8 @@ HRESULT CTriggerBox_MonsterSpawner::SpawnMonster()
 
 	CTransform::TRANSFORM_DESC tTransformDesc = {};
 
+    wstring poolTag = {};
+
 	for (auto& tData : m_vecMonsterSpawnData)
 	{
 		tTransformDesc.ScaleMatrix		= Matrix::CreateScale(tData.vScale);
@@ -164,8 +218,33 @@ HRESULT CTriggerBox_MonsterSpawner::SpawnMonster()
 			XMConvertToRadians(tData.vPitchYawRoll.y), XMConvertToRadians(tData.vPitchYawRoll.x), XMConvertToRadians(tData.vPitchYawRoll.z)
 		);
 
-        if (FAILED(CMonster_Base::Create_Mosnter(CBuilder_Map::Change_MakeMonsterType_To_MonsterType(tData.eMakeMonsterType) , iFindPrototypeIndex , iCurLevelIndex  , &tTransformDesc)))
-            return E_FAIL;
+        //if (FAILED(CMonster_Base::Create_Mosnter(CBuilder_Map::Change_MakeMonsterType_To_MonsterType(tData.eMakeMonsterType) , iFindPrototypeIndex , iCurLevelIndex  , &tTransformDesc)))
+        //    return E_FAIL;
+        
+        switch (tData.eMakeMonsterType)
+        {
+        case DTO::EMakeMonsterType::Dog:
+            poolTag = g_wszPool_Monster_Dog;
+        break;
+        case DTO::EMakeMonsterType::Boomer:
+            poolTag = g_wszPool_Monster_Boomer;
+        break;
+
+        // todo
+        case DTO::EMakeMonsterType::Shooter:
+        case DTO::EMakeMonsterType::Xibi:
+        default:
+            continue;
+        }
+
+        m_pGameInstance->Request_AddObject(iCurLevelIndex, poolTag, iCurLevelIndex, nullptr,
+            [this, tTransformDesc](CGameObject* p)
+            {
+                auto* pMonsterObject = static_cast<CMonster_Base*>(p);
+                if (nullptr == pMonsterObject)
+                    return;
+                pMonsterObject->SetSpawnPos(tTransformDesc);
+            });
 	}
 
     return S_OK;

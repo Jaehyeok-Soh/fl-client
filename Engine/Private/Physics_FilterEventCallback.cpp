@@ -65,7 +65,8 @@ void CPhysics_FilterEventCallback::onTrigger(PxTriggerPair* pairs, PxU32 count)
 		CGameObject* leftObject = Conversion_GameObject(pairs[i].triggerActor->userData);
 		CGameObject* rightObject = Conversion_GameObject(pairs[i].otherActor->userData);
 
-		if (leftObject->IsDead() || rightObject->IsDead() || leftObject == nullptr || rightObject == nullptr)
+		if (leftObject == nullptr || rightObject == nullptr ||
+			leftObject->IsDead() || rightObject->IsDead())
 			return;
 
 		GAMEOBJECTINFO info = Get_GameObject(pairs[i].triggerActor->userData, pairs[i].otherActor->userData);
@@ -102,16 +103,34 @@ void CPhysics_FilterEventCallback::ProcessOverlap(CGameObject* pOwner, const PxV
 			&closetPoint,
 			&closetIndex);
 
-		PxVec3 normal = vOverlapPoint - closetPoint;
-		normal.normalize();
+		PxVec3 hitPoint;
+		PxVec3 normal;
+
+		{
+			if (dist > 1e-6f)
+			{
+				hitPoint = closetPoint;
+				normal = vOverlapPoint - closetPoint;
+				normal.normalize();
+			}
+			else
+			{
+				PxVec3 shapeCenter = pOverlapHit->actor->getGlobalPose().p;
+				hitPoint = vOverlapPoint;
+				normal = vOverlapPoint - shapeCenter;
+
+				if (normal.magnitudeSquared() < 1e-6f)
+					normal = PxVec3(0.f, 1.f, 0.f);
+				else
+					normal.normalize();
+			}
+		}
 
 		info.bHasHitPoint = true;
 		// 추후에 BestPoint를 검출하려면 연산이 필요함
-		::memcpy(&info.vHitPoint.x, &closetPoint.x, sizeof(Vec3));
+		::memcpy(&info.vHitPoint.x, &hitPoint.x, sizeof(Vec3));
 		::memcpy(&info.vRawNormal.x, &normal.x, sizeof(Vec3));
 		info.fDepth = (std::max)(0.0f, -dist);
-
-		
 
 		// On collision enter
 		OnCollisionEnter(info);

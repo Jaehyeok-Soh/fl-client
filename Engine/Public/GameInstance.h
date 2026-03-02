@@ -348,6 +348,7 @@ public:
 	vector<PxShape*> CopyShapes(vector<PxShape*>& shapes);
 	vector<PxRigidActor*> GetActor(PHYSICSRIGIDBODY_DESC* rigidBodyDesc, PHYSICSCOLLIDER_DESC* colliderDesc, vector<PxShape*>& shapes);
 	PxController* GetController(PHYSICSCCT_DESC* pDesc);
+	class CPhysics_CCTFilterCallback* GetCCTFilterCallback();
 	void RegisterPhysicsMesh(_uint levelIndex, _wstring prototypeTag);
 	PxQuat GetPureRotation(const Matrix& mat);
 	PxVec3 GetPureScale(const Matrix& mat);

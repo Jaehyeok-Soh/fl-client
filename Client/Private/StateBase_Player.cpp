@@ -353,29 +353,45 @@ _bool CStateBase_Player::Check_Hit(const _float fTimeDelta)
 	{
 		Flags fAttackFlag = pActionState->Get_AttackFlag();
 
+		HITSTATE_START_DESC tStartDesc = {};
+		tStartDesc.vHitDir = pActionState->Get_HitNormal();
+		tStartDesc.vVicPos = pActionState->Get_VicPosition();
+
+
 		// 해당 hit collision을 체크 할 거고 : state 권한
 		// 해당 hit가 들어왔다면 : action state에서 처리 -> 아님 플레이어?
-		if (Engine_Utils::Has_Flag(m_FCollisions, COLLISIONFLAGS::C_Addtive) &&
-			Engine_Utils::Has_Flag(fAttackFlag, CPlayerActionState::AttackFlag::AF_Addtive))
-		{
-			Change_PlayerHitState(ENUM_TO_UINT(CPlayer::State::HITADDTIVE));
-			return true;
-		}
-
+		
 		if (Engine_Utils::Has_Flag(m_FCollisions, COLLISIONFLAGS::C_Fly) &&
 			Engine_Utils::Has_Flag(fAttackFlag, CPlayerActionState::AttackFlag::AF_Fly))
 		{
-			Change_PlayerHitState(ENUM_TO_UINT(CPlayer::State::HITFLYSTART));
+			// 충돌 방향 desc 넘겨줌
+			Change_PlayerHitState(ENUM_TO_UINT(CPlayer::State::HITFLYSTART) ,&tStartDesc);
+
 			return true;
 		}
 
+		// strong은 이제 지면 충돌 검사 후 fly, strong 전환 
 		if (Engine_Utils::Has_Flag(m_FCollisions, COLLISIONFLAGS::C_Strong) &&
 			Engine_Utils::Has_Flag(fAttackFlag, CPlayerActionState::AttackFlag::AF_Strong))
 		{
 			// 충돌 방향 desc 넘겨줌
-			HITSTATE_START_DESC tStartDesc = {};
-			tStartDesc.vHitDir = pActionState->Get_HitNormal();
-			Change_PlayerHitState(ENUM_TO_UINT(CPlayer::State::HITSTRONG), &tStartDesc);
+			if (Check_OnGround(0.3f))
+			{
+				Change_PlayerHitState(ENUM_TO_UINT(CPlayer::State::HITSTRONG), &tStartDesc);
+			}
+
+			else
+			{
+				Change_PlayerHitState(ENUM_TO_UINT(CPlayer::State::HITFLYSTART), &tStartDesc);
+			}
+
+			return true;
+		}
+
+		if (Engine_Utils::Has_Flag(m_FCollisions, COLLISIONFLAGS::C_Addtive) &&
+			Engine_Utils::Has_Flag(fAttackFlag, CPlayerActionState::AttackFlag::AF_Addtive))
+		{
+			Change_PlayerHitState(ENUM_TO_UINT(CPlayer::State::HITADDTIVE));
 			return true;
 		}
 	}

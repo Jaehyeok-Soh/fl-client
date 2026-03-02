@@ -131,6 +131,7 @@ HRESULT CPlayer::Awake(const _uint iCurrentLevelID)
 void CPlayer::Update_Priority(const _float fTimeDelta)
 {
     Count_DoubleJump(fTimeDelta);
+
     Super::Update_Priority(fTimeDelta);
 }
 
@@ -312,9 +313,11 @@ void CPlayer::End_Attack(State iState)
 {
     switch (iState)
     {
+        // combo timer Ω√¿€
     case State::COMBO:
-    case State::CHARGE:
     case State::JUMPATTEND:
+        static_cast<CStatCom_Player*>(Get_Component<CMyStat>())->Set_Timer(CStatCom_Player::TIMER_TYPE::COMBO, true);
+    case State::CHARGE:
         static_cast<CStatCom_Player*>(Get_Component<CMyStat>())->Set_AttackState(CStatCom_Player::Attack_State::Melee, false);
         break;
 

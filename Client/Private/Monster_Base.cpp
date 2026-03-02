@@ -188,7 +188,7 @@ _bool CMonster_Base::On_Hit(const HIT_DESC& hitDesc)
 	auto myStat = Get_Component<CMyStat>();
 	if (myStat)
 	{
-		myStat->Add_Health(-hitDesc.attackDesc.pAttackPreset->tCombat.fBaseDamage);
+		myStat->Add_Health(-hitDesc.fFinalDamage);
 
 		auto vHp = myStat->Get_Stat_Vec2(CMyStat::STAT_TYPE::HP);
 		if (vHp.x <= 0)
@@ -310,6 +310,15 @@ HRESULT CMonster_Base::Ready_CCT(void* pArgs)
 	}
 
 	return S_OK;
+}
+
+void CMonster_Base::SetSpawnPos(CTransform::TRANSFORM_DESC tTransformDesc)
+{
+	Matrix matWorld = tTransformDesc.ScaleMatrix * tTransformDesc.RotationMatrix * tTransformDesc.TranslationMatrix;
+
+	Get_Component<CTransform>()->Set_WorldMatrix(matWorld);
+
+	Get_Component<CPhysicsCCT>()->SetFootPosition(matWorld.Translation());
 }
 
 HRESULT CMonster_Base::Create_Mosnter(EMonster_Type eCreateMonsterType, _uint iFindPrototypeLevelType, _uint iAddLevelType, CTransform::TRANSFORM_DESC* pTransformDesc)

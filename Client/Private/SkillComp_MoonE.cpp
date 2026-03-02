@@ -40,9 +40,9 @@ HRESULT CSkillComp_MoonE::Initialize(void* pArg)
 	return S_OK;
 }
 
-void CSkillComp_MoonE::Update(const _float fTimeDelta)
+void CSkillComp_MoonE::Update(const _float fTimeDelta, CMyStat* pStatCom)
 {
-	Super::Update(fTimeDelta);
+	Super::Update(fTimeDelta, pStatCom);
 }
 
 _bool CSkillComp_MoonE::Start_Skill(CMyStat* pStatCom)
@@ -50,7 +50,7 @@ _bool CSkillComp_MoonE::Start_Skill(CMyStat* pStatCom)
 	if (Super::Start_Skill(pStatCom))
 	{
 		static_cast<CStatCom_Player*>(pStatCom)->Set_AttackState(CStatCom_Player::Attack_State::E, true);
-
+		static_cast<CStatCom_Player*>(pStatCom)->Set_Critical_AddRate(1.f);
 		// 충돌체 2개 발사
 
 		return true;
@@ -65,13 +65,18 @@ void CSkillComp_MoonE::End_Skill(CMyStat* pStatCom)
 	Super::End_Skill(pStatCom);
 
 	static_cast<CStatCom_Player*>(pStatCom)->Set_AttackState(CStatCom_Player::Attack_State::E, false);
-
+	static_cast<CStatCom_Player*>(pStatCom)->Set_Critical_AddRate(0.f);
 	// 충돌체 회수
 }
 
 _bool CSkillComp_MoonE::On_Collision(const _float fTimeDelta, CGameObject* pObj)
 {
 	return false;
+}
+
+void CSkillComp_MoonE::Set_ExtraAttack_Desc(EXTRA_ATTACK_DESC& tStat_ExtraDesc, CMyStat* pOwnerStat)
+{
+	static_cast<CStatCom_Player*>(pOwnerStat)->Set_Critical_AddRate(1.f);
 }
 
 void CSkillComp_MoonE::Update_Skill(const _float fTimeDelta)
