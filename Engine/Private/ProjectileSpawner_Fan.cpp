@@ -11,7 +11,6 @@ CProjectileSpawner_Fan::CProjectileSpawner_Fan(ID3D11Device* pDevice, ID3D11Devi
 
 CProjectileSpawner_Fan::CProjectileSpawner_Fan(const CProjectileSpawner_Fan& rhs)
 	: Super(rhs)
-	, m_desc(rhs.m_desc)
 {
 }
 
@@ -29,20 +28,21 @@ HRESULT CProjectileSpawner_Fan::Initialize(void* pArg)
 		return E_FAIL;
 
     PR_SPAWNER_FAN_DESC* pDesc = static_cast<PR_SPAWNER_FAN_DESC*>(pArg);
-    m_desc = *pDesc;
+    m_iCount = pDesc->iCount;
+    m_fSpreadDeg = pDesc->fSpreadDeg;
 
 	return S_OK;
 }
 
 void CProjectileSpawner_Fan::Emit_One(_uint i, const Vec3& vFoward, const Vec3& vUp)
 {
-    const _uint iCount = (std::max)(1u, m_desc.iCount);
+    const _uint iCount = (std::max)(1u, m_iCount);
     Vec3 vDir = vFoward;
 
     if (iCount > 1)
     {
-        const _float fA0 = -m_desc.fSpreadDeg * 0.5f;
-        const _float fA1 = +m_desc.fSpreadDeg * 0.5f;
+        const _float fA0 = -m_fSpreadDeg * 0.5f;
+        const _float fA1 = +m_fSpreadDeg * 0.5f;
         const _float fT = (_float)i / (_float)(iCount - 1);
         const _float fYaw = XMConvertToRadians(std::lerp(fA0, fA1, fT));
 

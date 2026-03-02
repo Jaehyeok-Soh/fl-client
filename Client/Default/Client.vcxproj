@@ -321,6 +321,7 @@
     <ClInclude Include="..\public\Boss_Xibi_Body.h" />
     <ClInclude Include="..\public\Xibi_GimmikController.h" />
     <ClInclude Include="..\public\Xibi_Loop_Thunder.h" />
+    <ClInclude Include="..\public\Xibi_Oneshot_Thunder.h" />
     <ClInclude Include="..\public\Xibi_Projectile_Circle.h" />
     <ClInclude Include="Client.h" />
     <ClInclude Include="framework.h" />
@@ -512,6 +513,7 @@
     <ClCompile Include="..\private\Boss_Xibi_Body.cpp" />
     <ClCompile Include="..\private\Xibi_GimmikController.cpp" />
     <ClCompile Include="..\private\Xibi_Loop_Thunder.cpp" />
+    <ClCompile Include="..\private\Xibi_Oneshot_Thunder.cpp" />
     <ClCompile Include="..\private\Xibi_Projectile_Circle.cpp" />
     <ClCompile Include="..\Public\Physics_Terrain.cpp" />
     <ClCompile Include="Client.cpp" />

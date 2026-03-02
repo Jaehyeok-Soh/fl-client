@@ -580,6 +580,9 @@
     <Filter Include="03. GameObject\SkillObject\Boss\Xibi\LoopThunder">
       <UniqueIdentifier>{cf67d8c5-c358-43fa-83eb-0afde4338646}</UniqueIdentifier>
     </Filter>
+    <Filter Include="03. GameObject\SkillObject\Boss\Xibi\OneshotThunder">
+      <UniqueIdentifier>{8e02636f-76e4-4efd-97df-126215ef3e7c}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="targetver.h">
@@ -1078,6 +1081,9 @@
     <ClInclude Include="..\Public\BossControlContext.h">
       <Filter>05. Component\ControlContext</Filter>
     </ClInclude>
+    <ClInclude Include="..\public\Xibi_Oneshot_Thunder.h">
+      <Filter>03. GameObject\SkillObject\Boss\Xibi\OneshotThunder</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <Image Include="Client.ico">
@@ -1567,6 +1573,9 @@
     </ClCompile>
     <ClCompile Include="..\Private\BossControlContext.cpp">
       <Filter>05. Component\ControlContext</Filter>
+    </ClCompile>
+    <ClCompile Include="..\private\Xibi_Oneshot_Thunder.cpp">
+      <Filter>03. GameObject\SkillObject\Boss\Xibi\OneshotThunder</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

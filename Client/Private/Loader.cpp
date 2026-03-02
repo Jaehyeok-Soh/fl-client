@@ -66,8 +66,11 @@
 //=================
 #include "SingleSkillSpawner.h"
 #include "ProjectileSpawner_Fan.h"
+#include "SkillObjectSpawner_RandomXZ.h"
+#include "ProjectileSpawner_Radial360.h"
 #include "Xibi_Projectile_Circle.h"
 #include "Xibi_Loop_Thunder.h"
+#include "Xibi_Oneshot_Thunder.h"
 
 
 //=================
@@ -609,6 +612,7 @@ HRESULT CLoader::Loading_For_Logo()
 		// Projectile
 		ADD_PROTOTYPE(ELevelType::TEST, g_wszXibiProjectile_Prototype_Tag,				CXibi_Projectile_Circle::Create(m_pDevice, m_pDeviceContext));
 		ADD_PROTOTYPE(ELevelType::TEST, g_wszXibiLoopThunder_Prototype_Tag,				CXibi_Loop_Thunder::Create(m_pDevice, m_pDeviceContext));
+		ADD_PROTOTYPE(ELevelType::TEST, g_wszXibiOneshotThunder_Prototype_Tag,			CXibi_Oneshot_Thunder::Create(m_pDevice, m_pDeviceContext));
 
 #pragma region Map Object
 		/* Map Object */
@@ -900,33 +904,75 @@ HRESULT CLoader::Ready_EffectEvent()
 
 HRESULT CLoader::Ready_Spawner()
 {
-	/* Xibi */
-	{
-		CSingleSkillSpawner::SPAWNER_ORIGIN_DESC desc{};
-		desc.iPoolLevelIndex = ENUM_TO_UINT(ELevelType::TEST);
-		desc.wstrSkillPoolTag = g_wszPool_XibiCircleProjectile;
-		desc.iSkillObjectFlags =
-			ENUM_TO_UINT(ESkillObjectFlag::Move_Straight) |
-			ENUM_TO_UINT(ESkillObjectFlag::Life_Timer) |
-			ENUM_TO_UINT(ESkillObjectFlag::Life_Distance) |
-			ENUM_TO_UINT(ESkillObjectFlag::Hit_Single);
-		if (FAILED(m_pGameInstance->Add_Prototype(ENUM_TO_UINT(ELevelType::TEST), g_wszSpawner_XibiCircleProjectile, CSingleSkillSpawner::Create(m_pDevice, m_pDeviceContext, &desc))))
-			return E_FAIL;
-	}
-	/* Xibi 3way Thunder */
-	{
-		CProjectileSpawner_Fan::SPAWNER_ORIGIN_DESC desc{};
-		desc.iPoolLevelIndex = ENUM_TO_UINT(ELevelType::TEST);
-		desc.wstrSkillPoolTag = g_wszPool_XibiLoopThunder;
-		desc.iSkillObjectFlags =
-			ENUM_TO_UINT(ESkillObjectFlag::Move_Straight) |
-			ENUM_TO_UINT(ESkillObjectFlag::Life_Timer) |
-			ENUM_TO_UINT(ESkillObjectFlag::Life_Distance) |
-			ENUM_TO_UINT(ESkillObjectFlag::Hit_Single);
-		if (FAILED(m_pGameInstance->Add_Prototype(ENUM_TO_UINT(ELevelType::TEST), g_wszSpawner_Xibi3wayLoopThunder, CProjectileSpawner_Fan::Create(m_pDevice, m_pDeviceContext, &desc))))
-			return E_FAIL;
-	}
+	//CSingleSkillSpawner* m_pOneshotThunderSpawner{ nullptr };
+	//CSkillObjectSpawner_RandomXZ* m_pRandomThunderSpawner{ nullptr };
+	//CProjectileSpawner_Fan* m_p3wayThunderSpawner{ nullptr };
+	//CProjectileSpawner_Radial360* m_p360CircleSpawner{ nullptr };
+	//CProjectileSpawner_Radial360* m_p360ThunderSpawner{ nullptr };
+	_uint iLevelID = ENUM_TO_UINT(ELevelType::TEST);
 
+	/* Xibi */
+	// SingleSkill
+	{
+		CSingleSkillSpawner::SPAWNER_ORIGIN_DESC originDesc{};
+		originDesc.iPoolLevelIndex = iLevelID;
+		originDesc.wstrSkillPoolTag = g_wszPool_XibiOneshotThunder;
+		originDesc.iSkillObjectFlags = ENUM_TO_UINT(ESkillObjectFlag::Life_Timer);
+		originDesc.fLifeTime = 0.5f;
+		originDesc.fStartDelay = 0.1f;
+		if (FAILED(m_pGameInstance->Add_Prototype(iLevelID, g_wszSpawner_XibiOneshotSingleThunder,
+			CSingleSkillSpawner::Create(m_pDevice, m_pDeviceContext, &originDesc))))
+			return E_FAIL;
+	}
+	// RandomXZ 
+	{
+		CSkillObjectSpawner_RandomXZ::SPAWNER_ORIGIN_DESC originDesc{};
+		originDesc.iPoolLevelIndex = iLevelID;
+		originDesc.wstrSkillPoolTag = g_wszPool_XibiOneshotThunder;
+		originDesc.iSkillObjectFlags = ENUM_TO_UINT(ESkillObjectFlag::Life_Timer);
+		originDesc.fLifeTime = 0.5f;
+		originDesc.fInterval = 0.1f;
+		if (FAILED(m_pGameInstance->Add_Prototype(iLevelID, g_wszSpawner_XibiOneshotRandomThunder,
+			CSkillObjectSpawner_RandomXZ::Create(m_pDevice, m_pDeviceContext, &originDesc))))
+			return E_FAIL;
+	}
+	// 360Circle
+	{
+		CProjectileSpawner_Radial360::SPAWNER_ORIGIN_DESC desc{};
+		desc.iPoolLevelIndex = iLevelID;
+		desc.wstrSkillPoolTag = g_wszPool_XibiCircleProjectile;
+		desc.fLifeTime = 5.f;
+		desc.fInterval = 0.05f;
+		desc.iSkillObjectFlags = ENUM_TO_UINT(ESkillObjectFlag::Move_Straight) | ENUM_TO_UINT(ESkillObjectFlag::Life_Timer);
+		if (FAILED(m_pGameInstance->Add_Prototype(ENUM_TO_UINT(ELevelType::TEST), g_wszSpawner_Xibi360CircleProjectile,
+			CProjectileSpawner_Radial360::Create(m_pDevice, m_pDeviceContext, &desc))))
+			return E_FAIL;
+	}
+	// 360Thunder
+	{
+		CProjectileSpawner_Radial360::SPAWNER_ORIGIN_DESC desc{};
+		desc.iPoolLevelIndex = iLevelID;
+		desc.wstrSkillPoolTag = g_wszPool_XibiLoopThunder;
+		desc.iSkillObjectFlags = ENUM_TO_UINT(ESkillObjectFlag::Move_Straight) | ENUM_TO_UINT(ESkillObjectFlag::Life_Timer);
+		desc.fLifeTime = 7.f;
+		desc.fInterval = 0.03f;
+
+		if (FAILED(m_pGameInstance->Add_Prototype(iLevelID, g_wszSpawner_Xibi360ThunderProjectile,
+			CProjectileSpawner_Radial360::Create(m_pDevice, m_pDeviceContext, &desc))))
+			return E_FAIL;
+	}
+	// 3wayThunder
+	{
+		CProjectileSpawner_Radial360::SPAWNER_ORIGIN_DESC desc{};
+		desc.iPoolLevelIndex = iLevelID;
+		desc.wstrSkillPoolTag = g_wszPool_XibiLoopThunder;
+		desc.iSkillObjectFlags = ENUM_TO_UINT(ESkillObjectFlag::Move_Straight) | ENUM_TO_UINT(ESkillObjectFlag::Life_Timer);
+		desc.fLifeTime = 7.f;
+
+		if (FAILED(m_pGameInstance->Add_Prototype(iLevelID, g_wszSpawner_Xibi3wayLoopThunder,
+			CProjectileSpawner_Fan::Create(m_pDevice, m_pDeviceContext, &desc))))
+			return E_FAIL;
+	}
 	return S_OK;
 }
 

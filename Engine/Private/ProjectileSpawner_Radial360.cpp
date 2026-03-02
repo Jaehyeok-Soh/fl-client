@@ -10,7 +10,6 @@ CProjectileSpawner_Radial360::CProjectileSpawner_Radial360(ID3D11Device* pDevice
 
 CProjectileSpawner_Radial360::CProjectileSpawner_Radial360(const CProjectileSpawner_Radial360& rhs)
     : Super(rhs)
-    , m_desc(rhs.m_desc)
 {
 
 }
@@ -29,14 +28,14 @@ HRESULT CProjectileSpawner_Radial360::Initialize(void *pArg)
         return E_FAIL;
 
     PR_SPAWNER_RADIAL_DESC* pDesc = static_cast<PR_SPAWNER_RADIAL_DESC*>(pArg);
-    m_desc = *pDesc;
+    m_iCount = pDesc->iCount;
 
     return S_OK;
 }
 
 void CProjectileSpawner_Radial360::Emit_One(_uint i, const Vec3& vFoward, const Vec3& vUp)
 {
-    const _uint iCount = (std::max)(1u, m_desc.iCount);
+    const _uint iCount = (std::max)(1u, m_iCount);
     const _float fYaw = XMConvertToRadians(360.f * ((_float)i / (_float)iCount));
 
     Matrix matResult = Matrix::CreateFromAxisAngle(vUp, fYaw);
