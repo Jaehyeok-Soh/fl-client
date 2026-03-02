@@ -55,6 +55,37 @@ void CPlayerActionState::Set_HitDesc(const HIT_DESC& tHit)
     switch (eCategory)
     {
     case DTO::EAttackPresetCategory::MonsterBasic:
+        /* EHitType으로 분기 처리*/
+    {
+        switch (tHit.attackDesc.pAttackPreset->tCombat.eHitType)
+        {
+        case DTO::EHitType::Light:
+            m_fAttackFlag |= AF_Addtive;
+            break;
+
+        case DTO::EHitType::Heavy:
+            m_fAttackFlag |= AF_Fly;
+            break;
+        }
+    }
+        break;
+
+    case DTO::EAttackPresetCategory::MonsterSkill:
+    {
+        switch (tHit.attackDesc.pAttackPreset->tCombat.eHitType)
+        {
+        case DTO::EHitType::Light:
+            m_fAttackFlag |= AF_Addtive;
+            break;
+
+        case DTO::EHitType::Heavy:
+            m_fAttackFlag |= AF_Fly;
+            break;
+        }
+    }
+    break;
+
+        // boss쪽도 알아야함
     case DTO::EAttackPresetCategory::BossBasic:
         m_fAttackFlag |= AF_Addtive;
         break;
