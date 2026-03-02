@@ -355,6 +355,7 @@ namespace Client
 	}
 
 	enum class ETriggerEventType { HOVER_ENTER, HOVER_EXIT, PRESS_ENTER, PRESS_EXIT, END };
+
 	enum class EUIFlip
 	{
 		NONE = 0,
@@ -405,7 +406,7 @@ namespace Client
 		UI_DAMAGEFONT_PREFAB_DATA DamageFontData = {};
 	}UI_PREFAB_DATA;
 
-
+	enum class ECombotype {C, B, A, S, END};
 #pragma endregion
 
 #pragma region SKILL

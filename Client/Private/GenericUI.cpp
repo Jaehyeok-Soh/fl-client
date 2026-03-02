@@ -36,23 +36,24 @@ HRESULT CGenericUI::Initialize_Prototype()
 HRESULT CGenericUI::Initialize(void* pArg)
 {
 	GENERIC_UI_DESC* pDesc = static_cast<GENERIC_UI_DESC*>(pArg);
-	m_strName				= pDesc->strName;
-	m_iLevelID				= pDesc->iLevelIndex;
-	m_eRectTransformType	= static_cast<ERectTransform>(pDesc->iRectTransformType);
-	m_wstrTextureTag		= pDesc->wstrTextureTag;
-	m_wstrNoiseTextureTag	= pDesc->wstrNoiseTextureTag;
-	m_wstrAlphaMaskTextureTag= pDesc->wstrAlphaMaskTextureTag;
-	m_iTextureIndex			= pDesc->iTextureIndex;
-	m_iComponentFlag		= pDesc->iComponentFlag;
-	m_pParentCanvasCache	= pDesc->pCanvasCache;
-	m_isUseColorTint		= pDesc->isUseColorTint;
-	m_vColorTint			= pDesc->vColorTint;
-	m_vGradiantColorTint	= pDesc->vGradiantColorTint;
-	m_iShaderPass			= pDesc->iShaderPass;
-	m_iFillDir				= pDesc->iFillDir;
-	m_fDelay				= pDesc->fDelay;
-	m_fAlpha_Ratio			= pDesc->fAlpha;
-	m_iFlip					= pDesc->iFlip;
+	m_strName					= pDesc->strName;
+	m_iLevelID					= pDesc->iLevelIndex;
+	m_eRectTransformType		= static_cast<ERectTransform>(pDesc->iRectTransformType);
+	m_wstrTextureTag			= pDesc->wstrTextureTag;
+	m_wstrNoiseTextureTag		= pDesc->wstrNoiseTextureTag;
+	m_wstrAlphaMaskTextureTag	= pDesc->wstrAlphaMaskTextureTag;
+	m_wstrGlowTextureTag		= pDesc->wstrGlowTextureTag;
+	m_iTextureIndex				= pDesc->iTextureIndex;
+	m_iComponentFlag			= pDesc->iComponentFlag;
+	m_pParentCanvasCache		= pDesc->pCanvasCache;
+	m_isUseColorTint			= pDesc->isUseColorTint;
+	m_vColorTint				= pDesc->vColorTint;
+	m_vGradiantColorTint		= pDesc->vGradiantColorTint;
+	m_iShaderPass				= pDesc->iShaderPass;
+	m_iFillDir					= pDesc->iFillDir;
+	m_fDelay					= pDesc->fDelay;
+	m_fAlpha_Ratio				= pDesc->fAlpha;
+	m_iFlip						= pDesc->iFlip;
 
 	if (FAILED(Super::Initialize(pArg)))
 		return E_FAIL;
@@ -79,6 +80,11 @@ HRESULT CGenericUI::Awake(const _uint iCurrentLevelID)
 	if (m_wstrAlphaMaskTextureTag != L"")
 	{
 		if (FAILED(Get_Component<CTexture>()->Add_DefaultTexture(m_wstrAlphaMaskTextureTag, ALPHA_MASK)))
+			return E_FAIL;
+	}
+	if (m_wstrGlowTextureTag != L"")
+	{
+		if (FAILED(Get_Component<CTexture>()->Add_DefaultTexture(m_wstrGlowTextureTag, GLOW)))
 			return E_FAIL;
 	}
 
@@ -238,13 +244,13 @@ void CGenericUI::Ready_ExplosionFade(const _float fDuration, const _float fStart
 
 void CGenericUI::Ready_LerpChange(const _float fDuration, const _float fStartAlpha, const _float fTargetAlpha, const _float fEaseValue, const _float fDelay)
 {
-	m_fFadeTimeAcc = 0.f;
-	m_fFadeDelayTimeAcc = 0.f;
-	m_fFadeDelay = fDelay;
-	m_fFadeDuration = fDuration;
-	m_fStartAlphaRatio = fStartAlpha;
-	m_fTargetAlphaRatio = fTargetAlpha;
-	m_fEaseValue = fEaseValue;
+	m_fFadeTimeAcc_LerpChange = 0.f;
+	m_fFadeDelayTimeAcc_LerpChange = 0.f;
+	m_fFadeDelay_LerpChange = fDelay;
+	m_fFadeDuration_LerpChange = fDuration;
+	m_fStartAlphaRatio_LerpChange = fStartAlpha;
+	m_fTargetAlphaRatio_LerpChange = fTargetAlpha;
+	m_fEaseValue_LerpChange = fEaseValue;
 }
 
 _bool CGenericUI::Tick_Lerp_Movement(const _float fTimeDelta)
@@ -296,24 +302,24 @@ _bool CGenericUI::Tick_Fade(const _float fTimeDelta)
 
 _bool CGenericUI::Tick_LerpChange(_float* p, const _float fTimeDelta)
 {
-	m_fFadeDelayTimeAcc += fTimeDelta;
-	if (m_fFadeDelayTimeAcc < m_fFadeDelay)
+	m_fFadeDelayTimeAcc_LerpChange += fTimeDelta;
+	if (m_fFadeDelayTimeAcc_LerpChange < m_fFadeDelay_LerpChange)
 		return false;
 
-	m_fFadeTimeAcc += fTimeDelta;
+	m_fFadeTimeAcc_LerpChange += fTimeDelta;
 
-	_float t = m_fFadeTimeAcc / m_fFadeDuration;
+	_float t = m_fFadeTimeAcc_LerpChange / m_fFadeDuration_LerpChange;
 	if (t >= 1.f)
 	{
-		*p = m_fTargetAlphaRatio;
+		*p = m_fTargetAlphaRatio_LerpChange;
 		return true;
 	}
 
 	_float eased = t;
-	if (m_fEaseValue > 0.f)
-		eased = powf(t, m_fEaseValue);
+	if (m_fEaseValue_LerpChange > 0.f)
+		eased = powf(t, m_fEaseValue_LerpChange);
 
-	_float f = m_fStartAlphaRatio + (m_fTargetAlphaRatio - m_fStartAlphaRatio) * eased;
+	_float f = m_fStartAlphaRatio_LerpChange + (m_fTargetAlphaRatio_LerpChange - m_fStartAlphaRatio_LerpChange) * eased;
 	*p = f;
 	return false;
 }

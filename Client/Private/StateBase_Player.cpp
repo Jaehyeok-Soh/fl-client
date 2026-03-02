@@ -208,6 +208,7 @@ _bool CStateBase_Player::Check_DashKey(const _float fTimeDelta)
 	if (Has_ChangeState(STATEKEY::SHIFT) &&
 		Key_Input(ENUM_TO_UINT(CControlContext::CONTROL_KEY::DASH)))
 	{
+		// 이벤트 호출 
 		Change_PlayerState(STATEKEY::SHIFT);
 		return true;
 	}
@@ -301,6 +302,7 @@ _bool CStateBase_Player::Check_SkillKey(const _float fTimeDelta)
 		Key_Input(ENUM_TO_UINT(CControlContext::CONTROL_KEY::SKILL1)) &&
 		static_cast<CPlayer*>(Get_OwnerObject())->Start_Attack(CPlayer::State::SKILL1))
 	{
+		// 이벤트 호출
 		Change_PlayerState(STATEKEY::E);
 		return true;
 	}
@@ -309,6 +311,7 @@ _bool CStateBase_Player::Check_SkillKey(const _float fTimeDelta)
 		Key_Input(ENUM_TO_UINT(CControlContext::CONTROL_KEY::SKILL2)) &&
 		static_cast<CPlayer*>(Get_OwnerObject())->Start_Attack(CPlayer::State::SKILL2))
 	{
+		// 이벤트 호출 
 		Change_PlayerState(STATEKEY::Q);
 		return true;
 	}

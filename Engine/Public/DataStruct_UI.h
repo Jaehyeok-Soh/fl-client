@@ -264,6 +264,12 @@ NLOHMANN_JSON_SERIALIZE_ENUM(EUISubClassType,
 	BOSS_STAT_TEXT_NICKNAME,
 	BOSS_STAT_TEXT_END,
 
+	BATTLE_COMBO_TEXT_BEGIN,
+	BATTLE_COMBO_COMBO_TEXT,
+	BATTLE_COMBO_CUR_COUNT_TEXT,
+	BATTLE_COMBO_NEXT_COUNT_TEXT,
+	BATTLE_COMBO_TEXT_END,
+
 	END
 };
 
@@ -323,6 +329,12 @@ NLOHMANN_JSON_SERIALIZE_ENUM(EUITextSubClassType,
 		{ EUITextSubClassType::BOSS_STAT_TEXT_LV,			  		"BOSS_STAT_TEXT_LV" },
 		{ EUITextSubClassType::BOSS_STAT_TEXT_NICKNAME,			  	"BOSS_STAT_TEXT_NICKNAME" },
 		{ EUITextSubClassType::BOSS_STAT_TEXT_END,			  		"BOSS_STAT_TEXT_END" },
+
+		{ EUITextSubClassType::BATTLE_COMBO_TEXT_BEGIN,			  	"BATTLE_COMBO_TEXT_BEGIN" },
+		{ EUITextSubClassType::BATTLE_COMBO_COMBO_TEXT,			  	"BATTLE_COMBO_COMBO_TEXT" },
+		{ EUITextSubClassType::BATTLE_COMBO_CUR_COUNT_TEXT,			"BATTLE_COMBO_CUR_COUNT_TEXT" },
+		{ EUITextSubClassType::BATTLE_COMBO_NEXT_COUNT_TEXT,		"BATTLE_COMBO_NEXT_COUNT_TEXT" },
+		{ EUITextSubClassType::BATTLE_COMBO_TEXT_END,			  	"BATTLE_COMBO_TEXT_END" },
 	  
 
 		{ EUITextSubClassType::END,									"END" },
@@ -382,6 +394,12 @@ NLOHMANN_JSON_SERIALIZE_ENUM(EUITextSubClassType,
 	else if (str == "BOSS_STAT_TEXT_LV")						return EUITextSubClassType::BOSS_STAT_TEXT_LV;
 	else if (str == "BOSS_STAT_TEXT_NICKNAME")					return EUITextSubClassType::BOSS_STAT_TEXT_NICKNAME;
 	else if (str == "BOSS_STAT_TEXT_END")						return EUITextSubClassType::BOSS_STAT_TEXT_END;
+
+	else if (str == "BATTLE_COMBO_TEXT_BEGIN")					return EUITextSubClassType::BATTLE_COMBO_TEXT_BEGIN;
+	else if (str == "BATTLE_COMBO_COMBO_TEXT")					return EUITextSubClassType::BATTLE_COMBO_COMBO_TEXT;
+	else if (str == "BATTLE_COMBO_CUR_COUNT_TEXT")				return EUITextSubClassType::BATTLE_COMBO_CUR_COUNT_TEXT;
+	else if (str == "BATTLE_COMBO_NEXT_COUNT_TEXT")				return EUITextSubClassType::BATTLE_COMBO_NEXT_COUNT_TEXT;
+	else if (str == "BATTLE_COMBO_TEXT_END")					return EUITextSubClassType::BATTLE_COMBO_TEXT_END;
 	
 	else if (str == "END")										return EUITextSubClassType::END;
 
@@ -445,6 +463,12 @@ inline std::string UITextSubClassTypeToString(EUITextSubClassType e)
 	case EUITextSubClassType::BOSS_STAT_TEXT_LV:					return "BOSS_STAT_TEXT_LV";
 	case EUITextSubClassType::BOSS_STAT_TEXT_NICKNAME:				return "BOSS_STAT_TEXT_NICKNAME";
 	case EUITextSubClassType::BOSS_STAT_TEXT_END:					return "BOSS_STAT_TEXT_END";
+
+	case EUITextSubClassType::BATTLE_COMBO_TEXT_BEGIN:				return "BATTLE_COMBO_TEXT_BEGIN";
+	case EUITextSubClassType::BATTLE_COMBO_COMBO_TEXT:				return "BATTLE_COMBO_COMBO_TEXT";
+	case EUITextSubClassType::BATTLE_COMBO_CUR_COUNT_TEXT:			return "BATTLE_COMBO_CUR_COUNT_TEXT";
+	case EUITextSubClassType::BATTLE_COMBO_NEXT_COUNT_TEXT:			return "BATTLE_COMBO_NEXT_COUNT_TEXT";
+	case EUITextSubClassType::BATTLE_COMBO_TEXT_END:				return "BATTLE_COMBO_TEXT_END";
 	
 	default:														return "END";
 	}
@@ -595,7 +619,11 @@ enum class EUIDImageSubClassType
 	BOSS_STAT_END,
 
 	// ÄÞº¸ 
-	BATTLE_COMBO,
+	BATTLE_COMBO_BEGIN,
+	BATTLE_COMBO_RANK,
+	BATTLE_COMBO_BG,
+	BATTLE_COMBO_BG_GLOW,
+	BATTLE_COMBO_END,
 
 	END
 };
@@ -660,6 +688,12 @@ NLOHMANN_JSON_SERIALIZE_ENUM(EUIDImageSubClassType,
 	{ EUIDImageSubClassType::BOSS_STAT_BG,						"BOSS_STAT_BG" },
 	{ EUIDImageSubClassType::BOSS_STAT_END,						"BOSS_STAT_END" },
 
+	{ EUIDImageSubClassType::BATTLE_COMBO_BEGIN,				"BATTLE_COMBO_BEGIN" },
+	{ EUIDImageSubClassType::BATTLE_COMBO_RANK,					"BATTLE_COMBO_RANK" },
+	{ EUIDImageSubClassType::BATTLE_COMBO_BG,					"BATTLE_COMBO_BG" },
+	{ EUIDImageSubClassType::BATTLE_COMBO_BG_GLOW,					"BATTLE_COMBO_BG_GLOW" },
+	{ EUIDImageSubClassType::BATTLE_COMBO_END,					"BATTLE_COMBO_END" },
+
 	{ EUIDImageSubClassType::END,								"END" }
 	})
 
@@ -722,6 +756,12 @@ NLOHMANN_JSON_SERIALIZE_ENUM(EUIDImageSubClassType,
 	if (str == "BOSS_STAT_BEGIN")						return EUIDImageSubClassType::BOSS_STAT_BEGIN;
 	if (str == "BOSS_STAT_BG")							return EUIDImageSubClassType::BOSS_STAT_BG;
 	if (str == "BOSS_STAT_END")							return EUIDImageSubClassType::BOSS_STAT_END;
+
+	if (str == "BATTLE_COMBO_BEGIN")					return EUIDImageSubClassType::BATTLE_COMBO_BEGIN;
+	if (str == "BATTLE_COMBO_RANK")						return EUIDImageSubClassType::BATTLE_COMBO_RANK;
+	if (str == "BATTLE_COMBO_BG")						return EUIDImageSubClassType::BATTLE_COMBO_BG;
+	if (str == "BATTLE_COMBO_BG_GLOW")						return EUIDImageSubClassType::BATTLE_COMBO_BG_GLOW;
+	if (str == "BATTLE_COMBO_END")						return EUIDImageSubClassType::BATTLE_COMBO_END;
 
 	if (str == "END")									return EUIDImageSubClassType::END;
 	return EUIDImageSubClassType::NONE_OWNER;
@@ -788,6 +828,12 @@ inline const char* UIDImageSubTypeToString(EUIDImageSubClassType type)
 	case EUIDImageSubClassType::BOSS_STAT_BEGIN:					return "BOSS_STAT_BEGIN";
 	case EUIDImageSubClassType::BOSS_STAT_BG:						return "BOSS_STAT_BG";
 	case EUIDImageSubClassType::BOSS_STAT_END:						return "BOSS_STAT_END";
+
+	case EUIDImageSubClassType::BATTLE_COMBO_BEGIN:					return "BATTLE_COMBO_BEGIN";
+	case EUIDImageSubClassType::BATTLE_COMBO_RANK:					return "BATTLE_COMBO_RANK";
+	case EUIDImageSubClassType::BATTLE_COMBO_BG:					return "BATTLE_COMBO_BG";
+	case EUIDImageSubClassType::BATTLE_COMBO_BG_GLOW:					return "BATTLE_COMBO_BG_GLOW";
+	case EUIDImageSubClassType::BATTLE_COMBO_END:					return "BATTLE_COMBO_END";
 
 	case EUIDImageSubClassType::END:								return "END";
 	default:														return "NONE_OWNER";
@@ -979,6 +1025,7 @@ struct TUI_GenericUIData
 	_float			fAlphaRatio;
 	_string			strNoiseTextureTag;
 	_string			strAlphaMaskTextureTag;
+	_string			strGlowTextureTag;
 };
 
 struct TUI_CanvasData

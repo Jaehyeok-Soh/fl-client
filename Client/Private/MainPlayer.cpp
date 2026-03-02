@@ -308,9 +308,6 @@ void CMainPlayer::Try_Attack(const HIT_DESC& hitDesc)
     }
     // 크리티컬 데미지 폰트
     {
-        for (int i = 0; i < 3; ++i)
-        {
-
         UI_PREFAB_DATA tPrefabData = {};
         tPrefabData.DamageFontData.iDamage = 1000 + m_pGameInstance->Rand_Int(-100, 100);
         tPrefabData.DamageFontData.vFontColor = Vec4{ 1.f, 0.f, 0.f, 1.f };
@@ -321,7 +318,6 @@ void CMainPlayer::Try_Attack(const HIT_DESC& hitDesc)
             m_pGameInstance->Rand_Float(-1.f, 1.f) };
         CUI_Manager::GetInstance()->Request_Add_Prefab(
             m_pGameInstance->Get_CurrentLevelIndex(), EUIPrefabType::DAMAGE_FONTS_CRITICAL, m_pGameInstance->Get_CurrentLevelIndex(), &tPrefabData);
-        }
     }
 
 #endif // _DEBUG

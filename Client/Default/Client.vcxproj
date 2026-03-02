@@ -287,6 +287,8 @@
     <ClInclude Include="..\Public\UIBossStat_Progress.h" />
     <ClInclude Include="..\Public\UIBossStat_Text.h" />
     <ClInclude Include="..\Public\UIButton_Trigger.h" />
+    <ClInclude Include="..\Public\UICombo_Image.h" />
+    <ClInclude Include="..\Public\UICombo_Text.h" />
     <ClInclude Include="..\Public\UICommon_Trigger.h" />
     <ClInclude Include="..\Public\UIDamageFont_Text.h" />
     <ClInclude Include="..\Public\UIDynamic_Image.h" />
@@ -474,6 +476,8 @@
     <ClCompile Include="..\Private\UIBossStat_Progress.cpp" />
     <ClCompile Include="..\Private\UIBossStat_Text.cpp" />
     <ClCompile Include="..\Private\UIButton_Trigger.cpp" />
+    <ClCompile Include="..\Private\UICombo_Image.cpp" />
+    <ClCompile Include="..\Private\UICombo_Text.cpp" />
     <ClCompile Include="..\Private\UICommon_Trigger.cpp" />
     <ClCompile Include="..\Private\UIDamageFont_Text.cpp" />
     <ClCompile Include="..\Private\UIDynamic_Image.cpp" />

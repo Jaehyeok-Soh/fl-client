@@ -17,6 +17,7 @@ public:
 		_wstring wstrTextureTag;
 		_wstring wstrNoiseTextureTag;
 		_wstring wstrAlphaMaskTextureTag;
+		_wstring wstrGlowTextureTag;
 		uint32_t iTextureIndex;
 		uint32_t iComponentFlag;
 		_bool isUseColorTint;
@@ -31,7 +32,7 @@ public:
 		CGameObject* pTarget = { nullptr };
 	}GENERIC_UI_DESC;
 
-	enum EUITextureSlot { DEFAULT, NOISE, ALPHA_MASK };
+	enum EUITextureSlot { DEFAULT, NOISE, ALPHA_MASK, GLOW };
 
 protected :
 	CGenericUI(ID3D11Device* pDevice, ID3D11DeviceContext* pDeviceContext);
@@ -84,6 +85,7 @@ protected:
 	_wstring m_wstrTextureTag			= {};
 	_wstring m_wstrNoiseTextureTag		= {};
 	_wstring m_wstrAlphaMaskTextureTag	= {};
+	_wstring m_wstrGlowTextureTag		= {};
 	uint32_t m_iTextureIndex			= {};
 	Vec3 m_vRectPos						= {};
 	Vec3 m_vRenderPos					= {};
@@ -124,6 +126,17 @@ protected:
 	_float m_fStartAlphaRatio			= {};
 	_float m_fTargetAlphaRatio			= {};
 	_float m_fExplosionAlphaRatio		= {};
+
+	_float m_fFadeTimeAcc_LerpChange = {};
+	_float m_fFadeDelayTimeAcc_LerpChange = {};
+	_float m_fFadeDelay_LerpChange = {};
+	_float m_fFadeDuration_LerpChange = {};
+	_float m_fStartAlphaRatio_LerpChange = {};
+	_float m_fTargetAlphaRatio_LerpChange = {};
+	_float m_fEaseValue_LerpChange = {};
+
+
+
 
 public:
 	virtual void Free()override;
