@@ -1,6 +1,7 @@
 #include "pch.h"
 #include "UIAimDot_Image.h"
 #include "Client_Defines.h"
+#include "Client_EventDefine.h"
 //=================
 // Component
 //=================
@@ -158,18 +159,24 @@ HRESULT CUIAimDot_Image::Awake(const _uint iCurrentLevelID)
 	case DTO::EUIDImageSubClassType::BATTLE_UI_BEGIN:
 		break;
 	case DTO::EUIDImageSubClassType::BATTLE_AIMDOT_COMMON:
+		m_pGameInstance->Subscribe<BOSS_STAGING_EVENT_START>([this]() { this->Set_Invisible(); });
+		m_pGameInstance->Subscribe<BOSS_STAGING_EVENT_END>([this]() { this->Set_Visible(); });
 		break;
 	case DTO::EUIDImageSubClassType::BATTLE_AIMDOT_CROSSHAIR_TOP:
 		m_vMaxOffset = Vec2{ 0.f, -10.f };
+		m_pGameInstance->Subscribe<BOSS_STAGING_EVENT_START>([this]() { this->Set_Invisible(); });
 		break;
 	case DTO::EUIDImageSubClassType::BATTLE_AIMDOT_CROSSHAIR_RIGHT:
 		m_vMaxOffset = Vec2{ 10.f, 0.f };
+		m_pGameInstance->Subscribe<BOSS_STAGING_EVENT_START>([this]() { this->Set_Invisible(); });
 		break;
 	case DTO::EUIDImageSubClassType::BATTLE_AIMDOT_CROSSHAIR_BOTTOM:
 		m_vMaxOffset = Vec2{ 0.f, 10.f };
+		m_pGameInstance->Subscribe<BOSS_STAGING_EVENT_START>([this]() { this->Set_Invisible(); });
 		break;
 	case DTO::EUIDImageSubClassType::BATTLE_AIMDOT_CROSSHAIR_LEFT:
 		m_vMaxOffset = Vec2{ -10.f, 0.f };
+		m_pGameInstance->Subscribe<BOSS_STAGING_EVENT_START>([this]() { this->Set_Invisible(); });
 		break;
 	case DTO::EUIDImageSubClassType::BATTLE_AIM_HIT:
 		break;

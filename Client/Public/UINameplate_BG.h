@@ -1,9 +1,7 @@
 #pragma once
 #include "UIDynamic_Image.h"
-#include "DataStruct_UI.h"
 
 NS_BEGIN(Client)
-class CWorldUI_Component;
 class CUINameplate_BG final : public  CUIDynamic_Image
 {
 	using Super = CUIDynamic_Image;
@@ -11,7 +9,6 @@ public:
 	typedef struct tagNamePlateBGDesc : public DIMAGE_DESC
 	{
 	}NAMEPLATE_BG_DESC;
-
 private:
 	CUINameplate_BG(ID3D11Device* pDevice, ID3D11DeviceContext* pDeviceContext);
 	CUINameplate_BG(const CUINameplate_BG& rhs);
@@ -19,7 +16,6 @@ private:
 public:
 	HRESULT Initialize_Prototype() override;
 	HRESULT Initialize(void* pArg) override;
-	HRESULT Attach_Personal_Info();
 public:
 	virtual HRESULT Awake(const _uint iCurrentLevelID) override;
 	virtual void Update_Priority(const _float fTimeDelta) override;
@@ -30,15 +26,15 @@ public:
 private:
 	HRESULT Ready_Components(NAMEPLATE_BG_DESC* pDesc);
 	HRESULT Bind_ShaderResources();
+	virtual HRESULT Attach_Personal_Info()override;
 private:
 	virtual void OnUIEvent(ETriggerEventType eEvent, CGenericUI* pSender)override;
 	virtual void Initialize_Visible_Event()override;
 	virtual _bool Tick_Visible_Event(const _float fTimeDelta)override;
 	virtual HRESULT Spawn_FromPool(void* pArg)override;
 	virtual HRESULT Despawn_FromPool()override;
-
-	CWorldUI_Component* m_pWorldUIComp = { nullptr };
-
+private:
+	CGameObject* m_pTargetMoster = { nullptr };
 public:
 	static CUINameplate_BG* Create(ID3D11Device* pDevice, ID3D11DeviceContext* pDeviceContext);
 	CGameObject* Clone(void* pArg);

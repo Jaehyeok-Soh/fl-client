@@ -39,44 +39,6 @@ HRESULT CUISkill_BG::Initialize(void* pArg)
 	return S_OK;
 }
 
-HRESULT CUISkill_BG::Attach_Personal_Info()
-{
-
-	CGameObject* pResult = m_pGameInstance->Get_GameObject_Front(ENUM_TO_UINT(ELevelType::STATIC), g_wszPlayerLayer);
-	if (nullptr == pResult)
-		return E_FAIL;
-
-	m_pPlayerStatCom = static_cast<CStatCom_Player*>(pResult->Get_Component<CMyStat>());
-	if (nullptr == m_pPlayerStatCom)
-		return E_FAIL;
-
-
-	switch (m_eDImageSubClass)
-	{
-	case DTO::EUIDImageSubClassType::NONE_OWNER:
-		return S_OK;
-	case DTO::EUIDImageSubClassType::PLAYER_E:
-		m_fMaxCoolTime = m_pPlayerStatCom->Get_Skill(CStatCom_Player::E).tCoolTimer.fMaxTime;
-		return S_OK;
-	case DTO::EUIDImageSubClassType::PLAYER_Q:
-		m_fMaxCoolTime = m_pPlayerStatCom->Get_Skill(CStatCom_Player::Q).tCoolTimer.fMaxTime;
-		return S_OK;
-	case DTO::EUIDImageSubClassType::PLAYER_Z:
-		return S_OK;
-	case DTO::EUIDImageSubClassType::PLAYER_GUN:
-		return S_OK;
-	case DTO::EUIDImageSubClassType::PLAYER_DODGE:
-		m_fMaxCoolTime = m_pPlayerStatCom->Get_Timer(CStatCom_Player::TIMER_TYPE::DASH).fMaxTime;
-		return S_OK;
-	case DTO::EUIDImageSubClassType::PLAYER_SKILL_END:
-	case DTO::EUIDImageSubClassType::END:
-	default:
-		return E_FAIL;
-	}
-
-	return S_OK;
-}
-
 HRESULT CUISkill_BG::Awake(const _uint iCurrentLevelID)
 {
 	if (FAILED(Super::Awake(iCurrentLevelID)))
@@ -89,39 +51,28 @@ HRESULT CUISkill_BG::Awake(const _uint iCurrentLevelID)
 
 void CUISkill_BG::Update_Priority(const _float fTimeDelta)
 {
-	if (m_strName == "Player_QSkill_fx")
-		int a = 0;
 	Super::Update_Priority(fTimeDelta);
 	Trigger_User_Use_Skill();
 }
 
 void CUISkill_BG::Update(const _float fTimeDelta)
 {
-	if (m_strName == "Player_QSkill_fx")
-		int a = 0;
 	Super::Update(fTimeDelta);
 	Tick_Use_Skill_Event(fTimeDelta);
 }
 
 void CUISkill_BG::Update_Late(const _float fTimeDelta)
 {
-	if (m_strName == "Player_QSkill_fx")
-		int a = 0;
 	Super::Update_Late(fTimeDelta);
 }
 
 void CUISkill_BG::Ready_Before_Render(const _float fTimeDelta)
 {
-	if (m_strName == "Player_QSkill_fx")
-		int a = 0;
 	Super::Ready_Before_Render(fTimeDelta);
 }
 
 HRESULT CUISkill_BG::Render()
 {
-	if (m_strName == "Player_QSkill_fx")
-		int a = 0;
-
 	if (!m_isVisible)
 		return S_OK;
 	if (FAILED(Bind_ShaderResources()))
@@ -237,16 +188,6 @@ void CUISkill_BG::Tick_Use_Skill_Event(const _float fTimeDelta)
 	}
 }
 
-void CUISkill_BG::Initialize_Visible_Event()
-{
-
-}
-
-_bool CUISkill_BG::Tick_Visible_Event(const _float fTimeDelta)
-{
-	return _bool();
-}
-
 HRESULT CUISkill_BG::Ready_Components(SKILL_BG_DESC* pDesc)
 {
 	if (FAILED(Super::Ready_Components(pDesc)))
@@ -262,6 +203,51 @@ HRESULT CUISkill_BG::Bind_ShaderResources()
 	if (FAILED(Super::Bind_ShaderResources()))
 		return E_FAIL;
 	return S_OK;
+}
+
+HRESULT CUISkill_BG::Attach_Personal_Info()
+{
+	CGameObject* pResult = m_pGameInstance->Get_GameObject_Front(ENUM_TO_UINT(ELevelType::STATIC), g_wszPlayerLayer);
+	if (nullptr == pResult)
+		return E_FAIL;
+	m_pPlayerStatCom = static_cast<CStatCom_Player*>(pResult->Get_Component<CMyStat>());
+	if (nullptr == m_pPlayerStatCom)
+		return E_FAIL;
+
+	switch (m_eDImageSubClass)
+	{
+	case DTO::EUIDImageSubClassType::NONE_OWNER:
+		break;
+	case DTO::EUIDImageSubClassType::PLAYER_E:
+		m_fMaxCoolTime = m_pPlayerStatCom->Get_Skill(CStatCom_Player::E).tCoolTimer.fMaxTime;
+		break;
+	case DTO::EUIDImageSubClassType::PLAYER_Q:
+		m_fMaxCoolTime = m_pPlayerStatCom->Get_Skill(CStatCom_Player::Q).tCoolTimer.fMaxTime;
+		break;
+	case DTO::EUIDImageSubClassType::PLAYER_Z:
+		break;
+	case DTO::EUIDImageSubClassType::PLAYER_GUN:
+		break;
+	case DTO::EUIDImageSubClassType::PLAYER_DODGE:
+		m_fMaxCoolTime = m_pPlayerStatCom->Get_Timer(CStatCom_Player::TIMER_TYPE::DASH).fMaxTime;
+		break;
+	case DTO::EUIDImageSubClassType::PLAYER_SKILL_END:
+		break;
+	case DTO::EUIDImageSubClassType::END:
+	default:
+		return E_FAIL;
+	}
+	return S_OK;
+}
+
+void CUISkill_BG::Initialize_Visible_Event()
+{
+
+}
+
+_bool CUISkill_BG::Tick_Visible_Event(const _float fTimeDelta)
+{
+	return true;
 }
 
 CUISkill_BG* CUISkill_BG::Create(ID3D11Device* pDevice, ID3D11DeviceContext* pDeviceContext)

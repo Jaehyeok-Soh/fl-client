@@ -36,23 +36,24 @@ HRESULT CGenericUI::Initialize_Prototype()
 HRESULT CGenericUI::Initialize(void* pArg)
 {
 	GENERIC_UI_DESC* pDesc = static_cast<GENERIC_UI_DESC*>(pArg);
-	m_strName				= pDesc->strName;
-	m_iLevelID				= pDesc->iLevelIndex;
-	m_eRectTransformType	= static_cast<ERectTransform>(pDesc->iRectTransformType);
-	m_wstrTextureTag		= pDesc->wstrTextureTag;
-	m_wstrNoiseTextureTag	= pDesc->wstrNoiseTextureTag;
-	m_wstrAlphaMaskTextureTag= pDesc->wstrAlphaMaskTextureTag;
-	m_iTextureIndex			= pDesc->iTextureIndex;
-	m_iComponentFlag		= pDesc->iComponentFlag;
-	m_pParentCanvasCache	= pDesc->pCanvasCache;
-	m_isUseColorTint		= pDesc->isUseColorTint;
-	m_vColorTint			= pDesc->vColorTint;
-	m_vGradiantColorTint	= pDesc->vGradiantColorTint;
-	m_iShaderPass			= pDesc->iShaderPass;
-	m_iFillDir				= pDesc->iFillDir;
-	m_fDelay				= pDesc->fDelay;
-	m_fAlpha_Ratio			= pDesc->fAlpha;
-	m_iFlip					= pDesc->iFlip;
+	m_strName					= pDesc->strName;
+	m_iLevelID					= pDesc->iLevelIndex;
+	m_eRectTransformType		= static_cast<ERectTransform>(pDesc->iRectTransformType);
+	m_wstrTextureTag			= pDesc->wstrTextureTag;
+	m_wstrNoiseTextureTag		= pDesc->wstrNoiseTextureTag;
+	m_wstrAlphaMaskTextureTag	= pDesc->wstrAlphaMaskTextureTag;
+	m_wstrGlowTextureTag		= pDesc->wstrGlowTextureTag;
+	m_iTextureIndex				= pDesc->iTextureIndex;
+	m_iComponentFlag			= pDesc->iComponentFlag;
+	m_pParentCanvasCache		= pDesc->pCanvasCache;
+	m_isUseColorTint			= pDesc->isUseColorTint;
+	m_vColorTint				= pDesc->vColorTint;
+	m_vGradiantColorTint		= pDesc->vGradiantColorTint;
+	m_iShaderPass				= pDesc->iShaderPass;
+	m_iFillDir					= pDesc->iFillDir;
+	m_fDelay					= pDesc->fDelay;
+	m_fAlpha_Ratio				= pDesc->fAlpha;
+	m_iFlip						= pDesc->iFlip;
 
 	if (FAILED(Super::Initialize(pArg)))
 		return E_FAIL;
@@ -81,6 +82,11 @@ HRESULT CGenericUI::Awake(const _uint iCurrentLevelID)
 		if (FAILED(Get_Component<CTexture>()->Add_DefaultTexture(m_wstrAlphaMaskTextureTag, ALPHA_MASK)))
 			return E_FAIL;
 	}
+	if (m_wstrGlowTextureTag != L"")
+	{
+		if (FAILED(Get_Component<CTexture>()->Add_DefaultTexture(m_wstrGlowTextureTag, GLOW)))
+			return E_FAIL;
+	}
 
 	m_iInteractState = static_cast<uint32_t>(EUIEvent_Flag::NONE);
 	return S_OK;
@@ -106,9 +112,6 @@ void CGenericUI::Update(const _float fTimeDelta)
 
 void CGenericUI::Update_Late(const _float fTimeDelta)
 {
-	if (KEY_BUTTON_DOWN(DIK_4))
-		Set_Dead(g_wszUILayer);
-
 	Super::Update_Late(fTimeDelta);
 }
 
@@ -141,14 +144,6 @@ _bool CGenericUI::Calc_HitEvent()
 	if (::PtInRect(&m_tRenderRect, m_pGameInstance->Get_MousePos()))
 		return TRUE;
 	return FALSE;
-}
-
-void CGenericUI::Acting_By_InteractState()
-{
-}
-
-void CGenericUI::OnUIEvent(ETriggerEventType eEvent, CGenericUI* pSender)
-{
 }
 
 HRESULT CGenericUI::Ready_Components(GENERIC_UI_DESC* pDesc)
@@ -214,14 +209,9 @@ HRESULT CGenericUI::Bind_ShaderResources()
 	return S_OK;
 }
 
-HRESULT CGenericUI::Spawn_FromPool(void* pArg)
-{
-	return S_OK;
-}
-
 void CGenericUI::Ready_Lerp_Movement(const Vec2& vStartOffset, const Vec2& vTargetOffset, const _float fDuration, const _float fEaseValue, const _float fDelay)
 {
-	m_fTimeAcc		= 0.f;
+	m_fLerpTimeAcc = 0.f;
 	m_fDelayTimeAcc = 0.f;
 	m_vStartOffset	= vStartOffset;
 	m_vTargetOffset	= vTargetOffset;
@@ -230,37 +220,14 @@ void CGenericUI::Ready_Lerp_Movement(const Vec2& vStartOffset, const Vec2& vTarg
 	m_fLerpDelay	= fDelay;
 }
 
-_bool CGenericUI::Tick_Lerp_Movement(const _float fTimeDelta)
-{
-	m_fDelayTimeAcc += fTimeDelta;
-	if (m_fDelayTimeAcc < m_fLerpDelay)
-		return false;
-
-	m_fTimeAcc += fTimeDelta;
-
-	_float t = m_fTimeAcc / m_fDuration;
-	if (t >= 1.f)
-	{
-		m_vMoveOffset = m_vMoveOffsetBase + m_vTargetOffset;
-		return true;
-	}
-
-	_float eased = t;
-	if (m_fEaseValue > 0.f)
-		eased = powf(t, m_fEaseValue);
-
-	m_vMoveOffset = m_vMoveOffsetBase + (m_vStartOffset + (m_vTargetOffset - m_vStartOffset) * eased);
-	return false;
-}
-
 void CGenericUI::Ready_Fade(const _float fDuration, const _float fStartAlpha, const _float fTargetAlpha, const _float fDelay)
 {
-	m_fAlpha_Ratio		= fStartAlpha;
-	m_fFadeTimeAcc		= 0.f;
+	m_fAlpha_Ratio = fStartAlpha;
+	m_fFadeTimeAcc = 0.f;
 	m_fFadeDelayTimeAcc = 0.f;
-	m_fFadeDelay		= fDelay;
-	m_fFadeDuration		= fDuration;
-	m_fStartAlphaRatio	= fStartAlpha;
+	m_fFadeDelay = fDelay;
+	m_fFadeDuration = fDuration;
+	m_fStartAlphaRatio = fStartAlpha;
 	m_fTargetAlphaRatio = fTargetAlpha;
 }
 
@@ -273,6 +240,40 @@ void CGenericUI::Ready_ExplosionFade(const _float fDuration, const _float fStart
 	m_fFadeDuration = fDuration;
 	m_fStartAlphaRatio = fExplosionAlpha;
 	m_fTargetAlphaRatio = fTargetAlpha;
+}
+
+void CGenericUI::Ready_LerpChange(const _float fDuration, const _float fStartAlpha, const _float fTargetAlpha, const _float fEaseValue, const _float fDelay)
+{
+	m_fFadeTimeAcc_LerpChange = 0.f;
+	m_fFadeDelayTimeAcc_LerpChange = 0.f;
+	m_fFadeDelay_LerpChange = fDelay;
+	m_fFadeDuration_LerpChange = fDuration;
+	m_fStartAlphaRatio_LerpChange = fStartAlpha;
+	m_fTargetAlphaRatio_LerpChange = fTargetAlpha;
+	m_fEaseValue_LerpChange = fEaseValue;
+}
+
+_bool CGenericUI::Tick_Lerp_Movement(const _float fTimeDelta)
+{
+	m_fDelayTimeAcc += fTimeDelta;
+	if (m_fDelayTimeAcc < m_fLerpDelay)
+		return false;
+
+	m_fLerpTimeAcc += fTimeDelta;
+
+	_float t = m_fLerpTimeAcc / m_fDuration;
+	if (t >= 1.f)
+	{
+		m_vMoveOffset = m_vMoveOffsetBase + m_vTargetOffset;
+		return true;
+	}
+
+	_float eased = t;
+	if (m_fEaseValue > 0.f)
+		eased = powf(t, m_fEaseValue);
+
+	m_vMoveOffset = m_vMoveOffsetBase + (m_vStartOffset + (m_vTargetOffset - m_vStartOffset) * eased);
+	return false;
 }
 
 _bool CGenericUI::Tick_Fade(const _float fTimeDelta)
@@ -299,37 +300,26 @@ _bool CGenericUI::Tick_Fade(const _float fTimeDelta)
 	return false;
 }
 
-void CGenericUI::Ready_LerpChange(const _float fDuration, const _float fStartAlpha, const _float fTargetAlpha, const _float fEaseValue, const _float fDelay)
-{
-	m_fFadeTimeAcc		= 0.f;
-	m_fFadeDelayTimeAcc = 0.f;
-	m_fFadeDelay		= fDelay;
-	m_fFadeDuration		= fDuration;
-	m_fStartAlphaRatio	= fStartAlpha;
-	m_fTargetAlphaRatio = fTargetAlpha;
-	m_fEaseValue		= fEaseValue;
-}
-
 _bool CGenericUI::Tick_LerpChange(_float* p, const _float fTimeDelta)
 {
-	m_fFadeDelayTimeAcc += fTimeDelta;
-	if (m_fFadeDelayTimeAcc < m_fFadeDelay)
+	m_fFadeDelayTimeAcc_LerpChange += fTimeDelta;
+	if (m_fFadeDelayTimeAcc_LerpChange < m_fFadeDelay_LerpChange)
 		return false;
 
-	m_fFadeTimeAcc += fTimeDelta;
+	m_fFadeTimeAcc_LerpChange += fTimeDelta;
 
-	_float t = m_fFadeTimeAcc / m_fFadeDuration;
+	_float t = m_fFadeTimeAcc_LerpChange / m_fFadeDuration_LerpChange;
 	if (t >= 1.f)
 	{
-		*p = m_fTargetAlphaRatio;
+		*p = m_fTargetAlphaRatio_LerpChange;
 		return true;
 	}
 
 	_float eased = t;
-	if (m_fEaseValue > 0.f)
-		eased = powf(t, m_fEaseValue);
+	if (m_fEaseValue_LerpChange > 0.f)
+		eased = powf(t, m_fEaseValue_LerpChange);
 
-	_float f = m_fStartAlphaRatio + (m_fTargetAlphaRatio - m_fStartAlphaRatio) * eased;
+	_float f = m_fStartAlphaRatio_LerpChange + (m_fTargetAlphaRatio_LerpChange - m_fStartAlphaRatio_LerpChange) * eased;
 	*p = f;
 	return false;
 }

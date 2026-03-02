@@ -232,9 +232,6 @@
     <Filter Include="03. GameObject\MapObject\02. LandScape">
       <UniqueIdentifier>{85c9ccf5-464c-4ec3-aa14-67d01e5a95ce}</UniqueIdentifier>
     </Filter>
-    <Filter Include="03. GameObject\UIObjects\02.UI\Text\Loading Text">
-      <UniqueIdentifier>{0ebf2b41-2b05-4ee9-a49a-641d42db1c72}</UniqueIdentifier>
-    </Filter>
     <Filter Include="03. GameObject\UIObjects\02.UI\Progress Bar\Loading">
       <UniqueIdentifier>{5d46b6c3-a13f-4703-a848-708f9a73243a}</UniqueIdentifier>
     </Filter>
@@ -249,6 +246,9 @@
     </Filter>
     <Filter Include="03. GameObject\UIObjects\02.UI\Text\Monster Stat Text">
       <UniqueIdentifier>{5d3f0be5-ffc3-44fc-9119-9d81aa03b857}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="05. Component\WorldUI">
+      <UniqueIdentifier>{8e22024d-4e3d-4939-938e-33aa2af517cb}</UniqueIdentifier>
     </Filter>
     <Filter Include="03. GameObject\UIObjects\02.UI\Progress Bar\Monster Stat">
       <UniqueIdentifier>{4b1e0e58-01df-4e73-867d-55b38392bafa}</UniqueIdentifier>
@@ -442,12 +442,6 @@
     <Filter Include="03. GameObject\UIObjects\02.UI\Text">
       <UniqueIdentifier>{4c552970-7965-46f3-85ec-73d256c4eba8}</UniqueIdentifier>
     </Filter>
-    <Filter Include="03. GameObject\UIObjects\02.UI\Text\Menu Text">
-      <UniqueIdentifier>{c8f806c3-d027-4861-9696-bc78504a554a}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="03. GameObject\UIObjects\02.UI\Text\Stat Text">
-      <UniqueIdentifier>{ba675289-98b0-43ba-990d-7137e8849731}</UniqueIdentifier>
-    </Filter>
     <Filter Include="03. GameObject\UIObjects\02.UI\Text\Loading Text">
       <UniqueIdentifier>{0ebf2b41-2b05-4ee9-a49a-641d42db1c72}</UniqueIdentifier>
     </Filter>
@@ -496,9 +490,6 @@
     <Filter Include="07. System\99. Debug_ImGui\Inspector\ShaderDebug">
       <UniqueIdentifier>{0b3e7565-de1d-44a2-b248-637354f68a85}</UniqueIdentifier>
     </Filter>
-    <Filter Include="03. GameObject\UIObjects\02.UI\Text\Damage Text">
-      <UniqueIdentifier>{677a64cd-1317-409c-a79c-d9f17b5e967a}</UniqueIdentifier>
-    </Filter>
     <Filter Include="06. FSM\Player\Attack\Gun\Base">
       <UniqueIdentifier>{2fe06ae1-d9fc-4a2a-9f4d-c6056176c36a}</UniqueIdentifier>
     </Filter>
@@ -523,11 +514,32 @@
     <Filter Include="03. GameObject\UIObjects\02.UI\Progress Bar\Boss Stat">
       <UniqueIdentifier>{1fd4e4f2-2b0f-4f1c-8be1-d0d43024b71e}</UniqueIdentifier>
     </Filter>
-    <Filter Include="03. GameObject\UIObjects\02.UI\Text\Boss Stat">
-      <UniqueIdentifier>{e25e844a-91c2-4e51-94f4-8342f4347985}</UniqueIdentifier>
-    </Filter>
     <Filter Include="03. GameObject\UIObjects\02.UI\Image\Dynamic Image\08.Boss Stat">
       <UniqueIdentifier>{e031f721-b76b-4d49-ac59-e279c691cdda}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="03. GameObject\UIObjects\02.UI\Image\Dynamic Image\09.Combo">
+      <UniqueIdentifier>{a42aa3b2-6246-4804-8c5a-2ca3aadc00da}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="03. GameObject\UIObjects\02.UI\Text\00.Stat Text">
+      <UniqueIdentifier>{ba675289-98b0-43ba-990d-7137e8849731}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="03. GameObject\UIObjects\02.UI\Text\01.Menu Text">
+      <UniqueIdentifier>{c8f806c3-d027-4861-9696-bc78504a554a}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="03. GameObject\UIObjects\02.UI\Text\02.Loading Text">
+      <UniqueIdentifier>{0ebf2b41-2b05-4ee9-a49a-641d42db1c72}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="03. GameObject\UIObjects\02.UI\Text\03.Damage Text">
+      <UniqueIdentifier>{677a64cd-1317-409c-a79c-d9f17b5e967a}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="03. GameObject\UIObjects\02.UI\Text\04.Boss Stat">
+      <UniqueIdentifier>{e25e844a-91c2-4e51-94f4-8342f4347985}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="03. GameObject\UIObjects\02.UI\Text\05.Monster Stat Text">
+      <UniqueIdentifier>{5d3f0be5-ffc3-44fc-9119-9d81aa03b857}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="03. GameObject\UIObjects\02.UI\Text\06.Combo Text">
+      <UniqueIdentifier>{66c21f94-64a0-4cf0-b64e-3655efb1ffdd}</UniqueIdentifier>
     </Filter>
     <Filter Include="06. FSM\Player\Hit">
       <UniqueIdentifier>{4e5b3d45-462f-40ce-b860-06a83a6e4560}</UniqueIdentifier>
@@ -844,10 +856,10 @@
       <Filter>03. GameObject\UIObjects\02.UI\Trigger\02.Menu Exit</Filter>
     </ClInclude>
     <ClInclude Include="..\Public\UIMenu_Text.h">
-      <Filter>03. GameObject\UIObjects\02.UI\Text\Menu Text</Filter>
+      <Filter>03. GameObject\UIObjects\02.UI\Text\01.Menu Text</Filter>
     </ClInclude>
     <ClInclude Include="..\Public\UIPlayerStat_Text.h">
-      <Filter>03. GameObject\UIObjects\02.UI\Text\Stat Text</Filter>
+      <Filter>03. GameObject\UIObjects\02.UI\Text\00.Stat Text</Filter>
     </ClInclude>
     <ClInclude Include="..\Public\Builder_Effect.h">
       <Filter>07. System\01. Builder\Effect\Builder_Effect</Filter>
@@ -877,7 +889,7 @@
       <Filter>04. Shaders\05. Component\Skill\Moon</Filter>
     </ClInclude>
     <ClInclude Include="..\Public\UILoading_Text.h">
-      <Filter>03. GameObject\UIObjects\02.UI\Text\Loading Text</Filter>
+      <Filter>03. GameObject\UIObjects\02.UI\Text\02.Loading Text</Filter>
     </ClInclude>
     <ClInclude Include="..\Public\UIPlayerStat_Progress.h">
       <Filter>03. GameObject\UIObjects\02.UI\Progress Bar\Stat</Filter>
@@ -986,7 +998,7 @@
       <Filter>07. System\01. Builder\UI</Filter>
     </ClInclude>
     <ClInclude Include="..\Public\UIMonsterStat_Text.h">
-      <Filter>03. GameObject\UIObjects\02.UI\Text\Monster Stat Text</Filter>
+      <Filter>03. GameObject\UIObjects\02.UI\Text\05.Monster Stat Text</Filter>
     </ClInclude>
     <ClInclude Include="..\Public\UIMonsterStat_Progress.h">
       <Filter>03. GameObject\UIObjects\02.UI\Progress Bar\Monster Stat</Filter>
@@ -1037,7 +1049,7 @@
       <Filter>07. System\99. Debug_ImGui\Inspector\ShaderDebug</Filter>
     </ClInclude>
     <ClInclude Include="..\Public\UIDamageFont_Text.h">
-      <Filter>03. GameObject\UIObjects\02.UI\Text\Damage Text</Filter>
+      <Filter>03. GameObject\UIObjects\02.UI\Text\03.Damage Text</Filter>
     </ClInclude>
     <ClInclude Include="..\Public\State_GunBase.h">
       <Filter>06. FSM\Player\Attack\Gun\Base</Filter>
@@ -1058,7 +1070,13 @@
       <Filter>03. GameObject\UIObjects\02.UI\Progress Bar\Boss Stat</Filter>
     </ClInclude>
     <ClInclude Include="..\Public\UIBossStat_Text.h">
-      <Filter>03. GameObject\UIObjects\02.UI\Text\Boss Stat</Filter>
+      <Filter>03. GameObject\UIObjects\02.UI\Text\04.Boss Stat</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\UICombo_Image.h">
+      <Filter>03. GameObject\UIObjects\02.UI\Image\Dynamic Image\09.Combo</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\UICombo_Text.h">
+      <Filter>03. GameObject\UIObjects\02.UI\Text\06.Combo Text</Filter>
     </ClInclude>
     <ClInclude Include="..\Public\State_HitAdditive.h">
       <Filter>06. FSM\Player\Hit\HitAdditive</Filter>
@@ -1340,10 +1358,10 @@
       <Filter>03. GameObject\UIObjects\02.UI\Image\Dynamic Image</Filter>
     </ClCompile>
     <ClCompile Include="..\Private\UIMenu_Text.cpp">
-      <Filter>03. GameObject\UIObjects\02.UI\Text\Menu Text</Filter>
+      <Filter>03. GameObject\UIObjects\02.UI\Text\01.Menu Text</Filter>
     </ClCompile>
     <ClCompile Include="..\Private\UIPlayerStat_Text.cpp">
-      <Filter>03. GameObject\UIObjects\02.UI\Text\Stat Text</Filter>
+      <Filter>03. GameObject\UIObjects\02.UI\Text\00.Stat Text</Filter>
     </ClCompile>
     <ClCompile Include="..\private\ImGui_ShaderLayout.cpp">
       <Filter>07. System\99. Debug_ImGui\Layout\Shader</Filter>
@@ -1367,7 +1385,7 @@
       <Filter>04. Shaders\05. Component\Skill\Moon</Filter>
     </ClCompile>
     <ClCompile Include="..\Private\UILoading_Text.cpp">
-      <Filter>03. GameObject\UIObjects\02.UI\Text\Loading Text</Filter>
+      <Filter>03. GameObject\UIObjects\02.UI\Text\02.Loading Text</Filter>
     </ClCompile>
     <ClCompile Include="..\Private\UIPlayerStat_Progress.cpp">
       <Filter>03. GameObject\UIObjects\02.UI\Progress Bar\Stat</Filter>
@@ -1473,7 +1491,7 @@
       <Filter>07. System\01. Builder\UI</Filter>
     </ClCompile>
     <ClCompile Include="..\Private\UIMonsterStat_Text.cpp">
-      <Filter>03. GameObject\UIObjects\02.UI\Text\Monster Stat Text</Filter>
+      <Filter>03. GameObject\UIObjects\02.UI\Text\05.Monster Stat Text</Filter>
     </ClCompile>
     <ClCompile Include="..\Private\UIMonsterStat_Progress.cpp">
       <Filter>03. GameObject\UIObjects\02.UI\Progress Bar\Monster Stat</Filter>
@@ -1527,7 +1545,7 @@
       <Filter>07. System\99. Debug_ImGui\Inspector\ShaderDebug</Filter>
     </ClCompile>
     <ClCompile Include="..\Private\UIDamageFont_Text.cpp">
-      <Filter>03. GameObject\UIObjects\02.UI\Text\Damage Text</Filter>
+      <Filter>03. GameObject\UIObjects\02.UI\Text\03.Damage Text</Filter>
     </ClCompile>
     <ClCompile Include="..\Private\Monster_Boomer_Body.cpp">
       <Filter>03. GameObject\PartObjects\Monster\Body\Boomer</Filter>
@@ -1548,7 +1566,13 @@
       <Filter>03. GameObject\UIObjects\02.UI\Progress Bar\Boss Stat</Filter>
     </ClCompile>
     <ClCompile Include="..\Private\UIBossStat_Text.cpp">
-      <Filter>03. GameObject\UIObjects\02.UI\Text\Boss Stat</Filter>
+      <Filter>03. GameObject\UIObjects\02.UI\Text\04.Boss Stat</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\UICombo_Image.cpp">
+      <Filter>03. GameObject\UIObjects\02.UI\Image\Dynamic Image\09.Combo</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\UICombo_Text.cpp">
+      <Filter>03. GameObject\UIObjects\02.UI\Text\06.Combo Text</Filter>
     </ClCompile>
     <ClCompile Include="..\Private\State_HitAdditive.cpp">
       <Filter>06. FSM\Player\Hit\HitAdditive</Filter>

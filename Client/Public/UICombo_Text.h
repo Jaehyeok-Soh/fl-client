@@ -3,19 +3,19 @@
 #include "DataStruct_UI.h"
 
 NS_BEGIN(Client)
-class CWorldUI_Component;
-class CUIMonsterStat_Text final : public CUIText
+class CStatCom_Player;
+class CUICombo_Text final : public CUIText
 {
 	using Super = CUIText;
 public:
-	typedef struct tagUIMonsterStatDesc : public UI_TEXT_DESC
+	typedef struct tagUIComboTextDesc : public UI_TEXT_DESC
 	{
-	}MONSTER_STAT_DESC;
+	}COMBO_TEXT_DESC;
 
 private:
-	CUIMonsterStat_Text(ID3D11Device* pDevice, ID3D11DeviceContext* pDeviceContext);
-	CUIMonsterStat_Text(const CUIMonsterStat_Text& rhs);
-	virtual ~CUIMonsterStat_Text() = default;
+	CUICombo_Text(ID3D11Device* pDevice, ID3D11DeviceContext* pDeviceContext);
+	CUICombo_Text(const CUICombo_Text& rhs);
+	virtual ~CUICombo_Text() = default;
 
 public:
 	HRESULT Initialize_Prototype() override;
@@ -30,9 +30,10 @@ public:
 	virtual HRESULT Render() override;
 
 private:
-	HRESULT Ready_Components(MONSTER_STAT_DESC* pDesc);
+	HRESULT Ready_Components(COMBO_TEXT_DESC* pDesc);
 	HRESULT Bind_ShaderResources();
 	HRESULT Attach_Personal_Info();
+	void Tick_By_Type(const _float fTimeDelta)override;
 	HRESULT Convert_Stat_To_Text();
 private:
 	virtual void OnUIEvent(ETriggerEventType eEvent, CGenericUI* pSender)override;
@@ -40,14 +41,20 @@ private:
 	virtual void Initialize_InVisible_Event()override;
 	virtual _bool Tick_Visible_Event(const _float fTimeDelta)override;
 	virtual _bool Tick_InVisible_Event(const _float fTimeDelta)override;
-	virtual HRESULT Spawn_FromPool(void* pArg)override;
-	virtual HRESULT Despawn_FromPool()override;
+
+	void Convert_Count_To_Rank();
 
 private:
-	_float m_fStat = {};
+	CStatCom_Player* m_pPlayerStatCom = { nullptr };
+
+	ECombotype m_eCurComboType = { ECombotype::END };
+	_uint m_iCurComboCount = {};
+	_uint m_iPreComboCount = {};
+
+	_bool m_isCountChange = { false };
 
 public:
-	static CUIMonsterStat_Text* Create(ID3D11Device* pDevice, ID3D11DeviceContext* pDeviceContext);
+	static CUICombo_Text* Create(ID3D11Device* pDevice, ID3D11DeviceContext* pDeviceContext);
 	CGameObject* Clone(void* pArg);
 	virtual void Free()override;
 };

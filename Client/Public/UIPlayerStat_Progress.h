@@ -21,7 +21,6 @@ public:
 	HRESULT Initialize_Prototype() override;
 	HRESULT Initialize(void* pArg) override;
 
-	HRESULT Attach_Personal_Info();
 
 public:
 	virtual HRESULT Awake(const _uint iCurrentLevelID) override;
@@ -40,16 +39,15 @@ public:
 private:
 	HRESULT Ready_Components(PLAYER_STAT_PROGRESS_DESC* pDesc);
 	HRESULT Bind_ShaderResources();
-
+	virtual HRESULT Attach_Personal_Info()override;
 	HRESULT Convert_Stat_To_Ratio();
-
 private:
 	// Player HP Func
 	void Low_HP(const _float fTimeDelta);
 
 private:
 	CStatCom_Player* m_pPlayerStatCom = { nullptr };
-
+	CGameObject* m_pTargetMonster = { nullptr };
 
 	// Player HP Values
 	_bool m_isStartLowHp	= { FALSE };

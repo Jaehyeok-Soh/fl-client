@@ -1,6 +1,7 @@
 #include "pch.h"
 #include "UIPlayerStat_Text.h"
 #include "Client_Defines.h"
+#include "Client_EventDefine.h"
 //=================
 // Component
 //=================
@@ -52,30 +53,6 @@ HRESULT CUIPlayerStat_Text::Awake(const _uint iCurrentLevelID)
 	return S_OK;
 }
 
-HRESULT CUIPlayerStat_Text::Attach_Personal_Info()
-{
-	CGameObject* pResult = m_pGameInstance->Get_GameObject_Front(ENUM_TO_UINT(ELevelType::STATIC), g_wszPlayerLayer);
-	if (nullptr == pResult)
-		return E_FAIL;
-
-	m_pPlayerStatCom = static_cast<CStatCom_Player*>(pResult->Get_Component<CMyStat>());
-	if (nullptr == m_pPlayerStatCom)
-		return E_FAIL;
-		
-	if (m_eTextSubClassType == DTO::EUITextSubClassType::PLAYER_STAT_TEXT_CUR_BULLET_COUNT ||
-		m_eTextSubClassType == DTO::EUITextSubClassType::PLAYER_STAT_TEXT_MAX_BULLET_COUNT)
-	{
-		auto* pPlayer = static_cast<CMainPlayer*>(pResult);
-		if (nullptr == pPlayer)
-			return E_FAIL;
-
-		m_pGunParts = pPlayer->Get_Part<CGun>(ENUM_TO_UINT(CPlayer::Part::GUN));
-		if (nullptr == m_pGunParts)
-			return E_FAIL;
-	}
-
-	return S_OK;
-}
 
 void CUIPlayerStat_Text::Update_Priority(const _float fTimeDelta)
 {
@@ -125,6 +102,34 @@ HRESULT CUIPlayerStat_Text::Bind_ShaderResources()
 		return E_FAIL;
 	if (FAILED(Super::Bind_ShaderResources()))
 		return E_FAIL;
+	return S_OK;
+}
+
+HRESULT CUIPlayerStat_Text::Attach_Personal_Info()
+{
+	CGameObject* pResult = m_pGameInstance->Get_GameObject_Front(ENUM_TO_UINT(ELevelType::STATIC), g_wszPlayerLayer);
+	if (nullptr == pResult)
+		return E_FAIL;
+
+	m_pPlayerStatCom = static_cast<CStatCom_Player*>(pResult->Get_Component<CMyStat>());
+	if (nullptr == m_pPlayerStatCom)
+		return E_FAIL;
+
+	if (m_eTextSubClassType == DTO::EUITextSubClassType::PLAYER_STAT_TEXT_CUR_BULLET_COUNT ||
+		m_eTextSubClassType == DTO::EUITextSubClassType::PLAYER_STAT_TEXT_MAX_BULLET_COUNT)
+	{
+		auto* pPlayer = static_cast<CMainPlayer*>(pResult);
+		if (nullptr == pPlayer)
+			return E_FAIL;
+
+		m_pGunParts = pPlayer->Get_Part<CGun>(ENUM_TO_UINT(CPlayer::Part::GUN));
+		if (nullptr == m_pGunParts)
+			return E_FAIL;
+	}
+
+	m_pGameInstance->Subscribe<BOSS_STAGING_EVENT_START>([this]() { this->Set_Invisible(); });
+	m_pGameInstance->Subscribe<BOSS_STAGING_EVENT_END>([this]() { this->Set_Visible(); });
+
 	return S_OK;
 }
 
