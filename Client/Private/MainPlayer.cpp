@@ -343,10 +343,6 @@ void CMainPlayer::Try_Attack(const HIT_DESC& hitDesc)
             m_pGameInstance->Rand_Float(-1.f, 1.f),
             m_pGameInstance->Rand_Float(-1.f, 1.f) 
         };
-        _wstring wstr = L"Hit Pos X : " + std::to_wstring(hitDesc.vHitPoint.x) +
-            L"Hit Pos Y : " + std::to_wstring(hitDesc.vHitPoint.y) +
-            L"Hit Pos Z : " + std::to_wstring(hitDesc.vHitPoint.z);
-        CLOG_INFO(wstr);
         CUI_Manager::GetInstance()->Request_Add_Prefab(
             m_pGameInstance->Get_CurrentLevelIndex(), EUIPrefabType::DAMAGE_FONTS_CRITICAL, m_pGameInstance->Get_CurrentLevelIndex(), &tPrefabData);
     }
