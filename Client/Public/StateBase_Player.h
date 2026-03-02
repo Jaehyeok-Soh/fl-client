@@ -23,8 +23,20 @@ public:
 
 	enum COLLISIONFLAGS : Flags
 	{
-		C_DOWN = 0x0001 
+		C_DOWN		= 0x00001 // 바닥 충돌 시간 누적후 -> falll
+		, C_WALL_NO = 0x00002
+
+		// hit state change 할래 말래
+		,C_Addtive	= 0x00008
+		,C_Fly		= 0x00010
+		,C_Strong	= 0x00020
+		
 	};
+
+	typedef struct tagHitStartDesc : public CStateBase::STATE_START_DESC
+	{
+		Vec3 vHitDir = {};
+	}HITSTATE_START_DESC;
 
 	enum class STATEKEY : _uint {MOVE, SPACE, SHIFT, LCRTL_PRESS, LCRTL_UP, E,Q, LM, RM, CHARGE, LOOPDONE , END}; //END에는 키가 없을떄 바꿀 state를 넣자
 
@@ -32,6 +44,7 @@ public:
 	typedef struct tagBaseDesc : public CStateBase::STATE_DESC
 	{
 		CGun* pOwnerGun = { nullptr };
+		Flags FCollis = { 0 };
 	}PLAYER_STATE_SPECIFICDESC;
 
 	typedef struct tagPlayerStateDesc : public CStateBase::STATE_DESC
@@ -56,9 +69,17 @@ public:
 	virtual void	Update(const _float fTimeDelta) override;
 	virtual HRESULT End() override;
 
+	// 기본으로는 BEATTACKED 가능. BEATTACKED 불가능한 state에서는 override 필요
+public:
+	virtual _uint	Get_Capabilities() const override
+	{
+		return	ENUM_TO_UINT(Engine::StateCapability::BEATTACKED);
+	}
+
 public:
 	virtual void Change_PlayerState(STATEKEY eKey);	// change 랩핑 함수 : 필요시 오버라이드
 	virtual void Change_PlayerState(_uint iState);	// change 함수2 : 키 없이 state 기준으로
+	virtual void Change_PlayerHitState(_uint iState, void* pArg = nullptr);
 	
 protected:
 	_uint					m_iEndStateIdx = { 0 };			// CPlayer::State::END 캐싱 해둠 : 만약 END면 state change x
@@ -85,6 +106,8 @@ protected:
 	_bool Check_RangeKey(const _float fTimeDelta);
 	_bool Check_SkillKey(const _float fTimeDelta);
 
+	_bool Check_Hit(const _float fTimeDelta);
+
 protected:
 	_bool Check_Collis(const _float fTimeDelta);
 
@@ -101,7 +124,7 @@ protected:
 
 	void	Set_RootMotion_Apply(_bool bApply);
 
-	void	Set_DoubleJump(_bool bCount);
+	void	Set_DoubleJumpCount(_bool bCount);
 	_bool	Check_Double();
 
 	// gun util funcs

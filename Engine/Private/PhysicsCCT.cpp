@@ -251,6 +251,29 @@ void CPhysicsCCT::SetIsSteppingOnCCT()
 	m_bIsSteppingOnCCT = true;
 }
 
+void CPhysicsCCT::EnableCollision(_bool bEnable)
+{
+	if (m_pController == nullptr)
+		return;
+
+	PxRigidDynamic* pActor = m_pController->getActor();
+	if (pActor)
+	{
+		PxU32 numShape = pActor->getNbShapes();
+		vector<PxShape*> vecShape(numShape);
+		pActor->getShapes(vecShape.data(), numShape);
+
+		if (vecShape.size() > 0)
+		{
+			for (auto& shape : vecShape)
+			{
+				shape->setFlag(PxShapeFlag::eSIMULATION_SHAPE, bEnable);
+				shape->setFlag(PxShapeFlag::eSCENE_QUERY_SHAPE, bEnable);
+			}
+		}
+	}
+}
+
 CPhysicsCCT* CPhysicsCCT::Create(ID3D11Device* pDevice, ID3D11DeviceContext* pDeviceContext)
 {
 	CPhysicsCCT* pInstance = new CPhysicsCCT(pDevice, pDeviceContext);

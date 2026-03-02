@@ -8,6 +8,8 @@
 #include "GameInstance.h"
 #include "Engine_Utils.h"
 
+#include "PhysicsCCT.h"
+
 CMonsterControlContext::CMonsterControlContext()
 	: Super()
 {
@@ -46,6 +48,9 @@ HRESULT CMonsterControlContext::Awake(const _uint iLevelIndex)
 		return E_FAIL;
 
 	Safe_AddRef(m_pTarget);
+
+	m_iSubState = 0;
+
 	return S_OK;
 }
 
@@ -54,6 +59,13 @@ Vec3 CMonsterControlContext::Get_MoveDir()
 	return m_vMoveDir;
 }
 
+void CMonsterControlContext::Set_Dead()
+{
+	if (IsDeadProcessing())
+		return;
+
+	m_iSubState |= SUB_STATE::DEAD;
+}
 _bool CMonsterControlContext::IsTargetFound()
 {
 	if (m_pTarget == nullptr)
@@ -339,6 +351,18 @@ _bool CMonsterControlContext::IsHitKnockdown()
 	return result;
 }
 
+_bool CMonsterControlContext::IsDead()
+{
+	_bool result = m_iSubState & SUB_STATE::DEAD;
+	return result;
+}
+
+_bool CMonsterControlContext::IsDeadProcessing()
+{
+	_bool result = m_iSubState & SUB_STATE::DEAD_PROCESS;
+	return result;
+}
+
 _bool CMonsterControlContext::IsDamageRecently()
 {
 	return _bool();
@@ -456,6 +480,16 @@ void CMonsterControlContext::UpdateTurn90(const _float fTimeDelta)
 
 void CMonsterControlContext::UpdateTrun180(const _float fTimeDelta)
 {
+}
+
+void CMonsterControlContext::Set_CCT_Collision_Disable()
+{
+	Get_Owner()->Get_Component<CPhysicsCCT>()->EnableCollision(false);
+}
+
+void CMonsterControlContext::Set_CCT_Collision_Enable()
+{
+	Get_Owner()->Get_Component<CPhysicsCCT>()->EnableCollision(true);
 }
 
 CMonsterControlContext* CMonsterControlContext::Create()

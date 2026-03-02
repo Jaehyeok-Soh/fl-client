@@ -22,8 +22,9 @@ HRESULT CState_SkillBase::Initialize(void* pArg)
 	tMyDesc.bBlend = true;
 	tMyDesc.bLoop = false;
 	tMyDesc.FAniFlags = 0;
-	tMyDesc.FCollis = 0;
 	tMyDesc.FMoves = MOVEFLAGS::PRESS_CHANGE;
+	tMyDesc.FCollis = CStateBase_Player::COLLISIONFLAGS::C_Strong
+					| CStateBase_Player::COLLISIONFLAGS::C_Fly;
 
 	TIME_COUNTER tKey = {};
 	if (pDesc->bKeyInput)

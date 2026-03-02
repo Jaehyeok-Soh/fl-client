@@ -37,31 +37,7 @@ HRESULT CUILoading_Image::Initialize(void* pArg)
 	return S_OK;
 }
 
-HRESULT CUILoading_Image::Attach_Personal_Info()
-{
-	switch (m_eDImageSubClass)
-	{
-	case DTO::EUIDImageSubClassType::LOADING_BG:
-	{
 
-		return S_OK;
-	}
-	case DTO::EUIDImageSubClassType::LOADING_BG_TOP:
-	{
-
-		return S_OK;
-	}
-	case DTO::EUIDImageSubClassType::LOADING_BG_BOTTOM:
-	{
-
-		return S_OK;
-	}
-	case DTO::EUIDImageSubClassType::END:
-	default:
-		return E_FAIL;
-	}
-	return S_OK;
-}
 
 HRESULT CUILoading_Image::Awake(const _uint iCurrentLevelID)
 {
@@ -123,6 +99,29 @@ HRESULT CUILoading_Image::Bind_ShaderResources()
 	return S_OK;
 }
 
+HRESULT CUILoading_Image::Attach_Personal_Info()
+{
+	switch (m_eDImageSubClass)
+	{
+	case DTO::EUIDImageSubClassType::LOADING_BG:
+	{
+	}
+	break;
+	case DTO::EUIDImageSubClassType::LOADING_BG_TOP:
+	{
+	}
+	break;
+	case DTO::EUIDImageSubClassType::LOADING_BG_BOTTOM:
+	{
+	}
+	break;
+	case DTO::EUIDImageSubClassType::END:
+	default:
+		return E_FAIL;
+	}
+	return S_OK;
+}
+
 void CUILoading_Image::OnUIEvent(ETriggerEventType eEvent, CGenericUI* pSender)
 {
 	if (!m_isActive)
@@ -138,18 +137,18 @@ void CUILoading_Image::Initialize_Visible_Event()
 	{
 	case DTO::EUIDImageSubClassType::LOADING_BG:
 	{
-		break;
 	}
+	break;
 	case DTO::EUIDImageSubClassType::LOADING_BG_TOP:
 	{
 		Ready_Lerp_Movement(Vec2{ 0.f, -50.f }, Vec2{ 0.f, 0.f }, 0.5f, 2.f, m_fDelay);
-		break;
 	}
+	break;
 	case DTO::EUIDImageSubClassType::LOADING_BG_BOTTOM:
 	{
 		Ready_Lerp_Movement(Vec2{ 0.f, 50.f }, Vec2{ 0.f, 0.f }, 0.5f, 2.f, m_fDelay);
-		break;
 	}
+	break;
 	case DTO::EUIDImageSubClassType::END:
 	default:
 		break;

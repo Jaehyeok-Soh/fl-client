@@ -1,7 +1,7 @@
 #include "pch.h"
 #include "UIMenu_OutLine.h"
 #include "Client_Defines.h"
-
+#include "Client_EventDefine.h"
 //=================
 // Component
 //=================
@@ -30,7 +30,6 @@ HRESULT CUIMenu_OutLine::Initialize_Prototype()
 HRESULT CUIMenu_OutLine::Initialize(void* pArg)
 {
 	MENU_OUTLINE_DESC* pDesc = static_cast<MENU_OUTLINE_DESC*>(pArg);
-	m_isInteract = true;
 	if (FAILED(Super::Initialize(pArg)))
 		return E_FAIL;
 	if (FAILED(Ready_Components(pDesc)))
@@ -42,6 +41,7 @@ HRESULT CUIMenu_OutLine::Awake(const _uint iCurrentLevelID)
 {
 	if (FAILED(Super::Awake(iCurrentLevelID)))
 		return E_FAIL;
+	m_isInteract = true;
 	return S_OK;
 }
 

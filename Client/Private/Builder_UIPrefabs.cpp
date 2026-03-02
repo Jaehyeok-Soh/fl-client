@@ -387,6 +387,7 @@ CGenericUI::GENERIC_UI_DESC CBuilder_UIPrefabs::Make_DefaultInfo(const DTO::TUI_
 	Desc.wstrTextureTag				= Engine_Utils::ToWString(data.strTextureTag);
 	Desc.wstrNoiseTextureTag		= Engine_Utils::ToWString(data.strNoiseTextureTag);
 	Desc.wstrAlphaMaskTextureTag	= Engine_Utils::ToWString(data.strAlphaMaskTextureTag);
+	Desc.wstrGlowTextureTag			= Engine_Utils::ToWString(data.strGlowTextureTag);
 	Desc.isAlpha					= TRUE;
 	Desc.isInitVisible				= data.isVisible;
 	Desc.isInitInteract				= data.isInteract;

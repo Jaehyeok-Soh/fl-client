@@ -20,7 +20,6 @@ private:
 public:
 	HRESULT Initialize_Prototype() override;
 	HRESULT Initialize(void* pArg) override;
-	HRESULT Attach_Personal_Info(const _uint iCurrentLevelID);
 
 public:
 	virtual HRESULT Awake(const _uint iCurrentLevelID) override;
@@ -33,6 +32,8 @@ public:
 private:
 	HRESULT Ready_Components(BOSS_STAT_TEXT_DESC* pDesc);
 	HRESULT Bind_ShaderResources();
+	HRESULT Attach_Personal_Info();
+
 	HRESULT Convert_Stat_To_Text();
 private:
 	virtual void OnUIEvent(ETriggerEventType eEvent, CGenericUI* pSender)override;

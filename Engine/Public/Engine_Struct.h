@@ -71,7 +71,56 @@ namespace Engine
 		SimpleMath::Vector3 vHitPoint{ SimpleMath::Vector3::Zero };
 		SimpleMath::Vector3 vHitNormal{ SimpleMath::Vector3::Zero };
 		ATTACKER_DESC attackDesc{}; // 지연 처리용
+
+		float			fFinalDamage{ 0.f };
+		unsigned int	iDamageFlag{ 0 };
 	}HIT_DESC;
+
+	typedef struct tagExtraAttDesc
+	{
+		// 규칙 rate의 값은 0 ~ 1로 써야함
+
+		enum class ComputeOrder : unsigned int
+		{
+			Normal_Add
+			, Normal_Rate
+			, Random_Add
+			, Random_Rate
+		};
+
+		// clamp 값 : 만약 x < y 일때만 clamp를 함
+		SimpleMath::Vector2 vFinalDamege_MinMax = { SimpleMath::Vector2::Zero };
+
+		// 어떤 종류의 damege를 주었는가에 대한 추가 정보
+		unsigned int iDamageFlag = { 0 };
+		// 예시 : 0번은 일반 공격, 1번은 critical 공격
+
+		// 0. 단순히 추가할 값
+		float fAddDamage{ 0.f }; 
+		// 연산 규칙 : pre_computed_damage + fAddRate;
+
+		// 1. 기본 데미지에 추가 할 rate
+		float fAddRate{ 0.f };	
+		// 연산 규칙  : pre_computed_damage * (1.f + fAddRate);
+
+		// 2. random으로 추가 될 값
+		float fRandomAdd_Rate{};
+		SimpleMath::Vector2 vRandomAdd_MinMax{ SimpleMath::Vector2::Zero };
+		// 연산 규칙 : random min max에서 값을 랜덤으로 뽑고
+		// rate로 적용 할래 말래 결정
+		// -> 적용 : pre_computed_damage + fAddRate;
+
+		// 3. random으로 곱해질 값
+		float fRandomMul_Rate{};
+		SimpleMath::Vector2 vRandomMul_MinMax{ SimpleMath::Vector2::Zero };
+		// 연산 규칙 : random min max에서 값을 랜덤으로 뽑고
+		// rate로 적용 할래 말래 결정
+		// -> 적용 : pre_computed_damage * (1.f + fAddRate);
+
+		// 넘겨 받은 값들을 통해 연산 순서 맵핑 : ComputeOrder 값 이용
+		std::vector<unsigned int> vecCompute_Order;
+
+	}EXTRA_ATTACK_DESC;
 
 	typedef struct tagCollidedDesc
 	{
@@ -81,6 +130,16 @@ namespace Engine
 		class CGameObject* pRequester{ nullptr };
 		class CGameObject* pOther{ nullptr };
 		COL_HIT_INFO tHitInfo{};
+
+		// EXTRA_HIT_INFO : 값을 넣기 전에 hit info에 추가로 넣을 정보들.
+		// 우리는 이미 attack preset에서 정보를 가져와서 값을 셋팅 해주기 때문에
+		// client쪽에서 상황에 따라 기본 값에 어떠한 변화를 주고 싶다면 추가 적인 정보를 넘겨줘야함
+
+		// CJudgementSystem 안에서
+		// attack preset + extra data를 통해
+		// 최종 damege 를 넘겨준다
+		EXTRA_ATTACK_DESC tExtraDesc{};
+
 	}COLLIDED_DESC;
 
 	typedef struct tagTimeline
@@ -805,6 +864,7 @@ namespace Engine
 		/// Details ///
 		///////////////
 		bool bIsTrigger = { false };
+		bool bIsSkillTrigger = { false };
 		SimpleMath::Vector3 vCenter = {};
 		float fRadius = {};
 		float fHeight = {};

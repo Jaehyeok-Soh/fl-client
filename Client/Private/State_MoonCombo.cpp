@@ -16,6 +16,12 @@ HRESULT CState_MoonCombo::Initialize(void* pArg)
 	tMyDesc.vCombo_CheckTimes = pDesc->vCombo_CheckTimes;
 	tMyDesc.pOwnerGun = pDesc->pOwnerGun;
 
+	tMyDesc.fSlide_CheckTime = pDesc->fSlide_CheckTime;
+
+	tMyDesc.FCollis = CStateBase_Player::COLLISIONFLAGS::C_DOWN
+		| CStateBase_Player::COLLISIONFLAGS::C_Strong
+		| CStateBase_Player::COLLISIONFLAGS::C_Fly;
+
 	tMyDesc.bBlend = true;
 	tMyDesc.bLoop = false;
 	tMyDesc.FAniFlags = 0;

@@ -331,6 +331,7 @@ namespace Client
 	}
 
 	enum class ETriggerEventType { HOVER_ENTER, HOVER_EXIT, PRESS_ENTER, PRESS_EXIT, END };
+
 	enum class EUIFlip
 	{
 		NONE = 0,
@@ -366,21 +367,27 @@ namespace Client
 		return L"NOT_PREFAB";
 	}
 
+	typedef struct tagUINamePlatePrefabData
+	{
+		Vec3 vOffset = {};
+	}UI_NAMEPLATE_PREFAB_DATA;
+
 	typedef struct tagUIDamageFontPrefabData
 	{
 		Vec4	vFontColor = {};
 		Vec3	vHitPos = {};
 		_uint	iDamage = {};
 		Vec3	vRandOffset = {};
-
 	}UI_DAMAGEFONT_PREFAB_DATA;
 
 	typedef struct tagUIPrefabData
 	{
 		CGameObject* pTarget = { nullptr };
+		UI_NAMEPLATE_PREFAB_DATA NamePlateData = {};
 		UI_DAMAGEFONT_PREFAB_DATA DamageFontData = {};
 	}UI_PREFAB_DATA;
 
+	enum class ECombotype {C, B, A, S, END};
 #pragma endregion
 
 #pragma region SKILL

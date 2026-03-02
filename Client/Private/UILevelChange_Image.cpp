@@ -40,38 +40,6 @@ HRESULT CUILevelChange_Image::Initialize(void* pArg)
 	return S_OK;
 }
 
-HRESULT CUILevelChange_Image::Attach_Personal_Info()
-{
-	switch (m_eDImageSubClass)
-	{
-	case DTO::EUIDImageSubClassType::LEVEL_CHAGE_1:
-		break;
-	case DTO::EUIDImageSubClassType::LEVEL_CHAGE_2:
-		m_eNextLevelID = ELevelType::TUTORIAL_VILLAGE;
-		m_wstrText = L"Æ©Åä¸®¾ó ºô¸®Áö";
-		m_vFontColor = Vec4{ 0.0f, 222.0f / 255.0f, 165.0f / 255.0f, 1.f };
-		break;
-	case DTO::EUIDImageSubClassType::LEVEL_CHAGE_3:
-		m_eNextLevelID = ELevelType::TUTORIAL_BOSS;
-		m_wstrText = L"Æ©Åä¸®¾ó º¸½º";
-		m_vFontColor = Vec4{ 0.78f, 0.28f, 0.90f, 1.f };
-		break;
-	case DTO::EUIDImageSubClassType::LEVEL_CHAGE_4:
-		m_eNextLevelID = ELevelType::SQUARE;
-		m_wstrText = L"±¤Àå";
-		m_vFontColor = Vec4{ 0.20f, 0.65f, 1.00f, 1.f };
-		break;
-	case DTO::EUIDImageSubClassType::LEVEL_CHAGE_5:
-		m_eNextLevelID = ELevelType::TEST;
-		m_wstrText = L"Å×½ºÆ®";
-		m_vFontColor = Vec4{ 1.0f, 0.423f, 0.051f, 1.f };
-		break;
-	case DTO::EUIDImageSubClassType::END:
-	default:
-		return E_FAIL;
-	}
-	return S_OK;
-}
 
 HRESULT CUILevelChange_Image::Awake(const _uint iCurrentLevelID)
 {
@@ -84,7 +52,6 @@ HRESULT CUILevelChange_Image::Awake(const _uint iCurrentLevelID)
 
 void CUILevelChange_Image::Update_Priority(const _float fTimeDelta)
 {
-	Acting_By_InteractState();
 	Super::Update_Priority(fTimeDelta);
 }
 
@@ -110,6 +77,7 @@ void CUILevelChange_Image::Update(const _float fTimeDelta)
 void CUILevelChange_Image::Update_Late(const _float fTimeDelta)
 {
 	Super::Update_Late(fTimeDelta);
+	Trigger_By_InteractState();
 }
 
 void CUILevelChange_Image::Ready_Before_Render(const _float fTimeDelta)
@@ -144,7 +112,40 @@ HRESULT CUILevelChange_Image::Bind_ShaderResources()
 	return S_OK;
 }
 
-void CUILevelChange_Image::Acting_By_InteractState()
+HRESULT CUILevelChange_Image::Attach_Personal_Info()
+{
+	switch (m_eDImageSubClass)
+	{
+	case DTO::EUIDImageSubClassType::LEVEL_CHAGE_1:
+		break;
+	case DTO::EUIDImageSubClassType::LEVEL_CHAGE_2:
+		m_eNextLevelID = ELevelType::TUTORIAL_VILLAGE;
+		m_wstrText = L"Æ©Åä¸®¾ó ºô¸®Áö";
+		m_vFontColor = Vec4{ 0.0f, 222.0f / 255.0f, 165.0f / 255.0f, 1.f };
+		break;
+	case DTO::EUIDImageSubClassType::LEVEL_CHAGE_3:
+		m_eNextLevelID = ELevelType::TUTORIAL_BOSS;
+		m_wstrText = L"Æ©Åä¸®¾ó º¸½º";
+		m_vFontColor = Vec4{ 0.78f, 0.28f, 0.90f, 1.f };
+		break;
+	case DTO::EUIDImageSubClassType::LEVEL_CHAGE_4:
+		m_eNextLevelID = ELevelType::SQUARE;
+		m_wstrText = L"±¤Àå";
+		m_vFontColor = Vec4{ 0.20f, 0.65f, 1.00f, 1.f };
+		break;
+	case DTO::EUIDImageSubClassType::LEVEL_CHAGE_5:
+		m_eNextLevelID = ELevelType::TEST;
+		m_wstrText = L"Å×½ºÆ®";
+		m_vFontColor = Vec4{ 1.0f, 0.423f, 0.051f, 1.f };
+		break;
+	case DTO::EUIDImageSubClassType::END:
+	default:
+		return E_FAIL;
+	}
+	return S_OK;
+}
+
+void CUILevelChange_Image::Trigger_By_InteractState()
 {
 	if (Engine_Utils::Has_Flag(m_iInteractState, EUIEvent_Flag::HOVER_ENTER))
 	{
@@ -162,7 +163,6 @@ void CUILevelChange_Image::Acting_By_InteractState()
 		m_pGameInstance->Request_ChangeLevel(ENUM_TO_UINT(ELevelType::LOADING), CLevel_Loading::Create(m_pDevice, m_pDeviceContext, m_eNextLevelID));
 		m_pUIManager->Request_Clear();
 	}
-
 }
 
 void CUILevelChange_Image::OnUIEvent(ETriggerEventType eEvent, CGenericUI* pSender)

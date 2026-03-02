@@ -151,33 +151,6 @@ void CLevel_Test::Update(const _float fTimeDelta)
 #endif
 		m_pGameInstance->Request_CursorMode(m_eCursorMode);
 	}
-
-	if (KEY_BUTTON_DOWN(DIK_5))
-	{
-		UI_PREFAB_DATA Desc = {};
-		Desc.DamageFontData.iDamage = m_pGameInstance->Rand_Int(100, 1000);
-		Desc.DamageFontData.vFontColor = Vec4(0.f, 0.f, 1.f, 1.f);
-		Desc.DamageFontData.vHitPos = Vec3{ 0.f, 0.f, 0.f };
-		CUI_Manager::GetInstance()->Request_Add_Prefab(ENUM_TO_UINT(ELevelType::TEST), EUIPrefabType::DAMAGE_FONTS_COMMON, ENUM_TO_UINT(ELevelType::TEST), &Desc);
-	}
-	if (KEY_BUTTON_DOWN(DIK_6))
-	{
-		UI_PREFAB_DATA Desc = {};
-		Desc.DamageFontData.iDamage = m_pGameInstance->Rand_Int(2000, 10000);
-		Desc.DamageFontData.vFontColor = Vec4(0.f, 1.f, 1.f, 1.f);
-		Desc.DamageFontData.vHitPos = Vec3{ 0.f, 0.f, 0.f };
-		CUI_Manager::GetInstance()->Request_Add_Prefab(ENUM_TO_UINT(ELevelType::TEST), EUIPrefabType::DAMAGE_FONTS_CRITICAL, ENUM_TO_UINT(ELevelType::TEST), &Desc);
-	}
-	if (KEY_BUTTON_DOWN(DIK_7))
-	{
-		UI_PREFAB_DATA Desc = {};
-		Desc.DamageFontData.iDamage = m_pGameInstance->Rand_Int(1, 999);
-
-		Desc.DamageFontData.vFontColor = Vec4(1.f, 0.f, 1.f, 1.f);
-		Desc.DamageFontData.vHitPos = Vec3{ 0.f, 0.f, 0.f };
-		CUI_Manager::GetInstance()->Request_Add_Prefab(ENUM_TO_UINT(ELevelType::TEST), EUIPrefabType::DAMAGE_FONTS_HIT, ENUM_TO_UINT(ELevelType::TEST), &Desc);
-	
-	}
 	if (KEY_BUTTON_DOWN(DIK_8))
 	{
 		UI_PREFAB_DATA Desc = {};

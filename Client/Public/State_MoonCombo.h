@@ -20,6 +20,8 @@ public:
 
 		CGun* pOwnerGun = { nullptr };
 
+		_float fSlide_CheckTime = { 0.f };
+
 	}MOONCOMBO_DESC;
 
 private:
