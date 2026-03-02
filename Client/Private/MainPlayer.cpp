@@ -226,6 +226,8 @@ void CMainPlayer::OnCollision_Enter(_uint iMyColliderLayer, _uint iOtherLayer, C
     desc.pOther = pOther;
     desc.tHitInfo = tHitInfo;
 
+    desc.tExtraDesc = Get_Component<CStatCom_Player>()->Get_ExtraAttack_Desc();
+
     m_pGameInstance->Push_CollidedData(desc);
 }
 
@@ -314,11 +316,28 @@ void CMainPlayer::Try_Attack(const HIT_DESC& hitDesc)
 
     CLOG_INFO(infoContant);
 
-    // 일반 공격 데미지 폰트
+    // player state에 따라 combo count 증가 여부 결정
+    CStatCom_Player* pStat = Get_Component<CStatCom_Player>();
+    switch ((_uint)Get_Component<CActionState>()->Get_CurrentStateIndex())
+    {
+    case ENUM_TO_UINT(State::COMBO):
+    case ENUM_TO_UINT(State::JUMPATTEND):
+        pStat->Add_ComboCount();
+        break;
+
+    default:
+        pStat->Reset_ComboCount();
+    }
+
+    // damage 폰트 : iDamageFlag에 따라 크리티컬 || 일반 판정
+    switch (hitDesc.iDamageFlag)
+    {
+    case 0:
+        // 일반 공격 데미지 폰트
     {
         UI_PREFAB_DATA tPrefabData = {};
-        tPrefabData.DamageFontData.iDamage = 100 + m_pGameInstance->Rand_Int(-10, 10); // 데미지 폰트에 뜰 숫자 // 플레이어 공격력 // 랜덤은 보여주기용
-        tPrefabData.DamageFontData.vFontColor = Vec4{ 1.f, 0.f, 0.f, 1.f }; // 데미지 폰트 색 // 캐릭터 고유 색
+        tPrefabData.DamageFontData.iDamage = hitDesc.fFinalDamage; // 데미지 폰트에 뜰 숫자 // 플레이어 공격력 // 랜덤은 보여주기용
+        tPrefabData.DamageFontData.vFontColor = Vec4{ 1.f, 0.95f, 0.47f, 1.f }; // 데미지 폰트 색 // 캐릭터 고유 색
         tPrefabData.DamageFontData.vHitPos = hitDesc.vHitPoint; // 데미지 폰트를 띄울 World 위치 // 
         tPrefabData.DamageFontData.vRandOffset = Vec3{
             m_pGameInstance->Rand_Float(-1.f, 1.f),
@@ -328,11 +347,13 @@ void CMainPlayer::Try_Attack(const HIT_DESC& hitDesc)
         CUI_Manager::GetInstance()->Request_Add_Prefab(
             m_pGameInstance->Get_CurrentLevelIndex(), EUIPrefabType::DAMAGE_FONTS_COMMON, m_pGameInstance->Get_CurrentLevelIndex(), &tPrefabData);
     }
-    // 크리티컬 데미지 폰트
+    break;
+    case 1:
+        // 크리티컬 데미지 폰트
     {
         UI_PREFAB_DATA tPrefabData = {};
-        tPrefabData.DamageFontData.iDamage = 1000 + m_pGameInstance->Rand_Int(-100, 100);
-        tPrefabData.DamageFontData.vFontColor = Vec4{ 1.f, 0.f, 0.f, 1.f };
+        tPrefabData.DamageFontData.iDamage = hitDesc.fFinalDamage;
+        tPrefabData.DamageFontData.vFontColor = Vec4{ 1.f, 0.95f, 0.47f, 1.f };
         tPrefabData.DamageFontData.vHitPos = hitDesc.vHitPoint;
         tPrefabData.DamageFontData.vRandOffset = Vec3{
             m_pGameInstance->Rand_Float(-1.f, 1.f),
@@ -340,6 +361,8 @@ void CMainPlayer::Try_Attack(const HIT_DESC& hitDesc)
             m_pGameInstance->Rand_Float(-1.f, 1.f) };
         CUI_Manager::GetInstance()->Request_Add_Prefab(
             m_pGameInstance->Get_CurrentLevelIndex(), EUIPrefabType::DAMAGE_FONTS_CRITICAL, m_pGameInstance->Get_CurrentLevelIndex(), &tPrefabData);
+    }
+    break;
     }
 
     m_pGameInstance->Broadcast<COMBO_ATTACK_EVENT_START>();
@@ -524,6 +547,19 @@ HRESULT CMainPlayer::Ready_Ability()
 
         desc.pESkill = pESkill;
         desc.pQSkill = pQSkill;
+
+        vector<_uint> vecComputeOrder;
+        {
+            vecComputeOrder.resize(4);
+            vecComputeOrder[0] = ENUM_TO_UINT(EXTRA_ATTACK_DESC::ComputeOrder::Normal_Add);
+            vecComputeOrder[1] = ENUM_TO_UINT(EXTRA_ATTACK_DESC::ComputeOrder::Random_Add);
+            vecComputeOrder[2] = ENUM_TO_UINT(EXTRA_ATTACK_DESC::ComputeOrder::Normal_Rate);
+            vecComputeOrder[3] = ENUM_TO_UINT(EXTRA_ATTACK_DESC::ComputeOrder::Random_Rate);
+        }
+
+        desc.vecExtraComputeOrder = vecComputeOrder;
+        desc.fCriticalAttack = 30.f;
+        desc.fCriticalRate = 0.3f;
 
         if (FAILED(Add_Component<CMyStat>(0/* STATIC */, L"Prototype_Component_Stat_Player", &desc)))
             return E_FAIL;

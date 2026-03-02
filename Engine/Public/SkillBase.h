@@ -81,6 +81,8 @@ public:
 	 
 	virtual _bool On_Collision(const _float fTimeDelta, CGameObject* pObj = nullptr); // 충돌 했을 때
 
+	virtual void Set_ExtraAttack_Desc(EXTRA_ATTACK_DESC& tStat_ExtraDesc, CMyStat* pOwnerStat) {};
+
 	// getter setter fucs
 public:
 	const SKILL_INFO& Get_SkillDesc() const { return m_tSkillInfo; }

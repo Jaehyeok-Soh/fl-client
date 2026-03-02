@@ -21,6 +21,8 @@ public:
 
 	virtual _bool On_Collision(const _float fTimeDelta, CGameObject* pObj = nullptr)override;
 
+	virtual void Set_ExtraAttack_Desc(EXTRA_ATTACK_DESC& tStat_ExtraDesc, CMyStat* pOwnerStat) override;
+
 private:
 	virtual void Update_Skill(const _float fTimeDelta)override;
 

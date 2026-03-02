@@ -5,6 +5,8 @@
 #include "PlayerControlContext.h"
 #include "Engine_Utils.h"
 
+#include "GameInstance.h"
+
 CStatCom_Player::CStatCom_Player()
 	:Super()
 {
@@ -20,6 +22,7 @@ CStatCom_Player::CStatCom_Player(const CStatCom_Player& rhs)
 	, m_iSkillAttack(rhs.m_iSkillAttack)
 	, m_pESkillBase(rhs.m_pESkillBase)
 	, m_pQSkillBase(rhs.m_pQSkillBase)
+	, m_tExtra_AttackDesc(rhs.m_tExtra_AttackDesc)
 {
 }
 
@@ -50,7 +53,10 @@ HRESULT CStatCom_Player::Initialize(void* pArg)
 	Safe_AddRef(m_pESkillBase);
 	Safe_AddRef(m_pQSkillBase);
 
+	m_tExtra_AttackDesc.vecCompute_Order  = std::move(pDesc->vecExtraComputeOrder);
 
+	m_fCriticalRate = pDesc->fCriticalRate;
+	m_fCirticalAttack = pDesc->fCriticalAttack;
 
 	// 초기는 우선 근접 무기로 설정해둠
 	m_FAttState = Attack_State::Melee;
@@ -68,6 +74,41 @@ void CStatCom_Player::Update_Stat(const _float fTimeDelta)
 
 	Count_Dash(fTimeDelta);
 	Count_Combo(fTimeDelta);
+}
+
+const EXTRA_ATTACK_DESC& CStatCom_Player::Get_ExtraAttack_Desc()
+{
+	// 상황에 맞게 값을 설정해서 내보자
+
+	// critical 정보 처리 : test용으로 일단 무조건 criticla
+	if (m_fCriticalRate + m_fCirticalRate_Add >1.f ||
+	 m_fCriticalRate + m_fCirticalRate_Add <= m_pGameInstance->Rand_Float(0.f, 1.f))
+	{
+		m_tExtra_AttackDesc.iDamageFlag = 1;
+
+		// critical은 일단 더하기로 하는걸로
+		m_tExtra_AttackDesc.fAddDamage = m_fCirticalAttack;
+	}
+	else
+	{
+		m_tExtra_AttackDesc.iDamageFlag = 0;
+		m_tExtra_AttackDesc.fAddDamage = 0.f;
+	}
+
+	// skill 이 켜져 있다면 안에서 값 수정 하도록 설정
+	if (Engine_Utils::Has_Flag(m_FAttState, Attack_State::E))
+	{
+		m_pESkillBase->Set_ExtraAttack_Desc(m_tExtra_AttackDesc, this);
+	}
+	if (Engine_Utils::Has_Flag(m_FAttState, Attack_State::Q))
+	{
+		m_pQSkillBase->Set_ExtraAttack_Desc(m_tExtra_AttackDesc,this);
+	}
+
+	// 연산 순서 : 우선은 stat 복사 생성시 desc으로 받도록 하자
+	// 좀 복잡해진다면 flag mask 검사후 order 지정
+
+	return m_tExtra_AttackDesc;
 }
 
 _bool CStatCom_Player::Set_AttackState(_uint iState, _bool bOn)
@@ -131,6 +172,13 @@ _bool CStatCom_Player::Set_AttackState(_uint iState, _bool bOn)
 		Engine_Utils::Add_Flag(m_FStatFlags, StatFlags::SheildOn);
 
 	return true;
+}
+
+void CStatCom_Player::Reset_ComboCount()
+{
+	m_iComboCount = 0;
+	m_tComboTimeCounter.fTimeAcc = 0.f;
+	m_tComboTimeCounter.bCountTime = false;
 }
 
 void CStatCom_Player::Add_ComboCount()

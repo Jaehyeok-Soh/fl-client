@@ -65,13 +65,18 @@ void CSkillComp_MoonE::End_Skill(CMyStat* pStatCom)
 	Super::End_Skill(pStatCom);
 
 	static_cast<CStatCom_Player*>(pStatCom)->Set_AttackState(CStatCom_Player::Attack_State::E, false);
-
+	static_cast<CStatCom_Player*>(pStatCom)->Set_Critical_AddRate(0.f);
 	// 충돌체 회수
 }
 
 _bool CSkillComp_MoonE::On_Collision(const _float fTimeDelta, CGameObject* pObj)
 {
 	return false;
+}
+
+void CSkillComp_MoonE::Set_ExtraAttack_Desc(EXTRA_ATTACK_DESC& tStat_ExtraDesc, CMyStat* pOwnerStat)
+{
+	static_cast<CStatCom_Player*>(pOwnerStat)->Set_Critical_AddRate(1.f);
 }
 
 void CSkillComp_MoonE::Update_Skill(const _float fTimeDelta)
