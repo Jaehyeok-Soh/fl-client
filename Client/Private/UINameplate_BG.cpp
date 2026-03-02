@@ -158,6 +158,7 @@ HRESULT CUINameplate_BG::Spawn_FromPool(void* pArg)
 		return E_FAIL;
 
 	m_pWorldUIComp->Set_Target(pDesc->pTarget);
+	m_pWorldUIComp->Set_TargetWorldOffset(pDesc->NamePlateData.vOffset);
 	m_pTargetMoster = pDesc->pTarget;
 	/* 몬스터 스탯 컴포넌트 부착 */
 

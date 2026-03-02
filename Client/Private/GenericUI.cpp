@@ -121,6 +121,8 @@ void CGenericUI::Ready_Before_Render(const _float fTimeDelta)
 
 	if (nullptr != m_pWorldUIComp)
 	{
+		if (m_strName == "MonsterHP_BG")
+			int a = 0;
 		Set_Position(Vec3{ m_pWorldUIComp->Get_TargetScreenPos().x + m_vMoveOffset.x , m_pWorldUIComp->Get_TargetScreenPos().y + m_vMoveOffset.y, m_fZ }) ;
 		Move_Size(m_fWidth * m_pWorldUIComp->Get_ScaleOffset(), m_fHeight * m_pWorldUIComp->Get_ScaleOffset());
 	}

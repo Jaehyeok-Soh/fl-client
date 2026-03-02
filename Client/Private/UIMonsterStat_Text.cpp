@@ -183,6 +183,8 @@ HRESULT CUIMonsterStat_Text::Spawn_FromPool(void* pArg)
 
 	m_pWorldUIComp->Set_Target(pDesc->pTarget);
 	m_pTargetMoster = pDesc->pTarget;
+	m_pWorldUIComp->Set_TargetWorldOffset(pDesc->NamePlateData.vOffset);
+
 	m_pTargetStat = pDesc->pTarget->Get_Component<CMyStat>();
 	if (nullptr == m_pTargetStat)
 		return E_FAIL;

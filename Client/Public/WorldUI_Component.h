@@ -43,6 +43,7 @@ public:
 
 	void Set_Target(CGameObject* pTarget) { m_pTargetObject = pTarget; }
 	void Set_TargetPos(const Vec3& vPos ) { m_vTargetPos = vPos; }
+	void Set_TargetWorldOffset(const Vec3& vOffset ) { m_vTargetWorldOffset = vOffset; }
 
 private:
 	CGameInstance* m_pGameInstance = { nullptr };
@@ -58,6 +59,7 @@ private:
 	Vec2 m_fCalcOffset			= {};
 	Vec2 m_vScreenPos			= {};
 	_float m_fScaleOffset		= {};
+	Vec3 m_vTargetWorldOffset	= {};
 
 	_bool m_isRequestScaleOffset = { false };
 	_float m_fRequestScaleOffset = {};
