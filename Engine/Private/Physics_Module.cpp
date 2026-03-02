@@ -316,6 +316,11 @@ PxController* CPhysics_Module::GetController(PHYSICSCCT_DESC* pDesc)
 	return m_pCCTManager->GetController(pDesc);
 }
 
+CPhysics_CCTFilterCallback* CPhysics_Module::GetCCTFilterCallback()
+{
+	return m_pCCTManager->GetCCTFilterCallback();
+}
+
 PxFilterFlags CPhysics_Module::FilterShader(
 	PxFilterObjectAttributes attributes0, PxFilterData filterData0,
 	PxFilterObjectAttributes attributes1, PxFilterData filterData1,
