@@ -36,6 +36,9 @@ protected:
 	HRESULT Bind_ShaderResources();
 
 protected:
+	virtual HRESULT Spawn_FromPool(void* pArg) override;
+	virtual HRESULT Despawn_FromPool()override;
+protected:
 	DTO::EUIDImageSubClassType m_eDImageSubClass = {};
 
 

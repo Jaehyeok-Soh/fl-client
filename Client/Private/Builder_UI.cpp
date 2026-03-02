@@ -15,6 +15,7 @@
 #include "UILoading_Text.h"
 #include "UIMonsterStat_Text.h"
 #include "UICombo_Text.h"
+#include "UIBossAction_Text.h"
 // 다이나믹 이미지 클래스
 #include "UIMenu_Image.h"
 #include "UIHover_Image.h"
@@ -26,6 +27,7 @@
 #include "UIAimDot_Image.h"	
 #include "UILevelChange_Image.h"
 #include "UICombo_Image.h"
+#include "UIBossAction_Image.h"
 
 // 트리거 클래스
 #include "UICommon_Trigger.h"
@@ -254,6 +256,10 @@ HRESULT CBuilder_UI::Register_Class(DTO::EUIClassType eClassType, const DTO::TUI
 		}
 	}
 
+	//Prototype_UI_BossActionImage
+	//Prototype_UI_BossActionText
+
+
 	////////////////////////////////////////
 	// UI_TEXT //
 	else if (eClassType == DTO::EUIClassType::UI_TEXT)
@@ -269,6 +275,7 @@ HRESULT CBuilder_UI::Register_Class(DTO::EUIClassType eClassType, const DTO::TUI
 		const _bool isLoading			= (Type >= DTO::EUITextSubClassType::LOADING_TEXT_BEGIN && Type <= DTO::EUITextSubClassType::LOADING_TEXT_END);
 		const _bool isMonsterNameplate	= (Type >= DTO::EUITextSubClassType::MONSTER_STAT_TEXT_BEGIN && Type <= DTO::EUITextSubClassType::MONSTER_STAT_TEXT_END);
 		const _bool isCombo				= (Type >= DTO::EUITextSubClassType::BATTLE_COMBO_TEXT_BEGIN && Type <= DTO::EUITextSubClassType::BATTLE_COMBO_TEXT_END);
+		const _bool isBossCivila		= (Type >= DTO::EUITextSubClassType::BOSS_CIVILA_ACTION_BEGIN && Type <= DTO::EUITextSubClassType::BOSS_CIVILA_ACTION_END);
 
 		static_cast<CGenericUI::GENERIC_UI_DESC&>(TextDesc) = DefaultDesc;
 		TextDesc.eTextSubClass	= Type;
@@ -305,6 +312,12 @@ HRESULT CBuilder_UI::Register_Class(DTO::EUIClassType eClassType, const DTO::TUI
 			CUICombo_Text::COMBO_TEXT_DESC ComboTextDesc = {};
 			static_cast<CUIText::UI_TEXT_DESC&>(ComboTextDesc) = TextDesc;
 			pResult = m_pGameInstance->Add_GameObject(ENUM_TO_UINT(ELevelType::STATIC), L"Prototype_UI_ComboText", m_iLevelID, g_wszUILayer, &ComboTextDesc);
+		}
+		else if (isBossCivila)
+		{
+			CUIBossAction_Text::BOSS_ACTION_TEXT_DESC BossActionTextDesc= {};
+			static_cast<CUIText::UI_TEXT_DESC&>(BossActionTextDesc) = TextDesc;
+			pResult = m_pGameInstance->Add_GameObject(ENUM_TO_UINT(ELevelType::STATIC), L"Prototype_UI_BossActionText", m_iLevelID, g_wszUILayer, &BossActionTextDesc);
 		}
 		else
 		{
@@ -396,6 +409,7 @@ HRESULT CBuilder_UI::Register_Class(DTO::EUIClassType eClassType, const DTO::TUI
 		const _bool isAimDot			= (Type >= DTO::EUIDImageSubClassType::BATTLE_UI_BEGIN		&& Type <= DTO::EUIDImageSubClassType::BATTLE_UI_END);
 		const _bool isLevelChange		= (Type >= DTO::EUIDImageSubClassType::LEVEL_CHAGE_1		&& Type <= DTO::EUIDImageSubClassType::LEVEL_CHAGE_5);
 		const _bool isCombo				= (Type >= DTO::EUIDImageSubClassType::BATTLE_COMBO_BEGIN	&& Type <= DTO::EUIDImageSubClassType::BATTLE_COMBO_END);
+		const _bool isBossCivila		= (Type >= DTO::EUIDImageSubClassType::BOSS_CIVILA_ACTION_BEGIN && Type <= DTO::EUIDImageSubClassType::BOSS_CIVILA_ACTION_END);
 
 		if (isPlayerSkill)
 		{
@@ -459,6 +473,13 @@ HRESULT CBuilder_UI::Register_Class(DTO::EUIClassType eClassType, const DTO::TUI
 			static_cast<CGenericUI::GENERIC_UI_DESC&>(ComboImageDesc) = DefaultDesc;
 			ComboImageDesc.eSubClassType = Type;
 			pResult = m_pGameInstance->Add_GameObject(ENUM_TO_UINT(ELevelType::STATIC), L"Prototype_UI_ComboImage", m_iLevelID, g_wszUILayer, &ComboImageDesc);
+		}
+		else if (isBossCivila)
+		{
+			CUIBossAction_Image::BOSS_ACTION_IMAGE_DESC BossActionImageDesc= {};
+			static_cast<CGenericUI::GENERIC_UI_DESC&>(BossActionImageDesc) = DefaultDesc;
+			BossActionImageDesc.eSubClassType = Type;
+			pResult = m_pGameInstance->Add_GameObject(ENUM_TO_UINT(ELevelType::STATIC), L"Prototype_UI_BossActionImage", m_iLevelID, g_wszUILayer, &BossActionImageDesc);
 		}
 		else
 		{

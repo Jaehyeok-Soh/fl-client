@@ -104,7 +104,8 @@ HRESULT CUIMonsterStat_Text::Bind_ShaderResources()
 
 HRESULT CUIMonsterStat_Text::Attach_Personal_Info()
 {
-	m_pGameInstance->Subscribe<MONSTER_DEAD_EVENT_START>([this](CGameObject* pDead)
+	m_pGameInstance->Subscribe<MONSTER_DEAD_EVENT_START>(
+		[this](CGameObject* pDead)
 		{
 			if (pDead == m_pTargetMoster)
 				this->Set_Invisible();
@@ -171,6 +172,8 @@ _bool CUIMonsterStat_Text::Tick_InVisible_Event(const _float fTimeDelta)
 
 HRESULT CUIMonsterStat_Text::Spawn_FromPool(void* pArg)
 {
+	if (FAILED(Super::Spawn_FromPool(pArg)))
+		return E_FAIL;
 	UI_PREFAB_DATA* pDesc = static_cast<UI_PREFAB_DATA*>(pArg);
 
 	auto* pComp = Get_Script_Component(L"WorldUIComponent");
@@ -195,6 +198,8 @@ HRESULT CUIMonsterStat_Text::Spawn_FromPool(void* pArg)
 
 HRESULT CUIMonsterStat_Text::Despawn_FromPool()
 {
+	if (FAILED(Super::Despawn_FromPool()))
+		return E_FAIL;
 	return S_OK;
 }
 

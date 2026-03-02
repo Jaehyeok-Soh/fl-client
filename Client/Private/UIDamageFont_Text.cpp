@@ -326,6 +326,9 @@ _bool CUIDamageFont_Text::Tick_InVisible_Event(const _float fTimeDelta)
 
 HRESULT CUIDamageFont_Text::Spawn_FromPool(void* pArg)
 {
+	if (FAILED(Super::Spawn_FromPool(pArg)))
+		return E_FAIL;
+
 	UI_PREFAB_DATA* pDesc = static_cast<UI_PREFAB_DATA*>(pArg);
 	auto* pComp = Get_Script_Component(L"WorldUIComponent");
 	if (nullptr == pComp)
@@ -407,6 +410,8 @@ HRESULT CUIDamageFont_Text::Spawn_FromPool(void* pArg)
 
 HRESULT CUIDamageFont_Text::Despawn_FromPool()
 {
+	if (FAILED(Super::Despawn_FromPool()))
+		return E_FAIL;
 	m_vFontColor				= m_vOriginFontColor;
 	m_fDamageFontScaleOffet		= 1.f;
 	m_isVisible					= false;

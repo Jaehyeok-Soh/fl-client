@@ -289,6 +289,8 @@
     <ClInclude Include="..\Public\UIAimDot_Image.h" />
     <ClInclude Include="..\Public\TriggerBox.h" />
     <ClInclude Include="..\Public\TriggerBox_LevelChange.h" />
+    <ClInclude Include="..\Public\UIBossAction_Image.h" />
+    <ClInclude Include="..\Public\UIBossAction_Text.h" />
     <ClInclude Include="..\Public\UIBossStat_Image.h" />
     <ClInclude Include="..\Public\UIBossStat_Progress.h" />
     <ClInclude Include="..\Public\UIBossStat_Text.h" />
@@ -489,6 +491,8 @@
     <ClCompile Include="..\Private\TriggerBox_LevelChange.cpp" />
     <ClCompile Include="..\Private\TriggerBox_MonsterSpawner.cpp" />
     <ClCompile Include="..\Private\UIAimDot_Image.cpp" />
+    <ClCompile Include="..\Private\UIBossAction_Image.h.cpp" />
+    <ClCompile Include="..\Private\UIBossAction_Text.cpp" />
     <ClCompile Include="..\Private\UIBossStat_Image.cpp" />
     <ClCompile Include="..\Private\UIBossStat_Progress.cpp" />
     <ClCompile Include="..\Private\UIBossStat_Text.cpp" />

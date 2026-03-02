@@ -40,8 +40,6 @@ HRESULT CUILoading_Text::Initialize(void* pArg)
 	return S_OK;
 }
 
-
-
 HRESULT CUILoading_Text::Awake(const _uint iCurrentLevelID)
 {
 	if (FAILED(Super::Awake(iCurrentLevelID)))
@@ -76,7 +74,6 @@ void CUILoading_Text::Update(const _float fTimeDelta)
 			m_fPercentTimeAcc = 0.f;
 		}
 	}
-
 }
 
 void CUILoading_Text::Update_Late(const _float fTimeDelta)
@@ -96,7 +93,7 @@ void CUILoading_Text::Ready_Before_Render(const _float fTimeDelta)
 	if (MOUSE_RBUTTON_DOWN)
 	{
 		m_iCurTextCursor++;
-		if (m_iCurTextCursor >= 6)
+		if (m_iCurTextCursor >= m_vecText.size())
 			m_iCurTextCursor = 0;
 	}
 
@@ -134,26 +131,25 @@ HRESULT CUILoading_Text::Bind_ShaderResources()
 HRESULT CUILoading_Text::Attach_Personal_Info()
 {
 	m_iCurTextCursor = 0;
+	m_vecText.reserve(10);
 
 	switch (m_eTextSubClassType)
 	{
 	case DTO::EUITextSubClassType::LOADING_TEXT_TITLE:
-		m_vecTitleText.reserve(10);
-		m_vecTitleText.push_back(L"∞≠∫¥¡ÿ");
-		m_vecTitleText.push_back(L"º“¿Á«ı");
-		m_vecTitleText.push_back(L"√÷¡§øÏ");
-		m_vecTitleText.push_back(L"πŒ∞«»Ò");
-		m_vecTitleText.push_back(L"±Ë¿∫∫Ò");
-		m_vecTitleText.push_back(L"πÈΩ¬πŒ");
+		m_vecText.push_back(L"∞≠∫¥¡ÿ");
+		m_vecText.push_back(L"º“¿Á«ı");
+		m_vecText.push_back(L"√÷¡§øÏ");
+		m_vecText.push_back(L"πŒ∞«»Ò");
+		m_vecText.push_back(L"±Ë¿∫∫Ò");
+		m_vecText.push_back(L"πÈΩ¬πŒ");
 		break;
 	case DTO::EUITextSubClassType::LOADING_TEXT_CONTENTS:
-		m_vecContentsText.reserve(10);
-		m_vecContentsText.push_back(L"∆¿¿Â / «¡∑π¿”øˆ≈©");
-		m_vecContentsText.push_back(L"º“πÊ∞¸ / ««¡˜Ω∫");
-		m_vecContentsText.push_back(L"¿Ã∆Â∆Æ");
-		m_vecContentsText.push_back(L"∏ ");
-		m_vecContentsText.push_back(L"«√∑π¿ÃæÓ");
-		m_vecContentsText.push_back(L"UI");
+		m_vecText.push_back(L"∆¿¿Â / «¡∑π¿”øˆ≈©");
+		m_vecText.push_back(L"º“πÊ∞¸ / ««¡˜Ω∫");
+		m_vecText.push_back(L"¿Ã∆Â∆Æ");
+		m_vecText.push_back(L"∏ ");
+		m_vecText.push_back(L"«√∑π¿ÃæÓ");
+		m_vecText.push_back(L"UI");
 		break;
 	}
 	return S_OK;
@@ -192,18 +188,13 @@ HRESULT CUILoading_Text::Convert_Value_To_Text()
 	switch (m_eTextSubClassType)
 	{
 	case DTO::EUITextSubClassType::LOADING_TEXT_TITLE:
-		m_wstrText = m_vecTitleText[m_iCurTextCursor];
-		break;
 	case DTO::EUITextSubClassType::LOADING_TEXT_CONTENTS:
-		m_wstrText = m_vecContentsText[m_iCurTextCursor];
-		break;
-	case DTO::EUITextSubClassType::LOADING_TEXT_PERCENT:
-		break;
-	case DTO::EUITextSubClassType::END:
-		break;
-	default:
-		break;
+		if (m_vecText.empty())
+			break;
+	m_wstrText = m_vecText[m_iCurTextCursor];
+	break;
 	}
+
 	return S_OK;
 }
 

@@ -244,9 +244,6 @@
     <Filter Include="03. GameObject\PartObjects\Monster">
       <UniqueIdentifier>{dd6c64a1-8604-4ada-acfe-59285f1d7176}</UniqueIdentifier>
     </Filter>
-    <Filter Include="03. GameObject\UIObjects\02.UI\Text\Monster Stat Text">
-      <UniqueIdentifier>{5d3f0be5-ffc3-44fc-9119-9d81aa03b857}</UniqueIdentifier>
-    </Filter>
     <Filter Include="03. GameObject\UIObjects\02.UI\Progress Bar\Monster Stat">
       <UniqueIdentifier>{4b1e0e58-01df-4e73-867d-55b38392bafa}</UniqueIdentifier>
     </Filter>
@@ -439,9 +436,6 @@
     <Filter Include="03. GameObject\UIObjects\02.UI\Text">
       <UniqueIdentifier>{4c552970-7965-46f3-85ec-73d256c4eba8}</UniqueIdentifier>
     </Filter>
-    <Filter Include="03. GameObject\UIObjects\02.UI\Text\Loading Text">
-      <UniqueIdentifier>{0ebf2b41-2b05-4ee9-a49a-641d42db1c72}</UniqueIdentifier>
-    </Filter>
     <Filter Include="03. GameObject\UIObjects\02.UI\Trigger">
       <UniqueIdentifier>{48b4a088-d124-4a5f-a826-7eac6ea855f7}</UniqueIdentifier>
     </Filter>
@@ -612,6 +606,15 @@
     </Filter>
     <Filter Include="03. GameObject\UIObjects\02.UI\Image\Dynamic Image\01.Minimap\System">
       <UniqueIdentifier>{983fdad9-a3a4-4156-8c20-f76207079595}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="03. GameObject\UIObjects\02.UI\Image\Dynamic Image\10.BossAction">
+      <UniqueIdentifier>{b0b078a9-8ce6-4282-a6a1-54bc4c207760}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="03. GameObject\UIObjects\02.UI\Image\Dynamic Image\10.BossAction\00.Civila">
+      <UniqueIdentifier>{7d9d5bd4-6815-48d2-8b72-f3d68ed904d3}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="03. GameObject\UIObjects\02.UI\Text\07.Boss Action Text">
+      <UniqueIdentifier>{a2af5a55-b193-4379-9444-0576a571b3a0}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
@@ -1138,6 +1141,12 @@
     <ClInclude Include="..\Public\UIMiniMap_Monster_Icon.h">
       <Filter>03. GameObject\UIObjects\02.UI\Image\Dynamic Image\01.Minimap\Monster Icon</Filter>
     </ClInclude>
+    <ClInclude Include="..\Public\UIBossAction_Image.h">
+      <Filter>03. GameObject\UIObjects\02.UI\Image\Dynamic Image\10.BossAction\00.Civila</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\UIBossAction_Text.h">
+      <Filter>03. GameObject\UIObjects\02.UI\Text\07.Boss Action Text</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <Image Include="Client.ico">
@@ -1654,6 +1663,12 @@
     </ClCompile>
     <ClCompile Include="..\Private\UIMiniMap_Monster_Icon.cpp">
       <Filter>03. GameObject\UIObjects\02.UI\Image\Dynamic Image\01.Minimap\Monster Icon</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\UIBossAction_Image.h.cpp">
+      <Filter>03. GameObject\UIObjects\02.UI\Image\Dynamic Image\10.BossAction\00.Civila</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\UIBossAction_Text.cpp">
+      <Filter>03. GameObject\UIObjects\02.UI\Text\07.Boss Action Text</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
