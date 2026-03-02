@@ -8,6 +8,8 @@
 #include "GameInstance.h"
 #include "Engine_Utils.h"
 
+#include "PhysicsCCT.h"
+
 CMonsterControlContext::CMonsterControlContext()
 	: Super()
 {
@@ -466,6 +468,16 @@ void CMonsterControlContext::UpdateTurn90(const _float fTimeDelta)
 
 void CMonsterControlContext::UpdateTrun180(const _float fTimeDelta)
 {
+}
+
+void CMonsterControlContext::Set_CCT_Collision_Disable()
+{
+	Get_Owner()->Get_Component<CPhysicsCCT>()->EnableCollision(false);
+}
+
+void CMonsterControlContext::Set_CCT_Collision_Enable()
+{
+	Get_Owner()->Get_Component<CPhysicsCCT>()->EnableCollision(true);
 }
 
 CMonsterControlContext* CMonsterControlContext::Create()

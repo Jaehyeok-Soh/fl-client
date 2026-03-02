@@ -126,6 +126,8 @@ public:
 
     void SetIsSteppingOnCCT();
 
+    void EnableCollision(_bool bEnable);
+
 private:
     ID3D11Device* m_pDevice = { nullptr };
     ID3D11DeviceContext* m_pDeviceContext = { nullptr };
