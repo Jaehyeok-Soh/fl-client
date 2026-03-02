@@ -14,6 +14,7 @@
 // 다이나믹 이미지 클래스
 #include "UINameplate_BG.h"
 #include "UIBossStat_Image.h"
+#include "UIMiniMap_Monster_Icon.h"
 // 트리거 클래스
 
 #include"UI_Manager.h"
@@ -216,10 +217,7 @@ HRESULT CBuilder_UIPrefabs::Register_Class(DTO::EUIClassType eClassType, const D
 		}
 	}
 
-	//Prototype_UI_BossStatProgress
-	//Prototype_UI_BossStatText 
-	//Prototype_UI_BossStatImage 
-	// 
+
 	////////////////////////////////////////
 	// UI_TEXT //
 	else if (eClassType == DTO::EUIClassType::UI_TEXT)
@@ -331,6 +329,7 @@ HRESULT CBuilder_UIPrefabs::Register_Class(DTO::EUIClassType eClassType, const D
 
 		const _bool isMonsterNameplate	= (Type == DTO::EUIDImageSubClassType::MONSTER_NAMEPLATE_BG);
 		const _bool isBossStat			= (Type >= DTO::EUIDImageSubClassType::BOSS_STAT_BEGIN && Type <= DTO::EUIDImageSubClassType::BOSS_STAT_END);
+		const _bool isMonsterIcon		= (Type == DTO::EUIDImageSubClassType::MINIMAP_MONSTER_ICON);
 
 		if (isMonsterNameplate)
 		{
@@ -355,6 +354,20 @@ HRESULT CBuilder_UIPrefabs::Register_Class(DTO::EUIClassType eClassType, const D
 			wstrProtoTag = L"Prototype_UI_BossStatImage";
 			_wstring wstrPoolTag = L"Prefab_" + Engine_Utils::ToWString(Desc.strName);
 
+			if (FAILED(m_pGameInstance->Regist_Pool(m_iLevelID, wstrPoolTag, g_wszUILayer, ENUM_TO_UINT(ELevelType::STATIC), wstrProtoTag, &Desc, m_iNumPrefab)))
+			{
+				_wstring wstr = Engine_Utils::ToWString(data.strTag) + L" <- 얘가 문제";
+				MSG_BOXW(wstr.c_str());
+				return E_FAIL;
+			}
+			m_vecPrefabTags.push_back(wstrPoolTag);
+		}
+		else if (isMonsterIcon)
+		{
+			CUIMiniMap_Monster_Icon::MINIMAP_MONSTER_ICON_DESC Desc = {};
+			static_cast<CGenericUI::GENERIC_UI_DESC&>(Desc) = DefaultDesc;
+			wstrProtoTag = L"Prototype_UI_MiniMapMonsterIconImage";
+			_wstring wstrPoolTag = L"Prefab_" + Engine_Utils::ToWString(Desc.strName);
 			if (FAILED(m_pGameInstance->Regist_Pool(m_iLevelID, wstrPoolTag, g_wszUILayer, ENUM_TO_UINT(ELevelType::STATIC), wstrProtoTag, &Desc, m_iNumPrefab)))
 			{
 				_wstring wstr = Engine_Utils::ToWString(data.strTag) + L" <- 얘가 문제";

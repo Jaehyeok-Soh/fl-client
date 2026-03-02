@@ -60,8 +60,13 @@ HRESULT CMonster_Boomer::Awake(const _uint iCurrentLevelID)
 	{
 		UI_PREFAB_DATA Desc = {};
 		Desc.pTarget = this;
-		Desc.NamePlateData.vOffset = Vec3{0.f, 2.5f, 0.f};
+		Desc.NamePlateData.vOffset = Vec3{ 0.f, 2.5f, 0.f };
 		CUI_Manager::GetInstance()->Request_Add_Prefab(iCurrentLevelID, EUIPrefabType::MONSTER_NAMEPLATE, iCurrentLevelID, &Desc);
+	}
+	{
+		UI_PREFAB_DATA Desc = {};
+		Desc.pTarget = this;
+		CUI_Manager::GetInstance()->Request_Add_Prefab(iCurrentLevelID, EUIPrefabType::MINIMAP_MONSTER_ICON, iCurrentLevelID, &Desc);
 	}
 	return S_OK;
 }

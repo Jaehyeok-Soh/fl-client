@@ -54,6 +54,11 @@ private:
 
 	_float m_fDuration = { 1.f };
 
+	vector<_wstring> m_vecTitleText;
+	vector<_wstring> m_vecContentsText;
+
+	_uint m_iCurTextCursor = {};
+
 public:
 	static CUILoading_Text* Create(ID3D11Device* pDevice, ID3D11DeviceContext* pDeviceContext);
 	CGameObject* Clone(void* pArg);

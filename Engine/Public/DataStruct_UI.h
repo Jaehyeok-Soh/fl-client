@@ -625,6 +625,7 @@ enum class EUIDImageSubClassType
 	BATTLE_COMBO_BG_GLOW,
 	BATTLE_COMBO_END,
 
+	MINIMAP_MONSTER_ICON,
 	END
 };
 
@@ -691,8 +692,10 @@ NLOHMANN_JSON_SERIALIZE_ENUM(EUIDImageSubClassType,
 	{ EUIDImageSubClassType::BATTLE_COMBO_BEGIN,				"BATTLE_COMBO_BEGIN" },
 	{ EUIDImageSubClassType::BATTLE_COMBO_RANK,					"BATTLE_COMBO_RANK" },
 	{ EUIDImageSubClassType::BATTLE_COMBO_BG,					"BATTLE_COMBO_BG" },
-	{ EUIDImageSubClassType::BATTLE_COMBO_BG_GLOW,					"BATTLE_COMBO_BG_GLOW" },
+	{ EUIDImageSubClassType::BATTLE_COMBO_BG_GLOW,				"BATTLE_COMBO_BG_GLOW" },
 	{ EUIDImageSubClassType::BATTLE_COMBO_END,					"BATTLE_COMBO_END" },
+
+	{ EUIDImageSubClassType::MINIMAP_MONSTER_ICON,				"MINIMAP_MONSTER_ICON" },
 
 	{ EUIDImageSubClassType::END,								"END" }
 	})
@@ -760,8 +763,10 @@ NLOHMANN_JSON_SERIALIZE_ENUM(EUIDImageSubClassType,
 	if (str == "BATTLE_COMBO_BEGIN")					return EUIDImageSubClassType::BATTLE_COMBO_BEGIN;
 	if (str == "BATTLE_COMBO_RANK")						return EUIDImageSubClassType::BATTLE_COMBO_RANK;
 	if (str == "BATTLE_COMBO_BG")						return EUIDImageSubClassType::BATTLE_COMBO_BG;
-	if (str == "BATTLE_COMBO_BG_GLOW")						return EUIDImageSubClassType::BATTLE_COMBO_BG_GLOW;
+	if (str == "BATTLE_COMBO_BG_GLOW")					return EUIDImageSubClassType::BATTLE_COMBO_BG_GLOW;
 	if (str == "BATTLE_COMBO_END")						return EUIDImageSubClassType::BATTLE_COMBO_END;
+
+	if (str == "MINIMAP_MONSTER_ICON")					return EUIDImageSubClassType::MINIMAP_MONSTER_ICON;
 
 	if (str == "END")									return EUIDImageSubClassType::END;
 	return EUIDImageSubClassType::NONE_OWNER;
@@ -832,8 +837,10 @@ inline const char* UIDImageSubTypeToString(EUIDImageSubClassType type)
 	case EUIDImageSubClassType::BATTLE_COMBO_BEGIN:					return "BATTLE_COMBO_BEGIN";
 	case EUIDImageSubClassType::BATTLE_COMBO_RANK:					return "BATTLE_COMBO_RANK";
 	case EUIDImageSubClassType::BATTLE_COMBO_BG:					return "BATTLE_COMBO_BG";
-	case EUIDImageSubClassType::BATTLE_COMBO_BG_GLOW:					return "BATTLE_COMBO_BG_GLOW";
+	case EUIDImageSubClassType::BATTLE_COMBO_BG_GLOW:				return "BATTLE_COMBO_BG_GLOW";
 	case EUIDImageSubClassType::BATTLE_COMBO_END:					return "BATTLE_COMBO_END";
+
+	case EUIDImageSubClassType::MINIMAP_MONSTER_ICON:				return "MINIMAP_MONSTER_ICON";
 
 	case EUIDImageSubClassType::END:								return "END";
 	default:														return "NONE_OWNER";

@@ -4,17 +4,17 @@
 
 NS_BEGIN(Client)
 class CStatCom_Player;
-class CUIMonster_MiniMap_Icon final : public  CUIDynamic_Image
+class CUIMiniMap_Monster_Icon final : public  CUIDynamic_Image
 {
 	using Super = CUIDynamic_Image;
 public:
-	typedef struct tagUIComboImageDesc : public DIMAGE_DESC
+	typedef struct tagUIMiniMapMonsterIcon : public DIMAGE_DESC
 	{
-	}COMBO_IMAGE_DESC;
+	}MINIMAP_MONSTER_ICON_DESC;
 private:
-	CUIMonster_MiniMap_Icon(ID3D11Device* pDevice, ID3D11DeviceContext* pDeviceContext);
-	CUIMonster_MiniMap_Icon(const CUIMonster_MiniMap_Icon& rhs);
-	virtual ~CUIMonster_MiniMap_Icon() = default;
+	CUIMiniMap_Monster_Icon(ID3D11Device* pDevice, ID3D11DeviceContext* pDeviceContext);
+	CUIMiniMap_Monster_Icon(const CUIMiniMap_Monster_Icon& rhs);
+	virtual ~CUIMiniMap_Monster_Icon() = default;
 public:
 	HRESULT Initialize_Prototype() override;
 	HRESULT Initialize(void* pArg) override;
@@ -26,7 +26,7 @@ public:
 	virtual void Ready_Before_Render(const _float fTimeDelta) override;
 	virtual HRESULT Render() override;
 private:
-	HRESULT Ready_Components(COMBO_IMAGE_DESC* pDesc);
+	HRESULT Ready_Components(MINIMAP_MONSTER_ICON_DESC* pDesc);
 	HRESULT Bind_ShaderResources();
 	virtual HRESULT Attach_Personal_Info()override;
 	virtual void Tick_By_Type(const _float fTimeDelta)override;
@@ -35,13 +35,20 @@ private:
 	virtual _bool Tick_Visible_Event(const _float fTimeDelta)override;
 	virtual void Initialize_InVisible_Event()override;
 	virtual _bool Tick_InVisible_Event(const _float fTimeDelta)override;
-
 	void Convert_Count_To_Rank();
-private:
-	CStatCom_Player* m_pPlayerStatCom = { nullptr };
+	virtual HRESULT Spawn_FromPool(void* pArg)override;
+	virtual HRESULT Despawn_FromPool()override;
 
+	void Proj_World_To_Screen(const Vec3& vLook);
+	void Rotate_MonsterIcon();
+private:
+	CGameObject* m_pTarget = { nullptr };
+	CGameObject* m_pPlayer = { nullptr };
+
+	_bool m_isSpawned = { false };
+	_float m_fRadian = {};
 public:
-	static CUIMonster_MiniMap_Icon* Create(ID3D11Device* pDevice, ID3D11DeviceContext* pDeviceContext);
+	static CUIMiniMap_Monster_Icon* Create(ID3D11Device* pDevice, ID3D11DeviceContext* pDeviceContext);
 	CGameObject* Clone(void* pArg);
 	virtual void Free()override;
 };

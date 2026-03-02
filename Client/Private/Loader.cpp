@@ -138,6 +138,7 @@
 #include "UILevelChange_Image.h"
 #include "UIBossStat_Image.h"
 #include "UICombo_Image.h"
+#include "UIMiniMap_Monster_Icon.h"
 // Æ®¸®°Å 
 #include "UIMenu_Trigger.h"
 #include "UICommon_Trigger.h"
@@ -706,6 +707,7 @@ HRESULT CLoader::Loading_For_Logo()
 	ADD_PROTOTYPE(ELevelType::STATIC, L"Prototype_UI_BossStatImage",			CUIBossStat_Image::Create(m_pDevice, m_pDeviceContext));
 	ADD_PROTOTYPE(ELevelType::STATIC, L"Prototype_UI_ComboImage",				CUICombo_Image::Create(m_pDevice, m_pDeviceContext));
 	ADD_PROTOTYPE(ELevelType::STATIC, L"Prototype_UI_ComboText",				CUICombo_Text::Create(m_pDevice, m_pDeviceContext));
+	ADD_PROTOTYPE(ELevelType::STATIC, L"Prototype_UI_MiniMapMonsterIconImage",	CUIMiniMap_Monster_Icon::Create(m_pDevice, m_pDeviceContext));
 #pragma endregion
 	
 	m_isFinished = true;

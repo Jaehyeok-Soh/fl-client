@@ -37,8 +37,6 @@ HRESULT CUILoading_Text::Initialize(void* pArg)
 		return E_FAIL;
 	if (FAILED(Ready_Components(pDesc)))
 		return E_FAIL;
-	if (FAILED(Attach_Personal_Info()))
-		return E_FAIL;
 	return S_OK;
 }
 
@@ -49,6 +47,8 @@ HRESULT CUILoading_Text::Awake(const _uint iCurrentLevelID)
 	if (FAILED(Super::Awake(iCurrentLevelID)))
 		return E_FAIL;
 
+	if (FAILED(Attach_Personal_Info()))
+		return E_FAIL;
 	return S_OK;
 }
 
@@ -59,6 +59,7 @@ void CUILoading_Text::Update_Priority(const _float fTimeDelta)
 
 void CUILoading_Text::Update(const _float fTimeDelta)
 {
+	Super::Update(fTimeDelta);
 	// Ratio 값 갱신 
 	if (m_eTextSubClassType == DTO::EUITextSubClassType::LOADING_TEXT_PERCENT && nullptr != m_pLoadingRatio)
 	{
@@ -76,22 +77,30 @@ void CUILoading_Text::Update(const _float fTimeDelta)
 		}
 	}
 
-	Super::Update(fTimeDelta);
 }
 
 void CUILoading_Text::Update_Late(const _float fTimeDelta)
 {
+	Super::Update_Late(fTimeDelta);
 	// Percent 계산
 	if (m_eTextSubClassType == DTO::EUITextSubClassType::LOADING_TEXT_PERCENT)
 	{
 		Lerp_Percent(fTimeDelta);
 	}
-	Super::Update_Late(fTimeDelta);
 }
 
 void CUILoading_Text::Ready_Before_Render(const _float fTimeDelta)
 {
 	Super::Ready_Before_Render(fTimeDelta);
+
+	if (MOUSE_RBUTTON_DOWN)
+	{
+		m_iCurTextCursor++;
+		if (m_iCurTextCursor >= 6)
+			m_iCurTextCursor = 0;
+	}
+
+	Convert_Value_To_Text();
 }
 
 HRESULT CUILoading_Text::Render()
@@ -124,6 +133,29 @@ HRESULT CUILoading_Text::Bind_ShaderResources()
 
 HRESULT CUILoading_Text::Attach_Personal_Info()
 {
+	m_iCurTextCursor = 0;
+
+	switch (m_eTextSubClassType)
+	{
+	case DTO::EUITextSubClassType::LOADING_TEXT_TITLE:
+		m_vecTitleText.reserve(10);
+		m_vecTitleText.push_back(L"강병준");
+		m_vecTitleText.push_back(L"소재혁");
+		m_vecTitleText.push_back(L"최정우");
+		m_vecTitleText.push_back(L"민건희");
+		m_vecTitleText.push_back(L"김은비");
+		m_vecTitleText.push_back(L"백승민");
+		break;
+	case DTO::EUITextSubClassType::LOADING_TEXT_CONTENTS:
+		m_vecContentsText.reserve(10);
+		m_vecContentsText.push_back(L"팀장 / 프레임워크");
+		m_vecContentsText.push_back(L"소방관 / 피직스");
+		m_vecContentsText.push_back(L"이펙트");
+		m_vecContentsText.push_back(L"맵");
+		m_vecContentsText.push_back(L"플레이어");
+		m_vecContentsText.push_back(L"UI");
+		break;
+	}
 	return S_OK;
 }
 
@@ -160,8 +192,10 @@ HRESULT CUILoading_Text::Convert_Value_To_Text()
 	switch (m_eTextSubClassType)
 	{
 	case DTO::EUITextSubClassType::LOADING_TEXT_TITLE:
+		m_wstrText = m_vecTitleText[m_iCurTextCursor];
 		break;
 	case DTO::EUITextSubClassType::LOADING_TEXT_CONTENTS:
+		m_wstrText = m_vecContentsText[m_iCurTextCursor];
 		break;
 	case DTO::EUITextSubClassType::LOADING_TEXT_PERCENT:
 		break;

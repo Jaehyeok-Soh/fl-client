@@ -257,6 +257,17 @@ void CUI_Manager::Request_Add_Prefab(_uint iPoolRegistLevel, EUIPrefabType ePref
 			});
 	}
 	break;
+	case Client::EUIPrefabType::MINIMAP_MONSTER_ICON:
+	{
+		_wstring wstr = m_vecPrefabs[ENUM_TO_UINT(EUIPrefabType::MINIMAP_MONSTER_ICON)];
+		m_pGameInstance->Request_AddObject(iPoolRegistLevel, wstr, iSpawnLevel, pArg,
+			[this, iPoolRegistLevel, iSpawnLevel](CGameObject* pObj)
+			{
+				auto* p = static_cast<CCanvas*>(pObj);
+				p->Ready_Prefab(iPoolRegistLevel, iSpawnLevel);
+			});
+	}
+	break;
 	case Client::EUIPrefabType::END:
 		break;
 	default:
