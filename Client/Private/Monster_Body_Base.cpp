@@ -63,6 +63,9 @@ HRESULT CMonster_Body_Base::Awake(const _uint iCurrentLevelIndex)
 	if (FAILED(Super::Awake(iCurrentLevelIndex)))
 		return E_FAIL;
 
+	if (m_pEffectHandler)
+		m_pEffectHandler->Awake();
+
 	return S_OK;
 }
 
