@@ -64,7 +64,6 @@ HRESULT CState_JumpAttStart::End()
 
 void CState_JumpAttStart::OwnMove(const _float fTimeDelta)
 {
-
 	CTransform* pPlayerTrans = Get_OwnerObject()->Get_Component<CTransform>();
 	CPhysicsCCT* pCCT = Get_OwnerObject()->Get_Component<CPhysicsCCT>();
 	_float moveps = pPlayerTrans->Get_MovePerSec(); // ¼Óµµ

@@ -30,6 +30,13 @@ HRESULT CState_Slide::Start(void* pArg, _bool bForce)
     if (FAILED(Super::Start(pArg, bForce)))
         return E_FAIL;
 
+    if (m_iMainAnimIdx == ENUM_TO_UINT(ANI::SKY))
+    {
+        m_FCollisions &= ~COLLISIONFLAGS::C_DOWN;
+    }
+
+    Set_ApplyYLerp(true);
+
     return S_OK;
 }
 
@@ -42,6 +49,10 @@ HRESULT CState_Slide::End()
 {
     if (FAILED(Super::End()))
         return E_FAIL;
+
+    m_FCollisions |= COLLISIONFLAGS::C_DOWN;
+
+    Set_ApplyYLerp(false);
 
     return S_OK;
 }
@@ -57,17 +68,9 @@ void CState_Slide::OwnMove(const _float fTimeDelta)
 
     Vec3 vLook = (pPlayerTrans->Get_Info(TRANSFORM_INFO_STATE::LOOK));
 
-    Vec3 disp = vLook * moveps * fTimeDelta;
+    Vec3 disp = vLook * moveps * fTimeDelta * 1.5f;
 
-    pCCT->Move(disp, 0.01f, fTimeDelta);
-
-    Vec3 finalPos = pCCT->GetFootPosition();
-    //Vec3 currentPos = m_pOwnerStateComp->Get_Owner()->Get_Component<CTransform>()->Get_Info(TRANSFORM_INFO_STATE::POS);
-
-    //_float yLerp = std::lerp(currentPos.y, finalPos.y, fTimeDelta);
-    //finalPos.y = yLerp;
-
-    pPlayerTrans->Set_Info(TRANSFORM_INFO_STATE::POS, finalPos);
+    Move(disp, 0.01f, fTimeDelta);
 }
 
 void CState_Slide::Change_PlayerState(STATEKEY eKey)

@@ -251,6 +251,10 @@
     <ClInclude Include="..\Public\State_GunIdle.h" />
     <ClInclude Include="..\Public\State_GunReload.h" />
     <ClInclude Include="..\Public\State_GunWalk.h" />
+    <ClInclude Include="..\Public\State_HitAdditive.h" />
+    <ClInclude Include="..\Public\State_HitFlyEnd.h" />
+    <ClInclude Include="..\Public\State_HitFlyStart.h" />
+    <ClInclude Include="..\Public\State_HitStrong.h" />
     <ClInclude Include="..\Public\State_Idle.h" />
     <ClInclude Include="..\Public\State_Jump.h" />
     <ClInclude Include="..\Public\State_JumpAttEnd.h" />
@@ -440,6 +444,10 @@
     <ClCompile Include="..\Private\State_GunIdle.cpp" />
     <ClCompile Include="..\Private\State_GunReload.cpp" />
     <ClCompile Include="..\Private\State_GunWalk.cpp" />
+    <ClCompile Include="..\Private\State_HitAdditive.cpp" />
+    <ClCompile Include="..\Private\State_HitFlyEnd.cpp" />
+    <ClCompile Include="..\Private\State_HitFlyStart.cpp" />
+    <ClCompile Include="..\Private\State_HitStrong.cpp" />
     <ClCompile Include="..\Private\State_Idle.cpp" />
     <ClCompile Include="..\Private\State_Jump.cpp" />
     <ClCompile Include="..\Private\State_JumpAttEnd.cpp" />

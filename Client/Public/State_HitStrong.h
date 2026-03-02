@@ -2,24 +2,16 @@
 #include "StateBase_Player.h"
 
 NS_BEGIN(Client)
-class CState_SkillBase abstract : public CStateBase_Player
+class CState_HitStrong final : public CStateBase_Player
 {
 	using Super = CStateBase_Player;
 
 public:
-	typedef struct tagSkillDesc
-	{
-		_uint iPlayerState = {};
-		_int iAnimIdx = {};
-		_bool bKeyInput = {false};
-		_float fKeyCoolTime = {0.f};
-		
-		CGun* pOwnerGun = { nullptr };
-	}Skill_DESC;
+	enum class HitStrong_AnimIdx { FRONT, BACK, LEFT, RIGHT, END };
 
-protected:
-	CState_SkillBase(CActionState* pOwnerComponent, const string& strName);
-	virtual ~CState_SkillBase() = default;
+private:
+	CState_HitStrong(CActionState* pOwnerComponent);
+	virtual ~CState_HitStrong() = default;
 
 	virtual HRESULT Initialize(void* pArg) override;
 
@@ -29,10 +21,11 @@ public:
 	virtual void	Update(const _float fTimeDelta) override;
 	virtual HRESULT End() override;
 
-protected:
-	_uint m_iPlayerState = {};
+public:
+	virtual _uint	Get_Capabilities() const override { return	0; }
 
 public:
+	static CState_HitStrong* Create(CActionState* pOwnerComponent, void* pArg = nullptr);
 	virtual void Free() override;
 };
 
