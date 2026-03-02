@@ -34,6 +34,21 @@ public:
 	HRESULT		Bind_Mix_RGBA_Data_And_Count(CShader* pBindShader, const wstring& wstrTextureSplatingInfoDataName);
 #pragma endregion
 
+#pragma region Camera Cinematic Data
+public:
+	HRESULT							Load_CameraCinematicSequence();  	/* Load */
+	HRESULT							Save_CameraCinematicSequence();		/* 현재 저장된 데이터 전부 저장함수 */
+
+	/* 이미 전부 Load된 Data에서 받아가는 함수 */
+	HRESULT							Load_CameraCinematicSequence(const wstring& wstrFindKey,OUT Camera_Cinematic_Sequence* pOutCamCinematicSequence);
+	HRESULT							Save_CameraCinematicSequence(const wstring& wstrFindKey,const Camera_Cinematic_Sequence* pSaveCamCinematicSequence);
+
+	/* Tool 작업을 위한함수 */
+	vector<string>					Get_CameraCinematicSequenceNames() const;
+
+#pragma endregion
+
+
 #pragma region ATTACK_PRESET
 	const DTO::TAttackPreset_Data* Find_AttackPrseet(_uint iPresetKey) const;
 	const DTO::TAttackPreset_Data* Find_AttackPresetByTag(const string& strTag) const;
@@ -49,6 +64,9 @@ private:
 	ID3D11ShaderResourceView*							m_pDefaultBlack{nullptr};
 	ID3D11ShaderResourceView*							m_pDefaultWhite{nullptr};
 private:
+	map<wstring, Camera_Cinematic_Sequence>				m_mapCameraCinematicSequence{};
+	const _tchar*										m_wszCameraCinematicDataPath = L"../../Resources/Data/CameraCinematicData/CameraCinematicData.json";
+private:
 
 	ID3D11Device*										m_pDevice{nullptr};
 	ID3D11DeviceContext*								m_pDeviceContext{nullptr};
@@ -56,8 +74,8 @@ private:
 	/// AttackPreset ///
 	////////////////////
 	_bool m_bAttackPresetLoaded{ false };
-	unordered_map<_uint, DTO::TAttackPreset_Data> m_umapAttackPresetDatas;
-	unordered_map<string, _uint> m_umapAttackPresetTagToKey;
+	unordered_map<_uint, DTO::TAttackPreset_Data>		m_umapAttackPresetDatas;
+	unordered_map<string, _uint>						m_umapAttackPresetTagToKey;
 	class CGameInstance *								m_pGameInstance = { nullptr };
 public:
 	static CGameDataManager* Create(ID3D11Device* pDevice , ID3D11DeviceContext* pDeviceContext);

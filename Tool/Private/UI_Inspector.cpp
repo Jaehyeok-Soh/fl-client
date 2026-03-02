@@ -493,7 +493,7 @@ void CUI_Inspector::SetUp_TextData()
 				const _bool isSelected = (cur == i);
 				if (ImGui::Selectable(m_VecTextSubClassTag[i].c_str(), isSelected))
 				{
-					cur = i;
+					cur = static_cast<_int>(i);
 					m_pSelectedUI->Set_UITextSubClassType(static_cast<DTO::EUITextSubClassType>(i));
 					changed = true;
 				}

@@ -33,9 +33,7 @@ private:
 
 	/* 전체적인 맵지형에 사용될 Texture 선택 ImGUi */
 	HRESULT					Render_SplatingTextureSetting();
-
 	HRESULT					Render_Single_Channel_Setting(const char* szLabel, const ImVec4& vColor,OUT int& iConnectedIndex, OUT float& fForce, OUT float& fHeightForce, int& iFlag,OUT bool* pIsOpenPopup);
-
 
 	HRESULT					Render_RaySetting();
 	HRESULT					Render_CameraSetting();
@@ -47,6 +45,9 @@ private:
 	/* MapTool Setting Render */
 	HRESULT					Render_CheckAndBind();
 	HRESULT					Render_MakeMapObjectSetting();
+
+	/* Camera Cinematic Sequence */
+	HRESULT					Render_CameraCinematicSequnce();
 
 private:
 	void					Select_MapTexture();
@@ -81,14 +82,21 @@ private:
 
 
 
+	_int					m_iSelectCamCinematicSequenceName{0};
+
 
 	vector<string>			m_vecTextureSplatingInfoDataName{};
 	_int					m_iSelectTextureSplatingInfoData{};
 
 	char					m_szTextureSplatingInfoData_SaveName[MAX_PATH];
+	char					m_szCameraCinematicSequence_SaveName[MAX_PATH];
 
 
 	char					m_szLevelTypeName[ENUM_TO_UINT(EClientLevelType::END)][MAX_PATH];
+
+
+	/* 카메라 쉐이킹 임시 Debuging 용 */
+
 
 public:
 	static  CPanel_MapTool* Create(const _char* pLabel, CLevel* pOwner, ID3D11Device* pDevice, ID3D11DeviceContext* pDeviceContext);

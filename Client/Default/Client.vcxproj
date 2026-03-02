@@ -157,6 +157,7 @@
     </FxCompile>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClInclude Include="..\Public\BattleField.h" />
     <ClInclude Include="..\Public\Body.h" />
     <ClInclude Include="..\Public\BossControlContext.h" />
     <ClInclude Include="..\public\Boss_Xibi.h" />
@@ -336,6 +337,7 @@
     <ClInclude Include="targetver.h" />
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="..\Private\BattleField.cpp" />
     <ClCompile Include="..\Private\Body.cpp" />
     <ClCompile Include="..\Private\BossControlContext.cpp" />
     <ClCompile Include="..\private\Boss_Xibi.cpp" />

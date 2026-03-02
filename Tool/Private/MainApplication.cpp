@@ -70,10 +70,16 @@ HRESULT CMainApplication::Initialize()
 	if (pAPDM == nullptr)
 		return E_FAIL;
 
+	/* Camre Cinematic Sequence Load */
+	if (FAILED(m_pGameInstance->GameDataManager_Load_CameraCinematicSequence()))
+		return E_FAIL;
+
 	/* 愱砒 概聪历 固府 积己 */
 	m_pMapToolManager = CMapToolManager::GetInstance();
 	if (FAILED(m_pMapToolManager->Initialize(m_pDevice, m_pDeviceContext)))
 		return E_FAIL;
+
+
 
 	return S_OK;
 }
@@ -125,11 +131,11 @@ HRESULT CMainApplication::Ready_Static_Prototype()
 	if (FAILED(m_pGameInstance->Add_Prototype(ENUM_TO_UINT(ELevelType::STATIC), L"Prototype_Component_Bounds", CBounds::Create(m_pDevice , m_pDeviceContext))))
 		return E_FAIL;
 	// For. Prototype_Component_Collider_Sphere
-	m_pGameInstance->Add_Prototype(ENUM_TO_UINT(ELevelType::STATIC), L"Prototype_Component_Collider_Sphere", CCollider::Create(m_pDevice, m_pDeviceContext, EColliderType::SPHERE));
+	m_pGameInstance->Add_Prototype(ENUM_TO_UINT(ELevelType::STATIC), g_wszCollider_Sphere_Prototype_Tag , CCollider::Create(m_pDevice, m_pDeviceContext, EColliderType::SPHERE));
 	// For. Prototype_Component_Collider_AABB
-	m_pGameInstance->Add_Prototype(ENUM_TO_UINT(ELevelType::STATIC), L"Prototype_Component_Collider_AABB", CCollider::Create(m_pDevice, m_pDeviceContext, EColliderType::AABB));
+	m_pGameInstance->Add_Prototype(ENUM_TO_UINT(ELevelType::STATIC), g_wszCollider_AABB_Prototype_Tag, CCollider::Create(m_pDevice, m_pDeviceContext, EColliderType::AABB));
 	// For. Prototype_Component_Collider_OBB
-	m_pGameInstance->Add_Prototype(ENUM_TO_UINT(ELevelType::STATIC), L"Prototype_Component_Collider_OBB", CCollider::Create(m_pDevice, m_pDeviceContext, EColliderType::OBB));
+	m_pGameInstance->Add_Prototype(ENUM_TO_UINT(ELevelType::STATIC), g_wszCollider_OBB_Prototype_Tag, CCollider::Create(m_pDevice, m_pDeviceContext, EColliderType::OBB));
 
 
 
@@ -496,6 +502,9 @@ HRESULT CMainApplication::Render()
 
 void CMainApplication::Free()
 {
+	/* Data 历厘 */
+	m_pGameInstance->GameDataManager_Save_CameraCinematicSequence();
+
 	Safe_Release(m_pImGuiManager);
 	CAttackPreset_DataManager::DestroyInstance();
 	CPicking_ToolManager::GetInstance()->DestroyInstance();
@@ -504,6 +513,7 @@ void CMainApplication::Free()
 	Safe_Release(m_pGameInstance);
 	Safe_Release(m_pDeviceContext);
 	Safe_Release(m_pDevice);
+
 
 	m_pGameInstance->Destroy_Engine();
 	Super::Free();

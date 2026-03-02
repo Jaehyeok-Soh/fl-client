@@ -45,7 +45,6 @@
 #include "DataDocument_EffectEvent.h"
 #include "Builder_AttackPreset.h"
 #include "DataDocument_AttackPreset.h"
-
 //=================
 // Object
 //=================
@@ -60,6 +59,7 @@
 #include "Loader.h"
 #include "Effect.h"
 #include "EffectObject.h"
+#include "BattleField.h"
 
 //=================
 // SkillObject
@@ -564,11 +564,11 @@ HRESULT CLoader::Loading_For_Logo()
 	// For. Prototype_Component_ControlContext_Player
 	m_pGameInstance->Add_Prototype(ENUM_TO_UINT(ELevelType::STATIC), L"Prototype_Component_ControlContext_Player", CPlayerControlContext::Create());
 	// For. Prototype_Component_Collider_AABB
-	m_pGameInstance->Add_Prototype(ENUM_TO_UINT(ELevelType::STATIC), L"Prototype_Component_Collider_AABB", CCollider::Create(m_pDevice, m_pDeviceContext, EColliderType::AABB));
+	m_pGameInstance->Add_Prototype(ENUM_TO_UINT(ELevelType::STATIC), g_wszCollider_AABB_Prototype_Tag, CCollider::Create(m_pDevice, m_pDeviceContext, EColliderType::AABB));
 	// For. Prototype_Component_Collider_OBB
-	m_pGameInstance->Add_Prototype(ENUM_TO_UINT(ELevelType::STATIC), L"Prototype_Component_Collider_OBB", CCollider::Create(m_pDevice, m_pDeviceContext, EColliderType::OBB));
+	m_pGameInstance->Add_Prototype(ENUM_TO_UINT(ELevelType::STATIC), g_wszCollider_OBB_Prototype_Tag , CCollider::Create(m_pDevice, m_pDeviceContext, EColliderType::OBB));
 	// For. Prototype_Component_Collider_SPHERE
-	m_pGameInstance->Add_Prototype(ENUM_TO_UINT(ELevelType::STATIC), L"Prototype_Component_Collider_Sphere", CCollider::Create(m_pDevice, m_pDeviceContext, EColliderType::SPHERE));
+	m_pGameInstance->Add_Prototype(ENUM_TO_UINT(ELevelType::STATIC), g_wszCollider_Sphere_PrototypeTag, CCollider::Create(m_pDevice, m_pDeviceContext, EColliderType::SPHERE));
 	// For. Prototype_Component_Bounds
 	m_pGameInstance->Add_Prototype(ENUM_TO_UINT(ELevelType::STATIC), L"Prototype_Component_Bounds", CBounds::Create(m_pDevice, m_pDeviceContext));
 	// For. Prototype_Component_Xibi_GimmikController
@@ -615,6 +615,10 @@ HRESULT CLoader::Loading_For_Logo()
 		ADD_PROTOTYPE(ELevelType::TEST, g_wszXibiProjectile_Prototype_Tag,				CXibi_Projectile_Circle::Create(m_pDevice, m_pDeviceContext));
 		ADD_PROTOTYPE(ELevelType::TEST, g_wszXibiLoopThunder_Prototype_Tag,				CXibi_Loop_Thunder::Create(m_pDevice, m_pDeviceContext));
 		ADD_PROTOTYPE(ELevelType::TEST, g_wszXibiOneshotThunder_Prototype_Tag,			CXibi_Oneshot_Thunder::Create(m_pDevice, m_pDeviceContext));
+
+
+		/* Battle Field */
+		ADD_PROTOTYPE(ELevelType::STATIC, g_wszBattleField_Prototype_Tag ,				CBattleField::Create(m_pDevice, m_pDeviceContext));
 
 #pragma region Map Object
 		/* Map Object */

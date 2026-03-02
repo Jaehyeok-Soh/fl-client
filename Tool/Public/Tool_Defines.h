@@ -271,6 +271,12 @@ namespace Tool
 	}
 
 
+	inline constexpr wchar_t g_wszCollider_AABB_Prototype_Tag[]		{ L"Prototype_Component_Collider_AABB" };
+	inline constexpr wchar_t g_wszCollider_Sphere_Prototype_Tag[]	{ L"Prototype_Component_Collider_Sphere" };
+	inline constexpr wchar_t g_wszCollider_OBB_Prototype_Tag[]		{ L"Prototype_Component_Collider_OBB" };
+
+
+
 	inline constexpr _tchar g_wszPreviewObejctModelPath		[]{L"L../../Resources/Models/Map/Level/MakeObjectPreview/Model/"};
 	inline constexpr _tchar g_wszMapObjectLayer				[]{ L"MapObject_Layer" };
 	inline constexpr _tchar g_wszMapModelPath				[]{ L"../../Resources/Models/Map/"};
@@ -386,6 +392,8 @@ namespace Tool
 		/*  생성 위치 잡아주는 역할  */
 		Batch_Player,
 		Batch_Monster,
+		/*  Object Batch 관련  */
+		Batch_Object,
 
 		/* Trigger Box 관련 */
 		TriggerBox_ChangeLevel,
@@ -428,6 +436,7 @@ namespace Tool
 
 		case Tool::EClientMakePath::Batch_Player:					return "Batch_Player";
 		case Tool::EClientMakePath::Batch_Monster:					return "Batch_Monster";
+		case Tool::EClientMakePath::Batch_Object:					return "Batch_Object";
 
 			/* -------------- Trigger Box -------------- */
 		case Tool::EClientMakePath::TriggerBox_ChangeLevel:			return "TriggerBox_ChangeLevel";
@@ -452,6 +461,7 @@ namespace Tool
 		/* 생성 위치관련 */
 		if (strType == "Batch_Player")					return EClientMakePath::Batch_Player;
 		if (strType == "Batch_Monster")					return EClientMakePath::Batch_Monster;
+		if (strType == "Batch_Object")					return EClientMakePath::Batch_Object;
 
 		/* Trigger Box 관련 */
 		if (strType == "TriggerBox_ChangeLevel")		return EClientMakePath::TriggerBox_ChangeLevel;
