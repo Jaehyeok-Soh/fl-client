@@ -12,6 +12,8 @@
 #include "VIBuffer_Rect_Tex.h"
 #include "GameInstance.h"
 
+#define DESTROY_TIME 0.5f
+
 CUIDamageFont_Text::CUIDamageFont_Text(ID3D11Device* pDevice, ID3D11DeviceContext* pDeviceContext)
 	:CUIText(pDevice, pDeviceContext)
 {
@@ -167,7 +169,7 @@ void CUIDamageFont_Text::Tick_By_Type(const _float fTimeDelta)
 		if (m_isFin_Event)
 		{
 			m_fTimeAcc += fTimeDelta;
-			_float t = m_fTimeAcc / 1.f;
+			_float t = m_fTimeAcc / DESTROY_TIME;
 
 			if (t > 1.f)
 			{
@@ -188,7 +190,7 @@ void CUIDamageFont_Text::Tick_By_Type(const _float fTimeDelta)
 			m_fTimeAcc += fTimeDelta;
 			m_vFontColor = m_vOriginFontColor;
 
-			if (m_fTimeAcc > 1.f)
+			if (m_fTimeAcc > DESTROY_TIME)
 				Set_Invisible();
 		}
 	}
@@ -257,7 +259,7 @@ _bool CUIDamageFont_Text::Tick_Visible_Event(const _float fTimeDelta)
 		_float t = m_fTimeAcc / fDuration;
 		if (1.f < t)
 		{
-			Ready_Lerp_Movement(Vec2{ 0.f, 0.f }, Vec2{ 0.f, -30.f }, 1.f, 3.f, m_fDelay);
+			Ready_Lerp_Movement(Vec2{ 0.f, 0.f }, Vec2{ 0.f, -30.f }, DESTROY_TIME, 3.f, m_fDelay);
 			m_fDamageFontScaleOffet		= 1.f;
 			m_pWorldUIComp->Request_ScaleOffset(m_fDamageFontScaleOffet);
 			m_isActive					= true;

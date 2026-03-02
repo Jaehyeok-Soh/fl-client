@@ -18,50 +18,66 @@ HRESULT CImGui_Dockspace_TabBar::Render(CToolObject* pGo)
 		if (ImGui::BeginTabItem("Logo##TabBar"))
 		{
 			eNowSelected = ELevelType::LOGO;
+			m_isNo = false;
 			ImGui::EndTabItem();
 		}
 		if (ImGui::BeginTabItem("Map##TabBar"))
 		{
 			eNowSelected = ELevelType::MAP;
+			m_isNo = false;
 			ImGui::EndTabItem();
 		}
 		if (ImGui::BeginTabItem("Animation##TabBar"))
 		{
 			eNowSelected = ELevelType::ANIMATION;
+			m_isNo = false;
 			ImGui::EndTabItem();
 		}
 		if (ImGui::BeginTabItem("Effect##TabBar"))
 		{
 			eNowSelected = ELevelType::EFFECT;
+			m_isNo = false;
 			ImGui::EndTabItem();
 		}
 		if (ImGui::BeginTabItem("Camera##TabBar"))
 		{
 			eNowSelected = ELevelType::CAMERA;
+			m_isNo = false;
 			ImGui::EndTabItem();
 		}
 		if (ImGui::BeginTabItem("UI##TabBar"))
 		{
 			eNowSelected = ELevelType::UI;
+			m_isNo = false;
 			ImGui::EndTabItem();
 		}
 		if (ImGui::BeginTabItem("AttackPreset##TabBar"))
 		{
 			eNowSelected = ELevelType::ATTACK_PRESET;
+			m_isNo = false;
 			ImGui::EndTabItem();
 		}
 		if (ImGui::BeginTabItem("AssetConvert##TabBar"))
 		{
 			eNowSelected = ELevelType::ASSET_CONVERT;
+			m_isNo = false;
 			ImGui::EndTabItem();
 		}
 		ImGui::EndTabBar();
 	}
 
-	if ((eNowSelected != ELevelType::END) && (eNowSelected != m_eLastSelectedTab))
+	if ((eNowSelected != ELevelType::END) && (eNowSelected != m_eLastSelectedTab) && !m_isNo)
 	{
-		if (FAILED(Change_Scene(eNowSelected)))
-			return E_FAIL;
+		int ret = MessageBoxW(g_hWnd, L"진짜 이동?", L"확인", MB_YESNO | MB_ICONQUESTION);
+		if (ret == IDYES)
+		{
+			if (FAILED(Change_Scene(eNowSelected)))
+				return E_FAIL;
+		}
+		else if (ret == IDNO)
+		{
+			m_isNo = true;
+		}
 	}
 
 	return S_OK;

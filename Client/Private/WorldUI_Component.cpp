@@ -81,7 +81,7 @@ void CWorldUI_Component::Proj_World_To_Screen()
 	clip = Vec4::Transform(clip, m_pGameInstance->Get_ViewMatrix());
 	m_fViewZ = clip.z;
 	clip = Vec4::Transform(clip, m_pGameInstance->Get_ProjMatrix());
-	if (clip.w <= 0.0001f)
+	if (clip.w <= 0.01f)
 		return;
 	clip /= clip.w;
 

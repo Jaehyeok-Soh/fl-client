@@ -118,7 +118,7 @@ HRESULT CUIMonsterStat_Text::Convert_Stat_To_Text()
 	switch (m_eTextSubClassType)
 	{
 	case DTO::EUITextSubClassType::MONSTER_STAT_TEXT_LV:
-		m_wstrText = L"1"; // UIFIX //
+		m_wstrText = L"Lv 1"; // UIFIX //
 		break;
 	case DTO::EUITextSubClassType::MONSTER_STAT_TEXT_NICKNAME:
 		m_wstrText = Engine_Utils::ToWString(m_pTargetStat->Get_Owner()->Get_Name());
