@@ -90,16 +90,6 @@ void CMoon_SkillE_Obj::OnCollision_Exit(_uint iMyColliderLayer, _uint iOtherLaye
 {
 }
 
-void CMoon_SkillE_Obj::Set_Dead(const wstring& wstrLayerTag)
-{
-	m_bDead = true;
-	m_pGameInstance->Request_DeleteGameObject(
-		m_pGameInstance->Get_CurrentLevelIndex(),
-		g_wszSkillObjectLayer,
-		this);
-	Get_Component<CEffectHandler>()->Trigger_Lifecycle_Effect(CEffectHandler::E_OBJ_LIFECYCLE_STATE::ON_DESTROY);
-}
-
 _bool CMoon_SkillE_Obj::On_Hit(const HIT_DESC& hitDesc)
 {
 	return true;

@@ -239,8 +239,24 @@ HRESULT CLevel_Test::Build_Files()
 
 HRESULT CLevel_Test::Ready_Player_Layer(const wstring& wstrLayerTag)
 {
+
+
 	/* Player 置段 持失 */
 	{
+		// SkillObject Pool
+		{
+			CMoon_SkillE_Obj::SKILLOBJECT_DESC desc{};
+			if (FAILED(m_pGameInstance->Regist_Pool(
+				0,
+				g_wszPool_MoonSkillE,
+				g_wszSkillObjectLayer,
+				0,
+				g_wszMoonSkillE__Prototype_Tag,
+				&desc,
+				30)))
+				return E_FAIL;
+		}
+
 		CGameObject* pResult = { nullptr };
 
 		CPlayer::PLAYER_DESC playerDesc = {};
@@ -330,29 +346,6 @@ HRESULT CLevel_Test::Ready_Lights()
 		desc.fRange = 10.f;
 
 		if (FAILED(m_pGameInstance->Add_Light(desc)))
-			return E_FAIL;
-	}
-
-	return S_OK;
-}
-
-HRESULT CLevel_Test::Ready_SkillObjectLayer()
-{
-	CGameObject* pPlayer = m_pGameInstance->Get_GameObject_Front(0, g_wszPlayerLayer);
-
-	_uint iLevelId = ENUM_TO_UINT(ELevelType::TEST);
-
-	// SkillObject Pool
-	{
-		CMoon_SkillE_Obj::SKILLOBJECT_DESC desc{};
-		if (FAILED(m_pGameInstance->Regist_Pool(
-			0,
-			g_wszPool_MoonSkillE,
-			g_wszSkillObjectLayer,
-			0,
-			g_wszMoonSkillE__Prototype_Tag,
-			&desc,
-			30)))
 			return E_FAIL;
 	}
 
