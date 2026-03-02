@@ -96,9 +96,9 @@ void CPhysics_CCTHitReport::onControllerHit(const PxControllersHit& hit)
 		static_cast<CGameObject*>(hit.controller->getUserData())->Get_Component<CPhysicsCCT>()->Add_Disp(disp);
 	}
 
-#ifdef _DEBUG
-	Debug_Log(HITEVENT::Enum::ON_CCT_HIT, info);
-#endif // _DEBUG
+//#ifdef _DEBUG
+//	Debug_Log(HITEVENT::Enum::ON_CCT_HIT, info);
+//#endif // _DEBUG
 }
 
 CPhysics_CCTHitReport::CPhysics_CCTHitReport()

@@ -20,7 +20,8 @@ public:
 			AIRBORNE = 1 << 2,
 			FLY = 1 << 3,
 			HIT = 1 << 4,
-			NONE,
+			DEAD = 1 << 5,
+			DEAD_PROCESS = 1 << 6,
 			END
 		};
 	}SUB_STATE;
@@ -74,6 +75,8 @@ public:
 public:
 	virtual Vec3  Get_MoveDir() override;
 
+	void Set_Dead();
+	void Set_Dead_Process() { m_iSubState |= SUB_STATE::DEAD_PROCESS; }
 	void Set_HitDesc(HIT_DESC hitDesc)
 	{
 		m_tHitDesc = hitDesc;
@@ -112,12 +115,17 @@ public:
 	// 공간
 	_bool IsFalling();
 	_bool IsDown();
+
+	// 상태
 	_bool IsHit();
 	_bool IsHitAdditive();
 	_bool IsHitLight();
 	_bool IsHitHeavy();
 	_bool IsHitLaunch();
 	_bool IsHitKnockdown();
+
+	_bool IsDead();
+	_bool IsDeadProcessing();
 
 	// 데미지
 	_bool IsDamageRecently();
@@ -162,7 +170,7 @@ private:
 
 	MONSTER_CONTROLCONTEXT_DESC m_tDesc = {};
 	HIT_DESC m_tHitDesc = {};
-	_uint m_iSubState = SUB_STATE::NONE;
+	_uint m_iSubState = 0;
 
 public:
 	static CMonsterControlContext* Create();
