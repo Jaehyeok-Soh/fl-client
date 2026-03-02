@@ -176,10 +176,7 @@ wstring Engine_Utils::ToWString(string value)
             return wstrReturn;
         };
 
-    // UTF8 먼저 시도
     wstring result = TryConvert(CP_UTF8, MB_ERR_INVALID_CHARS);
-
-    // 실패하면 CP_ACP(한글 CP949) 로 재시도
     if (result.empty())
         result = TryConvert(CP_ACP, 0);
 
