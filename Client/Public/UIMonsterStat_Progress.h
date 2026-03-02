@@ -2,8 +2,11 @@
 #include "UIProgress_Bar.h"
 #include "DataStruct_UI.h"
 
+NS_BEGIN(Engine)
+class CMyStat;
+NS_END
+
 NS_BEGIN(Client)
-class CWorldUI_Component;
 class CUIMonsterStat_Progress final : public CUIProgress_Bar
 {
 	using Super = CUIProgress_Bar;
@@ -45,7 +48,9 @@ private:
 	HRESULT Convert_Stat_To_Ratio();
 
 private:
-	// Player HP Values
+	CMyStat* m_pTargetStat = { nullptr };
+
+	// Monster HP Values
 	_bool m_isStartLowHp = { FALSE };
 	_bool m_isEndLowHp = { FALSE };
 	_float m_fTickTimeAcc = {};

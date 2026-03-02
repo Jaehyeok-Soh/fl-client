@@ -6,6 +6,7 @@
 // Component
 //=================
 #include "WorldUI_Component.h"
+#include "MyStat.h"
 #include "Texture.h"
 #include "Shader.h"
 #include "VIBuffer_Rect_Tex.h"
@@ -102,6 +103,7 @@ HRESULT CUIMonsterStat_Text::Bind_ShaderResources()
 
 HRESULT CUIMonsterStat_Text::Attach_Personal_Info()
 {
+
 	return S_OK;
 }
 
@@ -110,9 +112,10 @@ HRESULT CUIMonsterStat_Text::Convert_Stat_To_Text()
 	switch (m_eTextSubClassType)
 	{
 	case DTO::EUITextSubClassType::MONSTER_STAT_TEXT_LV:
-		m_wstrText = L"Lv.10";
+		m_wstrText = L"1"; // UIFIX //
 		break;
 	case DTO::EUITextSubClassType::MONSTER_STAT_TEXT_NICKNAME:
+		m_wstrText = Engine_Utils::ToWString(m_pTargetStat->Get_Owner()->Get_Name());
 		break;
 	case DTO::EUITextSubClassType::END:
 	default:
@@ -162,7 +165,10 @@ HRESULT CUIMonsterStat_Text::Spawn_FromPool(void* pArg)
 		return E_FAIL;
 
 	m_pWorldUIComp->Set_Target(pDesc->pTarget);
-	/* ¸ó½ºÅÍ ½ºÅÈ ÄÄÆ÷³ÍÆ® ºÎÂø */
+
+	m_pTargetStat = pDesc->pTarget->Get_Component<CMyStat>();
+	if (nullptr == m_pTargetStat)
+		return E_FAIL;
 	
 	m_bDead = false;
 	return S_OK;

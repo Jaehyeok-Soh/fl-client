@@ -173,8 +173,9 @@ HRESULT CUICombo_Image::Attach_Personal_Info()
 
 	m_pGameInstance->Subscribe<COMBO_ATTACK_EVENT_START>([this]() 
 		{
-			if(!this->m_isVisible)
+			if (!this->m_isVisible)
 				this->Set_Visible();
+			this->m_iCurComboCount++;
 		});
 
 	m_pGameInstance->Subscribe<COMBO_ATTACK_EVENT_END>([this]() 
@@ -200,9 +201,15 @@ void CUICombo_Image::Tick_By_Type(const _float fTimeDelta)
 		if (m_iPreComboCount != m_iCurComboCount)
 			m_isCountChange = true;
 
+		m_fComboCoolTime += fTimeDelta;
 		if (m_isCountChange)
 		{
-
+			m_fComboCoolTime = 0.f;
+		}
+		// ÄÞº¸Ã¢ ²ô±â
+		if (m_fComboCoolTime > 5.f)
+		{
+			m_pGameInstance->Broadcast<COMBO_ATTACK_EVENT_END>();
 		}
 
 		Convert_Count_To_Rank();
@@ -241,13 +248,14 @@ void CUICombo_Image::Tick_By_Type(const _float fTimeDelta)
 	case DTO::EUIDImageSubClassType::BATTLE_COMBO_BG_GLOW:
 	{
 		m_fTime += fTimeDelta;
+		m_fComboCoolTime += fTimeDelta;
 
 		if (m_iPreComboCount != m_iCurComboCount)
 			m_isCountChange = true;
 
 		if (m_isCountChange)
 		{
-
+			m_fComboCoolTime = 0.f;
 		}
 
 		Convert_Count_To_Rank();
@@ -275,7 +283,6 @@ void CUICombo_Image::Tick_By_Type(const _float fTimeDelta)
 			default:
 				break;
 			}
-			Ready_LerpChange(0.3f, 3.f, 1.f, 1.f, m_fDelay);
 		}
 	}
 	break;
@@ -285,6 +292,7 @@ void CUICombo_Image::Tick_By_Type(const _float fTimeDelta)
 	default:
 		break;
 	}
+	m_iPreComboCount = m_iCurComboCount;
 }
 
 void CUICombo_Image::OnUIEvent(ETriggerEventType eEvent, CGenericUI* pSender)
@@ -300,6 +308,18 @@ void CUICombo_Image::Initialize_Visible_Event()
 }
 
 _bool CUICombo_Image::Tick_Visible_Event(const _float fTimeDelta)
+{
+	return true;
+}
+
+void CUICombo_Image::Initialize_InVisible_Event()
+{
+	m_iCurComboCount = 0;
+	m_eCurComboType = ECombotype::END;
+	m_fComboCoolTime = 0.f;
+}
+
+_bool CUICombo_Image::Tick_InVisible_Event(const _float fTimeDelta)
 {
 	return true;
 }
@@ -320,7 +340,7 @@ void CUICombo_Image::Convert_Count_To_Rank()
 	{
 		m_eCurComboType = ECombotype::A;
 	}
-	else if (m_iCurComboCount > 120)
+	else if (m_iCurComboCount >= 120)
 	{
 		m_eCurComboType = ECombotype::S;
 	}

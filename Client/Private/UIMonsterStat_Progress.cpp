@@ -6,6 +6,7 @@
 // Component
 //=================
 #include "WorldUI_Component.h"	
+#include "MyStat.h"
 #include "Texture.h"
 #include "Shader.h"
 #include "VIBuffer_Rect_Tex.h"
@@ -165,7 +166,11 @@ HRESULT CUIMonsterStat_Progress::Spawn_FromPool(void* pArg)
 		return E_FAIL;
 
 	m_pWorldUIComp->Set_Target(pDesc->pTarget);
+
 	/* ¸ó½ºÅÍ ½ºÅÈ ÄÄÆ÷³ÍÆ® ºÎÂø */
+	m_pTargetStat = pDesc->pTarget->Get_Component<CMyStat>();
+	if (nullptr == m_pTargetStat)
+		return E_FAIL;
 
 	m_bDead = false;
 	return S_OK;
@@ -181,8 +186,12 @@ HRESULT CUIMonsterStat_Progress::Convert_Stat_To_Ratio()
 {
 	switch (m_eSubClassType)
 	{
-	case DTO::EUISubClassType::MONSTER_HP:break;
-	case DTO::EUISubClassType::MONSTER_ARMOR:break;
+	case DTO::EUISubClassType::MONSTER_HP:
+		m_fCurRatio = m_pTargetStat->Get_HealthRatio();
+		break;
+	case DTO::EUISubClassType::MONSTER_ARMOR:
+		m_fCurRatio = m_pTargetStat->Get_Rate(CMyStat::STAT_TYPE::DEFENSE);
+		break;
 	case DTO::EUISubClassType::END:
 	default:
 		return E_FAIL;
