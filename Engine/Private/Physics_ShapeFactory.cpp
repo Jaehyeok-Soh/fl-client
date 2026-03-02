@@ -163,8 +163,17 @@ vector<PxShape*> CPhysics_ShapeFactory::MakeShape(PHYSICSCOLLIDER_DESC* pDesc, v
 		shape->setLocalPose(PxTransform(PxVec3(pDesc->vCenter.x, pDesc->vCenter.y, pDesc->vCenter.z)));
 		if (pDesc->bIsTrigger)
 		{
-			shape->setFlag(PxShapeFlag::eSIMULATION_SHAPE, false);
-			shape->setFlag(PxShapeFlag::eTRIGGER_SHAPE, true);
+			if (pDesc->bIsSkillTrigger)
+			{
+				// 트리거 오프 시뮬레이션 온
+				shape->setFlag(PxShapeFlag::eSIMULATION_SHAPE, true);
+				shape->setFlag(PxShapeFlag::eTRIGGER_SHAPE, false);
+			}
+			else
+			{
+				shape->setFlag(PxShapeFlag::eSIMULATION_SHAPE, false);
+				shape->setFlag(PxShapeFlag::eTRIGGER_SHAPE, true);
+			}
 		}
 		else
 		{

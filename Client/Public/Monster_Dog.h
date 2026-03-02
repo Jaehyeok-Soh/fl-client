@@ -36,6 +36,7 @@ public:
 	virtual void Try_Attack(const HIT_DESC& hitDesc) override;
 
 private:
+	HRESULT Ready_Ability();
 	HRESULT Ready_BaseStates();
 	HRESULT Ready_PartObjects();
 	HRESULT Ready_Components(void *pArg);

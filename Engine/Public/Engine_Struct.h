@@ -863,6 +863,7 @@ namespace Engine
 		/// Details ///
 		///////////////
 		bool bIsTrigger = { false };
+		bool bIsSkillTrigger = { false };
 		SimpleMath::Vector3 vCenter = {};
 		float fRadius = {};
 		float fHeight = {};

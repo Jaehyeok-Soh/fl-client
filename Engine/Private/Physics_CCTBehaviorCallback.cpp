@@ -15,7 +15,8 @@ PxControllerBehaviorFlags CPhysics_CCTBehaviorCallback::getBehaviorFlags(const P
 	//PxControllerState cctState;
 	//controller.getState(cctState);
 
-	return PxControllerBehaviorFlag::eCCT_SLIDE;
+	//return PxControllerBehaviorFlag::eCCT_SLIDE;
+	return PxControllerBehaviorFlags();
 }
 
 PxControllerBehaviorFlags CPhysics_CCTBehaviorCallback::getBehaviorFlags(const PxShape& shape, const PxActor& actor)
