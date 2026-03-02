@@ -1664,7 +1664,7 @@
     <ClCompile Include="..\Private\UIMiniMap_Monster_Icon.cpp">
       <Filter>03. GameObject\UIObjects\02.UI\Image\Dynamic Image\01.Minimap\Monster Icon</Filter>
     </ClCompile>
-    <ClCompile Include="..\Private\UIBossAction_Image.h.cpp">
+    <ClCompile Include="..\Private\UIBossAction_Image.cpp">
       <Filter>03. GameObject\UIObjects\02.UI\Image\Dynamic Image\10.BossAction\00.Civila</Filter>
     </ClCompile>
     <ClCompile Include="..\Private\UIBossAction_Text.cpp">

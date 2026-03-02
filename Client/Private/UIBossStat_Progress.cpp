@@ -5,6 +5,7 @@
 //=================
 // Component
 //=================
+#include "Client_EventDefine.h"
 #include "WorldUI_Component.h"	
 #include "Texture.h"
 #include "Shader.h"
@@ -123,6 +124,15 @@ HRESULT CUIBossStat_Progress::Bind_ShaderResources()
 
 HRESULT CUIBossStat_Progress::Attach_Personal_Info()
 {
+	m_pGameInstance->Subscribe<BOSS_STAGING_EVENT_END>([this]()
+		{
+			this->Set_Visible();
+		});
+	m_pGameInstance->Subscribe<BOSS_STAGING_EVENT_START>([this]()
+		{
+			this->Set_Invisible();
+		});
+
 	return S_OK;
 }
 
@@ -193,8 +203,6 @@ HRESULT CUIBossStat_Progress::Despawn_FromPool()
 	m_isVisibleTrigger	= false;
 	return S_OK;
 }
-
-
 
 HRESULT CUIBossStat_Progress::Convert_Stat_To_Ratio()
 {

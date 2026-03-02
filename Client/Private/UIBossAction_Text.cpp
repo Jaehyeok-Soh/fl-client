@@ -59,6 +59,14 @@ void CUIBossAction_Text::Update_Priority(const _float fTimeDelta)
 void CUIBossAction_Text::Update(const _float fTimeDelta)
 {
 	Super::Update(fTimeDelta);
+	if (KEY_BUTTON_UP(DIK_9))
+	{
+		if (m_isVisible)
+			Set_Invisible();
+		else
+			Set_Visible();
+
+	}
 }
 
 void CUIBossAction_Text::Update_Late(const _float fTimeDelta)
@@ -106,6 +114,22 @@ HRESULT CUIBossAction_Text::Bind_ShaderResources()
 
 HRESULT CUIBossAction_Text::Attach_Personal_Info()
 {
+	switch (m_eTextSubClassType)
+	{
+	case DTO::EUITextSubClassType::BOSS_CIVILA_ACTION_BEGIN:
+		break;
+	case DTO::EUITextSubClassType::BOSS_CIVILA_ACTION_WORLD_TEXT:
+		break;
+	case DTO::EUITextSubClassType::BOSS_CIVILA_ACTION_NAME_TEXT:
+		break;
+	case DTO::EUITextSubClassType::BOSS_CIVILA_ACTION_NAME_NIGHTMARE_TEXT:
+		break;
+	case DTO::EUITextSubClassType::BOSS_CIVILA_ACTION_END:
+		break;
+	case DTO::EUITextSubClassType::END:
+	default:
+		return E_FAIL;
+	}
 	return S_OK;
 }
 
@@ -118,20 +142,6 @@ HRESULT CUIBossAction_Text::Convert_Stat_To_Text()
 	return S_OK;
 }
 
-HRESULT CUIBossAction_Text::Spawn_FromPool(void* pArg)
-{
-	if (FAILED(Super::Spawn_FromPool(pArg)))
-		return E_FAIL;
-	return S_OK;
-}
-
-HRESULT CUIBossAction_Text::Despawn_FromPool()
-{
-	if (FAILED(Super::Despawn_FromPool()))
-		return E_FAIL;
-	return S_OK;
-}
-
 void CUIBossAction_Text::OnUIEvent(ETriggerEventType eEvent, CGenericUI* pSender)
 {
 	if (!m_isActive)
@@ -140,24 +150,94 @@ void CUIBossAction_Text::OnUIEvent(ETriggerEventType eEvent, CGenericUI* pSender
 
 void CUIBossAction_Text::Initialize_Visible_Event()
 {
-	m_isActive = false;
-	m_isFin_Event = false;
+	switch (m_eTextSubClassType)
+	{
+	case DTO::EUITextSubClassType::BOSS_CIVILA_ACTION_BEGIN:
+		break;
+	case DTO::EUITextSubClassType::BOSS_CIVILA_ACTION_WORLD_TEXT:
+		Ready_Fade_Text(1.f, 0.f, 1.f, 0.5f);
+		break;
+	case DTO::EUITextSubClassType::BOSS_CIVILA_ACTION_NAME_TEXT:
+		Ready_Lerp_Movement(Vec2{ 10.f, 0.f }, Vec2{ 0.f, 0.f }, 1.f, 0.7f, m_fDelay);
+		Ready_Fade_Text(1.f, 0.f, 1.f, m_fDelay);
+		
+		break;
+	case DTO::EUITextSubClassType::BOSS_CIVILA_ACTION_NAME_NIGHTMARE_TEXT:
+		Ready_Fade_Text(1.f, 0.f, 1.f, 0.5f);
+		break;
+	case DTO::EUITextSubClassType::BOSS_CIVILA_ACTION_END:
+		break;
+	}
 }
 
 void CUIBossAction_Text::Initialize_InVisible_Event()
 {
+	switch (m_eTextSubClassType)
+	{
+	case DTO::EUITextSubClassType::BOSS_CIVILA_ACTION_BEGIN:
+		break;
+	case DTO::EUITextSubClassType::BOSS_CIVILA_ACTION_WORLD_TEXT:
+		Ready_Fade_Text(0.5f, 1.f, 0.f, m_fDelay);
+		break;
+	case DTO::EUITextSubClassType::BOSS_CIVILA_ACTION_NAME_TEXT:
+		Ready_Lerp_Movement(Vec2{ 0.f, 0.f }, Vec2{ 10.f, 0.f }, 1.f, 0.7f, m_fDelay);
+		Ready_Fade_Text(1.f, 1.f, 0.f, m_fDelay);
+		break;
+	case DTO::EUITextSubClassType::BOSS_CIVILA_ACTION_NAME_NIGHTMARE_TEXT:
+		Ready_Fade_Text(0.5f, 1.f, 0.f, m_fDelay);
+		break;
+	case DTO::EUITextSubClassType::BOSS_CIVILA_ACTION_END:
+		break;
+	}
 }
 
 _bool CUIBossAction_Text::Tick_Visible_Event(const _float fTimeDelta)
 {
-	m_isActive = true;
-	m_isFin_Event = true;
-	return true;
+	switch (m_eTextSubClassType)
+	{
+	case DTO::EUITextSubClassType::BOSS_CIVILA_ACTION_BEGIN:
+		break;
+	case DTO::EUITextSubClassType::BOSS_CIVILA_ACTION_WORLD_TEXT:
+		return Tick_Fade_Text(fTimeDelta);
+	case DTO::EUITextSubClassType::BOSS_CIVILA_ACTION_NAME_TEXT:
+	{
+		_bool isMove = Tick_Lerp_Movement(fTimeDelta);
+		_bool isFade = Tick_Fade_Text(fTimeDelta);
+		if (isMove && isFade)
+			return true;
+	}
+	break;
+	case DTO::EUITextSubClassType::BOSS_CIVILA_ACTION_NAME_NIGHTMARE_TEXT:
+		return Tick_Fade_Text(fTimeDelta);
+	case DTO::EUITextSubClassType::BOSS_CIVILA_ACTION_END:
+		break;
+	}
+
+	return false;
 }
 
 _bool CUIBossAction_Text::Tick_InVisible_Event(const _float fTimeDelta)
 {
-	return true;
+	switch (m_eTextSubClassType)
+	{
+	case DTO::EUITextSubClassType::BOSS_CIVILA_ACTION_BEGIN:
+		break;
+	case DTO::EUITextSubClassType::BOSS_CIVILA_ACTION_WORLD_TEXT:
+		return Tick_Fade_Text(fTimeDelta);
+	case DTO::EUITextSubClassType::BOSS_CIVILA_ACTION_NAME_TEXT:
+	{
+		_bool isMove = Tick_Lerp_Movement(fTimeDelta);
+		_bool isFade = Tick_Fade_Text(fTimeDelta);
+		if (isMove && isFade)
+			return true;
+	}
+	break;
+	case DTO::EUITextSubClassType::BOSS_CIVILA_ACTION_NAME_NIGHTMARE_TEXT:
+		return Tick_Fade_Text(fTimeDelta);
+	case DTO::EUITextSubClassType::BOSS_CIVILA_ACTION_END:
+		break;
+	}
+	return false;
 }
 
 CUIBossAction_Text* CUIBossAction_Text::Create(ID3D11Device* pDevice, ID3D11DeviceContext* pDeviceContext)

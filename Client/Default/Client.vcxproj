@@ -491,7 +491,7 @@
     <ClCompile Include="..\Private\TriggerBox_LevelChange.cpp" />
     <ClCompile Include="..\Private\TriggerBox_MonsterSpawner.cpp" />
     <ClCompile Include="..\Private\UIAimDot_Image.cpp" />
-    <ClCompile Include="..\Private\UIBossAction_Image.h.cpp" />
+    <ClCompile Include="..\Private\UIBossAction_Image.cpp" />
     <ClCompile Include="..\Private\UIBossAction_Text.cpp" />
     <ClCompile Include="..\Private\UIBossStat_Image.cpp" />
     <ClCompile Include="..\Private\UIBossStat_Progress.cpp" />

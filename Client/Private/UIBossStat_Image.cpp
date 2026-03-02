@@ -41,6 +41,14 @@ HRESULT CUIBossStat_Image::Initialize(void* pArg)
 
 HRESULT CUIBossStat_Image::Attach_Personal_Info()
 {
+	m_pGameInstance->Subscribe<BOSS_STAGING_EVENT_END>([this]()
+		{
+			this->Set_Visible();
+		});
+	m_pGameInstance->Subscribe<BOSS_STAGING_EVENT_START>([this]()
+		{
+			this->Set_Invisible();
+		});
 	return S_OK;
 }
 
@@ -144,7 +152,6 @@ HRESULT CUIBossStat_Image::Spawn_FromPool(void* pArg)
 	m_isBossEventTrigger = false;
 	m_fTimeAcc = 0.f;
 	m_isSpawned = true;
-	m_pGameInstance->Broadcast<BOSS_STAGING_EVENT_START>();
 	return S_OK;
 }
 
