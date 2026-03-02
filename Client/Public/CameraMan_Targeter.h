@@ -16,7 +16,8 @@ enum class TargeterState : _uint
 {
 	NORMAL = 0,
 	TARGETSYNC,
-	GUN
+	GUN,
+	Bone
 };
 
 class CCameraMan_Targeter final : public CCameraMan
@@ -59,6 +60,11 @@ private:
 	void GunCam_Update_Priority(const _float fTimeDelta);
 	void GunCam_Update(const _float fTimeDelta);
 	void GunCam_End();
+
+	//void GunCam_Begin();
+	//void GunCam_Update_Priority(const _float fTimeDelta);
+	//void GunCam_Update(const _float fTimeDelta);
+	//void GunCam_End();
 
 private:
 	void Update_Input(const _float fTimeDelta);

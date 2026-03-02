@@ -13,13 +13,15 @@ private:
 	virtual HRESULT Initialize(void* pArg) override;
 public:
 
-	virtual void	Update(const _float fTimeDelta) override;
+	virtual void	Update(const _float fTimeDelta, CMyStat* pStatCom = nullptr) override;
 
 public:
 	virtual _bool Start_Skill(CMyStat* pStatCom = nullptr)override;
 	virtual void End_Skill(CMyStat* pStatCom = nullptr)override;
 
 	virtual _bool On_Collision(const _float fTimeDelta, CGameObject* pObj = nullptr)override;
+
+	virtual void Set_ExtraAttack_Desc(EXTRA_ATTACK_DESC& tStat_ExtraDesc, CMyStat* pOwnerStat) override;
 
 private:
 	virtual void Update_Skill(const _float fTimeDelta)override;
