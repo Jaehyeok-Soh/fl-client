@@ -348,11 +348,17 @@ HRESULT CUIDamageFont_Text::Spawn_FromPool(void* pArg)
 	if (m_eTextSubClassType == DTO::EUITextSubClassType::BATTLE_DAMAGE_TEXT_CRITICAL_DAMAGE ||
 		m_eTextSubClassType == DTO::EUITextSubClassType::BATTLE_DAMAGE_TEXT_CRITCAL)
 	{
-		m_pWorldUIComp->Set_TargetPos(Vec3{ pDesc->DamageFontData.vHitPos.x,  pDesc->DamageFontData.vHitPos.y, pDesc->DamageFontData.vHitPos.z});
+		if(pDesc->DamageFontData.vHitPos.x > 100000 || pDesc->DamageFontData.vHitPos.x < -100000)
+			m_pWorldUIComp->Set_Target(pDesc->pTarget);
+		else
+			m_pWorldUIComp->Set_TargetPos(Vec3{ pDesc->DamageFontData.vHitPos.x,  pDesc->DamageFontData.vHitPos.y, pDesc->DamageFontData.vHitPos.z});
 	}
 	else
 	{
-		m_pWorldUIComp->Set_TargetPos(Vec3{ pDesc->DamageFontData.vHitPos.x + x,  pDesc->DamageFontData.vHitPos.y + y, pDesc->DamageFontData.vHitPos.z + z });
+		if (pDesc->DamageFontData.vHitPos.x > 100000 || pDesc->DamageFontData.vHitPos.x < -100000)
+			m_pWorldUIComp->Set_Target(pDesc->pTarget);
+		else
+			m_pWorldUIComp->Set_TargetPos(Vec3{ pDesc->DamageFontData.vHitPos.x + x,  pDesc->DamageFontData.vHitPos.y + y, pDesc->DamageFontData.vHitPos.z + z });
 	}
 
 	switch (m_eTextSubClassType)
@@ -381,7 +387,7 @@ HRESULT CUIDamageFont_Text::Spawn_FromPool(void* pArg)
 	{
 		m_wstrText				= std::to_wstring(pDesc->DamageFontData.iDamage) + L"!";
 	}
-	case DTO::EUITextSubClassType::BATTLE_DAMAGE_TEXT_CRITCAL:
+	case DTO::EUITextSubClassType::BATTLE_DAMAGE_TEXT_CRITCAL:	// 의도된것
 	{
 		m_vOriginFontColor		= pDesc->DamageFontData.vFontColor;
 		m_vFontColor			= m_vOriginFontColor;

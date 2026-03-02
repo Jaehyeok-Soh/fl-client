@@ -312,6 +312,7 @@
     <ClInclude Include="..\Public\UIMini_Map.h" />
     <ClInclude Include="..\Public\UIMonsterStat_Progress.h" />
     <ClInclude Include="..\Public\UIMonsterStat_Text.h" />
+    <ClInclude Include="..\Public\UIMonster_MiniMap_Icon.h" />
     <ClInclude Include="..\Public\UINameplate_BG.h" />
     <ClInclude Include="..\Public\UIPlayerAmmo_Progress.h" />
     <ClInclude Include="..\Public\UIPlayerStat_Progress.h" />
@@ -511,6 +512,7 @@
     <ClCompile Include="..\Private\UIMini_Map.cpp" />
     <ClCompile Include="..\Private\UIMonsterStat_Progress.cpp" />
     <ClCompile Include="..\Private\UIMonsterStat_Text.cpp" />
+    <ClCompile Include="..\Private\UIMonster_MiniMap_Icon.cpp" />
     <ClCompile Include="..\Private\UINameplate_BG.cpp" />
     <ClCompile Include="..\Private\UIPlayerAmmo_Progress.cpp" />
     <ClCompile Include="..\Private\UIPlayerStat_Progress.cpp" />

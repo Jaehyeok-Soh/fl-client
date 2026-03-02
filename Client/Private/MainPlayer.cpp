@@ -316,29 +316,37 @@ void CMainPlayer::Try_Attack(const HIT_DESC& hitDesc)
 #endif // _DEBUG
 
     // 일반 공격 데미지 폰트
-    {
-        UI_PREFAB_DATA tPrefabData = {};
-        tPrefabData.DamageFontData.iDamage = 100 + m_pGameInstance->Rand_Int(-10, 10); // 데미지 폰트에 뜰 숫자 // 플레이어 공격력 // 랜덤은 보여주기용
-        tPrefabData.DamageFontData.vFontColor = Vec4{ 1.f, 0.f, 0.f, 1.f }; // 데미지 폰트 색 // 캐릭터 고유 색
-        tPrefabData.DamageFontData.vHitPos = hitDesc.vHitPoint; // 데미지 폰트를 띄울 World 위치 // 
-        tPrefabData.DamageFontData.vRandOffset = Vec3{
-            m_pGameInstance->Rand_Float(-1.f, 1.f),
-            m_pGameInstance->Rand_Float(-1.f, 1.f),
-            m_pGameInstance->Rand_Float(-1.f, 1.f) }; // 랜덤 오프셋 // 더 커지면 이상함
+    //{
+    //    UI_PREFAB_DATA tPrefabData = {};
+    //    tPrefabData.pTarget = hitDesc.pVictim;
+    //    tPrefabData.DamageFontData.iDamage = 100 + m_pGameInstance->Rand_Int(-10, 10); // 데미지 폰트에 뜰 숫자 // 플레이어 공격력 // 랜덤은 보여주기용
+    //    tPrefabData.DamageFontData.vFontColor = Vec4{ 1.f, 0.f, 0.f, 1.f }; // 데미지 폰트 색 // 캐릭터 고유 색
+    //    tPrefabData.DamageFontData.vHitPos = hitDesc.vHitPoint; // 데미지 폰트를 띄울 World 위치 // 
+    //    tPrefabData.DamageFontData.vRandOffset = Vec3{
+    //        m_pGameInstance->Rand_Float(-1.f, 1.f),
+    //        m_pGameInstance->Rand_Float(-1.f, 1.f),
+    //        m_pGameInstance->Rand_Float(-1.f, 1.f) 
+    //    }; // 랜덤 오프셋 // 더 커지면 이상함
 
-        CUI_Manager::GetInstance()->Request_Add_Prefab(
-            m_pGameInstance->Get_CurrentLevelIndex(), EUIPrefabType::DAMAGE_FONTS_COMMON, m_pGameInstance->Get_CurrentLevelIndex(), &tPrefabData);
-    }
+    //    CUI_Manager::GetInstance()->Request_Add_Prefab(
+    //        m_pGameInstance->Get_CurrentLevelIndex(), EUIPrefabType::DAMAGE_FONTS_COMMON, m_pGameInstance->Get_CurrentLevelIndex(), &tPrefabData);
+    //}
     // 크리티컬 데미지 폰트
     {
         UI_PREFAB_DATA tPrefabData = {};
+        tPrefabData.pTarget = hitDesc.pVictim;
         tPrefabData.DamageFontData.iDamage = 1000 + m_pGameInstance->Rand_Int(-100, 100);
         tPrefabData.DamageFontData.vFontColor = Vec4{ 1.f, 0.f, 0.f, 1.f };
         tPrefabData.DamageFontData.vHitPos = hitDesc.vHitPoint;
         tPrefabData.DamageFontData.vRandOffset = Vec3{
             m_pGameInstance->Rand_Float(-1.f, 1.f),
             m_pGameInstance->Rand_Float(-1.f, 1.f),
-            m_pGameInstance->Rand_Float(-1.f, 1.f) };
+            m_pGameInstance->Rand_Float(-1.f, 1.f) 
+        };
+        _wstring wstr = L"Hit Pos X : " + std::to_wstring(hitDesc.vHitPoint.x) +
+            L"Hit Pos Y : " + std::to_wstring(hitDesc.vHitPoint.y) +
+            L"Hit Pos Z : " + std::to_wstring(hitDesc.vHitPoint.z);
+        CLOG_INFO(wstr);
         CUI_Manager::GetInstance()->Request_Add_Prefab(
             m_pGameInstance->Get_CurrentLevelIndex(), EUIPrefabType::DAMAGE_FONTS_CRITICAL, m_pGameInstance->Get_CurrentLevelIndex(), &tPrefabData);
     }

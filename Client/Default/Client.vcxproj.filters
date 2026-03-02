@@ -607,6 +607,9 @@
     <Filter Include="03. GameObject\BattelField">
       <UniqueIdentifier>{b1195416-a6da-4357-b964-0ea1df18e98b}</UniqueIdentifier>
     </Filter>
+    <Filter Include="03. GameObject\UIObjects\02.UI\Image\Dynamic Image\01.Minimap\Monster Icon">
+      <UniqueIdentifier>{2356813e-9a11-4a23-8c02-0a34c4c2c7a9}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="targetver.h">
@@ -1129,6 +1132,9 @@
     <ClInclude Include="..\Public\BattleField.h">
       <Filter>03. GameObject\BattelField</Filter>
     </ClInclude>
+    <ClInclude Include="..\Public\UIMonster_MiniMap_Icon.h">
+      <Filter>03. GameObject\UIObjects\02.UI\Image\Dynamic Image\01.Minimap\Monster Icon</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <Image Include="Client.ico">
@@ -1642,6 +1648,9 @@
     </ClCompile>
     <ClCompile Include="..\Private\BattleField.cpp">
       <Filter>03. GameObject\BattelField</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\UIMonster_MiniMap_Icon.cpp">
+      <Filter>03. GameObject\UIObjects\02.UI\Image\Dynamic Image\01.Minimap\Monster Icon</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
