@@ -227,7 +227,7 @@ void CGameObject::Set_Dead(const wstring& wstrLayerTag)
     {
         auto pCCT = Get_Component<CPhysicsCCT>();
         if (pCCT)
-            pCCT->EnableCollision(false);
+            pCCT->EnableCollision(false); 
         
         auto pRigidBody = Get_Component<CPhysicsRigidBody>();
         if (pRigidBody)

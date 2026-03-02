@@ -188,7 +188,7 @@ _bool CMonster_Base::On_Hit(const HIT_DESC& hitDesc)
 	auto myStat = Get_Component<CMyStat>();
 	if (myStat)
 	{
-		myStat->Add_Health(-hitDesc.attackDesc.pAttackPreset->tCombat.fBaseDamage);
+		myStat->Add_Health(-hitDesc.fFinalDamage);
 
 		auto vHp = myStat->Get_Stat_Vec2(CMyStat::STAT_TYPE::HP);
 		if (vHp.x <= 0)
