@@ -124,7 +124,7 @@ HRESULT CMonsterState_Factory::Ready_Feature()
 	// 02-27 구조 변경 후 예시
 	REGISTER_FEATURE("param_feat_move_local", FEATURE{ MONSTERCC(state)->Update_8Dir_LocalAxisXZ(fTimeDelta, param.fParam[0], param.fParam[1]); state->Align_Movement(fTimeDelta); });
 	
-	REGISTER_FEATURE("feat_set_dead", FEATURE{ state->Get_OwnerObject()->IsDead(); });
+	REGISTER_FEATURE("feat_set_dead", FEATURE{ state->Get_OwnerObject()->Set_Dead(g_wszMonstereLayer); });
 	REGISTER_FEATURE("feat_set_deadprocess", FEATURE{ MONSTERCC(state)->Set_Dead_Process(); });
 
 	return S_OK;

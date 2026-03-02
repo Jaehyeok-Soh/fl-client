@@ -75,7 +75,7 @@ public:
 public:
 	virtual Vec3  Get_MoveDir() override;
 
-	void Set_Dead() { m_iSubState |= SUB_STATE::DEAD; }
+	void Set_Dead();
 	void Set_Dead_Process() { m_iSubState |= SUB_STATE::DEAD_PROCESS; }
 	void Set_HitDesc(HIT_DESC hitDesc)
 	{

@@ -57,6 +57,13 @@ Vec3 CMonsterControlContext::Get_MoveDir()
 	return m_vMoveDir;
 }
 
+void CMonsterControlContext::Set_Dead()
+{
+	if (IsDeadProcessing())
+		return;
+
+	m_iSubState |= SUB_STATE::DEAD;
+}
 _bool CMonsterControlContext::IsTargetFound()
 {
 	if (m_pTarget == nullptr)
