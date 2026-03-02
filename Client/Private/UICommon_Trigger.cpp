@@ -91,6 +91,8 @@ void CUICommon_Trigger::Update_Priority(const _float fTimeDelta)
 void CUICommon_Trigger::Update(const _float fTimeDelta)
 {
 	Super::Update(fTimeDelta);
+			if (m_strName == "Menu_Exit_Trigger")
+			int a = 0;
 }
 
 void CUICommon_Trigger::Update_Late(const _float fTimeDelta)
@@ -132,6 +134,9 @@ void CUICommon_Trigger::OnUIEvent(ETriggerEventType eEvent, CGenericUI* pSender)
 	case Client::ETriggerEventType::HOVER_EXIT:
 		break;
 	case Client::ETriggerEventType::PRESS_ENTER:
+		if (m_strName == "Menu_Exit_Trigger")
+			int a = 0;
+
 		if (m_isInteract)
 		{
 			m_eCurTriggerType = ETriggerEventType::PRESS_ENTER;
@@ -162,11 +167,10 @@ void CUICommon_Trigger::Initialize_NonInteractable_Event()
 
 _bool CUICommon_Trigger::Tick_Interactable_Event(const _float fTimeDelta)
 {
-	_bool isFin = Check_FinEvent(m_eCurTriggerType);
 	m_fDelayTimeAcc += fTimeDelta;
 	_bool isDelay = (m_fDelayTimeAcc >= m_fDelay);
 
-	if (isFin && isDelay)
+	if (isDelay)
 	{
 		m_isVisible = true;
 		m_eCurTriggerType = ETriggerEventType::END;
