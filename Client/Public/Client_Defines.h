@@ -367,18 +367,23 @@ namespace Client
 		return L"NOT_PREFAB";
 	}
 
+	typedef struct tagUINamePlatePrefabData
+	{
+		Vec3 vOffset = {};
+	}UI_NAMEPLATE_PREFAB_DATA;
+
 	typedef struct tagUIDamageFontPrefabData
 	{
 		Vec4	vFontColor = {};
 		Vec3	vHitPos = {};
 		_uint	iDamage = {};
 		Vec3	vRandOffset = {};
-
 	}UI_DAMAGEFONT_PREFAB_DATA;
 
 	typedef struct tagUIPrefabData
 	{
 		CGameObject* pTarget = { nullptr };
+		UI_NAMEPLATE_PREFAB_DATA NamePlateData = {};
 		UI_DAMAGEFONT_PREFAB_DATA DamageFontData = {};
 	}UI_PREFAB_DATA;
 

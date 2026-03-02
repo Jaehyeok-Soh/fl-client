@@ -1,4 +1,5 @@
 #include "pch.h"
+#include "Client_EventDefine.h"
 #include "Monster_Boomer.h"
 #include "Monster_Body_Base.h"
 #include "MonsterActionState.h"
@@ -59,6 +60,7 @@ HRESULT CMonster_Boomer::Awake(const _uint iCurrentLevelID)
 	{
 		UI_PREFAB_DATA Desc = {};
 		Desc.pTarget = this;
+		Desc.NamePlateData.vOffset = Vec3{0.f, 2.5f, 0.f};
 		CUI_Manager::GetInstance()->Request_Add_Prefab(iCurrentLevelID, EUIPrefabType::MONSTER_NAMEPLATE, iCurrentLevelID, &Desc);
 	}
 	return S_OK;
@@ -119,7 +121,19 @@ void CMonster_Boomer::OnTrigger_Exit(_uint iMyColliderLayer, _uint iOtherLayer, 
 
 _bool CMonster_Boomer::On_Hit(const HIT_DESC& hitDesc)
 {
-	return Super::On_Hit(hitDesc);
+	_bool result = Super::On_Hit(hitDesc);
+	
+	auto myStat = Get_Component<CMyStat>();
+	myStat->Add_Health(-hitDesc.attackDesc.pAttackPreset->tCombat.fBaseDamage);
+	
+	auto vHp = myStat->Get_Stat_Vec2(CMyStat::STAT_TYPE::HP);
+	if (vHp.x <= 0)
+	{
+		Get_Component<CMonsterControlContext>()->Set_Dead();
+		m_pGameInstance->Broadcast<MONSTER_DEAD_EVENT_START>(this);
+	}
+
+	return result;
 }
 
 void CMonster_Boomer::Try_Attack(const HIT_DESC& hitDesc)

@@ -144,6 +144,7 @@ HRESULT CUICombo_Text::Attach_Personal_Info()
 		{
 			if (!this->m_isVisible)
 				this->Set_Visible();
+			this->m_iCurComboCount++;
 		});
 
 	m_pGameInstance->Subscribe<COMBO_ATTACK_EVENT_END>([this]()
@@ -204,7 +205,10 @@ HRESULT CUICombo_Text::Convert_Stat_To_Text()
 	case DTO::EUITextSubClassType::BATTLE_COMBO_COMBO_TEXT:
 		break;
 	case DTO::EUITextSubClassType::BATTLE_COMBO_CUR_COUNT_TEXT:
-		m_wstrText = std::to_wstring(m_iCurComboCount);
+		if (m_iCurComboCount >= 120)
+			m_wstrText = L"120";
+		else 
+			m_wstrText = std::to_wstring(m_iCurComboCount);
 		break;
 	case DTO::EUITextSubClassType::BATTLE_COMBO_NEXT_COUNT_TEXT:
 	{
@@ -252,6 +256,8 @@ void CUICombo_Text::Initialize_Visible_Event()
 
 void CUICombo_Text::Initialize_InVisible_Event()
 {
+	m_iCurComboCount = 0;
+	m_eCurComboType = ECombotype::END;
 }
 
 _bool CUICombo_Text::Tick_Visible_Event(const _float fTimeDelta)
@@ -268,19 +274,19 @@ _bool CUICombo_Text::Tick_InVisible_Event(const _float fTimeDelta)
 
 void CUICombo_Text::Convert_Count_To_Rank()
 {
-	if (m_iCurComboCount < 40 || m_iCurComboCount >= 0)
+	if (m_iCurComboCount < 40 && m_iCurComboCount >= 0)
 	{
 		m_eCurComboType = ECombotype::C;
 	}
-	else if (m_iCurComboCount < 70 || m_iCurComboCount >= 40)
+	else if (m_iCurComboCount < 70 && m_iCurComboCount >= 40)
 	{
 		m_eCurComboType = ECombotype::B;
 	}
-	else if (m_iCurComboCount < 120 || m_iCurComboCount >= 70)
+	else if (m_iCurComboCount < 120 && m_iCurComboCount >= 70)
 	{
 		m_eCurComboType = ECombotype::A;
 	}
-	else if (m_iCurComboCount == 120)
+	else if (m_iCurComboCount >= 120)
 	{
 		m_eCurComboType = ECombotype::S;
 	}

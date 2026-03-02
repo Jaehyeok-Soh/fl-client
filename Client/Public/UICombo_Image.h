@@ -33,6 +33,8 @@ private:
 	virtual void OnUIEvent(ETriggerEventType eEvent, CGenericUI* pSender)override;
 	virtual void Initialize_Visible_Event()override;
 	virtual _bool Tick_Visible_Event(const _float fTimeDelta)override;
+	virtual void Initialize_InVisible_Event()override;
+	virtual _bool Tick_InVisible_Event(const _float fTimeDelta)override;
 
 	void Convert_Count_To_Rank();
 private:
@@ -45,7 +47,7 @@ private:
 	_uint m_iPreComboCount		= {};
 	_bool m_isCountChange		= { false };
 	_bool m_isComboChange		= { false };
-
+	_float m_fComboCoolTime		= {};
 
 	// Glow Effect Values
 	Vec2	m_vNoiseUVScale		= {};

@@ -65,6 +65,8 @@ void CWorldUI_Component::Proj_World_To_Screen()
 	if (nullptr != m_pTargetObject)
 	{
 		vWorldPos = m_pTargetObject->Get_Component<CTransform>()->Get_Info(TRANSFORM_INFO_STATE::POS);
+		vWorldPos += m_vTargetWorldOffset;
+
 		//auto* p = static_cast<CMonster_Base*>(m_pTargetObject);
 		//const Matrix worldMat = *(p->Get_Part<CMonster_Body_Base>(ENUM_TO_UINT(CMonster_Base::Part::BODY))->Get_SocketMatrix("camera_test"));
 		//vWorldPos = Vec3::Transform(vWorldPos, worldMat);

@@ -1,11 +1,12 @@
 #include "pch.h"
 #include "UIMonsterStat_Progress.h"
 #include "Client_Defines.h"
-
+#include "Client_EventDefine.h"
 //=================
 // Component
 //=================
 #include "WorldUI_Component.h"	
+#include "MyStat.h"
 #include "Texture.h"
 #include "Shader.h"
 #include "VIBuffer_Rect_Tex.h"
@@ -62,6 +63,7 @@ void CUIMonsterStat_Progress::Update(const _float fTimeDelta)
 
 	// CurRatio °»½Å
 	Convert_Stat_To_Ratio();
+
 }
 
 void CUIMonsterStat_Progress::Update_Late(const _float fTimeDelta)
@@ -110,6 +112,12 @@ HRESULT CUIMonsterStat_Progress::Attach_Personal_Info()
 
 	m_vOriginColor = m_vColorTint;
 	m_vOriginGradiantColor = m_vGradiantColorTint;
+
+	m_pGameInstance->Subscribe<MONSTER_DEAD_EVENT_START>([this](CGameObject* pDead)
+		{
+			if (pDead == m_pTargetMoster)
+				this->Set_Invisible();
+		});
 	return S_OK;
 }
 
@@ -123,14 +131,13 @@ void CUIMonsterStat_Progress::Initialize_Visible_Event()
 {
 	m_isActive		= false;
 	m_isFin_Event	= false;
-	m_fTimeAcc		= 0.f;
-	m_fAlpha_Ratio	= 0.f;
 }
 
 void CUIMonsterStat_Progress::Initialize_InVisible_Event()
 {
+	m_isActive = false;
 	m_isFin_Event	= false;
-	m_fTimeAcc		= 0.f;
+	Ready_Fade(1.f, 1.f, 0.f, 1.f);
 }
 
 _bool CUIMonsterStat_Progress::Tick_Visible_Event(const _float fTimeDelta)
@@ -148,8 +155,14 @@ _bool CUIMonsterStat_Progress::Tick_Visible_Event(const _float fTimeDelta)
 
 _bool CUIMonsterStat_Progress::Tick_InVisible_Event(const _float fTimeDelta)
 {
-	m_isFin_Event = true;
-	return true;
+	if (Tick_Fade(fTimeDelta))
+	{
+		Request_SetDead();
+		m_isActive = false;
+		m_isFin_Event = true;
+		return true;
+	}
+	return false;
 }
 
 HRESULT CUIMonsterStat_Progress::Spawn_FromPool(void* pArg)
@@ -165,7 +178,13 @@ HRESULT CUIMonsterStat_Progress::Spawn_FromPool(void* pArg)
 		return E_FAIL;
 
 	m_pWorldUIComp->Set_Target(pDesc->pTarget);
+	m_pTargetMoster = pDesc->pTarget;
+	m_pWorldUIComp->Set_TargetWorldOffset(pDesc->NamePlateData.vOffset);
+
 	/* ¸ó½ºÅÍ ½ºÅÈ ÄÄÆ÷³ÍÆ® ºÎÂø */
+	m_pTargetStat = pDesc->pTarget->Get_Component<CMyStat>();
+	if (nullptr == m_pTargetStat)
+		return E_FAIL;
 
 	m_bDead = false;
 	return S_OK;
@@ -181,8 +200,12 @@ HRESULT CUIMonsterStat_Progress::Convert_Stat_To_Ratio()
 {
 	switch (m_eSubClassType)
 	{
-	case DTO::EUISubClassType::MONSTER_HP:break;
-	case DTO::EUISubClassType::MONSTER_ARMOR:break;
+	case DTO::EUISubClassType::MONSTER_HP:
+		m_fCurRatio = m_pTargetStat->Get_HealthRatio();
+		break;
+	case DTO::EUISubClassType::MONSTER_ARMOR:
+		m_fCurRatio = m_pTargetStat->Get_Rate(CMyStat::STAT_TYPE::DEFENSE);
+		break;
 	case DTO::EUISubClassType::END:
 	default:
 		return E_FAIL;
