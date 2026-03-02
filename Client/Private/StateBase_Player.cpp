@@ -269,9 +269,17 @@ _bool CStateBase_Player::Check_MeleeKey(const _float fTimeDelta)
 	}
 
 	/*else */if (Has_ChangeState(STATEKEY::LM) &&
-		Key_Input(ENUM_TO_UINT(CControlContext::CONTROL_KEY::LATT)))
+	Key_Input(ENUM_TO_UINT(CControlContext::CONTROL_KEY::LATT)))
 	{
-		Change_PlayerState(STATEKEY::LM);
+		if (Check_OnGround(0.3f))
+		{
+			Change_PlayerState(ENUM_TO_UINT(CPlayer::State::COMBO));
+		}
+
+		else
+		{
+			Change_PlayerState(ENUM_TO_UINT(CPlayer::State::JUMPATTSTART));
+		}
 		return true;
 	}
 

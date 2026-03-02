@@ -30,6 +30,11 @@ HRESULT CState_Slide::Start(void* pArg, _bool bForce)
     if (FAILED(Super::Start(pArg, bForce)))
         return E_FAIL;
 
+    if (m_iMainAnimIdx == ENUM_TO_UINT(ANI::SKY))
+    {
+        m_FCollisions &= ~COLLISIONFLAGS::C_DOWN;
+    }
+
     Set_ApplyYLerp(true);
 
     return S_OK;
@@ -44,6 +49,8 @@ HRESULT CState_Slide::End()
 {
     if (FAILED(Super::End()))
         return E_FAIL;
+
+    m_FCollisions |= COLLISIONFLAGS::C_DOWN;
 
     Set_ApplyYLerp(false);
 
