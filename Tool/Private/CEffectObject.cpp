@@ -757,12 +757,15 @@ bool CEffectObject::IntsersectWithPlane(OUT Vec3& vOut)
 
 HRESULT CEffectObject::Render()
 {
-    if (FAILED(Super::Render()))
-        return E_FAIL;
+    if (Is_Render_Possible())
+    {
+        if (FAILED(Super::Render()))
+            return E_FAIL;
 
-    // ===========  셰이더에 값 바인딩  ===========
-    if (FAILED(Bind_ShaderResource()))
-        return E_FAIL;
+        // ===========  셰이더에 값 바인딩  ===========
+        if (FAILED(Bind_ShaderResource()))
+            return E_FAIL;
+    }
 
     return S_OK;
 }

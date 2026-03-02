@@ -73,6 +73,7 @@ private:
     //  ==========  Shader Binding Setting  =============
     HRESULT Bind_ShaderResource();
     HRESULT Bind_Curve_To_GPU();
+    _bool   Is_Render_Possible() { return m_bIsStarted; }
 
 private:
     // ====== 계산함수 ====== 
