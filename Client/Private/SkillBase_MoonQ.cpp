@@ -1,15 +1,15 @@
 #include "pch.h"
-#include "SkillComp_MoonQ.h"
+#include "SkillBase_MoonQ.h"
 
 #include "Player.h"
 #include "StatCom_Player.h"
 
-CSkillComp_MoonQ::CSkillComp_MoonQ()
+CSkillBase_MoonQ::CSkillBase_MoonQ()
 	:Super()
 {
 }
 
-HRESULT CSkillComp_MoonQ::Initialize(void* pArg)
+HRESULT CSkillBase_MoonQ::Initialize(void* pArg)
 {
 	SKILL_DESC tMyDesc = {};
 
@@ -41,12 +41,12 @@ HRESULT CSkillComp_MoonQ::Initialize(void* pArg)
 	return S_OK;
 }
 
-void CSkillComp_MoonQ::Update(const _float fTimeDelta, CMyStat* pStatCom )
+void CSkillBase_MoonQ::Update(const _float fTimeDelta, CMyStat* pStatCom )
 {
 	Super::Update(fTimeDelta, pStatCom);
 }
 
-_bool CSkillComp_MoonQ::Start_Skill(CMyStat* pStatCom)
+_bool CSkillBase_MoonQ::Start_Skill(CMyStat* pStatCom)
 {
 	if (Super::Start_Skill(pStatCom))
 	{
@@ -60,7 +60,7 @@ _bool CSkillComp_MoonQ::Start_Skill(CMyStat* pStatCom)
 	return false;
 }
 
-void CSkillComp_MoonQ::End_Skill(CMyStat* pStatCom)
+void CSkillBase_MoonQ::End_Skill(CMyStat* pStatCom)
 {
 	Super::End_Skill(pStatCom);
 	static_cast<CStatCom_Player*>(pStatCom)->Set_AttackState(CStatCom_Player::Attack_State::Q, false);
@@ -68,33 +68,33 @@ void CSkillComp_MoonQ::End_Skill(CMyStat* pStatCom)
 	// 충돌체 회수
 }
 
-_bool CSkillComp_MoonQ::On_Collision(const _float fTimeDelta, CGameObject* pObj)
+_bool CSkillBase_MoonQ::On_Collision(const _float fTimeDelta, CGameObject* pObj)
 {
 	return false;
 }
 
-void CSkillComp_MoonQ::Set_ExtraAttack_Desc(EXTRA_ATTACK_DESC& tStat_ExtraDesc, CMyStat* pOwnerStat)
+void CSkillBase_MoonQ::Set_ExtraAttack_Desc(EXTRA_ATTACK_DESC& tStat_ExtraDesc, CMyStat* pOwnerStat)
 {
 	tStat_ExtraDesc.fAddRate = 0.15f;
 }
 
-void CSkillComp_MoonQ::Update_Skill(const _float fTimeDelta)
+void CSkillBase_MoonQ::Update_Skill(const _float fTimeDelta)
 {
 
 }
 
-CSkillComp_MoonQ* CSkillComp_MoonQ::Create(void* pArg)
+CSkillBase_MoonQ* CSkillBase_MoonQ::Create(void* pArg)
 {
-	CSkillComp_MoonQ* pInstance = new CSkillComp_MoonQ();
+	CSkillBase_MoonQ* pInstance = new CSkillBase_MoonQ();
 	if (FAILED(pInstance->Initialize(pArg)))
 	{
-		MSG_BOX("CSkillComp_MoonQ::Create, Failed");
+		MSG_BOX("CSkillBase_MoonQ::Create, Failed");
 		Safe_Release(pInstance);
 	}
 	return pInstance;
 }
 
-void CSkillComp_MoonQ::Free()
+void CSkillBase_MoonQ::Free()
 {
 	Super::Free();
 }
