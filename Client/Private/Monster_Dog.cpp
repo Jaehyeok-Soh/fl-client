@@ -39,7 +39,7 @@ HRESULT CMonster_Dog::Initialize(void* pArg)
 	if (FAILED(Ready_Ability()))
 		return E_FAIL;
 
-	Set_Name("Monster_Dog");
+	Set_Name("벨로시 필토이드");
 
 	if (FAILED(Ready_PartObjects()))
 		return E_FAIL;

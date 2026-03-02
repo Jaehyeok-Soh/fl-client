@@ -25,6 +25,12 @@ HRESULT CState_GunBase::Initialize(void* pArg)
     tSuperDesc.pOwnerGun                = pDesc->pOwnerGun;
     tSuperDesc.vecMainAnims             = { pDesc->iMainAnimIdx };
 
+
+    // todo down도 넣어야하나
+    tSuperDesc.FCollis = CStateBase_Player::COLLISIONFLAGS::C_DOWN
+        | CStateBase_Player::COLLISIONFLAGS::C_Strong
+        | CStateBase_Player::COLLISIONFLAGS::C_Fly;
+
     vector<_uint> vecChangeState_ByKey{};
     vecChangeState_ByKey.resize(ENUM_TO_SZET(CStateBase_Player::STATEKEY::END), ENUM_TO_UINT(CPlayer::State::END));
     tSuperDesc.vecChangeState_ByKey = vecChangeState_ByKey;

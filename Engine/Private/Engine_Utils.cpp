@@ -153,26 +153,34 @@ wstring Engine_Utils::ToWString(string value)
     if (value.empty())
         return wstring();
 
-    _int iRequire = ::MultiByteToWideChar(
-        CP_UTF8, MB_ERR_INVALID_CHARS,
-        value.data(),
-        static_cast<_int>(value.size()),
-        nullptr, 0);
+    auto TryConvert = [&](UINT codePage, DWORD flags) -> wstring
+        {
+            _int iRequire = ::MultiByteToWideChar(
+                codePage, flags,
+                value.data(),
+                static_cast<_int>(value.size()),
+                nullptr, 0);
 
-    if (iRequire <= 0)
-        return wstring();
+            if (iRequire <= 0)
+                return wstring();
 
-    wstring wstrReturn(static_cast<size_t>(iRequire), L'\0');
+            wstring wstrReturn(static_cast<size_t>(iRequire), L'\0');
+            _int iWritten = ::MultiByteToWideChar(
+                codePage, flags,
+                value.data(), static_cast<_int>(value.size()),
+                wstrReturn.data(), iRequire);
 
-    _int iWritten = ::MultiByteToWideChar(
-        CP_UTF8, MB_ERR_INVALID_CHARS,
-        value.data(), static_cast<_int>(value.size()),
-        wstrReturn.data(), iRequire);
+            if (iWritten <= 0)
+                return wstring();
 
-    if (iWritten <= 0)
-        return wstring();
+            return wstrReturn;
+        };
 
-    return wstrReturn;
+    wstring result = TryConvert(CP_UTF8, MB_ERR_INVALID_CHARS);
+    if (result.empty())
+        result = TryConvert(CP_ACP, 0);
+
+    return result;
 }
 
 string Engine_Utils::ToString(wstring value)

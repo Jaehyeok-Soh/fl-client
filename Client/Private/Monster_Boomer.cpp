@@ -39,7 +39,7 @@ HRESULT CMonster_Boomer::Initialize(void* pArg)
 	if (FAILED(Ready_Ability()))
 		return E_FAIL;
 
-	Set_Name("Monster_Boomer");
+	Set_Name("세비지 필토이드");
 
 	if (FAILED(Ready_PartObjects()))
 		return E_FAIL;
