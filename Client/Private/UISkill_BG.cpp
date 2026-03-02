@@ -1,11 +1,12 @@
 #include "pch.h"
 #include "UISkill_BG.h"
 #include "Client_Defines.h"
-
+#include "Client_EventDefine.h"
 //=================
 // Component
 //=================
 #include "StatCom_Player.h"
+#include "StateBase_Player.h"
 #include "Texture.h"
 #include "Shader.h"
 #include "VIBuffer_Rect_Tex.h"
@@ -84,62 +85,6 @@ HRESULT CUISkill_BG::Render()
 
 void CUISkill_BG::Trigger_User_Use_Skill()
 {
-	_bool isE = { false };
-	_bool is = { false };
-
-	switch (m_eDImageSubClass)
-	{
-	case DTO::EUIDImageSubClassType::PLAYER_SKILL_BEGIN:
-		break;
-	case DTO::EUIDImageSubClassType::PLAYER_E:
-		isE	= true;
-		if (m_isUsingE)
-			break;
-		is = m_pPlayerStatCom->Get_Skill_Ptr(CStatCom_Player::E)->Is_OnSkill();
-		break;
-	case DTO::EUIDImageSubClassType::PLAYER_Q:
-		m_fCurCoolTime = m_pPlayerStatCom->Get_Skill(CStatCom_Player::Q).tCoolTimer.fTimeAcc;
-		if (m_isUsingSkill)
-			break;
-		is = m_pPlayerStatCom->Get_Skill_Ptr(CStatCom_Player::Q)->Is_OnSkill();
-		break;
-	case DTO::EUIDImageSubClassType::PLAYER_Z:
-		break;
-	case DTO::EUIDImageSubClassType::PLAYER_GUN:
-		break;
-	case DTO::EUIDImageSubClassType::PLAYER_DODGE:
-	{
-		_float f = m_pPlayerStatCom->Get_Timer(CStatCom_Player::TIMER_TYPE::DASH).fTimeAcc;
-
-		if (m_fCurCoolTime == 0 && m_fCurCoolTime < f)
-			if(!m_isUsingSkill)
-				is = true;
-
-		m_fCurCoolTime = f;
-	}
-	break;
-	case DTO::EUIDImageSubClassType::PLAYER_SKILL_END:
-		break;
-	case DTO::EUIDImageSubClassType::END:
-	default:
-		break;
-	}
-
-	if (is)
-	{
-		if (isE)
-		{
-			Ready_Fade(0.3f, 0.f, 0.7f, m_fDelay);
-			m_isUsingE = true;
-			m_isFinUseE = false;
-		}
-		else
-		{
-			Ready_Fade(0.2f, 0.f, 0.7f, m_fDelay);
-			m_isUsingSkill = true;
-			m_isSkillFlash = false;
-		}
-	}
 }
 
 void CUISkill_BG::Tick_Use_Skill_Event(const _float fTimeDelta)
@@ -169,10 +114,17 @@ void CUISkill_BG::Tick_Use_Skill_Event(const _float fTimeDelta)
 			is = Tick_Fade(fTimeDelta);
 		else
 		{
-			m_fProgress_Ratio = 1.f - (m_fCurCoolTime / m_fMaxCoolTime);
-
-			if (m_fProgress_Ratio <= 0.1f)
+			switch (m_eDImageSubClass)
 			{
+			case DTO::EUIDImageSubClassType::PLAYER_Q:
+				m_fProgress_Ratio = 1.f - (m_pPlayerStatCom->Get_Skill(CStatCom_Player::Attack_State::Q).tCoolTimer.fTimeAcc / m_fMaxCoolTime);
+				break;
+			case DTO::EUIDImageSubClassType::PLAYER_DODGE:
+				m_fProgress_Ratio = 1.f - (m_pPlayerStatCom->Get_Timer(CStatCom_Player::TIMER_TYPE::DASH).fTimeAcc / m_fMaxCoolTime);
+				break;
+			}
+			if (m_fProgress_Ratio <= 0.01f)
+			{                                                                                                                                     
 				m_isUsingSkill = false;
 				m_fProgress_Ratio = 0.f;
 			}
@@ -220,9 +172,27 @@ HRESULT CUISkill_BG::Attach_Personal_Info()
 		break;
 	case DTO::EUIDImageSubClassType::PLAYER_E:
 		m_fMaxCoolTime = m_pPlayerStatCom->Get_Skill(CStatCom_Player::E).tCoolTimer.fMaxTime;
+		m_pGameInstance->Subscribe<PLAYER_SKILL_TRIGGERED>([this](_uint iKey)
+			{
+				if (static_cast<CStateBase_Player::STATEKEY>(iKey) == CStateBase_Player::STATEKEY::E)
+				{
+					this->Ready_Fade(0.3f, 0.f, 0.7f, m_fDelay);
+					this->m_isUsingE = true;
+					this->m_isFinUseE = false;
+				}
+			});
 		break;
 	case DTO::EUIDImageSubClassType::PLAYER_Q:
 		m_fMaxCoolTime = m_pPlayerStatCom->Get_Skill(CStatCom_Player::Q).tCoolTimer.fMaxTime;
+		m_pGameInstance->Subscribe<PLAYER_SKILL_TRIGGERED>([this](_uint iKey)
+			{
+				if (static_cast<CStateBase_Player::STATEKEY>(iKey) == CStateBase_Player::STATEKEY::Q)
+				{
+					this->Ready_Fade(0.2f, 0.f, 0.7f, m_fDelay);
+					this->m_isUsingSkill = true;
+					this->m_isSkillFlash = false;
+				}
+			});
 		break;
 	case DTO::EUIDImageSubClassType::PLAYER_Z:
 		break;
@@ -230,6 +200,16 @@ HRESULT CUISkill_BG::Attach_Personal_Info()
 		break;
 	case DTO::EUIDImageSubClassType::PLAYER_DODGE:
 		m_fMaxCoolTime = m_pPlayerStatCom->Get_Timer(CStatCom_Player::TIMER_TYPE::DASH).fMaxTime;
+		m_pGameInstance->Subscribe<PLAYER_SKILL_TRIGGERED>([this](_uint iKey)
+			{
+				if (static_cast<CStateBase_Player::STATEKEY>(iKey) == CStateBase_Player::STATEKEY::SHIFT)
+				{
+					this->Ready_Fade(0.2f, 0.f, 0.7f, m_fDelay);
+					this->m_isUsingSkill = true;
+					this->m_isSkillFlash = false;
+					this->m_fProgress_Ratio = 1.f;
+				}
+			});
 		break;
 	case DTO::EUIDImageSubClassType::PLAYER_SKILL_END:
 		break;

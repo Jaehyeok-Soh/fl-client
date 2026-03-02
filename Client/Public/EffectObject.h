@@ -51,8 +51,6 @@ public:
     virtual HRESULT Render() override;
     virtual _bool Picking(OUT Vec3& vOut) override;
     virtual _bool Export_Data(DTO::ECategory eCategory, CDataDocumentBase* pDocument) override;
-    virtual void Set_Dead(const wstring& wstrLayerTag) override;
-
 public:
         // 외부 호출 함수
     virtual HRESULT Spawn_FromPool(void* pArg);

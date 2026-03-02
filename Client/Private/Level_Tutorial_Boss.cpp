@@ -57,6 +57,9 @@
 #include "Monster_Dog_Body.h"
 #include "Boss_Xibi.h"
 #include "Boss_Xibi_Body.h"
+#include "Xibi_Projectile_Circle.h"
+#include "Xibi_Loop_Thunder.h"
+#include "Xibi_Oneshot_Thunder.h"
 
 
 //=================
@@ -109,6 +112,13 @@ HRESULT CLevel_Tutorial_Boss::Initialize()
 		MSG_BOX("CLevel_Tutorial_Boss::Initialize, Ready_Map Create Failed");
 		return E_FAIL;
 	}
+
+	if (FAILED(Ready_SkillObjectLayer()))
+	{
+		MSG_BOX("CLevel_Tutorial_Boss::Initialize, Ready_SkillObjectLayer Create Failed");
+		return E_FAIL;
+	}
+
 	return S_OK;
 }
 
@@ -179,31 +189,51 @@ HRESULT CLevel_Tutorial_Boss::Ready_Lights()
 		if (FAILED(m_pGameInstance->Add_Light(desc)))
 			return E_FAIL;
 	}
-	{
-		LIGHT_DESC desc = {};
-		desc.eType = LIGHT_TYPE::STATICPOINT;
-		desc.vDiffuse = Vec4(0.5f, 0.3f, 0.7f, 1.f);
-		desc.vAmbient = Vec4(0.2f, 0.1f, 0.3f, 1.f);
-		desc.vSpecular = desc.vDiffuse;
-		desc.vPosition = Vec4(21.f, 18.f, 0.f, 1.f);
-		desc.fRange = 10.f;
 
-		if (FAILED(m_pGameInstance->Add_Light(desc)))
+	return S_OK;
+}
+
+HRESULT CLevel_Tutorial_Boss::Ready_SkillObjectLayer()
+{
+	_uint iLevelId = ENUM_TO_UINT(ELevelType::TUTORIAL_BOSS);
+
+	// SkillObject Pool
+	{
+		CXibi_Projectile_Circle::SKILLOBJECT_DESC desc{};
+		if (FAILED(m_pGameInstance->Regist_Pool(
+			iLevelId,
+			g_wszPool_XibiCircleProjectile,
+			g_wszSkillObjectLayer,
+			iLevelId,
+			g_wszXibiProjectile_Prototype_Tag,
+			&desc,
+			30)))
 			return E_FAIL;
 	}
 	{
-		LIGHT_DESC desc = {};
-		desc.eType = LIGHT_TYPE::STATICPOINT;
-		desc.vDiffuse = Vec4(0.3f, 0.6f, 0.4f, 1.f);
-		desc.vAmbient = Vec4(0.1f, 0.3f, 0.2f, 1.f);
-		desc.vSpecular = desc.vDiffuse;
-		desc.vPosition = Vec4(21.f, 14.5f, 25.f, 1.f);
-		desc.fRange = 10.f;
-
-		if (FAILED(m_pGameInstance->Add_Light(desc)))
+		CXibi_Loop_Thunder::SKILLOBJECT_DESC desc{};
+		if (FAILED(m_pGameInstance->Regist_Pool(
+			iLevelId,
+			g_wszPool_XibiLoopThunder,
+			g_wszSkillObjectLayer,
+			iLevelId,
+			g_wszXibiLoopThunder_Prototype_Tag,
+			&desc,
+			30)))
 			return E_FAIL;
 	}
-
+	{
+		CXibi_Oneshot_Thunder::SKILLOBJECT_DESC desc{};
+		if (FAILED(m_pGameInstance->Regist_Pool(
+			iLevelId,
+			g_wszPool_XibiOneshotThunder,
+			g_wszSkillObjectLayer,
+			iLevelId,
+			g_wszXibiOneshotThunder_Prototype_Tag,
+			&desc,
+			100)))
+			return E_FAIL;
+	}
 	return S_OK;
 }
 

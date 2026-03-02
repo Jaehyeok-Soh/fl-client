@@ -55,6 +55,7 @@ private:
 	HRESULT Ready_AttackOverlap_PlayerMoon();
 	HRESULT Ready_AttackOverlap_Monster_Dog();
 	HRESULT Ready_AttackOverlap_Monster_Boomer();
+	HRESULT Ready_AttackOverlap_Xibi();
 
 public:
 	const _float* Get_LoadingRatio() const { return &m_fLoadingRatio; }

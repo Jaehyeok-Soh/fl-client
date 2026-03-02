@@ -50,8 +50,8 @@ public:
 	virtual void OnTrigger_Exit(_uint iMyColliderLayer, _uint iOtherLayer, CGameObject* pOther) {}
 	virtual _bool Picking(OUT Vec3& vOut) { return false; }
 	virtual HRESULT Render();
-	virtual HRESULT Spawn_FromPool(void* pArg) { return S_OK; }
-	virtual HRESULT Despawn_FromPool() { return S_OK; }
+	virtual HRESULT Spawn_FromPool(void* pArg);
+	virtual HRESULT Despawn_FromPool();
 	virtual _bool IntersectWithFrustrum(BoundingFrustum* pFrustrum) { return true; }
 	virtual _bool On_Hit(const HIT_DESC& hitDesc) { return true; }
 	virtual void Try_Attack(const HIT_DESC& hitDesc) {};
@@ -83,7 +83,7 @@ public:
 	_bool IsClone() const { return m_bClone; }
 	
 	_bool IsDead() const { return m_bDead; }
-	virtual void Set_Dead(const wstring &wstrLayerTag);
+	virtual void Set_Dead(_bool bStatic = false);
 	Vec3 Get_CenterFromCollider(EColliderType eType, class CBounding* pBounding);
 	void Set_ActiveIndex(_uint iActiveIndex) { m_iActiveIndex = (_int)iActiveIndex; }
 	_int Get_ActiveIndex() const { return m_iActiveIndex; }
@@ -103,6 +103,9 @@ public:
 
 	string Get_Name();
 	wstring Get_WName();
+	wstring Get_Layer() const { return m_wstrLayerTag; }
+	void Set_Layer(const wstring& wstrLayerTag) { m_wstrLayerTag = wstrLayerTag; }
+
 
 	uint64 Get_ID() { return m_iObjectID; }
 private:
@@ -114,6 +117,7 @@ protected:
 	_bool m_bDead = { false };
 	_bool m_bRender = { true };
 	_int m_iActiveIndex = { -1 };
+	wstring m_wstrLayerTag = { L"" };
 	CObjectPool* m_pOwnerPool = { nullptr };
 	CCameraMan* m_pTargeter = { nullptr };
 	ID3D11Device* m_pDevice = { nullptr };

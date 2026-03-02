@@ -554,12 +554,11 @@ _bool CEffectObject::Export_Data(DTO::ECategory eCategory, CDataDocumentBase* pD
     return false;
 }
 
-void CEffectObject::Set_Dead(const wstring& wstrLayerTag)
-{
-}
-
 HRESULT CEffectObject::Spawn_FromPool(void* pArg)
 {
+    if (FAILED(Super::Spawn_FromPool(pArg)))
+        return E_FAIL;
+
     m_bDespawnFlag = false;
     m_tEffectDesc = m_tOriginEffectDesc;
 
@@ -573,6 +572,9 @@ HRESULT CEffectObject::Spawn_FromPool(void* pArg)
 }
 HRESULT CEffectObject::Despawn_FromPool()
 {
+    if (FAILED(Super::Despawn_FromPool()))
+        return E_FAIL;
+
     TimeFlagRequest(RESET);
 
     for (_uint i = 0; i < ENUM_TO_UINT(DTO::TEXTURE_INFO::END); i++)

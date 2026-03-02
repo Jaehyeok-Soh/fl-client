@@ -42,6 +42,9 @@ private:
 	HRESULT Ready_Components(void *pArg);
 
 public:
+	static MONSTER_DESC Get_PreSetDesc(_uint iLevelId);
+
+public:
 	static CMonster_Dog* Create(ID3D11Device* pDevice, ID3D11DeviceContext* pDeviceContext);
 	virtual CGameObject* Clone(void* pArg) override;
 	virtual void Free() override;

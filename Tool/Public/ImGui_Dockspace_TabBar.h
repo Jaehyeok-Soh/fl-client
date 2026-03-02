@@ -17,6 +17,8 @@ private:
 	HRESULT Change_Scene(ELevelType eLevel);
 private:
 	ELevelType m_eLastSelectedTab = { ELevelType::END };
+	_bool m_isNo = { false };
+
 public:
 	static CImGui_Dockspace_TabBar* Create(const _char* pLabel, ID3D11Device* pDevice, ID3D11DeviceContext* pDeviceContext, ELevelType eStartLevel);
 	virtual void Free() override;

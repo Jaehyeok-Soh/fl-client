@@ -63,6 +63,11 @@ HRESULT CMonster_Dog::Awake(const _uint iCurrentLevelID)
 		Desc.NamePlateData.vOffset = Vec3{ 0.f, 1.f, 0.f };
 		CUI_Manager::GetInstance()->Request_Add_Prefab(iCurrentLevelID, EUIPrefabType::MONSTER_NAMEPLATE, iCurrentLevelID, &Desc);
 	}
+	{
+		UI_PREFAB_DATA Desc = {};
+		Desc.pTarget = this;
+		CUI_Manager::GetInstance()->Request_Add_Prefab(iCurrentLevelID, EUIPrefabType::MINIMAP_MONSTER_ICON, iCurrentLevelID, &Desc);
+	}
 	return S_OK;
 }
 
@@ -216,6 +221,49 @@ HRESULT CMonster_Dog::Ready_Components(void* pArg)
 		return E_FAIL;
 
 	return S_OK;
+}
+
+CMonster_Dog::MONSTER_DESC CMonster_Dog::Get_PreSetDesc(_uint iLevelId)
+{
+	CMonster_Base::MONSTER_DESC monsterDesc = {};
+	monsterDesc.iLevelIndex = iLevelId;
+	monsterDesc.pTransform_Desc = nullptr;
+
+	monsterDesc.wstrBodyModelTag = g_wszMonster_Dog_Model_Prototype_Tag;
+	monsterDesc.wstrPartBodyPrototypeTag = g_wszMonster_Dog_Body_Prototype_Tag;
+	monsterDesc.wstrAttackOverlapPrototypeTag = g_wszMonster_Dog_AttackOverlap_Prototype_Tag;
+	monsterDesc.wstrMonsterStateTag = g_wszMonster_Dog_State_Tag;
+
+	{
+		PHYSICSCCT_DESC desc;
+		desc.pOwner = nullptr;
+		desc.bIsPlayer = false;
+		desc.eType = EPhysicsCCTType::CAPSULE;
+		desc.pOwnerMatrix = nullptr;
+		desc.fRadius = 1.f;
+		desc.fHeight = 0.1f;
+		desc.vExtens = { 2.f, 2.f, 2.f };
+
+		PHYSICSMATERIAL_DESC mtrlDesc{};
+		mtrlDesc.eMaterial = EPhysicsMaterial::PLAYER;
+		desc.tMaterial = mtrlDesc;
+
+		desc.eFilterLayer = PHYSICSFILTERGROUP::Enum::MONSTER;
+		desc.iFilterMask =
+			PHYSICSFILTERGROUP::Enum::MONSTER
+			| PHYSICSFILTERGROUP::Enum::PLAYER
+			| PHYSICSFILTERGROUP::Enum::ATTACK
+			| PHYSICSFILTERGROUP::Enum::ATTACK_PROJECTTILE
+			| PHYSICSFILTERGROUP::Enum::SKILL
+			| PHYSICSFILTERGROUP::Enum::SKILL_PROJECTTILE
+			| PHYSICSFILTERGROUP::Enum::MAP
+			| PHYSICSFILTERGROUP::Enum::OBJECT1
+			| PHYSICSFILTERGROUP::Enum::OBJECT2;
+
+		monsterDesc.tCCTDesc = desc;
+	}
+
+	return monsterDesc;
 }
 
 CMonster_Dog* CMonster_Dog::Create(ID3D11Device* pDevice, ID3D11DeviceContext* pDeviceContext)

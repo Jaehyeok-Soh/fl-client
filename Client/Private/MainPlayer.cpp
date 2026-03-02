@@ -315,7 +315,6 @@ void CMainPlayer::Try_Attack(const HIT_DESC& hitDesc)
         + std::to_wstring(Get_ID());
 
     CLOG_INFO(infoContant);
-
 #endif // _DEBUG
 
     // player state에 따라 combo count 증가 여부 결정
@@ -360,7 +359,8 @@ void CMainPlayer::Try_Attack(const HIT_DESC& hitDesc)
         tPrefabData.DamageFontData.vRandOffset = Vec3{
             m_pGameInstance->Rand_Float(-1.f, 1.f),
             m_pGameInstance->Rand_Float(-1.f, 1.f),
-            m_pGameInstance->Rand_Float(-1.f, 1.f) };
+            m_pGameInstance->Rand_Float(-1.f, 1.f) 
+        };
         CUI_Manager::GetInstance()->Request_Add_Prefab(
             m_pGameInstance->Get_CurrentLevelIndex(), EUIPrefabType::DAMAGE_FONTS_CRITICAL, m_pGameInstance->Get_CurrentLevelIndex(), &tPrefabData);
     }

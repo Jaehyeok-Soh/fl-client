@@ -50,6 +50,9 @@ protected:
 	_bool Tick_Fade_Text(const _float fTimeDelta);
 
 protected:
+	virtual HRESULT Spawn_FromPool(void* pArg) override;
+	virtual HRESULT Despawn_FromPool()override;
+protected:
 	FONT_DESC m_tFontDesc	= {};
 	DTO::EUITextSubClassType m_eTextSubClassType = {};
 	_wstring m_wstrText		= {};
