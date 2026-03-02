@@ -61,14 +61,6 @@ void CUIBossAction_Image::Update(const _float fTimeDelta)
 
 void CUIBossAction_Image::Update_Late(const _float fTimeDelta)
 {
-	if (KEY_BUTTON_UP(DIK_9))
-	{
-		if (m_isVisible)
-			Set_Invisible();
-		else
-			Set_Visible();
-
-	}
 	Super::Update_Late(fTimeDelta);
 	Tick_By_Type(fTimeDelta);
 }
@@ -114,10 +106,34 @@ HRESULT CUIBossAction_Image::Attach_Personal_Info()
 	case DTO::EUIDImageSubClassType::BOSS_CIVILA_ACTION_BEGIN:
 		break;
 	case DTO::EUIDImageSubClassType::BOSS_CIVILA_ACTION_ICON:
+		m_pGameInstance->Subscribe<ACTION3>([this]()
+			{
+				this->Set_Visible();
+			});
+		m_pGameInstance->Subscribe<ACTION4>([this]()
+			{
+				this->Set_Invisible();
+			});
 		break;
 	case DTO::EUIDImageSubClassType::BOSS_CIVILA_ACTION_TOP_BG:
+		m_pGameInstance->Subscribe<ACTION1>([this]()
+			{
+				this->Set_Visible();
+			});
+		m_pGameInstance->Subscribe<ACTION2>([this]()
+			{
+				this->Set_Invisible();
+			});
 		break;
 	case DTO::EUIDImageSubClassType::BOSS_CIVILA_ACTION_BOTTOM_BG:
+		m_pGameInstance->Subscribe<ACTION1>([this]()
+			{
+				this->Set_Visible();
+			});
+		m_pGameInstance->Subscribe<ACTION2>([this]()
+			{
+				this->Set_Invisible();
+			});
 		break;
 	case DTO::EUIDImageSubClassType::BOSS_CIVILA_ACTION_END:
 		break;

@@ -1,6 +1,7 @@
 #include "pch.h"
 #include "Level_Test.h"
 #include "Level_Loading.h"
+#include "Client_EventDefine.h"
 //=================
 // Manager
 //=================
@@ -141,16 +142,31 @@ void CLevel_Test::Update(const _float fTimeDelta)
 #endif
 		m_pGameInstance->Request_CursorMode(m_eCursorMode);
 	}
-	if (KEY_BUTTON_DOWN(DIK_8))
+	//if (KEY_BUTTON_DOWN(DIK_8))
+	//{
+	//	UI_PREFAB_DATA Desc = {};
+	//	CUI_Manager::GetInstance()->Request_Add_Prefab(ENUM_TO_UINT(ELevelType::TEST), EUIPrefabType::BOSS_NAMEPLATE, ENUM_TO_UINT(ELevelType::TEST), &Desc);
+	//}
+	//if (KEY_BUTTON_DOWN(DIK_7))
+	//{
+	//	UI_PREFAB_DATA Desc = {};
+	//	CUI_Manager::GetInstance()->Request_Add_Prefab(ENUM_TO_UINT(ELevelType::TEST), EUIPrefabType::MINIMAP_MONSTER_ICON, ENUM_TO_UINT(ELevelType::TEST), &Desc);
+	//}
+	if (KEY_BUTTON_DOWN(DIK_5))
 	{
-		UI_PREFAB_DATA Desc = {};
-		CUI_Manager::GetInstance()->Request_Add_Prefab(ENUM_TO_UINT(ELevelType::TEST), EUIPrefabType::BOSS_NAMEPLATE, ENUM_TO_UINT(ELevelType::TEST), &Desc);
+		m_pGameInstance->Broadcast<ACTION1>();
 	}
-
+	if (KEY_BUTTON_DOWN(DIK_6))
+	{
+		m_pGameInstance->Broadcast<ACTION2>();
+	}
 	if (KEY_BUTTON_DOWN(DIK_7))
 	{
-		UI_PREFAB_DATA Desc = {};
-		CUI_Manager::GetInstance()->Request_Add_Prefab(ENUM_TO_UINT(ELevelType::TEST), EUIPrefabType::MINIMAP_MONSTER_ICON, ENUM_TO_UINT(ELevelType::TEST), &Desc);
+		m_pGameInstance->Broadcast<ACTION3>();
+	}
+	if (KEY_BUTTON_DOWN(DIK_8))
+	{
+		m_pGameInstance->Broadcast<ACTION4>();
 	}
 }
 
