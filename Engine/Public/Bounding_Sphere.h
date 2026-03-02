@@ -14,6 +14,7 @@ public:
 	}BOUNDING_SPHERE_DESC;
 private:
 	CBounding_Sphere(ID3D11Device* pDevice, ID3D11DeviceContext* pDeviceContext);
+	CBounding_Sphere( const CBounding_Sphere& rhs);
 	virtual ~CBounding_Sphere() = default;
 
 	HRESULT Initialize(const BOUNDING_DESC* pInitialDesc);

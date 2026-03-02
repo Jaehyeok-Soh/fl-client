@@ -2,8 +2,11 @@
 #include "UIProgress_Bar.h"
 #include "DataStruct_UI.h"
 
+NS_BEGIN(Engine)
+class CMyStat;
+NS_END
+
 NS_BEGIN(Client)
-class CWorldUI_Component;
 class CUIMonsterStat_Progress final : public CUIProgress_Bar
 {
 	using Super = CUIProgress_Bar;
@@ -21,7 +24,6 @@ public:
 	HRESULT Initialize_Prototype() override;
 	HRESULT Initialize(void* pArg) override;
 
-	HRESULT Attach_Personal_Info();
 
 public:
 	virtual HRESULT Awake(const _uint iCurrentLevelID) override;
@@ -31,6 +33,10 @@ public:
 	virtual void Ready_Before_Render(const _float fTimeDelta) override;
 	virtual HRESULT Render() override;
 
+private:
+	HRESULT Ready_Components(MONSTER_STAT_PROGRESS_DESC* pDesc);
+	HRESULT Bind_ShaderResources();
+	virtual HRESULT Attach_Personal_Info()override;
 	void OnUIEvent(ETriggerEventType eEvent, CGenericUI* pSender)override;
 	void Initialize_Visible_Event()override;
 	void Initialize_InVisible_Event()override;
@@ -39,16 +45,13 @@ public:
 	virtual HRESULT Spawn_FromPool(void* pArg)override;
 	virtual HRESULT Despawn_FromPool()override;
 
-private:
-	HRESULT Ready_Components(MONSTER_STAT_PROGRESS_DESC* pDesc);
-	HRESULT Bind_ShaderResources();
-
 	HRESULT Convert_Stat_To_Ratio();
 
 private:
-	CWorldUI_Component* m_pWorldUIComp = { nullptr };
+	CGameObject* m_pTargetMoster = { nullptr };
+	CMyStat* m_pTargetStat = { nullptr };
 
-	// Player HP Values
+	// Monster HP Values
 	_bool m_isStartLowHp = { FALSE };
 	_bool m_isEndLowHp = { FALSE };
 	_float m_fTickTimeAcc = {};

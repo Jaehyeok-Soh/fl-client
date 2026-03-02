@@ -331,6 +331,7 @@ namespace Client
 	}
 
 	enum class ETriggerEventType { HOVER_ENTER, HOVER_EXIT, PRESS_ENTER, PRESS_EXIT, END };
+
 	enum class EUIFlip
 	{
 		NONE = 0,
@@ -366,21 +367,27 @@ namespace Client
 		return L"NOT_PREFAB";
 	}
 
+	typedef struct tagUINamePlatePrefabData
+	{
+		Vec3 vOffset = {};
+	}UI_NAMEPLATE_PREFAB_DATA;
+
 	typedef struct tagUIDamageFontPrefabData
 	{
 		Vec4	vFontColor = {};
 		Vec3	vHitPos = {};
 		_uint	iDamage = {};
 		Vec3	vRandOffset = {};
-
 	}UI_DAMAGEFONT_PREFAB_DATA;
 
 	typedef struct tagUIPrefabData
 	{
 		CGameObject* pTarget = { nullptr };
+		UI_NAMEPLATE_PREFAB_DATA NamePlateData = {};
 		UI_DAMAGEFONT_PREFAB_DATA DamageFontData = {};
 	}UI_PREFAB_DATA;
 
+	enum class ECombotype {C, B, A, S, END};
 #pragma endregion
 
 #pragma region SKILL
@@ -402,37 +409,44 @@ namespace Client
 
 #pragma region Tag 모음
 
-#pragma region Monster 관련	
-	/* Monster Prototype Name 모음 */
-	inline constexpr wchar_t g_wszMonster_Dog_Prototype_Tag[]					{ L"Prototype_GameObject_Monster_Dog" };
-	inline constexpr wchar_t g_wszMonster_Boomer_Prototype_Tag[]				{ L"Prototype_GameObject_Monster_Boomer" };
-	inline constexpr wchar_t g_wszBoss_Xibi_Prototype_Tag[]						{ L"Prototype_GameObject_Boss_Xibi" };
 
-	/* Monster Body Prototype Name 모음 */
-	inline constexpr wchar_t g_wszMonster_Dog_Body_Prototype_Tag[]				{ L"Prototype_GameObject_Monster_Dog_Body" };
-	inline constexpr wchar_t g_wszMonster_Boomer_Body_Prototype_Tag[]			{ L"Prototype_GameObject_Monster_Boomer_Body" };
-	inline constexpr wchar_t g_wszBoss_Xibi_Body_Prototype_Tag[]				{ L"Prototype_GameObject_Boss_Xibi_Body" };
+#pragma region State Tag
+
+	/* Monster State Tag */
+	inline constexpr wchar_t g_wszMonster_Dog_State_Tag[]{ L"Monster_Dog" };
+	inline constexpr wchar_t g_wszMonster_Boomer_State_Tag[]{ L"Monster_Boomer" };
+	inline constexpr wchar_t g_wszBoss_Xibi_State_Tag[]{ L"Boss_Xibi" };
+
+#pragma endregion 
+
+#pragma region Model Protototype Tag
 
 	/* Monster Model Tag */
 	inline constexpr wchar_t g_wszMonster_Dog_Model_Prototype_Tag[]				{ L"Prototype_Component_Model_Monster_Dog"};
 	inline constexpr wchar_t g_wszMonster_Boomer_Model_Prototype_Tag[]			{ L"Prototype_Component_Model_Monster_Boomer" };
 	inline constexpr wchar_t g_wszBoss_Xibi_Model_Prototype_Tag[]				{ L"Prototype_Component_Model_Xibi" };
 
-	/* Monster State Tag */
-	inline constexpr wchar_t g_wszMonster_Dog_State_Tag[]						{ L"Monster_Dog" };
-	inline constexpr wchar_t g_wszMonster_Boomer_State_Tag[]					{ L"Monster_Boomer" };
-	inline constexpr wchar_t g_wszBoss_Xibi_State_Tag[]							{ L"Boss_Xibi" };
+#pragma endregion
+
+#pragma region Prototype Tag
+
+
+#pragma region Monster Attack Overlap
 
 	/* Monster Attack OverLap */
 	inline constexpr wchar_t g_wszMonster_Dog_AttackOverlap_Prototype_Tag[]		{ L"Prototype_Component_AttackOverlap_Monster_Dog" };
 	inline constexpr wchar_t g_wszMonster_Boomer_AttackOverlap_Prototype_Tag[]	{ L"Prototype_Component_AttackOverlap_Monster_Boomer" };
+
 #pragma endregion
 
 
-#pragma region Trigger Box 관련
-	inline constexpr wchar_t g_wszTriggerBox_ChangeLevel_Prototype_Tag[]		{ L"Prototype_GameObject_TriggerBox_ChangeLevel" };
-	inline constexpr wchar_t g_wszTriggerBox_MonsterSapwner_Prototype_Tag[]		{ L"Prototype_GameObject_TriggerBox_MonsterSpawner" };
-	inline constexpr wchar_t g_wszTriggerBox_PhysicsColliderBox_PrototypeTag[]	{ L"Prototype_Component_Physics_Collider_TriggerBox" };
+#pragma region Bounding 관련
+
+	/* Bounding Box */
+	inline constexpr wchar_t g_wszCollider_AABB_Prototype_Tag[]{ L"Prototype_Component_Collider_AABB" };
+	inline constexpr wchar_t g_wszCollider_Sphere_PrototypeTag[]{ L"Prototype_Component_Collider_Sphere" };
+	inline constexpr wchar_t g_wszCollider_OBB_Prototype_Tag[]{ L"Prototype_Component_Collider_OBB" };
+
 #pragma endregion
 
 #pragma region SkillObject 관련
@@ -442,10 +456,14 @@ namespace Client
 	inline constexpr wchar_t g_wszXibiOneshotThunder_Prototype_Tag[]			{ L"Prototype_GameObject_Xibi_OneshotThunder" };
 	inline constexpr wchar_t g_wszPool_XibiLoopThunder[]						{ L"Pool_Xibi_LoopThunder" };
 	inline constexpr wchar_t g_wszPool_XibiCircleProjectile[]					{ L"Pool_Xibi_CircleProjectile" };
+	inline constexpr wchar_t g_wszPool_XibiOneshotThunder[]						{ L"Pool_Xibi_OneshotThunder" };
 #pragma endregion
 
 #pragma region SkillObjectSpawner 관련
-	inline constexpr wchar_t g_wszSpawner_XibiCircleProjectile[]				{ L"Prototype_Spawner_XibiCircleProjectile" };
+	inline constexpr wchar_t g_wszSpawner_XibiOneshotSingleThunder[]			{ L"Prototype_Spawner_XibiOneshotSingleThunder" };
+	inline constexpr wchar_t g_wszSpawner_XibiOneshotRandomThunder[]			{ L"Prototype_Spawner_XibiOneshotRandomThunder" };
+	inline constexpr wchar_t g_wszSpawner_Xibi360CircleProjectile[]				{ L"Prototype_Spawner_Xibi360CircleProjectile" };
+	inline constexpr wchar_t g_wszSpawner_Xibi360ThunderProjectile[]			{ L"Prototype_Spawner_Xibi360ThunderProjectile" };
 	inline constexpr wchar_t g_wszSpawner_Xibi3wayLoopThunder[]					{ L"Prototype_Spawner_Xibi3wayLoopThunder" };
 #pragma endregion
 
@@ -461,8 +479,33 @@ namespace Client
 	inline constexpr wchar_t g_wszWater_Prototype_Tag[]							{ L"Prototype_GameObject_Water" };
 #pragma endregion
 
-#pragma region Layer
-	inline constexpr wchar_t g_wszSkillObjectLayer[]							{ L"SkillObject_Layer"};
+#pragma region Trigger Box 관련
+	inline constexpr wchar_t g_wszTriggerBox_ChangeLevel_Prototype_Tag[]{ L"Prototype_GameObject_TriggerBox_ChangeLevel" };
+	inline constexpr wchar_t g_wszTriggerBox_MonsterSapwner_Prototype_Tag[]{ L"Prototype_GameObject_TriggerBox_MonsterSpawner" };
+	inline constexpr wchar_t g_wszTriggerBox_PhysicsColliderBox_PrototypeTag[]{ L"Prototype_Component_Physics_Collider_TriggerBox" };
+#pragma endregion
+
+#pragma region Monster 관련	
+	/* Monster Prototype Name 모음 */
+	inline constexpr wchar_t g_wszMonster_Dog_Prototype_Tag[]{ L"Prototype_GameObject_Monster_Dog" };
+	inline constexpr wchar_t g_wszMonster_Boomer_Prototype_Tag[]{ L"Prototype_GameObject_Monster_Boomer" };
+	inline constexpr wchar_t g_wszBoss_Xibi_Prototype_Tag[]{ L"Prototype_GameObject_Boss_Xibi" };
+
+	/* Monster Body Prototype Name 모음 */
+	inline constexpr wchar_t g_wszMonster_Dog_Body_Prototype_Tag[]{ L"Prototype_GameObject_Monster_Dog_Body" };
+	inline constexpr wchar_t g_wszMonster_Boomer_Body_Prototype_Tag[]{ L"Prototype_GameObject_Monster_Boomer_Body" };
+	inline constexpr wchar_t g_wszBoss_Xibi_Body_Prototype_Tag[]{ L"Prototype_GameObject_Boss_Xibi_Body" };
+
+#pragma endregion
+
+#pragma region 기타
+	inline constexpr wchar_t g_wszBattleField_Prototype_Tag[]					{ L"Prototype_GameObject_BattleField" };
+#pragma endregion
+
+#pragma endregion
+
+#pragma region Layer Tag
+	inline constexpr wchar_t g_wszSkillObjectLayer[]							{ L"SkillObject_Layer" };
 	inline constexpr wchar_t g_wszPlayerLayer[]									{ L"Player_Layer" };
 	inline constexpr wchar_t g_wszMonstereLayer[]								{ L"Monster_Layer" };
 	inline constexpr wchar_t g_wszBossLayer[]									{ L"Boss_Layer" };
@@ -474,6 +517,7 @@ namespace Client
 	inline constexpr wchar_t g_wszSkillLayer[]									{ L"Skill_Layer" };
 	inline constexpr wchar_t g_wszEffectLayer[]									{ L"Effect_Layer" };
 	inline constexpr wchar_t g_wszTriggerBoxLayer[]								{ L"TriggerBox_Layer" };
+	inline constexpr wchar_t g_wszBattleFieldLayer[]							{ L"BattleField_Layer" };
 }
 #pragma endregion
 

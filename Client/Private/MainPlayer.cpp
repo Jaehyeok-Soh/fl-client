@@ -1,5 +1,6 @@
 #include "pch.h"
 #include "MainPlayer.h"
+#include "Client_EventDefine.h"
 
 // components
 #include "Model.h"
@@ -272,15 +273,32 @@ _bool CMainPlayer::On_Hit(const HIT_DESC& hitDesc)
     CLOG_INFO(infoContant);
 #endif // _DEBUG
 
-    // Hit 데미지 폰트 // 색 변경은 가능 //
+    CPlayerActionState* pPlayerState = Get_Component<CPlayerActionState>();
+
+    // 만약 현재 state가 attack을 받을 수 있다면
+    _uint iStateFlag = pPlayerState->Get_CurrentCapabilities();
+    if (Has_Capability(iStateFlag, Engine::StateCapability::BEATTACKED))
     {
-        UI_PREFAB_DATA tPrefabData = {};
-        tPrefabData.DamageFontData.iDamage = 100;
-        tPrefabData.DamageFontData.vHitPos = hitDesc.vHitPoint;
-        CUI_Manager::GetInstance()->Request_Add_Prefab(
-            m_pGameInstance->Get_CurrentLevelIndex(), EUIPrefabType::DAMAGE_FONTS_HIT, m_pGameInstance->Get_CurrentLevelIndex(), &tPrefabData);
+        // stat 컴포넌트에 정보 넘겨주기
+        _float fDamage = hitDesc.fFinalDamage;
+        static_cast<CStatCom_Player*>(Get_Component<CMyStat>())->Add_Health(fDamage * -1.f);
+
+        // action state 내부에 set hit desc 넣어주기 : 다음 update때 state에 정보를 주기 위함
+        if (pPlayerState)
+            pPlayerState->Set_HitDesc(hitDesc);
+
+        // Hit 데미지 폰트 // 색 변경은 가능 //
+        {
+            UI_PREFAB_DATA tPrefabData = {};
+            tPrefabData.DamageFontData.iDamage = fDamage;
+            tPrefabData.DamageFontData.vHitPos = hitDesc.vHitPoint;
+            CUI_Manager::GetInstance()->Request_Add_Prefab(
+                m_pGameInstance->Get_CurrentLevelIndex(), EUIPrefabType::DAMAGE_FONTS_HIT, m_pGameInstance->Get_CurrentLevelIndex(), &tPrefabData);
+        }
+        return true;
     }
-    return true;
+   
+    return false;
 }
 
 void CMainPlayer::Try_Attack(const HIT_DESC& hitDesc)
@@ -323,6 +341,8 @@ void CMainPlayer::Try_Attack(const HIT_DESC& hitDesc)
         CUI_Manager::GetInstance()->Request_Add_Prefab(
             m_pGameInstance->Get_CurrentLevelIndex(), EUIPrefabType::DAMAGE_FONTS_CRITICAL, m_pGameInstance->Get_CurrentLevelIndex(), &tPrefabData);
     }
+
+    m_pGameInstance->Broadcast<COMBO_ATTACK_EVENT_START>();
 
 #endif // _DEBUG
 }
@@ -825,6 +845,8 @@ HRESULT CMainPlayer::Ready_AttackStates()
     {
         CState_MoonCombo::MOONCOMBO_DESC tDesc = {};
         tDesc.vCombo_CheckTimes = Vec4{ 0.5f,0.5f,1.f,1.5f };
+        tDesc.fSlide_CheckTime = 0.7f;
+
         tDesc.iSlideAnimIdx = Get_AnimationIndex(L"Animation_PlayerMoon_Sword_SlideAttack");
         tDesc.iFirstAnimIdx = Get_AnimationIndex(L"Animation_PlayerMoon_Sword_RunAttack_01");
         tDesc.iSecondAnimIdx = Get_AnimationIndex(L"Animation_PlayerMoon_Sword_RunAttack_02");
@@ -849,6 +871,7 @@ HRESULT CMainPlayer::Ready_AttackStates()
         desc.bBlend = false;
         desc.bLoop = true;
 
+        desc.FCollis = CStateBase_Player::COLLISIONFLAGS::C_Fly;
         desc.FMoves = CStateBase_Player::MOVEFLAGS::OWN;
         desc.FCollis = 0;
 
@@ -870,6 +893,7 @@ HRESULT CMainPlayer::Ready_AttackStates()
         desc.bBlend = true;
         desc.bLoop = false;
 
+        desc.FCollis = CStateBase_Player::COLLISIONFLAGS::C_Fly;
         desc.FMoves = CStateBase_Player::MOVEFLAGS::PRESS_CHANGE;
         desc.FCollis = 0;
 
@@ -904,6 +928,9 @@ HRESULT CMainPlayer::Ready_AttackStates()
         desc.vecMainAnims = { Get_AnimationIndex(L"Animation_PlayerMoon_Sword_HeavyAttack_End") }; //Animation_PlayerMoon_Idle //Animation_Pino_Combo_Slash1
         desc.bBlend = true;
         desc.bLoop = false;
+
+        desc.FCollis = CStateBase_Player::COLLISIONFLAGS::C_Strong
+            | CStateBase_Player::COLLISIONFLAGS::C_Fly;
 
         desc.FMoves = CStateBase_Player::MOVEFLAGS::PRESS_CHANGE;
         desc.FCollis = 0;
@@ -965,6 +992,10 @@ HRESULT CMainPlayer::Ready_AttackStates()
         tDesc.vecMainAnims = { Get_AnimationIndex(L"Animation_PlayerMoon_Shotgun_Holding_Loop") };
         tDesc.pOwnerGun = pMyGun;
 
+        tDesc.FCollis = CStateBase_Player::COLLISIONFLAGS::C_DOWN
+            | CStateBase_Player::COLLISIONFLAGS::C_Strong
+            | CStateBase_Player::COLLISIONFLAGS::C_Fly;
+
         if (FAILED(pActionState->Add_State(ENUM_TO_UINT(State::GUNIDLE), CState_GunIdle::Create(pActionState, &tDesc))))
             return E_FAIL;
     }
@@ -976,6 +1007,10 @@ HRESULT CMainPlayer::Ready_AttackStates()
         tDesc.bLoop = true;
         tDesc.vecMainAnims = { Get_AnimationIndex(L"Animation_PlayerMoon_Shotgun_Holding_Run_Loop") };
         tDesc.pOwnerGun = pMyGun;
+
+        tDesc.FCollis = CStateBase_Player::COLLISIONFLAGS::C_DOWN
+            | CStateBase_Player::COLLISIONFLAGS::C_Strong
+            | CStateBase_Player::COLLISIONFLAGS::C_Fly;
 
         if (FAILED(pActionState->Add_State(ENUM_TO_UINT(State::GUNWALK), CState_GunWalk::Create(pActionState, &tDesc))))
             return E_FAIL;
@@ -1009,6 +1044,8 @@ HRESULT CMainPlayer::Ready_AttackStates()
         tDesc.bLoop = true;
         tDesc.pOwnerGun = pMyGun;
         tDesc.iMainAnimIdx = Get_AnimationIndex(L"Animation_PlayerMoon_Machinegun01_Shooting_Loop");
+
+
 
         if (FAILED(pActionState->Add_State(ENUM_TO_UINT(State::GUNATTACK), CState_GunAttack::Create(pActionState, &tDesc))))
             return E_FAIL;

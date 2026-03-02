@@ -34,9 +34,6 @@ private:
 	HRESULT Ready_Camera_Setting(const _uint iLevelIndex);
 	HRESULT Ready_Octree();
 private:
-	// TODO : 어디에다?
-	CSingleSkillSpawner* m_pSpawner{ nullptr };
-	CProjectileSpawner_Fan* m_pSpawner2{ nullptr };
 	ECursorMode m_eCursorMode = ECursorMode::LockedHiddenCenter;
 public:
 	static CLevel_Test* Create(ID3D11Device* pDevice, ID3D11DeviceContext* pDeviceContext);

@@ -1,7 +1,10 @@
 #include "Engine_pch.h"
 #include "DataStruct_Map.h"
 #include "Model.h"
-
+#include "Transform.h"
+#include "Collider.h"
+#include "Bounding_Sphere.h"
+#include "Bounding_Obb.h"
 
 #pragma push_macro("new")
 #undef new
@@ -10,6 +13,8 @@ using json = nlohmann::json;
 #pragma pop_macro("new")
 
 
+
+#include "GameInstance.h"
 
 NS_BEGIN(Engine)
 
@@ -309,6 +314,7 @@ inline CLIENT_MAKEPATH_DESC_BASE* Create_ClientMakePathDesc(DTO::EClientMakePath
 	
 		/* Batch Object 관련 */
 	case DTO::EClientMakePath::Batch_Monster:	return pSource == nullptr ? new BATCH_MONSTER_DESC : new BATCH_MONSTER_DESC(*static_cast<BATCH_MONSTER_DESC*>(pSource));
+	case DTO::EClientMakePath::Batch_Object:	return pSource == nullptr ? new BATCH_OBJECT_DESC : new BATCH_OBJECT_DESC(*static_cast<BATCH_OBJECT_DESC*>(pSource));
 
 		/* Trigger Box 관련 */
 	case DTO::EClientMakePath::TriggerBox_ChangeLevel:		return pSource == nullptr ? new TRIGGERBOX_CHANGELEVEL_DESC : new TRIGGERBOX_CHANGELEVEL_DESC(*static_cast<TRIGGERBOX_CHANGELEVEL_DESC*>(pSource));
@@ -337,6 +343,7 @@ inline _bool IsExist_ClientMakePathDesc(DTO::EClientMakePath ePath)
 
 
 #pragma region Static Object
+
 
 void STATICOBJECT_DESC::from_Json(const json& LoadJson)
 {
@@ -405,6 +412,153 @@ void BATCH_MONSTER_DESC::to_Json(json& SaveJson)
 }
 
 #pragma endregion 
+
+#pragma region Batch Object
+
+
+#pragma region Battle Field
+
+BATTLE_FIELD_DESC::BATTLE_FIELD_DESC()
+	: fRadius{1.f}, vExtents{ 1.f,1.f,1.f }, pBattleFieldColliderBox{ nullptr }, pBattleFieldColliderSphere{ nullptr }, eFieldType{ Field_Type::Box }
+{
+}
+
+BATTLE_FIELD_DESC::BATTLE_FIELD_DESC(const BATTLE_FIELD_DESC& rhs)
+	: fRadius{rhs.fRadius }, vExtents{ rhs.vExtents }, pBattleFieldColliderSphere{ rhs.pBattleFieldColliderSphere }, pBattleFieldColliderBox{ rhs.pBattleFieldColliderBox }, eFieldType{ rhs.eFieldType }
+{
+}
+BATTLE_FIELD_DESC::~BATTLE_FIELD_DESC()
+{
+	Safe_Release(pBattleFieldColliderSphere);
+	Safe_Release(pBattleFieldColliderBox);
+}
+
+void BATTLE_FIELD_DESC::Update_Collider(const Matrix* pWorldMatrix)
+{
+	if (!pBattleFieldColliderSphere)
+		return;
+	if (!pBattleFieldColliderBox)
+		return;
+
+	/* 위치 + Rotation 만 빼와서 Update 해주자 */
+
+
+	if (eFieldType == BATTLE_FIELD_DESC::Field_Type::Box)
+	{
+		static_cast<BoundingOrientedBox*>(static_cast<CBounding_OBB*>(pBattleFieldColliderBox->Get_Bounding())->Get_OriginalDesc())->Extents = this->vExtents;
+		if (pWorldMatrix)
+		{
+			Vec3 vPosition{}, vScale{};
+			Quat vQuat{};
+
+			Matrix World = *pWorldMatrix;
+			World.Decompose(vScale, vQuat, vPosition);
+
+			World = Matrix::CreateFromQuaternion(vQuat) * Matrix::CreateTranslation(vPosition);
+			pBattleFieldColliderBox->Update(World);
+		}
+	}
+	else if (eFieldType == BATTLE_FIELD_DESC::Field_Type::Sphere)
+	{
+		static_cast<BoundingSphere*>(static_cast<CBounding_Sphere*>(pBattleFieldColliderSphere->Get_Bounding())->Get_OriginalDesc())->Radius = this->fRadius;
+
+		if (pWorldMatrix)
+		{
+			Vec3 vPosition{}, vScale{};
+			Quat vQuat{};
+
+			Matrix World = *pWorldMatrix;
+			World.Decompose(vScale, vQuat, vPosition);
+
+			World = Matrix::CreateFromQuaternion(vQuat) * Matrix::CreateTranslation(vPosition);
+			pBattleFieldColliderSphere->Update(World);
+		}
+		/* 나중에 Rotation 값을 실제 SRT Rotation 값으로 들어가면 될거 같기도하고... */
+	}
+}
+
+void BATTLE_FIELD_DESC::from_Json(const json& LoadJson)
+{
+	if (LoadJson.contains("Field Type"))
+	{
+		this->eFieldType = BATTLE_FIELD_DESC::FieldType_ToEnum(LoadJson["Field Type"].get<string>());
+	}
+
+	if (LoadJson.contains("Radius"))
+	{	
+		this->fRadius = LoadJson["Radius"];
+	}
+	if (LoadJson.contains("Extents"))
+	{
+		Engine_Utils::read_vec3_xyz(LoadJson["Extents"],this->vExtents);
+	}
+
+}
+void BATTLE_FIELD_DESC::to_Json(json& SaveJson)
+{
+	SaveJson["Field Type"] = BATTLE_FIELD_DESC::FieldType_ToString(this->eFieldType);
+
+	if (this->eFieldType == BATTLE_FIELD_DESC::Field_Type::Box)
+	{
+		Engine_Utils::write_vec3_xyz(SaveJson["Extents"], this->vExtents);
+	}
+	else
+	{
+		SaveJson["Radius"] = this->fRadius;
+	}
+}
+
+#pragma endregion
+
+#pragma region Batch Object Desc
+
+void BATCH_OBJECT_DESC::Change_BatchObjecType(DTO::EMakeObjectType eChangeType)
+{
+	if (eChangeType == DTO::EMakeObjectType::END) return;
+	if (eChangeType == this->eBatchObjectType) return;
+
+	/* 기존에 있던 Desc 정리 */
+
+	Safe_Delete(pBatchObjectDesc);
+	pBatchObjectDesc = nullptr;
+
+	eBatchObjectType = eChangeType;
+
+	/* Description 다시할당 */
+	pBatchObjectDesc = Make_BatchObject_Desc(eBatchObjectType);
+
+	return;
+}
+
+void BATCH_OBJECT_DESC::from_Json(const json& LoadJson)
+{
+	if (LoadJson.contains("Batch Object Info"))
+	{
+		auto& BatchObjectDesc_LoadJson = LoadJson["Batch Object Info"];
+		
+		if(BatchObjectDesc_LoadJson.contains("Type"))
+		{
+			this->eBatchObjectType = DTO::MakeObjectType_ToEnum(BatchObjectDesc_LoadJson["Type"].get<string>());
+		}
+
+		if (pBatchObjectDesc)
+			pBatchObjectDesc->from_Json(BatchObjectDesc_LoadJson["Desc"]);
+	}
+}
+
+void BATCH_OBJECT_DESC::to_Json(json& SaveJson)
+{
+	auto& BatchObjectDesc_SaveJson = SaveJson["Batch Object Info"];
+
+	BatchObjectDesc_SaveJson["Type"] = DTO::MakeObjectType_ToString(this->eBatchObjectType);
+
+	if(this->pBatchObjectDesc)
+		pBatchObjectDesc->to_Json(BatchObjectDesc_SaveJson["Desc"]);
+}
+
+#pragma region 
+
+#pragma endregion
 
 #pragma region Trigger Box
 
@@ -543,6 +697,9 @@ void TRIGGERBOX_MONSTERSPAWNER_DESC::to_Json(json& SaveJson)
 
 
 #pragma endregion
+
+
+
 
 
 #pragma endregion

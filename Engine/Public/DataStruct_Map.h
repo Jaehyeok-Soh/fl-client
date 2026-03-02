@@ -18,7 +18,6 @@ enum class EMakeMonsterType
 	Xibi,
 	END,
 };
-
 inline std::string MakeMonsterType_ToString(EMakeMonsterType eType)
 {
 	switch (eType)
@@ -34,6 +33,7 @@ inline std::string MakeMonsterType_ToString(EMakeMonsterType eType)
 	default:									return "Unknown";
 	}
 }
+
 inline EMakeMonsterType MakeMonsterType_ToEnum(const std::string strType)
 { 
 	if (strType == "Dog")		return DTO::EMakeMonsterType::Dog;
@@ -44,6 +44,32 @@ inline EMakeMonsterType MakeMonsterType_ToEnum(const std::string strType)
 	if (strType == "Xibi")		return DTO::EMakeMonsterType::Xibi;
 
 	return EMakeMonsterType::END;
+}
+
+#pragma endregion
+
+#pragma region Make Object Type
+enum class EMakeObjectType
+{
+	/* Battle Filed */
+	Battle_Field,
+
+	END,
+};
+inline std::string MakeObjectType_ToString(EMakeObjectType eType)
+{
+	switch (eType)
+	{
+	case DTO::EMakeObjectType::Battle_Field:	return "Battle_Field";
+	default:									return "Unknown";
+	}
+}
+
+inline DTO::EMakeObjectType MakeObjectType_ToEnum(const std::string strType)
+{
+	if (strType == "Battle_Field") return DTO::EMakeObjectType::Battle_Field;
+
+	return DTO::EMakeObjectType::END;
 }
 
 #pragma endregion
@@ -61,6 +87,9 @@ enum class EMakeTriggerBoxType
 NS_END
 
 NS_BEGIN(Engine)
+
+class CCollider;
+
 struct ENGINE_DLL CLIENT_MAKEPATH_DESC_BASE
 {
 public:
@@ -169,12 +198,112 @@ public:
 #pragma endregion
 
 
+#pragma region Batch Object
+
+
+#pragma region Battle Field
+
+struct ENGINE_DLL BATCH_OBJECT_DESC_BASE
+{
+public:
+	BATCH_OBJECT_DESC_BASE() {}
+	BATCH_OBJECT_DESC_BASE(const BATCH_OBJECT_DESC_BASE& rhs) {}
+	virtual ~BATCH_OBJECT_DESC_BASE() {}
+public:
+	virtual void from_Json(const json& LoadJson)	PURE;
+	virtual void to_Json(json& SaveJson)			PURE;
+};
+
+
+struct ENGINE_DLL BATTLE_FIELD_DESC : BATCH_OBJECT_DESC_BASE
+{
+public:
+	enum class Field_Type { Sphere, Box ,END };
+public:
+	/* Radius 일때 사용할 변수 */
+	BATTLE_FIELD_DESC::Field_Type	eFieldType{ Field_Type::Box};
+	float							fRadius{ 1.f };
+	Vec3							vExtents{1.f,1.f ,1.f};
+	CCollider*						pBattleFieldColliderBox{ nullptr };
+	CCollider*						pBattleFieldColliderSphere{ nullptr };
+public:
+	inline static	std::string		FieldType_ToString(BATTLE_FIELD_DESC::Field_Type eType)
+	{
+		switch (eType)
+		{
+		case Engine::BATTLE_FIELD_DESC::Field_Type::Sphere:		return "Sphere";
+		case Engine::BATTLE_FIELD_DESC::Field_Type::Box:		return "Box";
+		default:												return "Unknown";
+		}
+
+		return "Unknonw";
+	}
+	inline static BATTLE_FIELD_DESC::Field_Type FieldType_ToEnum(const std::string& strType)
+	{
+		if (strType == "Sphere")return BATTLE_FIELD_DESC::Field_Type::Sphere;
+		if (strType == "Box")return BATTLE_FIELD_DESC::Field_Type::Box;
+
+		return BATTLE_FIELD_DESC::Field_Type::END;
+
+	}
+public:
+	BATTLE_FIELD_DESC();
+	BATTLE_FIELD_DESC(const BATTLE_FIELD_DESC& rhs);
+	virtual ~BATTLE_FIELD_DESC();
+public:
+	void Update_Collider(const Matrix* pWorldMatrix);
+public:
+	virtual void from_Json(const json& LoadJson)	override;
+	virtual void to_Json(json& SaveJson)			override;
+};
+#pragma endregion
+
+inline BATCH_OBJECT_DESC_BASE* Make_BatchObject_Desc(DTO::EMakeObjectType eBatchObjectType , BATCH_OBJECT_DESC_BASE* pBase = nullptr)
+{
+	switch (eBatchObjectType)
+	{
+	case DTO::EMakeObjectType::Battle_Field:	return pBase == nullptr ? new BATTLE_FIELD_DESC : new BATTLE_FIELD_DESC(*static_cast<BATTLE_FIELD_DESC*>(pBase));
+	default:									return nullptr;
+	}
+
+	return nullptr;
+}
+
+
+#pragma region Batch Object Desc
+struct ENGINE_DLL BATCH_OBJECT_DESC : public CLIENT_MAKEPATH_DESC_BASE
+{
+	DTO::EMakeObjectType	eBatchObjectType{DTO::EMakeObjectType::END};
+	BATCH_OBJECT_DESC_BASE*	pBatchObjectDesc{nullptr};
+public:
+	explicit BATCH_OBJECT_DESC()
+		: eBatchObjectType{ DTO::EMakeObjectType::END }, pBatchObjectDesc{nullptr}
+	{
+		Change_BatchObjecType(DTO::EMakeObjectType::Battle_Field);
+	}
+	explicit BATCH_OBJECT_DESC(const BATCH_OBJECT_DESC& rhs)
+		: CLIENT_MAKEPATH_DESC_BASE(rhs), eBatchObjectType{ rhs.eBatchObjectType }, pBatchObjectDesc{ nullptr }
+	{
+		this->pBatchObjectDesc = Make_BatchObject_Desc(this->eBatchObjectType,rhs.pBatchObjectDesc);
+		return;
+	}
+	virtual ~BATCH_OBJECT_DESC() { Safe_Delete(pBatchObjectDesc);}
+public:
+	void		 Change_BatchObjecType(DTO::EMakeObjectType eChangeType);
+public:
+	virtual void from_Json(const json& LoadJson);
+	virtual void to_Json(json& SaveJson);
+};
+
+
+#pragma endregion
+
 #pragma region 
 
 
 #pragma region Trigger Box
 
-struct ENGINE_DLL TRIGGERBOX_DESC : CLIENT_MAKEPATH_DESC_BASE
+struct ENGINE_DLL TRIGGERBOX_DESC : public CLIENT_MAKEPATH_DESC_BASE
 {
 public:
 	Vec3		 vExtents{0.5f,0.5f ,0.5f};
@@ -307,6 +436,10 @@ enum class EClientLevelType : unsigned int
 	STATIC = 0,
 	LOADING,
 	LOGO,
+	TUTORIAL_VILLAGE,
+	TUTORIAL_BOSS,
+	SQUARE,
+	TEST,
 	END
 };
 
@@ -335,6 +468,7 @@ enum class EClientMakePath
 	/* 몬스터 , Player 위치잡는 용도  */
 	Batch_Player,
 	Batch_Monster,
+	Batch_Object,
 
 	/* Trigger Box 관련 */
 	TriggerBox_ChangeLevel,
@@ -361,10 +495,13 @@ NLOHMANN_JSON_SERIALIZE_ENUM(EMapObject_Type,
 
 NLOHMANN_JSON_SERIALIZE_ENUM(EClientLevelType,
 		{
-			{EClientLevelType::LOADING, "LOADING"},
-			{EClientLevelType::LOGO,	"LOGO"},
-			{EClientLevelType::STATIC,	"STATIC"},
-			{EClientLevelType::END,		"UnKnown"},
+			{EClientLevelType::STATIC,			"STATIC"},
+			{EClientLevelType::LOADING,			"LOADING"},
+			{EClientLevelType::LOGO,			"LOGO"},
+			{EClientLevelType::TUTORIAL_VILLAGE,"TUTORIAL_VILLAGE"},
+			{EClientLevelType::TUTORIAL_BOSS,	"TUTORIAL_BOSS"},
+			{EClientLevelType::SQUARE,			"SQUARE"},
+			{EClientLevelType::TEST,			"TEST"},
 		}
 		)
 NLOHMANN_JSON_SERIALIZE_ENUM(EMapObject_DrawType,
@@ -389,9 +526,9 @@ NLOHMANN_JSON_SERIALIZE_ENUM(EMapObject_DrawType,
 			{EClientMakePath::Water,						"Water"},
 
 
-
-			{EClientMakePath::Player,						"Player"},
-			{EClientMakePath::Monster,						"Monster"},
+			{EClientMakePath::Batch_Player,					"Batch_Player"},
+			{EClientMakePath::Batch_Monster,				"Batch_Monster"},
+			{EClientMakePath::Batch_Object,					"Batch_Object"},
 
 
 			{EClientMakePath::TriggerBox_ChangeLevel,		"TriggerBox_ChangeLevel"},
@@ -461,9 +598,9 @@ typedef struct TMap_MapObjectData
 	string								strModelPath{ "" };
 
 	/* Client Make Level Type */
-	_uint								eClientMakePath{};
-	_uint								eClientLevelType{};
-	_uint								eMapObjectDrawType{};
+	EClientMakePath						eClientMakePath{EClientMakePath::StaticObject};
+	EClientLevelType					eClientLevelType{EClientLevelType::STATIC};
+	EMapObject_DrawType					eMapObjectDrawType{EMapObject_DrawType::Default};
 
 	/* SRT Data , Cient Make Path Desc */
 	vector<SRT_DATA>					vecSRTs{};

@@ -190,82 +190,85 @@ void to_json(json& j, const TUI_GenericUIData& data)
 		{ "fAlphaRatio", data.fAlphaRatio },
 		{ "strNoiseTextureTag", data.strNoiseTextureTag },
 		{ "strAlphaMaskTextureTag", data.strAlphaMaskTextureTag },
+		{ "strGlowTextureTag", data.strGlowTextureTag },
 	};
 }
 
 void from_json(const json& j, TUI_GenericUIData& data)
 {
-	data.eClassType			= EUIClassType::JUST_IMAGE;
-	data.strTag				= "";
-	data.strCanvasName		= "";
-	data.iRectTransformType = 0;
-	data.fWidth				= 0.f;
-	data.fHeight			= 0.f;
-	data.fPosX				= 0.f;
-	data.fPosY				= 0.f;
-	data.fPosZ				= 0.f;
-	data.fScale				= 1.f;
-	data.fRotate			= 0.f;
-	data.strTextureTag		= "";
-	data.isVisible			= true;
-	data.isInteract			= true;
-	data.isActivate			= true;
-	data.iComponentFlag		= 0;
-	data.eSubClassType		= decltype(data.eSubClassType){};
-	data.isUseColorTint		= false;
-	data.vColorTint.x		= 1.f;
-	data.vColorTint.y		= 1.f;
-	data.vColorTint.z		= 1.f;
-	data.vColorTint.w		= 1.f;
-	data.vGradiantColorTint.x = 1.f;
-	data.vGradiantColorTint.y = 1.f;
-	data.vGradiantColorTint.z = 1.f;
-	data.vGradiantColorTint.w = 1.f;
-	data.iShaderPass		= 0;
-	data.iFillDir			= 0;
-	data.fDelay				= 0.f;
-	data.iFlip				= 0;
-	data.fAlphaRatio		= 1.f;
-	data.strNoiseTextureTag = "";
+	data.eClassType				= EUIClassType::JUST_IMAGE;
+	data.strTag					= "";
+	data.strCanvasName			= "";
+	data.iRectTransformType		= 0;
+	data.fWidth					= 0.f;
+	data.fHeight				= 0.f;
+	data.fPosX					= 0.f;
+	data.fPosY					= 0.f;
+	data.fPosZ					= 0.f;
+	data.fScale					= 1.f;
+	data.fRotate				= 0.f;
+	data.strTextureTag			= "";
+	data.isVisible				= true;
+	data.isInteract				= true;
+	data.isActivate				= true;
+	data.iComponentFlag			= 0;
+	data.eSubClassType			= decltype(data.eSubClassType){};
+	data.isUseColorTint			= false;
+	data.vColorTint.x			= 1.f;
+	data.vColorTint.y			= 1.f;
+	data.vColorTint.z			= 1.f;
+	data.vColorTint.w			= 1.f;
+	data.vGradiantColorTint.x	= 1.f;
+	data.vGradiantColorTint.y	= 1.f;
+	data.vGradiantColorTint.z	= 1.f;
+	data.vGradiantColorTint.w	= 1.f;
+	data.iShaderPass			= 0;
+	data.iFillDir				= 0;
+	data.fDelay					= 0.f;
+	data.iFlip					= 0;
+	data.fAlphaRatio			= 1.f;
+	data.strNoiseTextureTag		= "";
 	data.strAlphaMaskTextureTag = "";
+	data.strGlowTextureTag		= "";
 
 
-	data.eClassType			= j.value("eClassType", data.eClassType);
-	data.strTag				= j.value("strTag", data.strTag);
-	data.strCanvasName		= j.value("strCanvasName", data.strCanvasName);
-	data.iRectTransformType = j.value("iRectTransformType", data.iRectTransformType);
-	data.fWidth				= j.value("fWidth", data.fWidth);
-	data.fHeight			= j.value("fHeight", data.fHeight);
-	data.fPosX				= j.value("fPosX", data.fPosX);
-	data.fPosY				= j.value("fPosY", data.fPosY);
-	data.fPosZ				= j.value("fPosZ", data.fPosZ);
-	data.fScale				= j.value("fScale", data.fScale);
-	data.fRotate			= j.value("fRotate", data.fRotate);
-	data.strTextureTag		= j.value("strTextureTag", data.strTextureTag);
-	data.isVisible			= j.value("isVisible", data.isVisible);
-	data.isInteract			= j.value("isInteract", data.isInteract);
-	data.isActivate			= j.value("isActivate", data.isActivate);
-	data.iComponentFlag		= j.value("iComponentFlag", data.iComponentFlag);
-	data.eSubClassType		= j.value("eSubClassType", data.eSubClassType);
-	data.isUseColorTint		= j.value("isUseColorTint", data.isUseColorTint);
-	const json jt			= j.value("vColorTint", json::object());
-	data.vColorTint.x		= jt.value("x", data.vColorTint.x);
-	data.vColorTint.y		= jt.value("y", data.vColorTint.y);
-	data.vColorTint.z		= jt.value("z", data.vColorTint.z);
-	data.vColorTint.w		= jt.value("w", data.vColorTint.w);
+	data.eClassType				= j.value("eClassType", data.eClassType);
+	data.strTag					= j.value("strTag", data.strTag);
+	data.strCanvasName			= j.value("strCanvasName", data.strCanvasName);
+	data.iRectTransformType		= j.value("iRectTransformType", data.iRectTransformType);
+	data.fWidth					= j.value("fWidth", data.fWidth);
+	data.fHeight				= j.value("fHeight", data.fHeight);
+	data.fPosX					= j.value("fPosX", data.fPosX);
+	data.fPosY					= j.value("fPosY", data.fPosY);
+	data.fPosZ					= j.value("fPosZ", data.fPosZ);
+	data.fScale					= j.value("fScale", data.fScale);
+	data.fRotate				= j.value("fRotate", data.fRotate);
+	data.strTextureTag			= j.value("strTextureTag", data.strTextureTag);
+	data.isVisible				= j.value("isVisible", data.isVisible);
+	data.isInteract				= j.value("isInteract", data.isInteract);
+	data.isActivate				= j.value("isActivate", data.isActivate);
+	data.iComponentFlag			= j.value("iComponentFlag", data.iComponentFlag);
+	data.eSubClassType			= j.value("eSubClassType", data.eSubClassType);
+	data.isUseColorTint			= j.value("isUseColorTint", data.isUseColorTint);
+	const json jt				= j.value("vColorTint", json::object());
+	data.vColorTint.x			= jt.value("x", data.vColorTint.x);
+	data.vColorTint.y			= jt.value("y", data.vColorTint.y);
+	data.vColorTint.z			= jt.value("z", data.vColorTint.z);
+	data.vColorTint.w			= jt.value("w", data.vColorTint.w);
 
-	const json jgt			= j.value("vGradiantColorTint", json::object());
-	data.vGradiantColorTint.x = jgt.value("x", data.vGradiantColorTint.x);
-	data.vGradiantColorTint.y = jgt.value("y", data.vGradiantColorTint.y);
-	data.vGradiantColorTint.z = jgt.value("z", data.vGradiantColorTint.z);
-	data.vGradiantColorTint.w = jgt.value("w", data.vGradiantColorTint.w);
-	data.iShaderPass		= j.value("iShaderPass", data.iShaderPass);
-	data.iFillDir			= j.value("iFillDir", data.iFillDir);
-	data.fDelay				= j.value("fDelay", data.fDelay);
-	data.iFlip				= j.value("iFlip", data.iFlip);
-	data.fAlphaRatio		= j.value("fAlphaRatio", data.fAlphaRatio);
-	data.strNoiseTextureTag = j.value("strNoiseTextureTag", data.strNoiseTextureTag);
+	const json jgt				= j.value("vGradiantColorTint", json::object());
+	data.vGradiantColorTint.x	= jgt.value("x", data.vGradiantColorTint.x);
+	data.vGradiantColorTint.y	= jgt.value("y", data.vGradiantColorTint.y);
+	data.vGradiantColorTint.z	= jgt.value("z", data.vGradiantColorTint.z);
+	data.vGradiantColorTint.w	= jgt.value("w", data.vGradiantColorTint.w);
+	data.iShaderPass			= j.value("iShaderPass", data.iShaderPass);
+	data.iFillDir				= j.value("iFillDir", data.iFillDir);
+	data.fDelay					= j.value("fDelay", data.fDelay);
+	data.iFlip					= j.value("iFlip", data.iFlip);
+	data.fAlphaRatio			= j.value("fAlphaRatio", data.fAlphaRatio);
+	data.strNoiseTextureTag		= j.value("strNoiseTextureTag", data.strNoiseTextureTag);
 	data.strAlphaMaskTextureTag = j.value("strAlphaMaskTextureTag", data.strAlphaMaskTextureTag);
+	data.strGlowTextureTag		= j.value("strGlowTextureTag", data.strGlowTextureTag);
 }
 
 void to_json(json& j, const TUI_CanvasData& data)

@@ -34,6 +34,7 @@ public:
 	static string Make_DataFileKey(const std::filesystem::path& filePath) { return filePath.stem().string(); }
 	// 쿼터니언 값을 오일러 값으로 바꿔서 반환해주는 함수
 	static Vec3 ToEulerDegrees(const Quat& q);
+
 	/* 비트 플래그 유틸 함수 */
 	static void Add_Flag(Flags& curFlags, _uint iBitFlag);
 	static void RemoveSoft_Flag(Flags& curFlags, _uint iBitFlag); // 있다면 지워라

@@ -19,6 +19,7 @@ public:
 		_float	fMovePerSec = { 5.f };
 		_float	fRotatePerSec = { 8.f };
 	}TRANSFORM_DESC;
+
 private:
 	CTransform();
 	explicit CTransform(const CTransform& rhs);
@@ -54,6 +55,7 @@ public:
 	inline void Yaw_Turn(const _float fTimeDelta);
 	inline void Rotation(const Vec3& vAxis, _float fRadian);
 	inline void Rotation(const Quat& vQuat);
+	inline void Tunr_ToPoint_YAxis(const Vec3 &vTargetPoint, const _float fTimeDelta);
 	inline void Turn_WorldYAxis(const Vec3 &vTargetDir, const _float fTimeDelta);
 	inline void Turn(const Vec3 &vAxis, const _float fTimeDelta);
 	inline void Look_At(const Vec3 &vPoint);

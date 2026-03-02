@@ -10,6 +10,7 @@ CPanel_MapTool::CPanel_MapTool(const _char* pLabel, CLevel* pOwner, ID3D11Device
 	: CImGui_Panel(pLabel, pOwner, pDevice, pDeviceContext), m_szBuffer{}, m_isTexArraySelect{ false }, m_szTextureSplatingInfoData_SaveName{}, m_iSelectTextureSplatingInfoData{}
 	, m_vecTextureSplatingInfoDataName{}
 	, m_szLevelTypeName{}
+	, m_szCameraCinematicSequence_SaveName{}
 {
 	for (_uint i = 0; i < ENUM_TO_UINT(EClientLevelType::END); ++i)
 	{
@@ -135,6 +136,16 @@ HRESULT CPanel_MapTool::Render(CToolObject* pGo)
 			return E_FAIL;
 		}
 	}
+
+	if (ImGui::CollapsingHeader(" Camera Cinematic Sequnce "))
+	{
+		if (FAILED((Render_CameraCinematicSequnce())))
+		{
+			ImGui::TreePop();
+			return E_FAIL;
+		}
+	}
+
 
 
 	if (ImGui::CollapsingHeader(" Map Tool Setting "))
@@ -917,6 +928,217 @@ HRESULT CPanel_MapTool::Render_MakeMapObjectSetting()
 #pragma endregion
 
 	ImGui::Separator();
+
+
+	return S_OK;
+}
+
+HRESULT CPanel_MapTool::Render_CameraCinematicSequnce()
+{
+	if (m_pMapToolManager->m_pCamCinematicSequence == nullptr) return E_FAIL;
+
+	auto& pCamCinematicSequence = m_pMapToolManager->m_pCamCinematicSequence;
+
+
+#pragma region Cam Cinematic Sequence Name List
+
+	ImGui::SeparatorText("Camera Cinematic Sequence List");
+
+	if (m_pMapToolManager->m_vecCamCinematicSequenceNames.empty())
+		m_strBuffer = "Empty";
+	else
+	{
+		if (m_pMapToolManager->m_vecCamCinematicSequenceNames.size() < m_iSelectCamCinematicSequenceName)
+			m_iSelectCamCinematicSequenceName = 0;
+		m_strBuffer = m_pMapToolManager->m_vecCamCinematicSequenceNames[m_iSelectCamCinematicSequenceName];
+	}
+
+	if (ImGui::BeginCombo("##Cam Cinematic Sequence Name List", m_strBuffer.c_str()))
+	{
+		for (_uint i = 0; i < static_cast<_uint>(m_pMapToolManager->m_vecCamCinematicSequenceNames.size()); ++i)
+		{
+			bool isSelected = i == m_iSelectCamCinematicSequenceName;
+			if (ImGui::Selectable(m_pMapToolManager->m_vecCamCinematicSequenceNames[i].c_str() , &isSelected))
+			{
+				m_iSelectCamCinematicSequenceName = i;
+				m_strBuffer = m_pMapToolManager->m_vecCamCinematicSequenceNames[i];
+			}
+			if (isSelected)
+				ImGui::SetItemDefaultFocus();
+		}
+		ImGui::EndCombo();
+	}
+
+	if (ImGui::Button("Load Camera Cinematic Sequence"))
+	{
+		if (FAILED(m_pMapToolManager->Load_Camera_Cinematic_Sequence(Engine_Utils::ToWString(m_strBuffer))))
+		{
+			MSG_BOX(" Load Camera Cinematic Sequence 실패");
+		}
+	}
+
+#pragma endregion
+	
+	ImGui::Separator();
+
+	ImGui::NewLine();
+
+	ImGui::SeparatorText(" Camera Cinematic Sequence Info ");
+
+	if (ImGui::Button("Save Camera Cinematic Sequence"))
+	{
+		if (FAILED(m_pMapToolManager->Save_Camera_Cinematic_Sequence(Engine_Utils::ToWString(pCamCinematicSequence->strDataName))))
+		{
+			MSG_BOX(" Save Camera Cinematic Sequence 실패");
+		}
+	}
+
+	ImGui::NewLine();
+
+	_bool isDebugRender = pCamCinematicSequence->isDebugRender;
+	ImGui::Checkbox("Debug Render##Debug Render",&pCamCinematicSequence->isDebugRender);
+
+	ImGui::NewLine();
+
+	ImGui::InputText("Name" , &pCamCinematicSequence->strDataName);
+
+	ImGui::NewLine();
+
+	ImGui::Separator();
+
+	if (ImGui::Button(" Reset Camera Cinematic Sequence "))
+	{
+		/* 전체 리셋 */
+		pCamCinematicSequence->Reset();
+	}
+
+	ImGui::Separator();
+
+	ImGui::SeparatorText(" Add Buttons");
+
+	if (ImGui::Button(" Add Default "))
+	{
+		pCamCinematicSequence->Add_KeyFrameData();
+	}
+
+	ImGui::SameLine();
+
+	if (ImGui::Button(" Add Copy Camera "))
+	{
+		pCamCinematicSequence->Copy_Camera(m_pGameInstance->Get_MainCamera());
+	}
+
+	ImGui::Separator();
+
+	ImGui::NewLine();
+
+	if (pCamCinematicSequence->vecCamKeyFrameData.empty())
+	{
+		ImGui::Text(" Camera KeyFrame Data is Empty..");
+	}
+	else
+	{
+		_int iDeleteIndex{ -1 };
+		_int iResetIndex{ -1 };
+		_int iCopyCameraIndex{ -1 };
+
+		// 키프레임 리스트 순회 (삭제 시 안전하게 인덱스를 다루기 위해 for 루프를 수동 증감합니다)
+		for (_uint i = 0; i < pCamCinematicSequence->vecCamKeyFrameData.size(); )
+		{
+			// ★ 아주 중요: ImGui는 이름이 같으면 겹치기 때문에, 반드시 고유 ID를 푸시해야 합니다.
+			ImGui::PushID(i);
+
+			string strTreeNodeName = "KeyFrame [" + std::to_string(i) + "]";
+
+			// TreeNodeEx를 써서 기본적으로 펼쳐져 있게 하거나 닫혀있게 설정 가능
+			bool bNodeOpen = ImGui::TreeNodeEx(strTreeNodeName.c_str(), ImGuiTreeNodeFlags_DefaultOpen);
+
+			// 트리 노드와 같은 줄 오른쪽 끝에 삭제 버튼 배치
+			ImGui::SameLine();
+
+			if (ImGui::Button("Delete"))
+			{
+				if(iDeleteIndex == -1)
+					iDeleteIndex = i;
+			}
+			ImGui::SameLine();
+			if (ImGui::Button("Reset"))
+			{
+				if (iResetIndex == -1)
+					iResetIndex = i;
+			}
+			ImGui::SameLine();
+			if (ImGui::Button("Copy Camera"))
+			{
+				if (iCopyCameraIndex == -1)
+					iCopyCameraIndex = i;
+			}
+
+			// 노드가 펼쳐져 있을 때만 내부 UI 렌더링
+			if (bNodeOpen)
+			{
+				// 코드가 길어지니 레퍼런스로 받아옵니다.
+				auto& KeyFrame = pCamCinematicSequence->vecCamKeyFrameData[i];
+
+				ImGui::SeparatorText("Time & FOV Info");
+				ImGui::DragFloat("Duration (Sec)", &KeyFrame.fDuration, 0.1f, 0.f, 100.f, "%.2f");
+				ImGui::DragFloat("Hold Time (Sec)", &KeyFrame.fHoldTime, 0.1f, 0.f, 100.f, "%.2f");
+				ImGui::DragFloat("FOV", &KeyFrame.fFov, 0.5f, 10.f, 180.f, "%.1f");
+
+				ImGui::SeparatorText("Move Info");
+				/* Enum 콤보박스 (TODO: 실제 Enum 문자열에 맞게 수정 필요!) */
+				ImGui::Combo("Move Base Target", (int*)&KeyFrame.eMoveBaseTarget,g_szCinematicTarget,(int)ECinematicTarget::END);
+				if(ImGui::InputInt("Move Bone Index", &KeyFrame.iMoveBaseTargetBoneIndex))
+				{
+					if (KeyFrame.iMoveBaseTargetBoneIndex < -1)
+						KeyFrame.iMoveBaseTargetBoneIndex = -1;
+				}
+				ImGui::DragFloat3("Position", (float*)&KeyFrame.vPosition, 0.1f);
+
+				ImGui::SeparatorText("LookAt Info");
+				/* Enum 콤보박스 (TODO: 실제 Enum 문자열에 맞게 수정 필요!) */
+				ImGui::Combo("LookAt Target", (int*)&KeyFrame.eLookAtTarget , g_szCinematicTarget, (int)ECinematicTarget::END);
+				if (ImGui::InputInt("LookAt Bone Index", &KeyFrame.iLookAtBoneIndex))
+				{
+					if (KeyFrame.iLookAtBoneIndex < -1)
+						KeyFrame.iLookAtBoneIndex = -1;
+				}
+				ImGui::DragFloat3("LookAt Offset", (float*)&KeyFrame.vLookAtOffset, 0.1f);
+				ImGui::DragFloat3("Pitch / Yaw / Roll", (float*)&KeyFrame.vPitchYawRoll, 0.1f);
+
+				ImGui::SeparatorText("Lerp Types");
+				// 배열의 주소(g_szLerpTypes)와 배열의 크기(END)를 넘겨주면 알아서 콤보박스가 완성됩니다!
+				ImGui::Combo("Move Lerp", (int*)&KeyFrame.eMoveLerpType, g_szLerpTypes, (int)Engine::ELerpType::END);
+				ImGui::Combo("LookAt Lerp", (int*)&KeyFrame.eLookAtLerpType, g_szLerpTypes, (int)Engine::ELerpType::END);
+				ImGui::Combo("Fov Lerp", (int*)&KeyFrame.eFovLerpType, g_szLerpTypes, (int)Engine::ELerpType::END);
+
+				ImGui::NewLine();
+				ImGui::TreePop(); // TreeNode를 닫아줌
+			}
+
+			ImGui::PopID(); // PushID 해제
+			++i; // 삭제 버튼이 안 눌렸을 때만 인덱스 증가
+		}
+
+		if (iCopyCameraIndex != -1 )
+		{
+			/* iCopyCameraIndex */
+			m_pMapToolManager->m_pCamCinematicSequence->Copy_Camera(m_pGameInstance->Get_MainCamera() , iCopyCameraIndex );
+		}
+
+		if (iResetIndex != -1)
+		{
+			/* CopyCamera */
+			m_pMapToolManager->m_pCamCinematicSequence->Reset(iResetIndex);
+		}
+
+		if (iDeleteIndex != -1)
+		{
+			/* Delete */
+			m_pMapToolManager->m_pCamCinematicSequence->Delete(iDeleteIndex);
+		}
+
+	}
 
 
 	return S_OK;

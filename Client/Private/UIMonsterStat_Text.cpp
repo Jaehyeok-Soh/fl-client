@@ -1,11 +1,13 @@
 #include "pch.h"
 #include "UIMonsterStat_Text.h"
 #include "Client_Defines.h"
+#include "Client_EventDefine.h"
 
 //=================
 // Component
 //=================
 #include "WorldUI_Component.h"
+#include "MyStat.h"
 #include "Texture.h"
 #include "Shader.h"
 #include "VIBuffer_Rect_Tex.h"
@@ -43,16 +45,12 @@ HRESULT CUIMonsterStat_Text::Awake(const _uint iCurrentLevelID)
 	if (FAILED(Super::Awake(iCurrentLevelID)))
 		return E_FAIL;
 
-	if (FAILED(Attach_Personal_Info(iCurrentLevelID)))
+	if (FAILED(Attach_Personal_Info()))
 		return E_FAIL;
 
 	return S_OK;
 }
 
-HRESULT CUIMonsterStat_Text::Attach_Personal_Info(const _uint iCurrentLevelID)
-{
-	return S_OK;
-}
 
 void CUIMonsterStat_Text::Update_Priority(const _float fTimeDelta)
 {
@@ -71,10 +69,9 @@ void CUIMonsterStat_Text::Update_Late(const _float fTimeDelta)
 
 void CUIMonsterStat_Text::Ready_Before_Render(const _float fTimeDelta)
 {
+	Super::Ready_Before_Render(fTimeDelta);
 	if (FAILED(Convert_Stat_To_Text()))
 		return;
-
-	Super::Ready_Before_Render(fTimeDelta);
 }
 
 HRESULT CUIMonsterStat_Text::Render()
@@ -105,13 +102,27 @@ HRESULT CUIMonsterStat_Text::Bind_ShaderResources()
 	return S_OK;
 }
 
+HRESULT CUIMonsterStat_Text::Attach_Personal_Info()
+{
+	m_pGameInstance->Subscribe<MONSTER_DEAD_EVENT_START>([this](CGameObject* pDead)
+		{
+			if (pDead == m_pTargetMoster)
+				this->Set_Invisible();
+		});
+
+	return S_OK;
+}
+
 HRESULT CUIMonsterStat_Text::Convert_Stat_To_Text()
 {
 	switch (m_eTextSubClassType)
 	{
-	case DTO::EUITextSubClassType::MONSTER_STAT_TEXT_LV:break;
-		m_wstrText = L"Lv.10";
-	case DTO::EUITextSubClassType::MONSTER_STAT_TEXT_NICKNAME:break;
+	case DTO::EUITextSubClassType::MONSTER_STAT_TEXT_LV:
+		m_wstrText = L"1"; // UIFIX //
+		break;
+	case DTO::EUITextSubClassType::MONSTER_STAT_TEXT_NICKNAME:
+		m_wstrText = Engine_Utils::ToWString(m_pTargetStat->Get_Owner()->Get_Name());
+		break;
 	case DTO::EUITextSubClassType::END:
 	default:
 		return E_FAIL;
@@ -133,6 +144,9 @@ void CUIMonsterStat_Text::Initialize_Visible_Event()
 
 void CUIMonsterStat_Text::Initialize_InVisible_Event()
 {
+	m_isActive = false;
+	m_isFin_Event = false;
+	Ready_Fade(1.f, 1.f, 0.f, 1.f);
 }
 
 _bool CUIMonsterStat_Text::Tick_Visible_Event(const _float fTimeDelta)
@@ -144,7 +158,15 @@ _bool CUIMonsterStat_Text::Tick_Visible_Event(const _float fTimeDelta)
 
 _bool CUIMonsterStat_Text::Tick_InVisible_Event(const _float fTimeDelta)
 {
-	return true;
+	if (Tick_Fade(fTimeDelta))
+	{
+		Request_SetDead();
+		m_fAlpha_Ratio = 1.f;
+		m_isFin_Event = true;
+		m_isActive = true;
+		return true;
+	}
+	return false;
 }
 
 HRESULT CUIMonsterStat_Text::Spawn_FromPool(void* pArg)
@@ -160,7 +182,12 @@ HRESULT CUIMonsterStat_Text::Spawn_FromPool(void* pArg)
 		return E_FAIL;
 
 	m_pWorldUIComp->Set_Target(pDesc->pTarget);
-	/* ¸ó½ºÅÍ ½ºÅÈ ÄÄÆ÷³ÍÆ® ºÎÂø */
+	m_pTargetMoster = pDesc->pTarget;
+	m_pWorldUIComp->Set_TargetWorldOffset(pDesc->NamePlateData.vOffset);
+
+	m_pTargetStat = pDesc->pTarget->Get_Component<CMyStat>();
+	if (nullptr == m_pTargetStat)
+		return E_FAIL;
 	
 	m_bDead = false;
 	return S_OK;

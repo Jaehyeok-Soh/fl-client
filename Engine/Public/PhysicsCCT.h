@@ -1,6 +1,10 @@
 #pragma once
 #include "Component.h"
+
 NS_BEGIN(Engine)
+
+class CPhysics_CCTFilterCallback;
+
 class ENGINE_DLL CPhysicsCCT final : public CComponent
 {
 	using Super = CComponent;
@@ -123,8 +127,11 @@ public:
     void ReleaseController();
 
     void SetCollisionFilter();
+    void SetCollisionFilter_Empty();
 
     void SetIsSteppingOnCCT();
+
+    void EnableCollision(_bool bEnable);
 
 private:
     ID3D11Device* m_pDevice = { nullptr };
@@ -132,7 +139,9 @@ private:
 
 private:
     PxController* m_pController = { nullptr };
+    CPhysics_CCTFilterCallback* m_pCCTFilterCallback = { nullptr };
     PHYSICSCCT_DESC m_tDesc = {};
+
     _float m_fHeightOffset = {};
     _float m_fContactOffset = {};
 

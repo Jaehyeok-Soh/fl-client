@@ -90,7 +90,6 @@ HRESULT CTriggerBox_LevelChange::Render()
 void CTriggerBox_LevelChange::OnCollision(_uint iMyColliderLayer, _uint iOtherLayer, CGameObject* pOther)
 {
     Super::OnCollision(iMyColliderLayer, iOtherLayer, pOther);
-
 }
 
 void CTriggerBox_LevelChange::OnCollision_Enter(_uint iMyColliderLayer, _uint iOtherLayer, CGameObject* pOther, const COL_HIT_INFO& tHitInfo)

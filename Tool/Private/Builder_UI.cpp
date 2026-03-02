@@ -157,6 +157,7 @@ HRESULT CBuilder_UI::Create_GenericUIDTO(const DTO::TUI_GenericUIData& data)
 	Desc.strInitTextureTag	= data.strTextureTag;
 	Desc.strNoiseTextureTag	= data.strNoiseTextureTag;
 	Desc.strAlphaMaskTextureTag	= data.strAlphaMaskTextureTag;
+	Desc.strGlowTextureTag	= data.strGlowTextureTag;
 	Desc.strCanvasName		= data.strCanvasName;
 	Desc.isInitVisible		= data.isVisible;
 	Desc.isInitInteract		= data.isInteract;
@@ -204,7 +205,6 @@ HRESULT CBuilder_UI::Create_GenericUIDTO(const DTO::TUI_GenericUIData& data)
 
 		Desc.tDImageData = iter->second;
 	}
-
 
 	auto iterCanvas = m_pCanvasCache.find(Desc.strCanvasName);
 	if (iterCanvas == m_pCanvasCache.end())

@@ -23,21 +23,30 @@ protected:
 
 	virtual HRESULT Initialize_Prototype() PURE;
 	virtual HRESULT Initialize(void* pArg) PURE;
+	HRESULT			Ready_Components(void *pArg);
 public:
 	virtual HRESULT Awake(const _uint iCurrentLevelID) override;
-	virtual void Update_Priority(const _float fTimeDelta) override;
-	virtual void Update(const _float fTimeDelta) override;
-	virtual void Update_Late(const _float fTimeDelta) override;
-	virtual void Ready_Before_Render(const _float fTimeDelta) override;
+	virtual void	Update_Priority(const _float fTimeDelta) override;
+	virtual void	Update(const _float fTimeDelta) override;
+	virtual void	Update_Late(const _float fTimeDelta) override;
+	virtual void	Ready_Before_Render(const _float fTimeDelta) override;
 
-	CameraType Get_Type() const { return m_eType; }
-	CGameObject* Get_Actor() { return m_pActor; }
-	inline void Change_Actor(CGameObject* pGo);
+	CameraType		Get_Type() const { return m_eType; }
+	CGameObject*	Get_Actor() { return m_pActor; }
+	inline void		Change_Actor(CGameObject* pGo);
+
+	void			Camera_Shaking(const CAM_SHAKING_DATA& tData);
+
+
+	const Vec3&		Get_CameraShakingOffsetPos() const { return m_vCamShakingOffsetPosition; }
 private:
-	HRESULT Ready_Components(void *pArg);
+	void			Camera_Shaking(const _float fTimeDelta);
 protected:
-	CameraType m_eType = { CameraType::STATIC };
-	CGameObject* m_pActor = { nullptr };
+	CameraType		m_eType = { CameraType::STATIC };
+	CGameObject*	m_pActor = { nullptr };
+protected:
+	list<CAM_SHAKING_DATA>			m_listCameraShakingDatas{};
+	Vec3							m_vCamShakingOffsetPosition{Vec3::Zero};
 public:
 	virtual CGameObject* Clone(void *pArg) PURE;
 	virtual void Free() override;

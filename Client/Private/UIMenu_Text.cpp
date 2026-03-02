@@ -1,7 +1,7 @@
 #include "pch.h"
 #include "UIMenu_Text.h"
 #include "Client_Defines.h"
-
+#include "Client_EventDefine.h"
 //=================
 // Component
 //=================
@@ -36,21 +36,16 @@ HRESULT CUIMenu_Text::Initialize(void* pArg)
 		return E_FAIL;
 	if (FAILED(Ready_Components(pDesc)))
 		return E_FAIL;
-	if (FAILED(Attach_Personal_Info()))
-		return E_FAIL;
 	return S_OK;
 }
 
-HRESULT CUIMenu_Text::Attach_Personal_Info()
-{
-	return S_OK;
-}
 
 HRESULT CUIMenu_Text::Awake(const _uint iCurrentLevelID)
 {
 	if (FAILED(Super::Awake(iCurrentLevelID)))
 		return E_FAIL;
-	m_vOriginFontColor = m_vFontColor;
+	if (FAILED(Attach_Personal_Info()))
+		return E_FAIL;
 
 	return S_OK;
 }
@@ -72,7 +67,6 @@ void CUIMenu_Text::Update_Late(const _float fTimeDelta)
 
 void CUIMenu_Text::Ready_Before_Render(const _float fTimeDelta)
 {
-	Acting_By_InteractState();
 	Super::Ready_Before_Render(fTimeDelta);
 }
 
@@ -101,6 +95,13 @@ HRESULT CUIMenu_Text::Bind_ShaderResources()
 		return E_FAIL;
 	if (FAILED(Super::Bind_ShaderResources()))
 		return E_FAIL;
+	return S_OK;
+}
+
+HRESULT CUIMenu_Text::Attach_Personal_Info()
+{
+	m_vOriginFontColor = m_vFontColor;
+
 	return S_OK;
 }
 

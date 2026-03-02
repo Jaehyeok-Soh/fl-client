@@ -1,6 +1,7 @@
 #include "pch.h"
 #include "UIBossStat_Text.h"
 #include "Client_Defines.h"
+#include "Client_EventDefine.h"
 
 //=================
 // Component
@@ -43,8 +44,9 @@ HRESULT CUIBossStat_Text::Awake(const _uint iCurrentLevelID)
 	if (FAILED(Super::Awake(iCurrentLevelID)))
 		return E_FAIL;
 
-	if (FAILED(Attach_Personal_Info(iCurrentLevelID)))
+	if (FAILED(Attach_Personal_Info()))
 		return E_FAIL;
+
 	if (m_isSpawned)
 	{
 		Set_Visible();
@@ -53,10 +55,6 @@ HRESULT CUIBossStat_Text::Awake(const _uint iCurrentLevelID)
 	return S_OK;
 }
 
-HRESULT CUIBossStat_Text::Attach_Personal_Info(const _uint iCurrentLevelID)
-{
-	return S_OK;
-}
 
 void CUIBossStat_Text::Update_Priority(const _float fTimeDelta)
 {
@@ -109,6 +107,14 @@ HRESULT CUIBossStat_Text::Bind_ShaderResources()
 	return S_OK;
 }
 
+HRESULT CUIBossStat_Text::Attach_Personal_Info()
+{
+	m_pGameInstance->Subscribe<BOSS_STAGING_EVENT_START>([this]() { this->Set_Invisible(); });
+	m_pGameInstance->Subscribe<BOSS_STAGING_EVENT_END>([this]() { this->Set_Visible(); });
+
+	return S_OK;
+}
+
 HRESULT CUIBossStat_Text::Convert_Stat_To_Text()
 {
 	return S_OK;
@@ -124,6 +130,8 @@ void CUIBossStat_Text::Initialize_Visible_Event()
 {
 	m_isActive = false;
 	m_isFin_Event = false;
+
+	Ready_Fade_Text(1.f, 0.f, 1.f, m_fDelay);
 }
 
 void CUIBossStat_Text::Initialize_InVisible_Event()
@@ -132,9 +140,13 @@ void CUIBossStat_Text::Initialize_InVisible_Event()
 
 _bool CUIBossStat_Text::Tick_Visible_Event(const _float fTimeDelta)
 {
-	m_isActive = true;
-	m_isFin_Event = true;
-	return true;
+	if (Tick_Fade_Text(fTimeDelta))
+	{
+		m_isActive = true;
+		m_isFin_Event = true;
+		return true;
+	}
+	return false;
 }
 
 _bool CUIBossStat_Text::Tick_InVisible_Event(const _float fTimeDelta)
@@ -154,6 +166,9 @@ HRESULT CUIBossStat_Text::Spawn_FromPool(void* pArg)
 
 HRESULT CUIBossStat_Text::Despawn_FromPool()
 {
+	m_isVisible = false;
+	m_isVisibleTrigger = false;
+	m_isPreVisible = false;
 	return S_OK;
 }
 

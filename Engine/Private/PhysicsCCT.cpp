@@ -3,6 +3,8 @@
 #include "GameInstance.h"
 #include "GameObject.h"
 
+#include "Physics_CCTFilterCallback.h"
+
 CPhysicsCCT::CPhysicsCCT(ID3D11Device* pDevice, ID3D11DeviceContext* pDeviceContext)
 	: Super()
 	, m_pDevice(pDevice)
@@ -37,6 +39,8 @@ HRESULT CPhysicsCCT::Initialize(void* pArg)
 
 	SetCollisionFilter();
 
+	m_pCCTFilterCallback = m_pGameInstance->GetCCTFilterCallback();
+
 	m_fContactOffset = m_pController->getContactOffset();
 
 	// todo eunbi : step offset 추가. 계단 덜덜 거림 해결을 위함 -> 못함
@@ -64,8 +68,9 @@ HRESULT CPhysicsCCT::Initialize(void* pArg)
 void CPhysicsCCT::Awake()
 {
 	Vec3 vPos = m_pOwner->Get_Component<CTransform>()->Get_Info(TRANSFORM_INFO_STATE::POS);
-
 	SetFootPosition(vPos);
+
+	EnableCollision(true);
 }
 
 void CPhysicsCCT::Update(const _float fTimeDelta)
@@ -124,6 +129,7 @@ const PxControllerCollisionFlags CPhysicsCCT::Move(Vec3 disp, _float minDist, _f
 {
 	PxVec3 displacementVec(disp.x, disp.y, disp.z);
 	PxControllerFilters filters;
+	filters.mCCTFilterCallback = (PxControllerFilterCallback*)m_pCCTFilterCallback;
 	PxControllerCollisionFlags collisionFlag = m_pController->move(displacementVec, minDist, fTimeDelta, filters);
 
 	if (m_bIsSteppingOnCCT)
@@ -246,9 +252,51 @@ void CPhysicsCCT::SetCollisionFilter()
 		shape->setSimulationFilterData(filter);
 }
 
+void CPhysicsCCT::SetCollisionFilter_Empty()
+{
+	_uint numShape = m_pController->getActor()->getNbShapes();
+	vector<PxShape*> shapes(numShape);
+	m_pController->getActor()->getShapes(shapes.data(), numShape);
+
+	PxFilterData filter(0, 0, 0, 0);
+
+	for (auto& shape : shapes)
+		shape->setSimulationFilterData(filter);
+}
+
 void CPhysicsCCT::SetIsSteppingOnCCT()
 {
 	m_bIsSteppingOnCCT = true;
+}
+
+void CPhysicsCCT::EnableCollision(_bool bEnable)
+{
+	if (m_pController == nullptr)
+		return;
+
+	PxRigidDynamic* pActor = m_pController->getActor();
+	if (pActor)
+	{
+		PxU32 numShape = pActor->getNbShapes();
+		vector<PxShape*> vecShape(numShape);
+		pActor->getShapes(vecShape.data(), numShape);
+
+		if (vecShape.size() > 0)
+		{
+			for (auto& shape : vecShape)
+			{
+				shape->setFlag(PxShapeFlag::eSIMULATION_SHAPE, bEnable);
+				shape->setFlag(PxShapeFlag::eSCENE_QUERY_SHAPE, bEnable);
+			}
+		}
+
+		pActor->setActorFlag(PxActorFlag::eDISABLE_SIMULATION, !bEnable);
+	}
+
+	if (bEnable)
+		SetCollisionFilter();
+	else
+		SetCollisionFilter_Empty();
 }
 
 CPhysicsCCT* CPhysicsCCT::Create(ID3D11Device* pDevice, ID3D11DeviceContext* pDeviceContext)

@@ -53,6 +53,7 @@ HRESULT CBoss_Xibi::Awake(const _uint iCurrentLevelID)
 
 	if (FAILED(Get_Component<CXibi_GimmikController>()->Awake(iCurrentLevelID)))
 		return E_FAIL;
+
 	CTransform* pTrnasform = Get_Component<CTransform>();
 	pTrnasform->Set_MovePerSec(1.5f);
 	pTrnasform->Set_RotatePerSec(3.f);
@@ -67,6 +68,7 @@ void CBoss_Xibi::Update_Priority(const _float fTimeDelta)
 void CBoss_Xibi::Update(const _float fTimeDelta)
 {
 	Super::Update(fTimeDelta);
+	Get_Component<CXibi_GimmikController>()->Update(fTimeDelta);
 }
 
 void CBoss_Xibi::Update_Late(const _float fTimeDelta)

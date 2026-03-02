@@ -37,10 +37,12 @@ private:
 	HRESULT Create_Rock(const DTO::TMap_MapObjectData& tData);
 
 
-	/* Player Start Postition */
+	/* Batch Player */
 	HRESULT Batch_Player(const DTO::TMap_MapObjectData& tData);
-	/* Monster Spawn Position */
+	/* Batch Monster */
 	HRESULT	Batch_Monster(const DTO::TMap_MapObjectData& tData);
+	/* Batch Object */
+	HRESULT	Batch_Object(const DTO::TMap_MapObjectData& tData);
 
 	/* Trigger Box */
 	HRESULT	Create_TriggerBox_ChangeLevel(const DTO::TMap_MapObjectData& tData);

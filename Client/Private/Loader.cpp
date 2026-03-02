@@ -45,7 +45,6 @@
 #include "DataDocument_EffectEvent.h"
 #include "Builder_AttackPreset.h"
 #include "DataDocument_AttackPreset.h"
-
 //=================
 // Object
 //=================
@@ -60,14 +59,18 @@
 #include "Loader.h"
 #include "Effect.h"
 #include "EffectObject.h"
+#include "BattleField.h"
 
 //=================
 // SkillObject
 //=================
 #include "SingleSkillSpawner.h"
 #include "ProjectileSpawner_Fan.h"
+#include "SkillObjectSpawner_RandomXZ.h"
+#include "ProjectileSpawner_Radial360.h"
 #include "Xibi_Projectile_Circle.h"
 #include "Xibi_Loop_Thunder.h"
+#include "Xibi_Oneshot_Thunder.h"
 
 
 //=================
@@ -120,6 +123,7 @@
 #include "UIMonsterStat_Text.h"
 #include "UIDamageFont_Text.h"
 #include "UIBossStat_Text.h"
+#include "UICombo_Text.h"
 // 그냥 이미지
 #include "UIJust_Image.h"
 // 다이나믹 이미지 
@@ -133,6 +137,7 @@
 #include "UIAimDot_Image.h"
 #include "UILevelChange_Image.h"
 #include "UIBossStat_Image.h"
+#include "UICombo_Image.h"
 // 트리거 
 #include "UIMenu_Trigger.h"
 #include "UICommon_Trigger.h"
@@ -559,11 +564,11 @@ HRESULT CLoader::Loading_For_Logo()
 	// For. Prototype_Component_ControlContext_Player
 	m_pGameInstance->Add_Prototype(ENUM_TO_UINT(ELevelType::STATIC), L"Prototype_Component_ControlContext_Player", CPlayerControlContext::Create());
 	// For. Prototype_Component_Collider_AABB
-	m_pGameInstance->Add_Prototype(ENUM_TO_UINT(ELevelType::STATIC), L"Prototype_Component_Collider_AABB", CCollider::Create(m_pDevice, m_pDeviceContext, EColliderType::AABB));
+	m_pGameInstance->Add_Prototype(ENUM_TO_UINT(ELevelType::STATIC), g_wszCollider_AABB_Prototype_Tag, CCollider::Create(m_pDevice, m_pDeviceContext, EColliderType::AABB));
 	// For. Prototype_Component_Collider_OBB
-	m_pGameInstance->Add_Prototype(ENUM_TO_UINT(ELevelType::STATIC), L"Prototype_Component_Collider_OBB", CCollider::Create(m_pDevice, m_pDeviceContext, EColliderType::OBB));
+	m_pGameInstance->Add_Prototype(ENUM_TO_UINT(ELevelType::STATIC), g_wszCollider_OBB_Prototype_Tag , CCollider::Create(m_pDevice, m_pDeviceContext, EColliderType::OBB));
 	// For. Prototype_Component_Collider_SPHERE
-	m_pGameInstance->Add_Prototype(ENUM_TO_UINT(ELevelType::STATIC), L"Prototype_Component_Collider_Sphere", CCollider::Create(m_pDevice, m_pDeviceContext, EColliderType::SPHERE));
+	m_pGameInstance->Add_Prototype(ENUM_TO_UINT(ELevelType::STATIC), g_wszCollider_Sphere_PrototypeTag, CCollider::Create(m_pDevice, m_pDeviceContext, EColliderType::SPHERE));
 	// For. Prototype_Component_Bounds
 	m_pGameInstance->Add_Prototype(ENUM_TO_UINT(ELevelType::STATIC), L"Prototype_Component_Bounds", CBounds::Create(m_pDevice, m_pDeviceContext));
 	// For. Prototype_Component_Xibi_GimmikController
@@ -609,6 +614,11 @@ HRESULT CLoader::Loading_For_Logo()
 		// Projectile
 		ADD_PROTOTYPE(ELevelType::TEST, g_wszXibiProjectile_Prototype_Tag,				CXibi_Projectile_Circle::Create(m_pDevice, m_pDeviceContext));
 		ADD_PROTOTYPE(ELevelType::TEST, g_wszXibiLoopThunder_Prototype_Tag,				CXibi_Loop_Thunder::Create(m_pDevice, m_pDeviceContext));
+		ADD_PROTOTYPE(ELevelType::TEST, g_wszXibiOneshotThunder_Prototype_Tag,			CXibi_Oneshot_Thunder::Create(m_pDevice, m_pDeviceContext));
+
+
+		/* Battle Field */
+		ADD_PROTOTYPE(ELevelType::STATIC, g_wszBattleField_Prototype_Tag ,				CBattleField::Create(m_pDevice, m_pDeviceContext));
 
 #pragma region Map Object
 		/* Map Object */
@@ -692,6 +702,8 @@ HRESULT CLoader::Loading_For_Logo()
 	ADD_PROTOTYPE(ELevelType::STATIC, L"Prototype_UI_BossStatProgress",			CUIBossStat_Progress::Create(m_pDevice, m_pDeviceContext));
 	ADD_PROTOTYPE(ELevelType::STATIC, L"Prototype_UI_BossStatText",				CUIBossStat_Text::Create(m_pDevice, m_pDeviceContext));
 	ADD_PROTOTYPE(ELevelType::STATIC, L"Prototype_UI_BossStatImage",			CUIBossStat_Image::Create(m_pDevice, m_pDeviceContext));
+	ADD_PROTOTYPE(ELevelType::STATIC, L"Prototype_UI_ComboImage",				CUICombo_Image::Create(m_pDevice, m_pDeviceContext));
+	ADD_PROTOTYPE(ELevelType::STATIC, L"Prototype_UI_ComboText",				CUICombo_Text::Create(m_pDevice, m_pDeviceContext));
 	
 #pragma endregion
 	
@@ -900,33 +912,75 @@ HRESULT CLoader::Ready_EffectEvent()
 
 HRESULT CLoader::Ready_Spawner()
 {
-	/* Xibi */
-	{
-		CSingleSkillSpawner::SPAWNER_ORIGIN_DESC desc{};
-		desc.iPoolLevelIndex = ENUM_TO_UINT(ELevelType::TEST);
-		desc.wstrSkillPoolTag = g_wszPool_XibiCircleProjectile;
-		desc.iSkillObjectFlags =
-			ENUM_TO_UINT(ESkillObjectFlag::Move_Straight) |
-			ENUM_TO_UINT(ESkillObjectFlag::Life_Timer) |
-			ENUM_TO_UINT(ESkillObjectFlag::Life_Distance) |
-			ENUM_TO_UINT(ESkillObjectFlag::Hit_Single);
-		if (FAILED(m_pGameInstance->Add_Prototype(ENUM_TO_UINT(ELevelType::TEST), g_wszSpawner_XibiCircleProjectile, CSingleSkillSpawner::Create(m_pDevice, m_pDeviceContext, &desc))))
-			return E_FAIL;
-	}
-	/* Xibi 3way Thunder */
-	{
-		CProjectileSpawner_Fan::SPAWNER_ORIGIN_DESC desc{};
-		desc.iPoolLevelIndex = ENUM_TO_UINT(ELevelType::TEST);
-		desc.wstrSkillPoolTag = g_wszPool_XibiLoopThunder;
-		desc.iSkillObjectFlags =
-			ENUM_TO_UINT(ESkillObjectFlag::Move_Straight) |
-			ENUM_TO_UINT(ESkillObjectFlag::Life_Timer) |
-			ENUM_TO_UINT(ESkillObjectFlag::Life_Distance) |
-			ENUM_TO_UINT(ESkillObjectFlag::Hit_Single);
-		if (FAILED(m_pGameInstance->Add_Prototype(ENUM_TO_UINT(ELevelType::TEST), g_wszSpawner_Xibi3wayLoopThunder, CProjectileSpawner_Fan::Create(m_pDevice, m_pDeviceContext, &desc))))
-			return E_FAIL;
-	}
+	//CSingleSkillSpawner* m_pOneshotThunderSpawner{ nullptr };
+	//CSkillObjectSpawner_RandomXZ* m_pRandomThunderSpawner{ nullptr };
+	//CProjectileSpawner_Fan* m_p3wayThunderSpawner{ nullptr };
+	//CProjectileSpawner_Radial360* m_p360CircleSpawner{ nullptr };
+	//CProjectileSpawner_Radial360* m_p360ThunderSpawner{ nullptr };
+	_uint iLevelID = ENUM_TO_UINT(ELevelType::TEST);
 
+	/* Xibi */
+	// SingleSkill
+	{
+		CSingleSkillSpawner::SPAWNER_ORIGIN_DESC originDesc{};
+		originDesc.iPoolLevelIndex = iLevelID;
+		originDesc.wstrSkillPoolTag = g_wszPool_XibiOneshotThunder;
+		originDesc.iSkillObjectFlags = ENUM_TO_UINT(ESkillObjectFlag::Life_Timer);
+		originDesc.fLifeTime = 0.5f;
+		originDesc.fStartDelay = 0.1f;
+		if (FAILED(m_pGameInstance->Add_Prototype(iLevelID, g_wszSpawner_XibiOneshotSingleThunder,
+			CSingleSkillSpawner::Create(m_pDevice, m_pDeviceContext, &originDesc))))
+			return E_FAIL;
+	}
+	// RandomXZ 
+	{
+		CSkillObjectSpawner_RandomXZ::SPAWNER_ORIGIN_DESC originDesc{};
+		originDesc.iPoolLevelIndex = iLevelID;
+		originDesc.wstrSkillPoolTag = g_wszPool_XibiOneshotThunder;
+		originDesc.iSkillObjectFlags = ENUM_TO_UINT(ESkillObjectFlag::Life_Timer);
+		originDesc.fLifeTime = 0.5f;
+		originDesc.fInterval = 0.1f;
+		if (FAILED(m_pGameInstance->Add_Prototype(iLevelID, g_wszSpawner_XibiOneshotRandomThunder,
+			CSkillObjectSpawner_RandomXZ::Create(m_pDevice, m_pDeviceContext, &originDesc))))
+			return E_FAIL;
+	}
+	// 360Circle
+	{
+		CProjectileSpawner_Radial360::SPAWNER_ORIGIN_DESC desc{};
+		desc.iPoolLevelIndex = iLevelID;
+		desc.wstrSkillPoolTag = g_wszPool_XibiCircleProjectile;
+		desc.fLifeTime = 5.f;
+		desc.fInterval = 0.05f;
+		desc.iSkillObjectFlags = ENUM_TO_UINT(ESkillObjectFlag::Move_Straight) | ENUM_TO_UINT(ESkillObjectFlag::Life_Timer);
+		if (FAILED(m_pGameInstance->Add_Prototype(ENUM_TO_UINT(ELevelType::TEST), g_wszSpawner_Xibi360CircleProjectile,
+			CProjectileSpawner_Radial360::Create(m_pDevice, m_pDeviceContext, &desc))))
+			return E_FAIL;
+	}
+	// 360Thunder
+	{
+		CProjectileSpawner_Radial360::SPAWNER_ORIGIN_DESC desc{};
+		desc.iPoolLevelIndex = iLevelID;
+		desc.wstrSkillPoolTag = g_wszPool_XibiLoopThunder;
+		desc.iSkillObjectFlags = ENUM_TO_UINT(ESkillObjectFlag::Move_Straight) | ENUM_TO_UINT(ESkillObjectFlag::Life_Timer);
+		desc.fLifeTime = 7.f;
+		desc.fInterval = 0.03f;
+
+		if (FAILED(m_pGameInstance->Add_Prototype(iLevelID, g_wszSpawner_Xibi360ThunderProjectile,
+			CProjectileSpawner_Radial360::Create(m_pDevice, m_pDeviceContext, &desc))))
+			return E_FAIL;
+	}
+	// 3wayThunder
+	{
+		CProjectileSpawner_Radial360::SPAWNER_ORIGIN_DESC desc{};
+		desc.iPoolLevelIndex = iLevelID;
+		desc.wstrSkillPoolTag = g_wszPool_XibiLoopThunder;
+		desc.iSkillObjectFlags = ENUM_TO_UINT(ESkillObjectFlag::Move_Straight) | ENUM_TO_UINT(ESkillObjectFlag::Life_Timer);
+		desc.fLifeTime = 7.f;
+
+		if (FAILED(m_pGameInstance->Add_Prototype(iLevelID, g_wszSpawner_Xibi3wayLoopThunder,
+			CProjectileSpawner_Fan::Create(m_pDevice, m_pDeviceContext, &desc))))
+			return E_FAIL;
+	}
 	return S_OK;
 }
 
@@ -936,7 +990,7 @@ HRESULT CLoader::Ready_AttackOverlap_PlayerMoon()
 	DTO::ECategory eCategory = DTO::ECategory::OVERLAP_SCRIPT;
 	_uint iLevelID = ENUM_TO_UINT(eLevelType);
 
-	std::filesystem::path FilePath = L"../../Resources/Data/AttackOverlapData/Moon.json";
+	std::filesystem::path FilePath = L"../../Resources/Data/AttackOverlapData/Moon2.json";
 	vector<path> vecfiles;
 
 	if (!std::filesystem::exists(FilePath))

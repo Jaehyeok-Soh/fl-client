@@ -19,6 +19,9 @@ namespace Tool
         "condition_target_lost",
         "condition_animation_finish",
         "condition_die",
+        "condition_none_die",
+        "condition_already_die",
+        "condition_none_already_die",
         "condition_hit",
         "condition_hit_light",
         "condition_hit_heavy",
@@ -30,6 +33,8 @@ namespace Tool
         "condition_non_cancellation",
         "condition_over_lifetime",
         "condition_cooldowntime_satisfy",
+        "param_condition_IsTrackPositionBetween",
+        "param_condition_IsTrackPositionAt",
 
         // param examples
         "param_condition_distance_over",
@@ -41,6 +46,8 @@ namespace Tool
         "feat_chase",
         "feat_align_attack",
         "feat_keep_look_target",
+        "feat_TurnToTarget_XZ",
+        "feat_TurnToTarget_XZ_Ratio",
 
         // 8-dir
         "feat_move_front",
@@ -54,6 +61,12 @@ namespace Tool
 
         // param examples
         "param_feat_move_local",
+
+        "feat_set_dead",
+        "feat_set_deadprocess",
+
+        "feat_set_cct_collision_enable",
+        "feat_set_cct_collision_disable",
     };
 
     inline constexpr int kConditionCount = (int)(sizeof(kConditionNames) / sizeof(kConditionNames[0]));

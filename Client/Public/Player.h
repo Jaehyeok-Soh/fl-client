@@ -47,7 +47,6 @@ public:
 		,CROUCH
 		,CROUCHWALK
 		,SLIDE
-		,SLIDESKY
 
 		,DASHBACK
 		,DASHSKY
@@ -77,6 +76,11 @@ public:
 		,SKILL2
 
 		,JUMPWALL
+
+		,HITADDTIVE
+		,HITFLYSTART
+		,HITFLYEND
+		,HITSTRONG
 
 		,END
 	};
@@ -109,7 +113,7 @@ public:
 	void	Set_RootMotion_Apply(_bool bApply);
 
 	_bool	Check_DoubleJump();
-	void	Set_DoubleJump(_bool bCount) { m_tDoubleJumpCount.bCountTime = bCount; if (!bCount) m_tDoubleJumpCount.fTimeAcc = 0.f; }
+	void	Set_DoubleJumpCount(_bool bCount) { m_tDoubleJumpCount.bCountTime = bCount; if (!bCount) m_tDoubleJumpCount.fTimeAcc = 0.f; }
 
 	void	Change_CamState(_uint iCamState);
 
@@ -125,6 +129,7 @@ protected:
 
 private:
 	HRESULT Ready_BaseStates();
+	HRESULT Ready_HitStates();
 	HRESULT Ready_PartObjects(PLAYER_DESC* pDesc);
 	HRESULT Ready_Components(PLAYER_DESC* pDesc);
 

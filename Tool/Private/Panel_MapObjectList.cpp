@@ -42,6 +42,20 @@ CPanel_MapObjectList::CPanel_MapObjectList(const _char* pLabel, CLevel* pOwner, 
 		string strCurName = DTO::MakeMonsterType_ToString(DTO::EMakeMonsterType(i));
 		::strcpy_s(m_szMakeMonsterTypeName[i] , MAX_PATH , strCurName.c_str());
 	}
+
+	for (_uint i = 0; i < ENUM_TO_UINT(DTO::EMakeObjectType::END); ++i)
+	{
+		string strCurName = DTO::MakeObjectType_ToString(DTO::EMakeObjectType(i));
+		::strcpy_s(m_szMakeObjectTypeName[i], MAX_PATH, strCurName.c_str());
+	}
+
+
+	for (_uint i = 0; i < ENUM_TO_UINT(BATTLE_FIELD_DESC::Field_Type::END); ++i)
+	{
+		string strCurName = BATTLE_FIELD_DESC::FieldType_ToString(BATTLE_FIELD_DESC::Field_Type(i));
+		::strcpy_s(m_szBattleFieldTypeName[i], MAX_PATH, strCurName.c_str());
+	}
+
 }
 
 
@@ -665,6 +679,9 @@ HRESULT CPanel_MapObjectList::Render_ModelInfo()
 
 	CModel* pModel = m_pSelectMapObject->Get_Component<CModel>();
 
+	if (!pModel)
+		return S_OK;
+
 	_uint iMtlCount = pModel->Get_MaterialCount();
 
 	ImGui::SeparatorText(" Model Info ");
@@ -972,16 +989,15 @@ HRESULT CPanel_MapObjectList::Render_Description()
 
 	switch (ePath)
 	{
-	case Tool::EClientMakePath::StaticObject:			ImGuiUpdate_StaticObject_Desc					(static_cast<STATICOBJECT_DESC*>(pDesc));					return S_OK;
-	case Tool::EClientMakePath::LandScape:				ImGuiUpdate_LandScape_Desc						(static_cast<LANDSCAPE_DESC*>(pDesc));						return S_OK;
+	case Tool::EClientMakePath::StaticObject:				ImGuiUpdate_StaticObject_Desc					(static_cast<STATICOBJECT_DESC*>(pDesc));					return S_OK;
+	case Tool::EClientMakePath::LandScape:					ImGuiUpdate_LandScape_Desc						(static_cast<LANDSCAPE_DESC*>(pDesc));						return S_OK;
 
+	case Tool::EClientMakePath::Batch_Monster:				ImGuiUpdate_Batch_Monster_Desc					(static_cast<BATCH_MONSTER_DESC*>(pDesc));					return S_OK;
+	case Tool::EClientMakePath::Batch_Object:				ImGuiUpdate_Batch_Object_Desc					(static_cast<BATCH_OBJECT_DESC*>(pDesc));					return S_OK;
 
-
-	case Tool::EClientMakePath::Batch_Monster:			ImGuiUpdate_Batch_Monster_Desc					(static_cast<BATCH_MONSTER_DESC*>(pDesc));						return S_OK;
-
-	case Tool::EClientMakePath::TriggerBox_ChangeLevel:		ImGuiUpdate_TriggerBox_ChanageLevel_Desc	(static_cast<TRIGGERBOX_CHANGELEVEL_DESC*>(pDesc));			return S_OK;
-	case Tool::EClientMakePath::TriggerBox_MonsterSpawner:	ImGuiUpdate_TriggerBox_MonsterSpawner		(static_cast<TRIGGERBOX_MONSTERSPAWNER_DESC*>(pDesc));		return S_OK;
-	default:																																						return E_FAIL;
+	case Tool::EClientMakePath::TriggerBox_ChangeLevel:		ImGuiUpdate_TriggerBox_ChanageLevel_Desc	(static_cast<TRIGGERBOX_CHANGELEVEL_DESC*>(pDesc));				return S_OK;
+	case Tool::EClientMakePath::TriggerBox_MonsterSpawner:	ImGuiUpdate_TriggerBox_MonsterSpawner		(static_cast<TRIGGERBOX_MONSTERSPAWNER_DESC*>(pDesc));			return S_OK;
+	default:																																							return E_FAIL;
 	}
 
 	return S_OK;
@@ -1089,6 +1105,87 @@ void CPanel_MapObjectList::ImGuiUpdate_Batch_Monster_Desc(BATCH_MONSTER_DESC* pD
 
 	return;
 
+}
+
+#pragma region Batch Object Desc
+
+void CPanel_MapObjectList::ImGuiUpdate_Batch_Object_Desc(BATCH_OBJECT_DESC* pDesc)
+{
+	if (pDesc == nullptr) return;
+
+
+	ImGui::SeparatorText( " Batch Object Type " );
+
+	m_strBuffer = DTO::MakeObjectType_ToString(pDesc->eBatchObjectType);
+	m_iBuffer = _int(pDesc->eBatchObjectType);
+
+	if (ImGui::BeginCombo("Batch Object Type List##Batch Object Desc", m_strBuffer.c_str()))
+	{
+		for (_uint i = 0; i < ENUM_TO_UINT(DTO::EMakeObjectType::END); ++i)
+		{
+			bool isSelected = i == m_iBuffer;
+			if (ImGui::Selectable(m_szMakeObjectTypeName[i], &isSelected))
+			{
+				pDesc->eBatchObjectType= DTO::EMakeObjectType(i);
+				pDesc->Change_BatchObjecType(pDesc->eBatchObjectType);
+				m_pSelectMapObject->Ready_Batch_Object();
+			}
+			if (isSelected)
+				ImGui::SetItemDefaultFocus();
+		}
+		ImGui::EndCombo();
+	}
+
+	ImGui::Separator();
+
+	DTO::EMakeObjectType eType = pDesc->eBatchObjectType;
+
+	switch (eType)
+	{
+	case DTO::EMakeObjectType::Battle_Field: ImGuiUpdate_Battle_Field_Desc(static_cast<BATTLE_FIELD_DESC*>(pDesc->pBatchObjectDesc));	break;
+	default:																															return;
+	}
+
+	return;
+}
+
+#pragma endregion
+
+
+void CPanel_MapObjectList::ImGuiUpdate_Battle_Field_Desc(BATTLE_FIELD_DESC* pDesc)
+{
+	if (pDesc == nullptr) return;
+
+	ImGui::SeparatorText(" Battle Field Desc ");
+
+	m_strBuffer = BATTLE_FIELD_DESC::FieldType_ToString(pDesc->eFieldType);
+	m_iBuffer = _int(pDesc->eFieldType);
+
+	if (ImGui::BeginCombo("Field Type##FieldType", m_strBuffer.c_str()))
+	{
+		for (_uint i = 0; i < ENUM_TO_UINT(BATTLE_FIELD_DESC::Field_Type::END); ++i)
+		{
+			bool isSelected = i == m_iBuffer;
+			if (ImGui::Selectable(m_szBattleFieldTypeName[i], &isSelected))
+				pDesc->eFieldType = BATTLE_FIELD_DESC::Field_Type(i);
+			if (isSelected)
+				ImGui::SetItemDefaultFocus();
+		}
+		ImGui::EndCombo();
+	}
+
+	if (pDesc->eFieldType == BATTLE_FIELD_DESC::Field_Type::Box)
+	{
+		ImGui::DragFloat3("Battle Field Extents##BattleFieldDesc",&pDesc->vExtents.x , 0.1f , 0.5f, 200.f );
+	}
+	else
+	{
+		ImGui::DragFloat("Battle Field Range##BattleFieldDesc", &pDesc->fRadius, 0.1f, 0.5, 200.f);
+	}
+	ImGui::Separator();
+
+
+	return;
 }
 
 #pragma endregion

@@ -1,6 +1,7 @@
 #include "pch.h"
 #include "UIMini_Map.h"
 #include "Client_Defines.h"
+#include "Client_EventDefine.h"
 #include "CameraMan.h"
 
 #include "MainPlayer.h"
@@ -41,52 +42,6 @@ HRESULT CUIMini_Map::Initialize(void* pArg)
 	return S_OK;
 }
 
-HRESULT CUIMini_Map::Attach_Personal_Info()
-{
-	switch (m_eDImageSubClass)
-	{
-	case DTO::EUIDImageSubClassType::MINIMAP_PLAYER_ICON:
-	{
-		CGameObject* pResult=	m_pGameInstance->Get_GameObject(/* static */ 0, g_wszPlayerLayer, 0);
-		if (nullptr == pResult)
-			return E_FAIL;
-		CMainPlayer* pPlayer = dynamic_cast<CMainPlayer*>(pResult);
-		if (nullptr == pPlayer)
-			return E_FAIL;
-
-		CTransform* pPlayerTransform = pPlayer->Get_Component<CTransform>();
-		if (nullptr == pPlayerTransform)
-			return E_FAIL;
-
-		m_pPlayerTransform = pPlayerTransform;
-	}
-		return S_OK;
-	case DTO::EUIDImageSubClassType::MINIMAP_CAMERA_SIGHT:
-	{
-		m_vPivotPos			= Vec2{ m_fX, m_fY + m_fHeight * 0.5f  };
-		m_vOriginPos		= Vec2{ m_fX, m_fY };
-		m_vPivotToOrigin	= m_vOriginPos - m_vPivotPos;
-	}
-		return S_OK;
-	case DTO::EUIDImageSubClassType::MINIMAP_BGFRAME:
-	{
-
-	}
-	break;
-	case DTO::EUIDImageSubClassType::MINIMAP_WARNING_FRAME:
-	{
-		// * 외부 변수 바인딩 *
-		m_beAttackEventTrigger;
-	}
-	break;
-	case DTO::EUIDImageSubClassType::END:
-		break;
-	default:
-		return E_FAIL;
-	}
-
-	return S_OK;
-}
 
 HRESULT CUIMini_Map::Awake(const _uint iCurrentLevelID)
 {
@@ -217,8 +172,6 @@ void CUIMini_Map::Rotate_Translate_CameraSight()
 
 	m_fX = m_vPivotPos.x + vRot.x;
 	m_fY = m_vPivotPos.y + vRot.y;
-
-	Move_Position(m_fX, m_fY, m_fZ);
 }
 
 void CUIMini_Map::Rotate_PlayerIcon()
@@ -233,10 +186,10 @@ _float CUIMini_Map::Clamp(_float v, _float lo, _float hi)
 
 _float CUIMini_Map::WrapPi(_float a)
 {
-	const _float PI = 3.14159265358979323846f;
+	const _float PI		= 3.14159265358979323846f;
 	const _float TWO_PI = 6.2831853071795864769f;
-	while (a > PI) a -= TWO_PI;
-	while (a < -PI) a += TWO_PI;
+	while (a > PI) a	-= TWO_PI;
+	while (a < -PI) a	+= TWO_PI;
 	return a;
 }
 
@@ -259,7 +212,8 @@ void CUIMini_Map::TickRotate(_int dir, _float dt)
 
 HRESULT CUIMini_Map::Ready_Components(MINIMAP_DESC* pDesc)
 {
-	Super::Ready_Components(pDesc);
+	if (FAILED(Super::Ready_Components(pDesc)))
+		return E_FAIL;
 	return S_OK;
 }
  
@@ -270,6 +224,56 @@ HRESULT CUIMini_Map::Bind_ShaderResources()
 		return E_FAIL;
 	if (FAILED(Super::Bind_ShaderResources()))
 		return E_FAIL;
+	return S_OK;
+}
+
+HRESULT CUIMini_Map::Attach_Personal_Info()
+{
+	switch (m_eDImageSubClass)
+	{
+	case DTO::EUIDImageSubClassType::MINIMAP_PLAYER_ICON:
+	{
+		CGameObject* pResult = m_pGameInstance->Get_GameObject(/* static */ 0, g_wszPlayerLayer, 0);
+		if (nullptr == pResult)
+			return E_FAIL;
+		CMainPlayer* pPlayer = dynamic_cast<CMainPlayer*>(pResult);
+		if (nullptr == pPlayer)
+			return E_FAIL;
+
+		CTransform* pPlayerTransform = pPlayer->Get_Component<CTransform>();
+		if (nullptr == pPlayerTransform)
+			return E_FAIL;
+
+		m_pPlayerTransform = pPlayerTransform;
+	}
+	break;
+	case DTO::EUIDImageSubClassType::MINIMAP_CAMERA_SIGHT:
+	{
+		m_vPivotPos = Vec2{ m_fX, m_fY + m_fHeight * 0.5f };
+		m_vOriginPos = Vec2{ m_fX, m_fY };
+		m_vPivotToOrigin = m_vOriginPos - m_vPivotPos;
+	}
+	break;
+	case DTO::EUIDImageSubClassType::MINIMAP_BGFRAME:
+	{
+
+	}
+	break;
+	case DTO::EUIDImageSubClassType::MINIMAP_WARNING_FRAME:
+	{
+		// * 외부 변수 바인딩 *
+		m_beAttackEventTrigger;
+	}
+	break;
+	case DTO::EUIDImageSubClassType::END:
+		break;
+	default:
+		return E_FAIL;
+	}
+
+	m_pGameInstance->Subscribe<BOSS_STAGING_EVENT_START>([this]() { this->Set_Invisible(); });
+	m_pGameInstance->Subscribe<BOSS_STAGING_EVENT_END>([this]() { this->Set_Visible(); });
+
 	return S_OK;
 }
 
@@ -304,22 +308,33 @@ void CUIMini_Map::Initialize_Visible_Event()
 	m_isActive = false;
 	m_fAlpha_Ratio = 0.f;
 	m_fTimeAcc = 0.f;
+	Ready_Lerp_Movement(Vec2{ -10.f,0.f }, Vec2{ 10.f, 0.f }, 0.5f, 1.f, 0.f);
+
 }
 
 void CUIMini_Map::Initialize_InVisible_Event()
 {
+	m_isFin_Event = false;
+	m_isActive = false;
+	Ready_Fade(0.5f, 1.f, 0.f, 0.f);
+	Ready_Lerp_Movement(Vec2{ 0.f,0.f }, Vec2{ -10.f, 0.f }, 0.5f, 1.f, 0.f);
 }
 
 _bool CUIMini_Map::Tick_Visible_Event(const _float fTimeDelta)
 {
 	m_fTimeAcc += fTimeDelta;
 	_float t = m_fTimeAcc / 2.f;
+
+	_bool is = Tick_Lerp_Movement(fTimeDelta);
 	if (t >= 1.f)
 	{
 		m_fAlpha_Ratio = 1.f;
-		m_isFin_Event = true;
-		m_isActive = true;
-		return true;
+		if (is)
+		{
+			m_isFin_Event = true;
+			m_isActive = true;
+			return true;
+		}
 	}
 
 	m_fAlpha_Ratio = t;
@@ -328,7 +343,11 @@ _bool CUIMini_Map::Tick_Visible_Event(const _float fTimeDelta)
 
 _bool CUIMini_Map::Tick_InVisible_Event(const _float fTimeDelta)
 {
-	return true;
+	_bool isFade = Tick_Fade(fTimeDelta);
+	_bool isLerp = Tick_Lerp_Movement(fTimeDelta);
+	if (isFade && isLerp)
+		return true;
+	return false;
 }
 
 CUIMini_Map* CUIMini_Map::Create(ID3D11Device* pDevice, ID3D11DeviceContext* pDeviceContext)

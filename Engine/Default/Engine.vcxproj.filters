@@ -463,6 +463,9 @@
     <Filter Include="00. System\04. GameObject\SkillObjectSpawner\OnceRandom">
       <UniqueIdentifier>{113383fc-f919-408e-9d5a-8d2124affd32}</UniqueIdentifier>
     </Filter>
+    <Filter Include="00. System\12. PhysX\EventCallback\CCTFilterCallback">
+      <UniqueIdentifier>{f0f18817-327c-4f4d-89f9-c5faf15fe01f}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="..\Private\Timer.cpp">
@@ -927,6 +930,9 @@
     </ClCompile>
     <ClCompile Include="..\private\SkillObjectSpawner_RandomXZ.cpp">
       <Filter>00. System\04. GameObject\SkillObjectSpawner\OnceRandom</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\Physics_CCTFilterCallback.cpp">
+      <Filter>00. System\12. PhysX\EventCallback\CCTFilterCallback</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -1411,7 +1417,6 @@
     <ClInclude Include="..\public\TimeScale_Manager.h">
       <Filter>00. System\01. Timer\Manager</Filter>
     </ClInclude>
-    <ClInclude Include="..\Public\GameData_Struct.h" />
     <ClInclude Include="..\Public\EffectPartBase.h">
       <Filter>00. System\14. Effect\EffectPartBase</Filter>
     </ClInclude>
@@ -1438,6 +1443,12 @@
     </ClInclude>
     <ClInclude Include="..\public\SkillObjectSpawner_RandomXZ.h">
       <Filter>00. System\04. GameObject\SkillObjectSpawner\OnceRandom</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\GameData_Struct.h">
+      <Filter>01. Utility\08. GameData\00. Struct</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\Physics_CCTFilterCallback.h">
+      <Filter>00. System\12. PhysX\EventCallback\CCTFilterCallback</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

@@ -21,6 +21,8 @@ HRESULT CState_ComboBase::Initialize(void* pArg)
 	m_ComboTimes[2] = pDesc->vCombo_CheckTimes.z;
 	m_ComboTimes[3] = pDesc->vCombo_CheckTimes.w;
 
+	m_fSlide_KeyCoolTime = pDesc->fSlide_CheckTime;
+
 	return S_OK;
 }
 
@@ -39,7 +41,11 @@ HRESULT CState_ComboBase::Start(void* pArg, _bool bForce)
 
 	m_bComboTime	= true;
 	m_iComboCount	= 1;
-	m_tKeyTimer.fMaxTime = m_ComboTimes[0];
+
+	if (m_iMainAnimIdx == 1)
+		m_tKeyTimer.fMaxTime = m_fSlide_KeyCoolTime;
+	else
+		m_tKeyTimer.fMaxTime = m_ComboTimes[0];
 
 	Change_Weapon(CPlayer::Part::SWORD, ENUM_TO_UINT(CWeapon::State::HAND));
 

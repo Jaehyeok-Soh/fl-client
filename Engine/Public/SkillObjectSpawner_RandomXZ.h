@@ -33,7 +33,13 @@ private:
 private:
 	Vec3 Make_RandomPos_OnPlane(const Vec3& vOrigin, const Vec3& vForward, const Vec3& vUp) const;
 private:
-	SPAWNER_RAND_COPY_DESC m_desc{};
+	_float m_fDurationSec = { 2.f };   // 몇초 동안?
+	_uint  m_iPerTick = { 1 };    // 1텀에 몇 개?
+	_float m_fRadiusMin = { 0.f };
+	_float m_fRadiusMax = { 5.f };
+		   
+	_bool  m_bUseForwardDir = { false }; // 번개처럼 정지형이면 false 권장
+	Vec3   m_vFixedDir = { 0.f, 0.f, 0.f }; // 필요하면 고정 방향(예: 아래)
 public:
 	static CSkillObjectSpawner_RandomXZ* Create(ID3D11Device* pDevice, ID3D11DeviceContext* pDeviceContext, SPAWNER_ORIGIN_DESC* pOriginDesc);
 	virtual CGameObject* Clone(void* pArg) override;

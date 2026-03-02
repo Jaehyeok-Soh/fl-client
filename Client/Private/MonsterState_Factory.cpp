@@ -61,7 +61,13 @@ HRESULT CMonsterState_Factory::Ready_Condition()
 	
 	REGISTER_CONDITION("condition_animation_finish", CONDITION{ return state->Is_MainAnimFinished(); });
 	
-	REGISTER_CONDITION("condition_die", CONDITION{ return state->Get_OwnerObject()->IsDead(); });
+	REGISTER_CONDITION("condition_die", CONDITION{ return MONSTERCC(state)->IsDead(); });
+
+	REGISTER_CONDITION("condition_none_die", CONDITION{ return !MONSTERCC(state)->IsDead(); });
+
+	REGISTER_CONDITION("condition_already_die", CONDITION{ return MONSTERCC(state)->IsDeadProcessing(); });
+	
+	REGISTER_CONDITION("condition_none_already_die", CONDITION{ return !MONSTERCC(state)->IsDeadProcessing(); });
 
 	REGISTER_CONDITION("condition_loop_animation", CONDITION{ return state->IsLoop(); });
 
@@ -89,6 +95,9 @@ HRESULT CMonsterState_Factory::Ready_Condition()
 
 	REGISTER_CONDITION("condition_cooldowntime_satisfy", CONDITION{ return state->IsCooldownTimeSatisfy(); });
 
+	REGISTER_CONDITION("param_condition_IsTrackPositionBetween", CONDITION{ return MONSTERACTIONSTATE(state)->Is_AnimTrackPositionBetweenRaw(param.fParam[0], param.fParam[1]); });
+
+	REGISTER_CONDITION("param_condition_IsTrackPositionAt", CONDITION{ return MONSTERACTIONSTATE(state)->Is_AnimTrackPositionAtRaw(param.fParam[0]); });
 
 	// 02-27 구조 변경 후 예시
 	REGISTER_CONDITION("param_condition_distance_over", CONDITION{ return MONSTERCC(state)->IsTargetDistanceOver(param.fParam[0]); });
@@ -105,6 +114,9 @@ HRESULT CMonsterState_Factory::Ready_Feature()
 
 	REGISTER_FEATURE("feat_keep_look_target", FEATURE{ state->SetupLook_Target_XZ(); });
 
+	REGISTER_FEATURE("feat_TurnToTarget_XZ", FEATURE{ MONSTERCC(state)->Update_TurnToTarget_XZ(fTimeDelta); });
+	REGISTER_FEATURE("feat_TurnToTarget_XZ_Ratio", FEATURE{ MONSTERCC(state)->Update_TurnToTarget_XZ(fTimeDelta * param.fParam[0]); });
+
 	// 8방향 움직임
 	REGISTER_FEATURE("feat_move_front", FEATURE{ MONSTERCC(state)->Update_8Dir_LocalAxisXZ(fTimeDelta, 1.f, 0.f); state->Align_Movement_MoveDir(fTimeDelta); });
 	REGISTER_FEATURE("feat_move_right", FEATURE{ MONSTERCC(state)->Update_8Dir_LocalAxisXZ(fTimeDelta, 0.f, 1.f); state->Align_Movement_MoveDir(fTimeDelta); });
@@ -117,6 +129,12 @@ HRESULT CMonsterState_Factory::Ready_Feature()
 
 	// 02-27 구조 변경 후 예시
 	REGISTER_FEATURE("param_feat_move_local", FEATURE{ MONSTERCC(state)->Update_8Dir_LocalAxisXZ(fTimeDelta, param.fParam[0], param.fParam[1]); state->Align_Movement(fTimeDelta); });
+	
+	REGISTER_FEATURE("feat_set_dead", FEATURE{ state->Get_OwnerObject()->Set_Dead(g_wszMonstereLayer); });
+	REGISTER_FEATURE("feat_set_deadprocess", FEATURE{ MONSTERCC(state)->Set_Dead_Process(); });
+	REGISTER_FEATURE("feat_set_cct_collision_enable", FEATURE{ MONSTERCC(state)->Set_CCT_Collision_Enable(); });
+	REGISTER_FEATURE("feat_set_cct_collision_disable", FEATURE{ MONSTERCC(state)->Set_CCT_Collision_Disable(); });
+
 	return S_OK;
 }
 

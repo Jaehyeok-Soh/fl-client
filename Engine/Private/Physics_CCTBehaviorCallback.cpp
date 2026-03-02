@@ -20,14 +20,14 @@ PxControllerBehaviorFlags CPhysics_CCTBehaviorCallback::getBehaviorFlags(const P
 
 PxControllerBehaviorFlags CPhysics_CCTBehaviorCallback::getBehaviorFlags(const PxShape& shape, const PxActor& actor)
 {
-	//if (actor.is<PxRigidDynamic>())
-	//{
-	//	return PxControllerBehaviorFlag::eCCT_SLIDE;
-	//}
+	PxFilterData filterData = shape.getSimulationFilterData();
 
-	//return PxControllerBehaviorFlag::eCCT_CAN_RIDE_ON_OBJECT;
+	if (filterData.word0 & (PHYSICSFILTERGROUP::PLAYER | PHYSICSFILTERGROUP::MONSTER))
+	{
+		return PxControllerBehaviorFlags(0);
+	}
 
-	return PxControllerBehaviorFlag::eCCT_SLIDE;
+	return PxControllerBehaviorFlag::eCCT_CAN_RIDE_ON_OBJECT | PxControllerBehaviorFlag::eCCT_SLIDE;
 }
 
 PxControllerBehaviorFlags CPhysics_CCTBehaviorCallback::getBehaviorFlags(const PxObstacle& obstacle)
