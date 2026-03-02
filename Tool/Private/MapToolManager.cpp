@@ -26,6 +26,8 @@ CMapToolManager::CMapToolManager()
 	, m_pDefaultWhiteSRV				{nullptr}
 	, m_mapTextureSplatingInfoDatas		{}
 	, m_pLevelData						{nullptr}
+	, m_pCamCinematicSequenceRenderModel{nullptr}
+	, m_pCamCinematicSequenceRenderShader{nullptr}
 {
 	Safe_AddRef(m_pGameInstance);
 	m_arrayMapObjectCloneFactory.fill(nullptr);
@@ -81,10 +83,14 @@ HRESULT CMapToolManager::Initialize(ID3D11Device* pDevice, ID3D11DeviceContext* 
 	if (FAILED(Make_DefaultTexture()))
 		return E_FAIL;
 
-
 	if (FAILED(Bind_MapTexture()))
 		return E_FAIL;
 
+	if (FAILED(Reset_Camera_Cinematic_Sequence()))
+		return E_FAIL;
+
+	if (FAILED(Update_Camera_Cinematic_Sequence_Names()))
+		return E_FAIL;
 
 	return S_OK;
 }
@@ -443,6 +449,27 @@ CModel* CMapToolManager::Get_PlayerPreviewModel()
 	pModel =
 		static_cast<CModel*>
 		(m_pGameInstance->Clone_Prototype(EPrototypeType::COMPONENT, ENUM_TO_UINT(ELevelType::MAP), L"Prototype_Component_Model_" + wstrPlayerModelName, &tModelCopyDesc));
+
+	return pModel;
+}
+
+CModel* CMapToolManager::Get_BatchObjectModel(DTO::EMakeObjectType eType)
+{
+	CModel* pModel{ nullptr };
+	wstring wstrModelName{};
+
+	switch (eType)
+	{
+	case DTO::EMakeObjectType::Battle_Field:	wstrModelName = L"Cube"; break;
+	break;
+	default:									return nullptr;
+	}
+
+
+	CModel::MODEL_COPY_DESC tModelCopyDesc{};
+	pModel =
+		static_cast<CModel*>
+		(m_pGameInstance->Clone_Prototype(EPrototypeType::COMPONENT, ENUM_TO_UINT(ELevelType::MAP), L"Prototype_Component_Model_" + wstrModelName, &tModelCopyDesc));
 
 	return pModel;
 }
@@ -946,11 +973,80 @@ const Vec3& CMapToolManager::Get_MousePickingPos() const
 	return m_vRayWorldPos;
 }
 
+HRESULT CMapToolManager::Render()
+{
+	if (m_pCamCinematicSequence)
+		if (FAILED(m_pCamCinematicSequence->Render_Debug(ENUM_TO_UINT(EMapObjectShaderPass::StaticObject), m_pCamCinematicSequenceRenderModel, m_pCamCinematicSequenceRenderShader)))
+			return E_FAIL;
+
+	return S_OK;
+}
+
 HRESULT CMapToolManager::Export_SaveSceneData(DTO::ECategory eCategory, CDataDocumentBase* pDocument)
 {
 	if (m_pLevelData == nullptr) return E_FAIL;
 
 	m_pLevelData->Export_Data(eCategory , pDocument);
+
+	return S_OK;
+}
+
+HRESULT CMapToolManager::Load_Camera_Cinematic_Sequence(const wstring& wstrFindKey)
+{
+	m_pGameInstance->GameDataManager_Load_CameraCinematicSequence(wstrFindKey , m_pCamCinematicSequence);
+	return S_OK;
+}
+
+HRESULT CMapToolManager::Save_Camera_Cinematic_Sequence(const wstring& wstrSaveKey)
+{
+	m_pGameInstance->GameDataManager_Save_CameraCinematicSequence(wstrSaveKey, m_pCamCinematicSequence);
+
+	Update_Camera_Cinematic_Sequence_Names();
+	return S_OK;
+}
+
+HRESULT CMapToolManager::Reset_Camera_Cinematic_Sequence()
+{
+	/* 전체리셋 */
+	if (!m_pCamCinematicSequence)
+	{
+		m_pCamCinematicSequence = new Camera_Cinematic_Sequence(m_pDevice, m_pContext);
+		return S_OK;
+	}
+
+	m_pCamCinematicSequence->Reset();
+
+	return S_OK;
+}
+
+HRESULT CMapToolManager::Update_Camera_Cinematic_Sequence_Names()
+{
+	m_vecCamCinematicSequenceNames.clear();
+
+	m_vecCamCinematicSequenceNames = m_pGameInstance->GameDataManager_Get_CameraCinematicSequenceNames();
+	
+	return S_OK;
+}
+
+HRESULT CMapToolManager::Ready_CinematicSequenceDebugRender()
+{
+	Safe_Release(m_pCamCinematicSequenceRenderModel);
+	Safe_Release(m_pCamCinematicSequenceRenderShader);
+
+
+
+	CModel::MODEL_COPY_DESC tModelCopyDesc{};
+	m_pCamCinematicSequenceRenderModel =
+		static_cast<CModel*>
+		(m_pGameInstance->Clone_Prototype(EPrototypeType::COMPONENT, ENUM_TO_UINT(ELevelType::MAP), L"Prototype_Component_Model_DebugCamera",&tModelCopyDesc));
+
+	CShader::SHADER_ORIGIN_DESC tDesc{};
+	m_pCamCinematicSequenceRenderShader =
+		static_cast<CShader*>
+		(m_pGameInstance->Clone_Prototype(EPrototypeType::COMPONENT, ENUM_TO_UINT(ELevelType::STATIC), L"Prototype_Component_Shader_VtxMesh_Tool", &tDesc));
+
+	if (m_pCamCinematicSequenceRenderModel == nullptr) return E_FAIL;
+	if (m_pCamCinematicSequenceRenderShader == nullptr) return E_FAIL;
 
 	return S_OK;
 }
@@ -1044,6 +1140,11 @@ void CMapToolManager::Free()
 	m_tTextureSplattingInfo.Free();
 	UnRegister_MapTexture();
 
+
+	Safe_Delete(m_pCamCinematicSequence);
+
+	Safe_Release(m_pCamCinematicSequenceRenderModel);
+	Safe_Release(m_pCamCinematicSequenceRenderShader);
 
 	m_pLevelMap = nullptr;
 

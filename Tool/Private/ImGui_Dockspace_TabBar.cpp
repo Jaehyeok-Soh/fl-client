@@ -12,46 +12,55 @@ CImGui_Dockspace_TabBar::CImGui_Dockspace_TabBar(const _char* pLabel, ID3D11Devi
 HRESULT CImGui_Dockspace_TabBar::Render(CToolObject* pGo)
 {
 	ELevelType eNowSelected = ELevelType::END;
+	wstring	   wstrChangeLevelName{L""};
 
 	if (ImGui::BeginTabBar(m_strLabel.c_str()))
 	{
 		if (ImGui::BeginTabItem("Logo##TabBar"))
 		{
+			wstrChangeLevelName = L"LOGO";
 			eNowSelected = ELevelType::LOGO;
 			ImGui::EndTabItem();
 		}
 		if (ImGui::BeginTabItem("Map##TabBar"))
 		{
+			wstrChangeLevelName = L"MAP";
 			eNowSelected = ELevelType::MAP;
 			ImGui::EndTabItem();
 		}
 		if (ImGui::BeginTabItem("Animation##TabBar"))
 		{
+			wstrChangeLevelName = L"ANIMATION";
 			eNowSelected = ELevelType::ANIMATION;
 			ImGui::EndTabItem();
 		}
 		if (ImGui::BeginTabItem("Effect##TabBar"))
 		{
+			wstrChangeLevelName = L"EFFECT";
 			eNowSelected = ELevelType::EFFECT;
 			ImGui::EndTabItem();
 		}
 		if (ImGui::BeginTabItem("Camera##TabBar"))
 		{
+			wstrChangeLevelName = L"CAMERA";
 			eNowSelected = ELevelType::CAMERA;
 			ImGui::EndTabItem();
 		}
 		if (ImGui::BeginTabItem("UI##TabBar"))
 		{
+			wstrChangeLevelName = L"UI";
 			eNowSelected = ELevelType::UI;
 			ImGui::EndTabItem();
 		}
 		if (ImGui::BeginTabItem("AttackPreset##TabBar"))
 		{
+			wstrChangeLevelName = L"ATTACK_PRESET";
 			eNowSelected = ELevelType::ATTACK_PRESET;
 			ImGui::EndTabItem();
 		}
 		if (ImGui::BeginTabItem("AssetConvert##TabBar"))
 		{
+			wstrChangeLevelName = L"ASSET_CONVERT";
 			eNowSelected = ELevelType::ASSET_CONVERT;
 			ImGui::EndTabItem();
 		}
@@ -60,8 +69,13 @@ HRESULT CImGui_Dockspace_TabBar::Render(CToolObject* pGo)
 
 	if ((eNowSelected != ELevelType::END) && (eNowSelected != m_eLastSelectedTab))
 	{
-		if (FAILED(Change_Scene(eNowSelected)))
-			return E_FAIL;
+		wstring Name{ L"[ "+ wstrChangeLevelName + L" ]"};
+
+		if (IDOK == MessageBox(NULL, wstring( Name + L" 로 변환됩니다? ").c_str(), L"경고: 데이터 말소 X", MB_OKCANCEL | MB_ICONWARNING | MB_SETFOREGROUND))
+		{
+			if (FAILED(Change_Scene(eNowSelected)))
+				return E_FAIL;
+		}
 	}
 
 	return S_OK;

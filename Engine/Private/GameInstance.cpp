@@ -29,6 +29,7 @@
 #include "Physics_Module.h"
 #include "Effect_Manager.h"
 #include "EffectHandler.h"
+#include "GameData_Struct.h"
 #include "JudgementSystem.h"
 
 IMPLEMENT_SINGLETON(CGameInstance)
@@ -599,6 +600,11 @@ void CGameInstance::Setup_Inv_ToCBuffer()
 {
 	m_pCamera_Manager->Setup_Inv_ToCBuffer();
 }
+
+HRESULT CGameInstance::Camera_Shaking(const CAM_SHAKING_DATA& tData)
+{
+	return m_pCamera_Manager->Camera_Shaking(tData);
+}
 #pragma endregion
 
 #pragma region SOUND_MANAGER
@@ -1118,6 +1124,8 @@ void CGameInstance::Physics_Render(const PxGeometry& geom, const PxTransform& tr
 
 #pragma region GAMEDATA_MANAGER
 
+
+#pragma region Texture Splating
 HRESULT CGameInstance::GameDataManager_Load_TextureSplatingInfoData()
 {
 	return m_pGameData_Manager->Load_TextureSplatingInfoData();
@@ -1126,7 +1134,35 @@ HRESULT CGameInstance::GameDataManager_Bind_SplatingTextureInfo(CShader* pBindSh
 {
 	return m_pGameData_Manager->Bind_SplatingTextureInfo(pBindShader, wstrTextureSplatingInfoDataName);
 }
+#pragma endregion
 
+#pragma region CameraCinematicSequence
+HRESULT CGameInstance::GameDataManager_Load_CameraCinematicSequence()
+{
+	return m_pGameData_Manager->Load_CameraCinematicSequence();
+}
+
+HRESULT CGameInstance::GameDataManager_Save_CameraCinematicSequence()
+{
+	return m_pGameData_Manager->Save_CameraCinematicSequence();
+}
+
+HRESULT CGameInstance::GameDataManager_Load_CameraCinematicSequence(const wstring& wstrFindKey, OUT Camera_Cinematic_Sequence* pOutCamCinematicSequence)
+{
+	return m_pGameData_Manager->Load_CameraCinematicSequence(wstrFindKey , pOutCamCinematicSequence);
+}
+
+HRESULT CGameInstance::GameDataManager_Save_CameraCinematicSequence(const wstring& wstrFindKey, const Camera_Cinematic_Sequence* pSaveCamCinematicSequence)
+{
+	return m_pGameData_Manager->Save_CameraCinematicSequence(wstrFindKey, pSaveCamCinematicSequence);
+}
+vector<std::string> CGameInstance::GameDataManager_Get_CameraCinematicSequenceNames() const
+{
+	return m_pGameData_Manager->Get_CameraCinematicSequenceNames();
+}
+#pragma endregion
+
+#pragma region Attack Preset
 const DTO::TAttackPreset_Data* CGameInstance::Find_AttackPrseet(_uint iPresetKey) const
 {
 	return m_pGameData_Manager->Find_AttackPrseet(iPresetKey);
@@ -1147,6 +1183,8 @@ const unordered_map<_uint, DTO::TAttackPreset_Data>& CGameInstance::Get_AttackPr
 {
 	return m_pGameData_Manager->Get_AttackPresetsData_ForDebug();
 }
+#pragma endregion
+
 #pragma endregion
 void CGameInstance::Free()
 {

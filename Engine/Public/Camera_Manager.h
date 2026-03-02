@@ -26,6 +26,8 @@ public:
 
 	void Change_Target(CGameObject* pGo);
 	HRESULT Change_Target_Next();
+
+	HRESULT Camera_Shaking(const CAM_SHAKING_DATA& tData);
 	
 	const Matrix& Get_ViewMatrix() const { return m_matView; }
 	void Set_ViewMatrix(const Matrix &matView) { m_matView = matView; }
@@ -62,6 +64,9 @@ private:
 	SHADER_INVDESC m_tInvDesc = {};
 	CConstant_Buffer<SHADER_GLOBALDESC>* m_pGlobal_CBuffer = { nullptr };
 	CConstant_Buffer<SHADER_INVDESC>* m_pInv_CBuffer = { nullptr };
+
+
+
 public:
 	static CCamera_Manager* Create(ID3D11Device* pDevice, ID3D11DeviceContext* pDeviceContext);
 	virtual void Free() override;

@@ -93,6 +93,15 @@ HRESULT CCamera_Manager::Change_Target_Next()
 	return S_OK;
 }
 
+HRESULT CCamera_Manager::Camera_Shaking(const CAM_SHAKING_DATA& tData)
+{
+	if (m_pMainCamera == nullptr) return E_FAIL;
+
+	m_pMainCamera->Camera_Shaking(tData);
+
+	return S_OK;
+}
+
 void CCamera_Manager::Add_Actor_Object(CGameObject* pGo, _bool bImmediatelyChange)
 {
 	if (nullptr == pGo)

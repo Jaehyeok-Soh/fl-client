@@ -13,6 +13,7 @@ public:
 	}BOUNDING_DESC;
 protected:
 	CBounding(ID3D11Device* pDevice, ID3D11DeviceContext* pDeviceContext);
+	CBounding(const  CBounding& rhs);
 	virtual ~CBounding() = default;
 
 	HRESULT Initialize(BOUNDING_DESC* pDesc);

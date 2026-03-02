@@ -2,6 +2,7 @@
 #include "Camera.h"
 #include "GameObject.h"
 #include "Transform.h"
+#include "CameraMan.h"
 #include "GameInstance.h"
 
 CCamera::CCamera()
@@ -53,13 +54,14 @@ HRESULT CCamera::Initialize(void* pArg)
 
 void CCamera::Update_View()
 {
-	CTransform* pOwnerTransform = Get_Owner()->Get_Component<CTransform>();
+	CCameraMan* pCameraMan = static_cast<CCameraMan*>(Get_Owner());
+	CTransform* pOwnerTransform = pCameraMan->Get_Component<CTransform>();
 
 	Matrix matView = Matrix::Identity;
 
 	if (m_eProjectionType == EProjectionType::PERSPECTIVE)
 	{
-		matView = ::XMMatrixLookToLH(pOwnerTransform->Get_Info(TRANSFORM_INFO_STATE::POS),
+		matView = ::XMMatrixLookToLH(pOwnerTransform->Get_Info(TRANSFORM_INFO_STATE::POS) + pCameraMan->Get_CameraShakingOffsetPos(),
 			pOwnerTransform->Get_Info(TRANSFORM_INFO_STATE::LOOK),
 			pOwnerTransform->Get_Info(TRANSFORM_INFO_STATE::UP));
 	}

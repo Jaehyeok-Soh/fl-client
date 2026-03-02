@@ -157,6 +157,7 @@
     </FxCompile>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClInclude Include="..\Public\BattleField.h" />
     <ClInclude Include="..\Public\Body.h" />
     <ClInclude Include="..\public\Boss_Xibi.h" />
     <ClInclude Include="..\Public\Builder_AttackOverlap.h" />
@@ -331,6 +332,7 @@
     <ClInclude Include="targetver.h" />
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="..\Private\BattleField.cpp" />
     <ClCompile Include="..\Private\Body.cpp" />
     <ClCompile Include="..\private\Boss_Xibi.cpp" />
     <ClCompile Include="..\Private\Builder_AttackOverlap.cpp" />

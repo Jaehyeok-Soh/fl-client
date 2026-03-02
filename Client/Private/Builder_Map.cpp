@@ -14,8 +14,15 @@
 #include "Shader.h"
 
 #pragma region Batch ฐüทร
+/* Batch Player */
 #include "MainPlayer.h"
+
+/* Batch Monster */
 #include "Monster_Body_Base.h"
+
+/* Batch Object */
+#include "BattleField.h"
+
 #pragma endregion
 
 #pragma region Trigger Box
@@ -91,6 +98,7 @@ HRESULT CBuilder_Map::Build(const CDataDocumentBase& document)
 
 			case DTO::EClientMakePath::Batch_Player:	Batch_Player(tData);		break;
 			case DTO::EClientMakePath::Batch_Monster:	Batch_Monster(tData);		break;
+			case DTO::EClientMakePath::Batch_Object:	Batch_Object(tData);		break;
 
 			case DTO::EClientMakePath::TriggerBox_ChangeLevel:		Create_TriggerBox_ChangeLevel(tData); break;
 			case DTO::EClientMakePath::TriggerBox_MonsterSpawner:	Create_TriggerBox_MonsterSpawner(tData); break;
@@ -387,6 +395,56 @@ HRESULT CBuilder_Map::Batch_Monster(const DTO::TMap_MapObjectData& tData)
 	if (pDesc == nullptr) return E_FAIL;
 
 	if (FAILED(CMonster_Base::Create_Mosnter(CBuilder_Map::Change_MakeMonsterType_To_MonsterType(pDesc->eBatchMonsterType), iFindPrototypeIndex , iCurLevelIndex , &tTransformDesc)))
+		return E_FAIL;
+
+	return S_OK;
+}
+
+HRESULT CBuilder_Map::Batch_Object(const DTO::TMap_MapObjectData& tData)
+{
+	/* Batch Object */
+
+	if (tData.vecClientMakePathDesc.empty()) return E_FAIL;
+	if (tData.vecSRTs.empty())				 return E_FAIL;
+
+	/* Transform  */
+	CTransform::TRANSFORM_DESC tTransformDesc{};
+	tTransformDesc.TranslationMatrix = tData.vecSRTs.front().Get_World();
+
+	void*	pDesc{nullptr};
+	_uint	iAddLevelIndex{ENUM_TO_UINT(m_eLevelType)};
+	_uint	iFindPrototypeIndex{ENUM_TO_UINT(ELevelType::STATIC)};
+	wstring wstrPrototypeTag{L""};
+	wstring wstrAddLayerTag{L""};
+
+	BATCH_OBJECT_DESC* pBatchObjectDesc = static_cast<BATCH_OBJECT_DESC*>(tData.vecClientMakePathDesc.front());
+	DTO::EMakeObjectType eMakeObjectType{ pBatchObjectDesc->eBatchObjectType };
+
+	switch (eMakeObjectType)
+	{
+	case DTO::EMakeObjectType::Battle_Field:
+	{
+		wstrAddLayerTag		= g_wszBattleFieldLayer;
+		wstrPrototypeTag	= g_wszBattleField_Prototype_Tag;
+
+		BATTLE_FIELD_DESC* pDataDesc = static_cast<BATTLE_FIELD_DESC*>(pBatchObjectDesc->pBatchObjectDesc);
+		if (pDataDesc == nullptr) return E_FAIL;
+
+		CBattleField::BATTLEFIELD_DESC tClientDesc{};
+		tClientDesc.pTransform_Desc = &tTransformDesc;
+		tClientDesc.eFieldType		= static_cast<Client::CBattleField::Field_Type>(pDataDesc->eFieldType);
+		tClientDesc.iLevelIndex		= iAddLevelIndex;
+		tClientDesc.fRadius			= pDataDesc->fRadius;
+		tClientDesc.vExtents		= pDataDesc->vExtents;
+		pDesc = &tClientDesc;
+	}
+	break;
+	default:									return E_FAIL;
+	}
+
+	CGameObject* pResult{nullptr};
+	pResult =  m_pGameInstance->Add_GameObject(iFindPrototypeIndex , wstrPrototypeTag, iAddLevelIndex , wstrAddLayerTag, pDesc );
+	if (pResult == nullptr)
 		return E_FAIL;
 
 	return S_OK;

@@ -82,6 +82,8 @@ HRESULT CLevel_Map::Initialize()
 	if (FAILED(m_pMapToolManager->Load_TextureSplatingInfoData()))
 		return E_FAIL;
 
+	if (FAILED(m_pMapToolManager->Ready_CinematicSequenceDebugRender()))
+		return E_FAIL;
 
 	return S_OK;
 }
@@ -140,6 +142,9 @@ void CLevel_Map::Update_Picking()
 HRESULT CLevel_Map::Render()
 {
 	if (FAILED(Super::Render()))
+		return E_FAIL;
+
+	if (FAILED(m_pMapToolManager->Render()))
 		return E_FAIL;
 
 	m_pImGuiManager->Render_Begin();
@@ -283,8 +288,6 @@ HRESULT CLevel_Map::Ready_Lights()
 		if (FAILED(m_pGameInstance->Add_Light(desc)))
 			return E_FAIL;
 	}
-
-	return S_OK;
 
 	return S_OK;
 }
