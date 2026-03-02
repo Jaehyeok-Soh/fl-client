@@ -49,18 +49,18 @@ HRESULT CBattleField::Ready_Component(BATTLEFIELD_DESC* pDesc)
 	const wchar_t*  pwszFindColliderPrototypeTag{L"None"};
 
 	CCollider::COLLIDER_DESC tColliderDesc{};
+	CBounding_OBB::BOUNDING_OBB_DESC tBoundingOBB_Desc{};
+	CBounding_Sphere::BOUNDING_SPHERE_DESC tBoundingSphere_Desc{};
 
 	/* Box => Obb */
 	if (pDesc->eFieldType == CBattleField::Field_Type::Box)
 	{
-		CBounding_OBB::BOUNDING_OBB_DESC tBoundingOBB_Desc{};
 		tBoundingOBB_Desc.vExtents = pDesc->vExtents;
 		tColliderDesc.pBoundingDesc = &tBoundingOBB_Desc;
 		pwszFindColliderPrototypeTag = g_wszCollider_OBB_Prototype_Tag;
 	}
 	else if(pDesc->eFieldType == CBattleField::Field_Type::Sphere)
 	{
-		CBounding_Sphere::BOUNDING_SPHERE_DESC tBoundingSphere_Desc{};
 		tBoundingSphere_Desc.fRadius = pDesc->fRadius;
 		tColliderDesc.pBoundingDesc = &tBoundingSphere_Desc;
 		pwszFindColliderPrototypeTag = g_wszCollider_Sphere_PrototypeTag;
