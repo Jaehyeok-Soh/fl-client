@@ -132,10 +132,6 @@ HRESULT CLoader::Loading_For_Map()
 {
 	Matrix matPreTransformScale100 = Matrix::CreateScale(0.01f, 0.01f, 0.01f);
 
-
-
-
-
 	/* Model Prototype */
 	CUEMapDataLoader* pMapDataLoader = CUEMapDataLoader::Create(m_pDevice,m_pDeviceContext);
 	if (pMapDataLoader == nullptr) return E_FAIL;
@@ -350,9 +346,16 @@ HRESULT CLoader::Loading_For_Effect()
 
 	if (FAILED(pMapDataLoader->Make_Prototype(ENUM_TO_UINT(ELevelType::EFFECT), basicBoxPath)))
 		return E_FAIL;
-	Safe_Release(pMapDataLoader);
-	
+
 	Loading_Textures_Effect(L"../../Resources/Textures/Effect");
+
+	if (FAILED(pMapDataLoader->Make_Prototype(ENUM_TO_UINT(ELevelType::EFFECT), L"../../Resources/Models/Map/MakeObjectPreview/")))
+	{
+		Safe_Release(pMapDataLoader);
+		return E_FAIL;
+	}
+
+	Safe_Release(pMapDataLoader);
 
 	m_isFinished = true;
 	return S_OK;

@@ -1652,6 +1652,7 @@ void CModel::Free()
 			{
 				Safe_Release(pBoneGroup.pInputGroupSB_SRV);
 				Safe_Release(pBoneGroup.pIndexBuffer);
+				int i = 0;
 			}
 		}
 

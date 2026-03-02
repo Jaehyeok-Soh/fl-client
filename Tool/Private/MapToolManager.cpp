@@ -434,7 +434,7 @@ CModel* CMapToolManager::Get_MonsterPreviewModel(DTO::EMakeMonsterType eMakeMons
 	CModel::MODEL_COPY_DESC tModelCopyDesc{};
 	pModel =
 		static_cast<CModel*>
-		(m_pGameInstance->Clone_Prototype(EPrototypeType::COMPONENT, ENUM_TO_UINT(ELevelType::MAP), L"Prototype_Component_Model_" + wstrModelName, &tModelCopyDesc));
+		(m_pGameInstance->Clone_Prototype(EPrototypeType::COMPONENT, m_pGameInstance->Get_CurrentLevelIndex(), L"Prototype_Component_Model_" + wstrModelName, &tModelCopyDesc));
 
 	return pModel;
 }
@@ -448,7 +448,7 @@ CModel* CMapToolManager::Get_PlayerPreviewModel()
 	CModel::MODEL_COPY_DESC tModelCopyDesc{};
 	pModel =
 		static_cast<CModel*>
-		(m_pGameInstance->Clone_Prototype(EPrototypeType::COMPONENT, ENUM_TO_UINT(ELevelType::MAP), L"Prototype_Component_Model_" + wstrPlayerModelName, &tModelCopyDesc));
+		(m_pGameInstance->Clone_Prototype(EPrototypeType::COMPONENT, m_pGameInstance->Get_CurrentLevelIndex(), L"Prototype_Component_Model_" + wstrPlayerModelName, &tModelCopyDesc));
 
 	return pModel;
 }
@@ -469,7 +469,7 @@ CModel* CMapToolManager::Get_BatchObjectModel(DTO::EMakeObjectType eType)
 	CModel::MODEL_COPY_DESC tModelCopyDesc{};
 	pModel =
 		static_cast<CModel*>
-		(m_pGameInstance->Clone_Prototype(EPrototypeType::COMPONENT, ENUM_TO_UINT(ELevelType::MAP), L"Prototype_Component_Model_" + wstrModelName, &tModelCopyDesc));
+		(m_pGameInstance->Clone_Prototype(EPrototypeType::COMPONENT, m_pGameInstance->Get_CurrentLevelIndex(), L"Prototype_Component_Model_" + wstrModelName, &tModelCopyDesc));
 
 	return pModel;
 }

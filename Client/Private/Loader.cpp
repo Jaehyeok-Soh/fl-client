@@ -446,7 +446,7 @@ HRESULT CLoader::Loading_For_Logo()
 		desc.pMatPreTransform		= &(matPreTransformScale);	// matPreTransformScale // matPreTransformTurn90
 		desc.wstrModelFolderName	= L"PlayerMoon";					// PlayerMoon // Pino
 		desc.FStageBone				= CModel::STAGEING_BONE::SB_SPCIPICBONE;
-		desc.vecStageBoneIndices	= { 285,286,287,288,289,295,413,414,415,416 ,417,418,419 };
+		desc.vecStageBoneIndices	= {3,72,285,286,287,288,289,295,413,414,415,416 ,417,418,419 };
 
 		// root bone 정보 셋팅 : 없으면 아예 안 넘겨주면 됨
 		CModel::DATA_ANIMCHANNEL tAniChannelData = {};
@@ -499,7 +499,7 @@ HRESULT CLoader::Loading_For_Logo()
 		desc.pMatPreTransform = &(matPreTransformScale);
 		desc.wstrModelFolderName = L"Xibi";
 		desc.FStageBone = CModel::STAGEING_BONE::SB_SPCIPICBONE;
-		desc.vecStageBoneIndices = { 375 };
+		desc.vecStageBoneIndices = { 3, 59, 375 };
 
 		CModel::DATA_ANIMCHANNEL tAniChannelData = {};
 		tAniChannelData.iRootBoneIndex = 2;
@@ -720,13 +720,6 @@ HRESULT CLoader::Loading_For_Tutorial_Village()
 	// 오브젝트
 	
 	// 이펙트 Object
-	ADD_PROTOTYPE(ELevelType::TUTORIAL_VILLAGE, L"Prototype_GameObject_Effect", Effect::Create(m_pDevice, m_pDeviceContext));
-	ADD_PROTOTYPE(ELevelType::TUTORIAL_VILLAGE, L"Prototype_GameObject_Effect_Parts", CEffectObject::Create(m_pDevice, m_pDeviceContext));
-
-
-
-
-
 
 	m_isFinished = true;
 	return S_OK;
@@ -739,8 +732,6 @@ HRESULT CLoader::Loading_For_Tutorial_Boss()
 	// 오브젝트
 	
 	// 이펙트 Object
-	ADD_PROTOTYPE(ELevelType::TUTORIAL_BOSS, L"Prototype_GameObject_Effect", Effect::Create(m_pDevice, m_pDeviceContext));
-	ADD_PROTOTYPE(ELevelType::TUTORIAL_BOSS, L"Prototype_GameObject_Effect_Parts", CEffectObject::Create(m_pDevice, m_pDeviceContext));
 
 	m_isFinished = true;
 	return S_OK;
@@ -753,8 +744,6 @@ HRESULT CLoader::Loading_For_Square()
 	// 오브젝트
 
 	// 이펙트 Object
-	ADD_PROTOTYPE(ELevelType::SQUARE, L"Prototype_GameObject_Effect", Effect::Create(m_pDevice, m_pDeviceContext));
-	ADD_PROTOTYPE(ELevelType::SQUARE, L"Prototype_GameObject_Effect_Parts", CEffectObject::Create(m_pDevice, m_pDeviceContext));
 
 	m_isFinished = true;
 	return S_OK;
