@@ -2,6 +2,8 @@
 #include "PlayerActionState.h"
 #include "ComboContainer.h"
 
+#include "GameObject.h"
+
 #include "Engine_Utils.h"
 #include "DataStruct_AttackPreset.h"
 
@@ -55,10 +57,42 @@ void CPlayerActionState::Set_HitDesc(const HIT_DESC& tHit)
     switch (eCategory)
     {
     case DTO::EAttackPresetCategory::MonsterBasic:
+        /* EHitType으로 분기 처리*/
+    {
+        switch (tHit.attackDesc.pAttackPreset->tCombat.eHitType)
+        {
+        case DTO::EHitType::Light:
+            m_fAttackFlag |= AF_Addtive;
+            break;
+
+        case DTO::EHitType::Heavy:
+            m_fAttackFlag |= AF_Fly;
+            break;
+        }
+    }
+        break;
+
+    case DTO::EAttackPresetCategory::MonsterSkill:
+    {
+        switch (tHit.attackDesc.pAttackPreset->tCombat.eHitType)
+        {
+        case DTO::EHitType::Light:
+            m_fAttackFlag |= AF_Addtive;
+            break;
+
+        case DTO::EHitType::Heavy:
+            m_fAttackFlag |= AF_Fly;
+            break;
+        }
+    }
+    break;
+
+        // boss쪽도 알아야함
     case DTO::EAttackPresetCategory::BossBasic:
         m_fAttackFlag |= AF_Addtive;
         break;
 
+    case DTO::EAttackPresetCategory::MonsterPorjectile:
     case DTO::EAttackPresetCategory::BossSkill:
         m_fAttackFlag |= AF_Strong;
         m_fAttackFlag |= AF_Fly;
@@ -73,6 +107,23 @@ void CPlayerActionState::Set_HitDesc(const HIT_DESC& tHit)
 _bool CPlayerActionState::Is_OnHit()
 {
     return Engine_Utils::Has_Flag(m_fAttackFlag, AttackFlag::AF_OnHit);
+}
+
+Vec3 CPlayerActionState::Get_VicPosition() const
+{
+    CGameObject* pVic = m_tPreHitDesc.pVictim;
+
+    if (pVic)
+    {
+        CTransform* pTrans = pVic->Get_Component<CTransform>();
+
+        if (pTrans)
+        {
+            return pTrans->Get_Info(TRANSFORM_INFO_STATE::POS);
+        }
+    }
+
+    return Vec3::Zero;
 }
 
 CPlayerActionState* CPlayerActionState::Create()

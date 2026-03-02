@@ -41,9 +41,9 @@ HRESULT CSkillComp_MoonQ::Initialize(void* pArg)
 	return S_OK;
 }
 
-void CSkillComp_MoonQ::Update(const _float fTimeDelta)
+void CSkillComp_MoonQ::Update(const _float fTimeDelta, CMyStat* pStatCom )
 {
-	Super::Update(fTimeDelta);
+	Super::Update(fTimeDelta, pStatCom);
 }
 
 _bool CSkillComp_MoonQ::Start_Skill(CMyStat* pStatCom)
@@ -71,6 +71,11 @@ void CSkillComp_MoonQ::End_Skill(CMyStat* pStatCom)
 _bool CSkillComp_MoonQ::On_Collision(const _float fTimeDelta, CGameObject* pObj)
 {
 	return false;
+}
+
+void CSkillComp_MoonQ::Set_ExtraAttack_Desc(EXTRA_ATTACK_DESC& tStat_ExtraDesc, CMyStat* pOwnerStat)
+{
+	tStat_ExtraDesc.fAddRate = 0.15f;
 }
 
 void CSkillComp_MoonQ::Update_Skill(const _float fTimeDelta)

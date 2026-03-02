@@ -65,7 +65,8 @@ void CPhysics_FilterEventCallback::onTrigger(PxTriggerPair* pairs, PxU32 count)
 		CGameObject* leftObject = Conversion_GameObject(pairs[i].triggerActor->userData);
 		CGameObject* rightObject = Conversion_GameObject(pairs[i].otherActor->userData);
 
-		if (leftObject->IsDead() || rightObject->IsDead() || leftObject == nullptr || rightObject == nullptr)
+		if (leftObject == nullptr || rightObject == nullptr ||
+			leftObject->IsDead() || rightObject->IsDead())
 			return;
 
 		GAMEOBJECTINFO info = Get_GameObject(pairs[i].triggerActor->userData, pairs[i].otherActor->userData);

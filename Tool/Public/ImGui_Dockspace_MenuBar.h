@@ -27,6 +27,7 @@ public:
 private:
 	void Open_FileDialog();
 	void Save_FileDialog();
+	void Clear_FileDialog();
 	void Save_Data(const wstring& wstrFilePath);
 	void Load_Data(const wstring& wstrFilePath);
 private:
@@ -41,6 +42,9 @@ private:
 	void Load_EffectData(const wstring& wstrFilePath);
 	void Load_CameraData(const wstring& wstrFilePath);
 	void Load_UIData(const wstring& wstrFilePath);
+
+private:
+	void Clear_EffectData();
 
 	void Request_ExportData(ELevelType eLevelID, DTO::ECategory eCategory, const wstring& wstrLayerTag, CDataDocumentBase* pDocument);
 private:

@@ -174,7 +174,7 @@ CGameObject* CObject_Manager::Add_GameObject(_uint iPrototypeLevelIndex, const w
 	if (FAILED(pLayer->Add_GameObject(pGo)))
 		return nullptr;
 
-	if ((m_pGameInstance->Is_Awaked(iCloneLevelIndex) == true) && (pGo->Is_Awaked() == false))
+	if ((m_pGameInstance->Is_Awaked(iCloneLevelIndex) == true))
 		pGo->Awake(iCloneLevelIndex);
 
 	return pGo;

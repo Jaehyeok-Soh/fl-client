@@ -29,6 +29,17 @@ HRESULT CState_HitFlyStart::Start(void* pArg, _bool bForce)
 	if (FAILED(Super::Start(pArg, bForce)))
 		return E_FAIL;
 
+	HITSTATE_START_DESC* pDesc = static_cast<HITSTATE_START_DESC*>(pArg);
+
+	CTransform* pOwnerTransform = Get_OwnerObject()->Get_Component<CTransform>();
+	if (pOwnerTransform)
+	{
+		Vec3 vMyPos		= pOwnerTransform->Get_Info(TRANSFORM_INFO_STATE::POS);
+		Vec3 vTargetPos = vMyPos + (pDesc->vHitDir * -1.f);
+
+		pOwnerTransform->Look_At_XZ(vTargetPos);
+	}
+
 	return S_OK;
 }
 

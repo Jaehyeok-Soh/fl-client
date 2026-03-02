@@ -1410,11 +1410,13 @@ void CParticle_System_Panel::Draw_ParticleSystem(CToolObject* pGo)
 				case (_uint)DTO::E_PARTICLETYPE::TEXTURE:
 					m_PParticleTypeList.push_back("DEFAULT_TEXTURE");
 					m_PParticleTypeList.push_back("BLEND_TEXTURE");
+					m_PParticleTypeList.push_back("BloomHard");
+					m_PParticleTypeList.push_back("Blend_BloomHard");
 					break;
 				case (_uint)DTO::E_PARTICLETYPE::MESH:
 					m_PParticleTypeList.push_back("DEFAULT_MESH");
 					m_PParticleTypeList.push_back("SPRITE_MESH");
-					m_PParticleTypeList.push_back("TRAIL");
+					m_PParticleTypeList.push_back("BloomHard");
 					m_PParticleTypeList.push_back("DISTOTION");
 					m_PParticleTypeList.push_back("SwordEffect");
 					break;

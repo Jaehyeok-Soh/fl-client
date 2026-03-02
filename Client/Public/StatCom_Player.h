@@ -42,6 +42,11 @@ public:
 		_float fDashCoolTime = { 0.f };
 		_float fComboCoolTime = { 0.f };
 
+		vector<_uint> vecExtraComputeOrder;
+
+		_float fCriticalRate = { 0.f }; // 0~1
+		_float fCriticalAttack = { 0.f }; // 크리티컬 발생시 더해줄 값
+
 	}PLAYER_STATCOMP_DESC;
 
 private:
@@ -114,8 +119,12 @@ public:
 
 	_uint Get_AttState()const { return m_FAttState; }
 
+	const EXTRA_ATTACK_DESC& Get_ExtraAttack_Desc();
+
 public:
 	_bool Set_AttackState(_uint iState, _bool bOn); // Attack_State 을 통해 넣을것
+
+	void Reset_ComboCount();
 	void Add_ComboCount();
 	void Sub_DashCount();
 	void Set_Timer(TIMER_TYPE eTimerType, _bool bTimerOn) {
@@ -132,6 +141,7 @@ public:
 	}
 
 	void Set_Attack_AddRate(_float fRate) { m_fAttack = m_fAttack *(1.f + fRate); }
+	void Set_Critical_AddRate(_float fRate) { m_fCirticalRate_Add = fRate; }
 
 	// counts
 private:
@@ -140,8 +150,14 @@ private:
 
 	// 공격 관련 
 private:
-	Flags			m_FAttState		= { 0 };
-	_uint			m_iSkillAttack	= { 0 };			// 만약 skill 공격력이 따로 있어야 한다면.. todo : 이거는 뺄지도
+	Flags						m_FAttState		= { 0 };
+	_uint						m_iSkillAttack	= { 0 };			// 만약 skill 공격력이 따로 있어야 한다면.. todo : 이거는 뺄지도
+
+
+	_float						m_fCriticalRate		= { 0.f }; // 0 ~ 1
+	_float						m_fCirticalRate_Add = { 0.f }; // 0 ~ 1
+	_float						m_fCirticalAttack	= { 0.f };
+	Engine::EXTRA_ATTACK_DESC	m_tExtra_AttackDesc = {};
 
 	//CSkillBase::SKILL_INFO		m_tESkill;
 	//CSkillBase::SKILL_INFO		m_tQSkill;

@@ -69,6 +69,7 @@ private:
 private:
     // ====== 계산함수 ====== 
     void TimeCalculate(const _float fDT);
+    _bool   Is_Render_Possible() { return m_bIsStarted; }
     //float Sample_GravityCurve(const vector<DTO::Gravity_CurveKey>& vecVurve, float fLifeRatio);   // 이제 GPU에서 계산함.
     void Update_Gravity_Force(); // 중력 계산하기.
     float Sample_RotationCurve(const vector<DTO::Rotation_CurveKey>& vecCurve, float fLifeRatio);
