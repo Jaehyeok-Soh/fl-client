@@ -410,18 +410,13 @@ namespace Client
 #pragma region Tag 모음
 
 
-#pragma region Attack Overlap Tag
-	/* Monster Attack OverLap */
-	inline constexpr wchar_t g_wszMonster_Dog_AttackOverlap_Prototype_Tag[]{ L"Prototype_Component_AttackOverlap_Monster_Dog" };
-	inline constexpr wchar_t g_wszMonster_Boomer_AttackOverlap_Prototype_Tag[]{ L"Monster_Boomer" };
-#pragma endregion
-
 #pragma region State Tag
 
 	/* Monster State Tag */
 	inline constexpr wchar_t g_wszMonster_Dog_State_Tag[]{ L"Monster_Dog" };
 	inline constexpr wchar_t g_wszMonster_Boomer_State_Tag[]{ L"Monster_Boomer" };
 	inline constexpr wchar_t g_wszBoss_Xibi_State_Tag[]{ L"Boss_Xibi" };
+
 #pragma endregion 
 
 #pragma region Model Protototype Tag
@@ -435,13 +430,19 @@ namespace Client
 
 #pragma region Prototype Tag
 
+
+#pragma region Monster Attack Overlap
+
 	/* Monster Attack OverLap */
 	inline constexpr wchar_t g_wszMonster_Dog_AttackOverlap_Prototype_Tag[]		{ L"Prototype_Component_AttackOverlap_Monster_Dog" };
 	inline constexpr wchar_t g_wszMonster_Boomer_AttackOverlap_Prototype_Tag[]	{ L"Prototype_Component_AttackOverlap_Monster_Boomer" };
+
 #pragma endregion
+
 
 #pragma region Bounding 관련
 
+	/* Bounding Box */
 	inline constexpr wchar_t g_wszCollider_AABB_Prototype_Tag[]{ L"Prototype_Component_Collider_AABB" };
 	inline constexpr wchar_t g_wszCollider_Sphere_PrototypeTag[]{ L"Prototype_Component_Collider_Sphere" };
 	inline constexpr wchar_t g_wszCollider_OBB_Prototype_Tag[]{ L"Prototype_Component_Collider_OBB" };
