@@ -380,6 +380,9 @@ HRESULT CMesh::Ready_CS_Buffer()
 
 HRESULT CMesh::Ready_BindCSBuffer(CComputeShader* pBoneMeshCS)
 {
+	// 기존 버퍼가 있다면 먼저 해제해서 누수를 방지
+	Safe_Release(m_pBoneMesh_ImmuBuffer);
+
 	m_pBoneMesh_ImmuBuffer = StructuredBuffer::Create(m_pDevice, m_pDeviceContext, sizeof(CS_IMMU_BONEMESH), m_iAffectBoneCount);
 
 	_uint iAffectSize = m_iAffectBoneCount;

@@ -240,6 +240,10 @@ void CModelAnimation::Bind_AnimationMixData(CComputeShader* pAnimMixCS, CCompute
 
 HRESULT CModelAnimation::Ready_Buffers()
 {
+	// 0. 안전 지우기
+	Safe_Release(m_pKeyFrameBuffer);
+	Safe_Release(m_pChannelDataBuffer);
+
 	// 1. 버퍼의 사이즈를 할당한다
 	m_iChannelSize = _uint(m_vecChannels.size());
 	m_iKeyFrameBufferSize = 0;

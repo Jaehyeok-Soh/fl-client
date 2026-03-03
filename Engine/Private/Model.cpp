@@ -75,11 +75,17 @@ CModel::CModel(const CModel& rhs)
 	
 	if (m_eType == EModelType::ANIM)
 	{
-		m_vecBoneGroups.reserve(rhs.m_vecBoneGroups.size());
+		m_vecBoneGroups.resize(rhs.m_vecBoneGroups.size());
+		size_t i = 0;
 		for (auto& pBoneGroup : rhs.m_vecBoneGroups)
 		{
-			m_vecBoneGroups.push_back(pBoneGroup);
+			//m_vecBoneGroups.push_back(pBoneGroup);
 
+			m_vecBoneGroups[i].BoneIndices = pBoneGroup.BoneIndices;
+			m_vecBoneGroups[i].pIndexBuffer = nullptr;
+			m_vecBoneGroups[i].pInputGroupSB_SRV = nullptr;
+
+			i++;
 		}
 
 		//if (m_bStageBones)
@@ -149,7 +155,7 @@ HRESULT CModel::Initialize_Prototype(void* pArg)
 	{
 		Flags FStageBone = pDesc->FStageBone;
 		m_bStageBones = true;
-
+		
 		// 안 빼돌리고 싶다면 : return
 		if (Engine_Utils::Has_Flag(FStageBone, STAGEING_BONE::SB_ZEROBONE))
 		{
@@ -190,11 +196,11 @@ HRESULT CModel::Initialize_Prototype(void* pArg)
 	}
 
 
-	for (size_t i = 0; i < m_vecAnimations.size(); i++)
-	{
-		if (Get_AnimationName((_uint)i) == TEXT("Animation_PlayerMoon_Land_Inplace"))
-			m_vecAnimations[i]->Set_ApplyRootMotion(false);
-	}
+	//for (size_t i = 0; i < m_vecAnimations.size(); i++)
+	//{
+	//	if (Get_AnimationName((_uint)i) == TEXT("Animation_PlayerMoon_Land_Inplace"))
+	//		m_vecAnimations[i]->Set_ApplyRootMotion(false);
+	//}
 
 	return S_OK;
 }
@@ -1197,33 +1203,37 @@ void CModel::Make_GroupBuffers()
 		_uint iGroupSize = _uint(m_vecBoneGroups[i].BoneIndices.size());
 
 		// SB class 생성
+
+		m_vecBoneGroups[i].pIndexBuffer = nullptr;
 		m_vecBoneGroups[i].pIndexBuffer = StructuredBuffer::Create(m_pDevice, m_pDeviceContext, sizeof(CS_MU_BONEIDX), iGroupSize);
 	}
 }
 
 void CModel::Make_SB()
 {
+	Safe_Release(m_pPreSB); 
+	Safe_Release(m_pCurSB);
 	m_pPreSB = StructuredBuffer::Create(m_pDevice, m_pDeviceContext, sizeof(CS_SRT), Get_BoneCount());
 	m_pCurSB = StructuredBuffer::Create(m_pDevice, m_pDeviceContext, sizeof(CS_SRT), Get_BoneCount());
 }
 
 void CModel::Make_Staging(MODEL_ORIGIN_DESC* pDesc)
 {
-	m_iStageBoneCounts = (_uint)(pDesc->vecStageBoneIndices.size());
+	//m_iStageBoneCounts = (_uint)(pDesc->vecStageBoneIndices.size());
 
-	// 1. staging buffer 생성
-	D3D11_BUFFER_DESC desc = {};
-	desc.ByteWidth = sizeof(CS_OUT_BONE) * m_iStageBoneCounts;
-	desc.Usage = D3D11_USAGE_STAGING;
-	desc.BindFlags = 0;
-	desc.CPUAccessFlags = D3D11_CPU_ACCESS_READ;
+	//// 1. staging buffer 생성
+	//D3D11_BUFFER_DESC desc = {};
+	//desc.ByteWidth = sizeof(CS_OUT_BONE) * m_iStageBoneCounts;
+	//desc.Usage = D3D11_USAGE_STAGING;
+	//desc.BindFlags = 0;
+	//desc.CPUAccessFlags = D3D11_CPU_ACCESS_READ;
 
-	m_pDevice->CreateBuffer(&desc, nullptr, &m_pBoneOuputStagingBuffer[0]);
-	m_pDevice->CreateBuffer(&desc, nullptr, &m_pBoneOuputStagingBuffer[1]);
+	//m_pDevice->CreateBuffer(&desc, nullptr, &m_pBoneOuputStagingBuffer[0]);
+	//m_pDevice->CreateBuffer(&desc, nullptr, &m_pBoneOuputStagingBuffer[1]);
 
-	// 2. bone indices 캐스팅 하고 있자
-	m_vecStageBoneIndices.reserve(m_iStageBoneCounts);
-	m_vecStageBoneIndices = pDesc->vecStageBoneIndices;
+	//// 2. bone indices 캐스팅 하고 있자
+	//m_vecStageBoneIndices.reserve(m_iStageBoneCounts);
+	//m_vecStageBoneIndices = pDesc->vecStageBoneIndices;
 }
 
 void CModel::Update_BoneCombineTransformMatrix(CComputeShader* pBoneComBineCS)
@@ -1366,39 +1376,39 @@ void CModel::Lerp_Animation(CComputeShader* pAnimBlendCS, _float fRatio)
 void CModel::Get_BoneMatrix(CComputeShader* pAnimMixCS)
 {
 
-	// 2. Gpu -> Cpu
-	{
-		uint32_t writeIndex = m_iFrameIndex % 2;
-		uint32_t readIndex = (m_iFrameIndex + 1) % 2;
+	//// 2. Gpu -> Cpu
+	//{
+	//	uint32_t writeIndex = m_iFrameIndex % 2;
+	//	uint32_t readIndex = (m_iFrameIndex + 1) % 2;
 
-		// copy data
-		m_pDeviceContext->CopyResource(m_pBoneOuputStagingBuffer[writeIndex], pAnimMixCS->Get_Output_Buffer()->Get_Buffer());
+	//	// copy data
+	//	m_pDeviceContext->CopyResource(m_pBoneOuputStagingBuffer[writeIndex], pAnimMixCS->Get_Output_Buffer()->Get_Buffer());
 
-		if (m_iFrameIndex == 0)
-		{
-			m_iFrameIndex++;
-			return;
-		}
+	//	if (m_iFrameIndex == 0)
+	//	{
+	//		m_iFrameIndex++;
+	//		return;
+	//	}
 
-		// 4. Map / Unmap을 통해 CPU로 데이터 가져오기
-		D3D11_MAPPED_SUBRESOURCE mappedResource;
-		if (SUCCEEDED(m_pDeviceContext->Map(m_pBoneOuputStagingBuffer[readIndex], 0, D3D11_MAP_READ, 0, &mappedResource)))
-		{
-			// 1. 데이터를 행렬 포인터로 해석
-			Matrix* pGpuMatrices = reinterpret_cast<Matrix*>(mappedResource.pData);
+	//	// 4. Map / Unmap을 통해 CPU로 데이터 가져오기
+	//	D3D11_MAPPED_SUBRESOURCE mappedResource;
+	//	if (SUCCEEDED(m_pDeviceContext->Map(m_pBoneOuputStagingBuffer[readIndex], 0, D3D11_MAP_READ, 0, &mappedResource)))
+	//	{
+	//		// 1. 데이터를 행렬 포인터로 해석
+	//		Matrix* pGpuMatrices = reinterpret_cast<Matrix*>(mappedResource.pData);
 
-			// 2. 중간 복사 없이 바로 bone에 정보 저장
-			for (size_t i = 0; i < m_iStageBoneCounts; i++)
-			{
-				// pGpuMatrices[i]로 바로 접근 가능
-				m_vecBones[m_vecStageBoneIndices[i]]->Set_CombinedTranformMatrix(pGpuMatrices[i]);
-			}
+	//		// 2. 중간 복사 없이 바로 bone에 정보 저장
+	//		for (size_t i = 0; i < m_iStageBoneCounts; i++)
+	//		{
+	//			// pGpuMatrices[i]로 바로 접근 가능
+	//			m_vecBones[m_vecStageBoneIndices[i]]->Set_CombinedTranformMatrix(pGpuMatrices[i]);
+	//		}
 
-			m_pDeviceContext->Unmap(m_pBoneOuputStagingBuffer[readIndex], 0);
-		}
+	//		m_pDeviceContext->Unmap(m_pBoneOuputStagingBuffer[readIndex], 0);
+	//	}
 
-		m_iFrameIndex++;
-	}
+	//	m_iFrameIndex++;
+	//}
 }
 
 void CModel::DisPatch_BondMatrix(CComputeShader* pBoneComBineCS, CComputeShader* pAnimMixCS)
@@ -1621,6 +1631,8 @@ CComponent* CModel::Clone(void* pArg)
 
 void CModel::Free()
 {
+	Super::Free();
+
 	/* Prototype 일떄만 지운다 */
 	if (!CComponent::IsClone())
 		Safe_Delete_Array(m_pStaticModel_MinMax);
@@ -1675,5 +1687,4 @@ void CModel::Free()
 	m_vecMaterialInstances.clear();
 	Safe_Release(m_pDeviceContext);
 	Safe_Release(m_pDevice);
-	Super::Free();
 }
