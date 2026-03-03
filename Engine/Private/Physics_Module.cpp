@@ -473,6 +473,11 @@ void CPhysics_Module::RemoveActor(PxRigidActor* actor)
 	m_pScene->removeActor(*actor);
 }
 
+void CPhysics_Module::ResetActorFilter(PxRigidActor* actor)
+{
+	m_pScene->resetFiltering(*actor);
+}
+
 CPhysics_Module* CPhysics_Module::Create(ID3D11Device* pDevice, ID3D11DeviceContext* pContext)
 {
 	CPhysics_Module* pInstance = new CPhysics_Module(pDevice, pContext);

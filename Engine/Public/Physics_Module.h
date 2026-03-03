@@ -28,6 +28,7 @@ public:
     void ClearPhysics();
     void FlushScene();
     void RemoveActor(PxRigidActor* actor);
+    void ResetActorFilter(PxRigidActor* actor);
 
 /// <summary>
 /// Utils
