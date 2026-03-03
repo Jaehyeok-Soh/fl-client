@@ -1200,7 +1200,7 @@ void CPlayer::Count_DoubleJump(const _float fTimeDelta)
 
 void CPlayer::Free()
 {
-    Super::Free();
-
     Safe_Release(m_pPhysic_QueryFilter);
+
+    Super::Free();
 }

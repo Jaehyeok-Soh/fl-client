@@ -193,6 +193,19 @@ HRESULT CActionState::Set_OwnerComponents()
 	return S_OK;
 }
 
+CTransform* CActionState::Get_CamTransform()
+{
+	if(!m_pOwnerTargetCamera)
+		return nullptr;
+
+	CTransform* pCamTransform = m_pOwnerTargetCamera->Get_Component<CTransform>();
+
+	if (!pCamTransform)
+		return nullptr;
+
+	return pCamTransform;
+}
+
 void CActionState::Move(Vec3 disp, _float minDist, _float fTimeDelta)
 {
 	CPhysicsCCT* cct = { nullptr };
