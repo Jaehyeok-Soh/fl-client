@@ -2,13 +2,13 @@
 #include "SkillBase.h"
 
 NS_BEGIN(Client)
-class CSkillComp_MoonQ final : public CSkillBase
+class CSkillBase_MoonQ final : public CSkillBase
 {
 	using Super = CSkillBase;
 
 private:
-	CSkillComp_MoonQ();
-	virtual ~CSkillComp_MoonQ() = default;
+	CSkillBase_MoonQ();
+	virtual ~CSkillBase_MoonQ() = default;
 
 	virtual HRESULT Initialize(void* pArg) override;
 
@@ -30,7 +30,7 @@ private:
 	virtual void Update_Skill(const _float fTimeDelta)override;
 
 public:
-	static CSkillComp_MoonQ* Create(void* pArg = nullptr);
+	static CSkillBase_MoonQ* Create(void* pArg = nullptr);
 	virtual void Free() override;
 };
 

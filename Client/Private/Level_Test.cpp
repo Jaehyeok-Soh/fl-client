@@ -56,6 +56,7 @@
 #include "Monster_Dog_Body.h"
 #include "Monster_Boomer.h"
 #include "Monster_Boomer_Body.h"
+#include "Moon_SkillE_Obj.h"
 
 //=================
 // GameInstance
@@ -238,8 +239,24 @@ HRESULT CLevel_Test::Build_Files()
 
 HRESULT CLevel_Test::Ready_Player_Layer(const wstring& wstrLayerTag)
 {
+
+
 	/* Player 置段 持失 */
 	{
+		// SkillObject Pool
+		{
+			CMoon_SkillE_Obj::SKILLOBJECT_DESC desc{};
+			if (FAILED(m_pGameInstance->Regist_Pool(
+				0,
+				g_wszPool_MoonSkillE,
+				g_wszSkillObjectLayer,
+				0,
+				g_wszMoonSkillE__Prototype_Tag,
+				&desc,
+				30)))
+				return E_FAIL;
+		}
+
 		CGameObject* pResult = { nullptr };
 
 		CPlayer::PLAYER_DESC playerDesc = {};

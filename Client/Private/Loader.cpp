@@ -22,8 +22,8 @@
 #include "Shader.h"
 #include "Camera.h"
 #include "Transform.h"
-#include "SkillComp_MoonE.h"
-#include "SkillComp_MoonQ.h"
+#include "SkillBase_MoonE.h"
+#include "SkillBase_MoonQ.h"
 #include "PhysicsCollider.h"
 #include "PhysicsRigidBody.h"
 //=================
@@ -60,6 +60,7 @@
 #include "Effect.h"
 #include "EffectObject.h"
 #include "BattleField.h"
+#include "Moon_SkillE_Obj.h"
 
 //=================
 // SkillObject
@@ -581,6 +582,12 @@ HRESULT CLoader::Loading_For_Logo()
 		// 이펙트 Object
 		ADD_PROTOTYPE(ELevelType::STATIC, L"Prototype_GameObject_Effect",				Effect::Create(m_pDevice, m_pDeviceContext));
 		ADD_PROTOTYPE(ELevelType::STATIC, L"Prototype_GameObject_Effect_Parts",			CEffectObject::Create(m_pDevice, m_pDeviceContext));
+		
+		// Projectile
+
+		// player effect object
+		ADD_PROTOTYPE(ELevelType::STATIC, g_wszMoonSkillE__Prototype_Tag,							CMoon_SkillE_Obj::Create(m_pDevice, m_pDeviceContext));
+
 
 		/* Battle Field */
 		ADD_PROTOTYPE(ELevelType::STATIC, g_wszBattleField_Prototype_Tag ,				CBattleField::Create(m_pDevice, m_pDeviceContext));
@@ -1000,6 +1007,21 @@ HRESULT CLoader::Ready_Spawner()
 
 		if (FAILED(m_pGameInstance->Add_Prototype(iLevelID, g_wszSpawner_Xibi3wayLoopThunder,
 			CProjectileSpawner_Fan::Create(m_pDevice, m_pDeviceContext, &desc))))
+			return E_FAIL;
+	}
+
+	/* player */
+	// Moon Skill
+	{
+		CSkillObjectSpawnerBase::SPAWNER_ORIGIN_DESC desc{};
+		desc.iPoolLevelIndex = 0;
+		desc.wstrSkillPoolTag = g_wszPool_MoonSkillE; // 스킬 poot에서 꺼내올 오브젝트 태그
+		desc.iSkillObjectFlags = ENUM_TO_UINT(ESkillObjectFlag::Move_Straight) | ENUM_TO_UINT(ESkillObjectFlag::Life_Timer);
+		desc.fLifeTime = 5.f;
+		desc.fSpeed = 20.f;
+
+		if (FAILED(m_pGameInstance->Add_Prototype(0, g_wszSpawner_MoonSkillE,
+			CSingleSkillSpawner::Create(m_pDevice, m_pDeviceContext, &desc))))
 			return E_FAIL;
 	}
 	return S_OK;

@@ -5,6 +5,8 @@
 #include "PlayerControlContext.h"
 #include "Weapon.h"
 
+#include "GameInstance.h"
+
 CState_ComboBase::CState_ComboBase(CActionState* pOwnerComponent, const string& strName)
 	: Super(pOwnerComponent, strName)
 {
@@ -87,6 +89,9 @@ _bool CState_ComboBase::Can_CheckKey(const _float fTimeDelta)
 
 void CState_ComboBase::Change_NextCombo()
 {
+	CTransform* pPlayerTrans = Get_OwnerObject()->Get_Component<CTransform>();
+
+
 	if (m_iComboCount == 4)
 	{
 		Change_FirstCombo();

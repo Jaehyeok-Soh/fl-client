@@ -49,7 +49,8 @@ void CState_HitFlyStart::Update(const _float fTimeDelta)
 
 	// 바닥 충돌 검사 후 change
 	if (m_fStateElapsed > 0.28f &&
-		Check_OnGround(0.3f))
+		(Check_OnGround(0.3f) || IsOn_CCTFlag(PxControllerCollisionFlag::Enum::eCOLLISION_SIDES))
+		)
 	{
 		Change_PlayerState(ENUM_TO_UINT(CPlayer::State::HITFLYEND));
 		return;

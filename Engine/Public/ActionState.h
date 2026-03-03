@@ -126,6 +126,7 @@ protected:
 
 protected:
 	HRESULT			Set_OwnerComponents();
+	CTransform*		Get_CamTransform();
 
 protected:
 	CControlContext*	m_pOwnerControlContext	= { nullptr };

@@ -60,6 +60,7 @@
 #include "Xibi_Projectile_Circle.h"
 #include "Xibi_Loop_Thunder.h"
 #include "Xibi_Oneshot_Thunder.h"
+#include "Moon_SkillE_Obj.h"
 
 
 //=================
@@ -275,6 +276,20 @@ HRESULT CLevel_Tutorial_Boss::Ready_Player_Layer(const wstring& wstrLayerTag)
 
 	/* Player 置段 持失 */
 	{
+		// SkillObject Pool
+		{
+			CMoon_SkillE_Obj::SKILLOBJECT_DESC desc{};
+			if (FAILED(m_pGameInstance->Regist_Pool(
+				0,
+				g_wszPool_MoonSkillE,
+				g_wszSkillObjectLayer,
+				0,
+				g_wszMoonSkillE__Prototype_Tag,
+				&desc,
+				30)))
+				return E_FAIL;
+		}
+
 		CGameObject* pResult = { nullptr };
 
 		CPlayer::PLAYER_DESC playerDesc = {};
