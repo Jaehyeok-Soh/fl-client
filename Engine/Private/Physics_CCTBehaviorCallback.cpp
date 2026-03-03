@@ -20,6 +20,9 @@ PxControllerBehaviorFlags CPhysics_CCTBehaviorCallback::getBehaviorFlags(const P
 
 PxControllerBehaviorFlags CPhysics_CCTBehaviorCallback::getBehaviorFlags(const PxShape& shape, const PxActor& actor)
 {
+	if (actor.userData == nullptr)
+		return PxControllerBehaviorFlags(0);
+
 	PxFilterData filterData = shape.getSimulationFilterData();
 
 	if (filterData.word0 & (PHYSICSFILTERGROUP::PLAYER | PHYSICSFILTERGROUP::MONSTER))

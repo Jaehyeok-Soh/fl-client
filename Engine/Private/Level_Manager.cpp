@@ -2,6 +2,8 @@
 #include "Level_Manager.h"
 #include "Level.h"
 #include "GameInstance.h"
+#include "GameObject.h"
+#include "PhysicsCCT.h"
 
 CLevel_Manager::CLevel_Manager()
 	: m_pGameInstance(CGameInstance::GetInstance())
@@ -35,6 +37,7 @@ HRESULT CLevel_Manager::Awake()
 	}
 
 	m_bAwaked = true;
+
 	return S_OK;
 }
 

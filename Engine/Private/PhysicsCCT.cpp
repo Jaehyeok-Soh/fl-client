@@ -85,9 +85,11 @@ void CPhysicsCCT::Render()
 }
 #endif // _DEBUG
 
-void CPhysicsCCT::Add_Disp(Vec3 disp)
+PxControllerCollisionFlags CPhysicsCCT::Add_Disp(Vec3 disp)
 {
 	m_vAccDisp += disp;
+
+	return m_cctFlags;
 }
 
 void CPhysicsCCT::UpdateMove(const _float fTimeDelta)
@@ -101,7 +103,7 @@ void CPhysicsCCT::UpdateMove(const _float fTimeDelta)
 	//PxControllerFilters filters;
 	//Move(totalDisp, 0.001f, fTimeDelta);
 
-	Move(m_vAccDisp, 0.001f, fTimeDelta);
+	m_cctFlags = Move(m_vAccDisp, 0.001f, fTimeDelta);
 
 	m_vAccDisp = { 0.f, 0.f, 0.f };
 }
@@ -127,6 +129,12 @@ void CPhysicsCCT::SetHeight(_float height)
 
 const PxControllerCollisionFlags CPhysicsCCT::Move(Vec3 disp, _float minDist, _float fTimeDelta)
 {
+	if (m_pGameInstance->GetChangeLevelSequence())
+	{
+		PxControllerCollisionFlags collisionFlag;
+		return collisionFlag;
+	}
+
 	PxVec3 displacementVec(disp.x, disp.y, disp.z);
 	PxControllerFilters filters;
 	filters.mCCTFilterCallback = (PxControllerFilterCallback*)m_pCCTFilterCallback;
@@ -241,7 +249,11 @@ void CPhysicsCCT::GetController()
 void CPhysicsCCT::ReleaseController()
 {
 	if (m_pController)
+	{
+		m_pController->setUserData(nullptr);
+		m_pController->getActor()->userData = nullptr;
 		PX_RELEASE(m_pController);
+	}
 }
 
 void CPhysicsCCT::SetCollisionFilter()

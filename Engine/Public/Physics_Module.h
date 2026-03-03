@@ -26,6 +26,8 @@ public:
     void StepPhysics(_float fTimeDelta);
     void AddActor(PxRigidActor* actor);
     void ClearPhysics();
+    void FlushScene();
+    void RemoveActor(PxRigidActor* actor);
 
 /// <summary>
 /// Utils
