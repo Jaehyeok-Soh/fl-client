@@ -36,6 +36,8 @@ public:
 
 #pragma region Camera Cinematic Data
 public:
+	HRESULT							Play_CameraCinematic(const wstring& wstrFindKey);
+public:
 	HRESULT							Load_CameraCinematicSequence();  	/* Load */
 	HRESULT							Save_CameraCinematicSequence();		/* 현재 저장된 데이터 전부 저장함수 */
 
@@ -56,6 +58,11 @@ public:
 	HRESULT Upsert_AttackPresetData(const DTO::TAttackPreset_Data& inData);
 	const unordered_map<_uint, DTO::TAttackPreset_Data>& Get_AttackPresetsData_ForDebug() const { return m_umapAttackPresetDatas; }
 #pragma endregion
+
+
+public:
+	HRESULT							Register_GlobalEventsBroadCast(_uint iTypeIndex, std::function<void()> funcGlobalEvent);
+	HRESULT							BroadCaset_RegisterGlobalEvent(_uint iTypeIndex);
 public:
 	void Clear_AttackPreset();
 private:
@@ -74,9 +81,13 @@ private:
 	/// AttackPreset ///
 	////////////////////
 	_bool m_bAttackPresetLoaded{ false };
-	unordered_map<_uint, DTO::TAttackPreset_Data>		m_umapAttackPresetDatas;
-	unordered_map<string, _uint>						m_umapAttackPresetTagToKey;
-	class CGameInstance *								m_pGameInstance = { nullptr };
+	unordered_map<_uint, DTO::TAttackPreset_Data>			m_umapAttackPresetDatas;
+	unordered_map<string, _uint>							m_umapAttackPresetTagToKey;
+	class CGameInstance *									m_pGameInstance = { nullptr };
+
+private:
+	/* Global Event 발행할 람다함수 등록 */
+	vector<std::function<void()>>							m_vecGlobalEventsBroadCast;
 public:
 	static CGameDataManager* Create(ID3D11Device* pDevice , ID3D11DeviceContext* pDeviceContext);
 	virtual void Free() override;

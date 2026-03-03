@@ -149,11 +149,6 @@ namespace Client
 
 #pragma region MapObject
 
-
-
-
-
-
 	static ELevelType StringToClientleveltype(const _string& str)
 	{
 		if (::strcmp(str.c_str(), "STATIC") == 0)
@@ -173,8 +168,6 @@ namespace Client
 		else
 			return ELevelType::END;
 	}
-
-
 
 	/* Tool과 1ㄷ1 대응 */
 	static _uint Get_IndexByMaterialSlotName(const wstring& wstrSlotName)
@@ -288,7 +281,6 @@ namespace Client
 		}
 	}
 
-
 	NLOHMANN_JSON_SERIALIZE_ENUM(EUIEvent,
 		{
 			{EUIEvent::NONE, "NONE"},
@@ -390,6 +382,44 @@ namespace Client
 	enum class ECombotype {C, B, A, S, END};
 #pragma endregion
 
+
+#pragma region BroadCast Enum Mapping
+
+	enum class EGlobal_Broadcast_Type
+	{
+		NONE,
+		TUTORIAL_BOSS_CONTATCT,
+		TUTORIAL_BOSS_CONTATCT_END,
+		END,
+	};
+
+	// 헤더 파일의 Enum 선언 바로 밑이나, cpp 파일 상단에 선언해 둡니다.
+	static const char* g_szGlobalBroadCastType[(int)EGlobal_Broadcast_Type::END] = {
+		"NONE",
+		"TUTORIAL_BOSS_CONTATCT",
+		"TUTORIAL_BOSS_CONTATCT_END",
+	};
+	inline string Global_Broadcast_Type_ToString(EGlobal_Broadcast_Type eType)
+	{
+		// 인덱스 초과 방지 안전장치
+		if (eType >= EGlobal_Broadcast_Type::NONE && eType < EGlobal_Broadcast_Type::END)
+			return g_szGlobalBroadCastType[(int)eType];
+
+		return "Unknown";
+	}
+	inline EGlobal_Broadcast_Type Global_Broadcast_Type_ToEnum(const string& strType)
+	{
+		for (int i = 0; i < (int)EGlobal_Broadcast_Type::END; ++i)
+		{
+			if (strType == g_szGlobalBroadCastType[i])
+				return (EGlobal_Broadcast_Type)i;
+		}
+		return EGlobal_Broadcast_Type::NONE;
+	}
+
+#pragma endregion
+
+
 #pragma region SKILL
 	inline _wstring SKILL_TYPE_ToWstring(const SKILL_TYPE eType)
 	{
@@ -465,6 +495,7 @@ namespace Client
 	inline constexpr wchar_t g_wszTriggerBox_ChangeLevel_Prototype_Tag[]{ L"Prototype_GameObject_TriggerBox_ChangeLevel" };
 	inline constexpr wchar_t g_wszTriggerBox_MonsterSapwner_Prototype_Tag[]{ L"Prototype_GameObject_TriggerBox_MonsterSpawner" };
 	inline constexpr wchar_t g_wszTriggerBox_PhysicsColliderBox_PrototypeTag[]{ L"Prototype_Component_Physics_Collider_TriggerBox" };
+	inline constexpr wchar_t g_wszTriggerBox_GlobalEvent_BroadCaster_PrototypeTag[]{ L"Prototype_GameObject_TriggerBox_GlobalEvent_BroadCaster" };
 #pragma endregion
 
 #pragma region Monster 관련	

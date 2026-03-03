@@ -187,15 +187,6 @@
     <Filter Include="03. GameObject\PartObjects\Weapon\Gun">
       <UniqueIdentifier>{6a93f015-83a7-4ad9-a084-d7e71fa8f3a4}</UniqueIdentifier>
     </Filter>
-    <Filter Include="07. System\01. Builder\Effect">
-      <UniqueIdentifier>{0a51c3b4-11ce-445a-904c-410b2a5ef809}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="07. System\01. Builder\Effect\Builder_Effect">
-      <UniqueIdentifier>{9c580bfd-a983-4b3f-a72a-f1da0a5c9270}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="07. System\01. Builder\Effect\Builder_EffectEvent">
-      <UniqueIdentifier>{5d286e09-eee0-4b43-bcea-01a835550da6}</UniqueIdentifier>
-    </Filter>
     <Filter Include="06. FSM\Player\JumpWall">
       <UniqueIdentifier>{2c8ee512-8e94-467f-9f3f-35d518b8ff89}</UniqueIdentifier>
     </Filter>
@@ -585,6 +576,18 @@
     </Filter>
     <Filter Include="03. GameObject\BattelField">
       <UniqueIdentifier>{b1195416-a6da-4357-b964-0ea1df18e98b}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="03. GameObject\TriggerBox\02. TriggerBox_GlobalEvent_BroadCaster">
+      <UniqueIdentifier>{bb28bb7b-aa31-4064-9d60-c0091f8cb5a5}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="07. System\01. Builder\Effect">
+      <UniqueIdentifier>{0a51c3b4-11ce-445a-904c-410b2a5ef809}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="07. System\01. Builder\Effect\Builder_Effect">
+      <UniqueIdentifier>{9c580bfd-a983-4b3f-a72a-f1da0a5c9270}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="07. System\01. Builder\Effect\Builder_EffectEvent">
+      <UniqueIdentifier>{5d286e09-eee0-4b43-bcea-01a835550da6}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
@@ -1093,6 +1096,9 @@
     <ClInclude Include="..\Public\BattleField.h">
       <Filter>03. GameObject\BattelField</Filter>
     </ClInclude>
+    <ClInclude Include="..\Public\TriggerBox_GlobalEvent_BroadCaster.h">
+      <Filter>03. GameObject\TriggerBox\02. TriggerBox_GlobalEvent_BroadCaster</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <Image Include="Client.ico">
@@ -1591,6 +1597,9 @@
     </ClCompile>
     <ClCompile Include="..\Private\BattleField.cpp">
       <Filter>03. GameObject\BattelField</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\TriggerBox_GlobalEvent_BroadCaster.cpp">
+      <Filter>03. GameObject\TriggerBox\02. TriggerBox_GlobalEvent_BroadCaster</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

@@ -324,23 +324,6 @@ PxFilterFlags CPhysics_Module::FilterShader(
 	if ((filterData0.word0 & filterData1.word1) && (filterData1.word0 & filterData0.word1) == false)
 		return PxFilterFlag::eSUPPRESS;
 
-	// 02/21
-	// HitPoint 추출을 위한 Flag 설정
-	// Enter에서만 추출하기 위해 사용
-	// CPhysics_FilterEventCallback::onContact에서 Flag 체크후 GAMEOBJECTINFO에 넣는중
-	// 03/02 소재혁
-	// 공격 및 스킬은 충돌안하고 감지만해서 oncollision불리게 플래그 수정
-	// 공격이랑 스킬은 충돌체 desc 설정에서 bIsSkillTrigger 셋팅해줘야함(bIsSkillTrigger 추가됨)
-	if (PHYSICSFILTERGROUP::IsAttackPair(filterData0.word0, filterData1.word0))
-	{
-			pairFlags = PxPairFlag::eDETECT_DISCRETE_CONTACT
-				| PxPairFlag::eNOTIFY_CONTACT_POINTS
-				| PxPairFlag::eNOTIFY_TOUCH_FOUND
-				| PxPairFlag::eNOTIFY_TOUCH_LOST;
-
-			return PxFilterFlag::eDEFAULT;
-	}
-
 	if (PxFilterObjectIsTrigger(attributes0) || PxFilterObjectIsTrigger(attributes1))
 	{
 		pairFlags = PxPairFlag::eTRIGGER_DEFAULT
@@ -364,6 +347,13 @@ PxFilterFlags CPhysics_Module::FilterShader(
 		| PxPairFlag::eNOTIFY_TOUCH_FOUND
 		| PxPairFlag::eNOTIFY_TOUCH_LOST
 		| PxPairFlag::eNOTIFY_TOUCH_PERSISTS;
+
+	// 02/21
+	// HitPoint 추출을 위한 Flag 설정
+	// Enter에서만 추출하기 위해 사용
+	// CPhysics_FilterEventCallback::onContact에서 Flag 체크후 GAMEOBJECTINFO에 넣는중
+	if (PHYSICSFILTERGROUP::IsAttackPair(filterData0.word0, filterData1.word0))
+		pairFlags = PxPairFlag::eNOTIFY_CONTACT_POINTS;
 
 	return PxFilterFlag::eDEFAULT;
 }
