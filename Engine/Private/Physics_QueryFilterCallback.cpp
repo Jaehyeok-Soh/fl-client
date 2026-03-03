@@ -9,6 +9,9 @@
 
 PxQueryHitType::Enum CPhysics_QueryFilterCallback::preFilter(const PxFilterData& filterData, const PxShape* shape, const PxRigidActor* actor, PxHitFlags& queryFlags)
 {
+	if (actor->userData == nullptr)
+		return PxQueryHitType::eNONE;
+
 	if (actor->userData == m_pOwner)
 		return PxQueryHitType::eNONE;
 

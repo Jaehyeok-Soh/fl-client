@@ -257,7 +257,13 @@ void CPhysicsRigidBody::Free()
 	for (auto& actor : m_pActors)
 	{
 		if (actor)
+		{
+			actor->userData = nullptr;
+
+			m_pGameInstance->RemoveActor(actor);
+
 			PX_RELEASE(actor);
+		}
 	}
 
 	m_pActors.clear();

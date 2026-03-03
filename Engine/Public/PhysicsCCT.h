@@ -32,7 +32,7 @@ public:
     /// 이동량 모아서 한번에 업데이트(move)
     /// </summary>
     /// <param name="disp"></param>
-    void Add_Disp(Vec3 disp);
+    PxControllerCollisionFlags Add_Disp(Vec3 disp);
     void UpdateMove(const _float fTimeDelta);
 
 public:
@@ -142,6 +142,8 @@ private:
     PxController* m_pController = { nullptr };
     CPhysics_CCTFilterCallback* m_pCCTFilterCallback = { nullptr };
     PHYSICSCCT_DESC m_tDesc = {};
+
+    PxControllerCollisionFlags m_cctFlags{};
 
     _float m_fHeightOffset = {};
     _float m_fContactOffset = {};

@@ -461,6 +461,18 @@ void CPhysics_Module::ClearPhysics()
 		PX_RELEASE(m_pFoundation);
 }
 
+void CPhysics_Module::FlushScene()
+{
+	m_pScene->flushQueryUpdates();
+	//m_pScene->flushSimulation();
+	m_pScene->flushUpdates();
+}
+
+void CPhysics_Module::RemoveActor(PxRigidActor* actor)
+{
+	m_pScene->removeActor(*actor);
+}
+
 CPhysics_Module* CPhysics_Module::Create(ID3D11Device* pDevice, ID3D11DeviceContext* pContext)
 {
 	CPhysics_Module* pInstance = new CPhysics_Module(pDevice, pContext);
