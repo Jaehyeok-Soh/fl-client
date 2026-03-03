@@ -230,7 +230,14 @@ void CPhysicsCollider::Free()
 	for (auto& shape : m_pColliderShapes)
 	{
 		if (shape != nullptr && shape->isReleasable())
+		{
+			shape->userData = nullptr;
+			PxRigidActor* actor = shape->getActor();
+			if (actor)
+				actor->detachShape(*shape);
+
 			PX_RELEASE(shape);
+		}
 	}
 
 	m_pColliderShapes.clear();

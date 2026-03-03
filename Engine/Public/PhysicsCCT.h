@@ -32,7 +32,7 @@ public:
     /// 이동량 모아서 한번에 업데이트(move)
     /// </summary>
     /// <param name="disp"></param>
-    void Add_Disp(Vec3 disp);
+    PxControllerCollisionFlags Add_Disp(Vec3 disp);
     void UpdateMove(const _float fTimeDelta);
 
 public:
@@ -130,6 +130,7 @@ public:
     void SetCollisionFilter_Empty();
 
     void SetIsSteppingOnCCT();
+    void SetIsSideOnCCT();
 
     void EnableCollision(_bool bEnable);
 
@@ -142,6 +143,8 @@ private:
     CPhysics_CCTFilterCallback* m_pCCTFilterCallback = { nullptr };
     PHYSICSCCT_DESC m_tDesc = {};
 
+    PxControllerCollisionFlags m_cctFlags{};
+
     _float m_fHeightOffset = {};
     _float m_fContactOffset = {};
 
@@ -152,6 +155,7 @@ private:
     Vec3 m_vAccDisp = {};
 
     _bool m_bIsSteppingOnCCT = { false };
+    _bool m_bIsSideOnCCT = { false };
 
 private:
     std::set<CGameObject*> m_setCurContact;

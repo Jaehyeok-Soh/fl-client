@@ -9,10 +9,13 @@
 
 void CPhysics_FilterEventCallback::onContact(const PxContactPairHeader& pairHeader, const PxContactPair* pairs, PxU32 nbPairs)
 {
+	if (pairHeader.actors[0]->userData == nullptr || pairHeader.actors[1]->userData == nullptr)
+		return;
+
 	CGameObject* leftObject = Conversion_GameObject(pairHeader.actors[0]->userData);
 	CGameObject* rightObject = Conversion_GameObject(pairHeader.actors[1]->userData);
 
-	if (leftObject->IsDead() || rightObject->IsDead() || leftObject == nullptr || rightObject == nullptr)
+	if (leftObject == nullptr || rightObject == nullptr || leftObject->IsDead() || rightObject->IsDead())
 		return;
 
 	GAMEOBJECTINFO info = Get_GameObject(pairHeader.actors[0]->userData, pairHeader.actors[1]->userData);
@@ -62,12 +65,14 @@ void CPhysics_FilterEventCallback::onTrigger(PxTriggerPair* pairs, PxU32 count)
 {
 	for (PxU32 i = 0; i < count; i++)
 	{
+		if (pairs[i].triggerActor->userData == nullptr || pairs[i].otherActor->userData == nullptr)
+			continue;
+
 		CGameObject* leftObject = Conversion_GameObject(pairs[i].triggerActor->userData);
 		CGameObject* rightObject = Conversion_GameObject(pairs[i].otherActor->userData);
 
-		if (leftObject == nullptr || rightObject == nullptr ||
-			leftObject->IsDead() || rightObject->IsDead())
-			return;
+		if (leftObject == nullptr || rightObject == nullptr || leftObject->IsDead() || rightObject->IsDead())
+			continue;
 
 		GAMEOBJECTINFO info = Get_GameObject(pairs[i].triggerActor->userData, pairs[i].otherActor->userData);
 
@@ -97,9 +102,12 @@ void CPhysics_FilterEventCallback::ProcessOverlap(CGameObject* pOwner, const PxV
 	{
 		PxVec3 closetPoint{};
 		PxU32 closetIndex{};
+
+		PxTransform shapeGlobalPose = pOverlapHit->actor->getGlobalPose() * pOverlapHit->shape->getLocalPose();
+
 		float dist = PxGeometryQuery::pointDistance(vOverlapPoint,
 			pOverlapHit->shape->getGeometry(),
-			pOverlapHit->actor->getGlobalPose(),
+			shapeGlobalPose,
 			&closetPoint,
 			&closetIndex);
 
@@ -117,7 +125,7 @@ void CPhysics_FilterEventCallback::ProcessOverlap(CGameObject* pOwner, const PxV
 			{
 				PxVec3 shapeCenter = pOverlapHit->actor->getGlobalPose().p;
 				hitPoint = vOverlapPoint;
-				normal = vOverlapPoint - shapeCenter;
+				normal = vOverlapPoint - shapeGlobalPose.p;
 
 				if (normal.magnitudeSquared() < 1e-6f)
 					normal = PxVec3(0.f, 1.f, 0.f);

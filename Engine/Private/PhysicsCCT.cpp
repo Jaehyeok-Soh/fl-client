@@ -85,9 +85,11 @@ void CPhysicsCCT::Render()
 }
 #endif // _DEBUG
 
-void CPhysicsCCT::Add_Disp(Vec3 disp)
+PxControllerCollisionFlags CPhysicsCCT::Add_Disp(Vec3 disp)
 {
 	m_vAccDisp += disp;
+
+	return m_cctFlags;
 }
 
 void CPhysicsCCT::UpdateMove(const _float fTimeDelta)
@@ -101,7 +103,7 @@ void CPhysicsCCT::UpdateMove(const _float fTimeDelta)
 	//PxControllerFilters filters;
 	//Move(totalDisp, 0.001f, fTimeDelta);
 
-	Move(m_vAccDisp, 0.001f, fTimeDelta);
+	m_cctFlags = Move(m_vAccDisp, 0.001f, fTimeDelta);
 
 	m_vAccDisp = { 0.f, 0.f, 0.f };
 }
@@ -127,6 +129,12 @@ void CPhysicsCCT::SetHeight(_float height)
 
 const PxControllerCollisionFlags CPhysicsCCT::Move(Vec3 disp, _float minDist, _float fTimeDelta)
 {
+	if (m_pGameInstance->GetChangeLevelSequence())
+	{
+		PxControllerCollisionFlags collisionFlag;
+		return collisionFlag;
+	}
+
 	PxVec3 displacementVec(disp.x, disp.y, disp.z);
 	PxControllerFilters filters;
 	filters.mCCTFilterCallback = (PxControllerFilterCallback*)m_pCCTFilterCallback;
@@ -135,7 +143,11 @@ const PxControllerCollisionFlags CPhysicsCCT::Move(Vec3 disp, _float minDist, _f
 	if (m_bIsSteppingOnCCT)
 		collisionFlag &= ~PxControllerCollisionFlag::eCOLLISION_DOWN;
 
+	if (m_bIsSideOnCCT)
+		collisionFlag &= ~PxControllerCollisionFlag::eCOLLISION_SIDES;
+
 	m_bIsSteppingOnCCT = false;
+	m_bIsSideOnCCT = false;
 
 	return collisionFlag;
 }
@@ -237,7 +249,11 @@ void CPhysicsCCT::GetController()
 void CPhysicsCCT::ReleaseController()
 {
 	if (m_pController)
+	{
+		m_pController->setUserData(nullptr);
+		m_pController->getActor()->userData = nullptr;
 		PX_RELEASE(m_pController);
+	}
 }
 
 void CPhysicsCCT::SetCollisionFilter()
@@ -269,6 +285,11 @@ void CPhysicsCCT::SetIsSteppingOnCCT()
 	m_bIsSteppingOnCCT = true;
 }
 
+void CPhysicsCCT::SetIsSideOnCCT()
+{
+	m_bIsSideOnCCT = true;
+}
+
 void CPhysicsCCT::EnableCollision(_bool bEnable)
 {
 	if (m_pController == nullptr)
@@ -290,7 +311,7 @@ void CPhysicsCCT::EnableCollision(_bool bEnable)
 			}
 		}
 
-		pActor->setActorFlag(PxActorFlag::eDISABLE_SIMULATION, !bEnable);
+		//pActor->setActorFlag(PxActorFlag::eDISABLE_SIMULATION, !bEnable);
 	}
 
 	if (bEnable)

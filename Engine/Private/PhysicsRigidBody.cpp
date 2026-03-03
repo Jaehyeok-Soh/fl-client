@@ -209,7 +209,7 @@ CPhysicsRigidBody* CPhysicsRigidBody::EnableCollision(_bool bEnable)
 			}
 		}
 
-		actor->setActorFlag(PxActorFlag::eDISABLE_SIMULATION, !bEnable);
+		//actor->setActorFlag(PxActorFlag::eDISABLE_SIMULATION, !bEnable);
 	}
 
 	return this;
@@ -257,7 +257,13 @@ void CPhysicsRigidBody::Free()
 	for (auto& actor : m_pActors)
 	{
 		if (actor)
+		{
+			actor->userData = nullptr;
+
+			m_pGameInstance->RemoveActor(actor);
+
 			PX_RELEASE(actor);
+		}
 	}
 
 	m_pActors.clear();
