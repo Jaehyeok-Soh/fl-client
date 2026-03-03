@@ -156,8 +156,6 @@ _bool CUIBossStat_Text::Tick_InVisible_Event(const _float fTimeDelta)
 
 HRESULT CUIBossStat_Text::Spawn_FromPool(void* pArg)
 {
-	if (FAILED(Super::Spawn_FromPool(pArg)))
-		return E_FAIL;
 	UI_PREFAB_DATA* pDesc = static_cast<UI_PREFAB_DATA*>(pArg);
 	/* ¸ó½ºÅÍ ½ºÅÈ ÄÄÆ÷³ÍÆ® ºÎÂø */
 	m_bDead = false;
@@ -168,8 +166,6 @@ HRESULT CUIBossStat_Text::Spawn_FromPool(void* pArg)
 
 HRESULT CUIBossStat_Text::Despawn_FromPool()
 {
-	if (FAILED(Super::Despawn_FromPool()))
-		return E_FAIL;
 	m_isVisible = false;
 	m_isVisibleTrigger = false;
 	m_isPreVisible = false;

@@ -785,9 +785,9 @@ void CEffectObject::Draw_ImGui()
     Super::Draw_ImGui();
 }
 
-void CEffectObject::Set_Dead(_bool bStatic)
+void CEffectObject::Set_Dead(const wstring& wstrLayerTag)
 {
-    Super::Set_Dead(bStatic);
+    Super::Set_Dead(wstrLayerTag);
 }
 
 

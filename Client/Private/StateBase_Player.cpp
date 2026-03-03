@@ -436,7 +436,9 @@ void CStateBase_Player::Check_Monster()
 
 void CStateBase_Player::Change_Weapon(_uint iPart, _uint iState)
 {
-	static_cast<CPlayer*>(Get_OwnerObject())->Change_Weapon(iPart, iState);
+	CPlayer* pPlayer = static_cast<CPlayer*>(Get_OwnerObject());
+	if(pPlayer)
+		pPlayer->Change_Weapon(iPart, iState); 
 }
 
 _bool CStateBase_Player::Start_Att(_uint iPlayerState)

@@ -331,20 +331,6 @@ void CGenericUI::Request_SetDead()
 	m_bDead = true;
 }
 
-HRESULT CGenericUI::Spawn_FromPool(void* pArg)
-{
-	if (FAILED(Super::Spawn_FromPool(pArg)))
-		return E_FAIL;
-	return S_OK;
-}
-
-HRESULT CGenericUI::Despawn_FromPool()
-{
-	if (FAILED(Super::Despawn_FromPool()))
-		return E_FAIL;
-	return S_OK;
-}
-
 void CGenericUI::Free()
 {
 	Safe_Release(m_pUIManager);

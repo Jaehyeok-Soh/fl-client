@@ -253,11 +253,6 @@ HRESULT CLoader::Loading_For_LoadLevel()
 
 HRESULT CLoader::Loading_For_Test()
 {
-	m_fLoadingRatio = 0.f;
-	Sleep(1000);
-	m_fLoadingRatio = 1.f;
-	Sleep(1000);
-
 	m_isFinished = true;
 	return S_OK;
 }
@@ -687,10 +682,6 @@ HRESULT CLoader::Loading_For_Tutorial_Village()
 
 
 
-	m_fLoadingRatio = 0.f;
-	Sleep(1000);
-	m_fLoadingRatio = 1.f;
-	Sleep(1000);
 	m_isFinished = true;
 	return S_OK;
 }
@@ -757,10 +748,6 @@ HRESULT CLoader::Loading_For_Tutorial_Boss()
 	ADD_PROTOTYPE(ELevelType::TUTORIAL_BOSS, g_wszXibiOneshotThunder_Prototype_Tag, CXibi_Oneshot_Thunder::Create(m_pDevice, m_pDeviceContext));
 
 	
-	m_fLoadingRatio = 0.f;
-	Sleep(1000);
-	m_fLoadingRatio = 1.f;
-	Sleep(1000);
 	m_isFinished = true;
 	return S_OK;
 }
@@ -775,10 +762,6 @@ HRESULT CLoader::Loading_For_Square()
 	ADD_PROTOTYPE(ELevelType::SQUARE, L"Prototype_GameObject_Effect", Effect::Create(m_pDevice, m_pDeviceContext));
 	ADD_PROTOTYPE(ELevelType::SQUARE, L"Prototype_GameObject_Effect_Parts", CEffectObject::Create(m_pDevice, m_pDeviceContext));
 	
-	m_fLoadingRatio = 0.f;
-	Sleep(1000);
-	m_fLoadingRatio = 1.f;
-	Sleep(1000);
 	m_isFinished = true;
 	return S_OK;
 }

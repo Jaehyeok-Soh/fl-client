@@ -92,9 +92,9 @@ void CToolObject::Draw_ImGui()
     
 }
 
-void CToolObject::Set_Dead(_bool bStatic)
+void CToolObject::Set_Dead(const wstring& wstrLayerTag)
 {
-    Super::Set_Dead(bStatic);
+    Super::Set_Dead(m_wstrLayerTag);
     m_pGameInstance->Broadcast<ChangeSelectedObject>(nullptr);
 }
 

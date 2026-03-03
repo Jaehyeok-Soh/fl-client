@@ -75,9 +75,6 @@ public:
 	void Set_TextureIndex(_uint index) { m_iTextureIndex = index; }
 	const _string& Get_Tag() { return m_strName; }
 	_bool Get_FinEvent()const { return m_isFin_Event; }
-
-	virtual HRESULT Spawn_FromPool(void* pArg) override;
-	virtual HRESULT Despawn_FromPool()override;
 protected:
 	CUI_Manager* m_pUIManager = { nullptr };	
 	uint32_t m_iLevelID = {};

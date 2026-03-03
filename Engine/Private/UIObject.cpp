@@ -293,20 +293,6 @@ void CUIObject::SetUp_Rect()
 	m_tRect.bottom = (LONG)(m_fY + m_fHeight / 2);
 }
 
-HRESULT CUIObject::Spawn_FromPool(void* pArg)
-{
-	if (FAILED(Super::Spawn_FromPool(pArg)))
-		return E_FAIL;
-	return S_OK;
-}
-
-HRESULT CUIObject::Despawn_FromPool()
-{
-	if (FAILED(Super::Despawn_FromPool()))
-		return E_FAIL;
-	return S_OK;
-}
-
 void CUIObject::Free()
 {
 	Super::Free();

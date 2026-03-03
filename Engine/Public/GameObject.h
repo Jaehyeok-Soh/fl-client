@@ -83,7 +83,7 @@ public:
 	_bool IsClone() const { return m_bClone; }
 	
 	_bool IsDead() const { return m_bDead; }
-	virtual void Set_Dead(_bool bStatic = false);
+	virtual void Set_Dead(const wstring& wstrLayerTag);
 	Vec3 Get_CenterFromCollider(EColliderType eType, class CBounding* pBounding);
 	void Set_ActiveIndex(_uint iActiveIndex) { m_iActiveIndex = (_int)iActiveIndex; }
 	_int Get_ActiveIndex() const { return m_iActiveIndex; }

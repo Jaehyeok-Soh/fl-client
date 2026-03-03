@@ -107,9 +107,9 @@ void CAnimObj::Draw_ImGui()
 {
 }
 
-void CAnimObj::Set_Dead(_bool bStatic)
+void CAnimObj::Set_Dead(const wstring& wstrLayerTag)
 {
-	Super::Set_Dead(bStatic);
+	Super::Set_Dead(wstrLayerTag);
 }
 
 const CModel* CAnimObj::Get_ModelComPtr()

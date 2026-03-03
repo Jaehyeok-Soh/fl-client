@@ -31,7 +31,7 @@ public:
 	virtual HRESULT Render() override;
 	virtual _bool Picking(OUT Vec3& vOut) PURE;
 	virtual void Draw_ImGui();
-	virtual void Set_Dead(_bool bStatic = false) override;
+	virtual void Set_Dead(const wstring& wstrLayerTag) override;
 
 	virtual bool	Get_SRT( OUT  Vec3& vOutScale , OUT Quat& vQuat , OUT Vec3& vPosition  );
 	

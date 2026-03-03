@@ -77,6 +77,16 @@ HRESULT CXibi_Projectile_Circle::Render()
 	return S_OK;
 }
 
+void CXibi_Projectile_Circle::Set_Dead(const wstring& wstrLayerTag)
+{
+	m_bDead = true;
+	m_pGameInstance->Request_DeleteGameObject(
+		m_pGameInstance->Get_CurrentLevelIndex(),
+		g_wszSkillObjectLayer,
+		this);
+	Get_Component<CEffectHandler>()->Trigger_Lifecycle_Effect(CEffectHandler::E_OBJ_LIFECYCLE_STATE::ON_DESTROY);
+}
+
 void CXibi_Projectile_Circle::OnCollision(_uint iMyColliderLayer, _uint iOtherLayer, CGameObject* pOther)
 {
 
@@ -93,7 +103,7 @@ void CXibi_Projectile_Circle::OnCollision_Exit(_uint iMyColliderLayer, _uint iOt
 void CXibi_Projectile_Circle::OnTrigger_Enter(_uint iMyColliderLayer, _uint iOtherLayer, CGameObject* pOther)
 {
 	if (iOtherLayer == PHYSICSFILTERGROUP::Enum::MAP)
-		Set_Dead();
+		Set_Dead(g_wszSkillObjectLayer);
 }
 
 _bool CXibi_Projectile_Circle::On_Hit(const HIT_DESC& hitDesc)

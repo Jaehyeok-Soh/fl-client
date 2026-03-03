@@ -261,9 +261,9 @@ void Effect::Update_CombinedWorldMatrix(const Matrix* pBoneMatrix)
 }
 
 
-void Effect::Set_Dead(_bool bStatic)
+void Effect::Set_Dead(const wstring& wstrLayerTag)
 {
-	Super::Set_Dead(bStatic);
+	Super::Set_Dead(wstrLayerTag);
 }
 
 void Effect::IsEffectFinish()

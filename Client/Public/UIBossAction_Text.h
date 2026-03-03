@@ -35,10 +35,6 @@ private:
 	void Tick_By_Type(const _float fTimeDelta)override;
 	HRESULT Convert_Stat_To_Text();
 
-protected:
-	virtual HRESULT Spawn_FromPool(void* pArg) override;
-	virtual HRESULT Despawn_FromPool()override;
-
 private:
 	virtual void OnUIEvent(ETriggerEventType eEvent, CGenericUI* pSender)override;
 	virtual void Initialize_Visible_Event()override;

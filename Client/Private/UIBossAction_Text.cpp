@@ -118,20 +118,6 @@ HRESULT CUIBossAction_Text::Convert_Stat_To_Text()
 	return S_OK;
 }
 
-HRESULT CUIBossAction_Text::Spawn_FromPool(void* pArg)
-{
-	if (FAILED(Super::Spawn_FromPool(pArg)))
-		return E_FAIL;
-	return S_OK;
-}
-
-HRESULT CUIBossAction_Text::Despawn_FromPool()
-{
-	if (FAILED(Super::Despawn_FromPool()))
-		return E_FAIL;
-	return S_OK;
-}
-
 void CUIBossAction_Text::OnUIEvent(ETriggerEventType eEvent, CGenericUI* pSender)
 {
 	if (!m_isActive)

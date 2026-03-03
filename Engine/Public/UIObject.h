@@ -111,9 +111,6 @@ public:
 	virtual _bool Tick_InActivate_Event(const _float fTimeDelta)		{return true;}
 	virtual _bool Tick_Interactable_Event(const _float fTimeDelta)		{return true;}
 	virtual _bool Tick_NonInteractable_Event(const _float fTimeDelta)	{return true;}
-
-	virtual HRESULT Spawn_FromPool(void* pArg) override;
-	virtual HRESULT Despawn_FromPool()override;
 protected:
 	/* 렌더 상태를 제어 */
 	_bool m_isPreVisible = { false };

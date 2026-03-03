@@ -112,9 +112,9 @@ void Tool_ContainerObject::Draw_ImGui()
 	}
 	
 }
-void Tool_ContainerObject::Set_Dead(_bool bStatic)
+void Tool_ContainerObject::Set_Dead(const wstring& wstrLayerTag)
 {
-	Super::Set_Dead(bStatic);
+	Super::Set_Dead(wstrLayerTag);
 }
 
 

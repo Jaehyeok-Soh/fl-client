@@ -175,12 +175,12 @@ void CCanvas::All_Dead()
 
 	for (auto* pUI : m_vecUI)
 	{
-		pUI->Set_Dead();
+		pUI->Set_Dead(g_wszUILayer);
 	}
 
 	CUI_Manager::GetInstance()->Request_Clear_DeadUI();
 	m_vecUI.clear();
-	Set_Dead();
+	Set_Dead(g_wszUILayer);
 }
 
 HRESULT CCanvas::Ready_Components(CANVAS_DESC* pDesc)

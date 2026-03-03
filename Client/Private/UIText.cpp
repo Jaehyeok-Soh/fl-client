@@ -179,20 +179,6 @@ _bool CUIText::Tick_Fade_Text(const _float fTimeDelta)
 	return false;
 }
 
-HRESULT CUIText::Spawn_FromPool(void* pArg)
-{
-	if (FAILED(Super::Spawn_FromPool(pArg)))
-		return E_FAIL;
-	return S_OK;
-}
-
-HRESULT CUIText::Despawn_FromPool()
-{
-	if (FAILED(Super::Despawn_FromPool()))
-		return E_FAIL;
-	return S_OK;
-}
-
 void CUIText::Free()
 {
 	Super::Free();

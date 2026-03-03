@@ -56,6 +56,11 @@ void CEffectPartBase::Ready_Before_Render(const _float fTimeDelta)
 	Super::Ready_Before_Render(fTimeDelta);
 }
 
+void CEffectPartBase::Set_Dead(const wstring& wstrLayerTag)
+{
+	Super::Set_Dead(wstrLayerTag);
+}
+
 void CEffectPartBase::Free()
 {
 	Super::Free();
