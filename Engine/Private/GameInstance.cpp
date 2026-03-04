@@ -459,8 +459,6 @@ void CGameInstance::Request_DeleteGameObject(_uint iCloneLevelIndex, CGameObject
 {
 	if (!pGo)
 		return;
-	if (pGo->IsDead() || pGo->IsPooled())
-		return;
 
 	RemoveEventDesc desc = {};
 	desc.iClonedLevelIndex = iCloneLevelIndex;

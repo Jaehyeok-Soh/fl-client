@@ -93,7 +93,7 @@ void CXibi_Loop_Thunder::OnCollision_Exit(_uint iMyColliderLayer, _uint iOtherLa
 void CXibi_Loop_Thunder::OnTrigger_Enter(_uint iMyColliderLayer, _uint iOtherLayer, CGameObject* pOther)
 {
 	if (iOtherLayer == PHYSICSFILTERGROUP::Enum::MAP)
-		Set_Dead(g_wszSkillObjectLayer);
+		Set_Dead();
 }
 
 _bool CXibi_Loop_Thunder::On_Hit(const HIT_DESC& hitDesc)

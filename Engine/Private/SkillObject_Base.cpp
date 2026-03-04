@@ -187,7 +187,7 @@ void CSkillObject_Base::Process_Life(const _float fTimeDelta)
 		if (m_runtimeDesc.Life.Tick(fTimeDelta))
 		{
 			// Set_Dead
-			Set_Dead(L"");
+			Set_Dead();
 			return;
 		}
 	}
@@ -196,7 +196,7 @@ void CSkillObject_Base::Process_Life(const _float fTimeDelta)
 		if (m_runtimeDesc.fTravelDistance >= m_desc.fMaxDistance)
 		{
 			// Set_Dead
-			Set_Dead(L"");
+			Set_Dead();
 			return;
 		}
 	}

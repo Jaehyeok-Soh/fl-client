@@ -1,6 +1,7 @@
 #include "Engine_pch.h"
 #include "ObjectPool.h"
 #include "GameObject.h"
+#include "EngineConsole.h"
 #include "GameInstance.h"
 
 CObjectPool::CObjectPool()
@@ -28,6 +29,7 @@ HRESULT CObjectPool::Initialize(const wstring& wstrLayerTag, void* pArg, CGameOb
 
 CGameObject* CObjectPool::Spawn(void* pArg)
 {
+	CLOG_INFO("Spawn");
 	if (m_iActiveCount >= m_vecObjects.size())
 	{
 		MSG_BOX("CObjectPool::Spawn, Pool is Full");
@@ -46,6 +48,7 @@ CGameObject* CObjectPool::Spawn(void* pArg)
 
 HRESULT CObjectPool::Despawn(CGameObject* pGo)
 {
+	CLOG_INFO("Despawn");
 	if (!pGo)
 	{
 		MSG_BOX("CObjectPool::Despawn, Parameter is nullptr");
@@ -107,6 +110,7 @@ HRESULT CObjectPool::Ready_Objects(void *pArg, CGameObject* pSeed)
 		if (!(pReturned = pSeed->Clone(pArg)))
 			return E_FAIL;
 
+		pReturned->Mark_Pooled();
 		pReturned->Set_OwnerPool(this);
 		m_vecObjects.push_back(pReturned);
 	}

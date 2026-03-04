@@ -159,3 +159,30 @@ void CObjectPool_Manager::Free()
 	All_Clear();
 	Super::Free();
 }
+
+#ifdef _DEBUG
+void CObjectPool_Manager::Collect_PoolTags(_uint iLevelIndex, vector<wstring>& outTags) const
+{
+	outTags.clear();
+	if (Is_OutOfRange(iLevelIndex))
+		return;
+
+	const auto& umapPools = m_Pools[iLevelIndex];
+	outTags.reserve(umapPools.size());
+	for (const auto& Pair : umapPools)
+		outTags.push_back(Pair.first);
+}
+
+_int CObjectPool_Manager::Get_Capacity(_uint iLevelIndex, const wstring& wstrPoolTag)
+{
+	if (Is_OutOfRange(iLevelIndex))
+		return -1;
+
+	auto& umapPools = m_Pools[iLevelIndex];
+	auto itr = umapPools.find(wstrPoolTag);
+	if (itr == umapPools.end())
+		return -1;
+
+	return (_int)itr->second->Get_Capacity();
+}
+#endif

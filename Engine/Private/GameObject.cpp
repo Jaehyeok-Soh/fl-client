@@ -93,8 +93,7 @@ HRESULT CGameObject::Spawn_FromPool(void *pArg)
 
 HRESULT CGameObject::Despawn_FromPool()
 {
-    m_eState = ELifeState::Pooled;
-    Clamp_FlagsByState();
+    Mark_Pooled();
     Disable_CollisionComponent();
     return S_OK;
 }
