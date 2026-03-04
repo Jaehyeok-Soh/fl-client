@@ -15,7 +15,7 @@ HRESULT CEvent_Manager::Initialize()
 	return S_OK;
 }
 
-void CEvent_Manager::Push_SpawnEvent(const SpawnEventDesc& desc)
+void CEvent_Manager::Push_SpawnEvent(const AddEventDesc& desc)
 {
 	if (m_bFlushing == false)
 		m_queSpawn.push(desc);
@@ -23,7 +23,7 @@ void CEvent_Manager::Push_SpawnEvent(const SpawnEventDesc& desc)
 		m_queSpawn_Pending.push(desc);
 }
 
-void CEvent_Manager::Push_DespawnEvent(const DespawnEventDesc& desc)
+void CEvent_Manager::Push_DespawnEvent(const RemoveEventDesc& desc)
 {
 	if (m_bFlushing == false)
 		m_queDespawn.push(desc);
@@ -190,7 +190,7 @@ void CEvent_Manager::Flush_Pending(EventType eType)
 		break;
 	}
 }
-HRESULT CEvent_Manager::Spawn_GameObject(SpawnEventDesc& spawnDesc)
+HRESULT CEvent_Manager::Spawn_GameObject(AddEventDesc& spawnDesc)
 {
 	if (!spawnDesc.pClone)
 	{
@@ -211,7 +211,7 @@ HRESULT CEvent_Manager::Spawn_GameObject(SpawnEventDesc& spawnDesc)
 	return S_OK;
 }
 
-HRESULT CEvent_Manager::Despawn_GameObject(DespawnEventDesc& despawnDesc)
+HRESULT CEvent_Manager::Despawn_GameObject(RemoveEventDesc& despawnDesc)
 {
 	if (!despawnDesc.pGo)
 	{
@@ -235,7 +235,7 @@ HRESULT CEvent_Manager::Change_Level(ChangeLevelEventDesc& changeLevelDesc)
 	return S_OK;
 }
 
-void CEvent_Manager::Clear_SpawnEvent(SpawnEventDesc& spawnDesc)
+void CEvent_Manager::Clear_SpawnEvent(AddEventDesc& spawnDesc)
 {
 	if (!spawnDesc.pClone)
 		return;
