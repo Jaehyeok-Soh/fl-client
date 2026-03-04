@@ -98,7 +98,13 @@ HRESULT CGameObject::Despawn_FromPool()
 
         auto pRigidBody = Get_Component<CPhysicsRigidBody>();
         if (pRigidBody)
+        {
+            auto pActors = pRigidBody->GetActors();
+            for (auto& pActor : pActors)
+                m_pGameInstance->ResetActorFilter(pActor);
+
             pRigidBody->EnableCollision(false);
+        }
     }
 
     return S_OK;
@@ -332,6 +338,12 @@ void CGameObject::Safe_Release_Component()
 
 void CGameObject::Safe_Release_ScriptComponent()
 {
+    if (m_ScriptComponents.size() <= 0)
+    {
+        m_ScriptComponents.clear();
+        return;
+    }
+
     for (auto itr = m_ScriptComponents.begin();
         itr != m_ScriptComponents.end();
         ++itr)
