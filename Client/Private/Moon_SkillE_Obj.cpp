@@ -113,7 +113,7 @@ HRESULT CMoon_SkillE_Obj::Ready_Components()
 			SkillDesc.bWorld = { CEffectHandler::E_WORLD::E_LOCAL }; 
 			SkillDesc.bFollowBone = { false };
 			SkillDesc.iBoneIndex = -1;
-			SkillDesc.vOffSet = { Vec3::Zero };
+			SkillDesc.vOffSet = { 0.f,0.f,0.f };
 			SkillDesc.vRotation = { Vec3::Zero };
 			Desc.eType = CEffectHandler::E_HANDLER_TYPE::SKILL_OBJ;
 			Desc.mEffectState.emplace(CEffectHandler::E_OBJ_LIFECYCLE_STATE::ON_SPAWN, SkillDesc);
@@ -152,8 +152,8 @@ HRESULT CMoon_SkillE_Obj::Ready_Components()
 			cloneDesc.bIsTrigger		= true;
 			cloneDesc.bSetOnlyFilter	= false;
 			cloneDesc.bIsActive			= true;
-			cloneDesc.vCenter			= { 0.f, 0.f, 0.f };
-			cloneDesc.vExtents			= { 0.5f, 1.f,0.5f };
+			cloneDesc.vCenter			= { 0.f, 0.3f, 0.f };
+			cloneDesc.vExtents			= { 0.3f, 1.f,0.3f };
 			PHYSICSMATERIAL_DESC mtrlDesc{};
 			mtrlDesc.eMaterial			= EPhysicsMaterial::CONCRETE;
 			cloneDesc.tMaterial			= mtrlDesc;

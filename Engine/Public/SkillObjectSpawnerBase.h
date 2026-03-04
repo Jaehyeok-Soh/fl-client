@@ -44,8 +44,12 @@ public:
 		Vec3 vOrigin{ Vec3::Zero };
 		Vec3 vForward{ Vec3::Zero };
 		Vec3 vUp{ Vec3::UnitY };
+
 		CGameObject* pRequester{ nullptr };
 		CGameObject* pTarget{ nullptr };
+
+		TRANSFORM_INFO_STATE eRotationState = TRANSFORM_INFO_STATE::END;
+		_float fRotation_Radian{0.f};
 	}SPAWNER_COPY_DESC;
 private:
 	enum class EState : _uint

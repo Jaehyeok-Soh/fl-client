@@ -44,7 +44,7 @@ void CState_DashSky::Update(const _float fTimeDelta)
 {
 	Super::Update(fTimeDelta);
 
-	if (Get_AnimElpasedTimeSeconds() > 0.5f)
+	if (Get_AnimElpasedTimeSeconds() > 0.45f)
 	{
 		if(Check_OnGround(0.3f))
 		{
