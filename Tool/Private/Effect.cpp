@@ -272,7 +272,7 @@ void Effect::IsEffectFinish()
 
 	if (FinishCount == m_vecPartObjects.size())
 	{
-		Set_Dead(L"Effect_Layer");
+		Set_Dead();
 	}
 }
 

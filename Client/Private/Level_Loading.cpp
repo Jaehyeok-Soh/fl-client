@@ -16,10 +16,10 @@
 #include "Builder_UI.h"
 
 #include "CameraMan_Targeter.h"
-
 #include "UI_Manager.h"
-
 #include "GameInstance.h"
+
+
 CLevel_Loading::CLevel_Loading(ID3D11Device* pDevice, ID3D11DeviceContext* pDeviceContext)
 	: Super(pDevice, pDeviceContext)
 {
@@ -51,8 +51,6 @@ HRESULT CLevel_Loading::Initialize(ELevelType eNextLevelID)
 
 HRESULT CLevel_Loading::Awake(const _uint iLevelID)
 {
-
-
 	if (FAILED(Super::Awake(iLevelID)))
 		return E_FAIL;
 	return S_OK;

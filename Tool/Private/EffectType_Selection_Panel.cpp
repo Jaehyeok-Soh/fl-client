@@ -257,7 +257,7 @@ void CEffectType_Selection_Panel::EditEffect()
 		{
 			if (ImGui::Button("Delete##Container_EffectList"))
 			{
-				static_cast<Effect*>(*m_ppTargetSlot)->Set_Dead(L"Effect_Layer");
+				static_cast<Effect*>(*m_ppTargetSlot)->Set_Dead();
 			}
 
 			ImGui::TreePop();
