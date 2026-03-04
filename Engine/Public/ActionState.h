@@ -127,6 +127,7 @@ protected:
 protected:
 	HRESULT			Set_OwnerComponents();
 	CTransform*		Get_CamTransform();
+	Vec3			Get_MoveDir();
 
 protected:
 	CControlContext*	m_pOwnerControlContext	= { nullptr };

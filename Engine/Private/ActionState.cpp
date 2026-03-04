@@ -206,6 +206,14 @@ CTransform* CActionState::Get_CamTransform()
 	return pCamTransform;
 }
 
+Vec3 CActionState::Get_MoveDir()
+{
+	if (!m_pOwnerControlContext)
+		return Vec3::Zero;
+
+	return m_pOwnerControlContext->Get_MoveDir();
+}
+
 void CActionState::Move(Vec3 disp, _float minDist, _float fTimeDelta)
 {
 	CPhysicsCCT* cct = { nullptr };

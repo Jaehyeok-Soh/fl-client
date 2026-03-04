@@ -90,6 +90,16 @@ _bool CState_ComboBase::Can_CheckKey(const _float fTimeDelta)
 void CState_ComboBase::Change_NextCombo()
 {
 	CTransform* pPlayerTrans = Get_OwnerObject()->Get_Component<CTransform>();
+	Vec3 vDir = Get_MoveDir();
+	if (vDir.LengthSquared() > 0.f)
+	{
+		vDir.y = 0.f;
+		vDir.Normalize();
+
+		pPlayerTrans->Look_At(
+			pPlayerTrans->Get_Info(TRANSFORM_INFO_STATE::POS) + vDir
+		);
+	}
 
 
 	if (m_iComboCount == 4)
