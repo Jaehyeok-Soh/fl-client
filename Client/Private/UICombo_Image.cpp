@@ -165,8 +165,7 @@ HRESULT CUICombo_Image::Attach_Personal_Info()
 
 	m_pGameInstance->Subscribe<COMBO_ATTACK_EVENT_START>([this]() 
 		{
-			if (!this->m_isVisible)
-				this->Set_Visible();
+			this->Set_Visible();
 		});
 
 	m_pGameInstance->Subscribe<COMBO_ATTACK_EVENT_END>([this]() 
@@ -179,26 +178,13 @@ HRESULT CUICombo_Image::Attach_Personal_Info()
 
 void CUICombo_Image::Tick_By_Type(const _float fTimeDelta)
 {
-	m_isCountChange = false;
-
 	switch (m_eDImageSubClass)
 	{
 	case DTO::EUIDImageSubClassType::BATTLE_COMBO_BEGIN:
 		break;
 	case DTO::EUIDImageSubClassType::BATTLE_COMBO_RANK:
 	{
-		// m_iCurComboCount = m_pPlayerStatCom->Get_Count(CStatCom_Player::TIMER_TYPE::COMBO);
-
-		if (m_iPreComboCount != m_iCurComboCount)
-			m_isCountChange = true;
-
-		m_fComboCoolTime += fTimeDelta;
-		if (m_isCountChange)
-		{
-			m_fComboCoolTime = 0.f;
-		}
-		// ÄÞº¸Ã¢ ²ô±â
-		if (m_fComboCoolTime > 5.f)
+		if (m_pPlayerStatCom->Get_Count(CStatCom_Player::TIMER_TYPE::COMBO) == 0)
 		{
 			m_pGameInstance->Broadcast<COMBO_ATTACK_EVENT_END>();
 		}

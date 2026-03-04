@@ -338,6 +338,8 @@ _bool CUIDamageFont_Text::Tick_InVisible_Event(const _float fTimeDelta)
 
 HRESULT CUIDamageFont_Text::Spawn_FromPool(void* pArg)
 {
+	CLOG_INFO(L"\n/////////////////////////////////////////\n데미지 폰트 활성화 됨\n///////////////////////////////////////////");
+
 	if (FAILED(Super::Spawn_FromPool(pArg)))
 		return E_FAIL;
 
@@ -419,8 +421,8 @@ HRESULT CUIDamageFont_Text::Spawn_FromPool(void* pArg)
 
 HRESULT CUIDamageFont_Text::Despawn_FromPool()
 {
-	if (m_strName == "DamageFont_CriticalText")
-		int a = 0;
+	CLOG_INFO(L"\n/////////////////////////////////////////\n데미지 폰트 비활성화 됨\n///////////////////////////////////////////");
+
 
 	m_vFontColor				= m_vOriginFontColor;
 	m_fDamageFontScaleOffet		= 1.f;
