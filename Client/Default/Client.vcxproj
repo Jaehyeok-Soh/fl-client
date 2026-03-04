@@ -194,7 +194,9 @@
     <ClInclude Include="..\public\ImGui_Inspector.h" />
     <ClInclude Include="..\Public\imgui_internal.h" />
     <ClInclude Include="..\public\ImGui_Layout.h" />
+    <ClInclude Include="..\public\ImGui_ObjectPoolLayout.h" />
     <ClInclude Include="..\public\ImGui_PlayerInspector.h" />
+    <ClInclude Include="..\public\ImGui_PoolInspector.h" />
     <ClInclude Include="..\public\ImGui_TextureDebugInspector.h" />
     <ClInclude Include="..\public\ImGui_ShaderDebugLayout.h" />
     <ClInclude Include="..\public\ImGui_ShaderLayout.h" />
@@ -389,7 +391,9 @@
     </ClCompile>
     <ClCompile Include="..\private\ImGui_Inspector.cpp" />
     <ClCompile Include="..\private\ImGui_Layout.cpp" />
+    <ClCompile Include="..\private\ImGui_ObjectPoolLayout.cpp" />
     <ClCompile Include="..\private\ImGui_PlayerInspector.cpp" />
+    <ClCompile Include="..\private\ImGui_PoolInspector.cpp" />
     <ClCompile Include="..\private\ImGui_TextureDebugInspector.cpp" />
     <ClCompile Include="..\private\ImGui_ShaderDebugLayout.cpp" />
     <ClCompile Include="..\private\ImGui_ShaderLayout.cpp" />

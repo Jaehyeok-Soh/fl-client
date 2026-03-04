@@ -616,6 +616,12 @@
     <Filter Include="03. GameObject\UIObjects\02.UI\Text\07.Boss Action Text">
       <UniqueIdentifier>{a2af5a55-b193-4379-9444-0576a571b3a0}</UniqueIdentifier>
     </Filter>
+    <Filter Include="07. System\99. Debug_ImGui\Inspector\PoolDebug">
+      <UniqueIdentifier>{424668f6-8bc5-4dd8-8036-5b7a5d57b52a}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="07. System\99. Debug_ImGui\Layout\ObjectPool">
+      <UniqueIdentifier>{32bebfb6-883b-4452-b824-e6ce5b80a0cd}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="targetver.h">
@@ -1147,6 +1153,12 @@
     <ClInclude Include="..\Public\UIBossAction_Text.h">
       <Filter>03. GameObject\UIObjects\02.UI\Text\07.Boss Action Text</Filter>
     </ClInclude>
+    <ClInclude Include="..\public\ImGui_PoolInspector.h">
+      <Filter>07. System\99. Debug_ImGui\Inspector\PoolDebug</Filter>
+    </ClInclude>
+    <ClInclude Include="..\public\ImGui_ObjectPoolLayout.h">
+      <Filter>07. System\99. Debug_ImGui\Layout\ObjectPool</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <Image Include="Client.ico">
@@ -1669,6 +1681,12 @@
     </ClCompile>
     <ClCompile Include="..\Private\UIBossAction_Text.cpp">
       <Filter>03. GameObject\UIObjects\02.UI\Text\07.Boss Action Text</Filter>
+    </ClCompile>
+    <ClCompile Include="..\private\ImGui_PoolInspector.cpp">
+      <Filter>07. System\99. Debug_ImGui\Inspector\PoolDebug</Filter>
+    </ClCompile>
+    <ClCompile Include="..\private\ImGui_ObjectPoolLayout.cpp">
+      <Filter>07. System\99. Debug_ImGui\Layout\ObjectPool</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

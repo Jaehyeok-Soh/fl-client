@@ -161,7 +161,7 @@ void CObjectPool_Manager::Free()
 }
 
 #ifdef _DEBUG
-void CObjectPool_Manager::Collect_PoolTags(_uint iLevelIndex, vector<wstring>& outTags) const
+void CObjectPool_Manager::Collect_PoolTags(_uint iLevelIndex, OUT vector<wstring>& outTags) const
 {
 	outTags.clear();
 	if (Is_OutOfRange(iLevelIndex))
@@ -173,7 +173,7 @@ void CObjectPool_Manager::Collect_PoolTags(_uint iLevelIndex, vector<wstring>& o
 		outTags.push_back(Pair.first);
 }
 
-_int CObjectPool_Manager::Get_Capacity(_uint iLevelIndex, const wstring& wstrPoolTag)
+_int CObjectPool_Manager::Get_Capacity(_uint iLevelIndex, const wstring& wstrPoolTag) const
 {
 	if (Is_OutOfRange(iLevelIndex))
 		return -1;

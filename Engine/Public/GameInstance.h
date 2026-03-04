@@ -36,6 +36,7 @@ enum class CameraType;
 struct DelegateHandle;
 class CCollider;
 class CGameObject;
+class CObjectPool;
 class CCameraMan;
 class CLayer;
 class CFxEffectAsset;
@@ -155,6 +156,12 @@ public:
 
 #pragma region OBJECTPOOL_MANAGER
 	HRESULT Regist_Pool(_uint iTargetLevelIndex, const wstring& wstrPoolTag, const wstring& wstrLayerTag, _uint iSeedLevelID, const wstring &wstrSeedPrototypeTag,void* pArg, _uint iPoolCapacityCount);
+	void Collect_PoolTags(_uint iLevelIndex, OUT vector<wstring>& vecOutTags) const;
+	_int Get_ObjectPoolCapacity(_uint iLevelIndex, const wstring& wstrPoolTag) const;
+	_int Get_ObjectPoolActiveCount(_uint iLevelIndex, const wstring& wstrPoolTag) const;
+#ifdef _DEBUG
+	
+#endif
 #pragma endregion
 
 #pragma region COLLISION_MANAGER

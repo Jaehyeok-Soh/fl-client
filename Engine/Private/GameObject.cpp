@@ -195,6 +195,7 @@ void CGameObject::Remove_Script_Component(const wstring& wstrComponentTag)
     if (itr == m_ScriptComponents.end())
         return;
 
+    Safe_Release(itr->second);
     m_ScriptComponents.erase(itr);
 }
 

@@ -52,48 +52,48 @@ HRESULT CObject_Manager::Awake(const _uint iCurrentLevelID)
 
 void CObject_Manager::Update_Priority(const _float fUnscaledTimeDelta, const _float fScaledTimeDelta)
 {
-	for (map<const wstring, CLayer*>& Element : m_pLayers)
+	for (auto& Element : m_pLayers)
 	{
-		for (auto& Pair : Element)
+		for (auto& [tag, Layer] : Element)
 		{
-			_bool bScaled = Pair.second->Is_ScaledDomain();
-			Pair.second->Update_Priority(bScaled == true ? fScaledTimeDelta : fUnscaledTimeDelta);
+			_bool bScaled = Layer->Is_ScaledDomain();
+			Layer->Update_Priority(bScaled == true ? fScaledTimeDelta : fUnscaledTimeDelta);
 		}
 	}
 }
 
 void CObject_Manager::Update(const _float fUnscaledTimeDelta, const _float fScaledTimeDelta)
 {
-	for (map<const wstring, CLayer*>& Element : m_pLayers)
+	for (auto& Element : m_pLayers)
 	{
-		for (auto& Pair : Element)
+		for (auto& [tag, Layer] : Element)
 		{
-			_bool bScaled = Pair.second->Is_ScaledDomain();
-			Pair.second->Update(bScaled == true ? fScaledTimeDelta : fUnscaledTimeDelta);
+			_bool bScaled = Layer->Is_ScaledDomain();
+			Layer->Update(bScaled == true ? fScaledTimeDelta : fUnscaledTimeDelta);
 		}
 	}
 }
 
 void CObject_Manager::Update_Late(const _float fUnscaledTimeDelta, const _float fScaledTimeDelta)
 {
-	for (map<const wstring, CLayer*>& Element : m_pLayers)
+	for (auto& Element : m_pLayers)
 	{
-		for (auto& Pair : Element)
+		for (auto& [tag, Layer] : Element)
 		{
-			_bool bScaled = Pair.second->Is_ScaledDomain();
-			Pair.second->Update_Late(bScaled == true ? fScaledTimeDelta : fUnscaledTimeDelta);
+			_bool bScaled = Layer->Is_ScaledDomain();
+			Layer->Update_Late(bScaled == true ? fScaledTimeDelta : fUnscaledTimeDelta);
 		}
 	}
 }
 
 void CObject_Manager::Ready_Before_Render(const _float fUnscaledTimeDelta, const _float fScaledTimeDelta)
 {
-	for (map<const wstring, CLayer*>& Element : m_pLayers)
+	for (auto& Element : m_pLayers)
 	{
-		for (auto& Pair : Element)
+		for (auto& [tag, Layer] : Element)
 		{
-			_bool bScaled = Pair.second->Is_ScaledDomain();
-			Pair.second->Ready_Before_Render(bScaled == true ? fScaledTimeDelta : fUnscaledTimeDelta);
+			_bool bScaled = Layer->Is_ScaledDomain();
+			Layer->Ready_Before_Render(bScaled == true ? fScaledTimeDelta : fUnscaledTimeDelta);
 		}
 	}
 }
@@ -112,10 +112,11 @@ void CObject_Manager::Delete_GameObject(_uint iCloneLevelIndex, CGameObject* pGo
 	if (CLayer* pFindLayer = Find_Layer(iCloneLevelIndex, pGo->m_wstrLayerTag))
 	{
 		pFindLayer->Delete_GameObject(pGo);
-		Safe_Release(pGo);
 	}
 	else
 		MSG_BOX("CObject_Manager::Delete_GameObject, layer invalid");
+
+	Safe_Release(pGo);
 }
 
 void CObject_Manager::Despawn_GameObject(_uint iCloneLevelIndex, CGameObject* pGo)
@@ -131,7 +132,7 @@ void CObject_Manager::Despawn_GameObject(_uint iCloneLevelIndex, CGameObject* pG
 		return;
 	}
 
-	if (CLayer* pFindLayer = Find_Layer(iCloneLevelIndex, pGo->m_pOwnerPool->Get_LayerTag()))
+	if (CLayer* pFindLayer = Find_Layer(iCloneLevelIndex, pGo->m_wstrLayerTag))
 		pFindLayer->Delete_GameObject(pGo);
 	else
 		MSG_BOX("CObject_Manager::Despawn_GameObject, layer invalid");

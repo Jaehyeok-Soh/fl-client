@@ -26,7 +26,7 @@ void CLayer::Update_Priority(const _float fTimeDelta)
 {
 	for (CGameObject*& pElement : m_pGameObjects)
 	{
-		if (pElement->Is_Active())
+		if (pElement && pElement->Is_Active())
 			pElement->Update_Priority(fTimeDelta);
 	}
 }
@@ -35,7 +35,7 @@ void CLayer::Update(const _float fTimeDelta)
 {
 	for (CGameObject*& pElement : m_pGameObjects)
 	{
-		if (pElement->Is_Active())
+		if (pElement && pElement->Is_Active())
 			pElement->Update(fTimeDelta);
 	}
 }
@@ -44,7 +44,7 @@ void CLayer::Update_Late(const _float fTimeDelta)
 {
 	for (CGameObject*& pElement : m_pGameObjects)
 	{
-		if (pElement->Is_Active())
+		if (pElement && pElement->Is_Active())
 			pElement->Update_Late(fTimeDelta);
 	}
 }
@@ -53,7 +53,7 @@ void CLayer::Ready_Before_Render(const _float fTimeDelta)
 {
 	for (CGameObject*& pElement : m_pGameObjects)
 	{
-		if (pElement->Can_Render())
+		if (pElement && pElement->Can_Render())
 			pElement->Ready_Before_Render(fTimeDelta);
 	}
 }

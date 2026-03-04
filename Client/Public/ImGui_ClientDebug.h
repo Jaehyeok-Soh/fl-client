@@ -22,6 +22,7 @@ private:
 		Player = 0,
 		Global,
 		TextureDebug,
+		PoolDebug,
 		Monster,
 		Light,
 		END

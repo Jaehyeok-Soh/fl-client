@@ -504,6 +504,20 @@ HRESULT CGameInstance::Regist_Pool(_uint iTargetLevelIndex, const wstring& wstrP
 {
 	return m_pObjectPool_Manager->Regist_Pool(iTargetLevelIndex, wstrPoolTag, wstrLayerTag, iSeedLevelID, wstrSeedPrototypeTag, pArg, iPoolCapacityCount);
 }
+#ifdef _DEBUG
+void CGameInstance::Collect_PoolTags(_uint iLevelIndex, OUT vector<wstring>& vecOutTags) const
+{
+	m_pObjectPool_Manager->Collect_PoolTags(iLevelIndex, vecOutTags);
+}
+_int CGameInstance::Get_ObjectPoolCapacity(_uint iLevelIndex, const wstring& wstrPoolTag) const
+{
+	return m_pObjectPool_Manager->Get_Capacity(iLevelIndex, wstrPoolTag);
+}
+_int CGameInstance::Get_ObjectPoolActiveCount(_uint iLevelIndex, const wstring& wstrPoolTag) const
+{
+	return m_pObjectPool_Manager->Get_ActiveCount(iLevelIndex, wstrPoolTag);
+}
+#endif
 #pragma endregion
 
 #pragma region COLLISION_MANAGER

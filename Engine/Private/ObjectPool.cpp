@@ -48,7 +48,13 @@ CGameObject* CObjectPool::Spawn(void* pArg)
 
 HRESULT CObjectPool::Despawn(CGameObject* pGo)
 {
-	CLOG_INFO("Despawn");
+	_int iIndex = pGo->Get_ActiveIndex();
+	if (iIndex < 0 || iIndex >= (_int)m_iActiveCount)
+	{
+		CLOG_INFO("Despawn:: SKIP");
+		return S_OK;
+	}
+
 	if (!pGo)
 	{
 		MSG_BOX("CObjectPool::Despawn, Parameter is nullptr");
@@ -79,6 +85,7 @@ HRESULT CObjectPool::Despawn(CGameObject* pGo)
 		return E_FAIL;
 	}
 
+	CLOG_INFO("Despawn");
 	--m_iActiveCount;
 	return S_OK;
 }
