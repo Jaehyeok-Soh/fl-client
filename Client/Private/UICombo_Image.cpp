@@ -209,19 +209,19 @@ void CUICombo_Image::Tick_By_Type(const _float fTimeDelta)
 			switch (m_eCurComboType)
 			{
 			case Client::ECombotype::C:
-				if (FAILED(Get_Component<CTexture>()->Add_DefaultTexture(C_RANK_IMAGE_TAG, DEFAULT)))
+				if (FAILED(Get_Component<CTexture>()->Add_DefaultTexture(C_RANK_IMAGE_TAG, ENUM_TO_UINT(EUITextureSlot::DEFAULT))))
 					break;
 				break;
 			case Client::ECombotype::B:
-				if (FAILED(Get_Component<CTexture>()->Add_DefaultTexture(B_RANK_IMAGE_TAG, DEFAULT)))
+				if (FAILED(Get_Component<CTexture>()->Add_DefaultTexture(B_RANK_IMAGE_TAG, ENUM_TO_UINT(EUITextureSlot::DEFAULT))))
 					break;
 				break;
 			case Client::ECombotype::A:
-				if (FAILED(Get_Component<CTexture>()->Add_DefaultTexture(A_RANK_IMAGE_TAG, DEFAULT)))
+				if (FAILED(Get_Component<CTexture>()->Add_DefaultTexture(A_RANK_IMAGE_TAG, ENUM_TO_UINT(EUITextureSlot::DEFAULT))))
 					break;
 				break;
 			case Client::ECombotype::S:
-				if (FAILED(Get_Component<CTexture>()->Add_DefaultTexture(S_RANK_IMAGE_TAG, DEFAULT)))
+				if (FAILED(Get_Component<CTexture>()->Add_DefaultTexture(S_RANK_IMAGE_TAG, ENUM_TO_UINT(EUITextureSlot::DEFAULT))))
 					break;
 				break;
 			case Client::ECombotype::END:

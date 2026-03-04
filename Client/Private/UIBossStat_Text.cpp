@@ -128,6 +128,7 @@ HRESULT CUIBossStat_Text::Convert_Stat_To_Text()
 
 		break;
 	}
+	return S_OK;
 }
 
 void CUIBossStat_Text::OnUIEvent(ETriggerEventType eEvent, CGenericUI* pSender)

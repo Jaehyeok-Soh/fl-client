@@ -68,6 +68,7 @@ HRESULT CUICommon_Trigger::Awake(const _uint iCurrentLevelID)
 void CUICommon_Trigger::Update_Priority(const _float fTimeDelta)
 {
 	Super::Update_Priority(fTimeDelta);
+
 	if (Engine_Utils::Has_Flag(m_iInteractState, EUIEvent_Flag::PRESS_ENTER))
 	{
 		m_eCurTriggerType = ETriggerEventType::PRESS_ENTER;
@@ -134,9 +135,7 @@ void CUICommon_Trigger::OnUIEvent(ETriggerEventType eEvent, CGenericUI* pSender)
 	case Client::ETriggerEventType::HOVER_EXIT:
 		break;
 	case Client::ETriggerEventType::PRESS_ENTER:
-		if (m_strName == "Menu_Exit_Trigger")
-			int a = 0;
-
+	{
 		if (m_isInteract)
 		{
 			m_eCurTriggerType = ETriggerEventType::PRESS_ENTER;
@@ -147,7 +146,8 @@ void CUICommon_Trigger::OnUIEvent(ETriggerEventType eEvent, CGenericUI* pSender)
 			m_eCurTriggerType = ETriggerEventType::PRESS_ENTER;
 			Set_Interactable();
 		}
-		break;
+	}
+	break;
 	case Client::ETriggerEventType::PRESS_EXIT:
 		break;
 	case Client::ETriggerEventType::END:

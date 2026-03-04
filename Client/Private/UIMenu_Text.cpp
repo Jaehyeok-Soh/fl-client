@@ -142,31 +142,30 @@ void CUIMenu_Text::Initialize_Visible_Event()
 		m_isFin_Event = false;
 	}
 
-	m_fTimeAcc = 0.f;
-	m_fDelayTimeAcc = 0.f;
+	m_fMenu_TimeAcc = 0.f;
+	m_fMenu_DelayTimeAcc = 0.f;
 }
 
 void CUIMenu_Text::Initialize_InVisible_Event()
 {
 	m_vFontColor = m_vOriginFontColor;
+
 	m_isActive = false;
 	m_isFin_Event = false;
-	m_fTimeAcc = 0.f;
-	m_fDelayTimeAcc = 0.f;
 }
 
 _bool CUIMenu_Text::Tick_Visible_Event(const _float fTimeDelta)
 {
-	m_fDelayTimeAcc += fTimeDelta;
-	if (m_fDelayTimeAcc < m_fDelay)
+	m_fMenu_DelayTimeAcc += fTimeDelta;
+	if (m_fMenu_DelayTimeAcc < m_fDelay)
 		return false;
 
-	m_fTimeAcc += fTimeDelta;
+	m_fMenu_TimeAcc += fTimeDelta;
 
-	_float t = m_fTimeAcc / 0.5f;
+	_float t = m_fMenu_TimeAcc / 0.5f;
+
 	if (t >= 1.f)
 	{
-		t = 1.f;
 		m_vFontColor = m_vOriginFontColor;
 		m_isActive = true;
 		m_isFin_Event = true;
@@ -174,8 +173,7 @@ _bool CUIMenu_Text::Tick_Visible_Event(const _float fTimeDelta)
 	}
 
 	const Vec4 vStart = Vec4{ 0.f, 0.f, 0.f, 0.f };
-	const Vec4 vEnd = m_vOriginFontColor;
-	m_vFontColor = vStart + (vEnd - vStart) * t;
+	m_vFontColor = vStart + (m_vOriginFontColor - vStart) * t;
 
 	return false;
 }

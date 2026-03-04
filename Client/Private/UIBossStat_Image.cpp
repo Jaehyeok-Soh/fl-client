@@ -147,7 +147,6 @@ HRESULT CUIBossStat_Image::Spawn_FromPool(void* pArg)
 	/* º¸½º ½ºÅÈ ÄÄÆ÷³ÍÆ® ºÎÂø */
 	m_bDead					= false;
 	m_isBossEventTrigger	= false;
-	m_fTimeAcc				= 0.f;
 	m_isSpawned				= true;
 	return S_OK;
 }

@@ -144,10 +144,13 @@ HRESULT CUIMini_Map::Render()
 {
 	if (!m_isVisible)
 		return S_OK;
+
 	if (FAILED(Bind_ShaderResources()))
 		return E_FAIL;
+
 	if (FAILED(Super::Render()))
 		return E_FAIL;
+
 	return S_OK;
 }
 

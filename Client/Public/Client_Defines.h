@@ -340,6 +340,9 @@ namespace Client
 		FLIP_XY,
 		END
 	};
+
+	enum class EUITextureSlot : uint32_t { DEFAULT, NOISE, ALPHA_MASK, GLOW, END };
+
 	enum class EUIPrefabType
 	{
 		NOT_PREFAB,

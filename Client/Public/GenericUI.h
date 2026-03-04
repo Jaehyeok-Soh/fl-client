@@ -32,8 +32,6 @@ public:
 		CGameObject* pTarget = { nullptr };
 	}GENERIC_UI_DESC;
 
-	enum EUITextureSlot { DEFAULT, NOISE, ALPHA_MASK, GLOW };
-
 protected :
 	CGenericUI(ID3D11Device* pDevice, ID3D11DeviceContext* pDeviceContext);
 	CGenericUI(const CGenericUI& rhs);
@@ -63,21 +61,19 @@ protected:
 
 	void Ready_Lerp_Movement(const Vec2& vStartOffset, const Vec2& vTargetOffset, const _float fDuration, const _float fEaseValue, const _float fDelay);
 	void Ready_Fade(const _float fDuration, const _float fStartAlpha, const _float fTargetAlpha, const _float fDelay);
-	void Ready_ExplosionFade(const _float fDuration, const _float fStartAlpha,const _float fExplosionAlpha, const _float fTargetAlpha, const _float fDelay);
 	void Ready_LerpChange(const _float fDuration, const _float fStartAlpha, const _float fTargetAlpha, const _float fEaseValue, const _float fDelay);
 	_bool Tick_Lerp_Movement(const _float fTimeDelta);
 	_bool Tick_Fade(const _float fTimeDelta);
 	_bool Tick_LerpChange(_float* p, const _float fTimeDelta);
 	void Request_SetDead();
+
 public:
 	void Set_RectPos(const Vec3& pos) { m_vRectPos = pos; }
 	ERectTransform Get_RectTransformType() const { return m_eRectTransformType; }
-	void Set_TextureIndex(_uint index) { m_iTextureIndex = index; }
 	const _string& Get_Tag() { return m_strName; }
 	_bool Get_FinEvent()const { return m_isFin_Event; }
+	_bool Get_DeadRequest()const { return m_isDeadRequest; }
 
-	virtual HRESULT Spawn_FromPool(void* pArg) override;
-	virtual HRESULT Despawn_FromPool()override;
 protected:
 	CUI_Manager* m_pUIManager = { nullptr };	
 	uint32_t m_iLevelID = {};
@@ -85,11 +81,8 @@ protected:
 
 protected:
 	ERectTransform m_eRectTransformType = { ERectTransform::C };
-	_wstring m_wstrTextureTag			= {};
-	_wstring m_wstrNoiseTextureTag		= {};
-	_wstring m_wstrAlphaMaskTextureTag	= {};
-	_wstring m_wstrGlowTextureTag		= {};
-	uint32_t m_iTextureIndex			= {};
+	array<vector<_wstring>, ENUM_TO_UINT(EUITextureSlot::END)> m_ArrTextures = {};
+	
 	Vec3 m_vRectPos						= {};
 	Vec3 m_vRenderPos					= {};
 	RECT m_tRenderRect					= {};
@@ -98,6 +91,7 @@ protected:
 	uint32_t m_iComponentFlag			= {};
 	uint32_t m_iOwnerType				= {};
 	_bool m_isFin_Event					= { true };
+	_bool m_isDeadRequest				= { false };
 
 	// Shader Bind Values
 	_bool m_isUseColorTint				= { false };
@@ -110,36 +104,37 @@ protected:
 	int32_t m_iFlip						= { ENUM_TO_UINT(EUIFlip::NONE) };
 	_float m_fBrightness				= {};
 
-	// Lerp Movement Valuse
-	Vec2 m_vMoveOffsetBase				= {};
-	Vec2 m_vStartOffset					= {};
-	Vec2 m_vTargetOffset				= {};
-	_float m_fDuration					= {};
-	_float m_fEaseValue					= {};
-	_float m_fTimeAcc					= {};
-	_float m_fLerpTimeAcc				= {};
-	_float m_fDelayTimeAcc				= {};
-	_float m_fLerpDelay					= {};
+private:
+	_float m_fTimeAcc = {};
 
-	// Fade 
-	_float m_fFadeDelay					= {};
-	_float m_fFadeDelayTimeAcc			= {};
-	_float m_fFadeDuration				= {};
-	_float m_fFadeTimeAcc				= {};
-	_float m_fStartAlphaRatio			= {};
-	_float m_fTargetAlphaRatio			= {};
-	_float m_fExplosionAlphaRatio		= {};
+	// Lerp Movement Values
+	Vec2 m_vMoveOffsetBase						= {};
 
-	_float m_fFadeTimeAcc_LerpChange = {};
-	_float m_fFadeDelayTimeAcc_LerpChange = {};
-	_float m_fFadeDelay_LerpChange = {};
-	_float m_fFadeDuration_LerpChange = {};
-	_float m_fStartAlphaRatio_LerpChange = {};
-	_float m_fTargetAlphaRatio_LerpChange = {};
-	_float m_fEaseValue_LerpChange = {};
+	Vec2	m_vLerpMove_StartOffset				= {};
+	Vec2	m_vLerpMove_TargetOffset			= {};
+	_float	m_fLerpMove_Duration				= {};
+	_float	m_fLerpMove_EaseValue				= {};
+	_float	m_fLerpMove_TimeAcc					= {};
+	_float	m_fLerpMove_DelayTimeAcc			= {};
+	_float	m_fLerpMove_Delay					= {};
 
+	// Fade Values
+	_float m_fFade_Delay						= {};
+	_float m_fFade_DelayTimeAcc					= {};
+	_float m_fFade_Duration						= {};
+	_float m_fFade_TimeAcc						= {};
+	_float m_fFade_StartAlphaRatio				= {};
+	_float m_fFade_TargetAlphaRatio				= {};
+	_float	m_fFade_EaseValue					= {};
 
-
+	// Lerp Change Values
+	_float m_fLerpChange_TimeAcc				= {};
+	_float m_fLerpChange_DelayTimeAcc			= {};
+	_float m_fLerpChange_Delay					= {};
+	_float m_fLerpChange_Duration				= {};
+	_float m_fLerpChange_StartValue				= {};
+	_float m_fLerpChange_TargetValue			= {};
+	_float m_fLerpChange_EaseValue				= {};
 
 public:
 	virtual void Free()override;
