@@ -101,7 +101,6 @@ void CState_ComboBase::Change_NextCombo()
 		);
 	}
 
-
 	if (m_iComboCount == 4)
 	{
 		Change_FirstCombo();

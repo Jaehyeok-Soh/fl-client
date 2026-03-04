@@ -154,6 +154,7 @@ HRESULT CMoon_SkillE_Obj::Ready_Components()
 			cloneDesc.bIsActive			= true;
 			cloneDesc.vCenter			= { 0.f, 0.3f, 0.f };
 			cloneDesc.vExtents			= { 0.3f, 1.f,0.3f };
+			cloneDesc.strAttackPresetTag = "Xibi_Circle";
 			PHYSICSMATERIAL_DESC mtrlDesc{};
 			mtrlDesc.eMaterial			= EPhysicsMaterial::CONCRETE;
 			cloneDesc.tMaterial			= mtrlDesc;

@@ -237,6 +237,8 @@ void CStatCom_Player::Count_Dash(const _float fTimeDelta)
 	{
 		if (m_tDashTimeCounter.CountTime(fTimeDelta) == 1.f)
 		{
+			m_tDashTimeCounter.fTimeAcc = 0.f;
+
 			m_iDashCount++;
 
 			// control에게 dash 키 받도록함
