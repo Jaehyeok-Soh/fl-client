@@ -51,9 +51,6 @@ HRESULT CSkillObject_Base::Initialize(void* pArg)
 		m_runtimeDesc.vFollowOffset = m_desc.vSpawnPos - reqPos;
 	}
 
-	if (CEffectHandler* pEffectHandler = Get_Component<CEffectHandler>())
-		pEffectHandler->Setup_ForOwner();
-
 	return S_OK;
 }
 
@@ -64,6 +61,9 @@ HRESULT CSkillObject_Base::Awake(const _uint iCurrentLevelID)
 
 	if(CPhysicsRigidBody* pRigidBody = Get_Component<CPhysicsRigidBody>())
 		pRigidBody->Awake();
+
+	if (CEffectHandler* pEffectHandler = Get_Component<CEffectHandler>())
+		pEffectHandler->Setup_ForOwner();
 	
 
 	Get_Component<CTransform>()->Set_Info(TRANSFORM_INFO_STATE::POS, m_desc.vSpawnPos);
@@ -140,13 +140,11 @@ HRESULT CSkillObject_Base::Despawn_FromPool()
 		return E_FAIL;
 
 	m_runtimeDesc = {};
-
 	CEffectHandler* pHandler = Get_Component<CEffectHandler>();
 	if (pHandler)
 	{
 		pHandler->Trigger_Lifecycle_Effect(CEffectHandler::E_OBJ_LIFECYCLE_STATE::ON_DESTROY);
 	}
-	
 	return S_OK;
 }
 

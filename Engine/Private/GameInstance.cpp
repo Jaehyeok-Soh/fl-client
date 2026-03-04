@@ -291,6 +291,7 @@ CFxShaderVariant* CGameInstance::GetOrCreate_Variant(const path& filePath, EVtxL
 #pragma region LEVEL_MANAGER
 HRESULT CGameInstance::Immediately_ChangeLevel(_uint iNewLevelID, CLevel* pNewLevel)
 {
+	SetChangeLevelSequence(true);
 	return m_pLevel_Manager->Change_Level(iNewLevelID, pNewLevel);
 }
 
@@ -303,8 +304,6 @@ void CGameInstance::Request_ChangeLevel(_uint iNewLevelID, CLevel* pNewLevel)
 	desc.iNewLevelID = static_cast<_int>(iNewLevelID);
 	desc.pNewLevel = pNewLevel;
 	m_pEvent_Manager->Push_ChangeLevelEvet(desc);
-
-	SetChangeLevelSequence(true);
 }
 
 _bool CGameInstance::Is_Awaked(const _uint iLevelID) const
@@ -917,11 +916,12 @@ void CGameInstance::Destroy_Engine()
 	Safe_Release(m_pRender_Manager);
 	Safe_Release(m_pSound_Manager);
 	Safe_Release(m_pFont_Manager);
-	Safe_Release(m_pEffect_Manager);
 	Safe_Release(m_pRenderTarget_Manager);
 	Safe_Release(m_pCamera_Manager);
 	Safe_Release(m_pOctree_Manager);
+	Safe_Release(m_pEvent_Manager);
 	Safe_Release(m_pObject_Manager);
+	Safe_Release(m_pEffect_Manager);
 	Safe_Release(m_pObjectPool_Manager);
 	Safe_Release(m_pCollision_Manager);
 	Safe_Release(m_pPicking);
@@ -929,7 +929,6 @@ void CGameInstance::Destroy_Engine()
 	Safe_Release(m_pPrototype_Manager);
 	Safe_Release(m_pLevel_Manager);
 	Safe_Release(m_pLight_Manager);
-	Safe_Release(m_pEvent_Manager);
 	Safe_Release(m_pEventBus_Manager);
 	Safe_Release(m_pShaderAsset_Manager);
 	Safe_Release(m_pResource_Manager);
@@ -1234,20 +1233,20 @@ void CGameInstance::Free()
 	Safe_Release(m_pTimeScale_Manager);
 	Safe_Release(m_pSound_Manager);
 	Safe_Release(m_pFont_Manager);
-	Safe_Release(m_pEffect_Manager);
 	Safe_Release(m_pDataRepository);
 	Safe_Release(m_pRender_Manager);
 	Safe_Release(m_pRenderTarget_Manager);
 	Safe_Release(m_pCamera_Manager);
 	Safe_Release(m_pOctree_Manager);
+	Safe_Release(m_pEvent_Manager);
 	Safe_Release(m_pObject_Manager);
+	Safe_Release(m_pEffect_Manager);
 	Safe_Release(m_pObjectPool_Manager);
 	Safe_Release(m_pCollision_Manager);
 	Safe_Release(m_pPicking);
 	Safe_Release(m_pGameData_Manager);
 	Safe_Release(m_pPrototype_Manager);
 	Safe_Release(m_pLevel_Manager);
-	Safe_Release(m_pEvent_Manager);
 	Safe_Release(m_pEventBus_Manager);
 	Safe_Release(m_pShaderAsset_Manager);
 	Safe_Release(m_pResource_Manager);
