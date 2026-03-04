@@ -51,7 +51,7 @@ void CSkillObjectSpawnerBase::Spawn_SkillObject(const Vec3& vSpawnPos, const Vec
 {
 	if (m_pOriginDesc->wstrSkillPoolTag.empty())
 		return;
-
+	
 	CSkillObject_Base::SKILLOBJECT_DESC desc{};
 	desc.pRequester = m_desc.pRequester;
 	desc.pTarget = m_desc.pTarget;
@@ -64,9 +64,10 @@ void CSkillObjectSpawnerBase::Spawn_SkillObject(const Vec3& vSpawnPos, const Vec
     desc.vSpawnPos = vSpawnPos;
     desc.vDirection = vDir;
 
-    CGameInstance::GetInstance()->Request_AddObject(
+	CGameInstance::GetInstance()->Request_AddObject(
 		m_pOriginDesc->iPoolLevelIndex, m_pOriginDesc->wstrSkillPoolTag,
-		m_desc.iSpawnLevelIndex, &desc);
+		m_pGameInstance->Get_CurrentLevelIndex(), &desc);
+		//m_desc.iSpawnLevelIndex, &desc);
 }
 
 HRESULT CSkillObjectSpawnerBase::Ready_Components()
