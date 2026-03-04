@@ -349,7 +349,9 @@ inline _bool IsExist_ClientMakePathDesc(DTO::EClientMakePath ePath)
 void STATICOBJECT_DESC::from_Json(const json& LoadJson)
 {
 	/* Desc 키값으로 들어온다 */
-	this->wstrTest = Engine_Utils::ToWString(LoadJson["Test"].get<string>());
+	if (LoadJson.contains("Test"))
+		this->wstrTest = Engine_Utils::ToWString(LoadJson["Test"].get<string>());
+
 	return;
 }
 
