@@ -43,7 +43,7 @@ void CEvent_Overlap_Module::SetAttackOverlap(CPhysicsAttackOverlap* pAttackOverl
 
 	m_pOverlap = static_cast<CPhysicsAttackOverlap*>(pAttackOverlap);
 	m_pOverlap->Set_Owner(pOwner);
-	m_pOverlap->Awake();
+	m_pOverlap->Bind_Events();
 }
 
 void CEvent_Overlap_Module::SetOwner(CAnimObj* pOwner)
@@ -78,7 +78,7 @@ void CEvent_Overlap_Module::Modify_AttackOverlap(vector<DTO::ATTACKEVENT> events
 void CEvent_Overlap_Module::Awake()
 {
 	if (m_pOverlap)
-		m_pOverlap->Awake();
+		m_pOverlap->Bind_Events();
 }
 
 void CEvent_Overlap_Module::Create_AttackOverlap(vector<DTO::ATTACKEVENT> events)

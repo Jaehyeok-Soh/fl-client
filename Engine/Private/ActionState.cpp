@@ -206,6 +206,14 @@ CTransform* CActionState::Get_CamTransform()
 	return pCamTransform;
 }
 
+Vec3 CActionState::Get_MoveDir()
+{
+	if (!m_pOwnerControlContext)
+		return Vec3::Zero;
+
+	return m_pOwnerControlContext->Get_MoveDir();
+}
+
 void CActionState::Move(Vec3 disp, _float minDist, _float fTimeDelta)
 {
 	CPhysicsCCT* cct = { nullptr };
@@ -430,7 +438,10 @@ void CActionState::Apply_Gravity(const _float fTimeDelta)
 void CActionState::Apply_Gravity_CCT(const _float fTimeDelta)
 {
 	if (Is_ApplyGravity() == false)
+	{
+		m_fVerticalSpeed = 0.f;
 		return;
+	}
 
 	//// 바닥일때는 중력을 적용하지 않는다
 	//if (CCTFlags & PxControllerCollisionFlag::eCOLLISION_DOWN)

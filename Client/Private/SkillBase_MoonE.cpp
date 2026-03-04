@@ -67,9 +67,9 @@ void CSkillBase_MoonE::Update(const _float fTimeDelta, CMyStat* pStatCom)
 		m_fAccTime += fTimeDelta;
 
 		// 0.5초 지났다면 생성
-		if (m_fAccTime >= 0.8f)
+		if (m_fAccTime >= 0.35f)
 		{
-			Spawn_SkillObj(pStatCom);
+			Spawn_SkillObj(pStatCom, false);
 			m_bSpawn_Second = true;
 		}
 	}
@@ -82,7 +82,7 @@ _bool CSkillBase_MoonE::Start_Skill(CMyStat* pStatCom)
 		static_cast<CStatCom_Player*>(pStatCom)->Set_AttackState(CStatCom_Player::Attack_State::E, true);
 		static_cast<CStatCom_Player*>(pStatCom)->Set_Critical_AddRate(1.f);
 
-		Spawn_SkillObj(pStatCom);
+		Spawn_SkillObj(pStatCom, true);
 
 		m_bSpawn_Second = false;
 		m_fAccTime = 0.f;
@@ -135,7 +135,7 @@ HRESULT CSkillBase_MoonE::Ready_Spawner()
 	return S_OK;
 }
 
-void CSkillBase_MoonE::Spawn_SkillObj(CMyStat* pOwnerStat)
+void CSkillBase_MoonE::Spawn_SkillObj(CMyStat* pOwnerStat, _bool bFirst)
 {
 	_uint iLevelIndex = m_pGameInstance->Get_CurrentLevelIndex();
 	CSkillObjectSpawnerBase::SPAWNER_COPY_DESC desc{};
@@ -144,8 +144,11 @@ void CSkillBase_MoonE::Spawn_SkillObj(CMyStat* pOwnerStat)
 
 	CTransform* pPlayerTrans = pOwnerStat->Get_Owner()->Get_Component<CTransform>();
 	desc.vOrigin = pPlayerTrans->Get_Info(TRANSFORM_INFO_STATE::POS);
-	desc.vOrigin.y += 0.55f;
+	desc.vOrigin.y += 1.f;
 	desc.vForward = pPlayerTrans->Get_Info(TRANSFORM_INFO_STATE::LOOK);
+
+	desc.eRotationState = TRANSFORM_INFO_STATE::LOOK;
+	desc.fRotation_Radian = bFirst ?  XMConvertToRadians(15.f) : XMConvertToRadians(-15.f);
 
 	m_pSkillObjSpawner->Trigger(desc);
 }

@@ -109,6 +109,9 @@ HRESULT CMainPlayer::Initialize(void* pArg)
     if (FAILED(Ready_AttackStates()))
         return E_FAIL;
 
+
+    Get_Component<CPhysicsAttackOverlap>()->Bind_Events();
+
     return S_OK;
 }
 
@@ -141,11 +144,9 @@ HRESULT CMainPlayer::Awake(const _uint iCurrentLevelID)
 
     //Get_Component<CTransform>()->Set_Info(TRANSFORM_INFO_STATE::POS, Vec3{ 18.f,30.f,19.f });
 
-    Get_Component<CPhysicsCCT>()->Awake();
-
-    Get_Component<CPhysicsAttackOverlap>()->Awake();
-
     CImGui_ClientDebug::GetInstance()->Set_Player(this);
+
+    Get_Component<CPhysicsCCT>()->Awake();
 
     return S_OK;
 }
@@ -323,7 +324,9 @@ void CMainPlayer::Try_Attack(const HIT_DESC& hitDesc)
     {
     case ENUM_TO_UINT(State::COMBO):
     case ENUM_TO_UINT(State::JUMPATTEND):
+    case ENUM_TO_UINT(State::CHARGE):
         pStat->Add_ComboCount();
+        m_pGameInstance->Broadcast<COMBO_ATTACK_EVENT_START>();
         break;
 
     default:
@@ -366,8 +369,6 @@ void CMainPlayer::Try_Attack(const HIT_DESC& hitDesc)
     }
     break;
     }
-
-    m_pGameInstance->Broadcast<COMBO_ATTACK_EVENT_START>();
 }
 
 #pragma region Legacy

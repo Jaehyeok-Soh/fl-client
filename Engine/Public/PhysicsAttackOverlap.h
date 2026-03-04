@@ -29,7 +29,7 @@ public:
 #endif
 
 public:
-	void Awake();
+	void Bind_Events();
 	void Update(_float fTimeDelta);
 
 	void Ready_Event();

@@ -266,6 +266,11 @@ HRESULT CLevel_Test::Ready_Player_Layer(const wstring& wstrLayerTag)
 		// SkillObject Pool
 		{
 			CMoon_SkillE_Obj::SKILLOBJECT_DESC desc{};
+			//TRANSFORM_DESC
+			CTransform::TRANSFORM_DESC tTransDesc = {};
+			tTransDesc.fMovePerSec = 20.f;
+			desc.pTransform_Desc = &tTransDesc;
+
 			if (FAILED(m_pGameInstance->Regist_Pool(
 				0,
 				g_wszPool_MoonSkillE,

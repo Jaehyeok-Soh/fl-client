@@ -40,7 +40,7 @@ private:
 
 private:
 	HRESULT Ready_Spawner();
-	void	Spawn_SkillObj(CMyStat* pOwnerStat);
+	void	Spawn_SkillObj(CMyStat* pOwnerStat, _bool bFirst);
 
 public:
 	static CSkillBase_MoonE* Create(void* pArg = nullptr);

@@ -75,7 +75,7 @@ HRESULT CMonster_Base::Awake(const _uint iCurrentLevelID)
 	Get_Component<CPhysicsCCT>()->Awake();
 
 	if (CPhysicsAttackOverlap* attackOverlap = Get_Component<CPhysicsAttackOverlap>())
-		attackOverlap->Awake();
+		attackOverlap->Bind_Events();
 
 	return S_OK;
 }

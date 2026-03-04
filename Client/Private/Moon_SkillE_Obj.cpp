@@ -3,6 +3,9 @@
 #include "EffectHandler.h"
 #include "PhysicsCollider.h"
 #include "PhysicsRigidBody.h"
+
+// manager
+#include "UI_Manager.h"
 #include "GameInstance.h"
 
 CMoon_SkillE_Obj::CMoon_SkillE_Obj(ID3D11Device* pDevice, ID3D11DeviceContext* pDeviceContext)
@@ -90,6 +93,19 @@ void CMoon_SkillE_Obj::OnCollision_Exit(_uint iMyColliderLayer, _uint iOtherLaye
 {
 }
 
+void CMoon_SkillE_Obj::OnTrigger_Enter(_uint iMyColliderLayer, _uint iOtherLayer, CGameObject* pOther)
+{
+	COLLIDED_DESC desc{};
+	desc.iCollisionType = COLLISIONEVENT::ON_COLLISION_ENTER;
+	desc.iRequesterLayer = iMyColliderLayer;
+	desc.iOtherLayer = iOtherLayer;
+	desc.pRequester = this;
+	desc.pOther = pOther;
+	//desc.tHitInfo = tHitInfo;
+
+	m_pGameInstance->Push_CollidedData(desc);
+}
+
 _bool CMoon_SkillE_Obj::On_Hit(const HIT_DESC& hitDesc)
 {
 	return true;
@@ -97,6 +113,22 @@ _bool CMoon_SkillE_Obj::On_Hit(const HIT_DESC& hitDesc)
 
 void CMoon_SkillE_Obj::Try_Attack(const HIT_DESC& hitDesc)
 {
+	// damage 폰트 : iDamageFlag에 따라 크리티컬 || 일반 판정
+
+	// 일반 공격 데미지 폰트
+	{
+		UI_PREFAB_DATA tPrefabData = {};
+		tPrefabData.DamageFontData.iDamage = hitDesc.fFinalDamage; // 데미지 폰트에 뜰 숫자 // 플레이어 공격력 // 랜덤은 보여주기용
+		tPrefabData.DamageFontData.vFontColor = Vec4{ 1.f, 0.95f, 0.47f, 1.f }; // 데미지 폰트 색 // 캐릭터 고유 색
+		tPrefabData.DamageFontData.vHitPos = hitDesc.vHitPoint; // 데미지 폰트를 띄울 World 위치 // 
+		tPrefabData.DamageFontData.vRandOffset = Vec3{
+			m_pGameInstance->Rand_Float(-1.f, 1.f),
+			m_pGameInstance->Rand_Float(-1.f, 1.f),
+			m_pGameInstance->Rand_Float(-1.f, 1.f) }; // 랜덤 오프셋 // 더 커지면 이상함
+
+		CUI_Manager::GetInstance()->Request_Add_Prefab(
+			m_pGameInstance->Get_CurrentLevelIndex(), EUIPrefabType::DAMAGE_FONTS_COMMON, m_pGameInstance->Get_CurrentLevelIndex(), &tPrefabData);
+	}
 }
 
 HRESULT CMoon_SkillE_Obj::Ready_Components()
@@ -113,7 +145,7 @@ HRESULT CMoon_SkillE_Obj::Ready_Components()
 			SkillDesc.bWorld = { CEffectHandler::E_WORLD::E_LOCAL }; 
 			SkillDesc.bFollowBone = { false };
 			SkillDesc.iBoneIndex = -1;
-			SkillDesc.vOffSet = { Vec3::Zero };
+			SkillDesc.vOffSet = { 0.f,0.f,0.f };
 			SkillDesc.vRotation = { Vec3::Zero };
 			Desc.eType = CEffectHandler::E_HANDLER_TYPE::SKILL_OBJ;
 			Desc.mEffectState.emplace(CEffectHandler::E_OBJ_LIFECYCLE_STATE::ON_SPAWN, SkillDesc);
@@ -152,8 +184,9 @@ HRESULT CMoon_SkillE_Obj::Ready_Components()
 			cloneDesc.bIsTrigger		= true;
 			cloneDesc.bSetOnlyFilter	= false;
 			cloneDesc.bIsActive			= true;
-			cloneDesc.vCenter			= { 0.f, 0.f, 0.f };
-			cloneDesc.vExtents			= { 0.5f, 1.f,0.5f };
+			cloneDesc.vCenter			= { 0.f, 0.3f, 0.f };
+			cloneDesc.vExtents			= { 0.3f, 1.f,0.3f };
+			cloneDesc.strAttackPresetTag = "Xibi_Circle";
 			PHYSICSMATERIAL_DESC mtrlDesc{};
 			mtrlDesc.eMaterial			= EPhysicsMaterial::CONCRETE;
 			cloneDesc.tMaterial			= mtrlDesc;
