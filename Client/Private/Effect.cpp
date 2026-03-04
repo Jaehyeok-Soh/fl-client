@@ -199,11 +199,6 @@ _bool Effect::Export_Data(DTO::ECategory eCategory, CDataDocumentBase* pDocument
 	return false;
 }
 
-void Effect::Set_Dead(const wstring& wstrLayerTag)
-{
-	m_pGameInstance->Request_DeleteGameObject(m_pGameInstance->Get_CurrentLevelIndex(), wstrLayerTag, this);
-}
-
 void Effect::Update_CombinedWorldMatrix(const Matrix* pMatParent)
 {
 	m_matCombinedWorld = Get_Component<CTransform>()->Get_WorldMatrix() * (*pMatParent);

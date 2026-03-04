@@ -59,6 +59,7 @@ private:
 	void Clear_AddEvent(AddEventDesc& spawnDesc);
 	void Clear_RemoveEvent(RemoveEventDesc &removeDesc);
 	void Clear_ChangeLevelEvent(ChangeLevelEventDesc& changeLevelDesc);
+	_bool Cancel_AddQueued(CGameObject* pGo);
 private:
 	_bool m_bFlushing = { false };
 	class CGameInstance* m_pGameInstance = { nullptr };

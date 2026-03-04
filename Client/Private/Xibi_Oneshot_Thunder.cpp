@@ -77,16 +77,6 @@ HRESULT CXibi_Oneshot_Thunder::Render()
 	return S_OK;
 }
 
-void CXibi_Oneshot_Thunder::Set_Dead(const wstring& wstrLayerTag)
-{
-	m_bDead = true;
-	m_pGameInstance->Request_DeleteGameObject(
-		m_pGameInstance->Get_CurrentLevelIndex(),
-		g_wszSkillObjectLayer,
-		this);
-	Get_Component<CEffectHandler>()->Trigger_Lifecycle_Effect(CEffectHandler::E_OBJ_LIFECYCLE_STATE::ON_DESTROY);
-}
-
 void CXibi_Oneshot_Thunder::OnCollision(_uint iMyColliderLayer, _uint iOtherLayer, CGameObject* pOther)
 {
 

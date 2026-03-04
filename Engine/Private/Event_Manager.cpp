@@ -26,8 +26,13 @@ void CEvent_Manager::Push_AddEvent(const AddEventDesc& desc)
 
 void CEvent_Manager::Push_RemoveEvent(const RemoveEventDesc& desc)
 {
-	Safe_AddRef(desc.pGo);
+	if (desc.pGo == nullptr)
+		return;
 
+	if (Cancel_AddQueued(desc.pGo))
+		return;
+
+	Safe_AddRef(desc.pGo);
 	if (m_bFlushing == false)
 		m_queRemoveGameObject.push(desc);
 	else
@@ -238,6 +243,7 @@ HRESULT CEvent_Manager::Remove_GameObject(RemoveEventDesc& removeDesc)
 		m_pGameInstance->Immediately_DespawnGameObject(removeDesc.iClonedLevelIndex, removeDesc.pGo);
 
 	Safe_Release(removeDesc.pGo);
+	removeDesc.pGo = nullptr;
 	return S_OK;
 }
 
@@ -282,6 +288,46 @@ void CEvent_Manager::Clear_ChangeLevelEvent(ChangeLevelEventDesc& changeLevelDes
 
 	Safe_Release(changeLevelDesc.pNewLevel);
 	changeLevelDesc.pNewLevel = nullptr;
+}
+
+_bool CEvent_Manager::Cancel_AddQueued(CGameObject* pGo)
+{
+	_bool bCancelled{ false };
+
+	{
+		std::queue<AddEventDesc> tmp;
+		while (m_queAddGameObject.empty() == false)
+		{
+			AddEventDesc desc = m_queAddGameObject.front();
+			m_queAddGameObject.pop();
+			if (desc.pClone == pGo)
+			{
+				Clear_AddEvent(desc);
+				bCancelled = true;
+			}
+			else
+				tmp.push(desc);
+		}
+		m_queAddGameObject.swap(tmp);
+	}
+	{
+		std::queue<AddEventDesc> tmp;
+		while (m_queAddGameObject_Pending.empty() == false)
+		{
+			AddEventDesc desc = m_queAddGameObject_Pending.front();
+			m_queAddGameObject_Pending.pop();
+			if (desc.pClone == pGo)
+			{
+				Clear_AddEvent(desc);
+				bCancelled = true;
+			}
+			else
+				tmp.push(desc);
+		}
+		m_queAddGameObject_Pending.swap(tmp);
+	}
+
+	return bCancelled;
 }
 
 CEvent_Manager* CEvent_Manager::Create()

@@ -148,13 +148,16 @@ _bool CUINameplate_BG::Tick_InVisible_Event(const _float fTimeDelta)
 HRESULT CUINameplate_BG::Spawn_FromPool(void* pArg)
 {
 	UI_PREFAB_DATA* pDesc = static_cast<UI_PREFAB_DATA*>(pArg);
-	
+
 	auto* pComp = Get_Script_Component(L"WorldUIComponent");
 	if (nullptr == pComp)
 		return E_FAIL;
 
 	m_pWorldUIComp = static_cast<CWorldUI_Component*>(pComp);
 	if (nullptr == m_pWorldUIComp)
+		return E_FAIL;
+
+	if (FAILED(Super::Spawn_FromPool(pArg)))
 		return E_FAIL;
 
 	m_pWorldUIComp->Set_Target(pDesc->pTarget);
@@ -167,6 +170,9 @@ HRESULT CUINameplate_BG::Spawn_FromPool(void* pArg)
 
 HRESULT CUINameplate_BG::Despawn_FromPool()
 {
+	if (FAILED(Super::Despawn_FromPool()))
+		return E_FAIL;
+
 	return S_OK;
 }
 

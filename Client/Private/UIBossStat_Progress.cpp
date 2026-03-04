@@ -171,11 +171,12 @@ _bool CUIBossStat_Progress::Tick_InVisible_Event(const _float fTimeDelta)
 
 HRESULT CUIBossStat_Progress::Spawn_FromPool(void* pArg)
 {
+	if (FAILED(Super::Spawn_FromPool(pArg)))
+		return E_FAIL;
+
 	UI_PREFAB_DATA* pDesc = static_cast<UI_PREFAB_DATA*>(pArg);
 
-	/* º¸½º ½ºÅÈ ÄÄÆ÷³ÍÆ® ºÎÂø */
-	m_bDead = false;
-	
+	/* º¸½º ½ºÅÈ ÄÄÆ÷³ÍÆ® ºÎÂø */	
 	m_isSpawned = true;
 	m_fProgress_Ratio = 0.f;
 	m_vOriginColorTint = m_vColorTint;
@@ -184,6 +185,9 @@ HRESULT CUIBossStat_Progress::Spawn_FromPool(void* pArg)
 
 HRESULT CUIBossStat_Progress::Despawn_FromPool()
 {
+	if (FAILED(Super::Despawn_FromPool()))
+		return E_FAIL;
+
 	m_isVisible			= false;
 	m_isPreVisible		= false;
 	m_isVisibleTrigger	= false;

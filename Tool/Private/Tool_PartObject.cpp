@@ -74,11 +74,6 @@ _bool Tool_PartObject::Picking(OUT Vec3& vOut)
 	return true;
 }
 
-void Tool_PartObject::Set_Dead(const wstring& wstrLayerTag)
-{
-	Super::Set_Dead(wstrLayerTag);
-}
-
 void Tool_PartObject::Draw_ImGui()
 {
 	Super::Draw_ImGui();

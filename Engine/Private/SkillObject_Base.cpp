@@ -69,17 +69,11 @@ HRESULT CSkillObject_Base::Awake(const _uint iCurrentLevelID)
 
 void CSkillObject_Base::Update_Priority(const _float fTimeDelta)
 {
-	if (m_bDead)
-		return;
-
 	Super::Update_Priority(fTimeDelta);
 }
 
 void CSkillObject_Base::Update(const _float fTimeDelta)
 {
-	if (m_bDead)
-		return;
-
 	Super::Update(fTimeDelta);
 
 	Process_Move(fTimeDelta);
@@ -88,17 +82,11 @@ void CSkillObject_Base::Update(const _float fTimeDelta)
 
 void CSkillObject_Base::Update_Late(const _float fTimeDelta)
 {
-	if (m_bDead)
-		return;
-
 	Super::Update_Late(fTimeDelta);
 }
 
 void CSkillObject_Base::Ready_Before_Render(const _float fTimeDelta)
 {
-	if (m_bDead)
-		return;
-
 	Super::Ready_Before_Render(fTimeDelta);
 }
 
@@ -140,7 +128,6 @@ HRESULT CSkillObject_Base::Spawn_FromPool(void* pArg)
 	if (pRigidBody)
 		pRigidBody->SetTransform(pTransform->Get_WorldMatrix());
 	pEffectHandler->Trigger_Lifecycle_Effect(CEffectHandler::E_OBJ_LIFECYCLE_STATE::ON_SPAWN);
-	m_bDead = false;
 	return S_OK;
 }
 

@@ -22,8 +22,6 @@ public:
     virtual void Update(const _float fTimeDelta) override;
     virtual void Update_Late(const _float fTimeDelta) override;
     virtual void Ready_Before_Render(const _float fTimeDelta) override;
-    virtual void Set_Dead(const wstring& wstrLayerTag) override;
-
 public:
     virtual void Free() override;
 

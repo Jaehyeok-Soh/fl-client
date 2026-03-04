@@ -38,8 +38,6 @@ public:
 	virtual HRESULT Render() override;
 	virtual _bool Picking(OUT Vec3& vOut) override;
 	virtual void Draw_ImGui();
-	virtual void Set_Dead(const wstring& wstrLayerTag) override;
-
 public:
 	void Set_Parent(CGameObject* pGo);
 	void Set_ToolPartsObjectID(E_PartsObjectID eID) { m_iToolObjectID = eID; }

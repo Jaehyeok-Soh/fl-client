@@ -54,7 +54,7 @@ HRESULT CMonster_Body_Base::Initialize(void* pArg)
 	if (FAILED(Ready_EffectHandler(pDesc)))
 		return E_FAIL;
 
-	Set_Flag(OF_Outline, true);
+	Set_RenderInfoFlag(OF_Outline, true);
 	return S_OK;
 }
 

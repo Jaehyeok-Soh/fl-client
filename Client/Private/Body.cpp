@@ -65,7 +65,7 @@ HRESULT CBody::Initialize(void* pArg)
 	//m_iRightShoulderSocket_Index = Get_Component<CModel>()->Get_BoneIndex("RightShoulder");
 	//m_iRightHandWeaponSocket_Index = Get_Component<CModel>()->Get_BoneIndex("MeleeWeaponRHand");
 	
-	Set_Flag(OF_Outline, true);
+	Set_RenderInfoFlag(OF_Outline, true);
 	return S_OK;
 }
 

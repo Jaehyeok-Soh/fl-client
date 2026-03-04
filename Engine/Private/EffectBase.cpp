@@ -62,11 +62,6 @@ HRESULT CEffectBase::Render()
 	return S_OK;
 }
 
-void CEffectBase::Set_Dead(const wstring& wstrLayerTag)
-{
-	Super::Set_Dead(wstrLayerTag);
-}
-
 void CEffectBase::LoopStateChange(DTO::E_LoopState EState)
 {
 	switch (EState)

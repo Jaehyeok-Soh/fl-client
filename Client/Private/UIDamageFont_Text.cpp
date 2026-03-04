@@ -334,7 +334,9 @@ HRESULT CUIDamageFont_Text::Spawn_FromPool(void* pArg)
 	if (nullptr == m_pWorldUIComp)
 		return E_FAIL;
 
-	m_bDead						= false;
+	if (FAILED(Super::Spawn_FromPool(pArg)))
+		return E_FAIL;
+
 	m_isFin_Event				= false;
 	m_isFin_HitFontEvent		= false;
 	m_isHitFontEventTrigger		= false;
@@ -407,6 +409,9 @@ HRESULT CUIDamageFont_Text::Spawn_FromPool(void* pArg)
 
 HRESULT CUIDamageFont_Text::Despawn_FromPool()
 {
+	if (FAILED(Super::Despawn_FromPool()))
+		return E_FAIL;
+
 	m_vFontColor				= m_vOriginFontColor;
 	m_fDamageFontScaleOffet		= 1.f;
 	m_isVisible					= false;

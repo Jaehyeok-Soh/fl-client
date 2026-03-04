@@ -403,7 +403,7 @@ void CLevel_Animation::Create_AnimModel(fs::path animModelPath, ANIM_SRT pretran
 	animObjDesc.wstrLayerTag = m_wstrLayer;
 
 	if (!(m_pSelectedObject = static_cast<CToolObject*>(m_pGameInstance->Add_GameObject(ENUM_TO_UINT(ELevelType::ANIMATION), L"Prototype_GameObject_AnimObject", ENUM_TO_UINT(ELevelType::ANIMATION), m_wstrLayer, &animObjDesc))))
-		m_pGameInstance->Immediately_DeleteGameObject(ENUM_TO_UINT(ELevelType::ANIMATION), m_wstrLayer, m_pSelectedObject);
+		m_pGameInstance->Immediately_DeleteGameObject(ENUM_TO_UINT(ELevelType::ANIMATION), m_pSelectedObject);
 
 	m_pSelectedObject->Get_Component<CTransform>()->Set_WorldMatrix(Matrix::Identity);
 }

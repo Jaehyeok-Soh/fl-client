@@ -32,7 +32,6 @@ public:
 	virtual void Update_Late(const _float fTimeDelta) override;
 	virtual void Ready_Before_Render(const _float fTimeDelta) override;
 	virtual HRESULT Render() override;
-	virtual void Set_Dead(const wstring& wstrLayerTag) override;
 public:
 	virtual void LoopStateChange(DTO::E_LoopState EState);
 

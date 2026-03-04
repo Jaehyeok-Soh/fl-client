@@ -98,37 +98,59 @@ void CObject_Manager::Ready_Before_Render(const _float fUnscaledTimeDelta, const
 	}
 }
 
-void CObject_Manager::Delete_GameObject(_uint iCloneLevelIndex, const wstring& wstrLayerTag, CGameObject* pGo)
+void CObject_Manager::Delete_GameObject(_uint iCloneLevelIndex, CGameObject* pGo)
 {
-	if (!pGo || wstrLayerTag.empty())
+	if (pGo == nullptr)
 		return;
 
-	if (pGo->Is_PoolObject() == true)
+	if (pGo->m_pOwnerPool != nullptr)
 	{
-		CObjectPool* pOwnerPool = pGo->Get_OwnerPool();
-		if (pOwnerPool == nullptr)
-			return;
-
-		const wstring& wstrLayerTagFromPool = pOwnerPool->Get_LayerTag();
-
-		if (CLayer* pFindLayer = Find_Layer(iCloneLevelIndex, wstrLayerTagFromPool))
-			pFindLayer->Delete_GameObject(pGo);
-
-		pOwnerPool->Despawn(pGo);
+		MSG_BOX("CObject_Manager::Delete_GameObject, choosed wrong function, must use Despawn_GameObject..");
+		return;
 	}
-	else
-	{
-		if (CLayer* pFindLayer = Find_Layer(iCloneLevelIndex, wstrLayerTag))
-			pFindLayer->Delete_GameObject(pGo);
 
+	if (CLayer* pFindLayer = Find_Layer(iCloneLevelIndex, pGo->m_wstrLayerTag))
+	{
+		pFindLayer->Delete_GameObject(pGo);
 		Safe_Release(pGo);
 	}
+	else
+		MSG_BOX("CObject_Manager::Delete_GameObject, layer invalid");
+}
+
+void CObject_Manager::Despawn_GameObject(_uint iCloneLevelIndex, CGameObject* pGo)
+{
+	if (pGo == nullptr)
+	{
+		MSG_BOX("CObject_Manager::Despawn_GameObject, GameObject nullptr");
+		return;
+	}
+	if (pGo->m_pOwnerPool == nullptr)
+	{
+		MSG_BOX("CObject_Manager::Despawn_GameObject, OwnerPool nullptr");
+		return;
+	}
+
+	if (CLayer* pFindLayer = Find_Layer(iCloneLevelIndex, pGo->m_pOwnerPool->Get_LayerTag()))
+		pFindLayer->Delete_GameObject(pGo);
+	else
+		MSG_BOX("CObject_Manager::Despawn_GameObject, layer invalid");
+
+	pGo->m_pOwnerPool->Despawn(pGo);
 }
 
 CGameObject* CObject_Manager::Add_GameObject(_uint iCloneLevelIndex, const wstring& wstrLayerTag, CGameObject* pGo)
 {
-	if (!pGo || wstrLayerTag.empty())
+	if (pGo == nullptr)
+	{
+		MSG_BOX("CObject_Manager::Add_GameObject, GameObject nullptr");
 		return nullptr;
+	}
+	if (wstrLayerTag.empty())
+	{
+		MSG_BOX("CObject_Manager::Add_GameObject, wstrLayerTag empty");
+		return nullptr;
+	}
 
 	CLayer* pLayer = Find_Layer(iCloneLevelIndex, wstrLayerTag);
 	if (pLayer == nullptr)
@@ -138,29 +160,24 @@ CGameObject* CObject_Manager::Add_GameObject(_uint iCloneLevelIndex, const wstri
 	}
 
 	if (FAILED(pLayer->Add_GameObject(pGo)))
+	{
+		Safe_Release(pGo);
 		return nullptr;
-
-	if (m_pGameInstance->Is_Awaked(iCloneLevelIndex) == true)
-		pGo->Awake(iCloneLevelIndex);
+	}
 
 	pGo->Set_Layer(wstrLayerTag);
+
+	if (m_pGameInstance->Is_Awaked(iCloneLevelIndex) == true && (pGo->Is_Awaked() == false))
+		pGo->Awake(iCloneLevelIndex);
+
 	return pGo;
 }
 
 CGameObject* CObject_Manager::Add_GameObject(_uint iPrototypeLevelIndex, const wstring& wstrPrototypeTag, _uint iCloneLevelIndex, const wstring& wstrLayerTag, void* pArg)
 {
-	CGameObject* pGo = { nullptr };
+	CGameObject* pGo{ nullptr };
 
-	if (iCloneLevelIndex == 0)
-		int a = 0;
-
-	// Pool쪽 먼저 체크
-	wstring wstrLayerTagFromPool = { L"" };
-	pGo = m_pPoolManager->Spawn(iPrototypeLevelIndex, wstrPrototypeTag, wstrLayerTagFromPool, pArg);
-
-	// Pool에 없으면 Clone
-	if (pGo == nullptr)
-		pGo = static_cast<CGameObject*>(m_pGameInstance->Clone_Prototype(EPrototypeType::GAMEOBJECT, iPrototypeLevelIndex, wstrPrototypeTag, pArg));
+	pGo = static_cast<CGameObject*>(m_pGameInstance->Clone_Prototype(EPrototypeType::GAMEOBJECT, iPrototypeLevelIndex, wstrPrototypeTag, pArg));
 
 	if (pGo == nullptr)
 		return nullptr;
@@ -173,12 +190,42 @@ CGameObject* CObject_Manager::Add_GameObject(_uint iPrototypeLevelIndex, const w
 	}
 
 	if (FAILED(pLayer->Add_GameObject(pGo)))
+	{
+		Safe_Release(pGo);
 		return nullptr;
-
-	if ((m_pGameInstance->Is_Awaked(iCloneLevelIndex) == true) && (pGo->Is_Awaked() == false))
-		pGo->Awake(iCloneLevelIndex);
+	}
 
 	pGo->Set_Layer(wstrLayerTag);
+
+	if (m_pGameInstance->Is_Awaked(iCloneLevelIndex) == true)
+		pGo->Awake(iCloneLevelIndex);
+	return pGo;
+}
+
+CGameObject* CObject_Manager::Spawn_GameObject(_uint iCloneLevelIndex, _uint iPoolLevelIndex, const wstring& wstrPoolTag, void* pArg)
+{
+	CGameObject* pGo{ nullptr };
+	wstring wstrLayerTagFromPool = { L"" };
+	pGo = m_pPoolManager->Spawn(iPoolLevelIndex, wstrPoolTag, wstrLayerTagFromPool, pArg);
+
+	if (pGo == nullptr)
+		return nullptr;
+
+	CLayer* pLayer = Find_Layer(iCloneLevelIndex, wstrLayerTagFromPool);
+	if (pLayer == nullptr)
+	{
+		pLayer = CLayer::Create();
+		m_pLayers[iCloneLevelIndex].insert(map<const wstring, CLayer*>::value_type(wstrLayerTagFromPool, pLayer));
+	}
+
+	if (FAILED(pLayer->Add_GameObject(pGo)))
+	{
+		pGo->m_pOwnerPool->Despawn(pGo);
+		return nullptr;
+	}
+
+	pGo->Set_Layer(wstrLayerTagFromPool);
+	pGo->Awake(iCloneLevelIndex);
 	return pGo;
 }
 
@@ -230,7 +277,7 @@ void CObject_Manager::Clear_Layer(_uint iLevelIndex, const wstring& wstrLayerTag
 		
 		for (CGameObject* pGo : *pFindList)
 		{
-			m_pGameInstance->Request_DeleteGameObject(iLevelIndex, wstrLayerTag, pGo);
+			m_pGameInstance->Request_DeleteGameObject(iLevelIndex, pGo);
 		}
 	}
 }

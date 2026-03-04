@@ -252,7 +252,6 @@ void CEffectHandler::CallBackEvent(const AnimNotifyKey& key)
         {
             m_pGameInstance->Request_DeleteGameObject(
                 m_pGameInstance->Get_CurrentLevelIndex(),
-                L"Layer_Effect",
                 itActive->second
             );
             m_ActiveEffects[ENUM_TO_UINT(m_tDesc.eType)].erase(itActive);

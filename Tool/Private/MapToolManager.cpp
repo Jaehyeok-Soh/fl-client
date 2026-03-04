@@ -659,7 +659,7 @@ HRESULT CMapToolManager::Change_Instance_To_OtherDrawType(CMapObject* pChangeMap
 				return E_FAIL;
 			}
 		}
-		pChangeMapObject->Set_Dead(pChangeMapObject->Get_LayerTag());
+		pChangeMapObject->Set_Dead();
 	}
 	return S_OK;
 }
@@ -692,7 +692,7 @@ void CMapToolManager::Delete_Preview()
 			_int iIndex = m_pPreviewMapobject->Get_InstanceCount() - 1;
 			if (iIndex == 0)
 			{
-				m_pGameInstance->Request_DeleteGameObject(ENUM_TO_UINT(ELevelType::MAP), m_pPreviewMapobject->Get_LayerTag(), m_pPreviewMapobject);
+				m_pGameInstance->Request_DeleteGameObject(ENUM_TO_UINT(ELevelType::MAP), m_pPreviewMapobject);
 			}
 			else
 			{
@@ -703,7 +703,7 @@ void CMapToolManager::Delete_Preview()
 		}
 		else
 		{
-			m_pGameInstance->Request_DeleteGameObject(ENUM_TO_UINT(ELevelType::MAP), m_pPreviewMapobject->Get_LayerTag(), m_pPreviewMapobject);
+			m_pGameInstance->Request_DeleteGameObject(ENUM_TO_UINT(ELevelType::MAP), m_pPreviewMapobject);
 			m_pPreviewMapobject = nullptr;
 		}
 	}

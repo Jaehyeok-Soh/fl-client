@@ -36,8 +36,6 @@ public:
 	virtual HRESULT Render() override;
 	virtual _bool	Picking(OUT Vec3& vOut) override;
 	virtual void	Draw_ImGui()override;
-	virtual void	Set_Dead(const wstring& wstrLayerTag) override;
-
 public:
 	const CModel*	Get_ModelComPtr(); // 모델 컴포넌트를 가져와야 하므로 계속 접근하게 한다.
 	HRESULT			Change_ModelCom(_wstring wstrModelTag);

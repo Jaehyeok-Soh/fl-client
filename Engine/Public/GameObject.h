@@ -98,7 +98,6 @@ public:
 	virtual HRESULT Change_State(_uint iIndex);
 	CCameraMan* Get_CameraTargeter() { return m_pTargeter; }
 	void Set_CameraTargeter(CCameraMan* pTargeter) { m_pTargeter = pTargeter; }
-	virtual void Set_Dead(const wstring& wstrLayerTag);
 	void Set_ActiveIndex(_uint iActiveIndex) { m_iActiveIndex = (_int)iActiveIndex; }
 	_int Get_ActiveIndex() const { return m_iActiveIndex; }
 	void Set_Awake(_bool bAwaked) { m_bAwaked = bAwaked; }
@@ -115,25 +114,28 @@ public:
 	void Clear_Components_WhenChangeLevel();
 public:
 	void Mark_Pooled();
-	void Set_Active(_bool b);
-	void Set_Render(_bool b);
-	void Set_CollideEnabled(_bool b);
+	virtual void Set_Active(_bool b);
+	virtual void Set_Render(_bool b);
+	virtual void Set_CollideEnabled(_bool b);
 public:
-	_bool Is_Alive() const { return m_eState == ELifeState::Alive; }
-	_bool Is_Dying() const { return m_eState == ELifeState::Dying; }
-	_bool Is_Destroy() const { return m_eState == ELifeState::Pending; }
-	_bool Is_Pooled() const { return m_eState == ELifeState::Pooled; }
+	_bool IsAlive() const { return m_eState == ELifeState::Alive; }
+	_bool IsDying() const { return m_eState == ELifeState::Dying; }
+	_bool IsDead() const { return m_eState == ELifeState::Pending || m_eState == ELifeState::Pooled; }
+	_bool IsPooled() const { return m_eState == ELifeState::Pooled; }
 
 	inline _bool Is_Active() const;
 	inline _bool Can_Collide() const;
 	inline _bool Can_Render() const;
 
 	inline void Set_Dying();
-	inline void Set_Destroy(_bool bIsStatic = false);
+	inline void Set_Dead(_bool bIsStatic = false);
 
 	_bool Is_Awaked() const { return m_bAwaked; }
+	_bool Is_FromPool() const { return m_pOwnerPool != nullptr; }
 	_bool IsClone() const { return m_bClone; }
 private:
+	CObjectPool* Get_OwnerPool() { return m_pOwnerPool; }
+	void Set_OwnerPool(CObjectPool* pOwnerPool) { m_pOwnerPool = pOwnerPool; }
 	void Clamp_FlagsByState();
 	void Disable_CollisionComponent();
 	void Update_Script_Components(const _float fTimeDelta);
@@ -161,6 +163,9 @@ public:
 	virtual CGameObject* Clone(void* pArg) PURE;
 	virtual void Free() override;
 	friend class CObject_Manager;
+	friend class CObjectPool;
+	friend class CEvent_Manager;
+	friend class CLayer;
 };
 
 /// <summary>
@@ -173,7 +178,7 @@ public:
 template <typename T>
 inline T* CGameObject::Get_Component()
 {
-	static_assert(T::_ID >= EComponentType::TRANSFORM || T::_ID < EComponentType::END, "ComponentType ID is invalid");
+	static_assert(T::_ID >= EComponentType::TRANSFORM && T::_ID < EComponentType::END, "ComponentType ID is invalid");
 	static_assert(T::_ID != EComponentType::SCRIPT, "Script type components dont support this feature. Please check the function name");
 	return static_cast<T*>(m_Components[ENUM_TO_UINT(T::_ID)]);
 }
@@ -190,7 +195,7 @@ inline T* CGameObject::Get_Component()
 template <typename T>
 inline HRESULT CGameObject::Add_Component(_uint iPrototypeLevelIndex, const wstring& wstrPrototypeTag, void* pArg)
 {
-	static_assert(T::_ID >= EComponentType::TRANSFORM || T::_ID < EComponentType::END, "ComponentType ID is invalid");
+	static_assert(T::_ID >= EComponentType::TRANSFORM && T::_ID < EComponentType::END, "ComponentType ID is invalid");
 	static_assert(T::_ID != EComponentType::SCRIPT, "Script type components dont support this feature. Please check the function name");
 
 	if (m_Components[ENUM_TO_UINT(T::_ID)])
@@ -214,7 +219,7 @@ inline HRESULT CGameObject::Add_Component(_uint iPrototypeLevelIndex, const wstr
 template <typename T>
 inline HRESULT CGameObject::Add_Component(T* pComp)
 {
-	static_assert(T::_ID >= EComponentType::TRANSFORM || T::_ID < EComponentType::END, "ComponentType ID is invalid");
+	static_assert(T::_ID >= EComponentType::TRANSFORM && T::_ID < EComponentType::END, "ComponentType ID is invalid");
 	static_assert(T::_ID != EComponentType::SCRIPT, "Script type components dont support this feature. Please check the function name");
 
 	if (!pComp)
@@ -242,7 +247,7 @@ inline HRESULT CGameObject::Add_Component(T* pComp)
 template<typename T>
 inline T* CGameObject::Detach_Component()
 {
-	static_assert(T::_ID >= EComponentType::TRANSFORM || T::_ID < EComponentType::END, "ComponentType ID is invalid");
+	static_assert(T::_ID >= EComponentType::TRANSFORM && T::_ID < EComponentType::END, "ComponentType ID is invalid");
 	static_assert(T::_ID != EComponentType::SCRIPT, "Script type components dont support this feature. Please check the function name");
 	
 	if (m_Components[ENUM_TO_UINT(T::_ID)] == nullptr)
@@ -264,7 +269,7 @@ inline T* CGameObject::Detach_Component()
 template <typename T>
 inline void CGameObject::Change_Component(T* pSrc)
 {
-	static_assert(T::_ID >= EComponentType::TRANSFORM || T::_ID < EComponentType::END, "ComponentType ID is invalid");
+	static_assert(T::_ID >= EComponentType::TRANSFORM && T::_ID < EComponentType::END, "ComponentType ID is invalid");
 	static_assert(T::_ID != EComponentType::SCRIPT, "Script type components dont support this feature. Please check the function name");
 
 	if (m_Components[ENUM_TO_UINT(T::_ID)])
@@ -281,7 +286,7 @@ inline void CGameObject::Change_Component(T* pSrc)
 template <typename T>
 inline void CGameObject::Remove_Component()
 {
-	static_assert(T::_ID >= EComponentType::TRANSFORM || T::_ID < EComponentType::END, "ComponentType ID is invalid");
+	static_assert(T::_ID >= EComponentType::TRANSFORM && T::_ID < EComponentType::END, "ComponentType ID is invalid");
 	static_assert(T::_ID != EComponentType::SCRIPT, "Script type components dont support this feature. Please check the function name");
 	Safe_Release(m_Components[ENUM_TO_UINT(T::_ID)]);
 	m_Components[ENUM_TO_UINT(T::_ID)] = nullptr;

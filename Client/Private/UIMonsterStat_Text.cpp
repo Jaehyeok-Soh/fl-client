@@ -182,6 +182,9 @@ HRESULT CUIMonsterStat_Text::Spawn_FromPool(void* pArg)
 	if (nullptr == m_pWorldUIComp)
 		return E_FAIL;
 
+	if (FAILED(Super::Spawn_FromPool(pArg)))
+		return E_FAIL;
+
 	m_pWorldUIComp->Set_Target(pDesc->pTarget);
 	m_pTargetMoster = pDesc->pTarget;
 	m_pWorldUIComp->Set_TargetWorldOffset(pDesc->NamePlateData.vOffset);
@@ -190,12 +193,14 @@ HRESULT CUIMonsterStat_Text::Spawn_FromPool(void* pArg)
 	if (nullptr == m_pTargetStat)
 		return E_FAIL;
 	
-	m_bDead = false;
 	return S_OK;
 }
 
 HRESULT CUIMonsterStat_Text::Despawn_FromPool()
 {
+	if (FAILED(Super::Despawn_FromPool()))
+		return E_FAIL;
+
 	return S_OK;
 }
 

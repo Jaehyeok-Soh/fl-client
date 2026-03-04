@@ -93,7 +93,7 @@ HRESULT CGameObject::Spawn_FromPool(void *pArg)
 
 HRESULT CGameObject::Despawn_FromPool()
 {
-    m_eState = ELifeState::Pending;
+    m_eState = ELifeState::Pooled;
     Clamp_FlagsByState();
     Disable_CollisionComponent();
     return S_OK;
@@ -236,7 +236,7 @@ HRESULT CGameObject::Change_State(_uint iIndex)
 /// <para>StaticLevel에 소속된 Object라면 플래그를 켜줄것 </para>
 /// </summary>
 /// <param name="bIsStatic">스태틱 레이어 소속인가?</param>
-void CGameObject::Set_Destroy(_bool bIsStatic)
+void CGameObject::Set_Dead(_bool bIsStatic)
 {
     if (m_eState == ELifeState::Pending || m_eState == ELifeState::Pooled)
         return;
@@ -245,7 +245,7 @@ void CGameObject::Set_Destroy(_bool bIsStatic)
     Clamp_FlagsByState();
     Disable_CollisionComponent();
     _uint iLevelIndex = bIsStatic ? 0 : m_pGameInstance->Get_CurrentLevelIndex();
-    m_pGameInstance->Request_DeleteGameObject(iLevelIndex, m_wstrLayerTag, this);
+    m_pGameInstance->Request_DeleteGameObject(iLevelIndex, this);
 }
 
 /// <summary>
@@ -297,22 +297,34 @@ void CGameObject::Mark_Pooled()
     Clamp_FlagsByState();
 }
 
+// Pending, Pooled는 Default Flag
 void CGameObject::Set_Active(_bool bActive)
 {
+    if (bActive && (m_eState == ELifeState::Pending || m_eState == ELifeState::Pooled))
+        return;
+
     bActive 
         ? Engine_Utils::Add_Flag(m_iObjectFlags, ACTIVE)
         : Engine_Utils::RemoveHard_Flag(m_iObjectFlags, ACTIVE);
 }
 
+// Pending, Pooled는 Default Flag
 void CGameObject::Set_Render(_bool bRender)
 {
+    if (bRender && (m_eState == ELifeState::Pending || m_eState == ELifeState::Pooled))
+        return;
+
     bRender 
         ? Engine_Utils::Add_Flag(m_iObjectFlags, RENDER)
         : Engine_Utils::RemoveHard_Flag(m_iObjectFlags, RENDER);
 }
 
+// Pending, Pooled는 Default Flag
 void CGameObject::Set_CollideEnabled(_bool bCollide)
 {
+    if (bCollide && (m_eState != ELifeState::Alive))
+        return;
+
     bCollide
         ? Engine_Utils::Add_Flag(m_iObjectFlags, COLLIDE)
         : Engine_Utils::RemoveHard_Flag(m_iObjectFlags, COLLIDE);

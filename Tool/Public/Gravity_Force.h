@@ -37,8 +37,6 @@ public:
     virtual _bool Picking(OUT Vec3& vOut) override;
     virtual _bool Export_Data(DTO::ECategory eCategory, CDataDocumentBase* pDocument) override;
     virtual void Draw_ImGui() override;
-    virtual void Set_Dead(const wstring& wstrLayerTag) override;
-
 public:
     static CGravity_Force* Create(EToolObjectType eType, ID3D11Device* pDevice, ID3D11DeviceContext* pDeviceContext);
     virtual CGameObject* Clone(void* pArg);

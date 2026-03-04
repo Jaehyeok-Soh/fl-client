@@ -152,6 +152,9 @@ HRESULT CUIMiniMap_Monster_Icon::Spawn_FromPool(void* pArg)
 	if (nullptr == m_pTarget)
 		return E_FAIL;
 
+	if (FAILED(Super::Spawn_FromPool(pArg)))
+		return E_FAIL;
+
 	CGameObject* pResult = m_pGameInstance->Get_GameObject_Front(ENUM_TO_UINT(ELevelType::STATIC), g_wszPlayerLayer);
 	if (nullptr == pResult)
 		return E_FAIL;
@@ -159,12 +162,15 @@ HRESULT CUIMiniMap_Monster_Icon::Spawn_FromPool(void* pArg)
 	m_pPlayer = static_cast<CMainPlayer*>(pResult);
 	if (nullptr == m_pPlayer)
 		return E_FAIL;
-	
+
 	return S_OK;
 }
 
 HRESULT CUIMiniMap_Monster_Icon::Despawn_FromPool()
 {
+	if (FAILED(Super::Despawn_FromPool()))
+		return E_FAIL;
+
 	return S_OK;
 }
 

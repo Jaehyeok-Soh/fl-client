@@ -26,8 +26,12 @@ public:
 	virtual void OnCollision_Exit(_uint iMyColliderLayer, _uint iOtherLayer, CGameObject* pOther) override;
 	virtual void OnTrigger_Enter(_uint iMyColliderLayer, _uint iOtherLayer, CGameObject* pOther) override;
 	virtual void OnTrigger_Exit(_uint iMyColliderLayer, _uint iOtherLayer, CGameObject* pOther) override;
+	virtual void Set_Active(_bool bActive) override;
 	virtual void Set_Render(_bool bRender) override;
+	virtual void Set_CollideEnabled(_bool bCollide) override;
+	virtual void Set_PartActive(_uint iPartIndex, _bool bActive);
 	virtual void Set_PartRender(_uint iPartIndex, _bool bRender);
+	virtual void Set_PartCollideEnabled(_uint iPartIndex, _bool bCollide);
 public:
 	template<typename T>
 	T* Get_Part(_uint iPartID);

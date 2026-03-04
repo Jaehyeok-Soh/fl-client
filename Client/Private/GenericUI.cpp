@@ -328,7 +328,6 @@ _bool CGenericUI::Tick_LerpChange(_float* p, const _float fTimeDelta)
 
 void CGenericUI::Request_SetDead()
 {
-	m_bDead = true;
 }
 
 void CGenericUI::Free()

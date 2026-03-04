@@ -194,7 +194,7 @@ _bool CMonster_Base::On_Hit(const HIT_DESC& hitDesc)
 		if (vHp.x <= 0)
 		{
 			Get_Component<CMonsterControlContext>()->Set_Dead();
-			m_bDead = true;
+			Set_Dying();
 		}
 	}
 
