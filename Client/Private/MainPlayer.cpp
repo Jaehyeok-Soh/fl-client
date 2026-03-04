@@ -326,6 +326,7 @@ void CMainPlayer::Try_Attack(const HIT_DESC& hitDesc)
     case ENUM_TO_UINT(State::JUMPATTEND):
     case ENUM_TO_UINT(State::CHARGE):
         pStat->Add_ComboCount();
+        m_pGameInstance->Broadcast<COMBO_ATTACK_EVENT_START>();
         break;
 
     default:
@@ -368,8 +369,6 @@ void CMainPlayer::Try_Attack(const HIT_DESC& hitDesc)
     }
     break;
     }
-
-    m_pGameInstance->Broadcast<COMBO_ATTACK_EVENT_START>();
 }
 
 #pragma region Legacy
