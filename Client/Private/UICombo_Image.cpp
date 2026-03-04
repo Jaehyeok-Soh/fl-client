@@ -189,6 +189,10 @@ void CUICombo_Image::Tick_By_Type(const _float fTimeDelta)
 			m_pGameInstance->Broadcast<COMBO_ATTACK_EVENT_END>();
 		}
 
+		_uint i = m_pPlayerStatCom->Get_Count(CStatCom_Player::TIMER_TYPE::COMBO);
+		if (m_iPreComboCount != i)
+			m_isComboChange = true;
+
 		Convert_Count_To_Rank();
 		if (m_isComboChange)
 		{
@@ -213,6 +217,8 @@ void CUICombo_Image::Tick_By_Type(const _float fTimeDelta)
 			case Client::ECombotype::END:
 			default:
 				break;
+
+				m_isComboChange = false;
 			}
 			Ready_LerpChange(0.3f, 3.f, 1.f, 1.f, m_fDelay);
 		}
