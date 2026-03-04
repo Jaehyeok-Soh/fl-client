@@ -68,7 +68,7 @@ void CUIMini_Map::Update(const _float fTimeDelta)
 	if (m_eDImageSubClass == DTO::EUIDImageSubClassType::MINIMAP_CAMERA_SIGHT)
 	{
 		Matrix CamWorldMat = m_pGameInstance->Get_ViewMatrix().Invert();
-		Vec3 vCamLook = CamWorldMat.Forward();
+		Vec3 vCamLook = -CamWorldMat.Forward();
 		Tick_CameraSight(vCamLook);
 		Rotate_Translate_CameraSight();
 	}
@@ -165,6 +165,7 @@ void CUIMini_Map::Tick_CameraSight(const Vec3& vLook)
 void CUIMini_Map::Rotate_Translate_CameraSight()
 {
 	Get_Component<CTransform>()->Rotation(Vec3{ 0.f, 0.f, -1.f }, m_fRadian);
+
 	const _float c = cosf(m_fRadian);
 	const _float s = sinf(m_fRadian);
 
