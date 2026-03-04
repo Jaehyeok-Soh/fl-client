@@ -122,8 +122,9 @@ HRESULT CPlayer::Awake(const _uint iCurrentLevelID)
     if (CPlayerActionState* pPlayerState = Get_Component<CPlayerActionState>())
         if (FAILED(pPlayerState->Awake(iCurrentLevelID)))
             return E_FAIL;
-
+    
     Change_Weapon(Part::SWORD, ENUM_TO_UINT(CWeapon::State::HOLD));
+    Start_Attack(CPlayer::State::COMBO);
 
     Get_Component<CActionSkill>()->Awake(iCurrentLevelID);
 
@@ -1091,7 +1092,7 @@ HRESULT CPlayer::Ready_PartObjects(PLAYER_DESC* pDesc)
             weaponDesc.eModel = CWeapon::Weapon_ModelType::STATIC;
             weaponDesc.bMianWeapon = false;
             weaponDesc.FDescFlag = CWeapon::WeaponDescFlag::WF_RGBMappingOn;
-            weaponDesc.vColorR = Vec4(0.84375f, 0.84375f, 0.84375f, 1.f);
+            weaponDesc.vColorR = Vec4(1.f, 1.f, 1.f, 1.f);//Vec4(0.84375f, 0.84375f, 0.84375f, 1.f);
             weaponDesc.vColorG = Vec4(0.686686f, 0.686686f, 0.686686f, 1.f);
             weaponDesc.vColorB = Vec4(0.234375f, 0.234375f, 0.234375f, 1.f);
 
