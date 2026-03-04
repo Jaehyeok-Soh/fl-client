@@ -130,7 +130,7 @@ void CUIDamageFont_Text::Tick_By_Type(const _float fTimeDelta)
 		break;
 	case DTO::EUITextSubClassType::BATTLE_DAMAGE_TEXT_COMMON:
 	{
-		if (m_isFin_Event)
+		if (m_isFinVisibleEvent)
 		{
 			if (Tick_Lerp_Movement(fTimeDelta))
 				Set_Invisible();
@@ -139,7 +139,7 @@ void CUIDamageFont_Text::Tick_By_Type(const _float fTimeDelta)
 	break;
 	case DTO::EUITextSubClassType::BATTLE_DAMAGE_TEXT_HIT:
 	{
-		if (m_isFin_Event)
+		if (m_isFinVisibleEvent)
 		{
 			m_isFin_HitFontEvent = Tick_Lerp_Movement(fTimeDelta);
 
@@ -165,7 +165,7 @@ void CUIDamageFont_Text::Tick_By_Type(const _float fTimeDelta)
 	break;
 	case DTO::EUITextSubClassType::BATTLE_DAMAGE_TEXT_CRITCAL:
 	{
-		if (m_isFin_Event)
+		if (m_isFinVisibleEvent)
 		{
 			m_fDamageFont_TimeAcc += fTimeDelta;
 			_float t = m_fDamageFont_TimeAcc / DESTROY_TIME;
@@ -184,7 +184,7 @@ void CUIDamageFont_Text::Tick_By_Type(const _float fTimeDelta)
 	break;
 	case DTO::EUITextSubClassType::BATTLE_DAMAGE_TEXT_CRITICAL_DAMAGE:
 	{
-		if (m_isFin_Event)
+		if (m_isFinVisibleEvent)
 		{
 			m_fDamageFont_TimeAcc += fTimeDelta;
 			m_vFontColor = m_vOriginFontColor;
@@ -257,6 +257,8 @@ _bool CUIDamageFont_Text::Tick_Visible_Event(const _float fTimeDelta)
 	case DTO::EUITextSubClassType::BATTLE_DAMAGE_TEXT_COMMON:
 	{
 		m_fDamageFont_TimeAcc += fTimeDelta;
+		CLOG_INFO(std::to_wstring(m_fDamageFont_TimeAcc));
+
 		_float t = m_fDamageFont_TimeAcc / 0.1f;
 
 		if (t >= 1.f)
@@ -279,6 +281,8 @@ _bool CUIDamageFont_Text::Tick_Visible_Event(const _float fTimeDelta)
 		Ready_Lerp_Movement(Vec2{ 0.f, 0.f }, Vec2{ 0.f, -10.f }, 0.5f, 0.5f, m_fDelay);
 		m_isActive						= true;
 		m_isFin_Event					= true;
+		m_isFinVisibleEvent = true;
+
 		m_isFin_HitFontEvent			= false;
 		m_isHitFontEventTrigger			= false;
 		return true;
@@ -297,7 +301,8 @@ _bool CUIDamageFont_Text::Tick_Visible_Event(const _float fTimeDelta)
 			m_vFontColor				= Vec4{1.f, 1.f, 1.f, 1.f};
 			m_isActive					= true;
 			m_isFin_Event				= true;
-			m_fDamageFont_TimeAcc = 0.f;
+			m_isFinVisibleEvent			= true;
+			m_fDamageFont_TimeAcc		= 0.f;
 			return true;
 		}
 		m_fDamageFontScaleOffet			= 5.f + ((-4.f) * t);
@@ -322,6 +327,10 @@ _bool CUIDamageFont_Text::Tick_InVisible_Event(const _float fTimeDelta)
 		Request_SetDead();
 		m_isActive = true;
 		m_isFin_Event = true;
+		m_fDamageFont_TimeAcc = 0.f;
+		m_isFinVisibleEvent = false;
+		m_isHitFontEventTrigger = false;
+		m_isFin_HitFontEvent = false;
 		return true;
 	}
 	return false;
@@ -340,7 +349,7 @@ HRESULT CUIDamageFont_Text::Spawn_FromPool(void* pArg)
 	if (nullptr == m_pWorldUIComp)
 		return E_FAIL;
 
-	m_bDead						= false;
+	m_isDeadRequest = false;
 	m_isFinVisibleEvent			= false;
 	m_isFin_HitFontEvent		= false;
 	m_isHitFontEventTrigger		= false;
@@ -413,8 +422,6 @@ HRESULT CUIDamageFont_Text::Despawn_FromPool()
 	if (m_strName == "DamageFont_CriticalText")
 		int a = 0;
 
-	if (FAILED(Super::Despawn_FromPool()))
-		return E_FAIL;
 	m_vFontColor				= m_vOriginFontColor;
 	m_fDamageFontScaleOffet		= 1.f;
 	m_isVisible					= false;

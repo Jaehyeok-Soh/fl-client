@@ -19,7 +19,7 @@ struct BOSS_STAGING_EVENT_END	{ using Signature = void(); };
 struct COMBO_ATTACK_EVENT_START { using Signature = void(); };
 struct COMBO_ATTACK_EVENT_END	{ using Signature = void(); };
 
-struct MONSTER_DEAD_EVENT_START { using Signature = void(CGameObject* ); };
+struct MONSTER_DEAD_EVENT_START { using Signature = void(CGameObject* ); }; // 몬스터 NamePlate 사라지게 하기
 
 struct ACTION1 { using Signature = void(); }; // UI 위 아래 나오는 연출
 struct ACTION2 { using Signature = void(); }; // UI 위 아래 들어가는 연출

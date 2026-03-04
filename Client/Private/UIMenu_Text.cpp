@@ -101,7 +101,6 @@ HRESULT CUIMenu_Text::Bind_ShaderResources()
 HRESULT CUIMenu_Text::Attach_Personal_Info()
 {
 	m_vOriginFontColor = m_vFontColor;
-
 	return S_OK;
 }
 

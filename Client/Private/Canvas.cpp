@@ -162,7 +162,7 @@ _bool CCanvas::Check_Dead()
 
 	for (auto* pUI : m_vecUI)
 	{
-		if (!pUI->IsDead())
+		if (!pUI->Get_DeadRequest())
 			return false;
 	}
 	 return m_isAllDead = true;
