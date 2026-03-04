@@ -106,10 +106,12 @@ StructuredBuffer* StructuredBuffer::Create(ID3D11Device* pDevice, ID3D11DeviceCo
 
 void StructuredBuffer::Free()
 {
+	Super::Free();
+
 	Safe_Release(m_pBuffer);
 	Safe_Release(m_pSRV);
 	Safe_Release(m_pUAV);
 	Safe_Release(m_pDeviceContext);
 	Safe_Release(m_pDevice);
-	Super::Free();
+
 }

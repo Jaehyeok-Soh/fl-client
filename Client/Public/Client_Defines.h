@@ -360,6 +360,9 @@ namespace Client
 		FLIP_XY,
 		END
 	};
+
+	enum class EUITextureSlot : uint32_t { DEFAULT, NOISE, ALPHA_MASK, GLOW, END };
+
 	enum class EUIPrefabType
 	{
 		NOT_PREFAB,
@@ -479,6 +482,9 @@ namespace Client
 	inline constexpr wchar_t g_wszPool_XibiLoopThunder[]						{ L"Pool_Xibi_LoopThunder" };
 	inline constexpr wchar_t g_wszPool_XibiCircleProjectile[]					{ L"Pool_Xibi_CircleProjectile" };
 	inline constexpr wchar_t g_wszPool_XibiOneshotThunder[]						{ L"Pool_Xibi_OneshotThunder" };
+
+	inline constexpr wchar_t g_wszMoonSkillE__Prototype_Tag[]								{ L"Prototype_GameObject_Moon_SkillE" };
+	inline constexpr wchar_t g_wszPool_MoonSkillE[]											{ L"Pool_Moon_SkillE" };
 #pragma endregion
 
 #pragma region SkillObjectSpawner 관련
@@ -487,6 +493,8 @@ namespace Client
 	inline constexpr wchar_t g_wszSpawner_Xibi360CircleProjectile[]				{ L"Prototype_Spawner_Xibi360CircleProjectile" };
 	inline constexpr wchar_t g_wszSpawner_Xibi360ThunderProjectile[]			{ L"Prototype_Spawner_Xibi360ThunderProjectile" };
 	inline constexpr wchar_t g_wszSpawner_Xibi3wayLoopThunder[]					{ L"Prototype_Spawner_Xibi3wayLoopThunder" };
+
+	inline constexpr wchar_t g_wszSpawner_MoonSkillE[]					{ L"Prototype_Spawner_PlayerMoon_SkillE" };
 #pragma endregion
 
 #pragma region MapObject 관련

@@ -68,10 +68,10 @@ void CWorldUI_Component::Proj_World_To_Screen()
 		vWorldPos = m_pTargetObject->Get_Component<CTransform>()->Get_Info(TRANSFORM_INFO_STATE::POS);
 		vWorldPos += m_vTargetWorldOffset;
 
-		_wstring wstr = L"World Pos X : " + std::to_wstring(vWorldPos.x) +
-			L"World Pos Y : " + std::to_wstring(vWorldPos.y) +
-			L"World Pos Z : " + std::to_wstring(vWorldPos.z);
-		CLOG_INFO(wstr);
+		//_wstring wstr = L"World Pos X : " + std::to_wstring(vWorldPos.x) +
+		//	L"World Pos Y : " + std::to_wstring(vWorldPos.y) +
+		//	L"World Pos Z : " + std::to_wstring(vWorldPos.z);
+		//CLOG_INFO(wstr);
 
 		//auto* p = static_cast<CMonster_Base*>(m_pTargetObject);
 		//const Matrix worldMat = *(p->Get_Part<CMonster_Body_Base>(ENUM_TO_UINT(CMonster_Base::Part::BODY))->Get_SocketMatrix("camera_test"));

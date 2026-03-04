@@ -66,13 +66,12 @@ void CUIDamageFont_Text::Update_Late(const _float fTimeDelta)
 {
 	Super::Update_Late(fTimeDelta);
 	Tick_By_Type(fTimeDelta);
+	if (FAILED(Convert_Stat_To_Text()))
+		return;
 }
 
 void CUIDamageFont_Text::Ready_Before_Render(const _float fTimeDelta)
 {
-	if (FAILED(Convert_Stat_To_Text()))
-		return;
-
 	Super::Ready_Before_Render(fTimeDelta);
 }
 
@@ -131,7 +130,7 @@ void CUIDamageFont_Text::Tick_By_Type(const _float fTimeDelta)
 		break;
 	case DTO::EUITextSubClassType::BATTLE_DAMAGE_TEXT_COMMON:
 	{
-		if (m_isFin_Event)
+		if (m_isFinVisibleEvent)
 		{
 			if (Tick_Lerp_Movement(fTimeDelta))
 				Set_Invisible();
@@ -140,7 +139,7 @@ void CUIDamageFont_Text::Tick_By_Type(const _float fTimeDelta)
 	break;
 	case DTO::EUITextSubClassType::BATTLE_DAMAGE_TEXT_HIT:
 	{
-		if (m_isFin_Event)
+		if (m_isFinVisibleEvent)
 		{
 			m_isFin_HitFontEvent = Tick_Lerp_Movement(fTimeDelta);
 
@@ -166,10 +165,10 @@ void CUIDamageFont_Text::Tick_By_Type(const _float fTimeDelta)
 	break;
 	case DTO::EUITextSubClassType::BATTLE_DAMAGE_TEXT_CRITCAL:
 	{
-		if (m_isFin_Event)
+		if (m_isFinVisibleEvent)
 		{
-			m_fTimeAcc += fTimeDelta;
-			_float t = m_fTimeAcc / DESTROY_TIME;
+			m_fDamageFont_TimeAcc += fTimeDelta;
+			_float t = m_fDamageFont_TimeAcc / DESTROY_TIME;
 
 			if (t > 1.f)
 			{
@@ -185,12 +184,12 @@ void CUIDamageFont_Text::Tick_By_Type(const _float fTimeDelta)
 	break;
 	case DTO::EUITextSubClassType::BATTLE_DAMAGE_TEXT_CRITICAL_DAMAGE:
 	{
-		if (m_isFin_Event)
+		if (m_isFinVisibleEvent)
 		{
-			m_fTimeAcc += fTimeDelta;
+			m_fDamageFont_TimeAcc += fTimeDelta;
 			m_vFontColor = m_vOriginFontColor;
 
-			if (m_fTimeAcc > DESTROY_TIME)
+			if (m_fDamageFont_TimeAcc > DESTROY_TIME)
 				Set_Invisible();
 		}
 	}
@@ -201,6 +200,7 @@ void CUIDamageFont_Text::Tick_By_Type(const _float fTimeDelta)
 	default:
 		return;
 	}
+
 	return;
 }
 
@@ -237,12 +237,14 @@ void CUIDamageFont_Text::Initialize_Visible_Event()
 {
 	m_isActive = false;
 	m_isFin_Event = false;
+	m_isFinVisibleEvent = false;
 }
 
 void CUIDamageFont_Text::Initialize_InVisible_Event()
 {
 	m_isActive = false;
 	m_isFin_Event = false;
+	m_isFinVisibleEvent = false;
 	Ready_Fade_Text(1.f, 1.f, 0.f, m_fDelay);
 }
 
@@ -254,17 +256,20 @@ _bool CUIDamageFont_Text::Tick_Visible_Event(const _float fTimeDelta)
 		break;
 	case DTO::EUITextSubClassType::BATTLE_DAMAGE_TEXT_COMMON:
 	{
-		m_fTimeAcc += fTimeDelta;
-		const _float fDuration			= 0.1f;
-		_float t = m_fTimeAcc / fDuration;
-		if (1.f < t)
+		m_fDamageFont_TimeAcc += fTimeDelta;
+		CLOG_INFO(std::to_wstring(m_fDamageFont_TimeAcc));
+
+		_float t = m_fDamageFont_TimeAcc / 0.1f;
+
+		if (t >= 1.f)
 		{
 			Ready_Lerp_Movement(Vec2{ 0.f, 0.f }, Vec2{ 0.f, -30.f }, DESTROY_TIME, 3.f, m_fDelay);
+
 			m_fDamageFontScaleOffet		= 1.f;
 			m_pWorldUIComp->Request_ScaleOffset(m_fDamageFontScaleOffet);
 			m_isActive					= true;
-			m_isFin_Event				= true;
-			m_fTimeAcc					= 0.f;
+			m_isFinVisibleEvent			= true;
+			m_fDamageFont_TimeAcc		= 0.f;
 			return true;
 		}
 		m_fDamageFontScaleOffet			= 1.5f + ((-0.5f) * t);
@@ -276,6 +281,8 @@ _bool CUIDamageFont_Text::Tick_Visible_Event(const _float fTimeDelta)
 		Ready_Lerp_Movement(Vec2{ 0.f, 0.f }, Vec2{ 0.f, -10.f }, 0.5f, 0.5f, m_fDelay);
 		m_isActive						= true;
 		m_isFin_Event					= true;
+		m_isFinVisibleEvent = true;
+
 		m_isFin_HitFontEvent			= false;
 		m_isHitFontEventTrigger			= false;
 		return true;
@@ -284,9 +291,9 @@ _bool CUIDamageFont_Text::Tick_Visible_Event(const _float fTimeDelta)
 	case DTO::EUITextSubClassType::BATTLE_DAMAGE_TEXT_CRITCAL:
 	case DTO::EUITextSubClassType::BATTLE_DAMAGE_TEXT_CRITICAL_DAMAGE:
 	{
-		m_fTimeAcc += fTimeDelta;
+		m_fDamageFont_TimeAcc += fTimeDelta;
 		const _float fDuration			= 0.1f;
-		_float t						= m_fTimeAcc / fDuration;
+		_float t						= m_fDamageFont_TimeAcc / fDuration;
 		if (1.f < t)
 		{
 			m_fDamageFontScaleOffet		= 1.f;
@@ -294,7 +301,8 @@ _bool CUIDamageFont_Text::Tick_Visible_Event(const _float fTimeDelta)
 			m_vFontColor				= Vec4{1.f, 1.f, 1.f, 1.f};
 			m_isActive					= true;
 			m_isFin_Event				= true;
-			m_fTimeAcc					= 0.f;
+			m_isFinVisibleEvent			= true;
+			m_fDamageFont_TimeAcc		= 0.f;
 			return true;
 		}
 		m_fDamageFontScaleOffet			= 5.f + ((-4.f) * t);
@@ -319,6 +327,10 @@ _bool CUIDamageFont_Text::Tick_InVisible_Event(const _float fTimeDelta)
 		Request_SetDead();
 		m_isActive = true;
 		m_isFin_Event = true;
+		m_fDamageFont_TimeAcc = 0.f;
+		m_isFinVisibleEvent = false;
+		m_isHitFontEventTrigger = false;
+		m_isFin_HitFontEvent = false;
 		return true;
 	}
 	return false;
@@ -326,6 +338,9 @@ _bool CUIDamageFont_Text::Tick_InVisible_Event(const _float fTimeDelta)
 
 HRESULT CUIDamageFont_Text::Spawn_FromPool(void* pArg)
 {
+	if (FAILED(Super::Spawn_FromPool(pArg)))
+		return E_FAIL;
+
 	UI_PREFAB_DATA* pDesc = static_cast<UI_PREFAB_DATA*>(pArg);
 	auto* pComp = Get_Script_Component(L"WorldUIComponent");
 	if (nullptr == pComp)
@@ -334,10 +349,8 @@ HRESULT CUIDamageFont_Text::Spawn_FromPool(void* pArg)
 	if (nullptr == m_pWorldUIComp)
 		return E_FAIL;
 
-	if (FAILED(Super::Spawn_FromPool(pArg)))
-		return E_FAIL;
-
-	m_isFin_Event				= false;
+	m_isDeadRequest				= false;
+	m_isFinVisibleEvent			= false;
 	m_isFin_HitFontEvent		= false;
 	m_isHitFontEventTrigger		= false;
 	m_fDamageFontScaleOffet		= 1.f;
@@ -373,7 +386,6 @@ HRESULT CUIDamageFont_Text::Spawn_FromPool(void* pArg)
 		m_vOriginFontColor		= pDesc->DamageFontData.vFontColor;
 		m_vFontColor			= m_vOriginFontColor;
 		m_fDamageFontScaleOffet = 1.5f;
-		m_fTimeAcc				= 0.f;
 		m_isSpawned				= true;
 	}
 	break;
@@ -381,7 +393,6 @@ HRESULT CUIDamageFont_Text::Spawn_FromPool(void* pArg)
 	{
 		m_wstrText				= std::to_wstring(pDesc->DamageFontData.iDamage);
 		m_vOriginFontColor		= m_vFontColor;
-		m_fTimeAcc				= 0.f;
 		m_isSpawned				= true;
 	}
 	break;
@@ -389,12 +400,11 @@ HRESULT CUIDamageFont_Text::Spawn_FromPool(void* pArg)
 	{
 		m_wstrText				= std::to_wstring(pDesc->DamageFontData.iDamage) + L"!";
 	}
-	case DTO::EUITextSubClassType::BATTLE_DAMAGE_TEXT_CRITCAL:	// 의도된것
+	case DTO::EUITextSubClassType::BATTLE_DAMAGE_TEXT_CRITCAL:
 	{
 		m_vOriginFontColor		= pDesc->DamageFontData.vFontColor;
 		m_vFontColor			= m_vOriginFontColor;
 		m_fDamageFontScaleOffet = 5.f;
-		m_fTimeAcc				= 0.f;
 		m_isSpawned				= true;
 	}
 	break;
@@ -409,6 +419,9 @@ HRESULT CUIDamageFont_Text::Spawn_FromPool(void* pArg)
 
 HRESULT CUIDamageFont_Text::Despawn_FromPool()
 {
+	CLOG_INFO(L"\n/////////////////////////////////////////\n데미지 폰트 비활성화 됨\n///////////////////////////////////////////");
+
+
 	if (FAILED(Super::Despawn_FromPool()))
 		return E_FAIL;
 

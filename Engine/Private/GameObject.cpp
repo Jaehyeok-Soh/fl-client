@@ -413,6 +413,12 @@ void CGameObject::Safe_Release_Component()
 
 void CGameObject::Safe_Release_ScriptComponent()
 {
+    if (m_ScriptComponents.size() <= 0)
+    {
+        m_ScriptComponents.clear();
+        return;
+    }
+
     for (auto itr = m_ScriptComponents.begin();
         itr != m_ScriptComponents.end();
         ++itr)

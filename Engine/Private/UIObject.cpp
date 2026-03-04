@@ -36,11 +36,6 @@ HRESULT CUIObject::Initialize(void* pArg)
 
 	m_eCategory = RENDER_CATEGORY::BLEND;
 
-	//if(pDesc->isWorld)
-	//	m_eCategory = RENDER_CATEGORY::BLEND;
-	//else
-	//	m_eCategory = (pDesc->isAlpha ? RENDER_CATEGORY::BLENDUI : RENDER_CATEGORY::UI);
-
 	m_fX = pDesc->fX;
 	m_fY = pDesc->fY;
 	m_fZ = pDesc->fZ;

@@ -94,6 +94,16 @@ void CXibi_Loop_Thunder::OnTrigger_Enter(_uint iMyColliderLayer, _uint iOtherLay
 {
 	if (iOtherLayer == PHYSICSFILTERGROUP::Enum::MAP)
 		Set_Dead();
+
+	COLLIDED_DESC desc{};
+	desc.iCollisionType = COLLISIONEVENT::ON_COLLISION_ENTER;
+	desc.iRequesterLayer = iMyColliderLayer;
+	desc.iOtherLayer = iOtherLayer;
+	desc.pRequester = this;
+	desc.pOther = pOther;
+	//desc.tHitInfo = tHitInfo;
+
+	m_pGameInstance->Push_CollidedData(desc);
 }
 
 _bool CXibi_Loop_Thunder::On_Hit(const HIT_DESC& hitDesc)

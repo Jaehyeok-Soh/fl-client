@@ -11,6 +11,7 @@
 #include "Xibi_GimmikController.h"
 #include "Weapon.h"
 #include "GameInstance.h"
+#include "UI_Manager.h"
 #include "MyStat.h"
 
 CBoss_Xibi::CBoss_Xibi(ID3D11Device* pDevice, ID3D11DeviceContext* pDeviceContext)
@@ -64,6 +65,12 @@ HRESULT CBoss_Xibi::Awake(const _uint iCurrentLevelID)
 	CTransform* pTrnasform = Get_Component<CTransform>();
 	pTrnasform->Set_MovePerSec(1.5f);
 	pTrnasform->Set_RotatePerSec(3.f);
+
+	{
+		UI_PREFAB_DATA ePrefabData = {};
+		ePrefabData.pTarget = this;
+		CUI_Manager::GetInstance()->Request_Add_Prefab(iCurrentLevelID, EUIPrefabType::BOSS_NAMEPLATE, iCurrentLevelID, &ePrefabData);
+	}
 	return S_OK;
 }
 

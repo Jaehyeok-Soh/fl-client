@@ -87,15 +87,27 @@ void CPlayerActionState::Set_HitDesc(const HIT_DESC& tHit)
     }
     break;
 
-        // boss쪽도 알아야함
-    case DTO::EAttackPresetCategory::BossBasic:
+
+    case DTO::EAttackPresetCategory::MonsterPorjectile:
         m_fAttackFlag |= AF_Addtive;
         break;
 
-    case DTO::EAttackPresetCategory::MonsterPorjectile:
+        // boss쪽
+    case DTO::EAttackPresetCategory::BossBasic:
     case DTO::EAttackPresetCategory::BossSkill:
-        m_fAttackFlag |= AF_Strong;
-        m_fAttackFlag |= AF_Fly;
+    case DTO::EAttackPresetCategory::BossProjectile:
+
+        switch (tHit.attackDesc.pAttackPreset->tCombat.eHitType)
+        {
+        case DTO::EHitType::Additive:
+            m_fAttackFlag |= AF_Addtive;
+            break;
+
+        case DTO::EHitType::Heavy:
+            m_fAttackFlag |= AF_Strong;
+            m_fAttackFlag |= AF_Fly;
+            break;
+        } 
         break;
 
         // 만약 위에 조건에 걸리지 않았다면 일단 attck을 끄자

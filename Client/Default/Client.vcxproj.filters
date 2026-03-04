@@ -166,9 +166,6 @@
     <Filter Include="03. GameObject\UIObjects\02.UI\Image\Dynamic Image\00.SkillBG">
       <UniqueIdentifier>{f1acf951-62e0-4e8b-b106-6fd9b77c5697}</UniqueIdentifier>
     </Filter>
-    <Filter Include="03. GameObject\UIObjects\02.UI\Image\Dynamic Image\02.HoverImage">
-      <UniqueIdentifier>{871de243-5883-42bb-b109-9645901ce4d2}</UniqueIdentifier>
-    </Filter>
     <Filter Include="03. GameObject\UIObjects\02.UI\Image\Dynamic Image\01.Minimap">
       <UniqueIdentifier>{f89b605a-01f2-485c-87d7-f34d36eeef01}</UniqueIdentifier>
     </Filter>
@@ -616,6 +613,18 @@
     <Filter Include="03. GameObject\UIObjects\02.UI\Text\07.Boss Action Text">
       <UniqueIdentifier>{a2af5a55-b193-4379-9444-0576a571b3a0}</UniqueIdentifier>
     </Filter>
+    <Filter Include="03. GameObject\SkillObject\Player">
+      <UniqueIdentifier>{6f4f5dc9-1d60-4f2c-b024-4a5ec8f6d5a8}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="03. GameObject\SkillObject\Player\Moon">
+      <UniqueIdentifier>{b30c69b1-aba4-4c50-a337-ca5e7b7f12fb}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="03. GameObject\SkillObject\Player\Moon\SkillE">
+      <UniqueIdentifier>{bb204f36-542f-4eeb-ac29-823025464153}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="03. GameObject\UIObjects\02.UI\Image\Dynamic Image\02.HoverImage">
+      <UniqueIdentifier>{871de243-5883-42bb-b109-9645901ce4d2}</UniqueIdentifier>
+    </Filter>
     <Filter Include="07. System\99. Debug_ImGui\Inspector\PoolDebug">
       <UniqueIdentifier>{424668f6-8bc5-4dd8-8036-5b7a5d57b52a}</UniqueIdentifier>
     </Filter>
@@ -918,10 +927,10 @@
     <ClInclude Include="..\Public\State_MoonSkill.h">
       <Filter>06. FSM\Player\Attack\Skill\Moon</Filter>
     </ClInclude>
-    <ClInclude Include="..\Public\SkillComp_MoonE.h">
+    <ClInclude Include="..\Public\SkillBase_MoonE.h">
       <Filter>05. Component\Skill\Moon</Filter>
     </ClInclude>
-    <ClInclude Include="..\Public\SkillComp_MoonQ.h">
+    <ClInclude Include="..\Public\SkillBase_MoonQ.h">
       <Filter>05. Component\Skill\Moon</Filter>
     </ClInclude>
     <ClInclude Include="..\Public\UILoading_Text.h">
@@ -1152,6 +1161,9 @@
     </ClInclude>
     <ClInclude Include="..\Public\UIBossAction_Text.h">
       <Filter>03. GameObject\UIObjects\02.UI\Text\07.Boss Action Text</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\Moon_SkillE_Obj.h">
+      <Filter>03. GameObject\SkillObject\Player\Moon\SkillE</Filter>
     </ClInclude>
     <ClInclude Include="..\public\ImGui_PoolInspector.h">
       <Filter>07. System\99. Debug_ImGui\Inspector\PoolDebug</Filter>
@@ -1447,10 +1459,10 @@
     <ClCompile Include="..\Private\State_MoonSkill.cpp">
       <Filter>06. FSM\Player\Attack\Skill\Moon</Filter>
     </ClCompile>
-    <ClCompile Include="..\Private\SkillComp_MoonE.cpp">
+    <ClCompile Include="..\Private\SkillBase_MoonE.cpp">
       <Filter>05. Component\Skill\Moon</Filter>
     </ClCompile>
-    <ClCompile Include="..\Private\SkillComp_MoonQ.cpp">
+    <ClCompile Include="..\Private\SkillBase_MoonQ.cpp">
       <Filter>05. Component\Skill\Moon</Filter>
     </ClCompile>
     <ClCompile Include="..\Private\UILoading_Text.cpp">
@@ -1676,11 +1688,14 @@
     <ClCompile Include="..\Private\UIMiniMap_Monster_Icon.cpp">
       <Filter>03. GameObject\UIObjects\02.UI\Image\Dynamic Image\01.Minimap\Monster Icon</Filter>
     </ClCompile>
-    <ClCompile Include="..\Private\UIBossAction_Image.h.cpp">
+    <ClCompile Include="..\Private\UIBossAction_Image.cpp">
       <Filter>03. GameObject\UIObjects\02.UI\Image\Dynamic Image\10.BossAction\00.Civila</Filter>
     </ClCompile>
     <ClCompile Include="..\Private\UIBossAction_Text.cpp">
       <Filter>03. GameObject\UIObjects\02.UI\Text\07.Boss Action Text</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\Moon_SkillE_Obj.cpp">
+      <Filter>03. GameObject\SkillObject\Player\Moon\SkillE</Filter>
     </ClCompile>
     <ClCompile Include="..\private\ImGui_PoolInspector.cpp">
       <Filter>07. System\99. Debug_ImGui\Inspector\PoolDebug</Filter>

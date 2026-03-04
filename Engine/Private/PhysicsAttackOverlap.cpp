@@ -41,7 +41,7 @@ void CPhysicsAttackOverlap::Render()
 }
 #endif
 
-void CPhysicsAttackOverlap::Awake()
+void CPhysicsAttackOverlap::Bind_Events()
 {
 	Safe_Release(m_pFilterCallback);
 

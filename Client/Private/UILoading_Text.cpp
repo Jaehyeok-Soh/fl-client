@@ -213,8 +213,8 @@ void CUILoading_Text::Initialize_Visible_Event()
 {
 	m_isActive = false;
 	m_isFin_Event = false;
-	m_vFontColor = Vec4{ 0.f ,0.f ,0.f ,0.f };
-	m_fTimeAcc = 0.f;
+	m_vFontColor.w = 0.f;
+	m_fLoadingTimeAcc = 0.f;
 }
 
 void CUILoading_Text::Initialize_InVisible_Event()
@@ -223,12 +223,12 @@ void CUILoading_Text::Initialize_InVisible_Event()
 
 _bool CUILoading_Text::Tick_Visible_Event(const _float fTimeDelta)
 {
-	m_fTimeAcc += fTimeDelta;
+	m_fLoadingTimeAcc += fTimeDelta;
 
-	if (m_fTimeAcc < m_fDelay)
+	if (m_fLoadingTimeAcc < m_fDelay)
 		return false;
 
-	m_vFontColor.w += fTimeDelta * 2.f;
+	m_vFontColor.w += fTimeDelta;
 	if (m_vFontColor.w > 1.f)
 	{
 		m_vFontColor.w = 1.f;

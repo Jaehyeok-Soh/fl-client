@@ -1044,6 +1044,11 @@ void CGameInstance::RemoveActor(PxRigidActor* actor)
 	m_pPhysics_Module->RemoveActor(actor);
 }
 
+void CGameInstance::ResetActorFilter(PxRigidActor* actor)
+{
+	m_pPhysics_Module->ResetActorFilter(actor);
+}
+
 PxTransform CGameInstance::XMMatrixToPxTransform(Matrix mat)
 {
 	return m_pPhysics_Module->XMMatrixToPxTransform(mat);

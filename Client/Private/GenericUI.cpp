@@ -39,12 +39,12 @@ HRESULT CGenericUI::Initialize(void* pArg)
 	m_strName					= pDesc->strName;
 	m_iLevelID					= pDesc->iLevelIndex;
 	m_eRectTransformType		= static_cast<ERectTransform>(pDesc->iRectTransformType);
-	m_wstrTextureTag			= pDesc->wstrTextureTag;
-	m_wstrNoiseTextureTag		= pDesc->wstrNoiseTextureTag;
-	m_wstrAlphaMaskTextureTag	= pDesc->wstrAlphaMaskTextureTag;
-	m_wstrGlowTextureTag		= pDesc->wstrGlowTextureTag;
-	m_iTextureIndex				= pDesc->iTextureIndex;
-	m_iComponentFlag			= pDesc->iComponentFlag;
+
+	m_ArrTextures[ENUM_TO_UINT(EUITextureSlot::DEFAULT)].push_back(pDesc->wstrTextureTag);
+	m_ArrTextures[ENUM_TO_UINT(EUITextureSlot::NOISE)].push_back(pDesc->wstrNoiseTextureTag);
+	m_ArrTextures[ENUM_TO_UINT(EUITextureSlot::ALPHA_MASK)].push_back(pDesc->wstrAlphaMaskTextureTag);
+	m_ArrTextures[ENUM_TO_UINT(EUITextureSlot::GLOW)].push_back(pDesc->wstrGlowTextureTag);
+
 	m_pParentCanvasCache		= pDesc->pCanvasCache;
 	m_isUseColorTint			= pDesc->isUseColorTint;
 	m_vColorTint				= pDesc->vColorTint;
@@ -57,8 +57,10 @@ HRESULT CGenericUI::Initialize(void* pArg)
 
 	if (FAILED(Super::Initialize(pArg)))
 		return E_FAIL;
+
 	m_vMoveOffsetBase = m_vMoveOffset;
 	m_fBrightness = 1.f;
+
 	return S_OK;
 }
 
@@ -69,22 +71,27 @@ HRESULT CGenericUI::Awake(const _uint iCurrentLevelID)
 
 	Get_Component<CShader>()->Set_Pass(m_iShaderPass);
 
-	if (FAILED(Get_Component<CTexture>()->Add_DefaultTexture(m_wstrTextureTag, DEFAULT)))
+	auto* pTexture = Get_Component<CTexture>();
+	// Default Texture Binding
+	if (FAILED(pTexture->Add_DefaultTexture(m_ArrTextures[ENUM_TO_UINT(EUITextureSlot::DEFAULT)].back(), ENUM_TO_UINT(EUITextureSlot::DEFAULT))))
 		return E_FAIL;
 
-	if (m_wstrNoiseTextureTag != L"")
+	// Noise Texture Binding
+	if (!m_ArrTextures[ENUM_TO_UINT(EUITextureSlot::NOISE)].empty())
 	{
-		if (FAILED(Get_Component<CTexture>()->Add_DefaultTexture(m_wstrNoiseTextureTag, NOISE)))
+		if (FAILED(Get_Component<CTexture>()->Add_DefaultTexture(m_ArrTextures[ENUM_TO_UINT(EUITextureSlot::NOISE)].back(), ENUM_TO_UINT(EUITextureSlot::NOISE))))
 			return E_FAIL;
 	}
-	if (m_wstrAlphaMaskTextureTag != L"")
+	// Alpha Mask Texture Binding
+	if (!m_ArrTextures[ENUM_TO_UINT(EUITextureSlot::ALPHA_MASK)].empty())
 	{
-		if (FAILED(Get_Component<CTexture>()->Add_DefaultTexture(m_wstrAlphaMaskTextureTag, ALPHA_MASK)))
+		if (FAILED(Get_Component<CTexture>()->Add_DefaultTexture(m_ArrTextures[ENUM_TO_UINT(EUITextureSlot::ALPHA_MASK)].back(), ENUM_TO_UINT(EUITextureSlot::ALPHA_MASK))))
 			return E_FAIL;
 	}
-	if (m_wstrGlowTextureTag != L"")
+	// Glow Texture Binding
+	if (!m_ArrTextures[ENUM_TO_UINT(EUITextureSlot::GLOW)].empty())
 	{
-		if (FAILED(Get_Component<CTexture>()->Add_DefaultTexture(m_wstrGlowTextureTag, GLOW)))
+		if (FAILED(Get_Component<CTexture>()->Add_DefaultTexture(m_ArrTextures[ENUM_TO_UINT(EUITextureSlot::GLOW)].back(), ENUM_TO_UINT(EUITextureSlot::GLOW))))
 			return E_FAIL;
 	}
 
@@ -121,8 +128,6 @@ void CGenericUI::Ready_Before_Render(const _float fTimeDelta)
 
 	if (nullptr != m_pWorldUIComp)
 	{
-		if (m_strName == "MonsterHP_BG")
-			int a = 0;
 		Set_Position(Vec3{ m_pWorldUIComp->Get_TargetScreenPos().x + m_vMoveOffset.x , m_pWorldUIComp->Get_TargetScreenPos().y + m_vMoveOffset.y, m_fZ }) ;
 		Move_Size(m_fWidth * m_pWorldUIComp->Get_ScaleOffset(), m_fHeight * m_pWorldUIComp->Get_ScaleOffset());
 	}
@@ -143,8 +148,10 @@ _bool CGenericUI::Calc_HitEvent()
 {
 	if (!m_isInteract)
 		return FALSE;
+
 	if (::PtInRect(&m_tRenderRect, m_pGameInstance->Get_MousePos()))
 		return TRUE;
+
 	return FALSE;
 }
 
@@ -185,14 +192,14 @@ HRESULT CGenericUI::Ready_Components(GENERIC_UI_DESC* pDesc)
 HRESULT CGenericUI::Bind_ShaderResources()
 {
 	CShader* pShader = Get_Component<CShader>();
-	pShader->Set_Pass(m_iShaderPass);
 
 	if (FAILED(Get_Component<CTexture>()->Bind_ShaderResourceBuffer(pShader)))
 		return E_FAIL;
 
+	const int32_t isColor = m_isUseColorTint ? 1 : 0;
+
 	if (FAILED(pShader->Get_Variable("g_iFlip")->SetRawValue(&m_iFlip, 0, sizeof(int32_t))))
 		return E_FAIL;
-	const int32_t isColor = m_isUseColorTint ? 1 : 0;
 	if (FAILED(pShader->Get_Variable("g_iColor")->SetRawValue(&isColor, 0, sizeof(int32_t))))
 		return E_FAIL;
 	if (FAILED(pShader->Get_Variable("g_vColorTint")->SetRawValue(&m_vColorTint, 0, sizeof(Vec4))))
@@ -207,127 +214,123 @@ HRESULT CGenericUI::Bind_ShaderResources()
 		return E_FAIL;
 	if (FAILED(pShader->Get_Variable("g_fBrightness")->SetRawValue(&m_fBrightness, 0, sizeof(_float))))
 		return E_FAIL;
-	
+
 	return S_OK;
 }
 
 void CGenericUI::Ready_Lerp_Movement(const Vec2& vStartOffset, const Vec2& vTargetOffset, const _float fDuration, const _float fEaseValue, const _float fDelay)
 {
-	m_fLerpTimeAcc = 0.f;
-	m_fDelayTimeAcc = 0.f;
-	m_vStartOffset	= vStartOffset;
-	m_vTargetOffset	= vTargetOffset;
-	m_fDuration		= fDuration;
-	m_fEaseValue	= fEaseValue;
-	m_fLerpDelay	= fDelay;
+	m_fLerpMove_TimeAcc = 0.f;
+	m_fLerpMove_DelayTimeAcc = 0.f;
+
+	m_vLerpMove_StartOffset	= vStartOffset;
+	m_vLerpMove_TargetOffset = vTargetOffset;
+	m_fLerpMove_Duration = fDuration;
+	m_fLerpMove_EaseValue = fEaseValue;
+	m_fLerpMove_Delay = fDelay;
 }
 
 void CGenericUI::Ready_Fade(const _float fDuration, const _float fStartAlpha, const _float fTargetAlpha, const _float fDelay)
 {
 	m_fAlpha_Ratio = fStartAlpha;
-	m_fFadeTimeAcc = 0.f;
-	m_fFadeDelayTimeAcc = 0.f;
-	m_fFadeDelay = fDelay;
-	m_fFadeDuration = fDuration;
-	m_fStartAlphaRatio = fStartAlpha;
-	m_fTargetAlphaRatio = fTargetAlpha;
+
+	m_fFade_TimeAcc = 0.f;
+	m_fFade_DelayTimeAcc = 0.f;
+
+	m_fFade_StartAlphaRatio = fStartAlpha;
+	m_fFade_TargetAlphaRatio = fTargetAlpha;
+	
+	m_fFade_Duration = fDuration;
+	m_fFade_Delay = fDelay;
 }
 
-void CGenericUI::Ready_ExplosionFade(const _float fDuration, const _float fStartAlpha, const _float fExplosionAlpha, const _float fTargetAlpha, const _float fDelay)
+void CGenericUI::Ready_LerpChange(const _float fDuration, const _float fStartValue, const _float fTargetValue, const _float fEaseValue, const _float fDelay)
 {
-	m_fAlpha_Ratio = fStartAlpha;
-	m_fFadeTimeAcc = 0.f;
-	m_fFadeDelayTimeAcc = 0.f;
-	m_fFadeDelay = fDelay;
-	m_fFadeDuration = fDuration;
-	m_fStartAlphaRatio = fExplosionAlpha;
-	m_fTargetAlphaRatio = fTargetAlpha;
-}
+	m_fLerpChange_TimeAcc = 0.f;
+	m_fLerpChange_DelayTimeAcc = 0.f;
 
-void CGenericUI::Ready_LerpChange(const _float fDuration, const _float fStartAlpha, const _float fTargetAlpha, const _float fEaseValue, const _float fDelay)
-{
-	m_fFadeTimeAcc_LerpChange = 0.f;
-	m_fFadeDelayTimeAcc_LerpChange = 0.f;
-	m_fFadeDelay_LerpChange = fDelay;
-	m_fFadeDuration_LerpChange = fDuration;
-	m_fStartAlphaRatio_LerpChange = fStartAlpha;
-	m_fTargetAlphaRatio_LerpChange = fTargetAlpha;
-	m_fEaseValue_LerpChange = fEaseValue;
+	m_fLerpChange_Delay = fDelay;
+	m_fLerpChange_Duration = fDuration;
+	m_fLerpChange_StartValue = fStartValue;
+	m_fLerpChange_TargetValue = fTargetValue;
+	m_fLerpChange_EaseValue = fEaseValue;
 }
 
 _bool CGenericUI::Tick_Lerp_Movement(const _float fTimeDelta)
 {
-	m_fDelayTimeAcc += fTimeDelta;
-	if (m_fDelayTimeAcc < m_fLerpDelay)
+	m_fLerpMove_DelayTimeAcc += fTimeDelta;
+	if (m_fLerpMove_DelayTimeAcc < m_fLerpMove_Delay)
 		return false;
 
-	m_fLerpTimeAcc += fTimeDelta;
+	m_fLerpMove_TimeAcc += fTimeDelta;
 
-	_float t = m_fLerpTimeAcc / m_fDuration;
+	_float t = m_fLerpMove_TimeAcc / m_fLerpMove_Duration;
+
 	if (t >= 1.f)
 	{
-		m_vMoveOffset = m_vMoveOffsetBase + m_vTargetOffset;
+		m_vMoveOffset = m_vMoveOffsetBase + m_vLerpMove_TargetOffset;
 		return true;
 	}
 
 	_float eased = t;
-	if (m_fEaseValue > 0.f)
-		eased = powf(t, m_fEaseValue);
+	if (m_fLerpMove_EaseValue > 0.f)
+		eased = powf(t, m_fLerpMove_EaseValue);
 
-	m_vMoveOffset = m_vMoveOffsetBase + (m_vStartOffset + (m_vTargetOffset - m_vStartOffset) * eased);
+	m_vMoveOffset = m_vMoveOffsetBase + (m_vLerpMove_StartOffset + (m_vLerpMove_TargetOffset - m_vLerpMove_StartOffset) * eased);
 	return false;
 }
 
 _bool CGenericUI::Tick_Fade(const _float fTimeDelta)
 {
-	m_fFadeDelayTimeAcc += fTimeDelta;
-	if (m_fFadeDelayTimeAcc < m_fFadeDelay)
+	m_fFade_DelayTimeAcc += fTimeDelta;
+	if (m_fFade_DelayTimeAcc < m_fFade_Delay)
 		return false;
 
-	m_fFadeTimeAcc += fTimeDelta;
+	m_fFade_TimeAcc += fTimeDelta;
 
-	_float t = m_fFadeTimeAcc / m_fFadeDuration;
+	_float t = m_fFade_TimeAcc / m_fFade_Duration;
+
 	if (t >= 1.f)
 	{
-		m_fAlpha_Ratio = m_fTargetAlphaRatio;
+		m_fAlpha_Ratio = m_fFade_TargetAlphaRatio;
 		return true;
 	}
 
 	_float eased = t;
-	if (m_fEaseValue > 0.f)
-		eased = powf(t, m_fEaseValue);
+	if (m_fFade_EaseValue > 0.f)
+		eased = powf(t, m_fFade_EaseValue);
 
-	_float f = m_fStartAlphaRatio + (m_fTargetAlphaRatio - m_fStartAlphaRatio) * t;
-	m_fAlpha_Ratio = f;
+	m_fAlpha_Ratio = m_fFade_StartAlphaRatio + (m_fFade_TargetAlphaRatio - m_fFade_StartAlphaRatio) * eased;
 	return false;
 }
 
 _bool CGenericUI::Tick_LerpChange(_float* p, const _float fTimeDelta)
 {
-	m_fFadeDelayTimeAcc_LerpChange += fTimeDelta;
-	if (m_fFadeDelayTimeAcc_LerpChange < m_fFadeDelay_LerpChange)
+	m_fLerpChange_DelayTimeAcc += fTimeDelta;
+	if (m_fLerpChange_DelayTimeAcc < m_fLerpChange_Delay)
 		return false;
 
-	m_fFadeTimeAcc_LerpChange += fTimeDelta;
+	m_fLerpChange_TimeAcc += fTimeDelta;
 
-	_float t = m_fFadeTimeAcc_LerpChange / m_fFadeDuration_LerpChange;
+	_float t = m_fLerpChange_TimeAcc / m_fLerpChange_Duration;
+
 	if (t >= 1.f)
 	{
-		*p = m_fTargetAlphaRatio_LerpChange;
+		*p = m_fLerpChange_TargetValue;
 		return true;
 	}
 
 	_float eased = t;
-	if (m_fEaseValue_LerpChange > 0.f)
-		eased = powf(t, m_fEaseValue_LerpChange);
+	if (m_fLerpChange_EaseValue > 0.f)
+		eased = powf(t, m_fLerpChange_EaseValue);
 
-	_float f = m_fStartAlphaRatio_LerpChange + (m_fTargetAlphaRatio_LerpChange - m_fStartAlphaRatio_LerpChange) * eased;
-	*p = f;
+	*p = m_fLerpChange_StartValue + (m_fLerpChange_TargetValue - m_fLerpChange_StartValue) * eased;
 	return false;
 }
 
 void CGenericUI::Request_SetDead()
 {
+	m_isDeadRequest = true;
 }
 
 void CGenericUI::Free()

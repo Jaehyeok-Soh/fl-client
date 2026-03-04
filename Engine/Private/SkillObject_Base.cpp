@@ -137,7 +137,13 @@ HRESULT CSkillObject_Base::Despawn_FromPool()
 		return E_FAIL;
 
 	m_runtimeDesc = {};
-	Get_Component<CEffectHandler>()->Trigger_Lifecycle_Effect(CEffectHandler::E_OBJ_LIFECYCLE_STATE::ON_DESTROY);
+
+	CEffectHandler* pHandler = Get_Component<CEffectHandler>();
+	if (pHandler)
+	{
+		pHandler->Trigger_Lifecycle_Effect(CEffectHandler::E_OBJ_LIFECYCLE_STATE::ON_DESTROY);
+	}
+	
 	return S_OK;
 }
 

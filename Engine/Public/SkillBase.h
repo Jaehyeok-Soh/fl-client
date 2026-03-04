@@ -10,6 +10,7 @@
 
 NS_BEGIN(Engine)
 class CMyStat;
+class CGameInstance;
 
 class ENGINE_DLL CSkillBase : public CBase
 {
@@ -72,6 +73,7 @@ protected:
 	virtual HRESULT Initialize(void* pArg);
 
 public:
+	virtual void Awake(const _uint iCurLevelIndex);
 	virtual void Update(const _float fTimeDelta, CMyStat* pStatCom = nullptr);
 	virtual void Update_Default(const _float fTimeDelta, CMyStat* pStatCom = nullptr);
 
@@ -94,6 +96,9 @@ public:
 	void Set_CountTime(_bool bCount) { m_bCountTime = bCount; }
 
 	_uint Get_SkillCount() const { return m_iOnSkillCount; }
+
+protected:
+	CGameInstance* m_pGameInstance = { nullptr };
 
 protected:
 	_bool		m_bEndSkill = { false };

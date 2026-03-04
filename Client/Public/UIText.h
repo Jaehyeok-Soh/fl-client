@@ -61,8 +61,16 @@ protected:
 	EFontPivotType m_ePivot = { EFontPivotType::CENTER };
 	_float m_fFontRotate	= {};
 
-	_float m_fTimeAcc = {};
 	_float m_fScaleOffset = {1.f};
+
+private:
+	// Fade Text Values
+	_float m_fFont_FadeTimeAcc = {};
+	_float m_fFont_FadeDelayTimeAcc = {};
+	_float m_fFont_FadeDelay = {};
+	_float m_fFont_FadeDuration = {};
+	_float m_fFont_StartAlphaRatio = {};
+	_float m_fFont_TargetAlphaRatio = {};
 
 public:
 	virtual void Free()override;

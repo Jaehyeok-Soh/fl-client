@@ -1,6 +1,7 @@
 #include "pch.h"
 #include "Level_Test.h"
 #include "Level_Loading.h"
+#include "Client_EventDefine.h"
 //=================
 // Manager
 //=================
@@ -56,6 +57,7 @@
 #include "Monster_Dog_Body.h"
 #include "Monster_Boomer.h"
 #include "Monster_Boomer_Body.h"
+#include "Moon_SkillE_Obj.h"
 
 //=================
 // GameInstance
@@ -146,12 +148,31 @@ void CLevel_Test::Update(const _float fTimeDelta)
 		UI_PREFAB_DATA Desc = {};
 		CUI_Manager::GetInstance()->Request_Add_Prefab(ENUM_TO_UINT(ELevelType::TEST), EUIPrefabType::BOSS_NAMEPLATE, ENUM_TO_UINT(ELevelType::TEST), &Desc);
 	}
-
 	if (KEY_BUTTON_DOWN(DIK_7))
 	{
 		UI_PREFAB_DATA Desc = {};
-		CUI_Manager::GetInstance()->Request_Add_Prefab(ENUM_TO_UINT(ELevelType::TEST), EUIPrefabType::MINIMAP_MONSTER_ICON, ENUM_TO_UINT(ELevelType::TEST), &Desc);
+		Desc.DamageFontData.iDamage = 10;
+		Desc.DamageFontData.vHitPos = Vec3{0.f, 0.f, 0.f};
+		Desc.DamageFontData.vFontColor = Vec4{ 1.f, 1.f,1.f, 1.f };
+
+		CUI_Manager::GetInstance()->Request_Add_Prefab(ENUM_TO_UINT(ELevelType::TEST), EUIPrefabType::DAMAGE_FONTS_CRITICAL, ENUM_TO_UINT(ELevelType::TEST), &Desc);
 	}
+	//if (KEY_BUTTON_DOWN(DIK_5))
+	//{
+	//	m_pGameInstance->Broadcast<ACTION1>();
+	//}
+	//if (KEY_BUTTON_DOWN(DIK_6))
+	//{
+	//	m_pGameInstance->Broadcast<ACTION2>();
+	//}
+	//if (KEY_BUTTON_DOWN(DIK_7))
+	//{
+	//	m_pGameInstance->Broadcast<ACTION3>();
+	//}
+	//if (KEY_BUTTON_DOWN(DIK_8))
+	//{
+	//	m_pGameInstance->Broadcast<ACTION4>();
+	//}
 }
 
 HRESULT CLevel_Test::Render()
@@ -238,8 +259,29 @@ HRESULT CLevel_Test::Build_Files()
 
 HRESULT CLevel_Test::Ready_Player_Layer(const wstring& wstrLayerTag)
 {
+
+
 	/* Player 置段 持失 */
 	{
+		// SkillObject Pool
+		{
+			CMoon_SkillE_Obj::SKILLOBJECT_DESC desc{};
+			//TRANSFORM_DESC
+			CTransform::TRANSFORM_DESC tTransDesc = {};
+			tTransDesc.fMovePerSec = 20.f;
+			desc.pTransform_Desc = &tTransDesc;
+
+			if (FAILED(m_pGameInstance->Regist_Pool(
+				0,
+				g_wszPool_MoonSkillE,
+				g_wszSkillObjectLayer,
+				0,
+				g_wszMoonSkillE__Prototype_Tag,
+				&desc,
+				30)))
+				return E_FAIL;
+		}
+
 		CGameObject* pResult = { nullptr };
 
 		CPlayer::PLAYER_DESC playerDesc = {};

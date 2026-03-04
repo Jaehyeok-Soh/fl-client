@@ -2,14 +2,13 @@
 #include "SkillObject_Base.h"
 
 NS_BEGIN(Client)
-
-class CXibi_Oneshot_Thunder final : public CSkillObject_Base
+class CMoon_SkillE_Obj final : public CSkillObject_Base
 {
 	using Super = CSkillObject_Base;
 private:
-	CXibi_Oneshot_Thunder(ID3D11Device* pDevice, ID3D11DeviceContext* pDeviceContext);
-	CXibi_Oneshot_Thunder(const CXibi_Oneshot_Thunder& rhs);
-	virtual ~CXibi_Oneshot_Thunder() = default;
+	CMoon_SkillE_Obj(ID3D11Device* pDevice, ID3D11DeviceContext* pDeviceContext);
+	CMoon_SkillE_Obj(const CMoon_SkillE_Obj& rhs);
+	virtual ~CMoon_SkillE_Obj() = default;
 
 	virtual HRESULT Initialize_Prototype() override;
 	virtual HRESULT Initialize(void* pArg) override;
@@ -24,14 +23,13 @@ public:
 	virtual void OnCollision(_uint iMyColliderLayer, _uint iOtherLayer, CGameObject* pOther) override;
 	virtual void OnCollision_Enter(_uint iMyColliderLayer, _uint iOtherLayer, CGameObject* pOther, const COL_HIT_INFO& tHitInfo) override;
 	virtual void OnCollision_Exit(_uint iMyColliderLayer, _uint iOtherLayer, CGameObject* pOther) override;
-	virtual void OnTrigger_Enter(_uint iMyColliderLayer, _uint iOtherLayer, CGameObject* pOther);
-	
+	virtual void OnTrigger_Enter(_uint iMyColliderLayer, _uint iOtherLayer, CGameObject* pOther) override;
 	virtual _bool On_Hit(const HIT_DESC& hitDesc) override;
 	virtual void Try_Attack(const HIT_DESC& hitDesc) override;
 private:
 	HRESULT Ready_Components();
 public:
-	static CXibi_Oneshot_Thunder* Create(ID3D11Device* pDevice, ID3D11DeviceContext* pDeviceContext);
+	static CMoon_SkillE_Obj* Create(ID3D11Device* pDevice, ID3D11DeviceContext* pDeviceContext);
 	virtual CGameObject* Clone(void* pArg) override;
 	virtual void Free() override;
 };

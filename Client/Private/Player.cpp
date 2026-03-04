@@ -125,6 +125,8 @@ HRESULT CPlayer::Awake(const _uint iCurrentLevelID)
 
     Change_Weapon(Part::SWORD, ENUM_TO_UINT(CWeapon::State::HOLD));
 
+    Get_Component<CActionSkill>()->Awake(iCurrentLevelID);
+
     return S_OK;
 }
 
@@ -1198,7 +1200,7 @@ void CPlayer::Count_DoubleJump(const _float fTimeDelta)
 
 void CPlayer::Free()
 {
-    Super::Free();
-
     Safe_Release(m_pPhysic_QueryFilter);
+
+    Super::Free();
 }

@@ -74,6 +74,10 @@ void CUIMonsterStat_Progress::Update_Late(const _float fTimeDelta)
 void CUIMonsterStat_Progress::Ready_Before_Render(const _float fTimeDelta)
 {
 	Super::Ready_Before_Render(fTimeDelta);
+	if (m_pWorldUIComp->Get_ScaleOffset() < 0.4f)
+		m_fAlpha_Ratio = 0.f;
+	else
+		m_fAlpha_Ratio = 1.f;
 }
 
 HRESULT CUIMonsterStat_Progress::Render()
@@ -118,6 +122,12 @@ HRESULT CUIMonsterStat_Progress::Attach_Personal_Info()
 			if (pDead == m_pTargetMoster)
 				this->Set_Invisible();
 		});
+
+	if (m_isSpawned)
+	{
+		Set_Visible();
+		m_isSpawned = false;
+	}
 	return S_OK;
 }
 
@@ -188,7 +198,10 @@ HRESULT CUIMonsterStat_Progress::Spawn_FromPool(void* pArg)
 	m_pTargetStat = pDesc->pTarget->Get_Component<CMyStat>();
 	if (nullptr == m_pTargetStat)
 		return E_FAIL;
-
+	m_isSpawned = true;
+	m_isDeadRequest = false;
+	m_fCurRatio = 1.f;
+	m_fProgress_Ratio = 1.f;
 	return S_OK;
 }
 
@@ -197,6 +210,9 @@ HRESULT CUIMonsterStat_Progress::Despawn_FromPool()
 	if (FAILED(Super::Despawn_FromPool()))
 		return E_FAIL;
 
+	m_isVisible = false;
+	m_isVisibleTrigger = false;
+	m_isPreVisible = false;
 	return S_OK;
 }
 
