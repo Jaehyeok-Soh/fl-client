@@ -70,7 +70,7 @@ private:
     virtual HRESULT Initialize(void* pArg) override;
     virtual HRESULT Ready_AnimState();
 public:
-    void Awake();
+    void Setup_ForOwner();
     void Update(_float fDT);
 
 public:

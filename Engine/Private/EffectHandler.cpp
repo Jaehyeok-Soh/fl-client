@@ -88,7 +88,7 @@ void CEffectHandler::Ready_State()
     m_eCurrentState = E_OBJ_LIFECYCLE_STATE::ON_SPAWN;
 }
 
-void CEffectHandler::Awake()
+void CEffectHandler::Setup_ForOwner()
 {
     if (m_tDesc.eType == E_HANDLER_TYPE::MODEL_ANIM)
         Ready_AnimState();

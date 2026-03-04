@@ -54,17 +54,6 @@ HRESULT CBody::Initialize(void* pArg)
 	m_iSpine1_Index = Get_Component<CModel>()->Get_BoneIndex("spine_01");
 	m_iCamPos_Index = Get_Component<CModel>()->Get_BoneIndex("camera_point");
 	m_iCamSocket_Index = Get_Component<CModel>()->Get_BoneIndex("camera_socket");
-	//m_iLeftHand_Index = Get_Component<CModel>()->Get_BoneIndex("hand_l");
-	//m_iRightHand_Index = Get_Component<CModel>()->Get_BoneIndex("hand_r");
-	//m_iLeftFoot_Index = Get_Component<CModel>()->Get_BoneIndex("LeftFoot");
-	//m_iRightFoot_Index = Get_Component<CModel>()->Get_BoneIndex("RightFoot");
-	//m_iSpine_Index = Get_Component<CModel>()->Get_BoneIndex("Spine");
-	//m_iEffectMouseSocket_Index = Get_Component<CModel>()->Get_BoneIndex("EFF_Mouth01");
-	//m_iSwordSocket_Index = Get_Component<CModel>()->Get_BoneIndex("Attach_NinjaSword");
-	//m_iLeftShoulderSocket_Index = Get_Component<CModel>()->Get_BoneIndex("LeftShoulder");
-	//m_iRightShoulderSocket_Index = Get_Component<CModel>()->Get_BoneIndex("RightShoulder");
-	//m_iRightHandWeaponSocket_Index = Get_Component<CModel>()->Get_BoneIndex("MeleeWeaponRHand");
-
 	{
 		CModel* pMyModel = Get_Component<CModel>();
 		// mix 값 초기화를 위함
@@ -82,8 +71,8 @@ HRESULT CBody::Initialize(void* pArg)
 		pMyModel->Set_Animtion_MotionOffset(iBulletAnimIdx, 2.f);
 	}
 
-	Get_Component<CEffectHandler>()->Awake();
 	Set_RenderInfoFlag(OF_Outline, true);
+	Get_Component<CEffectHandler>()->Setup_ForOwner();
 	return S_OK;
 }
 

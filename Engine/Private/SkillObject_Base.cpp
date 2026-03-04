@@ -50,6 +50,10 @@ HRESULT CSkillObject_Base::Initialize(void* pArg)
 		// spawnPos를 월드로 받더라도 offset으로 변환
 		m_runtimeDesc.vFollowOffset = m_desc.vSpawnPos - reqPos;
 	}
+
+	if (CEffectHandler* pEffectHandler = Get_Component<CEffectHandler>())
+		pEffectHandler->Setup_ForOwner();
+
 	return S_OK;
 }
 
@@ -60,8 +64,7 @@ HRESULT CSkillObject_Base::Awake(const _uint iCurrentLevelID)
 
 	if(CPhysicsRigidBody* pRigidBody = Get_Component<CPhysicsRigidBody>())
 		pRigidBody->Awake();
-	if(CEffectHandler* pEffectHandler = Get_Component<CEffectHandler>())
-		pEffectHandler->Awake();
+	
 
 	Get_Component<CTransform>()->Set_Info(TRANSFORM_INFO_STATE::POS, m_desc.vSpawnPos);
 	return S_OK;
