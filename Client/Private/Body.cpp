@@ -64,7 +64,25 @@ HRESULT CBody::Initialize(void* pArg)
 	//m_iLeftShoulderSocket_Index = Get_Component<CModel>()->Get_BoneIndex("LeftShoulder");
 	//m_iRightShoulderSocket_Index = Get_Component<CModel>()->Get_BoneIndex("RightShoulder");
 	//m_iRightHandWeaponSocket_Index = Get_Component<CModel>()->Get_BoneIndex("MeleeWeaponRHand");
-	
+
+	{
+		CModel* pMyModel = Get_Component<CModel>();
+		// mix 값 초기화를 위함
+		pMyModel->Set_MixAnim_ResetSize(0);
+		//Face_Smile
+		_uint iFaceAnimIdx = pMyModel->Get_AnimationIndex(L"Animation_PlayerMoon_Face_Angry");
+		_uint iJumpAnimIdx = pMyModel->Get_AnimationIndex(L"Animation_PlayerMoon_FirstJump_InplaceStart");
+		_uint iBulletAnimIdx = pMyModel->Get_AnimationIndex(L"Animation_PlayerMoon_BulletJump_Start");
+		vector<CModel::DATA_ANIMIX> vecMix = { {113,false,1.f} };
+		pMyModel->Set_MixAnim(true);
+		pMyModel->Set_MixAnim_ResetSize(2);
+		pMyModel->Make_MixRatio(iFaceAnimIdx, vecMix, m_pBoneAnimMixCS);
+		pMyModel->Set_MixAnim_AnimIndex(0, iFaceAnimIdx);
+		pMyModel->Set_Animtion_MotionOffset(iJumpAnimIdx, 2.5f);
+		pMyModel->Set_Animtion_MotionOffset(iBulletAnimIdx, 2.f);
+	}
+
+	Get_Component<CEffectHandler>()->Awake();
 	Set_RenderInfoFlag(OF_Outline, true);
 	return S_OK;
 }
@@ -73,30 +91,7 @@ HRESULT CBody::Awake(const _uint iCurrentLevelIndex)
 {
 	if (FAILED(Super::Awake(iCurrentLevelIndex)))
 		return E_FAIL;
-
-	Get_Component<CEffectHandler>()->Awake();
-
-	CModel* pMyModel = Get_Component<CModel>();
-
-	// mix 값 초기화를 위함
-	pMyModel->Set_MixAnim_ResetSize(0);
-
-	//Face_Smile
-	_uint iFaceAnimIdx					= pMyModel->Get_AnimationIndex(L"Animation_PlayerMoon_Face_Angry");
-	_uint iJumpAnimIdx = pMyModel->Get_AnimationIndex(L"Animation_PlayerMoon_FirstJump_InplaceStart");
-	_uint iBulletAnimIdx = pMyModel->Get_AnimationIndex(L"Animation_PlayerMoon_BulletJump_Start");
-
-	vector<CModel::DATA_ANIMIX> vecMix	= { {113,false,1.f} };
-
-	pMyModel->Set_MixAnim(true);
-	pMyModel->Set_MixAnim_ResetSize(2);
-
-	pMyModel->Make_MixRatio(iFaceAnimIdx, vecMix, m_pBoneAnimMixCS);
-	pMyModel->Set_MixAnim_AnimIndex(0, iFaceAnimIdx);
-
-	pMyModel->Set_Animtion_MotionOffset(iJumpAnimIdx, 2.5f);
-	pMyModel->Set_Animtion_MotionOffset(iBulletAnimIdx, 2.f);
-
+	
 	return S_OK;
 }
 

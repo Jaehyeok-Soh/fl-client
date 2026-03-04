@@ -20,7 +20,7 @@ private:
 	virtual HRESULT Initialize(void* pArg) override;
 
 public:
-	void Awake();
+	void Ready_Position();
 	void Update(const _float fTimeDelta);
 
 #ifdef _DEBUG
