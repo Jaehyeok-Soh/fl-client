@@ -51,6 +51,8 @@ private:
 	CGameObject* m_pTargetMoster = { nullptr };
 	CMyStat* m_pTargetStat = { nullptr };
 
+	_bool m_isSpawned = { false };
+
 public:
 	static CUIMonsterStat_Text* Create(ID3D11Device* pDevice, ID3D11DeviceContext* pDeviceContext);
 	CGameObject* Clone(void* pArg);

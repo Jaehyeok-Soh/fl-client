@@ -119,6 +119,11 @@ HRESULT CUIMonsterStat_Text::Attach_Personal_Info()
 				this->Set_Invisible();
 		});
 
+	if (m_isSpawned)
+	{
+		Set_Visible();
+		m_isSpawned = false;
+	}
 	return S_OK;
 }
 
@@ -199,8 +204,9 @@ HRESULT CUIMonsterStat_Text::Spawn_FromPool(void* pArg)
 	m_pTargetStat = pDesc->pTarget->Get_Component<CMyStat>();
 	if (nullptr == m_pTargetStat)
 		return E_FAIL;
-	
-	m_bDead = false;
+
+	m_isSpawned = true;
+	m_isDeadRequest = false;
 	return S_OK;
 }
 
@@ -208,6 +214,10 @@ HRESULT CUIMonsterStat_Text::Despawn_FromPool()
 {
 	if (FAILED(Super::Despawn_FromPool()))
 		return E_FAIL;
+
+	m_isVisible = false;
+	m_isVisibleTrigger = false;
+	m_isPreVisible = false;
 	return S_OK;
 }
 

@@ -109,6 +109,11 @@ HRESULT CUINameplate_BG::Attach_Personal_Info()
 				this->Set_Invisible();
 		});
 
+	if (m_isSpawned)
+	{
+		Set_Visible();
+		m_isSpawned = false;
+	}
 	return S_OK;
 }
 
@@ -122,11 +127,17 @@ void CUINameplate_BG::Initialize_Visible_Event()
 {
 	m_isFin_Event = false;
 	m_isActive = false;
+	Ready_Fade(0.1f, 0.f, 1.f, 1.f);
 }
 
 _bool CUINameplate_BG::Tick_Visible_Event(const _float fTimeDelta)
 {
-	return true;
+	if (Tick_Fade(fTimeDelta))
+	{
+		m_isFin_Event = false;
+		m_isActive = false;
+		return true;
+	}
 }
 
 void CUINameplate_BG::Initialize_InVisible_Event()
@@ -167,7 +178,9 @@ HRESULT CUINameplate_BG::Spawn_FromPool(void* pArg)
 	m_pWorldUIComp->Set_TargetWorldOffset(pDesc->NamePlateData.vOffset);
 	m_pTargetMoster = pDesc->pTarget;
 	/* ¸ó½ºÅÍ ½ºÅÈ ÄÄÆ÷³ÍÆ® ºÎÂø */
-
+	
+	m_isSpawned = true;
+	m_isDeadRequest = false;
 	return S_OK;
 }
 
@@ -175,6 +188,10 @@ HRESULT CUINameplate_BG::Despawn_FromPool()
 {
 	if (FAILED(Super::Despawn_FromPool()))
 		return E_FAIL;
+
+	m_isVisible = false;
+	m_isVisibleTrigger = false;
+	m_isPreVisible = false;
 	return S_OK;
 }
 

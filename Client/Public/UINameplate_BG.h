@@ -37,6 +37,8 @@ private:
 	virtual HRESULT Despawn_FromPool()override;
 private:
 	CGameObject* m_pTargetMoster = { nullptr };
+	_bool m_isSpawned = { false };
+
 public:
 	static CUINameplate_BG* Create(ID3D11Device* pDevice, ID3D11DeviceContext* pDeviceContext);
 	CGameObject* Clone(void* pArg);
