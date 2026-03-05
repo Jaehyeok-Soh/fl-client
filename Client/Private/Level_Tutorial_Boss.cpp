@@ -60,8 +60,8 @@
 #include "Xibi_Projectile_Circle.h"
 #include "Xibi_Loop_Thunder.h"
 #include "Xibi_Oneshot_Thunder.h"
-#include "Moon_SkillE_Obj.h"
 
+#include "PlayerSkillObj_Headers.h"
 
 //=================
 // Game Instance
@@ -177,6 +177,60 @@ HRESULT CLevel_Tutorial_Boss::Build_Files()
 	return S_OK;
 }
 
+HRESULT CLevel_Tutorial_Boss::Ready_Player_SkillObjPool()
+{
+	// SkillObject Pool
+
+	// Moon skil E
+	{
+		CMoon_SkillE_Obj::SKILLOBJECT_DESC desc{};
+		//TRANSFORM_DESC
+		CTransform::TRANSFORM_DESC tTransDesc = {};
+		tTransDesc.fMovePerSec = 20.f;
+		desc.pTransform_Desc = &tTransDesc;
+
+		if (FAILED(m_pGameInstance->Regist_Pool(
+			0,
+			g_wszPool_MoonSkillE,
+			g_wszSkillObjectLayer,
+			0,
+			g_wszMoonSkillE__Prototype_Tag,
+			&desc,
+			30)))
+			return E_FAIL;
+	}
+
+	// Moon skil Q sheild
+	{
+		CMoon_SkillQSheild_Obj::SKILLOBJECT_DESC desc{};
+		if (FAILED(m_pGameInstance->Regist_Pool(
+			0,
+			g_wszPool_MoonSkillQSheild,
+			g_wszSkillObjectLayer,
+			0,
+			g_wszMoonSkillQSheild_Prototype_Tag,
+			&desc,
+			10)))
+			return E_FAIL;
+	}
+
+	// Moon skil Q attack
+	{
+		CMoon_SkillQAttack_Obj::SKILLOBJECT_DESC desc{};
+		if (FAILED(m_pGameInstance->Regist_Pool(
+			0,
+			g_wszPool_MoonSkillQAttack,
+			g_wszSkillObjectLayer,
+			0,
+			g_wszMoonSkillQAttack_Prototype_Tag,
+			&desc,
+			10)))
+			return E_FAIL;
+	}
+
+	return S_OK;
+}
+
 HRESULT CLevel_Tutorial_Boss::Ready_Lights()
 {
 	{
@@ -276,24 +330,8 @@ HRESULT CLevel_Tutorial_Boss::Ready_Player_Layer(const wstring& wstrLayerTag)
 
 	/* Player 置段 持失 */
 	{
-		// SkillObject Pool
-		{
-			CMoon_SkillE_Obj::SKILLOBJECT_DESC desc{};
-			//TRANSFORM_DESC
-			CTransform::TRANSFORM_DESC tTransDesc = {};
-			tTransDesc.fMovePerSec = 20.f;
-			desc.pTransform_Desc = &tTransDesc;
-
-			if (FAILED(m_pGameInstance->Regist_Pool(
-				0,
-				g_wszPool_MoonSkillE,
-				g_wszSkillObjectLayer,
-				0,
-				g_wszMoonSkillE__Prototype_Tag,
-				&desc,
-				30)))
-				return E_FAIL;
-		}
+		if (FAILED(Ready_Player_SkillObjPool()))
+			return E_FAIL;
 
 		CGameObject* pResult = { nullptr };
 

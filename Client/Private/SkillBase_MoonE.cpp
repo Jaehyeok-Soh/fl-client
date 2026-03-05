@@ -3,7 +3,7 @@
 
 #include "Player.h"
 #include "StatCom_Player.h"
-#include "ProjectileSpawner_Fan.h"
+#include "SingleSkillSpawner.h"
 
 #include "GameInstance.h"
 
@@ -112,7 +112,7 @@ void CSkillBase_MoonE::Set_ExtraAttack_Desc(EXTRA_ATTACK_DESC& tStat_ExtraDesc, 
 	static_cast<CStatCom_Player*>(pOwnerStat)->Set_Critical_AddRate(1.f);
 }
 
-void CSkillBase_MoonE::Update_Skill(const _float fTimeDelta)
+void CSkillBase_MoonE::Update_Skill(const _float fTimeDelta, CMyStat* pStatCom)
 {
 	Super::Update_Skill(fTimeDelta);
 }
@@ -120,7 +120,7 @@ void CSkillBase_MoonE::Update_Skill(const _float fTimeDelta)
 HRESULT CSkillBase_MoonE::Ready_Spawner()
 {
 	{
-		CSkillObjectSpawnerBase::SPAWNER_COPY_DESC desc{};
+		CSingleSkillSpawner::SPAWNER_COPY_DESC desc{};
 		desc.iLevelIndex = 0;
 		desc.iSpawnLevelIndex = 0;
 
@@ -129,7 +129,7 @@ HRESULT CSkillBase_MoonE::Ready_Spawner()
 		if (pResult == nullptr)
 			return E_FAIL;
 
-		m_pSkillObjSpawner = static_cast<CSkillObjectSpawnerBase*>(pResult);
+		m_pSkillObjSpawner = static_cast<CSingleSkillSpawner*>(pResult);
 	}
 
 	return S_OK;
@@ -138,7 +138,7 @@ HRESULT CSkillBase_MoonE::Ready_Spawner()
 void CSkillBase_MoonE::Spawn_SkillObj(CMyStat* pOwnerStat, _bool bFirst)
 {
 	_uint iLevelIndex = m_pGameInstance->Get_CurrentLevelIndex();
-	CSkillObjectSpawnerBase::SPAWNER_COPY_DESC desc{};
+	CSingleSkillSpawner::SPAWNER_COPY_DESC desc{};
 	desc.iLevelIndex = iLevelIndex;
 	desc.iSpawnLevelIndex = iLevelIndex;
 
@@ -147,8 +147,8 @@ void CSkillBase_MoonE::Spawn_SkillObj(CMyStat* pOwnerStat, _bool bFirst)
 	desc.vOrigin.y += 1.f;
 	desc.vForward = pPlayerTrans->Get_Info(TRANSFORM_INFO_STATE::LOOK);
 
-	desc.eRotationState = TRANSFORM_INFO_STATE::LOOK;
-	desc.fRotation_Radian = bFirst ?  XMConvertToRadians(15.f) : XMConvertToRadians(-15.f);
+	//desc.eRotationState = TRANSFORM_INFO_STATE::LOOK;
+	//desc.fRotation_Radian = bFirst ?  XMConvertToRadians(15.f) : XMConvertToRadians(-15.f);
 
 	m_pSkillObjSpawner->Trigger(desc);
 }

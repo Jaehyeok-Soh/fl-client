@@ -2,7 +2,7 @@
 #include "SkillBase.h"
 
 NS_BEGIN(Engine)
-class CSkillObjectSpawnerBase;
+class CSingleSkillSpawner;
 NS_END
 
 NS_BEGIN(Client)
@@ -17,7 +17,7 @@ private:
 	virtual HRESULT Initialize(void* pArg) override;
 
 public:
-	virtual void	Awake(const _uint iCurLevelIndex);
+	virtual void	Awake(const _uint iCurLevelIndex) override;
 	virtual void	Update_Default(const _float fTimeDelta, CMyStat* pStatCom = nullptr) override;
 	virtual void	Update(const _float fTimeDelta, CMyStat* pStatCom = nullptr) override;
 
@@ -30,13 +30,13 @@ public:
 	virtual void Set_ExtraAttack_Desc(EXTRA_ATTACK_DESC& tStat_ExtraDesc, CMyStat* pOwnerStat) override;
 
 private:
-	CSkillObjectSpawnerBase* m_pSkillObjSpawner{ nullptr };
+	CSingleSkillSpawner* m_pSkillObjSpawner{ nullptr };
 
 	_bool m_bSpawn_Second = { false };
 	_float m_fAccTime = { 0.f };
 
 private:
-	virtual void Update_Skill(const _float fTimeDelta)override;
+	virtual void Update_Skill(const _float fTimeDelta, CMyStat* pStatCom)override;
 
 private:
 	HRESULT Ready_Spawner();

@@ -96,12 +96,12 @@ void CMoon_SkillE_Obj::OnCollision_Exit(_uint iMyColliderLayer, _uint iOtherLaye
 void CMoon_SkillE_Obj::OnTrigger_Enter(_uint iMyColliderLayer, _uint iOtherLayer, CGameObject* pOther)
 {
 	COLLIDED_DESC desc{};
-	desc.iCollisionType = COLLISIONEVENT::ON_COLLISION_ENTER;
-	desc.iRequesterLayer = iMyColliderLayer;
-	desc.iOtherLayer = iOtherLayer;
-	desc.pRequester = this;
-	desc.pOther = pOther;
-	//desc.tHitInfo = tHitInfo;
+	desc.iCollisionType		= COLLISIONEVENT::ON_COLLISION_ENTER;
+	desc.iRequesterLayer	= iMyColliderLayer;
+	desc.iOtherLayer		= iOtherLayer;
+	desc.pRequester			= this;
+	desc.pOther				= pOther;
+ 
 
 	m_pGameInstance->Push_CollidedData(desc);
 }
@@ -118,7 +118,7 @@ void CMoon_SkillE_Obj::Try_Attack(const HIT_DESC& hitDesc)
 	// 일반 공격 데미지 폰트
 	{
 		UI_PREFAB_DATA tPrefabData = {};
-		tPrefabData.DamageFontData.iDamage = hitDesc.fFinalDamage; // 데미지 폰트에 뜰 숫자 // 플레이어 공격력 // 랜덤은 보여주기용
+		tPrefabData.DamageFontData.iDamage = (_uint)hitDesc.fFinalDamage; // 데미지 폰트에 뜰 숫자 // 플레이어 공격력 // 랜덤은 보여주기용
 		tPrefabData.DamageFontData.vFontColor = Vec4{ 1.f, 0.95f, 0.47f, 1.f }; // 데미지 폰트 색 // 캐릭터 고유 색
 		tPrefabData.DamageFontData.vHitPos = hitDesc.vHitPoint; // 데미지 폰트를 띄울 World 위치 // 
 		tPrefabData.DamageFontData.vRandOffset = Vec3{
@@ -186,7 +186,7 @@ HRESULT CMoon_SkillE_Obj::Ready_Components()
 			cloneDesc.bIsActive			= true;
 			cloneDesc.vCenter			= { 0.f, 0.3f, 0.f };
 			cloneDesc.vExtents			= { 0.3f, 1.f,0.3f };
-			cloneDesc.strAttackPresetTag = "Xibi_Circle";
+			cloneDesc.strAttackPresetTag = "MoonSkill_E";
 			PHYSICSMATERIAL_DESC mtrlDesc{};
 			mtrlDesc.eMaterial			= EPhysicsMaterial::CONCRETE;
 			cloneDesc.tMaterial			= mtrlDesc;

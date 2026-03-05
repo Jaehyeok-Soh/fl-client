@@ -2,13 +2,13 @@
 #include "SkillObject_Base.h"
 
 NS_BEGIN(Client)
-class CMoon_SkillE_Obj final : public CSkillObject_Base
+class CMoon_SkillQSheild_Obj final : public CSkillObject_Base
 {
 	using Super = CSkillObject_Base;
 private:
-	CMoon_SkillE_Obj(ID3D11Device* pDevice, ID3D11DeviceContext* pDeviceContext);
-	CMoon_SkillE_Obj(const CMoon_SkillE_Obj& rhs);
-	virtual ~CMoon_SkillE_Obj() = default;
+	CMoon_SkillQSheild_Obj(ID3D11Device* pDevice, ID3D11DeviceContext* pDeviceContext);
+	CMoon_SkillQSheild_Obj(const CMoon_SkillQSheild_Obj& rhs);
+	virtual ~CMoon_SkillQSheild_Obj() = default;
 
 	virtual HRESULT Initialize_Prototype() override;
 	virtual HRESULT Initialize(void* pArg) override;
@@ -30,9 +30,10 @@ public:
 private:
 	HRESULT Ready_Components();
 public:
-	static CMoon_SkillE_Obj* Create(ID3D11Device* pDevice, ID3D11DeviceContext* pDeviceContext);
+	static CMoon_SkillQSheild_Obj* Create(ID3D11Device* pDevice, ID3D11DeviceContext* pDeviceContext);
 	virtual CGameObject* Clone(void* pArg) override;
 	virtual void Free() override;
 };
 
 NS_END
+

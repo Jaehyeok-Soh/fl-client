@@ -2,13 +2,13 @@
 #include "SkillObject_Base.h"
 
 NS_BEGIN(Client)
-class CMoon_SkillE_Obj final : public CSkillObject_Base
+class CMoon_SkillQAttack_Obj final : public CSkillObject_Base
 {
 	using Super = CSkillObject_Base;
 private:
-	CMoon_SkillE_Obj(ID3D11Device* pDevice, ID3D11DeviceContext* pDeviceContext);
-	CMoon_SkillE_Obj(const CMoon_SkillE_Obj& rhs);
-	virtual ~CMoon_SkillE_Obj() = default;
+	CMoon_SkillQAttack_Obj(ID3D11Device* pDevice, ID3D11DeviceContext* pDeviceContext);
+	CMoon_SkillQAttack_Obj(const CMoon_SkillQAttack_Obj& rhs);
+	virtual ~CMoon_SkillQAttack_Obj() = default;
 
 	virtual HRESULT Initialize_Prototype() override;
 	virtual HRESULT Initialize(void* pArg) override;
@@ -27,12 +27,21 @@ public:
 
 	virtual _bool On_Hit(const HIT_DESC& hitDesc) override;
 	virtual void Try_Attack(const HIT_DESC& hitDesc) override;
+
+private:
+	TimeCount m_TAttackCoolTime = { 0.f,2.f };
+
 private:
 	HRESULT Ready_Components();
+	
+private:
+	void Count_CoolTime(const _float fTimeDelta);
+
 public:
-	static CMoon_SkillE_Obj* Create(ID3D11Device* pDevice, ID3D11DeviceContext* pDeviceContext);
+	static CMoon_SkillQAttack_Obj* Create(ID3D11Device* pDevice, ID3D11DeviceContext* pDeviceContext);
 	virtual CGameObject* Clone(void* pArg) override;
 	virtual void Free() override;
 };
 
 NS_END
+

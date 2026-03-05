@@ -625,6 +625,12 @@
     <Filter Include="03. GameObject\SkillObject\Player\Moon\SkillE">
       <UniqueIdentifier>{bb204f36-542f-4eeb-ac29-823025464153}</UniqueIdentifier>
     </Filter>
+    <Filter Include="03. GameObject\SkillObject\Player\Moon\SkillQ">
+      <UniqueIdentifier>{86239eac-2955-425e-ace2-1cb312bcbc65}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="99. ETC\46.Headers">
+      <UniqueIdentifier>{e9831f57-7718-4a7b-9669-75fbbef83eee}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="targetver.h">
@@ -1159,6 +1165,15 @@
     <ClInclude Include="..\Public\Moon_SkillE_Obj.h">
       <Filter>03. GameObject\SkillObject\Player\Moon\SkillE</Filter>
     </ClInclude>
+    <ClInclude Include="..\Public\Moon_SkillQAttack_Obj.h">
+      <Filter>03. GameObject\SkillObject\Player\Moon\SkillQ</Filter>
+    </ClInclude>
+    <ClInclude Include="PlayerSkillObj_Headers.h">
+      <Filter>99. ETC\46.Headers</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\Moon_SkillQSheild_Obj.h">
+      <Filter>03. GameObject\SkillObject\Player\Moon\SkillQ</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <Image Include="Client.ico">
@@ -1684,6 +1699,12 @@
     </ClCompile>
     <ClCompile Include="..\Private\Moon_SkillE_Obj.cpp">
       <Filter>03. GameObject\SkillObject\Player\Moon\SkillE</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\Moon_SkillQAttack_Obj.cpp">
+      <Filter>03. GameObject\SkillObject\Player\Moon\SkillQ</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\Moon_SkillQSheild_Obj.cpp">
+      <Filter>03. GameObject\SkillObject\Player\Moon\SkillQ</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
