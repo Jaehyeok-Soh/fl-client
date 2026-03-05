@@ -54,7 +54,6 @@ public:
 
 private:
 	HRESULT Ready_Components(BODY_DESC *pDesc);
-	HRESULT Ready_EffectEvent();
 	HRESULT Bind_ShaderResources();
 	HRESULT Ready_ComputeShader();
 private:

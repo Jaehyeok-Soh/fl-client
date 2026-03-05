@@ -3,6 +3,8 @@
 
 #include "Player.h"
 
+#include "PhysicsCCT.h"
+
 CState_JumpBullet::CState_JumpBullet(CActionState* pOwnerComponent)
 	: Super(pOwnerComponent, "JumpBullet")
 {
@@ -33,6 +35,19 @@ HRESULT CState_JumpBullet::Start(void* pArg, _bool bForce)
 
 	CStateBase::SetupLook_CameraLook();
 
+	// 03/05 ¼ÒÀçÇõ Ãß°¡
+	{
+		CTransform* pPlayerTrans = Get_OwnerObject()->Get_Component<CTransform>();
+		CPhysicsCCT* pCCT = Get_OwnerObject()->Get_Component<CPhysicsCCT>();
+
+		Vec3 vLook = (pPlayerTrans->Get_Info(TRANSFORM_INFO_STATE::LOOK));
+
+		Vec3 accelation = vLook;
+
+		SetCCTImpuls(accelation * 5.f);
+		Set_ZeroDeAccelRate();
+	}
+
 	return S_OK;
 }
 
@@ -61,6 +76,7 @@ HRESULT CState_JumpBullet::End()
 		return E_FAIL;
 
 	Set_ApplyGravity(true);
+	Reset_DeAccelRate();
 
 	return S_OK;
 }

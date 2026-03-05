@@ -2,7 +2,7 @@
 #include "UIDynamic_Image.h"
 
 NS_BEGIN(Engine)
-class DelegateHandle;
+struct DelegateHandle;
 NS_END
 
 NS_BEGIN(Client)

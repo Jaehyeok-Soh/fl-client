@@ -420,9 +420,11 @@ public:
 #pragma endregion
 
 public:
-	void SetChangeLevelSequence(_bool bVal);
-	_bool GetChangeLevelSequence() { return m_bChangeLevelSequence; }
-
+	void SetChangeLevelSequence(_bool bVal) { m_bChangeLevelSequence = bVal; }
+	_bool Is_ChangeLevelSequence() { return m_bChangeLevelSequence; }
+	void SetDestroyEngineSequence(_bool bVal) { m_bDestroyEngineSequence = bVal; }
+	_bool Is_DestroyEngineSequence() { return m_bDestroyEngineSequence; }
+	_bool Is_TearDownSequence() { return m_bChangeLevelSequence || m_bDestroyEngineSequence; }
 private:
 	class CObjectPool_Manager* m_pObjectPool_Manager = { nullptr };
 	class CDataRepository* m_pDataRepository = { nullptr };
@@ -455,7 +457,7 @@ private:
 	std::mt19937_64 m_rng;
 
 	_bool m_bChangeLevelSequence = { false };
-
+	_bool m_bDestroyEngineSequence = { false };
 public:
 	virtual void			Free() override;
 

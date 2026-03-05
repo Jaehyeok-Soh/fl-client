@@ -435,7 +435,7 @@ CModel* CMapToolManager::Get_MonsterPreviewModel(DTO::EMakeMonsterType eMakeMons
 	CModel::MODEL_COPY_DESC tModelCopyDesc{};
 	pModel =
 		static_cast<CModel*>
-		(m_pGameInstance->Clone_Prototype(EPrototypeType::COMPONENT, ENUM_TO_UINT(ELevelType::MAP), L"Prototype_Component_Model_" + wstrModelName, &tModelCopyDesc));
+		(m_pGameInstance->Clone_Prototype(EPrototypeType::COMPONENT, m_pGameInstance->Get_CurrentLevelIndex(), L"Prototype_Component_Model_" + wstrModelName, &tModelCopyDesc));
 
 	return pModel;
 }
@@ -449,7 +449,7 @@ CModel* CMapToolManager::Get_PlayerPreviewModel()
 	CModel::MODEL_COPY_DESC tModelCopyDesc{};
 	pModel =
 		static_cast<CModel*>
-		(m_pGameInstance->Clone_Prototype(EPrototypeType::COMPONENT, ENUM_TO_UINT(ELevelType::MAP), L"Prototype_Component_Model_" + wstrPlayerModelName, &tModelCopyDesc));
+		(m_pGameInstance->Clone_Prototype(EPrototypeType::COMPONENT, m_pGameInstance->Get_CurrentLevelIndex(), L"Prototype_Component_Model_" + wstrPlayerModelName, &tModelCopyDesc));
 
 	return pModel;
 }
@@ -470,7 +470,7 @@ CModel* CMapToolManager::Get_BatchObjectModel(DTO::EMakeObjectType eType)
 	CModel::MODEL_COPY_DESC tModelCopyDesc{};
 	pModel =
 		static_cast<CModel*>
-		(m_pGameInstance->Clone_Prototype(EPrototypeType::COMPONENT, ENUM_TO_UINT(ELevelType::MAP), L"Prototype_Component_Model_" + wstrModelName, &tModelCopyDesc));
+		(m_pGameInstance->Clone_Prototype(EPrototypeType::COMPONENT, m_pGameInstance->Get_CurrentLevelIndex(), L"Prototype_Component_Model_" + wstrModelName, &tModelCopyDesc));
 
 	return pModel;
 }
@@ -693,7 +693,7 @@ void CMapToolManager::Delete_Preview()
 			_int iIndex = m_pPreviewMapobject->Get_InstanceCount() - 1;
 			if (iIndex == 0)
 			{
-				m_pGameInstance->Request_DeleteGameObject(ENUM_TO_UINT(ELevelType::MAP), m_pPreviewMapobject->Get_Layer(), m_pPreviewMapobject);
+				m_pGameInstance->Request_DeleteGameObject(ENUM_TO_UINT(ELevelType::MAP), m_pPreviewMapobject);
 			}
 			else
 			{
@@ -704,7 +704,7 @@ void CMapToolManager::Delete_Preview()
 		}
 		else
 		{
-			m_pGameInstance->Request_DeleteGameObject(ENUM_TO_UINT(ELevelType::MAP), m_pPreviewMapobject->Get_Layer(), m_pPreviewMapobject);
+			m_pGameInstance->Request_DeleteGameObject(ENUM_TO_UINT(ELevelType::MAP), m_pPreviewMapobject);
 			m_pPreviewMapobject = nullptr;
 		}
 	}

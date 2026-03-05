@@ -6,6 +6,7 @@
 NS_BEGIN(Engine)
 
 class CShader;
+class CGameObject;
 
 class CGameDataManager final : public CBase
 {
@@ -51,6 +52,10 @@ public:
 
 #pragma endregion
 
+#pragma region Player
+	void Player_BringOutFromStaticLayer();
+	void Player_SetToLayer(const wstring& wstrLayerTag);
+#pragma endregion
 
 #pragma region ATTACK_PRESET
 	const DTO::TAttackPreset_Data* Find_AttackPrseet(_uint iPresetKey) const;
@@ -72,16 +77,20 @@ private:
 
 	ID3D11ShaderResourceView*							m_pDefaultBlack{nullptr};
 	ID3D11ShaderResourceView*							m_pDefaultWhite{nullptr};
-	ID3D11ShaderResourceView*							m_pDefaultRed{nullptr};
-	ID3D11ShaderResourceView*							m_pDefaultBlue{nullptr};
-	ID3D11ShaderResourceView*							m_pDefaultGreen{nullptr};
+	ID3D11ShaderResourceView*							m_pDefaultRed{ nullptr };
+	ID3D11ShaderResourceView*							m_pDefaultBlue{ nullptr };
+	ID3D11ShaderResourceView*							m_pDefaultGreen{ nullptr };
 private:
 	map<wstring, Camera_Cinematic_Sequence>				m_mapCameraCinematicSequence{};
 	const _tchar*										m_wszCameraCinematicDataPath = L"../../Resources/Data/CameraCinematicData/CameraCinematicData.json";
 private:
-
 	ID3D11Device*										m_pDevice{nullptr};
 	ID3D11DeviceContext*								m_pDeviceContext{nullptr};
+	//////////////
+	/// Player ///
+	//////////////
+	CGameObject*										m_pPlayer{ nullptr };
+
 	////////////////////
 	/// AttackPreset ///
 	////////////////////

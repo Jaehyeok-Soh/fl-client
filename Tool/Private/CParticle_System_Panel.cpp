@@ -1403,6 +1403,7 @@ void CParticle_System_Panel::Draw_ParticleSystem(CToolObject* pGo)
 				switch (m_tCurrentDesc.Data.eEffectParticleType)
 				{
 				case (_uint)DTO::E_PARTICLETYPE::NONE:
+					m_PParticleTypeList.push_back("NONE");
 					break;
 				case (_uint)DTO::E_PARTICLETYPE::PARTICLE:
 					m_PParticleTypeList.push_back("DEFAULT_PARTICLE");
@@ -1423,7 +1424,7 @@ void CParticle_System_Panel::Draw_ParticleSystem(CToolObject* pGo)
 				}
 
 				if (m_PParticleTypeList.size() <= m_iSelectedShaderPassIdx)
-					m_iSelectedShaderPassIdx = static_cast<int>((m_PParticleTypeList.size() - 1));
+					m_iSelectedShaderPassIdx = 0/*static_cast<int>((m_PParticleTypeList.size() - 1))*/;
 
 				std::vector<const char*> iTems1;
 				iTems1.reserve(static_cast<int>(m_PParticleTypeList.size()));

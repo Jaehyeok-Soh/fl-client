@@ -3,7 +3,6 @@
 
 NS_BEGIN(Engine)
 class CBone;
-class CEffectHandler;
 NS_END
 
 NS_BEGIN(Client)
@@ -53,10 +52,8 @@ protected:
 	HRESULT Bind_ShaderResources();
 	HRESULT Ready_ComputeShader();
 	HRESULT Ready_Bones(MONSTERBODY_DESC* pDesc);
-	HRESULT Ready_EffectHandler(MONSTERBODY_DESC* pDesc);
 protected:
 	std::vector<_uint> m_vecBoneIndices;
-	class CEffectHandler* m_pEffectHandler = { nullptr };
 public:
 	virtual CGameObject* Clone(void* pArg) PURE;
 	virtual void Free() override;

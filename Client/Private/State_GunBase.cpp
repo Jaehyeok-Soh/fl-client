@@ -402,20 +402,17 @@ void CState_GunBase::Jump(const _float fTimeDelta)
     CTransform* pPlayerTrans = Get_OwnerObject()->Get_Component<CTransform>();
     _float moveps = pPlayerTrans->Get_MovePerSec(); // 속도
 
-
     Vec3 vUp = (pPlayerTrans->Get_Info(TRANSFORM_INFO_STATE::UP));
     vUp.Normalize();
 
-    Vec3 disp = vUp * moveps * fTimeDelta;
+    Vec3 accelation = vUp;
 
-    Move(disp, 0.01f, fTimeDelta);
+    Move(accelation);
 }
 
 void CState_GunBase::GunMove(const _float fTimeDelta)
 {
     CTransform* pPlayerTrans = Get_OwnerObject()->Get_Component<CTransform>();
-
-    _float moveps = pPlayerTrans->Get_MovePerSec(); // 속도
 
     Vec3 vRight = pPlayerTrans->Get_Info(TRANSFORM_INFO_STATE::RIGHT);
     vRight.y = 0.f;
@@ -448,7 +445,7 @@ void CState_GunBase::GunMove(const _float fTimeDelta)
 
     if (::XMVector3Equal(vDir, Vec3::Zero) == false)
         vDir.Normalize();
-    Move(vDir * moveps * fTimeDelta, 0.01f, fTimeDelta);
+    SetCCTInputDirection(vDir);
 }
 
 void CState_GunBase::Free()

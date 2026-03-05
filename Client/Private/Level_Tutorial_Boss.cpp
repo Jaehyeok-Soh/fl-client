@@ -63,6 +63,7 @@
 #include "Xibi_Oneshot_Thunder.h"
 #include "Moon_SkillE_Obj.h"
 
+#include "Level_Loading.h"
 
 //=================
 // Game Instance
@@ -290,7 +291,11 @@ HRESULT CLevel_Tutorial_Boss::Ready_Player_Layer(const wstring& wstrLayerTag)
 
 	// TODO : 만약 플레이어가 늘어난다면 레이어 추가 체크 필수
 	if (CGameObject* pPlayer = m_pGameInstance->Get_GameObject_Front(ENUM_TO_UINT(ELevelType::STATIC), wstrLayerTag))
+	{
+		CGameObject::GAMEOBJECT_REINIT_DESC desc{};
+		pPlayer->Reinitialize(&desc);
 		return S_OK;
+	}
 
 	/* Player 최초 생성 */
 	{
@@ -513,6 +518,17 @@ void CLevel_Tutorial_Boss::Update(const _float fTimeDelta)
 	if (KEY_BUTTON_DOWN(DIK_8))
 	{
 		m_pGameInstance->Broadcast<ACTION4>();
+	}
+
+	if (KEY_BUTTON_DOWN(DIK_2))
+	{
+		m_pGameInstance->Request_ChangeLevel(ENUM_TO_UINT(ELevelType::LOADING), CLevel_Loading::Create(m_pDevice, m_pDeviceContext, ELevelType::TUTORIAL_VILLAGE));
+		CUI_Manager::GetInstance()->Request_Clear();
+	}
+	if (KEY_BUTTON_DOWN(DIK_3))
+	{
+		m_pGameInstance->Request_ChangeLevel(ENUM_TO_UINT(ELevelType::LOADING), CLevel_Loading::Create(m_pDevice, m_pDeviceContext, ELevelType::LOGO));
+		CUI_Manager::GetInstance()->Request_Clear();
 	}
 }
 
