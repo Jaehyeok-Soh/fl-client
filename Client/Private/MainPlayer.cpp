@@ -131,6 +131,11 @@ HRESULT CMainPlayer::Clear_WhenChangeLevel()
 {
     m_pTargeter = nullptr;
     Clear_Components_WhenChangeLevel();
+
+    // LoadingScene에서 비활성화
+    Set_Active(false);
+    Set_CollideEnabled(false);
+    Set_Render(false);
     return S_OK;
 }
 
@@ -138,6 +143,14 @@ HRESULT CMainPlayer::Awake(const _uint iCurrentLevelID)
 {
     if (FAILED(Super::Awake(iCurrentLevelID)))
         return E_FAIL;
+
+    // 로딩씬 제외 매씬 Awake 호출시 활성화
+    if (iCurrentLevelID != ENUM_TO_UINT(ELevelType::LOADING))
+    {
+        Set_Active(true);
+        Set_CollideEnabled(true);
+        Set_Render(true);
+    }
 
     CGameInstance::GetInstance()->Add_Actor_Object(this);
 

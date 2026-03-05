@@ -251,6 +251,16 @@ HRESULT CLevel_Square::Ready_Lights()
 
 HRESULT CLevel_Square::Ready_Player_Layer(const wstring& wstrLayerTag)
 {
+	_uint iLevelIndex = ENUM_TO_UINT(ELevelType::SQUARE);
+
+	// TODO : 만약 플레이어가 늘어난다면 레이어 추가 체크 필수
+	if (CGameObject* pPlayer = m_pGameInstance->Get_GameObject_Front(ENUM_TO_UINT(ELevelType::STATIC), wstrLayerTag))
+	{
+		CGameObject::GAMEOBJECT_REINIT_DESC desc{};
+		pPlayer->Reinitialize(&desc);
+		return S_OK;
+	}
+
 	/* Player 최초 생성 */
 	{
 		CGameObject* pResult = { nullptr };
