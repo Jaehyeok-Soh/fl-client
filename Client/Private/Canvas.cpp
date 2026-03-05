@@ -148,7 +148,6 @@ HRESULT CCanvas::Ready_Prefab(_uint iPoolLevel, _uint iSpawnLevel)
 					return;
 				(this->Get_UIVector())->push_back(pUI);
 				CUI_Manager::GetInstance()->Add_VecGenericUICache(iSpawnLevel,pUI);
-				CUI_Manager::GetInstance()->Request_SortUI();
 			});
 	}
 	m_isAllDead = false;

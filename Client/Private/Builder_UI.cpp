@@ -129,7 +129,6 @@ HRESULT CBuilder_UI::Build(const CDataDocumentBase& document)
 	m_MapTriggerDataCache.clear();
 
 	CUI_Manager::GetInstance()->Add_TriggerUI(std::move(m_vecTriggerUIs));
-	CUI_Manager::GetInstance()->Request_SortUI();
 	return S_OK;
 }
 

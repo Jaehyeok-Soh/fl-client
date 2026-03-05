@@ -76,8 +76,8 @@ public:
 	void Located_RightBottom_In_Viewport();
 	void Set_SizeToTextureScale();
 
-	inline virtual HRESULT Spawn_FromPool(void* pArg)override { Super::Spawn_FromPool(pArg); };
-	inline virtual HRESULT Despawn_FromPool()override { Super::Despawn_FromPool(); };
+	inline virtual HRESULT Spawn_FromPool(void* pArg)override { if (FAILED(Super::Spawn_FromPool(pArg)))return E_FAIL; return S_OK; };
+	inline virtual HRESULT Despawn_FromPool()override { if (FAILED(Super::Despawn_FromPool()))return E_FAIL; return S_OK; };
 
 protected:
 	void SetUp_Rect();
