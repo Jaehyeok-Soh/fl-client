@@ -103,6 +103,12 @@ HRESULT CModelLoader::Read_Material(vector<CMaterial*>* vecMaterials)
 
 		MaterialDesc.wstrPath = finalPath;
 
+
+		if (m_ModelPath.wstring().find(L"SM_Home_Carp05A") != std::wstring::npos)
+		{
+			int a = 0;
+		}
+
 		if (pMaterial = m_pGameInstance->Get_Resource<CMaterial>(MaterialDesc.wstrName))
 		{
 			vecMaterials->push_back(pMaterial);

@@ -257,8 +257,6 @@ HRESULT CLoader::Loading_For_Logo()
 	if (FAILED(m_pGameInstance->GameDataManager_Load_CameraCinematicSequence()))
 		return E_FAIL;
 
-	m_fLoadingRatio = 1.f;
-
 #pragma region Register Global Event
 	/////////////////////////////////////////
 	/////////// Ready GlobalEvent ///////////
@@ -266,8 +264,6 @@ HRESULT CLoader::Loading_For_Logo()
 	/* Global */
 	m_pGameInstance->Register_GlobalEventsBroadCast(ENUM_TO_UINT(EGlobal_Broadcast_Type::NONE), nullptr);
 	REGISTER_GLOBAL_EVENT(TUTORIAL_BOSS_CONTATCT);
-
-	m_fLoadingRatio = 2.f;
 
 #pragma endregion
 
