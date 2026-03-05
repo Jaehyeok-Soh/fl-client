@@ -631,6 +631,12 @@
     <Filter Include="07. System\99. Debug_ImGui\Layout\MoveState">
       <UniqueIdentifier>{b8e2a682-0862-4d67-a466-eaca1a813102}</UniqueIdentifier>
     </Filter>
+    <Filter Include="07. System\99. Debug_ImGui\Inspector\PoolDebug">
+      <UniqueIdentifier>{424668f6-8bc5-4dd8-8036-5b7a5d57b52a}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="07. System\99. Debug_ImGui\Layout\ObjectPool">
+      <UniqueIdentifier>{32bebfb6-883b-4452-b824-e6ce5b80a0cd}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="targetver.h">
@@ -1171,6 +1177,12 @@
     <ClInclude Include="..\Public\ImGui_MoveStateLayout.h">
       <Filter>07. System\99. Debug_ImGui\Layout\MoveState</Filter>
     </ClInclude>
+    <ClInclude Include="..\public\ImGui_PoolInspector.h">
+      <Filter>07. System\99. Debug_ImGui\Inspector\PoolDebug</Filter>
+    </ClInclude>
+    <ClInclude Include="..\public\ImGui_ObjectPoolLayout.h">
+      <Filter>07. System\99. Debug_ImGui\Layout\ObjectPool</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <Image Include="Client.ico">
@@ -1702,6 +1714,12 @@
     </ClCompile>
     <ClCompile Include="..\Private\ImGui_MoveStateLayout.cpp">
       <Filter>07. System\99. Debug_ImGui\Layout\MoveState</Filter>
+    </ClCompile>
+    <ClCompile Include="..\private\ImGui_PoolInspector.cpp">
+      <Filter>07. System\99. Debug_ImGui\Inspector\PoolDebug</Filter>
+    </ClCompile>
+    <ClCompile Include="..\private\ImGui_ObjectPoolLayout.cpp">
+      <Filter>07. System\99. Debug_ImGui\Layout\ObjectPool</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

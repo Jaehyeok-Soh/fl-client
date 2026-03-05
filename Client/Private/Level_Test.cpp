@@ -259,8 +259,6 @@ HRESULT CLevel_Test::Build_Files()
 
 HRESULT CLevel_Test::Ready_Player_Layer(const wstring& wstrLayerTag)
 {
-
-
 	/* Player 置段 持失 */
 	{
 		// SkillObject Pool
@@ -296,7 +294,6 @@ HRESULT CLevel_Test::Ready_Player_Layer(const wstring& wstrLayerTag)
 			wstrLayerTag, &playerDesc)))
 			return E_FAIL;
 	}
-
 	return S_OK;
 }
 

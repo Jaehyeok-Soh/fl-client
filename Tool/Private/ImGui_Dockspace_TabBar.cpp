@@ -11,19 +11,19 @@ CImGui_Dockspace_TabBar::CImGui_Dockspace_TabBar(const _char* pLabel, ID3D11Devi
 
 HRESULT CImGui_Dockspace_TabBar::Render(CToolObject* pGo)
 {
-	ELevelType eNowSelected = ELevelType::END;
-	wstring	   wstrChangeLevelName{ L"" };
+    ELevelType eNowSelected = ELevelType::END;
+    wstring      wstrChangeLevelName{ L"" };
 
-	static ELevelType s_eForceRevertTab = ELevelType::END;
+    static ELevelType s_eForceRevertTab = ELevelType::END;
 
 	// ? [추가 핵심] 현재 프레임이 "탭을 강제로 되돌리는 중"인지 기억해 둠
 	bool bIsRevertingThisFrame = (s_eForceRevertTab != ELevelType::END);
 
-	if (ImGui::BeginTabBar(m_strLabel.c_str()))
-	{
-		auto RenderTab = [&](const char* szName, ELevelType eType, const wstring& wName)
-			{
-				ImGuiTabItemFlags flag = (s_eForceRevertTab == eType) ? ImGuiTabItemFlags_SetSelected : 0;
+    if (ImGui::BeginTabBar(m_strLabel.c_str()))
+    {
+        auto RenderTab = [&](const char* szName, ELevelType eType, const wstring& wName)
+            {
+                ImGuiTabItemFlags flag = (s_eForceRevertTab == eType) ? ImGuiTabItemFlags_SetSelected : 0;
 
 				if (ImGui::BeginTabItem(szName, nullptr, flag))
 				{

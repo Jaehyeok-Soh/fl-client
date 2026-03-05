@@ -138,7 +138,6 @@ _bool CUINameplate_BG::Tick_Visible_Event(const _float fTimeDelta)
 		m_isActive = false;
 		return true;
 	}
-
 	return false;
 }
 

@@ -43,7 +43,6 @@ public:
     virtual _bool Picking(OUT Vec3& vOut) override;
     virtual _bool Export_Data(DTO::ECategory eCategory, CDataDocumentBase* pDocument) override;
     virtual void Draw_ImGui() override;
-    void Set_Dead(_bool bStatic = false);
 
     bool IntsersectWithPlane(OUT Vec3& vOut);
 public:
