@@ -36,14 +36,17 @@ public:
     typedef struct tagStateEffectDesc
     {
         string          EffectPrefabTag = {};                   // 생성할 이펙트 Prefab Tag
-        E_WORLD         bWorld = {E_WORLD::E_WORLD};                            // 부모에 붙어서 갈것인가. 붙어서 갈거면 Local(0), 방구같이 싸고 지나가면 World(1)
-        const Matrix*   pParentTransformMatrix = { nullptr };   // 부모 Transform
+        E_WORLD         bWorld = { E_WORLD::E_WORLD };                            // 부모에 붙어서 갈것인가. 붙어서 갈거면 Local(0), 방구같이 싸고 지나가면 World(1)
+        const Matrix* pParentTransformMatrix = { nullptr };   // 부모 Transform
 
-        _bool           bFollowBone = {false};                  // 뼈 따라갈것인가
-        _int            iBoneIndex = {-1};                      // 뼈 인덱스            
+        _bool           bFollowBone = { false };                  // 뼈 따라갈것인가
+        _int            iBoneIndex = { -1 };                      // 뼈 인덱스            
 
         Vec3            vOffSet = {};                           // 위치 Offset
         Vec3            vRotation = {};                         // 회전 Offset
+        Vec3            vScale = {};
+
+        _float          vSpeed = {};
 
     }STATE_VFX_DESC;
 

@@ -179,7 +179,7 @@ void CEffectType_Selection_Panel::CreateParticleEffect()
 		pEffectDesc.Data._Effect_TargetRotation = { 0.f, 0.f, 0.f };
 
 		// =========   버퍼 사이즈   ======================
-		pEffectDesc.Data._Effect_MaxParticle = { 30 };
+		pEffectDesc.Data._Effect_MaxParticle = { 1 };
 		pEffectDesc.Data._Effect_Looping = { true };
 		pEffectDesc.Data._Effect_LifeTime = { 5.f };
 		pEffectDesc.Data._Effect_Range = { 1.f, 1.f, 1.f };

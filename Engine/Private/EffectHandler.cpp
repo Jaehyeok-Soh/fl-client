@@ -25,7 +25,6 @@ CEffectHandler::CEffectHandler(const CEffectHandler& rhs)
 
 HRESULT CEffectHandler::Initialize_Prototype(void* pArg)
 {
-
     if(FAILED(Ready_Desc(pArg)))
         return E_FAIL;
 
