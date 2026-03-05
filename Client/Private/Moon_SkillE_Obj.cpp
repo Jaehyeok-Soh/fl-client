@@ -46,6 +46,7 @@ HRESULT CMoon_SkillE_Obj::Awake(const _uint iCurrentLevelID)
 		return E_FAIL;
 
 	Get_Component<CEffectHandler>()->Setup_ForOwner();
+
 	return S_OK;
 }
 

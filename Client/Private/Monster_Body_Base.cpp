@@ -64,6 +64,7 @@ HRESULT CMonster_Body_Base::Awake(const _uint iCurrentLevelIndex)
 		return E_FAIL;
 
 	Get_Component<CEffectHandler>()->Setup_ForOwner();
+
 	return S_OK;
 }
 

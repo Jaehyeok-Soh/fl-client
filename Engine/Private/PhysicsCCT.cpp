@@ -129,7 +129,7 @@ void CPhysicsCCT::SetHeight(_float height)
 
 const PxControllerCollisionFlags CPhysicsCCT::Move(Vec3 disp, _float minDist, _float fTimeDelta)
 {
-	if (m_pGameInstance->GetChangeLevelSequence())
+	if (m_pGameInstance->Is_ChangeLevelSequence())
 	{
 		PxControllerCollisionFlags collisionFlag;
 		return collisionFlag;

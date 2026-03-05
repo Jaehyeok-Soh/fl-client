@@ -273,7 +273,6 @@ HRESULT CEffectHandler::Owner_Setting()
             m_pOwnerMatrix = &(Get_Owner()->Get_Component<CTransform>()->Get_WorldMatrix());
     }
 
-
     return m_pOwnerMatrix ? S_OK : E_FAIL;
 }
 
