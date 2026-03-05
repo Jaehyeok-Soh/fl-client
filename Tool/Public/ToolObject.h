@@ -36,6 +36,7 @@ public:
 	virtual void	Set_WorldMatrix(const Matrix& WorldMatrix);
 	virtual void	Set_WorldMatrix(const Vec3& vScale, const Quat& vQuat ,const Vec3& vPosition);
 	virtual Matrix  Get_WorldMatrix();
+
 	virtual void	Set_Dead(_bool bStatic = false) override;
 public:
 	virtual void Set_Visible();
