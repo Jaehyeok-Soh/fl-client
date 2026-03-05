@@ -907,6 +907,7 @@ void CGameInstance::Push_CollidedData(const COLLIDED_DESC& desc)
 
 void CGameInstance::Destroy_Engine()
 {
+	SetDestroyEngineSequence(true);
 	Safe_Release(m_pJudgementSystem);
 	Safe_Release(m_pFrustrum);
 	Safe_Release(m_pInput_Manager);
@@ -920,12 +921,12 @@ void CGameInstance::Destroy_Engine()
 	Safe_Release(m_pCamera_Manager);
 	Safe_Release(m_pOctree_Manager);
 	Safe_Release(m_pEvent_Manager);
+	Safe_Release(m_pGameData_Manager);
 	Safe_Release(m_pObject_Manager);
 	Safe_Release(m_pEffect_Manager);
 	Safe_Release(m_pObjectPool_Manager);
 	Safe_Release(m_pCollision_Manager);
 	Safe_Release(m_pPicking);
-	Safe_Release(m_pGameData_Manager);
 	Safe_Release(m_pPrototype_Manager);
 	Safe_Release(m_pLevel_Manager);
 	Safe_Release(m_pLight_Manager);
@@ -934,7 +935,7 @@ void CGameInstance::Destroy_Engine()
 	Safe_Release(m_pResource_Manager);
 	Safe_Release(m_pPhysics_Module);
 	Safe_Release(m_pGraphic_Device);
-
+	SetDestroyEngineSequence(false);
 	CGameInstance::GetInstance()->DestroyInstance();
 }
 
@@ -1216,15 +1217,12 @@ const unordered_map<_uint, DTO::TAttackPreset_Data>& CGameInstance::Get_AttackPr
 {
 	return m_pGameData_Manager->Get_AttackPresetsData_ForDebug();
 }
-void CGameInstance::SetChangeLevelSequence(_bool bVal)
-{
-	m_bChangeLevelSequence = bVal;
-}
 #pragma endregion
 
 #pragma endregion
 void CGameInstance::Free()
 {
+	SetDestroyEngineSequence(true);
 	Safe_Release(m_pJudgementSystem);
 	Safe_Release(m_pFrustrum);
 	Safe_Release(m_pLight_Manager);
@@ -1238,13 +1236,13 @@ void CGameInstance::Free()
 	Safe_Release(m_pRenderTarget_Manager);
 	Safe_Release(m_pCamera_Manager);
 	Safe_Release(m_pOctree_Manager);
+	Safe_Release(m_pGameData_Manager);
 	Safe_Release(m_pEvent_Manager);
 	Safe_Release(m_pObject_Manager);
 	Safe_Release(m_pEffect_Manager);
 	Safe_Release(m_pObjectPool_Manager);
 	Safe_Release(m_pCollision_Manager);
 	Safe_Release(m_pPicking);
-	Safe_Release(m_pGameData_Manager);
 	Safe_Release(m_pPrototype_Manager);
 	Safe_Release(m_pLevel_Manager);
 	Safe_Release(m_pEventBus_Manager);
@@ -1252,6 +1250,7 @@ void CGameInstance::Free()
 	Safe_Release(m_pResource_Manager);
 	Safe_Release(m_pPhysics_Module);
 	Safe_Release(m_pGraphic_Device);
+	SetDestroyEngineSequence(false);
 	Super::Free();
 }
 
