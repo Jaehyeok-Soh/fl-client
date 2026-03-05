@@ -16,10 +16,10 @@
 #include "Builder_UI.h"
 
 #include "CameraMan_Targeter.h"
-
 #include "UI_Manager.h"
-
 #include "GameInstance.h"
+
+
 CLevel_Loading::CLevel_Loading(ID3D11Device* pDevice, ID3D11DeviceContext* pDeviceContext)
 	: Super(pDevice, pDeviceContext)
 {
@@ -51,8 +51,6 @@ HRESULT CLevel_Loading::Initialize(ELevelType eNextLevelID)
 
 HRESULT CLevel_Loading::Awake(const _uint iLevelID)
 {
-
-
 	if (FAILED(Super::Awake(iLevelID)))
 		return E_FAIL;
 	return S_OK;
@@ -90,8 +88,6 @@ void CLevel_Loading::Update(const _float fTimeDelta)
 
 		if (!pNewLevel)
 			return;
-
-		m_pGameInstance->SetChangeLevelSequence(false);
 
 		CUI_Manager::GetInstance()->Clear_Cache(m_pGameInstance->Get_CurrentLevelIndex());
 		m_pGameInstance->Immediately_ChangeLevel(ENUM_TO_UINT(m_eNextLevelID), pNewLevel);

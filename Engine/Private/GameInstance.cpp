@@ -291,6 +291,7 @@ CFxShaderVariant* CGameInstance::GetOrCreate_Variant(const path& filePath, EVtxL
 #pragma region LEVEL_MANAGER
 HRESULT CGameInstance::Immediately_ChangeLevel(_uint iNewLevelID, CLevel* pNewLevel)
 {
+	SetChangeLevelSequence(true);
 	return m_pLevel_Manager->Change_Level(iNewLevelID, pNewLevel);
 }
 
@@ -303,8 +304,6 @@ void CGameInstance::Request_ChangeLevel(_uint iNewLevelID, CLevel* pNewLevel)
 	desc.iNewLevelID = static_cast<_int>(iNewLevelID);
 	desc.pNewLevel = pNewLevel;
 	m_pEvent_Manager->Push_ChangeLevelEvet(desc);
-
-	SetChangeLevelSequence(true);
 }
 
 _bool CGameInstance::Is_Awaked(const _uint iLevelID) const
@@ -417,22 +416,26 @@ CGameObject* CGameInstance::Add_GameObject(_uint iPrototypeLevelIndex, const wst
 {
 	return m_pObject_Manager->Add_GameObject(iPrototypeLevelIndex, wstrPrototypeTag, iCloneLevelIndex, wstrLayerTag, pArg);
 }
-void CGameInstance::Immediately_DeleteGameObject(_uint iCloneLevelIndex, const wstring& wstrLayerTag, CGameObject* pGo)
+void CGameInstance::Immediately_DeleteGameObject(_uint iCloneLevelIndex, CGameObject* pGo)
 {
-	m_pObject_Manager->Delete_GameObject(iCloneLevelIndex, wstrLayerTag, pGo);
+	m_pObject_Manager->Delete_GameObject(iCloneLevelIndex, pGo);
+}
+void CGameInstance::Immediately_DespawnGameObject(_uint iCloneLevelIndex, CGameObject* pGo)
+{
+	m_pObject_Manager->Despawn_GameObject(iCloneLevelIndex, pGo);
 }
 void CGameInstance::Request_AddObject(_uint iCloneLevelIndex, const wstring& wstrLayerTag, CGameObject* pGo, std::function<void(CGameObject*)> onSpawnedCallback)
 {
 	if (!pGo)
 		return;
 
-	SpawnEventDesc desc = {};
+	AddEventDesc desc = {};
 	desc.iCloneLevelIndex = static_cast<_int>(iCloneLevelIndex);
 	desc.wstrLayerTag = wstrLayerTag;
 	desc.pClone = pGo;
 	if (onSpawnedCallback)
 		desc.callback = std::move(onSpawnedCallback);
-	m_pEvent_Manager->Push_SpawnEvent(desc);
+	m_pEvent_Manager->Push_AddEvent(desc);
 }
 void CGameInstance::Request_AddObject(_uint iPrototypeLevelIndex, const wstring& wstrPrototypeTag, _uint iCloneLevelIndex, const wstring& wstrLayerTag, void* pArg, std::function<void(CGameObject*)> onSpawnedCallback)
 {
@@ -451,16 +454,15 @@ void CGameInstance::Request_AddObject(_uint iPoolLevelIndex, const wstring& wstr
 	if (pResult)
 		Request_AddObject(iSpawnLevelIndex, wstrLayerTag, pResult, onSpawnedCallback);
 }
-void CGameInstance::Request_DeleteGameObject(_uint iCloneLevelIndex, const wstring& wstrLayerTag, CGameObject* pGo)
+void CGameInstance::Request_DeleteGameObject(_uint iCloneLevelIndex, CGameObject* pGo)
 {
 	if (!pGo)
 		return;
 
-	DespawnEventDesc desc = {};
+	RemoveEventDesc desc = {};
 	desc.iClonedLevelIndex = iCloneLevelIndex;
-	desc.wstrLayerTag = wstrLayerTag;
 	desc.pGo = pGo;
-	m_pEvent_Manager->Push_DespawnEvent(desc);
+	m_pEvent_Manager->Push_RemoveEvent(desc);
 }
 
 CGameObject* CGameInstance::Get_GameObject(_uint iLevelIndex, const wstring& wstrLayerTag, _uint iObjectIndex)
@@ -501,6 +503,20 @@ HRESULT CGameInstance::Regist_Pool(_uint iTargetLevelIndex, const wstring& wstrP
 {
 	return m_pObjectPool_Manager->Regist_Pool(iTargetLevelIndex, wstrPoolTag, wstrLayerTag, iSeedLevelID, wstrSeedPrototypeTag, pArg, iPoolCapacityCount);
 }
+#ifdef _DEBUG
+void CGameInstance::Collect_PoolTags(_uint iLevelIndex, OUT vector<wstring>& vecOutTags) const
+{
+	m_pObjectPool_Manager->Collect_PoolTags(iLevelIndex, vecOutTags);
+}
+_int CGameInstance::Get_ObjectPoolCapacity(_uint iLevelIndex, const wstring& wstrPoolTag) const
+{
+	return m_pObjectPool_Manager->Get_Capacity(iLevelIndex, wstrPoolTag);
+}
+_int CGameInstance::Get_ObjectPoolActiveCount(_uint iLevelIndex, const wstring& wstrPoolTag) const
+{
+	return m_pObjectPool_Manager->Get_ActiveCount(iLevelIndex, wstrPoolTag);
+}
+#endif
 #pragma endregion
 
 #pragma region COLLISION_MANAGER
@@ -601,6 +617,11 @@ void CGameInstance::Setup_UIViewProj_ToCBuffer()
 void CGameInstance::Setup_Inv_ToCBuffer()
 {
 	m_pCamera_Manager->Setup_Inv_ToCBuffer();
+}
+
+HRESULT CGameInstance::Play_CameraCinematic(const Camera_Cinematic_Sequence* pCameraCinematicSequence)
+{
+	return m_pCamera_Manager->Play_CameraCinematic(pCameraCinematicSequence);
 }
 
 HRESULT CGameInstance::Camera_Shaking(const CAM_SHAKING_DATA& tData)
@@ -891,6 +912,7 @@ void CGameInstance::Push_CollidedData(const COLLIDED_DESC& desc)
 
 void CGameInstance::Destroy_Engine()
 {
+	SetDestroyEngineSequence(true);
 	Safe_Release(m_pJudgementSystem);
 	Safe_Release(m_pFrustrum);
 	Safe_Release(m_pInput_Manager);
@@ -900,25 +922,25 @@ void CGameInstance::Destroy_Engine()
 	Safe_Release(m_pRender_Manager);
 	Safe_Release(m_pSound_Manager);
 	Safe_Release(m_pFont_Manager);
-	Safe_Release(m_pEffect_Manager);
 	Safe_Release(m_pRenderTarget_Manager);
 	Safe_Release(m_pCamera_Manager);
 	Safe_Release(m_pOctree_Manager);
+	Safe_Release(m_pEvent_Manager);
+	Safe_Release(m_pGameData_Manager);
 	Safe_Release(m_pObject_Manager);
+	Safe_Release(m_pEffect_Manager);
 	Safe_Release(m_pObjectPool_Manager);
 	Safe_Release(m_pCollision_Manager);
 	Safe_Release(m_pPicking);
-	Safe_Release(m_pGameData_Manager);
 	Safe_Release(m_pPrototype_Manager);
 	Safe_Release(m_pLevel_Manager);
 	Safe_Release(m_pLight_Manager);
-	Safe_Release(m_pEvent_Manager);
 	Safe_Release(m_pEventBus_Manager);
 	Safe_Release(m_pShaderAsset_Manager);
 	Safe_Release(m_pResource_Manager);
 	Safe_Release(m_pPhysics_Module);
 	Safe_Release(m_pGraphic_Device);
-
+	SetDestroyEngineSequence(false);
 	CGameInstance::GetInstance()->DestroyInstance();
 }
 
@@ -1141,6 +1163,16 @@ void CGameInstance::Physics_Render(const PxGeometry& geom, const PxTransform& tr
 
 #pragma region GAMEDATA_MANAGER
 
+HRESULT	CGameInstance::Register_GlobalEventsBroadCast(_uint iTypeIndex, std::function<void()> funcGlobalEvent)
+{
+	return m_pGameData_Manager->Register_GlobalEventsBroadCast(iTypeIndex, funcGlobalEvent);
+}
+
+HRESULT	CGameInstance::BroadCaset_RegisterGlobalEvent(_uint iTypeIndex)
+{
+	return m_pGameData_Manager->BroadCaset_RegisterGlobalEvent(iTypeIndex);
+}
+
 
 #pragma region Texture Splating
 HRESULT CGameInstance::GameDataManager_Load_TextureSplatingInfoData()
@@ -1173,6 +1205,10 @@ HRESULT CGameInstance::GameDataManager_Save_CameraCinematicSequence(const wstrin
 {
 	return m_pGameData_Manager->Save_CameraCinematicSequence(wstrFindKey, pSaveCamCinematicSequence);
 }
+HRESULT CGameInstance::Play_CameraCinematic(const wstring& wstrFindKey)
+{
+	return m_pGameData_Manager->Play_CameraCinematic(wstrFindKey);
+}
 vector<std::string> CGameInstance::GameDataManager_Get_CameraCinematicSequenceNames() const
 {
 	return m_pGameData_Manager->Get_CameraCinematicSequenceNames();
@@ -1200,15 +1236,12 @@ const unordered_map<_uint, DTO::TAttackPreset_Data>& CGameInstance::Get_AttackPr
 {
 	return m_pGameData_Manager->Get_AttackPresetsData_ForDebug();
 }
-void CGameInstance::SetChangeLevelSequence(_bool bVal)
-{
-	m_bChangeLevelSequence = bVal;
-}
 #pragma endregion
 
 #pragma endregion
 void CGameInstance::Free()
 {
+	SetDestroyEngineSequence(true);
 	Safe_Release(m_pJudgementSystem);
 	Safe_Release(m_pFrustrum);
 	Safe_Release(m_pLight_Manager);
@@ -1217,25 +1250,26 @@ void CGameInstance::Free()
 	Safe_Release(m_pTimeScale_Manager);
 	Safe_Release(m_pSound_Manager);
 	Safe_Release(m_pFont_Manager);
-	Safe_Release(m_pEffect_Manager);
 	Safe_Release(m_pDataRepository);
 	Safe_Release(m_pRender_Manager);
 	Safe_Release(m_pRenderTarget_Manager);
 	Safe_Release(m_pCamera_Manager);
 	Safe_Release(m_pOctree_Manager);
+	Safe_Release(m_pGameData_Manager);
+	Safe_Release(m_pEvent_Manager);
 	Safe_Release(m_pObject_Manager);
+	Safe_Release(m_pEffect_Manager);
 	Safe_Release(m_pObjectPool_Manager);
 	Safe_Release(m_pCollision_Manager);
 	Safe_Release(m_pPicking);
-	Safe_Release(m_pGameData_Manager);
 	Safe_Release(m_pPrototype_Manager);
 	Safe_Release(m_pLevel_Manager);
-	Safe_Release(m_pEvent_Manager);
 	Safe_Release(m_pEventBus_Manager);
 	Safe_Release(m_pShaderAsset_Manager);
 	Safe_Release(m_pResource_Manager);
 	Safe_Release(m_pPhysics_Module);
 	Safe_Release(m_pGraphic_Device);
+	SetDestroyEngineSequence(false);
 	Super::Free();
 }
 

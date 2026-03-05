@@ -193,4 +193,14 @@ public:
 	}
 };
 
+inline physx::PxVec3 ToPxVec3(const DirectX::SimpleMath::Vector3& v)
+{
+	return physx::PxVec3(v.x, v.y, v.z);
+}
+
+inline DirectX::SimpleMath::Vector3 ToVector3(const physx::PxVec3& v)
+{
+	return DirectX::SimpleMath::Vector3(v.x, v.y, v.z);
+}
+
 NS_END

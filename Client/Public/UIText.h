@@ -49,9 +49,9 @@ protected:
 	void Ready_Fade_Text(const _float fDuration, const _float fStartAlpha, const _float fTargetAlpha, const _float fDelay);
 	_bool Tick_Fade_Text(const _float fTimeDelta);
 
-protected:
-	virtual HRESULT Spawn_FromPool(void* pArg) override;
-	virtual HRESULT Despawn_FromPool()override;
+	inline virtual HRESULT Spawn_FromPool(void* pArg)override { if (FAILED(Super::Spawn_FromPool(pArg)))return E_FAIL; return S_OK; };
+	inline virtual HRESULT Despawn_FromPool()override { if (FAILED(Super::Despawn_FromPool()))return E_FAIL; return S_OK; };
+
 protected:
 	FONT_DESC m_tFontDesc	= {};
 	DTO::EUITextSubClassType m_eTextSubClassType = {};
@@ -65,8 +65,16 @@ protected:
 	EFontPivotType m_ePivot = { EFontPivotType::CENTER };
 	_float m_fFontRotate	= {};
 
-	_float m_fTimeAcc = {};
 	_float m_fScaleOffset = {1.f};
+
+private:
+	// Fade Text Values
+	_float m_fFont_FadeTimeAcc = {};
+	_float m_fFont_FadeDelayTimeAcc = {};
+	_float m_fFont_FadeDelay = {};
+	_float m_fFont_FadeDuration = {};
+	_float m_fFont_StartAlphaRatio = {};
+	_float m_fFont_TargetAlphaRatio = {};
 
 public:
 	virtual void Free()override;

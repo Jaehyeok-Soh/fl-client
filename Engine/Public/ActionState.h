@@ -59,8 +59,16 @@ public:
 	_uint			Get_CurrentCapabilities() { return Get_CurrentState()->Get_Capabilities(); }
 	const char*		Get_CurrentStateName() const;
 
+	// cct move state
+	void			Set_ZeroVelocity();
+	void			Set_ZeroHorizontalVelocity();
+	void			Set_ZeroVerticalVelocity();
+	void			Set_ZeroDeAccelRate();
+	void			Set_DeAccelRate(_float fRate);
+	void			Reset_DeAccelRate();
+	void			Set_ApplyGravity(_bool bApply);
+
 	void			Set_Navigation(CNavigation* pNavigation);
-	void			Set_ApplyGravity(_bool bApply) { m_bApplyGravity = bApply; }
 	void			Set_ApplyYLerp(_bool bApply) { m_bApplyYLerp = bApply; }
 
 	void			Set_GravityOffset(_float fOffset) { 
@@ -70,7 +78,9 @@ public:
 	}
 
 	// action state 내부에 CCTFlags 가지고 있음 -> 외부에서는 어떻게 윰직일지만 값을 넘겨준다
-	void			Move(Vec3 disp, _float minDist, _float fTimeDelta); 
+	void			Move(Vec3 vAccelation);
+	void			SetCCTInputDirection(Vec3 vInputDir);
+	void			SetCCTImpuls(Vec3 vImpuls);
 	/* animation funcs*/
 protected:
 	HRESULT			Request_MixAnimation(_uint iVectorIdx, _int iAnimIdx);
@@ -107,7 +117,6 @@ protected:
 	void			StartForce_Right_ForAnimation(_float fForceAbs, _float fDragK);
 	void			Set_AttackCollider(_uint iPartIndex, _bool bActive, ATTACK_DESC* pDesc);
 	void			Apply_Gravity(const _float fTimeDelta);
-	void			Apply_Gravity_CCT(const _float fTimeDelta);
 	void			Apply_ForceMove(const _float fTimeDelta);
 	void			Clear_ForceMove();
 	void			SetupLook_CameraLook();

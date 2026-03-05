@@ -826,6 +826,15 @@ namespace Engine
 		////////////////////////
 		PHYSICSFILTERGROUP::Enum eFilterLayer = PHYSICSFILTERGROUP::Enum::NONE;
 		unsigned int iFilterMask = {};
+
+		//////////////////
+		/// Move State ///
+		//////////////////
+		bool bGravity = { true };
+		float fGravity = { -35.f };
+		SimpleMath::Vector2 MSpeed = { 0.f, 8.f };
+		SimpleMath::Vector2 MAccelRate = { 0.f, 10.f };
+		SimpleMath::Vector2 MDeAccelRate = { 0.f, 5.f };
 	}PHYSICSCCT_DESC;
 
 	typedef struct tagPhysicsSRT
@@ -912,10 +921,6 @@ namespace Engine
 		string strAttackPresetTag = { "" };
 		unsigned int iAttackPresetID = { UINT_MAX };
 	}PHYSICSCOLLIDER_DESC;
-
-	typedef struct tagPhysicsFilterShader
-	{
-	}PHYSICSFILTERSHADER_DESC;
 #pragma endregion
 
 	typedef struct tagOctreeDesc

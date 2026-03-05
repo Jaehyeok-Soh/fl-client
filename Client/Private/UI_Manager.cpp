@@ -103,62 +103,9 @@ vector<CGenericUI*>* CUI_Manager::Get_Level_All_GenericUI(uint32_t iLevelIndex)
 	return &m_vecGenericUICache[iLevelIndex];
 }
 
-void CUI_Manager::Add_RenderGroup(uint32_t iLevelIndex)
-{
-	if (m_isDeadUIClear)
-	{
-		auto& vec = m_vecGenericUICache[iLevelIndex];
-
-		for (size_t i = 0; i < vec.size(); )
-		{
-			CGenericUI* pUI = vec[i];
-
-			if (pUI && pUI->IsDead())
-			{
-				vec[i] = vec.back(); 
-				vec.pop_back();      
-			}
-			else
-			{
-				++i;
-			}
-		}
-		m_isSort = true;
-		m_isDeadUIClear = false;
-	}
-
-	if (m_isClear)
-	{
-		Clear_Cache(iLevelIndex);
-		m_isClear = false;
-		return;
-	}
-
-	if (m_isSort)
-	{
-		Sort_UI(m_vecGenericUICache[iLevelIndex]);
-		m_isSort = FALSE;
-	}
-
-	for (auto* pUI : m_vecSortUI)
-	{
-		CGameObject* pObj = dynamic_cast<CGameObject*>(pUI);
-		if (nullptr == pObj)
-			continue;
-
-		m_pGameInstance->Push_RenderObject(RENDER_CATEGORY::UI, pObj);
-	}
-}
-
-
-void CUI_Manager::Request_SortUI()
-{
-	m_isSort = TRUE;
-}
-
 void CUI_Manager::Clear_Cache(uint32_t iLevelIndex)
 {
-	m_vecSortUI.clear();
+	m_vecTriggerUIs.clear();
 	m_vecCanvasCache[iLevelIndex].clear();
 	m_vecGenericUICache[iLevelIndex].clear();
 	m_mapCanvasCache[iLevelIndex].clear();
@@ -273,7 +220,6 @@ void CUI_Manager::Request_Add_Prefab(_uint iPoolRegistLevel, EUIPrefabType ePref
 	default:
 		break;
 	}
-	Request_SortUI();
 }
 
 void CUI_Manager::Request_Clear()
@@ -284,23 +230,6 @@ void CUI_Manager::Request_Clear()
 void CUI_Manager::Request_Clear_DeadUI()
 {
 	m_isDeadUIClear = true;
-}
-
-void CUI_Manager::Sort_UI(vector<CGenericUI*>& Target)
-{
-	const auto& Base = m_vecGenericUICache[ENUM_TO_UINT(ELevelType::STATIC)];
-
-	m_vecSortUI.clear();
-	m_vecSortUI.reserve(Base.size() + Target.size());
-
-	m_vecSortUI.insert(m_vecSortUI.end(), Base.begin(), Base.end());
-	m_vecSortUI.insert(m_vecSortUI.end(), Target.begin(), Target.end());
-
-	/* Z가 큰 순서대로 렌더 그룹에 넣기 */
-	std::sort(m_vecSortUI.begin(), m_vecSortUI.end(), [](const CGenericUI* pUI1, const CGenericUI* pUI2)
-		{
-			return pUI1->Get_PosZ() > pUI2->Get_PosZ();
-		});
 }
 
 void CUI_Manager::Free()

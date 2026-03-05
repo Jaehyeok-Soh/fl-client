@@ -224,11 +224,15 @@ namespace Tool
 	{
 		STATIC = 0,
 		LOADING,
-		LOGO,
-		TUTORIAL_VILLAGE,	
-		TUTORIAL_BOSS,	
-		SQUARE,				
-		TEST,
+		LOGO,				/* 현재 임시 Test Level용 추후 Logo Scene으로 바뀔예정  */
+		TUTORIAL_VILLAGE,	/* 튜토리얼 처음 진입되는 Level */
+		TUTORIAL_BOSS,		/* 튜토리얼 진입 이후 Boss전 가는 Level Type */
+		SQUARE,				/* 광장 */
+		TAVERN,				/* 술집 */
+		KUANGKENG,			/* 갱도 */
+
+
+		TEST,				/* Test Scene은 맨 마지막 */
 		END
 	};
 
@@ -244,6 +248,8 @@ namespace Tool
 		case Tool::EClientLevelType::TUTORIAL_VILLAGE:	return "TUTORIAL_VILLAGE";
 		case Tool::EClientLevelType::TUTORIAL_BOSS:		return "TUTORIAL_BOSS";
 		case Tool::EClientLevelType::SQUARE:			return "SQUARE";
+		case Tool::EClientLevelType::TAVERN:			return "TAVERN";
+		case Tool::EClientLevelType::KUANGKENG:			return "KUANGKENG";
 		case Tool::EClientLevelType::TEST:				return "TEST";
 		default:										return "NONE";
 		}
@@ -264,6 +270,10 @@ namespace Tool
 			return EClientLevelType::TUTORIAL_BOSS;
 		else if (::strcmp(str.c_str(), "SQUARE") == 0)
 			return EClientLevelType::SQUARE;
+		else if (::strcmp(str.c_str(), "TAVERN") == 0)
+			return EClientLevelType::TAVERN;
+		else if (::strcmp(str.c_str(), "KUANGKENG") == 0)
+			return EClientLevelType::KUANGKENG;
 		else if (::strcmp(str.c_str(), "TEST") == 0)
 			return EClientLevelType::TEST;
 		else
@@ -398,6 +408,7 @@ namespace Tool
 		/* Trigger Box 관련 */
 		TriggerBox_ChangeLevel,
 		TriggerBox_MonsterSpawner,
+		TriggerBox_GlobalEvent_BroadCaster,
 
 		END,
 	};
@@ -424,23 +435,24 @@ namespace Tool
 		case Tool::EClientMakePath::LandScape:						return "LandScape";
 
 			/* ------------------환경 요소---------------- */
-		case Tool::EClientMakePath::Bush:							return "Bush";
-		case Tool::EClientMakePath::Grass:							return "Grass";
-		case Tool::EClientMakePath::Tree:							return "Tree";
-		case Tool::EClientMakePath::Vine:							return "Vine";
-		case Tool::EClientMakePath::Rock:							return "Rock";
-		case Tool::EClientMakePath::Water:							return "Water";
+		case Tool::EClientMakePath::Bush:									return "Bush";
+		case Tool::EClientMakePath::Grass:									return "Grass";
+		case Tool::EClientMakePath::Tree:									return "Tree";
+		case Tool::EClientMakePath::Vine:									return "Vine";
+		case Tool::EClientMakePath::Rock:									return "Rock";
+		case Tool::EClientMakePath::Water:									return "Water";
 			/* ------------------------------------------- */
 
 			/*  --------- 생성 위치 잡아주는 역할 ---------*/
 
-		case Tool::EClientMakePath::Batch_Player:					return "Batch_Player";
-		case Tool::EClientMakePath::Batch_Monster:					return "Batch_Monster";
-		case Tool::EClientMakePath::Batch_Object:					return "Batch_Object";
+		case Tool::EClientMakePath::Batch_Player:							return "Batch_Player";
+		case Tool::EClientMakePath::Batch_Monster:							return "Batch_Monster";
+		case Tool::EClientMakePath::Batch_Object:							return "Batch_Object";
 
 			/* -------------- Trigger Box -------------- */
-		case Tool::EClientMakePath::TriggerBox_ChangeLevel:			return "TriggerBox_ChangeLevel";
-		case Tool::EClientMakePath::TriggerBox_MonsterSpawner:		return "TriggerBox_MonsterSpawner";
+		case Tool::EClientMakePath::TriggerBox_ChangeLevel:					return "TriggerBox_ChangeLevel";
+		case Tool::EClientMakePath::TriggerBox_MonsterSpawner:				return "TriggerBox_MonsterSpawner";
+		case Tool::EClientMakePath::TriggerBox_GlobalEvent_BroadCaster:		return "TriggerBox_GlobalEvent_BroadCaster";
 
 		default:									return "Unknown";
 		}
@@ -466,6 +478,7 @@ namespace Tool
 		/* Trigger Box 관련 */
 		if (strType == "TriggerBox_ChangeLevel")		return EClientMakePath::TriggerBox_ChangeLevel;
 		if (strType == "TriggerBox_MonsterSpawner")		return EClientMakePath::TriggerBox_MonsterSpawner;
+		if (strType == "TriggerBox_GlobalEvent_BroadCaster")		return EClientMakePath::TriggerBox_GlobalEvent_BroadCaster;
 
 
 		return EClientMakePath::END;
@@ -780,6 +793,46 @@ namespace Tool
 			wstrModelPath = p.wstring();
 		}
 	}
+
+
+#pragma region BroadCast Enum Mapping
+
+	enum class EGlobal_Broadcast_Type
+	{
+		NONE,
+		TUTORIAL_BOSS_CONTATCT,
+		TUTORIAL_BOSS_CONTATCT_END,
+		END,
+	};
+
+	// 헤더 파일의 Enum 선언 바로 밑이나, cpp 파일 상단에 선언해 둡니다.
+	static const char* g_szGlobalBroadCastType[(int)EGlobal_Broadcast_Type::END] = {
+		"NONE",
+		"TUTORIAL_BOSS_CONTATCT",
+		"TUTORIAL_BOSS_CONTATCT_END",
+	};
+
+	inline string Global_Broadcast_Type_ToString(EGlobal_Broadcast_Type eType)
+	{
+		// 인덱스 초과 방지 안전장치
+		if (eType >= EGlobal_Broadcast_Type::NONE && eType < EGlobal_Broadcast_Type::END)
+			return g_szGlobalBroadCastType[(int)eType];
+
+		return "Unknown";
+	}
+
+	inline EGlobal_Broadcast_Type Global_Broadcast_Type_ToEnum(const string& strType)
+	{
+		for (int i = 0; i < (int)EGlobal_Broadcast_Type::END; ++i)
+		{
+			if (strType == g_szGlobalBroadCastType[i])
+				return (EGlobal_Broadcast_Type)i;
+		}
+		return EGlobal_Broadcast_Type::NONE;
+	}
+
+#pragma endregion
+
 #pragma region Struct
 #pragma endregion
 }

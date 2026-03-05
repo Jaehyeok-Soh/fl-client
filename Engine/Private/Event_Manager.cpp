@@ -1,6 +1,7 @@
 #include "Engine_pch.h"
 #include "Event_Manager.h"
 #include "Level.h"
+#include "ObjectPool.h"
 #include "GameObject.h"
 #include "GameInstance.h"
 
@@ -15,20 +16,27 @@ HRESULT CEvent_Manager::Initialize()
 	return S_OK;
 }
 
-void CEvent_Manager::Push_SpawnEvent(const SpawnEventDesc& desc)
+void CEvent_Manager::Push_AddEvent(const AddEventDesc& desc)
 {
 	if (m_bFlushing == false)
-		m_queSpawn.push(desc);
+		m_queAddGameObject.push(desc);
 	else
-		m_queSpawn_Pending.push(desc);
+		m_queAddGameObject_Pending.push(desc);
 }
 
-void CEvent_Manager::Push_DespawnEvent(const DespawnEventDesc& desc)
+void CEvent_Manager::Push_RemoveEvent(const RemoveEventDesc& desc)
 {
+	if (desc.pGo == nullptr)
+		return;
+
+	if (Cancel_AddQueued(desc.pGo))
+		return;
+
+	Safe_AddRef(desc.pGo);
 	if (m_bFlushing == false)
-		m_queDespawn.push(desc);
+		m_queRemoveGameObject.push(desc);
 	else
-		m_queDespawn_Pending.push(desc);
+		m_queRemoveGameObject_Pending.push(desc);
 }
 
 void CEvent_Manager::Push_ChangeLevelEvet(const ChangeLevelEventDesc& desc)
@@ -49,6 +57,7 @@ void CEvent_Manager::Flush_All()
 	{
 		// 昏力绰 贸府
 		Flush(EventType::OBJECT_REMOVE);
+		Flush_Pending(EventType::OBJECT_REMOVE);
 
 		_bool bShouldChange = { false };
 		ChangeLevelEventDesc shouldLevelChangeDesc = {};
@@ -81,37 +90,45 @@ void CEvent_Manager::Flush_All()
 	{
 		// Delete 快急
 		Flush(EventType::OBJECT_REMOVE);
-		Flush(EventType::OBJECT_CREATE);
+		Flush(EventType::OBJECT_ADD);
 	}
 
 	m_bFlushing = false;
 
 	// Delete 快急
 	Flush_Pending(EventType::OBJECT_REMOVE);
-	Flush_Pending(EventType::OBJECT_CREATE);
+	Flush_Pending(EventType::OBJECT_ADD);
 }
 
 void CEvent_Manager::Clear(EventType eType)
 {
 	switch (eType)
 	{
-	case EventType::OBJECT_CREATE:
+	case EventType::OBJECT_ADD:
 	{
-		while (!m_queSpawn.empty())
+		while (!m_queAddGameObject.empty())
 		{
-			Clear_SpawnEvent(m_queSpawn.front());
-			m_queSpawn.pop();
+			Clear_AddEvent(m_queAddGameObject.front());
+			m_queAddGameObject.pop();
 		}
-		while (!m_queSpawn_Pending.empty())
+		while (!m_queAddGameObject_Pending.empty())
 		{
-			Clear_SpawnEvent(m_queSpawn_Pending.front());
-			m_queSpawn_Pending.pop();
+			Clear_AddEvent(m_queAddGameObject_Pending.front());
+			m_queAddGameObject_Pending.pop();
 		}
 	} break;
 	case EventType::OBJECT_REMOVE:
 	{
-		while (!m_queDespawn.empty()) m_queDespawn.pop();
-		while (!m_queDespawn_Pending.empty()) m_queDespawn_Pending.pop();
+		while (!m_queRemoveGameObject.empty())
+		{
+			Clear_RemoveEvent(m_queRemoveGameObject.front());
+			m_queRemoveGameObject.pop();
+		}
+		while (!m_queRemoveGameObject_Pending.empty())
+		{
+			Clear_RemoveEvent(m_queRemoveGameObject_Pending.front());
+			m_queRemoveGameObject_Pending.pop();
+		}
 	} break;
 	case EventType::LEVEL_CHANGE:
 	{
@@ -134,7 +151,7 @@ void CEvent_Manager::Clear(EventType eType)
 
 void CEvent_Manager::Clear_All()
 {
-	Clear(EventType::OBJECT_CREATE);
+	Clear(EventType::OBJECT_ADD);
 	Clear(EventType::OBJECT_REMOVE);
 	Clear(EventType::LEVEL_CHANGE);
 }
@@ -143,20 +160,20 @@ void CEvent_Manager::Flush(EventType eType)
 {
 	switch (eType)
 	{
-	case EventType::OBJECT_CREATE:
+	case EventType::OBJECT_ADD:
 	{
-		while (!m_queSpawn.empty())
+		while (!m_queAddGameObject.empty())
 		{
-			Spawn_GameObject(m_queSpawn.front());
-			m_queSpawn.pop();
+			Add_GameObject(m_queAddGameObject.front());
+			m_queAddGameObject.pop();
 		}
 	} break;
 	case EventType::OBJECT_REMOVE:
 	{
-		while (!m_queDespawn.empty())
+		while (!m_queRemoveGameObject.empty())
 		{
-			Despawn_GameObject(m_queDespawn.front());
-			m_queDespawn.pop();
+			Remove_GameObject(m_queRemoveGameObject.front());
+			m_queRemoveGameObject.pop();
 		}
 	} break;
 	default:
@@ -169,20 +186,20 @@ void CEvent_Manager::Flush_Pending(EventType eType)
 {
 	switch (eType)
 	{
-	case EventType::OBJECT_CREATE:
+	case EventType::OBJECT_ADD:
 	{
-		while (!m_queSpawn_Pending.empty())
+		while (!m_queAddGameObject_Pending.empty())
 		{
-			Spawn_GameObject(m_queSpawn_Pending.front());
-			m_queSpawn_Pending.pop();
+			Add_GameObject(m_queAddGameObject_Pending.front());
+			m_queAddGameObject_Pending.pop();
 		}
 	} break;
 	case EventType::OBJECT_REMOVE:
 	{
-		while (!m_queDespawn_Pending.empty())
+		while (!m_queRemoveGameObject_Pending.empty())
 		{
-			Despawn_GameObject(m_queDespawn_Pending.front());
-			m_queDespawn_Pending.pop();
+			Remove_GameObject(m_queRemoveGameObject_Pending.front());
+			m_queRemoveGameObject_Pending.pop();
 		}
 	} break;
 	default:
@@ -190,36 +207,43 @@ void CEvent_Manager::Flush_Pending(EventType eType)
 		break;
 	}
 }
-HRESULT CEvent_Manager::Spawn_GameObject(SpawnEventDesc& spawnDesc)
+HRESULT CEvent_Manager::Add_GameObject(AddEventDesc& addDesc)
 {
-	if (!spawnDesc.pClone)
+	if (!addDesc.pClone)
 	{
-		MSG_BOX("CEvent_Manager::Spawn_GameObject, clone is invalid");
+		MSG_BOX("CEvent_Manager::Add_GameObject, clone is invalid");
 		return E_FAIL;
 	}
 
-	CGameObject* pResult = m_pGameInstance->Add_GameObject(spawnDesc.iCloneLevelIndex, spawnDesc.wstrLayerTag, spawnDesc.pClone);
+	CGameObject* pResult = m_pGameInstance->Add_GameObject(addDesc.iCloneLevelIndex, addDesc.wstrLayerTag, addDesc.pClone);
 	if (!pResult)
 	{
-		MSG_BOX("CEvent_Manager::Spawn_GameObject, add layer failed");
+		MSG_BOX("CEvent_Manager::Add_GameObject, add layer failed");
+		Clear_AddEvent(addDesc);
 		return E_FAIL;
 	}
 
-	if (spawnDesc.callback)
-		spawnDesc.callback(pResult);
+	if (addDesc.callback)
+		addDesc.callback(pResult);
 
 	return S_OK;
 }
 
-HRESULT CEvent_Manager::Despawn_GameObject(DespawnEventDesc& despawnDesc)
+HRESULT CEvent_Manager::Remove_GameObject(RemoveEventDesc& removeDesc)
 {
-	if (!despawnDesc.pGo)
+	if (removeDesc.pGo == nullptr)
 	{
-		MSG_BOX("CEvent_Manager::Despawn_GameObject, gameObject is invalid");
+		MSG_BOX("CEvent_Manager::Remove_GameObject, gameObject is invalid");
 		return E_FAIL;
 	}
 
-	m_pGameInstance->Immediately_DeleteGameObject(despawnDesc.iClonedLevelIndex, despawnDesc.wstrLayerTag, despawnDesc.pGo);
+	if (removeDesc.pGo->Is_FromPool() == false)
+		m_pGameInstance->Immediately_DeleteGameObject(removeDesc.iClonedLevelIndex, removeDesc.pGo);
+	else
+		m_pGameInstance->Immediately_DespawnGameObject(removeDesc.iClonedLevelIndex, removeDesc.pGo);
+
+	Safe_Release(removeDesc.pGo);
+	removeDesc.pGo = nullptr;
 	return S_OK;
 }
 
@@ -235,13 +259,26 @@ HRESULT CEvent_Manager::Change_Level(ChangeLevelEventDesc& changeLevelDesc)
 	return S_OK;
 }
 
-void CEvent_Manager::Clear_SpawnEvent(SpawnEventDesc& spawnDesc)
+void CEvent_Manager::Clear_AddEvent(AddEventDesc& addDesc)
 {
-	if (!spawnDesc.pClone)
+	if (!addDesc.pClone)
 		return;
 
-	Safe_Release(spawnDesc.pClone);
-	spawnDesc.pClone = nullptr;
+	if(addDesc.pClone->Is_FromPool() == false)
+		Safe_Release(addDesc.pClone);
+	else
+		addDesc.pClone->Get_OwnerPool()->Despawn(addDesc.pClone);
+
+	addDesc.pClone = nullptr;
+}
+
+void CEvent_Manager::Clear_RemoveEvent(RemoveEventDesc& removeDesc)
+{
+	if (!removeDesc.pGo)
+		return;
+
+	Safe_Release(removeDesc.pGo);
+	removeDesc.pGo = nullptr;
 }
 
 void CEvent_Manager::Clear_ChangeLevelEvent(ChangeLevelEventDesc& changeLevelDesc)
@@ -251,6 +288,46 @@ void CEvent_Manager::Clear_ChangeLevelEvent(ChangeLevelEventDesc& changeLevelDes
 
 	Safe_Release(changeLevelDesc.pNewLevel);
 	changeLevelDesc.pNewLevel = nullptr;
+}
+
+_bool CEvent_Manager::Cancel_AddQueued(CGameObject* pGo)
+{
+	_bool bCancelled{ false };
+
+	{
+		std::queue<AddEventDesc> tmp;
+		while (m_queAddGameObject.empty() == false)
+		{
+			AddEventDesc desc = m_queAddGameObject.front();
+			m_queAddGameObject.pop();
+			if (desc.pClone == pGo)
+			{
+				Clear_AddEvent(desc);
+				bCancelled = true;
+			}
+			else
+				tmp.push(desc);
+		}
+		m_queAddGameObject.swap(tmp);
+	}
+	{
+		std::queue<AddEventDesc> tmp;
+		while (m_queAddGameObject_Pending.empty() == false)
+		{
+			AddEventDesc desc = m_queAddGameObject_Pending.front();
+			m_queAddGameObject_Pending.pop();
+			if (desc.pClone == pGo)
+			{
+				Clear_AddEvent(desc);
+				bCancelled = true;
+			}
+			else
+				tmp.push(desc);
+		}
+		m_queAddGameObject_Pending.swap(tmp);
+	}
+
+	return bCancelled;
 }
 
 CEvent_Manager* CEvent_Manager::Create()

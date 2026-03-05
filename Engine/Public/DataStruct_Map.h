@@ -389,7 +389,7 @@ public:
 	void					to_Json(json& SaveJson);
 };
 
-struct ENGINE_DLL TRIGGERBOX_MONSTERSPAWNER_DESC : TRIGGERBOX_DESC
+struct ENGINE_DLL TRIGGERBOX_MONSTERSPAWNER_DESC : public TRIGGERBOX_DESC
 {
 	using Super = TRIGGERBOX_DESC;
 public:
@@ -415,6 +415,31 @@ public:
 
 #pragma endregion
 
+
+#pragma region GlobalEvent_BroadCaster
+
+struct ENGINE_DLL TRIGGERBOX_GLOBALEVENT_BROADCASTER_DESC : public TRIGGERBOX_DESC
+{
+	using Super = TRIGGERBOX_DESC;
+public:
+	vector<string>	vecGlobalEventBroadCasetNames{};
+public:
+	TRIGGERBOX_GLOBALEVENT_BROADCASTER_DESC()
+		: TRIGGERBOX_DESC(), vecGlobalEventBroadCasetNames{}
+	{
+	}
+	TRIGGERBOX_GLOBALEVENT_BROADCASTER_DESC(const TRIGGERBOX_GLOBALEVENT_BROADCASTER_DESC& rhs)
+		: TRIGGERBOX_DESC(rhs), vecGlobalEventBroadCasetNames{ rhs.vecGlobalEventBroadCasetNames }
+	{
+	}
+	virtual ~TRIGGERBOX_GLOBALEVENT_BROADCASTER_DESC() {};
+public:
+	virtual void from_Json(const json& LoadJson);
+	virtual void to_Json(json& SaveJson);
+};
+
+
+
 #pragma endregion
 
 #pragma endregion
@@ -435,11 +460,15 @@ enum class EClientLevelType : unsigned int
 {
 	STATIC = 0,
 	LOADING,
-	LOGO,
-	TUTORIAL_VILLAGE,
-	TUTORIAL_BOSS,
-	SQUARE,
-	TEST,
+	LOGO,				/* 현재 임시 Test Level용 추후 Logo Scene으로 바뀔예정  */
+	TUTORIAL_VILLAGE,	/* 튜토리얼 처음 진입되는 Level */
+	TUTORIAL_BOSS,		/* 튜토리얼 진입 이후 Boss전 가는 Level Type */
+	SQUARE,				/* 광장 */
+	TAVERN,				/* 술집 */
+	KUANGKENG,			/* 갱도 */
+
+
+	TEST,				/* Test Scene은 맨 마지막 */
 	END
 };
 
@@ -473,7 +502,7 @@ enum class EClientMakePath
 	/* Trigger Box 관련 */
 	TriggerBox_ChangeLevel,
 	TriggerBox_MonsterSpawner,
-
+	TriggerBox_GlobalEvent_BroadCaster,
 
 	END
 };
@@ -495,13 +524,15 @@ NLOHMANN_JSON_SERIALIZE_ENUM(EMapObject_Type,
 
 NLOHMANN_JSON_SERIALIZE_ENUM(EClientLevelType,
 		{
-			{EClientLevelType::STATIC,			"STATIC"},
-			{EClientLevelType::LOADING,			"LOADING"},
-			{EClientLevelType::LOGO,			"LOGO"},
-			{EClientLevelType::TUTORIAL_VILLAGE,"TUTORIAL_VILLAGE"},
-			{EClientLevelType::TUTORIAL_BOSS,	"TUTORIAL_BOSS"},
-			{EClientLevelType::SQUARE,			"SQUARE"},
-			{EClientLevelType::TEST,			"TEST"},
+			{EClientLevelType::STATIC,				"STATIC"},
+			{EClientLevelType::LOADING,				"LOADING"},
+			{EClientLevelType::LOGO,				"LOGO"},
+			{EClientLevelType::TUTORIAL_VILLAGE,	"TUTORIAL_VILLAGE"},
+			{EClientLevelType::TUTORIAL_BOSS,		"TUTORIAL_BOSS"},
+			{EClientLevelType::SQUARE,				"SQUARE"},
+			{EClientLevelType::KUANGKENG,			"KUANGKENG"},
+			{EClientLevelType::TAVERN,				"TAVERN"},
+			{EClientLevelType::TEST,				"TEST"},
 		}
 		)
 NLOHMANN_JSON_SERIALIZE_ENUM(EMapObject_DrawType,
@@ -515,26 +546,27 @@ NLOHMANN_JSON_SERIALIZE_ENUM(EMapObject_DrawType,
 
 	NLOHMANN_JSON_SERIALIZE_ENUM(EClientMakePath,
 		{
-			{EClientMakePath::StaticObject,					"StaticObject"},
-			{EClientMakePath::LandScape,					"LandScape"},
-			{EClientMakePath::Bush,							"Bush"},
-			{EClientMakePath::Grass,						"Grass"},
-			{EClientMakePath::Moss,							"Moss"},
-			{EClientMakePath::Tree,							"Tree"},
-			{EClientMakePath::Vine,							"Vine"},
-			{EClientMakePath::Rock,							"Rock"},
-			{EClientMakePath::Water,						"Water"},
+			{EClientMakePath::StaticObject,							"StaticObject"},
+			{EClientMakePath::LandScape,							"LandScape"},
+			{EClientMakePath::Bush,									"Bush"},
+			{EClientMakePath::Grass,								"Grass"},
+			{EClientMakePath::Moss,									"Moss"},
+			{EClientMakePath::Tree,									"Tree"},
+			{EClientMakePath::Vine,									"Vine"},
+			{EClientMakePath::Rock,									"Rock"},
+			{EClientMakePath::Water,								"Water"},
 
 
-			{EClientMakePath::Batch_Player,					"Batch_Player"},
-			{EClientMakePath::Batch_Monster,				"Batch_Monster"},
-			{EClientMakePath::Batch_Object,					"Batch_Object"},
+			{EClientMakePath::Batch_Player,							"Batch_Player"},
+			{EClientMakePath::Batch_Monster,						"Batch_Monster"},
+			{EClientMakePath::Batch_Object,							"Batch_Object"},
 
 
-			{EClientMakePath::TriggerBox_ChangeLevel,		"TriggerBox_ChangeLevel"},
-			{EClientMakePath::TriggerBox_MonsterSpawner,	"TriggerBox_MonsterSpawner"},
+			{EClientMakePath::TriggerBox_ChangeLevel,				"TriggerBox_ChangeLevel"},
+			{EClientMakePath::TriggerBox_MonsterSpawner,			"TriggerBox_MonsterSpawner"},
+			{EClientMakePath::TriggerBox_GlobalEvent_BroadCaster,	"TriggerBox_GlobalEvent_BroadCaster"},
 
-			{EClientMakePath::END,							"Unknown"},
+			{EClientMakePath::END,									"Unknown"},
 		}
 		)
 

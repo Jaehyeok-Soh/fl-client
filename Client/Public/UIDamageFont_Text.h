@@ -45,9 +45,11 @@ private:
 
 	_float m_fDamageFontScaleOffet = {1.f};
 	_bool m_isSpawned = { false };
-
 	_bool m_isHitFontEventTrigger = { false };
 	_bool m_isFin_HitFontEvent = { false };
+	_bool m_isFinVisibleEvent = { false };
+	
+	_float m_fDamageFont_TimeAcc = {};
 
 public:
 	static CUIDamageFont_Text* Create(ID3D11Device* pDevice, ID3D11DeviceContext* pDeviceContext);

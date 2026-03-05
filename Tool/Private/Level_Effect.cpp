@@ -90,6 +90,9 @@ HRESULT CLevel_Effect::Awake(const _uint iLevelID)
 	if (FAILED(CMapToolManager::GetInstance()->Initialize(m_pDevice, m_pDeviceContext)))
 		return E_FAIL;
 
+	//CMapToolManager::GetInstance()->Set_LevelMap(this);
+	CMapToolManager::GetInstance()->Ready_LevelData();
+
 	if (FAILED(Build_Prototype()))
 		return E_FAIL;
 
@@ -251,7 +254,7 @@ HRESULT CLevel_Effect::Ready_DevMap()
 	if (FAILED(m_pGameInstance->Regist_Document<CDataDocument_Map>(iLevelID, eCategory)))
 		return E_FAIL;
 
-	std::filesystem::path FilePath = L"../../Resources/Data/MapData/LevelData/DevLevel/DevMap.json";
+	std::filesystem::path FilePath = L"../../Resources/Data/MapData/LevelData/Test/Test.json";
 	vector<path> vecfiles;
 
 	if (!std::filesystem::exists(FilePath))

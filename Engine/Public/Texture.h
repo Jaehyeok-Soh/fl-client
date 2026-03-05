@@ -5,7 +5,7 @@
 
 NS_BEGIN(Engine)
 
-#define TEXTURE_MAGICNUMBER 8
+#define TEXTURE_MAGICNUMBER 10
 
 class ENGINE_DLL CTexture final : public CComponent
 {

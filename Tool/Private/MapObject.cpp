@@ -168,7 +168,7 @@ HRESULT CMapObject::Ready_Component()
     CModel::MODEL_ORIGIN_DESC tModelDesc{};
     tModelDesc.eType = EModelType::STATIC;
     tModelDesc.wstrModelFolderName = m_wstrModelPath;
-    tModelDesc.iPrototypeLevelIndex = ENUM_TO_UINT(ELevelType::MAP);
+    tModelDesc.iPrototypeLevelIndex = /*ENUM_TO_UINT(ELevelType::MAP)*/m_pGameInstance->Get_CurrentLevelIndex();
     CModel* pModel = CModel::Create(m_pDevice, m_pDeviceContext, &tModelDesc);
     if (pModel)
     {
@@ -569,6 +569,9 @@ HRESULT CMapObject::Ready_ColliderTypeName()
     case Tool::EClientMakePath::TriggerBox_MonsterSpawner:
         m_strName = "TriggerBox_MonsterSpawner";
         break;
+    case Tool::EClientMakePath::TriggerBox_GlobalEvent_BroadCaster:
+        m_strName = "TriggerBox_GlobalEvent_BroadCaster";
+        break;
     case Tool::EClientMakePath::END:
         break;
     default:
@@ -603,6 +606,7 @@ void CMapObject::Check_ClientMakePathAndDrawType_TriggerBox()
         {
         case Tool::EClientMakePath::TriggerBox_ChangeLevel:
         case Tool::EClientMakePath::TriggerBox_MonsterSpawner:
+        case Tool::EClientMakePath::TriggerBox_GlobalEvent_BroadCaster:
             MSG_BOX(" Trigger Box 관련 Client Make Path는 Draw Type으로 Collider로 자동 지정 됩니다 ");
             m_eMapObjectDrawType = EMapObject_DrawType::Collider;
             break;
@@ -1177,6 +1181,9 @@ HRESULT CMapObject::Render()
     case Tool::EClientMakePath::TriggerBox_MonsterSpawner:
         hr = Render_TriggerBox_MonsterSpawner();
         break;
+    case Tool::EClientMakePath::TriggerBox_GlobalEvent_BroadCaster:
+        hr = Render_TriggerBox_GlobalEvent_BroadCaster();
+        break;
     default:
         break;
     }
@@ -1355,6 +1362,7 @@ HRESULT CMapObject::Check_DrawType_ByClientPath()
     case Tool::EClientMakePath::LandScape:
     case Tool::EClientMakePath::TriggerBox_ChangeLevel:
     case Tool::EClientMakePath::TriggerBox_MonsterSpawner:
+    case Tool::EClientMakePath::TriggerBox_GlobalEvent_BroadCaster:
     {
         if (m_eMapObjectDrawType == EMapObject_DrawType::Instance)
             MSG_BOX(" 현재 바꾸는 Client MakePth 관련 오브젝트는 Instance 를 지원하지 않습니다 Default Draw로  바꿔주세요 ");
@@ -1847,7 +1855,20 @@ HRESULT CMapObject::Render_TriggerBox_MonsterSpawner()
 
     return S_OK;
 }
+
 #pragma endregion
+
+#pragma region TriggerBox GlobalEvent BroadCaster
+
+HRESULT CMapObject::Render_TriggerBox_GlobalEvent_BroadCaster()
+{
+    if (FAILED(Render_Collider()))
+        return E_FAIL;
+
+    return S_OK;
+}
+#pragma endregion
+
 #pragma endregion
 
 

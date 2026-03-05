@@ -112,11 +112,6 @@ void Tool_ContainerObject::Draw_ImGui()
 	}
 	
 }
-void Tool_ContainerObject::Set_Dead(_bool bStatic)
-{
-	Super::Set_Dead(bStatic);
-}
-
 
 vector<class Tool_PartObject*>& Tool_ContainerObject::Get_PartList()
 {

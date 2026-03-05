@@ -2,6 +2,10 @@
 #include "UIDynamic_Image.h"
 #include "DataStruct_UI.h"
 
+NS_BEGIN(Engine)
+class CMyStat;
+NS_END
+
 NS_BEGIN(Client)
 class CUIBossStat_Image final : public  CUIDynamic_Image
 {
@@ -36,6 +40,7 @@ private:
 	virtual HRESULT Spawn_FromPool(void* pArg)override;
 	virtual HRESULT Despawn_FromPool()override;
 private:
+	CMyStat* m_pTargetStat = { nullptr };
 	_bool m_isSpawned = { false };
 	_bool m_isBossEventTrigger = { false };
 

@@ -14,6 +14,7 @@
 #include "PhysicsCCT.h"
 #include "PhysicsCollider.h"
 #include "PhysicsAttackOverlap.h"
+#include "EffectHandler.h"
 
 #include "GameInstance.h"
 
@@ -50,9 +51,14 @@ HRESULT CMonster_Base::Initialize(void* pArg)
 	if (FAILED(Ready_Components(pArg)))
 		return E_FAIL;
 
+	if (FAILED(Ready_EffectHandler(pArg)))
+		return E_FAIL;
+
 	//if (FAILED(Ready_Ability()))
 	//	return E_FAIL;
 
+	Get_Component<CPhysicsAttackOverlap>()->Bind_Events();
+	m_pEffectHandler->Setup_ForOwner(this, Get_Part<CMonster_Body_Base>(Part::BODY)->Get_Component<CModel>());
 	return S_OK;
 }
 
@@ -72,10 +78,7 @@ HRESULT CMonster_Base::Awake(const _uint iCurrentLevelID)
 	if (FAILED(Get_Component<CControlContext>()->Awake(iCurrentLevelID)))
 		return E_FAIL;
 
-	Get_Component<CPhysicsCCT>()->Awake();
-
-	if (CPhysicsAttackOverlap* attackOverlap = Get_Component<CPhysicsAttackOverlap>())
-		attackOverlap->Bind_Events();
+	Get_Component<CPhysicsCCT>()->Ready_Position();
 
 	return S_OK;
 }
@@ -92,6 +95,9 @@ void CMonster_Base::Update(const _float fTimeDelta)
 		pMonsterState->Update(fTimeDelta);
 	}
 
+	if (m_pEffectHandler)
+		m_pEffectHandler->Update(fTimeDelta);
+
 	Super::Update(fTimeDelta);
 }
 
@@ -101,9 +107,6 @@ void CMonster_Base::Update_Late(const _float fTimeDelta)
 
 	if (Get_Component <CPhysicsAttackOverlap>())
 		Get_Component<CPhysicsAttackOverlap>()->Update(fTimeDelta);
-
-	if (Get_Component<CPhysicsCCT>())
-		Get_Component<CPhysicsCCT>()->Update(fTimeDelta);
 }
 
 void CMonster_Base::Ready_Before_Render(const _float fTimeDelta)
@@ -194,7 +197,7 @@ _bool CMonster_Base::On_Hit(const HIT_DESC& hitDesc)
 		if (vHp.x <= 0)
 		{
 			Get_Component<CMonsterControlContext>()->Set_Dead();
-			m_bDead = true;
+			Set_Dying();
 		}
 	}
 
@@ -289,6 +292,21 @@ HRESULT CMonster_Base::Ready_AttackOverlap(wstring prototypeName)
 	return S_OK;
 }
 
+HRESULT CMonster_Base::Ready_EffectHandler(void* pArg)
+{
+	MONSTER_DESC* pDesc = static_cast<MONSTER_DESC*>(pArg);
+
+	wstring NameTag = pDesc->wstrBodyModelTag;
+	Engine_Utils::Replace(NameTag, L"Prototype_Component_Model_", L"");
+
+	if (FAILED(Add_Component<CEffectHandler>(/*Static*/0, L"Prototype_Component_EffectHandler_" + NameTag, nullptr)))
+		return E_FAIL;
+
+	m_pEffectHandler = Get_Component<CEffectHandler>();
+
+	return S_OK;
+}
+
 HRESULT CMonster_Base::Ready_CCT(void* pArgs)
 {
 	MONSTER_DESC* pDesc = static_cast<MONSTER_DESC*>(pArgs);
@@ -370,6 +388,12 @@ HRESULT CMonster_Base::Create_Mosnter(EMonster_Type eCreateMonsterType, _uint iF
 				| PHYSICSFILTERGROUP::Enum::OBJECT1
 				| PHYSICSFILTERGROUP::Enum::OBJECT2;
 
+			desc.bGravity = { true };
+			desc.fGravity = { -35.f };
+			desc.MSpeed = { 0.f, 3.f };
+			desc.MAccelRate = { 0.f, 10.f };
+			desc.MDeAccelRate = { 0.f, 10.f };
+
 			monsterDesc.tCCTDesc = desc;
 		}
 		wstrFindPrototypeName	= g_wszMonster_Dog_Prototype_Tag;
@@ -418,6 +442,12 @@ HRESULT CMonster_Base::Create_Mosnter(EMonster_Type eCreateMonsterType, _uint iF
 				| PHYSICSFILTERGROUP::Enum::OBJECT1
 				| PHYSICSFILTERGROUP::Enum::OBJECT2;
 
+			desc.bGravity = { true };
+			desc.fGravity = { -35.f };
+			desc.MSpeed = { 0.f, 3.f };
+			desc.MAccelRate = { 0.f, 10.f };
+			desc.MDeAccelRate = { 0.f, 10.f };
+
 			monsterDesc.tCCTDesc = desc;
 		}
 
@@ -459,6 +489,12 @@ HRESULT CMonster_Base::Create_Mosnter(EMonster_Type eCreateMonsterType, _uint iF
 				| PHYSICSFILTERGROUP::Enum::MAP
 				| PHYSICSFILTERGROUP::Enum::OBJECT1
 				| PHYSICSFILTERGROUP::Enum::OBJECT2;
+
+			desc.bGravity = { true };
+			desc.fGravity = { -35.f };
+			desc.MSpeed = { 0.f, 1.f };
+			desc.MAccelRate = { 0.f, 10.f };
+			desc.MDeAccelRate = { 0.f, 10.f };
 
 			monsterDesc.tCCTDesc = desc;
 		}

@@ -23,6 +23,7 @@
 #include "PhysicsCCT.h"
 #include "PhysicsCollider.h"
 #include "PhysicsAttackOverlap.h"
+#include "EffectHandler.h"
 #include "Ray.h"
 #include "CameraMan.h"
 #include "Body.h"
@@ -113,8 +114,11 @@ HRESULT CMainPlayer::Initialize(void* pArg)
     if (FAILED(Ready_AttackStates()))
         return E_FAIL;
 
+    if (FAILED(Ready_EffectEvent()))
+        return E_FAIL;
 
     Get_Component<CPhysicsAttackOverlap>()->Bind_Events();
+    Get_Component<CEffectHandler>()->Setup_ForOwner(this, Get_Part<CBody>(ENUM_TO_UINT(Part::BODY))->Get_Component<CModel>());
 
     return S_OK;
 }
@@ -131,6 +135,11 @@ HRESULT CMainPlayer::Clear_WhenChangeLevel()
 {
     m_pTargeter = nullptr;
     Clear_Components_WhenChangeLevel();
+
+    // LoadingScene에서 비활성화
+    Set_Active(false);
+    Set_CollideEnabled(false);
+    Set_Render(false);
     return S_OK;
 }
 
@@ -139,6 +148,14 @@ HRESULT CMainPlayer::Awake(const _uint iCurrentLevelID)
     if (FAILED(Super::Awake(iCurrentLevelID)))
         return E_FAIL;
 
+    // 로딩씬 제외 매씬 Awake 호출시 활성화
+    if (iCurrentLevelID != ENUM_TO_UINT(ELevelType::LOADING))
+    {
+        Set_Active(true);
+        Set_CollideEnabled(true);
+        Set_Render(true);
+    }
+
     CGameInstance::GetInstance()->Add_Actor_Object(this);
 
     if (FAILED(Get_Component<CPlayerActionState>()->Change_State(ENUM_TO_UINT(State::IDLE))))
@@ -146,12 +163,11 @@ HRESULT CMainPlayer::Awake(const _uint iCurrentLevelID)
     if (FAILED(Get_Component<CControlContext>()->Awake(iCurrentLevelID)))
         return E_FAIL;
 
-    //Get_Component<CTransform>()->Set_Info(TRANSFORM_INFO_STATE::POS, Vec3{ 18.f,30.f,19.f });
+    Get_Component<CPhysicsCCT>()->Ready_Position();
 
+#ifdef _DEBUG
     CImGui_ClientDebug::GetInstance()->Set_Player(this);
-
-    Get_Component<CPhysicsCCT>()->Awake();
-
+#endif
     return S_OK;
 }
 
@@ -176,9 +192,6 @@ void CMainPlayer::Update_Late(const _float fTimeDelta)
     Super::Update_Late(fTimeDelta);
     
     Get_Component<CPhysicsAttackOverlap>()->Update(fTimeDelta);
-
-    if (Get_Component<CPhysicsCCT>())
-        Get_Component<CPhysicsCCT>()->Update(fTimeDelta);
 
     //CPlayerControlContext* pControlContext = Get_Component<CPlayerControlContext>();
     //if (pControlContext == nullptr)
@@ -297,7 +310,7 @@ _bool CMainPlayer::On_Hit(const HIT_DESC& hitDesc)
         // Hit 데미지 폰트 // 색 변경은 가능 //
         {
             UI_PREFAB_DATA tPrefabData = {};
-            tPrefabData.DamageFontData.iDamage = (_uint)fDamage;
+            tPrefabData.DamageFontData.iDamage = static_cast<_uint>(fDamage);
             tPrefabData.DamageFontData.vHitPos = hitDesc.vHitPoint;
             CUI_Manager::GetInstance()->Request_Add_Prefab(
                 m_pGameInstance->Get_CurrentLevelIndex(), EUIPrefabType::DAMAGE_FONTS_HIT, m_pGameInstance->Get_CurrentLevelIndex(), &tPrefabData);
@@ -344,7 +357,7 @@ void CMainPlayer::Try_Attack(const HIT_DESC& hitDesc)
         // 일반 공격 데미지 폰트
     {
         UI_PREFAB_DATA tPrefabData = {};
-        tPrefabData.DamageFontData.iDamage = (_uint)hitDesc.fFinalDamage; // 데미지 폰트에 뜰 숫자 // 플레이어 공격력 // 랜덤은 보여주기용
+        tPrefabData.DamageFontData.iDamage = static_cast<_uint>(hitDesc.fFinalDamage); // 데미지 폰트에 뜰 숫자 // 플레이어 공격력 // 랜덤은 보여주기용
         tPrefabData.DamageFontData.vFontColor = Vec4{ 1.f, 0.95f, 0.47f, 1.f }; // 데미지 폰트 색 // 캐릭터 고유 색
         tPrefabData.DamageFontData.vHitPos = hitDesc.vHitPoint; // 데미지 폰트를 띄울 World 위치 // 
         tPrefabData.DamageFontData.vRandOffset = Vec3{
@@ -360,7 +373,7 @@ void CMainPlayer::Try_Attack(const HIT_DESC& hitDesc)
         // 크리티컬 데미지 폰트
     {
         UI_PREFAB_DATA tPrefabData = {};
-        tPrefabData.DamageFontData.iDamage = (_uint)hitDesc.fFinalDamage;
+        tPrefabData.DamageFontData.iDamage = static_cast<_uint>(hitDesc.fFinalDamage);
         tPrefabData.DamageFontData.vFontColor = Vec4{ 1.f, 0.95f, 0.47f, 1.f };
         tPrefabData.DamageFontData.vHitPos = hitDesc.vHitPoint;
         tPrefabData.DamageFontData.vRandOffset = Vec3{
@@ -854,6 +867,15 @@ HRESULT CMainPlayer::Ready_CCT()
 HRESULT CMainPlayer::Ready_AttackOverlap()
 {
     if (FAILED(Add_Component<CPhysicsAttackOverlap>(0, L"Prototype_Component_AttackOverlap_PlayerMoon", nullptr)))
+        return E_FAIL;
+
+    return S_OK;
+}
+
+
+HRESULT CMainPlayer::Ready_EffectEvent()
+{
+    if (FAILED(Add_Component<CEffectHandler>(0, L"Prototype_Component_EffectHandler_PlayerMoon", nullptr)))
         return E_FAIL;
 
     return S_OK;

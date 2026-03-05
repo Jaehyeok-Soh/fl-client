@@ -47,6 +47,7 @@ private:
 	/* Trigger Box */
 	HRESULT	Create_TriggerBox_ChangeLevel(const DTO::TMap_MapObjectData& tData);
 	HRESULT	Create_TriggerBox_MonsterSpawner(const DTO::TMap_MapObjectData& tData);
+	HRESULT	Create_TriggerBox_GlobalEvent_BroadCaster(const DTO::TMap_MapObjectData& tData);
 
 private:
 	CShader*		m_pMeshShader{nullptr};

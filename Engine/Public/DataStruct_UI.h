@@ -542,6 +542,9 @@ NLOHMANN_JSON_SERIALIZE_ENUM(EFontShaderType,
 		{ EFontShaderType::NOISE_KOR,			"NOISE_KOR" },
 		{ EFontShaderType::OUTLINE_NOISE,		"OUTLINE_NOISE" },
 		{ EFontShaderType::OUTLINE_NOISE_KOR,	"OUTLINE_NOISE_KOR" },
+		{ EFontShaderType::GRADATION,			"GRADATION" },
+		{ EFontShaderType::OUTLINE_GRADATION,	"OUTLINE_GRADATION" },
+		{ EFontShaderType::HIT,					"HIT" },
 		{ EFontShaderType::END,					"END" }
 	})
 
@@ -553,6 +556,9 @@ NLOHMANN_JSON_SERIALIZE_ENUM(EFontShaderType,
 	if (str == "NOISE_KOR")				return EFontShaderType::NOISE_KOR;
 	if (str == "OUTLINE_NOISE")			return EFontShaderType::OUTLINE_NOISE;
 	if (str == "OUTLINE_NOISE_KOR")		return EFontShaderType::OUTLINE_NOISE_KOR;
+	if (str == "GRADATION")				return EFontShaderType::GRADATION;
+	if (str == "OUTLINE_GRADATION")		return EFontShaderType::OUTLINE_GRADATION;
+	if (str == "HIT")					return EFontShaderType::HIT;
 	if (str == "END")					return EFontShaderType::END;
 	return EFontShaderType::END;
 }
@@ -567,6 +573,9 @@ inline const char* FontShaderTypeToString(const EFontShaderType eType)
 	case EFontShaderType::NOISE_KOR:			return "NOISE_KOR";
 	case EFontShaderType::OUTLINE_NOISE:		return "OUTLINE_NOISE";
 	case EFontShaderType::OUTLINE_NOISE_KOR:	return "OUTLINE_NOISE_KOR";
+	case EFontShaderType::GRADATION:			return "GRADATION";
+	case EFontShaderType::OUTLINE_GRADATION:	return "OUTLINE_GRADATION";
+	case EFontShaderType::HIT:					return "HIT";
 	case EFontShaderType::END:					return "END";
 	default:									return "END";
 	}
@@ -638,6 +647,9 @@ enum class EUIDImageSubClassType
 	LEVEL_CHAGE_3,
 	LEVEL_CHAGE_4,
 	LEVEL_CHAGE_5,
+	LEVEL_CHAGE_6,
+	LEVEL_CHAGE_7,
+
 
 	// ∫∏Ω∫ Ω∫≈»
 	BOSS_STAT_BEGIN,
@@ -718,6 +730,8 @@ NLOHMANN_JSON_SERIALIZE_ENUM(EUIDImageSubClassType,
 	{ EUIDImageSubClassType::LEVEL_CHAGE_3,							"LEVEL_CHAGE_3" },
 	{ EUIDImageSubClassType::LEVEL_CHAGE_4,							"LEVEL_CHAGE_4" },
 	{ EUIDImageSubClassType::LEVEL_CHAGE_5,							"LEVEL_CHAGE_5" },
+	{ EUIDImageSubClassType::LEVEL_CHAGE_6,							"LEVEL_CHAGE_6" },
+	{ EUIDImageSubClassType::LEVEL_CHAGE_7,							"LEVEL_CHAGE_7" },
 
 	{ EUIDImageSubClassType::BOSS_STAT_BEGIN,						"BOSS_STAT_BEGIN" },
 	{ EUIDImageSubClassType::BOSS_STAT_BG,							"BOSS_STAT_BG" },
@@ -796,6 +810,8 @@ NLOHMANN_JSON_SERIALIZE_ENUM(EUIDImageSubClassType,
 	if (str == "LEVEL_CHAGE_3")							return EUIDImageSubClassType::LEVEL_CHAGE_3;
 	if (str == "LEVEL_CHAGE_4")							return EUIDImageSubClassType::LEVEL_CHAGE_4;
 	if (str == "LEVEL_CHAGE_5")							return EUIDImageSubClassType::LEVEL_CHAGE_5;
+	if (str == "LEVEL_CHAGE_6")							return EUIDImageSubClassType::LEVEL_CHAGE_6;
+	if (str == "LEVEL_CHAGE_7")							return EUIDImageSubClassType::LEVEL_CHAGE_7;
 
 	if (str == "BOSS_STAT_BEGIN")						return EUIDImageSubClassType::BOSS_STAT_BEGIN;
 	if (str == "BOSS_STAT_BG")							return EUIDImageSubClassType::BOSS_STAT_BG;
@@ -876,6 +892,8 @@ inline const char* UIDImageSubTypeToString(EUIDImageSubClassType type)
 	case EUIDImageSubClassType::LEVEL_CHAGE_3:							return "LEVEL_CHAGE_3";
 	case EUIDImageSubClassType::LEVEL_CHAGE_4:							return "LEVEL_CHAGE_4";
 	case EUIDImageSubClassType::LEVEL_CHAGE_5:							return "LEVEL_CHAGE_5";
+	case EUIDImageSubClassType::LEVEL_CHAGE_6:							return "LEVEL_CHAGE_6";
+	case EUIDImageSubClassType::LEVEL_CHAGE_7:							return "LEVEL_CHAGE_7";
 
 	case EUIDImageSubClassType::BOSS_STAT_BEGIN:						return "BOSS_STAT_BEGIN";
 	case EUIDImageSubClassType::BOSS_STAT_BG:							return "BOSS_STAT_BG";

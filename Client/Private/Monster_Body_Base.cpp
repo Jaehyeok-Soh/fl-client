@@ -12,7 +12,6 @@
 #include "Model.h"
 #include "ComputeShader.h"
 #include "PhysicsCCT.h"
-#include "EffectHandler.h"
 
 #include "UI_Manager.h"
 #include "GameInstance.h"
@@ -51,10 +50,7 @@ HRESULT CMonster_Body_Base::Initialize(void* pArg)
 	if (FAILED(Ready_Bones(pDesc)))
 		return E_FAIL;
 
-	if (FAILED(Ready_EffectHandler(pDesc)))
-		return E_FAIL;
-
-	Set_Flag(OF_Outline, true);
+	Set_RenderInfoFlag(OF_Outline, true);
 	return S_OK;
 }
 
@@ -62,9 +58,6 @@ HRESULT CMonster_Body_Base::Awake(const _uint iCurrentLevelIndex)
 {
 	if (FAILED(Super::Awake(iCurrentLevelIndex)))
 		return E_FAIL;
-
-	if (m_pEffectHandler)
-		m_pEffectHandler->Awake();
 
 	return S_OK;
 }
@@ -90,9 +83,6 @@ void CMonster_Body_Base::Update(_float fTimeDelta)
 void CMonster_Body_Base::Update_Late(_float fTimeDelta)
 {
 	Super::Update_Late(fTimeDelta);
-
-	if (m_pEffectHandler)
-		m_pEffectHandler->Update(fTimeDelta);
 
 	Get_Component<CModel>()->Emit_Notifies(EAnimNotifyPhase::Late);
 }
@@ -196,19 +186,6 @@ HRESULT CMonster_Body_Base::Ready_Components(MONSTERBODY_DESC* pDesc)
 
 	if (FAILED(Add_Component<CShader>(0/*static*/, L"Prototype_Component_Shader_VtxAnimMesh", nullptr)))
 		return E_FAIL;
-
-	return S_OK;
-}
-
-HRESULT CMonster_Body_Base::Ready_EffectHandler(MONSTERBODY_DESC* pDesc)
-{
-	wstring NameTag = pDesc->wstrModelPrototypeTag;
-	Engine_Utils::Replace(NameTag, L"Prototype_Component_Model_", L"");
-
-	if (FAILED(Add_Component<CEffectHandler>(/*Static*/0, L"Prototype_Component_EffectHandler_" + NameTag, nullptr)))
-		return E_FAIL;
-
-	m_pEffectHandler = Get_Component<CEffectHandler>();
 
 	return S_OK;
 }

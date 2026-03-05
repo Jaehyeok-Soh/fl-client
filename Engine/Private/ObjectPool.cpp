@@ -1,6 +1,7 @@
 #include "Engine_pch.h"
 #include "ObjectPool.h"
 #include "GameObject.h"
+#include "EngineConsole.h"
 #include "GameInstance.h"
 
 CObjectPool::CObjectPool()
@@ -28,6 +29,7 @@ HRESULT CObjectPool::Initialize(const wstring& wstrLayerTag, void* pArg, CGameOb
 
 CGameObject* CObjectPool::Spawn(void* pArg)
 {
+	CLOG_INFO("Spawn");
 	if (m_iActiveCount >= m_vecObjects.size())
 	{
 		MSG_BOX("CObjectPool::Spawn, Pool is Full");
@@ -46,6 +48,13 @@ CGameObject* CObjectPool::Spawn(void* pArg)
 
 HRESULT CObjectPool::Despawn(CGameObject* pGo)
 {
+	_int iIndex = pGo->Get_ActiveIndex();
+	if (iIndex < 0 || iIndex >= (_int)m_iActiveCount)
+	{
+		CLOG_INFO("Despawn:: SKIP");
+		return S_OK;
+	}
+
 	if (!pGo)
 	{
 		MSG_BOX("CObjectPool::Despawn, Parameter is nullptr");
@@ -57,7 +66,8 @@ HRESULT CObjectPool::Despawn(CGameObject* pGo)
 		MSG_BOX("CObjectPool::Despawn, Index was wrong");
 		return E_FAIL;
 	}
-
+	if (this->m_wstrLayerTag == L"UI_Layer")
+		int a = 0;
 	_int iLastActiveIndex = m_iActiveCount - 1;
 	if (iNeed_Despawned_Index != iLastActiveIndex)
 	{
@@ -76,6 +86,7 @@ HRESULT CObjectPool::Despawn(CGameObject* pGo)
 		return E_FAIL;
 	}
 
+	CLOG_INFO("Despawn");
 	--m_iActiveCount;
 	return S_OK;
 }
@@ -107,6 +118,7 @@ HRESULT CObjectPool::Ready_Objects(void *pArg, CGameObject* pSeed)
 		if (!(pReturned = pSeed->Clone(pArg)))
 			return E_FAIL;
 
+		pReturned->Mark_Pooled();
 		pReturned->Set_OwnerPool(this);
 		m_vecObjects.push_back(pReturned);
 	}

@@ -110,11 +110,6 @@ void CGravity_Force::Draw_ImGui()
 {
 }
 
-void CGravity_Force::Set_Dead(_bool bStatic)
-{
-    Super::Set_Dead(bStatic);
-}
-
 CGravity_Force* CGravity_Force::Create(EToolObjectType eType, ID3D11Device* pDevice, ID3D11DeviceContext* pDeviceContext)
 {
     CGravity_Force* pInstance = new CGravity_Force(eType, pDevice, pDeviceContext);

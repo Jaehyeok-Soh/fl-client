@@ -10,6 +10,7 @@
 #include "RenderTarget.h"
 #include "Octree_Manager.h"
 #include "EngineConsole.h"
+#include "UIObject.h"
 #include "GameInstance.h"
 
 CRender_Manager::CRender_Manager(ID3D11Device* pDevice, ID3D11DeviceContext* pDeviceContext)
@@ -279,7 +280,7 @@ void CRender_Manager::Push_RenderObject(RENDER_CATEGORY eCategory, CGameObject* 
 	if (pGO == nullptr)
 		return;
 
-	if (eCategory >= RENDER_CATEGORY::END || (pGO->Is_Render() == false))
+	if (eCategory >= RENDER_CATEGORY::END)
 		return;
 
 	Safe_AddRef(pGO);
@@ -1084,6 +1085,7 @@ HRESULT CRender_Manager::Render_BlendUI()
 
 HRESULT CRender_Manager::Render_UI()
 {
+	Sort_UI();
 	for (CGameObject* pElement : m_renderObjects[ENUM_TO_UINT(RENDER_CATEGORY::UI)])
 	{
 		if (FAILED(pElement->Render()))
@@ -1094,6 +1096,15 @@ HRESULT CRender_Manager::Render_UI()
 	m_renderObjects[ENUM_TO_UINT(RENDER_CATEGORY::UI)].clear();
 
 	return S_OK;
+}
+
+void CRender_Manager::Sort_UI()
+{
+	m_renderObjects[ENUM_TO_UINT(RENDER_CATEGORY::UI)].sort(
+		[](const CGameObject* a, const CGameObject* b)
+		{
+			return static_cast<const CUIObject*>(a)->Get_PosZ() > static_cast<const CUIObject*>(b)->Get_PosZ(); /* 매 프레임 Static Cast / 나중에 수정해야될 때 수정하기 */
+		});
 }
 
 array<Vec4, SSAO_KERNAL> CRender_Manager::Build_SSAO_Kernal16()

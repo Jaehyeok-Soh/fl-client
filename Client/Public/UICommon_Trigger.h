@@ -44,6 +44,10 @@ private:
 	HRESULT Ready_Components(UI_TRIGGER_DESC* pDesc);
 	HRESULT Bind_ShaderResources();
 
+private:
+	// ¼öÁ¤ÇØ¾ßµÊ
+	_float m_fDelayTimeAcc = {};
+
 public:
 	static CUICommon_Trigger* Create(ID3D11Device* pDevice, ID3D11DeviceContext* pDeviceContext);
 	CGameObject* Clone(void* pArg);

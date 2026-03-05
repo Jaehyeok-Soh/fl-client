@@ -53,6 +53,7 @@ private:
 	HRESULT Ready_Ray();
 	HRESULT Ready_CCT();
 	HRESULT Ready_AttackOverlap();
+	HRESULT Ready_EffectEvent();
 
 	HRESULT Ready_AttackStates();
 

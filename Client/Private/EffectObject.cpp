@@ -91,7 +91,8 @@ HRESULT CEffectObject::Ready_Component(void* pArg)
     if (pSRV = m_pComputeShader->Get_SRV("g_GravityCurve"))
     {
         if (m_tEffectDesc.Data._vecGlobalGravityCurve.size() != 0)
-            pSB = StructuredBuffer::Create(m_pDevice, m_pDeviceContext, sizeof(DTO::Gravity_CurveKey), m_tEffectDesc.Data._vecGlobalGravityCurve.size());
+            pSB = StructuredBuffer::Create(m_pDevice, m_pDeviceContext, sizeof(DTO::Gravity_CurveKey), 
+                static_cast<_uint>(m_tEffectDesc.Data._vecGlobalGravityCurve.size()));
 
         else
             pSB = StructuredBuffer::Create(m_pDevice, m_pDeviceContext, sizeof(DTO::Gravity_CurveKey), 1);
@@ -333,37 +334,37 @@ HRESULT CEffectObject::Bind_ShaderResource()
         pDesc.DiffuseTexture_SpriteInfo = Vec4(m_tEffectDesc.Data._Effect_DiffuseTexture_SpriteInfo.x,
             m_tEffectDesc.Data._Effect_DiffuseTexture_SpriteInfo.y,
             m_tEffectDesc.Data._Effect_DiffuseTexture_SpriteInfo.z,
-            m_iSpriteCurrentNumber[ENUM_TO_UINT(DTO::TEXTURE_INFO::DEFAULTTEXTURE)]);
+            static_cast<_float>(m_iSpriteCurrentNumber[ENUM_TO_UINT(DTO::TEXTURE_INFO::DEFAULTTEXTURE)]));
 
         pDesc.NoiseTexture_SpriteInfo = Vec4(m_tEffectDesc.Data._Effect_NoiseTexture_SpriteInfo.x,
             m_tEffectDesc.Data._Effect_NoiseTexture_SpriteInfo.y,
             m_tEffectDesc.Data._Effect_NoiseTexture_SpriteInfo.z,
-            m_iSpriteCurrentNumber[ENUM_TO_UINT(DTO::TEXTURE_INFO::NOISETEXTURE)]);
+            static_cast<_float>(m_iSpriteCurrentNumber[ENUM_TO_UINT(DTO::TEXTURE_INFO::NOISETEXTURE)]));
 
         pDesc.GradationTexture_SpriteInfo = Vec4(m_tEffectDesc.Data._Effect_GradationTexture_SpriteInfo.x,
             m_tEffectDesc.Data._Effect_GradationTexture_SpriteInfo.y,
             m_tEffectDesc.Data._Effect_GradationTexture_SpriteInfo.z,
-            m_iSpriteCurrentNumber[ENUM_TO_UINT(DTO::TEXTURE_INFO::GRADATIONTEXTURE)]);
+            static_cast<_float>(m_iSpriteCurrentNumber[ENUM_TO_UINT(DTO::TEXTURE_INFO::GRADATIONTEXTURE)]));
 
         pDesc.DissolveTexture_SpriteInfo = Vec4(m_tEffectDesc.Data._Effect_DissolveTexture_SpriteInfo.x,
             m_tEffectDesc.Data._Effect_DissolveTexture_SpriteInfo.y,
             m_tEffectDesc.Data._Effect_DissolveTexture_SpriteInfo.z,
-            m_iSpriteCurrentNumber[ENUM_TO_UINT(DTO::TEXTURE_INFO::DISSOLVETEXTURE)]);
+            static_cast<_float>(m_iSpriteCurrentNumber[ENUM_TO_UINT(DTO::TEXTURE_INFO::DISSOLVETEXTURE)]));
 
         pDesc.GlowTexture_SpriteInfo = Vec4(m_tEffectDesc.Data._Effect_GlowTexture_SpriteInfo.x,
             m_tEffectDesc.Data._Effect_GlowTexture_SpriteInfo.y,
             m_tEffectDesc.Data._Effect_GlowTexture_SpriteInfo.z,
-            m_iSpriteCurrentNumber[ENUM_TO_UINT(DTO::TEXTURE_INFO::GLOWTEXTURE)]);
+            static_cast<_float>(m_iSpriteCurrentNumber[ENUM_TO_UINT(DTO::TEXTURE_INFO::GLOWTEXTURE)]));
 
         pDesc.CurveTexture_SpriteInfo = Vec4(m_tEffectDesc.Data._Effect_CurveTexture_SpriteInfo.x,
             m_tEffectDesc.Data._Effect_CurveTexture_SpriteInfo.y,
             m_tEffectDesc.Data._Effect_CurveTexture_SpriteInfo.z,
-            m_iSpriteCurrentNumber[ENUM_TO_UINT(DTO::TEXTURE_INFO::CURVETEXTURE)]);
+            static_cast<_float>(m_iSpriteCurrentNumber[ENUM_TO_UINT(DTO::TEXTURE_INFO::CURVETEXTURE)]));
 
         pDesc.MaskTexture_SpriteInfo = Vec4(m_tEffectDesc.Data._Effect_MaskTexture_SpriteInfo.x,
             m_tEffectDesc.Data._Effect_MaskTexture_SpriteInfo.y,
             m_tEffectDesc.Data._Effect_MaskTexture_SpriteInfo.z,
-            m_iSpriteCurrentNumber[ENUM_TO_UINT(DTO::TEXTURE_INFO::MASKINGTEXTURE)]);
+            static_cast<_float>(m_iSpriteCurrentNumber[ENUM_TO_UINT(DTO::TEXTURE_INFO::MASKINGTEXTURE)]));
 
         m_pShader->Bind_EffectData(pDesc);
 
@@ -417,7 +418,7 @@ HRESULT CEffectObject::Bind_Curve_To_GPU()
     m_pComputeShader->Bind_InputStructuredBuffer_Data(1, vecCurve.data(), sizeof(DTO::Gravity_CurveKey), (_uint)vecCurve.size());
 
     EFFECT_CURVEINFO desc;
-    desc.g_iGravityKeyCount = vecCurve.size();
+    desc.g_iGravityKeyCount = static_cast<_int>(vecCurve.size());
     m_pComputeShader->Bind_Compute_EffectCurveData(desc);
 
     return S_OK;

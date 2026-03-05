@@ -35,6 +35,9 @@ HRESULT CXibi_Projectile_Circle::Initialize(void* pArg)
 
 	if (CPhysicsRigidBody* pRigidBody = Get_Component<CPhysicsRigidBody>())
 		pRigidBody->Awake();
+	
+	Get_Component<CEffectHandler>()->Setup_ForOwner(this);
+
 	return S_OK;
 }
 

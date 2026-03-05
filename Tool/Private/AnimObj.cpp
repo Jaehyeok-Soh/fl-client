@@ -107,11 +107,6 @@ void CAnimObj::Draw_ImGui()
 {
 }
 
-void CAnimObj::Set_Dead(_bool bStatic)
-{
-	Super::Set_Dead(bStatic);
-}
-
 const CModel* CAnimObj::Get_ModelComPtr()
 {
 	return Get_Component<CModel>();

@@ -7,11 +7,44 @@ class CPhysics_CCTFilterCallback;
 
 class ENGINE_DLL CPhysicsCCT final : public CComponent
 {
-	using Super = CComponent;
 public:
+    typedef struct tagCCTMovementState
+    {
+        _bool bGravity = { true };
+        _float fGravity = { -35.f };
+        
+        CurMinMax CMSpeed{ 0.f, 0.f, 8.f};
+        CurMinMax CMVerticalSpeed{ 0.f, -10.f, 10.f};
+        CurMinMax CMAccelRate{ 10.f, 0.f, 10.f };
+        CurMinMax CMDeAccelRate{ 5.f, 0.f, 5.f };
+
+        PxVec3 vTargetVelocity{ 0.f, 0.f, 0.f};
+
+        PxVec3 vAccelation{ 0.f, 0.f, 0.f };
+        PxVec3 vExternAccelation{ 0.f, 0.f, 0.f };
+        PxVec3 vImpulsAccelation{ 0.f, 0.f, 0.f };
+
+        PxVec3 vFixedMove{ 0.f, 0.f, 0.f };
+
+        PxVec3 vVelocity{ 0.f, 0.f, 0.f };
+
+        PxVec3 vInputDir{ 0.f, 0.f, 0.f };
+
+        void ReadyNext()
+        {
+            vInputDir = { 0.f, 0.f, 0.f };
+            vFixedMove = { 0.f, 0.f, 0.f };
+            vImpulsAccelation = { 0.f, 0.f, 0.f };
+            vExternAccelation = { 0.f, 0.f, 0.f };
+        }
+
+    }CCTMOVEMENTSTATE;
+
 	constexpr static EComponentType _ID = EComponentType::PX_CCT;
 
 private:
+	using Super = CComponent;
+
 	CPhysicsCCT(ID3D11Device* pDevice, ID3D11DeviceContext* pDeviceContext);
 	CPhysicsCCT(const CPhysicsCCT& rhs);
 	virtual ~CPhysicsCCT() = default;
@@ -20,7 +53,7 @@ private:
 	virtual HRESULT Initialize(void* pArg) override;
 
 public:
-	void Awake();
+	void Ready_Position();
 	void Update(const _float fTimeDelta);
 
 #ifdef _DEBUG
@@ -31,9 +64,30 @@ public:
     /// <summary>
     /// 이동량 모아서 한번에 업데이트(move)
     /// </summary>
-    /// <param name="disp"></param>
-    PxControllerCollisionFlags Add_Disp(Vec3 disp);
     void UpdateMove(const _float fTimeDelta);
+    void SetInputDir(Vec3 vInputDir);
+    
+    void AddAccelation(Vec3 vAccelation);
+    void AddFixedMove(Vec3 vFixedMove);
+    void SetImpulsAccelation(Vec3 vAccelation);
+
+    void SetApplyGravity(_bool bVal) { m_tMoveState.bGravity = bVal; }
+
+    void SetZeroVelocity();
+    void SetZeroHorizontalVelocity();
+    void SetZeroVerticalVelocity();
+
+    void SetZeroDeAccelRate();
+    void SetDeAccelRate(_float fRate);
+    void ResetDeAccelRate();
+
+    CCTMOVEMENTSTATE* GetMoveState() { return &m_tMoveState; }
+    PxControllerCollisionFlags GetCollisionState() { return m_CollisionFlags; }
+
+private:
+    void ApplyGravity(const _float fTimeDelta);
+    void ApplyExternAcc(const _float fTimeDelta);
+    void ApplyImpuls(const _float fTimeDelta);
 
 public:
     /// <summary>
@@ -42,7 +96,7 @@ public:
     /// <param name="height"></param>
     void SetHeight(_float height);
 
-    const PxControllerCollisionFlags Move(Vec3 disp, _float minDist, _float fTimeDelta);
+    const PxControllerCollisionFlags Move(PxVec3 disp, _float minDist, _float fTimeDelta);
 
     void SetPosition(Vec3 position);
     Vec3 GetPosition();
@@ -143,14 +197,12 @@ private:
     CPhysics_CCTFilterCallback* m_pCCTFilterCallback = { nullptr };
     PHYSICSCCT_DESC m_tDesc = {};
 
-    PxControllerCollisionFlags m_cctFlags{};
+    PxControllerCollisionFlags m_CollisionFlags{};
+
+    CCTMOVEMENTSTATE m_tMoveState{};
 
     _float m_fHeightOffset = {};
     _float m_fContactOffset = {};
-
-    Vec3 m_vVelocity = {};
-    _float m_fVerticalVelocity = {};
-    _float m_fGravity = { -9.81f };
 
     Vec3 m_vAccDisp = {};
 

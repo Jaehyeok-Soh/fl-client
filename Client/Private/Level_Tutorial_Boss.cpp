@@ -6,6 +6,7 @@
 // Manager
 //=================
 #include "UI_Manager.h"
+#include "Client_EventDefine.h"
 
 //=================
 // Data Struct
@@ -62,6 +63,7 @@
 #include "Xibi_Oneshot_Thunder.h"
 
 #include "PlayerSkillObj_Headers.h"
+#include "Level_Loading.h"
 
 //=================
 // Game Instance
@@ -131,6 +133,8 @@ HRESULT CLevel_Tutorial_Boss::Build_Prototype()
 		return E_FAIL;
 	if (FAILED(Ready_Builder(DTO::ECategory::UI, CBuilder_UI::Create(m_pDevice, m_pDeviceContext, static_cast<_uint>(ELevelType::TUTORIAL_BOSS)))))
 		return E_FAIL;
+	if (FAILED(Ready_Builder(DTO::ECategory::UI_PREFAB, CBuilder_UIPrefabs::Create(m_pDevice, m_pDeviceContext, static_cast<_uint>(ELevelType::TUTORIAL_BOSS)))))
+		return E_FAIL;
 	return S_OK;
 }
 
@@ -160,8 +164,23 @@ HRESULT CLevel_Tutorial_Boss::Build_Files()
 	eCategory = DTO::ECategory::UI;
 	if (FAILED(m_pGameInstance->Regist_Document<CDataDocument_UI>(iLevelID, eCategory)))
 		return E_FAIL;
-
 	strUIFolderPath = L"../../Resources/Data/UIData/Static/";
+	if (std::filesystem::exists(strUIFolderPath))
+	{
+		for (auto iter : std::filesystem::directory_iterator(strUIFolderPath))
+		{
+			if (FAILED(m_pGameInstance->Load_File_Json(iLevelID, eCategory, iter.path())))
+				return E_FAIL;
+
+			if (FAILED(Build_File(iLevelID, eCategory, iter.path().stem().string())))
+				return E_FAIL;
+		}
+	}
+
+	eCategory = DTO::ECategory::UI_PREFAB;
+	if (FAILED(m_pGameInstance->Regist_Document<CDataDocument_UI>(iLevelID, eCategory)))
+		return E_FAIL;
+	strUIFolderPath = L"../../Resources/Data/UIData/Prefab/";
 	if (std::filesystem::exists(strUIFolderPath))
 	{
 		for (auto iter : std::filesystem::directory_iterator(strUIFolderPath))
@@ -326,7 +345,11 @@ HRESULT CLevel_Tutorial_Boss::Ready_Player_Layer(const wstring& wstrLayerTag)
 
 	// TODO : 만약 플레이어가 늘어난다면 레이어 추가 체크 필수
 	if (CGameObject* pPlayer = m_pGameInstance->Get_GameObject_Front(ENUM_TO_UINT(ELevelType::STATIC), wstrLayerTag))
+	{
+		CGameObject::GAMEOBJECT_REINIT_DESC desc{};
+		pPlayer->Reinitialize(&desc);
 		return S_OK;
+	}
 
 	/* Player 최초 생성 */
 	{
@@ -519,7 +542,33 @@ void CLevel_Tutorial_Boss::Update(const _float fTimeDelta)
 #endif
 		m_pGameInstance->Request_CursorMode(m_eCursorMode);
 	}
+	if (KEY_BUTTON_DOWN(DIK_5))
+	{
+		m_pGameInstance->Broadcast<ACTION1>();
+	}
+	if (KEY_BUTTON_DOWN(DIK_6))
+	{
+		m_pGameInstance->Broadcast<ACTION2>();
+	}
+	if (KEY_BUTTON_DOWN(DIK_7))
+	{
+		m_pGameInstance->Broadcast<ACTION3>();
+	}
+	if (KEY_BUTTON_DOWN(DIK_8))
+	{
+		m_pGameInstance->Broadcast<ACTION4>();
+	}
 
+	if (KEY_BUTTON_DOWN(DIK_2))
+	{
+		m_pGameInstance->Request_ChangeLevel(ENUM_TO_UINT(ELevelType::LOADING), CLevel_Loading::Create(m_pDevice, m_pDeviceContext, ELevelType::TUTORIAL_VILLAGE));
+		CUI_Manager::GetInstance()->Request_Clear();
+	}
+	if (KEY_BUTTON_DOWN(DIK_3))
+	{
+		m_pGameInstance->Request_ChangeLevel(ENUM_TO_UINT(ELevelType::LOADING), CLevel_Loading::Create(m_pDevice, m_pDeviceContext, ELevelType::LOGO));
+		CUI_Manager::GetInstance()->Request_Clear();
+	}
 }
 
 HRESULT CLevel_Tutorial_Boss::Render()

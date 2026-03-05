@@ -31,7 +31,7 @@ public:
 	virtual HRESULT Render() override;
 	virtual _bool Picking(OUT Vec3& vOut) PURE;
 	virtual void Draw_ImGui();
-	virtual void Set_Dead(_bool bStatic = false) override;
+	void Set_Dead(_bool bStatic = false);
 
 	virtual bool	Get_SRT( OUT  Vec3& vOutScale , OUT Quat& vQuat , OUT Vec3& vPosition  );
 	
@@ -47,7 +47,6 @@ public:
 	const string& Get_TypeName() const { return m_strObjectType; }
 	EToolObjectType Get_Type() const { return m_eType; }
 	const string& Get_ModelFileName() const { return m_strModelFileName; }
-	const wstring& Get_LayerTag() const { return m_wstrLayerTag; }
 	void Update_CombinedWorldMatrix(const Matrix &matParent);
 private:
 	HRESULT Set_TypeString();

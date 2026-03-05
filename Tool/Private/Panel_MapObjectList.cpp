@@ -200,7 +200,7 @@ HRESULT CPanel_MapObjectList::Render_MapObjectList()
 
 				if (m_eShowMapObjectFilter == EClientMakePath::END || static_cast<CMapObject*>(GameObject)->Get_ClientMakePath() == m_eShowMapObjectFilter)
 				{
-					m_pGameInstance->Request_DeleteGameObject(ENUM_TO_UINT(ELevelType::MAP) , g_wszMapObjectLayer  , GameObject );
+					m_pGameInstance->Request_DeleteGameObject(ENUM_TO_UINT(ELevelType::MAP), GameObject);
 				}
 			}
 		}
@@ -392,7 +392,7 @@ HRESULT CPanel_MapObjectList::Render_SelectInfo()
 
 		if (ImGui::Button(" Delete [ Warning : [Instance] Draw Object All Delete ] "))
 		{
-			m_pGameInstance->Request_DeleteGameObject(ENUM_TO_UINT(ELevelType::MAP), m_pSelectMapObject->Get_LayerTag(), m_pSelectMapObject);
+			m_pGameInstance->Request_DeleteGameObject(ENUM_TO_UINT(ELevelType::MAP), m_pSelectMapObject);
 			static_cast<CLevel_Map*>(m_pOwnerLevel)->On_ChangeSelectedObject(nullptr);
 			m_pSelectMapObject = nullptr;
 			ImGui::End();
@@ -989,15 +989,16 @@ HRESULT CPanel_MapObjectList::Render_Description()
 
 	switch (ePath)
 	{
-	case Tool::EClientMakePath::StaticObject:				ImGuiUpdate_StaticObject_Desc					(static_cast<STATICOBJECT_DESC*>(pDesc));					return S_OK;
-	case Tool::EClientMakePath::LandScape:					ImGuiUpdate_LandScape_Desc						(static_cast<LANDSCAPE_DESC*>(pDesc));						return S_OK;
+	case Tool::EClientMakePath::StaticObject:						ImGuiUpdate_StaticObject_Desc						(static_cast<STATICOBJECT_DESC*>(pDesc));								return S_OK;
+	case Tool::EClientMakePath::LandScape:							ImGuiUpdate_LandScape_Desc							(static_cast<LANDSCAPE_DESC*>(pDesc));									return S_OK;
 
-	case Tool::EClientMakePath::Batch_Monster:				ImGuiUpdate_Batch_Monster_Desc					(static_cast<BATCH_MONSTER_DESC*>(pDesc));					return S_OK;
-	case Tool::EClientMakePath::Batch_Object:				ImGuiUpdate_Batch_Object_Desc					(static_cast<BATCH_OBJECT_DESC*>(pDesc));					return S_OK;
+	case Tool::EClientMakePath::Batch_Monster:						ImGuiUpdate_Batch_Monster_Desc						(static_cast<BATCH_MONSTER_DESC*>(pDesc));								return S_OK;
+	case Tool::EClientMakePath::Batch_Object:						ImGuiUpdate_Batch_Object_Desc						(static_cast<BATCH_OBJECT_DESC*>(pDesc));								return S_OK;
 
-	case Tool::EClientMakePath::TriggerBox_ChangeLevel:		ImGuiUpdate_TriggerBox_ChanageLevel_Desc	(static_cast<TRIGGERBOX_CHANGELEVEL_DESC*>(pDesc));				return S_OK;
-	case Tool::EClientMakePath::TriggerBox_MonsterSpawner:	ImGuiUpdate_TriggerBox_MonsterSpawner		(static_cast<TRIGGERBOX_MONSTERSPAWNER_DESC*>(pDesc));			return S_OK;
-	default:																																							return E_FAIL;
+	case Tool::EClientMakePath::TriggerBox_ChangeLevel:				ImGuiUpdate_TriggerBox_ChanageLevel_Desc			(static_cast<TRIGGERBOX_CHANGELEVEL_DESC*>(pDesc));						return S_OK;
+	case Tool::EClientMakePath::TriggerBox_MonsterSpawner:			ImGuiUpdate_TriggerBox_MonsterSpawner				(static_cast<TRIGGERBOX_MONSTERSPAWNER_DESC*>(pDesc));					return S_OK;
+	case Tool::EClientMakePath::TriggerBox_GlobalEvent_BroadCaster:	ImGuiUpdate_TriggerBox_GlobalEvent_BroadCaster		(static_cast<TRIGGERBOX_GLOBALEVENT_BROADCASTER_DESC*>(pDesc));			return S_OK;
+	default:																																													return S_OK;
 	}
 
 	return S_OK;
@@ -1374,6 +1375,58 @@ void CPanel_MapObjectList::ImGuiUpdate_TriggerBox_MonsterSpawner(TRIGGERBOX_MONS
 		ImGui::EndTable();
 	}
 
+}
+void CPanel_MapObjectList::ImGuiUpdate_TriggerBox_GlobalEvent_BroadCaster(TRIGGERBOX_GLOBALEVENT_BROADCASTER_DESC* pDesc)
+{
+	if (pDesc == nullptr) return;
+	ImGuiUpdate_TriggerBox(pDesc);
+
+
+	ImGui::SeparatorText(" Global Event BroadCater ");
+
+	ImGui::SeparatorText(" Global Event BroadCaster ");
+
+	// 1. 이벤트 추가 버튼
+	if (ImGui::Button("Add Event"))
+	{
+		// 추가할 때 기본값으로 "NONE"을 넣어줍니다.
+		pDesc->vecGlobalEventBroadCasetNames.push_back("NONE");
+	}
+
+	ImGui::Separator();
+
+	// 2. Vector 순회하며 콤보박스 그리기
+	for (int i = 0; i < pDesc->vecGlobalEventBroadCasetNames.size(); ++i)
+	{
+		ImGui::PushID(i);
+
+		int iBuffer = static_cast<int>(Global_Broadcast_Type_ToEnum(pDesc->vecGlobalEventBroadCasetNames[i]));
+
+		ImGui::SetNextItemWidth(ImGui::GetContentRegionAvail().x - 40.f);
+
+		if (ImGui::Combo("##EventCombo", &iBuffer, g_szGlobalBroadCastType, (int)EGlobal_Broadcast_Type::END))
+		{
+			pDesc->vecGlobalEventBroadCasetNames[i] = Global_Broadcast_Type_ToString(static_cast<EGlobal_Broadcast_Type>(iBuffer));
+		}
+
+		ImGui::SameLine();
+
+		// 3. 요소 삭제 버튼 (X)
+		if (ImGui::Button("X"))
+		{
+			auto iter = pDesc->vecGlobalEventBroadCasetNames.begin() + i;
+			pDesc->vecGlobalEventBroadCasetNames.erase(iter);
+
+			ImGui::PopID();
+			--i;
+			continue;
+		}
+
+		// ID 팝
+		ImGui::PopID();
+	}
+
+	ImGui::Separator();
 }
 #pragma endregion
 
