@@ -17,7 +17,6 @@ enum class TargeterState : _uint
 	NORMAL = 0,
 	TARGETSYNC,
 	GUN,
-	GUN,
 	CINEMATIC,
 	Bone
 };

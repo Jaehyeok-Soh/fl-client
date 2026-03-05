@@ -293,7 +293,7 @@ _bool CMainPlayer::On_Hit(const HIT_DESC& hitDesc)
         // Hit 데미지 폰트 // 색 변경은 가능 //
         {
             UI_PREFAB_DATA tPrefabData = {};
-            tPrefabData.DamageFontData.iDamage = fDamage;
+            tPrefabData.DamageFontData.iDamage = static_cast<_uint>(fDamage);
             tPrefabData.DamageFontData.vHitPos = hitDesc.vHitPoint;
             CUI_Manager::GetInstance()->Request_Add_Prefab(
                 m_pGameInstance->Get_CurrentLevelIndex(), EUIPrefabType::DAMAGE_FONTS_HIT, m_pGameInstance->Get_CurrentLevelIndex(), &tPrefabData);
@@ -340,7 +340,7 @@ void CMainPlayer::Try_Attack(const HIT_DESC& hitDesc)
         // 일반 공격 데미지 폰트
     {
         UI_PREFAB_DATA tPrefabData = {};
-        tPrefabData.DamageFontData.iDamage = hitDesc.fFinalDamage; // 데미지 폰트에 뜰 숫자 // 플레이어 공격력 // 랜덤은 보여주기용
+        tPrefabData.DamageFontData.iDamage = static_cast<_float>(hitDesc.fFinalDamage); // 데미지 폰트에 뜰 숫자 // 플레이어 공격력 // 랜덤은 보여주기용
         tPrefabData.DamageFontData.vFontColor = Vec4{ 1.f, 0.95f, 0.47f, 1.f }; // 데미지 폰트 색 // 캐릭터 고유 색
         tPrefabData.DamageFontData.vHitPos = hitDesc.vHitPoint; // 데미지 폰트를 띄울 World 위치 // 
         tPrefabData.DamageFontData.vRandOffset = Vec3{
