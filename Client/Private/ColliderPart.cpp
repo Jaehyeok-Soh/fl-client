@@ -103,9 +103,9 @@ void CColliderPart::OnCollision_Exit(_uint iMyColliderLayer, _uint iOtherLayer, 
 	Get_Parent()->OnCollision_Exit(iMyColliderLayer, iOtherLayer, pOther);
 }
 
-void CColliderPart::OnTrigger_Enter(_uint iMyColliderLayer, _uint iOtherLayer, CGameObject* pOther)
+void CColliderPart::OnTrigger_Enter(_uint iMyColliderLayer, _uint iOtherLayer, CGameObject* pOther, const COL_HIT_INFO& tHitInfo)
 {
-	Get_Parent()->OnTrigger_Enter(iMyColliderLayer, iOtherLayer, pOther);
+	Get_Parent()->OnTrigger_Enter(iMyColliderLayer, iOtherLayer, pOther, tHitInfo);
 }
 
 void CColliderPart::OnTrigger_Exit(_uint iMyColliderLayer, _uint iOtherLayer, CGameObject* pOther)

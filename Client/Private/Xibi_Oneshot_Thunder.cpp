@@ -93,20 +93,9 @@ void CXibi_Oneshot_Thunder::OnCollision_Exit(_uint iMyColliderLayer, _uint iOthe
 {
 }
 
-void CXibi_Oneshot_Thunder::OnTrigger_Enter(_uint iMyColliderLayer, _uint iOtherLayer, CGameObject* pOther)
+void CXibi_Oneshot_Thunder::OnTrigger_Enter(_uint iMyColliderLayer, _uint iOtherLayer, CGameObject* pOther, const COL_HIT_INFO& tHitInfo)
 {
-	if (iOtherLayer == PHYSICSFILTERGROUP::Enum::MAP)
-		Set_Dead();
-
-	COLLIDED_DESC desc{};
-	desc.iCollisionType = COLLISIONEVENT::ON_COLLISION_ENTER;
-	desc.iRequesterLayer = iMyColliderLayer;
-	desc.iOtherLayer = iOtherLayer;
-	desc.pRequester = this;
-	desc.pOther = pOther;
-	//desc.tHitInfo = tHitInfo;
-
-	m_pGameInstance->Push_CollidedData(desc);
+	Super::OnTrigger_Enter(iMyColliderLayer, iOtherLayer, pOther, tHitInfo);
 }
 
 _bool CXibi_Oneshot_Thunder::On_Hit(const HIT_DESC& hitDesc)

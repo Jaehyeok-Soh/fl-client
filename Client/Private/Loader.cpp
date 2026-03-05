@@ -9,6 +9,7 @@
 #include "EffectHandler.h"
 #include "PlayerActionState.h"
 #include "MonsterActionState.h"
+#include "StatCom_Boss.h"
 #include "StatCom_Player.h"
 #include "Collider.h"
 #include "Xibi_GimmikController.h"
@@ -584,6 +585,8 @@ HRESULT CLoader::Loading_For_Logo()
 	/* player components */
 	// For. Prototype_Component_Stat_Player
 	m_pGameInstance->Add_Prototype(ENUM_TO_UINT(ELevelType::STATIC), L"Prototype_Component_Stat_Player", CStatCom_Player::Create());
+	// For. Prototype_Component_Stat_Boss
+	m_pGameInstance->Add_Prototype(ENUM_TO_UINT(ELevelType::STATIC), L"Prototype_Component_Stat_Boss", CStatCom_Boss::Create());
 	// For. Prototype_Component_ControlContext_Monster
 	m_pGameInstance->Add_Prototype(ENUM_TO_UINT(ELevelType::STATIC), L"Prototype_Component_ControlContext_Monster", CMonsterControlContext::Create());
 	// For. Prototype_Component_ActionState_Monster
@@ -613,7 +616,7 @@ HRESULT CLoader::Loading_For_Logo()
 		// Projectile
 
 		// player effect object
-		ADD_PROTOTYPE(ELevelType::STATIC, g_wszMoonSkillE__Prototype_Tag,							CMoon_SkillE_Obj::Create(m_pDevice, m_pDeviceContext));
+		ADD_PROTOTYPE(ELevelType::STATIC, g_wszMoonSkillE__Prototype_Tag,				CMoon_SkillE_Obj::Create(m_pDevice, m_pDeviceContext));
 
 
 		/* Battle Field */
@@ -752,7 +755,7 @@ HRESULT CLoader::Loading_For_Tutorial_Boss()
 		desc.pMatPreTransform = &(matPreTransformScale);
 		desc.wstrModelFolderName = L"Xibi";
 		desc.FStageBone = CModel::STAGEING_BONE::SB_SPCIPICBONE;
-		desc.vecStageBoneIndices = { 375 };
+		desc.vecStageBoneIndices = { 3, 59, 375 };
 
 		CModel::DATA_ANIMCHANNEL tAniChannelData = {};
 		tAniChannelData.iRootBoneIndex = 2;

@@ -100,6 +100,24 @@ HRESULT CSkillObject_Base::Render()
 	return S_OK;
 }
 
+void CSkillObject_Base::OnTrigger_Enter(_uint iMyColliderLayer, _uint iOtherLayer, CGameObject* pOther, const COL_HIT_INFO& tHitInfo)
+{
+	if (iOtherLayer == PHYSICSFILTERGROUP::Enum::MAP)
+	{
+		Set_Dead();
+		return;
+	}
+
+	COLLIDED_DESC desc{};
+	desc.iCollisionType = COLLISIONEVENT::ON_COLLISION_ENTER;
+	desc.iRequesterLayer = iMyColliderLayer;
+	desc.iOtherLayer = iOtherLayer;
+	desc.pRequester = this;
+	desc.pOther = pOther;
+	desc.tHitInfo = tHitInfo;
+	m_pGameInstance->Push_CollidedData(desc);
+}
+
 HRESULT CSkillObject_Base::Spawn_FromPool(void* pArg)
 {
 	if (pArg == nullptr)

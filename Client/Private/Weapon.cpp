@@ -193,9 +193,9 @@ void CWeapon::OnCollision_Exit(_uint iMyColliderLayer, _uint iOtherLayer, CGameO
 	Get_Parent()->OnCollision_Exit(iMyColliderLayer, iOtherLayer, pOther);
 }
 
-void CWeapon::OnTrigger_Enter(_uint iMyColliderLayer, _uint iOtherLayer, CGameObject* pOther)
+void CWeapon::OnTrigger_Enter(_uint iMyColliderLayer, _uint iOtherLayer, CGameObject* pOther, const COL_HIT_INFO& tHitInfo)
 {
-	Get_Parent()->OnTrigger_Enter(iMyColliderLayer, iOtherLayer, pOther);
+	Get_Parent()->OnTrigger_Enter(iMyColliderLayer, iOtherLayer, pOther, tHitInfo);
 }
 
 void CWeapon::OnTrigger_Exit(_uint iMyColliderLayer, _uint iOtherLayer, CGameObject* pOther)

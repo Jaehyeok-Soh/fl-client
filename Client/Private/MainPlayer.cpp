@@ -255,7 +255,7 @@ void CMainPlayer::OnCollision_Exit(_uint iMyColliderLayer, _uint iOtherLayer, CG
     desc.pOther = pOther;
 }
 
-void CMainPlayer::OnTrigger_Enter(_uint iMyColliderLayer, _uint iOtherLayer, CGameObject* pOther)
+void CMainPlayer::OnTrigger_Enter(_uint iMyColliderLayer, _uint iOtherLayer, CGameObject* pOther, const COL_HIT_INFO& tHitInfo)
 {
     COLLIDED_DESC desc{};
     desc.iCollisionType = COLLISIONEVENT::ON_TRIGGER_ENTER;

@@ -99,7 +99,7 @@ void CPartObject::OnCollision_Exit(_uint iMyColliderLayer, _uint iOtherLayer, CG
 {
 }
 
-void CPartObject::OnTrigger_Enter(_uint iMyColliderLayer, _uint iOtherLayer, CGameObject* pOther)
+void CPartObject::OnTrigger_Enter(_uint iMyColliderLayer, _uint iOtherLayer, CGameObject* pOther, const COL_HIT_INFO& tHitInfo)
 {
 }
 

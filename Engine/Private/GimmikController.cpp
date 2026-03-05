@@ -39,6 +39,12 @@ HRESULT CGimmikController::Initialize(void* pArg)
     return S_OK;
 }
 
+HRESULT CGimmikController::Bind_Events()
+{
+    Bind_ModelAnimNotify();
+    return S_OK;
+}
+
 void CGimmikController::Bind_ModelAnimNotify()
 {
     if (m_pOwnerModel == nullptr)
