@@ -177,6 +177,9 @@ _bool CUIMonsterStat_Progress::Tick_InVisible_Event(const _float fTimeDelta)
 
 HRESULT CUIMonsterStat_Progress::Spawn_FromPool(void* pArg)
 {
+	if (FAILED(Super::Spawn_FromPool(pArg)))
+		return E_FAIL;
+
 	UI_PREFAB_DATA* pDesc = static_cast<UI_PREFAB_DATA*>(pArg);
 
 	auto* pComp = Get_Script_Component(L"WorldUIComponent");

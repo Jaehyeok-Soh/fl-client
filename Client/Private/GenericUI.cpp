@@ -131,6 +131,9 @@ void CGenericUI::Ready_Before_Render(const _float fTimeDelta)
 		Set_Position(Vec3{ m_pWorldUIComp->Get_TargetScreenPos().x + m_vMoveOffset.x , m_pWorldUIComp->Get_TargetScreenPos().y + m_vMoveOffset.y, m_fZ }) ;
 		Move_Size(m_fWidth * m_pWorldUIComp->Get_ScaleOffset(), m_fHeight * m_pWorldUIComp->Get_ScaleOffset());
 	}
+
+	m_pGameInstance->Push_RenderObject(RENDER_CATEGORY::UI, this);
+
 }
 
 HRESULT CGenericUI::Render()

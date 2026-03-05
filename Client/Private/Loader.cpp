@@ -254,6 +254,11 @@ HRESULT CLoader::Loading_For_LoadLevel()
 
 HRESULT CLoader::Loading_For_Test()
 {
+	m_fLoadingRatio = 0.f;
+	Sleep(1000);
+
+	m_fLoadingRatio = 1.f;
+	Sleep(5000);
 	m_isFinished = true;
 	return S_OK;
 }
@@ -681,11 +686,13 @@ HRESULT CLoader::Loading_For_Logo()
 HRESULT CLoader::Loading_For_Tutorial_Village()
 {
 	/* Tutorial Village */
+	m_fLoadingRatio = 0.f;
 		
 	// 오브젝트
 	
 	// 이펙트 Object
-
+	m_fLoadingRatio = 1.f;
+	Sleep(3000);
 
 	m_isFinished = true;
 	return S_OK;
@@ -694,6 +701,7 @@ HRESULT CLoader::Loading_For_Tutorial_Village()
 HRESULT CLoader::Loading_For_Tutorial_Boss()
 {
 	/* Tutorial Boss */
+	m_fLoadingRatio = 0.f;
 
 #pragma region PretransformMatrix
 	Matrix matPreTransformScaleTest = Matrix::CreateScale(100.f, 100.f, 100.f);
@@ -750,7 +758,9 @@ HRESULT CLoader::Loading_For_Tutorial_Boss()
 	ADD_PROTOTYPE(ELevelType::TUTORIAL_BOSS, g_wszXibiLoopThunder_Prototype_Tag, CXibi_Loop_Thunder::Create(m_pDevice, m_pDeviceContext));
 	ADD_PROTOTYPE(ELevelType::TUTORIAL_BOSS, g_wszXibiOneshotThunder_Prototype_Tag, CXibi_Oneshot_Thunder::Create(m_pDevice, m_pDeviceContext));
 
-	
+	m_fLoadingRatio = 1.f;
+	Sleep(1000);
+
 	m_isFinished = true;
 	return S_OK;
 }
@@ -758,13 +768,16 @@ HRESULT CLoader::Loading_For_Tutorial_Boss()
 HRESULT CLoader::Loading_For_Square()
 {
 	/* Square */
+	m_fLoadingRatio = 1.f;
 
 	// 오브젝트
 
 	// 이펙트 Object
 	ADD_PROTOTYPE(ELevelType::SQUARE, L"Prototype_GameObject_Effect", Effect::Create(m_pDevice, m_pDeviceContext));
 	ADD_PROTOTYPE(ELevelType::SQUARE, L"Prototype_GameObject_Effect_Parts", CEffectObject::Create(m_pDevice, m_pDeviceContext));
-	
+
+	m_fLoadingRatio = 1.f;
+	Sleep(5000);
 	m_isFinished = true;
 	return S_OK;
 }
