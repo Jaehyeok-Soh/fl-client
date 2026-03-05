@@ -12,6 +12,7 @@ private:
 		Frame = 0,
 		Transform,
 		State,
+		MoveState,
 		COUNT
 	};
 private:

@@ -266,9 +266,50 @@ _bool CStateBase::Align_Move(_uint iRunState, _bool bForce, void* pArg)
 	return m_pOwnerStateComp->Align_Move(iRunState, bForce, pArg);
 }
 
-void CStateBase::Move(Vec3 disp, _float minDist, _float fTimeDelta)
+void CStateBase::Move(Vec3 vAccelation)
 {
-	return m_pOwnerStateComp->Move(disp, minDist, fTimeDelta);
+	return m_pOwnerStateComp->Move(vAccelation);
+}
+
+void CStateBase::SetCCTInputDirection(Vec3 vInputDir)
+{
+	return m_pOwnerStateComp->SetCCTInputDirection(vInputDir);
+}
+
+void CStateBase::SetCCTImpuls(Vec3 vImpuls)
+{
+	return m_pOwnerStateComp->SetCCTImpuls(vImpuls);
+
+}
+
+void CStateBase::Set_ZeroVelocity()
+{
+	return m_pOwnerStateComp->Set_ZeroVelocity();
+}
+
+void CStateBase::Set_ZeroHorizontalVelocity()
+{
+	return m_pOwnerStateComp->Set_ZeroHorizontalVelocity();
+}
+
+void CStateBase::Set_ZeroVerticalVelocity()
+{
+	return m_pOwnerStateComp->Set_ZeroVerticalVelocity();
+}
+
+void CStateBase::Set_ZeroDeAccelRate()
+{
+	return m_pOwnerStateComp->Set_ZeroDeAccelRate();
+}
+
+void CStateBase::Set_DeAccelRate(_float fRate)
+{
+	return m_pOwnerStateComp->Set_DeAccelRate(fRate);
+}
+
+void CStateBase::Reset_DeAccelRate()
+{
+	return m_pOwnerStateComp->Reset_DeAccelRate();
 }
 
 void CStateBase::Follow_CameraLook(const _float fTimeDelta)

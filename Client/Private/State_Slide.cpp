@@ -37,6 +37,21 @@ HRESULT CState_Slide::Start(void* pArg, _bool bForce)
 
     Set_ApplyYLerp(true);
 
+    // 가속도 구조로 변경하면서 impuls 한번만 주도록 변경
+    // ownMove에서 이동함
+    // 03/05 소재혁
+    {
+        CTransform* pPlayerTrans = Get_OwnerObject()->Get_Component<CTransform>();
+        CPhysicsCCT* pCCT = Get_OwnerObject()->Get_Component<CPhysicsCCT>();
+
+        Vec3 vLook = (pPlayerTrans->Get_Info(TRANSFORM_INFO_STATE::LOOK));
+
+        Vec3 accelation = vLook;
+
+        SetCCTImpuls(accelation * 0.5f);
+        Set_DeAccelRate(0.5f);
+    }
+
     return S_OK;
 }
 
@@ -62,24 +77,23 @@ HRESULT CState_Slide::End()
     m_FCollisions |= COLLISIONFLAGS::C_DOWN;
 
     Set_ApplyYLerp(false);
+    Reset_DeAccelRate();
 
     return S_OK;
 }
 
 void CState_Slide::OwnMove(const _float fTimeDelta)
 {
-    //CStateBase::Move_Front(fTimeDelta);
+    ////CStateBase::Move_Front(fTimeDelta);
 
-    CTransform* pPlayerTrans = Get_OwnerObject()->Get_Component<CTransform>();
-    CPhysicsCCT* pCCT = Get_OwnerObject()->Get_Component<CPhysicsCCT>();
-    _float moveps = pPlayerTrans->Get_MovePerSec(); // 속도
+    //CTransform* pPlayerTrans = Get_OwnerObject()->Get_Component<CTransform>();
+    //CPhysicsCCT* pCCT = Get_OwnerObject()->Get_Component<CPhysicsCCT>();
 
+    //Vec3 vLook = (pPlayerTrans->Get_Info(TRANSFORM_INFO_STATE::LOOK));
 
-    Vec3 vLook = (pPlayerTrans->Get_Info(TRANSFORM_INFO_STATE::LOOK));
+    //Vec3 accelation = vLook;
 
-    Vec3 disp = vLook * moveps * fTimeDelta * 1.5f;
-
-    Move(disp, 0.01f, fTimeDelta);
+    //SetCCTImpuls(accelation * 10.f);
 }
 
 void CState_Slide::Change_PlayerState(STATEKEY eKey)

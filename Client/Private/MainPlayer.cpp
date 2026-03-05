@@ -172,9 +172,6 @@ void CMainPlayer::Update_Late(const _float fTimeDelta)
     
     Get_Component<CPhysicsAttackOverlap>()->Update(fTimeDelta);
 
-    if (Get_Component<CPhysicsCCT>())
-        Get_Component<CPhysicsCCT>()->Update(fTimeDelta);
-
     //CPlayerControlContext* pControlContext = Get_Component<CPlayerControlContext>();
     //if (pControlContext == nullptr)
     //    return;

@@ -625,6 +625,9 @@
     <Filter Include="03. GameObject\SkillObject\Player\Moon\SkillE">
       <UniqueIdentifier>{bb204f36-542f-4eeb-ac29-823025464153}</UniqueIdentifier>
     </Filter>
+    <Filter Include="07. System\99. Debug_ImGui\Layout\MoveState">
+      <UniqueIdentifier>{b8e2a682-0862-4d67-a466-eaca1a813102}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="targetver.h">
@@ -1159,6 +1162,9 @@
     <ClInclude Include="..\Public\Moon_SkillE_Obj.h">
       <Filter>03. GameObject\SkillObject\Player\Moon\SkillE</Filter>
     </ClInclude>
+    <ClInclude Include="..\Public\ImGui_MoveStateLayout.h">
+      <Filter>07. System\99. Debug_ImGui\Layout\MoveState</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <Image Include="Client.ico">
@@ -1684,6 +1690,9 @@
     </ClCompile>
     <ClCompile Include="..\Private\Moon_SkillE_Obj.cpp">
       <Filter>03. GameObject\SkillObject\Player\Moon\SkillE</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\ImGui_MoveStateLayout.cpp">
+      <Filter>07. System\99. Debug_ImGui\Layout\MoveState</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
