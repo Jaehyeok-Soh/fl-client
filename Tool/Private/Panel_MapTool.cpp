@@ -985,6 +985,17 @@ HRESULT CPanel_MapTool::Render_CameraCinematicSequnce()
 
 	ImGui::SeparatorText(" Camera Cinematic Sequence Info ");
 
+
+	ImGui::NewLine();
+
+	if (ImGui::Button(" Play Cinematic Test"))
+	{
+		m_pGameInstance->Play_CameraCinematic(m_pMapToolManager->m_pCamCinematicSequence);
+	}
+
+	ImGui::NewLine();
+
+
 	if (ImGui::Button("Save Camera Cinematic Sequence"))
 	{
 		if (FAILED(m_pMapToolManager->Save_Camera_Cinematic_Sequence(Engine_Utils::ToWString(pCamCinematicSequence->strDataName))))
@@ -1003,6 +1014,92 @@ HRESULT CPanel_MapTool::Render_CameraCinematicSequnce()
 	ImGui::InputText("Name" , &pCamCinematicSequence->strDataName);
 
 	ImGui::NewLine();
+
+	// =========================================================
+		// [추가] Start Cinematic Global Events UI
+		// =========================================================
+	ImGui::SeparatorText(" Start Cinematic Events ");
+
+	if (ImGui::Button("Add Start Event"))
+	{
+		// _uint 배열이므로 "NONE" 문자열 대신 숫자 0 (혹은 ENUM_TO_UINT(NONE))을 넣습니다.
+		pCamCinematicSequence->vecStartCinematic_GlobalEventIndex.push_back(0);
+	}
+
+	ImGui::PushID("StartEvents_Group"); // ID 겹침 방지용 그룹
+	for (int i = 0; i < pCamCinematicSequence->vecStartCinematic_GlobalEventIndex.size(); ++i)
+	{
+		ImGui::PushID(i);
+
+		// string 변환 없이 벡터에 있는 정수값을 바로 꺼내옵니다.
+		int iBuffer = static_cast<int>(pCamCinematicSequence->vecStartCinematic_GlobalEventIndex[i]);
+		ImGui::SetNextItemWidth(ImGui::GetContentRegionAvail().x - 40.f);
+
+		// 콤보박스에서 값이 변경되면...
+		if (ImGui::Combo("##StartEventCombo", &iBuffer, g_szGlobalBroadCastType, (int)EGlobal_Broadcast_Type::END))
+		{
+			// 변경된 정수값을 다시 벡터에 쏙 집어넣습니다.
+			pCamCinematicSequence->vecStartCinematic_GlobalEventIndex[i] = static_cast<_uint>(iBuffer);
+		}
+
+		ImGui::SameLine();
+		if (ImGui::Button("X"))
+		{
+			// erase 할 때도 이름 잘 맞춰서 삭제!
+			pCamCinematicSequence->vecStartCinematic_GlobalEventIndex.erase(pCamCinematicSequence->vecStartCinematic_GlobalEventIndex.begin() + i);
+			ImGui::PopID();
+			--i;
+			continue;
+		}
+		ImGui::PopID();
+	}
+	ImGui::PopID(); // StartEvents_Group 해제
+
+	ImGui::NewLine();
+
+	// =========================================================
+	// [추가] End Cinematic Global Events UI
+	// =========================================================
+	ImGui::SeparatorText(" End Cinematic Events ");
+
+	if (ImGui::Button("Add End Event"))
+	{
+		// 여기도 마찬가지로 숫자 0 삽입
+		pCamCinematicSequence->vecEndCinematic_GlobalEventIndex.push_back(0);
+	}
+
+	ImGui::PushID("EndEvents_Group"); // ID 겹침 방지용 그룹
+	for (int i = 0; i < pCamCinematicSequence->vecEndCinematic_GlobalEventIndex.size(); ++i)
+	{
+		ImGui::PushID(i);
+
+		// 정수값 바로 꺼내기
+		int iBuffer = static_cast<int>(pCamCinematicSequence->vecEndCinematic_GlobalEventIndex[i]);
+		ImGui::SetNextItemWidth(ImGui::GetContentRegionAvail().x - 40.f);
+
+		if (ImGui::Combo("##EndEventCombo", &iBuffer, g_szGlobalBroadCastType, (int)EGlobal_Broadcast_Type::END))
+		{
+			// 정수값 바로 갱신
+			pCamCinematicSequence->vecEndCinematic_GlobalEventIndex[i] = static_cast<_uint>(iBuffer);
+		}
+
+		ImGui::SameLine();
+		if (ImGui::Button("X"))
+		{
+			// 지울 때도 Index 벡터에서 삭제!
+			pCamCinematicSequence->vecEndCinematic_GlobalEventIndex.erase(pCamCinematicSequence->vecEndCinematic_GlobalEventIndex.begin() + i);
+			ImGui::PopID();
+			--i;
+			continue;
+		}
+		ImGui::PopID();
+	}
+	ImGui::PopID(); // EndEvents_Group 해제
+
+	ImGui::NewLine();
+	ImGui::Separator();
+	// =========================================================
+
 
 	ImGui::Separator();
 

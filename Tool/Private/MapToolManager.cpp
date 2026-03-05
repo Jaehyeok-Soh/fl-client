@@ -692,7 +692,7 @@ void CMapToolManager::Delete_Preview()
 			_int iIndex = m_pPreviewMapobject->Get_InstanceCount() - 1;
 			if (iIndex == 0)
 			{
-				m_pGameInstance->Request_DeleteGameObject(ENUM_TO_UINT(ELevelType::MAP), m_pPreviewMapobject);
+				m_pGameInstance->Request_DeleteGameObject(ENUM_TO_UINT(ELevelType::MAP), m_pPreviewMapobject->Get_Layer(), m_pPreviewMapobject);
 			}
 			else
 			{
@@ -703,7 +703,7 @@ void CMapToolManager::Delete_Preview()
 		}
 		else
 		{
-			m_pGameInstance->Request_DeleteGameObject(ENUM_TO_UINT(ELevelType::MAP), m_pPreviewMapobject);
+			m_pGameInstance->Request_DeleteGameObject(ENUM_TO_UINT(ELevelType::MAP), m_pPreviewMapobject->Get_Layer(), m_pPreviewMapobject);
 			m_pPreviewMapobject = nullptr;
 		}
 	}

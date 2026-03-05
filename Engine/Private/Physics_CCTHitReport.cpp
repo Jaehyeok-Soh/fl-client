@@ -90,7 +90,7 @@ void CPhysics_CCTHitReport::onControllerHit(const PxControllersHit& hit)
 		pushDir *= 0.05f;
 
 		Vec3 disp(pushDir.x, -0.1f, pushDir.z);
-		pCCT->Add_Disp(disp);
+		pCCT->AddFixedMove(disp);
 		pCCT->SetIsSteppingOnCCT();
 		return;
 	}
@@ -112,7 +112,7 @@ void CPhysics_CCTHitReport::onControllerHit(const PxControllersHit& hit)
 		slideDir.normalize();
 		slideDir = slideDir * 0.01f;
 		Vec3 disp(slideDir.x, slideDir.y, slideDir.z);
-		pCCT->Add_Disp(disp);
+		pCCT->AddFixedMove(disp);
 		pCCT->SetIsSteppingOnCCT();
 	}
 
@@ -121,7 +121,7 @@ void CPhysics_CCTHitReport::onControllerHit(const PxControllersHit& hit)
 		PxVec3 normal = hit.worldNormal.getNormalized();
 		Vec3 disp(normal.x, 0.f, normal.z);
 		disp *= 0.01f;
-		pCCT->Add_Disp(disp);
+		pCCT->AddFixedMove(disp);
 		pCCT->SetIsSideOnCCT();
 	}
 

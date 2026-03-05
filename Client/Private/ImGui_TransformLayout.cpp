@@ -52,7 +52,7 @@ void CImGui_TransformLayout::Render(CGameObject* pGo)
         if (ImGui::Button("Apply"))
         {
             pTransform->Set_Info(TRANSFORM_INFO_STATE::POS, m_vEditPos);
-            pGo->Get_Component<CPhysicsCCT>()->Move(m_vEditPos, 0.01f, 1.f / 60.f);
+            pGo->Get_Component<CPhysicsCCT>()->AddFixedMove(m_vEditPos);
             m_vDefaultPos = m_vEditPos;
         }
 

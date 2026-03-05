@@ -5,7 +5,7 @@
 #include <fstream>
 
 CGameDataManager::CGameDataManager(ID3D11Device* pDevice, ID3D11DeviceContext* pDeviceContext)
-	: m_pGameInstance(CGameInstance::GetInstance()), m_pDevice(pDevice), m_pDeviceContext(pDeviceContext)
+	: m_pGameInstance(CGameInstance::GetInstance()), m_pDevice(pDevice), m_pDeviceContext(pDeviceContext), m_vecGlobalEventsBroadCast{}
 {
     Safe_AddRef(m_pDevice);
     Safe_AddRef(m_pDeviceContext);
@@ -14,6 +14,8 @@ CGameDataManager::CGameDataManager(ID3D11Device* pDevice, ID3D11DeviceContext* p
 
 HRESULT CGameDataManager::Initialize()
 {
+	m_vecGlobalEventsBroadCast.reserve(100);
+
     return S_OK;
 }
 
@@ -247,6 +249,19 @@ HRESULT CGameDataManager::Bind_Mix_RGBA_Data_And_Count(CShader* pBindShader, con
 	return S_OK;
 }
 
+HRESULT CGameDataManager::Play_CameraCinematic(const wstring& wstrFindKey)
+{
+	const auto& iter = m_mapCameraCinematicSequence.find(wstrFindKey);
+	if (iter == m_mapCameraCinematicSequence.end()) return E_FAIL;
+
+
+	/* Play Cinematic */
+	m_pGameInstance->Play_CameraCinematic(&iter->second);
+
+	return S_OK;
+}
+
+
 HRESULT CGameDataManager::Load_CameraCinematicSequence()
 {
 	/* Texture Splating을 저장시킨 Data들을 Load해준다 */
@@ -403,6 +418,34 @@ _uint CGameDataManager::Get_AttackPresetIdByTag(const string& strTag) const
 	}
 
 	return itr->second;
+}
+
+
+HRESULT CGameDataManager::Register_GlobalEventsBroadCast(_uint iTypeIndex, std::function<void()> funcGlobalEvent)
+{
+
+	if (funcGlobalEvent == nullptr) return E_FAIL;
+
+	if (iTypeIndex >= m_vecGlobalEventsBroadCast.size())
+	{
+		m_vecGlobalEventsBroadCast.resize(iTypeIndex + 1);
+	}
+
+	m_vecGlobalEventsBroadCast[iTypeIndex] = funcGlobalEvent;
+
+	return S_OK;
+}
+
+HRESULT CGameDataManager::BroadCaset_RegisterGlobalEvent(_uint iTypeIndex)
+{
+	if (iTypeIndex >= m_vecGlobalEventsBroadCast.size())
+		return E_FAIL;
+
+	if (m_vecGlobalEventsBroadCast[iTypeIndex] == nullptr) return E_FAIL;
+
+	m_vecGlobalEventsBroadCast[iTypeIndex]();
+
+	return S_OK;
 }
 
 void CGameDataManager::Clear_AttackPreset()

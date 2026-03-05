@@ -76,6 +76,7 @@ private:
 	void						ImGuiUpdate_TriggerBox(TRIGGERBOX_DESC* pDesc);
 	void						ImGuiUpdate_TriggerBox_ChanageLevel_Desc(TRIGGERBOX_CHANGELEVEL_DESC* pDesc);
 	void						ImGuiUpdate_TriggerBox_MonsterSpawner(TRIGGERBOX_MONSTERSPAWNER_DESC* pDesc);
+	void						ImGuiUpdate_TriggerBox_GlobalEvent_BroadCaster(TRIGGERBOX_GLOBALEVENT_BROADCASTER_DESC* pDesc);
 
 
 	/* Mosnter Spawn ImGuiUpdate */

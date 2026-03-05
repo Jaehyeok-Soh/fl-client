@@ -107,9 +107,6 @@ void CMonster_Base::Update_Late(const _float fTimeDelta)
 
 	if (Get_Component <CPhysicsAttackOverlap>())
 		Get_Component<CPhysicsAttackOverlap>()->Update(fTimeDelta);
-
-	if (Get_Component<CPhysicsCCT>())
-		Get_Component<CPhysicsCCT>()->Update(fTimeDelta);
 }
 
 void CMonster_Base::Ready_Before_Render(const _float fTimeDelta)
@@ -391,6 +388,12 @@ HRESULT CMonster_Base::Create_Mosnter(EMonster_Type eCreateMonsterType, _uint iF
 				| PHYSICSFILTERGROUP::Enum::OBJECT1
 				| PHYSICSFILTERGROUP::Enum::OBJECT2;
 
+			desc.bGravity = { true };
+			desc.fGravity = { -35.f };
+			desc.MSpeed = { 0.f, 3.f };
+			desc.MAccelRate = { 0.f, 10.f };
+			desc.MDeAccelRate = { 0.f, 10.f };
+
 			monsterDesc.tCCTDesc = desc;
 		}
 		wstrFindPrototypeName	= g_wszMonster_Dog_Prototype_Tag;
@@ -439,6 +442,12 @@ HRESULT CMonster_Base::Create_Mosnter(EMonster_Type eCreateMonsterType, _uint iF
 				| PHYSICSFILTERGROUP::Enum::OBJECT1
 				| PHYSICSFILTERGROUP::Enum::OBJECT2;
 
+			desc.bGravity = { true };
+			desc.fGravity = { -35.f };
+			desc.MSpeed = { 0.f, 3.f };
+			desc.MAccelRate = { 0.f, 10.f };
+			desc.MDeAccelRate = { 0.f, 10.f };
+
 			monsterDesc.tCCTDesc = desc;
 		}
 
@@ -480,6 +489,12 @@ HRESULT CMonster_Base::Create_Mosnter(EMonster_Type eCreateMonsterType, _uint iF
 				| PHYSICSFILTERGROUP::Enum::MAP
 				| PHYSICSFILTERGROUP::Enum::OBJECT1
 				| PHYSICSFILTERGROUP::Enum::OBJECT2;
+
+			desc.bGravity = { true };
+			desc.fGravity = { -35.f };
+			desc.MSpeed = { 0.f, 1.f };
+			desc.MAccelRate = { 0.f, 10.f };
+			desc.MDeAccelRate = { 0.f, 10.f };
 
 			monsterDesc.tCCTDesc = desc;
 		}

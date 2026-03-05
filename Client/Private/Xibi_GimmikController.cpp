@@ -264,10 +264,8 @@ void CXibi_GimmikController::Teleport_To(const Vec3& vPos)
 	CPhysicsCCT* pCCT = Get_Owner()->Get_Component<CPhysicsCCT>();
 
 	pCCT->SetFootPosition(vPos);
-	pCCT->Move(Vec3{ 0.01f }, 0.01f, 1.f / 60.f);
-
-	Vec3 vFinal = pCCT->GetFootPosition();
-	pTransform->Set_Info(TRANSFORM_INFO_STATE::POS, vFinal);
+	//Vec3 vFinal = pCCT->GetFootPosition();
+	//pTransform->Set_Info(TRANSFORM_INFO_STATE::POS, vFinal);
 }
 
 Vec3 CXibi_GimmikController::Compute_RandomTeleportPosition(const Vec3& vCurrentPos)

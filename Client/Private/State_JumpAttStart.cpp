@@ -36,6 +36,25 @@ HRESULT CState_JumpAttStart::Start(void* pArg, _bool bForce)
 
 	Change_Weapon(CPlayer::Part::SWORD, ENUM_TO_UINT(CWeapon::State::HAND));
 
+	{
+		CTransform* pPlayerTrans = Get_OwnerObject()->Get_Component<CTransform>();
+		CPhysicsCCT* pCCT = Get_OwnerObject()->Get_Component<CPhysicsCCT>();
+
+		Vec3 vLook = (pPlayerTrans->Get_Info(TRANSFORM_INFO_STATE::LOOK));
+		Vec3 vUp = (pPlayerTrans->Get_Info(TRANSFORM_INFO_STATE::UP));
+
+		vLook.Normalize();
+		vUp.Normalize();
+
+		Vec3 vDir = vLook + (vUp * (-1.5f));
+		vDir.Normalize();
+
+		Vec3 accelation = vDir * 50.f;
+
+		SetCCTImpuls(accelation);
+		Set_ZeroDeAccelRate();
+	}
+
 	return S_OK;
 }
 
@@ -50,8 +69,6 @@ void CState_JumpAttStart::Update(const _float fTimeDelta)
 		Change_PlayerState(ENUM_TO_UINT(CPlayer::State::JUMPATTEND));
 		return;
 	}
-
-	OwnMove(fTimeDelta);
 }
 
 HRESULT CState_JumpAttStart::End()
@@ -59,32 +76,15 @@ HRESULT CState_JumpAttStart::End()
 	if (FAILED(Super::End()))
 		return E_FAIL;
 
+	Reset_DeAccelRate();
+	Set_ZeroHorizontalVelocity();
+
 	return S_OK;
 }
 
 void CState_JumpAttStart::OwnMove(const _float fTimeDelta)
 {
-	CTransform* pPlayerTrans = Get_OwnerObject()->Get_Component<CTransform>();
-	CPhysicsCCT* pCCT = Get_OwnerObject()->Get_Component<CPhysicsCCT>();
-	_float moveps = pPlayerTrans->Get_MovePerSec(); // ¼Óµµ
-
-
-	Vec3 vLook = (pPlayerTrans->Get_Info(TRANSFORM_INFO_STATE::LOOK));
-	Vec3 vUp = (pPlayerTrans->Get_Info(TRANSFORM_INFO_STATE::UP));
-
-	vLook.Normalize();
-	vUp.Normalize();
-
-	Vec3 vDir = vLook * 1.5f + vUp * (-1.f);
-	Vec3 disp = vDir * moveps * fTimeDelta * 4.5f;
-
-	Move(disp, 0.01f, fTimeDelta);
-
-	//pCCT->Move(disp, 0.01f, fTimeDelta);
-
-	//Vec3 finalPos = pCCT->GetFootPosition();
-
-	//pPlayerTrans->Set_Info(TRANSFORM_INFO_STATE::POS, finalPos);
+	
 }
 
 CState_JumpAttStart* CState_JumpAttStart::Create(CActionState* pOwnerComponent, void* pArg)

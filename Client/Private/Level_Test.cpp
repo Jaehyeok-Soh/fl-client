@@ -446,6 +446,12 @@ HRESULT CLevel_Test::Ready_Monster()
 				| PHYSICSFILTERGROUP::Enum::OBJECT1
 				| PHYSICSFILTERGROUP::Enum::OBJECT2;
 
+			desc.bGravity = { true };
+			desc.fGravity = { -35.f };
+			desc.MSpeed = { 0.f, 3.f };
+			desc.MAccelRate = { 0.f, 10.f };
+			desc.MDeAccelRate = { 0.f, 10.f };
+
 			monsterDesc.tCCTDesc = desc;
 		}
 
@@ -497,6 +503,12 @@ HRESULT CLevel_Test::Ready_Monster()
 				| PHYSICSFILTERGROUP::Enum::MAP
 				| PHYSICSFILTERGROUP::Enum::OBJECT1
 				| PHYSICSFILTERGROUP::Enum::OBJECT2;
+
+			desc.bGravity = { true };
+			desc.fGravity = { -35.f };
+			desc.MSpeed = { 0.f, 3.f };
+			desc.MAccelRate = { 0.f, 10.f };
+			desc.MDeAccelRate = { 0.f, 10.f };
 
 			monsterDesc.tCCTDesc = desc;
 		}
@@ -559,6 +571,12 @@ HRESULT CLevel_Test::Ready_Boss_Layer(const wstring& wstrLayerTag)
 				| PHYSICSFILTERGROUP::Enum::MAP
 				| PHYSICSFILTERGROUP::Enum::OBJECT1
 				| PHYSICSFILTERGROUP::Enum::OBJECT2;
+
+			desc.bGravity = { true };
+			desc.fGravity = { -35.f };
+			desc.MSpeed = { 0.f, 1.f };
+			desc.MAccelRate = { 0.f, 10.f };
+			desc.MDeAccelRate = { 0.f, 10.f };
 
 			monsterDesc.tCCTDesc = desc;
 		}

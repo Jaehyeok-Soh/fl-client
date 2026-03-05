@@ -619,6 +619,11 @@ void CGameInstance::Setup_Inv_ToCBuffer()
 	m_pCamera_Manager->Setup_Inv_ToCBuffer();
 }
 
+HRESULT CGameInstance::Play_CameraCinematic(const Camera_Cinematic_Sequence* pCameraCinematicSequence)
+{
+	return m_pCamera_Manager->Play_CameraCinematic(pCameraCinematicSequence);
+}
+
 HRESULT CGameInstance::Camera_Shaking(const CAM_SHAKING_DATA& tData)
 {
 	return m_pCamera_Manager->Camera_Shaking(tData);
@@ -1158,6 +1163,16 @@ void CGameInstance::Physics_Render(const PxGeometry& geom, const PxTransform& tr
 
 #pragma region GAMEDATA_MANAGER
 
+HRESULT	CGameInstance::Register_GlobalEventsBroadCast(_uint iTypeIndex, std::function<void()> funcGlobalEvent)
+{
+	return m_pGameData_Manager->Register_GlobalEventsBroadCast(iTypeIndex, funcGlobalEvent);
+}
+
+HRESULT	CGameInstance::BroadCaset_RegisterGlobalEvent(_uint iTypeIndex)
+{
+	return m_pGameData_Manager->BroadCaset_RegisterGlobalEvent(iTypeIndex);
+}
+
 
 #pragma region Texture Splating
 HRESULT CGameInstance::GameDataManager_Load_TextureSplatingInfoData()
@@ -1189,6 +1204,10 @@ HRESULT CGameInstance::GameDataManager_Load_CameraCinematicSequence(const wstrin
 HRESULT CGameInstance::GameDataManager_Save_CameraCinematicSequence(const wstring& wstrFindKey, const Camera_Cinematic_Sequence* pSaveCamCinematicSequence)
 {
 	return m_pGameData_Manager->Save_CameraCinematicSequence(wstrFindKey, pSaveCamCinematicSequence);
+}
+HRESULT CGameInstance::Play_CameraCinematic(const wstring& wstrFindKey)
+{
+	return m_pGameData_Manager->Play_CameraCinematic(wstrFindKey);
 }
 vector<std::string> CGameInstance::GameDataManager_Get_CameraCinematicSequenceNames() const
 {
