@@ -417,22 +417,26 @@ CGameObject* CGameInstance::Add_GameObject(_uint iPrototypeLevelIndex, const wst
 {
 	return m_pObject_Manager->Add_GameObject(iPrototypeLevelIndex, wstrPrototypeTag, iCloneLevelIndex, wstrLayerTag, pArg);
 }
-void CGameInstance::Immediately_DeleteGameObject(_uint iCloneLevelIndex, const wstring& wstrLayerTag, CGameObject* pGo)
+void CGameInstance::Immediately_DeleteGameObject(_uint iCloneLevelIndex, CGameObject* pGo)
 {
-	m_pObject_Manager->Delete_GameObject(iCloneLevelIndex, wstrLayerTag, pGo);
+	m_pObject_Manager->Delete_GameObject(iCloneLevelIndex, pGo);
+}
+void CGameInstance::Immediately_DespawnGameObject(_uint iCloneLevelIndex, CGameObject* pGo)
+{
+	m_pObject_Manager->Despawn_GameObject(iCloneLevelIndex, pGo);
 }
 void CGameInstance::Request_AddObject(_uint iCloneLevelIndex, const wstring& wstrLayerTag, CGameObject* pGo, std::function<void(CGameObject*)> onSpawnedCallback)
 {
 	if (!pGo)
 		return;
 
-	SpawnEventDesc desc = {};
+	AddEventDesc desc = {};
 	desc.iCloneLevelIndex = static_cast<_int>(iCloneLevelIndex);
 	desc.wstrLayerTag = wstrLayerTag;
 	desc.pClone = pGo;
 	if (onSpawnedCallback)
 		desc.callback = std::move(onSpawnedCallback);
-	m_pEvent_Manager->Push_SpawnEvent(desc);
+	m_pEvent_Manager->Push_AddEvent(desc);
 }
 void CGameInstance::Request_AddObject(_uint iPrototypeLevelIndex, const wstring& wstrPrototypeTag, _uint iCloneLevelIndex, const wstring& wstrLayerTag, void* pArg, std::function<void(CGameObject*)> onSpawnedCallback)
 {
@@ -451,16 +455,15 @@ void CGameInstance::Request_AddObject(_uint iPoolLevelIndex, const wstring& wstr
 	if (pResult)
 		Request_AddObject(iSpawnLevelIndex, wstrLayerTag, pResult, onSpawnedCallback);
 }
-void CGameInstance::Request_DeleteGameObject(_uint iCloneLevelIndex, const wstring& wstrLayerTag, CGameObject* pGo)
+void CGameInstance::Request_DeleteGameObject(_uint iCloneLevelIndex, CGameObject* pGo)
 {
 	if (!pGo)
 		return;
 
-	DespawnEventDesc desc = {};
+	RemoveEventDesc desc = {};
 	desc.iClonedLevelIndex = iCloneLevelIndex;
-	desc.wstrLayerTag = wstrLayerTag;
 	desc.pGo = pGo;
-	m_pEvent_Manager->Push_DespawnEvent(desc);
+	m_pEvent_Manager->Push_RemoveEvent(desc);
 }
 
 CGameObject* CGameInstance::Get_GameObject(_uint iLevelIndex, const wstring& wstrLayerTag, _uint iObjectIndex)
@@ -501,6 +504,20 @@ HRESULT CGameInstance::Regist_Pool(_uint iTargetLevelIndex, const wstring& wstrP
 {
 	return m_pObjectPool_Manager->Regist_Pool(iTargetLevelIndex, wstrPoolTag, wstrLayerTag, iSeedLevelID, wstrSeedPrototypeTag, pArg, iPoolCapacityCount);
 }
+#ifdef _DEBUG
+void CGameInstance::Collect_PoolTags(_uint iLevelIndex, OUT vector<wstring>& vecOutTags) const
+{
+	m_pObjectPool_Manager->Collect_PoolTags(iLevelIndex, vecOutTags);
+}
+_int CGameInstance::Get_ObjectPoolCapacity(_uint iLevelIndex, const wstring& wstrPoolTag) const
+{
+	return m_pObjectPool_Manager->Get_Capacity(iLevelIndex, wstrPoolTag);
+}
+_int CGameInstance::Get_ObjectPoolActiveCount(_uint iLevelIndex, const wstring& wstrPoolTag) const
+{
+	return m_pObjectPool_Manager->Get_ActiveCount(iLevelIndex, wstrPoolTag);
+}
+#endif
 #pragma endregion
 
 #pragma region COLLISION_MANAGER

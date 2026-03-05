@@ -279,7 +279,7 @@ void CRender_Manager::Push_RenderObject(RENDER_CATEGORY eCategory, CGameObject* 
 	if (pGO == nullptr)
 		return;
 
-	if (eCategory >= RENDER_CATEGORY::END || (pGO->Is_Render() == false))
+	if (eCategory >= RENDER_CATEGORY::END)
 		return;
 
 	Safe_AddRef(pGO);

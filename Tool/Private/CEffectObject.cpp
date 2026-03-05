@@ -785,14 +785,11 @@ void CEffectObject::Draw_ImGui()
     Super::Draw_ImGui();
 }
 
-void CEffectObject::Set_Dead(_bool bStatic)
-{
-    Super::Set_Dead(bStatic);
-}
-
-
 HRESULT CEffectObject::Spawn_FromPool(void* pArg)
 {
+    if (FAILED(Super::Spawn_FromPool(pArg)))
+        return E_FAIL;
+
     m_tEffectDesc = m_tOriginEffectDesc;
     TimeFlagRequest(RESET);
 
@@ -800,6 +797,9 @@ HRESULT CEffectObject::Spawn_FromPool(void* pArg)
 }
 HRESULT CEffectObject::Despawn_FromPool()
 {
+    if (FAILED(Super::Despawn_FromPool()))
+        return E_FAIL;
+
     TimeFlagRequest(RESET);
 
     for (_uint i = 0; i < ENUM_TO_UINT(DTO::TEXTURE_INFO::END); i++)

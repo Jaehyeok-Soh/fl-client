@@ -347,13 +347,23 @@ CGenericUI* CCanvas::Calc_TopUI()
 
 HRESULT CCanvas::Spawn_FromPool(void* pArg)
 {
+	if (pArg)
+		return E_FAIL;
+
+	if (FAILED(Super::Spawn_FromPool(pArg)))
+		return E_FAIL;
+
 	m_pPrefabData = *static_cast<UI_PREFAB_DATA*>(pArg);
-	m_bDead = false;
+
+
 	return S_OK;
 }
 
 HRESULT CCanvas::Despawn_FromPool()
 {
+	if (FAILED(Super::Despawn_FromPool()))
+		return E_FAIL;
+
 	return S_OK;
 }
 

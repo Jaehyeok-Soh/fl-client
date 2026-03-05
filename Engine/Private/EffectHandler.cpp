@@ -87,7 +87,7 @@ void CEffectHandler::Ready_State()
     m_eCurrentState = E_OBJ_LIFECYCLE_STATE::ON_SPAWN;
 }
 
-void CEffectHandler::Awake()
+void CEffectHandler::Setup_ForOwner()
 {
     if (m_tDesc.eType == E_HANDLER_TYPE::MODEL_ANIM)
         Ready_AnimState();
@@ -251,7 +251,6 @@ void CEffectHandler::CallBackEvent(const AnimNotifyKey& key)
         {
             m_pGameInstance->Request_DeleteGameObject(
                 m_pGameInstance->Get_CurrentLevelIndex(),
-                L"Layer_Effect",
                 itActive->second
             );
             m_ActiveEffects[ENUM_TO_UINT(m_tDesc.eType)].erase(itActive);

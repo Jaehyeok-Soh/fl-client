@@ -625,6 +625,12 @@
     <Filter Include="03. GameObject\UIObjects\02.UI\Image\Dynamic Image\02.HoverImage">
       <UniqueIdentifier>{871de243-5883-42bb-b109-9645901ce4d2}</UniqueIdentifier>
     </Filter>
+    <Filter Include="07. System\99. Debug_ImGui\Inspector\PoolDebug">
+      <UniqueIdentifier>{424668f6-8bc5-4dd8-8036-5b7a5d57b52a}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="07. System\99. Debug_ImGui\Layout\ObjectPool">
+      <UniqueIdentifier>{32bebfb6-883b-4452-b824-e6ce5b80a0cd}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="targetver.h">
@@ -1159,6 +1165,12 @@
     <ClInclude Include="..\Public\Moon_SkillE_Obj.h">
       <Filter>03. GameObject\SkillObject\Player\Moon\SkillE</Filter>
     </ClInclude>
+    <ClInclude Include="..\public\ImGui_PoolInspector.h">
+      <Filter>07. System\99. Debug_ImGui\Inspector\PoolDebug</Filter>
+    </ClInclude>
+    <ClInclude Include="..\public\ImGui_ObjectPoolLayout.h">
+      <Filter>07. System\99. Debug_ImGui\Layout\ObjectPool</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <Image Include="Client.ico">
@@ -1684,6 +1696,12 @@
     </ClCompile>
     <ClCompile Include="..\Private\Moon_SkillE_Obj.cpp">
       <Filter>03. GameObject\SkillObject\Player\Moon\SkillE</Filter>
+    </ClCompile>
+    <ClCompile Include="..\private\ImGui_PoolInspector.cpp">
+      <Filter>07. System\99. Debug_ImGui\Inspector\PoolDebug</Filter>
+    </ClCompile>
+    <ClCompile Include="..\private\ImGui_ObjectPoolLayout.cpp">
+      <Filter>07. System\99. Debug_ImGui\Layout\ObjectPool</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

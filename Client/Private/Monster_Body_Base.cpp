@@ -54,7 +54,8 @@ HRESULT CMonster_Body_Base::Initialize(void* pArg)
 	if (FAILED(Ready_EffectHandler(pDesc)))
 		return E_FAIL;
 
-	Set_Flag(OF_Outline, true);
+	Set_RenderInfoFlag(OF_Outline, true);
+	Get_Component<CEffectHandler>()->Setup_ForOwner();
 	return S_OK;
 }
 
@@ -62,9 +63,6 @@ HRESULT CMonster_Body_Base::Awake(const _uint iCurrentLevelIndex)
 {
 	if (FAILED(Super::Awake(iCurrentLevelIndex)))
 		return E_FAIL;
-
-	if (m_pEffectHandler)
-		m_pEffectHandler->Awake();
 
 	return S_OK;
 }

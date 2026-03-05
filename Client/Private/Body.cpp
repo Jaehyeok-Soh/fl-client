@@ -54,18 +54,25 @@ HRESULT CBody::Initialize(void* pArg)
 	m_iSpine1_Index = Get_Component<CModel>()->Get_BoneIndex("spine_01");
 	m_iCamPos_Index = Get_Component<CModel>()->Get_BoneIndex("camera_point");
 	m_iCamSocket_Index = Get_Component<CModel>()->Get_BoneIndex("camera_socket");
-	//m_iLeftHand_Index = Get_Component<CModel>()->Get_BoneIndex("hand_l");
-	//m_iRightHand_Index = Get_Component<CModel>()->Get_BoneIndex("hand_r");
-	//m_iLeftFoot_Index = Get_Component<CModel>()->Get_BoneIndex("LeftFoot");
-	//m_iRightFoot_Index = Get_Component<CModel>()->Get_BoneIndex("RightFoot");
-	//m_iSpine_Index = Get_Component<CModel>()->Get_BoneIndex("Spine");
-	//m_iEffectMouseSocket_Index = Get_Component<CModel>()->Get_BoneIndex("EFF_Mouth01");
-	//m_iSwordSocket_Index = Get_Component<CModel>()->Get_BoneIndex("Attach_NinjaSword");
-	//m_iLeftShoulderSocket_Index = Get_Component<CModel>()->Get_BoneIndex("LeftShoulder");
-	//m_iRightShoulderSocket_Index = Get_Component<CModel>()->Get_BoneIndex("RightShoulder");
-	//m_iRightHandWeaponSocket_Index = Get_Component<CModel>()->Get_BoneIndex("MeleeWeaponRHand");
-	
-	Set_Flag(OF_Outline, true);
+	{
+		CModel* pMyModel = Get_Component<CModel>();
+		// mix 값 초기화를 위함
+		pMyModel->Set_MixAnim_ResetSize(0);
+		//Face_Smile
+		_uint iFaceAnimIdx = pMyModel->Get_AnimationIndex(L"Animation_PlayerMoon_Face_Angry");
+		_uint iJumpAnimIdx = pMyModel->Get_AnimationIndex(L"Animation_PlayerMoon_FirstJump_InplaceStart");
+		_uint iBulletAnimIdx = pMyModel->Get_AnimationIndex(L"Animation_PlayerMoon_BulletJump_Start");
+		vector<CModel::DATA_ANIMIX> vecMix = { {113,false,1.f} };
+		pMyModel->Set_MixAnim(true);
+		pMyModel->Set_MixAnim_ResetSize(2);
+		pMyModel->Make_MixRatio(iFaceAnimIdx, vecMix, m_pBoneAnimMixCS);
+		pMyModel->Set_MixAnim_AnimIndex(0, iFaceAnimIdx);
+		pMyModel->Set_Animtion_MotionOffset(iJumpAnimIdx, 2.5f);
+		pMyModel->Set_Animtion_MotionOffset(iBulletAnimIdx, 2.f);
+	}
+
+	Set_RenderInfoFlag(OF_Outline, true);
+	Get_Component<CEffectHandler>()->Setup_ForOwner();
 	return S_OK;
 }
 
@@ -73,30 +80,7 @@ HRESULT CBody::Awake(const _uint iCurrentLevelIndex)
 {
 	if (FAILED(Super::Awake(iCurrentLevelIndex)))
 		return E_FAIL;
-
-	Get_Component<CEffectHandler>()->Awake();
-
-	CModel* pMyModel = Get_Component<CModel>();
-
-	// mix 값 초기화를 위함
-	pMyModel->Set_MixAnim_ResetSize(0);
-
-	//Face_Smile
-	_uint iFaceAnimIdx					= pMyModel->Get_AnimationIndex(L"Animation_PlayerMoon_Face_Angry");
-	_uint iJumpAnimIdx = pMyModel->Get_AnimationIndex(L"Animation_PlayerMoon_FirstJump_InplaceStart");
-	_uint iBulletAnimIdx = pMyModel->Get_AnimationIndex(L"Animation_PlayerMoon_BulletJump_Start");
-
-	vector<CModel::DATA_ANIMIX> vecMix	= { {113,false,1.f} };
-
-	pMyModel->Set_MixAnim(true);
-	pMyModel->Set_MixAnim_ResetSize(2);
-
-	pMyModel->Make_MixRatio(iFaceAnimIdx, vecMix, m_pBoneAnimMixCS);
-	pMyModel->Set_MixAnim_AnimIndex(0, iFaceAnimIdx);
-
-	pMyModel->Set_Animtion_MotionOffset(iJumpAnimIdx, 2.5f);
-	pMyModel->Set_Animtion_MotionOffset(iBulletAnimIdx, 2.f);
-
+	
 	return S_OK;
 }
 

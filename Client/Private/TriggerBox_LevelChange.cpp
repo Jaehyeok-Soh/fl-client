@@ -2,9 +2,9 @@
 #include "TriggerBox_LevelChange.h"
 #include "Transform.h"
 #include "UI_Manager.h"
-#include "GameInstance.h"
 #include "Level_Loading.h"
 #include "UI_Manager.h"
+#include "GameInstance.h"
 
 CTriggerBox_LevelChange::CTriggerBox_LevelChange(ID3D11Device* pDevice, ID3D11DeviceContext* pContext)
     : CTriggerBox(pDevice ,pContext) 

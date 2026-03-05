@@ -176,8 +176,6 @@ HRESULT CUIBossStat_Text::Spawn_FromPool(void* pArg)
 	if (nullptr == m_pTargetStat)
 		return E_FAIL;
 	/* ¸ó½ºÅÍ ½ºÅÈ ÄÄÆ÷³ÍÆ® ºÎÂø */
-	m_bDead = false;
-
 	m_isSpawned = true;
 	return S_OK;
 }
@@ -186,6 +184,7 @@ HRESULT CUIBossStat_Text::Despawn_FromPool()
 {
 	if (FAILED(Super::Despawn_FromPool()))
 		return E_FAIL;
+
 	m_isVisible = false;
 	m_isVisibleTrigger = false;
 	m_isPreVisible = false;

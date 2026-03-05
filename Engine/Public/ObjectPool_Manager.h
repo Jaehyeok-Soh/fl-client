@@ -26,13 +26,17 @@ public:
 private:
 	void All_Clear();
 	CObjectPool* Find_Pool(_uint iLevelIndex, const wstring& wstrPoolTag);
-	_bool Is_OutOfRange(_uint iIndex) { return m_iLevelCount <= iIndex; }
+	_bool Is_OutOfRange(_uint iIndex) const { return m_iLevelCount <= iIndex; }
 private:
 	_uint m_iLevelCount = { 0 };
 	vector<unordered_map<wstring, CObjectPool*>> m_Pools;
 public:
 	static CObjectPool_Manager* Create(_uint iLevelCount);
 	virtual void Free() override;
+#ifdef _DEBUG
+	void Collect_PoolTags(_uint iLevelIndex, OUT vector<wstring>& outTags) const;
+	_int Get_Capacity(_uint iLevelIndex, const wstring &wstrPoolTag) const;
+#endif
 };
 
 NS_END

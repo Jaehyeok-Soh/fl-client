@@ -28,6 +28,26 @@ namespace Client
 		END
 	};
 	inline constexpr size_t g_iLevelType_Count = static_cast<size_t>(ELevelType::END);
+#ifdef _DEBUG
+	static const char* LevelTypeToString(int lv)
+	{
+		static const char* kNames[] =
+		{
+			"STATIC",
+			"LOADING",
+			"LOGO",
+			"TUTORIAL_VILLAGE",
+			"TUTORIAL_BOSS",
+			"SQUARE",
+			"TEST",
+		};
+
+		if (lv < 0 || lv >= (_int)ELevelType::END)
+			return "Invalid";
+
+		return kNames[lv];
+	}
+#endif
 
 	enum class EDir : unsigned int
 	{

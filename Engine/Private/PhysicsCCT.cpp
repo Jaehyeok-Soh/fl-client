@@ -65,7 +65,7 @@ HRESULT CPhysicsCCT::Initialize(void* pArg)
 	return S_OK;
 }
 
-void CPhysicsCCT::Awake()
+void CPhysicsCCT::Ready_Position()
 {
 	Vec3 vPos = m_pOwner->Get_Component<CTransform>()->Get_Info(TRANSFORM_INFO_STATE::POS);
 	SetFootPosition(vPos);

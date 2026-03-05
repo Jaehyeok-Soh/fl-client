@@ -42,7 +42,6 @@ public:
 	virtual _bool Picking(OUT Vec3& vOut) override;
 	virtual _bool Export_Data(DTO::ECategory eCategory, CDataDocumentBase* pDocument) override;
 	virtual void Draw_ImGui() override;
-	virtual void Set_Dead(_bool bStatic = false) override;
 public:
 	virtual void Set_SimulationSpace(DTO::E_SIMULATION_SPACE Space) { m_eDesc._Effect_SimulationType = Space; }
 

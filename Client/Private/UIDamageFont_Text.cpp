@@ -338,8 +338,6 @@ _bool CUIDamageFont_Text::Tick_InVisible_Event(const _float fTimeDelta)
 
 HRESULT CUIDamageFont_Text::Spawn_FromPool(void* pArg)
 {
-	CLOG_INFO(L"\n/////////////////////////////////////////\n데미지 폰트 활성화 됨\n///////////////////////////////////////////");
-
 	if (FAILED(Super::Spawn_FromPool(pArg)))
 		return E_FAIL;
 
@@ -351,7 +349,7 @@ HRESULT CUIDamageFont_Text::Spawn_FromPool(void* pArg)
 	if (nullptr == m_pWorldUIComp)
 		return E_FAIL;
 
-	m_isDeadRequest = false;
+	m_isDeadRequest				= false;
 	m_isFinVisibleEvent			= false;
 	m_isFin_HitFontEvent		= false;
 	m_isHitFontEventTrigger		= false;
@@ -423,6 +421,9 @@ HRESULT CUIDamageFont_Text::Despawn_FromPool()
 {
 	CLOG_INFO(L"\n/////////////////////////////////////////\n데미지 폰트 비활성화 됨\n///////////////////////////////////////////");
 
+
+	if (FAILED(Super::Despawn_FromPool()))
+		return E_FAIL;
 
 	m_vFontColor				= m_vOriginFontColor;
 	m_fDamageFontScaleOffet		= 1.f;

@@ -36,6 +36,7 @@ enum class CameraType;
 struct DelegateHandle;
 class CCollider;
 class CGameObject;
+class CObjectPool;
 class CCameraMan;
 class CLayer;
 class CFxEffectAsset;
@@ -125,16 +126,25 @@ public:
 #pragma region OBJECT_MANAGER
 	HRESULT					Awake_GameObjects(const _uint iCurrentLevelID);
 	
+	// 파라미터 오브젝트를 레이어에 넣음
 	CGameObject*			Add_GameObject(_uint iCloneLevelIndex, const wstring& wstrLayerTag, CGameObject* pGo);
+	// 오브젝트를 생성해서 레이어에 넣음
 	CGameObject*			Add_GameObject(_uint iPrototypeLevelIndex, const wstring& wstrPrototypeTag,
 							_uint iCloneLevelIndex, const wstring& wstrLayerTag, void* pArg = nullptr);
-	void					Immediately_DeleteGameObject(_uint iCloneLevelIndex, const wstring& wstrLayerTag, CGameObject* pGo);
+	// 호출 시점에 바로 삭제
+	void					Immediately_DeleteGameObject(_uint iCloneLevelIndex, CGameObject* pGo);
+	// 호출 시점에 바로 회수
+	void					Immediately_DespawnGameObject(_uint iCloneLevelIndex, CGameObject* pGo);
 
+	// 파라미터 오브젝트를 EventManager에 Desc 전달하여 다음 프레임에 Layer에 추가
 	void					Request_AddObject(_uint iCloneLevelIndex, const wstring& wstrLayerTag, CGameObject* pGo, std::function<void(CGameObject*)> onSpawnedCallback = nullptr);
+	// 오브젝트를 생성해서 EventManager에 Desc 전달하여 다음 프레임에 Layer에 추가
 	void					Request_AddObject(_uint iPrototypeLevelIndex, const wstring& wstrPrototypeTag,
 							_uint iCloneLevelIndex, const wstring& wstrLayerTag, void* pArg = nullptr, std::function<void(CGameObject*)> onSpawnedCallback = nullptr);
+	// 풀 오브젝트를 스폰하여 EventManager에 Desc 전달하여 다음 프레임에 Layer에 추가
 	void					Request_AddObject(_uint iPoolLevelIndex, const wstring& wstrPoolTag, _uint iSpawnLevelIndex, void* pArg, std::function<void(CGameObject*)> onSpawnedCallback = nullptr);
-	void					Request_DeleteGameObject(_uint iCloneLevelIndex, const wstring& wstrLayerTag, CGameObject* pGo);
+	// 해당 오브젝트를 EventManager에 Desc전달 하여 당므 프레임에  레이어에서 삭제 / 풀회수
+	void					Request_DeleteGameObject(_uint iCloneLevelIndex, CGameObject* pGo);
 
 	CGameObject*			Get_GameObject(_uint iLevelIndex, const wstring& wstrLayerTag, _uint iObjectIndex);
 	CGameObject*			Get_GameObject_Front(_uint iLevelIndex, const wstring& wstrLayerTag);
@@ -146,6 +156,12 @@ public:
 
 #pragma region OBJECTPOOL_MANAGER
 	HRESULT Regist_Pool(_uint iTargetLevelIndex, const wstring& wstrPoolTag, const wstring& wstrLayerTag, _uint iSeedLevelID, const wstring &wstrSeedPrototypeTag,void* pArg, _uint iPoolCapacityCount);
+	void Collect_PoolTags(_uint iLevelIndex, OUT vector<wstring>& vecOutTags) const;
+	_int Get_ObjectPoolCapacity(_uint iLevelIndex, const wstring& wstrPoolTag) const;
+	_int Get_ObjectPoolActiveCount(_uint iLevelIndex, const wstring& wstrPoolTag) const;
+#ifdef _DEBUG
+	
+#endif
 #pragma endregion
 
 #pragma region COLLISION_MANAGER

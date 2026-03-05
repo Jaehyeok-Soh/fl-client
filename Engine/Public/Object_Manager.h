@@ -21,11 +21,14 @@ public:
 	void Update_Late(const _float fUnscaledTimeDelta, const _float fScaledTimeDelta);
 	void Ready_Before_Render(const _float fUnscaledTimeDelta, const _float fScaledTimeDelta);
 	
-	void Delete_GameObject(_uint iCloneLevelIndex, const wstring& wstrLayerTag, CGameObject* pGo);
+	void Delete_GameObject(_uint iCloneLevelIndex, CGameObject* pGo);
+	// ObjectPool
+	void Despawn_GameObject(_uint iCloneLevelIndex, CGameObject* pGo);
 
 	CGameObject* Add_GameObject(_uint iCloneLevelIndex, const wstring& wstrLayerTag, CGameObject* pGo);
 	CGameObject* Add_GameObject(_uint iPrototypeLevelIndex, const wstring &wstrPrototypeTag,
 		_uint iCloneLevelIndex, const wstring &wstrLayerTag, void* pArg);
+	CGameObject* Spawn_GameObject(_uint iCloneLevelIndex, _uint iPoolLevelIndex, const wstring& wstrPoolTag, void* pArg);
 
 	CGameObject* Get_GameObject(_uint iLevelIndex, const wstring& wstrLayerTag, _uint iIndex);
 	CGameObject* Get_GameObject_Front(_uint iLayerIndex, const wstring& wstrLayerTag);

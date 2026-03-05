@@ -146,8 +146,7 @@ HRESULT CMainPlayer::Awake(const _uint iCurrentLevelID)
 
     CImGui_ClientDebug::GetInstance()->Set_Player(this);
 
-    Get_Component<CPhysicsCCT>()->Awake();
-
+    Get_Component<CPhysicsCCT>()->Ready_Position();
     return S_OK;
 }
 
