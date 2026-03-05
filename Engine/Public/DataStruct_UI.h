@@ -647,6 +647,9 @@ enum class EUIDImageSubClassType
 	LEVEL_CHAGE_3,
 	LEVEL_CHAGE_4,
 	LEVEL_CHAGE_5,
+	LEVEL_CHAGE_6,
+	LEVEL_CHAGE_7,
+
 
 	// ∫∏Ω∫ Ω∫≈»
 	BOSS_STAT_BEGIN,
@@ -727,6 +730,8 @@ NLOHMANN_JSON_SERIALIZE_ENUM(EUIDImageSubClassType,
 	{ EUIDImageSubClassType::LEVEL_CHAGE_3,							"LEVEL_CHAGE_3" },
 	{ EUIDImageSubClassType::LEVEL_CHAGE_4,							"LEVEL_CHAGE_4" },
 	{ EUIDImageSubClassType::LEVEL_CHAGE_5,							"LEVEL_CHAGE_5" },
+	{ EUIDImageSubClassType::LEVEL_CHAGE_6,							"LEVEL_CHAGE_6" },
+	{ EUIDImageSubClassType::LEVEL_CHAGE_7,							"LEVEL_CHAGE_7" },
 
 	{ EUIDImageSubClassType::BOSS_STAT_BEGIN,						"BOSS_STAT_BEGIN" },
 	{ EUIDImageSubClassType::BOSS_STAT_BG,							"BOSS_STAT_BG" },
@@ -805,6 +810,8 @@ NLOHMANN_JSON_SERIALIZE_ENUM(EUIDImageSubClassType,
 	if (str == "LEVEL_CHAGE_3")							return EUIDImageSubClassType::LEVEL_CHAGE_3;
 	if (str == "LEVEL_CHAGE_4")							return EUIDImageSubClassType::LEVEL_CHAGE_4;
 	if (str == "LEVEL_CHAGE_5")							return EUIDImageSubClassType::LEVEL_CHAGE_5;
+	if (str == "LEVEL_CHAGE_6")							return EUIDImageSubClassType::LEVEL_CHAGE_6;
+	if (str == "LEVEL_CHAGE_7")							return EUIDImageSubClassType::LEVEL_CHAGE_7;
 
 	if (str == "BOSS_STAT_BEGIN")						return EUIDImageSubClassType::BOSS_STAT_BEGIN;
 	if (str == "BOSS_STAT_BG")							return EUIDImageSubClassType::BOSS_STAT_BG;
@@ -885,6 +892,8 @@ inline const char* UIDImageSubTypeToString(EUIDImageSubClassType type)
 	case EUIDImageSubClassType::LEVEL_CHAGE_3:							return "LEVEL_CHAGE_3";
 	case EUIDImageSubClassType::LEVEL_CHAGE_4:							return "LEVEL_CHAGE_4";
 	case EUIDImageSubClassType::LEVEL_CHAGE_5:							return "LEVEL_CHAGE_5";
+	case EUIDImageSubClassType::LEVEL_CHAGE_6:							return "LEVEL_CHAGE_6";
+	case EUIDImageSubClassType::LEVEL_CHAGE_7:							return "LEVEL_CHAGE_7";
 
 	case EUIDImageSubClassType::BOSS_STAT_BEGIN:						return "BOSS_STAT_BEGIN";
 	case EUIDImageSubClassType::BOSS_STAT_BG:							return "BOSS_STAT_BG";

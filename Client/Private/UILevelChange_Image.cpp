@@ -138,6 +138,16 @@ HRESULT CUILevelChange_Image::Attach_Personal_Info()
 		m_wstrText = L"테스트";
 		m_vFontColor = Vec4{ 1.0f, 0.423f, 0.051f, 1.f };
 		break;
+	case DTO::EUIDImageSubClassType::LEVEL_CHAGE_6:
+		m_eNextLevelID = ELevelType::TAVERN;
+		m_wstrText = L"술집"; 
+		m_vFontColor = Vec4{ 0.92f, 0.71f, 0.18f, 1.f };
+		break;
+	case DTO::EUIDImageSubClassType::LEVEL_CHAGE_7:
+		m_eNextLevelID = ELevelType::KUANGKENG;
+		m_wstrText = L"갱도";
+		m_vFontColor = Vec4{ 0.45f, 0.85f, 0.52f, 1.f };
+		break;
 	case DTO::EUIDImageSubClassType::END:
 	default:
 		return E_FAIL;

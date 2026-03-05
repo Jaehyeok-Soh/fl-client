@@ -118,7 +118,7 @@ void CMoon_SkillE_Obj::Try_Attack(const HIT_DESC& hitDesc)
 	// 일반 공격 데미지 폰트
 	{
 		UI_PREFAB_DATA tPrefabData = {};
-		tPrefabData.DamageFontData.iDamage = hitDesc.fFinalDamage; // 데미지 폰트에 뜰 숫자 // 플레이어 공격력 // 랜덤은 보여주기용
+		tPrefabData.DamageFontData.iDamage = static_cast<_uint>(hitDesc.fFinalDamage); // 데미지 폰트에 뜰 숫자 // 플레이어 공격력 // 랜덤은 보여주기용
 		tPrefabData.DamageFontData.vFontColor = Vec4{ 1.f, 0.95f, 0.47f, 1.f }; // 데미지 폰트 색 // 캐릭터 고유 색
 		tPrefabData.DamageFontData.vHitPos = hitDesc.vHitPoint; // 데미지 폰트를 띄울 World 위치 // 
 		tPrefabData.DamageFontData.vRandOffset = Vec3{

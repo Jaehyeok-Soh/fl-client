@@ -255,7 +255,7 @@ private:
 	/* Batch Mode */
 	EMapToolObjectBatchMode								m_eMapTooObjectBatchMode{ EMapToolObjectBatchMode::Single};
 	EMapTool_EmplaceType								m_eMapToolEmplaceType{EMapTool_EmplaceType::Free};
-	
+
 	/*  */
 	_int						m_iMakeSectionNumber{0};
 	/* 내가 생성시킬 때 기본 Defautl 값으로 들어갈 타입들 모임 */
