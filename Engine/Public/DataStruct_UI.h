@@ -542,6 +542,9 @@ NLOHMANN_JSON_SERIALIZE_ENUM(EFontShaderType,
 		{ EFontShaderType::NOISE_KOR,			"NOISE_KOR" },
 		{ EFontShaderType::OUTLINE_NOISE,		"OUTLINE_NOISE" },
 		{ EFontShaderType::OUTLINE_NOISE_KOR,	"OUTLINE_NOISE_KOR" },
+		{ EFontShaderType::GRADATION,			"GRADATION" },
+		{ EFontShaderType::OUTLINE_GRADATION,	"OUTLINE_GRADATION" },
+		{ EFontShaderType::HIT,					"HIT" },
 		{ EFontShaderType::END,					"END" }
 	})
 
@@ -553,6 +556,9 @@ NLOHMANN_JSON_SERIALIZE_ENUM(EFontShaderType,
 	if (str == "NOISE_KOR")				return EFontShaderType::NOISE_KOR;
 	if (str == "OUTLINE_NOISE")			return EFontShaderType::OUTLINE_NOISE;
 	if (str == "OUTLINE_NOISE_KOR")		return EFontShaderType::OUTLINE_NOISE_KOR;
+	if (str == "GRADATION")				return EFontShaderType::GRADATION;
+	if (str == "OUTLINE_GRADATION")		return EFontShaderType::OUTLINE_GRADATION;
+	if (str == "HIT")					return EFontShaderType::HIT;
 	if (str == "END")					return EFontShaderType::END;
 	return EFontShaderType::END;
 }
@@ -567,6 +573,9 @@ inline const char* FontShaderTypeToString(const EFontShaderType eType)
 	case EFontShaderType::NOISE_KOR:			return "NOISE_KOR";
 	case EFontShaderType::OUTLINE_NOISE:		return "OUTLINE_NOISE";
 	case EFontShaderType::OUTLINE_NOISE_KOR:	return "OUTLINE_NOISE_KOR";
+	case EFontShaderType::GRADATION:			return "GRADATION";
+	case EFontShaderType::OUTLINE_GRADATION:	return "OUTLINE_GRADATION";
+	case EFontShaderType::HIT:					return "HIT";
 	case EFontShaderType::END:					return "END";
 	default:									return "END";
 	}

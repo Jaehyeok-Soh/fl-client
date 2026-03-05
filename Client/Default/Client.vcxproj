@@ -287,6 +287,7 @@
     <ClInclude Include="..\Public\Tree.h" />
     <ClInclude Include="..\Public\Level_Tutorial_Boss.h" />
     <ClInclude Include="..\Public\Level_Tutorial_Village.h" />
+    <ClInclude Include="..\Public\TriggerBox_GlobalEvent_BroadCaster.h" />
     <ClInclude Include="..\Public\TriggerBox_MonsterSpawner.h" />
     <ClInclude Include="..\Public\UIAimDot_Image.h" />
     <ClInclude Include="..\Public\TriggerBox.h" />
@@ -492,10 +493,11 @@
     <ClCompile Include="..\Private\Level_Tutorial_Boss.cpp" />
     <ClCompile Include="..\Private\Level_Tutorial_Village.cpp" />
     <ClCompile Include="..\Private\TriggerBox.cpp" />
+    <ClCompile Include="..\Private\TriggerBox_GlobalEvent_BroadCaster.cpp" />
     <ClCompile Include="..\Private\TriggerBox_LevelChange.cpp" />
     <ClCompile Include="..\Private\TriggerBox_MonsterSpawner.cpp" />
     <ClCompile Include="..\Private\UIAimDot_Image.cpp" />
-    <ClCompile Include="..\Private\UIBossAction_Image.h.cpp" />
+    <ClCompile Include="..\Private\UIBossAction_Image.cpp" />
     <ClCompile Include="..\Private\UIBossAction_Text.cpp" />
     <ClCompile Include="..\Private\UIBossStat_Image.cpp" />
     <ClCompile Include="..\Private\UIBossStat_Progress.cpp" />

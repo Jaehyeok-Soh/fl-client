@@ -6,6 +6,7 @@
 // Manager
 //=================
 #include "UI_Manager.h"
+#include "Client_EventDefine.h"
 
 //=================
 // Data Struct
@@ -131,6 +132,8 @@ HRESULT CLevel_Tutorial_Boss::Build_Prototype()
 		return E_FAIL;
 	if (FAILED(Ready_Builder(DTO::ECategory::UI, CBuilder_UI::Create(m_pDevice, m_pDeviceContext, static_cast<_uint>(ELevelType::TUTORIAL_BOSS)))))
 		return E_FAIL;
+	if (FAILED(Ready_Builder(DTO::ECategory::UI_PREFAB, CBuilder_UIPrefabs::Create(m_pDevice, m_pDeviceContext, static_cast<_uint>(ELevelType::TUTORIAL_BOSS)))))
+		return E_FAIL;
 	return S_OK;
 }
 
@@ -160,8 +163,23 @@ HRESULT CLevel_Tutorial_Boss::Build_Files()
 	eCategory = DTO::ECategory::UI;
 	if (FAILED(m_pGameInstance->Regist_Document<CDataDocument_UI>(iLevelID, eCategory)))
 		return E_FAIL;
-
 	strUIFolderPath = L"../../Resources/Data/UIData/Static/";
+	if (std::filesystem::exists(strUIFolderPath))
+	{
+		for (auto iter : std::filesystem::directory_iterator(strUIFolderPath))
+		{
+			if (FAILED(m_pGameInstance->Load_File_Json(iLevelID, eCategory, iter.path())))
+				return E_FAIL;
+
+			if (FAILED(Build_File(iLevelID, eCategory, iter.path().stem().string())))
+				return E_FAIL;
+		}
+	}
+
+	eCategory = DTO::ECategory::UI_PREFAB;
+	if (FAILED(m_pGameInstance->Regist_Document<CDataDocument_UI>(iLevelID, eCategory)))
+		return E_FAIL;
+	strUIFolderPath = L"../../Resources/Data/UIData/Prefab/";
 	if (std::filesystem::exists(strUIFolderPath))
 	{
 		for (auto iter : std::filesystem::directory_iterator(strUIFolderPath))
@@ -279,6 +297,11 @@ HRESULT CLevel_Tutorial_Boss::Ready_Player_Layer(const wstring& wstrLayerTag)
 		// SkillObject Pool
 		{
 			CMoon_SkillE_Obj::SKILLOBJECT_DESC desc{};
+			//TRANSFORM_DESC
+			CTransform::TRANSFORM_DESC tTransDesc = {};
+			tTransDesc.fMovePerSec = 20.f;
+			desc.pTransform_Desc = &tTransDesc;
+
 			if (FAILED(m_pGameInstance->Regist_Pool(
 				0,
 				g_wszPool_MoonSkillE,
@@ -475,7 +498,22 @@ void CLevel_Tutorial_Boss::Update(const _float fTimeDelta)
 #endif
 		m_pGameInstance->Request_CursorMode(m_eCursorMode);
 	}
-
+	if (KEY_BUTTON_DOWN(DIK_5))
+	{
+		m_pGameInstance->Broadcast<ACTION1>();
+	}
+	if (KEY_BUTTON_DOWN(DIK_6))
+	{
+		m_pGameInstance->Broadcast<ACTION2>();
+	}
+	if (KEY_BUTTON_DOWN(DIK_7))
+	{
+		m_pGameInstance->Broadcast<ACTION3>();
+	}
+	if (KEY_BUTTON_DOWN(DIK_8))
+	{
+		m_pGameInstance->Broadcast<ACTION4>();
+	}
 }
 
 HRESULT CLevel_Tutorial_Boss::Render()

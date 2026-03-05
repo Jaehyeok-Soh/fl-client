@@ -164,18 +164,22 @@ HRESULT CUIAimDot_Image::Awake(const _uint iCurrentLevelID)
 		break;
 	case DTO::EUIDImageSubClassType::BATTLE_AIMDOT_CROSSHAIR_TOP:
 		m_vMaxOffset = Vec2{ 0.f, -10.f };
+		Set_Invisible();
 		m_pGameInstance->Subscribe<BOSS_STAGING_EVENT_START>([this]() { this->Set_Invisible(); });
 		break;
 	case DTO::EUIDImageSubClassType::BATTLE_AIMDOT_CROSSHAIR_RIGHT:
 		m_vMaxOffset = Vec2{ 10.f, 0.f };
+		Set_Invisible();
 		m_pGameInstance->Subscribe<BOSS_STAGING_EVENT_START>([this]() { this->Set_Invisible(); });
 		break;
 	case DTO::EUIDImageSubClassType::BATTLE_AIMDOT_CROSSHAIR_BOTTOM:
 		m_vMaxOffset = Vec2{ 0.f, 10.f };
+		Set_Invisible();
 		m_pGameInstance->Subscribe<BOSS_STAGING_EVENT_START>([this]() { this->Set_Invisible(); });
 		break;
 	case DTO::EUIDImageSubClassType::BATTLE_AIMDOT_CROSSHAIR_LEFT:
 		m_vMaxOffset = Vec2{ -10.f, 0.f };
+		Set_Invisible();
 		m_pGameInstance->Subscribe<BOSS_STAGING_EVENT_START>([this]() { this->Set_Invisible(); });
 		break;
 	case DTO::EUIDImageSubClassType::BATTLE_AIM_HIT:

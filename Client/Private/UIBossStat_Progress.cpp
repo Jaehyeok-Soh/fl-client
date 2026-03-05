@@ -5,6 +5,8 @@
 //=================
 // Component
 //=================
+#include "MyStat.h"
+#include "Client_EventDefine.h"
 #include "WorldUI_Component.h"	
 #include "Texture.h"
 #include "Shader.h"
@@ -50,7 +52,7 @@ HRESULT CUIBossStat_Progress::Awake(const _uint iCurrentLevelID)
 
 	if (m_isSpawned)
 	{
-		Set_Visible();
+		Set_Invisible();
 		m_isSpawned = false;
 	}
 
@@ -123,6 +125,15 @@ HRESULT CUIBossStat_Progress::Bind_ShaderResources()
 
 HRESULT CUIBossStat_Progress::Attach_Personal_Info()
 {
+	m_pGameInstance->Subscribe<BOSS_STAGING_EVENT_END>([this]()
+		{
+			this->Set_Visible();
+		});
+	m_pGameInstance->Subscribe<BOSS_STAGING_EVENT_START>([this]()
+		{
+			this->Set_Invisible();
+		});
+
 	return S_OK;
 }
 
@@ -173,11 +184,17 @@ HRESULT CUIBossStat_Progress::Spawn_FromPool(void* pArg)
 {
 	if (FAILED(Super::Spawn_FromPool(pArg)))
 		return E_FAIL;
-	UI_PREFAB_DATA* pDesc = static_cast<UI_PREFAB_DATA*>(pArg);
 
+	UI_PREFAB_DATA* pDesc = static_cast<UI_PREFAB_DATA*>(pArg);
+	m_pTargetStat = pDesc->pTarget->Get_Component<CMyStat>();
+
+	if (nullptr == m_pTargetStat)
+		return E_FAIL;
+
+	if (nullptr == m_pTargetStat)
+		return E_FAIL;
 	/* º¸½º ½ºÅÈ ÄÄÆ÷³ÍÆ® ºÎÂø */
 	m_bDead = false;
-	
 	m_isSpawned = true;
 	m_fProgress_Ratio = 0.f;
 	m_vOriginColorTint = m_vColorTint;
@@ -194,8 +211,6 @@ HRESULT CUIBossStat_Progress::Despawn_FromPool()
 	return S_OK;
 }
 
-
-
 HRESULT CUIBossStat_Progress::Convert_Stat_To_Ratio()
 {
 	if (KEY_BUTTON_DOWN(DIK_6))
@@ -205,6 +220,20 @@ HRESULT CUIBossStat_Progress::Convert_Stat_To_Ratio()
 	if (KEY_BUTTON_DOWN(DIK_7))
 	{
 		m_fCurRatio = 0.f;
+	}
+
+	switch (m_eSubClassType)
+	{
+	case DTO::EUISubClassType::BOSS_STAT_BEGIN:
+		break;
+	case DTO::EUISubClassType::BOSS_STAT_HP_PROGRESS:
+		m_fCurRatio = m_pTargetStat->Get_HealthRatio();
+		break;
+	case DTO::EUISubClassType::BOSS_STAT_ARMOR_PROGRESS:
+		m_fCurRatio = m_pTargetStat->Get_Rate(CMyStat::STAT_TYPE::DEFENSE);
+		break;
+	case DTO::EUISubClassType::BOSS_STAT_END:
+		break;
 	}
 	return S_OK;
 }

@@ -92,6 +92,7 @@ using namespace SimpleMath;
 #include <dinput.h>
 
 #include "Client_Defines.h"
+#include "Client_EventDefine.h"
 #include "DataDefine_Json.h"
 
 #pragma region MONSTER_STATE

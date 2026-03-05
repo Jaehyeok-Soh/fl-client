@@ -17,6 +17,7 @@ enum class TargeterState : _uint
 	NORMAL = 0,
 	TARGETSYNC,
 	GUN,
+	CINEMATIC,
 	Bone
 };
 
@@ -40,6 +41,8 @@ public:
 	void Initialize_WhenChangeTarget(CGameObject* pTarget);
 	void Change_CamState(TargeterState eState);
 	void Change_CamState(_uint iState);
+
+	HRESULT	Ready_GlobalEvent();
 private:
 	void Update_Priority_State(const _float fTimeDelta);
 	void Update_State(const _float fTimeDelta);
@@ -109,6 +112,9 @@ private:
 	Vec3 m_vTargetPos = Vec3::Zero;
 
 	_bool m_bChangeFirst = { true }; // ÃÊ±â change °ª
+
+
+	TargeterState m_ePreState = { TargeterState::NORMAL };
 
 public:
 	static CCameraMan_Targeter* Create(ID3D11Device* pDevice, ID3D11DeviceContext* pDeviceContext);

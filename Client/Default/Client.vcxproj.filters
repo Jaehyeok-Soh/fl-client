@@ -166,9 +166,6 @@
     <Filter Include="03. GameObject\UIObjects\02.UI\Image\Dynamic Image\00.SkillBG">
       <UniqueIdentifier>{f1acf951-62e0-4e8b-b106-6fd9b77c5697}</UniqueIdentifier>
     </Filter>
-    <Filter Include="03. GameObject\UIObjects\02.UI\Image\Dynamic Image\02.HoverImage">
-      <UniqueIdentifier>{871de243-5883-42bb-b109-9645901ce4d2}</UniqueIdentifier>
-    </Filter>
     <Filter Include="03. GameObject\UIObjects\02.UI\Image\Dynamic Image\01.Minimap">
       <UniqueIdentifier>{f89b605a-01f2-485c-87d7-f34d36eeef01}</UniqueIdentifier>
     </Filter>
@@ -186,15 +183,6 @@
     </Filter>
     <Filter Include="03. GameObject\PartObjects\Weapon\Gun">
       <UniqueIdentifier>{6a93f015-83a7-4ad9-a084-d7e71fa8f3a4}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="07. System\01. Builder\Effect">
-      <UniqueIdentifier>{0a51c3b4-11ce-445a-904c-410b2a5ef809}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="07. System\01. Builder\Effect\Builder_Effect">
-      <UniqueIdentifier>{9c580bfd-a983-4b3f-a72a-f1da0a5c9270}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="07. System\01. Builder\Effect\Builder_EffectEvent">
-      <UniqueIdentifier>{5d286e09-eee0-4b43-bcea-01a835550da6}</UniqueIdentifier>
     </Filter>
     <Filter Include="06. FSM\Player\JumpWall">
       <UniqueIdentifier>{2c8ee512-8e94-467f-9f3f-35d518b8ff89}</UniqueIdentifier>
@@ -624,6 +612,21 @@
     </Filter>
     <Filter Include="03. GameObject\SkillObject\Player\Moon\SkillE">
       <UniqueIdentifier>{bb204f36-542f-4eeb-ac29-823025464153}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="03. GameObject\UIObjects\02.UI\Image\Dynamic Image\02.HoverImage">
+      <UniqueIdentifier>{871de243-5883-42bb-b109-9645901ce4d2}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="03. GameObject\TriggerBox\02. TriggerBox_GlobalEvent_BroadCaster">
+      <UniqueIdentifier>{bb28bb7b-aa31-4064-9d60-c0091f8cb5a5}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="07. System\01. Builder\Effect">
+      <UniqueIdentifier>{0a51c3b4-11ce-445a-904c-410b2a5ef809}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="07. System\01. Builder\Effect\Builder_Effect">
+      <UniqueIdentifier>{9c580bfd-a983-4b3f-a72a-f1da0a5c9270}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="07. System\01. Builder\Effect\Builder_EffectEvent">
+      <UniqueIdentifier>{5d286e09-eee0-4b43-bcea-01a835550da6}</UniqueIdentifier>
     </Filter>
     <Filter Include="07. System\99. Debug_ImGui\Layout\MoveState">
       <UniqueIdentifier>{b8e2a682-0862-4d67-a466-eaca1a813102}</UniqueIdentifier>
@@ -1162,6 +1165,9 @@
     <ClInclude Include="..\Public\Moon_SkillE_Obj.h">
       <Filter>03. GameObject\SkillObject\Player\Moon\SkillE</Filter>
     </ClInclude>
+    <ClInclude Include="..\Public\TriggerBox_GlobalEvent_BroadCaster.h">
+      <Filter>03. GameObject\TriggerBox\02. TriggerBox_GlobalEvent_BroadCaster</Filter>
+    </ClInclude>
     <ClInclude Include="..\Public\ImGui_MoveStateLayout.h">
       <Filter>07. System\99. Debug_ImGui\Layout\MoveState</Filter>
     </ClInclude>
@@ -1682,7 +1688,7 @@
     <ClCompile Include="..\Private\UIMiniMap_Monster_Icon.cpp">
       <Filter>03. GameObject\UIObjects\02.UI\Image\Dynamic Image\01.Minimap\Monster Icon</Filter>
     </ClCompile>
-    <ClCompile Include="..\Private\UIBossAction_Image.h.cpp">
+    <ClCompile Include="..\Private\UIBossAction_Image.cpp">
       <Filter>03. GameObject\UIObjects\02.UI\Image\Dynamic Image\10.BossAction\00.Civila</Filter>
     </ClCompile>
     <ClCompile Include="..\Private\UIBossAction_Text.cpp">
@@ -1690,6 +1696,9 @@
     </ClCompile>
     <ClCompile Include="..\Private\Moon_SkillE_Obj.cpp">
       <Filter>03. GameObject\SkillObject\Player\Moon\SkillE</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\TriggerBox_GlobalEvent_BroadCaster.cpp">
+      <Filter>03. GameObject\TriggerBox\02. TriggerBox_GlobalEvent_BroadCaster</Filter>
     </ClCompile>
     <ClCompile Include="..\Private\ImGui_MoveStateLayout.cpp">
       <Filter>07. System\99. Debug_ImGui\Layout\MoveState</Filter>

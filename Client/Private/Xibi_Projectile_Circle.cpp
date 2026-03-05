@@ -84,6 +84,7 @@ void CXibi_Projectile_Circle::OnCollision(_uint iMyColliderLayer, _uint iOtherLa
 
 void CXibi_Projectile_Circle::OnCollision_Enter(_uint iMyColliderLayer, _uint iOtherLayer, CGameObject* pOther, const COL_HIT_INFO& tHitInfo)
 {
+
 }
 
 void CXibi_Projectile_Circle::OnCollision_Exit(_uint iMyColliderLayer, _uint iOtherLayer, CGameObject* pOther)
@@ -94,6 +95,16 @@ void CXibi_Projectile_Circle::OnTrigger_Enter(_uint iMyColliderLayer, _uint iOth
 {
 	if (iOtherLayer == PHYSICSFILTERGROUP::Enum::MAP)
 		Set_Dead();
+
+	COLLIDED_DESC desc{};
+	desc.iCollisionType = COLLISIONEVENT::ON_COLLISION_ENTER;
+	desc.iRequesterLayer = iMyColliderLayer;
+	desc.iOtherLayer = iOtherLayer;
+	desc.pRequester = this;
+	desc.pOther = pOther;
+	//desc.tHitInfo = tHitInfo;
+
+	m_pGameInstance->Push_CollidedData(desc);
 }
 
 _bool CXibi_Projectile_Circle::On_Hit(const HIT_DESC& hitDesc)

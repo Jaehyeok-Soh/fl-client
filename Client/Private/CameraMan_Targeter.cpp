@@ -50,6 +50,10 @@ HRESULT CCameraMan_Targeter::Awake(const _uint iCurrentLevelID)
 
     Change_CamState(TargeterState::NORMAL);
     //m_fK_SpeedTodist = m_fMaxDistanceDelta / m_fMaxSpeed;
+
+    if (FAILED(Ready_GlobalEvent()))
+        return E_FAIL;
+
     return S_OK;
 }
 
@@ -61,13 +65,16 @@ void CCameraMan_Targeter::Update_Priority(const _float fTimeDelta)
     if(KEY_BUTTON_HOLD(DIK_DOWN))
         m_fCurDistance += fTimeDelta;
 
+
     Super::Update_Priority(fTimeDelta);
     Update_Priority_State(fTimeDelta);
+
 }
 
 void CCameraMan_Targeter::Update(const _float fTimeDelta)
 {
     Super::Update(fTimeDelta);
+
     m_fStateTime += fTimeDelta;
     Update_State(fTimeDelta);
 }
@@ -124,6 +131,16 @@ void CCameraMan_Targeter::Change_CamState(_uint iState)
     m_eCurrentState = eState;
 }
 
+HRESULT CCameraMan_Targeter::Ready_GlobalEvent()
+{
+    /* Xibi_Cinematic Event 구독 */
+    m_pGameInstance->Subscribe<TUTORIAL_BOSS_CONTATCT>([this]() {
+        m_pGameInstance->Play_CameraCinematic(L"Xibi_Cinematic");
+        });
+
+    return S_OK;
+}
+
 void CCameraMan_Targeter::Update_Priority_State(const _float fTimeDelta)
 {
     switch (m_eCurrentState)
@@ -134,9 +151,10 @@ void CCameraMan_Targeter::Update_Priority_State(const _float fTimeDelta)
     case Client::TargeterState::TARGETSYNC:
         TargetSync_Update_Priority(fTimeDelta);
         break;
-
     case Client::TargeterState::GUN:
         GunCam_Update_Priority(fTimeDelta);
+        break;
+    case Client::TargeterState::CINEMATIC:
         break;
     }
 }
@@ -151,9 +169,11 @@ void CCameraMan_Targeter::Update_State(const _float fTimeDelta)
     case Client::TargeterState::TARGETSYNC:
         TargetSync_Update(fTimeDelta);
         break;
-
     case Client::TargeterState::GUN:
         GunCam_Update(fTimeDelta);
+        break;
+    case Client::TargeterState::CINEMATIC:
+        /* 임시 Update제거용 코드 */
         break;
     }
 }
@@ -168,9 +188,11 @@ void CCameraMan_Targeter::State_Begin(TargeterState eState)
     case Client::TargeterState::TARGETSYNC:
         TargetSync_Begin();
         break;
-
     case Client::TargeterState::GUN:
         GunCam_Begin();
+        break;
+    case Client::TargeterState::CINEMATIC:
+        /* 임시 Update제거용 코드 */
         break;
     }
 }
@@ -188,6 +210,9 @@ void CCameraMan_Targeter::State_End(TargeterState eState)
 
     case Client::TargeterState::GUN:
         GunCam_End();
+        break;
+
+    case Client::TargeterState::CINEMATIC:
         break;
     }
 }

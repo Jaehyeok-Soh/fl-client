@@ -114,7 +114,7 @@ protected:
 
 	// player 객체 연결 함수들
 protected:
-	_bool	Check_OnGround(_float fMaxDist = 0.8f); // 땅에 있는지 검사
+	_bool	Check_OnGround(_float fMaxDist = 0.6f); // 땅에 있는지 검사 0.8f
 
 	void	Check_Monster();
 

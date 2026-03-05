@@ -245,6 +245,21 @@ void CStateBase::Set_GravityOffset(_float fOffset)
 	m_pOwnerStateComp->Set_GravityOffset(fOffset);
 }
 
+CTransform* CStateBase::Get_CamTransform()
+{
+	if (m_pOwnerStateComp == nullptr)
+		return nullptr;
+
+	return m_pOwnerStateComp->Get_CamTransform();
+}
+
+Vec3 CStateBase::Get_MoveDir()
+{
+	if (m_pOwnerStateComp == nullptr)
+		return Vec3::Zero;
+	return m_pOwnerStateComp->Get_MoveDir();
+}
+
 _bool CStateBase::Align_Movement(const _float fTimeDelta)
 {
 	if (m_pOwnerStateComp == nullptr)

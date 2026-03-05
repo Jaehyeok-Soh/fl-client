@@ -2,11 +2,14 @@
 #include "Camera_Manager.h"
 #include "Engine_Utils.h"
 #include "Constant_Buffer.h"
+#include "GameInstance.h"
 
 CCamera_Manager::CCamera_Manager(ID3D11Device* pDevice, ID3D11DeviceContext* pDeviceContext)
 	: m_pDevice(pDevice)
 	, m_pDeviceContext(pDeviceContext)
+	, m_pGameInstnace{CGameInstance::GetInstance()}
 {
+	Safe_AddRef(m_pGameInstnace);
 	Safe_AddRef(m_pDevice);
 	Safe_AddRef(m_pDeviceContext);
 	m_matView = Matrix::Identity;
@@ -98,6 +101,15 @@ HRESULT CCamera_Manager::Camera_Shaking(const CAM_SHAKING_DATA& tData)
 	if (m_pMainCamera == nullptr) return E_FAIL;
 
 	m_pMainCamera->Camera_Shaking(tData);
+
+	return S_OK;
+}
+
+HRESULT CCamera_Manager::Play_CameraCinematic(const Camera_Cinematic_Sequence* pCameraCinematicSequence)
+{
+	if (pCameraCinematicSequence == nullptr) return E_FAIL;
+
+	m_pMainCamera->Cinematic(pCameraCinematicSequence);
 
 	return S_OK;
 }
@@ -244,6 +256,7 @@ CCamera_Manager* CCamera_Manager::Create(ID3D11Device* pDevice, ID3D11DeviceCont
 void CCamera_Manager::Free()
 {
 	Clear();
+	Safe_Release(m_pGameInstnace);
 	Safe_Release(m_pInv_CBuffer);
 	Safe_Release(m_pGlobal_CBuffer);
 	Safe_Release(m_pMainCamera);

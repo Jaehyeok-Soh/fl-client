@@ -1,6 +1,7 @@
 #include "pch.h"
 #include "TriggerBox_LevelChange.h"
 #include "Transform.h"
+#include "UI_Manager.h"
 #include "GameInstance.h"
 #include "Level_Loading.h"
 #include "UI_Manager.h"
@@ -111,6 +112,7 @@ void CTriggerBox_LevelChange::OnTrigger_Enter(_uint iMyColliderLayer, _uint iOth
     {
         m_pGameInstance->Request_ChangeLevel(ENUM_TO_UINT(ELevelType::LOADING), CLevel_Loading::Create(m_pDevice, m_pDeviceContext, m_eChangeLevelType));
         CUI_Manager::GetInstance()->Request_Clear();
+
         Set_Dead();
     }
 }

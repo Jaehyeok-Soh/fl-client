@@ -28,6 +28,7 @@
 #pragma region Trigger Box
 #include "TriggerBox_LevelChange.h"
 #include "TriggerBox_MonsterSpawner.h"
+#include "TriggerBox_GlobalEvent_BroadCaster.h"
 #pragma endregion
 
 #include "PhysicsCCT.h"
@@ -100,8 +101,9 @@ HRESULT CBuilder_Map::Build(const CDataDocumentBase& document)
 			case DTO::EClientMakePath::Batch_Monster:	Batch_Monster(tData);		break;
 			case DTO::EClientMakePath::Batch_Object:	Batch_Object(tData);		break;
 
-			case DTO::EClientMakePath::TriggerBox_ChangeLevel:		Create_TriggerBox_ChangeLevel(tData); break;
-			case DTO::EClientMakePath::TriggerBox_MonsterSpawner:	Create_TriggerBox_MonsterSpawner(tData); break;
+			case DTO::EClientMakePath::TriggerBox_ChangeLevel:				Create_TriggerBox_ChangeLevel(tData); break;
+			case DTO::EClientMakePath::TriggerBox_MonsterSpawner:			Create_TriggerBox_MonsterSpawner(tData); break;
+			case DTO::EClientMakePath::TriggerBox_GlobalEvent_BroadCaster:	Create_TriggerBox_GlobalEvent_BroadCaster(tData); break;
 
 
 			default:									return E_FAIL;
@@ -495,6 +497,38 @@ HRESULT CBuilder_Map::Create_TriggerBox_MonsterSpawner(const DTO::TMap_MapObject
 	pDesc.vTriggerBox_Extents = pTriggerBox_MonsterSpawner->vExtents;
 	pDesc.vecMonsterSpawnData = pTriggerBox_MonsterSpawner->vecMonsterSpawnData;
 	m_pGameInstance->Add_GameObject(ENUM_TO_UINT(ELevelType::STATIC), g_wszTriggerBox_MonsterSapwner_Prototype_Tag , ENUM_TO_UINT(m_eLevelType), g_wszTriggerBoxLayer, &pDesc);
+	return S_OK;
+}
+
+HRESULT CBuilder_Map::Create_TriggerBox_GlobalEvent_BroadCaster(const DTO::TMap_MapObjectData& tData)
+{
+	if (tData.vecSRTs.empty()) return E_FAIL;
+	if (tData.vecClientMakePathDesc.empty()) return E_FAIL;
+
+	Engine::TRIGGERBOX_GLOBALEVENT_BROADCASTER_DESC* pTriggerBox_GlobalEvent_BroadCaster = static_cast<Engine::TRIGGERBOX_GLOBALEVENT_BROADCASTER_DESC*>(tData.vecClientMakePathDesc.front());
+	if (pTriggerBox_GlobalEvent_BroadCaster == nullptr) return E_FAIL;
+
+
+	DTO::SRT_DATA tSRT{ tData.vecSRTs.front() };
+	CTriggerBox_GlobalEvent_BroadCaster::TRIGGERBOX_GLOBALEVENT_BROADCASTER_DESC  pDesc{};
+	CTransform::TRANSFORM_DESC transformDesc = {};
+	transformDesc.TranslationMatrix = { tSRT.Get_World() };
+
+	pDesc.iLevelIndex = ENUM_TO_UINT(m_eLevelType);
+	pDesc.pSRTData = &tSRT;
+	pDesc.pTransform_Desc = &transformDesc;
+	pDesc.vTriggerBox_Extents = pTriggerBox_GlobalEvent_BroadCaster->vExtents;
+
+	pDesc.vecGlobalBroadcastType.reserve(pTriggerBox_GlobalEvent_BroadCaster->vecGlobalEventBroadCasetNames.size());
+	for (auto& str : pTriggerBox_GlobalEvent_BroadCaster->vecGlobalEventBroadCasetNames)
+	{
+		pDesc.vecGlobalBroadcastType.push_back(Global_Broadcast_Type_ToEnum(str));
+	}
+
+	m_pGameInstance->Add_GameObject(ENUM_TO_UINT(ELevelType::STATIC), 
+									g_wszTriggerBox_GlobalEvent_BroadCaster_PrototypeTag, ENUM_TO_UINT(m_eLevelType),
+									g_wszTriggerBoxLayer, &pDesc);
+
 	return S_OK;
 }
 

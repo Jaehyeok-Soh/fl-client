@@ -1,7 +1,9 @@
 #pragma once
 #include "UIProgress_Bar.h"
 #include "DataStruct_UI.h"
-
+NS_BEGIN(Engine)
+class CMyStat;
+NS_END
 NS_BEGIN(Client)
 class CWorldUI_Component;
 class CUIBossStat_Progress final : public CUIProgress_Bar
@@ -45,6 +47,7 @@ private:
 	HRESULT Convert_Stat_To_Ratio();
 
 private:
+	CMyStat* m_pTargetStat = { nullptr };
 	_bool m_isSpawned = { false };
 	Vec4 m_vOriginColorTint = {};
 public:

@@ -307,18 +307,19 @@ inline CLIENT_MAKEPATH_DESC_BASE* Create_ClientMakePathDesc(DTO::EClientMakePath
 {
 	switch (ePath)
 	{
-	case DTO::EClientMakePath::StaticObject: return pSource == nullptr ? new STATICOBJECT_DESC	: new STATICOBJECT_DESC(*static_cast<STATICOBJECT_DESC*>(pSource));
-	case DTO::EClientMakePath::LandScape:	 return pSource == nullptr ? new LANDSCAPE_DESC		: new LANDSCAPE_DESC(*static_cast<LANDSCAPE_DESC*>(pSource));
+	case DTO::EClientMakePath::StaticObject:						return pSource == nullptr ? new STATICOBJECT_DESC	: new STATICOBJECT_DESC(*static_cast<STATICOBJECT_DESC*>(pSource));
+	case DTO::EClientMakePath::LandScape:							return pSource == nullptr ? new LANDSCAPE_DESC		: new LANDSCAPE_DESC(*static_cast<LANDSCAPE_DESC*>(pSource));
 
 
 	
 		/* Batch Object 관련 */
-	case DTO::EClientMakePath::Batch_Monster:	return pSource == nullptr ? new BATCH_MONSTER_DESC : new BATCH_MONSTER_DESC(*static_cast<BATCH_MONSTER_DESC*>(pSource));
-	case DTO::EClientMakePath::Batch_Object:	return pSource == nullptr ? new BATCH_OBJECT_DESC : new BATCH_OBJECT_DESC(*static_cast<BATCH_OBJECT_DESC*>(pSource));
+	case DTO::EClientMakePath::Batch_Monster:						return pSource == nullptr ? new BATCH_MONSTER_DESC : new BATCH_MONSTER_DESC(*static_cast<BATCH_MONSTER_DESC*>(pSource));
+	case DTO::EClientMakePath::Batch_Object:						return pSource == nullptr ? new BATCH_OBJECT_DESC : new BATCH_OBJECT_DESC(*static_cast<BATCH_OBJECT_DESC*>(pSource));
 
 		/* Trigger Box 관련 */
-	case DTO::EClientMakePath::TriggerBox_ChangeLevel:		return pSource == nullptr ? new TRIGGERBOX_CHANGELEVEL_DESC : new TRIGGERBOX_CHANGELEVEL_DESC(*static_cast<TRIGGERBOX_CHANGELEVEL_DESC*>(pSource));
-	case DTO::EClientMakePath::TriggerBox_MonsterSpawner:	return pSource == nullptr ? new TRIGGERBOX_MONSTERSPAWNER_DESC : new TRIGGERBOX_MONSTERSPAWNER_DESC(*static_cast<TRIGGERBOX_MONSTERSPAWNER_DESC*>(pSource));
+	case DTO::EClientMakePath::TriggerBox_ChangeLevel:				return pSource == nullptr ? new TRIGGERBOX_CHANGELEVEL_DESC : new TRIGGERBOX_CHANGELEVEL_DESC(*static_cast<TRIGGERBOX_CHANGELEVEL_DESC*>(pSource));
+	case DTO::EClientMakePath::TriggerBox_MonsterSpawner:			return pSource == nullptr ? new TRIGGERBOX_MONSTERSPAWNER_DESC : new TRIGGERBOX_MONSTERSPAWNER_DESC(*static_cast<TRIGGERBOX_MONSTERSPAWNER_DESC*>(pSource));
+	case DTO::EClientMakePath::TriggerBox_GlobalEvent_BroadCaster:	return pSource == nullptr ? new TRIGGERBOX_GLOBALEVENT_BROADCASTER_DESC : new TRIGGERBOX_GLOBALEVENT_BROADCASTER_DESC(*static_cast<TRIGGERBOX_GLOBALEVENT_BROADCASTER_DESC*>(pSource));
 
 
 
@@ -348,7 +349,9 @@ inline _bool IsExist_ClientMakePathDesc(DTO::EClientMakePath ePath)
 void STATICOBJECT_DESC::from_Json(const json& LoadJson)
 {
 	/* Desc 키값으로 들어온다 */
-	this->wstrTest = Engine_Utils::ToWString(LoadJson["Test"].get<string>());
+	if (LoadJson.contains("Test"))
+		this->wstrTest = Engine_Utils::ToWString(LoadJson["Test"].get<string>());
+
 	return;
 }
 
@@ -694,6 +697,32 @@ void TRIGGERBOX_MONSTERSPAWNER_DESC::to_Json(json& SaveJson)
 #pragma endregion
 
 
+#pragma region GlobalEvent BroadCaster
+
+
+void TRIGGERBOX_GLOBALEVENT_BROADCASTER_DESC::from_Json(const json& LoadJson)
+{
+	Super::from_Json(LoadJson);
+
+	if (LoadJson.contains("Global Event Broadcast Names"))
+	{
+		const auto& JsonArray = LoadJson["Global Event Broadcast Names"];
+		vecGlobalEventBroadCasetNames.reserve(JsonArray.size());
+		for (auto& Json : JsonArray)
+		{
+			vecGlobalEventBroadCasetNames.push_back(Json.get<string>());
+		}
+	}
+}
+
+void TRIGGERBOX_GLOBALEVENT_BROADCASTER_DESC::to_Json(json& SaveJson)
+{
+	Super::to_Json(SaveJson);
+
+	SaveJson["Global Event Broadcast Names"] = this->vecGlobalEventBroadCasetNames;
+}
+
+#pragma endregion
 
 
 #pragma endregion

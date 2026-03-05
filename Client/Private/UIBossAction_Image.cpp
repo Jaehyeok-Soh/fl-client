@@ -101,6 +101,46 @@ HRESULT CUIBossAction_Image::Bind_ShaderResources()
 
 HRESULT CUIBossAction_Image::Attach_Personal_Info()
 {
+	switch (m_eDImageSubClass)
+	{
+	case DTO::EUIDImageSubClassType::BOSS_CIVILA_ACTION_BEGIN:
+		break;
+	case DTO::EUIDImageSubClassType::BOSS_CIVILA_ACTION_ICON:
+		m_pGameInstance->Subscribe<ACTION3>([this]()
+			{
+				this->Set_Visible();
+			});
+		m_pGameInstance->Subscribe<ACTION4>([this]()
+			{
+				this->Set_Invisible();
+			});
+		break;
+	case DTO::EUIDImageSubClassType::BOSS_CIVILA_ACTION_TOP_BG:
+		m_pGameInstance->Subscribe<ACTION1>([this]()
+			{
+				this->Set_Visible();
+			});
+		m_pGameInstance->Subscribe<ACTION2>([this]()
+			{
+				this->Set_Invisible();
+			});
+		break;
+	case DTO::EUIDImageSubClassType::BOSS_CIVILA_ACTION_BOTTOM_BG:
+		m_pGameInstance->Subscribe<ACTION1>([this]()
+			{
+				this->Set_Visible();
+			});
+		m_pGameInstance->Subscribe<ACTION2>([this]()
+			{
+				this->Set_Invisible();
+			});
+		break;
+	case DTO::EUIDImageSubClassType::BOSS_CIVILA_ACTION_END:
+		break;
+	case DTO::EUIDImageSubClassType::END:
+	default:
+		return E_FAIL;
+	}
 	return S_OK;
 }
 
@@ -116,22 +156,80 @@ void CUIBossAction_Image::OnUIEvent(ETriggerEventType eEvent, CGenericUI* pSende
 
 void CUIBossAction_Image::Initialize_Visible_Event()
 {
-	m_isFin_Event = false;
-	m_isActive = false;
+	switch (m_eDImageSubClass)
+	{
+	case DTO::EUIDImageSubClassType::BOSS_CIVILA_ACTION_BEGIN:
+		break;
+	case DTO::EUIDImageSubClassType::BOSS_CIVILA_ACTION_ICON:
+		Ready_LerpChange(1.5f, 1.f, 0.f, 0.7f, m_fDelay);
+		break;
+	case DTO::EUIDImageSubClassType::BOSS_CIVILA_ACTION_TOP_BG:
+		Ready_Lerp_Movement(Vec2{ 0.f, -100.f }, Vec2{ 0.f, 0.f }, 1.5f, 0.7f, m_fDelay);
+		m_pGameInstance->Broadcast<BOSS_STAGING_EVENT_START>();
+		break;
+	case DTO::EUIDImageSubClassType::BOSS_CIVILA_ACTION_BOTTOM_BG:
+		Ready_Lerp_Movement(Vec2{ 0.f, 100.f }, Vec2{ 0.f, 0.f }, 1.5f, 0.7f, m_fDelay);
+		break;
+	case DTO::EUIDImageSubClassType::BOSS_CIVILA_ACTION_END:
+		break;
+	}
 }
 
 _bool CUIBossAction_Image::Tick_Visible_Event(const _float fTimeDelta)
 {
-	return true;
+	switch (m_eDImageSubClass)
+	{
+	case DTO::EUIDImageSubClassType::BOSS_CIVILA_ACTION_BEGIN:
+		break;
+	case DTO::EUIDImageSubClassType::BOSS_CIVILA_ACTION_ICON:
+		return Tick_LerpChange(&m_fProgress_Ratio, fTimeDelta);
+	case DTO::EUIDImageSubClassType::BOSS_CIVILA_ACTION_TOP_BG:
+		return Tick_Lerp_Movement(fTimeDelta);
+	case DTO::EUIDImageSubClassType::BOSS_CIVILA_ACTION_BOTTOM_BG:
+		return Tick_Lerp_Movement(fTimeDelta);
+	case DTO::EUIDImageSubClassType::BOSS_CIVILA_ACTION_END:
+		break;
+	}
+	return false;
 }
 
 void CUIBossAction_Image::Initialize_InVisible_Event()
 {
+	switch (m_eDImageSubClass)
+	{
+	case DTO::EUIDImageSubClassType::BOSS_CIVILA_ACTION_BEGIN:
+		break;
+	case DTO::EUIDImageSubClassType::BOSS_CIVILA_ACTION_ICON:
+		Ready_LerpChange(1.f, 0.f, 1.f, 0.7f, m_fDelay);
+		break;
+	case DTO::EUIDImageSubClassType::BOSS_CIVILA_ACTION_TOP_BG:
+		Ready_Lerp_Movement(Vec2{ 0.f, 0.f }, Vec2{ 0.f, -100.f }, 1.f, 0.7f, m_fDelay);
+		m_pGameInstance->Broadcast<BOSS_STAGING_EVENT_END>();
+		break;
+	case DTO::EUIDImageSubClassType::BOSS_CIVILA_ACTION_BOTTOM_BG:
+		Ready_Lerp_Movement(Vec2{ 0.f, 0.f}, Vec2{ 0.f, 100.f }, 1.f, 0.7f, m_fDelay);
+		break;
+	case DTO::EUIDImageSubClassType::BOSS_CIVILA_ACTION_END:
+		break;
+	}
 }
 
 _bool CUIBossAction_Image::Tick_InVisible_Event(const _float fTimeDelta)
 {
-	return true;
+	switch (m_eDImageSubClass)
+	{
+	case DTO::EUIDImageSubClassType::BOSS_CIVILA_ACTION_BEGIN:
+		break;
+	case DTO::EUIDImageSubClassType::BOSS_CIVILA_ACTION_ICON:
+		return Tick_LerpChange(&m_fProgress_Ratio, fTimeDelta);
+	case DTO::EUIDImageSubClassType::BOSS_CIVILA_ACTION_TOP_BG:
+		return Tick_Lerp_Movement(fTimeDelta);
+	case DTO::EUIDImageSubClassType::BOSS_CIVILA_ACTION_BOTTOM_BG:
+		return Tick_Lerp_Movement(fTimeDelta);
+	case DTO::EUIDImageSubClassType::BOSS_CIVILA_ACTION_END:
+		break;
+	}
+	return false;
 }
 
 CUIBossAction_Image* CUIBossAction_Image::Create(ID3D11Device* pDevice, ID3D11DeviceContext* pDeviceContext)

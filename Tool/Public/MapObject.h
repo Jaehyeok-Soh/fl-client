@@ -210,6 +210,7 @@ public:
 
 	HRESULT								Render_TriggerBox_ChangeLevel();
 	HRESULT								Render_TriggerBox_MonsterSpawner();
+	HRESULT								Render_TriggerBox_GlobalEvent_BroadCaster();
 
 	/* Collider Type 전용 Render함수 */
 	HRESULT								Render_Collider();

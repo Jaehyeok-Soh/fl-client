@@ -158,6 +158,7 @@ void CUI_Manager::Request_SortUI()
 
 void CUI_Manager::Clear_Cache(uint32_t iLevelIndex)
 {
+	m_vecTriggerUIs.clear();
 	m_vecSortUI.clear();
 	m_vecCanvasCache[iLevelIndex].clear();
 	m_vecGenericUICache[iLevelIndex].clear();
