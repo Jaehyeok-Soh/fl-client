@@ -8,6 +8,14 @@ namespace Engine
 struct Test { using Signature = void(unsigned int iCount); };
 struct Test2 { using Signature = void(unsigned int iCount); };
 
+#pragma region Global Event
+
+struct TUTORIAL_BOSS_CONTATCT		{ using Signature = void(); };
+struct TUTORIAL_BOSS_CONTATCT_END	{ using Signature = void(); };
+
+#pragma endregion
+
+
 #pragma region Player Event
 struct PLAYER_SKILL_TRIGGERED { using Signature = void(unsigned int); };
 #pragma endregion

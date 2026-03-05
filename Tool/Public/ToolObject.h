@@ -47,7 +47,6 @@ public:
 	const string& Get_TypeName() const { return m_strObjectType; }
 	EToolObjectType Get_Type() const { return m_eType; }
 	const string& Get_ModelFileName() const { return m_strModelFileName; }
-	const wstring& Get_LayerTag() const { return m_wstrLayerTag; }
 	void Update_CombinedWorldMatrix(const Matrix &matParent);
 private:
 	HRESULT Set_TypeString();

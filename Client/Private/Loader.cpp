@@ -92,6 +92,7 @@
 //=================
 #include "TriggerBox_LevelChange.h"
 #include "TriggerBox_MonsterSpawner.h"
+#include "TriggerBox_GlobalEvent_BroadCaster.h"
 
 /* --------------------- */
 //=================
@@ -156,6 +157,12 @@
 
 #pragma region Macro
 #define ADD_PROTOTYPE(eLevelType, wstrPrototypeTag, pBase) if(FAILED(m_pGameInstance->Add_Prototype(ENUM_TO_UINT(eLevelType), wstrPrototypeTag, pBase))) return E_FAIL
+
+#define REGISTER_GLOBAL_EVENT(EventStructName) \
+	m_pGameInstance->Register_GlobalEventsBroadCast( \
+		ENUM_TO_UINT(EGlobal_Broadcast_Type::EventStructName), \
+		[pGameInstance = m_pGameInstance]() { pGameInstance->Broadcast<EventStructName>(); } \
+	)
 #pragma endregion
 
 
@@ -269,6 +276,23 @@ HRESULT CLoader::Loading_For_Logo()
 	if (FAILED(Ready_Spawner()))
 		return E_FAIL;
 
+
+
+	/* Cinematic Data Load */
+	if (FAILED(m_pGameInstance->GameDataManager_Load_CameraCinematicSequence()))
+		return E_FAIL;
+
+#pragma region Register Global Event
+	/////////////////////////////////////////
+	/////////// Ready GlobalEvent ///////////
+	/////////////////////////////////////////
+	/* Global */
+	m_pGameInstance->Register_GlobalEventsBroadCast(ENUM_TO_UINT(EGlobal_Broadcast_Type::NONE), nullptr);
+	REGISTER_GLOBAL_EVENT(TUTORIAL_BOSS_CONTATCT);
+
+#pragma endregion
+
+
 #pragma region PretransformMatrix
 	Matrix matPreTransformScaleTest = Matrix::CreateScale(100.f, 100.f, 100.f);
 	Matrix matPreTransformScale = Matrix::CreateScale(0.01f, 0.01f, 0.01f);
@@ -345,6 +369,7 @@ HRESULT CLoader::Loading_For_Logo()
 			return E_FAIL;
 		if (FAILED(Make_StaticObject_Prototype(ELevelType::STATIC, L"../../Resources/Models/Effect_FBX/Sphere")))
 			return E_FAIL;
+
 
 		if (FAILED(Make_StaticObject_Prototype(ELevelType::STATIC, L"../../Resources/Models/Effect_FBX/Twist")))
 			return E_FAIL;
@@ -608,8 +633,9 @@ HRESULT CLoader::Loading_For_Logo()
 #pragma endregion
 
 #pragma region TriggerBox
-		ADD_PROTOTYPE(ELevelType::STATIC, g_wszTriggerBox_ChangeLevel_Prototype_Tag,	CTriggerBox_LevelChange::Create(m_pDevice, m_pDeviceContext));
-		ADD_PROTOTYPE(ELevelType::STATIC, g_wszTriggerBox_MonsterSapwner_Prototype_Tag, CTriggerBox_MonsterSpawner::Create(m_pDevice, m_pDeviceContext));
+		ADD_PROTOTYPE(ELevelType::STATIC, g_wszTriggerBox_ChangeLevel_Prototype_Tag,			CTriggerBox_LevelChange::Create(m_pDevice, m_pDeviceContext));
+		ADD_PROTOTYPE(ELevelType::STATIC, g_wszTriggerBox_MonsterSapwner_Prototype_Tag,			CTriggerBox_MonsterSpawner::Create(m_pDevice, m_pDeviceContext));
+		ADD_PROTOTYPE(ELevelType::STATIC, g_wszTriggerBox_GlobalEvent_BroadCaster_PrototypeTag, CTriggerBox_GlobalEvent_BroadCaster::Create(m_pDevice, m_pDeviceContext));
 #pragma endregion
 
 		/* Weapons */

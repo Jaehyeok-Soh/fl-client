@@ -170,7 +170,7 @@ HRESULT CLevel_Square::Build_Files()
 	}
 #pragma endregion
 
-	eLevelType = ELevelType::TUTORIAL_VILLAGE;
+	eLevelType = ELevelType::SQUARE;
 	iLevelID = ENUM_TO_UINT(eLevelType);
 
 
@@ -267,7 +267,7 @@ HRESULT CLevel_Square::Ready_Player_Layer(const wstring& wstrLayerTag)
 
 		CPlayer::PLAYER_DESC playerDesc = {};
 		CTransform::TRANSFORM_DESC transformDesc = {};
-		playerDesc.iLevelIndex = ENUM_TO_UINT(ELevelType::SQUARE);
+		playerDesc.iLevelIndex = ENUM_TO_UINT(ELevelType::STATIC);
 		playerDesc.wstrBodyModelTag = L"Prototype_Component_Model_Moon";
 		transformDesc.TranslationMatrix = Matrix::CreateTranslation(Vec3(15.f, 15.f, 15.f));
 		playerDesc.pTransform_Desc = &transformDesc;
@@ -318,7 +318,7 @@ HRESULT CLevel_Square::Ready_Map()
 		return E_FAIL;
 
 	/* Dev Map */
-	std::filesystem::path FilePath = L"../../Resources/Data/MapData/LevelData/Tutorial/Viilage/Viilage.json";
+	std::filesystem::path FilePath = L"../../Resources/Data/MapData/LevelData/Tavern/Tavern.json";
 
 	if (!std::filesystem::exists(FilePath))
 		return E_FAIL;
@@ -328,11 +328,7 @@ HRESULT CLevel_Square::Ready_Map()
 
 	if (FAILED(Build_File(iLevelID, eCategory, FilePath.stem().string())))
 		return E_FAIL;
-	if (FAILED(Build_Files()))
-	{
-		MSG_BOX("CLevel_Tutorial_Boss::Initialize, Build_Files Create Failed");
-		return E_FAIL;
-	}
+
 	return S_OK;
 }
 
@@ -340,6 +336,8 @@ HRESULT CLevel_Square::Ready_Octree()
 {
 	// 순회하며 OCTREE BOX 사이즈 검출
 	auto* pList = m_pGameInstance->Get_GameObject_List(ENUM_TO_UINT(ELevelType::SQUARE), g_wszStaticObjectLayer);
+
+	if (pList == nullptr) return S_OK;
 
 	// Registe에 필요한 Object, Bound 버퍼 reserve
 	vector<CGameObject*> vecWillReigstObject;
@@ -419,7 +417,7 @@ HRESULT CLevel_Square::Ready_Camera_Setting(const _uint iLevelIndex)
 	CGameObject* pMainCamera = m_pGameInstance->Get_GameObject_Front(iLevelIndex, g_wszDynamicCameraLayer);
 	m_pGameInstance->Add_Camera(CameraType::DYNAMIC, g_MainActorCameraName, static_cast<CCameraMan*>(pMainCamera));
 	m_pGameInstance->Change_MainCamera(CameraType::DYNAMIC, g_MainActorCameraName);
-	CGameObject* pPlayer = m_pGameInstance->Get_GameObject_Front(iLevelIndex, g_wszPlayerLayer);
+	CGameObject* pPlayer = m_pGameInstance->Get_GameObject_Front(ENUM_TO_UINT(ELevelType::STATIC), g_wszPlayerLayer);
 	m_pGameInstance->Change_Target(pPlayer);
 	m_pGameInstance->Ready_Frustrum();
 	return S_OK;

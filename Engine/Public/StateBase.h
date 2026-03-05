@@ -135,8 +135,15 @@ protected:
 	_bool Align_Movement(const _float fTimeDelta);
 	_bool Align_Movement_MoveDir(const _float fTimeDelta);
 	_bool Align_Move(_uint iRunState, _bool bForce = false, void* pArg = nullptr);
-	void Move(Vec3 disp, _float minDist, _float fTimeDelta);
-
+	void Move(Vec3 vAccelation);
+	void SetCCTInputDirection(Vec3 vInputDir);
+	void SetCCTImpuls(Vec3 vImpuls);
+	void Set_ZeroVelocity();
+	void Set_ZeroHorizontalVelocity();
+	void Set_ZeroVerticalVelocity();
+	void Set_ZeroDeAccelRate();
+	void Set_DeAccelRate(_float fRate);
+	void Reset_DeAccelRate();
 	void Follow_CameraLook(const _float fTimeDelta);
 	void Apply_Gravity(const _float fTimeDelta);
 	void SetupLook_CameraLook();

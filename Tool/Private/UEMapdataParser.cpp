@@ -348,7 +348,7 @@ void CUEMapdataParser::Change_Material_JsonFile_Path(OUT wstring& wstrMaterialJs
 	pathChange._Remove_filename_and_separator();
 	pathChange = pathChange.parent_path();
 
-	pathChange = g_wszModelRelativePath + pathChange.wstring() + L"/Material";
+	pathChange = pathChange.wstring() + L"/Material";
 
 	if (!std::filesystem::exists(pathChange))
 	{

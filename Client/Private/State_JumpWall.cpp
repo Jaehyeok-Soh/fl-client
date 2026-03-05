@@ -3,6 +3,8 @@
 
 #include "Player.h"
 
+#include "PhysicsCCT.h"
+
 CState_JumpWall::CState_JumpWall(CActionState* pOwnerComponent)
 	: Super(pOwnerComponent, "JumpWall")
 {
@@ -29,8 +31,20 @@ HRESULT CState_JumpWall::Start(void* pArg, _bool bForce)
 	if (FAILED(Super::Start(pArg, bForce)))
 		return E_FAIL;
 
-
 	Set_ApplyGravity(false);
+
+	// 03/05 ¼ÒÀçÇõ Ãß°¡
+	{
+		CTransform* pPlayerTrans = Get_OwnerObject()->Get_Component<CTransform>();
+		CPhysicsCCT* pCCT = Get_OwnerObject()->Get_Component<CPhysicsCCT>();
+
+		Vec3 vUp = (pPlayerTrans->Get_Info(TRANSFORM_INFO_STATE::UP));
+
+		Vec3 accelation = vUp;
+
+		SetCCTImpuls(accelation);
+		Set_ZeroVerticalVelocity();
+	}
 
 	return S_OK;
 }

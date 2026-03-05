@@ -37,6 +37,7 @@ namespace Engine
 
 	// 기능 typedef
 	using MinMax	= DirectX::SimpleMath::Vector2; // 변수 앞에 M 붙이기
+	using CurMinMax	= DirectX::SimpleMath::Vector3; // 변수 앞에 CM 붙이기
 	using TimeCount = DirectX::SimpleMath::Vector2; // 변수 앞에 T 붙이기
 	using Flags		= unsigned int;					// 변수 앞에 F 붙이기
 }

@@ -31,6 +31,16 @@ HRESULT CPhysicsCCT::Initialize_Prototype()
 HRESULT CPhysicsCCT::Initialize(void* pArg)
 {
 	m_tDesc = *static_cast<PHYSICSCCT_DESC*>(pArg);
+
+	m_tMoveState.bGravity = m_tDesc.bGravity;
+	m_tMoveState.fGravity = m_tDesc.fGravity;
+	m_tMoveState.CMSpeed.y = m_tDesc.MSpeed.x;
+	m_tMoveState.CMSpeed.z = m_tDesc.MSpeed.y;
+	m_tMoveState.CMAccelRate.y = m_tDesc.MAccelRate.x;
+	m_tMoveState.CMAccelRate.z = m_tDesc.MAccelRate.y;
+	m_tMoveState.CMDeAccelRate.y = m_tDesc.MDeAccelRate.x;
+	m_tMoveState.CMDeAccelRate.z = m_tDesc.MDeAccelRate.y;
+
 	m_fHeightOffset = m_tDesc.fHeight * 0.5f;
 	Set_Owner(m_tDesc.pOwner);
 
@@ -43,9 +53,6 @@ HRESULT CPhysicsCCT::Initialize(void* pArg)
 
 	m_fContactOffset = m_pController->getContactOffset();
 
-	// todo eunbi : step offset 추가. 계단 덜덜 거림 해결을 위함 -> 못함
-	m_pController->setStepOffset(0.35f);
-	
 	auto cctActor = m_pController->getActor();
 	PxShape* cctShape = { nullptr };
 	if (cctActor->getNbShapes() > 0)
@@ -85,27 +92,106 @@ void CPhysicsCCT::Render()
 }
 #endif // _DEBUG
 
-PxControllerCollisionFlags CPhysicsCCT::Add_Disp(Vec3 disp)
-{
-	m_vAccDisp += disp;
-
-	return m_cctFlags;
-}
-
 void CPhysicsCCT::UpdateMove(const _float fTimeDelta)
 {
-	//Vec3 totalDisp = m_vVelocity * fTimeDelta;
-	//totalDisp += m_vAccDisp;
-	//m_fVerticalVelocity += m_fGravity * fTimeDelta;
+	_bool bHasInput = m_tMoveState.vInputDir.magnitudeSquared() > 0.001f;
 
-	//totalDisp.y = m_fVerticalVelocity * fTimeDelta;
+	m_tMoveState.vTargetVelocity = m_tMoveState.vInputDir * m_tMoveState.CMSpeed.z;
+	m_tMoveState.vTargetVelocity.y = 0.f;
 
-	//PxControllerFilters filters;
-	//Move(totalDisp, 0.001f, fTimeDelta);
+	PxVec3 currentHorizontalVel = m_tMoveState.vVelocity;
+	currentHorizontalVel.y = 0.f;
 
-	m_cctFlags = Move(m_vAccDisp, 0.001f, fTimeDelta);
+	PxVec3 velocityDiff = m_tMoveState.vTargetVelocity - currentHorizontalVel;
 
-	m_vAccDisp = { 0.f, 0.f, 0.f };
+	_float curRate = bHasInput ? m_tMoveState.CMAccelRate.x : m_tMoveState.CMDeAccelRate.x;
+
+	m_tMoveState.vAccelation = velocityDiff * curRate;
+
+	ApplyImpuls(fTimeDelta);
+	ApplyExternAcc(fTimeDelta);
+	ApplyGravity(fTimeDelta);
+
+	m_tMoveState.vVelocity += m_tMoveState.vAccelation * fTimeDelta;
+
+	m_tMoveState.vVelocity.y = PxClamp(
+		m_tMoveState.vVelocity.y,
+		m_tMoveState.CMVerticalSpeed.y,
+		m_tMoveState.CMVerticalSpeed.z
+	);
+
+	m_CollisionFlags = Move((m_tMoveState.vVelocity * fTimeDelta) + m_tMoveState.vFixedMove, 0.001f, fTimeDelta);
+
+	m_tMoveState.ReadyNext();
+}
+
+void CPhysicsCCT::SetInputDir(Vec3 vInputDir)
+{
+	m_tMoveState.vInputDir = ToPxVec3(vInputDir);
+}
+
+void CPhysicsCCT::AddAccelation(Vec3 vAccelation)
+{
+	m_tMoveState.vExternAccelation += ToPxVec3(vAccelation);
+}
+
+void CPhysicsCCT::AddFixedMove(Vec3 vVelocity)
+{
+	m_tMoveState.vFixedMove += ToPxVec3(vVelocity);
+}
+
+void CPhysicsCCT::SetImpulsAccelation(Vec3 vImpuls)
+{
+	m_tMoveState.vImpulsAccelation = ToPxVec3(vImpuls);
+}
+
+void CPhysicsCCT::SetZeroVelocity()
+{
+	m_tMoveState.vVelocity = { 0.f, 0.f, 0.f };
+}
+
+void CPhysicsCCT::SetZeroHorizontalVelocity()
+{
+	m_tMoveState.vVelocity.x = 0.f;
+	m_tMoveState.vVelocity.z = 0.f;
+}
+
+void CPhysicsCCT::SetZeroVerticalVelocity()
+{
+	m_tMoveState.vVelocity.y = 0.f;
+}
+
+void CPhysicsCCT::SetZeroDeAccelRate()
+{
+	m_tMoveState.CMDeAccelRate.x = m_tMoveState.CMDeAccelRate.y;
+}
+
+void CPhysicsCCT::SetDeAccelRate(_float fRate)
+{
+	m_tMoveState.CMDeAccelRate.x = fRate;
+}
+
+void CPhysicsCCT::ResetDeAccelRate()
+{
+	m_tMoveState.CMDeAccelRate.x = m_tMoveState.CMDeAccelRate.z;
+}
+
+void CPhysicsCCT::ApplyGravity(const _float fTimeDelta)
+{
+	if (m_tMoveState.bGravity == false)
+		return;
+
+	m_tMoveState.vAccelation.y += m_tMoveState.fGravity;
+}
+
+void CPhysicsCCT::ApplyExternAcc(const _float fTimeDelta)
+{
+	m_tMoveState.vAccelation += m_tMoveState.vExternAccelation;
+}
+
+void CPhysicsCCT::ApplyImpuls(const _float fTimeDelta)
+{
+	m_tMoveState.vVelocity += m_tMoveState.vImpulsAccelation;
 }
 
 void CPhysicsCCT::SetHeight(_float height)
@@ -127,7 +213,7 @@ void CPhysicsCCT::SetHeight(_float height)
 	}
 }
 
-const PxControllerCollisionFlags CPhysicsCCT::Move(Vec3 disp, _float minDist, _float fTimeDelta)
+const PxControllerCollisionFlags CPhysicsCCT::Move(PxVec3 disp, _float minDist, _float fTimeDelta)
 {
 	if (m_pGameInstance->Is_ChangeLevelSequence())
 	{
@@ -135,10 +221,9 @@ const PxControllerCollisionFlags CPhysicsCCT::Move(Vec3 disp, _float minDist, _f
 		return collisionFlag;
 	}
 
-	PxVec3 displacementVec(disp.x, disp.y, disp.z);
 	PxControllerFilters filters;
 	filters.mCCTFilterCallback = (PxControllerFilterCallback*)m_pCCTFilterCallback;
-	PxControllerCollisionFlags collisionFlag = m_pController->move(displacementVec, minDist, fTimeDelta, filters);
+	PxControllerCollisionFlags collisionFlag = m_pController->move(disp, minDist, fTimeDelta, filters);
 
 	if (m_bIsSteppingOnCCT)
 		collisionFlag &= ~PxControllerCollisionFlag::eCOLLISION_DOWN;
@@ -148,6 +233,19 @@ const PxControllerCollisionFlags CPhysicsCCT::Move(Vec3 disp, _float minDist, _f
 
 	m_bIsSteppingOnCCT = false;
 	m_bIsSideOnCCT = false;
+
+	CTransform* transform = m_pOwner->Get_Component<CTransform>();
+
+	Vec3 finalPos = GetFootPosition();
+	Vec3 currentPos = transform->Get_Info(TRANSFORM_INFO_STATE::POS);
+
+	_float yLerp = std::lerp(currentPos.y, finalPos.y, fTimeDelta * 15.f);
+	finalPos.y = yLerp;
+
+	transform->Set_Info(TRANSFORM_INFO_STATE::POS, finalPos);
+
+	if (collisionFlag & PxControllerCollisionFlag::eCOLLISION_DOWN)
+		m_tMoveState.vVelocity.y = 0;
 
 	return collisionFlag;
 }
@@ -310,8 +408,6 @@ void CPhysicsCCT::EnableCollision(_bool bEnable)
 				shape->setFlag(PxShapeFlag::eSCENE_QUERY_SHAPE, bEnable);
 			}
 		}
-
-		//pActor->setActorFlag(PxActorFlag::eDISABLE_SIMULATION, !bEnable);
 	}
 
 	if (bEnable)

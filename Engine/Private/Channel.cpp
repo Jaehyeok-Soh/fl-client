@@ -251,19 +251,7 @@ void CChannel::Update_MotionBone(Vec3 vLeftTrans, Vec3 vRightTrans,  CTransform*
 
 	Vec3 moveDistance = vOwnerRight * vDelta.x + vOwnerUp * vDelta.z + vOwnerLook * vDelta.y;
 
-	pOwnerPhyCCT->Move(moveDistance * fMotionOffset, 0.01f, fTimeDelta);
-
-	Vec3 finalPos = pOwnerPhyCCT->GetFootPosition();
-
-	// y lerp
-	{
-		Vec3 currentPos = pOwnerTransform->Get_Info(TRANSFORM_INFO_STATE::POS);
-
-		_float yLerp = std::lerp(currentPos.y, finalPos.y, fTimeDelta * 15.f);
-		finalPos.y = yLerp;
-	}
-
-	pOwnerTransform->Set_Info(TRANSFORM_INFO_STATE::POS, finalPos);
+	pOwnerPhyCCT->AddFixedMove(moveDistance * fMotionOffset);
 }
 
 CChannel* CChannel::Create(const CHANNEL_DESC& desc)

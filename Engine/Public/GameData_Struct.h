@@ -309,13 +309,13 @@ namespace Engine
 		_int				iMoveBaseTargetBoneIndex{ NONE_BONE_INDEX };		/* BoneIndex 정보 없으면 -1 있다면 0 이상 */
 		Vec3				vPosition{ Vec3::Zero };								/* 포지션 */
 
-		ELerpType			eMoveLerpType{ELerpType::NONE};						/* 이번 포지션값 이동에 Lerp를 쓸건지 말건지 */
-		ELerpType			eLookAtLerpType{ELerpType::NONE};					/* 이번 LookAt  이동에  Lerp를 쓸지 말지 */
-		ELerpType			eFovLerpType{ELerpType::NONE};						/* 이번 LookAt  이동에  Lerp를 쓸지 말지 */
+		ELerpType			eMoveLerpType{ELerpType::Linear};			/* 이번 포지션값 이동에 Lerp를 쓸건지 말건지 */
+		ELerpType			eLookAtLerpType{ELerpType::Linear };		/* 이번 LookAt  이동에  Lerp를 쓸지 말지 */
+		ELerpType			eFovLerpType{ELerpType::NONE};				/* 이번 LookAt  이동에  Lerp를 쓸지 말지 */
 
 		/* Position , Look At , fov 가 전부 동일하게 사용하게된다 3개로 쪼갤려니 크게 어려워질거같아서 못쪼갬 ㅇㅇ */
 		_float				fDuration{ 1.f };									/* 걸리는 시간 (초) */
-		_float				fHoldTime{ 0.f };									/* 대기하는 시간 (초) */
+		_float				fHoldTime{ 0.f };									/* 도착하고 다음 위치 이동까지 대기하는 시간 (초) */
 		
 		_float				fFov{ 60.f };										/* 카메라 줌인용 Fov 값 */
 
@@ -341,7 +341,7 @@ namespace Engine
 		Camera_Keyframe_Data& operator=(const Camera_Keyframe_Data& rhs);
 		~Camera_Keyframe_Data();
 	public:
-		Matrix				Get_WorldMatrix();
+		Matrix				Get_WorldMatrix() const;
 	public:
 		void				Reset();
 		void				Copy_Camera(class CCameraMan* pCameraman);
@@ -352,12 +352,14 @@ namespace Engine
 		void				UnBind_CashingData();
 	};
 
-	struct		ENGINE_DLL				Camera_Cinematic_Sequence : CBase
+	struct		ENGINE_DLL				Camera_Cinematic_Sequence
 	{
 	public:
+		vector<_uint>					vecStartCinematic_GlobalEventIndex{0};
+		vector<_uint>					vecEndCinematic_GlobalEventIndex{0};
 		string							strDataName;			/* Data Name */
 		vector<Camera_Keyframe_Data>	vecCamKeyFrameData{};	/* 카메라 움직임 정보 */
-		_bool											isDebugRender{ false };
+		_bool							isDebugRender{ true };
 	private:
 
 		ID3D11Device*									pDevice{nullptr};
@@ -384,6 +386,8 @@ namespace Engine
 	public:
 		void	Save_Json(json& SaveJson);
 		void	Load_Json(const json& LoadJson);
+	public:
+		void	BroadCast(_bool isStart) const;
 	};
 
 #pragma endregion
