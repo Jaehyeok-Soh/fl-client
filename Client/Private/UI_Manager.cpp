@@ -142,11 +142,10 @@ void CUI_Manager::Add_RenderGroup(uint32_t iLevelIndex)
 
 	for (auto* pUI : m_vecSortUI)
 	{
-		CGameObject* pObj = dynamic_cast<CGameObject*>(pUI);
-		if (nullptr == pObj)
+		if (nullptr == pUI && pUI->Can_Render())
 			continue;
 
-		m_pGameInstance->Push_RenderObject(RENDER_CATEGORY::UI, pObj);
+		m_pGameInstance->Push_RenderObject(RENDER_CATEGORY::UI, pUI);
 	}
 }
 

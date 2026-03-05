@@ -107,7 +107,7 @@ void CUIObject::Update(const _float fTimeDelta)
 	{
 		m_isPlaying_VisibleEvent = true;
 		m_isVisible = true;
-
+		Set_Render(true);
 		if (m_isVisibleTrigger)
 			Initialize_Visible_Event();
 		else
@@ -147,6 +147,8 @@ void CUIObject::Update_Late(const _float fTimeDelta)
 
 		if (!m_isVisibleTrigger && !m_isPlaying_VisibleEvent)
 		{
+			Set_Render(false);
+
 			m_isVisible = false;
 			m_isVisibleTrigger = false;
 		}

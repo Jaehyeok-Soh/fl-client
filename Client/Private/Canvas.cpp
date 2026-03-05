@@ -347,7 +347,7 @@ CGenericUI* CCanvas::Calc_TopUI()
 
 HRESULT CCanvas::Spawn_FromPool(void* pArg)
 {
-	if (pArg)
+	if (!pArg)
 		return E_FAIL;
 
 	if (FAILED(Super::Spawn_FromPool(pArg)))

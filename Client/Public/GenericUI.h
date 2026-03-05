@@ -74,6 +74,9 @@ public:
 	_bool Get_FinEvent()const { return m_isFin_Event; }
 	_bool Get_DeadRequest()const { return m_isDeadRequest; }
 
+	inline virtual HRESULT Spawn_FromPool(void* pArg)override { if (FAILED(Super::Spawn_FromPool(pArg)))return E_FAIL; return S_OK; };
+	inline virtual HRESULT Despawn_FromPool()override { if (FAILED(Super::Despawn_FromPool()))return E_FAIL; return S_OK; };;
+
 protected:
 	CUI_Manager* m_pUIManager = { nullptr };	
 	uint32_t m_iLevelID = {};
