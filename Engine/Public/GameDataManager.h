@@ -24,6 +24,7 @@ public:
 public:
 
 	/* Engine 단위에서는 단순하게 Data들을 들고만 있는다 Json 파일 관리는 MapToolManager에서*/
+	HRESULT		Make_DefaultTextures();
 	HRESULT		Load_TextureSplatingInfoData();
 
 	/* 이름으로 Binding 하는 함수 */
@@ -35,6 +36,8 @@ public:
 #pragma endregion
 
 #pragma region Camera Cinematic Data
+public:
+	HRESULT							Play_CameraCinematic(const wstring& wstrFindKey);
 public:
 	HRESULT							Load_CameraCinematicSequence();  	/* Load */
 	HRESULT							Save_CameraCinematicSequence();		/* 현재 저장된 데이터 전부 저장함수 */
@@ -56,13 +59,22 @@ public:
 	HRESULT Upsert_AttackPresetData(const DTO::TAttackPreset_Data& inData);
 	const unordered_map<_uint, DTO::TAttackPreset_Data>& Get_AttackPresetsData_ForDebug() const { return m_umapAttackPresetDatas; }
 #pragma endregion
+
+
+public:
+	HRESULT							Register_GlobalEventsBroadCast(_uint iTypeIndex, std::function<void()> funcGlobalEvent);
+	HRESULT							BroadCaset_RegisterGlobalEvent(_uint iTypeIndex);
 public:
 	void Clear_AttackPreset();
 private:
 	map<wstring, TEXTURE_SPLATTING_INFO >				m_mapTextureSplatingInfoDatas{};
 	const _tchar*										m_wszTextureSplatingInfoDataPath = L"../../Resources/Data/MapData/TextureSplatingInfoData.json";
+
 	ID3D11ShaderResourceView*							m_pDefaultBlack{nullptr};
 	ID3D11ShaderResourceView*							m_pDefaultWhite{nullptr};
+	ID3D11ShaderResourceView*							m_pDefaultRed{nullptr};
+	ID3D11ShaderResourceView*							m_pDefaultBlue{nullptr};
+	ID3D11ShaderResourceView*							m_pDefaultGreen{nullptr};
 private:
 	map<wstring, Camera_Cinematic_Sequence>				m_mapCameraCinematicSequence{};
 	const _tchar*										m_wszCameraCinematicDataPath = L"../../Resources/Data/CameraCinematicData/CameraCinematicData.json";
@@ -74,9 +86,13 @@ private:
 	/// AttackPreset ///
 	////////////////////
 	_bool m_bAttackPresetLoaded{ false };
-	unordered_map<_uint, DTO::TAttackPreset_Data>		m_umapAttackPresetDatas;
-	unordered_map<string, _uint>						m_umapAttackPresetTagToKey;
-	class CGameInstance *								m_pGameInstance = { nullptr };
+	unordered_map<_uint, DTO::TAttackPreset_Data>			m_umapAttackPresetDatas;
+	unordered_map<string, _uint>							m_umapAttackPresetTagToKey;
+	class CGameInstance *									m_pGameInstance = { nullptr };
+
+private:
+	/* Global Event 발행할 람다함수 등록 */
+	vector<std::function<void()>>							m_vecGlobalEventsBroadCast;
 public:
 	static CGameDataManager* Create(ID3D11Device* pDevice , ID3D11DeviceContext* pDeviceContext);
 	virtual void Free() override;

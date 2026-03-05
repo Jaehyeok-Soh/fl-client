@@ -159,8 +159,8 @@ namespace Engine
 		: eMoveBaseTarget(ECinematicTarget::NONE)
 		, iMoveBaseTargetBoneIndex(NONE_BONE_INDEX)
 		, vPosition(Vec3::Zero)
-		, eMoveLerpType(ELerpType::NONE)
-		, eLookAtLerpType(ELerpType::NONE)
+		, eMoveLerpType(ELerpType::Linear)
+		, eLookAtLerpType(ELerpType::Linear)
 		, eFovLerpType(ELerpType::NONE)
 		, fDuration(1.f)
 		, fHoldTime(0.f)
@@ -179,8 +179,8 @@ namespace Engine
 		: eMoveBaseTarget(ECinematicTarget::NONE)
 		, iMoveBaseTargetBoneIndex(NONE_BONE_INDEX)
 		, vPosition(Vec3::Zero)
-		, eMoveLerpType(ELerpType::NONE)
-		, eLookAtLerpType(ELerpType::NONE)
+		, eMoveLerpType(ELerpType::Linear)
+		, eLookAtLerpType(ELerpType::Linear)
 		, eFovLerpType(ELerpType::NONE)
 		, fDuration(1.f)
 		, fHoldTime(0.f)
@@ -273,7 +273,7 @@ namespace Engine
 		UnBind_CashingData();
 	}
 
-	Matrix Camera_Keyframe_Data::Get_WorldMatrix()
+	Matrix Camera_Keyframe_Data::Get_WorldMatrix() const
 	{
 		return Matrix::CreateFromYawPitchRoll(XMConvertToRadians(this->vPitchYawRoll.y), XMConvertToRadians(this->vPitchYawRoll.x), XMConvertToRadians(this->vPitchYawRoll.z))
 			* Matrix::CreateTranslation(this->vPosition);
@@ -349,7 +349,9 @@ namespace Engine
 		, pBatch{nullptr}
 		, pEffect{nullptr}
 		, pInputLayout{nullptr}
-		, isDebugRender{false}
+		, isDebugRender{true}
+		, vecStartCinematic_GlobalEventIndex{}
+		, vecEndCinematic_GlobalEventIndex{}
 	{
 		Safe_AddRef(pDevice);
 		Safe_AddRef(pContext);
@@ -375,10 +377,12 @@ namespace Engine
 		, vecCamKeyFrameData{rhs.vecCamKeyFrameData }
 		, pDevice{ rhs.pDevice }
 		, pContext{ rhs.pContext }
+		, vecStartCinematic_GlobalEventIndex{ rhs.vecStartCinematic_GlobalEventIndex }
+		, vecEndCinematic_GlobalEventIndex{ rhs.vecEndCinematic_GlobalEventIndex }
 		, pBatch{ nullptr }
 		, pEffect{ nullptr }
 		, pInputLayout{ nullptr }
-		, isDebugRender{ false }
+		, isDebugRender{ true }
 	{
 		Safe_AddRef(this->pDevice);
 		Safe_AddRef(this->pContext);
@@ -414,6 +418,8 @@ namespace Engine
 		this->pDevice				= rhs.pDevice;		Safe_AddRef(pDevice);
 		this->pContext				= rhs.pContext;		Safe_AddRef(pContext);
 
+		this->vecStartCinematic_GlobalEventIndex	= rhs.vecStartCinematic_GlobalEventIndex;
+		this->vecEndCinematic_GlobalEventIndex		= rhs.vecEndCinematic_GlobalEventIndex;
 
 		if (!this->pBatch)
 			this->pBatch = new PrimitiveBatch<VertexPositionColor>(this->pContext);
@@ -618,13 +624,11 @@ namespace Engine
 
 	void Camera_Cinematic_Sequence::Reset(_int iResetIndex)
 	{
+		
 		/* 전체 리셋 */
 		if (iResetIndex == -1)
 		{
-			for (auto& CamKeyFrameData : this->vecCamKeyFrameData)
-			{
-				CamKeyFrameData.Reset();
-			}
+			this->vecCamKeyFrameData.clear();
 		}
 		else
 		{
@@ -664,6 +668,18 @@ namespace Engine
 
 	void Camera_Cinematic_Sequence::Save_Json(json& SaveJson)
 	{
+		if (!this->vecStartCinematic_GlobalEventIndex.empty())
+		{
+			auto& StartGlobalEventName_SaveJson = SaveJson["Start Global Event Names"];
+			StartGlobalEventName_SaveJson = this->vecStartCinematic_GlobalEventIndex;
+		}
+		if (!this->vecEndCinematic_GlobalEventIndex.empty())
+		{
+			auto& StartGlobalEventName_SaveJson = SaveJson["End Global Event Names"];
+			StartGlobalEventName_SaveJson = this->vecEndCinematic_GlobalEventIndex;
+		}
+
+
 		/* Key Frame Data 저장 */
 		auto& CamkeyFrame_SaveJson = SaveJson["Camera Keyframe Data"];
 		for (auto& CamKeyframeData : this->vecCamKeyFrameData)
@@ -681,6 +697,32 @@ namespace Engine
 		// 1. 현재 이 함수에 들어온 JSON 전체 구조를 로그로 출력
 		OutputDebugStringA(LoadJson.dump(4).c_str());
 
+		if (LoadJson.contains("Start Global Event Index"))
+		{
+			const auto& JsonArray = LoadJson["Start Global Event Index"];
+
+			for (auto& Json : JsonArray)
+			{
+				if (Json.is_null())
+					continue;
+				this->vecStartCinematic_GlobalEventIndex.push_back(Json);
+			}
+		}
+
+		if (LoadJson.contains("End Global Event Index"))
+		{
+			const auto& JsonArray = LoadJson["End Global Event Index"];
+
+			for (auto& Json : JsonArray)
+			{
+				if (Json.is_null())
+					continue;
+				this->vecEndCinematic_GlobalEventIndex.push_back(Json);
+			}
+		}
+
+
+
 		if (LoadJson.contains("Camera Keyframe Data"))
 		{
 			this->vecCamKeyFrameData.clear();
@@ -695,6 +737,23 @@ namespace Engine
 				tCamkeyFrameData.Load_Json(CameraKeyFrameData_LoadJson);
 				vecCamKeyFrameData.push_back(tCamkeyFrameData);
 			}
+		}
+	}
+
+	void Camera_Cinematic_Sequence::BroadCast(_bool isStart) const
+	{
+		auto* pGameInstnace = CGameInstance::GetInstance();
+		if (pGameInstnace == nullptr) return;
+
+		if (isStart == true)
+		{
+			for (auto& Index : this->vecStartCinematic_GlobalEventIndex)
+				pGameInstnace->BroadCaset_RegisterGlobalEvent(Index);
+		}
+		else
+		{
+			for (auto& Index : this->vecEndCinematic_GlobalEventIndex)
+				pGameInstnace->BroadCaset_RegisterGlobalEvent(Index);
 		}
 	}
 

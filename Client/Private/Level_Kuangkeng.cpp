@@ -1,5 +1,7 @@
 #include "pch.h"
-#include "Level_Square.h"
+#include "Level_Kuangkeng.h"
+#include "Level_Loading.h"
+#include "Client_EventDefine.h"
 //=================
 // Manager
 //=================
@@ -53,65 +55,51 @@
 #include "Physics_LandScape.h"
 #include "Monster_Dog.h"
 #include "Monster_Dog_Body.h"
-#include "Boss_Xibi.h"
-#include "Boss_Xibi_Body.h"
-
+#include "Monster_Boomer.h"
+#include "Monster_Boomer_Body.h"
+#include "Moon_SkillE_Obj.h"
 
 //=================
-// Game Instance
+// GameInstance
 //=================
 #include "GameInstance.h"
 
-CLevel_Square::CLevel_Square(ID3D11Device* pDevice, ID3D11DeviceContext* pDeviceContext)
-	: CLevel(pDevice , pDeviceContext)
+CLevel_Kuangkeng::CLevel_Kuangkeng(ID3D11Device* pDevice, ID3D11DeviceContext* pDeviceContext)
+	: Super(pDevice, pDeviceContext)
 {
 }
 
-HRESULT CLevel_Square::Initialize()
+HRESULT CLevel_Kuangkeng::Initialize()
 {
 	if (FAILED(Super::Initialize()))
 		return E_FAIL;
 
 	if (FAILED(Build_Prototype()))
-	{
-		MSG_BOX("CLevel_Square::Initialize, Build_Prototype Create Failed");
 		return E_FAIL;
-	}
 
 	if (FAILED(Build_Files()))
-	{
-		MSG_BOX("CLevel_Square::Initialize, Build_Files Create Failed");
 		return E_FAIL;
-	}
 
 	if (FAILED(Ready_Lights()))
-	{
-		MSG_BOX("CLevel_Square::Initialize, Ready_Lights Create Failed");
 		return E_FAIL;
-	}
 
 	if (FAILED(Ready_Player_Layer(g_wszPlayerLayer)))
-	{
-		MSG_BOX("CLevel_Square::Initialize, Ready_Player_Layer Create Failed");
 		return E_FAIL;
-	}
 
 	if (FAILED(Ready_Camera_Layer(g_wszDynamicCameraLayer)))
-	{
-		MSG_BOX("CLevel_Square::Initialize, Ready_Camera_Layer Create Failed");
 		return E_FAIL;
-	}
 
 	if (FAILED(Ready_Map()))
-	{
-		MSG_BOX("CLevel_Square::Initialize, Ready_Map Create Failed");
 		return E_FAIL;
-	}
+
+	if (FAILED(Ready_UI_Layer(g_wszUILayer)))
+		return E_FAIL;
 
 	return S_OK;
+
 }
 
-HRESULT CLevel_Square::Awake(const _uint iLevelID)
+HRESULT CLevel_Kuangkeng::Awake(const _uint iLevelID)
 {
 	if (FAILED(Super::Awake(iLevelID)))
 		return E_FAIL;
@@ -121,35 +109,86 @@ HRESULT CLevel_Square::Awake(const _uint iLevelID)
 
 	if (FAILED(Ready_Camera_Setting(iLevelID)))
 		return E_FAIL;
-	
 
 	m_eCursorMode = ECursorMode::LockedHiddenCenter;
 	m_pGameInstance->Request_CursorMode(m_eCursorMode);
+	return S_OK;
+}
 
+void CLevel_Kuangkeng::Update(const _float fTimeDelta)
+{
+	Super::Update(fTimeDelta);
+
+	static _uint s_iCount = { 0 };
+	if (m_pGameInstance->KeyButton_Down(DIK_LALT))
+	{
+#ifdef _DEBUG
+		s_iCount = (s_iCount + 1) % 3;
+#else
+		s_iCount = (s_iCount + 1) % 2;
+#endif
+		if (s_iCount == 0)
+		{
+			m_eCursorMode = ECursorMode::LockedHiddenCenter;
+		}
+		else if (s_iCount == 1)
+		{
+			m_eCursorMode = ECursorMode::VisibleClipped;
+		}
+#ifdef _DEBUG
+		else
+		{
+			m_eCursorMode = ECursorMode::VisibleFree;
+		}
+#endif
+		m_pGameInstance->Request_CursorMode(m_eCursorMode);
+	}
+
+	if (KEY_BUTTON_DOWN(DIK_8))
+	{
+		UI_PREFAB_DATA Desc = {};
+		CUI_Manager::GetInstance()->Request_Add_Prefab(ENUM_TO_UINT(ELevelType::KUANGKENG), EUIPrefabType::BOSS_NAMEPLATE, ENUM_TO_UINT(ELevelType::KUANGKENG), &Desc);
+	}
+
+	if (KEY_BUTTON_DOWN(DIK_7))
+	{
+		UI_PREFAB_DATA Desc = {};
+		Desc.DamageFontData.iDamage = 10;
+		Desc.DamageFontData.vHitPos = Vec3{0.f, 0.f, 0.f};
+		Desc.DamageFontData.vFontColor = Vec4{ 1.f, 1.f,1.f, 1.f };
+
+		CUI_Manager::GetInstance()->Request_Add_Prefab(ENUM_TO_UINT(ELevelType::KUANGKENG), EUIPrefabType::DAMAGE_FONTS_CRITICAL, ENUM_TO_UINT(ELevelType::KUANGKENG), &Desc);
+	}
+
+}
+
+HRESULT CLevel_Kuangkeng::Render()
+{
+	if (FAILED(Super::Render()))
+		return E_FAIL;
 
 	return S_OK;
 }
 
-HRESULT CLevel_Square::Build_Prototype()
+HRESULT CLevel_Kuangkeng::Build_Prototype()
 {
-	if (FAILED(Ready_Builder(DTO::ECategory::MAP, CBuilder_Map::Create(m_pDevice, m_pDeviceContext, ENUM_TO_UINT(ELevelType::SQUARE)))))
-		return E_FAIL;
+	_uint iLevelType = ENUM_TO_UINT(ELevelType::KUANGKENG);
 
-	if (FAILED(Ready_Builder(DTO::ECategory::EFFECT, CBuilder_Effect::Create(m_pDevice, m_pDeviceContext, ENUM_TO_UINT(ELevelType::SQUARE)))))
+	if (FAILED(Ready_Builder(DTO::ECategory::MAP, CBuilder_Map::Create(m_pDevice, m_pDeviceContext, iLevelType ))))
 		return E_FAIL;
-
-	if (FAILED(Ready_Builder(DTO::ECategory::UI, CBuilder_UI::Create(m_pDevice, m_pDeviceContext, static_cast<_uint>(ELevelType::SQUARE)))))
+	if (FAILED(Ready_Builder(DTO::ECategory::UI, CBuilder_UI::Create(m_pDevice, m_pDeviceContext, iLevelType))))
 		return E_FAIL;
-
-	if (FAILED(Ready_Builder(DTO::ECategory::UI_PREFAB, CBuilder_UIPrefabs::Create(m_pDevice, m_pDeviceContext, static_cast<_uint>(ELevelType::SQUARE)))))
+	if (FAILED(Ready_Builder(DTO::ECategory::UI_PREFAB, CBuilder_UIPrefabs::Create(m_pDevice, m_pDeviceContext, iLevelType))))
+		return E_FAIL;
+	if (FAILED(Ready_Builder(DTO::ECategory::EFFECT, CBuilder_Effect::Create(m_pDevice, m_pDeviceContext, iLevelType))))
 		return E_FAIL;
 
 	return S_OK;
 }
 
-HRESULT CLevel_Square::Build_Files()
+HRESULT CLevel_Kuangkeng::Build_Files()
 {
-	ELevelType eLevelType = ELevelType::SQUARE;
+	ELevelType eLevelType = ELevelType::KUANGKENG;
 	_uint iLevelID = ENUM_TO_UINT(eLevelType);
 
 #pragma region EFFECT
@@ -169,9 +208,6 @@ HRESULT CLevel_Square::Build_Files()
 		}
 	}
 #pragma endregion
-
-	eLevelType = ELevelType::SQUARE;
-	iLevelID = ENUM_TO_UINT(eLevelType);
 
 
 	eCategory = DTO::ECategory::UI;
@@ -208,7 +244,86 @@ HRESULT CLevel_Square::Build_Files()
 	return S_OK;
 }
 
-HRESULT CLevel_Square::Ready_Lights()
+HRESULT CLevel_Kuangkeng::Ready_Player_Layer(const wstring& wstrLayerTag)
+{
+
+
+	/* Player 최초 생성 */
+	{
+		// SkillObject Pool
+		{
+			CMoon_SkillE_Obj::SKILLOBJECT_DESC desc{};
+			//TRANSFORM_DESC
+			CTransform::TRANSFORM_DESC tTransDesc = {};
+			tTransDesc.fMovePerSec = 20.f;
+			desc.pTransform_Desc = &tTransDesc;
+
+			if (FAILED(m_pGameInstance->Regist_Pool(
+				0,
+				g_wszPool_MoonSkillE,
+				g_wszSkillObjectLayer,
+				0,
+				g_wszMoonSkillE__Prototype_Tag,
+				&desc,
+				30)))
+				return E_FAIL;
+		}
+
+		CGameObject* pResult = { nullptr };
+
+		CPlayer::PLAYER_DESC playerDesc = {};
+		CTransform::TRANSFORM_DESC transformDesc = {};
+		playerDesc.iLevelIndex = ENUM_TO_UINT(ELevelType::LOGO);
+		playerDesc.wstrBodyModelTag = L"Prototype_Component_Model_Moon";
+		transformDesc.TranslationMatrix = Matrix::CreateTranslation(Vec3(15.f, 15.f, 15.f));
+		playerDesc.pTransform_Desc = &transformDesc;
+		if (!(pResult = m_pGameInstance->Add_GameObject(ENUM_TO_UINT(ELevelType::STATIC),
+			L"Prototype_GameObject_MainPlayer",
+			ENUM_TO_UINT(ELevelType::STATIC),
+			wstrLayerTag, &playerDesc)))
+			return E_FAIL;
+	}
+
+	return S_OK;
+}
+
+HRESULT CLevel_Kuangkeng::Ready_UI_Layer(const wstring& wstrLayerTag)
+{
+	if (FAILED(CUI_Manager::GetInstance()->Bind_Trigger(ENUM_TO_UINT(ELevelType::KUANGKENG))))
+		return E_FAIL;
+
+	CUI_Manager::GetInstance()->Clear_TriggerUI();
+	return S_OK;
+}
+
+HRESULT CLevel_Kuangkeng::Ready_Camera_Layer(const wstring& wstrLayerTag)
+{
+	{
+		CGameObject* pResult = { nullptr };
+		CCameraMan_Targeter::GAMEOBJECT_DESC goDesc = {};
+		CTransform::TRANSFORM_DESC TransformDesc = {};
+		CCamera::CAMERA_DESC CameraDesc = {};
+
+		CameraDesc.eProjectionType = EProjectionType::PERSPECTIVE;
+		CameraDesc.fFov = ::XMConvertToRadians(60.f);
+		CameraDesc.fViewWidth = (_float)g_iWinSizeX;
+		CameraDesc.fViewHeight = (_float)g_iWinSizeY;
+		CameraDesc.fNear = 0.1f;
+		CameraDesc.fFar = 1000.f;
+
+		goDesc.pTransform_Desc = &TransformDesc;
+		goDesc.pCamera_Desc = &CameraDesc;
+		if (!(pResult = m_pGameInstance->Add_GameObject(ENUM_TO_UINT(ELevelType::STATIC),
+			L"Prototype_GameObject_CameraManTargeter",
+			ENUM_TO_UINT(ELevelType::KUANGKENG),
+			wstrLayerTag, &goDesc)))
+			return E_FAIL;
+	}
+
+	return S_OK;
+}
+
+HRESULT CLevel_Kuangkeng::Ready_Lights()
 {
 	{
 		LIGHT_DESC desc = {};
@@ -249,75 +364,25 @@ HRESULT CLevel_Square::Ready_Lights()
 	return S_OK;
 }
 
-HRESULT CLevel_Square::Ready_Player_Layer(const wstring& wstrLayerTag)
+HRESULT CLevel_Kuangkeng::Ready_Map()
 {
-	_uint iLevelIndex = ENUM_TO_UINT(ELevelType::SQUARE);
-
-	if (CGameObject* pPlayer = m_pGameInstance->Get_GameObject_Front(ENUM_TO_UINT(ELevelType::STATIC), wstrLayerTag))
-		return S_OK;
-
-
-	/* Player 최초 생성 */
-	{
-		CGameObject* pResult = { nullptr };
-
-		CPlayer::PLAYER_DESC playerDesc = {};
-		CTransform::TRANSFORM_DESC transformDesc = {};
-		playerDesc.iLevelIndex = ENUM_TO_UINT(ELevelType::STATIC);
-		playerDesc.wstrBodyModelTag = L"Prototype_Component_Model_Moon";
-		transformDesc.TranslationMatrix = Matrix::CreateTranslation(Vec3(15.f, 15.f, 15.f));
-		playerDesc.pTransform_Desc = &transformDesc;
-		if (!(pResult = m_pGameInstance->Add_GameObject(ENUM_TO_UINT(ELevelType::STATIC),
-			L"Prototype_GameObject_MainPlayer",
-			ENUM_TO_UINT(ELevelType::STATIC),
-			wstrLayerTag, &playerDesc)))
-			return E_FAIL;
-	}
-
-	return S_OK;
-}
-
-HRESULT CLevel_Square::Ready_Camera_Layer(const wstring& wstrLayerTag)
-{
-	{
-		CGameObject* pResult = { nullptr };
-		CCameraMan_Targeter::GAMEOBJECT_DESC goDesc = {};
-		CTransform::TRANSFORM_DESC TransformDesc = {};
-		CCamera::CAMERA_DESC CameraDesc = {};
-
-		CameraDesc.eProjectionType = EProjectionType::PERSPECTIVE;
-		CameraDesc.fFov = ::XMConvertToRadians(60.f);
-		CameraDesc.fViewWidth = (_float)g_iWinSizeX;
-		CameraDesc.fViewHeight = (_float)g_iWinSizeY;
-		CameraDesc.fNear = 0.1f;
-		CameraDesc.fFar = 1000.f;
-
-		goDesc.pTransform_Desc = &TransformDesc;
-		goDesc.pCamera_Desc = &CameraDesc;
-		if (!(pResult = m_pGameInstance->Add_GameObject(ENUM_TO_UINT(ELevelType::STATIC),
-			L"Prototype_GameObject_CameraManTargeter",
-			ENUM_TO_UINT(ELevelType::SQUARE),
-			wstrLayerTag, &goDesc)))
-			return E_FAIL;
-	}
-
-	return S_OK;
-}
-
-HRESULT CLevel_Square::Ready_Map()
-{
-	ELevelType		eLevelType = ELevelType::SQUARE;
-	DTO::ECategory	eCategory = DTO::ECategory::MAP;
-	_uint			iLevelID = ENUM_TO_UINT(eLevelType);
+	ELevelType eLevelType = ELevelType::KUANGKENG;
+	DTO::ECategory eCategory = DTO::ECategory::MAP;
+	_uint iLevelID = ENUM_TO_UINT(eLevelType);
 
 	if (FAILED(m_pGameInstance->Regist_Document<CDataDocument_Map>(iLevelID, eCategory)))
 		return E_FAIL;
 
-	/* Dev Map */
-	std::filesystem::path FilePath = L"../../Resources/Data/MapData/LevelData/Tavern/Tavern.json";
+
+	/* 갱도 처음 시작 부분 */
+	std::filesystem::path FilePath = L"../../Resources/Data/MapData/LevelData/Kuangkeng/Kuangkeng_Part_01.json";
+
 
 	if (!std::filesystem::exists(FilePath))
 		return E_FAIL;
+
+
+	/* 갱도는 파일 4개를 빌드해준다. */
 
 	if (FAILED(m_pGameInstance->Load_File_Json(iLevelID, eCategory, FilePath)))
 		return E_FAIL;
@@ -328,12 +393,11 @@ HRESULT CLevel_Square::Ready_Map()
 	return S_OK;
 }
 
-HRESULT CLevel_Square::Ready_Octree()
+
+HRESULT CLevel_Kuangkeng::Ready_Octree()
 {
 	// 순회하며 OCTREE BOX 사이즈 검출
-	auto* pList = m_pGameInstance->Get_GameObject_List(ENUM_TO_UINT(ELevelType::SQUARE), g_wszStaticObjectLayer);
-
-	if (pList == nullptr) return S_OK;
+	auto* pList = m_pGameInstance->Get_GameObject_List(ENUM_TO_UINT(ELevelType::KUANGKENG), g_wszStaticObjectLayer);
 
 	// Registe에 필요한 Object, Bound 버퍼 reserve
 	vector<CGameObject*> vecWillReigstObject;
@@ -407,71 +471,36 @@ HRESULT CLevel_Square::Ready_Octree()
 
 	return S_OK;
 }
-
-HRESULT CLevel_Square::Ready_Camera_Setting(const _uint iLevelIndex)
+HRESULT CLevel_Kuangkeng::Ready_Camera_Setting(const _uint iLevelIndex)
 {
 	CGameObject* pMainCamera = m_pGameInstance->Get_GameObject_Front(iLevelIndex, g_wszDynamicCameraLayer);
 	m_pGameInstance->Add_Camera(CameraType::DYNAMIC, g_MainActorCameraName, static_cast<CCameraMan*>(pMainCamera));
 	m_pGameInstance->Change_MainCamera(CameraType::DYNAMIC, g_MainActorCameraName);
-	CGameObject* pPlayer = m_pGameInstance->Get_GameObject_Front(ENUM_TO_UINT(ELevelType::STATIC), g_wszPlayerLayer);
+	CGameObject* pPlayer = m_pGameInstance->Get_GameObject_Front(/* static */ 0, g_wszPlayerLayer);
+	if (pPlayer == nullptr)
+		return E_FAIL;
+
 	m_pGameInstance->Change_Target(pPlayer);
 	m_pGameInstance->Ready_Frustrum();
 	return S_OK;
 }
 
-CLevel_Square* CLevel_Square::Create(ID3D11Device* pDevice, ID3D11DeviceContext* pDeviceContext)
+
+CLevel_Kuangkeng* CLevel_Kuangkeng::Create(ID3D11Device* pDevice, ID3D11DeviceContext* pDeviceContext)
 {
-	CLevel_Square* pInstance = new CLevel_Square(pDevice, pDeviceContext);
+	CLevel_Kuangkeng* pInstance = new CLevel_Kuangkeng(pDevice, pDeviceContext);
 
 	if (FAILED(pInstance->Initialize()))
 	{
-		MSG_BOX("CLevel_Square::Create, Failed");
+		MSG_BOX("CLevel_Kuangkeng::Create, Failed");
 		Safe_Release(pInstance);
 	}
 
 	return pInstance;
 }
 
-void CLevel_Square::Update(const _float fTimeDelta)
+void CLevel_Kuangkeng::Free()
 {
-
-	Super::Update(fTimeDelta);
-
-	static _uint s_iCount = { 0 };
-	if (m_pGameInstance->KeyButton_Down(DIK_LALT))
-	{
-#ifdef _DEBUG
-		s_iCount = (s_iCount + 1) % 3;
-#else
-		s_iCount = (s_iCount + 1) % 2;
-#endif
-		if (s_iCount == 0)
-		{
-			m_eCursorMode = ECursorMode::LockedHiddenCenter;
-		}
-		else if (s_iCount == 1)
-		{
-			m_eCursorMode = ECursorMode::VisibleClipped;
-		}
-#ifdef _DEBUG
-		else
-		{
-			m_eCursorMode = ECursorMode::VisibleFree;
-		}
-#endif
-		m_pGameInstance->Request_CursorMode(m_eCursorMode);
-	}
-}
-
-HRESULT CLevel_Square::Render()
-{
-	if(FAILED(Super::Render()))
-		return E_FAIL;
-
-	return S_OK;
-}
-
-void CLevel_Square::Free()
-{
+	m_pGameInstance->Clear_Lights();
 	Super::Free();
 }

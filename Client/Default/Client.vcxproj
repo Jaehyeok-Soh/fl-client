@@ -207,7 +207,9 @@
     <ClInclude Include="..\Public\imstb_textedit.h" />
     <ClInclude Include="..\Public\imstb_truetype.h" />
     <ClInclude Include="..\Public\LandScape.h" />
+    <ClInclude Include="..\Public\Level_Kuangkeng.h" />
     <ClInclude Include="..\Public\Level_Square.h" />
+    <ClInclude Include="..\Public\Level_Tavern.h" />
     <ClInclude Include="..\Public\Level_Test.h" />
     <ClInclude Include="..\Public\MapObject.h" />
     <ClInclude Include="..\Public\MonsterActionState.h" />
@@ -288,6 +290,7 @@
     <ClInclude Include="..\Public\Tree.h" />
     <ClInclude Include="..\Public\Level_Tutorial_Boss.h" />
     <ClInclude Include="..\Public\Level_Tutorial_Village.h" />
+    <ClInclude Include="..\Public\TriggerBox_GlobalEvent_BroadCaster.h" />
     <ClInclude Include="..\Public\TriggerBox_MonsterSpawner.h" />
     <ClInclude Include="..\Public\UIAimDot_Image.h" />
     <ClInclude Include="..\Public\TriggerBox.h" />
@@ -413,7 +416,9 @@
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|x64'">NotUsing</PrecompiledHeader>
     </ClCompile>
     <ClCompile Include="..\Private\LandScape.cpp" />
+    <ClCompile Include="..\Private\Level_Kuangkeng.cpp" />
     <ClCompile Include="..\Private\Level_Square.cpp" />
+    <ClCompile Include="..\Private\Level_Tavern.cpp" />
     <ClCompile Include="..\Private\Level_Test.cpp" />
     <ClCompile Include="..\Private\MapObject.cpp" />
     <ClCompile Include="..\Private\MonsterActionState.cpp" />
@@ -494,6 +499,7 @@
     <ClCompile Include="..\Private\Level_Tutorial_Boss.cpp" />
     <ClCompile Include="..\Private\Level_Tutorial_Village.cpp" />
     <ClCompile Include="..\Private\TriggerBox.cpp" />
+    <ClCompile Include="..\Private\TriggerBox_GlobalEvent_BroadCaster.cpp" />
     <ClCompile Include="..\Private\TriggerBox_LevelChange.cpp" />
     <ClCompile Include="..\Private\TriggerBox_MonsterSpawner.cpp" />
     <ClCompile Include="..\Private\UIAimDot_Image.cpp" />

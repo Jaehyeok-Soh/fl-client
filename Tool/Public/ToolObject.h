@@ -31,13 +31,12 @@ public:
 	virtual HRESULT Render() override;
 	virtual _bool Picking(OUT Vec3& vOut) PURE;
 	virtual void Draw_ImGui();
-	void Set_Dead(_bool bStatic = false);
-
 	virtual bool	Get_SRT( OUT  Vec3& vOutScale , OUT Quat& vQuat , OUT Vec3& vPosition  );
 	
 	virtual void	Set_WorldMatrix(const Matrix& WorldMatrix);
 	virtual void	Set_WorldMatrix(const Vec3& vScale, const Quat& vQuat ,const Vec3& vPosition);
 	virtual Matrix  Get_WorldMatrix();
+	virtual void	Set_Dead(_bool bStatic = false) override;
 public:
 	virtual void Set_Visible();
 	virtual void Set_Invisible();
@@ -47,7 +46,6 @@ public:
 	const string& Get_TypeName() const { return m_strObjectType; }
 	EToolObjectType Get_Type() const { return m_eType; }
 	const string& Get_ModelFileName() const { return m_strModelFileName; }
-	const wstring& Get_LayerTag() const { return m_wstrLayerTag; }
 	void Update_CombinedWorldMatrix(const Matrix &matParent);
 private:
 	HRESULT Set_TypeString();

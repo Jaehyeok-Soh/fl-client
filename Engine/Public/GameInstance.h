@@ -34,6 +34,7 @@ NS_BEGIN(Engine)
 
 enum class CameraType;
 struct DelegateHandle;
+struct Camera_Cinematic_Sequence;
 class CCollider;
 class CGameObject;
 class CObjectPool;
@@ -191,6 +192,7 @@ public:
 	void Setup_UIViewProj_ToCBuffer();
 	void Setup_Inv_ToCBuffer();
 
+	HRESULT Play_CameraCinematic(const Camera_Cinematic_Sequence* pCameraCinematicSequence);
 	HRESULT Camera_Shaking(const CAM_SHAKING_DATA& tData);
 #pragma endregion
 	
@@ -390,8 +392,8 @@ public:
 
 // Todo - 쓰레기통 정리
 #pragma region GAMEDATA_MANAGER
-
-
+	HRESULT		Register_GlobalEventsBroadCast(_uint iTypeIndex, std::function<void()> funcGlobalEvent);
+	HRESULT		BroadCaset_RegisterGlobalEvent(_uint iTypeIndex);
 #pragma region TextureSplating
 	HRESULT		GameDataManager_Load_TextureSplatingInfoData();
 	/* 이름으로 Binding 하는 함수 */
@@ -404,6 +406,7 @@ public:
 	HRESULT		GameDataManager_Load_CameraCinematicSequence(const wstring& wstrFindKey, OUT struct Camera_Cinematic_Sequence* pOutCamCinematicSequence);
 	HRESULT		GameDataManager_Save_CameraCinematicSequence(const wstring& wstrFindKey, const struct Camera_Cinematic_Sequence* pSaveCamCinematicSequence);
 
+	HRESULT		Play_CameraCinematic(const wstring& wstrFindKey);
 	vector<std::string> GameDataManager_Get_CameraCinematicSequenceNames() const;
 
 

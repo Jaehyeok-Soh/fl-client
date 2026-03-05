@@ -184,15 +184,6 @@
     <Filter Include="03. GameObject\PartObjects\Weapon\Gun">
       <UniqueIdentifier>{6a93f015-83a7-4ad9-a084-d7e71fa8f3a4}</UniqueIdentifier>
     </Filter>
-    <Filter Include="07. System\01. Builder\Effect">
-      <UniqueIdentifier>{0a51c3b4-11ce-445a-904c-410b2a5ef809}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="07. System\01. Builder\Effect\Builder_Effect">
-      <UniqueIdentifier>{9c580bfd-a983-4b3f-a72a-f1da0a5c9270}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="07. System\01. Builder\Effect\Builder_EffectEvent">
-      <UniqueIdentifier>{5d286e09-eee0-4b43-bcea-01a835550da6}</UniqueIdentifier>
-    </Filter>
     <Filter Include="06. FSM\Player\JumpWall">
       <UniqueIdentifier>{2c8ee512-8e94-467f-9f3f-35d518b8ff89}</UniqueIdentifier>
     </Filter>
@@ -624,6 +615,24 @@
     </Filter>
     <Filter Include="03. GameObject\UIObjects\02.UI\Image\Dynamic Image\02.HoverImage">
       <UniqueIdentifier>{871de243-5883-42bb-b109-9645901ce4d2}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="03. GameObject\TriggerBox\02. TriggerBox_GlobalEvent_BroadCaster">
+      <UniqueIdentifier>{bb28bb7b-aa31-4064-9d60-c0091f8cb5a5}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="07. System\01. Builder\Effect">
+      <UniqueIdentifier>{0a51c3b4-11ce-445a-904c-410b2a5ef809}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="07. System\01. Builder\Effect\Builder_Effect">
+      <UniqueIdentifier>{9c580bfd-a983-4b3f-a72a-f1da0a5c9270}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="07. System\01. Builder\Effect\Builder_EffectEvent">
+      <UniqueIdentifier>{5d286e09-eee0-4b43-bcea-01a835550da6}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02. Level\Kuangkeng">
+      <UniqueIdentifier>{a7626871-21e5-48ac-b793-01f83f14e2a0}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02. Level\Tavern">
+      <UniqueIdentifier>{2905b500-b428-4805-9fc4-638afebf03dc}</UniqueIdentifier>
     </Filter>
     <Filter Include="07. System\99. Debug_ImGui\Inspector\PoolDebug">
       <UniqueIdentifier>{424668f6-8bc5-4dd8-8036-5b7a5d57b52a}</UniqueIdentifier>
@@ -1165,6 +1174,15 @@
     <ClInclude Include="..\Public\Moon_SkillE_Obj.h">
       <Filter>03. GameObject\SkillObject\Player\Moon\SkillE</Filter>
     </ClInclude>
+    <ClInclude Include="..\Public\TriggerBox_GlobalEvent_BroadCaster.h">
+      <Filter>03. GameObject\TriggerBox\02. TriggerBox_GlobalEvent_BroadCaster</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\Level_Kuangkeng.h">
+      <Filter>02. Level\Kuangkeng</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\Level_Tavern.h">
+      <Filter>02. Level\Tavern</Filter>
+    </ClInclude>
     <ClInclude Include="..\public\ImGui_PoolInspector.h">
       <Filter>07. System\99. Debug_ImGui\Inspector\PoolDebug</Filter>
     </ClInclude>
@@ -1696,6 +1714,15 @@
     </ClCompile>
     <ClCompile Include="..\Private\Moon_SkillE_Obj.cpp">
       <Filter>03. GameObject\SkillObject\Player\Moon\SkillE</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\TriggerBox_GlobalEvent_BroadCaster.cpp">
+      <Filter>03. GameObject\TriggerBox\02. TriggerBox_GlobalEvent_BroadCaster</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\Level_Tavern.cpp">
+      <Filter>02. Level\Tavern</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\Level_Kuangkeng.cpp">
+      <Filter>02. Level\Kuangkeng</Filter>
     </ClCompile>
     <ClCompile Include="..\private\ImGui_PoolInspector.cpp">
       <Filter>07. System\99. Debug_ImGui\Inspector\PoolDebug</Filter>

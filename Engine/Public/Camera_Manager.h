@@ -4,6 +4,10 @@
 
 NS_BEGIN(Engine)
 
+class CGameInstance;
+
+struct Camera_Cinematic_Sequence;
+
 template<typename T>
 class CConstant_Buffer;
 
@@ -28,6 +32,7 @@ public:
 	HRESULT Change_Target_Next();
 
 	HRESULT Camera_Shaking(const CAM_SHAKING_DATA& tData);
+	HRESULT Play_CameraCinematic( const Camera_Cinematic_Sequence* pCameraCinematicSequence );
 	
 	const Matrix& Get_ViewMatrix() const { return m_matView; }
 	void Set_ViewMatrix(const Matrix &matView) { m_matView = matView; }
@@ -66,7 +71,8 @@ private:
 	CConstant_Buffer<SHADER_INVDESC>* m_pInv_CBuffer = { nullptr };
 
 
-
+private:
+	CGameInstance* m_pGameInstnace{ nullptr };
 public:
 	static CCamera_Manager* Create(ID3D11Device* pDevice, ID3D11DeviceContext* pDeviceContext);
 	virtual void Free() override;
