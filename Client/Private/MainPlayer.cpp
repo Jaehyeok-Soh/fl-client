@@ -23,6 +23,7 @@
 #include "PhysicsCCT.h"
 #include "PhysicsCollider.h"
 #include "PhysicsAttackOverlap.h"
+#include "EffectHandler.h"
 #include "Ray.h"
 #include "CameraMan.h"
 #include "Body.h"
@@ -109,8 +110,11 @@ HRESULT CMainPlayer::Initialize(void* pArg)
     if (FAILED(Ready_AttackStates()))
         return E_FAIL;
 
+    if (FAILED(Ready_EffectEvent()))
+        return E_FAIL;
 
     Get_Component<CPhysicsAttackOverlap>()->Bind_Events();
+    Get_Component<CEffectHandler>()->Setup_ForOwner(this, Get_Part<CBody>(ENUM_TO_UINT(Part::BODY))->Get_Component<CModel>());
 
     return S_OK;
 }
@@ -849,6 +853,15 @@ HRESULT CMainPlayer::Ready_CCT()
 HRESULT CMainPlayer::Ready_AttackOverlap()
 {
     if (FAILED(Add_Component<CPhysicsAttackOverlap>(0, L"Prototype_Component_AttackOverlap_PlayerMoon", nullptr)))
+        return E_FAIL;
+
+    return S_OK;
+}
+
+
+HRESULT CMainPlayer::Ready_EffectEvent()
+{
+    if (FAILED(Add_Component<CEffectHandler>(0, L"Prototype_Component_EffectHandler_PlayerMoon", nullptr)))
         return E_FAIL;
 
     return S_OK;

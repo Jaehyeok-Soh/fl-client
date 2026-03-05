@@ -5,6 +5,7 @@
 
 NS_BEGIN(Engine)
 class CRay;
+class CEffectHandler;
 NS_END
 
 NS_BEGIN(Client)
@@ -115,10 +116,12 @@ protected:
 	HRESULT				Ready_PartObjects(void* pArg);
 	HRESULT				Ready_Components(void* pArgs);
 	HRESULT				Ready_AttackOverlap(wstring prototypeName);
+	HRESULT				Ready_EffectHandler(void* pArgs);
 protected:
 	HRESULT Ready_CCT(void* pArgs);
 protected:
 	EMonster_Type			m_eMonsterType{ EMonster_Type::END};
+	class CEffectHandler*	m_pEffectHandler = { nullptr };
 public:
 	void SetSpawnPos(CTransform::TRANSFORM_DESC tTransformDesc);
 public:

@@ -37,7 +37,7 @@ HRESULT CMoon_SkillE_Obj::Initialize(void* pArg)
 		return E_FAIL;
 
 	Get_Component<CPhysicsRigidBody>()->Awake();
-	Get_Component<CEffectHandler>()->Setup_ForOwner();
+	Get_Component<CEffectHandler>()->Setup_ForOwner(this);
 	return S_OK;
 }
 

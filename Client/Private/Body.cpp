@@ -72,7 +72,7 @@ HRESULT CBody::Initialize(void* pArg)
 	}
 
 	Set_RenderInfoFlag(OF_Outline, true);
-	Get_Component<CEffectHandler>()->Setup_ForOwner();
+
 	return S_OK;
 }
 
@@ -343,17 +343,6 @@ HRESULT CBody::Ready_Components(BODY_DESC* pDesc)
 		return E_FAIL;
 
 	if (FAILED(Add_Component<CShader>(0/*static*/, L"Prototype_Component_Shader_VtxAnimMesh", nullptr)))
-		return E_FAIL;
-
-	if(FAILED(Ready_EffectEvent()))
-		return E_FAIL;
-
-	return S_OK;
-}
-
-HRESULT CBody::Ready_EffectEvent()
-{
-	if (FAILED(Add_Component<CEffectHandler>(0, L"Prototype_Component_EffectHandler_PlayerMoon", nullptr)))
 		return E_FAIL;
 
 	return S_OK;

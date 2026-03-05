@@ -14,6 +14,7 @@
 #include "PhysicsCCT.h"
 #include "PhysicsCollider.h"
 #include "PhysicsAttackOverlap.h"
+#include "EffectHandler.h"
 
 #include "GameInstance.h"
 
@@ -50,9 +51,13 @@ HRESULT CMonster_Base::Initialize(void* pArg)
 	if (FAILED(Ready_Components(pArg)))
 		return E_FAIL;
 
+	if (FAILED(Ready_EffectHandler(pArg)))
+		return E_FAIL;
+
 	//if (FAILED(Ready_Ability()))
 	//	return E_FAIL;
 
+	m_pEffectHandler->Setup_ForOwner(this, Get_Part<CMonster_Body_Base>(Part::BODY)->Get_Component<CModel>());
 	return S_OK;
 }
 
@@ -91,6 +96,9 @@ void CMonster_Base::Update(const _float fTimeDelta)
 	{
 		pMonsterState->Update(fTimeDelta);
 	}
+
+	if (m_pEffectHandler)
+		m_pEffectHandler->Update(fTimeDelta);
 
 	Super::Update(fTimeDelta);
 }
@@ -285,6 +293,21 @@ HRESULT CMonster_Base::Ready_AttackOverlap(wstring prototypeName)
 		if (FAILED(Add_Component<CPhysicsAttackOverlap>(0, prototypeName, nullptr)))
 			return E_FAIL;
 	}
+
+	return S_OK;
+}
+
+HRESULT CMonster_Base::Ready_EffectHandler(void* pArg)
+{
+	MONSTER_DESC* pDesc = static_cast<MONSTER_DESC*>(pArg);
+
+	wstring NameTag = pDesc->wstrBodyModelTag;
+	Engine_Utils::Replace(NameTag, L"Prototype_Component_Model_", L"");
+
+	if (FAILED(Add_Component<CEffectHandler>(/*Static*/0, L"Prototype_Component_EffectHandler_" + NameTag, nullptr)))
+		return E_FAIL;
+
+	m_pEffectHandler = Get_Component<CEffectHandler>();
 
 	return S_OK;
 }
