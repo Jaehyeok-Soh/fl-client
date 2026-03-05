@@ -392,7 +392,7 @@ HRESULT CPanel_MapObjectList::Render_SelectInfo()
 
 		if (ImGui::Button(" Delete [ Warning : [Instance] Draw Object All Delete ] "))
 		{
-			m_pGameInstance->Request_DeleteGameObject(ENUM_TO_UINT(ELevelType::MAP), m_pSelectMapObject->Get_LayerTag(), m_pSelectMapObject);
+			m_pGameInstance->Request_DeleteGameObject(ENUM_TO_UINT(ELevelType::MAP), m_pSelectMapObject->Get_Layer(), m_pSelectMapObject);
 			static_cast<CLevel_Map*>(m_pOwnerLevel)->On_ChangeSelectedObject(nullptr);
 			m_pSelectMapObject = nullptr;
 			ImGui::End();
