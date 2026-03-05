@@ -323,8 +323,10 @@ HRESULT CEffectHandler::Trigger_Lifecycle_Effect(E_OBJ_LIFECYCLE_STATE eState)
     auto it = activeMap.find(prevTag);
     if (it != activeMap.end())
     {
+        // TODO 
+        // 풀에 돌아간 EFfect인지 체크를 함.
         CEffectBase* pBase = static_cast<CEffectBase*>(it->second);
-        if (pBase)
+        if (pBase && !pBase->IsPooled())
             pBase->LoopStateChange(DTO::E_LoopState::LOOP_END);
 
         activeMap.erase(it);
