@@ -21,9 +21,9 @@ HRESULT CLevel_Manager::Change_Level(_uint iNewLevelID, CLevel* pNewLevel)
 	}
 
 	Safe_Release(m_pCurrentLevel);
-
 	m_pCurrentLevel = pNewLevel;
 	m_iCurrentLevelID = iNewLevelID;
+	m_pGameInstance->SetChangeLevelSequence(false);
  	Awake();
 	return S_OK;
 }

@@ -80,6 +80,8 @@ HRESULT CBody::Awake(const _uint iCurrentLevelIndex)
 {
 	if (FAILED(Super::Awake(iCurrentLevelIndex)))
 		return E_FAIL;
+
+	Get_Component<CEffectHandler>()->Setup_ForOwner();
 	
 	return S_OK;
 }

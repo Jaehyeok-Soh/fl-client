@@ -271,7 +271,6 @@ HRESULT CEffectHandler::Owner_Setting(CGameObject* pGo)
             m_pOwnerMatrix = &pGo->Get_Component<CTransform>()->Get_WorldMatrix();
     }
 
-
     return m_pOwnerMatrix ? S_OK : E_FAIL;
 }
 

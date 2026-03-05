@@ -57,6 +57,7 @@ HRESULT CMonster_Base::Initialize(void* pArg)
 	//if (FAILED(Ready_Ability()))
 	//	return E_FAIL;
 
+	Get_Component<CPhysicsAttackOverlap>()->Bind_Events();
 	m_pEffectHandler->Setup_ForOwner(this, Get_Part<CMonster_Body_Base>(Part::BODY)->Get_Component<CModel>());
 	return S_OK;
 }
@@ -78,9 +79,6 @@ HRESULT CMonster_Base::Awake(const _uint iCurrentLevelID)
 		return E_FAIL;
 
 	Get_Component<CPhysicsCCT>()->Ready_Position();
-
-	if (CPhysicsAttackOverlap* attackOverlap = Get_Component<CPhysicsAttackOverlap>())
-		attackOverlap->Bind_Events();
 
 	return S_OK;
 }
