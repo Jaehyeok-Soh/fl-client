@@ -162,7 +162,7 @@ _bool CCanvas::Check_Dead()
 
 	for (auto* pUI : m_vecUI)
 	{
-		if (!pUI->IsDead())
+		if (!pUI->Get_DeadRequest())
 			return false;
 	}
 	 return m_isAllDead = true;
@@ -175,12 +175,12 @@ void CCanvas::All_Dead()
 
 	for (auto* pUI : m_vecUI)
 	{
-		pUI->Set_Dead(g_wszUILayer);
+		pUI->Set_Dead();
 	}
 
 	CUI_Manager::GetInstance()->Request_Clear_DeadUI();
 	m_vecUI.clear();
-	Set_Dead(g_wszUILayer);
+	Set_Dead();
 }
 
 HRESULT CCanvas::Ready_Components(CANVAS_DESC* pDesc)
@@ -348,6 +348,7 @@ CGenericUI* CCanvas::Calc_TopUI()
 HRESULT CCanvas::Spawn_FromPool(void* pArg)
 {
 	m_pPrefabData = *static_cast<UI_PREFAB_DATA*>(pArg);
+	m_bDead = false;
 	return S_OK;
 }
 

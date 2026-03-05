@@ -256,7 +256,7 @@ _bool CMonsterControlContext::IsTargetOutOfAttackRange()
 _bool CMonsterControlContext::IsTargetDistanceOver(_float fValue)
 {
 	if (m_pTarget == nullptr)
-		return FLT_MAX;
+		return false;
 
 	CTransform* pOwnerTransform = Get_Owner()->Get_Component<CTransform>();
 	CTransform* pTargetTransform = m_pTarget->Get_Component<CTransform>();
@@ -421,6 +421,18 @@ void CMonsterControlContext::UpdateChase(const _float fTimeDelta)
 	vToTarget.Normalize();
 
 	m_vMoveDir = vToTarget;
+}
+
+void CMonsterControlContext::Update_TurnToTarget_XZ(const _float fTimeDelta)
+{
+	CGameObject* pTarget = Get_Target();
+	if (pTarget == nullptr)
+		return;
+
+	CTransform* pTransform = Get_Owner()->Get_Component<CTransform>();
+	Vec3 vTargetPos = pTarget->Get_Component<CTransform>()->Get_Info(TRANSFORM_INFO_STATE::POS);
+
+	pTransform->Tunr_ToPoint_YAxis(vTargetPos, fTimeDelta);
 }
 
 void CMonsterControlContext::Update_8Dir_LocalAxisXZ(const _float fTimeDelta, _float fForward, _float fRight)

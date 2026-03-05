@@ -63,9 +63,10 @@ public:
 		,LAND
 
 		,COMBO
-		,CHARGE
 		, JUMPATTSTART
 		, JUMPATTEND
+		,CHARGE
+
 
 		,GUNIDLE
 		,GUNWALK

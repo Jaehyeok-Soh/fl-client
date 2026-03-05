@@ -335,6 +335,9 @@ public:
 	void StepPhysics(_float fTimeDelta);
 	void AddActor(PxRigidActor* actor);
 	void ClearPhysics();
+	void FlushScene();
+	void RemoveActor(PxRigidActor* actor);
+	void ResetActorFilter(PxRigidActor* actor);
 	PxTransform XMMatrixToPxTransform(Matrix mat);
 	Matrix PxTransformToXMMatrix(PxTransform pxTransform);
 	_bool Execute_Overlap(PxGeometry& shape, PxTransform& transform, OUT PxOverlapBuffer& hit, PxQueryFilterData& filterData, PxQueryFilterCallback* filterCallback);
@@ -350,6 +353,7 @@ public:
 	vector<PxShape*> CopyShapes(vector<PxShape*>& shapes);
 	vector<PxRigidActor*> GetActor(PHYSICSRIGIDBODY_DESC* rigidBodyDesc, PHYSICSCOLLIDER_DESC* colliderDesc, vector<PxShape*>& shapes);
 	PxController* GetController(PHYSICSCCT_DESC* pDesc);
+	class CPhysics_CCTFilterCallback* GetCCTFilterCallback();
 	void RegisterPhysicsMesh(_uint levelIndex, _wstring prototypeTag);
 	PxQuat GetPureRotation(const Matrix& mat);
 	PxVec3 GetPureScale(const Matrix& mat);
@@ -398,6 +402,11 @@ public:
 	HRESULT Upsert_AttackPresetData(const DTO::TAttackPreset_Data& inData);
 	const unordered_map<_uint, DTO::TAttackPreset_Data>& Get_AttackPresetsData_ForDebug() const;
 #pragma endregion
+
+public:
+	void SetChangeLevelSequence(_bool bVal);
+	_bool GetChangeLevelSequence() { return m_bChangeLevelSequence; }
+
 private:
 	class CObjectPool_Manager* m_pObjectPool_Manager = { nullptr };
 	class CDataRepository* m_pDataRepository = { nullptr };
@@ -428,6 +437,9 @@ private:
 	class CJudgementSystem* m_pJudgementSystem = { nullptr };
 private:
 	std::mt19937_64 m_rng;
+
+	_bool m_bChangeLevelSequence = { false };
+
 public:
 	virtual void			Free() override;
 

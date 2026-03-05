@@ -146,6 +146,7 @@ public:
 public:
 	void UpdateWalk(const _float fTimeDelta);
 	void UpdateChase(const _float fTimeDelta);
+	void Update_TurnToTarget_XZ(const _float fTimeDelta);
 	void Update_8Dir_LocalAxisXZ(const _float fTimeDelta, _float fForward, _float fRight);
 	void UpdateRun(const _float fTimeDelta);
 	void UpdateFly(const _float fTimeDelta);

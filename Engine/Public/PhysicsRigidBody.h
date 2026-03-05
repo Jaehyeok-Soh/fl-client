@@ -21,6 +21,9 @@ public:
 	void Awake();
 	void Update(const Matrix& matWorld);
 	
+	PxRigidActor* GetActor(_uint index);
+	vector<PxRigidActor*> GetActors();
+
 	CPhysicsRigidBody* SetUserData(_uint iIndex, CGameObject* pObject);
 	CPhysicsRigidBody* SetUserData(CGameObject* pObject);
 
@@ -52,6 +55,8 @@ public:
 	//Èû
 	/// Only dynamic ///
 	////////////////////
+
+	CPhysicsRigidBody* EnableCollision(_bool bEnable);
 
 #ifdef _DEBUG
 	void Render();

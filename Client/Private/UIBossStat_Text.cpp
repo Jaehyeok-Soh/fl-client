@@ -6,6 +6,7 @@
 //=================
 // Component
 //=================
+#include "MyStat.h"
 #include "WorldUI_Component.h"
 #include "Texture.h"
 #include "Shader.h"
@@ -49,7 +50,7 @@ HRESULT CUIBossStat_Text::Awake(const _uint iCurrentLevelID)
 
 	if (m_isSpawned)
 	{
-		Set_Visible();
+		Set_Invisible();
 		m_isSpawned = false;
 	}
 	return S_OK;
@@ -117,6 +118,16 @@ HRESULT CUIBossStat_Text::Attach_Personal_Info()
 
 HRESULT CUIBossStat_Text::Convert_Stat_To_Text()
 {
+	switch (m_eTextSubClassType)
+	{
+	case DTO::EUITextSubClassType::BOSS_STAT_TEXT_LV:
+		break;
+	case DTO::EUITextSubClassType::BOSS_STAT_TEXT_NICKNAME:
+		m_wstrText =Engine_Utils::ToWString( m_pTargetStat->Get_Owner()->Get_Name());
+		break;
+
+		break;
+	}
 	return S_OK;
 }
 
@@ -156,7 +167,14 @@ _bool CUIBossStat_Text::Tick_InVisible_Event(const _float fTimeDelta)
 
 HRESULT CUIBossStat_Text::Spawn_FromPool(void* pArg)
 {
+	if (FAILED(Super::Spawn_FromPool(pArg)))
+		return E_FAIL;
+
 	UI_PREFAB_DATA* pDesc = static_cast<UI_PREFAB_DATA*>(pArg);
+	m_pTargetStat = pDesc->pTarget->Get_Component<CMyStat>();
+
+	if (nullptr == m_pTargetStat)
+		return E_FAIL;
 	/* ¸ó½ºÅÍ ½ºÅÈ ÄÄÆ÷³ÍÆ® ºÎÂø */
 	m_bDead = false;
 
@@ -166,6 +184,8 @@ HRESULT CUIBossStat_Text::Spawn_FromPool(void* pArg)
 
 HRESULT CUIBossStat_Text::Despawn_FromPool()
 {
+	if (FAILED(Super::Despawn_FromPool()))
+		return E_FAIL;
 	m_isVisible = false;
 	m_isVisibleTrigger = false;
 	m_isPreVisible = false;

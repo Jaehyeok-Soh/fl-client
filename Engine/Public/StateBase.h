@@ -8,6 +8,7 @@ NS_BEGIN(Engine)
 class CActionState;
 class CNavigation;
 class CGameObject;
+class CTransform;
 
 #pragma region Capability
 enum class StateCapability
@@ -181,6 +182,12 @@ protected:
 protected:
 	_bool IsBlend() { return m_bBlend; }
 	_bool IsLoop() { return m_bLoop; }
+
+protected:
+	CTransform* Get_CamTransform();
+	Vec3 Get_MoveDir();
+
+
 protected:
 	class CGameInstance* m_pGameInstance	= { nullptr };
 	CActionState*		m_pOwnerStateComp	= { nullptr };

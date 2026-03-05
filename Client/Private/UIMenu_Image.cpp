@@ -112,7 +112,8 @@ HRESULT CUIMenu_Image::Attach_Personal_Info()
 	break;
 	case DTO::EUIDImageSubClassType::MENU_ICON:
 	{
-
+		m_pGameInstance->Subscribe<BOSS_STAGING_EVENT_START>([this]() { this->Set_Invisible(); });
+		m_pGameInstance->Subscribe<BOSS_STAGING_EVENT_END>([this]() { this->Set_Visible(); });
 	}
 	break;
 	case DTO::EUIDImageSubClassType::MENU_ICON_BG:
@@ -153,22 +154,19 @@ void CUIMenu_Image::Initialize_Visible_Event()
 	{
 	case DTO::EUIDImageSubClassType::MENU_BG:
 	{
-		m_fTimeAcc = 0.f;
-		m_fProgress_Ratio = 1.f;
+		//m_fProgressTimeAcc	= 0.f;
+		//m_fProgress_Ratio		= 1.f;
+		Ready_LerpChange(1.f, 1.f, 0.f, 1.f, m_fDelay);
 	}
 	break;
 	case DTO::EUIDImageSubClassType::MENU_ICON:
 	{
-		m_pGameInstance->Subscribe<BOSS_STAGING_EVENT_START>([this]() { this->Set_Invisible(); });
-		m_pGameInstance->Subscribe<BOSS_STAGING_EVENT_END>([this]() { this->Set_Visible(); });
-		const _float fDuration = 1.f;
-		Ready_Fade(fDuration, 0.f, 1.f, m_fDelay);
+		Ready_Fade(0.5f, 1.f, 0.f, 0.f);
 	}
 	break;
 	case DTO::EUIDImageSubClassType::MENU_ICON_BG:
 	{
-		const _float fDuration = 1.f;
-		Ready_Fade(fDuration, 0.f, 1.f, m_fDelay);
+		Ready_Fade(0.5f, 1.f, 0.f, 0.f);
 	}
 	break;
 	case DTO::EUIDImageSubClassType::END:
@@ -181,23 +179,26 @@ void CUIMenu_Image::Initialize_InVisible_Event()
 {
 	m_isFin_Event = false;
 	m_isActive = false;
+
 	switch (m_eDImageSubClass)
 	{
 	case DTO::EUIDImageSubClassType::MENU_BG:
 	{
-		m_fTimeAcc = 0.f;
-		m_fProgress_Ratio = 0.f;
+		//m_fProgressTimeAcc = 0.f;
+		//m_fProgress_Ratio = 0.f;
+		Ready_LerpChange(1.f, 0.f, 1.f, 1.f, m_fDelay);
 	}
 	break;
-
 	case DTO::EUIDImageSubClassType::MENU_ICON:
+	{
+		Ready_Fade(0.5f, 1.f, 0.f, 0.f);
+	}
+	break;
 	case DTO::EUIDImageSubClassType::MENU_ICON_BG:
 	{
-		const _float fDuration = 0.5f;
-		Ready_Fade(fDuration, 1.f, 0.f, 0.f);
+		Ready_Fade(0.5f, 1.f, 0.f, 0.f);
 	}
 	break;
-
 	case DTO::EUIDImageSubClassType::END:
 	default:
 		break;
@@ -208,17 +209,25 @@ _bool CUIMenu_Image::Tick_Visible_Event(const _float fTimeDelta)
 {
 	if (m_eDImageSubClass == DTO::EUIDImageSubClassType::MENU_BG)
 	{
-		m_fTimeAcc += fTimeDelta;
-		_float t = m_fTimeAcc / 1.f;
+		//m_fTimeAcc += fTimeDelta;
+		//_float t = m_fTimeAcc / 1.f;
 
-		if (t >= 1.f)
+		//if (t >= 1.f)
+		//{
+		//	m_fProgress_Ratio = 0.f;	
+		//	m_isFin_Event = true;
+		//	m_isActive = true;
+		//	return true;
+		//}
+		//m_fProgress_Ratio = 1.f - t;
+
+		const _bool isLerp = Tick_LerpChange(&m_fProgress_Ratio, fTimeDelta);
+		if (isLerp)
 		{
-			m_fProgress_Ratio = 0.f;	
 			m_isFin_Event = true;
 			m_isActive = true;
 			return true;
 		}
-		m_fProgress_Ratio = 1.f - t;
 	}
 	else
 	{
@@ -237,16 +246,24 @@ _bool CUIMenu_Image::Tick_InVisible_Event(const _float fTimeDelta)
 {
 	if (m_eDImageSubClass == DTO::EUIDImageSubClassType::MENU_BG)
 	{
-		m_fTimeAcc += fTimeDelta;
-		_float t = m_fTimeAcc / 1.f;
-		if (t >= 1.f)
+		//m_fTimeAcc += fTimeDelta;
+		//_float t = m_fTimeAcc / 1.f;
+		//if (t >= 1.f)
+		//{
+		//	m_fProgress_Ratio = 1.f;
+		//	m_isFin_Event = true;
+		//	m_isActive = true;
+		//	return true;
+		//}
+		//m_fProgress_Ratio = t;
+		
+		const _bool isLerp = Tick_LerpChange(&m_fProgress_Ratio, fTimeDelta);
+		if (isLerp)
 		{
-			m_fProgress_Ratio = 1.f;
 			m_isFin_Event = true;
 			m_isActive = true;
 			return true;
 		}
-		m_fProgress_Ratio = t;
 	}
 	else
 	{

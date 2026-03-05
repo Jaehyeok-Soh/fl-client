@@ -158,6 +158,7 @@ void CUI_Manager::Request_SortUI()
 
 void CUI_Manager::Clear_Cache(uint32_t iLevelIndex)
 {
+	m_vecTriggerUIs.clear();
 	m_vecSortUI.clear();
 	m_vecCanvasCache[iLevelIndex].clear();
 	m_vecGenericUICache[iLevelIndex].clear();
@@ -249,6 +250,17 @@ void CUI_Manager::Request_Add_Prefab(_uint iPoolRegistLevel, EUIPrefabType ePref
 	case Client::EUIPrefabType::BOSS_NAMEPLATE:
 	{
 		_wstring wstr = m_vecPrefabs[ENUM_TO_UINT(EUIPrefabType::BOSS_NAMEPLATE)];
+		m_pGameInstance->Request_AddObject(iPoolRegistLevel, wstr, iSpawnLevel, pArg,
+			[this, iPoolRegistLevel, iSpawnLevel](CGameObject* pObj)
+			{
+				auto* p = static_cast<CCanvas*>(pObj);
+				p->Ready_Prefab(iPoolRegistLevel, iSpawnLevel);
+			});
+	}
+	break;
+	case Client::EUIPrefabType::MINIMAP_MONSTER_ICON:
+	{
+		_wstring wstr = m_vecPrefabs[ENUM_TO_UINT(EUIPrefabType::MINIMAP_MONSTER_ICON)];
 		m_pGameInstance->Request_AddObject(iPoolRegistLevel, wstr, iSpawnLevel, pArg,
 			[this, iPoolRegistLevel, iSpawnLevel](CGameObject* pObj)
 			{

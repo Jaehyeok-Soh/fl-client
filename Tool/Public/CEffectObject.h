@@ -43,7 +43,7 @@ public:
     virtual _bool Picking(OUT Vec3& vOut) override;
     virtual _bool Export_Data(DTO::ECategory eCategory, CDataDocumentBase* pDocument) override;
     virtual void Draw_ImGui() override;
-    virtual void Set_Dead(const wstring& wstrLayerTag) override;
+    virtual void Set_Dead(_bool bStatic = false) override;
 
     bool IntsersectWithPlane(OUT Vec3& vOut);
 public:
@@ -73,6 +73,7 @@ private:
     //  ==========  Shader Binding Setting  =============
     HRESULT Bind_ShaderResource();
     HRESULT Bind_Curve_To_GPU();
+    _bool   Is_Render_Possible() { return m_bIsStarted; }
 
 private:
     // ====== 계산함수 ====== 

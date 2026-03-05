@@ -206,6 +206,11 @@ _bool CModelAnimation::Is_TrackPositionBetween(_float fStartRatio, _float fEndRa
 	return Is_TrackPositionAt(fStartRatio) && (Is_TrackPositionAt(fEndRatio) == false);
 }
 
+_bool CModelAnimation::Is_TrackPositionBetweenRaw(_float fTrackPositionA, _float fTrackPositionB)
+{
+	return Is_TrackPositionAtRaw(fTrackPositionA) && (Is_TrackPositionAtRaw(fTrackPositionB) == false);
+}
+
 void CModelAnimation::Bind_AnimationEData(CComputeShader* pAnimEShader)
 {
 	pAnimEShader->Bind_InputStructuredBuffer(ENUM_TO_UINT(CS_SB_IDX::IMMU_KEYFRAME), m_pInputKeySB_SRV, m_pKeyFrameBuffer);
@@ -235,6 +240,10 @@ void CModelAnimation::Bind_AnimationMixData(CComputeShader* pAnimMixCS, CCompute
 
 HRESULT CModelAnimation::Ready_Buffers()
 {
+	// 0. 안전 지우기
+	Safe_Release(m_pKeyFrameBuffer);
+	Safe_Release(m_pChannelDataBuffer);
+
 	// 1. 버퍼의 사이즈를 할당한다
 	m_iChannelSize = _uint(m_vecChannels.size());
 	m_iKeyFrameBufferSize = 0;
@@ -469,6 +478,12 @@ void CModelAnimation::Free()
 	Safe_Release(m_pKeyFrameBuffer);
 	Safe_Release(m_pChannelDataBuffer);
 	Safe_Release(m_pMixDataBuffer);
+
+	//if (IsClone())
+	//{
+	//	ID3D11ShaderResourceView* pNullSRV = nullptr;
+	//	m_pDeviceContext->CSSetShaderResources(1, 1, &pNullSRV);
+	//}
 
 	//if (!IsClone())
 	{

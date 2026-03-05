@@ -146,37 +146,49 @@ _wstring CUIText::Float_To_Wstring(const _float f, _uint iDecimal)
 
 void CUIText::Ready_Fade_Text(const _float fDuration, const _float fStartAlpha, const _float fTargetAlpha, const _float fDelay)
 {
-	m_vFontColor.w			= fStartAlpha;
-	m_fFadeTimeAcc			= 0.f;
-	m_fFadeDelayTimeAcc		= 0.f;
-	m_fFadeDelay			= fDelay;
-	m_fFadeDuration			= fDuration;
-	m_fStartAlphaRatio		= fStartAlpha;
-	m_fTargetAlphaRatio		= fTargetAlpha;
+	m_vFontColor.w				= fStartAlpha;
+
+	m_fFont_FadeTimeAcc			= 0.f;
+	m_fFont_FadeDelayTimeAcc	= 0.f;
+
+	m_fFont_FadeDelay			= fDelay;
+	m_fFont_FadeDuration		= fDuration;
+	m_fFont_StartAlphaRatio		= fStartAlpha;
+	m_fFont_TargetAlphaRatio	= fTargetAlpha;
 }
 
 _bool CUIText::Tick_Fade_Text(const _float fTimeDelta)
 {
-	m_fFadeDelayTimeAcc += fTimeDelta;
-	if (m_fFadeDelayTimeAcc < m_fFadeDelay)
+	m_fFont_FadeDelayTimeAcc += fTimeDelta;
+	if (m_fFont_FadeDelayTimeAcc < m_fFont_FadeDelay)
 		return false;
 
-	m_fFadeTimeAcc += fTimeDelta;
+	m_fFont_FadeTimeAcc += fTimeDelta;
 
-	_float t = m_fFadeTimeAcc / m_fFadeDuration;
+	_float t = m_fFont_FadeTimeAcc / m_fFont_FadeDuration;
+
 	if (t >= 1.f)
 	{
-		m_vFontColor.w = m_fTargetAlphaRatio;
+		m_vFontColor.w = m_fFont_TargetAlphaRatio;
 		return true;
 	}
 
-	_float eased = t;
-	if (m_fEaseValue > 0.f)
-		eased = powf(t, m_fEaseValue);
-
-	_float f = m_fStartAlphaRatio + (m_fTargetAlphaRatio - m_fStartAlphaRatio) * t;
-	m_vFontColor.w = f;
+	m_vFontColor.w = m_fFont_StartAlphaRatio + (m_fFont_TargetAlphaRatio - m_fFont_StartAlphaRatio) * t;
 	return false;
+}
+
+HRESULT CUIText::Spawn_FromPool(void* pArg)
+{
+	if (FAILED(Super::Spawn_FromPool(pArg)))
+		return E_FAIL;
+	return S_OK;
+}
+
+HRESULT CUIText::Despawn_FromPool()
+{
+	if (FAILED(Super::Despawn_FromPool()))
+		return E_FAIL;
+	return S_OK;
 }
 
 void CUIText::Free()

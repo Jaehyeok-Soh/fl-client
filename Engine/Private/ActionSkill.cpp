@@ -35,6 +35,14 @@ HRESULT CActionSkill::Initialize(void* pArg)
 	return S_OK;
 }
 
+void CActionSkill::Awake(const _uint iCurLevelIndex)
+{
+	for (auto& pSkill : m_vecSkills)
+	{
+		pSkill->Awake(iCurLevelIndex);
+	}
+}
+
 HRESULT CActionSkill::Add_Skill(_uint iIndex, CSkillBase* pSkill)
 {
 	if (!Check_Index(iIndex))
@@ -65,12 +73,15 @@ void CActionSkill::Update_Skills(const _float fTimeDelta)
 			if (pSkill->Is_OnSkill())
 			{
 				// skill을 업데이트를 하고
-				pSkill->Update(fTimeDelta);
+				pSkill->Update(fTimeDelta, m_pOwnerStat);
 
 				// 그런데 skill이 끝났어 -> end skill 호출
 				if (pSkill->Is_EndSkill())
 					pSkill->End_Skill(m_pOwnerStat);
 			}
+
+			// skill on off와 상관없이 update 도는 함수
+			pSkill->Update_Default(fTimeDelta, m_pOwnerStat);
 		}
 
 	}

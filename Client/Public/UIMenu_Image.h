@@ -40,6 +40,10 @@ private:
 private:
 	Vec2 m_vOriginPos = {};
 	Vec2 m_vTargetPos = {};
+
+	//¼öÁ¤ÇØ¾ßµÊ
+	_float m_fProgressTimeAcc = {};
+
 public:
 	static CUIMenu_Image* Create(ID3D11Device* pDevice, ID3D11DeviceContext* pDeviceContext);
 	CGameObject* Clone(void* pArg);

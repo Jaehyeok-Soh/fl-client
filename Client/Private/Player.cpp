@@ -125,12 +125,15 @@ HRESULT CPlayer::Awake(const _uint iCurrentLevelID)
 
     Change_Weapon(Part::SWORD, ENUM_TO_UINT(CWeapon::State::HOLD));
 
+    Get_Component<CActionSkill>()->Awake(iCurrentLevelID);
+
     return S_OK;
 }
 
 void CPlayer::Update_Priority(const _float fTimeDelta)
 {
     Count_DoubleJump(fTimeDelta);
+
     Super::Update_Priority(fTimeDelta);
 }
 
@@ -312,9 +315,11 @@ void CPlayer::End_Attack(State iState)
 {
     switch (iState)
     {
+        // combo timer Ω√¿€
     case State::COMBO:
-    case State::CHARGE:
     case State::JUMPATTEND:
+        static_cast<CStatCom_Player*>(Get_Component<CMyStat>())->Set_Timer(CStatCom_Player::TIMER_TYPE::COMBO, true);
+    case State::CHARGE:
         static_cast<CStatCom_Player*>(Get_Component<CMyStat>())->Set_AttackState(CStatCom_Player::Attack_State::Melee, false);
         break;
 
@@ -1195,7 +1200,7 @@ void CPlayer::Count_DoubleJump(const _float fTimeDelta)
 
 void CPlayer::Free()
 {
-    Super::Free();
-
     Safe_Release(m_pPhysic_QueryFilter);
+
+    Super::Free();
 }

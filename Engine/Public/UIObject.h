@@ -112,6 +112,8 @@ public:
 	virtual _bool Tick_Interactable_Event(const _float fTimeDelta)		{return true;}
 	virtual _bool Tick_NonInteractable_Event(const _float fTimeDelta)	{return true;}
 
+	virtual HRESULT Spawn_FromPool(void* pArg) override;
+	virtual HRESULT Despawn_FromPool()override;
 protected:
 	/* 렌더 상태를 제어 */
 	_bool m_isPreVisible = { false };
@@ -138,14 +140,12 @@ protected:
 	_uint m_iShaderPass = { 0 };
 	_float m_fX = {};
 	_float m_fY = {};
-	/* 정렬 순서 */
+	// 렌더 정렬 순서 // 0이 가장 앞에 그려짐
 	_float m_fZ = {};
 	
-	/* 포지션 */
-	Vec3 m_vWorldPos = {};
-
 	_float m_fWidth = {};
 	_float m_fHeight = {};
+
 	_float m_fAspect = {};
 	
 	_float m_fScale = { 1.f };

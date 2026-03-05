@@ -200,10 +200,10 @@ HRESULT CUIPlayerStat_Text::Convert_Stat_To_Text()
 		m_wstrText = std::to_wstring(m_pPlayerStatCom->Get_Count(CStatCom_Player::TIMER_TYPE::DASH));
 		break;
 	case DTO::EUITextSubClassType::PLAYER_STAT_TEXT_MAX_BULLET_COUNT:
-		m_wstrText = Float_To_Wstring(m_pGunParts->Get_TotalButtlet().x, 0.f);
+		m_wstrText = Float_To_Wstring(m_pGunParts->Get_TotalButtlet().x, 0);
 		break;
 	case DTO::EUITextSubClassType::PLAYER_STAT_TEXT_CUR_BULLET_COUNT:
-		m_wstrText = Float_To_Wstring(m_pGunParts->Get_CurButtlet().x, 0.f);
+		m_wstrText = Float_To_Wstring(m_pGunParts->Get_CurButtlet().x, 0);
 		break;
 	case DTO::EUITextSubClassType::END:
 	default:
@@ -231,8 +231,7 @@ void CUIPlayerStat_Text::Initialize_Visible_Event()
 {
 	m_isActive		= false;
 	m_isFin_Event	= false;
-	m_vFontColor.w	= 0.f;
-	m_fTimeAcc		= 0.f;
+	Ready_Fade_Text(1.f, 0.f, 1.f, m_fDelay);
 }
 
 void CUIPlayerStat_Text::Initialize_InVisible_Event()
@@ -241,20 +240,7 @@ void CUIPlayerStat_Text::Initialize_InVisible_Event()
 
 _bool CUIPlayerStat_Text::Tick_Visible_Event(const _float fTimeDelta)
 {
-	m_fTimeAcc += fTimeDelta;
-
-	if (m_fTimeAcc < m_fDelay)
-		return false;
-
-	m_vFontColor.w += fTimeDelta * 2.f;
-	if (m_vFontColor.w > 1.f)
-	{
-		m_vFontColor.w = 1.f;
-		m_isActive = true;
-		m_isFin_Event = true;
-		return true;
-	}
-	return false;
+	return Tick_Fade_Text(fTimeDelta);
 }
 
 _bool CUIPlayerStat_Text::Tick_InVisible_Event(const _float fTimeDelta)

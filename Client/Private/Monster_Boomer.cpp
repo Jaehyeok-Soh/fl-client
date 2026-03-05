@@ -60,8 +60,13 @@ HRESULT CMonster_Boomer::Awake(const _uint iCurrentLevelID)
 	{
 		UI_PREFAB_DATA Desc = {};
 		Desc.pTarget = this;
-		Desc.NamePlateData.vOffset = Vec3{0.f, 2.5f, 0.f};
+		Desc.NamePlateData.vOffset = Vec3{ 0.f, 2.5f, 0.f };
 		CUI_Manager::GetInstance()->Request_Add_Prefab(iCurrentLevelID, EUIPrefabType::MONSTER_NAMEPLATE, iCurrentLevelID, &Desc);
+	}
+	{
+		UI_PREFAB_DATA Desc = {};
+		Desc.pTarget = this;
+		CUI_Manager::GetInstance()->Request_Add_Prefab(iCurrentLevelID, EUIPrefabType::MINIMAP_MONSTER_ICON, iCurrentLevelID, &Desc);
 	}
 	return S_OK;
 }
@@ -124,8 +129,6 @@ _bool CMonster_Boomer::On_Hit(const HIT_DESC& hitDesc)
 	_bool result = Super::On_Hit(hitDesc);
 	
 	auto myStat = Get_Component<CMyStat>();
-	myStat->Add_Health(-hitDesc.attackDesc.pAttackPreset->tCombat.fBaseDamage);
-	
 	auto vHp = myStat->Get_Stat_Vec2(CMyStat::STAT_TYPE::HP);
 	if (vHp.x <= 0)
 	{
@@ -146,7 +149,7 @@ HRESULT CMonster_Boomer::Ready_Ability()
 	// stat
 	{
 		CMyStat::STAT_DESC desc = {};
-		desc.fMaxHp = 200.f;
+		desc.fMaxHp = 600.f;
 		desc.fDefense = 100.f;
 		desc.FStatFlags = CMyStat::StatFlags::HpUpdate | CMyStat::StatFlags::DefenseUpdtae;
 
@@ -216,6 +219,48 @@ HRESULT CMonster_Boomer::Ready_Components(void* pArg)
 		return E_FAIL;
 
 	return S_OK;
+}
+
+CMonster_Base::MONSTER_DESC CMonster_Boomer::Get_PreSetDesc(_uint iLevelId)
+{
+	CMonster_Base::MONSTER_DESC monsterDesc = {};
+	monsterDesc.iLevelIndex = iLevelId;
+
+	monsterDesc.wstrPartBodyPrototypeTag = g_wszMonster_Boomer_Body_Prototype_Tag;
+	monsterDesc.wstrBodyModelTag = g_wszMonster_Boomer_Model_Prototype_Tag;
+	monsterDesc.wstrAttackOverlapPrototypeTag = g_wszMonster_Boomer_AttackOverlap_Prototype_Tag;
+	monsterDesc.wstrMonsterStateTag = g_wszMonster_Boomer_State_Tag;
+
+	{
+		PHYSICSCCT_DESC desc;
+		desc.pOwner = nullptr;
+		desc.bIsPlayer = false;
+		desc.eType = EPhysicsCCTType::CAPSULE;
+		desc.pOwnerMatrix = nullptr;
+		desc.fRadius = 1.f;
+		desc.fHeight = 1.5f;
+		desc.vExtens = { 2.f, 2.f, 2.f };
+
+		PHYSICSMATERIAL_DESC mtrlDesc{};
+		mtrlDesc.eMaterial = EPhysicsMaterial::PLAYER;
+		desc.tMaterial = mtrlDesc;
+
+		desc.eFilterLayer = PHYSICSFILTERGROUP::Enum::MONSTER;
+		desc.iFilterMask =
+			PHYSICSFILTERGROUP::Enum::MONSTER
+			| PHYSICSFILTERGROUP::Enum::PLAYER
+			| PHYSICSFILTERGROUP::Enum::ATTACK
+			| PHYSICSFILTERGROUP::Enum::ATTACK_PROJECTTILE
+			| PHYSICSFILTERGROUP::Enum::SKILL
+			| PHYSICSFILTERGROUP::Enum::SKILL_PROJECTTILE
+			| PHYSICSFILTERGROUP::Enum::MAP
+			| PHYSICSFILTERGROUP::Enum::OBJECT1
+			| PHYSICSFILTERGROUP::Enum::OBJECT2;
+
+		monsterDesc.tCCTDesc = desc;
+	}
+
+	return monsterDesc;
 }
 
 CMonster_Boomer* CMonster_Boomer::Create(ID3D11Device* pDevice, ID3D11DeviceContext* pDeviceContext)

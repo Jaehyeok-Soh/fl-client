@@ -9,10 +9,13 @@
 
 void CPhysics_FilterEventCallback::onContact(const PxContactPairHeader& pairHeader, const PxContactPair* pairs, PxU32 nbPairs)
 {
+	if (pairHeader.actors[0]->userData == nullptr || pairHeader.actors[1]->userData == nullptr)
+		return;
+
 	CGameObject* leftObject = Conversion_GameObject(pairHeader.actors[0]->userData);
 	CGameObject* rightObject = Conversion_GameObject(pairHeader.actors[1]->userData);
 
-	if (leftObject->IsDead() || rightObject->IsDead() || leftObject == nullptr || rightObject == nullptr)
+	if (leftObject == nullptr || rightObject == nullptr || leftObject->IsDead() || rightObject->IsDead())
 		return;
 
 	GAMEOBJECTINFO info = Get_GameObject(pairHeader.actors[0]->userData, pairHeader.actors[1]->userData);
@@ -62,11 +65,14 @@ void CPhysics_FilterEventCallback::onTrigger(PxTriggerPair* pairs, PxU32 count)
 {
 	for (PxU32 i = 0; i < count; i++)
 	{
+		if (pairs[i].triggerActor->userData == nullptr || pairs[i].otherActor->userData == nullptr)
+			continue;
+
 		CGameObject* leftObject = Conversion_GameObject(pairs[i].triggerActor->userData);
 		CGameObject* rightObject = Conversion_GameObject(pairs[i].otherActor->userData);
 
-		if (leftObject->IsDead() || rightObject->IsDead() || leftObject == nullptr || rightObject == nullptr)
-			return;
+		if (leftObject == nullptr || rightObject == nullptr || leftObject->IsDead() || rightObject->IsDead())
+			continue;
 
 		GAMEOBJECTINFO info = Get_GameObject(pairs[i].triggerActor->userData, pairs[i].otherActor->userData);
 
@@ -96,22 +102,43 @@ void CPhysics_FilterEventCallback::ProcessOverlap(CGameObject* pOwner, const PxV
 	{
 		PxVec3 closetPoint{};
 		PxU32 closetIndex{};
+
+		PxTransform shapeGlobalPose = pOverlapHit->actor->getGlobalPose() * pOverlapHit->shape->getLocalPose();
+
 		float dist = PxGeometryQuery::pointDistance(vOverlapPoint,
 			pOverlapHit->shape->getGeometry(),
-			pOverlapHit->actor->getGlobalPose(),
+			shapeGlobalPose,
 			&closetPoint,
 			&closetIndex);
 
-		PxVec3 normal = vOverlapPoint - closetPoint;
-		normal.normalize();
+		PxVec3 hitPoint;
+		PxVec3 normal;
+
+		{
+			if (dist > 1e-6f)
+			{
+				hitPoint = closetPoint;
+				normal = vOverlapPoint - closetPoint;
+				normal.normalize();
+			}
+			else
+			{
+				PxVec3 shapeCenter = pOverlapHit->actor->getGlobalPose().p;
+				hitPoint = vOverlapPoint;
+				normal = vOverlapPoint - shapeGlobalPose.p;
+
+				if (normal.magnitudeSquared() < 1e-6f)
+					normal = PxVec3(0.f, 1.f, 0.f);
+				else
+					normal.normalize();
+			}
+		}
 
 		info.bHasHitPoint = true;
 		// 추후에 BestPoint를 검출하려면 연산이 필요함
-		::memcpy(&info.vHitPoint.x, &closetPoint.x, sizeof(Vec3));
+		::memcpy(&info.vHitPoint.x, &hitPoint.x, sizeof(Vec3));
 		::memcpy(&info.vRawNormal.x, &normal.x, sizeof(Vec3));
 		info.fDepth = (std::max)(0.0f, -dist);
-
-		
 
 		// On collision enter
 		OnCollisionEnter(info);

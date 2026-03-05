@@ -205,12 +205,6 @@ void Effect::Update_CombinedWorldMatrix(const Matrix* pMatParent)
 	Get_Component<CTransform>()->Set_WorldMatrix(m_matCombinedWorld);
 }
 
-
-void Effect::Set_Dead(const wstring& wstrLayerTag)
-{
-	m_pGameInstance->Request_DeleteGameObject(m_pGameInstance->Get_CurrentLevelIndex(), wstrLayerTag, this);
-}
-
 void Effect::IsEffectFinish()
 {
 	_uint FinishCount = 0;
@@ -223,13 +217,15 @@ void Effect::IsEffectFinish()
 
 	if (FinishCount == m_vecPartObjects.size())
 	{
- 		Set_Dead(L"Effect_Layer");
+ 		Set_Dead();
 	}
 }
 
 HRESULT Effect::Spawn_FromPool(void* pArg)
 {
 	if (nullptr == pArg) return E_FAIL;
+	if (FAILED(Super::Spawn_FromPool(pArg)))
+		return E_FAIL;
 
 	Matrix matTargetWorld = XMMatrixIdentity();
 	Get_Component<CTransform>()->Set_WorldMatrix(matTargetWorld);
@@ -245,7 +241,6 @@ HRESULT Effect::Spawn_FromPool(void* pArg)
 
 	if (m_eDesc._Effect_SimulationType == DTO::E_SIMULATION_SPACE::WORLD)
 		Get_Component<CTransform>()->Set_WorldMatrix(pEngineDesc->matWorld);
-
 	else if ((m_eDesc._Effect_SimulationType == DTO::E_SIMULATION_SPACE::LOCAL))
 	{
 		m_pOffsetMartix = pEngineDesc->matWorld;
@@ -263,6 +258,9 @@ HRESULT Effect::Spawn_FromPool(void* pArg)
 
 HRESULT Effect::Despawn_FromPool()
 {
+	if (FAILED(Super::Despawn_FromPool()))
+		return E_FAIL;
+
 	for (auto effectObject : m_vecPartObjects)
 	{
 		if (effectObject != nullptr)

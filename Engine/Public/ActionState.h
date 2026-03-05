@@ -81,6 +81,8 @@ protected:
 	_bool			Is_AnimFinished();
 	_bool			Is_AnimTrackPositionAt(_float fRatio);
 	_bool			Is_AnimTrackPositionBetween(_float fStartRatio, _float EndRatio);
+	_bool			Is_AnimTrackPositionAtRaw(_float fTrack);
+	_bool			Is_AnimTrackPositionBetweenRaw(_float fTrackA, _float fTrackB);
 	_bool			Is_AnimTrackPositionHalf();
 	void			Set_AnimationPlayRate(_uint iIndex, _float fSpeed);
 
@@ -115,7 +117,7 @@ protected:
 	_bool			Align_Move(_uint iState, _bool bForce = false, void* pArg = nullptr);
 	_bool			Align_Attack(_uint iState);
 	void			Turn_byCam(const _float fTimeDelta);
-
+	
 	void			Set_JumpCount(_uint iCount);
 
 	/* key funcs */
@@ -124,6 +126,8 @@ protected:
 
 protected:
 	HRESULT			Set_OwnerComponents();
+	CTransform*		Get_CamTransform();
+	Vec3			Get_MoveDir();
 
 protected:
 	CControlContext*	m_pOwnerControlContext	= { nullptr };

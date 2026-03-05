@@ -3,6 +3,8 @@
 #include "GameInstance.h"
 #include "GameObject.h"
 
+#include "Physics_CCTFilterCallback.h"
+
 CPhysicsCCT::CPhysicsCCT(ID3D11Device* pDevice, ID3D11DeviceContext* pDeviceContext)
 	: Super()
 	, m_pDevice(pDevice)
@@ -37,6 +39,8 @@ HRESULT CPhysicsCCT::Initialize(void* pArg)
 
 	SetCollisionFilter();
 
+	m_pCCTFilterCallback = m_pGameInstance->GetCCTFilterCallback();
+
 	m_fContactOffset = m_pController->getContactOffset();
 
 	// todo eunbi : step offset 추가. 계단 덜덜 거림 해결을 위함 -> 못함
@@ -64,8 +68,9 @@ HRESULT CPhysicsCCT::Initialize(void* pArg)
 void CPhysicsCCT::Awake()
 {
 	Vec3 vPos = m_pOwner->Get_Component<CTransform>()->Get_Info(TRANSFORM_INFO_STATE::POS);
-
 	SetFootPosition(vPos);
+
+	EnableCollision(true);
 }
 
 void CPhysicsCCT::Update(const _float fTimeDelta)
@@ -80,9 +85,11 @@ void CPhysicsCCT::Render()
 }
 #endif // _DEBUG
 
-void CPhysicsCCT::Add_Disp(Vec3 disp)
+PxControllerCollisionFlags CPhysicsCCT::Add_Disp(Vec3 disp)
 {
 	m_vAccDisp += disp;
+
+	return m_cctFlags;
 }
 
 void CPhysicsCCT::UpdateMove(const _float fTimeDelta)
@@ -96,7 +103,7 @@ void CPhysicsCCT::UpdateMove(const _float fTimeDelta)
 	//PxControllerFilters filters;
 	//Move(totalDisp, 0.001f, fTimeDelta);
 
-	Move(m_vAccDisp, 0.001f, fTimeDelta);
+	m_cctFlags = Move(m_vAccDisp, 0.001f, fTimeDelta);
 
 	m_vAccDisp = { 0.f, 0.f, 0.f };
 }
@@ -122,14 +129,25 @@ void CPhysicsCCT::SetHeight(_float height)
 
 const PxControllerCollisionFlags CPhysicsCCT::Move(Vec3 disp, _float minDist, _float fTimeDelta)
 {
+	if (m_pGameInstance->GetChangeLevelSequence())
+	{
+		PxControllerCollisionFlags collisionFlag;
+		return collisionFlag;
+	}
+
 	PxVec3 displacementVec(disp.x, disp.y, disp.z);
 	PxControllerFilters filters;
+	filters.mCCTFilterCallback = (PxControllerFilterCallback*)m_pCCTFilterCallback;
 	PxControllerCollisionFlags collisionFlag = m_pController->move(displacementVec, minDist, fTimeDelta, filters);
 
 	if (m_bIsSteppingOnCCT)
 		collisionFlag &= ~PxControllerCollisionFlag::eCOLLISION_DOWN;
 
+	if (m_bIsSideOnCCT)
+		collisionFlag &= ~PxControllerCollisionFlag::eCOLLISION_SIDES;
+
 	m_bIsSteppingOnCCT = false;
+	m_bIsSideOnCCT = false;
 
 	return collisionFlag;
 }
@@ -231,7 +249,11 @@ void CPhysicsCCT::GetController()
 void CPhysicsCCT::ReleaseController()
 {
 	if (m_pController)
+	{
+		m_pController->setUserData(nullptr);
+		m_pController->getActor()->userData = nullptr;
 		PX_RELEASE(m_pController);
+	}
 }
 
 void CPhysicsCCT::SetCollisionFilter()
@@ -246,9 +268,26 @@ void CPhysicsCCT::SetCollisionFilter()
 		shape->setSimulationFilterData(filter);
 }
 
+void CPhysicsCCT::SetCollisionFilter_Empty()
+{
+	_uint numShape = m_pController->getActor()->getNbShapes();
+	vector<PxShape*> shapes(numShape);
+	m_pController->getActor()->getShapes(shapes.data(), numShape);
+
+	PxFilterData filter(0, 0, 0, 0);
+
+	for (auto& shape : shapes)
+		shape->setSimulationFilterData(filter);
+}
+
 void CPhysicsCCT::SetIsSteppingOnCCT()
 {
 	m_bIsSteppingOnCCT = true;
+}
+
+void CPhysicsCCT::SetIsSideOnCCT()
+{
+	m_bIsSideOnCCT = true;
 }
 
 void CPhysicsCCT::EnableCollision(_bool bEnable)
@@ -271,7 +310,14 @@ void CPhysicsCCT::EnableCollision(_bool bEnable)
 				shape->setFlag(PxShapeFlag::eSCENE_QUERY_SHAPE, bEnable);
 			}
 		}
+
+		//pActor->setActorFlag(PxActorFlag::eDISABLE_SIMULATION, !bEnable);
 	}
+
+	if (bEnable)
+		SetCollisionFilter();
+	else
+		SetCollisionFilter_Empty();
 }
 
 CPhysicsCCT* CPhysicsCCT::Create(ID3D11Device* pDevice, ID3D11DeviceContext* pDeviceContext)

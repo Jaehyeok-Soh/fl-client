@@ -316,6 +316,11 @@ PxController* CPhysics_Module::GetController(PHYSICSCCT_DESC* pDesc)
 	return m_pCCTManager->GetController(pDesc);
 }
 
+CPhysics_CCTFilterCallback* CPhysics_Module::GetCCTFilterCallback()
+{
+	return m_pCCTManager->GetCCTFilterCallback();
+}
+
 PxFilterFlags CPhysics_Module::FilterShader(
 	PxFilterObjectAttributes attributes0, PxFilterData filterData0,
 	PxFilterObjectAttributes attributes1, PxFilterData filterData1,
@@ -326,6 +331,15 @@ PxFilterFlags CPhysics_Module::FilterShader(
 
 	if (PxFilterObjectIsTrigger(attributes0) || PxFilterObjectIsTrigger(attributes1))
 	{
+		if (PxFilterObjectIsKinematic(attributes0) || PxFilterObjectIsKinematic(attributes1))
+		{
+			pairFlags = PxPairFlag::eTRIGGER_DEFAULT
+				| PxPairFlag::eNOTIFY_TOUCH_FOUND
+				| PxPairFlag::eNOTIFY_TOUCH_LOST;
+
+			return PxFilterFlag::eDEFAULT;
+		}
+
 		pairFlags = PxPairFlag::eTRIGGER_DEFAULT
 			| PxPairFlag::eNOTIFY_TOUCH_FOUND
 			| PxPairFlag::eNOTIFY_TOUCH_LOST;
@@ -445,6 +459,23 @@ void CPhysics_Module::ClearPhysics()
 
 	if (m_pFoundation)
 		PX_RELEASE(m_pFoundation);
+}
+
+void CPhysics_Module::FlushScene()
+{
+	m_pScene->flushQueryUpdates();
+	//m_pScene->flushSimulation();
+	m_pScene->flushUpdates();
+}
+
+void CPhysics_Module::RemoveActor(PxRigidActor* actor)
+{
+	m_pScene->removeActor(*actor);
+}
+
+void CPhysics_Module::ResetActorFilter(PxRigidActor* actor)
+{
+	m_pScene->resetFiltering(*actor);
 }
 
 CPhysics_Module* CPhysics_Module::Create(ID3D11Device* pDevice, ID3D11DeviceContext* pContext)

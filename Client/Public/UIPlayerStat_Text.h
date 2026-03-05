@@ -44,7 +44,6 @@ private:
 	virtual _bool Tick_InVisible_Event(const _float fTimeDelta)override;
 
 private:
-	_float m_fStat = {};
 	CStatCom_Player* m_pPlayerStatCom = { nullptr };
 	CGun* m_pGunParts = { nullptr };
 

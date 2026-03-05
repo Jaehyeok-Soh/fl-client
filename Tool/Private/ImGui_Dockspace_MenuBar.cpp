@@ -125,6 +125,31 @@ void CImGui_Dockspace_MenuBar::Save_FileDialog()
 	}
 }
 
+void CImGui_Dockspace_MenuBar::Clear_FileDialog()
+{
+	ELevelType eCurentLevel = static_cast<ELevelType>(m_pGameInstance->Get_CurrentLevelIndex());
+	switch (eCurentLevel)
+	{
+	case Tool::ELevelType::LOADING:
+
+		break;
+	case Tool::ELevelType::MAP: break;
+	case Tool::ELevelType::ANIMATION: break;
+	case Tool::ELevelType::EFFECT:
+		Clear_EffectData();
+		break;
+	case Tool::ELevelType::CAMERA: break;
+
+	case Tool::ELevelType::UI: break;
+	case Tool::ELevelType::ASSET_CONVERT: 		break;
+	}
+}
+
+void CImGui_Dockspace_MenuBar::Clear_EffectData()
+{
+	m_pGameInstance->Clear_Layer(ENUM_TO_UINT(ELevelType::EFFECT), L"Effect_Layer");
+}
+
 void CImGui_Dockspace_MenuBar::Save_Data(const wstring& wstrFilePath)
 {
 	ELevelType eCurentLevel = static_cast<ELevelType>(m_pGameInstance->Get_CurrentLevelIndex());

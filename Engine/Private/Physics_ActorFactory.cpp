@@ -3,6 +3,8 @@
 #include "GameInstance.h"
 #include "EngineConsole.h"
 
+#include "GameObject.h"
+
 #include "Physics_ActorFactory.h"
 
 CPhysics_ActorFactory::CPhysics_ActorFactory(ID3D11Device* pDevice, ID3D11DeviceContext* pContext, PxPhysics* pPhysics, PxScene* pScene)
@@ -54,8 +56,7 @@ vector<PxRigidActor*> CPhysics_ActorFactory::MakeDynamics(PHYSICSRIGIDBODY_DESC*
 {
 	vector<PxRigidActor*> result;
 
-	for (size_t i = 0; i < rigidBodyDesc->pOwnerMatrices.size(); i++)
-		result.push_back(MakeDynamic(rigidBodyDesc->pOwnerMatrices[i], rigidBodyDesc->vecSRT[i], rigidBodyDesc->fDensity, shapes));
+	result.push_back(MakeDynamic(*rigidBodyDesc->pOwnerMatrix, rigidBodyDesc->fDensity, shapes));
 
 	return result;
 }
@@ -64,8 +65,7 @@ vector<PxRigidActor*> CPhysics_ActorFactory::MakeKinematics(PHYSICSRIGIDBODY_DES
 {
 	vector<PxRigidActor*> result;
 
-	for (size_t i = 0; i < rigidBodyDesc->pOwnerMatrices.size(); i++)
-		result.push_back(MakeKinematic(rigidBodyDesc->pOwnerMatrices[i], rigidBodyDesc->vecSRT[i], rigidBodyDesc->fDensity, shapes));
+	result.push_back(MakeKinematic(*rigidBodyDesc->pOwnerMatrix, rigidBodyDesc->fDensity, shapes));
 
 	return result;
 }
@@ -142,13 +142,11 @@ PxRigidActor* CPhysics_ActorFactory::MakeStatic(const Matrix& world, PHYSICS_SRT
 	return staticActor;
 }
 
-PxRigidActor* CPhysics_ActorFactory::MakeDynamic(const Matrix& world, PHYSICS_SRT& srt, _float density, vector<PxShape*>& shapes)
+PxRigidActor* CPhysics_ActorFactory::MakeDynamic(const Matrix& world, _float density, vector<PxShape*>& shapes)
 {
-	PxVec3 vPos(srt.vPosition.x, srt.vPosition.y, srt.vPosition.z);
-	PxQuat vQuat(srt.vQuat.x, srt.vQuat.y, srt.vQuat.z, srt.vQuat.w);
-	PxVec3 vScale(srt.vScale.x, srt.vScale.y, srt.vScale.z);
+	PxTransform transform = m_pGameInstance->XMMatrixToPxTransform(world);
+	PxVec3 vScale(world.Right().Length(), world.Up().Length(), world.Forward().Length());
 
-	PxTransform transform(vPos, vQuat);
 	PxRigidDynamic* dynamicActor = m_pPhysics->createRigidDynamic(transform);
 	for (auto& shape : shapes)
 	{
@@ -170,7 +168,7 @@ PxRigidActor* CPhysics_ActorFactory::MakeDynamic(const Matrix& world, PHYSICS_SR
 	return dynamicActor;
 }
 
-PxRigidActor* CPhysics_ActorFactory::MakeKinematic(const Matrix& world, PHYSICS_SRT& srt, _float density, vector<PxShape*>& shapes)
+PxRigidActor* CPhysics_ActorFactory::MakeKinematic(const Matrix& world, _float density, vector<PxShape*>& shapes)
 {
 	PxTransform transform = m_pGameInstance->XMMatrixToPxTransform(world);
 

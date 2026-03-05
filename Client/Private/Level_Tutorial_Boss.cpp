@@ -6,6 +6,7 @@
 // Manager
 //=================
 #include "UI_Manager.h"
+#include "Client_EventDefine.h"
 
 //=================
 // Data Struct
@@ -57,6 +58,10 @@
 #include "Monster_Dog_Body.h"
 #include "Boss_Xibi.h"
 #include "Boss_Xibi_Body.h"
+#include "Xibi_Projectile_Circle.h"
+#include "Xibi_Loop_Thunder.h"
+#include "Xibi_Oneshot_Thunder.h"
+#include "Moon_SkillE_Obj.h"
 
 
 //=================
@@ -109,6 +114,13 @@ HRESULT CLevel_Tutorial_Boss::Initialize()
 		MSG_BOX("CLevel_Tutorial_Boss::Initialize, Ready_Map Create Failed");
 		return E_FAIL;
 	}
+
+	if (FAILED(Ready_SkillObjectLayer()))
+	{
+		MSG_BOX("CLevel_Tutorial_Boss::Initialize, Ready_SkillObjectLayer Create Failed");
+		return E_FAIL;
+	}
+
 	return S_OK;
 }
 
@@ -119,6 +131,8 @@ HRESULT CLevel_Tutorial_Boss::Build_Prototype()
 	if (FAILED(Ready_Builder(DTO::ECategory::EFFECT, CBuilder_Effect::Create(m_pDevice, m_pDeviceContext, ENUM_TO_UINT(ELevelType::TUTORIAL_BOSS)))))
 		return E_FAIL;
 	if (FAILED(Ready_Builder(DTO::ECategory::UI, CBuilder_UI::Create(m_pDevice, m_pDeviceContext, static_cast<_uint>(ELevelType::TUTORIAL_BOSS)))))
+		return E_FAIL;
+	if (FAILED(Ready_Builder(DTO::ECategory::UI_PREFAB, CBuilder_UIPrefabs::Create(m_pDevice, m_pDeviceContext, static_cast<_uint>(ELevelType::TUTORIAL_BOSS)))))
 		return E_FAIL;
 	return S_OK;
 }
@@ -149,8 +163,23 @@ HRESULT CLevel_Tutorial_Boss::Build_Files()
 	eCategory = DTO::ECategory::UI;
 	if (FAILED(m_pGameInstance->Regist_Document<CDataDocument_UI>(iLevelID, eCategory)))
 		return E_FAIL;
-
 	strUIFolderPath = L"../../Resources/Data/UIData/Static/";
+	if (std::filesystem::exists(strUIFolderPath))
+	{
+		for (auto iter : std::filesystem::directory_iterator(strUIFolderPath))
+		{
+			if (FAILED(m_pGameInstance->Load_File_Json(iLevelID, eCategory, iter.path())))
+				return E_FAIL;
+
+			if (FAILED(Build_File(iLevelID, eCategory, iter.path().stem().string())))
+				return E_FAIL;
+		}
+	}
+
+	eCategory = DTO::ECategory::UI_PREFAB;
+	if (FAILED(m_pGameInstance->Regist_Document<CDataDocument_UI>(iLevelID, eCategory)))
+		return E_FAIL;
+	strUIFolderPath = L"../../Resources/Data/UIData/Prefab/";
 	if (std::filesystem::exists(strUIFolderPath))
 	{
 		for (auto iter : std::filesystem::directory_iterator(strUIFolderPath))
@@ -179,31 +208,51 @@ HRESULT CLevel_Tutorial_Boss::Ready_Lights()
 		if (FAILED(m_pGameInstance->Add_Light(desc)))
 			return E_FAIL;
 	}
-	{
-		LIGHT_DESC desc = {};
-		desc.eType = LIGHT_TYPE::STATICPOINT;
-		desc.vDiffuse = Vec4(0.5f, 0.3f, 0.7f, 1.f);
-		desc.vAmbient = Vec4(0.2f, 0.1f, 0.3f, 1.f);
-		desc.vSpecular = desc.vDiffuse;
-		desc.vPosition = Vec4(21.f, 18.f, 0.f, 1.f);
-		desc.fRange = 10.f;
 
-		if (FAILED(m_pGameInstance->Add_Light(desc)))
+	return S_OK;
+}
+
+HRESULT CLevel_Tutorial_Boss::Ready_SkillObjectLayer()
+{
+	_uint iLevelId = ENUM_TO_UINT(ELevelType::TUTORIAL_BOSS);
+
+	// SkillObject Pool
+	{
+		CXibi_Projectile_Circle::SKILLOBJECT_DESC desc{};
+		if (FAILED(m_pGameInstance->Regist_Pool(
+			iLevelId,
+			g_wszPool_XibiCircleProjectile,
+			g_wszSkillObjectLayer,
+			iLevelId,
+			g_wszXibiProjectile_Prototype_Tag,
+			&desc,
+			30)))
 			return E_FAIL;
 	}
 	{
-		LIGHT_DESC desc = {};
-		desc.eType = LIGHT_TYPE::STATICPOINT;
-		desc.vDiffuse = Vec4(0.3f, 0.6f, 0.4f, 1.f);
-		desc.vAmbient = Vec4(0.1f, 0.3f, 0.2f, 1.f);
-		desc.vSpecular = desc.vDiffuse;
-		desc.vPosition = Vec4(21.f, 14.5f, 25.f, 1.f);
-		desc.fRange = 10.f;
-
-		if (FAILED(m_pGameInstance->Add_Light(desc)))
+		CXibi_Loop_Thunder::SKILLOBJECT_DESC desc{};
+		if (FAILED(m_pGameInstance->Regist_Pool(
+			iLevelId,
+			g_wszPool_XibiLoopThunder,
+			g_wszSkillObjectLayer,
+			iLevelId,
+			g_wszXibiLoopThunder_Prototype_Tag,
+			&desc,
+			30)))
 			return E_FAIL;
 	}
-
+	{
+		CXibi_Oneshot_Thunder::SKILLOBJECT_DESC desc{};
+		if (FAILED(m_pGameInstance->Regist_Pool(
+			iLevelId,
+			g_wszPool_XibiOneshotThunder,
+			g_wszSkillObjectLayer,
+			iLevelId,
+			g_wszXibiOneshotThunder_Prototype_Tag,
+			&desc,
+			100)))
+			return E_FAIL;
+	}
 	return S_OK;
 }
 
@@ -245,6 +294,25 @@ HRESULT CLevel_Tutorial_Boss::Ready_Player_Layer(const wstring& wstrLayerTag)
 
 	/* Player 置段 持失 */
 	{
+		// SkillObject Pool
+		{
+			CMoon_SkillE_Obj::SKILLOBJECT_DESC desc{};
+			//TRANSFORM_DESC
+			CTransform::TRANSFORM_DESC tTransDesc = {};
+			tTransDesc.fMovePerSec = 20.f;
+			desc.pTransform_Desc = &tTransDesc;
+
+			if (FAILED(m_pGameInstance->Regist_Pool(
+				0,
+				g_wszPool_MoonSkillE,
+				g_wszSkillObjectLayer,
+				0,
+				g_wszMoonSkillE__Prototype_Tag,
+				&desc,
+				30)))
+				return E_FAIL;
+		}
+
 		CGameObject* pResult = { nullptr };
 
 		CPlayer::PLAYER_DESC playerDesc = {};
@@ -430,7 +498,22 @@ void CLevel_Tutorial_Boss::Update(const _float fTimeDelta)
 #endif
 		m_pGameInstance->Request_CursorMode(m_eCursorMode);
 	}
-
+	if (KEY_BUTTON_DOWN(DIK_5))
+	{
+		m_pGameInstance->Broadcast<ACTION1>();
+	}
+	if (KEY_BUTTON_DOWN(DIK_6))
+	{
+		m_pGameInstance->Broadcast<ACTION2>();
+	}
+	if (KEY_BUTTON_DOWN(DIK_7))
+	{
+		m_pGameInstance->Broadcast<ACTION3>();
+	}
+	if (KEY_BUTTON_DOWN(DIK_8))
+	{
+		m_pGameInstance->Broadcast<ACTION4>();
+	}
 }
 
 HRESULT CLevel_Tutorial_Boss::Render()

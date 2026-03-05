@@ -4,9 +4,13 @@
 #include "Engine_Utils.h"
 #include "MyStat.h"
 
+#include "GameInstance.h"
+
 CSkillBase::CSkillBase()
 	:Super()
+	, m_pGameInstance(CGameInstance::GetInstance())
 {
+	Safe_AddRef(m_pGameInstance);
 }
 
 HRESULT CSkillBase::Initialize(void* pArg)
@@ -32,7 +36,11 @@ HRESULT CSkillBase::Initialize(void* pArg)
 	return S_OK;
 }
 
-void CSkillBase::Update(const _float fTimeDelta)
+void CSkillBase::Awake(const _uint iCurLevelIndex)
+{
+}
+
+void CSkillBase::Update(const _float fTimeDelta, CMyStat* pStatCom)
 {
 	// skill이 on이 되었고 end가 나지 않았을때
 	if (m_bOnSkill && !m_bEndSkill)
@@ -45,6 +53,11 @@ void CSkillBase::Update(const _float fTimeDelta)
 	}
 
 	Count_NextCoolTime(fTimeDelta);
+}
+
+void CSkillBase::Update_Default(const _float fTimeDelta, CMyStat* pStatCom)
+{
+
 }
 
 _bool CSkillBase::Can_StartSkill(CMyStat* pStatCom)
@@ -189,5 +202,6 @@ CSkillBase* CSkillBase::Create(void* pArg)
 
 void CSkillBase::Free()
 {
+	Safe_Release(m_pGameInstance);
 	Super::Free();
 }

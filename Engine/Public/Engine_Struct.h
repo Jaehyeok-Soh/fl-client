@@ -846,6 +846,7 @@ namespace Engine
 		float fLinearDamping = {};
 		float fAngularDamping = {};
 
+		Matrix* pOwnerMatrix = { nullptr };
 		vector<Matrix> pOwnerMatrices;
 		vector<PHYSICS_SRT> vecSRT{};
 	}PHYSICSRIGIDBODY_DESC;

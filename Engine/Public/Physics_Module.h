@@ -26,6 +26,9 @@ public:
     void StepPhysics(_float fTimeDelta);
     void AddActor(PxRigidActor* actor);
     void ClearPhysics();
+    void FlushScene();
+    void RemoveActor(PxRigidActor* actor);
+    void ResetActorFilter(PxRigidActor* actor);
 
 /// <summary>
 /// Utils
@@ -78,6 +81,7 @@ public:
 /// </summary>
 public:
     PxController* GetController(PHYSICSCCT_DESC* pDesc);
+    CPhysics_CCTFilterCallback* GetCCTFilterCallback();
 
 /// <summary>
 /// Collision Filter Shader

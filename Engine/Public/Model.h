@@ -165,11 +165,14 @@ public:
 	class CBone*						Get_Bone(const _char* szName);
 	class CBone*						Get_Bone(_uint iIndex);
 	class CMaterialInstance*			Get_MaterialInstance(_uint iIndex);
+	class CModelAnimation*				Get_Animation(_uint iIndex);
 
 	// animations
 	_bool								Is_AnimFinished() const { return m_bIsAnimFinished; }
 	_bool								Is_AnimTrackPositionBetween(_float fStartRatio, _float fEndRatio);
+	_bool								Is_AnimTrackPositionBetweenRaw(_float fTrackA, _float fTrackB);
 	_bool								Is_AnimTrackPositionAt(_float fRatio);
+	_bool								Is_AnimTrackPositionAtRaw(_float fTrackPosition);
 	_bool								Is_AnimTrackPositionAtHalf() const;
 
 	_bool								Is_LoopAnimDone() const { return m_bLoopAnimDone; }
@@ -330,7 +333,7 @@ private:
 
 	StructuredBuffer*					m_pPreSB					= { nullptr };
 	StructuredBuffer*					m_pCurSB					= { nullptr };
-	ID3D11Buffer*						m_pBoneOuputStagingBuffer[2] = {nullptr};
+	//ID3D11Buffer*						m_pBoneOuputStagingBuffer[2] = {nullptr};
 	_uint								m_iFrameIndex = { 0 };
 
 	_uint m_iCpuBoneCount = { 0 };

@@ -972,7 +972,7 @@ void CMapObject::Delete_InstanceData(_int iIndex)
 
     if (Get_InstanceCount() <= 1)
     {
-        Set_Dead(this->m_wstrLayerTag);
+        Set_Dead();
         return;
     }
   

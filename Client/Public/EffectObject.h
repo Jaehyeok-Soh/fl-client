@@ -51,8 +51,6 @@ public:
     virtual HRESULT Render() override;
     virtual _bool Picking(OUT Vec3& vOut) override;
     virtual _bool Export_Data(DTO::ECategory eCategory, CDataDocumentBase* pDocument) override;
-    virtual void Set_Dead(const wstring& wstrLayerTag) override;
-
 public:
         // 외부 호출 함수
     virtual HRESULT Spawn_FromPool(void* pArg);
@@ -69,6 +67,7 @@ private:
 private:
     // ====== 계산함수 ====== 
     void TimeCalculate(const _float fDT);
+    _bool   Is_Render_Possible() { return m_bIsStarted; }
     //float Sample_GravityCurve(const vector<DTO::Gravity_CurveKey>& vecVurve, float fLifeRatio);   // 이제 GPU에서 계산함.
     void Update_Gravity_Force(); // 중력 계산하기.
     float Sample_RotationCurve(const vector<DTO::Rotation_CurveKey>& vecCurve, float fLifeRatio);

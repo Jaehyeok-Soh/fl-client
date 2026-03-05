@@ -100,6 +100,7 @@ void CMonster_Body_Base::Update_Late(_float fTimeDelta)
 void CMonster_Body_Base::Ready_Before_Render(_float fTimeDelta)
 {
 	Super::Ready_Before_Render(fTimeDelta);
+	Get_Component<CModel>()->Emit_Notifies(EAnimNotifyPhase::PreRender);
 	m_pGameInstance->Push_RenderObject(RENDER_CATEGORY::NONEBLEND, this);
 	Get_Component<CModel>()->Emit_Notifies(EAnimNotifyPhase::PreRender);
 	Super::Update_CombinedWorldMatrix(m_pMatParent);

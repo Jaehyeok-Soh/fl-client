@@ -36,11 +36,6 @@ HRESULT CUIObject::Initialize(void* pArg)
 
 	m_eCategory = RENDER_CATEGORY::BLEND;
 
-	//if(pDesc->isWorld)
-	//	m_eCategory = RENDER_CATEGORY::BLEND;
-	//else
-	//	m_eCategory = (pDesc->isAlpha ? RENDER_CATEGORY::BLENDUI : RENDER_CATEGORY::UI);
-
 	m_fX = pDesc->fX;
 	m_fY = pDesc->fY;
 	m_fZ = pDesc->fZ;
@@ -291,6 +286,20 @@ void CUIObject::SetUp_Rect()
 	m_tRect.right = (LONG)(m_fX + m_fWidth / 2);
 	m_tRect.top = (LONG)(m_fY - m_fHeight / 2);
 	m_tRect.bottom = (LONG)(m_fY + m_fHeight / 2);
+}
+
+HRESULT CUIObject::Spawn_FromPool(void* pArg)
+{
+	if (FAILED(Super::Spawn_FromPool(pArg)))
+		return E_FAIL;
+	return S_OK;
+}
+
+HRESULT CUIObject::Despawn_FromPool()
+{
+	if (FAILED(Super::Despawn_FromPool()))
+		return E_FAIL;
+	return S_OK;
 }
 
 void CUIObject::Free()

@@ -1,6 +1,11 @@
 #pragma once
 #include "Level.h"
 
+NS_BEGIN(Engine)
+class CSingleSkillSpawner;
+class CProjectileSpawner_Fan;
+NS_END
+
 NS_BEGIN(Client)
 
 class CLevel_Test : public CLevel
