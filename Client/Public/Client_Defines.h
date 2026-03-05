@@ -517,6 +517,13 @@ namespace Client
 	inline constexpr wchar_t g_wszPool_Monster_Shooter[]{ L"Pool_Monster_Shooter" };
 #pragma endregion
 
+#pragma region Part Objects
+
+	/* Bounding Box */
+	inline constexpr wchar_t g_wszPartObj_Effect_Prototype_Tag[]{ L"Prototype_GameObject_Part_Effect" }; // static
+
+#pragma endregion
+
 #pragma region ±‚≈∏
 	inline constexpr wchar_t g_wszBattleField_Prototype_Tag[]					{ L"Prototype_GameObject_BattleField" };
 #pragma endregion

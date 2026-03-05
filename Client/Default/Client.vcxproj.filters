@@ -631,6 +631,9 @@
     <Filter Include="99. ETC\46.Headers">
       <UniqueIdentifier>{e9831f57-7718-4a7b-9669-75fbbef83eee}</UniqueIdentifier>
     </Filter>
+    <Filter Include="03. GameObject\PartObjects\PartEffect">
+      <UniqueIdentifier>{7217cf30-a2de-41b6-bc09-78d3de156fe9}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="targetver.h">
@@ -1174,6 +1177,9 @@
     <ClInclude Include="..\Public\Moon_SkillQSheild_Obj.h">
       <Filter>03. GameObject\SkillObject\Player\Moon\SkillQ</Filter>
     </ClInclude>
+    <ClInclude Include="..\Public\PartEffect.h">
+      <Filter>03. GameObject\PartObjects\PartEffect</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <Image Include="Client.ico">
@@ -1705,6 +1711,9 @@
     </ClCompile>
     <ClCompile Include="..\Private\Moon_SkillQSheild_Obj.cpp">
       <Filter>03. GameObject\SkillObject\Player\Moon\SkillQ</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\PartEffect.cpp">
+      <Filter>03. GameObject\PartObjects\PartEffect</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

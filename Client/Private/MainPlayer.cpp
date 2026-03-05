@@ -77,6 +77,9 @@ HRESULT CMainPlayer::Initialize_Prototype()
 
 HRESULT CMainPlayer::Initialize(void* pArg)
 {
+    PLAYER_DESC* pDesc = static_cast<PLAYER_DESC*>(pArg);
+    m_ePlayerType = pDesc->ePlayerType;
+
     if (FAILED(Super::Initialize(pArg)))
         return E_FAIL;
 
@@ -89,8 +92,9 @@ HRESULT CMainPlayer::Initialize(void* pArg)
     tDesc.FKeys = CPlayerControlContext::KEYFLAGS::MOVE     | CPlayerControlContext::KEYFLAGS::JUMP
                 | CPlayerControlContext::KEYFLAGS::DASH     | CPlayerControlContext::KEYFLAGS::SPECIAL
                 | CPlayerControlContext::KEYFLAGS::COMBO    | CPlayerControlContext::KEYFLAGS::SKILL1
-                | CPlayerControlContext::KEYFLAGS::SKILL2   | CPlayerControlContext::KEYFLAGS::INTERACT |
-                    CPlayerControlContext::KEYFLAGS::GUN;
+                | CPlayerControlContext::KEYFLAGS::SKILL2   | CPlayerControlContext::KEYFLAGS::INTERACT 
+                | CPlayerControlContext::KEYFLAGS::GUN;
+
     if (FAILED(Add_Component<CPlayerControlContext>(0 /*static*/, L"Prototype_Component_ControlContext_Player", &tDesc)))
         return E_FAIL;
 

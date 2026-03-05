@@ -39,6 +39,7 @@ public:
 public:
 	const Matrix* Get_SocketMatrix(const _char* szBoneName);
 	const Matrix* Get_SocketMatrix(_uint iIndex);
+	const Matrix* Get_PosMatrix(_uint iIndex);
 	CBone* Get_CamBone();
 	CBone* Get_CamSocketBone();
 

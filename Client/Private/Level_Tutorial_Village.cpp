@@ -233,18 +233,18 @@ HRESULT CLevel_Tutorial_Village::Ready_Player_SkillObjPool()
 	}
 
 	// Moon skil Q sheild
-	{
-		CMoon_SkillQSheild_Obj::SKILLOBJECT_DESC desc{};
-		if (FAILED(m_pGameInstance->Regist_Pool(
-			0,
-			g_wszPool_MoonSkillQSheild,
-			g_wszSkillObjectLayer,
-			0,
-			g_wszMoonSkillQSheild_Prototype_Tag,
-			&desc,
-			10)))
-			return E_FAIL;
-	}
+	//{
+	//	CMoon_SkillQSheild_Obj::SKILLOBJECT_DESC desc{};
+	//	if (FAILED(m_pGameInstance->Regist_Pool(
+	//		0,
+	//		g_wszPool_MoonSkillQSheild,
+	//		g_wszSkillObjectLayer,
+	//		0,
+	//		g_wszMoonSkillQSheild_Prototype_Tag,
+	//		&desc,
+	//		10)))
+	//		return E_FAIL;
+	//}
 
 	// Moon skil Q attack
 	{
@@ -284,6 +284,7 @@ HRESULT CLevel_Tutorial_Village::Ready_Player_Layer(const wstring& wstrLayerTag)
 		playerDesc.wstrBodyModelTag = L"Prototype_Component_Model_Moon";
 		transformDesc.TranslationMatrix = Matrix::CreateTranslation(Vec3(229.12f, 256.72f, -245.039f));
 		playerDesc.pTransform_Desc = &transformDesc;
+		playerDesc.ePlayerType = CPlayer::PLAYER_TYPE::MOON;
 		if (!(pResult = m_pGameInstance->Add_GameObject(ENUM_TO_UINT(ELevelType::STATIC),
 			L"Prototype_GameObject_MainPlayer",
 			ENUM_TO_UINT(ELevelType::STATIC),

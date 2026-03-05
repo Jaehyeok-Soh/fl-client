@@ -222,6 +222,7 @@
     <ClInclude Include="..\Public\Moon_SkillQAttack_Obj.h" />
     <ClInclude Include="..\Public\Moon_SkillQSheild_Obj.h" />
     <ClInclude Include="..\Public\Moss.h" />
+    <ClInclude Include="..\Public\PartEffect.h" />
     <ClInclude Include="..\Public\Physics_LandScape.h" />
     <ClInclude Include="..\Public\Physics_Terrain.h" />
     <ClInclude Include="..\Public\Plants.h" />
@@ -429,6 +430,7 @@
     <ClCompile Include="..\Private\Moon_SkillQAttack_Obj.cpp" />
     <ClCompile Include="..\Private\Moon_SkillQSheild_Obj.cpp" />
     <ClCompile Include="..\Private\Moss.cpp" />
+    <ClCompile Include="..\Private\PartEffect.cpp" />
     <ClCompile Include="..\Private\Physics_LandScape.cpp" />
     <ClCompile Include="..\Private\Plants.cpp" />
     <ClCompile Include="..\Private\Rock.cpp" />

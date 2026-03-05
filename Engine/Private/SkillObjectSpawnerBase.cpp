@@ -56,13 +56,13 @@ void CSkillObjectSpawnerBase::Spawn_SkillObject(const Vec3& vSpawnPos, const Vec
 	desc.pRequester = m_desc.pRequester;
 	desc.pTarget = m_desc.pTarget;
 
-	desc.iFlags = m_pOriginDesc->iSkillObjectFlags;
-	desc.fLifeTime = m_pOriginDesc->fLifeTime;
-	desc.fMaxDistance = m_pOriginDesc->fMaxDistance;
-	desc.fHomingStrength = m_pOriginDesc->fHomingStrength;
+	desc.iFlags				= m_pOriginDesc->iSkillObjectFlags;
+	desc.fLifeTime			= m_pOriginDesc->fLifeTime;
+	desc.fMaxDistance		= m_pOriginDesc->fMaxDistance;
+	desc.fHomingStrength	= m_pOriginDesc->fHomingStrength;
 
-    desc.vSpawnPos = vSpawnPos;
-    desc.vDirection = vDir;
+    desc.vSpawnPos			= vSpawnPos;
+    desc.vDirection			= vDir;
 
 	// eunbi 초반에 셋팅한 속도 == transform speed
 	//desc.fSpeed = m_pOriginDesc->fSpeed;

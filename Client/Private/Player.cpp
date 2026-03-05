@@ -17,11 +17,13 @@
 #include "ComputeShader.h"
 #include "StatCom_Player.h"
 #include "ActionSkill.h"
+#include "EffectHandler.h"
 
 // parts objs
 #include "Weapon.h"
 #include "Body.h"
 #include "Gun.h"
+#include "PartEffect.h"
 
 #include "MainPlayer.h"
 #include "CameraMan_Targeter.h"
@@ -306,6 +308,15 @@ _bool CPlayer::Start_Attack(State iState)
 
     case State::SKILL2:
         bChange = Get_Component<CActionSkill>()->Start_Skill(MoonQ);
+
+        if (bChange && m_ePlayerType == PLAYER_TYPE::MOON)
+        {
+            if (CPartEffect* pEff = Get_Part<CPartEffect>(Part::EFFECT))
+            {
+                pEff->Change_State(CPartEffect::CPartEff_State::SPAWN);
+            }
+        }
+
         break;
     }
 
@@ -1124,42 +1135,73 @@ HRESULT CPlayer::Ready_PartObjects(PLAYER_DESC* pDesc)
 
             weaponDesc.matHandOffsetMatrix = Matrix::CreateFromYawPitchRoll(XMConvertToRadians(90.f), XMConvertToRadians(90.f), XMConvertToRadians(-90.f));
             weaponDesc.matHoldOffsetMatrix = Matrix::CreateFromYawPitchRoll(XMConvertToRadians(0.f), XMConvertToRadians(-90.f), XMConvertToRadians(90.f));
-           
+
             if (FAILED(Add_Part(Part::GUN, ENUM_TO_UINT(ELevelType::STATIC), L"Prototype_GameObject_Part_Gun", &weaponDesc)))
                 return E_FAIL;
         }
-        //// LeftHand
-        //{
-        //    CColliderPart::COLLIDERPART_DESC colliderPartDesc = {};
-        //    colliderPartDesc.pMatParent = &Get_Component<CTransform>()->Get_WorldMatrix();
-        //    colliderPartDesc.pMatSocket = &Get_Part<CBody>(Part::BODY)->Get_LeftHandSocket()->Get_CombinedTransformMatrix();
-        //    if (FAILED(Add_Part(Part::LEFTHAND, ENUM_TO_UINT(ELevelType::STATIC), L"Prototype_GameObject_Part_Collider", &colliderPartDesc)))
-        //        return E_FAIL;
-        //}
-        //// RightHand
-        //{
-        //    CColliderPart::COLLIDERPART_DESC colliderPartDesc = {};
-        //    colliderPartDesc.pMatParent = &Get_Component<CTransform>()->Get_WorldMatrix();
-        //    colliderPartDesc.pMatSocket = &Get_Part<CBody>(Part::BODY)->Get_RightHandSocket()->Get_CombinedTransformMatrix();
-        //    if (FAILED(Add_Part(Part::RIGHTHAND, ENUM_TO_UINT(ELevelType::STATIC), L"Prototype_GameObject_Part_Collider", &colliderPartDesc)))
-        //        return E_FAIL;
-        //}
-        //// LeftFoot
-        //{
-        //    CColliderPart::COLLIDERPART_DESC colliderPartDesc = {};
-        //    colliderPartDesc.pMatParent = &Get_Component<CTransform>()->Get_WorldMatrix();
-        //    colliderPartDesc.pMatSocket = &Get_Part<CBody>(Part::BODY)->Get_LeftFootSocket()->Get_CombinedTransformMatrix();
-        //    if (FAILED(Add_Part(Part::LEFTFOOT, ENUM_TO_UINT(ELevelType::STATIC), L"Prototype_GameObject_Part_Collider", &colliderPartDesc)))
-        //        return E_FAIL;
-        //}
-        //// RightFoot
-        //{
-        //    CColliderPart::COLLIDERPART_DESC colliderPartDesc = {};
-        //    colliderPartDesc.pMatParent = &Get_Component<CTransform>()->Get_WorldMatrix();
-        //    colliderPartDesc.pMatSocket = &Get_Part<CBody>(Part::BODY)->Get_RightFootSocket()->Get_CombinedTransformMatrix();
-        //    if (FAILED(Add_Part(Part::RIGHTFOOT, ENUM_TO_UINT(ELevelType::STATIC), L"Prototype_GameObject_Part_Collider", &colliderPartDesc)))
-        //        return E_FAIL;
-        //}
+
+        switch (m_ePlayerType)
+        {
+        case PLAYER_TYPE::MOON:
+        {
+            CPartEffect::PART_EFFECT_DESC tDesc;
+            tDesc.pMatParent = &Get_Component<CTransform>()->Get_WorldMatrix();
+            tDesc.arrState_DurationTimes    = {};
+            tDesc.arrState_DurationTimes    = { 0.f,12.f,0.f }; 
+            tDesc.arrState_DelayTimes       = { 0.f,0.f,0.f };
+            tDesc.FPartEff_Flags = CPartEffect::PartEff_Flag::None;
+
+
+            vector<CPartEffect::DATA_EFFHANDLER> tEffectHandlerDesc;
+            tEffectHandlerDesc.reserve(2);
+
+            CPartEffect::DATA_EFFHANDLER tData0 = {};
+            {
+                tData0.eEffState = CEffectHandler::E_OBJ_LIFECYCLE_STATE::ON_SPAWN;
+                tData0.eHandlerType = CEffectHandler::E_HANDLER_TYPE::SKILL_OBJ;
+
+                CEffectHandler::STATE_VFX_DESC SkillDesc{};
+                {
+                    SkillDesc.EffectPrefabTag = "Player_Moon_QSkill_Barrior";//"PlayerMoon_ESkillObject";
+                    SkillDesc.pParentTransformMatrix = nullptr;
+                    SkillDesc.bWorld = { CEffectHandler::E_WORLD::E_LOCAL };
+                    SkillDesc.bFollowBone = { false };
+                    SkillDesc.iBoneIndex = -1;
+                    SkillDesc.vOffSet = { 0.f,1.f,0.f };
+                    SkillDesc.vRotation = { Vec3::Zero };
+                }
+                tData0.tSkillDesc = SkillDesc;
+            }
+            tEffectHandlerDesc.push_back(tData0);
+
+            CPartEffect::DATA_EFFHANDLER tData1 = {};
+            {
+                tData1.eEffState    = CEffectHandler::E_OBJ_LIFECYCLE_STATE::ON_DESTROY;
+                tData1.eHandlerType = CEffectHandler::E_HANDLER_TYPE::SKILL_OBJ;
+
+                CEffectHandler::STATE_VFX_DESC SkillDesc{};
+                {
+                    SkillDesc.EffectPrefabTag = "";
+                    SkillDesc.pParentTransformMatrix = nullptr;
+                    SkillDesc.bWorld = { CEffectHandler::E_WORLD::E_LOCAL };
+                    SkillDesc.bFollowBone = { false };
+                    SkillDesc.iBoneIndex = -1;
+                    SkillDesc.vOffSet = { Vec3::Zero };
+                    SkillDesc.vRotation = { Vec3::Zero };
+                }
+                tData1.tSkillDesc = SkillDesc;
+            }
+            tEffectHandlerDesc.push_back(tData1);
+
+            tDesc.tEffectHandlerDesc = tEffectHandlerDesc;
+
+            if (FAILED(Add_Part(Part::EFFECT, ENUM_TO_UINT(ELevelType::STATIC), g_wszPartObj_Effect_Prototype_Tag, &tDesc)))
+                return E_FAIL;
+        }
+
+            break;
+        }
+
         return S_OK;
     }
 

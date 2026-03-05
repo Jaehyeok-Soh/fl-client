@@ -214,6 +214,16 @@ const Matrix* CBody::Get_SocketMatrix(_uint iIndex)
 	return nullptr;
 }
 
+const Matrix* CBody::Get_PosMatrix(_uint iIndex)
+{
+	if (CBone* pReturn = Get_Component<CModel>()->Get_Bone(iIndex))
+	{
+		return &pReturn->Get_BindPoseTransformMatrix();
+	}
+
+	return nullptr;
+}
+
 CBone* CBody::Get_CamBone()
 {
 	if (CBone* pCam = Get_Component<CModel>()->Get_Bone(m_iCamPos_Index))
