@@ -190,8 +190,11 @@ void CUICombo_Image::Tick_By_Type(const _float fTimeDelta)
 		}
 
 		_uint i = m_pPlayerStatCom->Get_Count(CStatCom_Player::TIMER_TYPE::COMBO);
+
 		if (m_iPreComboCount != i)
 			m_isComboChange = true;
+
+		m_iCurComboCount = i;
 
 		Convert_Count_To_Rank();
 		if (m_isComboChange)
@@ -231,15 +234,13 @@ void CUICombo_Image::Tick_By_Type(const _float fTimeDelta)
 	case DTO::EUIDImageSubClassType::BATTLE_COMBO_BG_GLOW:
 	{
 		m_fTime += fTimeDelta;
-		m_fComboCoolTime += fTimeDelta;
 
-		if (m_iPreComboCount != m_iCurComboCount)
-			m_isCountChange = true;
+		_uint i = m_pPlayerStatCom->Get_Count(CStatCom_Player::TIMER_TYPE::COMBO);
 
-		if (m_isCountChange)
-		{
-			m_fComboCoolTime = 0.f;
-		}
+		if (m_iPreComboCount != i)
+			m_isComboChange = true;
+
+		m_iCurComboCount = i;
 
 		Convert_Count_To_Rank();
 		if (m_isComboChange)

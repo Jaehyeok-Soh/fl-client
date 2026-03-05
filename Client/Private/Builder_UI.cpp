@@ -255,10 +255,6 @@ HRESULT CBuilder_UI::Register_Class(DTO::EUIClassType eClassType, const DTO::TUI
 		}
 	}
 
-	//Prototype_UI_BossActionImage
-	//Prototype_UI_BossActionText
-
-
 	////////////////////////////////////////
 	// UI_TEXT //
 	else if (eClassType == DTO::EUIClassType::UI_TEXT)

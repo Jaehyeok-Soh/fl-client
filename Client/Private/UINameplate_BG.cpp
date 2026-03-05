@@ -103,7 +103,7 @@ HRESULT CUINameplate_BG::Bind_ShaderResources()
 
 HRESULT CUINameplate_BG::Attach_Personal_Info()
 {
-	m_pGameInstance->Subscribe<MONSTER_DEAD_EVENT_START>([this](CGameObject* pDead)
+	m_tEventHandle = m_pGameInstance->Subscribe<MONSTER_DEAD_EVENT_START>([this](CGameObject* pDead)
 		{
 			if (pDead == m_pTargetMoster)
 				this->Set_Invisible();
