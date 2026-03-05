@@ -35,6 +35,9 @@ HRESULT CXibi_Oneshot_Thunder::Initialize(void* pArg)
 
 	if (CPhysicsRigidBody* pRigidBody = Get_Component<CPhysicsRigidBody>())
 		pRigidBody->Awake();
+
+	Get_Component<CEffectHandler>()->Setup_ForOwner(this);
+
 	return S_OK;
 }
 

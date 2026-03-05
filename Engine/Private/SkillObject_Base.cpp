@@ -65,10 +65,6 @@ HRESULT CSkillObject_Base::Awake(const _uint iCurrentLevelID)
 	if(CPhysicsRigidBody* pRigidBody = Get_Component<CPhysicsRigidBody>())
 		pRigidBody->Awake();
 
-	if (CEffectHandler* pEffectHandler = Get_Component<CEffectHandler>())
-		pEffectHandler->Setup_ForOwner();
-	
-
 	Get_Component<CTransform>()->Set_Info(TRANSFORM_INFO_STATE::POS, m_desc.vSpawnPos);
 	return S_OK;
 }
